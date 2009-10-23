@@ -5,6 +5,11 @@
 #include <vector>
 #include <string>
 
+#define JACTIVE_BUTTON 0x00000001
+#define JACTIVE_AXIS   0x00000002
+#define JACTIVE_HAT    0x00000004
+#define JACTIVE_NONE   0x00000000
+
 #ifdef HAS_SDL_JOYSTICK
 
 #include <SDL/SDL_joystick.h>
@@ -12,10 +17,6 @@
 
 #define MAX_AXES 64
 
-#define JACTIVE_BUTTON 0x00000001
-#define JACTIVE_AXIS   0x00000002
-#define JACTIVE_HAT    0x00000004
-#define JACTIVE_NONE   0x00000000
 
 // Class to manage all connected joysticks
 

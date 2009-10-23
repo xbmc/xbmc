@@ -275,8 +275,7 @@ public:
     PLT_SsdpSearchTask(NPT_UdpSocket*                  socket,
                        PLT_SsdpSearchResponseListener* listener, 
                        NPT_HttpRequest*                request,
-                       NPT_Timeout                     timeout,
-                       bool                            repeat = true);
+                       NPT_Timeout                     frequency); // pass 0 for one time
 
 protected:
     virtual ~PLT_SsdpSearchTask();

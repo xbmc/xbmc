@@ -212,7 +212,7 @@ int64_t CFileShoutcast::GetLength()
 
 bool CFileShoutcast::Open(const CURL& url)
 {
-  m_dwLastTime = CTimeUtils::GetTimeMS();
+  m_lastTime = CTimeUtils::GetTimeMS();
   int ret;
 
   CGUIDialogProgress* dlgProgress = NULL;
@@ -381,9 +381,9 @@ unsigned int CFileShoutcast::Read(void* lpBuf, int64_t uiBufSize)
   if (iRead > uiBufSize) iRead = (int)uiBufSize;
   m_ringbuf.ReadBinary((char*)lpBuf, iRead);
 
-  if (CTimeUtils::GetTimeMS() - m_dwLastTime > 500)
+  if (CTimeUtils::GetTimeMS() - m_lastTime > 500)
   {
-    m_dwLastTime = CTimeUtils::GetTimeMS();
+    m_lastTime = CTimeUtils::GetTimeMS();
     CMusicInfoTag tag;
     GetMusicInfoTag(tag);
     g_infoManager.SetCurrentSongTag(tag);

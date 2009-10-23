@@ -42,7 +42,7 @@ NPT_SET_LOCAL_LOGGER("platinum.core.metadata.handler")
 |   PLT_MetadataHandler::Load
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MetadataHandler::LoadFile(const char* filename)
+PLT_MetadataHandler::Load(const char* filename)
 {
     NPT_File file(filename);
     NPT_Result res = file.Open(NPT_FILE_OPEN_MODE_READ);
@@ -67,7 +67,7 @@ PLT_MetadataHandler::LoadFile(const char* filename)
 |   PLT_MetadataHandler::Save
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MetadataHandler::SaveFile(const char* filename)
+PLT_MetadataHandler::Save(const char* filename)
 {
     NPT_File file(filename);
     NPT_Result res = file.Open(NPT_FILE_OPEN_MODE_WRITE);

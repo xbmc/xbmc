@@ -57,10 +57,10 @@ public:
   CThread(IRunnable* pRunnable);
   virtual ~CThread();
   void Create(bool bAutoDelete = false, unsigned stacksize = 0);
-  bool WaitForThreadExit(DWORD dwMilliseconds);
-  DWORD WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds);
-  DWORD WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWaitAll, DWORD dwMilliseconds);
-  void Sleep(DWORD dwMilliseconds);
+  bool WaitForThreadExit(unsigned int milliseconds);
+  DWORD WaitForSingleObject(HANDLE hHandle, unsigned int milliseconds);
+  DWORD WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWaitAll, unsigned int milliseconds);
+  void Sleep(unsigned int milliseconds);
   bool SetPriority(const int iPriority);
   void SetName( LPCTSTR szThreadName );
   HANDLE ThreadHandle();

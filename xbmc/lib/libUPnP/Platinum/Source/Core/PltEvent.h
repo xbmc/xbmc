@@ -72,7 +72,6 @@ public:
     NPT_Result        FindCallbackURL(const char* callback_url);
     NPT_Result        AddCallbackURL(const char* callback_url);
     NPT_Result        Notify(NPT_List<PLT_StateVariable*>& vars);
-    NPT_Result        Renew(PLT_CtrlPoint* ctrl_point);
     
 protected:
     //members

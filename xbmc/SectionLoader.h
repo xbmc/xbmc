@@ -34,7 +34,7 @@ public:
   public:
     CStdString m_strSectionName;
     long m_lReferenceCount;
-    DWORD m_lUnloadDelayStartTick;
+    unsigned int m_unloadDelayStartTick;
   };
   class CDll
   {
@@ -42,7 +42,7 @@ public:
     CStdString m_strDllName;
     long m_lReferenceCount;
     LibraryLoader *m_pDll;
-    DWORD m_lUnloadDelayStartTick;
+    unsigned int m_unloadDelayStartTick;
     bool m_bDelayUnload;
   };
   CSectionLoader(void);

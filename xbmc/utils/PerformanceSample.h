@@ -60,8 +60,8 @@ protected:
   struct rusage m_usage;
 #endif
 
-  LARGE_INTEGER m_tmStart;
-  static LARGE_INTEGER m_tmFreq;
+  int64_t m_tmStart;
+  static int64_t m_tmFreq;
 };
 
 #endif

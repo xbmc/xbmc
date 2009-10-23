@@ -27,6 +27,7 @@
 #include "XBMC_vkeys.h"
 #include "MouseStat.h"
 #include "MediaManager.h"
+#include "WindowingFactory.h"
 #include <dbt.h>
 #include "LocalizeStrings.h"
 
@@ -307,30 +308,40 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       m_pEventFunc(newEvent);
       break;
     case WM_SHOWWINDOW:
-      g_application.m_AppActive = wParam != 0;
-      CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.m_AppActive ? "shown" : "hidden");
+      {
+        bool active = g_application.m_AppActive;
+        g_application.m_AppActive = wParam != 0;
+        if (g_application.m_AppActive != active)
+          g_Windowing.NotifyAppActiveChange(g_application.m_AppActive);
+        CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.m_AppActive ? "shown" : "hidden");
+      }
       break;
     case WM_ACTIVATE:
-      if (HIWORD(wParam))
       {
-        g_application.m_AppActive = false;
-      }
-      else
-      {
-        WINDOWPLACEMENT lpwndpl;
-        lpwndpl.length = sizeof(lpwndpl);
-        if (LOWORD(wParam) != WA_INACTIVE && GetWindowPlacement(hWnd, &lpwndpl))
+        bool active = g_application.m_AppActive;
+        if (HIWORD(wParam))
         {
-          g_application.m_AppActive = lpwndpl.showCmd != SW_HIDE;
+          g_application.m_AppActive = false;
         }
+        else
+        {
+          WINDOWPLACEMENT lpwndpl;
+          lpwndpl.length = sizeof(lpwndpl);
+          if (LOWORD(wParam) != WA_INACTIVE && GetWindowPlacement(hWnd, &lpwndpl))
+          {
+            g_application.m_AppActive = lpwndpl.showCmd != SW_HIDE;
+          }
+        }
+        if (g_application.m_AppActive != active)
+          g_Windowing.NotifyAppActiveChange(g_application.m_AppActive);
+        CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.m_AppActive ? "active" : "inactive");
       }
-      CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.m_AppActive ? "active" : "inactive");
       break;
     case WM_SETFOCUS:
     case WM_KILLFOCUS:
       g_application.m_AppFocused = uMsg == WM_SETFOCUS;
       CLog::Log(LOGDEBUG, __FUNCTION__"Window %s focus", g_application.m_AppFocused ? "gained" : "lost");
-      g_graphicsContext.NotifyAppFocusChange(g_application.m_AppFocused);
+      g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
       break;
     case WM_SYSKEYDOWN:
       switch (wParam) 

@@ -49,7 +49,7 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
   if (!GetMatchingSource(strPath, share))
     return false;
 
-  DWORD progressTime = CTimeUtils::GetTimeMS() + 3000L;   // 3 seconds before showing progress bar
+  unsigned int progressTime = CTimeUtils::GetTimeMS() + 3000L;   // 3 seconds before showing progress bar
   CGUIDialogProgress* dlgProgress = NULL;
 
   unsigned int iFailures = 0;

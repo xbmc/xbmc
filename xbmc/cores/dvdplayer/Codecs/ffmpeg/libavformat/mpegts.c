@@ -1603,36 +1603,37 @@ static int64_t mpegts_get_pcr(AVFormatContext *s, int stream_index,
     int64_t pos, timestamp;
     uint8_t buf[TS_PACKET_SIZE];
     int pcr_l, pcr_pid = ((PESContext*)s->streams[stream_index]->priv_data)->pcr_pid;
-    const int find_next= 1;
+    int pid = ((PESContext*)s->streams[stream_index]->priv_data)->pid;
     pos = ((*ppos  + ts->raw_packet_size - 1 - ts->pos47) / ts->raw_packet_size) * ts->raw_packet_size + ts->pos47;
-    if (find_next) {
-        for(;;) {
-            url_fseek(s->pb, pos, SEEK_SET);
+    while(pos < pos_limit) {
+        if (url_fseek(s->pb, pos, SEEK_SET) < 0)
+            return AV_NOPTS_VALUE;
             if (get_buffer(s->pb, buf, TS_PACKET_SIZE) != TS_PACKET_SIZE)
                 return AV_NOPTS_VALUE;
+        if (buf[0] != 0x47) {
+            url_fseek(s->pb, -TS_PACKET_SIZE, SEEK_CUR);
+            if (mpegts_resync(s->pb) < 0)
+                return AV_NOPTS_VALUE;
+            pos = url_ftell(s->pb);
+            continue;
+            }
             if ((pcr_pid < 0 || (AV_RB16(buf + 1) & 0x1fff) == pcr_pid) &&
                 parse_pcr(&timestamp, &pcr_l, buf) == 0) {
-                break;
-            }
-            pos += ts->raw_packet_size;
-        }
-    } else {
-        for(;;) {
-            pos -= ts->raw_packet_size;
-            if (pos < 0)
-                return AV_NOPTS_VALUE;
-            url_fseek(s->pb, pos, SEEK_SET);
-            if (get_buffer(s->pb, buf, TS_PACKET_SIZE) != TS_PACKET_SIZE)
-                return AV_NOPTS_VALUE;
-            if ((pcr_pid < 0 || (AV_RB16(buf + 1) & 0x1fff) == pcr_pid) &&
-                parse_pcr(&timestamp, &pcr_l, buf) == 0) {
-                break;
-            }
-        }
+            *ppos = pos;
+            return timestamp;
     }
+
+        if ((pid < 0 || (AV_RB16(buf + 1) & 0x1fff) == pid) &&
+            parse_timestamp(&timestamp, buf) == 0) {
     *ppos = pos;
 
     return timestamp;
+}
+
+        pos += ts->raw_packet_size;
+    }
+
+    return AV_NOPTS_VALUE;
 }
 
 #ifdef USE_SYNCPOINT_SEARCH

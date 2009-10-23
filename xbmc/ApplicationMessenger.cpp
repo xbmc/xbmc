@@ -46,9 +46,7 @@
 
 #include "PowerManager.h"
 
-#ifdef HAS_HAL
-#include "linux/HalManager.h"
-#elif defined _WIN32
+#ifdef _WIN32
 #include "WIN32Util.h"
 #define CHalManager CWIN32Util
 #elif defined __APPLE__
@@ -362,7 +360,7 @@ case TMSG_POWERDOWN:
             pSlideShow->Add(items[i].get());
           pSlideShow->StartSlideShow(pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER); //Start the slideshow!
         }
-        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER && g_guiSettings.GetBool("screensaver.slideshowshuffle"))
+        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER)
           pSlideShow->Shuffle();
 
         if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)

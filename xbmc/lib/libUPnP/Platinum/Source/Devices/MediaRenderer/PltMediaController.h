@@ -38,6 +38,7 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "PltCtrlPoint.h"
+#include "PltMediaItem.h"
 
 /*----------------------------------------------------------------------
 |   Defines
@@ -216,6 +217,18 @@ public:
         const char*              /* channel */,
         bool                     /* mute */,
         void*                    /* userdata */) {}
+
+	virtual void OnSetVolumeResult(
+        NPT_Result               /* res */,
+        PLT_DeviceDataReference& /* device */,
+        void*                    /* userdata */) {}
+
+	virtual void OnGetVolumeResult(
+        NPT_Result               /* res */,
+        PLT_DeviceDataReference& /* device */,
+		const char*              /* channel */,
+    	NPT_UInt32				 /* volume */,
+	    void*                    /* userdata */) {}
 };
 
 /*----------------------------------------------------------------------
@@ -263,21 +276,17 @@ public:
     // RenderingControl
     NPT_Result SetMute(PLT_DeviceDataReference& device, NPT_UInt32 instance_id, const char* channel, bool mute, void* userdata);
     NPT_Result GetMute(PLT_DeviceDataReference& device, NPT_UInt32 instance_id, const char* channel, void* userdata);
+	NPT_Result SetVolume(PLT_DeviceDataReference& device, NPT_UInt32 instance_id, const char* channel, int volume, void* userdata);
+	NPT_Result GetVolume(PLT_DeviceDataReference& device, NPT_UInt32 instance_id, const char* channel, void* userdata);	
 
     // methods    
     virtual NPT_Result FindRenderer(const char* uuid, PLT_DeviceDataReference& device);
+    virtual NPT_Result GetProtocolInfoSink(PLT_DeviceDataReference& device, NPT_List<NPT_String>& sinks);
+    virtual NPT_Result FindMatchingProtocolInfo(NPT_List<NPT_String>& sinks,
+                                                const char*           protocol_info);
+    virtual NPT_Result FindBestResource(PLT_DeviceDataReference& device, PLT_MediaObject& item, NPT_Cardinal& resource_index);
 
 private:
-    NPT_Result FindActionDesc(PLT_DeviceDataReference& device, 
-        const char*              service_type,
-        const char*              action_name,
-        PLT_ActionDesc*&         action_desc);
-
-    NPT_Result CreateAction(PLT_DeviceDataReference& device, 
-        const char*              service_type,
-        const char*              action_name,
-        PLT_ActionReference&     action);
-
     NPT_Result InvokeActionWithInstance(PLT_ActionReference& action,
         NPT_UInt32               instance_id,
         void*                    userdata = NULL);
@@ -294,7 +303,9 @@ private:
     NPT_Result OnGetProtocolInfoResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata);
     
     NPT_Result OnGetMuteResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata);
+	NPT_Result OnGetVolumeResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata);
 
+public:
     static void ParseCSV(const char* csv, PLT_StringList& values) {
         const char* start = csv;
         const char* p = start;

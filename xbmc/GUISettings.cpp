@@ -204,7 +204,6 @@ void CGUISettings::Initialize()
   AddGroup(0, 1);
   AddCategory(0, "pictures", 16000);
   AddBool(2, "pictures.showvideos", 22022, false);
-  AddBool(3, "pictures.savefolderviews", 583, true);
   AddBool(4,"pictures.generatethumbs",13360,true);
   AddSeparator(5,"pictures.sep1");
   AddBool(6, "pictures.useexifrotation", 20184, true);
@@ -222,10 +221,7 @@ void CGUISettings::Initialize()
   AddBool(0, "slideshow.shuffle", 13319, false);
 
   // Programs settings
-  AddGroup(1, 0);
-
-  AddCategory(1,"programfiles",744);
-  AddBool(4, "programfiles.savefolderviews", 583, true);
+//  AddGroup(1, 0);
 
   // My Weather settings
   AddGroup(2, 8);
@@ -259,11 +255,9 @@ void CGUISettings::Initialize()
   AddPath(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(3,"musiclibrary",14022);
-  AddBool(1, "musiclibrary.enabled", 418, true);
   AddBool(2, "musiclibrary.albumartistsonly", 13414, false);
   AddSeparator(3,"musiclibrary.sep1");
-  AddBool(4,"musiclibrary.autoalbuminfo", 20192, false);
-  AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
+  AddBool(4,"musiclibrary.downloadinfo", 20192, false);
   AddString(6, "musiclibrary.defaultscraper", 20194, "discogs.xml", SPIN_CONTROL_TEXT);
   AddString(7, "musiclibrary.scrapersettings", 21417, "", BUTTON_CONTROL_STANDARD);
   AddBool(8, "musiclibrary.updateonstartup", 22000, false);
@@ -275,7 +269,6 @@ void CGUISettings::Initialize()
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
-  AddBool(2, "musicplayer.outputtoallspeakers", 252, false);
   AddSeparator(3, "musicplayer.sep1");
   AddInt(4, "musicplayer.replaygaintype", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
   AddInt(5, "musicplayer.replaygainpreamp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
@@ -297,8 +290,6 @@ void CGUISettings::Initialize()
   AddString(0, "musicfiles.librarytrackformat", 13307, "", EDIT_CONTROL_INPUT, false, 16016);
   AddString(0, "musicfiles.librarytrackformatright", 13387, "", EDIT_CONTROL_INPUT, false, 16016);
   AddSeparator(4, "musicfiles.sep1");
-  AddBool(8, "musicfiles.savefolderviews", 583, true);
-  AddSeparator(9, "musicfiles.sep2");
   AddBool(10, "musicfiles.usecddb", 227, true);
   AddBool(11, "musicfiles.findremotethumbs", 14059, true);
 
@@ -431,18 +422,11 @@ void CGUISettings::Initialize()
   AddBool(3, "myvideos.autothumb",12024, false);
   AddBool(4, "myvideos.extractflags",20433,false);
   AddBool(5, "myvideos.cleanstrings", 20418, false);
-  AddSeparator(6, "myvideos.sep1");
-  AddBool(7, "myvideos.savefolderviews", 583, true);
 
   AddCategory(5, "videolibrary", 14022);
 
-  AddBool(1, "videolibrary.enabled", 418, true);
-  AddSeparator(2, "videolibrary.sep1");
   AddBool(3, "videolibrary.hideplots", 20369, false);
-  AddBool(4, "videolibrary.seasonthumbs", 20382, true);
-  AddBool(5, "videolibrary.actorthumbs", 20402, false);
   AddInt(6, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddBool(7, "videolibrary.removeduplicates", 20419, true);
   AddSeparator(7, "videolibrary.sep2");
   AddBool(8, "videolibrary.updateonstartup", 22000, false);
   AddBool(0, "videolibrary.backgroundupdate", 22001, false);
@@ -634,13 +618,13 @@ void CGUISettings::Initialize()
   AddInt(6, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
   AddSeparator(7, "lookandfeel.sep1");
   AddString(8, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddBool(9,"lookandfeel.soundsduringplayback",21370,false);
   AddSeparator(10, "lookandfeel.sep2");
   AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
   AddBool(12, "lookandfeel.rssfeedsrtl",13412,  false);
   AddString(13, "lookandfeel.rssedit", 21435, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(14, "lookandfeel.sep3");
   AddBool(15, "lookandfeel.enablemouse", 21369, true);
+  AddBool(16, "lookandfeel.remoteaskeyboard", 21449, false);
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
@@ -682,7 +666,6 @@ void CGUISettings::Initialize()
   AddBool(2, "filelists.hideextensions", 497, false);
   AddBool(3, "filelists.ignorethewhensorting", 13399, true);
   AddBool(4, "filelists.unrollarchives",516, false);
-  AddBool(5, "filelists.fulldirectoryhistory", 15106, true);
   AddSeparator(6, "filelists.sep1");
   AddBool(7, "filelists.allowfiledeletion", 14071, false);
   AddBool(8, "filelists.disableaddsourcebuttons", 21382,  false);
@@ -702,7 +685,6 @@ void CGUISettings::Initialize()
   AddSeparator(8, "screensaver.sep1");
   AddInt(9, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddPath(10, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddBool(11, "screensaver.slideshowshuffle", 13319, false);
 
   AddCategory(7, "window", 0);
   AddInt(0, "window.width",  0, 720, 10, 1, INT_MAX, SPIN_CONTROL_INT);

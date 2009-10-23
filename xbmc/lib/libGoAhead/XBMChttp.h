@@ -140,7 +140,7 @@ private:
   CUdpClient UdpClient;
   CKey lastKey;
   int repeatKeyRate; //ms
-  DWORD MarkTime;
+  unsigned int MarkTime;
   bool autoGetPictureThumbs;
   CStdString lastThumbFn, lastPlayingInfo;
   CStdString openTag, closeTag,  openRecordSet, closeRecordSet, openRecord, closeRecord, openField, closeField, openBroadcast, closeBroadcast;

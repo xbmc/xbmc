@@ -106,7 +106,24 @@ public:
         value = text?*text:"";
         return NPT_SUCCESS;
     }
+                                   
+    static NPT_Result RemoveAttribute(NPT_XmlElementNode* node, 
+                                      const char*         name,
+                                      const char*         namespc = "") {
+        if (!node) return NPT_FAILURE;
 
+        // special case "" means we look for the same namespace as the parent
+        if (namespc && namespc[0] == '\0') namespc = node->GetNamespace()?node->GetNamespace()->GetChars():NPT_XML_NO_NAMESPACE;
+
+        NPT_List<NPT_XmlAttribute*>::Iterator attribute;
+        attribute = node->GetAttributes().Find(PLT_XmlAttributeFinder(*node, name, namespc));
+        if (!attribute) return NPT_FAILURE;
+
+        delete *attribute;
+        NPT_CHECK(node->GetAttributes().Erase(attribute));
+
+        return NPT_SUCCESS;
+    }
                                    
     static NPT_Result GetAttribute(NPT_XmlElementNode* node, 
                                    const char*         name,

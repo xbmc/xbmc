@@ -12,7 +12,7 @@ all: $(FLAC_LIB)
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 $(FLAC_LIB): flac-1.2.1/src/libFLAC/.libs/libFLAC.a
-	gcc -bundle -flat_namespace -undefined suppress -shared -fPIC \
+	$(CC) -bundle -flat_namespace -undefined suppress -shared -fPIC \
 	-mmacosx-version-min=10.4 -o $@ flac-1.2.1/src/libFLAC/.libs/*.o
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@

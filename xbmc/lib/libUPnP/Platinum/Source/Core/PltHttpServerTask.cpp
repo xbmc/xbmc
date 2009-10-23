@@ -53,8 +53,10 @@ PLT_HttpServerSocketTask::PLT_HttpServerSocketTask(NPT_Socket* socket,
     m_Socket(socket),
     m_StayAliveForever(stay_alive_forever)
 {
-    socket->SetReadTimeout(30000);
-    socket->SetWriteTimeout(30000);
+    // needed for PS3 that is some case will request data every 35secs and 
+    // won't like it if server disconnected too early
+    socket->SetReadTimeout(60000);
+    socket->SetWriteTimeout(60000);
 }
 
 /*----------------------------------------------------------------------
@@ -247,9 +249,9 @@ PLT_HttpServerSocketTask::Write(NPT_HttpResponse* response,
     NPT_HttpEntity* entity = response->GetEntity();
     
     NPT_InputStreamReference body_stream;
-    entity->GetInputStream(body_stream);
-
-    if (entity && !body_stream.IsNull()) {
+    if (entity && 
+        NPT_SUCCEEDED(entity->GetInputStream(body_stream)) && 
+        !body_stream.IsNull()) {
         if (entity->HasContentLength()) {
             // content length
             headers.SetHeader(NPT_HTTP_HEADER_CONTENT_LENGTH, 
@@ -269,8 +271,8 @@ PLT_HttpServerSocketTask::Write(NPT_HttpResponse* response,
         }
     }
 
-    NPT_LOG_FINE("PLT_HttpServerTask Sending response:");
-    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, response);
+    NPT_LOG_FINER("PLT_HttpServerTask Sending response:");
+    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, response);
 
     // get the socket stream to send the request
     NPT_OutputStreamReference output_stream;

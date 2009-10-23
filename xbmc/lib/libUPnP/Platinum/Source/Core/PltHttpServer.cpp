@@ -141,7 +141,7 @@ PLT_HttpServer::ProcessHttpRequest(NPT_HttpRequest&              request,
         (const char*) context.GetRemoteAddress().GetIpAddress().ToString(),
         (const char*) request.GetUrl().GetPath());
         
-    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, &request);
+    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, &request);
 
     NPT_HttpRequestHandler* handler = FindRequestHandler(request);
     if (handler == NULL) {
@@ -149,7 +149,7 @@ PLT_HttpServer::ProcessHttpRequest(NPT_HttpRequest&              request,
     } else {
         // create a repsones object
         response = new NPT_HttpResponse(200, "OK", NPT_HTTP_PROTOCOL_1_1);
-        response->GetHeaders().SetHeader("Server", "Platinum/" PLT_PLATINUM_VERSION_STRING);
+        response->GetHeaders().SetHeader("Server", "Platinum/" PLT_PLATINUM_SDK_VERSION_STRING);
 
         // prepare the response
         response->SetEntity(new NPT_HttpEntity());

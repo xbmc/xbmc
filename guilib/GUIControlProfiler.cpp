@@ -21,6 +21,7 @@
 
 #include "GUIControlProfiler.h"
 #include "tinyXML/tinyxml.h"
+#include "utils/TimeUtils.h"
 
 bool CGUIControlProfiler::m_bIsRunning = false;
 
@@ -63,26 +64,22 @@ void CGUIControlProfilerItem::Reset(CGUIControlProfiler *pProfiler)
 
 void CGUIControlProfilerItem::BeginVisibility(void)
 {
-  QueryPerformanceCounter(&m_i64VisStart);
+  m_i64VisStart = CurrentHostCounter();
 }
 
 void CGUIControlProfilerItem::EndVisibility(void)
 {
-  LARGE_INTEGER t2;
-  QueryPerformanceCounter(&t2);
-  m_visTime += (unsigned int)(m_pProfiler->m_fPerfScale * (t2.QuadPart - m_i64VisStart.QuadPart));
+  m_visTime += (unsigned int)(m_pProfiler->m_fPerfScale * (CurrentHostCounter() - m_i64VisStart));
 }
 
 void CGUIControlProfilerItem::BeginRender(void)
 { 
-  QueryPerformanceCounter(&m_i64RenderStart); 
+  m_i64RenderStart = CurrentHostCounter();
 }
 
 void CGUIControlProfilerItem::EndRender(void)
 {
-  LARGE_INTEGER t2;
-  QueryPerformanceCounter(&t2);
-  m_renderTime += (unsigned int)(m_pProfiler->m_fPerfScale * (t2.QuadPart - m_i64RenderStart.QuadPart));
+  m_renderTime += (unsigned int)(m_pProfiler->m_fPerfScale * (CurrentHostCounter() - m_i64RenderStart));
 }
 
 void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
@@ -252,9 +249,7 @@ CGUIControlProfiler::CGUIControlProfiler(void)
 : m_ItemHead(NULL, NULL, NULL), m_pLastItem(NULL), m_iMaxFrameCount(200)
 // m_bIsRunning(false), no isRunning because it is static
 {
-  LARGE_INTEGER i64PerfFreq;
-  QueryPerformanceFrequency(&i64PerfFreq);
-  m_fPerfScale = 100000.0f / i64PerfFreq.QuadPart;
+  m_fPerfScale = 100000.0f / CurrentHostFrequency();
 }
 
 CGUIControlProfiler &CGUIControlProfiler::Instance(void)

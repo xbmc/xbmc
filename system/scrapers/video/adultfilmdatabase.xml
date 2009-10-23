@@ -6,7 +6,7 @@
 	</NfoUrl>
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="&lt;url spoof=&quot;http://www.adultfilmdatabase.com&quot; post=&quot;true&quot;&gt;http://www.adultfilmdatabase.com/lookup.cfm?SearchType=Video&amp;amp;Action=Lookup&amp;amp;Find=\1&lt;/url&gt;" dest="3">
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>	
 	</CreateSearchUrl>
 	<GetSearchResults dest="6">
@@ -20,7 +20,7 @@
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.adultfilmdatabase.com/video.cfm?videoid=\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
 				<expression repeat="yes">&lt;a HREF=&quot;/video\.cfm\?videoid=([0-9]*)&quot;&gt;&lt;U&gt;([^&lt;]*)&lt;/U&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetSearchResults>
 	<GetDetails dest="3">
@@ -41,7 +41,7 @@
 				<expression>Year:&lt;/td&gt;&lt;td STYLE=&quot;font-size:11px;padding-left: 3px;&quot; WIDTH=&quot;100%&quot;&gt;([0-9]+)&lt;/td&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;genre&gt;Adult&lt;/genre&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
 				<RegExp input="$$1" output="\1" dest="6">
@@ -55,7 +55,7 @@
 			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
 				<expression>/director\.cfm\?directorid=281&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>				
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>			
 	</GetDetails>		
 </scraper>

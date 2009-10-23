@@ -130,7 +130,6 @@ public:
   void RestoreClipRegion();
   void ApplyHardwareTransform();
   void RestoreHardwareTransform();
-  void NotifyAppFocusChange(bool bGaining);
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
   void ClipToViewWindow();
   inline void ResetWindowTransform()

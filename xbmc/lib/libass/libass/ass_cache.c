@@ -58,14 +58,17 @@ hashmap_t *hashmap_init(ass_library_t *library, size_t key_size,
                         hashmap_hash_t hash)
 {
     hashmap_t *map = calloc(1, sizeof(hashmap_t));
-    map->library = library;
-    map->nbuckets = nbuckets;
-    map->key_size = key_size;
-    map->value_size = value_size;
-    map->root = calloc(nbuckets, sizeof(hashmap_item_p));
-    map->item_dtor = item_dtor ? item_dtor : hashmap_item_dtor;
-    map->key_compare = key_compare ? key_compare : hashmap_key_compare;
-    map->hash = hash ? hash : hashmap_hash;
+    if (map)
+    {
+      map->library = library;
+      map->nbuckets = nbuckets;
+      map->key_size = key_size;
+      map->value_size = value_size;
+      map->root = calloc(nbuckets, sizeof(hashmap_item_p));
+      map->item_dtor = item_dtor ? item_dtor : hashmap_item_dtor;
+      map->key_compare = key_compare ? key_compare : hashmap_key_compare;
+      map->hash = hash ? hash : hashmap_hash;
+    }
     return map;
 }
 

@@ -82,7 +82,6 @@
 					<onup>3</onup>
 					<ondown>610</ondown>
 					<enable>Library.HasContent(Music)</enable>
-					<visible>System.GetBool(musiclibrary.enabled)</visible>
 				</control>
 				<control type="button" id="610">
 					<description>Fake Button to fix Player Controls Navigation</description>

@@ -118,6 +118,7 @@ protected:
     virtual NPT_Result OnSearchContainer(PLT_ActionReference&          action, 
                                          const char*                   container_id, 
                                          const char*                   search_criteria,
+ 										 const char*                   filter,
                                          NPT_UInt32                    starting_index,
                                          NPT_UInt32                    requested_count,
                                          const NPT_List<NPT_String>&   sort_criteria, 

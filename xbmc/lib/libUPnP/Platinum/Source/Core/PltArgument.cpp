@@ -45,11 +45,13 @@ NPT_SET_LOCAL_LOGGER("platinum.core.argument")
 |   PLT_ArgumentDesc::PLT_ArgumentDesc
 +---------------------------------------------------------------------*/
 PLT_ArgumentDesc::PLT_ArgumentDesc(const char*        name, 
-                                   const char*        dir, 
+                                   NPT_Ordinal        position,
+                                   const char*        direction,
                                    PLT_StateVariable* variable, 
                                    bool               has_ret) :
     m_Name(name),
-    m_Direction(dir), 
+    m_Position(position),
+    m_Direction(direction),
     m_RelatedStateVariable(variable),
     m_HasReturnValue(has_ret)
 {
@@ -78,7 +80,7 @@ PLT_ArgumentDesc::GetSCPDXML(NPT_XmlElementNode* node)
 |   PLT_Argument::CreateArgument
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_Argument::CreateArgument(PLT_ActionDesc* action_desc, 
+PLT_Argument::CreateArgument(PLT_ActionDesc& action_desc, 
                              const char*     name, 
                              const char*     value, 
                              PLT_Argument*&  arg)
@@ -86,13 +88,24 @@ PLT_Argument::CreateArgument(PLT_ActionDesc* action_desc,
     // reset output params first
     arg = NULL;
 
-    PLT_ArgumentDesc* arg_desc = action_desc->GetArgumentDesc(name);
-    if (!arg_desc) return NPT_ERROR_INVALID_PARAMETERS;
+    PLT_ArgumentDesc* arg_desc = action_desc.GetArgumentDesc(name);
+	if (!arg_desc) {
+		NPT_LOG_WARNING_2("Invalid argument %s for action %s", 
+			name, 
+			(const char*)action_desc.GetName());
+		return NPT_ERROR_NO_SUCH_NAME;
+	}
 
-    PLT_Argument* new_arg = new PLT_Argument(arg_desc);
-    if (NPT_FAILED(new_arg->SetValue(value))) {
+	NPT_Result    res;
+    PLT_Argument* new_arg = new PLT_Argument(*arg_desc);
+    if (NPT_FAILED(res = new_arg->SetValue(value))) {
         delete new_arg;
-        return NPT_ERROR_INVALID_PARAMETERS;
+
+		NPT_LOG_WARNING_3("Invalid value of %s for argument %s of action %s", 
+			value,
+			name, 
+			(const char*)action_desc.GetName());
+        return res;
     }
 
     arg = new_arg;
@@ -102,7 +115,7 @@ PLT_Argument::CreateArgument(PLT_ActionDesc* action_desc,
 /*----------------------------------------------------------------------
 |   PLT_Argument::PLT_Argument
 +---------------------------------------------------------------------*/
-PLT_Argument::PLT_Argument(PLT_ArgumentDesc* arg_desc) :
+PLT_Argument::PLT_Argument(PLT_ArgumentDesc& arg_desc) :
     m_ArgDesc(arg_desc)
 {
 
@@ -135,8 +148,8 @@ PLT_Argument::GetValue()
 NPT_Result
 PLT_Argument::ValidateValue(const char* value)
 {
-    if (m_ArgDesc->GetRelatedStateVariable()) {
-        return m_ArgDesc->GetRelatedStateVariable()->ValidateValue(value);
+    if (m_ArgDesc.GetRelatedStateVariable()) {
+        return m_ArgDesc.GetRelatedStateVariable()->ValidateValue(value);
     }
     return NPT_SUCCESS;    
 }

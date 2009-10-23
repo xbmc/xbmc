@@ -177,6 +177,7 @@ void CGUIListGroup::SetFocusedItem(unsigned int focus)
     else
       (*it)->SetFocus(focus > 0);
   }
+  SetFocus(focus > 0);
 }
 
 unsigned int CGUIListGroup::GetFocusedItem() const

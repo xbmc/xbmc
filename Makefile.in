@@ -374,7 +374,6 @@ OBJSXBMC=	\
 	xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
 	xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a \
 	xbmc/karaoke/karaoke.a \
-	xbmc/lib/libcmyth/libcmyth.a \
 	xbmc/lib/libhts/libhts.a \
 	xbmc/lib/libPython/xbmcmodule/xbmcmodule.a \
 	xbmc/lib/libRTMP/librtmp.a \
@@ -395,6 +394,7 @@ OBJSXBMC=	\
 	xbmc/xbox/xbox.a
 
 DYNOBJSXBMC= \
+	xbmc/lib/libcmyth/libcmyth.a \
 	xbmc/linux/linux.a \
 	xbmc/utils/utils.a \
 	xbmc/cores/DllLoader/exports/util/exports_utils.a \
@@ -406,13 +406,6 @@ OBJSXBMC += \
 	xbmc/osx/osx.a \
 	xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a \
 	xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a
-endif
-
-# TODO: XBPythonDLLFuncs.S not implemented on PowerPC
-ifeq ($(ARCH), powerpc64-linux)
-	# For some reason the XBMC version of libpython gets linker errors - use system version instead
-	#OBJSXBMC += xbmc/lib/libPython/Python/libpython2.4.a
-	LIBS += -lpython2.4
 endif
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)

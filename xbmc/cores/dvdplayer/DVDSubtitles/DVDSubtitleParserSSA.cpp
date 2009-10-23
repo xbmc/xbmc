@@ -26,8 +26,8 @@
 
 using namespace std;
 
-CDVDSubtitleParserSSA::CDVDSubtitleParserSSA(const string& strFile)
-  : CDVDSubtitleParserCollection(strFile)
+CDVDSubtitleParserSSA::CDVDSubtitleParserSSA(CDVDSubtitleStream* pStream, const string& strFile)
+    : CDVDSubtitleParserText(pStream, strFile)
 {
   m_libass = new CDVDSubtitlesLibass();
 }
@@ -40,7 +40,9 @@ CDVDSubtitleParserSSA::~CDVDSubtitleParserSSA()
 bool CDVDSubtitleParserSSA::Open(CDVDStreamInfo &hints)
 {
 
-  if(!m_libass->ReadFile(m_filename))
+  if (!CDVDSubtitleParserText::Open())
+    return false;
+  if(!m_libass->CreateTrack((char* )m_stringstream.str().c_str()))
     return false;
 
   //Creating the overlays by going through the list of ass_events

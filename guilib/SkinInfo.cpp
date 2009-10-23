@@ -216,20 +216,19 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   if (!strBaseDir.IsEmpty())
     strPathToUse = strBaseDir;
   // first try and load from the current resolution's directory
-  int height=0;
   *res = g_graphicsContext.GetVideoResolution();
   if (*res >= RES_WINDOW)
   {
-    height = g_settings.m_ResInfo[*res].iHeight;
-    if (height>=1080 && (g_settings.m_ResInfo[*res].dwFlags & D3DPRESENTFLAG_WIDESCREEN))
+    unsigned int pixels = g_settings.m_ResInfo[*res].iHeight * g_settings.m_ResInfo[*res].iWidth;
+    if (pixels >= 1600 * 900)
     {
       *res = RES_HDTV_1080i;
     }
-    else if (height>=720 && (g_settings.m_ResInfo[*res].dwFlags & D3DPRESENTFLAG_WIDESCREEN))
+    else if (pixels >= 900 * 600)
     {
       *res = RES_HDTV_720p;
     }
-    else if (g_settings.m_ResInfo[*res].dwFlags & D3DPRESENTFLAG_WIDESCREEN)
+    else if (((float)g_settings.m_ResInfo[*res].iWidth) / ((float)g_settings.m_ResInfo[*res].iHeight) > 8.0f / (3.0f * sqrt(3.0f)))
     {
       *res = RES_PAL_16x9;
     }

@@ -230,10 +230,13 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_BrowseDataReference& browse_data,
 NPT_Result
 PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device, 
                                  const char*                   object_id, 
-                                 PLT_MediaObjectListReference& list)
+                                 PLT_MediaObjectListReference& list,
+                                 bool                          metadata, /* = false */
+                                 NPT_Int32                     start, /* = 0 */
+                                 NPT_Cardinal                  max_results /* = 0 */)
 {
     NPT_Result res = NPT_FAILURE;
-    NPT_Int32  index = 0;
+    NPT_Int32  index = start;
 
     // reset output params
     list = NULL;
@@ -252,10 +255,8 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device,
             device,
             (const char*)object_id,
             index,
-            1024,
-            false,
-            "*",
-            "");		
+            metadata?1:30, // DLNA recommendations for browsing children is no more than 30 at a time
+            metadata);		
         NPT_CHECK_LABEL_WARNING(res, done);
         
         if (NPT_FAILED(browse_data->res)) {
@@ -276,8 +277,14 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device,
             browse_data->info.items->Clear();
         }
 
-        // stop now if our list contains exactly what the server said it had
-        if (browse_data->info.tm && browse_data->info.tm == list->GetItemCount())
+        // stop now if our list contains exactly what the server said it had.
+        // Note that the server could return 0 if it didn't know how many items were
+        // available. In this case we have to continue browsing until
+        // nothing is returned back by the server.
+        // Unless we were told to stop after reaching a certain amount to avoid
+        // length delays
+        if ((browse_data->info.tm && browse_data->info.tm == list->GetItemCount()) ||
+            (max_results && list->GetItemCount() >= max_results))
             break;
 
         // ask for the next chunk of entries

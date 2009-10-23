@@ -181,16 +181,16 @@ int64_t CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMill
   if( iMillis == 0 || IsEndOfInput() )
     return GetAvailableRead();
 
-  DWORD dwTimeout = CTimeUtils::GetTimeMS() + iMillis;
-  DWORD dwTime;
-  while ( !IsEndOfInput() && (dwTime = CTimeUtils::GetTimeMS()) < dwTimeout )
+  unsigned int timeout = CTimeUtils::GetTimeMS() + iMillis;
+  unsigned int time;
+  while ( !IsEndOfInput() && (time = CTimeUtils::GetTimeMS()) < timeout )
   {
     int64_t iAvail = GetAvailableRead();
     if (iAvail >= iMinAvail)
       return iAvail;
 
     // busy look (sleep max 1 sec each round)
-    DWORD dwRc = WaitForSingleObject(m_hDataAvailEvent, (dwTimeout - dwTime)>1000?(dwTimeout - dwTime):1000 );
+    DWORD dwRc = WaitForSingleObject(m_hDataAvailEvent, (timeout - time)>1000?(timeout - time):1000 );
     if (dwRc == WAIT_FAILED || dwRc == WAIT_ABANDONED)
       return CACHE_RC_ERROR;
   }

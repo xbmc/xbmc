@@ -104,6 +104,11 @@
       <end>XBMC.ShutDown()</end>
     </keyboard>
   </Home>
+  <VirtualKeyboard>
+    <keyboard>
+      <backspace>Backspace</backspace>
+    </keyboard>
+  </VirtualKeyboard>
   <MyFiles>
     <keyboard>
       <space>Highlight</space>

@@ -28,6 +28,7 @@
 #include "GUISettings.h"
 #include "VideoReferenceClock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 #include <sstream>
 #include <iomanip>
@@ -137,7 +138,7 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock)
   m_stalled = false;
   m_started = false;
 
-  QueryPerformanceFrequency(&m_freq);
+  m_freq = CurrentHostFrequency();
 
   InitializeCriticalSection(&m_critCodecSection);
   m_messageQueue.SetMaxDataSize(30 * 16 * 1024);
@@ -185,7 +186,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   m_skipdupcount = 0;
   m_prevskipped = false;
   m_syncclock = true;
-  QueryPerformanceCounter(&m_errortime);
+  m_errortime = CurrentHostCounter();
 
   m_maxspeedadjust = g_guiSettings.GetFloat("videoplayer.maxspeedadjust");
 
@@ -540,28 +541,7 @@ void CDVDPlayerAudio::Process()
     {
       m_droptime = 0.0;
 
-      //set the synctype from the gui
-      //use skip/duplicate when resample is selected and passthrough is on
-      m_synctype = m_setsynctype;
-      if (audioframe.passthrough && m_synctype == SYNC_RESAMPLE)
-        m_synctype = SYNC_SKIPDUP;
-
-      //tell dvdplayervideo how much it can change the speed
-      //if SetMaxSpeedAdjust returns false, it means no video is played and we need to use clock feedback
-      double maxspeedadjust = 0.0;
-      if (m_synctype == SYNC_RESAMPLE)
-        maxspeedadjust = m_maxspeedadjust;
-
-      if (!m_pClock->SetMaxSpeedAdjust(maxspeedadjust))
-        m_synctype = SYNC_DISCON;
-
-      if (m_synctype != m_prevsynctype)
-      {
-        const char *synctypes[] = {"clock feedback", "skip/duplicate", "resample", "invalid"};
-        int synctype = (m_synctype >= 0 && m_synctype <= 2) ? m_synctype : 3;
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: synctype set to %i: %s", m_synctype, synctypes[synctype]);
-        m_prevsynctype = m_synctype;
-      }
+      SetSyncType(audioframe.passthrough);
       
       // add any packets play
       packetadded = OutputPacket(audioframe);
@@ -582,11 +562,37 @@ void CDVDPlayerAudio::Process()
   }
 }
 
+void CDVDPlayerAudio::SetSyncType(bool passthrough)
+{
+  //set the synctype from the gui
+  //use skip/duplicate when resample is selected and passthrough is on
+  m_synctype = m_setsynctype;
+  if (passthrough && m_synctype == SYNC_RESAMPLE)
+    m_synctype = SYNC_SKIPDUP;
+
+  //tell dvdplayervideo how much it can change the speed
+  //if SetMaxSpeedAdjust returns false, it means no video is played and we need to use clock feedback
+  double maxspeedadjust = 0.0;
+  if (m_synctype == SYNC_RESAMPLE)
+    maxspeedadjust = m_maxspeedadjust;
+
+  if (!m_pClock->SetMaxSpeedAdjust(maxspeedadjust))
+    m_synctype = SYNC_DISCON;
+
+  if (m_synctype != m_prevsynctype)
+  {
+    const char *synctypes[] = {"clock feedback", "skip/duplicate", "resample", "invalid"};
+    int synctype = (m_synctype >= 0 && m_synctype <= 2) ? m_synctype : 3;
+    CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: synctype set to %i: %s", m_synctype, synctypes[synctype]);
+    m_prevsynctype = m_synctype;
+  }
+}
+
 void CDVDPlayerAudio::HandleSyncError(double duration)
 {
   double clock = m_pClock->GetClock();
   double error = m_ptsOutput.Current() - clock;
-  LARGE_INTEGER now;
+  int64_t now;
 
   if( fabs(error) > DVD_MSEC_TO_TIME(100) || m_syncclock )
   {
@@ -599,7 +605,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
     m_skipdupcount = 0;
     m_error = 0;
     m_syncclock = false;
-    QueryPerformanceCounter(&m_errortime);
+    m_errortime = CurrentHostCounter();
 
     return;
   }
@@ -612,7 +618,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
     m_skipdupcount = 0;
     m_error = 0;
     m_resampler.Flush();
-    QueryPerformanceCounter(&m_errortime);
+    m_errortime = CurrentHostCounter();
     return;
   }
 
@@ -620,8 +626,8 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   m_errorcount++;
 
   //check if measured error for 1 second
-  QueryPerformanceCounter(&now);
-  if ((now.QuadPart - m_errortime.QuadPart) >= m_freq.QuadPart)
+  now = CurrentHostCounter();
+  if ((now - m_errortime) >= m_freq)
   {
     m_errortime = now;
     m_error = m_errorbuff / m_errorcount;

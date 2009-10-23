@@ -75,7 +75,7 @@ public:
   virtual CStdString GetContent();
 protected:
   void outputTimeoutMessage(const char* message);
-  DWORD m_dwLastTime;
+  unsigned int m_lastTime;
   int m_contenttype;
   RIP_MANAGER_OPTIONS m_opt;
 };

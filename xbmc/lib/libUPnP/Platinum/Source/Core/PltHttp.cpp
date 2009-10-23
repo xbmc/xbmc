@@ -503,3 +503,19 @@ PLT_HttpHelper::Connect(NPT_Socket& connection, NPT_HttpRequest& request, NPT_Ti
 
     return NPT_SUCCESS;
 }
+
+/*----------------------------------------------------------------------
+|   PLT_HttpHelper::SetBasicAuthorization
++---------------------------------------------------------------------*/
+void         
+PLT_HttpHelper::SetBasicAuthorization(NPT_HttpRequest& request, 
+                                      const char*      login, 
+                                      const char*      password)
+{ 
+	NPT_String encoded;
+	NPT_String cred =  NPT_String(login) + ":" + password;
+
+	NPT_Base64::Encode((const NPT_Byte *)cred.GetChars(), cred.GetLength(), encoded);
+	request.GetHeaders().SetHeader(NPT_HTTP_HEADER_AUTHORIZATION, NPT_String("Basic " + encoded)); 
+}
+

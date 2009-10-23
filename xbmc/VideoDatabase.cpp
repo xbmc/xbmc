@@ -4680,8 +4680,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     if (NULL == m_pDS.get()) return false;
 
     CStdString strIn = FormatSQL("= %i", idShow);
-    if (g_guiSettings.GetBool("videolibrary.removeduplicates"))
-      GetStackedTvShowList(idShow, strIn);
+    GetStackedTvShowList(idShow, strIn);
 
     CStdString strSQL = FormatSQL("select episode.c%02d,path.strPath,tvshow.c%02d,tvshow.c%02d,count(1),count(files.playCount) from episode join tvshow on tvshow.idshow=tvshowlinkepisode.idshow join tvshowlinkepisode on tvshowlinkepisode.idEpisode = episode.idEpisode join files on files.idFile=episode.idFile ", VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_GENRE);
     CStdString joins = FormatSQL(" join tvshowlinkpath on tvshowlinkpath.idShow = tvshow.idShow join path on path.idPath = tvshowlinkpath.idPath where tvshow.idShow %s ", strIn.c_str());
@@ -4973,12 +4972,9 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
 
     CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d",
               CTimeUtils::GetTimeMS() - time);
-    if (g_guiSettings.GetBool("videolibrary.removeduplicates"))
-    {
-      CStdString order(where);
-      bool maintainOrder = (size_t)order.ToLower().Find("order by") != CStdString::npos;
-      Stack(items, VIDEODB_CONTENT_TVSHOWS, maintainOrder);
-    }
+    CStdString order(where);
+    bool maintainOrder = (size_t)order.ToLower().Find("order by") != CStdString::npos;
+    Stack(items, VIDEODB_CONTENT_TVSHOWS, maintainOrder);
 
     // cleanup
     m_pDS->close();
@@ -5162,8 +5158,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
 bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idActor, int idDirector, int idShow, int idSeason)
 {
   CStdString strIn = FormatSQL("= %i", idShow);
-  if (g_guiSettings.GetBool("videolibrary.removeduplicates"))
-    GetStackedTvShowList(idShow, strIn);
+  GetStackedTvShowList(idShow, strIn);
   CStdString where = FormatSQL("where idShow %s",strIn.c_str());
   if (idGenre != -1)
     where = FormatSQL("join genrelinktvshow on genrelinktvshow.idShow=episodeview.idShow where episodeview.idShow=%i and genrelinktvshow.idgenre=%i",idShow,idGenre);

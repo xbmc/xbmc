@@ -22,6 +22,7 @@
 #include "DVDSubtitlesLibass.h"
 #include "DVDClock.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "GUISettings.h"
 #include "utils/log.h"
 
 using namespace std;
@@ -73,7 +74,8 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
     return;
 
   //Setting default font to the Arial in \media\fonts (used if FontConfig fails)
-  strPath = "special://xbmc/media/Fonts/arial.ttf";
+  strPath = "special://xbmc/media/Fonts/";
+  strPath += g_guiSettings.GetString("subtitles.font");
 
   m_dll.ass_set_margins(m_renderer, 0, 0, 0, 0);
   m_dll.ass_set_use_margins(m_renderer, 0);
@@ -123,7 +125,7 @@ bool CDVDSubtitlesLibass::DecodeDemuxPkt(char* data, int size, double start, dou
   return true;
 }
 
-bool CDVDSubtitlesLibass::ReadFile(const string& strFile)
+bool CDVDSubtitlesLibass::CreateTrack(char* buf)
 {
   if(!m_library)
   {
@@ -131,14 +133,9 @@ bool CDVDSubtitlesLibass::ReadFile(const string& strFile)
     return false;
   }
 
-  string fileName = strFile;
-#ifdef _LINUX
-  fileName = PTH_IC(fileName);
-#endif
+  CLog::Log(LOGINFO, "SSA Parser: Creating m_track from SSA buffer");
 
-  CLog::Log(LOGINFO, "SSA Parser: Creating m_track from SSA file:  %s", fileName.c_str());
-
-  m_track = m_dll.ass_read_file(m_library, (char* )fileName.c_str(), 0);
+  m_track = m_dll.ass_read_memory(m_library, buf, 0, 0);
   if(m_track == NULL)
     return false;
 

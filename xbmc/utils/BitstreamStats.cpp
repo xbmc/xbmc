@@ -20,11 +20,9 @@
  */
 
 #include "BitstreamStats.h"
-#ifdef _LINUX
-#include "linux/XTimeUtils.h"
-#endif
+#include "utils/TimeUtils.h"
 
-LARGE_INTEGER BitstreamStats::m_tmFreq;
+int64_t BitstreamStats::m_tmFreq;
 
 BitstreamStats::BitstreamStats(unsigned int nEstimatedBitrate)
 {
@@ -34,10 +32,10 @@ BitstreamStats::BitstreamStats(unsigned int nEstimatedBitrate)
 
   m_nBitCount = 0;
   m_nEstimatedBitrate = nEstimatedBitrate;
-  m_tmStart.QuadPart = 0LL;
+  m_tmStart = 0LL;
 
-  if (m_tmFreq.QuadPart == 0LL)
-    QueryPerformanceFrequency(&m_tmFreq);
+  if (m_tmFreq == 0LL)
+    m_tmFreq = CurrentHostFrequency();
 }
 
 BitstreamStats::~BitstreamStats()
@@ -59,15 +57,15 @@ void BitstreamStats::AddSampleBits(unsigned int nBits)
 void BitstreamStats::Start()
 {
   m_nBitCount = 0;
-  QueryPerformanceCounter(&m_tmStart);
+  m_tmStart = CurrentHostCounter();
 }
 
 void BitstreamStats::CalculateBitrate()
 {
-  LARGE_INTEGER tmNow;
-  QueryPerformanceCounter(&tmNow);
+  int64_t tmNow;
+  tmNow = CurrentHostCounter();
 
-  double elapsed = (double)(tmNow.QuadPart - m_tmStart.QuadPart) / (double)m_tmFreq.QuadPart;
+  double elapsed = (double)(tmNow - m_tmStart) / (double)m_tmFreq;
   // only update once every 2 seconds
   if (elapsed >= 2)
   {

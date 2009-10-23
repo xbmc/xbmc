@@ -3426,7 +3426,11 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
 CStdString CGUIInfoManager::GetVersion()
 {
   CStdString tmp;
+#ifdef SVN_REV
+  tmp.Format("%s r%s", VERSION_STRING, SVN_REV);
+#else
   tmp.Format("%s", VERSION_STRING);
+#endif
   return tmp;
 }
 
@@ -3437,10 +3441,10 @@ CStdString CGUIInfoManager::GetBuild()
   return tmp;
 }
 
-void CGUIInfoManager::SetDisplayAfterSeek(DWORD dwTimeOut)
+void CGUIInfoManager::SetDisplayAfterSeek(unsigned int timeOut)
 {
-  if(dwTimeOut>0)
-    m_AfterSeekTimeout = CTimeUtils::GetFrameTime() +  dwTimeOut;
+  if (timeOut>0)
+    m_AfterSeekTimeout = CTimeUtils::GetFrameTime() +  timeOut;
   else
     m_AfterSeekTimeout = 0;
 }

@@ -145,34 +145,14 @@ PLT_SsdpDeviceSearchResponseInterfaceIterator::operator()(NPT_NetworkInterface*&
     NPT_Result res;
     const NPT_SocketAddress* remote_addr = &m_RemoteAddr;
 
-    NPT_List<NPT_NetworkInterfaceAddress>::Iterator netaddr = net_if->GetAddresses().GetFirstItem();
-    if (!netaddr) {
-        return NPT_SUCCESS;
-    }
+    NPT_List<NPT_NetworkInterfaceAddress>::Iterator niaddr = 
+        net_if->GetAddresses().GetFirstItem();
+    if (!niaddr) return NPT_SUCCESS;
 
-    // don't respond on loopback
-    // windows media player on vista sends it's M-SEARCH to loopback interface if it's a local clients sometimes
-    //if (net_if->GetFlags() & NPT_NETWORK_INTERFACE_FLAG_LOOPBACK) {
-    //    return NPT_SUCCESS;
-    //}
+    NPT_UdpSocket socket;
 
-    NPT_SocketAddress local_addr((*netaddr).GetPrimaryAddress(), 0); // 1900?
-    NPT_UdpSocket     socket;
-    //if (NPT_FAILED(res = socket.Bind(local_addr))) {
-    //    return res;
-    //}
-
-    // get the output socket stream
-    NPT_OutputStreamReference stream;
-    if (NPT_FAILED(res = socket.GetOutputStream(stream))) {
-        return res;
-    }
-
-    NPT_HttpResponse response(200, "OK", NPT_HTTP_PROTOCOL_1_1);
-
-    // get location URL based on ip address of interface
     // by connecting, the kernel chooses which interface to use to route to the remote
-    // this is the IP we should use in our Location
+    // this is the IP we should use in our Location URL header
     if (NPT_FAILED(res = socket.Connect(m_RemoteAddr, 5000))) {
         return res;
     }
@@ -183,16 +163,16 @@ PLT_SsdpDeviceSearchResponseInterfaceIterator::operator()(NPT_NetworkInterface*&
     if (info.local_address.GetIpAddress().AsLong()) {
         // check that the interface the kernel chose matches the interface
         // we wanted to send on
-        // FIXME: Should we fail instead and stop sending a response once we get NPT_SUCCESS?
-        if (local_addr.GetIpAddress().AsLong() != info.local_address.GetIpAddress().AsLong()) {
+        if ((*niaddr).GetPrimaryAddress().AsLong() != info.local_address.GetIpAddress().AsLong()) {
             return NPT_SUCCESS;
         }
 
-        // already connected, so we don't need to specify where to go
+        // socket already connected, so we don't need to specify where to go
         remote_addr = NULL;
     }
 
-    PLT_UPnPMessageHelper::SetLocation(response, m_Device->GetDescriptionUrl(local_addr.GetIpAddress().ToString()));
+    NPT_HttpResponse response(200, "OK", NPT_HTTP_PROTOCOL_1_1);
+    PLT_UPnPMessageHelper::SetLocation(response, m_Device->GetDescriptionUrl((*niaddr).GetPrimaryAddress().ToString()));
     PLT_UPnPMessageHelper::SetLeaseTime(response, (NPT_Timeout)((float)m_Device->GetLeaseTime()));
     PLT_UPnPMessageHelper::SetServer(response, NPT_HttpServer::m_ServerHeader, false);
     response.GetHeaders().SetHeader("EXT", "");
@@ -211,7 +191,7 @@ void
 PLT_SsdpDeviceSearchResponseTask::DoRun() 
 {
     NPT_List<NPT_NetworkInterface*> if_list;
-    NPT_CHECK_LABEL_WARNING(PLT_UPnPMessageHelper::GetNetworkInterfaces(if_list), 
+    NPT_CHECK_LABEL_WARNING(PLT_UPnPMessageHelper::GetNetworkInterfaces(if_list, true), 
                             done);
 
     if_list.Apply(PLT_SsdpDeviceSearchResponseInterfaceIterator(
@@ -282,7 +262,7 @@ PLT_SsdpDeviceAnnounceTask::DoRun()
     NPT_List<NPT_NetworkInterface*> if_list;
 
     while (1) {
-        NPT_CHECK_LABEL_FATAL(PLT_UPnPMessageHelper::GetNetworkInterfaces(if_list),
+        NPT_CHECK_LABEL_FATAL(PLT_UPnPMessageHelper::GetNetworkInterfaces(if_list, true),
                               cleanup);
 
         // if we're announcing our arrival, sends a byebye first (NMPR compliance)
@@ -385,15 +365,14 @@ PLT_SsdpListenTask::ProcessRequest(NPT_HttpRequest&              request,
 PLT_SsdpSearchTask::PLT_SsdpSearchTask(NPT_UdpSocket*                  socket,
                                        PLT_SsdpSearchResponseListener* listener, 
                                        NPT_HttpRequest*                request,
-                                       NPT_Timeout                     timeout,
-                                       bool                            repeat     /* = true */) : 
+                                       NPT_Timeout                     frequency) : 
     m_Listener(listener), 
     m_Request(request),
-    m_Timeout(timeout),
-    m_Repeat(repeat),
+    m_Timeout(frequency?frequency:30000),
+    m_Repeat(frequency!=0),
     m_Socket(socket)
 {
-    m_Socket->SetReadTimeout(timeout);
+    m_Socket->SetReadTimeout(m_Timeout);
     m_Socket->SetWriteTimeout(10000);
 }
 

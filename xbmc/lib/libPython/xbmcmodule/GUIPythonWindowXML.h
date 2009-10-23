@@ -38,7 +38,7 @@ public:
   virtual void      AllocResources(bool forceLoad = false);
   virtual void      FreeResources(bool forceUnLoad = false);
   virtual void      Render();
-  void              WaitForActionEvent(DWORD timeout);
+  void              WaitForActionEvent(unsigned int timeout);
   void              PulseActionEvent();
   void              AddItem(CFileItemPtr fileItem,int itemPosition);
   void              RemoveItem(int itemPosition);

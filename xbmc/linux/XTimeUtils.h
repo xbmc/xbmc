@@ -26,9 +26,6 @@
 
 VOID GetLocalTime(LPSYSTEMTIME);
 
-BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount);
-BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency);
-
 void WINAPI Sleep(DWORD dwMilliSeconds);
 
 BOOL   FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTime);

@@ -506,7 +506,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
   const unsigned int timeBeforeProgressBar = 1500;
   const unsigned int timeToKillScript = 1000;
 
-  DWORD startTime = CTimeUtils::GetTimeMS();
+  unsigned int startTime = CTimeUtils::GetTimeMS();
   CGUIDialogProgress *progressBar = NULL;
 
   CLog::Log(LOGDEBUG, "%s - waiting on the %s plugin...", __FUNCTION__, scriptName.c_str());

@@ -135,6 +135,7 @@ const BUILT_IN commands[] = {
   { "Resolution",                 true,   "Change XBMC's Resolution" },
   { "SetFocus",                   true,   "Change current focus to a different control id" },
   { "UpdateLibrary",              true,   "Update the selected library (music or video)" },
+  { "CleanLibrary",               true,   "Clean the video library" },
   { "PageDown",                   true,   "Send a page down event to the pagecontrol with given id" },
   { "PageUp",                     true,   "Send a page up event to the pagecontrol with given id" },
   { "LastFM.Love",                false,  "Add the current playing last.fm radio track to the last.fm loved tracks" },
@@ -371,7 +372,7 @@ int CBuiltins::Execute(const CStdString& execString)
     else if (CUtil::IsRAR(params[0]))
       g_RarManager.ExtractArchive(params[0],strDestDirect);
     else
-      CLog::Log(LOGERROR, "CUtil::ExecuteBuiltin: No archive given");
+      CLog::Log(LOGERROR, "XBMC.Extract, No archive given");
   }
   else if (execute.Equals("runplugin"))
   {
@@ -386,7 +387,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else
     {
-      CLog::Log(LOGERROR, "CUtil::ExecBuiltIn, runplugin called with no arguments.");
+      CLog::Log(LOGERROR, "XBMC.RunPlugin called with no arguments.");
     }
   }
   else if (execute.Equals("playmedia"))
@@ -980,6 +981,22 @@ int CBuiltins::Execute(const CStdString& execString)
         else
           CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",info,settings);
       }
+    }
+  }
+  else if (execute.Equals("cleanlibrary"))
+  {
+    CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (scanner)
+    {
+      if (!scanner->IsScanning())
+      {
+         CVideoDatabase videodatabase;
+         videodatabase.Open();
+         videodatabase.CleanDatabase();
+         videodatabase.Close();
+      }
+      else
+        CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
     }
   }
   else if (execute.Equals("lastfm.love"))

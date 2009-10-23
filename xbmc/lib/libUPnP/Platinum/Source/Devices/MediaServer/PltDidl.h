@@ -64,6 +64,11 @@
 #define PLT_FILTER_MASK_RES_PROTECTION              0x00080000
 #define PLT_FILTER_MASK_RES_RESOLUTION              0x00100000
 #define PLT_FILTER_MASK_RES_BITRATE                 0x00200000
+#define PLT_FILTER_MASK_RES_BITSPERSAMPLE           0x00400000
+#define PLT_FILTER_MASK_RES_NRAUDIOCHANNELS			0x00800000
+#define PLT_FILTER_MASK_RES_SAMPLEFREQUENCY			0x01000000
+
+#define PLT_FILTER_MASK_TOC							0x02000000
 
 #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
 #define PLT_FILTER_FIELD_DATE                       "dc:date"
@@ -86,6 +91,9 @@
 #define PLT_FILTER_FIELD_RES_PROTECTION             "res@protection"
 #define PLT_FILTER_FIELD_RES_RESOLUTION             "res@resolution"
 #define PLT_FILTER_FIELD_RES_BITRATE                "res@bitrate"
+#define PLT_FILTER_FIELD_RES_BITSPERSAMPLE          "res@bitsPerSample"
+#define PLT_FILTER_FIELD_RES_NRAUDIOCHANNELS        "res@nrAudioChannels"
+#define PLT_FILTER_FIELD_RES_SAMPLEFREQUENCY        "res@sampleFrequency"
 
 extern const char* didl_header;
 extern const char* didl_footer;
@@ -104,8 +112,8 @@ public:
     static NPT_Result  FromDidl(const char* didl, 
                                 PLT_MediaObjectListReference& objects);
 
-    static void        AppendXmlEscape(NPT_String& out, NPT_String& in);
-    static void        AppendXmlUnEscape(NPT_String& out, NPT_String& in);
+    static void        AppendXmlEscape(NPT_String& out, const char* in);
+    static void        AppendXmlUnEscape(NPT_String& out, const char* in);
     static NPT_Result  ParseTimeStamp(NPT_String timestamp, NPT_UInt32& seconds);
     static void        FormatTimeStamp(NPT_String& out, NPT_UInt32 seconds);
 

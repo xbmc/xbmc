@@ -24,10 +24,14 @@ PYWRAPDEF=$(PYWRAP:.o=.def)
 ifeq ($(ARCH), powerpc64-linux)
 	PYLIBDIR=lib.linux-ppc64-2.4
 else
+ifeq ($(ARCH), powerpc-linux)
+	PYLIBDIR=lib.linux-ppc-2.4
+else
 ifeq ($(ARCH), x86_64-linux)
 	PYLIBDIR=lib.linux-x86_64-2.4
 else
 	PYLIBDIR=lib.linux-i686-2.4
+endif
 endif
 endif
 
@@ -66,7 +70,7 @@ $(SLIB): $(PYWRAP) ../Python/libpython2.4.a $(PYO) ../../../../tools/Mach5/wrapp
 	for dirs in $(PYDIRS); do rsync -a --exclude 'test*'  --exclude '.svn' ../Python/Lib/$$dirs $(SYSDIR)/Lib; done
 	(mkdir -p tmp && rm -rf tmp/*)
 	(cd ./tmp && ar x ../../Python/libpython2.4.a)
-	gcc -bundle -flat_namespace -undefined suppress -shared -o $@ \
+	$(CXX) -bundle -flat_namespace -undefined suppress -shared -o $@ \
 		tmp/*.o \
 		wrapper_python.o
 	../../../../tools/Mach5/wrapper.rb $@ libpython;mv output.so $@

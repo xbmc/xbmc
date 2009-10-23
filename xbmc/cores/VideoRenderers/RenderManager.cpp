@@ -110,7 +110,7 @@ CXBMCRenderManager::~CXBMCRenderManager()
   m_pRenderer = NULL;
 }
 
-/* These is based on QueryPerformanceCounter */
+/* These is based on CurrentHostCounter() */
 double CXBMCRenderManager::GetPresentTime()
 {
   return CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;

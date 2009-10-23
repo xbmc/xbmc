@@ -46,6 +46,7 @@
 //#define HAS_RENDERER 1
 //#define SIMULATE_XBOX_360 1
 //#define SIMULATE_PS3 1
+//#define BROADCAST_EXTRA 1
 
 /*----------------------------------------------------------------------
 |   main
@@ -117,7 +118,7 @@ int main(void)
     upnp.Start();
 
 #ifdef BROADCAST_EXTRA
-    // tell control point to perform extra broadcast discover every secs
+    // tell control point to perform extra broadcast discover every 6 secs
     // in case our device doesn't support multicast
     ctrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1, 6000);
     ctrlPoint->Discover(NPT_HttpUrl("239.255.255.250", 1900, "*"), "upnp:rootdevice", 1, 6000);

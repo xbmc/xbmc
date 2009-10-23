@@ -1,3 +1,73 @@
+Platinum 0.5.3
+--------------
+fixed: MediaCrawler app updated 
+fixed: crash on exit while Browse action is requested
+fixed: bug in ChunkDecoder
+changed: better support for HTTP 100 continue
+changed: DLNA compliance (handle 1xx responses, shutdown sockets better)
+added: code to check if ip or interface is within same network 
+changed: increased stream copy buffer to 16k for better streaming performance
+fixed: crash on exit due to logging in PosixThread wait function
+changed: FileMediaServer now serves files at the root url and not "/content" anymore so that it can serve "/crossdomain.xml" url for Flash if needed.
+changed: putting back GetVolumeDBRange & GetVolumeDB since it seems to be required by DLNA
+fixed: GetTransportAction not returning current protocol info
+changed: remove argument from argument list if value was not allowed
+changed: now returns NPT_ERROR_INVALID_PARAMETERS when validating state variable value if failed
+changed: dont' fail if action contains unknown argument names, simply return NPT_ERROR_NO_SUCH_NAME
+changed: now uses individual scpd cpp files for each scpd
+updated: now uses a batch file and header tool to convert scpd xml file to cpp for inclusion
+added: PlayTo functionality by supporting advertising and responding on localhost
+changed: more DLNA compliance
+added: time class
+
+Platinum 0.5.2
+--------------
+fixed: recursive posix deadlock when notifying new devices are ready and delegates try to subscribe to services
+added: seek command to MicroMediaController
+changed: lowered log levels
+changed: removed SsdpProxy from Build.scons
+updated: scpd for MediaRenderer now has GetVolumeDB, SetVolumeDB, GetVolumeDBRange
+changed: now attach root device to action instead of device (in case of embedded) since embedded devices are not referenced, they're children of main root device
+changed: better embedded devices support in ctrl point, now keeps only root devices in list
+fixed: crashes when device goes away while an action is performed on service or waiting for responses
+fixed: scpd retrieval for embedded devices with same service (Sonos with onnectionManager service for example in both DMS and DMR)
+fixed: action arguments are serialized in same order as defined as scpd (to make WMP12 happy)
+changed: Search sockets are bound on port > 1024 and different than 1900 according to DLNA
+added: When looking for device, can return root if device is known to be embedded
+fixed: root device reference is attached to task that need to access service or action in response to prevent release if device goes away while waiting
+fixed: don't check if subscriber sid start with 'uuid:' even though it's the spec
+added: more WMP12 support parsing xml responses (uses UPnPError instead of upnp_error and any namespace)
+fixed: random crashes
+fixed: PS3 DLNA errors
+changed: Advertise on localhost now and respond properly if search was receiving on localhost
+changed: Now can ignore all local UUIDs when multiple devices are attached
+fixed: MediaController made AVTransport optional and RenderingControl required service
+added: MediaController added SetVolume, GetVolume
+fixed: MediaController better handling of invalid timestamp or duration
+added: MediaRenderer GetVolumeDBRange and SetVolumeDB
+added: Didl support for bitspersample, nraudiochannels and samplefrequency
+changed: Didl adding .000 for frame in timestamp otherwise 360 won't play tracks
+improved: Didl parsing if invalid xml node found
+fixed: Filter criteria was missing in Search function prototype
+added: Can now decide if protocol info should contain DLNA info or not
+added: MediaBrowser added search 
+fixed: When receiving didl for item, don't try to validate resource url protocol and ip as it could be rtsp:// or FQDN addresses
+fixed: SetVariableValue can pass csvs and each value will be indepedently validated
+added: Can now set extra attributes to a state variables (for Volume that has a Channel)
+changed: The state variable now serializes itself into an xml node instead of the service doing it. That way we can add extra parameters if needed
+added: helper GetIPAddresses can be passed a flag to add localhost to list if needed
+fixed: vs2005 projects with new Neptune path
+changed: simplified AVTransport scpd for renderer
+added: Renderer now supports Windows 7 WMP PlayTo feature!
+added: now can choose to add xml header or not (some implementations like WMP needs it)
+fixed: bug where it would never keep a connection alive on the server side
+added: more DLNA improvements
+removed: Neptune from ThirdParty, now same level as Platinum in PlatinumKit
+fixed: 360 can play mov files now
+added: mimetype by extension
+fixed: WMP can see Platinum again (needs <?xml ?>
+changed: change mediatype after calling ServeFile instead of before, or it may get changed
+
 Platinum 0.5.1
 --------------
 removed: DMS 1.5 for 360, no need for it
