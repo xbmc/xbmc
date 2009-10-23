@@ -32,7 +32,7 @@
 	<GetSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;gb2312&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
 			<RegExp input="$$1" output="\1" dest="7">
-				<expression clear="yes">/title/([t0-9]*)/ratings</expression>
+				<expression clear="yes">http://www.imdb.cn/title/([t0-9]*)&quot;&gt;±¾Æ¬Ê×Ò³</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression clear="yes">&lt;td colspan=2&gt;&lt;span class=mn&gt;([^&lt;]*)&lt;/span&gt;</expression>
