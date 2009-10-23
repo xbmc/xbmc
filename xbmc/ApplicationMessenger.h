@@ -122,8 +122,9 @@ public:
   void RestartApp();
   void Reset();
   void SwitchToFullscreen(); //
-  void Minimize(bool wait = false); 
+  void Minimize(bool wait = false);
   void ExecOS(const CStdString command, bool waitExit = false);  
+  void UserEvent(int code);
 
   CStdString GetResponse();
   int SetResponse(CStdString response);

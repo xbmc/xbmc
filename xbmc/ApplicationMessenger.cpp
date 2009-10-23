@@ -787,6 +787,11 @@ void CApplicationMessenger::ExecOS(const CStdString command, bool waitExit)
   SendMessage(tMsg, false);
 }
 
+void CApplicationMessenger::UserEvent(int code)
+{
+  ThreadMessage tMsg = {code};
+  SendMessage(tMsg, false);
+}
 
 void CApplicationMessenger::Show(CGUIDialog *pDialog)
 {

@@ -410,6 +410,9 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
         g_settings.Save();
       }
       break;
+    case XBMC_USEREVENT:
+      g_application.getApplicationMessenger().UserEvent(newEvent.user.code);
+      break;
   }
   return true;
 }
