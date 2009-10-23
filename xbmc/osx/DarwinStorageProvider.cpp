@@ -8,7 +8,7 @@ bool CDarwinStorageProvider::m_event = false;
 CDarwinStorageProvider::CDarwinStorageProvider()
 {
   m_removableLength = 0;
-  PumpDriveChangeEvents();
+  PumpDriveChangeEvents(NULL);
 }
 
 void CDarwinStorageProvider::GetDrives(VECSOURCES &drives)
