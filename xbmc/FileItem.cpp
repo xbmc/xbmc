@@ -2717,7 +2717,27 @@ CStdString CFileItem::GetCachedThumb(const CStdString &path, const CStdString &p
 
 CStdString CFileItem::GetCachedProgramThumb() const
 {
-  return GetCachedThumb(m_strPath,g_settings.GetProgramsThumbFolder());
+  // get the locally cached thumb
+  Crc32 crc;
+  if (IsOnDVD())
+  {
+    CStdString strDesc;
+    CUtil::GetXBEDescription(m_strPath,strDesc);
+    CStdString strCRC;
+    strCRC.Format("%s%u",strDesc.c_str(),CUtil::GetXbeID(m_strPath));
+    crc.ComputeFromLowerCase(strCRC);
+  }
+  else
+    crc.ComputeFromLowerCase(m_strPath);
+
+  CStdString hex;
+  hex.Format("%08x", (__int32)crc);
+
+  CStdString thumb;
+
+  thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetProgramsThumbFolder().c_str(), hex[0], (unsigned __int32)crc);
+
+  return thumb;
 }
 
 CStdString CFileItem::GetCachedGameSaveThumb() const
@@ -2804,14 +2824,16 @@ void CFileItem::SetUserProgramThumb()
     {
       // use the shortcut's thumb
       if (!shortcut.m_strThumb.IsEmpty())
+      {
         m_strThumbnailImage = shortcut.m_strThumb;
+        return;
+	  }
       else
       {
         CFileItem item(shortcut.m_strPath,false);
         item.SetUserProgramThumb();
         m_strThumbnailImage = item.m_strThumbnailImage;
       }
-      return;
     }
   }
   // 1.  Try <filename>.tbn

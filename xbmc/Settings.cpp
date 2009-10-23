@@ -152,16 +152,16 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   bXboxMediacenter = bSettings = false;
 
 #ifdef _XBOX
-  char szDevicePath[1024]; 
-  CStdString strMnt = _P(GetProfileUserDataFolder()); 
-  if (strMnt.Left(2).Equals("Q:")) 
-  { 
-    CUtil::GetHomePath(strMnt); 
-    strMnt += _P(GetProfileUserDataFolder()).substr(2); 
-  } 
-  CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath); 
-  strcat(szDevicePath,strMnt.c_str()+2); 
-  CIoSupport::RemapDriveLetter('P', szDevicePath); 
+  char szDevicePath[1024];
+  CStdString strMnt = _P(GetProfileUserDataFolder());
+  if (strMnt.Left(2).Equals("Q:"))
+  {
+    CUtil::GetHomePath(strMnt);
+    strMnt += _P(GetProfileUserDataFolder()).substr(2);
+  }
+  CIoSupport::GetPartition(strMnt.c_str()[0], szDevicePath);
+  strcat(szDevicePath,strMnt.c_str()+2);
+  CIoSupport::RemapDriveLetter('P', szDevicePath);
 #endif
   CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
@@ -597,7 +597,7 @@ void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString 
     return;
   }
   GetInteger(pNode, "viewmode", viewState.m_viewMode, defaultView, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
-  
+
   int sortMethod;
   GetInteger(pNode, "sortmethod", sortMethod, defaultSort, SORT_METHOD_NONE, SORT_METHOD_MAX);
   viewState.m_sortMethod = (SORT_METHOD)sortMethod;
@@ -2302,6 +2302,7 @@ void CSettings::CreateProfileFolders()
     CDirectory::Create(CUtil::AddFileToFolder(GetPicturesThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetMusicThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex));
+    CDirectory::Create(CUtil::AddFileToFolder(GetProgramsThumbFolder(), strHex));
   }
   CDirectory::Create("special://profile/visualisations");
 }
