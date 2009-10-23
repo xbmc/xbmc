@@ -244,6 +244,7 @@
 #endif
 
 #include "MediaManager.h"
+#include "utils/JobManager.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -3352,6 +3353,9 @@ void CApplication::Stop()
 {
   try
   {
+    // cancel any jobs from the jobmanager
+    CJobManager::GetInstance().CancelJobs();
+
 #ifdef HAS_WEB_SERVER
     if (m_pXbmcHttp)
     {
