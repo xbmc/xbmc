@@ -18,7 +18,7 @@ public:
 
   virtual std::vector<CStdString> GetDiskUsage();
 
-  virtual bool PumpDriveChangeEvents();
+  virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
 private:
   unsigned int m_removableLength;
 };

@@ -32,7 +32,7 @@ std::vector<CStdString> CWin32StorageProvider::GetDiskUsage()
   return CWIN32Util::GetDiskUsage();
 }
 
-bool CWin32StorageProvider::PumpDriveChangeEvents()
+bool CWin32StorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
   bool b = event;
   event = false;

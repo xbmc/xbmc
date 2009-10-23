@@ -6,7 +6,7 @@
 CPosixMountProvider::CPosixMountProvider()
 {
   m_removableLength = 0;
-  PumpDriveChangeEvents();
+  PumpDriveChangeEvents(NULL);
 }
 
 void CPosixMountProvider::GetDrives(VECSOURCES &drives)
@@ -88,7 +88,7 @@ std::vector<CStdString> CPosixMountProvider::GetDiskUsage()
   return result;
 }
 
-bool CPosixMountProvider::PumpDriveChangeEvents()
+bool CPosixMountProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
   VECSOURCES drives;
   GetRemovableDrives(drives);

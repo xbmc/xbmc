@@ -16,7 +16,7 @@ public:
 
   virtual std::vector<CStdString> GetDiskUsage();
 
-  virtual bool PumpDriveChangeEvents();
+  virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
 
   static void SetEvent() { event = true; }
   static bool event;

@@ -17,7 +17,7 @@ public:
 
   virtual bool Eject(CStdString mountpath) { return false; }
 
-  virtual bool PumpDriveChangeEvents();
+  virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
 private:
   void GetDrives(VECSOURCES &drives);
 

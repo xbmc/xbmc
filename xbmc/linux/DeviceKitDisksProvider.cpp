@@ -137,7 +137,7 @@ void CDeviceKitDisksProvider::Initialize()
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: Querying available devices");
   std::vector<CStdString> devices = EnumerateDisks();
   for (unsigned int i = 0; i < devices.size(); i++)
-    DeviceAdded(devices[i].c_str());
+    DeviceAdded(devices[i].c_str(), NULL);
 }
 
 bool CDeviceKitDisksProvider::Eject(CStdString mountpath)
@@ -175,7 +175,7 @@ std::vector<CStdString> CDeviceKitDisksProvider::GetDiskUsage()
   return devices;
 }
 
-bool CDeviceKitDisksProvider::PumpDriveChangeEvents()
+bool CDeviceKitDisksProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
   bool result = false;
   if (m_connection)
@@ -190,11 +190,11 @@ bool CDeviceKitDisksProvider::PumpDriveChangeEvents()
       {
         result = true;
         if (dbus_message_is_signal(msg, "org.freedesktop.DeviceKit.Disks", "DeviceAdded"))
-          DeviceAdded(object);
+          DeviceAdded(object, callback);
         else if (dbus_message_is_signal(msg, "org.freedesktop.DeviceKit.Disks", "DeviceRemoved"))
-          DeviceRemoved(object);
+          DeviceRemoved(object, callback);
         else if (dbus_message_is_signal(msg, "org.freedesktop.DeviceKit.Disks", "DeviceChanged"))
-          DeviceChanged(object);
+          DeviceChanged(object, callback);
       }
       dbus_message_unref(msg);
     }
@@ -224,7 +224,7 @@ bool CDeviceKitDisksProvider::HasDeviceKitDisks()
   return hasDeviceKitDisks;
 }
 
-void CDeviceKitDisksProvider::DeviceAdded(const char *object)
+void CDeviceKitDisksProvider::DeviceAdded(const char *object, IStorageEventsCallback *callback)
 {
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: DeviceAdded (%s)", object);
 
@@ -239,24 +239,27 @@ void CDeviceKitDisksProvider::DeviceAdded(const char *object)
 
   if (g_advancedSettings.m_handleMounting)
     device->Mount();
+
+  if (device->m_isMounted && callback)
+    callback->OnStorageAdded(device->m_MountPath, device->m_MountPath);
 }
 
-void CDeviceKitDisksProvider::DeviceRemoved(const char *object)
+void CDeviceKitDisksProvider::DeviceRemoved(const char *object, IStorageEventsCallback *callback)
 {
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: DeviceRemoved (%s)", object);
 
   CDeviceKitDiskDevice *device = m_AvailableDevices[object];
   if (device)
   {
-    if (device->m_isMountedByUs)
-      CLog::Log(LOGWARNING, "DeviceKit.Disks: Unsafe removal of %s", object);
+    if (device->m_isMounted && callback)
+      callback->OnStorageUnsafelyRemoved(device->m_MountPath);
 
     delete m_AvailableDevices[object];
     m_AvailableDevices.erase(object);
   }
 }
 
-void CDeviceKitDisksProvider::DeviceChanged(const char *object)
+void CDeviceKitDisksProvider::DeviceChanged(const char *object, IStorageEventsCallback *callback)
 {
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: DeviceChanged (%s)", object);
 
@@ -264,10 +267,17 @@ void CDeviceKitDisksProvider::DeviceChanged(const char *object)
   if (device == NULL)
   {
     CLog::Log(LOGWARNING, "DeviceKit.Disks: Inconsistency found! DeviceChanged on an unindexed disk");
-    DeviceAdded(object);
+    DeviceAdded(object, callback);
   }
   else
+  {
+    bool mounted = device->m_isMounted;
     device->Update();
+    if (!mounted && device->m_isMounted && callback)
+      callback->OnStorageAdded(device->m_MountPath, device->m_MountPath);
+    else if (mounted && !device->m_isMounted && callback)
+      callback->OnStorageSafelyRemoved(device->m_MountPath);
+  }
 }
 
 std::vector<CStdString> CDeviceKitDisksProvider::EnumerateDisks()

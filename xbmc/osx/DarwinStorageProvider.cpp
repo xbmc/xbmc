@@ -89,7 +89,7 @@ bool CDarwinStorageProvider::Eject(CStdString mountpath)
   return false;
 }
 
-bool CDarwinStorageProvider::PumpDriveChangeEvents(void)
+bool CDarwinStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
   bool event = m_event;
   m_event = false;
@@ -102,7 +102,7 @@ void CDarwinStorageProvider::SetEvent(void)
 }
 
 /*
-bool CDarwinStorageProvider::PumpDriveChangeEvents()
+bool CDarwinStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
   VECSOURCES drives;
   GetRemovableDrives(drives);

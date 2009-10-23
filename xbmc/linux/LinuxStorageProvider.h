@@ -67,9 +67,9 @@ public:
     return m_instance->GetDiskUsage();
   }
 
-  virtual bool PumpDriveChangeEvents()
+  virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback)
   {
-    return m_instance->PumpDriveChangeEvents();
+    return m_instance->PumpDriveChangeEvents(callback);
   }
 
 private:

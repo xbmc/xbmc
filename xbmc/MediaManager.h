@@ -40,7 +40,7 @@ public:
   CStdString path;
 };
 
-class CMediaManager
+class CMediaManager : public IStorageEventsCallback
 {
 public:
   CMediaManager();
@@ -78,6 +78,10 @@ public:
   void ProcessEvents();
 
   std::vector<CStdString> GetDiskUsage();
+
+  virtual void OnStorageAdded(const CStdString &label, const CStdString &path);
+  virtual void OnStorageSafelyRemoved(const CStdString &label);
+  virtual void OnStorageUnsafelyRemoved(const CStdString &label);
 protected:
   std::vector<CNetworkLocation> m_locations;
 

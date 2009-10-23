@@ -17,7 +17,7 @@ public:
 
   virtual bool Eject(CStdString mountpath);
 
-  virtual bool PumpDriveChangeEvents(void);
+  virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
 
   static void SetEvent(void);
 
