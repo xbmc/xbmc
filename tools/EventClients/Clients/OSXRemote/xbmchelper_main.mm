@@ -21,7 +21,7 @@ bool g_verbose_mode = false;
 
 //
 const char* PROGNAME="XBMCHelper";
-const char* PROGVERS="0.5";
+const char* PROGVERS="0.6";
 
 void ParseOptions(int argc, char** argv);
 void ReadConfig();
@@ -199,19 +199,23 @@ int main (int argc,  char * argv[]) {
   
   NSLog(@"%s %s starting up...", PROGNAME, PROGVERS);
   gp_xbmchelper = [[XBMCHelper alloc] init];  
-  
-  signal(SIGHUP, Reconfigure);
-	signal(SIGINT, Reconfigure);
-	signal(SIGTERM, Reconfigure);
-  
-  ParseOptions(argc,argv);
-  StartHelper();
-  
-  //run event loop in this thread
-  RunCurrentEventLoop(kEventDurationForever);
-  NSLog(@"%s %s exiting...", PROGNAME, PROGVERS);
-  //cleanup
-  [gp_xbmchelper release];
+  if(gp_xbmchelper){
+    signal(SIGHUP, Reconfigure);
+    signal(SIGINT, Reconfigure);
+    signal(SIGTERM, Reconfigure);
+    
+    ParseOptions(argc,argv);
+    StartHelper();
+    
+    //run event loop in this thread
+    RunCurrentEventLoop(kEventDurationForever);
+    NSLog(@"%s %s exiting...", PROGNAME, PROGVERS);
+    //cleanup
+    [gp_xbmchelper release];    
+  } else {
+    NSLog(@"%s %s failed to initialize remote.", PROGNAME, PROGVERS);  
+    return -1;
+  }
   [pool drain];
   return 0;
 }
