@@ -119,7 +119,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
   else if (action.id == ACTION_MOVE_RIGHT)
   {
     if ((unsigned int) m_cursorPos < m_text2.size())
-    { 
+    {
       m_cursorPos++;
       UpdateText(false);
       return true;
@@ -159,8 +159,8 @@ bool CGUIEditControl::OnAction(const CAction &action)
       if (m_cursorPos > 0)
       { // backspace
         m_text2.erase(--m_cursorPos, 1);
-        UpdateText();      
-      }    
+        UpdateText();
+      }
       return true;
     }
   }
