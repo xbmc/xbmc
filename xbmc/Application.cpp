@@ -2263,17 +2263,13 @@ void CApplication::RenderMemoryStatus()
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
     CStdString profiling = CGUIControlProfiler::IsRunning() ? " (profiling)" : "";
-#ifdef __APPLE__
-    double dCPU = m_resourceCounter.GetCPUUsage();
-    info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
-              g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU, profiling.c_str());
-#elif !defined(_LINUX)
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
+#if !defined(_LINUX)
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
+              g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
-    CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", (int)(stat.dwAvailPhys/1024), (int)(stat.dwTotalPhys/1024),
               g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
 #endif
 
