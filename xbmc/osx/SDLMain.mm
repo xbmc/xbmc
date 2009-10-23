@@ -19,6 +19,7 @@
 // and obj-c's typedef unsigned char BOOL
 #define BOOL XBMC_BOOL 
 #import "PlatformDefs.h"
+#import "ApplicationMessenger.h"
 #import "DarwinStorageProvider.h"
 #undef BOOL
 
@@ -119,6 +120,16 @@ static void setupWindowMenu(void)
 
     windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
     
+    /* "Full/Windowed Toggle" item */
+    menuItem = [[NSMenuItem alloc] initWithTitle:@"Full/Windowed Toggle" action:@selector(fullScreenToggle:) keyEquivalent:@"f"];
+    [windowMenu addItem:menuItem];
+    [menuItem release];
+
+    /* "Full/Windowed Toggle" item */
+    menuItem = [[NSMenuItem alloc] initWithTitle:@"Float on Top" action:@selector(floatOnTopToggle:) keyEquivalent:@"t"];
+    [windowMenu addItem:menuItem];
+    [menuItem release];
+
     /* "Minimize" item */
     menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize" action:@selector(performMiniaturize:) keyEquivalent:@"m"];
     [windowMenu addItem:menuItem];
@@ -159,6 +170,31 @@ static void setupWindowMenu(void)
     SDL_Event event;
     event.type = SDL_QUIT;
     SDL_PushEvent(&event);
+}
+
+- (void)fullScreenToggle:(id)sender
+{
+  // Post an toggle full-screen event to the application thread.
+  SDL_Event event;
+  memset(&event, 0, sizeof(event));
+  event.type = SDL_USEREVENT;
+  event.user.code = TMSG_TOGGLEFULLSCREEN;
+  SDL_PushEvent(&event);
+}
+
+- (void)floatOnTopToggle:(id)sender
+{
+  NSWindow* window = [[[NSOpenGLContext currentContext] view] window];
+  if ([window level] == NSFloatingWindowLevel)
+  {
+    [window setLevel:NSNormalWindowLevel];
+    [sender setState:NSOffState];
+  }
+  else
+  {
+    [window setLevel:NSFloatingWindowLevel];
+    [sender setState:NSOnState];
+  }
 }
 @end
 

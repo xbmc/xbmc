@@ -399,6 +399,12 @@ case TMSG_POWERDOWN:
         g_application.SwitchToFullScreen();
       break;
 
+    case TMSG_TOGGLEFULLSCREEN:
+      g_graphicsContext.Lock();
+      g_graphicsContext.ToggleFullScreenRoot();
+      g_graphicsContext.Unlock();
+      break;
+      
     case TMSG_MINIMIZE:
       g_application.Minimize();
       break;
