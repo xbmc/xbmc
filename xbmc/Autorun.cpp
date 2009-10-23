@@ -58,7 +58,7 @@ CAutorun::~CAutorun()
 
 void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
 {
-  if ((!ignoreplaying && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || m_gWindowManager.HasModalDialog())) || m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN)
+  if ((!ignoreplaying && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || g_windowManager.HasModalDialog())) || g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN)
     return ;
 
   CCdInfo* pInfo = g_mediaManager.GetCdInfo();
@@ -79,36 +79,9 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
 
     RunCdda();
   }
-  else if (pInfo->IsUDFX( 1 ) || pInfo->IsUDF(1) || (pInfo->IsISOUDF(1) && g_advancedSettings.m_detectAsUdf))
-  {
-    RunXboxCd(bypassSettings);
-  }
-  else if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))
-  {
-    RunISOMedia(bypassSettings);
-  }
   else
   {
-    RunXboxCd(bypassSettings);
-  }
-}
-
-void CAutorun::RunXboxCd(bool bypassSettings)
-{
-  if ( !g_guiSettings.GetBool("autorun.dvd") && !g_guiSettings.GetBool("autorun.vcd") && !g_guiSettings.GetBool("autorun.video") && !g_guiSettings.GetBool("autorun.music") && !g_guiSettings.GetBool("autorun.pictures") )
-    return ;
-
-  int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
-  int nAddedToPlaylist = 0;
-  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "D:\\" ) );
-  bool bPlaying = RunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true, bypassSettings);
-  if ( !bPlaying && nAddedToPlaylist > 0 )
-  {
-    CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
-    m_gWindowManager.SendMessage( msg );
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-    // Start playing the items we inserted
-    g_playlistPlayer.Play( nSize );
+    RunMedia(bypassSettings);
   }
 }
 
@@ -129,21 +102,38 @@ void CAutorun::RunCdda()
   g_playlistPlayer.Play();
 }
 
-void CAutorun::RunISOMedia(bool bypassSettings)
+void CAutorun::RunMedia(bool bypassSettings)
 {
+  if ( !bypassSettings && !g_guiSettings.GetBool("autorun.dvd") && !g_guiSettings.GetBool("autorun.vcd") && !g_guiSettings.GetBool("autorun.video") && !g_guiSettings.GetBool("autorun.music") && !g_guiSettings.GetBool("autorun.pictures") )
+    return ;
+
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
   int nAddedToPlaylist = 0;
 #ifdef _WIN32
   auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()+4 ));
   bool bPlaying = RunDisc(pDir.get(), MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()+4, nAddedToPlaylist, true, bypassSettings);
 #else
-  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "iso9660://" ));
-  bool bPlaying = RunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true, bypassSettings);
+  CCdInfo* pInfo = g_mediaManager.GetCdInfo();
+
+  if ( pInfo == NULL )
+    return ;
+
+  bool bPlaying;
+  if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))
+  {
+    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "iso9660://" ));
+    bPlaying = RunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true, bypassSettings);
+  }
+  else
+  {
+    auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "D:\\" ) );
+    bPlaying = RunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true, bypassSettings);
+  }
 #endif
   if ( !bPlaying && nAddedToPlaylist > 0 )
   {
     CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
-    m_gWindowManager.SendMessage( msg );
+    g_windowManager.SendMessage( msg );
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     // Start playing the items we inserted
     g_playlistPlayer.Play(nSize);
@@ -268,7 +258,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         if (!bypassSettings)
           return false;
 
-        if (m_gWindowManager.GetActiveWindow() != WINDOW_VIDEO_FILES)
+        if (g_windowManager.GetActiveWindow() != WINDOW_VIDEO_FILES)
           if (!g_passwordManager.IsMasterLockUnlocked(true))
             return false;
       }

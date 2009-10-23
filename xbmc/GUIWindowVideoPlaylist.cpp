@@ -199,7 +199,7 @@ bool CGUIWindowVideoPlaylist::OnAction(const CAction &action)
   }
   if (action.id == ACTION_SHOW_PLAYLIST)
   {
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
   if ((action.id == ACTION_MOVE_ITEM_UP) || (action.id == ACTION_MOVE_ITEM_DOWN))

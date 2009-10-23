@@ -1,5 +1,5 @@
 TARGET=Textures.xbt
-XBMCTEX=../../../tools/XBMCTexXBT/XBMCTexXBT
+XBMCTEX=../../../tools/TexturePacker/TexturePacker
 IMAGES= \
 	busy/busy1.png \
 	busy/busy2.png \
@@ -378,7 +378,7 @@ $(TARGET): $(XBMCTEX) $(IMAGES)
 	$(XBMCTEX) -input . -output $(TARGET)
 
 $(XBMCTEX): force
-	$(MAKE) -C ../../../tools/XBMCTexXBT
+	$(MAKE) -C ../../../tools/TexturePacker
 
 clean:
 	rm -f $(TARGET)

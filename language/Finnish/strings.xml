@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 22/8/2009  -->
-<!--Finnish strings based on English strings revision 22290 -->
+<!--Date of translation: 22/9/2009 -->
+<!--Finnish strings based on English strings revision 23054 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -727,6 +727,7 @@
   <string id="1047">Jokin muu...</string>
   <string id="1048">Web-palvelimen käyttäjätunnus</string> 
   <string id="1049">Skripti-asetukset</string>
+  <string id="1050">Singlet</string>
 
   <string id="1200">SMB-asiakas</string>
   <string id="1202">Työryhmä</string>
@@ -807,6 +808,7 @@
   <!-- strings through to 1470 reserved for power-saving -->
 
   <string id="2050">Kesto</string>
+  <string id="2100">Skripti virhe! : %s</string> 
 
   <string id="4501">LCD:n tyyppi</string>
 
@@ -1001,7 +1003,7 @@
   <string id="13110">Tallenna resoluutio?</string>
   <string id="13111">Haluatko säilyttää nämä asetukset?</string>
 
-  <string id="13112">Korkealaatuinen ohjelmallinen skaalaus</string>
+  <string id="13112">Korkealaatuinen skaalaus</string>
   <string id="13113">Ei käytössä</string>
   <string id="13114">Käytössä normaali tarkkuudella</string>
   <string id="13115">Aina käytössä</string>
@@ -1010,8 +1012,9 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
-
-  <string id="13120">Strict Pixmap-Texture Binding (vaatii uudellenkäynnistyksen)</string>
+  <string id="13120">VDPAU</string>
+  <string id="13121">VDPAU HQ skaalaustaso</string>
+  <string id="13122">VDPAU studiotasoinen värimuunnos</string>
 
   <string id="13130">Näytön tyhjennys</string>
   <string id="13131">Ei käytössä</string>
@@ -1212,14 +1215,14 @@
 
   <string id="13500">A/V-tahdistus menetelmä</string>
   <string id="13501">Äänen kello</string>
-  <string id="13502">Videon kello (Poista/lisää ääntä)</string>
-  <string id="13503">Videon kello (Äänen uudelleennäytteistys)</string>
+  <string id="13502">Videon kello (poista/lisää ääntä)</string>
+  <string id="13503">Videon kello (äänen uudelleennäytteistys)</string>
   <string id="13504">Maksimi uudelleennäytteistys (%)</string>
   <string id="13505">Uudellennäytteistyksen laatu</string>
-  <string id="13506">Matala</string>
+  <string id="13506">Matala(nopea)</string>
   <string id="13507">Keski</string>
   <string id="13508">Korkea</string>
-  <string id="13509">Todellan korkea</string>
+  <string id="13509">Todella korkea(hidas)</string>
   <string id="13510">Tahdista toisto näyttöön</string>
 
   <string id="13600">Apple Remote -kauko-ohjain</string>
@@ -1544,6 +1547,8 @@
   <string id="16314">Inverse Telecine</string>
   <string id="17500">Näytön pimennyksen viive</string>
 
+  <string id="19000">Vaihda kanavalle</string>
+ 
   <string id="20000">Tallennuskansio</string>
   <string id="20001">Käytä ulkoista DVD-toisto-ohjelmaa</string>
   <string id="20002">Ulkoinen DVD-toisto-ohjelma</string>
@@ -1878,6 +1883,7 @@
   <string id="20431">Kirjoitetaanko vanhojen päälle?</string>
   <string id="20432">Ohita polku kirjastoja päivitettäessä</string>
   <string id="20433">Pura median metadata-tiedot</string>
+  <string id="20434">Setit</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -1952,6 +1958,7 @@
   <string id="21414">TV-ohjelman tietojen hakupaikka</string>
   <string id="21415">Musiikkivideon tietojen hakupaikka</string>
   <string id="21416">Palaute pohjautuu hakupaikan kieleen</string>
+  <string id="21417">- Hakupaikan asetukset</string>
 
   <string id="21420">Ehtoihin sopiva</string>
   <string id="21421">Valikoivan soittolistan ehdot</string>
@@ -2084,6 +2091,7 @@
   <string id="22019">Levytykset nimen mukaan</string>
   <string id="22020">Ohjelmaopas</string>
   <string id="22021">Sallittu kuvasuhteen virhe (%)</string>
+  <string id="22022">Sisällytä video-tiedostot listaukseen</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Kirjasin</string>
@@ -2103,6 +2111,15 @@
 
   <string id="23000">Sää lisäosa</string>
   <string id="23001">- Lisäosan asetukset</string>
+
+ <!-- strings 23100 thru 23150 reserved for external player -->
+  <string id="23100">External Player Active</string>
+  <string id="23101">Paina OK sulkeaksesi toisto-ohjelman</string>
+  <string id="23102"></string>
+  <string id="23103"></string>
+  <string id="23104">Paina OK kun toisto päätyttyy</string>
+  <string id="23105"></string>
+  <string id="23106"></string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code --> 
   <string id="29800">Kirjasto-tila</string> 
@@ -2147,7 +2164,7 @@
   <string id="33030">Ulkoasu</string>
   <string id="33031">Kuorivirta</string>
   <string id="33032">Käännä teksti</string>
-  <string id="33033">Kartta luettelon %s kategoria</string>
+  <string id="33033">Kartta luettelon %s-kategoria</string>
   <string id="33034">36 tuntia</string>
   <string id="33035">Kartat</string>
   <string id="33036">Tunneittain</string>

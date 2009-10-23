@@ -20,6 +20,7 @@
  */
 
 #include "GUIWindowMusicInfo.h"
+#include "GUIWindowManager.h"
 #include "Util.h"
 #include "GUIImage.h"
 #include "Picture.h"
@@ -126,7 +127,7 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
         if (m_bArtistInfo && (ACTION_SELECT_ITEM == iAction || ACTION_MOUSE_LEFT_CLICK == iAction))
         {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
-          g_graphicsContext.SendMessage(msg);
+          g_windowManager.SendMessage(msg);
           int iItem = msg.GetParam1();
           if (iItem < 0 || iItem >= (int)m_albumSongs->Size())
             break;
@@ -498,8 +499,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   if (CFile::Exists(localThumb))
   {
     CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
-    CPicture pic;
-    if (pic.DoCreateThumbnail(localThumb, cachedLocalThumb))
+    if (CPicture::CreateThumbnail(localThumb, cachedLocalThumb))
     {
       CFileItemPtr item(new CFileItem("thumb://Local", false));
       item->SetThumbnailImage(cachedLocalThumb);
@@ -553,10 +553,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);
   else if (CFile::Exists(result))
-  {
-    CPicture pic;
-    pic.DoCreateThumbnail(result, cachedThumb);
-  }
+    CPicture::CreateThumbnail(result, cachedThumb);
 
   m_albumItem->SetThumbnailImage(cachedThumb);
   m_hasUpdatedThumb = true;
@@ -564,7 +561,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_graphicsContext.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
   // Update our screen
   Update();
 }
@@ -658,11 +655,10 @@ void CGUIWindowMusicInfo::OnGetFanart()
       result = tempFile;
     }
 
-    CPicture pic;
     if (flip)
-      pic.ConvertFile(result, cachedThumb,0,1920,-1,100,true);
+      CPicture::ConvertFile(result, cachedThumb,0,1920,-1,100,true);
     else
-      pic.CacheImage(result, cachedThumb);
+      CPicture::CacheImage(result, cachedThumb);
 
     m_albumItem->SetProperty("fanart_image",cachedThumb);
     m_hasUpdatedThumb = true;
@@ -671,7 +667,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_graphicsContext.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
   // Update our screen
   Update();
 }

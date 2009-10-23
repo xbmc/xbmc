@@ -21,6 +21,7 @@
 
 #include "GUIBaseContainer.h"
 #include "GUIControlFactory.h"
+#include "GUIWindowManager.h"
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/TimeUtils.h"
@@ -622,7 +623,7 @@ bool CGUIBaseContainer::OnClick(int actionID)
           action.Replace(",,", ",");
           CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
           message.SetStringParam(action);
-          g_graphicsContext.SendMessage(message);
+          g_windowManager.SendMessage(message);
         }
       }
       return true;

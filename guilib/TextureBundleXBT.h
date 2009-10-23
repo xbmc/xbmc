@@ -47,12 +47,11 @@ public:
   
 private:  
   bool OpenBundle();
-  bool ConvertFrameToTexture(const CStdString& name, CXBTFFrame& frame, int format, CBaseTexture** ppTexture);  
+  bool ConvertFrameToTexture(const CStdString& name, CXBTFFrame& frame, CBaseTexture** ppTexture);  
 
   time_t m_TimeStamp;
 
   bool m_themeBundle;
-  bool m_supportsCompressedTextures;
   CXBTFReader m_XBTFReader;
 };
 

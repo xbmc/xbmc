@@ -33,6 +33,7 @@
 #include "SkinInfo.h"
 #include "GUIFont.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 
@@ -1153,7 +1154,7 @@ void RunCredits()
     // restore gamma
     D3DDevice::SetGammaRamp(D3DSGR_IMMEDIATE, &StartRamp);
 
-    DWORD StartTime = timeGetTime();
+    DWORD StartTime = CTimeUtils::GetTimeMS();
     DWORD LastTime = StartTime;
     DWORD LastCreditTime = 0;
 
@@ -1174,7 +1175,7 @@ void RunCredits()
       if (WaitForSingleObject(hMusicThread, 0) == WAIT_TIMEOUT)
         Time = (DWORD)mikxboxGetPTS();
       else
-        Time = timeGetTime() - StartTime;
+        Time = CTimeUtils::GetTimeMS() - StartTime;
 
       if (Time < LastTime)
       {

@@ -47,10 +47,6 @@
 #include "StdString.h"
 #include "Resolution.h"
 
-// forward definitions
-class IMsgSenderCallback;
-class CGUIMessage;
-
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,
                  VIEW_TYPE_ICON,
@@ -78,17 +74,13 @@ public:
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
   float GetFPS() const;
-  bool SendMessage(CGUIMessage& message);
-  bool SendMessage(int message, int senderID, int destID, int param1 = 0, int param2 = 0);
-  void setMessageSender(IMsgSenderCallback* pCallback);
   const CStdString& GetMediaDir() const { return m_strMediaDir; }
   void SetMediaDir(const CStdString& strMediaDir);
   bool IsWidescreen() const { return m_bWidescreen; }
   bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);
   void RestoreViewPort();
-  const RECT& GetViewWindow() const;
+  const CRect& GetViewWindow() const;
   void SetViewWindow(float left, float top, float right, float bottom);
-  void SetFullScreenViewWindow(RESOLUTION &res);
   bool IsFullScreenRoot() const;
   bool ToggleFullScreenRoot();
   void SetFullScreenVideo(bool bOnOff);
@@ -168,7 +160,8 @@ public:
   }
 
 protected:
-  IMsgSenderCallback* m_pCallback;
+  void SetFullScreenViewWindow(RESOLUTION &res);
+
   std::stack<CRect> m_viewStack;
 
   int m_iScreenHeight;
@@ -177,7 +170,7 @@ protected:
   int m_iBackBufferCount;
   bool m_bWidescreen;
   CStdString m_strMediaDir;
-  RECT m_videoRect;
+  CRect m_videoRect;
   bool m_bFullScreenRoot;
   bool m_bFullScreenVideo;
   bool m_bCalibrating;

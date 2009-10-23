@@ -913,7 +913,6 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   outputSurface = outputSurfaces[surfaceNum];
 
   SpewHardwareAvailable();
-  vdpauConfigured = true;
   return 0;
 }
 
@@ -978,6 +977,7 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   VdpStatus vdp_st = VDP_STATUS_ERROR;
   if (render == NULL)
   {
+    CSingleLock lock(g_graphicsContext);
     while(vdp_st != VDP_STATUS_OK && tries < NUM_VIDEO_SURFACES_MAX_TRIES)
     {
       tries++;
@@ -1078,6 +1078,7 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
                                    render->bitstream_buffers_used,
                                    render->bitstream_buffers);
   vdp->CheckStatus(vdp_st, __LINE__);
+  vdp->vdpauConfigured = true;
 }
 
 void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
@@ -1194,6 +1195,8 @@ void CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
   if (vdp_st != VDP_STATUS_OK)
   {
     CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
+    if (vdpauConfigured && !VDPAUSwitching) 
+      CheckRecover(true);
   }
   if (vdp_st == VDP_STATUS_HANDLE_DEVICE_MISMATCH)
     CheckRecover(true);

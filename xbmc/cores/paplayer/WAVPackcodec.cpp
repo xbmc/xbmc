@@ -21,6 +21,9 @@
 
 #include "WAVPackcodec.h"
 #include "utils/log.h"
+#ifdef _LINUX
+#include "config.h"
+#endif
 
 WAVPackCodec::WAVPackCodec()
 {

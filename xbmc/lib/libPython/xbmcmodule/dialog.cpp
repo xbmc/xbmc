@@ -51,7 +51,7 @@
 
 using namespace std;
 
-#define ACTIVE_WINDOW  m_gWindowManager.GetActiveWindow()
+#define ACTIVE_WINDOW  g_windowManager.GetActiveWindow()
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
@@ -115,7 +115,7 @@ namespace PYXBMC
     PyObject* unicodeLine[4];
     for (int i = 0; i < 4; i++) unicodeLine[i] = NULL;
 
-    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(window);
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(window);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     // get lines, last 2 lines are optional.
@@ -291,7 +291,7 @@ namespace PYXBMC
     const int window = WINDOW_DIALOG_YES_NO;
     PyObject* unicodeLine[6];
     for (int i = 0; i < 6; i++) unicodeLine[i] = NULL;
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(window);
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(window);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     // get lines, last 4 lines are optional.
@@ -340,7 +340,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"OO", &heading, &list))  return NULL;
     if (!PyList_Check(list)) return NULL;
 
-    CGUIDialogSelect* pDialog= (CGUIDialogSelect*)m_gWindowManager.GetWindow(window);
+    CGUIDialogSelect* pDialog= (CGUIDialogSelect*)g_windowManager.GetWindow(window);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     pDialog->Reset();
@@ -397,7 +397,7 @@ namespace PYXBMC
         return NULL;
     }
 
-    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     pDialog->SetHeading(utf8Line[0]);
@@ -438,7 +438,7 @@ namespace PYXBMC
         return NULL;
     }
 
-    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     if (percentage >= 0 && percentage <= 100)
@@ -469,7 +469,7 @@ namespace PYXBMC
   PyObject* Dialog_ProgressIsCanceled(PyObject *self, PyObject *args)
   {
     bool canceled = false;
-    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     canceled = pDialog->IsCanceled();
@@ -486,7 +486,7 @@ namespace PYXBMC
 
   PyObject* Dialog_ProgressClose(PyObject *self, PyObject *args)
   {
-    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     pDialog->Close();
@@ -497,7 +497,7 @@ namespace PYXBMC
 
   static void Dialog_ProgressDealloc(PyObject *self)
   {
-    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (PyWindowIsNull(pDialog)) return;
     pDialog->Close();
     self->ob_type->tp_free((PyObject*)self);

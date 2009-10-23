@@ -82,20 +82,17 @@ static void dump_floats(WMACodecContext *s, const char *name, int prec, const fl
 static int wma_decode_init(AVCodecContext * avctx)
 {
     WMACodecContext *s = avctx->priv_data;
-    int i, flags1, flags2;
+    int i, flags2;
     uint8_t *extradata;
 
     s->avctx = avctx;
 
     /* extract flag infos */
-    flags1 = 0;
     flags2 = 0;
     extradata = avctx->extradata;
     if (avctx->codec->id == CODEC_ID_WMAV1 && avctx->extradata_size >= 4) {
-        flags1 = AV_RL16(extradata);
         flags2 = AV_RL16(extradata+2);
     } else if (avctx->codec->id == CODEC_ID_WMAV2 && avctx->extradata_size >= 6) {
-        flags1 = AV_RL32(extradata);
         flags2 = AV_RL16(extradata+4);
     }
 // for(i=0; i<avctx->extradata_size; i++)
@@ -243,29 +240,102 @@ static void decode_exp_lsp(WMACodecContext *s, int ch)
                      s->block_len, lsp_coefs);
 }
 
+/** pow(10, i / 16.0) for i in -60..67 */
+static const float pow_tab[128] = {
+    1.7782794100389e-04, 2.0535250264571e-04,
+    2.3713737056617e-04, 2.7384196342644e-04,
+    3.1622776601684e-04, 3.6517412725484e-04,
+    4.2169650342858e-04, 4.8696752516586e-04,
+    5.6234132519035e-04, 6.4938163157621e-04,
+    7.4989420933246e-04, 8.6596432336006e-04,
+    1.0000000000000e-03, 1.1547819846895e-03,
+    1.3335214321633e-03, 1.5399265260595e-03,
+    1.7782794100389e-03, 2.0535250264571e-03,
+    2.3713737056617e-03, 2.7384196342644e-03,
+    3.1622776601684e-03, 3.6517412725484e-03,
+    4.2169650342858e-03, 4.8696752516586e-03,
+    5.6234132519035e-03, 6.4938163157621e-03,
+    7.4989420933246e-03, 8.6596432336006e-03,
+    1.0000000000000e-02, 1.1547819846895e-02,
+    1.3335214321633e-02, 1.5399265260595e-02,
+    1.7782794100389e-02, 2.0535250264571e-02,
+    2.3713737056617e-02, 2.7384196342644e-02,
+    3.1622776601684e-02, 3.6517412725484e-02,
+    4.2169650342858e-02, 4.8696752516586e-02,
+    5.6234132519035e-02, 6.4938163157621e-02,
+    7.4989420933246e-02, 8.6596432336007e-02,
+    1.0000000000000e-01, 1.1547819846895e-01,
+    1.3335214321633e-01, 1.5399265260595e-01,
+    1.7782794100389e-01, 2.0535250264571e-01,
+    2.3713737056617e-01, 2.7384196342644e-01,
+    3.1622776601684e-01, 3.6517412725484e-01,
+    4.2169650342858e-01, 4.8696752516586e-01,
+    5.6234132519035e-01, 6.4938163157621e-01,
+    7.4989420933246e-01, 8.6596432336007e-01,
+    1.0000000000000e+00, 1.1547819846895e+00,
+    1.3335214321633e+00, 1.5399265260595e+00,
+    1.7782794100389e+00, 2.0535250264571e+00,
+    2.3713737056617e+00, 2.7384196342644e+00,
+    3.1622776601684e+00, 3.6517412725484e+00,
+    4.2169650342858e+00, 4.8696752516586e+00,
+    5.6234132519035e+00, 6.4938163157621e+00,
+    7.4989420933246e+00, 8.6596432336007e+00,
+    1.0000000000000e+01, 1.1547819846895e+01,
+    1.3335214321633e+01, 1.5399265260595e+01,
+    1.7782794100389e+01, 2.0535250264571e+01,
+    2.3713737056617e+01, 2.7384196342644e+01,
+    3.1622776601684e+01, 3.6517412725484e+01,
+    4.2169650342858e+01, 4.8696752516586e+01,
+    5.6234132519035e+01, 6.4938163157621e+01,
+    7.4989420933246e+01, 8.6596432336007e+01,
+    1.0000000000000e+02, 1.1547819846895e+02,
+    1.3335214321633e+02, 1.5399265260595e+02,
+    1.7782794100389e+02, 2.0535250264571e+02,
+    2.3713737056617e+02, 2.7384196342644e+02,
+    3.1622776601684e+02, 3.6517412725484e+02,
+    4.2169650342858e+02, 4.8696752516586e+02,
+    5.6234132519035e+02, 6.4938163157621e+02,
+    7.4989420933246e+02, 8.6596432336007e+02,
+    1.0000000000000e+03, 1.1547819846895e+03,
+    1.3335214321633e+03, 1.5399265260595e+03,
+    1.7782794100389e+03, 2.0535250264571e+03,
+    2.3713737056617e+03, 2.7384196342644e+03,
+    3.1622776601684e+03, 3.6517412725484e+03,
+    4.2169650342858e+03, 4.8696752516586e+03,
+    5.6234132519035e+03, 6.4938163157621e+03,
+    7.4989420933246e+03, 8.6596432336007e+03,
+    1.0000000000000e+04, 1.1547819846895e+04,
+    1.3335214321633e+04, 1.5399265260595e+04,
+};
+
 /**
  * decode exponents coded with VLC codes
  */
 static int decode_exp_vlc(WMACodecContext *s, int ch)
 {
     int last_exp, n, code;
-    const uint16_t *ptr, *band_ptr;
-    float v, *q, max_scale, *q_end;
+    const uint16_t *ptr;
+    float v, max_scale;
+    uint32_t *q, *q_end, iv;
+    const float *ptab = pow_tab + 60;
+    const uint32_t *iptab = (const uint32_t*)ptab;
 
-    band_ptr = s->exponent_bands[s->frame_len_bits - s->block_len_bits];
-    ptr = band_ptr;
-    q = s->exponents[ch];
+    ptr = s->exponent_bands[s->frame_len_bits - s->block_len_bits];
+    q = (uint32_t *)s->exponents[ch];
     q_end = q + s->block_len;
     max_scale = 0;
     if (s->version == 1) {
         last_exp = get_bits(&s->gb, 5) + 10;
-        /* XXX: use a table */
-        v = pow(10, last_exp * (1.0 / 16.0));
+        v = ptab[last_exp];
+        iv = iptab[last_exp];
         max_scale = v;
         n = *ptr++;
-        do {
-            *q++ = v;
-        } while (--n);
+        switch (n & 3) do {
+        case 0: *q++ = iv;
+        case 3: *q++ = iv;
+        case 2: *q++ = iv;
+        case 1: *q++ = iv;
+        } while ((n -= 4) > 0);
     }else
         last_exp = 36;
 
@@ -275,14 +345,19 @@ static int decode_exp_vlc(WMACodecContext *s, int ch)
             return -1;
         /* NOTE: this offset is the same as MPEG4 AAC ! */
         last_exp += code - 60;
-        /* XXX: use a table */
-        v = pow(10, last_exp * (1.0 / 16.0));
+        if ((unsigned)last_exp + 60 > FF_ARRAY_ELEMS(pow_tab))
+            return -1;
+        v = ptab[last_exp];
+        iv = iptab[last_exp];
         if (v > max_scale)
             max_scale = v;
         n = *ptr++;
-        do {
-            *q++ = v;
-        } while (--n);
+        switch (n & 3) do {
+        case 0: *q++ = iv;
+        case 3: *q++ = iv;
+        case 2: *q++ = iv;
+        case 1: *q++ = iv;
+        } while ((n -= 4) > 0);
     }
     s->max_exponent[ch] = max_scale;
     return 0;
@@ -305,16 +380,16 @@ static void wma_window(WMACodecContext *s, float *out)
         block_len = s->block_len;
         bsize = s->frame_len_bits - s->block_len_bits;
 
-        s->dsp.vector_fmul_add_add(out, in, s->windows[bsize],
-                                   out, 0, block_len, 1);
+        s->dsp.vector_fmul_add(out, in, s->windows[bsize],
+                               out, block_len);
 
     } else {
         block_len = 1 << s->prev_block_len_bits;
         n = (s->block_len - block_len) / 2;
         bsize = s->frame_len_bits - s->prev_block_len_bits;
 
-        s->dsp.vector_fmul_add_add(out+n, in+n, s->windows[bsize],
-                                   out+n, 0, block_len, 1);
+        s->dsp.vector_fmul_add(out+n, in+n, s->windows[bsize],
+                               out+n, block_len);
 
         memcpy(out+n+block_len, in+n+block_len, n*sizeof(float));
     }
@@ -625,9 +700,6 @@ static int wma_decode_block(WMACodecContext *s)
 #endif
 
     if (s->ms_stereo && s->channel_coded[1]) {
-        float a, b;
-        int i;
-
         /* nominal case for ms stereo: we do it before mdct */
         /* no need to optimize this case because it should almost
            never happen */
@@ -637,12 +709,7 @@ static int wma_decode_block(WMACodecContext *s)
             s->channel_coded[0] = 1;
         }
 
-        for(i = 0; i < s->block_len; i++) {
-            a = s->coefs[0][i];
-            b = s->coefs[1][i];
-            s->coefs[0][i] = a + b;
-            s->coefs[1][i] = a - b;
-        }
+        s->dsp.butterflies_float(s->coefs[0], s->coefs[1], s->block_len);
     }
 
 next:

@@ -3,6 +3,7 @@ INCLUDES=-I. -I../ -Icommon -I../xbmc -I../xbmc/cores -I../xbmc/linux -I../xbmc/
 SRCS=AnimatedGif.cpp \
      AudioContext.cpp \
      DirectXGraphics.cpp \
+     DDSImage.cpp \
      GraphicContext.cpp \
      GUIAudioManager.cpp \
      GUIBaseContainer.cpp \

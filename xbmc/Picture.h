@@ -19,34 +19,16 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "DllImageLib.h"
-#include "gui3d.h"
-
-class CBaseTexture;
+#include "StdString.h"
 
 class CPicture
 {
 public:
-  CPicture(void);
-  virtual ~CPicture(void);
-  virtual bool Load(const CStdString& strFilename, CBaseTexture* texture, int iMaxWidth = 128, int iMaxHeight = 128);
+  static bool CreateThumbnailFromMemory(const unsigned char* buffer, int bufSize, const CStdString& extension, const CStdString& thumbFile);
+  static bool CreateThumbnailFromSurface(const unsigned char* buffer, int width, int height, int stride, const CStdString &thumbFile);
+  static int ConvertFile(const CStdString& srcFile, const CStdString& destFile, float rotateDegrees, int width, int height, unsigned int quality, bool mirror=false);
 
-  bool CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName);
-  bool CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName);
-  int ConvertFile(const CStdString& srcFile, const CStdString& destFile, float rotateDegrees, int width, int height, unsigned int quality, bool mirror=false);
-
-  ImageInfo GetInfo() const { return m_info; };
-  unsigned int GetWidth() const { return m_info.width; };
-  unsigned int GetHeight() const { return m_info.height; };
-  unsigned int GetOriginalWidth() const { return m_info.originalwidth; };
-  unsigned int GetOriginalHeight() const { return m_info.originalheight; };
-  const EXIFINFO *GetExifInfo() const { return &m_info.exifInfo; };
-
-  void CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail);
-  bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence = false);
-  bool CacheImage(const CStdString& sourceFileName, const CStdString& destFileName);
-
-protected:
-  DllImageLib m_dll;
-  ImageInfo m_info;
+  static void CreateFolderThumb(const CStdString *thumbs, const CStdString &folderThumb);
+  static bool CreateThumbnail(const CStdString& file, const CStdString& thumbFile, bool checkExistence = false);
+  static bool CacheImage(const CStdString& sourceFile, const CStdString& destFile);
 };

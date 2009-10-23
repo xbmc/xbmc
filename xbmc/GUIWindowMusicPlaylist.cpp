@@ -217,7 +217,7 @@ bool CGUIWindowMusicPlayList::OnAction(const CAction &action)
   }
   if (action.id == ACTION_SHOW_PLAYLIST)
   {
-    m_gWindowManager.ChangeActiveWindow(WINDOW_MUSIC);
+    g_windowManager.ChangeActiveWindow(WINDOW_MUSIC);
     return true;
   }
   if ((action.id == ACTION_MOVE_ITEM_UP) || (action.id == ACTION_MOVE_ITEM_DOWN))

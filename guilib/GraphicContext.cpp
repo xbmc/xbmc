@@ -22,8 +22,6 @@
 #include "system.h"
 #include "GraphicContext.h"
 #include "GUIFontManager.h"
-#include "GUIMessage.h"
-#include "IMsgSenderCallback.h"
 #include "utils/SingleLock.h"
 #include "Application.h"
 #include "GUISettings.h"
@@ -51,7 +49,6 @@ CGraphicContext::CGraphicContext(void)
   m_strMediaDir = "";
   m_bCalibrating = false;
   m_Resolution = RES_INVALID;
-  m_pCallback = NULL;
   m_guiScaleX = m_guiScaleY = 1.0f;
   m_windowResolution = RES_INVALID;
   m_bFullScreenRoot = false;
@@ -59,24 +56,6 @@ CGraphicContext::CGraphicContext(void)
 
 CGraphicContext::~CGraphicContext(void)
 {
-}
-
-bool CGraphicContext::SendMessage(int message, int senderID, int destID, int param1, int param2)
-{
-  if (!m_pCallback) return false;
-  CGUIMessage msg(message, senderID, destID, param1, param2);
-  return m_pCallback->SendMessage(msg);
-}
-
-bool CGraphicContext::SendMessage(CGUIMessage& message)
-{
-  if (!m_pCallback) return false;
-  return m_pCallback->SendMessage(message);
-}
-
-void CGraphicContext::setMessageSender(IMsgSenderCallback* pCallback)
-{
-  m_pCallback = pCallback;
 }
 
 void CGraphicContext::SetOrigin(float x, float y)
@@ -247,7 +226,7 @@ void CGraphicContext::RestoreViewPort()
   UpdateCameraPosition(m_cameras.top());
 }
 
-const RECT& CGraphicContext::GetViewWindow() const
+const CRect& CGraphicContext::GetViewWindow() const
 {
   return m_videoRect;
 }
@@ -260,19 +239,19 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
   }
   else
   {
-    m_videoRect.left = (long)(ScaleFinalXCoord(left, top) + 0.5f);
-    m_videoRect.top = (long)(ScaleFinalYCoord(left, top) + 0.5f);
-    m_videoRect.right = (long)(ScaleFinalXCoord(right, bottom) + 0.5f);
-    m_videoRect.bottom = (long)(ScaleFinalYCoord(right, bottom) + 0.5f);
+    m_videoRect.x1 = ScaleFinalXCoord(left, top);
+    m_videoRect.y1 = ScaleFinalYCoord(left, top);
+    m_videoRect.x2 = ScaleFinalXCoord(right, bottom);
+    m_videoRect.y2 = ScaleFinalYCoord(right, bottom);
   }
 }
 
 void CGraphicContext::SetFullScreenViewWindow(RESOLUTION &res)
 {
-  m_videoRect.left = g_settings.m_ResInfo[res].Overscan.left;
-  m_videoRect.top = g_settings.m_ResInfo[res].Overscan.top;
-  m_videoRect.right = g_settings.m_ResInfo[res].Overscan.right;
-  m_videoRect.bottom = g_settings.m_ResInfo[res].Overscan.bottom;
+  m_videoRect.x1 = (float)g_settings.m_ResInfo[res].Overscan.left;
+  m_videoRect.y1 = (float)g_settings.m_ResInfo[res].Overscan.top;
+  m_videoRect.x2 = (float)g_settings.m_ResInfo[res].Overscan.right;
+  m_videoRect.y2 = (float)g_settings.m_ResInfo[res].Overscan.bottom;
 }
 
 void CGraphicContext::SetFullScreenVideo(bool bOnOff)
@@ -359,8 +338,12 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   
   if (g_advancedSettings.m_fullScreen)
   {
+#if defined (__APPLE__) || defined (_WIN32)
     bool blankOtherDisplays = g_guiSettings.GetInt("videoscreen.displayblanking")  == BLANKING_ALL_DISPLAYS;
     g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], blankOtherDisplays);
+#else
+    g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], BLANKING_DISABLED);
+#endif
   }
   else if (lastRes >= RES_DESKTOP )
     g_Windowing.SetFullScreen(false, g_settings.m_ResInfo[res], false);

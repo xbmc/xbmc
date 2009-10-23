@@ -156,12 +156,8 @@ static void xan_unpack(unsigned char *dest, const unsigned char *src, int dest_l
             av_memcpy_backptr(dest, back, size2);
             dest += size2;
         } else {
-            int finish;
-            size = ((opcode & 0x1f) << 2) + 4;
-
-            finish = size > 0x70;
-            if (finish)
-                size = opcode & 3;
+            int finish = opcode >= 0xfc;
+            size = finish ? opcode & 3 : ((opcode & 0x1f) << 2) + 4;
 
             memcpy(dest, src, size);  dest += size;  src += size;
             if (finish)
@@ -185,13 +181,14 @@ static inline void xan_wc3_output_pixel_run(XanContext *s,
     line_inc = stride - width;
     index = y * stride + x;
     current_x = x;
-    while((pixel_count--) && (index < s->frame_size)) {
+    while(pixel_count && (index < s->frame_size)) {
+        int count = FFMIN(pixel_count, width - current_x);
+        memcpy(palette_plane + index, pixel_buffer, count);
+        pixel_count  -= count;
+        index        += count;
+        pixel_buffer += count;
+        current_x    += count;
 
-        /* don't do a memcpy() here; keyframes generally copy an entire
-         * frame of data and the stride needs to be accounted for */
-        palette_plane[index++] = *pixel_buffer++;
-
-        current_x++;
         if (current_x >= width) {
             index += line_inc;
             current_x = 0;
@@ -217,18 +214,21 @@ static inline void xan_wc3_copy_pixel_run(XanContext *s,
     curframe_x = x;
     prevframe_index = (y + motion_y) * stride + x + motion_x;
     prevframe_x = x + motion_x;
-    while((pixel_count--) && (curframe_index < s->frame_size)) {
+    while(pixel_count && (curframe_index < s->frame_size)) {
+        int count = FFMIN3(pixel_count, width - curframe_x, width - prevframe_x);
 
-        palette_plane[curframe_index++] =
-            prev_palette_plane[prevframe_index++];
+        memcpy(palette_plane + curframe_index, prev_palette_plane + prevframe_index, count);
+        pixel_count     -= count;
+        curframe_index  += count;
+        prevframe_index += count;
+        curframe_x      += count;
+        prevframe_x     += count;
 
-        curframe_x++;
         if (curframe_x >= width) {
             curframe_index += line_inc;
             curframe_x = 0;
         }
 
-        prevframe_x++;
         if (prevframe_x >= width) {
             prevframe_index += line_inc;
             prevframe_x = 0;

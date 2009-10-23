@@ -26,9 +26,9 @@ CRenderSystemBase::CRenderSystemBase()
   m_bRenderCreated = false;
   m_bVSync = true;
   m_maxTextureSize = 2048;
-  m_RenderVerdenVersionMajor = 0;
-  m_RenderVerdenVersionMinor = 0;
-  m_NeedPower2Texture = false;
+  m_RenderVersionMajor = 0;
+  m_RenderVersionMinor = 0;
+  m_renderCaps = 0;
 }
 
 CRenderSystemBase::~CRenderSystemBase()
@@ -36,8 +36,20 @@ CRenderSystemBase::~CRenderSystemBase()
 
 }
 
-void CRenderSystemBase::GetRenderVersion(unsigned int& major, unsigned int& minor)
+void CRenderSystemBase::GetRenderVersion(unsigned int& major, unsigned int& minor) const
 {
-  major = m_RenderVerdenVersionMajor;
-  minor = m_RenderVerdenVersionMinor;
+  major = m_RenderVersionMajor;
+  minor = m_RenderVersionMinor;
+}
+
+bool CRenderSystemBase::SupportsNPOT(bool dxt) const
+{
+  if (dxt)
+    return (m_renderCaps & RENDER_CAPS_DXT_NPOT);
+  return m_renderCaps & RENDER_CAPS_NPOT;
+}
+
+bool CRenderSystemBase::SupportsDXT() const
+{
+  return m_renderCaps & RENDER_CAPS_DXT;
 }

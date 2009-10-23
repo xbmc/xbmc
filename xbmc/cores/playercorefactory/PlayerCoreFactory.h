@@ -24,7 +24,7 @@
 #undef min
 #undef max
 
-#include "IPlayer.h"
+#include "../IPlayer.h"
 
 /*----------------------------------------------------------------------
 |   forward references

@@ -27,6 +27,7 @@
 #include "cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 extern "C" {
 #include "lib/libhts/htsmsg.h"
@@ -58,7 +59,7 @@ struct STimedOut
 {
   STimedOut(DWORD idle) : m_idle(idle) 
   { 
-    m_time = GetTickCount(); 
+    m_time = CTimeUtils::GetTimeMS(); 
   }
   bool operator()(SSession& data)
   {
@@ -129,7 +130,7 @@ void CHTSPDirectorySession::Release(CHTSPDirectorySession* &session)
     if(it->session == session)
     {
       it->refs--;
-      it->last = GetTickCount();
+      it->last = CTimeUtils::GetTimeMS();
       return;
     }
   }

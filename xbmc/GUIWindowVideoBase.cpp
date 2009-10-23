@@ -95,7 +95,7 @@ bool CGUIWindowVideoBase::OnAction(const CAction &action)
   if (action.id == ACTION_SHOW_PLAYLIST)
   {
     OutputDebugString("activate guiwindowvideoplaylist!\n");
-    m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
+    g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     return true;
   }
   if (action.id == ACTION_SCAN_ITEM)
@@ -118,7 +118,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
     {
       m_database.Open();
 
-      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // save current window, unless the current window is the video playlist window
       if (GetID() != WINDOW_VIDEO_PLAYLIST && g_stSettings.m_iVideoStartWindow != GetID())
@@ -142,7 +142,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTNTYPE)
       {
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTNTYPE);
-        m_gWindowManager.SendMessage(msg);
+        g_windowManager.SendMessage(msg);
 
         int nSelected = msg.GetParam1();
         int nNewWindow = WINDOW_VIDEO_FILES;
@@ -160,9 +160,9 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         {
           g_stSettings.m_iVideoStartWindow = nNewWindow;
           g_settings.Save();
-          m_gWindowManager.ChangeActiveWindow(nNewWindow);
+          g_windowManager.ChangeActiveWindow(nNewWindow);
           CGUIMessage msg2(GUI_MSG_SETFOCUS, nNewWindow, CONTROL_BTNTYPE);
-          g_graphicsContext.SendMessage(msg2);
+          g_windowManager.SendMessage(msg2);
         }
 
         return true;
@@ -212,7 +212,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
                 m_database.HasEpisodeInfo(item->m_strPath)))
             {
               // hack
-              CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+              CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
               if (pDialog && pDialog->IsScanning())
                 return true;
 
@@ -273,17 +273,17 @@ void CGUIWindowVideoBase::UpdateButtons()
 {
   // Remove labels from the window selection
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_BTNTYPE);
-  g_graphicsContext.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
 
   // Add labels to the window selection
   CStdString strItem = g_localizeStrings.Get(744); // Files
   CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_BTNTYPE);
   msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
+  g_windowManager.SendMessage(msg2);
 
   strItem = g_localizeStrings.Get(14022); // Library
   msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
+  g_windowManager.SendMessage(msg2);
 
   // Select the current window as default item
   int nWindow = g_stSettings.m_iVideoStartWindow-WINDOW_VIDEO_FILES;
@@ -319,8 +319,8 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   }
   bool modified = ShowIMDB(&item, info);
   if (modified && !info.strContent.Equals("plugin") && !info.strContent.Equals("livetv") &&
-     (m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
-      m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)) // since we can be called from the music library we need this check
+     (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
+      g_windowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)) // since we can be called from the music library we need this check
   {
     int itemNumber = m_viewControl.GetSelectedItem();
     Update(m_vecItems->m_strPath);
@@ -359,9 +359,9 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   CLog::Log(LOGDEBUG,"  bFolder   = [%s]", ((int)bFolder ? "true" : "false"));
   */
 
-  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-  CGUIWindowVideoInfo* pDlgInfo = (CGUIWindowVideoInfo*)m_gWindowManager.GetWindow(WINDOW_VIDEO_INFO);
+  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIWindowVideoInfo* pDlgInfo = (CGUIWindowVideoInfo*)g_windowManager.GetWindow(WINDOW_VIDEO_INFO);
 
   CVideoInfoScanner scanner;
   scanner.m_IMDB.SetScraperInfo(info2);
@@ -460,7 +460,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
     return false;
 
-  CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialog && pDialog->IsScanning())
   {
     CGUIDialogOK::ShowAndGetInput(13346,14057,-1,-1);
@@ -680,7 +680,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         }
         OutputDebugString("failed to get details\n");
         // show dialog...
-        CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+        CGUIDialogOK *pDlgOK = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
         if (pDlgOK)
         {
           pDlgOK->SetHeading(195);
@@ -750,7 +750,7 @@ bool CGUIWindowVideoBase::CheckMovie(const CStdString& strFileName)
   CFileItem movieFile(movieDetails.m_strFileNameAndPath, false);
   if (!movieFile.IsOnDVD())
     return true;
-  CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+  CGUIDialogOK *pDlgOK = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
   if (!pDlgOK)
     return true;
   while (1)
@@ -1097,7 +1097,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
       CDirectory::GetDirectory(path,items);
-      CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
+      CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)g_windowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
       if (!dlg) return true;
       dlg->SetNumberOfFiles(items.Size());
       dlg->DoModal();
@@ -1159,11 +1159,11 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_NOW_PLAYING:
-    m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
+    g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     return true;
 
   case CONTEXT_BUTTON_SETTINGS:
-    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
+    g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
     return true;
 
   case CONTEXT_BUTTON_INFO:
@@ -1177,7 +1177,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_STOP_SCANNING:
     {
-      CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+      CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
       if (pScanDlg && pScanDlg->IsScanning())
         pScanDlg->StopScanning();
       return true;
@@ -1341,7 +1341,7 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
     }
     else
     { // show file stacking dialog
-      CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
+      CGUIDialogFileStacking* dlg = (CGUIDialogFileStacking*)g_windowManager.GetWindow(WINDOW_DIALOG_FILESTACKING);
       if (dlg)
       {
         dlg->SetNumberOfFiles(movies.size());
@@ -1411,7 +1411,7 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
 void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
 {
   // dont allow update while scanning
-  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialogScan && pDialogScan->IsScanning())
   {
     CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
@@ -1446,7 +1446,7 @@ void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
 void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item)
 {
   // dont allow update while scanning
-  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialogScan && pDialogScan->IsScanning())
   {
     CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
@@ -1481,7 +1481,7 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item)
 void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
 {
   // dont allow update while scanning
-  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialogScan && pDialogScan->IsScanning())
   {
     CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
@@ -1682,7 +1682,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
       return;
 
     // pick genre
-    CGUIDialogSelect* pSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+    CGUIDialogSelect* pSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     if (!pSelect)
       return;
 
@@ -1725,7 +1725,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   m_database.Close();
 
   // done...
-  CGUIDialogOK *pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+  CGUIDialogOK *pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
   if (pDialog)
   {
     pDialog->SetHeading(20177); // Done
@@ -1762,7 +1762,7 @@ void CGUIWindowVideoBase::OnSearch()
 
   if (items.Size())
   {
-    CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+    CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     pDlgSelect->Reset();
     pDlgSelect->SetHeading(283);
     items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
@@ -1878,7 +1878,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info, 
 
 void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScraperInfo& info, const SScanSettings& settings)
 {
-  CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialog)
     pDialog->StartScanning(strPath,info,settings,false);
 }

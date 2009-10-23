@@ -130,11 +130,6 @@ static AVRational frame_rate;
 static float video_qscale = 0;
 static uint16_t *intra_matrix = NULL;
 static uint16_t *inter_matrix = NULL;
-#if 0 //experimental, (can be removed)
-static float video_rc_qsquish=1.0;
-static float video_rc_qmod_amp=0;
-static int video_rc_qmod_freq=0;
-#endif
 static const char *video_rc_override_string=NULL;
 static int video_disable = 0;
 static int video_discard = 0;
@@ -488,6 +483,10 @@ static int read_ffserver_streams(AVFormatContext *s, const char *filename)
         st = av_mallocz(sizeof(AVStream));
         memcpy(st, ic->streams[i], sizeof(AVStream));
         st->codec = avcodec_alloc_context();
+        if (!st->codec) {
+            print_error(filename, AVERROR(ENOMEM));
+            av_exit(1);
+        }
         memcpy(st->codec, ic->streams[i]->codec, sizeof(AVCodecContext));
         s->streams[i] = st;
 
@@ -803,7 +802,7 @@ static void do_subtitle_out(AVFormatContext *s,
                             int64_t pts)
 {
     static uint8_t *subtitle_out = NULL;
-    int subtitle_out_max_size = 65536;
+    int subtitle_out_max_size = 1024 * 1024;
     int subtitle_out_size, nb, i;
     AVCodecContext *enc;
     AVPacket pkt;
@@ -831,14 +830,22 @@ static void do_subtitle_out(AVFormatContext *s,
 
     for(i = 0; i < nb; i++) {
         sub->pts = av_rescale_q(pts, ist->st->time_base, AV_TIME_BASE_Q);
+        // start_display_time is required to be 0
+        sub->pts              += av_rescale_q(sub->start_display_time, (AVRational){1, 1000}, AV_TIME_BASE_Q);
+        sub->end_display_time -= sub->start_display_time;
+        sub->start_display_time = 0;
         subtitle_out_size = avcodec_encode_subtitle(enc, subtitle_out,
                                                     subtitle_out_max_size, sub);
+        if (subtitle_out_size < 0) {
+            fprintf(stderr, "Subtitle encoding failed\n");
+            av_exit(1);
+        }
 
         av_init_packet(&pkt);
         pkt.stream_index = ost->index;
         pkt.data = subtitle_out;
         pkt.size = subtitle_out_size;
-        pkt.pts = av_rescale_q(pts, ist->st->time_base, ost->st->time_base);
+        pkt.pts = av_rescale_q(sub->pts, AV_TIME_BASE_Q, ost->st->time_base);
         if (enc->codec_id == CODEC_ID_DVB_SUBTITLE) {
             /* XXX: the pts correction is handled here. Maybe handling
                it in the codec would be better */
@@ -1250,6 +1257,7 @@ static int output_packet(AVInputStream *ist, int ist_index,
     AVSubtitle subtitle, *subtitle_to_free;
     int got_subtitle;
     AVPacket avpkt;
+    int bps = av_get_bits_per_sample_format(ist->st->codec->sample_fmt)>>3;
 
     if(ist->next_pts == AV_NOPTS_VALUE)
         ist->next_pts= ist->pts;
@@ -1272,7 +1280,8 @@ static int output_packet(AVInputStream *ist, int ist_index,
     handle_eof:
         ist->pts= ist->next_pts;
 
-        if(avpkt.size && avpkt.size != pkt->size && verbose>0)
+        if(avpkt.size && avpkt.size != pkt->size &&
+           !(ist->st->codec->codec->capabilities & CODEC_CAP_SUBFRAMES) && verbose>0)
             fprintf(stderr, "Multiple frames in a packet from stream %d\n", pkt->stream_index);
 
         /* decode the packet if needed */
@@ -1303,7 +1312,7 @@ static int output_packet(AVInputStream *ist, int ist_index,
                     continue;
                 }
                 data_buf = (uint8_t *)samples;
-                ist->next_pts += ((int64_t)AV_TIME_BASE/2 * data_size) /
+                ist->next_pts += ((int64_t)AV_TIME_BASE/bps * data_size) /
                     (ist->st->codec->sample_rate * ist->st->codec->channels);
                 break;}
             case CODEC_TYPE_VIDEO:
@@ -1401,12 +1410,6 @@ static int output_packet(AVInputStream *ist, int ist_index,
                 if (ost->source_index == ist_index) {
                     os = output_files[ost->file_index];
 
-#if 0
-                    printf("%d: got pts=%0.3f %0.3f\n", i,
-                           (double)pkt->pts / AV_TIME_BASE,
-                           ((double)ist->pts / AV_TIME_BASE) -
-                           ((double)ost->st->pts.val * ost->st->time_base.num / ost->st->time_base.den));
-#endif
                     /* set the input output pts pairs */
                     //ost->sync_ipts = (double)(ist->pts + input_files_ts_offset[ist->file_index] - start_time)/ AV_TIME_BASE;
 
@@ -2371,28 +2374,6 @@ static int av_encode(AVFormatContext **output_files,
     return ret;
 }
 
-#if 0
-int file_read(const char *filename)
-{
-    URLContext *h;
-    unsigned char buffer[1024];
-    int len, i;
-
-    if (url_open(&h, filename, O_RDONLY) < 0) {
-        printf("could not open '%s'\n", filename);
-        return -1;
-    }
-    for(;;) {
-        len = url_read(h, buffer, sizeof(buffer));
-        if (len <= 0)
-            break;
-        for(i=0;i<len;i++) putchar(buffer[i]);
-    }
-    url_close(h);
-    return 0;
-}
-#endif
-
 static void opt_format(const char *arg)
 {
     /* compatibility stuff for pgmyuv */
@@ -2861,6 +2842,10 @@ static void opt_input_file(const char *filename)
 
     /* get default parameters from command line */
     ic = avformat_alloc_context();
+    if (!ic) {
+        print_error(filename, AVERROR(ENOMEM));
+        av_exit(1);
+    }
 
     memset(ap, 0, sizeof(*ap));
     ap->prealloced_context = 1;
@@ -3357,6 +3342,10 @@ static void opt_output_file(const char *filename)
         filename = "pipe:";
 
     oc = avformat_alloc_context();
+    if (!oc) {
+        print_error(filename, AVERROR(ENOMEM));
+        av_exit(1);
+    }
 
     if (!file_oformat) {
         file_oformat = guess_format(NULL, filename, NULL);
@@ -3861,7 +3850,7 @@ static const OptionDef options[] = {
     { "loop_input", OPT_BOOL | OPT_EXPERT, {(void*)&loop_input}, "loop (current only works with images)" },
     { "loop_output", HAS_ARG | OPT_INT | OPT_EXPERT, {(void*)&loop_output}, "number of times to loop output in formats that support looping (0 loops forever)", "" },
     { "v", HAS_ARG | OPT_FUNC2, {(void*)opt_verbose}, "set ffmpeg verbosity level", "number" },
-    { "loglevel", HAS_ARG | OPT_FUNC2, {(void*)opt_loglevel}, "set libav* logging level", "logging level number or string" },
+    { "loglevel", HAS_ARG | OPT_FUNC2, {(void*)opt_loglevel}, "set libav* logging level", "loglevel" },
     { "target", HAS_ARG, {(void*)opt_target}, "specify target file type (\"vcd\", \"svcd\", \"dvd\", \"dv\", \"dv50\", \"pal-vcd\", \"ntsc-svcd\", ...)", "type" },
     { "threads", OPT_FUNC2 | HAS_ARG | OPT_EXPERT, {(void*)opt_thread_count}, "thread count", "count" },
     { "vsync", HAS_ARG | OPT_INT | OPT_EXPERT, {(void*)&video_sync_method}, "video sync method", "" },

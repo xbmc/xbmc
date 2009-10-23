@@ -38,6 +38,8 @@ namespace OVERLAY {
   class COverlayGL
       : public COverlay
   {
+  public:
+    virtual ~COverlayGL() {}
     virtual long Release();
   };
 
@@ -48,7 +50,7 @@ namespace OVERLAY {
   public:
      COverlayTextureGL(CDVDOverlayImage* o);
      COverlayTextureGL(CDVDOverlaySpu* o);
-    ~COverlayTextureGL();
+    virtual ~COverlayTextureGL();
 
     void Render(SRenderState& state);
 
@@ -62,7 +64,7 @@ namespace OVERLAY {
   {
   public:
    COverlayGlyphGL(CDVDOverlaySSA* o, double pts);
-   ~COverlayGlyphGL();
+   virtual ~COverlayGlyphGL();
 
    void Render(SRenderState& state);
 

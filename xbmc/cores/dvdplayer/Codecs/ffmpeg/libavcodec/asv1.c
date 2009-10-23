@@ -49,8 +49,8 @@ typedef struct ASV1Context{
     int mb_width2;
     int mb_height2;
     DECLARE_ALIGNED_16(DCTELEM, block[6][64]);
-    DECLARE_ALIGNED_8(uint16_t, intra_matrix[64]);
-    DECLARE_ALIGNED_8(int, q_intra_matrix[64]);
+    uint16_t intra_matrix[64];
+    int q_intra_matrix[64];
     uint8_t *bitstream_buffer;
     unsigned int bitstream_buffer_size;
 } ASV1Context;
@@ -645,7 +645,7 @@ AVCodec asv1_encoder = {
     encode_init,
     encode_frame,
     //encode_end,
-    .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
+    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("ASUS V1"),
 };
 #endif
@@ -659,7 +659,7 @@ AVCodec asv2_encoder = {
     encode_init,
     encode_frame,
     //encode_end,
-    .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
+    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("ASUS V2"),
 };
 #endif

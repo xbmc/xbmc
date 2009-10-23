@@ -22,7 +22,7 @@
 #define AVFORMAT_AVFORMAT_H
 
 #define LIBAVFORMAT_VERSION_MAJOR 52
-#define LIBAVFORMAT_VERSION_MINOR 37
+#define LIBAVFORMAT_VERSION_MINOR 39
 #define LIBAVFORMAT_VERSION_MICRO  0
 
 #define LIBAVFORMAT_VERSION_INT AV_VERSION_INT(LIBAVFORMAT_VERSION_MAJOR, \
@@ -145,8 +145,8 @@ struct AVCodecTag;
 /** This structure contains the data a format has to probe a file. */
 typedef struct AVProbeData {
     const char *filename;
-    unsigned char *buf;
-    int buf_size;
+    unsigned char *buf; /**< Buffer must have AVPROBE_PADDING_SIZE of extra allocated bytes filled with zero. */
+    int buf_size;       /**< Size of buf except extra allocated bytes */
 } AVProbeData;
 
 #define AVPROBE_SCORE_MAX 100               ///< maximum score, half of that is used for file-extension-based detection
@@ -448,8 +448,14 @@ typedef struct AVStream {
      * Number of packets to buffer for codec probing
      * NOT PART OF PUBLIC API
      */
-#define MAX_PROBE_PACKETS 100
+#define MAX_PROBE_PACKETS 2500
     int probe_packets;
+
+    /**
+     * last packet in packet_buffer for this stream when muxing.
+     * used internally, NOT PART OF PUBLIC API, dont read or write from outside of libav*
+     */
+    struct AVPacketList *last_in_packet_buffer;
 } AVStream;
 
 #define AV_PROGRAM_RUNNING 1
@@ -644,7 +650,7 @@ typedef struct AVFormatContext {
      * Remaining size available for raw_packet_buffer, in bytes.
      * NOT PART OF PUBLIC API
      */
-#define RAW_PACKET_BUFFER_SIZE 32000
+#define RAW_PACKET_BUFFER_SIZE 2500000
     int raw_packet_buffer_remaining_size;
 } AVFormatContext;
 
@@ -969,6 +975,7 @@ void av_set_pts_info(AVStream *s, int pts_wrap_bits,
 #define AVSEEK_FLAG_BACKWARD 1 ///< seek backward
 #define AVSEEK_FLAG_BYTE     2 ///< seeking based on position in bytes
 #define AVSEEK_FLAG_ANY      4 ///< seek to any frame, even non-keyframes
+#define AVSEEK_FLAG_FRAME    8 ///< seeking based on frame number
 
 int av_find_default_stream_index(AVFormatContext *s);
 

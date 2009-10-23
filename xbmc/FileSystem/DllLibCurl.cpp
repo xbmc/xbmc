@@ -23,6 +23,7 @@
 #include "DllLibCurl.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 #include <assert.h>
 
@@ -81,7 +82,7 @@ void DllLibCurlGlobal::CheckIdle()
   VEC_CURLSESSIONS::iterator it = m_sessions.begin();
   while(it != m_sessions.end())
   {
-    if( !it->m_busy && it->m_idletimestamp + idletime < GetTickCount())
+    if( !it->m_busy && it->m_idletimestamp + idletime < CTimeUtils::GetTimeMS())
     {
       CLog::Log(LOGINFO, "%s - Closing session to %s://%s (easy=%p, multi=%p)\n", __FUNCTION__, it->m_protocol.c_str(), it->m_hostname.c_str(), (void*)it->m_easy, (void*)it->m_multi);
 
@@ -195,7 +196,7 @@ void DllLibCurlGlobal::easy_release(CURL_HANDLE** easy_handle, CURLM** multi_han
       /* will reset verbose too so it won't print that it closed connections on cleanup*/
       easy_reset(easy);
       it->m_busy = false;
-      it->m_idletimestamp = GetTickCount();
+      it->m_idletimestamp = CTimeUtils::GetTimeMS();
       return;
     }
   }

@@ -213,7 +213,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StartFtpServer();
 #endif
 #ifdef HAS_KAI
-      if (m_gWindowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN)
+      if (g_windowManager.GetActiveWindow() != WINDOW_LOGIN_SCREEN)
         g_application.StartKai();
 #endif
 #ifdef HAS_UPNP

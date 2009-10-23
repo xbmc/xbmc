@@ -8,6 +8,7 @@
 #ifdef _LINUX
 #include "PlatformDefs.h"
 #endif
+#include "BaseRenderer.h"
 
 #include "../ffmpeg/DllSwScale.h"
 #include "../ffmpeg/DllAvCodec.h"
@@ -98,17 +99,14 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-class CLinuxRenderer
+class CLinuxRenderer : public CBaseRenderer
 {
 public:
   CLinuxRenderer();
   virtual ~CLinuxRenderer();
 
-  virtual void GetVideoRect(RECT &rs, RECT &rd);
-  virtual float GetAspectRatio();
   virtual void Update(bool bPauseDrawing);
   virtual void SetupScreenshot() {};
-  virtual void SetViewMode(int iViewMode);
 
   void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
 
@@ -133,16 +131,11 @@ public:
   virtual bool SupportsGamma() { return false; }
   virtual bool SupportsMultiPassRendering() { return false; }
 
-  void AutoCrop(bool bCrop);
+  virtual void AutoCrop(bool bCrop);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
-  RESOLUTION GetResolution();  
 
 protected:
   virtual void Render(DWORD flags);
-  virtual void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);
-  void CalculateFrameAspectRatio(int desired_width, int desired_height);
-  void ChooseBestResolution(float fps);
-  virtual void ManageDisplay();
   void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
   void DeleteOSDTextures(int index);
@@ -150,14 +143,6 @@ protected:
 
   // not really low memory. name is misleading... simply a renderer 
   void RenderLowMem(DWORD flags);
-
-  float m_fSourceFrameRatio; // the frame aspect ratio of the source (corrected for pixel ratio)
-  RESOLUTION m_iResolution;    // the resolution we're running in
-  float m_fps;      // fps of movie
-  RECT rd;          // destination rect
-  RECT rs;          // source rect
-  unsigned int m_iSourceWidth;    // width
-  unsigned int m_iSourceHeight;   // height
 
   bool m_bConfigured;
 

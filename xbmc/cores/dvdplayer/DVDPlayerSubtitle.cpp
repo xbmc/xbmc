@@ -34,6 +34,9 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "utils/log.h"
+#ifdef _LINUX
+#include "config.h"
+#endif
 
 using namespace std;
 
@@ -132,7 +135,7 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
 
 // pData->m_data[i] points to an uint32_t
 // Byte swapping is needed between big and little endian systems
-#if defined(__powerpc__) || defined(__ppc__)
+#ifdef WORDS_BIGENDIAN
       color[0] = t[1]; // Y
       color[1] = t[2]; // Cr
       color[2] = t[3]; // Cb

@@ -21,6 +21,7 @@
 
 #include "GUIFontManager.h"
 #include "GraphicContext.h"
+#include "GUIWindowManager.h"
 #include "SkinInfo.h"
 #include "GUIFontTTF.h"
 #include "GUIFont.h"
@@ -191,7 +192,7 @@ void GUIFontManager::ReloadTTFFonts(void)
 
   m_bFontsNeedReloading = false;
   // send a message to our controls telling them they need to refresh.
-  g_graphicsContext.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_INVALIDATE);
+  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_INVALIDATE);
 }
 
 void GUIFontManager::Unload(const CStdString& strFontName)

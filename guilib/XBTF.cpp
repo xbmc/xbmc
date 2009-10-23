@@ -28,6 +28,7 @@ CXBTFFrame::CXBTFFrame()
   m_packedSize = 0;
   m_unpackedSize = 0;
   m_offset = 0;
+  m_format = XB_FMT_UNKNOWN;
 }
 
 uint32_t CXBTFFrame::GetWidth() const
@@ -60,6 +61,11 @@ void CXBTFFrame::SetPackedSize(uint64_t size)
   m_packedSize = size;
 }
 
+bool CXBTFFrame::IsPacked() const
+{
+  return m_unpackedSize != m_packedSize;
+}
+
 uint64_t CXBTFFrame::GetUnpackedSize() const
 {
   return m_unpackedSize;
@@ -70,24 +76,14 @@ void CXBTFFrame::SetUnpackedSize(uint64_t size)
   m_unpackedSize = size;
 }
 
-void CXBTFFrame::SetX(uint32_t x)
+void CXBTFFrame::SetFormat(uint32_t format)
 {
-  m_x = x;
+  m_format = format;
 }
 
-uint32_t CXBTFFrame::GetX() const
+uint32_t CXBTFFrame::GetFormat() const
 {
-  return m_x;
-}
-
-void CXBTFFrame::SetY(uint32_t y)
-{
-  m_y = y;
-}
-
-uint32_t CXBTFFrame::GetY() const
-{
-  return m_y;
+  return m_format;
 }
 
 uint64_t CXBTFFrame::GetOffset() const
@@ -110,19 +106,17 @@ void CXBTFFrame::SetDuration(uint32_t duration)
   m_duration = duration;
 }
 
-
 uint64_t CXBTFFrame::GetHeaderSize() const
 {
-  uint64_t result = 
+  uint64_t result =
     sizeof(m_width) +
     sizeof(m_height) +
-    sizeof(m_x) +
-    sizeof(m_y) +
+    sizeof(m_format) +
     sizeof(m_packedSize) +
     sizeof(m_unpackedSize) +
-    sizeof(m_offset) + 
-    sizeof(m_duration); 
-  
+    sizeof(m_offset) +
+    sizeof(m_duration);
+
   return result;
 }
 
@@ -130,14 +124,12 @@ CXBTFFile::CXBTFFile()
 {
   memset(m_path, 0, sizeof(m_path));
   m_loop = 0;
-  m_format = XB_FMT_UNKNOWN;  
 }
 
 CXBTFFile::CXBTFFile(const CXBTFFile& ref)
 {
   strcpy(m_path, ref.m_path);
   m_loop = ref.m_loop;
-  m_format = ref.m_format;
   m_frames = ref.m_frames;
 }
 
@@ -162,16 +154,6 @@ void CXBTFFile::SetLoop(uint32_t loop)
   m_loop = loop;
 }
 
-uint32_t CXBTFFile::GetFormat() const
-{
-  return m_format;
-}
-
-void CXBTFFile::SetFormat(uint32_t format)
-{
-  m_format = format;
-}
-
 std::vector<CXBTFFrame>& CXBTFFile::GetFrames()
 {
   return m_frames;
@@ -182,14 +164,13 @@ uint64_t CXBTFFile::GetHeaderSize() const
   uint64_t result = 
     sizeof(m_path) +
     sizeof(m_loop) +
-    sizeof(m_format) +    
     sizeof(uint32_t); /* Number of frames */
-  
+
   for (size_t i = 0; i < m_frames.size(); i++)
   {
     result += m_frames[i].GetHeaderSize();
   }
-  
+
   return result;
 }
 
@@ -199,20 +180,20 @@ CXBTF::CXBTF()
 
 uint64_t CXBTF::GetHeaderSize() const
 {
-  uint64_t result = 
-    4 /* Magic */ + 
+  uint64_t result =
+    4 /* Magic */ +
     1 /* Vesion */ +
     sizeof(uint32_t) /* Number of Files */;
-  
+
   for (size_t i = 0; i < m_files.size(); i++)
   {
     result += m_files[i].GetHeaderSize();
   }
-  
+
   return result;
 }
 
 std::vector<CXBTFFile>& CXBTF::GetFiles()
 {
-  return m_files; 
+  return m_files;
 }

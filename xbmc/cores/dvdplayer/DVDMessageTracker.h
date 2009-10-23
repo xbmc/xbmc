@@ -36,7 +36,7 @@ public:
   {
     m_pMsg = pMsg;
     m_debug_logged = false;
-    m_time_created = GetTickCount();
+    m_time_created = CTimeUtils::GetTimeMS();
   }
 
   CDVDMsg* m_pMsg;

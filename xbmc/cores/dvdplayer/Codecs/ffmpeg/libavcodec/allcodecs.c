@@ -199,6 +199,7 @@ void avcodec_register_all(void)
     REGISTER_ENCDEC  (AC3, ac3);
     REGISTER_ENCDEC  (ALAC, alac);
     REGISTER_DECODER (APE, ape);
+    REGISTER_DECODER (ATRAC1, atrac1);
     REGISTER_DECODER (ATRAC3, atrac3);
     REGISTER_DECODER (COOK, cook);
     REGISTER_DECODER (DCA, dca);
@@ -228,16 +229,18 @@ void avcodec_register_all(void)
     REGISTER_DECODER (TRUEHD, truehd);
     REGISTER_DECODER (TRUESPEECH, truespeech);
     REGISTER_DECODER (TTA, tta);
+    REGISTER_DECODER (TWINVQ, twinvq);
     REGISTER_DECODER (VMDAUDIO, vmdaudio);
     REGISTER_ENCDEC  (VORBIS, vorbis);
     REGISTER_DECODER (WAVPACK, wavpack);
+    REGISTER_DECODER (WMAPRO, wmapro);
     REGISTER_ENCDEC  (WMAV1, wmav1);
     REGISTER_ENCDEC  (WMAV2, wmav2);
-    REGISTER_DECODER (WMAPRO, wmapro);  
     REGISTER_DECODER (WS_SND1, ws_snd1);
 
     /* PCM codecs */
     REGISTER_ENCDEC  (PCM_ALAW, pcm_alaw);
+    REGISTER_DECODER (PCM_BLURAY, pcm_bluray);
     REGISTER_DECODER (PCM_DVD, pcm_dvd);
     REGISTER_ENCDEC  (PCM_F32BE, pcm_f32be);
     REGISTER_ENCDEC  (PCM_F32LE, pcm_f32le);
@@ -301,6 +304,7 @@ void avcodec_register_all(void)
     /* subtitles */
     REGISTER_ENCDEC  (DVBSUB, dvbsub);
     REGISTER_ENCDEC  (DVDSUB, dvdsub);
+    REGISTER_DECODER (PGSSUB, pgssub);
     REGISTER_ENCDEC  (XSUB, xsub);
 
     /* external libraries */

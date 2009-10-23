@@ -26,8 +26,6 @@
 
 VOID GetLocalTime(LPSYSTEMTIME);
 
-DWORD GetTickCount(void);
-
 BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount);
 BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency);
 
@@ -42,10 +40,6 @@ VOID   GetSystemTimeAsFileTime(LPFILETIME lpSystemTimeAsFileTime);
 
 BOOL  FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT);
 BOOL  TimeTToFileTime(time_t timeT, FILETIME* lpLocalFileTime);
-
-// Time
-DWORD timeGetTime(VOID);
-
 
 #endif
 

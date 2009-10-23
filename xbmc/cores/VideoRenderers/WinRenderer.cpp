@@ -63,8 +63,6 @@ YUVCOEF yuv_coef_smtp240m = {
 CWinRenderer::CWinRenderer(LPDIRECT3DDEVICE9 pDevice)
 {
   m_pD3DDevice = pDevice;
-  m_fSourceFrameRatio = 1.0f;
-  m_iResolution = RES_PAL_4x3;
   memset(m_pOSDYTexture,0,sizeof(LPDIRECT3DTEXTURE9)*NUM_BUFFERS);
   memset(m_pOSDATexture,0,sizeof(LPDIRECT3DTEXTURE9)*NUM_BUFFERS);
   memset(m_YUVMemoryTexture, 0, sizeof(m_YUVMemoryTexture));
@@ -128,69 +126,6 @@ void CWinRenderer::Setup_Y8A8Render()
   m_pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX2 );
 }
 
-//***************************************************************************************
-// CalculateFrameAspectRatio()
-//
-// Considers the source frame size and output frame size (as suggested by mplayer)
-// to determine if the pixels in the source are not square.  It calculates the aspect
-// ratio of the output frame.  We consider the cases of VCD, SVCD and DVD separately,
-// as these are intended to be viewed on a non-square pixel TV set, so the pixels are
-// defined to be the same ratio as the intended display pixels.
-// These formats are determined by frame size.
-//***************************************************************************************
-void CWinRenderer::CalculateFrameAspectRatio(int desired_width, int desired_height)
-{
-  m_fSourceFrameRatio = (float)desired_width / desired_height;
-
-  // Check whether mplayer has decided that the size of the video file should be changed
-  // This indicates either a scaling has taken place (which we didn't ask for) or it has
-  // found an aspect ratio parameter from the file, and is changing the frame size based
-  // on that.
-  if (m_iSourceWidth == desired_width && m_iSourceHeight == desired_height)
-    return ;
-
-  // mplayer is scaling in one or both directions.  We must alter our Source Pixel Ratio
-  float fImageFrameRatio = (float)m_iSourceWidth / m_iSourceHeight;
-
-  // OK, most sources will be correct now, except those that are intended
-  // to be displayed on non-square pixel based output devices (ie PAL or NTSC TVs)
-  // This includes VCD, SVCD, and DVD (and possibly others that we are not doing yet)
-  // For this, we can base the pixel ratio on the pixel ratios of PAL and NTSC,
-  // though we will need to adjust for anamorphic sources (ie those whose
-  // output frame ratio is not 4:3) and for SVCDs which have 2/3rds the
-  // horizontal resolution of the default NTSC or PAL frame sizes
-
-  // The following are the defined standard ratios for PAL and NTSC pixels
-  float fPALPixelRatio = 128.0f / 117.0f;
-  float fNTSCPixelRatio = 4320.0f / 4739.0f;
-
-  // Calculate the correction needed for anamorphic sources
-  float fNon4by3Correction = m_fSourceFrameRatio / (4.0f / 3.0f);
-
-  // Finally, check for a VCD, SVCD or DVD frame size as these need special aspect ratios
-  if (m_iSourceWidth == 352)
-  { // VCD?
-    if (m_iSourceHeight == 240) // NTSC
-      m_fSourceFrameRatio = fImageFrameRatio * fNTSCPixelRatio;
-    if (m_iSourceHeight == 288) // PAL
-      m_fSourceFrameRatio = fImageFrameRatio * fPALPixelRatio;
-  }
-  if (m_iSourceWidth == 480)
-  { // SVCD?
-    if (m_iSourceHeight == 480) // NTSC
-      m_fSourceFrameRatio = fImageFrameRatio * 3.0f / 2.0f * fNTSCPixelRatio * fNon4by3Correction;
-    if (m_iSourceHeight == 576) // PAL
-      m_fSourceFrameRatio = fImageFrameRatio * 3.0f / 2.0f * fPALPixelRatio * fNon4by3Correction;
-  }
-  if (m_iSourceWidth == 720)
-  { // DVD?
-    if (m_iSourceHeight == 480) // NTSC
-      m_fSourceFrameRatio = fImageFrameRatio * fNTSCPixelRatio * fNon4by3Correction;
-    if (m_iSourceHeight == 576) // PAL
-      m_fSourceFrameRatio = fImageFrameRatio * fPALPixelRatio * fNon4by3Correction;
-  }
-}
-
 //***********************************************************************************************************
 void CWinRenderer::CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride)
 {
@@ -212,7 +147,7 @@ void CWinRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, u
   // solution: have separate OSD textures
 
   // if it's down the bottom, use sub alpha blending
-  //  m_SubsOnOSD = (y0 > (int)(rs.bottom - rs.top) * 4 / 5);
+  //  m_SubsOnOSD = (y0 > (int)(m_sourceRect.bottom - m_sourceRect.top) * 4 / 5);
 
   //Sometimes happens when switching between fullscreen and small window
   if( w == 0 || h == 0 )
@@ -245,7 +180,7 @@ void CWinRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, u
   }
 
   // scale to fit screen
-  const RECT& rv = g_graphicsContext.GetViewWindow();
+  const CRect& rv = g_graphicsContext.GetViewWindow();
 
   // Vobsubs are defined to be 720 wide.
   // NOTE: This will not work nicely if we are allowing mplayer to render text based subs
@@ -259,8 +194,8 @@ void CWinRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, u
     // scale them up to the full output, assuming vobsubs have same 
     // pixel aspect ratio as the movie, and are 720 pixels wide
 
-    float pixelaspect = m_fSourceFrameRatio * m_iSourceHeight / m_iSourceWidth;
-    xscale = (rv.right - rv.left) / 720.0f;
+    float pixelaspect = m_sourceFrameRatio * m_sourceHeight / m_sourceWidth;
+    xscale = rv.Width() / 720.0f;
     yscale = xscale * g_settings.m_ResInfo[res].fPixelRatio / pixelaspect;
   }
   else
@@ -273,10 +208,10 @@ void CWinRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, u
   }
   
   // horizontal centering, and align to bottom of subtitles line
-  osdRect.left = (float)rv.left + (float)(rv.right - rv.left - (float)w * xscale) / 2.0f;
+  osdRect.left = rv.x1 + (rv.Width() - (float)w * xscale) / 2.0f;
   osdRect.right = osdRect.left + (float)w * xscale;
   float relbottom = ((float)(g_settings.m_ResInfo[res].iSubtitles - g_settings.m_ResInfo[res].Overscan.top)) / (g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top);
-  osdRect.bottom = (float)rv.top + (float)(rv.bottom - rv.top) * relbottom;
+  osdRect.bottom = rv.y1 + rv.Height() * relbottom;
   osdRect.top = osdRect.bottom - (float)h * yscale;
 
   RECT rc = { 0, 0, w, h };
@@ -394,63 +329,6 @@ void CWinRenderer::RenderOSD()
   m_pD3DDevice->SetTexture(1, NULL);
 }
 
-//********************************************************************************************************
-//Get resolution based on current mode.
-RESOLUTION CWinRenderer::GetResolution()
-{
-  if (g_graphicsContext.IsFullScreenRoot() && (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating()))
-    return m_iResolution;
-
-  return g_graphicsContext.GetVideoResolution();
-}
-
-float CWinRenderer::GetAspectRatio()
-{
-  float fWidth = (float)m_iSourceWidth - g_stSettings.m_currentVideoSettings.m_CropLeft - g_stSettings.m_currentVideoSettings.m_CropRight;
-  float fHeight = (float)m_iSourceHeight - g_stSettings.m_currentVideoSettings.m_CropTop - g_stSettings.m_currentVideoSettings.m_CropBottom;
-  return m_fSourceFrameRatio * fWidth / fHeight * m_iSourceHeight / m_iSourceWidth;
-}
-
-void CWinRenderer::GetVideoRect(RECT &rectSrc, RECT &rectDest)
-{
-  rectSrc = rs;
-  rectDest = rd;
-}
-
-void CWinRenderer::CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fInputFrameRatio, float fZoomAmount)
-{
-  // scale up image as much as possible
-  // and keep the aspect ratio (introduces with black bars)
-  // calculate the correct output frame ratio (using the users pixel ratio setting
-  // and the output pixel ratio setting)
-
-  float fOutputFrameRatio = fInputFrameRatio / g_settings.m_ResInfo[GetResolution()].fPixelRatio;
-
-  // maximize the movie width
-  float fNewWidth = fScreenWidth;
-  float fNewHeight = fNewWidth / fOutputFrameRatio;
-
-  if (fNewHeight > fScreenHeight)
-  {
-    fNewHeight = fScreenHeight;
-    fNewWidth = fNewHeight * fOutputFrameRatio;
-  }
-
-  // Scale the movie up by set zoom amount
-  fNewWidth *= fZoomAmount;
-  fNewHeight *= fZoomAmount;
-
-  // Centre the movie
-  float fPosY = (fScreenHeight - fNewHeight) / 2;
-  float fPosX = (fScreenWidth - fNewWidth) / 2;
-
-  rd.left = (int)(fPosX + fOffsetX1);
-  rd.right = (int)(rd.left + fNewWidth + 0.5f);
-  rd.top = (int)(fPosY + fOffsetY1);
-  rd.bottom = (int)(rd.top + fNewHeight + 0.5f);
-}
-
-
 void CWinRenderer::ManageTextures()
 {
   int neededbuffers = 0;
@@ -480,178 +358,14 @@ void CWinRenderer::ManageTextures()
   }
 }
 
-void CWinRenderer::ManageDisplay()
-{
-  const RECT& rv = g_graphicsContext.GetViewWindow();
-  float fScreenWidth = (float)rv.right - rv.left;
-  float fScreenHeight = (float)rv.bottom - rv.top;
-  float fOffsetX1 = (float)rv.left;
-  float fOffsetY1 = (float)rv.top;
-
-  // source rect
-  rs.left = g_stSettings.m_currentVideoSettings.m_CropLeft;
-  rs.top = g_stSettings.m_currentVideoSettings.m_CropTop;
-  rs.right = m_iSourceWidth - g_stSettings.m_currentVideoSettings.m_CropRight;
-  rs.bottom = m_iSourceHeight - g_stSettings.m_currentVideoSettings.m_CropBottom;
-
-  CalcNormalDisplayRect(fOffsetX1, fOffsetY1, fScreenWidth, fScreenHeight, GetAspectRatio() * g_stSettings.m_fPixelRatio, g_stSettings.m_fZoomAmount);
-}
-
-void CWinRenderer::ChooseBestResolution(float fps)
-{
-  return;
-  /* elis
-  bool bUsingPAL = g_videoConfig.HasPAL();    // current video standard:PAL or NTSC
-  bool bCanDoWidescreen = g_videoConfig.HasWidescreen(); // can widescreen be enabled?
-  bool bWideScreenMode = false;
-
-  // If the resolution selection is on Auto the following rules apply :
-  //
-  // BIOS Settings     ||Display resolution
-  // WS|480p|720p/1080i||4:3 Videos     |16:6 Videos
-  // ------------------||------------------------------
-  // - | X  |    X     || 480p 4:3      | 720p
-  // - | X  |    -     || 480p 4:3      | 480p 4:3
-  // - | -  |    X     || 720p          | 720p
-  // - | -  |    -     || NTSC/PAL 4:3  |NTSC/PAL 4:3
-  // X | X  |    X     || 720p          | 720p
-  // X | X  |    -     || 480p 4:3      | 480p 16:9
-  // X | -  |    X     || 720p          | 720p
-  // X | -  |    -     || NTSC/PAL 4:3  |NTSC/PAL 16:9
-
-  // Work out if the framerate suits PAL50 or PAL60
-  bool bPal60 = false;
-  if (bUsingPAL && g_guiSettings.GetInt("videoplayer.framerateconversions") == FRAME_RATE_USE_PAL60 && g_videoConfig.HasPAL60())
-  {
-    // yes we're in PAL
-    // yes PAL60 is allowed
-    // yes dashboard PAL60 settings is enabled
-    // Calculate the framerate difference from a divisor of 120fps and 100fps
-    // (twice 60fps and 50fps to allow for 2:3 IVTC pulldown)
-    float fFrameDifference60 = abs(120.0f / fps - floor(120.0f / fps + 0.5f));
-    float fFrameDifference50 = abs(100.0f / fps - floor(100.0f / fps + 0.5f));
-    // Make a decision based on the framerate difference
-    if (fFrameDifference60 < fFrameDifference50)
-      bPal60 = true;
-  }
-
-  // If the display resolution was specified by the user then use it, unless
-  // it's a PAL setting, whereby we use the above setting to autoswitch to PAL60
-  // if appropriate
-  RESOLUTION DisplayRes = (RESOLUTION) g_guiSettings.GetInt("videoplayer.displayresolution");
-  if ( DisplayRes != RES_AUTORES )
-  {
-    if (bPal60)
-    {
-      if (DisplayRes == RES_PAL_16x9) DisplayRes = PAL60_16x9;
-      if (DisplayRes == RES_PAL_4x3) DisplayRes = RES_PAL60_4x3;
-    }
-    CLog::Log(LOGNOTICE, "Display resolution USER : %s (%d)", g_settings.m_ResInfo[DisplayRes].strMode.c_str(), DisplayRes);
-    m_iResolution = DisplayRes;
-    return;
-  }
-
-  // Work out if framesize suits 4:3 or 16:9
-  // Uses the frame aspect ratio of 8/(3*sqrt(3)) (=1.53960) which is the optimal point
-  // where the percentage of black bars to screen area in 4:3 and 16:9 is equal
-  static const float fOptimalSwitchPoint = 8.0f / (3.0f*sqrt(3.0f));
-  if (bCanDoWidescreen && m_fSourceFrameRatio > fOptimalSwitchPoint)
-    bWideScreenMode = true;
-
-  // We are allowed to switch video resolutions, so we must
-  // now decide which is the best resolution for the video we have
-  if (bUsingPAL)  // PAL resolutions
-  {
-    // Currently does not allow HDTV solutions, as it is my beleif
-    // that the XBox hardware only allows HDTV resolutions for NTSC systems.
-    // this may need revising as more knowledge is obtained.
-    if (bPal60)
-    {
-      if (bWideScreenMode)
-        m_iResolution = RES_PAL60_16x9;
-      else
-        m_iResolution = RES_PAL60_4x3;
-    }
-    else    // PAL50
-    {
-      if (bWideScreenMode)
-        m_iResolution = RES_PAL_16x9;
-      else
-        m_iResolution = RES_PAL_4x3;
-    }
-  }
-  else      // NTSC resolutions
-  {
-    if (bCanDoWidescreen)
-    { // The TV set has a wide screen (16:9)
-      // So we always choose the best HD widescreen resolution no matter what
-      // the video aspect ratio is
-      // If the TV has no HD support widescreen mode is chossen according to video AR
-
-      if (g_videoConfig.Has1080i())     // Widescreen TV with 1080i res
-        m_iResolution = RES_HDTV_1080i;
-      else if (g_videoConfig.Has720p()) // Widescreen TV with 720p res
-        m_iResolution = RES_HDTV_720p;
-      else if (g_videoConfig.Has480p()) // Widescreen TV with 480p
-      {
-        if (bWideScreenMode) // Choose widescreen mode according to video AR
-          m_iResolution = RES_HDTV_480p_16x9;
-        else
-          m_iResolution = RES_HDTV_480p_4x3;
-    }
-      else if (bWideScreenMode)         // Standard 16:9 TV set with no HD
-        m_iResolution = RES_NTSC_16x9;
-      else
-        m_iResolution = RES_NTSC_4x3;
-    }
-    else
-    { // The TV set has a 4:3 aspect ratio
-      // So 4:3 video sources will best fit the screen with 4:3 resolution
-      // We choose 16:9 resolution only for 16:9 video sources
-
-      if (m_fSourceFrameRatio >= 16.0f / 9.0f)
-    {
-        // The video fits best into widescreen modes so they are
-        // the first choices
-        if (g_videoConfig.Has1080i())
-          m_iResolution = RES_HDTV_1080i;
-        else if (g_videoConfig.Has720p())
-          m_iResolution = RES_HDTV_720p;
-        else if (g_videoConfig.Has480p())
-          m_iResolution = RES_HDTV_480p_4x3;
-        else
-          m_iResolution = RES_NTSC_4x3;
-      }
-      else
-      {
-        // The video fits best into 4:3 modes so 480p
-        // is the first choice
-        if (g_videoConfig.Has480p())
-          m_iResolution = RES_HDTV_480p_4x3;
-        else if (g_videoConfig.Has1080i())
-          m_iResolution = RES_HDTV_1080i;
-        else if (g_videoConfig.Has720p())
-          m_iResolution = RES_HDTV_720p;
-        else
-          m_iResolution = RES_NTSC_4x3;
-      }
-    }
-  }
-
-  CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode.c_str(), m_iResolution);
-  */
-}
-
 bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
-  m_fps = fps;
-
-  m_iSourceWidth = width;
-  m_iSourceHeight = height;
+  m_sourceWidth = width;
+  m_sourceHeight = height;
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
-  ChooseBestResolution(m_fps);
+  ChooseBestResolution(fps);
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
 
   ManageDisplay();
@@ -680,8 +394,8 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
 
   image->cshift_x = 1;
   image->cshift_y = 1;
-  image->height = m_iSourceHeight;
-  image->width = m_iSourceWidth;
+  image->height = m_sourceHeight;
+  image->width = m_sourceWidth;
   image->flags = 0;
 
   D3DLOCKED_RECT rect;
@@ -689,9 +403,9 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
   {
     rect.pBits = planes[i];
     if(i == 0)
-      rect.Pitch = m_iSourceWidth;
+      rect.Pitch = m_sourceWidth;
     else
-      rect.Pitch = m_iSourceWidth / 2;
+      rect.Pitch = m_sourceWidth / 2;
     image->stride[i] = rect.Pitch;
     image->plane[i] = (BYTE*)rect.pBits;
   }
@@ -838,7 +552,7 @@ unsigned int CWinRenderer::PreInit()
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
   UnInit();
-  m_iResolution = RES_PAL_4x3;
+  m_resolution = RES_PAL_4x3;
 
   m_iOSDRenderBuffer = 0;
   m_iYV12RenderBuffer = 0;
@@ -953,114 +667,6 @@ void CWinRenderer::Render(DWORD flags)
   RenderOSD();
 }
 
-void CWinRenderer::SetViewMode(int iViewMode)
-{
-  if (iViewMode < VIEW_MODE_NORMAL || iViewMode > VIEW_MODE_CUSTOM) iViewMode = VIEW_MODE_NORMAL;
-  g_stSettings.m_currentVideoSettings.m_ViewMode = iViewMode;
-
-  if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL)
-  { // normal mode...
-    g_stSettings.m_fPixelRatio = 1.0;
-    g_stSettings.m_fZoomAmount = 1.0;
-    return ;
-  }
-  if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_CUSTOM)
-  {
-    g_stSettings.m_fZoomAmount = g_stSettings.m_currentVideoSettings.m_CustomZoomAmount;
-    g_stSettings.m_fPixelRatio = g_stSettings.m_currentVideoSettings.m_CustomPixelRatio;
-    return ;
-  }
-
-  // get our calibrated full screen resolution
-  float fOffsetX1 = (float)g_settings.m_ResInfo[m_iResolution].Overscan.left;
-  float fOffsetY1 = (float)g_settings.m_ResInfo[m_iResolution].Overscan.top;
-  float fScreenWidth = (float)(g_settings.m_ResInfo[m_iResolution].Overscan.right - g_settings.m_ResInfo[m_iResolution].Overscan.left);
-  float fScreenHeight = (float)(g_settings.m_ResInfo[m_iResolution].Overscan.bottom - g_settings.m_ResInfo[m_iResolution].Overscan.top);
-  // and the source frame ratio
-  float fSourceFrameRatio = GetAspectRatio();
-
-  if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ZOOM)
-  { // zoom image so no black bars
-    g_stSettings.m_fPixelRatio = 1.0;
-    // calculate the desired output ratio
-    float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio;
-    // now calculate the correct zoom amount.  First zoom to full height.
-    float fNewHeight = fScreenHeight;
-    float fNewWidth = fNewHeight * fOutputFrameRatio;
-    g_stSettings.m_fZoomAmount = fNewWidth / fScreenWidth;
-    if (fNewWidth < fScreenWidth)
-    { // zoom to full width
-      fNewWidth = fScreenWidth;
-      fNewHeight = fNewWidth / fOutputFrameRatio;
-      g_stSettings.m_fZoomAmount = fNewHeight / fScreenHeight;
-    }
-  }
-  else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_4x3)
-  { // stretch image to 4:3 ratio
-    g_stSettings.m_fZoomAmount = 1.0;
-    if (m_iResolution == RES_PAL_4x3 || m_iResolution == RES_PAL60_4x3 || m_iResolution == RES_NTSC_4x3 || m_iResolution == RES_HDTV_480p_4x3)
-    { // stretch to the limits of the 4:3 screen.
-      // incorrect behaviour, but it's what the users want, so...
-      g_stSettings.m_fPixelRatio = (fScreenWidth / fScreenHeight) * g_settings.m_ResInfo[m_iResolution].fPixelRatio / fSourceFrameRatio;
-    }
-    else
-    {
-      // now we need to set g_stSettings.m_fPixelRatio so that
-      // fOutputFrameRatio = 4:3.
-      g_stSettings.m_fPixelRatio = (4.0f / 3.0f) / fSourceFrameRatio;
-    }
-  }
-  else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_14x9)
-  { // stretch image to 14:9 ratio
-    // now we need to set g_stSettings.m_fPixelRatio so that
-    // fOutputFrameRatio = 14:9.
-    g_stSettings.m_fPixelRatio = (14.0f / 9.0f) / fSourceFrameRatio;
-    // calculate the desired output ratio
-    float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio;
-    // now calculate the correct zoom amount.  First zoom to full height.
-    float fNewHeight = fScreenHeight;
-    float fNewWidth = fNewHeight * fOutputFrameRatio;
-    g_stSettings.m_fZoomAmount = fNewWidth / fScreenWidth;
-    if (fNewWidth < fScreenWidth)
-    { // zoom to full width
-      fNewWidth = fScreenWidth;
-      fNewHeight = fNewWidth / fOutputFrameRatio;
-      g_stSettings.m_fZoomAmount = fNewHeight / fScreenHeight;
-    }
-  }
-  else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9)
-  { // stretch image to 16:9 ratio
-    g_stSettings.m_fZoomAmount = 1.0;
-    if (m_iResolution == RES_PAL_4x3 || m_iResolution == RES_PAL60_4x3 || m_iResolution == RES_NTSC_4x3 || m_iResolution == RES_HDTV_480p_4x3)
-    { // now we need to set g_stSettings.m_fPixelRatio so that
-      // fOutputFrameRatio = 16:9.
-      g_stSettings.m_fPixelRatio = (16.0f / 9.0f) / fSourceFrameRatio;
-    }
-    else
-    { // stretch to the limits of the 16:9 screen.
-      // incorrect behaviour, but it's what the users want, so...
-      g_stSettings.m_fPixelRatio = (fScreenWidth / fScreenHeight) * g_settings.m_ResInfo[m_iResolution].fPixelRatio / fSourceFrameRatio;
-    }
-  }
-  else // if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ORIGINAL)
-  { // zoom image so that the height is the original size
-    g_stSettings.m_fPixelRatio = 1.0;
-    // get the size of the media file
-    // calculate the desired output ratio
-    float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio;
-    // now calculate the correct zoom amount.  First zoom to full width.
-    float fNewWidth = fScreenWidth;
-    float fNewHeight = fNewWidth / fOutputFrameRatio;
-    if (fNewHeight > fScreenHeight)
-    { // zoom to full height
-      fNewHeight = fScreenHeight;
-      fNewWidth = fNewHeight * fOutputFrameRatio;
-    }
-    // now work out the zoom amount so that no zoom is done
-    g_stSettings.m_fZoomAmount = (m_iSourceHeight - g_stSettings.m_currentVideoSettings.m_CropTop - g_stSettings.m_currentVideoSettings.m_CropBottom) / fNewHeight;
-  }
-}
-
 void CWinRenderer::AutoCrop(bool bCrop)
 {
   if (!m_YUVMemoryTexture[0][PLANE_Y]) return ;
@@ -1072,19 +678,19 @@ void CWinRenderer::AutoCrop(bool bCrop)
     // apply auto-crop filter - only luminance needed, and we run vertically down 'n'
     // runs down the image.
     int min_detect = 8;                                // reasonable amount (what mplayer uses)
-    int detect = (min_detect + 16)*m_iSourceWidth;     // luminance should have minimum 16
+    int detect = (min_detect + 16)*m_sourceWidth;     // luminance should have minimum 16
     D3DLOCKED_RECT lr;
     lr.pBits = m_YUVMemoryTexture[0][PLANE_Y];
-    lr.Pitch = m_iSourceWidth;
+    lr.Pitch = m_sourceWidth;
    
     int total;
     // Crop top
     BYTE *s = (BYTE *)lr.pBits;
-    g_stSettings.m_currentVideoSettings.m_CropTop = m_iSourceHeight/2;
-    for (unsigned int y = 0; y < m_iSourceHeight/2; y++)
+    g_stSettings.m_currentVideoSettings.m_CropTop = m_sourceHeight/2;
+    for (unsigned int y = 0; y < m_sourceHeight/2; y++)
     {
       total = 0;
-      for (unsigned int x = 0; x < m_iSourceWidth; x++)
+      for (unsigned int x = 0; x < m_sourceWidth; x++)
         total += s[x];
       s += lr.Pitch;
       if (total > detect)
@@ -1094,27 +700,27 @@ void CWinRenderer::AutoCrop(bool bCrop)
       }
     }
     // Crop bottom
-    s = (BYTE *)lr.pBits + (m_iSourceHeight-1)*lr.Pitch;
-    g_stSettings.m_currentVideoSettings.m_CropBottom = m_iSourceHeight/2;
-    for (unsigned int y = (int)m_iSourceHeight; y > m_iSourceHeight/2; y--)
+    s = (BYTE *)lr.pBits + (m_sourceHeight-1)*lr.Pitch;
+    g_stSettings.m_currentVideoSettings.m_CropBottom = m_sourceHeight/2;
+    for (unsigned int y = (int)m_sourceHeight; y > m_sourceHeight/2; y--)
     {
       total = 0;
-      for (unsigned int x = 0; x < m_iSourceWidth; x++)
+      for (unsigned int x = 0; x < m_sourceWidth; x++)
         total += s[x];
       s -= lr.Pitch;
       if (total > detect)
       {
-        g_stSettings.m_currentVideoSettings.m_CropBottom = m_iSourceHeight - y;
+        g_stSettings.m_currentVideoSettings.m_CropBottom = m_sourceHeight - y;
         break;
       }
     }
     // Crop left
     s = (BYTE *)lr.pBits;
-    g_stSettings.m_currentVideoSettings.m_CropLeft = m_iSourceWidth/2;
-    for (unsigned int x = 0; x < m_iSourceWidth/2; x++)
+    g_stSettings.m_currentVideoSettings.m_CropLeft = m_sourceWidth/2;
+    for (unsigned int x = 0; x < m_sourceWidth/2; x++)
     {
       total = 0;
-      for (unsigned int y = 0; y < m_iSourceHeight; y++)
+      for (unsigned int y = 0; y < m_sourceHeight; y++)
         total += s[y * lr.Pitch];
       s++;
       if (total > detect)
@@ -1124,17 +730,17 @@ void CWinRenderer::AutoCrop(bool bCrop)
       }
     }
     // Crop right
-    s = (BYTE *)lr.pBits + (m_iSourceWidth-1);
-    g_stSettings.m_currentVideoSettings.m_CropRight= m_iSourceWidth/2;
-    for (unsigned int x = (int)m_iSourceWidth-1; x > m_iSourceWidth/2; x--)
+    s = (BYTE *)lr.pBits + (m_sourceWidth-1);
+    g_stSettings.m_currentVideoSettings.m_CropRight= m_sourceWidth/2;
+    for (unsigned int x = (int)m_sourceWidth-1; x > m_sourceWidth/2; x--)
     {
       total = 0;
-      for (unsigned int y = 0; y < m_iSourceHeight; y++)
+      for (unsigned int y = 0; y < m_sourceHeight; y++)
         total += s[y * lr.Pitch];
       s--;
       if (total > detect)
       {
-        g_stSettings.m_currentVideoSettings.m_CropRight = m_iSourceWidth - x;
+        g_stSettings.m_currentVideoSettings.m_CropRight = m_sourceWidth - x;
         break;
       }
     }
@@ -1223,28 +829,28 @@ void CWinRenderer::RenderLowMem(DWORD flags)
   CUSTOMVERTEX verts[4] = 
   {
     {
-      (float)rd.left                                                     , (float)rd.top, 0.0f, 1.0f,
-      ((float)rs.left) / m_iSourceWidth                                  , ((float)rs.top) / m_iSourceHeight,
-      ((float)rs.left / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceWidth>>1) , ((float)rs.top / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceHeight>>1),
-      ((float)rs.left / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceWidth>>1) , ((float)rs.top / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceHeight>>1)
+      m_destRect.x1                                                      ,  m_destRect.y1, 0.0f, 1.0f,
+      (m_sourceRect.x1) / m_sourceWidth                                  , (m_sourceRect.y1) / m_sourceHeight,
+      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1),
+      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1)
     },
     {
-      (float)rd.right                                                     , (float)rd.top, 0.0f, 1.0f,
-      ((float)rs.right) / m_iSourceWidth                                  , ((float)rs.top) / m_iSourceHeight,
-      ((float)rs.right / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceWidth>>1) , ((float)rs.top / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceHeight>>1),
-      ((float)rs.right / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceWidth>>1) , ((float)rs.top / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceHeight>>1)
+      m_destRect.x2                                                      ,  m_destRect.y1, 0.0f, 1.0f,
+      (m_sourceRect.x2) / m_sourceWidth                                  , (m_sourceRect.y1) / m_sourceHeight,
+      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1),
+      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1)
     },
     {
-      (float)rd.right                                                     , (float)rd.bottom, 0.0f, 1.0f,
-      ((float)rs.right) / m_iSourceWidth                                  , ((float)rs.bottom) / m_iSourceHeight,
-      ((float)rs.right / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceWidth>>1) , ((float)rs.bottom / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceHeight>>1),
-      ((float)rs.right / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceWidth>>1) , ((float)rs.bottom / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceHeight>>1)
+      m_destRect.x2                                                      ,  m_destRect.y2, 0.0f, 1.0f,
+      (m_sourceRect.x2) / m_sourceWidth                                  , (m_sourceRect.y2) / m_sourceHeight,
+      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1),
+      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1)
     },
     {
-      (float)rd.left                                                      , (float)rd.bottom, 0.0f, 1.0f,
-      ((float)rs.left) / m_iSourceWidth                                   , ((float)rs.bottom) / m_iSourceHeight,
-      ((float)rs.left / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceWidth>>1)  , ((float)rs.bottom / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceHeight>>1),
-      ((float)rs.left / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceWidth>>1)  , ((float)rs.bottom / 2.0f + CHROMAOFFSET_HORIZ) / (m_iSourceHeight>>1)
+      m_destRect.x1                                                       ,  m_destRect.y2, 0.0f, 1.0f,
+      (m_sourceRect.x1) / m_sourceWidth                                   , (m_sourceRect.y2) / m_sourceHeight,
+      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1)  , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1),
+      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1)  , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1)
     }
   };
 
@@ -1283,23 +889,21 @@ void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, un
   if (D3D_OK == m_pD3DDevice->CreateRenderTarget(width, height, D3DFMT_LIN_A8R8G8B8, D3DMULTISAMPLE_NONE, 0, TRUE, &surface, NULL))
   {
     LPDIRECT3DSURFACE9 oldRT;
-    RECT saveSize = rd;
-    rd.left = rd.top = 0;
-    rd.right = width;
-    rd.bottom = height;
+    CRect saveSize = m_destRect;
+    m_destRect.SetRect(0, 0, (float)width, (float)height);
     m_pD3DDevice->GetRenderTarget(0, &oldRT);
     m_pD3DDevice->SetRenderTarget(0, surface);
     m_pD3DDevice->BeginScene();
     RenderLowMem(0);
     m_pD3DDevice->EndScene();
-    rd = saveSize;
+    m_destRect = saveSize;
     m_pD3DDevice->SetRenderTarget(0, oldRT);
     oldRT->Release();
 
     D3DLOCKED_RECT lockedRect;
     if (D3D_OK == surface->LockRect(&lockedRect, NULL, NULL))
     {
-      texture->LoadFromMemory(width, height, lockedRect.Pitch, XB_FMT_B8G8R8A8, 32, (unsigned char *)lockedRect.pBits);
+      texture->LoadFromMemory(width, height, lockedRect.Pitch, XB_FMT_A8R8G8B8, (unsigned char *)lockedRect.pBits);
       surface->UnlockRect();
     }
     surface->Release();
@@ -1341,16 +945,16 @@ void CWinRenderer::ClearYV12Texture(int index)
   D3DLOCKED_RECT rect;
   
   rect.pBits = planes[0];
-  rect.Pitch = m_iSourceWidth;
-  memset(rect.pBits, 0,   rect.Pitch * m_iSourceHeight);
+  rect.Pitch = m_sourceWidth;
+  memset(rect.pBits, 0,   rect.Pitch * m_sourceHeight);
 
   rect.pBits = planes[1];
-  rect.Pitch = m_iSourceWidth / 2;
-  memset(rect.pBits, 128, rect.Pitch * m_iSourceHeight>>1);
+  rect.Pitch = m_sourceWidth / 2;
+  memset(rect.pBits, 128, rect.Pitch * m_sourceHeight>>1);
 
   rect.pBits = planes[2];
-  rect.Pitch = m_iSourceWidth / 2;
-  memset(rect.pBits, 128, rect.Pitch * m_iSourceHeight>>1);
+  rect.Pitch = m_sourceWidth / 2;
+  memset(rect.pBits, 128, rect.Pitch * m_sourceHeight>>1);
 }
 
 
@@ -1362,18 +966,18 @@ bool CWinRenderer::CreateYV12Texture(int index)
   CSingleLock lock(g_graphicsContext);
   DeleteYV12Texture(index);
   if (
-    D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth, m_iSourceHeight, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][0], NULL) ||
-    D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][1], NULL) ||
-    D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][2], NULL))
+    D3D_OK != m_pD3DDevice->CreateTexture(m_sourceWidth, m_sourceHeight, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][0], NULL) ||
+    D3D_OK != m_pD3DDevice->CreateTexture(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][1], NULL) ||
+    D3D_OK != m_pD3DDevice->CreateTexture(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][2], NULL))
   {
     CLog::Log(LOGERROR, "Unable to create YV12 video texture %i", index);
     return false;
   }
 
   if (
-    NULL == (m_YUVMemoryTexture[index][0] = new BYTE[m_iSourceWidth * m_iSourceHeight]) ||
-    NULL == (m_YUVMemoryTexture[index][1] = new BYTE[m_iSourceWidth / 2 * m_iSourceHeight / 2]) ||
-    NULL == (m_YUVMemoryTexture[index][2] = new BYTE[m_iSourceWidth / 2* m_iSourceHeight / 2]))
+    NULL == (m_YUVMemoryTexture[index][0] = new BYTE[m_sourceWidth * m_sourceHeight]) ||
+    NULL == (m_YUVMemoryTexture[index][1] = new BYTE[m_sourceWidth / 2 * m_sourceHeight / 2]) ||
+    NULL == (m_YUVMemoryTexture[index][2] = new BYTE[m_sourceWidth / 2* m_sourceHeight / 2]))
   {
     CLog::Log(LOGERROR, "Unable to create YV12 memory texture %i", index);
     return false;

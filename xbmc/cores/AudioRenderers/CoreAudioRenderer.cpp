@@ -25,6 +25,7 @@
 #include "Settings.h"
 #include "utils/Atomics.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 // CAtomicAllocator: Wrapper class for lf_heap.
@@ -242,7 +243,7 @@ void CCoreAudioPerformance::ReportData(UInt32 bytesIn, UInt32 bytesOut)
     return;
   
   // Perform watchdog funtions
-  UInt32 time = timeGetTime();
+  UInt32 time = CTimeUtils::GetTimeMS();
   if (!m_LastWatchdogCheck)
     m_LastWatchdogCheck = time;
   UInt32 deltaTime = time - m_LastWatchdogCheck;

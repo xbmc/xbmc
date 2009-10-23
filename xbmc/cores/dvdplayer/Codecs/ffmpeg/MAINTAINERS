@@ -143,6 +143,7 @@ Codecs:
   lcl*.c                                Roberto Togni, Reimar Doeffinger
   libgsm.c                              Michel Bardiaux
   libopenjpeg.c                         Jaikrishnan Menon
+  libspeexdec.c                         Justin Ruggles
   libx264.c                             Mans Rullgard, Jason Garrett-Glaser
   loco.c                                Kostya Shishkov
   lzo.h, lzo.c                          Reimar Doeffinger
@@ -282,7 +283,9 @@ Muxers/Demuxers:
   rdt.c                                 Ronald S. Bultje
   rl2.c                                 Sascha Sommer
   rmdec.c, rmenc.c                      Ronald S. Bultje, Kostya Shishkov
+  rtmp*                                 Kostya Shishkov
   rtp.c, rtpenc.c                       Luca Abeni
+  rtp_asf.*                             Ronald S. Bultje
   rtp_mpv.*, rtp_aac.*                  Luca Abeni
   rtsp.c                                Luca Barbato
   sdp.c                                 Luca Abeni
@@ -307,6 +310,8 @@ Operating systems / CPU architectures
 
 Alpha                                   Mans Rullgard, Falk Hueffner
 ARM                                     Mans Rullgard
+AVR32                                   Mans Rullgard
+MIPS                                    Mans Rullgard
 BeOS                                    Francois Revol
 Mac OS X / PowerPC                      Romain Dolbeau, Guillaume Poirier
 Amiga / PowerPC                         Colin Ward
@@ -324,6 +329,7 @@ GnuPG Fingerprints of maintainers and others who have svn write access
 Attila Kinali                 11F0 F9A6 A1D2 11F6 C745 D10C 6520 BCDD F2DF E765
 Benoit Fouet                  B22A 4F4F 43EF 636B BB66 FCDC 0023 AE1E 2985 49C8
 Baptiste Coudurier            8D77 134D 20CC 9220 201F C5DB 0AC9 325C 5C1A BAAA
+Daniel Verkamp                78A6 07ED 782C 653E C628 B8B9 F0EB 8DD8 2F0E 21C7
 Diego Biurrun                 8227 1E31 B6D9 4994 7427 E220 9CAE D6CC 4757 FCC5
 Jaikrishnan Menon             61A1 F09F 01C9 2D45 78E1 C862 25DC 8831 AF70 D368
 Loren Merritt                 ABD9 08F4 C920 3F65 D8BE 35D7 1540 DAA7 060F 56DE

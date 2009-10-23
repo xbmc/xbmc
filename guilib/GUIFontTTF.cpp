@@ -45,15 +45,6 @@
 using namespace std;
 
 
-
-// our free type library (debug)
-#if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
-  #pragma comment (lib,"../../guilib/freetype2/freetype239ST_D.lib")
-#elif !defined(__GNUC__)
-  #pragma comment (lib,"../../guilib/freetype2/freetype239ST.lib")
-#endif
-
-
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
 

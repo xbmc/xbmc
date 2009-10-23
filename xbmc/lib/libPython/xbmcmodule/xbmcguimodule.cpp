@@ -107,7 +107,7 @@ namespace PYXBMC
   PyObject* XBMCGUI_GetCurrentWindowId(PyObject *self, PyObject *args)
   {
     PyGUILock();
-    int id = m_gWindowManager.GetActiveWindow();
+    int id = g_windowManager.GetActiveWindow();
     PyGUIUnlock();
     return Py_BuildValue((char*)"l", id);
   }
@@ -122,7 +122,7 @@ namespace PYXBMC
   PyObject* XBMCGUI_GetCurrentWindowDialogId(PyObject *self, PyObject *args)
   {
     PyGUILock();
-    int id = m_gWindowManager.GetTopMostModalDialogID();
+    int id = g_windowManager.GetTopMostModalDialogID();
     PyGUIUnlock();
     return Py_BuildValue((char*)"l", id);
   }

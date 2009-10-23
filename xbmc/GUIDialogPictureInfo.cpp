@@ -60,9 +60,9 @@ bool CGUIDialogPictureInfo::OnAction(const CAction& action)
     case ACTION_PREV_PICTURE:
     case ACTION_PLAYER_PLAY:
     case ACTION_PAUSE:
-      if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
+      if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
       {
-        CGUIWindow* pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+        CGUIWindow* pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
         return pWindow->OnAction(action);
       }
       break;

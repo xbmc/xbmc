@@ -35,8 +35,8 @@ public:
   bool Open(const CStdString& fileName);
   void Close();
   time_t GetLastModificationTimestamp();
-  bool Exists(const CStdString& name, int formatMask);
-  CXBTFFile* Find(const CStdString& name, int formatMask);
+  bool Exists(const CStdString& name);
+  CXBTFFile* Find(const CStdString& name);
   bool Load(const CXBTFFrame& frame, unsigned char* buffer);
   std::vector<CXBTFFile>&  GetFiles();
   
@@ -44,7 +44,7 @@ private:
   CXBTF      m_xbtf;
   CStdString m_fileName;
   FILE*      m_file;
-  std::map<std::pair<CStdString, unsigned int>, CXBTFFile> m_filesMap;
+  std::map<CStdString, CXBTFFile> m_filesMap;
 };
 
 #endif

@@ -82,15 +82,15 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+      CGUIWindow *pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
       if (pWindow)
-        m_gWindowManager.ShowOverlay(pWindow->GetOverlayState());
+        g_windowManager.ShowOverlay(pWindow->GetOverlayState());
 
       CGUIWindow::OnMessage(message);
       // if we were running, make sure we remove ourselves from the window manager
       if (m_bRunning)
       {
-        m_gWindowManager.RemoveDialog(GetID());
+        g_windowManager.RemoveDialog(GetID());
         m_bRunning = false;
         m_dialogClosing = false;
         m_autoClosing = false;
@@ -148,7 +148,7 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CSt
   // the main rendering thread (this should really be handled via
   // a thread message though IMO)
   m_bRunning = true;
-  m_gWindowManager.RouteToWindow(this);
+  g_windowManager.RouteToWindow(this);
 
   //  Play the window specific init sound
   g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
@@ -167,7 +167,7 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CSt
 
   while (m_bRunning && !g_application.m_bStop)
   {
-    m_gWindowManager.Process();
+    g_windowManager.Process();
   }
 }
 
@@ -187,7 +187,7 @@ void CGUIDialog::Show_Internal()
   // a thread message though IMO)
   m_bRunning = true;
   m_dialogClosing = false;
-  m_gWindowManager.AddModeless(this);
+  g_windowManager.AddModeless(this);
 
   //  Play the window specific init sound
   g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);

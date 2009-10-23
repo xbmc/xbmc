@@ -160,6 +160,7 @@ CAdvancedSettings::CAdvancedSettings()
   m_detectAsUdf = false;
 
   m_thumbSize = DEFAULT_THUMB_SIZE;
+  m_useDDSFanart = false;
 
   m_sambaclienttimeout = 10;
   m_sambadoscodepage = "";
@@ -615,6 +616,7 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetInt(pRootElement, "remoterepeat", m_remoteRepeat, 1, INT_MAX);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
   XMLUtils::GetInt(pRootElement, "thumbsize", m_thumbSize, 64, 1024);
+  XMLUtils::GetBoolean(pRootElement, "useddsfanart", m_useDDSFanart);
 
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", m_playlistAsFolders);
   XMLUtils::GetBoolean(pRootElement, "detectasudf", m_detectAsUdf);

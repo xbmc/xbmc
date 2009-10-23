@@ -22,6 +22,7 @@
 #include "GUIWindowKaraokeLyrics.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 CKaraokeLyricsManager::CKaraokeLyricsManager()
 {
@@ -76,7 +77,7 @@ bool CKaraokeLyricsManager::Start(const CStdString & strSongPath)
 
   CLog::Log( LOGDEBUG, "Karaoke: lyrics for song %s loaded successfully", strSongPath.c_str() );
 
-  CGUIWindowKaraokeLyrics *window = (CGUIWindowKaraokeLyrics*) m_gWindowManager.GetWindow(WINDOW_KARAOKELYRICS);
+  CGUIWindowKaraokeLyrics *window = (CGUIWindowKaraokeLyrics*) g_windowManager.GetWindow(WINDOW_KARAOKELYRICS);
 
   if ( !window )
   {
@@ -85,7 +86,7 @@ bool CKaraokeLyricsManager::Start(const CStdString & strSongPath)
   }
 
   // Activate karaoke window
-  m_gWindowManager.ActivateWindow(WINDOW_KARAOKELYRICS);
+  g_windowManager.ActivateWindow(WINDOW_KARAOKELYRICS);
 
   // Start the song
   window->newSong( m_Lyrics );
@@ -105,14 +106,14 @@ void CKaraokeLyricsManager::Stop()
     return;
 
   // Clean up and close karaoke window when stopping
-  CGUIWindowKaraokeLyrics *window = (CGUIWindowKaraokeLyrics*) m_gWindowManager.GetWindow(WINDOW_KARAOKELYRICS);
+  CGUIWindowKaraokeLyrics *window = (CGUIWindowKaraokeLyrics*) g_windowManager.GetWindow(WINDOW_KARAOKELYRICS);
 
   if ( window )
     window->stopSong();
 
    // turn off visualisation window when stopping
-  if (m_gWindowManager.GetActiveWindow() == WINDOW_KARAOKELYRICS)
-    m_gWindowManager.PreviousWindow();
+  if (g_windowManager.GetActiveWindow() == WINDOW_KARAOKELYRICS)
+    g_windowManager.PreviousWindow();
 
   m_Lyrics->Shutdown();
   delete m_Lyrics;
@@ -127,7 +128,7 @@ void CKaraokeLyricsManager::ProcessSlow()
   if ( g_application.IsPlaying() )
   {
     if ( m_karaokeSongPlaying )
-      m_lastPlayedTime = timeGetTime();
+      m_lastPlayedTime = CTimeUtils::GetTimeMS();
 
     return;
   }
@@ -136,13 +137,13 @@ void CKaraokeLyricsManager::ProcessSlow()
     return;
 
   // If less than 750ms passed return; we're still processing STOP events
-  if ( !m_lastPlayedTime || timeGetTime() - m_lastPlayedTime < 750 )
+  if ( !m_lastPlayedTime || CTimeUtils::GetTimeMS() - m_lastPlayedTime < 750 )
     return;
 
   m_karaokeSongPlayed = false; // so it won't popup again
 
   CGUIDialogKaraokeSongSelectorLarge * selector =
-      (CGUIDialogKaraokeSongSelectorLarge*)m_gWindowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SELECTOR );
+      (CGUIDialogKaraokeSongSelectorLarge*)g_windowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SELECTOR );
 
   selector->DoModal();
 }
@@ -152,7 +153,7 @@ void CKaraokeLyricsManager::SetPaused(bool now_paused)
   CSingleLock lock (m_CritSection);
 
   // Clean up and close karaoke window when stopping
-  CGUIWindowKaraokeLyrics *window = (CGUIWindowKaraokeLyrics*) m_gWindowManager.GetWindow(WINDOW_KARAOKELYRICS);
+  CGUIWindowKaraokeLyrics *window = (CGUIWindowKaraokeLyrics*) g_windowManager.GetWindow(WINDOW_KARAOKELYRICS);
 
   if ( window )
     window->pauseSong( now_paused );

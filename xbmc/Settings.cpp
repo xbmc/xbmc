@@ -1050,7 +1050,7 @@ bool CSettings::LoadProfile(int index)
 #endif
     // init windows
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WINDOW_RESET);
-    m_gWindowManager.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
 
     CUtil::DeleteMusicDatabaseDirectoryCache();
     CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -1068,7 +1068,7 @@ bool CSettings::DeleteProfile(int index)
   if (index < 0 && index >= (int)g_settings.m_vecProfiles.size())
     return false;
 
-  CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (dlgYesNo)
   {
     CStdString message;

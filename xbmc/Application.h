@@ -36,7 +36,7 @@ class CFileItemList;
 #include "GUIWindowPointer.h"   // Mouse pointer
 
 #include "cores/IPlayer.h"
-#include "playercorefactory/PlayerCoreFactory.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
 #include "DetectDVDType.h"

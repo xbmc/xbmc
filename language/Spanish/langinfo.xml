@@ -23,5 +23,10 @@
 
   <sorttokens>
     <token>The</token>
+	<token>El</token>
+	<token>Los</token>
+	<token>La</token>
+	<token>Las</token>
+	<token>Un</token>
   </sorttokens>
 </language>

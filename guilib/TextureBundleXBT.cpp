@@ -55,8 +55,6 @@ CTextureBundleXBT::~CTextureBundleXBT(void)
 
 bool CTextureBundleXBT::OpenBundle()
 {
-  m_supportsCompressedTextures = g_Windowing.SupportsCompressedTextures();
-  
   Cleanup();
 
   // Find the correct texture file (skin or theme)
@@ -113,8 +111,7 @@ bool CTextureBundleXBT::HasFile(const CStdString& Filename)
   }
 
   CStdString name = Normalize(Filename);
-  bool result =  m_XBTFReader.Exists(name, XB_FMT_DXT5);
-  return result;
+  return m_XBTFReader.Exists(name);
 }
 
 void CTextureBundleXBT::GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures)
@@ -143,7 +140,7 @@ bool CTextureBundleXBT::LoadTexture(const CStdString& Filename, CBaseTexture** p
 {
   CStdString name = Normalize(Filename);
 
-  CXBTFFile* file = m_XBTFReader.Find(name, XB_FMT_DXT5);
+  CXBTFFile* file = m_XBTFReader.Find(name);
   if (!file)
     return false;
   
@@ -151,7 +148,7 @@ bool CTextureBundleXBT::LoadTexture(const CStdString& Filename, CBaseTexture** p
     return false;
   
   CXBTFFrame& frame = file->GetFrames().at(0);
-  if (!ConvertFrameToTexture(Filename, frame, file->GetFormat(), ppTexture))
+  if (!ConvertFrameToTexture(Filename, frame, ppTexture))
   {
     return false;
   }
@@ -167,7 +164,7 @@ int CTextureBundleXBT::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTe
 {
   CStdString name = Normalize(Filename);
 
-  CXBTFFile* file = m_XBTFReader.Find(name, XB_FMT_DXT5);
+  CXBTFFile* file = m_XBTFReader.Find(name);
   if (!file)
     return false;
   
@@ -182,7 +179,7 @@ int CTextureBundleXBT::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTe
   {
     CXBTFFrame& frame = file->GetFrames().at(i);
     
-    if (!ConvertFrameToTexture(Filename, frame, file->GetFormat(), &((*ppTextures)[i])))
+    if (!ConvertFrameToTexture(Filename, frame, &((*ppTextures)[i])))
     {
       return false;
     }
@@ -197,63 +194,75 @@ int CTextureBundleXBT::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTe
   return nTextures;
 }
 
-bool CTextureBundleXBT::ConvertFrameToTexture(const CStdString& name, CXBTFFrame& frame, int format, CBaseTexture** ppTexture)
+bool CTextureBundleXBT::ConvertFrameToTexture(const CStdString& name, CXBTFFrame& frame, CBaseTexture** ppTexture)
 {
   // found texture - allocate the necessary buffers
-  unsigned char* PackedBuf = (unsigned char*) malloc((size_t)frame.GetPackedSize());
-  if (PackedBuf == NULL)
+  squish::u8 *buffer = new squish::u8[(size_t)frame.GetPackedSize()];
+  if (buffer == NULL)
   {
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %llu bytes)", name.c_str(), frame.GetPackedSize());
     return false;
   }
-  
+
   // load the compressed texture
-  if (!m_XBTFReader.Load(frame, PackedBuf))
+  if (!m_XBTFReader.Load(frame, buffer))
   {
     CLog::Log(LOGERROR, "Error loading texture: %s", name.c_str());
-    free(PackedBuf);
-    return false;    
+    delete[] buffer;
+    return false;
   }
-  
-  squish::u8* UnpackedBuf = NULL;
-  if (!m_supportsCompressedTextures || g_Windowing.NeedPower2Texture() || format == XB_FMT_LZO)
-  {
-    UnpackedBuf = new squish::u8[frame.GetWidth() * frame.GetHeight() * 4];
-    if (UnpackedBuf == NULL)
+
+  // check if it's packed with lzo
+  if (frame.IsPacked())
+  { // unpack
+    squish::u8 *unpacked = new squish::u8[(size_t)frame.GetUnpackedSize()];
+    if (unpacked == NULL)
     {
       CLog::Log(LOGERROR, "Out of memory unpacking texture: %s (need %llu bytes)", name.c_str(), frame.GetUnpackedSize());
-      free(PackedBuf);
+      delete[] buffer;
       return false;
-    }    
-    
-    if (format == XB_FMT_LZO)
-    {
-      lzo_uint s = (lzo_uint)frame.GetUnpackedSize();
-      if (lzo1x_decompress(PackedBuf, (lzo_uint)frame.GetPackedSize(), UnpackedBuf, &s, NULL) != LZO_E_OK ||
-          s != frame.GetUnpackedSize())
-      {
-        CLog::Log(LOGERROR, "Error loading texture: %s: Decompression error", name.c_str());
-        free(PackedBuf);
-        delete [] UnpackedBuf;        
-        return false;
-      }      
     }
-    else
+    lzo_uint s = (lzo_uint)frame.GetUnpackedSize();
+    if (lzo1x_decompress(buffer, (lzo_uint)frame.GetPackedSize(), unpacked, &s, NULL) != LZO_E_OK ||
+        s != frame.GetUnpackedSize())
     {
-      squish::DecompressImage(UnpackedBuf, frame.GetWidth(), frame.GetHeight(), (const squish::u8*) PackedBuf, squish::kDxt5);
+      CLog::Log(LOGERROR, "Error loading texture: %s: Decompression error", name.c_str());
+      delete[] buffer;
+      delete[] unpacked;
+      return false;
     }
-    
-    format = XB_FMT_R8G8B8A8;
+    delete[] buffer;
+    buffer = unpacked;
   }
-  
-  // create an xbmc texture
-  *ppTexture = new CTexture(frame.GetWidth(), frame.GetHeight(), 32, format);
-  (*ppTexture)->LoadFromMemory(frame.GetWidth(), frame.GetHeight(), frame.GetWidth() * 4, 32, format, m_supportsCompressedTextures ? PackedBuf : UnpackedBuf);
+  unsigned int format = frame.GetFormat();
+  if ((format & XB_FMT_DXT_MASK) != 0 && !g_Windowing.SupportsDXT())
+  { // we don't support this texture format, so decode
+    squish::u8 *decoded = new squish::u8[frame.GetWidth() * frame.GetHeight() * 4];
+    if (decoded == NULL)
+    {
+      CLog::Log(LOGERROR, "Out of memory unpacking texture: %s (need %llu bytes)", name.c_str(), frame.GetUnpackedSize());
+      delete[] buffer;
+      return false;
+    }
 
-  free(PackedBuf);
-  if (UnpackedBuf)
-    delete [] UnpackedBuf; 
-  
+    if (format == XB_FMT_DXT1)
+      squish::DecompressImage(decoded, frame.GetWidth(), frame.GetHeight(), buffer, squish::kDxt1 | squish::kSourceBGRA);
+    else if (format == XB_FMT_DXT3)
+      squish::DecompressImage(decoded, frame.GetWidth(), frame.GetHeight(), buffer, squish::kDxt3 | squish::kSourceBGRA);
+    else if (format == XB_FMT_DXT5)
+      squish::DecompressImage(decoded, frame.GetWidth(), frame.GetHeight(), buffer, squish::kDxt5 | squish::kSourceBGRA);
+
+    format = XB_FMT_A8R8G8B8;
+    delete[] buffer;
+    buffer = decoded;
+  }
+
+  // create an xbmc texture
+  *ppTexture = new CTexture();
+  (*ppTexture)->LoadFromMemory(frame.GetWidth(), frame.GetHeight(), 0, format, buffer);
+
+  delete[] buffer;
+
   return true;
 }
 

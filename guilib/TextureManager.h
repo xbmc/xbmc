@@ -54,6 +54,7 @@ public:
   std::vector<int> m_delays;
   int m_width;
   int m_height;
+  int m_orientation;
   int m_loops;
   int m_texWidth;
   int m_texHeight;

@@ -20,6 +20,7 @@
  */
 
 #include "GUIMultiSelectText.h"
+#include "GUIWindowManager.h"
 #include "Key.h"
 #include "MouseStat.h"
 #include "utils/log.h"
@@ -174,7 +175,7 @@ bool CGUIMultiSelectTextControl::OnAction(const CAction &action)
     { // have a click action -> perform it
       CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
       message.SetStringParam(clickAction);
-      g_graphicsContext.SendMessage(message);
+      g_windowManager.SendMessage(message);
     }
     else
     { // no click action, just send a message to the window

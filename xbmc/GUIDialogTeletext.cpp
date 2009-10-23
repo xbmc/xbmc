@@ -99,7 +99,7 @@ void CGUIDialogTeletext::Render()
   unsigned char* textureBuffer = (unsigned char*)m_TextDecoder.GetTextureBuffer();
   if (!m_bClose && m_TextDecoder.NeedRendering() && textureBuffer)
   {
-    m_pTxtTexture->Update(m_TextDecoder.GetWidth(), m_TextDecoder.GetHeight(), m_TextDecoder.GetWidth()*4, XB_FMT_B8G8R8A8, textureBuffer, false);
+    m_pTxtTexture->Update(m_TextDecoder.GetWidth(), m_TextDecoder.GetHeight(), m_TextDecoder.GetWidth()*4, XB_FMT_A8R8G8B8, textureBuffer, false);
     m_TextDecoder.RenderingDone();
   }
 
@@ -127,7 +127,7 @@ void CGUIDialogTeletext::OnInitWindow()
     Close();
   }
 
-  m_pTxtTexture = new CTexture(m_TextDecoder.GetWidth(), m_TextDecoder.GetHeight(), 32, XB_FMT_B8G8R8A8);
+  m_pTxtTexture = new CTexture(m_TextDecoder.GetWidth(), m_TextDecoder.GetHeight(), XB_FMT_A8R8G8B8);
   if (!m_pTxtTexture)
   {
     CLog::Log(LOGERROR, "%s: failed to create texture", __FUNCTION__);

@@ -512,8 +512,7 @@ void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, c
 
         if (picture.pbData != NULL && picture.dwDataLen > 0)
         {
-          CPicture pic;
-          if (pic.CreateThumbnailFromMemory(picture.pbData, picture.dwDataLen, strExtension, strCoverArt))
+          if (CPicture::CreateThumbnailFromMemory(picture.pbData, picture.dwDataLen, strExtension, strCoverArt))
           {
             CUtil::ThumbCacheAdd(strCoverArt, true);
           }

@@ -44,6 +44,7 @@
 #include "MediaManager.h"
 #include "LocalizeStrings.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -178,7 +179,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   }
 
   // setup the progress dialog
-  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   CStdString strLine0, strLine1;
   int iTrack = atoi(strTrackFile.substr(13, strTrackFile.size() - 13 - 5).c_str());
   strLine0.Format("%s %i", g_localizeStrings.Get(606).c_str(), iTrack); // Track Number: %i
@@ -221,7 +222,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
       CLog::Log(LOGINFO, "Error copying file from %s to %s", strFilename.c_str(), strFile.c_str());
       // show error
       g_graphicsContext.Lock();
-      CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+      CGUIDialogOK* pDlgOK = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
       pDlgOK->SetHeading("Error copying");
       pDlgOK->SetLine(0, CStdString(strFilename) + " to");
       pDlgOK->SetLine(1, strFile);
@@ -389,7 +390,7 @@ bool CCDDARipper::RipCD()
     // construct filename
     CUtil::AddFileToFolder(strDirectory, track, strFile);
 
-    DWORD dwTick = timeGetTime();
+    DWORD dwTick = CTimeUtils::GetTimeMS();
 
     // don't rip non cdda items
     if (item->m_strPath.Find(".cdda") < 0)
@@ -398,7 +399,7 @@ bool CCDDARipper::RipCD()
     // return false if Rip returned false (this means an error or the user cancelled
     if (!Rip(item->m_strPath, strFile.c_str(), *item->GetMusicInfoTag())) return false;
 
-    dwTick = timeGetTime() - dwTick;
+    dwTick = CTimeUtils::GetTimeMS() - dwTick;
     CStdString strTmp;
     StringUtils::SecondsToTimeString(dwTick / 1000, strTmp);
     CLog::Log(LOGINFO, "Ripping Track %d took %s", iTrack, strTmp.c_str());

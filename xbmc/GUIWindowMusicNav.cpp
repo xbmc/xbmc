@@ -291,7 +291,7 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
   {
     if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
     {
-      m_gWindowManager.PreviousWindow();
+      g_windowManager.PreviousWindow();
       return true;
     }
   }
@@ -509,7 +509,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
 {
   CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
 
-  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   CFileItemPtr item;
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
@@ -664,7 +664,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         m_viewControl.SetSelectedItem(itemNumber);
         return true;
       }
-      CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)m_gWindowManager.GetWindow(WINDOW_VIDEO_NAV);
+      CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
       if (pWindow)
       {
         SScraperInfo info;
@@ -685,7 +685,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_UPDATE_LIBRARY:
     {
-      CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+      CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
       if (scanner)
         scanner->StartScanning("");
       return true;
@@ -707,7 +707,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CVideoDatabase database;
       database.Open();
       strPath.Format("videodb://3/4/%ld/",database.GetMatchingMusicVideo(item->GetMusicInfoTag()->GetArtist()));
-      m_gWindowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
+      g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
       return true;
     }
 
@@ -888,7 +888,6 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
   if (CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_musicSources,
                                              g_localizeStrings.Get(20019), picturePath))
   {
-    CPicture picture;
     if (picturePath.Equals("thumb://Current"))
       return;
 
@@ -908,13 +907,12 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
     if (!picturePath.Equals("thumb://None") && picturePath.Left(8).Equals("thumb://") && items.Get(picturePath))
       picturePath = items.Get(picturePath)->GetThumbnailImage();
 
-    if (picturePath.Equals("thumb://None") ||
-        picture.DoCreateThumbnail(picturePath, cachedThumb))
+    if (picturePath.Equals("thumb://None") || CPicture::CreateThumbnail(picturePath, cachedThumb))
     {
       CMusicDatabaseDirectory dir;
       dir.ClearDirectoryCache(m_vecItems->m_strPath);
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-      g_graphicsContext.SendMessage(msg);
+      g_windowManager.SendMessage(msg);
       Update(m_vecItems->m_strPath);
     }
     else

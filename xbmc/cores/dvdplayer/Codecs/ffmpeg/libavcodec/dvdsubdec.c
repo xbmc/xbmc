@@ -208,11 +208,7 @@ static int decode_dvd_subtitles(DVDSubContext *ctx, AVSubtitle *sub_header,
 
     if (buf_size < 10)
         return -1;
-    sub_header->rects = NULL;
-    sub_header->num_rects = 0;
-    sub_header->format = 0;
-    sub_header->start_display_time = 0;
-    sub_header->end_display_time = 0;
+    memset(sub_header, 0, sizeof(*sub_header));
 
     if (AV_RB16(buf) == 0) {   /* HD subpicture with 4-byte offsets */
         big_offsets = 1;
@@ -226,7 +222,7 @@ static int decode_dvd_subtitles(DVDSubContext *ctx, AVSubtitle *sub_header,
 
     cmd_pos = READ_OFFSET(buf + cmd_pos);
 
-    while ((cmd_pos + 2 + offset_size) < buf_size) {
+    while (cmd_pos > 0 && cmd_pos < buf_size - 2 - offset_size) {
         date = AV_RB16(buf + cmd_pos);
         next_cmd_pos = READ_OFFSET(buf + cmd_pos + 2);
         dprintf(NULL, "cmd_pos=0x%04x next=0x%04x date=%d\n",
@@ -357,14 +353,13 @@ static int decode_dvd_subtitles(DVDSubContext *ctx, AVSubtitle *sub_header,
                            buf, offset1, buf_size, is_8bit);
                 decode_rle(bitmap + w, w * 2, w, h / 2,
                            buf, offset2, buf_size, is_8bit);
+                sub_header->rects[0]->pict.data[1] = av_mallocz(AVPALETTE_SIZE);
                 if (is_8bit) {
                     if (yuv_palette == 0)
                         goto fail;
-                    sub_header->rects[0]->pict.data[1] = av_malloc(256 * 4);
                     sub_header->rects[0]->nb_colors = 256;
                     yuv_a_to_rgba(yuv_palette, alpha, (uint32_t*)sub_header->rects[0]->pict.data[1], 256);
                 } else {
-                    sub_header->rects[0]->pict.data[1] = av_malloc(4 * 4);
                     sub_header->rects[0]->nb_colors = 4;
                     fill_palette(ctx, sub_header->rects[0]->pict.data[1], 0xffff00);
                 }

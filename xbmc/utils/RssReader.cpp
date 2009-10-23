@@ -34,6 +34,7 @@
 #include "SystemInfo.h"
 #include "LocalizeStrings.h"
 #include "GUIRSSControl.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -142,10 +143,10 @@ void CRssReader::Process()
       strXML = "<rss><item><title>"+g_localizeStrings.Get(15301)+"</title></item></rss>";
     else
     {
-      DWORD starttime = timeGetTime();
+      DWORD starttime = CTimeUtils::GetTimeMS();
       while ( (!m_bStop) && (nRetries > 0) )
       {
-        DWORD currenttimer = timeGetTime() - starttime;
+        DWORD currenttimer = CTimeUtils::GetTimeMS() - starttime;
         if (currenttimer > 15000)
         {
           CLog::Log(LOGERROR,"Timeout whilst retrieving %s", strUrl.c_str());

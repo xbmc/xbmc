@@ -57,7 +57,10 @@ enum
 	kColourRangeFit	= ( 1 << 4 ),
 	
 	//! Weight the colour by alpha during cluster fit (disabled by default).
-	kWeightColourByAlpha = ( 1 << 7 )
+	kWeightColourByAlpha = ( 1 << 7 ),
+	
+	//! Source is BGRA rather than RGBA
+	kSourceBGRA = ( 1 << 9 ),
 };
 
 // -----------------------------------------------------------------------------
@@ -260,10 +263,10 @@ void DecompressImage( u8* rgba, int width, int height, void const* blocks, int f
 /*! @brief Computes MSE of an compressed image in memory.
 
 	@param rgba		The original image pixels.
-	@param dxt		The compressed dxt blocks
-	@param flags	Compression flags.
 	@param width	The width of the source image.
 	@param height	The height of the source image.
+	@param dxt		The compressed dxt blocks
+	@param flags	Compression flags.
 	@param colourMSE	The MSE of the colour values.
 	@param alphaMSE	The MSE of the alpha values.
 	
@@ -276,7 +279,7 @@ void DecompressImage( u8* rgba, int width, int height, void const* blocks, int f
 
 	Internally this function calls squish::Decompress for each block.
 */
-void ComputeMSE(u8 const *rgba, u8 const *dxt, int flags, int width, int height, double &colourMSE, double &alphaMSE);
+void ComputeMSE(u8 const *rgba, int width, int height, u8 const *dxt, int flags, double &colourMSE, double &alphaMSE);
 
 // -----------------------------------------------------------------------------
 

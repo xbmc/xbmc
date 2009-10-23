@@ -35,27 +35,28 @@
 #include "Settings.h"
 #include "LocalizeStrings.h"
 #include "CPUInfo.h"
+#include "utils/TimeUtils.h"
 
 CSysInfo g_sysinfo;
 
-void CBackgroundSystemInfoLoader::GetInformation()
+void CSysInfo::DoWork()
 {
-  CSysInfo *callback = (CSysInfo *)m_callback;
   //Request always
-  callback->m_systemuptime = callback->GetSystemUpTime(false);
-  callback->m_systemtotaluptime = callback->GetSystemUpTime(true);
-  callback->m_InternetState = callback->GetInternetState();
-#if defined (_LINUX) || defined(_WIN32)
-  callback->m_videoencoder    = callback->GetVideoEncoder();
-  callback->m_xboxversion     = callback->GetXBVerInfo();
-  callback->m_cpufrequency    = callback->GetCPUFreqInfo();
-  callback->m_kernelversion   = callback->GetKernelVersion();
-  callback->m_macadress       = callback->GetMACAddress();
-  callback->m_bRequestDone = true;
-#endif
+  m_systemuptime      = GetSystemUpTime(false);
+  m_systemtotaluptime = GetSystemUpTime(true);
+  m_InternetState     = GetInternetState();
+  if (!m_bRequestDone)
+  { // request once
+    m_videoencoder      = GetVideoEncoder();
+    m_xboxversion       = GetXBVerInfo();
+    m_cpufrequency      = GetCPUFreqInfo();
+    m_kernelversion     = GetKernelVersion();
+    m_macadress         = GetMACAddress();
+  }
+  m_bRequestDone = true;
 }
 
-const char *CSysInfo::TranslateInfo(int info)
+CStdString CSysInfo::TranslateInfo(int info) const
 {
   switch(info)
   {
@@ -89,18 +90,14 @@ const char *CSysInfo::TranslateInfo(int info)
     return g_localizeStrings.Get(503); //Busy text
   }
 }
-DWORD CSysInfo::TimeToNextRefreshInMs()
-{
-  // request every 15 seconds
-  return 15000;
-}
+
 void CSysInfo::Reset()
 {
   m_bInternetState = false;
   m_InternetState = "";
 }
 
-CSysInfo::CSysInfo(void) : CInfoLoader("sysinfo")
+CSysInfo::CSysInfo(void) : CInfoLoader(15 * 1000)
 {
 }
 
@@ -513,12 +510,12 @@ CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
   if(bTotalUptime)
   {
     //Total Uptime
-    iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(timeGetTime() / 60000));
+    iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(CTimeUtils::GetTimeMS() / 60000));
   }
   else
   {
     //Current UpTime
-    iInputMinutes = (int)(timeGetTime() / 60000);
+    iInputMinutes = (int)(CTimeUtils::GetTimeMS() / 60000);
   }
 
   SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
@@ -615,6 +612,11 @@ CStdString CSysInfo::GetUserAgent()
     result += "; ";
   }
   result += GetUnameVersion();
+#endif
+#ifdef SVN_REV
+  CStdString strRevision; 
+  strRevision.Format("; SVN r%s", SVN_REV);
+  result += strRevision;
 #endif
   result += "; http://www.xbmc.org)";
   

@@ -26,6 +26,7 @@
 #include "../utils/Network.h"
 #include "GraphicContext.h"
 #include "log.h"
+#include "utils/TimeUtils.h"
 
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
 
@@ -194,7 +195,7 @@ void CUdpClient::Process()
         CStdString message = messageBuffer;
 
         CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT RX: %u\t\t<- '%s'",
-                  timeGetTime(), message.c_str() );
+                  CTimeUtils::GetTimeMS(), message.c_str() );
 
         // NOTE: You should consider locking access to the screen device
         // or at least wait until after vertical refresh before firing off events
@@ -245,7 +246,7 @@ bool CUdpClient::DispatchNextCommand()
     // only perform the following if logging level at debug
     CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT TX: %u\t\t-> "
                                      "<binary payload %u bytes>",
-              timeGetTime(), command.binarySize );
+              CTimeUtils::GetTimeMS(), command.binarySize );
 
     do
     {
@@ -259,7 +260,7 @@ bool CUdpClient::DispatchNextCommand()
   {
     // only perform the following if logging level at debug
     CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT TX: %u\t\t-> '%s'",
-              timeGetTime(), command.message.c_str() );
+              CTimeUtils::GetTimeMS(), command.message.c_str() );
 
     do
     {

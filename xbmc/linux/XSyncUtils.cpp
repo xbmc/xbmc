@@ -43,6 +43,7 @@
 using namespace std;
 
 #include "../utils/log.h"
+#include "../utils/TimeUtils.h"
 
 static SDL_mutex *g_mutex = SDL_CreateMutex();
 
@@ -282,7 +283,7 @@ DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWait
     return dwRet;
 
   BOOL bWaitEnded    = FALSE;
-  DWORD dwStartTime   = GetTickCount();
+  DWORD dwStartTime   = CTimeUtils::GetTimeMS();
   BOOL *bDone = new BOOL[nCount];
   CXHandle* multi = CreateEvent(NULL, FALSE, FALSE, NULL);
 
@@ -325,7 +326,7 @@ DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWait
     if (bWaitEnded)
       break;
 
-    DWORD dwElapsed = GetTickCount() - dwStartTime;
+    DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
     if (dwMilliseconds != INFINITE && dwElapsed >= dwMilliseconds) {
       dwRet = WAIT_TIMEOUT;
       bWaitEnded = TRUE;
