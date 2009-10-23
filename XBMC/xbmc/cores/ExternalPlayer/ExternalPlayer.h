@@ -82,10 +82,8 @@ public:
   
 #if defined(_WIN32)
   virtual BOOL ExecuteAppW32(const char* strPath, const char* strSwitches);
-  static void CALLBACK AppFinished(void* closure, BOOLEAN TimerOrWaitFired);
-#endif
-
-#if defined(_LINUX)
+  //static void CALLBACK AppFinished(void* closure, BOOLEAN TimerOrWaitFired);
+#elif defined(_LINUX)
   virtual BOOL ExecuteAppLinux(const char* strSwitches);
 #endif
 
@@ -93,9 +91,10 @@ private:
   void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
   virtual void Process();
 
+  bool m_bAbortRequest;
   bool m_bIsPlaying;
   bool m_paused;
-  DWORD m_playbackStartTime;
+  int64_t m_playbackStartTime;
   int m_speed;
   int m_totalTime;
   int m_time;
@@ -103,6 +102,7 @@ private:
   HWND m_hwndXbmc; 
 #if defined(_WIN32)
   POINT m_ptCursorpos;
+  PROCESS_INFORMATION m_processInfo;
 #endif 
   CGUIDialogOK* m_dialog;
   int m_xPos;
@@ -112,6 +112,8 @@ private:
   bool m_hideconsole;
   bool m_hidexbmc;
   bool m_islauncher;
+  bool m_playOneStackItem;
   WARP_CURSOR m_warpcursor;
+  int m_playCountMinTime;
   CStdStringArray m_filenameReplacers;
 };

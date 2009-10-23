@@ -431,7 +431,8 @@ void PAPlayer::Pause()
 
 void PAPlayer::SetVolume(long nVolume)
 {
-  m_pAudioDecoder[m_currentStream]->SetCurrentVolume(nVolume);
+  if (m_pAudioDecoder[m_currentStream])
+    m_pAudioDecoder[m_currentStream]->SetCurrentVolume(nVolume);
 }
 
 void PAPlayer::SetDynamicRangeCompression(long drc)

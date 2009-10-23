@@ -621,7 +621,7 @@ public:
   CStdString GetBuild();
 
   bool GetDisplayAfterSeek() const;
-  void SetDisplayAfterSeek(DWORD TimeOut = 2500);
+  void SetDisplayAfterSeek(unsigned int timeOut = 2500);
   void SetSeeking(bool seeking) { m_playerSeeking = seeking; };
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
   void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
@@ -693,13 +693,13 @@ protected:
   CFileItem* m_currentSlide;
 
   // fan stuff
-  DWORD m_lastSysHeatInfoTime;
+  unsigned int m_lastSysHeatInfoTime;
   int m_fanSpeed;
   CTemperature m_gpuTemp;
   CTemperature m_cpuTemp;
 
   //Fullscreen OSD Stuff
-  DWORD m_AfterSeekTimeout;
+  unsigned int m_AfterSeekTimeout;
   bool m_playerSeeking;
   bool m_playerShowTime;
   bool m_playerShowCodec;
@@ -750,6 +750,7 @@ protected:
  */
 extern CGUIInfoManager g_infoManager;
 #endif
+
 
 
 

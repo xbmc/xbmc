@@ -91,10 +91,11 @@ SRCS=ASAPFileDirectory.cpp \
      ZipDirectory.cpp \
      ZipManager.cpp
 
-INCLUDES+=-I../lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
-          -I../lib/libUPnP/Platinum/Source/Core \
+INCLUDES+=-I../lib/libUPnP/Platinum/Source/Core \
+          -I../lib/libUPnP/Platinum/Source/Platinum \
           -I../lib/libUPnP/Platinum/Source/Devices/MediaServer \
-          -I../lib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Posix \
+          -I../lib/libUPnP/Neptune/Source/System/Posix \
+          -I../lib/libUPnP/Neptune/Source/Core
 
 LIB=filesystem.a
 

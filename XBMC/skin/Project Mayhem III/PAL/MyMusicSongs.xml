@@ -112,7 +112,6 @@
 				<onright>50</onright>
 				<onup>3</onup>
 				<ondown>20</ondown>
-				<visible>System.GetBool(musiclibrary.enabled)</visible>
 				<enable>Library.HasContent(Music)</enable>
 			</control>
 			<control type="group">

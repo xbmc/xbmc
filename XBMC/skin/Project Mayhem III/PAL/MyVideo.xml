@@ -122,7 +122,6 @@
 				<onright>50</onright>
 				<onup>3</onup>
 				<ondown>7</ondown>
-				<visible>System.GetBool(videolibrary.enabled)</visible>
 				<enable>Library.HasContent(Video)</enable>
 			</control>
 			<control type="radiobutton" id="7">

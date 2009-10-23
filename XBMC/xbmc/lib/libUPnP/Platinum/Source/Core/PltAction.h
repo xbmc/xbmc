@@ -39,6 +39,7 @@
 +---------------------------------------------------------------------*/
 #include "Neptune.h"
 #include "PltArgument.h"
+#include "PltDeviceData.h"
 
 /*----------------------------------------------------------------------
 |   forward declarations
@@ -76,14 +77,14 @@ protected:
 class PLT_Action
 {
 public:
-    PLT_Action(PLT_ActionDesc* action_desc);
    ~PLT_Action();
 
-    PLT_ActionDesc* GetActionDesc() { return m_ActionDesc; }
+    PLT_ActionDesc& GetActionDesc() { return m_ActionDesc; }
     
     NPT_Result    GetArgumentValue(const char* name, NPT_String& value);
     NPT_Result    GetArgumentValue(const char* name, NPT_UInt32& value);
     NPT_Result    GetArgumentValue(const char* name, NPT_Int32& value);
+	NPT_Result    GetArgumentValue(const char* name, bool& value);
     NPT_Result    VerifyArgumentValue(const char* name, const char* value);
     NPT_Result    VerifyArguments(bool input);
     NPT_Result    SetArgumentOutFromStateVariable(const char* name);
@@ -98,19 +99,28 @@ public:
     NPT_Result    FormatSoapResponse(NPT_OutputStream& stream);
 
     static NPT_Result FormatSoapError(unsigned int      code, 
-        NPT_String        desc, 
-        NPT_OutputStream& stream);
+                                      NPT_String        desc, 
+                                      NPT_OutputStream& stream);
 
 private:
+    // only PLT_DeviceHost and PLT_CtrlPoint can instantiate those directly
+    friend class PLT_DeviceHost;
+    friend class PLT_CtrlPoint;
+    PLT_Action(PLT_ActionDesc& action_desc);
+    PLT_Action(PLT_ActionDesc& action_desc, PLT_DeviceDataReference& root_device);
+
     NPT_Result    SetArgumentOutFromStateVariable(PLT_ArgumentDesc* arg_desc);
     PLT_Argument* GetArgument(const char* name);
 
 protected:
     // members
-    PLT_ActionDesc* m_ActionDesc;
-    PLT_Arguments   m_Arguments;
-    unsigned int    m_ErrorCode;
-    NPT_String      m_ErrorDescription;
+    PLT_ActionDesc&         m_ActionDesc;
+    PLT_Arguments           m_Arguments;
+    unsigned int            m_ErrorCode;
+    NPT_String              m_ErrorDescription;
+    // keep reference to device to prevent it 
+    // from being released during action lifetime
+	PLT_DeviceDataReference m_RootDevice;
 };
 
 typedef NPT_Reference<PLT_Action> PLT_ActionReference;

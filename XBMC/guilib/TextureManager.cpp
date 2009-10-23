@@ -26,6 +26,10 @@
 #include "utils/SingleLock.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
+#include "utils/log.h"
+#ifdef _DEBUG
+#include "utils/TimeUtils.h"
+#endif
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
 #include "../xbmc/FileSystem/Directory.h"
@@ -306,8 +310,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   CSingleLock lock(g_graphicsContext);
 
 #ifdef _DEBUG
-  LARGE_INTEGER start;
-  QueryPerformanceCounter(&start);
+  int64_t start;
+  start = CurrentHostCounter();
 #endif
 
   if (strPath.Right(4).ToLower() == ".gif")
@@ -372,11 +376,11 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
     }
 
 #ifdef _DEBUG
-    LARGE_INTEGER end, freq;
-    QueryPerformanceCounter(&end);
-    QueryPerformanceFrequency(&freq);
+    int64_t end, freq;
+    end = CurrentHostCounter();
+    freq = CurrentHostFrequency();
     char temp[200];
-    sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, (bundle >= 0) ? " (bundled)" : "");
+    sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end - start) / freq, (bundle >= 0) ? " (bundled)" : "");
     OutputDebugString(temp);
 #endif
 
@@ -415,11 +419,11 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   m_vecTextures.push_back(pMap);
 
 #ifdef _DEBUG_TEXTURES
-  LARGE_INTEGER end, freq;
-  QueryPerformanceCounter(&end);
-  QueryPerformanceFrequency(&freq);
+  int64_t end, freq;
+  end = CurrentHostCounter();
+  freq = CurrentHostFrequency();
   char temp[200];
-  sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, (bundle >= 0) ? " (bundled)" : "");
+  sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end - start) / freq, (bundle >= 0) ? " (bundled)" : "");
   OutputDebugString(temp);
 #endif
 

@@ -87,15 +87,15 @@ void CBackgroundPicLoader::Create(CGUIWindowSlideShow *pCallback)
 
 void CBackgroundPicLoader::Process()
 {
-  DWORD totalTime = 0;
-  DWORD count = 0;
+  unsigned int totalTime = 0;
+  unsigned int count = 0;
   while (!m_bStop)
   { // loop around forever, waiting for the app to call LoadPic
     if (WaitForSingleObject(m_loadPic, 10) == WAIT_OBJECT_0)
     {
       if (m_pCallback)
       {
-        DWORD start = CTimeUtils::GetTimeMS();
+        unsigned int start = CTimeUtils::GetTimeMS();
         CBaseTexture* texture = new CTexture();
         unsigned int originalWidth = 0;
         unsigned int originalHeight = 0;

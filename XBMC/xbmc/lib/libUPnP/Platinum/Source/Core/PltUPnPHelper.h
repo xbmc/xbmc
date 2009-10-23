@@ -238,7 +238,8 @@ public:
         }
         return temp.SubString(7).ToInteger(len);
     }
-    static NPT_Result GetIPAddresses(NPT_List<NPT_IpAddress>& ips) {
+    static NPT_Result GetIPAddresses(NPT_List<NPT_IpAddress>& ips, 
+                                     bool with_localhost = false) {
         NPT_List<NPT_NetworkInterface*> if_list;
         NPT_CHECK(NPT_NetworkInterface::GetNetworkInterfaces(if_list));
 
@@ -253,7 +254,7 @@ public:
             ++iface;
         }
 
-        if (ips.GetItemCount() == 0) {
+        if (ips.GetItemCount() == 0 || with_localhost) {
             NPT_IpAddress localhost;
             localhost.Parse("127.0.0.1");
             ips.Add(localhost);
@@ -273,6 +274,40 @@ public:
         }
         return NPT_SUCCESS;
     }
+
+	static NPT_Result GetMACAddresses(NPT_List<NPT_String>& addresses) {
+        NPT_List<NPT_NetworkInterface*> if_list;
+        NPT_CHECK(NPT_NetworkInterface::GetNetworkInterfaces(if_list));
+
+        NPT_List<NPT_NetworkInterface*>::Iterator iface = if_list.GetFirstItem();
+        while (iface) {
+            NPT_String ip = (*(*iface)->GetAddresses().GetFirstItem()).GetPrimaryAddress().ToString();
+            if (ip.Compare("0.0.0.0") && ip.Compare("127.0.0.1")) {
+				addresses.Add((*iface)->GetMacAddress().ToString());
+            }
+            ++iface;
+        }
+
+        if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
+        return NPT_SUCCESS;
+    }
+
+
+	static bool IsLocalNetworkAddress(const NPT_IpAddress& address) {
+		if(address.ToString() == "127.0.0.1") return true;
+
+		NPT_List<NPT_NetworkInterface*> if_list;
+        NPT_NetworkInterface::GetNetworkInterfaces(if_list);
+
+		NPT_List<NPT_NetworkInterface*>::Iterator iface = if_list.GetFirstItem();
+        while (iface) {
+			if((*iface)->IsAddressInNetwork(address)) return true;
+            ++iface;
+        }
+
+		if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
+		return false;
+	}
 
 private:
 

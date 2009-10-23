@@ -1587,7 +1587,7 @@ void CMusicDatabase::EmptyCache()
 
 bool CMusicDatabase::Search(const CStdString& search, CFileItemList &items)
 {
-  DWORD time = CTimeUtils::GetTimeMS();
+  unsigned int time = CTimeUtils::GetTimeMS();
   // first grab all the artists that match
   SearchArtists(search, items);
   CLog::Log(LOGDEBUG, "%s Artist search in %i ms",
@@ -2601,7 +2601,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    DWORD time = CTimeUtils::GetTimeMS();
+    unsigned int time = CTimeUtils::GetTimeMS();
 
     CStdString strSQL = "select * from artist where (idArtist IN ";
 
@@ -2948,7 +2948,7 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
 
   try
   {
-    DWORD time = CTimeUtils::GetTimeMS();
+    unsigned int time = CTimeUtils::GetTimeMS();
     // We don't use FormatSQL here, as the WHERE clause is already formatted.
     CStdString strSQL = "select * from songview " + whereClause;
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());

@@ -309,7 +309,7 @@ PLT_Service::SetSCPDXML(const char* scpd)
                         ret_value_found = true;
                     }
                 }
-                action_desc->GetArgumentDescs().Add(new PLT_ArgumentDesc(name, direction, variable, ret_value));
+                action_desc->GetArgumentDescs().Add(new PLT_ArgumentDesc(name, j, direction, variable, ret_value));
             }
         }
     }
@@ -441,6 +441,22 @@ PLT_Service::SetStateVariableRate(const char* name, NPT_TimeInterval rate)
         return NPT_FAILURE;
 
     return stateVariable->SetRate(rate);
+}
+
+/*----------------------------------------------------------------------
+|   PLT_Service::SetStateVariableExtraAttribute
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_Service::SetStateVariableExtraAttribute(const char* name, 
+											const char* key,
+											const char* value)
+{
+    PLT_StateVariable* stateVariable = NULL;
+    NPT_ContainerFind(m_StateVars, PLT_StateVariableNameFinder(name), stateVariable);
+    if (stateVariable == NULL)
+        return NPT_FAILURE;
+
+    return stateVariable->SetExtraAttribute(key, value);
 }
 
 /*----------------------------------------------------------------------
@@ -843,6 +859,6 @@ PLT_LastChangeXMLIterator::operator()(PLT_StateVariable* const &var) const
 
     NPT_XmlElementNode* variable = new NPT_XmlElementNode((const char*)var->GetName());
     NPT_CHECK_SEVERE(m_Node->AddChild(variable));
-    NPT_CHECK_SEVERE(variable->SetAttribute("val", var->GetValue()));
+	NPT_CHECK_SEVERE(var->Serialize(*variable));
     return NPT_SUCCESS;
 }

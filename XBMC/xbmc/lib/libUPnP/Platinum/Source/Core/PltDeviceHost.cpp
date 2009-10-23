@@ -118,10 +118,10 @@ PLT_DeviceHost::AddIcon(const PLT_DeviceIcon& icon,
 {
     NPT_HttpStaticRequestHandler* icon_handler = 
         new NPT_HttpStaticRequestHandler(
-        data, 
-        size,
-        icon.m_MimeType,
-        copy);
+			data, 
+			size,
+			icon.m_MimeType,
+			copy);
     m_HttpServer->AddRequestHandler(icon_handler, icon.m_UrlPath, false);
     m_RequestHandlers.Add(icon_handler);
     return m_Icons.Add(icon);
@@ -264,7 +264,7 @@ PLT_DeviceHost::Stop(PLT_SsdpListenTask* task)
 
         // notify we're gone
         NPT_List<NPT_NetworkInterface*> if_list;
-        PLT_UPnPMessageHelper::GetNetworkInterfaces(if_list);
+        PLT_UPnPMessageHelper::GetNetworkInterfaces(if_list, true);
         if_list.Apply(PLT_SsdpAnnounceInterfaceIterator(this, true, m_Broadcast));
         if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
     }
@@ -287,7 +287,7 @@ PLT_DeviceHost::Announce(PLT_DeviceData*  device,
 {
     NPT_Result res = NPT_SUCCESS;
 
-    NPT_LOG_INFO_3("Sending SSDP NOTIFY (%s) Request to %s with location:%s", 
+    NPT_LOG_FINE_3("Sending SSDP NOTIFY (%s) Request to %s with location:%s", 
         byebye?"ssdp:byebye":"ssdp:alive",
         (const char*)req.GetUrl().ToString(),
         (const char*)(PLT_UPnPMessageHelper::GetLocation(req)?*PLT_UPnPMessageHelper::GetLocation(req):""));
@@ -380,13 +380,27 @@ PLT_DeviceHost::ProcessHttpRequest(NPT_HttpRequest&              request,
         return ProcessHttpPostRequest(request, context, response);
     } else if (method.Compare("SUBSCRIBE") == 0 || method.Compare("UNSUBSCRIBE") == 0) {
         return ProcessHttpSubscriberRequest(request, context, response);
-    } else if (method.Compare("GET") == 0) {
-        if (request.GetUrl().GetPath() == m_URLDescription.GetPath()) {
-            return ProcessGetDescription(request, context, response);
-        }
+    } else if (method.Compare("GET") == 0 || method.Compare("HEAD") == 0) {
+        return ProcessHttpGetRequest(request, context, response);
     }
 
     response.SetStatus(405, "Bad Request");
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_DeviceHost::ProcessHttpGetRequest
++---------------------------------------------------------------------*/
+NPT_Result 
+PLT_DeviceHost::ProcessHttpGetRequest(NPT_HttpRequest&              request,
+                                      const NPT_HttpRequestContext& context,
+                                      NPT_HttpResponse&             response)
+{        
+    if (request.GetUrl().GetPath() == m_URLDescription.GetPath()) {
+        return ProcessGetDescription(request, context, response);
+    }
+
+    response.SetStatus(404, "Not Found");
     return NPT_SUCCESS;
 }
 
@@ -395,11 +409,16 @@ PLT_DeviceHost::ProcessHttpRequest(NPT_HttpRequest&              request,
 +---------------------------------------------------------------------*/
 NPT_Result 
 PLT_DeviceHost::ProcessGetDescription(NPT_HttpRequest&              /*request*/,
-                                      const NPT_HttpRequestContext& /*context*/,
+                                      const NPT_HttpRequestContext& context,
                                       NPT_HttpResponse&             response)
 {
+    NPT_COMPILER_UNUSED(context);
     NPT_String doc;
     NPT_CHECK_FATAL(GetDescription(doc));
+    NPT_LOG_FINEST_2("Returning description to %s: %s", 
+        (const char*)context.GetRemoteAddress().GetIpAddress().ToString(),
+        (const char*)doc);
+
     PLT_HttpHelper::SetBody(response, doc);    
     PLT_HttpHelper::SetContentType(response, "text/xml; charset=\"utf-8\"");
     return NPT_SUCCESS;
@@ -430,7 +449,7 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
     NPT_String                url         = request.GetUrl().ToRequestString(true);
     NPT_String                protocol    = request.GetProtocol();
 
-    if (NPT_FAILED(FindServiceByControlURL(url, service)))
+    if (NPT_FAILED(FindServiceByControlURL(url, service, true)))
         goto bad_request;
 
     if (!request.GetHeaders().GetHeaderValue("SOAPAction"))
@@ -493,7 +512,7 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
     }
 
     // create an action object
-    action = new PLT_Action(action_desc);
+    action = new PLT_Action(*action_desc);
 
     // read all the arguments if any
     for (NPT_List<NPT_XmlNode*>::Iterator args = soap_action->GetChildren().GetFirstItem(); 
@@ -511,20 +530,23 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
         res = action->SetArgumentValue(
             name,
             child->GetText()?*child->GetText():"");
-		if (NPT_FAILED(res)) {
+
+		// test if value was correct
+		if (res == NPT_ERROR_INVALID_PARAMETERS) {
 			action->SetError(701, "Invalid Name");
 			goto error;
 		}
     }
 
+	// verify all required arguments were passed
     if (NPT_FAILED(action->VerifyArguments(true))) {
-        action->SetError(402, "Invalid Args");
+        action->SetError(402, "Invalid or Missing Args");
         goto error;
     }
     
     
     NPT_LOG_FINE_2("Received %s action from %s", 
-                   (const char*)action->GetActionDesc()->GetName(), 
+                   (const char*)action->GetActionDesc().GetName(), 
                    (const char*)context.GetRemoteAddress().GetIpAddress().ToString());
                    
     // call the virtual function, it's all good
@@ -583,7 +605,7 @@ PLT_DeviceHost::ProcessHttpSubscriberRequest(NPT_HttpRequest&              reque
     const NPT_String* sid           = PLT_UPnPMessageHelper::GetSID(request);
     
     PLT_Service* service;
-    NPT_CHECK_LABEL_WARNING(FindServiceByEventSubURL(url, service), cleanup);
+    NPT_CHECK_LABEL_WARNING(FindServiceByEventSubURL(url, service, true), cleanup);
 
     if (method.Compare("SUBSCRIBE") == 0) {
         // Do we have a sid ?

@@ -4,12 +4,11 @@
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetSettings>
-
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://xml.n4rf.net/ofdbgw/movie/\2&lt;/url&gt;" dest="3">
 			<expression clear="yes" noclean="1">(http://www.ofdb.de/film/)([0-9]*)</expression>
@@ -21,19 +20,16 @@
 			<expression>(imdb.com/title/tt)([0-9]*)</expression>
 		</RegExp>
 	</NfoUrl>
-
 	<GetByIMDBId dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://xml.n4rf.net/ofdbgw/movie/\1&lt;/url&gt;" dest="3+">
 			<expression repeat="yes">&lt;ofdbid&gt;([^&lt;]+)</expression>
 		</RegExp>
 	</GetByIMDBId>
-
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="http://xml.n4rf.net/ofdbgw/search/\1" dest="3">
 			<expression noclean="1"/>
 		</RegExp>
 	</CreateSearchUrl>
-
 	<GetSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url&gt;http://xml.n4rf.net/ofdbgw/movie/\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
@@ -42,21 +38,20 @@
 			<expression noclean="1"/>
 		</RegExp>
 	</GetSearchResults>
-
-        <GetDetails dest="3">
-                <RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="3">
-		        <RegExp input="$$6" output="\1" dest="5+">
-	        	        <RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="6">
-                		        <expression trim="1">&lt;titel&gt;([^&lt;]+)&lt;/titel&gt;</expression>
-	        	        </RegExp>
-        	        	<RegExp input="$$7" output="&lt;title&gt;\2 \1&lt;/title&gt;" dest="6">
-	                        	<RegExp input="$$1" output="\1" dest="7">
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$6" output="\1" dest="5+">
+				<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="6">
+					<expression trim="1">&lt;titel&gt;([^&lt;]+)&lt;/titel&gt;</expression>
+				</RegExp>
+				<RegExp input="$$7" output="&lt;title&gt;\2 \1&lt;/title&gt;" dest="6">
+					<RegExp input="$$1" output="\1" dest="7">
 						<expression trim="1">&lt;titel&gt;([^&lt;]+)&lt;/titel&gt;</expression>
 					</RegExp>
 					<expression>(.*), (Die|Der|Das|The)</expression>
-        	        	</RegExp>
-		                <expression noclean="1"/>
-        		</RegExp>
+				</RegExp>
+				<expression noclean="1"/>
+			</RegExp>
 			<RegExp input="$$1" output="&lt;originaltitle&gt;\1&lt;/originaltitle&gt;" dest="5+">
 				<expression noclean="1">&lt;alternativ&gt;([^&lt;]+)</expression>
 			</RegExp>
@@ -105,25 +100,24 @@
 			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
 				<expression>&lt;bild&gt;([^&lt;]+)</expression>
 			</RegExp>
-			<RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=tt\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://www.imdb.com/title/tt\1&lt;/url&gt;" dest="5+">
 				<expression>&lt;imdbid&gt;([^&lt;]+)</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
 	</GetDetails>
-
 	<GetOFDBData dest="5">
-	        <RegExp input="$$6" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="5+">
-       	        	<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="6+">
+		<RegExp input="$$6" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="6+">
 				<expression trim="1">&lt;label&gt;([^&lt;|^(]*)</expression>
-       	        	</RegExp>
-        	        <RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="6+">
-               		        <expression trim="1">&lt;freigabe&gt;([^&lt;]+)</expression>
-        	        </RegExp>
-        	        <RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="6+">
-               		        <expression trim="1">&lt;laufzeit&gt;([^&lt;]+)</expression>
-        	        </RegExp>
-	                <expression noclean="1"/>
-       		</RegExp>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="6+">
+				<expression trim="1">&lt;freigabe&gt;([^&lt;]+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="6+">
+				<expression trim="1">&lt;laufzeit&gt;([^&lt;]+)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
 	</GetOFDBData>
 </scraper>

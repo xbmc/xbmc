@@ -42,7 +42,7 @@ class CEvent
 {
 public:
   void PulseEvent();
-  bool WaitMSec(DWORD dwMillSeconds);
+  bool WaitMSec(unsigned int milliSeconds);
   HANDLE GetHandle();
   void Reset();
   void Set();

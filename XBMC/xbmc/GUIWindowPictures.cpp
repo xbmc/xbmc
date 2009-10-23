@@ -270,15 +270,15 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
   bool bShowProgress=!g_windowManager.HasModalDialog();
   bool bProgressVisible=false;
 
-  DWORD dwTick=CTimeUtils::GetTimeMS();
+  unsigned int tick=CTimeUtils::GetTimeMS();
 
   while (loader.IsLoading() && m_dlgProgress && !m_dlgProgress->IsCanceled())
   {
     if (bShowProgress)
     { // Do we have to init a progress dialog?
-      DWORD dwElapsed=CTimeUtils::GetTimeMS()-dwTick;
+      unsigned int elapsed=CTimeUtils::GetTimeMS()-tick;
 
-      if (!bProgressVisible && dwElapsed>1500 && m_dlgProgress)
+      if (!bProgressVisible && elapsed>1500 && m_dlgProgress)
       { // tag loading takes more then 1.5 secs, show a progress dialog
         CURL url(items.m_strPath);
         CStdString strStrippedPath;
@@ -465,13 +465,11 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       if (item)
       {
-        if (item->m_bIsFolder)
-        {
-          buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, 13317);      // View Slideshow
-          buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
-        }
         if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
           buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
+        buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, item->m_bIsFolder ? 13317 : 13422);      // View Slideshow
+        if (item->m_bIsFolder)
+          buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
 
         if (!m_thumbLoader.IsLoading())
           buttons.Add(CONTEXT_BUTTON_REFRESH_THUMBS, 13315);         // Create Thumbnails
@@ -504,10 +502,14 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   switch (button)
   {
   case CONTEXT_BUTTON_VIEW_SLIDESHOW:
-    OnSlideShow(item->m_strPath);
+    if (item && item->m_bIsFolder)
+      OnSlideShow(item->m_strPath);
+    else
+      ShowPicture(itemNumber, true);
     return true;
   case CONTEXT_BUTTON_RECURSIVE_SLIDESHOW:
-    OnSlideShowRecursive(item->m_strPath);
+    if (item)
+      OnSlideShowRecursive(item->m_strPath);
     return true;
   case CONTEXT_BUTTON_INFO:
     OnInfo(itemNumber);

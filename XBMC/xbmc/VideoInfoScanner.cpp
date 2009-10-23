@@ -65,7 +65,7 @@ namespace VIDEO
   {
     try
     {
-      DWORD dwTick = CTimeUtils::GetTimeMS();
+      unsigned int tick = CTimeUtils::GetTimeMS();
 
       m_database.Open();
 
@@ -118,9 +118,9 @@ namespace VIDEO
       m_database.Close();
       CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
 
-      dwTick = CTimeUtils::GetTimeMS() - dwTick;
+      tick = CTimeUtils::GetTimeMS() - tick;
       CStdString strTmp, strTmp1;
-      StringUtils::SecondsToTimeString(dwTick / 1000, strTmp1);
+      StringUtils::SecondsToTimeString(tick / 1000, strTmp1);
       strTmp.Format("My Videos: Scanning for video info using worker thread, operation took %s", strTmp1);
       CLog::Log(LOGNOTICE, "%s", strTmp.c_str());
 
@@ -568,7 +568,7 @@ namespace VIDEO
               m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
             long lResult = AddMovieAndGetThumb(pItem.get(), info2.strContent, *pItem->GetVideoInfoTag(), -1, bDirNames, pDlgProgress);
-            if (bRefresh && info.strContent.Equals("tvshows") && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
+            if (bRefresh && info.strContent.Equals("tvshows"))
               FetchSeasonThumbs(lResult);
             if (!bRefresh && info2.strContent.Equals("tvshows"))
               i--;
@@ -623,8 +623,7 @@ namespace VIDEO
                     m_database.SetPathHash(pItem->m_strPath,pItem->GetProperty("hash"));
                 }
                 else
-                  if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
-                    FetchSeasonThumbs(lResult);
+                  FetchSeasonThumbs(lResult);
               }
               Return = true;
             }
@@ -1055,8 +1054,7 @@ namespace VIDEO
     if (bApplyToDir && !strThumb.IsEmpty())
       ApplyIMDBThumbToFolder(strDirectory,strThumb);
 
-    if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
-      FetchActorThumbs(movieDetails.m_cast,strDirectory);
+    FetchActorThumbs(movieDetails.m_cast,strDirectory);
     m_database.Close();
     return lResult;
   }
@@ -1175,8 +1173,7 @@ namespace VIDEO
         AddMovieAndGetThumb(&item,"tvshows",episodeDetails,idShow);
       }
     }
-    if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
-      FetchSeasonThumbs(idShow);
+    FetchSeasonThumbs(idShow);
     m_database.Close();
     return true;
   }

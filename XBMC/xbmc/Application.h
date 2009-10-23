@@ -103,7 +103,7 @@ public:
   void StartTimeServer();
   void StopTimeServer();
   void StartUPnP();
-  void StopUPnP();
+  void StopUPnP(bool bWait);
   void StartUPnPRenderer();
   void StopUPnPRenderer();
   void StartUPnPClient();
@@ -242,7 +242,7 @@ public:
 
   int GlobalIdleTime();
   void NewFrame();
-  bool WaitFrame(DWORD timeout);
+  bool WaitFrame(unsigned int timeout);
 
   void EnablePlatformDirectories(bool enable=true)
   {
@@ -276,7 +276,7 @@ public:
 
   bool IsPresentFrame();
 
-  void Minimize(bool minimize = true);
+  void Minimize();
 
   bool m_bRunResumeJobs;
 
@@ -324,7 +324,6 @@ protected:
 
   bool m_bStandalone;
   bool m_bEnableLegacyRes;
-  bool m_bWasFullScreenBeforeMinimize;
   bool m_bSystemScreenSaverEnable;
 
 #ifdef HAS_SDL

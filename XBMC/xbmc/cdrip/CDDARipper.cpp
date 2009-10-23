@@ -390,7 +390,7 @@ bool CCDDARipper::RipCD()
     // construct filename
     CUtil::AddFileToFolder(strDirectory, track, strFile);
 
-    DWORD dwTick = CTimeUtils::GetTimeMS();
+    unsigned int tick = CTimeUtils::GetTimeMS();
 
     // don't rip non cdda items
     if (item->m_strPath.Find(".cdda") < 0)
@@ -399,9 +399,9 @@ bool CCDDARipper::RipCD()
     // return false if Rip returned false (this means an error or the user cancelled
     if (!Rip(item->m_strPath, strFile.c_str(), *item->GetMusicInfoTag())) return false;
 
-    dwTick = CTimeUtils::GetTimeMS() - dwTick;
+    tick = CTimeUtils::GetTimeMS() - tick;
     CStdString strTmp;
-    StringUtils::SecondsToTimeString(dwTick / 1000, strTmp);
+    StringUtils::SecondsToTimeString(tick / 1000, strTmp);
     CLog::Log(LOGINFO, "Ripping Track %d took %s", iTrack, strTmp.c_str());
   }
   CLog::Log(LOGINFO, "Ripped CD succesfull");

@@ -77,7 +77,7 @@ void DllLibCurlGlobal::CheckIdle()
 {
   CSingleLock lock(m_critSection);
   /* 20 seconds idle time before closing handle */
-  const DWORD idletime = 30000;
+  const unsigned int idletime = 30000;
 
   VEC_CURLSESSIONS::iterator it = m_sessions.begin();
   while(it != m_sessions.end())

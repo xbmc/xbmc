@@ -79,8 +79,8 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   if (m_windowLoaded)
     return true;      // no point loading if it's already there
 
-  LARGE_INTEGER start;
-  QueryPerformanceCounter(&start);
+  int64_t start;
+  start = CurrentHostCounter();
 
   RESOLUTION resToUse = RES_INVALID;
   CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
@@ -102,10 +102,10 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 
   bool ret = LoadXML(strPath.c_str(), strLowerPath.c_str());
 
-  LARGE_INTEGER end, freq;
-  QueryPerformanceCounter(&end);
-  QueryPerformanceFrequency(&freq);
-  CLog::Log(LOGDEBUG,"Load %s: %.2fms", m_xmlFile.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
+  int64_t end, freq;
+  end = CurrentHostCounter();
+  freq = CurrentHostFrequency();
+  CLog::Log(LOGDEBUG,"Load %s: %.2fms", m_xmlFile.c_str(), 1000.f * (end - start) / freq);
 
   return ret;
 }
@@ -666,8 +666,8 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
 {
   CSingleLock lock(g_graphicsContext);
 
-  LARGE_INTEGER start;
-  QueryPerformanceCounter(&start);
+  int64_t start;
+  start = CurrentHostCounter();
 
   // load skin xml file
   bool bHasPath=false;
@@ -676,16 +676,16 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   if (m_xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded))
     Load(m_xmlFile,bHasPath);
 
-  LARGE_INTEGER slend;
-  QueryPerformanceCounter(&slend);
+  int64_t slend;
+  slend = CurrentHostCounter();
 
   // and now allocate resources
   CGUIControlGroup::AllocResources();
 
-  LARGE_INTEGER end, freq;
-  QueryPerformanceCounter(&end);
-  QueryPerformanceFrequency(&freq);
-  CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (slend.QuadPart - start.QuadPart) / freq.QuadPart);
+  int64_t end, freq;
+  end = CurrentHostCounter();
+  freq = CurrentHostFrequency();
+  CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load)", 1000.f * (end - start) / freq, 1000.f * (slend - start) / freq);
 
   m_bAllocated = true;
 }

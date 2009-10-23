@@ -375,7 +375,7 @@ if test "$host_vendor" = "apple" ; then
                     [INCLUDES+=" $VORBISENC_CFLAGS"; LIBS+=" $VORBISENC_LIBS"],
                     AC_MSG_ERROR($missing_library))
 else
-  AC_CHECK_HEADER([faad.h],,         AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([faad],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer], [main],, AC_MSG_ERROR($missing_library))
@@ -617,8 +617,7 @@ else
 fi
 
 # External Python
-if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes" || \
-  $(test "$host_cpu" = "powerpc" && test "$host_vendor" != "apple"); then
+if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes"; then
   AC_CHECK_LIB([python2.6], [main],,
   [AC_CHECK_LIB([python2.5], [main],,
   [AC_CHECK_LIB([python2.4], [main],,
@@ -995,8 +994,7 @@ OUTPUT_FILES="Makefile \
              tools/EventClients/Clients/OSXRemote/Makefile"
 
 if test "$host_vendor" = "apple"; then
-  OUTPUT_FILES+= \
-             " xbmc/cores/paplayer/FLACCodec/Makefile \
+  OUTPUT_FILES+=" xbmc/cores/paplayer/FLACCodec/Makefile \
              xbmc/cores/paplayer/vorbisfile/Makefile"
 fi
 
@@ -1161,8 +1159,10 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-postproc \
       --enable-gpl \
       `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; fi` \
+      --enable-libfaad \
       --enable-protocol=http \
       --enable-pthreads \
+      `if test "$host_cpu" = "powerpc" || test "$host_cpu" = "powerpc64"; then echo --enable-pic; fi` \
       --cc="$CC"
   fi
 ], [$USE_EXTERNAL_FFMPEG])

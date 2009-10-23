@@ -89,19 +89,19 @@ PLT_LightSampleDevice::OnAction(PLT_ActionReference&          action,
     NPT_COMPILER_UNUSED(context);
 
     /* parse the action name */
-    NPT_String name = action->GetActionDesc()->GetName();
+    NPT_String name = action->GetActionDesc().GetName();
     if (name.Compare("SetTarget") == 0) {
         NPT_String value;
         action->GetArgumentValue("newTargetValue", value);
 
-        PLT_StateVariable* variable = action->GetActionDesc()->GetService()->FindStateVariable("Status");
+        PLT_StateVariable* variable = action->GetActionDesc().GetService()->FindStateVariable("Status");
         if (NPT_FAILED(variable->SetValue(value))) {
             action->SetError(402, "Invalid Args");
             return NPT_FAILURE;
         }
         return NPT_SUCCESS;
     } else if (name.Compare("GetStatus") == 0) {
-        PLT_StateVariable* variable = action->GetActionDesc()->GetService()->FindStateVariable("Status");
+        PLT_StateVariable* variable = action->GetActionDesc().GetService()->FindStateVariable("Status");
         if (variable) {
             action->SetArgumentValue("ResultStatus", variable->GetValue());
             return NPT_SUCCESS;

@@ -47,7 +47,7 @@ private:
   bool CopySurface(LPDIRECT3DSURFACE9 pSurfaceSource, const RECT* rcSource, LPDIRECT3DSURFACE9 pSurfaceDest, const RECT* rcDest);
 #endif
 
-  DWORD m_time;
+  unsigned int m_time;
   bool m_enabled;
   int m_explicitbusy;
   int m_busycount;
@@ -61,5 +61,6 @@ private:
   RESOLUTION m_Resolution;
 };
 extern CApplicationRenderer g_ApplicationRenderer;
+
 
 

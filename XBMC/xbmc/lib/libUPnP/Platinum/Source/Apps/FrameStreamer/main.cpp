@@ -57,19 +57,17 @@ class FrameWriter : public NPT_Thread
 {
 public:
     FrameWriter(PLT_FrameBuffer& frame_buffer,
-                const char*      frame_folder,
-                NPT_TimeInterval frame_delay = NPT_TimeInterval(1.f)) : 
+                const char*      frame_folder) : 
         m_FrameBuffer(frame_buffer),
         m_Aborted(false),
-        m_Folder(frame_folder),
-        m_Delay(frame_delay)
+        m_Folder(frame_folder)
         {}
 
-    const char* GetNextEntry(NPT_List<NPT_String>::Iterator& entry) {
+    const char* GetPath(NPT_List<NPT_String>::Iterator& entry) {
         if (!entry) return NULL;
 
         if (!entry->EndsWith(".jpg", true)) {
-            return GetNextEntry(++entry);
+            return GetPath(++entry);
         }
 
         return *entry;
@@ -77,43 +75,55 @@ public:
 
     void Run() {
         NPT_List<NPT_String> entries;
-        NPT_File::ListDir(m_Folder, entries);
-        NPT_List<NPT_String>::Iterator entry = entries.GetFirstItem();
+        const char* frame_path = NULL;
+        NPT_DataBuffer frame;
+        NPT_List<NPT_String>::Iterator entry;
         
-        const char* frame_path = GetNextEntry(entry);
-        if (!frame_path) {
-            NPT_LOG_SEVERE("No images found!");
-            return;
-        }
-
         while (!m_Aborted) {
-            // load frame
-            NPT_DataBuffer frame;
-            NPT_Result res = NPT_File::Load(NPT_FilePath::Create(m_Folder, frame_path), frame);
-            if (NPT_FAILED(res)) {
-                NPT_LOG_SEVERE_1("Failed to load %s", frame_path);
-                return;
+            // has number of images changed since last time?
+            NPT_Cardinal count = entries.GetItemCount();
+            NPT_File::GetCount(m_Folder, count);
+            
+            if (entries.GetItemCount() == 0 || entries.GetItemCount() != count) {
+                NPT_File::ListDir(m_Folder, entries);
+                entry = entries.GetFirstItem();
+                if (!entry) {
+                    // Wait a bit before continuing
+                    NPT_System::Sleep(NPT_TimeInterval(0.2f));
+                    continue;
+                }
+                
+                // set delay based on number of files if necessary
+                m_Delay = NPT_TimeInterval((float)1.f/entries.GetItemCount());
+            }
+            
+            // look for path to next image
+            if (!(frame_path = GetPath(entry))) {
+                // loop back if necessary
+                entry = entries.GetFirstItem();
+                continue;
+            }
+            
+            if (NPT_FAILED(NPT_File::Load(NPT_FilePath::Create(m_Folder, frame_path), frame))) {
+                NPT_LOG_SEVERE_1("Image \"%s\" not found!", frame_path?frame_path:"none");
+                // clear previously loaded names so we reload entire set
+                entries.Clear();
+                continue;
             }
 
-            m_FrameBuffer.SetNextFrame(frame.GetData(), frame.GetDataSize());
-            if (NPT_FAILED(res)) {
+            if (NPT_FAILED(m_FrameBuffer.SetNextFrame(frame.GetData(), frame.GetDataSize()))) {
                 NPT_LOG_SEVERE_1("Failed to set next frame %s", frame_path);
-                return;
+                goto failure;
             }
 
             // Wait before loading next frame
             NPT_System::Sleep(m_Delay);
 
             // look for next entry
-            frame_path = GetNextEntry(++entry);
-
-            // loop back if none left
-            if (!frame_path) {
-                entry = entries.GetFirstItem();
-                frame_path = GetNextEntry(entry);
-            }
+            ++entry;
         }
 
+failure:
         // one more time to unblock any pending readers
         m_FrameBuffer.SetNextFrame(NULL, 0);
     }
@@ -175,20 +185,18 @@ main(int argc, char** argv)
     ParseCommandLine(argv);
     
     PLT_FrameBuffer frame_buffer;
-    FrameWriter writer(frame_buffer, Options.path, NPT_TimeInterval(.2f));
+    FrameWriter writer(frame_buffer, Options.path);
     writer.Start();
 
-    PLT_UPnP upnp;
+    NPT_Reference<PLT_FrameServer> device( 
+        new PLT_FrameServer(
+            frame_buffer, 
+            "FrameServer",
+            Options.path,
+            "frame",
+            8099));
 
-    PLT_DeviceHostReference device(new PLT_FrameServer(frame_buffer, 
-                                                       "/Users/sylvain/dev/veodia_frontend/bin-debug",
-                                                       "Platinum: FrameServer: ",
-                                                       false,
-                                                       NULL,
-                                                       8099));
-    upnp.AddDevice(device);
-
-    if (NPT_FAILED(upnp.Start()))
+    if (NPT_FAILED(device->Start()))
         return 1;
 
     char buf[256];
@@ -201,7 +209,6 @@ main(int argc, char** argv)
     }
 
     writer.m_Aborted = true;
-    upnp.Stop();
 
     return 0;
 }

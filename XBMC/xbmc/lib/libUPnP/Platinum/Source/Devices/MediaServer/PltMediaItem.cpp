@@ -104,12 +104,355 @@ PLT_PersonRoles::FromDidl(const NPT_Array<NPT_XmlElementNode*>& nodes)
 }
 
 /*----------------------------------------------------------------------
+|   PLT_ProtocolInfo::PLT_ProtocolInfo
++---------------------------------------------------------------------*/
+PLT_ProtocolInfo::PLT_ProtocolInfo() :
+    m_Valid(false)
+{
+}
+
+/*----------------------------------------------------------------------
+|   PLT_ProtocolInfo::PLT_ProtocolInfo
++---------------------------------------------------------------------*/
+PLT_ProtocolInfo::PLT_ProtocolInfo(const char* protocol_info) :
+    m_Valid(false)
+{
+    if (!protocol_info || protocol_info[0] == '\0') return;
+
+    NPT_List<NPT_String> parts = NPT_String(protocol_info).Split(":");
+    if (parts.GetItemCount() != 4) return;
+
+    NPT_List<NPT_String>::Iterator part = parts.GetFirstItem();
+    m_Protocol    = *part++;
+    m_Mask        = *part++;
+    m_ContentType = *part++;
+    m_Extra       = *part;
+
+    ValidateExtra();
+}
+
+/*----------------------------------------------------------------------
+|   PLT_ProtocolInfo::PLT_ProtocolInfo
++---------------------------------------------------------------------*/
+PLT_ProtocolInfo::PLT_ProtocolInfo(const char* protocol,
+                                   const char* mask,
+                                   const char* content_type,
+                                   const char* extra) :
+    m_Protocol(protocol),
+    m_Mask(mask),
+    m_ContentType(content_type),
+    m_Extra(extra),
+    m_Valid(false)
+{
+    ValidateExtra();
+}
+
+/*----------------------------------------------------------------------
+|   types
++---------------------------------------------------------------------*/
+typedef enum {
+    PLT_PROTINFO_PARSER_STATE_PN,
+    PLT_PROTINFO_PARSER_STATE_OP,
+    PLT_PROTINFO_PARSER_STATE_PS,
+    PLT_PROTINFO_PARSER_STATE_CI,
+    PLT_PROTINFO_PARSER_STATE_FLAGS,
+    PLT_PROTINFO_PARSER_STATE_MAXSP,
+    PLT_PROTINFO_PARSER_STATE_OTHER
+} NPT_ProtocolInfoParserState;
+
+/*----------------------------------------------------------------------
+|   PLT_ProtocolInfo::ParseExtra
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_ProtocolInfo::ParseExtra(NPT_List<FieldEntry>& entries)
+{
+    if (m_Extra == "*") return NPT_SUCCESS;
+    
+    NPT_List<NPT_String> fields = m_Extra.Split(";");
+    NPT_List<NPT_String>::Iterator field = fields.GetFirstItem();
+    if (!field) NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+
+    while (field) {
+        NPT_List<NPT_String> entry = (*field).Split("=");
+        if (entry.GetItemCount() != 2) NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+        entries.Add(FieldEntry(*entry.GetFirstItem(), *entry.GetLastItem()));
+        ++field;
+    }
+
+    return NPT_SUCCESS;
+}
+
+#define PLT_FIELD_ALPHA "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+#define PLT_FIELD_NUM   "0123456789"
+
+/*----------------------------------------------------------------------
+|   PLT_DLNAPNCharsToValidate
++---------------------------------------------------------------------*/
+static const char PLT_DLNAPNCharsToValidate[] = PLT_FIELD_ALPHA PLT_FIELD_NUM "_";
+
+/*----------------------------------------------------------------------
+|   PLT_DLNAPSCharsToValidate
++---------------------------------------------------------------------*/
+static const char PLT_DLNAPSCharsToValidate[] = PLT_FIELD_NUM "-,/";
+
+/*----------------------------------------------------------------------
+|   PLT_DLNAFlagCharsToValidate
++---------------------------------------------------------------------*/
+static const char PLT_DLNAFlagCharsToValidate[] = "01";
+
+/*----------------------------------------------------------------------
+|   PLT_DLNAHexCharsToValidate
++---------------------------------------------------------------------*/
+static const char PLT_DLNAHexCharsToValidate[] = PLT_FIELD_NUM "ABCDEFabcdef";
+
+/*----------------------------------------------------------------------
+|   PLT_DLNAOTherNameCharsToValidate
++---------------------------------------------------------------------*/
+static const char PLT_DLNAOTherNameCharsToValidate[] = PLT_FIELD_ALPHA PLT_FIELD_NUM;
+
+/*----------------------------------------------------------------------
+|   PLT_DLNAOTherValueCharsToValidate
++---------------------------------------------------------------------*/
+static const char PLT_DLNAOTherValueCharsToValidate[] = PLT_FIELD_ALPHA PLT_FIELD_NUM "_-+,";
+
+/*----------------------------------------------------------------------
+|   PLT_ProtocolInfo::ValidateField
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_ProtocolInfo::ValidateField(const char*  val, 
+                                const char*  valid_chars, 
+                                NPT_Cardinal num_chars /* = 0 */)
+{
+    if (!valid_chars || !val || val[0] == '\0') 
+        return NPT_ERROR_INVALID_PARAMETERS;
+    
+    // shortcut
+    if (num_chars && NPT_StringLength(val) != num_chars)
+        return NPT_ERROR_INVALID_SYNTAX;
+
+    while (val) {
+        char c = *val++;
+        if (c == '\0') return NPT_SUCCESS;
+
+        // look for character in valid chars
+        const char* p = valid_chars;
+        while (*p != c && ++p) {};
+
+        // reached end of valid chars means we didn't find it
+        if (!p) break;
+    }
+
+    return NPT_ERROR_INVALID_SYNTAX;
+
+}
+
+/*----------------------------------------------------------------------
+|   PLT_ProtocolInfo::ValidateExtra
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_ProtocolInfo::ValidateExtra()
+{
+    if (m_Extra != "*") {
+        NPT_List<FieldEntry> entries;
+        NPT_CHECK(ParseExtra(entries));
+
+        NPT_List<FieldEntry>::Iterator entry = 
+            entries.GetFirstItem();
+        
+        // parse other optional fields
+        NPT_ProtocolInfoParserState state = PLT_PROTINFO_PARSER_STATE_PN;
+        for (;entry;entry++) {
+            if (entry->m_Key == "DLNA.ORG_PN") {
+                if (state > PLT_PROTINFO_PARSER_STATE_PN) 
+                    NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+
+                NPT_CHECK_SEVERE(ValidateField(
+                    entry->m_Value, 
+                    PLT_DLNAPNCharsToValidate));
+
+                m_DLNA_PN = entry->m_Value;
+                state = PLT_PROTINFO_PARSER_STATE_PN;
+                continue;
+            } else if (entry->m_Key == "DLNA.ORG_OP") {
+                // op-param only allowed after pn-param
+                if (state > PLT_PROTINFO_PARSER_STATE_PN) 
+                    NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+                
+                // validate value
+                NPT_CHECK_SEVERE(ValidateField(
+                    entry->m_Value, 
+                    PLT_DLNAFlagCharsToValidate, 
+                    2));
+
+                m_DLNA_OP = entry->m_Value;
+                state = PLT_PROTINFO_PARSER_STATE_OP;
+                continue;
+            } else if (entry->m_Key == "DLNA.ORG_PS") {
+                // ps-param only allowed after op-param
+                if (state > PLT_PROTINFO_PARSER_STATE_OP) 
+                    NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+
+                // validate value
+                NPT_CHECK_SEVERE(ValidateField(
+                    entry->m_Value, 
+                    PLT_DLNAPSCharsToValidate));
+
+                m_DLNA_PS = entry->m_Value;
+                state = PLT_PROTINFO_PARSER_STATE_PS;
+                continue;
+            } else if (entry->m_Key == "DLNA.ORG_CI") {
+                // ci-param only allowed after ps-param
+                if (state > PLT_PROTINFO_PARSER_STATE_PS) 
+                    NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+
+                // validate value
+                NPT_CHECK_SEVERE(ValidateField(
+                    entry->m_Value, 
+                    PLT_DLNAFlagCharsToValidate, 
+                    1));
+
+                m_DLNA_CI = entry->m_Value;
+                state = PLT_PROTINFO_PARSER_STATE_CI;
+                continue;
+            } else if (entry->m_Key == "DLNA.ORG_FLAGS") {
+                // flags-param only allowed after ci-param
+                if (state > PLT_PROTINFO_PARSER_STATE_CI) 
+                    NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+
+                // validate value
+                NPT_CHECK_SEVERE(ValidateField(
+                    entry->m_Value, 
+                    PLT_DLNAHexCharsToValidate, 
+                    32));
+
+                m_DLNA_FLAGS = entry->m_Value;
+                state = PLT_PROTINFO_PARSER_STATE_FLAGS;
+                continue;
+            } else if (entry->m_Key == "DLNA.ORG_MAXSP") {
+                // maxsp-param only allowed after flags-param
+                if (state > PLT_PROTINFO_PARSER_STATE_FLAGS) 
+                    NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+
+                // validate value
+                NPT_CHECK_SEVERE(ValidateField(
+                    entry->m_Value, 
+                    PLT_FIELD_NUM "."));
+
+                m_DLNA_MAXSP = entry->m_Value;
+                state = PLT_PROTINFO_PARSER_STATE_MAXSP;
+                continue;
+            } else {
+                state = PLT_PROTINFO_PARSER_STATE_OTHER;
+
+                // validate key first which should IANA_*<"a"-"z","A"-"Z","0"-"9">
+                int index = entry->m_Key.Find("_");
+                if (index == -1) NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+
+                // validate key
+                if (NPT_FAILED(ValidateField(
+                    entry->m_Key.GetChars()+index, 
+                    PLT_DLNAOTherNameCharsToValidate))) {
+                        NPT_LOG_WARNING_2("Invalid protocolinfo 4th field other param: %s=%s",
+                            (const char*)entry->m_Key, 
+                            (const char*)entry->m_Value);
+                    continue;
+                }
+
+                // validate value
+                if (NPT_FAILED(ValidateField(
+                        entry->m_Value, 
+                        PLT_DLNAOTherValueCharsToValidate))) {
+                
+                    NPT_LOG_WARNING_2("Invalid protocolinfo 4th field other param: %s=%s",
+                        (const char*)entry->m_Key, 
+                        (const char*)entry->m_Value);
+                    continue;
+                }
+                
+                m_DLNA_OTHER.Add(*entry);
+                continue;
+            }
+        }
+    }
+
+    m_Valid = true;
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_ProtocolInfo::ToString
++---------------------------------------------------------------------*/
+NPT_String
+PLT_ProtocolInfo::ToString() const
+{
+    NPT_String output = m_Protocol + ":";
+    output += m_Mask + ":";
+    output += m_ContentType + ":";
+    if (m_Extra == "*") {
+        output += "*";
+    } else {
+        output += "DLNA.ORG_PN=" + m_DLNA_PN;
+        if (!m_DLNA_OP.IsEmpty()) {
+            output += ";DLNA.ORG_OP=" + m_DLNA_OP;
+        }
+        if (!m_DLNA_PS.IsEmpty()) {
+            output += ";DLNA.ORG_PS=" + m_DLNA_PS;
+        }
+        if (!m_DLNA_CI.IsEmpty()) {
+            output += ";DLNA.ORG_CI=" + m_DLNA_CI;
+        }
+        if (!m_DLNA_FLAGS.IsEmpty()) {
+            output += ";DLNA.ORG_FLAGS=" + m_DLNA_FLAGS;
+        }
+        if (!m_DLNA_MAXSP.IsEmpty()) {
+            output += ";DLNA.ORG_MAXSP=" + m_DLNA_MAXSP;
+        }
+        if (m_DLNA_OTHER.GetItemCount()) {
+            for (NPT_List<FieldEntry>::Iterator iter;
+                 iter;
+                 iter++) {
+                output += ";" + iter->m_Key + "=" + iter->m_Value;
+            }
+        }
+    }
+
+    return output;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_ProtocolInfo::Match
++---------------------------------------------------------------------*/
+bool
+PLT_ProtocolInfo::Match(const PLT_ProtocolInfo& other) const
+{
+    // we need the first 3 params
+    if (m_Protocol != '*' &&
+        other.GetProtocol() != '*' &&
+        m_Protocol != other.GetProtocol()) return false;
+        
+    if (m_Mask != '*' &&
+        other.GetMask() != '*' &&
+        m_Mask != other.GetMask()) return false;
+
+    if (m_ContentType != '*' &&
+        other.GetContentType() != '*' &&
+        m_ContentType != other.GetContentType()) return false;
+
+    // match DLNAPn of 4th item if not '*'
+    if (m_Extra == '*' ||
+        other.GetExtra() == '*' ||
+        (!m_DLNA_PN.IsEmpty() && m_DLNA_PN == other.GetDLNA_PN())) return true;
+
+    return false;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_MediaItemResource::PLT_MediaItemResource
 +---------------------------------------------------------------------*/
 PLT_MediaItemResource::PLT_MediaItemResource()
 {
     m_Uri             = "";
-    m_ProtocolInfo    = "";
+    m_ProtocolInfo    = PLT_ProtocolInfo();
     m_Duration        = (NPT_UInt32)-1;
     m_Size            = (NPT_Size)-1;
     m_Protection      = "";
@@ -157,7 +500,7 @@ PLT_HttpFileRequestHandler_DefaultDlnaMap[] = {
     {"audio/x-ms-wma", "DLNA.ORG_PN=WMABASE;DLNA.ORG_OP=01;DLNA.ORG_CI=0"},
     {"audio/x-wav",    "DLNA.ORG_PN=WAV;DLNA.ORG_OP=01;DLNA.ORG_CI=0"},
     {"video/avi",      "DLNA.ORG_PN=AVI;DLNA.ORG_OP=01;DLNA.ORG_CI=0"},
-    {"video/mp4",      "DLNA.ORG_PN=MPEG4_P2_SP_AAC;DLNA.ORG_CI=0"},
+    {"video/mp4",      "DLNA.ORG_PN=MPEG4_P2_SP_AAC;DLNA.ORG_OP=01;DLNA.ORG_CI=0"},
     {"video/mpeg",     "DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=01;DLNA.ORG_CI=0"},
     {"video/x-ms-wmv", "DLNA.ORG_PN=WMVMED_FULL;DLNA.ORG_OP=01;DLNA.ORG_CI=0"},
     {"video/x-msvideo","DLNA.ORG_PN=AVI;DLNA.ORG_OP=01;DLNA.ORG_CI=0"},
@@ -183,14 +526,14 @@ PLT_MediaObject::GetMimeType(const NPT_String& filename,
                              const PLT_HttpRequestContext* context /* = NULL */)
 {
     int last_dot = filename.ReverseFind('.');
-    if (last_dot > 0) {
+    if (last_dot >= 0) { // passing just the extension is ok (ex .mp3)
         NPT_String extension = filename.GetChars()+last_dot+1;
         extension.MakeLowercase();
         
         return GetMimeTypeFromExtension(extension, context);
     }
 
-    return "application/unknown";
+    return "application/octet-stream";
 }
 
 /*----------------------------------------------------------------------
@@ -231,7 +574,7 @@ PLT_MediaObject::GetMimeTypeFromExtension(const NPT_String& extension,
         }
     }
 
-    return "application/unknown";
+    return "application/octet-stream";
 }
 
 /*----------------------------------------------------------------------
@@ -283,10 +626,12 @@ PLT_MediaObject::GetDlnaExtension(const char*                   mime_type,
 +---------------------------------------------------------------------*/
 NPT_String
 PLT_MediaObject::GetProtocolInfo(const char*                   filepath, 
+                                 bool                          with_dlna_extension /* = true */,
 								 const PLT_HttpRequestContext* context /* = NULL */)
 {
     NPT_String mime_type = GetMimeType(filepath, context);
-    return "http-get:*:"+mime_type+":"+GetDlnaExtension(mime_type, context);
+    return "http-get:*:"+mime_type+":"+ \
+        (with_dlna_extension?GetDlnaExtension(mime_type, context):"*");
 }
 
 /*----------------------------------------------------------------------
@@ -458,10 +803,16 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
         didl += "</upnp:originalTrackNumber>";
     }
 
+	if (mask & PLT_FILTER_MASK_TOC & !m_MiscInfo.toc.IsEmpty()) {
+        didl += "<upnp:toc>";
+		PLT_Didl::AppendXmlEscape(didl, m_MiscInfo.toc);
+        didl += "</upnp:toc>";
+    }
+
     // resource
     if (mask & PLT_FILTER_MASK_RES) {
         for (NPT_Cardinal i=0; i<m_Resources.GetItemCount(); i++) {
-            if (m_Resources[i].m_ProtocolInfo.GetLength() > 0) {
+            if (m_Resources[i].m_ProtocolInfo.IsValid()) {
                 // protocol info is required
                 didl += "<res";
                 
@@ -494,9 +845,27 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
                     didl += NPT_String::FromIntegerU(m_Resources[i].m_Bitrate);
                     didl += "\"";
                 }
+
+				if (mask & PLT_FILTER_MASK_RES_BITSPERSAMPLE && m_Resources[i].m_BitsPerSample != (NPT_Size)-1) {                    
+                    didl += " bitsPerSample=\"";
+                    didl += NPT_String::FromIntegerU(m_Resources[i].m_BitsPerSample);
+                    didl += "\"";
+                }
+
+				if (mask & PLT_FILTER_MASK_RES_SAMPLEFREQUENCY && m_Resources[i].m_SampleFrequency != (NPT_Size)-1) {                    
+                    didl += " sampleFrequency=\"";
+                    didl += NPT_String::FromIntegerU(m_Resources[i].m_SampleFrequency);
+                    didl += "\"";
+                }
+
+				if (mask & PLT_FILTER_MASK_RES_NRAUDIOCHANNELS && m_Resources[i].m_NbAudioChannels != (NPT_Size)-1) {                    
+                    didl += " nrAudioChannels=\"";
+                    didl += NPT_String::FromIntegerU(m_Resources[i].m_NbAudioChannels);
+                    didl += "\"";
+                }
                 
                 didl += " protocolInfo=\"";
-                PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_ProtocolInfo);
+                PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_ProtocolInfo.ToString());
                 didl += "\">";
                 PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_Uri);
                 didl += "</res>";
@@ -559,6 +928,7 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     PLT_XmlHelper::GetChildText(entry, "albumArtURI", m_ExtraInfo.album_art_uri, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "longDescription", m_Description.long_description, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "originalTrackNumber", str, didl_namespace_upnp);
+	PLT_XmlHelper::GetChildText(entry, "toc", m_MiscInfo.toc, didl_namespace_upnp);
     NPT_UInt32 value;
     if (NPT_FAILED(str.ToInteger(value))) value = 0;
     m_MiscInfo.original_track_number = value;
@@ -569,21 +939,29 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
         for (NPT_Cardinal i=0; i<children.GetItemCount(); i++) {
             PLT_MediaItemResource resource;
             if (children[i]->GetText() == NULL) {
-                res = NPT_FAILURE;
-                NPT_CHECK_LABEL_SEVERE(res, cleanup);
+                NPT_LOG_WARNING("No resource text");
+                continue;
             }
 
             resource.m_Uri = *children[i]->GetText();
             
-            // validate uri
-            NPT_HttpUrl url(resource.m_Uri);
-            NPT_IpAddress ip;
-            if (!url.IsValid() || NPT_FAILED(ip.Parse(url.GetHost()))) {
-                res = NPT_FAILURE;
-                NPT_CHECK_LABEL_SEVERE(res, cleanup);
+            // basic uri validation, ignoring scheme (could be rtsp)
+            // do not try to parse ip, it could be a FQDN address
+            // and it would take too long to resolve at this point
+            NPT_HttpUrl url(resource.m_Uri, true);
+            if (!url.IsValid()) {
+                NPT_LOG_WARNING_1("Invalid resource uri: %s", (const char*)resource.m_Uri);
+                continue;
             }
-            res = PLT_XmlHelper::GetAttribute(children[i], "protocolInfo", resource.m_ProtocolInfo);
+            NPT_String protocol_info;
+            res = PLT_XmlHelper::GetAttribute(children[i], "protocolInfo", protocol_info);
             NPT_CHECK_LABEL_SEVERE(res, cleanup);
+
+            resource.m_ProtocolInfo = PLT_ProtocolInfo(protocol_info);
+            if (!resource.m_ProtocolInfo.IsValid()) {
+                NPT_LOG_WARNING_1("Invalid resource protocol info: %s", (const char*)protocol_info);
+                continue;
+            }
             
             PLT_XmlHelper::GetAttribute(children[i], "protection", resource.m_Protection);
             PLT_XmlHelper::GetAttribute(children[i], "resolution", resource.m_Resolution);
@@ -596,20 +974,22 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
                 if (NPT_FAILED(PLT_Didl::ParseTimeStamp(str, resource.m_Duration))) {
                     // if error while converting, ignore and set to -1 to indicate we don't know the duration
                     resource.m_Duration = (NPT_UInt32)-1;
+                    PLT_XmlHelper::RemoveAttribute(children[i], "duration");
+                } else {
+                    // DLNA: reformat duration in case it was not compliant
+                    str = "";
+                    PLT_Didl::FormatTimeStamp(str, resource.m_Duration);
+                    PLT_XmlHelper::SetAttribute(children[i], "duration", str); 
                 }
-
-                // DLNA: reformat duration in case it was wrong
-                str = "";
-                PLT_Didl::FormatTimeStamp(str, resource.m_Duration);
-                PLT_XmlHelper::SetAttribute(children[i], "duration", str); 
             }    
             m_Resources.Add(resource);
         }
     }
 
-    
-    // serialize the entry Didl as a we might need to pass it to a renderer
-    res = PLT_XmlHelper::Serialize(*entry, xml);
+    // reserialize the entry didl as a we might need to pass it to a renderer
+    // we may have modified the tree to "fix" issues, so as not to break a renderer
+    // (don't write xml prefix as this didl could be part of a larger document)
+    res = PLT_XmlHelper::Serialize(*entry, xml, false);
     NPT_CHECK_LABEL_SEVERE(res, cleanup);
     
     m_Didl = didl_header + xml + didl_footer;    

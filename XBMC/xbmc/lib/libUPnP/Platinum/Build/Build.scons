@@ -159,7 +159,7 @@ if os.path.exists(target_config_file):
 # modules
 #######################################################
 # Neptune
-NPT_SOURCE_ROOT = 'ThirdParty/Neptune'
+NPT_SOURCE_ROOT = '../Neptune'
 
 LibraryModule(name                  = 'Zlib',
               source_root           = NPT_SOURCE_ROOT,
@@ -179,6 +179,7 @@ LibraryModule(name                  = 'Neptune',
 # Platinum        
 LibraryModule(name               = 'Platinum',
               build_source_dirs  = ['Core'],
+              build_include_dirs = ['Source/Platinum'],
               included_modules   = ['Neptune'],
               linked_modules     = ['Neptune'])
                  
@@ -216,12 +217,12 @@ for app in ['MicroMediaController', 'MediaCrawler', 'MediaConnect', 'FrameStream
                 dir = 'Source/Apps/' + app, 
                 deps = ['Neptune', 'Platinum', 'PltMediaServer', 'PltMediaRenderer', 'PltMediaConnect', 'PltFrameStreamer'])
     
-for test in ['FileMediaServer', 'MediaRenderer', 'LightSample', 'Http']:
+for test in ['FileMediaServer', 'MediaRenderer', 'LightSample', 'Http', 'Time']:
     Application(name = test+'Test', 
                 dir = 'Source/Tests/' + test, 
                 deps = ['Neptune', 'Platinum', 'PltMediaServer', 'PltMediaRenderer'])
     		 
-for tool in ['SsdpProxy', 'TextToHeader']:
+for tool in ['TextToHeader']:
     Application(name = tool, 
                 dir = 'Source/Tools/' + tool, 
                 deps = ['Neptune', 'Platinum'])

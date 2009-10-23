@@ -49,7 +49,7 @@ bool CMusicSearchDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
 
   // and retrieve the search details
   items.m_strPath = strPath;
-  DWORD time = CTimeUtils::GetTimeMS();
+  unsigned int time = CTimeUtils::GetTimeMS();
   CMusicDatabase db;
   db.Open();
   db.Search(search, items);

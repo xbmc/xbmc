@@ -37,6 +37,13 @@ class IJobCallback
 {
 public:
   /*!
+   \brief Destructor for job call back objects.
+   
+   \sa CJobManager and CJob
+   */
+  virtual ~IJobCallback() {};
+
+  /*!
    \brief The callback used when a job completes.
    
    OnJobComplete is called at the completion of the job's DoWork() function, and is used

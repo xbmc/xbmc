@@ -72,7 +72,7 @@ void CMusicInfoScanner::Process()
 {
   try
   {
-    DWORD dwTick = CTimeUtils::GetTimeMS();
+    unsigned int tick = CTimeUtils::GetTimeMS();
 
     m_musicDatabase.Open();
 
@@ -151,12 +151,13 @@ void CMusicInfoScanner::Process()
       m_musicDatabase.Close();
       CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
 
-      dwTick = CTimeUtils::GetTimeMS() - dwTick;
+      tick = CTimeUtils::GetTimeMS() - tick;
       CStdString strTmp, strTmp1;
-      StringUtils::SecondsToTimeString(dwTick / 1000, strTmp1);
+      StringUtils::SecondsToTimeString(tick / 1000, strTmp1);
       strTmp.Format("My Music: Scanning for music info using worker thread, operation took %s", strTmp1);
       CLog::Log(LOGNOTICE, "%s", strTmp.c_str());
     }
+    bool bCanceled;
     if (m_scanType == 1) // load album info
     {
       if (m_pObserver)
@@ -172,7 +173,6 @@ void CMusicInfoScanner::Process()
         }
 
         CMusicAlbumInfo albumInfo;
-        bool bCanceled;
         DownloadAlbumInfo(it->strGenre,it->strArtist,it->strAlbum, bCanceled, albumInfo); // genre field holds path - see fetchalbuminfo()
 
         if (m_bStop || bCanceled)
@@ -193,9 +193,9 @@ void CMusicInfoScanner::Process()
           m_pObserver->OnSetProgress(iCurrentItem++, m_artistsToScan.size());
         }
 
-        DownloadArtistInfo(it->strGenre,it->strArtist); // genre field holds path - see fetchartistinfo()
+        DownloadArtistInfo(it->strGenre,it->strArtist,bCanceled); // genre field holds path - see fetchartistinfo()
 
-        if (m_bStop)
+        if (m_bStop || bCanceled)
           break;
       }
     }
@@ -533,17 +533,19 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
   }
   m_musicDatabase.CommitTransaction();
 
+  bool bCanceled;
   for (set<CStdString>::iterator i = artistsToScan.begin(); i != artistsToScan.end(); ++i)
   {
+    bCanceled = false;
     long iArtist = m_musicDatabase.GetArtistByName(*i);
     if (find(m_artistsScanned.begin(),m_artistsScanned.end(),iArtist) == m_artistsScanned.end())
     {
       m_artistsScanned.push_back(iArtist);
-      if (!m_bStop && g_guiSettings.GetBool("musiclibrary.autoartistinfo"))
+      if (!m_bStop && g_guiSettings.GetBool("musiclibrary.downloadinfo"))
       {
         CStdString strPath;
         strPath.Format("musicdb://2/%u/",iArtist);
-        if (!DownloadArtistInfo(strPath,*i)) // assume we want to retry
+        if (!DownloadArtistInfo(strPath,*i, bCanceled)) // assume we want to retry
           m_artistsScanned.pop_back();
       }
       else
@@ -551,7 +553,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     }
   }
 
-  if (g_guiSettings.GetBool("musiclibrary.autoalbuminfo"))
+  if (g_guiSettings.GetBool("musiclibrary.downloadinfo"))
   {
     for (set< pair<CStdString, CStdString> >::iterator i = albumsToScan.begin(); i != albumsToScan.end(); ++i)
     {
@@ -563,7 +565,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       strPath.Format("musicdb://3/%u/",iAlbum);
 
       CMusicAlbumInfo albumInfo;
-      bool bCanceled;
+      bCanceled = false;
       if (find(m_albumsScanned.begin(), m_albumsScanned.end(), iAlbum) == m_albumsScanned.end())
         if (DownloadAlbumInfo(strPath, i->second, i->first, bCanceled, albumInfo))
           m_albumsScanned.push_back(iAlbum);
@@ -1015,10 +1017,11 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
   }
 }
 
-bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, CGUIDialogProgress* pDialog)
+bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, bool& bCanceled, CGUIDialogProgress* pDialog)
 {
   DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
   DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
+  bCanceled = false;
   CArtist artist;
   m_musicDatabase.Open();
   if (m_musicDatabase.GetArtistInfo(params.GetArtistId(),artist)) // already got the info
@@ -1079,7 +1082,10 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   while (!scraper.Completed())
   {
     if (m_bStop)
+    {
       scraper.Cancel();
+      bCanceled = true;
+    }
     Sleep(1);
   }
 
@@ -1118,7 +1124,11 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
           // and wait till user selects one
           if (pDlg->GetSelectedLabel() < 0)
           { // none chosen
-            if (!pDlg->IsButtonPressed()) return false;
+            if (!pDlg->IsButtonPressed())
+            {
+              bCanceled = true;            
+              return false;
+            }
             // manual button pressed
             CStdString strNewArtist = strArtist;
             if (!CGUIDialogKeyboard::ShowAndGetInput(strNewArtist, g_localizeStrings.Get(16025), false)) return false;
@@ -1129,7 +1139,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
               pDialog->Progress();
             }
             m_musicDatabase.Close();
-            return DownloadArtistInfo(strPath,strNewArtist,pDialog);
+            return DownloadArtistInfo(strPath,strNewArtist,bCanceled,pDialog);
           }
           iSelectedArtist = pDlg->GetSelectedItem().m_idepth;
         }
@@ -1149,7 +1159,10 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   while (!scraper.Completed())
   {
     if (m_bStop)
+    {
       scraper.Cancel();
+      bCanceled = true;
+    }
     Sleep(1);
   }
 

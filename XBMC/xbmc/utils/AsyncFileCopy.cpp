@@ -58,7 +58,7 @@ bool CAsyncFileCopy::Copy(const CStdString &from, const CStdString &to, const CS
   // create our thread, which starts the file copy operation
   Create();
   CGUIDialogProgress *dlg = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  DWORD time = CTimeUtils::GetTimeMS();
+  unsigned int time = CTimeUtils::GetTimeMS();
   while (m_running)
   {
     m_event.WaitMSec(1000 / 30);

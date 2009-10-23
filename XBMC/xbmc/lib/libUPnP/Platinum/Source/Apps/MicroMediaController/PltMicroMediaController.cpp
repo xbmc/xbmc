@@ -41,6 +41,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+//NPT_SET_LOCAL_LOGGER("platinum.tests.micromediacontroller")
+
 /*----------------------------------------------------------------------
 |   PLT_MicroMediaController::PLT_MicroMediaController
 +---------------------------------------------------------------------*/
@@ -234,17 +236,22 @@ PLT_MicroMediaController::GetCurMediaRenderer(PLT_DeviceDataReference& renderer)
 |   PLT_MicroMediaController::DoBrowse
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MicroMediaController::DoBrowse()
+PLT_MicroMediaController::DoBrowse(const char* object_id, /* = NULL */
+                                   bool        metadata  /* = false */)
 {
     NPT_Result res = NPT_FAILURE;
     PLT_DeviceDataReference device;
     GetCurMediaServer(device);
     if (!device.IsNull()) {
-        NPT_String object_id;
-        m_CurBrowseDirectoryStack.Peek(object_id);
+        NPT_String cur_object_id;
+        m_CurBrowseDirectoryStack.Peek(cur_object_id);
 
         // send off the browse packet and block
-        res = BrowseSync(device, (const char*)object_id, m_MostRecentBrowseResults);		
+        res = BrowseSync(
+            device, 
+            object_id?object_id:(const char*)cur_object_id, 
+            m_MostRecentBrowseResults, 
+            metadata);		
     }
 
     return res;
@@ -365,7 +372,7 @@ PLT_MicroMediaController::HandleCmd_ls()
 void
 PLT_MicroMediaController::HandleCmd_info()
 {
-    NPT_String              objID;
+    NPT_String              object_id;
     PLT_StringMap           tracks;
     PLT_DeviceDataReference device;
 
@@ -383,11 +390,17 @@ PLT_MicroMediaController::HandleCmd_info()
         }
 
         // let the user choose which one
-        objID = ChooseIDFromTable(tracks);
-        if (objID.GetLength()) {
+        object_id = ChooseIDFromTable(tracks);
+
+        if (object_id.GetLength()) {
+            // issue a browse with metadata
+            DoBrowse(object_id, true);
+
             // look back for the PLT_MediaItem in the results
             PLT_MediaObject* track = NULL;
-            if (NPT_SUCCEEDED(NPT_ContainerFind(*m_MostRecentBrowseResults, PLT_MediaItemIDFinder(objID), track))) {
+            if (!m_MostRecentBrowseResults.IsNull() &&
+                NPT_SUCCEEDED(NPT_ContainerFind(*m_MostRecentBrowseResults, PLT_MediaItemIDFinder(object_id), track))) {
+
                 // display info
                 printf("Title: %s \n", track->m_Title.GetChars());
                 printf("OjbectID: %s\n", track->m_ObjectID.GetChars());
@@ -395,14 +408,15 @@ PLT_MicroMediaController::HandleCmd_info()
                 printf("Creator: %s\n", track->m_Creator.GetChars());
                 printf("Date: %s\n", track->m_Date.GetChars());
                 printf("Art Uri: %s\n", track->m_ExtraInfo.album_art_uri.GetChars());
-                printf("Art Uri Dlna Profile: %s\n", track->m_ExtraInfo.album_art_uri_dlna_profile.GetChars());
+                printf("Art Uri DLNA Profile: %s\n", track->m_ExtraInfo.album_art_uri_dlna_profile.GetChars());
                 for (NPT_Cardinal i=0;i<track->m_Resources.GetItemCount(); i++) {
                     printf("\tResource[%d].uri: %s\n", i, track->m_Resources[i].m_Uri.GetChars());
-                    printf("\tResource[%d].profile: %s\n", i, track->m_Resources[i].m_ProtocolInfo.GetChars());
+                    printf("\tResource[%d].profile: %s\n", i, track->m_Resources[i].m_ProtocolInfo.ToString().GetChars());
                     printf("\tResource[%d].duration: %d\n", i, track->m_Resources[i].m_Duration);
                     printf("\tResource[%d].size: %d\n", i, (int)track->m_Resources[i].m_Size);
                     printf("\n");
                 }
+                printf("Didl: %s\n", (const char*)track->m_Didl);
             } else {
                 printf("Couldn't find the track\n");
             }
@@ -418,7 +432,7 @@ PLT_MicroMediaController::HandleCmd_info()
 void
 PLT_MicroMediaController::HandleCmd_cd()
 {
-    NPT_String      newObjID;
+    NPT_String      newobject_id;
     PLT_StringMap   containers;
 
     DoBrowse();
@@ -432,9 +446,9 @@ PLT_MicroMediaController::HandleCmd_cd()
             ++item;
         }
 
-        newObjID = ChooseIDFromTable(containers);
-        if (newObjID.GetLength()) {
-            m_CurBrowseDirectoryStack.Push(newObjID);
+        newobject_id = ChooseIDFromTable(containers);
+        if (newobject_id.GetLength()) {
+            m_CurBrowseDirectoryStack.Push(newobject_id);
         }
 
         m_MostRecentBrowseResults = NULL;
@@ -485,7 +499,7 @@ PLT_MicroMediaController::HandleCmd_pwd()
 void
 PLT_MicroMediaController::HandleCmd_open()
 {
-    NPT_String              objID;
+    NPT_String              object_id;
     PLT_StringMap           tracks;
     PLT_DeviceDataReference device;
 
@@ -507,15 +521,24 @@ PLT_MicroMediaController::HandleCmd_open()
             }
 
             // let the user choose which one
-            objID = ChooseIDFromTable(tracks);
-            if (objID.GetLength()) {
+            object_id = ChooseIDFromTable(tracks);
+            if (object_id.GetLength()) {
                 // look back for the PLT_MediaItem in the results
                 PLT_MediaObject* track = NULL;
-                if (NPT_SUCCEEDED(NPT_ContainerFind(*m_MostRecentBrowseResults, PLT_MediaItemIDFinder(objID), track))) {
+                if (NPT_SUCCEEDED(NPT_ContainerFind(*m_MostRecentBrowseResults, PLT_MediaItemIDFinder(object_id), track))) {
                     if (track->m_Resources.GetItemCount() > 0) {
+                        // look for best resource to use by matching each resource to a sink advertised by renderer
+                        NPT_Cardinal resource_index = 0;
+                        if (NPT_FAILED(FindBestResource(device, *track, resource_index))) {
+                            printf("No matching resource\n");
+                            return;
+                        }
+
                         // invoke the setUri
-                        SetAVTransportURI(device, 0, track->m_Resources[0].m_Uri, track->m_Didl, NULL);
-                        Play(device, 0, "1", NULL);                        
+                        printf("Issuing SetAVTransportURI with url=%s & didl=%s", 
+                            (const char*)track->m_Resources[resource_index].m_Uri, 
+                            (const char*)track->m_Didl);
+                        SetAVTransportURI(device, 0, track->m_Resources[resource_index].m_Uri, track->m_Didl, NULL);
                     } else {
                         printf("Couldn't find the proper resource\n");
                     }
@@ -540,6 +563,26 @@ PLT_MicroMediaController::HandleCmd_play()
     GetCurMediaRenderer(device);
     if (!device.IsNull()) {
         Play(device, 0, "1", NULL);
+    }
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MicroMediaController::HandleCmd_seek
++---------------------------------------------------------------------*/
+void
+PLT_MicroMediaController::HandleCmd_seek(const char* command)
+{
+    PLT_DeviceDataReference device;
+    GetCurMediaRenderer(device);
+    if (!device.IsNull()) {
+        // remove first part of command ("seek")
+        NPT_String target = command;
+        NPT_List<NPT_String> args = target.Split(" ");
+        if (args.GetItemCount() < 2) return;
+        args.Erase(args.GetFirstItem());
+        target = NPT_String::Join(args, " ");
+        
+        Seek(device, 0, (target.Find(":")!=-1)?"REL_TIME":"X_DLNA_REL_BYTE", target, NULL);
     }
 }
 
@@ -611,6 +654,7 @@ PLT_MicroMediaController::HandleCmd_help()
     printf(" open    -   set the uri on the active media renderer\n");
     printf(" play    -   play the active uri on the active media renderer\n");
     printf(" stop    -   stop the active uri on the active media renderer\n");
+    printf(" seek    -   issue a seek command\n");
     printf(" mute    -   mute the active media renderer\n");
     printf(" unmute  -   unmute the active media renderer\n");
 
@@ -659,6 +703,8 @@ PLT_MicroMediaController::ProcessCommandLoop()
             HandleCmd_play();
         } else if (0 == strcmp(command, "stop")) {
             HandleCmd_stop();
+        } else if (0 == strncmp(command, "seek", 4)) {
+            HandleCmd_seek(command);
         } else if (0 == strcmp(command, "mute")) {
             HandleCmd_mute();
         } else if (0 == strcmp(command, "unmute")) {

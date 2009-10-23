@@ -757,11 +757,6 @@ void CGraphicContext::RestoreHardwareTransform()
   g_Windowing.RestoreHardwareTransform();
 }
 
-void CGraphicContext::NotifyAppFocusChange(bool bGaining)
-{
-  g_Windowing.NotifyAppFocusChange(bGaining);
-}
-
 void CGraphicContext::ClipToViewWindow()
 {
 }

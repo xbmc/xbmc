@@ -1056,9 +1056,6 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
 
   CStdString strPath(m_strParentPath[iList]), strOldPath(m_Directory[iList]->m_strPath);
   Update(iList, strPath);
-
-  if (!g_guiSettings.GetBool("filelists.fulldirectoryhistory"))
-    m_history[iList].RemoveSelectedItem(strOldPath); //Delete current path
 }
 
 void CGUIWindowFileManager::Render()

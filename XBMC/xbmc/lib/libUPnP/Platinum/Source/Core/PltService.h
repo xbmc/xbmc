@@ -69,7 +69,7 @@ public:
     NPT_Result  PauseEventing(bool paused = true);
 
     // static methods
-    static bool IsTrue(NPT_String& value) {
+    static bool IsTrue(const NPT_String& value) {
         if (value.Compare("1", true)    && 
             value.Compare("true", true) && 
             value.Compare("yes", true)) {
@@ -95,6 +95,9 @@ public:
     // State Variables
     NPT_Result          SetStateVariable(const char* name, const char* value);
     NPT_Result          SetStateVariableRate(const char* name, NPT_TimeInterval rate);
+	NPT_Result          SetStateVariableExtraAttribute(const char* name, 
+                                                       const char* key,
+                                                       const char* value);
     NPT_Result          IncStateVariable(const char* name);
     PLT_StateVariable*  FindStateVariable(const char* name);
     NPT_Result          GetStateVariableValue(const char* name, NPT_String& value);
@@ -171,7 +174,7 @@ protected:
 };
 
 /*----------------------------------------------------------------------
-|    PLT_ServiceDescriptionURLFinder
+|    PLT_ServiceSCPDURLFinder
 +---------------------------------------------------------------------*/
 class PLT_ServiceSCPDURLFinder
 {

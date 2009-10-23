@@ -45,7 +45,9 @@
 +---------------------------------------------------------------------*/
 static struct {
     const char* in_filename;
-    const char* header_filename;
+    const char* variable_name;
+    const char* header_name;
+    const char* out_filename;
 } Options;
 
 /*----------------------------------------------------------------------
@@ -54,9 +56,11 @@ static struct {
 static void
 PrintUsageAndExit(char** args)
 {
-    fprintf(stderr, "usage: %s [-kh <header>] <filename>\n", args[0]);
-    fprintf(stderr, "-kh : optional output .h header filename\n");
-	fprintf(stderr, "<filename> : input text filename\n");
+    fprintf(stderr, "usage: %s [-v <variable> -h <header name>] <intput> <output>\n", args[0]);
+    fprintf(stderr, "-v : optional variable name\n");
+    fprintf(stderr, "-h : optional header name\n");
+    fprintf(stderr, "<input>  : input scpd filename\n");
+    fprintf(stderr, "<output> : output filename\n");
     exit(1);
 }
 
@@ -70,14 +74,19 @@ ParseCommandLine(char** args)
     char** tmp = args+1;
 
     /* default values */
-    Options.in_filename     = NULL;
-    Options.header_filename = NULL;
+    Options.in_filename   = NULL;
+    Options.variable_name = NULL;
+    Options.out_filename  = NULL;
 
     while ((arg = *tmp++)) {
-        if (!strcmp(arg, "-kh")) {
-            Options.header_filename = *tmp++;
+        if (!strcmp(arg, "-v")) {
+            Options.variable_name = *tmp++;
+        } else if (!strcmp(arg, "-h")) {
+            Options.header_name = *tmp++;
         } else if (Options.in_filename == NULL) {
             Options.in_filename = arg;
+        } else if (Options.out_filename == NULL) {
+            Options.out_filename = arg;
         } else {
             fprintf(stderr, "ERROR: too many arguments\n");
             PrintUsageAndExit(args);
@@ -89,12 +98,16 @@ ParseCommandLine(char** args)
         fprintf(stderr, "ERROR: input filename missing\n");
         PrintUsageAndExit(args);
     }
+    if (Options.out_filename == NULL) {
+        fprintf(stderr, "ERROR: output filename missing\n");
+        PrintUsageAndExit(args);
+    }
 }
 
 /*----------------------------------------------------------------------
 |   PrintHex
 +---------------------------------------------------------------------*/
-static void
+/*static void
 PrintHex(unsigned char* h, unsigned int size)
 {
     unsigned int i;
@@ -107,7 +120,7 @@ PrintHex(unsigned char* h, unsigned int size)
                'A' + (h[i]&0xF)-10 : 
                '0' + (h[i]&0xF));
     }
-}
+}*/
 
 /*----------------------------------------------------------------------
 |   PrintHexForHeader
@@ -131,7 +144,7 @@ int
 main(int /*argc*/, char** argv)
 {
     FILE*           in;
-    FILE*           header;
+    FILE*           out;
     unsigned char*  data_block = NULL;
     unsigned long   data_block_size;
     unsigned long   k;
@@ -169,45 +182,80 @@ main(int /*argc*/, char** argv)
         data_block[data_block_size++] = 0;
     }
 
-    if (Options.header_filename != NULL) {
-        
-        /* open header output */
-        header = fopen(Options.header_filename, "w+");
-        if (header == NULL) {
-            fprintf(stderr, "ERROR: cannot open header output file (%s): %s\n", 
-                Options.header_filename, strerror(errno));
-        }
-
-        /* print header */
-        fprintf(header, "#include \"NptTypes.h\"\n\n");
-        //fprintf(header, "#ifndef _DATABLOCK_H_\n");
-        //fprintf(header, "#define _DATABLOCK_H_\n\n");
-        fprintf(header, "NPT_UInt8 kDataBlock[%ld] =\n", data_block_size);
-        fprintf(header, "{\n  ");
-        col = 0;
-        
-        /* rewind the input file */
-        fseek(in, 0, SEEK_SET);
-
-        for (k = 0; k < data_block_size; k++) {
-            PrintHex(&data_block[k], 1);
-            PrintHexForHeader(header, data_block[k]);
-            if (k < data_block_size - 1) fprintf(header, ", ");
-
-            /* wrap around 20 columns */
-            if (++col > 19) {
-                col = 0;
-                fprintf(header, "\n  ");
-            }
-        }
-
-        /* print footer */
-        fprintf(header, "\n};\n\n");  
-        //fprintf(header, "#endif /* _DATABLOCK_H_ */\n");
-        
-        /* close file */
-        fclose(header);
+    /* open output */
+    out = fopen(Options.out_filename, "w+");
+    if (out == NULL) {
+        fprintf(stderr, "ERROR: cannot open out output file (%s): %s\n", 
+            Options.out_filename, strerror(errno));
     }
+    fprintf(out,
+"/*****************************************************************\n"
+"|\n"
+"|   Platinum - %s SCPD\n"
+"|\n"
+"| Copyright (c) 2004-2008, Plutinosoft, LLC.\n"
+"| All rights reserved.\n"
+"| http://www.plutinosoft.com\n"
+"|\n"
+"| This program is free software; you can redistribute it and/or\n"
+"| modify it under the terms of the GNU General Public License\n"
+"| as published by the Free Software Foundation; either version 2\n"
+"| of the License, or (at your option) any later version.\n"
+"|\n"
+"| OEMs, ISVs, VARs and other distributors that combine and \n"
+"| distribute commercially licensed software with Platinum software\n"
+"| and do not wish to distribute the source code for the commercially\n"
+"| licensed software under version 2, or (at your option) any later\n"
+"| version, of the GNU General Public License (the \"GPL\") must enter\n"
+"| into a commercial license agreement with Plutinosoft, LLC.\n"
+"| \n"
+"| This program is distributed in the hope that it will be useful,\n"
+"| but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"| MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"| GNU General Public License for more details.\n"
+"|\n"
+"| You should have received a copy of the GNU General Public License\n"
+"| along with this program; see the file LICENSE.txt. If not, write to\n"
+"| the Free Software Foundation, Inc., \n"
+"| 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.\n"
+"| http://www.gnu.org/licenses/gpl-2.0.html\n"
+"|\n"
+"****************************************************************/\n", 
+		Options.header_name?Options.header_name:"");
+		fprintf(out, "\n"
+"/*----------------------------------------------------------------------\n"
+"|   includes\n"
+"+---------------------------------------------------------------------*/\n");
+    fprintf(out, "#include \"NptTypes.h\"\n");
+    fprintf(out, "\n"
+"/*----------------------------------------------------------------------\n"
+"|   globals\n"
+"+---------------------------------------------------------------------*/\n");
+    fprintf(out, "NPT_UInt8 %s[] =\n", 
+    	  Options.variable_name?Options.variable_name:"kData");
+    fprintf(out, "{\n  ");
+    col = 0;
+    
+    /* rewind the input file */
+    fseek(in, 0, SEEK_SET);
+
+    for (k = 0; k < data_block_size; k++) {
+        //PrintHex(&data_block[k], 1);
+        PrintHexForHeader(out, data_block[k]);
+        if (k < data_block_size - 1) fprintf(out, ", ");
+
+        /* wrap around 20 columns */
+        if (++col > 19) {
+            col = 0;
+            fprintf(out, "\n  ");
+        }
+    }
+
+    /* print footer */
+    fprintf(out, "\n};\n\n");  
+    
+    /* close file */
+    fclose(out);
 
     /* close file */
     fclose(in);

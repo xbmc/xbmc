@@ -131,7 +131,6 @@
 #include "utils/DbusServer.h"
 #endif
 
-
 // Windows includes
 #include "GUIWindowManager.h"
 #include "GUIWindowHome.h"
@@ -187,7 +186,6 @@
 #include "GUIDialogContentSettings.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogBusy.h"
-
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
@@ -245,21 +243,16 @@
 #include "CocoaInterface.h"
 #include "XBMCHelper.h"
 #endif
-#ifdef HAS_HAL
-#include "linux/LinuxFileSystem.h"
-#endif
-#ifdef HAS_EVENT_SERVER
-#include "utils/EventServer.h"
-#endif
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
-#endif
-#ifdef HAS_DBUS_SERVER
-#include "utils/DbusServer.h"
 #endif
 
 #ifdef HAS_DVD_DRIVE
 #include "lib/libcdio/logging.h"
+#endif
+
+#ifdef HAS_HAL
+#include "linux/HALManager.h"
 #endif
 
 #include "MediaManager.h"
@@ -359,8 +352,6 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
 
   //true while we in IsPaused mode! Workaround for OnPaused, which must be add. after v2.0
   m_bIsPaused = false;
-
-  m_bWasFullScreenBeforeMinimize = false;
 
   /* for now always keep this around */
 #ifdef HAS_KARAOKE
@@ -1573,13 +1564,13 @@ void CApplication::StartUPnP()
 #endif
 }
 
-void CApplication::StopUPnP()
+void CApplication::StopUPnP(bool bWait)
 {
 #ifdef HAS_UPNP
   if (CUPnP::IsInstantiated())
   {
     CLog::Log(LOGNOTICE, "stopping upnp");
-    CUPnP::ReleaseInstance();
+    CUPnP::ReleaseInstance(bWait);
   }
 #endif
 }
@@ -1940,8 +1931,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   g_localizeStrings.LoadSkinStrings(skinPath, skinEnglishPath);
 
-  LARGE_INTEGER start;
-  QueryPerformanceCounter(&start);
+  int64_t start;
+  start = CurrentHostCounter();
 
   CLog::Log(LOGINFO, "  load new skin...");
   CGUIWindowHome *pHome = (CGUIWindowHome *)g_windowManager.GetWindow(WINDOW_HOME);
@@ -1961,10 +1952,10 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   // Load the user windows
   LoadUserWindows(strSkinPath);
 
-  LARGE_INTEGER end, freq;
-  QueryPerformanceCounter(&end);
-  QueryPerformanceFrequency(&freq);
-  CLog::Log(LOGDEBUG,"Load Skin XML: %.2fms", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
+  int64_t end, freq;
+  end = CurrentHostCounter();
+  freq = CurrentHostFrequency();
+  CLog::Log(LOGDEBUG,"Load Skin XML: %.2fms", 1000.f * (end - start) / freq);
 
   CLog::Log(LOGINFO, "  initialize new skin...");
   m_guiPointer.AllocResources(true);
@@ -2297,7 +2288,7 @@ void CApplication::RenderScreenSaver()
   }
 }
 
-bool CApplication::WaitFrame(DWORD timeout)
+bool CApplication::WaitFrame(unsigned int timeout)
 {
   bool done = false;
 #ifdef HAS_SDL
@@ -2567,23 +2558,33 @@ bool CApplication::OnKey(CKey& key)
     }
     if (useKeyboard)
     {
-      if (key.GetFromHttpApi())
+      if (g_guiSettings.GetBool("lookandfeel.remoteaskeyboard"))
       {
-        if (key.GetButtonCode() != KEY_INVALID)
-          action.id = key.GetButtonCode();
-        action.unicode = key.GetUnicode();
+        // users remote is executing keyboard commands, so use the virtualkeyboard section of keymap.xml
+        // and send those rather than actual keyboard presses
+        CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, action);
       }
       else
-      { // see if we've got an ascii key
-        if (g_Keyboard.GetUnicode())
+      {
+        // keyboard entry - pass the keys through directly
+        if (key.GetFromHttpApi())
         {
-          action.id = g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
-          action.unicode = g_Keyboard.GetUnicode();
+          if (key.GetButtonCode() != KEY_INVALID)
+            action.id = key.GetButtonCode();
+          action.unicode = key.GetUnicode();
         }
         else
-        {
-          action.id = g_Keyboard.GetVKey() | KEY_VKEY;
-          action.unicode = 0;
+        { // see if we've got an ascii key
+          if (g_Keyboard.GetUnicode())
+          {
+            action.id = g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
+            action.unicode = g_Keyboard.GetUnicode();
+          }
+          else
+          {
+            action.id = g_Keyboard.GetVKey() | KEY_VKEY;
+            action.unicode = 0;
+          }
         }
       }
 
@@ -2787,8 +2788,7 @@ bool CApplication::OnAction(CAction &action)
       { // unpaused - set the playspeed back to normal
         SetPlaySpeed(1);
       }
-      if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-        g_audioManager.Enable(m_pPlayer->IsPaused());
+      g_audioManager.Enable(m_pPlayer->IsPaused());
       return true;
     }
     if (!m_pPlayer->IsPaused())
@@ -2848,8 +2848,7 @@ bool CApplication::OnAction(CAction &action)
       {
         // unpause, and set the playspeed back to normal
         m_pPlayer->Pause();
-        if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-          g_audioManager.Enable(m_pPlayer->IsPaused());
+        g_audioManager.Enable(m_pPlayer->IsPaused());
 
         g_application.SetPlaySpeed(1);
         return true;
@@ -3307,7 +3306,7 @@ bool CApplication::ProcessEventServer(float frameTime)
 
 bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKeyID, bool isAxis, float fAmount)
 {
-#if defined(HAS_EVENT_SERVER) && defined(HAS_SDL_JOYSTICK)
+#if defined(HAS_EVENT_SERVER)
   m_idleTimer.StartZero();
 
    // Make sure to reset screen saver, mouse.
@@ -3980,8 +3979,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   // Workaround for bug/quirk in SDL_Mixer on OSX.
   // TODO: Remove after GUI Sounds redux
 #if defined(__APPLE__)
-  if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-    g_audioManager.Enable(false);
+  g_audioManager.Enable(false);
 #endif
 
   bool bResult;
@@ -4030,8 +4028,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #endif
 
 #if !defined(__APPLE__)
-    if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-      g_audioManager.Enable(false);
+    g_audioManager.Enable(false);
 #endif
   }
   m_bPlaybackStarting = false;
@@ -5009,15 +5006,7 @@ void CApplication::ProcessSlow()
   smb.CheckIfIdle();
 #endif
 
-// Update HalManager to get newly connected media
-#ifdef HAS_HAL
-  while(g_HalManager.Update()) ;  //If there is 1 message it might be another one in queue, we take care of them directly
-  if (CLinuxFileSystem::AnyDeviceChange())
-  { // changes have occured - update our shares
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REMOVED_MEDIA);
-    g_windowManager.SendThreadMessage(msg);
-  }
-#endif
+  g_mediaManager.ProcessEvents();
 
 #ifdef HAS_LIRC
   if (g_RemoteControl.IsInUse() && !g_RemoteControl.IsInitialized())
@@ -5394,22 +5383,9 @@ bool CApplication::SwitchToFullScreen()
   return false;
 }
 
-void CApplication::Minimize(bool minimize)
+void CApplication::Minimize()
 {
-  if (minimize)
-  {
-    m_bWasFullScreenBeforeMinimize = g_graphicsContext.IsFullScreenRoot();
-    if (m_bWasFullScreenBeforeMinimize)
-      g_graphicsContext.ToggleFullScreenRoot();
-#ifdef HAS_SDL
-    SDL_WM_IconifyWindow();
-#endif
-  }
-  else
-  {
-    if (m_bWasFullScreenBeforeMinimize && !g_graphicsContext.IsFullScreenRoot())
-      g_graphicsContext.ToggleFullScreenRoot();
-  }
+  g_Windowing.Minimize();
 }
 
 PLAYERCOREID CApplication::GetCurrentPlayer()

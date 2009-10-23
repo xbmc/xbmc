@@ -43,6 +43,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "ThumbnailCache.h"
 #include "FileSystem/RarManager.h"
+#include "FileSystem/CMythDirectory.h"
 #ifdef HAS_UPNP
 #include "FileSystem/UPnPDirectory.h"
 #endif
@@ -411,7 +412,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
       continue;
     }
     int j=0;
-    if ((j=reTags.RegFind(strFileName.ToLower().c_str())) >= 0)
+    if ((j=reTags.RegFind(strFileName.ToLower().c_str())) > 0)
       strTitleAndYear = strTitleAndYear.Mid(0, j);
   }
 
@@ -1242,7 +1243,7 @@ static const char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".
 
 void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback )
 {
-  DWORD startTimer = CTimeUtils::GetTimeMS();
+  unsigned int startTimer = CTimeUtils::GetTimeMS();
   CLog::Log(LOGDEBUG,"%s: START", __FUNCTION__);
 
   // new array for commons sub dirs
@@ -1354,7 +1355,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
     strLookInPaths.push_back(strPath);
   }
 
-  DWORD nextTimer = CTimeUtils::GetTimeMS();
+  unsigned int nextTimer = CTimeUtils::GetTimeMS();
   CLog::Log(LOGDEBUG,"%s: Done (time: %i ms)", __FUNCTION__, (int)(nextTimer - startTimer));
 
   CStdString strLExt;
@@ -2615,8 +2616,8 @@ bool CUtil::AutoDetection()
   bool bReturn=false;
   if (g_guiSettings.GetBool("autodetect.onoff"))
   {
-    static DWORD pingTimer = 0;
-    if( CTimeUtils::GetTimeMS() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
+    static unsigned int pingTimer = 0;
+    if( CTimeUtils::GetTimeMS() - pingTimer < (unsigned int)g_advancedSettings.m_autoDetectPingTime * 1000)
       return false;
     pingTimer = CTimeUtils::GetTimeMS();
 
@@ -3211,8 +3212,12 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
     return true;
   if (IsMythTV(strPath))
   {
-    CURL url(strPath);
-    return url.GetFileName().Left(11).Equals("recordings/") && url.GetFileName().length() > 11;
+    /*
+     * Can't use CFile::Exists() to check whether the myth:// path supports file operations because
+     * it hits the directory cache on the way through, which has the Live Channels and Guide
+     * items cached.
+     */
+    return CCMythDirectory::SupportsFileOperations(strPath);
   }
   if (IsStack(strPath))
   {
@@ -3387,9 +3392,9 @@ CStdString CUtil::CreateUUID()
 void CUtil::InitRandomSeed()
 {
   // Init random seed 
-  LARGE_INTEGER now; 
-  QueryPerformanceCounter(&now); 
-  unsigned int seed = (now.u.LowPart);
+  int64_t now; 
+  now = CurrentHostCounter(); 
+  unsigned int seed = now;
 //  CLog::Log(LOGDEBUG, "%s - Initializing random seed with %u", __FUNCTION__, seed);
   srand(seed);
 }

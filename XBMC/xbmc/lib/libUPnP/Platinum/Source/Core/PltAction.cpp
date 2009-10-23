@@ -103,9 +103,20 @@ PLT_ActionDesc::GetArgumentDesc(const char* name)
 /*----------------------------------------------------------------------
 |   PLT_Action::PLT_Action
 +---------------------------------------------------------------------*/
-PLT_Action::PLT_Action(PLT_ActionDesc* action_desc) : 
+PLT_Action::PLT_Action(PLT_ActionDesc& action_desc) :
     m_ActionDesc(action_desc),
-    m_ErrorCode(0) 
+    m_ErrorCode(0)
+{
+}
+
+/*----------------------------------------------------------------------
+|   PLT_Action::PLT_Action
++---------------------------------------------------------------------*/
+PLT_Action::PLT_Action(PLT_ActionDesc&          action_desc, 
+                       PLT_DeviceDataReference& root_device) :
+    m_ActionDesc(action_desc),
+    m_ErrorCode(0),
+	m_RootDevice(root_device)
 {
 }
 
@@ -154,6 +165,28 @@ PLT_Action::GetArgumentValue(const char* name, NPT_Int32& value)
 }
 
 /*----------------------------------------------------------------------
+|   PLT_Action::GetArgumentValue
++---------------------------------------------------------------------*/
+NPT_Result 
+PLT_Action::GetArgumentValue(const char* name, bool& value) 
+{
+    NPT_String tmp_value;
+    NPT_CHECK_WARNING(GetArgumentValue(name, tmp_value));
+	if (tmp_value == "1" || 
+		!tmp_value.Compare("TRUE", true) || 
+		!tmp_value.Compare("YES", true)) {
+		value = true;
+	} else if (tmp_value == "0" ||
+		!tmp_value.Compare("FALSE", true) ||
+		!tmp_value.Compare("NO", true)) {
+		value = false;
+	} else {
+		return NPT_FAILURE;
+	}
+	return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_Action::GetArgument
 +---------------------------------------------------------------------*/
 PLT_Argument*
@@ -169,32 +202,36 @@ PLT_Action::GetArgument(const char* name)
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_Action::SetArgumentValue(const char* name,
-                             const char* value) 
+                             const char* value)
 {
-    PLT_Argument* arg = NULL;
-
     // look for this argument in our argument list
     // and replace the value if we found it 
-    if (NPT_SUCCEEDED(NPT_ContainerFind(m_Arguments, PLT_ArgumentNameFinder(name), arg))) {
-        return arg->SetValue(value);
+	PLT_Arguments::Iterator iter = NULL;
+    if (NPT_SUCCEEDED(NPT_ContainerFind(m_Arguments, PLT_ArgumentNameFinder(name), iter))) {
+        NPT_Result res = (*iter)->SetValue(value);
+
+		// remove argument from list if failed
+		// so that when we verify arguments later, 
+		// we don't use a previously set value
+		if (NPT_FAILED(res)) m_Arguments.Erase(iter);
+		return res;
     }
 
     // since we didn't find it, create a clone 
-    // from the action arguments
-    PLT_ArgumentDesc* arg_desc = m_ActionDesc->GetArgumentDesc(name);
-    if (arg_desc == NULL) {
-        return NPT_ERROR_INVALID_PARAMETERS;
-    }
-    arg = new PLT_Argument(arg_desc);
+	PLT_Argument* arg;
+    NPT_CHECK_SEVERE(PLT_Argument::CreateArgument(m_ActionDesc, name, value, arg));
 
-    NPT_Result res = arg->SetValue(value);
-    if (NPT_FAILED(res)) {
-        delete arg;
-        return res;
+    // insert it at the right position
+    for (NPT_Cardinal i=0;
+         i<m_Arguments.GetItemCount();
+         i++) {
+        NPT_Array<PLT_Argument*>::Iterator iter = m_Arguments.GetItem(i);
+        if ((*iter)->GetPosition() > arg->GetPosition()) {
+            return m_Arguments.Insert(iter, arg);
+        }
     }
 
-    m_Arguments.Add(arg);
-    return NPT_SUCCESS;
+    return m_Arguments.Add(arg);
 }
 
 /*----------------------------------------------------------------------
@@ -218,8 +255,8 @@ PLT_Action::VerifyArguments(bool input)
     NPT_Cardinal count = 0;
 
     // Check we have all the required parameters (in or out)
-    for(unsigned int i=0; i<m_ActionDesc->GetArgumentDescs().GetItemCount(); i++) {
-        PLT_ArgumentDesc* arg_desc = m_ActionDesc->GetArgumentDescs()[i];
+    for(unsigned int i=0; i<m_ActionDesc.GetArgumentDescs().GetItemCount(); i++) {
+        PLT_ArgumentDesc* arg_desc = m_ActionDesc.GetArgumentDescs()[i];
 
         // only input arguments are needed
         if (arg_desc->GetDirection().Compare(input?"in":"out", true))
@@ -228,6 +265,9 @@ PLT_Action::VerifyArguments(bool input)
         // look for this argument in the list we received
         PLT_Argument* arg = NULL;
         if (NPT_FAILED(NPT_ContainerFind(m_Arguments, PLT_ArgumentNameFinder(arg_desc->GetName()), arg))) {
+			NPT_LOG_WARNING_2("Argument %s for action %s not found", 
+				(const char*) arg_desc->GetName(), 
+				(const char*) m_ActionDesc.GetName());
             return NPT_FAILURE;
         }
         ++count;
@@ -264,7 +304,7 @@ PLT_Action::SetArgumentOutFromStateVariable(const char* name)
 {
     // look for this argument in the action list of arguments
     PLT_ArgumentDesc* arg_desc = NULL;
-    NPT_CHECK_SEVERE(NPT_ContainerFind(m_ActionDesc->GetArgumentDescs(), 
+    NPT_CHECK_SEVERE(NPT_ContainerFind(m_ActionDesc.GetArgumentDescs(), 
         PLT_ArgumentDescNameFinder(name), arg_desc));
 
     return SetArgumentOutFromStateVariable(arg_desc);
@@ -277,8 +317,8 @@ NPT_Result
 PLT_Action::SetArgumentsOutFromStateVariable()
 {
     // go through the list of the action output arguments
-    for(unsigned int i=0; i<m_ActionDesc->GetArgumentDescs().GetItemCount(); i++) {
-        PLT_ArgumentDesc* arg_desc = m_ActionDesc->GetArgumentDescs()[i];
+    for(unsigned int i=0; i<m_ActionDesc.GetArgumentDescs().GetItemCount(); i++) {
+        PLT_ArgumentDesc* arg_desc = m_ActionDesc.GetArgumentDescs()[i];
 
         // only output arguments are needed
         if (arg_desc->GetDirection().Compare("out", true))
@@ -338,16 +378,16 @@ PLT_Action::FormatSoapRequest(NPT_OutputStream& stream)
     body = new NPT_XmlElementNode("s", "Body");
     NPT_CHECK_LABEL_SEVERE(res = envelope->AddChild(body), cleanup);
 
-    request = new NPT_XmlElementNode("u", m_ActionDesc->GetName());
-    NPT_CHECK_LABEL_SEVERE(res = request->SetNamespaceUri("u", m_ActionDesc->GetService()->GetServiceType()), cleanup);
+    request = new NPT_XmlElementNode("u", m_ActionDesc.GetName());
+    NPT_CHECK_LABEL_SEVERE(res = request->SetNamespaceUri("u", m_ActionDesc.GetService()->GetServiceType()), cleanup);
     NPT_CHECK_LABEL_SEVERE(res = body->AddChild(request), cleanup);
 
     for(unsigned int i=0; i<m_Arguments.GetItemCount(); i++) {
         PLT_Argument* argument = m_Arguments[i];
-        if (argument->GetDesc()->GetDirection().Compare("in", true) == 0) {
+        if (argument->GetDesc().GetDirection().Compare("in", true) == 0) {
             NPT_CHECK_LABEL_SEVERE(res = PLT_XmlHelper::AddChildText(
                 request, 
-                argument->GetDesc()->GetName(), 
+                argument->GetDesc().GetName(), 
                 argument->GetValue()), cleanup);
         }
     }
@@ -385,19 +425,19 @@ PLT_Action::FormatSoapResponse(NPT_OutputStream& stream)
     body = new NPT_XmlElementNode("s", "Body");
     NPT_CHECK_LABEL_SEVERE(res = envelope->AddChild(body), cleanup);        
 
-    response = new NPT_XmlElementNode("u", m_ActionDesc->GetName() + "Response");
-    NPT_CHECK_LABEL_SEVERE(response->SetNamespaceUri("u", m_ActionDesc->GetService()->GetServiceType()), cleanup);
+    response = new NPT_XmlElementNode("u", m_ActionDesc.GetName() + "Response");
+    NPT_CHECK_LABEL_SEVERE(response->SetNamespaceUri("u", m_ActionDesc.GetService()->GetServiceType()), cleanup);
     NPT_CHECK_LABEL_SEVERE(res = body->AddChild(response), cleanup);    
 
     for(unsigned int i=0; i<m_Arguments.GetItemCount(); i++) {
         PLT_Argument* argument = m_Arguments[i];
-        if (argument->GetDesc()->GetDirection().Compare("out", true) == 0) {
-            node = new NPT_XmlElementNode(argument->GetDesc()->GetName());
+        if (argument->GetDesc().GetDirection().Compare("out", true) == 0) {
+            node = new NPT_XmlElementNode(argument->GetDesc().GetName());
             NPT_CHECK_LABEL_SEVERE(res = node->AddText(argument->GetValue()), cleanup);
             NPT_CHECK_LABEL_SEVERE(res = response->AddChild(node), cleanup);
 
 #ifndef REMOVE_WMP_DATATYPE_EXTENSION
-            PLT_StateVariable* var = argument->GetDesc()->GetRelatedStateVariable();
+            PLT_StateVariable* var = argument->GetDesc().GetRelatedStateVariable();
             if (var) {
                 node->SetNamespaceUri("dt", "urn:schemas-microsoft-com:datatypes");
                 node->SetAttribute("dt", "dt", var->GetDataType());

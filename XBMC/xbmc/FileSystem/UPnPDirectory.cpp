@@ -45,7 +45,7 @@ class CProtocolFinder {
 public:
     CProtocolFinder(const char* protocol) : m_Protocol(protocol) {}
     bool operator()(const PLT_MediaItemResource& resource) const {
-        return (resource.m_ProtocolInfo.Compare(m_Protocol, true) == 0);
+        return (resource.m_ProtocolInfo.ToString().Compare(m_Protocol, true) == 0);
     }
 private:
     NPT_String m_Protocol;
@@ -274,7 +274,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                                       CProtocolFinder("xbmc-get"),
                                       resource);
 
-                    CLog::Log(LOGDEBUG, "CUPnPDirectory::GetDirectory - resource protocol info '%s'", (const char*)(resource.m_ProtocolInfo));
+                    CLog::Log(LOGDEBUG, "CUPnPDirectory::GetDirectory - resource protocol info '%s'", 
+                        (const char*)(resource.m_ProtocolInfo.ToString()));
 
                     // if it's an item, path is the first url to the item
                     // we hope the server made the first one reachable for us
@@ -288,7 +289,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
                     // set a general content type
                     CStdString type = (const char*)(*entry)->m_ObjectClass.type.Left(21);
-                    if     (type.Equals("object.item.videoitem"))
+                    if (type.Equals("object.item.videoitem"))
                         pItem->SetContentType("video/octet-stream");
                     else if(type.Equals("object.item.audioitem"))
                         pItem->SetContentType("audio/octet-stream");
@@ -296,19 +297,13 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                         pItem->SetContentType("image/octet-stream");
 
                     // look for content type in protocol info
-                    if (resource.m_ProtocolInfo.GetLength()) {
-                        char proto[1024];
-                        char dummy1[1024];
-                        char ct[1204];
-                        char dummy2[1024];
-                        int fields = sscanf(resource.m_ProtocolInfo, "%[^:]:%[^:]:%[^:]:%[^:]", proto, dummy1, ct, dummy2);
-                        if (fields == 4) {
-                            if (strcmp(ct, "application/octet-stream") != 0) {
-                                pItem->SetContentType(ct);
-                            }
-                        } else {
-                            CLog::Log(LOGERROR, "CUPnPDirectory::GetDirectory - invalid protocol info '%s'", (const char*)(resource.m_ProtocolInfo));
+                    if (resource.m_ProtocolInfo.IsValid()) {
+                        if (resource.m_ProtocolInfo.GetContentType().Compare("application/octet-stream") != 0) {
+                            pItem->SetContentType((const char*)resource.m_ProtocolInfo.GetContentType());
                         }
+                    } else {
+                        CLog::Log(LOGERROR, "CUPnPDirectory::GetDirectory - invalid protocol info '%s'", 
+                            (const char*)(resource.m_ProtocolInfo.ToString()));
                     }
 
                     // look for date?

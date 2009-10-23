@@ -44,7 +44,7 @@
 #include "Settings.h"
 #include "LocalizeStrings.h"
 #ifdef HAS_HAL
-#include "linux/HalManager.h"
+#include "linux/HALManager.h"
 #endif
 
 #ifdef _WIN32

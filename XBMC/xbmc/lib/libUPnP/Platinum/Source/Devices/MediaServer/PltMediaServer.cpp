@@ -99,7 +99,7 @@ PLT_MediaServer::SetupServices(PLT_DeviceData& data)
         service = new PLT_Service(
             &data,
             "urn:schemas-upnp-org:service:ContentDirectory:1", 
-            "urn:upnp-org:serviceId:CDS_1-0");
+            "urn:upnp-org:serviceId:ContentDirectory");
         NPT_CHECK_FATAL(service->SetSCPDXML((const char*) MS_ContentDirectorywSearchSCPD));
         NPT_CHECK_FATAL(service->InitURLs("ContentDirectory", data.GetUUID()));
         NPT_CHECK_FATAL(data.AddService(service));
@@ -116,7 +116,7 @@ PLT_MediaServer::SetupServices(PLT_DeviceData& data)
         service = new PLT_Service(
             &data,
             "urn:schemas-upnp-org:service:ConnectionManager:1", 
-            "urn:upnp-org:serviceId:CMGR_1-0");
+            "urn:upnp-org:serviceId:ConnectionManager");
         NPT_CHECK_FATAL(service->SetSCPDXML((const char*) MS_ConnectionManagerSCPD));
         NPT_CHECK_FATAL(service->InitURLs("ConnectionManager", data.GetUUID()));
         NPT_CHECK_FATAL(data.AddService(service));
@@ -137,7 +137,7 @@ PLT_MediaServer::OnAction(PLT_ActionReference&          action,
                           const PLT_HttpRequestContext& context)
 {
     /* parse the action name */
-    NPT_String name = action->GetActionDesc()->GetName();
+    NPT_String name = action->GetActionDesc().GetName();
                    
     // ContentDirectory
     if (name.Compare("Browse", true) == 0) {
@@ -419,6 +419,7 @@ PLT_MediaServer::OnSearch(PLT_ActionReference&          action,
     NPT_Result res;
     NPT_String container_id;
     NPT_String search;
+	NPT_String filter;
     NPT_String start;
     NPT_String count;
     NPT_String sort;
@@ -426,6 +427,7 @@ PLT_MediaServer::OnSearch(PLT_ActionReference&          action,
 
     if (NPT_FAILED(action->GetArgumentValue("ContainerId", container_id)) ||
         NPT_FAILED(action->GetArgumentValue("SearchCriteria", search)) || 
+		NPT_FAILED(action->GetArgumentValue("Filter",  filter)) ||
         NPT_FAILED(action->GetArgumentValue("StartingIndex",  start)) || 
         NPT_FAILED(action->GetArgumentValue("RequestedCount",  count)) || 
         NPT_FAILED(action->GetArgumentValue("SortCriteria",  sort))) {
@@ -462,8 +464,8 @@ PLT_MediaServer::OnSearch(PLT_ActionReference&          action,
     if (search.IsEmpty() || search == "*") {
         res = OnBrowseDirectChildren(
             action, 
-            container_id, 
-            search, 
+            container_id,
+			filter,
             starting_index, 
             requested_count, 
             sort_list, 
@@ -473,6 +475,7 @@ PLT_MediaServer::OnSearch(PLT_ActionReference&          action,
             action, 
             container_id, 
             search, 
+			filter,
             starting_index, 
             requested_count, 
             sort_list,
@@ -523,6 +526,7 @@ NPT_Result
 PLT_MediaServer::OnSearchContainer(PLT_ActionReference&          /* action */, 
                                    const char*                   /* object_id */, 
                                    const char*                   /* search_criteria */,
+								   const char*                   /* filter */,
                                    NPT_UInt32                    /* starting_index */,
                                    NPT_UInt32                    /* requested_count */,
                                    const NPT_List<NPT_String>&   /* sort_criteria */,

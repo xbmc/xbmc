@@ -84,7 +84,7 @@ private:
   int              m_port;
   DllLibCMyth*     m_dll;
   CCriticalSection m_section;
-  DWORD            m_timestamp;
+  unsigned int     m_timestamp;
 
   static CCriticalSection            m_section_session;
   static std::vector<CCMythSession*> m_sessions;

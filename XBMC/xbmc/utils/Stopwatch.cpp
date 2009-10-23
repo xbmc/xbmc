@@ -19,7 +19,6 @@
  *
  */
 
-#include "system.h" // for LARGE_INTEGER, QueryPerformanceCounter etc.
 #include "Stopwatch.h"
 #if defined(_LINUX) && !defined(__APPLE__)
 #include <sys/sysinfo.h>
@@ -34,9 +33,7 @@ CStopWatch::CStopWatch()
 
   // Get the timer frequency (ticks per second)
 #ifndef _LINUX
-  LARGE_INTEGER timerFreq;
-  QueryPerformanceFrequency( &timerFreq );
-  m_timerPeriod = 1.0f / (float)timerFreq.QuadPart;
+  m_timerPeriod = 1.0f / (float)CurrentHostFrequency();
 #else
   m_timerPeriod = 1.0f / 1000.0f; // we want seconds
 #endif
@@ -94,9 +91,7 @@ float CStopWatch::GetElapsedMilliseconds() const
 int64_t CStopWatch::GetTicks() const
 {
 #ifndef _LINUX
-  LARGE_INTEGER currTicks;
-  QueryPerformanceCounter( &currTicks );
-  return currTicks.QuadPart;
+  return CurrentHostCounter();
 #else
   return CTimeUtils::GetTimeMS();
 #endif

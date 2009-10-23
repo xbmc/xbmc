@@ -66,8 +66,8 @@ public:
     virtual NPT_Result  GetYear(NPT_Size& year) = 0;
     
     // helper functions
-    virtual NPT_Result  LoadFile(const char* filename);
-    virtual NPT_Result  SaveFile(const char* filename);
+    virtual NPT_Result  Load(const char* filename);
+    virtual NPT_Result  Save(const char* filename);
 };
 
 /*----------------------------------------------------------------------

@@ -214,7 +214,7 @@ void CLastFmManager::CloseProgressDialog()
 
 bool CLastFmManager::ChangeStation(const CURL& stationUrl)
 {
-  DWORD start = CTimeUtils::GetTimeMS();
+  unsigned int start = CTimeUtils::GetTimeMS();
 
   CStdString strUrl;
   stationUrl.GetURL(strUrl);
@@ -280,7 +280,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
 
 bool CLastFmManager::RequestRadioTracks()
 {
-  DWORD start = CTimeUtils::GetTimeMS();
+  unsigned int start = CTimeUtils::GetTimeMS();
   CStdString url;
   CStdString html;
   url.Format("http://" + m_RadioBaseUrl + m_RadioBasePath + "/xspf.php?sk=%s&discovery=0&desktop=", m_RadioSession);
@@ -426,7 +426,7 @@ bool CLastFmManager::RequestRadioTracks()
 
 void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
 {
-  DWORD start = CTimeUtils::GetTimeMS();
+  unsigned int start = CTimeUtils::GetTimeMS();
   CSingleLock lock(m_lockCache);
   int iNrCachedTracks = m_RadioTrackQueue->size();
   CFileCurl http;
@@ -509,7 +509,7 @@ void CLastFmManager::OnSongChange(CFileItem& newSong)
     }
     else
     { 
-      DWORD start = CTimeUtils::GetTimeMS();
+      unsigned int start = CTimeUtils::GetTimeMS();
       ReapSongs();
       MovePlaying();
       Update();

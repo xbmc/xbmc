@@ -26,6 +26,7 @@
 #include "MathUtils.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
   #include <X11/extensions/Xrandr.h>
@@ -46,10 +47,8 @@ using namespace std;
 
 CVideoReferenceClock::CVideoReferenceClock()
 {
-  LARGE_INTEGER Freq;
-  QueryPerformanceFrequency(&Freq);
-  m_SystemFrequency = Freq.QuadPart;
-  m_AdjustedFrequency = Freq.QuadPart;
+  m_SystemFrequency = CurrentHostFrequency();
+  m_AdjustedFrequency = m_SystemFrequency;
   m_ClockOffset = 0;
   m_TotalMissedVblanks = 0;
   m_UseVblank = false;
@@ -58,22 +57,13 @@ CVideoReferenceClock::CVideoReferenceClock()
 #ifdef _WIN32
   ZeroMemory(&m_Monitor, sizeof(m_Monitor));
   ZeroMemory(&m_PrevMonitor, sizeof(m_PrevMonitor));
-  
-  m_IsVista = false;
-  OSVERSIONINFO WindowsVersion;
-  WindowsVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  if (GetVersionEx(&WindowsVersion))
-  {
-    if (WindowsVersion.dwMajorVersion == 6 && WindowsVersion.dwMinorVersion == 0)
-      m_IsVista = true;
-  }
 #endif
 }
 
 void CVideoReferenceClock::Process()
 {
   bool SetupSuccess = false;
-  LARGE_INTEGER Now;
+  int64_t Now;
 
   while(!m_bStop)
   {
@@ -91,8 +81,8 @@ void CVideoReferenceClock::Process()
 #endif
 
     CSingleLock SingleLock(m_CritSection);
-    QueryPerformanceCounter(&Now);
-    m_CurrTime = Now.QuadPart + m_ClockOffset; //add the clock offset from the previous time we stopped
+    Now = CurrentHostCounter();
+    m_CurrTime = Now + m_ClockOffset; //add the clock offset from the previous time we stopped
     m_AdjustedFrequency = m_SystemFrequency;
     m_TotalMissedVblanks = 0;
     m_Started.Set();
@@ -100,7 +90,7 @@ void CVideoReferenceClock::Process()
     if (SetupSuccess)
     {
       m_UseVblank = true;          //tell other threads we're using vblank as clock
-      m_VblankTime = Now.QuadPart; //initialize the timestamp of the last vblank
+      m_VblankTime = Now;          //initialize the timestamp of the last vblank
       SingleLock.Leave();
 
       //run the clock
@@ -116,13 +106,13 @@ void CVideoReferenceClock::Process()
     else
     {
       SingleLock.Leave();
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed, falling back to QueryPerformanceCounter");
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed, falling back to CurrentHostCounter()");
     }
 
     SingleLock.Enter();
     m_UseVblank = false;                       //we're back to using the systemclock
-    QueryPerformanceCounter(&Now);             //set the clockoffset between the vblank clock and systemclock
-    m_ClockOffset = m_CurrTime - Now.QuadPart;
+    Now = CurrentHostCounter();                //set the clockoffset between the vblank clock and systemclock
+    m_ClockOffset = m_CurrTime - Now;
     m_Started.Reset();
     SingleLock.Leave();
 
@@ -372,7 +362,7 @@ void CVideoReferenceClock::RunGLX()
   unsigned int  VblankCount;
   int           ReturnV;
   bool          IsReset = false;
-  LARGE_INTEGER Now;
+  int64_t       Now;
 
   CSingleLock SingleLock(m_CritSection);
   SingleLock.Leave();
@@ -386,7 +376,7 @@ void CVideoReferenceClock::RunGLX()
     //wait for the next vblank
     ReturnV = m_glXWaitVideoSyncSGI(2, (VblankCount + 1) % 2, &VblankCount);
     m_glXGetVideoSyncSGI(&VblankCount); //the vblank count returned by glXWaitVideoSyncSGI is not always correct
-    QueryPerformanceCounter(&Now); //get the timestamp of this vblank
+    Now = CurrentHostCounter();         //get the timestamp of this vblank
     
     if(ReturnV)
     {
@@ -398,7 +388,7 @@ void CVideoReferenceClock::RunGLX()
     {
       //update the vblank timestamp, update the clock and send a signal that we got a vblank
       SingleLock.Enter();
-      m_VblankTime = Now.QuadPart;
+      m_VblankTime = Now;
       UpdateClock((int)(VblankCount - PrevVblankCount), true);
       SingleLock.Leave();
       SendVblankSignal();
@@ -445,7 +435,7 @@ void CVideoReferenceClock::RunGLX()
 void CVideoReferenceClock::RunD3D()
 {
   D3DRASTER_STATUS RasterStatus;
-  LARGE_INTEGER Now;
+  int64_t       Now;
   int64_t       LastVBlankTime;
   unsigned int  LastLine;
   int           NrVBlanks;
@@ -461,8 +451,8 @@ void CVideoReferenceClock::RunD3D()
   else LastLine = RasterStatus.ScanLine;
 
   //init the vblanktime
-  QueryPerformanceCounter(&Now);
-  LastVBlankTime = Now.QuadPart;
+  Now = CurrentHostCounter();
+  LastVBlankTime = Now;
 
   while(!m_bStop)
   {
@@ -479,13 +469,13 @@ void CVideoReferenceClock::RunD3D()
     if ((RasterStatus.InVBlank && LastLine > 0) || (RasterStatus.ScanLine < LastLine))
     {
       //calculate how many vblanks happened
-      QueryPerformanceCounter(&Now);
-      VBlankTime = (double)(Now.QuadPart - LastVBlankTime) / (double)m_SystemFrequency;
+      Now = CurrentHostCounter();
+      VBlankTime = (double)(Now - LastVBlankTime) / (double)m_SystemFrequency;
       NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
 
       //update the vblank timestamp, update the clock and send a signal that we got a vblank
       SingleLock.Enter();
-      m_VblankTime = Now.QuadPart;
+      m_VblankTime = Now;
       UpdateClock(NrVBlanks, true);
       SingleLock.Leave();
       SendVblankSignal();
@@ -499,13 +489,13 @@ void CVideoReferenceClock::RunD3D()
       }
 
       //save the timestamp of this vblank so we can calulate how many vblanks happened next time
-      LastVBlankTime = Now.QuadPart;
+      LastVBlankTime = Now;
 
       HandleWindowMessages();
 
       //because we had a vblank, sleep until half the refreshrate period
-      QueryPerformanceCounter(&Now);
-      int SleepTime = (int)((LastVBlankTime + (m_SystemFrequency / m_RefreshRate / 2) - Now.QuadPart) * 1000 / m_SystemFrequency);
+      Now = CurrentHostCounter();
+      int SleepTime = (int)((LastVBlankTime + (m_SystemFrequency / m_RefreshRate / 2) - Now) * 1000 / m_SystemFrequency);
       if (SleepTime > 100) SleepTime = 100; //failsafe
       if (SleepTime > 0) ::Sleep(SleepTime);
     }
@@ -591,19 +581,8 @@ bool CVideoReferenceClock::SetupD3D()
   if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL))
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: SetThreadPriority failed");
 
-  if (m_IsVista)
-  {
-    //put the window on top because direct3d wants exclusive access for some reason
-    LockSetForegroundWindow(LSFW_UNLOCK);
-    SetForegroundWindow(m_Hwnd);
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: exclusive lock workaround for Vista enabled");
-  }
-
   HandleWindowMessages();
 
-  if (m_IsVista)
-    Sleep(500); //direct3d has better luck getting an exclusive lock this way
-  
   ReturnV = m_D3d->CreateDevice(m_Adapter, D3DDEVTYPE_HAL, m_Hwnd,
                                 D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3dPP, &m_D3dDev);
 
@@ -695,7 +674,7 @@ bool CVideoReferenceClock::SetupD3D()
 double CVideoReferenceClock::MeasureRefreshrate(int MSecs)
 {
   D3DRASTER_STATUS RasterStatus;
-  LARGE_INTEGER    Now;
+  int64_t          Now;
   int64_t          Target;
   int64_t          Prev;
   int64_t          AvgInterval;
@@ -703,18 +682,18 @@ double CVideoReferenceClock::MeasureRefreshrate(int MSecs)
   unsigned int     LastLine;
   int              ReturnV;
 
-  QueryPerformanceCounter(&Now);
-  Target = Now.QuadPart + (m_SystemFrequency * MSecs / 1000);
+  Now = CurrentHostCounter();
+  Target = Now + (m_SystemFrequency * MSecs / 1000);
   Prev = -1;
   AvgInterval = 0;
   MeasureCount = 0;
 
   //start measuring vblanks
   LastLine = 0;
-  while(Now.QuadPart <= Target)
+  while(Now <= Target)
   {
     ReturnV = m_D3dDev->GetRasterStatus(0, &RasterStatus);
-    QueryPerformanceCounter(&Now);
+    Now = CurrentHostCounter();
     if (ReturnV != D3D_OK)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned returned %s: %s",
@@ -726,10 +705,10 @@ double CVideoReferenceClock::MeasureRefreshrate(int MSecs)
     { //we got a vblank
       if (Prev != -1) //need two for a measurement
       {
-        AvgInterval += Now.QuadPart - Prev; //save how long this vblank lasted
+        AvgInterval += Now - Prev; //save how long this vblank lasted
         MeasureCount++;
       }
-      Prev = Now.QuadPart; //save this time for the next measurement
+      Prev = Now; //save this time for the next measurement
     }
 
     //save the current scanline
@@ -866,10 +845,9 @@ static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeSt
 bool CVideoReferenceClock::SetupCocoa()
 {
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: setting up up Cocoa");
-  LARGE_INTEGER Now;
-  
-  QueryPerformanceCounter(&Now);
-  m_LastVBlankTime = Now.QuadPart; //init the vblank timestamp
+
+  //init the vblank timestamp
+  m_LastVBlankTime = CurrentHostCounter();
   m_MissedVblanks = 0;
   m_RefreshRate = 60;              //init the refreshrate so we don't get any division by 0 errors
   
@@ -955,40 +933,40 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
 }
 
 //called from dvdclock to get the time
-void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
+int64_t CVideoReferenceClock::GetTime()
 {
   CSingleLock SingleLock(m_CritSection);
   
   //when using vblank, get the time from that, otherwise use the systemclock
   if (m_UseVblank)
   {
-    int64_t NextVblank;
-    LARGE_INTEGER Now;
+    int64_t  NextVblank;
+    int64_t  Now;
     
-    QueryPerformanceCounter(&Now);     //get current system time
+    Now = CurrentHostCounter();        //get current system time
     NextVblank = TimeOfNextVblank();   //get time when the next vblank should happen
     
-    while(Now.QuadPart >= NextVblank)  //keep looping until the next vblank is in the future
+    while(Now >= NextVblank)  //keep looping until the next vblank is in the future
     {
       UpdateClock(1, false);           //update clock when next vblank should have happened already
       NextVblank = TimeOfNextVblank(); //get time when the next vblank should happen
     }
     
-    ptime->QuadPart = m_CurrTime;
+    return m_CurrTime;
   }
   else
   {
     int64_t ClockOffset = m_ClockOffset; //get offset of clock
     SingleLock.Leave();
-    QueryPerformanceCounter(ptime);      //get time of systemclock
-    ptime->QuadPart += ClockOffset;      //add offset
+    
+    return CurrentHostCounter() + ClockOffset;
   }
 }
 
 //called from dvdclock to get the clock frequency
-void CVideoReferenceClock::GetFrequency(LARGE_INTEGER *pfreq)
+int64_t CVideoReferenceClock::GetFrequency()
 {
-  QueryPerformanceFrequency(pfreq);
+  return m_SystemFrequency;
 }
 
 void CVideoReferenceClock::SetSpeed(double Speed)
@@ -1151,7 +1129,7 @@ int CVideoReferenceClock::GetRefreshRate()
 //it waits until a certain timestamp has passed, used for displaying videoframes at the correct moment
 int64_t CVideoReferenceClock::Wait(int64_t Target)
 {
-  LARGE_INTEGER Now;
+  int64_t       Now;
   int           SleepTime;
   int64_t       NextVblank;
   bool          Late;
@@ -1163,9 +1141,9 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
     while (m_CurrTime < Target)
     {
       //calculate how long to sleep before we should have gotten a signal that a vblank happened
-      QueryPerformanceCounter(&Now);
+      Now = CurrentHostCounter();
       NextVblank = TimeOfNextVblank();
-      SleepTime = (int)((NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency);
+      SleepTime = (int)((NextVblank - Now) * 1000 / m_SystemFrequency);
 
       int64_t CurrTime = m_CurrTime; //save current value of the clock
       
@@ -1200,14 +1178,14 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
   {
     int64_t ClockOffset = m_ClockOffset;
     SingleLock.Leave();
-    QueryPerformanceCounter(&Now);
+    Now = CurrentHostCounter();
     //sleep until the timestamp has passed
-    SleepTime = (int)((Target - (Now.QuadPart + ClockOffset)) * 1000 / m_SystemFrequency);
+    SleepTime = (int)((Target - (Now + ClockOffset)) * 1000 / m_SystemFrequency);
     if (SleepTime > 0)
       ::Sleep(SleepTime);
     
-    QueryPerformanceCounter(&Now);
-    return Now.QuadPart + ClockOffset;
+    Now = CurrentHostCounter();
+    return Now + ClockOffset;
   }
 }
 

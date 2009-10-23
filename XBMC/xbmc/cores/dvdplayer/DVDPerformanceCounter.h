@@ -32,7 +32,6 @@ typedef struct stProcessPerformance
   ULARGE_INTEGER  timer_thread;
   ULARGE_INTEGER  timer_system;
   HANDLE          hThread;
-  DWORD           iPercent; // in percent
 } ProcessPerformance;
 
 class CDVDPerformanceCounter

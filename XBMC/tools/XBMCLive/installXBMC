@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
   "XBMC Live" installer
-  V1.005 - 20091002
+  V1.006 - 20091007
   Luigi Capriotti @2009
 
 """ 
@@ -92,7 +92,11 @@ def findBootVolume(rootFS, lookForRootFS):
 			rootPartition, retCode = runSilent('blkid | grep "' + anUUID + '" | cut -d ":" -f 1')
 		return rootPartition
 
-	driveList = ["sr0","sr1","sr2","sr3","sda","sdb","sdc","sdd","sde","sdf","sdg"]
+	outString, retCode = runSilent('mount | grep iso9660')
+	if len(outString):
+		driveList = ["sr0","sr1","sr2","sr3"]
+	else:
+		driveList = ["sda","sdb","sdc","sdd","sde","sdf","sdg"]
 
 	# Find the drive we booted from
 	found = False
@@ -102,7 +106,7 @@ def findBootVolume(rootFS, lookForRootFS):
 		if  os.path.exists(device):
 			if  os.path.exists("/sys/block/" + deviceNode + "/removable"):
 				if isRemovableDisk(device):
-					if device.startswith("sd"):
+					if deviceNode.startswith("sd"):
 						device = device + "1"
 						mountDevice(device, "", gBootPartMountPoint)
 					else:

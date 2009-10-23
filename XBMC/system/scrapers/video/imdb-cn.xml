@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="gb2312"?>
-<scraper framework="1.1" date="2009-08-10" name="IMDb-CN(Chinese)" content="movies" thumb="imdb-cn.gif" language="zh">
+<scraper framework="1.1" date="2009-08-10" name="IMDb.cn" content="movies" thumb="imdb-cn.gif" language="zh">
 	<include>common/tmdb.xml</include>
 	<include>common/movieposterdb.xml</include>
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetSettings>
 	<NfoUrl dest="3">
@@ -26,7 +26,7 @@
 	</NfoUrl>
 	<CreateSearchUrl dest="3" SearchStringEncoding="gb2312">
 		<RegExp input="$$1" output="&lt;url&gt;http://www.imdb.cn/searchh.php?keyword=\1&amp;amp;a=search&amp;amp;Type=movie&lt;/url&gt;" dest="3">
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</CreateSearchUrl>
 	<GetSearchResults dest="8">
@@ -49,7 +49,7 @@
 	<GetDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$2" output="&lt;id&gt;\1&lt;/id&gt;" dest="5">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
 				<expression trim="1" noclean="1">&lt;title&gt;([^&lt;|^-]*)</expression>
@@ -88,7 +88,7 @@
 				<expression>&lt;div id=imdbjqbody&gt;&lt;h2&gt;[^&lt;]*&lt;/h2&gt;&lt;br&gt;(.*?)&lt;/div</expression>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetFullcredits&quot;&gt;$$3/fulldredits&lt;/url&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/browse/search?type=movies&amp;amp;query=\1&lt;/url&gt;" dest="5+">
 				<expression>/title/tt([0-9]*)/ratings</expression>
@@ -96,13 +96,12 @@
 			<RegExp input="$$1" output="&lt;url function=&quot;GetIMDBCNPoster&quot;&gt;\1&lt;/url&gt;" dest="5+">
 				<expression>&lt;a href=(http://posters.imdb.cn/poster/[0-9]*)</expression>
 			</RegExp>
-			<RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=$$2&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5+">
-				<expression></expression>
+			<RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;$$3&lt;/url&gt;" dest="5+">
+				<expression/>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetDetails>	
-
 	<GetFullcredits clearbuffers="no" dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="6">
@@ -123,7 +122,7 @@
 			<RegExp input="$$8" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2+">
 				<expression repeat="yes">href=&apos;/name/nm[0-9]+&apos;&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetFullcredits>
 	<GetIMDBCNPoster dest="5">
@@ -131,7 +130,7 @@
 			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="6">
 				<expression clear="yes" noclean="1">&lt;img src=&quot;(.*?/poster-pic/.*?.jpg)&quot;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetIMDBCNPoster>
 </scraper>

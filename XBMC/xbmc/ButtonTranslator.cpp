@@ -542,7 +542,6 @@ bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice
   map<string, JoystickMap> *jmap;
 
   fullrange = false;
-#ifdef HAS_SDL_JOYSTICK
   if (inputType == JACTIVE_AXIS)
   {
     jmap = &m_joystickAxisMap;
@@ -556,7 +555,6 @@ bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice
   	jmap = &m_joystickHatMap;
   }
   else
-#endif
   {
     CLog::Log(LOGERROR, "Error reading joystick input type");
     return false;

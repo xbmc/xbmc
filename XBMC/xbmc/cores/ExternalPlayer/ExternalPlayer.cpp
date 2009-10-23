@@ -20,8 +20,12 @@
  */
 
 #include "system.h"
+#include "signal.h"
+#include "limits.h"
+#include "SingleLock.h"
 #include "AudioContext.h"
 #include "ExternalPlayer.h"
+#include "WindowingFactory.h"
 #include "GUIDialogOK.h"
 #include "GUIFontManager.h"
 #include "GUITextLayout.h"
@@ -37,9 +41,9 @@
 #include "utils/TimeUtils.h"
 #if defined(_WIN32)
   #include "Windows.h"
-#ifdef HAS_IRSERVERSUITE
-  #include "common/IRServerSuite/IRServerSuite.h"
-#endif
+  #ifdef HAS_IRSERVERSUITE
+    #include "common/IRServerSuite/IRServerSuite.h"
+  #endif
 #endif
 #if defined(HAS_LIRC)
   #include "common/LIRC.h"
@@ -50,26 +54,39 @@
 #define LAUNCHER_PROCESS_TIME 2000
 // Time (ms) we give a process we sent a WM_QUIT to close before terminating
 #define PROCESS_GRACE_TIME 3000
+// Default time after which the item's playcount is incremented
+#define DEFAULT_PLAYCOUNT_MIN_TIME 10
 
 using namespace XFILE;
+
+#if defined(_WIN32)
+extern HWND g_hWnd;
+#endif
 
 CExternalPlayer::CExternalPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
       CThread()
 {
+  m_bAbortRequest = false;
   m_bIsPlaying = false;
   m_paused = false;
   m_playbackStartTime = 0;
   m_speed = 1;
-  m_totalTime = 1000;
+  m_totalTime = 1;
   m_time = 0;
 
   m_hideconsole = false;
   m_warpcursor = WARP_NONE;
   m_hidexbmc = false;
   m_islauncher = false;
+  m_playCountMinTime = DEFAULT_PLAYCOUNT_MIN_TIME;
+  m_playOneStackItem = false;
 
   m_dialog = NULL;
+
+#if defined(_WIN32)
+  memset(&m_processInfo, 0, sizeof(m_processInfo));
+#endif
 }
 
 CExternalPlayer::~CExternalPlayer()
@@ -83,7 +100,6 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
   {
     m_launchFilename = file.m_strPath;
     CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, m_launchFilename.c_str());
-
     Create();
 
     return true;
@@ -97,7 +113,17 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
 
 bool CExternalPlayer::CloseFile()
 {
-  StopThread();
+  m_bAbortRequest = true;
+
+  if (m_dialog && m_dialog->IsActive()) m_dialog->Close();
+
+#if defined(_WIN32)
+  if (m_bIsPlaying && m_processInfo.hProcess)
+  {
+    TerminateProcess(m_processInfo.hProcess, 1);
+  }
+#endif
+
   return true;
 }
 
@@ -159,7 +185,7 @@ void CExternalPlayer::Process()
           CLog::Log(LOGERROR, "%s: Invalid RegExp:'%s'", __FUNCTION__, strPat.c_str());
           continue;
         }
-        
+
         CStdString strRep = vecSplit[2];
         strRep.Replace(",,",",");
         bool bGlobal = vecSplit[3].Find('g') > -1;
@@ -210,7 +236,7 @@ void CExternalPlayer::Process()
 
   if (!nReplaced)
     nReplaced = strFArgs.Replace("{1}", mainFile) + strFArgs.Replace("{2}", archiveContent);
-     
+
   if (!nReplaced)
   {
     strFArgs.append(" \"");
@@ -251,24 +277,20 @@ void CExternalPlayer::Process()
     CLog::Log(LOGNOTICE, "%s: Warping cursor to (%d,%d)", __FUNCTION__, x, y);
     SetCursorPos(x,y);
   }
-  
-  m_hwndXbmc = GetForegroundWindow();
 
-  LONG currentStyle;
-  if (m_hwndXbmc)
+  LONG currentStyle = GetWindowLong(g_hWnd, GWL_EXSTYLE);
+#endif
+
+  if (m_hidexbmc && !m_islauncher)
   {
-    currentStyle = GetWindowLong(m_hwndXbmc, GWL_EXSTYLE);
-
-    if (m_hidexbmc && !m_islauncher)
-    {
-      CLog::Log(LOGNOTICE, "%s: Hiding XBMC window", __FUNCTION__);
-      ShowWindow(m_hwndXbmc,SW_HIDE);
-    }
-    else if (currentStyle & WS_EX_TOPMOST)
-    {
-      CLog::Log(LOGNOTICE, "%s: Lowering XBMC window", __FUNCTION__);
-      SetWindowPos(m_hwndXbmc,HWND_BOTTOM,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
-    }
+    CLog::Log(LOGNOTICE, "%s: Hiding XBMC window", __FUNCTION__);
+    g_Windowing.Hide();
+  }
+#if defined(_WIN32)
+  else if (currentStyle & WS_EX_TOPMOST)
+  {
+    CLog::Log(LOGNOTICE, "%s: Lowering XBMC window", __FUNCTION__);
+    SetWindowPos(g_hWnd,HWND_BOTTOM,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
   }
 
   CLog::Log(LOGDEBUG, "%s: Unlocking foreground window", __FUNCTION__);
@@ -276,38 +298,51 @@ void CExternalPlayer::Process()
 #endif
 
   m_playbackStartTime = CTimeUtils::GetTimeMS();
-
   BOOL ret = TRUE;
 #if defined(_WIN32)
   ret = ExecuteAppW32(strFName.c_str(),strFArgs.c_str());
 #elif defined(_LINUX)
   ret = ExecuteAppLinux(strFArgs.c_str());
 #endif
+  int64_t elapsedMillis = CTimeUtils::GetTimeMS() - m_playbackStartTime;
 
-  m_time = m_totalTime;
+  if (ret && (m_islauncher || elapsedMillis < LAUNCHER_PROCESS_TIME))
+  {
+    if (m_hidexbmc)
+    {
+      CLog::Log(LOGNOTICE, "%s: XBMC cannot stay hidden for a launcher process", __FUNCTION__);
+      g_Windowing.Show(false);
+    }
+
+    {
+      CSingleLock lock(g_graphicsContext);
+      m_dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+      m_dialog->SetHeading(23100);
+      m_dialog->SetLine(1, 23104);
+      m_dialog->SetLine(2, 23105);
+      m_dialog->SetLine(3, 23106);
+    }
+
+    if (!m_bAbortRequest) m_dialog->DoModal();
+  }
+
   m_bIsPlaying = false;
   CLog::Log(LOGNOTICE, "%s: Stop", __FUNCTION__);
 
 #if defined(_WIN32)
-  if (m_hwndXbmc)
+  if (currentStyle & WS_EX_TOPMOST)
   {
-    if (currentStyle & WS_EX_TOPMOST)
-    {
-      CLog::Log(LOGNOTICE, "%s: Showing XBMC window TOPMOST", __FUNCTION__);
-      SetWindowPos(m_hwndXbmc,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
-    }
-    else
-    {
-      CLog::Log(LOGNOTICE, "%s: Showing XBMC window TOP", __FUNCTION__);
-      SetWindowPos(m_hwndXbmc,HWND_TOP,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
-    }
+    CLog::Log(LOGNOTICE, "%s: Showing XBMC window TOPMOST", __FUNCTION__);
+    SetWindowPos(g_hWnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
+  }
+  else
+#endif
+  {
+    CLog::Log(LOGNOTICE, "%s: Showing XBMC window", __FUNCTION__);
+    g_Windowing.Show();
   }
 
-  CLog::Log(LOGDEBUG, "%s: Focus XBMC window and lock foreground window", __FUNCTION__);
-  SetFocus(m_hwndXbmc);
-  SetForegroundWindow(m_hwndXbmc);
-  LockSetForegroundWindow(LSFW_LOCK);
-
+#if defined(_WIN32)
   if (m_warpcursor)
   {
     m_xPos = 0;
@@ -332,10 +367,10 @@ void CExternalPlayer::Process()
     g_audioContext.SetActiveDevice(iActiveDevice);
   }
 
-  if (ret) 
-    m_callback.OnPlayBackEnded();
-  else
+  if (!ret || (m_playOneStackItem && g_application.CurrentFileItem().IsStack()))
     m_callback.OnPlayBackStopped();
+  else
+    m_callback.OnPlayBackEnded();
 }
 
 #if defined(_WIN32)
@@ -344,9 +379,7 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
   CLog::Log(LOGNOTICE, "%s: %s %s", __FUNCTION__, strPath, strSwitches);
 
   STARTUPINFOW si;
-  PROCESS_INFORMATION pi;
   memset(&si, 0, sizeof(si));
-  memset(&pi, 0, sizeof(pi));
   si.cb = sizeof(si);
   si.dwFlags = STARTF_USESHOWWINDOW;
   si.wShowWindow = m_hideconsole ? SW_HIDE : SW_SHOW;
@@ -355,12 +388,11 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
   g_charsetConverter.utf8ToW(strPath, WstrPath);
   g_charsetConverter.utf8ToW(strSwitches, WstrSwitches);
 
-  m_dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-  m_dialog->SetHeading(23100);
+  if (m_bAbortRequest) return false;
 
   BOOL ret = CreateProcessW(WstrPath.IsEmpty() ? NULL : WstrPath.c_str(),
                             (LPWSTR) WstrSwitches.c_str(), NULL, NULL, FALSE, NULL, 
-                            NULL, NULL, &si, &pi);
+                            NULL, NULL, &si, &m_processInfo);
 
   if (ret == FALSE)
   {
@@ -369,65 +401,8 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
   }
   else
   {
-    m_playbackStartTime = CTimeUtils::GetTimeMS();
-    BOOL bIsLauncher = m_islauncher;
+    int res = WaitForSingleObject(m_processInfo.hProcess, INFINITE);
 
-    if (m_hidexbmc && !m_islauncher)
-    {
-      int res = WaitForSingleObject(pi.hProcess, INFINITE);
-      if (CTimeUtils::GetTimeMS() - m_playbackStartTime < LAUNCHER_PROCESS_TIME)
-      {
-        CLog::Log(LOGNOTICE, "%s: External player process ended too quickly, assuming it's a launcher process", __FUNCTION__);
-        bIsLauncher = true;
-
-        if (m_hwndXbmc && m_hidexbmc)
-        {
-          CLog::Log(LOGNOTICE, "%s: XBMC cannot stay hidden for a launcher process", __FUNCTION__);
-          SetWindowPos(m_hwndXbmc,HWND_BOTTOM,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
-        }
-      }
-    }
-
-    if (!m_hidexbmc || bIsLauncher)
-    {
-      BOOL waiting = false;
-      HANDLE hWait;
-      if (!bIsLauncher)
-      {
-        waiting = RegisterWaitForSingleObject(&hWait, pi.hProcess, AppFinished, this, INFINITE, WT_EXECUTEDEFAULT|WT_EXECUTEONLYONCE);
-
-        if (!waiting) 
-          CLog::Log(LOGERROR,"%s: Failed to register wait callback (%d)", __FUNCTION__, GetLastError());
-      }
-
-      if (waiting)
-      {
-        m_dialog->SetLine(1, 23101);
-        m_dialog->SetLine(2, 23102);
-        m_dialog->SetLine(3, 23103);
-      }
-      else
-      {
-        m_dialog->SetLine(1, 23104);
-        m_dialog->SetLine(2, 23105);
-        m_dialog->SetLine(3, 23106);
-      }
-
-      // Carry on if we failed to register the wait callback,
-      // the user will have to manually dismiss the dialog
-      m_dialog->DoModal();
-
-      if (waiting)
-        UnregisterWait(hWait);
-
-      if (m_dialog->IsConfirmed())
-        // Post a message telling the player to stop
-        PostThreadMessage(pi.dwThreadId, WM_QUIT, 0, 0);
-    }
-
-    // In case we've just posted a WM_QUIT we'll give the process a short while
-    // to comply before using TerminateProcess
-    int res = WaitForSingleObject(pi.hProcess, PROCESS_GRACE_TIME);
     switch (res)
     {
       case WAIT_OBJECT_0:
@@ -437,39 +412,21 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
         CLog::Log(LOGNOTICE, "%s: WAIT_ABANDONED", __FUNCTION__);
         break;
       case WAIT_TIMEOUT:
-        CLog::Log(LOGNOTICE, "%s: WAIT_TIMEOUT, terminating process", __FUNCTION__);
-        // The player hasn't stopped gracefully, kill it
-        TerminateProcess(pi.hProcess, 1);
+        CLog::Log(LOGNOTICE, "%s: WAIT_TIMEOUT", __FUNCTION__);
         break;
       case WAIT_FAILED:
-        CLog::Log(LOGNOTICE, "%s: WAIT_FAILED (%d), terminating process", __FUNCTION__, GetLastError());
-        // The wait failed, give the player a few seconds to stop gracefully before killing it
-        Sleep(PROCESS_GRACE_TIME);
-        TerminateProcess(pi.hProcess, 1);
+        CLog::Log(LOGNOTICE, "%s: WAIT_FAILED (%d)", __FUNCTION__, GetLastError());
+        ret = FALSE;
         break;
     }
-    // else the process exited normally and we closed the dialog programatically
 
-    CloseHandle(pi.hThread);
-    CloseHandle(pi.hProcess);
+    CloseHandle(m_processInfo.hThread);
+    m_processInfo.hThread = 0;
+    CloseHandle(m_processInfo.hProcess);
+    m_processInfo.hProcess = 0;
   }
 
   return ret;
-}
-
-void CALLBACK CExternalPlayer::AppFinished(void* closure, BOOLEAN TimerOrWaitFired)
-{
-  CExternalPlayer *player = (CExternalPlayer *)closure;
-  if (CTimeUtils::GetTimeMS() - player->m_playbackStartTime < LAUNCHER_PROCESS_TIME)
-  {
-    CLog::Log(LOGNOTICE, "%s: Process ran for <%dms, probably a launcher, not closing dialog", __FUNCTION__, LAUNCHER_PROCESS_TIME);
-  }
-  else
-  {
-    CLog::Log(LOGNOTICE, "%s: Process ended, closing dialog", __FUNCTION__);
-    if (player->m_dialog->IsActive())
-      player->m_dialog->Close();
-  }
 }
 #endif
 
@@ -482,11 +439,9 @@ BOOL CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
   g_RemoteControl.Disconnect();
   g_RemoteControl.setUsed(false);
 #endif
-  g_graphicsContext.Lock();
 
   int ret = system(strSwitches);
 
-  g_graphicsContext.Unlock();
 #ifdef HAS_LIRC
   g_RemoteControl.setUsed(remoteused);
   g_RemoteControl.Initialize();
@@ -562,7 +517,16 @@ void CExternalPlayer::SeekPercentage(float iPercent)
 
 float CExternalPlayer::GetPercentage()
 {
-  return (m_totalTime * 100.0f) / m_time;
+  __int64 iTime = GetTime();
+  __int64 iTotalTime = GetTotalTime() * 1000;
+
+  if (iTotalTime != 0)
+  {
+    CLog::Log(LOGDEBUG, "Percentage is %f", (iTime * 100 / (float)iTotalTime));
+    return iTime * 100 / (float)iTotalTime;
+  }
+
+  return 0.0f;
 }
 
 void CExternalPlayer::SetAVDelay(float fValue)
@@ -587,12 +551,17 @@ void CExternalPlayer::SeekTime(__int64 iTime)
 {
 }
 
-__int64 CExternalPlayer::GetTime()
+__int64 CExternalPlayer::GetTime() // in millis
 {
+  if ((CTimeUtils::GetTimeMS() - m_playbackStartTime) / 1000 > m_playCountMinTime)
+  {
+    m_time = m_totalTime * 1000;
+  }
+
   return m_time;
 }
 
-int CExternalPlayer::GetTotalTime()
+int CExternalPlayer::GetTotalTime() // in seconds
 {
   return m_totalTime;
 }
@@ -632,6 +601,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
   }
 
   XMLUtils::GetString(pConfig, "args", m_args);
+  XMLUtils::GetBoolean(pConfig, "playonestackitem", m_playOneStackItem);
   XMLUtils::GetBoolean(pConfig, "islauncher", m_islauncher);
   XMLUtils::GetBoolean(pConfig, "hidexbmc", m_hidexbmc);
   if (!XMLUtils::GetBoolean(pConfig, "hideconsole", m_hideconsole))
@@ -660,6 +630,8 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
       CLog::Log(LOGWARNING, "ExternalPlayer: invalid value for warpcursor: %s", warpCursor.c_str());
     }
   }
+
+  XMLUtils::GetInt(pConfig, "playcountminimumtime", m_playCountMinTime, 1, INT_MAX);
 
   CLog::Log(LOGNOTICE, "ExternalPlayer Tweaks: hideconsole (%s), hidexbmc (%s), islauncher (%s), warpcursor (%s)", 
           m_hideconsole ? "true" : "false",
@@ -730,7 +702,7 @@ void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
         strMatch.Replace(",",",,");
         strPat.Replace(",",",,");
         strRep.Replace(",",",,");
-        
+
         CStdString strReplacer = strMatch + " , " + strPat + " , " + strRep + " , " + (bGlobal ? "g" : "") + (bStop ? "s" : "");
         if (iAction == 2)
           settings.insert(settings.begin() + i++, 1, strReplacer);

@@ -101,6 +101,7 @@ public:
     const NPT_String&   GetType()             const { return m_DeviceType;       }
     const NPT_String&   GetModelDescription() const { return m_ModelDescription; }
     const NPT_String&   GetParentUUID()       const { return m_ParentUUID;       }
+    bool                IsRoot()              { return m_ParentUUID.IsEmpty(); }
 
     const NPT_Array<PLT_Service*>&            GetServices()        const { return m_Services; }
     const NPT_Array<PLT_DeviceDataReference>& GetEmbeddedDevices() const { return m_EmbeddedDevices; }
@@ -109,16 +110,16 @@ public:
     NPT_Result FindEmbeddedDeviceByType(const char* type, PLT_DeviceDataReference& device);
     NPT_Result FindServiceById(const char* id, PLT_Service*& service);
     NPT_Result FindServiceByType(const char* type, PLT_Service*& service);
-    NPT_Result FindServiceByDescriptionURL(const char* url, PLT_Service*& service);
-    NPT_Result FindServiceByControlURL(const char* url, PLT_Service*& service);
-    NPT_Result FindServiceByEventSubURL(const char* url, PLT_Service*& service);
+    NPT_Result FindServiceBySCPDURL(const char* url, PLT_Service*& service);
+    NPT_Result FindServiceByControlURL(const char* url, PLT_Service*& service, bool recursive = false);
+    NPT_Result FindServiceByEventSubURL(const char* url, PLT_Service*& service, bool recursive = false);
 
     /* called by PLT_Device subclasses */
-    NPT_Result AddDevice(PLT_DeviceDataReference& device);
-    NPT_Result RemoveDevice(PLT_DeviceDataReference& device);
+    NPT_Result AddEmbeddedDevice(PLT_DeviceDataReference& device);
+    NPT_Result RemoveEmbeddedDevice(PLT_DeviceDataReference& device);
     NPT_Result AddService(PLT_Service* service);
 
-    NPT_Result ToLog(int level = NPT_LOG_LEVEL_FINE);
+    operator const char* ();
 
 protected:
     virtual ~PLT_DeviceData();
@@ -170,6 +171,7 @@ protected:
     /* IP address of interface used when retrieving device description.
        We need the info for the control point subscription callback */
     NPT_IpAddress                      m_LocalIfaceIp; 
+    NPT_String                         m_Representation;
 };
 
 /*----------------------------------------------------------------------
@@ -192,25 +194,6 @@ private:
 };
 
 /*----------------------------------------------------------------------
-|   PLT_DeviceDataFinderByLocation
-+---------------------------------------------------------------------*/
-class PLT_DeviceDataFinderByLocation
-{
-public:
-    // methods
-    PLT_DeviceDataFinderByLocation(const char* location) : m_Location(location) {}
-    virtual ~PLT_DeviceDataFinderByLocation() {}
-
-    bool operator()(const PLT_DeviceDataReference& data) const {
-        return data->GetDescriptionUrl().Compare(m_Location, true)?false:true;
-    }
-
-private:
-    // members
-    NPT_String m_Location;
-};
-
-/*----------------------------------------------------------------------
 |   PLT_DeviceDataFinderByType
 +---------------------------------------------------------------------*/
 class PLT_DeviceDataFinderByType
@@ -230,4 +213,3 @@ private:
 };
 
 #endif /* _PLT_DEVICE_DATA_H_ */
-

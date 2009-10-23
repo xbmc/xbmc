@@ -58,7 +58,7 @@ SLIB=$(SYSDIR)/$(SO)
 
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	gcc -bundle -flat_namespace -undefined suppress -shared \
+	$(CC) -bundle -flat_namespace -undefined suppress -shared \
 		-isysroot /Developer/SDKs/MacOSX10.4u.sdk \
 		--mmacosx-version-min=10.4 \
 		-o $@ $(OBJS)

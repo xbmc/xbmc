@@ -158,6 +158,9 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
 
+  if (CGUIWindow::OnAction(action))
+    return true;
+  
   // live filtering
   if (action.id == ACTION_FILTER_CLEAR)
   {
@@ -183,8 +186,8 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     OnMessage(message);
     return true;
   }
-
-  return CGUIWindow::OnAction(action);
+  
+  return false;
 }
 
 bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
@@ -536,7 +539,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   }
   else
   {
-    DWORD time = CTimeUtils::GetTimeMS();
+    unsigned int time = CTimeUtils::GetTimeMS();
 
     if (!m_rootDir.GetDirectory(strDirectory, items))
       return false;
@@ -931,9 +934,6 @@ void CGUIMediaWindow::GoParentFolder()
   CStdString strOldPath(m_vecItems->m_strPath);
   strParent = m_history.RemoveParentPath();
   Update(strParent);
-
-  if (!g_guiSettings.GetBool("filelists.fulldirectoryhistory"))
-    m_history.RemoveSelectedItem(strOldPath); //Delete current path
 }
 
 // \brief Override the function to change the default behavior on how
@@ -1329,5 +1329,6 @@ bool CGUIMediaWindow::WaitForNetwork() const
   progress->Close();
   return true;
 }
+
 
 

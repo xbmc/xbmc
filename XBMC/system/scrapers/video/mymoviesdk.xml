@@ -1,57 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<scraper framework="1.1" date="2009-08-11" name="MyMovies.dk" content="movies" thumb="mymoviesdk.png" language="en" requiressettings="true">
+<scraper framework="1.1" date="2009-08-11" name="MyMovies.dk" content="movies" thumb="mymoviesdk.png" language="multi" requiressettings="true">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<!--Username-->
 			<RegExp input="$$1" output="&lt;setting label=&quot;Username&quot; type=&quot;text&quot; id=&quot;username&quot; default=&quot;&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<!--Password-->
 			<RegExp input="$$1" output="&lt;setting label=&quot;Password&quot; type=&quot;text&quot; option=&quot;hidden&quot; id=&quot;password&quot; default=&quot;&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<!--- -->
 			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<!--Fanart-->
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<!--Trailer-->
 			<RegExp input="$$1" output="&lt;setting label=&quot;Preferred trailer bitrate&quot; type=&quot;labelenum&quot; values=&quot;2048|1024|512|256|128&quot; id=&quot;trailerbitrate&quot; default=&quot;2048&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<!--Preferred language-->
 			<RegExp input="$$1" output="&lt;setting label=&quot;Preferred language&quot; type=&quot;labelenum&quot; values=&quot;Arabic|Bulgarian|Cantonese|Mandarin|Czech|Croatian|Danish|Dutch|English|Estonian|Faroese|Farsi|Finnish|Flemish|French|German|Greek|Hebrew|Hindi|Hungarian|Icelandic|Indonesian|Italian|Japanese|Korean|Lithuanian|Norwegian|Polish|Portuguese|Romanian|Russian|Serbian|Slovakian|Slovene|Spanish|Swedish|Tagalog|Thai|Turkish|Malay|Latvian|Ukrainian|Tamil|Catalan|Telugu|Malayalam|Kannada|Bengali|Serbo-Croatian|Gujarati|Esperanto|Vietnamese|Kazakh|Ancient Greek|Mandar|Braj|Macedonian|Zulu|Twi|Volapük|Albanian|Khmer|Basque&quot; id=&quot;language&quot; default=&quot;English&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<!--Include adult movies-->
 			<RegExp input="$$1" output="&lt;setting label=&quot;Include adult movies&quot; type=&quot;bool&quot; id=&quot;includeadult&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetSettings>
-
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;https://api.mymovies.dk/Default.aspx?command=SearchMovieByTitle&amp;amp;title=\1&amp;amp;username=$INFO[username]&amp;amp;password=$INFO[password]&amp;amp;PrimaryLanguage=$INFO[language]&amp;amp;includeadult=$INFO[includeadult]&amp;amp;locale=1033&lt;/url&gt;" dest="3">
 			<RegExp input="$$2" output="%20(\1)" dest="4">
 				<expression clear="yes">(.+)</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</CreateSearchUrl>
-
 	<GetSearchResults dest="8">
 		<RegExp input="$$3" output="&lt;results sorted=&quot;Yes&quot;&gt;\1&lt;/results&gt;" dest="8">
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;id&gt;\1&lt;/id&gt;&lt;url&gt;https://api.mymovies.dk/Default.aspx?command=LoadMovieById&amp;amp;titleid=\1&amp;amp;username=$INFO[username]&amp;amp;password=$INFO[password]&amp;amp;PrimaryLanguage=$INFO[language]&amp;amp;maxtrailerbitrate=$INFO[trailerbitrate]&amp;amp;locale=1033&amp;amp;client=xbmcbased&lt;/url&gt;&lt;/entity&gt;" dest="3">
 				<expression repeat="yes">id="(.*?)".*? title="(.*?)"[^&lt;]*year="(.*?)" thumb</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 		<RegExp input="$$4" output="&lt;error&gt;\1&lt;/error&gt;" dest="8">
 			<RegExp input="$$1" output="&lt;title&gt;Error returned from MyMovies.dk&lt;/title&gt;&lt;message&gt;\1&lt;/message&gt;" dest="4">
@@ -60,7 +58,6 @@
 			<expression noclean="1">(.+)</expression>
 		</RegExp>
 	</GetSearchResults>
-
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;https://api.mymovies.dk/Default.aspx?command=LoadMovieByIMDBId&amp;imdbid=tt\2&amp;username=$INFO[username]&amp;password=$INFO[password]&amp;PrimaryLanguage=$INFO[language]&amp;includeadult=$INFO[includeadult]&amp;maxtrailerbitrate=$INFO[trailerbitrate]&amp;locale=1033&lt;/url&gt;" dest="3">
 			<expression>(imdb.com/title/tt)([0-9]*)</expression>
@@ -69,7 +66,6 @@
 			<expression>(imdb.com/)Title\?([0-9]+)</expression>
 		</RegExp>
 	</NfoUrl>
-
 	<GetDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<!--Title-->
@@ -182,7 +178,7 @@
 			<RegExp input="$$1" output="&lt;trailer&gt;\1&lt;/trailer&gt;" dest="5+">
 				<expression>&lt;Trailer[^&gt;]*&gt;([^&lt;]*)&lt;/Trailer&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetDetails>
 </scraper>

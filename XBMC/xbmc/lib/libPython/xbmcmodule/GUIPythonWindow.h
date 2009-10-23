@@ -65,7 +65,7 @@ public:
   virtual bool    OnMessage(CGUIMessage& message);
   virtual bool    OnAction(const CAction &action);
   void             SetCallbackWindow(PyObject *object);
-  void             WaitForActionEvent(DWORD timeout);
+  void             WaitForActionEvent(unsigned int timeout);
   void             PulseActionEvent();
 protected:
   PyObject*        pCallbackWindow;
