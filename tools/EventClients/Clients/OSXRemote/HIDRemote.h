@@ -5,9 +5,12 @@
 //  Created by Felix Schwarz on 06.04.07.
 //  Copyright 2007-2009 IOSPIRIT GmbH. All rights reserved.
 //
+//  The latest version of this class is available at
+//     http://www.iospirit.com/developers/hidremote/
+//
 //  ** LICENSE *************************************************************************
 //
-//  Copyright (c) 2007-2009 IOSPIRIT GmbH
+//  Copyright (c) 2007-2009 IOSPIRIT GmbH (http://www.iospirit.com/)
 //  All rights reserved.
 //  
 //  Redistribution and use in source and binary forms, with or without modification,
@@ -36,6 +39,18 @@
 //  DAMAGE.
 //
 //  ************************************************************************************
+
+
+
+//  ************************************************************************************
+//  ********************************** DOCUMENTATION ***********************************
+//  ************************************************************************************
+//
+//  - a reference is available at http://www.iospirit.com/developers/hidremote/reference/
+//  - for a guide, please see http://www.iospirit.com/developers/hidremote/guide/
+//
+//  ************************************************************************************
+
 
 #import <Cocoa/Cocoa.h>
 
@@ -131,7 +146,8 @@ typedef enum
 - (void)hidRemote:(HIDRemote *)hidRemote				// Invoked when hardware was removed from HIDRemote's pool
 	releasedHardwareWithAttributes:(NSMutableDictionary *)attributes;
 
-// WARNING: Unless you know VERY PRECISELY what you are doing, do not implement any of the methods below.
+// ### WARNING: Unless you know VERY PRECISELY what you are doing, do not implement any of the delegate methods below. ###
+
 // Matching of newly found receiver hardware
 - (BOOL)hidRemote:(HIDRemote *)hidRemote				// Invoked when new hardware is inspected
 	inspectNewHardwareWithService:(io_service_t)service		// 
@@ -298,7 +314,11 @@ typedef enum
 
 /*
 	DESCRIPTION
-	Determine the number of remote controls HIDRemote has currently opened. This is usually 1 on current systems.
+	Determine the number of remote controls/receivers HIDRemote has currently opened in the mode supplied to
+	-startRemoteControl:
+	
+	RESULT
+	The number of remote controls/receivers HIDRemote has currently opened. Zero if none could be found or opened.
 */
 - (unsigned)activeRemoteControlCount;
 
@@ -308,7 +328,7 @@ typedef enum
 	ID change notifications by implementing the (optional) -hidRemote:remoteIDChangedOldID:newID: selector.
 	
 	RESULT
-	Returns the ID of the last seen remote. Returns -1, if the ID is unknown.
+	The ID of the last seen remote. Returns -1, if the ID is unknown.
 */
 - (SInt32)lastSeenRemoteControlID;
 
@@ -476,6 +496,7 @@ extern NSString *kHIDRemoteDNStatusActionKey;
 extern NSString *kHIDRemoteDNStatusActionStart;
 extern NSString *kHIDRemoteDNStatusActionStop;
 extern NSString *kHIDRemoteDNStatusActionUpdate;
+extern NSString *kHIDRemoteDNStatusActionNoNeed;
 
 #pragma mark -- Driver compatibility flags --
 typedef enum

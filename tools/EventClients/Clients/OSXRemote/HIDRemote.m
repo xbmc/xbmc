@@ -5,9 +5,12 @@
 //  Created by Felix Schwarz on 06.04.07.
 //  Copyright 2007-2009 IOSPIRIT GmbH. All rights reserved.
 //
+//  The latest version of this class is available at
+//     http://www.iospirit.com/developers/hidremote/
+//
 //  ** LICENSE *************************************************************************
 //
-//  Copyright (c) 2007-2009 IOSPIRIT GmbH
+//  Copyright (c) 2007-2009 IOSPIRIT GmbH (http://www.iospirit.com/)
 //  All rights reserved.
 //  
 //  Redistribution and use in source and binary forms, with or without modification,
@@ -36,6 +39,18 @@
 //  DAMAGE.
 //
 //  ************************************************************************************
+
+
+
+//  ************************************************************************************
+//  ********************************** DOCUMENTATION ***********************************
+//  ************************************************************************************
+//
+//  - a reference is available at http://www.iospirit.com/developers/hidremote/reference/
+//  - for a guide, please see http://www.iospirit.com/developers/hidremote/guide/
+//
+//  ************************************************************************************
+
 
 #import "HIDRemote.h"
 
@@ -549,9 +564,22 @@ static HIDRemote *sHIDRemote = nil;
 						
 						[_returnToPID release];
 						[self startRemoteControl:restartInMode];
-
-						_returnToPID = [[[notification userInfo] objectForKey:kHIDRemoteDNStatusPIDKey] retain];
+						
+						if (restartInMode != kHIDRemoteModeShared)
+						{
+							_returnToPID = [[[notification userInfo] objectForKey:kHIDRemoteDNStatusPIDKey] retain];
+						}
 					}
+				}
+				else
+				{
+					NSNumber *cacheReturnPID = _returnToPID;
+
+					_returnToPID = [[[notification userInfo] objectForKey:kHIDRemoteDNStatusPIDKey] retain];
+					[self _postStatusWithAction:kHIDRemoteDNStatusActionNoNeed];
+					[_returnToPID release];
+					
+					_returnToPID = cacheReturnPID;
 				}
 			}
 		}
@@ -564,70 +592,94 @@ static HIDRemote *sHIDRemote = nil;
 				
 				if ((action = [[notification userInfo] objectForKey:kHIDRemoteDNStatusActionKey]) != nil)
 				{
-					if (_mode==kHIDRemoteModeExclusive)
+					if ((_mode == kHIDRemoteModeNone) && _waitForReturnByPID)
 					{
-						if ([action isEqual:kHIDRemoteDNStatusActionStart])
+						NSNumber *pidNumber, *returnToPIDNumber;
+
+						if ((pidNumber		= [[notification userInfo] objectForKey:kHIDRemoteDNStatusPIDKey]) != nil)
 						{
-							NSNumber *originPID = [[notification userInfo] objectForKey:kHIDRemoteDNStatusPIDKey];
+							returnToPIDNumber = [[notification userInfo] objectForKey:kHIDRemoteDNStatusReturnToPIDKey];
 						
-							if ([originPID intValue] != getpid())
+							if ([action isEqual:kHIDRemoteDNStatusActionStart])
 							{
-								if (([self delegate] != nil) &&
-								    ([[self delegate] respondsToSelector:@selector(hidRemote:lendExclusiveLockToApplicationWithInfo:)]))
+								if ([pidNumber isEqual:_waitForReturnByPID])
 								{
-									if ([[self delegate] hidRemote:self lendExclusiveLockToApplicationWithInfo:[notification userInfo]])
+									NSNumber *startMode;
+									
+									 if ((startMode = [[notification userInfo] objectForKey:kHIDRemoteDNStatusModeKey]) != nil)
+									 {
+										if ([startMode intValue] == kHIDRemoteModeShared)
+										{
+											returnToPIDNumber = [NSNumber numberWithInt:getpid()];
+											action = kHIDRemoteDNStatusActionNoNeed;
+										}
+									 }
+								}
+							}
+
+							if (returnToPIDNumber != nil)
+							{
+								if ([action isEqual:kHIDRemoteDNStatusActionStop] || [action isEqual:kHIDRemoteDNStatusActionNoNeed])
+								{
+									if ([pidNumber isEqual:_waitForReturnByPID] && ([returnToPIDNumber intValue] == getpid()))
 									{
 										[_waitForReturnByPID release];
-										_waitForReturnByPID = [originPID retain];
-										
-										if (_waitForReturnByPID != nil)
+										_waitForReturnByPID = nil;
+									
+										if (([self delegate] != nil) &&
+										    ([[self delegate] respondsToSelector:@selector(hidRemote:exclusiveLockReleasedByApplicationWithInfo:)]))
 										{
-											BOOL cachedStatusSecureEventInputWorkAroundEnabled;
-											
-											// Workaround for what seems to be a missing lock on the counter in the EnableSecureEventInput() / DisableSecureEventInput() API
-											cachedStatusSecureEventInputWorkAroundEnabled = _statusSecureEventInputWorkAroundEnabled;
-											_statusSecureEventInputWorkAroundEnabled = NO;
-										
-											[self stopRemoteControl];
-											
-											_statusSecureEventInputWorkAroundEnabled = cachedStatusSecureEventInputWorkAroundEnabled;
-											
-											[[NSDistributedNotificationCenter defaultCenter] postNotificationName:kHIDRemoteDNHIDRemoteRetry
-																		       object:[NSString stringWithFormat:@"%d", [_waitForReturnByPID intValue]]
-																		     userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
-																					[NSNumber numberWithUnsignedInt:(unsigned int)getpid()], kHIDRemoteDNStatusPIDKey,
-																					[[NSBundle mainBundle] bundleIdentifier],		 (NSString *)kCFBundleIdentifierKey,
-																			      nil]
-																	   deliverImmediately:YES];
+											[[self delegate] hidRemote:self exclusiveLockReleasedByApplicationWithInfo:[notification userInfo]];
+										}
+										else
+										{
+											[self startRemoteControl:kHIDRemoteModeExclusive];
 										}
 									}
 								}
 							}
 						}
 					}
-					
-					if ((_mode == kHIDRemoteModeNone) && _waitForReturnByPID)
+
+					if (_mode==kHIDRemoteModeExclusive)
 					{
-						if ([action isEqual:kHIDRemoteDNStatusActionStop])
+						if ([action isEqual:kHIDRemoteDNStatusActionStart])
 						{
-							NSNumber *pidNumber, *returnToPIDNumber;
-							
-							if (((pidNumber		= [[notification userInfo] objectForKey:kHIDRemoteDNStatusPIDKey]) != nil) &&
-							    ((returnToPIDNumber = [[notification userInfo] objectForKey:kHIDRemoteDNStatusReturnToPIDKey]) != nil)) 
+							NSNumber *originPID = [[notification userInfo] objectForKey:kHIDRemoteDNStatusPIDKey];
+							BOOL lendLock = YES;
+						
+							if ([originPID intValue] != getpid())
 							{
-								if ([pidNumber isEqual:_waitForReturnByPID] && ([returnToPIDNumber intValue] == getpid()))
+								if (([self delegate] != nil) &&
+								    ([[self delegate] respondsToSelector:@selector(hidRemote:lendExclusiveLockToApplicationWithInfo:)]))
+								{
+									lendLock = [[self delegate] hidRemote:self lendExclusiveLockToApplicationWithInfo:[notification userInfo]];
+								}
+								
+								if (lendLock)
 								{
 									[_waitForReturnByPID release];
-									_waitForReturnByPID = nil;
-								
-									if (([self delegate] != nil) &&
-									    ([[self delegate] respondsToSelector:@selector(hidRemote:exclusiveLockReleasedByApplicationWithInfo:)]))
+									_waitForReturnByPID = [originPID retain];
+									
+									if (_waitForReturnByPID != nil)
 									{
-										[[self delegate] hidRemote:self exclusiveLockReleasedByApplicationWithInfo:[notification userInfo]];
-									}
-									else
-									{
-										[self startRemoteControl:kHIDRemoteModeExclusive];
+										BOOL cachedStatusSecureEventInputWorkAroundEnabled;
+										
+										// Workaround for what seems to be a missing lock on the counter in the EnableSecureEventInput() / DisableSecureEventInput() API
+										cachedStatusSecureEventInputWorkAroundEnabled = _statusSecureEventInputWorkAroundEnabled;
+										_statusSecureEventInputWorkAroundEnabled = NO;
+									
+										[self stopRemoteControl];
+										
+										_statusSecureEventInputWorkAroundEnabled = cachedStatusSecureEventInputWorkAroundEnabled;
+										
+										[[NSDistributedNotificationCenter defaultCenter] postNotificationName:kHIDRemoteDNHIDRemoteRetry
+																	       object:[NSString stringWithFormat:@"%d", [_waitForReturnByPID intValue]]
+																	     userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+																				[NSNumber numberWithUnsignedInt:(unsigned int)getpid()], kHIDRemoteDNStatusPIDKey,
+																				[[NSBundle mainBundle] bundleIdentifier],		 (NSString *)kCFBundleIdentifierKey,
+																		      nil]
+																   deliverImmediately:YES];
 									}
 								}
 							}
@@ -1542,3 +1594,5 @@ NSString *kHIDRemoteDNStatusReturnToPIDKey		= @"ReturnToPID";
 NSString *kHIDRemoteDNStatusActionStart			= @"start";
 NSString *kHIDRemoteDNStatusActionStop			= @"stop";
 NSString *kHIDRemoteDNStatusActionUpdate		= @"update";
+NSString *kHIDRemoteDNStatusActionNoNeed		= @"noneed";
+
