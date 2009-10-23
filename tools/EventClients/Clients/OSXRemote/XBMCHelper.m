@@ -69,6 +69,8 @@
 - (void) dealloc{
   PRINT_SIGNATURE();
   [remote stopRemoteControl];
+  if( [remote delegate] == self)
+    [remote setDelegate:nil];
   [mp_wrapper release];
   [mp_app_path release];
   [mp_home_path release];
