@@ -521,7 +521,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
               else
               {
                 // USB drive inserted
-                Win32StorageProvider::SetEvent();
+                CWin32StorageProvider::SetEvent();
               }
            }
            break;
@@ -542,7 +542,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
               else
               {
                 // USB drive was removed
-                Win32StorageProvider::SetEvent();
+                CWin32StorageProvider::SetEvent();
               }
            }
            break;
