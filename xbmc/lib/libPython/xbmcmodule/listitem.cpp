@@ -450,8 +450,11 @@ namespace PYXBMC
         else if (strcmpi(PyString_AsString(key), "playcount") == 0)
           self->item->GetVideoInfoTag()->m_playCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "overlay") == 0)
-          // TODO: Add a check for a valid overlay value
-          self->item->SetOverlayImage((CGUIListItem::GUIIconOverlay)PyInt_AsLong(value));
+        {
+          long overlay = PyInt_AsLong(value);
+          if (overlay >= 0 && overlay <= 8)
+            self->item->SetOverlayImage((CGUIListItem::GUIIconOverlay)overlay);
+        }
         else if (strcmpi(PyString_AsString(key), "cast") == 0 || strcmpi(PyString_AsString(key), "castandrole") == 0)
         {
           if (!PyObject_TypeCheck(value, &PyList_Type)) continue;
