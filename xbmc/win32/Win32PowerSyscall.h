@@ -26,7 +26,7 @@
 #ifdef _WIN32
 #ifndef _WIN32_POWER_SYSCALL_H_
 #define _WIN32_POWER_SYSCALL_H_
-#include "PowerManager.h"
+#include "IPowerSyscall.h"
 
 class CWin32PowerSyscall : public IPowerSyscall
 {

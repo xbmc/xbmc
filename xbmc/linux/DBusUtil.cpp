@@ -77,51 +77,52 @@ void CDBusUtil::GetAll(PropertyMap& properties, const char *destination, const c
 
 CStdString CDBusUtil::ParseVariant(DBusMessageIter *itr)
 {
+  DBusMessageIter variant;
+  dbus_message_iter_recurse(itr, &variant);
+
+  return ParseType(&variant);
+}
+
+CStdString CDBusUtil::ParseType(DBusMessageIter *itr)
+{
   CStdString value;
   const char *    string  = NULL;
   dbus_int32_t    int32   = 0;
   dbus_bool_t boolean = false;
 
-  DBusMessageIter variant;
-  dbus_message_iter_recurse(itr, &variant);
-  int type = dbus_message_iter_get_arg_type(&variant);
+  int type = dbus_message_iter_get_arg_type(itr);
 
   switch (type)
   {
-    case DBUS_TYPE_OBJECT_PATH:
-    case DBUS_TYPE_STRING:
-      dbus_message_iter_get_basic(&variant, &string);
-      value = string;
-      break;
+  case DBUS_TYPE_OBJECT_PATH:
+  case DBUS_TYPE_STRING:
+    dbus_message_iter_get_basic(itr, &string);
+    value = string;
+    break;
 
-    case DBUS_TYPE_BYTE:
-    case DBUS_TYPE_UINT32:
-    case DBUS_TYPE_INT32:
-      dbus_message_iter_get_basic(&variant, &int32);
-      value.Format("%i", (int)int32);
-      break;
-    case DBUS_TYPE_BOOLEAN:
-      dbus_message_iter_get_basic(&variant, &boolean);
-      value = boolean ? "true" : "false";
-      break;
-    case DBUS_TYPE_ARRAY:
-      DBusMessageIter array;
-      int len = 128;
-      char temp[len + 1];
-      dbus_message_iter_recurse(&variant, &array);
-      int strlen = 0;
-      if (dbus_message_iter_get_arg_type(&array) == DBUS_TYPE_BYTE)
-      {
-        do
-        {
-            dbus_message_iter_get_basic(&array, &int32);
-            temp[strlen++] = (char)int32;
-        } while (dbus_message_iter_next(&array) && strlen < len);
-        temp[strlen] = '\0';
-      }
-      if (strlen > 0)
-        value = temp;
-      break;
+  case DBUS_TYPE_BYTE:
+  case DBUS_TYPE_UINT32:
+  case DBUS_TYPE_INT32:
+    dbus_message_iter_get_basic(itr, &int32);
+    value.Format("%i", (int)int32);
+    break;
+  case DBUS_TYPE_BOOLEAN:
+    dbus_message_iter_get_basic(itr, &boolean);
+    value = boolean ? "true" : "false";
+    break;
+  case DBUS_TYPE_ARRAY:
+    DBusMessageIter array;
+    dbus_message_iter_recurse(itr, &array);
+
+    std::vector<CStdString> strArray;
+
+    do
+    {
+      strArray.push_back(ParseType(&array));
+    } while (dbus_message_iter_next(&array));
+
+    value = strArray.size() > 0 ? strArray[0] : ""; //Only handle first in the array for now.
+    break;
   }
 
   return value;

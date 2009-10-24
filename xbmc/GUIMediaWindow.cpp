@@ -1311,10 +1311,8 @@ bool CGUIMediaWindow::WaitForNetwork() const
     return true;
 
   CURL url(m_vecItems->m_strPath);
-  CStdString displayPath;
-  url.GetURLWithoutUserDetails(displayPath);
   progress->SetHeading(1040); // Loading Directory
-  progress->SetLine(1, displayPath);
+  progress->SetLine(1, url.GetWithoutUserDetails());
   progress->ShowProgressBar(false);
   progress->StartModal();
   while (!g_application.getNetwork().IsAvailable())

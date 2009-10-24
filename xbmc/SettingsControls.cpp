@@ -35,6 +35,7 @@ CBaseSettingControl::CBaseSettingControl(int id, CSetting *pSetting)
 {
   m_id = id;
   m_pSetting = pSetting;
+  m_delayed = false;
 }
 
 CRadioButtonSettingControl::CRadioButtonSettingControl(CGUIRadioButtonControl *pRadioButton, int id, CSetting *pSetting)

@@ -3,7 +3,7 @@ rm -r .libs
 make distclean
 
 ./configure \
---extra-cflags="-D_XBOX -fno-common" \
+--extra-cflags="-fno-common" \
 --enable-shared \
 --enable-memalign-hack \
 --enable-gpl \

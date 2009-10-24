@@ -62,7 +62,7 @@ CRssReader::~CRssReader()
     delete m_vecTimeStamps[i];
 }
 
-void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, int spacesBetweenFeeds)
+void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, int spacesBetweenFeeds, bool rtl)
 {
   CSingleLock lock(*this);
   
@@ -73,7 +73,7 @@ void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, co
   m_strColors.resize(aUrls.size());
   // set update times
   m_vecUpdateTimes = times;
-  m_rtlText = g_guiSettings.GetBool("lookandfeel.rssfeedsrtl");
+  m_rtlText = rtl;
   m_requestRefresh = false;
 
   // update each feed on creation
@@ -392,15 +392,18 @@ bool CRssReader::Parse(int iFeed)
   GetNewsItems(rssXmlNode,iFeed);
 
   // avoid trailing ' - '
-  if (m_strFeed[iFeed].size() > 3 && m_strFeed[iFeed].Mid(m_strFeed[iFeed].size()-3) == L" - " && !m_rtlText)
+  if (m_strFeed[iFeed].size() > 3 && m_strFeed[iFeed].Mid(m_strFeed[iFeed].size()-3) == L" - ")
   {
-    m_strFeed[iFeed].erase(m_strFeed[iFeed].length()-3);
-    m_strColors[iFeed].erase(m_strColors[iFeed].length()-3);
-  }
-  else if (m_strFeed[iFeed].size() > 3 && m_strFeed[iFeed].Mid(m_strFeed[iFeed].size()-3) == L" - " && m_rtlText)
-  {
-    m_strFeed[iFeed].erase(0, 3);
-    m_strColors[iFeed].erase(0, 3);
+    if (m_rtlText)
+    {
+      m_strFeed[iFeed].erase(0, 3);
+      m_strColors[iFeed].erase(0, 3);
+    }
+    else
+    {
+      m_strFeed[iFeed].erase(m_strFeed[iFeed].length()-3);
+      m_strColors[iFeed].erase(m_strColors[iFeed].length()-3);
+    }
   }
   return true;
 }

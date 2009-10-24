@@ -5,7 +5,7 @@ if [ "$XBMC_ROOT" == "" ]; then
    exit 1
 fi
 
-./configure --extra-cflags="-D_XBOX" --enable-shared --enable-postproc --enable-gpl --disable-static --disable-vhook --enable-swscale --enable-protocol=http --disable-altivec --disable-ipv6 --enable-pthreads --disable-debug 
+./configure --extra-cflags="--enable-shared --enable-postproc --enable-gpl --disable-static --disable-vhook --enable-swscale --enable-protocol=http --disable-altivec --disable-ipv6 --enable-pthreads --disable-debug"
 
 make
 

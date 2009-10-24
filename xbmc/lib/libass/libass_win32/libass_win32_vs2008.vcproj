@@ -142,6 +142,7 @@
 				AdditionalDependencies="..\..\..\..\lib\fontconfig_win32\lib\fontconfig.lib"
 				OutputFile="..\..\..\..\system\players\dvdplayer\libass.dll"
 				LinkIncremental="1"
+				IgnoreDefaultLibraryNames="libcmt"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
 				SubSystem="2"

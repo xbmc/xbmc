@@ -71,8 +71,7 @@ CFileXBMSP::~CFileXBMSP()
 //*********************************************************************************************
 bool CFileXBMSP::Open(const CURL& urlUtf8)
 {
-  CStdString strURL;
-  urlUtf8.GetURL(strURL);
+  CStdString strURL = urlUtf8.Get();
   g_charsetConverter.utf8ToStringCharset(strURL);
 
   CURL url(strURL);
@@ -239,13 +238,10 @@ int CFileXBMSP::Stat(const CURL& url, struct __stat64* buffer)
     return 0;
   }
 
-  CStdString strURL;
-  url.GetURL(strURL);
-
   int dot = url.GetFileName().rfind('.');
   int slash = url.GetFileName().rfind('/');
   if (dot <= slash)
-    if (CDirectory::Exists(strURL))
+    if (CDirectory::Exists(url.Get()))
     {
       buffer->st_mode = _S_IFDIR;
       return 0;

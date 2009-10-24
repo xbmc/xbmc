@@ -1267,8 +1267,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
-        CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath);
-        url.GetURLWithoutUserDetails(strLabel);
+        CURL(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath).GetWithoutUserDetails();
         if (info==CONTAINER_FOLDERNAME)
         {
           CUtil::RemoveSlashAtEnd(strLabel);
@@ -3912,8 +3911,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       }
       else
         CUtil::GetParentPath(item->m_strPath, path);
-      CURL url(path);
-      url.GetURLWithoutUserDetails(path);
+      path = CURL(path).GetWithoutUserDetails();
       if (info==CONTAINER_FOLDERNAME)
       {
         CUtil::RemoveSlashAtEnd(path);
@@ -3931,8 +3929,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         path = CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath);
       else
         path = item->m_strPath;
-      CURL url(path);
-      url.GetURLWithoutUserDetails(path);
+      path = CURL(path).GetWithoutUserDetails();
       CUtil::UrlDecode(path);
       return path;
     }
@@ -4215,10 +4212,9 @@ CStdString CGUIInfoManager::GetPictureLabel(int info) const
     return GetItemLabel(m_currentSlide, LISTITEM_FILENAME);
   else if (info == SLIDE_FILE_PATH)
   {
-    CStdString path, displayPath;
+    CStdString path;
     CUtil::GetDirectory(m_currentSlide->m_strPath, path);
-    CURL(path).GetURLWithoutUserDetails(displayPath);
-    return displayPath;
+    return CURL(path).GetWithoutUserDetails();
   }
   else if (info == SLIDE_FILE_SIZE)
     return GetItemLabel(m_currentSlide, LISTITEM_SIZE);

@@ -64,14 +64,12 @@ bool CShoutcastDirectory::ParseGenres(TiXmlElement *root, CFileItemList &items, 
     CUtil::URLEncode(path);
 
     url.SetOptions("?genre=" + path);
-    url.GetURL(path);
-
 
     CFileItemPtr pItem(new CFileItem);
     pItem->m_bIsFolder = true;
     pItem->SetLabel(genre);
     pItem->GetMusicInfoTag()->SetGenre(genre);
-    pItem->m_strPath = path;
+    pItem->m_strPath = url.Get();
 
     items.Add(pItem);
 
@@ -120,7 +118,6 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
     CStdString label = name;
 
     url.SetOptions("?id=" + id);
-    url.GetURL(path);
 
     CFileItemPtr pItem(new CFileItem);
     pItem->m_bIsFolder = false;
@@ -142,7 +139,7 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
     /* wonder if we could combine the contentype of the playlist and of the real stream */
     pItem->SetContentType("audio/x-scpls");
 
-    pItem->m_strPath = path;
+    pItem->m_strPath = url.Get();
 
     items.Add(pItem);
 

@@ -43,6 +43,8 @@ class CAdvancedSettings
   public:
     CAdvancedSettings();
 
+    void Initialize();
+
     bool Load();
     void Clear();
 
@@ -114,9 +116,9 @@ class CAdvancedSettings
     int m_logLevel;
     int m_logLevelHint;
     CStdString m_cddbAddress;
-#ifdef HAS_HAL
-    bool m_useHalMount;
-#endif
+
+    bool m_handleMounting;
+
     bool m_fullScreenOnMovieStart;
     bool m_noDVDROM;
     CStdString m_cachePath;
@@ -191,6 +193,7 @@ class CAdvancedSettings
     int m_iEdlMaxCommBreakLength;   // seconds
     int m_iEdlMinCommBreakLength;   // seconds
     int m_iEdlMaxCommBreakGap;      // seconds
+    int m_iEdlMaxStartGap;          // seconds
 
     bool m_bFirstLoop;
     int m_curlconnecttimeout;

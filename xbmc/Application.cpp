@@ -471,6 +471,7 @@ HRESULT CApplication::Create(HWND hWnd)
 {
   g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
+  g_advancedSettings.Initialize();
 
   m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
   g_Windowing.EnableSystemScreenSaver(false);
@@ -618,6 +619,8 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef HAS_SDL_JOYSTICK
   g_Joystick.Initialize(hWnd);
 #endif
+
+  g_mediaManager.Initialize();
 
   CLog::Log(LOGINFO, "Drives are mapped");
 
@@ -1379,10 +1382,6 @@ HRESULT CApplication::Initialize()
 
   if (!g_settings.bUseLoginScreen)
     UpdateLibraries();
-
-#ifdef HAS_HAL
-  g_HalManager.Initialize();
-#endif
 
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
   {
@@ -3621,6 +3620,8 @@ void CApplication::Stop()
       g_xbmcHelper.Stop();
 #endif
 
+  g_mediaManager.Stop();
+
 /* Python resource freeing must be done after skin has been unloaded, not before
    some windows still need it when deinitializing during skin unloading. */
 #ifdef HAS_PYTHON
@@ -3634,10 +3635,6 @@ void CApplication::Stop()
       delete g_lcd;
       g_lcd=NULL;
     }
-#endif
-
-#ifdef HAS_HAL
-    g_HalManager.Stop();
 #endif
 
     CLog::Log(LOGNOTICE, "stopped");

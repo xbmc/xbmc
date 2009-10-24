@@ -60,8 +60,7 @@ namespace DIRECTORY
     url.SetOptions(""); // delete options to have a clean path to add stuff too
     url.SetFileName(""); // delete filename too as our names later will contain it
 
-    CStdString strSlashPath;
-    url.GetURL(strSlashPath);
+    CStdString strSlashPath = url.Get();
 
     CStdString strBuffer;
 

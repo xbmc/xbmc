@@ -14,6 +14,7 @@ public:
 
   static CStdString GetVariant(const char *destination, const char *object, const char *interface, const char *property);
 private:
+  static CStdString ParseType(DBusMessageIter *itr);
   static CStdString ParseVariant(DBusMessageIter *itr);
 };
 #endif

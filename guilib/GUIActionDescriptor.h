@@ -20,12 +20,14 @@ public:
   {
     m_lang = LANG_XBMC;
     m_action = action;    
+    m_sourceWindowId = -1;
   }
   
   CGUIActionDescriptor(ActionLang lang, CStdString& action)
   {
     m_lang = lang;
     m_action = action;
+    m_sourceWindowId = -1;
   }
   
   CStdString m_action;

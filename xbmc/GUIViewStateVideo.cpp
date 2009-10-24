@@ -41,11 +41,6 @@ CStdString CGUIViewStateWindowVideo::GetLockType()
   return "video";
 }
 
-bool CGUIViewStateWindowVideo::UnrollArchives()
-{
-  return g_guiSettings.GetBool("filelists.unrollarchives");
-}
-
 CStdString CGUIViewStateWindowVideo::GetExtensions()
 {
   return g_stSettings.m_videoExtensions;

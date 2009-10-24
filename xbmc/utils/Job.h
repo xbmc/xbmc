@@ -128,6 +128,18 @@ public:
   virtual void DoWork() = 0;  // function to do the work
 
   /*!
+   \brief Function that returns the type of job.
+   
+   CJob subclasses may optionally implement this function to specify the type of job.
+   This is useful for the CJobManager::AddLIFOJob() routine, which preempts similar jobs
+   with the new job.
+   
+   \return a unique character string describing the job.
+   \sa CJobManager
+   */
+  virtual const char *GetType() const { return ""; };
+
+  /*!
    \brief Function for longer jobs to report progress and check whether they have been cancelled.
    
    Jobs that contain loops that may take time should check this routine each iteration of the loop,

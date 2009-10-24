@@ -268,12 +268,11 @@ void CGUISettings::Initialize()
   AddString(12, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicplayer", 16003);
-  AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "musicplayer.sep1");
   AddInt(4, "musicplayer.replaygaintype", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
-  AddInt(5, "musicplayer.replaygainpreamp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  AddInt(6, "musicplayer.replaygainnogainpreamp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
-  AddBool(7, "musicplayer.replaygainavoidclipping", 643, false);
+  AddInt(0, "musicplayer.replaygainpreamp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddInt(0, "musicplayer.replaygainnogainpreamp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
+  AddBool(0, "musicplayer.replaygainavoidclipping", 643, false);
   AddSeparator(8, "musicplayer.sep2");
   AddInt(9, "musicplayer.crossfade", 13314, 0, 0, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddBool(10, "musicplayer.crossfadealbumtracks", 13400, true);
@@ -359,10 +358,10 @@ void CGUISettings::Initialize()
   AddCategory(4, "appleremote", 13600);
   AddInt(1, "appleremote.mode", 13601, APPLE_REMOTE_STANDARD, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_MULTIREMOTE, SPIN_CONTROL_TEXT);
   AddBool(2, "appleremote.alwayson", 13602, false);
-  AddInt(3, "appleremote.sequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
+  AddInt(0, "appleremote.sequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
 #endif
 
-  AddCategory(4, "autorun", 447);
+  //AddCategory(4, "autorun", 447);
   AddBool(1, "autorun.dvd", 240, true);
   AddBool(2, "autorun.vcd", 241, true);
   AddBool(3, "autorun.cdda", 242, true);
@@ -395,9 +394,14 @@ void CGUISettings::Initialize()
   //AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
   AddBool(7, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_LINUX)
-  AddString(6, "audiooutput.audiodevice", 545, "default", EDIT_CONTROL_INPUT);
-  AddString(7, "audiooutput.passthroughdevice", 546, "iec958", EDIT_CONTROL_INPUT);
-  AddBool(8, "audiooutput.downmixmultichannel", 548, true);
+  AddSeparator(6, "audiooutput.sep1");
+  AddString(7, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
+  AddString(8, "audiooutput.customdevice", 1300, "", EDIT_CONTROL_INPUT);
+  AddSeparator(9, "audiooutput.sep2");
+  AddString(10, "audiooutput.passthroughdevice", 546, "iec958", SPIN_CONTROL_TEXT);
+  AddString(11, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
+  AddSeparator(12, "audiooutput.sep3");
+  AddBool(13, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_WIN32)
   AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
   AddBool(7, "audiooutput.downmixmultichannel", 548, true);
@@ -442,7 +446,6 @@ void CGUISettings::Initialize()
 
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
-  AddString(2, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "videoplayer.sep1");
 #ifdef HAVE_LIBVDPAU
   AddInt(4, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_VDPAU, SPIN_CONTROL_TEXT);
@@ -478,8 +481,8 @@ void CGUISettings::Initialize()
   AddSeparator(18, "videoplayer.sep4");
   AddBool(19, "videoplayer.usedisplayasclock", 13510, false);
   AddInt(20, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
-  AddFloat(21, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
-  AddInt(22, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
+  AddFloat(0, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
+  AddInt(0, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
 
   AddSeparator(23, "videoplayer.sep5");
   AddBool(24, "videoplayer.teletextenabled", 23090, true);
@@ -545,6 +548,12 @@ void CGUISettings::Initialize()
   AddSeparator(18, "network.sep2");
   AddBool(19, "network.enableinternet", 14054, true);
 
+  // zeroconf publishing
+#ifdef HAS_ZEROCONF
+  AddSeparator(20, "network.sep1");
+  AddBool(21, "network.zeroconf", 1260, true);
+#endif
+
   AddCategory(6, "servers", 14036);
 #if defined(HAS_FTP_SERVER) || defined (HAS_WEB_SERVER)
 #ifdef HAS_FTP_SERVER
@@ -568,11 +577,6 @@ void CGUISettings::Initialize()
 #endif
 #endif
 
-  // zeroconf publishing
-#ifdef HAS_ZEROCONF
-  AddBool(10, "servers.zeroconf", 1260, true);
-#endif
-
   AddCategory(6, "smb", 1200);
   AddString(1, "smb.username",    1203,   "", EDIT_CONTROL_INPUT, true, 1203);
   AddString(2, "smb.password",    1204,   "", EDIT_CONTROL_HIDDEN_INPUT, true, 1204);
@@ -589,9 +593,6 @@ void CGUISettings::Initialize()
   AddBool(2, "upnp.renderer", 21881, false);
   AddSeparator(3,"upnp.sep1");
   AddBool(4, "upnp.server", 21360, false);
-  AddString(5, "upnp.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
-  AddString(6, "upnp.videoshares", 21362, "", BUTTON_CONTROL_STANDARD);
-  AddString(7, "upnp.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
 
   // remote events settings
 #ifdef HAS_EVENT_SERVER
@@ -620,11 +621,11 @@ void CGUISettings::Initialize()
   AddString(8, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(10, "lookandfeel.sep2");
   AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
-  AddBool(12, "lookandfeel.rssfeedsrtl",13412,  false);
   AddString(13, "lookandfeel.rssedit", 21435, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(14, "lookandfeel.sep3");
   AddBool(15, "lookandfeel.enablemouse", 21369, true);
   AddBool(16, "lookandfeel.remoteaskeyboard", 21449, false);
+  AddBool(17, "lookandfeel.autorun", 447, false);
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
@@ -647,7 +648,6 @@ void CGUISettings::Initialize()
 
   AddCategory(7, "videoscreen", 131);
   AddInt(1, "videoscreen.resolution",169, (int)RES_DESKTOP, (int)RES_WINDOW, 1, (int)RES_CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
-  AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
 
 #if defined (__APPLE__) || defined(_WIN32)
   AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);
@@ -665,7 +665,6 @@ void CGUISettings::Initialize()
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
   AddBool(2, "filelists.hideextensions", 497, false);
   AddBool(3, "filelists.ignorethewhensorting", 13399, true);
-  AddBool(4, "filelists.unrollarchives",516, false);
   AddSeparator(6, "filelists.sep1");
   AddBool(7, "filelists.allowfiledeletion", 14071, false);
   AddBool(8, "filelists.disableaddsourcebuttons", 21382,  false);

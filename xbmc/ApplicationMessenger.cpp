@@ -37,7 +37,6 @@
 #include "utils/Builtins.h"
 #include "utils/Network.h"
 #include "GUIWindowManager.h"
-#include "GUIWindowManager.h"
 #include "Settings.h"
 #include "GUISettings.h"
 #include "FileItem.h"

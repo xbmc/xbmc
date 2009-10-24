@@ -50,7 +50,7 @@ public:
   virtual float GetDelay();
   virtual float GetCacheTime();
   CALSADirectSound();
-  virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
   virtual ~CALSADirectSound();
 
   virtual unsigned int AddPackets(const void* data, unsigned int len);
@@ -68,12 +68,13 @@ public:
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
   virtual void Flush();
-
+  static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough);
 private:
+  static bool SoundDeviceExists(const CStdString& device);
+  static void GenSoundLabel(AudioSinkList& vAudioSinks, CStdString sink, CStdString card, CStdString readableCard);
   snd_pcm_t 		*m_pPlayHandle;
 
   IAudioCallback* m_pCallback;
-
   CPCMAmplifier 	m_amp;
   long m_nCurrentVolume;
   snd_pcm_uframes_t m_dwPacketSize;

@@ -104,9 +104,7 @@ DWORD CWIN32Util::UmountShare(const CStdString &strPath)
 
 CStdString CWIN32Util::MountShare(const CStdString &strPath, DWORD *dwError)
 {
-  CStdString strURL = strPath;
-  CURL url(strURL);
-  url.GetURL(strURL);
+  CURL url(strPath);
   CStdString strPassword = url.GetPassWord();
   CStdString strUserName = url.GetUserName();
   CStdString strPathToShare = "\\\\"+url.GetHostName() + "\\" + url.GetShareName();
@@ -781,22 +779,22 @@ BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
 void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType)
 {
   CMediaSource share;
-  char* pcBuffer= NULL;
-  DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
+  WCHAR* pcBuffer= NULL;
+  DWORD dwStrLength= GetLogicalDriveStringsW( 0, pcBuffer );
   if( dwStrLength != 0 )
   {
     dwStrLength+= 1;
-    pcBuffer= new char [dwStrLength];
-    GetLogicalDriveStrings( dwStrLength, pcBuffer );
+    pcBuffer= new WCHAR [dwStrLength];
+    GetLogicalDriveStringsW( dwStrLength, pcBuffer );
 
     UINT uDriveType;
     int iPos= 0, nResult;
-    char cVolumeName[100];
+    WCHAR cVolumeName[100];
     do{
-      cVolumeName[0]= '\0';
-      uDriveType= GetDriveType( pcBuffer + iPos  );
+      cVolumeName[0]= L'\0';
+      uDriveType= GetDriveTypeW( pcBuffer + iPos  );
       if(uDriveType != DRIVE_REMOVABLE)
-        nResult= GetVolumeInformation( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
+        nResult= GetVolumeInformationW( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
       share.strPath= share.strName= "";
 
       bool bUseDCD= false;
@@ -807,7 +805,8 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
          ( eDriveType == DVD_DRIVES && ( uDriveType == DRIVE_CDROM ))))
       {
         share.strPath= pcBuffer + iPos;
-        if( cVolumeName[0] != '\0' ) share.strName= cVolumeName;
+        if( cVolumeName[0] != L'\0' )
+          g_charsetConverter.wToUTF8(cVolumeName, share.strName);
         if( uDriveType == DRIVE_CDROM && nResult)
         {
           // Has to be the same as auto mounted devices
@@ -854,8 +853,8 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
 
         localDrives.push_back(share);
       }
-      iPos += (strlen( pcBuffer + iPos) + 1 );
-    } while( strlen( pcBuffer + iPos ) > 0 );
+      iPos += (wcslen( pcBuffer + iPos) + 1 );
+    } while( wcslen( pcBuffer + iPos ) > 0 );
     if( pcBuffer != NULL)
       delete[] pcBuffer;
   }

@@ -615,7 +615,8 @@ namespace PYXBMC
   PyMODINIT_FUNC
   DeinitPluginModule(void)
   {
-    // void for now. no references to dec.
+    // no need to Py_DECREF our objects (see InitPluginTypes()) as they were created only
+    // so that they could be added to the module, which steals a reference.
   }
 
   PyMODINIT_FUNC

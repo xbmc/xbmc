@@ -1795,8 +1795,8 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
       {
         CStdString set(sets[i]);
         set.Trim();
-        int lSet = AddSet(set);
-        AddSetToMovie(idMovie, lSet);
+        int idSet = AddSet(set);
+        AddSetToMovie(idMovie, idSet);
       }
     }
     
@@ -2651,6 +2651,23 @@ void CVideoDatabase::DeleteStreamDetails(int idFile)
     m_pDS->exec(FormatSQL("delete from streamdetails where idFile=%i", idFile));
 }
 
+void CVideoDatabase::DeleteSet(int idSet)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return ;
+    if (NULL == m_pDS.get()) return ;
+
+    CStdString strSQL;
+    strSQL=FormatSQL("delete from sets where idSet=%i", idSet);
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idSet);
+  }
+}
+
 void CVideoDatabase::GetDetailsFromDB(auto_ptr<Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details)
 {
   for (int i = min + 1; i < max; i++)
@@ -2695,6 +2712,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, i
       break;
     case VIDEODB_CONTENT_MUSICVIDEOS:
       GetMusicVideoInfo("", details, id);
+    default:
+      break;
   }
 
   return details;
@@ -3840,6 +3859,11 @@ void CVideoDatabase::UpdateMovieTitle(int idMovie, const CStdString& strNewMovie
       CLog::Log(LOGINFO, "Changing MusicVideo:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
       strSQL = FormatSQL("UPDATE musicvideo SET c%02d='%s' WHERE idMVideo=%i", VIDEODB_ID_MUSICVIDEO_TITLE, strNewMovieTitle.c_str(), idMovie );
     }
+    else if (iType == VIDEODB_CONTENT_MOVIE_SETS)
+    {
+      CLog::Log(LOGINFO, "Changing Movie set:id:%i New Title:%s", idMovie, strNewMovieTitle.c_str());
+      strSQL = FormatSQL("UPDATE sets SET strSet='%s' WHERE idSet=%i", strNewMovieTitle.c_str(), idMovie );
+    }
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
@@ -4185,6 +4209,23 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         pItem->SetLabelPreformated(true);
+        if (CFile::Exists(pItem->GetCachedVideoThumb()))
+          pItem->SetThumbnailImage(pItem->GetCachedVideoThumb());
+        else // use the first item's thumb
+        {
+          CFileItemList items;
+          CStdString strSQL = FormatSQL("select strPath, strFileName from movieview join setlinkmovie on setlinkmovie.idMovie=movieview.idmovie where setlinkmovie.idSet=%u",m_pDS->fv("sets.idSet").get_asInt());
+          m_pDS2->query(strSQL.c_str());
+          if (!m_pDS2->eof())
+          {
+            CStdString path;
+            ConstructPath(path,m_pDS2->fv(0).get_asString(),m_pDS2->fv(1).get_asString());
+            CFileItem item(path,false);
+            if (CFile::Exists(item.GetCachedVideoThumb()))
+              pItem->SetThumbnailImage(item.GetCachedVideoThumb());
+            m_pDS2->close();
+          }
+        }
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent==VIDEODB_CONTENT_MUSICVIDEOS)
         {
           // fv(3) is the number of videos watched, fv(2) is the total number.  We set the playcount
@@ -5306,14 +5347,14 @@ bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir
   return GetMusicVideosByWhere(strBaseDir, where, items);
 }
 
-bool CVideoDatabase::GetGenreById(int lIdGenre, CStdString& strGenre)
+bool CVideoDatabase::GetGenreById(int idGenre, CStdString& strGenre)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select genre.strGenre from genre where genre.idGenre=%i", lIdGenre);
+    CStdString strSQL=FormatSQL("select genre.strGenre from genre where genre.idGenre=%i", idGenre);
     m_pDS->query( strSQL.c_str() );
 
     bool bResult = false;
@@ -5351,14 +5392,14 @@ bool CVideoDatabase::HasSets() const
   return false;
 }
 
-bool CVideoDatabase::GetSetById(int lIdSet, CStdString& strSet)
+bool CVideoDatabase::GetSetById(int idSet, CStdString& strSet)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select sets.strSet from sets where sets.idSet=%i", lIdSet);
+    CStdString strSQL=FormatSQL("select sets.strSet from sets where sets.idSet=%i", idSet);
     m_pDS->query( strSQL.c_str() );
 
     bool bResult = false;
@@ -5491,7 +5532,12 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
     if (NULL == m_pDS.get()) return false;
 
     CStdString strPath1;
-    CUtil::GetDirectory(strPath,strPath1);
+    CStdString strPath2(strPath);
+
+    if (CUtil::IsMultiPath(strPath))
+      strPath2 = CMultiPathDirectory::GetFirstPath(strPath);
+
+    CUtil::GetDirectory(strPath2,strPath1);
     int idPath = GetPathId(strPath1);
 
     if (idPath > -1)

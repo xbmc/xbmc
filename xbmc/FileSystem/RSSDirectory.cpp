@@ -44,10 +44,9 @@ bool CRSSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   
   CURL url(path);
   url.SetProtocol("http");
-  url.GetURL(path);
 
   CRssFeed feed;
-  feed.Init(path);
+  feed.Init(url.Get());
   feed.ReadFeed();
 
   feed.GetItemList(items);

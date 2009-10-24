@@ -324,19 +324,62 @@ bool CThread::SetPriority(const int iPriority)
 // Set thread priority
 // Return true for success
 {
+  bool rtn = false;
+  
   if (m_ThreadHandle)
   {
-#ifndef _LINUX
-    return ( SetThreadPriority( m_ThreadHandle, iPriority ) == TRUE );
-#else
-    return true;
-#endif
+    rtn = SetThreadPriority( m_ThreadHandle, iPriority ) == TRUE;
   }
-  else
-  {
-    return false;
-  }
+  
+  return(rtn);
 }
+
+int CThread::GetMinPriority(void)
+{
+#if defined(__APPLE__)
+  struct sched_param sched;
+  int rtn, policy;
+  
+  rtn = pthread_getschedparam(pthread_self(), &policy, &sched);
+  int min = sched_get_priority_min(policy);
+
+  return(min);
+#else
+  return(THREAD_PRIORITY_LOWEST);
+#endif
+}
+
+int CThread::GetMaxPriority(void)
+{
+#if defined(__APPLE__)
+  struct sched_param sched;
+  int rtn, policy;
+  
+  rtn = pthread_getschedparam(pthread_self(), &policy, &sched);
+  int max = sched_get_priority_max(policy);
+
+  return(max);
+#else
+  return(THREAD_PRIORITY_HIGHEST);
+#endif
+}
+
+int CThread::GetNormalPriority(void)
+{
+#if defined(__APPLE__)
+  struct sched_param sched;
+  int rtn, policy;
+  
+  rtn = pthread_getschedparam(pthread_self(), &policy, &sched);
+  int min = sched_get_priority_min(policy);
+  int max = sched_get_priority_max(policy);
+
+  return( min + ((max-min) / 2)  );
+#else
+  return(THREAD_PRIORITY_NORMAL);
+#endif
+}
+
 
 void CThread::SetName( LPCTSTR szThreadName )
 {

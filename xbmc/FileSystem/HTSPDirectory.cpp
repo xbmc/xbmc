@@ -379,7 +379,7 @@ bool CHTSPDirectory::GetChannels( const CURL &base
     CFileItemPtr item(new CFileItem("", true));
 
     url.SetFileName("");
-    url.GetURL(item->m_strPath);
+    item->m_strPath = url.Get();
     CHTSPSession::ParseItem(it->second, tag, event, *item);
     item->m_bIsFolder = false;
     item->m_strTitle.Format("%d", it->second.id);
@@ -432,7 +432,7 @@ bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
     item.reset(new CFileItem("", true));
     url.SetFileName("tags/0/");
-    url.GetURL(item->m_strPath);
+    item->m_strPath = url.Get();
     item->SetLabel(g_localizeStrings.Get(22018));
     item->SetLabelPreformated(true);
     items.Add(item);
@@ -446,7 +446,7 @@ bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
       item.reset(new CFileItem("", true));
       url.SetFileName(filename);
-      url.GetURL(item->m_strPath);
+      item->m_strPath = url.Get();
       item->SetLabel(label);
       item->SetLabelPreformated(true);
       item->SetThumbnailImage(it->second.icon);

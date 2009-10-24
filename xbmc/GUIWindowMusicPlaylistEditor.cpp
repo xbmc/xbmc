@@ -234,8 +234,9 @@ void CGUIWindowMusicPlaylistEditor::OnQueueItem(int iItem)
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return;
 
-  // add this item to our playlist
-  CFileItemPtr item = m_vecItems->Get(iItem);
+  // add this item to our playlist.  We make a new copy here as we may be rendering them side by side,
+  // and thus want a different layout for each item
+  CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
   CFileItemList newItems;
   AddItemToPlayList(item, newItems);
   AppendToPlaylist(newItems);

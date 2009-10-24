@@ -41,7 +41,7 @@ public:
   virtual float GetDelay();
   virtual float GetCacheTime();
   CNullDirectSound();
-  virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
   virtual ~CNullDirectSound();
 
   virtual unsigned int AddPackets(const void* data, unsigned int len);

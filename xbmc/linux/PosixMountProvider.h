@@ -7,10 +7,15 @@ public:
   CPosixMountProvider();
   virtual ~CPosixMountProvider() { }
 
+  virtual void Initialize() { }
+  virtual void Stop() { }
+
   virtual void GetLocalDrives(VECSOURCES &localDrives) { GetDrives(localDrives); }
   virtual void GetRemovableDrives(VECSOURCES &removableDrives) { /*GetDrives(removableDrives);*/ }
 
   virtual std::vector<CStdString> GetDiskUsage();
+
+  virtual bool Eject(CStdString mountpath) { return false; }
 
   virtual bool PumpDriveChangeEvents();
 private:

@@ -63,7 +63,8 @@ SRCS=Addon.cpp \
      TimeUtils.cpp \
      JobManager.cpp \
      Teletext.cpp \
-     fastmemcpy.cpp
+     fastmemcpy.cpp \
+     PasswordManager.cpp
 
 LIB=utils.a
 

@@ -63,7 +63,7 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
     return false;
   }
 
-  if (m_pFile->GetImplemenation() && (stdFile.Find(":8001/1:") < 0))
+  if (m_pFile->GetImplemenation() && (content.empty() || content == "application/octet-stream"))
     m_content = m_pFile->GetImplemenation()->GetContent();
 
   m_eof = true;

@@ -37,9 +37,6 @@
 #include "ProgramDatabase.h"
 #include "ViewDatabase.h"
 #include "XBAudioConfig.h"
-#ifdef _LINUX
-#include <dlfcn.h>
-#endif
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #endif
@@ -71,6 +68,11 @@
 #include "GUIWindowManager.h"
 #ifdef _LINUX
 #include "LinuxTimezone.h"
+#include <dlfcn.h>
+#include "cores/AudioRenderers/AudioRendererFactory.h"
+#ifndef __APPLE__
+#include "cores/AudioRenderers/ALSADirectSound.h"
+#endif
 #ifdef HAS_HAL
 #include "HALManager.h"
 #endif
@@ -146,6 +148,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_iControlBeforeJump=-1;
   m_iWindowBeforeJump=WINDOW_INVALID;
   m_returningFromSkinLoad = false;
+  m_delayedSetting = NULL;
 }
 
 CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
@@ -299,6 +302,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
+      m_delayedSetting = NULL;
       if (message.GetParam1() != WINDOW_INVALID && !m_returningFromSkinLoad)
       { // coming to this window first time (ie not returning back from some other window)
         // so we reset our section and control states
@@ -310,8 +314,17 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       return CGUIWindow::OnMessage(message);
     }
     break;
+  case GUI_MSG_UPDATE_ITEM:
+    if (m_delayedSetting)
+    {
+      OnSettingChanged(m_delayedSetting);
+      m_delayedSetting = NULL;
+      return true;
+    }
+    break;
   case GUI_MSG_WINDOW_DEINIT:
     {
+      m_delayedSetting = NULL;
       // Hardware based stuff
       // TODO: This should be done in a completely separate screen
       // to give warning to the user that it writes to the EEPROM.
@@ -872,6 +885,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInAudioDevices(pSetting);
     }
+    else if (strSetting.Equals("audiooutput.passthroughdevice"))
+    {
+      FillInAudioDevices(pSetting,true);
+    }
     else if (strSetting.Equals("myvideos.resumeautomatically"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -943,18 +960,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     CBaseSettingControl *pSettingControl = m_vecSettings[i];
     pSettingControl->Update();
     CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-    if (strSetting.Equals("videoscreen.testresolution"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl)
-      {
-        if ((m_NewResolution != g_guiSettings.m_LookAndFeelResolution) && (m_NewResolution!=RES_INVALID))
-          pControl->SetEnabled(true);
-        else
-          pControl->SetEnabled(false);
-      }
-    }
-    else if (strSetting.Equals("videoplayer.upscalingalgorithm"))
+    if (strSetting.Equals("videoplayer.upscalingalgorithm"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
@@ -1093,11 +1099,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE                                    &&
                                          g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE &&
                                          !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
-    }
-    else if (strSetting.Equals("upnp.musicshares") || strSetting.Equals("upnp.videoshares") || strSetting.Equals("upnp.pictureshares"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("upnp.server"));
     }
     else if (!strSetting.Equals("pvrmanager.enabled") && strSetting.Left(4).Equals("pvrmanager."))
     {
@@ -1443,11 +1444,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(enabled);
     }
-    else if (strSetting.Equals("lookandfeel.rssfeedsrtl"))
-    { // only visible if rss is enabled
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
-    }
     else if (strSetting.Equals("videoplayer.synctype"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1480,6 +1476,25 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(!g_guiSettings.GetString("weather.plugin").IsEmpty() && CScriptSettings::SettingsExist(basepath));
     }
+#if defined(_LINUX) && !defined(__APPLE__)
+    else if (strSetting.Equals("audiooutput.custompassthrough"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
+      {
+        if (pControl) pControl->SetEnabled(g_guiSettings.GetString("audiooutput.passthroughdevice").Equals("custom"));
+      }
+      else
+      {
+        if (pControl) pControl->SetEnabled(false);
+      }
+    }
+    else if (strSetting.Equals("audiooutput.customdevice"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetString("audiooutput.audiodevice").Equals("custom"));
+    }
+#endif
   }
 }
 
@@ -1583,7 +1598,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     return;
   }
 
-  OnSettingChanged(pSettingControl);
+  if (pSettingControl->IsDelayed())
+  { // delayed setting
+    m_delayedSetting = pSettingControl;
+    m_delayedTimer.StartZero();
+  }
+  else
+    OnSettingChanged(pSettingControl);
 }
 
 void CGUIWindowSettingsCategory::CheckForUpdates()
@@ -1602,21 +1623,6 @@ void CGUIWindowSettingsCategory::CheckForUpdates()
 void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingControl)
 {
   CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-
-  if (strSetting.Equals("videoscreen.testresolution"))
-  {
-    RESOLUTION lastRes = g_graphicsContext.GetVideoResolution();
-    g_guiSettings.SetInt("videoscreen.resolution", m_NewResolution);
-    g_graphicsContext.SetVideoResolution(m_NewResolution);
-    g_guiSettings.m_LookAndFeelResolution = m_NewResolution;
-    bool cancelled = false;
-    if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
-    {
-      g_guiSettings.SetInt("videoscreen.resolution", lastRes);
-      g_graphicsContext.SetVideoResolution(lastRes);
-      g_guiSettings.m_LookAndFeelResolution = lastRes;
-    }
-  }
 
   // ok, now check the various special things we need to do
   if (strSetting.Equals("mymusic.visualisation"))
@@ -1820,10 +1826,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       musicdatabase.Close();
     }
   }
-  else if (strSetting.Equals("musicplayer.jumptoaudiohardware") || strSetting.Equals("videoplayer.jumptoaudiohardware"))
-  {
-    JumpToSection(WINDOW_SETTINGS_SYSTEM, "audiooutput");
-  }
   else if (strSetting.Equals("musicplayer.jumptocache") || strSetting.Equals("videoplayer.jumptocache"))
   {
     JumpToSection(WINDOW_SETTINGS_SYSTEM, "cache");
@@ -1869,11 +1871,24 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
-#if defined(__APPLE__) || defined(_WIN32)
   else if (strSetting.Equals("audiooutput.audiodevice"))
   {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+#if defined(_LINUX) && !defined(__APPLE__)
+      g_guiSettings.SetString("audiooutput.audiodevice", m_AnalogAudioSinkMap[pControl->GetCurrentLabel()]);
+#else
       g_guiSettings.SetString("audiooutput.audiodevice", pControl->GetCurrentLabel());
+#endif
+  }
+#if defined(_LINUX)
+  else if (strSetting.Equals("audiooutput.passthroughdevice"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+#if defined(_LINUX) && !defined(__APPLE__)
+      g_guiSettings.SetString("audiooutput.passthroughdevice", m_DigitalAudioSinkMap[pControl->GetCurrentLabel()]);
+#else
+      g_guiSettings.SetString("audiooutput.passthroughdevice", pControl->GetCurrentLabel());
+#endif
   }
 #endif
 #ifdef HAS_LCD
@@ -2121,12 +2136,17 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
     g_windowManager.SendMessage(msg);
-    m_NewResolution = (RESOLUTION)msg.GetParam1();
-    // reset our skin if necessary
-    // delay change of resolution
-    if (m_NewResolution == g_guiSettings.m_LookAndFeelResolution)
+    RESOLUTION nextRes = (RESOLUTION)msg.GetParam1();
+    RESOLUTION lastRes = g_graphicsContext.GetVideoResolution();
+    g_guiSettings.SetInt("videoscreen.resolution", nextRes);
+    g_graphicsContext.SetVideoResolution(nextRes);
+    g_guiSettings.m_LookAndFeelResolution = nextRes;
+    bool cancelled = false;
+    if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
     {
-      m_NewResolution = RES_INVALID;
+      g_guiSettings.SetInt("videoscreen.resolution", lastRes);
+      g_graphicsContext.SetVideoResolution(lastRes);
+      g_guiSettings.m_LookAndFeelResolution = lastRes;
     }
   }
   else if (strSetting.Equals("videoscreen.vsync"))
@@ -2379,6 +2399,33 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
 #endif
   }
+  else if (strSetting.Equals("remoteevents.port"))
+  {
+#ifdef HAS_EVENT_SERVER
+    CStdString port_string = g_guiSettings.GetString("remoteevents.port");
+    int port = 0;
+    if(port_string.length() == 0)
+    {
+      CLog::Log(LOGERROR, "ES: No port specified, defaulting to 9777");
+      g_guiSettings.SetString("remoteevents.port", "9777");
+    }
+    else
+      port = atoi(port_string);
+    //verify valid port
+    if (port > 65535 || port < 1)
+    {
+      CLog::Log(LOGERROR, "ES: Invalid port specified %d, defaulting to 9777", port);
+      g_guiSettings.SetString("remoteevents.port", "9777");
+    }
+    //restart eventserver without asking user
+    if (g_application.StopEventServer(true, false))
+      g_application.StartEventServer();
+#ifdef __APPLE__
+    //reconfigure XBMCHelper for port changes
+    g_xbmcHelper.Configure();
+#endif
+#endif
+  }
   else if (strSetting.Equals("remoteevents.allinterfaces"))
   {
 #ifdef HAS_EVENT_SERVER
@@ -2404,39 +2451,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_application.RefreshEventServer();
     }
 #endif
-  }
-  else if (strSetting.Equals("upnp.musicshares"))
-  {
-    CStdString filename;
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
-    CStdString strDummy;
-    g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPMusicSources,"upnpmusic"))
-      g_settings.SaveUPnPXml(filename);
-    else
-      g_settings.LoadUPnPXml(filename);
-  }
-  else if (strSetting.Equals("upnp.videoshares"))
-  {
-    CStdString filename;
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
-    CStdString strDummy;
-    g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPVideoSources,"upnpvideo"))
-      g_settings.SaveUPnPXml(filename);
-    else
-      g_settings.LoadUPnPXml(filename);
-  }
-  else if (strSetting.Equals("upnp.pictureshares"))
-  {
-    CStdString filename;
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
-    CStdString strDummy;
-    g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPPictureSources,"upnppictures"))
-      g_settings.SaveUPnPXml(filename);
-    else
-      g_settings.LoadUPnPXml(filename);
   }
   else if (strSetting.Equals("pvrmanager.enabled"))
   {
@@ -2684,6 +2698,15 @@ void CGUIWindowSettingsCategory::Render()
 {
   // update realtime changeable stuff
   UpdateRealTimeSettings();
+
+  if (m_delayedSetting && m_delayedTimer.GetElapsedMilliseconds() > 3000)
+  { // we send a thread message so that it's processed the following frame (some settings won't
+    // like being changed during Render())
+    CGUIMessage message(GUI_MSG_UPDATE_ITEM, GetID(), GetID());
+    g_windowManager.SendThreadMessage(message, GetID());
+    m_delayedTimer.Stop();
+  }
+
   // update alpha status of current button
   bool bAlphaFaded = false;
   CGUIControl *control = GetFirstFocusableControl(CONTROL_START_BUTTONS + m_iSection);
@@ -3251,7 +3274,9 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
 void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool playbackSetting)
 {
   CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+  control->SetDelayed();
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
   pControl->Clear();
 
   pControl->AddLabel(g_settings.m_ResInfo[RES_WINDOW].strMode, RES_WINDOW);
@@ -3682,7 +3707,6 @@ void CGUIWindowSettingsCategory::OnInitWindow()
   }
   m_strOldTrackFormat = g_guiSettings.GetString("musicfiles.trackformat");
   m_strOldTrackFormatRight = g_guiSettings.GetString("musicfiles.trackformatright");
-  m_NewResolution = RES_INVALID;
   SetupControls();
   CGUIWindow::OnInitWindow();
 }
@@ -3805,9 +3829,11 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
   }
 }
 
-void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
+void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Passthrough)
 {
 #ifdef __APPLE__
+  if (Passthrough)
+    return;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
@@ -3830,7 +3856,71 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
     deviceList.pop_front();
   }
   pControl->SetValue(activeDevice);
+#elif defined(_LINUX)
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  CStdString currentDevice = Passthrough ? g_guiSettings.GetString("audiooutput.passthroughdevice") : g_guiSettings.GetString("audiooutput.audiodevice");
+
+  if (Passthrough)
+  {
+    m_DigitalAudioSinkMap.clear();
+    m_DigitalAudioSinkMap["Error - no devices found"] = "null:";
+  }
+  else
+  {
+    m_AnalogAudioSinkMap.clear();
+    m_AnalogAudioSinkMap["Error - no devices found"] = "null:";
+  }
+  
+
+  int numberSinks = 0;
+
+  int selectedValue = -1;
+  AudioSinkList sinkList;
+  CAudioRendererFactory::EnumerateAudioSinks(sinkList, Passthrough);
+  if (sinkList.size()==0)
+  {
+    pControl->AddLabel("Error - no devices found", 0);
+    numberSinks = 1;
+    selectedValue = 0;
+  }
+  else
+  {
+    AudioSinkList::const_iterator iter = sinkList.begin();
+    for (int i=0; iter != sinkList.end(); iter++)
+    {
+      CStdString label = (*iter).first;
+      CStdString sink  = (*iter).second;
+      pControl->AddLabel(label.c_str(), i);
+
+      if (currentDevice.Equals(sink))
+        selectedValue = i;
+
+      if (Passthrough)
+        m_DigitalAudioSinkMap[label] = sink;
+      else
+        m_AnalogAudioSinkMap[label] = sink;
+
+      i++;
+    }
+
+    numberSinks = sinkList.size();
+  }
+
+  pControl->AddLabel("Custom", numberSinks++);
+
+  if (selectedValue < 0)
+  {
+    CLog::Log(LOGWARNING, "Failed to find previously selected audio sink");
+    pControl->AddLabel("Unavailable " + currentDevice, numberSinks);
+    pControl->SetValue(numberSinks);
+  }
+  else
+    pControl->SetValue(selectedValue);
 #elif defined(_WIN32)
+  if (Passthrough)
+    return;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
   CWDSound p_dsound;

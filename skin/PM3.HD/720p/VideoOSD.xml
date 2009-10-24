@@ -107,6 +107,40 @@
 				<onclick>XBMC.PlayerControl(ShowVideoMenu)</onclick>
 				<visible>VideoPlayer.HasMenu</visible>
 			</control>
+			<control type="button" id="208">
+				<description>Subtitle button</description>
+				<posx>10</posx>
+				<posy>40</posy>
+				<width>128</width>
+				<height>128</height>
+				<texturefocus>osd_SubtitleFO.png</texturefocus>
+				<texturenofocus>osd_SubtitleNF.png</texturenofocus>
+				<label>-</label>
+				<font>-</font>
+				<onleft>210</onleft>
+				<onright>918</onright>
+				<onup>918</onup>
+				<ondown>210</ondown>
+				<onclick>RunScript($INFO[Skin.String(SubtitleScript_Path)])</onclick>
+				<visible>!VideoPlayer.HasMenu + !Player.CanRecord + !Player.Recording + Skin.HasSetting(SubtitleScript_Enable)</visible>
+			</control> 
+			<control type="button" id="209">
+				<description>Subtitle button 2</description>
+				<posx>10</posx>
+				<posy>40</posy>
+				<width>128</width>
+				<height>128</height>
+				<texturefocus>osd_SubtitleFO.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<label>-</label>
+				<font>-</font>
+				<onleft>211</onleft>
+				<onright>921</onright>
+				<onup>921</onup>
+				<ondown>211</ondown>
+				<onclick>RunScript($INFO[Skin.String(SubtitleScript_Path)])</onclick>
+				<visible>!VideoPlayer.HasMenu + !Player.CanRecord + !Player.Recording + Skin.HasSetting(SubtitleScript_Enable)</visible>
+			</control> 
 			<control type="image" id="1">
 				<description>Panel</description>
 				<posx>0</posx>

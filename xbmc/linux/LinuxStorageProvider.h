@@ -1,6 +1,7 @@
 #pragma once
 #include "IStorageProvider.h"
 #include "HALProvider.h"
+#include "DeviceKitDisksProvider.h"
 #include "PosixMountProvider.h"
 
 class CLinuxStorageProvider : public IStorageProvider
@@ -8,16 +9,34 @@ class CLinuxStorageProvider : public IStorageProvider
 public:
   CLinuxStorageProvider()
   {
-#ifdef HAS_HAL
-    m_instance = new CHALProvider();
-#else
-    m_instance = new CPosixMountProvider();
+    m_instance = NULL;
+
+#ifdef HAS_DBUS
+    if (CDeviceKitDisksProvider::HasDeviceKitDisks())
+      m_instance = new CDeviceKitDisksProvider();
 #endif
+#ifdef HAS_HAL
+    if (m_instance == NULL)
+      m_instance = new CHALProvider();
+#endif
+
+    if (m_instance == NULL)
+      m_instance = new CPosixMountProvider();
   }
 
   virtual ~CLinuxStorageProvider()
   {
     delete m_instance;
+  }
+
+  virtual void Initialize()
+  {
+    m_instance->Initialize();
+  }
+
+  virtual void Stop()
+  {
+    m_instance->Stop();
   }
 
   virtual void GetLocalDrives(VECSOURCES &localDrives)
@@ -36,6 +55,11 @@ public:
   virtual void GetRemovableDrives(VECSOURCES &removableDrives)
   {
     m_instance->GetRemovableDrives(removableDrives);
+  }
+
+  virtual bool Eject(CStdString mountpath)
+  {
+    return m_instance->Eject(mountpath);
   }
 
   virtual std::vector<CStdString> GetDiskUsage()

@@ -2266,12 +2266,11 @@ void CFileItemList::Stack()
     // set property
     item->SetProperty("isstacked", "1");
 
-    // skip folders, nfo files, playlists, dvd images
+    // skip folders, nfo files, playlists
     if (item->m_bIsFolder
       || item->IsParentFolder()
       || item->IsNFO()
       || item->IsPlayList()
-      || item->IsDVDImage()
       )
     {
       // increment index
@@ -2664,7 +2663,7 @@ CStdString CFileItem::GetTBNFile() const
     else
       CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
     url.SetFileName(thumbFile);
-    url.GetURL(thumbFile);
+    thumbFile = url.Get();
   }
   return thumbFile;
 }

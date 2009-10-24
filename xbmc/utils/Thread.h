@@ -62,6 +62,9 @@ public:
   DWORD WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWaitAll, unsigned int milliseconds);
   void Sleep(unsigned int milliseconds);
   bool SetPriority(const int iPriority);
+  int GetMinPriority(void);
+  int GetMaxPriority(void);
+  int GetNormalPriority(void);
   void SetName( LPCTSTR szThreadName );
   HANDLE ThreadHandle();
   operator HANDLE();

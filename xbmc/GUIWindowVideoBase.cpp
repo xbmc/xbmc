@@ -893,7 +893,8 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
   m_database.Open();
   long startoffset = 0;
 
-  if (item->IsStack() && !g_guiSettings.GetBool("myvideos.treatstackasfile") )
+  if (item->IsStack() && (!g_guiSettings.GetBool("myvideos.treatstackasfile") ||
+                          CFileItem(CStackDirectory::GetFirstStackedFile(item->m_strPath),false).IsDVDImage()) )
   {
 
     CStdStringArray movies;
@@ -1300,7 +1301,8 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
   int selectedFile = 1;
   long startoffset = item->m_lStartOffset;
 
-  if (item->IsStack() && !g_guiSettings.GetBool("myvideos.treatstackasfile"))
+  if (item->IsStack() && (!g_guiSettings.GetBool("myvideos.treatstackasfile") ||
+                          CFileItem(CStackDirectory::GetFirstStackedFile(item->m_strPath),false).IsDVDImage()) )
   {
     CStdStringArray movies;
     GetStackedFiles(item->m_strPath, movies);
@@ -1491,6 +1493,10 @@ void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
   CVideoInfoTag detail;
   CVideoDatabase database;
   database.Open();
+  CVideoDatabaseDirectory dir;
+  CQueryParams params;
+  dir.GetQueryParams(pItem->m_strPath,params);
+  int iDbId = pItem->GetVideoInfoTag()->m_iDbId;
 
   VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
   if (pItem->HasVideoInfoTag() && (!pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty() ||
@@ -1502,9 +1508,15 @@ void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
     iType = VIDEODB_CONTENT_EPISODES;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
     iType = VIDEODB_CONTENT_MUSICVIDEOS;
-
+  if (params.GetSetId() != -1 && params.GetMovieId() == -1)
+    iType = VIDEODB_CONTENT_MOVIE_SETS;
   if (iType == VIDEODB_CONTENT_MOVIES)
     database.GetMovieInfo("", detail, pItem->GetVideoInfoTag()->m_iDbId);
+  if (iType == VIDEODB_CONTENT_MOVIE_SETS)
+  {
+    database.GetSetById(params.GetSetId(),detail.m_strTitle);
+    iDbId = params.GetSetId();
+  }
   if (iType == VIDEODB_CONTENT_EPISODES)
     database.GetEpisodeInfo(pItem->m_strPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
   if (iType == VIDEODB_CONTENT_TVSHOWS)
@@ -1518,8 +1530,8 @@ void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
   //Get the new title
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false))
     return;
-
-  database.UpdateMovieTitle(pItem->GetVideoInfoTag()->m_iDbId, strInput, iType);
+  
+  database.UpdateMovieTitle(iDbId, strInput, iType);
 }
 
 void CGUIWindowVideoBase::LoadPlayList(const CStdString& strPlayList, int iPlayList /* = PLAYLIST_VIDEO */)
