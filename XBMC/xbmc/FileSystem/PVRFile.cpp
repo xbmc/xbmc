@@ -41,8 +41,7 @@ bool CPVRFile::Open(const CURL& url)
 {
   Close();
 
-  CStdString strURL;
-  url.GetURL(strURL);
+  CStdString strURL = url.Get();
 
   if (strURL.Left(17) == "pvr://channelstv/")
   {
@@ -83,7 +82,7 @@ bool CPVRFile::Open(const CURL& url)
       return false;
     }
     m_isPlayRecording = true;
-  
+
     CLog::Log(LOGDEBUG, "%s - Recording has started on filename %s", __FUNCTION__, strURL.c_str());
   }
   else

@@ -105,7 +105,7 @@ void CAddonStatusHandler::Process()
   /* AddOn lost connection to his backend (for ones that use Network) */
   if (m_status == STATUS_LOST_CONNECTION)
   {
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialog) return;
 
     CStdString heading;
@@ -116,7 +116,7 @@ void CAddonStatusHandler::Process()
     pDialog->SetLine(2, 23048);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, m_gWindowManager.GetActiveWindow()};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     if (pDialog->IsConfirmed())
@@ -127,7 +127,7 @@ void CAddonStatusHandler::Process()
   /* Request to restart the AddOn and data structures need updated */
   else if (m_status == STATUS_NEED_RESTART)
   {
-    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
     CStdString heading;
@@ -137,7 +137,7 @@ void CAddonStatusHandler::Process()
     pDialog->SetLine(1, 23049);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     g_addonmanager.GetCallbackForType(m_addon->m_addonType)->RequestRestart(m_addon, true);
@@ -148,7 +148,7 @@ void CAddonStatusHandler::Process()
     /* okey we really don't need to restart, only deinit Add-on, but that could be damn hard if something is playing*/
     //TODO - General way of handling setting changes that require restart
 
-    CGUIDialogYesNo *pDialog = (CGUIDialogYesNo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    CGUIDialogYesNo *pDialog = (CGUIDialogYesNo *)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialog) return ;
 
     CStdString heading;
@@ -160,7 +160,7 @@ void CAddonStatusHandler::Process()
     pDialog->SetLine( 2, 23052);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, m_gWindowManager.GetActiveWindow()};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     if (pDialog->IsConfirmed())
@@ -171,7 +171,7 @@ void CAddonStatusHandler::Process()
   /* A setting value is invalid */
   else if (m_status == STATUS_NEED_SETTINGS)
   {
-    CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialogYesNo) return;
 
     CStdString heading;
@@ -183,7 +183,7 @@ void CAddonStatusHandler::Process()
     pDialogYesNo->SetLine(3, m_message);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, m_gWindowManager.GetActiveWindow()};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     if (!pDialogYesNo->IsConfirmed()) return;
@@ -200,7 +200,7 @@ void CAddonStatusHandler::Process()
     CAddon::LoadAddonStrings(cUrl);
 
     // Create the dialog
-    CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+    CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
 
     heading.Format("$LOCALIZE[23054]: %s %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
     pDialog->SetHeading(heading);
@@ -225,7 +225,7 @@ void CAddonStatusHandler::Process()
   /* One or more AddOn file(s) missing (check log's for missing data) */
   else if (m_status == STATUS_MISSING_FILE)
   {
-    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
     CStdString heading;
@@ -237,13 +237,13 @@ void CAddonStatusHandler::Process()
     pDialog->SetLine(3, m_message);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
   }
   /* A unknown event is occurred */
   else if (m_status == STATUS_UNKNOWN)
   {
-    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
     CStdString heading;
@@ -255,7 +255,7 @@ void CAddonStatusHandler::Process()
     pDialog->SetLine(3, m_message);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
   }
 

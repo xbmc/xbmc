@@ -128,8 +128,7 @@ bool CAddonSettings::Load(const CURL& url)
   m_userFileName = GetUserDirectory(url);
   CUtil::AddFileToFolder(m_userFileName, "settings.xml", m_userFileName);
 
-  CStdString addonFileName;
-  url.GetURL(addonFileName);
+  CStdString addonFileName = url.Get();
   addonFileName = CPluginDirectory::TranslatePluginDirectory(addonFileName);
   CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
   CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
@@ -262,8 +261,7 @@ bool CAddonSettings::SettingsExist(const CStdString& strPath)
 
 CStdString CAddonSettings::GetUserDirectory(const CURL& url)
 {
-  CStdString addonUserName;
-  url.GetURL(addonUserName);
+  CStdString addonUserName = url.Get();
   addonUserName = CPluginDirectory::TranslatePluginDirectory(addonUserName);
   // Remove the special path
   addonUserName.Replace("special://home/addons/", "");

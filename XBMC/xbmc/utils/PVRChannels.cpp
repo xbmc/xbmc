@@ -409,7 +409,7 @@ void cPVRChannels::HideChannel(unsigned int number)
   {
     if ((PVRTimers[i].Number() == number) && (PVRTimers[i].IsRadio() == m_bRadio))
     {
-      CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+      CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
       if (!pDialog)
         return;
 

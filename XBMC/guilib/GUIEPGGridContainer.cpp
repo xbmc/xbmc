@@ -26,6 +26,7 @@
 #include "GUIListItem.h"
 #include "GUIFontManager.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 #include "LocalizeStrings.h"
 
 #define SHORTGAP     5 // how many blocks is considered a short-gap in nav logic
@@ -631,7 +632,7 @@ void CGUIEPGGridContainer::UpdateItems()
 
   blockDuration.SetDateTimeSpan(0, 0, MINSPERBLOCK, 0);
 
-  DWORD tick(timeGetTime());
+  DWORD tick(CTimeUtils::GetTimeMS());
 
   for (unsigned int row = 0; row < m_channelItems.size(); ++row)
   {
@@ -722,7 +723,7 @@ void CGUIEPGGridContainer::UpdateItems()
     return;
   }
 
-  CLog::Log(LOGDEBUG, "%s completed successfully in %u ms", __FUNCTION__, timeGetTime()-tick);
+  CLog::Log(LOGDEBUG, "%s completed successfully in %u ms", __FUNCTION__, CTimeUtils::GetTimeMS()-tick);
 
   m_channels = (int)m_gridItems.size();
   m_item = GetItem(m_channelCursor);

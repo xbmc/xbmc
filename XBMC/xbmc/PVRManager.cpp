@@ -36,6 +36,7 @@
 #include "LocalizeStrings.h"
 #include "FileSystem/File.h"
 #include "StringUtils.h"
+#include "utils/TimeUtils.h"
 
 /* GUI Messages includes */
 #include "GUIDialogOK.h"
@@ -131,7 +132,7 @@ bool CPVRTimeshiftRcvr::StartReceiver(IPVRClient *client)
   m_MaxSize   = m_MaxSizeStatic;
   m_written   = 0;
   m_position  = 0;
-  m_Started   = timeGetTime();
+  m_Started   = CTimeUtils::GetTimeMS();
   m_pFile->Seek(0);
 
   /* Clear the timestamp table */
@@ -280,7 +281,7 @@ void CPVRTimeshiftRcvr::Process()
     /* Create the timestamp for this read */
     STimestamp timestamp;
     timestamp.pos   = m_position;
-    timestamp.time  = timeGetTime() - m_Started;
+    timestamp.time  = CTimeUtils::GetTimeMS() - m_Started;
 
     /* Read the data from the stream */
     int ret = m_client->ReadLiveStream(buf, sizeof(buf));
@@ -530,7 +531,7 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
         CLog::Log(LOGDEBUG, "%s - PVR: client_%ld timers changed", __FUNCTION__, clientID);
         SyncInfo();
 
-        CGUIWindowTV *pTVWin = (CGUIWindowTV *)m_gWindowManager.GetWindow(WINDOW_TV);
+        CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
 	    if (pTVWin)
     	  pTVWin->UpdateData(TV_WINDOW_TIMERS);
 	  }
@@ -541,7 +542,7 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
         CLog::Log(LOGDEBUG, "%s - PVR: client_%ld recording list changed", __FUNCTION__, clientID);
         SyncInfo();
 
-        CGUIWindowTV *pTVWin = (CGUIWindowTV *)m_gWindowManager.GetWindow(WINDOW_TV);
+        CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
 	    if (pTVWin)
     	  pTVWin->UpdateData(TV_WINDOW_RECORDINGS);
 	  }
@@ -552,7 +553,7 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
         CLog::Log(LOGDEBUG, "%s - PVR: client_%ld channel list changed", __FUNCTION__, clientID);
         SyncInfo();
 
-        CGUIWindowTV *pTVWin = (CGUIWindowTV *)m_gWindowManager.GetWindow(WINDOW_TV);
+        CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
 	    if (pTVWin)
 		{
     	  pTVWin->UpdateData(TV_WINDOW_CHANNELS_TV);
@@ -933,13 +934,13 @@ bool CPVRManager::CreateInternalTimeshift()
 
 void CPVRManager::Process()
 {
-  DWORD Now = timeGetTime();
+  DWORD Now = CTimeUtils::GetTimeMS();
   DWORD LastTVChannelCheck = Now;
   DWORD LastRadioChannelCheck = Now-CHANNELCHECKDELTA*1000/2;
 
   while (!m_bStop)
   {
-    Now = timeGetTime();
+    Now = CTimeUtils::GetTimeMS();
 
     /* Check for new or updated TV Channels */
     if (Now - LastTVChannelCheck > CHANNELCHECKDELTA*1000) // don't do this too often
@@ -1009,12 +1010,12 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
   {
     if (m_infoToggleStart == 0)
     {
-      m_infoToggleStart = timeGetTime();
+      m_infoToggleStart = CTimeUtils::GetTimeMS();
       m_infoToggleCurrent = 0;
     }
     else
     {
-      if (timeGetTime() - m_infoToggleStart > INFO_TOGGLE_TIME)
+      if (CTimeUtils::GetTimeMS() - m_infoToggleStart > INFO_TOGGLE_TIME)
       {
         if (m_clients.size() > 0)
         {
@@ -1071,7 +1072,7 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
           m_backendRecordings   = "";
           m_backendChannels     = "";
         }
-        m_infoToggleStart = timeGetTime();
+        m_infoToggleStart = CTimeUtils::GetTimeMS();
       }
     }
 
@@ -1554,7 +1555,7 @@ bool CPVRManager::OpenLiveStream(unsigned int channel, bool radio)
   /* Set the new channel information */
   m_currentPlayingChannel   = new CFileItem(radio ? PVRChannelsRadio[channel-1] : PVRChannelsTV[channel-1]);
   m_currentPlayingRecording = NULL;
-  m_scanStart               = timeGetTime();  /* Reset the stream scan timer */
+  m_scanStart               = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
 
   /* Open the stream on the Client */
   const cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetTVChannelInfoTag();
@@ -1619,7 +1620,7 @@ bool CPVRManager::OpenRecordedStream(unsigned int recording)
   /* Set the new recording information */
   m_currentPlayingRecording = new CFileItem(PVRRecordings[recording-1]);
   m_currentPlayingChannel   = NULL;
-  m_scanStart               = timeGetTime();  /* Reset the stream scan timer */
+  m_scanStart               = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
 
   /* Open the recording stream on the Client */
   const cPVRRecordingInfoTag* tag = m_currentPlayingRecording->GetTVRecordingInfoTag();
@@ -1690,7 +1691,7 @@ int CPVRManager::ReadStream(BYTE* buf, int buf_size)
      is present playback is canceled and returns to the window */
   if (m_scanStart)
   {
-    if (timeGetTime() - m_scanStart > (unsigned int) g_guiSettings.GetInt("pvrplayback.scantime")*1000)
+    if (CTimeUtils::GetTimeMS() - m_scanStart > (unsigned int) g_guiSettings.GetInt("pvrplayback.scantime")*1000)
     {
       CLog::Log(LOGERROR,"PVR: No video or audio data available after %i seconds, playback stopped", g_guiSettings.GetInt("pvrplayback.scantime"));
       LeaveCriticalSection(&m_critSection);
@@ -1713,12 +1714,12 @@ int CPVRManager::ReadStream(BYTE* buf, int buf_size)
         return -1;
       }
 
-      DWORD now = timeGetTime();
+      DWORD now = CTimeUtils::GetTimeMS();
 
       /* Never read behind current write position inside cache */
       while (m_timeshiftCurrWrapAround+m_pTimeshiftFile->GetPosition()+buf_size+131072 > m_TimeshiftReceiver->GetWritten())
       {
-        if (timeGetTime() - now > 5*1000)
+        if (CTimeUtils::GetTimeMS() - now > 5*1000)
         {
           CLog::Log(LOGERROR,"PVR: internal Timeshift Cache Position timeout");
           LeaveCriticalSection(&m_critSection);
@@ -1736,7 +1737,7 @@ REPEAT_READ:
       bytesReaded = m_pTimeshiftFile->Read(buf, buf_size);
       if (bytesReaded <= 0)
       {
-        if (timeGetTime() - now > 5*1000)
+        if (CTimeUtils::GetTimeMS() - now > 5*1000)
         {
           CLog::Log(LOGERROR,"PVR: internal Timeshift Cache Read timeout");
           LeaveCriticalSection(&m_critSection);
@@ -2065,7 +2066,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
   /* Update the Playing channel data and the current epg data */
   delete m_currentPlayingChannel;
   m_currentPlayingChannel = new CFileItem(*tag);
-  m_scanStart             = timeGetTime();
+  m_scanStart             = CTimeUtils::GetTimeMS();
   SetCurrentPlayingProgram(*m_currentPlayingChannel);
   m_playbackStarted       = m_currentPlayingChannel->GetTVChannelInfoTag()->GetTime()*1000 - (__int64)(g_application.GetTime()*1000);
 
@@ -2126,7 +2127,7 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
         /* Update the Playing channel data and the current epg data */
         delete m_currentPlayingChannel;
         m_currentPlayingChannel = new CFileItem(*tag);
-        m_scanStart             = timeGetTime();
+        m_scanStart             = CTimeUtils::GetTimeMS();
         SetCurrentPlayingProgram(*m_currentPlayingChannel);
         m_playbackStarted       = m_currentPlayingChannel->GetTVChannelInfoTag()->GetTime()*1000 - (__int64)(g_application.GetTime()*1000);
 
@@ -2211,7 +2212,7 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel)
         /* Update the Playing channel data and the current epg data */
         delete m_currentPlayingChannel;
         m_currentPlayingChannel = new CFileItem(*tag);
-        m_scanStart             = timeGetTime();
+        m_scanStart             = CTimeUtils::GetTimeMS();
         SetCurrentPlayingProgram(*m_currentPlayingChannel);
         m_playbackStarted       = m_currentPlayingChannel->GetTVChannelInfoTag()->GetTime()*1000 - (__int64)(g_application.GetTime()*1000);
 
