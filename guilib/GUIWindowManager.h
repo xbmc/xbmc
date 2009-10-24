@@ -59,8 +59,6 @@ public:
   void ChangeActiveWindow(int iNewID, const CStdString &strPath = "");
   void ActivateWindow(int iWindowID, const std::vector<CStdString>& params, bool swappingWindows = false);
   void PreviousWindow();
-  void LoadNotOnDemandWindows();
-  void UnloadNotOnDemandWindows();
 
   void CloseDialogs(bool forceClose = false);
 
@@ -103,6 +101,8 @@ public:
   void DumpTextureUse();
 #endif
 private:
+  void LoadNotOnDemandWindows();
+  void UnloadNotOnDemandWindows();
   void HideOverlay(CGUIWindow::OVERLAY_STATE state);
   void AddToWindowHistory(int newWindowID);
   void ClearWindowHistory();
