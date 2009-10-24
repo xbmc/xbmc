@@ -126,7 +126,7 @@ private:
 
   IWindowManagerCallback* m_pCallback;
   std::vector < std::pair<CGUIMessage*,int> > m_vecThreadMessages;
-  CRITICAL_SECTION m_critSection;
+  CCriticalSection m_critSection;
   std::vector <IMsgTargetCallback*> m_vecMsgTargets;
 
   bool m_bShowOverlay;
