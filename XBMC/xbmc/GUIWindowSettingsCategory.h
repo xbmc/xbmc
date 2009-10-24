@@ -24,6 +24,7 @@
 #include "GUIWindow.h"
 #include "SettingsControls.h"
 #include "GUISettings.h"
+#include "utils/Stopwatch.h"
 
 class CGUIWindowSettingsCategory :
       public CGUIWindow
@@ -69,7 +70,7 @@ protected:
 
   void FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CStdString& strContent);
 
-  void FillInAudioDevices(CSetting* pSetting);
+  void FillInAudioDevices(CSetting* pSetting, bool Passthrough = false);
   void FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected);
 
   virtual void SetupControls();
@@ -90,7 +91,6 @@ protected:
   std::vector<CBaseSettingControl *> m_vecSettings;
   int m_iSection;
   int m_iScreen;
-  RESOLUTION m_NewResolution;
   vecSettingsCategory m_vecSections;
   CGUISpinControlEx *m_pOriginalSpin;
   CGUIRadioButtonControl *m_pOriginalRadioButton;
@@ -116,6 +116,9 @@ protected:
   CStdString m_strOldTrackFormat;
   CStdString m_strOldTrackFormatRight;
 
+  std::map<CStdString, CStdString> m_AnalogAudioSinkMap;
+  std::map<CStdString, CStdString> m_DigitalAudioSinkMap;
+
   // state of the window saved in JumpToSection()
   // to get to the previous settings screen when
   // using JumpToPreviousSection()
@@ -124,4 +127,8 @@ protected:
   int m_iWindowBeforeJump;
 
   bool m_returningFromSkinLoad; // true if we are returning from loading the skin
+
+  CBaseSettingControl *m_delayedSetting; ///< Current delayed setting \sa CBaseSettingControl::SetDelayed()
+  CStopWatch           m_delayedTimer;   ///< Delayed setting timer
 };
+

@@ -8,8 +8,13 @@ public:
   CHALProvider();
   virtual ~CHALProvider() { }
 
+  virtual void Initialize();
+  virtual void Stop();
+
   virtual void GetLocalDrives(VECSOURCES &localDrives);
   virtual void GetRemovableDrives(VECSOURCES &removableDrives);
+
+  virtual bool Eject(CStdString mountpath);
 
   virtual std::vector<CStdString> GetDiskUsage();
 

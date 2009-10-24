@@ -312,11 +312,6 @@ bool CGUIViewState::IsCurrentPlaylistDirectory(const CStdString& strDirectory)
 }
 
 
-bool CGUIViewState::UnrollArchives()
-{
-  return false;
-}
-
 bool CGUIViewState::AutoPlayNextItem()
 {
   return false;

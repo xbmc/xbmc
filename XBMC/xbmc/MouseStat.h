@@ -57,6 +57,8 @@ struct MouseState
   bool active;      // true if the mouse is active
 };
 
+class CGUIControl;
+
 class CMouseStat
 {
 public:
@@ -73,10 +75,10 @@ public:
   bool IsEnabled() const;
   bool HasMoved(bool allMoves = false) const;
   void SetActive(bool active = true);
-  void SetExclusiveAccess(int controlID, int windowID, const CPoint &point);
-  void EndExclusiveAccess(int controlID, int windowID);
+  void SetExclusiveAccess(const CGUIControl *control, int windowID, const CPoint &point);
+  void EndExclusiveAccess(const CGUIControl *control, int windowID);
   int GetExclusiveWindowID() const { return m_exclusiveWindowID; };
-  int GetExclusiveControlID() const { return m_exclusiveControlID; };
+  const CGUIControl *GetExclusiveControl() const { return m_exclusiveControl; };
   const CPoint &GetExclusiveOffset() const { return m_exclusiveOffset; };
   void SetState(MOUSE_STATE state) { m_pointerState = state; };
   void SetEnabled(bool enabled = true);
@@ -94,7 +96,7 @@ private:
  
   // exclusive access to mouse from a control
   int m_exclusiveWindowID;
-  int m_exclusiveControlID;
+  const CGUIControl *m_exclusiveControl;
   CPoint m_exclusiveOffset;
 
   // state of the mouse

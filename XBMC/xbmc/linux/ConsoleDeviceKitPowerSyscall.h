@@ -22,7 +22,7 @@
 #ifdef HAS_DBUS
 #ifndef _DBUS_POWER_SYSCALL_H_
 #define _DBUS_POWER_SYSCALL_H_
-#include "PowerManager.h"
+#include "IPowerSyscall.h"
 
 class CConsoleDeviceKitPowerSyscall : public IPowerSyscall
 {
@@ -40,6 +40,7 @@ public:
   virtual bool CanHibernate();
   virtual bool CanReboot();
 
+  static bool HasDeviceConsoleKit();
 private:
   static bool ConsoleKitMethodCall(const char *method);
 

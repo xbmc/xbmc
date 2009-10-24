@@ -3,7 +3,7 @@
 	<coordinates>
 		<system>1</system>
 		<posx>240</posx>
-		<posy>55</posy>
+		<posy>20</posy>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
@@ -12,7 +12,7 @@
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>800</width>
-			<height>610</height>
+			<height>660</height>
 			<texture border="40">DialogBack.png</texture>
 		</control>
 		<control type="image">
@@ -20,7 +20,7 @@
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>800</width>
-			<height>610</height>
+			<height>660</height>
 			<texture border="40">DialogFront.png</texture>
 		</control>
 		<control type="label" id="1">
@@ -157,7 +157,7 @@
 			<posx>40</posx>
 			<posy>345</posy>
 			<width>720</width>
-			<height>160</height>
+			<height>200</height>
 			<itemgap>5</itemgap>
 			<onup>4</onup>
 			<ondown>28</ondown>
@@ -186,7 +186,7 @@
 			<control type="button" id="28">
 				<description>OK Button</description>
 				<posx>300</posx>
-				<posy>525</posy>
+				<posy>575</posy>
 				<width>200</width>
 				<height>35</height>
 				<align>center</align>
@@ -202,7 +202,7 @@
 			<control type="button" id="29">
 				<description>Cancel Button</description>
 				<posx>510</posx>
-				<posy>525</posy>
+				<posy>575</posy>
 				<width>200</width>
 				<height>35</height>
 				<align>center</align>
@@ -218,7 +218,7 @@
 			<control type="button" id="6">
 				<description>Settings Button</description>
 				<posx>90</posx>
-				<posy>525</posy>
+				<posy>575</posy>
 				<width>200</width>
 				<height>35</height>
 				<align>center</align>

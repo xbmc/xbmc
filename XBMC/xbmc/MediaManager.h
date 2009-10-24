@@ -45,6 +45,9 @@ class CMediaManager
 public:
   CMediaManager();
 
+  void Initialize();
+  void Stop();
+
   bool LoadSources();
   bool SaveSources();
 
@@ -69,6 +72,8 @@ public:
 #endif
   CStdString GetDiskLabel(const CStdString& devicePath="");
   void SetHasOpticalDrive(bool bstatus);
+
+  bool Eject(CStdString mountpath);
 
   void ProcessEvents();
 

@@ -44,10 +44,9 @@ CStdString CFileMusicDatabase::TranslateUrl(const CURL& url)
   if (!musicDatabase.Open())
     return "";
   
-  CStdString strPath;
-  url.GetURL(strPath);
-
-  CStdString strFileName=CUtil::GetFileName(strPath);
+  CStdString strFileName=CUtil::GetFileName(url.Get());
+  CStdString strExtension;
+  CUtil::GetExtension(strFileName, strExtension);
   CUtil::RemoveExtension(strFileName);
 
   if (!StringUtils::IsNaturalNumber(strFileName))
@@ -59,8 +58,6 @@ CStdString CFileMusicDatabase::TranslateUrl(const CURL& url)
   if (!musicDatabase.GetSongById(idSong, song))
     return "";
   
-  CStdString strExtension;
-  CUtil::GetExtension(strPath, strExtension);
   CStdString strExtensionFromDb;
   CUtil::GetExtension(song.strFileName, strExtensionFromDb);
 

@@ -5,7 +5,17 @@
 CHALProvider::CHALProvider()
 {
   m_removableLength = 0;
+}
+
+void CHALProvider::Initialize()
+{
+  g_HalManager.Initialize();
   PumpDriveChangeEvents();
+}
+
+void CHALProvider::Stop()
+{
+  g_HalManager.Stop();
 }
 
 void CHALProvider::GetLocalDrives(VECSOURCES &localDrives)
@@ -36,6 +46,11 @@ void CHALProvider::GetRemovableDrives(VECSOURCES &removableDrives)
       removableDrives.push_back(share);
     }
   }
+}
+
+bool CHALProvider::Eject(CStdString mountpath)
+{
+  return g_HalManager.Eject(mountpath);
 }
 
 std::vector<CStdString> CHALProvider::GetDiskUsage()

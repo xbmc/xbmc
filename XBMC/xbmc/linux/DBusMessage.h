@@ -12,8 +12,9 @@ public:
   CDBusMessage(const char *destination, const char *object, const char *interface, const char *method);
   ~CDBusMessage();
 
-  void AppendObjectPath(const char *object);
-  void AppendArgument(const char *string);
+  bool AppendObjectPath(const char *object);
+  bool AppendArgument(const char *string);
+  bool AppendArgument(const char **arrayString, int length);
 
   DBusMessage *SendSystem();
   DBusMessage *SendSession();

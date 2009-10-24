@@ -46,7 +46,7 @@ public:
   virtual float GetDelay();
   virtual float GetCacheTime();
   CPulseAudioDirectSound();
-  virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
   virtual ~CPulseAudioDirectSound();
 
   virtual unsigned int AddPackets(const void* data, unsigned int len);
@@ -64,9 +64,12 @@ public:
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
   virtual void Flush();
+
+  static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough);
 private:
+  static bool SetupContext(const char *host, pa_context **context, pa_threaded_mainloop **mainloop);
   bool Cork(bool cork);
-  inline bool WaitForOperation(pa_operation *op, const char *LogEntry);
+  static inline bool WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry);
 
   IAudioCallback* m_pCallback;
 
@@ -84,11 +87,12 @@ private:
   bool m_bPause;
   bool m_bPassthrough;
 
-  pa_threaded_mainloop *m_MainLoop;
   pa_stream *m_Stream;
-  pa_context *m_Context;
   pa_sample_spec m_SampleSpec;
   pa_cvolume m_Volume;
+
+  pa_context *m_Context;
+  pa_threaded_mainloop *m_MainLoop;
 };
 
 #endif 

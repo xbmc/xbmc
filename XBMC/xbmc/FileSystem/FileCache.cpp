@@ -87,7 +87,7 @@ bool CFileCache::Open(const CURL& url)
     return false;
   }
 
-  url.GetURL(m_sourcePath);
+  m_sourcePath = url.Get();
 
   // open cache strategy
   if (m_pCache->Open() != CACHE_RC_OK) {
@@ -233,16 +233,12 @@ void CFileCache::OnExit()
 
 bool CFileCache::Exists(const CURL& url)
 {
-  CStdString strPath;
-  url.GetURL(strPath);
-  return CFile::Exists(strPath);
+  return CFile::Exists(url.Get());
 }
 
 int CFileCache::Stat(const CURL& url, struct __stat64* buffer)
 {
-  CStdString strPath;
-  url.GetURL(strPath);
-  return CFile::Stat(strPath, buffer);
+  return CFile::Stat(url.Get(), buffer);
 }
 
 unsigned int CFileCache::Read(void* lpBuf, int64_t uiBufSize)

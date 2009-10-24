@@ -88,7 +88,6 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
   strSearchMask += "*.*";
 #else
   CStdString strSearchMask = strRoot;
-  strSearchMask += "*";
 #endif
 
   FILETIME localTime;

@@ -238,26 +238,6 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
-  m_glXGetRefreshRateSGI = (int(*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetRefreshRateSGI");
-  if (!m_glXGetRefreshRateSGI)
-  {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetRefreshRateSGI not found");
-  }
-  else
-  {
-    ReturnV = m_glXGetRefreshRateSGI(&GlxTest);
-    if (ReturnV)
-    {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetRefreshRateSGI returned %i", ReturnV);
-      m_glXGetRefreshRateSGI = NULL;
-    }
-  }
-  
-  if (m_glXGetRefreshRateSGI)
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: using glXGetRefreshRateSGI to detect refreshrate changes");
-  else
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: using RandR to detect refreshrate changes");
-  
   XRRSizes(m_Dpy, m_vInfo->screen, &ReturnV);
   if (ReturnV == 0)
   {
@@ -265,6 +245,10 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
+  //set up receiving of RandR events, we'll get one when the refreshrate changes
+  XRRQueryExtension(m_Dpy, &m_RREventBase, &ReturnV);
+  XRRSelectInput(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), RRScreenChangeNotifyMask);
+  
   UpdateRefreshrate(true); //forced refreshrate update
   m_MissedVblanks = 0;
 
@@ -785,7 +769,7 @@ bool CVideoReferenceClock::CreateHiddenWindow()
 
   //make a layered window which can be made transparent
   CSingleLock SingleLock(m_CritSection);
-  m_Hwnd = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_TOPMOST, m_WinCl.lpszClassName,
+  m_Hwnd = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE, m_WinCl.lpszClassName,
                           m_WinCl.lpszClassName, WS_VISIBLE, m_Monitor.rcMonitor.left,
                           m_Monitor.rcMonitor.top, 64, 64, HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
   SingleLock.Leave();
@@ -1008,26 +992,21 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
   
-  int RefreshRate;
-  
-  if (m_glXGetRefreshRateSGI) //get the refreshrate from glXGetRefreshRateSGI when available, it's a cheaper call
+  bool   GotEvent = Forced;
+  XEvent Event;
+  //check for RandR events
+  while (XCheckTypedEvent(m_Dpy, m_RREventBase + RRScreenChangeNotify, &Event))
   {
-    int ReturnV = m_glXGetRefreshRateSGI((unsigned int*)&RefreshRate);
-    if (ReturnV)
+    if (Event.type == m_RREventBase + RRScreenChangeNotify)
     {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetRefreshRateSGI returned %i, using RandR instead", ReturnV);
-      m_glXGetRefreshRateSGI = NULL;
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Received RandR event %i", Event.type);
+      GotEvent = true;
     }
+    XRRUpdateConfiguration(&Event);
   }
   
-  if (!m_glXGetRefreshRateSGI) //glXGetRefreshRateSGI not available, use RandR instead
-    RefreshRate = GetRandRRate();
-
-  //just return if the refreshrate didn't change
-  if (RefreshRate == m_PrevRefreshRate && !Forced)
+  if (!GotEvent) //refreshrate did not change
     return false;
-
-  m_PrevRefreshRate = RefreshRate; //save the current refreshrate so we can detect if it changes again
   
   //the refreshrate can be wrong on nvidia drivers, so read it from nvidia-settings when it's available
   if (m_UseNvSettings || Forced)
@@ -1047,11 +1026,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   }
     
   CSingleLock SingleLock(m_CritSection);
-  
-  if (m_glXGetRefreshRateSGI) //we want the refreshrate from RandR if we didn't get it yet
-    m_RefreshRate = GetRandRRate();
-  else
-    m_RefreshRate = RefreshRate;
+  m_RefreshRate = GetRandRRate();
   
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
   

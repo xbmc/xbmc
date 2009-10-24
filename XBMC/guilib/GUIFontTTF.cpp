@@ -27,6 +27,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "MathUtils.h"
 #include "utils/log.h"
+#include "WindowingFactory.h"
 
 #include <math.h>
 
@@ -51,8 +52,6 @@ using namespace std;
 int CGUIFontTTFBase::justification_word_weight = 6;   // weight of word spacing over letter spacing when justifying.
                                                   // A larger number means more of the "dead space" is placed between
                                                   // words rather than between letters.
-
-unsigned int CGUIFontTTFBase::max_texture_size = 2048;         // max texture size - 2048 for GMA965
 
 class CFreeTypeLibrary
 {
@@ -183,6 +182,7 @@ void CGUIFontTTFBase::ClearCharacterCache()
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
   m_posY = -(int)m_cellHeight;
+  m_textureHeight = 0;
 }
 
 void CGUIFontTTFBase::Clear()
@@ -264,7 +264,8 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
 
   m_textureWidth = CBaseTexture::PadPow2(m_textureWidth);
 
-  if (m_textureWidth > max_texture_size) m_textureWidth = max_texture_size;
+  if (m_textureWidth > g_Windowing.GetMaxTextureSize())
+    m_textureWidth = g_Windowing.GetMaxTextureSize();
 
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
@@ -561,10 +562,10 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
     {
       // create the new larger texture
       unsigned int newHeight = m_posY + m_cellHeight;
-      // check for max height (can't be more than max_texture_size texels
-      if (newHeight > max_texture_size)
+      // check for max height
+      if (newHeight > g_Windowing.GetMaxTextureSize())
       {
-        CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: New cache texture is too large (%u > %u pixels long)", newHeight, max_texture_size);
+        CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: New cache texture is too large (%u > %u pixels long)", newHeight, g_Windowing.GetMaxTextureSize());
         FT_Done_Glyph(glyph);
         return false;
       }

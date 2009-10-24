@@ -165,15 +165,18 @@ CFileHomeRun::~CFileHomeRun()
 
 bool CFileHomeRun::Exists(const CURL& url)
 {
-  bool status = true;
   CStdString path(url.GetFileName());
-  
-  if(CUtil::GetExtension(path).Equals(".tbn")
-    || CUtil::GetExtension(path).Equals(".jpg")
-    || CUtil::GetExtension(path).Equals(".jpeg"))
-      status = false;
-  
-  return(status);
+
+  /*
+   * HDHomeRun URLs are of the form hdhomerun://1014F6D1/tuner0?channel=qam:108&program=10
+   * The filename starts with "tuner" and has no extension. This check will cover off requests
+   * for *.tbn, *.jpg, *.jpeg, *.edl etc. that do not exist.
+   */
+  if(path.Left(5) == "tuner"
+  && CUtil::GetExtension(path).IsEmpty())
+    return true;
+
+  return false;
 }
 
 int64_t CFileHomeRun::Seek(int64_t iFilePosition, int iWhence)

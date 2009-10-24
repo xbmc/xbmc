@@ -172,8 +172,7 @@ bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
     {
       CURL url(item.m_strPath);
       url.SetFileName("files/channels/" + temp);
-      url.GetURL(temp);
-      item.SetThumbnailImage(temp);
+      item.SetThumbnailImage(url.Get());
     }
 
     temp = GetValue(m_dll->proginfo_chanstr(info));
@@ -181,9 +180,7 @@ bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
     {
       CURL url(item.m_strPath);
       url.SetFileName("channels/" + temp + ".ts");
-      url.GetURL(temp);
-      if (item.m_strPath != temp)
-        item.m_strPath = temp;
+      item.m_strPath = url.Get();
     }
     item.SetCachedVideoThumb();
   }

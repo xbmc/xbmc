@@ -372,8 +372,7 @@ void CGUIWindowFileManager::UpdateButtons()
 
   */
   // update our current directory labels
-  CStdString strDir;
-  CURL(m_Directory[0]->m_strPath).GetURLWithoutUserDetails(strDir);
+  CStdString strDir = CURL(m_Directory[0]->m_strPath).GetWithoutUserDetails();
   if (strDir.IsEmpty())
   {
     SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_LEFT,g_localizeStrings.Get(20108));
@@ -382,7 +381,7 @@ void CGUIWindowFileManager::UpdateButtons()
   {
     SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_LEFT, strDir);
   }
-  CURL(m_Directory[1]->m_strPath).GetURLWithoutUserDetails(strDir);
+  strDir = CURL(m_Directory[1]->m_strPath).GetWithoutUserDetails();
   if (strDir.IsEmpty())
   {
     SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_RIGHT,g_localizeStrings.Get(20108));
@@ -670,10 +669,9 @@ void CGUIWindowFileManager::OnMark(int iList, int iItem)
 
 bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile, const CStdString& strDestFile)
 {
-  CStdString strShortSourceFile;
-  CStdString strShortDestFile;
-  CURL(strFile).GetURLWithoutUserDetails(strShortSourceFile);
-  CURL(strDestFile).GetURLWithoutUserDetails(strShortDestFile);
+  CStdString strShortSourceFile = CURL(strFile).GetWithoutUserDetails();
+  CStdString strShortDestFile   = CURL(strDestFile).GetWithoutUserDetails();
+
   switch (iAction)
   {
   case ACTION_COPY:

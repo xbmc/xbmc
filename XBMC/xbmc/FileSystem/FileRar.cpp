@@ -152,9 +152,6 @@ CFileRar::~CFileRar()
 
 bool CFileRar::Open(const CURL& url)
 {
-  CStdString strFile;
-  url.GetURL(strFile);
-
   InitFromUrl(url);
   CFileItemList items;
   g_RarManager.GetFilesInRar(items,m_strRarPath,false);
@@ -241,10 +238,7 @@ int CFileRar::Stat(const CURL& url, struct __stat64* buffer)
     return 0;
   }
 
-  CStdString strURL;
-  url.GetURL(strURL);
-
-  if (CDirectory::Exists(strURL))
+  if (CDirectory::Exists(url.Get()))
   {
     buffer->st_mode = _S_IFDIR;
     return 0;
@@ -513,7 +507,6 @@ void CFileRar::Flush()
 
 void CFileRar::InitFromUrl(const CURL& url)
 {
-  url.GetURL(m_strUrl);
   m_strCacheDir = g_advancedSettings.m_cachePath;//url.GetDomain();
   CUtil::AddSlashAtEnd(m_strCacheDir);
   m_strRarPath = url.GetHostName();
