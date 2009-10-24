@@ -1,24 +1,24 @@
-#include "PosixMountProvider.h"
+#include "DarwinStorageProvider.h"
 #include "RegExp.h"
 #include "StdString.h"
 #include "Util.h"
 
-CPosixMountProvider::CPosixMountProvider()
+bool CDarwinStorageProvider::m_event = false;
+
+CDarwinStorageProvider::CDarwinStorageProvider()
 {
   m_removableLength = 0;
   PumpDriveChangeEvents(NULL);
 }
 
-void CPosixMountProvider::GetDrives(VECSOURCES &drives)
+void CDarwinStorageProvider::GetDrives(VECSOURCES &drives)
 {
   std::vector<CStdString> result;
 
   CRegExp reMount;
-#ifdef __APPLE__
+  
   reMount.RegComp("on (.+) \\(([^,]+)");
-#else
-  reMount.RegComp("on (.+) type ([^ ]+)");
-#endif
+  
   char line[1024];
 
   FILE* pipe = popen("mount", "r");
@@ -65,16 +65,12 @@ void CPosixMountProvider::GetDrives(VECSOURCES &drives)
   }
 }
 
-std::vector<CStdString> CPosixMountProvider::GetDiskUsage()
+std::vector<CStdString> CDarwinStorageProvider::GetDiskUsage()
 {
   std::vector<CStdString> result;
   char line[1024];
 
-#ifdef __APPLE__
   FILE* pipe = popen("df -hT ufs,cd9660,hfs,udf", "r");
-#else
-  FILE* pipe = popen("df -hx tmpfs", "r");
-#endif
 
   if (pipe)
   {
@@ -88,7 +84,25 @@ std::vector<CStdString> CPosixMountProvider::GetDiskUsage()
   return result;
 }
 
-bool CPosixMountProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
+bool CDarwinStorageProvider::Eject(CStdString mountpath)
+{
+  return false;
+}
+
+bool CDarwinStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
+{
+  bool event = m_event;
+  m_event = false;
+  return event;
+}
+
+void CDarwinStorageProvider::SetEvent(void)
+{
+  CDarwinStorageProvider::m_event = true;
+}
+
+/*
+bool CDarwinStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
   VECSOURCES drives;
   GetRemovableDrives(drives);
@@ -96,3 +110,5 @@ bool CPosixMountProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback
   m_removableLength = drives.size();
   return changed;
 }
+*/
+

@@ -23,6 +23,7 @@
 #include "Windowsx.h"
 #include "WinEvents.h"
 #include "WIN32Util.h"
+#include "Win32StorageProvider.h"
 #include "Application.h"
 #include "XBMC_vkeys.h"
 #include "MouseStat.h"
@@ -520,12 +521,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
               else
               {
                 // USB drive inserted
-                CMediaSource share;
-                share.strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-                share.strName.Format("%s (%s)", g_localizeStrings.Get(437), share.strPath);
-                share.m_ignore = true;
-                share.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
-                g_mediaManager.AddAutoSource(share);
+                CWin32StorageProvider::SetEvent();
               }
            }
            break;
@@ -546,10 +542,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
               else
               {
                 // USB drive was removed
-                CMediaSource share;
-                share.strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-                share.strName.Format("%s (%s)", g_localizeStrings.Get(437), share.strPath);
-                g_mediaManager.RemoveAutoSource(share);
+                CWin32StorageProvider::SetEvent();
               }
            }
            break;

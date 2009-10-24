@@ -26,9 +26,7 @@
 #include <sys/stat.h>
 
 #ifndef __GNUC__
-#ifndef _XBOX
 #pragma comment (lib,"../../xbmc/lib/zlib/zlib.lib")
-#endif
 #endif
 
 #define ZIP_CACHE_LIMIT 4*1024*1024

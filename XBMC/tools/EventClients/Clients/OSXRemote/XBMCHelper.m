@@ -7,131 +7,75 @@
 //
 
 #import "XBMCHelper.h"
-#import "remotecontrolwrapper/AppleRemote.h"
 #import "XBMCDebugHelpers.h"
+
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
+@interface XBMCHelper (private)
+
+- (NSString *)buttonNameForButtonCode:(HIDRemoteButtonCode)buttonCode;
+- (void) checkAndLaunchApp;
+
+@end
+
 @implementation XBMCHelper
 - (id) init{
   PRINT_SIGNATURE();
-  if( ![super init] ){
-    return nil;
-  }
-  mp_wrapper = nil;
-  mp_remote_control = [[[AppleRemote alloc] initWithDelegate: self] retain];
-  [mp_remote_control setProcessesBacklog:true];
-  [mp_remote_control setOpenInExclusiveMode:true];
-  if( ! mp_remote_control ){
-    NSException* myException = [NSException
-                                exceptionWithName:@"AppleRemoteInitExecption"
-                                reason:@"AppleRemote could not be initialized"
-                                userInfo:nil];
-    @throw myException;
-  }
-  [mp_remote_control startListening: self];
-  if(![mp_remote_control isListeningToRemote]){
-    ELOG(@"Warning: XBMCHelper could not open the IR-Device in exclusive mode. Other remote control apps running?");
+  if( (self = [super init]) ){
+    if ((remote = [HIDRemote sharedHIDRemote]))
+    {
+      [remote setDelegate:self];
+      [remote setSimulateHoldEvents:NO];
+      //for now, we're using lending of exlusive lock
+      //kHIDRemoteModeExclusiveAuto isn't working, as we're a background daemon
+      //one possibility would be to know when XBMC is running. Once we know that,
+      //we could aquire exclusive lock when it's running, and release _exclusive_
+      //access once done
+      [remote setExclusiveLockLendingEnabled:YES];
+
+      if ([HIDRemote isCandelairInstallationRequiredForRemoteMode:kHIDRemoteModeExclusive])
+      {
+        //setup failed. user needs to install CandelaIR driver
+        NSLog(@"Error! Candelair driver installation necessary. XBMC Remote control won't function properly!");
+        NSLog(@"Due to an issue in the OS version you are running, an additional driver needs to be installed before XBMC(Helper) can reliably access the remote.");
+        NSLog(@"See http://www.candelair.com/download/ for details");
+        [super dealloc];
+        return nil;
+      }
+      else
+      {
+        if ([remote startRemoteControl:kHIDRemoteModeExclusiveAuto])
+        {
+          DLOG(@"Driver has started successfully.");
+          if ([remote activeRemoteControlCount])
+            DLOG(@"Driver has found %d remotes.", [remote activeRemoteControlCount]);
+          else
+            ELOG(@"Driver has not found any remotes it could use. Will use remotes as they become available.");
+        }
+        else
+        {
+          //setup failed, cleanup
+          [remote setDelegate:nil];
+          [super dealloc];
+          return nil;
+        }
+      }
+    }
   }
   return self;
 }
 
+//----------------------------------------------------------------------------
 - (void) dealloc{
   PRINT_SIGNATURE();
-  [mp_remote_control stopListening: self];  
-  [mp_remote_control release];  
+  [remote stopRemoteControl];
+  if( [remote delegate] == self)
+    [remote setDelegate:nil];
   [mp_wrapper release];
   [mp_app_path release];
   [mp_home_path release];
+
   [super dealloc];
-}
-
-//----------------------------------------------------------------------------
-- (void) checkAndLaunchApp
-{
-  if(!mp_app_path || ![mp_app_path length]){
-    ELOG(@"No executable set. Nothing to launch");
-    return;
-  }
-  
-  NSFileManager *fileManager = [NSFileManager defaultManager];
-  if(![fileManager fileExistsAtPath:mp_app_path]){
-    ELOG(@"Path does not exist: %@. Cannot launch executable", mp_app_path);
-    return;
-  }
-  if(mp_home_path && [mp_home_path length])
-    setenv("XBMC_HOME", [mp_home_path cString], 1);
-  //launch or activate xbmc
-  if(![[NSWorkspace sharedWorkspace] launchApplication:mp_app_path]){
-    ELOG(@"Error launching %@", mp_app_path);
-  }
-}
-
-//----------------------------------------------------------------------------
-- (void) sendRemoteButtonEvent: (RemoteControlEventIdentifier) event pressedDown: (BOOL) pressedDown remoteControl: (RemoteControl*) remoteControl;
-{
-  if(m_verbose) {
-    //do some logging here
-    //[self logButton: event press;
-  }
-  
-  switch(event){
-    case kRemoteButtonPlay:
-      if(pressedDown) [mp_wrapper handleEvent:ATV_BUTTON_PLAY];
-      break;
-    case kRemoteButtonPlay_Hold:
-      if(pressedDown) [mp_wrapper handleEvent:ATV_BUTTON_PLAY_H];
-      break;
-    case kRemoteButtonRight:
-      if(pressedDown) 
-        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT];
-      else
-        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_RELEASE];
-      break;
-    case kRemoteButtonRight_Hold:
-      if(pressedDown) 
-        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_H];
-      else
-        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_H_RELEASE];
-      break;
-    case kRemoteButtonLeft:
-      if(pressedDown) 
-        [mp_wrapper handleEvent:ATV_BUTTON_LEFT];
-      else
-        [mp_wrapper handleEvent:ATV_BUTTON_LEFT_RELEASE];
-      break;
-    case kRemoteButtonLeft_Hold:
-      if(pressedDown) 
-        [mp_wrapper handleEvent:ATV_BUTTON_LEFT_H];
-      else
-        [mp_wrapper handleEvent:ATV_BUTTON_LEFT_H_RELEASE];
-      break;
-    case kRemoteButtonPlus:
-      if(pressedDown) 
-        [mp_wrapper handleEvent:ATV_BUTTON_UP];
-      else
-        [mp_wrapper handleEvent:ATV_BUTTON_UP_RELEASE];
-      break;
-    case kRemoteButtonMinus:
-      if(pressedDown) 
-        [mp_wrapper handleEvent:ATV_BUTTON_DOWN];
-      else
-        [mp_wrapper handleEvent:ATV_BUTTON_DOWN_RELEASE];
-      break;      
-    case kRemoteButtonMenu:
-      if(pressedDown){
-        [self checkAndLaunchApp]; //launch mp_app_path if it's not running
-        [mp_wrapper handleEvent:ATV_BUTTON_MENU];
-      }
-      break;
-    case kRemoteButtonMenu_Hold:
-      if(pressedDown) [mp_wrapper handleEvent:ATV_BUTTON_MENU_H];
-      break;    
-    case kRemoteControl_Switched:
-      if(pressedDown) [mp_wrapper switchRemote: [mp_remote_control deviceID]];
-      break;        
-    default:
-      NSLog(@"Oha, remote button not recognized %i pressed/released %i", event, pressedDown);
-  }
 }
 
 //----------------------------------------------------------------------------
@@ -157,7 +101,7 @@
 //----------------------------------------------------------------------------
 - (void) setApplicationPath:(NSString*) fp_app_path{
   if (mp_app_path != fp_app_path) {
-    [mp_app_path release]; 
+    [mp_app_path release];
     mp_app_path = [[fp_app_path stringByStandardizingPath] retain];
   }
 }
@@ -165,58 +109,196 @@
 //----------------------------------------------------------------------------
 - (void) setApplicationHome:(NSString*) fp_home_path{
   if (mp_home_path != fp_home_path) {
-    [mp_home_path release]; 
+    [mp_home_path release];
     mp_home_path = [[fp_home_path stringByStandardizingPath] retain];
   }
 }
-//   NSString* pressed;
-//    NSString* buttonName;
-//    if (pressedDown) pressed = @"(pressed)"; else pressed = @"(released)";
-//    
-//    switch(event) {
-//      case kRemoteButtonPlus:
-//        buttonName = @"Volume up";			
-//        break;
-//      case kRemoteButtonMinus:
-//        buttonName = @"Volume down";
-//        break;			
-//      case kRemoteButtonMenu:
-//        buttonName = @"Menu";
-//        break;			
-//      case kRemoteButtonPlay:
-//        buttonName = @"Play";
-//        break;			
-//      case kRemoteButtonRight:	
-//        buttonName = @"Right";
-//        break;			
-//      case kRemoteButtonLeft:
-//        buttonName = @"Left";
-//        break;			
-//      case kRemoteButtonRight_Hold:
-//        buttonName = @"Right holding";	
-//        break;	
-//      case kRemoteButtonLeft_Hold:
-//        buttonName = @"Left holding";		
-//        break;			
-//      case kRemoteButtonPlus_Hold:
-//        buttonName = @"Volume up holding";	
-//        break;				
-//      case kRemoteButtonMinus_Hold:			
-//        buttonName = @"Volume down holding";	
-//        break;				
-//      case kRemoteButtonPlay_Hold:
-//        buttonName = @"Play (sleep mode)";
-//        break;			
-//      case kRemoteButtonMenu_Hold:
-//        buttonName = @"Menu holding";
-//        break;
-//      case kRemoteControl_Switched:
-//        buttonName = @"Remote Control Switched";
-//        break;
-//      default:
-//        break;
-//    }
-//    NSLog(@"%@ %@", pressed, buttonName);
-//    }
+
+#pragma mark -
+#pragma mark HIDRemote delegate methods
+
+// Notification of button events
+- (void)hidRemote:(HIDRemote *)hidRemote eventWithButton:(HIDRemoteButtonCode)buttonCode
+        isPressed:(BOOL)isPressed fromHardwareWithAttributes:(NSMutableDictionary *)attributes
+{
+  if(m_verbose){
+    NSLog(@"Received button '%@' %@ event", [self buttonNameForButtonCode:buttonCode], (isPressed)?@"press":@"release");
+  }
+  switch(buttonCode)
+  {
+    case kHIDRemoteButtonCodePlus:
+      if(isPressed)
+        [mp_wrapper handleEvent:ATV_BUTTON_UP];
+      else
+        [mp_wrapper handleEvent:ATV_BUTTON_UP_RELEASE];
+      break;
+    case kHIDRemoteButtonCodeMinus:
+      if(isPressed)
+        [mp_wrapper handleEvent:ATV_BUTTON_DOWN];
+      else
+        [mp_wrapper handleEvent:ATV_BUTTON_DOWN_RELEASE];
+      break;
+    case kHIDRemoteButtonCodeLeft:
+      if(isPressed)
+        [mp_wrapper handleEvent:ATV_BUTTON_LEFT];
+      else
+        [mp_wrapper handleEvent:ATV_BUTTON_LEFT_RELEASE];
+      break;
+    case kHIDRemoteButtonCodeLeftHold:
+      if(isPressed)
+        [mp_wrapper handleEvent:ATV_BUTTON_LEFT_H];
+      else
+        [mp_wrapper handleEvent:ATV_BUTTON_LEFT_H_RELEASE];
+      break;
+    case kHIDRemoteButtonCodeRight:
+      if(isPressed)
+        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT];
+      else
+        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_RELEASE];
+      break;
+    case kHIDRemoteButtonCodeRightHold:
+      if(isPressed)
+        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_H];
+      else
+        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_H_RELEASE];
+      break;
+    case kHIDRemoteButtonCodePlayPause:
+      if(isPressed) [mp_wrapper handleEvent:ATV_BUTTON_PLAY];
+      break;
+    case kHIDRemoteButtonCodePlayPauseHold:
+      if(isPressed) [mp_wrapper handleEvent:ATV_BUTTON_PLAY_H];
+      break;
+    case kHIDRemoteButtonCodeMenu:
+      if(isPressed){
+        [mp_wrapper handleEvent:ATV_BUTTON_MENU];
+      }
+      break;
+    case kHIDRemoteButtonCodeMenuHold:
+      if(isPressed) {
+        [self checkAndLaunchApp]; //launch mp_app_path if it's not running
+        [mp_wrapper handleEvent:ATV_BUTTON_MENU_H];
+      }
+      break;
+    default:
+      NSLog(@"Oha, remote button not recognized %i pressed/released %i", buttonCode, isPressed);
+  }
+}
+
+
+// Notification of ID changes
+- (void)hidRemote:(HIDRemote *)hidRemote remoteIDChangedOldID:(SInt32)old 
+            newID:(SInt32)newID forHardwareWithAttributes:(NSMutableDictionary *)attributes
+{
+  if(m_verbose)
+    NSLog(@"Change of remote ID from %d to %d", old, newID);
+  [mp_wrapper switchRemote: newID];
+  
+}
+
+#pragma mark -
+#pragma mark Helper methods
+
+- (NSString *)buttonNameForButtonCode:(HIDRemoteButtonCode)buttonCode
+{
+	switch (buttonCode)
+	{
+		case kHIDRemoteButtonCodePlus:
+			return (@"Plus");
+      break;
+		case kHIDRemoteButtonCodeMinus:
+			return (@"Minus");
+      break;
+		case kHIDRemoteButtonCodeLeft:
+			return (@"Left");
+      break;
+		case kHIDRemoteButtonCodeRight:
+			return (@"Right");
+      break;
+		case kHIDRemoteButtonCodePlayPause:
+			return (@"Play/Pause");
+      break;
+		case kHIDRemoteButtonCodeMenu:
+			return (@"Menu");
+      break;
+		case kHIDRemoteButtonCodePlusHold:
+			return (@"Plus (hold)");
+      break;
+		case kHIDRemoteButtonCodeMinusHold:
+			return (@"Minus (hold)");
+      break;
+		case kHIDRemoteButtonCodeLeftHold:
+			return (@"Left (hold)");
+      break;
+		case kHIDRemoteButtonCodeRightHold:
+			return (@"Right (hold)");
+      break;
+		case kHIDRemoteButtonCodePlayPauseHold:
+			return (@"Play/Pause (hold)");
+      break;
+		case kHIDRemoteButtonCodeMenuHold:
+			return (@"Menu (hold)");
+      break;
+	}
+	return ([NSString stringWithFormat:@"Button %x", (int)buttonCode]);
+}
+
+//----------------------------------------------------------------------------
+- (void) checkAndLaunchApp
+{
+  if(!mp_app_path || ![mp_app_path length]){
+    ELOG(@"No executable set. Nothing to launch");
+    return;
+  }
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+  if([fileManager fileExistsAtPath:mp_app_path]){
+    if(mp_home_path && [mp_home_path length])
+      setenv("XBMC_HOME", [mp_home_path cString], 1);
+    //launch or activate xbmc
+    if(![[NSWorkspace sharedWorkspace] launchApplication:mp_app_path])
+      ELOG(@"Error launching %@", mp_app_path);
+  } else
+    ELOG(@"Path does not exist: %@. Cannot launch executable", mp_app_path);
+}
+
+
+#pragma mark -
+#pragma mark Other (unused) HIDRemoteDelegate methods
+//- (BOOL)hidRemote:(HIDRemote *)aHidRemote
+//lendExclusiveLockToApplicationWithInfo:(NSDictionary *)applicationInfo
+//{
+//	NSLog(@"Lending exclusive lock to %@ (pid %@)", [applicationInfo objectForKey:(id)kCFBundleIdentifierKey], [applicationInfo objectForKey:kHIDRemoteDNStatusPIDKey]);
+//	return (YES);
+//}
+//
+//- (void)hidRemote:(HIDRemote *)aHidRemote
+//exclusiveLockReleasedByApplicationWithInfo:(NSDictionary *)applicationInfo
+//{
+//  NSLog(@"Exclusive lock released by %@ (pid %@)", [applicationInfo objectForKey:(id)kCFBundleIdentifierKey], [applicationInfo objectForKey:kHIDRemoteDNStatusPIDKey]);
+//	[aHidRemote startRemoteControl:kHIDRemoteModeExclusive];
+//}
+//
+//- (BOOL)hidRemote:(HIDRemote *)aHidRemote
+//shouldRetryExclusiveLockWithInfo:(NSDictionary *)applicationInfo
+//{
+//  NSLog(@"%@ (pid %@) says I should retry to acquire exclusive locks", [applicationInfo objectForKey:(id)kCFBundleIdentifierKey], [applicationInfo objectForKey:kHIDRemoteDNStatusPIDKey]);
+//	return (YES);
+//}
+//
+//
+//// Notification about hardware additions/removals
+//- (void)hidRemote:(HIDRemote *)aHidRemote foundNewHardwareWithAttributes:(NSMutableDictionary *)attributes
+//{
+//	NSLog(@"Found hardware: %@ by %@ (Transport: %@)", [attributes objectForKey:kHIDRemoteProduct], [attributes objectForKey:kHIDRemoteManufacturer], [attributes objectForKey:kHIDRemoteTransport]);
+//}
+//
+//- (void)hidRemote:(HIDRemote *)aHidRemote failedNewHardwareWithError:(NSError *)error
+//{
+//	NSLog(@"Initialization of hardware failed with error %@ (%@)", [error localizedDescription], [[error userInfo] objectForKey:@"InternalErrorCode"]);
+//}
+//
+//- (void)hidRemote:(HIDRemote *)aHidRemote releasedHardwareWithAttributes:(NSMutableDictionary *)attributes
+//{
+//	NSLog(@"Released hardware: %@ by %@ (Transport: %@)", [attributes objectForKey:kHIDRemoteProduct], [attributes objectForKey:kHIDRemoteManufacturer], [attributes objectForKey:kHIDRemoteTransport]);
+//}
 
 @end

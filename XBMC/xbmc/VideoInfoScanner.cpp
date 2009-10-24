@@ -28,7 +28,6 @@
 #include "utils/md5.h"
 #include "Picture.h"
 #include "FileSystem/StackDirectory.h"
-#include "xbox/XKGeneral.h"
 #include "utils/IMDB.h"
 #include "utils/GUIInfoManager.h"
 #include "FileSystem/File.h"

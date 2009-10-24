@@ -90,7 +90,7 @@ namespace PYXBMC
     };
 
     string url;
-    if (!PyGetUnicodeString(url, pURL, 1) || !ListItem_CheckExact(pItem)) return NULL;
+    if (!PyXBMCGetUnicodeString(url, pURL, 1) || !ListItem_CheckExact(pItem)) return NULL;
     
     ListItem *pListItem = (ListItem *)pItem;
     pListItem->item->m_strPath = url;
@@ -158,7 +158,7 @@ namespace PYXBMC
       };
 
       string url;
-      if (!PyGetUnicodeString(url, pURL, 1) || !ListItem_CheckExact(pItem)) return NULL;
+      if (!PyXBMCGetUnicodeString(url, pURL, 1) || !ListItem_CheckExact(pItem)) return NULL;
 
       ListItem *pListItem = (ListItem *)pItem;
       pListItem->item->m_strPath = url;
@@ -351,7 +351,7 @@ namespace PYXBMC
     };
 
     CStdString value;
-    if (!id || !PyGetUnicodeString(value, pValue, 1))
+    if (!id || !PyXBMCGetUnicodeString(value, pValue, 1))
     {
       PyErr_SetString(PyExc_ValueError, "Invalid id or value!");
       return NULL;
@@ -430,7 +430,7 @@ namespace PYXBMC
     };
 
     CStdString uCategory;
-    if (!category || (category && !PyGetUnicodeString(uCategory, category, 1)))
+    if (!category || (category && !PyXBMCGetUnicodeString(uCategory, category, 1)))
       return NULL;
 
     DIRECTORY::CPluginDirectory::SetProperty(handle, "plugincategory", uCategory);
@@ -525,7 +525,7 @@ namespace PYXBMC
 
     if (!key || !pValue) return NULL;
     CStdString value;
-    if (!PyGetUnicodeString(value, pValue, 1))
+    if (!PyXBMCGetUnicodeString(value, pValue, 1))
       return NULL;
 
     CStdString lowerKey = key;
@@ -567,7 +567,7 @@ namespace PYXBMC
     };
 
     CStdString url;
-    if (!pUrl || (pUrl && !PyGetUnicodeString(url, pUrl, 1)))
+    if (!pUrl || (pUrl && !PyXBMCGetUnicodeString(url, pUrl, 1)))
       return NULL;
 
     if (!CAddonSettings::SettingsExist(url))

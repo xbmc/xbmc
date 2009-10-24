@@ -244,7 +244,7 @@ namespace PYXBMC
 
   void initInfoTagVideo_Type()
   {
-    PyInitializeTypeObject(&InfoTagVideo_Type);
+    PyXBMCInitializeTypeObject(&InfoTagVideo_Type);
 
     InfoTagVideo_Type.tp_name = (char*)"xbmc.InfoTagVideo";
     InfoTagVideo_Type.tp_basicsize = sizeof(InfoTagVideo);

@@ -26,7 +26,6 @@
 
 #include <d3d9.h>
 #include <d3dx9.h>
-#include <dxerr9.h>
 #include <dxdiag.h>
 #include "WinSystemWin32.h"
 #include "RenderSystemDX.h"

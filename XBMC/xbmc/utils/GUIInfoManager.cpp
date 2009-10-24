@@ -30,11 +30,9 @@
 #include "lib/libscrobbler/lastfmscrobbler.h"
 #include "Weather.h"
 #include "PVRManager.h"
-#include "PlayListPlayer.h"
 #include "PartyModeManager.h"
 #include "visualizations/Visualisation.h"
 #include "ButtonTranslator.h"
-#include "MusicDatabase.h"
 #include "utils/AlarmClock.h"
 #ifdef HAS_LCD
 #include "utils/LCD.h"
@@ -45,15 +43,12 @@
 #include "GUIButtonScroller.h"
 #include "GUITextBox.h"
 #include "GUIInfoManager.h"
-#include <stack>
-#include "../utils/Network.h"
 #include "GUIWindowSlideShow.h"
 #include "LastFmManager.h"
 #include "PictureInfoTag.h"
 #include "MusicInfoTag.h"
 #include "PVREpg.h"
 #include "PVRChannels.h"
-#include "VideoDatabase.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIWindowManager.h"
@@ -67,7 +62,6 @@
 #include "LocalizeStrings.h"
 #include "CPUInfo.h"
 #include "StringUtils.h"
-#include "TeletextDefines.h"
 
 // stuff for current song
 #include "MusicInfoTagLoaderFactory.h"
@@ -3795,6 +3789,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
       {
         CStdString strRatingAndVotes;
+        if (item->GetVideoInfoTag()->m_strVotes.IsEmpty())
+          strRatingAndVotes.Format("%2.2f", item->GetVideoInfoTag()->m_fRating);
+        else
           strRatingAndVotes.Format("%2.2f (%s %s)", item->GetVideoInfoTag()->m_fRating, item->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
         return strRatingAndVotes;
       }

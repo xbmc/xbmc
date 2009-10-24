@@ -2,6 +2,8 @@
 #include "WIN32Util.h"
 #include "LocalizeStrings.h"
 
+bool CWin32StorageProvider::event = false;
+
 void CWin32StorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 {
   CMediaSource share;
@@ -15,6 +17,7 @@ void CWin32StorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 
 void CWin32StorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
+  CWIN32Util::GetDrivesByType(removableDrives, REMOVABLE_DRIVES);
 }
 
 bool CWin32StorageProvider::Eject(CStdString mountpath)
@@ -29,4 +32,11 @@ bool CWin32StorageProvider::Eject(CStdString mountpath)
 std::vector<CStdString> CWin32StorageProvider::GetDiskUsage()
 {
   return CWIN32Util::GetDiskUsage();
+}
+
+bool CWin32StorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
+{
+  bool b = event;
+  event = false;
+  return b;
 }

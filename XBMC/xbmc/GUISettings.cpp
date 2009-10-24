@@ -555,16 +555,6 @@ void CGUISettings::Initialize()
 #endif
 
   AddCategory(6, "servers", 14036);
-#if defined(HAS_FTP_SERVER) || defined (HAS_WEB_SERVER)
-#ifdef HAS_FTP_SERVER
-  AddBool(1,  "servers.ftpserver",        167, true);
-  AddString(3,"servers.ftpserverpassword",1246, "xbox", EDIT_CONTROL_HIDDEN_INPUT, true, 1246);
-  AddBool(4,  "servers.ftpautofatx",      771, true);
-  AddString(2,"servers.ftpserveruser",    1245, "xbox", SPIN_CONTROL_TEXT);
-#endif
-#if defined(HAS_FTP_SERVER) && defined(HAS_WEB_SERVER)
-  AddSeparator(5, "servers.sep1");
-#endif
 #ifdef HAS_WEB_SERVER
   AddBool(6,  "servers.webserver",        263, false);
 #ifdef _LINUX
@@ -574,7 +564,6 @@ void CGUISettings::Initialize()
 #endif
   AddString(8,"servers.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
   AddString(9,"servers.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
-#endif
 #endif
 
   AddCategory(6, "smb", 1200);

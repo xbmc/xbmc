@@ -1,11 +1,11 @@
 #pragma once
 #include "IStorageProvider.h"
 
-class CPosixMountProvider : public IStorageProvider
+class CDarwinStorageProvider : public IStorageProvider
 {
 public:
-  CPosixMountProvider();
-  virtual ~CPosixMountProvider() { }
+  CDarwinStorageProvider();
+  virtual ~CDarwinStorageProvider() { }
 
   virtual void Initialize() { }
   virtual void Stop() { }
@@ -13,13 +13,17 @@ public:
   virtual void GetLocalDrives(VECSOURCES &localDrives) { GetDrives(localDrives); }
   virtual void GetRemovableDrives(VECSOURCES &removableDrives) { /*GetDrives(removableDrives);*/ }
 
-  virtual std::vector<CStdString> GetDiskUsage();
+  virtual std::vector<CStdString> GetDiskUsage(void);
 
-  virtual bool Eject(CStdString mountpath) { return false; }
+  virtual bool Eject(CStdString mountpath);
 
   virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
+
+  static void SetEvent(void);
+
 private:
   void GetDrives(VECSOURCES &drives);
 
   unsigned int m_removableLength;
+  static bool m_event;
 };

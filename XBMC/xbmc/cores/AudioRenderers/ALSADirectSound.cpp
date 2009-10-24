@@ -544,12 +544,12 @@ void CALSADirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool pass
   {
     vAudioSinks.push_back(AudioSink("default", "alsa:default"));
     vAudioSinks.push_back(AudioSink("iec958" , "alsa:plug:iec958"));
-    vAudioSinks.push_back(AudioSink("HDMI"   , "alsa:plug:hdmi"));
+    vAudioSinks.push_back(AudioSink("hdmi"   , "alsa:plug:hdmi"));
   }
   else
   {
     vAudioSinks.push_back(AudioSink("iec958" , "alsa:iec958"));
-    vAudioSinks.push_back(AudioSink("HDMI"   , "alsa:hdmi"));
+    vAudioSinks.push_back(AudioSink("hdmi"   , "alsa:hdmi"));
   }
 
   int n_cards = -1;
@@ -573,8 +573,6 @@ void CALSADirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool pass
     {
       if ( snd_ctl_card_info( handle, info ) == 0 )
       {
-        int dev = -1;
-
         CStdString strReadableCardName = snd_ctl_card_info_get_name( info );
         CStdString strCardName = snd_ctl_card_info_get_id( info );
 

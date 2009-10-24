@@ -36,9 +36,13 @@
   #include "CocoaInterface.h"
 #elif defined(_WIN32)
   #pragma comment (lib,"d3d9.lib")
-  #if(DIRECT3D_VERSION > 0x0900)
+  #if (D3DX_SDK_VERSION >= 42) //aug 2009 sdk and up there is no dxerr9 anymore
+    #include <Dxerr.h>
     #pragma comment (lib,"DxErr.lib")
   #else
+    #include <dxerr9.h>
+    #define DXGetErrorString(hr)      DXGetErrorString9(hr)
+    #define DXGetErrorDescription(hr) DXGetErrorDescription9(hr)
     #pragma comment (lib,"Dxerr9.lib")
   #endif
 #endif

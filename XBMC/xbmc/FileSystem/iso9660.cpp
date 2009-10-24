@@ -44,7 +44,11 @@ ISO9660
 #include "utils/CharsetConverter.h"
 
 #include "DetectDVDType.h"  // for MODE2_DATA_SIZE etc.
+#ifdef _LINUX
+#include <cdio/bytesex.h>
+#else
 #include "lib/libcdio/bytesex.h" // for from_723 & from_733
+#endif
 //#define _DEBUG_OUTPUT 1
 
 static CRITICAL_SECTION m_critSection;
