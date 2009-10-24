@@ -84,7 +84,7 @@ private:
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;
-  bool m_bPause, m_bAutoResume;
+  bool m_bPause, m_bRecentlyFlushed, m_bAutoResume;
   bool m_bPassthrough;
 
   pa_stream *m_Stream;
