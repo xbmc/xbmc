@@ -309,15 +309,6 @@ void XBPython::Process()
     // We need to make sure the network is up in case the start scripts require network
     g_network.WaitForSetup(10000);
     
-
-    // autoexec.py - userdata
-    strAutoExecPy = "special://home/scripts/autoexec.py";
-
-    if (XFILE::CFile::Exists(strAutoExecPy))
-      evalFile(strAutoExecPy);
-    else
-      CLog::Log(LOGDEBUG, "%s - no user autoexec.py (%s) found, skipping", __FUNCTION__, CSpecialProtocol::TranslatePath(strAutoExecPy).c_str());
-
     // autoexec.py - system
     strAutoExecPy = "special://xbmc/scripts/autoexec.py";
 
