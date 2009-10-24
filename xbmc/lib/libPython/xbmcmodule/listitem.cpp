@@ -74,7 +74,7 @@ namespace PYXBMC
     self = (ListItem*)type->tp_alloc(type, 0);
     if (!self)
       return NULL;
-    
+
     self->item.reset();
 
     // parse user input
@@ -216,7 +216,7 @@ namespace PYXBMC
     "\n"
     "example:\n"
     "  - self.list.getSelectedItem().setLabel2('[pg-13]')\n");
-  
+
   PyObject* ListItem_SetLabel2(ListItem *self, PyObject *args)
   {
     PyObject* unicodeLine = NULL;
@@ -306,7 +306,7 @@ namespace PYXBMC
     Py_INCREF(Py_None);
     return Py_None;
   }
-  
+
   PyDoc_STRVAR(isSelected__doc__,
     "isSelected() -- Returns the listitem's selected status.\n"
     "\n"
