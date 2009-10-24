@@ -77,6 +77,7 @@ void CNullDirectSound::Flush()
 {
   m_lastUpdate = CTimeUtils::GetTimeMS();
   m_packetsSent = 0;
+  Pause();
 }
 
 //***********************************************************************************************
@@ -96,6 +97,7 @@ bool CNullDirectSound::Resume()
 //***********************************************************************************************
 bool CNullDirectSound::Stop()
 {
+  Flush();
   return true;
 }
 
