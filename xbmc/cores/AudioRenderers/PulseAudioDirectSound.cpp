@@ -347,6 +347,8 @@ void CPulseAudioDirectSound::Flush()
   if (!m_bIsAllocated)
      return;
 
+  Pause();
+
   pa_threaded_mainloop_lock(m_MainLoop);
   WaitForOperation(pa_stream_flush(m_Stream, NULL, NULL), m_MainLoop, "Flush");
   pa_threaded_mainloop_unlock(m_MainLoop);
@@ -393,8 +395,6 @@ bool CPulseAudioDirectSound::Stop()
     return -1;
 
   Flush();
-
-  m_bPause = false;
 
   return true;
 }
@@ -460,6 +460,10 @@ unsigned int CPulseAudioDirectSound::AddPackets(const void* data, unsigned int l
   int rtn = pa_stream_write(m_Stream, data, length, NULL, 0, PA_SEEK_RELATIVE);
 
   pa_threaded_mainloop_unlock(m_MainLoop);
+
+  if (m_bAutoResume)
+    m_bAutoResume = !Resume();
+
   return length - rtn;
 }
 
