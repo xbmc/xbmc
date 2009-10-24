@@ -647,7 +647,7 @@ void CGUIWindowManager::SendThreadMessage(CGUIMessage& message)
 
 void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, int window)
 {
-  CSingleLock(m_critSection);
+  CSingleLock lock(m_critSection);
 
   CGUIMessage* msg = new CGUIMessage(message);
   m_vecThreadMessages.push_back( pair<CGUIMessage*,int>(msg,window) );
@@ -655,10 +655,10 @@ void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, int window)
 
 void CGUIWindowManager::DispatchThreadMessages()
 {
-  CSingleLock(m_critSection);
+  CSingleLock lock(m_critSection);
   vector< pair<CGUIMessage*,int> > messages(m_vecThreadMessages);
   m_vecThreadMessages.erase(m_vecThreadMessages.begin(), m_vecThreadMessages.end());
-  m_critSection.Leave();
+  lock.Leave();
 
   while ( messages.size() > 0 )
   {
