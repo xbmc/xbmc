@@ -1500,10 +1500,10 @@
   <string id="16023">Interlaced handling</string>
   <string id="16024">Canceling...</string>
   <string id="16025">Enter the artist name</string>
-  <string id="16026">Playlist playback aborted</string>
-  <string id="16027">Too many consecutive failed items</string>
+  <string id="16026">Playback failed</string>
+  <string id="16027">One or more items failed to play.</string>
   <string id="16028">Enter value</string>
-
+  <string id="16029">Check the log file for details.</string>
   <string id="16030">Party mode aborted.</string>
   <string id="16031">No matching songs in the library.</string>
   <string id="16032">Could not initialize database.</string>
