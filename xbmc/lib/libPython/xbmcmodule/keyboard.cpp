@@ -55,9 +55,9 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"|OOb", &line, &heading, &bHidden)) return NULL;
 
     string utf8Line;
-    if (line && !PyGetUnicodeString(utf8Line, line, 1)) return NULL;
+    if (line && !PyXBMCGetUnicodeString(utf8Line, line, 1)) return NULL;
     string utf8Heading;
-    if (heading && !PyGetUnicodeString(utf8Heading, heading, 2)) return NULL;
+    if (heading && !PyXBMCGetUnicodeString(utf8Heading, heading, 2)) return NULL;
 
     self->strDefault = utf8Line;
     self->strHeading = utf8Heading;
@@ -119,7 +119,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"|O", &line))	return NULL;
 
     string utf8Line;
-    if (line && !PyGetUnicodeString(utf8Line, line, 1)) return NULL;
+    if (line && !PyXBMCGetUnicodeString(utf8Line, line, 1)) return NULL;
     self->strDefault = utf8Line;
 
     CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
@@ -178,7 +178,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"|O", &line)) return NULL;
 
     string utf8Line;
-    if (line && !PyGetUnicodeString(utf8Line, line, 1)) return NULL;
+    if (line && !PyXBMCGetUnicodeString(utf8Line, line, 1)) return NULL;
     self->strHeading = utf8Line;
 
     CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
@@ -276,7 +276,7 @@ namespace PYXBMC
 
   void initKeyboard_Type()
   {
-    PyInitializeTypeObject(&Keyboard_Type);
+    PyXBMCInitializeTypeObject(&Keyboard_Type);
 
     Keyboard_Type.tp_name = (char*)"xbmc.Keyboard";
     Keyboard_Type.tp_basicsize = sizeof(Keyboard);

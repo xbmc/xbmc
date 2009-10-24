@@ -69,15 +69,13 @@ public:
 //
 // Just call it 'VerifyGLState()' after a sequence of GL calls
 //
-// if _DEBUG and HAS_GL are defined, the function checks
+// if GL_DEBUGGING and HAS_GL are defined, the function checks
 // for GL errors and prints the current state of the various matrices;
 // if not it's just an empty inline stub, and thus won't affect performance
 // and will be optimized out.
 
-#undef GL_DEBUGGING
-
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);
-#if defined(GL_DEBUGGING) && defined(_DEBUG) && defined(HAS_GL)
+#if defined(GL_DEBUGGING) && defined(HAS_GL)
 #define VerifyGLState() _VerifyGLState(__FILE__, __FUNCTION__, __LINE__)
 #else
 #define VerifyGLState()

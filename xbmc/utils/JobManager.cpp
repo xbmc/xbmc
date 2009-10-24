@@ -72,7 +72,7 @@ CJobManager::CJobManager()
   m_running = true;
 }
 
-CJobManager::~CJobManager()
+void CJobManager::CancelJobs()
 {
   CSingleLock lock(m_section);
   m_running = false;
@@ -86,8 +86,14 @@ CJobManager::~CJobManager()
   
   // cancel any callbacks on jobs still processing
   for_each(m_processing.begin(), m_processing.end(), mem_fun_ref(&CWorkItem::Cancel));
+}
 
-  // and tell our workers to finish
+CJobManager::~CJobManager()
+{
+  CSingleLock lock(m_section);
+
+  // cancel any jobs, and tell our workers to finish
+  CancelJobs();
   while (m_workers.size())
   {
     lock.Leave();

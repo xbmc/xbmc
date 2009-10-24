@@ -29,17 +29,7 @@
   #include <X11/Xlib.h>
   #include <GL/glx.h>
 #elif defined(_WIN32)
-  #ifdef _DEBUG
-    #define D3D_DEBUG_INFO
-  #endif
   #include <d3d9.h>
-  #if(DIRECT3D_VERSION > 0x0900)
-    #include <Dxerr.h>
-  #else
-    #include <dxerr9.h>
-    #define DXGetErrorString(hr)      DXGetErrorString9(hr)
-    #define DXGetErrorDescription(hr) DXGetErrorDescription9(hr)
-  #endif
 #endif
 
 class CVideoReferenceClock : public CThread

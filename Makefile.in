@@ -52,7 +52,6 @@ BIN_DIRS=	\
 	xbmc/utils \
 	xbmc/settings \
 	xbmc/linux \
-	xbmc/xbox \
 	xbmc/osx
 
 EC_DIRS= \
@@ -255,8 +254,6 @@ xbmc/visualizations/visualization.a: force
 	$(MAKE) -C xbmc/visualizations
 xbmc/pvrclients/pvrclient.a: force
 	$(MAKE) -C xbmc/pvrclients
-xbmc/xbox/xbox.a: force
-	$(MAKE) -C xbmc/xbox
 xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
 
@@ -390,8 +387,7 @@ OBJSXBMC=	\
 	xbmc/pvrclients/pvrclient.a \
 	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
-	xbmc/visualizations/visualization.a \
-	xbmc/xbox/xbox.a
+	xbmc/visualizations/visualization.a
 
 DYNOBJSXBMC= \
 	xbmc/lib/libcmyth/libcmyth.a \

@@ -1158,6 +1158,7 @@ int CPlugin::AllocateMyDX8Stuff()
 	    // reallocate
 	    bool bSuccess = false;
 	    int nOrigTexSize = m_nTexSize;
+
 	    do
 	    {
 		    SafeRelease(m_lpVS[0]);
@@ -1170,7 +1171,7 @@ int CPlugin::AllocateMyDX8Stuff()
       bSuccess = (GetDevice()->SetDepthStencilSurface(pZBuffer) == D3D_OK);
 		  // create VS1 and VS2
       bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[0], NULL) == D3D_OK);
-			if (bSuccess)
+      if (bSuccess)
 			{
 				IDirect3DSurface9* pNewTarget = NULL;
 				if (m_lpVS[0]->GetSurfaceLevel(0, &pNewTarget) == D3D_OK) 
@@ -1180,8 +1181,8 @@ int CPlugin::AllocateMyDX8Stuff()
 					pNewTarget->Release();
 				}
 
-                bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[1], NULL) == D3D_OK);
-				if (bSuccess)
+        bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[1], NULL) == D3D_OK);
+        if (bSuccess)
 				{
 					if (m_lpVS[1]->GetSurfaceLevel(0, &pNewTarget) == D3D_OK) 
 					{
@@ -2188,7 +2189,7 @@ void CPlugin::MyRenderUI(
 //----------------------------------------------------------------------
 
 LRESULT CPlugin::MyWindowProc(HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lParam)
-{ 
+{
 #if 0
     // You can handle Windows messages here while the plugin is running, 
     //   such as mouse events (WM_MOUSEMOVE/WM_LBUTTONDOWN), keypresses 
@@ -4738,15 +4739,12 @@ void CPlugin::UpdatePresetList()
 */
 	strcpy(szPath, m_szPresetDir);
 	int len = strlen(szPath);
-	if (len>0 && szPath[len-1] != '\\') 
+	if (len>0 && szPath[len-1] != '/') 
 	{
-		strcat(szPath, "\\");
+		strcat(szPath, "/");
 	}
 	strcpy(szMask, szPath);
-	//if (m_UI_mode == UI_CHANGEDIR)
-		strcat(szMask, "*.*");
-	//else
-	//	strcat(szMask, "*.milk");
+	strcat(szMask, "*.*");
 
 
 	WIN32_FIND_DATA ffd;

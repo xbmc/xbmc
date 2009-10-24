@@ -39,7 +39,7 @@ void CPythonPlayer::OnPlayBackStarted()
 {
   // aquire lock?
   Py_INCREF(pCallback);
-  Py_AddPendingCall(Py_XBMC_Event_OnPlayBackStarted, pCallback);
+  PyXBMC_AddPendingCall(Py_XBMC_Event_OnPlayBackStarted, pCallback);
   g_pythonParser.PulseGlobalEvent();
 }
 
@@ -47,7 +47,7 @@ void CPythonPlayer::OnPlayBackEnded()
 {
   // aquire lock?
   Py_INCREF(pCallback);
-  Py_AddPendingCall(Py_XBMC_Event_OnPlayBackEnded, pCallback);
+  PyXBMC_AddPendingCall(Py_XBMC_Event_OnPlayBackEnded, pCallback);
   g_pythonParser.PulseGlobalEvent();
 }
 
@@ -55,7 +55,7 @@ void CPythonPlayer::OnPlayBackStopped()
 {
   // aquire lock?
   Py_INCREF(pCallback);
-  Py_AddPendingCall(Py_XBMC_Event_OnPlayBackStopped, pCallback);
+  PyXBMC_AddPendingCall(Py_XBMC_Event_OnPlayBackStopped, pCallback);
   g_pythonParser.PulseGlobalEvent();
 }
 

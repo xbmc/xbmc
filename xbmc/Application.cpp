@@ -108,7 +108,7 @@
 #include "AudioContext.h"
 #include "GUIFontTTF.h"
 #include "utils/Network.h"
-#include "xbox/IoSupport.h"
+#include "utils/IoSupport.h"
 #include "Zeroconf.h"
 #include "ZeroconfBrowser.h"
 #ifndef _LINUX
@@ -117,9 +117,6 @@
 #ifdef HAS_WEB_SERVER
 #include "lib/libGoAhead/XBMChttp.h"
 #include "lib/libGoAhead/WebServer.h"
-#endif
-#ifdef HAS_FTP_SERVER
-#include "lib/libfilezilla/xbfilezilla.h"
 #endif
 #ifdef HAS_TIME_SERVER
 #include "utils/Sntp.h"
@@ -256,6 +253,7 @@
 #endif
 
 #include "MediaManager.h"
+#include "utils/JobManager.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -422,6 +420,9 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
         g_settings.Save();
       }
       break;
+    case XBMC_USEREVENT:
+      g_application.getApplicationMessenger().UserEvent(newEvent.user.code);
+      break;
   }
   return true;
 }
@@ -471,7 +472,6 @@ HRESULT CApplication::Create(HWND hWnd)
 {
   g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
-  g_advancedSettings.Initialize();
 
   m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
   g_Windowing.EnableSystemScreenSaver(false);
@@ -1192,7 +1192,6 @@ HRESULT CApplication::Initialize()
     g_guiSettings.SetString("network.subnet", "255.255.255.0");
     g_guiSettings.SetString("network.gateway", "192.168.0.1");
     g_guiSettings.SetString("network.dns", "192.168.0.1");
-    g_guiSettings.SetBool("servers.ftpserver", true);
     g_guiSettings.SetBool("servers.webserver", false);
     g_guiSettings.SetBool("locale.timeserver", false);
   }
@@ -1460,67 +1459,6 @@ void CApplication::StopWebServer(bool bWait)
       CZeroconf::GetInstance()->RemoveService("servers.webserver");
       CZeroconf::GetInstance()->RemoveService("servers.webapi");
     }
-  }
-#endif
-}
-
-void CApplication::StartFtpServer()
-{
-#ifdef HAS_FTP_SERVER
-  if ( g_guiSettings.GetBool("servers.ftpserver") && m_network.IsAvailable() )
-  {
-    CLog::Log(LOGNOTICE, "XBFileZilla: Starting...");
-    if (!m_pFileZilla)
-    {
-      CStdString xmlpath = "special://xbmc/system/";
-      // if user didn't upgrade properly,
-      // check whether UserData/FileZilla Server.xml exists
-      if (CFile::Exists(g_settings.GetUserDataItem("FileZilla Server.xml")))
-        xmlpath = g_settings.GetUserDataFolder();
-
-      // check file size and presence
-      CFile xml;
-      if (xml.Open(xmlpath+"FileZilla Server.xml") && xml.GetLength() > 0)
-      {
-        m_pFileZilla = new CXBFileZilla(_P(xmlpath));
-        m_pFileZilla->Start(false);
-      }
-      else
-      {
-        // 'FileZilla Server.xml' does not exist or is corrupt,
-        // falling back to ftp emergency recovery mode
-        CLog::Log(LOGNOTICE, "XBFileZilla: 'FileZilla Server.xml' is missing or is corrupt!");
-        CLog::Log(LOGNOTICE, "XBFileZilla: Starting ftp emergency recovery mode");
-        StartFtpEmergencyRecoveryMode();
-      }
-      xml.Close();
-    }
-  }
-#endif
-}
-
-void CApplication::StopFtpServer()
-{
-#ifdef HAS_FTP_SERVER
-  if (m_pFileZilla)
-  {
-    CLog::Log(LOGINFO, "XBFileZilla: Stopping...");
-
-    std::vector<SXFConnection> mConnections;
-    std::vector<SXFConnection>::iterator it;
-
-    m_pFileZilla->GetAllConnections(mConnections);
-
-    for(it = mConnections.begin();it != mConnections.end();it++)
-    {
-      m_pFileZilla->CloseConnection(it->mId);
-    }
-
-    m_pFileZilla->Stop();
-    delete m_pFileZilla;
-    m_pFileZilla = NULL;
-
-    CLog::Log(LOGINFO, "XBFileZilla: Stopped");
   }
 #endif
 }
@@ -1965,6 +1903,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_windowManager.AddMsgTarget(this);
   g_windowManager.AddMsgTarget(&g_playlistPlayer);
   g_windowManager.AddMsgTarget(&g_infoManager);
+  g_windowManager.AddMsgTarget(&g_fontManager);
   g_windowManager.SetCallback(*this);
   g_windowManager.Initialize();
   g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
@@ -2396,10 +2335,6 @@ void CApplication::Render()
   }
   g_graphicsContext.Lock();
 
-  // check if we need font reloading
-  if(g_fontManager.FontsNeedReloading())
-    g_fontManager.ReloadTTFFonts();
-
   if(!g_Windowing.BeginRender())
     return;
 
@@ -2436,17 +2371,13 @@ void CApplication::RenderMemoryStatus()
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
     CStdString profiling = CGUIControlProfiler::IsRunning() ? " (profiling)" : "";
-#ifdef __APPLE__
-    double dCPU = m_resourceCounter.GetCPUUsage();
-    info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
-              g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU, profiling.c_str());
-#elif !defined(_LINUX)
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
+#if !defined(_LINUX)
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
+              g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
-    CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", (int)(stat.dwAvailPhys/1024), (int)(stat.dwTotalPhys/1024),
               g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
 #endif
 
@@ -2966,6 +2897,8 @@ void CApplication::UpdateLCD()
 void CApplication::FrameMove()
 {
   MEASURE_FUNCTION;
+
+  CSingleLock lock(g_graphicsContext);
 
   // currently we calculate the repeat time (ie time from last similar keypress) just global as fps
   float frameTime = m_frameTime.GetElapsedSeconds();
@@ -3540,6 +3473,9 @@ void CApplication::Stop()
 {
   try
   {
+    // cancel any jobs from the jobmanager
+    CJobManager::GetInstance().CancelJobs();
+
 #ifdef HAS_WEB_SERVER
     if (m_pXbmcHttp)
     {
@@ -4576,11 +4512,6 @@ void CApplication::CheckShutdown()
   if (IsPlaying()) // is something playing?
     resetTimer = true;
 
-#ifdef HAS_FTP_SERVER
-  if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
-    resetTimer = true;
-#endif
-
   if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
     resetTimer = true;
 
@@ -5483,41 +5414,6 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
     return true;
   }
   return false;
-}
-
-void CApplication::StartFtpEmergencyRecoveryMode()
-{
-#ifdef HAS_FTP_SERVER
-  m_pFileZilla = new CXBFileZilla(NULL);
-  m_pFileZilla->Start();
-
-  // Default settings
-  m_pFileZilla->mSettings.SetMaxUsers(0);
-  m_pFileZilla->mSettings.SetWelcomeMessage("XBMC emergency recovery console FTP.");
-
-  // default user
-  CXFUser* pUser;
-  m_pFileZilla->AddUser("xbox", pUser);
-  pUser->SetPassword("xbox");
-  pUser->SetShortcutsEnabled(false);
-  pUser->SetUseRelativePaths(false);
-  pUser->SetBypassUserLimit(false);
-  pUser->SetUserLimit(0);
-  pUser->SetIPLimit(0);
-  pUser->AddDirectory("/", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS | XBDIR_HOME);
-  pUser->AddDirectory("C:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-  pUser->AddDirectory("D:\\", XBFILE_READ | XBDIR_LIST | XBDIR_SUBDIRS);
-  pUser->AddDirectory("E:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-  pUser->AddDirectory("Q:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-  //Add. also Drive F/G
-  if (CIoSupport::DriveExists('F')){
-    pUser->AddDirectory("F:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-  }
-  if (CIoSupport::DriveExists('G')){
-    pUser->AddDirectory("G:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-  }
-  pUser->CommitChanges();
-#endif
 }
 
 void CApplication::SaveCurrentFileSettings()

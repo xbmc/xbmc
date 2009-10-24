@@ -22,7 +22,7 @@
 #include "system.h"
 #include "LocalizeStrings.h"
 #include "MediaManager.h"
-#include "xbox/IoSupport.h"
+#include "utils/IoSupport.h"
 #include "URL.h"
 #include "Util.h"
 #ifdef _WIN32
@@ -42,9 +42,10 @@
 #include "tinyXML/tinyxml.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "Application.h"
 
 #ifdef __APPLE__
-#include "PosixMountProvider.h"
+#include "DarwinStorageProvider.h"
 #elif defined(_LINUX)
 #include "LinuxStorageProvider.h"
 #elif _WIN32
@@ -60,7 +61,7 @@ class CMediaManager g_mediaManager;
 CMediaManager::CMediaManager()
 {
 #ifdef __APPLE__
-  m_platformStorage = new CPosixMountProvider();
+  m_platformStorage = new CDarwinStorageProvider();
 #elif defined(_LINUX)
   m_platformStorage = new CLinuxStorageProvider();
 #elif _WIN32
@@ -439,9 +440,9 @@ bool CMediaManager::Eject(CStdString mountpath)
 
 void CMediaManager::ProcessEvents()
 {
-  if (m_platformStorage->PumpDriveChangeEvents())
+  if (m_platformStorage->PumpDriveChangeEvents(this))
   {
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REMOVED_MEDIA);
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
     g_windowManager.SendThreadMessage(msg);
   }
 }
@@ -449,4 +450,19 @@ void CMediaManager::ProcessEvents()
 std::vector<CStdString> CMediaManager::GetDiskUsage()
 {
   return m_platformStorage->GetDiskUsage();
+}
+
+void CMediaManager::OnStorageAdded(const CStdString &label, const CStdString &path)
+{
+  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13021), label);
+}
+
+void CMediaManager::OnStorageSafelyRemoved(const CStdString &label)
+{
+  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13023), label);
+}
+
+void CMediaManager::OnStorageUnsafelyRemoved(const CStdString &label)
+{
+  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13022), label);
 }

@@ -703,7 +703,6 @@ void CGUIBaseContainer::FreeResources()
   if (m_staticContent)
   { // free any static content
     Reset();
-    m_staticItems.clear();
   }
   m_scrollSpeed = 0;
 }

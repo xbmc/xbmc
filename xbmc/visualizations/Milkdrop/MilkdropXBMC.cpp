@@ -8,7 +8,10 @@
 CPlugin* g_plugin;
 char g_visName[512];
 
-char m_szPresetSave[256] = "Milkdrop";
+#define PRESETS_DIR "special://xbmc/visualisations/Milkdrop"
+#define CONFIG_FILE "special://profile/visualisations/Milkdrop.conf"
+
+char m_szPresetSave[256] = "";
 char g_packFolder[256] = "Milkdrop";
 
 extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio, const char *szSubModuleName)
@@ -108,7 +111,7 @@ void FindPresetPacks()
   int numPacks = 0;
   VisSetting setting10(VisSetting::SPIN, "Preset Pack");
   char searchFolder[255];
-  sprintf(searchFolder, "special://xbmc/visualisations/%s/*", g_packFolder);
+  sprintf(searchFolder, "%s/*", PRESETS_DIR);
 
   if( (hFile = _findfirst(searchFolder, &c_file )) != -1L )		// note: returns filename -without- path
   {
@@ -135,8 +138,8 @@ void FindPresetPacks()
       {
         setting10.AddEntry(szFilename);
 
-        char nameCmp[512];
-        sprintf(nameCmp, "%s/%s", g_packFolder, szFilename);
+        if(strcmp(m_szPresetSave, "") == 0)
+          strcpy(m_szPresetSave, szFilename);
 
         if (strcmpi(m_szPresetSave, szFilename) == 0)
         {
@@ -161,20 +164,12 @@ void LoadSettings()
 	CXmlDocument doc;
 
 	char szXMLFile[1024];
-  strcpy(szXMLFile,"special://xbmc/visualisations/");
-  strcat(szXMLFile,g_visName);
-  strcat(szXMLFile,".xml");
-  FILE *f = fopen(szXMLFile,"r");
-  if (!f)
-  {
-    /*strcpy(szXMLFile,"T:\\Visualisations\\");
-    strcat(szXMLFile,g_visName);
-    strcat(szXMLFile,".xml");*/
-  }
-  else
-    fclose(f);
+  strcpy(szXMLFile,CONFIG_FILE);
 
-	//strcpy(szXMLFile, "d:\\milkdrop.xml");
+  // update our settings structure
+  // setup our settings structure (passable to GUI)
+  m_vecSettings.clear();
+  m_uiVisElements = 0;
 
 	// Load the config file
 	if (doc.Load(szXMLFile) >= 0)
@@ -210,8 +205,7 @@ void LoadSettings()
         else        
 				{
 					// Normal folder
-					strcpy(g_plugin->m_szPresetDir,  "special://xbmc/visualisations/");
-          strcat(g_plugin->m_szPresetDir,  g_packFolder);
+					strcpy(g_plugin->m_szPresetDir,  PRESETS_DIR);
           strcat(g_plugin->m_szPresetDir,  "/");
 					strcat(g_plugin->m_szPresetDir,  nodeStr);
 					strcat(g_plugin->m_szPresetDir, "/");
@@ -322,13 +316,19 @@ void LoadSettings()
     }
 
     doc.Close();
+    FindPresetPacks();
   }
-  // update our settings structure
-  // setup our settings structure (passable to GUI)
-  m_vecSettings.clear();
-  m_uiVisElements = 0;
+  else
+  {
+    FindPresetPacks();
+    if(strcmp(m_szPresetSave,"") != 0)
+    {
+      strcat(g_plugin->m_szPresetDir, m_szPresetSave);
+      strcat(g_plugin->m_szPresetDir, "/");
+    }
+  }
 
-  FindPresetPacks();
+  g_plugin->UpdatePresetList();
 
   VisSetting setting(VisSetting::SPIN, "Automatic Blend Time");
   for (int i=0; i < 50; i++)
@@ -400,9 +400,7 @@ void LoadSettings()
 void SaveSettings()
 {
   char szXMLFile[1024];
-  strcpy(szXMLFile,"special://xbmc/visualisations/");
-  strcat(szXMLFile,g_visName);
-  strcat(szXMLFile,".xml");
+  strcpy(szXMLFile,CONFIG_FILE);
 
   WriteXML doc;
   if (!doc.Open(szXMLFile, "visualisation"))
@@ -515,8 +513,7 @@ extern "C" void UpdateSetting(int num, StructSetting*** sSet)
     else        
     {
       // Normal folder
-      strcpy(g_plugin->m_szPresetDir,  "special://xbmc/visualisations/");
-      strcat(g_plugin->m_szPresetDir,  g_packFolder);
+      strcpy(g_plugin->m_szPresetDir,  PRESETS_DIR);
       strcat(g_plugin->m_szPresetDir,  "/");
       strcat(g_plugin->m_szPresetDir,  setting.entry[setting.current]);
       strcat(g_plugin->m_szPresetDir, "/");

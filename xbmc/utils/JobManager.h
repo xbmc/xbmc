@@ -127,6 +127,13 @@ public:
    */
   void CancelJob(unsigned int jobID);
 
+  /*!
+   \brief Cancel all remaining jobs, preparing for shutdown
+   Should be called prior to destroying any objects that may be being used as callbacks
+   \sa CancelJob(), AddJob()
+   */
+  void CancelJobs();
+
 protected:
   friend class CJobWorker;
   friend class CJob;

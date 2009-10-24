@@ -271,8 +271,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_pSubtitleDemuxer = NULL;
   m_pInputStream = NULL;
 
-  m_tmLastSeek = time(NULL);
-
   m_hReadyEvent = CreateEvent(NULL, true, false, NULL);
 
   InitializeCriticalSection(&m_critStreamSection);
@@ -469,6 +467,7 @@ bool CDVDPlayer::OpenInputStream()
   }
 
   SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
+  SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
   m_clock.Discontinuity(CLOCK_DISC_FULL);
   m_dvd.Clear();
   m_errorCount = 0;
@@ -2142,7 +2141,6 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 
   m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, accurate, restore));
   SyncronizeDemuxer(100);
-  m_tmLastSeek = time(NULL);
 }
 
 bool CDVDPlayer::SeekScene(bool bPlus)
@@ -2220,7 +2218,6 @@ void CDVDPlayer::SeekPercentage(float iPercent)
     return;
 
   SeekTime((__int64)(iTotalTime * iPercent / 100));
-  m_tmLastSeek = time(NULL);
 }
 
 float CDVDPlayer::GetPercentage()
@@ -2357,7 +2354,6 @@ void CDVDPlayer::SeekTime(__int64 iTime)
 {
   m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, true, true, true));
   SyncronizeDemuxer(100);
-  m_tmLastSeek = time(NULL);
 }
 
 // return the time in milliseconds
@@ -3238,7 +3234,6 @@ int CDVDPlayer::SeekChapter(int iChapter)
     // Seek to the chapter.
     m_messenger.Put(new CDVDMsgPlayerSeekChapter(iChapter));
     SyncronizeDemuxer(100);
-    m_tmLastSeek = time(NULL);
   }
   else
   {

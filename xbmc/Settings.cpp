@@ -1010,13 +1010,6 @@ bool CSettings::LoadProfile(int index)
     CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
     g_langInfo.Load(strLangInfoPath);
 
-#ifdef _XBOX
-    CStdString strKeyboardLayoutConfigurationPath;
-    strKeyboardLayoutConfigurationPath.Format("special://xbmc/language/%s/keyboardmap.xml", strLanguage.c_str());
-    CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
-    g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
-#endif
-
     CStdString strLanguagePath;
     strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
 

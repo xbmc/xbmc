@@ -140,7 +140,7 @@ namespace PYXBMC
     };
 
     CStdString value;
-    if (!id || !PyGetUnicodeString(value, pValue, 1))
+    if (!id || !PyXBMCGetUnicodeString(value, pValue, 1))
     {
       PyErr_SetString(PyExc_ValueError, "Invalid id or value!");
       return NULL;
@@ -206,7 +206,7 @@ namespace PYXBMC
 
   void initSettings_Type()
   {
-    PyInitializeTypeObject(&Settings_Type);
+    PyXBMCInitializeTypeObject(&Settings_Type);
 
     Settings_Type.tp_name = (char*)"xbmc.Settings";
     Settings_Type.tp_basicsize = sizeof(Settings);

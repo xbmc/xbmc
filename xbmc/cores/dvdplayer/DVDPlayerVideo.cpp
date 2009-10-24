@@ -172,13 +172,15 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   //if adjust refreshrate is used, or if sync playback to display is on,
   //we try to calculate the framerate from the pts', because the codec fps
   //is not always correct
-  m_bGuessFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
+  m_bCalcFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
                       g_guiSettings.GetBool("videoplayer.adjustrefreshrate");
   
   m_fStableFrameRate = 0.0;
   m_iFrameRateCount = 0;
-  m_bAllowDrop = true;
-  
+  m_bAllowDrop = !m_bCalcFrameRate; //we start with not allowing drops to calculate the framerate
+  m_iFrameRateLength = 1;
+  m_iFrameRateErr = 0;
+
   if (hint.vfr)
     m_autosync = 1;
 
@@ -398,6 +400,11 @@ void CDVDPlayerVideo::Process()
       LeaveCriticalSection(&m_critCodecSection);
       
       m_pullupCorrection.Flush();
+      //we need to recalculate the framerate
+      //TODO: this needs to be set on a streamchange instead
+      m_iFrameRateLength = 1;
+      m_bAllowDrop = !m_bCalcFrameRate;
+      m_iFrameRateErr = 0;
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
@@ -711,7 +718,7 @@ void CDVDPlayerVideo::Flush()
   /* and any demux packet that has been taken out of queue need to */
   /* be disposed of before we flush */
   m_messageQueue.Flush();
-  m_messageQueue.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
+  m_messageQueue.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 1);
 }
 
 #ifdef HAS_VIDEO_PLAYBACK
@@ -899,7 +906,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   pts += m_pullupCorrection.Correction();
   
   //try to calculate the framerate
-  if (m_bGuessFrameRate)
+  if (m_bCalcFrameRate)
     CalcFrameRate();
   
   // signal to clock what our framerate is, it may want to adjust it's
@@ -966,16 +973,12 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   {
     //if we're calculating the framerate,
     //don't drop frames until we've calculated a stable framerate
-    if (m_bAllowDrop || !m_bGuessFrameRate)
+    if (m_bAllowDrop)
     {
       result |= EOS_VERYLATE;
       m_pullupCorrection.Flush(); //dropped frames mess up the pattern, so just flush it
     }
   }
-  else
-  {
-    m_bAllowDrop = false; //we're back in sync so don't drop frames
-  }                       //until we've calculated a good framerate again
 
   if( m_speed < 0 )
   {
@@ -1005,7 +1008,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     while(!m_bStop && m_dropbase < m_droptime)             m_dropbase += frametime;
     while(!m_bStop && m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
     
-    m_bAllowDrop = true;
     m_pullupCorrection.Flush();
   }
   else
@@ -1091,9 +1093,18 @@ int CDVDPlayerVideo::GetVideoBitrate()
   return (int)m_videoStats.GetBitrate();
 }
 
-#define MAXFRAMERATEDIFF 0.0005
+#define MAXFRAMERATEDIFF   0.0005
+#define MAXFRAMESERR    1000
+
 void CDVDPlayerVideo::CalcFrameRate()
 {
+  if (m_iFrameRateLength >= 128) //we've calculated the framerate long enough
+  {                              //it's probably correct now
+    m_fStableFrameRate = 0.0;
+    m_iFrameRateCount = 0;
+    return;
+  }
+      
   //see if m_pullupCorrection was able to detect a pattern in the timestamps
   //and is able to calculate the correct frame duration from it
   double frameduration = m_pullupCorrection.CalcFrameDuration();
@@ -1103,6 +1114,14 @@ void CDVDPlayerVideo::CalcFrameRate()
     //reset the stored framerates if no good framerate was detected
     m_fStableFrameRate = 0.0;
     m_iFrameRateCount = 0;
+    m_iFrameRateErr++;
+
+    if (m_iFrameRateErr == MAXFRAMESERR && m_iFrameRateLength == 1)
+    {
+      CLog::Log(LOGDEBUG,"%s counted %i frames without being able to calculate the framerate, giving up", __FUNCTION__, m_iFrameRateErr);
+      m_bAllowDrop = true;
+      m_iFrameRateLength = 128;
+    }
     return;
   }
 
@@ -1120,8 +1139,8 @@ void CDVDPlayerVideo::CalcFrameRate()
     m_fStableFrameRate += framerate; //store the calculated framerate
     m_iFrameRateCount++;
     
-    //if we've measured one second of calculated framerates,
-    if (m_iFrameRateCount >= MathUtils::round_int(framerate))
+    //if we've measured m_iFrameRateLength seconds of framerates,
+    if (m_iFrameRateCount >= MathUtils::round_int(framerate) * m_iFrameRateLength)
     {
       //store the calculated framerate if it differs too much from m_fFrameRate
       if (fabs(1.0 - (m_fFrameRate / (m_fStableFrameRate / m_iFrameRateCount))) > MAXFRAMERATEDIFF)
@@ -1130,6 +1149,7 @@ void CDVDPlayerVideo::CalcFrameRate()
       //reset the stored framerates
       m_fStableFrameRate = 0.0;
       m_iFrameRateCount = 0;
+      m_iFrameRateLength *= 2; //double the length we should measure framerates
       
       //we're allowed to drop frames because we calculated a good framerate
       m_bAllowDrop = true;
