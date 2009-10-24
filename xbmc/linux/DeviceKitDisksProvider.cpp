@@ -31,6 +31,7 @@ void CDeviceKitDiskDevice::Update()
     m_FileSystem  = properties["IdType"];
     m_isMounted   = properties["DeviceIsMounted"].Equals("true");
     m_isRemovable = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable");
+    m_Label       = properties["IdLabel"];
 
     m_PartitionSizeGiB = (atol(properties["PartitionSize"].c_str()) / 1024.0 / 1024.0 / 1024.0);
   }
@@ -241,7 +242,7 @@ void CDeviceKitDisksProvider::DeviceAdded(const char *object, IStorageEventsCall
     device->Mount();
 
   if (device->m_isMounted && callback)
-    callback->OnStorageAdded(device->m_MountPath, device->m_MountPath);
+    callback->OnStorageAdded(device->m_Label, device->m_MountPath);
 }
 
 void CDeviceKitDisksProvider::DeviceRemoved(const char *object, IStorageEventsCallback *callback)
@@ -252,7 +253,7 @@ void CDeviceKitDisksProvider::DeviceRemoved(const char *object, IStorageEventsCa
   if (device)
   {
     if (device->m_isMounted && callback)
-      callback->OnStorageUnsafelyRemoved(device->m_MountPath);
+      callback->OnStorageUnsafelyRemoved(device->m_Label);
 
     delete m_AvailableDevices[object];
     m_AvailableDevices.erase(object);
@@ -274,9 +275,9 @@ void CDeviceKitDisksProvider::DeviceChanged(const char *object, IStorageEventsCa
     bool mounted = device->m_isMounted;
     device->Update();
     if (!mounted && device->m_isMounted && callback)
-      callback->OnStorageAdded(device->m_MountPath, device->m_MountPath);
+      callback->OnStorageAdded(device->m_MountPath, device->m_Label);
     else if (mounted && !device->m_isMounted && callback)
-      callback->OnStorageSafelyRemoved(device->m_MountPath);
+      callback->OnStorageSafelyRemoved(device->m_Label);
   }
 }
 
