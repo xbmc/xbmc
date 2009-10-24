@@ -44,7 +44,6 @@
 #include "lib/libGoAhead/XBMChttp.h"
 #endif
 #include "Crc32.h"
-#include "xbox/IoSupport.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "utils/log.h"
 #include "LocalizeStrings.h"
@@ -545,8 +544,8 @@ bool CAddonUtils::GetCondVisibility(const char *condition)
   if (condition == NULL)
     return false;
 
-  DWORD dwId = m_gWindowManager.GetTopMostModalDialogID();
-  if (dwId == WINDOW_INVALID) dwId = m_gWindowManager.GetActiveWindow();
+  DWORD dwId = g_windowManager.GetTopMostModalDialogID();
+  if (dwId == WINDOW_INVALID) dwId = g_windowManager.GetActiveWindow();
 
   int ret = g_infoManager.TranslateString(condition);
   return g_infoManager.GetBool(ret,dwId);
@@ -561,7 +560,7 @@ bool CAddonUtils::CreateDirectory(const char *dir)
       return false;
     }
   }
-    
+
   return true;
 }
 
@@ -695,7 +694,7 @@ demux_packet* CAddonUtils::AllocateDemuxPacket(int iDataSize)
 bool CAddonUtils::OpenDialogOK(const char* heading, const char* line1, const char* line2, const char* line3)
 {
   const DWORD dWindow = WINDOW_DIALOG_OK;
-  CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(dWindow);
+  CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(dWindow);
   if (!pDialog) return false;
 
   if (heading != NULL ) pDialog->SetHeading(heading);
@@ -704,7 +703,7 @@ bool CAddonUtils::OpenDialogOK(const char* heading, const char* line1, const cha
   if (line3 != NULL )   pDialog->SetLine(2, line3);
 
   //send message and wait for user input
-  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, m_gWindowManager.GetActiveWindow()};
+  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, g_windowManager.GetActiveWindow()};
   g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
   return pDialog->IsConfirmed();
@@ -715,7 +714,7 @@ bool CAddonUtils::OpenDialogYesNo(const char* heading, const char* line1, const 
 {
   const DWORD dWindow = WINDOW_DIALOG_YES_NO;
 
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(dWindow);
+  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(dWindow);
   if (!pDialog) return false;
 
   if (heading != NULL ) pDialog->SetHeading(heading);
@@ -730,7 +729,7 @@ bool CAddonUtils::OpenDialogYesNo(const char* heading, const char* line1, const 
     pDialog->SetChoice(1,yeslabel);
 
   //send message and wait for user input
-  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, m_gWindowManager.GetActiveWindow()};
+  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, g_windowManager.GetActiveWindow()};
   g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
   return pDialog->IsConfirmed();
@@ -816,7 +815,7 @@ char* CAddonUtils::OpenDialogNumeric(int type, const char* heading, const char* 
 
 char* CAddonUtils::OpenDialogKeyboard(const char* heading, const char* default_value, bool hidden)
 {
-  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 
   if (!pKeyboard)
     return NULL;
@@ -835,7 +834,7 @@ char* CAddonUtils::OpenDialogKeyboard(const char* heading, const char* default_v
     pKeyboard->SetText("");
 
   // do this using a thread message to avoid render() conflicts
-  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, m_gWindowManager.GetActiveWindow()};
+  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, g_windowManager.GetActiveWindow()};
   g_application.getApplicationMessenger().SendMessage(tMsg, true);
   pKeyboard->Close();
 
@@ -857,7 +856,7 @@ char* CAddonUtils::OpenDialogKeyboard(const char* heading, const char* default_v
 int CAddonUtils::OpenDialogSelect(const char* heading, addon_string_list_s* list)
 {
   const DWORD dWindow = WINDOW_DIALOG_SELECT;
-  CGUIDialogSelect* pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(dWindow);
+  CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(dWindow);
   if (!pDialog) return NULL;
 
   pDialog->Reset();
@@ -874,7 +873,7 @@ int CAddonUtils::OpenDialogSelect(const char* heading, addon_string_list_s* list
   }
 
   //send message and wait for user input
-  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, m_gWindowManager.GetActiveWindow()};
+  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, g_windowManager.GetActiveWindow()};
   g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
   return pDialog->GetSelectedLabel();
@@ -882,7 +881,7 @@ int CAddonUtils::OpenDialogSelect(const char* heading, addon_string_list_s* list
 
 bool CAddonUtils::ProgressDialogCreate(const char* heading, const char* line1, const char* line2, const char* line3)
 {
-  CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* pDialog= (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (!pDialog) return true;
 
   if (heading != NULL ) pDialog->SetHeading(heading);
@@ -897,7 +896,7 @@ bool CAddonUtils::ProgressDialogCreate(const char* heading, const char* line1, c
 
 void CAddonUtils::ProgressDialogUpdate(int percent, const char* line1, const char* line2, const char* line3)
 {
-  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (!pDialog) return;
 
   if (percent >= 0 && percent <= 100)
@@ -920,7 +919,7 @@ void CAddonUtils::ProgressDialogUpdate(int percent, const char* line1, const cha
 bool CAddonUtils::ProgressDialogIsCanceled()
 {
   bool canceled = false;
-  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (!pDialog) return canceled;
 
   canceled = pDialog->IsCanceled();
@@ -930,7 +929,7 @@ bool CAddonUtils::ProgressDialogIsCanceled()
 
 void CAddonUtils::ProgressDialogClose()
 {
-  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (!pDialog) return;
 
   pDialog->Close();
@@ -962,7 +961,7 @@ void CAddonUtils::GUIUnlock()
 int CAddonUtils::GUIGetCurrentWindowId()
 {
   GUILock();
-  DWORD dwId = m_gWindowManager.GetActiveWindow();
+  DWORD dwId = g_windowManager.GetActiveWindow();
   GUIUnlock();
   return dwId;
 }
@@ -970,7 +969,7 @@ int CAddonUtils::GUIGetCurrentWindowId()
 int CAddonUtils::GUIGetCurrentWindowDialogId()
 {
   GUILock();
-  DWORD dwId = m_gWindowManager.GetTopMostModalDialogID();
+  DWORD dwId = g_windowManager.GetTopMostModalDialogID();
   GUIUnlock();
   return dwId;
 }

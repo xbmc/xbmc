@@ -304,7 +304,7 @@ bool CGUIDialogAddonBrowser::ShowAndGetAddons(const AddonType &type, const bool 
   if (!browser) return false;
 
   // Add it to our window manager
-  m_gWindowManager.AddUniqueInstance(browser);
+  g_windowManager.AddUniqueInstance(browser);
 
   // determine the correct heading
   CStdString heading;
@@ -324,7 +324,7 @@ bool CGUIDialogAddonBrowser::ShowAndGetAddons(const AddonType &type, const bool 
   browser->DoModal();
   bool confirmed = browser->IsConfirmed();
 
-  m_gWindowManager.Remove(browser->GetID());
+  g_windowManager.Remove(browser->GetID());
   delete browser;
   return confirmed;
 }
@@ -342,7 +342,7 @@ void CGUIDialogAddonBrowser::OnGetAddons(const AddonType &type)
   if (!browser) return;
 
   // Add it to our window manager
-  m_gWindowManager.AddUniqueInstance(browser);
+  g_windowManager.AddUniqueInstance(browser);
 
   // present dialog with available addons
   if (ShowAndGetAddons(type, false))
@@ -365,7 +365,7 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
   if (m_getAddons)
     return true;
 
-  CGUIDialogContextMenu* pMenu = (CGUIDialogContextMenu*)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  CGUIDialogContextMenu* pMenu = (CGUIDialogContextMenu*)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu)
     return false;
 

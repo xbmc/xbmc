@@ -113,7 +113,7 @@ bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
         CFileItemPtr pItemGroup   = m_channelGroupItems->Get(m_iSelectedGroup);
 
         // prompt user for confirmation of channel record
-        CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+        CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
 
         if (pDialog)
         {

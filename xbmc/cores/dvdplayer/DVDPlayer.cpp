@@ -42,6 +42,7 @@
 #include "Util.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogFullScreenInfo.h"
 #include "Application.h"
 #include "DVDPerformanceCounter.h"
 #include "FileSystem/cdioSupport.h"
@@ -2162,7 +2163,7 @@ bool CDVDPlayer::SeekScene(bool bPlus)
     /*
      * Seeking is flushed and inaccurate, just like Seek()
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, !bPlus, true, false, false)); 
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, !bPlus, true, false, false));
     SyncronizeDemuxer(100);
     return true;
   }
@@ -3076,7 +3077,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         g_infoManager.SetDisplayAfterSeek();
         if (g_guiSettings.GetBool("pvrmenu.infoswitch"))
         {
-          CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
+          CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
           if (pDialog)
           {
             if (g_guiSettings.GetBool("pvrmenu.infotimeout"))
@@ -3096,7 +3097,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         g_infoManager.SetDisplayAfterSeek();
         if (g_guiSettings.GetBool("pvrmenu.infoswitch"))
         {
-          CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
+          CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
           if (pDialog)
           {
             if (g_guiSettings.GetBool("pvrmenu.infotimeout"))
@@ -3117,7 +3118,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         g_infoManager.SetDisplayAfterSeek();
         if (g_guiSettings.GetBool("pvrmenu.infoswitch"))
         {
-          CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
+          CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
           if (pDialog)
           {
             if (g_guiSettings.GetBool("pvrmenu.infotimeout"))

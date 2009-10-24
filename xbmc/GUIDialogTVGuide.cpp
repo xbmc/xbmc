@@ -129,7 +129,7 @@ void CGUIDialogTVGuide::ShowInfo(int item)
   CFileItemPtr pItem = m_vecItems->Get(item);
 
   /* Load programme info dialog */
-  CGUIDialogTVEPGProgInfo* pDlgInfo = (CGUIDialogTVEPGProgInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_INFO);
+  CGUIDialogTVEPGProgInfo* pDlgInfo = (CGUIDialogTVEPGProgInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_INFO);
 
   if (!pDlgInfo)
     return;

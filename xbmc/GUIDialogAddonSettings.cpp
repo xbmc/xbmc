@@ -29,6 +29,7 @@
 #include "GUIDialogOK.h"
 #include "Util.h"
 #include "MediaManager.h"
+#include "GUILabelControl.h"
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControlEx.h"
 #include "GUIImage.h"
@@ -73,14 +74,6 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-    case GUI_MSG_WINDOW_INIT:
-    {
-      CGUIDialogBoxBase::OnMessage(message);
-      FreeControls();
-      CreateControls();
-      return true;
-    }
-
     case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -111,6 +104,13 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
   return CGUIDialogBoxBase::OnMessage(message);
 }
 
+void CGUIDialogAddonSettings::OnInitWindow()
+{
+  FreeControls();
+  CreateControls();
+  CGUIDialogBoxBase::OnInitWindow();
+}
+
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
 void CGUIDialogAddonSettings::ShowAndGetInput(CURL& url)
 {
@@ -120,7 +120,7 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CURL& url)
   CAddon::LoadAddonStrings(url);
 
   // Create the dialog
-  CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+  CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
 
   CStdString heading;
   heading = m_url.GetFileName();
@@ -167,7 +167,7 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CAddon& addon)
   CAddon::LoadAddonStrings(m_url);
 
   // Create the dialog
-  CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+  CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
 
   // Set the heading
   CStdString heading;
@@ -202,7 +202,7 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CAddon& addon)
 void CGUIDialogAddonSettings::ShowAndGetInput(SScraperInfo& info)
 {
   // Create the dialog
-  CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+  CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
 
   pDialog->m_settings = info.settings;
   CStdString heading;
@@ -237,7 +237,7 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CStdString& path)
   g_localizeStringsTemp.Load(pathToLanguageFile, pathToFallbackLanguageFile);
 
   // Create the dialog
-  CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+  CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
 
   pDialog->m_strHeading = CUtil::GetFileName(path);
   pDialog->m_strHeading.Format("$LOCALIZE[1049] - %s", pDialog->m_strHeading.c_str());
@@ -385,8 +385,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           if (setting->Attribute("default"))
           {
             CStdString action = setting->Attribute("default");
-            CStdString url;
-            m_url.GetURL(url);
+            CStdString url = m_url.Get();
             // replace $CWD with the url of plugin
             action.Replace("$CWD", url);
             if (option)
@@ -492,8 +491,7 @@ void CGUIDialogAddonSettings::CreateControls()
 
   // Create our base path, used for type "fileenum" settings
   CStdString basepath;
-  m_url.GetURL(basepath);
-  basepath = CPluginDirectory::TranslatePluginDirectory(basepath);
+  basepath = CPluginDirectory::TranslatePluginDirectory(m_url.Get());
 
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;
@@ -823,4 +821,3 @@ void CGUIDialogAddonSettings::SetDefaults()
 }
 
 CURL CGUIDialogAddonSettings::m_url;
-

@@ -27,6 +27,7 @@
 #include "GUIDialogEpgScan.h"
 #include "GUIWindowManager.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 
@@ -82,7 +83,7 @@ CTVEPGInfoTag *cPVREpg::AddInfoTag(CTVEPGInfoTag *Tag)
 
 void cPVREpg::DelInfoTag(CTVEPGInfoTag *tag)
 {
-  if (tag->Epg == this) 
+  if (tag->Epg == this)
   {
     for (unsigned int i = 0; i < tags.size(); i++)
     {
@@ -160,13 +161,13 @@ const CTVEPGInfoTag *cPVREpg::GetInfoTagNext(void) const
 
 const CTVEPGInfoTag *cPVREpg::GetInfoTag(long uniqueID, CDateTime StartTime) const
 {
-  
+
   return NULL;
 }
 
 const CTVEPGInfoTag *cPVREpg::GetInfoTagAround(CDateTime Time) const
 {
-  
+
   return NULL;
 }
 
@@ -178,10 +179,10 @@ bool cPVREpg::Add(const PVR_PROGINFO *data, cPVREpg *Epg)
 
     long      uniqueBroadcastID = data->uid;
     CDateTime StartTime         = CDateTime((time_t)data->starttime);
-    
+
     InfoTag = (CTVEPGInfoTag *)Epg->GetInfoTag(uniqueBroadcastID, StartTime);
     CTVEPGInfoTag *newInfoTag = NULL;
-    if (!InfoTag) 
+    if (!InfoTag)
     {
       InfoTag = newInfoTag = new CTVEPGInfoTag(uniqueBroadcastID);
     }
@@ -199,15 +200,15 @@ bool cPVREpg::Add(const PVR_PROGINFO *data, cPVREpg *Epg)
       InfoTag->SetDuration(CDateTimeSpan(0, 0, duration / 60, duration % 60));
       InfoTag->SetChannelID(Epg->ChannelID());
       InfoTag->SetChannel(Epg->m_Channel);
-  
+
       InfoTag->m_strChannel = Epg->m_Channel->Name();
       InfoTag->m_channelNum = Epg->m_Channel->Number();
       InfoTag->m_isRadio    = Epg->m_Channel->IsRadio();
       InfoTag->m_IconPath   = Epg->m_Channel->Icon();
-        
+
       if (newInfoTag)
         Epg->AddInfoTag(newInfoTag);
-      
+
       return true;
     }
   }
@@ -234,9 +235,9 @@ cPVREpgsLock::~cPVREpgsLock()
   cPVREpgs::m_epgs.m_locked--;
 }
 
-bool cPVREpgsLock::Locked(void) 
-{ 
-  return cPVREpgs::m_epgs.m_locked > 1 ? true : false; 
+bool cPVREpgsLock::Locked(void)
+{
+  return cPVREpgs::m_epgs.m_locked > 1 ? true : false;
 }
 
 // --- cPVREpgs ---------------------------------------------------------------
@@ -251,13 +252,13 @@ const cPVREpgs *cPVREpgs::EPGs(cPVREpgsLock &PVREpgsLock)
 
 void cPVREpgs::Cleanup(void)
 {
-  DWORD now = timeGetTime();
-  if (now - m_lastCleanup > 3600) 
+  DWORD now = CTimeUtils::GetTimeMS();
+  if (now - m_lastCleanup > 3600)
   {
     CLog::Log(LOGNOTICE, "cPVREpgs: cleaning up epg data");
     cPVREpgsLock EpgsLock(true);
     cPVREpgs *s = (cPVREpgs *)EPGs(EpgsLock);
-    if (s) 
+    if (s)
     {
       for (unsigned int i = 0; i < s->size(); i++)
         s->at(i).Cleanup(CDateTime::GetCurrentDateTime());
@@ -270,7 +271,7 @@ bool cPVREpgs::ClearAll(void)
 {
   cPVREpgsLock EpgsLock(true);
   cPVREpgs *s = (cPVREpgs *)EPGs(EpgsLock);
-  if (s) 
+  if (s)
   {
     for (unsigned int i = 0; i < PVRTimers.size(); ++i)
       PVRTimers[i].SetEpg(NULL);
@@ -285,7 +286,7 @@ bool cPVREpgs::ClearChannel(long ChannelID)
 {
   cPVREpgsLock EpgsLock(true);
   cPVREpgs *s = (cPVREpgs *)EPGs(EpgsLock);
-  if (s) 
+  if (s)
   {
     for (unsigned int i = 0; i < s->size(); i++)
     {
@@ -300,7 +301,7 @@ bool cPVREpgs::ClearChannel(long ChannelID)
 }
 
 bool cPVREpgs::Load()
-{ 
+{
   InitializeCriticalSection(&m_epgs.m_critSection);
   m_epgs.m_locked = 0;
   return Update(false);
@@ -313,10 +314,10 @@ void cPVREpgs::Process()
   cPVREpgs *s = (cPVREpgs *)EPGs(EpgsLock);
   if (s)
   {
-    CGUIDialogEpgScan *scanner = (CGUIDialogEpgScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_EPG_SCAN);
+    CGUIDialogEpgScan *scanner = (CGUIDialogEpgScan *)g_windowManager.GetWindow(WINDOW_DIALOG_EPG_SCAN);
     scanner->Show();
     int channelcount = PVRChannelsTV.size() + PVRChannelsRadio.size();
-  
+
     time_t start;
     time_t end;
     CDateTime::GetCurrentDateTime().GetAsTime(start);
@@ -330,10 +331,10 @@ void cPVREpgs::Process()
       scanner->SetTitle(PVRChannelsTV[i].Name());
       scanner->UpdateState();
       cPVREpg *p = s->AddEPG(PVRChannelsTV[i].ChannelID());
-      if (p) 
+      if (p)
       {
         PVR_ERROR err = clients->find(PVRChannelsTV[i].ClientID())->second->GetEPGForChannel(PVRChannelsTV[i].ClientNumber(), p, start, end);
-        if (err == PVR_ERROR_NO_ERROR) 
+        if (err == PVR_ERROR_NO_ERROR)
         {
           // Initialize the channels' schedule pointers, so that the first WhatsOn menu will come up faster:
           s->GetEPG(&PVRChannelsTV[i]);
@@ -347,10 +348,10 @@ void cPVREpgs::Process()
       scanner->SetTitle(PVRChannelsRadio[i].Name());
       scanner->UpdateState();
       cPVREpg *p = s->AddEPG(PVRChannelsRadio[i].ChannelID());
-      if (p) 
+      if (p)
       {
         PVR_ERROR err = clients->find(PVRChannelsRadio[i].ClientID())->second->GetEPGForChannel(PVRChannelsRadio[i].ClientNumber(), p, start, end);
-        if (err == PVR_ERROR_NO_ERROR) 
+        if (err == PVR_ERROR_NO_ERROR)
         {
           // Initialize the channels' schedule pointers, so that the first WhatsOn menu will come up faster:
           s->GetEPG(&PVRChannelsRadio[i]);
@@ -363,7 +364,7 @@ void cPVREpgs::Process()
 
 bool cPVREpgs::Update(bool Wait)
 {
-  if (Wait) 
+  if (Wait)
   {
     m_epgs.Process();
     return true;
@@ -390,9 +391,9 @@ int cPVREpgs::GetEPGAll(CFileItemList* results, bool radio)
     {
       if (ch->at(i).m_hide)
         continue;
-      
+
       const cPVREpg *Epg = s->GetEPG(&ch->at(i), true);
-        
+
       const vector<CTVEPGInfoTag> *ch_epg = Epg->InfoTags();
 
 
@@ -491,7 +492,7 @@ int cPVREpgs::GetEPGNext(CFileItemList* results, bool radio)
 cPVREpg *cPVREpgs::AddEPG(long ChannelID)
 {
   cPVREpg *p = (cPVREpg *)GetEPG(ChannelID);
-  if (!p) 
+  if (!p)
   {
     p = new cPVREpg(ChannelID);
     Add(p);
@@ -524,7 +525,7 @@ const cPVREpg *cPVREpgs::GetEPG(const cPVRChannelInfoTag *Channel, bool AddIfMis
   if (!Channel->m_Epg)
      Channel->m_Epg = &DummyEPG;
 
-  if (Channel->m_Epg == &DummyEPG && AddIfMissing) 
+  if (Channel->m_Epg == &DummyEPG && AddIfMissing)
   {
     cPVREpg *Epg = new cPVREpg(Channel->ChannelID());
     ((cPVREpgs *)this)->Add(Epg);

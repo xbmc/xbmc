@@ -112,7 +112,7 @@ bool CGUIDialogTVEPGProgInfo::OnMessage(CGUIMessage& message)
           if (m_progItem->GetTVEPGInfoTag()->m_isRecording == false)
           {
             // prompt user for confirmation of channel record
-            CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+            CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
 
             if (pDialog)
             {

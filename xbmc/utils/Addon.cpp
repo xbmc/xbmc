@@ -77,7 +77,7 @@ void CAddon::LoadAddonStrings(const CURL &url)
     CUtil::AddFileToFolder(pathToAddon, url.GetFileName(), pathToAddon);
   }
   else
-    url.GetURL(pathToAddon);
+    pathToAddon = url.Get();
 
   // Path where the language strings reside
   CStdString pathToLanguageFile = pathToAddon;

@@ -41,6 +41,9 @@ public:
   void SetSettings(CAddonSettings settings) { m_settings = settings; };
   CAddonSettings GetSettings() { return m_settings; };
 
+protected:
+ 	virtual void OnInitWindow();
+
 private:
   void CreateControls();
   void FreeControls();
@@ -58,4 +61,3 @@ private:
 };
 
 #endif
-
