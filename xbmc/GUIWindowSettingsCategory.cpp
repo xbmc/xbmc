@@ -314,6 +314,21 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       return true;
     }
     break;
+  case GUI_MSG_NOTIFY_ALL:
+    {
+      if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
+      {
+        // Cancel delayed setting - it's only used for res changing anyway
+        m_delayedSetting = NULL;
+        if (IsActive() && g_guiSettings.GetInt("videoscreen.resolution") != g_graphicsContext.GetVideoResolution())
+        {
+          g_guiSettings.SetInt("videoscreen.resolution", g_graphicsContext.GetVideoResolution());
+          CreateSettings();
+        }
+        return true;
+      }
+    }
+    break;
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_delayedSetting = NULL;
@@ -2071,9 +2086,9 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     bool cancelled = false;
     if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
     {
-      g_guiSettings.SetInt("videoscreen.resolution", lastRes);
-      g_graphicsContext.SetVideoResolution(lastRes);
       g_guiSettings.m_LookAndFeelResolution = lastRes;
+      g_graphicsContext.SetVideoResolution(lastRes);
+      g_guiSettings.SetInt("videoscreen.resolution", lastRes);
     }
   }
   else if (strSetting.Equals("videoscreen.vsync"))
