@@ -840,48 +840,6 @@ int CPVRManager::GetPlayingGroup()
   return m_CurrentGroupID;
 }
 
-void CPVRManager::SyncInfo()
-{
-  PVRRecordings.GetNumRecordings() > 0 ? m_hasRecordings = true : m_hasRecordings = false;
-  PVRTimers.GetNumTimers()     > 0 ? m_hasTimers     = true : m_hasTimers = false;
-  m_isRecording = false;
-
-  if (m_hasTimers)
-  {
-    cPVRTimerInfoTag *nextRec = PVRTimers.GetNextActiveTimer();
-
-    m_nextRecordingTitle    = nextRec->Title();
-    m_nextRecordingChannel  = PVRChannelsTV.GetNameForChannel(nextRec->Number());
-    m_nextRecordingDateTime = nextRec->Start().GetAsLocalizedDateTime(false, false);
-
-    if (nextRec->IsRecording() == true)
-    {
-      m_isRecording = true;
-      CLog::Log(LOGDEBUG, "%s - PVR: next timer is currently recording", __FUNCTION__);
-    }
-    else
-    {
-      m_isRecording = false;
-    }
-  }
-
-  if (m_isRecording)
-  {
-    m_nowRecordingTitle = m_nextRecordingTitle;
-    m_nowRecordingDateTime = m_nextRecordingDateTime;
-    m_nowRecordingChannel = m_nextRecordingChannel;
-    CLog::Log(LOGDEBUG, "%s - PVR: data of active recording is used: '%s', '%s', '%s'", __FUNCTION__,
-                        m_nowRecordingTitle.c_str(),
-                        m_nextRecordingDateTime.c_str(),
-                        m_nextRecordingChannel.c_str());
-  }
-  else
-  {
-    m_nowRecordingTitle.clear();
-    m_nowRecordingDateTime.clear();
-    m_nowRecordingChannel.clear();
-  }
-}
 
 
 
@@ -984,6 +942,54 @@ void CPVRManager::Process()
 /*************************************************************/
 /** GUIInfoManager FUNCTIONS                                **/
 /*************************************************************/
+
+/********************************************************************
+/* CPVRManager SyncInfo
+/*
+/* Synchronize InfoManager related stuff
+/********************************************************************/
+void CPVRManager::SyncInfo()
+{
+  PVRRecordings.GetNumRecordings() > 0 ? m_hasRecordings = true : m_hasRecordings = false;
+  PVRTimers.GetNumTimers()         > 0 ? m_hasTimers     = true : m_hasTimers = false;
+  m_isRecording = false;
+
+  if (m_hasTimers)
+  {
+    cPVRTimerInfoTag *nextRec = PVRTimers.GetNextActiveTimer();
+
+    m_nextRecordingTitle    = nextRec->Title();
+    m_nextRecordingChannel  = PVRChannelsTV.GetNameForChannel(nextRec->Number());
+    m_nextRecordingDateTime = nextRec->Start().GetAsLocalizedDateTime(false, false);
+
+    if (nextRec->IsRecording() == true)
+    {
+      m_isRecording = true;
+      CLog::Log(LOGDEBUG, "%s - PVR: next timer is currently recording", __FUNCTION__);
+    }
+    else
+    {
+      m_isRecording = false;
+    }
+  }
+
+  if (m_isRecording)
+  {
+    m_nowRecordingTitle = m_nextRecordingTitle;
+    m_nowRecordingDateTime = m_nextRecordingDateTime;
+    m_nowRecordingChannel = m_nextRecordingChannel;
+    CLog::Log(LOGDEBUG, "%s - PVR: data of active recording is used: '%s', '%s', '%s'", __FUNCTION__,
+                        m_nowRecordingTitle.c_str(),
+                        m_nextRecordingDateTime.c_str(),
+                        m_nextRecordingChannel.c_str());
+  }
+  else
+  {
+    m_nowRecordingTitle.clear();
+    m_nowRecordingDateTime.clear();
+    m_nowRecordingChannel.clear();
+  }
+}
 
 /********************************************************************
 /* CPVRManager TranslateCharInfo

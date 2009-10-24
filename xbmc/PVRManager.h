@@ -83,45 +83,28 @@ public:
   CPVRManager();
   ~CPVRManager();
 
+  /*--- Startup functions ---*/
   void Start();
   void Stop();
-  bool LoadClients();
-  void GetClientProperties(); // call GetClientProperties(long clientID) for each client connected
-  void GetClientProperties(long clientID); // request the PVR_SERVERPROPS struct from each client
-  virtual void Process();
+
+  /*--- External Client access functions ---*/
   unsigned long GetFirstClientID();
   CLIENTMAP* Clients() { return &m_clients; }
   CTVDatabase *GetTVDatabase() { return &m_database; }
+
+  /*--- Addon related functions ---*/
   bool RequestRestart(const ADDON::CAddon* addon, bool datachanged);
   bool RequestRemoval(const ADDON::CAddon* addon);
   ADDON_STATUS SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
-  void	      OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
-  bool HasTimer() { return m_hasTimers;  }
-  bool IsRecording() { return m_isRecording; }
-  int GetGroupList(CFileItemList* results);
-  void AddGroup(const CStdString &newname);
-  bool RenameGroup(unsigned int GroupId, const CStdString &newname);
-  bool DeleteGroup(unsigned int GroupId);
-  bool ChannelToGroup(unsigned int number, unsigned int GroupId, bool radio = false);
-  int GetPrevGroupID(int current_group_id);
-  int GetNextGroupID(int current_group_id);
-  CStdString GetGroupName(int GroupId);
-  int GetFirstChannelForGroupID(int GroupId, bool radio = false);
-  void SetPlayingGroup(int GroupId);
-  int GetPlayingGroup();
-  void                SyncInfo(); // synchronize InfoManager related stuff
+  void OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
 
-
-
-
-
-
-  /* GUIInfoManager functions */
+  /*--- GUIInfoManager functions ---*/
+  void SyncInfo();
   const char* TranslateCharInfo(DWORD dwInfo);
   int TranslateIntInfo(DWORD dwInfo);
   bool TranslateBoolInfo(DWORD dwInfo);
 
-  /* General functions */
+  /*--- General functions ---*/
   bool IsPlayingTV();
   bool IsPlayingRadio();
   bool IsPlayingRecording();
@@ -132,11 +115,13 @@ public:
   bool HaveActiveClients();
   int GetPreviousChannel();
   bool CanInstantRecording();
+  bool HasTimer() { return m_hasTimers;  }
+  bool IsRecording() { return m_isRecording; }
   bool IsRecordingOnPlayingChannel();
   bool StartRecordingOnPlayingChannel(bool bOnOff);
   void SetCurrentPlayingProgram(CFileItem& item);
 
-  /* Stream reading functions */
+  /*--- Stream reading functions ---*/
   bool OpenLiveStream(unsigned int channel, bool radio = false);
   bool OpenRecordedStream(unsigned int recording);
   void CloseStream();
@@ -153,7 +138,7 @@ public:
   int GetTotalTime();
   int GetStartTime();
 
-  /* Stream demux functions */
+  /*--- Stream demux functions ---*/
   bool OpenDemux(PVRDEMUXHANDLE handle);
   void DisposeDemux();
   void ResetDemux();
@@ -164,19 +149,29 @@ public:
   bool SeekDemuxTime(int time, bool backwords, double* startpts);
   int GetDemuxStreamLength();
 
+
+
+/// >>>>> NEED REWORK
+  int GetGroupList(CFileItemList* results);
+  void AddGroup(const CStdString &newname);
+  bool RenameGroup(unsigned int GroupId, const CStdString &newname);
+  bool DeleteGroup(unsigned int GroupId);
+  bool ChannelToGroup(unsigned int number, unsigned int GroupId, bool radio = false);
+  int GetPrevGroupID(int current_group_id);
+  int GetNextGroupID(int current_group_id);
+  CStdString GetGroupName(int GroupId);
+  int GetFirstChannelForGroupID(int GroupId, bool radio = false);
+  void SetPlayingGroup(int GroupId);
+  int GetPlayingGroup();
+
 protected:
+  virtual void Process();
 
 private:
-
-
-  int                 m_CurrentChannelID;
-  int                 m_CurrentGroupID;
-
-  CHANNELGROUPS_DATA  m_channel_group;
-
-
-
-
+  /*--- Handling functions ---*/
+  bool LoadClients();
+  void GetClientProperties();                   /* call GetClientProperties(long clientID) for each client connected */
+  void GetClientProperties(long clientID);      /* request the PVR_SERVERPROPS struct from each client */
 
   /*--- General PVRManager data ---*/
   CLIENTMAP           m_clients;                /* pointer to each enabled client's interface */
@@ -213,7 +208,7 @@ private:
   /*--- Previous Channel data ---*/
   int                 m_PreviousChannel[2];
   int                 m_PreviousChannelIndex;
-  
+
   /*--- Stream playback data ---*/
   CFileItem          *m_currentPlayingChannel;    /* The current playing channel or NULL */
   CFileItem          *m_currentPlayingRecording;  /* The current playing recording or NULL */
@@ -228,6 +223,14 @@ private:
   CPVRTimeshiftRcvr  *m_TimeshiftReceiver;        /* The Thread based Receiver to fill buffer file */
   __int64             m_timeshiftCurrWrapAround;  /* Bytes readed during current wrap around */
   __int64             m_timeshiftLastWrapAround;  /* Bytes readed during last wrap around */
+
+
+
+/// >>>>> NEED REWORK
+  int                 m_CurrentChannelID;
+  int                 m_CurrentGroupID;
+
+  CHANNELGROUPS_DATA  m_channel_group;
 };
 
 extern CPVRManager g_PVRManager;

@@ -376,12 +376,12 @@ void cPVRChannels::MoveChannel(unsigned int oldindex, unsigned int newindex)
     {
       CStdString path;
       at(i).SetNumber(i+1);
-    
+
       if (!m_bRadio)
         path.Format("pvr://channelstv/%i.ts", at(i).Number());
       else
         path.Format("pvr://channelsradio/%i.ts", at(i).Number());
-      
+
       at(i).SetPath(path);
       database->UpdateDBChannel(at(i));
     }
@@ -524,7 +524,7 @@ void cPVRChannels::SetChannelIcon(unsigned int Number, CStdString Icon)
 {
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
 
-  if (Number > 0 && Number <= size()+1)
+  if (Number > size()+1)
     return;
 
   if (at(Number-1).Icon() != Icon)
