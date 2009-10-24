@@ -55,6 +55,10 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
   IAudioRenderer* audioSink = NULL;
 
   CStdString deviceString, device;
+#if defined(__APPLE__)
+  // osx platform does not have a "audiooutput.passthroughdevice" setting but can do passthrough
+  deviceString = g_guiSettings.GetString("audiooutput.audiodevice");
+#else
   if (bPassthrough)
   {
     if (g_guiSettings.GetString("audiooutput.passthroughdevice").Equals("custom"))
@@ -69,7 +73,7 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
     else
       deviceString = g_guiSettings.GetString("audiooutput.audiodevice");
   } 
-
+#endif
   int iPos = deviceString.Find(":");
   if (iPos > 0)
   {
