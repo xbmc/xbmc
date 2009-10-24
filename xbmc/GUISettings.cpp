@@ -927,7 +927,7 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   //ASSERT(false);
   // hardcoded return value so that compiler is happy
-  return ((CSettingString *)(*settingsMap.begin()).second)->GetData();
+  return StringUtils::EmptyString;
 }
 
 void CGUISettings::SetString(const char *strSetting, const char *strData)
