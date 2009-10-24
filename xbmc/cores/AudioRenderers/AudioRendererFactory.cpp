@@ -148,5 +148,8 @@ IAudioRenderer *CAudioRendererFactory::CreateFromUri(const CStdString &soundsyst
     return new CALSADirectSound();
 #endif
 
+  if (soundsystem.Equals("null"))
+    return new CNullDirectSound();
+
   return NULL;
 }
