@@ -382,12 +382,12 @@ namespace PYXBMC
       ++it;
     }
 
-    PyXBMCGUIUnlock();
     if (self->bIsPythonWindow)
     {
       g_windowManager.Remove(self->pWindow->GetID());
       delete self->pWindow;
     }
+    PyXBMCGUIUnlock();
     self->vecControls.clear();
     self->vecControls.~vector();
     self->sFallBackPath.~string();          
