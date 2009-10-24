@@ -879,7 +879,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       else
       {
         buttons.Add(CONTEXT_BUTTON_INFO, 18163);          /* Channel info button */
-        buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 18109);   /* switch to channel */
+        buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);   /* switch to channel */
         buttons.Add(CONTEXT_BUTTON_SET_THUMB, 18161);   /* Set icon */
         buttons.Add(CONTEXT_BUTTON_GROUP_MANAGER, 18126);       /* Group managment */
         buttons.Add(CONTEXT_BUTTON_HIDE, m_bShowHiddenChannels ? 18193 : 18198);        /* HIDE CHANNEL */
@@ -952,7 +952,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
         }
       }
 
-      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 18109);           /* Switch channel */
+      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);           /* Switch channel */
     }
   }
 
@@ -1091,6 +1091,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
   else if (button == CONTEXT_BUTTON_SET_THUMB)
   {
+    /* Check if a icon path is set inside settings */
     if (g_guiSettings.GetString("pvrmenu.iconpath") == "")
     {
       CGUIDialogOK::ShowAndGetInput(18100,18812,0,18813);
@@ -1102,7 +1103,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
 
-    if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(1030),strIcon))
+    if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(1030), strIcon))
     {
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
       {
