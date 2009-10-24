@@ -202,7 +202,8 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < (int)(CONTROL_START_BUTTONS + m_vecSections.size()) &&
           focusedControl - CONTROL_START_BUTTONS != m_iSection)
       {
-        // changing section, check for updates
+        // changing section, check for updates and cancel any delayed changes
+        m_delayedSetting = NULL;
         CheckForUpdates();
 
         if (m_vecSections[focusedControl-CONTROL_START_BUTTONS]->m_strCategory == "masterlock")
