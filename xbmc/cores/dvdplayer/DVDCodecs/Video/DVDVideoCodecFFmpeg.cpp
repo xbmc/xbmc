@@ -66,7 +66,6 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
 {
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_graphicsContext);
   if (g_VDPAU && !m_UsingSoftware) {
     delete g_VDPAU;
     g_VDPAU = NULL;
@@ -108,7 +107,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   if(pCodec && !hints.software)
   {
-    CSingleLock lock(g_graphicsContext);
     CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating VDPAU(%ix%i)",hints.width, hints.height);
     g_VDPAU = new CVDPAU(hints.width, hints.height);
     if(!g_VDPAU->GetVdpDevice())

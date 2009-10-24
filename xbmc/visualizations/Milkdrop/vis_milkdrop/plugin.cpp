@@ -4739,15 +4739,12 @@ void CPlugin::UpdatePresetList()
 */
 	strcpy(szPath, m_szPresetDir);
 	int len = strlen(szPath);
-	if (len>0 && szPath[len-1] != '\\') 
+	if (len>0 && szPath[len-1] != '/') 
 	{
-		strcat(szPath, "\\");
+		strcat(szPath, "/");
 	}
 	strcpy(szMask, szPath);
-	//if (m_UI_mode == UI_CHANGEDIR)
-		strcat(szMask, "*.*");
-	//else
-	//	strcat(szMask, "*.milk");
+	strcat(szMask, "*.*");
 
 
 	WIN32_FIND_DATA ffd;

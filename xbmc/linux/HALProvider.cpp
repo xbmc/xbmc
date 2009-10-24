@@ -11,7 +11,7 @@ CHALProvider::CHALProvider()
 void CHALProvider::Initialize()
 {
   g_HalManager.Initialize();
-  PumpDriveChangeEvents();
+  PumpDriveChangeEvents(NULL);
 }
 
 void CHALProvider::Stop()
@@ -61,7 +61,7 @@ std::vector<CStdString> CHALProvider::GetDiskUsage()
 }
 
 // TODO Use HALs events for this instead.
-bool CHALProvider::PumpDriveChangeEvents()
+bool CHALProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
 //Pump HalManager dry of events
   while(g_HalManager.Update()) ;

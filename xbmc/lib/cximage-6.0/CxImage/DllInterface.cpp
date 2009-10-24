@@ -512,6 +512,7 @@ extern "C"
     image.AlphaCreate();
     if (!image.AlphaIsValid()) return false;
     bool fullyTransparent(true);
+    bool fullyOpaque(true);
     for (unsigned int y = 0; y < height; y++)
     {
       BYTE *ptr = buffer + (y * stride);
@@ -521,12 +522,15 @@ extern "C"
         BYTE g = *ptr++;
         BYTE r = *ptr++;
         BYTE a = *ptr++;  // alpha
-        if (a) fullyTransparent = false;
+        if (a)
+          fullyTransparent = false;
+        if (a != 0xff)
+          fullyOpaque = false;
         image.SetPixelColor(x, height - 1 - y, RGB(r, g, b));
         image.AlphaSet(x, height - 1 - y, a);
       }
     }
-    if (fullyTransparent)
+    if (fullyTransparent || fullyOpaque)
       image.AlphaDelete();
     image.SetJpegQuality(90);
     if (!image.Save(thumb, image.AlphaIsValid() ? CXIMAGE_FORMAT_PNG : CXIMAGE_FORMAT_JPG))

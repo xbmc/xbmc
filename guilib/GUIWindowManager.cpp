@@ -25,6 +25,7 @@
 #include "Application.h"
 #include "GUIPassword.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/SingleLock.h"
 #include "Util.h"
 #include "GUISettings.h"
 #include "Settings.h"
@@ -35,15 +36,12 @@ CGUIWindowManager g_windowManager;
 
 CGUIWindowManager::CGUIWindowManager(void)
 {
-  InitializeCriticalSection(&m_critSection);
-
   m_pCallback = NULL;
   m_bShowOverlay = true;
 }
 
 CGUIWindowManager::~CGUIWindowManager(void)
 {
-  DeleteCriticalSection(&m_critSection);
 }
 
 void CGUIWindowManager::Initialize()
@@ -641,30 +639,26 @@ int CGUIWindowManager::GetTopMostModalDialogID() const
 
 void CGUIWindowManager::SendThreadMessage(CGUIMessage& message)
 {
-  ::EnterCriticalSection(&m_critSection );
+  CSingleLock lock(m_critSection);
 
   CGUIMessage* msg = new CGUIMessage(message);
   m_vecThreadMessages.push_back( pair<CGUIMessage*,int>(msg,0) );
-
-  ::LeaveCriticalSection(&m_critSection );
 }
 
 void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, int window)
 {
-  ::EnterCriticalSection(&m_critSection );
+  CSingleLock lock(m_critSection);
 
   CGUIMessage* msg = new CGUIMessage(message);
   m_vecThreadMessages.push_back( pair<CGUIMessage*,int>(msg,window) );
-
-  ::LeaveCriticalSection(&m_critSection );
 }
 
 void CGUIWindowManager::DispatchThreadMessages()
 {
-  ::EnterCriticalSection(&m_critSection );
+  CSingleLock lock(m_critSection);
   vector< pair<CGUIMessage*,int> > messages(m_vecThreadMessages);
   m_vecThreadMessages.erase(m_vecThreadMessages.begin(), m_vecThreadMessages.end());
-  ::LeaveCriticalSection(&m_critSection );
+  lock.Leave();
 
   while ( messages.size() > 0 )
   {

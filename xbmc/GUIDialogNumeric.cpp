@@ -22,7 +22,6 @@
 #include "GUIDialogNumeric.h"
 #include "GUILabelControl.h"
 #include "utils/md5.h"
-#include "xbox/XKGeneral.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "StringUtils.h"

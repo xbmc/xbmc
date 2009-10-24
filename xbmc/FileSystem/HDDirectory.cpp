@@ -21,7 +21,7 @@
 
 #include "HDDirectory.h"
 #include "Util.h"
-#include "xbox/IoSupport.h"
+#include "utils/IoSupport.h"
 #include "iso9660.h"
 #include "URL.h"
 #include "GUISettings.h"

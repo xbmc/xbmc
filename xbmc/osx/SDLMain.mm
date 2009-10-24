@@ -19,6 +19,8 @@
 // and obj-c's typedef unsigned char BOOL
 #define BOOL XBMC_BOOL 
 #import "PlatformDefs.h"
+#import "ApplicationMessenger.h"
+#import "DarwinStorageProvider.h"
 #undef BOOL
 
 /* For some reaon, Apple removed setAppleMenu from the headers in 10.4,
@@ -118,6 +120,16 @@ static void setupWindowMenu(void)
 
     windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
     
+    /* "Full/Windowed Toggle" item */
+    menuItem = [[NSMenuItem alloc] initWithTitle:@"Full/Windowed Toggle" action:@selector(fullScreenToggle:) keyEquivalent:@"f"];
+    [windowMenu addItem:menuItem];
+    [menuItem release];
+
+    /* "Full/Windowed Toggle" item */
+    menuItem = [[NSMenuItem alloc] initWithTitle:@"Float on Top" action:@selector(floatOnTopToggle:) keyEquivalent:@"t"];
+    [windowMenu addItem:menuItem];
+    [menuItem release];
+
     /* "Minimize" item */
     menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize" action:@selector(performMiniaturize:) keyEquivalent:@"m"];
     [windowMenu addItem:menuItem];
@@ -158,6 +170,31 @@ static void setupWindowMenu(void)
     SDL_Event event;
     event.type = SDL_QUIT;
     SDL_PushEvent(&event);
+}
+
+- (void)fullScreenToggle:(id)sender
+{
+  // Post an toggle full-screen event to the application thread.
+  SDL_Event event;
+  memset(&event, 0, sizeof(event));
+  event.type = SDL_USEREVENT;
+  event.user.code = TMSG_TOGGLEFULLSCREEN;
+  SDL_PushEvent(&event);
+}
+
+- (void)floatOnTopToggle:(id)sender
+{
+  NSWindow* window = [[[NSOpenGLContext currentContext] view] window];
+  if ([window level] == NSFloatingWindowLevel)
+  {
+    [window setLevel:NSNormalWindowLevel];
+    [sender setState:NSOffState];
+  }
+  else
+  {
+    [window setLevel:NSFloatingWindowLevel];
+    [sender setState:NSOnState];
+  }
 }
 @end
 
@@ -295,6 +332,10 @@ static void setupWindowMenu(void)
 {
   // calling into c++ code, need to use autorelease pools
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+  CDarwinStorageProvider::SetEvent();
+  
+/*
   NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
   //NSLog(@"Device did mount: %@", devicePath);
   
@@ -309,6 +350,7 @@ static void setupWindowMenu(void)
     // TODO: might need to translate devicePath into what CDetectDVDMedia::AddMedia wants
     //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->AddMedia(strDrive);
   }
+*/
   [pool release];
 }
 
@@ -316,10 +358,14 @@ static void setupWindowMenu(void)
 {
   // calling into c++ code, need to use autorelease pools
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+  CDarwinStorageProvider::SetEvent();
+  
   //NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
   //NSLog(@"Device did unmount: %@", devicePath);
   //const CStdString strDrive = [devicePath cString];
   //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->RemoveMedia(strDrive);
+
   [pool release];
 }
 

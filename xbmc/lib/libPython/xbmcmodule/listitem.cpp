@@ -101,11 +101,11 @@ namespace PYXBMC
       return NULL;
     }
     CStdString utf8String;
-    if (label && PyGetUnicodeString(utf8String, label, 1))
+    if (label && PyXBMCGetUnicodeString(utf8String, label, 1))
     {
       self->item->SetLabel( utf8String );
     }
-    if (label2 && PyGetUnicodeString(utf8String, label2, 1))
+    if (label2 && PyXBMCGetUnicodeString(utf8String, label2, 1))
     {
       self->item->SetLabel2( utf8String );
     }
@@ -117,7 +117,7 @@ namespace PYXBMC
     {
       self->item->SetThumbnailImage( cThumbnailImage );
     }
-    if (path && PyGetUnicodeString(utf8String, path, 1))
+    if (path && PyXBMCGetUnicodeString(utf8String, path, 1))
     {
       self->item->m_strPath = utf8String;
     }
@@ -158,9 +158,9 @@ namespace PYXBMC
   {
     if (!self->item) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     const char *cLabel = self->item->GetLabel().c_str();
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     return Py_BuildValue((char*)"s", cLabel);
   }
@@ -175,9 +175,9 @@ namespace PYXBMC
   {
     if (!self->item) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     const char *cLabel = self->item->GetLabel2().c_str();
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     return Py_BuildValue((char*)"s", cLabel);
   }
@@ -198,12 +198,12 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"O", &unicodeLine)) return NULL;
 
     string utf8Line;
-    if (unicodeLine && !PyGetUnicodeString(utf8Line, unicodeLine, 1))
+    if (unicodeLine && !PyXBMCGetUnicodeString(utf8Line, unicodeLine, 1))
       return NULL;
     // set label
-    PyGUILock();
+    PyXBMCGUILock();
     self->item->SetLabel(utf8Line);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -225,12 +225,12 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"O", &unicodeLine)) return NULL;
 
     string utf8Line;
-    if (unicodeLine && !PyGetUnicodeString(utf8Line, unicodeLine, 1))
+    if (unicodeLine && !PyXBMCGetUnicodeString(utf8Line, unicodeLine, 1))
       return NULL;
     // set label
-    PyGUILock();
+    PyXBMCGUILock();
     self->item->SetLabel2(utf8Line);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -252,9 +252,9 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
     // set label
-    PyGUILock();
+    PyXBMCGUILock();
     self->item->SetIconImage(cLine ? cLine : "");
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -276,9 +276,9 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
     // set label
-    PyGUILock();
+    PyXBMCGUILock();
     self->item->SetThumbnailImage(cLine ? cLine : "");
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -299,9 +299,9 @@ namespace PYXBMC
     char bOnOff = false;
     if (!PyArg_ParseTuple(args, (char*)"b", &bOnOff)) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     self->item->Select(0 != bOnOff);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -317,9 +317,9 @@ namespace PYXBMC
   {
     if (!self->item) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     bool bOnOff = self->item->IsSelected();
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     return Py_BuildValue((char*)"b", bOnOff);
   }
@@ -369,7 +369,7 @@ namespace PYXBMC
     PyObject *key, *value;
     int pos = 0;
 
-    PyGUILock();
+    PyXBMCGUILock();
 
     CStdString tmp;
     while (PyDict_Next(pInfoLabels, (Py_ssize_t*)&pos, &key, &value)) {
@@ -416,15 +416,15 @@ namespace PYXBMC
             else
               pActor = pTuple;
             SActorInfo info;
-            if (!PyGetUnicodeString(info.strName, pActor, 1)) continue;
+            if (!PyXBMCGetUnicodeString(info.strName, pActor, 1)) continue;
             if (pRole != NULL)
-              PyGetUnicodeString(info.strRole, pRole, 1);
+              PyXBMCGetUnicodeString(info.strRole, pRole, 1);
             self->item->GetVideoInfoTag()->m_cast.push_back(info);
           }
         }
         else
         {
-          if (!PyGetUnicodeString(tmp, value, 1)) continue;
+          if (!PyXBMCGetUnicodeString(tmp, value, 1)) continue;
           if (strcmpi(PyString_AsString(key), "genre") == 0)
             self->item->GetVideoInfoTag()->m_strGenre = tmp;
           else if (strcmpi(PyString_AsString(key), "director") == 0)
@@ -487,7 +487,7 @@ namespace PYXBMC
           self->item->GetMusicInfoTag()->SetYear(PyInt_AsLong(value));
         else
         {
-          if (!PyGetUnicodeString(tmp, value, 1)) continue;
+          if (!PyXBMCGetUnicodeString(tmp, value, 1)) continue;
           if (strcmpi(PyString_AsString(key), "genre") == 0)
             self->item->GetMusicInfoTag()->SetGenre(tmp);
           else if (strcmpi(PyString_AsString(key), "album") == 0)
@@ -516,7 +516,7 @@ namespace PYXBMC
           self->item->m_dwSize = (int64_t)PyLong_AsLongLong(value);
         else
         {
-          if (!PyGetUnicodeString(tmp, value, 1)) continue;
+          if (!PyXBMCGetUnicodeString(tmp, value, 1)) continue;
           if (strcmpi(PyString_AsString(key), "title") == 0)
             self->item->m_strTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "picturepath") == 0)
@@ -537,7 +537,7 @@ namespace PYXBMC
         self->item->GetPictureInfoTag()->SetLoaded(true);
       }
     }
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -553,8 +553,13 @@ namespace PYXBMC
     "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
+    " Some of these are treated internally by XBMC, such as the 'StartOffset' property, which is\n"
+    " the offset in seconds at which to start playback of an item.  Others may be used in the skin\n"
+    " to add extra information, such as 'WatchedCount' for tvshow items\n"
+    "\n"
     "example:\n"
-    "  - self.list.getSelectedItem().setProperty('AspectRatio', '1.85 : 1')\n");
+    "  - self.list.getSelectedItem().setProperty('AspectRatio', '1.85 : 1')\n"
+    "  - self.list.getSelectedItem().setProperty('StartOffset', '256.4')\n");
 
   PyObject* ListItem_SetProperty(ListItem *self, PyObject *args, PyObject *kwds)
   {
@@ -577,13 +582,19 @@ namespace PYXBMC
     if (!key || !value) return NULL;
 
     string uText;
-    if (!PyGetUnicodeString(uText, value, 1))
+    if (!PyXBMCGetUnicodeString(uText, value, 1))
       return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     CStdString lowerKey = key;
-    self->item->SetProperty(lowerKey.ToLower(), uText.c_str());
-    PyGUIUnlock();
+    if (lowerKey.CompareNoCase("startoffset") == 0)
+    { // special case for start offset - don't actually store in a property,
+      // we store it in item.m_lStartOffset instead
+      self->item->m_lStartOffset = (int)(atof(uText.c_str()) * 75.0); // we store the offset in frames, or 1/75th of a second
+    }
+    else
+      self->item->SetProperty(lowerKey.ToLower(), uText.c_str());
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -619,10 +630,17 @@ namespace PYXBMC
     }
     if (!key) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     CStdString lowerKey = key;
-    string value = self->item->GetProperty(lowerKey.ToLower());
-    PyGUIUnlock();
+    CStdString value;
+    if (lowerKey.CompareNoCase("startoffset") == 0)
+    { // special case for start offset - don't actually store in a property,
+      // we store it in item.m_lStartOffset instead
+      value.Format("%f", self->item->m_lStartOffset / 75.0);
+    }
+    else
+      value = self->item->GetProperty(lowerKey.ToLower());
+    PyXBMCGUIUnlock();
 
     return Py_BuildValue((char*)"s", value.c_str());
   }
@@ -683,12 +701,12 @@ namespace PYXBMC
       if (!label || !action) return NULL;
 
       string uText;
-      if (!PyGetUnicodeString(uText, label, 1))
+      if (!PyXBMCGetUnicodeString(uText, label, 1))
         return NULL;
       string uAction;
-      if (!PyGetUnicodeString(uAction, action, 1))
+      if (!PyXBMCGetUnicodeString(uAction, action, 1))
         return NULL;
-      PyGUILock();
+      PyXBMCGUILock();
 
       CStdString property;
       property.Format("contextmenulabel(%i)", item);
@@ -697,7 +715,7 @@ namespace PYXBMC
       property.Format("contextmenuaction(%i)", item);
       self->item->SetProperty(property, uAction);
 
-      PyGUIUnlock();
+      PyXBMCGUIUnlock();
     }
 
     // set our replaceItems status
@@ -738,12 +756,12 @@ namespace PYXBMC
     }
 
     string path;
-    if (pPath && !PyGetUnicodeString(path, pPath, 1))
+    if (pPath && !PyXBMCGetUnicodeString(path, pPath, 1))
       return NULL;
     // set path
-    PyGUILock();
+    PyXBMCGUILock();
     self->item->m_strPath = path;
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -795,7 +813,7 @@ namespace PYXBMC
 
   void initListItem_Type()
   {
-    PyInitializeTypeObject(&ListItem_Type);
+    PyXBMCInitializeTypeObject(&ListItem_Type);
 
     ListItem_Type.tp_name = (char*)"xbmcgui.ListItem";
     ListItem_Type.tp_basicsize = sizeof(ListItem);

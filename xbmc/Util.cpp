@@ -35,7 +35,7 @@
 #include "Application.h"
 #include "AutoPtrHandle.h"
 #include "Util.h"
-#include "xbox/IoSupport.h"
+#include "utils/IoSupport.h"
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/VirtualPathDirectory.h"
 #include "FileSystem/MultiPathDirectory.h"
@@ -65,6 +65,9 @@
 #ifdef _WIN32
 #include <shlobj.h>
 #include "WIN32Util.h"
+#endif
+#if defined(__APPLE__)
+#include "CocoaInterface.h"
 #endif
 #include "GUIDialogYesNo.h"
 #include "GUIUserMessages.h"
@@ -362,7 +365,11 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     strFileMask = g_stSettings.m_pictureExtensions;
     strFileMask += g_stSettings.m_musicExtensions;
     strFileMask += g_stSettings.m_videoExtensions;
+#if defined(__APPLE__)
+    strFileMask += ".py|.xml|.milk|.xpr|.cdg|.app|.applescript|.workflow";
+#else
     strFileMask += ".py|.xml|.milk|.xpr|.cdg";
+#endif
 
     // Only remove if its a valid media extension
     if (strFileMask.Find(strExtension.c_str()) >= 0)
@@ -1522,10 +1529,13 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
   if(strFolder.Find("://") >= 0)
   {
     CURL url(strFolder);
-    AddFileToFolder(url.GetFileName(), strFile, strResult);
-    url.SetFileName(strResult);
-    strResult = url.Get();
-    return;
+    if (url.GetFileName() != strFolder)
+    {
+      AddFileToFolder(url.GetFileName(), strFile, strResult);
+      url.SetFileName(strResult);
+      strResult = url.Get();
+      return;
+    }
   }
 
   strResult = strFolder;
@@ -1550,11 +1560,11 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
   if(strFolder.Find("://") >= 0)
   {
     CURL url(strFolder);
-    strFolder = url.GetFileName();
-    if(!strFolder.IsEmpty())
+    CStdString file = url.GetFileName();
+    if(!file.IsEmpty() && file != strFolder)
     {
-      AddSlashAtEnd(strFolder);
-      url.SetFileName(strFolder);
+      AddSlashAtEnd(file);
+      url.SetFileName(file);
     }
     strFolder = url.Get();
     return;
@@ -1574,11 +1584,11 @@ void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
   if(strFolder.Find("://") >= 0)
   {
     CURL url(strFolder);
-    strFolder = url.GetFileName();
-    if (!strFolder.IsEmpty())
+    CStdString file = url.GetFileName();
+    if (!file.IsEmpty() && file != strFolder)
     {
-      RemoveSlashAtEnd(strFolder);
-      url.SetFileName(strFolder);
+      RemoveSlashAtEnd(file);
+      url.SetFileName(file);
     }
     strFolder = url.Get();
     return;

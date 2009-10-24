@@ -179,7 +179,8 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   m_iFrameRateCount = 0;
   m_bAllowDrop = !m_bCalcFrameRate; //we start with not allowing drops to calculate the framerate
   m_iFrameRateLength = 1;
-  
+  m_iFrameRateErr = 0;
+
   if (hint.vfr)
     m_autosync = 1;
 
@@ -403,6 +404,7 @@ void CDVDPlayerVideo::Process()
       //TODO: this needs to be set on a streamchange instead
       m_iFrameRateLength = 1;
       m_bAllowDrop = !m_bCalcFrameRate;
+      m_iFrameRateErr = 0;
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
@@ -1093,7 +1095,9 @@ int CDVDPlayerVideo::GetVideoBitrate()
   return (int)m_videoStats.GetBitrate();
 }
 
-#define MAXFRAMERATEDIFF 0.0005
+#define MAXFRAMERATEDIFF   0.0005
+#define MAXFRAMESERR    1000
+
 void CDVDPlayerVideo::CalcFrameRate()
 {
   if (m_iFrameRateLength >= 128) //we've calculated the framerate long enough
@@ -1112,6 +1116,14 @@ void CDVDPlayerVideo::CalcFrameRate()
     //reset the stored framerates if no good framerate was detected
     m_fStableFrameRate = 0.0;
     m_iFrameRateCount = 0;
+    m_iFrameRateErr++;
+
+    if (m_iFrameRateErr == MAXFRAMESERR && m_iFrameRateLength == 1)
+    {
+      CLog::Log(LOGDEBUG,"%s counted %i frames without being able to calculate the framerate, giving up", __FUNCTION__, m_iFrameRateErr);
+      m_bAllowDrop = true;
+      m_iFrameRateLength = 128;
+    }
     return;
   }
 

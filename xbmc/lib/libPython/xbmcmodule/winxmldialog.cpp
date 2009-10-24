@@ -82,9 +82,9 @@ namespace PYXBMC
 
     if (!PyArg_ParseTuple(args, (char*)"OO|Ob", &pyOXMLname, &pyOname, &pyDName, &bForceDefaultSkin )) return NULL;
 
-    PyGetUnicodeString(strXMLname, pyOXMLname);
-    PyGetUnicodeString(strFallbackPath, pyOname);
-    if (pyDName) PyGetUnicodeString(strDefault, pyDName);
+    PyXBMCGetUnicodeString(strXMLname, pyOXMLname);
+    PyXBMCGetUnicodeString(strFallbackPath, pyOname);
+    if (pyDName) PyXBMCGetUnicodeString(strDefault, pyDName);
 
     RESOLUTION res;
     CStdString strSkinPath;
@@ -179,7 +179,7 @@ namespace PYXBMC
 
   void initWindowXMLDialog_Type()
   {
-    PyInitializeTypeObject(&WindowXMLDialog_Type);
+    PyXBMCInitializeTypeObject(&WindowXMLDialog_Type);
 
     WindowXMLDialog_Type.tp_name = (char*)"xbmcgui.WindowXMLDialog";
     WindowXMLDialog_Type.tp_basicsize = sizeof(WindowXMLDialog);

@@ -17,7 +17,7 @@ public:
 
   CMediaSource ToMediaShare();
 
-  CStdString m_UDI, m_DeviceKitUDI, m_MountPath, m_FileSystem;
+  CStdString m_UDI, m_DeviceKitUDI, m_MountPath, m_FileSystem, m_Label;
   bool m_isMounted, m_isMountedByUs, m_isRemovable, m_isPartition;
   long int m_PartitionSizeGiB;
 };
@@ -38,16 +38,16 @@ public:
 
   virtual std::vector<CStdString> GetDiskUsage();
 
-  virtual bool PumpDriveChangeEvents();
+  virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
 
   static bool HasDeviceKitDisks();
 private:
   typedef std::map<CStdString, CDeviceKitDiskDevice *> DeviceMap;
   typedef std::pair<CStdString, CDeviceKitDiskDevice *> DevicePair;
 
-  void DeviceAdded(const char *object);
-  void DeviceRemoved(const char *object);
-  void DeviceChanged(const char *object);
+  void DeviceAdded(const char *object, IStorageEventsCallback *callback);
+  void DeviceRemoved(const char *object, IStorageEventsCallback *callback);
+  void DeviceChanged(const char *object, IStorageEventsCallback *callback);
 
   std::vector<CStdString> EnumerateDisks();
 

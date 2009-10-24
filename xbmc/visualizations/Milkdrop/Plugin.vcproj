@@ -2,8 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="Milkdrop"
+	Name="visMilkdrop"
 	ProjectGUID="{5E479372-4F34-426D-AA1E-9879E94C105D}"
+	RootNamespace="visMilkdrop"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -21,6 +22,7 @@
 			IntermediateDirectory="Debug"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="1"
 			CharacterSet="2"
 			>
 			<Tool
@@ -102,6 +104,7 @@
 			IntermediateDirectory="Release"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="1"
 			CharacterSet="2"
 			>
 			<Tool
@@ -124,7 +127,7 @@
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;HAS_DX"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"

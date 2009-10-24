@@ -21,7 +21,6 @@
 
 #include "GUIDialogGamepad.h"
 #include "utils/md5.h"
-#include "xbox/XKGeneral.h"
 #include "GUIAudioManager.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"

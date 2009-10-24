@@ -1500,10 +1500,10 @@
   <string id="16023">Interlaced handling</string>
   <string id="16024">Canceling...</string>
   <string id="16025">Enter the artist name</string>
-  <string id="16026">Playlist playback aborted</string>
-  <string id="16027">Too many consecutive failed items</string>
+  <string id="16026">Playback failed</string>
+  <string id="16027">One or more items failed to play.</string>
   <string id="16028">Enter value</string>
-
+  <string id="16029">Check the log file for details.</string>
   <string id="16030">Party mode aborted.</string>
   <string id="16031">No matching songs in the library.</string>
   <string id="16032">Could not initialize database.</string>
@@ -1583,6 +1583,7 @@
 
   <!-- string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)-->
 
+  <string id="20037">Summary</string>
   <string id="20038">Lock music window</string>
   <string id="20039">Lock videos window</string>
   <string id="20040">Lock pictures window</string>
@@ -1698,7 +1699,7 @@
   <string id="20151">Cancel shutdown timer</string>
   <string id="20152">Lock preferences for %s</string>
   <string id="20153">Browse...</string>
-  <string id="20154">Basic information</string>
+  <string id="20154">Summary information</string>
   <string id="20155">Storage information</string>
   <string id="20156">Hard disk information</string>
   <string id="20157">DVD-ROM information</string>

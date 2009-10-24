@@ -107,7 +107,7 @@
 #include "AudioContext.h"
 #include "GUIFontTTF.h"
 #include "utils/Network.h"
-#include "xbox/IoSupport.h"
+#include "utils/IoSupport.h"
 #include "Zeroconf.h"
 #include "ZeroconfBrowser.h"
 #ifndef _LINUX
@@ -244,6 +244,7 @@
 #endif
 
 #include "MediaManager.h"
+#include "utils/JobManager.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -410,6 +411,9 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
         g_settings.Save();
       }
       break;
+    case XBMC_USEREVENT:
+      g_application.getApplicationMessenger().UserEvent(newEvent.user.code);
+      break;
   }
   return true;
 }
@@ -459,7 +463,6 @@ HRESULT CApplication::Create(HWND hWnd)
 {
   g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
-  g_advancedSettings.Initialize();
 
   m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
   g_Windowing.EnableSystemScreenSaver(false);
@@ -2261,17 +2264,13 @@ void CApplication::RenderMemoryStatus()
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
     CStdString profiling = CGUIControlProfiler::IsRunning() ? " (profiling)" : "";
-#ifdef __APPLE__
-    double dCPU = m_resourceCounter.GetCPUUsage();
-    info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
-              g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU, profiling.c_str());
-#elif !defined(_LINUX)
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
+#if !defined(_LINUX)
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
+              g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
-    CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", (int)(stat.dwAvailPhys/1024), (int)(stat.dwTotalPhys/1024),
               g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
 #endif
 
@@ -3352,6 +3351,9 @@ void CApplication::Stop()
 {
   try
   {
+    // cancel any jobs from the jobmanager
+    CJobManager::GetInstance().CancelJobs();
+
 #ifdef HAS_WEB_SERVER
     if (m_pXbmcHttp)
     {

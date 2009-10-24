@@ -13,6 +13,7 @@ SRCS=AlarmClock.cpp \
      HttpHeader.cpp \
      IMDB.cpp \
      InfoLoader.cpp \
+     IoSupport.cpp \
      log.cpp \
      MusicAlbumInfo.cpp \
      MusicInfoScraper.cpp \
