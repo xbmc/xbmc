@@ -31,8 +31,8 @@
 
 using namespace std;
 
-#define HOLD_TIME_START 1000
-#define HOLD_TIME_END   4000
+#define HOLD_TIME_START 100
+#define HOLD_TIME_END   3000
 
 CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)

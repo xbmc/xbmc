@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<scraper framework="1.0" date="2009-05-30" name="speedallocinev2.fr" content="movies" thumb="allocine.jpg" language="fr">
-
+<scraper framework="1.0" date="2009-05-30" name="speedallocinev3.fr" content="movies" thumb="allocine.jpg" language="fr">
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="http://passion-xbmc.org/scraper/index.php?search=\1" dest="3">
-			<expression></expression>
+			<expression/>
 		</RegExp>
 	</CreateSearchUrl>
-
 	<GetSearchResults dest="2">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="2">
 			<RegExp input="$$1" output="\1" dest="5">
 				<expression trim="1" noclean="1">(.*)</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetSearchResults>
-
 	<GetDetails clearbuffers="no" dest="3">
 		<RegExp input="$$5" output="\1" dest="3">
 			<RegExp input="$$1" output="\1" dest="5">
 				<expression trim="1" noclean="1">(.*)</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetDetails>
-
 </scraper>

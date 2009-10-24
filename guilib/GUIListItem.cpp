@@ -64,6 +64,8 @@ CGUIListItem::~CGUIListItem(void)
 
 void CGUIListItem::SetLabel(const CStdString& strLabel)
 {
+  if (m_strLabel == strLabel)
+    return;
   m_strLabel = strLabel;
   if (m_sortLabel.IsEmpty())
     m_sortLabel = strLabel;
@@ -78,6 +80,8 @@ const CStdString& CGUIListItem::GetLabel() const
 
 void CGUIListItem::SetLabel2(const CStdString& strLabel2)
 {
+  if (m_strLabel2 == strLabel2)
+    return;
   m_strLabel2 = strLabel2;
   SetInvalid();
 }
@@ -100,6 +104,8 @@ const CStdString& CGUIListItem::GetSortLabel() const
 
 void CGUIListItem::SetThumbnailImage(const CStdString& strThumbnail)
 {
+  if (m_strThumbnailImage == strThumbnail)
+    return;
   m_strThumbnailImage = strThumbnail;
   SetInvalid();
 }
@@ -111,6 +117,8 @@ const CStdString& CGUIListItem::GetThumbnailImage() const
 
 void CGUIListItem::SetIconImage(const CStdString& strIcon)
 {
+  if (m_strIcon == strIcon)
+    return;
   m_strIcon = strIcon;
   SetInvalid();
 }
@@ -122,10 +130,10 @@ const CStdString& CGUIListItem::GetIconImage() const
 
 void CGUIListItem::SetOverlayImage(GUIIconOverlay icon, bool bOnOff)
 {
-  if (bOnOff)
-    m_overlayIcon = GUIIconOverlay((int)(icon)+1);
-  else
-    m_overlayIcon = icon;
+  GUIIconOverlay newIcon = (bOnOff) ? GUIIconOverlay((int)(icon)+1) : icon;
+  if (m_overlayIcon == newIcon)
+    return;
+  m_overlayIcon = newIcon;
   SetInvalid();
 }
 

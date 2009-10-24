@@ -6,21 +6,17 @@
 	</NfoUrl>
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://jadedvideo.com/Search?q=\1&lt;/url&gt;" dest="3">
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
-
 	</CreateSearchUrl>
-
 	<GetSearchResults dest="6">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="6">
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3&lt;/title&gt;&lt;url&gt;http://jadedvideo.com/\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
 				<expression repeat="yes">&quot;jadedcatprodtitle&quot;&gt;&lt;a href=&quot;http://jadedvideo\.com/([^&quot;]*)&quot;&gt;&lt;em&gt;([^&gt;]*)&lt;/em&gt; ([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>
-		<expression noclean="1"></expression>
+		<expression noclean="1"/>
 		</RegExp>
-
 	</GetSearchResults>
-
 	<GetDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;thumb&gt;http://jadedvideo.com/images/CoverFront/320x480/\1.jpg&lt;/thumb&gt;" dest="5">
@@ -41,7 +37,7 @@
 			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
 				<expression>Studio&lt;/strong&gt;: &lt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetDetails>
 </scraper>

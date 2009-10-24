@@ -4832,7 +4832,15 @@ bool CVideoDatabase::GetMoviesNav(const CStdString& strBaseDir, CFileItemList& i
   else if (idActor != -1)
     where = FormatSQL("join actorlinkmovie on actorlinkmovie.idmovie=movieview.idmovie join actors on actors.idActor=actorlinkmovie.idActor where actors.idActor=%u",idActor);
   else if (idSet != -1)
-    where = FormatSQL("join setlinkmovie on setlinkmovie.idMovie=movieview.idmovie join sets on sets.idSet=setlinkmovie.idSet where sets.idSet=%u",idSet);
+    where = FormatSQL("join setlinkmovie on setlinkmovie.idMovie=movieview.idmovie where setlinkmovie.idSet=%u",idSet);
+  if (idSet == -1)
+  {
+    if (where.size())
+      where += FormatSQL(" and movieview.idmovie NOT in (select idmovie from setlinkmovie)");
+    else
+      where = FormatSQL("where movieview.idmovie NOT in (select idmovie from setlinkmovie)");
+  }
+
   return GetMoviesByWhere(strBaseDir, where, items);
 }
 

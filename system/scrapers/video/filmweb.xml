@@ -4,12 +4,12 @@
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Wysoka jakosc okladki&quot; type=&quot;bool&quot; id=&quot;poster&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Pelna obsada&quot; type=&quot;bool&quot; id=&quot;fullcredits&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetSettings>
 	<NfoUrl dest="3">
@@ -25,7 +25,7 @@
 	</NfoUrl>
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="http://www.filmweb.pl/szukaj/film?sort=COUNT&amp;q=\1" dest="3">
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</CreateSearchUrl>
 	<GetSearchResults dest="8">
@@ -42,7 +42,7 @@
 			<RegExp input="$$7" output="&lt;entity&gt;&lt;title&gt;(\1) \2&lt;/title&gt;&lt;url&gt;http://www.filmweb.pl/Film?id=\3&lt;/url&gt;&lt;/entity&gt;" dest="5+">
 				<expression repeat="yes">([0-9]+)#([^#]+)#([0-9]+)</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetSearchResults>
 	<GetDetails clearbuffers="no" dest="3">
@@ -111,21 +111,21 @@
 				<expression repeat="yes" trim="1,2">src=&quot;http://gfx.filmweb.pl/p/([^\.]+)[^&gt;]+[^[a-zA-Z]+([^\n]+)</expression>
 			</RegExp>
 			<RegExp input="$$9" output="&lt;url function=&quot;FilmwebToWikipedia&quot;&gt;http://pl.wikipedia.org/w/index.php?title=Specjalna%3ALinksearch&amp;amp;target=http://www.filmweb.pl/Film?id=$$9&lt;/url&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp conditional="fullcredits" input="$$1" output="&lt;url function=&quot;Obsada&quot; &gt;http://\1.filmweb.pl/f\2/xbmc,2008/obsada&lt;/url&gt;" dest="5+">
 				<expression>http://([^\/]+).filmweb.pl/f([0-9]*)/[^&gt;]+&quot;&gt;pełna obsada&lt;/a&gt;</expression>
 			</RegExp>
 			<RegExp input="$$9" output="&lt;url function=&quot;Zwiastuny&quot; &gt;http://www.filmweb.pl/f$$9/xbmc,2008/zwiastuny&lt;/url&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$9" output="&lt;url function=&quot;Opisy&quot;&gt;http://www.filmweb.pl/f$$9/xbmc,2008/opisy&lt;/url&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp  conditional="poster" input="$$9" output="&lt;url function=&quot;Plakaty&quot;&gt;http://www.filmweb.pl/f$$9/xbmc,2008/plakaty&lt;/url&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetDetails>
 	<FilmwebToWikipedia clearbuffers="no" dest="5">
@@ -139,7 +139,7 @@
 				</RegExp>
 				<expression>_(.*)</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</FilmwebToWikipedia>
 	<Opisy dest="5">
@@ -164,7 +164,7 @@
 			<RegExp input="$$1" output="&lt;thumb&gt;http://gfx.filmweb.pl/po\1&lt;/thumb&gt;" dest="8+">
 				<expression noclean="1" repeat="yes">href=&quot;http://gfx.filmweb.pl/po(.[^&quot;]*)</expression>
 			</RegExp>            
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</Plakaty>
 	<Obsada dest="5">
@@ -178,7 +178,7 @@
 			<RegExp input="$$9" output="&lt;actor&gt;&lt;thumb&gt;http://gfx.filmweb.pl/p/\1.1.jpg&lt;/thumb&gt;&lt;name&gt;\2&lt;/name&gt;&lt;/actor&gt;" dest="8+">
 				<expression repeat="yes" trim="1,2">src=&quot;http://gfx.filmweb.pl/p/([^\.]+)[^&gt;]+[^[a-zA-Z]+([^\n]+)</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</Obsada>
 	<Zwiastuny dest="5">

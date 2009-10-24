@@ -5,22 +5,19 @@
 			<expression noclean="1">excaliburfilms.com/AdultDVD/([^.]*)</expression>
 		</RegExp>
 	</NfoUrl>
-
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://search.excaliburfilms.com/excals.htm?searchString=\1&amp;amp;Search=AdultDVDMovies&amp;amp;SearchFor=Title.x&lt;/url&gt;" dest="3">
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</CreateSearchUrl>
-
 	<GetSearchResults dest="6">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="6">
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.excaliburfilms.com/AdultDVD/\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
 				<expression trim="1" repeat="yes">&lt;a href=&quot;http://www.ExcaliburFilms.com/AdultDVD/([^&quot;]*)&quot;.*?&lt;font class=&quot;searchTitle13&quot;&gt;([^&lt;]*)&lt;/font&gt;&lt;/a&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetSearchResults>
-
 	<GetDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;thumb&gt;http://images.excaliburfilms.com/DVD/reviews/imagesBB020609/largemoviepic/\1.jpg&lt;/thumb&gt;" dest="5+">
@@ -59,7 +56,7 @@
 			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5+">
 				<expression>/Stars_([0-9]).gif</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetDetails>
 </scraper>

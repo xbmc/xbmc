@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: Ydatografida-->
-<!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 09/11/2009-->
+<!--Date of translation: 10/01/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 22867-->
+<!--Based on english strings version 23283-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -67,9 +65,9 @@
   <string id="120">Επιβεβαίωση αντιγραφής</string>
   <string id="121">Επιβεβαίωση μετακίνησης</string>
   <string id="122">Επιβεβαίωση διαγραφής</string>
-  <string id="123">Αντιγραφή των αρχείων;</string>
-  <string id="124">Μετακίνηση των αρχείων;</string>
-  <string id="125">Διαγραφή των αρχείων; - Αυτή η ενέργεια θα διαγράψει οριστικά τα αρχεία σας!</string>
+  <string id="123">Αντιγραφή αυτών των αρχείων;</string>
+  <string id="124">Μετακίνηση αυτών των αρχείων;</string>
+  <string id="125">Διαγραφή αυτών των αρχείων; - Τα αρχεία σας θα διαγραφούν οριστικά!</string>
   <string id="126">Λειτουργία</string>
   <string id="127">Αντικείμενα</string>
   <string id="128">Γενικά</string>
@@ -782,6 +780,7 @@
   <string id="1419">Μπόρες (με κεραυνούς)</string>
   <string id="1450">Εξοικονόμηση ενέργειας κατά την αναμονή</string>
   <string id="2050">Εκτέλεση</string>
+  <string id="2100">Αποτυχία script! : %s</string>
   <string id="4501">Τύπος LCD</string>
   <string id="10000">Αρχική τοποθεσία</string>
   <string id="10001">Εφαρμογές</string>
@@ -963,7 +962,7 @@
   <string id="13109">Δοκιμή ανάλυσης</string>
   <string id="13110">Αποθήκευση ανάλυσης;</string>
   <string id="13111">Θέλετε να διατηρήσετε αυτή την ανάλυση;</string>
-  <string id="13112">Λογισμικό ανακλιμακοθέτησης (Υψηλή Ποιότητα)</string>
+  <string id="13112">Υψηλή ποιότητα ανακλιμακοθέτησης</string>
   <string id="13113">Ανενεργό</string>
   <string id="13114">Ενεργό για περιεχόμενο SD </string>
   <string id="13115">Πάντα ενεργό</string>
@@ -1171,7 +1170,7 @@
   <string id="13506">Χαμηλή (γρήγορη)</string>
   <string id="13507">Μεσαία</string>
   <string id="13508">Υψηλή</string>
-  <string id="13509">Πραγματικά υψηλή (αργή)</string>
+  <string id="13509">Πραγματικά υψηλή (αργή!)</string>
   <string id="13510">Συγχρονισμός αναπαραγωγής ήχου κατά τη προβολή</string>
   <string id="13600">Apple Remote</string>
   <string id="13601">Κατάσταση</string>
@@ -1416,6 +1415,7 @@
   <string id="16313">(VDPAU) Οξύτητα</string>
   <string id="16314">Αντίστροφη Telecine</string>
   <string id="17500">Προβολή λήξης χρόνου αναστόλης</string>
+  <string id="19000">Αλλαγή καναλιού</string>
   <string id="20000">Φάκελος εξαγωγής CDDA</string>
   <string id="20001">Χρήση εξωτερικού αναπαραγωγέα DVD</string>
   <string id="20002">Εξωτερικός αναπαραγωγέας DVD</string>
@@ -1738,6 +1738,7 @@
   <string id="20431">Αντικατάσταση παλιών αρχείων;</string>
   <string id="20432">Εξαίρεση διαδρομής από τις ενημερώσεις συλλογής</string>
   <string id="20433">Εξαγωγή πληροφοριών</string>
+  <string id="20434">Σύνολα</string>
   <string id="21330">Προβολή κρυφών αρχείων και φακέλων</string>
   <string id="21331">Πελάτης TuxBox</string>
   <string id="21332">ΠΡΟΣΟΧΗ: Η συσκευή TuxBox βρίσκεται σε κατάσταση εγγραφής!</string>
@@ -1806,6 +1807,7 @@
   <string id="21414">Προεπιλεγμένος καταγραφέας τηλεοπτικής σειράς</string>
   <string id="21415">Προεπιλεγμένος καταγραφέας μουσικού βίντεο</string>
   <string id="21416">Ενεργοποίηση επαναφοράς (βάση της γλώσσας του καταγραφέα)</string>
+  <string id="21417">- Ρυθμίσεις καταγραφέα</string>
   <string id="21420">Τιμές για αντιστοίχηση</string>
   <string id="21421">Όροι έξυπνης λίστας αναπαραγωγής</string>
   <string id="21422">Κριτήρια αντιστοίχησης αντικειμένων</string>
@@ -1948,6 +1950,7 @@
   <string id="22043">μαύρο/άσπρο</string>
   <string id="23000">Επέκταση καιρού</string>
   <string id="23001">- Ρυθμίσεις επέκτασης</string>
+  <string id="23050">Ενεργοποίηση Teletext</string>
   <string id="23100">Ενεργός εξωτερικός αναπαραγωγέας</string>
   <string id="23101">Πιέστε το 'Εντάξει' για να τερματίσετε τον αναπαραγωγέα</string>
   <string id="23104">Πιέστε το 'Εντάξει' όταν η αναπαραγωγή ολοκληρωθεί</string>

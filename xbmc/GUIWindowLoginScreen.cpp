@@ -139,6 +139,8 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
               m_gWindowManager.ActivateWindow(g_guiSettings.GetInt("lookandfeel.startupwindow"));
             }
 
+            g_application.UpdateLibraries();
+
             return true;
           }
           else

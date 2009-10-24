@@ -454,6 +454,8 @@ namespace PYXBMC
           self->item->m_dwSize = (__int64)PyLong_AsLongLong(value);
         else if (strcmpi(PyString_AsString(key), "duration") == 0)
           self->item->GetMusicInfoTag()->SetDuration(PyInt_AsLong(value));
+        else if (strcmpi(PyString_AsString(key), "year") == 0)
+          self->item->GetMusicInfoTag()->SetYear(PyInt_AsLong(value));
         else
         {
           if (!PyGetUnicodeString(tmp, value, 1)) continue;
@@ -465,6 +467,8 @@ namespace PYXBMC
             self->item->GetMusicInfoTag()->SetArtist(tmp);
           else if (strcmpi(PyString_AsString(key), "title") == 0)
             self->item->GetMusicInfoTag()->SetTitle(tmp);
+          else if (strcmpi(PyString_AsString(key), "rating") == 0)
+            self->item->GetMusicInfoTag()->SetRating(*tmp);
           else if (strcmpi(PyString_AsString(key), "lyrics") == 0)
             self->item->SetProperty("lyrics", tmp);
           else if (strcmpi(PyString_AsString(key), "date") == 0)

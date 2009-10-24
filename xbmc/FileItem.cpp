@@ -549,7 +549,7 @@ bool CFileItem::IsPicture() const
   if (g_stSettings.m_pictureExtensions.Find(extension) != -1)
     return true;
 
-  if (extension == ".tbn")
+  if (extension == ".tbn" || extension == ".dds")
     return true;
 
   return false;

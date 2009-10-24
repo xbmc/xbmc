@@ -252,9 +252,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       iformat = m_dllAvFormat.av_find_input_format("aac");
     else if( content.compare("audio/aac") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("aac");
-    else if( content.compare("audio/mpeg") == 0  )  
-      iformat = m_dllAvFormat.av_find_input_format("mp3");
-    else if( content.compare("video/mpeg") == 0 )
+    else if( content.compare("video/x-vobsub") == 0 )
+      iformat = m_dllAvFormat.av_find_input_format("mpeg");
+    else if( content.compare("video/x-dvd-mpeg") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("mpeg");
     else if( content.compare("video/flv") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("flv");
@@ -343,7 +343,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       else
         pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, context->max_packet_size);
 
-      if (pd.buf_size == 0)
+      if (pd.buf_size <= 0)
       {
         CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
         return false;
@@ -401,12 +401,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   // so we do this for files only
   if (streaminfo)
   {
-    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_TV))
-    {
-      /* too speed up livetv channel changes, only analyse very short */ 
-      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
-        m_pFormatContext->max_analyze_duration = 500000;
-    }
+    /* too speed up live sources, only analyse very short */
+    if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
+      m_pFormatContext->max_analyze_duration = 500000;
 
 
     CLog::Log(LOGDEBUG, "%s - av_find_stream_info starting", __FUNCTION__);

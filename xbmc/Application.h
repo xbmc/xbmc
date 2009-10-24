@@ -162,6 +162,7 @@ public:
 
   void SaveMusicScanSettings();
   void RestoreMusicScanSettings();
+  void UpdateLibraries();
   void CheckMusicPlaylist();
   
   CGUIDialogVolumeBar m_guiDialogVolumeBar;

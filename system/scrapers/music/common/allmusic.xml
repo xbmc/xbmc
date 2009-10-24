@@ -10,7 +10,7 @@
 			<RegExp input="$$3" output="" dest="2">
 				<expression>(.+)</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGDiscography>
 	<GetAMGBiography dest="5">
@@ -18,7 +18,7 @@
 			<RegExp input="$$1" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="2">
 				<expression clear="yes">Biography&lt;/td&gt;.*?&lt;p&gt;(.*?)&lt;/p&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGBiography>
 	<GetAMGReview dest="5">
@@ -26,7 +26,7 @@
 			<RegExp input="$$1" output="&lt;review&gt;\1&lt;/review&gt;" dest="2">
 				<expression>Review&lt;/td&gt;.*?&lt;p&gt;(.*?)&lt;/p&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGReview>
 	<ParseAMGArtist dest="3">
@@ -79,7 +79,7 @@
 			<RegExp input="$$1" output="&lt;thumb&gt;http://image.allmusic.com/00/amg/pic200/dr\1\200/\1\2\3\4/\1\2\3\4\5.jpg&lt;/thumb&gt;" dest="5+">
 				<expression noclean="1" repeat="yes">&quot;([A-Z^])([0-9^])([0-9^])([0-9^])([^&quot;]*)&quot;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</ParseAMGArtist>
 	<ParseAMGAlbum dest="3">
@@ -135,7 +135,7 @@
 			<RegExp input="$$1" output="&lt;thumb&gt;http://image.allmusic.com/\1&lt;/thumb&gt;" dest="5+">
 				<expression noclean="1">http://image.allmusic.com/([^&quot;]*)&quot;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</ParseAMGAlbum>
 </scraperfunctions>

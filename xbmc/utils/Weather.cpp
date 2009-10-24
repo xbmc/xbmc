@@ -138,8 +138,6 @@ CWeather::CWeather(void) : CInfoLoader("weather")
   m_bImagesOkay = false;
 
   Reset();
-
-  srand(timeGetTime());
 }
 
 CWeather::~CWeather(void)

@@ -133,7 +133,7 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetReleaseDate(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue("s", "");
+    return Py_BuildValue((char*)"s", self->infoTag.GetYearString().c_str());
   }
 
   PyMethodDef InfoTagMusic_methods[] = {

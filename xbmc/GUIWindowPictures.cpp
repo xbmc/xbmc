@@ -554,15 +554,21 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
   if ((pItem->m_bIsFolder || pItem->IsCBR() || pItem->IsCBZ()) && !pItem->m_bIsShareOrDrive && !pItem->HasThumbnail() && !pItem->IsParentFolder())
   {
     // first check for a folder.jpg
-    CStdString thumb;
+    CStdString thumb = "folder.jpg";
     CStdString strPath = pItem->m_strPath;
     if (pItem->IsCBR())
+    {
       CUtil::CreateArchivePath(strPath,"rar",pItem->m_strPath,"");
+      thumb = "cover.jpg";
+    }
     if (pItem->IsCBZ())
+    {
       CUtil::CreateArchivePath(strPath,"zip",pItem->m_strPath,"");
+      thumb = "cover.jpg";
+    }
     if (pItem->IsMultiPath())
       strPath = CMultiPathDirectory::GetFirstPath(pItem->m_strPath);
-    CUtil::AddFileToFolder(strPath, "folder.jpg", thumb);
+    thumb = CUtil::AddFileToFolder(strPath, thumb);
     if (CFile::Exists(thumb))
     {
       CPicture pic;
@@ -613,7 +619,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
       // randomize them
       items.Randomize();
 
-      if (items.Size() < 4)
+      if (items.Size() < 4 || pItem->IsCBR() || pItem->IsCBZ())
       { // less than 4 items, so just grab a single random thumb
         CStdString folderThumb(pItem->GetCachedPictureThumb());
         CPicture pic;

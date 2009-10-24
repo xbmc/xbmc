@@ -46,12 +46,16 @@ void CGUIColorManager::Load(const CStdString &colorFile)
 {
   Clear();
 
+  // load the global color map if it exists
+  TiXmlDocument xmlDoc;
+  if (xmlDoc.LoadFile(PTH_IC("special://xbmc/system/colors.xml")))
+    LoadXML(xmlDoc);
+
   // first load the default color map if it exists
   CStdString path, basePath;
   CUtil::AddFileToFolder(g_SkinInfo.GetBaseDir(), "colors", basePath);
   CUtil::AddFileToFolder(basePath, "defaults.xml", path);
 
-  TiXmlDocument xmlDoc;
   if (xmlDoc.LoadFile(path))
     LoadXML(xmlDoc);
 

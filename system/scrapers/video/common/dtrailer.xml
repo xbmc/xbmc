@@ -4,7 +4,7 @@
 			<RegExp input="$$1" dest="5" output="&lt;url function=&quot;GetDTrailer&quot;&gt;http://en.dtrailer.com/movies/watch/\1&lt;/url&gt;">
 				<expression>&lt;a href=&quot;http://en.dtrailer.com/movies/watch/(/?[^\&gt;]+)&quot; class=&quot;thumb&quot; title=&quot;(/?[^\&gt;]+)&quot;&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetDTrailerLink>
 	<GetDTrailer dest="5">

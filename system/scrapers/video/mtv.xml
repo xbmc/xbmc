@@ -2,7 +2,7 @@
 <scraper framework="1.0" date="2009-05-22" name="MTV" content="musicvideos" thumb="mtv.png" language="en">
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://api.mtvnservices.com/1/video/search/?term=\1&lt;/url&gt;" dest="3">
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</CreateSearchUrl>
 	<GetSearchResults dest="8">
@@ -10,7 +10,7 @@
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1 - \2&lt;/title&gt;&lt;url&gt;\4&lt;/url&gt;&lt;/entity&gt;" dest="5">
 				<expression noclean="1" repeat="yes">&lt;entry&gt;.*?&lt;content&gt;(.*?) \| (.*?) \| (.*?)&lt;/content&gt;.*?media:player url=&quot;([^&quot;]*)&quot;/&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>		
 	</GetSearchResults>
 	<GetDetails dest="3">
@@ -36,7 +36,7 @@
 			<RegExp input="$$1" output="&lt;thumb&gt;http://www.mtv.com\2.jpg&lt;/thumb&gt;" dest="5+">
 				<expression noclean="1">&quot;thumbnail&quot;([^&quot;]*)content=&quot;([^&quot;]*)\.jpg</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetDetails>
 </scraper>

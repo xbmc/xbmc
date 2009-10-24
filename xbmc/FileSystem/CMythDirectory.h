@@ -22,8 +22,7 @@
 
 #include "IDirectory.h"
 #include "CMythSession.h"
-
-class CDateTime;
+#include "DateTime.h"
 
 namespace DIRECTORY
 {
@@ -50,11 +49,11 @@ private:
   bool GetGuide(const CStdString& base, CFileItemList &items);
   bool GetGuideForChannel(const CStdString& base, CFileItemList &items, const int channelNumber);
   bool GetRecordings(const CStdString& base, CFileItemList &items, enum FilterType type = ALL, const CStdString& filter = "");
-  bool GetRecordingFolders(const CStdString& base, CFileItemList &items, enum FilterType type);
+  bool GetTvShowFolders(const CStdString& base, CFileItemList &items);
   bool GetChannels(const CStdString& base, CFileItemList &items);
 
   CStdString GetValue(char* str)           { return m_session->GetValue(str); }
-  CDateTime  GetValue(cmyth_timestamp_t t);
+  CDateTime  GetValue(cmyth_timestamp_t t) { return m_session->GetValue(t); }
   bool IsMovie(const cmyth_proginfo_t program);
   bool IsTvShow(const cmyth_proginfo_t program);
 

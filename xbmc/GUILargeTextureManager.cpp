@@ -24,6 +24,9 @@
 #include "Picture.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "Util.h"
 
 using namespace std;
 

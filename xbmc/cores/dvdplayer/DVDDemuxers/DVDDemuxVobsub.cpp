@@ -76,7 +76,7 @@ bool CDVDDemuxVobsub::Open(const string& filename)
   vobsub += ".sub";
 
   m_Input.reset(CDVDFactoryInputStream::CreateInputStream(NULL, vobsub, ""));
-  if(!m_Input.get() || !m_Input->Open(vobsub.c_str(), "video/mpeg"))
+  if(!m_Input.get() || !m_Input->Open(vobsub.c_str(), "video/x-vobsub"))
     return false;
 
   m_Demuxer.reset(new CDVDDemuxFFmpeg());

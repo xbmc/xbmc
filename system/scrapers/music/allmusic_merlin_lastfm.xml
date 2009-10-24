@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2009-09-16" name="allmusic &amp; merlin.pl &amp; lastfm.pl" content="albums" thumb="allmusic.gif">
+<scraper framework="1.1" date="2009-09-16" name="allmusic &amp; merlin.pl &amp; lastfm.pl" content="albums" thumb="allmusic.png" language="pl">
 	<include>common/htbackdrops.xml</include>
 	<include>common/allmusic.xml</include>
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;htbfanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Grab thumbs from HTBackdrops&quot; type=&quot;bool&quot; id=&quot;htbthumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetSettings>
 	<NfoUrl dest="3">
@@ -20,7 +20,7 @@
 	</NfoUrl>
 	<CreateAlbumSearchUrl dest="3">
 		<RegExp input="$$1" output="&lt;url post=&quot;yes&quot;&gt;http://www.allmusic.com/cg/amg.dll?P=amg&amp;amp;SQL=\1&amp;amp;OPT1=2&lt;/url&gt;" dest="3">
-			<expression></expression>
+			<expression/>
 		</RegExp>
 	</CreateAlbumSearchUrl>
 	<GetAlbumSearchResults dest="8">
@@ -31,7 +31,7 @@
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;year&gt;\1&lt;/year&gt;&lt;artist&gt;\2&lt;/artist&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url cache=&quot;allmusic-album.html&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;SQL=\3&lt;/url&gt;&lt;/entity&gt;" dest="5+">
 				<expression repeat="yes" noclean="1,2,3">&gt;([0-9]+)&lt;/.*?&gt;([a-zA-Z0-9].*?)&lt;.*?sql=([0-9:a-z]*)&quot;&gt;(.*?)&lt;.</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>		
 	</GetAlbumSearchResults>
 	<GetAlbumDetails dest="3">
@@ -58,9 +58,9 @@
 				<expression>\+(.*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;url function=&quot;MerlinLink&quot;&gt;http://merlin.pl/xbmc/browse/search/4,,1.html?phrase=&amp;amp;place=4+simple&amp;amp;carrier=3&amp;amp;offer=O&amp;amp;category=&amp;amp;title=$$6&amp;amp;person=$$7&amp;amp;firm=&amp;amp;date=&amp;amp;isbn=&amp;amp;sort=rank&amp;amp;x=40&amp;amp;y=12&lt;/url&gt;" dest="5+">
-				<expression noclean="1"></expression>
+				<expression noclean="1"/>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetAlbumDetails>
 	<MerlinLink dest="5">
@@ -68,7 +68,7 @@
 			<RegExp input="$$1" output="&lt;url function=&quot;GetReview&quot;&gt;http://merlin.pl\1&lt;/url&gt;" dest="2">
 				<expression>Liczba towar[^f]+f=&quot;([^&quot;]+)</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</MerlinLink>
 	<GetReview dest="5">
@@ -82,12 +82,12 @@
 			<RegExp input="$$1" output="\1" dest="2+">
 				<expression>contents&quot;&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetReview>
 	<CreateArtistSearchUrl dest="3">
 		<RegExp input="$$1" output="&lt;url post=&quot;yes&quot;&gt;http://www.allmusic.com/cg/amg.dll?P=amg&amp;amp;SQL=\1&amp;amp;OPT1=1&lt;/url&gt;" dest="3">
-			<expression></expression>
+			<expression/>
 		</RegExp>
 	</CreateArtistSearchUrl>
 	<GetArtistSearchResults dest="8">
@@ -98,7 +98,7 @@
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;genre&gt;\3&lt;/genre&gt;&lt;year&gt;\5&lt;/year&gt;&lt;url cache=&quot;allmusic-artist.html&quot; &gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;SQL=\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
 				<expression repeat="yes" noclean="1,2">style=&quot;[^=]*&lt;a href=&quot;[^&quot;]*sql=([^&quot;]*)&quot;&gt;([^&lt;]*)&lt;/a&gt;[^-]*[^&gt;]*&gt;([^&lt;]*)&lt;/TD&gt;[^&gt;]*&gt;(&amp;nbsp;)?([^&lt;]*)&lt;/td&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>		
 	</GetArtistSearchResults>
 	<GetArtistDetails dest="3">
@@ -122,12 +122,12 @@
 				<expression>\+(.*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;url function=&quot;LastfmLink&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.search&amp;amp;artist=$$6&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;" dest="5+">
-				<expression noclean="1"></expression>
+				<expression noclean="1"/>
 			</RegExp>            
 			<RegExp input="$$1" output="&lt;url function=&quot;GetAMGDiscography&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;sql=\1&lt;/url&gt;" dest="5+">
 				<expression noclean="1">sql=([^&quot;]*)&quot;&gt;Discography</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetArtistDetails>
 	<LastfmLink dest="5">
@@ -135,7 +135,7 @@
 			<RegExp input="$$1" output="&lt;url function=&quot;GetBiography&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&amp;amp;mbid=\2&amp;amp;lang=pl&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;" dest="2">
 				<expression noclean="1">&lt;artist&gt;.*?&lt;name&gt;([^&lt;]*)&lt;/name&gt;.*?&lt;mbid&gt;([^&lt;]*)&lt;/mbid&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</LastfmLink>
 	<GetBiography dest="5">
@@ -143,7 +143,7 @@
 			<RegExp input="$$1" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="2">
 				<expression clear="yes">&lt;content&gt;&lt;!\[CDATA\[(.*?)\]</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetBiography>
 </scraper>

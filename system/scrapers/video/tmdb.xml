@@ -5,12 +5,12 @@
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Trailers from Dtrailer.com&quot; type=&quot;bool&quot; id=&quot;trailer&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetSettings>
 	<CreateSearchUrl dest="3">
@@ -18,7 +18,7 @@
 			<RegExp input="$$2" output="%20(\1)" dest="4">
 				<expression clear="yes">(.+)</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</CreateSearchUrl>
 	<NfoUrl dest="3">
@@ -80,7 +80,6 @@
 			<RegExp input="$$1" output="&lt;url cache=&quot;tmdb-$$2.xml&quot; function=&quot;GetTMDBThumbs&quot;&gt;$$3&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-
 			<RegExp conditional="fanart" input="$$1" output="&lt;url cache=&quot;tmdb-$$2.xml&quot; function=&quot;GetTMDBFanart&quot;&gt;$$3&lt;/url&gt;" dest="5+">
 				<expression/>
 				</RegExp>
@@ -91,7 +90,7 @@
 					</RegExp>
 					<expression repeat="yes">([a-zA-Z0-9]+)</expression>
 				</RegExp>
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
