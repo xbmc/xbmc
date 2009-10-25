@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 10/10/2009-->
+<!--Date of translation: 10/25/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 23751 -->
+<!--Based on english strings version 23958 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1502,10 +1502,10 @@
   <string id="16023">交错设置</string>
   <string id="16024">取消中…</string>
   <string id="16025">输入艺人名字</string>
-  <string id="16026">播放列表回放取消</string>
-  <string id="16027">太多连续性错误</string>
+  <string id="16026">播放失败</string>
+  <string id="16027">一个或多个项目播放失败！</string>
   <string id="16028">输入数据</string>
- 
+  <string id="16029">详情请查看日志文件。</string>
   <string id="16030">取消舞会模式！</string>
   <string id="16031">资料库中没有符合条件的歌曲！</string>
   <string id="16032">无法初始化资料库！</string>
@@ -1585,6 +1585,7 @@
 
   <!-- string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)-->
 
+  <string id="20037">摘要</string>
   <string id="20038">锁定音乐部分</string>
   <string id="20039">锁定视频部分</string>
   <string id="20040">锁定图片部分</string>
@@ -1700,13 +1701,13 @@
   <string id="20151">取消自动关机</string>
   <string id="20152">锁定设置文件%s</string>
   <string id="20153">浏览…</string>
-  <string id="20154">系统基本信息</string>
-  <string id="20155">存储器信息</string>
-  <string id="20156">硬盘信息</string>
-  <string id="20157">DVD-ROM 光驱信息</string>
+  <string id="20154">系统摘要信息</string>
+  <string id="20155">存储设备信息</string>
+  <string id="20156">硬盘驱动器信息</string>
+  <string id="20157">光盘驱动器信息</string>
   <string id="20158">网络设备信息</string>
   <string id="20159">视频设备信息</string>
-  <string id="20160">硬件信息</string>
+  <string id="20160">硬件设备信息</string>
   <string id="20161">总计</string>
   <string id="20162">已使用</string>
   <string id="20163">中</string>
