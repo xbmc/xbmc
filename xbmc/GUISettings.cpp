@@ -425,7 +425,7 @@ void CGUISettings::Initialize()
   AddCategory(5, "videolibrary", 14022);
 
   AddBool(3, "videolibrary.hideplots", 20369, false);
-  AddInt(6, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddInt(0, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddSeparator(7, "videolibrary.sep2");
   AddBool(8, "videolibrary.updateonstartup", 22000, false);
   AddBool(0, "videolibrary.backgroundupdate", 22001, false);
