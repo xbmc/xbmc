@@ -522,9 +522,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(351), LCD_TYPE_NONE);
-#ifdef _LINUX
       pControl->AddLabel("LCDproc", LCD_TYPE_LCDPROC);
-#endif
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("harddisk.aamlevel"))
@@ -1378,18 +1376,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("system.leddisableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE);
     }
-#ifndef _LINUX
-    else if (strSetting.Equals("lcd.backlight") || strSetting.Equals("lcd.disableonplayback"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
-    }
-    else if (strSetting.Equals("lcd.contrast"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
-    }
-#endif
     else if (strSetting.Equals("lookandfeel.enablemouse"))
     {
     }
@@ -1851,16 +1837,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #endif
     g_lcd->Initialize();
   }
-#ifndef _LINUX
-  else if (strSetting.Equals("lcd.backlight"))
-  {
-    g_lcd->SetBackLight(((CSettingInt *)pSettingControl->GetSetting())->GetData());
-  }
-  else if (strSetting.Equals("lcd.contrast"))
-  {
-    g_lcd->SetContrast(((CSettingInt *)pSettingControl->GetSetting())->GetData());
-  }
-#endif
 #endif
   else if ( strSetting.Equals("servers.webserver") || strSetting.Equals("servers.webserverport") || 
             strSetting.Equals("servers.webserverusername") || strSetting.Equals("servers.webserverpassword"))

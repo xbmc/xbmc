@@ -1615,11 +1615,7 @@ void CApplication::DimLCDOnPlayback(bool dim)
       g_lcd->SetBackLight(0);
   }
   else if(!dim)
-#ifdef _LINUX
     g_lcd->SetBackLight(1);
-#else
-    g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
-#endif
 #endif
 }
 

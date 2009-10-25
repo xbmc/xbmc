@@ -337,14 +337,7 @@ void CGUISettings::Initialize()
 
 #ifdef HAS_LCD
   AddCategory(4, "lcd", 448);
-#ifdef _LINUX
   AddInt(2, "lcd.type", 4501, LCD_TYPE_NONE, LCD_TYPE_NONE, 1, LCD_TYPE_LCDPROC, SPIN_CONTROL_TEXT);
-#endif
-#ifndef _LINUX // xbmc's lcdproc can't control backlight/contrast yet ..
-  AddInt(4, "lcd.backlight", 463, 80, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddInt(5, "lcd.contrast", 465, 100, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddSeparator(6, "lcd.sep1");
-#endif
   AddInt(7, "lcd.disableonplayback", 20310, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
   AddBool(8, "lcd.enableonpaused", 20312, true);
 #endif
