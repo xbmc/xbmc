@@ -278,6 +278,7 @@ public:
   bool Load(bool radio);
   bool Update();
   void ReNumberAndCheck(void);
+  void SearchAndSetChannelIcons(bool writeDB = false);
   int GetNumChannels() const { return size(); }
   int GetNumHiddenChannels() const { return m_iHiddenChannels; }
   int GetChannels(CFileItemList* results, int group_id = -1);
@@ -294,6 +295,7 @@ public:
   void Clear();
 
   static int GetNumChannelsFromAll();
+  static void SearchMissingChannelIcons();
   static cPVRChannelInfoTag *GetByClientFromAll(int Number, int ClientID);
   static cPVRChannelInfoTag *GetByChannelIDFromAll(long ChannelID);
   static cPVRChannelInfoTag *GetByUniqueIDFromAll(long UniqueID);
