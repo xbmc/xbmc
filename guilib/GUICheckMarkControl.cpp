@@ -127,6 +127,13 @@ void CGUICheckMarkControl::DynamicResourceAlloc(bool bOnOff)
   m_imgCheckMarkNoFocus.DynamicResourceAlloc(bOnOff);
 }
 
+void CGUICheckMarkControl::SetInvalid()
+{
+  CGUIControl::SetInvalid();
+  m_imgCheckMark.SetInvalid();
+  m_imgCheckMarkNoFocus.SetInvalid();
+}
+
 void CGUICheckMarkControl::SetSelected(bool bOnOff)
 {
   m_bSelected = bOnOff;

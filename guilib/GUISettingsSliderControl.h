@@ -53,6 +53,7 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
+  virtual void SetInvalid();
   virtual void SetPosition(float posX, float posY);
   virtual float GetWidth() const { return m_buttonControl.GetWidth();};
   virtual void SetWidth(float width);

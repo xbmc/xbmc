@@ -326,7 +326,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
           g_guiSettings.SetInt("videoscreen.resolution", g_graphicsContext.GetVideoResolution());
           CreateSettings();
         }
-        return true;
       }
     }
     break;
