@@ -6,6 +6,11 @@ bool CDBusUtil::GetBoolean(const char *destination, const char *object, const ch
   return GetVariant(destination, object, interface, property).Equals("true");
 }
 
+int CDBusUtil::GetInt32(const char *destination, const char *object, const char *interface, const char *property)
+{
+  return atoi(GetVariant(destination, object, interface, property).c_str());
+}
+
 CStdString CDBusUtil::GetVariant(const char *destination, const char *object, const char *interface, const char *property)
 {
 //dbus-send --system --print-reply --dest=destination object org.freedesktop.DBus.Properties.Get string:interface string:property
