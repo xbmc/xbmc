@@ -156,6 +156,8 @@ protected:
   unsigned int        m_aspectratio_x;
   unsigned int        m_aspectratio_y;
   uint64_t            m_old_timestamp;
+  int                 m_y_buffer_size;
+  int                 m_uv_buffer_size;
   BYTE                *m_y_buffer_ptr;
   BYTE                *m_uv_buffer_ptr;
 };
@@ -167,7 +169,7 @@ protected:
 CMPCDecodeBuffer::CMPCDecodeBuffer(size_t size) :
 m_Size(size)
 {
-  m_pBuffer = (unsigned char*)_aligned_malloc(size, 4);
+  m_pBuffer = (unsigned char*)_aligned_malloc(size, 16);
 }
 
 CMPCDecodeBuffer::~CMPCDecodeBuffer()
@@ -294,6 +296,8 @@ CMPCOutputThread::CMPCOutputThread(BCM::HANDLE device) :
 {
   m_width = 1920;
   m_height = 1080;
+  m_y_buffer_size = m_width * m_height;
+  m_uv_buffer_size = m_y_buffer_size / 2;
 }
 
 CMPCOutputThread::~CMPCOutputThread()
@@ -578,77 +582,92 @@ CMPCDecodeBuffer* CMPCOutputThread::AllocBuffer()
 CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
 {
   BCM::BC_STATUS ret;
-  
-  // Get next output buffer from the free list
-  CMPCDecodeBuffer* pBuffer = AllocBuffer();
-  if (!pBuffer) // No free pre-allocated buffers so make one
-  {
-    pBuffer = new CMPCDecodeBuffer( sizeof(BCM::BC_DTS_PROC_OUT) ); // Allocate a new buffer
-    CLog::Log(LOGDEBUG, "%s: Added a new Buffer (count=%d). Size: %d", __MODULE_NAME__, (int)m_BufferCount, pBuffer->GetSize());    
-  }
-
-  // Set-up output struct
   BCM::BC_DTS_PROC_OUT procOut;
-  memset(&procOut, 0, sizeof(BCM::BC_DTS_PROC_OUT));
-
-  // Fetch data from the decoder
-  BCM::DtsReleaseOutputBuffs(m_Device, NULL, FALSE);
-  ret = BCM::DtsProcOutputNoCopy(m_Device, m_OutputTimeout, &procOut);
-
-  switch (ret)
-  {
-    case BCM::BC_STS_SUCCESS:
-      if (procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID)
-      {
-        if (procOut.PicInfo.timeStamp && (procOut.PicInfo.timeStamp != m_old_timestamp))
-        {
-          pBuffer->SetPts(procOut.PicInfo.timeStamp);
-          memcpy(pBuffer->GetPtr(), &procOut, sizeof(BCM::BC_DTS_PROC_OUT));
-          m_old_timestamp = procOut.PicInfo.timeStamp;
-          m_PictureCount++;
-          m_y_buffer_ptr  = (BYTE*)procOut.Ybuff;  // Y plane
-          m_uv_buffer_ptr = (BYTE*)procOut.UVbuff; // UV packed plane
-          return pBuffer;
-        }
-        else
-        {
-          //CLog::Log(LOGDEBUG, "%s: Duplicate or no timestamp detected: %llu", __MODULE_NAME__, procOut.PicInfo.timeStamp); 
-        }
-      }
-    break;
-      
-    case BCM::BC_STS_NO_DATA:
-    break;
-
-    case BCM::BC_STS_FMT_CHANGE:
-      CLog::Log(LOGDEBUG, "%s: Format Change Detected. Flags: 0x%08x", __MODULE_NAME__, procOut.PoutFlags); 
-      if ((procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID) && (procOut.PoutFlags & BCM::BC_POUT_FLAGS_FMT_CHANGE))
-      {
-        PrintFormat(procOut.PicInfo);
-        
-        SetAspectRatio(&procOut.PicInfo);
-        SetFrameRate(procOut.PicInfo.frame_rate);
-        if (procOut.PicInfo.height == 1088) {
-          procOut.PicInfo.height = 1080;
-        }
-        m_width = procOut.PicInfo.width;
-        m_height = procOut.PicInfo.height;
-
-        m_OutputTimeout = 10000;
-        m_PictureCount = 0;
-      }
-    break;
-    
-    default:
-      if (ret > 26)
-        CLog::Log(LOGDEBUG, "%s: DtsProcOutput returned %d.", __MODULE_NAME__, ret);
-      else
-        CLog::Log(LOGDEBUG, "%s: DtsProcOutput returned %s.", __MODULE_NAME__, g_DtsStatusText[ret]);
-    break;
-  }  
-  FreeBuffer(pBuffer); // Use it again later
+  CMPCDecodeBuffer *pBuffer = NULL;
+  bool got_picture = false;
   
-  return NULL;
+  do
+  {
+    // Setup output struct
+    memset(&procOut, 0, sizeof(BCM::BC_DTS_PROC_OUT));
+
+    // Fetch data from the decoder
+    ret = BCM::DtsProcOutputNoCopy(m_Device, m_OutputTimeout, &procOut);
+
+    switch (ret)
+    {
+      case BCM::BC_STS_SUCCESS:
+        if (procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID)
+        {
+          if (procOut.PicInfo.timeStamp && (procOut.PicInfo.timeStamp != m_old_timestamp))
+          {
+            uint8_t *tmp_buffer;
+
+            // Get next output buffer from the free list
+            pBuffer = AllocBuffer();
+            if (!pBuffer) // No free pre-allocated buffers so make one
+            {
+              pBuffer = new CMPCDecodeBuffer( sizeof(BCM::BC_DTS_PROC_OUT) ); // Allocate a new buffer
+              CLog::Log(LOGDEBUG, "%s: Added a new Buffer (count=%d). Size: %d", __MODULE_NAME__, (int)m_BufferCount, pBuffer->GetSize());    
+            }
+
+            pBuffer->SetPts(procOut.PicInfo.timeStamp);
+            memcpy(pBuffer->GetPtr(), &procOut, sizeof(BCM::BC_DTS_PROC_OUT));
+            m_old_timestamp = procOut.PicInfo.timeStamp;
+            m_PictureCount++;
+            m_y_buffer_ptr  = (BYTE*)procOut.Ybuff;  // Y plane
+            m_uv_buffer_ptr = (BYTE*)procOut.UVbuff; // UV packed plane
+            
+            tmp_buffer = (uint8_t*)_aligned_malloc(m_y_buffer_size + m_uv_buffer_size, 16);
+            fast_memcpy(tmp_buffer, m_y_buffer_ptr, m_y_buffer_size);
+            fast_memcpy(tmp_buffer + m_y_buffer_size, m_uv_buffer_ptr, m_uv_buffer_size);
+            _aligned_free(tmp_buffer);
+            got_picture = true;
+          }
+          else
+          {
+            //CLog::Log(LOGDEBUG, "%s: Duplicate or no timestamp detected: %llu", __MODULE_NAME__, procOut.PicInfo.timeStamp); 
+          }
+        }
+      break;
+        
+      case BCM::BC_STS_NO_DATA:
+      break;
+
+      case BCM::BC_STS_FMT_CHANGE:
+        CLog::Log(LOGDEBUG, "%s: Format Change Detected. Flags: 0x%08x", __MODULE_NAME__, procOut.PoutFlags); 
+        if ((procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID) && (procOut.PoutFlags & BCM::BC_POUT_FLAGS_FMT_CHANGE))
+        {
+          PrintFormat(procOut.PicInfo);
+          
+          SetAspectRatio(&procOut.PicInfo);
+          SetFrameRate(procOut.PicInfo.frame_rate);
+          if (procOut.PicInfo.height == 1088) {
+            procOut.PicInfo.height = 1080;
+          }
+          m_width = procOut.PicInfo.width;
+          m_height = procOut.PicInfo.height;
+          m_y_buffer_size = m_width * m_height;
+          m_uv_buffer_size = m_y_buffer_size / 2;
+
+          m_OutputTimeout = 10000;
+          m_PictureCount = 0;
+        }
+      break;
+      
+      default:
+        if (ret > 26)
+          CLog::Log(LOGDEBUG, "%s: DtsProcOutput returned %d.", __MODULE_NAME__, ret);
+        else
+          CLog::Log(LOGDEBUG, "%s: DtsProcOutput returned %s.", __MODULE_NAME__, g_DtsStatusText[ret]);
+      break;
+    }
+    
+    BCM::DtsReleaseOutputBuffs(m_Device, NULL, FALSE);
+    
+  } while (!m_bStop && !got_picture);
+  
+  return pBuffer;
 }
 
 void CMPCOutputThread::Process()
@@ -890,19 +909,21 @@ bool CCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   m_framerate = m_pOutputThread->GetFrameRate();
 
   pDvdVideoPicture->pts = pBuffer->GetPts() / 10.0;
+  pDvdVideoPicture->iWidth = m_pOutputThread->GetWidth();
+  pDvdVideoPicture->iHeight = m_pOutputThread->GetHeight();
+  pDvdVideoPicture->iDisplayWidth = pDvdVideoPicture->iWidth;
+  pDvdVideoPicture->iDisplayHeight = pDvdVideoPicture->iHeight;
   pDvdVideoPicture->data[0] = procOut->Ybuff;  // Y plane
   pDvdVideoPicture->data[1] = procOut->UVbuff; // UV packed plane
-  pDvdVideoPicture->iLineSize[0] = procOut->PicInfo.width;
-  pDvdVideoPicture->iLineSize[1] = procOut->PicInfo.width*2;
+  pDvdVideoPicture->iLineSize[0] = pDvdVideoPicture->iWidth;
+  pDvdVideoPicture->iLineSize[1] = pDvdVideoPicture->iWidth * 2;
   //CLog::Log(LOGDEBUG, "%s: procOut->Ybuff %p", __MODULE_NAME__, procOut->Ybuff);   
 
   pDvdVideoPicture->iRepeatPicture = 0;
   pDvdVideoPicture->iDuration = (DVD_TIME_BASE / m_framerate);
   pDvdVideoPicture->color_range = 0;
-  pDvdVideoPicture->iWidth = procOut->PicInfo.width;
-  pDvdVideoPicture->iHeight = procOut->PicInfo.height;
-  pDvdVideoPicture->iDisplayWidth = procOut->PicInfo.width;
-  pDvdVideoPicture->iDisplayHeight = procOut->PicInfo.height;
+  // todo 
+  //pDvdVideoPicture->color_matrix = ??;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iFlags |= m_interlace ? DVP_FLAG_INTERLACED : 0;
   //pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
@@ -915,6 +936,13 @@ bool CCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   
   return true;
 }
+
+/*
+bool CCrystalHD::FreePicture(DVDVideoPicture* pDvdVideoPicture)
+{
+  m_pOutputThread->FreeBuffer(pDvdVideoPicture);
+}
+*/
 
 bool CCrystalHD::LoadNV12Pointers(YV12Image* pDest)
 {

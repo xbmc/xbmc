@@ -26,6 +26,13 @@
 #include "CrystalHD.h"
 #include "DVDVideoCodec.h"
 
+typedef struct H264BSFContext {
+    uint8_t  length_size;
+    uint8_t  first_idr;
+    uint8_t *sps_pps_data;
+    uint32_t size;
+} H264BSFContext;
+
 class CDVDVideoCodecCrystalHD : public CDVDVideoCodec
 {
 public:
@@ -42,6 +49,17 @@ public:
   virtual const char* GetName() { return (const char*)m_pFormatName; }
 
 protected:
+  bool init_h264_mp4toannexb_filter(CDVDStreamInfo &hints);
+  void alloc_and_copy(uint8_t **poutbuf,     int *poutbuf_size,
+                const uint8_t *sps_pps, uint32_t sps_pps_size,
+                const uint8_t *in,      uint32_t in_size);
+  bool prepend_sps_pps_data(BYTE* pData, int iSize);
+ 
+  bool            m_insert_sps_pps;
+  uint8_t         *m_sps_pps_data;
+  uint32_t        m_sps_pps_size;
+  H264BSFContext  m_sps_pps_context;
+
   CCrystalHD      *m_Device;
   bool            m_DropPictures;
   const char*     m_pFormatName;

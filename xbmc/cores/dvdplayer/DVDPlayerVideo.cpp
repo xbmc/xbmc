@@ -467,7 +467,11 @@ void CDVDPlayerVideo::Process()
       // picture from a demux packet, this should be reasonable
       // for libavformat as a demuxer as it normally packetizes
       // pictures when they come from demuxer
+#if defined(HAVE_LIBCRYSTALHD)
+      if(bRequestDrop && !bPacketDrop && (iDecoderState & VC_BUFFER))
+#else
       if(bRequestDrop && !bPacketDrop && (iDecoderState & VC_BUFFER) && !(iDecoderState & VC_PICTURE))
+#endif
       {
         m_iDroppedFrames++;
         iDropped++;
@@ -1044,7 +1048,21 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   if (index < 0)
     return EOS_DROPPED;
 
-  ProcessOverlays(pPicture, &image, pts);
+  if(pPicture->format == DVDVideoPicture::FMT_NV12)
+  {
+    // Hack, Hack to get NV12 pict frame pointers ref'ed as texture planes
+    //BYTE* pPlanes[] = {pPicture->data[0], pPicture->data[1], NULL};
+    //g_renderManager.SetPlaneData(index, 3, pPlanes);
+
+    // Copy Y
+    //fast_memcpy(pDest->plane[0], pSource->data[0], pSource->iWidth * pPicture->pSource);
+    // Copy UV
+    //fast_memcpy(pDest->plane[1], pSource->data[1], pSource->iWidth * pPicture->pSource/2);
+  }
+  else
+  {
+    ProcessOverlays(pPicture, &image, pts);
+  }
 
   // tell the renderer that we've finished with the image (so it can do any
   // post processing before FlipPage() is called.)
