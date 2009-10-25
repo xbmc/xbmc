@@ -2793,6 +2793,7 @@ void CApplication::FrameMove()
   // never set a frametime less than 2 fps to avoid problems when debuggin and on breaks
   if( frameTime > 0.5 ) frameTime = 0.5;
 
+  g_graphicsContext.Lock();
   // check if there are notifications to display
   if (m_guiDialogKaiToast.DoWork())
   {
@@ -2801,6 +2802,7 @@ void CApplication::FrameMove()
       m_guiDialogKaiToast.Show();
     }
   }
+  g_graphicsContext.Unlock();
 
   UpdateLCD();
   
