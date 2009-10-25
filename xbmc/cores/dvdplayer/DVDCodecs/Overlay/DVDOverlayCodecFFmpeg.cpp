@@ -194,7 +194,7 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     overlay->replace  = true;
     overlay->linesize = rect.w;
     overlay->data     = (BYTE*)malloc(rect.w * rect.h);
-    overlay->palette  = (DWORD*)malloc(rect.nb_colors*4);
+    overlay->palette  = (uint32_t*)malloc(rect.nb_colors*4);
     overlay->palette_colors = rect.nb_colors;
     overlay->x        = rect.x;
     overlay->y        = rect.y;
