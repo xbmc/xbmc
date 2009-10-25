@@ -27,6 +27,7 @@
 #include "DVDClock.h"
 #include "utils/Win32Exception.h"
 #include "utils/log.h"
+#include "utils/EndianSwap.h"
 
 CDVDOverlayCodecFFmpeg::CDVDOverlayCodecFFmpeg() : CDVDOverlayCodec("FFmpeg Subtitle Decoder")
 {
@@ -248,7 +249,9 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
       t += overlay->linesize;
     }
 
-    memcpy(overlay->palette, rect.pict.data[1], rect.nb_colors*4);
+    for(int i=0;i<rect.nb_colors;i++)
+      overlay->palette[i] = Endian_SwapLE32(((uint32_t *)rect.pict.data[1])[i]);
+
     m_dllAvUtil.av_free(rect.pict.data[0]);
     m_dllAvUtil.av_free(rect.pict.data[1]);
     m_dllAvUtil.av_freep(&m_Subtitle.rects[m_SubtitleIndex]);
