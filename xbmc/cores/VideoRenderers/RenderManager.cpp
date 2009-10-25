@@ -387,12 +387,6 @@ void CXBMCRenderManager::Present()
   if(g_graphicsContext.IsFullScreenVideo() && g_VDPAU)
     WaitPresentTime(m_presenttime);
 #endif
-#ifdef HAVE_LIBCRYSTALHD
-  /* wait for this present to be valid */
-  //if(g_graphicsContext.IsFullScreenVideo() && g_CrystalHD)
-  if(g_CrystalHD)
-    WaitPresentTime(m_presenttime);
-#endif
 
   if (!m_pRenderer)
   {
@@ -421,9 +415,6 @@ void CXBMCRenderManager::Present()
       m_presentevent.Set();
 #ifdef HAVE_LIBVDPAU
     if (!g_VDPAU)
-#endif
-#ifdef HAVE_LIBCRYSTALHD
-    if (!g_CrystalHD)
 #endif
     {
       WaitPresentTime(m_presenttime);
