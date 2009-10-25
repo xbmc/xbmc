@@ -26,7 +26,7 @@
 #include "RenderSystemDX.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "GUIWindowManager.h"/
+#include "GUIWindowManager.h"
 
 using namespace std;
 
@@ -103,7 +103,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height)
   m_nBackBufferHeight = height;
 
   CRect rc;
-  rc.SetRect(0, 0, width, height);
+  rc.SetRect(0, 0, (float)width, (float)height);
 
   SetViewPort(rc);
 
