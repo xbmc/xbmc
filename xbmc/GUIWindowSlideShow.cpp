@@ -446,15 +446,15 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
 {
   if (m_bScreensaver)
   {
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
     
-  switch (action.wID)
+  switch (action.id)
   {
   case ACTION_SHOW_CODEC:
     {
-      CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);
+      CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)g_windowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);
       if (pictureInfo)
       {
         // no need to set the picture here, it's done in Render()
@@ -464,7 +464,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     break;
   case ACTION_PREVIOUS_MENU:
   case ACTION_STOP:
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     break;
   case ACTION_NEXT_PICTURE:
 //    if (m_iZoomFactor == 1)
@@ -533,10 +533,10 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
   case ACTION_ZOOM_LEVEL_7:
   case ACTION_ZOOM_LEVEL_8:
   case ACTION_ZOOM_LEVEL_9:
-    Zoom((action.wID - ACTION_ZOOM_LEVEL_NORMAL) + 1);
+    Zoom((action.id - ACTION_ZOOM_LEVEL_NORMAL) + 1);
     break;
   case ACTION_ANALOG_MOVE:
-    Move(action.fAmount1*PICTURE_MOVE_AMOUNT_ANALOG, -action.fAmount2*PICTURE_MOVE_AMOUNT_ANALOG);
+    Move(action.amount1*PICTURE_MOVE_AMOUNT_ANALOG, -action.amount2*PICTURE_MOVE_AMOUNT_ANALOG);
     break;
   default:
     return CGUIWindow::OnAction(action);
@@ -576,7 +576,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       {
         m_ImageLib.Unload();
       }
-      m_gWindowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
+      g_windowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
       // set screen filters to video filters so that we
       // get sharper images
       g_graphicsContext.SetScreenFilters(false);
@@ -601,7 +601,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       {
         m_ImageLib.Load();
       }
-      m_gWindowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
+      g_windowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
       // set screen filters to video filters so that we
       // get sharper images
       g_graphicsContext.SetScreenFilters(true);
@@ -807,7 +807,7 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursiv
 
   StartSlideShow();
   if (NumSlides())
-    m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+    g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
 void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursivePaths)

@@ -78,7 +78,7 @@ bool CSpecialProtocol::ComparePath(const CStdString &path1, const CStdString &pa
 CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
 {
   CURL url(path);
-  
+
   // check for special-protocol, if not, return
   if (!url.GetProtocol().Equals("special"))
   {
@@ -89,28 +89,28 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
      // printf("Trying to access old style dir: %s\n", path.c_str());
     }
 #endif
-    
+
     return path;
   }
-  
+
   CStdString FullFileName = url.GetFileName();
- 
+
   CStdString translatedPath;
   CStdString FileName;
   CStdString RootDir;
-  
+
   // Split up into the special://root and the rest of the filename
   int pos = FullFileName.Find('/');
   if (pos != -1 && pos > 1)
   {
     RootDir = FullFileName.Left(pos);
-    
+
     if (pos < FullFileName.GetLength())
       FileName = FullFileName.Mid(pos + 1);
   }
   else
     RootDir = FullFileName;
-  
+
   if (RootDir.Equals("subtitles"))
     CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), FileName, translatedPath);
   else if (RootDir.Equals("userdata"))
@@ -138,7 +138,7 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
   else if (RootDir.Equals("home"))
     CUtil::AddFileToFolder(GetPath("home"), FileName, translatedPath);
   else if (RootDir.Equals("userhome"))
-    CUtil::AddFileToFolder(GetPath("userhome"), FileName, translatedPath);  
+    CUtil::AddFileToFolder(GetPath("userhome"), FileName, translatedPath);
   else if (RootDir.Equals("temp"))
     CUtil::AddFileToFolder(GetPath("temp"), FileName, translatedPath);
   else if (RootDir.Equals("profile"))

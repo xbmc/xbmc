@@ -55,7 +55,7 @@
 
 using namespace std;
 
-CGUIMediaWindow::CGUIMediaWindow(DWORD id, const char *xmlFile)
+CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
 {
   m_vecItems = new CFileItemList;
@@ -132,30 +132,30 @@ CFileItemPtr CGUIMediaWindow::GetCurrentListItem(int offset)
 
 bool CGUIMediaWindow::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PARENT_DIR)
+  if (action.id == ACTION_PARENT_DIR)
   {
     if (m_vecItems->IsVirtualDirectoryRoot() && g_advancedSettings.m_bUseEvilB)
-      m_gWindowManager.PreviousWindow();
+      g_windowManager.PreviousWindow();
     else
       GoParentFolder();
     return true;
   }
 
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
   {
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
 
   // the non-contextual menu can be called at any time
-  if (action.wID == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
+  if (action.id == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
   {
     OnPopupMenu(-1);
     return true;
   }
 
   // live filtering
-  if (action.wID == ACTION_FILTER_CLEAR)
+  if (action.id == ACTION_FILTER_CLEAR)
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
     message.SetStringParam("");
@@ -163,17 +163,17 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
   
-  if (action.wID == ACTION_BACKSPACE)
+  if (action.id == ACTION_BACKSPACE)
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 2); // 2 for delete
     OnMessage(message);
     return true;
   }
 
-  if (action.wID >= ACTION_FILTER_SMS2 && action.wID <= ACTION_FILTER_SMS9)
+  if (action.id >= ACTION_FILTER_SMS2 && action.id <= ACTION_FILTER_SMS9)
   {
     CStdString filter;
-    filter.Format("%i", (int)(action.wID - ACTION_FILTER_SMS2 + 2));
+    filter.Format("%i", (int)(action.id - ACTION_FILTER_SMS2 + 2));
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 1); // 1 for append
     message.SetStringParam(filter);
     OnMessage(message);
@@ -256,7 +256,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_SETFOCUS:
     {
-      if (m_viewControl.HasControl(message.GetControlId()) && (DWORD) m_viewControl.GetCurrentControl() != message.GetControlId())
+      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
       {
         m_viewControl.SetFocused();
         return true;
@@ -412,12 +412,12 @@ void CGUIMediaWindow::UpdateButtons()
       if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_ASC)
       {
         CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
-        g_graphicsContext.SendMessage(msg);
+        g_windowManager.SendMessage(msg);
       }
       else
       {
         CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CONTROL_BTNSORTASC);
-        g_graphicsContext.SendMessage(msg);
+        g_windowManager.SendMessage(msg);
       }
     }
 
@@ -768,7 +768,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     if (pItem->m_strPath == "newplaylist://")
     {
       m_vecItems->RemoveDiscCache();
-      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR,"newplaylist://");
+      g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR,"newplaylist://");
       return true;
     }
     else if (pItem->m_strPath.Left(19).Equals("newsmartplaylist://"))
@@ -921,9 +921,6 @@ void CGUIMediaWindow::GoParentFolder()
   CStdString strOldPath(m_vecItems->m_strPath);
   strParent = m_history.RemoveParentPath();
   Update(strParent);
-
-  if (!g_guiSettings.GetBool("filelists.fulldirectoryhistory"))
-    m_history.RemoveSelectedItem(strOldPath); //Delete current path
 }
 
 // \brief Override the function to change the default behavior on how
@@ -1172,7 +1169,7 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
     if (iItem >= 0 && iItem < m_vecItems->Size())
       m_vecItems->Get(iItem)->Select(true);
 
-    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
     if (!pMenu) return false;
     // load our menu
     pMenu->Initialize();
@@ -1296,15 +1293,13 @@ bool CGUIMediaWindow::WaitForNetwork() const
   if (g_network.IsAvailable())
     return true;
 
-  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (!progress)
     return true;
 
   CURL url(m_vecItems->m_strPath);
-  CStdString displayPath;
-  url.GetURLWithoutUserDetails(displayPath);
   progress->SetHeading(1040); // Loading Directory
-  progress->SetLine(1, displayPath);
+  progress->SetLine(1, url.GetWithoutUserDetails());
   progress->ShowProgressBar(false);
   progress->StartModal();
   while (!g_network.IsAvailable())

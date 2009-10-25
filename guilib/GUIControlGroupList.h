@@ -35,7 +35,7 @@
 class CGUIControlGroupList : public CGUIControlGroup
 {
 public:
-  CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation, bool useControlPositions, DWORD alignment);
+  CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment);
   virtual ~CGUIControlGroupList(void);
   virtual CGUIControlGroupList *Clone() const { return new CGUIControlGroupList(*this); };
 
@@ -58,7 +58,7 @@ protected:
   float GetAlignOffset() const;
 
   float m_itemGap;
-  DWORD m_pageControl;
+  int m_pageControl;
 
   float m_offset; // measurement in pixels of our origin
   float m_totalSize;
@@ -69,6 +69,6 @@ protected:
 
   bool m_useControlPositions;
   ORIENTATION m_orientation;
-  DWORD m_alignment;
+  uint32_t m_alignment;
 };
 

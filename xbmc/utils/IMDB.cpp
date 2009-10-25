@@ -69,6 +69,9 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
 
   movieTitle.ToLower();
 
+  if (m_info.strContent.Equals("musicvideos"))
+    movieTitle.Replace("-"," ");
+
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s', language: '%s', date: '%s', framework: '%s')",
     __FUNCTION__, movieTitle.c_str(), m_info.strTitle.c_str(), m_info.strPath.c_str(), m_info.strContent.c_str(), m_info.strLanguage.c_str(), m_info.strDate.c_str(), m_info.strFramework.c_str());
 
@@ -84,7 +87,8 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
        return false;
 
       CScraperUrl scrURL("filenamescrape");
-      scrURL.strTitle = strMovie;
+      CUtil::RemoveExtension(strName);
+      scrURL.strTitle = strName;
       movielist.push_back(scrURL);
       return 1;
     }
@@ -136,7 +140,7 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
     CStdString strMessage;
     if (message && message->FirstChild() && message->FirstChild()->Value())
       strMessage = message->FirstChild()->Value();
-    CGUIDialogOK* dialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    CGUIDialogOK* dialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     dialog->SetHeading(strTitle);
     dialog->SetLine(0,strMessage);
     dialog->DoModal(); 
@@ -446,28 +450,13 @@ void CIMDB::RemoveAllAfter(char* szMovie, const char* szSearch)
 
 void CIMDB::GetURL(const CStdString &movieFile, const CStdString &movieName, const CStdString &movieYear, CScraperUrl& scrURL)
 {
-  bool bOkay = false;
-  if (m_info.strContent.Equals("musicvideos"))
-  {
-    CVideoInfoTag tag;
-    if (ScrapeFilename(movieFile,tag))
-    {
-      m_parser.m_param[0] = tag.m_strArtist;
-      m_parser.m_param[1] = tag.m_strTitle;
-      CUtil::URLEncode(m_parser.m_param[0]);
-      CUtil::URLEncode(m_parser.m_param[1]);
-      bOkay = true;
-    }
-  }
-  if (!bOkay)
-  {
     if (!movieYear.IsEmpty())
       m_parser.m_param[1] = movieYear;
 
     // convert to the encoding requested by the parser
     g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), movieName, m_parser.m_param[0]);
     CUtil::URLEncode(m_parser.m_param[0]);
-  }
+ 
   scrURL.ParseString(m_parser.Parse("CreateSearchUrl",&m_info.settings));
 }
 
@@ -677,6 +666,7 @@ bool CIMDB::ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details
   CUtil::RemoveExtension(m_parser.m_param[0]);
   m_parser.m_param[0].Replace("_"," ");
   CStdString strResult = m_parser.Parse("FileNameScrape",&m_info.settings);
+  CLog::Log(LOGDEBUG,"scraper: FileNameScrape returned %s", strResult.c_str());
   TiXmlDocument doc;
   doc.Parse(strResult.c_str());
   if (doc.RootElement())

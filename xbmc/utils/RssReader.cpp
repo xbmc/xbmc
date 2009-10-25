@@ -32,6 +32,7 @@
 #include "CocoaUtils.h"
 #endif
 #include "SystemInfo.h"
+#include "GUIRSSControl.h"
 
 using namespace std;
 using namespace XFILE;
@@ -199,7 +200,7 @@ void CRssReader::Process()
   UpdateObserver();
 }
 
-void CRssReader::getFeed(vector<DWORD> &text)
+void CRssReader::getFeed(vecText &text)
 {
   text.clear();
   // double the spaces at the start of the set
@@ -211,13 +212,13 @@ void CRssReader::getFeed(vector<DWORD> &text)
       text.push_back(L' ');
     for (unsigned int j = 0; j < m_strFeed[i].size(); j++)
     {
-      DWORD letter = m_strFeed[i][j] | ((m_strColors[i][j] - 48) << 16);
+      character_t letter = m_strFeed[i][j] | ((m_strColors[i][j] - 48) << 16);
       text.push_back(letter);
     }
   }
 }
 
-void CRssReader::AddTag(const CStdString aString)
+void CRssReader::AddTag(const CStdString &aString)
 {
   m_tagSet.push_back(aString);
 }
@@ -409,7 +410,7 @@ void CRssReader::SetObserver(IRssObserver *observer)
 void CRssReader::UpdateObserver()
 {
   if (!m_pObserver) return;
-  vector<DWORD> feed;
+  vecText feed;
   getFeed(feed);
   if (feed.size() > 0)
   {
@@ -469,7 +470,7 @@ void CRssManager::Stop()
 }
 
 // returns true if the reader doesn't need creating, false otherwise
-bool CRssManager::GetReader(DWORD controlID, DWORD windowID, IRssObserver* observer, CRssReader *&reader)
+bool CRssManager::GetReader(int controlID, int windowID, IRssObserver* observer, CRssReader *&reader)
 {
   // check to see if we've already created this reader
   for (unsigned int i = 0; i < m_readers.size(); i++)

@@ -974,6 +974,38 @@
 					<height>2</height>
 					<texture>separator.png</texture>
 				</control>
+				<control type="radiobutton" id="408">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>$LOCALIZE[31207]</label>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<onclick>Skin.ToggleSetting(SubtitleScript_Enable)</onclick>
+					<selected>Skin.HasSetting(SubtitleScript_Enable)</selected>
+			</control>
+				<control type="button" id="409">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>Script path</label>
+					<label2>[COLOR=green]$INFO[Skin.String(SubtitleScript_Path)][/COLOR]</label2>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<onclick>Skin.SetFile(SubtitleScript_Path,.py)</onclick>
+					<enable>Skin.HasSetting(SubtitleScript_Enable)</enable>
+		</control>
+				<control type="image" id="410">
+					<width>950</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
 			</control>
 		</control>
 		<control type="group">

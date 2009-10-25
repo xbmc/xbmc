@@ -51,20 +51,20 @@ void CGUIInfoBool::Parse(const CStdString &info)
     m_info = g_infoManager.GetBool(m_info);
 }
 
-void CGUIInfoBool::Update(DWORD parentID, const CGUIListItem *item)
+void CGUIInfoBool::Update(int parentID, const CGUIListItem *item)
 {
   if (m_info)
     m_value = g_infoManager.GetBool(m_info, parentID, item);
 }
 
 
-CGUIInfoColor::CGUIInfoColor(DWORD color)
+CGUIInfoColor::CGUIInfoColor(uint32_t color)
 {
   m_color = color;
   m_info = 0;
 }
 
-const CGUIInfoColor &CGUIInfoColor::operator=(DWORD color)
+const CGUIInfoColor &CGUIInfoColor::operator=(uint32_t color)
 {
   m_color = color;
   m_info = 0;

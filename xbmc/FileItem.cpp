@@ -1920,6 +1920,8 @@ void CFileItemList::Stack()
   if (IsVirtualDirectoryRoot() || IsLiveTV())
     return;
 
+  SetProperty("isstacked", "1");
+
   // items needs to be sorted for stuff below to work properly
   Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
@@ -2030,12 +2032,11 @@ void CFileItemList::Stack()
     // set property
     item->SetProperty("isstacked", "1");
 
-    // skip folders, nfo files, playlists, dvd images
+    // skip folders, nfo files, playlists
     if (item->m_bIsFolder
       || item->IsParentFolder()
       || item->IsNFO()
       || item->IsPlayList()
-      || item->IsDVDImage()
       )
     {
       // increment index
@@ -2427,7 +2428,7 @@ CStdString CFileItem::GetTBNFile() const
     else
       CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
     url.SetFileName(thumbFile);
-    url.GetURL(thumbFile);
+    thumbFile = url.Get();
   }
   return thumbFile;
 }

@@ -71,18 +71,18 @@ protected:
   void AddReference();
   void RemoveReference();
 
-  float GetTextWidthInternal(std::vector<DWORD>::const_iterator start, std::vector<DWORD>::const_iterator end);
-  float GetCharWidthInternal(DWORD ch);
+  float GetTextWidthInternal(vecText::const_iterator start, vecText::const_iterator end);
+  float GetCharWidthInternal(character_t ch);
   float GetTextHeight(float lineSpacing, int numLines) const;
   float GetLineHeight(float lineSpacing) const;
 
-  void DrawTextInternal(float x, float y, const std::vector<DWORD> &colors, const std::vector<DWORD> &text,
-                            DWORD alignment, float maxPixelWidth, bool scrolling);
+  void DrawTextInternal(float x, float y, const vecColors &colors, const vecText &text,
+                            uint32_t alignment, float maxPixelWidth, bool scrolling);
 
-  void DrawTextInternal(float x, float y, DWORD color, const std::vector<DWORD> &text,
-                            DWORD alignment, float maxPixelWidth, bool scrolling)
+  void DrawTextInternal(float x, float y, color_t color, const vecText &text,
+                            uint32_t alignment, float maxPixelWidth, bool scrolling)
   {
-    std::vector<DWORD> colors;
+    vecColors colors;
     colors.push_back(color);
     DrawTextInternal(x, y, colors, text, alignment, maxPixelWidth, scrolling);
   }
@@ -91,8 +91,8 @@ protected:
   CStdString m_strFilename;
 
   // Stuff for pre-rendering for speed
-  inline Character *GetCharacter(DWORD letter);
-  bool CacheCharacter(WCHAR letter, DWORD style, Character *ch);
+  inline Character *GetCharacter(character_t letter);
+  bool CacheCharacter(wchar_t letter, uint32_t style, Character *ch);
   inline void RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor, bool roundX);
   void ClearCharacterCache();
 
@@ -117,7 +117,7 @@ protected:
   unsigned int m_cellBaseLine;
   unsigned int m_cellHeight;
 
-  DWORD m_dwNestedBeginCount;             // speedups
+  unsigned int m_nestedBeginCount;             // speedups
 
   // freetype stuff
   FT_Face    m_face;

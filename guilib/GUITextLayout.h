@@ -42,16 +42,21 @@ class CScrollInfo;
 // 5.  Each item in the vector is length-calculated, and then layout occurs governed by alignment and wrapping rules.
 // 6.  A new vector<CGUIString> is constructed
 
+typedef uint32_t character_t;
+typedef uint32_t color_t;
+typedef std::vector<character_t> vecText;
+typedef std::vector<color_t> vecColors;
+
 class CGUIString
 {
 public:
-  typedef std::vector<DWORD>::const_iterator iString;
+  typedef vecText::const_iterator iString;
 
   CGUIString(iString start, iString end, bool carriageReturn);
 
   CStdString GetAsString() const;
 
-  std::vector<DWORD> m_text;
+  vecText m_text;
   bool m_carriageReturn; // true if we have a carriage return here
 };
 
@@ -61,9 +66,9 @@ public:
   CGUITextLayout(CGUIFont *font, bool wrap, float fHeight=0.0f);  // this may need changing - we may just use this class to replace CLabelInfo completely
 
   // main function to render strings
-  void Render(float x, float y, float angle, DWORD color, DWORD shadowColor, DWORD alignment, float maxWidth, bool solid = false);
-  void RenderScrolling(float x, float y, float angle, DWORD color, DWORD shadowColor, DWORD alignment, float maxWidth, CScrollInfo &scrollInfo);
-  void RenderOutline(float x, float y, DWORD color, DWORD outlineColor, DWORD outlineWidth, DWORD alignment, float maxWidth);
+  void Render(float x, float y, float angle, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, bool solid = false);
+  void RenderScrolling(float x, float y, float angle, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, CScrollInfo &scrollInfo);
+  void RenderOutline(float x, float y, color_t color, color_t outlineColor, uint32_t outlineWidth, uint32_t alignment, float maxWidth);
   void GetTextExtent(float &width, float &height);
   float GetTextWidth();
   float GetTextWidth(const CStdStringW &text) const;
@@ -71,26 +76,26 @@ public:
   void SetText(const CStdStringW &text, float maxWidth = 0, bool forceLTRReadingOrder = false);
 
   unsigned int GetTextLength() const;
-  void GetFirstText(std::vector<DWORD> &text) const;
+  void GetFirstText(std::vector<uint32_t> &text) const;
   void Reset();
 
   void SetWrap(bool bWrap=true);
   void SetMaxHeight(float fHeight);
 
 
-  static void DrawText(CGUIFont *font, float x, float y, DWORD color, DWORD shadowColor, const CStdString &text, DWORD align);
-  static void DrawOutlineText(CGUIFont *font, float x, float y, DWORD color, DWORD outlineColor, DWORD outlineWidth, const CStdString &text);
+  static void DrawText(CGUIFont *font, float x, float y, color_t color, color_t shadowColor, const CStdString &text, uint32_t align);
+  static void DrawOutlineText(CGUIFont *font, float x, float y, color_t color, color_t outlineColor, uint32_t outlineWidth, const CStdString &text);
   static void Filter(CStdString &text);
 
 protected:
-  void ParseText(const CStdStringW &text, std::vector<DWORD> &parsedText);
-  void LineBreakText(const std::vector<DWORD> &text, std::vector<CGUIString> &lines);
-  void WrapText(const std::vector<DWORD> &text, float maxWidth);
+  void ParseText(const CStdStringW &text, vecText &parsedText);
+  void LineBreakText(const vecText &text, std::vector<CGUIString> &lines);
+  void WrapText(const vecText &text, float maxWidth);
   void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);
   CStdStringW BidiFlip(const CStdStringW &text, bool forceLTRReadingOrder);
 
   // our text to render
-  std::vector<DWORD> m_colors;
+  vecColors m_colors;
   std::vector<CGUIString> m_lines;
   typedef std::vector<CGUIString>::iterator iLine;
 
@@ -99,23 +104,23 @@ protected:
   bool  m_wrap;            // wrapping (true if justify is enabled!)
   float m_maxHeight;
   // the default color (may differ from the font objects defaults)
-  DWORD m_textColor;
+  color_t m_textColor;
 
   CStdString m_lastText;
 private:
-  inline bool IsSpace(DWORD letter) const XBMC_FORCE_INLINE
+  inline bool IsSpace(character_t letter) const XBMC_FORCE_INLINE
   {
     return (letter & 0xffff) == L' ';
   };
-  inline bool CanWrapAtLetter(DWORD letter) const XBMC_FORCE_INLINE
+  inline bool CanWrapAtLetter(character_t letter) const XBMC_FORCE_INLINE
   {
-    DWORD ch = letter & 0xffff;
+    character_t ch = letter & 0xffff;
     return ch == L' ' || (ch >=0x4e00 && ch <= 0x9fff);
   };
-  static void AppendToUTF32(const CStdString &utf8, DWORD colStyle, std::vector<DWORD> &utf32);
-  static void AppendToUTF32(const CStdStringW &utf16, DWORD colStyle, std::vector<DWORD> &utf32);
-  static void DrawOutlineText(CGUIFont *font, float x, float y, const std::vector<DWORD> &colors, DWORD outlineColor, DWORD outlineWidth, const std::vector<DWORD> &text, DWORD align, float maxWidth);
-  static void ParseText(const CStdStringW &text, DWORD defaultStyle, std::vector<DWORD> &colors, std::vector<DWORD> &parsedText);
+  static void AppendToUTF32(const CStdString &utf8, character_t colStyle, vecText &utf32);
+  static void AppendToUTF32(const CStdStringW &utf16, character_t colStyle, vecText &utf32);
+  static void DrawOutlineText(CGUIFont *font, float x, float y, const vecColors &colors, color_t outlineColor, uint32_t outlineWidth, const vecText &text, uint32_t align, float maxWidth);
+  static void ParseText(const CStdStringW &text, uint32_t defaultStyle, vecColors &colors, vecText &parsedText);
 
   static void utf8ToW(const CStdString &utf8, CStdStringW &utf16);
 };

@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIDialogVisualisationSettings.h"
+#include "GUIWindowManager.h"
 #include "GUIWindowSettingsCategory.h"
 #include "GUIControlGroupList.h"
 #include "utils/GUIInfoManager.h"
@@ -42,7 +43,6 @@ CGUIDialogVisualisationSettings::CGUIDialogVisualisationSettings(void)
   m_pOriginalSettingsButton = NULL;
   m_pVisualisation = NULL;
   m_pSettings = NULL;
-  LoadOnDemand(false);    // we are loaded by the vis window.
 }
 
 CGUIDialogVisualisationSettings::~CGUIDialogVisualisationSettings(void)
@@ -71,7 +71,7 @@ bool CGUIDialogVisualisationSettings::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_VISUALISATION_LOADED:
     {
-      SetVisualisation((CVisualisation *)message.GetLPVOID());
+      SetVisualisation((CVisualisation *)message.GetPointer());
       SetupPage();
       SET_CONTROL_FOCUS(CONTROL_START, 0);
     }
@@ -210,8 +210,8 @@ void CGUIDialogVisualisationSettings::OnInitWindow()
 {
   // set our visualisation
   CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-  g_graphicsContext.SendMessage(msg);
-  SetVisualisation((CVisualisation *)msg.GetLPVOID());
+  g_windowManager.SendMessage(msg);
+  SetVisualisation((CVisualisation *)msg.GetPointer());
 
   SetupPage();
   // reset the default control

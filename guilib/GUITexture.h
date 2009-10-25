@@ -32,6 +32,8 @@
 #include "TextureManager.h"
 #include "Geometry.h"
 
+typedef uint32_t color_t;
+
 struct FRECT
 {
   float left;
@@ -69,7 +71,7 @@ public:
   };
 
   ASPECT_RATIO ratio;
-  DWORD        align;
+  uint32_t     align;
   bool         scaleDiffuse;
 };
 
@@ -122,7 +124,7 @@ public:
 
   void SetVisible(bool visible);
   void SetAlpha(unsigned char alpha);
-  void SetDiffuseColor(DWORD color);
+  void SetDiffuseColor(color_t color);
   void SetPosition(float x, float y);
   void SetWidth(float width);
   void SetHeight(float height);
@@ -156,11 +158,11 @@ protected:
   virtual void Allocate() {}; ///< called after our textures have been allocated
   virtual void Free() {};     ///< called after our textures have been freed
   virtual void Begin() {};
-  virtual void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)=0;
+  virtual void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, color_t color, int orientation)=0;
   virtual void End() {};
 
   bool m_visible;
-  DWORD m_diffuseColor;
+  color_t m_diffuseColor;
 
   float m_posX;         // size of the frame
   float m_posY;

@@ -36,25 +36,27 @@
 
 using namespace std;
 
-CGUIWindowManager m_gWindowManager;
+CGUIWindowManager g_windowManager;
 
 CGUIWindowManager::CGUIWindowManager(void)
 {
-  InitializeCriticalSection(&m_critSection);
-
   m_pCallback = NULL;
   m_bShowOverlay = true;
 }
 
 CGUIWindowManager::~CGUIWindowManager(void)
 {
-  DeleteCriticalSection(&m_critSection);
 }
 
 void CGUIWindowManager::Initialize()
 {
-  g_graphicsContext.setMessageSender(this);
   LoadNotOnDemandWindows();
+}
+
+bool CGUIWindowManager::SendMessage(int message, int senderID, int destID, int param1, int param2)
+{
+  CGUIMessage msg(message, senderID, destID, param1, param2);
+  return SendMessage(msg);
 }
 
 bool CGUIWindowManager::SendMessage(CGUIMessage& message)
@@ -82,7 +84,7 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
       dialog->OnMessage(message);
     }
 
-    for (map<DWORD, CGUIWindow *>::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
+    for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
     {
       CGUIWindow *pWindow = (*it).second;
       pWindow->OnMessage(message);
@@ -141,9 +143,9 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
   return handled;
 }
 
-bool CGUIWindowManager::SendMessage(CGUIMessage& message, DWORD dwWindow)
+bool CGUIWindowManager::SendMessage(CGUIMessage& message, int window)
 {
-  CGUIWindow* pWindow = GetWindow(dwWindow);
+  CGUIWindow* pWindow = GetWindow(window);
   if(pWindow)
     return pWindow->OnMessage(message);
   else
@@ -154,7 +156,7 @@ void CGUIWindowManager::AddUniqueInstance(CGUIWindow *window)
 {
   // increment our instance (upper word of windowID)
   // until we get a window we don't have
-  DWORD instance = 0;
+  int instance = 0;
   while (GetWindow(window->GetID()))
     window->SetID(window->GetID() + (++instance << 16));
   Add(window);
@@ -168,9 +170,9 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
     return;
   }
   // push back all the windows if there are more than one covered by this class
-  for (unsigned int i = 0; i < pWindow->GetIDRange(); i++)
+  for (int i = 0; i < pWindow->GetIDRange(); i++)
   {
-    map<DWORD, CGUIWindow *>::iterator it = m_mapWindows.find(pWindow->GetID() + i);
+    WindowMap::iterator it = m_mapWindows.find(pWindow->GetID() + i);
     if (it != m_mapWindows.end())
     {
       CLog::Log(LOGERROR, "Error, trying to add a second window with id %u "
@@ -178,7 +180,7 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
                 pWindow->GetID());
       return;
     }
-    m_mapWindows.insert(pair<DWORD, CGUIWindow *>(pWindow->GetID() + i, pWindow));
+    m_mapWindows.insert(pair<int, CGUIWindow *>(pWindow->GetID() + i, pWindow));
   }
 }
 
@@ -196,9 +198,9 @@ void CGUIWindowManager::AddModeless(CGUIWindow* dialog)
   m_activeDialogs.push_back(dialog);
 }
 
-void CGUIWindowManager::Remove(DWORD dwID)
+void CGUIWindowManager::Remove(int id)
 {
-  map<DWORD, CGUIWindow *>::iterator it = m_mapWindows.find(dwID);
+  WindowMap::iterator it = m_mapWindows.find(id);
   if (it != m_mapWindows.end())
   {
     m_mapWindows.erase(it);
@@ -207,18 +209,18 @@ void CGUIWindowManager::Remove(DWORD dwID)
   {
     CLog::Log(LOGWARNING, "Attempted to remove window %u "
                           "from the window manager when it didn't exist",
-              dwID);
+              id);
   }
 }
 
 // removes and deletes the window.  Should only be called
 // from the class that created the window using new.
-void CGUIWindowManager::Delete(DWORD dwID)
+void CGUIWindowManager::Delete(int id)
 {
-  CGUIWindow *pWindow = GetWindow(dwID);
+  CGUIWindow *pWindow = GetWindow(id);
   if (pWindow)
   {
-    Remove(dwID);
+    Remove(id);
     delete pWindow;
   }
 }
@@ -227,7 +229,7 @@ void CGUIWindowManager::PreviousWindow()
 {
   // deactivate any window
   CLog::Log(LOGDEBUG,"CGUIWindowManager::PreviousWindow: Deactivate");
-  DWORD currentWindow = GetActiveWindow();
+  int currentWindow = GetActiveWindow();
   CGUIWindow *pCurrentWindow = GetWindow(currentWindow);
   if (!pCurrentWindow)
     return;     // no windows or window history yet
@@ -295,19 +297,6 @@ void CGUIWindowManager::PreviousWindow()
   return;
 }
 
-void CGUIWindowManager::RefreshWindow()
-{
-  // deactivate the current window
-  CGUIWindow *pWindow = GetWindow(GetActiveWindow());
-  if (!pWindow)
-    return;
-
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-  pWindow->OnMessage(msg);
-  CGUIMessage msg2(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID);
-  pWindow->OnMessage(msg2);
-}
-
 void CGUIWindowManager::ChangeActiveWindow(int newWindow, const CStdString& strPath)
 {
   vector<CStdString> params;
@@ -352,19 +341,6 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
       iWindowID = WINDOW_VIDEO_FILES;
     // destination path cannot be used with virtual window
     passParams = false;
-  }
-  // Is the Library enabled?  If not, go to Files view.
-  if (iWindowID == WINDOW_MUSIC_NAV && !g_guiSettings.GetBool("musiclibrary.enabled"))
-  {
-    iWindowID = WINDOW_MUSIC_FILES;
-    passParams = false;
-    CLog::Log(LOGDEBUG, "Trying to activate Music Library, but its disabled.  Switching to Files instead.");
-  }
-  if (iWindowID == WINDOW_VIDEO_NAV && !g_guiSettings.GetBool("videolibrary.enabled"))
-  {
-    iWindowID = WINDOW_VIDEO_FILES;
-    passParams = false;
-    CLog::Log(LOGDEBUG, "Trying to activate Video Library, but its disabled.  Switching to Files instead.");
   }
 
   // debug
@@ -455,7 +431,7 @@ bool CGUIWindowManager::OnAction(const CAction &action)
     }
     // music or video overlay are handled as a special case, as they're modeless, but we allow
     // clicking on them with the mouse.
-    if (action.wID == ACTION_MOUSE && (dialog->GetID() == WINDOW_VIDEO_OVERLAY ||
+    if (action.id == ACTION_MOUSE && (dialog->GetID() == WINDOW_VIDEO_OVERLAY ||
                                        dialog->GetID() == WINDOW_MUSIC_OVERLAY))
     {
       if (dialog->OnAction(action))
@@ -499,14 +475,14 @@ void CGUIWindowManager::RenderDialogs()
   }
 }
 
-CGUIWindow* CGUIWindowManager::GetWindow(DWORD dwID) const
+CGUIWindow* CGUIWindowManager::GetWindow(int id) const
 {
-  if (dwID == WINDOW_INVALID)
+  if (id == WINDOW_INVALID)
   {
     return NULL;
   }
 
-  map<DWORD, CGUIWindow *>::const_iterator it = m_mapWindows.find(dwID);
+  WindowMap::const_iterator it = m_mapWindows.find(id);
   if (it != m_mapWindows.end())
     return (*it).second;
   return NULL;
@@ -515,7 +491,7 @@ CGUIWindow* CGUIWindowManager::GetWindow(DWORD dwID) const
 // Shows and hides modeless dialogs as necessary.
 void CGUIWindowManager::UpdateModelessVisibility()
 {
-  for (map<DWORD, CGUIWindow *>::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
+  for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
   {
     CGUIWindow *pWindow = (*it).second;
     if (pWindow && pWindow->IsDialog() && pWindow->GetVisibleCondition())
@@ -558,7 +534,7 @@ void CGUIWindowManager::SetCallback(IWindowManagerCallback& callback)
 
 void CGUIWindowManager::DeInitialize()
 {
-  for (map<DWORD, CGUIWindow *>::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
+  for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
   {
     CGUIWindow* pWindow = (*it).second;
     if (IsWindowActive(it->first))
@@ -599,12 +575,12 @@ void CGUIWindowManager::RouteToWindow(CGUIWindow* dialog)
 }
 
 /// \brief Unroute window
-/// \param dwID ID of the window routed
-void CGUIWindowManager::RemoveDialog(DWORD dwID)
+/// \param id ID of the window routed
+void CGUIWindowManager::RemoveDialog(int id)
 {
   for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
-    if ((*it)->GetID() == dwID)
+    if ((*it)->GetID() == id)
     {
       m_activeDialogs.erase(it);
       return;
@@ -632,7 +608,7 @@ bool CGUIWindowManager::HasDialogOnScreen() const
 }
 
 /// \brief Get the ID of the top most routed window
-/// \return dwID ID of the window or WINDOW_INVALID if no routed window available
+/// \return id ID of the window or WINDOW_INVALID if no routed window available
 int CGUIWindowManager::GetTopMostModalDialogID() const
 {
   for (crDialog it = m_activeDialogs.rbegin(); it != m_activeDialogs.rend(); ++it)
@@ -648,43 +624,39 @@ int CGUIWindowManager::GetTopMostModalDialogID() const
 
 void CGUIWindowManager::SendThreadMessage(CGUIMessage& message)
 {
-  ::EnterCriticalSection(&m_critSection );
+  CSingleLock lock(m_critSection);
 
   CGUIMessage* msg = new CGUIMessage(message);
-  m_vecThreadMessages.push_back( pair<CGUIMessage*,DWORD>(msg,0) );
+  m_vecThreadMessages.push_back( pair<CGUIMessage*,int>(msg,0) );
 
-  ::LeaveCriticalSection(&m_critSection );
 }
 
-void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, DWORD dwWindow)
+void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, int window)
 {
-  ::EnterCriticalSection(&m_critSection );
+  CSingleLock lock(m_critSection);
 
   CGUIMessage* msg = new CGUIMessage(message);
-  m_vecThreadMessages.push_back( pair<CGUIMessage*,DWORD>(msg,dwWindow) );
-
-  ::LeaveCriticalSection(&m_critSection );
+  m_vecThreadMessages.push_back( pair<CGUIMessage*,int>(msg,window) );
 }
 
 void CGUIWindowManager::DispatchThreadMessages()
 {
-  ::EnterCriticalSection(&m_critSection );
-  vector< pair<CGUIMessage*,DWORD> > messages(m_vecThreadMessages);
+  CSingleLock lock(m_critSection);
+  vector< pair<CGUIMessage*,int> > messages(m_vecThreadMessages);
   m_vecThreadMessages.erase(m_vecThreadMessages.begin(), m_vecThreadMessages.end());
-  ::LeaveCriticalSection(&m_critSection );
+  lock.Leave();
 
   while ( messages.size() > 0 )
   {
-    vector< pair<CGUIMessage*,DWORD> >::iterator it = messages.begin();
+    vector< pair<CGUIMessage*,int> >::iterator it = messages.begin();
     CGUIMessage* pMsg = it->first;
-    DWORD dwWindow = it->second;
+    int window = it->second;
     // first remove the message from the queue,
     // else the message could be processed more then once
     it = messages.erase(it);
     
-    //Leave critical section here since this can cause some thread to come back here into dispatch
-    if(dwWindow)
-      SendMessage( *pMsg, dwWindow );
+    if (window)
+      SendMessage( *pMsg, window );
     else
       SendMessage( *pMsg );
     delete pMsg;
@@ -713,16 +685,16 @@ int CGUIWindowManager::GetFocusedWindow() const
   return GetActiveWindow();
 }
 
-bool CGUIWindowManager::IsWindowActive(DWORD dwID, bool ignoreClosing /* = true */) const
+bool CGUIWindowManager::IsWindowActive(int id, bool ignoreClosing /* = true */) const
 {
   // mask out multiple instances of the same window
-  dwID &= WINDOW_ID_MASK;
-  if ((GetActiveWindow() & WINDOW_ID_MASK) == dwID) return true;
+  id &= WINDOW_ID_MASK;
+  if ((GetActiveWindow() & WINDOW_ID_MASK) == id) return true;
   // run through the dialogs
   for (ciDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
     CGUIWindow *window = *it;
-    if ((window->GetID() & WINDOW_ID_MASK) == dwID && (!ignoreClosing || !window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
+    if ((window->GetID() & WINDOW_ID_MASK) == id && (!ignoreClosing || !window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
       return true;
   }
   return false; // window isn't active
@@ -742,7 +714,7 @@ bool CGUIWindowManager::IsWindowActive(const CStdString &xmlFile, bool ignoreClo
   return false; // window isn't active
 }
 
-bool CGUIWindowManager::IsWindowVisible(DWORD id) const
+bool CGUIWindowManager::IsWindowVisible(int id) const
 {
   return IsWindowActive(id, false);
 }
@@ -754,7 +726,7 @@ bool CGUIWindowManager::IsWindowVisible(const CStdString &xmlFile) const
 
 void CGUIWindowManager::LoadNotOnDemandWindows()
 {
-  for (map<DWORD, CGUIWindow *>::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
+  for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
   {
     CGUIWindow *pWindow = (*it).second;
     if (!pWindow ->GetLoadOnDemand())
@@ -767,7 +739,7 @@ void CGUIWindowManager::LoadNotOnDemandWindows()
 
 void CGUIWindowManager::UnloadNotOnDemandWindows()
 {
-  for (map<DWORD, CGUIWindow *>::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
+  for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
   {
     CGUIWindow *pWindow = (*it).second;
     if (!pWindow->GetLoadOnDemand())
@@ -794,12 +766,12 @@ void CGUIWindowManager::HideOverlay(CGUIWindow::OVERLAY_STATE state)
     m_bShowOverlay = false;
 }
 
-void CGUIWindowManager::AddToWindowHistory(DWORD newWindowID)
+void CGUIWindowManager::AddToWindowHistory(int newWindowID)
 {
   // Check the window stack to see if this window is in our history,
   // and if so, pop all the other windows off the stack so that we
   // always have a predictable "Back" behaviour for each window
-  stack<DWORD> historySave = m_windowHistory;
+  stack<int> historySave = m_windowHistory;
   while (historySave.size())
   {
     if (historySave.top() == newWindowID)
@@ -816,7 +788,7 @@ void CGUIWindowManager::AddToWindowHistory(DWORD newWindowID)
   }
 } 
 
-void CGUIWindowManager::GetActiveModelessWindows(vector<DWORD> &ids)
+void CGUIWindowManager::GetActiveModelessWindows(vector<int> &ids)
 {
   // run through our modeless windows, and construct a vector of them
   // useful for saving and restoring the modeless windows on skin change etc.
@@ -840,7 +812,7 @@ CGUIWindow *CGUIWindowManager::GetTopMostDialog() const
   return *renderList.rbegin();
 }
 
-bool CGUIWindowManager::IsWindowTopMost(DWORD id) const
+bool CGUIWindowManager::IsWindowTopMost(int id) const
 {
   CGUIWindow *topMost = GetTopMostDialog();
   if (topMost && (topMost->GetID() & WINDOW_ID_MASK) == id)

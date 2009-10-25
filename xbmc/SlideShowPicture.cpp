@@ -183,16 +183,16 @@ void CSlideShowPic::Process()
   { // do start transistion
     if (m_transistionStart.type == CROSSFADE)
     { // fade in at 1x speed
-      m_dwAlpha = (DWORD)((float)m_iCounter / (float)m_transistionStart.length * 255.0f);
+      m_alpha = (color_t)((float)m_iCounter / (float)m_transistionStart.length * 255.0f);
     }
     else if (m_transistionStart.type == FADEIN_FADEOUT)
     { // fade in at 2x speed, then keep solid
-      m_dwAlpha = (DWORD)((float)m_iCounter / (float)m_transistionStart.length * 255.0f * 2);
-      if (m_dwAlpha > 255) m_dwAlpha = 255;
+      m_alpha = (color_t)((float)m_iCounter / (float)m_transistionStart.length * 255.0f * 2);
+      if (m_alpha > 255) m_alpha = 255;
     }
     else // m_transistionEffect == TRANSISTION_NONE
     {
-      m_dwAlpha = 0xFF; // opaque
+      m_alpha = 0xFF; // opaque
     }
   }
   bool bPaused = m_bPause | (m_fZoomAmount != 1.0f);
@@ -286,16 +286,16 @@ void CSlideShowPic::Process()
     m_bDrawNextImage = true;
     if (m_transistionEnd.type == CROSSFADE)
     { // fade out at 1x speed
-      m_dwAlpha = 255 - (DWORD)((float)(m_iCounter - m_transistionEnd.start) / (float)m_transistionEnd.length * 255.0f);
+      m_alpha = 255 - (color_t)((float)(m_iCounter - m_transistionEnd.start) / (float)m_transistionEnd.length * 255.0f);
     }
     else if (m_transistionEnd.type == FADEIN_FADEOUT)
     { // keep solid, then fade out at 2x speed
-      m_dwAlpha = (DWORD)((float)(m_transistionEnd.length - m_iCounter + m_transistionEnd.start) / (float)m_transistionEnd.length * 255.0f * 2);
-      if (m_dwAlpha > 255) m_dwAlpha = 255;
+      m_alpha = (color_t)((float)(m_transistionEnd.length - m_iCounter + m_transistionEnd.start) / (float)m_transistionEnd.length * 255.0f * 2);
+      if (m_alpha > 255) m_alpha = 255;
     }
     else // m_transistionEffect == TRANSISTION_NONE
     {
-      m_dwAlpha = 0xFF; // opaque
+      m_alpha = 0xFF; // opaque
     }
   }
   if (m_displayEffect != EFFECT_NO_TIMEOUT || m_iCounter < m_transistionStart.length || m_iCounter >= m_transistionEnd.start || (m_iCounter >= m_transistionTemp.start && m_iCounter < m_transistionTemp.start + m_transistionTemp.length))
@@ -512,7 +512,7 @@ void CSlideShowPic::Render()
     y[i] += m_fPosY * m_fHeight * fScale;
   }
   // and render
-  Render(x, y, m_pImage, (m_dwAlpha << 24) | 0xFFFFFF);
+  Render(x, y, m_pImage, (m_alpha << 24) | 0xFFFFFF);
 
   // now render the image in the top right corner if we're zooming
   if (m_fZoomAmount == 1 || m_bIsComic) return ;
@@ -593,7 +593,7 @@ void CSlideShowPic::Render()
   Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR, D3DFILL_WIREFRAME);
 }
 
-void CSlideShowPic::Render(float *x, float *y, IDirect3DTexture8 *pTexture, DWORD dwColor, _D3DFILLMODE fillmode)
+void CSlideShowPic::Render(float *x, float *y, IDirect3DTexture8 *pTexture, color_t color, _D3DFILLMODE fillmode)
 {
   VERTEX vertex[4];
 
@@ -606,7 +606,7 @@ void CSlideShowPic::Render(float *x, float *y, IDirect3DTexture8 *pTexture, DWOR
 #endif
     vertex[i].tu = 0;
     vertex[i].tv = 0;
-    vertex[i].col = dwColor;
+    vertex[i].col = color;
   }
 #ifdef HAS_XBOX_D3D
   vertex[1].tu = m_fWidth;

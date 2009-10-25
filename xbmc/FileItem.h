@@ -251,8 +251,8 @@ public:
   CStdString m_strTitle;
   int m_iprogramCount;
   int m_idepth;
-  long m_lStartOffset;
-  long m_lEndOffset;
+  int m_lStartOffset;
+  int m_lEndOffset;
   LockType m_iLockMode;
   CStdString m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked

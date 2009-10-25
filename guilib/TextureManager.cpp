@@ -1,3 +1,23 @@
+/*
+*      Copyright (C) 2005-2008 Team XBMC
+*      http://www.xbmc.org
+*
+*  This Program is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2, or (at your option)
+*  any later version.
+*
+*  This Program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with XBMC; see the file COPYING.  If not, write to
+*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+*  http://www.gnu.org/copyleft/gpl.html
+*
+*/
 
 
 #include "include.h"
@@ -115,6 +135,11 @@ void CTexture::Free()
   Reset();
 }
 
+
+/************************************************************************/
+/*                                                                      */
+/************************************************************************/
+
 CTextureMap::CTextureMap()
 {
   m_textureName = "";
@@ -199,7 +224,7 @@ void CTextureMap::FreeTexture()
   m_texture.Free();
 }
 
-DWORD CTextureMap::GetMemoryUsage() const
+unsigned int CTextureMap::GetMemoryUsage() const
 {
   return m_memUsage;
 }
@@ -581,6 +606,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   return 1;
 }
 
+
 void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName)
 {
   CSingleLock lock(g_graphicsContext);
@@ -669,9 +695,9 @@ void CGUITextureManager::Flush()
   }
 }
 
-DWORD CGUITextureManager::GetMemoryUsage() const
+unsigned int CGUITextureManager::GetMemoryUsage() const
 {
-  DWORD memUsage = 0;
+  unsigned int memUsage = 0;
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
   {
     memUsage += m_vecTextures[i]->GetMemoryUsage();
@@ -734,4 +760,3 @@ void CGUITextureManager::GetBundledTexturesFromPath(const CStdString& texturePat
   if (items.empty())
     m_TexBundle[1].GetTexturesFromPath(texturePath, items);
 }
-

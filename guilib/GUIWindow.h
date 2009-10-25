@@ -78,7 +78,7 @@ class CGUIWindow : public CGUIControlGroup
 public:
   enum WINDOW_TYPE { WINDOW = 0, MODAL_DIALOG, MODELESS_DIALOG, BUTTON_MENU, SUB_MENU };
 
-  CGUIWindow(DWORD dwID, const CStdString &xmlFile);
+  CGUIWindow(int id, const CStdString &xmlFile);
   virtual ~CGUIWindow(void);
 
   bool Initialize();  // loads the window
@@ -103,10 +103,10 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
   bool ControlGroupHasFocus(int groupID, int controlID);
-  virtual bool HasID(DWORD dwID) { return (dwID >= m_dwControlID && dwID < m_dwControlID + m_dwIDRange); };
-  void SetIDRange(DWORD dwRange) { m_dwIDRange = dwRange; };
-  DWORD GetIDRange() const { return m_dwIDRange; };
-  DWORD GetPreviousWindow() { return m_previousWindow; };
+  virtual bool HasID(int id) { return (id >= m_controlID && id < m_controlID + m_idRange); };
+  void SetIDRange(int range) { m_idRange = range; };
+  int GetIDRange() const { return m_idRange; };
+  int GetPreviousWindow() { return m_previousWindow; };
   FRECT GetScaledBounds() const;
   virtual void ClearAll();
   virtual void AllocResources(bool forceLoad = false);
@@ -180,7 +180,7 @@ protected:
 
   // methods for updating controls and sending messages
   void OnEditChanged(int id, CStdString &text);
-  bool SendMessage(DWORD message, DWORD id, DWORD param1 = 0, DWORD param2 = 0);
+  bool SendMessage(int message, int id, int param1 = 0, int param2 = 0);
 
   typedef GUIEvent<CGUIMessage&> CLICK_EVENT;
   typedef std::map<int, CLICK_EVENT> MAPCONTROLCLICKEVENTS;
@@ -196,7 +196,7 @@ protected:
   void ChangeButtonToEdit(int id, bool singleLabel = false);
 //#endif
 
-  DWORD m_dwIDRange;
+  int m_idRange;
   bool m_bRelativeCoords;
   OVERLAY_STATE m_overlayState;
   RESOLUTION m_coordsRes; // resolution that the window coordinates are in.
@@ -215,7 +215,7 @@ protected:
   bool m_saveLastControl;
   int m_lastControlID;
   std::vector<CControlState> m_controlStates;
-  DWORD m_previousWindow;
+  int m_previousWindow;
 
   bool m_animationsEnabled;
   struct icompare

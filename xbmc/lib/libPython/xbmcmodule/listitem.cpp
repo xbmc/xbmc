@@ -60,7 +60,7 @@ namespace PYXBMC
     self = (ListItem*)type->tp_alloc(type, 0);
     if (!self)
       return NULL;
-    
+
     self->item.reset();
 
     // parse user input
@@ -202,7 +202,7 @@ namespace PYXBMC
     "\n"
     "example:\n"
     "  - self.list.getSelectedItem().setLabel2('[pg-13]')\n");
-  
+
   PyObject* ListItem_SetLabel2(ListItem *self, PyObject *args)
   {
     PyObject* unicodeLine = NULL;
@@ -292,7 +292,7 @@ namespace PYXBMC
     Py_INCREF(Py_None);
     return Py_None;
   }
-  
+
   PyDoc_STRVAR(isSelected__doc__,
     "isSelected() -- Returns the listitem's selected status.\n"
     "\n"
@@ -322,6 +322,60 @@ namespace PYXBMC
     "\n"
     "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
+    "\n"
+    "General Values that apply to all types:\n"
+    "    count       : integer (12) - can be used to store an id for later, or for sorting purposes\n"
+    "    size        : long (1024) - size in bytes\n"
+    "    date        : string (%d.%m.%Y / 01.01.2009) - file date\n"
+    "\n"
+    "Video Values:\n"
+    "    genre       : string (Comedy)\n"
+    "    year        : integer (2009)\n"
+    "    episode     : integer (4)\n"
+    "    season      : integer (1)\n"
+    "    top250      : integer (192)\n"
+    "    tracknumber : integer (3)\n"
+    "    rating      : float (6.4) - range is 0..10\n"
+    "    watched     : depreciated - use playcount instead\n"
+    "    playcount   : integer (2) - number of times this item has been played\n"
+    "    overlay     : integer (2) - range is 0..8.  See GUIListItem.h for values\n"
+    "    cast        : list (Michal C. Hall)\n"
+    "    castandrole : list (Michael C. Hall|Dexter)\n"
+    "    director    : string (Dagur Kari)\n"
+    "    mpaa        : string (PG-13)\n"
+    "    plot        : string (Long Description)\n"
+    "    plotoutline : string (Short Description)\n"
+    "    title       : string (Big Fan)\n"
+    "    duration    : string (3:18)\n"
+    "    studio      : string (Warner Bros.)\n"
+    "    tagline     : string (An awesome movie) - short description of movie\n"
+    "    writer      : string (Robert D. Siegel)\n"
+    "    tvshowtitle : string (Heroes)\n"
+    "    premiered   : string (2005-03-04)\n"
+    "    status      : string (Continuing) - status of a TVshow\n"
+    "    code        : string (tt0110293) - IMDb code\n"
+    "    aired       : string (2008-12-07)\n"
+    "    credits     : string (Andy Kaufman) - writing credits\n"
+    "    lastplayed  : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)\n"
+    "    album       : string (The Joshua Tree)\n"
+    "    votes       : string (12345 votes)\n"
+    "    trailer     : string (/home/user/trailer.avi)\n"
+    "\n"
+    "Music Values:\n"
+    "    tracknumber : integer (8)\n"
+    "    duration    : integer (245) - duration in seconds\n"
+    "    year        : integer (1998)\n"
+    "    genre       : string (Rock)\n"
+    "    album       : string (Pulse)\n"
+    "    artist      : string (Muse)\n"
+    "    title       : string (American Pie)\n"
+    "    rating      : string (3) - single character between 0 and 5\n"
+    "    lyrics      : string (On a dark desert highway...)\n"
+    "\n"
+    "Picture Values:\n"
+    "    title       : string (In the last summer-1)\n"
+    "    picturepath : string (/home/username/pictures/img001.jpg)\n"
+    "    exif*       : string (See CPictureInfoTag::TranslateString in PictureInfoTag.cpp for valid strings)\n"
     "\n"
     "example:\n"
     "  - self.list.getSelectedItem().setInfo('video', { 'Genre': 'Comedy' })\n");
@@ -361,13 +415,16 @@ namespace PYXBMC
     while (PyDict_Next(pInfoLabels, &pos, &key, &value)) {
       if (strcmpi(cType, "video") == 0)
       {
-        // TODO: add the rest of the infolabels
         if (strcmpi(PyString_AsString(key), "year") == 0)
           self->item->GetVideoInfoTag()->m_iYear = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "episode") == 0)
           self->item->GetVideoInfoTag()->m_iEpisode = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "season") == 0)
           self->item->GetVideoInfoTag()->m_iSeason = PyInt_AsLong(value);
+        else if (strcmpi(PyString_AsString(key), "top250") == 0)
+          self->item->GetVideoInfoTag()->m_iTop250 = PyInt_AsLong(value);
+        else if (strcmpi(PyString_AsString(key), "tracknumber") == 0)
+          self->item->GetVideoInfoTag()->m_iTrack = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "count") == 0)
           self->item->m_iprogramCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "rating") == 0)
@@ -379,8 +436,11 @@ namespace PYXBMC
         else if (strcmpi(PyString_AsString(key), "playcount") == 0)
           self->item->GetVideoInfoTag()->m_playCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "overlay") == 0)
-          // TODO: Add a check for a valid overlay value
-          self->item->SetOverlayImage((CGUIListItem::GUIIconOverlay)PyInt_AsLong(value));
+        {
+          long overlay = PyInt_AsLong(value);
+          if (overlay >= 0 && overlay <= 8)
+            self->item->SetOverlayImage((CGUIListItem::GUIIconOverlay)overlay);
+        }
         else if (strcmpi(PyString_AsString(key), "cast") == 0 || strcmpi(PyString_AsString(key), "castandrole") == 0)
         {
           if (!PyObject_TypeCheck(value, &PyList_Type)) continue;
@@ -432,6 +492,18 @@ namespace PYXBMC
             self->item->GetVideoInfoTag()->m_strShowTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "premiered") == 0)
             self->item->GetVideoInfoTag()->m_strPremiered = tmp;
+          else if (strcmpi(PyString_AsString(key), "status") == 0)
+            self->item->GetVideoInfoTag()->m_strStatus = tmp;
+          else if (strcmpi(PyString_AsString(key), "code") == 0)
+            self->item->GetVideoInfoTag()->m_strProductionCode = tmp;
+          else if (strcmpi(PyString_AsString(key), "aired") == 0)
+            self->item->GetVideoInfoTag()->m_strFirstAired = tmp;
+          else if (strcmpi(PyString_AsString(key), "credits") == 0)
+            self->item->GetVideoInfoTag()->m_strWritingCredits = tmp;
+          else if (strcmpi(PyString_AsString(key), "lastplayed") == 0)
+            self->item->GetVideoInfoTag()->m_lastPlayed = tmp;
+          else if (strcmpi(PyString_AsString(key), "album") == 0)
+            self->item->GetVideoInfoTag()->m_strAlbum = tmp;
           else if (strcmpi(PyString_AsString(key), "votes") == 0)
             self->item->GetVideoInfoTag()->m_strVotes = tmp;
           else if (strcmpi(PyString_AsString(key), "trailer") == 0)
@@ -524,8 +596,13 @@ namespace PYXBMC
     "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
+    " Some of these are treated internally by XBMC, such as the 'StartOffset' property, which is\n"
+    " the offset in seconds at which to start playback of an item.  Others may be used in the skin\n"
+    " to add extra information, such as 'WatchedCount' for tvshow items\n"
+    "\n"
     "example:\n"
-    "  - self.list.getSelectedItem().setProperty('AspectRatio', '1.85 : 1')\n");
+    "  - self.list.getSelectedItem().setProperty('AspectRatio', '1.85 : 1')\n"
+    "  - self.list.getSelectedItem().setProperty('StartOffset', '256.4')\n");
 
   PyObject* ListItem_SetProperty(ListItem *self, PyObject *args, PyObject *kwds)
   {
@@ -553,6 +630,12 @@ namespace PYXBMC
 
     PyGUILock();
     CStdString lowerKey = key;
+    if (lowerKey.CompareNoCase("startoffset") == 0)
+    { // special case for start offset - don't actually store in a property,
+      // we store it in item.m_lStartOffset instead
+      self->item->m_lStartOffset = (int)(atof(uText.c_str()) * 75.0); // we store the offset in frames, or 1/75th of a second
+    }
+    else
     self->item->SetProperty(lowerKey.ToLower(), uText.c_str());
     PyGUIUnlock();
 
@@ -592,7 +675,14 @@ namespace PYXBMC
 
     PyGUILock();
     CStdString lowerKey = key;
-    string value = self->item->GetProperty(lowerKey.ToLower());
+    CStdString value;
+    if (lowerKey.CompareNoCase("startoffset") == 0)
+    { // special case for start offset - don't actually store in a property,
+      // we store it in item.m_lStartOffset instead
+      value.Format("%f", self->item->m_lStartOffset / 75.0);
+    }
+    else
+      value = self->item->GetProperty(lowerKey.ToLower());
     PyGUIUnlock();
 
     return Py_BuildValue("s", value.c_str());

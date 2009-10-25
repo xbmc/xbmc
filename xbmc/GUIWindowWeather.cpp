@@ -75,9 +75,9 @@ CGUIWindowWeather::~CGUIWindowWeather(void)
 
 bool CGUIWindowWeather::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
   {
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
   return CGUIWindow::OnAction(action);
@@ -101,7 +101,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
           m_pluginTimer.Stop();
 
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_SELECTLOCATION);
-        m_gWindowManager.SendMessage(msg);
+        g_windowManager.SendMessage(msg);
         m_iCurWeather = msg.GetParam1();
 
         CStdString strLabel=g_weatherManager.GetLocation(m_iCurWeather);
@@ -127,7 +127,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
     {
       UpdateLocations();
       SetProperties();
-      if (m_gWindowManager.GetActiveWindow() == WINDOW_WEATHER)
+      if (g_windowManager.GetActiveWindow() == WINDOW_WEATHER)
       {
         if (!g_guiSettings.GetString("weather.plugin").IsEmpty())
           m_pluginTimer.StartZero();
@@ -154,7 +154,7 @@ void CGUIWindowWeather::UpdateLocations()
   if (!IsActive()) return;
 
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
-  g_graphicsContext.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);
 
   for (unsigned int i = 0; i < MAX_LOCATION; i++)
@@ -172,7 +172,7 @@ void CGUIWindowWeather::UpdateLocations()
       }
       msg2.SetParam1(i);
       msg2.SetLabel(strLabel);
-      g_graphicsContext.SendMessage(msg2);
+      g_windowManager.SendMessage(msg2);
     }
     else
     {
@@ -180,7 +180,7 @@ void CGUIWindowWeather::UpdateLocations()
 
       msg2.SetLabel(strLabel);
       msg2.SetParam1(i);
-      g_graphicsContext.SendMessage(msg2);
+      g_windowManager.SendMessage(msg2);
     }
     if (i==m_iCurWeather)
       SET_CONTROL_LABEL(CONTROL_SELECTLOCATION,strLabel);
@@ -312,7 +312,7 @@ void CGUIWindowWeather::CallPlugin()
     argv[0] = (char*)plugin.c_str();
 
     // if plugin is running we wait for another timeout only when in weather window
-    if (m_gWindowManager.GetActiveWindow() == WINDOW_WEATHER)
+    if (g_windowManager.GetActiveWindow() == WINDOW_WEATHER)
     {
       int id = g_pythonParser.getScriptId(argv[0]);
       if (id != -1 && g_pythonParser.isRunning(id))

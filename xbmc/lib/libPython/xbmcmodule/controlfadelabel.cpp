@@ -60,8 +60,8 @@ namespace PYXBMC
 
     // set up default values in case they are not supplied
     self->strFont = "font13";
-    self->dwTextColor = 0xffffffff;
-    self->dwAlign = XBFONT_LEFT;
+    self->textColor = 0xffffffff;
+    self->align = XBFONT_LEFT;
 
     if (!PyArg_ParseTupleAndKeywords(
       args,
@@ -74,14 +74,14 @@ namespace PYXBMC
       &self->dwHeight,
       &cFont,
       &cTextColor,
-      &self->dwAlign ))
+      &self->align ))
     {
       Py_DECREF( self );
       return NULL;
     }
 
     if (cFont) self->strFont = cFont;
-    if (cTextColor) sscanf(cTextColor, "%lx", &self->dwTextColor);
+    if (cTextColor) sscanf(cTextColor, "%x", &self->textColor);
 
     self->pGUIControl = NULL;
 
@@ -101,8 +101,8 @@ namespace PYXBMC
   {
     CLabelInfo label;
     label.font = g_fontManager.GetFont(pControl->strFont);
-    label.textColor = label.focusedColor = pControl->dwTextColor;
-    label.align = pControl->dwAlign;
+    label.textColor = label.focusedColor = pControl->textColor;
+    label.align = pControl->align;
     pControl->pGUIControl = new CGUIFadeLabelControl(
       pControl->iParentId,
       pControl->iControlId,

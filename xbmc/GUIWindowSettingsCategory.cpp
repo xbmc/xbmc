@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIWindowSettingsCategory.h"
 #include "Application.h"
+#include "Builtins.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "FileSystem/Directory.h"
 #include "Util.h"
@@ -110,7 +111,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_pOriginalImage = NULL;
   m_pOriginalEdit = NULL;
   // set the correct ID range...
-  m_dwIDRange = 8;
+  m_idRange = 8;
   m_iScreen = 0;
   // set the network settings so that we don't reset them unnecessarily
   m_iNetworkAssignment = -1;
@@ -131,7 +132,7 @@ CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
 
 bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
   {
     g_settings.Save();
     if (m_iWindowBeforeJump!=WINDOW_INVALID)
@@ -140,7 +141,7 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
       return true;
     }
     m_lastControlID = 0; // don't save the control as we go to a different window each time
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
   return CGUIWindow::OnAction(action);
@@ -171,9 +172,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
   case GUI_MSG_FOCUSED:
     {
       CGUIWindow::OnMessage(message);
-      DWORD focusedControl = GetFocusedControlID();
-      if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < (DWORD) (CONTROL_START_BUTTONS + m_vecSections.size()) &&
-          focusedControl - CONTROL_START_BUTTONS != (DWORD) m_iSection)
+      int focusedControl = GetFocusedControlID();
+      if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < (int)(CONTROL_START_BUTTONS + m_vecSections.size()) &&
+          focusedControl - CONTROL_START_BUTTONS != m_iSection)
       {
         // changing section, check for updates
         CheckForUpdates();
@@ -822,25 +823,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                          g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE &&
                                          !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
     }
-    else if (strSetting.Equals("upnp.musicshares") || strSetting.Equals("upnp.videoshares") || strSetting.Equals("upnp.pictureshares"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("upnp.server"));
-    }
     else if (!strSetting.Equals("remoteevents.enabled")
              && strSetting.Left(13).Equals("remoteevents."))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("remoteevents.enabled"));
-    }
-    else if (strSetting.Equals("mymusic.clearplaylistsonend"))
-    { // disable repeat and repeat one if clear playlists is enabled
-      if (g_guiSettings.GetBool("mymusic.clearplaylistsonend"))
-      {
-        g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
-        g_stSettings.m_bMyMusicPlaylistRepeat = false;
-        g_settings.Save();
-      }
     }
     else if (strSetting.Equals("cddaripper.quality"))
     { // only visible if we are doing non-WAV ripping
@@ -1138,11 +1125,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         if (pControl) pControl->SetEnabled(false); 
       }
     }
-    else if (strSetting.Equals("lookandfeel.soundsduringplayback"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.soundskin") != "OFF");
-    }
     else if (strSetting.Equals("lookandfeel.rssedit"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1158,18 +1140,18 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(enabled);
     }
-    else if (!strSetting.Equals("musiclibrary.enabled")
-      && strSetting.Left(13).Equals("musiclibrary."))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("musiclibrary.enabled"));
-    }
-    else if (!strSetting.Equals("videolibrary.enabled")
-      && strSetting.Left(13).Equals("videolibrary."))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+    else if (!strSetting.Equals("musiclibrary.enabled") 
+      && strSetting.Left(13).Equals("musiclibrary.")) 
+    { 
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID()); 
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("musiclibrary.enabled")); 
+    } 
+    else if (!strSetting.Equals("videolibrary.enabled") 
+      && strSetting.Left(13).Equals("videolibrary.")) 
+    { 
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID()); 
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videolibrary.enabled"));
-    }
+    }     
     else if (strSetting.Equals("lookandfeel.rssfeedsrtl"))
     { // only visible if rss is enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1239,7 +1221,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_weatherManager.ResetTimer();
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
-    CUtil::ExecBuiltIn("RunScript(special://home/scripts/RssTicker/default.py)");
+    CBuiltins::Execute("RunScript(special://home/scripts/RssTicker/default.py)");
   else if (strSetting.Equals("musiclibrary.scrapersettings") || strSetting.Equals("musiclibrary.defaultscraper"))
   {
     CMusicDatabase database;
@@ -1487,13 +1469,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       CLibrefmScrobbler::GetInstance()->Term();
     }
   }
-  else if (strSetting.Equals("musicplayer.outputtoallspeakers"))
-  {
-    if (!g_application.IsPlaying())
-    {
+  else if (strSetting.Equals("musicplayer.outputtoallspeakers")) 
+  { 
+    if (!g_application.IsPlaying()) 
+    { 
       g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
     }
-  }
+  } 
   else if (strSetting.Left(22).Equals("MusicPlayer.ReplayGain"))
   { // Update our replaygain settings
     g_guiSettings.m_replayGain.iType = g_guiSettings.GetInt("musicplayer.replaygaintype");
@@ -1534,7 +1516,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CSettingInt *pSetting = (CSettingInt*)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
-    g_graphicsContext.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
     int iSpeed = (RESOLUTION)msg.GetParam1();
     g_guiSettings.SetInt("system.fanspeed", iSpeed);
     CFanController::Instance()->SetFanSpeed(iSpeed);
@@ -1667,7 +1649,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("videoplayer.calibrate") || strSetting.Equals("videoscreen.guicalibration"))
   { // activate the video calibration screen
-    m_gWindowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
+    g_windowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
   }
   else if (strSetting.Equals("videoplayer.externaldvdplayer"))
   {
@@ -1775,13 +1757,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
     g_audioManager.Load();
   }
-  else if (strSetting.Equals("lookandfeel.soundsduringplayback"))
-  {
-    if (g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-      g_audioManager.Enable(true);
-    else
-      g_audioManager.Enable(!g_application.IsPlaying() || g_application.IsPaused());
-  }
   else if (strSetting.Equals("lookandfeel.enablemouse"))
   {
     g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
@@ -1791,7 +1766,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
-    g_graphicsContext.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
     m_NewResolution = (RESOLUTION)msg.GetParam1();
     // reset our skin if necessary
     // delay change of resolution
@@ -1886,7 +1861,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
-    g_graphicsContext.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
     pSettingInt->SetData(msg.GetParam1());
   }
   else if (strSetting.Equals("videoscreen.flickerfilter") || strSetting.Equals("videoscreen.soften"))
@@ -1958,7 +1933,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       {
         if (CGUIDialogYesNo::ShowAndGetInput(12012,20135,20022,20022))
         {
-          CGUIWindowPrograms* pWindow = (CGUIWindowPrograms*)m_gWindowManager.GetWindow(WINDOW_PROGRAMS);
+          CGUIWindowPrograms* pWindow = (CGUIWindowPrograms*)g_windowManager.GetWindow(WINDOW_PROGRAMS);
           if (pWindow)
             pWindow->PopulateTrainersList();
         }
@@ -2019,7 +1994,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     /* okey we really don't need to restarat, only deinit samba, but that could be damn hard if something is playing*/
     //TODO - General way of handling setting changes that require restart
 
-    CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    CGUIDialogOK *dlg = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!dlg) return ;
     dlg->SetHeading( g_localizeStrings.Get(14038) );
     dlg->SetLine( 0, g_localizeStrings.Get(14039) );
@@ -2101,39 +2076,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
 #endif      
   }
-  else if (strSetting.Equals("upnp.musicshares"))
-  {
-    CStdString filename;
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
-    CStdString strDummy;
-    g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPMusicSources,"upnpmusic"))
-      g_settings.SaveUPnPXml(filename);
-    else
-      g_settings.LoadUPnPXml(filename);
-  }
-  else if (strSetting.Equals("upnp.videoshares"))
-  {
-    CStdString filename;
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
-    CStdString strDummy;
-    g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPVideoSources,"upnpvideo"))
-      g_settings.SaveUPnPXml(filename);
-    else
-      g_settings.LoadUPnPXml(filename);
-  }
-  else if (strSetting.Equals("upnp.pictureshares"))
-  {
-    CStdString filename;
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
-    CStdString strDummy;
-    g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPPictureSources,"upnppictures"))
-      g_settings.SaveUPnPXml(filename);
-    else
-      g_settings.LoadUPnPXml(filename);
-  }
   else if (strSetting.Equals("masterlock.lockcode"))
   {
     // Now Prompt User to enter the old and then the new MasterCode!
@@ -2142,22 +2084,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       // We asked for the master password and saved the new one!
       // Nothing todo here
     }
-  }
-  else if (strSetting.Equals("musicfiles.savefolderviews"))
-  {
-    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_MUSIC_FILES);
-  }
-  else if (strSetting.Equals("myvideos.savefolderviews"))
-  {
-    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_VIDEO_FILES);
-  }
-  else if (strSetting.Equals("programfiles.savefolderviews"))
-  {
-    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PROGRAMS);
-  }
-  else if (strSetting.Equals("pictures.savefolderviews"))
-  {
-    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PICTURES);
   }
 
   else if (strSetting.Equals("lookandfeel.skinzoom"))
@@ -2658,10 +2584,10 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
 {
   CSettingString *pSettingString = (CSettingString*)pSetting;
   if (!pSetting) return;
-  int iWinID = m_gWindowManager.GetActiveWindow();
+  int iWinID = g_windowManager.GetActiveWindow();
   {
     CGUIMessage msg(GUI_MSG_LABEL_RESET, iWinID, iControlID);
-    g_graphicsContext.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
   }
   vector<CStdString> vecVis;
   //find visz....
@@ -2697,7 +2623,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, iWinID, iControlID, iVis++);
     msg.SetLabel(231);
-    g_graphicsContext.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
   }
   for (int i = 0; i < (int) vecVis.size(); ++i)
   {
@@ -2709,12 +2635,12 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     {
       CGUIMessage msg(GUI_MSG_LABEL_ADD, iWinID, iControlID, iVis++);
       msg.SetLabel(strVis);
-      g_graphicsContext.SendMessage(msg);
+      g_windowManager.SendMessage(msg);
     }
   }
   {
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, iWinID, iControlID, iCurrentVis);
-    g_graphicsContext.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
   }
 }
 
@@ -3092,10 +3018,10 @@ CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &st
   return NULL;
 }
 
-void CGUIWindowSettingsCategory::JumpToSection(DWORD dwWindowId, const CStdString &section)
+void CGUIWindowSettingsCategory::JumpToSection(int windowId, const CStdString &section)
 {
   // grab our section
-  CSettingsGroup *pSettingsGroup = g_guiSettings.GetGroup(dwWindowId - WINDOW_SETTINGS_MYPICTURES);
+  CSettingsGroup *pSettingsGroup = g_guiSettings.GetGroup(windowId - WINDOW_SETTINGS_MYPICTURES);
   if (!pSettingsGroup) return;
   // get the categories we need
   vecSettingsCategory categories;
@@ -3115,7 +3041,7 @@ void CGUIWindowSettingsCategory::JumpToSection(DWORD dwWindowId, const CStdStrin
 
   m_iSection=iSection;
   m_lastControlID=CONTROL_START_CONTROL;
-  CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, dwWindowId);
+  CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, windowId);
   OnMessage(msg1);
   for (unsigned int i=0; i<m_vecSections.size(); ++i)
     CONTROL_DISABLE(CONTROL_START_BUTTONS+i);
@@ -3287,7 +3213,7 @@ void CGUIWindowSettingsCategory::FillInViewModes(CSetting *pSetting, int windowI
   pControl->AddLabel("Auto", DEFAULT_VIEW_AUTO);
   bool found(false);
   int foundType = 0;
-  CGUIWindow *window = m_gWindowManager.GetWindow(windowID);
+  CGUIWindow *window = g_windowManager.GetWindow(windowID);
   if (window)
   {
     window->Initialize();
@@ -3372,21 +3298,6 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
     }
   }
   pControl->SetValue(k);
-}
-
-// check and clear our folder views if applicable.
-void CGUIWindowSettingsCategory::ClearFolderViews(CSetting *pSetting, int windowID)
-{
-  CSettingBool *pSettingBool = (CSettingBool*)pSetting;
-  if (!pSettingBool->GetData())
-  { // clear out our db
-    CViewDatabase db;
-    if (db.Open())
-    {
-      db.ClearViewStates(windowID);
-      db.Close();
-    }
-  }
 }
 
 void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected)

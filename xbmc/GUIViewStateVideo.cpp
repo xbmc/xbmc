@@ -85,13 +85,7 @@ CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList
 
 void CGUIViewStateWindowVideoFiles::SaveViewState()
 {
-  if (g_guiSettings.GetBool("myvideos.savefolderviews"))
     SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_FILES, &g_stSettings.m_viewStateVideoFiles);
-  else
-  {
-    g_stSettings.m_viewStateVideoFiles = CViewState(GetViewAsControl(), GetSortMethod(), GetSortOrder());
-    g_settings.Save();
-  }
 }
 
 VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()

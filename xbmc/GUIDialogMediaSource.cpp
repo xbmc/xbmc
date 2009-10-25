@@ -59,7 +59,7 @@ CGUIDialogMediaSource::~CGUIDialogMediaSource()
 
 bool CGUIDialogMediaSource::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
   {
     m_confirmed = false;
   }
@@ -129,7 +129,7 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
 // \return True if the media source is added, false otherwise.
 bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
 {
-  CGUIDialogMediaSource *dialog = (CGUIDialogMediaSource *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MEDIA_SOURCE);
+  CGUIDialogMediaSource *dialog = (CGUIDialogMediaSource *)g_windowManager.GetWindow(WINDOW_DIALOG_MEDIA_SOURCE);
   if (!dialog) return false;
   dialog->Initialize();
   dialog->SetShare(CMediaSource());
@@ -176,13 +176,6 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
 {
   VECSOURCES* pShares=NULL;
   
-  if (type.Equals("upnpmusic"))
-    pShares = &g_settings.m_UPnPMusicSources;
-  if (type.Equals("upnpvideo"))
-    pShares = &g_settings.m_UPnPVideoSources;
-  if (type.Equals("upnppictures"))
-    pShares = &g_settings.m_UPnPPictureSources;
-
   if (pShares)
   {
     for (unsigned int i=0;i<pShares->size();++i)
@@ -198,7 +191,7 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
 bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const CMediaSource &share)
 {
   CStdString strOldName = share.strName;
-  CGUIDialogMediaSource *dialog = (CGUIDialogMediaSource *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MEDIA_SOURCE);
+  CGUIDialogMediaSource *dialog = (CGUIDialogMediaSource *)g_windowManager.GetWindow(WINDOW_DIALOG_MEDIA_SOURCE);
   if (!dialog) return false;
   dialog->Initialize();
   dialog->SetShare(share);
@@ -238,13 +231,13 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   // Browse is called.  Open the filebrowser dialog.
   // Ignore current path is best at this stage??
   CStdString path;
-  bool allowNetworkShares(m_type != "programs" && m_type.Left(4) != "upnp");
+  bool allowNetworkShares(m_type != "programs");
   VECSOURCES extraShares;
 
   if (m_name != CUtil::GetTitleFromPath(m_paths->Get(item)->m_strPath))
     m_bNameChanged=true;
 
-  if (m_type == "music" || m_type == "upnpmusic")
+  if (m_type == "music")
   { // add the music playlist location
     CMediaSource share1;
     share1.strPath = "special://musicplaylists/";
@@ -302,7 +295,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share1);
     }
  }
-  else if (m_type == "video" || m_type == "upnpvideo")
+  else if (m_type == "video")
   { // add the music playlist location
     CMediaSource share1;
     share1.m_ignore = true;
@@ -338,7 +331,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share1);
     }
   }
-  else if (m_type == "pictures" || m_type == "upnpictures")
+  else if (m_type == "pictures")
   {
     CMediaSource share1;
     share1.m_ignore = true;
@@ -383,7 +376,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     if (!m_bNameChanged || m_name.IsEmpty())
     {
       CURL url(path);
-      url.GetURLWithoutUserDetails(m_name);
+      m_name = url.GetWithoutUserDetails();
       CUtil::RemoveSlashAtEnd(m_name);
       m_name = CUtil::GetTitleFromPath(m_name);
     }
@@ -404,7 +397,7 @@ void CGUIDialogMediaSource::OnPath(int item)
   if (!m_bNameChanged || m_name.IsEmpty())
   {
     CURL url(m_paths->Get(item)->m_strPath);
-    url.GetURLWithoutUserDetails(m_name);
+    m_name = url.GetWithoutUserDetails();
     CUtil::RemoveSlashAtEnd(m_name);
     m_name = CUtil::GetTitleFromPath(m_name);
   }
@@ -479,7 +472,7 @@ void CGUIDialogMediaSource::UpdateButtons()
     CFileItemPtr item = m_paths->Get(i);
     CStdString path;
     CURL url(item->m_strPath);
-    url.GetURLWithoutUserDetails(path);
+    path = url.GetWithoutUserDetails();
     if (path.IsEmpty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
     item->SetLabel(path);
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PATH, 0, 0, item);
@@ -527,12 +520,6 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const CStdString &type, bool editNotA
     typeStringID = 350;  // "Programs"
   else if (type == "pictures")
     typeStringID = 1213;  // "Pictures"
-  else if (type == "upnpmusic")
-    typeStringID = 21356;
-  else if (type == "upnpvideo")
-    typeStringID = 21357;
-  else if (type == "upnppictures")
-    typeStringID = 21358;
   else // if (type == "files");
     typeStringID = 744;  // "Files"
   CStdString format;

@@ -34,7 +34,6 @@
 
 #include "XBPython.h"
 #include "XBPythonDll.h"
-#include "ActionManager.h"
 #include "Settings.h"
 #include "Profile.h"
 #include "FileSystem/File.h"
@@ -70,11 +69,6 @@ XBPython::XBPython()
 XBPython::~XBPython()
 {
   CloseHandle(m_globalEvent);
-}
-
-bool XBPython::SendMessage(CGUIMessage& message)
-{
-  return (evalFile(message.GetStringParam().c_str()) != -1);
 }
 
 // message all registered callbacks that xbmc stopped playing

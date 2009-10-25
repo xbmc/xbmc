@@ -31,7 +31,7 @@
 class CGUIMultiSelectTextControl : public CGUIControl
 {
 public:
-  CGUIMultiSelectTextControl(DWORD dwParentID, DWORD dwControlId,
+  CGUIMultiSelectTextControl(int parentID, int controlID,
                     float posX, float posY, float width, float height,
                     const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo &label, const CGUIInfoLabel &content);
 
@@ -46,7 +46,7 @@ public:
   virtual void OnRight();
   virtual bool HitTest(const CPoint &point) const;
   virtual bool OnMouseOver(const CPoint &point);
-  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseClick(int button, const CPoint &point);
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
 
   virtual CStdString GetDescription() const;

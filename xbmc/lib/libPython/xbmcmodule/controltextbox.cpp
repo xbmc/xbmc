@@ -76,8 +76,8 @@ namespace PYXBMC
     // set default values if needed
     self->strFont = cFont ? cFont : "font13";
 
-    if (cTextColor) sscanf(cTextColor, "%lx", &self->dwTextColor);
-    else self->dwTextColor = 0xffffffff;
+    if (cTextColor) sscanf(cTextColor, "%x", &self->textColor);
+    else self->textColor = 0xffffffff;
 
     return (PyObject*)self;
   }
@@ -94,7 +94,7 @@ namespace PYXBMC
     // create textbox
     CLabelInfo label;
     label.font = g_fontManager.GetFont(pControl->strFont);
-    label.textColor = label.focusedColor = pControl->dwTextColor;
+    label.textColor = label.focusedColor = pControl->textColor;
 
     pControl->pGUIControl = new CGUITextBox(pControl->iParentId, pControl->iControlId,
       (float)pControl->dwPosX, (float)pControl->dwPosY, (float)pControl->dwWidth, (float)pControl->dwHeight,

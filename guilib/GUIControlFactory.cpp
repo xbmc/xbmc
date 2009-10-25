@@ -248,20 +248,20 @@ void CGUIControlFactory::GetRectFromString(const CStdString &string, FRECT &rect
   }
 }
 
-bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment)
+bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* strTag, uint32_t& alignment)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
 
   CStdString strAlign = pNode->FirstChild()->Value();
-  if (strAlign == "right" || strAlign == "bottom") dwAlignment = XBFONT_RIGHT;
-  else if (strAlign == "center") dwAlignment = XBFONT_CENTER_X;
-  else if (strAlign == "justify") dwAlignment = XBFONT_JUSTIFIED;
-  else dwAlignment = XBFONT_LEFT;
+  if (strAlign == "right" || strAlign == "bottom") alignment = XBFONT_RIGHT;
+  else if (strAlign == "center") alignment = XBFONT_CENTER_X;
+  else if (strAlign == "justify") alignment = XBFONT_JUSTIFIED;
+  else alignment = XBFONT_LEFT;
   return true;
 }
 
-bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment)
+bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, uint32_t& alignment)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild())
@@ -271,10 +271,10 @@ bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* s
 
   CStdString strAlign = pNode->FirstChild()->Value();
 
-  dwAlignment = 0;
+  alignment = 0;
   if (strAlign == "center")
   {
-    dwAlignment = XBFONT_CENTER_Y;
+    alignment = XBFONT_CENTER_Y;
   }
 
   return true;
@@ -389,7 +389,7 @@ bool CGUIControlFactory::GetHitRect(const TiXmlNode *control, CRect &rect)
   return false;
 }
 
-bool CGUIControlFactory::GetColor(const TiXmlNode *control, const char *strTag, DWORD &value)
+bool CGUIControlFactory::GetColor(const TiXmlNode *control, const char *strTag, color_t &value)
 {
   const TiXmlElement* node = control->FirstChildElement(strTag);
   if (node && node->FirstChild())
@@ -411,7 +411,7 @@ bool CGUIControlFactory::GetInfoColor(const TiXmlNode *control, const char *strT
   return false;
 }
 
-bool CGUIControlFactory::GetNavigation(const TiXmlElement *node, const char *tag, DWORD &direction, vector<CStdString> &actions)
+bool CGUIControlFactory::GetNavigation(const TiXmlElement *node, const char *tag, int &direction, vector<CStdString> &actions)
 {
   if (!GetMultipleString(node, tag, actions))
     return false; // no tag specified
@@ -525,7 +525,7 @@ CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
   return type;
 }
 
-CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiXmlElement* pControlNode, bool insideContainer)
+CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlElement* pControlNode, bool insideContainer)
 {
   // resolve any <include> tag's in this control
   g_SkinInfo.ResolveIncludes(pControlNode);
@@ -536,16 +536,16 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   // resolve again with strType set so that <default> tags are added
   g_SkinInfo.ResolveIncludes(pControlNode, strType);
 
-  DWORD id = 0;
+  int id = 0;
   float posX = 0, posY = 0;
   float width = 0, height = 0;
 
-  DWORD left = 0, right = 0, up = 0, down = 0;
+  int left = 0, right = 0, up = 0, down = 0;
   vector<CStdString> leftActions, rightActions, upActions, downActions;
 
-  DWORD pageControl = 0;
+  int pageControl = 0;
   CGUIInfoColor colorDiffuse(0xFFFFFFFF);
-  DWORD defaultControl = 0;
+  int defaultControl = 0;
   bool  defaultAlways = false;
   CStdString strTmp;
   int singleInfo = 0;
@@ -600,8 +600,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   vector<CStdString> focusActions;
   CStdString strTitle = "";
   CStdString strRSSTags = "";
-
-  DWORD dwThumbAlign = 0;
 
   float thumbXPos = 4;
   float thumbYPos = 10;
@@ -713,13 +711,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   if (!GetNavigation(pControlNode, "onleft", left, leftActions)) left = id;
   if (!GetNavigation(pControlNode, "onright", right, rightActions)) right = id;
 
-  if (XMLUtils::GetDWORD(pControlNode, "defaultcontrol", defaultControl))
+  if (XMLUtils::GetInt(pControlNode, "defaultcontrol", defaultControl))
   {
     const char *always = pControlNode->FirstChildElement("defaultcontrol")->Attribute("always");
     if (always && strnicmp(always, "true", 4) == 0)
       defaultAlways = true;
   }
-  XMLUtils::GetDWORD(pControlNode, "pagecontrol", pageControl);
+  XMLUtils::GetInt(pControlNode, "pagecontrol", pageControl);
 
   GetInfoColor(pControlNode, "colordiffuse", colorDiffuse);
 
@@ -747,7 +745,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   if (XMLUtils::GetString(pControlNode, "font", strFont))
     labelInfo.font = g_fontManager.GetFont(strFont);
   GetAlignment(pControlNode, "align", labelInfo.align);
-  DWORD alignY = 0;
+  uint32_t alignY = 0;
   if (GetAlignmentY(pControlNode, "aligny", alignY))
     labelInfo.align |= alignY;
   if (GetFloat(pControlNode, "textwidth", labelInfo.width))
@@ -869,8 +867,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetFloat(pControlNode, "thumbheight", thumbHeight);
   GetFloat(pControlNode, "thumbposx", thumbXPos);
   GetFloat(pControlNode, "thumbposy", thumbYPos);
-
-  GetAlignment(pControlNode, "thumbalign", dwThumbAlign);
 
   GetFloat(pControlNode, "thumbwidthbig", thumbWidthBig);
   GetFloat(pControlNode, "thumbheightbig", thumbHeightBig);
@@ -1003,12 +999,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     if (insideContainer)
     {
-      control = new CGUIListGroup(dwParentId, id, posX, posY, width, height);
+      control = new CGUIListGroup(parentID, id, posX, posY, width, height);
     }
     else
     {
       control = new CGUIControlGroup(
-        dwParentId, id, posX, posY, width, height);
+        parentID, id, posX, posY, width, height);
       ((CGUIControlGroup *)control)->SetDefaultControl(defaultControl, defaultAlways);
       ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
     }
@@ -1016,7 +1012,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "grouplist")
   {
     control = new CGUIControlGroupList(
-      dwParentId, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords, labelInfo.align);
+      parentID, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords, labelInfo.align);
     ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
   }
   else if (strType == "label")
@@ -1024,12 +1020,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     const CGUIInfoLabel &content = (infoLabels.size()) ? infoLabels[0] : CGUIInfoLabel("");
     if (insideContainer)
     { // inside lists we use CGUIListLabel
-      control = new CGUIListLabel(dwParentId, id, posX, posY, width, height, labelInfo, content, bScrollLabel, scrollSpeed);
+      control = new CGUIListLabel(parentID, id, posX, posY, width, height, labelInfo, content, bScrollLabel, scrollSpeed);
     }
     else
     {
       control = new CGUILabelControl(
-        dwParentId, id, posX, posY, width, height,
+        parentID, id, posX, posY, width, height,
         labelInfo, wrapMultiLine, bHasPath);
       ((CGUILabelControl *)control)->SetInfo(content);
       ((CGUILabelControl *)control)->SetWidthControl(bScrollLabel, scrollSpeed);
@@ -1038,18 +1034,18 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "edit")
   {
     control = new CGUIEditControl(
-      dwParentId, id, posX, posY, width, height, textureFocus, textureNoFocus,
+      parentID, id, posX, posY, width, height, textureFocus, textureNoFocus,
       labelInfo, strLabel);
   }
   else if (strType == "videowindow")
   {
     control = new CGUIVideoControl(
-      dwParentId, id, posX, posY, width, height);
+      parentID, id, posX, posY, width, height);
   }
   else if (strType == "fadelabel")
   {
     control = new CGUIFadeLabelControl(
-      dwParentId, id, posX, posY, width, height,
+      parentID, id, posX, posY, width, height,
       labelInfo, scrollOut, scrollSpeed, timeToPauseAtEnd, resetOnLabelChange);
 
     ((CGUIFadeLabelControl *)control)->SetInfo(infoLabels);
@@ -1057,7 +1053,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "rss")
   {
     control = new CGUIRSSControl(
-      dwParentId, id, posX, posY, width, height,
+      parentID, id, posX, posY, width, height,
       labelInfo, textColor3, labelInfo2.textColor, strRSSTags, scrollSpeed);
 
     std::map<int, std::pair<std::vector<int>,std::vector<string> > >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
@@ -1072,7 +1068,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "button")
   {
     control = new CGUIButtonControl(
-      dwParentId, id, posX, posY, width, height,
+      parentID, id, posX, posY, width, height,
       textureFocus, textureNoFocus,
       labelInfo);
 
@@ -1084,7 +1080,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "togglebutton")
   {
     control = new CGUIToggleButtonControl(
-      dwParentId, id, posX, posY, width, height,
+      parentID, id, posX, posY, width, height,
       textureFocus, textureNoFocus,
       textureAltFocus, textureAltNoFocus, labelInfo);
 
@@ -1098,7 +1094,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "checkmark")
   {
     control = new CGUICheckMarkControl(
-      dwParentId, id, posX, posY, width, height,
+      parentID, id, posX, posY, width, height,
       textureCheckMark, textureCheckMarkNF,
       checkWidth, checkHeight, labelInfo);
 
@@ -1107,7 +1103,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "radiobutton")
   {
     control = new CGUIRadioButtonControl(
-      dwParentId, id, posX, posY, width, height,
+      parentID, id, posX, posY, width, height,
       textureFocus, textureNoFocus,
       labelInfo,
       textureRadioOn, textureRadioOff);
@@ -1124,13 +1120,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     if (infoLabels.size())
       label = infoLabels[0];
     control = new CGUIMultiSelectTextControl(
-      dwParentId, id, posX, posY, width, height,
+      parentID, id, posX, posY, width, height,
       textureFocus, textureNoFocus, labelInfo, label);
   }
   else if (strType == "spincontrol")
   {
     control = new CGUISpinControl(
-      dwParentId, id, posX, posY, width, height,
+      parentID, id, posX, posY, width, height,
       textureUp, textureDown, textureUpFocus, textureDownFocus,
       labelInfo, iType);
 
@@ -1156,7 +1152,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "slider")
   {
     control = new CGUISliderControl(
-      dwParentId, id, posX, posY, width, height,
+      parentID, id, posX, posY, width, height,
       textureBar, textureNib, textureNibFocus, SPIN_CONTROL_TYPE_TEXT);
 
     ((CGUISliderControl *)control)->SetInfo(singleInfo);
@@ -1165,7 +1161,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     labelInfo.align |= XBFONT_CENTER_Y;    // always center text vertically
     control = new CGUISettingsSliderControl(
-      dwParentId, id, posX, posY, width, height, sliderWidth, sliderHeight, textureFocus, textureNoFocus,
+      parentID, id, posX, posY, width, height, sliderWidth, sliderHeight, textureFocus, textureNoFocus,
       textureBar, textureNib, textureNibFocus, labelInfo, SPIN_CONTROL_TYPE_TEXT);
 
     ((CGUISettingsSliderControl *)control)->SetText(strLabel);
@@ -1174,13 +1170,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "scrollbar")
   {
     control = new CGUIScrollBar(
-      dwParentId, id, posX, posY, width, height,
+      parentID, id, posX, posY, width, height,
       textureBackground, textureBar, textureBarFocus, textureNib, textureNibFocus, orientation, showOnePage);
   }
   else if (strType == "progress")
   {
     control = new CGUIProgressControl(
-      dwParentId, id, posX, posY, width, height,
+      parentID, id, posX, posY, width, height,
       textureBackground, textureLeft, textureMid, textureRight, 
       textureOverlay, rMin, rMax, bReveal);
     ((CGUIProgressControl *)control)->SetInfo(singleInfo);
@@ -1193,10 +1189,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     // use a bordered texture if we have <bordersize> or <bordertexture> specified.
     if (borderTexture.filename.IsEmpty() && borderStr.IsEmpty())
       control = new CGUIImage(
-        dwParentId, id, posX, posY, width, height, texture);
+        parentID, id, posX, posY, width, height, texture);
     else
       control = new CGUIBorderedImage(
-        dwParentId, id, posX, posY, width, height, texture, borderTexture, borderSize);
+        parentID, id, posX, posY, width, height, texture, borderTexture, borderSize);
 #ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
     if (insideContainer && textureFile.IsConstant())
       aspect.ratio = CAspectRatio::AR_STRETCH;
@@ -1208,13 +1204,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "multiimage")
   {
     control = new CGUIMultiImage(
-      dwParentId, id, posX, posY, width, height, texture, timePerImage, fadeTime, randomized, loop, timeToPauseAtEnd);
+      parentID, id, posX, posY, width, height, texture, timePerImage, fadeTime, randomized, loop, timeToPauseAtEnd);
     ((CGUIMultiImage *)control)->SetInfo(texturePath);
     ((CGUIMultiImage *)control)->SetAspectRatio(aspect);
   }
   else if (strType == "list")
   {
-    control = new CGUIListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, preloadItems);
+    control = new CGUIListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems);
     ((CGUIListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIListContainer *)control)->LoadContent(pControlNode);
     ((CGUIListContainer *)control)->SetType(viewType, viewLabel);
@@ -1222,7 +1218,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else if (strType == "wraplist")
   {
-    control = new CGUIWrappingListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition);
+    control = new CGUIWrappingListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition);
     ((CGUIWrappingListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIWrappingListContainer *)control)->LoadContent(pControlNode);
     ((CGUIWrappingListContainer *)control)->SetType(viewType, viewLabel);
@@ -1230,7 +1226,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else if (strType == "fixedlist")
   {
-    control = new CGUIFixedListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition);
+    control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition);
     ((CGUIFixedListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIFixedListContainer *)control)->LoadContent(pControlNode);
     ((CGUIFixedListContainer *)control)->SetType(viewType, viewLabel);
@@ -1238,7 +1234,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else if (strType == "panel")
   {
-    control = new CGUIPanelContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, preloadItems);
+    control = new CGUIPanelContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems);
     ((CGUIPanelContainer *)control)->LoadLayout(pControlNode);
     ((CGUIPanelContainer *)control)->LoadContent(pControlNode);
     ((CGUIPanelContainer *)control)->SetType(viewType, viewLabel);
@@ -1247,7 +1243,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "textbox")
   {
     control = new CGUITextBox(
-      dwParentId, id, posX, posY, width, height,
+      parentID, id, posX, posY, width, height,
       labelInfo, scrollTime);
 
     ((CGUITextBox *)control)->SetPageControl(pageControl);
@@ -1258,7 +1254,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "selectbutton")
   {
     control = new CGUISelectButtonControl(
-      dwParentId, id, posX, posY,
+      parentID, id, posX, posY,
       width, height, textureFocus, textureNoFocus,
       labelInfo,
       textureBackground, textureLeft, textureLeftFocus, textureRight, textureRightFocus);
@@ -1268,19 +1264,19 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "mover")
   {
     control = new CGUIMoverControl(
-      dwParentId, id, posX, posY, width, height,
+      parentID, id, posX, posY, width, height,
       textureFocus, textureNoFocus);
   }
   else if (strType == "resize")
   {
     control = new CGUIResizeControl(
-      dwParentId, id, posX, posY, width, height,
+      parentID, id, posX, posY, width, height,
       textureFocus, textureNoFocus);
   }
   else if (strType == "buttonscroller")
   {
     control = new CGUIButtonScroller(
-      dwParentId, id, posX, posY, width, height, buttonGap, iNumSlots, iDefaultSlot,
+      parentID, id, posX, posY, width, height, buttonGap, iNumSlots, iDefaultSlot,
       iMovementRange, bHorizontal, iAlpha, bWrapAround, bSmoothScrolling,
       textureFocus, textureNoFocus, labelInfo);
     ((CGUIButtonScroller *)control)->LoadButtons(pControlNode);
@@ -1288,7 +1284,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "spincontrolex")
   {
     control = new CGUISpinControlEx(
-      dwParentId, id, posX, posY, width, height, spinWidth, spinHeight,
+      parentID, id, posX, posY, width, height, spinWidth, spinHeight,
       labelInfo, textureFocus, textureNoFocus, textureUp, textureDown, textureUpFocus, textureDownFocus,
       labelInfo, iType);
 
@@ -1298,7 +1294,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else if (strType == "visualisation")
   {
-    control = new CGUIVisualisationControl(dwParentId, id, posX, posY, width, height);
+    control = new CGUIVisualisationControl(parentID, id, posX, posY, width, height);
   }
 
   // things that apply to all controls

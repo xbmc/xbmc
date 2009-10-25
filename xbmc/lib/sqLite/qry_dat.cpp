@@ -84,21 +84,15 @@ field_value::field_value(const unsigned short us) {
   is_null = false;
 }
   
-field_value::field_value(const long l) {
-  long_value = l; 
-  field_type = ft_Long;
-  is_null = false;
-}
-
 field_value::field_value(const int i) {
-  long_value = (long)i; 
-  field_type = ft_Long;
+  int_value = i; 
+  field_type = ft_Int;
   is_null = false;
 }
   
-field_value::field_value(const unsigned long ul) {
-  ulong_value = ul; 
-  field_type = ft_ULong;
+field_value::field_value(const unsigned int ui) {
+  uint_value = ui; 
+  field_type = ft_UInt;
   is_null = false;
 }
   
@@ -114,7 +108,7 @@ field_value::field_value(const double d) {
   is_null = false;
 }
   
-field_value::field_value(const __int64 i) {
+field_value::field_value(const int64_t i) {
   int64_value = i; 
   field_type = ft_Int64;
   is_null = false;
@@ -142,12 +136,12 @@ field_value::field_value (const field_value & fv) {
       set_asUShort(fv.get_asUShort());
       break;
     }
-    case ft_Long: {
-      set_asLong(fv.get_asLong());
+    case ft_Int: {
+      set_asInt(fv.get_asInt());
       break;
     }
-    case ft_ULong: {
-      set_asULong(fv.get_asULong());
+    case ft_UInt: {
+      set_asUInt(fv.get_asUInt());
       break;
     }
     case ft_Float: {
@@ -202,14 +196,14 @@ string field_value::get_asString() const {
       sprintf(t,"%i",ushort_value);
       return tmp = t;
     }
-    case ft_Long: {
+    case ft_Int: {
       char t[12];
-      sprintf(t,"%ld",long_value);
+      sprintf(t,"%ld",int_value);
       return tmp = t;
     }
-    case ft_ULong: {
+    case ft_UInt: {
       char t[12];
-      sprintf(t,"%lu",ulong_value);
+      sprintf(t,"%lu",uint_value);
       return tmp = t;
     }
     case ft_Float: {
@@ -257,11 +251,11 @@ bool field_value::get_asBool() const {
     case ft_UShort: {
       return (bool)ushort_value;
     }
-    case ft_Long: {
-      return (bool)long_value;
+    case ft_Int: {
+      return (bool)int_value;
     }
-    case ft_ULong: {
-      return (bool)ulong_value;
+    case ft_UInt: {
+      return (bool)uint_value;
     }
     case ft_Float: {
       return (bool)float_value;
@@ -303,14 +297,14 @@ char field_value::get_asChar() const {
       sprintf(t,"%i",ushort_value);
       return t[0];
     }
-    case ft_Long: {
+    case ft_Int: {
       char t[12];
-      sprintf(t,"%ld",long_value);
+      sprintf(t,"%ld",int_value);
       return t[0];
     }
-    case ft_ULong: {
+    case ft_UInt: {
       char t[12];
-      sprintf(t,"%lu",ulong_value);
+      sprintf(t,"%lu",uint_value);
       return t[0];
     }
     case ft_Float: {
@@ -351,11 +345,11 @@ short field_value::get_asShort() const {
     case ft_UShort: {
        return (short)ushort_value;
     }
-    case ft_Long: {
-      return (short)long_value;
+    case ft_Int: {
+      return (short)int_value;
     }
-    case ft_ULong: {
-      return (short)ulong_value;
+    case ft_UInt: {
+      return (short)uint_value;
     }
     case ft_Float: {
       return (short)float_value;
@@ -389,11 +383,11 @@ unsigned short field_value::get_asUShort() const {
     case ft_UShort: {
        return ushort_value;
     }
-    case ft_Long: {
-      return (unsigned short)long_value;
+    case ft_Int: {
+      return (unsigned short)int_value;
     }
-    case ft_ULong: {
-      return (unsigned short)ulong_value;
+    case ft_UInt: {
+      return (unsigned short)uint_value;
     }
     case ft_Float: {
       return (unsigned short)float_value;
@@ -409,78 +403,74 @@ unsigned short field_value::get_asUShort() const {
     }
   }
 
-long field_value::get_asLong() const {
+int field_value::get_asInt() const {
     switch (field_type) {
     case ft_String: {
-      return (long)atoi(str_value.c_str());
+      return (int)atoi(str_value.c_str());
     }
     case ft_Boolean:{
-      return (long)bool_value;
+      return (int)bool_value;
     }
     case ft_Char: {
-      return (long)char_value;
+      return (int)char_value;
     }
     case ft_Short: {
-       return (long)short_value;
+       return (int)short_value;
     }
     case ft_UShort: {
-       return (long)ushort_value;
+       return (int)ushort_value;
     }
-    case ft_Long: {
-      return long_value;
+    case ft_Int: {
+      return int_value;
     }
-    case ft_ULong: {
-      return (long)ulong_value;
+    case ft_UInt: {
+      return (int)uint_value;
     }
     case ft_Float: {
-      return (long)float_value;
+      return (int)float_value;
     }
     case ft_Double: {
-      return (long)double_value;
+      return (int)double_value;
     }
     case ft_Int64: {
-      return (long)int64_value;
+      return (int)int64_value;
     }
     default:
       return 0;
     }
   }
 
-int field_value::get_asInteger() const{
-  return (int)get_asLong();
-}
-
-unsigned long field_value::get_asULong() const {
+unsigned int field_value::get_asUInt() const {
     switch (field_type) {
     case ft_String: {
-      return (unsigned long)atoi(str_value.c_str());
+      return (unsigned int)atoi(str_value.c_str());
     }
     case ft_Boolean:{
-      return (unsigned long)bool_value;
+      return (unsigned int)bool_value;
     }
     case ft_Char: {
-      return (unsigned long)char_value;
+      return (unsigned int)char_value;
     }
     case ft_Short: {
-       return (unsigned long)short_value;
+       return (unsigned int)short_value;
     }
     case ft_UShort: {
-       return (unsigned long)ushort_value;
+       return (unsigned int)ushort_value;
     }
-    case ft_Long: {
-      return (unsigned long)long_value;
+    case ft_Int: {
+      return (unsigned int)int_value;
     }
-    case ft_ULong: {
-      return ulong_value;
+    case ft_UInt: {
+      return uint_value;
     }
     case ft_Float: {
-      return (unsigned long)float_value;
+      return (unsigned int)float_value;
     }
     case ft_Double: {
-      return (unsigned long)double_value;
+      return (unsigned int)double_value;
     }
     case ft_Int64: {
-      return (unsigned long)int64_value;
+      return (unsigned int)int64_value;
     }
     default:
       return 0;
@@ -504,11 +494,11 @@ float field_value::get_asFloat() const {
     case ft_UShort: {
        return (float)ushort_value;
     }
-    case ft_Long: {
-      return (float)long_value;
+    case ft_Int: {
+      return (float)int_value;
     }
-    case ft_ULong: {
-      return (float)ulong_value;
+    case ft_UInt: {
+      return (float)uint_value;
     }
     case ft_Float: {
       return float_value;
@@ -541,11 +531,11 @@ double field_value::get_asDouble() const {
     case ft_UShort: {
        return (double)ushort_value;
     }
-    case ft_Long: {
-      return (double)long_value;
+    case ft_Int: {
+      return (double)int_value;
     }
-    case ft_ULong: {
-      return (double)ulong_value;
+    case ft_UInt: {
+      return (double)uint_value;
     }
     case ft_Float: {
       return (double)float_value;
@@ -561,34 +551,34 @@ double field_value::get_asDouble() const {
     }
   }
 
-__int64 field_value::get_asInt64() const {
+int64_t field_value::get_asInt64() const {
     switch (field_type) {
     case ft_String: {
       return _atoi64(str_value.c_str());
     }
     case ft_Boolean:{
-      return (__int64)bool_value;
+      return (int64_t)bool_value;
     }
     case ft_Char: {
-      return (__int64)char_value;
+      return (int64_t)char_value;
     }
     case ft_Short: {
-       return (__int64)short_value;
+       return (int64_t)short_value;
     }
     case ft_UShort: {
-       return (__int64)ushort_value;
+       return (int64_t)ushort_value;
     }
-    case ft_Long: {
-      return (__int64)long_value;
+    case ft_Int: {
+      return (int64_t)int_value;
     }
-    case ft_ULong: {
-      return (__int64)ulong_value;
+    case ft_UInt: {
+      return (int64_t)uint_value;
     }
     case ft_Float: {
-      return (__int64)float_value;
+      return (int64_t)float_value;
     }
     case ft_Double: {
-      return (__int64)double_value;
+      return (int64_t)double_value;
     }
     case ft_Int64: {
       return int64_value;
@@ -630,13 +620,13 @@ field_value& field_value::operator= (const field_value & fv) {
       return *this;
       break;
     }
-    case ft_Long: {
-      set_asLong(fv.get_asLong());
+    case ft_Int: {
+      set_asInt(fv.get_asInt());
       return *this;
       break;
     }
-    case ft_ULong: {
-      set_asULong(fv.get_asULong());
+    case ft_UInt: {
+      set_asUInt(fv.get_asUInt());
       return *this;
       break;
     }
@@ -687,20 +677,16 @@ void field_value::set_asUShort(const unsigned short us) {
   ushort_value = us; 
   field_type = ft_UShort;
 }
-  
-void field_value::set_asLong(const long l) {
-  long_value = l; 
-  field_type = ft_Long;
-}
 
-void field_value::set_asInteger(const int i) {
-  long_value = (long)i; 
-  field_type = ft_Long;
+void field_value::set_asInt(const int i) {
+  int_value = i; 
+  field_type = ft_Int;
 }
   
-void field_value::set_asULong(const unsigned long ul) {
-  long_value = ul; 
-  field_type = ft_ULong;}
+void field_value::set_asUInt(const unsigned int ui) {
+  int_value = ui; 
+  field_type = ft_UInt;
+}
   
 void field_value::set_asFloat(const float f) {
   float_value = f; 
@@ -710,7 +696,7 @@ void field_value::set_asDouble(const double d) {
   double_value = d; 
   field_type = ft_Double;}
 
-void field_value::set_asInt64(const __int64 i) {
+void field_value::set_asInt64(const int64_t i) {
   int64_value = i; 
   field_type = ft_Int64;}
   
@@ -737,8 +723,8 @@ string field_value::gft() {
       tmp.assign("short");
       return tmp;
     }
-    case ft_Long: {
-      tmp.assign("long");
+    case ft_Int: {
+      tmp.assign("int");
       return tmp;
     }
     case ft_Float: {

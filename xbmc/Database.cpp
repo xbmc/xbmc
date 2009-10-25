@@ -150,7 +150,7 @@ bool CDatabase::Open()
       }
       else
 //#endif
-      version = m_pDS->fv("idVersion").get_asInteger();
+      version = m_pDS->fv("idVersion").get_asInt();
     }
   }
   CDatabase::UpdateOldVersion(version); // always call this
@@ -222,7 +222,7 @@ bool CDatabase::Compress(bool bForce /* =true */)
       m_pDS->query("select iCompressCount from version");
       if (!m_pDS->eof())
       {
-        int iCount = m_pDS->fv(0).get_asInteger();
+        int iCount = m_pDS->fv(0).get_asInt();
         if (iCount > MAX_COMPRESS_COUNT)
           iCount = -1;
         m_pDS->close();

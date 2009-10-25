@@ -28,8 +28,8 @@ using namespace std;
 #define SPIN_BUTTON_DOWN 1
 #define SPIN_BUTTON_UP   2
 
-CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CLabelInfo &labelInfo, int iType)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUISpinControl::CGUISpinControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CLabelInfo &labelInfo, int iType)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_imgspinUp(posX, posY, width, height, textureUp)
     , m_imgspinDown(posX, posY, width, height, textureDown)
     , m_imgspinUpFocus(posX, posY, width, height, textureUpFocus)
@@ -63,7 +63,7 @@ CGUISpinControl::~CGUISpinControl(void)
 
 bool CGUISpinControl::OnAction(const CAction &action)
 {
-  switch (action.wID)
+  switch (action.id)
   {
   case REMOTE_0:
   case REMOTE_1:
@@ -81,7 +81,7 @@ bool CGUISpinControl::OnAction(const CAction &action)
         m_iTypedPos = 0;
         strcpy(m_szTyped, "");
       }
-      int iNumber = action.wID - REMOTE_0;
+      int iNumber = action.id - REMOTE_0;
 
       m_szTyped[m_iTypedPos] = iNumber + '0';
       m_iTypedPos++;
@@ -166,9 +166,9 @@ bool CGUISpinControl::OnAction(const CAction &action)
     break;
   }
 /*  static float m_fSmoothScrollOffset = 0.0f;
-  if (action.wID == ACTION_SCROLL_UP)
+  if (action.id == ACTION_SCROLL_UP)
   {
-    m_fSmoothScrollOffset += action.fAmount1 * action.fAmount1;
+    m_fSmoothScrollOffset += action.amount1 * action.amount1;
     bool handled = false;
     while (m_fSmoothScrollOffset > 0.4)
     {
@@ -875,9 +875,9 @@ bool CGUISpinControl::OnMouseOver(const CPoint &point)
   return true;
 }
 
-bool CGUISpinControl::OnMouseClick(DWORD dwButton, const CPoint &point)
+bool CGUISpinControl::OnMouseClick(int button, const CPoint &point)
 { // only left button handled
-  if (dwButton != MOUSE_LEFT_BUTTON) return false;
+  if (button != MOUSE_LEFT_BUTTON) return false;
   if (m_imgspinUpFocus.HitTest(point))
   {
     MoveUp();

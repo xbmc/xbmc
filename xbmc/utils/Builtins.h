@@ -1,8 +1,3 @@
-/*!
-\file ActionManager.h
-\brief 
-*/
-
 #pragma once
 
 /*
@@ -26,28 +21,13 @@
  *
  */
 
-// forward definitions
-class CGUIMessage;
-class IMsgSenderCallback;
+#include "StdString.h"
 
-/*!
- \ingroup actionkeys
- \brief 
- */
-class CActionManager
+class CBuiltins
 {
 public:
-  CActionManager(void);
-  virtual ~CActionManager(void);
-  void CallScriptAction(CGUIMessage& message);
-  void SetScriptActionCallback(IMsgSenderCallback* pCallback);
-
-protected:
-  IMsgSenderCallback* m_pScriptActionCallback;
+  static bool HasCommand(const CStdString& execString);
+  static void GetHelp(CStdString &help);
+  static int Execute(const CStdString& execString);
 };
 
-/*!
- \ingroup actionkeys
- \brief 
- */
-extern CActionManager g_actionManager;

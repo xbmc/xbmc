@@ -24,14 +24,14 @@
 
 CKey::CKey(void)
 {
-  m_dwButtonCode = KEY_INVALID;
-  m_bLeftTrigger = 0;
-  m_bRightTrigger = 0;
-  m_fLeftThumbX = 0.0f;
-  m_fLeftThumbY = 0.0f;
-  m_fRightThumbX = 0.0f;
-  m_fRightThumbY = 0.0f;
-  m_fRepeat = 0.0f;
+  m_buttonCode = KEY_INVALID;
+  m_leftTrigger = 0;
+  m_rightTrigger = 0;
+  m_leftThumbX = 0.0f;
+  m_leftThumbY = 0.0f;
+  m_rightThumbX = 0.0f;
+  m_rightThumbY = 0.0f;
+  m_repeat = 0.0f;
   m_fromHttpApi = false;
   m_held = 0;
 }
@@ -39,16 +39,16 @@ CKey::CKey(void)
 CKey::~CKey(void)
 {}
 
-CKey::CKey(DWORD dwButtonCode, BYTE bLeftTrigger, BYTE bRightTrigger, float fLeftThumbX, float fLeftThumbY, float fRightThumbX, float fRightThumbY, float fRepeat)
+CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float leftThumbX, float leftThumbY, float rightThumbX, float rightThumbY, float repeat)
 {
-  m_bLeftTrigger = bLeftTrigger;
-  m_bRightTrigger = bRightTrigger;
-  m_fLeftThumbX = fLeftThumbX;
-  m_fLeftThumbY = fLeftThumbY;
-  m_fRightThumbX = fRightThumbX;
-  m_fRightThumbY = fRightThumbY;
-  m_dwButtonCode = dwButtonCode;
-  m_fRepeat = fRepeat;
+  m_leftTrigger = leftTrigger;
+  m_rightTrigger = rightTrigger;
+  m_leftThumbX = leftThumbX;
+  m_leftThumbY = leftThumbY;
+  m_rightThumbX = rightThumbX;
+  m_rightThumbY = rightThumbY;
+  m_buttonCode = buttonCode;
+  m_repeat = repeat;
   m_fromHttpApi = false;
   m_held = 0;
 }
@@ -58,15 +58,15 @@ CKey::CKey(const CKey& key)
   *this = key;
 }
 
-DWORD CKey::GetButtonCode() const // for backwards compatibility only
+uint32_t CKey::GetButtonCode() const // for backwards compatibility only
 {
-  return m_dwButtonCode;
+  return m_buttonCode;
 }
 
-DWORD CKey::GetUnicode() const
+uint32_t CKey::GetUnicode() const
 {  
-  if (m_dwButtonCode>=KEY_ASCII && m_dwButtonCode < KEY_UNICODE) // will need to change when Unicode is fully implemented
-    return m_dwButtonCode-KEY_ASCII;
+  if (m_buttonCode>=KEY_ASCII && m_buttonCode < KEY_UNICODE) // will need to change when Unicode is fully implemented
+    return m_buttonCode-KEY_ASCII;
   else
     return 0;
 }
@@ -74,14 +74,14 @@ DWORD CKey::GetUnicode() const
 const CKey& CKey::operator=(const CKey& key)
 {
   if (&key == this) return * this;
-  m_bLeftTrigger = key.m_bLeftTrigger;
-  m_bRightTrigger = key.m_bRightTrigger;
-  m_dwButtonCode = key.m_dwButtonCode;
-  m_fLeftThumbX = key.m_fLeftThumbX;
-  m_fLeftThumbY = key.m_fLeftThumbY;
-  m_fRightThumbX = key.m_fRightThumbX;
-  m_fRightThumbY = key.m_fRightThumbY;
-  m_fRepeat = key.m_fRepeat;
+  m_leftTrigger = key.m_leftTrigger;
+  m_rightTrigger = key.m_rightTrigger;
+  m_buttonCode = key.m_buttonCode;
+  m_leftThumbX = key.m_leftThumbX;
+  m_leftThumbY = key.m_leftThumbY;
+  m_rightThumbX = key.m_rightThumbX;
+  m_rightThumbY = key.m_rightThumbY;
+  m_repeat = key.m_repeat;
   m_fromHttpApi = key.m_fromHttpApi;
   m_held = key.m_held;
   return *this;
@@ -89,38 +89,38 @@ const CKey& CKey::operator=(const CKey& key)
 
 BYTE CKey::GetLeftTrigger() const
 {
-  return m_bLeftTrigger;
+  return m_leftTrigger;
 }
 
 BYTE CKey::GetRightTrigger() const
 {
-  return m_bRightTrigger;
+  return m_rightTrigger;
 }
 
 float CKey::GetLeftThumbX() const
 {
-  return m_fLeftThumbX;
+  return m_leftThumbX;
 }
 
 float CKey::GetLeftThumbY() const
 {
-  return m_fLeftThumbY;
+  return m_leftThumbY;
 }
 
 
 float CKey::GetRightThumbX() const
 {
-  return m_fRightThumbX;
+  return m_rightThumbX;
 }
 
 float CKey::GetRightThumbY() const
 {
-  return m_fRightThumbY;
+  return m_rightThumbY;
 }
 
 bool CKey::FromKeyboard() const
 {
-  return (m_dwButtonCode >= KEY_VKEY && m_dwButtonCode != KEY_INVALID);
+  return (m_buttonCode >= KEY_VKEY && m_buttonCode != KEY_INVALID);
 }
 
 bool CKey::IsAnalogButton() const
@@ -140,7 +140,7 @@ bool CKey::IsIRRemote() const
 
 float CKey::GetRepeat() const
 {
-  return m_fRepeat;
+  return m_repeat;
 }
 
 bool CKey::GetFromHttpApi() const

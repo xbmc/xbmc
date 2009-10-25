@@ -170,8 +170,8 @@ public:
   inline ANIMATION_PROCESS GetProcess() const { return m_currentProcess; };
   inline ANIMATION_PROCESS GetQueuedProcess() const { return m_queuedProcess; };
 
-  void UpdateCondition(DWORD contextWindow, const CGUIListItem *item = NULL);
-  void SetInitialCondition(DWORD contextWindow);
+  void UpdateCondition(int contextWindow, const CGUIListItem *item = NULL);
+  void SetInitialCondition(int contextWindow);
 
 private:
   void Calculate(const CPoint &point);

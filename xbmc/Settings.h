@@ -214,10 +214,6 @@ public:
   CStdString m_defaultMusicLibSource;
   CStdString m_defaultVideoLibSource;
 
-  VECSOURCES m_UPnPMusicSources;
-  VECSOURCES m_UPnPVideoSources;
-  VECSOURCES m_UPnPPictureSources;
-
   CStdString m_UPnPUUIDServer;
   int        m_UPnPPortServer;
   int        m_UPnPMaxReturnedItems;

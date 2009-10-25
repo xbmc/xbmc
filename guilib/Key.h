@@ -389,19 +389,19 @@ class CAction
 public:
   CAction()
   {
-    wID = 0;
-    fAmount1 = fAmount2 = fRepeat = 0;
-    m_dwButtonCode = 0;
+    id = 0;
+    amount1 = amount2 = repeat = 0;
+    buttonCode = 0;
     unicode = 0;
     holdTime = 0;
   };
-  WORD wID;
-  float fAmount1;
-  float fAmount2;
-  float fRepeat;
-  DWORD m_dwButtonCode;
+  int          id;
+  float        amount1;
+  float        amount2;
+  float        repeat;
+  unsigned int buttonCode;
   CStdString strAction;
-  WCHAR unicode; // new feature, does not fit into wID like ASCII, wouldn't be good design either!? Will be set whenever ASCII is set into wID (for backwards compatibility)
+  wchar_t      unicode; // new feature, does not fit into id like ASCII, wouldn't be good design either!? Will be set whenever ASCII is set into id (for backwards compatibility)
   unsigned int holdTime; ///< Time the key has been held down (in ms)
 };
 
@@ -413,15 +413,15 @@ class CKey
 {
 public:
   CKey(void);
-  CKey(DWORD dwButtonCode, BYTE bLeftTrigger = 0, BYTE bRightTrigger = 0, float fLeftThumbX = 0.0f, float fLeftThumbY = 0.0f, float fRightThumbX = 0.0f, float fRightThumbY = 0.0f, float fRepeat = 0.0f);
+  CKey(uint32_t buttonCode, uint8_t leftTrigger = 0, uint8_t rightTrigger = 0, float leftThumbX = 0.0f, float leftThumbY = 0.0f, float rightThumbX = 0.0f, float rightThumbY = 0.0f, float repeat = 0.0f);
   CKey(const CKey& key);
 
   virtual ~CKey(void);
   const CKey& operator=(const CKey& key);
-  DWORD GetButtonCode() const; // for backwards compatibility only
-  DWORD GetUnicode() const; // http api does not really support unicode till now. It only simulates unicode when ascii codes are available:
-  BYTE GetLeftTrigger() const;
-  BYTE GetRightTrigger() const;
+  uint32_t GetButtonCode() const; // for backwards compatibility only
+  uint32_t GetUnicode() const; // http api does not really support unicode till now. It only simulates unicode when ascii codes are available:
+  uint8_t GetLeftTrigger() const;
+  uint8_t GetRightTrigger() const;
   float GetLeftThumbX() const;
   float GetLeftThumbY() const;
   float GetRightThumbX() const;
@@ -436,14 +436,14 @@ public:
   void SetHeld(unsigned int held);
   unsigned int GetHeld() const;
 private:
-  DWORD m_dwButtonCode;
-  BYTE m_bLeftTrigger;
-  BYTE m_bRightTrigger;
-  float m_fLeftThumbX;
-  float m_fLeftThumbY;
-  float m_fRightThumbX;
-  float m_fRightThumbY;
-  float m_fRepeat; // time since last keypress
+  uint32_t m_buttonCode;
+  uint8_t m_leftTrigger;
+  uint8_t m_rightTrigger;
+  float m_leftThumbX;
+  float m_leftThumbY;
+  float m_rightThumbX;
+  float m_rightThumbY;
+  float m_repeat; // time since last keypress
   bool m_fromHttpApi;
   unsigned int m_held;
 };

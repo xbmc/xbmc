@@ -365,6 +365,12 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   XMLUtils::GetString(movie, "originaltitle", m_strOriginalTitle);
   XMLUtils::GetString(movie, "sorttitle", m_strSortTitle);
   XMLUtils::GetFloat(movie, "rating", m_fRating);
+  int max_value = 10;
+  const TiXmlElement* rElement = movie->FirstChildElement("rating");
+  if (rElement && (rElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value>=1)
+  {    
+    m_fRating = m_fRating / max_value * 10; // Normalise the Movie Rating to between 1 and 10
+  }
   XMLUtils::GetInt(movie, "year", m_iYear);
   XMLUtils::GetInt(movie, "top250", m_iTop250);
   XMLUtils::GetInt(movie, "season", m_iSeason);
@@ -640,4 +646,5 @@ bool CVideoInfoTag::HasStreamDetails() const
 {
   return m_streamDetails.HasItems();
 }
+
 

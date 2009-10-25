@@ -746,7 +746,7 @@ bool CFileCurl::Open(const CURL& url)
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
-  url2.GetURL(m_url);
+  m_url = url2.Get();
 
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", (void*)this, m_url.c_str());  
 
@@ -928,7 +928,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
-  url2.GetURL(m_url);
+  m_url = url2.Get();
 
   ASSERT(m_state->m_easyHandle == NULL);
   g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, NULL);
@@ -1244,9 +1244,7 @@ bool CFileCurl::GetHttpHeader(const CURL &url, CHttpHeader &headers)
   }
   catch(...)
   {
-    CStdString path;
-    url.GetURL(path);
-    CLog::Log(LOGERROR, "%s - Exception thrown while trying to retrieve header url: %s", __FUNCTION__, path.c_str());
+    CLog::Log(LOGERROR, "%s - Exception thrown while trying to retrieve header url: %s", __FUNCTION__, url.Get().c_str());
     return false;
   }
 }

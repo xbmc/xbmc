@@ -546,8 +546,8 @@ bool CCdgParser::Start(CStdString strSongPath)
 
   /* make sure we have fullscreen viz */
   /* hmm won't this switch to fullscreen after each track?? */
-  if (m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
-    m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
+  if (g_windowManager.GetActiveWindow() != WINDOW_VISUALISATION)
+    g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
 
   // Karaoke patch (114097) ...
   if ( g_guiSettings.GetBool("karaoke.voiceenabled") )

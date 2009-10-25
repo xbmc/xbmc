@@ -24,20 +24,20 @@
 #include "Util.h"
 #include "FileSystem/SpecialProtocol.h"
 
-bool XMLUtils::GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwHexValue)
+bool XMLUtils::GetHex(const TiXmlNode* pRootNode, const char* strTag, uint32_t& hexValue)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild()) return false;
-  sscanf(pNode->FirstChild()->Value(), "%x", (unsigned int*) &dwHexValue );
+  sscanf(pNode->FirstChild()->Value(), "%x", (uint32_t*) &hexValue );
   return true;
 }
 
 
-bool XMLUtils::GetDWORD(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwDWORDValue)
+bool XMLUtils::GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t& uintValue)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild()) return false;
-  dwDWORDValue = atol(pNode->FirstChild()->Value());
+  uintValue = atol(pNode->FirstChild()->Value());
   return true;
 }
 
@@ -228,7 +228,7 @@ void XMLUtils::SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value)
   SetString(pRootNode, strTag, value ? "true" : "false");
 }
 
-void XMLUtils::SetHex(TiXmlNode* pRootNode, const char *strTag, DWORD value)
+void XMLUtils::SetHex(TiXmlNode* pRootNode, const char *strTag, uint32_t value)
 {
   CStdString strValue;
   strValue.Format("%x", value);

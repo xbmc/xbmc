@@ -31,23 +31,23 @@ class CSetting;
 class CBaseSettingControl
 {
 public:
-  CBaseSettingControl(DWORD dwID, CSetting *pSetting);
+  CBaseSettingControl(int id, CSetting *pSetting);
   virtual ~CBaseSettingControl() {}
   virtual bool OnClick() { return false; };
   virtual void Update() {};
-  DWORD GetID() { return m_dwID; };
+  int GetID() { return m_id; };
   CSetting* GetSetting() { return m_pSetting; };
   virtual bool NeedsUpdate() { return false; };   ///< Returns true if the control needs an update
   virtual void Reset() {}; ///< Resets the NeedsUpdate() state
 protected:
-  DWORD m_dwID;
+  int m_id;
   CSetting* m_pSetting;
 };
 
 class CRadioButtonSettingControl : public CBaseSettingControl
 {
 public:
-  CRadioButtonSettingControl(CGUIRadioButtonControl* pRadioButton, DWORD dwID, CSetting *pSetting);
+  CRadioButtonSettingControl(CGUIRadioButtonControl* pRadioButton, int id, CSetting *pSetting);
   virtual ~CRadioButtonSettingControl();
   virtual bool OnClick();
   virtual void Update();
@@ -59,7 +59,7 @@ private:
 class CSpinExSettingControl : public CBaseSettingControl
 {
 public:
-  CSpinExSettingControl(CGUISpinControlEx* pSpin, DWORD dwID, CSetting *pSetting);
+  CSpinExSettingControl(CGUISpinControlEx* pSpin, int id, CSetting *pSetting);
   virtual ~CSpinExSettingControl();
   virtual bool OnClick();
   virtual void Update();
@@ -70,7 +70,7 @@ private:
 class CButtonSettingControl : public CBaseSettingControl
 {
 public:
-  CButtonSettingControl(CGUIButtonControl* pButton, DWORD dwID, CSetting *pSetting);
+  CButtonSettingControl(CGUIButtonControl* pButton, int id, CSetting *pSetting);
   virtual ~CButtonSettingControl();
   virtual bool OnClick();
   virtual void Update();
@@ -81,7 +81,7 @@ private:
 class CEditSettingControl : public CBaseSettingControl
 {
 public:
-  CEditSettingControl(CGUIEditControl* pButton, DWORD dwID, CSetting *pSetting);
+  CEditSettingControl(CGUIEditControl* pButton, int id, CSetting *pSetting);
   virtual ~CEditSettingControl();
   virtual bool OnClick();
   virtual void Update();
@@ -96,7 +96,7 @@ private:
 class CSeparatorSettingControl : public CBaseSettingControl
 {
 public:
-  CSeparatorSettingControl(CGUIImage* pImage, DWORD dwID, CSetting *pSetting);
+  CSeparatorSettingControl(CGUIImage* pImage, int id, CSetting *pSetting);
   virtual ~CSeparatorSettingControl();
   virtual bool OnClick() { return false; };
   virtual void Update() {};

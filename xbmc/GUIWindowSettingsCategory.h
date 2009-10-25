@@ -34,7 +34,7 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
   virtual bool OnAction(const CAction &action);
   virtual void Render();
-  virtual DWORD GetID() const { return CGUIWindow::GetID() + (DWORD)m_iScreen; };
+  virtual int GetID() const { return CGUIWindow::GetID() + m_iScreen; };
 
   // static function as it's accessed elsewhere
   static void FillInVisualisations(CSetting *pSetting, int iControlID);
@@ -58,7 +58,6 @@ protected:
   void FillInStartupWindow(CSetting *pSetting);
   void FillInViewModes(CSetting *pSetting, int windowID);
   void FillInSortMethods(CSetting *pSetting, int windowID);
-  void ClearFolderViews(CSetting *pSetting, int windowID);
   bool SetFTPServerUserPass();
 
   void FillInSkinThemes(CSetting *pSetting);
@@ -79,7 +78,7 @@ protected:
   void AddSetting(CSetting *pSetting, float width, int &iControlID);
   CBaseSettingControl* GetSetting(const CStdString &strSetting);
 
-  void JumpToSection(DWORD dwWindowId, const CStdString &section);
+  void JumpToSection(int windowID, const CStdString &section);
   void JumpToPreviousSection();
 
   std::vector<CBaseSettingControl *> m_vecSettings;

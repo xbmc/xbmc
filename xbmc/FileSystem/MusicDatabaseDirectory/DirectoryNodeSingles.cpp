@@ -39,7 +39,7 @@ bool CDirectoryNodeSingles::GetContent(CFileItemList& items)
     return false;
 
   CStdString strBaseDir=BuildPath();
-  bool bSuccess=musicdatabase.GetSongsByWhere(strBaseDir, "where strAlbum=''", items);
+  bool bSuccess=musicdatabase.GetSongsByWhere(strBaseDir, "where idAlbum in (select idAlbum from album where strAlbum='')", items);
 
   musicdatabase.Close();
 

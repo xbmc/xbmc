@@ -182,12 +182,9 @@ __int64 CFileCDDA::GetLength()
 
 bool CFileCDDA::IsValidFile(const CURL& url)
 {
-  CStdString strFileName;
-  url.GetURL(strFileName);
-
   // Only .cdda files are supported
   CStdString strExtension;
-  CUtil::GetExtension(strFileName, strExtension);
+  CUtil::GetExtension(url.Get(), strExtension);
   strExtension.MakeLower();
 
   return (strExtension == ".cdda");
@@ -195,8 +192,7 @@ bool CFileCDDA::IsValidFile(const CURL& url)
 
 int CFileCDDA::GetTrackNum(const CURL& url)
 {
-  CStdString strFileName;
-  url.GetURL(strFileName);
+  CStdString strFileName = url.Get();
 
   // get track number from "cdda://local/01.cdda"
   return atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str());

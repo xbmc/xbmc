@@ -45,7 +45,7 @@ CGUIWindowVideoOverlay::~CGUIWindowVideoOverlay()
 
 void CGUIWindowVideoOverlay::Render()
 {
-  if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+  if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
   { // close immediately
     Close(true);
     return;

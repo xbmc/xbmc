@@ -53,7 +53,7 @@ void CGUIDialogProgress::SetCanCancel(bool bCanCancel)
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, GetID());
+    g_windowManager.SendThreadMessage(msg, GetID());
 }
 
 void CGUIDialogProgress::DoModal(int iWindowID, const CStdString &param)
@@ -74,7 +74,7 @@ void CGUIDialogProgress::DoModal(int iWindowID, const CStdString &param)
   m_bRunning = true;
   m_bModal = true;
   m_dialogClosing = false;
-  m_gWindowManager.RouteToWindow(this);
+  g_windowManager.RouteToWindow(this);
 
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
@@ -115,7 +115,7 @@ void CGUIDialogProgress::Progress()
 {
   if (m_bRunning)
   {
-    m_gWindowManager.Process();
+    g_windowManager.Process();
   }
 }
 
@@ -160,7 +160,7 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
 
 bool CGUIDialogProgress::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_CLOSE_DIALOG || action.id == ACTION_PREVIOUS_MENU)
   {
     if (m_bCanCancel)
     {
@@ -221,7 +221,7 @@ void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, GetID());
+    g_windowManager.SendThreadMessage(msg, GetID());
 }
 
 void CGUIDialogProgress::SetHeading(const string& strLine)

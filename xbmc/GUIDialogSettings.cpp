@@ -37,7 +37,7 @@
 #define CONTROL_START              30
 #define CONTROL_PAGE               60
 
-CGUIDialogSettings::CGUIDialogSettings(DWORD id, const char *xmlFile)
+CGUIDialogSettings::CGUIDialogSettings(int id, const char *xmlFile)
     : CGUIDialog(id, xmlFile)
 {
   m_pOriginalSpin = NULL;
@@ -196,7 +196,7 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
 
 bool CGUIDialogSettings::OnAction(const CAction& action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
   {
     OnCancel();
     Close();

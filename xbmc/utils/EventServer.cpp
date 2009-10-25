@@ -29,7 +29,7 @@
 #include "Socket.h"
 #include "CriticalSection.h"
 #include "Application.h"
-#include "Util.h"
+#include "Builtins.h"
 #include "ButtonTranslator.h"
 #include "SingleLock.h"
 #include "GUIAudioManager.h"
@@ -332,15 +332,15 @@ bool CEventServer::ExecuteNextAction()
       switch(actionEvent.actionType)
       {
       case AT_EXEC_BUILTIN:
-        CUtil::ExecBuiltIn(actionEvent.actionName);
+        CBuiltins::Execute(actionEvent.actionName);
         break;
 
       case AT_BUTTON:
-        CButtonTranslator::TranslateActionString(actionEvent.actionName.c_str(), action.wID);
+        CButtonTranslator::TranslateActionString(actionEvent.actionName.c_str(), action.id);
         action.strAction = actionEvent.actionName;
-        action.fRepeat  = 0.0f;
-        action.fAmount1 = 1.0f;
-        action.fAmount2 = 1.0f;
+        action.repeat  = 0.0f;
+        action.amount1 = 1.0f;
+        action.amount2 = 1.0f;
         g_audioManager.PlayActionSound(action);
         g_application.OnAction(action);
         break;

@@ -87,7 +87,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     m_type = m_bIsVideo ? "musicvideos" : "songs";
   }
 
-  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   int iHeading = (m_bIsVideo ? 20250 : 20121);
   int iLine0 = (m_bIsVideo ? 20251 : 20123);
   pDialog->SetHeading(iHeading);
@@ -98,7 +98,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
 
   ClearState();
   DWORD time = timeGetTime();
-  vector<pair<int,long> > songIDs;
+  vector< pair<int,int> > songIDs;
   if (m_type.Equals("songs") || m_type.Equals("mixed"))
   {
     CMusicDatabase musicdatabase;
@@ -124,7 +124,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   }
   if (m_type.Equals("musicvideos") || m_type.Equals("mixed"))
   {
-    vector<pair<int,long> > songIDs2;
+    vector< pair<int,int> > songIDs2;
     CVideoDatabase database;
     if (database.Open())
     {
@@ -183,8 +183,8 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   // open now playing window
   if (m_type.Equals("songs"))
   {
-    if (m_gWindowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST)
-      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+    if (g_windowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST)
+      g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
   }
 
   // done
@@ -329,7 +329,7 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
       {
         pair<CStdString,CStdString> whereClause = GetWhereClauseWithHistory();
         CFileItemPtr item(new CFileItem);
-        long songID;
+        int songID;
         if (database.GetRandomSong(item.get(), songID, whereClause.first))
         { // success
           Add(item);
@@ -376,7 +376,7 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
       {
         pair<CStdString,CStdString> whereClause = GetWhereClauseWithHistory();
         CFileItemPtr item(new CFileItem);
-        long songID;
+        int songID;
         if (database.GetRandomMusicVideo(item.get(), songID, whereClause.second))
         { // success
           Add(item);
@@ -466,7 +466,7 @@ bool CPartyModeManager::MovePlaying()
 void CPartyModeManager::SendUpdateMessage()
 {
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  m_gWindowManager.SendThreadMessage(msg);
+  g_windowManager.SendThreadMessage(msg);
 }
 
 void CPartyModeManager::Play(int iPos)
@@ -549,7 +549,7 @@ void CPartyModeManager::UpdateStats()
   m_iRelaxedSongs = 0;  // unsupported at this stage
 }
 
-bool CPartyModeManager::AddInitialSongs(vector<pair<int,long> > &songIDs)
+bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
 {
   int iPlaylist = m_bIsVideo ? PLAYLIST_VIDEO : PLAYLIST_MUSIC;
 
@@ -561,12 +561,12 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,long> > &songIDs)
     if (iMissingSongs > (int)songIDs.size())
       return false; // can't do it if we have less songs than we need
 
-    vector<pair<int,long> > chosenSongIDs;
+    vector<pair<int,int> > chosenSongIDs;
     GetRandomSelection(songIDs, iMissingSongs, chosenSongIDs);
     CStdString sqlWhereMusic = "where songview.idsong in (";
     CStdString sqlWhereVideo = "where idmvideo in (";
 
-    for (vector<pair<int,long> >::iterator it = chosenSongIDs.begin(); it != chosenSongIDs.end(); it++)
+    for (vector< pair<int,int> >::iterator it = chosenSongIDs.begin(); it != chosenSongIDs.end(); it++)
     {
       CStdString song;
       song.Format("%i,", it->second);
@@ -637,14 +637,14 @@ pair<CStdString,CStdString> CPartyModeManager::GetWhereClauseWithHistory() const
   return make_pair(historyWhereMusic,historyWhereVideo);
 }
 
-void CPartyModeManager::AddToHistory(int type, long songID)
+void CPartyModeManager::AddToHistory(int type, int songID)
 {
   while (m_history.size() >= m_songsInHistory && m_songsInHistory)
     m_history.erase(m_history.begin());
-  m_history.push_back(make_pair<int,long>(type,songID));
+  m_history.push_back(make_pair<int,int>(type,songID));
 }
 
-void CPartyModeManager::GetRandomSelection(vector<pair<int,long> >& in, unsigned int number, vector<pair<int,long> >& out)
+void CPartyModeManager::GetRandomSelection(vector< pair<int,int> >& in, unsigned int number, vector< pair<int,int> >& out)
 {
   // only works if we have < 32768 in the in vector
   for (unsigned int i = 0; i < number; i++)

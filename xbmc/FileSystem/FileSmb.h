@@ -98,7 +98,8 @@ public:
 protected:
   CURL m_url;
   bool IsValidFile(const CStdString& strFileName);
-  __int64 m_fileSize;
+  CStdString GetAuthenticatedPath(const CURL &url);
+  int64_t m_fileSize;
   int m_fd;
 };
 }

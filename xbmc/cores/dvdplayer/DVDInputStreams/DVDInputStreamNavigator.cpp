@@ -62,10 +62,8 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
 {
   char* strDVDFile;
   m_icurrentGroupId = 0;
-  if (!CDVDInputStream::Open(strFile, "video/mpeg")) return false;
-  
-  // should really fix it so this is passed into Open as the content type.
-  m_content = "video/x-dvd-mpeg";
+  if (!CDVDInputStream::Open(strFile, "video/x-dvd-mpeg")) 
+    return false;
   
   // load libdvdnav.dll
   if (!m_dll.Load())

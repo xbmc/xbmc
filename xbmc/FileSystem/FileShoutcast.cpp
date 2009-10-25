@@ -198,7 +198,7 @@ bool CFileShoutcast::Open(const CURL& url)
 
   // No progress dialog for now as it may deadlock when DVDplayer is used
   CGUIDialogProgress* dlgProgress = NULL;
-  //CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  //CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
   strcpy(m_opt.output_directory, "./");
   m_opt.proxyurl[0] = '\0';
@@ -213,8 +213,7 @@ bool CFileShoutcast::Open(const CURL& url)
 	  _snprintf( m_opt.proxyurl, MAX_URL_LEN, "http://%s:%s", strProxyServer.c_str(), strProxyPort.c_str() );
   }
 
-  CStdString strUrl;
-  url.GetURL(strUrl);
+  CStdString strUrl = url.Get();
   strUrl.Replace("shout://", "http://");
   strncpy(m_opt.url, strUrl.c_str(), MAX_URL_LEN);
   sprintf(m_opt.useragent, "x%s", url.GetFileName().c_str());

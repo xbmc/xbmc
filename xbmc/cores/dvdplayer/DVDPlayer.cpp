@@ -38,6 +38,7 @@
 
 #include "Util.h"
 #include "utils/GUIInfoManager.h"
+#include "GUIWindowManager.h"
 #include "Application.h"
 #include "DVDPerformanceCounter.h"
 #include "../../FileSystem/File.h"
@@ -242,8 +243,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_pSubtitleDemuxer = NULL;
   m_pInputStream = NULL;
 
-  m_tmLastSeek = time(NULL);
-
   m_hReadyEvent = CreateEvent(NULL, true, false, NULL);
 
   InitializeCriticalSection(&m_critStreamSection);
@@ -441,6 +440,7 @@ bool CDVDPlayer::OpenInputStream()
   }
 
   SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
+  SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
   m_clock.Discontinuity(CLOCK_DISC_FULL);
   m_dvd.Clear();
   m_errorCount = 0;
@@ -1858,7 +1858,6 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 
   m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false));
   SyncronizeDemuxer(100);
-  m_tmLastSeek = time(NULL);
 }
 
 bool CDVDPlayer::SeekScene(bool bPlus)
@@ -1928,7 +1927,6 @@ void CDVDPlayer::SeekPercentage(float iPercent)
     return;
 
   SeekTime((__int64)(iTotalTime * iPercent / 100));
-  m_tmLastSeek = time(NULL);
 }
 
 float CDVDPlayer::GetPercentage()
@@ -2049,7 +2047,6 @@ void CDVDPlayer::SeekTime(__int64 iTime)
 {
   m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, true, true, true));
   SyncronizeDemuxer(100);
-  m_tmLastSeek = time(NULL);
 }
 
 // return the time in milliseconds
@@ -2544,7 +2541,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
 
     if( m_dvd.state == DVDSTATE_STILL && m_dvd.iDVDStillTime != 0 && pStream->GetTotalButtons() == 0 )
     {
-      switch(action.wID)
+      switch(action.id)
       {
         case ACTION_NEXT_ITEM:
         case ACTION_MOVE_RIGHT:
@@ -2562,8 +2559,10 @@ bool CDVDPlayer::OnAction(const CAction &action)
     }
 
 
-    switch (action.wID)
+    switch (action.id)
     {
+/* this code is disabled to allow switching playlist items (dvdimage "stacks") */
+#if 0
     case ACTION_PREV_ITEM:  // SKIP-:
       {
         THREAD_ACTION(action);
@@ -2582,6 +2581,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         return true;
       }
       break;
+#endif
     case ACTION_SHOW_VIDEOMENU:   // start button
       {
         THREAD_ACTION(action);
@@ -2589,7 +2589,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         pStream->OnMenu();
         // send a message to everyone that we've gone to the menu
         CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
-        g_graphicsContext.SendMessage(msg);
+        g_windowManager.SendMessage(msg);
         return true;
       }
       break;
@@ -2597,7 +2597,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
 
     if (pStream->IsInMenu())
     {
-      switch (action.wID)
+      switch (action.id)
       {
       case ACTION_PREVIOUS_MENU:
         {
@@ -2639,23 +2639,23 @@ bool CDVDPlayer::OnAction(const CAction &action)
         {
           // check the action
           CAction action2 = action;
-          action2.m_dwButtonCode = g_Mouse.bClick[MOUSE_LEFT_BUTTON] ? 1 : 0;
-          action2.fAmount1 = g_Mouse.GetLocation().x;
-          action2.fAmount2 = g_Mouse.GetLocation().y;
+          action2.buttonCode = g_Mouse.bClick[MOUSE_LEFT_BUTTON] ? 1 : 0;
+          action2.amount1 = g_Mouse.GetLocation().x;
+          action2.amount2 = g_Mouse.GetLocation().y;
 
           RECT rs, rd;
           GetVideoRect(rs, rd);
-          if (action2.fAmount1 < rd.left || action2.fAmount1 > rd.right ||
-              action2.fAmount2 < rd.top || action2.fAmount2 > rd.bottom)
+          if (action2.amount1 < rd.left || action2.amount1 > rd.right ||
+              action2.amount2 < rd.top || action2.amount2 > rd.bottom)
             return false; // out of bounds
           THREAD_ACTION(action2);
           // convert to video coords...
-          CPoint pt(action2.fAmount1, action2.fAmount2);
+          CPoint pt(action2.amount1, action2.amount2);
           pt -= CPoint(rd.left, rd.top);
           pt.x *= (float)(rs.right - rs.left) / (rd.right - rd.left);
           pt.y *= (float)(rs.bottom - rs.top) / (rd.bottom - rd.top);
           pt += CPoint(rs.left, rs.top);
-          if (action2.m_dwButtonCode)
+          if (action2.buttonCode)
             return pStream->OnMouseClick(pt);
           return pStream->OnMouseMove(pt);
         }
@@ -2683,7 +2683,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         {
           THREAD_ACTION(action);
           // Offset from key codes back to button number
-          int button = action.wID - REMOTE_0;
+          int button = action.id - REMOTE_0;
           CLog::Log(LOGDEBUG, " - button pressed %d", button);
           pStream->SelectButton(button);
         }
@@ -2698,7 +2698,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
 
   if (dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream))
   {
-    switch (action.wID)
+    switch (action.id)
     {
       case ACTION_NEXT_ITEM:
       case ACTION_PAGE_UP:
@@ -2716,7 +2716,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
     }
   }
 
-  switch (action.wID)
+  switch (action.id)
   {
     case ACTION_NEXT_ITEM:
     case ACTION_PAGE_UP:
@@ -2817,7 +2817,6 @@ int CDVDPlayer::SeekChapter(int iChapter)
     // Seek to the chapter.
     m_messenger.Put(new CDVDMsgPlayerSeekChapter(iChapter));
     SyncronizeDemuxer(100);
-    m_tmLastSeek = time(NULL);
   }
   else
   {

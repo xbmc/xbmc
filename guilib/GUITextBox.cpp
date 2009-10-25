@@ -27,9 +27,9 @@
 
 using namespace std;
 
-CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
+CGUITextBox::CGUITextBox(int parentID, int controlID, float posX, float posY, float width, float height,
                          const CLabelInfo& labelInfo, int scrollTime)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
     , CGUITextLayout(labelInfo.font, true)
 {
   m_offset = 0;
@@ -113,7 +113,7 @@ void CGUITextBox::UpdateColors()
 void CGUITextBox::Render()
 {
   m_textColor = m_label.textColor;
-  if (CGUITextLayout::Update(m_info.GetLabel(m_dwParentID), m_width))
+  if (CGUITextLayout::Update(m_info.GetLabel(m_parentID), m_width))
   { // needed update, so reset to the top of the textbox and update our sizing/page control
     m_offset = 0;
     m_scrollOffset = 0;
@@ -128,7 +128,7 @@ void CGUITextBox::Render()
   // update our auto-scrolling as necessary
   if (m_autoScrollTime && m_lines.size() > m_itemsPerPage)
   {
-    if (!m_autoScrollCondition || g_infoManager.GetBool(m_autoScrollCondition, m_dwParentID))
+    if (!m_autoScrollCondition || g_infoManager.GetBool(m_autoScrollCondition, m_parentID))
     {
       if (m_lastRenderTime)
         m_autoScrollDelayTime += m_renderTime - m_lastRenderTime;
@@ -188,7 +188,7 @@ void CGUITextBox::Render()
     int current = offset;
     while (posY < m_posY + m_height && current < (int)m_lines.size())
     {
-      DWORD align = m_label.align;
+      uint32_t align = m_label.align;
       if (m_lines[current].m_text.size() && m_lines[current].m_carriageReturn)
         align &= ~XBFONT_JUSTIFIED; // last line of a paragraph shouldn't be justified
       m_font->DrawText(posX, posY + 2, m_colors, m_label.shadowColor, m_lines[current].m_text, align, m_width);
@@ -261,7 +261,7 @@ bool CGUITextBox::CanFocus() const
   return false;
 }
 
-void CGUITextBox::SetPageControl(DWORD pageControl)
+void CGUITextBox::SetPageControl(int pageControl)
 {
   m_pageControl = pageControl;
 }

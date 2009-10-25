@@ -90,12 +90,12 @@ void CInfoLoader::LoaderFinished()
   if (m_type == "weather" && m_busy)
   {
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WEATHER_FETCHED);
-    m_gWindowManager.SendThreadMessage(msg);
+    g_windowManager.SendThreadMessage(msg);
   }
   m_busy = false;
 }
 
-const char *CInfoLoader::GetInfo(DWORD dwInfo)
+const char *CInfoLoader::GetInfo(int info)
 {
   // Refresh if need be
   if (m_refreshTime < timeGetTime())
@@ -104,18 +104,18 @@ const char *CInfoLoader::GetInfo(DWORD dwInfo)
   }
   if (m_busy && (m_type != "sysinfo") )
   {
-    return BusyInfo(dwInfo);
+    return BusyInfo(info);
   }
-  return TranslateInfo(dwInfo);
+  return TranslateInfo(info);
 }
 
-const char *CInfoLoader::BusyInfo(DWORD dwInfo)
+const char *CInfoLoader::BusyInfo(int info)
 {
   m_busyText = g_localizeStrings.Get(503);
   return m_busyText.c_str();
 }
 
-const char *CInfoLoader::TranslateInfo(DWORD dwInfo)
+const char *CInfoLoader::TranslateInfo(int info)
 {
   return "";
 }

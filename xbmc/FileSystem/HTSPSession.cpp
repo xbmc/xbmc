@@ -478,12 +478,11 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
 {
   CVideoInfoTag* tag = item.GetVideoInfoTag();
 
-  CStdString temp, path;
+  CStdString temp;
 
   CURL url(item.m_strPath);
   temp.Format("tags/%d/%d.ts", tagid, channel.id);
   url.SetFileName(temp);
-  url.GetURL(path);
 
   tag->m_iSeason  = 0;
   tag->m_iEpisode = 0;
@@ -497,7 +496,7 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
   if(tag->m_strShowTitle.length() > 0)
     tag->m_strTitle += " : " + tag->m_strShowTitle;
 
-  item.m_strPath  = path;
+  item.m_strPath  = url.Get();
   item.m_strTitle = tag->m_strTitle;
   item.SetThumbnailImage(channel.icon);
   item.SetContentType("video/X-htsp");

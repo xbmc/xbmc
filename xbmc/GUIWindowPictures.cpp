@@ -154,7 +154,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
         SetHistoryForPath(m_vecItems->m_strPath);
       }
 
-      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       if (message.GetParam1() != WINDOW_SLIDESHOW)
       {
@@ -223,12 +223,12 @@ void CGUIWindowPictures::UpdateButtons()
   if (g_guiSettings.GetBool("slideshow.shuffle"))
   {
     CGUIMessage msg2(GUI_MSG_SELECTED, GetID(), CONTROL_SHUFFLE);
-    g_graphicsContext.SendMessage(msg2);
+    g_windowManager.SendMessage(msg2);
   }
   else
   {
     CGUIMessage msg2(GUI_MSG_DESELECTED, GetID(), CONTROL_SHUFFLE);
-    g_graphicsContext.SendMessage(msg2);
+    g_windowManager.SendMessage(msg2);
   }
 
   // check we can slideshow or recursive slideshow
@@ -267,7 +267,7 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
   loader.SetProgressCallback(m_dlgProgress);
   loader.Load(items);
 
-  bool bShowProgress=!m_gWindowManager.HasModalDialog();
+  bool bShowProgress=!g_windowManager.HasModalDialog();
   bool bProgressVisible=false;
 
   DWORD dwTick=timeGetTime();
@@ -281,12 +281,11 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
       if (!bProgressVisible && dwElapsed>1500 && m_dlgProgress)
       { // tag loading takes more then 1.5 secs, show a progress dialog
         CURL url(items.m_strPath);
-        CStdString strStrippedPath;
-        url.GetURLWithoutUserDetails(strStrippedPath);
+        
         m_dlgProgress->SetHeading(189);
         m_dlgProgress->SetLine(0, 505);
         m_dlgProgress->SetLine(1, "");
-        m_dlgProgress->SetLine(2, strStrippedPath );
+        m_dlgProgress->SetLine(2, url.GetWithoutUserDetails());
         m_dlgProgress->StartModal();
         m_dlgProgress->ShowProgressBar(true);
         bProgressVisible = true;
@@ -372,7 +371,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   if (pItem->m_bIsShareOrDrive)
     return false;
 
-  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (!pSlideShow)
     return false;
   if (g_application.IsPlayingVideo())
@@ -396,14 +395,14 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   if (startSlideShow)
     pSlideShow->StartSlideShow(false);
 
-  m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+  g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
 
   return true;
 }
 
 void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPath)
 {
-  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pSlideShow)
   {
     // stop any video
@@ -411,13 +410,13 @@ void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPath)
       g_application.StopPlaying();
     pSlideShow->AddFromPath(strPath, true);
     if (pSlideShow->NumSlides())
-      m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+      g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
   }
 }
 
 void CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
 {
-  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pSlideShow)
     pSlideShow->RunSlideShow(strPicture, true, g_guiSettings.GetBool("slideshow.shuffle"));
 }
@@ -435,7 +434,7 @@ void CGUIWindowPictures::OnSlideShow()
 
 void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
 {
-  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pSlideShow)
     pSlideShow->RunSlideShow(strPicture);
 }
@@ -463,13 +462,11 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       if (item)
       {
-        if (item->m_bIsFolder)
-        {
-          buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, 13317);      // View Slideshow
-          buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
-        }
         if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
           buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
+        buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, item->m_bIsFolder ? 13317 : 13422);      // View Slideshow
+        if (item->m_bIsFolder)
+          buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
 
         if (!m_thumbLoader.IsLoading())
           buttons.Add(CONTEXT_BUTTON_REFRESH_THUMBS, 13315);         // Create Thumbnails
@@ -502,9 +499,13 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   switch (button)
   {
   case CONTEXT_BUTTON_VIEW_SLIDESHOW:
+    if (item && item->m_bIsFolder)
     OnSlideShow(item->m_strPath);
+    else
+      ShowPicture(itemNumber, true);
     return true;
   case CONTEXT_BUTTON_RECURSIVE_SLIDESHOW:
+    if (item)
     OnSlideShowRecursive(item->m_strPath);
     return true;
   case CONTEXT_BUTTON_INFO:
@@ -520,7 +521,7 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     OnRenameItem(itemNumber);
     return true;
   case CONTEXT_BUTTON_SETTINGS:
-    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
+    g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYPICTURES);
     return true;
   case CONTEXT_BUTTON_GOTO_ROOT:
     Update("");
@@ -659,7 +660,7 @@ void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)
   if (playlist.size() > 0)
   {
     // set up slideshow
-    CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     if (!pSlideShow)
       return;
     if (g_application.IsPlayingVideo())
@@ -678,7 +679,7 @@ void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)
     // start slideshow if there are items
     pSlideShow->StartSlideShow();
     if (pSlideShow->NumSlides())
-      m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+      g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
   }
 }
 
@@ -687,7 +688,7 @@ void CGUIWindowPictures::OnInfo(int itemNumber)
   CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
   if (!item || item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR())
     return;
-  CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);
+  CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)g_windowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);
   if (pictureInfo)
   {
     pictureInfo->SetPicture(item.get());

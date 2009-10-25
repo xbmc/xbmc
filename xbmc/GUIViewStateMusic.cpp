@@ -615,13 +615,7 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
 
 void CGUIViewStateWindowMusicSongs::SaveViewState()
 {
-  if (g_guiSettings.GetBool("musicfiles.savefolderviews"))
     SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, &g_stSettings.m_viewStateMusicFiles);  
-  else
-  {
-    g_stSettings.m_viewStateMusicFiles = CViewState(GetViewAsControl(), GetSortMethod(), GetSortOrder());
-    g_settings.Save();
-  }
 }
 
 VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()

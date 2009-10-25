@@ -93,7 +93,7 @@
 #define CONTROL_PROGRESS                 23
 
 
-static DWORD color[6] = { 0xFFFFFF00, 0xFFFFFFFF, 0xFF0099FF, 0xFF00FF00, 0xFFCCFF00, 0xFF00FFFF };
+static color_t color[6] = { 0xFFFFFF00, 0xFFFFFFFF, 0xFF0099FF, 0xFF00FF00, 0xFFCCFF00, 0xFF00FFFF };
 
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
     : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml")
@@ -130,7 +130,7 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 
 void CGUIWindowFullScreen::PreloadDialog(unsigned int windowID)
 {
-  CGUIWindow *pWindow = m_gWindowManager.GetWindow(windowID);
+  CGUIWindow *pWindow = g_windowManager.GetWindow(windowID);
   if (pWindow)
   {
     pWindow->Initialize();
@@ -141,7 +141,7 @@ void CGUIWindowFullScreen::PreloadDialog(unsigned int windowID)
 
 void CGUIWindowFullScreen::UnloadDialog(unsigned int windowID)
 {
-  CGUIWindow *pWindow = m_gWindowManager.GetWindow(windowID);
+  CGUIWindow *pWindow = g_windowManager.GetWindow(windowID);
   if (pWindow) {
     pWindow->FreeResources(pWindow->GetLoadOnDemand());
   }
@@ -179,14 +179,14 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
     return true;
 
-  switch (action.wID)
+  switch (action.id)
   {
 
   case ACTION_SHOW_GUI:
     {
       // switch back to the menu
       OutputDebugString("Switching to GUI\n");
-      m_gWindowManager.PreviousWindow();
+      g_windowManager.PreviousWindow();
       OutputDebugString("Now in GUI\n");
       return true;
     }
@@ -241,7 +241,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   
   case ACTION_SHOW_INFO:
     {
-      CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
+      CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
       if (pDialog)
       {
         pDialog->DoModal();
@@ -292,13 +292,13 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_SUBTITLE_DELAY:
     CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(22006), g_stSettings.m_currentVideoSettings.m_SubtitleDelay,
                                                                    -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
-                                                                    g_advancedSettings.m_videoSubsDelayRange, this, (void *)&action.wID);
+                                                                    g_advancedSettings.m_videoSubsDelayRange, this, (void *)&action.id);
     return true;
     break;
   case ACTION_AUDIO_DELAY:
     CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(297), g_stSettings.m_currentVideoSettings.m_AudioDelay,
                                                                  -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
-                                                                  g_advancedSettings.m_videoAudioDelayRange, this, (void *)&action.wID);
+                                                                  g_advancedSettings.m_videoAudioDelayRange, this, (void *)&action.id);
     return true;
     break;
   case ACTION_AUDIO_DELAY_MIN:
@@ -345,7 +345,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case REMOTE_7:
   case REMOTE_8:
   case REMOTE_9:
-    ChangetheTimeCode(action.wID);
+    ChangetheTimeCode(action.id);
     return true;
     break;
 
@@ -419,7 +419,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       // stopped playing videos
       if (message.GetParam1() == WINDOW_INVALID && !g_application.IsPlayingVideo())
       { // why are we here if nothing is playing???
-        m_gWindowManager.PreviousWindow();
+        g_windowManager.PreviousWindow();
         return true;
       }
       m_bLastRender = false;
@@ -487,11 +487,11 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
     {
       CGUIWindow::OnMessage(message);
 
-      CGUIDialogSlider *slider = (CGUIDialogSlider *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SLIDER);
+      CGUIDialogSlider *slider = (CGUIDialogSlider *)g_windowManager.GetWindow(WINDOW_DIALOG_SLIDER);
       if (slider) slider->Close(true);
-      CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
+      CGUIDialog *pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_OSD);
       if (pDialog) pDialog->Close(true);
-      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
       if (pDialog) pDialog->Close(true);
 
       FreeResources(true);
@@ -515,8 +515,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         m_subsLayout = NULL;
       }
 
-      if (g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-        g_audioManager.Enable(true);
       return true;
     }
   case GUI_MSG_SETFOCUS:
@@ -533,19 +531,19 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go back to GUI
     CAction action;
-    action.wID = ACTION_SHOW_GUI;
+    action.id = ACTION_SHOW_GUI;
     OnAction(action);
     return true;
   }
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // no control found to absorb this click - pause video
     CAction action;
-    action.wID = ACTION_PAUSE;
+    action.id = ACTION_PAUSE;
     return g_application.OnAction(action);
   }
   if (g_Mouse.HasMoved())
   { // movement - toggle the OSD
-    CGUIWindowOSD *pOSD = (CGUIWindowOSD *)m_gWindowManager.GetWindow(WINDOW_OSD);
+    CGUIWindowOSD *pOSD = (CGUIWindowOSD *)g_windowManager.GetWindow(WINDOW_OSD);
     if (pOSD)
     {
       pOSD->SetAutoClose(3000);
@@ -794,7 +792,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
   }
 }
 
-void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
+void CGUIWindowFullScreen::ChangetheTimeCode(int remote)
 {
   if (remote >= 58 && remote <= 67) //Make sure it's only for the remote
   {

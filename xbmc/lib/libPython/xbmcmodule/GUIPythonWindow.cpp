@@ -30,8 +30,8 @@
 
 using namespace PYXBMC;
 
-CGUIPythonWindow::CGUIPythonWindow(DWORD dwId)
-: CGUIWindow(dwId, "")
+CGUIPythonWindow::CGUIPythonWindow(int id)
+: CGUIWindow(id, "")
 {
   pCallbackWindow = NULL;
   m_actionEvent = CreateEvent(NULL, true, false, NULL);
@@ -47,6 +47,13 @@ bool CGUIPythonWindow::OnAction(const CAction &action)
 {
   // do the base class window first, and the call to python after this
   bool ret = CGUIWindow::OnAction(action);
+
+  // workaround - for scripts which try to access the active control (focused) when there is none.
+  // for example - the case when the mouse enters the screen.
+  CGUIControl *pControl = GetFocusedControl();
+  if (action.id == ACTION_MOUSE && !pControl)
+     return ret;
+
   if(pCallbackWindow)
   {
     PyXBMCAction* inf = new PyXBMCAction;
@@ -66,14 +73,14 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_DEINIT:
     {
-      m_gWindowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
+      g_windowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
     }
     break;
 
     case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      m_gWindowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
+      g_windowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
       return true;
     }
     break;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <string id="31000">静音</string>
   <string id="31001">工作中...</string>
@@ -90,8 +90,8 @@
   <string id="31204">脚本程序目录</string>
   <string id="31205"></string>
   <string id="31206"></string>
-  <string id="31207"></string>
-  <string id="31208">在OSD中显示歌词脚本程序按键</string>
+  <string id="31207">在OSD中显示字幕下载按钮</string>
+  <string id="31208">在视频OSD中显示歌词脚本按钮</string>
   <string id="31209">启用快速运行脚本按键为 -</string>
 
   <!-- AMT Script Extra labels -->

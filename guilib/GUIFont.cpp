@@ -64,7 +64,7 @@ float CScrollInfo::GetPixelsPerFrame()
 #endif
 }
 
-CGUIFont::CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTF *font)
+CGUIFont::CGUIFont(const CStdString& strFontName, uint32_t style, color_t textColor, color_t shadowColor, float lineSpacing, CGUIFontTTF *font)
 {
   m_strFontName = strFontName;
   m_style = style & 3;
@@ -88,8 +88,8 @@ CStdString& CGUIFont::GetFontName()
   return m_strFontName;
 }
 
-void CGUIFont::DrawText( float x, float y, const vector<DWORD> &colors, DWORD shadowColor,
-                const vector<DWORD> &text, DWORD alignment, float maxPixelWidth)
+void CGUIFont::DrawText( float x, float y, const vecColors &colors, color_t shadowColor,
+                const vecText &text, uint32_t alignment, float maxPixelWidth)
 {
   if (!m_font) return;
 
@@ -98,7 +98,7 @@ void CGUIFont::DrawText( float x, float y, const vector<DWORD> &colors, DWORD sh
     return;
       
   maxPixelWidth = ROUND(maxPixelWidth / g_graphicsContext.GetGUIScaleX());
-  vector<DWORD> renderColors;
+  vecColors renderColors;
   for (unsigned int i = 0; i < colors.size(); i++)
     renderColors.push_back(g_graphicsContext.MergeAlpha(colors[i] ? colors[i] : m_textColor));
   if (!shadowColor) shadowColor = m_shadowColor;
@@ -110,8 +110,8 @@ void CGUIFont::DrawText( float x, float y, const vector<DWORD> &colors, DWORD sh
     g_graphicsContext.RestoreClipRegion();
 }
 
-void CGUIFont::DrawScrollingText(float x, float y, const vector<DWORD> &colors, DWORD shadowColor,
-                const vector<DWORD> &text, DWORD alignment, float maxWidth, CScrollInfo &scrollInfo)
+void CGUIFont::DrawScrollingText(float x, float y, const vecColors &colors, color_t shadowColor,
+                const vecText &text, uint32_t alignment, float maxWidth, CScrollInfo &scrollInfo)
 {
   if (!m_font) return;
   if (!shadowColor) shadowColor = m_shadowColor;
@@ -191,9 +191,9 @@ void CGUIFont::DrawScrollingText(float x, float y, const vector<DWORD> &colors, 
 
   // Now rotate our string as needed, only take a slightly larger then visible part of the text.
   unsigned int pos = scrollInfo.characterPos;
-  vector<DWORD> renderText;
+  vecText renderText;
   renderText.reserve(maxChars);
-  for (unsigned int i = 0; i < maxChars; i++)
+  for (vecText::size_type i = 0; i < maxChars; i++)
   {
     if (pos >= text.size() + scrollInfo.suffix.size())
       pos = 0;
@@ -204,7 +204,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const vector<DWORD> &colors, 
     pos++;
   }
 
-  vector<DWORD> renderColors;
+  vecColors renderColors;
   for (unsigned int i = 0; i < colors.size(); i++)
     renderColors.push_back(g_graphicsContext.MergeAlpha(colors[i] ? colors[i] : m_textColor));
 
@@ -218,14 +218,14 @@ void CGUIFont::DrawScrollingText(float x, float y, const vector<DWORD> &colors, 
 }
 
 // remaps unsupported font glpyhs to other suitable ones
-SHORT CGUIFont::RemapGlyph(SHORT letter)
+uint16_t CGUIFont::RemapGlyph(uint16_t letter)
 {
   if (letter == 0x2019 || letter == 0x2018) return 0x0027;  // single quotes
   else if (letter == 0x201c || letter == 0x201d) return 0x0022;
   return 0; // no decent character map
 }
 
-bool CGUIFont::ClippedRegionIsEmpty(float x, float y, float width, DWORD alignment) const
+bool CGUIFont::ClippedRegionIsEmpty(float x, float y, float width, uint32_t alignment) const
 {
   if (alignment & XBFONT_CENTER_X)
     x -= width * 0.5f;
@@ -237,14 +237,14 @@ bool CGUIFont::ClippedRegionIsEmpty(float x, float y, float width, DWORD alignme
   return !g_graphicsContext.SetClipRegion(x, y, width, m_font->GetLineHeight(2.0f));
 }
 
-float CGUIFont::GetTextWidth( const std::vector<DWORD> &text )
+float CGUIFont::GetTextWidth( const vecText &text )
 {
   if (!m_font) return 0;
   CSingleLock lock(g_graphicsContext);
   return m_font->GetTextWidthInternal(text.begin(), text.end()) * g_graphicsContext.GetGUIScaleX();
 }
 
-float CGUIFont::GetCharWidth( DWORD ch )
+float CGUIFont::GetCharWidth( character_t ch )
 {
   if (!m_font) return 0;
   CSingleLock lock(g_graphicsContext);

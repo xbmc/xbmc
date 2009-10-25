@@ -65,7 +65,7 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
   bool showSingles = false;
   if (musicDatabase.Open())
   {
-    if (musicDatabase.GetSongsCount("where strAlbum=''") > 0)
+    if (musicDatabase.GetSongsCount("where idAlbum in (select idAlbum from album where strAlbum='')") > 0)
       showSingles = true;
     musicDatabase.Close();
   }

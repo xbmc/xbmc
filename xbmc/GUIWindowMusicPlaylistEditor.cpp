@@ -61,12 +61,12 @@ CGUIWindowMusicPlaylistEditor::~CGUIWindowMusicPlaylistEditor(void)
 
 bool CGUIWindowMusicPlaylistEditor::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PARENT_DIR && !m_viewControl.HasControl(GetFocusedControlID()))
+  if (action.id == ACTION_PARENT_DIR && !m_viewControl.HasControl(GetFocusedControlID()))
   { // don't go to parent folder unless we're on the list in question
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
-  if (action.wID == ACTION_CONTEXT_MENU && GetFocusedControlID() == CONTROL_PLAYLIST)
+  if (action.id == ACTION_CONTEXT_MENU && GetFocusedControlID() == CONTROL_PLAYLIST)
   {
     int item = GetCurrentPlaylistItem();
     if (item >= 0)
@@ -230,8 +230,9 @@ void CGUIWindowMusicPlaylistEditor::OnQueueItem(int iItem)
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return;
 
-  // add this item to our playlist
-  CFileItemPtr item = m_vecItems->Get(iItem);
+  // add this item to our playlist.  We make a new copy here as we may be rendering them side by side,
+  // and thus want a different layout for each item
+  CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
   CFileItemList newItems;
   AddItemToPlayList(item, newItems);
   AppendToPlaylist(newItems);
@@ -382,6 +383,7 @@ void CGUIWindowMusicPlaylistEditor::OnLoadPlaylist()
   CMediaSource share;
   share.strName = g_localizeStrings.Get(20011);
   share.strPath = "special://musicplaylists/";
+  if (find(shares.begin(), shares.end(), share) == shares.end())
   shares.push_back(share);
   if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".m3u|.pls|.b4s|.wpl", g_localizeStrings.Get(656), playlist))
     LoadPlaylist(playlist);

@@ -24,8 +24,8 @@
 
 #define MIN_NIB_SIZE 4.0f
 
-CGUIScrollBar::CGUIScrollBar(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& barTexture, const CTextureInfo& barTextureFocus, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, ORIENTATION orientation, bool showOnePage)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUIScrollBar::CGUIScrollBar(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& barTexture, const CTextureInfo& barTextureFocus, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, ORIENTATION orientation, bool showOnePage)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_guiBackground(posX, posY, width, height, backGroundTexture)
     , m_guiBarNoFocus(posX, posY, width, height, barTexture)
     , m_guiBarFocus(posX, posY, width, height, barTextureFocus)
@@ -89,7 +89,7 @@ bool CGUIScrollBar::OnMessage(CGUIMessage& message)
 
 bool CGUIScrollBar::OnAction(const CAction &action)
 {
-  switch ( action.wID )
+  switch ( action.id )
   {
   case ACTION_MOVE_LEFT:
     if (m_orientation == HORIZONTAL)
@@ -264,7 +264,7 @@ void CGUIScrollBar::SetFromPosition(const CPoint &point)
   SetInvalid();
 }
 
-bool CGUIScrollBar::OnMouseClick(DWORD dwButton, const CPoint &point)
+bool CGUIScrollBar::OnMouseClick(int button, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_CLICK);
   // turn off any exclusive access, if it's on...

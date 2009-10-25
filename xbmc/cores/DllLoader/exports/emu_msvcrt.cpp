@@ -643,7 +643,7 @@ extern "C"
     }
     CStdString fName = url.GetFileName();
     url.SetFileName("");
-    url.GetURL(strURL);
+    strURL=url.Get();
     bVecDirsInited = true;
     vecDirsOpen[iDirSlot].items.Clear();
     vecDirsOpen[iDirSlot].Directory = CFactoryDirectory::Create(strURL);

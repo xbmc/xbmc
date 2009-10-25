@@ -79,7 +79,7 @@ CGUIDialogSmartPlaylistEditor::~CGUIDialogSmartPlaylistEditor()
 
 bool CGUIDialogSmartPlaylistEditor::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
     m_cancelled = true;
   return CGUIDialog::OnAction(action);
 }
@@ -469,7 +469,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleAdd()
 
 bool CGUIDialogSmartPlaylistEditor::NewPlaylist(const CStdString &type)
 {
-  CGUIDialogSmartPlaylistEditor *editor = (CGUIDialogSmartPlaylistEditor *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
+  CGUIDialogSmartPlaylistEditor *editor = (CGUIDialogSmartPlaylistEditor *)g_windowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
   if (!editor) return false;
 
   editor->m_path = "";
@@ -477,13 +477,13 @@ bool CGUIDialogSmartPlaylistEditor::NewPlaylist(const CStdString &type)
   editor->m_playlist.m_playlistRules.push_back(CSmartPlaylistRule());
   editor->m_mode = type;
   editor->Initialize();
-  editor->DoModal(m_gWindowManager.GetActiveWindow());
+  editor->DoModal(g_windowManager.GetActiveWindow());
   return !editor->m_cancelled;
 }
 
 bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const CStdString &path, const CStdString &type)
 {
-  CGUIDialogSmartPlaylistEditor *editor = (CGUIDialogSmartPlaylistEditor *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
+  CGUIDialogSmartPlaylistEditor *editor = (CGUIDialogSmartPlaylistEditor *)g_windowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
   if (!editor) return false;
 
   editor->m_mode = type;
@@ -506,7 +506,7 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const CStdString &path, const C
   editor->m_playlist = playlist;
   editor->m_path = path;
   editor->Initialize();
-  editor->DoModal(m_gWindowManager.GetActiveWindow());
+  editor->DoModal(g_windowManager.GetActiveWindow());
   return !editor->m_cancelled;
 }
 

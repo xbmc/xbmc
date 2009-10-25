@@ -21,6 +21,7 @@
 
 #include "include.h"
 #include "GUIEditControl.h"
+#include "GUIWindowManager.h"
 #include "utils/CharsetConverter.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogNumeric.h"
@@ -29,10 +30,10 @@
 
 using namespace std;
 
-CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
+CGUIEditControl::CGUIEditControl(int parentID, int controlID, float posX, float posY,
                                  float width, float height, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus,
                                  const CLabelInfo& labelInfo, const std::string &text)
-    : CGUIButtonControl(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
+    : CGUIButtonControl(parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
 {
   ControlType = GUICONTROL_EDIT;
   m_textOffset = 0;
@@ -48,7 +49,6 @@ CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
     : CGUIButtonControl(button)
 {
   ControlType = GUICONTROL_EDIT;
-  SetLabel(m_info.GetLabel(GetParentID()));
   m_textOffset = 0;
   m_textWidth = GetWidth();
   m_cursorPos = 0;
@@ -78,10 +78,10 @@ bool CGUIEditControl::OnAction(const CAction &action)
 {
   ValidateCursor();
 
-  if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
+  if (action.id >= KEY_VKEY && action.id < KEY_ASCII)
   {
     // input from the keyboard (vkey, not ascii)
-    BYTE b = action.wID & 0xFF;
+    BYTE b = action.id & 0xFF;
     if (b == 0x25 && m_cursorPos > 0)
     { // left
       m_cursorPos--;
@@ -101,7 +101,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
       return true;
     }
   }
-  else if (action.wID >= KEY_ASCII)
+  else if (action.id >= KEY_ASCII)
   {
     // input from the keyboard
     switch (action.unicode) 
@@ -136,11 +136,11 @@ bool CGUIEditControl::OnAction(const CAction &action)
     OnTextChanged();
     return true;
   }
-  else if (action.wID >= REMOTE_2 && action.wID <= REMOTE_9)
+  else if (action.id >= REMOTE_2 && action.id <= REMOTE_9)
   { // input from the remote
     if (m_inputType == INPUT_TYPE_FILTER)
     { // filtering - use single number presses
-      m_text2.insert(m_text2.begin() + m_cursorPos, L'0' + (action.wID - REMOTE_0));
+      m_text2.insert(m_text2.begin() + m_cursorPos, L'0' + (action.id - REMOTE_0));
       m_cursorPos++;
       OnTextChanged();
       return true;
@@ -258,7 +258,10 @@ void CGUIEditControl::RecalcLabelPosition()
 void CGUIEditControl::RenderText()
 {
   if (m_bInvalidated)
+  {
+    m_textLayout.Update(m_info.GetLabel(GetParentID()));
     RecalcLabelPosition();
+  }
 
   float leftTextWidth = m_textLayout.GetTextWidth();
   float maxTextWidth = m_width - m_label.offsetX * 2;
@@ -266,7 +269,7 @@ void CGUIEditControl::RenderText()
   // start by rendering the normal text
   float posX = m_posX + m_label.offsetX;
   float posY = m_posY;
-  DWORD align = m_label.align & XBFONT_CENTER_Y;
+  uint32_t align = m_label.align & XBFONT_CENTER_Y;
 
   if (m_label.align & XBFONT_CENTER_Y)
     posY += m_height*0.5f;
@@ -354,7 +357,7 @@ void CGUIEditControl::OnTextChanged()
 
 void CGUIEditControl::SetLabel(const std::string &text)
 {
-  m_textLayout.Update(text);
+  CGUIButtonControl::SetLabel(text);
   SetInvalid();
 }
 

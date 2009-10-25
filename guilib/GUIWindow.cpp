@@ -39,11 +39,11 @@
 
 using namespace std;
 
-CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
+CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
 {
-  SetID(dwID);
+  SetID(id);
   m_xmlFile = xmlFile;
-  m_dwIDRange = 1;
+  m_idRange = 1;
   m_saveLastControl = false;
   m_lastControlID = 0;
   m_bRelativeCoords = false;
@@ -333,7 +333,7 @@ void CGUIWindow::Close(bool forceClose)
 
 bool CGUIWindow::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_MOUSE)
+  if (action.id == ACTION_MOUSE)
     return OnMouseAction();
 
   CGUIControl *focusedControl = GetFocusedControl();
@@ -420,7 +420,7 @@ bool CGUIWindow::OnMouse(const CPoint &point)
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go to previous menu
     CAction action;
-    action.wID = ACTION_PREVIOUS_MENU;
+    action.id = ACTION_PREVIOUS_MENU;
     return OnAction(action);
   }
   return false;
@@ -480,7 +480,7 @@ void CGUIWindow::OnInitWindow()
   RestoreControlStates();
   SetInitialVisibility();
   QueueAnimation(ANIM_TYPE_WINDOW_OPEN);
-  m_gWindowManager.ShowOverlay(m_overlayState);
+  g_windowManager.ShowOverlay(m_overlayState);
 }
 
 // Called on window close.
@@ -498,7 +498,7 @@ void CGUIWindow::OnDeinitWindow(int nextWindowID)
       QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
       while (IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
       {
-        m_gWindowManager.Process(true);
+        g_windowManager.Process(true);
       }
     }
   }
@@ -697,7 +697,7 @@ void CGUIWindow::SetInitialVisibility()
 
 bool CGUIWindow::IsActive() const
 {
-  return m_gWindowManager.IsWindowActive(GetID());
+  return g_windowManager.IsWindowActive(GetID());
 }
 
 bool CGUIWindow::CheckAnimation(ANIMATION_TYPE animType)
@@ -856,7 +856,7 @@ void CGUIWindow::OnEditChanged(int id, CStdString &text)
   text = msg.GetLabel();
 }
 
-bool CGUIWindow::SendMessage(DWORD message, DWORD id, DWORD param1 /* = 0*/, DWORD param2 /* = 0*/)
+bool CGUIWindow::SendMessage(int message, int id, int param1 /* = 0*/, int param2 /* = 0*/)
 {
   CGUIMessage msg(message, GetID(), id, param1, param2);
   return OnMessage(msg);

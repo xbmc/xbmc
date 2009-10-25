@@ -139,7 +139,7 @@ void CGUIDialogVideoScan::OnDirectoryScanned(const CStdString& strDirectory)
 {
   CGUIMessage msg(GUI_MSG_DIRECTORY_SCANNED, 0, 0, 0);
   msg.SetStringParam(strDirectory);
-  m_gWindowManager.SendThreadMessage(msg);
+  g_windowManager.SendThreadMessage(msg);
 }
 
 void CGUIDialogVideoScan::OnFinished()
@@ -149,7 +149,7 @@ void CGUIDialogVideoScan::OnFinished()
 
   // send message
   CGUIMessage msg(GUI_MSG_SCAN_FINISHED, 0, 0, 0);
-  m_gWindowManager.SendThreadMessage(msg);
+  g_windowManager.SendThreadMessage(msg);
 
   // be sure to restore the settings
   CLog::Log(LOGINFO,"Video scan was stopped or finished ... restoring FindRemoteThumbs");
@@ -169,8 +169,7 @@ void CGUIDialogVideoScan::UpdateState()
   if (m_ScanState == FETCHING_MOVIE_INFO || m_ScanState == FETCHING_MUSICVIDEO_INFO || m_ScanState == FETCHING_TVSHOW_INFO || m_ScanState == CLEANING_UP_DATABASE)
   {
     CURL url(m_strCurrentDir);
-    CStdString strStrippedPath;
-    url.GetURLWithoutUserDetails(strStrippedPath);
+    CStdString strStrippedPath = url.GetWithoutUserDetails();
     CUtil::UrlDecode(strStrippedPath);
 
     SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, strStrippedPath);

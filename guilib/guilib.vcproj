@@ -227,9 +227,6 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath=".\ActionManager.cpp">
-			</File>
-			<File
 				RelativePath=".\AnimatedGif.cpp">
 			</File>
 			<File
@@ -436,9 +433,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath=".\ActionManager.h">
-			</File>
-			<File
 				RelativePath=".\AnimatedGif.h">
 			</File>
 			<File
@@ -623,9 +617,6 @@
 			</File>
 			<File
 				RelativePath=".\IAudioDeviceChangedCallback.h">
-			</File>
-			<File
-				RelativePath=".\IMsgSenderCallback.h">
 			</File>
 			<File
 				RelativePath=".\IMsgTargetCallback.h">

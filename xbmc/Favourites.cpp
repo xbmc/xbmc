@@ -26,6 +26,7 @@
 #include "Key.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "VideoInfoTag.h"
 
 bool CFavourites::Load(CFileItemList &items)
 {
@@ -109,7 +110,7 @@ bool CFavourites::Save(const CFileItemList &items)
   return doc.SaveFile(favourites);
 }
 
-bool CFavourites::AddOrRemove(CFileItem *item, DWORD contextWindow)
+bool CFavourites::AddOrRemove(CFileItem *item, int contextWindow)
 {
   if (!item) return false;
 
@@ -138,7 +139,7 @@ bool CFavourites::AddOrRemove(CFileItem *item, DWORD contextWindow)
   return Save(items);
 }
 
-bool CFavourites::IsFavourite(CFileItem *item, DWORD contextWindow)
+bool CFavourites::IsFavourite(CFileItem *item, int contextWindow)
 {
   CFileItemList items;
   if (!Load(items)) return false;
@@ -146,7 +147,7 @@ bool CFavourites::IsFavourite(CFileItem *item, DWORD contextWindow)
   return items.Contains(GetExecutePath(item, contextWindow));
 }
 
-CStdString CFavourites::GetExecutePath(const CFileItem *item, DWORD contextWindow)
+CStdString CFavourites::GetExecutePath(const CFileItem *item, int contextWindow)
 {
   CStdString execute;
   if (item->m_bIsFolder && !(item->IsSmartPlayList() || item->IsPlayList()))
@@ -158,6 +159,11 @@ CStdString CFavourites::GetExecutePath(const CFileItem *item, DWORD contextWindo
   else if (contextWindow == WINDOW_PROGRAMS)
     execute.Format("RunXBE(%s)", item->m_strPath);
   else  // assume a media file
-    execute.Format("PlayMedia(%s)", item->m_strPath);
+  {
+    if (item->IsVideoDb() && item->HasVideoInfoTag())
+      execute.Format("PlayMedia(%s)", item->GetVideoInfoTag()->m_strFileNameAndPath);
+    else
+      execute.Format("PlayMedia(%s)", item->m_strPath);
+  }
   return execute;
 }

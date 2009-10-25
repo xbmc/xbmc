@@ -40,7 +40,7 @@ class CGUIProgressControl :
       public CGUIControl
 {
 public:
-  CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, 
+  CGUIProgressControl(int parentID, int controlID, float posX, float posY, 
                       float width, float height, const CTextureInfo& backGroundTexture, 
                       const CTextureInfo& leftTexture, const CTextureInfo& midTexture, 
                       const CTextureInfo& rightTexture, const CTextureInfo& overlayTexture, 

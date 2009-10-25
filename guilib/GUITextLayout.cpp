@@ -58,7 +58,7 @@ void CGUITextLayout::SetWrap(bool bWrap)
   m_wrap = bWrap;
 }
 
-void CGUITextLayout::Render(float x, float y, float angle, DWORD color, DWORD shadowColor, DWORD alignment, float maxWidth, bool solid)
+void CGUITextLayout::Render(float x, float y, float angle, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, bool solid)
 {
   if (!m_font)
     return;
@@ -83,7 +83,7 @@ void CGUITextLayout::Render(float x, float y, float angle, DWORD color, DWORD sh
   for (vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); i++)
   {
     const CGUIString &string = *i;
-    DWORD align = alignment;
+    uint32_t align = alignment;
     if (align & XBFONT_JUSTIFIED && string.m_carriageReturn)
       align &= ~XBFONT_JUSTIFIED;
     if (solid)
@@ -98,7 +98,7 @@ void CGUITextLayout::Render(float x, float y, float angle, DWORD color, DWORD sh
 }
 
 
-void CGUITextLayout::RenderScrolling(float x, float y, float angle, DWORD color, DWORD shadowColor, DWORD alignment, float maxWidth, CScrollInfo &scrollInfo)
+void CGUITextLayout::RenderScrolling(float x, float y, float angle, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, CScrollInfo &scrollInfo)
 {
   if (!m_font)
     return;
@@ -140,7 +140,7 @@ void CGUITextLayout::RenderScrolling(float x, float y, float angle, DWORD color,
     g_graphicsContext.RemoveTransform();
 }
 
-void CGUITextLayout::RenderOutline(float x, float y, DWORD color, DWORD outlineColor, DWORD outlineWidth, DWORD alignment, float maxWidth)
+void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outlineColor, uint32_t outlineWidth, uint32_t alignment, float maxWidth)
 {
   if (!m_font)
     return;
@@ -159,7 +159,7 @@ void CGUITextLayout::RenderOutline(float x, float y, DWORD color, DWORD outlineC
   for (vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); i++)
   {
     const CGUIString &string = *i;
-    DWORD align = alignment;
+    uint32_t align = alignment;
     if (align & XBFONT_JUSTIFIED && string.m_carriageReturn)
       align &= ~XBFONT_JUSTIFIED;
 
@@ -188,7 +188,7 @@ bool CGUITextLayout::Update(const CStdString &text, float maxWidth, bool forceLT
 
 void CGUITextLayout::SetText(const CStdStringW &text, float maxWidth, bool forceLTRReadingOrder /*= false*/)
 {
-  vector<DWORD> parsedText;
+  vecText parsedText;
 
   // empty out our previous string
   m_lines.clear();
@@ -222,14 +222,14 @@ void CGUITextLayout::BidiTransform(vector<CGUIString> &lines, bool forceLTRReadi
     CGUIString &line = lines[i];
 
     // reserve enough space in the flipped text
-    vector<DWORD> flippedText; 
+    vecText flippedText; 
     flippedText.reserve(line.m_text.size());
 
-    DWORD sectionStyle = 0xffff0000; // impossible to achieve
+    character_t sectionStyle = 0xffff0000; // impossible to achieve
     CStdStringW sectionText;
-    for (vector<DWORD>::iterator it = line.m_text.begin(); it != line.m_text.end(); ++it)
+    for (vecText::iterator it = line.m_text.begin(); it != line.m_text.end(); ++it)
     { 
-      DWORD style = *it & 0xffff0000;
+      character_t style = *it & 0xffff0000;
       if (style != sectionStyle) 
       {
         if (!sectionText.IsEmpty())
@@ -273,23 +273,23 @@ void CGUITextLayout::Filter(CStdString &text)
 {
   CStdStringW utf16;
   utf8ToW(text, utf16);
-  vector<DWORD> colors;
-  vector<DWORD> parsedText;
+  vecColors colors;
+  vecText parsedText;
   ParseText(utf16, 0, colors, parsedText);
   utf16.Empty();
   for (unsigned int i = 0; i < parsedText.size(); i++)
-    utf16 += (WCHAR)(0xffff & parsedText[i]);
+    utf16 += (wchar_t)(0xffff & parsedText[i]);
   g_charsetConverter.wToUTF8(utf16, text);
 }
 
-void CGUITextLayout::ParseText(const CStdStringW &text, vector<DWORD> &parsedText)
+void CGUITextLayout::ParseText(const CStdStringW &text, vecText &parsedText)
 {
   if (!m_font)
     return;
   ParseText(text, m_font->GetStyle(), m_colors, parsedText);
 }
 
-void CGUITextLayout::ParseText(const CStdStringW &text, DWORD defaultStyle, vector<DWORD> &colors, vector<DWORD> &parsedText)
+void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, vecColors &colors, vecText &parsedText)
 {
   // run through the string, searching for:
   // [B] or [/B] -> toggle bold on and off
@@ -297,10 +297,10 @@ void CGUITextLayout::ParseText(const CStdStringW &text, DWORD defaultStyle, vect
   // [COLOR ffab007f] or [/COLOR] -> toggle color on and off
   // [CAPS <option>] or [/CAPS] -> toggle capatilization on and off
 
-  DWORD currentStyle = defaultStyle; // start with the default font's style
-  DWORD currentColor = 0;
+  uint32_t currentStyle = defaultStyle; // start with the default font's style
+  color_t currentColor = 0;
 
-  stack<DWORD> colorStack;
+  stack<color_t> colorStack;
   colorStack.push(0);
 
   // these aren't independent, but that's probably not too much of an issue
@@ -313,8 +313,8 @@ void CGUITextLayout::ParseText(const CStdStringW &text, DWORD defaultStyle, vect
   size_t pos = text.Find(L'[');
   while (pos != CStdString::npos && pos + 1 < text.size())
   {
-    DWORD newStyle = 0;
-    DWORD newColor = currentColor;
+    uint32_t newStyle = 0;
+    color_t newColor = currentColor;
     bool newLine = false;
     // have a [ - check if it's an ON or OFF switch
     bool on(true);
@@ -410,7 +410,7 @@ void CGUITextLayout::SetMaxHeight(float fHeight)
   m_maxHeight = fHeight;
 }
 
-void CGUITextLayout::WrapText(const vector<DWORD> &text, float maxWidth)
+void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
 {
   if (!m_font)
     return;
@@ -425,14 +425,14 @@ void CGUITextLayout::WrapText(const vector<DWORD> &text, float maxWidth)
   for (unsigned int i = 0; i < lines.size(); i++)
   {
     const CGUIString &line = lines[i];
-    vector<DWORD>::const_iterator lastSpace = line.m_text.begin();
-    vector<DWORD>::const_iterator pos = line.m_text.begin();
+    vecText::const_iterator lastSpace = line.m_text.begin();
+    vecText::const_iterator pos = line.m_text.begin();
     unsigned int lastSpaceInLine = 0;
-    vector<DWORD> curLine;
+    vecText curLine;
     while (pos != line.m_text.end() && (nMaxLines <= 0 || m_lines.size() <= (size_t)nMaxLines))
     {
       // Get the current letter in the string
-      DWORD letter = *pos;
+      character_t letter = *pos;
       // check for a space
       if (CanWrapAtLetter(letter))
       {
@@ -483,14 +483,14 @@ void CGUITextLayout::WrapText(const vector<DWORD> &text, float maxWidth)
   }
 }
 
-void CGUITextLayout::LineBreakText(const vector<DWORD> &text, vector<CGUIString> &lines)
+void CGUITextLayout::LineBreakText(const vecText &text, vector<CGUIString> &lines)
 {
-  vector<DWORD>::const_iterator lineStart = text.begin();
-  vector<DWORD>::const_iterator pos = text.begin();
+  vecText::const_iterator lineStart = text.begin();
+  vecText::const_iterator pos = text.begin();
   while (pos != text.end())
   {
     // Get the current letter in the string
-    DWORD letter = *pos;
+    character_t letter = *pos;
 
     // Handle the newline character
     if ((letter & 0xffff) == L'\n' )
@@ -533,7 +533,7 @@ unsigned int CGUITextLayout::GetTextLength() const
   return length;
 }
 
-void CGUITextLayout::GetFirstText(vector<DWORD> &text) const
+void CGUITextLayout::GetFirstText(vecText &text) const
 {
   text.clear();
   if (m_lines.size())
@@ -544,30 +544,30 @@ float CGUITextLayout::GetTextWidth(const CStdStringW &text) const
 {
   // NOTE: Assumes a single line of text
   if (!m_font) return 0;
-  vector<DWORD> utf32;
+  vecText utf32;
   AppendToUTF32(text, (m_font->GetStyle() & 3) << 24, utf32);
   return m_font->GetTextWidth(utf32);
 }
 
-void CGUITextLayout::DrawText(CGUIFont *font, float x, float y, DWORD color, DWORD shadowColor, const CStdString &text, DWORD align)
+void CGUITextLayout::DrawText(CGUIFont *font, float x, float y, color_t color, color_t shadowColor, const CStdString &text, uint32_t align)
 {
   if (!font) return;
-  vector<DWORD> utf32;
+  vecText utf32;
   AppendToUTF32(text, 0, utf32);
   font->DrawText(x, y, color, shadowColor, utf32, align, 0);
 }
 
-void CGUITextLayout::DrawOutlineText(CGUIFont *font, float x, float y, DWORD color, DWORD outlineColor, DWORD outlineWidth, const CStdString &text)
+void CGUITextLayout::DrawOutlineText(CGUIFont *font, float x, float y, color_t color, color_t outlineColor, uint32_t outlineWidth, const CStdString &text)
 {
   if (!font) return;
-  vector<DWORD> utf32;
+  vecText utf32;
   AppendToUTF32(text, 0, utf32);
-  vector<DWORD> colors;
+  vecColors colors;
   colors.push_back(color);
   DrawOutlineText(font, x, y, colors, outlineColor, outlineWidth, utf32, 0, 0);
 }
 
-void CGUITextLayout::DrawOutlineText(CGUIFont *font, float x, float y, const vector<DWORD> &colors, DWORD outlineColor, DWORD outlineWidth, const vector<DWORD> &text, DWORD align, float maxWidth)
+void CGUITextLayout::DrawOutlineText(CGUIFont *font, float x, float y, const vecColors &colors, color_t outlineColor, uint32_t outlineWidth, const vecText &text, uint32_t align, float maxWidth)
 {
   for (unsigned int i = 1; i < outlineWidth; i++)
   {
@@ -583,7 +583,7 @@ void CGUITextLayout::DrawOutlineText(CGUIFont *font, float x, float y, const vec
   font->DrawText(x, y, colors, 0, text, align, maxWidth);
 }
 
-void CGUITextLayout::AppendToUTF32(const CStdStringW &utf16, DWORD colStyle, vector<DWORD> &utf32)
+void CGUITextLayout::AppendToUTF32(const CStdStringW &utf16, character_t colStyle, vecText &utf32)
 {
   // NOTE: Assumes a single line of text
   utf32.reserve(utf32.size() + utf16.size());
@@ -614,7 +614,7 @@ void CGUITextLayout::utf8ToW(const CStdString &utf8, CStdStringW &utf16)
 #endif
 }
 
-void CGUITextLayout::AppendToUTF32(const CStdString &utf8, DWORD colStyle, vector<DWORD> &utf32)
+void CGUITextLayout::AppendToUTF32(const CStdString &utf8, character_t colStyle, vecText &utf32)
 {
   CStdStringW utf16;
   utf8ToW(utf8, utf16);

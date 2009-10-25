@@ -509,9 +509,9 @@ void CWeather::LoadLocalizedToken()
       const char* attrId = pChild->Attribute("id");
       if (attrId && !pChild->NoChildren())
       {
-        DWORD dwID = atoi(attrId);
-        if ((LOCALIZED_TOKEN_FIRSTID <= dwID && dwID <= LOCALIZED_TOKEN_LASTID) ||
-            (LOCALIZED_TOKEN_FIRSTID2 <= dwID && dwID <= LOCALIZED_TOKEN_LASTID2))
+        int id = atoi(attrId);
+        if ((LOCALIZED_TOKEN_FIRSTID <= id && id <= LOCALIZED_TOKEN_LASTID) ||
+            (LOCALIZED_TOKEN_FIRSTID2 <= id && id <= LOCALIZED_TOKEN_LASTID2))
         {
           CStdString utf8Label;
           if (strEncoding.IsEmpty()) // Is language file utf8?
@@ -520,7 +520,7 @@ void CWeather::LoadLocalizedToken()
             g_charsetConverter.stringCharsetToUtf8(strEncoding, pChild->FirstChild()->Value(), utf8Label);
 
           if (!utf8Label.IsEmpty())
-            m_localizedTokens.insert(make_pair(utf8Label, dwID));
+            m_localizedTokens.insert(make_pair(utf8Label, id));
         }
       }
     }
@@ -558,8 +558,8 @@ bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResu
     strResult = "";
   }
 
-  CGUIDialogSelect *pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-  CGUIDialogProgress *pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogSelect *pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogProgress *pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
   //do the download
   CStdString strURL;
@@ -646,27 +646,27 @@ bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResu
   return true;
 }
 
-const char *CWeather::BusyInfo(DWORD dwInfo)
+const char *CWeather::BusyInfo(int info)
 {
-  if (dwInfo == WEATHER_IMAGE_CURRENT_ICON)
+  if (info == WEATHER_IMAGE_CURRENT_ICON)
   {
     sprintf(m_szNAIcon,"%s128x128/na.png", WEATHER_BASE_PATH);
     return m_szNAIcon;
   }
-  return CInfoLoader::BusyInfo(dwInfo);
+  return CInfoLoader::BusyInfo(info);
 }
 
-const char *CWeather::TranslateInfo(DWORD dwInfo)
+const char *CWeather::TranslateInfo(int info)
 {
-  if (dwInfo == WEATHER_LABEL_CURRENT_COND) return m_szCurrentConditions;
-  else if (dwInfo == WEATHER_IMAGE_CURRENT_ICON) return m_szCurrentIcon;
-  else if (dwInfo == WEATHER_LABEL_CURRENT_TEMP) return m_szCurrentTemperature;
-  else if (dwInfo == WEATHER_LABEL_CURRENT_FEEL) return m_szCurrentFeelsLike;
-  else if (dwInfo == WEATHER_LABEL_CURRENT_UVID) return m_szCurrentUVIndex;
-  else if (dwInfo == WEATHER_LABEL_CURRENT_WIND) return m_szCurrentWind;
-  else if (dwInfo == WEATHER_LABEL_CURRENT_DEWP) return m_szCurrentDewPoint;
-  else if (dwInfo == WEATHER_LABEL_CURRENT_HUMI) return m_szCurrentHumidity;
-  else if (dwInfo == WEATHER_LABEL_LOCATION) return m_szLocation[m_iCurWeather];
+  if (info == WEATHER_LABEL_CURRENT_COND) return m_szCurrentConditions;
+  else if (info == WEATHER_IMAGE_CURRENT_ICON) return m_szCurrentIcon;
+  else if (info == WEATHER_LABEL_CURRENT_TEMP) return m_szCurrentTemperature;
+  else if (info == WEATHER_LABEL_CURRENT_FEEL) return m_szCurrentFeelsLike;
+  else if (info == WEATHER_LABEL_CURRENT_UVID) return m_szCurrentUVIndex;
+  else if (info == WEATHER_LABEL_CURRENT_WIND) return m_szCurrentWind;
+  else if (info == WEATHER_LABEL_CURRENT_DEWP) return m_szCurrentDewPoint;
+  else if (info == WEATHER_LABEL_CURRENT_HUMI) return m_szCurrentHumidity;
+  else if (info == WEATHER_LABEL_LOCATION) return m_szLocation[m_iCurWeather];
   return "";
 }
 

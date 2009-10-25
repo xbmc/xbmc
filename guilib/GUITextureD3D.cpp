@@ -114,7 +114,7 @@ void CGUITextureD3D::End()
     g_graphicsContext.Get3DDevice()->SetTexture( 1, NULL );
 }
 
-void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)
+void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, color_t color, int orientation)
 {
   struct CUSTOMVERTEX {
       FLOAT x, y, z;

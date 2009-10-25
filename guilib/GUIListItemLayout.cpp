@@ -71,7 +71,7 @@ float CGUIListItemLayout::Size(ORIENTATION orientation) const
   return (orientation == HORIZONTAL) ? m_width : m_height;
 }
 
-void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
+void CGUIListItemLayout::Render(CGUIListItem *item, int parentID, DWORD time)
 {
   if (m_invalidated)
   { // need to update our item

@@ -51,8 +51,10 @@ CFileZip::~CFileZip()
 
 bool CFileZip::Open(const CURL&url)
 {
-  CStdString strPath;
-  url.GetURL(strPath);
+  CStdString strOpts = url.GetOptions();
+  CURL url2(url);
+  url2.SetOptions("");
+  CStdString strPath = url2.Get();
   if (!g_ZipManager.GetZipEntry(strPath,mZipItem))
     return false;
   
@@ -271,18 +273,14 @@ __int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
 bool CFileZip::Exists(const CURL& url)
 {
   SZipEntry item;
-  CStdString strPath;
-  url.GetURL(strPath);
-  if (g_ZipManager.GetZipEntry(strPath,item))
+  if (g_ZipManager.GetZipEntry(url.Get(),item))
     return true;
   return false;
 }
 
 int CFileZip::Stat(const CURL& url, struct __stat64* buffer)
-{ 
-  CStdString strPath;
-  url.GetURL(strPath);
-  if (!g_ZipManager.GetZipEntry(strPath,mZipItem))
+{
+  if (!g_ZipManager.GetZipEntry(url.Get(),mZipItem))
     return -1;
 
   buffer->st_gid = 0;
@@ -472,7 +470,7 @@ void CFileZip::DestroyBuffer(void* lpBuffer, int iBufSize)
 void CFileZip::StartProgressBar()
 {
   if (!m_dlgProgress)
-    m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   m_dlgProgress->StartModal();
   m_dlgProgress->SetPercentage(0);
   m_dlgProgress->SetHeading(773);

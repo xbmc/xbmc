@@ -49,7 +49,7 @@ public:
           bool        Load();
 
           void        PlayActionSound(const CAction& action);
-          void        PlayWindowSound(DWORD dwID, WINDOW_SOUND event);
+          void        PlayWindowSound(int id, WINDOW_SOUND event);
           void        PlayPythonSound(const CStdString& strFileName);
 
           void        FreeUnused();
@@ -60,11 +60,11 @@ public:
 private:
           bool        LoadWindowSound(TiXmlNode* pWindowNode, const CStdString& strIdentifier, CStdString& strFile);
 
-  typedef std::map<WORD, CStdString> actionSoundMap;
-  typedef std::map<WORD, CWindowSounds> windowSoundMap;
+  typedef std::map<int, CStdString> actionSoundMap;
+  typedef std::map<int, CWindowSounds> windowSoundMap;
 
   typedef std::map<CStdString, CGUISound*> pythonSoundsMap;
-  typedef std::map<DWORD, CGUISound*> windowSoundsMap;
+  typedef std::map<int, CGUISound*> windowSoundsMap;
 
   actionSoundMap      m_actionSoundMap;
   windowSoundMap      m_windowSoundMap;

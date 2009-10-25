@@ -37,10 +37,6 @@
 #include "gui3d.h"
 #include "StdString.h"
 
-// forward definitions
-class IMsgSenderCallback;
-class CGUIMessage;
-
 #include "common/Mouse.h"
 
 /*!
@@ -118,9 +114,6 @@ public:
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
   int GetFPS() const;
-  bool SendMessage(CGUIMessage& message);
-  bool SendMessage(DWORD message, DWORD senderID, DWORD destID, DWORD param1 = 0, DWORD param2 = 0);
-  void setMessageSender(IMsgSenderCallback* pCallback);
   DWORD GetNewID();
   const CStdString& GetMediaDir() const { return m_strMediaDir; }
   void SetMediaDir(const CStdString& strMediaDir);
@@ -163,9 +156,9 @@ public:
 
   inline float GetGUIScaleX() const { return m_guiScaleX; };
   inline float GetGUIScaleY() const { return m_guiScaleY; };
-  inline DWORD MergeAlpha(DWORD color) const
+  inline DWORD MergeAlpha(color_t color) const
   {
-    DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
+    color_t alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
     if (alpha > 255) alpha = 255;
     return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
   }
@@ -205,7 +198,6 @@ public:
 
   int GetMaxTextureSize() const { return m_maxTextureSize; };
 protected:
-  IMsgSenderCallback* m_pCallback;
   LPDIRECT3DDEVICE8 m_pd3dDevice;
   D3DPRESENT_PARAMETERS* m_pd3dParams;
   std::stack<D3DVIEWPORT8*> m_viewStack;
@@ -213,7 +205,6 @@ protected:
   int m_iScreenHeight;
   int m_iScreenWidth;
   int m_iBackBufferCount;
-  DWORD m_dwID;
   bool m_bWidescreen;
   CStdString m_strMediaDir;
   RECT m_videoRect;

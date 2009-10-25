@@ -37,7 +37,7 @@ public:
   CGUIInfoBool(bool value = false);
   operator bool() const { return m_value; };
 
-  void Update(DWORD parentID = 0, const CGUIListItem *item = NULL);
+  void Update(int parentID = 0, const CGUIListItem *item = NULL);
   void Parse(const CStdString &info);
 private:
   int m_info;
@@ -47,19 +47,19 @@ private:
 class CGUIInfoColor
 {
 public:
-  CGUIInfoColor(DWORD color = 0);
+  CGUIInfoColor(uint32_t color = 0);
 
   const CGUIInfoColor &operator=(const CGUIInfoColor &color);
-  const CGUIInfoColor &operator=(DWORD color);
-  operator DWORD() const { return m_color; };
+  const CGUIInfoColor &operator=(uint32_t color);
+  operator uint32_t() const { return m_color; };
 
   void Update();
   void Parse(const CStdString &label);
 
 private:
-  DWORD GetColor() const;
-  int m_info;
-  DWORD m_color;
+  uint32_t GetColor() const;
+  int      m_info;
+  uint32_t m_color;
 };
 
 #endif

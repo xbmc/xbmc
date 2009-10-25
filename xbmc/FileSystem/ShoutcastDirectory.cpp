@@ -65,15 +65,13 @@ bool CShoutcastDirectory::ParseGenres(TiXmlElement *root, CFileItemList &items, 
     CUtil::URLEncode(path);
 
     url.SetOptions("?genre=" + path);
-    url.GetURL(path);
-
 
     CFileItemPtr pItem(new CFileItem);
     pItem->m_bIsFolder = true;
     pItem->SetLabel(genre);
     pItem->GetMusicInfoTag()->SetGenre(genre);
-    pItem->m_strPath = path;  
-    
+    pItem->m_strPath = url.Get();
+
     items.Add(pItem);
 
     element = element->NextSiblingElement("genre");
@@ -121,7 +119,6 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
     CStdString label = name;
 
     url.SetOptions("?id=" + id);
-    url.GetURL(path);
 
     CFileItemPtr pItem(new CFileItem);
     pItem->m_bIsFolder = false;
@@ -143,8 +140,8 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
     /* wonder if we could combine the contentype of the playlist and of the real stream */
     pItem->SetContentType("audio/x-scpls");
 
-    pItem->m_strPath = path;
-    
+    pItem->m_strPath = url.Get();
+
     items.Add(pItem);
 
     stations++;
@@ -167,7 +164,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   /* display progress dialog after 2 seconds */
   DWORD dwTimeStamp = GetTickCount() + 2000;
 
-  CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   bool dialogopen = false;
   if (dlgProgress)
   {

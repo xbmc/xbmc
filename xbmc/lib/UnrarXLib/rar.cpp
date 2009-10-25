@@ -1,3 +1,4 @@
+#include "../../xbox/PlatformDefs.h"
 #include "rar.hpp"
 #include "UnrarX.hpp"
 #include "GUIWindowManager.h"
@@ -179,7 +180,7 @@ int main(int argc, char *argv[])
           or NULL for all files.
   libpassword   - Password (for encrypted archives)
 \*-------------------------------------------------------------------------*/
-int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword, __int64* iOffset, bool bShowProgress)
+int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword, int64_t* iOffset, bool bShowProgress)
 {
   InitCRC();
   int bRes = 1;
@@ -239,10 +240,10 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 
           if (bShowProgress)
           {
-            pExtract->GetDataIO().m_pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+            pExtract->GetDataIO().m_pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
           }
 
-          __int64 iOff=0;
+          int64_t iOff=0;
           bool bSeeked = false;
           while (1)
           {
@@ -354,7 +355,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword, 
       {
         if (pArc->IsOpened() && pArc->IsArchive(true))
         {
-          __int64 iOffset = pArc->NextBlockPos;
+          int64_t iOffset = pArc->NextBlockPos;
           while(pArc->ReadHeader()>0)
           {
             if (pArc->GetHeaderType() == FILE_HEAD)

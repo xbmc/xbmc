@@ -35,6 +35,7 @@
 #include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "Crc32.h"
+#include "utils/SingleLock.h"
 
 using namespace std;
 
@@ -117,7 +118,7 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_SETFOCUS:
     {
-      if (m_viewControl.HasControl(message.GetControlId()) && (DWORD) m_viewControl.GetCurrentControl() != message.GetControlId())
+      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
       {
         m_viewControl.SetFocused();
         return true;
@@ -308,7 +309,7 @@ void CGUIDialogVideoBookmarks::AddEpisodeBookmark()
   videoDatabase.Close();
   if(episodes.size() > 0)
   {
-    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
     map<int, CVideoInfoTag*> buttons;
     const CGUIControl *pList = GetControl(CONTROL_ADD_EPISODE_BOOKMARK);
     if (pList)

@@ -78,7 +78,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_iRegionSet = 0;
-      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // check for a passed destination path
       CStdString strDestination = message.GetStringParam();
@@ -311,7 +311,7 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_SETTINGS:
-    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
+    g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
     return true;
 
   case CONTEXT_BUTTON_GOTO_ROOT:
@@ -328,7 +328,7 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString strGameSavepath;
       strTitleID.Format("%08X",CUtil::GetXbeID(item->m_strPath));
       CUtil::AddFileToFolder("E:\\udata\\",strTitleID,strGameSavepath);
-      m_gWindowManager.ActivateWindow(WINDOW_GAMESAVES,strGameSavepath);
+      g_windowManager.ActivateWindow(WINDOW_GAMESAVES,strGameSavepath);
       return true;
     }
   case CONTEXT_BUTTON_LAUNCH_IN:
@@ -354,7 +354,7 @@ bool CGUIWindowPrograms::OnChooseVideoModeAndLaunch(int item)
   }
 
   // grab the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu) return false;
 
   pMenu->Initialize();
@@ -533,7 +533,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
   // first, remove any dead items
   std::vector<CStdString> vecTrainerPath;
   m_database.GetAllTrainers(vecTrainerPath);
-  CGUIDialogProgress* m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   m_dlgProgress->SetLine(0,12023);
   m_dlgProgress->SetLine(1,"");
   m_dlgProgress->SetLine(2,"");
@@ -607,7 +607,7 @@ void CGUIWindowPrograms::PopulateTrainersList()
       }
     }
     if (!m_dlgProgress)
-      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     m_dlgProgress->SetPercentage(0);
     m_dlgProgress->ShowProgressBar(true);
 

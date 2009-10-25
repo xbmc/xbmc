@@ -29,7 +29,7 @@
 #include "Util.h"
 #include "FileSystem/File.h"
 
-#define ACTIVE_WINDOW  m_gWindowManager.GetActiveWindow()
+#define ACTIVE_WINDOW  g_windowManager.GetActiveWindow()
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")

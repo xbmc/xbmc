@@ -23,12 +23,13 @@
 #include "dlgcache.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
+#include "utils/SingleLock.h"
 
 extern "C" void mplayer_exit_player(void);
 
 CDlgCache::CDlgCache(DWORD dwDelay, const CStdString& strHeader, const CStdString& strMsg)
 {
-  m_pDlg = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  m_pDlg = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
   /* if progress dialog is already running, take it over */
   if( m_pDlg->IsDialogRunning() )
@@ -132,7 +133,7 @@ void CDlgCache::Process()
 #endif
         }
         else if( !m_pDlg->IsDialogRunning() && GetTickCount() > m_dwTimeStamp 
-              && !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_YES_NO) )
+              && !g_windowManager.IsWindowActive(WINDOW_DIALOG_YES_NO) )
           OpenDialog();
       }
       catch(...)

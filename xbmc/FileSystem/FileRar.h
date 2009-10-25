@@ -82,7 +82,6 @@ namespace XFILE
     CStdString  m_strRarPath;
     CStdString m_strPassword;
     CStdString m_strPathInRar;
-    CStdString m_strUrl;
 		BYTE m_bRarOptions;
 		BYTE m_bFileOptions;
     void Init();

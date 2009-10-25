@@ -494,7 +494,7 @@ void CXbmcHttp::AddItemToPlayList(const CFileItemPtr &pItem, int playList, int s
     //selected item is a file, add it to playlist
     if (playList==-1)
     {
-      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
       if (!pSlideShow)
         return ;
       pSlideShow->Add(pItem.get());
@@ -1308,8 +1308,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
     thumbNothingPlaying=paras[1];
   if (numParas>2)
     justChange=paras[2].ToLower()=="true";
-  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
-  if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW && pSlideShow)
+  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+  if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW && pSlideShow)
   {
     const CFileItemPtr slide = pSlideShow->GetCurrentSlide();
     output=openTag+"Filename:"+slide->m_strPath;
@@ -1608,7 +1608,7 @@ int CXbmcHttp::xbmcGetVolume()
 
 int CXbmcHttp::xbmcClearSlideshow()
 {
-  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (!pSlideShow)
     return SetResponse(openTag+"Error:Could not create slideshow");
   else
@@ -1629,7 +1629,7 @@ int CXbmcHttp::xbmcPlaySlideshow(int numParas, CStdString paras[])
     msg.SetStringParam("");
   else
     msg.SetStringParam(paras[0]);
-  CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+  CGUIWindow *pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pWindow) pWindow->OnMessage(msg);
   return SetResponse(openTag+"OK");
 }
@@ -1640,7 +1640,7 @@ int CXbmcHttp::xbmcSlideshowSelect(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Missing filename");
   else
   {
-    CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     if (!pSlideShow)
       return SetResponse(openTag+"Error:Could not create slideshow");
     else
@@ -1706,26 +1706,26 @@ int CXbmcHttp::xbmcGetGUIDescription()
 int CXbmcHttp::xbmcGetGUIStatus()
 {
   CStdString output, tmp, strTmp;
-  CGUIMediaWindow *mediaWindow = (CGUIMediaWindow *)m_gWindowManager.GetWindow(WINDOW_MUSIC_FILES);
+  CGUIMediaWindow *mediaWindow = (CGUIMediaWindow *)g_windowManager.GetWindow(WINDOW_MUSIC_FILES);
   if (mediaWindow)
     output = closeTag+openTag+"MusicPath:" + mediaWindow->CurrentDirectory().m_strPath;
-  mediaWindow = (CGUIMediaWindow *)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
+  mediaWindow = (CGUIMediaWindow *)g_windowManager.GetWindow(WINDOW_VIDEO_FILES);
   if (mediaWindow)
     output += closeTag+openTag+"VideoPath:" + mediaWindow->CurrentDirectory().m_strPath;
-  mediaWindow = (CGUIMediaWindow *)m_gWindowManager.GetWindow(WINDOW_PICTURES);
+  mediaWindow = (CGUIMediaWindow *)g_windowManager.GetWindow(WINDOW_PICTURES);
   if (mediaWindow)
     output += closeTag+openTag+"PicturePath:" + mediaWindow->CurrentDirectory().m_strPath;
-  mediaWindow = (CGUIMediaWindow *)m_gWindowManager.GetWindow(WINDOW_PROGRAMS);
+  mediaWindow = (CGUIMediaWindow *)g_windowManager.GetWindow(WINDOW_PROGRAMS);
   if (mediaWindow)
     output += closeTag+openTag+"ProgramsPath:" + mediaWindow->CurrentDirectory().m_strPath;
-  CGUIWindowFileManager *fileManager = (CGUIWindowFileManager *)m_gWindowManager.GetWindow(WINDOW_FILES);
+  CGUIWindowFileManager *fileManager = (CGUIWindowFileManager *)g_windowManager.GetWindow(WINDOW_FILES);
   if (fileManager)
   {
     output += closeTag+openTag+"FilesPath1:" + fileManager->CurrentDirectory(0).m_strPath;
     output += closeTag+openTag+"FilesPath2:" + fileManager->CurrentDirectory(1).m_strPath;
   }
-  int iWin=m_gWindowManager.GetActiveWindow();
-  CGUIWindow* pWindow=m_gWindowManager.GetWindow(iWin);  
+  int iWin=g_windowManager.GetActiveWindow();
+  CGUIWindow* pWindow=g_windowManager.GetWindow(iWin);  
   tmp.Format("%i", iWin);
   output += openTag+"ActiveWindow:" + tmp;
   if (pWindow)
@@ -1941,7 +1941,7 @@ int CXbmcHttp::xbmcGetPlayListLength(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcGetSlideshowContents()
 {
   CStdString list="";
-  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (!pSlideShow)
     return SetResponse(openTag+"Error");
   else
@@ -2070,19 +2070,19 @@ void CXbmcHttp::ResetKey()
 
 int CXbmcHttp::xbmcSetKey(int numParas, CStdString paras[])
 {
-  DWORD dwButtonCode=0;
-  BYTE bLeftTrigger=0, bRightTrigger=0;
+  int buttonCode=0;
+  uint8_t leftTrigger=0, rightTrigger=0;
   float fLeftThumbX=0.0f, fLeftThumbY=0.0f, fRightThumbX=0.0f, fRightThumbY=0.0f ;
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing parameters");
     
   else
   {
-    dwButtonCode=(DWORD) strtol(paras[0], NULL, 0);
+    buttonCode=(int) strtol(paras[0], NULL, 0);
     if (numParas>1) {
-      bLeftTrigger=(BYTE) atoi(paras[1]) ;
+      leftTrigger=(uint8_t) atoi(paras[1]) ;
       if (numParas>2) {
-        bRightTrigger=(BYTE) atoi(paras[2]) ;
+        rightTrigger=(uint8_t) atoi(paras[2]) ;
         if (numParas>3) {
           fLeftThumbX=(float) atof(paras[3]) ;
           if (numParas>4) {
@@ -2096,7 +2096,7 @@ int CXbmcHttp::xbmcSetKey(int numParas, CStdString paras[])
         }
       }
     }
-    CKey tempKey(dwButtonCode, bLeftTrigger, bRightTrigger, fLeftThumbX, fLeftThumbY, fRightThumbX, fRightThumbY) ;
+    CKey tempKey(buttonCode, leftTrigger, rightTrigger, fLeftThumbX, fLeftThumbY, fRightThumbX, fRightThumbY) ;
     tempKey.SetFromHttpApi(true);
     key = tempKey;
     lastKey = key;
@@ -2117,16 +2117,16 @@ int CXbmcHttp::xbmcSetKeyRepeat(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
 {
-  bool showingSlideshow=(m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW);
+  bool showingSlideshow=(g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW);
 
   switch(theAction)
   {
   case 1:
     if (showingSlideshow) {
-      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         CAction action;
-        action.wID = ACTION_PAUSE;
+        action.id = ACTION_PAUSE;
         pSlideShow->OnAction(action);    
       }
     }
@@ -2136,10 +2136,10 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
     break;
   case 2:
     if (showingSlideshow) {
-      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         CAction action;
-        action.wID = ACTION_STOP;
+        action.id = ACTION_STOP;
         pSlideShow->OnAction(action);    
       }
     }
@@ -2150,10 +2150,10 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
     break;
   case 3:
     if (showingSlideshow) {
-      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         CAction action;
-        action.wID = ACTION_NEXT_PICTURE;
+        action.id = ACTION_NEXT_PICTURE;
         pSlideShow->OnAction(action);
       }
     }
@@ -2163,10 +2163,10 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
     break;
   case 4:
     if (showingSlideshow) {
-      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         CAction action;
-        action.wID = ACTION_PREV_PICTURE;
+        action.id = ACTION_PREV_PICTURE;
         pSlideShow->OnAction(action);    
       }
     }
@@ -2177,10 +2177,10 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
   case 5:
     if (showingSlideshow)
     {
-      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         CAction action;
-        action.wID = ACTION_ROTATE_PICTURE;
+        action.id = ACTION_ROTATE_PICTURE;
         pSlideShow->OnAction(action);  
         return SetResponse(openTag+"OK");
       }
@@ -2193,13 +2193,13 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
   case 6:
     if (showingSlideshow)
     {
-      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         if (numParas>1) {
           CAction action;
-          action.wID = ACTION_ANALOG_MOVE;
-          action.fAmount1=(float) atof(paras[0]);
-          action.fAmount2=(float) atof(paras[1]);
+          action.id = ACTION_ANALOG_MOVE;
+          action.amount1=(float) atof(paras[0]);
+          action.amount2=(float) atof(paras[1]);
           pSlideShow->OnAction(action);    
           return SetResponse(openTag+"OK");
         }
@@ -2215,12 +2215,12 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
   case 7:
     if (showingSlideshow)
     {
-      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+      CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         if (numParas>0)
         {
           CAction action;
-          action.wID = ACTION_ZOOM_LEVEL_NORMAL+atoi(paras[0]);
+          action.id = ACTION_ZOOM_LEVEL_NORMAL+atoi(paras[0]);
           pSlideShow->OnAction(action);    
           return SetResponse(openTag+"OK");
         }
@@ -2518,7 +2518,7 @@ int CXbmcHttp::xbmcShowPicture(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcGetCurrentSlide()
 {
-  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (!pSlideShow)
     return SetResponse(openTag+"Error:Could not access slideshown");
   else
@@ -2805,7 +2805,7 @@ int CXbmcHttp::xbmcSpinDownHardDisk(int numParas, CStdString paras[])
   }
   if (g_application.m_dwSpinDownTime==0)
 	return SetResponse(openTag+"OK:Already spun down");
-  if (m_gWindowManager.HasModalDialog())
+  if (g_windowManager.HasModalDialog())
 	return SetResponse(openTag+"Error:Can't spin down now (modal dialog)");
   if (g_application.MustBlockHDSpinDown())
 	return SetResponse(openTag+"Error:Can't spin down now (must block)");
@@ -3003,8 +3003,8 @@ int CXbmcHttp::xbmcOnAction(int numParas, CStdString paras[])
   else
   {
     CAction action;
-    action.wID = atoi(paras[0]);
-    action.fAmount1 = 1; // digital button (could change this for repeat acceleration)
+    action.id = atoi(paras[0]);
+    action.amount1 = 1; // digital button (could change this for repeat acceleration)
     g_application.OnAction(action);
     return SetResponse(openTag+"OK");
   }

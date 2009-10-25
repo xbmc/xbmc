@@ -894,13 +894,6 @@ CUPnPServer::Build(CFileItemPtr                  item,
 
                     // look up number of shares
                     VECSOURCES *shares = NULL;
-                    if (path == "virtualpath://upnpmusic") {
-                        shares = g_settings.GetSourcesFromType("upnpmusic");
-                    } else if (path == "virtualpath://upnpvideo") {
-                        shares = g_settings.GetSourcesFromType("upnpvideo");
-                    } else if (path == "virtualpath://upnppictures") {
-                        shares = g_settings.GetSourcesFromType("upnppictures");
-                    }
 
                     // use only shares that would some path with local files
                     if (shares) {
@@ -921,18 +914,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
                     }
                 }
             } else {
-                // this is a share name
-                CStdString mask;
-                if (share_name.StartsWith("virtualpath://upnpmusic")) {
-                    object->m_ParentID = "virtualpath://upnpmusic";
-                    mask = g_stSettings.m_musicExtensions;
-                } else if (share_name.StartsWith("virtualpath://upnpvideo")) {
-                    object->m_ParentID = "virtualpath://upnpvideo";
-                    mask = g_stSettings.m_videoExtensions;
-                } else if (share_name.StartsWith("virtualpath://upnppictures")) {
-                    object->m_ParentID = "virtualpath://upnppictures";
-                    mask = g_stSettings.m_pictureExtensions;
-                } else {
+                {
                     // weird!
                     goto failure;
                 }
@@ -944,14 +926,14 @@ CUPnPServer::Build(CFileItemPtr                  item,
                     CMediaSource share;
                     CUPnPVirtualPathDirectory dir;
                     vector<CStdString> paths;
-                    if (!dir.GetMatchingSource((const char*)share_name, share, paths)) goto failure;
+                    if (1 || !dir.GetMatchingSource((const char*)share_name, share, paths)) goto failure;
                     for (unsigned int i=0; i<paths.size(); i++) {
                         // FIXME: this is not efficient, we only need the number of items given a mask
                         // and not the list of items
 
                         // retrieve all the files for a given path
                         CFileItemList items;
-                        if (CDirectory::GetDirectory(paths[i], items, mask)) {
+                        if (CDirectory::GetDirectory(paths[i], items, "")) {
                             // update childcount
                             ((PLT_MediaContainer*)object)->m_ChildrenCount += items.Size();
                         }
@@ -1035,24 +1017,6 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
             id += "/";
             item.reset(new CFileItem((const char*)id, true));
             item->SetLabel("Root");
-            item->SetLabelPreformated(true);
-            object = Build(item, true, context);
-        } else if (id == "virtualpath://upnpmusic") {
-            id += "/";
-            item.reset(new CFileItem((const char*)id, true));
-            item->SetLabel("Music Files");
-            item->SetLabelPreformated(true);
-            object = Build(item, true, context);
-        } else if (id == "virtualpath://upnpvideo") {
-            id += "/";
-            item.reset(new CFileItem((const char*)id, true));
-            item->SetLabel("Video Files");
-            item->SetLabelPreformated(true);
-            object = Build(item, true, context);
-        } else if (id == "virtualpath://upnppictures") {
-            id += "/";
-            item.reset(new CFileItem((const char*)id, true));
-            item->SetLabel("Picture Files");
             item->SetLabelPreformated(true);
             object = Build(item, true, context);
         } else if (dir.GetMatchingSource((const char*)id, share, paths)) {
@@ -1768,7 +1732,7 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
     PLT_MediaObject* object = CUPnPServer::BuildObject(item, file_path, false);
     if (object) {
         // fetch the path to the thumbnail
-        CStdString thumb = g_infoManager.GetImage(MUSICPLAYER_COVER, (DWORD)-1); //TODO: Only audio for now
+        CStdString thumb = g_infoManager.GetImage(MUSICPLAYER_COVER, -1); //TODO: Only audio for now
             
         NPT_String ip = g_network.m_networkinfo.ip;
 
@@ -2052,7 +2016,7 @@ public:
     {
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam("upnp://");
-        m_gWindowManager.SendThreadMessage(message);
+        g_windowManager.SendThreadMessage(message);
 
         return PLT_SyncMediaBrowser::OnMSAdded(device);
     }
@@ -2062,7 +2026,7 @@ public:
 
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam("upnp://");
-        m_gWindowManager.SendThreadMessage(message);
+        g_windowManager.SendThreadMessage(message);
 
         PLT_SyncMediaBrowser::OnMSRemoved(device);
     }
@@ -2082,7 +2046,7 @@ public:
 
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam(path.GetChars());
-        m_gWindowManager.SendThreadMessage(message);
+        g_windowManager.SendThreadMessage(message);
     }
 };
 

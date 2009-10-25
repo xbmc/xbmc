@@ -50,7 +50,7 @@ class CGUIButtonScroller :
       public CGUIControl
 {
 public:
-  CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float gap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo);
+  CGUIButtonScroller(int parentID, int controlID, float posX, float posY, float width, float height, float gap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo);
   CGUIButtonScroller(const CGUIButtonScroller &from);
   virtual ~CGUIButtonScroller(void);
   virtual CGUIButtonScroller *Clone() const { return new CGUIButtonScroller(*this); };
@@ -62,7 +62,7 @@ public:
   virtual void OnRight();
   virtual void OnDown();
   virtual bool OnMouseOver(const CPoint &point);
-  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseClick(int button, const CPoint &point);
   virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual void Render();
   virtual void PreAllocResources();

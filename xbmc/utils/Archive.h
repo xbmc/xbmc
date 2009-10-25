@@ -21,6 +21,7 @@
  *
  */
 
+#include "../../xbox/PlatformDefs.h"
 #include "StdString.h"
 
 namespace XFILE
@@ -47,8 +48,7 @@ public:
   CArchive& operator<<(double d);
   CArchive& operator<<(int i);
   CArchive& operator<<(unsigned int i);
-  CArchive& operator<<(__int64 i64);
-  CArchive& operator<<(long l);
+  CArchive& operator<<(int64_t i64);
   CArchive& operator<<(bool b);
   CArchive& operator<<(char c);
   CArchive& operator<<(const CStdString& str);
@@ -61,8 +61,7 @@ public:
   CArchive& operator>>(double& d);
   CArchive& operator>>(int& i);
   CArchive& operator>>(unsigned int& i);
-  CArchive& operator>>(__int64& i64);
-  CArchive& operator>>(long& l);
+  CArchive& operator>>(int64_t& i64);
   CArchive& operator>>(bool& b);
   CArchive& operator>>(char& c);
   CArchive& operator>>(CStdString& str);

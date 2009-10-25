@@ -28,8 +28,8 @@
 #include "Application.h"
 #include "ApplicationMessenger.h"
 
-CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)
-    : CGUIWindow(dwID, xmlFile)
+CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
+    : CGUIWindow(id, xmlFile)
 {
   m_bModal = true;
   m_bRunning = false;
@@ -69,7 +69,7 @@ void CGUIDialog::OnWindowLoaded()
 
 bool CGUIDialog::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_CLOSE_DIALOG || action.id == ACTION_PREVIOUS_MENU)
   {
     Close();
     return true;
@@ -83,15 +83,15 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+      CGUIWindow *pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
       if (pWindow)
-        m_gWindowManager.ShowOverlay(pWindow->GetOverlayState());
+        g_windowManager.ShowOverlay(pWindow->GetOverlayState());
 
       CGUIWindow::OnMessage(message);
       // if we were running, make sure we remove ourselves from the window manager
       if (m_bRunning)
       {
-        m_gWindowManager.RemoveDialog(GetID());
+        g_windowManager.RemoveDialog(GetID());
         m_bRunning = false;
         m_dialogClosing = false;
         m_autoClosing = false;
@@ -149,7 +149,7 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CSt
   // the main rendering thread (this should really be handled via
   // a thread message though IMO)
   m_bRunning = true;
-  m_gWindowManager.RouteToWindow(this);
+  g_windowManager.RouteToWindow(this);
 
   //  Play the window specific init sound
   g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
@@ -168,14 +168,14 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CSt
 
   while (m_bRunning && !g_application.m_bStop)
   {
-    m_gWindowManager.Process();
+    g_windowManager.Process();
   }
 }
 
 void CGUIDialog::DoModalThreadSafe()
 {
   // we make sure we're threadsafe by sending via the application messenger
-  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, GetID(), m_gWindowManager.GetActiveWindow()};
+  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, GetID(), g_windowManager.GetActiveWindow()};
   // first ensure we don't hold the graphics lock
   int numLocks = ExitCriticalSection(g_graphicsContext);
   g_applicationMessenger.SendMessage(tMsg, true);
@@ -198,7 +198,7 @@ void CGUIDialog::Show_Internal()
   // a thread message though IMO)
   m_bRunning = true;
   m_dialogClosing = false;
-  m_gWindowManager.AddModeless(this);
+  g_windowManager.AddModeless(this);
 
   //  Play the window specific init sound
   g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);

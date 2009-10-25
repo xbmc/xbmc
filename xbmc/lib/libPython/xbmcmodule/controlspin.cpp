@@ -60,8 +60,8 @@ namespace PYXBMC
 
     // SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor)
     self->strFont = "font13";
-    self->dwTextColor = 0xffffffff;
-    self->dwDisabledColor = 0x60ffffff;
+    self->textColor = 0xffffffff;
+    self->disabledColor = 0x60ffffff;
 
     self->strTextureFocus = cTextureFocus ? cTextureFocus : "button-focus.png";
     self->strTextureNoFocus = cTextureNoFocus ? cTextureNoFocus : "button-nofocus.jpg";
@@ -83,7 +83,7 @@ namespace PYXBMC
     new(&self->strTextureDownFocus) string();      
 
     // default values for spin control
-    self->dwColor = 0xffffffff;
+    self->color = 0xffffffff;
     self->dwPosX = 0;
     self->dwPosY = 0;
     self->dwWidth = 16;
@@ -113,7 +113,7 @@ namespace PYXBMC
 
     if (!PyArg_ParseTuple(args, "s", &cColor))	return NULL;
 
-    if (cColor) sscanf(cColor, "%lx", &self->dwColor);
+    if (cColor) sscanf(cColor, "%x", &self->color);
 
     PyGUILock();
     //if (self->pGUIControl)

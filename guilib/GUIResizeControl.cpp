@@ -26,8 +26,8 @@
 // time to reset accelerated cursors (digital movement)
 #define MOVE_TIME_OUT 500L
 
-CGUIResizeControl::CGUIResizeControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUIResizeControl::CGUIResizeControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_imgFocus(posX, posY, width, height, textureFocus)
     , m_imgNoFocus(posX, posY, width, height, textureNoFocus)
 {
@@ -83,16 +83,16 @@ void CGUIResizeControl::Render()
 
 bool CGUIResizeControl::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SELECT_ITEM)
+  if (action.id == ACTION_SELECT_ITEM)
   {
     // button selected - send message to parent
     CGUIMessage message(GUI_MSG_CLICKED, GetID(), GetParentID());
     SendWindowMessage(message);
     return true;
   }
-  if (action.wID == ACTION_ANALOG_MOVE)
+  if (action.id == ACTION_ANALOG_MOVE)
   {
-    Resize(m_fAnalogSpeed*action.fAmount1, -m_fAnalogSpeed*action.fAmount2);
+    Resize(m_fAnalogSpeed*action.amount1, -m_fAnalogSpeed*action.amount2);
     return true;
   }
   return CGUIControl::OnAction(action);
@@ -130,9 +130,9 @@ bool CGUIResizeControl::OnMouseDrag(const CPoint &offset, const CPoint &point)
   return true;
 }
 
-bool CGUIResizeControl::OnMouseClick(DWORD dwButton, const CPoint &point)
+bool CGUIResizeControl::OnMouseClick(int button, const CPoint &point)
 {
-  if (dwButton != MOUSE_LEFT_BUTTON) return false;
+  if (button != MOUSE_LEFT_BUTTON) return false;
   g_Mouse.EndExclusiveAccess(GetID(), GetParentID());
   return true;
 }

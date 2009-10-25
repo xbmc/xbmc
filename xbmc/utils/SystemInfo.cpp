@@ -97,70 +97,70 @@ void CBackgroundSystemInfoLoader::GetInformation()
 #endif
 }
 
-const char *CSysInfo::TranslateInfo(DWORD dwInfo)
+const char *CSysInfo::TranslateInfo(int info)
 {
-  switch(dwInfo)
+  switch(info)
   {
 #ifdef HAS_XBOX_HARDWARE
   case SYSTEM_MPLAYER_VERSION:
     if (m_bRequestDone) return m_mplayerversion;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_KERNEL_VERSION:
     if (m_bRequestDone) return m_kernelversion;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_CPUFREQUENCY:
     if (m_bRequestDone) return m_cpufrequency;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_XBOX_VERSION:
     if (m_bRequestDone) return m_xboxversion;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_AV_PACK_INFO:
     if (m_bRequestDone) return m_avpackinfo;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_VIDEO_ENCODER_INFO:
     if (m_bRequestDone) return m_videoencoder;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_XBOX_SERIAL:
     if (m_bRequestDone) return m_xboxserial;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_HDD_LOCKKEY:
     if (m_bRequestDone) return m_hddlockkey;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_HDD_BOOTDATE:
     if (m_bRequestDone) return m_hddbootdate;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_HDD_CYCLECOUNT:
     if (m_bRequestDone) return m_hddcyclecount;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case NETWORK_MAC_ADDRESS:
     if (m_bRequestDone) return m_macadress;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_XBE_REGION:
     if (m_bRequestDone) return m_videoxberegion;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_DVD_ZONE:
     if (m_bRequestDone) return m_videodvdzone;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_XBOX_PRODUCE_INFO:
     if (m_bRequestDone) return m_produceinfo;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_XBOX_BIOS:
     if (m_bRequestDone) return m_XboxBios;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_XBOX_MODCHIP:
     if (g_advancedSettings.m_DisableModChipDetection)
@@ -170,32 +170,32 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
         if (m_bRequestDone) 
           return m_XboxModChip;
         else 
-          return CInfoLoader::BusyInfo(dwInfo);
+          return CInfoLoader::BusyInfo(info);
     }
     break;
   // HDD request
   case SYSTEM_HDD_MODEL:
     if (m_hddRequest) return m_HDDModel;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
   case SYSTEM_HDD_SERIAL:
     if (m_hddRequest) return m_HDDSerial;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
   case SYSTEM_HDD_FIRMWARE:
     if (m_hddRequest) return m_HDDFirmware;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
   case SYSTEM_HDD_PASSWORD:
     if (m_hddRequest) return m_HDDpw;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
   case SYSTEM_HDD_LOCKSTATE:
     if (m_hddRequest) return m_HDDLockState;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
   // DVD request
   case SYSTEM_DVD_MODEL:
     if (m_dvdRequest) return m_DVDModel;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
   case SYSTEM_DVD_FIRMWARE:
     if (m_dvdRequest) return m_DVDFirmware;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
   // All Time request
   case LCD_HDD_TEMPERATURE:
   case SYSTEM_HDD_TEMPERATURE:
@@ -210,10 +210,10 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
 #endif
   case SYSTEM_UPTIME:
     if (!m_systemuptime.IsEmpty()) return m_systemuptime;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
   case SYSTEM_TOTALUPTIME:
      if (!m_systemtotaluptime.IsEmpty()) return m_systemtotaluptime;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
   case SYSTEM_INTERNET_STATE:
     if (!m_InternetState.IsEmpty()) return m_InternetState;
     else return g_localizeStrings.Get(503); //Busy text

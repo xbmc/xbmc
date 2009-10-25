@@ -553,7 +553,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       CLog::Log(LOGDEBUG, "%s - Starting network services",__FUNCTION__);
       g_application.StartTimeServer();
       g_application.StartWebServer();
-      g_application.StartFtpServer();      
+      g_application.StartFtpServer();
       g_application.StartUPnP();
       g_application.StartEventServer();
       CLastfmScrobbler::GetInstance()->Init();

@@ -27,8 +27,9 @@
 #ifndef GUILIB_TEXTUREMANAGER_H
 #define GUILIB_TEXTUREMANAGER_H
 
-#include "TextureBundle.h"
 #include <vector>
+#include <list>
+#include "TextureBundle.h"
 
 #pragma once
 
@@ -89,7 +90,7 @@ public:
   const CStdString& GetName() const;
   const CTexture &GetTexture();
   void Dump() const;
-  DWORD GetMemoryUsage() const;
+  unsigned int GetMemoryUsage() const;
   void Flush();
   bool IsEmpty() const;
 protected:
@@ -98,7 +99,7 @@ protected:
   CStdString m_textureName;
   CTexture m_texture;
   unsigned int m_referenceCount;
-  DWORD m_memUsage;
+  unsigned int m_memUsage;
 };
 
 /*!
@@ -122,7 +123,7 @@ public:
   void ReleaseTexture(const CStdString& strTextureName);
   void Cleanup();
   void Dump() const;
-  DWORD GetMemoryUsage() const;
+  unsigned int GetMemoryUsage() const;
   void Flush();
   CStdString GetTexturePath(const CStdString& textureName, bool directory = false);
   void GetBundledTexturesFromPath(const CStdString& texturePath, std::vector<CStdString> &items);

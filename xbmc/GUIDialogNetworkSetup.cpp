@@ -53,7 +53,7 @@ CGUIDialogNetworkSetup::~CGUIDialogNetworkSetup()
 
 bool CGUIDialogNetworkSetup::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
     m_confirmed = false;
   return CGUIDialog::OnAction(action);
 }
@@ -100,7 +100,7 @@ bool CGUIDialogNetworkSetup::OnMessage(CGUIMessage& message)
 // \return True if the network address is valid, false otherwise.
 bool CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(CStdString &path)
 {
-  CGUIDialogNetworkSetup *dialog = (CGUIDialogNetworkSetup *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NETWORK_SETUP);
+  CGUIDialogNetworkSetup *dialog = (CGUIDialogNetworkSetup *)g_windowManager.GetWindow(WINDOW_DIALOG_NETWORK_SETUP);
   if (!dialog) return false;
   dialog->Initialize();
   dialog->SetPath(path);
@@ -156,7 +156,7 @@ void CGUIDialogNetworkSetup::OnServerBrowse()
   share.strPath = basePath;
   // don't include the user details in the share name
   CURL url(share.strPath);
-  url.GetURLWithoutUserDetails(share.strName);
+  share.strName = url.GetWithoutUserDetails();
   shares.push_back(share);
   if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(1015), path))
   {
@@ -303,10 +303,7 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
   }
   if (!m_path.IsEmpty())
     url.SetFileName(m_path);
-  CStdString path;
-  url.GetURL(path);
-  CUtil::AddSlashAtEnd(path);
-  return path;
+  return url.Get();
 }
 
 void CGUIDialogNetworkSetup::SetPath(const CStdString &path)

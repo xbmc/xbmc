@@ -40,7 +40,6 @@ CGUIPassword::CGUIPassword(void)
 {
   iMasterLockRetriesLeft = -1;
   bMasterUser = false;
-  m_SMBShare = "";
 }
 CGUIPassword::~CGUIPassword(void)
 {}
@@ -120,35 +119,6 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
   return true;
 }
 
-void CGUIPassword::SetSMBShare(const CStdString &strPath)
-{
-  m_SMBShare = strPath;
-}
-
-CStdString CGUIPassword::GetSMBShare()
-{
-  return m_SMBShare;
-}
-
-bool CGUIPassword::GetSMBShareUserPassword()
-{
-  CURL url(m_SMBShare);
-  CStdString passcode;
-  CStdString username = url.GetUserName();
-  CStdString outusername = username;
-  CStdString share;
-  url.GetURLWithoutUserDetails(share);
-
-  if (!CGUIDialogLockSettings::ShowAndGetUserAndPassword(outusername,passcode,share))
-    return false;
-
-  url.SetPassword(passcode);
-  url.SetUserName(outusername);
-  url.GetURL(m_SMBShare);
-
-  return true;
-}
-
 bool CGUIPassword::CheckStartUpLock()
 {
   // prompt user for mastercode if the mastercode was set b4 or by xml
@@ -173,7 +143,7 @@ bool CGUIPassword::CheckStartUpLock()
         strLabel.Format("%i %s",iLeft,strLabel1.c_str());
 
         // PopUp OK and Display: MasterLock mode has changed but no no Mastercode has been set!
-        CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+        CGUIDialogOK *dlg = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
         if (!dlg) 
           return false;
 
@@ -202,7 +172,7 @@ bool CGUIPassword::CheckStartUpLock()
 
 bool CGUIPassword::SetMasterLockMode(bool bDetails)
 {
-  CGUIDialogLockSettings* pDialog = (CGUIDialogLockSettings*)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
+  CGUIDialogLockSettings* pDialog = (CGUIDialogLockSettings*)g_windowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
   if (pDialog)
   {
     CProfile& profile=g_settings.m_vecProfiles.at(0);
@@ -332,7 +302,7 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
     CStdString dlgLine1 = "";
     if (0 < g_passwordManager.iMasterLockRetriesLeft)
       dlgLine1.Format("%d %s", g_passwordManager.iMasterLockRetriesLeft, g_localizeStrings.Get(12343));
-    CGUIDialogOK *dialog = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK); // Tell user they entered a bad password
+    CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK); // Tell user they entered a bad password
     if (dialog)
     {
       dialog->SetHeading(20075);
@@ -377,25 +347,25 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
   // check if a settings subcategory was called from other than settings window
   if (iWindowID >= WINDOW_SCREEN_CALIBRATION && iWindowID <= WINDOW_SETTINGS_APPEARANCE)
   {
-    int iCWindowID = m_gWindowManager.GetActiveWindow();
+    int iCWindowID = g_windowManager.GetActiveWindow();
     if (iCWindowID != WINDOW_SETTINGS_MENU && (iCWindowID < WINDOW_SCREEN_CALIBRATION || iCWindowID > WINDOW_SETTINGS_APPEARANCE))
       iSwitch = WINDOW_SETTINGS_MENU;
   }
 
   if (iWindowID == WINDOW_MUSIC_FILES)
-    if (m_gWindowManager.GetActiveWindow() == WINDOW_MUSIC_NAV)
+    if (g_windowManager.GetActiveWindow() == WINDOW_MUSIC_NAV)
       iSwitch = WINDOW_HOME;
 
   if (iWindowID == WINDOW_MUSIC_NAV)
-    if (m_gWindowManager.GetActiveWindow() == WINDOW_HOME)
+    if (g_windowManager.GetActiveWindow() == WINDOW_HOME)
       iSwitch = WINDOW_MUSIC_FILES;
 
   if (iWindowID == WINDOW_VIDEO_NAV)
-    if (m_gWindowManager.GetActiveWindow() == WINDOW_HOME)
+    if (g_windowManager.GetActiveWindow() == WINDOW_HOME)
       iSwitch = WINDOW_VIDEO_FILES;
 
   if (iWindowID == WINDOW_VIDEO_FILES)
-    if (m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)
+    if (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)
       iSwitch = WINDOW_HOME;
 
   CLog::Log(LOGDEBUG, "Checking if window ID %i is locked.", iSwitch);
@@ -436,33 +406,6 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
   else
     return true;
 }
-CStdString CGUIPassword::GetSMBAuthFilename(const CStdString& strAuth)
-{
-  /// \brief Gets the path of an authenticated share
-  /// \param strAuth The SMB style path
-  /// \return Path to share with proper username/password, or same as imput if none found in db
-  CURL urlIn(strAuth);
-  CStdString strPath(strAuth);
-
-  CStdString strShare;  // it's only the server\share we're interested in authenticating
-  strShare  = urlIn.GetHostName();
-  strShare += "/";
-  strShare += urlIn.GetShareName();
-
-  IMAPPASSWORDS it = m_mapSMBPasswordCache.find(strShare);
-  if(it != m_mapSMBPasswordCache.end())
-  {
-    // if share found in cache use it to supply username and password
-    CURL url(it->second);		// map value contains the full url of the originally authenticated share. map key is just the share
-    CStdString strPassword = url.GetPassWord();
-
-    CStdString strUserName = url.GetUserName();
-    urlIn.SetPassword(strPassword);
-    urlIn.SetUserName(strUserName);
-    urlIn.GetURL(strPath);
-  }
-  return strPath;
-}
 
 bool CGUIPassword::LockSource(const CStdString& strType, const CStdString& strName, bool bState)
 {
@@ -481,7 +424,7 @@ bool CGUIPassword::LockSource(const CStdString& strType, const CStdString& strNa
     }
   }
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-  m_gWindowManager.SendThreadMessage(msg);
+  g_windowManager.SendThreadMessage(msg);
 
   return bResult;
 }
@@ -498,7 +441,7 @@ void CGUIPassword::LockSources(bool lock)
         it->m_iHasLock = lock ? 2 : 1;
   }
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-  m_gWindowManager.SendThreadMessage(msg);
+  g_windowManager.SendThreadMessage(msg);
 }
 
 void CGUIPassword::RemoveSourceLocks()
@@ -518,7 +461,7 @@ void CGUIPassword::RemoveSourceLocks()
   }
   g_settings.SaveSources();
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0, GUI_MSG_UPDATE_SOURCES);
-  m_gWindowManager.SendThreadMessage(msg);
+  g_windowManager.SendThreadMessage(msg);
 }
 
 bool CGUIPassword::IsDatabasePathUnlocked(CStdString& strPath, VECSOURCES& vecSources)

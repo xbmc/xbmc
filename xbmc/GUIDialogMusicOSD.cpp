@@ -34,7 +34,6 @@ CGUIDialogMusicOSD::CGUIDialogMusicOSD(void)
     : CGUIDialog(WINDOW_DIALOG_MUSIC_OSD, "MusicOSD.xml")
 {
   m_pVisualisation = NULL;
-  LoadOnDemand(false);    // we are loaded by the vis window.
 }
 
 CGUIDialogMusicOSD::~CGUIDialogMusicOSD(void)
@@ -68,13 +67,13 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
         SET_CONTROL_FOCUS(CONTROL_VIS_CHOOSER, 0);
         // fire off an event that we've pressed this button...
         CAction action;
-        action.wID = ACTION_SELECT_ITEM;
+        action.id = ACTION_SELECT_ITEM;
         OnAction(action);
       }
       else if (iControl == CONTROL_LOCK_BUTTON)
       {
         CGUIMessage msg(GUI_MSG_VISUALISATION_ACTION, 0, 0, ACTION_VIS_PRESET_LOCK);
-        g_graphicsContext.SendMessage(msg);
+        g_windowManager.SendMessage(msg);
       }
       return true;
     }
@@ -87,8 +86,8 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_VISUALISATION_LOADED:
     {
-      if (message.GetLPVOID())
-        m_pVisualisation = (CVisualisation *)message.GetLPVOID();
+      if (message.GetPointer())
+        m_pVisualisation = (CVisualisation *)message.GetPointer();
     }
   }
   return CGUIDialog::OnMessage(message);
@@ -99,8 +98,8 @@ void CGUIDialogMusicOSD::Render()
   if (m_autoClosing)
   {
     // check for movement of mouse or a submenu open
-    if (g_Mouse.HasMoved() || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIS_SETTINGS)
-                           || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIS_PRESET_LIST))
+    if (g_Mouse.HasMoved() || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_SETTINGS)
+                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_PRESET_LIST))
       SetAutoClose(3000);
   }
   CGUIDialog::Render();
@@ -118,7 +117,7 @@ void CGUIDialogMusicOSD::OnInitWindow()
 bool CGUIDialogMusicOSD::OnAction(const CAction &action)
 {
   // keyboard or controller movement should prevent autoclosing
-  if (action.wID != ACTION_MOUSE && m_autoClosing)
+  if (action.id != ACTION_MOUSE && m_autoClosing)
     SetAutoClose(3000);
   return CGUIDialog::OnAction(action);
 }
@@ -128,7 +127,7 @@ bool CGUIDialogMusicOSD::OnMouse(const CPoint &point)
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // pause
     CAction action;
-    action.wID = ACTION_PAUSE;
+    action.id = ACTION_PAUSE;
     return g_application.OnAction(action);
   }
   return CGUIDialog::OnMouse(point);

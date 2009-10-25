@@ -24,7 +24,7 @@
 #include "GUIWindowManager.h"
 #include "utils/CharsetConverter.h"
 
-CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId,
+CGUISelectButtonControl::CGUISelectButtonControl(int parentID, int controlID,
     float posX, float posY,
     float width, float height,
     const CTextureInfo& buttonFocus,
@@ -36,7 +36,7 @@ CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwContr
     const CTextureInfo& selectArrowRight,
     const CTextureInfo& selectArrowRightFocus
                                                 )
-    : CGUIButtonControl(dwParentID, dwControlId, posX, posY, width, height, buttonFocus, button, labelInfo)
+    : CGUIButtonControl(parentID, controlID, posX, posY, width, height, buttonFocus, button, labelInfo)
     , m_imgBackground(posX, posY, width, height, selectBackground)
     , m_imgLeft(posX, posY, 16, 16, selectArrowLeft)
     , m_imgLeftFocus(posX, posY, 16, 16, selectArrowLeftFocus)
@@ -117,11 +117,11 @@ void CGUISelectButtonControl::Render()
     if (m_iCurrentItem >= 0 && (unsigned)m_iCurrentItem < m_vecItems.size())
     {
       m_textLayout.Update(m_vecItems[m_iCurrentItem]);
-      DWORD dwAlign = m_label.align | XBFONT_CENTER_X;
+      uint32_t align = m_label.align | XBFONT_CENTER_X;
       float fPosY = m_posY + m_label.offsetY;
       if (m_label.align & XBFONT_CENTER_Y)
         fPosY = m_posY + m_imgBackground.GetHeight()*0.5f;
-      m_textLayout.Render(m_posX + GetWidth()*0.5f, fPosY, 0, dwTextColor, m_label.shadowColor, dwAlign, m_label.width);
+      m_textLayout.Render(m_posX + GetWidth()*0.5f, fPosY, 0, dwTextColor, m_label.shadowColor, align, m_label.width);
     }
 
     // Select current item, if user doesn't
@@ -136,7 +136,7 @@ void CGUISelectButtonControl::Render()
       // (Sending a message with SendMessage
       // can result in a GPF.)
       CGUIMessage message(GUI_MSG_CLICKED, GetID(), GetParentID() );
-      m_gWindowManager.SendThreadMessage(message);
+      g_windowManager.SendThreadMessage(message);
     }
   } // if (m_bShowSelect)
   else
@@ -189,7 +189,7 @@ bool CGUISelectButtonControl::OnAction(const CAction &action)
 {
   if (!m_bShowSelect)
   {
-    if (action.wID == ACTION_SELECT_ITEM)
+    if (action.id == ACTION_SELECT_ITEM)
     {
       // Enter selection mode
       m_bShowSelect = true;
@@ -205,7 +205,7 @@ bool CGUISelectButtonControl::OnAction(const CAction &action)
   }
   else
   {
-    if (action.wID == ACTION_SELECT_ITEM)
+    if (action.id == ACTION_SELECT_ITEM)
     {
       // User has selected an item, disable selection mode...
       m_bShowSelect = false;
@@ -215,7 +215,7 @@ bool CGUISelectButtonControl::OnAction(const CAction &action)
       SendWindowMessage(message);
       return true;
     }
-    if (action.wID == ACTION_MOVE_UP || action.wID == ACTION_MOVE_DOWN )
+    if (action.id == ACTION_MOVE_UP || action.id == ACTION_MOVE_DOWN )
     {
       // Disable selection mode when moving up or down
       m_bShowSelect = false;
@@ -361,9 +361,9 @@ bool CGUISelectButtonControl::OnMouseOver(const CPoint &point)
   return ret;
 }
 
-bool CGUISelectButtonControl::OnMouseClick(DWORD dwButton, const CPoint &point)
+bool CGUISelectButtonControl::OnMouseClick(int button, const CPoint &point)
 { // only left click handled
-  if (dwButton != MOUSE_LEFT_BUTTON) return false;
+  if (button != MOUSE_LEFT_BUTTON) return false;
   if (m_bShowSelect && m_imgLeft.HitTest(point))
   { // move left
     OnLeft();
@@ -374,7 +374,7 @@ bool CGUISelectButtonControl::OnMouseClick(DWORD dwButton, const CPoint &point)
   }
   else
   { // normal select
-    CGUIButtonControl::OnMouseClick(dwButton, point);
+    CGUIButtonControl::OnMouseClick(button, point);
   }
   return true;
 }

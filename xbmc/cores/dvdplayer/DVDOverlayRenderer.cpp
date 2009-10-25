@@ -138,7 +138,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlayImage*
 
   for(int i=0;i<pOverlay->palette_colors;i++)
   {
-    DWORD color = pOverlay->palette[i];
+    uint32_t color = pOverlay->palette[i];
 
     palette[3][i] = (BYTE)((color >> 24) & 0xff);
     

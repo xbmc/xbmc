@@ -35,7 +35,7 @@
 
 using namespace std;
 
-#define ACTIVE_WINDOW  m_gWindowManager.GetActiveWindow()
+#define ACTIVE_WINDOW  g_windowManager.GetActiveWindow()
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
@@ -88,11 +88,11 @@ namespace PYXBMC
 
   PyObject* Dialog_OK(PyObject *self, PyObject *args)
   {
-    const DWORD dWindow = WINDOW_DIALOG_OK;
+    const int window = WINDOW_DIALOG_OK;
     PyObject* unicodeLine[4];
     for (int i = 0; i < 4; i++) unicodeLine[i] = NULL;
 
-    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(dWindow);
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(window);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     // get lines, last 2 lines are optional.
@@ -110,7 +110,7 @@ namespace PYXBMC
     pDialog->SetLine(2, utf8Line[3]);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, window, ACTIVE_WINDOW};
     g_applicationMessenger.SendMessage(tMsg, true);
 
     return Py_BuildValue("b", pDialog->IsConfirmed());
@@ -218,7 +218,10 @@ namespace PYXBMC
         if (CGUIDialogNumeric::ShowAndGetDate(timedate, utf8Heading))
           value.Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
         else
-          value = cDefault;
+        {
+          Py_INCREF(Py_None);
+          return Py_None;
+        }
       }
       else if (inputtype == 2)
       {
@@ -231,17 +234,28 @@ namespace PYXBMC
         if (CGUIDialogNumeric::ShowAndGetTime(timedate, utf8Heading))
           value.Format("%2d:%02d", timedate.wHour, timedate.wMinute);
         else
-          value = cDefault;
+        {
+          Py_INCREF(Py_None);
+          return Py_None;
+        }
       }
       else if (inputtype == 3)
       {
         value = cDefault;
-        CGUIDialogNumeric::ShowAndGetIPAddress(value, utf8Heading);
+        if (!CGUIDialogNumeric::ShowAndGetIPAddress(value, utf8Heading))
+        {
+          Py_INCREF(Py_None);
+          return Py_None;
+        }
       }
       else
       {
         value = cDefault;
-        CGUIDialogNumeric::ShowAndGetNumber(value, utf8Heading);
+        if (!CGUIDialogNumeric::ShowAndGetNumber(value, utf8Heading))
+        {
+          Py_INCREF(Py_None);
+          return Py_None;
+        }
       }
     }
     return Py_BuildValue("s", value.c_str());
@@ -265,10 +279,10 @@ namespace PYXBMC
 
   PyObject* Dialog_YesNo(PyObject *self, PyObject *args)
   {
-    const DWORD dWindow = WINDOW_DIALOG_YES_NO;
+    const int window = WINDOW_DIALOG_YES_NO;
     PyObject* unicodeLine[6];
     for (int i = 0; i < 6; i++) unicodeLine[i] = NULL;
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(dWindow);
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(window);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     // get lines, last 4 lines are optional.
@@ -290,7 +304,7 @@ namespace PYXBMC
       pDialog->SetChoice(1,utf8Line[5]);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, window, ACTIVE_WINDOW};
     g_applicationMessenger.SendMessage(tMsg, true);
 
     return Py_BuildValue("b", pDialog->IsConfirmed());
@@ -310,14 +324,14 @@ namespace PYXBMC
 
   PyObject* Dialog_Select(PyObject *self, PyObject *args)
   {
-    const DWORD dWindow = WINDOW_DIALOG_SELECT;
+    const int window = WINDOW_DIALOG_SELECT;
     PyObject *heading = NULL;
     PyObject *list = NULL;
 
     if (!PyArg_ParseTuple(args, "OO", &heading, &list))  return NULL;
     if (!PyList_Check(list)) return NULL;
 
-    CGUIDialogSelect* pDialog= (CGUIDialogSelect*)m_gWindowManager.GetWindow(dWindow);
+    CGUIDialogSelect* pDialog= (CGUIDialogSelect*)g_windowManager.GetWindow(window);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     pDialog->Reset();
@@ -335,7 +349,7 @@ namespace PYXBMC
     }
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, window, ACTIVE_WINDOW};
     g_applicationMessenger.SendMessage(tMsg, true);
 
     return Py_BuildValue("i", pDialog->GetSelectedLabel());
@@ -374,7 +388,7 @@ namespace PYXBMC
         return NULL;
     }
 
-    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     pDialog->SetHeading(utf8Line[0]);
@@ -415,7 +429,7 @@ namespace PYXBMC
         return NULL;
     }
 
-    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     if (percentage >= 0 && percentage <= 100)
@@ -446,7 +460,7 @@ namespace PYXBMC
   PyObject* Dialog_ProgressIsCanceled(PyObject *self, PyObject *args)
   {
     bool canceled = false;
-    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     canceled = pDialog->IsCanceled();
@@ -463,7 +477,7 @@ namespace PYXBMC
 
   PyObject* Dialog_ProgressClose(PyObject *self, PyObject *args)
   {
-    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     pDialog->Close();
@@ -474,7 +488,7 @@ namespace PYXBMC
 
   static void Dialog_ProgressDealloc(PyObject *self)
   {
-    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress* pDialog= (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (PyWindowIsNull(pDialog)) return;
     pDialog->Close();
     self->ob_type->tp_free((PyObject*)self);

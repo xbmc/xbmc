@@ -22,8 +22,6 @@
 #include "include.h"
 #include "GraphicContext.h"
 #include "GUIFontManager.h"
-#include "GUIMessage.h"
-#include "IMsgSenderCallback.h"
 #include "Settings.h"
 #include "GUISettings.h"
 #include "XBVideoConfig.h"
@@ -52,11 +50,9 @@ CGraphicContext::CGraphicContext(void)
   m_pd3dParams = NULL;
   m_stateBlock = 0xffffffff;
   m_maxTextureSize = 4096;
-  m_dwID = 0;
   m_strMediaDir = "";
   m_bCalibrating = false;
   m_Resolution = INVALID;
-  m_pCallback = NULL;
   m_guiScaleX = m_guiScaleY = 1.0f;
   m_windowResolution = INVALID;
 }
@@ -84,30 +80,6 @@ void CGraphicContext::SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice)
 void CGraphicContext::SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams)
 {
   m_pd3dParams = p3dParams;
-}
-
-bool CGraphicContext::SendMessage(DWORD message, DWORD senderID, DWORD destID, DWORD param1, DWORD param2)
-{
-  if (!m_pCallback) return false;
-  CGUIMessage msg(message, senderID, destID, param1, param2);
-  return m_pCallback->SendMessage(msg);
-}
-
-bool CGraphicContext::SendMessage(CGUIMessage& message)
-{
-  if (!m_pCallback) return false;
-  return m_pCallback->SendMessage(message);
-}
-
-void CGraphicContext::setMessageSender(IMsgSenderCallback* pCallback)
-{
-  m_pCallback = pCallback;
-}
-
-DWORD CGraphicContext::GetNewID()
-{
-  m_dwID++;
-  return m_dwID;
 }
 
 void CGraphicContext::SetOrigin(float x, float y)

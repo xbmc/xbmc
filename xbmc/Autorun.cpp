@@ -37,6 +37,7 @@
 #include "Settings.h"
 #include "AdvancedSettings.h"
 #include "PlayList.h"
+#include "Builtins.h"
 
 using namespace std;
 using namespace XFILE;
@@ -54,7 +55,7 @@ CAutorun::~CAutorun()
 
 void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
 {
-  if ((!ignoreplaying && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || m_gWindowManager.HasModalDialog())) || m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN)
+  if ((!ignoreplaying && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || g_windowManager.HasModalDialog())) || g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN)
     return ;
 
   CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
@@ -146,7 +147,7 @@ void CAutorun::RunXboxCd(bool bypassSettings)
   if ( !bPlaying && nAddedToPlaylist > 0 )
   {
     CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
-    m_gWindowManager.SendMessage( msg );
+    g_windowManager.SendMessage( msg );
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     // Start playing the items we inserted
     g_playlistPlayer.Play( nSize );
@@ -179,7 +180,7 @@ void CAutorun::RunISOMedia(bool bypassSettings)
   if ( !bPlaying && nAddedToPlaylist > 0 )
   {
     CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
-    m_gWindowManager.SendMessage( msg );
+    g_windowManager.SendMessage( msg );
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     // Start playing the items we inserted
     g_playlistPlayer.Play(nSize);
@@ -263,7 +264,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           bPlaying = true;
           CStdString strExec;
           strExec.Format("XBMC.RecursiveSlideShow(%s)", pItem->m_strPath.c_str());
-          CUtil::ExecBuiltIn(strExec);
+          CBuiltins::Execute(strExec);
           return true;
         }
       }
@@ -305,7 +306,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         if (!bypassSettings)
           return false;
 
-        if (m_gWindowManager.GetActiveWindow() != WINDOW_VIDEO_FILES)
+        if (g_windowManager.GetActiveWindow() != WINDOW_VIDEO_FILES)
           if (!g_passwordManager.IsMasterLockUnlocked(true))
             return false;
       }
@@ -339,7 +340,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         bPlaying = true;
         CStdString strExec;
         strExec.Format("XBMC.RecursiveSlideShow(%s)", strDrive.c_str());
-        CUtil::ExecBuiltIn(strExec);
+        CBuiltins::Execute(strExec);
         break;
       }
     }

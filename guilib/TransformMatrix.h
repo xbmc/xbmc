@@ -23,6 +23,9 @@
 
 #include <math.h>
 #include <memory>
+#include <stdint.h>
+
+typedef uint32_t color_t;
 
 class TransformMatrix
 {
@@ -219,9 +222,9 @@ public:
     return m[2][0] * x + m[2][1] * y + m[2][2] * z + m[2][3];
   }
 
-  inline unsigned int TransformAlpha(unsigned int colour) const
+  inline color_t TransformAlpha(color_t colour) const
   {
-    return (unsigned int)(colour * alpha);
+    return (color_t)(colour * alpha);
   }
 
   float m[3][4];

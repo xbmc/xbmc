@@ -21,6 +21,7 @@
  
 #include "stdafx.h"
 #include "RenderManager.h"
+#include "utils/SingleLock.h"
 
 #include "PixelShaderRenderer.h"
 #include "ComboRenderer.h"

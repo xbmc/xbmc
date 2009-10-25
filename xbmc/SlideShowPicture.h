@@ -20,6 +20,7 @@
  *
  */
 
+typedef uint32_t color_t;
 
 class CSlideShowPic
 {
@@ -71,7 +72,7 @@ public:
   bool m_bIsComic;
 private:
   void Process();
-  void Render(float *x, float *y, IDirect3DTexture8 *pTexture, DWORD dwColor, _D3DFILLMODE fillmode = D3DFILL_SOLID );
+  void Render(float *x, float *y, IDirect3DTexture8 *pTexture, color_t color, _D3DFILLMODE fillmode = D3DFILL_SOLID );
 
   struct VERTEX
   {
@@ -91,7 +92,7 @@ private:
   IDirect3DTexture8* m_pImage;
   float m_fWidth;
   float m_fHeight;
-  DWORD m_dwAlpha;
+  color_t m_alpha;
   // stuff relative to middle position
   float m_fPosX;
   float m_fPosY;

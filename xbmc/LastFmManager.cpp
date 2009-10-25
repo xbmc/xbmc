@@ -163,7 +163,7 @@ void CLastFmManager::InitProgressDialog(const CStdString& strUrl)
 {
   if (m_RadioSession.IsEmpty())
   {
-    dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (dlgProgress)
     {
       dlgProgress->SetHeading(15200);
@@ -208,10 +208,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
 {
   DWORD start = timeGetTime();
 
-  CStdString strUrl;
-  stationUrl.GetURL(strUrl);
-
-  InitProgressDialog(strUrl);
+  InitProgressDialog(stationUrl.Get());
 
   StopRadio(false);
   if (!RadioHandShake())
@@ -225,8 +222,9 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
   CFileCurl http;
   CStdString url;
   CStdString html;
-  url.Format("http://" + m_RadioBaseUrl + m_RadioBasePath + "/adjust.php?session=%s&url=%s&debug=%i", m_RadioSession, strUrl, 0);
-  if (!http.Get(url, html)) 
+
+  url.Format("http://" + m_RadioBaseUrl + m_RadioBasePath + "/adjust.php?session=%s&url=%s&debug=%i", m_RadioSession, stationUrl.Get().c_str(), 0);
+  if (!http.Get(url, html))
   {
     CLog::Log(LOGERROR, "Connect to Last.fm to change station failed.");
     CloseProgressDialog();
@@ -256,7 +254,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
   if ((int)playlist.size())
   {
-    g_application.m_strPlayListFile = strUrl; //needed to highlight the playing item
+    g_application.m_strPlayListFile = stationUrl.Get(); //needed to highlight the playing item
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.Play(0);
     CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - start));
@@ -588,7 +586,7 @@ bool CLastFmManager::MovePlaying()
 void CLastFmManager::SendUpdateMessage()
 {
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  m_gWindowManager.SendThreadMessage(msg);
+  g_windowManager.SendThreadMessage(msg);
 }
 
 void CLastFmManager::OnStartup()

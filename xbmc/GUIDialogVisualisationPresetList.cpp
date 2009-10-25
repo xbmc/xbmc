@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIDialogVisualisationPresetList.h"
+#include "GUIWindowManager.h"
 #include "GUIListContainer.h"
 #include "GUISettings.h"
 #include "FileItem.h"
@@ -33,7 +34,6 @@ CGUIDialogVisualisationPresetList::CGUIDialogVisualisationPresetList(void)
     : CGUIDialog(WINDOW_DIALOG_VIS_PRESET_LIST, "VisualisationPresetList.xml")
 {
   m_currentPreset = 0;
-  LoadOnDemand(false);    // we are loaded by the vis window.
   m_vecPresets = new CFileItemList;
 }
 
@@ -68,8 +68,8 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
       CGUIDialog::OnMessage(message);
 
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      g_graphicsContext.SendMessage(msg);
-      SetVisualisation((CVisualisation *)msg.GetLPVOID());
+      g_windowManager.SendMessage(msg);
+      SetVisualisation((CVisualisation *)msg.GetPointer());
       return true;
     }
     break;
@@ -84,9 +84,9 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_VISUALISATION_LOADED:
     {
-      if (message.GetLPVOID())
+      if (message.GetPointer())
       {
-        SetVisualisation((CVisualisation *)message.GetLPVOID());
+        SetVisualisation((CVisualisation *)message.GetPointer());
       }
     }
   }

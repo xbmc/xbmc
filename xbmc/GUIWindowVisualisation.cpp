@@ -56,7 +56,7 @@ CGUIWindowVisualisation::~CGUIWindowVisualisation(void)
 
 bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
-  switch (action.wID)
+  switch (action.id)
   {
   case ACTION_SHOW_INFO:
     {
@@ -70,17 +70,17 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
   case ACTION_SHOW_GUI:
     // save the settings
     g_settings.Save();
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
     break;
 
   case ACTION_VIS_PRESET_LOCK:
     { // show the locked icon + fall through so that the vis handles the locking
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      g_graphicsContext.SendMessage(msg);
-      if (msg.GetLPVOID())
+      g_windowManager.SendMessage(msg);
+      if (msg.GetPointer())
       {
-        CVisualisation *pVis = (CVisualisation *)msg.GetLPVOID();
+        CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
         char** pPresets=NULL;
         int currpreset=0, numpresets=0;
         bool locked;
@@ -122,10 +122,10 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
 
     case ACTION_ANALOG_FORWARD:
     // calculate the speed based on the amount the button is held down
-    if (action.fAmount1)
+    if (action.amount1)
     {
       float AVDelay = g_application.m_CdgParser.GetAVDelay();
-      g_application.m_CdgParser.SetAVDelay(AVDelay - action.fAmount1 / 4.0f);
+      g_application.m_CdgParser.SetAVDelay(AVDelay - action.amount1 / 4.0f);
       return true;
     }
     break;*/
@@ -153,7 +153,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 //      message.SetControlID(CONTROL_VIS);
       CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
       if (pVisControl)
-        message.SetLPVOID(pVisControl->GetVisualisation());
+        message.SetPointer(pVisControl->GetVisualisation());
       return true;
     }
     break;
@@ -167,10 +167,12 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_DEINIT:
     {
+      if (IsActive()) // save any changed settings from the OSD
+        g_settings.Save();
       // check and close any OSD windows
-      CGUIDialogMusicOSD *pOSD = (CGUIDialogMusicOSD *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
+      CGUIDialogMusicOSD *pOSD = (CGUIDialogMusicOSD *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
       if (pOSD && pOSD->IsDialogRunning()) pOSD->Close(true);
-      CGUIDialogVisualisationPresetList *pList = (CGUIDialogVisualisationPresetList *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
+      CGUIDialogVisualisationPresetList *pList = (CGUIDialogVisualisationPresetList *)g_windowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
       if (pList && pList->IsDialogRunning()) pList->Close(true);
 
 #ifdef HAS_KARAOKE
@@ -185,7 +187,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       // stopped playing music
       if (message.GetParam1() == WINDOW_INVALID && !g_application.IsPlayingAudio())
       { // why are we here if nothing is playing???
-        m_gWindowManager.PreviousWindow();
+        g_windowManager.PreviousWindow();
         return true;
       }
 
@@ -220,19 +222,19 @@ bool CGUIWindowVisualisation::OnMouse(const CPoint &point)
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go back to GUI
     CAction action;
-    action.wID = ACTION_SHOW_GUI;
+    action.id = ACTION_SHOW_GUI;
     OnAction(action);
     return true;
   }
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // no control found to absorb this click - toggle the track INFO
     CAction action;
-    action.wID = ACTION_PAUSE;
+    action.id = ACTION_PAUSE;
     return g_application.OnAction(action);
   }
   if (g_Mouse.HasMoved())
   { // movement - toggle the OSD
-    CGUIDialog *pOSD = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
+    CGUIDialog *pOSD = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
     if (pOSD)
     {
       pOSD->SetAutoClose(3000);
@@ -276,11 +278,11 @@ void CGUIWindowVisualisation::AllocResources(bool forceLoad)
 {
   CGUIWindow::AllocResources(forceLoad);
   CGUIWindow *pWindow;
-  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
+  pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
   if (pWindow) pWindow->AllocResources(true);
-  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_SETTINGS);
+  pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_VIS_SETTINGS);
   if (pWindow) pWindow->AllocResources(true);
-  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
+  pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
   if (pWindow) pWindow->AllocResources(true);
 }
 
@@ -289,11 +291,11 @@ void CGUIWindowVisualisation::FreeResources(bool forceUnload)
   // Save changed settings from music OSD
   g_settings.Save();
   CGUIWindow *pWindow;
-  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
+  pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
   if (pWindow) pWindow->FreeResources(true);
-  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_SETTINGS);
+  pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_VIS_SETTINGS);
   if (pWindow) pWindow->FreeResources(true);
-  pWindow = m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
+  pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
   if (pWindow) pWindow->FreeResources(true);
   CGUIWindow::FreeResources(forceUnload);
 }

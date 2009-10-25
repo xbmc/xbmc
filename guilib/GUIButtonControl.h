@@ -39,7 +39,7 @@
 class CGUIButtonControl : public CGUIControl
 {
 public:
-  CGUIButtonControl(DWORD dwParentID, DWORD dwControlId,
+  CGUIButtonControl(int parentID, int controlID,
                     float posX, float posY, float width, float height,
                     const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,
                     const CLabelInfo &label);
@@ -49,7 +49,7 @@ public:
 
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
-  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseClick(int button, const CPoint &point);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void PreAllocResources();
   virtual void AllocResources();
@@ -69,11 +69,11 @@ public:
   virtual CStdString GetDescription() const;
   void SetAlpha(unsigned char alpha);
 
-  void PythonSetLabel(const CStdString &strFont, const std::string &strText, DWORD dwTextColor, DWORD dwShadowColor, DWORD dwFocusedColor);
-  void PythonSetDisabledColor(DWORD dwDisabledColor);
+  void PythonSetLabel(const CStdString &strFont, const std::string &strText, color_t textColor, color_t shadowColor, color_t focusedColor);
+  void PythonSetDisabledColor(color_t disabledColor);
 
-  void RAMSetTextColor(DWORD dwTextColor);
-  void SettingsCategorySetTextAlign(DWORD dwAlign);
+  void RAMSetTextColor(color_t textColor);
+  void SettingsCategorySetTextAlign(uint32_t align);
 
   virtual void OnClick();
   bool HasClickActions() { return m_clickActions.size() > 0; };

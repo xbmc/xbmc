@@ -2099,7 +2099,7 @@ bool CMPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
 
 bool CMPlayer::OnAction(const CAction &action)
 {
-  switch(action.wID)
+  switch(action.id)
   {
     case ACTION_SHOW_MPLAYER_OSD:
     {

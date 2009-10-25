@@ -42,12 +42,12 @@ CGUIDialogGamepad::~CGUIDialogGamepad(void)
 
 bool CGUIDialogGamepad::OnAction(const CAction &action)
 {
-  if ((action.m_dwButtonCode >= KEY_BUTTON_A &&
-       action.m_dwButtonCode <= KEY_BUTTON_RIGHT_TRIGGER) ||
-      (action.m_dwButtonCode >= KEY_BUTTON_DPAD_UP &&
-       action.m_dwButtonCode <= KEY_BUTTON_DPAD_RIGHT))
+  if ((action.buttonCode >= KEY_BUTTON_A &&
+       action.buttonCode <= KEY_BUTTON_RIGHT_TRIGGER) ||
+      (action.buttonCode >= KEY_BUTTON_DPAD_UP &&
+       action.buttonCode <= KEY_BUTTON_DPAD_RIGHT))
   {
-    switch (action.m_dwButtonCode)
+    switch (action.buttonCode)
     {
     case KEY_BUTTON_A : m_strUserInput += "A"; break;
     case KEY_BUTTON_B : m_strUserInput += "B"; break;
@@ -72,7 +72,7 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
     SetLine(2, strHiddenInput);
     return true;
   }
-  else if (action.m_dwButtonCode == KEY_BUTTON_BACK || action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU || action.wID == ACTION_PARENT_DIR)
+  else if (action.buttonCode == KEY_BUTTON_BACK || action.id == ACTION_CLOSE_DIALOG || action.id == ACTION_PREVIOUS_MENU || action.id == ACTION_PARENT_DIR)
   {
     m_bConfirmed = false;
     m_bCanceled = true;
@@ -81,7 +81,7 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
     Close();
     return true;
   }
-  else if (action.m_dwButtonCode == KEY_BUTTON_START)
+  else if (action.buttonCode == KEY_BUTTON_START)
   {
     m_bConfirmed = false;
     m_bCanceled = false;
@@ -115,7 +115,7 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
     Close();
     return true;
   }
-  else if (action.wID >= REMOTE_0 && action.wID <= REMOTE_9)
+  else if (action.id >= REMOTE_0 && action.id <= REMOTE_9)
   {
     return true; // unhandled
   }
@@ -249,7 +249,7 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
     const CStdString& dlgLine2, bool bGetUserInput, bool bHideInputChars)
 {
   // Prompt user for password input
-  CGUIDialogGamepad *pDialog = (CGUIDialogGamepad *)m_gWindowManager.GetWindow(WINDOW_DIALOG_GAMEPAD);
+  CGUIDialogGamepad *pDialog = (CGUIDialogGamepad *)g_windowManager.GetWindow(WINDOW_DIALOG_GAMEPAD);
   pDialog->m_strPassword = strToVerify;
   pDialog->m_bUserInputCleanup = !bGetUserInput;
   pDialog->m_bHideInputChars = bHideInputChars;

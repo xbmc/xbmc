@@ -41,7 +41,7 @@ CGUIDialogSlider::~CGUIDialogSlider(void)
 
 bool CGUIDialogSlider::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SELECT_ITEM)
+  if (action.id == ACTION_SELECT_ITEM)
   {
     Close();
     return true;
@@ -99,7 +99,7 @@ void CGUIDialogSlider::OnWindowLoaded()
 void CGUIDialogSlider::ShowAndGetInput(const CStdString &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData)
 {
   // grab the slider dialog
-  CGUIDialogSlider *slider = (CGUIDialogSlider *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SLIDER);
+  CGUIDialogSlider *slider = (CGUIDialogSlider *)g_windowManager.GetWindow(WINDOW_DIALOG_SLIDER);
   if (!slider)
     return;
 
@@ -112,7 +112,7 @@ void CGUIDialogSlider::ShowAndGetInput(const CStdString &label, float value, flo
 void CGUIDialogSlider::Display(int label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData)
 {
   // grab the slider dialog
-  CGUIDialogSlider *slider = (CGUIDialogSlider *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SLIDER);
+  CGUIDialogSlider *slider = (CGUIDialogSlider *)g_windowManager.GetWindow(WINDOW_DIALOG_SLIDER);
   if (!slider)
     return;
 

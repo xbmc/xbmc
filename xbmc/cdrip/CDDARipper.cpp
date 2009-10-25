@@ -158,7 +158,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   }
 
   // setup the progress dialog
-  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   CStdString strLine0, strLine1;
   int iTrack = atoi(strTrackFile.substr(13, strTrackFile.size() - 13 - 5).c_str());
   strLine0.Format("%s %i", g_localizeStrings.Get(606).c_str(), iTrack); // Track Number: %i
@@ -201,7 +201,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
       CLog::Log(LOGINFO, "Error copying file from %s to %s", strFilename, strFile.c_str());
       // show error
       g_graphicsContext.Lock();
-      CGUIDialogOK* pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+      CGUIDialogOK* pDlgOK = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
       pDlgOK->SetHeading("Error copying");
       pDlgOK->SetLine(0, CStdString(strFilename) + " to");
       pDlgOK->SetLine(1, strFile);

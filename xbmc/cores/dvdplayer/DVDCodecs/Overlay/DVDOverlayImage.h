@@ -48,7 +48,7 @@ public:
   BYTE*  data;
   int    linesize;
 
-  DWORD* palette;
+  uint32_t* palette;
   int    palette_colors;
 
   int    x;

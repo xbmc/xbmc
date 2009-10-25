@@ -45,7 +45,7 @@
 class CGUIResizeControl : public CGUIControl
 {
 public:
-  CGUIResizeControl(DWORD dwParentID, DWORD dwControlId,
+  CGUIResizeControl(int parentID, int controlID,
                     float posX, float posY, float width, float height,
                     const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus);
 
@@ -59,7 +59,7 @@ public:
   virtual void OnLeft();
   virtual void OnRight();
   virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point);
-  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseClick(int button, const CPoint &point);
   virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();

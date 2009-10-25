@@ -139,7 +139,7 @@ void CGUIDialogTrainerSettings::OnSettingChanged(SettingInfo &setting)
 
 bool CGUIDialogTrainerSettings::ShowForTitle(unsigned int iTitleId, CProgramDatabase* database)
 {
-  CGUIDialogTrainerSettings *dialog = (CGUIDialogTrainerSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_TRAINER_SETTINGS);
+  CGUIDialogTrainerSettings *dialog = (CGUIDialogTrainerSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_TRAINER_SETTINGS);
   if (!dialog) return false;
   dialog->m_iTitleId = iTitleId;
   dialog->m_database = database;

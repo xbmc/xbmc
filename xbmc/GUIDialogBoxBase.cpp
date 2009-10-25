@@ -25,8 +25,8 @@
 
 using namespace std;
 
-CGUIDialogBoxBase::CGUIDialogBoxBase(DWORD dwID, const CStdString &xmlFile)
-    : CGUIDialog(dwID, xmlFile)
+CGUIDialogBoxBase::CGUIDialogBoxBase(int id, const CStdString &xmlFile)
+    : CGUIDialog(id, xmlFile)
 {
   m_bConfirmed = false;
 }
@@ -64,7 +64,7 @@ void CGUIDialogBoxBase::SetHeading(const string& strLine)
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, GetID());
+    g_windowManager.SendThreadMessage(msg, GetID());
 }
 
 void CGUIDialogBoxBase::SetHeading(int iString)
@@ -79,7 +79,7 @@ void CGUIDialogBoxBase::SetHeading(int iString)
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, GetID());
+    g_windowManager.SendThreadMessage(msg, GetID());
 }
 
 void CGUIDialogBoxBase::SetLine(int iLine, const string& strLine)
@@ -91,7 +91,7 @@ void CGUIDialogBoxBase::SetLine(int iLine, const string& strLine)
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, GetID());
+    g_windowManager.SendThreadMessage(msg, GetID());
 
 }
 
@@ -107,7 +107,7 @@ void CGUIDialogBoxBase::SetLine(int iLine, int iString)
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, GetID());
+    g_windowManager.SendThreadMessage(msg, GetID());
 }
 
 void CGUIDialogBoxBase::SetChoice(int iButton, int iString) // iButton == 0 for no, 1 for yes
@@ -122,7 +122,7 @@ void CGUIDialogBoxBase::SetChoice(int iButton, int iString) // iButton == 0 for 
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, GetID());
+    g_windowManager.SendThreadMessage(msg, GetID());
 }
 
 void CGUIDialogBoxBase::SetChoice(int iButton, const string& strString) // iButton == 0 for no, 1 for yes
@@ -134,7 +134,7 @@ void CGUIDialogBoxBase::SetChoice(int iButton, const string& strString) // iButt
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, GetID());
+    g_windowManager.SendThreadMessage(msg, GetID());
 }
 
 void CGUIDialogBoxBase::OnInitWindow()

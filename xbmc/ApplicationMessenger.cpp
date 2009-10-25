@@ -33,6 +33,7 @@
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowSlideShow.h"
 #include "lib/libGoAhead/XBMChttp.h"
+#include "Builtins.h"
 #include "xbox/network.h"
 #include "GUIWindowManager.h"
 #include "Settings.h"
@@ -40,6 +41,7 @@
 #include "GUIDialog.h"
 
 
+#include "SingleLock.h"
 
 
 
@@ -183,7 +185,7 @@ case TMSG_POWERDOWN:
 #ifdef _XBOX
     case TMSG_QUIT:
       {
-        CUtil::ExecBuiltIn("XBMC.Dashboard()");
+        CBuiltins::Execute("XBMC.Dashboard()");
       }
       break;
 #else
@@ -267,10 +269,10 @@ case TMSG_POWERDOWN:
           return;
         }
         // restore to previous window if needed
-        if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
-            m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-            m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
-          m_gWindowManager.PreviousWindow();
+        if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
+            g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+            g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+          g_windowManager.PreviousWindow();
 
         g_application.ResetScreenSaver();
         g_application.ResetScreenSaverWindow();
@@ -304,22 +306,22 @@ case TMSG_POWERDOWN:
 
     case TMSG_PICTURE_SHOW:
       {
-        CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+        CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
         if (!pSlideShow) return ;
 
         // stop playing file
         if (g_application.IsPlayingVideo()) g_application.StopPlaying();
 
-        if (m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-          m_gWindowManager.PreviousWindow();
+        if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+          g_windowManager.PreviousWindow();
 
         g_application.ResetScreenSaver();
         g_application.ResetScreenSaverWindow();
 
         g_graphicsContext.Lock();
         pSlideShow->Reset();
-        if (m_gWindowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
-          m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+        if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
+          g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
         if (CUtil::IsZIP(pMsg->strParam) || CUtil::IsRAR(pMsg->strParam)) // actually a cbz/cbr
         {
           CFileItemList items;
@@ -352,7 +354,7 @@ case TMSG_POWERDOWN:
     case TMSG_SLIDESHOW_SCREENSAVER:
     case TMSG_PICTURE_SLIDESHOW:
       {
-        CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+        CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
         if (!pSlideShow) return ;
 
         g_graphicsContext.Lock();
@@ -375,11 +377,11 @@ case TMSG_POWERDOWN:
             pSlideShow->Add(items[i].get());
           pSlideShow->StartSlideShow(pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER); //Start the slideshow!
         }
-        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER && g_guiSettings.GetBool("screensaver.slideshowshuffle"))
+        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER)
           pSlideShow->Shuffle();
 
-        if (m_gWindowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
-          m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+        if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
+          g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
 
         g_graphicsContext.Unlock();
       }
@@ -388,10 +390,10 @@ case TMSG_POWERDOWN:
     case TMSG_MEDIA_STOP:
       {
         // restore to previous window if needed
-        if (m_gWindowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
-            m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-            m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
-          m_gWindowManager.PreviousWindow();
+        if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
+            g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+            g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+          g_windowManager.PreviousWindow();
 
         g_application.ResetScreenSaver();
         g_application.ResetScreenSaverWindow();
@@ -411,7 +413,7 @@ case TMSG_POWERDOWN:
       break;
 
     case TMSG_SWITCHTOFULLSCREEN:
-      if( m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
+      if( g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
         g_application.SwitchToFullScreen();
       break;
 
@@ -448,7 +450,7 @@ case TMSG_POWERDOWN:
       break;
 
     case TMSG_EXECUTE_BUILT_IN:
-      CUtil::ExecBuiltIn(pMsg->strParam.c_str());
+      CBuiltins::Execute(pMsg->strParam.c_str());
       break;
 
     case TMSG_PLAYLISTPLAYER_PLAY:
@@ -470,7 +472,7 @@ case TMSG_POWERDOWN:
     // Window messages below here...
     case TMSG_DIALOG_DOMODAL:  //doModel of window
       {
-        CGUIDialog* pDialog = (CGUIDialog*)m_gWindowManager.GetWindow(pMsg->dwParam1);
+        CGUIDialog* pDialog = (CGUIDialog*)g_windowManager.GetWindow(pMsg->dwParam1);
         if (!pDialog) return ;
         pDialog->DoModal();
       }
@@ -481,7 +483,7 @@ case TMSG_POWERDOWN:
         //send message to window 2004 (CGUIWindowScriptsInfo)
         CGUIMessage msg(GUI_MSG_USER, 0, 0);
         msg.SetLabel(pMsg->strParam);
-        CGUIWindow* pWindowScripts = m_gWindowManager.GetWindow(WINDOW_SCRIPTS_INFO);
+        CGUIWindow* pWindowScripts = g_windowManager.GetWindow(WINDOW_SCRIPTS_INFO);
         if (pWindowScripts) pWindowScripts->OnMessage(msg);
       }
       break;

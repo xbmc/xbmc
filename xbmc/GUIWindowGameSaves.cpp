@@ -189,7 +189,7 @@ bool CGUIWindowGameSaves::GetDirectory(const CStdString& strDirectory, CFileItem
   // flatten any folders with 1 save
   DWORD dwTick=timeGetTime();
   bool bProgressVisible = false;
-  CGUIDialogProgress* m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   LABEL_MASKS labelMasks;
   m_guiState->GetSortMethodLabelMasks(labelMasks);
   CLabelFormatter formatter("", labelMasks.m_strLabel2File);
@@ -327,7 +327,7 @@ bool CGUIWindowGameSaves::DownloadSaves(CFileItem item)
             TiXmlElement* pSave = pGame->FirstChildElement("save");
             if (pSave->Value())
             {
-              CGUIDialogSelect *pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+              CGUIDialogSelect *pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
               if (pDlg)
               {
                 pDlg->SetHeading(20320);

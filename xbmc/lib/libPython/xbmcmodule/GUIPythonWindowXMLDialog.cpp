@@ -23,8 +23,8 @@
 #include "GUIPythonWindowXMLDialog.h"
 #include "GUIWindowManager.h"
 
-CGUIPythonWindowXMLDialog::CGUIPythonWindowXMLDialog(DWORD dwId, CStdString strXML, CStdString strFallBackPath)
-: CGUIPythonWindowXML(dwId,strXML,strFallBackPath)
+CGUIPythonWindowXMLDialog::CGUIPythonWindowXMLDialog(int id, CStdString strXML, CStdString strFallBackPath)
+: CGUIPythonWindowXML(id,strXML,strFallBackPath)
 {
   m_bRunning = false;
   m_loadOnDemand = false;
@@ -34,9 +34,9 @@ CGUIPythonWindowXMLDialog::~CGUIPythonWindowXMLDialog(void)
 {
 }
 
-void CGUIPythonWindowXMLDialog::Activate(DWORD dwParentId)
+void CGUIPythonWindowXMLDialog::Activate(int parentId)
 {
-  m_gWindowManager.RouteToWindow(this);
+  g_windowManager.RouteToWindow(this);
 
   // active this dialog...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
@@ -48,9 +48,9 @@ bool CGUIPythonWindowXMLDialog::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_WINDOW_DEINIT)
   {
-    CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    CGUIWindow *pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
     if (pWindow)
-      m_gWindowManager.ShowOverlay(pWindow->GetOverlayState());
+      g_windowManager.ShowOverlay(pWindow->GetOverlayState());
     return CGUIWindow::OnMessage(message);
   }
   return CGUIPythonWindowXML::OnMessage(message);
@@ -61,7 +61,7 @@ void CGUIPythonWindowXMLDialog::Close()
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
   OnMessage(msg);
 
-  m_gWindowManager.RemoveDialog(GetID());
+  g_windowManager.RemoveDialog(GetID());
   m_bRunning = false;
 }
 

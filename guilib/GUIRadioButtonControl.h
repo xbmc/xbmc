@@ -36,7 +36,7 @@ class CGUIRadioButtonControl :
       public CGUIButtonControl
 {
 public:
-  CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId,
+  CGUIRadioButtonControl(int parentID, int controlID,
                          float posX, float posY, float width, float height,
                          const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,
                          const CLabelInfo& labelInfo,

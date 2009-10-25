@@ -349,7 +349,7 @@ bool CRTMP::SendConnectPacket()
   CStdString tcURL;
   if (m_strTcUrl.empty())
   {
-  url.GetURLWithoutFilename(tcURL);
+    tcURL = url.GetWithoutFilename();
   tcURL += app;
   }
   else

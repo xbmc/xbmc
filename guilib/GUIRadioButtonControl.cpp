@@ -24,11 +24,11 @@
 #include "utils/GUIInfoManager.h"
 #include "GUIFontManager.h"
 
-CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
+CGUIRadioButtonControl::CGUIRadioButtonControl(int parentID, int controlID, float posX, float posY, float width, float height,
     const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,
     const CLabelInfo& labelInfo,
     const CTextureInfo& radioOn, const CTextureInfo& radioOff)
-    : CGUIButtonControl(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
+    : CGUIButtonControl(parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
     , m_imgRadioOn(posX, posY, 16, 16, radioOn)
     , m_imgRadioOff(posX, posY, 16, 16, radioOff)
 {
@@ -50,7 +50,7 @@ void CGUIRadioButtonControl::Render()
 
   // ask our infoManager whether we are selected or not...
   if (m_toggleSelect)
-    m_bSelected = g_infoManager.GetBool(m_toggleSelect, m_dwParentID);
+    m_bSelected = g_infoManager.GetBool(m_toggleSelect, m_parentID);
 
   if ( IsSelected() && !IsDisabled() )
     m_imgRadioOn.Render();
@@ -60,7 +60,7 @@ void CGUIRadioButtonControl::Render()
 
 bool CGUIRadioButtonControl::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SELECT_ITEM)
+  if (action.id == ACTION_SELECT_ITEM)
   {
     m_bSelected = !m_bSelected;
   }

@@ -105,7 +105,7 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
   DIRECTORY::CPluginDirectory::LoadPluginStrings(url);
 
   // Create the dialog
-  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
 
   pDialog->m_strHeading = m_url.GetFileName();
   CUtil::RemoveSlashAtEnd(pDialog->m_strHeading);
@@ -127,7 +127,7 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
 void CGUIDialogPluginSettings::ShowAndGetInput(SScraperInfo& info)
 {
   // Create the dialog
-  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
 
   pDialog->m_settings = info.settings;
   pDialog->m_strHeading.Format("$LOCALIZE[20407] - %s", info.strTitle.c_str());
@@ -160,7 +160,7 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CStdString& path)
   g_localizeStringsTemp.Load(pathToLanguageFile, pathToFallbackLanguageFile);
 
   // Create the dialog
-  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
 
   pDialog->m_strHeading = CUtil::GetFileName(path);
   pDialog->m_strHeading.Format("$LOCALIZE[1049] - %s", pDialog->m_strHeading.c_str());
@@ -300,8 +300,7 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
           if (setting->Attribute("default"))
           {
             CStdString action = setting->Attribute("default");
-            CStdString url;
-            m_url.GetURL(url);
+            CStdString url = m_url.Get();
             // replace $CWD with the url of plugin
             action.Replace("$CWD", url);
             if (option)
@@ -409,7 +408,7 @@ void CGUIDialogPluginSettings::CreateControls()
     basepath = CUtil::AddFileToFolder(basepath, m_url.GetFileName());
   }
   else
-    m_url.GetURL(basepath);
+    basepath = m_url.Get();
 
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;
