@@ -1089,15 +1089,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("remoteevents.enabled"));
     }
-    else if (strSetting.Equals("mymusic.clearplaylistsonend"))
-    { // disable repeat and repeat one if clear playlists is enabled
-      if (g_guiSettings.GetBool("mymusic.clearplaylistsonend"))
-      {
-        g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
-        g_stSettings.m_bMyMusicPlaylistRepeat = false;
-        g_settings.Save();
-      }
-    }
     else if (strSetting.Equals("cddaripper.quality"))
     { // only visible if we are doing non-WAV ripping
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
