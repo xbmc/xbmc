@@ -146,11 +146,13 @@ bool CMediaManager::SaveSources()
 
 void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
 {
+  CSingleLock lock(m_CritSecStorageProvider);
   m_platformStorage->GetLocalDrives(localDrives);
 }
 
 void CMediaManager::GetRemovableDrives(VECSOURCES &removableDrives)
 {
+  CSingleLock lock(m_CritSecStorageProvider);
   m_platformStorage->GetRemovableDrives(removableDrives);
 }
 
@@ -435,11 +437,13 @@ void CMediaManager::SetHasOpticalDrive(bool bstatus)
 
 bool CMediaManager::Eject(CStdString mountpath)
 {
+  CSingleLock lock(m_CritSecStorageProvider);
   return m_platformStorage->Eject(mountpath);
 }
 
 void CMediaManager::ProcessEvents()
 {
+  CSingleLock lock(m_CritSecStorageProvider);
   if (m_platformStorage->PumpDriveChangeEvents(this))
   {
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
@@ -449,6 +453,7 @@ void CMediaManager::ProcessEvents()
 
 std::vector<CStdString> CMediaManager::GetDiskUsage()
 {
+  CSingleLock waitLock(m_muAutoSource);
   return m_platformStorage->GetDiskUsage();
 }
 

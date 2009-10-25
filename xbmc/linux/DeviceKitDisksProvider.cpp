@@ -3,6 +3,46 @@
 #include "Util.h"
 #include "AdvancedSettings.h"
 
+void CDeviceKitDiskDeviceOldAPI::Update()
+{
+  m_isPartition = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "device-is-partition");
+
+  if (m_isPartition)
+  {
+    PropertyMap properties;
+    CDBusUtil::GetAll(properties, "org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device");
+
+    m_UDI         = properties["id-uuid"];
+    m_Label       = properties["id-label"];
+    m_FileSystem  = properties["id-type"];
+    m_MountPath   = properties["device-mount-paths"];
+    m_isMounted   = properties["device-is-mounted"].Equals("true");
+    m_isRemovable = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", properties["partition-slave"].c_str(), "org.freedesktop.DeviceKit.Disks.Device", "device-is-removable");
+
+    m_PartitionSizeGiB = (atol(properties["partition-size"].c_str()) / 1024.0 / 1024.0 / 1024.0);
+  }
+}
+
+void CDeviceKitDiskDeviceNewAPI::Update()
+{
+  PropertyMap properties;
+  
+  m_isPartition = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsPartition");
+  if (m_isPartition)
+  {
+    CDBusUtil::GetAll(properties, "org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device");
+
+    m_UDI         = properties["IdUuid"];
+    m_Label       = properties["IdLabel"];
+    m_FileSystem  = properties["IdType"];
+    m_MountPath   = properties["DeviceMountPaths"];
+    m_isMounted   = properties["DeviceIsMounted"].Equals("true");
+    m_isRemovable = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable");
+
+    m_PartitionSizeGiB = (atol(properties["PartitionSize"].c_str()) / 1024.0 / 1024.0 / 1024.0);
+  }
+}
+
 CDeviceKitDiskDevice::CDeviceKitDiskDevice(const char *DeviceKitUDI)
 {
   m_DeviceKitUDI = DeviceKitUDI;
@@ -12,28 +52,7 @@ CDeviceKitDiskDevice::CDeviceKitDiskDevice(const char *DeviceKitUDI)
   m_isMounted = false;
   m_isMountedByUs = false;
   m_isRemovable = false;
-
-  m_isPartition = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsPartition");
-
-  Update();
-}
-
-void CDeviceKitDiskDevice::Update()
-{
-  PropertyMap properties;
-
-  if (m_isPartition)
-  {
-    CDBusUtil::GetAll(properties, "org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device");
-
-    m_UDI         = properties["IdUuid"];
-    m_MountPath   = properties["DeviceMountPaths"];
-    m_FileSystem  = properties["IdType"];
-    m_isMounted   = properties["DeviceIsMounted"].Equals("true");
-    m_isRemovable = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable");
-
-    m_PartitionSizeGiB = (atol(properties["PartitionSize"].c_str()) / 1024.0 / 1024.0 / 1024.0);
-  }
+  m_isPartition = false;
 }
 
 bool CDeviceKitDiskDevice::Mount()
@@ -134,6 +153,9 @@ CDeviceKitDisksProvider::~CDeviceKitDisksProvider()
 
 void CDeviceKitDisksProvider::Initialize()
 {
+  m_DaemonVersion = CDBusUtil::GetInt32("org.freedesktop.DeviceKit.Disks", "/org/freedesktop/DeviceKit/Disks", "org.freedesktop.DeviceKit.Disks", "DaemonVersion");
+  CLog::Log(LOGDEBUG, "DeviceKit.Disks: DaemonVersion %i", m_DaemonVersion);
+
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: Querying available devices");
   std::vector<CStdString> devices = EnumerateDisks();
   for (unsigned int i = 0; i < devices.size(); i++)
@@ -234,14 +256,18 @@ void CDeviceKitDisksProvider::DeviceAdded(const char *object, IStorageEventsCall
     delete m_AvailableDevices[object];
   }
 
-  CDeviceKitDiskDevice *device = new CDeviceKitDiskDevice(object);
+  CDeviceKitDiskDevice *device = NULL;
+  if (m_DaemonVersion >= 7)
+    device = new CDeviceKitDiskDeviceNewAPI(object);
+  else
+    device = new CDeviceKitDiskDeviceOldAPI(object);
   m_AvailableDevices[object] = device;
 
   if (g_advancedSettings.m_handleMounting)
     device->Mount();
 
   if (device->m_isMounted && callback)
-    callback->OnStorageAdded(device->m_MountPath, device->m_MountPath);
+    callback->OnStorageAdded(device->m_Label, device->m_MountPath);
 }
 
 void CDeviceKitDisksProvider::DeviceRemoved(const char *object, IStorageEventsCallback *callback)
@@ -252,7 +278,7 @@ void CDeviceKitDisksProvider::DeviceRemoved(const char *object, IStorageEventsCa
   if (device)
   {
     if (device->m_isMounted && callback)
-      callback->OnStorageUnsafelyRemoved(device->m_MountPath);
+      callback->OnStorageUnsafelyRemoved(device->m_Label);
 
     delete m_AvailableDevices[object];
     m_AvailableDevices.erase(object);
@@ -274,9 +300,9 @@ void CDeviceKitDisksProvider::DeviceChanged(const char *object, IStorageEventsCa
     bool mounted = device->m_isMounted;
     device->Update();
     if (!mounted && device->m_isMounted && callback)
-      callback->OnStorageAdded(device->m_MountPath, device->m_MountPath);
+      callback->OnStorageAdded(device->m_MountPath, device->m_Label);
     else if (mounted && !device->m_isMounted && callback)
-      callback->OnStorageSafelyRemoved(device->m_MountPath);
+      callback->OnStorageSafelyRemoved(device->m_Label);
   }
 }
 

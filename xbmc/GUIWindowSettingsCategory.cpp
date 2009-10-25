@@ -204,7 +204,8 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < (int)(CONTROL_START_BUTTONS + m_vecSections.size()) &&
           focusedControl - CONTROL_START_BUTTONS != m_iSection)
       {
-        // changing section, check for updates
+        // changing section, check for updates and cancel any delayed changes
+        m_delayedSetting = NULL;
         CheckForUpdates();
 
         if (m_vecSections[focusedControl-CONTROL_START_BUTTONS]->m_strCategory == "masterlock")
@@ -314,6 +315,20 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       OnSettingChanged(m_delayedSetting);
       m_delayedSetting = NULL;
       return true;
+    }
+    break;
+  case GUI_MSG_NOTIFY_ALL:
+    {
+      if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
+      {
+        // Cancel delayed setting - it's only used for res changing anyway
+        m_delayedSetting = NULL;
+        if (IsActive() && g_guiSettings.GetInt("videoscreen.resolution") != g_graphicsContext.GetVideoResolution())
+        {
+          g_guiSettings.SetInt("videoscreen.resolution", g_graphicsContext.GetVideoResolution());
+          CreateSettings();
+        }
+      }
     }
     break;
   case GUI_MSG_WINDOW_DEINIT:
@@ -509,9 +524,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(351), LCD_TYPE_NONE);
-#ifdef _LINUX
       pControl->AddLabel("LCDproc", LCD_TYPE_LCDPROC);
-#endif
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("harddisk.aamlevel"))
@@ -1101,15 +1114,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("remoteevents.enabled"));
     }
-    else if (strSetting.Equals("mymusic.clearplaylistsonend"))
-    { // disable repeat and repeat one if clear playlists is enabled
-      if (g_guiSettings.GetBool("mymusic.clearplaylistsonend"))
-      {
-        g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
-        g_stSettings.m_bMyMusicPlaylistRepeat = false;
-        g_settings.Save();
-      }
-    }
     else if (strSetting.Equals("cddaripper.quality"))
     { // only visible if we are doing non-WAV ripping
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1399,18 +1403,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("system.leddisableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE);
     }
-#ifndef _LINUX
-    else if (strSetting.Equals("lcd.backlight") || strSetting.Equals("lcd.disableonplayback"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
-    }
-    else if (strSetting.Equals("lcd.contrast"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
-    }
-#endif
     else if (strSetting.Equals("lookandfeel.enablemouse"))
     {
     }
@@ -1887,16 +1879,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #endif
     g_lcd->Initialize();
   }
-#ifndef _LINUX
-  else if (strSetting.Equals("lcd.backlight"))
-  {
-    g_lcd->SetBackLight(((CSettingInt *)pSettingControl->GetSetting())->GetData());
-  }
-  else if (strSetting.Equals("lcd.contrast"))
-  {
-    g_lcd->SetContrast(((CSettingInt *)pSettingControl->GetSetting())->GetData());
-  }
-#endif
 #endif
   else if ( strSetting.Equals("servers.webserver") || strSetting.Equals("servers.webserverport") ||
             strSetting.Equals("servers.webserverusername") || strSetting.Equals("servers.webserverpassword"))
@@ -2113,9 +2095,9 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     bool cancelled = false;
     if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
     {
-      g_guiSettings.SetInt("videoscreen.resolution", lastRes);
-      g_graphicsContext.SetVideoResolution(lastRes);
       g_guiSettings.m_LookAndFeelResolution = lastRes;
+      g_graphicsContext.SetVideoResolution(lastRes);
+      g_guiSettings.SetInt("videoscreen.resolution", lastRes);
     }
   }
   else if (strSetting.Equals("videoscreen.vsync"))

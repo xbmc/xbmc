@@ -721,20 +721,25 @@ bool CHALManager::Mount(CStorageDevice *volume, CStdString mountpath)
       CLog::Log(LOGERROR, "DBus: Failed to append arguments");
     DBusMessageIter sub;
     dbus_message_iter_open_container(&args, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &sub);
-    
-    CStdString temporaryString;
-    temporaryString.Format("uid=%u", getuid());
-    s = temporaryString.c_str();
-    dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
 
+    CStdString temporaryString;
+
+    if (volume->FileSystem.Equals("vfat"))
+    {
+      temporaryString.Format("uid=%u", getuid());
+      s = temporaryString.c_str();
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+    }
     s = "sync";
     dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
 
-    int mask = umask (0);
-    temporaryString.Format("umask=%#o", mask);
-    s = temporaryString.c_str();
-    dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
-
+    if (volume->FileSystem.Equals("vfat"))
+    {
+      int mask = umask (0);
+      temporaryString.Format("umask=%#o", mask);
+      s = temporaryString.c_str();
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+    }
     dbus_message_iter_close_container(&args, &sub);
 
     if (msg == NULL)

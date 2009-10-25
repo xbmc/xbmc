@@ -36,7 +36,7 @@
       if ([HIDRemote isCandelairInstallationRequiredForRemoteMode:kHIDRemoteModeExclusive])
       {
         //setup failed. user needs to install CandelaIR driver
-        NSLog(@"Error! Candelair driver installation necessary. XBMC Remote control won't function properly!");
+        NSLog(@"Error! Candelair driver installation necessary. XBMCHelper won't function properly!");
         NSLog(@"Due to an issue in the OS version you are running, an additional driver needs to be installed before XBMC(Helper) can reliably access the remote.");
         NSLog(@"See http://www.candelair.com/download/ for details");
         [super dealloc];
@@ -44,7 +44,7 @@
       }
       else
       {
-        if ([remote startRemoteControl:kHIDRemoteModeExclusiveAuto])
+        if ([remote startRemoteControl:kHIDRemoteModeExclusive])
         {
           DLOG(@"Driver has started successfully.");
           if ([remote activeRemoteControlCount])
@@ -54,6 +54,7 @@
         }
         else
         {
+          ELOG(@"Failed to start remote control.");
           //setup failed, cleanup
           [remote setDelegate:nil];
           [super dealloc];

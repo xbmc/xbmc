@@ -197,6 +197,11 @@ void CGUIVisualisationControl::UpdateVisibility(const CGUIListItem *item)
     FreeVisualisation();
 }
 
+void CGUIVisualisationControl::SetInvalid()
+{
+  FreeResources();
+}
+
 void CGUIVisualisationControl::Render()
 {
   if (m_pVisualisation == NULL)

@@ -21,6 +21,7 @@
 
 #include "GUIPythonWindowXMLDialog.h"
 #include "GUIWindowManager.h"
+#include "Application.h"
 
 CGUIPythonWindowXMLDialog::CGUIPythonWindowXMLDialog(int id, CStdString strXML, CStdString strFallBackPath)
 : CGUIPythonWindowXML(id,strXML,strFallBackPath)
@@ -31,16 +32,6 @@ CGUIPythonWindowXMLDialog::CGUIPythonWindowXMLDialog(int id, CStdString strXML, 
 
 CGUIPythonWindowXMLDialog::~CGUIPythonWindowXMLDialog(void)
 {
-}
-
-void CGUIPythonWindowXMLDialog::Activate(int parentId)
-{
-  g_windowManager.RouteToWindow(this);
-
-  // active this dialog...
-  CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
-  OnMessage(msg);
-  m_bRunning = true;
 }
 
 bool CGUIPythonWindowXMLDialog::OnMessage(CGUIMessage &message)
@@ -55,12 +46,32 @@ bool CGUIPythonWindowXMLDialog::OnMessage(CGUIMessage &message)
   return CGUIPythonWindowXML::OnMessage(message);
 }
 
-void CGUIPythonWindowXMLDialog::Close()
+void CGUIPythonWindowXMLDialog::Show(bool show /* = true */)
 {
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
-  OnMessage(msg);
-
-  g_windowManager.RemoveDialog(GetID());
-  m_bRunning = false;
+  int count = ExitCriticalSection(g_graphicsContext);
+  ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, 1, show ? 1 : 0};
+  tMsg.lpVoid = this;
+  g_application.getApplicationMessenger().SendMessage(tMsg, true);
+  RestoreCriticalSection(g_graphicsContext, count);
 }
 
+void CGUIPythonWindowXMLDialog::Show_Internal(bool show /* = true */)
+{
+  if (show)
+  {
+    g_windowManager.RouteToWindow(this);
+
+    // active this dialog...
+    CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
+    OnMessage(msg);
+    m_bRunning = true;
+  }
+  else // hide
+  {
+    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
+    OnMessage(msg);
+
+    g_windowManager.RemoveDialog(GetID());
+    m_bRunning = false;
+  }
+}

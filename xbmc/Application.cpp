@@ -1722,11 +1722,7 @@ void CApplication::DimLCDOnPlayback(bool dim)
       g_lcd->SetBackLight(0);
   }
   else if(!dim)
-#ifdef _LINUX
     g_lcd->SetBackLight(1);
-#else
-    g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
-#endif
 #endif
 }
 
@@ -2718,7 +2714,7 @@ bool CApplication::OnAction(CAction &action)
       { // unpaused - set the playspeed back to normal
         SetPlaySpeed(1);
       }
-      g_audioManager.Enable(m_pPlayer->IsPaused());
+      g_audioManager.Enable(m_pPlayer->IsPaused() && !g_audioContext.IsPassthroughActive());
       return true;
     }
     if (!m_pPlayer->IsPaused())
@@ -2778,7 +2774,7 @@ bool CApplication::OnAction(CAction &action)
       {
         // unpause, and set the playspeed back to normal
         m_pPlayer->Pause();
-        g_audioManager.Enable(m_pPlayer->IsPaused());
+        g_audioManager.Enable(m_pPlayer->IsPaused() && !g_audioContext.IsPassthroughActive());
 
         g_application.SetPlaySpeed(1);
         return true;
@@ -2898,14 +2894,13 @@ void CApplication::FrameMove()
 {
   MEASURE_FUNCTION;
 
-  CSingleLock lock(g_graphicsContext);
-
   // currently we calculate the repeat time (ie time from last similar keypress) just global as fps
   float frameTime = m_frameTime.GetElapsedSeconds();
   m_frameTime.StartZero();
   // never set a frametime less than 2 fps to avoid problems when debuggin and on breaks
   if( frameTime > 0.5 ) frameTime = 0.5;
 
+  g_graphicsContext.Lock();
   // check if there are notifications to display
   if (m_guiDialogKaiToast.DoWork())
   {
@@ -2914,6 +2909,7 @@ void CApplication::FrameMove()
       m_guiDialogKaiToast.Show();
     }
   }
+  g_graphicsContext.Unlock();
 
   UpdateLCD();
   
@@ -4692,14 +4688,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         g_settings.Save();  // save vis settings
         WakeUpScreenSaverAndDPMS();
         g_windowManager.PreviousWindow();
-      }
-
-      // reset the audio playlist on finish
-      if (!IsPlayingAudio() && (g_guiSettings.GetBool("mymusic.clearplaylistsonend")) && (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC))
-      {
-        g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-        g_playlistPlayer.Reset();
-        g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
       }
 
       // DVD ejected while playing in vis ?
