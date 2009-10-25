@@ -3,6 +3,36 @@
 #include "Util.h"
 #include "AdvancedSettings.h"
 
+#ifdef FEDORA_DEVICEKIT
+
+#define PROPERTY_PARTITION_SLAVE "partition-slave"
+#define PROPERTY_PARTITION_SIZE  "partition-size"
+
+#define PROPERTY_ID_UUID  "id-uuid"
+#define PROPERTY_ID_LABEL "id-label"
+#define PROPERTY_ID_TYPE  "id-type"
+
+#define PROPERTY_DEVICE_ISPARTITION "device-is-partition"
+#define PROPERTY_DEVICE_MOUNTPATHS  "device-mount-paths"
+#define PROPERTY_DEVICE_ISMOUNTED   "device-is-mounted"
+#define PROPERTY_DEVICE_ISREMOVABLE "device-is-removable"
+
+#else
+
+#define PROPERTY_PARTITION_SLAVE "PartitionSlave"
+#define PROPERTY_PARTITION_SIZE  "PartitionSize"
+
+#define PROPERTY_ID_UUID  "IdUuid"
+#define PROPERTY_ID_LABEL "IdLabel"
+#define PROPERTY_ID_TYPE  "IdType"
+
+#define PROPERTY_DEVICE_ISPARTITION "DeviceIsPartition"
+#define PROPERTY_DEVICE_MOUNTPATHS  "DeviceMountPaths"
+#define PROPERTY_DEVICE_ISMOUNTED   "DeviceIsMounted"
+#define PROPERTY_DEVICE_ISREMOVABLE "DeviceIsRemovable"
+
+#endif
+
 CDeviceKitDiskDevice::CDeviceKitDiskDevice(const char *DeviceKitUDI)
 {
   m_DeviceKitUDI = DeviceKitUDI;
@@ -13,7 +43,7 @@ CDeviceKitDiskDevice::CDeviceKitDiskDevice(const char *DeviceKitUDI)
   m_isMountedByUs = false;
   m_isRemovable = false;
 
-  m_isPartition = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsPartition");
+  m_isPartition = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", PROPERTY_DEVICE_ISPARTITION);
 
   Update();
 }
@@ -26,14 +56,14 @@ void CDeviceKitDiskDevice::Update()
   {
     CDBusUtil::GetAll(properties, "org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device");
 
-    m_UDI         = properties["IdUuid"];
-    m_MountPath   = properties["DeviceMountPaths"];
-    m_FileSystem  = properties["IdType"];
-    m_isMounted   = properties["DeviceIsMounted"].Equals("true");
-    m_isRemovable = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable");
-    m_Label       = properties["IdLabel"];
+    m_UDI         = properties[PROPERTY_ID_UUID];
+    m_Label       = properties[PROPERTY_ID_LABEL];
+    m_FileSystem  = properties[PROPERTY_ID_TYPE];
+    m_MountPath   = properties[PROPERTY_DEVICE_MOUNTPATHS];
+    m_isMounted   = properties[PROPERTY_DEVICE_ISMOUNTED].Equals("true");
+    m_isRemovable = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", properties[PROPERTY_PARTITION_SLAVE].c_str(), "org.freedesktop.DeviceKit.Disks.Device", PROPERTY_DEVICE_ISREMOVABLE);
 
-    m_PartitionSizeGiB = (atol(properties["PartitionSize"].c_str()) / 1024.0 / 1024.0 / 1024.0);
+    m_PartitionSizeGiB = (atol(properties[PROPERTY_PARTITION_SIZE].c_str()) / 1024.0 / 1024.0 / 1024.0);
   }
 }
 
