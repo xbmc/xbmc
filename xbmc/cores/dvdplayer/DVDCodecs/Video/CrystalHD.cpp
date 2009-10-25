@@ -612,7 +612,7 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
         }
         else
         {
-          CLog::Log(LOGDEBUG, "%s: Duplicate or no timestamp detected: %llu", __MODULE_NAME__, procOut.PicInfo.timeStamp); 
+          //CLog::Log(LOGDEBUG, "%s: Duplicate or no timestamp detected: %llu", __MODULE_NAME__, procOut.PicInfo.timeStamp); 
         }
       }
     break;
@@ -656,6 +656,7 @@ void CMPCOutputThread::Process()
   CLog::Log(LOGDEBUG, "%s: Output Thread Started...", __MODULE_NAME__);
   while (!m_bStop)
   {
+    // Crystal HD likes this structure, video video starts to glitch if removed.
     if (GetReadyCount() < 2)
     {  
       CMPCDecodeBuffer* pBuffer = GetDecoderOutput(); // Check for output frames
