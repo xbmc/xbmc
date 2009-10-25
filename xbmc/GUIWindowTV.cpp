@@ -177,20 +177,20 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       if (m_iGuideView == GUIDE_VIEW_CHANNEL)
       {
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LIST_GUIDE_CHANNEL);
-		g_windowManager.SendMessage(msg);
-		m_iSelected_GUIDE = msg.GetParam1();
+        g_windowManager.SendMessage(msg);
+        m_iSelected_GUIDE = msg.GetParam1();
       }
       else if (m_iGuideView == GUIDE_VIEW_NOW || m_iGuideView == GUIDE_VIEW_NEXT)
       {
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LIST_GUIDE_NOW_NEXT);
-		g_windowManager.SendMessage(msg);
-		m_iSelected_GUIDE = msg.GetParam1();
+        g_windowManager.SendMessage(msg);
+        m_iSelected_GUIDE = msg.GetParam1();
       }
       else if (m_iGuideView == GUIDE_VIEW_TIMELINE)
       {
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LIST_TIMELINE);
-		g_windowManager.SendMessage(msg);
-		m_iSelected_GUIDE = msg.GetParam1();
+        g_windowManager.SendMessage(msg);
+        m_iSelected_GUIDE = msg.GetParam1();
       }
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)

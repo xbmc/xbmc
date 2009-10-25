@@ -35,6 +35,9 @@
 #include "GUIDialogOK.h"
 #include "LocalizeStrings.h"
 #include "utils/log.h"
+#include "FileSystem/File.h"
+
+using namespace XFILE;
 
 /**
  * Create a blank unmodified channel tag
@@ -165,6 +168,7 @@ bool cPVRChannels::Load(bool radio)
     }
 
     ReNumberAndCheck();
+    SearchAndSetChannelIcons();
 
     for (unsigned int i = 0; i < size(); i++)
       at(i).SetChannelID(database->AddDBChannel(at(i)));
@@ -272,6 +276,95 @@ bool cPVRChannels::Update()
   }
 
   return false;
+}
+
+void cPVRChannels::SearchAndSetChannelIcons(bool writeDB)
+{
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  database->Open();
+
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    CStdString iconpath;
+
+    /* If the Icon is already set continue with next channel */
+    if (at(i).Icon() != "")
+      continue;
+
+    if (g_guiSettings.GetString("pvrmenu.iconpath") != "")
+    {
+      /* Search icon by channel name */
+      iconpath = g_guiSettings.GetString("pvrmenu.iconpath") + at(i).ClientName();
+      if (CFile::Exists(iconpath + ".tbn"))
+      {
+        at(i).SetIcon(iconpath + ".tbn");
+        if (writeDB) database->UpdateDBChannel(at(i));
+        continue;
+      }
+      else if (CFile::Exists(iconpath + ".jpg"))
+      {
+        at(i).SetIcon(iconpath + ".jpg");
+        if (writeDB) database->UpdateDBChannel(at(i));
+        continue;
+      }
+      else if (CFile::Exists(iconpath + ".png"))
+      {
+        at(i).SetIcon(iconpath + ".png");
+        if (writeDB) database->UpdateDBChannel(at(i));
+        continue;
+      }
+
+      /* Search icon by channel name in lower case */
+      iconpath = g_guiSettings.GetString("pvrmenu.iconpath") + at(i).ClientName().ToLower();
+      if (CFile::Exists(iconpath + ".tbn"))
+      {
+        at(i).SetIcon(iconpath + ".tbn");
+        if (writeDB) database->UpdateDBChannel(at(i));
+        continue;
+      }
+      else if (CFile::Exists(iconpath + ".jpg"))
+      {
+        at(i).SetIcon(iconpath + ".jpg");
+        if (writeDB) database->UpdateDBChannel(at(i));
+        continue;
+      }
+      else if (CFile::Exists(iconpath + ".png"))
+      {
+        at(i).SetIcon(iconpath + ".png");
+        if (writeDB) database->UpdateDBChannel(at(i));
+        continue;
+      }
+
+      /* Search Icon by Unique Id */
+      iconpath.Format("%s/%08d",g_guiSettings.GetString("pvrmenu.iconpath"), at(i).UniqueID());
+      if (CFile::Exists(iconpath + ".tbn"))
+      {
+        at(i).SetIcon(iconpath + ".tbn");
+        if (writeDB) database->UpdateDBChannel(at(i));
+        continue;
+      }
+      else if (CFile::Exists(iconpath + ".jpg"))
+      {
+        at(i).SetIcon(iconpath + ".jpg");
+        if (writeDB) database->UpdateDBChannel(at(i));
+        continue;
+      }
+      else if (CFile::Exists(iconpath + ".png"))
+      {
+        at(i).SetIcon(iconpath + ".png");
+        if (writeDB) database->UpdateDBChannel(at(i));
+        continue;
+      }
+    }
+
+    /* Start channel icon scraper here if nothing was found*/
+    /// TODO
+
+
+    CLog::Log(LOGNOTICE,"PVRManager: No channel icon found for %s, use '%s' or '%08d' with extension 'tbn', 'jpg' or 'png'", at(i).Name().c_str(), at(i).ClientName().c_str(), at(i).UniqueID());
+  }
+
+  database->Close();
 }
 
 void cPVRChannels::ReNumberAndCheck(void)
@@ -432,24 +525,24 @@ void cPVRChannels::HideChannel(unsigned int number)
     return;
   }
 
-    if (at(number-1).IsHidden())
-    {
-      at(number-1).SetHidden(false);
-      database->Open();
-      database->UpdateDBChannel(at(number-1));
-      m_iHiddenChannels = database->GetNumHiddenChannels();
-      database->Close();
-    }
-    else
-    {
-      at(number-1).SetHidden(true);
-      cPVREpgs::ClearChannel(at(number-1).ChannelID());
-      database->Open();
-      database->UpdateDBChannel(at(number-1));
-      m_iHiddenChannels = database->GetNumHiddenChannels();
-      database->Close();
-      MoveChannel(number, size());
-    }
+  if (at(number-1).IsHidden())
+  {
+    at(number-1).SetHidden(false);
+    database->Open();
+    database->UpdateDBChannel(at(number-1));
+    m_iHiddenChannels = database->GetNumHiddenChannels();
+    database->Close();
+  }
+  else
+  {
+    at(number-1).SetHidden(true);
+    cPVREpgs::ClearChannel(at(number-1).ChannelID());
+    database->Open();
+    database->UpdateDBChannel(at(number-1));
+    m_iHiddenChannels = database->GetNumHiddenChannels();
+    database->Close();
+    MoveChannel(number, size());
+  }
 }
 
 cPVRChannelInfoTag *cPVRChannels::GetByNumber(int Number)
@@ -547,6 +640,15 @@ void cPVRChannels::Clear()
 int cPVRChannels::GetNumChannelsFromAll()
 {
   return PVRChannelsTV.GetNumChannels()+PVRChannelsRadio.GetNumChannels();
+}
+
+void cPVRChannels::SearchMissingChannelIcons()
+{
+  CLog::Log(LOGINFO,"PVRManager: Manual Channel Icon search started...");
+  PVRChannelsTV.SearchAndSetChannelIcons(true);
+  PVRChannelsRadio.SearchAndSetChannelIcons(true);
+  /// TODO: Add Process dialog here
+  CGUIDialogOK::ShowAndGetInput(18033,0,20177,0);
 }
 
 cPVRChannelInfoTag *cPVRChannels::GetByClientFromAll(int Number, int ClientID)

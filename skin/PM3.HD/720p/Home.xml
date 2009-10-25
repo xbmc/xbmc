@@ -126,7 +126,7 @@
 		<control type="group">
 			<posx>600r</posx>
 			<posy>450</posy>
-			<visible>Container(9000).HasFocus(7) + !Skin.HasSetting(homepageSysteminfo)</visible>
+			<visible>Container(9000).HasFocus(8) + !Skin.HasSetting(homepageSysteminfo)</visible>
 			<include>homestatsinfo</include>
 			<control type="image">
 				<description>gradient</description>

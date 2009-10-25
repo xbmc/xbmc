@@ -352,19 +352,11 @@ CPVRManager::~CPVRManager()
   CLog::Log(LOGDEBUG,"PVR: destroyed");
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+/********************************************************************
+/* CPVRManager Start
+/*
+/* PVRManager Startup
+/********************************************************************/
 void CPVRManager::Start()
 {
   /* First stop and remove any clients */
@@ -422,6 +414,11 @@ void CPVRManager::Start()
   return;
 }
 
+/********************************************************************
+/* CPVRManager Stop
+/*
+/* PVRManager shutdown
+/********************************************************************/
 void CPVRManager::Stop()
 {
   CLog::Log(LOGNOTICE, "PVR: PVRManager stoping");
@@ -434,15 +431,19 @@ void CPVRManager::Stop()
   m_clients.clear();
   m_clientsProps.clear();
 
-  if (m_pTimeshiftFile)
-  {
-    delete m_pTimeshiftFile;
-    m_pTimeshiftFile = NULL;
-  }
+  delete m_pTimeshiftFile;
+  m_pTimeshiftFile = NULL;
+  delete m_TimeshiftReceiver;
+  m_TimeshiftReceiver = NULL;
 
   return;
 }
 
+/********************************************************************
+/* CPVRManager LoadClients
+/*
+/* Load the client drivers and doing the startup.
+/********************************************************************/
 bool CPVRManager::LoadClients()
 {
   /* Get all PVR Add on's */
@@ -491,12 +492,11 @@ bool CPVRManager::LoadClients()
   return !m_clients.empty();
 }
 
-unsigned long CPVRManager::GetFirstClientID()
-{
-  CLIENTMAPITR itr = m_clients.begin();
-  return m_clients[(*itr).first]->GetID();
-}
-
+/********************************************************************
+/* CPVRManager GetClientProperties
+/*
+/* Load the client Properties for every client
+/********************************************************************/
 void CPVRManager::GetClientProperties()
 {
   m_clientsProps.clear();
@@ -508,6 +508,12 @@ void CPVRManager::GetClientProperties()
   }
 }
 
+/********************************************************************
+/* CPVRManager GetClientProperties
+/*
+/* Load the client Properties for the given client ID in the
+/* Properties list
+/********************************************************************/
 void CPVRManager::GetClientProperties(long clientID)
 {
   PVR_SERVERPROPS props;
@@ -518,54 +524,78 @@ void CPVRManager::GetClientProperties(long clientID)
   }
 }
 
+/********************************************************************
+/* CPVRManager GetFirstClientID
+/*
+/* Returns the first loaded client ID
+/********************************************************************/
+unsigned long CPVRManager::GetFirstClientID()
+{
+  CLIENTMAPITR itr = m_clients.begin();
+  return m_clients[(*itr).first]->GetID();
+}
+
+/********************************************************************
+/* CPVRManager OnClientMessage
+/*
+/* Callback function from Client driver to inform about changed
+/* timers, channels, recordings or epg.
+/********************************************************************/
 void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg)
 {
   /* here the manager reacts to messages sent from any of the clients via the IPVRClientCallback */
-  switch (clientEvent) {
+  switch (clientEvent)
+  {
     case PVR_EVENT_UNKNOWN:
       CLog::Log(LOGDEBUG, "%s - PVR: client_%ld unknown event : %s", __FUNCTION__, clientID, msg);
       break;
 
     case PVR_EVENT_TIMERS_CHANGE:
-	  {
+      {
         CLog::Log(LOGDEBUG, "%s - PVR: client_%ld timers changed", __FUNCTION__, clientID);
         SyncInfo();
 
         CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
-	    if (pTVWin)
-    	  pTVWin->UpdateData(TV_WINDOW_TIMERS);
-	  }
+        if (pTVWin)
+        pTVWin->UpdateData(TV_WINDOW_TIMERS);
+      }
       break;
 
     case PVR_EVENT_RECORDINGS_CHANGE:
-	  {
+      {
         CLog::Log(LOGDEBUG, "%s - PVR: client_%ld recording list changed", __FUNCTION__, clientID);
         SyncInfo();
 
         CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
-	    if (pTVWin)
-    	  pTVWin->UpdateData(TV_WINDOW_RECORDINGS);
-	  }
+        if (pTVWin)
+        pTVWin->UpdateData(TV_WINDOW_RECORDINGS);
+      }
       break;
 
     case PVR_EVENT_CHANNELS_CHANGE:
-	  {
+      {
         CLog::Log(LOGDEBUG, "%s - PVR: client_%ld channel list changed", __FUNCTION__, clientID);
         SyncInfo();
 
         CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
-	    if (pTVWin)
-		{
-    	  pTVWin->UpdateData(TV_WINDOW_CHANNELS_TV);
-		  pTVWin->UpdateData(TV_WINDOW_CHANNELS_RADIO);
-		}
-	  }
+        if (pTVWin)
+        {
+          pTVWin->UpdateData(TV_WINDOW_CHANNELS_TV);
+          pTVWin->UpdateData(TV_WINDOW_CHANNELS_RADIO);
+        }
+      }
       break;
+
     default:
       break;
   }
 }
 
+/********************************************************************
+/* CPVRManager SetSetting
+/*
+/* Send a setting value to the client driver
+/********************************************************************/
 ADDON_STATUS CPVRManager::SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)
 {
   if (!addon)
@@ -587,6 +617,11 @@ ADDON_STATUS CPVRManager::SetSetting(const CAddon* addon, const char *settingNam
   return STATUS_UNKNOWN;
 }
 
+/********************************************************************
+/* CPVRManager RequestRestart
+/*
+/* Restart a client driver
+/********************************************************************/
 bool CPVRManager::RequestRestart(const CAddon* addon, bool datachanged)
 {
   if (!addon)
@@ -624,6 +659,11 @@ bool CPVRManager::RequestRestart(const CAddon* addon, bool datachanged)
   return true;
 }
 
+/********************************************************************
+/* CPVRManager RequestRemoval
+/*
+/* Unload a client driver
+/********************************************************************/
 bool CPVRManager::RequestRemoval(const CAddon* addon)
 {
   if (!addon)
@@ -648,206 +688,6 @@ bool CPVRManager::RequestRemoval(const CAddon* addon)
 
   return false;
 }
-
-int CPVRManager::GetGroupList(CFileItemList* results)
-{
-  for (unsigned int i = 0; i < m_channel_group.size(); i++)
-  {
-    CFileItemPtr group(new CFileItem(m_channel_group[i].m_Title));
-    group->m_strTitle = m_channel_group[i].m_Title;
-    group->m_strPath.Format("%i", m_channel_group[i].m_ID);
-    results->Add(group);
-  }
-  return m_channel_group.size();
-}
-
-void CPVRManager::AddGroup(const CStdString &newname)
-{
-  EnterCriticalSection(&m_critSection);
-  m_database.Open();
-
-  m_database.AddGroup(GetFirstClientID(), newname);
-  m_database.GetGroupList(GetFirstClientID(), &m_channel_group);
-
-  m_database.Close();
-  LeaveCriticalSection(&m_critSection);
-}
-
-bool CPVRManager::RenameGroup(unsigned int GroupId, const CStdString &newname)
-{
-  EnterCriticalSection(&m_critSection);
-  m_database.Open();
-
-  m_database.RenameGroup(GetFirstClientID(), GroupId, newname);
-  m_database.GetGroupList(GetFirstClientID(), &m_channel_group);
-
-  m_database.Close();
-  LeaveCriticalSection(&m_critSection);
-  return true;
-}
-
-bool CPVRManager::DeleteGroup(unsigned int GroupId)
-{
-  EnterCriticalSection(&m_critSection);
-//  m_database.Open();
-//
-//  m_database.DeleteGroup(GetFirstClientID(), GroupId);
-//
-//  for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
-//  {
-//    if (PVRChannelsTV[i].GroupID() == GroupId)
-//    {
-//      PVRChannelsTV[i].m_iGroupID = 0;
-//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsTV[i]);
-//    }
-//  }
-//  for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
-//  {
-//    if (PVRChannelsRadio[i].GroupID() == GroupId)
-//    {
-//      PVRChannelsRadio[i].m_iGroupID = 0;
-//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsRadio[i]);
-//    }
-//  }
-//  m_database.GetGroupList(GetFirstClientID(), &m_channel_group);
-//  m_database.Close();
-  LeaveCriticalSection(&m_critSection);
-  return true;
-}
-
-bool CPVRManager::ChannelToGroup(unsigned int number, unsigned int GroupId, bool radio)
-{
-//  if (!radio)
-//  {
-//    if (((int) number <= PVRChannelsTV.size()+1) && (number != 0))
-//    {
-//      EnterCriticalSection(&m_critSection);
-//      m_database.Open();
-//      PVRChannelsTV[number-1].m_iGroupID = GroupId;
-//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsTV[number-1]);
-//      m_database.Close();
-//      LeaveCriticalSection(&m_critSection);
-//      return true;
-//    }
-//  }
-//  else
-//  {
-//    if (((int) number <= PVRChannelsRadio.size()+1) && (number != 0))
-//    {
-//      EnterCriticalSection(&m_critSection);
-//      m_database.Open();
-//      PVRChannelsRadio[number-1].m_iGroupID = GroupId;
-//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsRadio[number-1]);
-//      m_database.Close();
-//      LeaveCriticalSection(&m_critSection);
-//      return true;
-//    }
-//  }
-  return false;
-}
-
-int CPVRManager::GetPrevGroupID(int current_group_id)
-{
-  if (m_channel_group.size() == 0)
-    return -1;
-
-  if ((current_group_id == -1) || (current_group_id == 0))
-    return m_channel_group[m_channel_group.size()-1].m_ID;
-
-  for (unsigned int i = 0; i < m_channel_group.size(); i++)
-  {
-    if (current_group_id == m_channel_group[i].m_ID)
-    {
-      if (i != 0)
-        return m_channel_group[i-1].m_ID;
-      else
-        return -1;
-    }
-  }
-  return -1;
-}
-
-int CPVRManager::GetNextGroupID(int current_group_id)
-{
-  unsigned int i = 0;
-
-  if (m_channel_group.size() == 0)
-    return -1;
-
-  if ((current_group_id == 0) || (current_group_id == -1))
-    return m_channel_group[0].m_ID;
-
-  if (m_channel_group.size() == 0)
-    return -1;
-
-  for (; i < m_channel_group.size(); i++)
-  {
-    if (current_group_id == m_channel_group[i].m_ID)
-      break;
-  }
-
-  if (i >= m_channel_group.size()-1)
-    return -1;
-  else
-    return m_channel_group[i+1].m_ID;
-}
-
-CStdString CPVRManager::GetGroupName(int GroupId)
-{
-  if (GroupId == -1)
-    return g_localizeStrings.Get(593);
-
-  for (unsigned int i = 0; i < m_channel_group.size(); i++)
-  {
-    if (GroupId == m_channel_group[i].m_ID)
-      return m_channel_group[i].m_Title;
-  }
-
-  return g_localizeStrings.Get(593);
-}
-
-int CPVRManager::GetFirstChannelForGroupID(int GroupId, bool radio)
-{
-  if (GroupId == -1)
-    return 1;
-
-  if (!radio)
-  {
-    for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
-    {
-      if (PVRChannelsTV[i].GroupID() == GroupId)
-        return i+1;
-    }
-  }
-  else
-  {
-    for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
-    {
-      if (PVRChannelsRadio[i].GroupID() == GroupId)
-        return i+1;
-    }
-  }
-  return 1;
-}
-
-void CPVRManager::SetPlayingGroup(int GroupId)
-{
-  m_CurrentGroupID = GroupId;
-}
-
-int CPVRManager::GetPlayingGroup()
-{
-  return m_CurrentGroupID;
-}
-
-
-
-
-
-
-
-
-
 
 
 /*************************************************************/
@@ -2423,3 +2263,210 @@ int CPVRManager::GetDemuxStreamLength()
 }
 
 CPVRManager g_PVRManager;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/// >>>>> NEED REWORK
+int CPVRManager::GetGroupList(CFileItemList* results)
+{
+  for (unsigned int i = 0; i < m_channel_group.size(); i++)
+  {
+    CFileItemPtr group(new CFileItem(m_channel_group[i].m_Title));
+    group->m_strTitle = m_channel_group[i].m_Title;
+    group->m_strPath.Format("%i", m_channel_group[i].m_ID);
+    results->Add(group);
+  }
+  return m_channel_group.size();
+}
+
+void CPVRManager::AddGroup(const CStdString &newname)
+{
+  EnterCriticalSection(&m_critSection);
+  m_database.Open();
+
+  m_database.AddGroup(GetFirstClientID(), newname);
+  m_database.GetGroupList(GetFirstClientID(), &m_channel_group);
+
+  m_database.Close();
+  LeaveCriticalSection(&m_critSection);
+}
+
+bool CPVRManager::RenameGroup(unsigned int GroupId, const CStdString &newname)
+{
+  EnterCriticalSection(&m_critSection);
+  m_database.Open();
+
+  m_database.RenameGroup(GetFirstClientID(), GroupId, newname);
+  m_database.GetGroupList(GetFirstClientID(), &m_channel_group);
+
+  m_database.Close();
+  LeaveCriticalSection(&m_critSection);
+  return true;
+}
+
+bool CPVRManager::DeleteGroup(unsigned int GroupId)
+{
+  EnterCriticalSection(&m_critSection);
+//  m_database.Open();
+//
+//  m_database.DeleteGroup(GetFirstClientID(), GroupId);
+//
+//  for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
+//  {
+//    if (PVRChannelsTV[i].GroupID() == GroupId)
+//    {
+//      PVRChannelsTV[i].m_iGroupID = 0;
+//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsTV[i]);
+//    }
+//  }
+//  for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
+//  {
+//    if (PVRChannelsRadio[i].GroupID() == GroupId)
+//    {
+//      PVRChannelsRadio[i].m_iGroupID = 0;
+//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsRadio[i]);
+//    }
+//  }
+//  m_database.GetGroupList(GetFirstClientID(), &m_channel_group);
+//  m_database.Close();
+  LeaveCriticalSection(&m_critSection);
+  return true;
+}
+
+bool CPVRManager::ChannelToGroup(unsigned int number, unsigned int GroupId, bool radio)
+{
+//  if (!radio)
+//  {
+//    if (((int) number <= PVRChannelsTV.size()+1) && (number != 0))
+//    {
+//      EnterCriticalSection(&m_critSection);
+//      m_database.Open();
+//      PVRChannelsTV[number-1].m_iGroupID = GroupId;
+//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsTV[number-1]);
+//      m_database.Close();
+//      LeaveCriticalSection(&m_critSection);
+//      return true;
+//    }
+//  }
+//  else
+//  {
+//    if (((int) number <= PVRChannelsRadio.size()+1) && (number != 0))
+//    {
+//      EnterCriticalSection(&m_critSection);
+//      m_database.Open();
+//      PVRChannelsRadio[number-1].m_iGroupID = GroupId;
+//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsRadio[number-1]);
+//      m_database.Close();
+//      LeaveCriticalSection(&m_critSection);
+//      return true;
+//    }
+//  }
+  return false;
+}
+
+int CPVRManager::GetPrevGroupID(int current_group_id)
+{
+  if (m_channel_group.size() == 0)
+    return -1;
+
+  if ((current_group_id == -1) || (current_group_id == 0))
+    return m_channel_group[m_channel_group.size()-1].m_ID;
+
+  for (unsigned int i = 0; i < m_channel_group.size(); i++)
+  {
+    if (current_group_id == m_channel_group[i].m_ID)
+    {
+      if (i != 0)
+        return m_channel_group[i-1].m_ID;
+      else
+        return -1;
+    }
+  }
+  return -1;
+}
+
+int CPVRManager::GetNextGroupID(int current_group_id)
+{
+  unsigned int i = 0;
+
+  if (m_channel_group.size() == 0)
+    return -1;
+
+  if ((current_group_id == 0) || (current_group_id == -1))
+    return m_channel_group[0].m_ID;
+
+  if (m_channel_group.size() == 0)
+    return -1;
+
+  for (; i < m_channel_group.size(); i++)
+  {
+    if (current_group_id == m_channel_group[i].m_ID)
+      break;
+  }
+
+  if (i >= m_channel_group.size()-1)
+    return -1;
+  else
+    return m_channel_group[i+1].m_ID;
+}
+
+CStdString CPVRManager::GetGroupName(int GroupId)
+{
+  if (GroupId == -1)
+    return g_localizeStrings.Get(593);
+
+  for (unsigned int i = 0; i < m_channel_group.size(); i++)
+  {
+    if (GroupId == m_channel_group[i].m_ID)
+      return m_channel_group[i].m_Title;
+  }
+
+  return g_localizeStrings.Get(593);
+}
+
+int CPVRManager::GetFirstChannelForGroupID(int GroupId, bool radio)
+{
+  if (GroupId == -1)
+    return 1;
+
+  if (!radio)
+  {
+    for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
+    {
+      if (PVRChannelsTV[i].GroupID() == GroupId)
+        return i+1;
+    }
+  }
+  else
+  {
+    for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
+    {
+      if (PVRChannelsRadio[i].GroupID() == GroupId)
+        return i+1;
+    }
+  }
+  return 1;
+}
+
+void CPVRManager::SetPlayingGroup(int GroupId)
+{
+  m_CurrentGroupID = GroupId;
+}
+
+int CPVRManager::GetPlayingGroup()
+{
+  return m_CurrentGroupID;
+}
+
+

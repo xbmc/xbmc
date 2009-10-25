@@ -776,7 +776,7 @@
 
   <string id="1300">Custom audio device</string>
   <string id="1301">Custom passthrough device</string>
-  
+
   <string id="1396">Drifting</string>
   <string id="1397">and</string>
   <string id="1398">Freezing</string>
@@ -1588,6 +1588,7 @@
   <string id="18030">PVR information</string>
   <string id="18031">PVR service</string>
   <string id="18032">Loading EPG from clients</string>
+  <string id="18033">Rescan for missing icons</string>
 
   <string id="18048">Edit Channel Settings</string>
   <string id="18049">New Channel</string>

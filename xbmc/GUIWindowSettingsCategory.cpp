@@ -84,6 +84,7 @@
 #include "GUIDialogAccessPoints.h"
 #include "FileSystem/Directory.h"
 #include "utils/ScraperParser.h"
+#include "utils/PVRChannels.h"
 
 #include "FileItem.h"
 #include "GUIToggleButtonControl.h"
@@ -2567,6 +2568,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }
+  else if (strSetting.Equals("pvrmenu.searchicons"))
+  {
+    cPVRChannels::SearchMissingChannelIcons();
+  }
 
   UpdateSettings();
 }
@@ -3783,7 +3788,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
     m_AnalogAudioSinkMap["Error - no devices found"] = "null:";
     m_AnalogAudioSinkMap["custom"] = "custom";
   }
-  
+
 
   int numberSinks = 0;
 

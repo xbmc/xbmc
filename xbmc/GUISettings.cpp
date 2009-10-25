@@ -690,13 +690,15 @@ void CGUISettings::Initialize()
   AddBool(5, "pvrmenu.infotimeout", 18011, true);
   AddInt(6, "pvrmenu.infotime", 18009, 5, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddBool(7, "pvrmenu.hidevideolength", 18024, true);
-  AddString(8, "pvrmenu.iconpath", 18012, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddSeparator(8, "pvrmenu.sep1");
+  AddString(9, "pvrmenu.iconpath", 18012, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddString(10, "pvrmenu.searchicons", 18033, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(8,"pvrepg", 18013);
   AddInt(1, "pvrepg.epgscan", 18014, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
   AddInt(2, "pvrepg.epgupdate", 18015, 60, 15, 15, 240, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddInt(3, "pvrepg.daystosave", 18016, 7, 1, 1, 180, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
-  
+
   AddCategory(8,"pvrplayback", 18023);
   AddBool(1, "pvrplayback.playminimized", 18026, true);
   AddInt(2, "pvrplayback.scantime", 18025, 5, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
