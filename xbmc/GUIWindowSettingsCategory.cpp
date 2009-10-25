@@ -1867,12 +1867,12 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
 #endif
   } 
-  else if (strSetting.Equals("servers.zeroconf"))
+  else if (strSetting.Equals("network.zeroconf"))
   {
 #ifdef HAS_ZEROCONF
     //ifdef zeroconf here because it's only found in guisettings if defined
     CZeroconf::GetInstance()->Stop();
-    if(g_guiSettings.GetBool("servers.zeroconf"))
+    if(g_guiSettings.GetBool("network.zeroconf"))
       CZeroconf::GetInstance()->Start();
 #endif
   }
