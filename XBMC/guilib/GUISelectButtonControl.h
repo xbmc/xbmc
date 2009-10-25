@@ -111,6 +111,7 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
+  virtual void SetInvalid();
   virtual void SetPosition(float posX, float posY);
 
 protected:

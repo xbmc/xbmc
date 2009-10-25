@@ -85,7 +85,7 @@ public:
 protected:
   std::vector<CNetworkLocation> m_locations;
 
-  CCriticalSection m_muAutoSource;
+  CCriticalSection m_muAutoSource, m_CritSecStorageProvider;
 #ifdef HAS_DVD_DRIVE
   std::map<CStdString,CCdInfo*> m_mapCdInfo;
 #endif

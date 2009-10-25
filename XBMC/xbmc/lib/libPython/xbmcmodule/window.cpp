@@ -382,12 +382,12 @@ namespace PYXBMC
       ++it;
     }
 
-    PyXBMCGUIUnlock();
     if (self->bIsPythonWindow)
     {
       g_windowManager.Remove(self->pWindow->GetID());
       delete self->pWindow;
     }
+    PyXBMCGUIUnlock();
     self->vecControls.clear();
     self->vecControls.~vector();
     self->sFallBackPath.~string();          
@@ -410,11 +410,13 @@ namespace PYXBMC
       self->iOldWindowId = ACTIVE_WINDOW;
 
     PyXBMCGUILock();
-    // if it's a idalog, we have to activate it a bit different
-    if (WindowDialog_Check(self))	((CGUIPythonWindowDialog*)self->pWindow)->Activate(ACTIVE_WINDOW);
-    else if (WindowXMLDialog_Check(self))	((CGUIPythonWindowXMLDialog*)self->pWindow)->Activate(ACTIVE_WINDOW);
-    // activate the window
-    else g_windowManager.ActivateWindow(self->iWindowId);
+    // if it's a dialog, we have to activate it a bit different
+    if (WindowDialog_Check(self))
+      ((CGUIPythonWindowDialog*)self->pWindow)->Show();
+    else if (WindowXMLDialog_Check(self))
+      ((CGUIPythonWindowXMLDialog*)self->pWindow)->Show();
+    else
+      g_windowManager.ActivateWindow(self->iWindowId);
     PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -442,10 +444,12 @@ namespace PYXBMC
     PyXBMCGUILock();
 
     // if it's a dialog, we have to close it a bit different
-    if (WindowDialog_Check(self))	((CGUIPythonWindowDialog*)self->pWindow)->Close();
-    else if (WindowXMLDialog_Check(self)) ((CGUIPythonWindowXMLDialog*)self->pWindow)->Close();
-    // close the window by activating the parent one
-    else g_windowManager.ActivateWindow(self->iOldWindowId);
+    if (WindowDialog_Check(self))
+      ((CGUIPythonWindowDialog*)self->pWindow)->Show(false);
+    else if (WindowXMLDialog_Check(self))
+      ((CGUIPythonWindowXMLDialog*)self->pWindow)->Show(false);
+    else
+      g_windowManager.ActivateWindow(self->iOldWindowId);
     self->iOldWindowId = 0;
 
     PyXBMCGUIUnlock();

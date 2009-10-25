@@ -75,17 +75,18 @@ void CGUIProgressControl::Render()
     if (m_fPercent < 0.0f) m_fPercent = 0.0f;
     if (m_fPercent > 100.0f) m_fPercent = 100.0f;
 
-    float fScaleX, fScaleY;
     if (m_width == 0)
       m_width = m_guiBackground.GetTextureWidth();
     if (m_height == 0)
       m_height = m_guiBackground.GetTextureHeight();
-    fScaleY = m_height / m_guiBackground.GetTextureHeight();
-    fScaleX = m_width / m_guiBackground.GetTextureWidth();
 
     m_guiBackground.SetHeight(m_height);
     m_guiBackground.SetWidth(m_width);
     m_guiBackground.Render();
+
+    float fScaleX, fScaleY;
+    fScaleY = m_guiBackground.GetTextureHeight() ? m_height / m_guiBackground.GetTextureHeight() : 1.0f;
+    fScaleX = m_guiBackground.GetTextureWidth() ? m_width / m_guiBackground.GetTextureWidth() : 1.0f;
 
     float fWidth = m_fPercent;
 
@@ -235,6 +236,16 @@ void CGUIProgressControl::AllocResources()
   m_guiLeft.SetHeight(20);
   m_guiMid.SetHeight(20);
   m_guiOverlay.SetHeight(20);
+}
+
+void CGUIProgressControl::SetInvalid()
+{
+  CGUIControl::SetInvalid();
+  m_guiBackground.SetInvalid();
+  m_guiMid.SetInvalid();
+  m_guiRight.SetInvalid();
+  m_guiLeft.SetInvalid();
+  m_guiOverlay.SetInvalid();
 }
 
 void CGUIProgressControl::SetInfo(int iInfo)

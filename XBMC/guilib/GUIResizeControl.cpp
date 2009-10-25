@@ -183,6 +183,13 @@ void CGUIResizeControl::DynamicResourceAlloc(bool bOnOff)
   m_imgNoFocus.DynamicResourceAlloc(bOnOff);
 }
 
+void CGUIResizeControl::SetInvalid()
+{
+  CGUIControl::SetInvalid();
+  m_imgFocus.SetInvalid();
+  m_imgNoFocus.SetInvalid();
+}
+
 void CGUIResizeControl::Resize(float x, float y)
 {
   float width = m_width + x;

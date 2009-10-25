@@ -1551,10 +1551,13 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
   if(strFolder.Find("://") >= 0)
   {
     CURL url(strFolder);
-    AddFileToFolder(url.GetFileName(), strFile, strResult);
-    url.SetFileName(strResult);
-    strResult = url.Get();
-    return;
+    if (url.GetFileName() != strFolder)
+    {
+      AddFileToFolder(url.GetFileName(), strFile, strResult);
+      url.SetFileName(strResult);
+      strResult = url.Get();
+      return;
+    }
   }
 
   strResult = strFolder;
@@ -1579,11 +1582,11 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
   if(strFolder.Find("://") >= 0)
   {
     CURL url(strFolder);
-    strFolder = url.GetFileName();
-    if(!strFolder.IsEmpty())
+    CStdString file = url.GetFileName();
+    if(!file.IsEmpty() && file != strFolder)
     {
-      AddSlashAtEnd(strFolder);
-      url.SetFileName(strFolder);
+      AddSlashAtEnd(file);
+      url.SetFileName(file);
     }
     strFolder = url.Get();
     return;
@@ -1603,11 +1606,11 @@ void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
   if(strFolder.Find("://") >= 0)
   {
     CURL url(strFolder);
-    strFolder = url.GetFileName();
-    if (!strFolder.IsEmpty())
+    CStdString file = url.GetFileName();
+    if (!file.IsEmpty() && file != strFolder)
     {
-      RemoveSlashAtEnd(strFolder);
-      url.SetFileName(strFolder);
+      RemoveSlashAtEnd(file);
+      url.SetFileName(file);
     }
     strFolder = url.Get();
     return;

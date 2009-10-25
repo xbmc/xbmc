@@ -647,9 +647,8 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
         }
         if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
         {
-          // reallocate all the control resources
-          CGUIControlGroup::FreeResources();
-          CGUIControlGroup::AllocResources();
+          // invalidate controls to get them to recalculate sizing information
+          SetInvalid();
           return true;
         }
       }

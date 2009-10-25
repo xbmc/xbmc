@@ -157,6 +157,8 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   m_Stream = NULL;
   m_MainLoop = NULL;
   m_bPause = false;
+  m_bRecentlyFlushed = true;
+  m_bAutoResume = false;
   m_bIsAllocated = false;
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
@@ -279,7 +281,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   m_bIsAllocated = true;
 
   SetCurrentVolume(m_nCurrentVolume);
-  m_bPause = Cork(false);
+  Resume();
   return true;
 }
 
@@ -347,8 +349,11 @@ void CPulseAudioDirectSound::Flush()
   if (!m_bIsAllocated)
      return;
 
+  Pause();
+
   pa_threaded_mainloop_lock(m_MainLoop);
   WaitForOperation(pa_stream_flush(m_Stream, NULL, NULL), m_MainLoop, "Flush");
+  m_bRecentlyFlushed = true;
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
@@ -380,21 +385,27 @@ bool CPulseAudioDirectSound::Pause()
 bool CPulseAudioDirectSound::Resume()
 {
   if (!m_bIsAllocated)
-     return -1;
-  if(m_bPause)
-    m_bPause = Cork(false);
+     return false;
 
-  return !m_bPause;
+  bool result = false;
+
+  if(m_bPause && !m_bRecentlyFlushed)
+  {
+    m_bPause = Cork(false);
+    result = !m_bPause;
+  }
+  else if (m_bPause)
+    result = m_bAutoResume = true;
+
+  return result;
 }
 
 bool CPulseAudioDirectSound::Stop()
 {
   if (!m_bIsAllocated)
-    return -1;
+    return false;
 
   Flush();
-
-  m_bPause = false;
 
   return true;
 }
@@ -459,7 +470,15 @@ unsigned int CPulseAudioDirectSound::AddPackets(const void* data, unsigned int l
 
   int rtn = pa_stream_write(m_Stream, data, length, NULL, 0, PA_SEEK_RELATIVE);
 
+
+  if (rtn < length && m_bRecentlyFlushed)
+    m_bRecentlyFlushed = false;
+
   pa_threaded_mainloop_unlock(m_MainLoop);
+
+  if (m_bAutoResume)   
+    m_bAutoResume = !Resume();
+
   return length - rtn;
 }
 
