@@ -44,6 +44,9 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VARIABLE 4
 #define OTHER    5
 
+#define strnicmp _strnicmp
+#define strcmpi  _strcmpi
+
 int yyparse(char *exp);
 void llinit(void);
 int gettoken(char *lltb, int lltbsiz);

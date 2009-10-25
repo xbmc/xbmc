@@ -5,6 +5,9 @@
 #include "../../../visualisations/xbmc_vis.h"
 #include "XmlDocument.h"
 
+#define strnicmp _strnicmp
+#define strcmpi  _strcmpi
+
 CPlugin* g_plugin;
 char g_visName[512];
 

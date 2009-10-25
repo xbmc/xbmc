@@ -44,14 +44,13 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;HAS_DX"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;HAS_DX;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				AssemblerOutput="4"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -126,12 +125,11 @@
 				Name="VCCLCompilerTool"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;HAS_DX"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;HAS_DX;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="0"
 				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
