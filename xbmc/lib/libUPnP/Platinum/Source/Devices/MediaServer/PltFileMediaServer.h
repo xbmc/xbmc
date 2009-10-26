@@ -44,6 +44,7 @@
 |   constants
 +---------------------------------------------------------------------*/
 #define MAX_PATH_LENGTH 1024
+#define ALBUMART_QUERY  "aa"
 
 /*----------------------------------------------------------------------
 |   forward declarations
@@ -83,9 +84,9 @@ protected:
                                           NPT_HttpResponse&             response);
     // PLT_DeviceHost methods
     virtual NPT_Result SetupDevice();
-    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest&              request, 
-                                          const NPT_HttpRequestContext& context,
-                                          NPT_HttpResponse&             response);
+    virtual NPT_Result ProcessHttpGetRequest(NPT_HttpRequest&              request, 
+                                             const NPT_HttpRequestContext& context,
+                                             NPT_HttpResponse&             response);
     virtual NPT_Result ProcessGetDescription(NPT_HttpRequest&              request,
                                              const NPT_HttpRequestContext& context,
                                              NPT_HttpResponse&             response);
@@ -107,6 +108,7 @@ protected:
     virtual NPT_Result OnSearchContainer(PLT_ActionReference&          action, 
                                          const char*                   object_id, 
                                          const char*                   search_criteria,
+                                         const char*                   filter,
                                          NPT_UInt32                    starting_index,
                                          NPT_UInt32                    requested_count,
                                          const NPT_List<NPT_String>&   sort_criteria, 

@@ -133,6 +133,62 @@ typedef struct {
 } PLT_StorageInfo;
 
 /*----------------------------------------------------------------------
+|   PLT_ProtocolInfo class
++---------------------------------------------------------------------*/
+class PLT_ProtocolInfo
+{
+public:
+    class FieldEntry {
+    public:
+        FieldEntry(const char* key, const char* value) :
+          m_Key(key), m_Value(value) {}
+        NPT_String m_Key;
+        NPT_String m_Value;
+    };
+
+    PLT_ProtocolInfo();
+    PLT_ProtocolInfo(const char* protocol_info);
+    PLT_ProtocolInfo(const char* protocol,
+                     const char* mask,
+                     const char* content_type,
+                     const char* extra);
+    const NPT_String& GetProtocol()     const { return m_Protocol;  }
+    const NPT_String& GetMask()         const { return m_Mask; }
+    const NPT_String& GetContentType()  const { return m_ContentType;  }
+    const NPT_String& GetExtra()        const { return m_Extra; }
+
+    const NPT_String& GetDLNA_PN()      const { return m_DLNA_PN; }
+
+    bool IsValid() { return m_Valid; }
+    NPT_String ToString() const;
+
+    bool Match(const PLT_ProtocolInfo& other) const;
+
+private:
+    NPT_Result ValidateField(const char*  val, 
+                        const char*  valid_chars, 
+                        NPT_Cardinal num_chars = 0); // 0 means variable number of chars
+    NPT_Result ParseExtra(NPT_List<FieldEntry>& entries);
+    NPT_Result ValidateExtra();
+
+private:
+    NPT_String m_Protocol;
+    NPT_String m_Mask;
+    NPT_String m_ContentType;
+    NPT_String m_Extra;
+
+    NPT_String m_DLNA_PN;
+    NPT_String m_DLNA_OP;
+    NPT_String m_DLNA_PS;
+    NPT_String m_DLNA_CI;
+    NPT_String m_DLNA_FLAGS;
+    NPT_String m_DLNA_MAXSP;
+
+    NPT_List<FieldEntry> m_DLNA_OTHER;
+    bool       m_Valid;
+};
+
+/*----------------------------------------------------------------------
 |   PLT_MediaItemResource class
 +---------------------------------------------------------------------*/
 class PLT_MediaItemResource
@@ -141,17 +197,17 @@ public:
     PLT_MediaItemResource();
     ~PLT_MediaItemResource() {}
 
-    NPT_String    m_Uri;
-    NPT_String    m_ProtocolInfo;
-    NPT_UInt32    m_Duration; /* seconds */
-    NPT_LargeSize m_Size;
-    NPT_String    m_Protection;
-    NPT_UInt32    m_Bitrate; /* bytes/seconds */
-    NPT_UInt32    m_BitsPerSample;
-    NPT_UInt32    m_SampleFrequency;
-    NPT_UInt32    m_NbAudioChannels;
-    NPT_String    m_Resolution;
-    NPT_UInt32    m_ColorDepth;
+    NPT_String       m_Uri;
+    PLT_ProtocolInfo m_ProtocolInfo;
+    NPT_UInt32       m_Duration; /* seconds */
+    NPT_LargeSize    m_Size;
+    NPT_String       m_Protection;
+    NPT_UInt32       m_Bitrate; /* bytes/seconds */
+    NPT_UInt32       m_BitsPerSample;
+    NPT_UInt32       m_SampleFrequency;
+    NPT_UInt32       m_NbAudioChannels;
+    NPT_String       m_Resolution;
+    NPT_UInt32       m_ColorDepth;
 };
 
 /*----------------------------------------------------------------------
@@ -165,12 +221,18 @@ public:
 
     bool IsContainer() { return m_ObjectClass.type.StartsWith("object.container"); }
 
-    static const char* GetMimeType(const NPT_String& filename, const PLT_HttpRequestContext* context = NULL);
-    static const char* GetMimeTypeFromExtension(const NPT_String& extension, const PLT_HttpRequestContext* context = NULL);
-    static NPT_String  GetProtocolInfo(const char* filename, const PLT_HttpRequestContext* context = NULL);
+    static const char* GetMimeType(const NPT_String& filename, 
+                                   const PLT_HttpRequestContext* context = NULL);
+    static const char* GetMimeTypeFromExtension(const NPT_String& extension, 
+                                                const PLT_HttpRequestContext* context = NULL);
+    static NPT_String  GetProtocolInfo(const char* filename, 
+                                       bool with_dlna_extension = true, 
+                                       const PLT_HttpRequestContext* context = NULL);
 	static NPT_String  GetMimeTypeFromProtocolInfo(const char* protocol_info);
-    static const char* GetUPnPClass(const char* filename, const PLT_HttpRequestContext* context = NULL);
-    static const char* GetDlnaExtension(const char* mime_type, const PLT_HttpRequestContext* context = NULL);
+    static const char* GetUPnPClass(const char* filename, 
+                                    const PLT_HttpRequestContext* context = NULL);
+    static const char* GetDlnaExtension(const char* mime_type, 
+                                        const PLT_HttpRequestContext* context = NULL);
 
     virtual NPT_Result Reset();
     virtual NPT_Result ToDidl(NPT_UInt32 mask, NPT_String& didl);

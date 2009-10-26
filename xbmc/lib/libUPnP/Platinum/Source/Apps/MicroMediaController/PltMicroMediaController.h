@@ -91,7 +91,7 @@ public:
 private:
     const char* ChooseIDFromTable(PLT_StringMap& table);
     void        PopDirectoryStackToRoot(void);
-    NPT_Result  DoBrowse();
+    NPT_Result  DoBrowse(const char* object_id = NULL, bool metdata = false);
 
     void        GetCurMediaServer(PLT_DeviceDataReference& server);
     void        GetCurMediaRenderer(PLT_DeviceDataReference& renderer);
@@ -112,6 +112,7 @@ private:
     void    HandleCmd_setmr();
     void    HandleCmd_open();
     void    HandleCmd_play();
+    void    HandleCmd_seek(const char* command);
     void    HandleCmd_stop();
     void    HandleCmd_mute();
     void    HandleCmd_unmute();

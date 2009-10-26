@@ -312,8 +312,10 @@
          <dataType>string</dataType>
          <allowedValueList>
             <allowedValue>NORMAL</allowedValue>
+            <allowedValue>REPEAT_ONE</allowedValue>
             <allowedValue>REPEAT_ALL</allowedValue>
-            <allowedValue>INTRO</allowedValue>
+            <allowedValue>SHUFFLE</allowedValue>
+            <allowedValue>SHUFFLE_NOREPEAT</allowedValue>
          </allowedValueList>
          <defaultValue>NORMAL</defaultValue>
       </stateVariable>
@@ -321,39 +323,7 @@
          <name>RecordStorageMedium</name>
          <dataType>string</dataType>
          <allowedValueList>
-            <allowedValue>UNKNOWN</allowedValue>
-            <allowedValue>DV</allowedValue>
-            <allowedValue>MINI-DV</allowedValue>
-            <allowedValue>VHS</allowedValue>
-            <allowedValue>W-VHS</allowedValue>
-            <allowedValue>S-VHS</allowedValue>
-            <allowedValue>D-VHS</allowedValue>
-            <allowedValue>VHSC</allowedValue>
-            <allowedValue>VIDEO8</allowedValue>
-            <allowedValue>HI8</allowedValue>
-            <allowedValue>CD-ROM</allowedValue>
-            <allowedValue>CD-DA</allowedValue>
-            <allowedValue>CD-R</allowedValue>
-            <allowedValue>CD-RW</allowedValue>
-            <allowedValue>VIDEO-CD</allowedValue>
-            <allowedValue>SACD</allowedValue>
-            <allowedValue>MD-AUDIO</allowedValue>
-            <allowedValue>MD-PICTURE</allowedValue>
-            <allowedValue>DVD-ROM</allowedValue>
-            <allowedValue>DVD-VIDEO</allowedValue>
-            <allowedValue>DVD-R</allowedValue>
-            <allowedValue>DVD+RW</allowedValue>
-            <allowedValue>DVD-RW</allowedValue>
-            <allowedValue>DVD-RAM</allowedValue>
-            <allowedValue>DVD-AUDIO</allowedValue>
-            <allowedValue>DAT</allowedValue>
-            <allowedValue>LD</allowedValue>
-            <allowedValue>HDD</allowedValue>
-            <allowedValue>MICRO-MV</allowedValue>
-            <allowedValue>NETWORK</allowedValue>
-            <allowedValue>NONE</allowedValue>
             <allowedValue>NOT_IMPLEMENTED</allowedValue>
-            <allowedValue> vendor-defined </allowedValue>
          </allowedValueList>
       </stateVariable>
       <stateVariable sendEvents="yes">
@@ -376,14 +346,7 @@
          <name>CurrentRecordQualityMode</name>
          <dataType>string</dataType>
          <allowedValueList>
-            <allowedValue>0:EP</allowedValue>
-            <allowedValue>1:LP</allowedValue>
-            <allowedValue>2:SP</allowedValue>
-            <allowedValue>0:BASIC</allowedValue>
-            <allowedValue>1:MEDIUM</allowedValue>
-            <allowedValue>2:HIGH</allowedValue>
             <allowedValue>NOT_IMPLEMENTED</allowedValue>
-            <allowedValue> vendor-defined </allowedValue>
          </allowedValueList>
       </stateVariable>
       <stateVariable sendEvents="no">
@@ -412,9 +375,7 @@
          <allowedValueList>
             <allowedValue>STOPPED</allowedValue>
             <allowedValue>PAUSED_PLAYBACK</allowedValue>
-            <allowedValue>PAUSED_RECORDING</allowedValue>
             <allowedValue>PLAYING</allowedValue>
-            <allowedValue>RECORDING</allowedValue>
             <allowedValue>TRANSITIONING</allowedValue>
             <allowedValue>NO_MEDIA_PRESENT</allowedValue>
          </allowedValueList>
@@ -429,14 +390,17 @@
       </stateVariable>
       <stateVariable sendEvents="no">
          <name>PossibleRecordQualityModes</name>
-         <dataType>string</dataType>
+         <dataType>string</dataType>  
+         <allowedValueList>
+            <allowedValue>NOT_IMPLEMENTED</allowedValue>
+         </allowedValueList>
       </stateVariable>
       <stateVariable sendEvents="no">
          <name>CurrentTrack</name>
          <dataType>ui4</dataType>
          <allowedValueRange>
             <minimum>0</minimum>
-            <maximum>4294967295</maximum>
+            <maximum>65535</maximum>
             <step>1</step>
          </allowedValueRange>
       </stateVariable>
@@ -452,39 +416,11 @@
          <name>PlaybackStorageMedium</name>
          <dataType>string</dataType>
          <allowedValueList>
-            <allowedValue>UNKNOWN</allowedValue>
-            <allowedValue>DV</allowedValue>
-            <allowedValue>MINI-DV</allowedValue>
-            <allowedValue>VHS</allowedValue>
-            <allowedValue>W-VHS</allowedValue>
-            <allowedValue>S-VHS</allowedValue>
-            <allowedValue>D-VHS</allowedValue>
-            <allowedValue>VHSC</allowedValue>
-            <allowedValue>VIDEO8</allowedValue>
-            <allowedValue>HI8</allowedValue>
-            <allowedValue>CD-ROM</allowedValue>
-            <allowedValue>CD-DA</allowedValue>
-            <allowedValue>CD-R</allowedValue>
-            <allowedValue>CD-RW</allowedValue>
-            <allowedValue>VIDEO-CD</allowedValue>
-            <allowedValue>SACD</allowedValue>
-            <allowedValue>MD-AUDIO</allowedValue>
-            <allowedValue>MD-PICTURE</allowedValue>
-            <allowedValue>DVD-ROM</allowedValue>
-            <allowedValue>DVD-VIDEO</allowedValue>
-            <allowedValue>DVD-R</allowedValue>
-            <allowedValue>DVD+RW</allowedValue>
-            <allowedValue>DVD-RW</allowedValue>
-            <allowedValue>DVD-RAM</allowedValue>
-            <allowedValue>DVD-AUDIO</allowedValue>
-            <allowedValue>DAT</allowedValue>
-            <allowedValue>LD</allowedValue>
-            <allowedValue>HDD</allowedValue>
-            <allowedValue>MICRO-MV</allowedValue>
-            <allowedValue>NETWORK</allowedValue>
             <allowedValue>NONE</allowedValue>
-            <allowedValue>NOT_IMPLEMENTED</allowedValue>
-            <allowedValue> vendor-defined </allowedValue>
+            <allowedValue>UNKNOWN</allowedValue>
+            <allowedValue>CD-DA</allowedValue>
+            <allowedValue>HDD</allowedValue>
+            <allowedValue>NETWORK</allowedValue>
          </allowedValueList>
       </stateVariable>
       <stateVariable sendEvents="no">
@@ -495,16 +431,19 @@
          <name>RecordMediumWriteStatus</name>
          <dataType>string</dataType>
          <allowedValueList>
-            <allowedValue>WRITABLE</allowedValue>
-            <allowedValue>PROTECTED</allowedValue>
-            <allowedValue>NOT_WRITABLE</allowedValue>
-            <allowedValue>UNKNOWN</allowedValue>
             <allowedValue>NOT_IMPLEMENTED</allowedValue>
          </allowedValueList>
       </stateVariable>
       <stateVariable sendEvents="no">
          <name>PossiblePlaybackStorageMedia</name>
          <dataType>string</dataType>
+         <allowedValueList>
+            <allowedValue>NONE</allowedValue>
+            <allowedValue>UNKNOWN</allowedValue>
+            <allowedValue>CD-DA</allowedValue>
+            <allowedValue>HDD</allowedValue>
+            <allowedValue>NETWORK</allowedValue>
+         </allowedValueList>
       </stateVariable>
       <stateVariable sendEvents="no">
          <name>AVTransportURIMetaData</name>
@@ -515,21 +454,15 @@
          <dataType>ui4</dataType>
          <allowedValueRange>
             <minimum>0</minimum>
-            <maximum>4294967295</maximum>
+            <maximum>65535</maximum>
          </allowedValueRange>
       </stateVariable>
       <stateVariable sendEvents="no">
          <name>A_ARG_TYPE_SeekMode</name>
          <dataType>string</dataType>
          <allowedValueList>
-            <allowedValue>ABS_TIME</allowedValue>
             <allowedValue>REL_TIME</allowedValue>
-            <allowedValue>ABS_COUNT</allowedValue>
-            <allowedValue>REL_COUNT</allowedValue>
             <allowedValue>TRACK_NR</allowedValue>
-            <allowedValue>CHANNEL_FREQ</allowedValue>
-            <allowedValue>TAPE-INDEX</allowedValue>
-            <allowedValue>FRAME</allowedValue>
          </allowedValueList>
       </stateVariable>
       <stateVariable sendEvents="no">
@@ -539,6 +472,9 @@
       <stateVariable sendEvents="no">
          <name>PossibleRecordStorageMedia</name>
          <dataType>string</dataType>
+         <allowedValueList>
+            <allowedValue>NOT_IMPLEMENTED</allowedValue>
+         </allowedValueList>
       </stateVariable>
       <stateVariable sendEvents="no">
          <name>TransportStatus</name>
@@ -546,7 +482,6 @@
          <allowedValueList>
             <allowedValue>OK</allowedValue>
             <allowedValue>ERROR_OCCURRED</allowedValue>
-            <allowedValue> vendor-defined </allowedValue>
          </allowedValueList>
       </stateVariable>
       <stateVariable sendEvents="no">
@@ -554,7 +489,6 @@
          <dataType>string</dataType>
          <allowedValueList>
             <allowedValue>1</allowedValue>
-            <allowedValue> vendor-defined </allowedValue>
          </allowedValueList>
       </stateVariable>
    </serviceStateTable>

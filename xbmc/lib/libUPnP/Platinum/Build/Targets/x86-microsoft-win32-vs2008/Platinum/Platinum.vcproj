@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="Debug"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="Debug"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\ThirdParty\Neptune\Source\Config;..\..\..\..\ThirdParty\Neptune\Source\Core;..\..\..\..\ThirdParty\Neptune\Source\Neptune;..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaServer"
+				AdditionalIncludeDirectories="..\..\..\..\Source\Platinum;..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\..\Neptune\Source\Core"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -84,7 +84,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Release"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="Release"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -107,7 +107,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\ThirdParty\Neptune\Source\Config;..\..\..\..\ThirdParty\Neptune\Source\Core;..\..\..\..\ThirdParty\Neptune\Source\Neptune;..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaServer"
+				AdditionalIncludeDirectories="..\..\..\..\Source\Platinum;..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\..\Neptune\Source\Core"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
@@ -153,19 +153,23 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{D5F7DD40-709C-455b-A225-F1917F8750A3}"
 			>
+			<File
+				RelativePath="..\..\..\..\Source\Core\PltTime.cpp"
+				>
+			</File>
 			<Filter
 				Name="Core"
 				>
-				<File
-					RelativePath="..\..\..\..\Source\Core\Platinum.cpp"
-					>
-				</File>
 				<File
 					RelativePath="..\..\..\..\Source\Core\PltAction.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\..\..\Source\Core\PltArgument.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Core\PltConstants.cpp"
 					>
 				</File>
 				<File
@@ -261,6 +265,18 @@
 				Name="MediaServer"
 				>
 				<File
+					RelativePath="..\..\..\..\Source\Devices\MediaServer\ConnectionManagerSCPD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\MediaServer\ContentDirectorySCPD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\MediaServer\ContentDirectorywSearchSCPD.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\..\Source\Devices\MediaServer\PltDidl.cpp"
 					>
 				</File>
@@ -289,10 +305,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaServerSCPDs.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\..\Source\Devices\MediaServer\PltSyncMediaBrowser.cpp"
 					>
 				</File>
@@ -300,6 +312,10 @@
 			<Filter
 				Name="MediaRenderer"
 				>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\MediaRenderer\AVTransportSCPD.cpp"
+					>
+				</File>
 				<File
 					RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaController.cpp"
 					>
@@ -309,7 +325,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaRendererSCPDs.cpp"
+					RelativePath="..\..\..\..\Source\Devices\MediaRenderer\RdrConnectionManagerSCPD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\MediaRenderer\RenderingControlSCPD.cpp"
 					>
 				</File>
 			</Filter>
@@ -321,7 +341,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\MediaConnect\PltMediaConnectSCPDs.cpp"
+					RelativePath="..\..\..\..\Source\Devices\MediaConnect\X_MS_MediaReceiverRegistrarSCPD.cpp"
 					>
 				</File>
 			</Filter>
@@ -335,7 +355,7 @@
 				Name="Core"
 				>
 				<File
-					RelativePath="..\..\..\..\Source\Core\Platinum.h"
+					RelativePath="..\..\..\..\Source\Platinum\Platinum.h"
 					>
 				</File>
 				<File
@@ -344,10 +364,6 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\Source\Core\PltArgument.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\Source\Core\PltConstants.cpp"
 					>
 				</File>
 				<File
@@ -435,11 +451,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\..\Source\Platinum\PltSvnVersion.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\..\Source\Core\PltTaskManager.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\..\..\Source\Core\PltThreadTask.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Core\PltTime.h"
 					>
 				</File>
 				<File
@@ -451,7 +475,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Core\PltVersion.h"
+					RelativePath="..\..\..\..\Source\Platinum\PltVersion.h"
 					>
 				</File>
 				<File

@@ -74,6 +74,7 @@ class PLT_HttpHelper {
     static NPT_Result   Connect(NPT_Socket&      connection,
                                 NPT_HttpRequest& request,
                                 NPT_Timeout      timeout = NPT_TIMEOUT_INFINITE);
+	static void			SetBasicAuthorization(NPT_HttpRequest& request, const char* login, const char* password);
 };
 
 /*----------------------------------------------------------------------

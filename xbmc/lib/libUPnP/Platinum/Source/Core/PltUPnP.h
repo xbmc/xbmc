@@ -70,6 +70,8 @@ public:
     NPT_Result Start();
     NPT_Result Stop();
 
+	void       SetIgnoreLocalUUIDs(bool ignore) { m_IgnoreLocalUUIDs = ignore; }
+
 private:
     // members
     NPT_Mutex                           m_Lock;
@@ -84,6 +86,7 @@ private:
     NPT_UInt32                          m_Port;
     bool                                m_Multicast;
     PLT_SsdpListenTask*                 m_SsdpListenTask; 
+	bool								m_IgnoreLocalUUIDs;
 };
 
 #endif /* _PLT_UPNP_H_ */

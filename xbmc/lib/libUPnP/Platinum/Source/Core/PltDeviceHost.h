@@ -135,6 +135,9 @@ protected:
     virtual NPT_Result ProcessGetDescription(NPT_HttpRequest&              request,
                                              const NPT_HttpRequestContext& context,
                                              NPT_HttpResponse&             response);
+    virtual NPT_Result ProcessHttpGetRequest(NPT_HttpRequest&              request,
+                                             const NPT_HttpRequestContext& context,
+                                             NPT_HttpResponse&             response);
     virtual NPT_Result ProcessHttpPostRequest(NPT_HttpRequest&              request,
                                               const NPT_HttpRequestContext& context,
                                               NPT_HttpResponse&             response);

@@ -103,7 +103,7 @@ public:
   void StartTimeServer();
   void StopTimeServer();
   void StartUPnP();
-  void StopUPnP();
+  void StopUPnP(bool bWait);
   void StartUPnPRenderer();
   void StopUPnPRenderer();
   void StartUPnPClient();

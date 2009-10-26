@@ -185,7 +185,7 @@ PLT_MediaConnect::OnAction(PLT_ActionReference&          action,
     PLT_MediaConnectInfo* mc_info = NULL;
 
     /* parse the action name */
-    NPT_String name = action->GetActionDesc()->GetName();
+    NPT_String name = action->GetActionDesc().GetName();
 
     /* handle X_MS_MediaReceiverRegistrar actions here */
     if (name.Compare("IsAuthorized") == 0) {

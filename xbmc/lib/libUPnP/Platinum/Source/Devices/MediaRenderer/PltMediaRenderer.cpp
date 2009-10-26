@@ -96,13 +96,13 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         service->SetStateVariable("CurrentTransportActions", "Play,Pause,Stop,Seek,Next,Previous");
 
         // GetDeviceCapabilities
-        service->SetStateVariable("PossiblePlaybackStorageMedia", "NONE,NETWORK");
+        service->SetStateVariable("PossiblePlaybackStorageMedia", "NONE,NETWORK,HDD,CD-DA,UNKNOWN");
         service->SetStateVariable("PossibleRecordStorageMedia", "NOT_IMPLEMENTED");
         service->SetStateVariable("PossibleRecordQualityModes", "NOT_IMPLEMENTED");
 
         // GetMediaInfo
         service->SetStateVariable("NumberOfTracks", "0");
-        service->SetStateVariable("CurrentMediaDuration", "00:00:00");;
+        service->SetStateVariable("CurrentMediaDuration", "00:00:00");
         service->SetStateVariable("AVTransportURI", "");
         service->SetStateVariable("AVTransportURIMetadata", "");;
         service->SetStateVariable("NextAVTransportURI", "NOT_IMPLEMENTED");
@@ -133,7 +133,7 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         if (var) var->DisableIndirectEventing();
 
         // GetTransportInfo
-        service->SetStateVariable("TransportState", "STOPPED");
+        service->SetStateVariable("TransportState", "NO_MEDIA_PRESENT");
         service->SetStateVariable("TransportStatus", "OK");
         service->SetStateVariable("TransportPlaySpeed", "1");
 
@@ -155,7 +155,7 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         service->SetStateVariable("CurrentConnectionIDs", "0");
 
         // put all supported mime types here instead
-        service->SetStateVariable("SinkProtocolInfo", "http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_PRO,http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_SP_G726,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_FULL,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_MED,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_BASE,http-get:*:audio/L16;rate=44100;channels=1:DLNA.ORG_PN=LPCM,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_NTSC,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVHIGH_PRO,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMDRM_WMAFULL,http-get:*:audio/L16;rate=44100;channels=2:DLNA.ORG_PN=LPCM,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_SM,http-get:*:video/x-ms-asf:DLNA.ORG_PN=VC1_ASF_AP_L1_WMA,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMDRM_WMABASE,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVHIGH_FULL,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVHIGH_FULL,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVSPML_MP3,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAFULL,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVMED_FULL,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMABASE,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVSPLL_BASE,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_NTSC_XAC3,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVMED_BASE,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVSPLL_BASE,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVHIGH_PRO,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVSPML_BASE,http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_ASP_L5_SO_G726,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_LRG,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVSPML_BASE,http-get:*:audio/mpeg:DLNA.ORG_PN=MP3,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL_XAC3,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMDRM_WMAPRO,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAPRO,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG1,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_TN,http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_ASP_L4_SO_G726,http-get:*:audio/L16;rate=48000;channels=2:DLNA.ORG_PN=LPCM,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVMED_PRO,http-get:*:audio/mpeg:DLNA.ORG_PN=MP3X,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVSPML_MP3,http-get:*:image/x-ycbcr-yuv420:*,http-get:*:video/x-ms-wmv:*,http-get:*:video/wtv:*");
+        service->SetStateVariable("SinkProtocolInfo", "http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_PRO,http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_SP_G726,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_FULL,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_MED,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_BASE,http-get:*:audio/L16;rate=44100;channels=1:DLNA.ORG_PN=LPCM,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_NTSC,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVHIGH_PRO,http-get:*:audio/L16;rate=44100;channels=2:DLNA.ORG_PN=LPCM,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_SM,http-get:*:video/x-ms-asf:DLNA.ORG_PN=VC1_ASF_AP_L1_WMA,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMDRM_WMABASE,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVHIGH_FULL,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAFULL,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMABASE,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVSPLL_BASE,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_NTSC_XAC3,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVSPLL_BASE,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVSPML_BASE,http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_ASP_L5_SO_G726,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_LRG,http-get:*:audio/mpeg:DLNA.ORG_PN=MP3,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL_XAC3,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAPRO,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG1,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_TN,http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_ASP_L4_SO_G726,http-get:*:audio/L16;rate=48000;channels=2:DLNA.ORG_PN=LPCM,http-get:*:audio/mpeg:DLNA.ORG_PN=MP3X,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVSPML_MP3,http-get:*:video/x-ms-wmv:*");
         service->SetStateVariable("SourceProtocolInfo", "");
     }
 
@@ -173,7 +173,13 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         service->SetStateVariableRate("LastChange", NPT_TimeInterval(0.2f));
 
         service->SetStateVariable("Mute", "0");
+        service->SetStateVariableExtraAttribute("Mute", "Channel", "Master");
         service->SetStateVariable("Volume", "100");
+        service->SetStateVariableExtraAttribute("Volume", "Channel", "Master");
+        service->SetStateVariable("VolumeDB", "0");
+        service->SetStateVariableExtraAttribute("VolumeDB", "Channel", "Master");
+
+        service->SetStateVariable("PresetNameList", "FactoryDefaults");
     }
 
     return NPT_SUCCESS;
@@ -189,18 +195,18 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference&          action,
     NPT_COMPILER_UNUSED(context);
 
     /* parse the action name */
-    NPT_String name = action->GetActionDesc()->GetName();
+    NPT_String name = action->GetActionDesc().GetName();
 
     // since all actions take an instance ID and we only support 1 instance
     // verify that the Instance ID is 0 and return an error here now if not
-    NPT_String serviceType = action->GetActionDesc()->GetService()->GetServiceType();
+    NPT_String serviceType = action->GetActionDesc().GetService()->GetServiceType();
     if (serviceType.Compare("urn:schemas-upnp-org:service:AVTransport:1", true) == 0) {
         if (NPT_FAILED(action->VerifyArgumentValue("InstanceID", "0"))) {
             action->SetError(718, "Not valid InstanceID");
             return NPT_FAILURE;
         }
     }
-	serviceType = action->GetActionDesc()->GetService()->GetServiceType();
+	serviceType = action->GetActionDesc().GetService()->GetServiceType();
 	if (serviceType.Compare("urn:schemas-upnp-org:service:RenderingControl:1", true) == 0) {
 		if (NPT_FAILED(action->VerifyArgumentValue("InstanceID", "0"))) {
 			action->SetError(702, "Not valid InstanceID");
@@ -243,6 +249,13 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference&          action,
     if (name.Compare("SetVolume", true) == 0) {
           return OnSetVolume(action);
     }
+	if (name.Compare("SetVolumeDB", true) == 0) {
+		return OnSetVolumeDB(action);
+    }
+	if (name.Compare("GetVolumeDBRange", true) == 0) {
+		return OnGetVolumeDBRange(action);
+
+	}
     if (name.Compare("SetMute", true) == 0) {
           return OnSetMute(action);
     }
@@ -273,7 +286,7 @@ PLT_MediaRenderer::OnGetCurrentConnectionInfo(PLT_ActionReference& action)
     if (NPT_FAILED(action->SetArgumentValue("AVTransportID", "0"))) {
         return NPT_FAILURE;
     }
-    if (NPT_FAILED(action->SetArgumentValue("ProtocolInfo", ""))) {
+    if (NPT_FAILED(action->SetArgumentOutFromStateVariable("ProtocolInfo"))) {
         return NPT_FAILURE;
     }
     if (NPT_FAILED(action->SetArgumentValue("PeerConnectionManager", "/"))) {
@@ -382,6 +395,24 @@ PLT_MediaRenderer::OnSetPlayMode(PLT_ActionReference& /* action */)
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_MediaRenderer::OnSetVolume(PLT_ActionReference& /* action */)
+{
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaRenderer::OnSetVolumeDB
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaRenderer::OnSetVolumeDB(PLT_ActionReference& /* action */)
+{
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaRenderer::OnGetVolumeDBRange
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaRenderer::OnGetVolumeDBRange(PLT_ActionReference& /* action */)
 {
     return NPT_SUCCESS;
 }

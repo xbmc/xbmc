@@ -44,10 +44,10 @@
 +---------------------------------------------------------------------*/
 PLT_CtrlPointGetDescriptionTask::PLT_CtrlPointGetDescriptionTask(const NPT_HttpUrl&       url,
                                                                  PLT_CtrlPoint*           ctrl_point, 
-                                                                 PLT_DeviceDataReference& device) :
+                                                                 PLT_DeviceDataReference& root_device) :
     PLT_HttpClientSocketTask(new NPT_HttpRequest(url, "GET", NPT_HTTP_PROTOCOL_1_1)), 
     m_CtrlPoint(ctrl_point), 
-    m_Device(device) 
+    m_RootDevice(root_device) 
 {
 }
 
@@ -68,17 +68,17 @@ PLT_CtrlPointGetDescriptionTask::ProcessResponse(NPT_Result                    r
                                                  NPT_HttpResponse*             response)
 {
     NPT_COMPILER_UNUSED(request);
-    return m_CtrlPoint->ProcessGetDescriptionResponse(res, context, response, m_Device);
+    return m_CtrlPoint->ProcessGetDescriptionResponse(res, context, response, m_RootDevice);
 }
 
 /*----------------------------------------------------------------------
 |    PLT_CtrlPointGetSCPDTask::PLT_CtrlPointGetSCPDTask
 +---------------------------------------------------------------------*/
 PLT_CtrlPointGetSCPDTask::PLT_CtrlPointGetSCPDTask(PLT_CtrlPoint*           ctrl_point, 
-                                                   PLT_DeviceDataReference& device) :  
+                                                   PLT_DeviceDataReference& root_device) :  
     PLT_HttpClientSocketTask(), 
     m_CtrlPoint(ctrl_point), 
-    m_Device(device) 
+    m_RootDevice(root_device) 
 {
 }
 
@@ -99,7 +99,8 @@ PLT_CtrlPointGetSCPDTask::ProcessResponse(NPT_Result                    res,
                                           NPT_HttpResponse*             response)
 {
     NPT_COMPILER_UNUSED(context);
-    return m_CtrlPoint->ProcessGetSCPDResponse(res, request, response, m_Device);
+    return m_CtrlPoint->ProcessGetSCPDResponse(
+        res, (PLT_CtrlPointGetSCPDRequest*)request, response, m_RootDevice);
 }
 
 /*----------------------------------------------------------------------
@@ -164,13 +165,15 @@ PLT_CtrlPointHouseKeepingTask::DoRun()
 /*----------------------------------------------------------------------
 |    PLT_CtrlPointSubscribeEventTask::PLT_CtrlPointSubscribeEventTask
 +---------------------------------------------------------------------*/
-PLT_CtrlPointSubscribeEventTask::PLT_CtrlPointSubscribeEventTask(NPT_HttpRequest* request,
-                                                                 PLT_CtrlPoint*   ctrl_point, 
-                                                                 PLT_Service*     service,
-                                                                 void*            userdata) : 
+PLT_CtrlPointSubscribeEventTask::PLT_CtrlPointSubscribeEventTask(NPT_HttpRequest*        request,
+                                                                 PLT_CtrlPoint*          ctrl_point, 
+																 PLT_DeviceDataReference &device,
+                                                                 PLT_Service*            service,
+                                                                 void*                   userdata) : 
     PLT_HttpClientSocketTask(request), 
     m_CtrlPoint(ctrl_point), 
     m_Service(service), 
+	m_Device(device),
     m_Userdata(userdata) 
 {
 }

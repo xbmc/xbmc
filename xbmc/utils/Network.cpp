@@ -165,7 +165,7 @@ void CNetwork::StopServices(bool bWait)
     g_application.StopFtpServer();
 #endif
 #ifdef HAS_UPNP
-    g_application.StopUPnP();
+    g_application.StopUPnP(bWait);
 #endif
 #ifdef HAS_ZEROCONF
     g_application.StopZeroconf();

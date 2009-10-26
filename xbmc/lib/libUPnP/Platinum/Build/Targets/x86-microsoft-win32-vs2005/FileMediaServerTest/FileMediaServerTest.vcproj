@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\ThirdParty\Neptune\Source\Core;..\..\..\..\Source\Devices\MediaRenderer"
+				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\Platinum;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\Source\Devices\MediaRenderer;..\..\..\..\..\Neptune\Source\Core"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;NPT_CONFIG_ENABLE_LOGGING;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -122,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\ThirdParty\Neptune\Source\Core"
+				AdditionalIncludeDirectories="..\..\..\..\Source\Core;..\..\..\..\Source\Platinum;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\Source\Devices\MediaRenderer;..\..\..\..\..\Neptune\Source\Core"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"

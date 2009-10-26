@@ -107,8 +107,7 @@ PLT_MediaBrowser::OnDeviceAdded(PLT_DeviceDataReference& device)
             return NPT_FAILURE;
         }
 
-        NPT_LOG_FINE("Device Found:");
-        device->ToLog(NPT_LOG_LEVEL_FINE);
+        NPT_LOG_FINE_1("Device Found: %s", (const char*)*device);
 
         m_MediaServers.Add(device);
     }
@@ -143,8 +142,7 @@ PLT_MediaBrowser::OnDeviceRemoved(PLT_DeviceDataReference& device)
             return NPT_FAILURE;
         }
 
-        NPT_LOG_FINE("Device Removed:");
-        device->ToLog(NPT_LOG_LEVEL_FINE);
+        NPT_LOG_FINE_1("Device Removed: %s", (const char*)*device);
 
         m_MediaServers.Remove(device);
     }
@@ -162,6 +160,8 @@ PLT_MediaBrowser::OnDeviceRemoved(PLT_DeviceDataReference& device)
 NPT_Result
 PLT_MediaBrowser::FindServer(const char* uuid, PLT_DeviceDataReference& device)
 {
+    NPT_AutoLock lock(m_MediaServers);
+
     if (NPT_FAILED(NPT_ContainerFind(m_MediaServers, PLT_DeviceDataFinder(uuid), device))) {
         NPT_LOG_FINE_1("Device (%s) not found in our list of servers", (const char*)uuid);
         return NPT_FAILURE;
@@ -171,40 +171,93 @@ PLT_MediaBrowser::FindServer(const char* uuid, PLT_DeviceDataReference& device)
 }
 
 /*----------------------------------------------------------------------
-|   PLT_MediaBrowser::Browse
+|   PLT_MediaBrowser::Search
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_MediaBrowser::Browse(PLT_DeviceDataReference&   device, 
-                         const char*                obj_id,
-                         NPT_UInt32                 start_index,
-                         NPT_UInt32                 count,
-                         bool                       browse_metadata,
-                         const char*                filter,
-                         const char*                sort_criteria,
-                         void*                      userdata)
+PLT_MediaBrowser::Search(PLT_DeviceDataReference& device, 
+                         const char*              container_id,
+						 const char*              search_criteria,
+                         NPT_UInt32               start_index,
+                         NPT_UInt32               count,
+                         const char*              filter,
+                         void*                    userdata)
 {
-    // look for the service
-    PLT_Service* service;
-    NPT_String type;
-
     // verify device still in our list
     PLT_DeviceDataReference device_data;
     NPT_CHECK_WARNING(FindServer(device->GetUUID(), device_data));
 
-    // verify it has the action available
-    type = "urn:schemas-upnp-org:service:ContentDirectory:1";
-    if (NPT_FAILED(device->FindServiceByType(type, service))) {
-        NPT_LOG_WARNING_1("Service %s not found", (const char*)type);
-        return NPT_FAILURE;
+    // create action
+    PLT_ActionReference action;
+    NPT_CHECK_SEVERE(m_CtrlPoint->CreateAction(
+        device, 
+        "urn:schemas-upnp-org:service:ContentDirectory:1",
+        "Search",
+        action));
+
+    // Set the container id
+    PLT_Arguments args;
+    if (NPT_FAILED(action->SetArgumentValue("ContainerID", container_id))) {
+        return NPT_ERROR_INVALID_PARAMETERS;
     }
 
-    PLT_ActionDesc* action_desc = service->FindActionDesc("Browse");
-    if (action_desc == NULL) {
-        NPT_LOG_WARNING("Action Browse not found in service");
-        return NPT_FAILURE;
+    // set the Search Criteria
+    if (NPT_FAILED(action->SetArgumentValue("SearchCriteria", search_criteria))) {
+        return NPT_ERROR_INVALID_PARAMETERS;
     }
 
-    PLT_ActionReference action(new PLT_Action(action_desc));
+ 
+    // set the Filter
+    if (NPT_FAILED(action->SetArgumentValue("Filter", filter))) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+
+    // set the Starting Index
+    if (NPT_FAILED(action->SetArgumentValue("StartingIndex", NPT_String::FromInteger(start_index)))) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+
+    // set the Requested Count
+    if (NPT_FAILED(action->SetArgumentValue("RequestedCount", NPT_String::FromInteger(count)))) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+
+    // set the Requested Count
+    if (NPT_FAILED(action->SetArgumentValue("SortCriteria", ""))) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+
+    // invoke the action
+    if (NPT_FAILED(m_CtrlPoint->InvokeAction(action, userdata))) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaBrowser::Browse
++---------------------------------------------------------------------*/
+NPT_Result 
+PLT_MediaBrowser::Browse(PLT_DeviceDataReference& device, 
+                         const char*              obj_id,
+                         NPT_UInt32               start_index,
+                         NPT_UInt32               count,
+                         bool                     browse_metadata,
+                         const char*              filter,
+                         const char*              sort_criteria,
+                         void*                    userdata)
+{
+    // verify device still in our list
+    PLT_DeviceDataReference device_data;
+    NPT_CHECK_WARNING(FindServer(device->GetUUID(), device_data));
+
+    // create action
+    PLT_ActionReference action;
+    NPT_CHECK_SEVERE(m_CtrlPoint->CreateAction(
+        device, 
+        "urn:schemas-upnp-org:service:ContentDirectory:1",
+        "Browse",
+        action));
 
     // Set the object id
     PLT_Arguments args;
@@ -253,18 +306,18 @@ PLT_MediaBrowser::OnActionResponse(NPT_Result           res,
                                    PLT_ActionReference& action, 
                                    void*                userdata)
 {
-    if (m_Delegate == NULL) return NPT_SUCCESS;
+    NPT_String actionName = action->GetActionDesc().GetName();
 
-    NPT_String actionName = action->GetActionDesc()->GetName();
+    // look for device in our list first
+    PLT_DeviceDataReference device;
+    NPT_String uuid = action->GetActionDesc().GetService()->GetDevice()->GetUUID();
+    if (NPT_FAILED(FindServer(uuid, device))) res = NPT_FAILURE;
 
     // Browse action response
     if (actionName.Compare("Browse", true) == 0) {
-        // look for device in our list first
-        PLT_DeviceDataReference device;
-        NPT_String uuid = action->GetActionDesc()->GetService()->GetDevice()->GetUUID();
-        if (NPT_FAILED(FindServer(uuid, device))) res = NPT_FAILURE;
-
         return OnBrowseResponse(res, device, action, userdata);
+    } else if (actionName.Compare("Search", true) == 0) {
+        return OnSearchResponse(res, device, action, userdata);
     }
 
     return NPT_SUCCESS;
@@ -274,11 +327,14 @@ PLT_MediaBrowser::OnActionResponse(NPT_Result           res,
 |   PLT_MediaBrowser::OnBrowseResponse
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaBrowser::OnBrowseResponse(NPT_Result res, PLT_DeviceDataReference& device, PLT_ActionReference& action, void* userdata)
+PLT_MediaBrowser::OnBrowseResponse(NPT_Result               res, 
+                                   PLT_DeviceDataReference& device, 
+                                   PLT_ActionReference&     action, 
+                                   void*                    userdata)
 {
-    NPT_String value;
+    NPT_String     value;
     PLT_BrowseInfo info;
-    NPT_String unescaped;
+    NPT_String     unescaped;
 
     if (NPT_FAILED(res) || action->GetErrorCode() != 0) {
         goto bad_action;
@@ -311,11 +367,63 @@ PLT_MediaBrowser::OnBrowseResponse(NPT_Result res, PLT_DeviceDataReference& devi
         goto bad_action;
     }
 
-    m_Delegate->OnBrowseResult(NPT_SUCCESS, device, &info, userdata);
+    if (m_Delegate) m_Delegate->OnBrowseResult(NPT_SUCCESS, device, &info, userdata);
     return NPT_SUCCESS;
 
 bad_action:
-    m_Delegate->OnBrowseResult(NPT_FAILURE, device, NULL, userdata);
+    if (m_Delegate) m_Delegate->OnBrowseResult(NPT_FAILURE, device, NULL, userdata);
+    return NPT_FAILURE;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaBrowser::OnSearchResponse
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaBrowser::OnSearchResponse(NPT_Result               res, 
+                                   PLT_DeviceDataReference& device, 
+                                   PLT_ActionReference&     action, 
+                                   void*                    userdata)
+{
+    NPT_String     value;
+    PLT_BrowseInfo info;
+    NPT_String     unescaped;
+
+    if (NPT_FAILED(res) || action->GetErrorCode() != 0) {
+        goto bad_action;
+    }
+
+    if (NPT_FAILED(action->GetArgumentValue("ContainerId", info.object_id)))  {
+        goto bad_action;
+    }
+    if (NPT_FAILED(action->GetArgumentValue("UpdateID", value)) || 
+        value.GetLength() == 0 || 
+        NPT_FAILED(value.ToInteger(info.uid))) {
+        goto bad_action;
+    }
+    if (NPT_FAILED(action->GetArgumentValue("NumberReturned", value)) || 
+        value.GetLength() == 0 || 
+        NPT_FAILED(value.ToInteger(info.nr))) {
+        goto bad_action;
+    }
+    if (NPT_FAILED(action->GetArgumentValue("TotalMatches", value)) || 
+        value.GetLength() == 0 || 
+        NPT_FAILED(value.ToInteger(info.tm))) {
+        goto bad_action;
+    }
+    if (NPT_FAILED(action->GetArgumentValue("Result", value)) || 
+        value.GetLength() == 0) {
+        goto bad_action;
+    }
+    
+    if (NPT_FAILED(PLT_Didl::FromDidl(value, info.items))) {
+        goto bad_action;
+    }
+
+    if (m_Delegate) m_Delegate->OnSearchResult(NPT_SUCCESS, device, &info, userdata);
+    return NPT_SUCCESS;
+
+bad_action:
+    if (m_Delegate) m_Delegate->OnSearchResult(NPT_FAILURE, device, NULL, userdata);
     return NPT_FAILURE;
 }
 
@@ -330,6 +438,7 @@ PLT_MediaBrowser::OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVariable
 
     if (!m_Delegate) return NPT_SUCCESS;
 
+    /* make sure device associated to service is still around */
     PLT_DeviceDataReference data;
     NPT_CHECK_WARNING(FindServer(service->GetDevice()->GetUUID(), data));
 
