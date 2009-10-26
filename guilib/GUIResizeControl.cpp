@@ -127,7 +127,7 @@ void CGUIResizeControl::OnRight()
 bool CGUIResizeControl::OnMouseDrag(const CPoint &offset, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_DRAG);
-  g_Mouse.SetExclusiveAccess(GetID(), GetParentID(), point);
+  g_Mouse.SetExclusiveAccess(this, GetParentID(), point);
   Resize(offset.x, offset.y);
   return true;
 }
@@ -135,7 +135,7 @@ bool CGUIResizeControl::OnMouseDrag(const CPoint &offset, const CPoint &point)
 bool CGUIResizeControl::OnMouseClick(int button, const CPoint &point)
 {
   if (button != MOUSE_LEFT_BUTTON) return false;
-  g_Mouse.EndExclusiveAccess(GetID(), GetParentID());
+  g_Mouse.EndExclusiveAccess(this, GetParentID());
   return true;
 }
 
@@ -181,6 +181,13 @@ void CGUIResizeControl::DynamicResourceAlloc(bool bOnOff)
   CGUIControl::DynamicResourceAlloc(bOnOff);
   m_imgFocus.DynamicResourceAlloc(bOnOff);
   m_imgNoFocus.DynamicResourceAlloc(bOnOff);
+}
+
+void CGUIResizeControl::SetInvalid()
+{
+  CGUIControl::SetInvalid();
+  m_imgFocus.SetInvalid();
+  m_imgNoFocus.SetInvalid();
 }
 
 void CGUIResizeControl::Resize(float x, float y)

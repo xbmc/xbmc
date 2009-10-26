@@ -62,23 +62,12 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
 
 void CGUIViewStateWindowPictures::SaveViewState()
 {
-  if (g_guiSettings.GetBool("pictures.savefolderviews"))
-    SaveViewToDb(m_items.m_strPath, WINDOW_PICTURES, &g_stSettings.m_viewStatePictures);
-  else
-  {
-    g_stSettings.m_viewStatePictures = CViewState(GetViewAsControl(), GetSortMethod(), GetSortOrder());
-    g_settings.Save();
-  }
+  SaveViewToDb(m_items.m_strPath, WINDOW_PICTURES, &g_stSettings.m_viewStatePictures);
 }
 
 CStdString CGUIViewStateWindowPictures::GetLockType()
 {
   return "pictures";
-}
-
-bool CGUIViewStateWindowPictures::UnrollArchives()
-{
-  return g_guiSettings.GetBool("filelists.unrollarchives");
 }
 
 CStdString CGUIViewStateWindowPictures::GetExtensions()

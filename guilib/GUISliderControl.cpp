@@ -275,6 +275,14 @@ void CGUISliderControl::AllocResources()
   m_guiMidFocus.AllocResources();
 }
 
+void CGUISliderControl::SetInvalid()
+{
+  CGUIControl::SetInvalid();
+  m_guiBackground.SetInvalid();
+  m_guiMid.SetInvalid();
+  m_guiMidFocus.SetInvalid();
+}
+
 bool CGUISliderControl::HitTest(const CPoint &point) const
 {
   if (m_guiBackground.HitTest(point)) return true;
@@ -308,7 +316,7 @@ bool CGUISliderControl::OnMouseClick(int button, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_CLICK);
   // turn off any exclusive access, if it's on...
-  g_Mouse.EndExclusiveAccess(GetID(), GetParentID());
+  g_Mouse.EndExclusiveAccess(this, GetParentID());
   if (m_guiBackground.HitTest(point))
   { // set the position
     SetFromPosition(point);
@@ -321,7 +329,7 @@ bool CGUISliderControl::OnMouseDrag(const CPoint &offset, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_DRAG);
   // get exclusive access to the mouse
-  g_Mouse.SetExclusiveAccess(GetID(), GetParentID(), point);
+  g_Mouse.SetExclusiveAccess(this, GetParentID(), point);
   // get the position of the mouse
   SetFromPosition(point);
   return true;

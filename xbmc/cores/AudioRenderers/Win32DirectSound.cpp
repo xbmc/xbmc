@@ -61,7 +61,7 @@ CWin32DirectSound::CWin32DirectSound() :
 {
 }
 
-bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
+bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
 {
   bool bAudioOnAllSpeakers(false);
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
@@ -115,6 +115,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
 
   // unsure if these are the right values
   m_dwChunkSize = wfxex.Format.nBlockAlign * 3096;
+  m_PreCacheSize = m_dwChunkSize;
   m_dwBufferLen = m_dwChunkSize * 16;
 
   CLog::Log(LOGDEBUG, __FUNCTION__": Packet Size = %d. Avg Bytes Per Second = %d.", m_dwChunkSize, m_AvgBytesPerSec);

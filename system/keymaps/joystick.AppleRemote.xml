@@ -63,9 +63,15 @@
   </global>
   <Home>
     <joystick name="AppleRemote">
-      <button id="6">Fullscreen</button>
+      <button id="6">XBMC.ActivateWindow(Favourites)</button>
+      <button id="8">ActivateWindow(shutdownmenu)</button>
     </joystick>
   </Home>
+  <MyPictures>
+    <joystick name="AppleRemote">
+      <button id="6">ParentDir</button>
+    </joystick>
+  </MyPictures>
   <MyMusicPlaylist>
     <joystick name="AppleRemote">
       <button id="6">Playlist</button>
@@ -73,8 +79,6 @@
   </MyMusicPlaylist>
   <MyMusicPlaylistEditor>
     <joystick name="AppleRemote">
-      <button id="5">ContextMenu</button>
-      <!-- FIXME? -->
       <button id="6">Playlist</button>
     </joystick>
   </MyMusicPlaylistEditor>
@@ -94,8 +98,11 @@
       <button id="2">VolumeDown</button>
       <button id="3">StepBack</button>
       <button id="4">StepForward</button>
-      <button id="5">OSD</button>
-      <button id="6">Fullscreen</button>
+      <button id="5">Pause</button>
+      <button id="6">Stop</button>
+      <button id="7">OSD</button>
+      <button id="9">Rewind</button>
+      <button id="10">FastForward</button>
     </joystick>
   </FullscreenVideo>
   <FullscreenInfo>
@@ -114,8 +121,10 @@
       <button id="2">VolumeDown</button>
       <button id="3">SkipPrevious</button>
       <button id="4">SkipNext</button>
-      <button id="5">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="5">Pause</button>
       <button id="6">Fullscreen</button>
+      <button id="7">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="8">Stop</button>
     </joystick>
   </Visualisation>
   <MusicOSD>
@@ -139,8 +148,8 @@
       <button id="2">ZoomOut</button>
       <button id="3">PreviousPicture</button>
       <button id="4">NextPicture</button>
-      <button id="5">Info</button>
       <button id="6">Stop</button>
+      <button id="7">Info</button>
     </joystick>
   </SlideShow>
   <ScreenCalibration>
@@ -160,7 +169,10 @@
   </VideoOSD>
   <VideoMenu>
     <joystick name="AppleRemote">
-      <button id="5">OSD</button>
+      <button id="5">Select</button>
+      <button id="6">Stop</button>
+      <button id="7">OSD</button>
+      <button id="8"/>
     </joystick>
   </VideoMenu>
   <OSDVideoSettings>
@@ -181,11 +193,13 @@
   <MyVideoLibrary>
     <joystick name="AppleRemote">
       <button id="6">ParentDir</button>
+      <button id="7">Info</button>
     </joystick>
   </MyVideoLibrary>
   <MyVideoFiles>
     <joystick name="AppleRemote">
       <button id="6">ParentDir</button>
+      <button id="7">Info</button>
     </joystick>
   </MyVideoFiles>
   <MyVideoPlaylist>

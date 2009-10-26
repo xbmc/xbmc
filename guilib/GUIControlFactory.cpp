@@ -627,7 +627,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   int iNumSlots = 7;
   float buttonGap = 5;
   int iDefaultSlot = 2;
-  int iMovementRange = 2;
+  int iMovementRange = 0;
   bool bHorizontal = false;
   int iAlpha = 0;
   bool bWrapAround = true;
@@ -1079,11 +1079,11 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       parentID, id, posX, posY, width, height,
       labelInfo, textColor3, labelInfo2.textColor, strRSSTags, scrollSpeed);
 
-    std::map<int, std::pair<std::vector<int>,std::vector<string> > >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
+    std::map<int,CSettings::RssSet>::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
     if (iter != g_settings.m_mapRssUrls.end())
     {
-      ((CGUIRSSControl *)control)->SetUrls(iter->second.second);
-      ((CGUIRSSControl *)control)->SetIntervals(iter->second.first);
+      ((CGUIRSSControl *)control)->SetUrls(iter->second.url,iter->second.rtl);
+      ((CGUIRSSControl *)control)->SetIntervals(iter->second.interval);
     }
     else
       CLog::Log(LOGERROR,"invalid rss url set referenced in skin");
@@ -1252,7 +1252,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   else if (strType == "fixedlist")
   {
-    control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition);
+    control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition, iMovementRange);
     ((CGUIFixedListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIFixedListContainer *)control)->LoadContent(pControlNode);
     ((CGUIFixedListContainer *)control)->SetType(viewType, viewLabel);

@@ -39,6 +39,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libass_win32", "..\..\xbmc\
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B} = {78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visMilkdrop", "..\..\xbmc\visualizations\Milkdrop\Plugin.vcproj", "{5E479372-4F34-426D-AA1E-9879E94C105D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libfaad2_dll", "..\..\xbmc\cores\dvdplayer\Codecs\libfaad2\libfaad\libfaad2_dll.vcproj", "{482DA264-EE88-4575-B208-87C4CB80CD08}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libaddon", "..\..\xbmc\lib\libaddon\Win32\libaddon_2008.vcproj", "{F15B500F-0011-4ADA-8BFC-C1AC4DBFA3CD}"
 	ProjectSection(ProjectDependencies) = postProject
 		{25200712-8ABE-11DE-805D-60A756D89593} = {25200712-8ABE-11DE-805D-60A756D89593}
@@ -177,6 +181,28 @@ Global
 		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Release|Win32.ActiveCfg = Release|Win32
 		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Release|Win32.Build.0 = Release|Win32
+		{5E479372-4F34-426D-AA1E-9879E94C105D}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{5E479372-4F34-426D-AA1E-9879E94C105D}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{5E479372-4F34-426D-AA1E-9879E94C105D}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{5E479372-4F34-426D-AA1E-9879E94C105D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5E479372-4F34-426D-AA1E-9879E94C105D}.Debug|Win32.Build.0 = Debug|Win32
+		{5E479372-4F34-426D-AA1E-9879E94C105D}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{5E479372-4F34-426D-AA1E-9879E94C105D}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{5E479372-4F34-426D-AA1E-9879E94C105D}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{5E479372-4F34-426D-AA1E-9879E94C105D}.Release|Win32.ActiveCfg = Release|Win32
+		{5E479372-4F34-426D-AA1E-9879E94C105D}.Release|Win32.Build.0 = Release|Win32
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Debug|Win32.ActiveCfg = Debug|Win32
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Debug|Win32.Build.0 = Debug|Win32
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Release|Win32.ActiveCfg = Release|Win32
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Release|Win32.Build.0 = Release|Win32
 		{F15B500F-0011-4ADA-8BFC-C1AC4DBFA3CD}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
 		{F15B500F-0011-4ADA-8BFC-C1AC4DBFA3CD}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{F15B500F-0011-4ADA-8BFC-C1AC4DBFA3CD}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32

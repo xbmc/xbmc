@@ -41,11 +41,6 @@ CStdString CGUIViewStateWindowVideo::GetLockType()
   return "video";
 }
 
-bool CGUIViewStateWindowVideo::UnrollArchives()
-{
-  return g_guiSettings.GetBool("filelists.unrollarchives");
-}
-
 CStdString CGUIViewStateWindowVideo::GetExtensions()
 {
   return g_stSettings.m_videoExtensions;
@@ -87,13 +82,7 @@ CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList
 
 void CGUIViewStateWindowVideoFiles::SaveViewState()
 {
-  if (g_guiSettings.GetBool("myvideos.savefolderviews"))
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_FILES, &g_stSettings.m_viewStateVideoFiles);
-  else
-  {
-    g_stSettings.m_viewStateVideoFiles = CViewState(GetViewAsControl(), GetSortMethod(), GetSortOrder());
-    g_settings.Save();
-  }
+  SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_FILES, &g_stSettings.m_viewStateVideoFiles);
 }
 
 VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()

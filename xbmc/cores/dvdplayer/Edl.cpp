@@ -70,7 +70,7 @@ bool CEdl::ReadFiles(const CStdString& strMovie, const float fFramesPerSecond)
 
   /*
    * Read any available format until a valid EDL related file is found.
-   * 
+   *
    * TODO: Surely there's a better way to do this bFound shenanigans.
    */
   bool bFound = false;
@@ -354,7 +354,8 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 {
   Clear();
 
-  CStdString beyondTVFilename = strMovie + ".chapters.xml";
+  CStdString beyondTVFilename;
+  CUtil::ReplaceExtension(strMovie, CUtil::GetExtension(strMovie) + ".chapters.xml", beyondTVFilename);
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
@@ -788,6 +789,21 @@ bool CEdl::ReadMythCommBreaks(const CURL& url, const float fFramesPerSecond)
 
 void CEdl::MergeShortCommBreaks()
 {
+  /*
+   * mythcommflag routinely seems to put a 20-40ms commercial break at the start of the recording.
+   *
+   * Remove any spurious short commercial breaks at the very start so they don't interfere with
+   * the algorithms below.
+   */
+  if (!m_vecCuts.empty()
+  &&  m_vecCuts[0].action == COMM_BREAK
+  && (m_vecCuts[0].end - m_vecCuts[0].start) < 5 * 1000) // 5 seconds
+  {
+    CLog::Log(LOGDEBUG, "%s - Removing short commercial break at start [%s - %s]. <5 seconds", __FUNCTION__,
+              MillisecondsToTimeString(m_vecCuts[0].start).c_str(), MillisecondsToTimeString(m_vecCuts[0].end).c_str());
+    m_vecCuts.erase(m_vecCuts.begin());
+  }
+
   if (g_advancedSettings.m_bEdlMergeShortCommBreaks)
   {
     for (int i = 0; i < (int)m_vecCuts.size() - 1; i++)
@@ -814,6 +830,21 @@ void CEdl::MergeShortCommBreaks()
 
         i--; // Reduce i to see if the next break is also within the max commercial break length.
       }
+    }
+
+    /*
+     * To cater for recordings that are started early and then have a commercial break identified
+     * before the TV show starts, expand the first commercial break to the very beginning if it
+     * starts within the maximum start gap. This is done outside of the consolidation to prevent
+     * the maximum commercial break length being triggered.
+     */
+    if (!m_vecCuts.empty()
+    &&  m_vecCuts[0].action == COMM_BREAK
+    &&  m_vecCuts[0].start < g_advancedSettings.m_iEdlMaxStartGap * 1000)
+    {
+      CLog::Log(LOGDEBUG, "%s - Expanding first commercial break back to start [%s - %s].", __FUNCTION__,
+                MillisecondsToTimeString(m_vecCuts[0].start).c_str(), MillisecondsToTimeString(m_vecCuts[0].end).c_str());
+      m_vecCuts[0].start = 0;
     }
 
     /*

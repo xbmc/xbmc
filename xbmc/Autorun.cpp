@@ -70,7 +70,7 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
 
   if ( pInfo->IsAudio( 1 ) )
   {
-    if( !bypassSettings && !g_guiSettings.GetBool("autorun.cdda") )
+    if( !bypassSettings && !g_guiSettings.GetBool("autorun.cdda") && !g_guiSettings.GetBool("lookandfeel.autorun") )
       return;
 
     if (!g_passwordManager.IsMasterLockUnlocked(false))
@@ -104,7 +104,7 @@ void CAutorun::RunCdda()
 
 void CAutorun::RunMedia(bool bypassSettings)
 {
-  if ( !bypassSettings && !g_guiSettings.GetBool("autorun.dvd") && !g_guiSettings.GetBool("autorun.vcd") && !g_guiSettings.GetBool("autorun.video") && !g_guiSettings.GetBool("autorun.music") && !g_guiSettings.GetBool("autorun.pictures") )
+  if ( !bypassSettings && !g_guiSettings.GetBool("autorun.dvd") && !g_guiSettings.GetBool("autorun.vcd") && !g_guiSettings.GetBool("autorun.video") && !g_guiSettings.GetBool("autorun.music") && !g_guiSettings.GetBool("autorun.pictures") && !g_guiSettings.GetBool("lookandfeel.autorun"))
     return ;
 
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
@@ -172,33 +172,22 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       if (pItem->m_bIsFolder && pItem->m_strPath != "." && pItem->m_strPath != "..")
       {
         if (pItem->m_strPath.Find( "VIDEO_TS" ) != -1 && bAllowVideo
-        && (bypassSettings || g_guiSettings.GetBool("autorun.dvd")))
+        && (bypassSettings || g_guiSettings.GetBool("autorun.dvd") || g_guiSettings.GetBool("lookandfeel.autorun")))
         {
           CUtil::PlayDVD();
           bPlaying = true;
           return true;
         }
-        else if (pItem->m_strPath.Find("MPEGAV") != -1 && bAllowVideo
-             && (bypassSettings || g_guiSettings.GetBool("autorun.vcd")))
+        CStdString strExt;
+        if (pItem->m_strPath.Find("MPEGAV") != -1)
+          strExt = ".dat";
+        if (pItem->m_strPath.Find("MPEG2") != -1)
+          strExt = ".mpg";
+        if (!strExt.IsEmpty() && bAllowVideo
+             && (bypassSettings || g_guiSettings.GetBool("autorun.vcd") || g_guiSettings.GetBool("lookandfeel.autorun")))
         {
           CFileItemList items;
-          CDirectory::GetDirectory(pItem->m_strPath, items, ".dat");
-          if (items.Size())
-          {
-            items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-            g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
-            g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
-            g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-            g_playlistPlayer.Play(0);
-            bPlaying = true;
-            return true;
-          }
-        }
-        else if (pItem->m_strPath.Find("MPEG2") != -1 && bAllowVideo
-              && (bypassSettings || g_guiSettings.GetBool("autorun.vcd")))
-        {
-          CFileItemList items;
-          CDirectory::GetDirectory(pItem->m_strPath, items, ".mpg");
+          CDirectory::GetDirectory(pItem->m_strPath, items, strExt);
           if (items.Size())
           {
             items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
@@ -224,7 +213,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   }
 
   // check video first
-  if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.video")))
+  if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.video") || g_guiSettings.GetBool("lookandfeel.autorun")))
   {
     // stack video files
     CFileItemList tempItems;
@@ -269,7 +258,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     }
   }
   // then music
-  if (!bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.music")) && bAllowMusic)
+  if (!bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.music") || g_guiSettings.GetBool("lookandfeel.autorun")) && bAllowMusic)
   {
     for (int i = 0; i < vecItems.Size(); i++)
     {
@@ -282,7 +271,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     }
   }
   // and finally pictures
-  if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.pictures")) && bAllowPictures)
+  if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.pictures") || g_guiSettings.GetBool("lookandfeel.autorun")) && bAllowPictures)
   {
     for (int i = 0; i < vecItems.Size(); i++)
     {

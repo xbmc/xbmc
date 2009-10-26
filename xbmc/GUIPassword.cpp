@@ -43,7 +43,6 @@ CGUIPassword::CGUIPassword(void)
 {
   iMasterLockRetriesLeft = -1;
   bMasterUser = false;
-  m_SMBShare = "";
 }
 CGUIPassword::~CGUIPassword(void)
 {}
@@ -120,35 +119,6 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const CStdString &strType)
       }
     }
   }
-  return true;
-}
-
-void CGUIPassword::SetSMBShare(const CStdString &strPath)
-{
-  m_SMBShare = strPath;
-}
-
-CStdString CGUIPassword::GetSMBShare()
-{
-  return m_SMBShare;
-}
-
-bool CGUIPassword::GetSMBShareUserPassword()
-{
-  CURL url(m_SMBShare);
-  CStdString passcode;
-  CStdString username = url.GetUserName();
-  CStdString outusername = username;
-  CStdString share;
-  url.GetURLWithoutUserDetails(share);
-
-  if (!CGUIDialogLockSettings::ShowAndGetUserAndPassword(outusername,passcode,share))
-    return false;
-
-  url.SetPassword(passcode);
-  url.SetUserName(outusername);
-  url.GetURL(m_SMBShare);
-
   return true;
 }
 
@@ -320,13 +290,6 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
       {
         // user has run out of retry attempts
         g_passwordManager.iMasterLockRetriesLeft = 0;
-        if (g_guiSettings.GetBool("masterlock.enableshutdown"))
-        {
-          // Shutdown enabled, tell the user we're shutting off
-          CGUIDialogOK::ShowAndGetInput(12345, 12346, 12347, 0);
-          g_application.getApplicationMessenger().Shutdown();
-          return ;
-        }
         // Tell the user they ran out of retry attempts
         CGUIDialogOK::ShowAndGetInput(12345, 12346, 0, 0);
         return ;
@@ -435,33 +398,6 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
     return IsMasterLockUnlocked(true); //Now let's check the PW if we need!
   else
     return true;
-}
-CStdString CGUIPassword::GetSMBAuthFilename(const CStdString& strAuth)
-{
-  /// \brief Gets the path of an authenticated share
-  /// \param strAuth The SMB style path
-  /// \return Path to share with proper username/password, or same as imput if none found in db
-  CURL urlIn(strAuth);
-  CStdString strPath(strAuth);
-
-  CStdString strShare;  // it's only the server\share we're interested in authenticating
-  strShare  = urlIn.GetHostName();
-  strShare += "/";
-  strShare += urlIn.GetShareName();
-
-  IMAPPASSWORDS it = m_mapSMBPasswordCache.find(strShare);
-  if(it != m_mapSMBPasswordCache.end())
-  {
-    // if share found in cache use it to supply username and password
-    CURL url(it->second);  // map value contains the full url of the originally authenticated share. map key is just the share
-    CStdString strPassword = url.GetPassWord();
-
-    CStdString strUserName = url.GetUserName();
-    urlIn.SetPassword(strPassword);
-    urlIn.SetUserName(strUserName);
-    urlIn.GetURL(strPath);
-  }
-  return strPath;
 }
 
 bool CGUIPassword::LockSource(const CStdString& strType, const CStdString& strName, bool bState)

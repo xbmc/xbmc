@@ -35,7 +35,7 @@
 #include "Application.h"
 #include "AutoPtrHandle.h"
 #include "Util.h"
-#include "xbox/IoSupport.h"
+#include "utils/IoSupport.h"
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/VirtualPathDirectory.h"
 #include "FileSystem/MultiPathDirectory.h"
@@ -59,15 +59,15 @@
 #include "TextureManager.h"
 #include "utils/fstrcmp.h"
 #include "MediaManager.h"
-#ifdef HAS_FTP_SERVER
-#include "lib/libfilezilla/xbfilezilla.h"
-#endif
 #include "DirectXGraphics.h"
 #include "DNSNameCache.h"
 #include "GUIWindowManager.h"
 #ifdef _WIN32
 #include <shlobj.h>
 #include "WIN32Util.h"
+#endif
+#if defined(__APPLE__)
+#include "CocoaInterface.h"
 #endif
 #include "GUIDialogYesNo.h"
 #include "GUIUserMessages.h"
@@ -107,8 +107,6 @@ static uint16_t flashrampRed[256];
 static uint16_t flashrampGreen[256];
 static uint16_t flashrampBlue[256];
 #endif
-
-XBOXDETECTION v_xboxclients;
 
 CUtil::CUtil(void)
 {
@@ -185,7 +183,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   if (url.GetProtocol() == "rss")
   {
     url.SetProtocol("http");
-    url.GetURL(path);
+    path = url.Get();
     CRssFeed feed;
     feed.Init(path);
     feed.ReadFeed();
@@ -351,7 +349,7 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     strFileName = url.GetFileName();
     RemoveExtension(strFileName);
     url.SetFileName(strFileName);
-    url.GetURL(strFileName);
+    strFileName = url.Get();
     return;
   }
 
@@ -367,7 +365,11 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     strFileMask = g_stSettings.m_pictureExtensions;
     strFileMask += g_stSettings.m_musicExtensions;
     strFileMask += g_stSettings.m_videoExtensions;
+#if defined(__APPLE__)
+    strFileMask += ".py|.xml|.milk|.xpr|.cdg|.app|.applescript|.workflow";
+#else
     strFileMask += ".py|.xml|.milk|.xpr|.cdg";
+#endif
 
     // Only remove if its a valid media extension
     if (strFileMask.Find(strExtension.c_str()) >= 0)
@@ -412,7 +414,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
       continue;
     }
     int j=0;
-    if ((j=reTags.RegFind(strFileName.ToLower().c_str())) >= 0)
+    if ((j=reTags.RegFind(strFileName.ToLower().c_str())) > 0)
       strTitleAndYear = strTitleAndYear.Mid(0, j);
   }
 
@@ -510,19 +512,19 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     if (!url.GetOptions().IsEmpty())
     {
       url.SetOptions("");
-      url.GetURL(strParent);
+      strParent = url.Get();
       return true;
     }
     if (!url.GetFileName().IsEmpty())
     {
       url.SetFileName("");
-      url.GetURL(strParent);
+      strParent = url.Get();
       return true;
     }
     if (!url.GetHostName().IsEmpty())
     {
       url.SetHostName("");
-      url.GetURL(strParent);
+      strParent = url.Get();
       return true;
     }
     return true;  // already at root
@@ -541,7 +543,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
       // we have an share with only server or workgroup name
       // set hostname to "" and return true to get back to root
       url.SetHostName("");
-      url.GetURL(strParent);
+      strParent = url.Get();
       return true;
     }
     return false;
@@ -562,7 +564,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   if (iPos < 0)
   {
     url.SetFileName("");
-    url.GetURL(strParent);
+    strParent = url.Get();
     return true;
   }
 
@@ -571,7 +573,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   CUtil::AddSlashAtEnd(strFile);
 
   url.SetFileName(strFile);
-  url.GetURL(strParent);
+  strParent = url.Get();
   return true;
 }
 
@@ -702,7 +704,7 @@ void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNew
     CURL url(strFile);
     ReplaceExtension(url.GetFileName(), strNewExtension, strChangedFile);
     url.SetFileName(strChangedFile);
-    url.GetURL(strChangedFile);
+    strChangedFile = url.Get();
     return;
   }
 
@@ -1527,10 +1529,13 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
   if(strFolder.Find("://") >= 0)
   {
     CURL url(strFolder);
-    AddFileToFolder(url.GetFileName(), strFile, strResult);
-    url.SetFileName(strResult);
-    url.GetURL(strResult);
-    return;
+    if (url.GetFileName() != strFolder)
+    {
+      AddFileToFolder(url.GetFileName(), strFile, strResult);
+      url.SetFileName(strResult);
+      strResult = url.Get();
+      return;
+    }
   }
 
   strResult = strFolder;
@@ -1555,13 +1560,13 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
   if(strFolder.Find("://") >= 0)
   {
     CURL url(strFolder);
-    strFolder = url.GetFileName();
-    if(!strFolder.IsEmpty())
+    CStdString file = url.GetFileName();
+    if(!file.IsEmpty() && file != strFolder)
     {
-      AddSlashAtEnd(strFolder);
-      url.SetFileName(strFolder);
+      AddSlashAtEnd(file);
+      url.SetFileName(file);
     }
-    url.GetURL(strFolder);
+    strFolder = url.Get();
     return;
   }
 
@@ -1579,13 +1584,13 @@ void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
   if(strFolder.Find("://") >= 0)
   {
     CURL url(strFolder);
-    strFolder = url.GetFileName();
-    if (!strFolder.IsEmpty())
+    CStdString file = url.GetFileName();
+    if (!file.IsEmpty() && file != strFolder)
     {
-      RemoveSlashAtEnd(strFolder);
-      url.SetFileName(strFolder);
+      RemoveSlashAtEnd(file);
+      url.SetFileName(file);
     }
-    url.GetURL(strFolder);
+    strFolder = url.Get();
     return;
   }
 
@@ -2098,8 +2103,7 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   StringUtils::SplitString(url.GetFileName(), sep, dirs);
   
   // we start with the root path
-  CStdString dir;
-  url.GetURLWithoutFilename(dir);
+  CStdString dir = url.GetWithoutFilename();
   unsigned int i = 0;
   if (dir.IsEmpty())
   { // local directory - start with the first dirs member so that
@@ -2220,6 +2224,11 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
         continue;
       }
     }
+    if (ch == '\"' && escaped)
+    { // escape quote
+      parameter[parameter.size()-1] = ch;
+      continue;
+    }
     // whitespace handling - we skip any whitespace at the left or right of an unquoted parameter
     if (ch == ' ' && !inQuotes)
     {
@@ -2304,9 +2313,8 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
   // remove user details, and ensure path only uses forward slashes
   // and ends with a trailing slash so as not to match a substring
   CURL urlDest(strPath);
-  CStdString strDest;
   urlDest.SetOptions("");
-  urlDest.GetURLWithoutUserDetails(strDest);
+  CStdString strDest = urlDest.GetWithoutUserDetails();
   ForceForwardSlashes(strDest);
   if (!HasSlashAtEnd(strDest))
     strDest += "/";
@@ -2342,9 +2350,8 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       // remove user details, and ensure path only uses forward slashes
       // and ends with a trailing slash so as not to match a substring
       CURL urlShare(vecPaths[j]);
-      CStdString strShare;
       urlShare.SetOptions("");
-      urlShare.GetURLWithoutUserDetails(strShare);
+      CStdString strShare = urlShare.GetWithoutUserDetails();
       ForceForwardSlashes(strShare);
       if (!HasSlashAtEnd(strShare))
         strShare += "/";
@@ -2589,441 +2596,12 @@ int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
   return iHourUTC;
 }
 
-bool CUtil::AutoDetection()
-{
-  bool bReturn=false;
-  if (g_guiSettings.GetBool("autodetect.onoff"))
-  {
-    static unsigned int pingTimer = 0;
-    if( CTimeUtils::GetTimeMS() - pingTimer < (unsigned int)g_advancedSettings.m_autoDetectPingTime * 1000)
-      return false;
-    pingTimer = CTimeUtils::GetTimeMS();
-
-    // send ping and request new client info
-    if ( CUtil::AutoDetectionPing(
-      g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("servers.ftpserveruser"):"anonymous",
-      g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("servers.ftpserverpassword"):"anonymous",
-      g_guiSettings.GetString("autodetect.nickname"),21 /*Our FTP Port! TODO: Extract FTP from FTP Server settings!*/) )
-    {
-      CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
-      CStdStringArray arSplit;
-      // do we have clients in our list ?
-      for(unsigned int i=0; i < v_xboxclients.client_ip.size(); i++)
-      {
-        // extract client informations
-        StringUtils::SplitString(v_xboxclients.client_info[i],";", arSplit);
-        if ((int)arSplit.size() > 1 && !v_xboxclients.client_informed[i])
-        {
-          //extract client info and build the ftp link!
-          strNickName     = arSplit[0].c_str();
-          strFtpUserName  = arSplit[1].c_str();
-          strFtpPassword  = arSplit[2].c_str();
-          strFtpPort      = arSplit[3].c_str();
-          strBoosMode     = arSplit[4].c_str();
-          strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),v_xboxclients.client_ip[i],strFtpPort.c_str());
-
-          //Do Notification for this Client
-          CStdString strtemplbl;
-          strtemplbl.Format("%s %s",strNickName, v_xboxclients.client_ip[i]);
-          g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(1251), strtemplbl);
-
-          //Debug Log
-          CLog::Log(LOGDEBUG,"%s: %s FTP-Link: %s", g_localizeStrings.Get(1251).c_str(), strNickName.c_str(), strFTPPath.c_str());
-
-          //set the client_informed to TRUE, to prevent loop Notification
-          v_xboxclients.client_informed[i]=true;
-
-          //YES NO PopUP: ask for connecting to the detected client via Filemanger!
-          if (g_guiSettings.GetBool("autodetect.popupinfo") && CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
-          {
-            g_windowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
-          }
-          bReturn = true;
-        }
-      }
-    }
-  }
-  return bReturn;
-}
-
-bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort)
-{
-  bool bFoundNewClient= false;
-  CStdString strLocalIP;
-  CStdString strSendMessage = "ping\0";
-  CStdString strReceiveMessage = "ping";
-  int iUDPPort = 4905;
-  char sztmp[512];
-
-  static int udp_server_socket, inited=0;
-#ifndef _LINUX
-  int cliLen;
-#else
-  socklen_t cliLen;
-#endif
-  int t1,t2,t3,t4, life=0;
-
-  struct sockaddr_in server;
-  struct sockaddr_in cliAddr;
-  struct timeval timeout={0,500};
-  fd_set readfds;
-  char hostname[255];
-#ifndef _LINUX
-    WORD wVer;
-    WSADATA wData;
-    PHOSTENT hostinfo;
-    wVer = MAKEWORD( 2, 0 );
-    if (WSAStartup(wVer,&wData) == 0)
-    {
-#else
-    struct hostent * hostinfo;
-#endif
-      if(gethostname(hostname,sizeof(hostname)) == 0)
-      {
-        if((hostinfo = gethostbyname(hostname)) != NULL)
-        {
-          strLocalIP = inet_ntoa (*(struct in_addr *)*hostinfo->h_addr_list);
-          strNickName.Format("%s",hostname);
-        }
-      }
-#ifndef _LINUX
-      WSACleanup();
-    }
-#endif
-  // get IP address
-  sscanf( (char *)strLocalIP.c_str(), "%d.%d.%d.%d", &t1, &t2, &t3, &t4 );
-  if( !t1 ) return false;
-  cliLen = sizeof( cliAddr);
-  // setup UDP socket
-  if( !inited )
-  {
-    int tUDPsocket  = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    char value      = 1;
-    setsockopt( tUDPsocket, SOL_SOCKET, SO_BROADCAST, &value, value );
-    struct sockaddr_in addr;
-    memset(&(addr),0,sizeof(addr));
-    addr.sin_family       = AF_INET;
-    addr.sin_addr.s_addr  = INADDR_ANY;
-    addr.sin_port         = htons(iUDPPort);
-    bind(tUDPsocket,(struct sockaddr *)(&addr),sizeof(addr));
-    udp_server_socket = tUDPsocket;
-    inited = 1;
-  }
-  FD_ZERO(&readfds);
-  FD_SET(udp_server_socket, &readfds);
-  life = select( 0,&readfds, NULL, NULL, &timeout );
-  if (life == SOCKET_ERROR )
-    return false;
-  memset(&(server),0,sizeof(server));
-  server.sin_family = AF_INET;
-#ifndef _LINUX
-  server.sin_addr.S_un.S_addr = INADDR_BROADCAST;
-#else
-  server.sin_addr.s_addr = INADDR_BROADCAST;
-#endif
-  server.sin_port = htons(iUDPPort);
-  sendto(udp_server_socket,(char *)strSendMessage.c_str(),5,0,(struct sockaddr *)(&server),sizeof(server));
-  FD_ZERO(&readfds);
-  FD_SET(udp_server_socket, &readfds);
-  life = select( 0,&readfds, NULL, NULL, &timeout );
-
-  unsigned int iLookUpCountMax = 2;
-  unsigned int i=0;
-  bool bUpdateShares=false;
-
-  // Ping able clients? 0:false
-  if (life == 0 )
-  {
-    if(v_xboxclients.client_ip.size() > 0)
-    {
-      // clients in list without life signal!
-      // calculate iLookUpCountMax value counter dependence on clients size!
-      if(v_xboxclients.client_ip.size() > iLookUpCountMax)
-        iLookUpCountMax += (v_xboxclients.client_ip.size()-iLookUpCountMax);
-
-      for (i=0; i<v_xboxclients.client_ip.size(); i++)
-      {
-        bUpdateShares=false;
-        //only 1 client, clear our list
-        if(v_xboxclients.client_lookup_count[i] >= iLookUpCountMax && v_xboxclients.client_ip.size() == 1 )
-        {
-          v_xboxclients.client_ip.clear();
-          v_xboxclients.client_info.clear();
-          v_xboxclients.client_lookup_count.clear();
-          v_xboxclients.client_informed.clear();
-
-          // debug log, clients removed from our list
-          CLog::Log(LOGDEBUG,"Autodetection: all Clients Removed! (mode LIFE 0)");
-          bUpdateShares = true;
-        }
-        else
-        {
-          // check client lookup counter! Not reached the CountMax, Add +1!
-          if(v_xboxclients.client_lookup_count[i] < iLookUpCountMax )
-            v_xboxclients.client_lookup_count[i] = v_xboxclients.client_lookup_count[i]+1;
-          else
-          {
-            // client lookup counter REACHED CountMax, remove this client
-            v_xboxclients.client_ip.erase(v_xboxclients.client_ip.begin()+i);
-            v_xboxclients.client_info.erase(v_xboxclients.client_info.begin()+i);
-            v_xboxclients.client_lookup_count.erase(v_xboxclients.client_lookup_count.begin()+i);
-            v_xboxclients.client_informed.erase(v_xboxclients.client_informed.begin()+i);
-
-            // debug log, clients removed from our list
-            CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] Removed! (mode LIFE 0)",i );
-            bUpdateShares = true;
-          }
-        }
-        if(bUpdateShares)
-        {
-          // a client is removed from our list, update our shares
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-          g_windowManager.SendThreadMessage(msg);
-        }
-      }
-    }
-  }
-  // life !=0 we are online and ready to receive and send
-  while( life )
-  {
-    bFoundNewClient = false;
-    bUpdateShares = false;
-    // Receive ping request or Info
-    int iSockRet = recvfrom(udp_server_socket, sztmp, 512, 0,(struct sockaddr *) &cliAddr, &cliLen);
-    if (iSockRet != SOCKET_ERROR)
-    {
-      CStdString strTmp;
-      // do we received a new Client info or just a "ping" request
-      if(strReceiveMessage.Equals(sztmp))
-      {
-        // we received a "ping" request, sending our informations
-        strTmp.Format("%s;%s;%s;%d;%d\r\n\0",
-          strNickName.c_str(),  // Our Nick-, Device Name!
-          strFTPUserName.c_str(), // User Name for our FTP Server
-          strFTPPass.c_str(), // Password for our FTP Server
-          iFTPPort, // FTP PORT Adress for our FTP Server
-          0 ); // BOOSMODE, for our FTP Server!
-        sendto(udp_server_socket,(char *)strTmp.c_str(),strlen((char *)strTmp.c_str())+1,0,(struct sockaddr *)(&cliAddr),sizeof(cliAddr));
-      }
-      else
-      {
-        //We received new client information, extracting information
-        CStdString strInfo, strIP;
-        strInfo.Format("%s",sztmp); //this is the client info
-        strIP.Format("%d.%d.%d.%d",
-#ifndef _LINUX
-          cliAddr.sin_addr.S_un.S_un_b.s_b1,
-          cliAddr.sin_addr.S_un.S_un_b.s_b2,
-          cliAddr.sin_addr.S_un.S_un_b.s_b3,
-          cliAddr.sin_addr.S_un.S_un_b.s_b4
-#else
-          (int)((char *)(cliAddr.sin_addr.s_addr))[0],
-          (int)((char *)(cliAddr.sin_addr.s_addr))[1],
-          (int)((char *)(cliAddr.sin_addr.s_addr))[2],
-          (int)((char *)(cliAddr.sin_addr.s_addr))[3]
-#endif
-        ); //this is the client IP
-
-        //Is this our Local IP ?
-        if ( !strIP.Equals(strLocalIP) )
-        {
-          //is our list empty?
-          if(v_xboxclients.client_ip.size() <= 0 )
-          {
-            // the list is empty, add. this client to the list!
-            v_xboxclients.client_ip.push_back(strIP);
-            v_xboxclients.client_info.push_back(strInfo);
-            v_xboxclients.client_lookup_count.push_back(0);
-            v_xboxclients.client_informed.push_back(false);
-            bFoundNewClient = true;
-            bUpdateShares = true;
-          }
-          // our list is not empty, check if we allready have this client in our list!
-          else
-          {
-            // this should be a new client or?
-            // check list
-            bFoundNewClient = true;
-            for (i=0; i<v_xboxclients.client_ip.size(); i++)
-            {
-              if(strIP.Equals(v_xboxclients.client_ip[i].c_str()))
-                bFoundNewClient=false;
-            }
-            if(bFoundNewClient)
-            {
-              // bFoundNewClient is still true, the client is not in our list!
-              // add. this client to our list!
-              v_xboxclients.client_ip.push_back(strIP);
-              v_xboxclients.client_info.push_back(strInfo);
-              v_xboxclients.client_lookup_count.push_back(0);
-              v_xboxclients.client_informed.push_back(false);
-              bUpdateShares = true;
-            }
-            else // this is a existing client! check for LIFE & lookup counter
-            {
-              // calculate iLookUpCountMax value counter dependence on clients size!
-              if(v_xboxclients.client_ip.size() > iLookUpCountMax)
-                iLookUpCountMax += (v_xboxclients.client_ip.size()-iLookUpCountMax);
-
-              for (i=0; i<v_xboxclients.client_ip.size(); i++)
-              {
-                if(strIP.Equals(v_xboxclients.client_ip[i].c_str()))
-                {
-                  // found client in list, reset looup_Count and the client_info
-                  v_xboxclients.client_info[i]=strInfo;
-                  v_xboxclients.client_lookup_count[i] = 0;
-                }
-                else
-                {
-                  // check client lookup counter! Not reached the CountMax, Add +1!
-                  if(v_xboxclients.client_lookup_count[i] < iLookUpCountMax )
-                    v_xboxclients.client_lookup_count[i] = v_xboxclients.client_lookup_count[i]+1;
-                  else
-                  {
-                    // client lookup counter REACHED CountMax, remove this client
-                    v_xboxclients.client_ip.erase(v_xboxclients.client_ip.begin()+i);
-                    v_xboxclients.client_info.erase(v_xboxclients.client_info.begin()+i);
-                    v_xboxclients.client_lookup_count.erase(v_xboxclients.client_lookup_count.begin()+i);
-                    v_xboxclients.client_informed.erase(v_xboxclients.client_informed.begin()+i);
-
-                    // debug log, clients removed from our list
-                    CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] Removed! (mode LIFE 1)",i );
-
-                    // client is removed from our list, update our shares
-                    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-                    g_windowManager.SendThreadMessage(msg);
-                  }
-                }
-              }
-              // here comes our list for debug log
-              for (i=0; i<v_xboxclients.client_ip.size(); i++)
-              {
-                CLog::Log(LOGDEBUG,"Autodetection: Client ID:[%i] (mode LIFE=1)",i );
-                CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
-                CLog::Log(LOGDEBUG,"IP:%s Info:%s LookUpCount:%i Informed:%s",
-                  v_xboxclients.client_ip[i].c_str(),
-                  v_xboxclients.client_info[i].c_str(),
-                  v_xboxclients.client_lookup_count[i],
-                  v_xboxclients.client_informed[i] ? "true":"false");
-                CLog::Log(LOGDEBUG,"----------------------------------------------------------------" );
-              }
-            }
-          }
-          if(bUpdateShares)
-          {
-            // a client is add or removed from our list, update our shares
-            CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-            g_windowManager.SendThreadMessage(msg);
-          }
-        }
-      }
-    }
-    else
-    {
-       CLog::Log(LOGDEBUG, "Autodetection: Socket error %u", WSAGetLastError());
-    }
-    timeout.tv_sec=0;
-    timeout.tv_usec = 5000;
-    FD_ZERO(&readfds);
-    FD_SET(udp_server_socket, &readfds);
-    life = select( 0,&readfds, NULL, NULL, &timeout );
-  }
-  return bFoundNewClient;
-}
-
-void CUtil::AutoDetectionGetSource(VECSOURCES &shares)
-{
-  if(v_xboxclients.client_ip.size() > 0)
-  {
-    // client list is not empty, add to shares
-    CMediaSource share;
-    for (unsigned int i=0; i< v_xboxclients.client_ip.size(); i++)
-    {
-      //extract client info string: NickName;FTP_USER;FTP_Password;FTP_PORT;BOOST_MODE
-      CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
-      CStdStringArray arSplit;
-      StringUtils::SplitString(v_xboxclients.client_info[i],";", arSplit);
-      if ((int)arSplit.size() > 1)
-      {
-        strNickName     = arSplit[0].c_str();
-        strFtpUserName  = arSplit[1].c_str();
-        strFtpPassword  = arSplit[2].c_str();
-        strFtpPort      = arSplit[3].c_str();
-        strBoosMode     = arSplit[4].c_str();
-        strFTPPath.Format("ftp://%s:%s@%s:%s/",strFtpUserName.c_str(),strFtpPassword.c_str(),v_xboxclients.client_ip[i].c_str(),strFtpPort.c_str());
-
-        strNickName.TrimRight(' ');
-        share.strName.Format("FTP XBMC_PC (%s)", strNickName.c_str());
-        share.strPath.Format("%s",strFTPPath.c_str());
-        shares.push_back(share);
-      }
-    }
-  }
-}
 bool CUtil::IsFTP(const CStdString& strFile)
 {
   if( strFile.Left(6).Equals("ftp://") ) return true;
   else if( strFile.Left(7).Equals("ftpx://") ) return true;
   else if( strFile.Left(7).Equals("ftps://") ) return true;
   else return false;
-}
-
-bool CUtil::GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax )
-{
-#ifdef HAS_FTP_SERVER
-  if( !g_application.m_pFileZilla )
-    return false;
-
-  class CXFUser* m_pUser;
-  vector<CXFUser*> users;
-  g_application.m_pFileZilla->GetAllUsers(users);
-  iUserMax = users.size();
-  if (iUserMax > 0)
-  {
-    //for (int i = 1 ; i < iUserSize; i++){ delete users[i]; }
-    m_pUser = users[iFTPUserID];
-    strFtpUser1 = m_pUser->GetName();
-    if (strFtpUser1.size() != 0) return true;
-    else return false;
-  }
-  else
-#endif
-    return false;
-}
-bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword)
-{
-#ifdef HAS_FTP_SERVER
-  if( !g_application.m_pFileZilla )
-    return false;
-
-  CStdString strTempUserName;
-  class CXFUser* p_ftpUser;
-  vector<CXFUser*> v_ftpusers;
-  bool bFoundUser = false;
-  g_application.m_pFileZilla->GetAllUsers(v_ftpusers);
-  int iUserSize = v_ftpusers.size();
-  if (iUserSize > 0)
-  {
-    int i = 1 ;
-    while( i <= iUserSize)
-    {
-      p_ftpUser = v_ftpusers[i-1];
-      strTempUserName = p_ftpUser->GetName();
-      if (strTempUserName.Equals(strFtpUserName.c_str()) )
-      {
-        if (p_ftpUser->SetPassword(strFtpUserPassword.c_str()) != XFS_INVALID_PARAMETERS)
-        {
-          p_ftpUser->CommitChanges();
-          g_guiSettings.SetString("servers.ftpserverpassword",strFtpUserPassword.c_str());
-          return true;
-        }
-        break;
-      }
-      i++;
-    }
-  }
-#endif
-  return false;
 }
 
 void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories)

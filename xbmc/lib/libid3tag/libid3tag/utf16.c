@@ -250,6 +250,8 @@ id3_ucs4_t *id3_utf16_deserialize(id3_byte_t const **ptr, id3_length_t length,
   id3_ucs4_t *ucs4;
 
   end = *ptr + (length & ~1);
+  if (end == *ptr && length == 1)
+    (*ptr)++;
 
   utf16 = malloc((length / 2 + 1) * sizeof(*utf16));
   if (utf16 == 0)

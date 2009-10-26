@@ -64,7 +64,7 @@ public:
   virtual bool CanFocus() const { return false; };
 
   void SetIntervals(const std::vector<int>& vecIntervals);
-  void SetUrls(const std::vector<std::string>& vecUrl);
+  void SetUrls(const std::vector<std::string>& vecUrl, bool rtl);
 
 protected:
   virtual void UpdateColors();
@@ -82,6 +82,7 @@ protected:
 
   std::vector<std::string> m_vecUrls;
   std::vector<int> m_vecIntervals;
+  bool m_rtl;
   CScrollInfo m_scrollInfo;
 };
 #endif

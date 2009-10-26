@@ -46,6 +46,7 @@ CJobWorker::~CJobWorker()
 
 void CJobWorker::Process()
 {
+  SetPriority( GetMinPriority() );
   while (true)
   {
     // request an item from our manager (this call is blocking)
@@ -71,7 +72,7 @@ CJobManager::CJobManager()
   m_running = true;
 }
 
-CJobManager::~CJobManager()
+void CJobManager::CancelJobs()
 {
   CSingleLock lock(m_section);
   m_running = false;
@@ -85,8 +86,14 @@ CJobManager::~CJobManager()
   
   // cancel any callbacks on jobs still processing
   for_each(m_processing.begin(), m_processing.end(), mem_fun_ref(&CWorkItem::Cancel));
+}
 
-  // and tell our workers to finish
+CJobManager::~CJobManager()
+{
+  CSingleLock lock(m_section);
+
+  // cancel any jobs, and tell our workers to finish
+  CancelJobs();
   while (m_workers.size())
   {
     lock.Leave();
@@ -102,6 +109,21 @@ unsigned int CJobManager::AddJob(CJob *job, IJobCallback *callback, CJob::PRIORI
 
   // create a work item for this job
   CWorkItem work(job, m_jobCounter++, callback);
+  m_jobQueue[priority].push_back(work);
+
+  StartWorkers(priority);
+  return work.m_id;
+}
+
+unsigned int CJobManager::AddLIFOJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority)
+{
+  CSingleLock lock(m_section);
+
+  // check if we have a similar job, and if so, swap the first such job with this one
+  CWorkItem work(job, m_jobCounter++, callback);
+  JobQueue::iterator i = find(m_jobQueue[priority].begin(), m_jobQueue[priority].end(), job->GetType());
+  if (i != m_jobQueue[priority].end())
+    swap(*i, work);
   m_jobQueue[priority].push_back(work);
 
   StartWorkers(priority);

@@ -210,7 +210,14 @@ public:
     VOICE_MASK m_karaokeVoiceMask[4];
   };
 
-  std::map<int,std::pair<std::vector<int>,std::vector<std::string> > > m_mapRssUrls;
+  struct RssSet
+  {
+    bool rtl;
+    std::vector<int> interval;
+    std::vector<std::string> url;
+  };
+
+  std::map<int,RssSet> m_mapRssUrls;
   std::map<int, CSkinString> m_skinStrings;
   std::map<int, CSkinBool> m_skinBools;
 
@@ -227,10 +234,6 @@ public:
   CStdString m_defaultVideoSource;
   CStdString m_defaultMusicLibSource;
   CStdString m_defaultVideoLibSource;
-
-  VECSOURCES m_UPnPMusicSources;
-  VECSOURCES m_UPnPVideoSources;
-  VECSOURCES m_UPnPPictureSources;
 
   CStdString m_UPnPUUIDServer;
   int        m_UPnPPortServer;

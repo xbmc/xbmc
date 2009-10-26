@@ -111,12 +111,6 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     CStdString strUrl;
     CUtil::CreateArchivePath(strUrl, "zip", strPath, "");
 
-    if (!g_guiSettings.GetBool("filelists.unrollarchives"))
-    {
-      pItem->m_strPath = strUrl;
-      return new CZipDirectory;
-    }
-
     CFileItemList items;
     CDirectory::GetDirectory(strUrl, items, strMask);
     if (items.Size() == 0) // no files
@@ -166,12 +160,6 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
       }
     }
     
-    if (!g_guiSettings.GetBool("filelists.unrollarchives"))
-    {
-      pItem->m_strPath = strUrl;
-      return new CRarDirectory;
-    }
-
     CFileItemList items;
     CDirectory::GetDirectory(strUrl, items, strMask);
     if (items.Size() == 0) // no files - hide this

@@ -36,7 +36,6 @@ CGUIDialogVisualisationPresetList::CGUIDialogVisualisationPresetList(void)
     : CGUIDialog(WINDOW_DIALOG_VIS_PRESET_LIST, "VisualisationPresetList.xml")
 {
   m_currentPreset = 0;
-  LoadOnDemand(false);    // we are loaded by the vis window.
   m_vecPresets = new CFileItemList;
 }
 

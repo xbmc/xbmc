@@ -67,6 +67,12 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
 
   movieTitle.ToLower();
 
+  if (m_info.strContent.Equals("musicvideos"))
+    movieTitle.Replace("-"," ");
+
+  CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s', language: '%s', date: '%s', framework: '%s')",
+    __FUNCTION__, movieTitle.c_str(), m_info.strTitle.c_str(), m_info.strPath.c_str(), m_info.strContent.c_str(), m_info.strLanguage.c_str(), m_info.strDate.c_str(), m_info.strFramework.c_str());
+
   if (!pUrl)
   {
     if (m_parser.HasFunction("CreateSearchUrl"))
@@ -75,11 +81,12 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
     }
     else if (m_info->Content() == CONTENT_MUSICVIDEOS)
     {
-    if (!m_parser.HasFunction("FileNameScrape"))
-       return false;
+      if (!m_parser.HasFunction("FileNameScrape"))
+        return false;
 
       CScraperUrl scrURL("filenamescrape");
-      scrURL.strTitle = strMovie;
+      CUtil::RemoveExtension(strName);
+      scrURL.strTitle = strName;
       movielist.push_back(scrURL);
       return 1;
     }
@@ -459,10 +466,10 @@ void CIMDB::GetURL(const CStdString &movieFile, const CStdString &movieName, con
     if (!movieYear.IsEmpty())
       m_parser.m_param[1] = movieYear;
 
-    // convert to the encoding requested by the parser
-    g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), movieName, m_parser.m_param[0]);
-    CUtil::URLEncode(m_parser.m_param[0]);
-  }
+  // convert to the encoding requested by the parser
+  g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), movieName, m_parser.m_param[0]);
+  CUtil::URLEncode(m_parser.m_param[0]);
+ 
   scrURL.ParseString(m_parser.Parse("CreateSearchUrl"/*,&m_info.settings*/));
 }
 
@@ -673,6 +680,7 @@ bool CIMDB::ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details
   CUtil::RemoveExtension(m_parser.m_param[0]);
   m_parser.m_param[0].Replace("_"," ");
   CStdString strResult = m_parser.Parse("FileNameScrape"/*,&m_info.settings*/);
+  CLog::Log(LOGDEBUG,"scraper: FileNameScrape returned %s", strResult.c_str());
   TiXmlDocument doc;
   doc.Parse(strResult.c_str());
   if (doc.RootElement())

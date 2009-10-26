@@ -29,7 +29,6 @@
 #include "utils/md5.h"
 #include "Picture.h"
 #include "FileSystem/StackDirectory.h"
-#include "xbox/XKGeneral.h"
 #include "utils/IMDB.h"
 #include "utils/GUIInfoManager.h"
 #include "FileSystem/File.h"
@@ -553,7 +552,7 @@ namespace VIDEO
               m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
             long lResult = AddMovieAndGetThumb(pItem.get(), ADDON::TranslateContent(info2->Content()), *pItem->GetVideoInfoTag(), -1, bDirNames, pDlgProgress);
-            if (bRefresh && scraper->Content() == CONTENT_TVSHOWS && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
+            if (bRefresh && scraper->Content() == CONTENT_TVSHOWS)
               FetchSeasonThumbs(lResult);
             if (!bRefresh && info2->Content() == CONTENT_TVSHOWS)
               i--;
@@ -610,8 +609,7 @@ namespace VIDEO
                     m_database.SetPathHash(pItem->m_strPath,pItem->GetProperty("hash"));
                 }
                 else
-                  if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
-                    FetchSeasonThumbs(lResult);
+                  FetchSeasonThumbs(lResult);
               }
               Return = true;
             }
@@ -1044,8 +1042,7 @@ namespace VIDEO
     if (bApplyToDir && !strThumb.IsEmpty())
       ApplyIMDBThumbToFolder(strDirectory,strThumb);
 
-    if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
-      FetchActorThumbs(movieDetails.m_cast,strDirectory);
+    FetchActorThumbs(movieDetails.m_cast,strDirectory);
     m_database.Close();
     return lResult;
   }
@@ -1164,8 +1161,7 @@ namespace VIDEO
         AddMovieAndGetThumb(&item,"tvshows",episodeDetails,idShow);
       }
     }
-    if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
-      FetchSeasonThumbs(idShow);
+    FetchSeasonThumbs(idShow);
     m_database.Close();
     return true;
   }

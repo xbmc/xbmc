@@ -1194,7 +1194,9 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
   if (stream)
   {
     unsigned int in = stream->codec_fourcc;
-    // audio codecs have 2 byte IDs that don't make much sense so only use FourCC for video
+    // FourCC codes are only valid on video streams, audio codecs in AVI/WAV 
+    // are 2 bytes and audio codecs in transport streams have subtle variation
+    // e.g AC-3 instead of ac3
     if (stream->type == STREAM_VIDEO && in != 0)
     {
       char fourcc[5];
@@ -1207,10 +1209,16 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
       *(unsigned int*)fourcc = in;
 #endif
       fourcc[4] = 0;
-      strName = fourcc;
-      strName.MakeLower();
+      // fourccs have to be 4 characters
+      if (strlen(fourcc) == 4)
+      {
+        strName = fourcc;
+        strName.MakeLower();
+        return;
+      }
     }
-    else if (m_dllAvCodec.IsLoaded())
+
+    if (m_dllAvCodec.IsLoaded())
     {
       AVCodec *codec = m_dllAvCodec.avcodec_find_decoder(stream->codec);
       if (codec)

@@ -245,7 +245,7 @@
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">/title/tt([0-9]*)</expression>
 			</RegExp>
-			<RegExp conditional="EnableFanArt" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;tt$$6&lt;/url&gt;" dest="5">
+			<RegExp conditional="EnableFanArt" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://www.imdb.com/title/tt$$6&lt;/url&gt;" dest="5">
 				<expression/>
 			</RegExp>
 			<RegExp conditional="EnableIMPAwards" output="&lt;url function=&quot;GetIMPALink&quot;cache=&quot;$$2.html&quot;&gt;http://www.imdb.com/title/tt$$6/posters&lt;/url&gt;" dest="5+">

@@ -22,12 +22,10 @@
 #include "system.h"
 #include "LocalizeStrings.h"
 #include "MediaManager.h"
-#include "xbox/IoSupport.h"
+#include "utils/IoSupport.h"
 #include "URL.h"
 #include "Util.h"
-#ifdef _LINUX
-#include "LinuxFileSystem.h"
-#elif defined(_WIN32)
+#ifdef _WIN32
 #include "WIN32Util.h"
 #endif
 #include "GUIWindowManager.h"
@@ -44,6 +42,18 @@
 #include "tinyXML/tinyxml.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "Application.h"
+#include "utils/JobManager.h"
+#include "AutorunMediaJob.h"
+#include "GUISettings.h"
+
+#ifdef __APPLE__
+#include "DarwinStorageProvider.h"
+#elif defined(_LINUX)
+#include "LinuxStorageProvider.h"
+#elif _WIN32
+#include "Win32StorageProvider.h"
+#endif
 
 using namespace std;
 
@@ -53,7 +63,28 @@ class CMediaManager g_mediaManager;
 
 CMediaManager::CMediaManager()
 {
+#ifdef __APPLE__
+  m_platformStorage = new CDarwinStorageProvider();
+#elif defined(_LINUX)
+  m_platformStorage = new CLinuxStorageProvider();
+#elif _WIN32
+  m_platformStorage = new CWin32StorageProvider();
+#endif
+
   m_bhasoptical = false;
+}
+
+void CMediaManager::Stop()
+{
+  m_platformStorage->Stop();
+
+  delete m_platformStorage;
+  m_platformStorage = NULL;
+}
+
+void CMediaManager::Initialize()
+{
+  m_platformStorage->Initialize();
 }
 
 bool CMediaManager::LoadSources()
@@ -118,83 +149,14 @@ bool CMediaManager::SaveSources()
 
 void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
 {
-
-#ifdef _WIN32
-  CMediaSource share;
-  if (includeQ)
-  {
-    CMediaSource share;
-    share.strPath = "special://xbmc/";
-    share.strName.Format(g_localizeStrings.Get(21438),'Q');
-    share.m_ignore = true;
-    localDrives.push_back(share) ;
-  }
-
-  CWIN32Util::GetDrivesByType(localDrives, LOCAL_DRIVES);
-
-#else
-#ifndef _LINUX
-  // Local shares
-  CMediaSource share;
-  share.strPath = "C:\\";
-  share.strName.Format(g_localizeStrings.Get(21438),'C');
-  share.m_ignore = true;
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-  localDrives.push_back(share);
-#endif
-
-#ifdef _LINUX
-  // Home directory
-  CMediaSource share;
-  share.strPath = getenv("HOME");
-  share.strName = g_localizeStrings.Get(21440);
-  share.m_ignore = true;
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-  localDrives.push_back(share);
-#endif
-
-  share.strPath = "D:\\";
-  share.strName = g_localizeStrings.Get(218);
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
-  localDrives.push_back(share);
-
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-#ifndef _LINUX
-  share.strPath = "E:\\";
-  share.strName.Format(g_localizeStrings.Get(21438),'E');
-  localDrives.push_back(share);
-  for (char driveletter=EXTEND_DRIVE_BEGIN; driveletter<=EXTEND_DRIVE_END; driveletter++)
-  {
-    if (CIoSupport::DriveExists(driveletter))
-    {
-      CMediaSource share;
-      share.strPath.Format("%c:\\", driveletter);
-      share.strName.Format(g_localizeStrings.Get(21438),driveletter);
-      share.m_ignore = true;
-      localDrives.push_back(share);
-    }
-  }
-  if (includeQ)
-  {
-    CMediaSource share;
-    share.strPath = "special://xbmc/";
-    share.strName.Format(g_localizeStrings.Get(21438),'Q');
-    share.m_ignore = true;
-    localDrives.push_back(share) ;
-  }
-#endif
-
-#ifdef _LINUX
-  CLinuxFileSystem::GetLocalDrives(localDrives);
-#endif
-#endif
+  CSingleLock lock(m_CritSecStorageProvider);
+  m_platformStorage->GetLocalDrives(localDrives);
 }
 
 void CMediaManager::GetRemovableDrives(VECSOURCES &removableDrives)
 {
-#ifdef _LINUX
-  CLinuxFileSystem::GetRemovableDrives(removableDrives); 
-#endif
+  CSingleLock lock(m_CritSecStorageProvider);
+  m_platformStorage->GetRemovableDrives(removableDrives);
 }
 
 void CMediaManager::GetNetworkLocations(VECSOURCES &locations)
@@ -206,7 +168,7 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations)
     CMediaSource share;
     share.strPath = m_locations[i].path;
     CURL url(share.strPath);
-    url.GetURLWithoutUserDetails(share.strName);
+    share.strName = url.GetWithoutUserDetails();
     locations.push_back(share);
   }
 }
@@ -476,3 +438,42 @@ void CMediaManager::SetHasOpticalDrive(bool bstatus)
   m_bhasoptical = bstatus;
 }
 
+bool CMediaManager::Eject(CStdString mountpath)
+{
+  CSingleLock lock(m_CritSecStorageProvider);
+  return m_platformStorage->Eject(mountpath);
+}
+
+void CMediaManager::ProcessEvents()
+{
+  CSingleLock lock(m_CritSecStorageProvider);
+  if (m_platformStorage->PumpDriveChangeEvents(this))
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
+    g_windowManager.SendThreadMessage(msg);
+  }
+}
+
+std::vector<CStdString> CMediaManager::GetDiskUsage()
+{
+  CSingleLock waitLock(m_muAutoSource);
+  return m_platformStorage->GetDiskUsage();
+}
+
+void CMediaManager::OnStorageAdded(const CStdString &label, const CStdString &path)
+{
+  if (g_guiSettings.GetBool("lookandfeel.autorun"))
+    CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_HIGH);
+  else
+    g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13021), label);
+}
+
+void CMediaManager::OnStorageSafelyRemoved(const CStdString &label)
+{
+  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13023), label);
+}
+
+void CMediaManager::OnStorageUnsafelyRemoved(const CStdString &label)
+{
+  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13022), label);
+}

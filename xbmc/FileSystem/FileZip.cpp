@@ -26,9 +26,7 @@
 #include <sys/stat.h>
 
 #ifndef __GNUC__
-#ifndef _XBOX
 #pragma comment (lib,"../../xbmc/lib/zlib/zlib.lib")
-#endif
 #endif
 
 #define ZIP_CACHE_LIMIT 4*1024*1024
@@ -54,11 +52,10 @@ CFileZip::~CFileZip()
 
 bool CFileZip::Open(const CURL&url)
 {
-  CStdString strPath;
-  CStdString strOpts  = url.GetOptions();
+  CStdString strOpts = url.GetOptions();
   CURL url2(url);
   url2.SetOptions("");
-  url2.GetURL(strPath);
+  CStdString strPath = url2.Get();
   if (!g_ZipManager.GetZipEntry(strPath,mZipItem))
     return false;
 
@@ -243,9 +240,7 @@ int64_t CFileZip::Seek(int64_t iFilePosition, int iWhence)
 bool CFileZip::Exists(const CURL& url)
 {
   SZipEntry item;
-  CStdString strPath;
-  url.GetURL(strPath);
-  if (g_ZipManager.GetZipEntry(strPath,item))
+  if (g_ZipManager.GetZipEntry(url.Get(),item))
     return true;
   return false;
 }
@@ -272,9 +267,7 @@ int CFileZip::Stat(struct __stat64 *buffer)
 
 int CFileZip::Stat(const CURL& url, struct __stat64* buffer)
 {
-  CStdString strPath;
-  url.GetURL(strPath);
-  if (!g_ZipManager.GetZipEntry(strPath,mZipItem))
+  if (!g_ZipManager.GetZipEntry(url.Get(),mZipItem))
     return -1;
 
   buffer->st_gid = 0;

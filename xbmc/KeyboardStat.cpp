@@ -150,7 +150,7 @@ static XBMC_KeyMapping g_mapping_npc[] =
 , { XBMCK_TAB, 0x09 }
 , { XBMCK_RETURN, 0x0d }
 , { XBMCK_ESCAPE, 0x1b }
-, { XBMCK_SPACE, 0x20 }
+, { XBMCK_SPACE, 0x20, ' ', L' ' }
 , { XBMCK_MENU, 0x5d }
 , { XBMCK_KP0, 0x60 }
 , { XBMCK_KP1, 0x61 }

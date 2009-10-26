@@ -89,6 +89,15 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
+  /*!
+   \brief Check whether a given control is valid
+   Runs through controls and returns whether this control is valid.  Only functional
+   for controls with non-zero id.
+   \param control to check
+   \return true if the control is valid, false otherwise.
+   */
+  bool IsValidControl(const CGUIControl *control) const;
+
   // sub controls
   std::vector<CGUIControl *> m_children;
   typedef std::vector<CGUIControl *>::iterator iControls;

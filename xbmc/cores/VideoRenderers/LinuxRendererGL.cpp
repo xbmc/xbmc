@@ -194,6 +194,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 
   m_bConfigured = true;
   m_bImageReady = false;
+  m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
 
   // Ensure that textures are recreated and rendering starts only after the 1st 
   // frame is loaded after every call to Configure().
@@ -236,8 +237,11 @@ void CLinuxRendererGL::ChooseUpscalingMethod()
     g_stSettings.m_currentVideoSettings.m_ScalingMethod = ret;
 
     // Initialize software upscaling.
-    InitializeSoftwareUpscaling();
-    CLog::Log(LOGWARNING, "Upscale: selected algorithm %d", ret);
+    if (g_guiSettings.GetInt("videoplayer.upscalingalgorithm") < 10) //non-hardware
+    {
+      InitializeSoftwareUpscaling();
+      CLog::Log(LOGWARNING, "Upscale: selected algorithm %d", ret);
+    }
   }
 }
 
@@ -424,10 +428,10 @@ void CLinuxRendererGL::LoadTextures(int source)
     struct SwsContext *context = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
                                                              im->width, im->height, PIX_FMT_BGRA,
                                                              SWS_FAST_BILINEAR, NULL, NULL, NULL);
-    uint8_t *src[] = { im->plane[0], im->plane[1], im->plane[2] };
-    int     srcStride[] = { im->stride[0], im->stride[1], im->stride[2] };
-    uint8_t *dst[] = { m_rgbBuffer, 0, 0 };
-    int     dstStride[] = { m_sourceWidth*4, 0, 0 };
+    uint8_t *src[] = { im->plane[0], im->plane[1], im->plane[2], 0 };
+    int     srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
+    uint8_t *dst[] = { m_rgbBuffer, 0, 0, 0 };
+    int     dstStride[] = { m_sourceWidth*4, 0, 0, 0 };
     m_dllSwScale.sws_scale(context, src, srcStride, 0, im->height, dst, dstStride);
     m_dllSwScale.sws_freeContext(context);
     SetEvent(m_eventTexturesDone[source]);
@@ -435,10 +439,10 @@ void CLinuxRendererGL::LoadTextures(int source)
   else if (IsSoftwareUpscaling()) // FIXME: s/w upscaling + RENDER_SW => broken
   {
     // Perform the scaling.
-    uint8_t* src[] =       { im->plane[0],  im->plane[1],  im->plane[2] };
-    int      srcStride[] = { im->stride[0], im->stride[1], im->stride[2] };
-    uint8_t* dst[] =       { m_imScaled.plane[0],  m_imScaled.plane[1],  m_imScaled.plane[2] };
-    int      dstStride[] = { m_imScaled.stride[0], m_imScaled.stride[1], m_imScaled.stride[2] };
+    uint8_t* src[] =       { im->plane[0],  im->plane[1],  im->plane[2], 0 };
+    int      srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
+    uint8_t* dst[] =       { m_imScaled.plane[0],  m_imScaled.plane[1],  m_imScaled.plane[2], 0 };
+    int      dstStride[] = { m_imScaled.stride[0], m_imScaled.stride[1], m_imScaled.stride[2], 0 };
     int      algorithm   = 0;
 
     switch (m_scalingMethod)
@@ -862,6 +866,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
 {
   if (m_scalingMethod == g_stSettings.m_currentVideoSettings.m_ScalingMethod)
     return;
+  m_scalingMethod = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
 
   if (m_pVideoFilterShader)
   {
@@ -869,62 +874,81 @@ void CLinuxRendererGL::UpdateVideoFilter()
     delete m_pVideoFilterShader;
     m_pVideoFilterShader = NULL;
   }
-
   m_fbo.Cleanup();
 
   VerifyGLState();
-  m_scalingMethod = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
 
   switch (g_stSettings.m_currentVideoSettings.m_ScalingMethod)
   {
   case VS_SCALINGMETHOD_NEAREST:
-    m_renderQuality = RQ_SINGLEPASS;
     SetTextureFilter(GL_NEAREST);
-    break;
+    m_renderQuality = RQ_SINGLEPASS;
+    return;
 
   case VS_SCALINGMETHOD_LINEAR:
     SetTextureFilter(GL_LINEAR);
     m_renderQuality = RQ_SINGLEPASS;
-    break;
+    return;
 
   case VS_SCALINGMETHOD_CUBIC:
-    SetTextureFilter(GL_LINEAR);
-    m_renderQuality = RQ_MULTIPASS;
-    m_pVideoFilterShader = new BicubicFilterShader(0.3f, 0.3f);
-
-    if (!m_pVideoFilterShader->CompileAndLink())
+    if(!glewIsSupported("GL_ARB_texture_float"))
     {
-      CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
-      m_pVideoFilterShader->Free();
-      delete m_pVideoFilterShader;
-      m_pVideoFilterShader = NULL;
+      CLog::Log(LOGERROR, "GL: hardware doesn't support GL_ARB_texture_float");
+      break;
     }
 
     if (!m_fbo.Initialize())
+    {
       CLog::Log(LOGERROR, "GL: Error initializing FBO");
+      break;
+    }
 
     if (!m_fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
+    {
       CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
+      break;
+    }
 
-    break;
+    m_pVideoFilterShader = new BicubicFilterShader(0.3f, 0.3f);
+    if (!m_pVideoFilterShader->CompileAndLink())
+    {
+      CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
+      break;
+    }
+
+    SetTextureFilter(GL_LINEAR);
+    m_renderQuality = RQ_MULTIPASS;
+    return;
 
   case VS_SCALINGMETHOD_LANCZOS2:
   case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_SINC8:
   case VS_SCALINGMETHOD_NEDI:
     CLog::Log(LOGERROR, "GL: TODO: This scaler has not yet been implemented");
-    m_renderQuality = RQ_SINGLEPASS;
     break;
 
   case VS_SCALINGMETHOD_BICUBIC_SOFTWARE:
   case VS_SCALINGMETHOD_LANCZOS_SOFTWARE:
   case VS_SCALINGMETHOD_SINC_SOFTWARE:
     InitializeSoftwareUpscaling();
-    break;
+    return;
 
   default:
     break;
   }
+
+  g_application.m_guiDialogKaiToast.QueueNotification("Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
+  CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
+  if (m_pVideoFilterShader)
+  {
+    m_pVideoFilterShader->Free();
+    delete m_pVideoFilterShader;
+    m_pVideoFilterShader = NULL;
+  }
+  m_fbo.Cleanup();
+
+  SetTextureFilter(GL_LINEAR);
+  m_renderQuality = RQ_SINGLEPASS;
 }
 
 void CLinuxRendererGL::LoadShaders(int field)
@@ -1593,12 +1617,12 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   glActiveTextureARB(GL_TEXTURE0);
 
   // Try some clamping or wrapping
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   VerifyGLState();
 
   glBegin(GL_QUADS);

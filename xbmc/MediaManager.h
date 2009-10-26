@@ -26,6 +26,8 @@
 #include "FileSystem/cdioSupport.h"
 #endif
 #include "URL.h"
+#include "utils/Job.h"
+#include "IStorageProvider.h"
 
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
@@ -39,10 +41,13 @@ public:
   CStdString path;
 };
 
-class CMediaManager
+class CMediaManager : public IStorageEventsCallback, public IJobCallback
 {
 public:
   CMediaManager();
+
+  void Initialize();
+  void Stop();
 
   bool LoadSources();
   bool SaveSources();
@@ -69,15 +74,28 @@ public:
   CStdString GetDiskLabel(const CStdString& devicePath="");
   void SetHasOpticalDrive(bool bstatus);
 
+  bool Eject(CStdString mountpath);
+
+  void ProcessEvents();
+
+  std::vector<CStdString> GetDiskUsage();
+
+  virtual void OnStorageAdded(const CStdString &label, const CStdString &path);
+  virtual void OnStorageSafelyRemoved(const CStdString &label);
+  virtual void OnStorageUnsafelyRemoved(const CStdString &label);
+
+  virtual void OnJobComplete(unsigned int jobID, CJob *job) { }
 protected:
   std::vector<CNetworkLocation> m_locations;
 
-  CCriticalSection m_muAutoSource;
+  CCriticalSection m_muAutoSource, m_CritSecStorageProvider;
 #ifdef HAS_DVD_DRIVE
   std::map<CStdString,CCdInfo*> m_mapCdInfo;
 #endif
   bool m_bhasoptical;
 
+private:
+  IStorageProvider *m_platformStorage;
 };
 
 extern class CMediaManager g_mediaManager;

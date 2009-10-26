@@ -29,17 +29,7 @@
   #include <X11/Xlib.h>
   #include <GL/glx.h>
 #elif defined(_WIN32)
-  #ifdef _DEBUG
-    #define D3D_DEBUG_INFO
-  #endif
   #include <d3d9.h>
-  #if(DIRECT3D_VERSION > 0x0900)
-    #include <Dxerr.h>
-  #else
-    #include <dxerr9.h>
-    #define DXGetErrorString(hr)      DXGetErrorString9(hr)
-    #define DXGetErrorDescription(hr) DXGetErrorDescription9(hr)
-  #endif
 #endif
 
 class CVideoReferenceClock : public CThread
@@ -47,8 +37,8 @@ class CVideoReferenceClock : public CThread
   public:
     CVideoReferenceClock();
 
-    void    GetTime(int64_t *ptime);
-    void    GetFrequency(int64_t *pfreq);
+    int64_t GetTime();
+    int64_t GetFrequency();
     void    SetSpeed(double Speed);
     double  GetSpeed();
     int     GetRefreshRate();
@@ -82,8 +72,8 @@ class CVideoReferenceClock : public CThread
     int     m_TotalMissedVblanks;//total number of clock updates missed, used by codec information screen
     int64_t m_VblankTime;        //last time the clock was updated when using vblank as clock
 
-    CEvent m_Started;            //set when the vblank clock is started
-    CEvent m_VblankEvent;        //set when a vblank happens
+    CEvent  m_Started;            //set when the vblank clock is started
+    CEvent  m_VblankEvent;        //set when a vblank happens
 
     CCriticalSection m_CritSection;
 
@@ -96,12 +86,12 @@ class CVideoReferenceClock : public CThread
 
     int  (*m_glXWaitVideoSyncSGI) (int, int, unsigned int*);
     int  (*m_glXGetVideoSyncSGI)  (unsigned int*);
-    int  (*m_glXGetRefreshRateSGI)(unsigned int*);
 
     Display*     m_Dpy;
     XVisualInfo *m_vInfo;
     Window       m_Window;
     GLXContext   m_Context;
+    int          m_RREventBase;
 
     bool         m_UseNvSettings;
 
@@ -124,7 +114,6 @@ class CVideoReferenceClock : public CThread
     unsigned int  m_Adapter;
     MONITORINFOEX m_Monitor;
     MONITORINFOEX m_PrevMonitor;
-    bool          m_IsVista;
 
 #elif defined(__APPLE__)
     bool SetupCocoa();

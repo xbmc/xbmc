@@ -48,8 +48,7 @@ bool CVTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if(url.GetHostName() == "")
     url.SetHostName("localhost");
 
-  CStdString base;
-  url.GetURL(base);
+  CStdString base = url.Get();
   CUtil::RemoveSlashAtEnd(base);
 
   // add port after, it changes the structure

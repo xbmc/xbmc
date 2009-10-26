@@ -182,6 +182,12 @@ void CGUIMultiImage::DynamicResourceAlloc(bool bOnOff)
   m_bDynamicResourceAlloc=bOnOff;
 }
 
+void CGUIMultiImage::SetInvalid()
+{
+  m_image.SetInvalid();
+  CGUIControl::SetInvalid();
+}
+
 bool CGUIMultiImage::CanFocus() const
 {
   return false;

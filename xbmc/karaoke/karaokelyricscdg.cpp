@@ -93,7 +93,7 @@ bool CKaraokeLyricsCDG::InitGraphics()
 
   if (!m_pCdgTexture)
   {
-    m_pCdgTexture = new CTexture(WIDTH, HEIGHT, 32);
+    m_pCdgTexture = new CTexture(WIDTH, HEIGHT, XB_FMT_A8R8G8B8);
   }
 
   if ( !m_pCdgTexture )

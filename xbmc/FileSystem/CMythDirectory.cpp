@@ -118,15 +118,13 @@ bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
         CLog::Log(LOGDEBUG, "%s - Channel '%s' Icon '%s'", __FUNCTION__, name.c_str(), icon.c_str());
         path.Format("guide/%d/", num);
         url.SetFileName(path);
-        url.GetURL(path);
-        CFileItemPtr item(new CFileItem(path, true));
+        CFileItemPtr item(new CFileItem(url.Get(), true));
         item->SetLabel(name);
         item->SetLabelPreformated(true);
         if (icon.length() > 0)
         {
           url.SetFileName("files/channels/" + CUtil::GetFileName(icon));
-          url.GetURL(icon);
-          item->SetThumbnailImage(icon);
+          item->SetThumbnailImage(url.Get());
         }
         items.Add(item);
       }
@@ -172,12 +170,14 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &
       CDateTime starttime(program[i].starttime);
       CDateTime endtime(program[i].endtime);
 
+      tm *local = localtime(&program[i].starttime);
+      CDateTime localstart = *local;
       CStdString title;
-      title.Format("%s - %s", starttime.GetAsLocalizedTime("HH:mm", false), program[i].title);
+      title.Format("%s - %s", localstart.GetAsLocalizedTime("HH:mm", false), program[i].title);
 
       CFileItemPtr item(new CFileItem(title, false));
       item->SetLabel(title);
-      item->m_dateTime = starttime;
+      item->m_dateTime = localstart;
 
       CVideoInfoTag* tag = item->GetVideoInfoTag();
 
@@ -234,7 +234,7 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
     cmyth_proginfo_t program = m_dll->proglist_get_item(list, i);
     if (program)
     {
-      if (GetValue(m_dll->proginfo_recgroup(program)).Equals("LiveTV"))
+      if (!IsVisible(program))
       {
         m_dll->ref_release(program);
         continue;
@@ -269,20 +269,18 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
           m_dll->ref_release(program);
           continue;
         }
-        url.SetFileName("tvshows/" + path);
+        url.SetFileName("tvshows/" + name + "/" + path);
         break;
       case ALL:
         url.SetFileName("recordings/" + path);
         break;
       }
 
-      CFileItemPtr item(new CFileItem("", false));
+      CFileItemPtr item(new CFileItem(url.Get(), false));
       m_session->UpdateItem(*item, program);
-      url.GetURL(item->m_strPath);
 
       url.SetFileName("files/" + path + ".png");
-      url.GetURL(path);
-      item->SetThumbnailImage(path);
+      item->SetThumbnailImage(url.Get());
 
       /*
        * Don't adjust the name for MOVIES as additional information in the name will affect any scraper lookup.
@@ -313,10 +311,17 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
     }
   }
 
-  if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
-  else
-    items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
+  /*
+   * Only add sort by name for the Movies and All Recordings directories. For TV Shows they all have
+   * the same name, so only date is useful.
+   */
+  if (type != TV_SHOWS)
+  {
+    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+      items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
+    else
+      items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
+  }
   items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%Z", "%J", "%L", "%J"));
 
   m_dll->ref_release(list);
@@ -345,7 +350,7 @@ bool CCMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &it
     cmyth_proginfo_t program = m_dll->proglist_get_item(list, i);
     if (program)
     {
-      if (GetValue(m_dll->proginfo_recgroup(program)).Equals("LiveTV"))
+      if (!IsVisible(program))
       {
         m_dll->ref_release(program);
         continue;
@@ -445,17 +450,16 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
     num   = GetValue(m_dll->proginfo_chanstr (program));
     icon  = GetValue(m_dll->proginfo_chanicon(program));
 
-    CFileItemPtr item(new CFileItem("", false));
-    m_session->UpdateItem(*item, program);
     url.SetFileName("channels/" + num + ".ts");
-    url.GetURL(item->m_strPath);
+    CFileItemPtr item(new CFileItem(url.Get(), false));
+    m_session->UpdateItem(*item, program);
+
     item->SetLabel(GetValue(m_dll->proginfo_chansign(program)));
 
     if (icon.length() > 0)
     {
       url.SetFileName("files/channels/" + CUtil::GetFileName(icon));
-      url.GetURL(icon);
-      item->SetThumbnailImage(icon);
+      item->SetThumbnailImage(url.Get());
     }
 
     /* hack to get sorting working properly when sorting by show title */
@@ -545,6 +549,17 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   else if (fileName.Left(8) == "tvshows/")
     return GetRecordings(base, items, TV_SHOWS, fileName.Mid(8));
   return false;
+}
+
+bool CCMythDirectory::IsVisible(const cmyth_proginfo_t program)
+{
+  CStdString group = GetValue(m_dll->proginfo_recgroup(program));
+  /*
+   * Ignore programs that were recorded using "LiveTV" or that have been deleted via the
+   * "Auto Expire Instead of Delete Recording" option, which places the recording in the
+   * "Deleted" recording group for x days rather than deleting straight away.
+   */
+  return !(group.Equals("LiveTV") || group.Equals("Deleted"));
 }
 
 bool CCMythDirectory::IsMovie(const cmyth_proginfo_t program)

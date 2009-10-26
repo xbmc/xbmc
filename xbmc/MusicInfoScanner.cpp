@@ -30,7 +30,6 @@
 #include "Util.h"
 #include "utils/md5.h"
 #include "utils/GUIInfoManager.h"
-#include "xbox/XKGeneral.h"
 #include "NfoFile.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
@@ -541,7 +540,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     if (find(m_artistsScanned.begin(),m_artistsScanned.end(),iArtist) == m_artistsScanned.end())
     {
       m_artistsScanned.push_back(iArtist);
-      if (!m_bStop && g_guiSettings.GetBool("musiclibrary.autoartistinfo"))
+      if (!m_bStop && g_guiSettings.GetBool("musiclibrary.downloadinfo"))
       {
         CStdString strPath;
         strPath.Format("musicdb://2/%u/",iArtist);
@@ -553,7 +552,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     }
   }
 
-  if (g_guiSettings.GetBool("musiclibrary.autoalbuminfo"))
+  if (g_guiSettings.GetBool("musiclibrary.downloadinfo"))
   {
     for (set< pair<CStdString, CStdString> >::iterator i = albumsToScan.begin(); i != albumsToScan.end(); ++i)
     {
@@ -1202,8 +1201,7 @@ void CMusicInfoScanner::GetArtistArtwork(long id, const CStdString &artistName, 
   if (!CFile::Exists(cachedImage))
   { // check for local fanart
     CLog::Log(LOGDEBUG, "%s looking for fanart for artist %s in folder %s", __FUNCTION__, artistName.c_str(), item2.m_strPath.c_str());
-    item2.m_bIsFolder = true;
-    CStdString strFanart = item.CacheFanart(true);
+    CStdString strFanart = item2.CacheFanart(true);
     if (!strFanart.IsEmpty())
       CPicture::CacheImage(strFanart,cachedImage);
     else

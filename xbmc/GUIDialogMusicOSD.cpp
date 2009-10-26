@@ -34,7 +34,6 @@ CGUIDialogMusicOSD::CGUIDialogMusicOSD(void)
     : CGUIDialog(WINDOW_DIALOG_MUSIC_OSD, "MusicOSD.xml")
 {
   m_pVisualisation = NULL;
-  LoadOnDemand(false);    // we are loaded by the vis window.
 }
 
 CGUIDialogMusicOSD::~CGUIDialogMusicOSD(void)

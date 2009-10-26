@@ -82,7 +82,6 @@
 					<onup>3</onup>
 					<ondown>610</ondown>
 					<enable>Library.HasContent(Music)</enable>
-					<visible>System.GetBool(musiclibrary.enabled)</visible>
 				</control>
 				<control type="button" id="610">
 					<description>Fake Button to fix Player Controls Navigation</description>
@@ -93,7 +92,6 @@
 				<control type="group">
 					<posx>0</posx>
 					<posy>135</posy>
-					<animation effect="slide" start="0,0" end="0,-45" time="0" condition="!Control.IsVisible(99)">conditional</animation>
 					<include>CommonNowPlaying_Controls</include>
 				</control>
 				<control type="button" id="611">

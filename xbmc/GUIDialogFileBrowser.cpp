@@ -460,8 +460,7 @@ void CGUIDialogFileBrowser::Render()
     {
       // Update the current path label
       CURL url(m_selectedPath);
-      CStdString safePath;
-      url.GetURLWithoutUserDetails(safePath);
+      CStdString safePath = url.GetWithoutUserDetails();
       SET_CONTROL_LABEL(CONTROL_LABEL_PATH, safePath);
     }
     if ((!m_browsingForFolders && (*m_vecItems)[item]->m_bIsFolder) || ((*m_vecItems)[item]->m_strPath == "image://Browse"))
@@ -560,9 +559,6 @@ void CGUIDialogFileBrowser::GoParentFolder()
     if (strPath[1] == ':')
       CUtil::AddSlashAtEnd(strPath);
   Update(strPath);
-
-  if (!g_guiSettings.GetBool("filelists.fulldirectoryhistory"))
-    m_history.RemoveSelectedItem(strOldPath); //Delete current path
 }
 
 void CGUIDialogFileBrowser::OnWindowLoaded()
@@ -757,12 +753,6 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(CStdString &path, bool allowNetwork
   VECSOURCES shares;
   if (!strType.IsEmpty())
   {
-    if (strType.Equals("upnpmusic"))
-      browser->SetHeading(g_localizeStrings.Get(21361));
-    if (strType.Equals("upnpvideo"))
-      browser->SetHeading(g_localizeStrings.Get(21362));
-    if (strType.Equals("upnppictures"))
-      browser->SetHeading(g_localizeStrings.Get(21363));
     if (additionalShare)
       shares = *additionalShare;
     browser->m_addSourceType = strType;
@@ -823,7 +813,7 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
       CMediaSource share;
       share.strPath = path; //setPath(path);
       CURL url(path);
-      url.GetURLWithoutUserDetails(share.strName);
+      share.strName = url.GetWithoutUserDetails();
       m_shares.push_back(share);
       // add to our location manager...
       g_mediaManager.AddNetworkLocation(path);

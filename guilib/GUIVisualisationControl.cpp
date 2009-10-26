@@ -93,6 +93,11 @@ void CGUIVisualisationControl::UpdateVisibility(const CGUIListItem *item)
     FreeVisualisation();
 }
 
+void CGUIVisualisationControl::SetInvalid()
+{
+  FreeResources();
+}
+
 void CGUIVisualisationControl::Render()
 {
   if (!m_addon || !m_currentVis.Equals(g_guiSettings.GetString("mymusic.visualisation")))

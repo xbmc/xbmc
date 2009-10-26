@@ -67,13 +67,21 @@ XBPython g_pythonParser;
 #else
 #define PYTHON_DLL "special://xbmc/system/python/python24-x86_64-linux.so"
 #endif
-#elif defined(__powerpc__)
+#elif defined(_POWERPC)
 #if (defined HAVE_LIBPYTHON2_6)
 #define PYTHON_DLL "special://xbmc/system/python/python26-powerpc-linux.so"
 #elif (defined HAVE_LIBPYTHON2_5)
 #define PYTHON_DLL "special://xbmc/system/python/python25-powerpc-linux.so"
 #else
 #define PYTHON_DLL "special://xbmc/system/python/python24-powerpc-linux.so"
+#endif
+#elif defined(_POWERPC64)
+#if (defined HAVE_LIBPYTHON2_6)
+#define PYTHON_DLL "special://xbmc/system/python/python26-powerpc64-linux.so"
+#elif (defined HAVE_LIBPYTHON2_5)
+#define PYTHON_DLL "special://xbmc/system/python/python25-powerpc64-linux.so"
+#else
+#define PYTHON_DLL "special://xbmc/system/python/python24-powerpc64-linux.so"
 #endif
 #else /* !__x86_64__ && !__powerpc__ */
 #if (defined HAVE_LIBPYTHON2_6)
@@ -425,27 +433,31 @@ void XBPython::FreeResources()
 
 void XBPython::Process()
 {
-  CStdString strAutoExecPy;
+  CSingleLock lock(m_critSection);
 
   if (m_bStartup)
   {
     m_bStartup = false;
 
     // autoexec.py - userdata
-    strAutoExecPy = "special://home/scripts/autoexec.py";
+    CStdString strAutoExecPy = _P("special://home/scripts/autoexec.py");
 
-    if (XFILE::CFile::Exists(strAutoExecPy))
+    if ( XFILE::CFile::Exists(strAutoExecPy) )
       evalFile(strAutoExecPy);
     else
-      CLog::Log(LOGDEBUG, "%s - no user autoexec.py (%s) found, skipping", __FUNCTION__, CSpecialProtocol::TranslatePath(strAutoExecPy).c_str());
+      CLog::Log(LOGDEBUG, "%s - no user autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy.c_str());
 
     // autoexec.py - system
-    strAutoExecPy = "special://xbmc/scripts/autoexec.py";
+    CStdString strAutoExecPy2 = _P("special://xbmc/scripts/autoexec.py");
 
-    if (XFILE::CFile::Exists(strAutoExecPy))
-      evalFile(strAutoExecPy);
-    else
-      CLog::Log(LOGDEBUG, "%s - no system autoexec.py (%s) found, skipping", __FUNCTION__, CSpecialProtocol::TranslatePath(strAutoExecPy).c_str());
+    // Make sure special://xbmc & special://home don't point to the same location
+    if (strAutoExecPy != strAutoExecPy2)
+    {
+      if ( XFILE::CFile::Exists(strAutoExecPy2) )
+        evalFile(strAutoExecPy2);
+      else
+        CLog::Log(LOGDEBUG, "%s - no system autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy2.c_str());
+    }
   }
 
   if (m_bLogin)
@@ -453,15 +465,13 @@ void XBPython::Process()
     m_bLogin = false;
 
     // autoexec.py - profile
-    strAutoExecPy = "special://profile/scripts/autoexec.py";
+    CStdString strAutoExecPy = _P("special://profile/scripts/autoexec.py");
 
-    if (XFILE::CFile::Exists(strAutoExecPy))
+    if ( XFILE::CFile::Exists(strAutoExecPy) )
       evalFile(strAutoExecPy);
     else
-      CLog::Log(LOGDEBUG, "%s - no profile autoexec.py (%s) found, skipping", __FUNCTION__, CSpecialProtocol::TranslatePath(strAutoExecPy).c_str());
+      CLog::Log(LOGDEBUG, "%s - no profile autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy.c_str());
   }
-
-  CSingleLock lock(m_critSection);
 
   if (m_bInitialized)
   {

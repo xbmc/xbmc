@@ -168,7 +168,7 @@ namespace PYXBMC
 
   void initInfoTagMusic_Type()
   {
-    PyInitializeTypeObject(&InfoTagMusic_Type);
+    PyXBMCInitializeTypeObject(&InfoTagMusic_Type);
 
     InfoTagMusic_Type.tp_name = (char*)"xbmc.InfoTagMusic";
     InfoTagMusic_Type.tp_basicsize = sizeof(InfoTagMusic);

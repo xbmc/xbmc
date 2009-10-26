@@ -46,11 +46,6 @@ int CGUIViewStateWindowMusic::GetPlaylist()
   return PLAYLIST_MUSIC;
 }
 
-bool CGUIViewStateWindowMusic::UnrollArchives()
-{
-  return g_guiSettings.GetBool("filelists.unrollarchives");
-}
-
 bool CGUIViewStateWindowMusic::AutoPlayNextItem()
 {
   return g_guiSettings.GetBool("mymusic.autoplaynextitem");
@@ -618,13 +613,7 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
 
 void CGUIViewStateWindowMusicSongs::SaveViewState()
 {
-  if (g_guiSettings.GetBool("musicfiles.savefolderviews"))
-    SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, &g_stSettings.m_viewStateMusicFiles);
-  else
-  {
-    g_stSettings.m_viewStateMusicFiles = CViewState(GetViewAsControl(), GetSortMethod(), GetSortOrder());
-    g_settings.Save();
-  }
+  SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, &g_stSettings.m_viewStateMusicFiles);
 }
 
 VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()

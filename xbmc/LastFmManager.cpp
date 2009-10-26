@@ -214,10 +214,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
 {
   unsigned int start = CTimeUtils::GetTimeMS();
 
-  CStdString strUrl;
-  stationUrl.GetURL(strUrl);
-
-  InitProgressDialog(strUrl);
+  InitProgressDialog(stationUrl.Get());
 
   StopRadio(false);
   if (!RadioHandShake())
@@ -232,7 +229,8 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
   CFileCurl http;
   CStdString url;
   CStdString html;
-  url.Format("http://" + m_RadioBaseUrl + m_RadioBasePath + "/adjust.php?session=%s&url=%s&debug=%i", m_RadioSession, strUrl, 0);
+
+  url.Format("http://" + m_RadioBaseUrl + m_RadioBasePath + "/adjust.php?session=%s&url=%s&debug=%i", m_RadioSession, stationUrl.Get().c_str(), 0);
   if (!http.Get(url, html))
   {
     CLog::Log(LOGERROR, "Connect to Last.fm to change station failed.");
@@ -263,7 +261,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
   if ((int)playlist.size())
   {
-    g_application.m_strPlayListFile = strUrl; //needed to highlight the playing item
+    g_application.m_strPlayListFile = stationUrl.Get(); //needed to highlight the playing item
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.Play(0);
     CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - start));
@@ -599,7 +597,7 @@ void CLastFmManager::SendUpdateMessage()
 
 void CLastFmManager::OnStartup()
 {
-  SetPriority(THREAD_PRIORITY_NORMAL);
+  SetPriority( GetNormalPriority() );
 }
 
 void CLastFmManager::Process()

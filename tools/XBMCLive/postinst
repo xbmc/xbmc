@@ -115,15 +115,25 @@ case "$1" in
     ;;
 esac
 
-# Automatically added by dh_installinit
-if [ -x "/etc/init.d/xbmc-live" ]; then
-       update-rc.d xbmc-live defaults >/dev/null
-       if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
-               invoke-rc.d xbmc-live start || exit $?
-       else
-               /etc/init.d/xbmc-live start || exit $?
-       fi
-fi
-# End automatically added section
+# Upstart scripts tested on karmic only and not backward compatible ATM
+if [ "$(lsb_release -c | grep karmic)" ]; then
+	if [ -x "/etc/init.d/xbmc-live" ]; then
+		rm /etc/init.d/xbmc-live
+		update-rc.d -f xbmc-live remove >/dev/null
+	fi
 
+	ln -s /lib/init/upstart-job /etc/init.d/xbmc-live
+else
+	rm /etc/init/xbmc-live.conf
+	rm /etc/init/xbmc-live-install.conf
+
+	if [ -x "/etc/init.d/xbmc-live" ]; then
+		update-rc.d xbmc-live defaults >/dev/null
+		if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
+			invoke-rc.d xbmc-live start || exit $?
+		else
+			/etc/init.d/xbmc-live start || exit $?
+		fi
+	fi
+fi
 exit 0

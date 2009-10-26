@@ -58,6 +58,7 @@ class XBMCHelper
   bool m_alwaysOn;
   int  m_mode;
   int  m_sequenceDelay;
+  int  m_port;
   bool m_errorStarting;
 
   std::string m_configFile;

@@ -418,6 +418,8 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     items.SetContent("playlists");
   else if (strDirectory.Equals("plugin://music/"))
     items.SetContent("plugins");
+  else if (items.IsPlayList())
+    items.SetContent("songs");
 
   // clear the filter
   m_filter.Empty();
@@ -475,12 +477,6 @@ void CGUIWindowMusicNav::UpdateButtons()
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !m_filter.IsEmpty());
   SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, m_filter);
-
-  if (m_searchWithEdit)
-  {
-    SendMessage(GUI_MSG_SET_TYPE, CONTROL_SEARCH, CGUIEditControl::INPUT_TYPE_SEARCH);
-    SET_CONTROL_LABEL2(CONTROL_SEARCH, m_search);
-  }
 }
 
 void CGUIWindowMusicNav::PlayItem(int iItem)
@@ -503,6 +499,12 @@ void CGUIWindowMusicNav::OnWindowLoaded()
 
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_BTN_FILTER, CGUIEditControl::INPUT_TYPE_FILTER);
   CGUIWindowMusicBase::OnWindowLoaded();
+  
+  if (m_searchWithEdit)
+  {
+    SendMessage(GUI_MSG_SET_TYPE, CONTROL_SEARCH, CGUIEditControl::INPUT_TYPE_SEARCH);
+    SET_CONTROL_LABEL2(CONTROL_SEARCH, m_search);
+  }
 }
 
 void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &buttons)

@@ -70,7 +70,7 @@ rem plugins
 IF EXIST plugins.nsi del plugins.nsi > NUL
 IF EXIST BUILD_WIN32\Xbmc\plugins (
   ECHO SectionGroup "Plugins" SecPlugins >> plugins.nsi
-  for %%a IN (Music Pictures Programs Video) DO (
+  for %%a IN (Music Pictures Programs Video Weather) DO (
     IF EXIST BUILD_WIN32\Xbmc\plugins\%%a (
       SETLOCAL ENABLEDELAYEDEXPANSION
       SET Counter=1

@@ -39,7 +39,7 @@
 #include "player.h"
 #include "pyplaylist.h"
 #include "keyboard.h"
-#include "xbox/IoSupport.h"
+#include "utils/IoSupport.h"
 #ifndef _LINUX
 #include <ConIo.h>
 #endif
@@ -349,7 +349,7 @@ namespace PYXBMC
       Sleep(i);//(500);
       Py_END_ALLOW_THREADS
 
-      Py_MakePendingCalls();
+      PyXBMC_MakePendingCalls();
       //i = PyInt_AsLong(pObject);
     //}
 
@@ -599,10 +599,10 @@ namespace PYXBMC
     char *cLine = NULL;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     int id = g_windowManager.GetTopMostModalDialogID();
     if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     int ret = g_infoManager.TranslateString(cLine);
     return Py_BuildValue((char*)"b", g_infoManager.GetBool(ret,id));
@@ -635,7 +635,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText)) return NULL;
  
     string strText;
-    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
+    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     Crc32 crc;
     CStdString strPath;
@@ -679,7 +679,7 @@ namespace PYXBMC
     };
 
     CStdString strText;
-    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
+    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strFilename;
     strFilename = CUtil::MakeLegalPath(strText);
@@ -705,7 +705,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText)) return NULL;
 
     CStdString strText;
-    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
+    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strPath;
     if (CUtil::IsDOSPath(strText))
@@ -914,14 +914,8 @@ namespace PYXBMC
   PyMODINIT_FUNC
   DeinitXBMCModule()
   {
-    Py_DECREF(&Keyboard_Type);
-    Py_DECREF(&Player_Type);
-    Py_DECREF(&PlayList_Type);
-    Py_DECREF(&PlayListItem_Type);
-    Py_DECREF(&InfoTagMusic_Type);
-    Py_DECREF(&InfoTagVideo_Type);
-    Py_DECREF(&Language_Type);
-    Py_DECREF(&Settings_Type);
+    // no need to Py_DECREF our objects (see InitXBMCModule()) as they were created only
+    // so that they could be added to the module, which steals a reference.
   }
 
   PyMODINIT_FUNC

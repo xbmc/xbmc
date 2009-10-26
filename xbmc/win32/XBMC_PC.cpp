@@ -129,7 +129,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   LPWSTR *szArglist;
   int nArgs;
 
-  g_advancedSettings.m_startFullScreen = false;
+  g_advancedSettings.Initialize();
   szArglist = CommandLineToArgvW(strcl.c_str(), &nArgs);
   if(szArglist != NULL)
   {

@@ -63,7 +63,7 @@
 			<RegExp input="$$2" output="&lt;url function=&quot;Getfdblink&quot;&gt;http://fdb.pl/katalog?catalog[query]=$$6&amp;amp;catalog[year_from]=$$7&amp;amp;catalog[order]=votes&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;$$2&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://www.imdb.com/title/$$2&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<expression noclean="1"/>

@@ -165,6 +165,8 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_DEINIT:
     {
+      if (IsActive()) // save any changed settings from the OSD
+        g_settings.Save();
       // check and close any OSD windows
       CGUIDialogMusicOSD *pOSD = (CGUIDialogMusicOSD *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
       if (pOSD && pOSD->IsDialogRunning()) pOSD->Close(true);
@@ -260,30 +262,3 @@ void CGUIWindowVisualisation::Render()
   }
   CGUIWindow::Render();
 }
-
-void CGUIWindowVisualisation::AllocResources(bool forceLoad)
-{
-  CGUIWindow::AllocResources(forceLoad);
-  CGUIWindow *pWindow;
-  pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
-  if (pWindow) pWindow->AllocResources(true);
-  pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_VIS_SETTINGS);
-  if (pWindow) pWindow->AllocResources(true);
-  pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
-  if (pWindow) pWindow->AllocResources(true);
-}
-
-void CGUIWindowVisualisation::FreeResources(bool forceUnload)
-{
-  // Save changed settings from music OSD
-  g_settings.Save();
-  CGUIWindow *pWindow;
-  pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
-  if (pWindow) pWindow->FreeResources(true);
-  pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_VIS_SETTINGS);
-  if (pWindow) pWindow->FreeResources(true);
-  pWindow = g_windowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
-  if (pWindow) pWindow->FreeResources(true);
-  CGUIWindow::FreeResources(forceUnload);
-}
-

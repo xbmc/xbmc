@@ -180,6 +180,16 @@ void CGUIScrollBar::AllocResources()
   m_guiNibFocus.AllocResources();
 }
 
+void CGUIScrollBar::SetInvalid()
+{
+  CGUIControl::SetInvalid();
+  m_guiBackground.SetInvalid();
+  m_guiBarFocus.SetInvalid();
+  m_guiBarFocus.SetInvalid();
+  m_guiNibNoFocus.SetInvalid();
+  m_guiNibFocus.SetInvalid();
+}
+
 void CGUIScrollBar::UpdateBarSize()
 {
   // scale our textures to suit
@@ -259,7 +269,7 @@ bool CGUIScrollBar::OnMouseClick(int button, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_CLICK);
   // turn off any exclusive access, if it's on...
-  g_Mouse.EndExclusiveAccess(GetID(), GetParentID());
+  g_Mouse.EndExclusiveAccess(this, GetParentID());
   if (m_guiBackground.HitTest(point))
   { // set the position
     SetFromPosition(point);
@@ -272,7 +282,7 @@ bool CGUIScrollBar::OnMouseDrag(const CPoint &offset, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_DRAG);
   // get exclusive access to the mouse
-  g_Mouse.SetExclusiveAccess(GetID(), GetParentID(), point);
+  g_Mouse.SetExclusiveAccess(this, GetParentID(), point);
   // get the position of the mouse
   SetFromPosition(point);
   return true;

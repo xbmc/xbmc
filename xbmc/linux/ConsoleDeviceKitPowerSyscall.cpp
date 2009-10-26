@@ -77,6 +77,40 @@ bool CConsoleDeviceKitPowerSyscall::CanReboot()
   return m_CanReboot;
 }
 
+bool CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit()
+{
+  bool hasConsoleKitManager = false;
+  CDBusMessage consoleKitMessage("org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit.Manager", "CanReboot");
+
+  DBusError error;
+  dbus_error_init (&error);
+  DBusConnection *con = dbus_bus_get(DBUS_BUS_SYSTEM, &error);
+
+  consoleKitMessage.Send(con, &error);
+
+  if (!dbus_error_is_set(&error))
+    hasConsoleKitManager = true;
+  else
+    CLog::Log(LOGDEBUG, "ConsoleKit.Manager: %s - %s", error.name, error.message);
+
+  dbus_error_free (&error);
+
+  bool hasDeviceKitPower = false;
+  CDBusMessage deviceKitMessage("org.freedesktop.DeviceKit.Disks", "/org/freedesktop/DeviceKit/Disks", "org.freedesktop.DeviceKit.Disks", "EnumerateDevices");
+
+  deviceKitMessage.Send(con, &error);
+
+  if (!dbus_error_is_set(&error))
+    hasDeviceKitPower = true;
+  else
+    CLog::Log(LOGDEBUG, "DeviceKit.Power: %s - %s", error.name, error.message);
+
+  dbus_error_free (&error);
+  dbus_connection_unref(con);
+
+  return hasDeviceKitPower && hasConsoleKitManager;
+}
+
 bool CConsoleDeviceKitPowerSyscall::ConsoleKitMethodCall(const char *method)
 {
   CDBusMessage message("org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit.Manager", method);
@@ -85,11 +119,8 @@ bool CConsoleDeviceKitPowerSyscall::ConsoleKitMethodCall(const char *method)
   {
     bool boolean = false;
     
-    if (dbus_message_get_args (reply, NULL,
-				DBUS_TYPE_BOOLEAN, &boolean, DBUS_TYPE_INVALID))
-	  {
+    if (dbus_message_get_args (reply, NULL, DBUS_TYPE_BOOLEAN, &boolean, DBUS_TYPE_INVALID))
       return boolean;
-    }
   }
 
   return false;

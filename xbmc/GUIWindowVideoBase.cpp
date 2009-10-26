@@ -395,18 +395,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
     }
     else
     {
-      // !! WORKAROUND !!
-      // As we cannot add an episode to a non-existing tvshow entry, we have to check the parent directory
-      // to see if it`s already in our video database. If it's not yet part of the database we will exit here.
-      // (Ticket #4764)
-      CStdString strParentDirectory;
-      CUtil::GetParentPath(item->m_strPath,strParentDirectory);
-      if (m_database.GetTvShowId(strParentDirectory) < 0)
-      {
-        CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
-        return false;
-      }
-
       int EpisodeHint=-1;
       if (item->HasVideoInfoTag())
         EpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
@@ -415,6 +403,24 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
       {
         bHasInfo = true;
         m_database.GetEpisodeInfo(item->m_strPath, movieDetails, idEpisode);
+      }
+      else
+      {
+        // !! WORKAROUND !!
+        // As we cannot add an episode to a non-existing tvshow entry, we have to check the parent directory
+        // to see if it`s already in our video database. If it's not yet part of the database we will exit here.
+        // (Ticket #4764)
+        //
+        // NOTE: This will fail for episodes on multipath shares, as the parent path isn't what is stored in the
+        //       database.  Possible solutions are to store the paths in the db separately and rely on the show
+        //       stacking stuff, or to modify GetTvShowId to do support multipath:// shares
+        CStdString strParentDirectory;
+        CUtil::GetParentPath(item->m_strPath, strParentDirectory);
+        if (m_database.GetTvShowId(strParentDirectory) < 0)
+        {
+          CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
+          return false;
+        }
       }
     }
   }
@@ -885,7 +891,8 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
   m_database.Open();
   long startoffset = 0;
 
-  if (item->IsStack() && !g_guiSettings.GetBool("myvideos.treatstackasfile") )
+  if (item->IsStack() && (!g_guiSettings.GetBool("myvideos.treatstackasfile") ||
+                          CFileItem(CStackDirectory::GetFirstStackedFile(item->m_strPath),false).IsDVDImage()) )
   {
 
     CStdStringArray movies;
@@ -1292,7 +1299,8 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
   int selectedFile = 1;
   long startoffset = item->m_lStartOffset;
 
-  if (item->IsStack() && !g_guiSettings.GetBool("myvideos.treatstackasfile"))
+  if (item->IsStack() && (!g_guiSettings.GetBool("myvideos.treatstackasfile") ||
+                          CFileItem(CStackDirectory::GetFirstStackedFile(item->m_strPath),false).IsDVDImage()) )
   {
     CStdStringArray movies;
     GetStackedFiles(item->m_strPath, movies);
@@ -1483,6 +1491,10 @@ void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
   CVideoInfoTag detail;
   CVideoDatabase database;
   database.Open();
+  CVideoDatabaseDirectory dir;
+  CQueryParams params;
+  dir.GetQueryParams(pItem->m_strPath,params);
+  int iDbId = pItem->GetVideoInfoTag()->m_iDbId;
 
   CONTENT_TYPE iType=CONTENT_MOVIES;
   if (pItem->HasVideoInfoTag() && (!pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty() ||
@@ -1494,9 +1506,15 @@ void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
     iType = CONTENT_EPISODES;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
     iType = CONTENT_MUSICVIDEOS;
-
+  if (params.GetSetId() != -1 && params.GetMovieId() == -1)
+    iType = VIDEODB_CONTENT_MOVIE_SETS;
   if (iType == CONTENT_MOVIES)
     database.GetMovieInfo("", detail, pItem->GetVideoInfoTag()->m_iDbId);
+  if (iType == CONTENT_MOVIE_SETS)
+  {
+    database.GetSetById(params.GetSetId(),detail.m_strTitle);
+    iDbId = params.GetSetId();
+  }
   if (iType == CONTENT_EPISODES)
     database.GetEpisodeInfo(pItem->m_strPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
   if (iType == CONTENT_TVSHOWS)
@@ -1510,8 +1528,8 @@ void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
   //Get the new title
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false))
     return;
-
-  database.UpdateMovieTitle(pItem->GetVideoInfoTag()->m_iDbId, strInput, iType);
+  
+  database.UpdateMovieTitle(iDbId, strInput, iType);
 }
 
 void CGUIWindowVideoBase::LoadPlayList(const CStdString& strPlayList, int iPlayList /* = PLAYLIST_VIDEO */)

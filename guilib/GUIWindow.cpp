@@ -393,14 +393,10 @@ bool CGUIWindow::OnMouseAction()
 
   bool bHandled = false;
   // check if we have exclusive access
-  if (g_Mouse.GetExclusiveWindowID() == GetID())
+  if (g_Mouse.GetExclusiveWindowID() == GetID() && IsValidControl(g_Mouse.GetExclusiveControl()))
   { // we have exclusive access to the mouse...
-    CGUIControl *pControl = (CGUIControl *)GetControl(g_Mouse.GetExclusiveControlID());
-    if (pControl)
-    { // this control has exclusive access to the mouse
-      HandleMouse(pControl, mousePoint + g_Mouse.GetExclusiveOffset());
-      return true;
-    }
+    HandleMouse((CGUIControl *)g_Mouse.GetExclusiveControl(), mousePoint + g_Mouse.GetExclusiveOffset());
+    return true;
   }
 
   // run through the controls, and unfocus all those that aren't under the pointer,
@@ -649,8 +645,9 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
             control->OnMessage(msg);
           }
         }
-        if (message.GetParam1() == GUI_MSG_INVALIDATE)
+        if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
         {
+          // invalidate controls to get them to recalculate sizing information
           SetInvalid();
           return true;
         }

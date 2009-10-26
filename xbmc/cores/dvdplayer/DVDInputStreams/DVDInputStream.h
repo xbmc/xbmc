@@ -66,7 +66,7 @@ public:
 
   CDVDInputStream(DVDStreamType m_streamType);
   virtual ~CDVDInputStream();
-  virtual bool Open(const char* strFileName, const std::string& content) = 0;
+  virtual bool Open(const char* strFileName, const std::string& content);
   virtual void Close() = 0;
   virtual int Read(BYTE* buf, int buf_size) = 0;
   virtual __int64 Seek(__int64 offset, int whence) = 0;

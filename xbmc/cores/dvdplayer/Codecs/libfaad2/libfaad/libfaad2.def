@@ -1,4 +1,4 @@
-LIBRARY  libfaad2.dll
+LIBRARY  libfaad.dll
 EXPORTS
 ;
 ; libfaad2 exports
@@ -13,3 +13,4 @@ NeAACDecClose                     @7
 NeAACDecGetErrorMessage           @8
 NeAACDecAudioSpecificConfig       @9
 NeAACDecPostSeekReset             @10
+NeAACDecDecode2                   @11

@@ -36,9 +36,13 @@
   #include "CocoaInterface.h"
 #elif defined(_WIN32)
   #pragma comment (lib,"d3d9.lib")
-  #if(DIRECT3D_VERSION > 0x0900)
+  #if (D3DX_SDK_VERSION >= 42) //aug 2009 sdk and up there is no dxerr9 anymore
+    #include <Dxerr.h>
     #pragma comment (lib,"DxErr.lib")
   #else
+    #include <dxerr9.h>
+    #define DXGetErrorString(hr)      DXGetErrorString9(hr)
+    #define DXGetErrorDescription(hr) DXGetErrorDescription9(hr)
     #pragma comment (lib,"Dxerr9.lib")
   #endif
 #endif
@@ -47,10 +51,8 @@ using namespace std;
 
 CVideoReferenceClock::CVideoReferenceClock()
 {
-  int64_t Freq;
-  Freq = CurrentHostFrequency();
-  m_SystemFrequency = Freq;
-  m_AdjustedFrequency = Freq;
+  m_SystemFrequency = CurrentHostFrequency();
+  m_AdjustedFrequency = m_SystemFrequency;
   m_ClockOffset = 0;
   m_TotalMissedVblanks = 0;
   m_UseVblank = false;
@@ -59,15 +61,6 @@ CVideoReferenceClock::CVideoReferenceClock()
 #ifdef _WIN32
   ZeroMemory(&m_Monitor, sizeof(m_Monitor));
   ZeroMemory(&m_PrevMonitor, sizeof(m_PrevMonitor));
-  
-  m_IsVista = false;
-  OSVERSIONINFO WindowsVersion;
-  WindowsVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  if (GetVersionEx(&WindowsVersion))
-  {
-    if (WindowsVersion.dwMajorVersion == 6 && WindowsVersion.dwMinorVersion == 0)
-      m_IsVista = true;
-  }
 #endif
 }
 
@@ -249,26 +242,6 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
-  m_glXGetRefreshRateSGI = (int(*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetRefreshRateSGI");
-  if (!m_glXGetRefreshRateSGI)
-  {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetRefreshRateSGI not found");
-  }
-  else
-  {
-    ReturnV = m_glXGetRefreshRateSGI(&GlxTest);
-    if (ReturnV)
-    {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetRefreshRateSGI returned %i", ReturnV);
-      m_glXGetRefreshRateSGI = NULL;
-    }
-  }
-  
-  if (m_glXGetRefreshRateSGI)
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: using glXGetRefreshRateSGI to detect refreshrate changes");
-  else
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: using RandR to detect refreshrate changes");
-  
   XRRSizes(m_Dpy, m_vInfo->screen, &ReturnV);
   if (ReturnV == 0)
   {
@@ -276,6 +249,10 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
+  //set up receiving of RandR events, we'll get one when the refreshrate changes
+  XRRQueryExtension(m_Dpy, &m_RREventBase, &ReturnV);
+  XRRSelectInput(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), RRScreenChangeNotifyMask);
+  
   UpdateRefreshrate(true); //forced refreshrate update
   m_MissedVblanks = 0;
 
@@ -592,19 +569,8 @@ bool CVideoReferenceClock::SetupD3D()
   if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL))
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: SetThreadPriority failed");
 
-  if (m_IsVista)
-  {
-    //put the window on top because direct3d wants exclusive access for some reason
-    LockSetForegroundWindow(LSFW_UNLOCK);
-    SetForegroundWindow(m_Hwnd);
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: exclusive lock workaround for Vista enabled");
-  }
-
   HandleWindowMessages();
 
-  if (m_IsVista)
-    Sleep(500); //direct3d has better luck getting an exclusive lock this way
-  
   ReturnV = m_D3d->CreateDevice(m_Adapter, D3DDEVTYPE_HAL, m_Hwnd,
                                 D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3dPP, &m_D3dDev);
 
@@ -807,7 +773,7 @@ bool CVideoReferenceClock::CreateHiddenWindow()
 
   //make a layered window which can be made transparent
   CSingleLock SingleLock(m_CritSection);
-  m_Hwnd = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_TOPMOST, m_WinCl.lpszClassName,
+  m_Hwnd = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE, m_WinCl.lpszClassName,
                           m_WinCl.lpszClassName, WS_VISIBLE, m_Monitor.rcMonitor.left,
                           m_Monitor.rcMonitor.top, 64, 64, HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
   SingleLock.Leave();
@@ -955,7 +921,7 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
 }
 
 //called from dvdclock to get the time
-void CVideoReferenceClock::GetTime(int64_t *ptime)
+int64_t CVideoReferenceClock::GetTime()
 {
   CSingleLock SingleLock(m_CritSection);
   
@@ -974,21 +940,21 @@ void CVideoReferenceClock::GetTime(int64_t *ptime)
       NextVblank = TimeOfNextVblank(); //get time when the next vblank should happen
     }
     
-    *ptime = m_CurrTime;
+    return m_CurrTime;
   }
   else
   {
     int64_t ClockOffset = m_ClockOffset; //get offset of clock
     SingleLock.Leave();
-    *ptime = CurrentHostCounter();        //get time of systemclock
-    *ptime += ClockOffset;      //add offset
+    
+    return CurrentHostCounter() + ClockOffset;
   }
 }
 
 //called from dvdclock to get the clock frequency
-void CVideoReferenceClock::GetFrequency(int64_t *pfreq)
+int64_t CVideoReferenceClock::GetFrequency()
 {
-  *pfreq = CurrentHostFrequency();
+  return m_SystemFrequency;
 }
 
 void CVideoReferenceClock::SetSpeed(double Speed)
@@ -1030,26 +996,21 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
   
-  int RefreshRate;
-  
-  if (m_glXGetRefreshRateSGI) //get the refreshrate from glXGetRefreshRateSGI when available, it's a cheaper call
+  bool   GotEvent = Forced;
+  XEvent Event;
+  //check for RandR events
+  while (XCheckTypedEvent(m_Dpy, m_RREventBase + RRScreenChangeNotify, &Event))
   {
-    int ReturnV = m_glXGetRefreshRateSGI((unsigned int*)&RefreshRate);
-    if (ReturnV)
+    if (Event.type == m_RREventBase + RRScreenChangeNotify)
     {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetRefreshRateSGI returned %i, using RandR instead", ReturnV);
-      m_glXGetRefreshRateSGI = NULL;
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Received RandR event %i", Event.type);
+      GotEvent = true;
     }
+    XRRUpdateConfiguration(&Event);
   }
   
-  if (!m_glXGetRefreshRateSGI) //glXGetRefreshRateSGI not available, use RandR instead
-    RefreshRate = GetRandRRate();
-
-  //just return if the refreshrate didn't change
-  if (RefreshRate == m_PrevRefreshRate && !Forced)
+  if (!GotEvent) //refreshrate did not change
     return false;
-
-  m_PrevRefreshRate = RefreshRate; //save the current refreshrate so we can detect if it changes again
   
   //the refreshrate can be wrong on nvidia drivers, so read it from nvidia-settings when it's available
   if (m_UseNvSettings || Forced)
@@ -1069,11 +1030,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   }
     
   CSingleLock SingleLock(m_CritSection);
-  
-  if (m_glXGetRefreshRateSGI) //we want the refreshrate from RandR if we didn't get it yet
-    m_RefreshRate = GetRandRRate();
-  else
-    m_RefreshRate = RefreshRate;
+  m_RefreshRate = GetRandRRate();
   
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
   

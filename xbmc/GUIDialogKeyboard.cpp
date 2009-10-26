@@ -31,7 +31,6 @@
 #include "GUIPassword.h"
 #include "utils/md5.h"
 #include "utils/TimeUtils.h"
-#include "xbox/XKGeneral.h"
 #include "Application.h"
 #include "AdvancedSettings.h"
 #include "LocalizeStrings.h"
@@ -142,52 +141,18 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     uint8_t b = action.id & 0xFF;
     if (b == 0x25) // left
     {
-      if (g_advancedSettings.m_bNavVKeyboard)
-      {
-        CAction action;
-        action.id = ACTION_MOVE_LEFT;
-        return OnAction(action);
-      }
-      else
-       MoveCursor( -1);
-    }
-    else if (b == 0x26 && g_advancedSettings.m_bNavVKeyboard)
-    {
-      CAction action;
-      action.id = ACTION_MOVE_UP;
-      return OnAction(action);
+      MoveCursor( -1);
     }
     else if (b == 0x27) // right
-    {
-      if (g_advancedSettings.m_bNavVKeyboard)
-      {
-        CAction action;
-        action.id = ACTION_MOVE_RIGHT;
-        return OnAction(action);
-      }
-      else
-       MoveCursor(1);
-    }
-    else if (b == 0x28 && g_advancedSettings.m_bNavVKeyboard)
-    {
-      CAction action;
-      action.id = ACTION_MOVE_DOWN;
-      return OnAction(action);
+    { 
+      MoveCursor(1);
     }
     else if (b == 0x0D) // enter
     {
-      if (g_advancedSettings.m_bNavVKeyboard)
-      {
-        CAction action;
-        action.id = ACTION_SELECT_ITEM;
-        return OnAction(action);
-      }
-      else
-        OnOK();
+      OnOK();
     }
     else if (b == 0x08) Backspace();    // backspace
     else if (b == 0x1B) Close();        // escape
-    else if (b == 0x20) Character(b);   // space
   }
   else if (action.id >= KEY_ASCII)
   { // input from the keyboard
@@ -196,14 +161,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     {
     case 13:  // enter
     case 10:  // enter
-      if (g_advancedSettings.m_bNavVKeyboard)
-      {
-        CAction action;
-        action.id = ACTION_SELECT_ITEM;
-        return OnAction(action);
-      }
-      else
-        OnOK();
+      OnOK();
       break;
     case 8:   // backspace
       Backspace();

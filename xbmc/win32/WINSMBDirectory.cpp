@@ -29,6 +29,7 @@
 #include "AutoPtrHandle.h"
 #include "log.h"
 #include "CharsetConverter.h"
+#include "utils/PasswordManager.h"
 
 #ifndef INVALID_FILE_ATTRIBUTES
 #define INVALID_FILE_ATTRIBUTES ((DWORD) -1)
@@ -368,15 +369,9 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
   nr.lpRemoteName = (char*)strUNC.c_str();
 
   // in general we shouldn't need the password manager as we won't disconnect from shares yet
-  IMAPPASSWORDS it = g_passwordManager.m_mapSMBPasswordCache.find(strUNC);
-  if(it != g_passwordManager.m_mapSMBPasswordCache.end())
+  if (CPasswordManager::GetInstance().AuthenticateURL(urlIn))
   {
-    // if share found in cache use it to supply username and password
-    CURL murl(it->second);		// map value contains the full url of the originally authenticated share. map key is just the share
-    CStdString strPassword = murl.GetPassWord();
-    CStdString strUserName = murl.GetUserName();
-    urlIn.SetPassword(strPassword);
-    urlIn.SetUserName(strUserName);
+    // noop
   }
   else if(urlIn.GetUserNameA().empty() && !g_guiSettings.GetString("smb.username").IsEmpty())
   {
@@ -398,13 +393,8 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
       CLog::Log(LOGERROR,"Couldn't connect to %s, access denied", strUNC.c_str());
       if (m_allowPrompting)
       {
-        g_passwordManager.SetSMBShare(strPath);
-        if (!g_passwordManager.GetSMBShareUserPassword())  // Do this bit via a threadmessage?
-        	break;
-
-        CURL urlnew( g_passwordManager.GetSMBShare() );
-        urlIn.SetUserName(urlnew.GetUserName());
-        urlIn.SetPassword(urlnew.GetPassWord());
+        if (!CPasswordManager::GetInstance().PromptToAuthenticateURL(urlIn))
+          break;
       }
       else
         break;
@@ -431,10 +421,6 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
     CLog::Log(LOGERROR,"Couldn't connect to %s, error code %d", strUNC.c_str(), dwRet);
     return false;
   }
-  else if (strPath != strAuth && !strUNC.IsEmpty()) // we succeeded so, if path was changed, return the correct one and cache it
-  {
-    g_passwordManager.m_mapSMBPasswordCache[strUNC] = strPath;
-  }  
   return true;
 }
 

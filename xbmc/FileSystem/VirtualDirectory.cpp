@@ -29,12 +29,9 @@
 #include "Directory.h"
 #include "DirectoryCache.h"
 #include "../MediaManager.h"
-#ifdef HAS_HAL // This should be ifdef _LINUX when hotplugging is supported on osx
-#include "linux/LinuxFileSystem.h"
-#include <vector>
-#endif
 #include "File.h"
 #include "FileItem.h"
+#include "TextureManager.h"
 #ifdef _WIN32
 #include "WIN32Util.h"
 #endif
@@ -137,6 +134,8 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       strIcon = "DefaultDVDRom.png";
     else if (pItem->IsCDDA())
       strIcon = "DefaultCDDA.png";
+    else if (pItem->IsRemovable() && g_TextureManager.HasTexture("DefaultRemovableDisk.png"))
+      strIcon = "DefaultRemovableDisk.png";
     else
       strIcon = "DefaultHardDisk.png";
 
@@ -220,15 +219,7 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
   // add our plug n play shares
 
   if (m_allowNonLocalSources)
-  {
     g_mediaManager.GetRemovableDrives(shares);
-
-#ifdef HAS_HAL
-    int type = CMediaSource::SOURCE_TYPE_DVD;
-    CLinuxFileSystem::GetDrives(&type, 1, shares);
-#endif
-    CUtil::AutoDetectionGetSource(shares);
-  }
 
 #ifdef HAS_DVD_DRIVE
   // and update our dvd share

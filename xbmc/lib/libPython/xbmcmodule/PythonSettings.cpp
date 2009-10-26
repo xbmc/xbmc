@@ -206,7 +206,7 @@ namespace PYXBMC
 
   void initSettings_Type()
   {
-    PyInitializeTypeObject(&Settings_Type);
+    PyXBMCInitializeTypeObject(&Settings_Type);
 
     /*Settings_Type.tp_name = (char*)"xbmc.Settings";
     Settings_Type.tp_basicsize = sizeof(Settings);

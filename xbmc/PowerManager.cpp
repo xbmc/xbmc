@@ -22,13 +22,11 @@
 #include "system.h"
 #include "PowerManager.h"
 #include "Application.h"
-#include "GUIWindowManager.h"
-#include "GUIDialogVideoScan.h"
-#include "GUIDialogMusicScan.h"
 #include "KeyboardStat.h"
 #include "MouseStat.h"
 #include "GUISettings.h"
 #include "WindowingFactory.h"
+#include "utils/log.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
@@ -36,10 +34,9 @@
 
 #ifdef __APPLE__
 #include "osx/CocoaPowerSyscall.h"
-#elif defined(_LINUX) && defined(HAS_DBUS) && defined(HAS_HAL)
-#include "linux/HALPowerSyscall.h"
 #elif defined(_LINUX) && defined(HAS_DBUS)
 #include "linux/ConsoleDeviceKitPowerSyscall.h"
+#include "linux/HALPowerSyscall.h"
 #elif defined(_WIN32)
 #include "win32/Win32PowerSyscall.h"
 #endif
@@ -59,10 +56,11 @@ CPowerManager::CPowerManager()
 
 #ifdef __APPLE__
   m_instance = new CCocoaPowerSyscall();
-#elif defined(_LINUX) && defined(HAS_DBUS) && defined(HAS_HAL)
-  m_instance = new CHALPowerSyscall();
 #elif defined(_LINUX) && defined(HAS_DBUS)
-  m_instance = new CConsoleDeviceKitPowerSyscall();
+  if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
+    m_instance = new CConsoleDeviceKitPowerSyscall();
+  else
+    m_instance = new CHALPowerSyscall();
 #elif defined(_WIN32)
   m_instance = new CWin32PowerSyscall();
 #endif
@@ -179,11 +177,7 @@ void CPowerManager::Resume()
   // restart and undim lcd
 #ifdef HAS_LCD
   CLog::Log(LOGNOTICE, "%s: Restarting lcd", __FUNCTION__);
-#ifdef _LINUX
   g_lcd->SetBackLight(1);
-#else
-  g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
-#endif
   g_lcd->Stop();
   g_lcd->Initialize();
 #endif

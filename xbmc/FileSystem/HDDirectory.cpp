@@ -21,7 +21,7 @@
 
 #include "HDDirectory.h"
 #include "Util.h"
-#include "xbox/IoSupport.h"
+#include "utils/IoSupport.h"
 #include "iso9660.h"
 #include "URL.h"
 #include "GUISettings.h"
@@ -88,7 +88,6 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
   strSearchMask += "*.*";
 #else
   CStdString strSearchMask = strRoot;
-  strSearchMask += "*";
 #endif
 
   FILETIME localTime;

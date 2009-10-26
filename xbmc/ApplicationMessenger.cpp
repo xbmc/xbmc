@@ -37,7 +37,6 @@
 #include "utils/Builtins.h"
 #include "utils/Network.h"
 #include "GUIWindowManager.h"
-#include "GUIWindowManager.h"
 #include "Settings.h"
 #include "GUISettings.h"
 #include "FileItem.h"
@@ -46,9 +45,7 @@
 
 #include "PowerManager.h"
 
-#ifdef HAS_HAL
-#include "linux/HalManager.h"
-#elif defined _WIN32
+#ifdef _WIN32
 #include "WIN32Util.h"
 #define CHalManager CWIN32Util
 #elif defined __APPLE__
@@ -57,6 +54,8 @@
 #include "MediaManager.h"
 #include "LocalizeStrings.h"
 #include "SingleLock.h"
+#include "lib/libPython/xbmcmodule/GUIPythonWindowDialog.h"
+#include "lib/libPython/xbmcmodule/GUIPythonWindowXMLDialog.h"
 
 using namespace std;
 
@@ -362,7 +361,7 @@ case TMSG_POWERDOWN:
             pSlideShow->Add(items[i].get());
           pSlideShow->StartSlideShow(pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER); //Start the slideshow!
         }
-        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER && g_guiSettings.GetBool("screensaver.slideshowshuffle"))
+        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER)
           pSlideShow->Shuffle();
 
         if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
@@ -402,6 +401,12 @@ case TMSG_POWERDOWN:
         g_application.SwitchToFullScreen();
       break;
 
+    case TMSG_TOGGLEFULLSCREEN:
+      g_graphicsContext.Lock();
+      g_graphicsContext.ToggleFullScreenRoot();
+      g_graphicsContext.Unlock();
+      break;
+      
     case TMSG_MINIMIZE:
       g_application.Minimize();
       break;
@@ -518,6 +523,18 @@ case TMSG_POWERDOWN:
     case TMSG_GUI_ACTIVATE_WINDOW:
       {
         g_windowManager.ActivateWindow(pMsg->dwParam1, pMsg->params, pMsg->dwParam2 > 0);
+      }
+      break;
+
+    case TMSG_GUI_PYTHON_DIALOG:
+      {
+        if (pMsg->lpVoid)
+        { // TODO: This is ugly - really these python dialogs should just be normal XBMC dialogs
+          if (pMsg->dwParam1)
+            ((CGUIPythonWindowXMLDialog *)pMsg->lpVoid)->Show_Internal(pMsg->dwParam2 > 0);
+          else
+            ((CGUIPythonWindowDialog *)pMsg->lpVoid)->Show_Internal(pMsg->dwParam2 > 0);
+        }
       }
       break;
 
@@ -790,6 +807,11 @@ void CApplicationMessenger::ExecOS(const CStdString command, bool waitExit)
   SendMessage(tMsg, false);
 }
 
+void CApplicationMessenger::UserEvent(int code)
+{
+  ThreadMessage tMsg = {code};
+  SendMessage(tMsg, false);
+}
 
 void CApplicationMessenger::Show(CGUIDialog *pDialog)
 {

@@ -246,7 +246,13 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_SHOW_SUBTITLES:
     {
-      g_application.m_pPlayer->SetSubtitleVisible(!g_application.m_pPlayer->GetSubtitleVisible());
+      g_stSettings.m_currentVideoSettings.m_SubtitleOn = !g_stSettings.m_currentVideoSettings.m_SubtitleOn;
+      g_application.m_pPlayer->SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
+      if (!g_stSettings.m_currentVideoSettings.m_SubtitleCached && g_stSettings.m_currentVideoSettings.m_SubtitleOn)
+      {
+        g_application.Restart(true); // cache subtitles
+        Close();
+      }
     }
     return true;
     break;
@@ -532,8 +538,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         m_subsLayout = NULL;
       }
 
-      if (g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-        g_audioManager.Enable(true);
       return true;
     }
   case GUI_MSG_SETFOCUS:

@@ -28,6 +28,7 @@
 #define CHECK_ALSA(l,s,e) if ((e)<0) CLog::Log(l,"%s - %s, alsa error: %d - %s",__FUNCTION__,s,e,snd_strerror(e));
 #define CHECK_ALSA_RETURN(l,s,e) CHECK_ALSA((l),(s),(e)); if ((e)<0) return false;
 
+using namespace std;
 
 static CStdString EscapeDevice(const CStdString& device)
 {
@@ -46,9 +47,11 @@ CALSADirectSound::CALSADirectSound()
   m_bIsAllocated = false;
 }
 
-bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
-  CLog::Log(LOGDEBUG,"CALSADirectSound::CALSADirectSound - Channels: %i - SampleRate: %i - SampleBit: %i - Resample %s - Codec %s - IsMusic %s - IsPassthrough %s - audioDevice: %s", iChannels, uiSamplesPerSec, uiBitsPerSample, bResample ? "true" : "false", strAudioCodec, bIsMusic ? "true" : "false", bPassthrough ? "true" : "false", g_guiSettings.GetString("audiooutput.audiodevice").c_str());
+  CStdString deviceuse;
+
+  CLog::Log(LOGDEBUG,"CALSADirectSound::CALSADirectSound - Channels: %i - SampleRate: %i - SampleBit: %i - Resample %s - Codec %s - IsMusic %s - IsPassthrough %s - audioDevice: %s", iChannels, uiSamplesPerSec, uiBitsPerSample, bResample ? "true" : "false", strAudioCodec, bIsMusic ? "true" : "false", bPassthrough ? "true" : "false", device.c_str());
 
   if (iChannels == 0)
     iChannels = 2;
@@ -79,12 +82,6 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
   snd_pcm_sw_params_t *sw_params=NULL;
 
   /* Open the device */
-  CStdString device, deviceuse;
-  if (!m_bPassthrough)
-    device = g_guiSettings.GetString("audiooutput.audiodevice");
-  else
-    device = g_guiSettings.GetString("audiooutput.passthroughdevice");
-
   int nErr;
 
   /* if this is first access to audio, global sound config might not be loaded */
@@ -229,7 +226,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_access",nErr);
 
   // always use 16 bit samples
-  nErr = snd_pcm_hw_params_set_format(m_pPlayHandle, hw_params, SND_PCM_FORMAT_S16_LE);
+  nErr = snd_pcm_hw_params_set_format(m_pPlayHandle, hw_params, SND_PCM_FORMAT_S16);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_format",nErr);
 
   nErr = snd_pcm_hw_params_set_rate_near(m_pPlayHandle, hw_params, &m_uiSamplesPerSec, NULL);
@@ -539,5 +536,97 @@ void CALSADirectSound::WaitCompletion()
 void CALSADirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 {
     return ;
+}
+
+void CALSADirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough)
+{
+  if (!passthrough)
+  {
+    vAudioSinks.push_back(AudioSink("default", "alsa:default"));
+    vAudioSinks.push_back(AudioSink("iec958" , "alsa:plug:iec958"));
+    vAudioSinks.push_back(AudioSink("hdmi"   , "alsa:plug:hdmi"));
+  }
+  else
+  {
+    vAudioSinks.push_back(AudioSink("iec958" , "alsa:iec958"));
+    vAudioSinks.push_back(AudioSink("hdmi"   , "alsa:hdmi"));
+  }
+
+  int n_cards = -1;
+  int numberCards = 0;
+  while ( snd_card_next( &n_cards ) == 0 && n_cards >= 0 ) 
+    numberCards++;
+
+  if (numberCards <= 1)
+    return;
+
+  snd_ctl_t *handle;
+  snd_ctl_card_info_t *info;
+  snd_ctl_card_info_alloca( &info );
+  CStdString strHwName;
+  n_cards = -1;
+
+  while ( snd_card_next( &n_cards ) == 0 && n_cards >= 0 )
+  {
+    strHwName.Format("hw:%d", n_cards);
+    if ( snd_ctl_open( &handle, strHwName.c_str(), 0 ) == 0 )
+    {
+      if ( snd_ctl_card_info( handle, info ) == 0 )
+      {
+        CStdString strReadableCardName = snd_ctl_card_info_get_name( info );
+        CStdString strCardName = snd_ctl_card_info_get_id( info );
+
+        if (!passthrough) 
+          GenSoundLabel(vAudioSinks, "default", strCardName, strReadableCardName); 
+        GenSoundLabel(vAudioSinks, "iec958", strCardName, strReadableCardName); 
+        GenSoundLabel(vAudioSinks, "hdmi", strCardName, strReadableCardName); 
+      }
+      else
+        CLog::Log(LOGERROR,"((ALSAENUM))control hardware info (%i): failed.\n", n_cards );
+      snd_ctl_close( handle );
+    }
+    else
+      CLog::Log(LOGERROR,"((ALSAENUM))control open (%i) failed.\n", n_cards );
+  }
+}
+
+bool CALSADirectSound::SoundDeviceExists(const CStdString& device)
+{
+  void **hints, **n;
+  char *name;
+  CStdString strName;
+  bool retval = false;
+
+  if (snd_device_name_hint(-1, "pcm", &hints) == 0)
+  {
+    for (n = hints; *n; n++)
+    {
+      if ((name = snd_device_name_get_hint(*n, "NAME")) != NULL)
+      {
+        strName = name;
+        free(name);
+        if (strName.find(device) != string::npos)
+        {
+          retval = true;
+          break;
+        }
+      }
+    }
+    snd_device_name_free_hint(hints);
+  }
+  return retval;
+}
+
+void CALSADirectSound::GenSoundLabel(AudioSinkList& vAudioSinks, CStdString sink, CStdString card, CStdString readableCard)
+{
+  CStdString deviceString;
+  deviceString.Format("%s:CARD=%s", sink, card.c_str());
+  if (sink.Equals("default") || SoundDeviceExists(deviceString.c_str()))
+  {
+    CStdString finalSink;
+    finalSink.Format("alsa:%s", deviceString.c_str());
+    CStdString label = readableCard + " " + sink;
+    vAudioSinks.push_back(AudioSink(label, finalSink));
+  }
 }
 #endif

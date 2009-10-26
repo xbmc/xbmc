@@ -133,7 +133,7 @@ extern "C"
 
     void initControlGroup_Type ()
     {
-      PyInitializeTypeObject (&ControlGroup_Type);
+      PyXBMCInitializeTypeObject (&ControlGroup_Type);
 
       ControlGroup_Type.tp_name = (char*)"xbmcgui.ControlGroup";
       ControlGroup_Type.tp_basicsize = sizeof (ControlGroup);

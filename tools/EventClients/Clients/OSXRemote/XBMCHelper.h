@@ -8,11 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 #import "xbmcclientwrapper.h"
+#import "HIDRemote/HIDRemote.h"
 
-@class AppleRemote, MultiClickRemoteBehavior;
-
-@interface XBMCHelper : NSObject {
-  AppleRemote* mp_remote_control;
+@interface XBMCHelper : NSObject<HIDRemoteDelegate> {
+  HIDRemote *remote;
   XBMCClientWrapper* mp_wrapper;
   NSString* mp_app_path;
   NSString* mp_home_path;
@@ -24,6 +23,6 @@
 - (void) setApplicationPath:(NSString*) fp_app_path;
 - (void) setApplicationHome:(NSString*) fp_home_path;  
 
-- (void) connectToServer:(NSString*) fp_server withMode:(eRemoteMode) f_mode withTimeout:(double) f_timeout;
+- (void) connectToServer:(NSString*) fp_server onPort:(int) f_port withMode:(eRemoteMode) f_mode withTimeout:(double) f_timeout;
 - (void) disconnect;
 @end

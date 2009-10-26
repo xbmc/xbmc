@@ -143,9 +143,9 @@ namespace PYXBMC
     //if (cShadowColor) sscanf( cShadowColor, "%x", &self->shadowColor );
 
     self->strTextureButton = cTextureButton ? cTextureButton :
-      PyGetDefaultImage((char*)"listcontrol", (char*)"texturenofocus", (char*)"list-nofocus.png");
+      PyXBMCGetDefaultImage((char*)"listcontrol", (char*)"texturenofocus", (char*)"list-nofocus.png");
     self->strTextureButtonFocus = cTextureButtonFocus ? cTextureButtonFocus :
-      PyGetDefaultImage((char*)"listcontrol", (char*)"texturefocus", (char*)"list-focus.png");
+      PyXBMCGetDefaultImage((char*)"listcontrol", (char*)"texturefocus", (char*)"list-focus.png");
 
     // default values for spin control
     self->pControlSpin->dwPosX = self->dwWidth - 35;
@@ -240,7 +240,7 @@ PyDoc_STRVAR(addItem__doc__,
     {
       string strText;
       // object is probably a text item
-      if (!PyGetUnicodeString(strText, pObject, 1)) return NULL;
+      if (!PyXBMCGetUnicodeString(strText, pObject, 1)) return NULL;
       // object is a unicode string now, create a new ListItem
       pListItem = ListItem_FromString(strText);
     }
@@ -252,9 +252,9 @@ PyDoc_STRVAR(addItem__doc__,
     CGUIMessage msg(GUI_MSG_LABEL_ADD, self->iParentId, self->iControlId, 0, 0, pListItem->item);
 
     // send message
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl) self->pGUIControl->OnMessage(msg);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -304,7 +304,7 @@ PyDoc_STRVAR(addItems__doc__,
       {
         string strText;
         // object is probably a text item
-        if (!PyGetUnicodeString(strText, pItem, 1)) return NULL;
+        if (!PyXBMCGetUnicodeString(strText, pItem, 1)) return NULL;
         // object is a unicode string now, create a new ListItem
         pListItem = ListItem_FromString(strText);
       }
@@ -318,9 +318,9 @@ PyDoc_STRVAR(addItems__doc__,
     CGUIMessage msg(GUI_MSG_LABEL_BIND, self->iParentId, self->iControlId, 0, 0, &items);
 
     // send message
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl) self->pGUIControl->OnMessage(msg);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
 
     Py_INCREF(Py_None);
@@ -349,9 +349,9 @@ PyDoc_STRVAR(addItems__doc__,
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, self->iParentId, self->iControlId, itemIndex);
 
     // send message
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl) self->pGUIControl->OnMessage(msg);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -371,9 +371,9 @@ PyDoc_STRVAR(addItems__doc__,
     CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
 
     // send message
-    PyGUILock();
+    PyXBMCGUILock();
     if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     // delete all items from vector
     // delete all ListItem from vector
@@ -425,13 +425,13 @@ PyDoc_STRVAR(addItems__doc__,
     }
 
     /*
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl)
     {
       CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
       pListControl->SetImageDimensions((float)self->dwImageWidth, (float)self->dwImageHeight );
     }
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
     */
     Py_INCREF(Py_None);
     return Py_None;
@@ -451,13 +451,13 @@ PyDoc_STRVAR(addItems__doc__,
     if (!PyArg_ParseTuple(args, (char*)"l", &self->itemHeight)) return NULL;
 
     /*
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl)
     {
       CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
       pListControl->SetItemHeight((float)self->dwItemHeight);
     }
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
     */
     Py_INCREF(Py_None);
     return Py_None;
@@ -480,12 +480,12 @@ PyDoc_STRVAR(addItems__doc__,
     if (!PyArg_ParseTuple(args, (char*)"b", &isOn)) return NULL;
 
     /*
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl)
     {
       ((CGUIListControl*)self->pGUIControl)->SetPageControlVisible((bool)isOn );
     }
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
     */
 
     Py_INCREF(Py_None);
@@ -506,13 +506,13 @@ PyDoc_STRVAR(addItems__doc__,
     if (!PyArg_ParseTuple(args, (char*)"l", &self->space)) return NULL;
 
     /*
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl)
     {
       CGUIListControl* pListControl = (CGUIListControl*) self->pGUIControl;
       pListControl->SetSpaceBetweenItems((float)self->dwSpace);
     }
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
     */
 
     Py_INCREF(Py_None);
@@ -536,13 +536,13 @@ PyDoc_STRVAR(addItems__doc__,
     long pos = -1;
 
     // send message
-    PyGUILock();
+    PyXBMCGUILock();
     if ((self->vecItems.size() > 0) && pControl->pGUIControl)
     {
       pControl->pGUIControl->OnMessage(msg);
       pos = msg.GetParam1();
     }
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     return Py_BuildValue((char*)"l", pos);
   }
@@ -566,13 +566,13 @@ PyDoc_STRVAR(addItems__doc__,
     PyObject* pListItem = Py_None;
 
     // send message
-    PyGUILock();
+    PyXBMCGUILock();
     if ((self->vecItems.size() > 0) && pControl->pGUIControl)
     {
       pControl->pGUIControl->OnMessage(msg);
       pListItem = (PyObject*)self->vecItems[msg.GetParam1()];
     }
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(pListItem);
     return pListItem;
@@ -757,7 +757,7 @@ PyDoc_STRVAR(setStaticContent__doc__,
 
   void initControlList_Type()
   {
-    PyInitializeTypeObject(&ControlList_Type);
+    PyXBMCInitializeTypeObject(&ControlList_Type);
 
     ControlList_Type.tp_name = (char*)"xbmcgui.ControlList";
     ControlList_Type.tp_basicsize = sizeof(ControlList);

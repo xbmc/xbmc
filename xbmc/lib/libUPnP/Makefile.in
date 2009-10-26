@@ -1,5 +1,4 @@
-SRCS= Platinum/Source/Core/Platinum.cpp \
-      Platinum/Source/Core/PltAction.cpp \
+SRCS= Platinum/Source/Core/PltAction.cpp \
       Platinum/Source/Core/PltArgument.cpp \
       Platinum/Source/Core/PltConstants.cpp \
       Platinum/Source/Core/PltCtrlPoint.cpp \
@@ -63,9 +62,9 @@ SRCS= Platinum/Source/Core/Platinum.cpp \
       Neptune/Source/System/Posix/NptPosixQueue.cpp \
       Neptune/Source/System/Posix/NptPosixThreads.cpp \
       Neptune/Source/System/Posix/NptPosixFile.cpp \
+      Neptune/Source/System/StdC/NptStdCTime.cpp \
       Neptune/Source/System/StdC/NptStdcDebug.cpp \
       Neptune/Source/System/StdC/NptStdcEnvironment.cpp \
-      Neptune/Source/System/StdC/NptStdcTime.cpp \
       Platinum/Source/Devices/MediaRenderer/PltMediaRenderer.cpp \
       Platinum/Source/Devices/MediaRenderer/PltMediaController.cpp \
       Platinum/Source/Devices/MediaRenderer/AVTransportSCPD.cpp \
@@ -75,7 +74,7 @@ SRCS= Platinum/Source/Core/Platinum.cpp \
       Platinum/Source/Devices/MediaConnect/PltMediaConnect.cpp \
 
 
-INCLUDES=-I./Neptune/Source/Core -I./Platinum/Source/Core -I./Platinum/Source/Devices/MediaServer -I./Neptune/Source/System/Posix
+INCLUDES=-I./Neptune/Source/Core -I./Platinum/Source/Core -I./Platinum/Source/Platinum -I./Platinum/Source/Devices/MediaServer -I./Neptune/Source/System/Posix
 
 LIB=libupnp-@ARCH@.a
 

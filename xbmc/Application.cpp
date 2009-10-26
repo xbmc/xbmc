@@ -107,7 +107,7 @@
 #include "AudioContext.h"
 #include "GUIFontTTF.h"
 #include "utils/Network.h"
-#include "xbox/IoSupport.h"
+#include "utils/IoSupport.h"
 #include "Zeroconf.h"
 #include "ZeroconfBrowser.h"
 #ifndef _LINUX
@@ -116,9 +116,6 @@
 #ifdef HAS_WEB_SERVER
 #include "lib/libGoAhead/XBMChttp.h"
 #include "lib/libGoAhead/WebServer.h"
-#endif
-#ifdef HAS_FTP_SERVER
-#include "lib/libfilezilla/xbfilezilla.h"
 #endif
 #ifdef HAS_TIME_SERVER
 #include "utils/Sntp.h"
@@ -234,9 +231,6 @@
 #include "CocoaInterface.h"
 #include "XBMCHelper.h"
 #endif
-#ifdef HAS_HAL
-#include "linux/LinuxFileSystem.h"
-#endif
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
@@ -245,7 +239,12 @@
 #include "lib/libcdio/logging.h"
 #endif
 
+#ifdef HAS_HAL
+#include "linux/HALManager.h"
+#endif
+
 #include "MediaManager.h"
+#include "utils/JobManager.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -411,6 +410,9 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
         g_guiSettings.SetInt("window.height", newEvent.resize.h);
         g_settings.Save();
       }
+      break;
+    case XBMC_USEREVENT:
+      g_application.getApplicationMessenger().UserEvent(newEvent.user.code);
       break;
   }
   return true;
@@ -608,6 +610,8 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef HAS_SDL_JOYSTICK
   g_Joystick.Initialize(hWnd);
 #endif
+
+  g_mediaManager.Initialize();
 
   CLog::Log(LOGINFO, "Drives are mapped");
 
@@ -1108,7 +1112,6 @@ HRESULT CApplication::Initialize()
     g_guiSettings.SetString("network.subnet", "255.255.255.0");
     g_guiSettings.SetString("network.gateway", "192.168.0.1");
     g_guiSettings.SetString("network.dns", "192.168.0.1");
-    g_guiSettings.SetBool("servers.ftpserver", true);
     g_guiSettings.SetBool("servers.webserver", false);
     g_guiSettings.SetBool("locale.timeserver", false);
   }
@@ -1290,10 +1293,6 @@ HRESULT CApplication::Initialize()
   if (!g_settings.bUseLoginScreen)
     UpdateLibraries();
 
-#ifdef HAS_HAL
-  g_HalManager.Initialize();
-#endif
-
   m_slowTimer.StartZero();
 
 #ifdef __APPLE__
@@ -1366,67 +1365,6 @@ void CApplication::StopWebServer(bool bWait)
       CZeroconf::GetInstance()->RemoveService("servers.webserver");
       CZeroconf::GetInstance()->RemoveService("servers.webapi");
     }
-  }
-#endif
-}
-
-void CApplication::StartFtpServer()
-{
-#ifdef HAS_FTP_SERVER
-  if ( g_guiSettings.GetBool("servers.ftpserver") && m_network.IsAvailable() )
-  {
-    CLog::Log(LOGNOTICE, "XBFileZilla: Starting...");
-    if (!m_pFileZilla)
-    {
-      CStdString xmlpath = "special://xbmc/system/";
-      // if user didn't upgrade properly,
-      // check whether UserData/FileZilla Server.xml exists
-      if (CFile::Exists(g_settings.GetUserDataItem("FileZilla Server.xml")))
-        xmlpath = g_settings.GetUserDataFolder();
-
-      // check file size and presence
-      CFile xml;
-      if (xml.Open(xmlpath+"FileZilla Server.xml") && xml.GetLength() > 0)
-      {
-        m_pFileZilla = new CXBFileZilla(_P(xmlpath));
-        m_pFileZilla->Start(false);
-      }
-      else
-      {
-        // 'FileZilla Server.xml' does not exist or is corrupt,
-        // falling back to ftp emergency recovery mode
-        CLog::Log(LOGNOTICE, "XBFileZilla: 'FileZilla Server.xml' is missing or is corrupt!");
-        CLog::Log(LOGNOTICE, "XBFileZilla: Starting ftp emergency recovery mode");
-        StartFtpEmergencyRecoveryMode();
-      }
-      xml.Close();
-    }
-  }
-#endif
-}
-
-void CApplication::StopFtpServer()
-{
-#ifdef HAS_FTP_SERVER
-  if (m_pFileZilla)
-  {
-    CLog::Log(LOGINFO, "XBFileZilla: Stopping...");
-
-    std::vector<SXFConnection> mConnections;
-    std::vector<SXFConnection>::iterator it;
-
-    m_pFileZilla->GetAllConnections(mConnections);
-
-    for(it = mConnections.begin();it != mConnections.end();it++)
-    {
-      m_pFileZilla->CloseConnection(it->mId);
-    }
-
-    m_pFileZilla->Stop();
-    delete m_pFileZilla;
-    m_pFileZilla = NULL;
-
-    CLog::Log(LOGINFO, "XBFileZilla: Stopped");
   }
 #endif
 }
@@ -1643,7 +1581,7 @@ void CApplication::StartZeroconf()
 {
 #ifdef HAS_ZEROCONF
   //entry in guisetting only present if HAS_ZEROCONF is set
-  if(g_guiSettings.GetBool("servers.zeroconf"))
+  if(g_guiSettings.GetBool("network.zeroconf"))
   {
     CLog::Log(LOGNOTICE, "starting zeroconf publishing");
     CZeroconf::GetInstance()->Start();
@@ -1665,21 +1603,13 @@ void CApplication::StopZeroconf()
 void CApplication::DimLCDOnPlayback(bool dim)
 {
 #ifdef HAS_LCD
-  if(g_lcd && dim && (g_guiSettings.GetInt("lcd.disableonplayback") != LED_PLAYBACK_OFF) && (g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE))
+  if (g_lcd)
   {
-    if ( (IsPlayingVideo()) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_VIDEO)
-      g_lcd->SetBackLight(0);
-    if ( (IsPlayingAudio()) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_MUSIC)
-      g_lcd->SetBackLight(0);
-    if ( ((IsPlayingVideo() || IsPlayingAudio())) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_VIDEO_MUSIC)
-      g_lcd->SetBackLight(0);
+    if (dim)
+      g_lcd->DisableOnPlayback(IsPlayingVideo(), IsPlayingAudio());
+    else
+      g_lcd->SetBackLight(1);
   }
-  else if(!dim)
-#ifdef _LINUX
-    g_lcd->SetBackLight(1);
-#else
-    g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
-#endif
 #endif
 }
 
@@ -1856,6 +1786,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_windowManager.AddMsgTarget(this);
   g_windowManager.AddMsgTarget(&g_playlistPlayer);
   g_windowManager.AddMsgTarget(&g_infoManager);
+  g_windowManager.AddMsgTarget(&g_fontManager);
   g_windowManager.SetCallback(*this);
   g_windowManager.Initialize();
   g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
@@ -2287,10 +2218,6 @@ void CApplication::Render()
   }
   g_graphicsContext.Lock();
 
-  // check if we need font reloading
-  if(g_fontManager.FontsNeedReloading())
-    g_fontManager.ReloadTTFFonts();
-
   if(!g_Windowing.BeginRender())
     return;
 
@@ -2327,17 +2254,13 @@ void CApplication::RenderMemoryStatus()
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
     CStdString profiling = CGUIControlProfiler::IsRunning() ? " (profiling)" : "";
-#ifdef __APPLE__
-    double dCPU = m_resourceCounter.GetCPUUsage();
-    info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
-              g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU, profiling.c_str());
-#elif !defined(_LINUX)
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
+#if !defined(_LINUX)
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
+              g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
-    CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", (int)(stat.dwAvailPhys/1024), (int)(stat.dwTotalPhys/1024),
               g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
 #endif
 
@@ -2448,23 +2371,33 @@ bool CApplication::OnKey(CKey& key)
     }
     if (useKeyboard)
     {
-      if (key.GetFromHttpApi())
+      if (g_guiSettings.GetBool("lookandfeel.remoteaskeyboard"))
       {
-        if (key.GetButtonCode() != KEY_INVALID)
-          action.id = key.GetButtonCode();
-        action.unicode = key.GetUnicode();
+        // users remote is executing keyboard commands, so use the virtualkeyboard section of keymap.xml
+        // and send those rather than actual keyboard presses
+        CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, action);
       }
       else
-      { // see if we've got an ascii key
-        if (g_Keyboard.GetUnicode())
+      {
+        // keyboard entry - pass the keys through directly
+        if (key.GetFromHttpApi())
         {
-          action.id = g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
-          action.unicode = g_Keyboard.GetUnicode();
+          if (key.GetButtonCode() != KEY_INVALID)
+            action.id = key.GetButtonCode();
+          action.unicode = key.GetUnicode();
         }
         else
-        {
-          action.id = g_Keyboard.GetVKey() | KEY_VKEY;
-          action.unicode = 0;
+        { // see if we've got an ascii key
+          if (g_Keyboard.GetUnicode())
+          {
+            action.id = g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
+            action.unicode = g_Keyboard.GetUnicode();
+          }
+          else
+          {
+            action.id = g_Keyboard.GetVKey() | KEY_VKEY;
+            action.unicode = 0;
+          }
         }
       }
 
@@ -2668,8 +2601,7 @@ bool CApplication::OnAction(CAction &action)
       { // unpaused - set the playspeed back to normal
         SetPlaySpeed(1);
       }
-      if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-        g_audioManager.Enable(m_pPlayer->IsPaused());
+      g_audioManager.Enable(m_pPlayer->IsPaused() && !g_audioContext.IsPassthroughActive());
       return true;
     }
     if (!m_pPlayer->IsPaused())
@@ -2729,8 +2661,7 @@ bool CApplication::OnAction(CAction &action)
       {
         // unpause, and set the playspeed back to normal
         m_pPlayer->Pause();
-        if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-          g_audioManager.Enable(m_pPlayer->IsPaused());
+        g_audioManager.Enable(m_pPlayer->IsPaused() && !g_audioContext.IsPassthroughActive());
 
         g_application.SetPlaySpeed(1);
         return true;
@@ -2822,7 +2753,7 @@ void CApplication::UpdateLCD()
 #ifdef HAS_LCD
   static long lTickCount = 0;
 
-  if (!g_lcd || g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE)
+  if (!g_lcd || !g_guiSettings.GetBool("system.haslcd"))
     return ;
   long lTimeOut = 1000;
   if ( m_iPlaySpeed != 1)
@@ -2856,6 +2787,7 @@ void CApplication::FrameMove()
   // never set a frametime less than 2 fps to avoid problems when debuggin and on breaks
   if( frameTime > 0.5 ) frameTime = 0.5;
 
+  g_graphicsContext.Lock();
   // check if there are notifications to display
   if (m_guiDialogKaiToast.DoWork())
   {
@@ -2864,6 +2796,7 @@ void CApplication::FrameMove()
       m_guiDialogKaiToast.Show();
     }
   }
+  g_graphicsContext.Unlock();
 
   UpdateLCD();
   
@@ -3409,6 +3342,9 @@ void CApplication::Stop()
 {
   try
   {
+    // cancel any jobs from the jobmanager
+    CJobManager::GetInstance().CancelJobs();
+
 #ifdef HAS_WEB_SERVER
     if (m_pXbmcHttp)
     {
@@ -3489,6 +3425,8 @@ void CApplication::Stop()
       g_xbmcHelper.Stop();
 #endif
 
+  g_mediaManager.Stop();
+
 /* Python resource freeing must be done after skin has been unloaded, not before
    some windows still need it when deinitializing during skin unloading. */
 #ifdef HAS_PYTHON
@@ -3502,10 +3440,6 @@ void CApplication::Stop()
       delete g_lcd;
       g_lcd=NULL;
     }
-#endif
-
-#ifdef HAS_HAL
-    g_HalManager.Stop();
 #endif
 
     CLog::Log(LOGNOTICE, "stopped");
@@ -3847,8 +3781,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   // Workaround for bug/quirk in SDL_Mixer on OSX.
   // TODO: Remove after GUI Sounds redux
 #if defined(__APPLE__)
-  if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-    g_audioManager.Enable(false);
+  g_audioManager.Enable(false);
 #endif
 
   bool bResult;
@@ -3897,8 +3830,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #endif
 
 #if !defined(__APPLE__)
-    if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-      g_audioManager.Enable(false);
+    g_audioManager.Enable(false);
 #endif
   }
   m_bPlaybackStarting = false;
@@ -4449,11 +4381,6 @@ void CApplication::CheckShutdown()
   if (IsPlaying()) // is something playing?
     resetTimer = true;
 
-#ifdef HAS_FTP_SERVER
-  if (m_pFileZilla && m_pFileZilla->GetNoConnections() != 0) // is FTP active ?
-    resetTimer = true;
-#endif
-
   if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
     resetTimer = true;
 
@@ -4634,14 +4561,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         g_settings.Save();  // save vis settings
         WakeUpScreenSaverAndDPMS();
         g_windowManager.PreviousWindow();
-      }
-
-      // reset the audio playlist on finish
-      if (!IsPlayingAudio() && (g_guiSettings.GetBool("mymusic.clearplaylistsonend")) && (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC))
-      {
-        g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-        g_playlistPlayer.Reset();
-        g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
       }
 
       // DVD ejected while playing in vis ?
@@ -4852,8 +4771,7 @@ void CApplication::ProcessSlow()
   if(IsPaused() != m_bIsPaused)
   {
 #ifdef HAS_LCD
-    if(g_guiSettings.GetBool("lcd.enableonpaused"))
-      DimLCDOnPlayback(m_bIsPaused);
+    DimLCDOnPlayback(m_bIsPaused);
 #endif
     m_bIsPaused = IsPaused();
   }
@@ -4876,15 +4794,7 @@ void CApplication::ProcessSlow()
   smb.CheckIfIdle();
 #endif
 
-// Update HalManager to get newly connected media
-#ifdef HAS_HAL
-  while(g_HalManager.Update()) ;  //If there is 1 message it might be another one in queue, we take care of them directly
-  if (CLinuxFileSystem::AnyDeviceChange())
-  { // changes have occured - update our shares
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REMOVED_MEDIA);
-    g_windowManager.SendThreadMessage(msg);
-  }
-#endif
+  g_mediaManager.ProcessEvents();
 
 #ifdef HAS_LIRC
   if (g_RemoteControl.IsInUse() && !g_RemoteControl.IsInitialized())
@@ -5363,41 +5273,6 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
     return true;
   }
   return false;
-}
-
-void CApplication::StartFtpEmergencyRecoveryMode()
-{
-#ifdef HAS_FTP_SERVER
-  m_pFileZilla = new CXBFileZilla(NULL);
-  m_pFileZilla->Start();
-
-  // Default settings
-  m_pFileZilla->mSettings.SetMaxUsers(0);
-  m_pFileZilla->mSettings.SetWelcomeMessage("XBMC emergency recovery console FTP.");
-
-  // default user
-  CXFUser* pUser;
-  m_pFileZilla->AddUser("xbox", pUser);
-  pUser->SetPassword("xbox");
-  pUser->SetShortcutsEnabled(false);
-  pUser->SetUseRelativePaths(false);
-  pUser->SetBypassUserLimit(false);
-  pUser->SetUserLimit(0);
-  pUser->SetIPLimit(0);
-  pUser->AddDirectory("/", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS | XBDIR_HOME);
-  pUser->AddDirectory("C:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-  pUser->AddDirectory("D:\\", XBFILE_READ | XBDIR_LIST | XBDIR_SUBDIRS);
-  pUser->AddDirectory("E:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-  pUser->AddDirectory("Q:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-  //Add. also Drive F/G
-  if (CIoSupport::DriveExists('F')){
-    pUser->AddDirectory("F:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-  }
-  if (CIoSupport::DriveExists('G')){
-    pUser->AddDirectory("G:\\", XBFILE_READ | XBFILE_WRITE | XBFILE_DELETE | XBFILE_APPEND | XBDIR_DELETE | XBDIR_CREATE | XBDIR_LIST | XBDIR_SUBDIRS);
-  }
-  pUser->CommitChanges();
-#endif
 }
 
 void CApplication::SaveCurrentFileSettings()

@@ -28,11 +28,11 @@
 #include "URL.h"
 #include "GUIWindowFileManager.h"
 #include "GUIDialogButtonMenu.h"
-#include "GUIDialogContentSettings.h"
 #include "GUIFontManager.h"
 #include "LangCodeExpander.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
+#include "utils/PasswordManager.h"
 #include "utils/RegExp.h"
 #include "GUIPassword.h"
 #include "GUIAudioManager.h"
@@ -281,12 +281,6 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
     return &g_settings.m_videoSources;
   else if (type == "pictures")
     return &g_settings.m_pictureSources;
-  else if (type == "upnpmusic")
-    return &g_settings.m_UPnPMusicSources;
-  else if (type == "upnpvideo")
-    return &g_settings.m_UPnPVideoSources;
-  else if (type == "upnppictures")
-    return &g_settings.m_UPnPPictureSources;
 
   return NULL;
 }
@@ -1129,13 +1123,6 @@ bool CSettings::LoadProfile(int index)
     CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
     g_langInfo.Load(strLangInfoPath);
 
-#ifdef _XBOX
-    CStdString strKeyboardLayoutConfigurationPath;
-    strKeyboardLayoutConfigurationPath.Format("special://xbmc/language/%s/keyboardmap.xml", strLanguage.c_str());
-    CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
-    g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
-#endif
-
     CStdString strLanguagePath;
     strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
 
@@ -1154,6 +1141,8 @@ bool CSettings::LoadProfile(int index)
       if (doc.LoadFile(CUtil::AddFileToFolder(GetUserDataFolder(),"guisettings.xml")))
         g_guiSettings.LoadMasterLock(doc.RootElement());
     }
+    
+    CPasswordManager::GetInstance().Clear();
 
     // to set labels - shares are reloaded
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
@@ -1419,11 +1408,6 @@ bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
   XMLUtils::GetString(pRootElement, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
   XMLUtils::GetInt(pRootElement, "PortRenderer", g_settings.m_UPnPPortRenderer);
 
-  CStdString strDefault;
-  GetSources(pRootElement,"music",g_settings.m_UPnPMusicSources,strDefault);
-  GetSources(pRootElement,"video",g_settings.m_UPnPVideoSources,strDefault);
-  GetSources(pRootElement,"pictures",g_settings.m_UPnPPictureSources,strDefault);
-
   return true;
 }
 
@@ -1441,47 +1425,6 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
   XMLUtils::SetString(pRoot, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
   XMLUtils::SetInt(pRoot, "PortRenderer", g_settings.m_UPnPPortRenderer);
 
-  VECSOURCES* pShares[3];
-  pShares[0] = &g_settings.m_UPnPMusicSources;
-  pShares[1] = &g_settings.m_UPnPVideoSources;
-  pShares[2] = &g_settings.m_UPnPPictureSources;
-  for (int k=0;k<3;++k)
-  {
-    if ((*pShares)[k].size()==0)
-      continue;
-
-    TiXmlElement xmlType("");
-    if (k==0)
-      xmlType = TiXmlElement("music");
-    if (k==1)
-      xmlType = TiXmlElement("video");
-    if (k==2)
-      xmlType = TiXmlElement("pictures");
-
-    TiXmlNode* pNode = pRoot->InsertEndChild(xmlType);
-
-    for (unsigned int j=0;j<(*pShares)[k].size();++j)
-    {
-      // create a new Element
-      TiXmlText xmlName((*pShares)[k][j].strName);
-      TiXmlElement eName("name");
-      eName.InsertEndChild(xmlName);
-
-      TiXmlElement source("source");
-      source.InsertEndChild(eName);
-
-      for (unsigned int i = 0; i < (*pShares)[k][j].vecPaths.size(); i++)
-      {
-        TiXmlText xmlPath((*pShares)[k][j].vecPaths[i]);
-        TiXmlElement ePath("path");
-        ePath.InsertEndChild(xmlPath);
-        source.InsertEndChild(ePath);
-      }
-
-      if (pNode)
-        pNode->ToElement()->InsertEndChild(source);
-    }
-  }
   // save the file
   return xmlDoc.SaveFile(strSettingsFile);
 }
@@ -1570,7 +1513,7 @@ bool CSettings::DeleteSource(const CStdString &strType, const CStdString strName
     }
   }
 
-  if (virtualSource || strType.Find("upnp") > -1)
+  if (virtualSource)
     return found;
 
   return SaveSources();
@@ -1604,7 +1547,7 @@ bool CSettings::AddShare(const CStdString &type, const CMediaSource &share)
   }
   pShares->push_back(shareToAdd);
 
-  if (!share.m_ignore || type.Find("upnp") < 0)
+  if (!share.m_ignore)
   {
     return SaveSources();
   }
@@ -2215,8 +2158,8 @@ void CSettings::LoadRSSFeeds()
     int iId;
     if (pSet->QueryIntAttribute("id", &iId) == TIXML_SUCCESS)
     {
-      vector<string> vecSet;
-      vector<int> vecIntervals;
+      RssSet set;
+      set.rtl = pSet->Attribute("rtl") && strcasecmp(pSet->Attribute("rtl"),"true")==0;
       TiXmlElement* pFeed = pSet->FirstChildElement("feed");
       while (pFeed)
       {
@@ -2231,12 +2174,12 @@ void CSettings::LoadRSSFeeds()
           // TODO: UTF-8: Do these URLs need to be converted to UTF-8?
           //              What about the xml encoding?
           CStdString strUrl = pFeed->FirstChild()->Value();
-          vecSet.push_back(strUrl);
-          vecIntervals.push_back(iInterval);
+          set.url.push_back(strUrl);
+          set.interval.push_back(iInterval);
         }
         pFeed = pFeed->NextSiblingElement("feed");
       }
-      g_settings.m_mapRssUrls.insert(make_pair(iId,make_pair(vecIntervals,vecSet)));
+      g_settings.m_mapRssUrls.insert(make_pair(iId,set));
     }
     else
       CLog::Log(LOGERROR,"found rss url set with no id in RssFeeds.xml, ignored");

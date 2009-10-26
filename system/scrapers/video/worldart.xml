@@ -140,11 +140,11 @@
 			<RegExp conditional="!thepos" input="$$1" output="&lt;url function=&quot;GetCoverThumbs&quot;&gt;http://www.world-art.ru/$$7/$$7_poster.php?id=$$2&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp conditional="thepos" input="$$1" output="&lt;url function=&quot;GetTMDBThumbsByIMDBId&quot;&gt;\1&lt;/url&gt;" dest="5+">
+			<RegExp conditional="thepos" input="$$1" output="&lt;url function=&quot;GetTMDBThumbsByIMDBId&quot;&gt;http://www.imdb.com/title/\1&lt;/url&gt;" dest="5+">
 				<expression noclean="1" clear="no">imdb.com/title/([t0-9]*)</expression>
 			</RegExp>
 			<!-- FANART -->
-			<RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;\1&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://www.imdb.com/title/\1&lt;/url&gt;" dest="5+">
 				<expression>imdb.com/title/([t0-9]*)</expression>
 			</RegExp>
 			<expression noclean="1"/>

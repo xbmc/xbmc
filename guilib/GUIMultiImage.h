@@ -53,6 +53,7 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool IsDynamicallyAllocated() { return m_bDynamicResourceAlloc; };
+  virtual void SetInvalid();
   virtual bool CanFocus() const;
 
   void SetInfo(const CGUIInfoLabel &info);

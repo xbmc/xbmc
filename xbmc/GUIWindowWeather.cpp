@@ -166,10 +166,8 @@ void CGUIWindowWeather::UpdateLocations()
 
   for (unsigned int i = 0; i < MAX_LOCATION; i++)
   {
-    char *szLocation = g_weatherManager.GetLocation(i);
-    if (!szLocation) continue;
-    CStdString strLabel(szLocation);
-    if (strlen(szLocation) > 1) //got the location string yet?
+    CStdString strLabel = g_weatherManager.GetLocation(i);
+    if (strLabel.size() > 1) //got the location string yet?
     {
       int iPos = strLabel.ReverseFind(", ");
       if (iPos)
@@ -234,12 +232,12 @@ void CGUIWindowWeather::UpdateButtons()
 
   for (int i = 0; i < NUM_DAYS; i++)
   {
-    SET_CONTROL_LABEL(CONTROL_LABELD0DAY + (i*10), g_weatherManager.m_dfForcast[i].m_szDay);
-    SET_CONTROL_LABEL(CONTROL_LABELD0HI + (i*10), g_weatherManager.m_dfForcast[i].m_szHigh + g_langInfo.GetTempUnitString());
-    SET_CONTROL_LABEL(CONTROL_LABELD0LOW + (i*10), g_weatherManager.m_dfForcast[i].m_szLow + g_langInfo.GetTempUnitString());
-    SET_CONTROL_LABEL(CONTROL_LABELD0GEN + (i*10), g_weatherManager.m_dfForcast[i].m_szOverview);
+    SET_CONTROL_LABEL(CONTROL_LABELD0DAY + (i*10), g_weatherManager.m_dfForcast[i].m_day);
+    SET_CONTROL_LABEL(CONTROL_LABELD0HI + (i*10), g_weatherManager.m_dfForcast[i].m_high + g_langInfo.GetTempUnitString());
+    SET_CONTROL_LABEL(CONTROL_LABELD0LOW + (i*10), g_weatherManager.m_dfForcast[i].m_low + g_langInfo.GetTempUnitString());
+    SET_CONTROL_LABEL(CONTROL_LABELD0GEN + (i*10), g_weatherManager.m_dfForcast[i].m_overview);
     pImage = (CGUIImage *)GetControl(CONTROL_IMAGED0IMG + (i * 10));
-    if (pImage) pImage->SetFileName(g_weatherManager.m_dfForcast[i].m_szIcon);
+    if (pImage) pImage->SetFileName(g_weatherManager.m_dfForcast[i].m_icon);
   }
 }
 
@@ -295,12 +293,12 @@ void CGUIWindowWeather::SetProperties()
   for (int i = 0; i < NUM_DAYS; i++)
   {
     day.Format("Day%i.", i);
-    SetProperty(day + "Title", g_weatherManager.m_dfForcast[i].m_szDay);
-    SetProperty(day + "HighTemp", g_weatherManager.m_dfForcast[i].m_szHigh);
-    SetProperty(day + "LowTemp", g_weatherManager.m_dfForcast[i].m_szLow);
-    SetProperty(day + "Outlook", g_weatherManager.m_dfForcast[i].m_szOverview);
-    SetProperty(day + "OutlookIcon", g_weatherManager.m_dfForcast[i].m_szIcon);
-    fanartcode = CUtil::GetFileName(g_weatherManager.m_dfForcast[i].m_szIcon);
+    SetProperty(day + "Title", g_weatherManager.m_dfForcast[i].m_day);
+    SetProperty(day + "HighTemp", g_weatherManager.m_dfForcast[i].m_high);
+    SetProperty(day + "LowTemp", g_weatherManager.m_dfForcast[i].m_low);
+    SetProperty(day + "Outlook", g_weatherManager.m_dfForcast[i].m_overview);
+    SetProperty(day + "OutlookIcon", g_weatherManager.m_dfForcast[i].m_icon);
+    fanartcode = CUtil::GetFileName(g_weatherManager.m_dfForcast[i].m_icon);
     CUtil::RemoveExtension(fanartcode);
     SetProperty(day + "FanartCode", fanartcode);
   }

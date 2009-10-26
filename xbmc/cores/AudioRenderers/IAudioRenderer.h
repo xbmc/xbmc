@@ -29,16 +29,20 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "StdString.h"
 #include "IAudioCallback.h"
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
+
+typedef std::pair<CStdString, CStdString> AudioSink;
+typedef std::vector<AudioSink> AudioSinkList;
 
 class IAudioRenderer
 {
 public:
   IAudioRenderer() {};
   virtual ~IAudioRenderer() {};
-  virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough) = 0;
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false) = 0;
   virtual void UnRegisterAudioCallback() = 0;
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
   virtual float GetDelay() = 0;

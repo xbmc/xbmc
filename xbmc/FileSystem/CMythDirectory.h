@@ -56,6 +56,7 @@ private:
 
   CStdString GetValue(char* str)           { return m_session->GetValue(str); }
   CDateTime  GetValue(cmyth_timestamp_t t) { return m_session->GetValue(t); }
+  bool IsVisible(const cmyth_proginfo_t program);
   bool IsMovie(const cmyth_proginfo_t program);
   bool IsTvShow(const cmyth_proginfo_t program);
 

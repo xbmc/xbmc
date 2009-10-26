@@ -302,9 +302,9 @@ public:
   bool HasEpisodeInfo(const CStdString& strFilenameAndPath);
   bool HasMusicVideoInfo(const CStdString& strFilenameAndPath);
 
-  void GetFilePathById(int id, CStdString &filePath, CONTENT_TYPE iType);
-  bool GetGenreById(int id, CStdString& strGenre);
-  bool GetSetById(int id, CStdString& strSet);
+  void GetFilePathById(int idMovie, CStdString &filePath, CONTENT_TYPE iType);
+  bool GetGenreById(int idGenre, CStdString& strGenre);
+  bool GetSetById(int idSet, CStdString& strSet);
   int GetTvShowForEpisode(int idEpisode);
 
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMovie = -1);
@@ -333,6 +333,7 @@ public:
   void DeleteDetailsForTvShow(const CStdString& strPath);
   void RemoveContentForPath(const CStdString& strPath,CGUIDialogProgress *progress = NULL);
   void UpdateFanart(const CFileItem &item, CONTENT_TYPE type);
+  void DeleteSet(int idSet);
 
   // per-file video settings
   bool GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings);
@@ -436,7 +437,7 @@ public:
   int AddFile(const CStdString& strFileName);
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool overwrite=false);
   bool ExportSkipEntry(const CStdString &nfoFile);
-  void ExportActorThumbs(const CVideoInfoTag& tag);
+  void ExportActorThumbs(const CVideoInfoTag& tag, bool overwrite=false);
   void ImportFromXML(const CStdString &xmlFile);
   void DumpToDummyFiles(const CStdString &path);
   CStdString GetCachedThumb(const CFileItem& item) const;
