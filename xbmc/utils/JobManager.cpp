@@ -184,6 +184,7 @@ CJob *CJobManager::GetNextJob(const CJobWorker *worker)
         m_jobQueue[priority].pop_front();
         // add to the processing vector
         m_processing.push_back(job);
+        job.m_callback = this;
         return job.m_job;
       }
     }
@@ -210,8 +211,10 @@ bool CJobManager::OnJobProgress(unsigned int progress, unsigned int total, const
     CWorkItem item(*i);
     lock.Leave(); // leave section prior to call
     if (item.m_callback)
+    {
       item.m_callback->OnJobProgress(item.m_id, progress, total, job);
-    return false;
+      return false;
+    }
   }
   return true; // couldn't find the job, or it's been cancelled
 }
