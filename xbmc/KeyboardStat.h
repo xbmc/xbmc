@@ -55,7 +55,7 @@ private:
   uint8_t m_VKey;
 
   XBMCKey m_lastKey;
-  DWORD m_lastKeyTime;
+  unsigned int m_lastKeyTime;
   unsigned int m_keyHoldTime;
   bool m_bEvdev;
 };

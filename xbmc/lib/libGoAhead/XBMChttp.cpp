@@ -1873,12 +1873,16 @@ int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
   if (thePlayList.size()==0)
     list=openTag+"[Empty]" ;
   bool bIsMusic = (playList == PLAYLIST_MUSIC);
+  bool bIsVideo = (playList == PLAYLIST_VIDEO);
   for (int i = 0; i < thePlayList.size(); i++)
   {
     CFileItemPtr item = thePlayList[i];
     const CMusicInfoTag* tagVal = NULL;
+    const CVideoInfoTag* tagVid = NULL;
     if (bIsMusic)
       tagVal = item->GetMusicInfoTag();
+    if (bIsVideo)
+      tagVid = item->GetVideoInfoTag();
     CStdString strInfo;
     if (bShowIndex)
       strInfo.Format("%i;", i);
@@ -1886,13 +1890,22 @@ int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
       strInfo += tagVal->GetURL();
     else
       strInfo += item->m_strPath;
-    if (bShowTitle && tagVal)
-      strInfo += ';' + tagVal->GetTitle();
-    if (bShowDuration && tagVal)
+    if (bShowTitle)
+    {
+      if (tagVal)
+        strInfo += ';' + tagVal->GetTitle();
+      else if (tagVid)
+        strInfo += ';' + tagVid->m_strTitle;
+    }
+    if (bShowDuration)
     {
       CStdString duration;
-      StringUtils::SecondsToTimeString(tagVal->GetDuration(), duration, TIME_FORMAT_GUESS);
-      strInfo += ';' + duration;
+      if (tagVal)
+        StringUtils::SecondsToTimeString(tagVal->GetDuration(), duration, TIME_FORMAT_GUESS);
+      else if (tagVid)
+        duration = tagVid->m_strRuntime;
+      if (!duration.IsEmpty())
+        strInfo += ';' + duration;
     }
     list += closeTag + openTag + strInfo;
   }

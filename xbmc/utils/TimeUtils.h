@@ -23,6 +23,9 @@
 
 #include <stdint.h>
 
+int64_t CurrentHostCounter(void);
+int64_t CurrentHostFrequency(void);
+
 class CTimeUtils
 {
 public:
@@ -32,3 +35,4 @@ public:
 private:
   static unsigned int frameTime;
 };
+

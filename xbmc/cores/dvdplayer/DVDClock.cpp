@@ -26,27 +26,20 @@
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 
-#if defined(_WIN32)
-static void TimeGetTimeFrequency(LARGE_INTEGER* freq){ freq->QuadPart = 1000; }
-static void TimeGetTimeCounter(LARGE_INTEGER* val)   { val->QuadPart = timeGetTime();}
-#define QueryPerformanceFrequency(a) TimeGetTimeFrequency(a)
-#define QueryPerformanceCounter(a)   TimeGetTimeCounter(a)
-#endif
-
-LARGE_INTEGER CDVDClock::m_systemOffset;
-LARGE_INTEGER CDVDClock::m_systemFrequency;
+int64_t CDVDClock::m_systemOffset;
+int64_t CDVDClock::m_systemFrequency;
 CCriticalSection CDVDClock::m_systemsection;
 
 CDVDClock::CDVDClock()
 {
-  if(!m_systemFrequency.QuadPart)
+  if(!m_systemFrequency)
     g_VideoReferenceClock.GetFrequency(&m_systemFrequency);
 
-  if(!m_systemOffset.QuadPart)
+  if(!m_systemOffset)
     g_VideoReferenceClock.GetTime(&m_systemOffset);
 
   m_systemUsed = m_systemFrequency;
-  m_pauseClock.QuadPart = 0;
+  m_pauseClock = 0;
   m_bReset = true;
   m_iDisc = 0;
   m_maxspeedadjust = 0.0;
@@ -61,43 +54,43 @@ double CDVDClock::GetAbsoluteClock()
 {
   CSingleLock lock(m_systemsection);
 
-  if(!m_systemFrequency.QuadPart)
+  if(!m_systemFrequency)
     g_VideoReferenceClock.GetFrequency(&m_systemFrequency);
 
-  if(!m_systemOffset.QuadPart)
+  if(!m_systemOffset)
     g_VideoReferenceClock.GetTime(&m_systemOffset);
 
-  LARGE_INTEGER current;
+  int64_t current;
   g_VideoReferenceClock.GetTime(&current);
-  current.QuadPart -= m_systemOffset.QuadPart;
+  current -= m_systemOffset;
 
 #if _DEBUG
-  static LARGE_INTEGER old;
-  if(old.QuadPart > current.QuadPart)
-    CLog::Log(LOGWARNING, "QueryPerformanceCounter moving backwords by %"PRId64" ticks with freq of %"PRId64, old.QuadPart - current.QuadPart, m_systemFrequency.QuadPart);
+  static int64_t old;
+  if(old > current)
+    CLog::Log(LOGWARNING, "CurrentHostCounter() moving backwords by %"PRId64" ticks with freq of %"PRId64, old - current, m_systemFrequency);
   old = current;
 #endif
 
-  return DVD_TIME_BASE * (double)current.QuadPart / m_systemFrequency.QuadPart;
+  return DVD_TIME_BASE * (double)current / m_systemFrequency;
 }
 
 double CDVDClock::WaitAbsoluteClock(double target)
 {
   CSingleLock lock(m_systemsection);
 
-  __int64 systemtarget, freq, offset;
-  if(!m_systemFrequency.QuadPart)
+  int64_t systemtarget, freq, offset;
+  if(!m_systemFrequency)
     g_VideoReferenceClock.GetFrequency(&m_systemFrequency);
 
-  if(!m_systemOffset.QuadPart)
+  if(!m_systemOffset)
     g_VideoReferenceClock.GetTime(&m_systemOffset);
 
-  freq   = m_systemFrequency.QuadPart;
-  offset = m_systemOffset.QuadPart;
+  freq   = m_systemFrequency;
+  offset = m_systemOffset;
 
   lock.Leave();
 
-  systemtarget = (__int64)(target / DVD_TIME_BASE * (double)freq);
+  systemtarget = (int64_t)(target / DVD_TIME_BASE * (double)freq);
   systemtarget += offset;
   systemtarget = g_VideoReferenceClock.Wait(systemtarget);
   systemtarget -= offset;
@@ -107,24 +100,24 @@ double CDVDClock::WaitAbsoluteClock(double target)
 double CDVDClock::GetClock()
 {
   CSharedLock lock(m_critSection);
-  LARGE_INTEGER current;
+  int64_t current;
 
   if (m_bReset)
   {
     g_VideoReferenceClock.GetTime(&m_startClock);
     m_systemUsed = m_systemFrequency;
-    m_pauseClock.QuadPart = 0;
+    m_pauseClock = 0;
     m_iDisc = 0;
     m_bReset = false;
   }
 
-  if (m_pauseClock.QuadPart)
+  if (m_pauseClock)
     current = m_pauseClock;
   else
     g_VideoReferenceClock.GetTime(&current);
 
-  current.QuadPart -= m_startClock.QuadPart;
-  return DVD_TIME_BASE * (double)current.QuadPart / m_systemUsed.QuadPart + m_iDisc;
+  current -= m_startClock;
+  return DVD_TIME_BASE * (double)current / m_systemUsed + m_iDisc;
 }
 
 void CDVDClock::SetSpeed(int iSpeed)
@@ -134,23 +127,23 @@ void CDVDClock::SetSpeed(int iSpeed)
 
   if(iSpeed == DVD_PLAYSPEED_PAUSE)
   {
-    if(!m_pauseClock.QuadPart)
+    if(!m_pauseClock)
       g_VideoReferenceClock.GetTime(&m_pauseClock);
     return;
   }
 
-  LARGE_INTEGER current;
-  __int64 newfreq = m_systemFrequency.QuadPart * DVD_PLAYSPEED_NORMAL / iSpeed;
+  int64_t current;
+  int64_t newfreq = m_systemFrequency * DVD_PLAYSPEED_NORMAL / iSpeed;
 
   g_VideoReferenceClock.GetTime(&current);
-  if( m_pauseClock.QuadPart )
+  if( m_pauseClock )
   {
-    m_startClock.QuadPart += current.QuadPart - m_pauseClock.QuadPart;
-    m_pauseClock.QuadPart = 0;
+    m_startClock += current - m_pauseClock;
+    m_pauseClock = 0;
   }
 
-  m_startClock.QuadPart = current.QuadPart - ( newfreq * (current.QuadPart - m_startClock.QuadPart) ) / m_systemUsed.QuadPart;
-  m_systemUsed.QuadPart = newfreq;
+  m_startClock = current - ( newfreq * (current - m_startClock) ) / m_systemUsed;
+  m_systemUsed = newfreq;
 }
 
 void CDVDClock::Discontinuity(ClockDiscontinuityType type, double currentPts, double delay)
@@ -166,7 +159,7 @@ void CDVDClock::Discontinuity(ClockDiscontinuityType type, double currentPts, do
   case CLOCK_DISC_NORMAL:
     {
       g_VideoReferenceClock.GetTime(&m_startClock);
-      m_startClock.QuadPart += (__int64)(delay * m_systemUsed.QuadPart / DVD_TIME_BASE);
+      m_startClock += (int64_t)(delay * m_systemUsed / DVD_TIME_BASE);
       m_iDisc = currentPts;
       m_bReset = false;
       break;
@@ -177,20 +170,20 @@ void CDVDClock::Discontinuity(ClockDiscontinuityType type, double currentPts, do
 void CDVDClock::Pause()
 {
   CExclusiveLock lock(m_critSection);
-  if(!m_pauseClock.QuadPart)
+  if(!m_pauseClock)
     g_VideoReferenceClock.GetTime(&m_pauseClock);
 }
 
 void CDVDClock::Resume()
 {
   CExclusiveLock lock(m_critSection);
-  if( m_pauseClock.QuadPart )
+  if( m_pauseClock )
   {
-    LARGE_INTEGER current;
+    int64_t current;
     g_VideoReferenceClock.GetTime(&current);
 
-    m_startClock.QuadPart += current.QuadPart - m_pauseClock.QuadPart;
-    m_pauseClock.QuadPart = 0;
+    m_startClock += current - m_pauseClock;
+    m_pauseClock = 0;
   }
 }
 

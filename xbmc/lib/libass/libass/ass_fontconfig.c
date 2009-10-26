@@ -250,7 +250,8 @@ char *fontconfig_select(ass_library_t *library, fc_instance_t *priv,
     char *res = 0;
     if (!priv->config) {
         *index = priv->index_default;
-        return priv->path_default;
+        res = (priv->path_default) ? strdup(priv->path_default) : 0;
+        return res;
     }
     if (family && *family)
         res =
@@ -266,7 +267,7 @@ char *fontconfig_select(ass_library_t *library, fc_instance_t *priv,
                     family, bold, italic, res, *index);
     }
     if (!res && priv->path_default) {
-        res = priv->path_default;
+        res = (priv->path_default) ? strdup(priv->path_default) : 0;
         *index = priv->index_default;
         ass_msg(library, MSGL_WARN, "fontconfig_select: Using default font: "
                 "(%s, %d, %d) -> %s, %d", family, bold, italic,
@@ -533,8 +534,11 @@ char *fontconfig_select(ass_library_t *library, fc_instance_t *priv,
                         unsigned bold, unsigned italic, int *index,
                         uint32_t code)
 {
+    char *res;
+
     *index = priv->index_default;
-    return priv->path_default;
+    res = (priv->path_default) ? strdup(priv->path_default) : 0;
+    return res;
 }
 
 fc_instance_t *fontconfig_init(ass_library_t *library,
@@ -548,9 +552,11 @@ fc_instance_t *fontconfig_init(ass_library_t *library,
         "Fontconfig disabled, only default font will be used.");
 
     priv = calloc(1, sizeof(fc_instance_t));
-
-    priv->path_default = strdup(path);
-    priv->index_default = 0;
+    if (priv)
+    {
+      priv->path_default = strdup(path);
+      priv->index_default = 0;
+    }
     return priv;
 }
 
@@ -564,8 +570,10 @@ int fontconfig_update(fc_instance_t *priv)
 
 void fontconfig_done(fc_instance_t *priv)
 {
+#ifdef CONFIG_FONTCONFIG
     if (priv && priv->config)
         FcConfigDestroy(priv->config);
+#endif
     if (priv && priv->path_default)
         free(priv->path_default);
     if (priv && priv->family_default)

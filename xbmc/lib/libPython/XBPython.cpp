@@ -640,7 +640,7 @@ void XBPython::PulseGlobalEvent()
   SetEvent(m_globalEvent);
 }
 
-void XBPython::WaitForEvent(HANDLE hEvent, DWORD timeout)
+void XBPython::WaitForEvent(HANDLE hEvent, unsigned int timeout)
 {
   // wait for either this event our our global event
   HANDLE handles[2] = { hEvent, m_globalEvent };

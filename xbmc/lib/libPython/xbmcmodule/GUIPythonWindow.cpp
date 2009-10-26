@@ -148,7 +148,7 @@ void CGUIPythonWindow::SetCallbackWindow(PyObject *object)
   pCallbackWindow = object;
 }
 
-void CGUIPythonWindow::WaitForActionEvent(DWORD timeout)
+void CGUIPythonWindow::WaitForActionEvent(unsigned int timeout)
 {
   g_pythonParser.WaitForEvent(m_actionEvent, timeout);
   ResetEvent(m_actionEvent);

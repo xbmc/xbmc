@@ -22,7 +22,7 @@
  
 #include <samplerate.h>
 
-#define MAXRATIO 3
+#define MAXRATIO 30
 
 #define PROPORTIONAL 20.0
 #define PROPREF       0.01
@@ -52,6 +52,7 @@ class CDVDPlayerResampler
     int        m_quality;
     SRC_STATE* m_converter;
     SRC_DATA   m_converterdata;
+    double     m_ratio;
   
     float*     m_buffer;     //buffer for the audioframes
     int        m_bufferfill; //how many unread frames there are in the buffer

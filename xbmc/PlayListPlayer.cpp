@@ -240,7 +240,7 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
 
   m_bPlaybackStarted = false;
 
-  DWORD playAttempt = CTimeUtils::GetTimeMS();
+  unsigned int playAttempt = CTimeUtils::GetTimeMS();
   if (!g_application.PlayFile(*item, bAutoPlay))
   {
     CLog::Log(LOGERROR,"Playlist Player: skipping unplayable item: %i, path [%s]", m_iCurrentSong, item->m_strPath.c_str());
@@ -604,4 +604,5 @@ void CPlayListPlayer::Clear()
     m_PlaylistEmpty->Clear();
   }
 }
+
 

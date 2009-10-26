@@ -1142,10 +1142,10 @@ void RunCredits()
   CloseHandle(s_hMusicStarted);
 
 #ifdef _DEBUG
-  LARGE_INTEGER freq, start, end, start2, end2;
-  __int64 rendertime = 0;
-  QueryPerformanceFrequency(&freq);
-  QueryPerformanceCounter(&start2);
+  int64_t freq, start, end, start2, end2;
+  int64_t rendertime = 0;
+  freq = CurrentHostFrequency();
+  start2 = CurrentHostCounter();
 #endif // _DEBUG
 
   // Start credits loop
@@ -1169,7 +1169,7 @@ void RunCredits()
     while (NextCredit < NUM_CREDITS || !ActiveList.empty())
     {
 #ifdef _DEBUG
-      QueryPerformanceCounter(&start);
+      start = CurrentHostCounter();
 #endif // _DEBUG
 
       if (WaitForSingleObject(hMusicThread, 0) == WAIT_TIMEOUT)
@@ -1356,21 +1356,21 @@ void RunCredits()
 
 #ifdef _DEBUG
       static char FPS[80];
-      QueryPerformanceCounter(&end);
-      rendertime += end.QuadPart - start.QuadPart;
+      end = CurrentHostCounter();
+      rendertime += end - start;
       if (++n == 50)
       {
-        QueryPerformanceCounter(&end2);
+        end2 = CurrentHostCounter();
 
         MEMORYSTATUS stat;
         GlobalMemoryStatus(&stat);
-        float f = float(end2.QuadPart - start2.QuadPart);
-        sprintf(FPS, "Render: %.2f fps (%.2f%%)\nFreeMem: %.1f/%uMB", 50.0f * freq.QuadPart / f, 100.f * rendertime / f,
+        float f = float(end2 - start2);
+        sprintf(FPS, "Render: %.2f fps (%.2f%%)\nFreeMem: %.1f/%uMB", 50.0f * freq / f, 100.f * rendertime / f,
                  float(stat.dwAvailPhys) / (1024.0f*1024.0f), stat.dwTotalPhys / (1024*1024));
 
         rendertime = 0;
         n = 0;
-        QueryPerformanceCounter(&start2);
+        start2 = CurrentHostCounter();
       }
       CGUITextLayout::DrawText(g_fontManager.GetFont("font13"), 50, 30, 0xffffffff, 0, FPS, 0);
 #endif

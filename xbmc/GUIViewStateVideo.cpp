@@ -276,6 +276,8 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
           AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
           AddSortMethod(SORT_METHOD_YEAR,562, LABEL_MASKS("%T", "%Y"));
         }
+        AddSortMethod(SORT_METHOD_VIDEO_RUNTIME,2050, LABEL_MASKS("%T", "%D"));
+
         SetSortMethod(g_stSettings.m_viewStateVideoNavTitles.m_sortMethod);
 
         SetViewAsControl(g_stSettings.m_viewStateVideoNavTitles.m_viewMode);

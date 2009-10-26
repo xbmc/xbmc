@@ -26,9 +26,6 @@
 #ifdef _LINUX
 #include "linux/PlatformDefs.h"
 #endif
-#ifdef _WIN32
-#include "system.h" // for LARGE_INTEGER
-#endif
 
 class BitstreamStats
 {
@@ -55,8 +52,8 @@ private:
   double m_dMinBitrate;
   unsigned int m_nBitCount;
   unsigned int m_nEstimatedBitrate; // when we reach this amount of bits we check current bitrate.
-  LARGE_INTEGER m_tmStart;
-  static LARGE_INTEGER m_tmFreq;
+  int64_t m_tmStart;
+  static int64_t m_tmFreq;
 };
 
 #endif

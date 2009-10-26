@@ -608,12 +608,12 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 /// \brief Retrieve tag information for \e m_vecItems
 void CGUIWindowMusicBase::RetrieveMusicInfo()
 {
-  DWORD dwStartTick = CTimeUtils::GetTimeMS();
+  unsigned int startTick = CTimeUtils::GetTimeMS();
 
   OnRetrieveMusicInfo(*m_vecItems);
 
   CLog::Log(LOGDEBUG, "RetrieveMusicInfo() took %u msec",
-            CTimeUtils::GetTimeMS() - dwStartTick);
+            CTimeUtils::GetTimeMS() - startTick);
 }
 
 /// \brief Add selected list/thumb control item to playlist and start playing
@@ -783,17 +783,32 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
 
   CMusicInfoScanner scanner;
   CStdString strPath;
+  CStdString strTempAlbum(strAlbum);
+  CStdString strTempArtist(strArtist);
   long idAlbum = m_musicdatabase.GetAlbumByName(strAlbum,strArtist);
-
   strPath.Format("musicdb://3/%d/",idAlbum);
-  bool bCanceled;
-  if (!scanner.DownloadAlbumInfo(strPath,strArtist,strAlbum,bCanceled,album,m_dlgProgress))
-  { // no albums found
-    CGUIDialogOK::ShowAndGetInput(185, 0, 187, 0);
-    return false;
+
+  bool bCanceled(false);
+  bool needsRefresh(true);
+  do 
+  { 
+    if (!scanner.DownloadAlbumInfo(strPath,strTempArtist,strTempAlbum,bCanceled,album,m_dlgProgress))
+    {
+      if (m_dlgProgress && allowSelection != SELECTION_AUTO)
+      {
+        if (!CGUIDialogKeyboard::ShowAndGetInput(strTempAlbum, g_localizeStrings.Get(16011), false))
+          return false;
+
+        if (!CGUIDialogKeyboard::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
+          return false;
+      }
+      else
+        needsRefresh = false;
+    }
+    else
+      needsRefresh = false;
   }
-  if (bCanceled)
-    return false;
+  while (needsRefresh || bCanceled);
 
   // Read the album information from the database if we are dealing with a DB album.
   if (idAlbum != -1)
@@ -820,13 +835,28 @@ bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArti
 
   CMusicInfoScanner scanner;
   CStdString strPath;
+  CStdString strTempArtist(strArtist);
   long idArtist = m_musicdatabase.GetArtistByName(strArtist);
   strPath.Format("musicdb://2/%u/",idArtist);
-  if (!scanner.DownloadArtistInfo(strPath,strArtist,m_dlgProgress))
-  { // no albums found
-    CGUIDialogOK::ShowAndGetInput(21889, 0, 20198, 0);
-    return false;
+
+  bool bCanceled(false);
+  bool needsRefresh(true);
+  do 
+  { 
+    if (!scanner.DownloadArtistInfo(strPath,strTempArtist,bCanceled,m_dlgProgress))
+    {
+      if (m_dlgProgress && allowSelection != SELECTION_AUTO)
+      {
+        if (!CGUIDialogKeyboard::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
+          return false;
+      }
+      else
+        needsRefresh = false;
+    }
+    else
+      needsRefresh = false;
   }
+  while (needsRefresh || bCanceled);
 
   m_musicdatabase.GetArtistInfo(idArtist,artist.GetArtist());
   artist.SetLoaded(true);
@@ -1269,15 +1299,15 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
   bool bShowProgress=!g_windowManager.HasModalDialog();
   bool bProgressVisible=false;
 
-  DWORD dwTick=CTimeUtils::GetTimeMS();
+  unsigned int tick=CTimeUtils::GetTimeMS();
 
   while (m_musicInfoLoader.IsLoading())
   {
     if (bShowProgress)
     { // Do we have to init a progress dialog?
-      DWORD dwElapsed=CTimeUtils::GetTimeMS()-dwTick;
+      unsigned int elapsed=CTimeUtils::GetTimeMS()-tick;
 
-      if (!bProgressVisible && dwElapsed>1500 && m_dlgProgress)
+      if (!bProgressVisible && elapsed>1500 && m_dlgProgress)
       { // tag loading takes more then 1.5 secs, show a progress dialog
         CURL url(items.m_strPath);
         CStdString strStrippedPath;
@@ -1340,5 +1370,6 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
   if (!items.m_strPath.Equals("plugin://music/"))
     items.SetCachedMusicThumbs();
 }
+
 
 

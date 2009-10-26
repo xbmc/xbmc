@@ -272,6 +272,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       iformat = m_dllAvFormat.av_find_input_format("aac");
     else if( content.compare("video/x-vobsub") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("mpeg");
+    else if( content.compare("video/x-dvd-mpeg") == 0 )
+      iformat = m_dllAvFormat.av_find_input_format("mpeg");
     else if( content.compare("video/flv") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("flv");
     else if( content.compare("video/x-flv") == 0 )
@@ -359,7 +361,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       else
         pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, context->max_packet_size);
 
-      if (pd.buf_size == 0)
+      if (pd.buf_size <= 0)
       {
         CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
         return false;

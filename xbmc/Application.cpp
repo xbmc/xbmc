@@ -130,7 +130,6 @@
 #include "utils/DbusServer.h"
 #endif
 
-
 // Windows includes
 #include "GUIWindowManager.h"
 #include "GUIWindowHome.h"
@@ -185,7 +184,6 @@
 #include "GUIDialogContentSettings.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogBusy.h"
-
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
@@ -239,14 +237,8 @@
 #ifdef HAS_HAL
 #include "linux/LinuxFileSystem.h"
 #endif
-#ifdef HAS_EVENT_SERVER
-#include "utils/EventServer.h"
-#endif
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
-#endif
-#ifdef HAS_DBUS_SERVER
-#include "utils/DbusServer.h"
 #endif
 
 #ifdef HAS_DVD_DRIVE
@@ -350,8 +342,6 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
 
   //true while we in IsPaused mode! Workaround for OnPaused, which must be add. after v2.0
   m_bIsPaused = false;
-
-  m_bWasFullScreenBeforeMinimize = false;
 
   /* for now always keep this around */
 #ifdef HAS_KARAOKE
@@ -1831,8 +1821,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   g_localizeStrings.LoadSkinStrings(skinPath, skinEnglishPath);
 
-  LARGE_INTEGER start;
-  QueryPerformanceCounter(&start);
+  int64_t start;
+  start = CurrentHostCounter();
 
   CLog::Log(LOGINFO, "  load new skin...");
   CGUIWindowHome *pHome = (CGUIWindowHome *)g_windowManager.GetWindow(WINDOW_HOME);
@@ -1852,10 +1842,10 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   // Load the user windows
   LoadUserWindows(strSkinPath);
 
-  LARGE_INTEGER end, freq;
-  QueryPerformanceCounter(&end);
-  QueryPerformanceFrequency(&freq);
-  CLog::Log(LOGDEBUG,"Load Skin XML: %.2fms", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
+  int64_t end, freq;
+  end = CurrentHostCounter();
+  freq = CurrentHostFrequency();
+  CLog::Log(LOGDEBUG,"Load Skin XML: %.2fms", 1000.f * (end - start) / freq);
 
   CLog::Log(LOGINFO, "  initialize new skin...");
   m_guiPointer.AllocResources(true);
@@ -2188,7 +2178,7 @@ void CApplication::RenderScreenSaver()
   }
 }
 
-bool CApplication::WaitFrame(DWORD timeout)
+bool CApplication::WaitFrame(unsigned int timeout)
 {
   bool done = false;
 #ifdef HAS_SDL
@@ -3198,7 +3188,7 @@ bool CApplication::ProcessEventServer(float frameTime)
 
 bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKeyID, bool isAxis, float fAmount)
 {
-#if defined(HAS_EVENT_SERVER) && defined(HAS_SDL_JOYSTICK)
+#if defined(HAS_EVENT_SERVER)
   m_idleTimer.StartZero();
 
    // Make sure to reset screen saver, mouse.
@@ -5271,22 +5261,9 @@ bool CApplication::SwitchToFullScreen()
   return false;
 }
 
-void CApplication::Minimize(bool minimize)
+void CApplication::Minimize()
 {
-  if (minimize)
-  {
-    m_bWasFullScreenBeforeMinimize = g_graphicsContext.IsFullScreenRoot();
-    if (m_bWasFullScreenBeforeMinimize)
-      g_graphicsContext.ToggleFullScreenRoot();
-#ifdef HAS_SDL
-    SDL_WM_IconifyWindow();
-#endif
-  }
-  else
-  {
-    if (m_bWasFullScreenBeforeMinimize && !g_graphicsContext.IsFullScreenRoot())
-      g_graphicsContext.ToggleFullScreenRoot();
-  }
+  g_Windowing.Minimize();
 }
 
 PLAYERCOREID CApplication::GetCurrentPlayer()

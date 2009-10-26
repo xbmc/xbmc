@@ -537,7 +537,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   }
   else
   {
-    DWORD time = CTimeUtils::GetTimeMS();
+    unsigned int time = CTimeUtils::GetTimeMS();
 
     if (!m_rootDir.GetDirectory(strDirectory, items))
       return false;
@@ -1334,5 +1334,6 @@ bool CGUIMediaWindow::WaitForNetwork() const
   progress->Close();
   return true;
 }
+
 
 

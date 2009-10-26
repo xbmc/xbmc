@@ -369,7 +369,6 @@ OBJSXBMC=	\
 	xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a \
 	xbmc/karaoke/karaoke.a \
 	xbmc/lib/libaddon/libaddon.a \
-	xbmc/lib/libcmyth/libcmyth.a \
 	xbmc/lib/libhts/libhts.a \
 	xbmc/lib/librefmem/librefmem.a \
 	xbmc/lib/libPython/xbmcmodule/xbmcmodule.a \
@@ -391,6 +390,7 @@ OBJSXBMC=	\
 	xbmc/xbox/xbox.a
 
 DYNOBJSXBMC= \
+	xbmc/lib/libcmyth/libcmyth.a \
 	xbmc/linux/linux.a \
 	xbmc/utils/utils.a \
 	xbmc/cores/DllLoader/exports/util/exports_utils.a \

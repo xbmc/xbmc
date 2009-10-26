@@ -41,7 +41,8 @@ static void ass_msg_handler(int level, const char *fmt, va_list va, void *data)
 ass_library_t *ass_library_init(void)
 {
     ass_library_t* lib = calloc(1, sizeof(ass_library_t));
-    lib->msg_callback = ass_msg_handler;
+    if (lib)
+      lib->msg_callback = ass_msg_handler;
 
     return lib;
 }

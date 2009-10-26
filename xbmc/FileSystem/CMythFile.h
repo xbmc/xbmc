@@ -107,7 +107,7 @@ protected:
 
   bool              m_recording;
 
-  DWORD             m_timestamp;
+  unsigned int      m_timestamp;
 };
 
 }

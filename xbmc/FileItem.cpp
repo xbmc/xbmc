@@ -1456,10 +1456,7 @@ void CFileItemList::Reserve(int iCount)
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 {
   CSingleLock lock(m_lock);
-  DWORD dwStart = CTimeUtils::GetTimeMS();
   std::sort(m_items.begin(), m_items.end(), func);
-  DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStart;
-  CLog::Log(LOGDEBUG,"%s, sorting took %u millis", __FUNCTION__, dwElapsed);
 }
 
 void CFileItemList::FillSortFields(FILEITEMFILLFUNC func)
@@ -3023,4 +3020,5 @@ CStdString CFileItem::FindTrailer() const
 
   return strTrailer;
 }
+
 

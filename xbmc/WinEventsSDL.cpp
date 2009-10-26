@@ -27,6 +27,7 @@
 #include "common/SDLJoystick.h"
 #endif
 #include "MouseStat.h"
+#include "WindowingFactory.h"
 
 #ifdef HAS_SDL_WIN_EVENTS
 
@@ -61,12 +62,12 @@ bool CWinEventsSDL::MessagePump()
       if( event.active.state & SDL_APPACTIVE )
       {
         g_application.m_AppActive = event.active.gain != 0;
-        if (g_application.m_AppActive) g_application.Minimize(false);
+        g_Windowing.NotifyAppActiveChange(g_application.m_AppActive);
       }
       else if (event.active.state & SDL_APPINPUTFOCUS)
       {
         g_application.m_AppFocused = event.active.gain != 0;
-        g_graphicsContext.NotifyAppFocusChange(g_application.m_AppFocused);
+        g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
       }
       break;
       

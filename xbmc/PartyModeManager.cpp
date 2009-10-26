@@ -99,7 +99,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   pDialog->StartModal();
 
   ClearState();
-  DWORD time = CTimeUtils::GetTimeMS();
+  unsigned int time = CTimeUtils::GetTimeMS();
   vector< pair<int,int> > songIDs;
   if (m_type.Equals("songs") || m_type.Equals("mixed"))
   {

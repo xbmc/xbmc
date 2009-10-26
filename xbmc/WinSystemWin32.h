@@ -62,6 +62,11 @@ public:
   virtual bool CenterWindow();
   virtual void NotifyAppFocusChange(bool bGaining);
 
+  virtual bool Minimize();
+  virtual bool Restore();
+  virtual bool Hide();
+  virtual bool Show(bool raise = true);
+
    // OS System screensaver
   virtual void EnableSystemScreenSaver(bool bEnable);
   virtual bool IsSystemScreenSaverEnabled();

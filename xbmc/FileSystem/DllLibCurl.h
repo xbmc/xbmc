@@ -122,7 +122,7 @@ namespace XCURL
     /* structure holding a session info */
     typedef struct SSession
     {
-      DWORD         m_idletimestamp;  // timestamp of when this object when idle
+      unsigned int  m_idletimestamp;  // timestamp of when this object when idle
       CStdString    m_protocol;
       CStdString    m_hostname;
       bool          m_busy;

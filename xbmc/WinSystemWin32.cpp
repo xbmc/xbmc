@@ -321,8 +321,10 @@ bool CWinSystemWin32::ResizeInternal()
   {
     SetWindowRgn(m_hWnd, 0, false);
     SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
-
-    SetWindowPos(m_hWnd, windowAfter, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW);
+    
+    // The SWP_DRAWFRAME is here because, perversely, without it win7 draws a
+    // white frame plus titlebar around the xbmc splash
+    SetWindowPos(m_hWnd, windowAfter, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW|SWP_DRAWFRAME);
     if (bFromFullScreen)
       ValidateRect(NULL, NULL); //validate desktop if we're switching from fullscreen to window
   }
@@ -481,5 +483,41 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
   return 0;
 }
 
+
+bool CWinSystemWin32::Minimize()
+{
+  ShowWindow(m_hWnd, SW_MINIMIZE);
+  return true;
+}
+bool CWinSystemWin32::Restore()
+{
+  ShowWindow(m_hWnd, SW_RESTORE);
+  return true;
+}
+bool CWinSystemWin32::Hide()
+{
+  ShowWindow(m_hWnd, SW_HIDE);
+  return true;
+}
+bool CWinSystemWin32::Show(bool raise)
+{
+  HWND windowAfter = HWND_BOTTOM;
+  if (raise)
+  {
+    if (m_bFullScreen)
+      windowAfter = HWND_TOP;
+    else
+      windowAfter = g_advancedSettings.m_alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST;
+  }
+
+  SetWindowPos(m_hWnd, windowAfter, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
+  UpdateWindow(m_hWnd);
+  if (raise)
+  {
+    SetForegroundWindow(g_hWnd);
+    SetFocus(g_hWnd);
+  }
+  return true;
+}
 
 #endif

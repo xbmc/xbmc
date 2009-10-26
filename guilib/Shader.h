@@ -198,7 +198,7 @@ namespace Shaders {
                      , const std::string& frag)
       {
         m_pFP = new CGLSLPixelShader();
-        m_pFP->LoadSource(vert);
+        m_pFP->LoadSource(frag);
         m_pVP = new CGLSLVertexShader();
         m_pVP->LoadSource(vert);
       }

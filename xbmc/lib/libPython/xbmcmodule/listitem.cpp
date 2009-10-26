@@ -479,6 +479,8 @@ namespace PYXBMC
             self->item->GetMusicInfoTag()->SetArtist(tmp);
           else if (strcmpi(PyString_AsString(key), "title") == 0)
             self->item->GetMusicInfoTag()->SetTitle(tmp);
+          else if (strcmpi(PyString_AsString(key), "year") == 0)
+            self->item->GetMusicInfoTag()->SetYear(PyInt_AsLong(value));
           else if (strcmpi(PyString_AsString(key), "lyrics") == 0)
             self->item->SetProperty("lyrics", tmp);
           else if (strcmpi(PyString_AsString(key), "date") == 0)

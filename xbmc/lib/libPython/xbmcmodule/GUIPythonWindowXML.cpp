@@ -268,7 +268,7 @@ void CGUIPythonWindowXML::ClearList()
   UpdateButtons();
 }
 
-void CGUIPythonWindowXML::WaitForActionEvent(DWORD timeout)
+void CGUIPythonWindowXML::WaitForActionEvent(unsigned int timeout)
 {
   g_pythonParser.WaitForEvent(m_actionEvent, timeout);
   ResetEvent(m_actionEvent);

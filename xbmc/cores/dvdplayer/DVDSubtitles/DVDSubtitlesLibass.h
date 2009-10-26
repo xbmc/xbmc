@@ -38,7 +38,7 @@ public:
 
   bool DecodeHeader(char* data, int size);
   bool DecodeDemuxPkt(char* data, int size, double start, double duration);
-  bool ReadFile(const std::string& strFile);
+  bool CreateTrack(char* buf);
 
   long GetNrOfReferences();
   long Acquire();

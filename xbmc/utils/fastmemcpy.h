@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,34 +19,10 @@
  *
  */
 
-#ifdef HAS_DBUS
-#ifndef _DBUS_POWER_SYSCALL_H_
-#define _DBUS_POWER_SYSCALL_H_
-#include "PowerManager.h"
-
-class CDBusPowerSyscall : public IPowerSyscall
-{
-public:
-  CDBusPowerSyscall();
-
-  virtual bool Powerdown();
-  virtual bool Suspend();
-  virtual bool Hibernate();
-  virtual bool Reboot();
-
-  virtual bool CanPowerdown();
-  virtual bool CanSuspend();
-  virtual bool CanHibernate();
-  virtual bool CanReboot();
-
-private:
-  bool QueryCapability(const char *capability);
-  bool doPowerCall(const char *powerstate);
-
-  bool m_CanPowerdown;
-  bool m_CanSuspend;
-  bool m_CanHibernate;
-  bool m_CanReboot;
-};
+#if !defined(WIN32) && !defined(__ppc__) || !defined(__powerpc__)
+void * fast_memcpy(void * to, const void * from, size_t len);
+//#define fast_memcpy memcpy
+#else
+#define fast_memcpy memcpy
 #endif
-#endif
+

@@ -37,8 +37,8 @@ public:
   virtual bool OnMouse(const CPoint &point);
   virtual void Render();
 protected:
-  DWORD m_dwInitTimer;
-  DWORD m_dwLockedTimer;
+  unsigned int m_initTimer;
+  unsigned int m_lockedTimer;
   bool m_bShowPreset;
   MUSIC_INFO::CMusicInfoTag m_tag;    // current tag info, for finding when the info manager updates
 };
