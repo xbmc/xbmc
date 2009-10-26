@@ -31,9 +31,7 @@ CAutorunMediaJob::CAutorunMediaJob(const CStdString &path)
 
 void CAutorunMediaJob::DoWork()
 {
-  const int window = WINDOW_DIALOG_SELECT;
-
-  CGUIDialogSelect* pDialog= (CGUIDialogSelect*)g_windowManager.GetWindow(window);
+  CGUIDialogSelect* pDialog= (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
 
   pDialog->Reset();
   pDialog->SetHeading("New media detected");
