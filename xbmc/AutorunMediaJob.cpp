@@ -24,9 +24,10 @@
 #include "GUIDialogSelect.h"
 #include "Key.h"
 
-CAutorunMediaJob::CAutorunMediaJob(const CStdString &path)
+CAutorunMediaJob::CAutorunMediaJob(const CStdString &label, const CStdString &path)
 {
-  m_path = path;
+  m_label = label;
+  m_path  = path;
 }
 
 void CAutorunMediaJob::DoWork()
@@ -34,7 +35,10 @@ void CAutorunMediaJob::DoWork()
   CGUIDialogSelect* pDialog= (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
 
   pDialog->Reset();
-  pDialog->SetHeading("New media detected");
+  if (m_label.size() > 0)
+    pDialog->SetHeading(m_label);
+  else
+    pDialog->SetHeading("New media detected");
 
   pDialog->Add("Browse videos");
   pDialog->Add("Browse music");

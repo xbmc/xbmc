@@ -26,11 +26,11 @@
 class CAutorunMediaJob : public CJob
 {
 public:
-  CAutorunMediaJob(const CStdString &path);
+  CAutorunMediaJob(const CStdString &label, const CStdString &path);
 
   virtual void DoWork();
 private:
   const char *GetWindowString(int selection);
 
-  CStdString m_path;
+  CStdString m_path, m_label;
 };

@@ -463,7 +463,7 @@ std::vector<CStdString> CMediaManager::GetDiskUsage()
 void CMediaManager::OnStorageAdded(const CStdString &label, const CStdString &path)
 {
   if (g_guiSettings.GetBool("lookandfeel.autorun"))
-    CJobManager::GetInstance().AddJob(new CAutorunMediaJob(path), this, CJob::PRIORITY_HIGH);
+    CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_HIGH);
   else
     g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13021), label);
 }
