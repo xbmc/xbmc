@@ -2734,6 +2734,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\AutorunMediaJob.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\AutoSwitch.cpp"
 					>
 				</File>
@@ -5256,6 +5260,10 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\Autorun.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\AutorunMediaJob.h"
 				>
 			</File>
 			<File
