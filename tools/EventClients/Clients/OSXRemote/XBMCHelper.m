@@ -20,7 +20,6 @@
 
 @implementation XBMCHelper
 - (id) init{
-  PRINT_SIGNATURE();
   if( (self = [super init]) ){
     if ((remote = [HIDRemote sharedHIDRemote]))
     {
@@ -68,7 +67,6 @@
 
 //----------------------------------------------------------------------------
 - (void) dealloc{
-  PRINT_SIGNATURE();
   [remote stopRemoteControl];
   if( [remote delegate] == self)
     [remote setDelegate:nil];
