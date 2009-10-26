@@ -498,7 +498,7 @@ extern "C" void UpdateSetting(int num, StructSetting*** sSet)
     if (len >= 4 && strcmpi(setting.entry[setting.current] + len - 4, ".zip") == 0)
     {
       // Zip file
-      strcpy(g_plugin->m_szPresetDir, "zip://q%3A%5Cvisualisations%5C"); 
+      strcpy(g_plugin->m_szPresetDir, "zip://special%3A%5Cvisualisations%5C"); 
       strcat(g_plugin->m_szPresetDir,  g_packFolder);
       strcat(g_plugin->m_szPresetDir,  "%5C");
       strcat(g_plugin->m_szPresetDir,  setting.entry[setting.current]);
@@ -507,7 +507,7 @@ extern "C" void UpdateSetting(int num, StructSetting*** sSet)
     else if (len >= 4 && strcmpi(setting.entry[setting.current] + len - 4, ".rar") == 0)
     {
       // Rar file
-      strcpy(g_plugin->m_szPresetDir, "rar://q%3A%5Cvisualisations%5C"); 
+      strcpy(g_plugin->m_szPresetDir, "rar://special%3A%5Cvisualisations%5C"); 
       strcat(g_plugin->m_szPresetDir,  g_packFolder);
       strcat(g_plugin->m_szPresetDir,  "%5C");
       strcat(g_plugin->m_szPresetDir,  setting.entry[setting.current]);
