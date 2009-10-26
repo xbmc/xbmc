@@ -190,18 +190,18 @@ void LoadSettings()
         if (len >= 4 && strcmpi(nodeStr + len - 4, ".zip") == 0)
         {
           // Zip file
-          strcpy(g_plugin->m_szPresetDir, "zip://q%3A%5Cvisualisations%5C"); 
+          strcpy(g_plugin->m_szPresetDir, "zip://special%3A%2F%2Fxbmc%2Fvisualisations%2F"); 
           strcat(g_plugin->m_szPresetDir,  g_packFolder);
-          strcat(g_plugin->m_szPresetDir,  "%5C");
+          strcat(g_plugin->m_szPresetDir,  "%2F");
           strcat(g_plugin->m_szPresetDir,  nodeStr);
           strcat(g_plugin->m_szPresetDir, "/");
         }
         else if (len >= 4 && strcmpi(nodeStr + len - 4, ".rar") == 0)
         {
           // Rar file
-          strcpy(g_plugin->m_szPresetDir, "rar://q%3A%5Cvisualisations%5C"); 
+          strcpy(g_plugin->m_szPresetDir, "rar://special%3A%2F%2Fxbmc%2Fvisualisations%2F"); 
           strcat(g_plugin->m_szPresetDir,  g_packFolder);
-          strcat(g_plugin->m_szPresetDir,  "%5C");
+          strcat(g_plugin->m_szPresetDir,  "%2F");
           strcat(g_plugin->m_szPresetDir,  nodeStr);
           strcat(g_plugin->m_szPresetDir, "/");
         }
