@@ -1583,7 +1583,7 @@ void CApplication::StartZeroconf()
 {
 #ifdef HAS_ZEROCONF
   //entry in guisetting only present if HAS_ZEROCONF is set
-  if(g_guiSettings.GetBool("servers.zeroconf"))
+  if(g_guiSettings.GetBool("network.zeroconf"))
   {
     CLog::Log(LOGNOTICE, "starting zeroconf publishing");
     CZeroconf::GetInstance()->Start();
@@ -1605,21 +1605,13 @@ void CApplication::StopZeroconf()
 void CApplication::DimLCDOnPlayback(bool dim)
 {
 #ifdef HAS_LCD
-  if(g_lcd && dim && (g_guiSettings.GetInt("lcd.disableonplayback") != LED_PLAYBACK_OFF) && (g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE))
+  if (g_lcd)
   {
-    if ( (IsPlayingVideo()) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_VIDEO)
-      g_lcd->SetBackLight(0);
-    if ( (IsPlayingAudio()) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_MUSIC)
-      g_lcd->SetBackLight(0);
-    if ( ((IsPlayingVideo() || IsPlayingAudio())) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_VIDEO_MUSIC)
-      g_lcd->SetBackLight(0);
+    if (dim)
+      g_lcd->DisableOnPlayback(IsPlayingVideo(), IsPlayingAudio());
+    else
+      g_lcd->SetBackLight(1);
   }
-  else if(!dim)
-#ifdef _LINUX
-    g_lcd->SetBackLight(1);
-#else
-    g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
-#endif
 #endif
 }
 
@@ -2611,7 +2603,7 @@ bool CApplication::OnAction(CAction &action)
       { // unpaused - set the playspeed back to normal
         SetPlaySpeed(1);
       }
-      g_audioManager.Enable(m_pPlayer->IsPaused());
+      g_audioManager.Enable(m_pPlayer->IsPaused() && !g_audioContext.IsPassthroughActive());
       return true;
     }
     if (!m_pPlayer->IsPaused())
@@ -2671,7 +2663,7 @@ bool CApplication::OnAction(CAction &action)
       {
         // unpause, and set the playspeed back to normal
         m_pPlayer->Pause();
-        g_audioManager.Enable(m_pPlayer->IsPaused());
+        g_audioManager.Enable(m_pPlayer->IsPaused() && !g_audioContext.IsPassthroughActive());
 
         g_application.SetPlaySpeed(1);
         return true;
@@ -2763,7 +2755,7 @@ void CApplication::UpdateLCD()
 #ifdef HAS_LCD
   static long lTickCount = 0;
 
-  if (!g_lcd || g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE)
+  if (!g_lcd || !g_guiSettings.GetBool("system.haslcd"))
     return ;
   long lTimeOut = 1000;
   if ( m_iPlaySpeed != 1)
@@ -2797,6 +2789,7 @@ void CApplication::FrameMove()
   // never set a frametime less than 2 fps to avoid problems when debuggin and on breaks
   if( frameTime > 0.5 ) frameTime = 0.5;
 
+  g_graphicsContext.Lock();
   // check if there are notifications to display
   if (m_guiDialogKaiToast.DoWork())
   {
@@ -2805,6 +2798,7 @@ void CApplication::FrameMove()
       m_guiDialogKaiToast.Show();
     }
   }
+  g_graphicsContext.Unlock();
 
   UpdateLCD();
   
@@ -4572,14 +4566,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         g_windowManager.PreviousWindow();
       }
 
-      // reset the audio playlist on finish
-      if (!IsPlayingAudio() && (g_guiSettings.GetBool("mymusic.clearplaylistsonend")) && (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC))
-      {
-        g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-        g_playlistPlayer.Reset();
-        g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
-      }
-
       // DVD ejected while playing in vis ?
       if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       {
@@ -4788,8 +4774,7 @@ void CApplication::ProcessSlow()
   if(IsPaused() != m_bIsPaused)
   {
 #ifdef HAS_LCD
-    if(g_guiSettings.GetBool("lcd.enableonpaused"))
-      DimLCDOnPlayback(m_bIsPaused);
+    DimLCDOnPlayback(m_bIsPaused);
 #endif
     m_bIsPaused = IsPaused();
   }

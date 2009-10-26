@@ -246,8 +246,6 @@ void CGUISettings::Initialize()
 #endif
   AddSeparator(2, "mymusic.sep1");
   AddBool(3, "mymusic.autoplaynextitem", 489, true);
-  //AddBool(4, "musicfiles.repeat", 488, false);
-  AddBool(5, "mymusic.clearplaylistsonend",239,false);
   AddSeparator(6, "mymusic.sep2");
   AddPath(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
@@ -336,20 +334,7 @@ void CGUISettings::Initialize()
 #if defined(_LINUX) && !defined(__APPLE__)
   AddInt(5, "system.powerbuttonaction", 13015, POWERSTATE_NONE, 0, 1, 5, SPIN_CONTROL_TEXT);
 #endif
-
-#ifdef HAS_LCD
-  AddCategory(4, "lcd", 448);
-#ifdef _LINUX
-  AddInt(2, "lcd.type", 4501, LCD_TYPE_NONE, LCD_TYPE_NONE, 1, LCD_TYPE_LCDPROC, SPIN_CONTROL_TEXT);
-#endif
-#ifndef _LINUX // xbmc's lcdproc can't control backlight/contrast yet ..
-  AddInt(4, "lcd.backlight", 463, 80, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddInt(5, "lcd.contrast", 465, 100, 0, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddSeparator(6, "lcd.sep1");
-#endif
-  AddInt(7, "lcd.disableonplayback", 20310, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
-  AddBool(8, "lcd.enableonpaused", 20312, true);
-#endif
+  AddBool(6, "system.haslcd", 4501, false);
 
 #ifdef __APPLE__
   AddCategory(4, "appleremote", 13600);
@@ -408,7 +393,6 @@ void CGUISettings::Initialize()
   AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
   AddSeparator(2, "masterlock.sep1");
   AddBool(4, "masterlock.startuplock"      , 20076,false);
-  AddBool(5, "masterlock.enableshutdown"   , 12362,false);
   AddBool(6, "masterlock.automastermode"   , 20101,false);
   AddSeparator(7,"masterlock.sep2" );
   AddBool(8, "masterlock.loginlock",20116,true);
@@ -427,7 +411,7 @@ void CGUISettings::Initialize()
   AddCategory(5, "videolibrary", 14022);
 
   AddBool(3, "videolibrary.hideplots", 20369, false);
-  AddInt(6, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
+  AddInt(0, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddSeparator(7, "videolibrary.sep2");
   AddBool(8, "videolibrary.updateonstartup", 22000, false);
   AddBool(0, "videolibrary.backgroundupdate", 22001, false);
@@ -461,7 +445,7 @@ void CGUISettings::Initialize()
   AddBool(11, "videoplayer.vdpaustudiolevel", 13122, true);
 #endif
 #endif
-  AddFloat(11, "videoplayer.aspecterror", 22021, 3.0f, 0.0f, 1.0f, 20.0f);
+  AddFloat(0, "videoplayer.aspecterror", 22021, 3.0f, 0.0f, 1.0f, 20.0f);
 
   AddSeparator(12, "videoplayer.sep2");
   AddString(0, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
@@ -795,10 +779,7 @@ void CGUISettings::SetFloat(const char *strSetting, float fSetting)
 
 void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
 {
-  std::map<CStdString,CSetting*>::iterator it = settingsMap.find("masterlock.enableshutdown");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.maxretries");
+  std::map<CStdString,CSetting*>::iterator it = settingsMap.find("masterlock.maxretries");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
   it = settingsMap.find("masterlock.automastermode");

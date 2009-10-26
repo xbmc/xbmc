@@ -74,6 +74,7 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
   //  and all windows whether they are active or not
   if (message.GetMessage()==GUI_MSG_NOTIFY_ALL)
   {
+    CSingleLock lock(g_graphicsContext);
     for (rDialog it = m_activeDialogs.rbegin(); it != m_activeDialogs.rend(); ++it)
     {
       CGUIWindow *dialog = *it;
@@ -97,10 +98,12 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
   bool modalAcceptedMessage(false);
   // don't use an iterator for this loop, as some messages mean that m_activeDialogs is altered,
   // which will invalidate any iterator
+  CSingleLock lock(g_graphicsContext);
   unsigned int topWindow = m_activeDialogs.size();
   while (topWindow)
   {
     CGUIWindow* dialog = m_activeDialogs[--topWindow];
+    lock.Leave();
     if (!modalAcceptedMessage && dialog->IsModalDialog())
     { // modal window
       hasModalDialog = true;
@@ -114,7 +117,11 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
       if (dialog->OnMessage( message ))
         handled = true;
     }
+    lock.Enter();
+    if (topWindow > m_activeDialogs.size())
+      topWindow = m_activeDialogs.size();
   }
+  lock.Leave();
 
   // now send to the underlying window
   CGUIWindow* window = GetWindow(GetActiveWindow());
@@ -150,6 +157,7 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message, int window)
 
 void CGUIWindowManager::AddUniqueInstance(CGUIWindow *window)
 {
+  CSingleLock lock(g_graphicsContext);
   // increment our instance (upper word of windowID)
   // until we get a window we don't have
   int instance = 0;
@@ -166,6 +174,7 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
     return;
   }
   // push back all the windows if there are more than one covered by this class
+  CSingleLock lock(g_graphicsContext);
   for (int i = 0; i < pWindow->GetIDRange(); i++)
   {
     WindowMap::iterator it = m_mapWindows.find(pWindow->GetID() + i);
@@ -182,12 +191,14 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
 
 void CGUIWindowManager::AddCustomWindow(CGUIWindow* pWindow)
 {
+  CSingleLock lock(g_graphicsContext);
   Add(pWindow);
   m_vecCustomWindows.push_back(pWindow);
 }
 
 void CGUIWindowManager::AddModeless(CGUIWindow* dialog)
 {
+  CSingleLock lock(g_graphicsContext);
   // only add the window if it's not already added
   for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
     if (*it == dialog) return;
@@ -196,6 +207,7 @@ void CGUIWindowManager::AddModeless(CGUIWindow* dialog)
 
 void CGUIWindowManager::Remove(int id)
 {
+  CSingleLock lock(g_graphicsContext);
   WindowMap::iterator it = m_mapWindows.find(id);
   if (it != m_mapWindows.end())
   {
@@ -213,6 +225,7 @@ void CGUIWindowManager::Remove(int id)
 // from the class that created the window using new.
 void CGUIWindowManager::Delete(int id)
 {
+  CSingleLock lock(g_graphicsContext);
   CGUIWindow *pWindow = GetWindow(id);
   if (pWindow)
   {
@@ -224,6 +237,7 @@ void CGUIWindowManager::Delete(int id)
 void CGUIWindowManager::PreviousWindow()
 {
   // deactivate any window
+  CSingleLock lock(g_graphicsContext);
   CLog::Log(LOGDEBUG,"CGUIWindowManager::PreviousWindow: Deactivate");
   int currentWindow = GetActiveWindow();
   CGUIWindow *pCurrentWindow = GetWindow(currentWindow);
@@ -407,6 +421,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
 
 void CGUIWindowManager::CloseDialogs(bool forceClose)
 {
+  CSingleLock lock(g_graphicsContext);
   while (m_activeDialogs.size() > 0)
   {
     CGUIWindow* win = m_activeDialogs[0];
@@ -416,18 +431,22 @@ void CGUIWindowManager::CloseDialogs(bool forceClose)
 
 bool CGUIWindowManager::OnAction(const CAction &action)
 {
-  for (rDialog it = m_activeDialogs.rbegin(); it != m_activeDialogs.rend(); ++it)
+  CSingleLock lock(g_graphicsContext);
+  unsigned int topMost = m_activeDialogs.size();
+  while (topMost)
   {
-    CGUIWindow *dialog = *it;
+    CGUIWindow *dialog = m_activeDialogs[--topMost];
+    lock.Leave();
     if (dialog->IsModalDialog())
     { // we have the topmost modal dialog
       if (!dialog->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
       {
+        bool fallThrough = (dialog->GetID() == WINDOW_DIALOG_FULLSCREEN_INFO);
         if (dialog->OnAction(action))
           return true;
-        // dialog didn't want the action - we'd normally return true
+        // dialog didn't want the action - we'd normally return false
         // but for some dialogs we want to drop the actions through
-        if (dialog->GetID() == WINDOW_DIALOG_FULLSCREEN_INFO)
+        if (fallThrough)
           break;
         return false;
       }
@@ -441,7 +460,11 @@ bool CGUIWindowManager::OnAction(const CAction &action)
       if (dialog->OnAction(action))
         return true;
     }
+    lock.Enter();
+    if (topMost > m_activeDialogs.size())
+      topMost = m_activeDialogs.size();
   }
+  lock.Leave();
   CGUIWindow* window = GetWindow(GetActiveWindow());
   if (window)
     return window->OnAction(action);
@@ -463,6 +486,7 @@ void CGUIWindowManager::Render()
 
 void CGUIWindowManager::Render_Internal()
 {
+  CSingleLock lock(g_graphicsContext);
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
     pWindow->Render();
@@ -475,6 +499,7 @@ bool RenderOrderSortFunction(CGUIWindow *first, CGUIWindow *second)
 
 void CGUIWindowManager::RenderDialogs()
 {
+  CSingleLock lock(g_graphicsContext);
   // find the window with the lowest render order
   vector<CGUIWindow *> renderList = m_activeDialogs;
   stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
@@ -494,6 +519,7 @@ CGUIWindow* CGUIWindowManager::GetWindow(int id) const
     return NULL;
   }
 
+  CSingleLock lock(g_graphicsContext);
   WindowMap::const_iterator it = m_mapWindows.find(id);
   if (it != m_mapWindows.end())
     return (*it).second;
@@ -503,6 +529,7 @@ CGUIWindow* CGUIWindowManager::GetWindow(int id) const
 // Shows and hides modeless dialogs as necessary.
 void CGUIWindowManager::UpdateModelessVisibility()
 {
+  CSingleLock lock(g_graphicsContext);
   for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
   {
     CGUIWindow *pWindow = (*it).second;
@@ -549,6 +576,7 @@ void CGUIWindowManager::SetCallback(IWindowManagerCallback& callback)
 
 void CGUIWindowManager::DeInitialize()
 {
+  CSingleLock lock(g_graphicsContext);
   for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
   {
     CGUIWindow* pWindow = (*it).second;
@@ -582,6 +610,7 @@ void CGUIWindowManager::DeInitialize()
 /// \param pWindow Window to route to
 void CGUIWindowManager::RouteToWindow(CGUIWindow* dialog)
 {
+  CSingleLock lock(g_graphicsContext);
   // Just to be sure: Unroute this window,
   // #we may have routed to it before
   RemoveDialog(dialog->GetID());
@@ -593,6 +622,7 @@ void CGUIWindowManager::RouteToWindow(CGUIWindow* dialog)
 /// \param id ID of the window routed
 void CGUIWindowManager::RemoveDialog(int id)
 {
+  CSingleLock lock(g_graphicsContext);
   for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
     if ((*it)->GetID() == id)
@@ -605,6 +635,7 @@ void CGUIWindowManager::RemoveDialog(int id)
 
 bool CGUIWindowManager::HasModalDialog() const
 {
+  CSingleLock lock(g_graphicsContext);
   for (ciDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
     CGUIWindow *window = *it;
@@ -626,6 +657,7 @@ bool CGUIWindowManager::HasDialogOnScreen() const
 /// \return id ID of the window or WINDOW_INVALID if no routed window available
 int CGUIWindowManager::GetTopMostModalDialogID() const
 {
+  CSingleLock lock(g_graphicsContext);
   for (crDialog it = m_activeDialogs.rbegin(); it != m_activeDialogs.rend(); ++it)
   {
     CGUIWindow *dialog = *it;
@@ -705,6 +737,7 @@ bool CGUIWindowManager::IsWindowActive(int id, bool ignoreClosing /* = true */) 
   id &= WINDOW_ID_MASK;
   if ((GetActiveWindow() & WINDOW_ID_MASK) == id) return true;
   // run through the dialogs
+  CSingleLock lock(g_graphicsContext);
   for (ciDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
     CGUIWindow *window = *it;
@@ -716,6 +749,7 @@ bool CGUIWindowManager::IsWindowActive(int id, bool ignoreClosing /* = true */) 
 
 bool CGUIWindowManager::IsWindowActive(const CStdString &xmlFile, bool ignoreClosing /* = true */) const
 {
+  CSingleLock lock(g_graphicsContext);
   CGUIWindow *window = GetWindow(GetActiveWindow());
   if (window && CUtil::GetFileName(window->GetXMLFile()).Equals(xmlFile)) return true;
   // run through the dialogs
@@ -740,6 +774,7 @@ bool CGUIWindowManager::IsWindowVisible(const CStdString &xmlFile) const
 
 void CGUIWindowManager::LoadNotOnDemandWindows()
 {
+  CSingleLock lock(g_graphicsContext);
   for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
   {
     CGUIWindow *pWindow = (*it).second;
@@ -753,6 +788,7 @@ void CGUIWindowManager::LoadNotOnDemandWindows()
 
 void CGUIWindowManager::UnloadNotOnDemandWindows()
 {
+  CSingleLock lock(g_graphicsContext);
   for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
   {
     CGUIWindow *pWindow = (*it).second;
@@ -806,6 +842,7 @@ void CGUIWindowManager::GetActiveModelessWindows(vector<int> &ids)
 {
   // run through our modeless windows, and construct a vector of them
   // useful for saving and restoring the modeless windows on skin change etc.
+  CSingleLock lock(g_graphicsContext);
   for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
     if (!(*it)->IsModalDialog())
@@ -815,6 +852,7 @@ void CGUIWindowManager::GetActiveModelessWindows(vector<int> &ids)
 
 CGUIWindow *CGUIWindowManager::GetTopMostDialog() const
 {
+  CSingleLock lock(g_graphicsContext);
   // find the window with the lowest render order
   vector<CGUIWindow *> renderList = m_activeDialogs;
   stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
@@ -855,6 +893,7 @@ void CGUIWindowManager::DumpTextureUse()
   if (pWindow)
     pWindow->DumpTextureUse();
 
+  CSingleLock lock(g_graphicsContext);
   for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
     if ((*it)->IsDialogRunning())

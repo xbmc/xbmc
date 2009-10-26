@@ -7,8 +7,9 @@ class CDeviceKitDiskDevice
 {
 public:
   CDeviceKitDiskDevice(const char *DeviceKitUDI);
+  virtual ~CDeviceKitDiskDevice() { }
 
-  void Update();
+  virtual void Update() = 0;
 
   bool Mount();
   bool UnMount();
@@ -20,6 +21,24 @@ public:
   CStdString m_UDI, m_DeviceKitUDI, m_MountPath, m_FileSystem, m_Label;
   bool m_isMounted, m_isMountedByUs, m_isRemovable, m_isPartition;
   long int m_PartitionSizeGiB;
+};
+
+class CDeviceKitDiskDeviceNewAPI : public CDeviceKitDiskDevice
+{
+public:
+  CDeviceKitDiskDeviceNewAPI(const char *DeviceKitUDI) : CDeviceKitDiskDevice(DeviceKitUDI) { Update(); }
+  virtual ~CDeviceKitDiskDeviceNewAPI() { }
+
+  virtual void Update();
+};
+
+class CDeviceKitDiskDeviceOldAPI : public CDeviceKitDiskDevice
+{
+public:
+  CDeviceKitDiskDeviceOldAPI(const char *DeviceKitUDI) : CDeviceKitDiskDevice(DeviceKitUDI) { Update(); }
+  virtual ~CDeviceKitDiskDeviceOldAPI() { }
+
+  virtual void Update();
 };
 
 class CDeviceKitDisksProvider : public IStorageProvider
@@ -52,6 +71,8 @@ private:
   std::vector<CStdString> EnumerateDisks();
 
   void GetDisks(VECSOURCES& devices, bool EnumerateRemovable);
+
+  int m_DaemonVersion;
 
   DeviceMap m_AvailableDevices;
 

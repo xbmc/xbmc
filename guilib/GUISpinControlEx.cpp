@@ -58,6 +58,13 @@ void CGUISpinControlEx::DynamicResourceAlloc(bool bOnOff)
   m_buttonControl.DynamicResourceAlloc(bOnOff);
 }
 
+
+void CGUISpinControlEx::SetInvalid()
+{
+  CGUISpinControl::SetInvalid();
+  m_buttonControl.SetInvalid();
+}
+
 void CGUISpinControlEx::Render()
 {
   // make sure the button has focus if it should have...

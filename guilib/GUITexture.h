@@ -93,6 +93,7 @@ public:
   void DynamicResourceAlloc(bool bOnOff);
   void AllocResources();
   void FreeResources(bool immediately = false);
+  void SetInvalid();
 
   void SetVisible(bool visible);
   void SetAlpha(unsigned char alpha);

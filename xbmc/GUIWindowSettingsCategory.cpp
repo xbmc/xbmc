@@ -326,7 +326,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
           g_guiSettings.SetInt("videoscreen.resolution", g_graphicsContext.GetVideoResolution());
           CreateSettings();
         }
-        return true;
       }
     }
     break;
@@ -516,16 +515,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(601), CDDARIP_QUALITY_MEDIUM);
       pControl->AddLabel(g_localizeStrings.Get(602), CDDARIP_QUALITY_STANDARD);
       pControl->AddLabel(g_localizeStrings.Get(603), CDDARIP_QUALITY_EXTREME);
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting.Equals("lcd.type"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(351), LCD_TYPE_NONE);
-#ifdef _LINUX
-      pControl->AddLabel("LCDproc", LCD_TYPE_LCDPROC);
-#endif
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("harddisk.aamlevel"))
@@ -805,28 +794,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
     }
 #endif
-    else if (strSetting.Equals("system.ledcolour"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(13340), LED_COLOUR_NO_CHANGE);
-      pControl->AddLabel(g_localizeStrings.Get(13341), LED_COLOUR_GREEN);
-      pControl->AddLabel(g_localizeStrings.Get(13342), LED_COLOUR_ORANGE);
-      pControl->AddLabel(g_localizeStrings.Get(13343), LED_COLOUR_RED);
-      pControl->AddLabel(g_localizeStrings.Get(13344), LED_COLOUR_CYCLE);
-      pControl->AddLabel(g_localizeStrings.Get(351), LED_COLOUR_OFF);
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting.Equals("system.leddisableonplayback") || strSetting.Equals("lcd.disableonplayback"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(106), LED_PLAYBACK_OFF);     // No
-      pControl->AddLabel(g_localizeStrings.Get(13002), LED_PLAYBACK_VIDEO);   // Video Only
-      pControl->AddLabel(g_localizeStrings.Get(475), LED_PLAYBACK_MUSIC);    // Music Only
-      pControl->AddLabel(g_localizeStrings.Get(476), LED_PLAYBACK_VIDEO_MUSIC); // Video & Music
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting.Equals("videoplayer.rendermethod"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1067,7 +1034,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser);
     }
-    else if (strSetting.Equals("masterlock.startuplock") || strSetting.Equals("masterlock.enableshutdown") || strSetting.Equals("masterlock.automastermode"))
+    else if (strSetting.Equals("masterlock.startuplock") || strSetting.Equals("masterlock.automastermode"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE);
@@ -1089,15 +1056,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("remoteevents.enabled"));
-    }
-    else if (strSetting.Equals("mymusic.clearplaylistsonend"))
-    { // disable repeat and repeat one if clear playlists is enabled
-      if (g_guiSettings.GetBool("mymusic.clearplaylistsonend"))
-      {
-        g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
-        g_stSettings.m_bMyMusicPlaylistRepeat = false;
-        g_settings.Save();
-      }
     }
     else if (strSetting.Equals("cddaripper.quality"))
     { // only visible if we are doing non-WAV ripping
@@ -1310,13 +1268,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       else
         g_guiSettings.SetString("weather.plugin", pControl->GetCurrentLabel());
     }
-    else if (strSetting.Equals("system.leddisableonplayback"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      // LED_COLOUR_NO_CHANGE: we can't disable the LED on playback,
-      //                       we have no previos reference LED COLOUR, to set the LED colour back
-      pControl->SetEnabled(g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_OFF);
-    }
     else if (strSetting.Equals("musicfiles.trackformat"))
     {
       if (m_strOldTrackFormat != g_guiSettings.GetString("musicfiles.trackformat"))
@@ -1376,30 +1327,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
         pControl->SetLabel2("");
     }
-    else if (strSetting.Equals("lcd.enableonpaused"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.disableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
-    }
-    else if (strSetting.Equals("system.ledenableonpaused"))
-    {
-      // LED_COLOUR_NO_CHANGE: we can't enable LED on paused,
-      //                       we have no previos reference LED COLOUR, to set the LED colour back
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("system.leddisableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE);
-    }
-#ifndef _LINUX
-    else if (strSetting.Equals("lcd.backlight") || strSetting.Equals("lcd.disableonplayback"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
-    }
-    else if (strSetting.Equals("lcd.contrast"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
-    }
-#endif
     else if (strSetting.Equals("lookandfeel.enablemouse"))
     {
     }
@@ -1851,26 +1778,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
 #endif
 #ifdef HAS_LCD
-  else if (strSetting.Equals("lcd.type"))
+  else if (strSetting.Equals("system.haslcd"))
   {
-#ifdef _LINUX
     g_lcd->Stop();
     CLCDFactory factory;
     delete g_lcd;
     g_lcd = factory.Create();
-#endif
     g_lcd->Initialize();
   }
-#ifndef _LINUX
-  else if (strSetting.Equals("lcd.backlight"))
-  {
-    g_lcd->SetBackLight(((CSettingInt *)pSettingControl->GetSetting())->GetData());
-  }
-  else if (strSetting.Equals("lcd.contrast"))
-  {
-    g_lcd->SetContrast(((CSettingInt *)pSettingControl->GetSetting())->GetData());
-  }
-#endif
 #endif
   else if ( strSetting.Equals("servers.webserver") || strSetting.Equals("servers.webserverport") || 
             strSetting.Equals("servers.webserverusername") || strSetting.Equals("servers.webserverpassword"))
@@ -1901,12 +1816,12 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
 #endif
   } 
-  else if (strSetting.Equals("servers.zeroconf"))
+  else if (strSetting.Equals("network.zeroconf"))
   {
 #ifdef HAS_ZEROCONF
     //ifdef zeroconf here because it's only found in guisettings if defined
     CZeroconf::GetInstance()->Stop();
-    if(g_guiSettings.GetBool("servers.zeroconf"))
+    if(g_guiSettings.GetBool("network.zeroconf"))
       CZeroconf::GetInstance()->Start();
 #endif
   }

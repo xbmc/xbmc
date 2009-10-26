@@ -75,6 +75,7 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool IsDynamicallyAllocated() { return m_bDynamicResourceAlloc; };
+  virtual void SetInvalid();
   virtual bool CanFocus() const;
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
 

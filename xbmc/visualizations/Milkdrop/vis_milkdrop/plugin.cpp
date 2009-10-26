@@ -486,6 +486,8 @@ Order of Function Calls
 //#include "../XmlDocument.h"
 
 #define FRAND ((rand() % 7381)/7380.0f)
+#define strnicmp _strnicmp
+#define strcmpi  _strcmpi
 
 //extern CSoundData*   pg_sound;	// declared in main.cpp
 extern CPlugin* g_plugin;		// declared in MilkDropXBMC.cpp
@@ -4605,7 +4607,7 @@ void CPlugin::RandomizeBlendPattern()
     else if (mixtype==3)
     {
         // radial blend
-        float band = 0.02f + 0.14f*FRAND + 0.34*FRAND;
+        float band = 0.02f + 0.14f*FRAND + 0.34f*FRAND;
         float inv_band = 1.0f/band;
         float dir = (rand()%2)*2 - 1;
 
@@ -4715,7 +4717,7 @@ void CPlugin::UpdatePresetList()
 {
 	struct _finddata_t c_file;
 	long hFile;
-	HANDLE hFindFile;
+	//HANDLE hFindFile;
 
 	char szMask[512];
 	char szPath[512];

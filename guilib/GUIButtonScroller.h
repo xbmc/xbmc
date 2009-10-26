@@ -71,6 +71,7 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
+  virtual void SetInvalid();
   void ClearButtons();
   void AddButton(const std::string &strLabel, const CStdString &strExecute, const int iIcon);
   void SetActiveButton(int iButton);

@@ -238,6 +238,16 @@ void CGUIProgressControl::AllocResources()
   m_guiOverlay.SetHeight(20);
 }
 
+void CGUIProgressControl::SetInvalid()
+{
+  CGUIControl::SetInvalid();
+  m_guiBackground.SetInvalid();
+  m_guiMid.SetInvalid();
+  m_guiRight.SetInvalid();
+  m_guiLeft.SetInvalid();
+  m_guiOverlay.SetInvalid();
+}
+
 void CGUIProgressControl::SetInfo(int iInfo)
 {
   m_iInfoCode = iInfo;

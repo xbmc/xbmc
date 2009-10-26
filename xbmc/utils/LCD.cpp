@@ -25,6 +25,7 @@
 #include "Settings.h"
 #include "CharsetConverter.h"
 #include "log.h"
+#include "XMLUtils.h"
 
 using namespace std;
 
@@ -32,7 +33,7 @@ void ILCD::StringToLCDCharSet(CStdString& strText)
 {
 
   //0 = HD44780, 1=KS0073
-  unsigned int iLCDContr = g_guiSettings.GetInt("lcd.type") == LCD_TYPE_LCD_KS0073 ? 1 : 0;
+  unsigned int iLCDContr = 0;
   //the timeline is using blocks
   //a block is used at address 0xA0, smallBlocks at address 0xAC-0xAF
 
@@ -423,6 +424,14 @@ void ILCD::LoadSkin(const CStdString &xmlFile)
     return;
   }
 
+  // load our settings
+  CStdString disableOnPlay;
+  XMLUtils::GetString(element, "disableonplay", disableOnPlay);
+  if (disableOnPlay.Find("video") != CStdString::npos)
+    m_disableOnPlay |= DISABLE_ON_PLAY_VIDEO;
+  if (disableOnPlay.Find("music") != CStdString::npos)
+    m_disableOnPlay |= DISABLE_ON_PLAY_MUSIC;
+
   TiXmlElement *mode = element->FirstChildElement();
   while (mode)
   {
@@ -469,6 +478,7 @@ void ILCD::LoadMode(TiXmlNode *node, LCD_MODE mode)
 
 void ILCD::Reset()
 {
+  m_disableOnPlay = DISABLE_ON_PLAY_NONE;
   for (unsigned int i = 0; i < LCD_MODE_MAX; i++)
     m_lcdMode[i].clear();
 }
@@ -490,4 +500,11 @@ void ILCD::Render(LCD_MODE mode)
   // fill remainder with empty space
   while (outLine < 4)
     SetLine(outLine++, "");
+}
+
+void ILCD::DisableOnPlayback(bool playingVideo, bool playingAudio)
+{
+  if ((playingVideo && (m_disableOnPlay & DISABLE_ON_PLAY_VIDEO)) ||
+      (playingAudio && (m_disableOnPlay & DISABLE_ON_PLAY_MUSIC)))
+    SetBackLight(0);
 }

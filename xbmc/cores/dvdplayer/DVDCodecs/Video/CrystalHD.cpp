@@ -601,8 +601,6 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
         {
           if (procOut.PicInfo.timeStamp && (procOut.PicInfo.timeStamp != m_old_timestamp))
           {
-            uint8_t *tmp_buffer;
-
             // Get next output buffer from the free list
             pBuffer = AllocBuffer();
             if (!pBuffer) // No free pre-allocated buffers so make one
@@ -617,11 +615,13 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
             m_PictureCount++;
             m_y_buffer_ptr  = (BYTE*)procOut.Ybuff;  // Y plane
             m_uv_buffer_ptr = (BYTE*)procOut.UVbuff; // UV packed plane
-            
+            /*
+            uint8_t *tmp_buffer;
             tmp_buffer = (uint8_t*)_aligned_malloc(m_y_buffer_size + m_uv_buffer_size, 16);
             fast_memcpy(tmp_buffer, m_y_buffer_ptr, m_y_buffer_size);
             fast_memcpy(tmp_buffer + m_y_buffer_size, m_uv_buffer_ptr, m_uv_buffer_size);
             _aligned_free(tmp_buffer);
+            */
             got_picture = true;
           }
           else

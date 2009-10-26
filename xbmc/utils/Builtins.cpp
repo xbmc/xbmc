@@ -97,6 +97,7 @@ const BUILT_IN commands[] = {
   { "Suspend",                    false,  "Suspends the system" },
   { "RestartApp",                 false,  "Restart XBMC" },
   { "Minimize",                   false,  "Minimize XBMC" },
+  { "ToggleFullscreen",           false,  "Switch XBMC between windowed and fullscreen mode" },
   { "Credits",                    false,  "Run XBMCs Credits" },
   { "Reset",                      false,  "Reset the xbox (warm reboot)" },
   { "Mastermode",                 false,  "Control master mode" },
@@ -240,6 +241,10 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("minimize"))
   {
     g_application.getApplicationMessenger().Minimize();
+  }
+  else if (execute.Equals("togglefullscreen"))
+  {
+    g_application.getApplicationMessenger().UserEvent(TMSG_TOGGLEFULLSCREEN);
   }
   else if (execute.Equals("loadprofile") && g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
   {
