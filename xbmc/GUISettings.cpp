@@ -393,7 +393,6 @@ void CGUISettings::Initialize()
   AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
   AddSeparator(2, "masterlock.sep1");
   AddBool(4, "masterlock.startuplock"      , 20076,false);
-  AddBool(5, "masterlock.enableshutdown"   , 12362,false);
   AddBool(6, "masterlock.automastermode"   , 20101,false);
   AddSeparator(7,"masterlock.sep2" );
   AddBool(8, "masterlock.loginlock",20116,true);
@@ -781,10 +780,7 @@ void CGUISettings::SetFloat(const char *strSetting, float fSetting)
 
 void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
 {
-  std::map<CStdString,CSetting*>::iterator it = settingsMap.find("masterlock.enableshutdown");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.maxretries");
+  std::map<CStdString,CSetting*>::iterator it = settingsMap.find("masterlock.maxretries");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
   it = settingsMap.find("masterlock.automastermode");
