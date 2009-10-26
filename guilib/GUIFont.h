@@ -114,7 +114,7 @@ public:
 
   uint32_t GetStyle() const { return m_style; };
 
-  static uint16_t RemapGlyph(uint16_t letter);
+  static wchar_t RemapGlyph(wchar_t letter);
   
   CGUIFontTTF* GetFont() const
   {

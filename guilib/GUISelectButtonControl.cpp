@@ -71,7 +71,7 @@ void CGUISelectButtonControl::Render()
     // render background, left and right arrow
     m_imgBackground.Render();
 
-    D3DCOLOR dwTextColor = m_label.textColor;
+    color_t textColor = m_label.textColor;
 
     // User has moved left...
     if (m_bMovedLeft)
@@ -84,7 +84,7 @@ void CGUISelectButtonControl::Render()
       }
       // If we are moving left
       // render item text as disabled
-      dwTextColor = m_label.disabledColor;
+      textColor = m_label.disabledColor;
     }
 
     // Render arrow
@@ -104,7 +104,7 @@ void CGUISelectButtonControl::Render()
       }
       // If we are moving right
       // render item text as disabled
-      dwTextColor = m_label.disabledColor;
+      textColor = m_label.disabledColor;
     }
 
     // Render arrow
@@ -121,7 +121,7 @@ void CGUISelectButtonControl::Render()
       float fPosY = m_posY + m_label.offsetY;
       if (m_label.align & XBFONT_CENTER_Y)
         fPosY = m_posY + m_imgBackground.GetHeight()*0.5f;
-      m_textLayout.Render(m_posX + GetWidth()*0.5f, fPosY, 0, dwTextColor, m_label.shadowColor, align, m_label.width);
+      m_textLayout.Render(m_posX + GetWidth()*0.5f, fPosY, 0, textColor, m_label.shadowColor, align, m_label.width);
     }
 
     // Select current item, if user doesn't

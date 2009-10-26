@@ -260,7 +260,7 @@
 				RelativePath=".\GUIControl.cpp">
 			</File>
 			<File
-				RelativePath=".\GuiControlFactory.cpp">
+				RelativePath=".\GUIControlFactory.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIControlGroup.cpp">
@@ -290,13 +290,13 @@
 				RelativePath=".\GUIFontTTF.cpp">
 			</File>
 			<File
-				RelativePath=".\guiImage.cpp">
+				RelativePath=".\GUIImage.cpp">
 			</File>
 			<File
 				RelativePath=".\GUIIncludes.cpp">
 			</File>
 			<File
-				RelativePath=".\GUIInfoColor.cpp">
+				RelativePath=".\GUIInfoTypes.cpp">
 			</File>
 			<File
 				RelativePath=".\GUILabelControl.cpp">
@@ -475,7 +475,7 @@
 				RelativePath=".\GUIControl.h">
 			</File>
 			<File
-				RelativePath=".\GuiControlFactory.h">
+				RelativePath=".\GUIControlFactory.h">
 			</File>
 			<File
 				RelativePath=".\GUIControlGroup.h">
@@ -505,13 +505,13 @@
 				RelativePath=".\GUIFontTTF.h">
 			</File>
 			<File
-				RelativePath=".\guiImage.h">
+				RelativePath=".\GUIImage.h">
 			</File>
 			<File
 				RelativePath=".\GUIIncludes.h">
 			</File>
 			<File
-				RelativePath=".\GUIInfoColor.h">
+				RelativePath=".\GUIInfoTypes.h">
 			</File>
 			<File
 				RelativePath=".\GUIItem.h">

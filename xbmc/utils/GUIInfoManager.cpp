@@ -47,6 +47,7 @@
 #endif
 #include "SystemInfo.h"
 #include "GUIButtonScroller.h"
+#include "GUITextBox.h"
 #include "GUIInfoManager.h"
 #include <stack>
 #include "xbox/network.h"
@@ -70,8 +71,6 @@
 #include "MusicInfoLoader.h"
 #include "LabelFormatter.h"
 #include "TextureManager.h"
-#include "GUILabelControl.h"  // for CInfoLabel
-#include "GUITextBox.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
 #include "SkinInfo.h"

@@ -76,7 +76,7 @@ public:
   void SetText(const CStdStringW &text, float maxWidth = 0, bool forceLTRReadingOrder = false);
 
   unsigned int GetTextLength() const;
-  void GetFirstText(std::vector<uint32_t> &text) const;
+  void GetFirstText(vecText &text) const;
   void Reset();
 
   void SetWrap(bool bWrap=true);

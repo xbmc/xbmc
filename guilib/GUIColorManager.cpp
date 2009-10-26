@@ -102,7 +102,7 @@ bool CGUIColorManager::LoadXML(TiXmlDocument &xmlDoc)
 }
 
 // lookup a color and return it's hex value
-uint32_t CGUIColorManager::GetColor(const CStdString &color) const
+color_t CGUIColorManager::GetColor(const CStdString &color) const
 {
   // look in our color map
   CStdString trimmed(color);
@@ -112,8 +112,8 @@ uint32_t CGUIColorManager::GetColor(const CStdString &color) const
     return (*it).second;
 
   // try converting hex directly
-  uint32_t value = 0;
-  sscanf(trimmed.c_str(), "%lx", &value);
+  color_t value = 0;
+  sscanf(trimmed.c_str(), "%x", &value);
   return value;
 }
 

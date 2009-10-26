@@ -31,7 +31,6 @@
 
 #include "GUIControl.h"
 #include "GUITexture.h"
-#include "GUILabelControl.h"  // for CGUIInfoLabel
 
 /*!
  \ingroup controls

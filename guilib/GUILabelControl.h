@@ -32,39 +32,6 @@
 #include "GUIControl.h"
 #include "GUITextLayout.h"
 
-class CGUIListItem;
-
-class CGUIInfoLabel
-{
-public:
-  CGUIInfoLabel();
-  CGUIInfoLabel(const CStdString &label, const CStdString &fallback = "");
-
-  void SetLabel(const CStdString &label, const CStdString &fallback);
-  CStdString GetLabel(int contextWindow, bool preferImage = false) const;
-  CStdString GetItemLabel(const CGUIListItem *item, bool preferImage = false) const;
-  bool IsConstant() const;
-  bool IsEmpty() const;
-
-  const CStdString GetFallback() const { return m_fallback; };
-
-  static CStdString GetLabel(const CStdString &label, bool preferImage = false);
-private:
-  void Parse(const CStdString &label);
-
-  class CInfoPortion
-  {
-  public:
-    CInfoPortion(int info, const CStdString &prefix, const CStdString &postfix);
-    int m_info;
-    CStdString m_prefix;
-    CStdString m_postfix;
-  };
-
-  CStdString m_fallback;
-  std::vector<CInfoPortion> m_info;
-};
-
 /*!
  \ingroup controls
  \brief 

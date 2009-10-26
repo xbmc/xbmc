@@ -25,7 +25,6 @@
 #include "GUIWindowManager.h"
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
-#include "GUILabelControl.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
 #include "FileItem.h"
@@ -701,7 +700,6 @@ void CGUIBaseContainer::FreeResources()
   if (m_staticContent)
   { // free any static content
     Reset();
-    m_staticItems.clear();
   }
   m_scrollSpeed = 0;
 }

@@ -1,10 +1,10 @@
 /*!
-\file GUIInfoColor.h
+\file GUIInfoTypes.h
 \brief 
 */
 
-#ifndef GUILIB_GUIINFOCOLOR_H
-#define GUILIB_GUIINFOCOLOR_H
+#ifndef GUILIB_GUIINFOTYPES_H
+#define GUILIB_GUIINFOTYPES_H
 
 #pragma once
 
@@ -44,22 +44,55 @@ private:
   bool m_value;
 };
 
+typedef uint32_t color_t;
+
 class CGUIInfoColor
 {
 public:
-  CGUIInfoColor(uint32_t color = 0);
+  CGUIInfoColor(color_t color = 0);
 
   const CGUIInfoColor &operator=(const CGUIInfoColor &color);
-  const CGUIInfoColor &operator=(uint32_t color);
-  operator uint32_t() const { return m_color; };
+  const CGUIInfoColor &operator=(color_t color);
+  operator color_t() const { return m_color; };
 
   void Update();
   void Parse(const CStdString &label);
 
 private:
-  uint32_t GetColor() const;
+  color_t GetColor() const;
   int      m_info;
-  uint32_t m_color;
+  color_t m_color;
+};
+
+class CGUIInfoLabel
+{
+public:
+  CGUIInfoLabel();
+  CGUIInfoLabel(const CStdString &label, const CStdString &fallback = "");
+
+  void SetLabel(const CStdString &label, const CStdString &fallback);
+  CStdString GetLabel(int contextWindow, bool preferImage = false) const;
+  CStdString GetItemLabel(const CGUIListItem *item, bool preferImage = false) const;
+  bool IsConstant() const;
+  bool IsEmpty() const;
+
+  const CStdString GetFallback() const { return m_fallback; };
+
+  static CStdString GetLabel(const CStdString &label, bool preferImage = false);
+private:
+  void Parse(const CStdString &label);
+
+  class CInfoPortion
+  {
+  public:
+    CInfoPortion(int info, const CStdString &prefix, const CStdString &postfix);
+    int m_info;
+    CStdString m_prefix;
+    CStdString m_postfix;
+  };
+
+  CStdString m_fallback;
+  std::vector<CInfoPortion> m_info;
 };
 
 #endif

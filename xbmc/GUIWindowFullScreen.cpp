@@ -849,12 +849,12 @@ void CGUIWindowFullScreen::OnSliderChange(void *data, CGUISliderControl *slider)
   slider->SetTextValue(CGUIDialogAudioSubtitleSettings::FormatDelay(slider->GetFloatValue(), 0.025f));
   if (data && g_application.m_pPlayer)
   {
-    if (*(DWORD *)data == ACTION_AUDIO_DELAY)
+    if (*(int *)data == ACTION_AUDIO_DELAY)
     {
       g_stSettings.m_currentVideoSettings.m_AudioDelay = slider->GetFloatValue();
       g_application.m_pPlayer->SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
     }
-    else if (*(DWORD *)data == ACTION_SUBTITLE_DELAY)
+    else if (*(int *)data == ACTION_SUBTITLE_DELAY)
     {
       g_stSettings.m_currentVideoSettings.m_SubtitleDelay = slider->GetFloatValue();
       g_application.m_pPlayer->SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);

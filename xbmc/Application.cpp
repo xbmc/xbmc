@@ -39,9 +39,6 @@
 #include "Autorun.h"
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
-#else
-#include "GUILabelControl.h"  // needed for CInfoLabel
-#include "guiImage.h"
 #endif
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
@@ -54,6 +51,7 @@
 #include "PlayListFactory.h"
 #include "GUIFontManager.h"
 #include "GUIColorManager.h"
+#include "GUITextLayout.h"
 #include "SkinInfo.h"
 #include "lib/libPython/XBPython.h"
 #include "ButtonTranslator.h"
@@ -2433,19 +2431,19 @@ bool CApplication::OnKey(CKey& key)
       if (key.GetFromHttpApi())
       {
         if (key.GetButtonCode() != KEY_INVALID)
-          action.id = (WORD) key.GetButtonCode();
-        action.unicode = (WCHAR)key.GetUnicode();
+          action.id = key.GetButtonCode();
+        action.unicode = key.GetUnicode();
       }
       else
       { // see if we've got an ascii key
         if (g_Keyboard.GetUnicode())
         {
-          action.id = (WORD)g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
+          action.id = g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
           action.unicode = g_Keyboard.GetUnicode();
         }
         else
         {
-          action.id = (WORD)g_Keyboard.GetKey() | KEY_VKEY;
+          action.id = g_Keyboard.GetKey() | KEY_VKEY;
           action.unicode = 0;
         }
       }
@@ -2460,7 +2458,7 @@ bool CApplication::OnKey(CKey& key)
     {
       if (key.GetButtonCode() != KEY_INVALID)
       {
-        action.id = (WORD) key.GetButtonCode();
+        action.id = key.GetButtonCode();
         CButtonTranslator::GetInstance().GetAction(iWin, key, action);
       }
     }
@@ -3333,7 +3331,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    g_Mouse.SetInactive();
 
    // Figure out what window we're taking the event for.
-   WORD iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+   int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
    if (g_windowManager.HasModalDialog())
        iWin = g_windowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
 
@@ -3377,13 +3375,13 @@ bool CApplication::ProcessKeyboard()
   if (vkey || unicode)
   {
     // got a valid keypress - convert to a key code
-    WORD wkeyID;
+    int keyID;
     if (vkey) // FIXME, every ascii has a vkey so vkey would always and ascii would never be processed, but fortunately OnKey uses wkeyID only to detect keyboard use and the real key is recalculated correctly.
-      wkeyID = (WORD)vkey | KEY_VKEY;
+      keyID = vkey | KEY_VKEY;
     else
-      wkeyID = KEY_UNICODE;
+      keyID = KEY_UNICODE;
     //  CLog::Log(LOGDEBUG,"Keyboard: time=%i key=%i", timeGetTime(), vkey);
-    CKey key(wkeyID);
+    CKey key(keyID);
     key.SetHeld(g_Keyboard.KeyHeld());
     return OnKey(key);
   }
