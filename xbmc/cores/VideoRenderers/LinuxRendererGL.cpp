@@ -1703,7 +1703,11 @@ void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width
   m_destRect.SetRect(0, 0, (float)width, (float)height);
 
   // clear framebuffer and invert Y axis to get non-inverted image
+  glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT);
+  glClearColor(0, 0, 0, 0);
+  glDisable(GL_BLEND);
+  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   glTranslatef(0, height, 0);
