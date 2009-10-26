@@ -1605,17 +1605,13 @@ void CApplication::StopZeroconf()
 void CApplication::DimLCDOnPlayback(bool dim)
 {
 #ifdef HAS_LCD
-  if(g_lcd && dim && (g_guiSettings.GetInt("lcd.disableonplayback") != LED_PLAYBACK_OFF) && (g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE))
+  if (g_lcd)
   {
-    if ( (IsPlayingVideo()) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_VIDEO)
-      g_lcd->SetBackLight(0);
-    if ( (IsPlayingAudio()) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_MUSIC)
-      g_lcd->SetBackLight(0);
-    if ( ((IsPlayingVideo() || IsPlayingAudio())) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_VIDEO_MUSIC)
-      g_lcd->SetBackLight(0);
+    if (dim)
+      g_lcd->DisableOnPlayback(IsPlayingVideo(), IsPlayingAudio());
+    else
+      g_lcd->SetBackLight(1);
   }
-  else if(!dim)
-    g_lcd->SetBackLight(1);
 #endif
 }
 
@@ -2759,7 +2755,7 @@ void CApplication::UpdateLCD()
 #ifdef HAS_LCD
   static long lTickCount = 0;
 
-  if (!g_lcd || g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE)
+  if (!g_lcd || !g_guiSettings.GetBool("system.haslcd"))
     return ;
   long lTimeOut = 1000;
   if ( m_iPlaySpeed != 1)
@@ -4778,8 +4774,7 @@ void CApplication::ProcessSlow()
   if(IsPaused() != m_bIsPaused)
   {
 #ifdef HAS_LCD
-    if(g_guiSettings.GetBool("lcd.enableonpaused"))
-      DimLCDOnPlayback(m_bIsPaused);
+    DimLCDOnPlayback(m_bIsPaused);
 #endif
     m_bIsPaused = IsPaused();
   }

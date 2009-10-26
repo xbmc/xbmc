@@ -47,7 +47,7 @@ XLCDproc::~XLCDproc()
 
 void XLCDproc::Initialize()
 {
-  if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE)
+  if (!g_guiSettings.GetBool("system.haslcd"))
     return ;//nothing to do
 
   // don't try to initialize too often
