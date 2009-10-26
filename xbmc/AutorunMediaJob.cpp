@@ -64,5 +64,7 @@ const char *CAutorunMediaJob::GetWindowString(int selection)
       return "Pictures";
     case 3:
       return "FileManager";
+    default:
+      return "FileManager";
   }
 }
