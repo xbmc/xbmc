@@ -184,7 +184,7 @@ CJob *CJobManager::GetNextJob(const CJobWorker *worker)
         m_jobQueue[priority].pop_front();
         // add to the processing vector
         m_processing.push_back(job);
-        job.m_callback = this;
+        job.m_job->m_callback = this;
         return job.m_job;
       }
     }
