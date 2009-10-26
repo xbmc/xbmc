@@ -175,6 +175,7 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
     m_height = (float)o->height / o->source_height;
     m_pos    = POSITION_RELATIVE;
 
+#if 0
     if(center_x > 0.4 && center_x < 0.6
     && center_y > 0.8 && center_y < 1.0)
     {
@@ -184,6 +185,7 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
       m_y      = - 0.5 * m_height;
     }
     else
+#endif
     {
       /* render aligned to screen to avoid cropping problems */
       m_align  = ALIGN_SCREEN;
