@@ -41,8 +41,6 @@ Export win32_exports[] =
 {
   // kernel32
   { "FindFirstFileA",                               -1, (void*)dllFindFirstFileA,                               NULL },
-  { "FindNextFileA",                                -1, (void*)dllFindNextFileA,                                NULL },
-  { "FindClose",                                    -1, (void*)dllFindClose,                                    NULL },
   { "GetFileAttributesA",                           -1, (void*)dllGetFileAttributesA,                        NULL },
   { "LoadLibraryA",                                 -1, (void*)dllLoadLibraryA,                              (void*)track_LoadLibraryA },
   { "FreeLibrary",                                  -1, (void*)dllFreeLibrary,                               (void*)track_FreeLibrary },
