@@ -949,6 +949,8 @@
 		E49ACDA010074A4000A86ECD /* ZeroconfBrowserOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACD9D10074A4000A86ECD /* ZeroconfBrowserOSX.cpp */; };
 		E49ACDD510074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACDD410074F9200A86ECD /* ZeroconfBrowser.cpp */; };
 		E49ACDD610074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACDD410074F9200A86ECD /* ZeroconfBrowser.cpp */; };
+		E4A249F71095C880003D74C6 /* AutorunMediaJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4A249F51095C880003D74C6 /* AutorunMediaJob.cpp */; };
+		E4A249F81095C880003D74C6 /* AutorunMediaJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4A249F51095C880003D74C6 /* AutorunMediaJob.cpp */; };
 		E4DC97540FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */; };
 		E4DC97550FFE5BA8008E0C07 /* SAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */; };
 		E4DC97560FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */; };
@@ -3673,6 +3675,8 @@
 		E49ACD9E10074A4000A86ECD /* ZeroconfBrowserOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfBrowserOSX.h; sourceTree = "<group>"; };
 		E49ACDD310074F9200A86ECD /* ZeroconfBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfBrowser.h; sourceTree = "<group>"; };
 		E49ACDD410074F9200A86ECD /* ZeroconfBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfBrowser.cpp; sourceTree = "<group>"; };
+		E4A249F51095C880003D74C6 /* AutorunMediaJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AutorunMediaJob.cpp; sourceTree = "<group>"; };
+		E4A249F61095C880003D74C6 /* AutorunMediaJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutorunMediaJob.h; sourceTree = "<group>"; };
 		E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SAPDirectory.cpp; sourceTree = "<group>"; };
 		E4DC97510FFE5BA8008E0C07 /* SAPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAPDirectory.h; sourceTree = "<group>"; };
 		E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SAPFile.cpp; sourceTree = "<group>"; };
@@ -4450,6 +4454,8 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				E4A249F51095C880003D74C6 /* AutorunMediaJob.cpp */,
+				E4A249F61095C880003D74C6 /* AutorunMediaJob.h */,
 				7C62F24010505BC7002AD2C1 /* Bookmark.cpp */,
 				7C62F24110505BC7002AD2C1 /* Bookmark.h */,
 				7C62F22C104FC8B9002AD2C1 /* AdvancedSettings.cpp */,
@@ -8181,6 +8187,7 @@
 				7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */,
 				F599CD2B108E65370010EC2A /* IoSupport.cpp in Sources */,
 				F599CD74108E6A7A0010EC2A /* DarwinStorageProvider.cpp in Sources */,
+				E4A249F71095C880003D74C6 /* AutorunMediaJob.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9050,6 +9057,7 @@
 				7CAA25361085963B0096DE39 /* PasswordManager.cpp in Sources */,
 				F599CD2C108E65370010EC2A /* IoSupport.cpp in Sources */,
 				F599CD75108E6A7A0010EC2A /* DarwinStorageProvider.cpp in Sources */,
+				E4A249F81095C880003D74C6 /* AutorunMediaJob.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
