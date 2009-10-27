@@ -389,12 +389,12 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
     }
     else if (iControl == CONTROL_BTNCHANNELS_TV)
     {
-      m_iCurrentTVGroup = g_PVRManager.GetNextGroupID(m_iCurrentTVGroup);
+      m_iCurrentTVGroup = PVRChannelGroups.GetNextGroupID(m_iCurrentTVGroup);
       UpdateChannelsTV();
     }
     else if (iControl == CONTROL_BTNCHANNELS_RADIO)
     {
-      m_iCurrentRadioGroup = g_PVRManager.GetNextGroupID(m_iCurrentRadioGroup);
+      m_iCurrentRadioGroup = PVRChannelGroups.GetNextGroupID(m_iCurrentRadioGroup);
       UpdateChannelsRadio();
     }
     else if (iControl == CONTROL_LIST_TIMELINE ||
@@ -1635,7 +1635,7 @@ void CGUIWindowTV::UpdateChannelsTV()
   }
   else if (m_iCurrentTVGroup != -1)
   {
-    m_iCurrentTVGroup = g_PVRManager.GetNextGroupID(m_iCurrentTVGroup);
+    m_iCurrentTVGroup = PVRChannelGroups.GetNextGroupID(m_iCurrentTVGroup);
     UpdateChannelsTV();
     return;
   }
@@ -1648,7 +1648,7 @@ void CGUIWindowTV::UpdateChannelsTV()
   if (m_bShowHiddenChannels)
     strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18051), g_localizeStrings.Get(18151));
   else
-    strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18051), g_PVRManager.GetGroupName(m_iCurrentTVGroup));
+    strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18051), PVRChannelGroups.GetGroupName(m_iCurrentTVGroup));
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
 
   SET_CONTROL_VISIBLE(CONTROL_LIST_CHANNELS_TV);
@@ -1682,7 +1682,7 @@ void CGUIWindowTV::UpdateChannelsRadio()
   }
   else if (m_iCurrentRadioGroup != -1)
   {
-    m_iCurrentRadioGroup = g_PVRManager.GetNextGroupID(m_iCurrentRadioGroup);
+    m_iCurrentRadioGroup = PVRChannelGroups.GetNextGroupID(m_iCurrentRadioGroup);
     UpdateChannelsRadio();
     return;
   }
@@ -1695,7 +1695,7 @@ void CGUIWindowTV::UpdateChannelsRadio()
   if (m_bShowHiddenChannels)
     strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18052), g_localizeStrings.Get(18151));
   else
-    strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18052), g_PVRManager.GetGroupName(m_iCurrentTVGroup));
+    strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18052), PVRChannelGroups.GetGroupName(m_iCurrentTVGroup));
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
 
   SET_CONTROL_VISIBLE(CONTROL_LIST_CHANNELS_RADIO);

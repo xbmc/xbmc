@@ -430,11 +430,6 @@ void CGUISettings::Initialize()
   AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(5, "pvrmanager", 18000);
-  AddBool(1, "pvrmanager.enabled", 449  , false);
-  AddString(2, "pvrmanager.pvrsources", 18001, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(3, "pvrmanager.sep1");
-
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "videoplayer.sep1");
@@ -573,6 +568,10 @@ void CGUISettings::Initialize()
   AddBool(2, "upnp.renderer", 21881, false);
   AddSeparator(3,"upnp.sep1");
   AddBool(4, "upnp.server", 21360, false);
+
+  AddCategory(6, "pvrmanager", 18000);
+  AddBool(1, "pvrmanager.enabled", 449  , false);
+  AddString(2, "pvrmanager.pvrsources", 18001, "", BUTTON_CONTROL_STANDARD);
 
   // remote events settings
 #ifdef HAS_EVENT_SERVER

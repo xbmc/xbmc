@@ -212,12 +212,12 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (!g_guiSettings.GetBool("pvrplayback.timeshift") && item.HasTVChannelInfoTag())
       {
         int current_group = g_PVRManager.GetPlayingGroup();
-        current_group = g_PVRManager.GetPrevGroupID(current_group);
+        current_group = PVRChannelGroups.GetPrevGroupID(current_group);
         g_PVRManager.SetPlayingGroup(current_group);
 
         CAction action;
         action.id = ACTION_CHANNEL_SWITCH;
-        action.amount1 = g_PVRManager.GetFirstChannelForGroupID(current_group);
+        action.amount1 = PVRChannelGroups.GetFirstChannelForGroupID(current_group);
         OnAction(action);
       }
       else
@@ -234,12 +234,12 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (!g_guiSettings.GetBool("pvrplayback.timeshift") && item.HasTVChannelInfoTag())
       {
         int current_group = g_PVRManager.GetPlayingGroup();
-        current_group = g_PVRManager.GetNextGroupID(current_group);
+        current_group = PVRChannelGroups.GetNextGroupID(current_group);
         g_PVRManager.SetPlayingGroup(current_group);
 
         CAction action;
         action.id = ACTION_CHANNEL_SWITCH;
-        action.amount1 = g_PVRManager.GetFirstChannelForGroupID(current_group);
+        action.amount1 = PVRChannelGroups.GetFirstChannelForGroupID(current_group);
         OnAction(action);
       }
       else

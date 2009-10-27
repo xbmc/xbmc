@@ -1103,7 +1103,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                          g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE &&
                                          !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
     }
-    else if (!strSetting.Equals("pvrmanager.enabled") && strSetting.Left(4).Equals("pvrmanager."))
+    else if (!strSetting.Equals("pvr.enabled") && strSetting.Left(4).Equals("pvrmanager."))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));

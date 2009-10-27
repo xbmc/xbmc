@@ -120,6 +120,8 @@ public:
   bool IsRecordingOnPlayingChannel();
   bool StartRecordingOnPlayingChannel(bool bOnOff);
   void SetCurrentPlayingProgram(CFileItem& item);
+  void SetPlayingGroup(int GroupId);
+  int GetPlayingGroup();
 
   /*--- Stream reading functions ---*/
   bool OpenLiveStream(unsigned int channel, bool radio = false);
@@ -148,21 +150,6 @@ public:
   demux_packet_t* ReadDemux();
   bool SeekDemuxTime(int time, bool backwords, double* startpts);
   int GetDemuxStreamLength();
-
-
-
-/// >>>>> NEED REWORK
-  int GetGroupList(CFileItemList* results);
-  void AddGroup(const CStdString &newname);
-  bool RenameGroup(unsigned int GroupId, const CStdString &newname);
-  bool DeleteGroup(unsigned int GroupId);
-  bool ChannelToGroup(unsigned int number, unsigned int GroupId, bool radio = false);
-  int GetPrevGroupID(int current_group_id);
-  int GetNextGroupID(int current_group_id);
-  CStdString GetGroupName(int GroupId);
-  int GetFirstChannelForGroupID(int GroupId, bool radio = false);
-  void SetPlayingGroup(int GroupId);
-  int GetPlayingGroup();
 
 protected:
   virtual void Process();
@@ -212,6 +199,7 @@ private:
   /*--- Stream playback data ---*/
   CFileItem          *m_currentPlayingChannel;    /* The current playing channel or NULL */
   CFileItem          *m_currentPlayingRecording;  /* The current playing recording or NULL */
+  int                 m_CurrentGroupID;           /* The current selected Channel group list */
   DWORD               m_scanStart;                /* Scan start time to check for non present streams */
 
   /*--- Timeshift data ---*/
@@ -223,14 +211,6 @@ private:
   CPVRTimeshiftRcvr  *m_TimeshiftReceiver;        /* The Thread based Receiver to fill buffer file */
   __int64             m_timeshiftCurrWrapAround;  /* Bytes readed during current wrap around */
   __int64             m_timeshiftLastWrapAround;  /* Bytes readed during last wrap around */
-
-
-
-/// >>>>> NEED REWORK
-  int                 m_CurrentChannelID;
-  int                 m_CurrentGroupID;
-
-  CHANNELGROUPS_DATA  m_channel_group;
 };
 
 extern CPVRManager g_PVRManager;
