@@ -21,6 +21,8 @@
 #ifndef _OSX_INTERFACE_H_
 #define _OSX_INTERFACE_H_
 
+#include <string>
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -63,6 +65,11 @@ extern "C"
   // Smart folders.
   //
   void Cocoa_GetSmartFolderResults(const char* strFile, void (*)(void* userData, void* userData2, const char* path), void* userData, void* userData2);
+
+  //
+  // Files
+  //
+  bool Cocoa_ResolveFileAlias(std::string &filepath);
 
   //
   // Version.

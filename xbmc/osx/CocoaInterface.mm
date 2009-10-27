@@ -428,6 +428,29 @@ void Cocoa_GetSmartFolderResults(const char* strFile, void (*CallbackFunc)(void*
   CFRelease(doc);
 }
 
+bool Cocoa_ResolveFileAlias(std::string &filepath)
+{
+  FSRef fileRef;
+  Boolean targetIsFolder, wasAliased = NO;
+  
+  if (noErr == FSPathMakeRef((UInt8*)filepath.c_str(), &fileRef, NULL))
+  {
+    if (noErr == FSResolveAliasFile(&fileRef, TRUE, &targetIsFolder, &wasAliased))
+    {
+      if (wasAliased)
+      {
+        char real_path[PATH_MAX];
+        if (noErr == FSRefMakePath(&fileRef, (UInt8*)real_path, PATH_MAX))
+        {
+          filepath = real_path;
+        }
+      }
+    }
+  }
+  
+  return(wasAliased == YES);
+}
+
 static char strVersion[32];
 
 const char* Cocoa_GetAppVersion()
