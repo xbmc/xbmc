@@ -705,6 +705,7 @@ AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h inttypes.h limits.h locale.h \
   malloc.h memory.h netdb.h netinet/in.h stddef.h stdint.h stdlib.h string.h \
   strings.h sys/file.h sys/ioctl.h sys/mount.h sys/param.h sys/socket.h \
   sys/time.h sys/timeb.h sys/vfs.h termios.h unistd.h utime.h wchar.h wctype.h])
+AC_CHECK_HEADERS([cdio/iso9660.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STAT
