@@ -176,6 +176,11 @@ AC_ARG_ENABLE([avahi],
                 [disable Avahi support (default is enabled if libavahi-common and libavahi-client is found)])],
              [use_avahi=$enableval],
              [use_avahi=yes])
+AC_ARG_ENABLE([non-free],
+              [AS_HELP_STRING([--disable-non-free],
+                [disable componentents with non-compliant licenses])],
+              [use_nonfree=$enableval],
+              [use_nonfree=yes])
 
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
@@ -466,7 +471,6 @@ else
      AC_MSG_RESULT($avahi_disabled)
    fi
 fi
- 
 
 # XRandR
 if test "$host_vendor" = "apple" ; then
@@ -912,6 +916,12 @@ else
     SVN_REV="Unknown"
   fi
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
+fi
+if test "$use_nonfree" = "yes"; then
+  final_message="$final_message\n  Non-free:\tYes"
+  AC_DEFINE([HAVE_XBMC_NONFREE], [], [Define to 1 to enable non-free components.])
+else
+  final_message="$final_message\n  Non-free:\tNo"
 fi
 
 ### External libraries messages
