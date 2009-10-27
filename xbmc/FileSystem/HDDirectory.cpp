@@ -31,6 +31,9 @@
 #ifndef _LINUX
 #include "utils/CharsetConverter.h"
 #endif
+#ifdef __APPLE__
+#include "CocoaInterface.h"
+#endif
 
 #ifndef INVALID_FILE_ATTRIBUTES
 #define INVALID_FILE_ATTRIBUTES ((DWORD) -1)
@@ -60,6 +63,13 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
   LOCAL_WIN32_FIND_DATA wfd;
 
   CStdString strPath=strPath1;
+#ifdef __APPLE__
+  std::string realpath = strPath;
+  if (Cocoa_ResolveFinderAlias(realpath))
+  {
+    strPath = realpath;
+  }
+#endif
 
   CStdString strRoot = strPath;
   CURL url(strPath);
