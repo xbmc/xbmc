@@ -35,6 +35,10 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #endif
+#ifdef __APPLE__
+#include "CocoaInterface.h"
+//#include "CoreServices/CoreServices.h"
+#endif
 
 using namespace XFILE;
 
@@ -74,6 +78,14 @@ CStdString CFileHD::GetLocal(const CURL &url)
 
 #ifndef _LINUX
   path.Replace('/', '\\');
+#endif
+
+#ifdef __APPLE__
+  std::string realpath = path;
+  if (Cocoa_ResolveFileAlias(realpath))
+  {
+    path = realpath;
+  }
 #endif
 
   return path;
