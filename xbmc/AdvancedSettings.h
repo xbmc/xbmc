@@ -150,6 +150,10 @@ class CAdvancedSettings
 
     bool m_bHTTPDirectoryStatFilesize;
 
+    bool m_bFTPFanartImages;
+    bool m_bFTPVideoThumbs;
+    bool m_bFTPMusicThumbs;
+
     CStdString m_musicThumbs;
     CStdString m_dvdThumbs;
     CStdString m_fanartImages;

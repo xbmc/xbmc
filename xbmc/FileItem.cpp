@@ -2305,13 +2305,14 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
 
 CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) const
 {
-  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsMusicDb())
+  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsUPnP(m_strPath) || (CUtil::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPMusicThumbs) || IsParentFolder() || IsMusicDb())
     return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
   CStdString fileThumb(GetTBNFile());
   if (CFile::Exists(fileThumb))
     return fileThumb;
+  
   // if a folder, check for folder.jpg
   if (m_bIsFolder && (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
   {
@@ -2446,6 +2447,7 @@ CStdString CFileItem::GetUserVideoThumb() const
   || m_bIsShareOrDrive
   || IsInternetStream()
   || CUtil::IsUPnP(m_strPath)
+  || ( CUtil::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPVideoThumbs )
   || IsParentFolder()
   || IsLiveTV())
     return "";
@@ -2612,7 +2614,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
   || CUtil::IsUPnP(strFile)
   || IsLiveTV()
   || IsPlugin()
-  || CUtil::IsFTP(strFile)
+  || (CUtil::IsFTP(strFile) && !g_advancedSettings.m_bFTPFanartImages)
   || m_strPath.IsEmpty())
     return "";
 

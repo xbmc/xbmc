@@ -170,6 +170,10 @@ void CAdvancedSettings::Initialize()
 
   m_bHTTPDirectoryStatFilesize = false;
 
+  m_bFTPFanartImages = false;
+  m_bFTPVideoThumbs = true;
+  m_bFTPMusicThumbs = true;
+
   m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
   m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
   m_fanartImages = "fanart.jpg|fanart.png";
@@ -462,6 +466,14 @@ bool CAdvancedSettings::Load()
   pElement = pRootElement->FirstChildElement("httpdirectory");
   if (pElement)
     XMLUtils::GetBoolean(pElement, "statfilesize", m_bHTTPDirectoryStatFilesize);
+
+  pElement = pRootElement->FirstChildElement("ftp");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "fanartimages", m_bFTPFanartImages);
+    XMLUtils::GetBoolean(pElement, "videothumbs", m_bFTPVideoThumbs);
+    XMLUtils::GetBoolean(pElement, "musicthumbs", m_bFTPMusicThumbs);
+  }
 
   pElement = pRootElement->FirstChildElement("loglevel");
   if (pElement)
