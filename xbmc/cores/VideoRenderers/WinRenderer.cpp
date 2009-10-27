@@ -780,7 +780,11 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     videoSurface->GetDesc(&desc);
     if(videoSurface->LockRect(&rect, NULL, 0) == D3D_OK)
     {
-      for(unsigned int j = 0; j < desc.Height; j++)
+      if (rect.Pitch == desc.Width)
+      {
+        memcpy((BYTE *)rect.pBits, src, desc.Height * desc.Width);
+      }
+      else for(unsigned int j = 0; j < desc.Height; j++)
       {
         memcpy((BYTE *)rect.pBits + (j * rect.Pitch), src + (j * desc.Width), rect.Pitch);
       }
