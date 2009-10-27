@@ -431,7 +431,12 @@ void CFileItem::Serialize(CArchive& ar)
 }
 bool CFileItem::Exists() const
 {
-  if (m_strPath.IsEmpty() || m_strPath.Equals("add") || IsInternetStream() || IsParentFolder() || IsVirtualDirectoryRoot() || IsPlugin())
+  if (m_strPath.IsEmpty()
+   || m_strPath.Equals("add")
+   || IsInternetStream()
+   || IsParentFolder()
+   || IsVirtualDirectoryRoot()
+   || IsPlugin())
     return true;
 
   if (IsVideoDb() && HasVideoInfoTag())
@@ -2305,7 +2310,13 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
 
 CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) const
 {
-  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsUPnP(m_strPath) || (CUtil::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPMusicThumbs) || IsParentFolder() || IsMusicDb())
+  if (m_strPath.IsEmpty()
+   || m_bIsShareOrDrive
+   || IsInternetStream()
+   || CUtil::IsUPnP(m_strPath)
+   || (CUtil::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPMusicThumbs)
+   || IsParentFolder()
+   || IsMusicDb())
     return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
@@ -2444,12 +2455,12 @@ CStdString CFileItem::GetUserVideoThumb() const
   }
 
   if (m_strPath.IsEmpty()
-  || m_bIsShareOrDrive
-  || IsInternetStream()
-  || CUtil::IsUPnP(m_strPath)
-  || ( CUtil::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPVideoThumbs )
-  || IsParentFolder()
-  || IsLiveTV())
+   || m_bIsShareOrDrive
+   || IsInternetStream()
+   || CUtil::IsUPnP(m_strPath)
+   || (CUtil::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPVideoThumbs)
+   || IsParentFolder()
+   || IsLiveTV())
     return "";
 
 
@@ -2611,11 +2622,11 @@ CStdString CFileItem::CacheFanart(bool probe) const
 
   // no local fanart available for these
   if (IsInternetStream()
-  || CUtil::IsUPnP(strFile)
-  || IsLiveTV()
-  || IsPlugin()
-  || (CUtil::IsFTP(strFile) && !g_advancedSettings.m_bFTPFanartImages)
-  || m_strPath.IsEmpty())
+   || CUtil::IsUPnP(strFile)
+   || IsLiveTV()
+   || IsPlugin()
+   || (CUtil::IsFTP(strFile) && !g_advancedSettings.m_bFTPFanartImages)
+   || m_strPath.IsEmpty())
     return "";
 
   CStdString localFanart;
@@ -2997,7 +3008,10 @@ CStdString CFileItem::FindTrailer() const
   }
 
   // no local trailer available for these
-  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsLiveTV() || IsPlugin())
+  if (IsInternetStream()
+   || CUtil::IsUPnP(strFile)
+   || IsLiveTV()
+   || IsPlugin())
     return strTrailer;
 
   CStdString strDir;
