@@ -199,7 +199,7 @@ DWORD CPVRTimeshiftRcvr::GetDuration()
 /* CPVRTimeshiftRcvr GetDurationString
 /*
 /* Same as GetDuration but return a string which is used by the
-/* GUIInfoManager label "pvr.timeshiftduration".
+/* GUIInfoManager label "pvrmanager.timeshiftduration".
 /********************************************************************/
 const char* CPVRTimeshiftRcvr::GetDurationString()
 {
@@ -395,6 +395,9 @@ void CPVRManager::Start()
 
   /* Get Radio Channels from Backends */
   PVRChannelsRadio.Load(true);
+
+  /* Load the Channel group lists */
+  PVRChannelGroups.Load();
 
   /* Get Timers from Backends */
   PVRTimers.Load();
@@ -1372,6 +1375,28 @@ void CPVRManager::SetCurrentPlayingProgram(CFileItem& item)
   }
 }
 
+/********************************************************************
+/* CPVRManager SetPlayingGroup
+/*
+/* Set the current playing group ID, used to load the right channel
+/* lists
+/********************************************************************/
+void CPVRManager::SetPlayingGroup(int GroupId)
+{
+  m_CurrentGroupID = GroupId;
+}
+
+/********************************************************************
+/* CPVRManager GetPlayingGroup
+/*
+/* Get the current playing group ID, used to load the right channel
+/* lists
+/********************************************************************/
+int CPVRManager::GetPlayingGroup()
+{
+  return m_CurrentGroupID;
+}
+
 
 /*************************************************************/
 /** PVR CLIENT INPUT STREAM                                 **/
@@ -2263,210 +2288,3 @@ int CPVRManager::GetDemuxStreamLength()
 }
 
 CPVRManager g_PVRManager;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/// >>>>> NEED REWORK
-int CPVRManager::GetGroupList(CFileItemList* results)
-{
-  for (unsigned int i = 0; i < m_channel_group.size(); i++)
-  {
-    CFileItemPtr group(new CFileItem(m_channel_group[i].m_Title));
-    group->m_strTitle = m_channel_group[i].m_Title;
-    group->m_strPath.Format("%i", m_channel_group[i].m_ID);
-    results->Add(group);
-  }
-  return m_channel_group.size();
-}
-
-void CPVRManager::AddGroup(const CStdString &newname)
-{
-  EnterCriticalSection(&m_critSection);
-  m_database.Open();
-
-  m_database.AddGroup(GetFirstClientID(), newname);
-  m_database.GetGroupList(GetFirstClientID(), &m_channel_group);
-
-  m_database.Close();
-  LeaveCriticalSection(&m_critSection);
-}
-
-bool CPVRManager::RenameGroup(unsigned int GroupId, const CStdString &newname)
-{
-  EnterCriticalSection(&m_critSection);
-  m_database.Open();
-
-  m_database.RenameGroup(GetFirstClientID(), GroupId, newname);
-  m_database.GetGroupList(GetFirstClientID(), &m_channel_group);
-
-  m_database.Close();
-  LeaveCriticalSection(&m_critSection);
-  return true;
-}
-
-bool CPVRManager::DeleteGroup(unsigned int GroupId)
-{
-  EnterCriticalSection(&m_critSection);
-//  m_database.Open();
-//
-//  m_database.DeleteGroup(GetFirstClientID(), GroupId);
-//
-//  for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
-//  {
-//    if (PVRChannelsTV[i].GroupID() == GroupId)
-//    {
-//      PVRChannelsTV[i].m_iGroupID = 0;
-//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsTV[i]);
-//    }
-//  }
-//  for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
-//  {
-//    if (PVRChannelsRadio[i].GroupID() == GroupId)
-//    {
-//      PVRChannelsRadio[i].m_iGroupID = 0;
-//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsRadio[i]);
-//    }
-//  }
-//  m_database.GetGroupList(GetFirstClientID(), &m_channel_group);
-//  m_database.Close();
-  LeaveCriticalSection(&m_critSection);
-  return true;
-}
-
-bool CPVRManager::ChannelToGroup(unsigned int number, unsigned int GroupId, bool radio)
-{
-//  if (!radio)
-//  {
-//    if (((int) number <= PVRChannelsTV.size()+1) && (number != 0))
-//    {
-//      EnterCriticalSection(&m_critSection);
-//      m_database.Open();
-//      PVRChannelsTV[number-1].m_iGroupID = GroupId;
-//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsTV[number-1]);
-//      m_database.Close();
-//      LeaveCriticalSection(&m_critSection);
-//      return true;
-//    }
-//  }
-//  else
-//  {
-//    if (((int) number <= PVRChannelsRadio.size()+1) && (number != 0))
-//    {
-//      EnterCriticalSection(&m_critSection);
-//      m_database.Open();
-//      PVRChannelsRadio[number-1].m_iGroupID = GroupId;
-//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsRadio[number-1]);
-//      m_database.Close();
-//      LeaveCriticalSection(&m_critSection);
-//      return true;
-//    }
-//  }
-  return false;
-}
-
-int CPVRManager::GetPrevGroupID(int current_group_id)
-{
-  if (m_channel_group.size() == 0)
-    return -1;
-
-  if ((current_group_id == -1) || (current_group_id == 0))
-    return m_channel_group[m_channel_group.size()-1].m_ID;
-
-  for (unsigned int i = 0; i < m_channel_group.size(); i++)
-  {
-    if (current_group_id == m_channel_group[i].m_ID)
-    {
-      if (i != 0)
-        return m_channel_group[i-1].m_ID;
-      else
-        return -1;
-    }
-  }
-  return -1;
-}
-
-int CPVRManager::GetNextGroupID(int current_group_id)
-{
-  unsigned int i = 0;
-
-  if (m_channel_group.size() == 0)
-    return -1;
-
-  if ((current_group_id == 0) || (current_group_id == -1))
-    return m_channel_group[0].m_ID;
-
-  if (m_channel_group.size() == 0)
-    return -1;
-
-  for (; i < m_channel_group.size(); i++)
-  {
-    if (current_group_id == m_channel_group[i].m_ID)
-      break;
-  }
-
-  if (i >= m_channel_group.size()-1)
-    return -1;
-  else
-    return m_channel_group[i+1].m_ID;
-}
-
-CStdString CPVRManager::GetGroupName(int GroupId)
-{
-  if (GroupId == -1)
-    return g_localizeStrings.Get(593);
-
-  for (unsigned int i = 0; i < m_channel_group.size(); i++)
-  {
-    if (GroupId == m_channel_group[i].m_ID)
-      return m_channel_group[i].m_Title;
-  }
-
-  return g_localizeStrings.Get(593);
-}
-
-int CPVRManager::GetFirstChannelForGroupID(int GroupId, bool radio)
-{
-  if (GroupId == -1)
-    return 1;
-
-  if (!radio)
-  {
-    for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
-    {
-      if (PVRChannelsTV[i].GroupID() == GroupId)
-        return i+1;
-    }
-  }
-  else
-  {
-    for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
-    {
-      if (PVRChannelsRadio[i].GroupID() == GroupId)
-        return i+1;
-    }
-  }
-  return 1;
-}
-
-void CPVRManager::SetPlayingGroup(int GroupId)
-{
-  m_CurrentGroupID = GroupId;
-}
-
-int CPVRManager::GetPlayingGroup()
-{
-  return m_CurrentGroupID;
-}
-
-

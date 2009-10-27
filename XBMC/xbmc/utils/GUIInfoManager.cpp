@@ -3067,7 +3067,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_NEXT:
       return m_currentFile->GetTVChannelInfoTag()->NextTitle();
     case VIDEOPLAYER_GROUP:
-      return g_PVRManager.GetGroupName(g_PVRManager.GetPlayingGroup());
+      return PVRChannelGroups.GetGroupName(g_PVRManager.GetPlayingGroup());
     case VIDEOPLAYER_STARTTIME:
       return m_currentFile->GetTVChannelInfoTag()->StartTime().GetAsLocalizedTime("", false);
     case VIDEOPLAYER_ENDTIME:

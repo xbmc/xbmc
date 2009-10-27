@@ -52,10 +52,10 @@ public:
   bool SetChannelSettings(DWORD clientID, unsigned int channelID, const CVideoSettings &settings);
 
   /* Database Channel Group handling */
-  long AddGroup(DWORD clientID, const CStdString &groupname);
-  bool DeleteGroup(DWORD clientID, unsigned int groupID);
-  bool RenameGroup(DWORD clientID, unsigned int GroupId, const CStdString &newname);
-  bool GetGroupList(DWORD clientID, CHANNELGROUPS_DATA* results);
+  long AddGroup(const CStdString &groupName);
+  bool DeleteGroup(unsigned int groupID);
+  bool RenameGroup(unsigned int groupID, const CStdString &newname);
+  bool GetGroupList(cPVRChannelGroups &results);
 
 protected:
   long GetClientId(const CStdString &guid);

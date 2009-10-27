@@ -582,7 +582,7 @@ bool CTVDatabase::SetChannelSettings(DWORD clientID, unsigned int channelID, con
   }
 }
 
-long CTVDatabase::AddGroup(DWORD clientID, const CStdString &groupname)
+long CTVDatabase::AddGroup(const CStdString &groupname)
 {
   try
   {
@@ -594,7 +594,7 @@ long CTVDatabase::AddGroup(DWORD clientID, const CStdString &groupname)
     groupId = GetGroupId(groupname);
     if (groupId < 0)
     {
-      CStdString SQL=FormatSQL("insert into Groups (idClient, idGroup, Name) values ('%i', NULL, '%s')", clientID, groupname.c_str());
+      CStdString SQL=FormatSQL("insert into Groups (idClient, idGroup, Name) values (NULL, NULL, '%s')", groupname.c_str());
       m_pDS->exec(SQL.c_str());
       groupId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
     }
@@ -608,7 +608,7 @@ long CTVDatabase::AddGroup(DWORD clientID, const CStdString &groupname)
   return -1;
 }
 
-bool CTVDatabase::DeleteGroup(DWORD clientID, unsigned int groupID)
+bool CTVDatabase::DeleteGroup(unsigned int groupID)
 {
   try
   {
@@ -620,7 +620,7 @@ bool CTVDatabase::DeleteGroup(DWORD clientID, unsigned int groupID)
       return false;
     }
 
-    CStdString strSQL=FormatSQL("delete from Groups WHERE Groups.idGroup = '%u' AND Groups.idClient = '%u'", groupID, clientID);
+    CStdString strSQL=FormatSQL("delete from Groups WHERE Groups.idGroup = '%u'", groupID);
 
     m_pDS->exec(strSQL.c_str());
     return true;
@@ -632,7 +632,7 @@ bool CTVDatabase::DeleteGroup(DWORD clientID, unsigned int groupID)
   }
 }
 
-bool CTVDatabase::RenameGroup(DWORD clientID, unsigned int GroupId, const CStdString &newname)
+bool CTVDatabase::RenameGroup(unsigned int GroupId, const CStdString &newname)
 {
   try
   {
@@ -646,15 +646,14 @@ bool CTVDatabase::RenameGroup(DWORD clientID, unsigned int GroupId, const CStdSt
 
     CStdString SQL;
 
-    SQL=FormatSQL("select * from Groups WHERE Groups.idGroup = '%u' AND Groups.idClient = '%u'", GroupId, clientID);
+    SQL=FormatSQL("select * from Groups WHERE Groups.idGroup = '%u'", GroupId);
     m_pDS->query(SQL.c_str());
 
     if (m_pDS->num_rows() > 0)
     {
       m_pDS->close();
       // update the item
-      CStdString SQL = FormatSQL("update Groups set idClient=%i,Name='%s' where idGroup=%i",
-                                 clientID, newname.c_str(), GroupId);
+      CStdString SQL = FormatSQL("update Groups set Name='%s' WHERE idGroup=%i", newname.c_str(), GroupId);
       m_pDS->exec(SQL.c_str());
       return true;
     }
@@ -667,27 +666,25 @@ bool CTVDatabase::RenameGroup(DWORD clientID, unsigned int GroupId, const CStdSt
   }
 }
 
-bool CTVDatabase::GetGroupList(DWORD clientID, CHANNELGROUPS_DATA* results)
+bool CTVDatabase::GetGroupList(cPVRChannelGroups &results)
 {
-  results->erase(results->begin(), results->end());
-
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString SQL=FormatSQL("select * from Groups WHERE Groups.idClient=%u ORDER BY Groups.Name", clientID);
+    CStdString SQL=FormatSQL("select * from Groups ORDER BY Groups.Name");
 
     m_pDS->query(SQL.c_str());
 
     while (!m_pDS->eof())
     {
-      TVGroupData data;
+      cPVRChannelGroup data;
 
-      data.m_ID     = m_pDS->fv("idGroup").get_asInt();
-      data.m_Title  = m_pDS->fv("Name").get_asString();
+      data.SetGroupID(m_pDS->fv("idGroup").get_asInt());
+      data.SetGroupName(m_pDS->fv("Name").get_asString());
 
-      results->push_back(data);
+      results.push_back(data);
       m_pDS->next();
     }
 

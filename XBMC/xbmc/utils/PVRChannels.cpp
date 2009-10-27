@@ -696,4 +696,205 @@ cPVRChannelInfoTag *cPVRChannels::GetByUniqueIDFromAll(long UniqueID)
   return NULL;
 }
 
+// --- cPVRChannelGroup -----------------------------------------------------------
 
+cPVRChannelGroup::cPVRChannelGroup(void)
+{
+  m_iGroupID = 0;
+  m_GroupName = "";
+}
+
+// --- cPVRChannelGroups ----------------------------------------------------------
+
+cPVRChannelGroups PVRChannelGroups;
+
+cPVRChannelGroups::cPVRChannelGroups(void)
+{
+}
+
+bool cPVRChannelGroups::Load()
+{
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  database->Open();
+
+  Clear();
+  database->GetGroupList(*this);
+
+  database->Close();
+  return true;
+}
+
+int cPVRChannelGroups::GetGroupList(CFileItemList* results)
+{
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    CFileItemPtr group(new CFileItem(at(i).GroupName()));
+    group->m_strTitle = at(i).GroupName();
+    group->m_strPath.Format("%i", at(i).GroupID());
+    results->Add(group);
+  }
+  return size();
+}
+
+int cPVRChannelGroups::GetFirstChannelForGroupID(int GroupId, bool radio)
+{
+  if (GroupId == -1)
+    return 1;
+
+  cPVRChannels *channels;
+  if (!radio)
+    channels = &PVRChannelsTV;
+  else
+    channels = &PVRChannelsRadio;
+
+  for (unsigned int i = 0; i < channels->size(); i++)
+  {
+    if (channels->at(i).GroupID() == GroupId)
+      return i+1;
+  }
+  return 1;
+}
+
+int cPVRChannelGroups::GetPrevGroupID(int current_group_id)
+{
+  if (size() == 0)
+    return -1;
+
+  if ((current_group_id == -1) || (current_group_id == 0))
+    return at(size()-1).GroupID();
+
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    if (current_group_id == at(i).GroupID())
+    {
+      if (i != 0)
+        return at(i-1).GroupID();
+      else
+        return -1;
+    }
+  }
+  return -1;
+}
+
+int cPVRChannelGroups::GetNextGroupID(int current_group_id)
+{
+  unsigned int i = 0;
+
+  if (size() == 0)
+    return -1;
+
+  if ((current_group_id == 0) || (current_group_id == -1))
+    return at(0).GroupID();
+
+  if (size() == 0)
+    return -1;
+
+  for (; i < size(); i++)
+  {
+    if (current_group_id == at(i).GroupID())
+      break;
+  }
+
+  if (i >= size()-1)
+    return -1;
+  else
+    return at(i+1).GroupID();
+}
+
+void cPVRChannelGroups::AddGroup(const CStdString &name)
+{
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  database->Open();
+
+  Clear();
+  database->AddGroup(name);
+  database->GetGroupList(*this);
+
+  database->Close();
+}
+
+bool cPVRChannelGroups::RenameGroup(unsigned int GroupId, const CStdString &newname)
+{
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  database->Open();
+
+  Clear();
+  database->RenameGroup(GroupId, newname);
+  database->GetGroupList(*this);
+
+  database->Close();
+  return true;
+}
+
+bool cPVRChannelGroups::DeleteGroup(unsigned int GroupId)
+{
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  database->Open();
+
+  /* Delete the group inside Database */
+  database->DeleteGroup(GroupId);
+
+  /* Set all channels with this group to undefined */
+  for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
+  {
+    if (PVRChannelsTV[i].GroupID() == GroupId)
+    {
+      PVRChannelsTV[i].SetGroupID(0);
+      database->UpdateDBChannel(PVRChannelsTV[i]);
+    }
+  }
+  for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
+  {
+    if (PVRChannelsRadio[i].GroupID() == GroupId)
+    {
+      PVRChannelsRadio[i].SetGroupID(0);
+      database->UpdateDBChannel(PVRChannelsRadio[i]);
+    }
+  }
+
+  /* Reload the group list */
+  Clear();
+  database->GetGroupList(*this);
+
+  database->Close();
+  return true;
+}
+
+CStdString cPVRChannelGroups::GetGroupName(int GroupId)
+{
+  if (GroupId != -1)
+  {
+    for (unsigned int i = 0; i < size(); i++)
+    {
+      if (GroupId == at(i).GroupID())
+        return at(i).GroupName();
+    }
+  }
+
+  return g_localizeStrings.Get(593);
+}
+
+bool cPVRChannelGroups::ChannelToGroup(const cPVRChannelInfoTag &channel, unsigned int GroupId)
+{
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  database->Open();
+
+  cPVRChannels *channels;
+  if (!channel.IsRadio())
+    channels = &PVRChannelsTV;
+  else
+    channels = &PVRChannelsRadio;
+
+  channels->at(channel.Number()-1).SetGroupID(GroupId);
+  database->UpdateDBChannel(channels->at(channel.Number()-1));
+
+  database->Close();
+  return true;
+}
+
+void cPVRChannelGroups::Clear()
+{
+  /* Clear all current present Channel groups inside list */
+  erase(begin(), end());
+  return;
+}

@@ -171,15 +171,6 @@ typedef struct
 
 } TVChannelSettings;
 
-typedef struct
-{
-  unsigned long m_ID;
-  CStdString    m_Title;
-
-} TVGroupData;
-
-typedef std::vector<TVGroupData> CHANNELGROUPS_DATA;
-
 class cPVREpg;
 
 class cPVRChannelInfoTag : public CVideoInfoTag
@@ -265,8 +256,6 @@ public:
   void SetNextTitle(CStdString title) { m_strNextTitle = title; }
 };
 
-typedef std::vector<cPVRChannelInfoTag> VECCHANNELS;
-
 class cPVRChannels : public std::vector<cPVRChannelInfoTag>
 {
 private:
@@ -301,5 +290,41 @@ public:
   static cPVRChannelInfoTag *GetByUniqueIDFromAll(long UniqueID);
 };
 
-extern cPVRChannels PVRChannelsTV;
-extern cPVRChannels PVRChannelsRadio;
+class cPVRChannelGroup
+{
+private:
+  unsigned long m_iGroupID;
+  CStdString    m_GroupName;
+
+public:
+  cPVRChannelGroup(void);
+
+  long GroupID(void) const { return m_iGroupID; }
+  void SetGroupID(long group) { m_iGroupID = group; }
+  CStdString GroupName(void) const { return m_GroupName; }
+  void SetGroupName(CStdString name) { m_GroupName = name; }
+};
+
+class cPVRChannelGroups : public std::vector<cPVRChannelGroup>
+{
+public:
+  cPVRChannelGroups(void);
+
+  bool Load();
+
+  int GetGroupList(CFileItemList* results);
+  int GetFirstChannelForGroupID(int GroupId, bool radio = false);
+  int GetPrevGroupID(int current_group_id);
+  int GetNextGroupID(int current_group_id);
+
+  void AddGroup(const CStdString &name);
+  bool RenameGroup(unsigned int GroupId, const CStdString &newname);
+  bool DeleteGroup(unsigned int GroupId);
+  bool ChannelToGroup(const cPVRChannelInfoTag &channel, unsigned int GroupId);
+  CStdString GetGroupName(int GroupId);
+  void Clear();
+};
+
+extern cPVRChannels      PVRChannelsTV;
+extern cPVRChannels      PVRChannelsRadio;
+extern cPVRChannelGroups PVRChannelGroups;
