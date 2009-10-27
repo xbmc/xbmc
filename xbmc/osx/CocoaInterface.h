@@ -69,7 +69,7 @@ extern "C"
   //
   // Files
   //
-  bool Cocoa_ResolveFileAlias(std::string &filepath);
+  bool Cocoa_ResolveFinderAlias(std::string &filepath);
 
   //
   // Version.

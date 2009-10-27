@@ -37,7 +37,6 @@
 #endif
 #ifdef __APPLE__
 #include "CocoaInterface.h"
-//#include "CoreServices/CoreServices.h"
 #endif
 
 using namespace XFILE;
@@ -82,7 +81,7 @@ CStdString CFileHD::GetLocal(const CURL &url)
 
 #ifdef __APPLE__
   std::string realpath = path;
-  if (Cocoa_ResolveFileAlias(realpath))
+  if (Cocoa_ResolveFinderAlias(realpath))
   {
     path = realpath;
   }
