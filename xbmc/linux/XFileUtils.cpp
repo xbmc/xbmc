@@ -138,7 +138,7 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
     return FALSE;
 
   CStdString strFileName = hHandle->m_FindFileResults[hHandle->m_nFindFileIterator++];
-  CStdString strFileNameTest = hHandle->m_FindFileDir + '/' + strFileName;
+  CStdString strFileNameTest = hHandle->m_FindFileDir + strFileName;
 
 #ifdef __APPLE__
   std::string realpath = strFileNameTest;
