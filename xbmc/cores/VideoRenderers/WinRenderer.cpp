@@ -786,6 +786,7 @@ void CWinRenderer::RenderLowMem(DWORD flags)
       }
       videoSurface->UnlockRect();
     }
+    SAFE_RELEASE(videoSurface);
   }
 
   for (int i = 0; i < 3; ++i)
@@ -922,19 +923,13 @@ void CWinRenderer::DeleteYV12Texture(int index)
   if (videoPlanes[0] || videoPlanes[1] || videoPlanes[2])
     CLog::Log(LOGDEBUG, "Deleted YV12 texture (%i)", index);
 
-  if (videoPlanes[0])
-    SAFE_RELEASE(videoPlanes[0]);
-  if (videoPlanes[1])
-    SAFE_RELEASE(videoPlanes[1]);
-  if (videoPlanes[2])
-    SAFE_RELEASE(videoPlanes[2]);
+  SAFE_RELEASE(videoPlanes[0]);
+  SAFE_RELEASE(videoPlanes[1]);
+  SAFE_RELEASE(videoPlanes[2]);
 
-  if (memoryPlanes[0])
-    SAFE_DELETE_ARRAY(memoryPlanes[0]);
-  if (memoryPlanes[1])
-    SAFE_DELETE_ARRAY(memoryPlanes[1]);
-  if (memoryPlanes[2])
-    SAFE_DELETE_ARRAY(memoryPlanes[2]);
+  SAFE_DELETE_ARRAY(memoryPlanes[0]);
+  SAFE_DELETE_ARRAY(memoryPlanes[1]);
+  SAFE_DELETE_ARRAY(memoryPlanes[2]);
 
   m_NumYV12Buffers = 0;
 }
