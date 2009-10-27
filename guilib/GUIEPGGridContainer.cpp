@@ -570,7 +570,7 @@ void CGUIEPGGridContainer::UpdateRuler()
   for (; marker < m_gridEnd; marker += unit)
   {
     CGUIListItemLayout *pRulerLayout = new CGUIListItemLayout(*m_rulerLayout);
-    CGUIListItemPtr markerItem(new CGUIListItem(marker.GetAsLocalizedTime("", false)));
+    CGUIListItemPtr markerItem(new CFileItem(marker.GetAsLocalizedTime("", false)));
     pRulerLayout->SetWidth(m_rulerWidth);
     markerItem->SetLayout(pRulerLayout);
     m_rulerItems.push_back(markerItem);
@@ -579,7 +579,6 @@ void CGUIEPGGridContainer::UpdateRuler()
 
 void CGUIEPGGridContainer::UpdateChannels()
 {
-
   if (!m_channelItems.empty())
   {
     m_channelItems.clear();
@@ -599,7 +598,7 @@ void CGUIEPGGridContainer::UpdateChannels()
       pChannelLayout->SetWidth(m_channelWidth);
       pChannelFocusedLayout->SetWidth(m_channelWidth);
 
-      CGUIListItemPtr item(new CGUIListItem(m_items[i]->GetTVEPGInfoTag()->m_strChannel));
+      CGUIListItemPtr item(new CFileItem(m_items[i]->GetTVEPGInfoTag()->m_strChannel));
       item->SetLabel2(m_items[i]->GetTVEPGInfoTag()->m_strChannel);
       item->SetThumbnailImage(m_items[i]->GetTVEPGInfoTag()->m_IconPath);
       item->SetLayout(pChannelLayout);
