@@ -250,6 +250,7 @@ void CGUISettings::Initialize()
   AddPath(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(3,"musiclibrary",14022);
+  AddBool(0, "musiclibrary.enabled", 418, true);
   AddBool(2, "musiclibrary.albumartistsonly", 13414, false);
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.downloadinfo", 20192, false);
@@ -410,6 +411,7 @@ void CGUISettings::Initialize()
 
   AddCategory(5, "videolibrary", 14022);
 
+  AddBool(0, "videolibrary.enabled", 418, true);
   AddBool(3, "videolibrary.hideplots", 20369, false);
   AddInt(0, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddSeparator(7, "videolibrary.sep2");
