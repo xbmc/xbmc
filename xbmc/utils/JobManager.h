@@ -149,9 +149,10 @@ protected:
    \brief Callback from CJobWorker after a job has completed.
    Calls IJobCallback::OnJobComplete(), and then destroys job.
    \param job a pointer to the calling subclassed CJob instance.
+   \param success the result from the DoWork call
    \sa IJobCallback, CJob
    */
-  void  OnJobComplete(CJob *job);
+  void  OnJobComplete(bool success, CJob *job);
 
   /*!
    \brief Callback from CJob to report progress and check for cancellation.

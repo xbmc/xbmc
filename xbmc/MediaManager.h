@@ -84,7 +84,7 @@ public:
   virtual void OnStorageSafelyRemoved(const CStdString &label);
   virtual void OnStorageUnsafelyRemoved(const CStdString &label);
 
-  virtual void OnJobComplete(unsigned int jobID, CJob *job) { }
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job) { }
 protected:
   std::vector<CNetworkLocation> m_locations;
 

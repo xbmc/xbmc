@@ -48,7 +48,7 @@ CImageLoader::~CImageLoader()
   delete(m_texture);
 }
 
-void CImageLoader::DoWork()
+bool CImageLoader::DoWork()
 {
   CFileItem file(m_path, false);
   if (file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) // ignore non-pictures
@@ -76,6 +76,8 @@ void CImageLoader::DoWork()
       m_texture = NULL;
     }
   }
+
+  return true;
 }
 
 CGUILargeTextureManager::CLargeTexture::CLargeTexture(const CStdString &path)
@@ -222,7 +224,7 @@ void CGUILargeTextureManager::QueueImage(const CStdString &path)
   m_queued.push_back(make_pair(jobID, image));
 }
 
-void CGUILargeTextureManager::OnJobComplete(unsigned int jobID, CJob *job)
+void CGUILargeTextureManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   // see if we still have this job id
   CSingleLock lock(m_listSection);

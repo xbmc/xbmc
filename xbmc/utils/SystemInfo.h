@@ -87,7 +87,7 @@ class CSysInfo : public CInfoLoader
     void Reset();
 
 protected:
-  virtual void DoWork();
+  virtual bool DoWork();
   virtual CStdString TranslateInfo(int info) const;
 };
 

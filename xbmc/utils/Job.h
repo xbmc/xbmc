@@ -51,10 +51,11 @@ public:
    the CJobManager will destroy this job.
    
    \param jobID the unique id of the job (as retrieved from CJobManager::AddJob)
+   \param success the result from the DoWork call
    \param job the job that has been processed.  The job will be destroyed after this function returns
    \sa CJobManager and CJob
    */
-  virtual void OnJobComplete(unsigned int jobID, CJob *job)=0;
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job)=0;
 
   /*!
    \brief An optional callback function that a job may call while processing.
@@ -125,7 +126,7 @@ public:
    
    \sa CJobManager, IJobCallback::OnJobComplete()
    */
-  virtual void DoWork() = 0;  // function to do the work
+  virtual bool DoWork() = 0;  // function to do the work
 
   /*!
    \brief Function that returns the type of job.

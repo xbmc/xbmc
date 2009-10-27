@@ -28,7 +28,7 @@ class CAutorunMediaJob : public CJob
 public:
   CAutorunMediaJob(const CStdString &label, const CStdString &path);
 
-  virtual void DoWork();
+  virtual bool DoWork();
 private:
   const char *GetWindowString(int selection);
 

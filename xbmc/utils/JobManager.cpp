@@ -55,8 +55,8 @@ void CJobWorker::Process()
       break;
     
     // we have a job to do
-    job->DoWork();
-    m_jobManager->OnJobComplete(job);
+    bool success = job->DoWork();
+    m_jobManager->OnJobComplete(success, job);
   }
 }
 
@@ -219,7 +219,7 @@ bool CJobManager::OnJobProgress(unsigned int progress, unsigned int total, const
   return true; // couldn't find the job, or it's been cancelled
 }
 
-void CJobManager::OnJobComplete(CJob *job)
+void CJobManager::OnJobComplete(bool success, CJob *job)
 {
   CSingleLock lock(m_section);
   // remove the job from the processing queue
@@ -231,7 +231,7 @@ void CJobManager::OnJobComplete(CJob *job)
     m_processing.erase(i);
     lock.Leave();
     if (item.m_callback)
-      item.m_callback->OnJobComplete(item.m_id, item.m_job);
+      item.m_callback->OnJobComplete(item.m_id, success, item.m_job);
     item.FreeJob();
   }
 }
