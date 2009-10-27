@@ -920,8 +920,10 @@ else
 fi
 if test "$use_nonfree" = "yes"; then
   final_message="$final_message\n  Non-free:\tYes"
-  AC_DEFINE([HAVE_XBMC_NONFREE], [], [Define to 1 to enable non-free components.])
+  HAVE_XBMC_NONFREE=1
+  AC_DEFINE([HAVE_XBMC_NONFREE], [1], [Define to 1 to enable non-free components.])
 else
+  HAVE_XBMC_NONFREE=0
   final_message="$final_message\n  Non-free:\tNo"
 fi
 
@@ -1045,6 +1047,7 @@ AC_SUBST(USE_PYTHON2_6)
 AC_SUBST(USE_PYTHON2_5)
 AC_SUBST(USE_PYTHON2_4)
 AC_SUBST(OUTPUT_FILES)
+AC_SUBST(HAVE_XBMC_NONFREE)
 # Function to run the configure scripts in our submodules
 # Consists of three paramaters, the path to the submodule, the configure command
 # with appropriate arguments, and a third parameter set to 1 if we are to skip
