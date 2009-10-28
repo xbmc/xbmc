@@ -611,8 +611,6 @@ HRESULT CApplication::Create(HWND hWnd)
   g_Joystick.Initialize(hWnd);
 #endif
 
-  g_mediaManager.Initialize();
-
   CLog::Log(LOGINFO, "Drives are mapped");
 
   CLog::Log(LOGNOTICE, "load settings...");
@@ -717,6 +715,8 @@ HRESULT CApplication::Create(HWND hWnd)
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
   CUtil::InitRandomSeed();
+
+  g_mediaManager.Initialize();
 
 #ifdef _WIN32
   CWIN32Util::AddRemovableDrives();
