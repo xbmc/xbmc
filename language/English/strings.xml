@@ -2079,7 +2079,7 @@
   <string id="22000">Update library on startup</string>
   <string id="22001">Always update library in background</string>
   <string id="22002">- DNS suffix</string>
-  <string id="22003">Enable edit and decision lists</string>
+  <string id="22003"></string>
   <string id="22004">Delayed by: %2.3fs</string>
   <string id="22005">Ahead by: %2.3fs</string>
   <string id="22006">Subtitle offset</string>

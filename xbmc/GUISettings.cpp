@@ -453,7 +453,6 @@ void CGUISettings::Initialize()
   AddSeparator(13, "videoplayer.sep3");
   AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(16, "videoplayer.dvdautomenu", 21882, false);
-  AddBool(17, "videoplayer.editdecision", 22003, false);
 
   AddSeparator(18, "videoplayer.sep4");
   AddBool(19, "videoplayer.usedisplayasclock", 13510, false);
