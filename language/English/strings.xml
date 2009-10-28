@@ -900,7 +900,7 @@
   <string id="12021">Start from beginning</string>
   <string id="12022">Resume from %s</string>
   <string id="12023">Validating existing trainers...</string>
-  <string id="12024">Automatically generate thumbs for videos with no cover art</string>
+  <string id="12024"></string>
   
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -1886,7 +1886,7 @@
   <string id="20430">Export thumbs and fanart?</string>
   <string id="20431">Overwrite old files?</string>
   <string id="20432">Exclude path from library updates</string>
-  <string id="20433">Extract media metadata information</string>
+  <string id="20433">Extract thumbs and flags</string>
   <string id="20434">Sets</string>
   <string id="20435">Set movieset thumb</string>
   <!-- up to 21329 is reserved for the video db !! !-->
