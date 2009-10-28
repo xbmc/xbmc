@@ -1456,26 +1456,18 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
     CBuiltins::Execute("RunScript("RSSEDITOR_PATH")");
-  else if (strSetting.Equals("musiclibrary.scrapersettings") || strSetting.Equals("musiclibrary.defaultscraper"))
+  else if (strSetting.Equals("musiclibrary.scrapersettings"))
   {
     CMusicDatabase database;
     database.Open();
     SScraperInfo info;
     database.GetScraperForPath("musicdb://",info);
-    if (!info.strPath.Equals(g_guiSettings.GetString("musiclibrary.defaultscraper")))
-    {
-      CScraperParser parser;
-      parser.Load("special://xbmc/system/scrapers/music/"+g_guiSettings.GetString("musiclibrary.defaultscraper"));
-      info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
-      info.strContent = "albums";
-      info.strTitle = parser.GetName();
-    }
-    if (info.settings.GetPluginRoot() || info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/"+info.strPath))
-    {
-      if (strSetting.Equals("musiclibrary.scrapersettings"))
+
+    if (info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + info.strPath))
         CGUIDialogPluginSettings::ShowAndGetInput(info);
-    }
+
     database.SetScraperForPath("musicdb://",info);
+    database.Close();
   }
 
   // if OnClick() returns false, the setting hasn't changed or doesn't
@@ -3567,7 +3559,20 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
       if (parser.GetName().Equals(strSelected) || CUtil::GetFileName(items[i]->m_strPath).Equals(strSelected))
       {
         if (strContent.Equals("music")) // native strContent would be albums or artists but we're using the same scraper for both
+        {
           g_guiSettings.SetString("musiclibrary.defaultscraper", CUtil::GetFileName(items[i]->m_strPath));
+
+          SScraperInfo info;
+          CMusicDatabase database;
+
+          info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
+          info.strContent = "albums";
+          info.strTitle = parser.GetName();
+
+          database.Open();
+          database.SetScraperForPath("musicdb://",info);
+          database.Close();
+        }
         else if (strContent.Equals("movies"))
           g_guiSettings.SetString("scrapers.moviedefault", CUtil::GetFileName(items[i]->m_strPath));
         else if (strContent.Equals("tvshows"))
