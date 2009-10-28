@@ -126,6 +126,8 @@ using namespace DIRECTORY;
 
 #define PREDEFINED_SCREENSAVERS          5
 
+#define RSSEDITOR_PATH "special://home/scripts/RSS Editor/default.py"
+
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
     : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml")
 {
@@ -1333,7 +1335,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("lookandfeel.rssedit"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(XFILE::CFile::Exists("special://home/scripts/RssTicker/default.py"));
+      pControl->SetEnabled(XFILE::CFile::Exists(RSSEDITOR_PATH));
     }
     else if (strSetting.Equals("musiclibrary.scrapersettings"))
     {
@@ -1453,7 +1455,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_weatherManager.Refresh();
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
-    CBuiltins::Execute("RunScript(special://home/scripts/RssTicker/default.py)");
+    CBuiltins::Execute("RunScript("RSSEDITOR_PATH")");
   else if (strSetting.Equals("musiclibrary.scrapersettings") || strSetting.Equals("musiclibrary.defaultscraper"))
   {
     CMusicDatabase database;
