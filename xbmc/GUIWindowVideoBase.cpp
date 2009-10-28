@@ -998,8 +998,6 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
 
 void CGUIWindowVideoBase::OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId)
 {
-  m_bStreamDetailsChanged = true;
-
   CVideoDatabase db;
   if (db.Open())
   {
