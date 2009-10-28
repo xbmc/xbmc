@@ -414,6 +414,15 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
     case XBMC_USEREVENT:
       g_application.getApplicationMessenger().UserEvent(newEvent.user.code);
       break;
+    case XBMC_APPCOMMAND:
+      {
+        // Special media keys are mapped to WM_APPCOMMAND on Windows (and to DBUS events on Linux?)
+        // XBMC translates WM_APPCOMMAND to XBMC_APPCOMMAND events.
+        CAction action;
+        action.id = newEvent.appcommand.action;
+        g_application.OnAction(action);
+      }
+      break;
   }
   return true;
 }
