@@ -213,7 +213,7 @@ void CGUISettings::Initialize()
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  AddInt(2, "slideshow.transistiontime", 225, 2500, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddInt(2, "slideshow.transistiontime", 225, 3, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddBool(3, "slideshow.displayeffects", 12379, true);
   AddBool(0, "slideshow.shuffle", 13319, false);
 
