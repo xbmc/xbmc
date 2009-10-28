@@ -2694,6 +2694,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\AliasShortcutUtils.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AliasShortcutUtils.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\ApplicationMessenger.cpp"
 					>
 				</File>
