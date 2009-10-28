@@ -4086,6 +4086,7 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       info.strTitle = parser.GetName();
       info.strDate = parser.GetDate();
       info.strFramework = parser.GetFramework();
+      info.strLanguage = parser.GetLanguage();
 
     }
     if (info.strPath.IsEmpty() && !strPath.Equals("musicdb://")) // default fallback
