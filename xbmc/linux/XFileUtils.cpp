@@ -34,7 +34,6 @@
 #else
 #include <sys/param.h>
 #include <sys/mount.h>
-#include "CocoaInterface.h"
 #endif
 #include <dirent.h>
 #include <errno.h>
@@ -43,6 +42,7 @@
 
 #include "../utils/log.h"
 #include "utils/RegExp.h"
+#include "utils/AliasShortcutUtils.h"
 
 HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
 {
@@ -51,13 +51,8 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
 
   CStdString strPath(szPath);
 
-#ifdef __APPLE__
-  std::string realpath = strPath;
-  if (Cocoa_ResolveFinderAlias(realpath))
-  {
-    strPath = realpath;
-  }
-#endif
+  if (IsAliasShortcut(strPath))
+    TranslateAliasShortcut(strPath);
 
   if (strPath.empty())
     return INVALID_HANDLE_VALUE;
@@ -66,7 +61,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
 
   // if the file name is a directory then we add a * to look for all files in this directory
 #ifdef __APPLE__
-  DIR *testDir = opendir(realpath.c_str());
+  DIR *testDir = opendir(strPath.c_str());
 #else
   DIR *testDir = opendir(szPath);
 #endif
@@ -140,13 +135,9 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
   CStdString strFileName = hHandle->m_FindFileResults[hHandle->m_nFindFileIterator++];
   CStdString strFileNameTest = hHandle->m_FindFileDir + strFileName;
 
-#ifdef __APPLE__
-  std::string realpath = strFileNameTest;
-  if (Cocoa_ResolveFinderAlias(realpath))
-  {
-    strFileNameTest = realpath;
-  }
-#endif
+  if (IsAliasShortcut(strFileNameTest))
+    TranslateAliasShortcut(strFileNameTest);
+
   struct stat64 fileStat;
   stat64(strFileNameTest, &fileStat);
 

@@ -23,6 +23,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "GUISettings.h"
+#include "utils/AliasShortcutUtils.h"
 #ifdef _LINUX
 #include "XHandle.h"
 #endif
@@ -35,9 +36,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #endif
-#ifdef __APPLE__
-#include "CocoaInterface.h"
-#endif
+
 
 using namespace XFILE;
 
@@ -79,13 +78,8 @@ CStdString CFileHD::GetLocal(const CURL &url)
   path.Replace('/', '\\');
 #endif
 
-#ifdef __APPLE__
-  std::string realpath = path;
-  if (Cocoa_ResolveFinderAlias(realpath))
-  {
-    path = realpath;
-  }
-#endif
+  if (IsAliasShortcut(path))
+    TranslateAliasShortcut(path);
 
   return path;
 }

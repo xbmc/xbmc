@@ -59,7 +59,8 @@ SRCS=AlarmClock.cpp \
      JobManager.cpp \
      Teletext.cpp \
      fastmemcpy.cpp \
-     PasswordManager.cpp
+     PasswordManager.cpp \
+     AliasShortcutUtils.cpp
 
 LIB=utils.a
 

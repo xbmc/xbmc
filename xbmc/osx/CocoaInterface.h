@@ -67,11 +67,6 @@ extern "C"
   void Cocoa_GetSmartFolderResults(const char* strFile, void (*)(void* userData, void* userData2, const char* path), void* userData, void* userData2);
 
   //
-  // Files
-  //
-  bool Cocoa_ResolveFinderAlias(std::string &filepath);
-
-  //
   // Version.
   //
   const char* Cocoa_GetAppVersion();
