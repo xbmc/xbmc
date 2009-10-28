@@ -101,9 +101,6 @@ CWeather g_weatherManager;
 
 bool CWeather::DoWork()
 {
-  if (!g_guiSettings.GetBool("network.enableinternet"))
-    return false;
-
   // wait for the network
   if (!g_application.getNetwork().IsAvailable(true))
     return false;

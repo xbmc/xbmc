@@ -289,17 +289,8 @@ void CGUIWindowVideoBase::UpdateButtons()
   int nWindow = g_stSettings.m_iVideoStartWindow-WINDOW_VIDEO_FILES;
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
-  // disable scan and manual imdb controls if internet lookups are disabled
-  if (g_guiSettings.GetBool("network.enableinternet"))
-  {
-    CONTROL_ENABLE(CONTROL_BTNSCAN);
-    CONTROL_ENABLE(CONTROL_IMDB);
-  }
-  else
-  {
-    CONTROL_DISABLE(CONTROL_BTNSCAN);
-    CONTROL_DISABLE(CONTROL_IMDB);
-  }
+  CONTROL_ENABLE(CONTROL_BTNSCAN);
+  CONTROL_ENABLE(CONTROL_IMDB);
 
   CGUIMediaWindow::UpdateButtons();
 }
@@ -462,7 +453,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   }
 
   // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("network.enableinternet")) return false;
   if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
     return false;
 

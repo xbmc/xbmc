@@ -521,7 +521,6 @@ void CGUISettings::Initialize()
   AddString(17, "network.httpproxypassword", 710, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);
 
   AddSeparator(18, "network.sep2");
-  AddBool(19, "network.enableinternet", 14054, true);
 
   // zeroconf publishing
 #ifdef HAS_ZEROCONF

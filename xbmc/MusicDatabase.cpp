@@ -2254,7 +2254,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
     return false;
 
   // check network connectivity
-  if (!g_guiSettings.GetBool("network.enableinternet") || !g_application.getNetwork().IsAvailable())
+  if (!g_application.getNetwork().IsAvailable())
     return false;
 
   // Get information for the inserted disc
