@@ -466,7 +466,7 @@ HRESULT CApplication::Create(HWND hWnd)
 
   m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
   g_Windowing.EnableSystemScreenSaver(false);
-  
+
 #ifdef _LINUX
   tzset();   // Initialize timezone information variables
 #endif
@@ -555,7 +555,7 @@ HRESULT CApplication::Create(HWND hWnd)
   atexit(SDL_Quit);
 
   uint32_t sdlFlags = 0;
-  
+
 #ifdef HAS_SDL_OPENGL
   sdlFlags |= SDL_INIT_VIDEO;
 #endif
@@ -629,7 +629,7 @@ HRESULT CApplication::Create(HWND hWnd)
   // Configure and possible manually start the helper.
   g_xbmcHelper.Configure();
 #endif
-  
+
   // update the window resolution
   g_Windowing.SetWindowResolution(g_guiSettings.GetInt("window.width"), g_guiSettings.GetInt("window.height"));
 
@@ -649,9 +649,9 @@ HRESULT CApplication::Create(HWND hWnd)
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return E_FAIL;
   }
-  
+
   if (!g_Windowing.InitRenderSystem())
-  {    
+  {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to init rendering system");
     return E_FAIL;
   }
@@ -808,7 +808,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
-    
+
     // copy system-wide plugins into userprofile
     if ( bCopySystemPlugins )
        CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
@@ -1133,7 +1133,7 @@ HRESULT CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   g_windowManager.Add(new CGUIWindowSettings);                 // window id = 4
   g_windowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
-#ifdef HAS_GL  
+#ifdef HAS_GL
   g_windowManager.Add(new CGUIWindowTestPatternGL);      // window id = 8
 #endif
 #ifdef HAS_DX
@@ -1456,17 +1456,17 @@ bool CApplication::StopEventServer(bool bWait, bool promptuser)
       }
     }
     CLog::Log(LOGNOTICE, "ES: Stopping event server with confirmation");
-    
+
     CEventServer::GetInstance()->StopServer(true);
   }
   else
   {
     if (!bWait)
       CLog::Log(LOGNOTICE, "ES: Stopping event server");
-    
+
     CEventServer::GetInstance()->StopServer(bWait);
   }
-  
+
   return true;
 #endif
 }
@@ -1971,7 +1971,7 @@ void CApplication::RenderNoPresent()
 //          while not updating the UI setting?
 //  int vsync_mode = g_videoConfig.GetVSyncMode();
   int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
-  
+
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
@@ -2120,7 +2120,7 @@ bool CApplication::WaitFrame(unsigned int timeout)
       break;
     if(result < 0)
       CLog::Log(LOGWARNING, "CApplication::WaitFrame - error from conditional wait");
-  }  
+  }
   done = m_frameCount == 0;
   SDL_mutexV(m_frameMutex);
 #endif
@@ -2226,7 +2226,7 @@ void CApplication::Render()
   g_infoManager.UpdateFPS();
   g_renderManager.UpdateResolution();
   g_graphicsContext.Unlock();
-  
+
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
   if(m_frameCount > 0)
@@ -2797,12 +2797,12 @@ void CApplication::FrameMove()
   g_graphicsContext.Unlock();
 
   UpdateLCD();
-  
+
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   // Read the input from a remote
   g_RemoteControl.Update();
 #endif
-  
+
   // process input actions
   CWinEvents::MessagePump();
   ProcessHTTPApiButtons();
@@ -4196,7 +4196,7 @@ void CApplication::DoRenderFullScreen()
     // Render the mouse pointer, if visible...
     if (g_Mouse.IsActive())
       g_application.m_guiPointer.Render();
-    
+
     g_TextureManager.FreeUnusedTextures();
   }
 }
@@ -4476,7 +4476,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
           CLibrefmScrobbler::GetInstance()->AddSong(*tag, CLastFmManager::GetInstance()->IsRadioEnabled());
         }
       }
-      
+
       return true;
     }
     break;
@@ -4570,7 +4570,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         WakeUpScreenSaverAndDPMS();
         g_windowManager.PreviousWindow();
       }
-      
+
       return true;
     }
     break;
@@ -4593,7 +4593,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
     else
     {
       CGUIActionDescriptor action = message.GetAction();
-      action.m_sourceWindowId = message.GetControlId(); // set source window id, 
+      action.m_sourceWindowId = message.GetControlId(); // set source window id,
       return ExecuteAction(action);
     }
 
@@ -4714,7 +4714,7 @@ void CApplication::ProcessSlow()
 {
   // run resume jobs if we are coming from suspend/hibernate
   if (m_bRunResumeJobs)
-    g_powerManager.Resume(); 
+    g_powerManager.Resume();
 
   // Store our file state for use on close()
   UpdateFileState();
@@ -4777,11 +4777,11 @@ void CApplication::ProcessSlow()
 
   g_largeTextureManager.CleanupUnusedImages();
 
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
   m_Autorun.HandleAutorun();
 #endif
-  
+
   // update upnp server/renderer states
   if(CUPnP::IsInstantiated())
     CUPnP::GetInstance()->UpdateState();
@@ -4801,8 +4801,8 @@ void CApplication::ProcessSlow()
 #endif
 
 #ifdef HAS_LCD
-  // attempt to reinitialize the LCD (e.g. after resuming from sleep) 
-  if (g_lcd && !g_lcd->IsConnected()) 
+  // attempt to reinitialize the LCD (e.g. after resuming from sleep)
+  if (g_lcd && !g_lcd->IsConnected())
   {
     g_lcd->Stop();
     g_lcd->Initialize();
@@ -5206,7 +5206,7 @@ void CApplication::UpdateLibraries()
     if (scanner && !scanner->IsScanning())
       scanner->StartScanning("",info,settings,false);
   }
- 
+
   if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))
   {
     CLog::Log(LOGNOTICE, "%s - Starting music library startup scan", __FUNCTION__);
