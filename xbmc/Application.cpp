@@ -718,10 +718,6 @@ HRESULT CApplication::Create(HWND hWnd)
 
   g_mediaManager.Initialize();
 
-#ifdef _WIN32
-  CWIN32Util::AddRemovableDrives();
-#endif
-
   return Initialize();
 }
 
