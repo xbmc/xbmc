@@ -140,6 +140,11 @@ public:
    */
   virtual const char *GetType() const { return ""; };
 
+  virtual bool operator==(const CJob* job) const
+  {
+    return false;
+  }
+
   /*!
    \brief Function for longer jobs to report progress and check whether they have been cancelled.
    

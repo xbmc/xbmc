@@ -115,9 +115,15 @@ unsigned int CJobManager::AddJob(CJob *job, IJobCallback *callback, CJob::PRIORI
   return work.m_id;
 }
 
-unsigned int CJobManager::AddLIFOJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority)
+unsigned int CJobManager::AddLIFOJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority, bool checkdupe)
 {
   CSingleLock lock(m_section);
+
+  if (checkdupe && HasJob(job))
+  {
+    delete job;
+    return -1;
+  }
 
   // check if we have a similar job, and if so, swap the first such job with this one
   CWorkItem work(job, m_jobCounter++, callback);
@@ -178,7 +184,7 @@ CJob *CJobManager::GetNextJob(const CJobWorker *worker)
     // grab a job off the queue if we have one
     for (int priority = CJob::PRIORITY_HIGH; priority >= CJob::PRIORITY_LOW; --priority)
     {
-      if (m_jobQueue[priority].size())
+      if (m_jobQueue[priority].size() && m_processing.size() < GetMaxWorkers(CJob::PRIORITY(priority)))
       {
         CWorkItem job = m_jobQueue[priority].front();
         m_jobQueue[priority].pop_front();
@@ -236,6 +242,31 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
   }
 }
 
+template<class T>
+bool IsIn(const T& v, const CJob* job)
+{
+  for (typename T::const_iterator i = v.begin(); i != v.end(); ++i)
+  {
+    if (*job == i->m_job)
+      return true;
+  }
+  return false; 
+}
+
+bool CJobManager::HasJob(const CJob *job) const
+{
+  CSingleLock lock(m_section);
+  for (int priority = CJob::PRIORITY_HIGH; priority >= CJob::PRIORITY_LOW; --priority)
+  {
+    if (IsIn(m_jobQueue[priority],job))
+      return true;
+  }
+  if (IsIn(m_processing,job))
+    return true;
+
+  return false;
+}
+
 void CJobManager::RemoveWorker(const CJobWorker *worker)
 {
   CSingleLock lock(m_section);
@@ -248,5 +279,5 @@ void CJobManager::RemoveWorker(const CJobWorker *worker)
 unsigned int CJobManager::GetMaxWorkers(CJob::PRIORITY priority) const
 {
   static const unsigned int max_workers = 5;
-  return max_workers - (CJob::PRIORITY_HIGH - priority);
+  return max_workers - 2*(CJob::PRIORITY_HIGH - priority);
 }

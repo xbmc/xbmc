@@ -115,10 +115,18 @@ public:
    \param job a pointer to the job to add. The job should be subclassed from CJob
    \param callback a pointer to an IJobCallback instance to receive job progress and completion notices.
    \param priority the priority that this job should run at.
+   \ param checkdupe if true we check for a duplicate job, and if one is found we do not add another one.
    \return a unique identifier for this job, to be used with other interaction
    \sa CJob, IJobInterface, CancelJob(), AddJob()
    */
-  unsigned int AddLIFOJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority = CJob::PRIORITY_LOW);
+  unsigned int AddLIFOJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority = CJob::PRIORITY_LOW, bool checkdupe=false);
+
+  /*!
+   \brief Check if a job is already running.
+   \param job The job to check for
+   \sa HasJob()
+   */
+  bool HasJob(const CJob* job) const;
 
   /*!
    \brief Cancel a job with the given id.
