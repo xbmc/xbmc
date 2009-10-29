@@ -33,7 +33,6 @@
 #include "VideoInfoTag.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
-#include "AdvancedSettings.h"
 
 #include "cores/dvdplayer/DVDFileInfo.h"
 
