@@ -119,7 +119,7 @@ bool CThumbExtractor::DoWork()
 }
 
 CVideoThumbLoader::CVideoThumbLoader() :
-  CThumbLoader(), m_pStreamDetailsObs(NULL)
+  CThumbLoader(1), CJobQueue(true), m_pStreamDetailsObs(NULL)
 {
 }
 
@@ -177,7 +177,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
           path = CStackDirectory::GetFirstStackedFile(item.m_strPath);
 
         CThumbExtractor* extract = new CThumbExtractor(item,pItem->m_strPath,true,item.m_strPath,cachedThumb);
-        CJobManager::GetInstance().AddLIFOJob(extract, this, CJob::PRIORITY_LOW, true);
+        AddJob(extract);
       }
     }
     if (CFile::Exists(cachedThumb))
@@ -199,7 +199,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
        !pItem->GetVideoInfoTag()->HasStreamDetails())
   {
     CThumbExtractor* extract = new CThumbExtractor(*pItem,pItem->m_strPath,false);
-    CJobManager::GetInstance().AddLIFOJob(extract, this, CJob::PRIORITY_LOW, true);
+    AddJob(extract);
   }
   return true;
 }
@@ -214,6 +214,7 @@ void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* jo
   CFileItemPtr pItem(new CFileItem(loader->m_item));
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
   g_windowManager.SendThreadMessage(msg);
+  CJobQueue::OnJobComplete(jobID, success, job);
 }
 
 CProgramThumbLoader::CProgramThumbLoader()

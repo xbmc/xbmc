@@ -70,7 +70,7 @@ public:
   bool LoadRemoteThumb(CFileItem *pItem);
 };
 
-class CVideoThumbLoader : public CThumbLoader, public IJobCallback
+class CVideoThumbLoader : public CThumbLoader, public CJobQueue
 {
 public:
   CVideoThumbLoader();
