@@ -42,6 +42,97 @@ private:
 
 /*!
  \ingroup jobs
+ \brief Job Queue class to handle a queue of unique jobs to be processed sequentially
+ 
+ Holds a queue of jobs to be processed sequentially, either first in,first out
+ or last in, first out.  Jobs are unique, so queueing multiple copies of the same job
+ (based on the CJob::operator==) will not add additional jobs.
+
+ Classes should subclass this class and override OnJobCallback should they require
+ information from the job.
+
+ \sa CJob and IJobCallback
+ */
+class CJobQueue: public IJobCallback
+{
+  class CJobPointer
+  {
+  public:
+    CJobPointer(CJob *job)
+    {
+      m_job = job;
+    };
+    void CancelJob();
+    void FreeJob()
+    {
+      delete m_job;
+      m_job = NULL;
+    };
+    bool operator==(const CJob *job) const
+    {
+      if (m_job)
+        return *m_job == job;
+      return false;
+    };
+    CJob *m_job;
+    unsigned int m_id;
+  };
+public:
+  /*!
+   \brief CJobQueue constructor
+   \param lifo whether the queue should be processed last in first out or first in first out.  Defaults to false (first in first out)
+   \param jobsAtOnce number of jobs at once to process.  Defaults to 1.
+   \param priority priority of this queue.
+   \sa CJob
+   */
+  CJobQueue(bool lifo = false, unsigned int jobsAtOnce = 1, CJob::PRIORITY priority = CJob::PRIORITY_LOW);
+
+  /*!
+   \brief CJobQueue destructor
+   Cancels any in-process jobs, and destroys the job queue.
+   \sa CJob
+   */
+  virtual ~CJobQueue();
+
+  /*!
+   \brief Add a job to the queue
+   On completion of the job (or destruction of the job queue) the CJob object will be destroyed.
+   \param job a pointer to the job to add. The job should be subclassed from CJob.
+   \sa CJob
+   */
+  void AddJob(CJob *job);
+
+  /*!
+   \brief The callback used when a job completes.
+   
+   OnJobComplete is called at the completion of the CJob::DoWork function, and is used
+   to return information to the caller on the result of the job.  On returning from this function
+   the CJobManager will destroy this job.
+
+   Subclasses should override this function if they wish to transfer information from the job prior
+   to it's deletion.  They must then call this base class function, which will move on to the next
+   job.
+   
+   \sa CJobManager, IJobCallback and  CJob
+   */
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+
+private:
+  void QueueNextJob();
+
+  typedef std::deque<CJobPointer> Queue;
+  typedef std::vector<CJobPointer> Processing;
+  Queue m_jobQueue;
+  Processing m_processing;
+
+  unsigned int m_jobsAtOnce;
+  CJob::PRIORITY m_priority;
+  CCriticalSection m_section;
+  bool m_lifo;
+};
+
+/*!
+ \ingroup jobs
  \brief Job Manager class for scheduling asynchronous jobs.
  
  Controls asynchronous job execution, by allowing clients to add and cancel jobs.
@@ -101,7 +192,7 @@ public:
    \param callback a pointer to an IJobCallback instance to receive job progress and completion notices.
    \param priority the priority that this job should run at.
    \return a unique identifier for this job, to be used with other interaction
-   \sa CJob, IJobInterface, CancelJob(), AddLIFOJob()
+   \sa CJob, IJobCallback, CancelJob(), AddLIFOJob()
    */
   unsigned int AddJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority = CJob::PRIORITY_LOW);
 
@@ -117,7 +208,7 @@ public:
    \param priority the priority that this job should run at.
    \ param checkdupe if true we check for a duplicate job, and if one is found we do not add another one.
    \return a unique identifier for this job, to be used with other interaction
-   \sa CJob, IJobInterface, CancelJob(), AddJob()
+   \sa CJob, IJobCallback, CancelJob(), AddJob()
    */
   unsigned int AddLIFOJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority = CJob::PRIORITY_LOW, bool checkdupe=false);
 

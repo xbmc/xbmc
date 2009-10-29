@@ -60,6 +60,64 @@ void CJobWorker::Process()
   }
 }
 
+void CJobQueue::CJobPointer::CancelJob()
+{
+  CJobManager::GetInstance().CancelJob(m_id);
+  m_id = 0;
+}
+
+CJobQueue::CJobQueue(bool lifo, unsigned int jobsAtOnce, CJob::PRIORITY priority)
+: m_lifo(lifo), m_jobsAtOnce(jobsAtOnce), m_priority(priority)
+{
+}
+
+CJobQueue::~CJobQueue()
+{
+  CSingleLock lock(m_section);
+  // cancel all jobs
+  for_each(m_processing.begin(), m_processing.end(), mem_fun_ref(&CJobPointer::CancelJob));
+  for_each(m_jobQueue.begin(), m_jobQueue.end(), mem_fun_ref(&CJobPointer::FreeJob));
+  m_jobQueue.clear();
+}
+
+void CJobQueue::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+{
+  CSingleLock lock(m_section);
+  // check if this job is in our processing list
+  Processing::iterator i = find(m_processing.begin(), m_processing.end(), job);
+  if (i != m_processing.end())
+    m_processing.erase(i);
+  // request a new job be queued
+  QueueNextJob();
+}
+
+void CJobQueue::AddJob(CJob *job)
+{
+  CSingleLock lock(m_section);
+  // check if we have this job already.  If so, we're done.
+  if (find(m_jobQueue.begin(), m_jobQueue.end(), job) != m_jobQueue.end() ||
+      find(m_processing.begin(), m_processing.end(), job) != m_processing.end())
+    return;
+
+  if (m_lifo)
+    m_jobQueue.push_back(CJobPointer(job));
+  else
+    m_jobQueue.push_front(CJobPointer(job));
+  QueueNextJob();
+}
+
+void CJobQueue::QueueNextJob()
+{
+  CSingleLock lock(m_section);
+  if (m_jobQueue.size() && m_processing.size() < m_jobsAtOnce)
+  {
+    CJobPointer &job = m_jobQueue.back();
+    job.m_id = CJobManager::GetInstance().AddJob(job.m_job, this, m_priority);
+    m_processing.push_back(job);
+    m_jobQueue.pop_back();
+  }
+}
+
 CJobManager &CJobManager::GetInstance()
 {
   static CJobManager sJobManager;
