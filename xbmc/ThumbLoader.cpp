@@ -171,7 +171,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         pItem->SetProperty("HasAutoThumb", "1");
         pItem->SetProperty("AutoThumbImage", cachedThumb);
       }
-      else if (item.IsVideo() && !item.IsInternetStream() && !item.IsPlayList())
+      else if (!item.m_bIsFolder && item.IsVideo() && !item.IsInternetStream() && !item.IsPlayList())
       {
         CStdString path(item.m_strPath);
         if (item.IsStack())
