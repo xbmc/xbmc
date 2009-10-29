@@ -150,6 +150,17 @@ int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 #endif
 }
 
+bool CFileHD::SetHidden(const CURL &url, bool hidden)
+{
+#ifdef _WIN32
+  CStdStringW path;
+  g_charsetConverter.utf8ToW(GetLocal(url), path, false);
+  DWORD attributes = hidden ? FILE_ATTRIBUTE_HIDDEN : FILE_ATTRIBUTE_NORMAL;
+  if (SetFileAttributesW(path.c_str(), attributes))
+    return true;
+#endif
+  return false;
+}
 
 //*********************************************************************************************
 bool CFileHD::OpenForWrite(const CURL& url, bool bOverWrite)
