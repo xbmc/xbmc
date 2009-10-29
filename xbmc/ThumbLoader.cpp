@@ -101,7 +101,7 @@ bool CThumbExtractor::DoWork()
   ||  CUtil::IsDAAP(m_path))
     return false;
 
-  if (CUtil::IsRemote(m_path) && !CUtil::IsOnLAN(m_path) && !(CUtil::IsFTP(m_path) && g_advancedSettings.m_bFTPExtractFlags))
+  if (CUtil::IsRemote(m_path) && !CUtil::IsOnLAN(m_path))
     return false;
 
   if (m_thumb && g_guiSettings.GetBool("myvideos.extractflags"))

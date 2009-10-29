@@ -171,7 +171,6 @@ void CAdvancedSettings::Initialize()
   m_bHTTPDirectoryStatFilesize = false;
 
   m_bFTPThumbs = false;
-  m_bFTPExtractFlags = false;
 
   m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
   m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
@@ -470,7 +469,6 @@ bool CAdvancedSettings::Load()
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "remotethumbs", m_bFTPThumbs);
-    XMLUtils::GetBoolean(pElement, "extractflags", m_bFTPExtractFlags);
   }
 
   pElement = pRootElement->FirstChildElement("loglevel");

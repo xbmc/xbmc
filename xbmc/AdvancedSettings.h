@@ -151,7 +151,6 @@ class CAdvancedSettings
     bool m_bHTTPDirectoryStatFilesize;
 
     bool m_bFTPThumbs;
-    bool m_bFTPExtractFlags;
 
     CStdString m_musicThumbs;
     CStdString m_dvdThumbs;
