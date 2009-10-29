@@ -7368,6 +7368,7 @@ void CVideoDatabase::ExportActorThumbs(const CVideoInfoTag& tag, bool overwrite 
     if (CFile::Exists(strThumb))
     {
       CDirectory::Create(strDir);
+      CFile::SetHidden(strDir, true);
       CStdString thumbFile = iter->strName;
       thumbFile.Replace(" ","_");
       thumbFile += ".tbn";
