@@ -161,10 +161,6 @@ class CJobManager
     {
       return m_job == job;
     };
-    bool operator==(const std::string &type) const
-    {
-      return (m_job && m_job->GetType() == type);
-    };
     void FreeJob()
     {
       delete m_job;
@@ -192,32 +188,9 @@ public:
    \param callback a pointer to an IJobCallback instance to receive job progress and completion notices.
    \param priority the priority that this job should run at.
    \return a unique identifier for this job, to be used with other interaction
-   \sa CJob, IJobCallback, CancelJob(), AddLIFOJob()
+   \sa CJob, IJobCallback, CancelJob()
    */
   unsigned int AddJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority = CJob::PRIORITY_LOW);
-
-  /*!
-   \brief Add a preemptable job to the threaded job manager.
-
-   The only difference between AddLIFOJob() and AddJob() is that AddLIFOJob() adds this job in place
-   of the first similar job in the queue, bumping that job to the back of the queue.  This is useful
-   when you have a sequence of jobs to process where the last job added should be done first.
-
-   \param job a pointer to the job to add. The job should be subclassed from CJob
-   \param callback a pointer to an IJobCallback instance to receive job progress and completion notices.
-   \param priority the priority that this job should run at.
-   \ param checkdupe if true we check for a duplicate job, and if one is found we do not add another one.
-   \return a unique identifier for this job, to be used with other interaction
-   \sa CJob, IJobCallback, CancelJob(), AddJob()
-   */
-  unsigned int AddLIFOJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority = CJob::PRIORITY_LOW, bool checkdupe=false);
-
-  /*!
-   \brief Check if a job is already running.
-   \param job The job to check for
-   \sa HasJob()
-   */
-  bool HasJob(const CJob* job) const;
 
   /*!
    \brief Cancel a job with the given id.

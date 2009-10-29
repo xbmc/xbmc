@@ -173,27 +173,6 @@ unsigned int CJobManager::AddJob(CJob *job, IJobCallback *callback, CJob::PRIORI
   return work.m_id;
 }
 
-unsigned int CJobManager::AddLIFOJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority, bool checkdupe)
-{
-  CSingleLock lock(m_section);
-
-  if (checkdupe && HasJob(job))
-  {
-    delete job;
-    return -1;
-  }
-
-  // check if we have a similar job, and if so, swap the first such job with this one
-  CWorkItem work(job, m_jobCounter++, callback);
-  JobQueue::iterator i = find(m_jobQueue[priority].begin(), m_jobQueue[priority].end(), job->GetType());
-  if (i != m_jobQueue[priority].end())
-    swap(*i, work);
-  m_jobQueue[priority].push_back(work);
-
-  StartWorkers(priority);
-  return work.m_id;
-}
-
 void CJobManager::CancelJob(unsigned int jobID)
 {
   CSingleLock lock(m_section);
@@ -300,31 +279,6 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
   }
 }
 
-template<class T>
-bool IsIn(const T& v, const CJob* job)
-{
-  for (typename T::const_iterator i = v.begin(); i != v.end(); ++i)
-  {
-    if (*job == i->m_job)
-      return true;
-  }
-  return false; 
-}
-
-bool CJobManager::HasJob(const CJob *job) const
-{
-  CSingleLock lock(m_section);
-  for (int priority = CJob::PRIORITY_HIGH; priority >= CJob::PRIORITY_LOW; --priority)
-  {
-    if (IsIn(m_jobQueue[priority],job))
-      return true;
-  }
-  if (IsIn(m_processing,job))
-    return true;
-
-  return false;
-}
-
 void CJobManager::RemoveWorker(const CJobWorker *worker)
 {
   CSingleLock lock(m_section);
@@ -337,5 +291,5 @@ void CJobManager::RemoveWorker(const CJobWorker *worker)
 unsigned int CJobManager::GetMaxWorkers(CJob::PRIORITY priority) const
 {
   static const unsigned int max_workers = 5;
-  return max_workers - 2*(CJob::PRIORITY_HIGH - priority);
+  return max_workers - (CJob::PRIORITY_HIGH - priority);
 }
