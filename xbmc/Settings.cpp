@@ -2013,5 +2013,6 @@ void CSettings::CreateProfileFolders()
     CDirectory::Create(CUtil::AddFileToFolder(GetMusicThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex));
   }
+  CDirectory::Create("special://profile/keymaps");
   CDirectory::Create("special://profile/visualisations");
 }
