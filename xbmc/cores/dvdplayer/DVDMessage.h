@@ -60,7 +60,8 @@ public:
 
     PLAYER_CHANNEL_NEXT,            // switches to next playback channel
     PLAYER_CHANNEL_PREV,            // switches to previous playback channel
-    
+    PLAYER_CHANNEL_SELECT,          // switches to given playback channel
+
     // demuxer related messages
     
     DEMUXER_PACKET,                 // data packet
@@ -243,22 +244,25 @@ private:
 class CDVDMsgPlayerSeek : public CDVDMsg
 {
 public:
-  CDVDMsgPlayerSeek(int time, bool backward, bool flush = true, bool accurate = true)
+  CDVDMsgPlayerSeek(int time, bool backward, bool flush = true, bool accurate = true, bool restore = true)
     : CDVDMsg(PLAYER_SEEK)
     , m_time(time)
     , m_backward(backward)
     , m_flush(flush)
     , m_accurate(accurate)
+    , m_restore(restore)
   {}
   int  GetTime()              { return m_time; }
   bool GetBackward()          { return m_backward; }
   bool GetFlush()             { return m_flush; }
   bool GetAccurate()          { return m_accurate; }
+  bool GetRestore()           { return m_restore; }
 private:
   int  m_time;
   bool m_backward;
   bool m_flush;
   bool m_accurate;
+  bool m_restore; // whether to restore any EDL cut time
 };
 
 class CDVDMsgPlayerSeekChapter : public CDVDMsg

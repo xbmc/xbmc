@@ -1,5 +1,3 @@
-
-
 #include "stdafx.h"
 #include "mplayer.h"
 #include "cores/DllLoader/DllLoader.h"
@@ -821,8 +819,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
   if( strFile.Left(6).Equals("ftp://") )
     strFile.replace(0, 6, "ftpx://");
 
-
-
   CURL url(strFile);
   if ( file.IsHD() ) bFileOnHD = true;
   else if ( file.IsISO9660() ) bFileOnISO = true;
@@ -899,8 +895,10 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     {
       if (g_guiSettings.GetBool("videoplayer.editdecision"))
       {
-        if (m_Edl.ReadnCacheAny(strFile))
-          options.SetEdl(m_Edl.GetCachedEdl());
+        m_Edl.Clear(); 
+        // Don't know how to get the framerate from mplayer so can't tell ReadFiles(0.0f)
+        if (m_Edl.ReadFiles(strFile, 0.0f))
+          options.SetEdl("special://temp/xbmc.edl");
       }
     }
     
@@ -1550,7 +1548,7 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
       iSeek= bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
     }
 
-    if (m_Edl.HaveCutpoints())
+    if (m_Edl.HasCut())
       SeekTime(GetTime() + iSeek*1000);
     else
       SeekRelativeTime(iSeek);
@@ -1583,7 +1581,7 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
 
       iSeek=(int)timeInSecs;
 
-      if (m_Edl.HaveCutpoints())
+      if (m_Edl.HasCut())
         SeekTime(GetTime() + iSeek*1000);
       else
         SeekRelativeTime(iSeek);
@@ -1594,7 +1592,7 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
 bool CMPlayer::SeekScene(bool bPlus)
 {
   __int64 iScenemarker;
-  if( m_Edl.HaveScenes() && m_Edl.SeekScene(bPlus,&iScenemarker) )
+  if( m_Edl.HasSceneMarker() && m_Edl.GetNextSceneMarker(bPlus, GetTime(), &iScenemarker) )
   {
     SeekTime(m_Edl.RemoveCutTime(iScenemarker));
     return true;
@@ -1676,16 +1674,15 @@ void CMPlayer::GetGeneralInfo( CStdString& strVideoInfo)
   int iCacheFilled;
   float fTotalCorrection;
   float fAVDelay;
-  char cEdlStatus;
   if (!m_bIsPlaying)
   {
     strVideoInfo = "";
     return ;
   }
-  cEdlStatus = m_Edl.GetEdlStatus();
+
   mplayer_GetGeneralInfo(&lFramesDropped, &iQuality, &iCacheFilled, &fTotalCorrection, &fAVDelay);
-  strVideoInfo.Format("dropped:%i Q:%i cache:%i%% ct:%2.2f edl:%c av:%2.2f",
-                      lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, cEdlStatus, fAVDelay );
+  strVideoInfo.Format("dropped:%i Q:%i cache:%i%% ct:%2.2f edl:%s av:%2.2f",
+                      lFramesDropped, iQuality, iCacheFilled, fTotalCorrection, m_Edl.GetInfo().c_str(), fAVDelay );
 }
 
 void CMPlayer::Update(bool bPauseDrawing)
@@ -1751,7 +1748,7 @@ void CMPlayer::SeekPercentage(float percent)
 
 float CMPlayer::GetPercentage()
 {
-  if (m_Edl.HaveCutpoints())
+  if (m_Edl.HasCut())
     return ( (float)(100 / ((double)(GetTotalTime()*1000)/(double)GetTime())) ); 
 
   return (float)mplayer_getPercentage(); 
@@ -1950,7 +1947,7 @@ __int64 CMPlayer::GetTime()
     }
   }
 
-  if(m_Edl.HaveCutpoints())
+  if(m_Edl.HasCut())
     time = m_Edl.RemoveCutTime(time);
 
   return time;
@@ -1972,8 +1969,8 @@ int CMPlayer::GetTotalTime()
     }
   }
 
-  if(m_Edl.HaveCutpoints())
-    time -= (int)(m_Edl.TotalCutTime()/1000);
+  if(m_Edl.HasCut())
+    time -= (int)(m_Edl.GetTotalCutTime()/1000);
 
   return time;
 }

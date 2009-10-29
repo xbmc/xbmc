@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7,10"
+	Version="7.10"
 	Name="xbmc"
 	ProjectGUID="{31103E92-4EE8-4F94-B67A-092C7CEFDB3D}"
 	RootNamespace="xbmc"
@@ -912,9 +912,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\DynamicDll.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\Edl.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\Event.cpp">
@@ -2781,9 +2778,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\DynamicDll.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\Edl.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\utils\Event.h">
 			</File>
 			<File
@@ -3117,12 +3111,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\Picture.h">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\PlayerCoreFactory.h">
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\PlayerSelectionRule.h">
-			</File>
-			<File
 				RelativePath=".\xbmc\PlayList.h">
 			</File>
 			<File
@@ -3316,48 +3304,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\ModPlayer.cpp">
 			</File>
 			<File
-				RelativePath=".\xbmc\cores\PlayerCoreFactory.cpp">
-				<FileConfiguration
-					Name="Debug|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile_FastCap|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release_LTCG|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug Xbox No Memory Tracking|Xbox">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\xbmc\cores\PlayerSelectionRule.cpp">
-			</File>
-			<File
 				RelativePath=".\xbmc\cores\ssrc.cpp">
 			</File>
 			<File
@@ -3495,6 +3441,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\dvdplayer\IDVDPlayer.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\Edl.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\dvdplayer\Edl.h">
 				</File>
 				<Filter
 					Name="DVDCodecs"
@@ -4476,6 +4428,25 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\ffmpeg\swscale.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="playercorefactory"
+				Filter="">
+				<File
+					RelativePath=".\xbmc\cores\playercorefactory\PlayerCoreConfig.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\playercorefactory\PlayerCoreFactory.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\playercorefactory\PlayerCoreFactory.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\playercorefactory\PlayerSelectionRule.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\cores\playercorefactory\PlayerSelectionRule.h">
 				</File>
 			</Filter>
 		</Filter>

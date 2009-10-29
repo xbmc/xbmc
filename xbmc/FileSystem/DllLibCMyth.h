@@ -120,6 +120,9 @@ public:
   virtual int              timestamp_compare        (cmyth_timestamp_t ts1, cmyth_timestamp_t ts2)=0;
   virtual cmyth_database_t database_init            (char *host, char *db_name, char *user, char *pass)=0;
   virtual cmyth_chanlist_t mysql_get_chanlist       (cmyth_database_t db)=0;
+
+  virtual cmyth_commbreaklist_t get_commbreaklist   (cmyth_conn_t control, cmyth_proginfo_t prog)=0;
+
 };
 
 class DllLibCMyth : public DllDynamic, DllLibCMythInterface
@@ -212,6 +215,9 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD2(int,                 timestamp_compare,        (cmyth_timestamp_t p1, cmyth_timestamp_t p2))
   DEFINE_METHOD4(cmyth_database_t,    database_init,            (char *p1, char *p2, char *p3, char *p4))
   DEFINE_METHOD1(cmyth_chanlist_t,    mysql_get_chanlist,       (cmyth_database_t p1))
+
+  DEFINE_METHOD2(cmyth_commbreaklist_t, get_commbreaklist,      (cmyth_conn_t p1, cmyth_proginfo_t p2))
+
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_ctrl, conn_connect_ctrl)
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_event, conn_connect_event)
@@ -298,5 +304,8 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_timestamp_compare, timestamp_compare)
     RESOLVE_METHOD_RENAME(cmyth_database_init, database_init)
     RESOLVE_METHOD_RENAME(cmyth_mysql_get_chanlist, mysql_get_chanlist)
+
+    RESOLVE_METHOD_RENAME(cmyth_get_commbreaklist, get_commbreaklist)
+
   END_METHOD_RESOLVE()
 };

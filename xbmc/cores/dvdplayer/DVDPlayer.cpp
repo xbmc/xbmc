@@ -356,7 +356,8 @@ bool CDVDPlayer::CloseFile()
   // we are done after the StopThread call
   StopThread();
 
-  m_Edl.Reset();
+  m_Edl.Clear();
+  m_EdlAutoSkipMarkers.Clear();
 
   CLog::Log(LOGNOTICE, "DVDPlayer: finished waiting");
 
@@ -432,11 +433,6 @@ bool CDVDPlayer::OpenInputStream()
 
       g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
     }
-
-    // look for any edl files
-    m_Edl.Reset();
-    if (g_guiSettings.GetBool("videoplayer.editdecision") && !m_item.IsInternetStream())
-      m_Edl.ReadnCacheAny(m_filename);
   }
 
   SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
@@ -754,6 +750,27 @@ void CDVDPlayer::Process()
 
   OpenDefaultStreams();
 
+  // look for any EDL files
+  m_Edl.Clear();
+  m_EdlAutoSkipMarkers.Clear();
+  if (g_guiSettings.GetBool("videoplayer.editdecision"))
+  {
+    float fFramesPerSecond;
+    if (m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
+      fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
+    else
+    {
+      fFramesPerSecond = 25.0; // TODO: Default to one of 50.0, 29.97, 25.0, or 23.976 fps. Advanced setting?
+      CLog::Log(LOGWARNING, "%s - Could not detect frame rate for: %s. Using default of %.3f fps for conversion of any commercial break frame markers to times.",
+                __FUNCTION__, m_filename.c_str(), fFramesPerSecond);
+    }
+
+    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_FILE))
+      m_Edl.ReadFiles(m_filename, fFramesPerSecond);
+    else if (m_item.IsMythTV())
+      m_Edl.ReadMythCommBreaks(m_item.GetAsUrl(), fFramesPerSecond);
+  }
+  
   if( m_PlayerOptions.starttime > 0 )
   {
     int starttime = m_Edl.RestoreCutTime((__int64)m_PlayerOptions.starttime * 1000); // s to ms
@@ -999,6 +1016,9 @@ void CDVDPlayer::Process()
 
     // process the packet
     ProcessPacket(pStream, pPacket);
+
+    // check if in a cut or commercial break that should be automatically skipped
+    CheckAutoSceneSkip();
   }
 }
 
@@ -1358,24 +1378,109 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
 
 bool CDVDPlayer::CheckSceneSkip(CCurrentStream& current)
 {
-  CEdl::Cut cut;
-
-  if(!m_Edl.HaveCutpoints())
+  if(!m_Edl.HasCut())
     return false;
 
   if(current.dts == DVD_NOPTS_VALUE)
     return false;
 
-  if (m_Edl.InCutpoint(DVD_TIME_TO_MSEC(current.dts), &cut) && cut.CutAction == CEdl::CUT)
-  {
-    // check if both streams are in cut position, if they are do the seek
-    if (m_CurrentAudio.id >= 0 && m_CurrentAudio.dts != DVD_NOPTS_VALUE && m_CurrentAudio.dts > DVD_MSEC_TO_TIME(cut.CutStart)
-    &&  m_CurrentVideo.id >= 0 && m_CurrentVideo.dts != DVD_NOPTS_VALUE && m_CurrentVideo.dts > DVD_MSEC_TO_TIME(cut.CutStart))
-      m_messenger.Put(new CDVDMsgPlayerSeek(cut.CutEnd+1, false, false, true)); // seek past cutpoint
+  CEdl::Cut cut;
+  if (!m_Edl.InCut(DVD_TIME_TO_MSEC(current.dts), &cut))
+    return false;
 
+  /*
+   * It's more efficient to drop packets than to seek if the cut is shorter than 10 seconds, but
+   * only do this if the cut is short otherwise the clock never reaches the point where it should do
+   * a full seek on Windows (instead it clears the audio queue and gets into a loop of starting and
+   * stopping caching).
+   */
+  else if(cut.action == CEdl::CUT
+  &&      cut.end - cut.start < 10*1000) // 10 seconds in ms
     return true;
+  else
+    return false;
+}
+
+void CDVDPlayer::CheckAutoSceneSkip()
+{
+  if(!m_Edl.HasCut())
+    return;
+
+  if(m_CurrentAudio.dts == DVD_NOPTS_VALUE
+  || m_CurrentVideo.dts == DVD_NOPTS_VALUE)
+    return;
+
+  const int clock = DVD_TIME_TO_MSEC(m_clock.GetClock());
+
+  CEdl::Cut cut;
+  if(!m_Edl.InCut(clock, &cut))
+    return;
+
+  /*
+   * HACK: If there was a start time specified, only seek past cuts if the current clock time is
+   * greater than 5 seconds. There is some sort of race condition between the setting of the demuxer
+   * start time and the clock being updated to reflect that playback time. If this check is not
+   * performed the start time will be overwritten if there is a cut near the start of the file.
+   *
+   * 5 seconds should be a reasonable timeout for checking as start times aren't recorded for less
+   * than that amount of time.
+   */
+  if(m_PlayerOptions.starttime > 0
+     && clock < 5*1000) // 5 seconds in msec
+    return;
+
+  /*
+   * TODO: 10 second cutoff between seeking and dropping packets seems a bit arbitrary. Is there
+   * some reason that length of time seems to work well? Perhaps that's about the length of time
+   * that is already cached.
+   */
+  if(cut.action == CEdl::CUT
+  && cut.end - cut.start > 10*1000 // More efficient to drop packets than to seek if cut shorter than 10 seconds
+  && !(cut.end == m_EdlAutoSkipMarkers.cut || cut.start == m_EdlAutoSkipMarkers.cut)) // To prevent looping if same cut again
+  {
+    CLog::Log(LOGDEBUG, "%s - Clock in EDL cut [%s - %s]: %s. Automatically skipping over.",
+              __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(),
+              CEdl::MillisecondsToTimeString(cut.end).c_str(), CEdl::MillisecondsToTimeString(clock).c_str());
+    /*
+     * Seeking either goes to the start or the end of the cut depending on the play direction.
+     */
+    __int64 seek = GetPlaySpeed() >= 0 ? cut.end : cut.start;
+    /*
+     * Seeking is flushed and accurate, just like SeekTime()
+     */
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, GetPlaySpeed() < 0, true, true, false));
+    /*
+     * Seek doesn't always work reliably. Last physical seek time is recorded to prevent looping
+     * if there was an error with seeking and it landed somewhere unexpected, perhaps back in the
+     * cut. The cut automatic skip marker is reset every 500ms allowing another attempt at the seek.
+     */
+    m_EdlAutoSkipMarkers.cut = GetPlaySpeed() >= 0 ? cut.end : cut.start;
   }
-  return false;
+  else if(cut.action == CEdl::COMM_BREAK
+  &&      GetPlaySpeed() >= 0
+  &&      cut.start > m_EdlAutoSkipMarkers.commbreak_end)
+  {
+    CLog::Log(LOGDEBUG, "%s - Clock in commercial break [%s - %s]: %s. Automatically skipping to end of commercial break (only done once per break)",
+              __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(), CEdl::MillisecondsToTimeString(cut.end).c_str(),
+              CEdl::MillisecondsToTimeString(clock).c_str());
+    /*
+     * Seeking is flushed and inaccurate, just like Seek()
+     */
+    m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, false, true, false, false));
+    /*
+     * Each commercial break is only skipped once so poorly detected commercial breaks can be
+     * manually re-entered. Start and end are recorded to prevent looping and to allow seeking back
+     * to the start of the commercial break if incorrectly flagged.
+     */
+    m_EdlAutoSkipMarkers.commbreak_start = cut.start;
+    m_EdlAutoSkipMarkers.commbreak_end   = cut.end;
+    m_EdlAutoSkipMarkers.seek_to_start   = true; // Allow backwards Seek() to go directly to the start
+  }
+
+  /*
+   * Reset the EDL automatic skip cut marker every 500 ms.
+   */
+  m_EdlAutoSkipMarkers.ResetCutMarker(500); // in msec
 }
 
 
@@ -1552,14 +1657,15 @@ void CDVDPlayer::HandleMessages()
         CDVDMsgPlayerSeek &msg(*((CDVDMsgPlayerSeek*)pMsg));
         double start = DVD_NOPTS_VALUE;
 
-        CLog::Log(LOGDEBUG, "demuxer seek to: %d", msg.GetTime());
-        if (m_pDemuxer && m_pDemuxer->SeekTime(msg.GetTime(), msg.GetBackward(), &start))
+        int time = msg.GetRestore() ? (int)m_Edl.RestoreCutTime(msg.GetTime()) : msg.GetTime();
+        CLog::Log(LOGDEBUG, "demuxer seek to: %d", time);
+        if (m_pDemuxer && m_pDemuxer->SeekTime(time, msg.GetBackward(), &start))
         {
-          CLog::Log(LOGDEBUG, "demuxer seek to: %d, success", msg.GetTime());
+          CLog::Log(LOGDEBUG, "demuxer seek to: %d, success", time);
           if(m_pSubtitleDemuxer)
           {
-            if(!m_pSubtitleDemuxer->SeekTime(msg.GetTime(), msg.GetBackward()))
-              CLog::Log(LOGDEBUG, "failed to seek subtitle demuxer: %d, success", msg.GetTime());
+            if(!m_pSubtitleDemuxer->SeekTime(time, msg.GetBackward()))
+              CLog::Log(LOGDEBUG, "failed to seek subtitle demuxer: %d, success", time);
           }
           FlushBuffers(!msg.GetFlush());
           if(msg.GetAccurate())
@@ -1710,8 +1816,10 @@ void CDVDPlayer::HandleMessages()
         //        until our buffers are somewhat filled
         if(m_pDemuxer)
           m_pDemuxer->SetSpeed(speed);
-      } 
-      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV))
+      }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) ||
+               pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV) ||
+               pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT))
       {
         CPlayerSeek m_pause(this);
 
@@ -1719,7 +1827,9 @@ void CDVDPlayer::HandleMessages()
         if(input)
         {
           bool result;
-          if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
+          if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT))
+            result = input->SelectChannel(static_cast<CDVDMsgInt*>(pMsg)->m_value);
+          else if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
             result = input->NextChannel();
           else
             result = input->PrevChannel();
@@ -1856,16 +1966,74 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
     seek = (__int64)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
   }
 
-  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false));
+  bool restore = true;
+  if (m_Edl.HasCut())
+  {
+    /*
+     * Alter the standard seek position based on whether any commercial breaks have been
+     * automatically skipped.
+     */
+    const int clock = DVD_TIME_TO_MSEC(m_clock.GetClock());
+    /*
+     * If a backwards seek (either small or large) occurs within 10 seconds of the end of the last
+     * automated commercial skip, then seek back to the start of the commercial break under the
+     * assumption that it was flagged incorrectly. 10 seconds grace period is allowed in case the
+     * watcher has to fumble around finding the remote. Only happens once per commercial break.
+     */
+    if (!bPlus && m_EdlAutoSkipMarkers.seek_to_start
+    &&  clock >= m_EdlAutoSkipMarkers.commbreak_end
+    &&  clock <= m_EdlAutoSkipMarkers.commbreak_end + 10*1000) // Only if within 10 seconds of the end (in msec)
+    {
+      CLog::Log(LOGDEBUG, "%s - Seeking back to start of commercial break [%s - %s] as backwards skip activated within 10 seconds of the automatic commercial skip (only done once per break).",
+                __FUNCTION__, CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_start).c_str(),
+                CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_end).c_str());
+      seek = m_EdlAutoSkipMarkers.commbreak_start;
+      restore = false;
+      m_EdlAutoSkipMarkers.seek_to_start = false; // So this will only happen within the 10 second grace period once.
+    }
+    /*
+     * If big skip forward within the last "reverted" commercial break, seek to the end of the
+     * commercial break under the assumption that the break was incorrectly flagged and playback has
+     * now reached the actual start of the commercial break. Assume that the end is flagged more
+     * correctly than the landing point for a standard big skip (ends seem to be flagged more
+     * accurately than the start).
+     */
+    else if (bPlus && bLargeStep
+    &&       clock >= m_EdlAutoSkipMarkers.commbreak_start
+    &&       clock <= m_EdlAutoSkipMarkers.commbreak_end)
+    {
+      CLog::Log(LOGDEBUG, "%s - Seeking to end of previously skipped commercial break [%s - %s] as big forwards skip activated within the break.",
+                __FUNCTION__, CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_start).c_str(),
+                CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_end).c_str());
+      seek = m_EdlAutoSkipMarkers.commbreak_end;
+      restore = false;
+    }
+  }
+
+  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false, restore));
   SyncronizeDemuxer(100);
 }
 
 bool CDVDPlayer::SeekScene(bool bPlus)
 {
-  __int64 iScenemarker;
-  if( m_Edl.HaveScenes() && m_Edl.SeekScene(bPlus,&iScenemarker) )
+  if (!m_Edl.HasSceneMarker())
+    return false;
+
+  /*
+   * There is a 5 second grace period applied when seeking for scenes backwards. If there is no
+   * grace period applied it is impossible to go backwards past a scene marker.
+   */
+  __int64 clock = GetTime();
+  if (!bPlus && clock > 5 * 1000) // 5 seconds
+    clock -= 5 * 1000;
+
+  int64_t iScenemarker;
+  if (m_Edl.GetNextSceneMarker(bPlus, clock, &iScenemarker))
   {
-    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, !bPlus, false, true));
+    /*
+     * Seeking is flushed and inaccurate, just like Seek()
+     */
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, !bPlus, true, false, false)); 
     SyncronizeDemuxer(100);
     return true;
   }
@@ -1905,9 +2073,8 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
       dDiff = (apts - vpts) / DVD_TIME_BASE;
 
     CStdString strEDL;
-
-    if(m_Edl.HaveCutpoints())
-      strEDL.Format(", edl:%c",  m_Edl.GetEdlStatus());
+    if (g_guiSettings.GetBool("videoplayer.editdecision"))
+      strEDL.AppendFormat(", edl:%s", m_Edl.GetInfo().c_str());
 
     strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%% )"
                          , dDelay
@@ -2713,6 +2880,16 @@ bool CDVDPlayer::OnAction(const CAction &action)
         g_infoManager.SetDisplayAfterSeek();
         return true;
       break;
+
+      case ACTION_CHANNEL_SWITCH:
+      {
+        // Offset from key codes back to button number
+        int channel = action.amount1;
+        m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
+        g_infoManager.SetDisplayAfterSeek();
+        return true;
+      }
+      break;
     }
   }
 
@@ -2949,10 +3126,10 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     }
   }
 
-  if (m_Edl.HaveCutpoints())
+  if (m_Edl.HasCut())
   {
     m_State.time        = m_Edl.RemoveCutTime(llrint(m_State.time));
-    m_State.time_total -= m_Edl.TotalCutTime();
+    m_State.time_total -= m_Edl.GetTotalCutTime();
   }
 
   if (m_CurrentAudio.id >= 0 && m_pDemuxer)

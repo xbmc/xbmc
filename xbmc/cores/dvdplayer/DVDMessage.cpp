@@ -61,7 +61,7 @@ void CDVDMsgGeneralSynchronize::Wait(volatile bool *abort, DWORD source)
 
   InterlockedIncrement(&m_objects);
 
-  DWORD timeout = GetTickCount() + m_timeout;    
+  DWORD timeout = GetTickCount() + m_timeout;
 
   if (abort)
     while( m_objects < GetNrOfReferences() && timeout > GetTickCount() && !(*abort)) Sleep(1);

@@ -36,6 +36,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogFullScreenInfo.h"
 #include "GUIDialogAudioSubtitleSettings.h"
+#include "GUIDialogNumeric.h"
 #include "GUISliderControl.h"
 #include "Settings.h"
 #include "FileItem.h"
@@ -345,8 +346,30 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case REMOTE_7:
   case REMOTE_8:
   case REMOTE_9:
-    ChangetheTimeCode(action.id);
-    return true;
+    {
+      if (g_application.CurrentFileItem().IsLiveTV())
+      {
+        int channelNr = -1;
+
+        CStdString strChannel;
+        strChannel.Format("%i", action.id - REMOTE_0);
+        if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000)))
+          channelNr = atoi(strChannel.c_str());
+
+        if (channelNr > 0)
+        {
+          CAction action;
+          action.id = ACTION_CHANNEL_SWITCH;
+          action.amount1 = (float)channelNr;
+          OnAction(action);
+        }
+      }
+      else
+      {
+        ChangetheTimeCode(action.id);
+      }
+      return true;
+    }
     break;
 
   case ACTION_ASPECT_RATIO:

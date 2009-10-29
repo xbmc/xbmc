@@ -38,7 +38,7 @@ class CFileItemList;
 #include "utils/Idle.h"
 #include "utils/DelayController.h"
 #include "cores/IPlayer.h"
-#include "cores/PlayerCoreFactory.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
 #include "DetectDVDType.h"
 #include "Autorun.h"

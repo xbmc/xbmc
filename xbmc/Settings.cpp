@@ -52,7 +52,7 @@
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #endif
-#include "cores/PlayerCoreFactory.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 
 using namespace std;
 using namespace XFILE;

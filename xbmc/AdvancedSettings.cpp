@@ -182,6 +182,12 @@ CAdvancedSettings::CAdvancedSettings()
 
   m_iMythMovieLength = 0; // 0 == Off
 
+  m_bEdlMergeShortCommBreaks = false;      // Off by default
+  m_iEdlMaxCommBreakLength = 8 * 30 + 10;  // Just over 8 * 30 second commercial break.
+  m_iEdlMinCommBreakLength = 3 * 30;       // 3 * 30 second commercial breaks.
+  m_iEdlMaxCommBreakGap = 4 * 30;          // 4 * 30 second commercial breaks.
+  m_iEdlMaxStartGap = 5 * 60;              // 5 minutes.
+
   m_curlconnecttimeout = 10;
   m_curllowspeedtime = 5;
   m_curlretries = 3;
@@ -434,6 +440,17 @@ bool CAdvancedSettings::Load()
   if (pElement)
   {
     XMLUtils::GetInt(pElement, "movielength", m_iMythMovieLength);
+  }
+
+  // EDL commercial break handling
+  pElement = pRootElement->FirstChildElement("edl");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "mergeshortcommbreaks", m_bEdlMergeShortCommBreaks);
+    XMLUtils::GetInt(pElement, "maxcommbreaklength", m_iEdlMaxCommBreakLength, 0, 10 * 60); // Between 0 and 10 minutes 
+    XMLUtils::GetInt(pElement, "mincommbreaklength", m_iEdlMinCommBreakLength, 0, 5 * 60);  // Between 0 and 5 minutes
+    XMLUtils::GetInt(pElement, "maxcommbreakgap", m_iEdlMaxCommBreakGap, 0, 5 * 60);        // Between 0 and 5 minutes.
+    XMLUtils::GetInt(pElement, "maxstartgap", m_iEdlMaxStartGap, 0, 10 * 60);               // Between 0 and 10 minutes
   }
 
   // picture exclude regexps

@@ -600,6 +600,10 @@ bool CCMythFile::PrevChannel()
   return ChangeChannel(CHANNEL_DIRECTION_DOWN, "");
 }
 
+bool CCMythFile::SelectChannel(unsigned int channel)
+{
+  return ChangeChannel(CHANNEL_DIRECTION_SAME,""+channel);
+}
 
 bool CCMythFile::CanRecord()
 {
@@ -650,4 +654,12 @@ bool CCMythFile::Record(bool bOnOff)
   return false;
 }
 
-
+bool CCMythFile::GetCommBreakList(cmyth_commbreaklist_t& commbreaklist)
+{
+  if (m_program)
+  {
+    commbreaklist = m_dll->get_commbreaklist(m_control, m_program);
+    return true;
+  }
+  return false;
+}
