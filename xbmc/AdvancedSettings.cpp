@@ -49,7 +49,7 @@ void CAdvancedSettings::Initialize()
 
   m_audioHeadRoom = 0;
   m_ac3Gain = 12.0f;
-  m_audioApplyDrc = true;      
+  m_audioApplyDrc = true;
 
   m_karaokeSyncDelayCDG = 0.0f;
   m_karaokeSyncDelayLRC = 0.0f;
@@ -170,9 +170,8 @@ void CAdvancedSettings::Initialize()
 
   m_bHTTPDirectoryStatFilesize = false;
 
-  m_bFTPFanartImages = false;
-  m_bFTPVideoThumbs = true;
-  m_bFTPMusicThumbs = true;
+  m_bFTPThumbs = false;
+  m_bFTPExtractFlags = false;
 
   m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
   m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
@@ -316,7 +315,7 @@ bool CAdvancedSettings::Load()
       GetCustomRegexps(pAudioExcludes, m_audioExcludeFromScanRegExps);
 
     XMLUtils::GetString(pElement, "audiohost", m_audioHost);
-    XMLUtils::GetBoolean(pElement, "applydrc", m_audioApplyDrc);        
+    XMLUtils::GetBoolean(pElement, "applydrc", m_audioApplyDrc);
   }
 
   pElement = pRootElement->FirstChildElement("karaoke");
@@ -470,9 +469,8 @@ bool CAdvancedSettings::Load()
   pElement = pRootElement->FirstChildElement("ftp");
   if (pElement)
   {
-    XMLUtils::GetBoolean(pElement, "fanartimages", m_bFTPFanartImages);
-    XMLUtils::GetBoolean(pElement, "videothumbs", m_bFTPVideoThumbs);
-    XMLUtils::GetBoolean(pElement, "musicthumbs", m_bFTPMusicThumbs);
+    XMLUtils::GetBoolean(pElement, "remotethumbs", m_bFTPThumbs);
+    XMLUtils::GetBoolean(pElement, "extractflags", m_bFTPExtractFlags);
   }
 
   pElement = pRootElement->FirstChildElement("loglevel");
