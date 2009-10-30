@@ -458,10 +458,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         (g_guiSettings.GetInt("harddisk.remoteplayspindown") || g_guiSettings.GetInt("harddisk.spindowntime"))
       )
       {
-        if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-          g_audioManager.Enable(false);
+        g_audioManager.Enable(false);
       }
-
 
       // setup the brightness, contrast and resolution
       CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);
