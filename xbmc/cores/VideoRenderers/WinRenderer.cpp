@@ -324,6 +324,12 @@ void CWinRenderer::RenderOSD()
     }
   };
 
+  for(int i = 0; i < 4; i++)
+  {
+    verts[i].x -= 0.5;
+    verts[i].y -= 0.5;
+  }
+
   m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetTexture(1, NULL);
@@ -858,6 +864,12 @@ void CWinRenderer::RenderLowMem(DWORD flags)
       (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1)  , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1)
     }
   };
+
+  for(int i = 0; i < 4; i++)
+  {
+    verts[i].x -= 0.5;
+    verts[i].y -= 0.5;
+  }
 
   m_pYUV2RGBEffect->SetTechnique( "YUV2RGB_T" );
   m_pYUV2RGBEffect->SetTexture( "g_YTexture",  m_YUVVideoTexture[index][0] ) ;
