@@ -157,8 +157,8 @@ uint32_t* convert_rgba(CDVDOverlaySpu* o, bool mergealpha
             min_y = y;
           if(x + draw > max_x)
             max_x = x + draw;
-          if(y > max_y)
-            max_y = y;
+          if(y + 1    > max_y)
+            max_y = y + 1;
         }
 
         for(int i = 0; i < draw; i++)
