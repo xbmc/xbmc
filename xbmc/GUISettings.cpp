@@ -429,6 +429,7 @@ void CGUISettings::Initialize()
   //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
   AddBool(5, "videoplayer.adjustrefreshrate", 170, false);
+  AddFloat(6, "videoplayer.aspecterror", 22021, 3.0f, 0.0f, 1.0f, 20.0f);
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.strictbinding", 13120, false);
   AddBool(0, "videoplayer.vdpau_allow_xrandr", 13122, false);
@@ -442,7 +443,6 @@ void CGUISettings::Initialize()
   AddBool(11, "videoplayer.vdpaustudiolevel", 13122, true);
 #endif
 #endif
-  AddFloat(0, "videoplayer.aspecterror", 22021, 3.0f, 0.0f, 1.0f, 20.0f);
 
   AddSeparator(12, "videoplayer.sep2");
   AddString(0, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);

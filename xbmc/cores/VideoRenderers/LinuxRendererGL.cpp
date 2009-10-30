@@ -848,7 +848,6 @@ unsigned int CLinuxRendererGL::PreInit()
 
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
-  m_aspecterror = g_guiSettings.GetFloat("videoplayer.aspecterror") * 0.01;
 
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
