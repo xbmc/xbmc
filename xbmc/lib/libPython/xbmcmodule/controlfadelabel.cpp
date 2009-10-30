@@ -46,7 +46,7 @@ namespace PYXBMC
     PyObject *args,
     PyObject *kwds )
   {
-    static char *keywords[] = {
+    static const char *keywords[] = {
       "x", "y", "width", "height", "font", "textColor", "alignment", NULL };
 
     ControlFadeLabel *self;
@@ -66,8 +66,8 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "llll|ssl",
-      keywords,
+      (char*)"llll|ssl",
+      (char**)keywords,
       &self->dwPosX,
       &self->dwPosY,
       &self->dwWidth,
@@ -136,16 +136,16 @@ namespace PYXBMC
     PyObject *pObjectText;
     string strText;
 
-    if (!PyArg_ParseTuple(args, "O", &pObjectText))   return NULL;
-    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText))   return NULL;
+    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     ControlFadeLabel *pControl = (ControlFadeLabel*)self;
     CGUIMessage msg(GUI_MSG_LABEL_ADD, pControl->iParentId, pControl->iControlId);
     msg.SetLabel(strText);
 
-    PyGUILock();
+    PyXBMCGUILock();
     if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -164,17 +164,17 @@ namespace PYXBMC
     CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
 
     pControl->vecLabels.clear();
-    PyGUILock();
+    PyXBMCGUILock();
     if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
   }
 
   PyMethodDef ControlFadeLabel_methods[] = {
-    {"addLabel", (PyCFunction)ControlFadeLabel_AddLabel, METH_VARARGS, addLabel__doc__},
-    {"reset", (PyCFunction)ControlFadeLabel_Reset, METH_VARARGS, reset__doc__},
+    {(char*)"addLabel", (PyCFunction)ControlFadeLabel_AddLabel, METH_VARARGS, addLabel__doc__},
+    {(char*)"reset", (PyCFunction)ControlFadeLabel_Reset, METH_VARARGS, reset__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -212,9 +212,9 @@ namespace PYXBMC
 
   void initControlFadeLabel_Type()
   {
-    PyInitializeTypeObject(&ControlFadeLabel_Type);
+    PyXBMCInitializeTypeObject(&ControlFadeLabel_Type);
 
-    ControlFadeLabel_Type.tp_name = "xbmcgui.ControlFadeLabel";
+    ControlFadeLabel_Type.tp_name = (char*)"xbmcgui.ControlFadeLabel";
     ControlFadeLabel_Type.tp_basicsize = sizeof(ControlFadeLabel);
     ControlFadeLabel_Type.tp_dealloc = (destructor)ControlFadeLabel_Dealloc;
     ControlFadeLabel_Type.tp_compare = 0;

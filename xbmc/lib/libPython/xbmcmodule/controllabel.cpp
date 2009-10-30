@@ -44,7 +44,7 @@ namespace PYXBMC
 {
   PyObject* ControlLabel_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = {
+    static const char *keywords[] = {
       "x", "y", "width", "height", "label", "font", "textColor",
       "disabledColor", "alignment", "hasPath", "angle", NULL };
 
@@ -70,8 +70,8 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "llllO|ssslbl",
-      keywords,
+      (char*)"llllO|ssslbl",
+      (char**)keywords,
       &self->dwPosX,
       &self->dwPosY,
       &self->dwWidth,
@@ -88,7 +88,7 @@ namespace PYXBMC
         return NULL;
     }
     self->bHasPath = (0 != bHasPath);
-    if (!PyGetUnicodeString(self->strText, pObjectText, 5))
+    if (!PyXBMCGetUnicodeString(self->strText, pObjectText, 5))
     {
       Py_DECREF( self );
       return NULL;
@@ -146,16 +146,16 @@ namespace PYXBMC
   {
     PyObject *pObjectText;
 
-    if (!PyArg_ParseTuple(args, "O", &pObjectText))	return NULL;
-    if (!PyGetUnicodeString(self->strText, pObjectText, 1)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText))	return NULL;
+    if (!PyXBMCGetUnicodeString(self->strText, pObjectText, 1)) return NULL;
 
     ControlLabel *pControl = (ControlLabel*)self;
     CGUIMessage msg(GUI_MSG_LABEL_SET, pControl->iParentId, pControl->iControlId);
     msg.SetLabel(self->strText);
 
-    PyGUILock();
+    PyXBMCGUILock();
     if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -172,16 +172,16 @@ namespace PYXBMC
   {
     if (!self->pGUIControl) return NULL;
     
-    PyGUILock();
+    PyXBMCGUILock();
     const char *cLabel = self->strText.c_str();
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
-    return Py_BuildValue("s", cLabel);
+    return Py_BuildValue((char*)"s", cLabel);
   }
 
   PyMethodDef ControlLabel_methods[] = {
-    {"setLabel", (PyCFunction)ControlLabel_SetLabel, METH_VARARGS, setLabel__doc__},
-    {"getLabel", (PyCFunction)ControlLabel_GetLabel, METH_VARARGS, getLabel__doc__},
+    {(char*)"setLabel", (PyCFunction)ControlLabel_SetLabel, METH_VARARGS, setLabel__doc__},
+    {(char*)"getLabel", (PyCFunction)ControlLabel_GetLabel, METH_VARARGS, getLabel__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -223,9 +223,9 @@ namespace PYXBMC
 
   void initControlLabel_Type()
   {
-    PyInitializeTypeObject(&ControlLabel_Type);
+    PyXBMCInitializeTypeObject(&ControlLabel_Type);
 
-    ControlLabel_Type.tp_name = "xbmcgui.ControlLabel";
+    ControlLabel_Type.tp_name = (char*)"xbmcgui.ControlLabel";
     ControlLabel_Type.tp_basicsize = sizeof(ControlLabel);
     ControlLabel_Type.tp_dealloc = (destructor)ControlLabel_Dealloc;
     ControlLabel_Type.tp_compare = 0;

@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -28,6 +26,8 @@
 #include "GUIPythonWindowXMLDialog.h"
 #include "GUIPythonWindowDialog.h"
 #include "control.h"
+
+#pragma once
 
 #define Window_Check(op) PyObject_TypeCheck(op, &Window_Type)
 #define Window_CheckExact(op) ((op)->ob_type == &Window_Type)

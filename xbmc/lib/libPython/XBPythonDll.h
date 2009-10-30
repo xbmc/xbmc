@@ -42,6 +42,13 @@
 #define PyExc_KeyboardInterrupt ((PyObject*)(*(long*)pointer_PyExc_KeyboardInterrupt))
 #define PyExc_RuntimeError ((PyObject*)(*(long*)pointer_PyExc_RuntimeError))
 #define PyExc_ReferenceError ((PyObject*)(*(long*)pointer_PyExc_ReferenceError))
+/* Allow our modules to be compatible with Python2.4.
+   http://www.python.org/dev/peps/pep-0353/ */
+#if PY_VERSION_HEX < 0x02050000 && !defined(PY_SSIZE_T_MIN)
+typedef int Py_ssize_t;
+#define PY_SSIZE_T_MAX INT_MAX
+#define PY_SSIZE_T_MIN INT_MIN
+#endif
 
 #ifdef __cplusplus
 extern "C"

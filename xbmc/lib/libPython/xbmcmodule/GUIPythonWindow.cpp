@@ -93,8 +93,8 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
         PyXBMCAction* inf = new PyXBMCAction;
         inf->pObject = NULL;
         // find python control object with same iControl
-        std::vector<Control*>::iterator it = ((Window*)pCallbackWindow)->vecControls.begin();
-        while (it != ((Window*)pCallbackWindow)->vecControls.end())
+        std::vector<Control*>::iterator it = ((PYXBMC::Window*)pCallbackWindow)->vecControls.begin();
+        while (it != ((PYXBMC::Window*)pCallbackWindow)->vecControls.end())
         {
           Control* pControl = *it;
           if (pControl->iControlId == iControl)
@@ -109,7 +109,7 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
         if (inf->pObject)
         {
           // currently we only accept messages from a button or controllist with a select action
-          if ((ControlList_CheckExact(inf->pObject) && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK))||
+          if ((ControlList_CheckExact(inf->pObject) && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)) ||
             ControlButton_CheckExact(inf->pObject) || ControlRadioButton_CheckExact(inf->pObject) ||
             ControlCheckMark_CheckExact(inf->pObject))
           {
@@ -137,7 +137,7 @@ void CGUIPythonWindow::SetCallbackWindow(PyObject *object)
   pCallbackWindow = object;
 }
 
-void CGUIPythonWindow::WaitForActionEvent(DWORD timeout)
+void CGUIPythonWindow::WaitForActionEvent(unsigned int timeout)
 {
   g_pythonParser.WaitForEvent(m_actionEvent, timeout);
   ResetEvent(m_actionEvent);
@@ -156,9 +156,10 @@ int Py_XBMC_Event_OnControl(void* arg)
   if (arg != NULL)
   {
     PyXBMCAction* action = (PyXBMCAction*)arg;
-
-    PyObject_CallMethod(action->pCallbackWindow, "onControl", "O", action->pObject);
-
+    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onControl", (char*)"(O)", action->pObject);
+    if (ret) {
+       Py_DECREF(ret);
+    }
     delete action;
   }
   return 0;
@@ -172,9 +173,16 @@ int Py_XBMC_Event_OnAction(void* arg)
   if (arg != NULL)
   {
     PyXBMCAction* action = (PyXBMCAction*)arg;
+    Action *pAction= (Action *)action->pObject;
 
-    PyObject_CallMethod(action->pCallbackWindow, "onAction", "O", action->pObject);
-
+    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onAction", (char*)"(O)", pAction);
+    if (ret) {
+      Py_DECREF(ret);
+    }
+    else {
+      CLog::Log(LOGERROR,"Exception in python script's onAction");
+    	PyErr_Print();
+    }
     delete action;
   }
   return 0;

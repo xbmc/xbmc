@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -24,6 +22,7 @@
 #include "lib/libPython/Python/Python.h"
 #include "../XBPythonDll.h"
 #include <string>
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {

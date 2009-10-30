@@ -44,7 +44,7 @@ namespace PYXBMC
 {
   PyObject* ControlCheckMark_New(PyTypeObject *type, PyObject *args, PyObject *kwds )
   {
-    static char *keywords[] = {
+    static const char *keywords[] = {
       "x", "y", "width", "height", "label", "focusTexture", "noFocusTexture",
       "checkWidth", "checkHeight", "alignment", "font", "textColor", "disabledColor", NULL };
     ControlCheckMark *self;
@@ -75,8 +75,8 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "llllO|sslllsss:ControlCheckMark",
-      keywords,
+      (char*)"llllO|sslllsss:ControlCheckMark",
+      (char**)keywords,
       &self->dwPosX,
       &self->dwPosY,
       &self->dwWidth,
@@ -94,7 +94,7 @@ namespace PYXBMC
       Py_DECREF( self );
       return NULL;
     }
-    if (!PyGetUnicodeString(self->strText, pObjectText, 5))
+    if (!PyXBMCGetUnicodeString(self->strText, pObjectText, 5))
     {
       Py_DECREF( self );
       return NULL;
@@ -108,10 +108,10 @@ namespace PYXBMC
     }
     self->strTextureFocus = cTextureFocus ?
       cTextureFocus :
-      PyGetDefaultImage("checkmark", "texturefocus", "check-box.png");
+      PyXBMCGetDefaultImage((char*)"checkmark", (char*)"texturefocus", (char*)"check-box.png");
     self->strTextureNoFocus = cTextureNoFocus ?
       cTextureNoFocus :
-      PyGetDefaultImage("checkmark", "texturenofocus", "check-boxNF.png");
+      PyXBMCGetDefaultImage((char*)"checkmark", (char*)"texturenofocus", (char*)"check-boxNF.png");
 
     return (PyObject*)self;
   }
@@ -165,19 +165,19 @@ namespace PYXBMC
   {
     char *cDisabledColor = NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cDisabledColor))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cDisabledColor))	return NULL;
 
     if (cDisabledColor)
     {
       sscanf(cDisabledColor, "%x", &self->disabledColor);
     }
 
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl)
     {
       ((CGUICheckMarkControl*)self->pGUIControl)->PythonSetDisabledColor( self->disabledColor );
     }
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -203,12 +203,12 @@ namespace PYXBMC
     char* cDisabledColor = NULL;
 
     if (!PyArg_ParseTuple(
-      args, "O|sss",
+      args, (char*)"O|sss",
       &pObjectText, &cFont,
       &cTextColor,  &cDisabledColor))
       return NULL;
 
-    if (!PyGetUnicodeString(self->strText, pObjectText, 1))
+    if (!PyXBMCGetUnicodeString(self->strText, pObjectText, 1))
       return NULL;
 
     if (cFont) self->strFont = cFont;
@@ -221,7 +221,7 @@ namespace PYXBMC
       sscanf(cDisabledColor, "%x", &self->disabledColor);
     }
 
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl)
     {
       ((CGUICheckMarkControl*)self->pGUIControl)->PythonSetLabel(
@@ -231,7 +231,7 @@ namespace PYXBMC
       ((CGUICheckMarkControl*)self->pGUIControl)->PythonSetDisabledColor(
         self->disabledColor );
     }
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -248,14 +248,14 @@ namespace PYXBMC
   {
     bool isSelected = 0;
 
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl)
     {
       isSelected = ((CGUICheckMarkControl*)self->pGUIControl)->GetSelected();
     }
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
-    return Py_BuildValue("b", isSelected);
+    return Py_BuildValue((char*)"b", isSelected);
   }
 
   // setSelected() Method
@@ -271,25 +271,25 @@ namespace PYXBMC
   {
     char isSelected = 0;
 
-    if (!PyArg_ParseTuple(args, "b", &isSelected))
+    if (!PyArg_ParseTuple(args, (char*)"b", &isSelected))
       return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl)
     {
       ((CGUICheckMarkControl*)self->pGUIControl)->SetSelected(0 != isSelected);
     }
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
   }
 
   PyMethodDef ControlCheckMark_methods[] = {
-    {"getSelected", (PyCFunction)ControlCheckMark_GetSelected, METH_NOARGS, getSelected__doc__},
-    {"setSelected", (PyCFunction)ControlCheckMark_SetSelected, METH_VARARGS, setSelected__doc__},
-    {"setLabel", (PyCFunction)ControlCheckMark_SetLabel, METH_VARARGS, setLabel__doc__},
-    {"setDisabledColor", (PyCFunction)ControlCheckMark_SetDisabledColor, METH_VARARGS, setDisabledColor__doc__},
+    {(char*)"getSelected", (PyCFunction)ControlCheckMark_GetSelected, METH_NOARGS, getSelected__doc__},
+    {(char*)"setSelected", (PyCFunction)ControlCheckMark_SetSelected, METH_VARARGS, setSelected__doc__},
+    {(char*)"setLabel", (PyCFunction)ControlCheckMark_SetLabel, METH_VARARGS, setLabel__doc__},
+    {(char*)"setDisabledColor", (PyCFunction)ControlCheckMark_SetDisabledColor, METH_VARARGS, setDisabledColor__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -334,9 +334,9 @@ namespace PYXBMC
 
   void initControlCheckMark_Type()
   {
-    PyInitializeTypeObject(&ControlCheckMark_Type);
+    PyXBMCInitializeTypeObject(&ControlCheckMark_Type);
 
-    ControlCheckMark_Type.tp_name = "xbmcgui.ControlCheckMark";
+    ControlCheckMark_Type.tp_name = (char*)"xbmcgui.ControlCheckMark";
     ControlCheckMark_Type.tp_basicsize = sizeof(ControlCheckMark);
     ControlCheckMark_Type.tp_dealloc = (destructor)ControlCheckMark_Dealloc;
     ControlCheckMark_Type.tp_compare = 0;

@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -25,6 +23,8 @@
 #include "../XBPythonDll.h"
 #include "GUIControl.h"
 #include "listitem.h"
+
+#pragma once
 
 // python type checking
 #define Control_Check(op) PyObject_TypeCheck(op, &Control_Type)

@@ -64,4 +64,3 @@ void CGUIPythonWindowXMLDialog::Close()
   g_windowManager.RemoveDialog(GetID());
   m_bRunning = false;
 }
-

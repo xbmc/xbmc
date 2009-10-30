@@ -50,12 +50,12 @@ namespace PYXBMC
     PyObject *line = NULL;
     PyObject *heading = NULL;
     char bHidden = false;
-    if (!PyArg_ParseTuple(args, "|OOb", &line, &heading, &bHidden)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"|OOb", &line, &heading, &bHidden)) return NULL;
 
     string utf8Line;
-    if (line && !PyGetUnicodeString(utf8Line, line, 1)) return NULL;
+    if (line && !PyXBMCGetUnicodeString(utf8Line, line, 1)) return NULL;
     string utf8Heading;
-    if (heading && !PyGetUnicodeString(utf8Heading, heading, 2)) return NULL;
+    if (heading && !PyXBMCGetUnicodeString(utf8Heading, heading, 2)) return NULL;
 
     self->strDefault = utf8Line;
     self->strHeading = utf8Heading;
@@ -88,7 +88,8 @@ namespace PYXBMC
     pKeyboard->Initialize();
     pKeyboard->CenterWindow();
     pKeyboard->SetHeading(self->strHeading);
-    pKeyboard->SetText(CStdString(self->strDefault));
+    CStdString strDefault(self->strDefault);
+    pKeyboard->SetText(strDefault);
     pKeyboard->SetHiddenInput(self->bHidden);
 
     // do modal of dialog
@@ -111,10 +112,10 @@ namespace PYXBMC
   PyObject* Keyboard_SetDefault(Keyboard *self, PyObject *args)
   {
     PyObject *line = NULL;
-    if (!PyArg_ParseTuple(args, "|O", &line))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"|O", &line))	return NULL;
 
     string utf8Line;
-    if (line && !PyGetUnicodeString(utf8Line, line, 1)) return NULL;
+    if (line && !PyXBMCGetUnicodeString(utf8Line, line, 1)) return NULL;
     self->strDefault = utf8Line;
 
     CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
@@ -124,7 +125,8 @@ namespace PYXBMC
       return NULL;
     }
 
-    pKeyboard->SetText(CStdString(self->strDefault));
+    CStdString strDefault(self->strDefault);
+    pKeyboard->SetText(strDefault);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -141,7 +143,7 @@ namespace PYXBMC
   PyObject* Keyboard_SetHiddenInput(Keyboard *self, PyObject *args)
   {
     char bHidden = false;
-    if (!PyArg_ParseTuple(args, "|b", &bHidden))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"|b", &bHidden))	return NULL;
     self->bHidden = (0 != bHidden);
 
     CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
@@ -169,10 +171,10 @@ namespace PYXBMC
   PyObject* Keyboard_SetHeading(Keyboard *self, PyObject *args)
   {
     PyObject *line = NULL;
-    if (!PyArg_ParseTuple(args, "|O", &line)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"|O", &line)) return NULL;
 
     string utf8Line;
-    if (line && !PyGetUnicodeString(utf8Line, line, 1)) return NULL;
+    if (line && !PyXBMCGetUnicodeString(utf8Line, line, 1)) return NULL;
     self->strHeading = utf8Line;
 
     CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
@@ -207,7 +209,7 @@ namespace PYXBMC
       return NULL;
     }
 
-    return Py_BuildValue("s", pKeyboard->GetText().c_str());
+    return Py_BuildValue((char*)"s", pKeyboard->GetText().c_str());
   }
 
   // isConfirmed() Method
@@ -226,16 +228,16 @@ namespace PYXBMC
       return NULL;
     }
 
-    return Py_BuildValue("b", pKeyboard->IsConfirmed());
+    return Py_BuildValue((char*)"b", pKeyboard->IsConfirmed());
   }
 
   PyMethodDef Keyboard_methods[] = {
-    {"doModal", (PyCFunction)Keyboard_DoModal, METH_VARARGS, doModal__doc__},
-    {"setDefault", (PyCFunction)Keyboard_SetDefault, METH_VARARGS, setDefault__doc__},
-    {"setHeading", (PyCFunction)Keyboard_SetHeading, METH_VARARGS, setHeading__doc__},
-    {"setHiddenInput", (PyCFunction)Keyboard_SetHiddenInput, METH_VARARGS, setHiddenInput__doc__},
-    {"getText", (PyCFunction)Keyboard_GetText, METH_VARARGS, getText__doc__},
-    {"isConfirmed", (PyCFunction)Keyboard_IsConfirmed, METH_VARARGS, isConfirmed__doc__},
+    {(char*)"doModal", (PyCFunction)Keyboard_DoModal, METH_VARARGS, doModal__doc__},
+    {(char*)"setDefault", (PyCFunction)Keyboard_SetDefault, METH_VARARGS, setDefault__doc__},
+    {(char*)"setHeading", (PyCFunction)Keyboard_SetHeading, METH_VARARGS, setHeading__doc__},
+    {(char*)"setHiddenInput", (PyCFunction)Keyboard_SetHiddenInput, METH_VARARGS, setHiddenInput__doc__},
+    {(char*)"getText", (PyCFunction)Keyboard_GetText, METH_VARARGS, getText__doc__},
+    {(char*)"isConfirmed", (PyCFunction)Keyboard_IsConfirmed, METH_VARARGS, isConfirmed__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -270,9 +272,9 @@ namespace PYXBMC
 
   void initKeyboard_Type()
   {
-    PyInitializeTypeObject(&Keyboard_Type);
+    PyXBMCInitializeTypeObject(&Keyboard_Type);
 
-    Keyboard_Type.tp_name = "xbmc.Keyboard";
+    Keyboard_Type.tp_name = (char*)"xbmc.Keyboard";
     Keyboard_Type.tp_basicsize = sizeof(Keyboard);
     Keyboard_Type.tp_dealloc = (destructor)Keyboard_Dealloc;
     Keyboard_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;

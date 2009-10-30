@@ -43,7 +43,7 @@ namespace PYXBMC
 {
   PyObject* ControlImage_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = {
+    static const char *keywords[] = {
       "x", "y", "width", "height", "filename", "aspectRatio", "colorDiffuse", NULL };
     ControlImage *self;
     char *cImage = NULL;
@@ -58,7 +58,8 @@ namespace PYXBMC
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args, kwds,
-      "lllls|ls", keywords,
+      (char*)"lllls|ls",
+      (char**)keywords,
       &self->dwPosX,
       &self->dwPosY,
       &self->dwWidth,
@@ -113,15 +114,15 @@ namespace PYXBMC
   {
     char *cImage = NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cImage)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cImage)) return NULL;
 
     self->strFileName = cImage;
 
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl)
       ((CGUIImage*)self->pGUIControl)->SetFileName(self->strFileName);
 
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -138,24 +139,24 @@ namespace PYXBMC
   {
     char *cColorDiffuse = NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cColorDiffuse)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cColorDiffuse)) return NULL;
 
     if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->colorDiffuse);
     else self->colorDiffuse = 0;
 
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl)
       ((CGUIImage *)self->pGUIControl)->SetColorDiffuse(self->colorDiffuse);
 
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
     Py_INCREF(Py_None);
     return Py_None;
   }
 
 
   PyMethodDef ControlImage_methods[] = {
-    {"setImage", (PyCFunction)ControlImage_SetImage, METH_VARARGS, setImage__doc__},
-    {"setColorDiffuse", (PyCFunction)ControlImage_SetColorDiffuse, METH_VARARGS, setColorDiffuse__doc__},
+    {(char*)"setImage", (PyCFunction)ControlImage_SetImage, METH_VARARGS, setImage__doc__},
+    {(char*)"setColorDiffuse", (PyCFunction)ControlImage_SetColorDiffuse, METH_VARARGS, setColorDiffuse__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -193,9 +194,9 @@ namespace PYXBMC
 
   void initControlImage_Type()
   {
-    PyInitializeTypeObject(&ControlImage_Type);
+    PyXBMCInitializeTypeObject(&ControlImage_Type);
 
-    ControlImage_Type.tp_name = "xbmcgui.ControlImage";
+    ControlImage_Type.tp_name = (char*)"xbmcgui.ControlImage";
     ControlImage_Type.tp_basicsize = sizeof(ControlImage);
     ControlImage_Type.tp_dealloc = (destructor)ControlImage_Dealloc;
     ControlImage_Type.tp_compare = 0;

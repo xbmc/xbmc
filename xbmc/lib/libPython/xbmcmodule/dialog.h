@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -23,6 +21,7 @@
 
 #include "lib/libPython/python/Python.h"
 #include "window.h"
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {

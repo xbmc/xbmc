@@ -61,11 +61,11 @@ namespace PYXBMC
     string strXMLname, strFallbackPath;
     string strDefault = "Default";
 
-    if (!PyArg_ParseTuple(args, "OO|Ob", &pyOXMLname, &pyOname, &pyDName, &bForceDefaultSkin )) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"OO|Ob", &pyOXMLname, &pyOname, &pyDName, &bForceDefaultSkin )) return NULL;
 
-    PyGetUnicodeString(strXMLname, pyOXMLname);
-    PyGetUnicodeString(strFallbackPath, pyOname);
-    if (pyDName) PyGetUnicodeString(strDefault, pyDName);
+    PyXBMCGetUnicodeString(strXMLname, pyOXMLname);
+    PyXBMCGetUnicodeString(strFallbackPath, pyOname);
+    if (pyDName) PyXBMCGetUnicodeString(strDefault, pyDName);
 
     RESOLUTION res;
     CStdString strSkinPath;
@@ -145,9 +145,9 @@ namespace PYXBMC
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
     // Tells the window to remove the item at the specified position from the FileItem vector
-    PyGUILock();
+    PyXBMCGUILock();
     pwx->RemoveItem(itemPosition);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -183,7 +183,7 @@ namespace PYXBMC
     else
     {
       // object is probably a text item
-      if (!PyGetUnicodeString(strText, pObject, 1)) return NULL;
+      if (!PyXBMCGetUnicodeString(strText, pObject, 1)) return NULL;
       // object is a unicode string now, create a new ListItem
       pListItem = ListItem_FromString(strText);
     }
@@ -191,20 +191,20 @@ namespace PYXBMC
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
     // Tells the window to add the item to FileItem vector
-    PyGUILock();
+    PyXBMCGUILock();
     pwx->AddItem(pListItem->item, itemPosition);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
   }
 
   // refreshList() method
-  PyDoc_STRVAR(refreshList__doc__,
+  /*PyDoc_STRVAR(refreshList__doc__,
     "refreshList() -- Updates this Window List. (any new items will be shown once this command is ran.\n"
     "\n"
     "example:\n"
-    "  - self.refrestList()\n");
+    "  - self.refrestList()\n");*/
 
   // clearList() method
   PyDoc_STRVAR(clearList__doc__,
@@ -219,9 +219,9 @@ namespace PYXBMC
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
-    PyGUILock();
+    PyXBMCGUILock();
     pwx->ClearList();
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -245,9 +245,9 @@ namespace PYXBMC
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
-    PyGUILock();
+    PyXBMCGUILock();
     pwx->SetCurrentListPosition(listPos);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -266,9 +266,9 @@ namespace PYXBMC
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
-    PyGUILock();
+    PyXBMCGUILock();
     int listPos = pwx->GetCurrentListPosition();
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_BuildValue((char*)"l", listPos);
@@ -292,19 +292,19 @@ namespace PYXBMC
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
-    PyGUILock();
+    PyXBMCGUILock();
     CFileItemPtr fi = pwx->GetListItem(listPos);
 
     if (fi == NULL)
     {
-      PyGUIUnlock();
+      PyXBMCGUIUnlock();
       PyErr_SetString(PyExc_TypeError, "Index out of range");
       return NULL;
     }
 
     ListItem* sListItem = (ListItem*)ListItem_Type.tp_alloc(&ListItem_Type, 0);
     sListItem->item = fi;
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(sListItem);
     return (PyObject *)sListItem;
@@ -323,9 +323,9 @@ namespace PYXBMC
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
-    PyGUILock();
+    PyXBMCGUILock();
     int listSize = pwx->GetListSize();
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_BuildValue((char*)"l", listSize);
@@ -364,15 +364,15 @@ namespace PYXBMC
     if (!key || !value) return NULL;
 
     CStdString uText;
-    if (!PyGetUnicodeString(uText, value, 1))
+    if (!PyXBMCGetUnicodeString(uText, value, 1))
       return NULL;
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
     CStdString lowerKey = key;
 
-    PyGUILock();
+    PyXBMCGUILock();
     pwx->SetProperty(lowerKey.ToLower(), uText.c_str());
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -418,7 +418,7 @@ namespace PYXBMC
 
   void initWindowXML_Type()
   {
-    PyInitializeTypeObject(&WindowXML_Type);
+    PyXBMCInitializeTypeObject(&WindowXML_Type);
 
     WindowXML_Type.tp_name = (char*)"xbmcgui.WindowXML";
     WindowXML_Type.tp_basicsize = sizeof(WindowXML);
@@ -434,4 +434,5 @@ namespace PYXBMC
 #ifdef __cplusplus
 }
 #endif
+
 

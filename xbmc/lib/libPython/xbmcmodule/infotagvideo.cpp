@@ -61,7 +61,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetDirector(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.m_strDirector.c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.m_strDirector.c_str());
   }
 
   // InfoTagVideo_GetWritingCredits
@@ -70,7 +70,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetWritingCredits(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.m_strWritingCredits.c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.m_strWritingCredits.c_str());
   }
 
   // InfoTagVideo_GetGenre
@@ -79,7 +79,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetGenre(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.m_strGenre.c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.m_strGenre.c_str());
   }
 
   // InfoTagVideo_GetTagLine
@@ -88,7 +88,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetTagLine(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.m_strTagLine.c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.m_strTagLine.c_str());
   }
 
   // InfoTagVideo_GetPlotOutline
@@ -97,7 +97,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetPlotOutline(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.m_strPlotOutline.c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.m_strPlotOutline.c_str());
   }
 
   // InfoTagVideo_GetPlot
@@ -106,7 +106,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetPlot(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.m_strPlot.c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.m_strPlot.c_str());
   }
 
   // InfoTagVideo_GetPictureURL
@@ -115,7 +115,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetPictureURL(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.m_strPictureURL.GetFirstThumb().m_url.c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.m_strPictureURL.GetFirstThumb().m_url.c_str());
   }
 
   // InfoTagVideo_GetTitle
@@ -124,7 +124,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetTitle(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.m_strTitle.c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.m_strTitle.c_str());
   }
 
   // InfoTagVideo_GetVotes
@@ -133,7 +133,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetVotes(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.m_strVotes.c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.m_strVotes.c_str());
   }
 
   // InfoTagVideo_GetCast
@@ -149,7 +149,7 @@ namespace PYXBMC
       character.Format("%s %s %s\n", it->first.c_str(), g_localizeStrings.Get(20347).c_str(), it->second.c_str());
       cast += character;
     }*/
-    return Py_BuildValue("s", cast.c_str());
+    return Py_BuildValue((char*)"s", cast.c_str());
   }
 
   // InfoTagVideo_GetFile
@@ -158,7 +158,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetFile(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.m_strFile.c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.m_strFile.c_str());
   }
 
   // InfoTagVideo_GetPath
@@ -167,7 +167,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetPath(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.m_strPath.c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.m_strPath.c_str());
   }
 
   /*// InfoTagVideo_GetDVDLabel
@@ -186,7 +186,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetIMDBNumber(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue("s", self->infoTag.m_strIMDBNumber.c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.m_strIMDBNumber.c_str());
   }
 
   // InfoTagVideo_GetIMDBNumber
@@ -195,7 +195,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetYear(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue("i", self->infoTag.m_iYear);
+    return Py_BuildValue((char*)"i", self->infoTag.m_iYear);
   }
 
   // InfoTagVideo_GetIMDBNumber
@@ -204,26 +204,26 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetRating(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue("f", self->infoTag.m_fRating);
+    return Py_BuildValue((char*)"f", self->infoTag.m_fRating);
   }
 
   PyMethodDef InfoTagVideo_methods[] = {
-    {"getDirector", (PyCFunction)InfoTagVideo_GetDirector, METH_VARARGS, getDirector__doc__},
-    {"getWritingCredits", (PyCFunction)InfoTagVideo_GetWritingCredits, METH_VARARGS, getWritingCredits__doc__},
-    {"getGenre", (PyCFunction)InfoTagVideo_GetGenre, METH_VARARGS, getGenre__doc__},
-    {"getTagLine", (PyCFunction)InfoTagVideo_GetTagLine, METH_VARARGS, getTagLine__doc__},
-    {"getPlotOutline", (PyCFunction)InfoTagVideo_GetPlotOutline, METH_VARARGS, getPlotOutline__doc__},
-    {"getPlot", (PyCFunction)InfoTagVideo_GetPlot, METH_VARARGS, getPlot__doc__},
-    {"getPictureURL", (PyCFunction)InfoTagVideo_GetPictureURL, METH_VARARGS, getPictureURL__doc__},
-    {"getTitle", (PyCFunction)InfoTagVideo_GetTitle, METH_VARARGS, getTitle__doc__},
-    {"getVotes", (PyCFunction)InfoTagVideo_GetVotes, METH_VARARGS, getVotes__doc__},
-    {"getCast", (PyCFunction)InfoTagVideo_GetCast, METH_VARARGS, getCast__doc__},
-    {"getFile", (PyCFunction)InfoTagVideo_GetFile, METH_VARARGS, getFile__doc__},
-    {"getPath", (PyCFunction)InfoTagVideo_GetPath, METH_VARARGS, getPath__doc__},
-    //{"getDVDLabel", (PyCFunction)InfoTagVideo_GetDVDLabel, METH_VARARGS, getDVDLabel__doc__},
-    {"getIMDBNumber", (PyCFunction)InfoTagVideo_GetIMDBNumber, METH_VARARGS, getIMDBNumber__doc__},
-    {"getYear", (PyCFunction)InfoTagVideo_GetYear, METH_VARARGS, getYear__doc__},
-    {"getRating", (PyCFunction)InfoTagVideo_GetRating, METH_VARARGS, getRating__doc__},
+    {(char*)"getDirector", (PyCFunction)InfoTagVideo_GetDirector, METH_VARARGS, getDirector__doc__},
+    {(char*)"getWritingCredits", (PyCFunction)InfoTagVideo_GetWritingCredits, METH_VARARGS, getWritingCredits__doc__},
+    {(char*)"getGenre", (PyCFunction)InfoTagVideo_GetGenre, METH_VARARGS, getGenre__doc__},
+    {(char*)"getTagLine", (PyCFunction)InfoTagVideo_GetTagLine, METH_VARARGS, getTagLine__doc__},
+    {(char*)"getPlotOutline", (PyCFunction)InfoTagVideo_GetPlotOutline, METH_VARARGS, getPlotOutline__doc__},
+    {(char*)"getPlot", (PyCFunction)InfoTagVideo_GetPlot, METH_VARARGS, getPlot__doc__},
+    {(char*)"getPictureURL", (PyCFunction)InfoTagVideo_GetPictureURL, METH_VARARGS, getPictureURL__doc__},
+    {(char*)"getTitle", (PyCFunction)InfoTagVideo_GetTitle, METH_VARARGS, getTitle__doc__},
+    {(char*)"getVotes", (PyCFunction)InfoTagVideo_GetVotes, METH_VARARGS, getVotes__doc__},
+    {(char*)"getCast", (PyCFunction)InfoTagVideo_GetCast, METH_VARARGS, getCast__doc__},
+    {(char*)"getFile", (PyCFunction)InfoTagVideo_GetFile, METH_VARARGS, getFile__doc__},
+    {(char*)"getPath", (PyCFunction)InfoTagVideo_GetPath, METH_VARARGS, getPath__doc__},
+    //{"(char*)getDVDLabel", (PyCFunction)InfoTagVideo_GetDVDLabel, METH_VARARGS, getDVDLabel__doc__},
+    {(char*)"getIMDBNumber", (PyCFunction)InfoTagVideo_GetIMDBNumber, METH_VARARGS, getIMDBNumber__doc__},
+    {(char*)"getYear", (PyCFunction)InfoTagVideo_GetYear, METH_VARARGS, getYear__doc__},
+    {(char*)"getRating", (PyCFunction)InfoTagVideo_GetRating, METH_VARARGS, getRating__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -244,9 +244,9 @@ namespace PYXBMC
 
   void initInfoTagVideo_Type()
   {
-    PyInitializeTypeObject(&InfoTagVideo_Type);
+    PyXBMCInitializeTypeObject(&InfoTagVideo_Type);
 
-    InfoTagVideo_Type.tp_name = "xbmc.InfoTagVideo";
+    InfoTagVideo_Type.tp_name = (char*)"xbmc.InfoTagVideo";
     InfoTagVideo_Type.tp_basicsize = sizeof(InfoTagVideo);
     InfoTagVideo_Type.tp_dealloc = (destructor)InfoTagVideo_Dealloc;
     InfoTagVideo_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;

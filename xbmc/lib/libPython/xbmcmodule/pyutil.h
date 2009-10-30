@@ -2,7 +2,7 @@
 
 /*
  *      Copyright (C) 2005-2008 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,13 +35,13 @@ extern "C" {
 
 namespace PYXBMC
 {
-  int   PyGetUnicodeString(std::string& buf, PyObject* pObject, int pos = -1);
-  void  PyGUILock();
-  void  PyGUIUnlock();
-  const char* PyGetDefaultImage(char* controlType, char* textureType, char* cDefault);
-  bool  PyWindowIsNull(void* pWindow);
+  int   PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, int pos = -1);
+  void  PyXBMCGUILock();
+  void  PyXBMCGUIUnlock();
+  const char* PyXBMCGetDefaultImage(char* controlType, char* textureType, char* cDefault);
+  bool  PyXBMCWindowIsNull(void* pWindow);
 
-  void  PyInitializeTypeObject(PyTypeObject* type_object);
+  void  PyXBMCInitializeTypeObject(PyTypeObject* type_object);
 }
 
 #ifdef __cplusplus

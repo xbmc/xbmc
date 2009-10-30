@@ -53,10 +53,14 @@ namespace PYXBMC
 
     self = (ControlSpin*)type->tp_alloc(type, 0);
     if (!self) return NULL;
+    new(&self->strTextureUp) string();    
+    new(&self->strTextureDown) string();    
+    new(&self->strTextureUpFocus) string();    
+    new(&self->strTextureDownFocus) string();      
 
     if (!PyArg_ParseTuple(args, "llll|Oss", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
       &pObjectText, &cTextureFocus, &cTextureNoFocus)) return NULL;
-    if (!PyGetUnicodeString(self->strText, pObjectText, 5)) return NULL;
+    if (!PyXBMCGetUnicodeString(self->strText, pObjectText, 5)) return NULL;
 
     // SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor)
     self->strFont = "font13";
@@ -90,10 +94,10 @@ namespace PYXBMC
     self->dwHeight = 16;
 
     // get default images
-    self->strTextureUp = PyGetDefaultImage("listcontrol", "textureup", "scroll-up.png");
-    self->strTextureDown = PyGetDefaultImage("listcontrol", "texturedown", "scroll-down.png");
-    self->strTextureUpFocus = PyGetDefaultImage("listcontrol", "textureupfocus", "scroll-up-focus.png");
-    self->strTextureDownFocus = PyGetDefaultImage("listcontrol", "texturedownfocus", "scroll-down-focus.png");
+    self->strTextureUp = PyXBMCGetDefaultImage((char*)"listcontrol", (char*)"textureup", (char*)"scroll-up.png");
+    self->strTextureDown = PyXBMCGetDefaultImage((char*)"listcontrol", (char*)"texturedown", (char*)"scroll-down.png");
+    self->strTextureUpFocus = PyXBMCGetDefaultImage((char*)"listcontrol", (char*)"textureupfocus", (char*)"scroll-up-focus.png");
+    self->strTextureDownFocus = PyXBMCGetDefaultImage((char*)"listcontrol", (char*)"texturedownfocus", (char*)"scroll-down-focus.png");
 
     return (PyObject*)self;
   }
@@ -111,14 +115,14 @@ namespace PYXBMC
   {
     char *cColor = NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cColor))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cColor))	return NULL;
 
     if (cColor) sscanf(cColor, "%x", &self->color);
 
-    PyGUILock();
+    PyXBMCGUILock();
     //if (self->pGUIControl)
       //((CGUISpinControl*)self->pGUIControl)->SetColor(self->dwDColor);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -137,27 +141,27 @@ namespace PYXBMC
   {
     char *cLine[4];
 
-    if (!PyArg_ParseTuple(args, "ssss", &cLine[0], &cLine[1], &cLine[2], &cLine[3]))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"ssss", &cLine[0], &cLine[1], &cLine[2], &cLine[3]))	return NULL;
 
     self->strTextureUp = cLine[0];
     self->strTextureDown = cLine[1];
     self->strTextureUpFocus = cLine[2];
     self->strTextureDownFocus = cLine[3];
     /*
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl)
     {
       CGUISpinControl* pControl = (CGUISpinControl*)self->pGUIControl;
       pControl->se
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
     */
     Py_INCREF(Py_None);
     return Py_None;
   }
 
   PyMethodDef ControlSpin_methods[] = {
-    //{"setColor", (PyCFunction)ControlSpin_SetColor, METH_VARARGS, ""},
-    {"setTextures", (PyCFunction)ControlSpin_SetTextures, METH_VARARGS, setTextures__doc__},
+    //{(char*)"setColor", (PyCFunction)ControlSpin_SetColor, METH_VARARGS, ""},
+    {(char*)"setTextures", (PyCFunction)ControlSpin_SetTextures, METH_VARARGS, setTextures__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -180,9 +184,9 @@ namespace PYXBMC
 
   void initControlSpin_Type()
   {
-    PyInitializeTypeObject(&ControlSpin_Type);
+    PyXBMCInitializeTypeObject(&ControlSpin_Type);
 
-    ControlSpin_Type.tp_name = "xbmcgui.ControlSpin";
+    ControlSpin_Type.tp_name = (char*)"xbmcgui.ControlSpin";
     ControlSpin_Type.tp_basicsize = sizeof(ControlSpin);
     ControlSpin_Type.tp_dealloc = (destructor)ControlSpin_Dealloc;
     ControlSpin_Type.tp_compare = 0;

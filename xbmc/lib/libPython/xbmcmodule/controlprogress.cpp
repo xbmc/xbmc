@@ -61,8 +61,8 @@ namespace PYXBMC
 
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(args, kwds,
-      "llll|sssss",
-      keywords,
+      (char*)"llll|sssss",
+      (char**)keywords,
       &self->dwPosX,
       &self->dwPosY,
       &self->dwWidth,
@@ -78,11 +78,11 @@ namespace PYXBMC
     }
 
     // if texture is supplied use it, else get default ones
-    self->strTextureBg = cTextureBg ? cTextureBg : PyGetDefaultImage("progress", "texturebg", "progress_back.png");
-    self->strTextureLeft = cTextureLeft ? cTextureLeft : PyGetDefaultImage("progress", "lefttexture", "progress_left.png");
-    self->strTextureMid = cTextureMid ? cTextureMid : PyGetDefaultImage("progress", "midtexture", "progress_mid.png");
-    self->strTextureRight = cTextureRight ? cTextureRight : PyGetDefaultImage("progress", "righttexture", "progress_right.png");
-    self->strTextureOverlay = cTextureOverLay ? cTextureOverLay : PyGetDefaultImage("progress", "overlaytexture", "progress_over.png");
+    self->strTextureBg = cTextureBg ? cTextureBg : PyXBMCGetDefaultImage((char*)"progress", (char*)"texturebg", (char*)"progress_back.png");
+    self->strTextureLeft = cTextureLeft ? cTextureLeft : PyXBMCGetDefaultImage((char*)"progress", (char*)"lefttexture", (char*)"progress_left.png");
+    self->strTextureMid = cTextureMid ? cTextureMid : PyXBMCGetDefaultImage((char*)"progress", (char*)"midtexture", (char*)"progress_mid.png");
+    self->strTextureRight = cTextureRight ? cTextureRight : PyXBMCGetDefaultImage((char*)"progress", (char*)"righttexture", (char*)"progress_right.png");
+    self->strTextureOverlay = cTextureOverLay ? cTextureOverLay : PyXBMCGetDefaultImage((char*)"progress", (char*)"overlaytexture", (char*)"progress_over.png");
 
     //if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->colorDiffuse);
     //else self->colorDiffuse = 0;
@@ -127,14 +127,14 @@ namespace PYXBMC
   PyObject* ControlProgress_SetPercent(ControlProgress *self, PyObject *args)
   {
     float fPercent = 0;
-    if (!PyArg_ParseTuple(args, "f", &fPercent)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"f", &fPercent)) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl)
     {
       ((CGUIProgressControl*)self->pGUIControl)->SetPercentage(fPercent);
     }
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -151,14 +151,14 @@ namespace PYXBMC
     if (self->pGUIControl)
     {
       fPercent = ((CGUIProgressControl*)self->pGUIControl)->GetPercentage();
-      return Py_BuildValue("f", fPercent);
+      return Py_BuildValue((char*)"f", fPercent);
     }
-    return Py_BuildValue("f", 0);
+    return Py_BuildValue((char*)"f", 0);
   }
 
   PyMethodDef ControlProgress_methods[] = {
-    {"setPercent", (PyCFunction)ControlProgress_SetPercent, METH_VARARGS, setPercent__doc__},
-    {"getPercent", (PyCFunction)ControlProgress_GetPercent, METH_VARARGS, getPercent__doc__},
+    {(char*)"setPercent", (PyCFunction)ControlProgress_SetPercent, METH_VARARGS, setPercent__doc__},
+    {(char*)"getPercent", (PyCFunction)ControlProgress_GetPercent, METH_VARARGS, getPercent__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -197,9 +197,9 @@ namespace PYXBMC
 
   void initControlProgress_Type()
   {
-    PyInitializeTypeObject(&ControlProgress_Type);
+    PyXBMCInitializeTypeObject(&ControlProgress_Type);
 
-    ControlProgress_Type.tp_name = "xbmcgui.ControlProgress";
+    ControlProgress_Type.tp_name = (char*)"xbmcgui.ControlProgress";
     ControlProgress_Type.tp_basicsize = sizeof(ControlProgress);
     ControlProgress_Type.tp_dealloc = (destructor)ControlProgress_Dealloc;
     ControlProgress_Type.tp_compare = 0;

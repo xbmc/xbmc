@@ -47,7 +47,7 @@ namespace PYXBMC
   PyObject* ListItem_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
     ListItem *self;
-    static char *keywords[] = { "label", "label2",
+    static const char *keywords[] = { "label", "label2",
       "iconImage", "thumbnailImage", "path", NULL };
 
     PyObject* label = NULL;
@@ -87,11 +87,11 @@ namespace PYXBMC
       return NULL;
     }
     CStdString utf8String;
-    if (label && PyGetUnicodeString(utf8String, label, 1))
+    if (label && PyXBMCGetUnicodeString(utf8String, label, 1))
     {
       self->item->SetLabel( utf8String );
     }
-    if (label2 && PyGetUnicodeString(utf8String, label2, 1))
+    if (label2 && PyXBMCGetUnicodeString(utf8String, label2, 1))
     {
       self->item->SetLabel2( utf8String );
     }
@@ -103,7 +103,7 @@ namespace PYXBMC
     {
       self->item->SetThumbnailImage( cThumbnailImage );
     }
-    if (path && PyGetUnicodeString(utf8String, path, 1))
+    if (path && PyXBMCGetUnicodeString(utf8String, path, 1))
     {
       self->item->m_strPath = utf8String;
     }
@@ -144,11 +144,11 @@ namespace PYXBMC
   {
     if (!self->item) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     const char *cLabel = self->item->GetLabel().c_str();
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
-    return Py_BuildValue("s", cLabel);
+    return Py_BuildValue((char*)"s", cLabel);
   }
 
   PyDoc_STRVAR(getLabel2__doc__,
@@ -161,11 +161,11 @@ namespace PYXBMC
   {
     if (!self->item) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     const char *cLabel = self->item->GetLabel2().c_str();
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
-    return Py_BuildValue("s", cLabel);
+    return Py_BuildValue((char*)"s", cLabel);
   }
 
   PyDoc_STRVAR(setLabel__doc__,
@@ -181,15 +181,15 @@ namespace PYXBMC
     if (!self->item) return NULL;
     PyObject* unicodeLine = NULL;
 
-    if (!PyArg_ParseTuple(args, "O", &unicodeLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &unicodeLine)) return NULL;
 
     string utf8Line;
-    if (unicodeLine && !PyGetUnicodeString(utf8Line, unicodeLine, 1))
+    if (unicodeLine && !PyXBMCGetUnicodeString(utf8Line, unicodeLine, 1))
       return NULL;
     // set label
-    PyGUILock();
+    PyXBMCGUILock();
     self->item->SetLabel(utf8Line);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -208,15 +208,15 @@ namespace PYXBMC
     PyObject* unicodeLine = NULL;
     if (!self->item) return NULL;
 
-    if (!PyArg_ParseTuple(args, "O", &unicodeLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &unicodeLine)) return NULL;
 
     string utf8Line;
-    if (unicodeLine && !PyGetUnicodeString(utf8Line, unicodeLine, 1))
+    if (unicodeLine && !PyXBMCGetUnicodeString(utf8Line, unicodeLine, 1))
       return NULL;
     // set label
-    PyGUILock();
+    PyXBMCGUILock();
     self->item->SetLabel2(utf8Line);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -235,12 +235,12 @@ namespace PYXBMC
     char *cLine = NULL;
     if (!self->item) return NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
     // set label
-    PyGUILock();
+    PyXBMCGUILock();
     self->item->SetIconImage(cLine ? cLine : "");
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -259,12 +259,12 @@ namespace PYXBMC
     char *cLine = NULL;
     if (!self->item) return NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
     // set label
-    PyGUILock();
+    PyXBMCGUILock();
     self->item->SetThumbnailImage(cLine ? cLine : "");
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -283,11 +283,11 @@ namespace PYXBMC
     if (!self->item) return NULL;
 
     char bOnOff = false;
-    if (!PyArg_ParseTuple(args, "b", &bOnOff)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"b", &bOnOff)) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     self->item->Select(0 != bOnOff);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -303,11 +303,11 @@ namespace PYXBMC
   {
     if (!self->item) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     bool bOnOff = self->item->IsSelected();
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
-    return Py_BuildValue("b", bOnOff);
+    return Py_BuildValue((char*)"b", bOnOff);
   }
 
   PyDoc_STRVAR(setInfo__doc__,
@@ -382,14 +382,14 @@ namespace PYXBMC
 
   PyObject* ListItem_SetInfo(ListItem *self, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "type", "infoLabels", NULL };
+    static const char *keywords[] = { "type", "infoLabels", NULL };
     char *cType = NULL;
     PyObject *pInfoLabels = NULL;
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "sO",
-      keywords,
+      (char*)"sO",
+      (char**)keywords,
       &cType,
       &pInfoLabels))
     {
@@ -409,10 +409,10 @@ namespace PYXBMC
     PyObject *key, *value;
     int pos = 0;
 
-    PyGUILock();
+    PyXBMCGUILock();
 
     CStdString tmp;
-    while (PyDict_Next(pInfoLabels, &pos, &key, &value)) {
+    while (PyDict_Next(pInfoLabels, (Py_ssize_t*)&pos, &key, &value)) {
       if (strcmpi(cType, "video") == 0)
       {
         if (strcmpi(PyString_AsString(key), "year") == 0)
@@ -430,7 +430,7 @@ namespace PYXBMC
         else if (strcmpi(PyString_AsString(key), "rating") == 0)
           self->item->GetVideoInfoTag()->m_fRating = (float)PyFloat_AsDouble(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
-          self->item->m_dwSize = (__int64)PyLong_AsLongLong(value);
+          self->item->m_dwSize = (int64_t)PyLong_AsLongLong(value);
         else if (strcmpi(PyString_AsString(key), "watched") == 0) // backward compat - do we need it?
           self->item->GetVideoInfoTag()->m_playCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "playcount") == 0)
@@ -454,20 +454,20 @@ namespace PYXBMC
             PyObject *pRole = NULL;
             if (PyObject_TypeCheck(pTuple, &PyTuple_Type))
             {
-              if (!PyArg_ParseTuple(pTuple, "O|O", &pActor, &pRole)) continue;
+              if (!PyArg_ParseTuple(pTuple, (char*)"O|O", &pActor, &pRole)) continue;
             }
             else
               pActor = pTuple;
             SActorInfo info;
-            if (!PyGetUnicodeString(info.strName, pActor, 1)) continue;
+            if (!PyXBMCGetUnicodeString(info.strName, pActor, 1)) continue;
             if (pRole != NULL)
-              PyGetUnicodeString(info.strRole, pRole, 1);
+              PyXBMCGetUnicodeString(info.strRole, pRole, 1);
             self->item->GetVideoInfoTag()->m_cast.push_back(info);
           }
         }
         else
         {
-          if (!PyGetUnicodeString(tmp, value, 1)) continue;
+          if (!PyXBMCGetUnicodeString(tmp, value, 1)) continue;
           if (strcmpi(PyString_AsString(key), "genre") == 0)
             self->item->GetVideoInfoTag()->m_strGenre = tmp;
           else if (strcmpi(PyString_AsString(key), "director") == 0)
@@ -523,14 +523,14 @@ namespace PYXBMC
         else if (strcmpi(PyString_AsString(key), "count") == 0)
           self->item->m_iprogramCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
-          self->item->m_dwSize = (__int64)PyLong_AsLongLong(value);
+          self->item->m_dwSize = (int64_t)PyLong_AsLongLong(value);
         else if (strcmpi(PyString_AsString(key), "duration") == 0)
           self->item->GetMusicInfoTag()->SetDuration(PyInt_AsLong(value));
         else if (strcmpi(PyString_AsString(key), "year") == 0)
           self->item->GetMusicInfoTag()->SetYear(PyInt_AsLong(value));
         else
         {
-          if (!PyGetUnicodeString(tmp, value, 1)) continue;
+          if (!PyXBMCGetUnicodeString(tmp, value, 1)) continue;
           if (strcmpi(PyString_AsString(key), "genre") == 0)
             self->item->GetMusicInfoTag()->SetGenre(tmp);
           else if (strcmpi(PyString_AsString(key), "album") == 0)
@@ -556,10 +556,10 @@ namespace PYXBMC
         if (strcmpi(PyString_AsString(key), "count") == 0)
           self->item->m_iprogramCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
-          self->item->m_dwSize = (__int64)PyLong_AsLongLong(value);
+          self->item->m_dwSize = (int64_t)PyLong_AsLongLong(value);
         else
         {
-          if (!PyGetUnicodeString(tmp, value, 1)) continue;
+          if (!PyXBMCGetUnicodeString(tmp, value, 1)) continue;
           if (strcmpi(PyString_AsString(key), "title") == 0)
             self->item->m_strTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "picturepath") == 0)
@@ -580,7 +580,7 @@ namespace PYXBMC
         self->item->GetPictureInfoTag()->SetLoaded(true);
       }
     }
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -608,15 +608,15 @@ namespace PYXBMC
   {
     if (!self->item) return NULL;
 
-    static char *keywords[] = { "key", "value", NULL };
+    static const char *keywords[] = { "key", "value", NULL };
     char *key = NULL;
     PyObject *value = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "sO",
-      keywords,
+      (char*)"sO",
+      (char**)keywords,
       &key,
       &value))
     {
@@ -625,10 +625,10 @@ namespace PYXBMC
     if (!key || !value) return NULL;
 
     string uText;
-    if (!PyGetUnicodeString(uText, value, 1))
+    if (!PyXBMCGetUnicodeString(uText, value, 1))
       return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     CStdString lowerKey = key;
     if (lowerKey.CompareNoCase("startoffset") == 0)
     { // special case for start offset - don't actually store in a property,
@@ -636,8 +636,8 @@ namespace PYXBMC
       self->item->m_lStartOffset = (int)(atof(uText.c_str()) * 75.0); // we store the offset in frames, or 1/75th of a second
     }
     else
-    self->item->SetProperty(lowerKey.ToLower(), uText.c_str());
-    PyGUIUnlock();
+      self->item->SetProperty(lowerKey.ToLower(), uText.c_str());
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -659,21 +659,21 @@ namespace PYXBMC
   {
     if (!self->item) return NULL;
 
-    static char *keywords[] = { "key", NULL };
+    static const char *keywords[] = { "key", NULL };
     char *key = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "s",
-      keywords,
+      (char*)"s",
+      (char**)keywords,
       &key))
     {
       return NULL;
     }
     if (!key) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     CStdString lowerKey = key;
     CStdString value;
     if (lowerKey.CompareNoCase("startoffset") == 0)
@@ -683,9 +683,9 @@ namespace PYXBMC
     }
     else
       value = self->item->GetProperty(lowerKey.ToLower());
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
-    return Py_BuildValue("s", value.c_str());
+    return Py_BuildValue((char*)"s", value.c_str());
   }
 
   // addContextMenuItems() method
@@ -744,12 +744,12 @@ namespace PYXBMC
       if (!label || !action) return NULL;
 
       string uText;
-      if (!PyGetUnicodeString(uText, label, 1))
+      if (!PyXBMCGetUnicodeString(uText, label, 1))
         return NULL;
       string uAction;
-      if (!PyGetUnicodeString(uAction, action, 1))
+      if (!PyXBMCGetUnicodeString(uAction, action, 1))
         return NULL;
-      PyGUILock();
+      PyXBMCGUILock();
 
       CStdString property;
       property.Format("contextmenulabel(%i)", item);
@@ -758,7 +758,7 @@ namespace PYXBMC
       property.Format("contextmenuaction(%i)", item);
       self->item->SetProperty(property, uAction);
 
-      PyGUIUnlock();
+      PyXBMCGUIUnlock();
     }
 
     // set our replaceItems status
@@ -799,12 +799,12 @@ namespace PYXBMC
     }
 
     string path;
-    if (pPath && !PyGetUnicodeString(path, pPath, 1))
+    if (pPath && !PyXBMCGetUnicodeString(path, pPath, 1))
       return NULL;
     // set path
-    PyGUILock();
+    PyXBMCGUILock();
     self->item->m_strPath = path;
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -856,9 +856,9 @@ namespace PYXBMC
 
   void initListItem_Type()
   {
-    PyInitializeTypeObject(&ListItem_Type);
+    PyXBMCInitializeTypeObject(&ListItem_Type);
 
-    ListItem_Type.tp_name = "xbmcgui.ListItem";
+    ListItem_Type.tp_name = (char*)"xbmcgui.ListItem";
     ListItem_Type.tp_basicsize = sizeof(ListItem);
     ListItem_Type.tp_dealloc = (destructor)ListItem_Dealloc;
     ListItem_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;

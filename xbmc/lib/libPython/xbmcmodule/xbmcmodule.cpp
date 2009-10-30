@@ -228,7 +228,7 @@ namespace PYXBMC
   PyObject* XBMC_ExecuteScript(PyObject *self, PyObject *args)
   {
     char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
     ThreadMessage tMsg = {TMSG_EXECUTE_SCRIPT};
     tMsg.strParam = cLine;
@@ -252,7 +252,7 @@ namespace PYXBMC
   PyObject* XBMC_ExecuteBuiltIn(PyObject *self, PyObject *args)
   {
     char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
     g_applicationMessenger.ExecBuiltIn(cLine);
 
@@ -275,7 +275,7 @@ namespace PYXBMC
   {
     char *cLine = NULL;
     CStdString ret;
-    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
     if (!m_pXbmcHttp)
     {
       CSectionLoader::Load("LIBHTTP");
@@ -309,7 +309,7 @@ namespace PYXBMC
   PyObject* XBMC_Sleep(PyObject *self, PyObject *args)
   {
     PyObject *pObject;
-    if (!PyArg_ParseTuple(args, "O", &pObject)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pObject)) return NULL;
     if (!PyInt_Check(pObject))
     {
       PyErr_Format(PyExc_TypeError, "argument must be a bool(integer) value");
@@ -346,7 +346,7 @@ namespace PYXBMC
   PyObject* XBMC_GetLocalizedString(PyObject *self, PyObject *args)
   {
     int iString;
-    if (!PyArg_ParseTuple(args, "i", &iString)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"i", &iString)) return NULL;
 
     CStdStringW unicodeLabel;
     if (iString >= 30000 && iString <= 30999)
@@ -356,7 +356,7 @@ namespace PYXBMC
     else
       g_charsetConverter.utf8ToW(g_localizeStrings.Get(iString), unicodeLabel);
 
-    return Py_BuildValue("u", unicodeLabel.c_str());
+    return Py_BuildValue((char*)"u", unicodeLabel.c_str());
   }
 
   // getSkinDir() method
@@ -484,10 +484,10 @@ namespace PYXBMC
   PyObject* XBMC_GetInfoLabel(PyObject *self, PyObject *args)
   {
     char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
     int ret = g_infoManager.TranslateString(cLine);
-    return Py_BuildValue("s", g_infoManager.GetLabel(ret).c_str());
+    return Py_BuildValue((char*)"s", g_infoManager.GetLabel(ret).c_str());
   }
 
   // getInfoImage() method
@@ -505,10 +505,10 @@ namespace PYXBMC
   PyObject* XBMC_GetInfoImage(PyObject *self, PyObject *args)
   {
     char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
     int ret = g_infoManager.TranslateString(cLine);
-    return Py_BuildValue("s", g_infoManager.GetImage(ret, WINDOW_INVALID).c_str());
+    return Py_BuildValue((char*)"s", g_infoManager.GetImage(ret, WINDOW_INVALID).c_str());
   }
 
   // playSFX() method
@@ -524,7 +524,7 @@ namespace PYXBMC
   {
     const char *cFile = NULL;
 
-    if (!PyArg_ParseTuple(args, "s", &cFile)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cFile)) return NULL;
 
     if (CFile::Exists(cFile))
     {
@@ -548,7 +548,7 @@ namespace PYXBMC
   {
     int yesNo = 1;
 
-    if (!PyArg_ParseTuple(args, "i", &yesNo)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"i", &yesNo)) return NULL;
 
     g_audioManager.Enable(yesNo==1);
 
@@ -573,12 +573,12 @@ namespace PYXBMC
   PyObject* XBMC_GetCondVisibility(PyObject *self, PyObject *args)
   {
     char *cLine = NULL;
-    if (!PyArg_ParseTuple(args, "s", &cLine)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     int id = g_windowManager.GetTopMostModalDialogID();
     if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     int ret = g_infoManager.TranslateString(cLine);
     return Py_BuildValue((char*)"b", g_infoManager.GetBool(ret,id));
@@ -593,7 +593,7 @@ namespace PYXBMC
 
   PyObject* XBMC_GetGlobalIdleTime(PyObject *self)
   {
-    return Py_BuildValue("i", g_application.GlobalIdleTime());
+    return Py_BuildValue((char*)"i", g_application.GlobalIdleTime());
   }
 
   // getCacheThumbName function
@@ -608,16 +608,16 @@ namespace PYXBMC
   PyObject* XBMC_GetCacheThumbName(PyObject *self, PyObject *args)
   {
     PyObject *pObjectText;
-    if (!PyArg_ParseTuple(args, "O", &pObjectText)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText)) return NULL;
  
     string strText;
-    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
+    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     Crc32 crc;
     CStdString strPath;
     crc.ComputeFromLowerCase(strText);
     strPath.Format("%08x.tbn", (unsigned __int32)crc);
-    return Py_BuildValue("s", strPath.c_str());
+    return Py_BuildValue((char*)"s", strPath.c_str());
   }
 
   // makeLegalFilename function
@@ -655,7 +655,7 @@ namespace PYXBMC
     };
 
     CStdString strText;
-    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
+    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strFilename;
     strFilename = CUtil::MakeLegalPath(strText);
@@ -678,10 +678,10 @@ namespace PYXBMC
   PyObject* XBMC_TranslatePath(PyObject *self, PyObject *args)
   {
     PyObject *pObjectText;
-    if (!PyArg_ParseTuple(args, "O", &pObjectText)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText)) return NULL;
 
     CStdString strText;
-    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
+    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strPath;
     if (CUtil::IsDOSPath(strText))
@@ -707,14 +707,14 @@ namespace PYXBMC
 
   PyObject* XBMC_GetRegion(PyObject *self, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "id", NULL };
+    static const char *keywords[] = { "id", NULL };
     char *id = NULL;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "s",
-      keywords,
+      (char*)"s",
+      (char**)keywords,
       &id
       ))
     {
@@ -736,7 +736,7 @@ namespace PYXBMC
     else if (strcmpi(id, "meridiem") == 0)
       result.Format("%s/%s", g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_AM), g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_PM));
 
-    return Py_BuildValue("s", result.c_str());
+    return Py_BuildValue((char*)"s", result.c_str());
   }
 
   // getSupportedMedia function
@@ -756,14 +756,14 @@ namespace PYXBMC
 
   PyObject* XBMC_GetSupportedMedia(PyObject *self, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "media", NULL };
+    static const char *keywords[] = { "media", NULL };
     char *media = NULL;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "s",
-      keywords,
+      (char*)"s",
+      (char**)keywords,
       &media
       ))
     {
@@ -783,7 +783,7 @@ namespace PYXBMC
       return NULL;
     }
 
-    return Py_BuildValue("s", result.c_str());
+    return Py_BuildValue((char*)"s", result.c_str());
   }
 
   // skinHasImage function
@@ -801,14 +801,14 @@ namespace PYXBMC
 
   PyObject* XBMC_SkinHasImage(PyObject *self, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "image", NULL };
+    static const char *keywords[] = { "image", NULL };
     char *image = NULL;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "s",
-      keywords,
+      (char*)"s",
+      (char**)keywords,
       &image
       ))
     {
@@ -817,7 +817,7 @@ namespace PYXBMC
 
     bool exists = g_TextureManager.HasTexture(image);
 
-    return Py_BuildValue("b", exists);
+    return Py_BuildValue((char*)"b", exists);
   }
 
   // define c functions to be used in python here
@@ -827,37 +827,37 @@ namespace PYXBMC
     {(char*)"executescript", (PyCFunction)XBMC_ExecuteScript, METH_VARARGS, executeScript__doc__},
     {(char*)"executebuiltin", (PyCFunction)XBMC_ExecuteBuiltIn, METH_VARARGS, executeBuiltIn__doc__},
 
-    {"sleep", (PyCFunction)XBMC_Sleep, METH_VARARGS, sleep__doc__},
-    {"shutdown", (PyCFunction)XBMC_Shutdown, METH_VARARGS, shutdown__doc__},
-    {"dashboard", (PyCFunction)XBMC_Dashboard, METH_VARARGS, dashboard__doc__},
-    {"restart", (PyCFunction)XBMC_Restart, METH_VARARGS, restart__doc__},
-    {"getSkinDir", (PyCFunction)XBMC_GetSkinDir, METH_VARARGS, getSkinDir__doc__},
-    {"getLocalizedString", (PyCFunction)XBMC_GetLocalizedString, METH_VARARGS, getLocalizedString__doc__},
+    {(char*)"sleep", (PyCFunction)XBMC_Sleep, METH_VARARGS, sleep__doc__},
+    {(char*)"shutdown", (PyCFunction)XBMC_Shutdown, METH_VARARGS, shutdown__doc__},
+    {(char*)"dashboard", (PyCFunction)XBMC_Dashboard, METH_VARARGS, dashboard__doc__},
+    {(char*)"restart", (PyCFunction)XBMC_Restart, METH_VARARGS, restart__doc__},
+    {(char*)"getSkinDir", (PyCFunction)XBMC_GetSkinDir, METH_VARARGS, getSkinDir__doc__},
+    {(char*)"getLocalizedString", (PyCFunction)XBMC_GetLocalizedString, METH_VARARGS, getLocalizedString__doc__},
 
-    {"getLanguage", (PyCFunction)XBMC_GetLanguage, METH_VARARGS, getLanguage__doc__},
-    {"getIPAddress", (PyCFunction)XBMC_GetIPAddress, METH_VARARGS, getIPAddress__doc__},
-    {"getDVDState", (PyCFunction)XBMC_GetDVDState, METH_VARARGS, getDVDState__doc__},
-    {"getFreeMem", (PyCFunction)XBMC_GetFreeMem, METH_VARARGS, getFreeMem__doc__},
-    //{"getCpuTemp", (PyCFunction)XBMC_GetCpuTemp, METH_VARARGS, getCpuTemp__doc__},
+    {(char*)"getLanguage", (PyCFunction)XBMC_GetLanguage, METH_VARARGS, getLanguage__doc__},
+    {(char*)"getIPAddress", (PyCFunction)XBMC_GetIPAddress, METH_VARARGS, getIPAddress__doc__},
+    {(char*)"getDVDState", (PyCFunction)XBMC_GetDVDState, METH_VARARGS, getDVDState__doc__},
+    {(char*)"getFreeMem", (PyCFunction)XBMC_GetFreeMem, METH_VARARGS, getFreeMem__doc__},
+    //{(char*)"getCpuTemp", (PyCFunction)XBMC_GetCpuTemp, METH_VARARGS, getCpuTemp__doc__},
 
-    {"executehttpapi", (PyCFunction)XBMC_ExecuteHttpApi, METH_VARARGS, executeHttpApi__doc__},
-    {"getInfoLabel", (PyCFunction)XBMC_GetInfoLabel, METH_VARARGS, getInfoLabel__doc__},
-    {"getInfoImage", (PyCFunction)XBMC_GetInfoImage, METH_VARARGS, getInfoImage__doc__},
-    {"getCondVisibility", (PyCFunction)XBMC_GetCondVisibility, METH_VARARGS, getCondVisibility__doc__},
-    {"getGlobalIdleTime", (PyCFunction)XBMC_GetGlobalIdleTime, METH_VARARGS, getGlobalIdleTime__doc__},
+    {(char*)"executehttpapi", (PyCFunction)XBMC_ExecuteHttpApi, METH_VARARGS, executeHttpApi__doc__},
+    {(char*)"getInfoLabel", (PyCFunction)XBMC_GetInfoLabel, METH_VARARGS, getInfoLabel__doc__},
+    {(char*)"getInfoImage", (PyCFunction)XBMC_GetInfoImage, METH_VARARGS, getInfoImage__doc__},
+    {(char*)"getCondVisibility", (PyCFunction)XBMC_GetCondVisibility, METH_VARARGS, getCondVisibility__doc__},
+    {(char*)"getGlobalIdleTime", (PyCFunction)XBMC_GetGlobalIdleTime, METH_VARARGS, getGlobalIdleTime__doc__},
 
-    {"playSFX", (PyCFunction)XBMC_PlaySFX, METH_VARARGS, playSFX__doc__},
-    {"enableNavSounds", (PyCFunction)XBMC_EnableNavSounds, METH_VARARGS, enableNavSounds__doc__},
+    {(char*)"playSFX", (PyCFunction)XBMC_PlaySFX, METH_VARARGS, playSFX__doc__},
+    {(char*)"enableNavSounds", (PyCFunction)XBMC_EnableNavSounds, METH_VARARGS, enableNavSounds__doc__},
 
-    {"getCacheThumbName", (PyCFunction)XBMC_GetCacheThumbName, METH_VARARGS, getCacheThumbName__doc__},
+    {(char*)"getCacheThumbName", (PyCFunction)XBMC_GetCacheThumbName, METH_VARARGS, getCacheThumbName__doc__},
 
     {(char*)"makeLegalFilename", (PyCFunction)XBMC_MakeLegalFilename, METH_VARARGS|METH_KEYWORDS, makeLegalFilename__doc__},
     {(char*)"translatePath", (PyCFunction)XBMC_TranslatePath, METH_VARARGS, translatePath__doc__},
 
-    {"getRegion", (PyCFunction)XBMC_GetRegion, METH_VARARGS|METH_KEYWORDS, getRegion__doc__},
-    {"getSupportedMedia", (PyCFunction)XBMC_GetSupportedMedia, METH_VARARGS|METH_KEYWORDS, getSupportedMedia__doc__},
+    {(char*)"getRegion", (PyCFunction)XBMC_GetRegion, METH_VARARGS|METH_KEYWORDS, getRegion__doc__},
+    {(char*)"getSupportedMedia", (PyCFunction)XBMC_GetSupportedMedia, METH_VARARGS|METH_KEYWORDS, getSupportedMedia__doc__},
 
-    {"skinHasImage", (PyCFunction)XBMC_SkinHasImage, METH_VARARGS|METH_KEYWORDS, skinHasImage__doc__},
+    {(char*)"skinHasImage", (PyCFunction)XBMC_SkinHasImage, METH_VARARGS|METH_KEYWORDS, skinHasImage__doc__},
     {NULL, NULL, 0, NULL}
   };
 
@@ -865,7 +865,6 @@ namespace PYXBMC
  * end of methods and python objects
  * initxbmc(void);
  *****************************************************************/
-
   PyMODINIT_FUNC
   initxbmc(void)
   {
@@ -899,43 +898,43 @@ namespace PYXBMC
     Py_INCREF(&Language_Type);
     Py_INCREF(&Settings_Type);
 
-    pXbmcModule = Py_InitModule("xbmc", xbmcMethods);
+    pXbmcModule = Py_InitModule((char*)"xbmc", xbmcMethods);
     if (pXbmcModule == NULL) return;
 
-    PyModule_AddObject(pXbmcModule, "Keyboard", (PyObject*)&Keyboard_Type);
-    PyModule_AddObject(pXbmcModule, "Player", (PyObject*)&Player_Type);
-    PyModule_AddObject(pXbmcModule, "PlayList", (PyObject*)&PlayList_Type);
-    PyModule_AddObject(pXbmcModule, "PlayListItem", (PyObject*)&PlayListItem_Type);
-    PyModule_AddObject(pXbmcModule, "InfoTagMusic", (PyObject*)&InfoTagMusic_Type);
-    PyModule_AddObject(pXbmcModule, "InfoTagVideo", (PyObject*)&InfoTagVideo_Type);
-    PyModule_AddObject(pXbmcModule, "Language", (PyObject*)&Language_Type);
+    PyModule_AddObject(pXbmcModule, (char*)"Keyboard", (PyObject*)&Keyboard_Type);
+    PyModule_AddObject(pXbmcModule, (char*)"Player", (PyObject*)&Player_Type);
+    PyModule_AddObject(pXbmcModule, (char*)"PlayList", (PyObject*)&PlayList_Type);
+    PyModule_AddObject(pXbmcModule, (char*)"PlayListItem", (PyObject*)&PlayListItem_Type);
+    PyModule_AddObject(pXbmcModule, (char*)"InfoTagMusic", (PyObject*)&InfoTagMusic_Type);
+    PyModule_AddObject(pXbmcModule, (char*)"InfoTagVideo", (PyObject*)&InfoTagVideo_Type);
+    PyModule_AddObject(pXbmcModule, (char*)"Language", (PyObject*)&Language_Type);
     PyModule_AddObject(pXbmcModule, (char*)"Settings", (PyObject*)&Settings_Type);
 
     // constants
-    PyModule_AddStringConstant(pXbmcModule, "__author__", PY_XBMC_AUTHOR);
-    PyModule_AddStringConstant(pXbmcModule, "__date__", "15 November 2005");
-    PyModule_AddStringConstant(pXbmcModule, "__version__", "1.3");
-    PyModule_AddStringConstant(pXbmcModule, "__credits__", PY_XBMC_CREDITS);
-    PyModule_AddStringConstant(pXbmcModule, "__platform__", PY_XBMC_PLATFORM);
+    PyModule_AddStringConstant(pXbmcModule, (char*)"__author__", (char*)PY_XBMC_AUTHOR);
+    PyModule_AddStringConstant(pXbmcModule, (char*)"__date__", (char*)"15 November 2005");
+    PyModule_AddStringConstant(pXbmcModule, (char*)"__version__", (char*)"1.3");
+    PyModule_AddStringConstant(pXbmcModule, (char*)"__credits__", (char*)PY_XBMC_CREDITS);
+    PyModule_AddStringConstant(pXbmcModule, (char*)"__platform__", (char*)PY_XBMC_PLATFORM);
 
     // playlist constants
-    PyModule_AddIntConstant(pXbmcModule, "PLAYLIST_MUSIC", PLAYLIST_MUSIC);
-    //PyModule_AddIntConstant(pXbmcModule, "PLAYLIST_MUSIC_TEMP", PLAYLIST_MUSIC_TEMP);
-    PyModule_AddIntConstant(pXbmcModule, "PLAYLIST_VIDEO", PLAYLIST_VIDEO);
-    //PyModule_AddIntConstant(pXbmcModule, "PLAYLIST_VIDEO_TEMP", PLAYLIST_VIDEO_TEMP);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"PLAYLIST_MUSIC", PLAYLIST_MUSIC);
+    //PyModule_AddIntConstant(pXbmcModule, (char*)"PLAYLIST_MUSIC_TEMP", (char*)PLAYLIST_MUSIC_TEMP);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"PLAYLIST_VIDEO", PLAYLIST_VIDEO);
+    //PyModule_AddIntConstant(pXbmcModule, (char*)"PLAYLIST_VIDEO_TEMP", PLAYLIST_VIDEO_TEMP);
 
     // player constants
-    PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_AUTO", EPC_NONE);
-    PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_DVDPLAYER", EPC_DVDPLAYER);
-    PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_MPLAYER", EPC_MPLAYER);
-    PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_PAPLAYER", EPC_PAPLAYER);
-    PyModule_AddIntConstant(pXbmcModule, "PLAYER_CORE_MODPLAYER", EPC_MODPLAYER);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"PLAYER_CORE_AUTO", EPC_NONE);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"PLAYER_CORE_DVDPLAYER", EPC_DVDPLAYER);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"PLAYER_CORE_MPLAYER", EPC_MPLAYER);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"PLAYER_CORE_PAPLAYER", EPC_PAPLAYER);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"PLAYER_CORE_MODPLAYER", EPC_MODPLAYER);
 
     // dvd state constants
-    PyModule_AddIntConstant(pXbmcModule, "TRAY_OPEN", TRAY_OPEN);
-    PyModule_AddIntConstant(pXbmcModule, "DRIVE_NOT_READY", DRIVE_NOT_READY);
-    PyModule_AddIntConstant(pXbmcModule, "TRAY_CLOSED_NO_MEDIA", TRAY_CLOSED_NO_MEDIA);
-    PyModule_AddIntConstant(pXbmcModule, "TRAY_CLOSED_MEDIA_PRESENT", TRAY_CLOSED_MEDIA_PRESENT);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"TRAY_OPEN", TRAY_OPEN);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"DRIVE_NOT_READY", DRIVE_NOT_READY);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"TRAY_CLOSED_NO_MEDIA", TRAY_CLOSED_NO_MEDIA);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"TRAY_CLOSED_MEDIA_PRESENT", TRAY_CLOSED_MEDIA_PRESENT);
 
     // log levels
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGDEBUG", LOGDEBUG);

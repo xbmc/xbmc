@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -25,6 +23,7 @@
 #include "../XBPythonDll.h"
 #include "PythonPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {

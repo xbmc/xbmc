@@ -46,7 +46,7 @@ namespace PYXBMC
 
   PyObject* ControlTextBox_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static char *keywords[] = { "x", "y", "width", "height", "font", "textColor", NULL };
+    static const char *keywords[] = { "x", "y", "width", "height", "font", "textColor", NULL };
     ControlTextBox *self;
     char *cFont = NULL;
     char *cTextColor = NULL;
@@ -60,8 +60,8 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      "llll|ss",
-      keywords,
+      (char*)"llll|ss",
+      (char**)keywords,
       &self->dwPosX,
       &self->dwPosY,
       &self->dwWidth,
@@ -121,8 +121,8 @@ namespace PYXBMC
   {
     PyObject *pObjectText;
     string strText;
-    if (!PyArg_ParseTuple(args, "O", &pObjectText))	return NULL;
-    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText))	return NULL;
+    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     // create message
     ControlTextBox *pControl = (ControlTextBox*)self;
@@ -130,9 +130,9 @@ namespace PYXBMC
     msg.SetLabel(strText);
 
     // send message
-    PyGUILock();
+    PyXBMCGUILock();
     if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -173,9 +173,9 @@ namespace PYXBMC
     CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
 
     // send message
-    PyGUILock();
+    PyXBMCGUILock();
     if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -219,9 +219,9 @@ namespace PYXBMC
 
   void initControlTextBox_Type()
   {
-    PyInitializeTypeObject(&ControlTextBox_Type);
+    PyXBMCInitializeTypeObject(&ControlTextBox_Type);
 
-    ControlTextBox_Type.tp_name = "xbmcgui.ControlTextBox";
+    ControlTextBox_Type.tp_name = (char*)"xbmcgui.ControlTextBox";
     ControlTextBox_Type.tp_basicsize = sizeof(ControlTextBox);
     ControlTextBox_Type.tp_dealloc = (destructor)ControlTextBox_Dealloc;
     ControlTextBox_Type.tp_compare = 0;

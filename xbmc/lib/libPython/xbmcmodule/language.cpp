@@ -173,7 +173,7 @@ namespace PYXBMC
 
   void initLanguage_Type()
   {
-    PyInitializeTypeObject(&Language_Type);
+    PyXBMCInitializeTypeObject(&Language_Type);
 
     Language_Type.tp_name = (char*)"xbmc.Language";
     Language_Type.tp_basicsize = sizeof(Language);
