@@ -134,7 +134,11 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock)
   m_started = false;
 
   InitializeCriticalSection(&m_critCodecSection);
+#ifdef _XBOX
+  m_messageQueue.SetMaxDataSize(10 * 16 * 1024);
+#else
   m_messageQueue.SetMaxDataSize(30 * 16 * 1024);
+#endif
   g_dvdPerformanceCounter.EnableAudioQueue(&m_messageQueue);
 }
 

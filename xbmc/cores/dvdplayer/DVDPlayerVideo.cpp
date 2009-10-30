@@ -63,7 +63,11 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_fForcedAspectRatio = 0;
   m_iNrOfPicturesNotToSkip = 0;
   InitializeCriticalSection(&m_critCodecSection);
+#ifdef _XBOX
+  m_messageQueue.SetMaxDataSize(10 * 256 * 1024);
+#else
   m_messageQueue.SetMaxDataSize(40 * 256 * 1024);
+#endif
   g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
   
   m_iCurrentPts = DVD_NOPTS_VALUE;
