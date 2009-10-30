@@ -1280,21 +1280,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("locale.timeserver"));
     }
-    else if (strSetting.Equals("locale.time") || strSetting.Equals("locale.date"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(!g_guiSettings.GetBool("locale.timeserver"));
-      SYSTEMTIME curTime;
-      GetLocalTime(&curTime);
-      CStdString time;
-      if (strSetting.Equals("locale.time"))
-        time = g_infoManager.GetTime();
-      else
-        time = g_infoManager.GetDate();
-      CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
-      pSettingString->SetData(time);
-      pSettingControl->Update();
-    }
 #endif
     else if (strSetting.Equals("autodetect.nickname") || strSetting.Equals("autodetect.senduserpw"))
     {
@@ -1391,28 +1376,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 
 void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
 {
-  for (unsigned int i = 0; i < m_vecSettings.size(); i++)
-  {
-    CBaseSettingControl *pSettingControl = m_vecSettings[i];
-    CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-    if (strSetting.Equals("locale.time") || strSetting.Equals("locale.date"))
-    {
-#ifdef HAS_TIME_SERVER
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(!g_guiSettings.GetBool("locale.timeserver"));
-#endif
-      SYSTEMTIME curTime;
-      GetLocalTime(&curTime);
-      CStdString time;
-      if (strSetting.Equals("locale.time"))
-        time = g_infoManager.GetTime();
-      else
-        time = g_infoManager.GetDate();
-      CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
-      pSettingString->SetData(time);
-      pSettingControl->Update();
-    }
-  }
+  // date and time used to be here
 }
 
 void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
@@ -2149,28 +2113,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_application.StartTimeServer();
   }
 #endif
-  else if (strSetting.Equals("locale.time"))
-  {
-    SYSTEMTIME curTime;
-    GetLocalTime(&curTime);
-    if (CGUIDialogNumeric::ShowAndGetTime(curTime, g_localizeStrings.Get(14066)))
-    { // yay!
-      SYSTEMTIME curDate;
-      GetLocalTime(&curDate);
-      CUtil::SetSysDateTimeYear(curDate.wYear, curDate.wMonth, curDate.wDay, curTime.wHour, curTime.wMinute);
-    }
-  }
-  else if (strSetting.Equals("locale.date"))
-  {
-    SYSTEMTIME curDate;
-    GetLocalTime(&curDate);
-    if (CGUIDialogNumeric::ShowAndGetDate(curDate, g_localizeStrings.Get(14067)))
-    { // yay!
-      SYSTEMTIME curTime;
-      GetLocalTime(&curTime);
-      CUtil::SetSysDateTimeYear(curDate.wYear, curDate.wMonth, curDate.wDay, curTime.wHour, curTime.wMinute);
-    }
-  }
   else if (strSetting.Equals("smb.winsserver") || strSetting.Equals("smb.workgroup") )
   {
     if (g_guiSettings.GetString("smb.winsserver") == "0.0.0.0")

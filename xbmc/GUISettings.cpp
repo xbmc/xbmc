@@ -587,12 +587,8 @@ void CGUISettings::Initialize()
   AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
   AddString(2, "locale.language",248,"english", SPIN_CONTROL_TEXT);
   AddString(3, "locale.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
-  AddSeparator(4, "locale.sep1");
-#ifndef __APPLE__
-  AddString(5, "locale.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
-  AddString(6, "locale.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
-#endif
 #if defined(_LINUX) && !defined(__APPLE__)
+  AddSeparator(4, "locale.sep1");
   AddString(8, "locale.timezone", 14081, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
   AddString(7, "locale.timezonecountry", 14080, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
 #endif
