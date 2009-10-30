@@ -97,7 +97,7 @@ bool CEdl::ReadFiles(const CStdString& strMovie, const float fFramesPerSecond)
 bool CEdl::ReadEdl(const CStdString& strMovie)
 {
   Clear();
-      
+
   CStdString edlFilename;
   CUtil::ReplaceExtension(strMovie, ".edl", edlFilename);
   if (!CFile::Exists(edlFilename))
@@ -164,8 +164,8 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
   }
   else if (HasCut() || HasSceneMarker())
   {
-    CLog::Log(LOGDEBUG, "%s - Read %i cuts and %i scene markers in EDL file: %s", __FUNCTION__, m_vecCuts.size(),
-              m_vecSceneMarkers.size(), edlFilename.c_str());
+    CLog::Log(LOGDEBUG, "%s - Read %i cuts and %i scene markers in EDL file: %s", __FUNCTION__,
+              m_vecCuts.size(), m_vecSceneMarkers.size(), edlFilename.c_str());
     return true;
   }
   else
@@ -191,7 +191,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie, const float fFramesPerSecond)
     CLog::Log(LOGERROR, "%s - Could not open Comskip file: %s", __FUNCTION__, comskipFilename.c_str());
     return false;
   }
-  
+
   char szBuffer[1024];
   if (comskipFile.ReadString(szBuffer, 1023)
   &&  strncmp(szBuffer, COMSKIP_HEADER, strlen(COMSKIP_HEADER)) != 0) // Line 1.
@@ -201,7 +201,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie, const float fFramesPerSecond)
     comskipFile.Close();
     return false;
   }
-  
+
   int iFrames;
   float fFrameRate;
   if (sscanf(szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %f", &iFrames, &fFrameRate) != 2)
@@ -209,19 +209,9 @@ bool CEdl::ReadComskip(const CStdString& strMovie, const float fFramesPerSecond)
     /*
      * Not all generated Comskip files have the frame rate information.
      */
-    if (fFramesPerSecond != 0.0f)
-    {
-      fFrameRate = fFramesPerSecond;
-      CLog::Log(LOGWARNING, "%s - Frame rate not in Comskip file. Using detected frames per second: %.3f",
-                __FUNCTION__, fFrameRate);
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "%s - Frame rate not found on line 1 in Comskip file.", 
-                __FUNCTION__); 
-      comskipFile.Close(); 
-      return false; 
-    }
+    fFrameRate = fFramesPerSecond;
+    CLog::Log(LOGWARNING, "%s - Frame rate not in Comskip file. Using detected frames per second: %.3f",
+              __FUNCTION__, fFrameRate);
   }
   else
     fFrameRate /= 100; // Reduce by factor of 100 to get fps.
@@ -460,7 +450,7 @@ bool CEdl::AddCut(const Cut& cut)
               cut.action);
     return false;
   }
-  
+
   if (cut.start >= cut.end)
   {
     CLog::Log(LOGERROR, "%s - Times are around the wrong way or the same! [%s - %s], %d", __FUNCTION__,
@@ -487,7 +477,7 @@ bool CEdl::AddCut(const Cut& cut)
       return false;
     }
   }
-  
+
   /*
    * Insert cut in the list in the right position (ALL algorithms assume cuts are in ascending order)
    */
@@ -531,7 +521,7 @@ bool CEdl::AddSceneMarker(const int64_t iSceneMarker)
             MillisecondsToTimeString(iSceneMarker).c_str());
   m_vecSceneMarkers.push_back(iSceneMarker); // Unsorted
 
-  return true; 
+  return true;
 }
 
 bool CEdl::WriteMPlayerEdl()
@@ -679,7 +669,7 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const int64_t iClock, int64_t *iSceneM
 {
   if (!HasSceneMarker())
     return false;
-    
+
   int64_t iSeek = RestoreCutTime(iClock);
 
   int64_t iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
@@ -717,10 +707,10 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const int64_t iClock, int64_t *iSceneM
   Cut cut;
   if (bFound && InCut(*iSceneMarker, &cut) && cut.action == CUT)
     *iSceneMarker = cut.end;
-  
+
   return bFound;
 }
-   
+
 CStdString CEdl::MillisecondsToTimeString(const int64_t iMilliseconds)
 {
   CStdString strTimeString = "";

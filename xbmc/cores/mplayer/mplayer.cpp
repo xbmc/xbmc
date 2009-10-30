@@ -131,6 +131,7 @@ CMPlayer::Options::Options()
   m_strEdl = "";
   m_synccomp = -1.0f;
 }
+
 void CMPlayer::Options::SetFPS(float fFPS)
 {
   m_fFPS = fFPS;
@@ -809,9 +810,8 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
   bool bFileIsDVDImage(false);
   bool bFileIsDVDIfoFile(false);
   
-  starttime=0;
+  starttime = 0;
   CStdString strFile = file.m_strPath;
-
 
   /* use our own protocol for ftp to avoid using mplayer's builtin */
   // not working well with seeking.. curl locks up for some reason. think it's the thread handover
@@ -890,18 +890,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     m_iPTS = 0;
     m_bPaused = false;
 
-    // Read EDL
-    if (!bFileOnInternet && bIsVideo && !bIsDVD )
-    {
-      if (g_guiSettings.GetBool("videoplayer.editdecision"))
-      {
-        m_Edl.Clear(); 
-        // Don't know how to get the framerate from mplayer so can't tell ReadFiles(0.0f)
-        if (m_Edl.ReadFiles(strFile, 0.0f))
-          options.SetEdl("special://temp/xbmc.edl");
-      }
-    }
-    
     // first init mplayer. This is needed 2 find out all information
     // like audio channels, fps etc
     load();
@@ -942,8 +930,8 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     }
     else
     {
-      //Since the xbox downmixes any multichannel track to dolby surround if we don't have a dd reciever,
-      //allways tell mplayer to output the maximum number of channels.
+      // Since the xbox downmixes any multichannel track to dolby surround if we don't have a dd reciever,
+      // always tell mplayer to output the maximum number of channels.
       options.SetChannels(6);
 
       // if we're using digital out
@@ -1124,6 +1112,32 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
       mplayer_GetAudioInfo(strFourCC, strAudioCodec, &lBitRate, &lSampleRate, &iChannels, &bVBR);
       mplayer_GetVideoInfo(strVidFourCC, strVideoCodec, &fFPS, &iWidth, &iHeight, &lFrames2Early, &lFrames2Late);
 
+      // look for any EDL files
+      m_Edl.Clear();
+
+      if (bIsVideo)
+      {
+        float fFramesPerSecond;
+
+        if (fFPS > 0)
+          fFramesPerSecond = fFPS;
+        else
+        {
+          fFramesPerSecond = 25.0; // TODO: Default to one of 50.0, 29.97, 25.0, or 23.976 fps. Advanced setting?
+          CLog::Log(LOGWARNING, "%s - Could not detect frame rate for: %s. Using default of %.3f fps for conversion of any commercial break frame markers to times.",
+                    __FUNCTION__, strFile.c_str(), fFramesPerSecond);
+        }
+
+        if (!bIsDVD)
+        {
+          if (m_Edl.ReadFiles(strFile, fFramesPerSecond))
+            options.SetEdl("special://temp/xbmc.edl");
+        }
+        else if (file.IsMythTV())
+        {
+          m_Edl.ReadMythCommBreaks(file.GetAsUrl(), fFramesPerSecond);
+        }
+      }
 
       // do we need 2 do frame rate conversions ?
       if (g_guiSettings.GetInt("videoplayer.framerateconversions") == FRAME_RATE_CONVERT && file.IsVideo() )
