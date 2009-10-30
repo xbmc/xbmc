@@ -1974,11 +1974,27 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.h"
 					>
 				</File>
 				<File

@@ -2,8 +2,6 @@
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
- *      Initial code sponsored by: Voddler Inc (voddler.com)
- *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2, or (at your option)
@@ -23,67 +21,63 @@
 
 #pragma once
 #include "OverlayRenderer.h"
+#include "OverlayRendererUtil.h"
+#include "RenderSystemDX.h"
 
-#include <GL/glew.h>
+#ifdef HAS_DX
 
 class CDVDOverlay;
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
 class CDVDOverlaySSA;
 
-#ifdef HAS_GL
-
 namespace OVERLAY {
 
-  class COverlayGL
-      : public COverlay
+  class COverlayQuadsDX
+    : public COverlay
   {
   public:
-    virtual ~COverlayGL() {}
-    virtual long Release();
-  };
-
-
-  class COverlayTextureGL
-      : public COverlayGL
-  {
-  public:
-     COverlayTextureGL(CDVDOverlayImage* o);
-     COverlayTextureGL(CDVDOverlaySpu* o);
-    virtual ~COverlayTextureGL();
+    COverlayQuadsDX(CDVDOverlaySSA* o, double pts);
+    virtual ~COverlayQuadsDX();
 
     void Render(SRenderState& state);
 
-    GLuint m_texture;
-    float  m_u;
-    float  m_v;
-  };
-
-  class COverlayGlyphGL
-     : public COverlayGL
-  {
-  public:
-   COverlayGlyphGL(CDVDOverlaySSA* o, double pts);
-   virtual ~COverlayGlyphGL();
-
-   void Render(SRenderState& state);
-
-    struct VERTEX
-    {
-       GLfloat u, v;
-       GLubyte r, g, b, a;    
-       GLfloat x, y, z;
+    struct VERTEX {
+        FLOAT x, y, z;
+        DWORD c;
+        FLOAT u, v;
     };
 
-   VERTEX* m_vertex;
-   int     m_count;
+    int                          m_count;
+    DWORD                        m_fvf;
+    LPDIRECT3DDEVICE9            m_device;
+    LPDIRECT3DTEXTURE9           m_texture;
+    LPDIRECT3DVERTEXBUFFER9      m_vertex;
+  }; 
 
-   GLuint m_texture;
-   float  m_u;
-   float  m_v;
+  class COverlayImageDX
+    : public COverlay
+  {
+  public:
+    COverlayImageDX(CDVDOverlayImage* o);
+    COverlayImageDX(CDVDOverlaySpu*   o);
+    virtual ~COverlayImageDX();
+
+    void Load(uint32_t* rgba, int width, int height, int stride);
+    void Render(SRenderState& state);
+
+    struct VERTEX {
+        FLOAT x, y, z;
+        FLOAT u, v;
+    };
+
+    DWORD                        m_fvf;
+    LPDIRECT3DDEVICE9            m_device;
+    LPDIRECT3DTEXTURE9           m_texture;
+    LPDIRECT3DVERTEXBUFFER9      m_vertex;
   }; 
 
 }
 
-#endif
 
+#endif

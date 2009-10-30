@@ -2,8 +2,6 @@
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
- *      Initial code sponsored by: Voddler Inc (voddler.com)
- *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2, or (at your option)
@@ -20,70 +18,49 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
 #pragma once
-#include "OverlayRenderer.h"
-
-#include <GL/glew.h>
-
-class CDVDOverlay;
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
 class CDVDOverlaySSA;
 
-#ifdef HAS_GL
-
 namespace OVERLAY {
 
-  class COverlayGL
-      : public COverlay
+  struct SQuad
   {
-  public:
-    virtual ~COverlayGL() {}
-    virtual long Release();
+     int           u, v;
+     unsigned char r, g, b, a;    
+     int           x, y;
+     int           w, h;
   };
 
-
-  class COverlayTextureGL
-      : public COverlayGL
+  struct SQuads
   {
-  public:
-     COverlayTextureGL(CDVDOverlayImage* o);
-     COverlayTextureGL(CDVDOverlaySpu* o);
-    virtual ~COverlayTextureGL();
-
-    void Render(SRenderState& state);
-
-    GLuint m_texture;
-    float  m_u;
-    float  m_v;
-  };
-
-  class COverlayGlyphGL
-     : public COverlayGL
-  {
-  public:
-   COverlayGlyphGL(CDVDOverlaySSA* o, double pts);
-   virtual ~COverlayGlyphGL();
-
-   void Render(SRenderState& state);
-
-    struct VERTEX
+    SQuads()
     {
-       GLfloat u, v;
-       GLubyte r, g, b, a;    
-       GLfloat x, y, z;
-    };
+      data = NULL;
+      quad = NULL;
+      size_x = 0;
+      size_y = 0;
+      count  = 0;
+    }
+   ~SQuads()
+    {
+      free(data);
+      free(quad);
+    }
+    int      size_x;
+    int      size_y;
+    int      count;
+    uint8_t* data;
+    SQuad*   quad;
+  };
 
-   VERTEX* m_vertex;
-   int     m_count;
-
-   GLuint m_texture;
-   float  m_u;
-   float  m_v;
-  }; 
+  uint32_t* convert_rgba(CDVDOverlayImage* o, bool mergealpha);
+  uint32_t* convert_rgba(CDVDOverlaySpu*   o, bool mergealpha
+                       , int& min_x, int& max_x
+                       , int& min_y, int& max_y);
+  bool      convert_quad(CDVDOverlaySSA*   o, double pts
+                       , int width, int height
+                       , SQuads& quads);
 
 }
-
-#endif
-
