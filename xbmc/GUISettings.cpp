@@ -399,7 +399,7 @@ void CGUISettings::Initialize()
   // video settings
   AddGroup(5, 3);
   AddCategory(5, "myvideos", 16000);
-  AddBool(1, "myvideos.treatstackasfile", 20051, true);
+  AddBool(0, "myvideos.treatstackasfile", 20051, true);
   AddInt(2, "myvideos.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
   AddBool(4, "myvideos.extractflags",20433, true);
   AddBool(5, "myvideos.cleanstrings", 20418, false);
