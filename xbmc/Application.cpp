@@ -4252,12 +4252,10 @@ bool CApplication::WakeUpScreenSaver()
   {
     int iProfile = g_settings.m_iLastLoadedProfileIndex;
     if (m_iScreenSaveLock == 0)
-      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE        &&
+      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE &&
+          (g_settings.bUseLoginScreen || g_guiSettings.GetBool("masterlock.startuplock")) &&
           g_settings.m_vecProfiles[iProfile].getLockMode() != LOCK_MODE_EVERYONE &&
-         !g_guiSettings.GetString("screensaver.mode").Equals("Black")            &&
-        !(g_guiSettings.GetBool("screensaver.usemusicvisinstead")                &&
-         !g_guiSettings.GetString("screensaver.mode").Equals("Black")            &&
-          g_application.IsPlayingAudio())                                          )
+          m_screenSaverMode != "Dim" && m_screenSaverMode != "Black" && m_screenSaverMode != "Visualisation")
       {
         m_iScreenSaveLock = 2;
         CGUIMessage msg(GUI_MSG_CHECK_LOCK,0,0);
