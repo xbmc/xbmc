@@ -24,7 +24,6 @@
 #include "../utils/Network.h"
 #include "Application.h"
 #include "CharsetConverter.h"
-#include "GUISettings.h"
 #include "URL.h"
 #include "FileSystem/File.h"
 #include "FileSystem/FileCurl.h"
