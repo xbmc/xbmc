@@ -392,10 +392,7 @@ void CGUISettings::Initialize()
 
   AddCategory(4, "masterlock", 12360);
   AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
-  AddSeparator(2, "masterlock.sep1");
   AddBool(4, "masterlock.startuplock"      , 20076,false);
-  AddSeparator(7,"masterlock.sep2" );
-  AddBool(8, "masterlock.loginlock",20116,true);
   // hidden masterlock settings
   AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT);
 
