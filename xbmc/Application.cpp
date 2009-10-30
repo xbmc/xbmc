@@ -3977,7 +3977,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       // if player didn't manange to switch to fullscreen by itself do it here
       if( options.fullscreen && g_renderManager.IsStarted()
        && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
-         SwitchToFullScreen();
+       SwitchToFullScreen();
 
       // Save information about the stream if we currently have no data
       if (item.HasVideoInfoTag())
@@ -4149,6 +4149,7 @@ bool CApplication::IsPlayingVideo() const
     return false;
   if (m_pPlayer->HasVideo())
     return true;
+
   return false;
 }
 
@@ -4177,6 +4178,8 @@ void CApplication::SaveFileState()
           // consider this item as played
           videodatabase.MarkAsWatched(*m_progressTrackingItem);
           CUtil::DeleteVideoDatabaseDirectoryCache();
+          CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
+          g_windowManager.SendMessage(message);
         }
 
         if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
