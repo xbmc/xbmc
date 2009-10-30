@@ -635,7 +635,6 @@ void CGUISettings::Initialize()
   AddInt(3, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
   AddBool(4, "screensaver.usedimonpause", 22014, true);
-  AddBool(5, "screensaver.uselock",20140,false);
   // Note: Application.cpp might hide powersaving settings if not supported.
   AddSeparator(6, "screensaver.sep_powersaving");
   AddInt(7, "screensaver.powersavingtime", 1450, 0, 0, 5, 4 * 60, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);

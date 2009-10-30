@@ -1041,13 +1041,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE);
     }
-    else if (strSetting.Equals("screensaver.uselock"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE                                    &&
-                                         g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE &&
-                                         !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
-    }
     else if (!strSetting.Equals("remoteevents.enabled")
              && strSetting.Left(13).Equals("remoteevents."))
     {
