@@ -64,6 +64,8 @@ public:
 
   bool GetNextSceneMarker(bool bPlus, const int64_t iClock, int64_t *iSceneMarker);
 
+  CStdString GetMPlayerEdl();
+
   static CStdString MillisecondsToTimeString(const int64_t iMilliseconds);
 
 protected:

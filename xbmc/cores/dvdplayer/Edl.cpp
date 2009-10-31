@@ -561,6 +561,11 @@ bool CEdl::WriteMPlayerEdl()
   return true;
 }
 
+CStdString GetMPlayerEdl()
+{
+  return MPLAYER_EDL_FILENAME;
+}
+
 bool CEdl::HasCut()
 {
   return !m_vecCuts.empty();
