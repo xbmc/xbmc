@@ -805,11 +805,7 @@ void CDVDPlayer::Process()
     CLog::Log(LOGWARNING, "%s - Could not detect frame rate for: %s. Using default of %.3f fps for conversion of any commercial break frame markers to times.",
               __FUNCTION__, m_filename.c_str(), fFramesPerSecond);
   }
-
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_FILE))
-    m_Edl.ReadFiles(m_filename, fFramesPerSecond);
-  else if (m_item.IsMythTV())
-    m_Edl.ReadMythCommBreaks(m_item.GetAsUrl(), fFramesPerSecond);
+  m_Edl.ReadEditDecisionLists(m_filename, fFramesPerSecond);
 
   if( m_PlayerOptions.starttime > 0 )
   {

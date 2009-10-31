@@ -48,10 +48,8 @@ public:
     Action action;
   };
 
-  bool ReadFiles(const CStdString& strMovie, const float fFramesPerSecond);
+  bool ReadEditDecisionLists(const CStdString& strMovie, const float fFramesPerSecond);
   void Clear();
-
-  bool ReadMythCommBreaks(const CURL& url, const float fFramesPerSecond);
 
   bool HasCut();
   bool HasSceneMarker();
@@ -78,6 +76,7 @@ private:
   bool ReadComskip(const CStdString& strMovie, const float fFramesPerSecond);
   bool ReadVideoReDo(const CStdString& strMovie);
   bool ReadBeyondTV(const CStdString& strMovie);
+  bool ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPerSecond);
 
   bool AddCut(const Cut& NewCut);
   bool AddSceneMarker(const int64_t sceneMarker);
