@@ -38,6 +38,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		431AE5D9109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */; };
+		431AE5DA109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */; };
 		43248C4E0FBE224000B88866 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; };
 		43248C510FBE224C00B88866 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B920FBC8DFF00171871 /* CoreAudio.cpp */; };
 		43248C520FBE224E00B88866 /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B8E0FBC8DB000171871 /* CoreAudioRenderer.cpp */; };
@@ -1871,6 +1873,8 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRendererUtil.cpp; sourceTree = "<group>"; };
+		431AE5D8109C1A63007428C3 /* OverlayRendererUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRendererUtil.h; sourceTree = "<group>"; };
 		43348AA1107747CD00F859CF /* Edl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Edl.cpp; sourceTree = "<group>"; };
 		43348AA2107747CD00F859CF /* Edl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Edl.h; sourceTree = "<group>"; };
 		43348AA71077486D00F859CF /* PlayerCoreConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayerCoreConfig.h; path = playercorefactory/PlayerCoreConfig.h; sourceTree = "<group>"; };
@@ -5471,6 +5475,8 @@
 				F5D8D72E102BB3B1004A11AB /* OverlayRendererGL.h */,
 				F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */,
 				F5D8D730102BB3B1004A11AB /* OverlayRenderer.h */,
+				431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */,
+				431AE5D8109C1A63007428C3 /* OverlayRendererUtil.h */,
 				E38E16640D25F9FA00618676 /* PixelShaderRenderer.h */,
 				E38E16650D25F9FA00618676 /* RenderManager.cpp */,
 				E38E16660D25F9FA00618676 /* RenderManager.h */,
@@ -8195,6 +8201,7 @@
 				F599CD74108E6A7A0010EC2A /* DarwinStorageProvider.cpp in Sources */,
 				E4A249F71095C880003D74C6 /* AutorunMediaJob.cpp in Sources */,
 				F5A9D3091097C9370050490F /* AliasShortcutUtils.cpp in Sources */,
+				431AE5DA109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9066,6 +9073,7 @@
 				F599CD75108E6A7A0010EC2A /* DarwinStorageProvider.cpp in Sources */,
 				E4A249F81095C880003D74C6 /* AutorunMediaJob.cpp in Sources */,
 				F5A9D30A1097C9370050490F /* AliasShortcutUtils.cpp in Sources */,
+				431AE5D9109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
