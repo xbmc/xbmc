@@ -397,6 +397,7 @@ void CLinuxRendererGL::LoadTextures(int source)
   {
     g_VDPAU->CheckRecover();
     SetEvent(m_eventTexturesDone[source]);
+    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
     return;
   }
 #endif
