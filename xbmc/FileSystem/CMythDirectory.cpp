@@ -607,7 +607,11 @@ bool CCMythDirectory::SupportsFileOperations(const CStdString& strPath)
   CURL url(strPath);
   CStdString filename = url.GetFileName();
   CUtil::RemoveSlashAtEnd(filename);
+  /*
+   * TV Shows directory has sub-folders so extra check is included so only files get the file
+   * operations.
+   */
   return filename.Left(11) == "recordings/" ||
          filename.Left(7)  == "movies/" ||
-         filename.Left(8)  == "tvshows/";
+        (filename.Left(8)  == "tvshows/" && CUtil::GetExtension(filename) != "");
 }
