@@ -62,18 +62,23 @@ void CEdl::Clear()
   m_iTotalCutTime = 0;
 }
 
-bool CEdl::ReadFiles(const CStdString& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFramesPerSecond)
 {
-  CLog::Log(LOGDEBUG, "%s - checking for any edit decision list (EDL) files for: %s", __FUNCTION__,
+  CLog::Log(LOGDEBUG, "%s - checking for any edit decision lists (EDL) for: %s", __FUNCTION__,
             strMovie.c_str());
 
-  /*
-   * Read any available format until a valid EDL related file is found.
-   *
-   * TODO: Surely there's a better way to do this bFound shenanigans.
-   */
   bool bFound = false;
 
+  /*
+   * Only check for edit decision lists if the movie is on the local hard drive, or accessed over a
+   * network share.
+   */
+  if (CUtil::IsHD(strMovie)
+  ||  CUtil::IsSmb(strMovie))
+  {
+    /*
+     * Read any available file format until a valid EDL related file is found.
+     */
   if (!bFound)
     bFound = ReadVideoReDo(strMovie);
 
@@ -85,6 +90,15 @@ bool CEdl::ReadFiles(const CStdString& strMovie, const float fFramesPerSecond)
 
   if (!bFound)
     bFound = ReadBeyondTV(strMovie);
+  }
+  /*
+   * Or if the movie points to MythTV and isn't live TV.
+   */
+  else if (CUtil::IsMythTV(strMovie)
+  &&      !CUtil::IsLiveTV(strMovie))
+  {
+    bFound = ReadMythCommBreaks(strMovie, fFramesPerSecond);
+  }
 
   if (bFound)
   {
@@ -560,6 +574,11 @@ bool CEdl::WriteMPlayerEdl()
   return true;
 }
 
+CStdString CEdl::GetMPlayerEdl()
+{
+  return MPLAYER_EDL_FILENAME;
+}
+
 bool CEdl::HasCut()
 {
   return !m_vecCuts.empty();
@@ -719,7 +738,7 @@ CStdString CEdl::MillisecondsToTimeString(const int64_t iMilliseconds)
   return strTimeString;
 }
 
-bool CEdl::ReadMythCommBreaks(const CURL& url, const float fFramesPerSecond)
+bool CEdl::ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPerSecond)
 {
   Clear();
 
@@ -727,6 +746,7 @@ bool CEdl::ReadMythCommBreaks(const CURL& url, const float fFramesPerSecond)
    * Exists() sets up all the internal bits needed for GetCommBreakList().
    */
   CCMythFile mythFile;
+  CURL url(strMovie);
   if (!mythFile.Exists(url))
     return false;
 
@@ -772,10 +792,6 @@ bool CEdl::ReadMythCommBreaks(const CURL& url, const float fFramesPerSecond)
   {
     CLog::Log(LOGDEBUG, "%s - Added %i commercial breaks from MythTV for: %s. Used detected frame rate of %.3f fps to calculate times from the frame markers.",
               __FUNCTION__, m_vecCuts.size(), url.GetFileName().c_str(), fFramesPerSecond);
-    MergeShortCommBreaks();
-    /*
-     * No point writing the MPlayer EDL file as it won't be able to play the MythTV files anyway.
-     */
     return true;
   }
   else

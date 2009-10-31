@@ -36,6 +36,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "ThumbnailCache.h"
 #include "FileSystem/RarManager.h"
+#include "FileSystem/CMythDirectory.h"
 #ifdef HAS_UPNP
 #include "FileSystem/UPnPDirectory.h"
 #endif
@@ -1902,12 +1903,10 @@ bool CUtil::IsHTSP(const CStdString& strFile)
 
 bool CUtil::IsLiveTV(const CStdString& strFile)
 {
-  CURL url(strFile);
-
   if (IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile) || IsHTSP(strFile))
     return true;
 
-  if (IsMythTV(strFile) && url.GetFileName().Left(9) == "channels/")
+  if (IsMythTV(strFile) && CCMythDirectory::IsLiveTV(strFile))
     return true;
 
   return false;

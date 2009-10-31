@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?><scraper framework="1.0" date="2009-10-17" name="Rotten Tomatoes" content="movies" thumb="rottentomatoes.png" language="en">
+	<include>common/tmdb.xml</include>
+	<include>common/movieposterdb.xml</include>
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Location&quot; type=&quot;labelenum&quot; id=&quot;locality&quot; values=&quot;us|au|uk&quot; default=&quot;au&quot;&gt;&lt;/setting&gt;" dest="5">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Rating Type&quot; type=&quot;labelenum&quot; id=&quot;ratetype&quot; values=&quot;Overall|Top Critics|RT Community&quot; default=&quot;Overall&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Retrieve Classification Reason&quot; type=&quot;bool&quot; id=&quot;classreason&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Retrieve Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+            <RegExp input="$$1" output="&lt;setting label=&quot;Retrieve Thumbs&quot; type=&quot;bool&quot; id=&quot;thumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSettings>
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="\1" dest="3">
+			<expression noclean="1">(http://$INFO[locality]\.rottentomatoes\.com/m/[A-Za-z0-9_]*)</expression>
+		</RegExp>
+	</NfoUrl>
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="http://$INFO[locality].rottentomatoes.com/search/full_search.php?search=\1" dest="3">
+			<expression noclean="1"></expression>
+		</RegExp>
+	</CreateSearchUrl>
+	<GetSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2 (\3)&lt;/title&gt;&lt;url&gt;http://$INFO[locality].rottentomatoes.com/m/\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
+				<expression repeat="yes">&lt;a href=&quot;/m/([^&quot;]*)&quot;&gt;([^&lt;]*).*?([0-9]{4})</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSearchResults>
+	<GetDetails dest="3">
+		<RegExp input="$$8" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="6">
+				<expression trim="1" noclean="1">&lt;h1.class=&quot;movie_title clearfix&quot;&gt;([\S\s]*)\([0-9]{4}\)&lt;/h1&gt;[\S\s]*dialog_content clearfix</expression>
+			</RegExp>
+			<RegExp input="$$6" output="\1" dest="8">
+				<expression noclean="1"></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="9">
+				<expression noclean="1">&lt;h1.class=&quot;movie_title clearfix&quot;&gt;[\S\s]*\(([0-9]{4})\)&lt;/h1&gt;[\S\s]*dialog_content clearfix</expression>
+			</RegExp>
+			<RegExp input="$$9" output="\1" dest="8+">
+				<expression noclean="1"></expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;director&gt;\1&lt;/director&gt;" dest="8+">
+				<RegExp input="$$1" output="\1" dest="7">
+					<expression noclean="1">&lt;p class=&quot;movie_crew_shortened[\S\s]*Director:([\S\s]*)movie_crew_all</expression>
+				</RegExp>
+				<expression repeat="yes" noclean="1">&lt;a.href=&quot;[^&gt;]*&gt;([A-Za-z ]*)</expression>
+			</RegExp>
+            <!-- MPAA / Classification-->
+			<RegExp conditional="!classreason" input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="8+">
+				<expression>&lt;div id=&quot;movie_stats&quot;&gt;[\S\s]*&lt;span class=&quot;content&quot;&gt;([^&lt;]*)[\S\s]*\[See.Full.Rating\]</expression>
+			</RegExp>
+			<RegExp conditional="classreason" input="$$1" output="&lt;mpaa&gt;\1 \2&lt;/mpaa&gt;" dest="8+">
+				<expression>&lt;div id=&quot;movie_stats&quot;&gt;[\S\s]*&lt;span class=&quot;content&quot;&gt;([^&lt;]*)[\S\s]*\[See.Full.Rating\][\S\s]*movie_rating_reason&quot;.style=&quot;display:.none&quot;&gt;([^&lt;]*)</expression>
+			</RegExp>
+            <!-- Runtime -->
+			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="8+">
+				<expression>Runtime:[^0-9]*([^&lt;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="8+">
+				<expression>&lt;span class=&quot;label&quot;&gt;Studio:&lt;/span&gt;([^&lt;]*)</expression>
+			</RegExp>
+            <!-- Credits -->
+            <RegExp input="$$7" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="8+">
+                <RegExp input="$$1" output="\1" dest="7">
+                    <expression noclean="1">class=&quot;label&quot;&gt;Screenwriter:&lt;/span&gt;([^:]*)</expression>
+                </RegExp>
+                <expression noclean="1" repeat="yes">&lt;a.href=&quot;[^&gt;]*&gt;([^&lt;]*)</expression>
+            </RegExp>
+            <!-- Rating -->
+			<RegExp input="$$1" output="$INFO[ratetype]\1" dest="10">
+				<expression noclean="1">(&lt;h1 class=&quot;movie_title clearfix&quot;&gt;[\S\s]*&lt;div id="tomatometer_bar"&gt;)</expression>
+			</RegExp>
+			<RegExp input="$$10" output="&lt;rating max=&quot;100&quot;&gt;\1&lt;/rating&gt;" dest="8+">
+				<expression>Overall[\S\s]*&lt;li class=&quot;ui-tabs-selected&quot;&gt;&lt;a title=&quot;([0-9]{2,3})</expression>
+			</RegExp>
+			<RegExp input="$$10" output="&lt;rating max=&quot;100&quot;&gt;\1&lt;/rating&gt;" dest="8+">
+				<expression>Top Critics[\S\s]*&lt;a title=&quot;(\d{1,3})%&quot; href=&quot;/m/[^/]*/\?critic=creamcrop&quot;&gt;</expression>
+			</RegExp>
+			<RegExp input="$$10" output="&lt;rating max=&quot;100&quot;&gt;\1&lt;/rating&gt;" dest="8+">
+				<expression>RT Community[\S\s]*&lt;a title=&quot;(\d{1,3})%&quot; href=&quot;reviews_users.php&quot;&gt;</expression>
+			</RegExp>
+            <!-- Votes -->
+			<RegExp input="$$1" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="8+">
+				<expression>&lt;p&gt;Reviews Counted:&lt;span&gt;([^&lt;]*)</expression>
+			</RegExp>
+            <!-- Genre -->
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="8+">
+				<expression noclean="1">&lt;span.class=&quot;label&quot;&gt;Genre:&lt;/span&gt;.&lt;span class=&quot;content&quot;&gt;&lt;a.href=&quot;/movie/browser.php\?genre=[0-9]*&quot;&gt;([^&lt;]*)</expression>
+			</RegExp>
+            <!-- Actors-->
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;&lt;/role&gt;&lt;/actor&gt;" dest="8+">
+				<RegExp input="$$1" output="\1" dest="7">
+					<expression noclean="1">&lt;span class=&quot;label&quot;&gt;Starring:([\S\s]*)&lt;p class=&quot;movie_cast_all&quot;</expression>
+				</RegExp>
+				<expression repeat="yes" noclean="1">&lt;a.href=&quot;[^&gt;]*&gt;([A-Za-z ]*)</expression>
+			</RegExp>
+            <!-- Outline -->
+            <RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="8+">
+                <expression>&lt;p id=&quot;consensus&quot;&gt;&lt;span&gt;Consensus:[^&gt;]*&gt;([^\n\r\t]*)</expression>
+            </RegExp>
+            <!-- Plot -->
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="8+">
+				<expression>&lt;span id=&quot;movie_synopsis_all&quot; style=&quot;display: none;&quot;&gt;([\S\s]*)&lt;a href=&quot;#&quot; id=&quot;movie_synopsis_link</expression>
+			</RegExp>
+			<RegExp input="$$6" output="+\1" dest="12+">
+				<expression repeat="yes">([^ ,]+)</expression>
+			</RegExp>
+			<RegExp conditional="thumbs" input="$$12" output="&lt;url cache=&quot;rottentomatoes_temp.xml&quot; function=&quot;GetTMDBThumbsByIMDBId&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="8+">
+				<RegExp input="$$1" output="&quot;\1&quot;+\2" dest="4+">
+					<expression>www\.imdb\.com/title/(tt[0-9]*)/\s</expression>
+				</RegExp>
+				<RegExp input="$$4" output="+\1" dest="12+">
+					<expression repeat="yes">([^ ,]+)</expression>
+				</RegExp>
+				<expression></expression>
+			</RegExp>
+			<RegExp conditional="fanart" input="$$12" output="&lt;url cache=&quot;rottentomatoes_temp.xml&quot; function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="8+">
+				<RegExp input="$$1" output="&quot;\1&quot;+\2" dest="4+">
+					<expression>www\.imdb\.com/title/(tt[0-9]*)/\s</expression>
+				</RegExp>
+				<RegExp input="$$4" output="+\1" dest="12+">
+					<expression repeat="yes">([^ ,]+)</expression>
+				</RegExp>
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetDetails>
+</scraper>

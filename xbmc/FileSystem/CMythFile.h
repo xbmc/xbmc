@@ -45,12 +45,12 @@ public:
   CCMythFile();
   virtual ~CCMythFile();
   virtual bool          Open(const CURL& url);
-  virtual __int64       Seek(__int64 pos, int whence=SEEK_SET);
-  virtual __int64       GetPosition();
-  virtual __int64       GetLength();
+  virtual int64_t       Seek(int64_t pos, int whence=SEEK_SET);
+  virtual int64_t       GetPosition();
+  virtual int64_t       GetLength();
   virtual int           Stat(const CURL& url, struct __stat64* buffer) { return -1; }
   virtual void          Close();
-  virtual unsigned int  Read(void* buffer, __int64 size);
+  virtual unsigned int  Read(void* buffer, int64_t size);
   virtual CStdString    GetContent() { return ""; }
   virtual bool          SkipNext();
 
@@ -105,7 +105,7 @@ protected:
 
   bool              m_recording;
 
-  DWORD             m_timestamp;
+  unsigned int      m_timestamp;
 };
 
 }

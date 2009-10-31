@@ -97,9 +97,6 @@ CWeather g_weatherManager;
 
 void CBackgroundWeatherLoader::GetInformation()
 {
-  if (!g_guiSettings.GetBool("network.enableinternet"))
-    return;
-
   if (!g_network.IsAvailable(true))
     return;
 

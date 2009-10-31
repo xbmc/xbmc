@@ -385,7 +385,7 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
     CMediaSource share;
     share.strName=item->GetLabel();
     share.strPath = item->m_strPath;
-    share.m_strThumbnailImage= item->GetThumbnailImage();
+    share.m_strThumbnailImage= item->GetIconImage();
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);
   }
@@ -464,9 +464,9 @@ VECSOURCES& CGUIViewStateWindowVideoPlaylist::GetSources()
 CGUIViewStateVideoMovies::CGUIViewStateVideoMovies(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-    AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
+    AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
   else
-    AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
+    AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 551, LABEL_MASKS("%T", "%R"));
   AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
   AddSortMethod(SORT_METHOD_YEAR,562, LABEL_MASKS("%T", "%Y"));
 

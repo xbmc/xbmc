@@ -402,11 +402,7 @@ void CGUIWindowVideoNav::OnItemLoaded(CFileItem* pItem)
      be acting on someone else's flag, we don't care who invalidates the cache
      only that it is done.  We also don't care if it is done multiple times due
      to a race between multiple threads here at the same time */
-  if (m_bStreamDetailsChanged)
-  {
-    m_bStreamDetailsChanged = false;
     CUtil::DeleteVideoDatabaseDirectoryCache();
-  }
 }
 
 bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)

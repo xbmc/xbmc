@@ -125,7 +125,7 @@ static int read_braindead_odml_indx(AVFormatContext *s, int frame_num){
     AVIStream *ast;
     int i;
     int64_t last_pos= -1;
-    int64_t filesize= url_fsize(s->pb);
+    int64_t filesize= avi->fsize;
 
 #ifdef DEBUG_SEEK
     av_log(s, AV_LOG_ERROR, "longs_pre_entry:%d index_type:%d entries_in_use:%d chunk_id:%X base:%16"PRIX64"\n",
@@ -266,7 +266,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
         return -1;
 
     avi->fsize = url_fsize(pb);
-    if(avi->fsize<=0)
+    if(avi->fsize<=0 || avi->fsize < avi->riff_end)
         avi->fsize= avi->riff_end;
 
     /* first list tag */
@@ -292,7 +292,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
             if (tag1 == MKTAG('m', 'o', 'v', 'i')) {
                 avi->movi_list = url_ftell(pb) - 4;
                 if(size) avi->movi_end = avi->movi_list + size + (size & 1);
-                else     avi->movi_end = url_fsize(pb);
+                else     avi->movi_end = avi->fsize;
 #ifdef DEBUG
                 printf("movi end=%"PRIx64"\n", avi->movi_end);
 #endif
@@ -616,7 +616,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
                 av_log(s, AV_LOG_ERROR, "Something went wrong during header parsing, "
                                         "I will ignore it and try to continue anyway.\n");
                 avi->movi_list = url_ftell(pb) - 4;
-                avi->movi_end  = url_fsize(pb);
+                avi->movi_end  = avi->fsize;
                 goto end_of_header;
             }
             /* skip tag */

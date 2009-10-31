@@ -428,7 +428,12 @@ void CFileItem::Serialize(CArchive& ar)
 }
 bool CFileItem::Exists() const
 {
-  if (m_strPath.IsEmpty() || m_strPath.Equals("add") || IsInternetStream() || IsParentFolder() || IsVirtualDirectoryRoot() || IsPlugin())
+  if (m_strPath.IsEmpty()
+   || m_strPath.Equals("add")
+   || IsInternetStream()
+   || IsParentFolder()
+   || IsVirtualDirectoryRoot()
+   || IsPlugin())
     return true;
 
   if (IsVideoDb() && HasVideoInfoTag())
@@ -1566,7 +1571,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   default:
     break;
   }
-  if (sortMethod == SORT_METHOD_FILE)
+  if (sortMethod == SORT_METHOD_FILE        ||
+      sortMethod == SORT_METHOD_VIDEO_SORT_TITLE ||
+      sortMethod == SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::IgnoreFoldersAscending : SSortFileItem::IgnoreFoldersDescending);
   else if (sortMethod != SORT_METHOD_NONE)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::Ascending : SSortFileItem::Descending);
@@ -2304,13 +2311,20 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
 
 CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) const
 {
-  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsMusicDb())
+  if (m_strPath.IsEmpty()
+   || m_bIsShareOrDrive
+   || IsInternetStream()
+   || CUtil::IsUPnP(m_strPath)
+   || (CUtil::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
+   || IsParentFolder()
+   || IsMusicDb())
     return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
   CStdString fileThumb(GetTBNFile());
   if (CFile::Exists(fileThumb))
     return fileThumb;
+
   // if a folder, check for folder.jpg
   if (m_bIsFolder && (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
   {
@@ -2446,6 +2460,7 @@ CStdString CFileItem::GetUserVideoThumb() const
   || m_bIsShareOrDrive
   || IsInternetStream()
   || CUtil::IsUPnP(m_strPath)
+   || (CUtil::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
   || IsParentFolder()
   || IsLiveTV())
     return "";
@@ -2613,7 +2628,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
   || CUtil::IsUPnP(strFile)
   || IsLiveTV()
   || IsPlugin()
-  || CUtil::IsFTP(strFile)
+   || (CUtil::IsFTP(strFile) && !g_advancedSettings.m_bFTPThumbs)
   || m_strPath.IsEmpty())
     return "";
 
@@ -3096,7 +3111,10 @@ CStdString CFileItem::FindTrailer() const
   }
 
   // no local trailer available for these
-  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsLiveTV() || IsPlugin())
+  if (IsInternetStream()
+   || CUtil::IsUPnP(strFile)
+   || IsLiveTV()
+   || IsPlugin())
     return strTrailer;
 
   CStdString strDir;

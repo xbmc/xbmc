@@ -43,7 +43,7 @@ CGUIBorderedImage::~CGUIBorderedImage(void)
 
 void CGUIBorderedImage::Render()
 {
-  if (!m_borderImage.GetFileName().IsEmpty() && m_texture.IsAllocated())
+  if (!m_borderImage.GetFileName().IsEmpty() && m_texture.ReadyToRender())
   {
     CRect rect = CRect(m_texture.GetXPosition(), m_texture.GetYPosition(), m_texture.GetXPosition() + m_texture.GetWidth(), m_texture.GetYPosition() + m_texture.GetHeight());
     rect.Intersect(m_texture.GetRenderRect());

@@ -1257,7 +1257,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
-        CURL(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath).GetWithoutUserDetails();
+        strLabel = CURL(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath).GetWithoutUserDetails();
 	if (info==CONTAINER_FOLDERNAME)
         {
           CUtil::RemoveSlashAtEnd(strLabel);

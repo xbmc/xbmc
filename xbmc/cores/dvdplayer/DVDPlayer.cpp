@@ -753,8 +753,6 @@ void CDVDPlayer::Process()
   // look for any EDL files
   m_Edl.Clear();
   m_EdlAutoSkipMarkers.Clear();
-  if (g_guiSettings.GetBool("videoplayer.editdecision"))
-  {
     float fFramesPerSecond;
     if (m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
       fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
@@ -764,13 +762,8 @@ void CDVDPlayer::Process()
       CLog::Log(LOGWARNING, "%s - Could not detect frame rate for: %s. Using default of %.3f fps for conversion of any commercial break frame markers to times.",
                 __FUNCTION__, m_filename.c_str(), fFramesPerSecond);
     }
+  m_Edl.ReadEditDecisionLists(m_filename, fFramesPerSecond);
 
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_FILE))
-      m_Edl.ReadFiles(m_filename, fFramesPerSecond);
-    else if (m_item.IsMythTV())
-      m_Edl.ReadMythCommBreaks(m_item.GetAsUrl(), fFramesPerSecond);
-  }
-  
   if( m_PlayerOptions.starttime > 0 )
   {
     int starttime = m_Edl.RestoreCutTime((__int64)m_PlayerOptions.starttime * 1000); // s to ms
@@ -2073,7 +2066,6 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
       dDiff = (apts - vpts) / DVD_TIME_BASE;
 
     CStdString strEDL;
-    if (g_guiSettings.GetBool("videoplayer.editdecision"))
       strEDL.AppendFormat(", edl:%s", m_Edl.GetInfo().c_str());
 
     strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%% )"

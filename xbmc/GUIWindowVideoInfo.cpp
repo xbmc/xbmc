@@ -456,13 +456,6 @@ void CGUIWindowVideoInfo::Update()
 
 void CGUIWindowVideoInfo::Refresh()
 {
-  // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("network.enableinternet"))
-  {
-    Update();
-    return ;
-  }
-
   try
   {
     OutputDebugString("Refresh\n");

@@ -270,22 +270,15 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share1);
     }
 #ifdef _XBOX
-    share1.strPath = "soundtrack://";
     share1.strName = "MS Soundtracks";
+    share1.strPath = "soundtrack://";
     extraShares.push_back(share1);
 #endif
-    if (g_guiSettings.GetBool("network.enableinternet"))
+    if (g_guiSettings.GetString("scrobbler.lastfmusername") != "")
     {
-      share1.strName = "Shoutcast";
-      share1.strPath = SHOUTCAST_MASTER_LINK;
+      share1.strName = "Last.FM";
+      share1.strPath = "lastfm://";
       extraShares.push_back(share1);
-
-      if (g_guiSettings.GetString("scrobbler.lastfmusername") != "")
-      {
-        share1.strName = "Last.FM";
-        share1.strPath = "lastfm://";
-        extraShares.push_back(share1);
-      }
     }
     // add the plugins dir as needed
     if (CPluginDirectory::HasPlugins("music"))

@@ -42,7 +42,7 @@ CAdvancedSettings::CAdvancedSettings()
 
   m_audioHeadRoom = 0;
   m_ac3Gain = 12.0f;
-  m_audioApplyDrc = true;      
+  m_audioApplyDrc = true;
 
   m_audioDefaultPlayer = "paplayer";
   m_audioPlayCountMinimumPercent = 90.0f;
@@ -113,8 +113,6 @@ CAdvancedSettings::CAdvancedSettings()
   m_tvshowExcludeFromScanRegExps.push_back("[-._ ]sample[-._ ]");
 
   m_videoStackRegExps.push_back("()[ _.-]*?(?:cd|dvd|p(?:ar)t|dis[ck])[ _.-]*?([0-9a-d]+)(.*\\....?.?)$");
-  m_videoStackRegExps.push_back("()[ ._-]*?([a-c0-3]+)(\\....?.?)$");
-  m_videoStackRegExps.push_back("()[ ._-]+(0?[a-c1-3])[ ._-]+(.*?\\....?.?)$");
 
   // foo_[s01]_[e01]
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
@@ -145,6 +143,8 @@ CAdvancedSettings::CAdvancedSettings()
   m_sambastatfiles = true;
 
   m_bHTTPDirectoryStatFilesize = false;
+
+  m_bFTPThumbs = false;
 
   m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
   m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
@@ -270,7 +270,7 @@ bool CAdvancedSettings::Load()
     if (pAudioExcludes)
       GetCustomRegexps(pAudioExcludes, m_audioExcludeFromScanRegExps);
 
-    XMLUtils::GetBoolean(pElement, "applydrc", m_audioApplyDrc);        
+    XMLUtils::GetBoolean(pElement, "applydrc", m_audioApplyDrc);
   }
 
   pElement = pRootElement->FirstChildElement("video");
@@ -388,6 +388,12 @@ bool CAdvancedSettings::Load()
   pElement = pRootElement->FirstChildElement("httpdirectory");
   if (pElement)
     XMLUtils::GetBoolean(pElement, "statfilesize", m_bHTTPDirectoryStatFilesize);
+
+  pElement = pRootElement->FirstChildElement("ftp");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "remotethumbs", m_bFTPThumbs);
+  }
 
   if (XMLUtils::GetInt(pRootElement, "loglevel", m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
   { // read the loglevel setting, so set the setting advanced to hide it in GUI

@@ -2245,7 +2245,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
     return false;
 
   // check network connectivity
-  if (!g_guiSettings.GetBool("network.enableinternet") || !g_network.IsAvailable())
+  if (!g_network.IsAvailable())
     return false;
 
   // Get information for the inserted disc
@@ -4085,6 +4085,7 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       info.strTitle = parser.GetName();
       info.strDate = parser.GetDate();
       info.strFramework = parser.GetFramework();
+      info.strLanguage = parser.GetLanguage();
 
     }
     if (info.strPath.IsEmpty() && !strPath.Equals("musicdb://")) // default fallback

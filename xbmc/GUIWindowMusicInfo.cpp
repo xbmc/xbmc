@@ -90,7 +90,6 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
       CGUIDialog::OnMessage(message);
       m_bViewReview = true;
       m_bRefresh = false;
-      if (g_guiSettings.GetBool("network.enableinternet"))
         RefreshThumb();
       Update();
       return true;

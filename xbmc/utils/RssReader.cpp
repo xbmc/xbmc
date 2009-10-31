@@ -137,7 +137,7 @@ void CRssReader::Process()
     CURL url(strUrl);
 
     // we wait for the network to come up
-    if ((url.GetProtocol() == "http" || url.GetProtocol() == "https") && (!g_guiSettings.GetBool("network.enableinternet") || !g_network.IsAvailable()))
+    if ((url.GetProtocol() == "http" || url.GetProtocol() == "https") && !g_network.IsAvailable())
       strXML = "<rss><item><title>"+g_localizeStrings.Get(15301)+"</title></item></rss>";
     else
     {
@@ -278,7 +278,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
           // This usually happens in right-to-left languages where they want to
           // specify in the RSS body that the text should be RTL.
           // <title>
-          //		<div dir="RTL">òìå áøùú: ùîøå òì òöîëí</div> 
+          //		<div dir="RTL">Ã²Ã¬Ã¥ Ã¡Ã¸Ã¹Ãº: Ã¹Ã®Ã¸Ã¥ Ã²Ã¬ Ã²Ã¶Ã®Ã«Ã­</div> 
           // </title>
           if (htmlText.Equals("div") || htmlText.Equals("span"))
           {

@@ -650,7 +650,6 @@ void CScrobbler::Process()
       time_t now = time(NULL);
       // We need to handshake.
       if (m_bBanned || m_bBadAuth ||
-          !g_guiSettings.GetBool("network.enableinternet") ||
           ((now - m_lastFailedHandshake) < m_failedHandshakeDelay))
         continue;
       if (!DoHandshake(now))

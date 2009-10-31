@@ -173,6 +173,17 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
   if(m_SubtitleIndex<0)
     return NULL;
 
+  if(m_Subtitle.num_rects == 0 && m_SubtitleIndex == 0)
+  {
+    // we must add an empty overlay to replace the previous one
+    CDVDOverlay* o = new CDVDOverlay(DVDOVERLAY_TYPE_NONE);
+    o->iPTSStartTime = 0;
+    o->iPTSStopTime  = 0;
+    o->replace  = true;
+    m_SubtitleIndex++;
+    return o;
+  }
+
   if(m_Subtitle.format == 0)
   {
     if(m_SubtitleIndex >= (int)m_Subtitle.num_rects)

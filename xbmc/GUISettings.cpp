@@ -207,7 +207,7 @@ void CGUISettings::Initialize()
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  AddInt(2, "slideshow.transistiontime", 225, 2500, 100, 100, 10000, SPIN_CONTROL_INT_PLUS, MASK_MS);
+  AddInt(2, "slideshow.transistiontime", 225, 3, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddBool(3, "slideshow.displayeffects", 12379, true);
   AddBool(0, "slideshow.shuffle", 13319, false);
 
@@ -403,7 +403,7 @@ void CGUISettings::Initialize()
   // video settings
   AddGroup(5, 3);
   AddCategory(5, "myvideos", 16000);
-  AddBool(1, "myvideos.treatstackasfile", 20051, true);
+  AddBool(0, "myvideos.treatstackasfile", 20051, true);
   AddInt(2, "myvideos.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
 // Disabled since Xbox doesn't work properly with them
 /*
@@ -492,7 +492,6 @@ void CGUISettings::Initialize()
   AddString(17, "network.httpproxypassword", 710, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);
 
   AddSeparator(18, "network.sep2");
-  AddBool(19, "network.enableinternet", 14054, true);
 
   AddCategory(6, "servers", 14036);
   AddBool(1,  "servers.ftpserver",        167, true);

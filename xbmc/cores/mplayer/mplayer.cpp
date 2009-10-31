@@ -1120,7 +1120,9 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
         float fFramesPerSecond;
 
         if (fFPS > 0)
+        {
           fFramesPerSecond = fFPS;
+        }
         else
         {
           fFramesPerSecond = 25.0; // TODO: Default to one of 50.0, 29.97, 25.0, or 23.976 fps. Advanced setting?
@@ -1128,15 +1130,8 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
                     __FUNCTION__, strFile.c_str(), fFramesPerSecond);
         }
 
-        if (!bIsDVD)
-        {
-          if (m_Edl.ReadFiles(strFile, fFramesPerSecond))
-            options.SetEdl("special://temp/xbmc.edl");
-        }
-        else if (file.IsMythTV())
-        {
-          m_Edl.ReadMythCommBreaks(file.GetAsUrl(), fFramesPerSecond);
-        }
+        if (m_Edl.ReadEditDecisionLists(strFile, fFramesPerSecond))
+          options.SetEdl(CEdl::GetMPlayerEdl());
       }
 
       // do we need 2 do frame rate conversions ?
