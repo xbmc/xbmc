@@ -575,7 +575,7 @@ bool CEdl::WriteMPlayerEdl()
   return true;
 }
 
-CStdString GetMPlayerEdl()
+CStdString CEdl::GetMPlayerEdl()
 {
   return MPLAYER_EDL_FILENAME;
 }
