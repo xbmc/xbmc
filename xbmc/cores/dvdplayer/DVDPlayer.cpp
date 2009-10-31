@@ -452,16 +452,13 @@ bool CDVDPlayer::OpenInputStream()
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV)
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
   {
-    if(g_stSettings.m_currentVideoSettings.m_SubtitleOn)
-    {
-      // find any available external subtitles
-      std::vector<std::string> filenames;
-      CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
-      for(unsigned int i=0;i<filenames.size();i++)
-        AddSubtitleFile(filenames[i]);
+    // find any available external subtitles
+    std::vector<std::string> filenames;
+    CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
+    for(unsigned int i=0;i<filenames.size();i++)
+      AddSubtitleFile(filenames[i]);
 
-      g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
-    }
+    g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
   }
 
   SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
@@ -556,30 +553,28 @@ void CDVDPlayer::OpenDefaultStreams()
   }
 
   // open subtitle stream
-  if(g_stSettings.m_currentVideoSettings.m_SubtitleOn && !m_PlayerOptions.video_only)
+  count = m_SelectionStreams.Count(STREAM_SUBTITLE);
+  valid = false;
+  if(g_stSettings.m_currentVideoSettings.m_SubtitleStream >= 0
+  && g_stSettings.m_currentVideoSettings.m_SubtitleStream < count)
   {
-    m_dvdPlayerVideo.EnableSubtitle(true);
-    count = m_SelectionStreams.Count(STREAM_SUBTITLE);
-    valid = false;
-    if(g_stSettings.m_currentVideoSettings.m_SubtitleStream >= 0
-    && g_stSettings.m_currentVideoSettings.m_SubtitleStream < count)
-    {
-      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
-      if(OpenSubtitleStream(s.id, s.source))
-        valid = true;
-      else
-        CLog::Log(LOGWARNING, "%s - failed to restore selected subtitle stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
-    }
-
-    for(int i = 0;i<count && !valid; i++)
-    {
-      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
-      if(OpenSubtitleStream(s.id, s.source))
-        valid = true;
-    }
-    if(!valid)
-      CloseSubtitleStream(false);
+    SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
+    if(OpenSubtitleStream(s.id, s.source))
+      valid = true;
+    else
+      CLog::Log(LOGWARNING, "%s - failed to restore selected subtitle stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
   }
+
+  for(int i = 0;i<count && !valid; i++)
+  {
+    SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
+    if(OpenSubtitleStream(s.id, s.source))
+      valid = true;
+  }
+  if(!valid)
+    CloseSubtitleStream(false);
+  if(g_stSettings.m_currentVideoSettings.m_SubtitleOn && !m_PlayerOptions.video_only)
+    m_dvdPlayerVideo.EnableSubtitle(true);
   else
     m_dvdPlayerVideo.EnableSubtitle(false);
 

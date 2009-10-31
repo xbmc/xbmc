@@ -248,11 +248,6 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     {
       g_stSettings.m_currentVideoSettings.m_SubtitleOn = !g_stSettings.m_currentVideoSettings.m_SubtitleOn;
       g_application.m_pPlayer->SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
-      if (!g_stSettings.m_currentVideoSettings.m_SubtitleCached && g_stSettings.m_currentVideoSettings.m_SubtitleOn)
-      {
-        g_application.Restart(true); // cache subtitles
-        Close();
-      }
     }
     return true;
     break;
