@@ -261,11 +261,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   {
     g_stSettings.m_currentVideoSettings.m_SubtitleOn = m_subtitleVisible;
     g_application.m_pPlayer->SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
-    if (!g_stSettings.m_currentVideoSettings.m_SubtitleCached && g_stSettings.m_currentVideoSettings.m_SubtitleOn)
-    {
-      g_application.Restart(true); // cache subtitles
-      Close();
-    }
   }
   else if (setting.id == SUBTITLE_SETTINGS_DELAY)
   {

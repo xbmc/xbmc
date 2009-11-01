@@ -122,6 +122,8 @@ Section "XBMC" SecXBMC
     File /nonfatal /r "${xbmc_root}\Xbmc\visualisations\projectM\*.*"
   !else
     File "${xbmc_root}\Xbmc\visualisations\*_win32dx.vis"
+    SetOutPath "$INSTDIR\visualisations\Milkdrop"
+    File /nonfatal /r "${xbmc_root}\Xbmc\visualisations\Milkdrop\*.*"
   !endif
   SetOutPath "$INSTDIR\web"
   File /r "${xbmc_root}\Xbmc\web\*.*"

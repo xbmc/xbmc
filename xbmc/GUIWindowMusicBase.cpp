@@ -778,9 +778,6 @@ void CGUIWindowMusicBase::UpdateButtons()
 
 bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, const SScraperInfo& info, ALLOW_SELECTION allowSelection)
 {
-  // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("network.enableinternet")) return false;
-
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)
   {
@@ -830,9 +827,6 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
 
 bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArtistInfo& artist, const SScraperInfo& info, ALLOW_SELECTION allowSelection)
 {
-  // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("network.enableinternet")) return false;
-
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)
   {

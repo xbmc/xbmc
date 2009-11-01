@@ -42,7 +42,7 @@ public:
   /*!
    \brief Work function that loads in a particular image.
    */
-  virtual void DoWork();
+  virtual bool DoWork();
   
   CStdString    m_path; ///< path of image to load
   CBaseTexture *m_texture; ///< Texture object to load the image into \sa CBaseTexture.
@@ -70,7 +70,7 @@ public:
    
    \sa CImageLoader, IJobCallback
    */
-  virtual void OnJobComplete(unsigned int jobID, CJob *job);
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
   /*!
    \brief Request a texture to be loaded in the background.

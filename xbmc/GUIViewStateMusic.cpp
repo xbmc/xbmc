@@ -508,7 +508,6 @@ void CGUIViewStateWindowMusicNav::SaveViewState()
 
 void CGUIViewStateWindowMusicNav::AddOnlineShares()
 {
-  if (!g_guiSettings.GetBool("network.enableinternet")) return;
   if (!g_advancedSettings.m_bVirtualShares) return;
   for (int i = 0; i < (int)g_settings.m_musicSources.size(); ++i)
   {
@@ -533,7 +532,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
     CMediaSource share;
     share.strName=item->GetLabel();
     share.strPath = item->m_strPath;
-    share.m_strThumbnailImage = item->GetThumbnailImage();
+    share.m_strThumbnailImage = item->GetIconImage();
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);
   }

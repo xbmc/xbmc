@@ -3046,12 +3046,12 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
       strSQL=FormatSQL("insert into settings ( idFile,Deinterlace,ViewMode,ZoomAmount,PixelRatio,"
                        "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,Contrast,Gamma,"
                        "VolumeAmplification,AudioDelay,OutputToAllSpeakers,ResumeTime,Crop,CropLeft,CropRight,CropTop,CropBottom,Sharpness,NoiseReduction)"
-                       " values (%i,%i,%i,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%f,%f,",
+                       " values (%i,%i,%i,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,",
                        idFile, setting.m_InterlaceMethod, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
                        setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn,
-                       setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay, setting.m_Sharpness, setting.m_NoiseReduction);
+                       setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay);
       CStdString strSQL2;
-      strSQL2=FormatSQL("%i,%i,%i,%i,%i,%f,%f)\n", setting.m_OutputToAllSpeakers, setting.m_ResumeTime, setting.m_Crop, setting.m_CropLeft, setting.m_CropRight,
+      strSQL2=FormatSQL("%i,%i,%i,%i,%i,%i,%i,%f,%f)\n", setting.m_OutputToAllSpeakers, setting.m_ResumeTime, setting.m_Crop, setting.m_CropLeft, setting.m_CropRight,
                     setting.m_CropTop, setting.m_CropBottom, setting.m_Sharpness, setting.m_NoiseReduction);
       strSQL += strSQL2;
       m_pDS->exec(strSQL.c_str());
@@ -4231,6 +4231,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
           // fv(3) is the number of videos watched, fv(2) is the total number.  We set the playcount
           // only if the number of videos watched is equal to the total number (i.e. every video watched)
           pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(3).get_asInt() == m_pDS->fv(2).get_asInt()) ? 1 : 0;
+          pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
         }
         items.Add(pItem);
         m_pDS->next();
@@ -7367,6 +7368,7 @@ void CVideoDatabase::ExportActorThumbs(const CVideoInfoTag& tag, bool overwrite 
     if (CFile::Exists(strThumb))
     {
       CDirectory::Create(strDir);
+      CFile::SetHidden(strDir, true);
       CStdString thumbFile = iter->strName;
       thumbFile.Replace(" ","_");
       thumbFile += ".tbn";

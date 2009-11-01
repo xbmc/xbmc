@@ -111,11 +111,21 @@ public:
    */
   virtual int Decode(BYTE* pData, int iSize, double pts) = 0;
 
- /*
+  /*
    * Reset the decoder.
    * Should be the same as calling Dispose and Open after each other
    */
   virtual void Reset() = 0;
+
+  /*
+   * returns true if successfull
+   * the DVDVideoPicture structure is reset or initialized.
+   */
+  virtual bool ResetPicture(DVDVideoPicture* pDvdVideoPicture)
+  {
+    memset(pDvdVideoPicture, 0, sizeof(DVDVideoPicture));
+    return true;
+  }
 
   /*
    * returns true if successfull

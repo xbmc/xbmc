@@ -45,7 +45,7 @@ void CBaseRenderer::ChooseBestResolution(float fps)
   if ( m_resolution == RES_WINDOW )
     m_resolution = RES_DESKTOP;
   // Adjust refreshrate to match source fps
-#if !defined(__APPLE__) && !defined(_WIN32)
+#if !defined(__APPLE__)
   if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
   {
     // Find closest refresh rate
@@ -105,6 +105,14 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
   // and the output pixel ratio setting)
 
   float outputFrameRatio = inputFrameRatio / g_settings.m_ResInfo[GetResolution()].fPixelRatio;
+
+  // allow a certain error to maximize screen size
+  float fCorrection = screenWidth / screenHeight / outputFrameRatio - 1.0f;
+  float fAllowed    = g_guiSettings.GetFloat("videoplayer.aspecterror") * 0.01f;
+  if(fCorrection >   fAllowed) fCorrection =   fAllowed;
+  if(fCorrection < - fAllowed) fCorrection = - fAllowed;
+
+  outputFrameRatio *= 1.0f + fCorrection;
 
   // maximize the movie width
   float newWidth = screenWidth;

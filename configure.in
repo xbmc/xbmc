@@ -184,6 +184,11 @@ AC_ARG_ENABLE([avahi],
                 [disable Avahi support (default is enabled if libavahi-common and libavahi-client is found)])],
              [use_avahi=$enableval],
              [use_avahi=yes])
+AC_ARG_ENABLE([non-free],
+              [AS_HELP_STRING([--disable-non-free],
+                [disable componentents with non-compliant licenses])],
+              [use_nonfree=$enableval],
+              [use_nonfree=yes])
 
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
@@ -474,7 +479,6 @@ else
      AC_MSG_RESULT($avahi_disabled)
    fi
 fi
- 
 
 # XRandR
 if test "$host_vendor" = "apple" ; then
@@ -718,6 +722,7 @@ AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h inttypes.h limits.h locale.h \
   malloc.h memory.h netdb.h netinet/in.h stddef.h stdint.h stdlib.h string.h \
   strings.h sys/file.h sys/ioctl.h sys/mount.h sys/param.h sys/socket.h \
   sys/time.h sys/timeb.h sys/vfs.h termios.h unistd.h utime.h wchar.h wctype.h])
+AC_CHECK_HEADERS([cdio/iso9660.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STAT
@@ -937,6 +942,14 @@ else
   fi
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
 fi
+if test "$use_nonfree" = "yes"; then
+  final_message="$final_message\n  Non-free:\tYes"
+  HAVE_XBMC_NONFREE=1
+  AC_DEFINE([HAVE_XBMC_NONFREE], [1], [Define to 1 to enable non-free components.])
+else
+  HAVE_XBMC_NONFREE=0
+  final_message="$final_message\n  Non-free:\tNo"
+fi
 
 ### External libraries messages
 if test "$use_external_libraries" = "yes"; then
@@ -1058,6 +1071,7 @@ AC_SUBST(USE_PYTHON2_6)
 AC_SUBST(USE_PYTHON2_5)
 AC_SUBST(USE_PYTHON2_4)
 AC_SUBST(OUTPUT_FILES)
+AC_SUBST(HAVE_XBMC_NONFREE)
 # Function to run the configure scripts in our submodules
 # Consists of three paramaters, the path to the submodule, the configure command
 # with appropriate arguments, and a third parameter set to 1 if we are to skip

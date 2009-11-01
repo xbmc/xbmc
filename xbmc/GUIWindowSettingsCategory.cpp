@@ -106,6 +106,7 @@
 #include "LocalizeStrings.h"
 #include "LangInfo.h"
 #include "StringUtils.h"
+#include "WindowingFactory.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -125,6 +126,8 @@ using namespace DIRECTORY;
 #define CONTROL_START_CONTROL           -80
 
 #define PREDEFINED_SCREENSAVERS          5
+
+#define RSSEDITOR_PATH "special://home/scripts/RSS Editor/default.py"
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
     : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml")
@@ -1034,22 +1037,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser);
     }
-    else if (strSetting.Equals("masterlock.startuplock") || strSetting.Equals("masterlock.automastermode"))
+    else if (strSetting.Equals("masterlock.startuplock"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE);
-    }
-    else if (strSetting.Equals("masterlock.loginlock"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.bUseLoginScreen);
-    }
-    else if (strSetting.Equals("screensaver.uselock"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE                                    &&
-                                         g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE &&
-                                         !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
     }
     else if (!strSetting.Equals("remoteevents.enabled")
              && strSetting.Left(13).Equals("remoteevents."))
@@ -1290,21 +1281,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("locale.timeserver"));
     }
-    else if (strSetting.Equals("locale.time") || strSetting.Equals("locale.date"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(!g_guiSettings.GetBool("locale.timeserver"));
-      SYSTEMTIME curTime;
-      GetLocalTime(&curTime);
-      CStdString time;
-      if (strSetting.Equals("locale.time"))
-        time = g_infoManager.GetTime();
-      else
-        time = g_infoManager.GetDate();
-      CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
-      pSettingString->SetData(time);
-      pSettingControl->Update();
-    }
 #endif
     else if (strSetting.Equals("autodetect.nickname") || strSetting.Equals("autodetect.senduserpw"))
     {
@@ -1333,7 +1309,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("lookandfeel.rssedit"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(XFILE::CFile::Exists("special://home/scripts/RssTicker/default.py"));
+      pControl->SetEnabled(XFILE::CFile::Exists(RSSEDITOR_PATH));
     }
     else if (strSetting.Equals("musiclibrary.scrapersettings"))
     {
@@ -1401,28 +1377,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 
 void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
 {
-  for (unsigned int i = 0; i < m_vecSettings.size(); i++)
-  {
-    CBaseSettingControl *pSettingControl = m_vecSettings[i];
-    CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-    if (strSetting.Equals("locale.time") || strSetting.Equals("locale.date"))
-    {
-#ifdef HAS_TIME_SERVER
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(!g_guiSettings.GetBool("locale.timeserver"));
-#endif
-      SYSTEMTIME curTime;
-      GetLocalTime(&curTime);
-      CStdString time;
-      if (strSetting.Equals("locale.time"))
-        time = g_infoManager.GetTime();
-      else
-        time = g_infoManager.GetDate();
-      CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
-      pSettingString->SetData(time);
-      pSettingControl->Update();
-    }
-  }
+  // date and time used to be here
 }
 
 void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
@@ -1453,27 +1408,19 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_weatherManager.Refresh();
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
-    CBuiltins::Execute("RunScript(special://home/scripts/RssTicker/default.py)");
-  else if (strSetting.Equals("musiclibrary.scrapersettings") || strSetting.Equals("musiclibrary.defaultscraper"))
+    CBuiltins::Execute("RunScript("RSSEDITOR_PATH")");
+  else if (strSetting.Equals("musiclibrary.scrapersettings"))
   {
     CMusicDatabase database;
     database.Open();
     SScraperInfo info;
     database.GetScraperForPath("musicdb://",info);
-    if (!info.strPath.Equals(g_guiSettings.GetString("musiclibrary.defaultscraper")))
-    {
-      CScraperParser parser;
-      parser.Load("special://xbmc/system/scrapers/music/"+g_guiSettings.GetString("musiclibrary.defaultscraper"));
-      info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
-      info.strContent = "albums";
-      info.strTitle = parser.GetName();
-    }
-    if (info.settings.GetPluginRoot() || info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/"+info.strPath))
-    {
-      if (strSetting.Equals("musiclibrary.scrapersettings"))
+
+    if (info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + info.strPath))
         CGUIDialogPluginSettings::ShowAndGetInput(info);
-    }
+
     database.SetScraperForPath("musicdb://",info);
+    database.Close();
   }
 
   // if OnClick() returns false, the setting hasn't changed or doesn't
@@ -2167,28 +2114,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_application.StartTimeServer();
   }
 #endif
-  else if (strSetting.Equals("locale.time"))
-  {
-    SYSTEMTIME curTime;
-    GetLocalTime(&curTime);
-    if (CGUIDialogNumeric::ShowAndGetTime(curTime, g_localizeStrings.Get(14066)))
-    { // yay!
-      SYSTEMTIME curDate;
-      GetLocalTime(&curDate);
-      CUtil::SetSysDateTimeYear(curDate.wYear, curDate.wMonth, curDate.wDay, curTime.wHour, curTime.wMinute);
-    }
-  }
-  else if (strSetting.Equals("locale.date"))
-  {
-    SYSTEMTIME curDate;
-    GetLocalTime(&curDate);
-    if (CGUIDialogNumeric::ShowAndGetDate(curDate, g_localizeStrings.Get(14067)))
-    { // yay!
-      SYSTEMTIME curTime;
-      GetLocalTime(&curTime);
-      CUtil::SetSysDateTimeYear(curDate.wYear, curDate.wMonth, curDate.wDay, curTime.wHour, curTime.wMinute);
-    }
-  }
   else if (strSetting.Equals("smb.winsserver") || strSetting.Equals("smb.workgroup") )
   {
     if (g_guiSettings.GetString("smb.winsserver") == "0.0.0.0")
@@ -3113,9 +3038,12 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool play
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
   pControl->Clear();
 
-  pControl->AddLabel(g_settings.m_ResInfo[RES_WINDOW].strMode, RES_WINDOW);  
+  pControl->AddLabel(g_settings.m_ResInfo[RES_WINDOW].strMode, RES_WINDOW);
   pControl->AddLabel(g_settings.m_ResInfo[RES_DESKTOP].strMode, RES_DESKTOP);
-  for (size_t i = RES_CUSTOM ; i < g_settings.m_ResInfo.size(); i++)
+  size_t maxRes = g_settings.m_ResInfo.size();
+  if (g_Windowing.GetNumScreens())
+    maxRes = std::min(maxRes, (size_t)RES_DESKTOP + g_Windowing.GetNumScreens() - 1);
+  for (size_t i = RES_CUSTOM ; i < maxRes; i++)
   {
     pControl->AddLabel(g_settings.m_ResInfo[i].strMode, i);
   }
@@ -3127,7 +3055,7 @@ void CGUIWindowSettingsCategory::FillInVSyncs(CSetting *pSetting)
   CSettingInt *pSettingInt = (CSettingInt*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(_WIN32)
   pControl->AddLabel(g_localizeStrings.Get(13101) , VSYNC_DRIVER);
 #endif
   pControl->AddLabel(g_localizeStrings.Get(13106) , VSYNC_DISABLED);
@@ -3565,7 +3493,23 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
       if (parser.GetName().Equals(strSelected) || CUtil::GetFileName(items[i]->m_strPath).Equals(strSelected))
       {
         if (strContent.Equals("music")) // native strContent would be albums or artists but we're using the same scraper for both
-          g_guiSettings.SetString("musiclibrary.defaultscraper", CUtil::GetFileName(items[i]->m_strPath));
+        {
+          if (g_guiSettings.GetString("musiclibrary.defaultscraper") != strSelected)
+          {
+            g_guiSettings.SetString("musiclibrary.defaultscraper", CUtil::GetFileName(items[i]->m_strPath));
+
+            SScraperInfo info;
+            CMusicDatabase database;
+
+            info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
+            info.strContent = "albums";
+            info.strTitle = parser.GetName();
+
+            database.Open();
+            database.SetScraperForPath("musicdb://",info);
+            database.Close();
+          }
+        }
         else if (strContent.Equals("movies"))
           g_guiSettings.SetString("scrapers.moviedefault", CUtil::GetFileName(items[i]->m_strPath));
         else if (strContent.Equals("tvshows"))

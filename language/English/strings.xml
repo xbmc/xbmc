@@ -180,13 +180,13 @@
   <string id="237">Minification</string>
   <string id="238">Magnification</string>
   <string id="239">Clear playlist on finish</string>
-  <string id="240">Autoplay DVD-Video</string>
-  <string id="241">Autoplay VCD/SVCD</string>
-  <string id="242">Autoplay Audio-CD</string>
-  <string id="243">Autoplay Xbox games</string>
-  <string id="244">Autoplay videos</string>
-  <string id="245">Autoplay music</string>
-  <string id="246">Autoplay pictures</string>
+  <string id="240"></string>
+  <string id="241"></string>
+  <string id="242"></string>
+  <string id="243"></string>
+  <string id="244"></string>
+  <string id="245"></string>
+  <string id="246"></string>
   <string id="247">Scripts</string>
   <string id="248">Language</string>
   <string id="249">Music</string>
@@ -378,7 +378,7 @@
   <string id="444">Video</string>
   <string id="445">Audio</string>
   <string id="446">DVD</string>
-  <string id="447">Autoplay</string>
+  <string id="447">Autorun media</string>
   <string id="448">LCD</string>
   <string id="449">Enabled</string>
   <string id="450">Columns</string>
@@ -900,7 +900,7 @@
   <string id="12021">Start from beginning</string>
   <string id="12022">Resume from %s</string>
   <string id="12023">Validating existing trainers...</string>
-  <string id="12024">Automatically generate thumbs for videos with no cover art</string>
+  <string id="12024"></string>
   
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -1292,7 +1292,7 @@
   <string id="14051">Time format</string>
   <string id="14052">Date format</string>
   <string id="14053">GUI filters</string>
-  <string id="14054">Enable internet lookups</string>
+  <string id="14054"></string>
   <string id="14055">Use background scanning</string>
   <string id="14056">Stop scan</string>
   <string id="14057">Not possible while scanning for media info</string>
@@ -1886,7 +1886,7 @@
   <string id="20430">Export thumbs and fanart?</string>
   <string id="20431">Overwrite old files?</string>
   <string id="20432">Exclude path from library updates</string>
-  <string id="20433">Extract media metadata information</string>
+  <string id="20433">Extract thumbs and flags</string>
   <string id="20434">Sets</string>
   <string id="20435">Set movieset thumb</string>
   <!-- up to 21329 is reserved for the video db !! !-->
@@ -2079,7 +2079,7 @@
   <string id="22000">Update library on startup</string>
   <string id="22001">Always update library in background</string>
   <string id="22002">- DNS suffix</string>
-  <string id="22003">Enable edit and decision lists</string>
+  <string id="22003"></string>
   <string id="22004">Delayed by: %2.3fs</string>
   <string id="22005">Ahead by: %2.3fs</string>
   <string id="22006">Subtitle offset</string>

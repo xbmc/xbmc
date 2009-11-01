@@ -587,7 +587,10 @@ WORD    wBitsPerSample;
 WORD    cbSize;
 } __attribute__((__packed__)) WAVEFORMATEX, *PWAVEFORMATEX, *LPWAVEFORMATEX;
 
+#define WAVE_FORMAT_UNKNOWN           0x0000
 #define WAVE_FORMAT_PCM               0x0001
+#define WAVE_FORMAT_ADPCM             0x0002
+#define WAVE_FORMAT_IEEE_FLOAT        0x0003
 #define WAVE_FORMAT_EXTENSIBLE        0xFFFE
 
 #define SPEAKER_FRONT_LEFT            0x00001
@@ -613,8 +616,26 @@ typedef struct tGUID
 {
   DWORD Data1;
   WORD  Data2, Data3;
-  char  Data4[8];
+  BYTE  Data4[8];
 } __attribute__((__packed__)) GUID;
+
+static const GUID KSDATAFORMAT_SUBTYPE_UNKNOWN = {
+  WAVE_FORMAT_UNKNOWN,
+  0x0000, 0x0000,
+  {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+};
+
+static const GUID KSDATAFORMAT_SUBTYPE_PCM = {
+  WAVE_FORMAT_PCM,
+  0x0000, 0x0010,
+  {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
+};
+
+static const GUID KSDATAFORMAT_SUBTYPE_IEEE_FLOAT = {
+  WAVE_FORMAT_IEEE_FLOAT,
+  0x0000, 0x0010,
+  {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}
+};
 
 typedef struct tWAVEFORMATEXTENSIBLE
 {
@@ -634,4 +655,5 @@ typedef struct tWAVEFORMATEXTENSIBLE
 #endif
 
 #endif //__PLATFORM_DEFS_H__
+
 

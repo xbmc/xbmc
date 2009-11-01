@@ -210,6 +210,13 @@ void CDVDVideoCodecCrystalHD::Reset()
   m_Device->Flush();
 }
 
+bool CDVDVideoCodecCrystalHD::ResetPicture(DVDVideoPicture* pDvdVideoPicture)
+{
+  memset(pDvdVideoPicture, 0, sizeof(DVDVideoPicture));
+
+  return true;
+}
+
 bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
   m_Device->GetPicture(pDvdVideoPicture);

@@ -866,23 +866,6 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
   }
 }
 
-void CWIN32Util::AddRemovableDrives()
-{
-  VECSOURCES vShare;
-  VECSOURCES::const_iterator it;
-  GetDrivesByType(vShare, REMOVABLE_DRIVES);
-  for(it=vShare.begin();it!=vShare.end();++it)
-    g_mediaManager.AddAutoSource(*it);
-  vShare.clear();
-  GetDrivesByType(vShare, DVD_DRIVES);
-  if(!vShare.empty())
-    g_mediaManager.SetHasOpticalDrive(true);
-
-  for(it=vShare.begin();it!=vShare.end();++it)
-    if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
-      g_application.getApplicationMessenger().OpticalMount(it->strPath);
-}
-
 bool CWIN32Util::IsAudioCD(const CStdString& strPath)
 {
   CStdString strDrive = strPath;

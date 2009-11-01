@@ -38,6 +38,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		431AE5D9109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */; };
+		431AE5DA109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */; };
 		43248C4E0FBE224000B88866 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; };
 		43248C510FBE224C00B88866 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B920FBC8DFF00171871 /* CoreAudio.cpp */; };
 		43248C520FBE224E00B88866 /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B8E0FBC8DB000171871 /* CoreAudioRenderer.cpp */; };
@@ -949,6 +951,8 @@
 		E49ACDA010074A4000A86ECD /* ZeroconfBrowserOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACD9D10074A4000A86ECD /* ZeroconfBrowserOSX.cpp */; };
 		E49ACDD510074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACDD410074F9200A86ECD /* ZeroconfBrowser.cpp */; };
 		E49ACDD610074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACDD410074F9200A86ECD /* ZeroconfBrowser.cpp */; };
+		E4A249F71095C880003D74C6 /* AutorunMediaJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4A249F51095C880003D74C6 /* AutorunMediaJob.cpp */; };
+		E4A249F81095C880003D74C6 /* AutorunMediaJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4A249F51095C880003D74C6 /* AutorunMediaJob.cpp */; };
 		E4DC97540FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */; };
 		E4DC97550FFE5BA8008E0C07 /* SAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */; };
 		E4DC97560FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */; };
@@ -1780,6 +1784,8 @@
 		F5A2BD0F0F7AD92C0006ABA0 /* Zeroconf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C280F77217400C25D29 /* Zeroconf.cpp */; };
 		F5A2BD600F7AE6CB0006ABA0 /* libsmbclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D547950D723EFD00F36320 /* libsmbclient.dylib */; };
 		F5A2BD610F7AE6CB0006ABA0 /* libsmbclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D547950D723EFD00F36320 /* libsmbclient.dylib */; };
+		F5A9D3091097C9370050490F /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
+		F5A9D30A1097C9370050490F /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
 		F5AAC9CF0FB0D20100DBB77C /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */; };
 		F5AAC9D00FB0D20100DBB77C /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */; };
 		F5AACA680FB3DE2D00DBB77C /* GUIDialogSelect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */; };
@@ -1876,6 +1882,8 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRendererUtil.cpp; sourceTree = "<group>"; };
+		431AE5D8109C1A63007428C3 /* OverlayRendererUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRendererUtil.h; sourceTree = "<group>"; };
 		43348AA1107747CD00F859CF /* Edl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Edl.cpp; sourceTree = "<group>"; };
 		43348AA2107747CD00F859CF /* Edl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Edl.h; sourceTree = "<group>"; };
 		43348AA71077486D00F859CF /* PlayerCoreConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayerCoreConfig.h; path = playercorefactory/PlayerCoreConfig.h; sourceTree = "<group>"; };
@@ -3682,6 +3690,8 @@
 		E49ACD9E10074A4000A86ECD /* ZeroconfBrowserOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfBrowserOSX.h; sourceTree = "<group>"; };
 		E49ACDD310074F9200A86ECD /* ZeroconfBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfBrowser.h; sourceTree = "<group>"; };
 		E49ACDD410074F9200A86ECD /* ZeroconfBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfBrowser.cpp; sourceTree = "<group>"; };
+		E4A249F51095C880003D74C6 /* AutorunMediaJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AutorunMediaJob.cpp; sourceTree = "<group>"; };
+		E4A249F61095C880003D74C6 /* AutorunMediaJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutorunMediaJob.h; sourceTree = "<group>"; };
 		E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SAPDirectory.cpp; sourceTree = "<group>"; };
 		E4DC97510FFE5BA8008E0C07 /* SAPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAPDirectory.h; sourceTree = "<group>"; };
 		E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SAPFile.cpp; sourceTree = "<group>"; };
@@ -3792,6 +3802,8 @@
 		F5A1CC0B0F6B20D600A96ABD /* libGoAhead-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libGoAhead-powerpc-osx.a"; path = "xbmc/lib/libGoAhead/libGoAhead-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
 		F5A1CC0D0F6B214800A96ABD /* libSDL-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL-powerpc-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
 		F5A1CC130F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_mixer-powerpc-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL_mixer-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
+		F5A9D3071097C9370050490F /* AliasShortcutUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AliasShortcutUtils.h; sourceTree = "<group>"; };
+		F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AliasShortcutUtils.cpp; sourceTree = "<group>"; };
 		F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = /opt/local/lib/libsqlite3.0.dylib; sourceTree = "<absolute>"; };
 		F5AACA660FB3DE2D00DBB77C /* GUIDialogSelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSelect.h; sourceTree = "<group>"; };
 		F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSelect.cpp; sourceTree = "<group>"; };
@@ -4481,6 +4493,8 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				E4A249F51095C880003D74C6 /* AutorunMediaJob.cpp */,
+				E4A249F61095C880003D74C6 /* AutorunMediaJob.h */,
 				7C62F24010505BC7002AD2C1 /* Bookmark.cpp */,
 				7C62F24110505BC7002AD2C1 /* Bookmark.h */,
 				7C62F22C104FC8B9002AD2C1 /* AdvancedSettings.cpp */,
@@ -5498,6 +5512,8 @@
 				F5D8D72E102BB3B1004A11AB /* OverlayRendererGL.h */,
 				F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */,
 				F5D8D730102BB3B1004A11AB /* OverlayRenderer.h */,
+				431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */,
+				431AE5D8109C1A63007428C3 /* OverlayRendererUtil.h */,
 				E38E16640D25F9FA00618676 /* PixelShaderRenderer.h */,
 				E38E16650D25F9FA00618676 /* RenderManager.cpp */,
 				E38E16660D25F9FA00618676 /* RenderManager.h */,
@@ -6794,6 +6810,8 @@
 			children = (
 				E38E1E230D25F9FD00618676 /* AlarmClock.cpp */,
 				E38E1E240D25F9FD00618676 /* AlarmClock.h */,
+				F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */,
+				F5A9D3071097C9370050490F /* AliasShortcutUtils.h */,
 				F5F8E1EF0E42807A00A8E96F /* ArabicShaping.cpp */,
 				F5F8E1EE0E42807A00A8E96F /* ArabicShaping.h */,
 				E38E1E250D25F9FD00618676 /* Archive.cpp */,
@@ -8264,6 +8282,9 @@
 				7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */,
 				F599CD2B108E65370010EC2A /* IoSupport.cpp in Sources */,
 				F599CD74108E6A7A0010EC2A /* DarwinStorageProvider.cpp in Sources */,
+				E4A249F71095C880003D74C6 /* AutorunMediaJob.cpp in Sources */,
+				F5A9D3091097C9370050490F /* AliasShortcutUtils.cpp in Sources */,
+				431AE5DA109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9133,6 +9154,9 @@
 				7CAA25361085963B0096DE39 /* PasswordManager.cpp in Sources */,
 				F599CD2C108E65370010EC2A /* IoSupport.cpp in Sources */,
 				F599CD75108E6A7A0010EC2A /* DarwinStorageProvider.cpp in Sources */,
+				E4A249F81095C880003D74C6 /* AutorunMediaJob.cpp in Sources */,
+				F5A9D30A1097C9370050490F /* AliasShortcutUtils.cpp in Sources */,
+				431AE5D9109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

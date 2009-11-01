@@ -256,7 +256,6 @@ protected:
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
 
   CRect m_crop;
-  float m_aspecterror;
 };
 
 
