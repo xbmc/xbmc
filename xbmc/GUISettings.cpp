@@ -344,7 +344,7 @@ void CGUISettings::Initialize()
   AddInt(0, "appleremote.sequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
 #endif
 
-  AddCategory(4, "autorun", 447);
+  //AddCategory(4, "autorun", 447);
   AddBool(1, "autorun.dvd", 240, true);
   AddBool(2, "autorun.vcd", 241, true);
   AddBool(3, "autorun.cdda", 242, true);
@@ -581,6 +581,7 @@ void CGUISettings::Initialize()
   AddSeparator(14, "lookandfeel.sep3");
   AddBool(15, "lookandfeel.enablemouse", 21369, true);
   AddBool(16, "lookandfeel.remoteaskeyboard", 21449, false);
+  AddBool(17, "lookandfeel.autorun", 447, false);
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);

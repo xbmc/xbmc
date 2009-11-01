@@ -889,7 +889,8 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
   m_database.Open();
   long startoffset = 0;
 
-  if (item->IsStack() && !g_guiSettings.GetBool("myvideos.treatstackasfile") )
+  if (item->IsStack() && (!g_guiSettings.GetBool("myvideos.treatstackasfile") ||
+                          CFileItem(CStackDirectory::GetFirstStackedFile(item->m_strPath),false).IsDVDImage()) )
   {
 
     CStdStringArray movies;
@@ -1294,7 +1295,8 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
   int selectedFile = 1;
   long startoffset = item->m_lStartOffset;
 
-  if (item->IsStack() && !g_guiSettings.GetBool("myvideos.treatstackasfile"))
+  if (item->IsStack() && (!g_guiSettings.GetBool("myvideos.treatstackasfile") ||
+                          CFileItem(CStackDirectory::GetFirstStackedFile(item->m_strPath),false).IsDVDImage()) )
   {
     CStdStringArray movies;
     GetStackedFiles(item->m_strPath, movies);

@@ -61,7 +61,6 @@ CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
     : CGUIButtonControl(button)
 {
   ControlType = GUICONTROL_EDIT;
-  SetLabel(m_info.GetLabel(GetParentID()));
   m_textOffset = 0;
   m_textWidth = GetWidth();
   m_cursorPos = 0;
@@ -346,7 +345,10 @@ void CGUIEditControl::RenderText()
     UpdateText();
   
   if (m_bInvalidated)
+  {
+    m_textLayout.Update(m_info.GetLabel(GetParentID()));
     RecalcLabelPosition();
+  }
 
   float leftTextWidth = m_textLayout.GetTextWidth();
   float maxTextWidth = m_width - m_label.offsetX * 2;
@@ -436,7 +438,7 @@ void CGUIEditControl::ValidateCursor()
 
 void CGUIEditControl::SetLabel(const std::string &text)
 {
-  m_textLayout.Update(text);
+  CGUIButtonControl::SetLabel(text);
   SetInvalid();
 }
 

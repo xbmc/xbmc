@@ -269,7 +269,7 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
           m_dll->ref_release(program);
           continue;
         }
-        url.SetFileName("tvshows/" + path);
+        url.SetFileName("tvshows/" + name + "/" + path);
         break;
       case ALL:
         url.SetFileName("recordings/" + path);
