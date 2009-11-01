@@ -506,10 +506,10 @@ int CFileSMB::OpenFile(const CURL &url, CStdString& strAuth)
 
 bool CFileSMB::Exists(const CURL& url)
 {
+  // we can't open files like smb://file.f or smb://server/file.f
   // if a file matches the if below return false, it can't exist on a samba share.
-  if (url.GetFileName().Find('/') < 0 ||
-      url.GetFileName().at(0) == '.' ||
-      url.GetFileName().Find("/.") >= 0) return false;
+  if (!IsValidFile(url.GetFileName())) return false;
+
   smb.Init();
   CStdString strFileName = GetAuthenticatedPath(url);
 

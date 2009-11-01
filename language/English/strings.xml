@@ -1888,6 +1888,7 @@
   <string id="20433">Extract media metadata information</string>
   <string id="20434">Sets</string>
   <string id="20435">Set movieset thumb</string>
+  <string id="20436">Export actor thumbs</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

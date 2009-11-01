@@ -1556,19 +1556,29 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_mediaManager.GetLocalDrives(shares);
     bool singleFile;
     bool thumbs=false;
+    bool actorThumbs=false;
     bool overwrite=false;
     bool cancelled;
+
     singleFile = CGUIDialogYesNo::ShowAndGetInput(iHeading,20426,20427,-1,20428,20429,cancelled);
     if (cancelled)
       return;
+
     if (singleFile)
       thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20430,-1,-1,cancelled);
     if (cancelled)
       return;
+
+    if (thumbs)
+      actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20436,-1,-1,cancelled);
+    if (cancelled)
+      return;
+
     if (singleFile)
       overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
     if (cancelled)
       return;
+
     if (singleFile || CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
     {
       if (strSetting.Equals("videolibrary.export"))
@@ -1576,7 +1586,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
         CUtil::AddFileToFolder(path, "videodb.xml", path);
         CVideoDatabase videodatabase;
         videodatabase.Open();
-        videodatabase.ExportToXML(path,singleFile,thumbs,overwrite);
+        videodatabase.ExportToXML(path, singleFile, thumbs, actorThumbs, overwrite);
         videodatabase.Close();
       }
       else
@@ -1584,7 +1594,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
         CUtil::AddFileToFolder(path, "musicdb.xml", path);
         CMusicDatabase musicdatabase;
         musicdatabase.Open();
-        musicdatabase.ExportToXML(path,singleFile,thumbs,overwrite);
+        musicdatabase.ExportToXML(path, singleFile, thumbs, overwrite);
         musicdatabase.Close();
       }
     }
