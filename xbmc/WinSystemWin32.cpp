@@ -125,7 +125,7 @@ bool CWinSystemWin32::CreateNewWindow(const CStdString& name, bool fullScreen, R
     return false;
   }
 
-  HWND hWnd = CreateWindow( name.c_str(), name.c_str(), 0,
+  HWND hWnd = CreateWindow( name.c_str(), name.c_str(), fullScreen ? WS_POPUP : WS_OVERLAPPEDWINDOW,
     0, 0, m_nWidth, m_nHeight, 0,
     NULL, m_hInstance, userFunction );
   if( hWnd == NULL )
@@ -274,15 +274,13 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
 
 bool CWinSystemWin32::ResizeInternal()
 {
-  RECT rc;
+  RECT rc = {0, 0, m_nWidth, m_nHeight};
 
   int monitorId;
   if(m_nScreen == 0)
     monitorId = m_nPrimary;
   else
     monitorId = m_nSecondary;
-
-  CopyRect(&rc, &(m_MonitorsInfo[monitorId].MonitorRC));
 
   DWORD dwStyle = WS_CLIPCHILDREN;
   HWND windowAfter;
