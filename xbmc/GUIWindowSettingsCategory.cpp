@@ -106,6 +106,7 @@
 #include "LocalizeStrings.h"
 #include "LangInfo.h"
 #include "StringUtils.h"
+#include "WindowingFactory.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -3037,9 +3038,12 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool play
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
   pControl->Clear();
 
-  pControl->AddLabel(g_settings.m_ResInfo[RES_WINDOW].strMode, RES_WINDOW);  
+  pControl->AddLabel(g_settings.m_ResInfo[RES_WINDOW].strMode, RES_WINDOW);
   pControl->AddLabel(g_settings.m_ResInfo[RES_DESKTOP].strMode, RES_DESKTOP);
-  for (size_t i = RES_CUSTOM ; i < g_settings.m_ResInfo.size(); i++)
+  size_t maxRes = g_settings.m_ResInfo.size();
+  if (g_Windowing.GetNumScreens())
+    maxRes = std::min(maxRes, (size_t)RES_DESKTOP + g_Windowing.GetNumScreens() - 1);
+  for (size_t i = RES_CUSTOM ; i < maxRes; i++)
   {
     pControl->AddLabel(g_settings.m_ResInfo[i].strMode, i);
   }
