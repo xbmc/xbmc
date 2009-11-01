@@ -408,11 +408,12 @@
             <bordertexture border="14">ThumbShadow.png</bordertexture>
             <bordersize>8</bordersize>
           </control>
+          <!--
           <control type="image">
             <description>Glass overlay</description>
             <include>MusicSongsCoverOverlayDims</include>
             <include>GlassTextureOverlay</include>
-          </control>
+          </control>-->
           <control type="image">
             <include>MusicSongsCoverRflctnDims</include>
             <info>ListItem.Icon</info>
