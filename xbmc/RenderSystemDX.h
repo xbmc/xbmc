@@ -36,7 +36,7 @@ public:
   // CRenderBase
   virtual bool InitRenderSystem();
   virtual bool DestroyRenderSystem();
-  virtual bool ResetRenderSystem(int width, int height);  
+  virtual bool ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate);
 
   virtual bool BeginRender();
   virtual bool EndRender();
@@ -76,6 +76,7 @@ protected:
   void SetFocusWnd(HWND wnd) { m_hFocusWnd = wnd; }
   void SetDeviceWnd(HWND wnd) { m_hDeviceWnd = wnd; }
   void SetRenderParams(unsigned int width, unsigned int height, bool fullScreen, float refreshRate);
+  void BuildPresentParameters();
 
   LPDIRECT3D9 m_pD3D;
   LPDIRECT3DDEVICE9 m_pD3DDevice;
@@ -85,6 +86,7 @@ protected:
   unsigned int m_nBackBufferWidth;
   unsigned int m_nBackBufferHeight;
   bool m_bFullScreenDevice;
+  float m_refreshRate;
   HRESULT m_nDeviceStatus;
   IDirect3DStateBlock9* m_stateBlock;
 
