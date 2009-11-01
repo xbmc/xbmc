@@ -1141,8 +1141,11 @@ void CDVDPlayerVideo::CalcFrameRate()
     {
       //store the calculated framerate if it differs too much from m_fFrameRate
       if (fabs(1.0 - (m_fFrameRate / (m_fStableFrameRate / m_iFrameRateCount))) > MAXFRAMERATEDIFF)
+      {
+        CLog::Log(LOGDEBUG,"%s framerate was:%f calculated:%f", __FUNCTION__, m_fFrameRate, m_fStableFrameRate / m_iFrameRateCount);
         m_fFrameRate = m_fStableFrameRate / m_iFrameRateCount;
-      
+      }
+
       //reset the stored framerates
       m_fStableFrameRate = 0.0;
       m_iFrameRateCount = 0;
