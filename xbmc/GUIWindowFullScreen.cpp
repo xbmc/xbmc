@@ -463,9 +463,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       m_bShowCurrentTime = false;
       g_infoManager.SetDisplayAfterSeek(0); // Make sure display after seek is off.
 
-      // setup the brightness, contrast and resolution
-      CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);
-
       // switch resolution
       g_graphicsContext.SetFullScreenVideo(true);
 
@@ -516,7 +513,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       FreeResources(true);
 
       CSingleLock lock (g_graphicsContext);
-      CUtil::RestoreBrightnessContrastGamma();
       g_graphicsContext.SetFullScreenVideo(false);
       lock.Leave();
 

@@ -1734,77 +1734,6 @@ CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
   return "";
 }
 
-void CUtil::InitGamma()
-{
-#ifdef HAS_DX
-  g_Windowing.Get3DDevice()->GetGammaRamp(0, &oldramp);
-#elif defined(HAS_SDL_2D)
-  SDL_GetGammaRamp(oldrampRed, oldrampGreen, oldrampBlue);
-#endif
-}
-void CUtil::RestoreBrightnessContrastGamma()
-{
-  g_graphicsContext.Lock();
-#ifdef HAS_DX
-  g_Windowing.Get3DDevice()->SetGammaRamp(0, GAMMA_RAMP_FLAG, &oldramp);
-#elif defined(HAS_SDL_2D)
-  SDL_SetGammaRamp(oldrampRed, oldrampGreen, oldrampGreen);
-#endif
-  g_graphicsContext.Unlock();
-}
-
-void CUtil::SetBrightnessContrastGammaPercent(float brightness, float contrast, float gamma, bool immediate)
-{
-  if (brightness < 0.0f) brightness = 0.0f;
-  if (brightness > 100.0f) brightness = 100.0f;
-  if (contrast < 0.0f) contrast = 0.0f;
-  if (contrast > 100.0f) contrast = 100.0f;
-  if (gamma < 0.0f) gamma = 0.0f;
-  if (gamma > 100.0f) gamma = 100.0f;
-
-  float fBrightNess = brightness / 50.0f - 1.0f; // -1..1    Default: 0
-  float fContrast = contrast / 50.0f;            // 0..2     Default: 1
-  float fGamma = gamma / 40.0f + 0.5f;           // 0.5..3.0 Default: 1
-  CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, immediate);
-}
-
-void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate)
-{
-  // calculate ramp
-#ifdef HAS_DX
-  D3DGAMMARAMP ramp;
-#elif defined(HAS_SDL_2D)
-  uint16_t rampRed[256];
-  uint16_t rampGreen[256];
-  uint16_t rampBlue[256];
-#endif
-
-  Gamma = 1.0f / Gamma;
-#ifdef HAS_DX
-  for (int i = 0; i < 256; ++i)
-  {
-    float f = (powf((float)i / 255.f, Gamma) * Contrast + Brightness) * 255.f;
-    ramp.blue[i] = ramp.green[i] = ramp.red[i] = clamp(f);
-  }
-#elif defined(HAS_SDL_2D)
-  for (int i = 0; i < 256; ++i)
-  {
-    float f = (powf((float)i / 255.f, Gamma) * Contrast + Brightness) * 255.f;
-    rampBlue[i] = rampGreen[i] = rampRed[i] = clamp(f);
-  }
-#endif
-
-  // set ramp next v sync
-  g_graphicsContext.Lock();
-#ifdef HAS_DX
-  g_Windowing.Get3DDevice()->SetGammaRamp(0, bImmediate ? GAMMA_RAMP_FLAG : 0, &ramp);
-#elif defined(HAS_SDL_2D)
-  SDL_SetGammaRamp(rampRed, rampGreen, rampBlue);
-#endif
-  g_graphicsContext.Unlock();
-}
-
-
 void CUtil::Tokenize(const CStdString& path, vector<CStdString>& tokens, const string& delimiters)
 {
   // Tokenize ripped from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
@@ -1824,34 +1753,7 @@ void CUtil::Tokenize(const CStdString& path, vector<CStdString>& tokens, const s
   }
 }
 
-
-void CUtil::FlashScreen(bool bImmediate, bool bOn)
-{
-  static bool bInFlash = false;
-
-  if (bInFlash == bOn)
-    return ;
-  bInFlash = bOn;
-  g_graphicsContext.Lock();
-  if (bOn)
-  {
-#ifdef HAS_DX
-    g_Windowing.Get3DDevice()->GetGammaRamp(0, &flashramp);
-#elif defined(HAS_SDL_2D)
-    SDL_GetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);
-#endif
-    SetBrightnessContrastGamma(0.5f, 1.2f, 2.0f, bImmediate);
-  }
-  else
-#ifdef HAS_DX
-    g_Windowing.Get3DDevice()->SetGammaRamp(0, bImmediate ? GAMMA_RAMP_FLAG : 0, &flashramp);
-#elif defined(HAS_SDL_2D)
-    SDL_SetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);
-#endif
-  g_graphicsContext.Unlock();
-}
-
-void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
+void CUtil::TakeScreenshot(const CStdString &filename)
 {
 #ifdef HAS_DX
     LPDIRECT3DSURFACE9 lpSurface = NULL;
@@ -1875,23 +1777,17 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
     g_application.RenderNoPresent();
     if (SUCCEEDED(g_Windowing.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
     {
-      if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
+      if (FAILED(XGWriteSurfaceToFile(lpSurface, filename.c_str())))
       {
         CLog::Log(LOGERROR, "Failed to Generate Screenshot");
       }
       else
       {
-        CLog::Log(LOGINFO, "Screen shot saved as %s", fn);
+        CLog::Log(LOGINFO, "Screen shot saved as %s", filename.c_str());
       }
       lpSurface->Release();
     }
     g_graphicsContext.Unlock();
-    if (flashScreen)
-    {
-      FlashScreen(true, true);
-      Sleep(10);
-      FlashScreen(true, false);
-    }
 #else
 
 #endif
@@ -1915,7 +1811,7 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
     if (pixels)
     {
       glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, pixels);
-      XGWriteSurfaceToFile(pixels, viewport[2], viewport[3], fn);
+      XGWriteSurfaceToFile(pixels, viewport[2], viewport[3], filename.c_str());
       free(pixels);
     }
     g_graphicsContext.EndPaint();
@@ -1950,7 +1846,7 @@ void CUtil::TakeScreenshot()
 
     if (!file.IsEmpty())
     {
-      TakeScreenshot(file.c_str(), true);
+      TakeScreenshot(file);
       if (savingScreenshots)
         screenShots.push_back(file);
       if (promptUser)
