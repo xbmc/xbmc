@@ -389,6 +389,7 @@ else
   AC_CHECK_LIB([jasper],    [main],, AC_MSG_ERROR($missing_library)) # check for cximage
   AC_CHECK_LIB([tiff],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([rt],        [clock_gettime],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR($missing_library))
   
   PKG_CHECK_MODULES([ALSA],       [alsa],
                   [INCLUDES+=" $ALSA_CFLAGS"; LIBS+=" $ALSA_LIBS"],
