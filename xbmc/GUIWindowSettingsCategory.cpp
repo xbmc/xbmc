@@ -3055,7 +3055,7 @@ void CGUIWindowSettingsCategory::FillInVSyncs(CSetting *pSetting)
   CSettingInt *pSettingInt = (CSettingInt*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(_WIN32)
   pControl->AddLabel(g_localizeStrings.Get(13101) , VSYNC_DRIVER);
 #endif
   pControl->AddLabel(g_localizeStrings.Get(13106) , VSYNC_DISABLED);
