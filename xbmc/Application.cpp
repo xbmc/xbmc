@@ -2375,13 +2375,33 @@ bool CApplication::OnKey(CKey& key)
     }
     if (useKeyboard)
     {
+      action.id = 0;
       if (g_guiSettings.GetBool("lookandfeel.remoteaskeyboard"))
       {
         // users remote is executing keyboard commands, so use the virtualkeyboard section of keymap.xml
-        // and send those rather than actual keyboard presses
+        // and send those rather than actual keyboard presses.  Only for navigation-type commands though
         CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, action);
+        if (!(action.id == ACTION_MOVE_LEFT ||
+              action.id == ACTION_MOVE_RIGHT ||
+              action.id == ACTION_MOVE_UP ||
+              action.id == ACTION_MOVE_DOWN ||
+              action.id == ACTION_SELECT_ITEM ||
+              action.id == ACTION_ENTER ||
+              action.id == ACTION_PREVIOUS_MENU ||
+              action.id == ACTION_CLOSE_DIALOG))
+        {
+          // the action isn't plain navigation - check for a keyboard-specific keymap
+          CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, action, false);
+          if (!(action.id >= REMOTE_0 && action.id <= REMOTE_9) ||
+                action.id == ACTION_BACKSPACE ||
+                action.id == ACTION_SHIFT ||
+                action.id == ACTION_SYMBOLS ||
+                action.id == ACTION_CURSOR_LEFT ||
+                action.id == ACTION_CURSOR_RIGHT)
+            action.id = 0; // don't bother with this action
+        }
       }
-      else
+      if (!action.id)
       {
         // keyboard entry - pass the keys through directly
         if (key.GetFromHttpApi())
