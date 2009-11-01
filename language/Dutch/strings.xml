@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
@@ -1682,7 +1682,7 @@
   <string id="20433">Extract thumbs en vlaggen</string>
   <string id="20434">Sets</string>
   <string id="20435">Zet filmset thumb</string>
-  <string id="20436">Exportorteer acteur thumbs</string>
+  <string id="20436">Exporteer acteur thumbs</string>
   <string id="21330">Verborgen bestanden en mappen weergeven</string>
   <string id="21331">TuxBox-client</string>
   <string id="21332">WAARSCHUWING: TuxBox is aan het opnemen.</string>
