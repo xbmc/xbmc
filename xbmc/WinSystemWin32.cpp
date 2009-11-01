@@ -24,6 +24,7 @@
 #include "Settings.h"
 #include "resource.h"
 #include "AdvancedSettings.h"
+#include "utils/log.h"
 
 #ifdef _WIN32
 
@@ -355,19 +356,54 @@ void CWinSystemWin32::UpdateResolutions()
    
 
   // Secondary
-  if(m_nMonitorsCount < 2)
-    return;
-  w = m_MonitorsInfo[m_nSecondary].ScreenWidth;
-  h = m_MonitorsInfo[m_nSecondary].ScreenHeight;
-  if( (m_MonitorsInfo[m_nSecondary].RefreshRate == 59) || (m_MonitorsInfo[m_nSecondary].RefreshRate == 29) || (m_MonitorsInfo[m_nSecondary].RefreshRate == 23) )
-    refreshRate = (float)(m_MonitorsInfo[m_nSecondary].RefreshRate + 1) / 1.001f;
-  else
-    refreshRate = (float)m_MonitorsInfo[m_nSecondary].RefreshRate;
+  if(m_nMonitorsCount >= 2)
+  {
+    w = m_MonitorsInfo[m_nSecondary].ScreenWidth;
+    h = m_MonitorsInfo[m_nSecondary].ScreenHeight;
+    if( (m_MonitorsInfo[m_nSecondary].RefreshRate == 59) || (m_MonitorsInfo[m_nSecondary].RefreshRate == 29) || (m_MonitorsInfo[m_nSecondary].RefreshRate == 23) )
+      refreshRate = (float)(m_MonitorsInfo[m_nSecondary].RefreshRate + 1) / 1.001f;
+    else
+      refreshRate = (float)m_MonitorsInfo[m_nSecondary].RefreshRate;
 
-  RESOLUTION_INFO res;
-  UpdateDesktopResolution(res, 1, w, h, refreshRate);
-  g_graphicsContext.ResetOverscan(res);
-  g_settings.m_ResInfo.push_back(res);
+    RESOLUTION_INFO res;
+    UpdateDesktopResolution(res, 1, w, h, refreshRate);
+    g_graphicsContext.ResetOverscan(res);
+    g_settings.m_ResInfo.push_back(res);
+  }
+
+  // add other resolutions...
+  for (int i = 0; i < m_nMonitorsCount; i++)
+  {
+    for(int mode = 0;; mode++)
+    {
+      DEVMODE devmode;
+      ZeroMemory(&devmode, sizeof(devmode));
+      devmode.dmSize = sizeof(devmode);
+      if(EnumDisplaySettings(m_MonitorsInfo[i].DeviceName, mode, &devmode) == 0)
+        break;
+      if(devmode.dmBitsPerPel != 32)
+        continue;
+
+      RESOLUTION_INFO res;
+      res.iWidth  = devmode.dmPelsWidth;
+      res.iHeight = devmode.dmPelsHeight;
+      if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
+        res.fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
+      else
+        res.fRefreshRate = (float)(devmode.dmDisplayFrequency);
+      res.iSubtitles = (int)(0.9*res.iWidth);
+      res.fPixelRatio = 1.0f;
+      res.iScreen = i;
+      res.strMode.Format("%dx%d @ %.2fHz", res.iWidth, res.iHeight, res.fRefreshRate);
+      if ((float)res.iWidth / (float)res.iHeight >= 1.59)
+        res.dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+      else
+        res.dwFlags = 0;
+      g_graphicsContext.ResetOverscan(res);
+      g_settings.m_ResInfo.push_back(res);
+      CLog::Log(LOGINFO, "Found mode: %s", res.strMode);
+    }
+  }
 }
 
 

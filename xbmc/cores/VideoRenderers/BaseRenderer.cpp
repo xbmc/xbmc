@@ -45,7 +45,7 @@ void CBaseRenderer::ChooseBestResolution(float fps)
   if ( m_resolution == RES_WINDOW )
     m_resolution = RES_DESKTOP;
   // Adjust refreshrate to match source fps
-#if !defined(__APPLE__) && !defined(_WIN32)
+#if !defined(__APPLE__)
   if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
   {
     // Find closest refresh rate
@@ -54,6 +54,11 @@ void CBaseRenderer::ChooseBestResolution(float fps)
       RESOLUTION_INFO &curr = g_settings.m_ResInfo[m_resolution];
       RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
 
+      if (info.iWidth == 800 && info.iHeight == 600)
+      {
+        m_resolution = (RESOLUTION)i;
+        break;
+      }
       if (info.iWidth  != curr.iWidth 
       ||  info.iHeight != curr.iHeight)
         continue;
