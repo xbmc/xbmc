@@ -209,23 +209,7 @@ bool CVDPAU::MakePixmap(int width, int height)
     CLog::Log(LOGINFO, "GLX: Creating Pixmap context");
     m_glContext = glXCreateContext(m_Display, visInfo, NULL, True);
     XFree(visInfo);
-    if (glXMakeCurrent(m_Display, m_glPixmap, m_glContext))
-    {
-      CLog::Log(LOGINFO, "GL: Initialised Pixmap");
-      GLenum glErr;
-      if (!m_glPixmapTexture)
-      {
-        CLog::Log(LOGINFO, "GL: Generated Pixmap Texture");
-        glGenTextures (1, &m_glPixmapTexture);
-        glErr = glGetError();
-        if ((glErr == GL_INVALID_VALUE) | (glErr == GL_INVALID_OPERATION))
-        {
-          CLog::Log(LOGINFO, "glGenTextures returned an error!");
-          status = false;
-        }
-      }
-    }
-    else
+    if (!glXMakeCurrent(m_Display, m_glPixmap, m_glContext))
     {
       CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
       status = false;

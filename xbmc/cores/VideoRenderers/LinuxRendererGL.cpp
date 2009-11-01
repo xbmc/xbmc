@@ -1610,7 +1610,13 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
     g_graphicsContext.ClipToViewWindow();
 
   glEnable(m_textureTarget);
-
+  
+  if (!g_VDPAU->m_glPixmapTexture)
+  {
+    glGenTextures (1, &(g_VDPAU->m_glPixmapTexture));
+    CLog::Log(LOGNOTICE,"Created m_glPixmapTexture (%i)",(int)g_VDPAU->m_glPixmapTexture);
+  }
+  
   glBindTexture(m_textureTarget, g_VDPAU->m_glPixmapTexture);
   g_VDPAU->BindPixmap();
 
