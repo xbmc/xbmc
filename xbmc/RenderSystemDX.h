@@ -91,6 +91,8 @@ protected:
   IDirect3DStateBlock9* m_stateBlock;
 
   std::vector<ID3DXEffect*> m_vecEffects;
+
+  bool m_inScene; ///< True if we're in a BeginScene()/EndScene() block
 };
 
 #endif // RENDER_SYSTEM_DX

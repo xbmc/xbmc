@@ -44,6 +44,7 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   m_bVSync = true;
   m_nDeviceStatus = S_OK;
   m_stateBlock = NULL;
+  m_inScene = false;
 
   ZeroMemory(&m_D3DPP, sizeof(D3DPRESENT_PARAMETERS));
 }
@@ -321,12 +322,14 @@ bool CRenderSystemDX::BeginRender()
     CLog::Log(LOGERROR, "m_pD3DDevice->BeginScene() failed");
     return false;
   }
-
+  m_inScene = true;
   return true;
 }
 
 bool CRenderSystemDX::EndRender()
 {
+  m_inScene = false;
+
   if (!m_bRenderCreated)
     return false;
 
@@ -388,6 +391,16 @@ bool CRenderSystemDX::PresentRender()
 
 void CRenderSystemDX::SetVSync(bool enable)
 {
+  if (m_bVSync != enable)
+  {
+    bool inScene(m_inScene);
+    if (m_inScene)
+      EndRender();
+    ResetRenderSystem(m_nBackBufferWidth, m_nBackBufferHeight, m_bFullScreenDevice, m_refreshRate);
+    if (inScene)
+      BeginRender();
+  }
+  m_bVSync = enable;
 }
 
 void CRenderSystemDX::CaptureStateBlock()
