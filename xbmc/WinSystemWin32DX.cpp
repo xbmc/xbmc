@@ -46,9 +46,7 @@ bool CWinSystemWin32DX::CreateNewWindow(CStdString name, bool fullScreen, RESOLU
 
   SetFocusWnd(m_hWnd);
   SetDeviceWnd(m_hWnd);
-
-  SetBackBufferSize(m_nWidth, m_nHeight);
-  SetDeviceFullScreen(fullScreen);
+  SetRenderParams(m_nWidth, m_nHeight, fullScreen, res.fRefreshRate);
 
   return true;
 }

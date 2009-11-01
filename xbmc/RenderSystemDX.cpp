@@ -56,7 +56,6 @@ CRenderSystemDX::~CRenderSystemDX()
 bool CRenderSystemDX::InitRenderSystem()
 {
   m_bVSync = true;
-  m_iVSyncMode = 0;
   m_renderCaps = 0;
   D3DADAPTER_IDENTIFIER9 AIdentifier;
 
@@ -97,14 +96,20 @@ bool CRenderSystemDX::InitRenderSystem()
   return true;
 }
 
-bool CRenderSystemDX::ResetRenderSystem(int width, int height)
+void CRenderSystemDX::SetRenderParams(unsigned int width, unsigned int height, bool fullScreen, float refreshRate)
+{
+  m_nBackBufferWidth = width;
+  m_nBackBufferHeight = height;
+  m_bFullScreenDevice = fullScreen;
+}
+
+bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate)
 {
   m_nBackBufferWidth = width;
   m_nBackBufferHeight = height;
 
   CRect rc;
   rc.SetRect(0, 0, (float)width, (float)height);
-
   SetViewPort(rc);
 
   m_D3DPP.BackBufferWidth = m_nBackBufferWidth;
@@ -518,11 +523,6 @@ void CRenderSystemDX::RestoreHardwareTransform()
 {
   if (!m_bRenderCreated)
     return;
-}
-
-void CRenderSystemDX::CalculateMaxTexturesize()
-{
- 
 }
 
 void CRenderSystemDX::GetViewPort(CRect& viewPort)
