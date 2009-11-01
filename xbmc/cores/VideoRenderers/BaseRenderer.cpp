@@ -54,11 +54,6 @@ void CBaseRenderer::ChooseBestResolution(float fps)
       RESOLUTION_INFO &curr = g_settings.m_ResInfo[m_resolution];
       RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
 
-      if (info.iWidth == 800 && info.iHeight == 600)
-      {
-        m_resolution = (RESOLUTION)i;
-        break;
-      }
       if (info.iWidth  != curr.iWidth 
       ||  info.iHeight != curr.iHeight)
         continue;
