@@ -19,11 +19,10 @@
  *
  */
 
-#ifdef HAS_AVAHI
-
 #include "PlatformDefs.h"
-
 #include "ZeroconfAvahi.h"
+
+#ifdef HAS_AVAHI
 
 #include <string>
 #include <iostream>

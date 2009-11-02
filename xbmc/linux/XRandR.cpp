@@ -19,12 +19,13 @@
  *
  */
 
+#include "XRandR.h"
+
 #ifdef HAS_XRANDR
 
 #include <string.h>
 #include "system.h"
 #include "PlatformInclude.h"
-#include "XRandR.h"
 #include "tinyXML/tinyxml.h"
 #include "../xbmc/utils/log.h"
 
