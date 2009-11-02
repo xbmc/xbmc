@@ -1052,6 +1052,12 @@ CProfile* CApplication::InitDirectoriesWin32()
   // Expand the DLL search path with our directories
   CWIN32Util::ExtendDllPath();
 
+  // check for a DVD drive
+  VECSOURCES vShare;
+  CWIN32Util::GetDrivesByType(vShare, DVD_DRIVES);
+  if(!vShare.empty())
+    g_mediaManager.SetHasOpticalDrive(true);
+
   return profile;
 #else
   return NULL;
