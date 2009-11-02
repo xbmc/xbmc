@@ -245,6 +245,16 @@ bool CWINFileSMB::Rename(const CURL& url, const CURL& urlnew)
   return ::MoveFileW(strWFile.c_str(), strWNewFile.c_str()) ? true : false;
 }
 
+bool CWINFileSMB::SetHidden(const CURL &url, bool hidden)
+{
+  CStdStringW path;
+  g_charsetConverter.utf8ToW(GetLocal(url), path, false);
+  DWORD attributes = hidden ? FILE_ATTRIBUTE_HIDDEN : FILE_ATTRIBUTE_NORMAL;
+  if (SetFileAttributesW(path.c_str(), attributes))
+    return true;
+  return false;
+}
+
 void CWINFileSMB::Flush()
 {
   ::FlushFileBuffers(m_hFile);

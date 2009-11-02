@@ -216,7 +216,7 @@ void CGUISettings::Initialize()
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  AddInt(2, "slideshow.transistiontime", 225, 2500, 100, 100, 10000, SPIN_CONTROL_INT_PLUS, MASK_MS);
+  AddInt(2, "slideshow.transistiontime", 225, 3, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddBool(3, "slideshow.displayeffects", 12379, true);
   AddBool(0, "slideshow.shuffle", 13319, false);
 
@@ -253,6 +253,7 @@ void CGUISettings::Initialize()
   AddPath(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(3,"musiclibrary",14022);
+  AddBool(0, "musiclibrary.enabled", 418, true);
   AddBool(2, "musiclibrary.albumartistsonly", 13414, false);
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.downloadinfo", 20192, false);
@@ -337,13 +338,7 @@ void CGUISettings::Initialize()
 #if defined(_LINUX) && !defined(__APPLE__)
   AddInt(5, "system.powerbuttonaction", 13015, POWERSTATE_NONE, 0, 1, 5, SPIN_CONTROL_TEXT);
 #endif
-
-#ifdef HAS_LCD
-  AddCategory(4, "lcd", 448);
-  AddInt(2, "lcd.type", 4501, LCD_TYPE_NONE, LCD_TYPE_NONE, 1, LCD_TYPE_LCDPROC, SPIN_CONTROL_TEXT);
-  AddInt(7, "lcd.disableonplayback", 20310, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
-  AddBool(8, "lcd.enableonpaused", 20312, true);
-#endif
+  AddBool(6, "system.haslcd", 4501, false);
 
 #ifdef __APPLE__
   AddCategory(4, "appleremote", 13600);
@@ -400,26 +395,21 @@ void CGUISettings::Initialize()
 
   AddCategory(4, "masterlock", 12360);
   AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
-  AddSeparator(2, "masterlock.sep1");
   AddBool(4, "masterlock.startuplock"      , 20076,false);
-  AddBool(5, "masterlock.enableshutdown"   , 12362,false);
-  AddBool(6, "masterlock.automastermode"   , 20101,false);
-  AddSeparator(7,"masterlock.sep2" );
-  AddBool(8, "masterlock.loginlock",20116,true);
   // hidden masterlock settings
   AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT);
 
   // video settings
   AddGroup(5, 3);
   AddCategory(5, "myvideos", 16000);
-  AddBool(1, "myvideos.treatstackasfile", 20051, true);
+  AddBool(0, "myvideos.treatstackasfile", 20051, true);
   AddInt(2, "myvideos.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
-  AddBool(3, "myvideos.autothumb",12024, false);
-  AddBool(4, "myvideos.extractflags",20433,false);
+  AddBool(4, "myvideos.extractflags",20433, true);
   AddBool(5, "myvideos.cleanstrings", 20418, false);
 
   AddCategory(5, "videolibrary", 14022);
 
+  AddBool(0, "videolibrary.enabled", 418, true);
   AddBool(3, "videolibrary.hideplots", 20369, false);
   AddInt(0, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddSeparator(7, "videolibrary.sep2");
@@ -442,27 +432,26 @@ void CGUISettings::Initialize()
   //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
   AddBool(5, "videoplayer.adjustrefreshrate", 170, false);
+  AddFloat(6, "videoplayer.aspecterror", 22021, 3.0f, 0.0f, 1.0f, 20.0f);
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.strictbinding", 13120, false);
   AddBool(0, "videoplayer.vdpau_allow_xrandr", 13122, false);
 #endif
 #ifdef HAS_GL
   AddSeparator(7, "videoplayer.sep1.5");
-  AddInt(8, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
-  AddInt(9, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
+  AddInt(0, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
+  AddInt(0, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
-  AddInt(10, "videoplayer.vdpauUpscalingLevel", 13121, 0, 0, 1, 9, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddBool(10, "videoplayer.vdpauUpscalingLevel", 13121, false);
   AddBool(11, "videoplayer.vdpaustudiolevel", 13122, true);
 #endif
 #endif
-  AddFloat(0, "videoplayer.aspecterror", 22021, 3.0f, 0.0f, 1.0f, 20.0f);
 
   AddSeparator(12, "videoplayer.sep2");
   AddString(0, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(13, "videoplayer.sep3");
   AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(16, "videoplayer.dvdautomenu", 21882, false);
-  AddBool(17, "videoplayer.editdecision", 22003, false);
 
   AddSeparator(18, "videoplayer.sep4");
   AddBool(19, "videoplayer.usedisplayasclock", 13510, false);
@@ -480,8 +469,6 @@ void CGUISettings::Initialize()
   AddInt(4, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
   AddString(5, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(7, "subtitles.sep1");
-  AddBool(9, "subtitles.searchrars", 13249, false);
-  AddSeparator(10,"subtitles.sep2");
   AddPath(11, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
 
   // Don't add the category - makes them hidden in the GUI
@@ -532,7 +519,6 @@ void CGUISettings::Initialize()
   AddString(17, "network.httpproxypassword", 710, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);
 
   AddSeparator(18, "network.sep2");
-  AddBool(19, "network.enableinternet", 14054, true);
 
   // zeroconf publishing
 #ifdef HAS_ZEROCONF
@@ -577,14 +563,12 @@ void CGUISettings::Initialize()
 #ifdef HAS_EVENT_SERVER
   AddCategory(6, "remoteevents", 790);
   AddBool(1,  "remoteevents.enabled",         791, true);
-  AddString(2,"remoteevents.port",            792, "9777", EDIT_CONTROL_NUMBER_INPUT, false, 792);
-  AddInt(3,   "remoteevents.portrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
-  AddInt(4,   "remoteevents.maxclients",      797, 20, 1, 1, 100, SPIN_CONTROL_INT);
-  AddSeparator(5,"remoteevents.sep1");
+  AddString(0,"remoteevents.port",            792, "9777", EDIT_CONTROL_NUMBER_INPUT, false, 792);
+  AddInt(0,   "remoteevents.portrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
+  AddInt(0,   "remoteevents.maxclients",      797, 20, 1, 1, 100, SPIN_CONTROL_INT);
   AddBool(6,  "remoteevents.allinterfaces",   794, false);
-  AddSeparator(7,"remoteevents.sep2");
-  AddInt(8,   "remoteevents.initialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
-  AddInt(9,   "remoteevents.continuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
+  AddInt(0,   "remoteevents.initialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
+  AddInt(0,   "remoteevents.continuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
 #endif
 
   // appearance settings
@@ -610,12 +594,8 @@ void CGUISettings::Initialize()
   AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
   AddString(2, "locale.language",248,"english", SPIN_CONTROL_TEXT);
   AddString(3, "locale.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
-  AddSeparator(4, "locale.sep1");
-#ifndef __APPLE__
-  AddString(5, "locale.time", 14065, "", BUTTON_CONTROL_MISC_INPUT);
-  AddString(6, "locale.date", 14064, "", BUTTON_CONTROL_MISC_INPUT);
-#endif
 #if defined(_LINUX) && !defined(__APPLE__)
+  AddSeparator(4, "locale.sep1");
   AddString(8, "locale.timezone", 14081, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
   AddString(7, "locale.timezonecountry", 14080, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
 #endif
@@ -634,7 +614,7 @@ void CGUISettings::Initialize()
 
   AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
   AddString(4, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32)
   // OSX does not use a driver set vsync
   AddInt(6, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_ALWAYS, SPIN_CONTROL_TEXT);
 #else
@@ -656,7 +636,6 @@ void CGUISettings::Initialize()
   AddInt(3, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
   AddBool(4, "screensaver.usedimonpause", 22014, true);
-  AddBool(5, "screensaver.uselock",20140,false);
   // Note: Application.cpp might hide powersaving settings if not supported.
   AddSeparator(6, "screensaver.sep_powersaving");
   AddInt(7, "screensaver.powersavingtime", 1450, 0, 0, 5, 4 * 60, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
@@ -831,13 +810,7 @@ void CGUISettings::SetFloat(const char *strSetting, float fSetting)
 
 void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
 {
-  std::map<CStdString,CSetting*>::iterator it = settingsMap.find("masterlock.enableshutdown");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.maxretries");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
-  it = settingsMap.find("masterlock.automastermode");
+  std::map<CStdString,CSetting*>::iterator it = settingsMap.find("masterlock.maxretries");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
   it = settingsMap.find("masterlock.startuplock");

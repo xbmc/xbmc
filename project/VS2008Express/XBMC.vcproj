@@ -1998,11 +1998,27 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.h"
 					>
 				</File>
 				<File
@@ -2742,6 +2758,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\AliasShortcutUtils.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AliasShortcutUtils.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\ApplicationMessenger.cpp"
 					>
 				</File>
@@ -2779,6 +2803,10 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\Autorun.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\AutorunMediaJob.cpp"
 					>
 				</File>
 				<File
@@ -5480,6 +5508,10 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\Autorun.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\AutorunMediaJob.h"
 				>
 			</File>
 			<File

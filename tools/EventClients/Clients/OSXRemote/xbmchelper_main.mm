@@ -170,7 +170,7 @@ void ParseOptions(int argc, char** argv)
 }
 
 //----------------------------------------------------------------------------
-void StartHelper(){
+void ConfigureHelper(){
   [gp_xbmchelper enableVerboseMode:g_verbose_mode];
   
   //set apppath to startup when pressing Menu
@@ -186,7 +186,7 @@ void Reconfigure(int nSignal)
 {
 	if (nSignal == SIGHUP){
 		ReadConfig();
-    StartHelper();
+    ConfigureHelper();
   }
 	else {
     QuitEventLoop(GetMainEventLoop());
@@ -197,6 +197,8 @@ void Reconfigure(int nSignal)
 int main (int argc,  char * argv[]) {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
   
+  ParseOptions(argc,argv);
+
   NSLog(@"%s %s starting up...", PROGNAME, PROGVERS);
   gp_xbmchelper = [[XBMCHelper alloc] init];  
   if(gp_xbmchelper){
@@ -204,8 +206,7 @@ int main (int argc,  char * argv[]) {
     signal(SIGINT, Reconfigure);
     signal(SIGTERM, Reconfigure);
     
-    ParseOptions(argc,argv);
-    StartHelper();
+    ConfigureHelper();
     
     //run event loop in this thread
     RunCurrentEventLoop(kEventDurationForever);

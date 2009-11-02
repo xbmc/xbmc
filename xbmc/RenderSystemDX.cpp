@@ -44,6 +44,7 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   m_bVSync = true;
   m_nDeviceStatus = S_OK;
   m_stateBlock = NULL;
+  m_inScene = false;
 
   ZeroMemory(&m_D3DPP, sizeof(D3DPRESENT_PARAMETERS));
 }
@@ -56,7 +57,6 @@ CRenderSystemDX::~CRenderSystemDX()
 bool CRenderSystemDX::InitRenderSystem()
 {
   m_bVSync = true;
-  m_iVSyncMode = 0;
   m_renderCaps = 0;
   D3DADAPTER_IDENTIFIER9 AIdentifier;
 
@@ -97,23 +97,73 @@ bool CRenderSystemDX::InitRenderSystem()
   return true;
 }
 
-bool CRenderSystemDX::ResetRenderSystem(int width, int height)
+void CRenderSystemDX::SetRenderParams(unsigned int width, unsigned int height, bool fullScreen, float refreshRate)
 {
   m_nBackBufferWidth = width;
   m_nBackBufferHeight = height;
+  m_bFullScreenDevice = fullScreen;
+  m_refreshRate = refreshRate;
+}
+
+bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate)
+{
+  SetRenderParams(width, height, fullScreen, refreshRate);
 
   CRect rc;
   rc.SetRect(0, 0, (float)width, (float)height);
-
   SetViewPort(rc);
 
-  m_D3DPP.BackBufferWidth = m_nBackBufferWidth;
-  m_D3DPP.BackBufferHeight = m_nBackBufferHeight;
+  BuildPresentParameters();
 
   OnDeviceLost();
   OnDeviceReset();
   
   return true;
+}
+
+void CRenderSystemDX::BuildPresentParameters()
+{
+  ZeroMemory( &m_D3DPP, sizeof(D3DPRESENT_PARAMETERS) );
+  m_D3DPP.Windowed					= !m_bFullScreenDevice;
+  m_D3DPP.SwapEffect				= D3DSWAPEFFECT_DISCARD;
+  m_D3DPP.BackBufferCount			= 1;
+  m_D3DPP.EnableAutoDepthStencil	= TRUE;
+  m_D3DPP.hDeviceWindow			= m_hDeviceWnd;
+  m_D3DPP.BackBufferWidth			= m_nBackBufferWidth;
+  m_D3DPP.BackBufferHeight			= m_nBackBufferHeight;
+  m_D3DPP.Flags   =   D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+  m_D3DPP.PresentationInterval = (m_bVSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+  m_D3DPP.FullScreen_RefreshRateInHz = (m_bFullScreenDevice) ? (int)m_refreshRate : 0;
+  m_D3DPP.BackBufferFormat = D3DFMT_X8R8G8B8;
+  m_D3DPP.MultiSampleType = D3DMULTISAMPLE_NONE;
+  m_D3DPP.MultiSampleQuality = 0;
+
+  // Try to create a 32-bit depth, 8-bit stencil
+  if( FAILED( m_pD3D->CheckDeviceFormat( D3DADAPTER_DEFAULT,
+    D3DDEVTYPE_HAL,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL, 
+    D3DRTYPE_SURFACE, D3DFMT_D24S8 )))
+  {
+    // Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer 
+    if( FAILED( m_pD3D->CheckDeviceFormat(D3DADAPTER_DEFAULT,
+      D3DDEVTYPE_HAL,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL, 
+      D3DRTYPE_SURFACE, D3DFMT_D32 )))
+    {
+      // Jeez, what a naff card. Fall back on 16-bit depth buffering
+      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D16;
+    }
+    else
+      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D32;
+  }
+  else
+  {
+    if( SUCCEEDED( m_pD3D->CheckDepthStencilMatch( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
+      m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat, D3DFMT_D24S8 ) ) )
+    {
+      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D24S8; 
+    } 
+    else 
+      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D24X8; 
+  }
 }
 
 bool CRenderSystemDX::DestroyRenderSystem()
@@ -185,56 +235,7 @@ bool CRenderSystemDX::CreateDevice()
     devType = D3DDEVTYPE_REF
 #endif
 
-  ZeroMemory( &m_D3DPP, sizeof(D3DPRESENT_PARAMETERS) );
-  m_D3DPP.Windowed					= true;
-  m_D3DPP.SwapEffect				= D3DSWAPEFFECT_DISCARD;
-  m_D3DPP.BackBufferCount			= 1;
-  m_D3DPP.EnableAutoDepthStencil	= true;
-  m_D3DPP.hDeviceWindow			= m_hDeviceWnd;
-  m_D3DPP.BackBufferWidth			= m_nBackBufferWidth;
-  m_D3DPP.BackBufferHeight			= m_nBackBufferHeight;
-  m_D3DPP.Flags   =   D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
-  if (m_bVSync)
-  {
-    m_D3DPP.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
-  }
-  else
-  {
-    m_D3DPP.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-  }
-
-  m_D3DPP.BackBufferFormat = D3DFMT_X8R8G8B8;
-
-  // Try to create a 32-bit depth, 8-bit stencil
-  if( FAILED( m_pD3D->CheckDeviceFormat( D3DADAPTER_DEFAULT,
-    devType,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL, 
-    D3DRTYPE_SURFACE, D3DFMT_D24S8 )))
-  {
-    // Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer 
-    if( FAILED( m_pD3D->CheckDeviceFormat(D3DADAPTER_DEFAULT,
-      devType,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL, 
-      D3DRTYPE_SURFACE, D3DFMT_D32 )))
-    {
-      // Jeez, what a naff card. Fall back on 16-bit depth buffering
-      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D16;
-    }
-    else
-      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D32;
-  }
-  else
-  {
-    if( SUCCEEDED( m_pD3D->CheckDepthStencilMatch( D3DADAPTER_DEFAULT, devType,
-      m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat, D3DFMT_D24S8 ) ) )
-    {
-      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D24S8; 
-    } 
-    else 
-      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D24X8; 
-  }
-
-
-  m_D3DPP.MultiSampleType = D3DMULTISAMPLE_NONE;
-  m_D3DPP.MultiSampleQuality = 0;
+  BuildPresentParameters();
 
   hr = m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, devType, m_hFocusWnd,
     D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_D3DPP, &m_pD3DDevice );
@@ -321,12 +322,14 @@ bool CRenderSystemDX::BeginRender()
     CLog::Log(LOGERROR, "m_pD3DDevice->BeginScene() failed");
     return false;
   }
-
+  m_inScene = true;
   return true;
 }
 
 bool CRenderSystemDX::EndRender()
 {
+  m_inScene = false;
+
   if (!m_bRenderCreated)
     return false;
 
@@ -388,7 +391,16 @@ bool CRenderSystemDX::PresentRender()
 
 void CRenderSystemDX::SetVSync(bool enable)
 {
-  SetVSyncImpl(enable);
+  if (m_bVSync != enable)
+  {
+    bool inScene(m_inScene);
+    if (m_inScene)
+      EndRender();
+    ResetRenderSystem(m_nBackBufferWidth, m_nBackBufferHeight, m_bFullScreenDevice, m_refreshRate);
+    if (inScene)
+      BeginRender();
+  }
+  m_bVSync = enable;
 }
 
 void CRenderSystemDX::CaptureStateBlock()
@@ -518,11 +530,6 @@ void CRenderSystemDX::RestoreHardwareTransform()
 {
   if (!m_bRenderCreated)
     return;
-}
-
-void CRenderSystemDX::CalculateMaxTexturesize()
-{
- 
 }
 
 void CRenderSystemDX::GetViewPort(CRect& viewPort)

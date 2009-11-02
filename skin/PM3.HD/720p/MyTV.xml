@@ -316,16 +316,16 @@
 					<texture border="3">guide.png</texture>
 				</control>
 				<control type="label" id="1">
-				<posx>4</posx>`
-				<posy>0</posy>
-				<width>34</width>
-				<height>29</height>
-				<font>font13</font>
-				<aligny>center</aligny>
-				<selectedcolor>green</selectedcolor>
-				<align>left</align>
-				<info>ListItem.Label</info>
-			</control>
+          <posx>4</posx>
+          <posy>0</posy>
+          <width>34</width>
+          <height>29</height>
+          <font>font13</font>
+          <aligny>center</aligny>
+          <selectedcolor>green</selectedcolor>
+          <align>left</align>
+          <info>ListItem.Label</info>
+        </control>
 			</rulerlayout>
 			<channellayout height="60" width="150">
 				<animation effect="fade" start="110" time="200">UnFocus</animation>

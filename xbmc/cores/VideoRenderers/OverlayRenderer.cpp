@@ -23,11 +23,17 @@
 #include "system.h"
 #include "OverlayRenderer.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlay.h"
+#include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"
+#include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
+#include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "WindowingFactory.h"
 #include "../../Settings.h"
 #include "SingleLock.h"
-#ifdef HAS_GL
+#if   defined(HAS_GL)
 #include "OverlayRendererGL.h"
+#elif defined(HAS_DX)
+#include "OverlayRendererDX.h"
 #endif
 
 
@@ -273,9 +279,17 @@ COverlay* CRenderer::Convert(CDVDOverlay* o, double pts)
     r = new COverlayTextureGL((CDVDOverlaySpu*)o);
   else if(o->IsOverlayType(DVDOVERLAY_TYPE_SSA))
     r = new COverlayGlyphGL((CDVDOverlaySSA*)o, pts);
+#elif defined(HAS_DX)
+  if     (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
+    r = new COverlayImageDX((CDVDOverlayImage*)o);
+  else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
+    r = new COverlayImageDX((CDVDOverlaySpu*)o);
+  else if(o->IsOverlayType(DVDOVERLAY_TYPE_SSA))
+    r = new COverlayQuadsDX((CDVDOverlaySSA*)o, pts);
 #endif
 
   if(r && !o->IsOverlayType(DVDOVERLAY_TYPE_SSA))
     o->m_overlay = r->Acquire();
   return r;
 }
+

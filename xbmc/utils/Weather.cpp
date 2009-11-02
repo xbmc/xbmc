@@ -99,14 +99,11 @@ FIXME'S
 
 CWeather g_weatherManager;
 
-void CWeather::DoWork()
+bool CWeather::DoWork()
 {
-  if (!g_guiSettings.GetBool("network.enableinternet"))
-    return;
-
   // wait for the network
   if (!g_application.getNetwork().IsAvailable(true))
-    return;
+    return false;
 
   // Download our weather
   CLog::Log(LOGINFO, "WEATHER: Downloading weather");
@@ -138,6 +135,8 @@ void CWeather::DoWork()
   }
   else
     CLog::Log(LOGERROR, "WEATHER: Weather download failed!");
+
+  return true;
 }
 
 CWeather::CWeather(void) : CInfoLoader(30 * 60 * 1000) // 30 minutes

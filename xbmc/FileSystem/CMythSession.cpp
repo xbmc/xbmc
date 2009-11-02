@@ -99,7 +99,9 @@ CDateTime CCMythSession::GetValue(cmyth_timestamp_t t)
   CDateTime result;
   if (t)
   {
-    result = m_dll->timestamp_to_unixtime(t);
+    time_t time = m_dll->timestamp_to_unixtime(t);
+    tm *local = localtime(&time); // Convert to local time
+    result = *local;
     m_dll->ref_release(t);
   }
   return result;

@@ -91,6 +91,7 @@ SRCS=Application.cpp \
      GUIPassword.cpp \
      LangCodeExpander.cpp \
      LangInfo.cpp \
+     AutorunMediaJob.cpp \
      MediaManager.cpp \
      NfoFile.cpp \
      PartyModeManager.cpp \

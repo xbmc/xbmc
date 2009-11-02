@@ -397,6 +397,7 @@ void CLinuxRendererGL::LoadTextures(int source)
   {
     g_VDPAU->CheckRecover();
     SetEvent(m_eventTexturesDone[source]);
+    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
     return;
   }
 #endif
@@ -848,7 +849,6 @@ unsigned int CLinuxRendererGL::PreInit()
 
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
-  m_aspecterror = g_guiSettings.GetFloat("videoplayer.aspecterror") * 0.01;
 
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
@@ -1610,7 +1610,13 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
     g_graphicsContext.ClipToViewWindow();
 
   glEnable(m_textureTarget);
-
+  
+  if (!g_VDPAU->m_glPixmapTexture)
+  {
+    glGenTextures (1, &(g_VDPAU->m_glPixmapTexture));
+    CLog::Log(LOGNOTICE,"Created m_glPixmapTexture (%i)",(int)g_VDPAU->m_glPixmapTexture);
+  }
+  
   glBindTexture(m_textureTarget, g_VDPAU->m_glPixmapTexture);
   g_VDPAU->BindPixmap();
 
@@ -1628,17 +1634,17 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   glBegin(GL_QUADS);
   if (m_textureTarget==GL_TEXTURE_2D)
   {
-    glTexCoord2f(0.0, 0.0);  glVertex2d(m_destRect.x1, m_destRect.y1);
-    glTexCoord2f(1.0, 0.0);  glVertex2d(m_destRect.x2, m_destRect.y1);
-    glTexCoord2f(1.0, 1.0);  glVertex2d(m_destRect.x2, m_destRect.y2);
-    glTexCoord2f(0.0, 1.0);  glVertex2d(m_destRect.x1, m_destRect.y2);
+    glTexCoord2f(0.0, 0.0);  glVertex2f(m_destRect.x1, m_destRect.y1);
+    glTexCoord2f(1.0, 0.0);  glVertex2f(m_destRect.x2, m_destRect.y1);
+    glTexCoord2f(1.0, 1.0);  glVertex2f(m_destRect.x2, m_destRect.y2);
+    glTexCoord2f(0.0, 1.0);  glVertex2f(m_destRect.x1, m_destRect.y2);
   }
   else
   {
-    glTexCoord2f(m_sourceRect.x1, m_sourceRect.y1); glVertex4f(m_destRect.x1, m_destRect.y1, 0.0f, 0.0f);
-    glTexCoord2f(m_sourceRect.x2, m_sourceRect.y1); glVertex4f(m_destRect.x2, m_destRect.y1, 1.0f, 0.0f);
-    glTexCoord2f(m_sourceRect.x2, m_sourceRect.y2); glVertex4f(m_destRect.x2, m_destRect.y2, 1.0f, 1.0f);
-    glTexCoord2f(m_sourceRect.x1, m_sourceRect.y2); glVertex4f(m_destRect.x1, m_destRect.y2, 0.0f, 1.0f);
+    glTexCoord2f(m_destRect.x1, m_destRect.y1); glVertex4f(m_destRect.x1, m_destRect.y1, 0.0f, 0.0f);
+    glTexCoord2f(m_destRect.x2, m_destRect.y1); glVertex4f(m_destRect.x2, m_destRect.y1, 1.0f, 0.0f);
+    glTexCoord2f(m_destRect.x2, m_destRect.y2); glVertex4f(m_destRect.x2, m_destRect.y2, 1.0f, 1.0f);
+    glTexCoord2f(m_destRect.x1, m_destRect.y2); glVertex4f(m_destRect.x1, m_destRect.y2, 0.0f, 1.0f);
   }
   glEnd();
   VerifyGLState();
@@ -1703,7 +1709,11 @@ void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width
   m_destRect.SetRect(0, 0, (float)width, (float)height);
 
   // clear framebuffer and invert Y axis to get non-inverted image
+  glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT);
+  glClearColor(0, 0, 0, 0);
+  glDisable(GL_BLEND);
+  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   glTranslatef(0, height, 0);

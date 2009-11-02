@@ -423,6 +423,15 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
     case XBMC_USEREVENT:
       g_application.getApplicationMessenger().UserEvent(newEvent.user.code);
       break;
+    case XBMC_APPCOMMAND:
+      {
+        // Special media keys are mapped to WM_APPCOMMAND on Windows (and to DBUS events on Linux?)
+        // XBMC translates WM_APPCOMMAND to XBMC_APPCOMMAND events.
+        CAction action;
+        action.id = newEvent.appcommand.action;
+        g_application.OnAction(action);
+      }
+      break;
   }
   return true;
 }
@@ -475,7 +484,7 @@ HRESULT CApplication::Create(HWND hWnd)
 
   m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
   g_Windowing.EnableSystemScreenSaver(false);
-  
+
 #ifdef _LINUX
   tzset();   // Initialize timezone information variables
 #endif
@@ -564,7 +573,7 @@ HRESULT CApplication::Create(HWND hWnd)
   atexit(SDL_Quit);
 
   uint32_t sdlFlags = 0;
-  
+
 #ifdef HAS_SDL_OPENGL
   sdlFlags |= SDL_INIT_VIDEO;
 #endif
@@ -620,8 +629,6 @@ HRESULT CApplication::Create(HWND hWnd)
   g_Joystick.Initialize(hWnd);
 #endif
 
-  g_mediaManager.Initialize();
-
   CLog::Log(LOGINFO, "Drives are mapped");
 
   CLog::Log(LOGNOTICE, "load settings...");
@@ -640,7 +647,7 @@ HRESULT CApplication::Create(HWND hWnd)
   // Configure and possible manually start the helper.
   g_xbmcHelper.Configure();
 #endif
-  
+
   // update the window resolution
   g_Windowing.SetWindowResolution(g_guiSettings.GetInt("window.width"), g_guiSettings.GetInt("window.height"));
 
@@ -660,9 +667,9 @@ HRESULT CApplication::Create(HWND hWnd)
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return E_FAIL;
   }
-  
+
   if (!g_Windowing.InitRenderSystem())
-  {    
+  {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to init rendering system");
     return E_FAIL;
   }
@@ -727,9 +734,7 @@ HRESULT CApplication::Create(HWND hWnd)
 
   CUtil::InitRandomSeed();
 
-#ifdef _WIN32
-  CWIN32Util::AddRemovableDrives();
-#endif
+  g_mediaManager.Initialize();
 
   return Initialize();
 }
@@ -813,7 +818,6 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/addons/plugins/pictures");
     CDirectory::Create("special://home/addons/plugins/weather");
     CDirectory::Create("special://home/addons/dsp-audio");
-    CDirectory::Create("special://home/keymaps");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -840,7 +844,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
-    
+
     // copy system-wide plugins into userprofile
     if ( bCopySystemPlugins )
        CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
@@ -945,7 +949,6 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/addons/plugins/pictures");
     CDirectory::Create("special://home/addons/plugins/weather");
     CDirectory::Create("special://home/addons/dsp-audio");
-    CDirectory::Create("special://home/keymaps");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -1061,7 +1064,6 @@ CProfile* CApplication::InitDirectoriesWin32()
     CDirectory::Create("special://home/addons/plugins/pictures");
     CDirectory::Create("special://home/addons/plugins/weather");
     CDirectory::Create("special://home/addons/dsp-audio");
-    CDirectory::Create("special://home/keymaps");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -1223,7 +1225,7 @@ HRESULT CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogTVRecordingInfo);          // window id = 603
   g_windowManager.Add(new CGUIDialogTVGroupManager);           // window id = 603
   g_windowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
-#ifdef HAS_GL  
+#ifdef HAS_GL
   g_windowManager.Add(new CGUIWindowTestPatternGL);      // window id = 8
 #endif
 #ifdef HAS_DX
@@ -1552,17 +1554,17 @@ bool CApplication::StopEventServer(bool bWait, bool promptuser)
       }
     }
     CLog::Log(LOGNOTICE, "ES: Stopping event server with confirmation");
-    
+
     CEventServer::GetInstance()->StopServer(true);
   }
   else
   {
     if (!bWait)
       CLog::Log(LOGNOTICE, "ES: Stopping event server");
-    
+
     CEventServer::GetInstance()->StopServer(bWait);
   }
-  
+
   return true;
 #endif
 }
@@ -1675,7 +1677,7 @@ void CApplication::StartZeroconf()
 {
 #ifdef HAS_ZEROCONF
   //entry in guisetting only present if HAS_ZEROCONF is set
-  if(g_guiSettings.GetBool("servers.zeroconf"))
+  if(g_guiSettings.GetBool("network.zeroconf"))
   {
     CLog::Log(LOGNOTICE, "starting zeroconf publishing");
     CZeroconf::GetInstance()->Start();
@@ -1712,17 +1714,13 @@ void CApplication::StopPVRManager()
 void CApplication::DimLCDOnPlayback(bool dim)
 {
 #ifdef HAS_LCD
-  if(g_lcd && dim && (g_guiSettings.GetInt("lcd.disableonplayback") != LED_PLAYBACK_OFF) && (g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE))
+  if (g_lcd)
   {
-    if ( (IsPlayingVideo()) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_VIDEO)
-      g_lcd->SetBackLight(0);
-    if ( (IsPlayingAudio()) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_MUSIC)
-      g_lcd->SetBackLight(0);
-    if ( ((IsPlayingVideo() || IsPlayingAudio())) && g_guiSettings.GetInt("lcd.disableonplayback") == LED_PLAYBACK_VIDEO_MUSIC)
-      g_lcd->SetBackLight(0);
+    if (dim)
+      g_lcd->DisableOnPlayback(IsPlayingVideo(), IsPlayingAudio());
+    else
+      g_lcd->SetBackLight(1);
   }
-  else if(!dim)
-    g_lcd->SetBackLight(1);
 #endif
 }
 
@@ -2086,7 +2084,7 @@ void CApplication::RenderNoPresent()
 //          while not updating the UI setting?
 //  int vsync_mode = g_videoConfig.GetVSyncMode();
   int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
-  
+
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
@@ -2235,7 +2233,7 @@ bool CApplication::WaitFrame(unsigned int timeout)
       break;
     if(result < 0)
       CLog::Log(LOGWARNING, "CApplication::WaitFrame - error from conditional wait");
-  }  
+  }
   done = m_frameCount == 0;
   SDL_mutexV(m_frameMutex);
 #endif
@@ -2341,7 +2339,7 @@ void CApplication::Render()
   g_infoManager.UpdateFPS();
   g_renderManager.UpdateResolution();
   g_graphicsContext.Unlock();
-  
+
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
   if(m_frameCount > 0)
@@ -2484,13 +2482,33 @@ bool CApplication::OnKey(CKey& key)
     }
     if (useKeyboard)
     {
+      action.id = 0;
       if (g_guiSettings.GetBool("lookandfeel.remoteaskeyboard"))
       {
         // users remote is executing keyboard commands, so use the virtualkeyboard section of keymap.xml
-        // and send those rather than actual keyboard presses
+        // and send those rather than actual keyboard presses.  Only for navigation-type commands though
         CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, action);
+        if (!(action.id == ACTION_MOVE_LEFT ||
+              action.id == ACTION_MOVE_RIGHT ||
+              action.id == ACTION_MOVE_UP ||
+              action.id == ACTION_MOVE_DOWN ||
+              action.id == ACTION_SELECT_ITEM ||
+              action.id == ACTION_ENTER ||
+              action.id == ACTION_PREVIOUS_MENU ||
+              action.id == ACTION_CLOSE_DIALOG))
+        {
+          // the action isn't plain navigation - check for a keyboard-specific keymap
+          CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, action, false);
+          if (!(action.id >= REMOTE_0 && action.id <= REMOTE_9) ||
+                action.id == ACTION_BACKSPACE ||
+                action.id == ACTION_SHIFT ||
+                action.id == ACTION_SYMBOLS ||
+                action.id == ACTION_CURSOR_LEFT ||
+                action.id == ACTION_CURSOR_RIGHT)
+            action.id = 0; // don't bother with this action
+        }
       }
-      else
+      if (!action.id)
       {
         // keyboard entry - pass the keys through directly
         if (key.GetFromHttpApi())
@@ -2866,7 +2884,7 @@ void CApplication::UpdateLCD()
 #ifdef HAS_LCD
   static long lTickCount = 0;
 
-  if (!g_lcd || g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE)
+  if (!g_lcd || !g_guiSettings.GetBool("system.haslcd"))
     return ;
   long lTimeOut = 1000;
   if ( m_iPlaySpeed != 1)
@@ -2912,12 +2930,12 @@ void CApplication::FrameMove()
   g_graphicsContext.Unlock();
 
   UpdateLCD();
-  
+
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   // Read the input from a remote
   g_RemoteControl.Update();
 #endif
-  
+
   // process input actions
   CWinEvents::MessagePump();
   ProcessHTTPApiButtons();
@@ -4324,7 +4342,7 @@ void CApplication::DoRenderFullScreen()
     // Render the mouse pointer, if visible...
     if (g_Mouse.IsActive())
       g_application.m_guiPointer.Render();
-    
+
     g_TextureManager.FreeUnusedTextures();
   }
 }
@@ -4374,13 +4392,10 @@ bool CApplication::WakeUpScreenSaver()
   {
     int iProfile = g_settings.m_iLastLoadedProfileIndex;
     if (m_iScreenSaveLock == 0)
-      if (g_guiSettings.GetBool("screensaver.uselock")                           &&
-          g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE        &&
+      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE &&
+          (g_settings.bUseLoginScreen || g_guiSettings.GetBool("masterlock.startuplock")) &&
           g_settings.m_vecProfiles[iProfile].getLockMode() != LOCK_MODE_EVERYONE &&
-         !g_guiSettings.GetString("screensaver.mode").Equals("Black")            &&
-        !(g_guiSettings.GetBool("screensaver.usemusicvisinstead")                &&
-         !g_guiSettings.GetString("screensaver.mode").Equals("Black")            &&
-          g_application.IsPlayingAudio())                                          )
+          m_screenSaverMode != "Dim" && m_screenSaverMode != "Black" && m_screenSaverMode != "Visualisation")
       {
         m_iScreenSaveLock = 2;
         CGUIMessage msg(GUI_MSG_CHECK_LOCK,0,0);
@@ -4604,7 +4619,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
           CLibrefmScrobbler::GetInstance()->AddSong(*tag, CLastFmManager::GetInstance()->IsRadioEnabled());
         }
       }
-      
+
       return true;
     }
     break;
@@ -4698,7 +4713,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         WakeUpScreenSaverAndDPMS();
         g_windowManager.PreviousWindow();
       }
-      
+
       return true;
     }
     break;
@@ -4721,7 +4736,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
     else
     {
       CGUIActionDescriptor action = message.GetAction();
-      action.m_sourceWindowId = message.GetControlId(); // set source window id, 
+      action.m_sourceWindowId = message.GetControlId(); // set source window id,
       return ExecuteAction(action);
     }
 
@@ -4842,7 +4857,7 @@ void CApplication::ProcessSlow()
 {
   // run resume jobs if we are coming from suspend/hibernate
   if (m_bRunResumeJobs)
-    g_powerManager.Resume(); 
+    g_powerManager.Resume();
 
   // Store our file state for use on close()
   UpdateFileState();
@@ -4898,19 +4913,18 @@ void CApplication::ProcessSlow()
   if(IsPaused() != m_bIsPaused)
   {
 #ifdef HAS_LCD
-    if(g_guiSettings.GetBool("lcd.enableonpaused"))
-      DimLCDOnPlayback(m_bIsPaused);
+    DimLCDOnPlayback(m_bIsPaused);
 #endif
     m_bIsPaused = IsPaused();
   }
 
   g_largeTextureManager.CleanupUnusedImages();
 
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
   m_Autorun.HandleAutorun();
 #endif
-  
+
   // update upnp server/renderer states
   if(CUPnP::IsInstantiated())
     CUPnP::GetInstance()->UpdateState();
@@ -4930,8 +4944,8 @@ void CApplication::ProcessSlow()
 #endif
 
 #ifdef HAS_LCD
-  // attempt to reinitialize the LCD (e.g. after resuming from sleep) 
-  if (g_lcd && !g_lcd->IsConnected()) 
+  // attempt to reinitialize the LCD (e.g. after resuming from sleep)
+  if (g_lcd && !g_lcd->IsConnected())
   {
     g_lcd->Stop();
     g_lcd->Initialize();
@@ -5335,7 +5349,7 @@ void CApplication::UpdateLibraries()
     if (scanner && !scanner->IsScanning())
       scanner->StartScanning("",info,settings,false);
   }
- 
+
   if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))
   {
     CLog::Log(LOGNOTICE, "%s - Starting music library startup scan", __FUNCTION__);

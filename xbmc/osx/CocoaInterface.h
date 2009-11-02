@@ -21,6 +21,8 @@
 #ifndef _OSX_INTERFACE_H_
 #define _OSX_INTERFACE_H_
 
+#include <string>
+
 #ifdef __cplusplus
 extern "C"
 {

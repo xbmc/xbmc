@@ -36,7 +36,7 @@ public:
   // CRenderBase
   virtual bool InitRenderSystem();
   virtual bool DestroyRenderSystem();
-  virtual bool ResetRenderSystem(int width, int height);  
+  virtual bool ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate);
 
   virtual bool BeginRender();
   virtual bool EndRender();
@@ -60,27 +60,24 @@ public:
 
   virtual bool TestRender();
 
-  // CRenderSystemDX
-  virtual void SetFocusWnd(HWND wnd) { m_hFocusWnd = wnd; }
-  virtual void SetDeviceWnd(HWND wnd) { m_hDeviceWnd = wnd; }
-  virtual void SetBackBufferSize(unsigned int width, unsigned int height) { m_nBackBufferWidth = width; m_nBackBufferHeight = height; };
-  virtual void SetDeviceFullScreen(bool bFullScreen){ m_bFullScreenDevice = bFullScreen; };
-  virtual LPDIRECT3DDEVICE9 Get3DDevice() { return m_pD3DDevice; }
+  LPDIRECT3DDEVICE9 Get3DDevice() { return m_pD3DDevice; }
   int GetBackbufferCount() const { return m_D3DPP.BackBufferCount; }
-  bool IsDeviceReady() const { return m_nDeviceStatus == S_OK; }
-  virtual bool CreateEffect(CStdString& name, ID3DXEffect** pEffect);
-  virtual void ReleaseEffect(ID3DXEffect* pEffect);
+  bool CreateEffect(CStdString& name, ID3DXEffect** pEffect);
+  void ReleaseEffect(ID3DXEffect* pEffect);
 
 protected:
-  virtual bool CreateResources();
-  virtual void DeleteResources();
-  virtual void OnDeviceLost();
-  virtual void OnDeviceReset();
-  virtual void SetVSyncImpl(bool enable){};
-  virtual bool PresentRenderImpl();
-  void CalculateMaxTexturesize();
-  virtual bool CreateDevice();
-  
+  bool CreateResources();
+  void DeleteResources();
+  void OnDeviceLost();
+  void OnDeviceReset();
+  bool PresentRenderImpl();
+  bool CreateDevice();
+
+  void SetFocusWnd(HWND wnd) { m_hFocusWnd = wnd; }
+  void SetDeviceWnd(HWND wnd) { m_hDeviceWnd = wnd; }
+  void SetRenderParams(unsigned int width, unsigned int height, bool fullScreen, float refreshRate);
+  void BuildPresentParameters();
+
   LPDIRECT3D9 m_pD3D;
   LPDIRECT3DDEVICE9 m_pD3DDevice;
   D3DPRESENT_PARAMETERS m_D3DPP;
@@ -89,12 +86,13 @@ protected:
   unsigned int m_nBackBufferWidth;
   unsigned int m_nBackBufferHeight;
   bool m_bFullScreenDevice;
+  float m_refreshRate;
   HRESULT m_nDeviceStatus;
   IDirect3DStateBlock9* m_stateBlock;
 
   std::vector<ID3DXEffect*> m_vecEffects;
 
-  int        m_iVSyncMode;
+  bool m_inScene; ///< True if we're in a BeginScene()/EndScene() block
 };
 
 #endif // RENDER_SYSTEM_DX

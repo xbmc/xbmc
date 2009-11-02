@@ -27,6 +27,7 @@
 #include "GUISettings.h"
 #include "FileItem.h"
 #include "AutoPtrHandle.h"
+#include "utils/AliasShortcutUtils.h"
 
 #ifndef _LINUX
 #include "utils/CharsetConverter.h"
@@ -60,6 +61,9 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
   LOCAL_WIN32_FIND_DATA wfd;
 
   CStdString strPath=strPath1;
+
+  if (IsAliasShortcut(strPath))
+    TranslateAliasShortcut(strPath);
 
   CStdString strRoot = strPath;
   CURL url(strPath);

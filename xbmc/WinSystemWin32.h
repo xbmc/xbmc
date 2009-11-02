@@ -61,6 +61,7 @@ public:
   virtual void UpdateResolutions();
   virtual bool CenterWindow();
   virtual void NotifyAppFocusChange(bool bGaining);
+  virtual int GetNumScreens() { return m_nMonitorsCount; };
 
   virtual bool Minimize();
   virtual bool Restore();

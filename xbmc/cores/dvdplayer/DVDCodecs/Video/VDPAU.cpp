@@ -152,7 +152,7 @@ bool CVDPAU::MakePixmap(int width, int height)
     GLX_BIND_TO_TEXTURE_RGBA_EXT, True,
     GLX_DOUBLEBUFFER, True,
     GLX_Y_INVERTED_EXT, True,
-    GLX_X_RENDERABLE, True, // Added by Rob
+    GLX_X_RENDERABLE, True,
     None
   };
 
@@ -166,12 +166,9 @@ bool CVDPAU::MakePixmap(int width, int height)
     None
   };
 
-//  if (m_bDoublebuffer)
-    fbConfigs = glXChooseFBConfig(m_Display, DefaultScreen(m_Display), doubleVisAttributes, &num);
-//  else
-//    fbConfigs = glXChooseFBConfig(m_Display, DefaultScreen(m_Display), singleVisAttributes, &num);
+  fbConfigs = glXChooseFBConfig(m_Display, DefaultScreen(m_Display), doubleVisAttributes, &num);
 
-  // Get our window attribs.
+    // Get our window attribs.
   XWindowAttributes wndattribs;
   XGetWindowAttributes(m_Display, DefaultRootWindow(m_Display), &wndattribs); // returns a status but I don't know what success is
 
@@ -209,23 +206,7 @@ bool CVDPAU::MakePixmap(int width, int height)
     CLog::Log(LOGINFO, "GLX: Creating Pixmap context");
     m_glContext = glXCreateContext(m_Display, visInfo, NULL, True);
     XFree(visInfo);
-    if (glXMakeCurrent(m_Display, m_glPixmap, m_glContext))
-    {
-      CLog::Log(LOGINFO, "GL: Initialised Pixmap");
-      GLenum glErr;
-      if (!m_glPixmapTexture)
-      {
-        CLog::Log(LOGINFO, "GL: Generated Pixmap Texture");
-        glGenTextures (1, &m_glPixmapTexture);
-        glErr = glGetError();
-        if ((glErr == GL_INVALID_VALUE) | (glErr == GL_INVALID_OPERATION))
-        {
-          CLog::Log(LOGINFO, "glGenTextures returned an error!");
-          status = false;
-        }
-      }
-    }
-    else
+    if (!glXMakeCurrent(m_Display, m_glPixmap, m_glContext))
     {
       CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
       status = false;
@@ -316,15 +297,13 @@ void CVDPAU::CheckFeatures()
     tmpNoiseReduction = 0;
     tmpSharpness = 0;
     int featuresCount = 0;
-    VdpVideoMixerFeature features[5];
+    VdpVideoMixerFeature features[6];
 
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION;
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_SHARPNESS;
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-    if ( (g_guiSettings.GetInt("videoplayer.upscalingalgorithm") == 10) &&
-          (g_guiSettings.GetInt("videoplayer.highqualityupscaling") > 0) )
-      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 + g_guiSettings.GetInt("videoplayer.vdpauUpscalingLevel");
-    CLog::Log(LOGNOTICE,"upscalingalgoritm = %i vdpauUpscalingLevel = %i",g_guiSettings.GetInt("videoplayer.upscalingalgorithm"),g_guiSettings.GetInt("videoplayer.vdpauUpscalingLevel"));
+    if (g_guiSettings.GetBool("videoplayer.vdpauUpscalingLevel"))
+      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1;
 #endif
     if (interlaced && tmpDeint)
     {
@@ -940,7 +919,6 @@ enum PixelFormat CVDPAU::FFGetFormat(struct AVCodecContext * avctx,
                                                      const PixelFormat * fmt)
 {
   //CLog::Log(LOGNOTICE," (VDPAU) %s",__FUNCTION__);
-  //pSingleton->CheckRecover();
   avctx->get_buffer      = FFGetBuffer;
   avctx->release_buffer  = FFReleaseBuffer;
   avctx->draw_horiz_band = FFDrawSlice;
@@ -1126,25 +1104,8 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     outRectVid.y0 = 0;
     outRectVid.x1 = g_graphicsContext.GetWidth();
     outRectVid.y1 = g_graphicsContext.GetHeight();
-
-    /*if(g_graphicsContext.GetViewWindow().right < (long)vid_width)
-      outWidth = vid_width;
-    else
-      outWidth = g_graphicsContext.GetViewWindow().right;
-    if(g_graphicsContext.GetViewWindow().bottom < (long)vid_height)
-      outHeight = vid_height;
-    else
-      outHeight = g_graphicsContext.GetViewWindow().bottom;
-
-    outRect.x0 = 0;
-    outRect.y0 = 0;
-    outRect.x1 = outWidth;
-    outRect.y1 = outHeight;
-    */
   }
-  //CLog::Log(LOGNOTICE,"surfaceNum %i",surfaceNum);
-//  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
-//  CheckStatus(vdp_st, __LINE__);
+
   vdp_st = vdp_video_mixer_render(videoMixer,
                                   VDP_INVALID_HANDLE,
                                   0,
@@ -1169,7 +1130,6 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
 void CVDPAU::Present()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  //CLog::Log(LOGNOTICE,"presentSurfaceNum %i",presentSurfaceNum);
   VdpStatus vdp_st;
   presentSurface = outputSurfaces[presentSurfaceNum];
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
