@@ -303,7 +303,10 @@ void CVDPAU::CheckFeatures()
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_SHARPNESS;
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
     if (g_guiSettings.GetBool("videoplayer.vdpauUpscalingLevel"))
+    {
+      CLog::Log(LOGNOTICE,"(VDPAU) enabling VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1");
       features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1;
+    }
 #endif
     if (interlaced && tmpDeint)
     {
