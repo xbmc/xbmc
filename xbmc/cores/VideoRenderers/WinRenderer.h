@@ -139,7 +139,6 @@ public:
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
-  virtual void         DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride);
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
@@ -158,9 +157,6 @@ protected:
   virtual void Render(DWORD flags);
   void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
-  void DeleteOSDTextures(int index);
-  void Setup_Y8A8Render();
-  void RenderOSD();
   void DeleteYV12Texture(int index);
   void ClearYV12Texture(int index);
   bool CreateYV12Texture(int index);
@@ -175,18 +171,6 @@ protected:
   int m_NumYV12Buffers;
 
   bool m_bConfigured;
-
-  // OSD stuff
-  LPDIRECT3DTEXTURE9 m_pOSDYTexture[NUM_BUFFERS];
-  LPDIRECT3DTEXTURE9 m_pOSDATexture[NUM_BUFFERS];
-  float m_OSDWidth;
-  float m_OSDHeight;
-  DRAWRECT m_OSDRect;
-  int m_iOSDRenderBuffer;
-  int m_iOSDTextureWidth;
-  int m_iOSDTextureHeight[NUM_BUFFERS];
-  int m_NumOSDBuffers;
-  bool m_OSDRendered;
 
   typedef LPDIRECT3DTEXTURE9      YUVVIDEOPLANES[MAX_PLANES];
   typedef BYTE*                   YUVMEMORYPLANES[MAX_PLANES];
