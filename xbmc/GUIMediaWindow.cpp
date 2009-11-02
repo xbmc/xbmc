@@ -793,7 +793,10 @@ bool CGUIMediaWindow::OnClick(int iItem)
       return true;
     }
 
-    if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList())
+    // If karaoke song is being played AND popup autoselector is enabled, the playlist should not be added
+    bool do_not_add_karaoke = pItem->IsKaraoke() && g_guiSettings.GetBool("karaoke.autopopupselector");
+
+    if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList() && !do_not_add_karaoke )
     {
       // TODO: music videos!
       if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026) && m_guiState->GetPlaylist() == PLAYLIST_MUSIC) // 'add source button' in empty root
