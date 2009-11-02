@@ -513,8 +513,22 @@ void CGUIEPGGridContainer::RenderChannels(float posY, int chanOffset)
 
 void CGUIEPGGridContainer::RenderRuler(float horzDrawOffset, int blockOffset)
 {
+  CGUIListItemPtr item;
 
   if (!m_rulerLayout) return;
+
+  g_graphicsContext.SetClipRegion(m_posX, m_posY, m_channelWidth, m_rulerHeight);
+  item = m_rulerItems[0];
+  // set the origin
+  g_graphicsContext.SetOrigin(m_posX, m_posY);
+  // render the item
+  item->SetLabel(m_rulerItems[blockOffset/m_rulerUnit+1]->GetLabel2());
+  item->GetLayout()->Render(item.get(), m_parentID, m_renderTime);
+  // restore the origin
+  g_graphicsContext.RestoreOrigin();
+
+  g_graphicsContext.RestoreClipRegion();
+
 
   g_graphicsContext.SetClipRegion(m_gridPosX, m_posY, m_gridWidth, m_rulerHeight);
 
@@ -533,11 +547,9 @@ void CGUIEPGGridContainer::RenderRuler(float horzDrawOffset, int blockOffset)
     posX -= missingSection * m_blockSize;
   }
 
-  CGUIListItemPtr item;
-
-  while (posX < m_gridPosX + m_gridWidth && m_rulerItems.size())
+  while (posX < m_gridPosX + m_gridWidth && m_rulerItems.size()-1)
   {
-    item = m_rulerItems[blockOffset/m_rulerUnit];
+    item = m_rulerItems[blockOffset/m_rulerUnit+1];
     // set the origin
     g_graphicsContext.SetOrigin(posX, m_posY);
     // render the item
@@ -550,7 +562,6 @@ void CGUIEPGGridContainer::RenderRuler(float horzDrawOffset, int blockOffset)
   }
 
   g_graphicsContext.RestoreClipRegion();
-
 }
 
 void CGUIEPGGridContainer::UpdateRuler()
@@ -567,12 +578,20 @@ void CGUIEPGGridContainer::UpdateRuler()
 
   unit.SetDateTimeSpan(0, 0, m_rulerUnit * MINSPERBLOCK, 0);
 
+  CGUIListItemLayout *pRulerLayout = new CGUIListItemLayout(*m_rulerLayout);
+  CGUIListItemPtr markerItem(new CFileItem(marker.GetAsLocalizedDate(true, true)));
+  pRulerLayout->SetWidth(m_channelWidth);
+  markerItem->SetProperty("DateLabel", true);
+  markerItem->SetLayout(pRulerLayout);
+  m_rulerItems.push_back(markerItem);
+
   for (; marker < m_gridEnd; marker += unit)
   {
     CGUIListItemLayout *pRulerLayout = new CGUIListItemLayout(*m_rulerLayout);
     CGUIListItemPtr markerItem(new CFileItem(marker.GetAsLocalizedTime("", false)));
     pRulerLayout->SetWidth(m_rulerWidth);
     markerItem->SetLayout(pRulerLayout);
+    markerItem->SetLabel2(marker.GetAsLocalizedDate(true, true));
     m_rulerItems.push_back(markerItem);
   }
 }
@@ -1143,49 +1162,8 @@ void CGUIEPGGridContainer::GenerateItemLayout(int row, int itemSize, int block)
     }
   }
 
-  switch (m_gridIndex[row][block]->GetTVEPGInfoTag()->m_GenreType)
-  {
-  case EVCONTENTMASK_MOVIEDRAMA:
-    pItemLayout->SetVisible(1);
-    break;
-  case EVCONTENTMASK_NEWSCURRENTAFFAIRS:
-    pItemLayout->SetVisible(2);
-    break;
-  case EVCONTENTMASK_SHOW:
-    pItemLayout->SetVisible(3);
-    break;
-  case EVCONTENTMASK_SPORTS:
-    pItemLayout->SetVisible(4);
-    break;
-  case EVCONTENTMASK_CHILDRENYOUTH:
-    pItemLayout->SetVisible(5);
-    break;
-  case EVCONTENTMASK_MUSICBALLETDANCE:
-    pItemLayout->SetVisible(6);
-    break;
-  case EVCONTENTMASK_ARTSCULTURE:
-    pItemLayout->SetVisible(7);
-    break;
-  case EVCONTENTMASK_SOCIALPOLITICALECONOMICS:
-    pItemLayout->SetVisible(8);
-    break;
-  case EVCONTENTMASK_EDUCATIONALSCIENCE:
-    pItemLayout->SetVisible(9);
-    break;
-  case EVCONTENTMASK_LEISUREHOBBIES:
-    pItemLayout->SetVisible(10);
-    break;
-  case EVCONTENTMASK_SPECIAL:
-    pItemLayout->SetVisible(11);
-    break;
-  case EVCONTENTMASK_USERDEFINED:
-  default:
-    pItemLayout->SetVisible(12);
-    break;
-  }
-
+  m_gridIndex[row][block]->SetProperty("GenreType" ,m_gridIndex[row][block]->GetTVEPGInfoTag()->m_GenreType);
   m_gridIndex[row][block]->SetFocusedLayout(pItemFocusedLayout);
-
   m_gridIndex[row][block]->SetLayout(pItemLayout);
 
   //m_lastItem = m_gridIndex[row][block]; ///?

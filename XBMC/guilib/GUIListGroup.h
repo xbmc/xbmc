@@ -47,7 +47,6 @@ public:
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual void UpdateInfo(const CGUIListItem *item);
 
-  void ShowIdOnly(int id);
   void EnlargeWidth(float difference);
   void SetFocusedItem(unsigned int subfocus);
   unsigned int GetFocusedItem() const;

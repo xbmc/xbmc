@@ -64,8 +64,15 @@ bool CTVEPGInfoTag::HasTimer(void) const
   return false;
 }
 
-
-
+int CTVEPGInfoTag::DurationSeconds() const
+{
+  int duration;
+  duration =  m_duration.GetDays()*60*60*24;
+  duration += m_duration.GetHours()*60*60;
+  duration += m_duration.GetMinutes()*60;
+  duration += m_duration.GetSeconds();
+  return duration;
+}
 
 
 cPVREpg::cPVREpg(long ChannelID)

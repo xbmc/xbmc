@@ -166,7 +166,7 @@ public:
 
   CStdString GetAsDBDateTime() const;
   CStdString GetAsDBDate() const;
-  CStdString GetAsLocalizedDate(bool longDate=false) const;
+  CStdString GetAsLocalizedDate(bool longDate=false, bool withShortNames=false) const;
   CStdString GetAsLocalizedTime(const CStdString &format, bool withSeconds=true) const;
   CStdString GetAsLocalizedDateTime(bool longDate=false, bool withSeconds=true) const;
 

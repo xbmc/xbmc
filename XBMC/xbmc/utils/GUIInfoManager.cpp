@@ -470,7 +470,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Left(18).Equals("integergreaterthan("))
   {
     int pos = strTest.Find(",");
-    int info = TranslateString(strTest.Mid(18, pos-18));
+    int info = TranslateString(strTest.Mid(19, pos-19));
     int compareInt = atoi(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)).c_str());
     return AddMultiInfo(GUIInfo(bNegate ? -INTEGER_GREATER_THAN: INTEGER_GREATER_THAN, info, compareInt));
   }
