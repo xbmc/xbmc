@@ -166,3 +166,4 @@ inline bool operator==(CZeroconfBrowser::ZeroconfService const& fcr_lhs, CZeroco
 {
   return (fcr_lhs.GetName() == fcr_rhs.GetName() && fcr_lhs.GetType() == fcr_rhs.GetType() && fcr_lhs.GetDomain() == fcr_rhs.GetDomain() );
 }
+
