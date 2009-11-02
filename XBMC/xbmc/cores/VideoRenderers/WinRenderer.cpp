@@ -324,6 +324,12 @@ void CWinRenderer::RenderOSD()
     }
   };
 
+  for(int i = 0; i < 4; i++)
+  {
+    verts[i].x -= 0.5;
+    verts[i].y -= 0.5;
+  }
+
   m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetTexture(1, NULL);
@@ -780,12 +786,17 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     videoSurface->GetDesc(&desc);
     if(videoSurface->LockRect(&rect, NULL, 0) == D3D_OK)
     {
-      for(unsigned int j = 0; j < desc.Height; j++)
+      if (rect.Pitch == desc.Width)
+      {
+        memcpy((BYTE *)rect.pBits, src, desc.Height * desc.Width);
+      }
+      else for(unsigned int j = 0; j < desc.Height; j++)
       {
         memcpy((BYTE *)rect.pBits + (j * rect.Pitch), src + (j * desc.Width), rect.Pitch);
       }
       videoSurface->UnlockRect();
     }
+    SAFE_RELEASE(videoSurface);
   }
 
   for (int i = 0; i < 3; ++i)
@@ -853,6 +864,12 @@ void CWinRenderer::RenderLowMem(DWORD flags)
       (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1)  , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1)
     }
   };
+
+  for(int i = 0; i < 4; i++)
+  {
+    verts[i].x -= 0.5;
+    verts[i].y -= 0.5;
+  }
 
   m_pYUV2RGBEffect->SetTechnique( "YUV2RGB_T" );
   m_pYUV2RGBEffect->SetTexture( "g_YTexture",  m_YUVVideoTexture[index][0] ) ;
@@ -922,19 +939,13 @@ void CWinRenderer::DeleteYV12Texture(int index)
   if (videoPlanes[0] || videoPlanes[1] || videoPlanes[2])
     CLog::Log(LOGDEBUG, "Deleted YV12 texture (%i)", index);
 
-  if (videoPlanes[0])
-    SAFE_RELEASE(videoPlanes[0]);
-  if (videoPlanes[1])
-    SAFE_RELEASE(videoPlanes[1]);
-  if (videoPlanes[2])
-    SAFE_RELEASE(videoPlanes[2]);
+  SAFE_RELEASE(videoPlanes[0]);
+  SAFE_RELEASE(videoPlanes[1]);
+  SAFE_RELEASE(videoPlanes[2]);
 
-  if (memoryPlanes[0])
-    SAFE_DELETE_ARRAY(memoryPlanes[0]);
-  if (memoryPlanes[1])
-    SAFE_DELETE_ARRAY(memoryPlanes[1]);
-  if (memoryPlanes[2])
-    SAFE_DELETE_ARRAY(memoryPlanes[2]);
+  SAFE_DELETE_ARRAY(memoryPlanes[0]);
+  SAFE_DELETE_ARRAY(memoryPlanes[1]);
+  SAFE_DELETE_ARRAY(memoryPlanes[2]);
 
   m_NumYV12Buffers = 0;
 }

@@ -108,6 +108,7 @@
 #include "LocalizeStrings.h"
 #include "LangInfo.h"
 #include "StringUtils.h"
+#include "WindowingFactory.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -127,6 +128,8 @@ using namespace DIRECTORY;
 #define CONTROL_START_CONTROL           -80
 
 #define PREDEFINED_SCREENSAVERS          5
+
+#define RSSEDITOR_PATH "special://home/scripts/RSS Editor/default.py"
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
     : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml")
@@ -519,14 +522,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(603), CDDARIP_QUALITY_EXTREME);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("lcd.type"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(351), LCD_TYPE_NONE);
-      pControl->AddLabel("LCDproc", LCD_TYPE_LCDPROC);
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting.Equals("harddisk.aamlevel"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -804,28 +799,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
     }
 #endif
-    else if (strSetting.Equals("system.ledcolour"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(13340), LED_COLOUR_NO_CHANGE);
-      pControl->AddLabel(g_localizeStrings.Get(13341), LED_COLOUR_GREEN);
-      pControl->AddLabel(g_localizeStrings.Get(13342), LED_COLOUR_ORANGE);
-      pControl->AddLabel(g_localizeStrings.Get(13343), LED_COLOUR_RED);
-      pControl->AddLabel(g_localizeStrings.Get(13344), LED_COLOUR_CYCLE);
-      pControl->AddLabel(g_localizeStrings.Get(351), LED_COLOUR_OFF);
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting.Equals("system.leddisableonplayback") || strSetting.Equals("lcd.disableonplayback"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(106), LED_PLAYBACK_OFF);     // No
-      pControl->AddLabel(g_localizeStrings.Get(13002), LED_PLAYBACK_VIDEO);   // Video Only
-      pControl->AddLabel(g_localizeStrings.Get(475), LED_PLAYBACK_MUSIC);    // Music Only
-      pControl->AddLabel(g_localizeStrings.Get(476), LED_PLAYBACK_VIDEO_MUSIC); // Video & Music
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting.Equals("videoplayer.rendermethod"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -982,13 +955,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
       {
-        int value1 = g_guiSettings.GetInt("videoplayer.upscalingalgorithm");
-        int value2 = g_guiSettings.GetInt("videoplayer.highqualityupscaling");
-
-        if (value1 == VS_SCALINGMETHOD_VDPAU_HARDWARE && value2 != SOFTWARE_UPSCALING_DISABLED)
-          pControl->SetEnabled(true);
-        else
-          pControl->SetEnabled(false);
+        pControl->SetEnabled(true);
       }
     }
 #endif
@@ -1086,22 +1053,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser);
     }
-    else if (strSetting.Equals("masterlock.startuplock") || strSetting.Equals("masterlock.enableshutdown") || strSetting.Equals("masterlock.automastermode"))
+    else if (strSetting.Equals("masterlock.startuplock"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE);
-    }
-    else if (strSetting.Equals("masterlock.loginlock"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.bUseLoginScreen);
-    }
-    else if (strSetting.Equals("screensaver.uselock"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE                                    &&
-                                         g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE &&
-                                         !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
     }
     else if (!strSetting.Equals("pvr.enabled") && strSetting.Left(4).Equals("pvrmanager."))
     {
@@ -1325,13 +1280,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       else
         g_guiSettings.SetString("weather.plugin", pControl->GetCurrentLabel());
     }
-    else if (strSetting.Equals("system.leddisableonplayback"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      // LED_COLOUR_NO_CHANGE: we can't disable the LED on playback,
-      //                       we have no previos reference LED COLOUR, to set the LED colour back
-      pControl->SetEnabled(g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_OFF);
-    }
     else if (strSetting.Equals("musicfiles.trackformat"))
     {
       if (m_strOldTrackFormat != g_guiSettings.GetString("musicfiles.trackformat"))
@@ -1353,21 +1301,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("locale.timeserver"));
-    }
-    else if (strSetting.Equals("locale.time") || strSetting.Equals("locale.date"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(!g_guiSettings.GetBool("locale.timeserver"));
-      SYSTEMTIME curTime;
-      GetLocalTime(&curTime);
-      CStdString time;
-      if (strSetting.Equals("locale.time"))
-        time = g_infoManager.GetTime();
-      else
-        time = g_infoManager.GetDate();
-      CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
-      pSettingString->SetData(time);
-      pSettingControl->Update();
     }
 #endif
     else if (strSetting.Equals("autodetect.nickname") || strSetting.Equals("autodetect.senduserpw"))
@@ -1391,25 +1324,13 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
         pControl->SetLabel2("");
     }
-    else if (strSetting.Equals("lcd.enableonpaused"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.disableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
-    }
-    else if (strSetting.Equals("system.ledenableonpaused"))
-    {
-      // LED_COLOUR_NO_CHANGE: we can't enable LED on paused,
-      //                       we have no previos reference LED COLOUR, to set the LED colour back
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("system.leddisableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_OFF && g_guiSettings.GetInt("system.ledcolour") != LED_COLOUR_NO_CHANGE);
-    }
     else if (strSetting.Equals("lookandfeel.enablemouse"))
     {
     }
     else if (strSetting.Equals("lookandfeel.rssedit"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(XFILE::CFile::Exists("special://home/scripts/RssTicker/default.py"));
+      pControl->SetEnabled(XFILE::CFile::Exists(RSSEDITOR_PATH));
     }
     else if (strSetting.Equals("musiclibrary.scrapersettings"))
     {
@@ -1477,43 +1398,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 
 void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
 {
-  for (unsigned int i = 0; i < m_vecSettings.size(); i++)
-  {
-    CBaseSettingControl *pSettingControl = m_vecSettings[i];
-    CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-    if (strSetting.Equals("locale.time") || strSetting.Equals("locale.date"))
-    {
-#ifdef HAS_TIME_SERVER
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(!g_guiSettings.GetBool("locale.timeserver"));
-#endif
-      SYSTEMTIME curTime;
-      GetLocalTime(&curTime);
-      CStdString time;
-      if (strSetting.Equals("locale.time"))
-        time = g_infoManager.GetTime();
-      else
-        time = g_infoManager.GetDate();
-      CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
-      pSettingString->SetData(time);
-      pSettingControl->Update();
-    }
-    else if (strSetting.Equals("pvrplayback.timeshiftcache") || strSetting.Equals("pvrplayback.timeshiftpath"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrplayback.timeshift"));
-    }
-    else if (strSetting.Equals("pvrmenu.infotimeout"))
-    { // only visible if infoswitch is enabled
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmenu.infoswitch"));
-    }
-    else if (strSetting.Equals("pvrmenu.infotime"))
-    { // only visible if infoswitch is enabled
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmenu.infoswitch") && g_guiSettings.GetBool("pvrmenu.infotimeout"));
-    }
-  }
+  // date and time used to be here
 }
 
 void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
@@ -1544,27 +1429,19 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_weatherManager.Refresh();
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
-    CBuiltins::Execute("RunScript(special://home/scripts/RssTicker/default.py)");
-  else if (strSetting.Equals("musiclibrary.scrapersettings") || strSetting.Equals("musiclibrary.defaultscraper"))
+    CBuiltins::Execute("RunScript("RSSEDITOR_PATH")");
+  else if (strSetting.Equals("musiclibrary.scrapersettings"))
   {
     CMusicDatabase database;
     database.Open();
     SScraperInfo info;
     database.GetScraperForPath("musicdb://",info);
-    if (!info.strPath.Equals(g_guiSettings.GetString("musiclibrary.defaultscraper")))
-    {
-      CScraperParser parser;
-      parser.Load("special://xbmc/system/scrapers/music/"+g_guiSettings.GetString("musiclibrary.defaultscraper"));
-      info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
-      info.strContent = "albums";
-      info.strTitle = parser.GetName();
-    }
-    if (info.settings.GetAddonRoot() || info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/"+info.strPath))
-    {
-      if (strSetting.Equals("musiclibrary.scrapersettings"))
+
+    if (info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + info.strPath))
         CGUIDialogAddonSettings::ShowAndGetInput(info);
-    }
+
     database.SetScraperForPath("musicdb://",info);
+    database.Close();
   }
 
   // if OnClick() returns false, the setting hasn't changed or doesn't
@@ -1700,19 +1577,29 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_mediaManager.GetLocalDrives(shares);
     bool singleFile;
     bool thumbs=false;
+    bool actorThumbs=false;
     bool overwrite=false;
     bool cancelled;
+
     singleFile = CGUIDialogYesNo::ShowAndGetInput(iHeading,20426,20427,-1,20428,20429,cancelled);
     if (cancelled)
       return;
+
     if (singleFile)
       thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20430,-1,-1,cancelled);
     if (cancelled)
       return;
+
+    if (thumbs)
+      actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20436,-1,-1,cancelled);
+    if (cancelled)
+      return;
+
     if (singleFile)
       overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
     if (cancelled)
       return;
+
     if (singleFile || CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
     {
       if (strSetting.Equals("videolibrary.export"))
@@ -1720,7 +1607,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
         CUtil::AddFileToFolder(path, "videodb.xml", path);
         CVideoDatabase videodatabase;
         videodatabase.Open();
-        videodatabase.ExportToXML(path,singleFile,thumbs,overwrite);
+        videodatabase.ExportToXML(path, singleFile, thumbs, actorThumbs, overwrite);
         videodatabase.Close();
       }
       else
@@ -1728,7 +1615,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
         CUtil::AddFileToFolder(path, "musicdb.xml", path);
         CMusicDatabase musicdatabase;
         musicdatabase.Open();
-        musicdatabase.ExportToXML(path,singleFile,thumbs,overwrite);
+        musicdatabase.ExportToXML(path, singleFile, thumbs, overwrite);
         musicdatabase.Close();
       }
     }
@@ -1869,14 +1756,12 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
 #endif
 #ifdef HAS_LCD
-  else if (strSetting.Equals("lcd.type"))
+  else if (strSetting.Equals("system.haslcd"))
   {
-#ifdef _LINUX
     g_lcd->Stop();
     CLCDFactory factory;
     delete g_lcd;
     g_lcd = factory.Create();
-#endif
     g_lcd->Initialize();
   }
 #endif
@@ -1909,12 +1794,12 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
 #endif
   }
-  else if (strSetting.Equals("servers.zeroconf"))
+  else if (strSetting.Equals("network.zeroconf"))
   {
 #ifdef HAS_ZEROCONF
     //ifdef zeroconf here because it's only found in guisettings if defined
     CZeroconf::GetInstance()->Stop();
-    if(g_guiSettings.GetBool("servers.zeroconf"))
+    if(g_guiSettings.GetBool("network.zeroconf"))
       CZeroconf::GetInstance()->Start();
 #endif
   }
@@ -2264,28 +2149,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_application.StartTimeServer();
   }
 #endif
-  else if (strSetting.Equals("locale.time"))
-  {
-    SYSTEMTIME curTime;
-    GetLocalTime(&curTime);
-    if (CGUIDialogNumeric::ShowAndGetTime(curTime, g_localizeStrings.Get(14066)))
-    { // yay!
-      SYSTEMTIME curDate;
-      GetLocalTime(&curDate);
-      CUtil::SetSysDateTimeYear(curDate.wYear, curDate.wMonth, curDate.wDay, curTime.wHour, curTime.wMinute);
-    }
-  }
-  else if (strSetting.Equals("locale.date"))
-  {
-    SYSTEMTIME curDate;
-    GetLocalTime(&curDate);
-    if (CGUIDialogNumeric::ShowAndGetDate(curDate, g_localizeStrings.Get(14067)))
-    { // yay!
-      SYSTEMTIME curTime;
-      GetLocalTime(&curTime);
-      CUtil::SetSysDateTimeYear(curDate.wYear, curDate.wMonth, curDate.wDay, curTime.wHour, curTime.wMinute);
-    }
-  }
   else if (strSetting.Equals("smb.winsserver") || strSetting.Equals("smb.workgroup") )
   {
     if (g_guiSettings.GetString("smb.winsserver") == "0.0.0.0")
@@ -3236,7 +3099,10 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool play
 
   pControl->AddLabel(g_settings.m_ResInfo[RES_WINDOW].strMode, RES_WINDOW);
   pControl->AddLabel(g_settings.m_ResInfo[RES_DESKTOP].strMode, RES_DESKTOP);
-  for (size_t i = RES_CUSTOM ; i < g_settings.m_ResInfo.size(); i++)
+  size_t maxRes = g_settings.m_ResInfo.size();
+  if (g_Windowing.GetNumScreens())
+    maxRes = std::min(maxRes, (size_t)RES_DESKTOP + g_Windowing.GetNumScreens());
+  for (size_t i = RES_CUSTOM ; i < maxRes; i++)
   {
     pControl->AddLabel(g_settings.m_ResInfo[i].strMode, i);
   }
@@ -3248,7 +3114,7 @@ void CGUIWindowSettingsCategory::FillInVSyncs(CSetting *pSetting)
   CSettingInt *pSettingInt = (CSettingInt*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(_WIN32)
   pControl->AddLabel(g_localizeStrings.Get(13101) , VSYNC_DRIVER);
 #endif
   pControl->AddLabel(g_localizeStrings.Get(13106) , VSYNC_DISABLED);
@@ -3686,7 +3552,23 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
       if (parser.GetName().Equals(strSelected) || CUtil::GetFileName(items[i]->m_strPath).Equals(strSelected))
       {
         if (strContent.Equals("music")) // native strContent would be albums or artists but we're using the same scraper for both
-          g_guiSettings.SetString("musiclibrary.defaultscraper", CUtil::GetFileName(items[i]->m_strPath));
+        {
+          if (g_guiSettings.GetString("musiclibrary.defaultscraper") != strSelected)
+          {
+            g_guiSettings.SetString("musiclibrary.defaultscraper", CUtil::GetFileName(items[i]->m_strPath));
+
+            SScraperInfo info;
+            CMusicDatabase database;
+
+            info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
+            info.strContent = "albums";
+            info.strTitle = parser.GetName();
+
+            database.Open();
+            database.SetScraperForPath("musicdb://",info);
+            database.Close();
+          }
+        }
         else if (strContent.Equals("movies"))
           g_guiSettings.SetString("scrapers.moviedefault", CUtil::GetFileName(items[i]->m_strPath));
         else if (strContent.Equals("tvshows"))

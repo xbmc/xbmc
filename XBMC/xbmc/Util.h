@@ -142,13 +142,8 @@ public:
   static void PlayDVD();
   static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static void TakeScreenshot();
-  static void TakeScreenshot(const char* fn, bool flash);
-  static void SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate);
-  static void SetBrightnessContrastGammaPercent(float brightness, float contrast, float gamma, bool immediate);
+  static void TakeScreenshot(const CStdString &filename);
   static void Tokenize(const CStdString& path, std::vector<CStdString>& tokens, const std::string& delimiters);
-  static void FlashScreen(bool bImmediate, bool bOn);
-  static void RestoreBrightnessContrastGamma();
-  static void InitGamma();
   static void ClearCache();
   static void StatToStatI64(struct _stati64 *result, struct stat *stat);
   static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);

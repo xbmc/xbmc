@@ -43,6 +43,9 @@
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 #include "Application.h"
+#include "utils/JobManager.h"
+#include "AutorunMediaJob.h"
+#include "GUISettings.h"
 
 #ifdef __APPLE__
 #include "DarwinStorageProvider.h"
@@ -459,7 +462,10 @@ std::vector<CStdString> CMediaManager::GetDiskUsage()
 
 void CMediaManager::OnStorageAdded(const CStdString &label, const CStdString &path)
 {
-  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13021), label);
+  if (g_guiSettings.GetBool("lookandfeel.autorun"))
+    CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_HIGH);
+  else
+    g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13021), label);
 }
 
 void CMediaManager::OnStorageSafelyRemoved(const CStdString &label)

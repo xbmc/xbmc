@@ -744,9 +744,6 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     // on some mesa intel drivers
     if(m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA) && pSource->format == DVDVideoPicture::FMT_YUV420P)
       render = OVERLAY_VID;
-#elif defined(HAS_DX)
-    // fixme: GPU overlay disabled for now until it's implemented
-    render = OVERLAY_VID;
 #endif
 
     if(render == OVERLAY_VID)
@@ -1144,8 +1141,11 @@ void CDVDPlayerVideo::CalcFrameRate()
     {
       //store the calculated framerate if it differs too much from m_fFrameRate
       if (fabs(1.0 - (m_fFrameRate / (m_fStableFrameRate / m_iFrameRateCount))) > MAXFRAMERATEDIFF)
+      {
+        CLog::Log(LOGDEBUG,"%s framerate was:%f calculated:%f", __FUNCTION__, m_fFrameRate, m_fStableFrameRate / m_iFrameRateCount);
         m_fFrameRate = m_fStableFrameRate / m_iFrameRateCount;
-      
+      }
+
       //reset the stored framerates
       m_fStableFrameRate = 0.0;
       m_iFrameRateCount = 0;

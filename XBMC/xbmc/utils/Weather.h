@@ -68,7 +68,7 @@ public:
 
   day_forcast m_dfForcast[NUM_DAYS];
 protected:
-  virtual void DoWork();
+  virtual bool DoWork();
   virtual CStdString TranslateInfo(int info) const;
   virtual CStdString BusyInfo(int info) const;
 

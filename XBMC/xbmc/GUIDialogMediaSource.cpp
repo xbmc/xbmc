@@ -275,18 +275,16 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       share1.strName = g_localizeStrings.Get(21883);
       extraShares.push_back(share1);
     }
-    if (g_guiSettings.GetBool("network.enableinternet"))
-    {
-      share1.strName = "Shoutcast";
-      share1.strPath = SHOUTCAST_MASTER_LINK;
-      extraShares.push_back(share1);
 
-      if (g_guiSettings.GetString("scrobbler.lastfmusername") != "")
-      {
-        share1.strName = "Last.FM";
-        share1.strPath = "lastfm://";
-        extraShares.push_back(share1);
-      }
+    share1.strName = "Shoutcast";
+    share1.strPath = SHOUTCAST_MASTER_LINK;
+    extraShares.push_back(share1);
+
+    if (g_guiSettings.GetString("scrobbler.lastfmusername") != "")
+    {
+      share1.strName = "Last.FM";
+      share1.strPath = "lastfm://";
+      extraShares.push_back(share1);
     }
     // add the plugins dir as needed
     if (CPluginDirectory::HasPlugins("music"))

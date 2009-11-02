@@ -22,9 +22,12 @@
 #include "system.h"
 #include "WAVcodec.h"
 #include "utils/EndianSwap.h"
+#include "utils/log.h"
 
 #if defined(WIN32)
 #include <mmreg.h>
+#include <ks.h>
+#include <ksmedia.h>
 #endif
 
 typedef struct
@@ -45,6 +48,7 @@ WAVCodec::WAVCodec()
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
+  m_bHasFloat = false;
   m_iDataStart=0;
   m_iDataLen=0;
   m_Bitrate = 0;
@@ -61,82 +65,167 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
   if (!m_file.Open(strFile, READ_CACHED))
     return false;
 
-  // read header
-  WAVE_RIFFHEADER riffh;
-  m_file.Read(&riffh, sizeof(WAVE_RIFFHEADER));
-  riffh.filesize = Endian_SwapLE32(riffh.filesize);
+  int64_t         length;
+  WAVE_RIFFHEADER riff;
+  bool            hasFmt  = false;
+  bool            hasData = false;
 
-  // file valid?
-  if (strncmp(riffh.riff, "RIFF", 4)!=0 && strncmp(riffh.rifftype, "WAVE", 4)!=0)
+  length = m_file.GetLength();
+  m_file.Seek(0, SEEK_SET);
+  m_file.Read(&riff, sizeof(WAVE_RIFFHEADER));
+  riff.filesize = Endian_SwapLE32(riff.filesize);
+  if ((strncmp(riff.riff, "RIFF", 4) != 0) && (strncmp(riff.rifftype, "WAVE", 4) != 0))
     return false;
 
-  unsigned long offset = 0, pos;
-  offset += sizeof(WAVE_RIFFHEADER);
-  offset -= sizeof(WAVE_CHUNK);
-
-  // parse chunks
-  do
+  // read in each chunk
+  while(length - m_file.GetPosition() >= (int64_t)sizeof(WAVE_CHUNK))
   {
     WAVE_CHUNK chunk;
-
-    // always seeking to the start of a chunk
-    m_file.Seek(offset + sizeof(WAVE_CHUNK), SEEK_SET);
     m_file.Read(&chunk, sizeof(WAVE_CHUNK));
     chunk.chunksize = Endian_SwapLE32(chunk.chunksize);
 
-    if (!strncmp(chunk.chunk_id, "fmt ", 4))
+    // if it is the "fmt " chunk
+    if (!hasFmt && (strncmp(chunk.chunk_id, "fmt ", 4) == 0))
     {
-      pos = (long)m_file.GetPosition();
-
-      // format chunk
+      int64_t              read;
       WAVEFORMATEXTENSIBLE wfx;
-      m_file.Read(&wfx, sizeof(WAVEFORMATEX));
 
-      //  Get file info
+      read = std::min((DWORD)sizeof(WAVEFORMATEXTENSIBLE), chunk.chunksize);
+      m_file.Read(&wfx, read);
+
+      // get the format information
       m_SampleRate    = Endian_SwapLE32(wfx.Format.nSamplesPerSec);
-      m_Channels      = Endian_SwapLE16(wfx.Format.nChannels);
+      m_Channels      = Endian_SwapLE16(wfx.Format.nChannels     );
       m_BitsPerSample = Endian_SwapLE16(wfx.Format.wBitsPerSample);
 
-      //  Is it an extensible wav file
-      if ((Endian_SwapLE16(wfx.Format.wFormatTag) == WAVE_FORMAT_EXTENSIBLE) && (Endian_SwapLE16(wfx.Format.cbSize) >= 22))
+      CLog::Log(LOGINFO, "WAVCodec::Init - Sample Rate: %d, Bits Per Sample: %d, Channels: %d", m_SampleRate, m_BitsPerSample, m_Channels);
+      if ((m_SampleRate == 0) || (m_Channels == 0) || (m_BitsPerSample == 0))
       {
-        m_file.Read(&wfx + sizeof(WAVEFORMATEX), sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX));
-        m_ChannelMask = Endian_SwapLE32(wfx.dwChannelMask);
-      } else {
-        m_ChannelMask = 0;
+        CLog::Log(LOGERROR, "WAVCodec::Init - Invalid data in WAVE header");
+        return false;
       }
 
-      m_file.Seek(pos + chunk.chunksize, SEEK_SET);
-    }
-    else if (!strncmp(chunk.chunk_id, "data", 4))
-    { // data chunk
-      m_iDataStart=(long)m_file.GetPosition();
-      m_iDataLen=chunk.chunksize;
+      wfx.Format.wFormatTag = Endian_SwapLE16(wfx.Format.wFormatTag);
+      wfx.Format.cbSize     = Endian_SwapLE16(wfx.Format.cbSize    );
 
-      if (chunk.chunksize & 1)
-        offset++;
+      // detect the file type
+      switch(wfx.Format.wFormatTag)
+      {
+        case WAVE_FORMAT_PCM:
+          CLog::Log(LOGINFO, "WAVCodec::Init - WAVE_FORMAT_PCM detected");
+          m_ChannelMask = 0;
+          m_bHasFloat = false;
+        break;
+
+        case WAVE_FORMAT_IEEE_FLOAT:
+          CLog::Log(LOGINFO, "WAVCodec::Init - WAVE_FORMAT_IEEE_FLOAT detected");
+          if (wfx.Format.wBitsPerSample != 32)
+          {
+            CLog::Log(LOGERROR, "WAVCodec::Init - Only 32bit Float is supported");
+            return false;
+          }
+
+          m_ChannelMask = 0;
+          m_bHasFloat = true;
+        break;
+
+        case WAVE_FORMAT_EXTENSIBLE:
+          if (wfx.Format.cbSize < 22)
+          {
+            CLog::Log(LOGERROR, "WAVCodec::Init - Corrupted WAVE_FORMAT_EXTENSIBLE header");
+            return false;
+          }
+          m_ChannelMask = Endian_SwapLE32(wfx.dwChannelMask);
+          CLog::Log(LOGINFO, "WAVCodec::Init - WAVE_FORMAT_EXTENSIBLE detected, channel mask: %d", m_ChannelMask);
+
+          wfx.SubFormat.Data1 = Endian_SwapLE32(wfx.SubFormat.Data1);
+          wfx.SubFormat.Data2 = Endian_SwapLE16(wfx.SubFormat.Data2);
+          wfx.SubFormat.Data3 = Endian_SwapLE16(wfx.SubFormat.Data3);
+          if (memcmp(&wfx.SubFormat, &KSDATAFORMAT_SUBTYPE_PCM, sizeof(GUID)) == 0)
+          {
+            CLog::Log(LOGINFO, "WAVCodec::Init - SubFormat KSDATAFORMAT_SUBTYPE_PCM Detected");
+            m_bHasFloat = false;
+          }
+          else if (memcmp(&wfx.SubFormat, &KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, sizeof(GUID)) == 0)
+          {
+            CLog::Log(LOGINFO, "WAVCodec::Init - SubFormat KSDATAFORMAT_SUBTYPE_IEEE_FLOAT Detected");
+            if (wfx.Format.wBitsPerSample != 32)
+            {
+              CLog::Log(LOGERROR, "WAVCodec::Init - Only 32bit Float is supported");
+              return false;
+            }
+            m_bHasFloat = true;
+          }
+          else
+          {
+            CLog::Log(LOGERROR, "WAVCodec::Init - Unsupported extensible Wave format");
+            return false;
+          }
+        break;
+
+        default:
+          CLog::Log(LOGERROR, "WAVCodec::Init - Unsupported Wave Format %d", wfx.Format.wFormatTag);
+          return false;
+        break;
+      }
+
+      // seek past any extra data that may be in the header
+      m_file.Seek(chunk.chunksize - read, SEEK_CUR);
+      hasFmt = true;
+
+    }
+    else if (!hasData && (strncmp(chunk.chunk_id, "data", 4) == 0))
+    {
+      m_iDataStart     = (long)m_file.GetPosition();
+      m_iDataLen       = chunk.chunksize;
+      chunk.chunksize += (chunk.chunksize % 2);
+
+      // sanity check on the data length
+      if (m_iDataLen > length - m_iDataStart)
+      {
+        CLog::Log(LOGWARNING, "WAVCodec::Init - Wave has corrupt data length of %ld when it can't be longer then %ld", m_iDataLen, length - m_iDataStart);
+        m_iDataLen = (long)(length - m_iDataStart);
+      }
+
+      // if this data chunk is empty, we will look for another data chunk that is not empty
+      if (m_iDataLen == 0)
+        CLog::Log(LOGWARNING, "WAVCodec::Init - Empty data chunk, will look for another");
+      else
+        hasData = true;
+
+      //seek past the data
+      m_file.Seek(chunk.chunksize, SEEK_CUR);
+
     }
     else
-    { // other chunk - unused, just skip
+    {
+      // any unknown chunks just seek past
       m_file.Seek(chunk.chunksize, SEEK_CUR);
     }
 
-    offset+=(chunk.chunksize+sizeof(WAVE_CHUNK));
+    // dont keep reading if we have the chunks we need
+    if (hasFmt && hasData)
+      break;
+  }
 
-    if (offset & 1)
-      offset++;
-
-  } while (offset+(int)sizeof(WAVE_CHUNK) < riffh.filesize);
-
-  m_TotalTime = (int)(((float)m_iDataLen/(m_SampleRate*m_Channels*(m_BitsPerSample/8)))*1000);
-  m_Bitrate = (int)(((float)m_iDataLen * 8) / ((float)m_TotalTime / 1000));
-
-  if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0 || m_iDataStart==0 || m_iDataLen==0)
+  if (!hasFmt || !hasData)
+  {
+    CLog::Log(LOGERROR, "WAVCodec::Init - Corrupt file, unable to locate both fmt and data chunks");
     return false;
+  }
+
+  m_TotalTime = (int)(((float)m_iDataLen / (m_SampleRate * m_Channels * (m_BitsPerSample / 8))) * 1000);
+  m_Bitrate   = (int)(((float)m_iDataLen * 8) / ((float)m_TotalTime / 1000));
+
+  // ensure the parameters are valid
+  if ((m_TotalTime <= 0) || (m_Bitrate <= 0))
+  {
+    CLog::Log(LOGERROR, "WAVCodec::Init - The total time/bitrate is invalid, possibly corrupt file");
+    return false;
+  }
 
   //  Seek to the start of the data chunk
-  m_file.Seek(m_iDataStart);
-
+  m_file.Seek(m_iDataStart, SEEK_SET);
   return true;
 }
 

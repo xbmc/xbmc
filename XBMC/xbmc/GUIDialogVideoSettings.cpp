@@ -134,9 +134,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
   }
   else 
 #endif
-  if (setting.id == VIDEO_SETTINGS_BRIGHTNESS || setting.id == VIDEO_SETTINGS_CONTRAST || setting.id == VIDEO_SETTINGS_GAMMA)
-    CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, true);
-  else if (setting.id == VIDEO_SETTINGS_CALIBRATION)
+  if (setting.id == VIDEO_SETTINGS_CALIBRATION)
   {
     // launch calibration window
     if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)

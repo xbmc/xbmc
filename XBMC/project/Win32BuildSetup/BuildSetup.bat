@@ -164,6 +164,7 @@ IF %target%==dx SET buildconfig=Release (DirectX)
     xcopy ..\..\visualisations\projectM BUILD_WIN32\Xbmc\visualisations\projectM /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   ) else (
     xcopy ..\..\visualisations\*_win32dx.vis BUILD_WIN32\Xbmc\visualisations /Q /I /Y /EXCLUDE:exclude.txt > NUL
+    xcopy ..\..\visualisations\Milkdrop BUILD_WIN32\Xbmc\visualisations\Milkdrop /Q /I /Y /EXCLUDE:exclude.txt > NUL
   )
   xcopy ..\..\system BUILD_WIN32\Xbmc\system /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\media BUILD_WIN32\Xbmc\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL

@@ -121,5 +121,4 @@ namespace OVERLAY {
 
     COverlayV        m_cleanup;
   };
-
 }

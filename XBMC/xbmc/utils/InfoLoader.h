@@ -30,7 +30,7 @@ class CInfoJob : public CJob
 {
 public:
   CInfoJob(CInfoLoader *loader);
-  virtual void DoWork();
+  virtual bool DoWork();
 private:
   CInfoLoader *m_loader;  
 };
@@ -44,8 +44,8 @@ public:
   CStdString GetInfo(int info);
   void Refresh();
   
-  virtual void OnJobComplete(unsigned int jobID, CJob *job);
-  virtual void DoWork()=0;
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  virtual bool DoWork()=0;
 protected:
   virtual CStdString TranslateInfo(int info) const;
   virtual CStdString BusyInfo(int info) const;
