@@ -401,7 +401,7 @@ void CWinSystemWin32::UpdateResolutions()
         res.dwFlags = 0;
       g_graphicsContext.ResetOverscan(res);
       g_settings.m_ResInfo.push_back(res);
-      CLog::Log(LOGINFO, "Found mode: %s", res.strMode);
+      CLog::Log(LOGINFO, "Found mode: %s", res.strMode.c_str());
     }
   }
 }
