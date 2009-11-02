@@ -568,15 +568,20 @@ void CRenderSystemDX::SetViewPort(CRect& viewPort)
 bool CRenderSystemDX::CreateEffect(CStdString& name, ID3DXEffect** pEffect)
 {
   HRESULT hr;
-
-  hr = D3DXCreateEffect(m_pD3DDevice, name, name.length(), NULL, NULL, 0, NULL, pEffect, NULL );
+  LPD3DXBUFFER pError = NULL;
+  hr = D3DXCreateEffect(m_pD3DDevice, name, name.length(), NULL, NULL, 0, NULL, pEffect, &pError );
 
   if(hr == S_OK)
   {
     m_vecEffects.push_back(*pEffect);
     return true;
   }
-
+  else if(pError)
+  {
+    CStdString error;
+    error.assign((const char*)pError->GetBufferPointer(), pError->GetBufferSize());
+    CLog::Log(LOGERROR, "%s", error.c_str());
+  }
   return false;
 }
 
