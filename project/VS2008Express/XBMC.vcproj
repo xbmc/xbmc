@@ -1661,30 +1661,6 @@
 					RelativePath="..\..\xbmc\cores\paplayer\YMCodec.h"
 					>
 				</File>
-				<Filter
-					Name="PlayerCoreFactory"
-					>
-					<File
-						RelativePath="..\..\xbmc\cores\playercorefactory\PlayerCoreConfig.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\playercorefactory\PlayerCoreFactory.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\playercorefactory\PlayerCoreFactory.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\playercorefactory\PlayerSelectionRule.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\playercorefactory\PlayerSelectionRule.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="DllLoader"
@@ -2147,6 +2123,30 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="PlayerCoreFactory"
+				>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerCoreConfig.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerCoreFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerCoreFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerSelectionRule.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerSelectionRule.h"
 					>
 				</File>
 			</Filter>
