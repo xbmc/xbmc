@@ -67,6 +67,11 @@
       <button id="8">ActivateWindow(shutdownmenu)</button>
     </joystick>
   </Home>
+  <Favourites>
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+  </Favourites>
   <MyPictures>
     <joystick name="AppleRemote">
       <button id="6">ParentDir</button>
