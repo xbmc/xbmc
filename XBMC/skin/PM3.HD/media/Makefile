@@ -337,7 +337,9 @@ IMAGES= \
 	VolumeIcon.png \
 	white-reflect.png \
 	Wide_Icon_Diffuse.png \
-	xbmc-logo.png
+	xbmc-logo.png \
+	ruler-side-horiz.png \
+	ruler-side-vert.png
 
 all: $(TARGET)
 
