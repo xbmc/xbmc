@@ -3052,7 +3052,7 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool play
   pControl->AddLabel(g_settings.m_ResInfo[RES_DESKTOP].strMode, RES_DESKTOP);
   size_t maxRes = g_settings.m_ResInfo.size();
   if (g_Windowing.GetNumScreens())
-    maxRes = std::min(maxRes, (size_t)RES_DESKTOP + g_Windowing.GetNumScreens() - 1);
+    maxRes = std::min(maxRes, (size_t)RES_DESKTOP + g_Windowing.GetNumScreens());
   for (size_t i = RES_CUSTOM ; i < maxRes; i++)
   {
     pControl->AddLabel(g_settings.m_ResInfo[i].strMode, i);
