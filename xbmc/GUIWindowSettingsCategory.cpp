@@ -933,13 +933,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
       {
-        int value1 = g_guiSettings.GetInt("videoplayer.upscalingalgorithm");
-        int value2 = g_guiSettings.GetInt("videoplayer.highqualityupscaling");
-
-        if (value1 == VS_SCALINGMETHOD_VDPAU_HARDWARE && value2 != SOFTWARE_UPSCALING_DISABLED)
-          pControl->SetEnabled(true);
-        else
-          pControl->SetEnabled(false);
+        pControl->SetEnabled(true);
       }
     }
 #endif

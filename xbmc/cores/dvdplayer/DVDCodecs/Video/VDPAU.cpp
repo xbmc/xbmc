@@ -297,15 +297,13 @@ void CVDPAU::CheckFeatures()
     tmpNoiseReduction = 0;
     tmpSharpness = 0;
     int featuresCount = 0;
-    VdpVideoMixerFeature features[5];
+    VdpVideoMixerFeature features[6];
 
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION;
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_SHARPNESS;
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-    if ( (g_guiSettings.GetInt("videoplayer.upscalingalgorithm") == 10) &&
-          (g_guiSettings.GetInt("videoplayer.highqualityupscaling") > 0) )
-      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 + g_guiSettings.GetInt("videoplayer.vdpauUpscalingLevel");
-    CLog::Log(LOGNOTICE,"upscalingalgoritm = %i vdpauUpscalingLevel = %i",g_guiSettings.GetInt("videoplayer.upscalingalgorithm"),g_guiSettings.GetInt("videoplayer.vdpauUpscalingLevel"));
+    if (g_guiSettings.GetBool("videoplayer.vdpauUpscalingLevel"))
+      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1;
 #endif
     if (interlaced && tmpDeint)
     {

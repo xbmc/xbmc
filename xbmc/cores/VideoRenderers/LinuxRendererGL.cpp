@@ -1634,17 +1634,17 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   glBegin(GL_QUADS);
   if (m_textureTarget==GL_TEXTURE_2D)
   {
-    glTexCoord2f(0.0, 0.0);  glVertex2d(m_destRect.x1, m_destRect.y1);
-    glTexCoord2f(1.0, 0.0);  glVertex2d(m_destRect.x2, m_destRect.y1);
-    glTexCoord2f(1.0, 1.0);  glVertex2d(m_destRect.x2, m_destRect.y2);
-    glTexCoord2f(0.0, 1.0);  glVertex2d(m_destRect.x1, m_destRect.y2);
+    glTexCoord2f(0.0, 0.0);  glVertex2f(m_destRect.x1, m_destRect.y1);
+    glTexCoord2f(1.0, 0.0);  glVertex2f(m_destRect.x2, m_destRect.y1);
+    glTexCoord2f(1.0, 1.0);  glVertex2f(m_destRect.x2, m_destRect.y2);
+    glTexCoord2f(0.0, 1.0);  glVertex2f(m_destRect.x1, m_destRect.y2);
   }
   else
   {
-    glTexCoord2f(m_sourceRect.x1, m_sourceRect.y1); glVertex4f(m_destRect.x1, m_destRect.y1, 0.0f, 0.0f);
-    glTexCoord2f(m_sourceRect.x2, m_sourceRect.y1); glVertex4f(m_destRect.x2, m_destRect.y1, 1.0f, 0.0f);
-    glTexCoord2f(m_sourceRect.x2, m_sourceRect.y2); glVertex4f(m_destRect.x2, m_destRect.y2, 1.0f, 1.0f);
-    glTexCoord2f(m_sourceRect.x1, m_sourceRect.y2); glVertex4f(m_destRect.x1, m_destRect.y2, 0.0f, 1.0f);
+    glTexCoord2f(m_destRect.x1, m_destRect.y1); glVertex4f(m_destRect.x1, m_destRect.y1, 0.0f, 0.0f);
+    glTexCoord2f(m_destRect.x2, m_destRect.y1); glVertex4f(m_destRect.x2, m_destRect.y1, 1.0f, 0.0f);
+    glTexCoord2f(m_destRect.x2, m_destRect.y2); glVertex4f(m_destRect.x2, m_destRect.y2, 1.0f, 1.0f);
+    glTexCoord2f(m_destRect.x1, m_destRect.y2); glVertex4f(m_destRect.x1, m_destRect.y2, 0.0f, 1.0f);
   }
   glEnd();
   VerifyGLState();

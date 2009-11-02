@@ -439,7 +439,7 @@ void CGUISettings::Initialize()
   AddInt(0, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
-  AddInt(10, "videoplayer.vdpauUpscalingLevel", 13121, 0, 0, 1, 9, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddBool(10, "videoplayer.vdpauUpscalingLevel", 13121, false);
   AddBool(11, "videoplayer.vdpaustudiolevel", 13122, true);
 #endif
 #endif
