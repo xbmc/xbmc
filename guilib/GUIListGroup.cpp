@@ -134,32 +134,16 @@ void CGUIListGroup::UpdateInfo(const CGUIListItem *item)
   }
 }
 
-void CGUIListGroup::ShowIdOnly(int id)
-{
-  for (iControls it = m_children.begin(); it != m_children.end(); it++)
-  {
-    CGUIControl *child = *it;
-    if (child->GetID() >= 1 && child->GetID() <= 12)
-    {
-      if (child->GetID() == id) // label
-        child->SetVisible(true);
-      else
-        child->SetVisible(false);
-    }
-  }
-  SetInvalid();
-}
-
 void CGUIListGroup::EnlargeWidth(float difference)
 {
   // Alters the width of the controls that have an ID of 1
   for (iControls it = m_children.begin(); it != m_children.end(); it++)
   {
     CGUIControl *child = *it;
-    if (child->GetID() >= 1 && child->GetID() <= 13)
+    if (child->GetID() >= 1 && child->GetID() <= 14)
     {
       child->SetWidth(child->GetWidth() + difference);
-      if (child->GetID() == 13) // label
+      if (child->GetID() == 1) // label
         child->SetVisible(child->GetWidth() > 10); ///
     }
   }

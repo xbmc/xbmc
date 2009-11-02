@@ -47,7 +47,6 @@ public:
 //#endif
 
   void SetWidth(float width);
-  void SetVisible(int id);
   void SelectItemFromPoint(const CPoint &point);
   bool MoveLeft();
   bool MoveRight();

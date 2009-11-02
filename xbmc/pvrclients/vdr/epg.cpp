@@ -39,7 +39,7 @@ cEpg::cEpg()
   m_genre_type      = 0;
   m_genre_sub_type  = 0;
   m_vps             = 0;
-  
+
 }
 
 cEpg::~cEpg()
@@ -76,7 +76,7 @@ void cEpg::Reset()
 bool cEpg::ParseLine(const char *s)
 {
   char *t = skipspace(s + 1);
-  switch (*s) 
+  switch (*s)
   {
     case 'T': SetTitle(t);
               break;
@@ -93,7 +93,7 @@ bool cEpg::ParseLine(const char *s)
         unsigned int TableID = 0;
         unsigned int Version = 0xFF; // actual value is ignored
         int n = sscanf(t, "%u %ld %d %X %X", &EventID, &StartTime, &Duration, &TableID, &Version);
-        if (n >= 3 && n <= 5) 
+        if (n >= 3 && n <= 5)
         {
           m_StartTime = StartTime;
           m_EndTime   = StartTime+Duration;
@@ -108,7 +108,7 @@ bool cEpg::ParseLine(const char *s)
         int genreType;
         int genreSubType;
         int n = sscanf(t, "%u %u %[^\n]", &genreType, &genreSubType, genre);
-        if (n == 3) 
+        if (n == 3)
         {
           SetGenre(genre, genreType, genreSubType);
         }
@@ -145,7 +145,7 @@ void cEpg::SetGenre(const char *Genre, int genreType, int genreSubType)
 {
   m_genre_type      = genreType;
   m_genre_sub_type  = genreSubType;
-  if (m_genre)
+  if (Genre)
     m_genre = strcpyrealloc(m_genre, Genre);
 }
 

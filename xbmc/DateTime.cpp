@@ -1045,7 +1045,7 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
   return strOut;
 }
 
-CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
+CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/, bool withShortNames/*=true*/) const
 {
   CStdString strOut;
 
@@ -1107,15 +1107,31 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
         str.Format("%02d", dateTime.wDay);
       else // Day of week string
       {
-        switch (dateTime.wDayOfWeek)
+        if (withShortNames)
         {
-          case 1 : str = g_localizeStrings.Get(11); break;
-          case 2 : str = g_localizeStrings.Get(12); break;
-          case 3 : str = g_localizeStrings.Get(13); break;
-          case 4 : str = g_localizeStrings.Get(14); break;
-          case 5 : str = g_localizeStrings.Get(15); break;
-          case 6 : str = g_localizeStrings.Get(16); break;
-          default: str = g_localizeStrings.Get(17); break;
+          switch (dateTime.wDayOfWeek)
+          {
+            case 1 : str = g_localizeStrings.Get(41); break;
+            case 2 : str = g_localizeStrings.Get(42); break;
+            case 3 : str = g_localizeStrings.Get(43); break;
+            case 4 : str = g_localizeStrings.Get(44); break;
+            case 5 : str = g_localizeStrings.Get(45); break;
+            case 6 : str = g_localizeStrings.Get(46); break;
+            default: str = g_localizeStrings.Get(47); break;
+          }
+        }
+        else
+        {
+          switch (dateTime.wDayOfWeek)
+          {
+            case 1 : str = g_localizeStrings.Get(11); break;
+            case 2 : str = g_localizeStrings.Get(12); break;
+            case 3 : str = g_localizeStrings.Get(13); break;
+            case 4 : str = g_localizeStrings.Get(14); break;
+            case 5 : str = g_localizeStrings.Get(15); break;
+            case 6 : str = g_localizeStrings.Get(16); break;
+            default: str = g_localizeStrings.Get(17); break;
+          }
         }
       }
       strOut+=str;
@@ -1146,20 +1162,41 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
         str.Format("%02d", dateTime.wMonth);
       else // Month string
       {
-        switch (dateTime.wMonth)
+        if (withShortNames)
         {
-          case 1 : str = g_localizeStrings.Get(21); break;
-          case 2 : str = g_localizeStrings.Get(22); break;
-          case 3 : str = g_localizeStrings.Get(23); break;
-          case 4 : str = g_localizeStrings.Get(24); break;
-          case 5 : str = g_localizeStrings.Get(25); break;
-          case 6 : str = g_localizeStrings.Get(26); break;
-          case 7 : str = g_localizeStrings.Get(27); break;
-          case 8 : str = g_localizeStrings.Get(28); break;
-          case 9 : str = g_localizeStrings.Get(29); break;
-          case 10: str = g_localizeStrings.Get(30); break;
-          case 11: str = g_localizeStrings.Get(31); break;
-          default: str = g_localizeStrings.Get(32); break;
+          switch (dateTime.wMonth)
+          {
+            case 1 : str = g_localizeStrings.Get(51); break;
+            case 2 : str = g_localizeStrings.Get(52); break;
+            case 3 : str = g_localizeStrings.Get(53); break;
+            case 4 : str = g_localizeStrings.Get(54); break;
+            case 5 : str = g_localizeStrings.Get(55); break;
+            case 6 : str = g_localizeStrings.Get(56); break;
+            case 7 : str = g_localizeStrings.Get(57); break;
+            case 8 : str = g_localizeStrings.Get(58); break;
+            case 9 : str = g_localizeStrings.Get(59); break;
+            case 10: str = g_localizeStrings.Get(60); break;
+            case 11: str = g_localizeStrings.Get(61); break;
+            default: str = g_localizeStrings.Get(62); break;
+          }
+        }
+        else
+        {
+          switch (dateTime.wMonth)
+          {
+            case 1 : str = g_localizeStrings.Get(21); break;
+            case 2 : str = g_localizeStrings.Get(22); break;
+            case 3 : str = g_localizeStrings.Get(23); break;
+            case 4 : str = g_localizeStrings.Get(24); break;
+            case 5 : str = g_localizeStrings.Get(25); break;
+            case 6 : str = g_localizeStrings.Get(26); break;
+            case 7 : str = g_localizeStrings.Get(27); break;
+            case 8 : str = g_localizeStrings.Get(28); break;
+            case 9 : str = g_localizeStrings.Get(29); break;
+            case 10: str = g_localizeStrings.Get(30); break;
+            case 11: str = g_localizeStrings.Get(31); break;
+            default: str = g_localizeStrings.Get(32); break;
+          }
         }
       }
       strOut+=str;

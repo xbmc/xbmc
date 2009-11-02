@@ -110,12 +110,6 @@ void CGUIListItemLayout::SetWidth(float width)
   SetInvalid();
 }
 
-void CGUIListItemLayout::SetVisible(int id)
-{
-  m_group.ShowIdOnly(id);
-  SetInvalid();
-}
-
 void CGUIListItemLayout::SelectItemFromPoint(const CPoint &point)
 {
   m_group.SelectItemFromPoint(point);

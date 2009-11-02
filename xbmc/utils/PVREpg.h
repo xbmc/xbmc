@@ -23,6 +23,7 @@
 #include "VideoInfoTag.h"
 #include "DateTime.h"
 #include "utils/Thread.h"
+#include "utils/PVRChannels.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
 #define EVCONTENTMASK_MOVIEDRAMA               0x10
@@ -96,10 +97,13 @@ public:
   void SetGenreSubType(int GenreSubType) { m_GenreSubType = GenreSubType; }
   CStdString Genre(void) const { return m_strGenre; }
   void SetGenre(CStdString Genre) { m_strGenre = Genre; }
+  int DurationSeconds() const;
   CDateTimeSpan Duration(void) const { return m_duration; }
   void SetDuration(CDateTimeSpan duration) { m_duration = duration; }
   long ChannelID(void) const { return m_idChannel; }
   void SetChannelID(int ChannelID) { m_idChannel = ChannelID; }
+  long Channel(void) const { return m_Channel->Number(); }
+  CStdString ChannelName(void) const { return m_Channel->Name(); }
   void SetChannel(const cPVRChannelInfoTag *Channel) { m_Channel = Channel; }
   bool HasTimer() const;
 };
@@ -130,7 +134,7 @@ public:
 };
 
 
-class cPVREpgsLock 
+class cPVREpgsLock
 {
 private:
   int m_locked;
@@ -143,7 +147,7 @@ public:
 
 
 class cPVREpgs : public std::vector<cPVREpg>
-               , private CThread 
+               , private CThread
 {
   friend class cPVREpg;
   friend class cPVREpgsLock;

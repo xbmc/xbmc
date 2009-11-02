@@ -357,7 +357,7 @@ PVR_ERROR PVRClientVDR::RequestEPGForChannel(unsigned int number, PVRHANDLE hand
 
     if (m_bCharsetConv)
       XBMC_unknown_to_utf8(str_result);
-    
+
     bool isEnd = epg.ParseLine(str_result.c_str());
     if (isEnd && epg.StartTime() != 0)
     {
