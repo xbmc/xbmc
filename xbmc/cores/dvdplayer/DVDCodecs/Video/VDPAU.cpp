@@ -77,7 +77,7 @@ CVDPAU::CVDPAU(int width, int height)
     glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
 
   totalAvailableOutputSurfaces = outputSurface = presentSurface = 0;
-  vid_width = vid_height = outWidth = outHeight = 0;
+  vid_width = vid_height = OutWidth = OutHeight = 0;
   memset(&outRect, 0, sizeof(VdpRect));
   memset(&outRectVid, 0, sizeof(VdpRect));
   m_Display = g_Windowing.GetDisplay();
@@ -91,7 +91,7 @@ CVDPAU::CVDPAU(int width, int height)
   max_references = 0;
 
   if (vdp_device)
-    InitCSCMatrix();
+    InitCSCMatrix(height);
 
   for (int i = 0; i < NUM_OUTPUT_SURFACES; i++)
     outputSurfaces[i] = VDP_INVALID_HANDLE;
@@ -156,8 +156,8 @@ bool CVDPAU::MakePixmap(int width, int height)
     None
   };
 
-  int OutWidth = g_graphicsContext.GetWidth();
-  int OutHeight = g_graphicsContext.GetHeight();
+  OutWidth = g_graphicsContext.GetWidth();
+  OutHeight = g_graphicsContext.GetHeight();
 
   CLog::Log(LOGNOTICE,"Creating %ix%i pixmap", OutWidth, OutHeight);
   int pixmapAttribs[] = {
@@ -330,7 +330,7 @@ void CVDPAU::CheckFeatures()
   if (tmpBrightness != g_stSettings.m_currentVideoSettings.m_Brightness ||
       tmpContrast   != g_stSettings.m_currentVideoSettings.m_Contrast)
   {
-    SetColor();
+    SetColor(vid_height);
     tmpBrightness = g_stSettings.m_currentVideoSettings.m_Brightness;
     tmpContrast = g_stSettings.m_currentVideoSettings.m_Contrast;
   }
@@ -352,7 +352,7 @@ void CVDPAU::CheckFeatures()
   }
 }
 
-void CVDPAU::SetColor()
+void CVDPAU::SetColor(int Height)
 {
   VdpStatus vdp_st;
 
@@ -361,7 +361,7 @@ void CVDPAU::SetColor()
   if (tmpContrast != g_stSettings.m_currentVideoSettings.m_Contrast)
     m_Procamp.contrast = (float)((g_stSettings.m_currentVideoSettings.m_Contrast)+50) / 100;
   vdp_st = vdp_generate_csc_matrix(&m_Procamp, 
-                                   VDP_COLOR_STANDARD_ITUR_BT_709,
+                                   (Height < 720)? VDP_COLOR_STANDARD_ITUR_BT_601 : VDP_COLOR_STANDARD_ITUR_BT_709,
                                    &m_CSCMatrix);
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
   if (g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
@@ -741,7 +741,7 @@ void CVDPAU::InitVDPAUOutput()
   CheckStatus(vdp_st, __LINE__);
 }
 
-void CVDPAU::InitCSCMatrix()
+void CVDPAU::InitCSCMatrix(int Height)
 {
   VdpStatus vdp_st;
   m_Procamp.struct_version = VDP_PROCAMP_VERSION;
@@ -750,7 +750,7 @@ void CVDPAU::InitCSCMatrix()
   m_Procamp.saturation     = 1.0;
   m_Procamp.hue            = 0;
   vdp_st = vdp_generate_csc_matrix(&m_Procamp,
-                                   VDP_COLOR_STANDARD_ITUR_BT_709,
+                                   (Height < 720)? VDP_COLOR_STANDARD_ITUR_BT_601 : VDP_COLOR_STANDARD_ITUR_BT_709,
                                    &m_CSCMatrix);
   CheckStatus(vdp_st, __LINE__);
 }
@@ -838,8 +838,8 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   vid_height = avctx->height;
 
   past[1] = past[0] = current = future = VDP_INVALID_HANDLE;
-  CLog::Log(LOGNOTICE, " (VDPAU) screenWidth:%i vidWidth:%i",g_graphicsContext.GetWidth(),vid_width);
-  CLog::Log(LOGNOTICE, " (VDPAU) screenHeight:%i vidHeight:%i",g_graphicsContext.GetHeight(),vid_height);
+  CLog::Log(LOGNOTICE, " (VDPAU) screenWidth:%i vidWidth:%i",OutWidth,vid_width);
+  CLog::Log(LOGNOTICE, " (VDPAU) screenHeight:%i vidHeight:%i",OutHeight,vid_height);
   ReadFormatOf(avctx->pix_fmt, vdp_decoder_profile, vdp_chroma_type);
 
   if(avctx->pix_fmt == PIX_FMT_VDPAU_H264)
@@ -875,8 +875,8 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   {
     vdp_st = vdp_output_surface_create(vdp_device,
                                        VDP_RGBA_FORMAT_B8G8R8A8,
-                                       g_graphicsContext.GetWidth(),
-                                       g_graphicsContext.GetHeight(),
+                                       OutWidth,
+                                       OutHeight,
                                        &outputSurfaces[i]);
     CheckStatus(vdp_st, __LINE__);
 
@@ -1099,14 +1099,14 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     future = render->surface;
   }
 
-  if (( (int)outRectVid.x1 != g_graphicsContext.GetWidth() ) ||
-      ( (int)outRectVid.y1 != g_graphicsContext.GetHeight() ))
+  if (( (int)outRectVid.x1 != OutWidth ) ||
+      ( (int)outRectVid.y1 != OutHeight ))
   {
     CSingleLock lock(g_graphicsContext);
     outRectVid.x0 = 0;
     outRectVid.y0 = 0;
-    outRectVid.x1 = g_graphicsContext.GetWidth();
-    outRectVid.y1 = g_graphicsContext.GetHeight();
+    outRectVid.x1 = OutWidth;
+    outRectVid.y1 = OutHeight;
   }
 
   vdp_st = vdp_video_mixer_render(videoMixer,
