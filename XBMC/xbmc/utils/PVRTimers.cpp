@@ -283,26 +283,26 @@ bool cPVRTimerInfoTag::operator !=(const cPVRTimerInfoTag& right) const
 }
 
 time_t cPVRTimerInfoTag::StartTime(void) const
-{ 
+{
   time_t start;
   m_StartTime.GetAsTime(start);
-  return start; 
+  return start;
 }
 
 time_t cPVRTimerInfoTag::StopTime(void) const
-{ 
+{
   time_t stop;
   m_StopTime.GetAsTime(stop);
-  return stop; 
+  return stop;
 }
 
 time_t cPVRTimerInfoTag::FirstDayTime(void) const
-{ 
+{
   time_t firstday;
   m_FirstDay.GetAsTime(firstday);
-  return firstday; 
+  return firstday;
 }
-  
+
 int cPVRTimerInfoTag::Compare(const cPVRTimerInfoTag &timer) const
 {
   time_t timer1 = StartTime();
@@ -367,9 +367,11 @@ bool cPVRTimerInfoTag::Add() const
 
     /* and write it to the backend */
     PVR_ERROR err = clients->find(m_clientID)->second->AddTimer(*this);
-  
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
+
+    if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
+      g_PVRManager.TriggerRecordingsUpdate(false);
 
     return true;
   }
@@ -443,6 +445,9 @@ bool cPVRTimerInfoTag::Update() const
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
 
+    if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
+      g_PVRManager.TriggerRecordingsUpdate(false);
+
     return true;
   }
   catch (PVR_ERROR err)
@@ -464,7 +469,7 @@ void cPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
     CGUIDialogOK::ShowAndGetInput(18100,18806,0,18814); /* print info dialog */
   else
     CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0); /* print info dialog "Unknown error!" */
-  
+
   return;
 }
 
@@ -508,7 +513,7 @@ bool cPVRTimers::Update()
     }
     itr++;
   }
-    
+
   return true;
 }
 
@@ -526,7 +531,7 @@ int cPVRTimers::GetTimers(CFileItemList* results)
     CFileItemPtr timer(new CFileItem(at(i)));
     results->Add(timer);
   }
-  
+
   g_PVRManager.SyncInfo();
 
   return size();
@@ -628,7 +633,7 @@ bool cPVRTimers::UpdateTimer(const CFileItem &item)
     CLog::Log(LOGERROR, "cPVRTimers: UpdateTimer no TimerInfoTag given!");
     return false;
   }
-  
+
   const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
   return tag->Update();
 }

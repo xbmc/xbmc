@@ -168,7 +168,7 @@ void cPVRRecordingInfoTag::DisplayError(PVR_ERROR err) const
     CGUIDialogOK::ShowAndGetInput(18100,18811,18803,0); /* print info dialog "Couldn't delete recording!" */
   else
     CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0); /* print info dialog "Unknown error!" */
-  
+
   return;
 }
 
@@ -186,7 +186,7 @@ void cPVRRecordings::Process()
 {
   CSingleLock lock(m_critSection);
 
-  CLIENTMAP   *clients  = g_PVRManager.Clients();
+  CLIENTMAP *clients  = g_PVRManager.Clients();
 
   Clear();
 
@@ -215,7 +215,7 @@ void cPVRRecordings::Process()
 
 bool cPVRRecordings::Update(bool Wait)
 {
-  if (Wait) 
+  if (Wait)
   {
     Process();
     return true;
@@ -252,7 +252,7 @@ bool cPVRRecordings::DeleteRecording(const CFileItem &item)
     CLog::Log(LOGERROR, "cPVRRecordings: DeleteRecording no RecordingInfoTag given!");
     return false;
   }
-  
+
   const cPVRRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
   return tag->Delete();
 }
@@ -265,7 +265,7 @@ bool cPVRRecordings::RenameRecording(CFileItem &item, CStdString &newname)
     CLog::Log(LOGERROR, "cPVRRecordings: RenameRecording no RecordingInfoTag given!");
     return false;
   }
-  
+
   cPVRRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
   if (tag->Rename(newname))
   {

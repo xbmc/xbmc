@@ -662,8 +662,6 @@ void CGUIEPGGridContainer::UpdateItems()
     CFileItemPtr programme;
     unsigned long progIdx = m_epgItemsPtr[row];
 
-    if (!m_items[progIdx]->IsTVEPG())
-      continue;
     if (m_items[progIdx]->GetTVEPGInfoTag() == NULL)
       continue;
 
@@ -690,18 +688,19 @@ void CGUIEPGGridContainer::UpdateItems()
         if (programme == NULL)
           progIdx++;
 
-        if (programme->GetTVEPGInfoTag() == NULL)
+        const CTVEPGInfoTag* tag = programme->GetTVEPGInfoTag();
+        if (tag == NULL)
           progIdx++;
 
-        if (m_gridEnd <= programme->GetTVEPGInfoTag()->m_startTime)
+        if (m_gridEnd <= tag->m_startTime)
         {
           break;
         }
-        else if (gridCursor >= programme->GetTVEPGInfoTag()->m_endTime)
+        else if (gridCursor >= tag->m_endTime)
         {
           progIdx++;
         }
-        else if (gridCursor < programme->GetTVEPGInfoTag()->m_endTime)
+        else if (gridCursor < tag->m_endTime)
         {
           m_gridIndex[row][block] = programme;
           break;

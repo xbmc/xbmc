@@ -735,28 +735,37 @@ bool CPVRManager::CreateInternalTimeshift()
 
 void CPVRManager::Process()
 {
-  DWORD Now = CTimeUtils::GetTimeMS();
-  DWORD LastTVChannelCheck = Now;
-  DWORD LastRadioChannelCheck = Now-CHANNELCHECKDELTA*1000/2;
+  m_LastTVChannelCheck     = 0;
+  m_LastRadioChannelCheck  = 250;
+  m_LastRecordingsCheck    = 0;
 
   while (!m_bStop)
   {
-    Now = CTimeUtils::GetTimeMS();
+    int Now = CTimeUtils::GetTimeMS()/1000;
 
     /* Check for new or updated TV Channels */
-    if (Now - LastTVChannelCheck > CHANNELCHECKDELTA*1000) // don't do this too often
+    if (Now - m_LastTVChannelCheck > CHANNELCHECKDELTA) // don't do this too often
     {
       CLog::Log(LOGDEBUG,"PVR: Updating TV Channel list");
       PVRChannelsTV.Update();
-      LastTVChannelCheck = Now;
+      m_LastTVChannelCheck = Now;
     }
     /* Check for new or updated Radio Channels */
-    if (Now - LastRadioChannelCheck > CHANNELCHECKDELTA*1000) // don't do this too often
+    if (Now - m_LastRadioChannelCheck > CHANNELCHECKDELTA) // don't do this too often
     {
       CLog::Log(LOGDEBUG,"PVR: Updating Radio Channel list");
       PVRChannelsRadio.Update();
-      LastRadioChannelCheck = Now;
+      m_LastRadioChannelCheck = Now;
     }
+
+    /* Check for new or updated Recordings */
+    if (Now - m_LastRecordingsCheck > RECORDINGCHECKDELTA) // don't do this too often
+    {
+      CLog::Log(LOGDEBUG,"PVR: Updating Recordings list");
+      PVRRecordings.Update(true);
+      m_LastRecordingsCheck = Now;
+    }
+
     /* Check if we are 10 seconds before the end of the timeshift buffer
        and using timeshift and playback is paused, if yes start playback
        again */
@@ -1565,6 +1574,16 @@ void CPVRManager::SetPlayingGroup(int GroupId)
 int CPVRManager::GetPlayingGroup()
 {
   return m_CurrentGroupID;
+}
+
+/********************************************************************
+/* CPVRManager TriggerRecordingsUpdate
+/*
+/* Trigger a Recordings Update
+/********************************************************************/
+void CPVRManager::TriggerRecordingsUpdate(bool force)
+{
+  m_LastRecordingsCheck = CTimeUtils::GetTimeMS()/1000-RECORDINGCHECKDELTA + (force ? 0 : 5);
 }
 
 

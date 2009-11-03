@@ -397,6 +397,11 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       m_iCurrentRadioGroup = PVRChannelGroups.GetNextGroupID(m_iCurrentRadioGroup);
       UpdateChannelsRadio();
     }
+    else if (iControl == CONTROL_BTNRECORDINGS)
+    {
+      g_PVRManager.TriggerRecordingsUpdate();
+      UpdateRecordings();
+    }
     else if (iControl == CONTROL_LIST_TIMELINE ||
              iControl == CONTROL_LIST_GUIDE_CHANNEL ||
              iControl == CONTROL_LIST_GUIDE_NOW_NEXT)
