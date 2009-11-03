@@ -133,7 +133,7 @@ uint32_t* convert_rgba(CDVDOverlaySpu* o, bool mergealpha
         draw  = len;
         color = palette[idx];
 
-        if (y > btn_y_start && y < btn_y_end)
+        if (y >= btn_y_start && y <= btn_y_end)
         {
           if     ( x <  btn_x_start && x + len >= btn_x_start) // starts outside
             draw = btn_x_start - x;
