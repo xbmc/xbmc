@@ -1602,6 +1602,7 @@
   <string id="18031">PVR service</string>
   <string id="18032">Loading EPG from clients</string>
   <string id="18033">Rescan for missing icons</string>
+  <string id="18034">Switch channel without pressing OK</string>
 
   <string id="18048">Edit Channel Settings</string>
   <string id="18049">New Channel</string>

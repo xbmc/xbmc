@@ -669,14 +669,15 @@ void CGUISettings::Initialize()
   AddInt(3, "pvrepg.daystosave", 18016, 7, 1, 1, 180, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
 
   AddCategory(8,"pvrplayback", 18023);
-  AddBool(1, "pvrplayback.playminimized", 18026, true);
-  AddInt(2, "pvrplayback.scantime", 18025, 5, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  AddBool(3, "pvrplayback.sddeinterlace", 18027, false);
-  AddInt(4, "pvrplayback.deinterlacemethod", 16023, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, 1, VS_INTERLACEMETHOD_INVERSE_TELECINE, SPIN_CONTROL_TEXT);
-  AddSeparator(5, "pvrplayback.sep1");
-  AddBool(6, "pvrplayback.timeshift", 18107, false);
-  AddInt(7, "pvrplayback.timeshiftcache", 18108, 1024, 128, 128, 16384, SPIN_CONTROL_INT_PLUS, MASK_MB, TEXT_OFF);
-  AddString(8, "pvrplayback.timeshiftpath", 18123, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddBool(1, "pvrplayback.switchautoclose", 18034, true);
+  AddBool(2, "pvrplayback.playminimized", 18026, true);
+  AddInt(3, "pvrplayback.scantime", 18025, 5, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddBool(4, "pvrplayback.sddeinterlace", 18027, false);
+  AddInt(5, "pvrplayback.deinterlacemethod", 16023, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, 1, VS_INTERLACEMETHOD_INVERSE_TELECINE, SPIN_CONTROL_TEXT);
+  AddSeparator(6, "pvrplayback.sep1");
+  AddBool(7, "pvrplayback.timeshift", 18107, false);
+  AddInt(8, "pvrplayback.timeshiftcache", 18108, 1024, 128, 128, 16384, SPIN_CONTROL_INT_PLUS, MASK_MB, TEXT_OFF);
+  AddString(9, "pvrplayback.timeshiftpath", 18123, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
 //  AddInt(5, "pvrplayback.zaptimeout", 18028, 3, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
 
   AddCategory(8,"pvrrecord", 18017);

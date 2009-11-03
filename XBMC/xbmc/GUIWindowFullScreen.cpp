@@ -37,7 +37,6 @@
 #include "GUIDialogFullScreenInfo.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogAudioSubtitleSettings.h"
-#include "GUIDialogNumeric.h"
 #include "GUISliderControl.h"
 #include "Settings.h"
 #include "FileItem.h"
@@ -425,10 +424,11 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (g_application.CurrentFileItem().IsLiveTV())
       {
         int channelNr = -1;
+        int autoCloseTime = g_guiSettings.GetBool("pvrplayback.switchautoclose") ? 1500 : 0;
 
         CStdString strChannel;
         strChannel.Format("%i", action.id - REMOTE_0);
-        if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000)))
+        if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
           channelNr = atoi(strChannel.c_str());
 
         if (channelNr > 0)

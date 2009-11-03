@@ -42,6 +42,7 @@ CGUIDialogNumeric::CGUIDialogNumeric(void)
 {
   m_bConfirmed = false;
   m_bCanceled = false;
+  m_autoCloseTime = 0;
 
   m_mode = INPUT_PASSWORD;
   m_block = 0;
@@ -56,6 +57,11 @@ CGUIDialogNumeric::~CGUIDialogNumeric(void)
 
 bool CGUIDialogNumeric::OnAction(const CAction &action)
 {
+  if (action.id >= ACTION_MOVE_LEFT &&  action.id <= ACTION_MOVE_DOWN)
+  {
+    m_autoClosing = false;
+  }
+
   if (action.id == ACTION_CLOSE_DIALOG || action.id == ACTION_PREVIOUS_MENU)
     OnCancel();
   else if (action.id == ACTION_NEXT_ITEM)
@@ -99,6 +105,7 @@ bool CGUIDialogNumeric::OnMessage(CGUIMessage& message)
       m_bConfirmed = false;
       m_bCanceled = false;
       m_dirty = false;
+      m_autoCloseTime = 0;
       return CGUIDialog::OnMessage(message);
     }
     break;
@@ -108,6 +115,7 @@ bool CGUIDialogNumeric::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       m_bConfirmed = false;
       m_bCanceled = false;
+
       if (CONTROL_NUM0 <= iControl && iControl <= CONTROL_NUM9)  // User numeric entry via dialog button UI
       {
         OnNumber(iControl - 10);
@@ -283,6 +291,11 @@ void CGUIDialogNumeric::Render()
 
 void CGUIDialogNumeric::OnNumber(unsigned int num)
 {
+  if (m_autoCloseTime)
+  {
+    SetAutoClose(m_autoCloseTime);
+  }
+
   if (m_mode == INPUT_NUMBER)
   {
     m_integer *= 10;
@@ -587,16 +600,22 @@ bool CGUIDialogNumeric::ShowAndGetIPAddress(CStdString &IPAddress, const CStdStr
   return true;
 }
 
-bool CGUIDialogNumeric::ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading)
+bool CGUIDialogNumeric::ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading, unsigned int autoCloseTime)
 {
   // Prompt user for password input
   CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
   pDialog->SetHeading( strHeading );
 
   pDialog->SetMode(INPUT_NUMBER, (void *)&strInput);
+  if (autoCloseTime)
+  {
+    pDialog->m_autoCloseTime = autoCloseTime;
+    pDialog->SetAutoClose(autoCloseTime);
+  }
+
   pDialog->DoModal();
 
-  if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
+  if (!autoCloseTime && (!pDialog->IsConfirmed() || pDialog->IsCanceled()))
     return false;
   pDialog->GetOutput(&strInput);
   return true;

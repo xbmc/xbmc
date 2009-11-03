@@ -4,7 +4,7 @@
 	<controls>
 		<include>CommonBackground</include>
 		<control type="group">
-			<visible>![Control.HasFocus(31) | Control.HasFocus(35) | Control.HasFocus(36)] + ![ControlGroup(9005).IsVisible | ControlGroup(9001).IsVisible]</visible>
+			<visible>![Control.HasFocus(31) | Control.HasFocus(35) | Control.HasFocus(36)] + ![Control.IsVisible(9005) | Control.IsVisible(9001)]</visible>
 		<control type="videowindow">
 				<posx>0</posx>
 				<posy>95</posy>
@@ -1447,7 +1447,7 @@
 			<control type="group" id="9000">
 				<posx>0</posx>
 				<posy>130</posy>
-				<animation effect="slide" start="0,0" end="-275,0" time="400" tween="quadratic" easing="out" condition="!ControlGroup(9000).HasFocus + !ControlGroup(8001).HasFocus + !ControlGroup(8002).HasFocus + !ControlGroup(9005).IsVisible">Conditional</animation>
+				<animation effect="slide" start="0,0" end="-275,0" time="400" tween="quadratic" easing="out" condition="!ControlGroup(9000).HasFocus + !ControlGroup(8001).HasFocus + !ControlGroup(8002).HasFocus + !Control.IsVisible(9005)">Conditional</animation>
 				<control type="image">
 					<posx>0</posx>
 					<posy>-30</posy>

@@ -1592,6 +1592,7 @@
   <string id="18031">PVR-Service</string>
   <string id="18032">Lade EPG von den PVR-Klienten</string>
   <string id="18033">Suche fehlende Kanallogos</string>
+  <string id="18034">Beim umschalten auf OK verzichten</string>
 
   <string id="18048">Kanaleinstellungen bearbeiten</string>
   <string id="18049">Neuer Kanal</string>
