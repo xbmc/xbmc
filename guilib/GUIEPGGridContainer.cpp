@@ -111,9 +111,14 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
     }
 
     break;
+
     // smooth scrolling (for analog controls)
+  case ACTION_TELETEXT_RED:
+  case ACTION_TELETEXT_GREEN:
   case ACTION_SCROLL_UP: // left horizontal scrolling
     {
+      int blocksToJump = action.id == ACTION_TELETEXT_RED ? m_blocksPerPage/2 : m_blocksPerPage/4;
+
       m_analogScrollCount += action.amount1 * action.amount1;
       bool handled = false;
 
@@ -124,11 +129,11 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
 
         if (m_blockOffset > 0 && m_blockCursor <= m_blocksPerPage / 2)
         {
-          HorizontalScroll(-BLOCKJUMP);
+          HorizontalScroll(-blocksToJump);
         }
-        else if (m_blockCursor > BLOCKJUMP)
+        else if (m_blockCursor > blocksToJump)
         {
-          SetBlock(m_blockCursor - BLOCKJUMP);
+          SetBlock(m_blockCursor - blocksToJump);
         }
       }
 
@@ -136,8 +141,13 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
     }
 
     break;
+
+  case ACTION_TELETEXT_BLUE:
+  case ACTION_TELETEXT_YELLOW:
   case ACTION_SCROLL_DOWN: // right horizontal scrolling
     {
+      int blocksToJump = action.id == ACTION_TELETEXT_BLUE ? m_blocksPerPage/2 : m_blocksPerPage/4;
+
       m_analogScrollCount += action.amount1 * action.amount1;
       bool handled = false;
 
@@ -148,11 +158,11 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
 
         if (m_blockOffset + m_blocksPerPage < m_blocks && m_blockCursor >= m_blocksPerPage / 2)
         {
-          HorizontalScroll(BLOCKJUMP);
+          HorizontalScroll(blocksToJump);
         }
-        else if (m_blockCursor < m_blocksPerPage - BLOCKJUMP && m_blockOffset + m_blockCursor < m_blocks - BLOCKJUMP)
+        else if (m_blockCursor < m_blocksPerPage - blocksToJump && m_blockOffset + m_blockCursor < m_blocks - blocksToJump)
         {
-          SetBlock(m_blockCursor + BLOCKJUMP);
+          SetBlock(m_blockCursor + blocksToJump);
         }
       }
 
@@ -387,7 +397,6 @@ void CGUIEPGGridContainer::Render()
 
 void CGUIEPGGridContainer::RenderItems(float horzDrawOffset, float posY, int chanOffset, int blockOffset)
 {
-
   g_graphicsContext.SetClipRegion(m_gridPosX, m_channelPosY, m_gridWidth, m_gridHeight);
 
   int channel = chanOffset;
@@ -471,7 +480,6 @@ void CGUIEPGGridContainer::RenderItems(float horzDrawOffset, float posY, int cha
 
 void CGUIEPGGridContainer::RenderChannels(float posY, int chanOffset)
 {
-
   g_graphicsContext.SetClipRegion(m_posX, m_channelPosY, m_channelWidth, m_gridHeight);
 
   int channel = chanOffset;
@@ -566,7 +574,6 @@ void CGUIEPGGridContainer::RenderRuler(float horzDrawOffset, int blockOffset)
 
 void CGUIEPGGridContainer::UpdateRuler()
 {
-
   if (!m_rulerItems.empty())
     m_rulerItems.clear();
 
@@ -832,14 +839,13 @@ void CGUIEPGGridContainer::OnDown()
 
 void CGUIEPGGridContainer::OnLeft()
 {
-
   if (m_item != m_gridIndex[m_channelCursor + m_channelOffset][m_blockOffset])
   {
     // this is not first item on page
     m_item = GetPrevItem(m_channelCursor);
     m_blockCursor = GetBlock(m_item, m_channelCursor);
   }
-  else if (m_blockCursor == 0 && m_blockOffset)
+  else if (m_blockCursor <= 0 && m_blockOffset)
   {
     // we're at the left edge and offset
     int itemSize = GetItemSize(m_item);
@@ -893,7 +899,6 @@ void CGUIEPGGridContainer::OnLeft()
 
 void CGUIEPGGridContainer::OnRight()
 {
-
   if (m_item != m_gridIndex[m_channelCursor + m_channelOffset][m_blocksPerPage + m_blockOffset - 1])
   {
     // this is not last item on page

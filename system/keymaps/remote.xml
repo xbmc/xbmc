@@ -357,6 +357,15 @@
       <back>PreviousMenu</back>
     </remote>
   </Weather>
+  <TV>
+    <remote>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
+      <back>PreviousMenu</back>
+    </remote>
+  </TV>
   <Settings>
     <remote>
       <back>PreviousMenu</back>
