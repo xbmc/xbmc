@@ -127,7 +127,7 @@ extern YUVCOEF yuv_coef_smtp240m;
 class CWinRenderer : public CBaseRenderer
 {
 public:
-  CWinRenderer(LPDIRECT3DDEVICE9 pDevice);
+  CWinRenderer();
   ~CWinRenderer();
 
   virtual void Update(bool bPauseDrawing);
@@ -193,7 +193,6 @@ protected:
   YUVMEMORYBUFFERS m_YUVMemoryTexture;
 
   // render device
-  LPDIRECT3DDEVICE9 m_pD3DDevice;
   ID3DXEffect*  m_pYUV2RGBEffect;
 
   // clear colour for "black" bars
@@ -204,7 +203,7 @@ protected:
 class CPixelShaderRenderer : public CWinRenderer
 {
 public:
-  CPixelShaderRenderer(LPDIRECT3DDEVICE9 pDevice);
+  CPixelShaderRenderer();
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
 
 protected:

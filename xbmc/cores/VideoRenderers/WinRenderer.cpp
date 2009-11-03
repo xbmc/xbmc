@@ -61,9 +61,8 @@ YUVCOEF yuv_coef_smtp240m = {
 };
 
 
-CWinRenderer::CWinRenderer(LPDIRECT3DDEVICE9 pDevice)
+CWinRenderer::CWinRenderer()
 {
-  m_pD3DDevice = pDevice;
   memset(m_YUVMemoryTexture, 0, sizeof(m_YUVMemoryTexture));
   memset(m_YUVVideoTexture, 0, sizeof(m_YUVVideoTexture));
 
@@ -178,14 +177,14 @@ void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   CSingleLock lock(g_graphicsContext);
 
   ManageDisplay();
- 
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
   if (clear)
-    m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
+    pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
 
   if(alpha < 255)
-    m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+    pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
   else
-    m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+    pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
 
   Render(flags);
 }
@@ -456,7 +455,8 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     SAFE_RELEASE(videoSurface);
   }
 
-  m_pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX3 );
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+  pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX3 );
 
   //See RGB renderer for comment on this
   #define CHROMAOFFSET_HORIZ 0.25f
@@ -517,16 +517,16 @@ void CWinRenderer::RenderLowMem(DWORD flags)
   {
     m_pYUV2RGBEffect->BeginPass( iPass );
 
-    m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
-    m_pD3DDevice->SetTexture(0, NULL);
-    m_pD3DDevice->SetTexture(1, NULL);
-    m_pD3DDevice->SetTexture(2, NULL);
+    pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
+    pD3DDevice->SetTexture(0, NULL);
+    pD3DDevice->SetTexture(1, NULL);
+    pD3DDevice->SetTexture(2, NULL);
   
     m_pYUV2RGBEffect->EndPass() ;
   }
 
   m_pYUV2RGBEffect->End() ;
-  m_pD3DDevice->SetPixelShader( NULL );
+  pD3DDevice->SetPixelShader( NULL );
 }
 
 void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height)
@@ -536,18 +536,19 @@ void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, un
   // create a new render surface to copy out of - note, this may be slow on some hardware
   // due to the TRUE parameter - you're supposed to use GetRenderTargetData.
   LPDIRECT3DSURFACE9 surface = NULL;
-  if (D3D_OK == m_pD3DDevice->CreateRenderTarget(width, height, D3DFMT_LIN_A8R8G8B8, D3DMULTISAMPLE_NONE, 0, TRUE, &surface, NULL))
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+  if (D3D_OK == pD3DDevice->CreateRenderTarget(width, height, D3DFMT_LIN_A8R8G8B8, D3DMULTISAMPLE_NONE, 0, TRUE, &surface, NULL))
   {
     LPDIRECT3DSURFACE9 oldRT;
     CRect saveSize = m_destRect;
     m_destRect.SetRect(0, 0, (float)width, (float)height);
-    m_pD3DDevice->GetRenderTarget(0, &oldRT);
-    m_pD3DDevice->SetRenderTarget(0, surface);
-    m_pD3DDevice->BeginScene();
+    pD3DDevice->GetRenderTarget(0, &oldRT);
+    pD3DDevice->SetRenderTarget(0, surface);
+    pD3DDevice->BeginScene();
     RenderLowMem(0);
-    m_pD3DDevice->EndScene();
+    pD3DDevice->EndScene();
     m_destRect = saveSize;
-    m_pD3DDevice->SetRenderTarget(0, oldRT);
+    pD3DDevice->SetRenderTarget(0, oldRT);
     oldRT->Release();
 
     D3DLOCKED_RECT lockedRect;
@@ -608,11 +609,12 @@ bool CWinRenderer::CreateYV12Texture(int index)
 {
 
   CSingleLock lock(g_graphicsContext);
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
   DeleteYV12Texture(index);
   if (
-    D3D_OK != m_pD3DDevice->CreateTexture(m_sourceWidth, m_sourceHeight, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][0], NULL) ||
-    D3D_OK != m_pD3DDevice->CreateTexture(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][1], NULL) ||
-    D3D_OK != m_pD3DDevice->CreateTexture(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][2], NULL))
+    D3D_OK != pD3DDevice->CreateTexture(m_sourceWidth, m_sourceHeight, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][0], NULL) ||
+    D3D_OK != pD3DDevice->CreateTexture(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][1], NULL) ||
+    D3D_OK != pD3DDevice->CreateTexture(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][2], NULL))
   {
     CLog::Log(LOGERROR, "Unable to create YV12 video texture %i", index);
     return false;
@@ -633,8 +635,8 @@ bool CWinRenderer::CreateYV12Texture(int index)
 }
 
 
-CPixelShaderRenderer::CPixelShaderRenderer(LPDIRECT3DDEVICE9 pDevice)
-    : CWinRenderer(pDevice)
+CPixelShaderRenderer::CPixelShaderRenderer()
+    : CWinRenderer()
 {
 }
 

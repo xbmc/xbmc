@@ -50,7 +50,6 @@ namespace OVERLAY {
 
     int                          m_count;
     DWORD                        m_fvf;
-    LPDIRECT3DDEVICE9            m_device;
     LPDIRECT3DTEXTURE9           m_texture;
     LPDIRECT3DVERTEXBUFFER9      m_vertex;
   }; 
@@ -72,7 +71,6 @@ namespace OVERLAY {
     };
 
     DWORD                        m_fvf;
-    LPDIRECT3DDEVICE9            m_device;
     LPDIRECT3DTEXTURE9           m_texture;
     LPDIRECT3DVERTEXBUFFER9      m_vertex;
   }; 
