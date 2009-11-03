@@ -788,29 +788,6 @@ bool CGUIWindow::ControlGroupHasFocus(int groupID, int controlID)
   return false;
 }
 
-bool CGUIWindow::ControlGroupIsVisible(int groupID, int controlID)
-{
-  // 1.  Run through and get control with groupID (assume unique)
-  // 2.  Get it's selected item.
-  CGUIControl *group = GetFirstFocusableControl(groupID);
-  if (!group) group = (CGUIControl *)GetControl(groupID);
-
-  if (group && group->IsGroup())
-  {
-    if (controlID == 0)
-    { // just want to know if the group is visible
-      return group->IsVisible();
-    }
-    else
-    {
-      CGUIMessage message(GUI_MSG_ITEM_SELECTED, GetID(), group->GetID());
-      group->OnMessage(message);
-      return (controlID == (int) message.GetParam1());
-    }
-  }
-  return false;
-}
-
 void CGUIWindow::SaveControlStates()
 {
   ResetControlStates();
