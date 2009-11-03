@@ -126,8 +126,11 @@ bool CDeviceKitDiskDevice::UnMount()
 CMediaSource CDeviceKitDiskDevice::ToMediaShare()
 {
   CMediaSource source;
-  source.strPath = m_MountPath.c_str();
-  source.strName = CUtil::GetFileName(m_MountPath.c_str());
+  source.strPath = m_MountPath;
+  if (m_Label.empty())
+    source.strName = CUtil::GetFileName(m_MountPath);
+  else
+    source.strName = m_Label;
   source.m_iDriveType =  m_isRemovable ? CMediaSource::SOURCE_TYPE_REMOVABLE : CMediaSource::SOURCE_TYPE_LOCAL;
   source.m_ignore = true;
   return source;
