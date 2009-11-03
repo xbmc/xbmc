@@ -68,7 +68,7 @@
       <mypictures>XBMC.ActivateWindow(MyPictures)</mypictures>
       <mytv>XBMC.ActivateWindow(MyTV)</mytv>
       <playlist>Playlist</playlist>
-      <red>XBMC.ActivateWindow(Home)</red>
+      <red>XBMC.ActivateWindow(MyTV)</red>
       <green>XBMC.ActivateWindow(MyVideos)</green>
       <yellow>XBMC.ActivateWindow(MyMusic)</yellow>
       <blue>XBMC.ActivateWindow(MyPictures)</blue>
