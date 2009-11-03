@@ -281,22 +281,29 @@
 			</control>
 			</control>
 			<control type="group" id="8003">
-			<description>TV Guide Timeline</description>
-			<control type="label" id="30">
-				<description>No Info Scanned Label</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>930</width>
-				<height>476</height>
-				<font>Special13</font>
-				<label>-</label>
-				<align>center</align>
-				<aligny>center</aligny>
-			</control>
-			<control type="epggrid" id="10">
+        <description>TV Guide Timeline</description>
+        <control type="image">
+          <posx>15</posx>
+          <posy>100</posy>
+          <width>1265</width>
+          <height>580</height>
+          <texture border="50,0,0,45">Panel.png</texture>
+        </control>
+        <control type="label" id="30">
+          <description>No Info Scanned Label</description>
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>930</width>
+          <height>476</height>
+          <font>Special13</font>
+          <label>-</label>
+          <align>center</align>
+          <aligny>center</aligny>
+        </control>
+        <control type="epggrid" id="10">
 			<description>EPG Grid</description>
-			<posx>40</posx>
-			<posy>125</posy>
+			<posx>50</posx>
+			<posy>130</posy>
 			<width>1200</width>
 			<height>504</height>
 			<onleft>31</onleft>

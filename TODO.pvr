@@ -40,6 +40,10 @@ things to do:
 - Improve Timeshift
 - Use new Addon System
 - Use better system to transfer data from client to XBMC, like the channel lists (current is sometimes bad under Win32)
+- Read recording directories from client and allow creation of own directories to sort Recordings
+- Search inside EPG Data
+- Speedup EPG Timeline view
+- Allow auto close and switch during numeric channel selection
 
 and a lot more
 

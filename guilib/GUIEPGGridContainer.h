@@ -32,7 +32,7 @@
 class CGUIEPGGridContainer : public CGUIControl
 {
 public:
-  CGUIEPGGridContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
+  CGUIEPGGridContainer(int dwParentID, int dwControlId, float posX, float posY,
                        float width, float height, int scrollTime, int minutesPerPage,
                        int rulerUnit);
   virtual ~CGUIEPGGridContainer(void);
@@ -44,8 +44,8 @@ public:
   virtual void OnLeft();
   virtual void OnRight();
   virtual bool OnMouseOver(const CPoint &point);
-  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
-  virtual bool OnMouseDoubleClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseClick(int dwButton, const CPoint &point);
+  virtual bool OnMouseDoubleClick(int dwButton, const CPoint &point);
   virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
@@ -56,7 +56,7 @@ public:
   CFileItemPtr GetSelectedItemPtr() const;
   const int GetSelectedChannel() { return m_channelCursor + m_channelOffset; }
 
-  void DoRender(DWORD currentTime);
+  void DoRender(unsigned int currentTime);
   void Render();
   void LoadLayout(TiXmlElement *layout);
   void LoadContent(TiXmlElement *content);
@@ -65,7 +65,7 @@ public:
   CGUIListItemPtr GetListItem(int offset) const;
 
 protected:
-  bool OnClick(DWORD actionID);
+  bool OnClick(int actionID);
   bool SelectItemFromPoint(const CPoint &point);
 
   void UpdateRuler();
@@ -146,8 +146,7 @@ private:
   CGUIListItem *m_lastItem;
   CGUIListItem *m_lastChannel;
 
-  DWORD m_renderTime;
-
+  unsigned int m_renderTime;
 
   CGUIListItemLayout *m_rulerLayout;
   CGUIListItemLayout *m_channelLayout;
@@ -159,11 +158,11 @@ private:
   bool  m_channelWrapAround;
   bool  m_gridWrapAround; //! only when no more data available should this be true
 
-  DWORD m_horzScrollLastTime;
+  int m_horzScrollLastTime;
   float m_horzScrollSpeed;
   float m_horzScrollOffset;
 
-  DWORD m_vertScrollLastTime;
+  int m_vertScrollLastTime;
   float m_vertScrollSpeed;
   float m_vertScrollOffset;
 
