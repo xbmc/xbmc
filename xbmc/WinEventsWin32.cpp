@@ -452,10 +452,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           newEvent.appcommand.action = ACTION_STOP;
           break;
         case APPCOMMAND_MEDIA_PREVIOUSTRACK:
-          newEvent.appcommand.action = ACTION_NEXT_ITEM;
+          newEvent.appcommand.action = ACTION_PREV_ITEM;
           break;
         case APPCOMMAND_MEDIA_NEXTTRACK:
-          newEvent.appcommand.action = ACTION_PREV_ITEM;
+          newEvent.appcommand.action = ACTION_NEXT_ITEM;
           break;
       }
       if (newEvent.appcommand.action != 0)
