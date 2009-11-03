@@ -57,11 +57,8 @@ void CGUIImage::UpdateVisibility(const CGUIListItem *item)
 {
   CGUIControl::UpdateVisibility(item);
 
-  // check for conditional information before we free and
-  // alloc as this does free and allocation as well
-  if (!m_pushedUpdates)
-    UpdateInfo(item);
-
+  // now that we've checked for conditional info, we can
+  // check for allocation
   AllocateOnDemand();
 }
 

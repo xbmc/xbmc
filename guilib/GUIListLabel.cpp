@@ -71,9 +71,6 @@ void CGUIListLabel::UpdateColors()
 
 void CGUIListLabel::Render()
 {
-  if (!m_pushedUpdates)
-    UpdateInfo();
-
   color_t color = m_selected ? m_label.selectedColor : m_label.textColor;
   bool needsToScroll = (m_renderRect.Width() + 0.5f < m_textWidth); // 0.5f to deal with floating point rounding issues
   if (m_scrolling && needsToScroll)
