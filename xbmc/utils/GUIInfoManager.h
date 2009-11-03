@@ -456,6 +456,7 @@ class CDateTime;
 #define CONTROL_GROUP_HAS_FOCUS     29999
 #define CONTROL_HAS_FOCUS           30000
 #define BUTTON_SCROLLER_HAS_ICON    30001
+#define CONTROL_GROUP_IS_VISIBLE    30002
 
 #define VERSION_STRING "pre-9.10"
 
