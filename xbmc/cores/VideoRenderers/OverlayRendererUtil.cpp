@@ -106,10 +106,10 @@ uint32_t* convert_rgba(CDVDOverlaySpu* o, bool mergealpha
 
   if(o->bForced)
   {
-    btn_x_start = o->crop_i_x_start;
-    btn_x_end   = o->crop_i_x_end;
-    btn_y_start = o->crop_i_y_start;
-    btn_y_end   = o->crop_i_y_end;
+    btn_x_start = o->crop_i_x_start - o->x;
+    btn_x_end   = o->crop_i_x_end   - o->x;
+    btn_y_start = o->crop_i_y_start - o->y;
+    btn_y_end   = o->crop_i_y_end   - o->y;
   }
 
   min_x = o->width;
