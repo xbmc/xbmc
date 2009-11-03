@@ -479,6 +479,8 @@ class CDateTime;
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
 #define LISTITEM_END                (LISTITEM_PROPERTY_END)
 
+#define MUSICPLAYER_PROPERTY_OFFSET 900 // last 100 id's reserved for musicplayer props.
+
 // the multiple information vector
 #define MULTI_INFO_START              40000
 #define MULTI_INFO_END                41000 // 1000 references is all we have for now
@@ -630,7 +632,7 @@ protected:
   // The offset into the string parameters array is returned.
   int ConditionalStringParameter(const CStdString &strParameter);
   int AddMultiInfo(const GUIInfo &info);
-  int AddListItemProp(const CStdString &str);
+  int AddListItemProp(const CStdString &str, int offset=0);
 
   CStdString GetAudioScrobblerLabel(int item);
 
