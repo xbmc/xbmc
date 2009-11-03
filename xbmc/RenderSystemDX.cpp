@@ -28,6 +28,7 @@
 #include "utils/TimeUtils.h"
 #include "GUIWindowManager.h"
 #include "SingleLock.h"
+#include "D3DResource.h"
 
 using namespace std;
 
