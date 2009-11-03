@@ -257,6 +257,9 @@ void COverlayQuadsDX::Render(SRenderState &state)
   device->SetFVF(m_fvf);
   device->SetStreamSource(0, m_vertex.Get(), 0, sizeof(VERTEX));
   device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, m_count*2);
+
+  device->SetTexture(0, NULL);
+  device->SetTransform(D3DTS_WORLD, &orig);
 }
 
 COverlayImageDX::~COverlayImageDX()
