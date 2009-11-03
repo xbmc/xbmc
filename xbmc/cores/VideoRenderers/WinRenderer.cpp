@@ -456,30 +456,6 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     SAFE_RELEASE(videoSurface);
   }
 
-  for (int i = 0; i < 3; ++i)
-  {
-    m_pD3DDevice->SetTexture(i, m_YUVVideoTexture[index][i]);
-    m_pD3DDevice->SetSamplerState( i, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
-    m_pD3DDevice->SetSamplerState( i, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
-    m_pD3DDevice->SetSamplerState( i, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
-    m_pD3DDevice->SetSamplerState( i, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
-  }
-
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE  );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-
-  m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-  m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
- 
-  m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );  // was m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE ); ???
   m_pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX3 );
 
   //See RGB renderer for comment on this

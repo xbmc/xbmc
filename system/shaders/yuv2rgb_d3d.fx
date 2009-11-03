@@ -5,6 +5,8 @@ texture g_VTexture;
 sampler YSampler =
   sampler_state {
     Texture = <g_YTexture>;
+    AddressU = CLAMP;
+    AddressV = CLAMP;
     MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
@@ -13,6 +15,8 @@ sampler YSampler =
 sampler USampler = 
   sampler_state {
     Texture = <g_UTexture>;
+    AddressU = CLAMP;
+    AddressV = CLAMP;
     MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
@@ -22,6 +26,8 @@ sampler VSampler =
   sampler_state
   {
     Texture = <g_VTexture>;
+    AddressU = CLAMP;
+    AddressV = CLAMP;
     MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
@@ -58,5 +64,8 @@ technique YUV2RGB_T
   pass P0
   {
     PixelShader  = compile ps_2_0 YUV2RGB();
+    ZEnable = False;
+    FillMode = Solid;
+    FogEnable = False;
   }
 };
