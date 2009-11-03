@@ -136,7 +136,7 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
     return;
   }
 
-  if (!m_vertex.Create(sizeof(VERTEX) * 6 * quads.count, 0, m_fvf, D3DPOOL_DEFAULT))
+  if (!m_vertex.Create(sizeof(VERTEX) * 6 * quads.count, 0, m_fvf, D3DPOOL_MANAGED))
   {
     CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
     m_texture.Release();
@@ -345,7 +345,7 @@ void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
                 , &m_texture))
     return;
 
-  if (!m_vertex.Create(sizeof(VERTEX) * 6, 0, m_fvf, D3DPOOL_DEFAULT))
+  if (!m_vertex.Create(sizeof(VERTEX) * 6, 0, m_fvf, D3DPOOL_MANAGED))
   {
     CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
     m_texture.Release();
