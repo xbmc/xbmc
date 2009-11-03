@@ -350,7 +350,6 @@ COverlayImageDX::COverlayImageDX(CDVDOverlaySpu* o)
 
 void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
 {
-  LPDIRECT3DDEVICE9 device = g_Windowing.Get3DDevice();
   m_fvf    = D3DFVF_XYZ | D3DFVF_TEX1;
 
   float u, v;
@@ -363,8 +362,7 @@ void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
                 , &m_texture))
     return;
 
-  HRESULT result;
-  result = device->CreateVertexBuffer(sizeof(VERTEX) * 6, 0, m_fvf, D3DPOOL_DEFAULT, &m_vertex, NULL);
+  HRESULT result = g_Windowing.Get3DDevice()->CreateVertexBuffer(sizeof(VERTEX) * 6, 0, m_fvf, D3DPOOL_DEFAULT, &m_vertex, NULL);
   if(FAILED(result))
   {
     CLog::Log(LOGERROR, "COverlayImageDX::Load - failed to create vertex buffer (%u)", result);
