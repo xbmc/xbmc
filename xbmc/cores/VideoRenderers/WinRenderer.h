@@ -26,6 +26,7 @@
 #include "GraphicContext.h"
 #include "RenderFlags.h"
 #include "BaseRenderer.h"
+#include "D3DResource.h"
 
 //#define MP_DIRECTRENDERING
 
@@ -172,7 +173,7 @@ protected:
 
   bool m_bConfigured;
 
-  typedef LPDIRECT3DTEXTURE9      YUVVIDEOPLANES[MAX_PLANES];
+  typedef CD3DTexture             YUVVIDEOPLANES[MAX_PLANES];
   typedef BYTE*                   YUVMEMORYPLANES[MAX_PLANES];
   typedef YUVVIDEOPLANES          YUVVIDEOBUFFERS[NUM_BUFFERS];
   typedef YUVMEMORYPLANES         YUVMEMORYBUFFERS[NUM_BUFFERS];
@@ -192,8 +193,7 @@ protected:
   YUVVIDEOBUFFERS m_YUVVideoTexture;
   YUVMEMORYBUFFERS m_YUVMemoryTexture;
 
-  // render device
-  ID3DXEffect*  m_pYUV2RGBEffect;
+  CD3DEffect  m_YUV2RGBEffect;
 
   // clear colour for "black" bars
   DWORD m_clearColour;

@@ -38,19 +38,12 @@ static bool LoadTexture(int width, int height, int stride
                       , D3DFORMAT format
                       , const void* pixels
                       , float* u, float* v
-                      , LPDIRECT3DTEXTURE9* texture)
+                      , CD3DTexture* texture)
 {
-  HRESULT result;
-  result = D3DXCreateTexture(g_Windowing.Get3DDevice()
-                           , width
-                           , height
-                           , 1, 0
-                           , format
-                           , D3DPOOL_MANAGED
-                           , texture);
-  if(FAILED(result))
+
+  if (!texture->Create(width, height, 1, 0, format, D3DPOOL_MANAGED))
   {
-    CLog::Log(LOGERROR, "LoadTexture - failed to allocate texture (%u)", result);
+    CLog::Log(LOGERROR, "LoadTexture - failed to allocate texture");
     return false;
   }
 
@@ -63,11 +56,10 @@ static bool LoadTexture(int width, int height, int stride
     ASSERT(0);
 
   D3DSURFACE_DESC desc;
-  result = (*texture)->GetLevelDesc(0, &desc);
-  if(FAILED(result))
+  if(!texture->GetLevelDesc(0, &desc))
   {
-    CLog::Log(LOGERROR, "LoadTexture - failed to get level description(%u)", result);
-    SAFE_RELEASE(*texture);
+    CLog::Log(LOGERROR, "LoadTexture - failed to get level description");
+    texture->Release();
     return false;
   }
   ASSERT(format == desc.Format);
@@ -76,11 +68,10 @@ static bool LoadTexture(int width, int height, int stride
   *v = (float)height / desc.Height;
 
   D3DLOCKED_RECT lr;
-  result = (*texture)->LockRect(0, &lr, NULL, 0);
-  if(FAILED(result))
+  if (!texture->LockRect(0, &lr, NULL, 0))
   {
-    CLog::Log(LOGERROR, "LoadTexture - failed to lock texture (%u)", result);
-    SAFE_RELEASE(*texture);
+    CLog::Log(LOGERROR, "LoadTexture - failed to lock texture (%u)");
+    texture->Release();
     return false;
   }
 
@@ -113,14 +104,13 @@ static bool LoadTexture(int width, int height, int stride
     memcpy(dst, src, bpp * width);
   }
 
-  (*texture)->UnlockRect(0);
+  texture->UnlockRect(0);
 
   return true;
 }
 
 COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
 {
-  m_vertex = NULL;
   m_width  = (float)g_graphicsContext.GetWidth();
   m_height = (float)g_graphicsContext.GetHeight();
   m_fvf    = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
@@ -146,23 +136,20 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
     return;
   }
 
-  HRESULT result;
-  result = g_Windowing.Get3DDevice()->CreateVertexBuffer(sizeof(VERTEX) * 6 * quads.count, 0, m_fvf, D3DPOOL_DEFAULT, &m_vertex, NULL);
-  if(FAILED(result))
+  if (!m_vertex.Create(sizeof(VERTEX) * 6 * quads.count, 0, m_fvf, D3DPOOL_DEFAULT))
   {
-    CLog::Log(LOGERROR, "COverlayQuadsDX::COverlayQuadsDX - failed to create vertex buffer (%u)", result);
-    SAFE_RELEASE(m_texture);
+    CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
+    m_texture.Release();
     return;
   }
 
   VERTEX* vt = NULL;
   SQuad*  vs = quads.quad;
 
-  result = m_vertex->Lock(0, 0, (void**)&vt, 0);
-  if(FAILED(result))
+  if (!m_vertex.Lock(0, 0, (void**)&vt, 0))
   {
-    CLog::Log(LOGERROR, "COverlayQuadsDX::COverlayQuadsDX - failed to lock texture (%u)", result);
-    SAFE_RELEASE(m_texture);
+    CLog::Log(LOGERROR, "%s - failed to lock texture", __FUNCTION__);
+    m_texture.Release();
     return;
   }
 
@@ -212,14 +199,12 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
     vt += 6;
   }
 
-  m_vertex->Unlock();
+  m_vertex.Unlock();
   m_count  = quads.count;
 }
 
 COverlayQuadsDX::~COverlayQuadsDX()
 {
-  SAFE_RELEASE(m_vertex);
-  SAFE_RELEASE(m_texture);
 }
 
 void COverlayQuadsDX::Render(SRenderState &state)
@@ -244,7 +229,7 @@ void COverlayQuadsDX::Render(SRenderState &state)
 
   device->SetTransform(D3DTS_WORLD, &world);
 
-  device->SetTexture( 0, m_texture );
+  device->SetTexture( 0, m_texture.Get() );
   device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
   device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
   device->SetSamplerState(0, D3DSAMP_ADDRESSU , D3DTADDRESS_CLAMP);
@@ -270,14 +255,12 @@ void COverlayQuadsDX::Render(SRenderState &state)
   device->SetRenderState( D3DRS_SRCBLEND , D3DBLEND_SRCALPHA );
   device->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
   device->SetFVF(m_fvf);
-  device->SetStreamSource(0, m_vertex, 0, sizeof(VERTEX));
+  device->SetStreamSource(0, m_vertex.Get(), 0, sizeof(VERTEX));
   device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, m_count*2);
 }
 
 COverlayImageDX::~COverlayImageDX()
 {
-  SAFE_RELEASE(m_vertex);
-  SAFE_RELEASE(m_texture);
 }
 
 COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o)
@@ -362,20 +345,19 @@ void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
                 , &m_texture))
     return;
 
-  HRESULT result = g_Windowing.Get3DDevice()->CreateVertexBuffer(sizeof(VERTEX) * 6, 0, m_fvf, D3DPOOL_DEFAULT, &m_vertex, NULL);
-  if(FAILED(result))
+  if (!m_vertex.Create(sizeof(VERTEX) * 6, 0, m_fvf, D3DPOOL_DEFAULT))
   {
-    CLog::Log(LOGERROR, "COverlayImageDX::Load - failed to create vertex buffer (%u)", result);
+    CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
+    m_texture.Release();
     return;
   }
 
-  VERTEX*  vt = NULL;;
-  result = m_vertex->Lock(0, 0, (void**)&vt, 0);
-  if(FAILED(result))
+  VERTEX*  vt = NULL;
+  if (!m_vertex.Lock(0, 0, (void**)&vt, 0))
   {
-    CLog::Log(LOGERROR, "COverlayImageDX::Load - failed to lock texture (%u)", result);
-    SAFE_RELEASE(m_texture);
-    SAFE_RELEASE(m_vertex);
+    CLog::Log(LOGERROR, "%s - failed to lock texture", __FUNCTION__);
+    m_texture.Release();
+    m_vertex.Release();
     return;
   }
 
@@ -407,7 +389,7 @@ void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
 
   vt[5] = vt[2];
 
-  m_vertex->Unlock();
+  m_vertex.Unlock();
 }
 
 void COverlayImageDX::Render(SRenderState &state)
@@ -438,7 +420,7 @@ void COverlayImageDX::Render(SRenderState &state)
 
   device->SetTransform(D3DTS_WORLD, &world);
 
-  device->SetTexture( 0, m_texture );
+  device->SetTexture( 0, m_texture.Get() );
   device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
   device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
   device->SetSamplerState(0, D3DSAMP_ADDRESSU , D3DTADDRESS_CLAMP);
@@ -468,7 +450,7 @@ void COverlayImageDX::Render(SRenderState &state)
   device->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
 
   device->SetFVF(m_fvf);
-  device->SetStreamSource(0, m_vertex, 0, sizeof(VERTEX));
+  device->SetStreamSource(0, m_vertex.Get(), 0, sizeof(VERTEX));
   device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 2);
 
   device->SetTransform(D3DTS_WORLD, &orig);

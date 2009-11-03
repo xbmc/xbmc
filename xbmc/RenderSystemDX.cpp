@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "GUIWindowManager.h"
+#include "SingleLock.h"
 
 using namespace std;
 
@@ -45,6 +46,7 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   m_nDeviceStatus = S_OK;
   m_stateBlock = NULL;
   m_inScene = false;
+  m_needNewDevice = false;
 
   ZeroMemory(&m_D3DPP, sizeof(D3DPRESENT_PARAMETERS));
 }
@@ -66,9 +68,11 @@ bool CRenderSystemDX::InitRenderSystem()
   if(m_pD3D == NULL)
     return false;
 
-  CreateResources();
+  UpdateMonitor();
 
-  if(m_pD3D->GetAdapterIdentifier(0, 0, &AIdentifier) == D3D_OK)
+  CreateDevice();
+
+  if(m_pD3D->GetAdapterIdentifier(m_adapter, 0, &AIdentifier) == D3D_OK)
     m_RenderRenderer = (const char*)AIdentifier.Description;
 
   // get our render capabilities
@@ -105,6 +109,23 @@ void CRenderSystemDX::SetRenderParams(unsigned int width, unsigned int height, b
   m_refreshRate = refreshRate;
 }
 
+void CRenderSystemDX::SetMonitor(HMONITOR monitor)
+{
+  if (!m_pD3D)
+    return;
+  // find the appropriate screen
+  for (unsigned int adapter = 0; adapter < m_pD3D->GetAdapterCount(); adapter++)
+  {
+    HMONITOR hMonitor = m_pD3D->GetAdapterMonitor(adapter);
+    if (hMonitor == monitor && adapter != m_adapter)
+    {
+      m_adapter = adapter;
+      m_needNewDevice = true;
+      break;
+    }
+  }
+}
+
 bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate)
 {
   SetRenderParams(width, height, fullScreen, refreshRate);
@@ -139,12 +160,12 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.MultiSampleQuality = 0;
 
   // Try to create a 32-bit depth, 8-bit stencil
-  if( FAILED( m_pD3D->CheckDeviceFormat( D3DADAPTER_DEFAULT,
+  if( FAILED( m_pD3D->CheckDeviceFormat( m_adapter,
     D3DDEVTYPE_HAL,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL, 
     D3DRTYPE_SURFACE, D3DFMT_D24S8 )))
   {
     // Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer 
-    if( FAILED( m_pD3D->CheckDeviceFormat(D3DADAPTER_DEFAULT,
+    if( FAILED( m_pD3D->CheckDeviceFormat(m_adapter,
       D3DDEVTYPE_HAL,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL, 
       D3DRTYPE_SURFACE, D3DFMT_D32 )))
     {
@@ -156,7 +177,7 @@ void CRenderSystemDX::BuildPresentParameters()
   }
   else
   {
-    if( SUCCEEDED( m_pD3D->CheckDepthStencilMatch( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
+    if( SUCCEEDED( m_pD3D->CheckDepthStencilMatch( m_adapter, D3DDEVTYPE_HAL,
       m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat, D3DFMT_D24S8 ) ) )
     {
       m_D3DPP.AutoDepthStencilFormat = D3DFMT_D24S8; 
@@ -177,38 +198,45 @@ bool CRenderSystemDX::DestroyRenderSystem()
   return true;
 }
 
-bool CRenderSystemDX::CreateResources()
+void CRenderSystemDX::DeleteDevice()
 {
-  if(!CreateDevice())
-    return false;
+  CSingleLock lock(m_resourceSection);
 
-  return true;
-}
+  // tell any shared resources
+  for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    (*i)->OnDestroyDevice();
 
-void CRenderSystemDX::DeleteResources()
-{
-  
+  SAFE_RELEASE(m_pD3DDevice);
+  m_bRenderCreated = false;
 }
 
 void CRenderSystemDX::OnDeviceLost()
 {
+  CSingleLock lock(m_resourceSection);
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
   SAFE_RELEASE(m_stateBlock);
-  // notify all objects
-  for(unsigned int i = 0; i < m_vecEffects.size(); i++)
+
+  if (m_needNewDevice)
+    DeleteDevice();
+  else
   {
-    m_vecEffects[i]->OnLostDevice();
+    // just resetting the device
+    for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+      (*i)->OnLostDevice();
   }
 }
 
 void CRenderSystemDX::OnDeviceReset()
 {
-  // reset all required resources
-  m_nDeviceStatus = m_pD3DDevice->Reset(&m_D3DPP);
-
-  for(unsigned int i = 0; i < m_vecEffects.size(); i++)
+  CSingleLock lock(m_resourceSection);
+  if (m_needNewDevice)
+    CreateDevice();
+  else
   {
-    m_vecEffects[i]->OnResetDevice();
+    // just need a reset
+    m_nDeviceStatus = m_pD3DDevice->Reset(&m_D3DPP);
+    for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+      (*i)->OnResetDevice();
   }
 
   if (m_nDeviceStatus == S_OK)
@@ -220,6 +248,7 @@ void CRenderSystemDX::OnDeviceReset()
 bool CRenderSystemDX::CreateDevice()
 {
   // Code based on Ogre 3D engine
+  CSingleLock lock(m_resourceSection);
 
   HRESULT hr;
 
@@ -229,6 +258,8 @@ bool CRenderSystemDX::CreateDevice()
   if(m_hDeviceWnd == NULL)
     return false;
 
+  CLog::Log(LOGDEBUG, "%s on adapter %d", __FUNCTION__, m_adapter);
+
   D3DDEVTYPE devType = D3DDEVTYPE_HAL;
 
 #if defined(DEBUG_PS) || defined (DEBUG_VS)
@@ -237,21 +268,21 @@ bool CRenderSystemDX::CreateDevice()
 
   BuildPresentParameters();
 
-  hr = m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, devType, m_hFocusWnd,
-    D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_D3DPP, &m_pD3DDevice );
+  hr = m_pD3D->CreateDevice(m_adapter, devType, m_hFocusWnd,
+    D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
   if (FAILED(hr))
   {
     // Try a second time, may fail the first time due to back buffer count,
     // which will be corrected down to 1 by the runtime
-    hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, devType, m_hFocusWnd,
+    hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
       D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_D3DPP, &m_pD3DDevice );
     if( FAILED( hr ) )
     {
-      hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, devType, m_hFocusWnd,
+      hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
         D3DCREATE_MIXED_VERTEXPROCESSING, &m_D3DPP, &m_pD3DDevice );
       if( FAILED( hr ) )
       {
-        hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, devType, m_hFocusWnd,
+        hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
           D3DCREATE_SOFTWARE_VERTEXPROCESSING, &m_D3DPP, &m_pD3DDevice );
       }
       if(FAILED( hr ) )
@@ -263,6 +294,12 @@ bool CRenderSystemDX::CreateDevice()
   m_pD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
 
   m_bRenderCreated = true;
+
+  m_needNewDevice = false;
+
+  // tell any shared objects about our resurrection
+  for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+    (*i)->OnCreateDevice();
 
   return true;
 }
@@ -280,10 +317,16 @@ bool CRenderSystemDX::PresentRenderImpl()
   hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
 
   if( D3DERR_DEVICELOST == hr )
+  {
+    CLog::Log(LOGDEBUG, "%s - lost device", __FUNCTION__);
     return false;
+  }
 
   if(FAILED(hr))
+  {
+    CLog::Log(LOGDEBUG, "%s - Present failed with hr=%d", __FUNCTION__, hr);
     return false;
+  }
 
   return true;
 }
@@ -562,41 +605,18 @@ void CRenderSystemDX::SetViewPort(CRect& viewPort)
   m_pD3DDevice->SetViewport(&newviewport);
 }
 
-
-// The rendering system need to knows about effects created since they require
-// reseting when the device is lost
-bool CRenderSystemDX::CreateEffect(CStdString& name, ID3DXEffect** pEffect)
+void CRenderSystemDX::Register(ID3DResource *resource)
 {
-  HRESULT hr;
-  LPD3DXBUFFER pError = NULL;
-  hr = D3DXCreateEffect(m_pD3DDevice, name, name.length(), NULL, NULL, 0, NULL, pEffect, &pError );
-
-  if(hr == S_OK)
-  {
-    m_vecEffects.push_back(*pEffect);
-    return true;
-  }
-  else if(pError)
-  {
-    CStdString error;
-    error.assign((const char*)pError->GetBufferPointer(), pError->GetBufferSize());
-    CLog::Log(LOGERROR, "%s", error.c_str());
-  }
-  return false;
+  CSingleLock lock(m_resourceSection);
+  m_resources.push_back(resource);
 }
 
-void CRenderSystemDX::ReleaseEffect(ID3DXEffect* pEffect)
+void CRenderSystemDX::Unregister(ID3DResource* resource)
 {
-  for (vector<ID3DXEffect *>::iterator iter = m_vecEffects.begin(); 
-    iter != m_vecEffects.end();
-    ++iter)
-  {
-    if(*iter == pEffect)
-    {
-      m_vecEffects.erase(iter);
-      return;
-    }
-  }
+  CSingleLock lock(m_resourceSection);
+  vector<ID3DResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
+  if (i != m_resources.end())
+    m_resources.erase(i);
 }
 
 #endif

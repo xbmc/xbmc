@@ -64,10 +64,9 @@ YUVCOEF yuv_coef_smtp240m = {
 CWinRenderer::CWinRenderer()
 {
   memset(m_YUVMemoryTexture, 0, sizeof(m_YUVMemoryTexture));
-  memset(m_YUVVideoTexture, 0, sizeof(m_YUVVideoTexture));
 
   m_iYV12RenderBuffer = 0;
-  m_pYUV2RGBEffect = NULL;
+  m_NumYV12Buffers = 0;
 }
 
 CWinRenderer::~CWinRenderer()
@@ -296,8 +295,7 @@ void CWinRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
 
-  g_Windowing.ReleaseEffect(m_pYUV2RGBEffect);
-  m_pYUV2RGBEffect = NULL;
+  m_YUV2RGBEffect.Release();
   m_bConfigured = false;
 }
 
@@ -315,7 +313,7 @@ bool CWinRenderer::LoadEffect()
   CStdString pStrEffect;
   getline(file, pStrEffect, '\0');
 
-  if(!g_Windowing.CreateEffect(pStrEffect, &m_pYUV2RGBEffect))
+  if (!m_YUV2RGBEffect.Create(pStrEffect))
   {
     CLog::Log(LOGERROR, "D3DXCreateEffectFromFile %s failed", pStrEffect);
     return false;
@@ -419,7 +417,7 @@ void CWinRenderer::AutoCrop(bool bCrop)
 
 void CWinRenderer::RenderLowMem(DWORD flags)
 {
-  if(m_pYUV2RGBEffect == NULL)
+  if (!m_YUV2RGBEffect.Get())
     LoadEffect();
 
   CSingleLock lock(g_graphicsContext);
@@ -438,7 +436,7 @@ void CWinRenderer::RenderLowMem(DWORD flags)
   for(unsigned int i = 0; i < 3; i++)
   {
     BYTE* src = (BYTE *)m_YUVMemoryTexture[index][i];
-    m_YUVVideoTexture[index][i]->GetSurfaceLevel(0, &videoSurface);
+    m_YUVVideoTexture[index][i].GetSurfaceLevel(0, &videoSurface);
     videoSurface->GetDesc(&desc);
     if(videoSurface->LockRect(&rect, NULL, 0) == D3D_OK)
     {
@@ -504,28 +502,28 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     verts[i].y -= 0.5;
   }
 
-  m_pYUV2RGBEffect->SetTechnique( "YUV2RGB_T" );
-  m_pYUV2RGBEffect->SetTexture( "g_YTexture",  m_YUVVideoTexture[index][0] ) ;
-  m_pYUV2RGBEffect->SetTexture( "g_UTexture",  m_YUVVideoTexture[index][1] ) ;
-  m_pYUV2RGBEffect->SetTexture( "g_VTexture",  m_YUVVideoTexture[index][2] ) ;
+  m_YUV2RGBEffect.SetTechnique( "YUV2RGB_T" );
+  m_YUV2RGBEffect.SetTexture( "g_YTexture",  m_YUVVideoTexture[index][0] ) ;
+  m_YUV2RGBEffect.SetTexture( "g_UTexture",  m_YUVVideoTexture[index][1] ) ;
+  m_YUV2RGBEffect.SetTexture( "g_VTexture",  m_YUVVideoTexture[index][2] ) ;
 
   UINT cPasses, iPass;
-  if(FAILED (m_pYUV2RGBEffect->Begin( &cPasses, 0 )))
+  if (!m_YUV2RGBEffect.Begin( &cPasses, 0 ))
     return;
 
   for( iPass = 0; iPass < cPasses; iPass++ )
   {
-    m_pYUV2RGBEffect->BeginPass( iPass );
+    m_YUV2RGBEffect.BeginPass( iPass );
 
     pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
     pD3DDevice->SetTexture(0, NULL);
     pD3DDevice->SetTexture(1, NULL);
     pD3DDevice->SetTexture(2, NULL);
   
-    m_pYUV2RGBEffect->EndPass() ;
+    m_YUV2RGBEffect.EndPass() ;
   }
 
-  m_pYUV2RGBEffect->End() ;
+  m_YUV2RGBEffect.End() ;
   pD3DDevice->SetPixelShader( NULL );
 }
 
@@ -570,12 +568,9 @@ void CWinRenderer::DeleteYV12Texture(int index)
   YUVVIDEOPLANES &videoPlanes = m_YUVVideoTexture[index];
   YUVMEMORYPLANES &memoryPlanes = m_YUVMemoryTexture[index];
 
-  if (videoPlanes[0] || videoPlanes[1] || videoPlanes[2])
-    CLog::Log(LOGDEBUG, "Deleted YV12 texture (%i)", index);
-
-  SAFE_RELEASE(videoPlanes[0]);
-  SAFE_RELEASE(videoPlanes[1]);
-  SAFE_RELEASE(videoPlanes[2]);
+  videoPlanes[0].Release();
+  videoPlanes[1].Release();
+  videoPlanes[2].Release();
 
   SAFE_DELETE_ARRAY(memoryPlanes[0]);
   SAFE_DELETE_ARRAY(memoryPlanes[1]);
@@ -609,12 +604,11 @@ bool CWinRenderer::CreateYV12Texture(int index)
 {
 
   CSingleLock lock(g_graphicsContext);
-  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
   DeleteYV12Texture(index);
   if (
-    D3D_OK != pD3DDevice->CreateTexture(m_sourceWidth, m_sourceHeight, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][0], NULL) ||
-    D3D_OK != pD3DDevice->CreateTexture(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][1], NULL) ||
-    D3D_OK != pD3DDevice->CreateTexture(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][2], NULL))
+    !m_YUVVideoTexture[index][0].Create(m_sourceWidth, m_sourceHeight, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED) ||
+    !m_YUVVideoTexture[index][1].Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED) ||
+    !m_YUVVideoTexture[index][2].Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED))
   {
     CLog::Log(LOGERROR, "Unable to create YV12 video texture %i", index);
     return false;
