@@ -27,6 +27,7 @@
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "Application.h"
 #include "WindowingFactory.h"
 #include "../../Settings.h"
 #include "SingleLock.h"
@@ -70,6 +71,20 @@ long COverlay::Release()
 
   return count;
 }
+
+long COverlayMainThread::Release()
+{
+  long count = InterlockedDecrement(&m_references);
+  if (count == 0)
+  {
+    if (g_application.IsCurrentThread())
+      delete this;
+    else
+      g_renderManager.AddCleanup(this);
+  }
+  return count;
+}
+
 
 CRenderer::CRenderer()
 {

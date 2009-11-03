@@ -35,7 +35,7 @@ class CDVDOverlaySSA;
 namespace OVERLAY {
 
   class COverlayQuadsDX
-    : public COverlay
+    : public COverlayMainThread
   {
   public:
     COverlayQuadsDX(CDVDOverlaySSA* o, double pts);
@@ -56,7 +56,7 @@ namespace OVERLAY {
   }; 
 
   class COverlayImageDX
-    : public COverlay
+    : public COverlayMainThread
   {
   public:
     COverlayImageDX(CDVDOverlayImage* o);
