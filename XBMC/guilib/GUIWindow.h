@@ -103,6 +103,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
   bool ControlGroupHasFocus(int groupID, int controlID);
+  bool ControlGroupIsVisible(int groupID, int controlID);
   virtual bool HasID(int id) { return (id >= m_controlID && id < m_controlID + m_idRange); };
   void SetIDRange(int range) { m_idRange = range; };
   int GetIDRange() const { return m_idRange; };

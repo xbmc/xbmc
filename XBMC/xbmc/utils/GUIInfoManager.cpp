@@ -869,12 +869,26 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     int groupID = atoi(strTest.Mid(13).c_str());
     int controlID = 0;
-    int controlPos = strTest.Find(".hasfocus(");
-    if (controlPos > 0)
-      controlID = atoi(strTest.Mid(controlPos + 10).c_str());
-    if (groupID)
+
+    if (strTest.Find(".hasfocus") > 0)
     {
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_GROUP_HAS_FOCUS : CONTROL_GROUP_HAS_FOCUS, groupID, controlID));
+      int controlPos = strTest.Find(".hasfocus(");
+      if (controlPos > 0)
+        controlID = atoi(strTest.Mid(controlPos + 10).c_str());
+      if (groupID)
+      {
+        return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_GROUP_HAS_FOCUS : CONTROL_GROUP_HAS_FOCUS, groupID, controlID));
+      }
+    }
+    else if (strTest.Find(".isvisible") > 0)
+    {
+      int controlPos = strTest.Find(".isvisible(");
+      if (controlPos > 0)
+        controlID = atoi(strTest.Mid(controlPos + 11).c_str());
+      if (groupID)
+      {
+        return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_GROUP_IS_VISIBLE : CONTROL_GROUP_IS_VISIBLE, groupID, controlID));
+      }
     }
   }
   else if (strTest.Left(24).Equals("buttonscroller.hasfocus("))
@@ -2146,6 +2160,13 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
           if (window)
             bReturn = window->ControlGroupHasFocus(info.GetData1(), info.GetData2());
+        }
+        break;
+      case CONTROL_GROUP_IS_VISIBLE:
+        {
+          CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
+          if (window)
+            bReturn = window->ControlGroupIsVisible(info.GetData1(), info.GetData2());
         }
         break;
       case CONTROL_IS_VISIBLE:
