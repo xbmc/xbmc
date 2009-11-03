@@ -1376,6 +1376,176 @@ void CPVRManager::SetCurrentPlayingProgram(CFileItem& item)
 }
 
 /********************************************************************
+/* CPVRManager SaveCurrentChannelSettings
+/*
+/* Write the current Video and Audio settings of playing channel
+/* to the TV Database
+/********************************************************************/
+void CPVRManager::SaveCurrentChannelSettings()
+{
+  if (m_currentPlayingChannel)
+  {
+    // save video settings
+    if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
+    {
+      m_database.Open();
+      m_database.SetChannelSettings(m_currentPlayingChannel->GetTVChannelInfoTag()->ChannelID(), g_stSettings.m_currentVideoSettings);
+      m_database.Close();
+    }
+  }
+}
+
+/********************************************************************
+/* CPVRManager LoadCurrentChannelSettings
+/*
+/* Read and set the Video and Audio settings of playing channel
+/* from the TV Database
+/********************************************************************/
+void CPVRManager::LoadCurrentChannelSettings()
+{
+  if (m_currentPlayingChannel)
+  {
+    CVideoSettings loadedChannelSettings;
+
+    // Switch to default options
+    g_stSettings.m_currentVideoSettings = g_stSettings.m_defaultVideoSettings;
+
+    m_database.Open();
+    if (m_database.GetChannelSettings(m_currentPlayingChannel->GetTVChannelInfoTag()->ChannelID(), loadedChannelSettings))
+    {
+      if (loadedChannelSettings.m_AudioDelay != g_stSettings.m_currentVideoSettings.m_AudioDelay)
+      {
+        g_stSettings.m_currentVideoSettings.m_AudioDelay = loadedChannelSettings.m_AudioDelay;
+
+        if (g_application.m_pPlayer)
+          g_application.m_pPlayer->SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
+      }
+
+      if (loadedChannelSettings.m_AudioStream != g_stSettings.m_currentVideoSettings.m_AudioStream)
+      {
+        g_stSettings.m_currentVideoSettings.m_AudioStream = loadedChannelSettings.m_AudioStream;
+
+        // only change the audio stream if a different one has been asked for
+        if (g_application.m_pPlayer->GetAudioStream() != g_stSettings.m_currentVideoSettings.m_AudioStream)
+        {
+          g_application.m_pPlayer->SetAudioStream(g_stSettings.m_currentVideoSettings.m_AudioStream);    // Set the audio stream to the one selected
+        }
+      }
+
+      if (loadedChannelSettings.m_Brightness != g_stSettings.m_currentVideoSettings.m_Brightness)
+      {
+        g_stSettings.m_currentVideoSettings.m_Brightness = loadedChannelSettings.m_Brightness;
+      }
+
+      if (loadedChannelSettings.m_Contrast != g_stSettings.m_currentVideoSettings.m_Contrast)
+      {
+        g_stSettings.m_currentVideoSettings.m_Contrast = loadedChannelSettings.m_Contrast;
+      }
+
+      if (loadedChannelSettings.m_Gamma != g_stSettings.m_currentVideoSettings.m_Gamma)
+      {
+        g_stSettings.m_currentVideoSettings.m_Gamma = loadedChannelSettings.m_Gamma;
+      }
+
+      if (loadedChannelSettings.m_Crop != g_stSettings.m_currentVideoSettings.m_Crop)
+      {
+        g_stSettings.m_currentVideoSettings.m_Crop = loadedChannelSettings.m_Crop;
+        g_renderManager.AutoCrop(g_stSettings.m_currentVideoSettings.m_Crop);
+      }
+
+      if (loadedChannelSettings.m_CropLeft != g_stSettings.m_currentVideoSettings.m_CropLeft)
+      {
+        g_stSettings.m_currentVideoSettings.m_CropLeft = loadedChannelSettings.m_CropLeft;
+      }
+
+      if (loadedChannelSettings.m_CropRight != g_stSettings.m_currentVideoSettings.m_CropRight)
+      {
+        g_stSettings.m_currentVideoSettings.m_CropRight = loadedChannelSettings.m_CropRight;
+      }
+
+      if (loadedChannelSettings.m_CropTop != g_stSettings.m_currentVideoSettings.m_CropTop)
+      {
+        g_stSettings.m_currentVideoSettings.m_CropTop = loadedChannelSettings.m_CropTop;
+      }
+
+      if (loadedChannelSettings.m_CropBottom != g_stSettings.m_currentVideoSettings.m_CropBottom)
+      {
+        g_stSettings.m_currentVideoSettings.m_CropBottom = loadedChannelSettings.m_CropBottom;
+      }
+
+      if (loadedChannelSettings.m_VolumeAmplification != g_stSettings.m_currentVideoSettings.m_VolumeAmplification)
+      {
+        g_stSettings.m_currentVideoSettings.m_VolumeAmplification = loadedChannelSettings.m_VolumeAmplification;
+
+        if (g_application.m_pPlayer)
+          g_application.m_pPlayer->SetDynamicRangeCompression((long)(g_stSettings.m_currentVideoSettings.m_VolumeAmplification * 100));
+      }
+
+      if (loadedChannelSettings.m_OutputToAllSpeakers != g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers)
+      {
+        g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers = loadedChannelSettings.m_OutputToAllSpeakers;
+      }
+
+      if (loadedChannelSettings.m_ViewMode != g_stSettings.m_currentVideoSettings.m_ViewMode)
+      {
+        g_stSettings.m_currentVideoSettings.m_ViewMode = loadedChannelSettings.m_ViewMode;
+
+        g_renderManager.SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+        g_stSettings.m_currentVideoSettings.m_CustomZoomAmount = g_stSettings.m_fZoomAmount;
+        g_stSettings.m_currentVideoSettings.m_CustomPixelRatio = g_stSettings.m_fPixelRatio;
+      }
+
+      if (loadedChannelSettings.m_CustomPixelRatio != g_stSettings.m_currentVideoSettings.m_CustomPixelRatio)
+      {
+        g_stSettings.m_currentVideoSettings.m_CustomPixelRatio = loadedChannelSettings.m_CustomPixelRatio;
+      }
+
+      if (loadedChannelSettings.m_CustomZoomAmount != g_stSettings.m_currentVideoSettings.m_CustomZoomAmount)
+      {
+        g_stSettings.m_currentVideoSettings.m_CustomZoomAmount = loadedChannelSettings.m_CustomZoomAmount;
+      }
+
+      if (loadedChannelSettings.m_NoiseReduction != g_stSettings.m_currentVideoSettings.m_NoiseReduction)
+      {
+        g_stSettings.m_currentVideoSettings.m_NoiseReduction = loadedChannelSettings.m_NoiseReduction;
+      }
+
+      if (loadedChannelSettings.m_Sharpness != g_stSettings.m_currentVideoSettings.m_Sharpness)
+      {
+        g_stSettings.m_currentVideoSettings.m_Sharpness = loadedChannelSettings.m_Sharpness;
+      }
+
+      if (loadedChannelSettings.m_SubtitleDelay != g_stSettings.m_currentVideoSettings.m_SubtitleDelay)
+      {
+        g_stSettings.m_currentVideoSettings.m_SubtitleDelay = loadedChannelSettings.m_SubtitleDelay;
+
+        g_application.m_pPlayer->SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
+      }
+
+      if (loadedChannelSettings.m_SubtitleOn != g_stSettings.m_currentVideoSettings.m_SubtitleOn)
+      {
+        g_stSettings.m_currentVideoSettings.m_SubtitleOn = loadedChannelSettings.m_SubtitleOn;
+
+        g_application.m_pPlayer->SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
+      }
+
+      if (loadedChannelSettings.m_SubtitleStream != g_stSettings.m_currentVideoSettings.m_SubtitleStream)
+      {
+        g_stSettings.m_currentVideoSettings.m_SubtitleStream = loadedChannelSettings.m_SubtitleStream;
+
+        g_application.m_pPlayer->SetSubtitle(g_stSettings.m_currentVideoSettings.m_SubtitleStream);
+      }
+
+      if (loadedChannelSettings.m_InterlaceMethod != g_stSettings.m_currentVideoSettings.m_InterlaceMethod)
+      {
+        g_stSettings.m_currentVideoSettings.m_InterlaceMethod = loadedChannelSettings.m_InterlaceMethod;
+      }
+    }
+    m_database.Close();
+  }
+}
+
+/********************************************************************
 /* CPVRManager SetPlayingGroup
 /*
 /* Set the current playing group ID, used to load the right channel
@@ -1449,6 +1619,9 @@ bool CPVRManager::OpenLiveStream(unsigned int channel, bool radio)
   m_timeshiftLastWrapAround = 0;
   m_timeshiftCurrWrapAround = 0;
   m_playbackStarted         = tag->GetTime()*1000;
+
+  /* Load now the new channel settings from Database */
+  LoadCurrentChannelSettings();
 
   /* Timeshift related code */
   /* Check if Client handles timeshift itself */
@@ -1526,6 +1699,14 @@ void CPVRManager::CloseStream()
     m_timeshiftInt    = false;
     m_timeshiftExt    = false;
     m_playbackStarted = -1;
+
+    /* Save channel number in database */
+    m_database.Open();
+    m_database.UpdateLastChannel(*m_currentPlayingChannel->GetTVChannelInfoTag());
+    m_database.Close();
+
+    /* Store current settings inside Database */
+    SaveCurrentChannelSettings();
 
     /* Close the Client connection */
     m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->CloseLiveStream();
@@ -1909,6 +2090,9 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
   m_timeshiftCurrWrapAround     = 0;
   const cPVRChannelInfoTag* tag = &channels->at(iChannel-1);
 
+  /* Store current settings inside Database */
+  SaveCurrentChannelSettings();
+
   /* Perform Channelswitch */
   if (!m_clients[tag->ClientID()]->SwitchChannel(*tag))
   {
@@ -1940,6 +2124,9 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
   m_scanStart             = CTimeUtils::GetTimeMS();
   SetCurrentPlayingProgram(*m_currentPlayingChannel);
   m_playbackStarted       = m_currentPlayingChannel->GetTVChannelInfoTag()->GetTime()*1000 - (__int64)(g_application.GetTime()*1000);
+
+  /* Load now the new channel settings from Database */
+  LoadCurrentChannelSettings();
 
   LeaveCriticalSection(&m_critSection);
   return true;
@@ -1978,6 +2165,9 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
     m_timeshiftLastWrapAround = 0;
     m_timeshiftCurrWrapAround = 0;
 
+    /* Store current settings inside Database */
+    SaveCurrentChannelSettings();
+
     unsigned int currentTVChannel = m_currentPlayingChannel->GetTVChannelInfoTag()->Number();
     const cPVRChannelInfoTag* tag;
     for (unsigned int i = 1; i < channels->size(); i++)
@@ -2001,6 +2191,9 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
         m_scanStart             = CTimeUtils::GetTimeMS();
         SetCurrentPlayingProgram(*m_currentPlayingChannel);
         m_playbackStarted       = m_currentPlayingChannel->GetTVChannelInfoTag()->GetTime()*1000 - (__int64)(g_application.GetTime()*1000);
+
+        /* Load now the new channel settings from Database */
+        LoadCurrentChannelSettings();
 
         /* Timeshift related code */
         /* Check if Client handles timeshift itself */
@@ -2063,6 +2256,9 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel)
     m_timeshiftLastWrapAround = 0;
     m_timeshiftCurrWrapAround = 0;
 
+    /* Store current settings inside Database */
+    SaveCurrentChannelSettings();
+
     int currentTVChannel = m_currentPlayingChannel->GetTVChannelInfoTag()->Number();
     const cPVRChannelInfoTag* tag;
     for (unsigned int i = 1; i < channels->size(); i++)
@@ -2086,6 +2282,9 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel)
         m_scanStart             = CTimeUtils::GetTimeMS();
         SetCurrentPlayingProgram(*m_currentPlayingChannel);
         m_playbackStarted       = m_currentPlayingChannel->GetTVChannelInfoTag()->GetTime()*1000 - (__int64)(g_application.GetTime()*1000);
+
+        /* Load now the new channel settings from Database */
+        LoadCurrentChannelSettings();
 
         /* Timeshift related code */
         /* Check if Client handles timeshift itself */

@@ -159,6 +159,8 @@ private:
   bool LoadClients();
   void GetClientProperties();                   /* call GetClientProperties(long clientID) for each client connected */
   void GetClientProperties(long clientID);      /* request the PVR_SERVERPROPS struct from each client */
+  void SaveCurrentChannelSettings();
+  void LoadCurrentChannelSettings();
 
   /*--- General PVRManager data ---*/
   CLIENTMAP           m_clients;                /* pointer to each enabled client's interface */

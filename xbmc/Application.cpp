@@ -3831,7 +3831,14 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     options.starttime = item.m_lStartOffset / 75.0;
 
-    if (item.IsVideo())
+    if (item.HasTVChannelInfoTag())
+    {
+      CTVDatabase dbs;
+      dbs.Open();
+      dbs.GetChannelSettings(item.GetTVChannelInfoTag()->ChannelID(), g_stSettings.m_currentVideoSettings);
+      dbs.Close();
+    }
+    else if (item.IsVideo())
     {
       // open the d/b and retrieve the bookmarks for the current movie
       CVideoDatabase dbs;
@@ -4153,7 +4160,17 @@ void CApplication::SaveFileState()
 
   if (progressTrackingFile != "")
   {
-    if (m_progressTrackingItem->IsVideo())
+    if (m_progressTrackingItem->HasTVChannelInfoTag())
+    {
+      if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
+      {
+        CTVDatabase dbs;
+        dbs.Open();
+        dbs.SetChannelSettings(m_progressTrackingItem->GetTVChannelInfoTag()->ChannelID(), g_stSettings.m_currentVideoSettings);
+        dbs.Close();
+      }
+    }
+    else if (m_progressTrackingItem->IsVideo())
     {
       CLog::Log(LOGDEBUG, "%s - Saving file state for video file %s", __FUNCTION__, progressTrackingFile.c_str());
 
@@ -5420,7 +5437,18 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
 
 void CApplication::SaveCurrentFileSettings()
 {
-  if (m_itemCurrentFile->IsVideo())
+  if (m_itemCurrentFile->HasTVChannelInfoTag())
+  {
+    // save video settings
+    if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
+    {
+      CTVDatabase dbs;
+      dbs.Open();
+      dbs.SetChannelSettings(m_itemCurrentFile->GetTVChannelInfoTag()->ChannelID(), g_stSettings.m_currentVideoSettings);
+      dbs.Close();
+    }
+  }
+  else if (m_itemCurrentFile->IsVideo())
   {
     // save video settings
     if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)

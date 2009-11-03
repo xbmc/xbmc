@@ -54,7 +54,7 @@ bool CTVDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE Clients (idClient integer primary key, Name text, GUID text)\n");
 
     CLog::Log(LOGINFO, "TV: Creating Last Channel table");
-    m_pDS->exec("CREATE TABLE LastChannel (idClient integer, idChannel integer primary key, Number integer, Name text)\n");
+    m_pDS->exec("CREATE TABLE LastChannel (idChannel integer primary key, Number integer, Name text)\n");
 
     CLog::Log(LOGINFO, "TV: Creating Channels table");
     m_pDS->exec("CREATE TABLE Channels (idClient integer, idChannel integer primary key,"
@@ -72,11 +72,11 @@ bool CTVDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX idx_UniqueBroadcast on GuideData(idProgramme, idChannel, idBouquet, StartTime desc)\n"); /// pointless?
 
     CLog::Log(LOGINFO, "TV: Creating ChannelSettings table");
-    m_pDS->exec("CREATE TABLE ChannelSettings ( idClient integer, idChannel integer primary key, Deinterlace bool, "
-                "ViewMode integer, ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer, "
-                "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer, "
-                "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer, "
-                "CropRight integer, CropTop integer, CropBottom integer)\n");
+    m_pDS->exec("CREATE TABLE ChannelSettings ( idChannel integer primary key, Deinterlace integer,"
+                "ViewMode integer,ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
+                "SubtitleDelay float, SubtitlesOn bool, Brightness float, Contrast float, Gamma float,"
+                "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, Crop bool, CropLeft integer,"
+                "CropRight integer, CropTop integer, CropBottom integer, Sharpness float, NoiseReduction float)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_ChannelSettings ON ChannelSettings (idChannel)\n");
 
     CLog::Log(LOGINFO, "TV: Creating Groups table");
@@ -105,14 +105,14 @@ bool CTVDatabase::CommitTransaction()
   return false;
 }
 
-int CTVDatabase::GetLastChannel(DWORD clientID)
+int CTVDatabase::GetLastChannel()
 {
   try
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    CStdString SQL=FormatSQL("select * from LastChannel WHERE LastChannel.idClient = '%u'", clientID);
+    CStdString SQL=FormatSQL("select * from LastChannel");
 
     m_pDS->query(SQL.c_str());
 
@@ -137,29 +137,29 @@ int CTVDatabase::GetLastChannel(DWORD clientID)
   return -1;
 }
 
-bool CTVDatabase::UpdateLastChannel(DWORD clientID, unsigned int channelID, CStdString m_strChannel)
+bool CTVDatabase::UpdateLastChannel(const cPVRChannelInfoTag &info)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    if (channelID < 0)   // no match found, update required
+    if (info.ChannelID() < 0)   // no match found, update required
     {
       return false;
     }
 
     CStdString SQL;
 
-    SQL=FormatSQL("select * from LastChannel WHERE LastChannel.idChannel = '%u' AND LastChannel.idClient = '%u'", channelID, clientID);
+    SQL=FormatSQL("select * from LastChannel");
     m_pDS->query(SQL.c_str());
 
     if (m_pDS->num_rows() > 0)
     {
       m_pDS->close();
       // update the item
-      CStdString SQL=FormatSQL("update LastChannel set idClient=%i,Number=%i,Name='%s' where idChannel=%i",
-                               clientID, channelID, m_strChannel.c_str(), channelID);
+      CStdString SQL=FormatSQL("update LastChannel set Number=%i,Name='%s',idChannel=%i",
+                               info.Number(), info.Name().c_str(), info.ChannelID());
 
       m_pDS->exec(SQL.c_str());
       return true;
@@ -167,16 +167,16 @@ bool CTVDatabase::UpdateLastChannel(DWORD clientID, unsigned int channelID, CStd
     else   // add the items
     {
       m_pDS->close();
-      SQL=FormatSQL("insert into LastChannel ( idClient,idChannel,Number,Name)"
-                    " values ('%i','%i','%i','%s')\n",
-                    clientID, channelID, channelID, m_strChannel.c_str());
+      SQL=FormatSQL("insert into LastChannel ( idChannel,Number,Name )"
+                    " values ('%i','%i','%s')\n",
+                    info.ChannelID(), info.Number(), info.Name().c_str());
       m_pDS->exec(SQL.c_str());
       return true;
     }
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, channelID);
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, info.ChannelID());
     return false;
   }
 }
@@ -216,7 +216,7 @@ long CTVDatabase::AddDBChannel(const cPVRChannelInfoTag &info)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    long channelId = info.m_iIdChannel;
+    long channelId = info.ChannelID();
 
     if (channelId < 0)
     {
@@ -344,14 +344,14 @@ long CTVDatabase::UpdateDBChannel(const cPVRChannelInfoTag &info)
   }
 }
 
-bool CTVDatabase::HasChannel(DWORD clientID, const cPVRChannelInfoTag &info)
+bool CTVDatabase::HasChannel(const cPVRChannelInfoTag &info)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString SQL=FormatSQL("select * from Channels WHERE Channels.Name = '%s' AND Channels.ClientNumber = '%i' AND Channels.idClient = '%u'", info.m_strChannel.c_str(), info.m_iClientNum, clientID);
+    CStdString SQL=FormatSQL("select * from Channels WHERE Channels.Name = '%s' AND Channels.ClientNumber = '%i'", info.m_strChannel.c_str(), info.m_iClientNum);
 
     m_pDS->query(SQL.c_str());
 
@@ -467,7 +467,7 @@ bool CTVDatabase::GetDBChannelList(cPVRChannels &results, bool radio)
   return false;
 }
 
-bool CTVDatabase::GetChannelSettings(DWORD clientID, unsigned int channelID, CVideoSettings &settings)
+bool CTVDatabase::GetChannelSettings(unsigned int channelID, CVideoSettings &settings)
 {
   try
   {
@@ -475,25 +475,24 @@ bool CTVDatabase::GetChannelSettings(DWORD clientID, unsigned int channelID, CVi
     if (NULL == m_pDS.get()) return false;
     if (channelID < 0) return false;
 
-    CStdString SQL=FormatSQL("select * from ChannelSettings where idChannel like '%u'", channelID);
+    CStdString strSQL=FormatSQL("select * from ChannelSettings where idChannel like '%u'", channelID);
 
-    m_pDS->query(SQL.c_str());
-
+    m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() > 0)
-    {
-      // get the channel settings info
+    { // get the video settings info
       settings.m_AudioDelay           = m_pDS->fv("AudioDelay").get_asFloat();
       settings.m_AudioStream          = m_pDS->fv("AudioStream").get_asInt();
-      settings.m_Brightness           = m_pDS->fv("Brightness").get_asInt();
-      settings.m_Contrast             = m_pDS->fv("Contrast").get_asInt();
+      settings.m_Brightness           = m_pDS->fv("Brightness").get_asFloat();
+      settings.m_Contrast             = m_pDS->fv("Contrast").get_asFloat();
       settings.m_CustomPixelRatio     = m_pDS->fv("PixelRatio").get_asFloat();
+      settings.m_NoiseReduction       = m_pDS->fv("NoiseReduction").get_asFloat();
+      settings.m_Sharpness            = m_pDS->fv("Sharpness").get_asFloat();
       settings.m_CustomZoomAmount     = m_pDS->fv("ZoomAmount").get_asFloat();
-      settings.m_Gamma                = m_pDS->fv("Gamma").get_asInt();
+      settings.m_Gamma                = m_pDS->fv("Gamma").get_asFloat();
       settings.m_SubtitleDelay        = m_pDS->fv("SubtitleDelay").get_asFloat();
       settings.m_SubtitleOn           = m_pDS->fv("SubtitlesOn").get_asBool();
       settings.m_SubtitleStream       = m_pDS->fv("SubtitleStream").get_asInt();
       settings.m_ViewMode             = m_pDS->fv("ViewMode").get_asInt();
-      settings.m_ResumeTime           = m_pDS->fv("ResumeTime").get_asInt();
       settings.m_Crop                 = m_pDS->fv("Crop").get_asBool();
       settings.m_CropLeft             = m_pDS->fv("CropLeft").get_asInt();
       settings.m_CropRight            = m_pDS->fv("CropRight").get_asInt();
@@ -506,72 +505,61 @@ bool CTVDatabase::GetChannelSettings(DWORD clientID, unsigned int channelID, CVi
       m_pDS->close();
       return true;
     }
-    else
-    {
-      m_pDS->close();
-      return false;
-    }
+    m_pDS->close();
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
-
   return false;
 }
 
-bool CTVDatabase::SetChannelSettings(DWORD clientID, unsigned int channelID, const CVideoSettings &settings)
+bool CTVDatabase::SetChannelSettings(unsigned int channelID, const CVideoSettings &settings)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-
     if (channelID < 0)
     {
       // no match found, update required
       return false;
     }
-
-    CStdString SQL;
-
-    SQL.Format("select * from ChannelSettings where idChannel=%i", channelID);
-    m_pDS->query(SQL.c_str());
-
+    CStdString strSQL;
+    strSQL.Format("select * from ChannelSettings where idChannel=%i", channelID);
+    m_pDS->query( strSQL.c_str() );
     if (m_pDS->num_rows() > 0)
     {
       m_pDS->close();
       // update the item
-      SQL=FormatSQL("update ChannelSettings set Deinterlace=%i,ViewMode=%i,ZoomAmount=%f,PixelRatio=%f,"
-                    "AudioStream=%i,SubtitleStream=%i,SubtitleDelay=%f,SubtitlesOn=%i,Brightness=%i,Contrast=%i,Gamma=%i,"
-                    "VolumeAmplification=%f,AudioDelay=%f,OutputToAllSpeakers=%i,",
-                    settings.m_InterlaceMethod, settings.m_ViewMode,
-                    settings.m_CustomZoomAmount, settings.m_CustomPixelRatio, settings.m_AudioStream, settings.m_SubtitleStream, settings.m_SubtitleDelay,
-                    settings.m_SubtitleOn, settings.m_Brightness, settings.m_Contrast, settings.m_Gamma, settings.m_VolumeAmplification, settings.m_AudioDelay,
-                    settings.m_OutputToAllSpeakers);
-      CStdString SQL2;
-      SQL2=FormatSQL("ResumeTime=%i,Crop=%i,CropLeft=%i,CropRight=%i,CropTop=%i,CropBottom=%i where idChannel=%i\n", settings.m_ResumeTime,
-                     settings.m_Crop, settings.m_CropLeft, settings.m_CropRight, settings.m_CropTop, settings.m_CropBottom, channelID);
-      SQL += SQL2;
-      m_pDS->exec(SQL.c_str());
+      strSQL=FormatSQL("update ChannelSettings set Deinterlace=%i,ViewMode=%i,ZoomAmount=%f,PixelRatio=%f,"
+                       "AudioStream=%i,SubtitleStream=%i,SubtitleDelay=%f,SubtitlesOn=%i,Brightness=%f,Contrast=%f,Gamma=%f,"
+                       "VolumeAmplification=%f,AudioDelay=%f,OutputToAllSpeakers=%i,Sharpness=%f,NoiseReduction=%f,",
+                       settings.m_InterlaceMethod, settings.m_ViewMode, settings.m_CustomZoomAmount, settings.m_CustomPixelRatio,
+                       settings.m_AudioStream, settings.m_SubtitleStream, settings.m_SubtitleDelay, settings.m_SubtitleOn,
+                       settings.m_Brightness, settings.m_Contrast, settings.m_Gamma, settings.m_VolumeAmplification, settings.m_AudioDelay,
+                       settings.m_OutputToAllSpeakers,settings.m_Sharpness,settings.m_NoiseReduction);
+      CStdString strSQL2;
+      strSQL2=FormatSQL("Crop=%i,CropLeft=%i,CropRight=%i,CropTop=%i,CropBottom=%i where idChannel=%i\n", settings.m_Crop, settings.m_CropLeft, settings.m_CropRight, settings.m_CropTop, settings.m_CropBottom, channelID);
+      strSQL += strSQL2;
+      m_pDS->exec(strSQL.c_str());
       return true;
     }
     else
-    {
-      // add the items
+    { // add the items
       m_pDS->close();
-      SQL=FormatSQL("insert into ChannelSettings ( idChannel,Deinterlace,ViewMode,ZoomAmount,PixelRatio,"
-                    "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,Contrast,Gamma,"
-                    "VolumeAmplification,AudioDelay,OutputToAllSpeakers,ResumeTime,Crop,CropLeft,CropRight,CropTop,CropBottom)"
-                    " values (%i,%i,%i,%i,%i,%i,%f,%f,%i,%i,%f,%i,%i,%i,%i,%f,%f,",
-                    channelID, settings.m_InterlaceMethod, settings.m_ViewMode,
-                    settings.m_CustomZoomAmount, settings.m_CustomPixelRatio, settings.m_AudioStream, settings.m_SubtitleStream, settings.m_SubtitleDelay,
-                    settings.m_SubtitleOn, settings.m_Brightness, settings.m_Contrast, settings.m_Gamma, settings.m_VolumeAmplification, settings.m_AudioDelay);
-      CStdString SQL2;
-      SQL2=FormatSQL("%i,%i,%i,%i,%i,%i,%i)\n", settings.m_OutputToAllSpeakers, settings.m_ResumeTime, settings.m_Crop, settings.m_CropLeft, settings.m_CropRight,
-                     settings.m_CropTop, settings.m_CropBottom);
-      SQL += SQL2;
-      m_pDS->exec(SQL.c_str());
+      strSQL=FormatSQL("insert into ChannelSettings ( idChannel,Deinterlace,ViewMode,ZoomAmount,PixelRatio,"
+                       "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,Contrast,Gamma,"
+                       "VolumeAmplification,AudioDelay,OutputToAllSpeakers,Crop,CropLeft,CropRight,CropTop,CropBottom,Sharpness,NoiseReduction)"
+                       " values (%i,%i,%i,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,",
+                       channelID, settings.m_InterlaceMethod, settings.m_ViewMode, settings.m_CustomZoomAmount, settings.m_CustomPixelRatio,
+                       settings.m_AudioStream, settings.m_SubtitleStream, settings.m_SubtitleDelay, settings.m_SubtitleOn,
+                       settings.m_Brightness, settings.m_Contrast, settings.m_Gamma, settings.m_VolumeAmplification, settings.m_AudioDelay);
+      CStdString strSQL2;
+      strSQL2=FormatSQL("%i,%i,%i,%i,%i,%i,%f,%f)\n",  settings.m_OutputToAllSpeakers, settings.m_Crop, settings.m_CropLeft, settings.m_CropRight,
+                    settings.m_CropTop, settings.m_CropBottom, settings.m_Sharpness, settings.m_NoiseReduction);
+      strSQL += strSQL2;
+      m_pDS->exec(strSQL.c_str());
       return true;
     }
   }

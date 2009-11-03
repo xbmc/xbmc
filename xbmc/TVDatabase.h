@@ -36,8 +36,8 @@ public:
   virtual bool CommitTransaction();
 
   long AddClient(const CStdString &client, const CStdString &guid);
-  int GetLastChannel(DWORD clientID);
-  bool UpdateLastChannel(DWORD clientID, unsigned int channelID, CStdString m_strChannel);
+  int GetLastChannel();
+  bool UpdateLastChannel(const cPVRChannelInfoTag &info);
 
   /* Database Channel handling */
   long AddDBChannel(const cPVRChannelInfoTag &info);
@@ -46,10 +46,10 @@ public:
   long UpdateDBChannel(const cPVRChannelInfoTag &info);
   int  GetDBNumChannels(bool radio);
   int  GetNumHiddenChannels();
-  bool HasChannel(DWORD clientID, const cPVRChannelInfoTag &info);
+  bool HasChannel(const cPVRChannelInfoTag &info);
   bool GetDBChannelList(cPVRChannels &results, bool radio);
-  bool GetChannelSettings(DWORD clientID, unsigned int channelID, CVideoSettings &settings);
-  bool SetChannelSettings(DWORD clientID, unsigned int channelID, const CVideoSettings &settings);
+  bool GetChannelSettings(unsigned int channelID, CVideoSettings &settings);
+  bool SetChannelSettings(unsigned int channelID, const CVideoSettings &settings);
 
   /* Database Channel Group handling */
   long AddGroup(const CStdString &groupName);
