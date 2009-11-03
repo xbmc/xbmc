@@ -4193,7 +4193,10 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
+        {
           pItem->GetVideoInfoTag()->m_playCount = it->second.second;
+          pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
+        }
         if (!items.Contains(pItem->m_strPath))
         {
           pItem->SetLabelPreformated(true);
