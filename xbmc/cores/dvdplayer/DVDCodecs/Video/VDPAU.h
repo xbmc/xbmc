@@ -90,12 +90,12 @@ public:
   void Present();
   int  ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();
-  void InitCSCMatrix();
+  void InitCSCMatrix(int Height);
   void CheckStatus(VdpStatus vdp_st, int line);
 
   void CheckRecover(bool force = false);
   void CheckFeatures();
-  void SetColor();
+  void SetColor(int Height);
   void SetNoiseReduction();
   void SetSharpness();
   void SetDeinterlacing();
@@ -112,7 +112,7 @@ public:
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
   bool       interlaced;
-  int        outWidth, outHeight;
+  int        OutWidth, OutHeight;
   int        lastDisplayedSurface;
 
   VdpProcamp    m_Procamp;

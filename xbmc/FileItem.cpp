@@ -54,6 +54,7 @@
 #include "AdvancedSettings.h"
 #include "Settings.h"
 #include "utils/TimeUtils.h"
+#include "karaoke/karaokelyricsfactory.h"
 
 using namespace std;
 using namespace XFILE;
@@ -536,6 +537,14 @@ bool CFileItem::IsAudio() const
     return true;
 
   return false;
+}
+
+bool CFileItem::IsKaraoke() const
+{
+  if ( !IsAudio() )
+    return false;
+  
+  return CKaraokeLyricsFactory::HasLyrics( m_strPath );
 }
 
 bool CFileItem::IsPicture() const

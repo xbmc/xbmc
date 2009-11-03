@@ -21,7 +21,7 @@
  *
  */
 
-#if defined(_LINUX) || defined(__APPLE__)
+#if defined(HAVE_CONFIG_H) && !defined(_WIN32)
 #include "../config.h"
 #endif
 
@@ -105,8 +105,9 @@
 #ifndef HAS_SDL_OPENGL
 #define HAS_SDL_OPENGL
 #endif
-#ifdef HAS_AVAHI
+#if defined(HAVE_LIBAVAHI_COMMON) && defined(HAVE_LIBAVAHI_CLIENT)
 #define HAS_ZEROCONF
+#define HAS_AVAHI
 #endif
 #define HAS_LCD
 #define HAS_HAL
@@ -118,6 +119,12 @@
 #define HAS_SDL_AUDIO
 #define HAS_LIRC
 #define HAS_SDL_WIN_EVENTS
+#ifdef HAVE_LIBPULSE
+#define HAS_PULSEAUDIO
+#endif
+#ifdef HAVE_LIBXRANDR
+#define HAS_XRANDR
+#endif
 #endif
 
 /*****************

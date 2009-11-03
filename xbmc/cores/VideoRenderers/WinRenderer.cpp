@@ -29,6 +29,7 @@
 #include "AdvancedSettings.h"
 #include "SingleLock.h"
 #include "utils/log.h"
+#include "FileSystem/File.h"
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
@@ -63,8 +64,6 @@ YUVCOEF yuv_coef_smtp240m = {
 CWinRenderer::CWinRenderer(LPDIRECT3DDEVICE9 pDevice)
 {
   m_pD3DDevice = pDevice;
-  memset(m_pOSDYTexture,0,sizeof(LPDIRECT3DTEXTURE9)*NUM_BUFFERS);
-  memset(m_pOSDATexture,0,sizeof(LPDIRECT3DTEXTURE9)*NUM_BUFFERS);
   memset(m_YUVMemoryTexture, 0, sizeof(m_YUVMemoryTexture));
   memset(m_YUVVideoTexture, 0, sizeof(m_YUVVideoTexture));
 
@@ -77,275 +76,9 @@ CWinRenderer::~CWinRenderer()
   UnInit();
 }
 
-//********************************************************************************************************
-void CWinRenderer::DeleteOSDTextures(int index)
-{
-  CSingleLock lock(g_graphicsContext);
-
-  if (m_pOSDYTexture[index])
-    SAFE_RELEASE(m_pOSDYTexture[index]);
-
-  if (m_pOSDATexture[index])
-    SAFE_RELEASE(m_pOSDATexture[index]);
-  
-  m_iOSDTextureHeight[index] = 0;
-  m_iOSDTextureWidth = 0;
-}
-
-void CWinRenderer::Setup_Y8A8Render()
-{
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_CURRENT );
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-
-  m_pD3DDevice->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE );
-  m_pD3DDevice->SetTextureStageState( 2, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-  m_pD3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
-  m_pD3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
-  m_pD3DDevice->SetSamplerState( 1, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
-  m_pD3DDevice->SetSamplerState( 1, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
-
-  m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
-  m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
-  m_pD3DDevice->SetSamplerState( 1, D3DSAMP_MAGFILTER, D3DTEXF_POINT /*g_stSettings.m_maxFilter*/ );
-  m_pD3DDevice->SetSamplerState( 1, D3DSAMP_MINFILTER, D3DTEXF_POINT /*g_stSettings.m_minFilter*/ );
-
-  m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-  m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
-  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-  m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_INVSRCALPHA );
-  m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_SRCALPHA );
-  m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
-  m_pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX2 );
-}
-
-//***********************************************************************************************************
-void CWinRenderer::CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride)
-{
-  for (int y = 0; y < h; ++y)
-  {
-    memcpy(dst, src, w);
-    memcpy(dsta, srca, w);
-    src += srcstride;
-    srca += srcstride;
-    dst += dststride;
-    dsta += dststride;
-  }
-}
-
-void CWinRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride)
-{
-  // OSD is drawn after draw_slice / put_image
-  // this means that the buffer has already been handed off to the RGB converter
-  // solution: have separate OSD textures
-
-  // if it's down the bottom, use sub alpha blending
-  //  m_SubsOnOSD = (y0 > (int)(m_sourceRect.bottom - m_sourceRect.top) * 4 / 5);
-
-  //Sometimes happens when switching between fullscreen and small window
-  if( w == 0 || h == 0 )
-  {
-    CLog::Log(LOGINFO, "Zero dimensions specified to DrawAlpha, skipping");
-    return;
-  }
-
-  //use temporary rect for calculation to avoid messing with module-rect while other functions might be using it.
-  DRAWRECT osdRect;
-  RESOLUTION res = GetResolution();
-
-  if (w > m_iOSDTextureWidth)
-  {
-    //delete osdtextures so they will be recreated with the correct width
-    for (int i = 0; i < 2; ++i)
-    {
-      DeleteOSDTextures(i);
-    }
-    m_iOSDTextureWidth = w;
-  }
-  else
-  {
-    // clip to buffer
-    if (w > m_iOSDTextureWidth) w = m_iOSDTextureWidth;
-    if (h > g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top)
-    {
-      h = g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top;
-    }
-  }
-
-  // scale to fit screen
-  const CRect& rv = g_graphicsContext.GetViewWindow();
-
-  // Vobsubs are defined to be 720 wide.
-  // NOTE: This will not work nicely if we are allowing mplayer to render text based subs
-  //       as it'll want to render within the pixel width it is outputting.
-
-  float xscale;
-  float yscale;
-
-  if(true /*isvobsub*/) // xbox_video.cpp is fixed to 720x576 osd, so this should be fine
-  { // vobsubs are given to us unscaled
-    // scale them up to the full output, assuming vobsubs have same 
-    // pixel aspect ratio as the movie, and are 720 pixels wide
-
-    float pixelaspect = m_sourceFrameRatio * m_sourceHeight / m_sourceWidth;
-    xscale = rv.Width() / 720.0f;
-    yscale = xscale * g_settings.m_ResInfo[res].fPixelRatio / pixelaspect;
-  }
-  else
-  { // text subs/osd assume square pixels, but will render to full size of view window
-    // if mplayer could be fixed to use monitorpixelaspect when rendering it's osd
-    // this would give perfect output, however monitorpixelaspect currently doesn't work
-    // that way
-    xscale = 1.0f;
-    yscale = 1.0f;
-  }
-  
-  // horizontal centering, and align to bottom of subtitles line
-  osdRect.left = rv.x1 + (rv.Width() - (float)w * xscale) / 2.0f;
-  osdRect.right = osdRect.left + (float)w * xscale;
-  float relbottom = ((float)(g_settings.m_ResInfo[res].iSubtitles - g_settings.m_ResInfo[res].Overscan.top)) / (g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top);
-  osdRect.bottom = rv.y1 + rv.Height() * relbottom;
-  osdRect.top = osdRect.bottom - (float)h * yscale;
-
-  RECT rc = { 0, 0, w, h };
-
-  int iOSDBuffer = (m_iOSDRenderBuffer + 1) % m_NumOSDBuffers;
-
-  //if new height is heigher than current osd-texture height, recreate the textures with new height.
-  if (h > m_iOSDTextureHeight[iOSDBuffer])
-  {
-    CSingleLock lock(g_graphicsContext);
-
-    DeleteOSDTextures(iOSDBuffer);
-    m_iOSDTextureHeight[iOSDBuffer] = h;
-    // Create osd textures for this buffer with new size
-    if (
-      D3D_OK != m_pD3DDevice->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_L8, D3DPOOL_DEFAULT, &m_pOSDYTexture[iOSDBuffer], NULL) ||
-      D3D_OK != m_pD3DDevice->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_A8, D3DPOOL_DEFAULT, &m_pOSDATexture[iOSDBuffer], NULL)
-    )
-    {
-      CLog::Log(LOGERROR, "Could not create OSD/Sub textures");
-      DeleteOSDTextures(iOSDBuffer);
-      return;
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "Created OSD textures (%i)", iOSDBuffer);
-    }
-  }
-
-  // draw textures
-  D3DLOCKED_RECT lr, lra;
-  if (
-    (D3D_OK == m_pOSDYTexture[iOSDBuffer]->LockRect(0, &lr, &rc, 0)) &&
-    (D3D_OK == m_pOSDATexture[iOSDBuffer]->LockRect(0, &lra, &rc, 0))
-  )
-  {
-    //clear the textures
-    memset(lr.pBits, 0, lr.Pitch*m_iOSDTextureHeight[iOSDBuffer]);
-    memset(lra.pBits, 0, lra.Pitch*m_iOSDTextureHeight[iOSDBuffer]);
-    //draw the osd/subs
-    CopyAlpha(w, h, src, srca, stride, (BYTE*)lr.pBits, (BYTE*)lra.pBits, lr.Pitch);
-  }
-  m_pOSDYTexture[iOSDBuffer]->UnlockRect(0);
-  m_pOSDATexture[iOSDBuffer]->UnlockRect(0);
-
-  //set module variables to calculated values
-  m_OSDRect = osdRect;
-  m_OSDWidth = (float)w;
-  m_OSDHeight = (float)h;
-  m_OSDRendered = true;
-}
-
-//********************************************************************************************************
-void CWinRenderer::RenderOSD()
-{
-  int iRenderBuffer = m_iOSDRenderBuffer;
-
-  if (!m_pOSDYTexture[iRenderBuffer] || !m_pOSDATexture[iRenderBuffer])
-    return ;
-  if (!m_OSDWidth || !m_OSDHeight)
-    return ;
-
-  CSingleLock lock(g_graphicsContext);
-
-  //copy alle static vars to local vars because they might change during this function by mplayer callbacks
-  float osdWidth = m_OSDWidth;
-  float osdHeight = m_OSDHeight;
-  DRAWRECT osdRect = m_OSDRect;
-  //  if (!viewportRect.bottom && !viewportRect.right)
-  //    return;
-
-  // Set state to render the image
-  m_pD3DDevice->SetTexture(0, m_pOSDYTexture[iRenderBuffer]);
-  m_pD3DDevice->SetTexture(1, m_pOSDATexture[iRenderBuffer]);
-  Setup_Y8A8Render();
-
-  // clip the output if we are not in FSV so that zoomed subs don't go all over the GUI
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
-
-  struct CUSTOMVERTEX {
-      FLOAT x, y, z;
-      FLOAT rhw;
-      DWORD color;
-      FLOAT tu, tv;   // Texture coordinates
-      FLOAT tu2, tv2;
-  };
-
-  CUSTOMVERTEX verts[4] =
-  {
-    { osdRect.left         , osdRect.top            , 0.0f,
-      1.0f, 0,
-      0.0f                 , 0.0f,
-      0.0f                 , 0.0f,
-    }, 
-    { osdRect.right        , osdRect.top            , 0.0f,
-      1.0f, 0,
-      osdWidth / m_OSDWidth, 0.0f,
-      osdWidth / m_OSDWidth, 0.0f,
-    }, 
-    { osdRect.right        , osdRect.bottom         , 0.0f,
-      1.0f, 0,
-      osdWidth / m_OSDWidth, osdHeight / m_OSDHeight,
-      osdWidth / m_OSDWidth, osdHeight / m_OSDHeight,
-    }, 
-    { osdRect.left         , osdRect.bottom         , 0.0f,
-      1.0f, 0,
-      0.0f                 , osdHeight / m_OSDHeight,
-      0.0f                 , osdHeight / m_OSDHeight,
-    }
-  };
-
-  for(int i = 0; i < 4; i++)
-  {
-    verts[i].x -= 0.5;
-    verts[i].y -= 0.5;
-  }
-
-  m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
-  m_pD3DDevice->SetTexture(0, NULL);
-  m_pD3DDevice->SetTexture(1, NULL);
-}
-
 void CWinRenderer::ManageTextures()
 {
-  int neededbuffers = 0;
-  if (m_NumOSDBuffers != 2)
-  {
-    m_NumOSDBuffers = 2;
-    m_iOSDRenderBuffer = 0;
-    m_OSDWidth = m_OSDHeight = 0;
-    // buffers will be created on demand in DrawAlpha()
-  }
-  neededbuffers = 2;
+  int neededbuffers = 2;
 
   if( m_NumYV12Buffers < neededbuffers )
   {
@@ -464,16 +197,6 @@ void CWinRenderer::FlipPage(int source)
   else
     m_iYV12RenderBuffer = NextYV12Texture();
 
-  /* we always decode into to the next buffer */
-  ++m_iOSDRenderBuffer %= m_NumOSDBuffers;
-
-  /* if osd wasn't rendered this time around, previuse should not be */
-  /* displayed on next frame */
-  if( !m_OSDRendered )
-    m_OSDWidth = m_OSDHeight = 0;
-
-  m_OSDRendered = false;
-
 #ifdef MP_DIRECTRENDERING
   __asm wbinvd
 #endif
@@ -560,16 +283,8 @@ unsigned int CWinRenderer::PreInit()
   UnInit();
   m_resolution = RES_PAL_4x3;
 
-  m_iOSDRenderBuffer = 0;
   m_iYV12RenderBuffer = 0;
-  m_NumOSDBuffers = 0;
   m_NumYV12Buffers = 0;
-  m_OSDHeight = m_OSDWidth = 0;
-  m_OSDRendered = false;
-
-  m_iOSDTextureWidth = 0;
-  m_iOSDTextureHeight[0] = 0;
-  m_iOSDTextureHeight[1] = 0;
 
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
@@ -582,13 +297,6 @@ void CWinRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
 
-  // YV12 textures, subtitle and osd stuff
-  for (int i = 0; i < NUM_BUFFERS; ++i)
-  {
-    DeleteYV12Texture(i);
-    DeleteOSDTextures(i);
-  }
-
   g_Windowing.ReleaseEffect(m_pYUV2RGBEffect);
   m_pYUV2RGBEffect = NULL;
   m_bConfigured = false;
@@ -596,65 +304,17 @@ void CWinRenderer::UnInit()
 
 bool CWinRenderer::LoadEffect()
 {
-  CStdString pStrEffect = 
-    "texture g_YTexture;"
-    "texture g_UTexture;"
-    "texture g_VTexture;"
-    "sampler YSampler =" 
-    "sampler_state"
-    "{"
-    "Texture = <g_YTexture>;"
-    "MipFilter = LINEAR;"
-    "MinFilter = LINEAR;"
-    "MagFilter = LINEAR;"
-    "};"
+  CStdString filename = "special://xbmc/system/shaders/yuv2rgb_d3d.fx";
 
-    "sampler USampler = "
-    "sampler_state"
-    "{"
-    "Texture = <g_UTexture>;"
-    "MipFilter = LINEAR;"
-    "MinFilter = LINEAR;"
-    "MagFilter = LINEAR;"
-    "};"
-    "sampler VSampler = "
-    "sampler_state"
-    "{"
-    "Texture = <g_VTexture>;"
-    "MipFilter = LINEAR;"
-    "MinFilter = LINEAR;"
-    "MagFilter = LINEAR;"
-    "};"
-    "struct VS_OUTPUT"
-    "{"
-    "float4 Position   : POSITION;"
-    "float4 Diffuse    : COLOR0;"
-    "float2 TextureUV  : TEXCOORD0;"
-    "};"
-    "struct PS_OUTPUT"
-    "{"
-    "float4 RGBColor : COLOR0;"   
-    "};"
-    "PS_OUTPUT YUV2RGB( VS_OUTPUT In)"
-    "{" 
-    "PS_OUTPUT OUT;"
-    "OUT.RGBColor = In.Diffuse;"
-    "float3 YUV = float3(tex2D (YSampler, In.TextureUV).x - (16.0 / 256.0) ,"
-    "tex2D (USampler, In.TextureUV).x - (128.0 / 256.0), "
-    "tex2D (VSampler, In.TextureUV).x - (128.0 / 256.0)); "
-    "OUT.RGBColor.r = clamp((1.164 * YUV.x + 1.596 * YUV.z),0,255);"
-    "OUT.RGBColor.g = clamp((1.164 * YUV.x - 0.813 * YUV.z - 0.391 * YUV.y), 0,255); "
-    "OUT.RGBColor.b = clamp((1.164 * YUV.x + 2.018 * YUV.y),0,255);" 
-    "OUT.RGBColor.a = 1.0;"
-    "return OUT;"
-    "}"
-    "technique YUV2RGB_T"
-    "{"
-    "pass P0"
-    "{ "         
-    "PixelShader  = compile ps_2_0 YUV2RGB();"
-    "}"
-    "}";
+  XFILE::CFileStream file;
+  if(!file.Open(filename))
+  {
+    CLog::Log(LOGERROR, "CWinRenderer::LoadEffect - failed to open file %s", filename.c_str());
+    return false;
+  }
+
+  CStdString pStrEffect;
+  getline(file, pStrEffect, '\0');
 
   if(!g_Windowing.CreateEffect(pStrEffect, &m_pYUV2RGBEffect))
   {
@@ -668,9 +328,6 @@ bool CWinRenderer::LoadEffect()
 void CWinRenderer::Render(DWORD flags)
 {
   if( flags & RENDER_FLAG_NOOSD ) return;
-
-  /* general stuff */
-  RenderOSD();
 }
 
 void CWinRenderer::AutoCrop(bool bCrop)
@@ -799,30 +456,6 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     SAFE_RELEASE(videoSurface);
   }
 
-  for (int i = 0; i < 3; ++i)
-  {
-    m_pD3DDevice->SetTexture(i, m_YUVVideoTexture[index][i]);
-    m_pD3DDevice->SetSamplerState( i, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
-    m_pD3DDevice->SetSamplerState( i, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
-    m_pD3DDevice->SetSamplerState( i, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
-    m_pD3DDevice->SetSamplerState( i, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
-  }
-
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE  );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-
-  m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-  m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
- 
-  m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );  // was m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE ); ???
   m_pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX3 );
 
   //See RGB renderer for comment on this

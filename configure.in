@@ -339,7 +339,6 @@ AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for
 AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
-
 PKG_CHECK_MODULES([MAD],        [mad],
                   [INCLUDES+=" $MAD_CFLAGS"; LIBS+=" $MAD_LIBS"],
                   AC_MSG_ERROR($missing_library))
@@ -356,7 +355,8 @@ PKG_CHECK_MODULES([PNG],        [libpng],
                   [INCLUDES+=" $PNG_CFLAGS"; LIBS+=" $PNG_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([PCRE],       [libpcre],
-                  [INCLUDES+=" $PCRE_CFLAGS"; LIBS+=" $PCRE_LIBS"],
+                  [INCLUDES+=" $PCRE_CFLAGS"; LIBS+=" $PCRE_LIBS"]; \
+                  AC_DEFINE([HAVE_LIBPCRE],[1],["Define to 1 if libpcre is installed"]),
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([CDIO],       [libcdio],
                   [INCLUDES+=" $CDIO_CFLAGS"; LIBS+=" $CDIO_LIBS"],
@@ -440,8 +440,7 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_RESULT($pulse_disabled)
 else
   if test "$use_pulse" = "yes"; then
-    AC_CHECK_LIB([pulse], [main], 
-      LIBS=" -lpulse $LIBS";INCLUDES="$INCLUDES -DHAS_PULSEAUDIO",
+    AC_CHECK_LIB([pulse], [main],, 
       use_pulse=no;AC_MSG_RESULT($pulse_not_found))
   else
     AC_MSG_RESULT($pulse_disabled)
@@ -467,13 +466,11 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_RESULT($avahi_disabled)
 else
   if test "$use_avahi" = "yes"; then
-    AC_CHECK_LIB([avahi-common], [main], 
-      LIBS=" -lavahi-common $LIBS";,
+    AC_CHECK_LIB([avahi-common], [main],,
       use_avahi=no;AC_MSG_RESULT($avahi_not_found))
 	if test "$use_avahi" = "yes"; then
 		#either both libs or none
-    	AC_CHECK_LIB([avahi-client], [main], 
-	      LIBS=" -lavahi-client $LIBS";INCLUDES="$INCLUDES -DHAS_AVAHI",
+    	AC_CHECK_LIB([avahi-client], [main],,
 	      use_avahi=no;AC_MSG_RESULT($avahi_not_found))
 	fi
     else
@@ -817,7 +814,6 @@ fi
 
 if test "$use_gl" = "yes"; then
   final_message="$final_message\n  OpenGL:\tYes"
-  SDL_DEFINES=""
 else
   final_message="$final_message\n  OpenGL:\tNo (Very Slow)"
   SDL_DEFINES="-DHAS_SDL_2D"
@@ -844,7 +840,6 @@ fi
 
 if test "$use_xrandr" = "yes"; then
   final_message="$final_message\n  XRandR:\tYes"
-  SDL_DEFINES="$SDL_DEFINES -DHAS_XRANDR"
 else
   final_message="$final_message\n  XRandR:\tNo"
 fi
@@ -857,7 +852,6 @@ fi
 
 if test "$use_pcre" = "yes"; then
   final_message="$final_message\n  PCRE Support:\tYes"
-  SDL_DEFINES="$SDL_DEFINES -DHAS_PCRE"
 else
   final_message="$final_message\n  PCRE Support:\tNo"
 fi

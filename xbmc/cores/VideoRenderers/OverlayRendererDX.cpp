@@ -150,7 +150,7 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
   }
 
   HRESULT result;
-  result = m_device->CreateVertexBuffer(sizeof(VERTEX) * 6 * quads.count, 0, m_fvf, D3DPOOL_MANAGED, &m_vertex, NULL);
+  result = m_device->CreateVertexBuffer(sizeof(VERTEX) * 6 * quads.count, 0, m_fvf, D3DPOOL_DEFAULT, &m_vertex, NULL);
   if(FAILED(result))
   {
     CLog::Log(LOGERROR, "COverlayQuadsDX::COverlayQuadsDX - failed to create vertex buffer (%u)", result);
@@ -161,7 +161,7 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
   VERTEX* vt = NULL;
   SQuad*  vs = quads.quad;
 
-  result = m_vertex->Lock(0, 0, (void**)&vt, D3DLOCK_DISCARD);
+  result = m_vertex->Lock(0, 0, (void**)&vt, 0);
   if(FAILED(result))
   {
     CLog::Log(LOGERROR, "COverlayQuadsDX::COverlayQuadsDX - failed to lock texture (%u)", result);
@@ -368,7 +368,7 @@ void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
     return;
 
   HRESULT result;
-  result = m_device->CreateVertexBuffer(sizeof(VERTEX) * 6, 0, m_fvf, D3DPOOL_MANAGED, &m_vertex, NULL);
+  result = m_device->CreateVertexBuffer(sizeof(VERTEX) * 6, 0, m_fvf, D3DPOOL_DEFAULT, &m_vertex, NULL);
   if(FAILED(result))
   {
     CLog::Log(LOGERROR, "COverlayImageDX::Load - failed to create vertex buffer (%u)", result);
@@ -376,7 +376,7 @@ void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
   }
 
   VERTEX*  vt = NULL;;
-  result = m_vertex->Lock(0, 0, (void**)&vt, D3DLOCK_DISCARD);
+  result = m_vertex->Lock(0, 0, (void**)&vt, 0);
   if(FAILED(result))
   {
     CLog::Log(LOGERROR, "COverlayImageDX::Load - failed to lock texture (%u)", result);

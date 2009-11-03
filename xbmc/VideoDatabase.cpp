@@ -85,7 +85,7 @@ bool CVideoDatabase::CreateTables()
     CDatabase::CreateTables();
 
     CLog::Log(LOGINFO, "create bookmark table");
-    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, totalTimeInSeconds, thumbNailImage text, player text, playerState text, type integer)\n");
+    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, totalTimeInSeconds double, thumbNailImage text, player text, playerState text, type integer)\n");
     m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile)");
 
     CLog::Log(LOGINFO, "create settings table");
