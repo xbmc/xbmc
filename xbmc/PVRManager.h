@@ -122,6 +122,7 @@ public:
   void SetCurrentPlayingProgram(CFileItem& item);
   void SetPlayingGroup(int GroupId);
   int GetPlayingGroup();
+  void TriggerRecordingsUpdate(bool force=true);
 
   /*--- Stream reading functions ---*/
   bool OpenLiveStream(unsigned int channel, bool radio = false);
@@ -193,6 +194,11 @@ private:
   bool                m_isRecording;
   bool                m_hasRecordings;
   bool                m_hasTimers;
+
+  /*--- Thread Update Timers ---*/
+  int                 m_LastTVChannelCheck;
+  int                 m_LastRadioChannelCheck;
+  int                 m_LastRecordingsCheck;
 
   /*--- Previous Channel data ---*/
   int                 m_PreviousChannel[2];
