@@ -547,6 +547,10 @@ void CDVDPlayerVideo::Process()
               pts = picture.pts;
             }
 
+            //don't do single repeats, they mess up the pattern detection
+            if (picture.iRepeatPicture == 1)
+              picture.iRepeatPicture = 0;
+
             int iResult;
             do
             {
