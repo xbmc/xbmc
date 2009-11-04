@@ -139,21 +139,15 @@ Section "XBMC" SecXBMC
   SetOutPath "$INSTDIR"
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
   ${If} $PageProfileState == "1"
-    StrCpy $RunArgs "-fs -p"
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk" "$INSTDIR\XBMC.exe" \
-      "-fs -p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
-      "" "Start XBMC in fullscreen."
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk" "$INSTDIR\XBMC.exe" \
+    StrCpy $RunArgs "-p"
+    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC (Portable).lnk" "$INSTDIR\XBMC.exe" \
       "-p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
-      "" "Start XBMC in windowed mode."
+      "" "Start XBMC (Portable)."
   ${Else}
-    StrCpy $RunArgs "-fs"
+    StrCpy $RunArgs ""
     CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk" "$INSTDIR\XBMC.exe" \
-      "-fs" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
-      "" "Start XBMC in fullscreen."
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk" "$INSTDIR\XBMC.exe" \
       "" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
-      "" "Start XBMC in windowed mode."
+      "" "Start XBMC."
   ${EndIf}
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall XBMC.lnk" "$INSTDIR\Uninstall.exe" \
     "" "$INSTDIR\Uninstall.exe" 0 SW_SHOWNORMAL \
