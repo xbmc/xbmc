@@ -26,6 +26,7 @@
 #include "GraphicContext.h"
 #include "RenderFlags.h"
 #include "BaseRenderer.h"
+#include "D3DResource.h"
 
 //#define MP_DIRECTRENDERING
 
@@ -110,24 +111,13 @@ struct YUVRANGE
   int v_min, v_max;
 };
 
-struct YUVCOEF
-{
-  float r_up, r_vp;
-  float g_up, g_vp;
-  float b_up, b_vp;
-};
-
 extern YUVRANGE yuv_range_lim;
 extern YUVRANGE yuv_range_full;
-extern YUVCOEF yuv_coef_bt601;
-extern YUVCOEF yuv_coef_bt709;
-extern YUVCOEF yuv_coef_ebu;
-extern YUVCOEF yuv_coef_smtp240m;
 
 class CWinRenderer : public CBaseRenderer
 {
 public:
-  CWinRenderer(LPDIRECT3DDEVICE9 pDevice);
+  CWinRenderer();
   ~CWinRenderer();
 
   virtual void Update(bool bPauseDrawing);
@@ -146,8 +136,8 @@ public:
   virtual bool         IsConfigured() { return m_bConfigured; }
 
   // TODO:DIRECTX - implement these
-  virtual bool         SupportsBrightness() { return false; }
-  virtual bool         SupportsContrast() { return false; }
+  virtual bool         SupportsBrightness() { return true; }
+  virtual bool         SupportsContrast() { return true; }
   virtual bool         SupportsGamma() { return false; }
 
   virtual void AutoCrop(bool bCrop);
@@ -172,7 +162,7 @@ protected:
 
   bool m_bConfigured;
 
-  typedef LPDIRECT3DTEXTURE9      YUVVIDEOPLANES[MAX_PLANES];
+  typedef CD3DTexture             YUVVIDEOPLANES[MAX_PLANES];
   typedef BYTE*                   YUVMEMORYPLANES[MAX_PLANES];
   typedef YUVVIDEOPLANES          YUVVIDEOBUFFERS[NUM_BUFFERS];
   typedef YUVMEMORYPLANES         YUVMEMORYBUFFERS[NUM_BUFFERS];
@@ -192,19 +182,18 @@ protected:
   YUVVIDEOBUFFERS m_YUVVideoTexture;
   YUVMEMORYBUFFERS m_YUVMemoryTexture;
 
-  // render device
-  LPDIRECT3DDEVICE9 m_pD3DDevice;
-  ID3DXEffect*  m_pYUV2RGBEffect;
+  CD3DEffect  m_YUV2RGBEffect;
 
   // clear colour for "black" bars
   DWORD m_clearColour;
+  unsigned int m_flags;
 };
 
 
 class CPixelShaderRenderer : public CWinRenderer
 {
 public:
-  CPixelShaderRenderer(LPDIRECT3DDEVICE9 pDevice);
+  CPixelShaderRenderer();
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
 
 protected:

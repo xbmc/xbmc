@@ -29,7 +29,6 @@
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
-#include "Application.h"
 #include "WindowingFactory.h"
 
 #ifdef HAS_GL
@@ -46,6 +45,7 @@ static void LoadTexture(GLenum target
   int width2  = NP2(width);
   int height2 = NP2(height);
 
+  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
   if(format == GL_RGBA)
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 4);
   else if(format == GL_RGB)
@@ -78,21 +78,6 @@ static void LoadTexture(GLenum target
 
   *u = (GLfloat)width  / width2;
   *v = (GLfloat)height / height2;
-}
-
-
-
-long COverlayGL::Release()
-{
-  long count = InterlockedDecrement(&m_references);
-  if (count == 0)
-  {
-    if (g_application.IsCurrentThread())
-      delete this;
-    else
-      g_renderManager.AddCleanup(this);
-  }
-  return count;
 }
 
 COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)

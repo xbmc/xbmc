@@ -138,7 +138,7 @@ void CAdvancedSettings::Initialize()
   m_moviesExcludeFromScanRegExps.push_back("[-._ ]sample");
   m_tvshowExcludeFromScanRegExps.push_back("[-._ ]sample[-._ ]");
 
-  m_videoStackRegExps.push_back("()[ _.-]*?(?:cd|dvd|p(?:ar)t|dis[ck])[ _.-]*?([0-9a-d]+)(.*\\....?.?)$");
+  m_videoStackRegExps.push_back("()[ _.-]+?(?:cd|dvd|p(?:ar)t|dis[ck])[ _.-]*([0-9a-d]+)(.*\\....?.?)$");
 
   // foo_[s01]_[e01]
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
@@ -224,7 +224,11 @@ void CAdvancedSettings::Initialize()
   m_playlistTimeout = 20; // 20 seconds timeout
   m_GLRectangleHack = false;
   m_iSkipLoopFilter = 0;
-  m_osx_GLFullScreen = false;
+#ifdef __APPLE__
+  m_fakeFullScreen = true;
+#else
+  m_fakeFullScreen = false;
+#endif
   m_bVirtualShares = true;
 
 //caused lots of jerks
@@ -503,7 +507,16 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetBoolean(pRootElement,"glrectanglehack", m_GLRectangleHack);
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
-  XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", m_osx_GLFullScreen);
+
+  { 
+    // backward compatibility with Launcher install script on AppleTV platforms
+    // AppleTV OS < 2.4 needs this set for getting XBMC in front of Frontrow.
+    bool oldOSXFullScreen = false;
+    XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", oldOSXFullScreen);
+    if (oldOSXFullScreen)
+      m_fakeFullScreen = false;
+  }
+  XMLUtils::GetBoolean(pRootElement,"fakefullscreen", m_fakeFullScreen);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
 
   //Tuxbox

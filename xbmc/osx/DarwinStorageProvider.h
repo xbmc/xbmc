@@ -30,8 +30,8 @@ public:
   virtual void Initialize() { }
   virtual void Stop() { }
 
-  virtual void GetLocalDrives(VECSOURCES &localDrives) { GetDrives(localDrives); }
-  virtual void GetRemovableDrives(VECSOURCES &removableDrives) { /*GetDrives(removableDrives);*/ }
+  virtual void GetLocalDrives(VECSOURCES &localDrives);
+  virtual void GetRemovableDrives(VECSOURCES &removableDrives);
 
   virtual std::vector<CStdString> GetDiskUsage(void);
 

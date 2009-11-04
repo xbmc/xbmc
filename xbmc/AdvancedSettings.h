@@ -211,7 +211,7 @@ class CAdvancedSettings
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
 
-    bool m_osx_GLFullScreen;
+    bool m_fakeFullScreen; ///< if true, XBMC renders in a window covering the screen rather than grabbing the fullscreen device.
     bool m_bVirtualShares;
 
     float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s

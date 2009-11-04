@@ -36,39 +36,44 @@
 YUVRANGE yuv_range_lim =  { 16, 235, 16, 240, 16, 240 };
 YUVRANGE yuv_range_full = {  0, 255,  0, 255,  0, 255 };
 
-YUVCOEF yuv_coef_bt601 = {
-     0.0f,   1.403f,
-  -0.344f,  -0.714f,
-   1.773f,     0.0f,
-};
-
-YUVCOEF yuv_coef_bt709 = {
-     0.0f,  1.5701f,
- -0.1870f, -0.4664f,
-  1.8556f,     0.0f, /* page above have the 1.8556f as negative */
-};
-
-YUVCOEF yuv_coef_ebu = {
-    0.0f,  1.140f,
- -0.396f, -0.581f,
-  2.029f,    0.0f, 
-};
-
-YUVCOEF yuv_coef_smtp240m = {
-     0.0f,  1.5756f,
- -0.2253f, -0.5000f, /* page above have the 0.5000f as positive */
-  1.8270f,     0.0f,  
-};
-
-
-CWinRenderer::CWinRenderer(LPDIRECT3DDEVICE9 pDevice)
+static float yuv_coef_bt601[4][4] = 
 {
-  m_pD3DDevice = pDevice;
+    { 1.0f,      1.0f,     1.0f,     0.0f },
+    { 0.0f,     -0.344f,   1.773f,   0.0f },
+    { 1.403f,   -0.714f,   0.0f,     0.0f },
+    { 0.0f,      0.0f,     0.0f,     0.0f } 
+};
+
+static float yuv_coef_bt709[4][4] =
+{
+    { 1.0f,      1.0f,     1.0f,     0.0f },
+    { 0.0f,     -0.1870f,  1.8556f,  0.0f },
+    { 1.5701f,  -0.4664f,  0.0f,     0.0f },
+    { 0.0f,      0.0f,     0.0f,     0.0f }
+};
+
+static float yuv_coef_ebu[4][4] = 
+{
+    { 1.0f,      1.0f,     1.0f,     0.0f },
+    { 0.0f,     -0.3960f,  2.029f,   0.0f },
+    { 1.140f,   -0.581f,   0.0f,     0.0f },
+    { 0.0f,      0.0f,     0.0f,     0.0f }
+};
+
+static float yuv_coef_smtp240m[4][4] =
+{
+    { 1.0f,      1.0f,     1.0f,     0.0f },
+    { 0.0f,     -0.2253f,  1.8270f,  0.0f },
+    { 1.5756f,  -0.5000f,  0.0f,     0.0f },
+    { 0.0f,      0.0f,     0.0f,     0.0f }
+};
+
+CWinRenderer::CWinRenderer()
+{
   memset(m_YUVMemoryTexture, 0, sizeof(m_YUVMemoryTexture));
-  memset(m_YUVVideoTexture, 0, sizeof(m_YUVVideoTexture));
 
   m_iYV12RenderBuffer = 0;
-  m_pYUV2RGBEffect = NULL;
+  m_NumYV12Buffers = 0;
 }
 
 CWinRenderer::~CWinRenderer()
@@ -101,6 +106,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
 {
   m_sourceWidth = width;
   m_sourceHeight = height;
+  m_flags = flags;
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
@@ -178,14 +184,14 @@ void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   CSingleLock lock(g_graphicsContext);
 
   ManageDisplay();
- 
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
   if (clear)
-    m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
+    pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
 
   if(alpha < 255)
-    m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+    pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
   else
-    m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+    pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
 
   Render(flags);
 }
@@ -297,8 +303,7 @@ void CWinRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
 
-  g_Windowing.ReleaseEffect(m_pYUV2RGBEffect);
-  m_pYUV2RGBEffect = NULL;
+  m_YUV2RGBEffect.Release();
   m_bConfigured = false;
 }
 
@@ -316,7 +321,7 @@ bool CWinRenderer::LoadEffect()
   CStdString pStrEffect;
   getline(file, pStrEffect, '\0');
 
-  if(!g_Windowing.CreateEffect(pStrEffect, &m_pYUV2RGBEffect))
+  if (!m_YUV2RGBEffect.Create(pStrEffect))
   {
     CLog::Log(LOGERROR, "D3DXCreateEffectFromFile %s failed", pStrEffect);
     return false;
@@ -420,7 +425,7 @@ void CWinRenderer::AutoCrop(bool bCrop)
 
 void CWinRenderer::RenderLowMem(DWORD flags)
 {
-  if(m_pYUV2RGBEffect == NULL)
+  if (!m_YUV2RGBEffect.Get())
     LoadEffect();
 
   CSingleLock lock(g_graphicsContext);
@@ -439,7 +444,7 @@ void CWinRenderer::RenderLowMem(DWORD flags)
   for(unsigned int i = 0; i < 3; i++)
   {
     BYTE* src = (BYTE *)m_YUVMemoryTexture[index][i];
-    m_YUVVideoTexture[index][i]->GetSurfaceLevel(0, &videoSurface);
+    m_YUVVideoTexture[index][i].GetSurfaceLevel(0, &videoSurface);
     videoSurface->GetDesc(&desc);
     if(videoSurface->LockRect(&rect, NULL, 0) == D3D_OK)
     {
@@ -456,7 +461,8 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     SAFE_RELEASE(videoSurface);
   }
 
-  m_pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX3 );
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+  pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX3 );
 
   //See RGB renderer for comment on this
   #define CHROMAOFFSET_HORIZ 0.25f
@@ -504,29 +510,74 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     verts[i].y -= 0.5;
   }
 
-  m_pYUV2RGBEffect->SetTechnique( "YUV2RGB_T" );
-  m_pYUV2RGBEffect->SetTexture( "g_YTexture",  m_YUVVideoTexture[index][0] ) ;
-  m_pYUV2RGBEffect->SetTexture( "g_UTexture",  m_YUVVideoTexture[index][1] ) ;
-  m_pYUV2RGBEffect->SetTexture( "g_VTexture",  m_YUVVideoTexture[index][2] ) ;
+  float contrast   = g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f;
+  float blacklevel = g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f;
+
+  D3DXMATRIX temp, mat;
+  D3DXMatrixIdentity(&mat);
+
+  if (!(m_flags & CONF_FLAGS_YUV_FULLRANGE))
+  {
+    D3DXMatrixTranslation(&temp, - 16.0f / 255
+                               , - 16.0f / 255
+                               , - 16.0f / 255);
+    D3DXMatrixMultiply(&mat, &mat, &temp);
+
+    D3DXMatrixScaling(&temp, 255.0f / (235 - 16)
+                           , 255.0f / (240 - 16)
+                           , 255.0f / (240 - 16));
+    D3DXMatrixMultiply(&mat, &mat, &temp);
+  }
+
+  D3DXMatrixTranslation(&temp, 0.0f, - 0.5f, - 0.5f);
+  D3DXMatrixMultiply(&mat, &mat, &temp);
+
+  switch(CONF_FLAGS_YUVCOEF_MASK(m_flags))
+  {
+   case CONF_FLAGS_YUVCOEF_240M:
+     memcpy(temp.m, yuv_coef_smtp240m, 4*4*sizeof(float)); break;
+   case CONF_FLAGS_YUVCOEF_BT709:
+     memcpy(temp.m, yuv_coef_bt709   , 4*4*sizeof(float)); break;
+   case CONF_FLAGS_YUVCOEF_BT601:    
+     memcpy(temp.m, yuv_coef_bt601   , 4*4*sizeof(float)); break;
+   case CONF_FLAGS_YUVCOEF_EBU:
+     memcpy(temp.m, yuv_coef_ebu     , 4*4*sizeof(float)); break;
+   default:
+     memcpy(temp.m, yuv_coef_bt601   , 4*4*sizeof(float)); break;
+  }
+  temp.m[3][3] = 1.0f;
+  D3DXMatrixMultiply(&mat, &mat, &temp);
+
+  D3DXMatrixTranslation(&temp, blacklevel, blacklevel, blacklevel);
+  D3DXMatrixMultiply(&mat, &mat, &temp);
+
+  D3DXMatrixScaling(&temp, contrast, contrast, contrast);
+  D3DXMatrixMultiply(&mat, &mat, &temp);
+
+  m_YUV2RGBEffect.SetMatrix( "g_ColorMatrix", &mat);
+  m_YUV2RGBEffect.SetTechnique( "YUV2RGB_T" );
+  m_YUV2RGBEffect.SetTexture( "g_YTexture",  m_YUVVideoTexture[index][0] ) ;
+  m_YUV2RGBEffect.SetTexture( "g_UTexture",  m_YUVVideoTexture[index][1] ) ;
+  m_YUV2RGBEffect.SetTexture( "g_VTexture",  m_YUVVideoTexture[index][2] ) ;
 
   UINT cPasses, iPass;
-  if(FAILED (m_pYUV2RGBEffect->Begin( &cPasses, 0 )))
+  if (!m_YUV2RGBEffect.Begin( &cPasses, 0 ))
     return;
 
   for( iPass = 0; iPass < cPasses; iPass++ )
   {
-    m_pYUV2RGBEffect->BeginPass( iPass );
+    m_YUV2RGBEffect.BeginPass( iPass );
 
-    m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
-    m_pD3DDevice->SetTexture(0, NULL);
-    m_pD3DDevice->SetTexture(1, NULL);
-    m_pD3DDevice->SetTexture(2, NULL);
+    pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
+    pD3DDevice->SetTexture(0, NULL);
+    pD3DDevice->SetTexture(1, NULL);
+    pD3DDevice->SetTexture(2, NULL);
   
-    m_pYUV2RGBEffect->EndPass() ;
+    m_YUV2RGBEffect.EndPass() ;
   }
 
-  m_pYUV2RGBEffect->End() ;
-  m_pD3DDevice->SetPixelShader( NULL );
+  m_YUV2RGBEffect.End() ;
+  pD3DDevice->SetPixelShader( NULL );
 }
 
 void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height)
@@ -536,18 +587,19 @@ void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, un
   // create a new render surface to copy out of - note, this may be slow on some hardware
   // due to the TRUE parameter - you're supposed to use GetRenderTargetData.
   LPDIRECT3DSURFACE9 surface = NULL;
-  if (D3D_OK == m_pD3DDevice->CreateRenderTarget(width, height, D3DFMT_LIN_A8R8G8B8, D3DMULTISAMPLE_NONE, 0, TRUE, &surface, NULL))
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+  if (D3D_OK == pD3DDevice->CreateRenderTarget(width, height, D3DFMT_LIN_A8R8G8B8, D3DMULTISAMPLE_NONE, 0, TRUE, &surface, NULL))
   {
     LPDIRECT3DSURFACE9 oldRT;
     CRect saveSize = m_destRect;
     m_destRect.SetRect(0, 0, (float)width, (float)height);
-    m_pD3DDevice->GetRenderTarget(0, &oldRT);
-    m_pD3DDevice->SetRenderTarget(0, surface);
-    m_pD3DDevice->BeginScene();
+    pD3DDevice->GetRenderTarget(0, &oldRT);
+    pD3DDevice->SetRenderTarget(0, surface);
+    pD3DDevice->BeginScene();
     RenderLowMem(0);
-    m_pD3DDevice->EndScene();
+    pD3DDevice->EndScene();
     m_destRect = saveSize;
-    m_pD3DDevice->SetRenderTarget(0, oldRT);
+    pD3DDevice->SetRenderTarget(0, oldRT);
     oldRT->Release();
 
     D3DLOCKED_RECT lockedRect;
@@ -569,12 +621,9 @@ void CWinRenderer::DeleteYV12Texture(int index)
   YUVVIDEOPLANES &videoPlanes = m_YUVVideoTexture[index];
   YUVMEMORYPLANES &memoryPlanes = m_YUVMemoryTexture[index];
 
-  if (videoPlanes[0] || videoPlanes[1] || videoPlanes[2])
-    CLog::Log(LOGDEBUG, "Deleted YV12 texture (%i)", index);
-
-  SAFE_RELEASE(videoPlanes[0]);
-  SAFE_RELEASE(videoPlanes[1]);
-  SAFE_RELEASE(videoPlanes[2]);
+  videoPlanes[0].Release();
+  videoPlanes[1].Release();
+  videoPlanes[2].Release();
 
   SAFE_DELETE_ARRAY(memoryPlanes[0]);
   SAFE_DELETE_ARRAY(memoryPlanes[1]);
@@ -610,9 +659,9 @@ bool CWinRenderer::CreateYV12Texture(int index)
   CSingleLock lock(g_graphicsContext);
   DeleteYV12Texture(index);
   if (
-    D3D_OK != m_pD3DDevice->CreateTexture(m_sourceWidth, m_sourceHeight, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][0], NULL) ||
-    D3D_OK != m_pD3DDevice->CreateTexture(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][1], NULL) ||
-    D3D_OK != m_pD3DDevice->CreateTexture(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][2], NULL))
+    !m_YUVVideoTexture[index][0].Create(m_sourceWidth, m_sourceHeight, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED) ||
+    !m_YUVVideoTexture[index][1].Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED) ||
+    !m_YUVVideoTexture[index][2].Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED))
   {
     CLog::Log(LOGERROR, "Unable to create YV12 video texture %i", index);
     return false;
@@ -633,8 +682,8 @@ bool CWinRenderer::CreateYV12Texture(int index)
 }
 
 
-CPixelShaderRenderer::CPixelShaderRenderer(LPDIRECT3DDEVICE9 pDevice)
-    : CWinRenderer(pDevice)
+CPixelShaderRenderer::CPixelShaderRenderer()
+    : CWinRenderer()
 {
 }
 

@@ -1058,6 +1058,13 @@ CProfile* CApplication::InitDirectoriesWin32()
   if(!vShare.empty())
     g_mediaManager.SetHasOpticalDrive(true);
 
+  // Can be removed once the StorageHandler supports optical media
+  VECSOURCES::const_iterator it;
+  for(it=vShare.begin();it!=vShare.end();++it)
+    if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
+      g_application.getApplicationMessenger().OpticalMount(it->strPath);
+  // remove end
+
   return profile;
 #else
   return NULL;

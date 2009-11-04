@@ -493,20 +493,20 @@ void CGUISettings::Initialize()
   if (g_application.IsStandAlone())
   {
 #ifndef __APPLE__
-    AddString(1, "network.interface",775,"", SPIN_CONTROL_TEXT);
-    AddInt(2, "network.assignment", 715, NETWORK_DHCP, NETWORK_DHCP, 1, NETWORK_DISABLED, SPIN_CONTROL_TEXT);
-    AddString(3, "network.ipaddress", 719, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
-    AddString(4, "network.subnet", 720, "255.255.255.0", EDIT_CONTROL_IP_INPUT);
-    AddString(5, "network.gateway", 721, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
-    AddString(6, "network.dns", 722, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
-    AddString(7, "network.dnssuffix", 22002, "", EDIT_CONTROL_INPUT, true);
-    AddString(8, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_STANDARD);
-    AddInt(9, "network.enc", 778, ENC_NONE, ENC_NONE, 1, ENC_WPA2, SPIN_CONTROL_TEXT);
-    AddString(10, "network.key", 777, "0.0.0.0", EDIT_CONTROL_INPUT);
+    AddString(0, "network.interface",775,"", SPIN_CONTROL_TEXT);
+    AddInt(0, "network.assignment", 715, NETWORK_DHCP, NETWORK_DHCP, 1, NETWORK_DISABLED, SPIN_CONTROL_TEXT);
+    AddString(0, "network.ipaddress", 719, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
+    AddString(0, "network.subnet", 720, "255.255.255.0", EDIT_CONTROL_IP_INPUT);
+    AddString(0, "network.gateway", 721, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
+    AddString(0, "network.dns", 722, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
+    AddString(0, "network.dnssuffix", 22002, "", EDIT_CONTROL_INPUT, true);
+    AddString(0, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_STANDARD);
+    AddInt(0, "network.enc", 778, ENC_NONE, ENC_NONE, 1, ENC_WPA2, SPIN_CONTROL_TEXT);
+    AddString(0, "network.key", 777, "0.0.0.0", EDIT_CONTROL_INPUT);
 #ifndef _WIN32
-    AddString(11, "network.save", 779, "", BUTTON_CONTROL_STANDARD);
+    AddString(0, "network.save", 779, "", BUTTON_CONTROL_STANDARD);
 #endif
-    AddSeparator(12, "network.sep1");
+    AddSeparator(0, "network.sep1");
 #endif
   }
   AddBool(13, "network.usehttpproxy", 708, false);

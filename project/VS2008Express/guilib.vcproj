@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="guilib"
 	ProjectGUID="{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}"
 	RootNamespace="guilib"
@@ -323,6 +323,14 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\AudioContext.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\D3DResource.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\D3DResource.h"
 				>
 			</File>
 			<File

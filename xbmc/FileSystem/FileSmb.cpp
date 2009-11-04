@@ -103,32 +103,6 @@ void CSMB::Init()
   CSingleLock lock(*this);
   if (!m_context)
   {
-#ifdef _WIN32
-    // set the log function
-    set_log_callback(xb_smbc_log);
-#endif
-
-    // setup our context
-    m_context = smbc_new_context();
-    smbc_init(xb_smbc_auth, 0);
-#ifdef DEPRECATED_SMBC_INTERFACE
-    smbc_setDebug(m_context, g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0);
-    smbc_setFunctionAuthData(m_context, xb_smbc_auth);
-    orig_cache = smbc_getFunctionGetCachedServer(m_context);
-    smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache);
-    smbc_setOptionOneSharePerServer(m_context, false);
-    smbc_setOptionBrowseMaxLmbCount(m_context, 0);
-    smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
-#else
-    m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0; 
-    m_context->callbacks.auth_fn = xb_smbc_auth; 
-    orig_cache = m_context->callbacks.get_cached_srv_fn; 
-    m_context->callbacks.get_cached_srv_fn = xb_smbc_cache; 
-    m_context->options.one_share_per_server = false; 
-    m_context->options.browse_max_lmb_count = 0; 
-    m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
-#endif
-
 #ifdef _LINUX
     // Create ~/.smb/smb.conf
     char smb_conf[MAX_PATH];
@@ -158,6 +132,32 @@ void CSMB::Init()
       fprintf(f, "workgroup = %s\n", g_guiSettings.GetString("smb.workgroup").c_str());
       fclose(f);
     }
+#endif
+
+#ifdef _WIN32
+    // set the log function
+    set_log_callback(xb_smbc_log);
+#endif
+
+    // setup our context
+    m_context = smbc_new_context();
+    smbc_init(xb_smbc_auth, 0);
+#ifdef DEPRECATED_SMBC_INTERFACE
+    smbc_setDebug(m_context, g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0);
+    smbc_setFunctionAuthData(m_context, xb_smbc_auth);
+    orig_cache = smbc_getFunctionGetCachedServer(m_context);
+    smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache);
+    smbc_setOptionOneSharePerServer(m_context, false);
+    smbc_setOptionBrowseMaxLmbCount(m_context, 0);
+    smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
+#else
+    m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0; 
+    m_context->callbacks.auth_fn = xb_smbc_auth; 
+    orig_cache = m_context->callbacks.get_cached_srv_fn; 
+    m_context->callbacks.get_cached_srv_fn = xb_smbc_cache; 
+    m_context->options.one_share_per_server = false; 
+    m_context->options.browse_max_lmb_count = 0; 
+    m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
 #endif
 
     // initialize samba and do some hacking into the settings

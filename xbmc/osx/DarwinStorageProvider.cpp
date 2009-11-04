@@ -22,6 +22,7 @@
 #include "RegExp.h"
 #include "StdString.h"
 #include "Util.h"
+#include "LocalizeStrings.h"
 
 bool CDarwinStorageProvider::m_event = false;
 
@@ -29,6 +30,22 @@ CDarwinStorageProvider::CDarwinStorageProvider()
 {
   m_removableLength = 0;
   PumpDriveChangeEvents(NULL);
+}
+
+void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
+{
+  CMediaSource share;
+  share.strPath = getenv("HOME");
+  share.strName = g_localizeStrings.Get(10000);
+  share.m_ignore = true;
+  localDrives.push_back(share);
+
+  GetDrives(localDrives);
+}
+
+void CDarwinStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
+{
+  /*GetDrives(removableDrives);*/
 }
 
 void CDarwinStorageProvider::GetDrives(VECSOURCES &drives)

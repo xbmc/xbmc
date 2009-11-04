@@ -1,6 +1,7 @@
 texture g_YTexture;
 texture g_UTexture;
 texture g_VTexture;
+float4x4 g_ColorMatrix;
 
 sampler YSampler =
   sampler_state {
@@ -49,12 +50,11 @@ struct PS_OUTPUT
 PS_OUTPUT YUV2RGB( VS_OUTPUT In)
 {
   PS_OUTPUT OUT;
-  float3 YUV = float3(tex2D (YSampler, In.TextureY).x - (16.0  / 256.0)
-                    , tex2D (USampler, In.TextureU).x - (128.0 / 256.0)
-                    , tex2D (VSampler, In.TextureV).x - (128.0 / 256.0)); 
-  OUT.RGBColor.r = clamp((1.164 * YUV.x + 1.596 * YUV.z),0,255);
-  OUT.RGBColor.g = clamp((1.164 * YUV.x - 0.813 * YUV.z - 0.391 * YUV.y), 0,255); 
-  OUT.RGBColor.b = clamp((1.164 * YUV.x + 2.018 * YUV.y),0,255);
+  float4 YUV = float4(tex2D (YSampler, In.TextureY).x
+                    , tex2D (USampler, In.TextureU).x
+                    , tex2D (VSampler, In.TextureV).x
+                    , 1.0);
+  OUT.RGBColor = mul(YUV, g_ColorMatrix);
   OUT.RGBColor.a = 1.0;
   return OUT;
 }
