@@ -196,6 +196,8 @@ public:
   void ExportKaraokeInfo(const CStdString &outFile, bool asHTML );
   void ImportKaraokeInfo(const CStdString &inputFile );
 
+  static void SetPropertiesFromArtist(CFileItem& item, const CArtist& artist);
+  static void SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album);
 protected:
   std::map<CStdString, int /*CArtistCache*/> m_artistCache;
   std::map<CStdString, int /*CGenreCache*/> m_genreCache;

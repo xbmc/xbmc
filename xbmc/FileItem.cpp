@@ -93,6 +93,7 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   else
     m_strThumbnailImage.clear();
 
+  /* TODO: remove when we remove old properties */
   SetProperty("description", album.strReview);
   SetProperty("theme", album.strThemes);
   SetProperty("mood", album.strMoods);
@@ -101,6 +102,8 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   SetProperty("label", album.strLabel);
   if (album.iRating > 0)
     SetProperty("rating", album.iRating);
+
+  CMusicDatabase::SetPropertiesFromAlbum(*this,album);
 }
 
 CFileItem::CFileItem(const CVideoInfoTag& movie)
