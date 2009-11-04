@@ -111,19 +111,8 @@ struct YUVRANGE
   int v_min, v_max;
 };
 
-struct YUVCOEF
-{
-  float r_up, r_vp;
-  float g_up, g_vp;
-  float b_up, b_vp;
-};
-
 extern YUVRANGE yuv_range_lim;
 extern YUVRANGE yuv_range_full;
-extern YUVCOEF yuv_coef_bt601;
-extern YUVCOEF yuv_coef_bt709;
-extern YUVCOEF yuv_coef_ebu;
-extern YUVCOEF yuv_coef_smtp240m;
 
 class CWinRenderer : public CBaseRenderer
 {
@@ -147,8 +136,8 @@ public:
   virtual bool         IsConfigured() { return m_bConfigured; }
 
   // TODO:DIRECTX - implement these
-  virtual bool         SupportsBrightness() { return false; }
-  virtual bool         SupportsContrast() { return false; }
+  virtual bool         SupportsBrightness() { return true; }
+  virtual bool         SupportsContrast() { return true; }
   virtual bool         SupportsGamma() { return false; }
 
   virtual void AutoCrop(bool bCrop);
@@ -197,6 +186,7 @@ protected:
 
   // clear colour for "black" bars
   DWORD m_clearColour;
+  unsigned int m_flags;
 };
 
 

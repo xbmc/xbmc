@@ -74,6 +74,7 @@ public:
   virtual ~CD3DEffect();
   bool Create(const CStdString &effectString);
   void Release();
+  bool SetMatrix(D3DXHANDLE handle, const D3DXMATRIX* mat);
   bool SetTechnique(D3DXHANDLE handle);
   bool SetTexture(D3DXHANDLE handle, CD3DTexture &texture);
   bool Begin(UINT *passes, DWORD flags);

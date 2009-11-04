@@ -182,6 +182,13 @@ void CD3DEffect::OnCreateDevice()
   CreateEffect();
 }
 
+bool CD3DEffect::SetMatrix(D3DXHANDLE handle, const D3DXMATRIX* mat)
+{
+  if (m_effect)
+    return (D3D_OK == m_effect->SetMatrix(handle, mat));
+  return false;
+}
+
 bool CD3DEffect::SetTechnique(D3DXHANDLE handle)
 {
   if (m_effect)

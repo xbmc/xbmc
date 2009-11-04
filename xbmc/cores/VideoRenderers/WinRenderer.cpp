@@ -36,30 +36,37 @@
 YUVRANGE yuv_range_lim =  { 16, 235, 16, 240, 16, 240 };
 YUVRANGE yuv_range_full = {  0, 255,  0, 255,  0, 255 };
 
-YUVCOEF yuv_coef_bt601 = {
-     0.0f,   1.403f,
-  -0.344f,  -0.714f,
-   1.773f,     0.0f,
+static float yuv_coef_bt601[4][4] = 
+{
+    { 1.0f,      1.0f,     1.0f,     0.0f },
+    { 0.0f,     -0.344f,   1.773f,   0.0f },
+    { 1.403f,   -0.714f,   0.0f,     0.0f },
+    { 0.0f,      0.0f,     0.0f,     0.0f } 
 };
 
-YUVCOEF yuv_coef_bt709 = {
-     0.0f,  1.5701f,
- -0.1870f, -0.4664f,
-  1.8556f,     0.0f, /* page above have the 1.8556f as negative */
+static float yuv_coef_bt709[4][4] =
+{
+    { 1.0f,      1.0f,     1.0f,     0.0f },
+    { 0.0f,     -0.1870f,  1.8556f,  0.0f },
+    { 1.5701f,  -0.4664f,  0.0f,     0.0f },
+    { 0.0f,      0.0f,     0.0f,     0.0f }
 };
 
-YUVCOEF yuv_coef_ebu = {
-    0.0f,  1.140f,
- -0.396f, -0.581f,
-  2.029f,    0.0f, 
+static float yuv_coef_ebu[4][4] = 
+{
+    { 1.0f,      1.0f,     1.0f,     0.0f },
+    { 0.0f,     -0.3960f,  2.029f,   0.0f },
+    { 1.140f,   -0.581f,   0.0f,     0.0f },
+    { 0.0f,      0.0f,     0.0f,     0.0f }
 };
 
-YUVCOEF yuv_coef_smtp240m = {
-     0.0f,  1.5756f,
- -0.2253f, -0.5000f, /* page above have the 0.5000f as positive */
-  1.8270f,     0.0f,  
+static float yuv_coef_smtp240m[4][4] =
+{
+    { 1.0f,      1.0f,     1.0f,     0.0f },
+    { 0.0f,     -0.2253f,  1.8270f,  0.0f },
+    { 1.5756f,  -0.5000f,  0.0f,     0.0f },
+    { 0.0f,      0.0f,     0.0f,     0.0f }
 };
-
 
 CWinRenderer::CWinRenderer()
 {
@@ -99,6 +106,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
 {
   m_sourceWidth = width;
   m_sourceHeight = height;
+  m_flags = flags;
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
@@ -502,6 +510,51 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     verts[i].y -= 0.5;
   }
 
+  float contrast   = g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f;
+  float blacklevel = g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f;
+
+  D3DXMATRIX temp, mat;
+  D3DXMatrixIdentity(&mat);
+
+  if (!(m_flags & CONF_FLAGS_YUV_FULLRANGE))
+  {
+    D3DXMatrixTranslation(&temp, - 16.0f / 255
+                               , - 16.0f / 255
+                               , - 16.0f / 255);
+    D3DXMatrixMultiply(&mat, &mat, &temp);
+
+    D3DXMatrixScaling(&temp, 255.0f / (235 - 16)
+                           , 255.0f / (240 - 16)
+                           , 255.0f / (240 - 16));
+    D3DXMatrixMultiply(&mat, &mat, &temp);
+  }
+
+  D3DXMatrixTranslation(&temp, 0.0f, - 0.5f, - 0.5f);
+  D3DXMatrixMultiply(&mat, &mat, &temp);
+
+  switch(CONF_FLAGS_YUVCOEF_MASK(m_flags))
+  {
+   case CONF_FLAGS_YUVCOEF_240M:
+     memcpy(temp.m, yuv_coef_smtp240m, 4*4*sizeof(float)); break;
+   case CONF_FLAGS_YUVCOEF_BT709:
+     memcpy(temp.m, yuv_coef_bt709   , 4*4*sizeof(float)); break;
+   case CONF_FLAGS_YUVCOEF_BT601:    
+     memcpy(temp.m, yuv_coef_bt601   , 4*4*sizeof(float)); break;
+   case CONF_FLAGS_YUVCOEF_EBU:
+     memcpy(temp.m, yuv_coef_ebu     , 4*4*sizeof(float)); break;
+   default:
+     memcpy(temp.m, yuv_coef_bt601   , 4*4*sizeof(float)); break;
+  }
+  temp.m[3][3] = 1.0f;
+  D3DXMatrixMultiply(&mat, &mat, &temp);
+
+  D3DXMatrixTranslation(&temp, blacklevel, blacklevel, blacklevel);
+  D3DXMatrixMultiply(&mat, &mat, &temp);
+
+  D3DXMatrixScaling(&temp, contrast, contrast, contrast);
+  D3DXMatrixMultiply(&mat, &mat, &temp);
+
+  m_YUV2RGBEffect.SetMatrix( "g_ColorMatrix", &mat);
   m_YUV2RGBEffect.SetTechnique( "YUV2RGB_T" );
   m_YUV2RGBEffect.SetTexture( "g_YTexture",  m_YUVVideoTexture[index][0] ) ;
   m_YUV2RGBEffect.SetTexture( "g_UTexture",  m_YUVVideoTexture[index][1] ) ;
