@@ -27,6 +27,7 @@
 #include "RenderFlags.h"
 #include "BaseRenderer.h"
 #include "D3DResource.h"
+#include "settings/VideoSettings.h"
 
 //#define MP_DIRECTRENDERING
 
@@ -139,6 +140,8 @@ public:
   virtual bool         SupportsBrightness() { return true; }
   virtual bool         SupportsContrast() { return true; }
   virtual bool         SupportsGamma() { return false; }
+  virtual bool         Supports(EINTERLACEMETHOD method);
+  virtual bool         Supports(ESCALINGMETHOD method);
 
   virtual void AutoCrop(bool bCrop);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);

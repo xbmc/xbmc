@@ -1972,4 +1972,50 @@ bool CLinuxRendererGL::SupportsMultiPassRendering()
   return glewIsSupported("GL_EXT_framebuffer_object") && glCreateProgram;
 }
 
+bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
+{
+  if(method == VS_INTERLACEMETHOD_NONE
+  || method == VS_INTERLACEMETHOD_AUTO
+  || method == VS_INTERLACEMETHOD_DEINTERLACE)
+    return true;
+
+  if(method == VS_INTERLACEMETHOD_RENDER_BLEND
+  || method == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED
+  || method == VS_INTERLACEMETHOD_RENDER_WEAVE
+  || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
+  || method == VS_INTERLACEMETHOD_RENDER_BOB)
+    return true;
+
+  if(method == VS_INTERLACEMETHOD_VDPAU && m_renderMethod == RENDER_METHOD_VDPAU)
+    return true;
+
+  return false;
+}
+
+bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
+{
+  if(method == VS_SCALINGMETHOD_NEAREST
+  || method == VS_SCALINGMETHOD_LINEAR)
+    return true;
+
+
+  if(method == VS_SCALINGMETHOD_CUBIC 
+  && glewIsSupported("GL_ARB_texture_float")
+  && glewIsSupported("GL_EXT_framebuffer_object")
+  && m_renderMethod == RENDER_GLSL)
+    return true;
+
+#if 0
+  if(method == VS_SCALINGMETHOD_BICUBIC_SOFTWARE
+  || method == VS_SCALINGMETHOD_LANCZOS_SOFTWARE
+  || method == VS_SCALINGMETHOD_SINC_SOFTWARE)
+    return true;
+#endif
+
+  if(method == VS_SCALINGMETHOD_VDPAU_HARDWARE && m_renderMethod == RENDER_METHOD_VDPAU)
+    return true;
+
+  return false;
+}
+
 #endif

@@ -77,18 +77,23 @@ void CGUIDialogVideoSettings::CreateSettings()
     vector<pair<int, int> > entries;
     entries.push_back(make_pair(VS_INTERLACEMETHOD_NONE                 , 16018));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_AUTO                 , 16019));
-#if defined(HAS_GL)
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_BLEND         , 20131));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED, 20130));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_WEAVE         , 20129));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_BOB_INVERTED  , 16022));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_BOB           , 16021));
-#endif
     entries.push_back(make_pair(VS_INTERLACEMETHOD_DEINTERLACE          , 16020));
-#if defined(HAVE_LIBVDPAU)
     entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU                , 16310));
-#endif
-    //entries.push_back(make_pair(VS_INTERLACEMETHOD_INVERSE_TELECINE     , 16314));
+    entries.push_back(make_pair(VS_INTERLACEMETHOD_INVERSE_TELECINE     , 16314));
+
+    /* remove unsupported methods */
+    for(vector<pair<int, int> >::iterator it = entries.begin(); it != entries.end();)
+    {
+      if(g_renderManager.Supports((EINTERLACEMETHOD)it->first))
+        it++;
+      else
+        it = entries.erase(it);
+    }
 
     AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_stSettings.m_currentVideoSettings.m_InterlaceMethod, entries);
   }
@@ -96,25 +101,25 @@ void CGUIDialogVideoSettings::CreateSettings()
     vector<pair<int, int> > entries;
     entries.push_back(make_pair(VS_SCALINGMETHOD_NEAREST          , 16301));
     entries.push_back(make_pair(VS_SCALINGMETHOD_LINEAR           , 16302));
-#if defined(HAS_GL)
     entries.push_back(make_pair(VS_SCALINGMETHOD_CUBIC            , 16303));
-#endif
-
-#if 0
     entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS2         , 16304));
     entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS3         , 16305));
     entries.push_back(make_pair(VS_SCALINGMETHOD_SINC8            , 16306));
-    entries.push_back(make_pair(VS_SCALINGMETHOD_NEDI             , ?????));
-#endif
-
-#if defined(HAS_GL) && 0 // disabled for now, these technically do work
+//    entries.push_back(make_pair(VS_SCALINGMETHOD_NEDI             , ?????));
     entries.push_back(make_pair(VS_SCALINGMETHOD_BICUBIC_SOFTWARE , 16307));
     entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS_SOFTWARE , 16308));
     entries.push_back(make_pair(VS_SCALINGMETHOD_SINC_SOFTWARE    , 16309));
-#endif
-#if defined(HAVE_LIBVDPAU)
     entries.push_back(make_pair(VS_SCALINGMETHOD_VDPAU_HARDWARE   , 13120));
-#endif
+
+    /* remove unsupported methods */
+    for(vector<pair<int, int> >::iterator it = entries.begin(); it != entries.end();)
+    {
+      if(g_renderManager.Supports((ESCALINGMETHOD)it->first))
+        it++;
+      else
+        it = entries.erase(it);
+    }
+
     AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_stSettings.m_currentVideoSettings.m_ScalingMethod, entries);
   }
   AddBool(VIDEO_SETTINGS_CROP, 644, &g_stSettings.m_currentVideoSettings.m_Crop);

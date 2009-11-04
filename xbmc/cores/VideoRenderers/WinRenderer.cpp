@@ -681,6 +681,24 @@ bool CWinRenderer::CreateYV12Texture(int index)
   return true;
 }
 
+bool CWinRenderer::Supports(EINTERLACEMETHOD method)
+{
+  if(method == VS_INTERLACEMETHOD_NONE
+  || method == VS_INTERLACEMETHOD_AUTO
+  || method == VS_INTERLACEMETHOD_DEINTERLACE)
+    return true;
+
+  return false;
+}
+
+bool CWinRenderer::Supports(ESCALINGMETHOD method)
+{
+  if(method == VS_SCALINGMETHOD_NEAREST
+  || method == VS_SCALINGMETHOD_LINEAR)
+    return true;
+
+  return false;
+}
 
 CPixelShaderRenderer::CPixelShaderRenderer()
     : CWinRenderer()
