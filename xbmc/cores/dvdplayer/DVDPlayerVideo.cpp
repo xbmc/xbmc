@@ -547,35 +547,25 @@ void CDVDPlayerVideo::Process()
               pts = picture.pts;
             }
 
-            //don't do single repeats, they mess up the pattern detection
-            if (picture.iRepeatPicture == 1)
-              picture.iRepeatPicture = 0;
+            if(pulldown.enabled())
+            {
+              picture.iDuration = pulldown.dur();
+              pulldown.next();
+            }
+
+            if (picture.iRepeatPicture > 0)
+              picture.iDuration *= picture.iRepeatPicture + 1;
 
             int iResult;
-            do
+            try
             {
-              if(pulldown.enabled())
-              {
-                picture.iDuration = pulldown.dur();
-                pulldown.next();
-              }
-
-              try
-              {
-                iResult = OutputPicture(&picture, pts);
-              }
-              catch (...)
-              {
-                CLog::Log(LOGERROR, "%s - Exception caught when outputing picture", __FUNCTION__);
-                iResult = EOS_ABORT;
-              }
-
-              if (iResult == EOS_ABORT) break;
-
-              // guess next frame pts. iDuration is always valid
-              pts += picture.iDuration * m_speed / abs(m_speed);
+              iResult = OutputPicture(&picture, pts);
             }
-            while (!m_bStop && picture.iRepeatPicture-- > 0);
+            catch (...)
+            {
+              CLog::Log(LOGERROR, "%s - Exception caught when outputing picture", __FUNCTION__);
+              iResult = EOS_ABORT;
+            }
 
             if( iResult & EOS_ABORT )
             {
