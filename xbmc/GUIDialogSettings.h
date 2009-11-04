@@ -87,8 +87,8 @@ protected:
   void AddBool(unsigned int id, int label, bool *on, bool enabled = true);
   void AddSpin(unsigned int id, int label, int *current, unsigned int max, const int *entries);
   void AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max, const char* minLabel = NULL);
-  void AddSpin(unsigned int id, int label, int *current, std::vector<std::pair<int, CStdString>> &values);
-  void AddSpin(unsigned int id, int label, int *current, std::vector<std::pair<int, int>> &values);
+  void AddSpin(unsigned int id, int label, int *current, std::vector<std::pair<int, CStdString> > &values);
+  void AddSpin(unsigned int id, int label, int *current, std::vector<std::pair<int, int> > &values);
   void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, FORMATFUNCTION formatFunction, bool allowPopup = true);
   void AddSeparator(unsigned int id);
 
