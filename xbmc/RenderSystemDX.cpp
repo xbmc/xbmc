@@ -29,6 +29,7 @@
 #include "GUIWindowManager.h"
 #include "SingleLock.h"
 #include "D3DResource.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 
@@ -48,6 +49,7 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   m_stateBlock = NULL;
   m_inScene = false;
   m_needNewDevice = false;
+  m_adapter = D3DADAPTER_DEFAULT;
 
   ZeroMemory(&m_D3DPP, sizeof(D3DPRESENT_PARAMETERS));
 }
@@ -114,6 +116,11 @@ void CRenderSystemDX::SetMonitor(HMONITOR monitor)
 {
   if (!m_pD3D)
     return;
+
+  // fake fullscreen mode
+  if (g_advancedSettings.m_fakeFullScreen)
+    return;
+
   // find the appropriate screen
   for (unsigned int adapter = 0; adapter < m_pD3D->GetAdapterCount(); adapter++)
   {
@@ -146,7 +153,8 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
 void CRenderSystemDX::BuildPresentParameters()
 {
   ZeroMemory( &m_D3DPP, sizeof(D3DPRESENT_PARAMETERS) );
-  m_D3DPP.Windowed					= !m_bFullScreenDevice;
+  bool useWindow = g_advancedSettings.m_fakeFullScreen || !m_bFullScreenDevice;
+  m_D3DPP.Windowed					= useWindow;
   m_D3DPP.SwapEffect				= D3DSWAPEFFECT_DISCARD;
   m_D3DPP.BackBufferCount			= 1;
   m_D3DPP.EnableAutoDepthStencil	= TRUE;
@@ -155,7 +163,7 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.BackBufferHeight			= m_nBackBufferHeight;
   m_D3DPP.Flags   =   D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
   m_D3DPP.PresentationInterval = (m_bVSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
-  m_D3DPP.FullScreen_RefreshRateInHz = (m_bFullScreenDevice) ? (int)m_refreshRate : 0;
+  m_D3DPP.FullScreen_RefreshRateInHz = (useWindow) ? 0 : (int)m_refreshRate;
   m_D3DPP.BackBufferFormat = D3DFMT_X8R8G8B8;
   m_D3DPP.MultiSampleType = D3DMULTISAMPLE_NONE;
   m_D3DPP.MultiSampleQuality = 0;

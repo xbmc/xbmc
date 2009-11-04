@@ -224,7 +224,11 @@ void CAdvancedSettings::Initialize()
   m_playlistTimeout = 20; // 20 seconds timeout
   m_GLRectangleHack = false;
   m_iSkipLoopFilter = 0;
-  m_osx_GLFullScreen = false;
+#ifdef __APPLE__
+  m_fakeFullScreen = true;
+#else
+  m_fakeFullScreen = false;
+#endif
   m_bVirtualShares = true;
 
 //caused lots of jerks
@@ -503,7 +507,14 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetBoolean(pRootElement,"glrectanglehack", m_GLRectangleHack);
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
-  XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", m_osx_GLFullScreen);
+
+  { // backward compatibility with 9.11 alpha1
+    bool oldOSXFullScreen = false;
+    XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", oldOSXFullScreen);
+    if (oldOSXFullScreen)
+      m_fakeFullScreen = false;
+  }
+  XMLUtils::GetBoolean(pRootElement,"fakefullscreen", m_fakeFullScreen);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
 
   //Tuxbox
