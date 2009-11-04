@@ -508,7 +508,9 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
 
-  { // backward compatibility with 9.11 alpha1
+  { 
+    // backward compatibility with Launcher install script on AppleTV platforms
+    // AppleTV OS < 2.4 needs this set for getting XBMC in front of Frontrow.
     bool oldOSXFullScreen = false;
     XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", oldOSXFullScreen);
     if (oldOSXFullScreen)
