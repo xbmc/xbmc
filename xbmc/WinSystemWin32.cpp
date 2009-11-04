@@ -143,7 +143,7 @@ bool CWinSystemWin32::CreateNewWindow(const CStdString& name, bool fullScreen, R
 
   CreateBlankWindow();
 
-  ResizeInternal();
+  ResizeInternal(true);
 
   // Show the window
   ShowWindow( m_hWnd, SW_SHOWDEFAULT );
@@ -253,12 +253,13 @@ void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
 bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   m_bFullScreen = fullScreen;
+  bool forceResize = (m_nScreen != res.iScreen);
   m_nScreen = res.iScreen;
   m_nWidth  = res.iWidth;
   m_nHeight = res.iHeight;
   m_bBlankOtherDisplay = blankOtherDisplays;
 
-  ResizeInternal();
+  ResizeInternal(forceResize);
 
   BlankNonActiveMonitor(m_bBlankOtherDisplay);
  
@@ -277,7 +278,7 @@ const MONITOR_DETAILS &CWinSystemWin32::GetMonitor(int screen) const
   return m_MonitorsInfo[monitorId];
 }
 
-bool CWinSystemWin32::ResizeInternal()
+bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
 {
   DWORD dwStyle = WS_CLIPCHILDREN;
   HWND windowAfter;
@@ -311,8 +312,8 @@ bool CWinSystemWin32::ResizeInternal()
   }
 
   RECT wr = wi.rcWindow;
-  if (wr.bottom != rc.bottom || wr.top != rc.top || wr.right != rc.right || wr.left != rc.left ||
-    (wi.dwStyle & WS_CAPTION) != (dwStyle & WS_CAPTION))
+  if (forceRefresh || wr.bottom  - wr.top != rc.bottom - rc.top || wr.right - wr.left != rc.right - rc.left ||
+                     (wi.dwStyle & WS_CAPTION) != (dwStyle & WS_CAPTION))
   {
     CLog::Log(LOGDEBUG, "%s - resizing due to size change (%d,%d,%d,%d%s)->(%d,%d,%d,%d%s)",__FUNCTION__,wr.left, wr.top, wr.right, wr.bottom, (wi.dwStyle & WS_CAPTION) ? "" : " fullscreen",
                                                                                                          rc.left, rc.top, rc.right, rc.bottom, (dwStyle & WS_CAPTION) ? "" : " fullscreen");

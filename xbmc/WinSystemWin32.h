@@ -76,7 +76,7 @@ public:
   HWND GetHwnd() { return m_hWnd; }
 
 protected:
-  virtual bool ResizeInternal();
+  virtual bool ResizeInternal(bool forceRefresh = false);
   virtual bool UpdateResolutionsInternal();
   virtual bool CreateBlankWindow();
   virtual bool BlankNonActiveMonitor(bool bBlank);
