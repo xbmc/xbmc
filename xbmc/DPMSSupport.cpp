@@ -24,6 +24,7 @@
 #include "system.h"
 #include "utils/log.h"
 #include "WindowingFactory.h"
+#include "SystemInfo.h"
 
 #include <assert.h>
 #include <string>
