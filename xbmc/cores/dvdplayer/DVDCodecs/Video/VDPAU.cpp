@@ -325,6 +325,12 @@ void CVDPAU::CheckFeatures()
                                     parameter_values,
                                     &videoMixer);
     CheckStatus(vdp_st, __LINE__);
+#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+    if (g_guiSettings.GetBool("videoplayer.vdpauUpscalingLevel"))
+    {
+      SetHWUpscaling();
+    }
+#endif
   }
 
   if (tmpBrightness != g_stSettings.m_currentVideoSettings.m_Brightness ||
@@ -421,6 +427,27 @@ void CVDPAU::SetSharpness()
   CheckStatus(vdp_st, __LINE__);
 }
 
+void CVDPAU::SetHWUpscaling()
+{
+#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+  CLog::Log(LOGNOTICE,"Enabling VDPAU HQ Upscaling");
+  VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
+  VdpStatus vdp_st;
+  VdpBool available;
+  
+  vdp_st = vdp_video_mixer_query_feature_support(vdp_device, VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1, &available);
+  
+  if ( (vdp_st != VDP_STATUS_OK) || !available )
+  {
+    CLog::Log(LOGNOTICE,"VDPAU HQ upscaling not available");
+    return;
+  }
+  
+  VdpBool enabled[]={1};
+  vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+  CheckStatus(vdp_st, __LINE__);
+#endif
+}
 
 void CVDPAU::SetDeinterlacing()
 {
@@ -604,6 +631,13 @@ void CVDPAU::InitVDPAUProcs()
                                 (void **)&vdp_video_mixer_query_parameter_support
                                 );
   CheckStatus(vdp_st, __LINE__);
+
+  vdp_st = vdp_get_proc_address(
+                                vdp_device,
+                                VDP_FUNC_ID_VIDEO_MIXER_QUERY_FEATURE_SUPPORT,
+                                (void **)&vdp_video_mixer_query_feature_support
+                                );
+  CheckStatus(vdp_st, __LINE__);  
 
   vdp_st = vdp_get_proc_address(
                                 vdp_device,

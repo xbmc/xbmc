@@ -99,6 +99,7 @@ public:
   void SetNoiseReduction();
   void SetSharpness();
   void SetDeinterlacing();
+  void SetHWUpscaling();
   bool VDPAURecovered, VDPAUSwitching;
 
   VdpTime    lastSwapTime, frameLagTime, frameLagTimeRunning, frameLagAverage;
@@ -148,6 +149,7 @@ public:
   VdpVideoMixerCreate *                vdp_video_mixer_create;
   VdpVideoMixerSetFeatureEnables *     vdp_video_mixer_set_feature_enables;
   VdpVideoMixerQueryParameterSupport * vdp_video_mixer_query_parameter_support;
+  VdpVideoMixerQueryFeatureSupport *   vdp_video_mixer_query_feature_support;
   VdpVideoMixerDestroy *               vdp_video_mixer_destroy;
   VdpVideoMixerRender *                vdp_video_mixer_render;
   VdpVideoMixerSetAttributeValues *    vdp_video_mixer_set_attribute_values;
