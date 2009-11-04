@@ -45,6 +45,7 @@ static void LoadTexture(GLenum target
   int width2  = NP2(width);
   int height2 = NP2(height);
 
+  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
   if(format == GL_RGBA)
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 4);
   else if(format == GL_RGB)
