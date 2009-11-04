@@ -1102,36 +1102,23 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   vdpau_render_state * render = (vdpau_render_state*)pFrame->data[0];
   VdpVideoMixerPictureStructure structure;
   VdpStatus vdp_st;
+  VdpTime time;
 
   if (!vdpauConfigured)
     return;
 
   outputSurface = outputSurfaces[surfaceNum];
-  interlaced = pFrame->interlaced_frame;
 
   CheckFeatures();
-  if (interlaced && tmpDeint)
-  {
-    past[1] = past[0];
-    past[0] = current;
-    current = future;
-    future = render->surface;
-  }
-  else
-    current = render->surface;
 
   if (interlaced && tmpDeint)
     structure = pFrame->top_field_first ? VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD :
                                           VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
   else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME; 
 
-  if (interlaced && tmpDeint)
-  {
-    past[1] = past[0];
-    past[0] = current;
-    current = future;
-    future = render->surface;
-  }
+  past[0] = past[1];
+  past[1] = current;
+  current = render->surface;
 
   if (( (int)outRectVid.x1 != OutWidth ) ||
       ( (int)outRectVid.y1 != OutHeight ))
@@ -1142,16 +1129,21 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     outRectVid.x1 = OutWidth;
     outRectVid.y1 = OutHeight;
   }
+  
+  if (current == VDP_INVALID_HANDLE)
+    current = render->surface;
+  
+  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
 
   vdp_st = vdp_video_mixer_render(videoMixer,
                                   VDP_INVALID_HANDLE,
                                   0,
                                   structure,
-                                  (interlaced && tmpDeint)? ARSIZE(past) : 0, //2,
-                                  (interlaced && tmpDeint)? past : NULL, //past,
+                                  2,
+                                  past,
                                   current,
-                                  (interlaced && tmpDeint)? 1 : 0, //1,
-                                  (interlaced && tmpDeint)? &(future) : NULL, //&(future),
+                                  0,
+                                  NULL,
                                   NULL,
                                   outputSurface,
                                   &(outRectVid),
@@ -1159,7 +1151,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
                                   0,
                                   NULL);
   CheckStatus(vdp_st, __LINE__);
-
+  
   surfaceNum++;
   if (surfaceNum >= totalAvailableOutputSurfaces) surfaceNum = 0;
 }
@@ -1168,15 +1160,13 @@ void CVDPAU::Present()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
-  presentSurface = outputSurfaces[presentSurfaceNum];
+
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
                                           outputSurface,
                                           0,
                                           0,
                                           0);
   CheckStatus(vdp_st, __LINE__);
-  presentSurfaceNum++;
-  if (presentSurfaceNum >= totalAvailableOutputSurfaces) presentSurfaceNum = 0;
 }
 
 void CVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)
