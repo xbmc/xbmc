@@ -257,14 +257,6 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
 
   // user successfully entered mastercode
   UpdateMasterLockRetryCount(true);
-  if (g_guiSettings.GetBool("masterlock.automastermode") && 
-      g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
-  {
-      LockSources(false);
-      bMasterUser = true;
-      g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),
-                                                          g_localizeStrings.Get(20054));
-  }
   return true;
 }
 

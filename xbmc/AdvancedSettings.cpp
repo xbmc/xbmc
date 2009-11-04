@@ -311,7 +311,7 @@ bool CAdvancedSettings::Load()
     if (pVideoExcludes)
       GetCustomRegexps(pVideoExcludes, m_tvshowExcludeFromScanRegExps);
 
-    pVideoExcludes = pElement->FirstChildElement("cleanfilenames");
+    pVideoExcludes = pElement->FirstChildElement("cleanstrings");
     if (pVideoExcludes)
       GetCustomRegexps(pVideoExcludes, m_videoCleanStringRegExps);
 

@@ -4372,8 +4372,7 @@ bool CApplication::ResetScreenSaverWindow()
   {
     int iProfile = g_settings.m_iLastLoadedProfileIndex;
     if (m_iScreenSaveLock == 0)
-      if (g_guiSettings.GetBool("screensaver.uselock")                           &&
-          g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE        &&
+      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE        &&
           g_settings.m_vecProfiles[iProfile].getLockMode() != LOCK_MODE_EVERYONE &&
          !g_guiSettings.GetString("screensaver.mode").Equals("Black")            &&
         !(g_guiSettings.GetBool("screensaver.usemusicvisinstead")                &&
