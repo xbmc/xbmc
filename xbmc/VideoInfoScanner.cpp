@@ -1200,13 +1200,8 @@ namespace VIDEO
         return GetnfoFile(&item2,bGrabAny);
       }
 
-      // mymovies.xml precedes any nfo file
       CStdString strPath;
       CUtil::GetDirectory(item->m_strPath,strPath);
-      nfoFile = CUtil::AddFileToFolder(strPath,"mymovies.xml");
-      if (CFile::Exists(nfoFile) && !item->m_bIsFolder) // "our" mymovies.xml only work for movies, not shows (mymovies.dk vs windows mce
-        return nfoFile;
-
       nfoFile = CUtil::AddFileToFolder(strPath,"movie.nfo");
       if (CFile::Exists(nfoFile))
         return nfoFile;
@@ -1253,6 +1248,11 @@ namespace VIDEO
           return GetnfoFile(&item2,bGrabAny);
         }
       }
+      
+      // finally try mymovies.xml
+      nfoFile = CUtil::AddFileToFolder(strPath,"mymovies.xml");
+      if (CFile::Exists(nfoFile))
+        return nfoFile;
     }
     if (item->m_bIsFolder || (bGrabAny && nfoFile.IsEmpty()))
     {
