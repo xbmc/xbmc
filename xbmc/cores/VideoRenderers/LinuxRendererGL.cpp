@@ -931,6 +931,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_LANCZOS_SOFTWARE:
   case VS_SCALINGMETHOD_SINC_SOFTWARE:
     InitializeSoftwareUpscaling();
+    m_renderQuality = RQ_SINGLEPASS;
     return;
 
   default:
