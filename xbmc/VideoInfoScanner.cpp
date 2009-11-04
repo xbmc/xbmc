@@ -567,7 +567,7 @@ namespace VIDEO
               m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
             long lResult = AddMovieAndGetThumb(pItem.get(), info2.strContent, *pItem->GetVideoInfoTag(), -1, bDirNames, pDlgProgress);
-            if (bRefresh && info.strContent.Equals("tvshows"))
+            if (bRefresh && info.strContent.Equals("tvshows") && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
               FetchSeasonThumbs(lResult);
             if (!bRefresh && info2.strContent.Equals("tvshows"))
               i--;
@@ -622,7 +622,8 @@ namespace VIDEO
                     m_database.SetPathHash(pItem->m_strPath,pItem->GetProperty("hash"));
                 }
                 else
-                  FetchSeasonThumbs(lResult);
+                  if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
+                    FetchSeasonThumbs(lResult);
               }
               Return = true;
             }
@@ -1053,6 +1054,7 @@ namespace VIDEO
     if (bApplyToDir && !strThumb.IsEmpty())
       ApplyIMDBThumbToFolder(strDirectory,strThumb);
 
+    if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
     FetchActorThumbs(movieDetails.m_cast,strDirectory);
     m_database.Close();
     return lResult;
@@ -1172,7 +1174,8 @@ namespace VIDEO
         AddMovieAndGetThumb(&item,"tvshows",episodeDetails,idShow);
       }
     }
-    FetchSeasonThumbs(idShow);
+    if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
+      FetchSeasonThumbs(idShow);
     m_database.Close();
     return true;
   }
