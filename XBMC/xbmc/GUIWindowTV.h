@@ -23,6 +23,7 @@
 
 #include "GUIMediaWindow.h"
 #include "GUIEPGGridContainer.h"
+#include "utils/PVREpg.h"
 
 enum TVWindow
 {
@@ -32,7 +33,8 @@ enum TVWindow
   TV_WINDOW_CHANNELS_RADIO  = 3,
   TV_WINDOW_RECORDINGS      = 4,
   TV_WINDOW_TIMERS          = 5,
-  TV_WINDOW_SETTINGS        = 6
+  TV_WINDOW_SEARCH          = 6,
+  TV_WINDOW_SETTINGS        = 7
 };
 
 class CGUIWindowTV : public CGUIMediaWindow
@@ -55,6 +57,9 @@ private:
   TVWindow m_iCurrSubTVWindow;    /* Active subwindow */
   TVWindow m_iSavedSubTVWindow;   /* Last subwindow, required if main window is shown again */
   bool m_bShowHiddenChannels;
+  bool m_bSearchStarted;
+  bool m_bSearchConfirmed;
+  EPGSearchFilter m_searchfilter;
 
   /* Selected item in associated list, required for subwindow change */
   int m_iSelected_GUIDE;
@@ -62,6 +67,10 @@ private:
   int m_iSelected_CHANNELS_RADIO;
   int m_iSelected_RECORDINGS;
   int m_iSelected_TIMERS;
+  int m_iSelected_SEARCH;
+
+  SORT_ORDER m_iSortOrder_SEARCH;
+  SORT_METHOD m_iSortMethod_SEARCH;
 
   int m_iGuideView;
   int m_iCurrentTVGroup;
@@ -71,12 +80,14 @@ private:
   void ShowRecordingInfo(CFileItem *item);
   bool ShowTimerSettings(CFileItem *item);
   void ShowGroupManager(bool IsRadio);
+  void ShowSearchResults();
 
   void UpdateGuide();
   void UpdateChannelsTV();
   void UpdateChannelsRadio();
   void UpdateRecordings();
   void UpdateTimers();
+  void UpdateSearch();
 
   CGUIEPGGridContainer   *m_guideGrid;
 };

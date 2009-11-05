@@ -944,6 +944,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("subtitlelanguage")) return LISTITEM_SUBTITLE_LANGUAGE;
   else if (info.Equals("starttime")) return LISTITEM_STARTTIME;
   else if (info.Equals("endtime")) return LISTITEM_ENDTIME;
+  else if (info.Equals("channel")) return LISTITEM_CHANNEL;
   else if (info.Equals("channelnumber")) return LISTITEM_CHANNELNUMBER;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
@@ -3693,6 +3694,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetTitle());
     if (item->HasTVChannelInfoTag())
       return CorrectAllItemsSortHack(item->GetTVChannelInfoTag()->m_strTitle);
+    if (item->HasTVEPGInfoTag())
+      return CorrectAllItemsSortHack(item->GetTVEPGInfoTag()->Title());
     if (item->HasVideoInfoTag())
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strTitle);
     break;
@@ -3750,6 +3753,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetGenre());
     if (item->HasTVChannelInfoTag())
       return CorrectAllItemsSortHack(item->GetTVChannelInfoTag()->m_strGenre);
+    if (item->HasTVEPGInfoTag())
+      return CorrectAllItemsSortHack(item->GetTVEPGInfoTag()->Genre());
     if (item->HasVideoInfoTag())
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strGenre);
     break;
@@ -3760,10 +3765,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return CUtil::GetFileName(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath));
     return CUtil::GetFileName(item->m_strPath);
   case LISTITEM_DATE:
+    if (item->HasTVEPGInfoTag())
+      return item->GetTVEPGInfoTag()->Start().GetAsLocalizedDateTime(false, false);
     if (item->HasTVRecordingInfoTag())
-    {
       return item->GetTVRecordingInfoTag()->RecordingTime().GetAsLocalizedDateTime(false, false);
-    }
     if (item->HasTVTimerInfoTag())
       return item->GetTVTimerInfoTag()->Summary();
     if (item->m_dateTime.IsValid())
@@ -3816,6 +3821,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         if (item->GetTVChannelInfoTag()->GetDuration() > 0)
           StringUtils::SecondsToTimeString(item->GetTVChannelInfoTag()->GetDuration(), duration);
       }
+      if (item->HasTVEPGInfoTag())
+      {
+        if (item->GetTVEPGInfoTag()->DurationSeconds() > 0)
+          StringUtils::SecondsToTimeString(item->GetTVEPGInfoTag()->DurationSeconds(), duration);
+      }
       if (item->HasVideoInfoTag())
       {
         duration = item->GetVideoInfoTag()->m_strRuntime;
@@ -3826,6 +3836,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_PLOT:
     if (item->HasTVChannelInfoTag())
       return item->GetTVChannelInfoTag()->m_strPlot;
+    if (item->HasTVEPGInfoTag())
+      return item->GetTVEPGInfoTag()->Plot();
     if (item->HasVideoInfoTag())
     {
       if (!(!item->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && item->GetVideoInfoTag()->m_iSeason == -1)) // dont apply to tvshows
@@ -3838,6 +3850,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_PLOT_OUTLINE:
     if (item->HasTVChannelInfoTag())
       return item->GetTVChannelInfoTag()->m_strPlotOutline;
+    if (item->HasTVEPGInfoTag())
+      return item->GetTVEPGInfoTag()->PlotOutline();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strPlotOutline;
     break;
@@ -4025,18 +4039,32 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_STARTTIME:
     if (item->HasTVChannelInfoTag())
       return item->GetTVChannelInfoTag()->StartTime().GetAsLocalizedTime("", false);
+    if (item->HasTVEPGInfoTag())
+      return item->GetTVEPGInfoTag()->Start().GetAsLocalizedTime("", false);
     break;
   case LISTITEM_ENDTIME:
     if (item->HasTVChannelInfoTag())
       return item->GetTVChannelInfoTag()->EndTime().GetAsLocalizedTime("", false);
+    if (item->HasTVEPGInfoTag())
+      return item->GetTVEPGInfoTag()->End().GetAsLocalizedTime("", false);
     break;
   case LISTITEM_CHANNELNUMBER:
     {
       CStdString number;
       if (item->HasTVChannelInfoTag())
         number.Format("%i", item->GetTVChannelInfoTag()->Number());
+      else if (item->HasTVEPGInfoTag())
+        number.Format("%i", item->GetTVEPGInfoTag()->Channel());
 
       return number;
+    }
+    break;
+  case LISTITEM_CHANNEL:
+    {
+      if (item->HasTVChannelInfoTag())
+        return item->GetTVChannelInfoTag()->Name();
+      else if (item->HasTVEPGInfoTag())
+        return item->GetTVEPGInfoTag()->ChannelName();
     }
     break;
   }

@@ -1811,6 +1811,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_FULLPATH:
     FillSortFields(SSortFileItem::ByFullPath);
     break;
+  case SORT_METHOD_CHANNEL:
+    FillSortFields(SSortFileItem::ByChannel);
+    break;
   default:
     break;
   }

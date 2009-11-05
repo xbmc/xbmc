@@ -4,7 +4,7 @@
 	<controls>
 		<include>CommonBackground</include>
 		<control type="group">
-			<visible>![Control.HasFocus(31) | Control.HasFocus(35) | Control.HasFocus(36)] + ![Control.IsVisible(9005) | Control.IsVisible(9001)]</visible>
+			<visible>![Control.HasFocus(31) | Control.HasFocus(35) | Control.HasFocus(36) | Control.HasFocus(37)] + ![Control.IsVisible(9005) | Control.IsVisible(9006) | Control.IsVisible(9001)]</visible>
 		<control type="videowindow">
 				<posx>0</posx>
 				<posy>95</posy>
@@ -1442,12 +1442,153 @@
 				<visible>PVR.HasTimer</visible>
 			</control>
 		</control>
+		<!-- EGP search group -->
+		<control type="group" id="9006">
+			<description>TV Search group</description>
+				<animation effect="slide" start="0,0" end="40,0" time="300" tween="quadratic" easing="out" condition="true">Conditional</animation>
+				<include>ContentPanel</include>
+				<control type="list" id="17">
+					<posx>300</posx>
+					<posy>130</posy>
+					<width>910</width>
+					<height>510</height>
+					<onup>17</onup>
+					<ondown>17</ondown>
+					<onleft>36</onleft>
+					<onright>77</onright>
+					<pagecontrol>76</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<itemlayout height="40">
+						<control type="image">
+							<width>32</width>
+							<height>32</height>
+							<posx>0</posx>
+							<posy>1</posy>
+							<info>ListItem.Icon</info>
+						</control>
+						<control type="label">
+							<posx>40</posx>
+							<posy>0</posy>
+							<width>180</width>
+							<height>35</height>
+							<font>font12</font>
+							<align>left</align>
+							<aligny>center</aligny>
+							<selectedcolor>green</selectedcolor>
+							<info>ListItem.Channel</info>
+						</control>
+						<control type="label">
+							<posx>240</posx>
+							<posy>0</posy>
+							<width>400</width>
+							<height>35</height>
+							<font>font12</font>
+							<align>left</align>
+							<aligny>center</aligny>
+							<selectedcolor>green</selectedcolor>
+							<info>ListItem.Date</info>
+						</control>
+						<control type="label">
+						<posx>890</posx>
+						<posy>0</posy>
+						<width>410</width>
+						<height>35</height>
+						<font>font12</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<info>ListItem.Label</info>
+					</control>
+					</itemlayout>
+					<focusedlayout height="40">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>910</width>
+						<height>35</height>
+						<texture border="8">list-focus.png</texture>
+						<visible>Control.HasFocus(17)</visible>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="image">
+						<width>32</width>
+						<height>32</height>
+						<posx>0</posx>
+						<posy>1</posy>
+						<info>ListItem.Icon</info>
+					</control>
+					<control type="label">
+						<posx>40</posx>
+						<posy>0</posy>
+						<width>180</width>
+						<height>35</height>
+						<font>font12</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<info>ListItem.Channel</info>
+					</control>
+					<control type="label">
+						<posx>240</posx>
+						<posy>0</posy>
+						<width>400</width>
+						<height>35</height>
+						<font>font12</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<selectedcolor>green</selectedcolor>
+						<info>ListItem.Date</info>
+					</control>
+					<control type="label">
+					<posx>890</posx>
+					<posy>0</posy>
+					<width>410</width>
+					<height>35</height>
+					<font>font12</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+				</focusedlayout>
+				</control>
+				<control type="scrollbar" id="77">
+					<posx>1215</posx>
+					<posy>130</posy>
+					<width>20</width>
+					<height>510</height>
+					<texturesliderbackground border="2,2,2,2">scrollbar_bar_back.png</texturesliderbackground>
+					<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>scrollbar_nib.png</textureslidernib>
+					<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+					<onleft>17</onleft>
+					<onright>36</onright>
+					<ondown>77</ondown>
+					<onup>77</onup>
+					<showonepage>true</showonepage>
+					<orientation>vertical</orientation>
+				</control>
+				<control type="label">
+				<description>number of files/pages in list text label</description>
+				<posx>50r</posx>
+				<posy>38r</posy>
+				<width>500</width>
+				<height>20</height>
+				<font>font12b</font>
+				<align>right</align>
+				<aligny>center</aligny>
+				<scroll>true</scroll>
+				<textcolor>white</textcolor>
+				<label>$LOCALIZE[18060] ($INFO[Container(17).CurrentPage]/$INFO[Container(17).NumPages])</label>
+			</control>
+    </control>
 		<control type="group">
 			<include>Window_OpenClose_Left_Panel_Animation</include>
 			<control type="group" id="9000">
 				<posx>0</posx>
 				<posy>130</posy>
-				<animation effect="slide" start="0,0" end="-275,0" time="400" tween="quadratic" easing="out" condition="!ControlGroup(9000).HasFocus + !ControlGroup(8001).HasFocus + !ControlGroup(8002).HasFocus + !Control.IsVisible(9005)">Conditional</animation>
+				<animation effect="slide" start="0,0" end="-275,0" time="400" tween="quadratic" easing="out" condition="!ControlGroup(9000).HasFocus + !ControlGroup(8001).HasFocus + !ControlGroup(8002).HasFocus + !Control.IsVisible(9005) + !Control.IsVisible(9006)">Conditional</animation>
 				<control type="image">
 					<posx>0</posx>
 					<posy>-30</posy>
@@ -1464,7 +1605,7 @@
 					<label>18050</label>
 					<onleft>10</onleft>
 					<onright>10</onright>
-					<onup>36</onup>
+					<onup>37</onup>
 					<ondown>32</ondown>
 				</control>
 				<control type="button" id="32">
@@ -1512,37 +1653,29 @@
 					<ondown>36</ondown>
 				</control>
 				<control type="button" id="36">
-					<description>Settings</description>
+					<description>Search</description>
 					<posx>0</posx>
 					<posy>225</posy>
+					<include>ButtonCommonValues</include>
+					<label>137</label>
+					<onleft>17</onleft>
+					<onright>17</onright>
+					<onup>35</onup>
+					<ondown>37</ondown>
+				</control>
+				<control type="button" id="37">
+					<description>Settings</description>
+					<posx>0</posx>
+					<posy>270</posy>
 					<include>ButtonCommonValues</include>
 					<label>5</label>
 					<onleft>36</onleft>
 					<onright>36</onright>
-					<onup>35</onup>
+					<onup>36</onup>
 					<ondown>31</ondown>
 				</control>
 				<control type="group">
 					<visible>[Control.HasFocus(31) + Control.IsVisible(8003)]</visible>
-					<control type="image">
-						<posx>17</posx>
-						<posy>300</posy>
-						<width>15</width>
-						<height>15</height>
-						<texture>genre-a-moviedrama.png</texture>
-					</control>
-					<control type="label">
-						<description>Movie Genre</description>
-						<posx>42</posx>
-						<posy>290</posy>
-						<width>280</width>
-						<height>35</height>
-						<font>font10</font>
-						<label>18110</label>
-						<align>left</align>
-						<aligny>center</aligny>
-						<textcolor>white</textcolor>
-					</control>
 					<control type="image">
 						<posx>17</posx>
 						<posy>325</posy>
@@ -1567,12 +1700,50 @@
 						<posy>350</posy>
 						<width>15</width>
 						<height>15</height>
+						<texture>genre-a-moviedrama.png</texture>
+					</control>
+					<control type="label">
+						<description>Movie Genre</description>
+						<posx>42</posx>
+						<posy>340</posy>
+						<width>280</width>
+						<height>35</height>
+						<font>font10</font>
+						<label>18110</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<textcolor>white</textcolor>
+					</control>
+					<control type="image">
+						<posx>137</posx>
+						<posy>350</posy>
+						<width>15</width>
+						<height>15</height>
+						<texture>genre-k-special.png</texture>
+					</control>
+					<control type="label">
+						<description>Special Genre</description>
+						<posx>162</posx>
+						<posy>340</posy>
+						<width>280</width>
+						<height>35</height>
+						<font>font10</font>
+						<label>18122</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<textcolor>white</textcolor>
+					</control>
+					<control type="image">
+						<posx>17</posx>
+						<posy>375</posy>
+						<width>15</width>
+						<height>15</height>
 						<texture>genre-c-show.png</texture>
 					</control>
 					<control type="label">
 						<description>News Genre</description>
 						<posx>42</posx>
-						<posy>340</posy>
+						<posy>365</posy>
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
@@ -1583,7 +1754,7 @@
 					</control>
 					<control type="image">
 						<posx>137</posx>
-						<posy>350</posy>
+						<posy>375</posy>
 						<width>15</width>
 						<height>15</height>
 						<texture>genre-d-sports.png</texture>
@@ -1591,7 +1762,7 @@
 					<control type="label">
 						<description>Sports Genre</description>
 						<posx>162</posx>
-						<posy>340</posy>
+						<posy>365</posy>
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
@@ -1602,7 +1773,7 @@
 					</control>
 					<control type="image">
 						<posx>17</posx>
-						<posy>375</posy>
+						<posy>400</posy>
 						<width>15</width>
 						<height>15</height>
 						<texture>genre-e-child.png</texture>
@@ -1610,7 +1781,7 @@
 					<control type="label">
 						<description>Children Genre</description>
 						<posx>42</posx>
-						<posy>365</posy>
+						<posy>390</posy>
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
@@ -1621,7 +1792,7 @@
 					</control>
 					<control type="image">
 						<posx>137</posx>
-						<posy>375</posy>
+						<posy>400</posy>
 						<width>15</width>
 						<height>15</height>
 						<texture>genre-i-science.png</texture>
@@ -1629,7 +1800,7 @@
 					<control type="label">
 						<description>Educational/Science Genre</description>
 						<posx>162</posx>
-						<posy>365</posy>
+						<posy>390</posy>
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
@@ -1640,7 +1811,7 @@
 					</control>
 					<control type="image">
 						<posx>17</posx>
-						<posy>400</posy>
+						<posy>425</posy>
 						<width>15</width>
 						<height>15</height>
 						<texture>genre-f-music.png</texture>
@@ -1648,7 +1819,7 @@
 					<control type="label">
 						<description>Music Genre</description>
 						<posx>42</posx>
-						<posy>390</posy>
+						<posy>415</posy>
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
@@ -1659,7 +1830,7 @@
 					</control>
 					<control type="image">
 						<posx>137</posx>
-						<posy>400</posy>
+						<posy>425</posy>
 						<width>15</width>
 						<height>15</height>
 						<texture>genre-g-arts.png</texture>
@@ -1667,7 +1838,7 @@
 					<control type="label">
 						<description>Arts Genre</description>
 						<posx>162</posx>
-						<posy>390</posy>
+						<posy>415</posy>
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
@@ -1678,7 +1849,7 @@
 					</control>
 					<control type="image">
 						<posx>17</posx>
-						<posy>425</posy>
+						<posy>450</posy>
 						<width>15</width>
 						<height>15</height>
 						<texture>genre-j-hobby.png</texture>
@@ -1686,7 +1857,7 @@
 					<control type="label">
 						<description>Leisure/Hobbies Genre</description>
 						<posx>42</posx>
-						<posy>415</posy>
+						<posy>440</posy>
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
@@ -1697,7 +1868,7 @@
 					</control>
 					<control type="image">
 						<posx>17</posx>
-						<posy>450</posy>
+						<posy>475</posy>
 						<width>15</width>
 						<height>15</height>
 						<texture>genre-h-social.png</texture>
@@ -1705,30 +1876,11 @@
 					<control type="label">
 						<description>Social Genre</description>
 						<posx>42</posx>
-						<posy>440</posy>
-						<width>280</width>
-						<height>35</height>
-						<font>font10</font>
-						<label>18121</label>
-						<align>left</align>
-						<aligny>center</aligny>
-						<textcolor>white</textcolor>
-					</control>
-					<control type="image">
-						<posx>17</posx>
-						<posy>475</posy>
-						<width>15</width>
-						<height>15</height>
-						<texture>genre-k-special.png</texture>
-					</control>
-					<control type="label">
-						<description>Special Genre</description>
-						<posx>42</posx>
 						<posy>465</posy>
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
-						<label>18122</label>
+						<label>18121</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>

@@ -864,6 +864,18 @@ void CDateTime::SetFromDBDateTime(const CStdString &dateTime)
   SetDateTime(year, month, day, hour, minute, second);
 }
 
+void CDateTime::SetFromDBTime(const CStdString &time)
+{
+  // assumes format:
+  // HH:MM:SS
+  int hour = 0, minute = 0, second = 0;
+  hour = atoi(time.Mid(0,2).c_str());
+  minute = atoi(time.Mid(3,2).c_str());
+  if (time.size() > 5)
+    second = atoi(time.Mid(6,2).c_str());
+  SetTime(hour, minute, second);
+}
+
 void CDateTime::SetFromDBDate(const CStdString &date)
 {
   // assumes format:

@@ -101,13 +101,39 @@ public:
   CDateTimeSpan Duration(void) const { return m_duration; }
   void SetDuration(CDateTimeSpan duration) { m_duration = duration; }
   long ChannelID(void) const { return m_idChannel; }
+  long GroupID(void) const { return m_Channel->GroupID(); }
   void SetChannelID(int ChannelID) { m_idChannel = ChannelID; }
+  bool IsEncrypted(void) const { return m_Channel->IsEncrypted(); }
+  bool IsRadio(void) const { return m_Channel->IsRadio(); }
   long Channel(void) const { return m_Channel->Number(); }
   CStdString ChannelName(void) const { return m_Channel->Name(); }
   void SetChannel(const cPVRChannelInfoTag *Channel) { m_Channel = Channel; }
   bool HasTimer() const;
 };
 
+struct EPGSearchFilter
+{
+  void SetDefaults();
+
+  CStdString    m_SearchString;
+  bool          m_CaseSensitive;
+  bool          m_SearchDescription;
+  int           m_GenreType;
+  int           m_GenreSubType;
+  int           m_minDuration;
+  int           m_maxDuration;
+  SYSTEMTIME    m_startTime;
+  SYSTEMTIME    m_endTime;
+  SYSTEMTIME    m_startDate;
+  SYSTEMTIME    m_endDate;
+  int           m_ChannelNumber;
+  bool          m_FTAOnly;
+  bool          m_IncUnknGenres;
+  int           m_Group;
+  bool          m_IgnPresentTimers;
+  bool          m_IgnPresentRecords;
+  bool          m_PreventRepeats;
+};
 
 class cPVREpg
 {
@@ -158,6 +184,7 @@ private:
   static cPVREpgs m_epgs;
   int m_locked;
   virtual void Process();
+  static bool FilterEntry(const CTVEPGInfoTag &tag, const EPGSearchFilter &filter);
 
 public:
   static const cPVREpgs *EPGs(cPVREpgsLock &PVREpgsLock);
@@ -166,10 +193,13 @@ public:
   static bool ClearChannel(long ChannelID);
   static bool Load();
   static bool Update(bool Wait = false);
+  static int GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter);
   static int GetEPGAll(CFileItemList* results, bool radio = false);
   static int GetEPGChannel(unsigned int number, CFileItemList* results, bool radio = false);
   static int GetEPGNow(CFileItemList* results, bool radio = false);
   static int GetEPGNext(CFileItemList* results, bool radio = false);
+  static CDateTime GetFirstEPGDate(bool radio = false);
+  static CDateTime GetLastEPGDate(bool radio = false);
   cPVREpg *AddEPG(long ChannelID);
   const cPVREpg *GetEPG(long ChannelID) const;
   const cPVREpg *GetEPG(const cPVRChannelInfoTag *Channel, bool AddIfMissing = false) const;

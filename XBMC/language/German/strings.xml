@@ -1684,13 +1684,33 @@
   <string id="18136">Bitte erstellen Sie zuerst eine</string>
   <string id="18137">Seite %3x-%02x nicht gefunden</string>
   <string id="18138">Kanal unterstützt kein Videotext</string>
-
+  <string id="18139">EPG durchsuchen</string>
+  <string id="18140">Suchbegriff</string>
+  <string id="18141">Inklusive Beschreibung</string>
+  <string id="18142">Groß-/Kleinschreibung</string>
+  <string id="18143">Minimale Dauer</string>
+  <string id="18144">Maximale Dauer</string>
+  <string id="18145">Start Uhrzeit</string>
+  <string id="18146">Stop Uhrzeit</string>
+  <string id="18147">Start Datum</string>
+  <string id="18148">Stop Datum</string>
+  <string id="18149">Inklusive unbekannter Genres</string>
   <string id="18150">Jetzt</string>
   <string id="18151">Versteckt</string>
-
+  <string id="18152">Genre</string>
+  <string id="18153">Unterkategorie</string>
+  <string id="18154">Nur frei empfangbare Kanäle</string>
+  <string id="18155">Nur TV</string>
+  <string id="18156">Vorhandene Timer ignorieren</string>
+  <string id="18157">Musik/Balett/Tanzen</string>
+  <string id="18158">Kunst/Kultur</string>
+  <string id="18159">Vorhandene Aufnahmen ignorieren</string>
+  <string id="18160">Keine Wiederholungen</string>
   <string id="18161">Kanallogo festlegen</string>
   <string id="18162">Timer zeichnet auf - trotzdem löschen?</string>
   <string id="18163">Titel-Informationen</string>
+  <string id="18164">Es liegen keine Suchergebnisse vor</string>
+  <string id="18165">Nach Kanal</string>
 
   <string id="18190">Nächster Timer am</string>
   <string id="18191">um</string>
