@@ -972,30 +972,66 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
   return true;
 }
 
-void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
+void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
 {
-  m_unfilteredItems->Append(items);
+  CGUIWindowVideoBase::OnPrepareFileItems(items);
+
   // now filter as necessary
   CVideoDatabaseDirectory dir;
-  CQueryParams params;
-  dir.GetQueryParams(items.m_strPath,params);
+  NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
+
   bool filterWatched=false;
-  if (params.GetContentType() == VIDEODB_CONTENT_TVSHOWS ||
-       dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_EPISODES)
+  if (node == NODE_TYPE_EPISODES
+  ||  node == NODE_TYPE_TITLE_MOVIES
+  ||  node == NODE_TYPE_TITLE_TVSHOWS
+  ||  node == NODE_TYPE_TITLE_MUSICVIDEOS
+  ||  node == NODE_TYPE_RECENTLY_ADDED_EPISODES
+  ||  node == NODE_TYPE_RECENTLY_ADDED_MOVIES
+  ||  node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
     filterWatched = true;
   if (items.IsPlugin())
     filterWatched = true;
-  if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
-    filterWatched = false;
-  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES                             ||
-      params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS                        ||
-      dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MOVIES ||
-      dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
+
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CFileItemPtr item = items.Get(i);
+    if(item->HasVideoInfoTag() && node == NODE_TYPE_TITLE_TVSHOWS)
+    {
+      if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED)
+        item->GetVideoInfoTag()->m_iEpisode = item->GetPropertyInt("unwatchedepisodes");
+      if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_WATCHED)
+        item->GetVideoInfoTag()->m_iEpisode = item->GetPropertyInt("watchedepisodes");
+    }
+
+    if(filterWatched)
+    {
+      if(g_stSettings.m_iMyVideoWatchMode==VIDEO_SHOW_WATCHED   && item->GetVideoInfoTag()->m_playCount== 0
+      || g_stSettings.m_iMyVideoWatchMode==VIDEO_SHOW_UNWATCHED && item->GetVideoInfoTag()->m_playCount > 0)
+      {
+        items.Remove(i);
+        i--;
+      }
+    }
+  }
+}
+
+void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
+{
+  m_unfilteredItems->Append(items);
+
+  CVideoDatabaseDirectory dir;
+  NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
+
+  bool filter = false;
+  if (node == NODE_TYPE_TITLE_MOVIES
+  ||  node == NODE_TYPE_TITLE_MUSICVIDEOS
+  ||  node == NODE_TYPE_RECENTLY_ADDED_MOVIES 
+  ||  node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
   { // need to filter no matter to get rid of duplicates - price to pay for not filtering in db
-    filterWatched = true;
+    filter = true;
   }
 
-  if (filterWatched || !m_filter.IsEmpty())
+  if (filter && !m_filter.IsEmpty())
     FilterItems(items);
 }
 
@@ -1028,21 +1064,6 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
   CVideoDatabaseDirectory dir;
   CQueryParams params;
   dir.GetQueryParams(items.m_strPath,params);
-  bool filterWatched=false;
-  if (params.GetContentType() == VIDEODB_CONTENT_TVSHOWS ||
-       dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_EPISODES)
-  {
-    filterWatched = true;
-  }
-  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES                             ||
-      params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS                        ||
-      dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MOVIES ||
-      dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
-    filterWatched = true;
-  if (items.IsPlugin())
-    filterWatched = true;
-  if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
-    filterWatched = false;
 
   NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
   // todo: why aren't we filtering every view consistently?
@@ -1063,9 +1084,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
   for (int i = 0; i < m_unfilteredItems->Size(); i++)
   {
     CFileItemPtr item = m_unfilteredItems->Get(i);
-    if (item->IsParentFolder()         ||
-      (filter.IsEmpty() && (!filterWatched               ||
-      (item->GetVideoInfoTag()->m_playCount>0) == (g_stSettings.m_iMyVideoWatchMode==2))))
+    if (item->IsParentFolder() || filter.IsEmpty())
     {
       if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES  && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
         items.Add(item);
@@ -1088,8 +1107,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
       StringUtils::WordToDigits(match);
 
     size_t pos = StringUtils::FindWords(match.c_str(), filter.c_str());
-    if (pos != CStdString::npos &&
-       (!filterWatched || (item->GetVideoInfoTag()->m_playCount>0) == (g_stSettings.m_iMyVideoWatchMode==2)))
+    if (pos != CStdString::npos)
     {
       if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
         items.Add(item);

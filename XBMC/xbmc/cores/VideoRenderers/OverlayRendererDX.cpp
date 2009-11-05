@@ -34,24 +34,16 @@ using namespace OVERLAY;
 
 #define USE_PREMULTIPLIED_ALPHA 1
 
-static bool LoadTexture(LPDIRECT3DDEVICE9 device
-                      , int width, int height, int stride
+static bool LoadTexture(int width, int height, int stride
                       , D3DFORMAT format
                       , const void* pixels
                       , float* u, float* v
-                      , LPDIRECT3DTEXTURE9* texture)
+                      , CD3DTexture* texture)
 {
-  HRESULT result;
-  result = D3DXCreateTexture(device
-                           , width
-                           , height
-                           , 1, 0
-                           , format
-                           , D3DPOOL_MANAGED
-                           , texture);
-  if(FAILED(result))
+
+  if (!texture->Create(width, height, 1, 0, format, D3DPOOL_MANAGED))
   {
-    CLog::Log(LOGERROR, "LoadTexture - failed to allocate texture (%u)", result);
+    CLog::Log(LOGERROR, "LoadTexture - failed to allocate texture");
     return false;
   }
 
@@ -64,11 +56,10 @@ static bool LoadTexture(LPDIRECT3DDEVICE9 device
     ASSERT(0);
 
   D3DSURFACE_DESC desc;
-  result = (*texture)->GetLevelDesc(0, &desc);
-  if(FAILED(result))
+  if(!texture->GetLevelDesc(0, &desc))
   {
-    CLog::Log(LOGERROR, "LoadTexture - failed to get level description(%u)", result);
-    SAFE_RELEASE(*texture);
+    CLog::Log(LOGERROR, "LoadTexture - failed to get level description");
+    texture->Release();
     return false;
   }
   ASSERT(format == desc.Format);
@@ -77,11 +68,10 @@ static bool LoadTexture(LPDIRECT3DDEVICE9 device
   *v = (float)height / desc.Height;
 
   D3DLOCKED_RECT lr;
-  result = (*texture)->LockRect(0, &lr, NULL, 0);
-  if(FAILED(result))
+  if (!texture->LockRect(0, &lr, NULL, 0))
   {
-    CLog::Log(LOGERROR, "LoadTexture - failed to lock texture (%u)", result);
-    SAFE_RELEASE(*texture);
+    CLog::Log(LOGERROR, "LoadTexture - failed to lock texture (%u)");
+    texture->Release();
     return false;
   }
 
@@ -114,17 +104,15 @@ static bool LoadTexture(LPDIRECT3DDEVICE9 device
     memcpy(dst, src, bpp * width);
   }
 
-  (*texture)->UnlockRect(0);
+  texture->UnlockRect(0);
 
   return true;
 }
 
 COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
 {
-  m_vertex = NULL;
   m_width  = (float)g_graphicsContext.GetWidth();
   m_height = (float)g_graphicsContext.GetHeight();
-  m_device = g_Windowing.Get3DDevice();
   m_fvf    = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
   m_align  = ALIGN_SCREEN;
   m_pos    = POSITION_ABSOLUTE;
@@ -137,8 +125,7 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
     return;
 
   float u, v;
-  if(!LoadTexture(m_device
-                , quads.size_x
+  if(!LoadTexture(quads.size_x
                 , quads.size_y
                 , quads.size_x
                 , D3DFMT_A8
@@ -149,23 +136,20 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
     return;
   }
 
-  HRESULT result;
-  result = m_device->CreateVertexBuffer(sizeof(VERTEX) * 6 * quads.count, 0, m_fvf, D3DPOOL_MANAGED, &m_vertex, NULL);
-  if(FAILED(result))
+  if (!m_vertex.Create(sizeof(VERTEX) * 6 * quads.count, 0, m_fvf, D3DPOOL_MANAGED))
   {
-    CLog::Log(LOGERROR, "COverlayQuadsDX::COverlayQuadsDX - failed to create vertex buffer (%u)", result);
-    SAFE_RELEASE(m_texture);
+    CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
+    m_texture.Release();
     return;
   }
 
   VERTEX* vt = NULL;
   SQuad*  vs = quads.quad;
 
-  result = m_vertex->Lock(0, 0, (void**)&vt, D3DLOCK_DISCARD);
-  if(FAILED(result))
+  if (!m_vertex.Lock(0, 0, (void**)&vt, 0))
   {
-    CLog::Log(LOGERROR, "COverlayQuadsDX::COverlayQuadsDX - failed to lock texture (%u)", result);
-    SAFE_RELEASE(m_texture);
+    CLog::Log(LOGERROR, "%s - failed to lock texture", __FUNCTION__);
+    m_texture.Release();
     return;
   }
 
@@ -215,20 +199,19 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
     vt += 6;
   }
 
-  m_vertex->Unlock();
+  m_vertex.Unlock();
   m_count  = quads.count;
 }
 
 COverlayQuadsDX::~COverlayQuadsDX()
 {
-  SAFE_RELEASE(m_vertex);
-  SAFE_RELEASE(m_texture);
 }
 
 void COverlayQuadsDX::Render(SRenderState &state)
 {
   D3DXMATRIX orig;
-  m_device->GetTransform(D3DTS_WORLD, &orig);
+  LPDIRECT3DDEVICE9 device = g_Windowing.Get3DDevice();
+  device->GetTransform(D3DTS_WORLD, &orig);
 
   D3DXMATRIX world = orig;
   D3DXMATRIX trans, scale;
@@ -244,43 +227,43 @@ void COverlayQuadsDX::Render(SRenderState &state)
   D3DXMatrixMultiply(&world, &world, &scale);
   D3DXMatrixMultiply(&world, &world, &trans);
 
-  m_device->SetTransform(D3DTS_WORLD, &world);
+  device->SetTransform(D3DTS_WORLD, &world);
 
-  m_device->SetTexture( 0, m_texture );
-  m_device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-  m_device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-  m_device->SetSamplerState(0, D3DSAMP_ADDRESSU , D3DTADDRESS_CLAMP);
-  m_device->SetSamplerState(0, D3DSAMP_ADDRESSV , D3DTADDRESS_CLAMP);
+  device->SetTexture( 0, m_texture.Get() );
+  device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+  device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+  device->SetSamplerState(0, D3DSAMP_ADDRESSU , D3DTADDRESS_CLAMP);
+  device->SetSamplerState(0, D3DSAMP_ADDRESSV , D3DTADDRESS_CLAMP);
 
-  m_device->SetTextureStageState(0, D3DTSS_COLOROP  , D3DTOP_SELECTARG1 );
-  m_device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE );
-  m_device->SetTextureStageState(0, D3DTSS_ALPHAOP  , D3DTOP_MODULATE );
-  m_device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-  m_device->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+  device->SetTextureStageState(0, D3DTSS_COLOROP  , D3DTOP_SELECTARG1 );
+  device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE );
+  device->SetTextureStageState(0, D3DTSS_ALPHAOP  , D3DTOP_MODULATE );
+  device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+  device->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
 
-  m_device->SetRenderState( D3DRS_LIGHTING , FALSE );
-  m_device->SetRenderState( D3DRS_ZENABLE  , FALSE );
-  m_device->SetRenderState( D3DRS_FOGENABLE, FALSE );
+  device->SetRenderState( D3DRS_LIGHTING , FALSE );
+  device->SetRenderState( D3DRS_ZENABLE  , FALSE );
+  device->SetRenderState( D3DRS_FOGENABLE, FALSE );
 
-  m_device->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
-  m_device->SetRenderState( D3DRS_ALPHAREF , 0 );
-  m_device->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
-  m_device->SetRenderState( D3DRS_FILLMODE , D3DFILL_SOLID );
-  m_device->SetRenderState( D3DRS_CULLMODE , D3DCULL_NONE );
+  device->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
+  device->SetRenderState( D3DRS_ALPHAREF , 0 );
+  device->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
+  device->SetRenderState( D3DRS_FILLMODE , D3DFILL_SOLID );
+  device->SetRenderState( D3DRS_CULLMODE , D3DCULL_NONE );
 
-  m_device->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-  m_device->SetRenderState( D3DRS_SRCBLEND , D3DBLEND_SRCALPHA );
-  m_device->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+  device->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+  device->SetRenderState( D3DRS_SRCBLEND , D3DBLEND_SRCALPHA );
+  device->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+  device->SetFVF(m_fvf);
+  device->SetStreamSource(0, m_vertex.Get(), 0, sizeof(VERTEX));
+  device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, m_count*2);
 
-  m_device->SetFVF(m_fvf);
-  m_device->SetStreamSource(0, m_vertex, 0, sizeof(VERTEX));
-  m_device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, m_count*2);
+  device->SetTexture(0, NULL);
+  device->SetTransform(D3DTS_WORLD, &orig);
 }
 
 COverlayImageDX::~COverlayImageDX()
 {
-  SAFE_RELEASE(m_vertex);
-  SAFE_RELEASE(m_texture);
 }
 
 COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o)
@@ -353,12 +336,10 @@ COverlayImageDX::COverlayImageDX(CDVDOverlaySpu* o)
 
 void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
 {
-  m_device = g_Windowing.Get3DDevice();
   m_fvf    = D3DFVF_XYZ | D3DFVF_TEX1;
 
   float u, v;
-  if(!LoadTexture(m_device
-                , width
+  if(!LoadTexture(width
                 , height
                 , stride
                 , D3DFMT_A8R8G8B8
@@ -367,21 +348,19 @@ void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
                 , &m_texture))
     return;
 
-  HRESULT result;
-  result = m_device->CreateVertexBuffer(sizeof(VERTEX) * 6, 0, m_fvf, D3DPOOL_MANAGED, &m_vertex, NULL);
-  if(FAILED(result))
+  if (!m_vertex.Create(sizeof(VERTEX) * 6, 0, m_fvf, D3DPOOL_MANAGED))
   {
-    CLog::Log(LOGERROR, "COverlayImageDX::Load - failed to create vertex buffer (%u)", result);
+    CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
+    m_texture.Release();
     return;
   }
 
-  VERTEX*  vt = NULL;;
-  result = m_vertex->Lock(0, 0, (void**)&vt, D3DLOCK_DISCARD);
-  if(FAILED(result))
+  VERTEX*  vt = NULL;
+  if (!m_vertex.Lock(0, 0, (void**)&vt, 0))
   {
-    CLog::Log(LOGERROR, "COverlayImageDX::Load - failed to lock texture (%u)", result);
-    SAFE_RELEASE(m_texture);
-    SAFE_RELEASE(m_vertex);
+    CLog::Log(LOGERROR, "%s - failed to lock texture", __FUNCTION__);
+    m_texture.Release();
+    m_vertex.Release();
     return;
   }
 
@@ -413,14 +392,15 @@ void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
 
   vt[5] = vt[2];
 
-  m_vertex->Unlock();
+  m_vertex.Unlock();
 }
 
 void COverlayImageDX::Render(SRenderState &state)
 {
 
   D3DXMATRIX orig;
-  m_device->GetTransform(D3DTS_WORLD, &orig);
+  LPDIRECT3DDEVICE9 device = g_Windowing.Get3DDevice();
+  device->GetTransform(D3DTS_WORLD, &orig);
 
   D3DXMATRIX world = orig;
   D3DXMATRIX trans, scale;
@@ -441,43 +421,42 @@ void COverlayImageDX::Render(SRenderState &state)
   D3DXMatrixMultiply(&world, &world, &scale);
   D3DXMatrixMultiply(&world, &world, &trans);
 
-  m_device->SetTransform(D3DTS_WORLD, &world);
+  device->SetTransform(D3DTS_WORLD, &world);
 
-  m_device->SetTexture( 0, m_texture );
-  m_device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-  m_device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-  m_device->SetSamplerState(0, D3DSAMP_ADDRESSU , D3DTADDRESS_CLAMP);
-  m_device->SetSamplerState(0, D3DSAMP_ADDRESSV , D3DTADDRESS_CLAMP);
+  device->SetTexture( 0, m_texture.Get() );
+  device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+  device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+  device->SetSamplerState(0, D3DSAMP_ADDRESSU , D3DTADDRESS_CLAMP);
+  device->SetSamplerState(0, D3DSAMP_ADDRESSV , D3DTADDRESS_CLAMP);
 
-  m_device->SetTextureStageState(0, D3DTSS_COLOROP  , D3DTOP_SELECTARG1 );
-  m_device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-  m_device->SetTextureStageState(0, D3DTSS_ALPHAOP  , D3DTOP_SELECTARG1 );
-  m_device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+  device->SetTextureStageState(0, D3DTSS_COLOROP  , D3DTOP_SELECTARG1 );
+  device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+  device->SetTextureStageState(0, D3DTSS_ALPHAOP  , D3DTOP_SELECTARG1 );
+  device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
 
-  m_device->SetRenderState( D3DRS_LIGHTING , FALSE );
-  m_device->SetRenderState( D3DRS_ZENABLE  , FALSE );
-  m_device->SetRenderState( D3DRS_FOGENABLE, FALSE );
+  device->SetRenderState( D3DRS_LIGHTING , FALSE );
+  device->SetRenderState( D3DRS_ZENABLE  , FALSE );
+  device->SetRenderState( D3DRS_FOGENABLE, FALSE );
 
-  m_device->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
-  m_device->SetRenderState( D3DRS_ALPHAREF , 0 );
-  m_device->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
-  m_device->SetRenderState( D3DRS_FILLMODE , D3DFILL_SOLID );
-  m_device->SetRenderState( D3DRS_CULLMODE , D3DCULL_NONE );
-
-  m_device->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+  device->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
+  device->SetRenderState( D3DRS_ALPHAREF , 0 );
+  device->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
+  device->SetRenderState( D3DRS_FILLMODE , D3DFILL_SOLID );
+  device->SetRenderState( D3DRS_CULLMODE , D3DCULL_NONE );
+  device->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
 
 #if USE_PREMULTIPLIED_ALPHA
-  m_device->SetRenderState( D3DRS_SRCBLEND , D3DBLEND_ONE );
+  device->SetRenderState( D3DRS_SRCBLEND , D3DBLEND_ONE );
 #else
-  m_device->SetRenderState( D3DRS_SRCBLEND , D3DBLEND_SRCALPHA );
+  device->SetRenderState( D3DRS_SRCBLEND , D3DBLEND_SRCALPHA );
 #endif
-  m_device->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+  device->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
 
-  m_device->SetFVF(m_fvf);
-  m_device->SetStreamSource(0, m_vertex, 0, sizeof(VERTEX));
-  m_device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 2);
+  device->SetFVF(m_fvf);
+  device->SetStreamSource(0, m_vertex.Get(), 0, sizeof(VERTEX));
+  device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 2);
 
-  m_device->SetTransform(D3DTS_WORLD, &orig);
+  device->SetTransform(D3DTS_WORLD, &orig);
 }
 
 #endif

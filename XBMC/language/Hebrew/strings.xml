@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 08/02/2009-->
+<!--Date of translation: 11/01/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21874-->
+<!--Based on english strings version 24098-->
 <strings>
   <string id="0">התוכניות שלי</string>
   <string id="1">התמונות שלי</string>
@@ -1528,9 +1528,9 @@
   <string id="20158">מידע אודות הרשת</string>
   <string id="20159">מידע אודות הוידאו</string>
   <string id="20160">מידע אודות החומרה</string>
-  <string id="20161">סך הכל: %s MB, בשימוש: %s MB, חופשי: %s MB</string>
-  <string id="20162">סך הכל HDD בשימוש: %u%%  חופשי: %u%%</string>
-  <string id="20163">%s: %s MB של %s MB חופשי</string>
+  <string id="20161">סך הכל</string>
+  <string id="20162">בשימוש</string>
+  <string id="20163">מתוך</string>
   <string id="20164">נעילה לא נתמכת</string>
   <string id="20165">לא נעול</string>
   <string id="20166">נעול</string>

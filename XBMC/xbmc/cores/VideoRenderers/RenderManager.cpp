@@ -30,7 +30,6 @@
 #include "Application.h"
 #include "Settings.h"
 #include "GUISettings.h"
-#include "WindowingFactory.h"
 
 #ifdef _LINUX
 #include "PlatformInclude.h"
@@ -245,7 +244,7 @@ unsigned int CXBMCRenderManager::PreInit()
 #if defined(HAS_GL)
     m_pRenderer = new CLinuxRendererGL();
 #elif defined(HAS_DX)
-    m_pRenderer = new CPixelShaderRenderer(g_Windowing.Get3DDevice());
+    m_pRenderer = new CPixelShaderRenderer();
 #elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();
 #endif

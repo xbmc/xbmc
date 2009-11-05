@@ -38,7 +38,8 @@ LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp )
   // Create the dump file where the xbmc.exe resides
   CStdString errorMsg;
   CStdString dumpFile;
-  dumpFile.Format("xbmc.r%s.dmp", SVN_REV);
+  CDateTime now(CDateTime::GetCurrentDateTime());
+  dumpFile.Format("%s\\XBMC\\xbmc_crashlog-%04i%02i%02i-%02i%02i%02i.dmp", CWIN32Util::GetProfilePath().c_str(), now.GetYear(), now.GetMonth(), now.GetDay(), now.GetHour(), now.GetMinute(), now.GetSecond());
   HANDLE hFile = CreateFile(dumpFile.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL ); 
 
   // Call MiniDumpWriteDump api with the dump file

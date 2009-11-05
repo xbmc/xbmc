@@ -457,7 +457,9 @@ class CDateTime;
 #define CONTROL_HAS_FOCUS           30000
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
-#define VERSION_STRING "pre-9.10"
+// Version string MUST NOT contain spaces.  It is used
+// in the HTTP request user agent.
+#define VERSION_STRING "9.11-alpha1"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
@@ -521,6 +523,8 @@ class CDateTime;
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
 #define LISTITEM_END                (LISTITEM_PROPERTY_END)
+
+#define MUSICPLAYER_PROPERTY_OFFSET 900 // last 100 id's reserved for musicplayer props.
 
 // the multiple information vector
 #define MULTI_INFO_START              40000
@@ -673,7 +677,7 @@ protected:
   // The offset into the string parameters array is returned.
   int ConditionalStringParameter(const CStdString &strParameter);
   int AddMultiInfo(const GUIInfo &info);
-  int AddListItemProp(const CStdString &str);
+  int AddListItemProp(const CStdString &str, int offset=0);
 
   CStdString GetAudioScrobblerLabel(int item);
 
