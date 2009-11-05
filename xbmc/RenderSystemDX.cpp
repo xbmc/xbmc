@@ -448,11 +448,11 @@ void CRenderSystemDX::SetVSync(bool enable)
     bool inScene(m_inScene);
     if (m_inScene)
       EndRender();
+    m_bVSync = enable;
     ResetRenderSystem(m_nBackBufferWidth, m_nBackBufferHeight, m_bFullScreenDevice, m_refreshRate);
     if (inScene)
       BeginRender();
   }
-  m_bVSync = enable;
 }
 
 void CRenderSystemDX::CaptureStateBlock()

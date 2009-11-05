@@ -1,7 +1,10 @@
 #!/usr/bin/perl
 
-die("No home set, cannot install defaults.\n")
+die("No HOME set, cannot install defaults.\n")
     if !$ENV{HOME};
+
+die("No XBMC_HOME set, cannot install defaults.\n")
+    if !$ENV{'XBMC_HOME'};
 
 sub get_home {
     return $ENV{'HOME'} if defined $ENV{'HOME'};
@@ -42,15 +45,7 @@ sub get_userdata_path {
 sub setup_sources {
     my $xbmchome = get_xbmc_home();
     my $userdata = get_userdata_path();
-    if (!$userdata) {
-        print STDERR "Unable to obtain userdata path\n";
-        exit;
-    }
-
     my $sources = $userdata."/sources.xml";
-
-    # create userdata directory if it doesn't exist
-    `mkdir -p "$userdata"`;
 
     # check whether a sources.xml already exists, and if it does back it up
     if ( -f $sources ) {
@@ -114,7 +109,6 @@ sub get_default_sources {
         # Default sources for OS X
         for my $key ( keys %$sources ) {
             $sources->{$key}->{'Volumes'} = "/Volumes";
-            $sources->{$key}->{'Home'} = "$home";
             $sources->{$key}->{'Desktop'} = "$home/Desktop";
         }
         
@@ -123,26 +117,6 @@ sub get_default_sources {
         $sources->{'video'}->{'Movies'} = $home."/Movies";
         $sources->{'video'}->{'Video Playlists'} = "special://videoplaylists";
         $sources->{'pictures'}->{'Pictures'} = $home."/Pictures";
-
-        my $plugindir = "$xbmchome/plugins/";
-
-        # iPhoto
-        if ( -f "$plugindir/pictures/iPhoto/default.py" ) {
-            $sources->{'pictures'}->{'iPhoto'} =
-                "plugin://pictures/iPhoto/^^$plugindir/pictures/iPhoto/default.tbn";
-        }
-        
-        # iTunes
-        if ( -f "$plugindir/music/iTunes/default.py" ) {
-            $sources->{'music'}->{'iTunes'} =
-                "plugin://music/iTunes/^^$plugindir/music/iTunes/default.tbn";
-        }
-
-        # AMT
-        if ( -f "$plugindir/video/Apple Movie Trailers II/default.py" ) {
-            $sources->{'video'}->{'Apple Movie Trailers'} =
-                "plugin://video/Apple Movie Trailers II/^^$plugindir/video/Apple Movie Trailers II/default.tbn";
-        }
     }
     elsif ( get_os() eq "linux" ) {
 
@@ -176,11 +150,20 @@ sub first_xbmc_version_run() {
 sub setup_default_xbmc() {
     my $extras = get_extras();
     my $xhome = get_xbmc_home();
+    my $userdata = get_userdata_path();
 
-    die("No home or extras :(\n") if !$xhome || !$extras;
+    die("No extras :(\n")
+        if !defined $extras;
+    die("No XBMC home folder :(\n")
+        if !defined $xhome;
+    die ("No userdata folder :(\n")
+        if !defined $userdata;
 
-    # copy extra stuff to xbmc's app data directory
-    `cp -fRv "$extras/user/" "$xhome/"`;
+    # create userdata directory if it doesn't exist
+    `mkdir -p "$userdata"`;
+    # copy extra stuff to xbmc's userdata directory
+    `cp -fRv "$extras/user/" "$userdata"`;
+
     setup_sources();
     `touch -f "$xhome/.setup_complete"`;
 }

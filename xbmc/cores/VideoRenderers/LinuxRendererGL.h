@@ -138,6 +138,8 @@ public:
   virtual bool SupportsContrast();
   virtual bool SupportsGamma();
   virtual bool SupportsMultiPassRendering();
+  virtual bool Supports(EINTERLACEMETHOD method);
+  virtual bool Supports(ESCALINGMETHOD method);
 
 protected:
   virtual void Render(DWORD flags, int renderBuffer);

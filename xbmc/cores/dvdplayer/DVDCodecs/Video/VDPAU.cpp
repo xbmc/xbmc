@@ -325,6 +325,12 @@ void CVDPAU::CheckFeatures()
                                     parameter_values,
                                     &videoMixer);
     CheckStatus(vdp_st, __LINE__);
+#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+    if (g_guiSettings.GetBool("videoplayer.vdpauUpscalingLevel"))
+    {
+      SetHWUpscaling();
+    }
+#endif
   }
 
   if (tmpBrightness != g_stSettings.m_currentVideoSettings.m_Brightness ||
@@ -421,6 +427,27 @@ void CVDPAU::SetSharpness()
   CheckStatus(vdp_st, __LINE__);
 }
 
+void CVDPAU::SetHWUpscaling()
+{
+#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+  CLog::Log(LOGNOTICE,"Enabling VDPAU HQ Upscaling");
+  VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
+  VdpStatus vdp_st;
+  VdpBool available;
+  
+  vdp_st = vdp_video_mixer_query_feature_support(vdp_device, VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1, &available);
+  
+  if ( (vdp_st != VDP_STATUS_OK) || !available )
+  {
+    CLog::Log(LOGNOTICE,"VDPAU HQ upscaling not available");
+    return;
+  }
+  
+  VdpBool enabled[]={1};
+  vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+  CheckStatus(vdp_st, __LINE__);
+#endif
+}
 
 void CVDPAU::SetDeinterlacing()
 {
@@ -604,6 +631,13 @@ void CVDPAU::InitVDPAUProcs()
                                 (void **)&vdp_video_mixer_query_parameter_support
                                 );
   CheckStatus(vdp_st, __LINE__);
+
+  vdp_st = vdp_get_proc_address(
+                                vdp_device,
+                                VDP_FUNC_ID_VIDEO_MIXER_QUERY_FEATURE_SUPPORT,
+                                (void **)&vdp_video_mixer_query_feature_support
+                                );
+  CheckStatus(vdp_st, __LINE__);  
 
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
@@ -1068,36 +1102,23 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   vdpau_render_state * render = (vdpau_render_state*)pFrame->data[0];
   VdpVideoMixerPictureStructure structure;
   VdpStatus vdp_st;
+  VdpTime time;
 
   if (!vdpauConfigured)
     return;
 
   outputSurface = outputSurfaces[surfaceNum];
-  interlaced = pFrame->interlaced_frame;
 
   CheckFeatures();
-  if (interlaced && tmpDeint)
-  {
-    past[1] = past[0];
-    past[0] = current;
-    current = future;
-    future = render->surface;
-  }
-  else
-    current = render->surface;
 
   if (interlaced && tmpDeint)
     structure = pFrame->top_field_first ? VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD :
                                           VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
   else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME; 
 
-  if (interlaced && tmpDeint)
-  {
-    past[1] = past[0];
-    past[0] = current;
-    current = future;
-    future = render->surface;
-  }
+  past[0] = past[1];
+  past[1] = current;
+  current = render->surface;
 
   if (( (int)outRectVid.x1 != OutWidth ) ||
       ( (int)outRectVid.y1 != OutHeight ))
@@ -1108,16 +1129,21 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     outRectVid.x1 = OutWidth;
     outRectVid.y1 = OutHeight;
   }
+  
+  if (current == VDP_INVALID_HANDLE)
+    current = render->surface;
+  
+  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
 
   vdp_st = vdp_video_mixer_render(videoMixer,
                                   VDP_INVALID_HANDLE,
                                   0,
                                   structure,
-                                  (interlaced && tmpDeint)? ARSIZE(past) : 0, //2,
-                                  (interlaced && tmpDeint)? past : NULL, //past,
+                                  2,
+                                  past,
                                   current,
-                                  (interlaced && tmpDeint)? 1 : 0, //1,
-                                  (interlaced && tmpDeint)? &(future) : NULL, //&(future),
+                                  0,
+                                  NULL,
                                   NULL,
                                   outputSurface,
                                   &(outRectVid),
@@ -1125,7 +1151,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
                                   0,
                                   NULL);
   CheckStatus(vdp_st, __LINE__);
-
+  
   surfaceNum++;
   if (surfaceNum >= totalAvailableOutputSurfaces) surfaceNum = 0;
 }
@@ -1134,15 +1160,13 @@ void CVDPAU::Present()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
-  presentSurface = outputSurfaces[presentSurfaceNum];
+
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
                                           outputSurface,
                                           0,
                                           0,
                                           0);
   CheckStatus(vdp_st, __LINE__);
-  presentSurfaceNum++;
-  if (presentSurfaceNum >= totalAvailableOutputSurfaces) presentSurfaceNum = 0;
 }
 
 void CVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)
