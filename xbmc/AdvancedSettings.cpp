@@ -140,6 +140,14 @@ void CAdvancedSettings::Initialize()
 
   m_videoStackRegExps.push_back("()[ _.-]+?(?:cd|dvd|p(?:ar)t|dis[ck])[ _.-]*([0-9a-d]+)(.*\\....?.?)$");
 
+  // foocd1.bar foocd 2.bar
+  m_videoStackRegExps.push_back("()(cd[0 ]?[1-3])(?:[ ._-]?.*)(.*?\\....?.?)$");
+  m_videoStackRegExps.push_back("()(cd[0 ]?[1-3])(\\....?.?)$");
+
+  // fooa.bar foob.bar
+  m_videoStackRegExps.push_back("()([a-c])(?:[ ._-]?.*)(.*?\\....?.?)$");
+  m_videoStackRegExps.push_back("()([a-c])(\\....?.?)$");
+
   // foo_[s01]_[e01]
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
   // foo.1x09* or just /1x09*
