@@ -67,7 +67,7 @@ void CJobQueue::CJobPointer::CancelJob()
 }
 
 CJobQueue::CJobQueue(bool lifo, unsigned int jobsAtOnce, CJob::PRIORITY priority)
-: m_lifo(lifo), m_jobsAtOnce(jobsAtOnce), m_priority(priority)
+: m_jobsAtOnce(jobsAtOnce), m_priority(priority), m_lifo(lifo)
 {
 }
 
