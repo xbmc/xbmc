@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 06/11/2009-->
+<!--Date of translation: 10/27/2009-->
 <!--$Revision$-->
 <strings>
   <string id="31000">소리꺼짐</string>
@@ -96,6 +96,7 @@
   <string id="31112">"넓은 아이콘" 보기에 미디어 제목 보이기</string>
   <string id="31113">단일 이미지</string>
   <string id="31114">다중 이미지</string>
+  <string id="31115">오디오 설정 버튼을 문자다중방송으로 교체</string>
   <string id="31200">사용자 지정 스크립트 옵션</string>
   <string id="31201">
   </string>
@@ -107,9 +108,8 @@
   </string>
   <string id="31206">
   </string>
-  <string id="31207">
-  </string>
-  <string id="31208">OSD에 가사 스크립트 버튼 보이기</string>
+  <string id="31207">OSD 에 자막 다운로드 버튼 보이기</string>
+  <string id="31208">비디오 OSD 에 가사 스크립트 버튼 보이기</string>
   <string id="31209">빠른 실행 스크립트 버튼 사용 -</string>
   <string id="31300">배역 보기</string>
 </strings>

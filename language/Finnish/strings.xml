@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 22/9/2009 -->
-<!--Finnish strings based on English strings revision 23054 -->
+<!--Date of translation: 2/11/2009 -->
+<!--Finnish strings based on English strings revision 24203 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -777,6 +777,9 @@
 
   <string id="1260">Zeroconf publishing</string>
 
+  <string id="1300">Valinnainen äänilaite</string>
+  <string id="1301">Valinnainen äänen ulostulon laite</string>
+
   <string id="1396">kasaantuvaa</string>
   <string id="1397">ja</string>
   <string id="1398">jäätävää</string>
@@ -808,9 +811,10 @@
   <!-- strings through to 1470 reserved for power-saving -->
 
   <string id="2050">Kesto</string>
+
   <string id="2100">Skripti virhe! : %s</string> 
 
-  <string id="4501">LCD:n tyyppi</string>
+  <string id="4501">LCD:n käytössä</string>
 
   <string id="10000">Päävalikko</string>
   <string id="10001">Ohjelmat</string>
@@ -1210,8 +1214,10 @@
   <string id="13417">Basic Shaders (ARB)</string>
   <string id="13418">Advanced Shaders (GLSL)</string>
   <string id="13419">Ohjelmallinen</string>
-  <string id="13421">VDPAU</string>
   <string id="13420">Poista turvallisesti</string>
+  <string id="13421">VDPAU</string>
+  <string id="13422">Aloita kuvaesitys tästä</string>
+  <string id="13423">Muista polku</string>
 
   <string id="13500">A/V-tahdistus menetelmä</string>
   <string id="13501">Äänen kello</string>
@@ -1497,10 +1503,10 @@
   <string id="16023">Lomituksen käsittely</string>
   <string id="16024">Peruutetaan...</string>
   <string id="16025">Anna esittäjän nimi</string>
-  <string id="16026">Soittolistan toisto keskeytettiin</string>
-  <string id="16027">Liian monta peräkkäistä virhettä</string>
+  <string id="16026">Toisto ei onnistu</string>
+  <string id="16027">Yksi tai useampi toistovirhe esiintyi</string>
   <string id="16028">Anna arvo</string>
-
+  <string id="16029">Katso lokitiedostosta lisätietoja.</string>
   <string id="16030">Jukeboksi keskeytettiin.</string>
   <string id="16031">Kirjastosta ei löytynyt sopivia kappaleita.</string>
   <string id="16032">Tietokantaa ei voida valmistella.</string>
@@ -1580,6 +1586,7 @@
 
   <!-- string id's 20027 thru 20034 are reserved for temperaturestrings  (LocalizeStrings.cpp)-->
 
+  <string id="20037">Yhteenveto</string>
   <string id="20038">Lukitse musiikki</string>
   <string id="20039">Lukitse videot</string>
   <string id="20040">Lukitse kuvat</string>
@@ -1695,7 +1702,7 @@
   <string id="20151">Keskeytä sammutusajastus</string>
   <string id="20152">Lukitse %s asetukset</string>
   <string id="20153">Valitse...</string>
-  <string id="20154">Perustiedot</string>
+  <string id="20154">Tietojen yhteenveto</string>
   <string id="20155">Tallennustiedot</string>
   <string id="20156">Kiintolevyn tiedot</string>
   <string id="20157">DVD-aseman tiedot</string>
@@ -1882,8 +1889,10 @@
   <string id="20430">Tallennetaanko pienoiskuvat ja fanitaide?</string>
   <string id="20431">Kirjoitetaanko vanhojen päälle?</string>
   <string id="20432">Ohita polku kirjastoja päivitettäessä</string>
-  <string id="20433">Pura median metadata-tiedot</string>
+  <string id="20433">Pura kuvakkeet ja merkinnät </string>
   <string id="20434">Setit</string>
+  <string id="20435">Aseta elokuvasetin pienoiskuvake</string>
+  <string id="20436">Vie ohjaajan pienoiskuvakkeet</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -1959,6 +1968,7 @@
   <string id="21415">Musiikkivideon tietojen hakupaikka</string>
   <string id="21416">Palaute pohjautuu hakupaikan kieleen</string>
   <string id="21417">- Hakupaikan asetukset</string>
+  <string id="21418">Monikielinen</string>
 
   <string id="21420">Ehtoihin sopiva</string>
   <string id="21421">Valikoivan soittolistan ehdot</string>
@@ -1989,6 +1999,7 @@
   <string id="21446">Ääni koodekki</string>
   <string id="21447">Äänen kieli</string>
   <string id="21448">Tekstityskieli</string>
+  <string id="21449">Kauko-ohjain lähettää näppäin painallukset</string>
 
   <string id="21800">Tiedostonimi</string>
   <string id="21801">Tiedoston sijainti</string>
@@ -2111,6 +2122,8 @@
 
   <string id="23000">Sää lisäosa</string>
   <string id="23001">- Lisäosan asetukset</string>
+
+  <string id="23050">Teksti-tv käytössä</string>
 
  <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">External Player Active</string>

@@ -1,13 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 05/03/2009-->
-<!--Turkish strings based on English strings revision 17639-->
+<!--Date of translation: 15/10/2009-->
+<!--Turkish strings based on English strings revision 23729-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Sessiz</string>
-  <string id="31001"></string>
+  <string id="31001">Çalışıyor...</string>
   <string id="31002"></string>
   <string id="31003"></string>
   <string id="31004"></string>
@@ -69,7 +68,7 @@
   <string id="31058">Sistem müzik dosyaları</string>
   <string id="31059">Geçerli çalma listesi</string>
   <string id="31060">Bu dosya istiflendi, oynatmak istediğiniz bölümü seçin.</string>
-  
+
   <!-- Skin Settings labels -->
   <string id="31100">Arkaplan ayarları</string>
   <string id="31101">Ana ekran ayarları</string>
@@ -84,6 +83,9 @@
   <string id="31110">düğmesi - Özel arkaplanları etkinleştir</string>
   <string id="31111">Lyrics esnasında her zaman müzik bilgisini göster</string>
   <string id="31112">"Geniş simge" görünümünde ortam başlıklarını göster</string>
+  <string id="31113">Tek Resim</string>
+  <string id="31114">Çoklu Resim</string>
+  <string id="31115">Ses Ayarları Tuşu'nu Teletext ile değiştir</string>
 
   <!-- Script Settings labels -->
   <string id="31200">Özel betik ayarları</string>
@@ -93,7 +95,7 @@
   <string id="31204">Betik dizini</string>
   <string id="31205"></string>
   <string id="31206"></string>
-  <string id="31207"></string>
+  <string id="31207">Altyazı indirme tuşunu OSD'de göster</string>
   <string id="31208">Lyrics betik tuşunu OSD'de göster</string>
   <string id="31209">Hızlı başlat betik tuşunu etkinleştir -</string>
 
