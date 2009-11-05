@@ -426,7 +426,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, compareString));
   }
-  else if (strTest.Left(18).Equals("integergreaterthan("))
+  else if (strTest.Left(19).Equals("integergreaterthan("))
   {
     int pos = strTest.Find(",");
     int info = TranslateString(strTest.Mid(18, pos-18));
