@@ -1100,38 +1100,41 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
     {
-      buttons.Add(CONTEXT_BUTTON_INFO, 658);              /* Epg info button */
-
-      if (pItem->GetTVEPGInfoTag()->m_endTime > CDateTime::GetCurrentDateTime())
+      if (pItem->GetLabel() != g_localizeStrings.Get(18164))
       {
-        if (pItem->GetTVEPGInfoTag()->m_isRecording == false)
-        {
-          if (pItem->GetTVEPGInfoTag()->m_startTime < CDateTime::GetCurrentDateTime())
-          {
-            buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);             /* RECORD programme */
-          }
-          else
-          {
-            buttons.Add(CONTEXT_BUTTON_START_RECORD, 18416);
-          }
-        }
-        else
-        {
-          if (pItem->GetTVEPGInfoTag()->m_startTime < CDateTime::GetCurrentDateTime())
-          {
-            buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 18414);
-          }
-          else
-          {
-            buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 18415);
-          }
-        }
-      }
+        buttons.Add(CONTEXT_BUTTON_INFO, 658);              /* Epg info button */
 
-      buttons.Add(CONTEXT_BUTTON_USER1, 18165);
-      buttons.Add(CONTEXT_BUTTON_USER2, 103);
-      buttons.Add(CONTEXT_BUTTON_USER3, 104);
-      buttons.Add(CONTEXT_BUTTON_CLEAR, 20375);
+        if (pItem->GetTVEPGInfoTag()->m_endTime > CDateTime::GetCurrentDateTime())
+        {
+          if (pItem->GetTVEPGInfoTag()->m_isRecording == false)
+          {
+            if (pItem->GetTVEPGInfoTag()->m_startTime < CDateTime::GetCurrentDateTime())
+            {
+              buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);             /* RECORD programme */
+            }
+            else
+            {
+              buttons.Add(CONTEXT_BUTTON_START_RECORD, 18416);
+            }
+          }
+          else
+          {
+            if (pItem->GetTVEPGInfoTag()->m_startTime < CDateTime::GetCurrentDateTime())
+            {
+              buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 18414);
+            }
+            else
+            {
+              buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 18415);
+            }
+          }
+        }
+
+        buttons.Add(CONTEXT_BUTTON_USER1, 18165);
+        buttons.Add(CONTEXT_BUTTON_USER2, 103);
+        buttons.Add(CONTEXT_BUTTON_USER3, 104);
+        buttons.Add(CONTEXT_BUTTON_CLEAR, 20375);
+      }
     }
   }
 

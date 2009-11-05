@@ -1456,7 +1456,7 @@
 					<ondown>17</ondown>
 					<onleft>36</onleft>
 					<onright>77</onright>
-					<pagecontrol>76</pagecontrol>
+					<pagecontrol>77</pagecontrol>
 					<scrolltime>200</scrolltime>
 					<itemlayout height="40">
 						<control type="image">
