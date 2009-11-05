@@ -673,21 +673,21 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     int offset = atoi(strCategory.Mid(9, strCategory.GetLength() - 10));
     ret = TranslateListItem(strTest.Mid(strCategory.GetLength() + 1));
-    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || LISTITEM_IS_FOLDER)
+    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
       return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
   }
   else if (strCategory.Left(16).Equals("listitemposition"))
   {
     int offset = atoi(strCategory.Mid(17, strCategory.GetLength() - 18));
     ret = TranslateListItem(strCategory.Mid(strCategory.GetLength()+1));
-    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || LISTITEM_IS_FOLDER)
+    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
       return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset, INFOFLAG_LISTITEM_POSITION));
   }
   else if (strCategory.Left(14).Equals("listitemnowrap"))
   {
     int offset = atoi(strCategory.Mid(15, strCategory.GetLength() - 16));
     ret = TranslateListItem(strTest.Mid(strCategory.GetLength() + 1));
-    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || LISTITEM_IS_FOLDER)
+    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
       return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset));
   }
   else if (strCategory.Equals("visualisation"))
