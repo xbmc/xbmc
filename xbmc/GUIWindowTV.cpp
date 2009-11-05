@@ -40,6 +40,7 @@
 #include "GUIDialogTVRecordingInfo.h"
 #include "GUIDialogTVTimerSettings.h"
 #include "GUIDialogTVGroupManager.h"
+#include "GUIDialogTVGuideSearch.h"
 
 /* self include */
 #include "GUIWindowTV.h"
@@ -57,6 +58,7 @@ using namespace std;
 #define CONTROL_LIST_TIMERS          14
 #define CONTROL_LIST_GUIDE_CHANNEL   15
 #define CONTROL_LIST_GUIDE_NOW_NEXT  16
+#define CONTROL_LIST_SEARCH          17
 
 #define CONTROL_LABELHEADER          29
 #define CONTROL_LABELEMPTY           30
@@ -66,14 +68,16 @@ using namespace std;
 #define CONTROL_BTNCHANNELS_RADIO    33
 #define CONTROL_BTNRECORDINGS        34
 #define CONTROL_BTNTIMERS            35
-#define CONTROL_BTNSETTINGS          36
+#define CONTROL_BTNSEARCH            36
+#define CONTROL_BTNSETTINGS          37
 
 #define CONTROL_AREA_GUIDE           9001
 #define CONTROL_AREA_CHANNELS_TV     9002
 #define CONTROL_AREA_CHANNELS_RADIO  9003
 #define CONTROL_AREA_RECORDINGS      9004
 #define CONTROL_AREA_TIMERS          9005
-#define CONTROL_AREA_INFO            9006
+#define CONTROL_AREA_SEARCH          9006
+#define CONTROL_AREA_INFO            9007
 
 
 #define GUIDE_VIEW_CHANNEL          0
@@ -93,11 +97,16 @@ CGUIWindowTV::CGUIWindowTV(void) : CGUIMediaWindow(WINDOW_TV, "MyTV.xml")
   m_iSelected_CHANNELS_RADIO      = 0;
   m_iSelected_RECORDINGS          = 0;
   m_iSelected_TIMERS              = 0;
+  m_iSelected_SEARCH              = 0;
   m_iCurrentTVGroup               = -1;
   m_iCurrentRadioGroup            = -1;
   m_bShowHiddenChannels           = false;
+  m_bSearchStarted                = false;
+  m_bSearchConfirmed              = false;
   m_iGuideView                    = GUIDE_VIEW_CHANNEL;
   m_guideGrid                     = NULL;
+  m_iSortOrder_SEARCH             = SORT_ORDER_ASC;
+  m_iSortMethod_SEARCH            = SORT_METHOD_DATE;
 }
 
 /**
@@ -168,6 +177,12 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       CGUIDialogOK::ShowAndGetInput(18100,0,18091,18092);
       return true;
     }
+
+    if (!m_bSearchStarted)
+    {
+      m_bSearchStarted = true;
+      m_searchfilter.SetDefaults();
+    }
   }
   else if (iMessage == GUI_MSG_WINDOW_DEINIT)
   {
@@ -217,6 +232,12 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       g_windowManager.SendMessage(msg);
       m_iSelected_TIMERS = msg.GetParam1();
     }
+    else if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
+    {
+      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LIST_SEARCH);
+      g_windowManager.SendMessage(msg);
+      m_iSelected_SEARCH = msg.GetParam1();
+    }
 
     m_iSavedSubTVWindow = m_iCurrSubTVWindow;
     m_iCurrSubTVWindow  = TV_WINDOW_UNKNOWN;
@@ -236,6 +257,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       SET_CONTROL_HIDDEN(CONTROL_AREA_CHANNELS_RADIO);
       SET_CONTROL_HIDDEN(CONTROL_AREA_RECORDINGS);
       SET_CONTROL_HIDDEN(CONTROL_AREA_TIMERS);
+      SET_CONTROL_HIDDEN(CONTROL_AREA_SEARCH);
       SET_CONTROL_HIDDEN(CONTROL_AREA_INFO);
 
       if (m_iCurrSubTVWindow != TV_WINDOW_TV_PROGRAM)
@@ -260,6 +282,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       SET_CONTROL_HIDDEN(CONTROL_AREA_CHANNELS_RADIO);
       SET_CONTROL_HIDDEN(CONTROL_AREA_RECORDINGS);
       SET_CONTROL_HIDDEN(CONTROL_AREA_TIMERS);
+      SET_CONTROL_HIDDEN(CONTROL_AREA_SEARCH);
       SET_CONTROL_HIDDEN(CONTROL_AREA_INFO);
 
       if (m_iCurrSubTVWindow != TV_WINDOW_CHANNELS_TV)
@@ -284,6 +307,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       SET_CONTROL_HIDDEN(CONTROL_AREA_CHANNELS_TV);
       SET_CONTROL_HIDDEN(CONTROL_AREA_RECORDINGS);
       SET_CONTROL_HIDDEN(CONTROL_AREA_TIMERS);
+      SET_CONTROL_HIDDEN(CONTROL_AREA_SEARCH);
       SET_CONTROL_HIDDEN(CONTROL_AREA_INFO);
 
       if (m_iCurrSubTVWindow != TV_WINDOW_CHANNELS_RADIO)
@@ -308,6 +332,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       SET_CONTROL_HIDDEN(CONTROL_AREA_CHANNELS_TV);
       SET_CONTROL_HIDDEN(CONTROL_AREA_CHANNELS_RADIO);
       SET_CONTROL_HIDDEN(CONTROL_AREA_TIMERS);
+      SET_CONTROL_HIDDEN(CONTROL_AREA_SEARCH);
       SET_CONTROL_HIDDEN(CONTROL_AREA_INFO);
 
       if (m_iCurrSubTVWindow != TV_WINDOW_RECORDINGS)
@@ -332,6 +357,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       SET_CONTROL_HIDDEN(CONTROL_AREA_CHANNELS_TV);
       SET_CONTROL_HIDDEN(CONTROL_AREA_CHANNELS_RADIO);
       SET_CONTROL_HIDDEN(CONTROL_AREA_RECORDINGS);
+      SET_CONTROL_HIDDEN(CONTROL_AREA_SEARCH);
       SET_CONTROL_HIDDEN(CONTROL_AREA_INFO);
 
       if (m_iCurrSubTVWindow != TV_WINDOW_TIMERS)
@@ -350,6 +376,31 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 
       SET_CONTROL_VISIBLE(CONTROL_AREA_TIMERS);
     }
+    else if (iControl == CONTROL_BTNSEARCH || m_iSavedSubTVWindow == TV_WINDOW_SEARCH)
+    {
+      SET_CONTROL_HIDDEN(CONTROL_AREA_GUIDE);
+      SET_CONTROL_HIDDEN(CONTROL_AREA_CHANNELS_TV);
+      SET_CONTROL_HIDDEN(CONTROL_AREA_CHANNELS_RADIO);
+      SET_CONTROL_HIDDEN(CONTROL_AREA_RECORDINGS);
+      SET_CONTROL_HIDDEN(CONTROL_AREA_TIMERS);
+      SET_CONTROL_HIDDEN(CONTROL_AREA_INFO);
+
+      if (m_iCurrSubTVWindow != TV_WINDOW_SEARCH)
+      {
+        m_iCurrSubTVWindow = TV_WINDOW_SEARCH;
+
+        UpdateSearch();
+        UpdateButtons();
+      }
+      else
+      {
+        CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LIST_SEARCH);
+        g_windowManager.SendMessage(msg);
+        m_iSelected_SEARCH = msg.GetParam1();
+      }
+
+      SET_CONTROL_VISIBLE(CONTROL_AREA_SEARCH);
+    }
     else if (iControl == CONTROL_BTNSETTINGS || m_iSavedSubTVWindow == TV_WINDOW_SETTINGS)
     {
       m_iCurrSubTVWindow = TV_WINDOW_SETTINGS;
@@ -364,6 +415,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       SET_CONTROL_HIDDEN(CONTROL_AREA_CHANNELS_RADIO);
       SET_CONTROL_HIDDEN(CONTROL_AREA_RECORDINGS);
       SET_CONTROL_HIDDEN(CONTROL_AREA_TIMERS);
+      SET_CONTROL_HIDDEN(CONTROL_AREA_SEARCH);
       SET_CONTROL_VISIBLE(CONTROL_AREA_INFO);
     }
 
@@ -740,9 +792,90 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
         }
       }
     }
+    else if (iControl == CONTROL_LIST_SEARCH)
+    {
+      /* Get currently performed action */
+      int iAction = message.GetParam1();
+
+      /* Get currently selected item from file list */
+      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
+      g_windowManager.SendMessage(msg);
+      int iItem = msg.GetParam1();
+
+      /* Check file item is in list range and get his pointer */
+
+      if (iItem < 0 || iItem >= (int)m_vecItems->Size()) return true;
+
+      CFileItemPtr pItem = m_vecItems->Get(iItem);
+
+      /* Process actions */
+      if (iAction == ACTION_SHOW_INFO || iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+      {
+        if (pItem->GetLabel() == g_localizeStrings.Get(18164))
+        {
+          ShowSearchResults();
+        }
+        else
+        {
+          /* Show information Dialog */
+          ShowEPGInfo(pItem.get());
+          return true;
+        }
+
+        return true;
+      }
+      else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
+      {
+        //contextmenu
+        OnPopupMenu(iItem);
+        return true;
+      }
+      else if (iAction == ACTION_RECORD)
+      {
+        int iChannel = pItem->GetTVEPGInfoTag()->m_channelNum;
+
+        if (iChannel != -1)
+        {
+          if (pItem->GetTVEPGInfoTag()->m_isRecording == false)
+          {
+            // prompt user for confirmation of channel record
+            CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+
+            if (pDialog)
+            {
+              pDialog->SetHeading(264);
+              pDialog->SetLine(0, "");
+              pDialog->SetLine(1, pItem->GetTVEPGInfoTag()->m_strTitle);
+              pDialog->SetLine(2, "");
+              pDialog->DoModal();
+
+              if (pDialog->IsConfirmed())
+              {
+                cPVRTimerInfoTag newtimer(*pItem.get());
+                CFileItem *item = new CFileItem(newtimer);
+
+                if (cPVRTimers::AddTimer(*item))
+                {
+                  pItem->GetTVEPGInfoTag()->m_isRecording = true;
+                  pItem->SetProperty("Recording", pItem->GetTVEPGInfoTag()->m_isRecording);
+                }
+              }
+            }
+          }
+          else
+          {
+            CGUIDialogOK::ShowAndGetInput(18100,18107,0,0);
+          }
+        }
+      }
+    }
     else if (iControl == CONTROL_BTNSETTINGS)
     {
       g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYTV);
+    }
+    else if (iControl == CONTROL_BTNSEARCH)
+    {
+      ShowSearchResults();
     }
   }
 
@@ -763,7 +896,7 @@ bool CGUIWindowTV::OnPopupMenu(int iItem)
   unsigned int iControl = GetFocusedControlID();
   int m_iSelected;
 
-  if (iControl < 10 || iControl > 16) return false;
+  if (iControl < 10 || iControl > 17) return false;
 
   /* Save current Subwindow selected list position */
   if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
@@ -810,6 +943,12 @@ bool CGUIWindowTV::OnPopupMenu(int iItem)
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LIST_TIMERS);
     g_windowManager.SendMessage(msg);
     m_iSelected = m_iSelected_TIMERS = msg.GetParam1();
+  }
+  else if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
+  {
+    CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LIST_SEARCH);
+    g_windowManager.SendMessage(msg);
+    m_iSelected = m_iSelected_SEARCH = msg.GetParam1();
   }
 
   // popup the context menu
@@ -958,6 +1097,41 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       }
 
       buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);           /* Switch channel */
+    }
+    else if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
+    {
+      buttons.Add(CONTEXT_BUTTON_INFO, 658);              /* Epg info button */
+
+      if (pItem->GetTVEPGInfoTag()->m_endTime > CDateTime::GetCurrentDateTime())
+      {
+        if (pItem->GetTVEPGInfoTag()->m_isRecording == false)
+        {
+          if (pItem->GetTVEPGInfoTag()->m_startTime < CDateTime::GetCurrentDateTime())
+          {
+            buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);             /* RECORD programme */
+          }
+          else
+          {
+            buttons.Add(CONTEXT_BUTTON_START_RECORD, 18416);
+          }
+        }
+        else
+        {
+          if (pItem->GetTVEPGInfoTag()->m_startTime < CDateTime::GetCurrentDateTime())
+          {
+            buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 18414);
+          }
+          else
+          {
+            buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 18415);
+          }
+        }
+      }
+
+      buttons.Add(CONTEXT_BUTTON_USER1, 18165);
+      buttons.Add(CONTEXT_BUTTON_USER2, 103);
+      buttons.Add(CONTEXT_BUTTON_USER3, 104);
+      buttons.Add(CONTEXT_BUTTON_CLEAR, 20375);
     }
   }
 
@@ -1258,7 +1432,8 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV ||
         m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO ||
-        m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
+        m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM ||
+        m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
     {
 
       if (m_iGuideView == GUIDE_VIEW_TIMELINE)
@@ -1278,7 +1453,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
   else if (button == CONTEXT_BUTTON_START_RECORD)
   {
-    if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
+    if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM || m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
     {
       int iChannel = pItem->GetTVEPGInfoTag()->m_channelNum;
 
@@ -1319,7 +1494,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
   else if (button == CONTEXT_BUTTON_STOP_RECORD)
   {
-    if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
+    if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM || m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
     {
       int iChannel = pItem->GetTVEPGInfoTag()->m_channelNum;
 
@@ -1360,6 +1535,64 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   else if (button == CONTEXT_BUTTON_RESUME_ITEM)
   {
 
+  }
+  else if (button == CONTEXT_BUTTON_CLEAR)
+  {
+    if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
+    {
+      m_bSearchStarted = false;
+      m_bSearchConfirmed = false;
+      m_searchfilter.SetDefaults();
+      UpdateSearch();
+    }
+  }
+  else if (button == CONTEXT_BUTTON_USER1)
+  {
+    if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
+    {
+      if (m_iSortMethod_SEARCH != SORT_METHOD_CHANNEL)
+      {
+        m_iSortMethod_SEARCH = SORT_METHOD_CHANNEL;
+        m_iSortOrder_SEARCH  = SORT_ORDER_ASC;
+      }
+      else
+      {
+        m_iSortOrder_SEARCH = m_iSortOrder_SEARCH == SORT_ORDER_ASC ? SORT_ORDER_DESC : SORT_ORDER_ASC;
+      }
+      UpdateSearch();
+    }
+  }
+  else if (button == CONTEXT_BUTTON_USER2)
+  {
+    if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
+    {
+      if (m_iSortMethod_SEARCH != SORT_METHOD_LABEL)
+      {
+        m_iSortMethod_SEARCH = SORT_METHOD_LABEL;
+        m_iSortOrder_SEARCH  = SORT_ORDER_ASC;
+      }
+      else
+      {
+        m_iSortOrder_SEARCH = m_iSortOrder_SEARCH == SORT_ORDER_ASC ? SORT_ORDER_DESC : SORT_ORDER_ASC;
+      }
+      UpdateSearch();
+    }
+  }
+  else if (button == CONTEXT_BUTTON_USER3)
+  {
+    if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
+    {
+      if (m_iSortMethod_SEARCH != SORT_METHOD_DATE)
+      {
+        m_iSortMethod_SEARCH = SORT_METHOD_DATE;
+        m_iSortOrder_SEARCH  = SORT_ORDER_ASC;
+      }
+      else
+      {
+        m_iSortOrder_SEARCH = m_iSortOrder_SEARCH == SORT_ORDER_ASC ? SORT_ORDER_DESC : SORT_ORDER_ASC;
+      }
+      UpdateSearch();
+    }
   }
 
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
@@ -1493,6 +1726,28 @@ void CGUIWindowTV::ShowGroupManager(bool IsRadio)
 
   /* Open dialog window */
   pDlgInfo->DoModal();
+
+  return;
+}
+
+void CGUIWindowTV::ShowSearchResults()
+{
+  /* Load timer settings dialog */
+  CGUIDialogTVEPGSearch* pDlgInfo = (CGUIDialogTVEPGSearch*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_SEARCH);
+
+  if (!pDlgInfo)
+    return;
+
+  pDlgInfo->SetFilterData(&m_searchfilter);
+
+  /* Open dialog window */
+  pDlgInfo->DoModal();
+
+  if (pDlgInfo->IsConfirmed())
+  {
+    m_bSearchConfirmed = true;
+    UpdateSearch();
+  }
 
   return;
 }
@@ -1762,6 +2017,63 @@ void CGUIWindowTV::UpdateTimers()
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
 
   SET_CONTROL_VISIBLE(CONTROL_LIST_TIMERS);
+}
+
+void CGUIWindowTV::UpdateSearch()
+{
+  int items = 0;
+
+  SET_CONTROL_HIDDEN(CONTROL_LIST_SEARCH);
+
+  m_vecItems->Clear();
+
+  if (m_bSearchConfirmed)
+  {
+    CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    if (dlgProgress)
+    {
+      dlgProgress->SetHeading(194);
+      dlgProgress->SetLine(0, m_searchfilter.m_SearchString);
+      dlgProgress->SetLine(1, "");
+      dlgProgress->SetLine(2, "");
+      dlgProgress->StartModal();
+      dlgProgress->Progress();
+    }
+
+    items = cPVREpgs::GetEPGSearch(m_vecItems, m_searchfilter);
+
+    if (dlgProgress)
+      dlgProgress->Close();
+
+    if (items == 0)
+    {
+      CGUIDialogOK::ShowAndGetInput(194, 284, 0, 0);
+      m_bSearchConfirmed = false;
+    }
+  }
+
+  if (items == 0)
+  {
+    CFileItemPtr addsearch(new CFileItem(g_localizeStrings.Get(18164)));
+    m_vecItems->Add(addsearch);
+  }
+  else
+  {
+    m_vecItems->Sort(m_iSortMethod_SEARCH, m_iSortOrder_SEARCH);
+  }
+
+  CGUIMessage msg1(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_SEARCH, 0, 0, m_vecItems);
+  g_windowManager.SendMessage(msg1);
+
+  /* Set Selected item inside list */
+  CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_LIST_SEARCH, m_iSelected_SEARCH);
+  g_windowManager.SendMessage(msg2);
+
+  CStdString strLabel;
+  strLabel.Format("%s - %s", g_localizeStrings.Get(9), g_localizeStrings.Get(283));
+  SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
+
+  SET_CONTROL_VISIBLE(CONTROL_LIST_SEARCH);
 }
 
 /**

@@ -1694,13 +1694,33 @@
   <string id="18136">Please create first one</string>
   <string id="18137">Page %3x-%02x not found</string>
   <string id="18138">Channel does not support Teletext</string>
-
+  <string id="18139">Search Guide</string>
+  <string id="18140">Search string</string>
+  <string id="18141">Include Description</string>
+  <string id="18142">Case Sensitive</string>
+  <string id="18143">Minimal Duration</string>
+  <string id="18144">Maximal Duration</string>
+  <string id="18145">Start Time</string>
+  <string id="18146">Stop Time</string>
+  <string id="18147">Start Date</string>
+  <string id="18148">Stop Date</string>
+  <string id="18149">Inluding unknown Genres</string>
   <string id="18150">Now</string>
   <string id="18151">Hidden</string>
-
+  <string id="18152">Genre</string>
+  <string id="18153">Subcategory</string>
+  <string id="18154">Free-To-Air only</string>
+  <string id="18155">TV only</string>
+  <string id="18156">Ignore for present Timers</string>
+  <string id="18157">Music/Balett/Dance</string>
+  <string id="18158">Arts/Culture</string>
+  <string id="18159">Ignore for present Recordings</string>
+  <string id="18160">Avoid Repeats</string>
   <string id="18161">Set Channel Icon</string>
   <string id="18162">Timer still recording - really delete?</string>
   <string id="18163">Programme info</string>
+  <string id="18164">No search results present</string>
+  <string id="18165">Sort by: Channel</string>
 
   <string id="18190">Next timer on</string>
   <string id="18191">at</string>

@@ -24,6 +24,7 @@
 #include "StringUtils.h"
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
+#include "utils/PVREpg.h"
 #include "FileItem.h"
 #include "URL.h"
 #include "utils/log.h"
@@ -125,7 +126,11 @@ void SSortFileItem::ByDate(CFileItemPtr &item)
   if (!item) return;
 
   CStdString label;
-  label.Format("%s %s", item->m_dateTime.GetAsDBDateTime().c_str(), item->GetLabel().c_str());
+  if (item->IsTVEPG())
+    label.Format("%s %s", item->GetTVEPGInfoTag()->Start().GetAsDBDateTime().c_str(), item->GetLabel().c_str());
+  else
+    label.Format("%s %s", item->m_dateTime.GetAsDBDateTime().c_str(), item->GetLabel().c_str());
+
   item->SetSortLabel(label);
 }
 
@@ -425,3 +430,10 @@ void SSortFileItem::ByProductionCode(CFileItemPtr &item)
   item->SetSortLabel(item->GetVideoInfoTag()->m_strProductionCode);
 }
 
+void SSortFileItem::ByChannel(CFileItemPtr &item)
+{
+  if (!item) return;
+
+  if (item->IsTVEPG())
+    item->SetSortLabel(item->GetTVEPGInfoTag()->ChannelName());
+}

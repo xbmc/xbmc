@@ -137,6 +137,7 @@ SRCS=Application.cpp \
      GUIDialogSettings.cpp \
      GUIDialogSubMenu.cpp \
      GUIDialogTVGuide.cpp \
+     GUIDialogTVGuideSearch.cpp \
      GUIDialogTeletext.cpp \
      GUIDialogVideoBookmarks.cpp \
      GUIDialogVideoSettings.cpp \

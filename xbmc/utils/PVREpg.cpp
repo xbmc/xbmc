@@ -31,6 +31,36 @@
 
 using namespace std;
 
+void EPGSearchFilter::SetDefaults()
+{
+  m_SearchString      = "";
+  m_CaseSensitive     = false;
+  m_SearchDescription = false;
+  m_GenreType         = -1;
+  m_GenreSubType      = -1;
+  m_minDuration       = -1;
+  m_maxDuration       = -1;
+  cPVREpgs::GetFirstEPGDate().GetAsSystemTime(m_startDate);
+  m_startDate.wHour   = 0;
+  m_startDate.wMinute = 0;
+  cPVREpgs::GetLastEPGDate().GetAsSystemTime(m_endDate);
+  m_endDate.wHour     = 23;
+  m_endDate.wMinute   = 59;
+  m_startTime         = m_startDate;
+  m_startTime.wHour   = 0;
+  m_startTime.wMinute = 0;
+  m_endTime           = m_endDate;
+  m_endTime.wHour     = 23;
+  m_endTime.wMinute   = 59;
+  m_ChannelNumber     = -1;
+  m_FTAOnly           = false;
+  m_IncUnknGenres     = true;
+  m_Group             = -1;
+  m_IgnPresentTimers  = true;
+  m_IgnPresentRecords = true;
+  m_PreventRepeats    = true;
+}
+
 CTVEPGInfoTag::CTVEPGInfoTag(long uniqueBroadcastID)
 {
   Reset();
@@ -415,6 +445,213 @@ int cPVREpgs::GetEPGAll(CFileItemList* results, bool radio)
   return cnt;
 }
 
+bool cPVREpgs::FilterEntry(const CTVEPGInfoTag &tag, const EPGSearchFilter &filter)
+{
+  if (filter.m_GenreType != -1)
+  {
+    if (tag.GenreType() != filter.m_GenreType &&
+        (!filter.m_IncUnknGenres &&
+        ((tag.GenreType() < EVCONTENTMASK_USERDEFINED || tag.GenreType() >= EVCONTENTMASK_MOVIEDRAMA))))
+    {
+      return false;
+    }
+
+    if (filter.m_GenreSubType != -1)
+    {
+      if (tag.GenreSubType() != filter.m_GenreSubType &&
+          (!filter.m_IncUnknGenres &&
+          ((tag.GenreSubType() < EVCONTENTMASK_USERDEFINED || tag.GenreSubType() >= EVCONTENTMASK_MOVIEDRAMA))))
+      {
+        return false;
+      }
+    }
+  }
+  if (filter.m_minDuration != -1)
+  {
+    if (tag.DurationSeconds() < (filter.m_minDuration*60))
+      return false;
+  }
+  if (filter.m_maxDuration != -1)
+  {
+    if (tag.DurationSeconds() > (filter.m_maxDuration*60))
+      return false;
+  }
+  if (filter.m_ChannelNumber != -1)
+  {
+    if (filter.m_ChannelNumber == -2)
+    {
+      if (tag.IsRadio())
+        return false;
+    }
+    else if (filter.m_ChannelNumber == -3)
+    {
+      if (!tag.IsRadio())
+        return false;
+    }
+    else if (tag.Channel() != filter.m_ChannelNumber)
+      return false;
+  }
+  if (filter.m_FTAOnly && tag.IsEncrypted())
+  {
+    return false;
+  }
+  if (filter.m_Group != -1)
+  {
+    if (tag.GroupID() != filter.m_Group)
+      return false;
+  }
+
+  int timeTag = (tag.Start().GetHour()*60 + tag.Start().GetMinute());
+
+  if (timeTag < (filter.m_startTime.wHour*60 + filter.m_startTime.wMinute))
+    return false;
+
+  if (timeTag > (filter.m_endTime.wHour*60 + filter.m_endTime.wMinute))
+    return false;
+
+  if (tag.Start() < filter.m_startDate)
+    return false;
+
+  if (tag.Start() > filter.m_endDate)
+    return false;
+
+  if (filter.m_SearchString != "")
+  {
+    CStdString title = tag.Title();
+    CStdString searchStr = filter.m_SearchString;
+    if (!filter.m_CaseSensitive)
+    {
+      title.ToLower();
+      searchStr.ToLower();
+    }
+
+    if (title.Find(searchStr) < 0)
+    {
+      if (filter.m_SearchDescription)
+      {
+        title = tag.PlotOutline();
+        if (!filter.m_CaseSensitive)
+          title.ToLower();
+
+        if (title.Find(searchStr) < 0)
+        {
+          title = tag.Plot();
+          if (!filter.m_CaseSensitive)
+            title.ToLower();
+
+          if (title.Find(searchStr) < 0)
+          {
+            return false;
+          }
+        }
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+  }
+  return true;
+}
+
+int cPVREpgs::GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter)
+{
+  cPVREpgsLock EpgsLock;
+  cPVREpgs *s = (cPVREpgs *)EPGs(EpgsLock);
+  if (s)
+  {
+    for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
+    {
+      if (PVRChannelsTV[i].m_hide)
+        continue;
+
+      const cPVREpg *Epg = s->GetEPG(&PVRChannelsTV[i], true);
+
+      const vector<CTVEPGInfoTag> *ch_epg = Epg->InfoTags();
+
+
+      for (unsigned int i = 0; i < ch_epg->size(); i++)
+      {
+        if (FilterEntry(ch_epg->at(i), filter))
+        {
+          CFileItemPtr channel(new CFileItem(ch_epg->at(i)));
+          results->Add(channel);
+        }
+      }
+    }
+
+    for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
+    {
+      if (PVRChannelsRadio[i].m_hide)
+        continue;
+
+      const cPVREpg *Epg = s->GetEPG(&PVRChannelsRadio[i], true);
+
+      const vector<CTVEPGInfoTag> *ch_epg = Epg->InfoTags();
+
+
+      for (unsigned int i = 0; i < ch_epg->size(); i++)
+      {
+        if (FilterEntry(ch_epg->at(i), filter))
+        {
+          CFileItemPtr channel(new CFileItem(ch_epg->at(i)));
+          results->Add(channel);
+        }
+      }
+    }
+
+    if (filter.m_IgnPresentRecords && PVRRecordings.size() > 0)
+    {
+      for (unsigned int i = 0; i < PVRRecordings.size(); i++)
+      {
+        unsigned int size = results->Size();
+        for (unsigned int j = 0; j < size; j++)
+        {
+          const CTVEPGInfoTag *epgentry = results->Get(j)->GetTVEPGInfoTag();
+          if (epgentry)
+          {
+            if (epgentry->Title() != PVRRecordings[i].Title())
+              continue;
+            if (epgentry->PlotOutline() != PVRRecordings[i].PlotOutline())
+              continue;
+            if (epgentry->Plot() != PVRRecordings[i].Plot())
+              continue;
+
+            results->Remove(j);
+            j--;
+          }
+        }
+      }
+    }
+
+    if (filter.m_IgnPresentTimers && PVRTimers.size() > 0)
+    {
+      for (unsigned int i = 0; i < PVRTimers.size(); i++)
+      {
+        unsigned int size = results->Size();
+        for (unsigned int j = 0; j < size; j++)
+        {
+          const CTVEPGInfoTag *epgentry = results->Get(j)->GetTVEPGInfoTag();
+          if (epgentry)
+          {
+            if (epgentry->Channel() != PVRTimers[i].Number())
+              continue;
+            if (epgentry->Start() < PVRTimers[i].Start())
+              continue;
+            if (epgentry->End() > PVRTimers[i].Stop())
+              continue;
+
+            results->Remove(j);
+            j--;
+          }
+        }
+      }
+    }
+  }
+  return results->Size();
+}
+
 int cPVREpgs::GetEPGChannel(unsigned int number, CFileItemList* results, bool radio)
 {
   int cnt = 0;
@@ -539,6 +776,58 @@ const cPVREpg *cPVREpgs::GetEPG(const cPVRChannelInfoTag *Channel, bool AddIfMis
     Channel->m_Epg = Epg;
   }
   return Channel->m_Epg != &DummyEPG ? Channel->m_Epg: NULL;
+}
+
+CDateTime cPVREpgs::GetFirstEPGDate(bool radio/* = false*/)
+{
+  CDateTime first = CDateTime::GetCurrentDateTime();
+  cPVRChannels *ch = !radio ? &PVRChannelsTV : &PVRChannelsRadio;
+  cPVREpgsLock EpgsLock;
+  cPVREpgs *s = (cPVREpgs *)EPGs(EpgsLock);
+  if (s)
+  {
+    for (unsigned int i = 0; i < ch->size(); i++)
+    {
+      if (ch->at(i).m_hide)
+        continue;
+
+      const cPVREpg *Epg = s->GetEPG(&ch->at(i), true);
+      const vector<CTVEPGInfoTag> *ch_epg = Epg->InfoTags();
+
+      for (unsigned int j = 0; j < ch_epg->size(); j++)
+      {
+        if (ch_epg->at(j).Start() < first)
+          first = ch_epg->at(j).Start();
+      }
+    }
+  }
+  return first;
+}
+
+CDateTime cPVREpgs::GetLastEPGDate(bool radio/* = false*/)
+{
+  CDateTime last = CDateTime::GetCurrentDateTime();
+  cPVRChannels *ch = !radio ? &PVRChannelsTV : &PVRChannelsRadio;
+  cPVREpgsLock EpgsLock;
+  cPVREpgs *s = (cPVREpgs *)EPGs(EpgsLock);
+  if (s)
+  {
+    for (unsigned int i = 0; i < ch->size(); i++)
+    {
+      if (ch->at(i).m_hide)
+        continue;
+
+      const cPVREpg *Epg = s->GetEPG(&ch->at(i), true);
+      const vector<CTVEPGInfoTag> *ch_epg = Epg->InfoTags();
+
+      for (unsigned int j = 0; j < ch_epg->size(); j++)
+      {
+        if (ch_epg->at(j).End() >= last)
+          last = ch_epg->at(j).End();
+      }
+    }
+  }
+  return last;
 }
 
 void cPVREpgs::Add(cPVREpg *entry)

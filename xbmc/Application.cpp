@@ -207,6 +207,7 @@
 #include "GUIDialogAccessPoints.h"
 #endif
 #include "GUIDialogFullScreenInfo.h"
+#include "GUIDialogTVGuideSearch.h"
 #include "GUIDialogTVEPGProgInfo.h"
 #include "GUIDialogTVRecordingInfo.h"
 #include "GUIDialogTVTimerSettings.h"
@@ -1219,6 +1220,7 @@ HRESULT CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowSettings);                 // window id = 4
   g_windowManager.Add(new CGUIWindowTV);                       // window id = 9
   g_windowManager.Add(new CGUIDialogTVEPGProgInfo);            // window id = 600
+  g_windowManager.Add(new CGUIDialogTVEPGSearch);              // window id = 611
   g_windowManager.Add(new CGUIDialogTVTimerSettings);          // window id = 602
   g_windowManager.Add(new CGUIDialogTVChannels);               // window id = 603
   g_windowManager.Add(new CGUIDialogTVGuide);                  // window id = 603
@@ -3409,6 +3411,7 @@ HRESULT CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_SCRIPTS_INFO);
     g_windowManager.Delete(WINDOW_SLIDESHOW);
     g_windowManager.Delete(WINDOW_DIALOG_EPG_SCAN);
+    g_windowManager.Delete(WINDOW_DIALOG_TV_GUIDE_SEARCH);
 
     g_windowManager.Delete(WINDOW_HOME);
     g_windowManager.Delete(WINDOW_PROGRAMS);
