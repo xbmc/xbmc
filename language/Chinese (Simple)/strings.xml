@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 10/25/2009-->
+<!--Date of translation: 11/5/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 24098 -->
+<!--Based on english strings version 24272 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1837,7 +1837,7 @@
   <string id="20379">被选文件夹包含单个电视节目</string>
   <string id="20380">扫描时排除文件夹</string>
   <string id="20381">特别</string>
-  <string id="20382"></string>
+  <string id="20382">自动获取剧集分季缩略图</string>
   <string id="20383">被选文件夹为单个视频</string>
   <string id="20384">链接到电视节目</string>
   <string id="20385">移除电视节目链接</string>
@@ -1857,7 +1857,7 @@
   <string id="20399">从专辑进入音乐视频</string>
   <string id="20400">按艺人进入音乐视频</string>
   <string id="20401">播放音乐视频</string>
-  <string id="20402"></string>
+  <string id="20402">自动获取演员缩略图</string>
   <string id="20403">设置演员缩略图</string>
   <string id="20404"></string>
   <string id="20405">移除剧集书签</string>
@@ -1891,6 +1891,7 @@
   <string id="20433">提取缩略图和媒体标识</string>
   <string id="20434">影片集</string>
   <string id="20435">设置影片集缩略图</string>
+  <string id="20436">导出演员缩略图</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
