@@ -167,6 +167,8 @@ void CGUIWindowMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
   m_albumItem->GetMusicInfoTag()->SetLoaded(true);
   m_albumItem->GetMusicInfoTag()->SetRating('0' + (m_album.iRating + 1) / 2);
   m_albumItem->GetMusicInfoTag()->SetGenre(m_album.strGenre);
+  CMusicDatabase::SetPropertiesFromAlbum(*m_albumItem,m_album);
+  /* TODO: remove when unifying the properties */
   m_albumItem->SetProperty("albumstyles", m_album.strStyles);
   m_albumItem->SetProperty("albummoods", m_album.strMoods);
   m_albumItem->SetProperty("albumthemes", m_album.strThemes);
@@ -194,6 +196,8 @@ void CGUIWindowMusicInfo::SetArtist(const CArtist& artist, const CStdString &pat
   m_albumItem->GetMusicInfoTag()->SetArtist(m_artist.strArtist);
   m_albumItem->GetMusicInfoTag()->SetLoaded(true);
   m_albumItem->GetMusicInfoTag()->SetGenre(m_artist.strGenre);
+  CMusicDatabase::SetPropertiesFromArtist(*m_albumItem,m_artist);
+  /* TODO: remove when unifying the properties */
   m_albumItem->SetProperty("styles", m_artist.strStyles);
   m_albumItem->SetProperty("moods", m_artist.strMoods);
   m_albumItem->SetProperty("biography", m_artist.strBiography);
