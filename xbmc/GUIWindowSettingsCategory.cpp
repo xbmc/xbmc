@@ -3757,12 +3757,7 @@ void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pContro
 
 void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
 {
-  if (!g_application.IsStandAlone())
-    return;
-
-#ifdef __APPLE__
   return;
-#endif
 
    NetworkAssignment iAssignment;
    CStdString sIPAddress;

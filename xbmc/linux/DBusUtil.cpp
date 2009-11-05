@@ -113,7 +113,9 @@ CStdString CDBusUtil::ParseType(DBusMessageIter *itr)
   CStdString value;
   const char *    string  = NULL;
   dbus_int32_t    int32   = 0;
+  dbus_uint32_t   uint32  = 0;
   dbus_int64_t    int64   = 0;
+  dbus_uint64_t   uint64  = 0;
   dbus_bool_t     boolean = false;
 
   int type = dbus_message_iter_get_arg_type(itr);
@@ -128,14 +130,20 @@ CStdString CDBusUtil::ParseType(DBusMessageIter *itr)
 
   case DBUS_TYPE_BYTE:
   case DBUS_TYPE_UINT32:
+    dbus_message_iter_get_basic(itr, &uint32);
+    value.Format("%u", uint32);
+    break;
   case DBUS_TYPE_INT32:
     dbus_message_iter_get_basic(itr, &int32);
-    value.Format("%i", (int)int32);
+    value.Format("%d", int32);
     break;
   case DBUS_TYPE_UINT64:
+    dbus_message_iter_get_basic(itr, &uint64);
+    value.Format("%"PRIu64, uint64);
+    break;
   case DBUS_TYPE_INT64:
     dbus_message_iter_get_basic(itr, &int64);
-    value.Format("%li", int64);
+    value.Format("%"PRId64, int64);
     break;
   case DBUS_TYPE_BOOLEAN:
     dbus_message_iter_get_basic(itr, &boolean);

@@ -2724,6 +2724,8 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       pItem->SetIconImage("DefaultArtist.png");
       CArtist artist;
       GetArtistInfo(idArtist,artist,false);
+
+      /* TODO: remove when we remove old property names */ 
       pItem->SetProperty("instrument",artist.strInstruments);
       pItem->SetProperty("style",artist.strStyles);
       pItem->SetProperty("mood",artist.strMoods);
@@ -2734,6 +2736,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       pItem->SetProperty("died",artist.strDied);
       pItem->SetProperty("disbanded",artist.strDisbanded);
       pItem->SetProperty("yearsactive",artist.strYearsActive);
+      SetPropertiesFromArtist(*pItem,artist);
       items.Add(pItem);
 
       m_pDS->next();
@@ -4701,3 +4704,30 @@ int CMusicDatabase::GetKaraokeSongsCount()
   }
   return 0;
 }
+
+void CMusicDatabase::SetPropertiesFromArtist(CFileItem& item, const CArtist& artist)
+{
+  item.SetProperty("artist_instrument",artist.strInstruments);
+  item.SetProperty("artist_style",artist.strStyles);
+  item.SetProperty("artist_mood",artist.strMoods);
+  item.SetProperty("artist_born",artist.strBorn);
+  item.SetProperty("artist_formed",artist.strFormed);
+  item.SetProperty("artist_description",artist.strBiography);
+  item.SetProperty("artist_genre",artist.strGenre);
+  item.SetProperty("artist_died",artist.strDied);
+  item.SetProperty("artist_disbanded",artist.strDisbanded);
+  item.SetProperty("artist_yearsactive",artist.strYearsActive);
+}
+
+void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album)
+{
+  item.SetProperty("album_description", album.strReview);
+  item.SetProperty("album_theme", album.strThemes);
+  item.SetProperty("album_mood", album.strMoods);
+  item.SetProperty("album_style", album.strStyles);
+  item.SetProperty("album_type", album.strType);
+  item.SetProperty("album_label", album.strLabel);
+  if (album.iRating > 0)
+    item.SetProperty("album_rating", album.iRating);
+}
+

@@ -534,6 +534,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Left(9).Equals("timespeed")) return AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(info.Mid(9))));
     else if (info.Left(4).Equals("time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(info.Mid(4))));
     else if (info.Left(8).Equals("duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(info.Mid(8))));
+    else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10), MUSICPLAYER_PROPERTY_OFFSET);
     else
       ret = TranslateMusicPlayerString(strTest.Mid(12));
   }
@@ -998,6 +999,15 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 
   if (info >= SLIDE_INFO_START && info <= SLIDE_INFO_END)
     return GetPictureLabel(info);
+
+  if (info >= LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET)
+  { // grab the property
+    if (!m_currentFile)
+      return "";
+
+    CStdString property = m_listitemProperties[info - LISTITEM_PROPERTY_START-MUSICPLAYER_PROPERTY_OFFSET];
+    return m_currentFile->GetProperty(property);
+  }
 
   if (info >= LISTITEM_START && info <= LISTITEM_END)
   {
@@ -3624,16 +3634,16 @@ void CGUIInfoManager::UpdateFPS()
   }
 }
 
-int CGUIInfoManager::AddListItemProp(const CStdString &str)
+int CGUIInfoManager::AddListItemProp(const CStdString &str, int offset)
 {
   for (int i=0; i < (int)m_listitemProperties.size(); i++)
     if (m_listitemProperties[i] == str)
-      return (LISTITEM_PROPERTY_START + i);
+      return (LISTITEM_PROPERTY_START+offset + i);
 
   if (m_listitemProperties.size() < LISTITEM_PROPERTY_END - LISTITEM_PROPERTY_START)
   {
     m_listitemProperties.push_back(str);
-    return LISTITEM_PROPERTY_START + m_listitemProperties.size() - 1;
+    return LISTITEM_PROPERTY_START + offset + m_listitemProperties.size() - 1;
   }
 
   CLog::Log(LOGERROR,"%s - not enough listitem property space!", __FUNCTION__);

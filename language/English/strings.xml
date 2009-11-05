@@ -2072,7 +2072,7 @@
   <string id="20379">Selected folder contains a single TV show</string>
   <string id="20380">Exclude selected folder from scans</string>
   <string id="20381">Specials</string>
-  <string id="20382"></string>
+  <string id="20382">Automatically grab season thumbs</string>
   <string id="20383">Selected folder contains a single video</string>
   <string id="20384">Link to TV show</string>
   <string id="20385">Remove link to TV show</string>
@@ -2092,7 +2092,7 @@
   <string id="20399">Go to music videos from album</string>
   <string id="20400">Go to music videos by artist</string>
   <string id="20401">Play music video</string>
-  <string id="20402"></string>
+  <string id="20402">Automatically grab actor thumbs</string>
   <string id="20403">Set actor thumb</string>
   <string id="20404"></string>
   <string id="20405">Remove episode bookmark</string>

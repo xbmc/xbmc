@@ -77,7 +77,7 @@ CVDPAU::CVDPAU(int width, int height)
     glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
 
   totalAvailableOutputSurfaces = outputSurface = presentSurface = 0;
-  vid_width = vid_height = outWidth = outHeight = 0;
+  vid_width = vid_height = OutWidth = OutHeight = 0;
   memset(&outRect, 0, sizeof(VdpRect));
   memset(&outRectVid, 0, sizeof(VdpRect));
   m_Display = g_Windowing.GetDisplay();
@@ -91,7 +91,7 @@ CVDPAU::CVDPAU(int width, int height)
   max_references = 0;
 
   if (vdp_device)
-    InitCSCMatrix();
+    InitCSCMatrix(height);
 
   for (int i = 0; i < NUM_OUTPUT_SURFACES; i++)
     outputSurfaces[i] = VDP_INVALID_HANDLE;
@@ -156,8 +156,8 @@ bool CVDPAU::MakePixmap(int width, int height)
     None
   };
 
-  int OutWidth = g_graphicsContext.GetWidth();
-  int OutHeight = g_graphicsContext.GetHeight();
+  OutWidth = g_graphicsContext.GetWidth();
+  OutHeight = g_graphicsContext.GetHeight();
 
   CLog::Log(LOGNOTICE,"Creating %ix%i pixmap", OutWidth, OutHeight);
   int pixmapAttribs[] = {
@@ -303,7 +303,10 @@ void CVDPAU::CheckFeatures()
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_SHARPNESS;
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
     if (g_guiSettings.GetBool("videoplayer.vdpauUpscalingLevel"))
+    {
+      CLog::Log(LOGNOTICE,"(VDPAU) enabling VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1");
       features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1;
+    }
 #endif
     if (interlaced && tmpDeint)
     {
@@ -322,12 +325,18 @@ void CVDPAU::CheckFeatures()
                                     parameter_values,
                                     &videoMixer);
     CheckStatus(vdp_st, __LINE__);
+#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+    if (g_guiSettings.GetBool("videoplayer.vdpauUpscalingLevel"))
+    {
+      SetHWUpscaling();
+    }
+#endif
   }
 
   if (tmpBrightness != g_stSettings.m_currentVideoSettings.m_Brightness ||
       tmpContrast   != g_stSettings.m_currentVideoSettings.m_Contrast)
   {
-    SetColor();
+    SetColor(vid_height);
     tmpBrightness = g_stSettings.m_currentVideoSettings.m_Brightness;
     tmpContrast = g_stSettings.m_currentVideoSettings.m_Contrast;
   }
@@ -349,7 +358,7 @@ void CVDPAU::CheckFeatures()
   }
 }
 
-void CVDPAU::SetColor()
+void CVDPAU::SetColor(int Height)
 {
   VdpStatus vdp_st;
 
@@ -358,7 +367,7 @@ void CVDPAU::SetColor()
   if (tmpContrast != g_stSettings.m_currentVideoSettings.m_Contrast)
     m_Procamp.contrast = (float)((g_stSettings.m_currentVideoSettings.m_Contrast)+50) / 100;
   vdp_st = vdp_generate_csc_matrix(&m_Procamp, 
-                                   VDP_COLOR_STANDARD_ITUR_BT_709,
+                                   (Height < 720)? VDP_COLOR_STANDARD_ITUR_BT_601 : VDP_COLOR_STANDARD_ITUR_BT_709,
                                    &m_CSCMatrix);
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
   if (g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
@@ -418,6 +427,27 @@ void CVDPAU::SetSharpness()
   CheckStatus(vdp_st, __LINE__);
 }
 
+void CVDPAU::SetHWUpscaling()
+{
+#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+  CLog::Log(LOGNOTICE,"Enabling VDPAU HQ Upscaling");
+  VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
+  VdpStatus vdp_st;
+  VdpBool available;
+  
+  vdp_st = vdp_video_mixer_query_feature_support(vdp_device, VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1, &available);
+  
+  if ( (vdp_st != VDP_STATUS_OK) || !available )
+  {
+    CLog::Log(LOGNOTICE,"VDPAU HQ upscaling not available");
+    return;
+  }
+  
+  VdpBool enabled[]={1};
+  vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+  CheckStatus(vdp_st, __LINE__);
+#endif
+}
 
 void CVDPAU::SetDeinterlacing()
 {
@@ -604,6 +634,13 @@ void CVDPAU::InitVDPAUProcs()
 
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
+                                VDP_FUNC_ID_VIDEO_MIXER_QUERY_FEATURE_SUPPORT,
+                                (void **)&vdp_video_mixer_query_feature_support
+                                );
+  CheckStatus(vdp_st, __LINE__);  
+
+  vdp_st = vdp_get_proc_address(
+                                vdp_device,
                                 VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_DESTROY,
                                 (void **)&vdp_presentation_queue_target_destroy
                                 );
@@ -738,7 +775,7 @@ void CVDPAU::InitVDPAUOutput()
   CheckStatus(vdp_st, __LINE__);
 }
 
-void CVDPAU::InitCSCMatrix()
+void CVDPAU::InitCSCMatrix(int Height)
 {
   VdpStatus vdp_st;
   m_Procamp.struct_version = VDP_PROCAMP_VERSION;
@@ -747,7 +784,7 @@ void CVDPAU::InitCSCMatrix()
   m_Procamp.saturation     = 1.0;
   m_Procamp.hue            = 0;
   vdp_st = vdp_generate_csc_matrix(&m_Procamp,
-                                   VDP_COLOR_STANDARD_ITUR_BT_709,
+                                   (Height < 720)? VDP_COLOR_STANDARD_ITUR_BT_601 : VDP_COLOR_STANDARD_ITUR_BT_709,
                                    &m_CSCMatrix);
   CheckStatus(vdp_st, __LINE__);
 }
@@ -835,8 +872,8 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   vid_height = avctx->height;
 
   past[1] = past[0] = current = future = VDP_INVALID_HANDLE;
-  CLog::Log(LOGNOTICE, " (VDPAU) screenWidth:%i vidWidth:%i",g_graphicsContext.GetWidth(),vid_width);
-  CLog::Log(LOGNOTICE, " (VDPAU) screenHeight:%i vidHeight:%i",g_graphicsContext.GetHeight(),vid_height);
+  CLog::Log(LOGNOTICE, " (VDPAU) screenWidth:%i vidWidth:%i",OutWidth,vid_width);
+  CLog::Log(LOGNOTICE, " (VDPAU) screenHeight:%i vidHeight:%i",OutHeight,vid_height);
   ReadFormatOf(avctx->pix_fmt, vdp_decoder_profile, vdp_chroma_type);
 
   if(avctx->pix_fmt == PIX_FMT_VDPAU_H264)
@@ -872,8 +909,8 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   {
     vdp_st = vdp_output_surface_create(vdp_device,
                                        VDP_RGBA_FORMAT_B8G8R8A8,
-                                       g_graphicsContext.GetWidth(),
-                                       g_graphicsContext.GetHeight(),
+                                       OutWidth,
+                                       OutHeight,
                                        &outputSurfaces[i]);
     CheckStatus(vdp_st, __LINE__);
 
@@ -1065,56 +1102,48 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   vdpau_render_state * render = (vdpau_render_state*)pFrame->data[0];
   VdpVideoMixerPictureStructure structure;
   VdpStatus vdp_st;
+  VdpTime time;
 
   if (!vdpauConfigured)
     return;
 
   outputSurface = outputSurfaces[surfaceNum];
-  interlaced = pFrame->interlaced_frame;
 
   CheckFeatures();
-  if (interlaced && tmpDeint)
-  {
-    past[1] = past[0];
-    past[0] = current;
-    current = future;
-    future = render->surface;
-  }
-  else
-    current = render->surface;
 
   if (interlaced && tmpDeint)
     structure = pFrame->top_field_first ? VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD :
                                           VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
   else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME; 
 
-  if (interlaced && tmpDeint)
-  {
-    past[1] = past[0];
-    past[0] = current;
-    current = future;
-    future = render->surface;
-  }
+  past[0] = past[1];
+  past[1] = current;
+  current = render->surface;
 
-  if (( (int)outRectVid.x1 != g_graphicsContext.GetWidth() ) ||
-      ( (int)outRectVid.y1 != g_graphicsContext.GetHeight() ))
+  if (( (int)outRectVid.x1 != OutWidth ) ||
+      ( (int)outRectVid.y1 != OutHeight ))
   {
     CSingleLock lock(g_graphicsContext);
     outRectVid.x0 = 0;
     outRectVid.y0 = 0;
-    outRectVid.x1 = g_graphicsContext.GetWidth();
-    outRectVid.y1 = g_graphicsContext.GetHeight();
+    outRectVid.x1 = OutWidth;
+    outRectVid.y1 = OutHeight;
   }
+  
+  if (current == VDP_INVALID_HANDLE)
+    current = render->surface;
+  
+  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
 
   vdp_st = vdp_video_mixer_render(videoMixer,
                                   VDP_INVALID_HANDLE,
                                   0,
                                   structure,
-                                  (interlaced && tmpDeint)? ARSIZE(past) : 0, //2,
-                                  (interlaced && tmpDeint)? past : NULL, //past,
+                                  2,
+                                  past,
                                   current,
-                                  (interlaced && tmpDeint)? 1 : 0, //1,
-                                  (interlaced && tmpDeint)? &(future) : NULL, //&(future),
+                                  0,
+                                  NULL,
                                   NULL,
                                   outputSurface,
                                   &(outRectVid),
@@ -1122,7 +1151,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
                                   0,
                                   NULL);
   CheckStatus(vdp_st, __LINE__);
-
+  
   surfaceNum++;
   if (surfaceNum >= totalAvailableOutputSurfaces) surfaceNum = 0;
 }
@@ -1131,15 +1160,13 @@ void CVDPAU::Present()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
-  presentSurface = outputSurfaces[presentSurfaceNum];
+
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
                                           outputSurface,
                                           0,
                                           0,
                                           0);
   CheckStatus(vdp_st, __LINE__);
-  presentSurfaceNum++;
-  if (presentSurfaceNum >= totalAvailableOutputSurfaces) presentSurfaceNum = 0;
 }
 
 void CVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)

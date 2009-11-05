@@ -23,6 +23,7 @@
 #include "OverlayRenderer.h"
 #include "OverlayRendererUtil.h"
 #include "RenderSystemDX.h"
+#include "D3DResource.h"
 
 #ifdef HAS_DX
 
@@ -34,7 +35,7 @@ class CDVDOverlaySSA;
 namespace OVERLAY {
 
   class COverlayQuadsDX
-    : public COverlay
+    : public COverlayMainThread
   {
   public:
     COverlayQuadsDX(CDVDOverlaySSA* o, double pts);
@@ -50,13 +51,12 @@ namespace OVERLAY {
 
     int                          m_count;
     DWORD                        m_fvf;
-    LPDIRECT3DDEVICE9            m_device;
-    LPDIRECT3DTEXTURE9           m_texture;
-    LPDIRECT3DVERTEXBUFFER9      m_vertex;
+    CD3DTexture                  m_texture;
+    CD3DVertexBuffer             m_vertex;
   }; 
 
   class COverlayImageDX
-    : public COverlay
+    : public COverlayMainThread
   {
   public:
     COverlayImageDX(CDVDOverlayImage* o);
@@ -72,9 +72,8 @@ namespace OVERLAY {
     };
 
     DWORD                        m_fvf;
-    LPDIRECT3DDEVICE9            m_device;
-    LPDIRECT3DTEXTURE9           m_texture;
-    LPDIRECT3DVERTEXBUFFER9      m_vertex;
+    CD3DTexture                  m_texture;
+    CD3DVertexBuffer             m_vertex;
   }; 
 
 }

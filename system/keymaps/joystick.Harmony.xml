@@ -89,13 +89,13 @@
       <!-- F2		-->      <button id="54">XBMC.ActivateWindow(videolibrary,movietitles,return)</button>
       <!-- F4		-->      <button id="56">XBMC.ActivateWindow(Weather)</button>
       <!-- F5			-->  <button id="93">OSD</button>
-      <!-- F7			-->  <button id="95">XBMC.ActivateWindow(settings)</button>
+      <!-- F7			-->  <button id="95">XBMC.ActivateWindow(Home)</button>
       <!-- F6			-->  <button id="94">XBMC.ActivateWindow(Scripts)</button>
       <!-- F8			-->  <button id="96">XBMC.ActivateWindow(favourites)</button>
       <!-- F9			-->  <button id="73">ShowVideoMenu</button>
       <!-- F10			-->  <button id="74">ShowSubtitles</button>
       <!-- F11			-->  <button id="75">NextSubtitle</button>
-      <!-- F12			-->  <button id="76">CodecInfo</button>
+      <!-- F12			-->  <button id="76">XBMC.ActivateWindow(VideoFiles)</button>
       <!-- F13			-->  <button id="63">Playlist</button>
       <!-- F14			-->  <button id="64">AudioNextLanguage</button>
       <!-- Large Down	-->  <button id="82">PageDown</button>
@@ -103,10 +103,10 @@
       <!-- pwrToggle   -->   <button id="66">XBMC.ShutDown()</button>
       <!-- Queue	-->      <button id="62">Queue</button>
       <!-- Sleep	-->      <button id="46">XBMC.SleepSystem()</button>
-      <!-- Red		-->      <button id="83">XBMC.ActivateWindow(Music)</button>
-      <!-- Green	-->      <button id="84">XBMC.ActivateWindow(videolibrary,tvshowtitles,return)</button>
-      <!-- Yellow	-->      <button id="85">xbmc.ActivateWindow(videolibrary,movietitles,return)</button>
-      <!-- Blue		-->      <button id="86">XBMC.ActivateWindow(Weather)</button>
+      <!-- Red		-->      <button id="83">CodecInfo</button>
+      <!-- Green	-->      <button id="84">XBMC.ActivateWindow(Settings)</button>
+      <!-- Yellow	-->      <button id="85">xbmc.ActivateWindow(SystemSettings)</button>
+      <!-- Blue		-->      <button id="86">XBMC.ActivateWindow(SystemInfo)</button>
     </joystick>
   </global>
   <Home>

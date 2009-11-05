@@ -525,7 +525,7 @@ namespace PYXBMC
           else if (strcmpi(PyString_AsString(key), "date") == 0)
           {
             if (strlen(tmp) == 10)
-              self->item->m_dateTime.SetDate(atoi(tmp.Right(4)), atoi(tmp.Mid(3,4)), atoi(tmp.Left(2)));
+              self->item->m_dateTime.SetDate(atoi(tmp.Right(4).c_str()), atoi(tmp.Mid(3,4).c_str()), atoi(tmp.Left(2).c_str()));
           }
         }
       }

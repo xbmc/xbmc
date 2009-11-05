@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Josue Jeriel Camargo Cruz-->
 <!--Email: josue.camargo@gmail.com-->
@@ -1921,9 +1921,9 @@ para esta visualización</string>
   <string id="21416">Habilitar vuelta atrás basada en lenguaje de Scraper</string>
   <string id="21420">Valor a encontrar</string>
   <string id="21421">Regla de lista de reproducción inteligente</string>
-  <string id="21422">Encontrar canciones donde</string>
+  <string id="21422">Encontrar elementos donde</string>
   <string id="21423">Nueva regla...</string>
-  <string id="21424">Las canciones deben coincidir con</string>
+  <string id="21424">Los elementos deben coincidir con</string>
   <string id="21425">todas las reglas</string>
   <string id="21426">una o más reglas</string>
   <string id="21427">Limitar a</string>
@@ -1933,7 +1933,7 @@ para esta visualización</string>
   <string id="21431">descendente</string>
   <string id="21432">Editar lista de reproducción inteligente</string>
   <string id="21433">Nombre de la lista de reproducción</string>
-  <string id="21434">Encontrar canciones coincidentes</string>
+  <string id="21434">Encontrar elementos coincidentes</string>
   <string id="21435">Editar</string>
   <string id="21436">%i canciones</string>
   <string id="21437">Nueva lista de reproducción inteligente...</string>

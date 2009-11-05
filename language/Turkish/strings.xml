@@ -1,13 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: NFA (necipfazil)-->
 <!--Email: necipfazil@gmail.com-->
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 05/03/2009-->
-<!--Based on english strings revision 19506-->
-<!--$Revision$-->
+<!--Date of translation: 05/11/2009-->
+<!--Based on English strings revision 24272-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -19,7 +17,7 @@
   <string id="7">Dosya Yöneticisi</string>
   <string id="8">Hava Durumu</string>
   <string id="9">xbmc media center</string>
-  
+
   <string id="11">Pazartesi</string>
   <string id="12">Salı</string>
   <string id="13">Çarşamba</string>
@@ -27,7 +25,7 @@
   <string id="15">Cuma</string>
   <string id="16">Cumartesi</string>
   <string id="17">Pazar</string>
-  
+
   <string id="21">Ocak</string>
   <string id="22">Şubat</string>
   <string id="23">Mart</string>
@@ -40,7 +38,15 @@
   <string id="30">Ekim</string>
   <string id="31">Kasım</string>
   <string id="32">Aralık</string>
-  
+
+  <string id="41">Pzt</string>
+  <string id="42">Sal</string>
+  <string id="43">Çar</string>
+  <string id="44">Per</string>
+  <string id="45">Cum</string>
+  <string id="46">Cmt</string>
+  <string id="47">Paz</string>
+
   <string id="98">Görünüm: Otomatik</string>
   <string id="99">Görünüm: Otomatik büyük</string>
   <string id="100">Görünüm: Simge</string>
@@ -89,12 +95,12 @@
   <string id="143">Güncel:</string>
   <string id="144">Versiyon:</string>
   <string id="145">Ağ:</string>
-  <string id="146">Türü:</string>
+  <string id="146">Tür:</string>
   <string id="147">Statik</string>
   <string id="148">DHCP</string>
   <string id="149">MAC adresi</string>
   <string id="150">IP adresi</string>
-  <string id="151">Bağlantı: </string>
+  <string id="151">Bağlantı:</string>
   <string id="152">Half duplex</string>
   <string id="153">Full duplex</string>
   <string id="154">Depolama</string>
@@ -119,7 +125,7 @@
   <string id="173"></string>
   <string id="174"></string>
   <string id="175">Nitelik</string>
-  <string id="176">Stil</string>
+  <string id="176">Stiller</string>
   <string id="177"></string>
   <string id="178"></string>
   <string id="179">Şarkı</string>
@@ -154,9 +160,9 @@
   <string id="208">Oynat</string>
   <string id="209">Sonraki</string>
   <string id="210">Önceki</string>
-  <string id="213">Kullanıcı arayüzü ayarı...</string>
+  <string id="213">Kullanıcı arayüzünü ayarla...</string>
   <string id="214">Video ayarı...</string>
-  <string id="215">Yumuşak Görüntü</string>
+  <string id="215">Yumuşat</string>
   <string id="216">Yakınlaştırma miktarı</string>
   <string id="217">Piksel oranı</string>
   <string id="218">DVD sürücü</string>
@@ -169,24 +175,24 @@
   <string id="226">Desenleri test et...</string>
   <string id="227">Ses CD'lerini İnternet'te ara</string>
   <string id="228">Çalma listesini karıştır</string>
-  <string id="229">Sabit diski kapat</string>
+  <string id="229">Sabit disk yavaşlatma zamanı</string>
   <string id="230">Video filtreleri</string>
   <string id="231">Hiçbiri</string>
   <string id="232">Nokta</string>
   <string id="233">Çizgisel</string>
   <string id="234">Anisotropic</string>
   <string id="235">Quincunx</string>
-  <string id="236">Gaussian Cubic</string>
+  <string id="236">Gaussian cubic</string>
   <string id="237">Küçültmek</string>
   <string id="238">Büyültmek</string>
   <string id="239">Oynatma bittiğinde çalma listesini temizle</string>
-  <string id="240">Otomatik Başlat DVD-Video</string>
-  <string id="241">Otomatik Başlat VCD/SVCD</string>
-  <string id="242">Otomatik Başlat Audio-CD</string>
-  <string id="243">Otomatik Başlat XBOX oyunlarını</string>
-  <string id="244">Otomatik Başlat Videoları</string>
-  <string id="245">Otomatik Başlat Müzikleri</string>
-  <string id="246">Otomatik Başlat Resimleri</string>
+  <string id="240"></string>
+  <string id="241"></string>
+  <string id="242"></string>
+  <string id="243"></string>
+  <string id="244"></string>
+  <string id="245"></string>
+  <string id="246"></string>
   <string id="247">Betikler</string>
   <string id="248">Dil</string>
   <string id="249">Müzik</string>
@@ -214,9 +220,9 @@
   <string id="271">En İyi 100</string>
   <string id="272">Sol Üst Köşe Resim Ayarı</string>
   <string id="273">Sağ Alt Köşe Resim Ayarı</string>
-  <string id="274">Altyazı Pozisyonu Ayarı</string>
-  <string id="275">Piksel Oranı Ayarı</string>
-  <string id="276">Oku resmi ayarlamak için kaydır</string>
+  <string id="274">Altyazı konumlandırması</string>
+  <string id="275">Piksel oranı ayarı</string>
+  <string id="276">Ok işaretini resmi ayarlamak için kaydır</string>
   <string id="277">Sütunu altyazı pozisyonunu ayarlamak için kaydır</string>
   <string id="278">Dörtgeni tam olarak kare olacak şekilde ayarla</string>
   <string id="279">Ayarlar yüklenemiyor</string>
@@ -225,7 +231,7 @@
   <string id="282">%i öge bulundu</string>
   <string id="283">Arama sonuçları</string>
   <string id="284">Hiçbir sonuç bulunamadı</string>
-  <string id="286">Post-processing filtre</string>
+  <string id="286">Post-processing filtresi</string>
   <string id="287">Altyazılar</string>
   <string id="288">Yazı tipi</string>
   <string id="289">- Boyut</string>
@@ -274,7 +280,7 @@
   <string id="337">Ses çıkışı</string>
   <string id="338">Analog</string>
   <string id="339">Dijital</string>
-  <string id="340">Değişik sanatçılar</string>
+  <string id="340">Çeşitli sanatçılar</string>
   <string id="341">Diski oynat</string>
   <string id="342">Filmler</string>
   <string id="343">Çerçeve hızını ayarla</string>
@@ -328,8 +334,8 @@
   <string id="395">Puslu</string>
   <string id="396">Yer Seçimi</string>
   <string id="397">Yenileme zamanı</string>
-  <string id="398">Sıcaklık Birimi</string>
-  <string id="399">Rüzgar Hızı Birimi</string>
+  <string id="398">Sıcaklık birimi</string>
+  <string id="399">Rüzgar Hızı birimi</string>
   <string id="400">Hava</string>
   <string id="401">Hava Sıcaklığı</string>
   <string id="402">Hissedilen Sıcaklık</string>
@@ -340,7 +346,7 @@
   <string id="407">ondan</string>
   <string id="408">ile</string>
   <string id="409">Varsayılan</string>
-  
+
   <string id="410">Hava Durumu servisine erişiliyor</string>
   <string id="411">Hava Durumu bilgileri alınıyor:</string>
   <string id="412">Hava Durumu bilgileri alınamıyor</string>
@@ -349,7 +355,7 @@
   <string id="415">Küçük resim indiriliyor...</string>
   <string id="416">Mevcut değil</string>
   <string id="417">Görünüm: Büyük Simgeler</string>
-  <string id="418">Kitaplığı etkinleştir</string>
+  <string id="418"></string>
   <string id="419"></string>
   <string id="420"></string>
   <string id="421"></string>
@@ -378,7 +384,7 @@
   <string id="444">Video</string>
   <string id="445">Ses</string>
   <string id="446">DVD</string>
-  <string id="447">Otomatik Başlatma</string>
+  <string id="447">Ortamları otomatik başlat</string>
   <string id="448">LCD</string>
   <string id="449">Aktif</string>
   <string id="450">Sütunlar</string>
@@ -390,7 +396,7 @@
   <string id="456">Mode</string>
   <string id="457">Görünümü değiştir</string>
   <string id="459">Altyazı</string>
-  <string id="460">Ses kanalları</string>
+  <string id="460">Ses akışı</string>
   <string id="461">[aktif]</string>
   <string id="462">Altyazı</string>
   <string id="463">Arka Işık</string>
@@ -400,14 +406,14 @@
   <string id="467">Tip</string>
   <string id="468">OSD pozisyonunu değiştirmek için çubuğu kaydırın</string>
   <string id="469">OSD pozisyonu</string>
-  <string id="470">Bilgiler</string>
+  <string id="470">Jenerik</string>
   <string id="471">Modchip</string>
   <string id="474">Kapalı</string>
   <string id="475">Sadece Müzik</string>
-  <string id="476">Müzik &amp; video</string>
+  <string id="476">Müzik ve video</string>
   <string id="477">Çalma listesi yüklenemedi</string>
   <string id="478">OSD</string>
-  <string id="479">Arayüz &amp; dil</string>
+  <string id="479">Arayüz ve dil</string>
   <string id="480">Görünüm</string>
   <string id="481">Ses ayarları</string>
   <string id="482">XBMC Hakkında</string>
@@ -437,15 +443,15 @@
   <string id="510">Görsel efektleri etkinleştir</string>
   <string id="511">Video modu geçişini etkinleştir</string>
   <string id="512">Başlangıç penceresi</string>
-  <string id="513">Menü</string>
+  <string id="513">Ana Menü penceresi</string>
   <string id="514">Kişisel ayarlar</string>
   <string id="515">Tarz</string>
-  <string id="516">Sıkıştırılmış dosyaları klasör halinde göster</string>
+  <string id="516"></string>
   <string id="517">Yeni çalınan albümler</string>
   <string id="518">Başlat</string>
   <string id="519">...Modunda Başlat</string>
   <string id="520">XBE başlığını düzenle</string>
-  <string id="521">Derleme</string>
+  <string id="521">Derlemeler</string>
   <string id="522">Kaynağı kaldır</string>
   <string id="523">Ortamı değiştir</string>
   <string id="524">Çalma listesini seç</string>
@@ -473,7 +479,7 @@
   <string id="546">Passthrough çıkış aygıtı</string>
   <string id="547">Bu sanatçı için biyografi yok</string>
   <string id="548">Çoklu ses kanallarını stereo'ya indirge</string>
-  
+
   <string id="550">Sırala: %s</string>
   <string id="551">İsim</string>
   <string id="552">Tarih</string>
@@ -498,7 +504,7 @@
   <string id="571">Varsayılan</string>
   <string id="572">Stüdyo</string>
   <string id="573">Dizin</string>
-  
+
   <string id="580">Sıralama yönü</string>
   <string id="581">Sıralama yöntemi</string>
   <string id="582">Görünüm biçimi</string>
@@ -517,7 +523,7 @@
   <string id="595">Tekrarlama: Kapalı</string>
   <string id="596">Tekrarlama: Birini</string>
   <string id="597">Tekrarlama: Hepsini</string>
-  
+
   <string id="600">Ses CD'sini Aktar</string>
   <string id="601">Orta</string>
   <string id="602">Standart</string>
@@ -530,7 +536,7 @@
   <string id="609">CDDA Aktarma Dizini ayarlanmamış</string>
   <string id="610">Parçayı aktar</string>
   <string id="611">Numara gir</string>
-  
+
   <string id="620">CD Aktarma</string>
   <string id="621">Kodlayıcı</string>
   <string id="622">Kalite</string>
@@ -572,7 +578,8 @@
   <string id="661">Dışa aktarma dizinini seç</string>
   <string id="662">Bu dosya artık mevcut değil.</string>
   <string id="663">Kitaplıktan kaldırmak ister misiniz?</string>
-  
+  <string id="664">Betiklere Gözat</string>
+
   <string id="700">Kitaplık temizleniyor</string>
   <string id="701">Eski şarkılar kitaplıktan kaldırılıyor</string>
   <string id="702">Bu dizin daha önceden taranmıştı</string>
@@ -661,7 +668,7 @@
   <string id="787">Arayüz devre dışı</string>
   <string id="788">Ağ arayüzü başarıyla devre dışı bırakıldı.</string>
   <string id="789">Kablosuz ağın adı (ESSID)</string>
-  
+
   <string id="790">Olay sunucusu</string>
   <string id="791">Olay sunucusunu etkinleştir</string>
   <string id="792">Port</string>
@@ -670,7 +677,7 @@
   <string id="795">Başlangıçtaki tekrar gecikmesi (ms)</string>
   <string id="796">Kesintisiz tekrar gecikmesi (ms)</string>
   <string id="797">Azami istemci sayısı</string>
-  
+
   <string id="998"></string>
   <string id="999"></string>
   <string id="1000">Ekran Koruyucu önizlemesi</string>
@@ -722,15 +729,17 @@
   <string id="1046">Giriş noktaları</string>
   <string id="1047">Diğer...</string>
   <string id="1048">Web sunucusu kullanıcı adı</string>
-  
+  <string id="1049">Betik ayarları</string>
+  <string id="1050">Singles</string>
+
   <string id="1200">SMB istemcisi</string>
   <string id="1202">Çalışma grubu</string>
   <string id="1203">Varsayılan kullanıcı adı</string>
   <string id="1204">Varsayılan şifre</string>
-  
-  <string id="1207">WINS sunucu</string>
+
+  <string id="1207">WINS sunucusu</string>
   <string id="1208">SMB paylaşımlarını bağla</string>
-  
+
   <string id="1210">Kaldır</string>
   <string id="1211">Müzik</string>
   <string id="1212">Video</string>
@@ -755,11 +764,11 @@
   <string id="1233">Programlar &amp; video &amp; müzik</string>
   <string id="1234">Programlar &amp; resimler &amp; müzik</string>
   <string id="1235">Programlar &amp; resimler &amp; video</string>
-  
+
   <string id="1245">FTP kullanıcı adı</string>
   <string id="1246">FTP şifresi</string>
   <string id="1247">Şifre başarıyla ayarlandı</string>
-  
+
   <string id="1250">Otomatik algılama</string>
   <string id="1251">Otomatik sistem algılama</string>
   <string id="1252">Takma İsim</string>
@@ -768,9 +777,12 @@
   <string id="1255">FTP kullanıcı adı ve şifresini gönder</string>
   <string id="1256">Ping süresi</string>
   <string id="1257">Otomatik olarak tanımlanan sistem'e bağlamak ister misiniz?</string>
-  
+
   <string id="1260">Zeroconf yayınlama</string>
-  
+
+  <string id="1300">Özel ses aygıtı</string>
+  <string id="1301">Özel passthrough aygıtı</string>
+
   <string id="1396">Akıntılı</string>
   <string id="1397">ve</string>
   <string id="1398">Donma Noktası</string>
@@ -793,13 +805,20 @@
   <string id="1415">Çiseleyen</string>
   <string id="1416">Sisli</string>
   <string id="1417">Grains</string>
-  
+  <string id="1418">T-Storms</string>
+  <string id="1419">T-Showers</string>
+
   <!-- strings through to 1450 reserved for weather translation -->
-  
+
+  <string id="1450">Enable power saving when idle</string>
+  <!-- strings through to 1470 reserved for power-saving -->
+
   <string id="2050">Süre</string>
-  
-  <string id="4501">LCD türü</string>
-  
+
+  <string id="2100">Betik başarısız! : %s</string>
+
+  <string id="4501">LCD'yi etkinleştir</string>
+
   <string id="10000">Giriş</string>
   <string id="10001">Programlar</string>
   <string id="10002">Resimler</string>
@@ -827,16 +846,16 @@
   <string id="10025"></string>
   <string id="10028">Videolar/Çalma Listesi</string>
   <string id="10034">Ayarlar - Profiller</string>
-  
+
   <string id="10100">Evet/Hayır penceresi</string>
   <string id="10101">İşlem penceresi</string>
-  
+
   <string id="10210">Altyazılara bakılıyor...</string>
   <string id="10211">Altyazılara bakılıyor veya önbellekleniyor...</string>
   <string id="10212">sonlandırılıyor</string>
   <string id="10213">tampon belleğe alınıyor</string>
   <string id="10214">Akış açılıyor</string>
-  
+
   <string id="10500">Müzik/Çalma Listesi</string>
   <string id="10501">Müzik/Dosyalar</string>
   <string id="10502">Müzik/Kitaplık</string>
@@ -862,7 +881,7 @@
   <string id="10522">Şimdi Oynatılıyor - Videolar</string>
   <string id="10523">Albüm bilgisi</string>
   <string id="10524">Film bilgisi</string>
-  
+
   <string id="12000">Seçim penceresi</string>
   <string id="12001">Müzik/Bilgi</string>
   <string id="12002">OK penceresi</string>
@@ -887,8 +906,8 @@
   <string id="12021">Baştan başla</string>
   <string id="12022">%s pozisyonundan başla</string>
   <string id="12023">Mevcut hileler doğrulanıyor...</string>
-  <string id="12024">Kapak resmi olmayan videolar için otomatik olarak küçük resimler oluştur</string>
-  
+  <string id="12024"></string>
+
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -933,7 +952,7 @@
   <string id="12362">Eğer Yönetici Kilidi denemesi aşılırsa sistemi Kapat</string>
   <string id="12367">Geçersiz yönetici şifresi!</string>
   <string id="12368">Lütfen doğru yönetici şifresini girin!</string>
-  <string id="12373">Ayarlar &amp;  Dosya yöneticisi</string>
+  <string id="12373">Ayarlar ve dosya yöneticisi</string>
   <string id="12376">Tüm videolar için varsayılan olarak ayarla</string>
   <string id="12377">Bu işlem önceki kayıtları silecek</string>
   <string id="12378">Resimlerin gösterim zamanı</string>
@@ -951,12 +970,12 @@
   <string id="12392">Saat</string>
   <string id="12393">Gün</string>
   <string id="12394">Toplam çalışma süresi</string>
-  
+
   <string id="12600">Hava Durumu</string>
-  
+
   <string id="12900">Ekran Koruyucu</string>
   <string id="12901">Tam Ekran OSD</string>
-  
+
   <string id="13000">Sistem</string>
   <string id="13001">Sabit Diski Durdur</string>
   <string id="13002">Sadece Video</string>
@@ -972,14 +991,15 @@
   <string id="13012">Çıkış</string>
   <string id="13013">Yeniden Başlat</string>
   <string id="13014">Simge Durumuna</string>
-  
+  <string id="13015">Güç düğmesi eylemi</string>
+
   <string id="13020">Başka bir oturum mu etkin, ssh üzerinden olabilir mi?</string>
   <string id="13021">Çıkarılabilir sabit disk bağlandı</string>
   <string id="13022">Aygıt güvensiz bir şekilde kaldırıldı</string>
   <string id="13023">Aygıt başarıyla kaldırıldı</string>
   <string id="13024">Joystick takılı</string>
   <string id="13025">Joystick takılı değil</string>
-  
+
   <string id="13100">Titreme filtresi</string>
   <string id="13101">Sürücü seçsin (yeniden başlatmak gerekir)</string>
   <string id="13105">Dikey boşluk senkronizasyonu</string>
@@ -989,32 +1009,33 @@
   <string id="13109">Çözünürlüğü test et</string>
   <string id="13110">Çözünürlük kaydedilsin mi?</string>
   <string id="13111">Bu çözünürlük ayarlarını saklamak ister misiniz?</string>
-  
+
   <string id="13112">Yüksek kalite yazılım upscaling</string>
   <string id="13113">Etkin Değil</string>
   <string id="13114">SD içeriği için etkinleştir</string>
   <string id="13115">Her zaman etkin</string>
-  
+
   <string id="13116">Upscaling yöntemi</string>
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
-  
-  <string id="13120">Strict Pixmap-Texture Binding (yeniden başlatmak gerekir)</string>
-  
+  <string id="13120">VDPAU</string>
+  <string id="13121">VDPAU HQ Upscaling level</string>
+  <string id="13122">VDPAU Studio level color conversion</string>
+
   <string id="13130">Display blanking</string>
   <string id="13131">Etkin Değil</string>
   <string id="13132">Blank displays</string>
-  
+
   <string id="13140">Aktif bağlantılar saptandı!</string>
   <string id="13141">Devam ederseniz, XBMC'yi kontrol etmek mümkün olmayabilir.</string>
   <string id="13142">Olay sunucusunu durdurmak istediğinize emin misiniz?</string>
-  
+
   <string id="13144">Apple Kumanda biçimi değiştirilsin mi?</string>
   <string id="13145">XBMC'yi kontrol etmek için Apple Kumandayı kullanıyorsanız,</string>
   <string id="13146">bu ayarı değiştirmek kontrol yeteneğini etkileyebilir.</string>
   <string id="13147">Devam etmek istiyor musunuz?</string>
-  
+
   <string id="13150">HDD anahtarı:</string>
   <string id="13151">HDD ısısı:</string>
   <string id="13152">DVD modeli:</string>
@@ -1028,7 +1049,7 @@
   <string id="13160">Ağ Geçidi</string>
   <string id="13161">Birincil DNS</string>
   <string id="13162">Bilgi mevcut değil</string>
-  
+
   <string id="13163">Joystick</string>
   <string id="13164">Klavye</string>
   <string id="13165">Fare</string>
@@ -1036,14 +1057,14 @@
   <string id="13167">Bellek birimi</string>
   <string id="13168">Uzaktan Kumanda</string>
   <string id="13169">Denetleyici portu</string>
-  
-  
+
+
   <string id="13170">Hiçbir Zaman</string>
   <string id="13171">Hemen</string>
   <string id="13172">%i saniye sonra</string>
   <string id="13173">HDD yükleme tarihi:</string>
   <string id="13174">HDD power cycle count:</string>
-  
+
   <string id="13200">Profiller</string>
   <string id="13201">'%s' profili silinsin mi?</string>
   <string id="13204">En son yüklenen profil:</string>
@@ -1054,16 +1075,16 @@
   <string id="13210">Alarm Aktif: %idk</string>
   <string id="13211">Alarm!</string>
   <string id="13212">%idk:%isn kala iptal edildi</string>
-  
+
   <string id="13249">Altyazıları sıkıştırılmış klasörlerde ara</string>
   <string id="13250">Altyazıya gözat...</string>
   <string id="13251">Taşı</string>
   <string id="13252">Buraya taşı</string>
   <string id="13253">Taşımayı iptal et</string>
-  
+
   <string id="13270">Donanım:</string>
   <string id="13271">CPU Kullanımı:</string>
-  
+
   <string id="13274">Bağlı, fakat bir DNS mevcut değil.</string>
   <string id="13275">Sabit Disk</string>
   <string id="13276">DVD-ROM</string>
@@ -1083,7 +1104,7 @@
   <string id="13290">Xbox üreticisi:</string>
   <string id="13291">Modchip:</string>
   <string id="13292">Görüntü/Ses Kablosu:</string>
-  <string id="13293">Video &amp; XBE bölgesi:</string>
+  <string id="13293">Video ve XBE bölgesi:</string>
   <string id="13294">DVD bölgesi:</string>
   <string id="13295">İnternet:</string>
   <string id="13296">Bağlı</string>
@@ -1198,19 +1219,34 @@
   <string id="13419">Yazılım</string>
   <string id="13420">Güvenli kaldır</string>
   <string id="13421">VDPAU</string>
-  
+  <string id="13422">Slayt gösterine buradan başla</string>
+  <string id="13423">Bu yolu hatırla</string>
+
+  <string id="13500">A/V sync method</string>
+  <string id="13501">Audio clock</string>
+  <string id="13502">Video clock (Drop/Dupe audio)</string>
+  <string id="13503">Video clock (Resample audio)</string>
+  <string id="13504">Maximum resample amount (%)</string>
+  <string id="13505">Resample quality</string>
+  <string id="13506">Low(fast)</string>
+  <string id="13507">Medium</string>
+  <string id="13508">High</string>
+  <string id="13509">Really high(slow!)</string>
+  <string id="13510">Sync playback to display</string>
+
   <string id="13600">Apple Kumanda</string>
   <string id="13601">Biçim</string>
   <string id="13602">Her zaman çalışan</string>
   <string id="13603">Sekans gecikme süresi</string>
-  
+
   <string id="13610">Etkin Değil</string>
   <string id="13611">Standart</string>
   <string id="13612">Evrensel Kumanda</string>
-  
+  <string id="13613">Çoklu Kumanda (Harmony)</string>
+
   <string id="13620">Apple Kumanda Hatası</string>
   <string id="13621">Apple Kumanda desteği etkinleştirilebilir.</string>
-  
+
   <string id="14000">Birleştir</string>
   <string id="14001">Ayrı Tut</string>
   <string id="14003">Çalma listesi indiriliyor...</string>
@@ -1245,7 +1281,7 @@
   <string id="14034">DVD önbelleği - DVD-ROM</string>
   <string id="14035">- Yerel Ağ</string>
   <string id="14036">Sunucular</string>
-  <string id="14037">Görünüm &amp; Kullanım</string>
+  <string id="14037">Görünüm</string>
   <string id="14038">Ağ ayarları dDeğişti</string>
   <string id="14039">Ayarların etkili olabilmesi için yeniden başlatmak gerekli.</string>
   <string id="14040">XBMC' ı yeniden başlatmak istiyor musunuz?</string>
@@ -1262,7 +1298,7 @@
   <string id="14051">Saat biçimi</string>
   <string id="14052">Tarih biçimi</string>
   <string id="14053">Arayüz filtresi</string>
-  <string id="14054">İnternet bilgi akışını etkinleştir</string>
+  <string id="14054"></string>
   <string id="14055">Arkaplan taramasını kullan</string>
   <string id="14056">Taramayı durdur</string>
   <string id="14057">Tarama yaparken ortam bilgisine ulaşılamaz</string>
@@ -1271,7 +1307,7 @@
   <string id="14060">Bilinmeyen dosya tipi önbelleği - İnternet</string>
   <string id="14061">Otomatik</string>
   <string id="14062">Kullanıcı adı girin</string>
-  <string id="14063">Tarih &amp; saat</string>
+  <string id="14063">Tarih ve saat</string>
   <string id="14064">Tarihi ayarla</string>
   <string id="14065">Saati ayarla</string>
   <string id="14066">Saati 24' lük formatta SS:DD olarak girin</string>
@@ -1289,7 +1325,7 @@
   <string id="14078">- Renkler</string>
   <string id="14079">Ülke zaman dilimi</string>
   <string id="14080">Zaman dilimi</string>
-  
+
   <string id="15000"></string>
   <string id="15001"></string>
   <string id="15002"></string>
@@ -1364,7 +1400,7 @@
   <string id="15109">Arayüz varsayılanı</string>
   <string id="15111">- Tema</string>
   <string id="15112">Varsayılan tema</string>
-  
+
   <string id="15200">Last.fm</string>
   <string id="15201">Şarkıları Last.fm'e gönder</string>
   <string id="15202">Last.fm kullanıcı adı</string>
@@ -1382,7 +1418,12 @@
   <string id="15214">Düzgün Ses/Video senkronizasyonunu kullan</string>
   <string id="15215">Küçük resim görünümünde dosya isimlerini sakla</string>
   <string id="15216">Parti modunda çal</string>
-  
+  <string id="15217">Şarkıları Libre.fm'e gönder</string>
+  <string id="15218">Libre.fm kullanıcı adı</string>
+  <string id="15219">Libre.fm şifresi</string>
+  <string id="15220">Libre.fm</string>
+  <string id="15221">Scrobbler</string>
+
   <string id="15250">Last.fm Radyoya Bağlan</string>
   <string id="15251">Last.fm'e bağlanılıyor...</string>
   <string id="15252">İstasyon seçiliyor...</string>
@@ -1432,21 +1473,21 @@
   <string id="15296">Yasaksız</string>
   <string id="15297">Bu parçayı sevilen parçalardan kaldırmak istiyor musunuz?</string>
   <string id="15298">Bu parçanın yasağını kaldırmak istiyor musunuz?</string>
-  
+
   <string id="15300">Dizin bulunamadı veya geçersiz</string>
   <string id="15301">Ağ sunucusuna bağlanamıyor</string>
   <string id="15302">Sunucu bulunamadı</string>
   <string id="15303">Çalışma grubu bulunamadı</string>
-  
+
   <string id="15310">Çok dizinli kaynak açılıyor</string>
   <string id="15311">Dizin:</string>
-  
+
   <string id="16000">Genel</string>
   <string id="16001">Ses donanımını ayarla...</string>
   <string id="16002">İnternet'te ara</string>
   <string id="16003">Ortam Oynatıcısı</string>
   <string id="16004">Ortamları CD/DVD' den oynat</string>
-  
+
   <string id="16008">Yeni başlık giriniz</string>
   <string id="16009">Film adını girin</string>
   <string id="16010">Profil adını girin</string>
@@ -1465,29 +1506,29 @@
   <string id="16023">Resim düzeltme</string>
   <string id="16024">İptal ediliyor...</string>
   <string id="16025">Sanatçı adını girin</string>
-  <string id="16026">Çalma listesi durduruldu</string>
-  <string id="16027">Çok sayıda hatalı nesne var</string>
+  <string id="16026">Çalma başarısız</string>
+  <string id="16027">Bir veya daha fazla öğe çalınamadı</string>
   <string id="16028">Değeri girin</string>
-  
+  <string id="16029">Detaylar için günlük dosyasına bakınız.</string>
   <string id="16030">Parti modu durduruldu.</string>
   <string id="16031">Veritabanına uyan sonuç bulunamadı.</string>
   <string id="16032">Veritabanı bilgisine ulaşılamıyor.</string>
   <string id="16033">Veritabanı açılamıyor.</string>
   <string id="16034">Veritabanından şarkılar alınamıyor.</string>
   <string id="16035">Parti modu çalma listesi</string>
-  
+
   <string id="16100">Bütün Videolar</string>
   <string id="16101">Seyredilmeyenler</string>
   <string id="16102">Seyredilenler</string>
   <string id="16103">Seyredilmiş olarak işaretle</string>
   <string id="16104">Seyredilmemiş olarak işaretle</string>
   <string id="16105">Başlığı düzenle</string>
-  <string id="16106">NTSC-M &amp; NTSC-J</string>
+  <string id="16106">NTSC-M ve NTSC-J</string>
   <string id="16107">NTSC-M</string>
   <string id="16108">NTSC-J</string>
   <string id="16109">PAL-60</string>
   <string id="16110">60hz'lik oyunlar için</string>
-  
+
   <string id="16200">İşlem durduruldu</string>
   <string id="16201">Kopyalanamadı</string>
   <string id="16202">En az bir dosya kopyalanamadı</string>
@@ -1495,7 +1536,7 @@
   <string id="16204">En az bir dosya taşınamadı</string>
   <string id="16205">Silinemedi</string>
   <string id="16206">En az bir dosya silinemedi</string>
-  
+
   <string id="16300">Video ölçekleme yöntemi</string>
   <string id="16301">En yakın komşu</string>
   <string id="16302">Bilinear</string>
@@ -1503,18 +1544,20 @@
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
-  
+
   <string id="16307">Bicubic (yazılım)</string>
   <string id="16308">Lanczos (yazılım)</string>
   <string id="16309">Sinc (yazılım)</string>
-  
+
   <string id="16310">(VDPAU)Temporal</string>
   <string id="16311">(VDPAU)Temporal/Spatial</string>
   <string id="16312">(VDPAU)Noise Reduction</string>
   <string id="16313">(VDPAU)Sharpness</string>
   <string id="16314">Inverse Telecine</string>
   <string id="17500">Uyku zaman aşımını göster</string>
-  
+
+  <string id="19000">Kanal değiştir</string>
+
   <string id="20000">CDDA aktarma klasörü</string>
   <string id="20001">Harici DVD oynatıcıyı kullan</string>
   <string id="20002">Harici DVD oynatıcı</string>
@@ -1543,9 +1586,10 @@
   <string id="20024">Yenileri tara</string>
   <string id="20025">Hepsini tara</string>
   <string id="20026">Ülke</string>
-  
+
   <!-- string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)-->
 
+  <string id="20037">Özet</string>
   <string id="20038">Müzik penceresini kilitle</string>
   <string id="20039">Video penceresini kilitle</string>
   <string id="20040">Resim penceresini kilitle</string>
@@ -1580,7 +1624,7 @@
   <string id="20069">Klasör yaratılamadı</string>
   <string id="20070">Profil dizini</string>
   <string id="20071">Taze ortam kaynaklarıyla başla</string>
-  <string id="20072">Seçili klasörün yazılabilir ve klasör adının </string>
+  <string id="20072">Seçili klasörün yazılabilir ve klasör adının</string>
   <string id="20073">geçerli olduğundan emin olun</string>
   <string id="20074">MPAA</string>
   <string id="20075">Yönetici kilit kodunu gir</string>
@@ -1661,7 +1705,7 @@
   <string id="20151">Kapatma zamanlayıcısını iptal et</string>
   <string id="20152">%s için tercihleri kilitle</string>
   <string id="20153">Gözat...</string>
-  <string id="20154">Temel bilgiler</string>
+  <string id="20154">Özetlenmiş bilgiler</string>
   <string id="20155">Depolama bilgisi</string>
   <string id="20156">Sabit sürücü bilgisi</string>
   <string id="20157">DVD-ROM bilgisi</string>
@@ -1709,18 +1753,18 @@
   <string id="20199">Sanatçı bilgisi indirilemedi</string>
 
   <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
-    
+
   <string id="20250">Partiye devam! (videolar)</string>
   <string id="20251">İçecekler karıştırılıyor (videolar)</string>
   <string id="20252">Bardaklar dolduruluyor (videolar)</string>
-  
+
   <string id="20300">Web sunucu dizini (HTTP)</string>
   <string id="20301">Web sunucu dizini (HTTPS)</string>
-  <string id="20302"></string>
-  <string id="20303"></string>
-  <string id="20304"></string>
+  <string id="20302">Klasöre yazılamıyor:</string>
+  <string id="20303">Bu adımı atlayıp devam etme istiyor musunuz?</string>
+  <string id="20304">RSS Beslemesi</string>
   <string id="20305"></string>
-  
+
   <string id="20306">Bilinmiyor. Lütfen MD5'i xbmc.log'dan BiosIDs.ini'ye ekleyiniz.</string>
   <string id="20307">İkincil DNS</string>
   <string id="20308">DHCP sunucusu:</string>
@@ -1848,10 +1892,14 @@
   <string id="20430">Küçük resimler ve fanart dışarı aktarılsın mı?</string>
   <string id="20431">Eski dosyaların üzerine yazılsın mı?</string>
   <string id="20432">Bu dizini kitaplık güncellemelerine dahil etme</string>
+  <string id="20433">Küçük resimleri ve etiketleri çıkart</string>
+  <string id="20434">Setler</string>
+  <string id="20435">Set movieset thumb</string>
+  <string id="20436">Aktör küçük resimlerini çıkart</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Gizli dosya ve dizinleri göster</string>
-  
+
   <string id="21331">TuxBox istemcisi</string>
   <string id="21332">UYARI: Hedef TuxBox aygıtı kayıt modunda!</string>
   <string id="21333">Akış durdurulacak!</string>
@@ -1860,7 +1908,7 @@
   <string id="21336">Bağlanıyor: %s</string>
   <string id="21337">TuxBox aygıtı</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
-  
+
   <string id="21356">UPnP müzik</string>
   <string id="21357">UPnP video</string>
   <string id="21358">UPnP resimler</string>
@@ -1872,8 +1920,8 @@
   <string id="21364">Ortam paylaşımını düzenle</string>
   <string id="21365">Ortam paylaşımını kaldır</string>
   <string id="21366">Özel altyazı klasörü</string>
-  <string id="21367">Film &amp; alternatif altyazı klasörü</string>
-  
+  <string id="21367">Film ve alternatif altyazı klasörü</string>
+
   <string id="21369">Fareyi etkinleştir</string>
   <string id="21370">Ortam oynatılırken kılavuz seslerini çal</string>
   <string id="21371">Küçük resimler</string>
@@ -1922,7 +1970,9 @@
   <string id="21414">Varsayılan tv programı scraper</string>
   <string id="21415">Varsayılan müzik video scraper</string>
   <string id="21416">Scraper diline dayalı başvurmayı etkinleştir</string>
-  
+  <string id="21417">- Scraper ayarları</string>
+  <string id="21418">Çok dilli</string>
+
   <string id="21420">Değer eşleşmelidir</string>
   <string id="21421">Akıllı çalma listesi talimatı</string>
   <string id="21422">Eşleşen ögeler nerede</string>
@@ -1946,7 +1996,14 @@
   <string id="21440">Ana klasör</string>
   <string id="21441">İzlenme sayısı</string>
   <string id="21442">Bölüm başlığı</string>
-  
+  <string id="21443">Video çözünürlüğü</string>
+  <string id="21444">Ses kanalları</string>
+  <string id="21445">Video codec</string>
+  <string id="21446">Audio codec</string>
+  <string id="21447">Ses dili</string>
+  <string id="21448">Altyazı dili</string>
+  <string id="21449">Remote control sends keyboard presses</string>
+
   <string id="21800">Dosya adı</string>
   <string id="21801">Dosya dizini</string>
   <string id="21802">Dosya boyutu</string>
@@ -1956,7 +2013,7 @@
   <string id="21806">Yorum</string>
   <string id="21807">Renkli/B&amp;W</string>
   <string id="21808">JPEG yöntemi</string>
-  
+
   <string id="21820">Tarih/Saat</string>
   <string id="21821">Açıklama</string>
   <string id="21822">Kamera</string>
@@ -1981,7 +2038,7 @@
   <string id="21841">GPS boylam</string>
   <string id="21842">GPS rakım</string>
   <string id="21843">Oryantasyon</string>
-  
+
   <string id="21860">Ek sınıflandırmalar</string>
   <string id="21861">Anahtar sözcük</string>
   <string id="21862">Başlık</string>
@@ -2023,13 +2080,13 @@
   <string id="21898">Etkin yıllar</string>
   <string id="21899">Etiket</string>
   <string id="21900">Doğum</string>
- 
+
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="22000">Kitaplığı başlangıçta güncelle</string>
   <string id="22001">Kitaplığı her zaman arka planda güncelle</string>
   <string id="22002">- DNS soneki</string>
-  <string id="22003">Düzenleme ve karar listesini etkinleştir</string>
+  <string id="22003"></string>
   <string id="22004">Geriye :% 2.3fs</string>
   <string id="22005">İleriye: %2.3fs</string>
   <string id="22006">Altyazı gecikmesi</string>
@@ -2047,6 +2104,8 @@
   <string id="22018">Canlı kanallar</string>
   <string id="22019">Başlığa göre kayıtlar</string>
   <string id="22020">Rehber</string>
+  <string id="22021">İzin verilen görüntü oranı hatası (%)</string>
+  <string id="22022">Include video files in listings</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Yazı tipi</string>
@@ -2064,13 +2123,96 @@
   <string id="22042">beyaz/mavi</string>
   <string id="22043">siyah/beyaz</string>
 
+  <string id="23000">Hava Durumu eklentisi</string>
+  <string id="23001">- Eklenti ayarları</string>
+
+  <string id="23050">Teletext'i Etkinleştir</string>
+
+  <!-- strings 23100 thru 23150 reserved for external player -->
+  <string id="23100">Harici Oynatıcı Etkin</string>
+  <string id="23101">Oynatıcıyı sonlandırmak için Tamam'a basın</string>
+  <string id="23102"></string>
+  <string id="23103"></string>
+  <string id="23104">Oynatma bitince Tamam'a basın</string>
+  <string id="23105"></string>
+  <string id="23106"></string>
+
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Kitaplık Biçimi</string>
   <string id="29801">QWERTY klavye</string>
-  
+  <string id="29802">Passthrough Audio in use</string>
+
   <string id="29999">Titreme filtresi ayarını oyunlara uygula</string>
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
-  <!-- strings 32000 thru 32999 reserved for scripts -->  
+  <!-- strings 32000 thru 32999 reserved for scripts -->
+  <!-- strings 33000 thru 33999 reserved for common strings used in addons -->
+  <string id="33001">Fragman kalitesi</string>
+  <string id="33002">Akış</string>
+  <string id="33003">İndir</string>
+  <string id="33004">İndir ve oynat</string>
+  <string id="33005">İndir ve kaydet</string>
+  <string id="33006">Bugün</string>
+  <string id="33007">Yarın</string>
+  <string id="33008">Saving</string>
+  <string id="33009">Copying</string>
+  <string id="33010">İndirme klasörünü ayarla</string>
+  <string id="30011">Arama süresi</string>
+  <string id="33012">Kısa</string>
+  <string id="33013">Uzun</string>
+  <string id="33014">Herzamanki oynatıcı yerine DVD oynatıcıyı kullan</string>
+  <string id="33015">Videoyu oynatmadan önce indirmek için sor</string>
+  <string id="33016">Klipler</string>
+  <string id="33017">Etkinleştirmek için eklentiyi yeniden başlat</string>
+  <string id="33018">Bu Gece</string>
+  <string id="33019">Yarın Gece</string>
+  <string id="33020">Durum</string>
+  <string id="33021">Yağışlı</string>
+  <string id="33022">Precip</string>
+  <string id="33023">Nemli</string>
+  <string id="33024">Hissedilen</string>
+  <string id="33025">Görünen</string>
+  <string id="33026">Departure from normal</string>
+  <string id="33027">Gündoğumu</string>
+  <string id="33028">Günbatımı</string>
+  <string id="33029">Ayrıntılar</string>
+  <string id="33030">Outlook</string>
+  <string id="33031">Coverflow</string>
+  <string id="33032">Translate text</string>
+  <string id="33033">Map list %s category</string>
+  <string id="33034">36 Saat</string>
+  <string id="33035">Haritalar</string>
+  <string id="33036">Saatlik</string>
+  <string id="33037">Haftalık</string>
+  <string id="33038">%s günlük</string>
+  <string id="33049">Uyarı</string>
+  <string id="33050">Uyarılar</string>
+  <string id="33051">Choose Your</string>
+  <string id="33052">Check</string>
+  <string id="33053">Configure the</string>
+  <string id="33054">Seasons</string>
+  <string id="33055">Use your</string>
+  <string id="33056">Watch your</string>
+  <string id="33057">Listen to</string>
+  <string id="33058">View your</string>
+  <string id="33059">Configure the</string>
+  <string id="33060">Güç</string>
+  <string id="33061">Menü</string>
+  <string id="33062">Play the</string>
+  <string id="33063">Ayarlar</string>
+  <string id="33065">Düzenleyici</string>
+  <string id="33066">About your</string>
+  <string id="33067">Star rating</string>
+  <string id="33068">Arkaplan</string>
+  <string id="33069">Arkaplanlar</string>
+  <string id="33070">Özel arkaplan</string>
+  <string id="33071">Özel arkaplanlar</string>
+  <string id="33072">Benioku'yu görüntüle</string>
+  <string id="33073">Değişiklikleri görüntüle</string>
+  <string id="33074">This version of %s requires an</string>
+  <string id="33075">XBMC revision of %s or greater to run.</string>
+  <string id="33076">Lütfen XBMC'yi güncelleyin.</string>
+  <string id="33077">Hiç veri bulunamadı!</string>
+  <string id="33078">Sonraki sayfa</string>
 </strings>

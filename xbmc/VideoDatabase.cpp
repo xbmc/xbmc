@@ -85,7 +85,7 @@ bool CVideoDatabase::CreateTables()
     CDatabase::CreateTables();
 
     CLog::Log(LOGINFO, "create bookmark table");
-    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, totalTimeInSeconds, thumbNailImage text, player text, playerState text, type integer)\n");
+    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, totalTimeInSeconds double, thumbNailImage text, player text, playerState text, type integer)\n");
     m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile)");
 
     CLog::Log(LOGINFO, "create settings table");
@@ -4122,7 +4122,7 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
   return false;
 }
 
-bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent)
+bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent, const CStdString &where)
 {
   try
   {
@@ -4135,6 +4135,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
     {
       if (idContent == VIDEODB_CONTENT_MOVIES)
         strSQL=FormatSQL("select sets.idSet,sets.strSet,path.strPath,files.playCount from sets join setlinkmovie on sets.idSet=setlinkmovie.idSet join movie on setlinkMovie.idMovie = movie.idMovie join files on files.idFile=movie.idFile join path on path.idPath = files.idPath");
+      strSQL += where;
     }
     else
     {
@@ -4144,6 +4145,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         strSQL=FormatSQL("select sets.idSet,sets.strSet,count(1),count(files.playCount) from sets join setlinkmovie on sets.idSet=setlinkmovie.idSet join movie on setlinkmovie.idMovie=movie.idMovie join files on files.idFile=movie.idFile ");
         group = " group by sets.idSet";
       }
+      strSQL += where;
       strSQL += group;
     }
 
@@ -4191,7 +4193,10 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
+        {
           pItem->GetVideoInfoTag()->m_playCount = it->second.second;
+          pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
+        }
         if (!items.Contains(pItem->m_strPath))
         {
           pItem->SetLabelPreformated(true);
@@ -4877,18 +4882,11 @@ bool CVideoDatabase::GetMoviesNav(const CStdString& strBaseDir, CFileItemList& i
     where = FormatSQL("join actorlinkmovie on actorlinkmovie.idmovie=movieview.idmovie join actors on actors.idActor=actorlinkmovie.idActor where actors.idActor=%i",idActor);
   else if (idSet != -1)
     where = FormatSQL("join setlinkmovie on setlinkmovie.idMovie=movieview.idmovie where setlinkmovie.idSet=%u",idSet);
-  if (idSet == -1)
-  {
-    if (where.size())
-      where += FormatSQL(" and movieview.idmovie NOT in (select idmovie from setlinkmovie)");
-    else
-      where = FormatSQL("where movieview.idmovie NOT in (select idmovie from setlinkmovie)");
-  }
 
-  return GetMoviesByWhere(strBaseDir, where, items);
+  return GetMoviesByWhere(strBaseDir, where, items, idSet == -1);
 }
 
-bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items)
+bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items, bool fetchSets)
 {
   try
   {
@@ -4899,7 +4897,22 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = "select * from movieview " + where;
+    CStdString strSQL = "select * from movieview ";
+    if (fetchSets)
+    {
+      // not getting a set, so grab all sets that match this where clause first
+      CStdString setsWhere;
+      if (where.size())
+        setsWhere = " where movie.idMovie in (select movieview.idMovie from movieview " + where + ")";
+      GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES, setsWhere);
+      if (where.size())
+        strSQL += where + FormatSQL(" and movieview.idmovie NOT in (select idmovie from setlinkmovie)");
+      else
+        strSQL += FormatSQL("where movieview.idmovie NOT in (select idmovie from setlinkmovie)");
+    }
+    else
+      strSQL += where;
+
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());

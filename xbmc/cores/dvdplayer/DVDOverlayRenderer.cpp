@@ -241,7 +241,7 @@ void CDVDOverlayRenderer::Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverl
 
         if (bCrop)
         {
-          if (i_y > btn_y_start && i_y < btn_y_end)
+          if (i_y >= btn_y_start && i_y <= btn_y_end)
           {
             if (i_x < btn_x_start && i_x + rp_len >= btn_x_start) // starts outside
               pixels_to_draw = btn_x_start - i_x;

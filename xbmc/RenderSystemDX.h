@@ -24,8 +24,11 @@
 
 #pragma once
 
-#include "RenderSystem.h"
 #include <vector>
+#include "RenderSystem.h"
+#include "CriticalSection.h"
+
+class ID3DResource;
 
 class CRenderSystemDX : public CRenderSystemBase
 {
@@ -62,24 +65,46 @@ public:
 
   LPDIRECT3DDEVICE9 Get3DDevice() { return m_pD3DDevice; }
   int GetBackbufferCount() const { return m_D3DPP.BackBufferCount; }
-  bool CreateEffect(CStdString& name, ID3DXEffect** pEffect);
-  void ReleaseEffect(ID3DXEffect* pEffect);
+
+  /*!
+   \brief Register as a dependent of the DirectX Render System
+   Resources should call this on construction if they're dependent on the Render System
+   for survival. Any resources that registers will get callbacks on loss and reset of
+   device, where resources that are in the D3DPOOL_DEFAULT pool should be handled.
+   In addition, callbacks for destruction and creation of the device are also called,
+   where any resources dependent on the DirectX device should be destroyed and recreated.
+   \sa Unregister, ID3DResource
+  */
+  void Register(ID3DResource *resource);
+
+  /*!
+   \brief Unregister as a dependent of the DirectX Render System
+   Resources should call this on destruction if they're a dependent on the Render System
+   \sa Register, ID3DResource
+  */
+  void Unregister(ID3DResource *resource);
 
 protected:
-  bool CreateResources();
-  void DeleteResources();
+  bool CreateDevice();
+  void DeleteDevice();
   void OnDeviceLost();
   void OnDeviceReset();
   bool PresentRenderImpl();
-  bool CreateDevice();
 
   void SetFocusWnd(HWND wnd) { m_hFocusWnd = wnd; }
   void SetDeviceWnd(HWND wnd) { m_hDeviceWnd = wnd; }
+  void SetMonitor(HMONITOR monitor);
   void SetRenderParams(unsigned int width, unsigned int height, bool fullScreen, float refreshRate);
   void BuildPresentParameters();
+  virtual void UpdateMonitor() {};
 
   LPDIRECT3D9 m_pD3D;
+
+  // our adapter could change as we go
+  bool m_needNewDevice;
+  unsigned int m_adapter;
   LPDIRECT3DDEVICE9 m_pD3DDevice;
+
   D3DPRESENT_PARAMETERS m_D3DPP;
   HWND m_hFocusWnd;
   HWND m_hDeviceWnd;
@@ -90,7 +115,8 @@ protected:
   HRESULT m_nDeviceStatus;
   IDirect3DStateBlock9* m_stateBlock;
 
-  std::vector<ID3DXEffect*> m_vecEffects;
+  CCriticalSection m_resourceSection;
+  std::vector<ID3DResource*>  m_resources;
 
   bool m_inScene; ///< True if we're in a BeginScene()/EndScene() block
 };

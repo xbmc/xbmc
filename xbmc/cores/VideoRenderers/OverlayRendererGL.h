@@ -35,17 +35,8 @@ class CDVDOverlaySSA;
 
 namespace OVERLAY {
 
-  class COverlayGL
-      : public COverlay
-  {
-  public:
-    virtual ~COverlayGL() {}
-    virtual long Release();
-  };
-
-
   class COverlayTextureGL
-      : public COverlayGL
+      : public COverlayMainThread
   {
   public:
      COverlayTextureGL(CDVDOverlayImage* o);
@@ -60,7 +51,7 @@ namespace OVERLAY {
   };
 
   class COverlayGlyphGL
-     : public COverlayGL
+     : public COverlayMainThread
   {
   public:
    COverlayGlyphGL(CDVDOverlaySSA* o, double pts);
