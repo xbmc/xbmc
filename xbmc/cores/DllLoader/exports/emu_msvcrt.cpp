@@ -59,6 +59,9 @@
 #include "emu_kernel32.h"
 #include "util/EmuFileWrapper.h"
 #include "utils/log.h"
+#ifndef _LINUX
+#include "utils/CharsetConverter.h"
+#endif
 
 using namespace std;
 using namespace XFILE;
@@ -1618,12 +1621,14 @@ extern "C"
   {
     if (!dir) return -1;
 
-#ifndef _LINUX
     // Make sure the slashes are correct & translate the path
-    return mkdir(_P(CURL::ValidatePath(dir)).c_str());
+    CStdString strPath = _P(CURL::ValidatePath(dir));
+#ifndef _LINUX
+    CStdStringW strWPath;
+    g_charsetConverter.utf8ToW(strPath, strWPath, false);
+    return _wmkdir(strWPath.c_str());
 #else
-    // Make sure the slashes are correct & translate the path 
-    return mkdir(_P(CURL::ValidatePath(dir)).c_str(), 0755);
+    return mkdir(strPath.c_str(), 0755);
 #endif
   }
 

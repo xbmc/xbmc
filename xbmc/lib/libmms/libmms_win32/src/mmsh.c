@@ -1090,8 +1090,7 @@ mmsh_t *mmsh_connect (mms_io_t *io, void *data, const char *url, int bandwidth) 
     this->host_user = (uri->user) ? strdup(uri->user) : NULL;
     this->host_password = (uri->passwd) ? strdup(uri->passwd) : NULL;
     gnet_uri_set_scheme(uri,"http");
-    uri_string = gnet_uri_get_string(uri);
-    this->uri = strdup(uri_string);
+    this->uri = gnet_mms_helper(uri);
     g_free(uri_string);
   } else {
     this->proto = (uri->scheme) ? strdup(uri->scheme) : NULL;
@@ -1103,23 +1102,12 @@ mmsh_t *mmsh_connect (mms_io_t *io, void *data, const char *url, int bandwidth) 
     this->proxy_password = NULL;
     this->host_user =(uri->user) ?  strdup(uri->user) : NULL;
     this->host_password = (uri->passwd) ? strdup(uri->passwd) : NULL;
-
-    if (uri->path && uri->query) {
-
-      size_t plen = strlen(uri->path), qlen = strlen(uri->query);
-      this->uri = (char *)malloc(plen + qlen + 2);
-      memcpy(this->uri, uri->path, plen);
-      this->uri[plen] = '?';
-      memcpy(&this->uri[plen + 1], uri->query, qlen + 1);
-
-    } else {
-
-      char * uri_string = gnet_uri_get_string(uri);
-      this->uri = strdup(uri_string);
-      g_free(uri_string);
-
-	}
+    this->uri = gnet_mms_helper(uri);
   }
+
+  if(!this->uri)
+	goto fail;
+
   if (proxy_uri) {
     gnet_uri_delete(proxy_uri);
     proxy_uri = NULL;

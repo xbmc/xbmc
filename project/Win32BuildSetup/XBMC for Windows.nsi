@@ -34,6 +34,8 @@
   Var StartMenuFolder
   Var PageProfileState
   Var RunArgs
+  Var DirectXSetupError
+  Var VSRedistSetupError
   
 ;--------------------------------
 ;Interface Settings
@@ -358,4 +360,42 @@ Section "Uninstall"
 
   DeleteRegKey /ifempty HKCU "Software\XBMC"
 
+SectionEnd
+
+;--------------------------------
+;DirectX webinstaller Section
+
+!if "${xbmc_target}" == "dx"
+Section "DirectX Install" SEC_DIRECTX
+ 
+  SectionIn RO
+ 
+  SetOutPath "$TEMP"
+  File "${xbmc_root}\Xbmc\dxwebsetup.exe"
+  DetailPrint "Running DirectX Setup..."
+  ExecWait '"$TEMP\dxwebsetup.exe" /Q' $DirectXSetupError
+  DetailPrint "Finished DirectX Setup"
+ 
+  Delete "$TEMP\dxwebsetup.exe"
+ 
+  SetOutPath "$INSTDIR"
+ 
+SectionEnd
+!endif
+
+;--------------------------------
+;vs redist installer Section
+
+Section "Microsoft Visual C++ 2008 Redistributable Package (x86)" SEC_VCREDIST
+  SectionIn RO
+  
+  SetOutPath "$TEMP"
+  File "${xbmc_root}\Xbmc\vcredist_x86.exe"
+  DetailPrint "Running VS Redist Setup..."
+  ExecWait '"$TEMP\vcredist_x86.exe" /Q' $VSRedistSetupError
+  DetailPrint "Finished VS Redist Setup"
+ 
+  Delete "$TEMP\vcredist_x86.exe"
+ 
+  SetOutPath "$INSTDIR"
 SectionEnd

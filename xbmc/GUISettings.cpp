@@ -34,6 +34,7 @@
 #include "AdvancedSettings.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "SystemInfo.h"
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
 
@@ -242,7 +243,7 @@ void CGUISettings::Initialize()
   AddString(1, "mymusic.visualisation", 250, "opengl_spectrum.vis", SPIN_CONTROL_TEXT);
 #elif defined(_WIN32)
 #ifdef HAS_DX
-  AddString(1, "mymusic.visualisation", 250, "Waveform_win32dx.vis", SPIN_CONTROL_TEXT);
+  AddString(1, "mymusic.visualisation", 250, "MilkDrop_win32dx.vis", SPIN_CONTROL_TEXT);
 #else
   AddString(1, "mymusic.visualisation", 250, "opengl_spectrum_win32.vis", SPIN_CONTROL_TEXT);
 #endif
@@ -456,10 +457,17 @@ void CGUISettings::Initialize()
   AddBool(16, "videoplayer.dvdautomenu", 21882, false);
 
   AddSeparator(18, "videoplayer.sep4");
-  AddBool(19, "videoplayer.usedisplayasclock", 13510, false);
-  AddInt(20, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
-  AddFloat(0, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
-  AddInt(0, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
+
+  //sync settings not available on windows gl build
+#if defined(_WIN32) && defined(HAS_GL)
+  #define SYNCSETTINGS 0
+#else
+  #define SYNCSETTINGS 1
+#endif
+  AddBool(SYNCSETTINGS ? 19 : 0, "videoplayer.usedisplayasclock", 13510, false);
+  AddInt(SYNCSETTINGS ? 20 : 0, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
+  AddFloat(SYNCSETTINGS ? 0 : 0, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
+  AddInt(SYNCSETTINGS ? 0 : 0, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
 
   AddSeparator(23, "videoplayer.sep5");
   AddBool(24, "videoplayer.teletextenabled", 23090, true);
@@ -546,9 +554,6 @@ void CGUISettings::Initialize()
 #ifndef _WIN32
   AddString(3, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
-#endif
-#ifdef _LINUX
-  AddBool  (5, "smb.mountshares", 1208,   false);
 #endif
 
   AddCategory(6, "upnp", 20110);
@@ -894,32 +899,14 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
   if (it != settingsMap.end())
   {
     CSettingString* result = ((CSettingString *)(*it).second);
-    if (result->GetData() == "select folder")
+    if (result->GetData() == "select folder" || result->GetData() == "select writable folder")
     {
       CStdString strData = "";
       if (bPrompt)
       {
         VECSOURCES shares;
         g_mediaManager.GetLocalDrives(shares);
-        if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(result->GetLabel()),strData,false))
-        {
-          result->SetData(strData);
-          g_settings.Save();
-        }
-        else
-          return StringUtils::EmptyString;
-      }
-      else
-        return StringUtils::EmptyString;
-    }
-    if (result->GetData() == "select writable folder")
-    {
-      CStdString strData = "";
-      if (bPrompt)
-      {
-        VECSOURCES shares;
-        g_mediaManager.GetLocalDrives(shares);
-        if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(result->GetLabel()),strData,true))
+        if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(result->GetLabel()),strData,result->GetData() == "select writable folder"))
         {
           result->SetData(strData);
           g_settings.Save();
@@ -1024,6 +1011,14 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   if (GetInt("videoscreen.vsync") == VSYNC_DRIVER)
   {
     SetInt("videoscreen.vsync", VSYNC_ALWAYS);
+  }
+  // if AppleTV, trap any previous highqualityupscaling setting and set to zero
+  if (g_sysinfo.IsAppleTV())
+  {
+    if (GetInt("videoplayer.highqualityupscaling") != SOFTWARE_UPSCALING_DISABLED)
+    {
+      SetInt("videoplayer.highqualityupscaling", SOFTWARE_UPSCALING_DISABLED);
+    }
   }
 #endif
  // DXMERGE: This might have been useful?

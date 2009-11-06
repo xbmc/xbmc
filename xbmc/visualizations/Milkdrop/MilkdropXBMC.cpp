@@ -331,8 +331,7 @@ void LoadSettings()
     FindPresetPacks();
     if(strcmp(m_szPresetSave,"") != 0)
     {
-      strcat(g_plugin->m_szPresetDir, m_szPresetSave);
-      strcat(g_plugin->m_szPresetDir, "/");
+      SetPresetDir(m_szPresetSave);
     }
   }
 

@@ -90,7 +90,7 @@
 
 #define CMD_HEADER_LEN   40
 #define CMD_PREFIX_LEN    8
-#define CMD_BODY_LEN   1024
+#define CMD_BODY_LEN   1024 * 16 /* FIXME: make this dynamic */
 
 #define ASF_HEADER_LEN (8192 * 2)
 
@@ -1106,7 +1106,6 @@ mms_t *mms_connect (mms_io_t *io, void *data, const char *url, int bandwidth) {
   mms_t  *this;
   int     res;
   GURI   *uri;
-  char   *c;
   
   if (!url)
     return NULL;
@@ -1149,28 +1148,11 @@ mms_t *mms_connect (mms_io_t *io, void *data, const char *url, int bandwidth) {
   this->host = uri->hostname;
   this->port = uri->port;
   this->password = uri->passwd;
+  this->uri = gnet_mms_helper(uri);
 
-  c = uri->path;
-  while (*c == '/') ++c;
+  if(!this->uri)
+	goto fail;
 
-  if (uri->query) {
-    size_t plen = strlen(c), qlen = strlen(uri->query);
-
-    this->uri = (char *)malloc(plen + qlen + 2);
-    memcpy(this->uri, c, plen);
-    this->uri[plen] = '?';
-    memcpy(&this->uri[plen + 1], uri->query, qlen + 1);
-    free(uri->path);
-    free(uri->query);
-  } else {
-    gsize plen = strlen(c);
-
-    this->uri = (char *)malloc(plen + 1);
-    memcpy(this->uri, c, plen + 1);
-    free(uri->path);
-  }
-
-  
   if (!mmst_valid_proto(this->proto)) {
     lprintf ("unsupported protocol\n");
     goto fail;
@@ -1253,6 +1235,13 @@ mms_t *mms_connect (mms_io_t *io, void *data, const char *url, int bandwidth) {
     mms_buffer_init(&command_buffer, this->scmd_body);
     mms_buffer_put_32 (&command_buffer, 0x00000000); /* ?? */
     mms_buffer_put_32 (&command_buffer, 0x00000000); /* ?? */
+
+    /* FIXME: refuse to work with urls that are longer that buffer can hold
+       64 is a precation */
+
+    if (strlen(this->uri) >= CMD_BODY_LEN - 64)
+	goto fail;
+
     string_utf16 (url_conv, this->scmd_body + command_buffer.pos, this->uri, strlen(this->uri));
     if (!send_command (io, this, 5, 1, 0xffffffff, strlen(this->uri) * 2 + 12))
       goto fail;

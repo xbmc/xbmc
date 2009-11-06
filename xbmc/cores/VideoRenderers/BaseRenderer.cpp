@@ -137,6 +137,22 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
   m_destRect.x2 = m_destRect.x1 + MathUtils::round_int(newWidth);
   m_destRect.y1 = (float)MathUtils::round_int(posY + offsetY);
   m_destRect.y2 = m_destRect.y1 + MathUtils::round_int(newHeight);
+
+  // clip as needed
+  if (!(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating()))
+  {
+    CRect original(m_destRect);
+    m_destRect.Intersect(CRect(offsetX, offsetY, offsetX + screenWidth, offsetY + screenHeight));
+    if (m_destRect != original)
+    {
+      float scaleX = m_sourceRect.Width() / original.Width();
+      float scaleY = m_sourceRect.Height() / original.Height();
+      m_sourceRect.x1 += (m_destRect.x1 - original.x1) * scaleX;
+      m_sourceRect.y1 += (m_destRect.y1 - original.y1) * scaleY;
+      m_sourceRect.x2 += (m_destRect.x2 - original.x2) * scaleX;
+      m_sourceRect.y2 += (m_destRect.y2 - original.y2) * scaleY;
+    }
+  }
 }
 
 //***************************************************************************************

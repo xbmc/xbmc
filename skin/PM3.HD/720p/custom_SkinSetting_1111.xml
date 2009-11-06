@@ -1029,7 +1029,7 @@
 					<width>950</width>
 					<height>35</height>
 					<font>font12</font>
-					<label>Script path</label>
+					<label>- $LOCALIZE[31204]</label>
 					<label2>[COLOR=green]$INFO[Skin.String(SubtitleScript_Path)][/COLOR]</label2>
 					<textcolor>grey2</textcolor>
 					<focusedcolor>white</focusedcolor>

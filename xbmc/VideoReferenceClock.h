@@ -23,7 +23,6 @@
 #include "system.h" // for HAS_XRANDR, and Win32 types
 #include "Thread.h"
 #include "utils/CriticalSection.h"
-#include "utils/SingleLock.h"
 
 //TODO: get rid of #ifdef hell, abstract implementations in separate classes
 

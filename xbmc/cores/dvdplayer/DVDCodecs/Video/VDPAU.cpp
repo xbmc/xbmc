@@ -71,6 +71,7 @@ CVDPAU::CVDPAU(int width, int height)
   m_glPixmapTexture = 0;
   m_Pixmap = 0;
   m_glContext = 0;
+  m_bPixmapCreated = false;
   if (!glXBindTexImageEXT)
     glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
   if (!glXReleaseTexImageEXT)
@@ -108,7 +109,7 @@ CVDPAU::~CVDPAU()
     glXDestroyPixmap(m_Display, m_glPixmap);
     m_glPixmap = NULL;
   }
-  if (m_Pixmap)
+  if (m_Pixmap && m_bPixmapCreated)
   {
     CLog::Log(LOGINFO, "GLX: Destroying XPixmap");
     XFreePixmap(m_Display, m_Pixmap);
@@ -218,6 +219,7 @@ bool CVDPAU::MakePixmap(int width, int height)
     status = false;
   }
   XFree(fbConfigs);
+  m_bPixmapCreated = true;
   return status;
 }
 
@@ -504,7 +506,15 @@ void CVDPAU::InitVDPAUProcs()
                                  mScreen, //x_screen,
                                  &vdp_device,
                                  &vdp_get_proc_address);
-  CheckStatus(vdp_st, __LINE__);
+
+  CLog::Log(LOGNOTICE,"vdp_device = 0x%08x vdp_st = 0x%08x",vdp_device,vdp_st);
+  if (vdp_st != VDP_STATUS_OK)
+  {
+    CLog::Log(LOGERROR,"(VDPAU) unable to init VDPAU - vdp_st = 0x%x.  Falling back.",vdp_st);
+    vdp_device = NULL;
+    return;
+  }
+  
   if (vdp_st != VDP_STATUS_OK) 
   {
     CLog::Log(LOGERROR,"(VDPAU) - Unable to create X11 device in %s",__FUNCTION__);
@@ -974,8 +984,6 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   vdpau_render_state * render = NULL;
 
   vdp->Create(avctx->width,avctx->height);
-  // make sure device is recovered
-  vdp->CheckRecover();
 
   // find unused surface
   for(unsigned int i = 0; i < vdp->m_videoSurfaces.size(); i++)
@@ -1183,10 +1191,10 @@ void CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
   {
     CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
     if (vdpauConfigured && !VDPAUSwitching) 
-      CheckRecover(true);
+      recover = true;
   }
   if (vdp_st == VDP_STATUS_HANDLE_DEVICE_MISMATCH)
-    CheckRecover(true);
+    recover = true;
 }
 
 #endif
