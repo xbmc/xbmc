@@ -108,7 +108,6 @@ void CGUIDialogTVRecordingInfo::SetRecording(const CFileItem *item)
 void CGUIDialogTVRecordingInfo::Update()
 {
   CStdString strTemp;
-  int minutes;
   strTemp = m_recordItem->GetTVRecordingInfoTag()->m_strTitle; strTemp.Trim();
   SetLabel(CONTROL_REC_TITLE, strTemp);
 
@@ -118,10 +117,7 @@ void CGUIDialogTVRecordingInfo::Update()
   strTemp = m_recordItem->GetTVRecordingInfoTag()->RecordingTime().GetAsLocalizedTime("", false); strTemp.Trim();
   SetLabel(CONTROL_REC_STARTTIME, strTemp);
 
-  minutes = m_recordItem->GetTVRecordingInfoTag()->Duration().GetMinutes();
-  minutes += m_recordItem->GetTVRecordingInfoTag()->Duration().GetHours()*60;
-  strTemp.Format("%i", minutes);
-  strTemp.Trim();
+  strTemp.Format("%i", m_recordItem->GetTVRecordingInfoTag()->GetDuration()/60); strTemp.Trim();
   SetLabel(CONTROL_REC_DURATION, strTemp);
 
   strTemp = m_recordItem->GetTVRecordingInfoTag()->m_strGenre; strTemp.Trim();

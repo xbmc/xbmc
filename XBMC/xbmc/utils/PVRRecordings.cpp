@@ -105,7 +105,7 @@ void cPVRRecordingInfoTag::Reset(void)
   CVideoInfoTag::Reset();
 }
 
-int cPVRRecordingInfoTag::DurationSeconds() const
+int cPVRRecordingInfoTag::GetDuration() const
 {
   int duration;
   duration =  m_duration.GetDays()*60*60*24;

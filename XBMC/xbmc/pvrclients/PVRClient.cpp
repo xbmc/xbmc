@@ -726,7 +726,7 @@ void CPVRClient::WriteClientRecordingInfo(const cPVRRecordingInfoTag &recordingi
   tag.subtitle      = recordinginfo.PlotOutline();
   tag.description   = recordinginfo.Plot();
   tag.channelName   = recordinginfo.ChannelName();
-  tag.duration      = recordinginfo.DurationSeconds();
+  tag.duration      = recordinginfo.GetDuration();
   tag.priority      = recordinginfo.Priority();
   tag.lifetime      = recordinginfo.Lifetime();
   time_t recTime    = tag.starttime;

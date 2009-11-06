@@ -107,12 +107,10 @@ void cPVRChannelInfoTag::Reset()
 
 int cPVRChannelInfoTag::GetDuration() const
 {
-  int duration;
-  duration =  m_duration.GetDays()*60*60*24;
-  duration += m_duration.GetHours()*60*60;
-  duration += m_duration.GetMinutes()*60;
-  duration += m_duration.GetSeconds();
-  return duration;
+  time_t start, end;
+  m_startTime.GetAsTime(start);
+  m_endTime.GetAsTime(end);
+  return end - start;
 }
 
 int cPVRChannelInfoTag::GetTime() const

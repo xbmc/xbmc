@@ -64,7 +64,7 @@
 							<info>ListItem.Label2</info>
 						</control>
 						<control type="label">
-						<posx>890</posx>
+						<posx>850</posx>
 						<posy>0</posy>
 						<width>700</width>
 						<height>35</height>
@@ -74,6 +74,22 @@
 						<selectedcolor>green</selectedcolor>
 						<info>ListItem.Label</info>
 					</control>
+          <control type="image">
+            <width>35</width>
+            <height>35</height>
+            <posx>855</posx>
+            <posy>0</posy>
+            <texture>icon_record.png</texture>
+            <visible>ListItem.IsRecording</visible>
+          </control>
+          <control type="image">
+            <width>35</width>
+            <height>35</height>
+            <posx>855</posx>
+            <posy>0</posy>
+            <texture>icon_schedule.png</texture>
+            <visible>ListItem.HasTimer</visible>
+          </control>
 					</itemlayout>
 					<focusedlayout height="40">
 					<control type="image">
@@ -97,7 +113,7 @@
 						<info>ListItem.Label2</info>
 					</control>
 					<control type="label">
-						<posx>890</posx>
+						<posx>850</posx>
 						<posy>0</posy>
 						<width>700</width>
 						<height>35</height>
@@ -107,6 +123,22 @@
 						<selectedcolor>green</selectedcolor>
 						<info>ListItem.Label</info>
 					</control>
+          <control type="image">
+            <width>35</width>
+            <height>35</height>
+            <posx>855</posx>
+            <posy>0</posy>
+            <texture>icon_record.png</texture>
+            <visible>ListItem.IsRecording</visible>
+          </control>
+          <control type="image">
+            <width>35</width>
+            <height>35</height>
+            <posx>855</posx>
+            <posy>0</posy>
+            <texture>icon_schedule.png</texture>
+            <visible>ListItem.HasTimer</visible>
+          </control>
 				</focusedlayout>
 				</control>
 				<control type="scrollbar" id="75">
@@ -186,7 +218,7 @@
 							<info>ListItem.Label2</info>
 						</control>
 						<control type="label">
-						<posx>890</posx>
+						<posx>850</posx>
 						<posy>0</posy>
 						<width>410</width>
 						<height>35</height>
@@ -196,6 +228,22 @@
 						<selectedcolor>green</selectedcolor>
 						<info>ListItem.Label</info>
 					</control>
+          <control type="image">
+            <width>35</width>
+            <height>35</height>
+            <posx>855</posx>
+            <posy>0</posy>
+            <texture>icon_record.png</texture>
+            <visible>ListItem.IsRecording</visible>
+          </control>
+          <control type="image">
+            <width>35</width>
+            <height>35</height>
+            <posx>855</posx>
+            <posy>0</posy>
+            <texture>icon_schedule.png</texture>
+            <visible>ListItem.HasTimer</visible>
+          </control>
 					</itemlayout>
 					<focusedlayout height="40">
 					<control type="image">
@@ -237,7 +285,7 @@
 						<info>ListItem.Label2</info>
 					</control>
 					<control type="label">
-					<posx>890</posx>
+					<posx>850</posx>
 					<posy>0</posy>
 					<width>410</width>
 					<height>35</height>
@@ -247,6 +295,22 @@
 					<selectedcolor>green</selectedcolor>
 					<info>ListItem.Label</info>
 				</control>
+          <control type="image">
+            <width>35</width>
+            <height>35</height>
+            <posx>855</posx>
+            <posy>0</posy>
+            <texture>icon_record.png</texture>
+            <visible>ListItem.IsRecording</visible>
+          </control>
+          <control type="image">
+            <width>35</width>
+            <height>35</height>
+            <posx>855</posx>
+            <posy>0</posy>
+            <texture>icon_schedule.png</texture>
+            <visible>ListItem.HasTimer</visible>
+          </control>
 				</focusedlayout>
 				</control>
 				<control type="scrollbar" id="76">
@@ -514,14 +578,22 @@
 					<align>left</align>
 					<info>ListItem.Label</info>
 				</control>
-				<control type="image">
-				<width>26</width>
-				<height>26</height>
-				<posx>5</posx>
-				<posy>28</posy>
-				<texture>OverlayRecording.png</texture>
-				<visible>ListItem.Property(Recording)</visible>
-			</control>
+        <control type="image">
+          <width>26</width>
+          <height>26</height>
+          <posx>5</posx>
+          <posy>28</posy>
+          <texture>icon_record.png</texture>
+          <visible>ListItem.IsRecording</visible>
+        </control>
+          <control type="image">
+          <width>26</width>
+          <height>26</height>
+          <posx>5</posx>
+          <posy>28</posy>
+          <texture>icon_schedule.png</texture>
+          <visible>ListItem.HasTimer</visible>
+        </control>
 			</itemlayout>
 			<focusedlayout height="60" width="40">
 				<control type="image" id="2">
@@ -645,8 +717,16 @@
           <height>26</height>
           <posx>5</posx>
           <posy>28</posy>
-          <texture>OverlayRecording.png</texture>
-          <visible>ListItem.Property(Recording)</visible>
+          <texture>icon_record.png</texture>
+          <visible>ListItem.IsRecording</visible>
+        </control>
+        <control type="image">
+          <width>26</width>
+          <height>26</height>
+          <posx>5</posx>
+          <posy>28</posy>
+          <texture>icon_schedule.png</texture>
+          <visible>ListItem.HasTimer</visible>
         </control>
       </focusedlayout>
 		</control>
@@ -1475,7 +1555,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<selectedcolor>green</selectedcolor>
-							<info>ListItem.Channel</info>
+							<info>ListItem.ChannelName</info>
 						</control>
 						<control type="label">
 							<posx>240</posx>
@@ -1488,17 +1568,33 @@
 							<selectedcolor>green</selectedcolor>
 							<info>ListItem.Date</info>
 						</control>
-						<control type="label">
-						<posx>890</posx>
-						<posy>0</posy>
-						<width>410</width>
-						<height>35</height>
-						<font>font12</font>
-						<align>right</align>
-						<aligny>center</aligny>
-						<selectedcolor>green</selectedcolor>
-						<info>ListItem.Label</info>
-					</control>
+            <control type="label">
+              <posx>850</posx>
+              <posy>0</posy>
+              <width>410</width>
+              <height>35</height>
+              <font>font12</font>
+              <align>right</align>
+              <aligny>center</aligny>
+              <selectedcolor>green</selectedcolor>
+              <info>ListItem.Label</info>
+            </control>
+            <control type="image">
+              <width>35</width>
+              <height>35</height>
+              <posx>855</posx>
+              <posy>0</posy>
+              <texture>icon_record.png</texture>
+              <visible>ListItem.IsRecording</visible>
+            </control>
+            <control type="image">
+              <width>35</width>
+              <height>35</height>
+              <posx>855</posx>
+              <posy>0</posy>
+              <texture>icon_schedule.png</texture>
+              <visible>ListItem.HasTimer</visible>
+            </control>
 					</itemlayout>
 					<focusedlayout height="40">
 					<control type="image">
@@ -1526,7 +1622,7 @@
 						<align>left</align>
 						<aligny>center</aligny>
 						<selectedcolor>green</selectedcolor>
-						<info>ListItem.Channel</info>
+						<info>ListItem.ChannelName</info>
 					</control>
 					<control type="label">
 						<posx>240</posx>
@@ -1540,16 +1636,32 @@
 						<info>ListItem.Date</info>
 					</control>
 					<control type="label">
-					<posx>890</posx>
-					<posy>0</posy>
-					<width>410</width>
-					<height>35</height>
-					<font>font12</font>
-					<align>right</align>
-					<aligny>center</aligny>
-					<selectedcolor>green</selectedcolor>
-					<info>ListItem.Label</info>
-				</control>
+            <posx>850</posx>
+            <posy>0</posy>
+            <width>410</width>
+            <height>35</height>
+            <font>font12</font>
+            <align>right</align>
+            <aligny>center</aligny>
+            <selectedcolor>green</selectedcolor>
+            <info>ListItem.Label</info>
+          </control>
+          <control type="image">
+            <width>35</width>
+            <height>35</height>
+            <posx>855</posx>
+            <posy>0</posy>
+            <texture>icon_record.png</texture>
+            <visible>ListItem.IsRecording</visible>
+          </control>
+          <control type="image">
+            <width>35</width>
+            <height>35</height>
+            <posx>855</posx>
+            <posy>0</posy>
+            <texture>icon_schedule.png</texture>
+            <visible>ListItem.HasTimer</visible>
+          </control>
 				</focusedlayout>
 				</control>
 				<control type="scrollbar" id="77">

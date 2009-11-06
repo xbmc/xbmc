@@ -42,75 +42,7 @@
 class cPVREpg;
 class cPVRChannelInfoTag;
 
-class CTVEPGInfoTag : public CVideoInfoTag
-{
-  friend class cPVREpg;
-private:
-  cPVREpg *Epg;     // The Schedule this event belongs to
-  const cPVRChannelInfoTag *m_Channel;
-
-public:
-  int           m_idChannel;
-  CStdString    m_strSource;
-  CStdString    m_strBouquet;
-  int           m_bouquetNum;
-  CStdString    m_strChannel;
-  int           m_channelNum;
-  CStdString    m_IconPath;
-
-  CStdString    m_strFileNameAndPath;
-
-  CDateTime     m_startTime;
-  CDateTime     m_endTime;
-  CDateTimeSpan m_duration;
-  CDateTime     m_firstAired;
-  bool          m_repeat;
-
-  bool          m_isRadio;
-  bool          m_commFree;
-  bool          m_isRecording;
-  bool          m_bAutoSwitch;
-  int           m_GenreType;
-  int           m_GenreSubType;
-
-private:
-  long m_uniqueBroadcastID; // db's unique identifier for this tag
-
-public:
-  CTVEPGInfoTag(long uniqueBroadcastID);
-  CTVEPGInfoTag() { Reset(); };
-  void Reset();
-
-  CDateTime Start(void) const { return m_startTime; }
-  void SetStart(CDateTime Start) { m_startTime = Start; }
-  CDateTime End(void) const { return m_endTime; }
-  void SetEnd(CDateTime Stop) { m_endTime = Stop; }
-  CStdString Title(void) const { return m_strTitle; }
-  void SetTitle(CStdString name) { m_strTitle = name; }
-  CStdString PlotOutline(void) const { return m_strPlotOutline; }
-  void SetPlotOutline(CStdString PlotOutline) { m_strPlotOutline = PlotOutline; }
-  CStdString Plot(void) const { return m_strPlot; }
-  void SetPlot(CStdString Plot) { m_strPlot = Plot; }
-  int GenreType(void) const { return m_GenreType; }
-  void SetGenreType(int GenreType) { m_GenreType = GenreType; }
-  int GenreSubType(void) const { return m_GenreSubType; }
-  void SetGenreSubType(int GenreSubType) { m_GenreSubType = GenreSubType; }
-  CStdString Genre(void) const { return m_strGenre; }
-  void SetGenre(CStdString Genre) { m_strGenre = Genre; }
-  int DurationSeconds() const;
-  CDateTimeSpan Duration(void) const { return m_duration; }
-  void SetDuration(CDateTimeSpan duration) { m_duration = duration; }
-  long ChannelID(void) const { return m_idChannel; }
-  long GroupID(void) const { return m_Channel->GroupID(); }
-  void SetChannelID(int ChannelID) { m_idChannel = ChannelID; }
-  bool IsEncrypted(void) const { return m_Channel->IsEncrypted(); }
-  bool IsRadio(void) const { return m_Channel->IsRadio(); }
-  long Channel(void) const { return m_Channel->Number(); }
-  CStdString ChannelName(void) const { return m_Channel->Name(); }
-  void SetChannel(const cPVRChannelInfoTag *Channel) { m_Channel = Channel; }
-  bool HasTimer() const;
-};
-
+/* Filter data to check with a EPGEntry */
 struct EPGSearchFilter
 {
   void SetDefaults();
@@ -133,6 +65,68 @@ struct EPGSearchFilter
   bool          m_IgnPresentTimers;
   bool          m_IgnPresentRecords;
   bool          m_PreventRepeats;
+};
+
+class CTVEPGInfoTag : public CVideoInfoTag
+{
+  friend class cPVREpg;
+private:
+  cPVREpg *m_Epg;     // The Schedule this event belongs to
+  const cPVRChannelInfoTag *m_Channel;
+  const cPVRTimerInfoTag   *m_Timer;
+
+  CDateTime     m_startTime;
+  CDateTime     m_endTime;
+  CDateTimeSpan m_duration;
+  CStdString    m_IconPath;
+  CStdString    m_strFileNameAndPath;
+  int           m_GenreType;
+  int           m_GenreSubType;
+  bool          m_isRecording;
+
+  long          m_uniqueBroadcastID; // db's unique identifier for this tag
+
+public:
+  CTVEPGInfoTag(long uniqueBroadcastID);
+  CTVEPGInfoTag() { Reset(); };
+  void Reset();
+
+  long GetUniqueBroadcastID(void) const { return m_uniqueBroadcastID; }
+  CDateTime Start(void) const { return m_startTime; }
+  void SetStart(CDateTime Start) { m_startTime = Start; }
+  CDateTime End(void) const { return m_endTime; }
+  void SetEnd(CDateTime Stop) { m_endTime = Stop; }
+  int GetDuration() const;
+  CStdString Title(void) const { return m_strTitle; }
+  void SetTitle(CStdString name) { m_strTitle = name; }
+  CStdString PlotOutline(void) const { return m_strPlotOutline; }
+  void SetPlotOutline(CStdString PlotOutline) { m_strPlotOutline = PlotOutline; }
+  CStdString Plot(void) const { return m_strPlot; }
+  void SetPlot(CStdString Plot) { m_strPlot = Plot; }
+  int GenreType(void) const { return m_GenreType; }
+  void SetGenreType(int GenreType) { m_GenreType = GenreType; }
+  int GenreSubType(void) const { return m_GenreSubType; }
+  void SetGenreSubType(int GenreSubType) { m_GenreSubType = GenreSubType; }
+  CStdString Genre(void) const { return m_strGenre; }
+  void SetGenre(CStdString Genre) { m_strGenre = Genre; }
+  CStdString Icon(void) const { return m_IconPath; }
+  void SetIcon(CStdString icon) { m_IconPath = icon; }
+  CStdString Path(void) const { return m_strFileNameAndPath; }
+  void SetPath(CStdString Path) { m_strFileNameAndPath = Path; }
+  bool HasTimer() const;
+
+  /* Channel related Data */
+  void SetChannel(const cPVRChannelInfoTag *Channel) { m_Channel = Channel; }
+  long ChannelID(void) const { return m_Channel->ChannelID(); }
+  long ChannelNumber(void) const { return m_Channel->Number(); }
+  CStdString ChannelName(void) const { return m_Channel->Name(); }
+  long GroupID(void) const { return m_Channel->GroupID(); }
+  bool IsEncrypted(void) const { return m_Channel->IsEncrypted(); }
+  bool IsRadio(void) const { return m_Channel->IsRadio(); }
+
+  /* Scheduled recording related Data */
+  void SetTimer(const cPVRTimerInfoTag *Timer) { m_Timer = Timer; }
+  const cPVRTimerInfoTag *Timer(void) const { return m_Timer; }
 };
 
 class cPVREpg
@@ -180,7 +174,7 @@ class cPVREpgs : public std::vector<cPVREpg>
 
 private:
   CRITICAL_SECTION m_critSection;
-  static DWORD m_lastCleanup;
+  static unsigned int m_lastCleanup;
   static cPVREpgs m_epgs;
   int m_locked;
   virtual void Process();
@@ -191,8 +185,8 @@ public:
   static void Cleanup(void);
   static bool ClearAll(void);
   static bool ClearChannel(long ChannelID);
-  static bool Load();
-  static bool Update(bool Wait = false);
+  static void Load();
+  static void Update(bool Wait = false);
   static int GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter);
   static int GetEPGAll(CFileItemList* results, bool radio = false);
   static int GetEPGChannel(unsigned int number, CFileItemList* results, bool radio = false);
@@ -203,5 +197,6 @@ public:
   cPVREpg *AddEPG(long ChannelID);
   const cPVREpg *GetEPG(long ChannelID) const;
   const cPVREpg *GetEPG(const cPVRChannelInfoTag *Channel, bool AddIfMissing = false) const;
+  static void SetVariableData(CFileItemList* results);
   void Add(cPVREpg *entry);
 };

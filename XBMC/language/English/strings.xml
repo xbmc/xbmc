@@ -1711,16 +1711,18 @@
   <string id="18153">Subcategory</string>
   <string id="18154">Free-To-Air only</string>
   <string id="18155">TV only</string>
-  <string id="18156">Ignore for present Timers</string>
+  <string id="18156">Ignore for by present Timers</string>
   <string id="18157">Music/Balett/Dance</string>
   <string id="18158">Arts/Culture</string>
-  <string id="18159">Ignore for present Recordings</string>
+  <string id="18159">Ignore for by present Recordings</string>
   <string id="18160">Avoid Repeats</string>
   <string id="18161">Set Channel Icon</string>
   <string id="18162">Timer still recording - really delete?</string>
   <string id="18163">Programme info</string>
   <string id="18164">No search results present</string>
   <string id="18165">Sort by: Channel</string>
+  <string id="18166">Go to begin</string>
+  <string id="18167">Go to end</string>
 
   <string id="18190">Next timer on</string>
   <string id="18191">at</string>

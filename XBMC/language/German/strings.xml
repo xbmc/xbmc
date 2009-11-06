@@ -1701,16 +1701,18 @@
   <string id="18153">Unterkategorie</string>
   <string id="18154">Nur frei empfangbare Kanäle</string>
   <string id="18155">Nur TV</string>
-  <string id="18156">Vorhandene Timer ignorieren</string>
+  <string id="18156">Bei vorhandenem Timer ignorieren</string>
   <string id="18157">Musik/Balett/Tanzen</string>
   <string id="18158">Kunst/Kultur</string>
-  <string id="18159">Vorhandene Aufnahmen ignorieren</string>
+  <string id="18159">Bei vorhandener Aufnahmen ignorieren</string>
   <string id="18160">Keine Wiederholungen</string>
   <string id="18161">Kanallogo festlegen</string>
   <string id="18162">Timer zeichnet auf - trotzdem löschen?</string>
   <string id="18163">Titel-Informationen</string>
   <string id="18164">Es liegen keine Suchergebnisse vor</string>
   <string id="18165">Nach Kanal</string>
+  <string id="18166">Gehe zum Anfang</string>
+  <string id="18167">Gehe zum Ende</string>
 
   <string id="18190">Nächster Timer am</string>
   <string id="18191">um</string>

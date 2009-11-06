@@ -743,6 +743,9 @@ void CPVRManager::Process()
   {
     int Now = CTimeUtils::GetTimeMS()/1000;
 
+    /* Cleanup EPG Data */
+    cPVREpgs::Cleanup();
+
     /* Check for new or updated TV Channels */
     if (Now - m_LastTVChannelCheck > CHANNELCHECKDELTA) // don't do this too often
     {
@@ -1329,7 +1332,6 @@ void CPVRManager::SetCurrentPlayingProgram(CFileItem& item)
       tag->m_strGenre          = epgnow->Genre();
       tag->SetStartTime(epgnow->Start());
       tag->SetEndTime(epgnow->End());
-      tag->SetDuration(epgnow->Duration());
       if (epgnext)
         tag->SetNextTitle(epgnext->Title());
       else

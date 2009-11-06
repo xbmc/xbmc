@@ -668,7 +668,6 @@ void CGUISettings::Initialize()
   AddCategory(8,"pvrepg", 18013);
   AddInt(1, "pvrepg.epgscan", 18014, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
   AddInt(2, "pvrepg.epgupdate", 18015, 60, 15, 15, 240, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddInt(3, "pvrepg.daystosave", 18016, 7, 1, 1, 180, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
 
   AddCategory(8,"pvrplayback", 18023);
   AddBool(1, "pvrplayback.switchautoclose", 18034, true);
