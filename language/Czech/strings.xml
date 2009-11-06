@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: ezechiel1917-->
-<!--Date of translation: 18/10/2009-->
-<!--Based on English strings version 23751-->
+<!--Date of translation: 06/11/2009-->
+<!--Based on English strings version 24305-->
 <strings>
   <string id="0">Programy</string>
   <string id="1">Obrázky</string>
@@ -380,7 +380,7 @@
   <string id="444">Video</string>
   <string id="445">Audio</string>
   <string id="446">DVD</string>
-  <string id="447">Automaticky přehrávat DVD</string>
+  <string id="447">Automaticky přehrávat média</string>
   <string id="448">LCD</string>
   <string id="449">Aktivní</string>
   <string id="450">Sloupce</string>
@@ -813,7 +813,7 @@
 
   <string id="2100">Chyba skriptu! : %s</string>
 
-  <string id="4501">Typ LCD</string>
+  <string id="4501">Aktivovat LCD displej</string>
 
   <string id="10000">Základní</string>
   <string id="10001">Programy</string>
@@ -902,7 +902,8 @@
   <string id="12021">Začít od začátku</string>
   <string id="12022">Pokračovat z poslední pozice</string>
   <string id="12023">Probíhá ověření stávájících trainerů...</string>
-  <string id="12024">Automaticky generovat náhledy k videím, které nemají k dispozici obal/plakát</string>
+  <string id="12024"></string>
+
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -1084,7 +1085,7 @@
   <string id="13274">Připojeno, ale služba DNS není k dispozici.</string>
   <string id="13275">HDD</string>
   <string id="13276">DVD-ROM</string>
-  <string id="13277">Kapacita</string>
+  <string id="13277">Úložiště</string>
   <string id="13278">Standardní</string>
   <string id="13279">Síť</string>
   <string id="13280">Video</string>
@@ -1165,7 +1166,7 @@
   <string id="13356">Hardwarové překrytí</string>
   <string id="13357">Vysoká kvalita Pixel Shaderu</string>
   <string id="13358">Přehrát položku</string>
-  <string id="13359">Nastavit ikonu interpreta</string>
+  <string id="13359">Přiřadit náhled interpretovi</string>
   <string id="13360">Generovat náhledy</string>
   <string id="13361">Povolit úpravu hlasu</string>
   <string id="13375">Povolit zařízení</string>
@@ -1298,7 +1299,7 @@ není k dispozici žádné nastavení</string>
   <string id="14051">Formát hodin</string>
   <string id="14052">Formát datumu</string>
   <string id="14053">Filtry GUI</string>
-  <string id="14054">Povolit načítání dat z Internetu</string>
+  <string id="14054"></string>
   <string id="14055">Použít vyhledávání na pozadí</string>
   <string id="14056">Zastavit vyhledávání</string>
   <string id="14057">Tuto operaci nelze provést při vyhledávání informací o médiu</string>
@@ -1418,7 +1419,7 @@ není k dispozici žádné nastavení</string>
   <string id="15214">Používat hladkou synchronizaci A/V</string>
   <string id="15215">Nezobrazovat názvy souborů při zobrazení náhledů</string>
   <string id="15216">Přehrát v Párty módu</string>
-  <string id="15217">Libre.fm - Povolit odesílání skladeb</string>
+  <string id="15217">Libre.fm - Odesílat informace o skladbách</string>
   <string id="15218">Libre.fm - Uživatelské jméno</string>
   <string id="15219">Libre.fm - Heslo</string>
   <string id="15220">Libre.fm</string>
@@ -1506,10 +1507,10 @@ není k dispozici žádné nastavení</string>
   <string id="16023">Prokládaný materiál</string>
   <string id="16024">Stornuji...</string>
   <string id="16025">Zadejte jméno interpreta</string>
-  <string id="16026">Přehrávání Seznamu stop bylo ukončeno</string>
-  <string id="16027">Příliš mnoho nezdařených operací</string>
+  <string id="16026">Přehrávání selhalo</string>
+  <string id="16027">Jednu nebo více položek se nepodařilo přehrát.</string>
   <string id="16028">Zadejte hodnotu</string>
-
+  <string id="16029">Více informací najdete v log souboru.</string>
   <string id="16030">Párty mód byl přerušen.</string>
   <string id="16031">Žádné odpovídající skladby nebyly v knihovně nalezeny.</string>
   <string id="16032">Incializace knihovny nebyla úspěšná.</string>
@@ -1587,6 +1588,7 @@ není k dispozici žádné nastavení</string>
 
   <!-- string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)-->
 
+  <string id="20037">Souhrn</string>
   <string id="20038">Uzamknout hudební sekci</string>
   <string id="20039">Uzamknout video sekci</string>
   <string id="20040">Uzamknout sekci s obrázky</string>
@@ -1702,13 +1704,13 @@ není k dispozici žádné nastavení</string>
   <string id="20151">Zrušit automatické vypnutí</string>
   <string id="20152">Uzamknout nastavení pro %s</string>
   <string id="20153">Procházet...</string>
-  <string id="20154">Základní informace</string>
-  <string id="20155">Informace o uložišti dat</string>
-  <string id="20156">HDD Informace</string>
-  <string id="20157">DVD-ROM informace</string>
-  <string id="20158">Síťové informace</string>
-  <string id="20159">Video informace</string>
-  <string id="20160">Hardwarové informace</string>
+  <string id="20154">Souhrn informací</string>
+  <string id="20155">Informace o úložištích dat</string>
+  <string id="20156">Informace o HDD</string>
+  <string id="20157">Informace o DVD</string>
+  <string id="20158">Informace o síti</string>
+  <string id="20159">Informace o videu</string>
+  <string id="20160">Informace o hardwaru</string>
   <string id="20161">Celkem</string>
   <string id="20162">Využito</string>
   <string id="20163">z</string>
@@ -1744,8 +1746,8 @@ není k dispozici žádné nastavení</string>
   <string id="20193"></string>
   <string id="20194">Výchozí Stahovač</string>
   <string id="20195">Změnit Stahovač</string>
-  <string id="20196">Export Hudební knihovny</string>
-  <string id="20197">Import Hudební knihovny</string>
+  <string id="20196">Exportovat Hudební knihovnu</string>
+  <string id="20197">Importovat Hudební knihovnu</string>
   <string id="20198">Interpret nenalezen!</string>
   <string id="20199">Stažení informací o interpretovi se nezdařilo</string>
 
@@ -1838,7 +1840,7 @@ není k dispozici žádné nastavení</string>
   <string id="20379">Složka obsahuje jediný seriál</string>
   <string id="20380">Nezahrnovat tuto složku při aktualizaci knihovny</string>
   <string id="20381">Specialní epizody</string>
-  <string id="20382"></string>
+  <string id="20382">Stahovat náhledy řad seriálů</string>
   <string id="20383">Složka obsahuje jediné video</string>
   <string id="20384">Přiřadit k seriálu</string>
   <string id="20385">Odebrat ze seriálu</string>
@@ -1858,8 +1860,8 @@ není k dispozici žádné nastavení</string>
   <string id="20399">Přejít k hudebním videoklipům alba</string>
   <string id="20400">Přejít k hudebním videoklipům interpreta</string>
   <string id="20401">Přehrát hudební videoklip</string>
-  <string id="20402"></string>
-  <string id="20403">Nastavení ikony herce</string>
+  <string id="20402">Stahovat náhledy herců</string>
+  <string id="20403">Přiřadit náhled herci</string>
   <string id="20404">Studio:</string>
   <string id="20405">Odstranit záložku epizody</string>
   <string id="20406">Nastavit záložku epizody</string>
@@ -1882,16 +1884,17 @@ není k dispozici žádné nastavení</string>
   <string id="20423">Má upoutávku</string>
   <string id="20424">Nepravdivé</string>
   <string id="20425">Fanart prezentace</string>
-  <string id="20426">Exportovat do jednoho souboru nebo odděleně</string>
-  <string id="20427">Kolik souborů pro každý vstup?</string>
-  <string id="20428">Jediný soubor</string>
-  <string id="20429">Oddšleně</string>
-  <string id="20430">Exportovat ikony a fanart?</string>
-  <string id="20431">Přepssat staré soubory?</string>
+  <string id="20426">Exportovat vše do jednoho souboru nebo</string>
+  <string id="20427">každou položku do samostatného souboru?</string>
+  <string id="20428">1 soubor</string>
+  <string id="20429">Samostatně</string>
+  <string id="20430">Exportovat náhledy a Fanart?</string>
+  <string id="20431">Přepsat existující soubory?</string>
   <string id="20432">Nezahrnovat položky v tomto umístění při aktualizaci knihovny</string>
-  <string id="20433">Načítat metadata z multimediálních souborů</string>
+  <string id="20433">Extrahovat náhledy a informace ze souborů</string>
   <string id="20434">Sady</string>
   <string id="20435">Přiřadit náhled sadě</string>
+  <string id="20436">Exportovat náhledy herců</string>
 
   <!-- up to 21329 is reserved for the video db !! !-->
 
@@ -2084,7 +2087,7 @@ není k dispozici žádné nastavení</string>
   <string id="22000">Aktualizovat knihovnu po spuštění</string>
   <string id="22001">Aktualizovat knihovnu vždy na pozadí</string>
   <string id="22002">- DNS sufix</string>
-  <string id="22003">Povolit EDL (přeskakování úseků ve videu)</string>
+  <string id="22003"></string>
   <string id="22004">- %2.3fs</string>
   <string id="22005">+ %2.3fs</string>
   <string id="22006">Posunutí titulků</string>
@@ -2111,8 +2114,8 @@ není k dispozici žádné nastavení</string>
   <string id="22031">- Velikost</string>
   <string id="22032">- Barva</string>
   <string id="22033">- Znaková sada</string>
-  <string id="22034">Exportovat karaoke tituly jako HTML</string>
-  <string id="22035">Exportovat karaoke tituly jako CSV</string>
+  <string id="22034">Exportovat do HTML</string>
+  <string id="22035">Exportovat do CSV</string>
   <string id="22036">Importovat karaoke tituly...</string>
   <string id="22037">Automaticky zobrazovat dialog pro výběr skladby</string>
   <string id="22038">Exportovat karaoke tituly...</string>
