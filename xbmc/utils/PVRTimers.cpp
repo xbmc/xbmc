@@ -167,7 +167,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(const CFileItem& item)
     return;
   }
 
-  const cPVRChannelInfoTag *channel = cPVRChannels::GetByChannelIDFromAll(tag->m_idChannel);
+  const cPVRChannelInfoTag *channel = cPVRChannels::GetByChannelIDFromAll(tag->ChannelID());
   if (channel == NULL)
   {
     CLog::Log(LOGERROR, "cPVRTimerInfoTag: constructor is called with not present channel");
@@ -175,7 +175,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(const CFileItem& item)
   }
 
   /* Check epg end date is in the future */
-  if (tag->m_endTime < CDateTime::GetCurrentDateTime())
+  if (tag->End() < CDateTime::GetCurrentDateTime())
   {
     CLog::Log(LOGERROR, "cPVRTimerInfoTag: Can't initialize tag, EPGInfoTag is in the past!");
     return;
@@ -212,8 +212,8 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(const CFileItem& item)
     m_strTitle  = channel->Name();
 
   /* Calculate start/stop times */
-  m_StartTime     = tag->m_startTime - CDateTimeSpan(0, marginstart / 60, marginstart % 60, 0);
-  m_StopTime      = tag->m_endTime  + CDateTimeSpan(0, marginstop / 60, marginstop % 60, 0);
+  m_StartTime     = tag->Start() - CDateTimeSpan(0, marginstart / 60, marginstart % 60, 0);
+  m_StopTime      = tag->End()  + CDateTimeSpan(0, marginstop / 60, marginstop % 60, 0);
 
   /* Set priority and lifetime */
   m_Priority      = defprio;
@@ -514,6 +514,7 @@ bool cPVRTimers::Update()
     itr++;
   }
 
+  g_PVRManager.SyncInfo();
   return true;
 }
 
@@ -531,8 +532,6 @@ int cPVRTimers::GetTimers(CFileItemList* results)
     CFileItemPtr timer(new CFileItem(at(i)));
     results->Add(timer);
   }
-
-  g_PVRManager.SyncInfo();
 
   return size();
 }

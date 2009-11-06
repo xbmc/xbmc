@@ -105,11 +105,11 @@ bool CGUIDialogTVEPGProgInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_RECORD)
       {
-        int iChannel = m_progItem->GetTVEPGInfoTag()->Channel();
+        int iChannel = m_progItem->GetTVEPGInfoTag()->ChannelNumber();
 
         if (iChannel != -1)
         {
-          if (m_progItem->GetTVEPGInfoTag()->m_isRecording == false)
+          if (m_progItem->GetTVEPGInfoTag()->Timer() == NULL)
           {
             // prompt user for confirmation of channel record
             CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -127,10 +127,7 @@ bool CGUIDialogTVEPGProgInfo::OnMessage(CGUIMessage& message)
                 cPVRTimerInfoTag newtimer(*m_progItem.get());
                 CFileItem *item = new CFileItem(newtimer);
 
-                if (cPVRTimers::AddTimer(*item))
-                {
-                  m_progItem->GetTVEPGInfoTag()->m_isRecording = true;
-                }
+                cPVRTimers::AddTimer(*item);
               }
             }
           }
@@ -151,14 +148,14 @@ bool CGUIDialogTVEPGProgInfo::OnMessage(CGUIMessage& message)
           CFileItemList channelslist;
           int ret_channels;
 
-          if (!m_progItem->GetTVEPGInfoTag()->m_isRadio)
+          if (!m_progItem->GetTVEPGInfoTag()->IsRadio())
             ret_channels = PVRChannelsTV.GetChannels(&channelslist, -1);
           else
             ret_channels = PVRChannelsRadio.GetChannels(&channelslist, -1);
 
           if (ret_channels > 0)
           {
-            if (!g_application.PlayFile(*channelslist[m_progItem->GetTVEPGInfoTag()->Channel()-1]))
+            if (!g_application.PlayFile(*channelslist[m_progItem->GetTVEPGInfoTag()->ChannelNumber()-1]))
             {
               CGUIDialogOK::ShowAndGetInput(18100,0,18134,0);
               return false;
@@ -191,7 +188,7 @@ void CGUIDialogTVEPGProgInfo::Update()
   strTemp = m_progItem->GetTVEPGInfoTag()->Start().GetAsLocalizedTime("", false); strTemp.Trim();
   SetLabel(CONTROL_PROG_STARTTIME, strTemp);
 
-  strTemp.Format("%i", m_progItem->GetTVEPGInfoTag()->DurationSeconds()/60);
+  strTemp.Format("%i", m_progItem->GetTVEPGInfoTag()->GetDuration()/60);
   strTemp.Trim();
   SetLabel(CONTROL_PROG_DURATION, strTemp);
 
@@ -202,7 +199,7 @@ void CGUIDialogTVEPGProgInfo::Update()
   strTemp.Trim();
   SetLabel(CONTROL_PROG_CHANNEL, strTemp);
 
-  strTemp.Format("%u", m_progItem->GetTVEPGInfoTag()->Channel()); // int value
+  strTemp.Format("%u", m_progItem->GetTVEPGInfoTag()->ChannelNumber()); // int value
   SetLabel(CONTROL_PROG_CHANNELNUM, strTemp);
 
   // programme subtitle

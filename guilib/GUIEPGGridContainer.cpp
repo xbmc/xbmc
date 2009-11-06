@@ -612,18 +612,18 @@ void CGUIEPGGridContainer::UpdateChannels()
 
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
-    if (m_items[i]->GetTVEPGInfoTag()->m_channelNum != lastChannel)
+    if (m_items[i]->GetTVEPGInfoTag()->ChannelNumber() != lastChannel)
     {
-      lastChannel = m_items[i]->GetTVEPGInfoTag()->m_channelNum;
+      lastChannel = m_items[i]->GetTVEPGInfoTag()->ChannelNumber();
 
       CGUIListItemLayout *pChannelLayout = new CGUIListItemLayout(*m_channelLayout);
       CGUIListItemLayout *pChannelFocusedLayout = new CGUIListItemLayout(*m_focusedChannelLayout);
       pChannelLayout->SetWidth(m_channelWidth);
       pChannelFocusedLayout->SetWidth(m_channelWidth);
 
-      CGUIListItemPtr item(new CFileItem(m_items[i]->GetTVEPGInfoTag()->m_strChannel));
-      item->SetLabel2(m_items[i]->GetTVEPGInfoTag()->m_strChannel);
-      item->SetThumbnailImage(m_items[i]->GetTVEPGInfoTag()->m_IconPath);
+      CGUIListItemPtr item(new CFileItem(m_items[i]->GetTVEPGInfoTag()->ChannelName()));
+      item->SetLabel2(m_items[i]->GetTVEPGInfoTag()->ChannelName());
+      item->SetThumbnailImage(m_items[i]->GetTVEPGInfoTag()->Icon());
       item->SetLayout(pChannelLayout);
       item->SetFocusedLayout(pChannelFocusedLayout);
       m_channelItems.push_back(item);
@@ -665,7 +665,7 @@ void CGUIEPGGridContainer::UpdateItems()
     if (m_items[progIdx]->GetTVEPGInfoTag() == NULL)
       continue;
 
-    unsigned int channelnum = m_items[progIdx]->GetTVEPGInfoTag()->m_channelNum;
+    unsigned int channelnum = m_items[progIdx]->GetTVEPGInfoTag()->ChannelNumber();
 
     /** FOR EACH BLOCK **********************************************************************/
 
@@ -680,7 +680,7 @@ void CGUIEPGGridContainer::UpdateItems()
 
       while (progIdx < lastIdx)
       {
-        if (m_items[progIdx]->GetTVEPGInfoTag()->m_channelNum != channelnum)
+        if (m_items[progIdx]->GetTVEPGInfoTag()->ChannelNumber() != channelnum)
           break;
 
         programme = m_items[progIdx];
@@ -692,15 +692,15 @@ void CGUIEPGGridContainer::UpdateItems()
         if (tag == NULL)
           progIdx++;
 
-        if (m_gridEnd <= tag->m_startTime)
+        if (m_gridEnd <= tag->Start())
         {
           break;
         }
-        else if (gridCursor >= tag->m_endTime)
+        else if (gridCursor >= tag->End())
         {
           progIdx++;
         }
-        else if (gridCursor < tag->m_endTime)
+        else if (gridCursor < tag->End())
         {
           m_gridIndex[row][block] = programme;
           break;
@@ -1128,13 +1128,7 @@ void CGUIEPGGridContainer::GenerateItemLayout(int row, int itemSize, int block)
   {
     CTVEPGInfoTag broadcast(NULL);
 
-    broadcast.m_strChannel        = g_localizeStrings.Get(18074);
-    broadcast.m_strTitle          = g_localizeStrings.Get(18074);
-    broadcast.m_strPlotOutline    = "";
-    broadcast.m_strPlot           = "";
-    broadcast.m_GenreType         = 0;
-    broadcast.m_GenreSubType      = 0;
-    broadcast.m_strGenre          = "";
+//    broadcast.m_strChannel        = g_localizeStrings.Get(18074);
 
     CFileItemPtr unknown(new CFileItem(broadcast));
 
@@ -1144,7 +1138,7 @@ void CGUIEPGGridContainer::GenerateItemLayout(int row, int itemSize, int block)
     }
   }
 
-  m_gridIndex[row][block]->SetProperty("GenreType" ,m_gridIndex[row][block]->GetTVEPGInfoTag()->m_GenreType);
+  m_gridIndex[row][block]->SetProperty("GenreType" ,m_gridIndex[row][block]->GetTVEPGInfoTag()->GenreType());
   m_gridIndex[row][block]->SetFocusedLayout(pItemFocusedLayout);
   m_gridIndex[row][block]->SetLayout(pItemLayout);
 
@@ -1396,4 +1390,14 @@ void CGUIEPGGridContainer::Reset()
   m_lastItem    = NULL;
   m_lastChannel = NULL;
   m_items.clear();
+}
+
+void CGUIEPGGridContainer::GoToBegin()
+{
+  ScrollToBlockOffset(0);
+}
+
+void CGUIEPGGridContainer::GoToEnd()
+{
+  ScrollToBlockOffset(m_blocks - m_blocksPerPage);
 }

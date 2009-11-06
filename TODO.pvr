@@ -4,11 +4,10 @@ things to do:
 - Read RDS information from Radio channels
 - RaSS-Radiotext
 - EPG update
-- Timer update
-- Recordings update
+- Client triggered Timer update
+- Client triggered Recordings update
 - Jump between Cutmarks in Recordings
 - Cutting of Recordings
-- Fix Timeline view
 - Add Timeline view to Fullscreen view
 - Read channel groups from PVR backend
 - Add Recordings to video view and use scrapers with it
@@ -31,7 +30,7 @@ things to do:
 - Select TV Window after XBMC start
 - Add Picture in Picture if possible
 - Use Webservices with TV Channels (see IFA 2009)
-- Fix channel switching over HD stream, it crash XBMC
+- Fix channel switching with VDPAU enabled, it crash XBMC
 - Fix playback of recordings if EPG scan is running, XBMC freezes
 - Fix artefackts if a recording is played
 - Seek does sometimes jump on end to the begin of buffer
@@ -41,9 +40,11 @@ things to do:
 - Use new Addon System
 - Use better system to transfer data from client to XBMC, like the channel lists (current is sometimes bad under Win32)
 - Read recording directories from client and allow creation of own directories to sort Recordings
-- Search inside EPG Data
 - Speedup EPG Timeline view
 - Allow auto close and switch during numeric channel selection
+- Fix seeking inside Recordings
+- Code cleanup's
+- Add Channelswitch timers if a selected show is upcoming
 
 and a lot more
 

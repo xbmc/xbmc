@@ -500,11 +500,9 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       }
       else if (iAction == ACTION_RECORD)
       {
-        int iChannel = pItem->GetTVEPGInfoTag()->m_channelNum;
-
-        if (iChannel != -1)
+        if (pItem->GetTVEPGInfoTag()->ChannelNumber() != -1)
         {
-          if (pItem->GetTVEPGInfoTag()->m_isRecording == false)
+          if (pItem->GetTVEPGInfoTag()->Timer() == NULL)
           {
             // prompt user for confirmation of channel record
             CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -513,7 +511,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             {
               pDialog->SetHeading(264);
               pDialog->SetLine(0, "");
-              pDialog->SetLine(1, pItem->GetTVEPGInfoTag()->m_strTitle);
+              pDialog->SetLine(1, pItem->GetTVEPGInfoTag()->Title());
               pDialog->SetLine(2, "");
               pDialog->DoModal();
 
@@ -523,10 +521,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
                 CFileItem *item = new CFileItem(newtimer);
 
                 if (cPVRTimers::AddTimer(*item))
-                {
-                  pItem->GetTVEPGInfoTag()->m_isRecording = true;
-                  pItem->SetProperty("Recording", pItem->GetTVEPGInfoTag()->m_isRecording);
-                }
+                  cPVREpgs::SetVariableData(m_vecItems);
               }
             }
           }
@@ -694,7 +689,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             pDialog->SetHeading(122);
             pDialog->SetLine(0, 18192);
             pDialog->SetLine(1, "");
-            pDialog->SetLine(2, pItem->GetTVRecordingInfoTag()->m_strTitle);
+            pDialog->SetLine(2, pItem->GetTVRecordingInfoTag()->Title());
             pDialog->DoModal();
 
             if (pDialog->IsConfirmed())
@@ -832,11 +827,11 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       }
       else if (iAction == ACTION_RECORD)
       {
-        int iChannel = pItem->GetTVEPGInfoTag()->m_channelNum;
+        int iChannel = pItem->GetTVEPGInfoTag()->ChannelNumber();
 
         if (iChannel != -1)
         {
-          if (pItem->GetTVEPGInfoTag()->m_isRecording == false)
+          if (pItem->GetTVEPGInfoTag()->Timer() == NULL)
           {
             // prompt user for confirmation of channel record
             CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -845,7 +840,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             {
               pDialog->SetHeading(264);
               pDialog->SetLine(0, "");
-              pDialog->SetLine(1, pItem->GetTVEPGInfoTag()->m_strTitle);
+              pDialog->SetLine(1, pItem->GetTVEPGInfoTag()->Title());
               pDialog->SetLine(2, "");
               pDialog->DoModal();
 
@@ -855,10 +850,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
                 CFileItem *item = new CFileItem(newtimer);
 
                 if (cPVRTimers::AddTimer(*item))
-                {
-                  pItem->GetTVEPGInfoTag()->m_isRecording = true;
-                  pItem->SetProperty("Recording", pItem->GetTVEPGInfoTag()->m_isRecording);
-                }
+                  cPVREpgs::SetVariableData(m_vecItems);
               }
             }
           }
@@ -1005,7 +997,19 @@ bool CGUIWindowTV::OnPopupMenu(int iItem)
 void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   /* Perform file item for specified sub window */
-  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
+  CFileItemPtr pItem;
+  if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM && m_iGuideView == GUIDE_VIEW_TIMELINE)
+  {
+    /* Get currently selected item from grid container */
+    pItem = m_guideGrid->GetSelectedItemPtr();
+  }
+  else
+  {
+    /* Check file item is in list range and get his pointer */
+    if (itemNumber < 0 || itemNumber >= (int)m_vecItems->Size()) return;
+
+    pItem = m_vecItems->Get(itemNumber);
+  }
 
   if (pItem)
   {
@@ -1068,13 +1072,11 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
     {
-      buttons.Add(CONTEXT_BUTTON_INFO, 658);              /* Epg info button */
-
-      if (pItem->GetTVEPGInfoTag()->m_endTime > CDateTime::GetCurrentDateTime())
+      if (pItem->GetTVEPGInfoTag()->End() > CDateTime::GetCurrentDateTime())
       {
-        if (pItem->GetTVEPGInfoTag()->m_isRecording == false)
+        if (pItem->GetTVEPGInfoTag()->Timer() == NULL)
         {
-          if (pItem->GetTVEPGInfoTag()->m_startTime < CDateTime::GetCurrentDateTime())
+          if (pItem->GetTVEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
           {
             buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);             /* RECORD programme */
           }
@@ -1085,7 +1087,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
         }
         else
         {
-          if (pItem->GetTVEPGInfoTag()->m_startTime < CDateTime::GetCurrentDateTime())
+          if (pItem->GetTVEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
           {
             buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 18414);
           }
@@ -1096,19 +1098,23 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
         }
       }
 
+      buttons.Add(CONTEXT_BUTTON_INFO, 658);              /* Epg info button */
       buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);           /* Switch channel */
+      if (m_iGuideView == GUIDE_VIEW_TIMELINE)
+      {
+        buttons.Add(CONTEXT_BUTTON_USER4, 18166);           /* Go to begin */
+        buttons.Add(CONTEXT_BUTTON_USER5, 18167);           /* Go to end */
+      }
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
     {
       if (pItem->GetLabel() != g_localizeStrings.Get(18164))
       {
-        buttons.Add(CONTEXT_BUTTON_INFO, 658);              /* Epg info button */
-
-        if (pItem->GetTVEPGInfoTag()->m_endTime > CDateTime::GetCurrentDateTime())
+        if (pItem->GetTVEPGInfoTag()->End() > CDateTime::GetCurrentDateTime())
         {
-          if (pItem->GetTVEPGInfoTag()->m_isRecording == false)
+          if (pItem->GetTVEPGInfoTag()->Timer() == NULL)
           {
-            if (pItem->GetTVEPGInfoTag()->m_startTime < CDateTime::GetCurrentDateTime())
+            if (pItem->GetTVEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
             {
               buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);             /* RECORD programme */
             }
@@ -1119,7 +1125,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
           }
           else
           {
-            if (pItem->GetTVEPGInfoTag()->m_startTime < CDateTime::GetCurrentDateTime())
+            if (pItem->GetTVEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
             {
               buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 18414);
             }
@@ -1130,6 +1136,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
           }
         }
 
+        buttons.Add(CONTEXT_BUTTON_INFO, 658);              /* Epg info button */
         buttons.Add(CONTEXT_BUTTON_USER1, 18165);
         buttons.Add(CONTEXT_BUTTON_USER2, 103);
         buttons.Add(CONTEXT_BUTTON_USER3, 104);
@@ -1149,7 +1156,22 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
  */
 bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
-  CFileItemPtr pItem = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
+  CFileItemPtr pItem;
+  if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM && m_iGuideView == GUIDE_VIEW_TIMELINE)
+  {
+    /* Get currently selected item from grid container */
+    pItem = m_guideGrid->GetSelectedItemPtr();
+  }
+  else
+  {
+    /* Check file item is in list range and get his pointer */
+    if (itemNumber < 0 || itemNumber >= (int)m_vecItems->Size()) return false;
+
+    pItem = m_vecItems->Get(itemNumber);
+  }
+
+  if (!pItem)
+    return false;
 
   if (button == CONTEXT_BUTTON_PLAY_ITEM)
   {
@@ -1184,7 +1206,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CFileItemList channelslist;
       int ret_channels;
 
-      if (!pItem->GetTVEPGInfoTag()->m_isRadio)
+      if (!pItem->GetTVEPGInfoTag()->IsRadio())
       {
         ret_channels = PVRChannelsTV.GetChannels(&channelslist, m_iCurrentTVGroup);
       }
@@ -1202,7 +1224,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         }
 
         g_PVRManager.SetPlayingGroup(-1);
-        if (!g_application.PlayFile(*channelslist[pItem->GetTVEPGInfoTag()->m_channelNum-1]))
+        if (!g_application.PlayFile(*channelslist[pItem->GetTVEPGInfoTag()->ChannelNumber()-1]))
         {
           CGUIDialogOK::ShowAndGetInput(18100,0,18134,0);
           return false;
@@ -1416,7 +1438,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         pDialog->SetHeading(122);
         pDialog->SetLine(0, 18192);
         pDialog->SetLine(1, "");
-        pDialog->SetLine(2, pItem->GetTVRecordingInfoTag()->m_strTitle);
+        pDialog->SetLine(2, pItem->GetTVRecordingInfoTag()->Title());
         pDialog->DoModal();
 
         if (!pDialog->IsConfirmed()) return false;
@@ -1458,11 +1480,11 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM || m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
     {
-      int iChannel = pItem->GetTVEPGInfoTag()->m_channelNum;
+      int iChannel = pItem->GetTVEPGInfoTag()->ChannelNumber();
 
       if (iChannel != -1)
       {
-        if (pItem->GetTVEPGInfoTag()->m_isRecording == false)
+        if (pItem->GetTVEPGInfoTag()->Timer() == NULL)
         {
           // prompt user for confirmation of channel record
           CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -1470,9 +1492,9 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           if (pDialog)
           {
             pDialog->SetHeading(264);
-            pDialog->SetLine(0, pItem->GetTVEPGInfoTag()->m_strChannel);
+            pDialog->SetLine(0, pItem->GetTVEPGInfoTag()->ChannelName());
             pDialog->SetLine(1, "");
-            pDialog->SetLine(2, pItem->GetTVEPGInfoTag()->m_strTitle);
+            pDialog->SetLine(2, pItem->GetTVEPGInfoTag()->Title());
             pDialog->DoModal();
 
             if (pDialog->IsConfirmed())
@@ -1481,10 +1503,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
               CFileItem *item = new CFileItem(newtimer);
 
               if (cPVRTimers::AddTimer(*item))
-              {
-                pItem->GetTVEPGInfoTag()->m_isRecording = true;
-                pItem->SetProperty("Recording", pItem->GetTVEPGInfoTag()->m_isRecording);
-              }
+                cPVREpgs::SetVariableData(m_vecItems);
             }
           }
         }
@@ -1499,11 +1518,11 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM || m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
     {
-      int iChannel = pItem->GetTVEPGInfoTag()->m_channelNum;
+      int iChannel = pItem->GetTVEPGInfoTag()->ChannelNumber();
 
       if (iChannel != -1)
       {
-        if (pItem->GetTVEPGInfoTag()->m_isRecording == true)
+        if (pItem->GetTVEPGInfoTag()->Timer() != NULL)
         {
           CFileItemList timerlist;
 
@@ -1511,19 +1530,16 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           {
             for (int i = 0; i < timerlist.Size(); ++i)
             {
-              if ((timerlist[i]->GetTVTimerInfoTag()->Number() == pItem->GetTVEPGInfoTag()->m_channelNum) &&
-                  (timerlist[i]->GetTVTimerInfoTag()->Start() <= pItem->GetTVEPGInfoTag()->m_startTime) &&
-                  (timerlist[i]->GetTVTimerInfoTag()->Stop() >= pItem->GetTVEPGInfoTag()->m_endTime) &&
+              if ((timerlist[i]->GetTVTimerInfoTag()->Number() == pItem->GetTVEPGInfoTag()->ChannelNumber()) &&
+                  (timerlist[i]->GetTVTimerInfoTag()->Start() <= pItem->GetTVEPGInfoTag()->Start()) &&
+                  (timerlist[i]->GetTVTimerInfoTag()->Stop() >= pItem->GetTVEPGInfoTag()->End()) &&
                   (timerlist[i]->GetTVTimerInfoTag()->IsRepeating() != true))
               {
-                cPVRTimers::DeleteTimer(*timerlist[i]);
+                if (cPVRTimers::DeleteTimer(*timerlist[i]))
+                  cPVREpgs::SetVariableData(m_vecItems);
               }
             }
           }
-
-          pItem->GetTVEPGInfoTag()->m_isRecording = false;
-
-          pItem->SetProperty("Recording", pItem->GetTVEPGInfoTag()->m_isRecording);
         }
       }
     }
@@ -1597,6 +1613,14 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       UpdateSearch();
     }
   }
+  else if (button == CONTEXT_BUTTON_USER4)
+  {
+    m_guideGrid->GoToBegin();
+  }
+  else if (button == CONTEXT_BUTTON_USER5)
+  {
+    m_guideGrid->GoToEnd();
+  }
 
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
@@ -1642,6 +1666,8 @@ void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
 
       /* Open dialog window */
       pDlgInfo->DoModal();
+
+      cPVREpgs::SetVariableData(m_vecItems);
     }
   }
   else

@@ -155,11 +155,11 @@ CFileItem::CFileItem(const CTVEPGInfoTag& programme)
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
-  m_strPath = programme.m_strFileNameAndPath;
+  m_strPath = programme.Path();
   m_bIsFolder = false;
   *GetTVEPGInfoTag() = programme;
-  SetLabel(programme.m_strTitle);
-  SetThumbnailImage(programme.m_IconPath);
+  SetLabel(programme.Title());
+  SetThumbnailImage(programme.Icon());
   //FillInDefaultIcon();
   //SetVideoThumb();
   SetInvalid();

@@ -64,6 +64,9 @@ public:
   virtual bool IsContainer() const { return true; };
   CGUIListItemPtr GetListItem(int offset) const;
 
+  void GoToBegin();
+  void GoToEnd();
+
 protected:
   bool OnClick(int actionID);
   bool SelectItemFromPoint(const CPoint &point);

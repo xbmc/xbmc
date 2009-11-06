@@ -79,8 +79,24 @@
 					<height>35</height>
 					<texture border="3">button-nofocus.png</texture>
 				</control>
+          <control type="image">
+            <width>35</width>
+            <height>35</height>
+            <posx>5</posx>
+            <posy>0</posy>
+            <texture>icon_record.png</texture>
+            <visible>ListItem.IsRecording</visible>
+          </control>
+          <control type="image">
+            <width>35</width>
+            <height>35</height>
+            <posx>5</posx>
+            <posy>0</posy>
+            <texture>icon_schedule.png</texture>
+            <visible>ListItem.HasTimer</visible>
+          </control>
 				<control type="label">
-					<posx>10</posx>
+					<posx>50</posx>
 					<posy>0</posy>
 					<width>300</width>
 					<height>35</height>
@@ -110,8 +126,24 @@
 					<height>35</height>
 					<texture border="8">button-focus.png</texture>
 				</control>
+          <control type="image">
+            <width>35</width>
+            <height>35</height>
+            <posx>5</posx>
+            <posy>0</posy>
+            <texture>icon_record.png</texture>
+            <visible>ListItem.IsRecording</visible>
+          </control>
+          <control type="image">
+            <width>35</width>
+            <height>35</height>
+            <posx>5</posx>
+            <posy>0</posy>
+            <texture>icon_schedule.png</texture>
+            <visible>ListItem.HasTimer</visible>
+          </control>
 				<control type="label">
-					<posx>10</posx>
+					<posx>50</posx>
 					<posy>0</posy>
 					<width>300</width>
 					<height>35</height>

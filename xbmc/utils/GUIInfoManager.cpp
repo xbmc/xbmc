@@ -945,8 +945,11 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("subtitlelanguage")) return LISTITEM_SUBTITLE_LANGUAGE;
   else if (info.Equals("starttime")) return LISTITEM_STARTTIME;
   else if (info.Equals("endtime")) return LISTITEM_ENDTIME;
-  else if (info.Equals("channel")) return LISTITEM_CHANNEL;
+  else if (info.Equals("channelname")) return LISTITEM_CHANNELNAME;
   else if (info.Equals("channelnumber")) return LISTITEM_CHANNELNUMBER;
+  else if (info.Equals("isrecording")) return LISTITEM_ISRECORDING;
+  else if (info.Equals("hastimer")) return LISTITEM_HASTIMER;
+  else if (info.Equals("isencrypted")) return LISTITEM_ISENCRYPTED;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -3833,8 +3836,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       }
       if (item->HasTVEPGInfoTag())
       {
-        if (item->GetTVEPGInfoTag()->DurationSeconds() > 0)
-          StringUtils::SecondsToTimeString(item->GetTVEPGInfoTag()->DurationSeconds(), duration);
+        if (item->GetTVEPGInfoTag()->GetDuration() > 0)
+          StringUtils::SecondsToTimeString(item->GetTVEPGInfoTag()->GetDuration(), duration);
       }
       if (item->HasVideoInfoTag())
       {
@@ -4064,12 +4067,12 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       if (item->HasTVChannelInfoTag())
         number.Format("%i", item->GetTVChannelInfoTag()->Number());
       else if (item->HasTVEPGInfoTag())
-        number.Format("%i", item->GetTVEPGInfoTag()->Channel());
+        number.Format("%i", item->GetTVEPGInfoTag()->ChannelNumber());
 
       return number;
     }
     break;
-  case LISTITEM_CHANNEL:
+  case LISTITEM_CHANNELNAME:
     {
       if (item->HasTVChannelInfoTag())
         return item->GetTVChannelInfoTag()->Name();
@@ -4145,6 +4148,59 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   }
   else if (condition == LISTITEM_ISSELECTED)
     return item->IsSelected();
+
+  if (item->IsFileItem())
+  {
+    const CFileItem *pItem = (const CFileItem *)item;
+    if (condition == LISTITEM_ISRECORDING)
+    {
+      if (pItem->HasTVChannelInfoTag())
+      {
+        return pItem->GetTVChannelInfoTag()->IsRecording();
+      }
+      else if (pItem->HasTVEPGInfoTag())
+      {
+        const cPVRTimerInfoTag *timer = pItem->GetTVEPGInfoTag()->Timer();
+        if (timer)
+        {
+          CDateTime now = CDateTime::GetCurrentDateTime();
+          if ((timer->Start() <= now) && (timer->Stop() >= now) && timer->Active())
+            return true;
+        }
+      }
+      else if (pItem->HasTVTimerInfoTag())
+      {
+        const cPVRTimerInfoTag *timer = pItem->GetTVTimerInfoTag();
+        CDateTime now = CDateTime::GetCurrentDateTime();
+        if ((timer->Start() <= now) && (timer->Stop() >= now) && timer->Active())
+          return true;
+      }
+    }
+    else if (condition == LISTITEM_HASTIMER)
+    {
+      if (pItem->HasTVEPGInfoTag())
+      {
+        const cPVRTimerInfoTag *timer = pItem->GetTVEPGInfoTag()->Timer();
+        if (timer)
+        {
+          if (timer->Start() > CDateTime::GetCurrentDateTime() && timer->Active())
+            return true;
+        }
+      }
+    }
+    else if (condition == LISTITEM_ISENCRYPTED)
+    {
+      if (pItem->HasTVChannelInfoTag())
+      {
+        return pItem->GetTVChannelInfoTag()->IsEncrypted();
+      }
+      else if (pItem->HasTVEPGInfoTag())
+      {
+        return pItem->GetTVEPGInfoTag()->IsEncrypted();
+      }
+    }
+  }
+
   return false;
 }
 

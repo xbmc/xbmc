@@ -42,7 +42,7 @@ private:
   int           m_Priority;
   int           m_Lifetime;
   CStdString    m_strFileNameAndPath; /// Filename for PVRManager to open and read stream
-  
+
   void DisplayError(PVR_ERROR err) const;
 
 public:
@@ -50,7 +50,7 @@ public:
   bool operator ==(const cPVRRecordingInfoTag& right) const;
   bool operator !=(const cPVRRecordingInfoTag& right) const;
   void Reset(void);
-  
+
   long ClientID(void) const { return m_clientID; }
   void SetClientID(int ClientId) { m_clientID = ClientId; }
   long ClientIndex(void) const { return m_clientIndex; }
@@ -59,9 +59,8 @@ public:
   void SetChannelName(CStdString name) { m_strChannel = name; }
   CDateTime RecordingTime(void) const { return m_recordingTime; }
   void SetRecordingTime(CDateTime time) { m_recordingTime = time; }
-  CDateTimeSpan Duration(void) const { return m_duration; }
+  int GetDuration() const;
   void SetDuration(CDateTimeSpan duration) { m_duration = duration; }
-  int DurationSeconds() const;
   int Lifetime(void) const { return m_Lifetime; }
   void SetLifetime(int Lifetime) { m_Lifetime = Lifetime; }
   int Priority(void) const { return m_Priority; }
@@ -81,8 +80,8 @@ public:
 };
 
 
-class cPVRRecordings : public std::vector<cPVRRecordingInfoTag> 
-                     , private CThread 
+class cPVRRecordings : public std::vector<cPVRRecordingInfoTag>
+                     , private CThread
 {
 private:
   CCriticalSection  m_critSection;
