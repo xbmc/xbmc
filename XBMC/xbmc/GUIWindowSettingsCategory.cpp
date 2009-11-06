@@ -1330,7 +1330,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("lookandfeel.rssedit"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(XFILE::CFile::Exists(RSSEDITOR_PATH));
+      pControl->SetEnabled(XFILE::CFile::Exists(RSSEDITOR_PATH) && g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
     else if (strSetting.Equals("musiclibrary.scrapersettings"))
     {
@@ -2897,6 +2897,12 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
         if (!handle)
           continue;
         dlclose(handle);
+#elif defined(HAS_DX)
+        if(pItem->m_strPath.Right(11).CompareNoCase("win32dx.vis") != 0)
+          continue;
+#elif defined(_WIN32)
+        if(pItem->m_strPath.Right(9).CompareNoCase("win32.vis") != 0)
+          continue;
 #endif
         CStdString strLabel = pItem->GetLabel();
         vecVis.push_back( CVisualisation::GetFriendlyName( strLabel ) );

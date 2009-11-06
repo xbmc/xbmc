@@ -1,3 +1,8 @@
+2009-11-03  Maxim Levitsky <maximlevitsky@gmail.com>
+
+	* Rework URL handling
+	* Increase buffer size for very long URLS and handle buffer overflow
+
 2007-12-11  Hans de Goede <j.w.r.degoede@hhs.nl>
 
 	* Remove out of date (not working with recent autotools) autogen.sh,

@@ -32,6 +32,7 @@
 #include "GUISettings.h"
 #include "Settings.h"
 #include "StringUtils.h"
+#include "SystemInfo.h"
 #include "XMLUtils.h"
 #include "utils/log.h"
 
@@ -495,6 +496,7 @@ bool CAdvancedSettings::Load()
       if (!((hide = pElement->Attribute("hide")) && strnicmp("false", hide, 4) == 0))
         setting->SetAdvanced();
     }
+    g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
   }
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
 
@@ -516,6 +518,8 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
 
+#ifdef __APPLE__
+  if (g_sysinfo.IsAppleTV())
   { 
     // backward compatibility with Launcher install script on AppleTV platforms
     // AppleTV OS < 2.4 needs this set for getting XBMC in front of Frontrow.
@@ -524,6 +528,7 @@ bool CAdvancedSettings::Load()
     if (oldOSXFullScreen)
       m_fakeFullScreen = false;
   }
+#endif
   XMLUtils::GetBoolean(pRootElement,"fakefullscreen", m_fakeFullScreen);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
 
