@@ -858,32 +858,14 @@ const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) 
   if (it != settingsMap.end())
   {
     CSettingString* result = ((CSettingString *)(*it).second);
-    if (result->GetData() == "select folder")
+    if (result->GetData() == "select folder" || result->GetData() == "select writable folder")
     {
       CStdString strData = "";
       if (bPrompt)
       {
         VECSOURCES shares;
         g_mediaManager.GetLocalDrives(shares);
-        if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(result->GetLabel()),strData,false))
-        {
-          result->SetData(strData);
-          g_settings.Save();
-        }
-        else
-          return StringUtils::EmptyString;
-      }
-      else
-        return StringUtils::EmptyString;
-    }
-    if (result->GetData() == "select writable folder")
-    {
-      CStdString strData = "";
-      if (bPrompt)
-      {
-        VECSOURCES shares;
-        g_mediaManager.GetLocalDrives(shares);
-        if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(result->GetLabel()),strData,true))
+        if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares,g_localizeStrings.Get(result->GetLabel()),strData,result->GetData() == "select writable folder"))
         {
           result->SetData(strData);
           g_settings.Save();
