@@ -80,7 +80,7 @@ namespace VIDEO
       m_itemCount=-1;
 
       // Create the thread to count all files to be scanned
-      SetPriority(THREAD_PRIORITY_IDLE);
+      SetPriority( GetMinPriority() );
       CThread fileCountReader(this);
       if (m_pObserver)
         fileCountReader.Create();
@@ -1247,12 +1247,12 @@ namespace VIDEO
           CUtil::AddFileToFolder(strPath,CUtil::GetFileName(item->m_strPath),item2.m_strPath);
           return GetnfoFile(&item2,bGrabAny);
         }
+
+        // finally try mymovies.xml
+        nfoFile = CUtil::AddFileToFolder(strPath,"mymovies.xml");
+        if (CFile::Exists(nfoFile))
+          return nfoFile;
       }
-      
-      // finally try mymovies.xml
-      nfoFile = CUtil::AddFileToFolder(strPath,"mymovies.xml");
-      if (CFile::Exists(nfoFile))
-        return nfoFile;
     }
     if (item->m_bIsFolder || (bGrabAny && nfoFile.IsEmpty()))
     {

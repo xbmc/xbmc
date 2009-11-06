@@ -2182,9 +2182,11 @@ bool CFileItemList::Save()
 
 void CFileItemList::RemoveDiscCache() const
 {
-  CLog::Log(LOGDEBUG,"Clearing cached fileitems [%s]",m_strPath.c_str());
   if (CFile::Exists(GetDiscCacheFile()))
+  {
+    CLog::Log(LOGDEBUG,"Clearing cached fileitems [%s]",m_strPath.c_str());
     CFile::Delete(GetDiscCacheFile());
+  }
 }
 
 CStdString CFileItemList::GetDiscCacheFile() const

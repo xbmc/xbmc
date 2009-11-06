@@ -495,6 +495,7 @@ bool CAdvancedSettings::Load()
       if (!((hide = pElement->Attribute("hide")) && strnicmp("false", hide, 4) == 0))
         setting->SetAdvanced();
     }
+    g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
   }
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
 

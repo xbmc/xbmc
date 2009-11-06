@@ -814,6 +814,7 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
       share.strPath = path; //setPath(path);
       CURL url(path);
       share.strName = url.GetWithoutUserDetails();
+      CUtil::RemoveSlashAtEnd(share.strName);
       m_shares.push_back(share);
       // add to our location manager...
       g_mediaManager.AddNetworkLocation(path);

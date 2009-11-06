@@ -418,7 +418,9 @@ class CDateTime;
 #define CONTROL_HAS_FOCUS           30000
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
-#define VERSION_STRING "9.11 alpha 1"
+// Version string MUST NOT contain spaces.  It is used
+// in the HTTP request user agent.
+#define VERSION_STRING "9.11-alpha1"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
@@ -474,6 +476,7 @@ class CDateTime;
 #define LISTITEM_AUDIO_CHANNELS     (LISTITEM_START + 50)
 #define LISTITEM_AUDIO_LANGUAGE     (LISTITEM_START + 51)
 #define LISTITEM_SUBTITLE_LANGUAGE  (LISTITEM_START + 52)
+#define LISTITEM_IS_FOLDER          (LISTITEM_START + 53)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)

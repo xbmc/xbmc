@@ -113,6 +113,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new TimidityCodec();
   else if (ASAPCodec::IsSupportedFormat(strFileType) || strFileType.Equals("asapstream"))
     return new ASAPCodec();
+  else if (strFileType.Equals("tta"))
+    return new DVDPlayerCodec();
 
   return NULL;
 }
