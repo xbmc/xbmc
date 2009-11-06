@@ -63,22 +63,38 @@
 				<font>font12</font>
 				<haspath>true</haspath>
 			</control>
+			<control type="scrollbar" id="60">
+				<posx>580</posx>
+				<posy>120</posy>
+				<width>20</width>
+				<height>435</height>
+				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>scrollbar_nib.png</textureslidernib>
+				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+				<onleft>450</onleft>
+				<onright>9000</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
 			<control type="list" id="450">
 				<posx>40</posx>
 				<posy>120</posy>
-				<width>560</width>
+				<width>535</width>
 				<height>440</height>
 				<onleft>9000</onleft>
-				<onright>9000</onright>
+				<onright>60</onright>
 				<onup>450</onup>
 				<ondown>450</ondown>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
+				<animation effect="slide" start="0,0" end="12,0" time="0" condition="!Control.IsVisible(60)">Conditional</animation>
 				<itemlayout height="40">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>560</width>
+						<width>535</width>
 						<height>35</height>
 						<texture border="5">button-nofocus.png</texture>
 					</control>
@@ -92,7 +108,7 @@
 					<control type="label">
 						<posx>45</posx>
 						<posy>0</posy>
-						<width>505</width>
+						<width>480</width>
 						<height>35</height>
 						<font>font12</font>
 						<align>left</align>
@@ -105,7 +121,7 @@
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>560</width>
+						<width>535</width>
 						<height>35</height>
 						<visible>!Control.HasFocus(450)</visible>
 						<texture border="5">button-nofocus.png</texture>
@@ -113,7 +129,7 @@
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>560</width>
+						<width>535</width>
 						<height>35</height>
 						<visible>Control.HasFocus(450)</visible>
 						<texture border="5">button-focus.png</texture>
@@ -128,7 +144,7 @@
 					<control type="label">
 						<posx>45</posx>
 						<posy>0</posy>
-						<width>505</width>
+						<width>480</width>
 						<height>35</height>
 						<font>font12</font>
 						<align>left</align>
@@ -144,16 +160,17 @@
 				<width>560</width>
 				<height>440</height>
 				<onleft>9000</onleft>
-				<onright>9000</onright>
+				<onright>60</onright>
 				<onup>451</onup>
 				<ondown>451</ondown>
-				<pagecontrol>-</pagecontrol>
+				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="40" width="560">
+				<animation effect="slide" start="0,0" end="12,0" time="0" condition="!Control.IsVisible(60)">Conditional</animation>
+				<itemlayout height="40" width="535">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>560</width>
+						<width>535</width>
 						<height>35</height>
 						<texture border="5">button-nofocus.png</texture>
 					</control>
@@ -167,7 +184,7 @@
 					<control type="label">
 						<posx>45</posx>
 						<posy>0</posy>
-						<width>505</width>
+						<width>480</width>
 						<height>35</height>
 						<font>font12</font>
 						<align>left</align>
@@ -176,11 +193,11 @@
 						<info>ListItem.Label</info>
 					</control>
 				</itemlayout>
-				<focusedlayout height="40" width="560">
+				<focusedlayout height="40" width="535">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>560</width>
+						<width>535</width>
 						<height>35</height>
 						<visible>!Control.HasFocus(451)</visible>
 						<texture border="5">button-nofocus.png</texture>
@@ -188,7 +205,7 @@
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>560</width>
+						<width>535</width>
 						<height>35</height>
 						<visible>Control.HasFocus(451)</visible>
 						<texture border="5">button-focus.png</texture>
@@ -203,7 +220,7 @@
 					<control type="label">
 						<posx>45</posx>
 						<posy>0</posy>
-						<width>505</width>
+						<width>480</width>
 						<height>35</height>
 						<font>font12</font>
 						<align>left</align>
