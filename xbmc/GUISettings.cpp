@@ -551,9 +551,6 @@ void CGUISettings::Initialize()
   AddString(3, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
 #endif
-#ifdef _LINUX
-  AddBool  (5, "smb.mountshares", 1208,   false);
-#endif
 
   AddCategory(6, "upnp", 20110);
   AddBool(1,    "upnp.client", 20111, false);
