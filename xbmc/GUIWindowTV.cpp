@@ -69,7 +69,6 @@ using namespace std;
 #define CONTROL_BTNRECORDINGS        34
 #define CONTROL_BTNTIMERS            35
 #define CONTROL_BTNSEARCH            36
-#define CONTROL_BTNSETTINGS          37
 
 #define CONTROL_AREA_GUIDE           9001
 #define CONTROL_AREA_CHANNELS_TV     9002
@@ -77,8 +76,6 @@ using namespace std;
 #define CONTROL_AREA_RECORDINGS      9004
 #define CONTROL_AREA_TIMERS          9005
 #define CONTROL_AREA_SEARCH          9006
-#define CONTROL_AREA_INFO            9007
-
 
 #define GUIDE_VIEW_CHANNEL          0
 #define GUIDE_VIEW_NOW              1
@@ -258,7 +255,6 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       SET_CONTROL_HIDDEN(CONTROL_AREA_RECORDINGS);
       SET_CONTROL_HIDDEN(CONTROL_AREA_TIMERS);
       SET_CONTROL_HIDDEN(CONTROL_AREA_SEARCH);
-      SET_CONTROL_HIDDEN(CONTROL_AREA_INFO);
 
       if (m_iCurrSubTVWindow != TV_WINDOW_TV_PROGRAM)
       {
@@ -283,7 +279,6 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       SET_CONTROL_HIDDEN(CONTROL_AREA_RECORDINGS);
       SET_CONTROL_HIDDEN(CONTROL_AREA_TIMERS);
       SET_CONTROL_HIDDEN(CONTROL_AREA_SEARCH);
-      SET_CONTROL_HIDDEN(CONTROL_AREA_INFO);
 
       if (m_iCurrSubTVWindow != TV_WINDOW_CHANNELS_TV)
       {
@@ -308,7 +303,6 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       SET_CONTROL_HIDDEN(CONTROL_AREA_RECORDINGS);
       SET_CONTROL_HIDDEN(CONTROL_AREA_TIMERS);
       SET_CONTROL_HIDDEN(CONTROL_AREA_SEARCH);
-      SET_CONTROL_HIDDEN(CONTROL_AREA_INFO);
 
       if (m_iCurrSubTVWindow != TV_WINDOW_CHANNELS_RADIO)
       {
@@ -333,7 +327,6 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       SET_CONTROL_HIDDEN(CONTROL_AREA_CHANNELS_RADIO);
       SET_CONTROL_HIDDEN(CONTROL_AREA_TIMERS);
       SET_CONTROL_HIDDEN(CONTROL_AREA_SEARCH);
-      SET_CONTROL_HIDDEN(CONTROL_AREA_INFO);
 
       if (m_iCurrSubTVWindow != TV_WINDOW_RECORDINGS)
       {
@@ -358,7 +351,6 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       SET_CONTROL_HIDDEN(CONTROL_AREA_CHANNELS_RADIO);
       SET_CONTROL_HIDDEN(CONTROL_AREA_RECORDINGS);
       SET_CONTROL_HIDDEN(CONTROL_AREA_SEARCH);
-      SET_CONTROL_HIDDEN(CONTROL_AREA_INFO);
 
       if (m_iCurrSubTVWindow != TV_WINDOW_TIMERS)
       {
@@ -383,7 +375,6 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       SET_CONTROL_HIDDEN(CONTROL_AREA_CHANNELS_RADIO);
       SET_CONTROL_HIDDEN(CONTROL_AREA_RECORDINGS);
       SET_CONTROL_HIDDEN(CONTROL_AREA_TIMERS);
-      SET_CONTROL_HIDDEN(CONTROL_AREA_INFO);
 
       if (m_iCurrSubTVWindow != TV_WINDOW_SEARCH)
       {
@@ -400,23 +391,6 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       }
 
       SET_CONTROL_VISIBLE(CONTROL_AREA_SEARCH);
-    }
-    else if (iControl == CONTROL_BTNSETTINGS || m_iSavedSubTVWindow == TV_WINDOW_SETTINGS)
-    {
-      m_iCurrSubTVWindow = TV_WINDOW_SETTINGS;
-
-      CStdString strLabel;
-
-      strLabel.Format("%s - %s", g_localizeStrings.Get(9), g_localizeStrings.Get(5));
-      SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
-
-      SET_CONTROL_HIDDEN(CONTROL_AREA_GUIDE);
-      SET_CONTROL_HIDDEN(CONTROL_AREA_CHANNELS_TV);
-      SET_CONTROL_HIDDEN(CONTROL_AREA_CHANNELS_RADIO);
-      SET_CONTROL_HIDDEN(CONTROL_AREA_RECORDINGS);
-      SET_CONTROL_HIDDEN(CONTROL_AREA_TIMERS);
-      SET_CONTROL_HIDDEN(CONTROL_AREA_SEARCH);
-      SET_CONTROL_VISIBLE(CONTROL_AREA_INFO);
     }
 
     if (m_iSavedSubTVWindow != TV_WINDOW_UNKNOWN)
@@ -860,10 +834,6 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
           }
         }
       }
-    }
-    else if (iControl == CONTROL_BTNSETTINGS)
-    {
-      g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYTV);
     }
     else if (iControl == CONTROL_BTNSEARCH)
     {
