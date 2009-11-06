@@ -34,6 +34,7 @@
 #include "AdvancedSettings.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "SystemInfo.h"
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
 
@@ -967,6 +968,14 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   if (GetInt("videoscreen.vsync") == VSYNC_DRIVER)
   {
     SetInt("videoscreen.vsync", VSYNC_ALWAYS);
+  }
+  // if AppleTV, trap any previous highqualityupscaling setting and set to zero
+  if (g_sysinfo.IsAppleTV())
+  {
+    if (GetInt("videoplayer.highqualityupscaling") != SOFTWARE_UPSCALING_DISABLED)
+    {
+      SetInt("videoplayer.highqualityupscaling", SOFTWARE_UPSCALING_DISABLED);
+    }
   }
 #endif
  // DXMERGE: This might have been useful?
