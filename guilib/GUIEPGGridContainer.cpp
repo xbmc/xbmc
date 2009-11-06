@@ -612,18 +612,18 @@ void CGUIEPGGridContainer::UpdateChannels()
 
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
-    if (m_items[i]->GetTVEPGInfoTag()->ChannelNumber() != lastChannel)
+    if (m_items[i]->GetEPGInfoTag()->ChannelNumber() != lastChannel)
     {
-      lastChannel = m_items[i]->GetTVEPGInfoTag()->ChannelNumber();
+      lastChannel = m_items[i]->GetEPGInfoTag()->ChannelNumber();
 
       CGUIListItemLayout *pChannelLayout = new CGUIListItemLayout(*m_channelLayout);
       CGUIListItemLayout *pChannelFocusedLayout = new CGUIListItemLayout(*m_focusedChannelLayout);
       pChannelLayout->SetWidth(m_channelWidth);
       pChannelFocusedLayout->SetWidth(m_channelWidth);
 
-      CGUIListItemPtr item(new CFileItem(m_items[i]->GetTVEPGInfoTag()->ChannelName()));
-      item->SetLabel2(m_items[i]->GetTVEPGInfoTag()->ChannelName());
-      item->SetThumbnailImage(m_items[i]->GetTVEPGInfoTag()->Icon());
+      CGUIListItemPtr item(new CFileItem(m_items[i]->GetEPGInfoTag()->ChannelName()));
+      item->SetLabel2(m_items[i]->GetEPGInfoTag()->ChannelName());
+      item->SetThumbnailImage(m_items[i]->GetEPGInfoTag()->Icon());
       item->SetLayout(pChannelLayout);
       item->SetFocusedLayout(pChannelFocusedLayout);
       m_channelItems.push_back(item);
@@ -662,10 +662,10 @@ void CGUIEPGGridContainer::UpdateItems()
     CFileItemPtr programme;
     unsigned long progIdx = m_epgItemsPtr[row];
 
-    if (m_items[progIdx]->GetTVEPGInfoTag() == NULL)
+    if (m_items[progIdx]->GetEPGInfoTag() == NULL)
       continue;
 
-    unsigned int channelnum = m_items[progIdx]->GetTVEPGInfoTag()->ChannelNumber();
+    unsigned int channelnum = m_items[progIdx]->GetEPGInfoTag()->ChannelNumber();
 
     /** FOR EACH BLOCK **********************************************************************/
 
@@ -680,7 +680,7 @@ void CGUIEPGGridContainer::UpdateItems()
 
       while (progIdx < lastIdx)
       {
-        if (m_items[progIdx]->GetTVEPGInfoTag()->ChannelNumber() != channelnum)
+        if (m_items[progIdx]->GetEPGInfoTag()->ChannelNumber() != channelnum)
           break;
 
         programme = m_items[progIdx];
@@ -688,7 +688,7 @@ void CGUIEPGGridContainer::UpdateItems()
         if (programme == NULL)
           progIdx++;
 
-        const CTVEPGInfoTag* tag = programme->GetTVEPGInfoTag();
+        const cPVREPGInfoTag* tag = programme->GetEPGInfoTag();
         if (tag == NULL)
           progIdx++;
 
@@ -1126,7 +1126,7 @@ void CGUIEPGGridContainer::GenerateItemLayout(int row, int itemSize, int block)
 
   if (!m_gridIndex[row][block])
   {
-    CTVEPGInfoTag broadcast(NULL);
+    cPVREPGInfoTag broadcast(NULL);
 
 //    broadcast.m_strChannel        = g_localizeStrings.Get(18074);
 
@@ -1138,7 +1138,7 @@ void CGUIEPGGridContainer::GenerateItemLayout(int row, int itemSize, int block)
     }
   }
 
-  m_gridIndex[row][block]->SetProperty("GenreType" ,m_gridIndex[row][block]->GetTVEPGInfoTag()->GenreType());
+  m_gridIndex[row][block]->SetProperty("GenreType" ,m_gridIndex[row][block]->GetEPGInfoTag()->GenreType());
   m_gridIndex[row][block]->SetFocusedLayout(pItemFocusedLayout);
   m_gridIndex[row][block]->SetLayout(pItemLayout);
 

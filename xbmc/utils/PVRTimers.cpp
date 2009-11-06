@@ -108,7 +108,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(bool Init)
 
   CFileItem *curPlayingChannel = g_PVRManager.GetCurrentPlayingItem();
   if (curPlayingChannel)
-    channel = curPlayingChannel->GetTVChannelInfoTag();
+    channel = curPlayingChannel->GetPVRChannelInfoTag();
   else
     channel = PVRChannelsTV.GetByNumber(1);
 
@@ -149,7 +149,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(bool Init)
 
 /**
  * Create Timer based upon an TVEPGInfoTag
- * \param const CFileItem& item = reference to CTVEPGInfoTag class
+ * \param const CFileItem& item = reference to cPVREPGInfoTag class
  *
  * Note:
  * Check active flag "m_Active" is set, after creating the tag. If it
@@ -160,7 +160,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(const CFileItem& item)
 {
   Reset();
 
-  const CTVEPGInfoTag* tag = item.GetTVEPGInfoTag();
+  const cPVREPGInfoTag* tag = item.GetEPGInfoTag();
   if (tag == NULL)
   {
     CLog::Log(LOGERROR, "cPVRTimerInfoTag: Can't initialize tag, no EPGInfoTag given!");
@@ -473,7 +473,7 @@ void cPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
   return;
 }
 
-void cPVRTimerInfoTag::SetEpg(const CTVEPGInfoTag *tag)
+void cPVRTimerInfoTag::SetEpg(const cPVREPGInfoTag *tag)
 {
   if (m_EpgInfo != tag)
   {
@@ -561,7 +561,7 @@ cPVRTimerInfoTag *cPVRTimers::GetMatch(time_t t)
   return NULL;
 }
 
-cPVRTimerInfoTag *cPVRTimers::GetMatch(const CTVEPGInfoTag *Epg, int *Match)
+cPVRTimerInfoTag *cPVRTimers::GetMatch(const cPVREPGInfoTag *Epg, int *Match)
 {
 
   return NULL;
@@ -589,7 +589,7 @@ bool cPVRTimers::AddTimer(const CFileItem &item)
     return false;
   }
 
-  const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
+  const cPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
   return tag->Add();
 }
 
@@ -602,7 +602,7 @@ bool cPVRTimers::DeleteTimer(const CFileItem &item, bool force)
     return false;
   }
 
-  const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
+  const cPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
   return tag->Delete(force);
 }
 
@@ -615,7 +615,7 @@ bool cPVRTimers::RenameTimer(CFileItem &item, CStdString &newname)
     return false;
   }
 
-  cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
+  cPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
   if (tag->Rename(newname))
   {
     tag->SetTitle(newname);
@@ -633,7 +633,7 @@ bool cPVRTimers::UpdateTimer(const CFileItem &item)
     return false;
   }
 
-  const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
+  const cPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
   return tag->Update();
 }
 

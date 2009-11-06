@@ -62,13 +62,13 @@ void EPGSearchFilter::SetDefaults()
   m_PreventRepeats    = true;
 }
 
-CTVEPGInfoTag::CTVEPGInfoTag(long uniqueBroadcastID)
+cPVREPGInfoTag::cPVREPGInfoTag(long uniqueBroadcastID)
 {
   Reset();
   m_uniqueBroadcastID = uniqueBroadcastID;
 }
 
-void CTVEPGInfoTag::Reset()
+void cPVREPGInfoTag::Reset()
 {
   m_strTitle            = g_localizeStrings.Get(18074);
   m_strPlotOutline      = "";
@@ -86,7 +86,7 @@ void CTVEPGInfoTag::Reset()
   CVideoInfoTag::Reset();
 }
 
-bool CTVEPGInfoTag::HasTimer(void) const
+bool cPVREPGInfoTag::HasTimer(void) const
 {
   for (unsigned int i = 0; i < PVRTimers.size(); ++i)
   {
@@ -96,7 +96,7 @@ bool CTVEPGInfoTag::HasTimer(void) const
   return false;
 }
 
-int CTVEPGInfoTag::GetDuration() const
+int cPVREPGInfoTag::GetDuration() const
 {
   time_t start, end;
   m_startTime.GetAsTime(start);
@@ -110,19 +110,19 @@ cPVREpg::cPVREpg(long ChannelID)
   m_Channel = cPVRChannels::GetByChannelIDFromAll(ChannelID);
 }
 
-CTVEPGInfoTag *cPVREpg::AddInfoTag(CTVEPGInfoTag *Tag)
+cPVREPGInfoTag *cPVREpg::AddInfoTag(cPVREPGInfoTag *Tag)
 {
   tags.push_back(*Tag);
   return Tag;
 }
 
-void cPVREpg::DelInfoTag(CTVEPGInfoTag *tag)
+void cPVREpg::DelInfoTag(cPVREPGInfoTag *tag)
 {
   if (tag->m_Epg == this)
   {
     for (unsigned int i = 0; i < tags.size(); i++)
     {
-      CTVEPGInfoTag *entry = &tags[i];
+      cPVREPGInfoTag *entry = &tags[i];
       if (entry == tag)
       {
         tags.erase(tags.begin()+i);
@@ -141,7 +141,7 @@ void cPVREpg::Cleanup(CDateTime Time)
 {
   for (unsigned int i = 0; i < tags.size(); i++)
   {
-    CTVEPGInfoTag *tag = &tags[i];
+    cPVREPGInfoTag *tag = &tags[i];
     if (!tag->HasTimer() && (tag->End()+CDateTimeSpan(0, g_guiSettings.GetInt("pvrmenu.lingertime") / 60 + 1, g_guiSettings.GetInt("pvrmenu.lingertime") % 60, 0) < Time)) // adding one hour for safety
     {
       DelInfoTag(tag);
@@ -151,7 +151,7 @@ void cPVREpg::Cleanup(CDateTime Time)
   }
 }
 
-const CTVEPGInfoTag *cPVREpg::GetInfoTagNow(void) const
+const cPVREPGInfoTag *cPVREpg::GetInfoTagNow(void) const
 {
   CDateTime now = CDateTime::GetCurrentDateTime();
 
@@ -166,9 +166,9 @@ const CTVEPGInfoTag *cPVREpg::GetInfoTagNow(void) const
   return NULL;
 }
 
-const CTVEPGInfoTag *cPVREpg::GetInfoTagNext(void) const
+const cPVREPGInfoTag *cPVREpg::GetInfoTagNext(void) const
 {
-  const CTVEPGInfoTag *TagNext = NULL;
+  const cPVREPGInfoTag *TagNext = NULL;
   CDateTime now = CDateTime::GetCurrentDateTime();
 
   if (tags.size() == 0)
@@ -193,7 +193,7 @@ const CTVEPGInfoTag *cPVREpg::GetInfoTagNext(void) const
   return NULL;
 }
 
-const CTVEPGInfoTag *cPVREpg::GetInfoTag(long uniqueID, CDateTime StartTime) const
+const cPVREPGInfoTag *cPVREpg::GetInfoTag(long uniqueID, CDateTime StartTime) const
 {
   if (uniqueID > 0)
   {
@@ -215,7 +215,7 @@ const CTVEPGInfoTag *cPVREpg::GetInfoTag(long uniqueID, CDateTime StartTime) con
   return NULL;
 }
 
-const CTVEPGInfoTag *cPVREpg::GetInfoTagAround(CDateTime Time) const
+const cPVREPGInfoTag *cPVREpg::GetInfoTagAround(CDateTime Time) const
 {
   if (tags.size() == 0)
     return NULL;
@@ -232,16 +232,16 @@ bool cPVREpg::Add(const PVR_PROGINFO *data, cPVREpg *Epg)
 {
   if (Epg && data)
   {
-    CTVEPGInfoTag *InfoTag = NULL;
+    cPVREPGInfoTag *InfoTag = NULL;
 
     long      uniqueBroadcastID = data->uid;
     CDateTime StartTime         = CDateTime((time_t)data->starttime);
 
-    InfoTag = (CTVEPGInfoTag *)Epg->GetInfoTag(uniqueBroadcastID, StartTime);
-    CTVEPGInfoTag *newInfoTag = NULL;
+    InfoTag = (cPVREPGInfoTag *)Epg->GetInfoTag(uniqueBroadcastID, StartTime);
+    cPVREPGInfoTag *newInfoTag = NULL;
     if (!InfoTag)
     {
-      InfoTag = newInfoTag = new CTVEPGInfoTag(uniqueBroadcastID);
+      InfoTag = newInfoTag = new cPVREPGInfoTag(uniqueBroadcastID);
     }
     if (InfoTag)
     {
@@ -454,7 +454,7 @@ int cPVREpgs::GetEPGAll(CFileItemList* results, bool radio)
         continue;
 
       const cPVREpg *Epg = s->GetEPG(&ch->at(i), true);
-      const vector<CTVEPGInfoTag> *ch_epg = Epg->InfoTags();
+      const vector<cPVREPGInfoTag> *ch_epg = Epg->InfoTags();
 
       for (unsigned int i = 0; i < ch_epg->size(); i++)
       {
@@ -468,7 +468,7 @@ int cPVREpgs::GetEPGAll(CFileItemList* results, bool radio)
   return cnt;
 }
 
-bool cPVREpgs::FilterEntry(const CTVEPGInfoTag &tag, const EPGSearchFilter &filter)
+bool cPVREpgs::FilterEntry(const cPVREPGInfoTag &tag, const EPGSearchFilter &filter)
 {
   if (filter.m_GenreType != -1)
   {
@@ -591,7 +591,7 @@ int cPVREpgs::GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter
 
       const cPVREpg *Epg = s->GetEPG(&PVRChannelsTV[i], true);
 
-      const vector<CTVEPGInfoTag> *ch_epg = Epg->InfoTags();
+      const vector<cPVREPGInfoTag> *ch_epg = Epg->InfoTags();
 
 
       for (unsigned int i = 0; i < ch_epg->size(); i++)
@@ -611,7 +611,7 @@ int cPVREpgs::GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter
 
       const cPVREpg *Epg = s->GetEPG(&PVRChannelsRadio[i], true);
 
-      const vector<CTVEPGInfoTag> *ch_epg = Epg->InfoTags();
+      const vector<cPVREPGInfoTag> *ch_epg = Epg->InfoTags();
 
 
       for (unsigned int i = 0; i < ch_epg->size(); i++)
@@ -631,7 +631,7 @@ int cPVREpgs::GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter
         unsigned int size = results->Size();
         for (unsigned int j = 0; j < size; j++)
         {
-          const CTVEPGInfoTag *epgentry = results->Get(j)->GetTVEPGInfoTag();
+          const cPVREPGInfoTag *epgentry = results->Get(j)->GetEPGInfoTag();
           if (epgentry)
           {
             if (epgentry->Title() != PVRRecordings[i].Title())
@@ -655,7 +655,7 @@ int cPVREpgs::GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter
         unsigned int size = results->Size();
         for (unsigned int j = 0; j < size; j++)
         {
-          const CTVEPGInfoTag *epgentry = results->Get(j)->GetTVEPGInfoTag();
+          const cPVREPGInfoTag *epgentry = results->Get(j)->GetEPGInfoTag();
           if (epgentry)
           {
             if (epgentry->ChannelNumber() != PVRTimers[i].Number())
@@ -686,7 +686,7 @@ int cPVREpgs::GetEPGChannel(unsigned int number, CFileItemList* results, bool ra
   cPVREpgs *s = (cPVREpgs *)EPGs(EpgsLock);
   if (s)
   {
-    const vector<CTVEPGInfoTag> *ch_epg = s->GetEPG(&ch->at(number-1), true)->InfoTags();
+    const vector<cPVREPGInfoTag> *ch_epg = s->GetEPG(&ch->at(number-1), true)->InfoTags();
     for (unsigned int i = 0; i < ch_epg->size(); i++)
     {
       CFileItemPtr channel(new CFileItem(ch_epg->at(i)));
@@ -713,7 +713,7 @@ int cPVREpgs::GetEPGNow(CFileItemList* results, bool radio)
       if (ch->at(i).m_hide)
         continue;
 
-      const CTVEPGInfoTag *epgnow = s->GetEPG(&ch->at(i), true)->GetInfoTagNow();
+      const cPVREPGInfoTag *epgnow = s->GetEPG(&ch->at(i), true)->GetInfoTagNow();
 
       if (!epgnow)
         continue;
@@ -744,7 +744,7 @@ int cPVREpgs::GetEPGNext(CFileItemList* results, bool radio)
       if (ch->at(i).m_hide)
         continue;
 
-      const CTVEPGInfoTag *epgnext = s->GetEPG(&ch->at(i), true)->GetInfoTagNext();
+      const cPVREPGInfoTag *epgnext = s->GetEPG(&ch->at(i), true)->GetInfoTagNext();
 
       if (!epgnext)
         continue;
@@ -820,7 +820,7 @@ CDateTime cPVREpgs::GetFirstEPGDate(bool radio/* = false*/)
         continue;
 
       const cPVREpg *Epg = s->GetEPG(&ch->at(i), true);
-      const vector<CTVEPGInfoTag> *ch_epg = Epg->InfoTags();
+      const vector<cPVREPGInfoTag> *ch_epg = Epg->InfoTags();
 
       for (unsigned int j = 0; j < ch_epg->size(); j++)
       {
@@ -846,7 +846,7 @@ CDateTime cPVREpgs::GetLastEPGDate(bool radio/* = false*/)
         continue;
 
       const cPVREpg *Epg = s->GetEPG(&ch->at(i), true);
-      const vector<CTVEPGInfoTag> *ch_epg = Epg->InfoTags();
+      const vector<cPVREPGInfoTag> *ch_epg = Epg->InfoTags();
 
       for (unsigned int j = 0; j < ch_epg->size(); j++)
       {
@@ -866,7 +866,7 @@ void cPVREpgs::SetVariableData(CFileItemList* results)
   /* Clear first all Timers set inside the EPG tags */
   for (unsigned int j = 0; j < results->Size(); j++)
   {
-    CTVEPGInfoTag *epg = results->Get(j)->GetTVEPGInfoTag();
+    cPVREPGInfoTag *epg = results->Get(j)->GetEPGInfoTag();
     if (epg)
       epg->SetTimer(NULL);
   }
@@ -876,7 +876,7 @@ void cPVREpgs::SetVariableData(CFileItemList* results)
   {
     for (unsigned int j = 0; j < results->Size(); j++)
     {
-      CTVEPGInfoTag *epg = results->Get(j)->GetTVEPGInfoTag();
+      cPVREPGInfoTag *epg = results->Get(j)->GetEPGInfoTag();
       if (epg)
       {
         if (!PVRTimers[i].Active())

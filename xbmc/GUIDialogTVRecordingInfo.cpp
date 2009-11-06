@@ -108,26 +108,26 @@ void CGUIDialogTVRecordingInfo::SetRecording(const CFileItem *item)
 void CGUIDialogTVRecordingInfo::Update()
 {
   CStdString strTemp;
-  strTemp = m_recordItem->GetTVRecordingInfoTag()->m_strTitle; strTemp.Trim();
+  strTemp = m_recordItem->GetPVRRecordingInfoTag()->m_strTitle; strTemp.Trim();
   SetLabel(CONTROL_REC_TITLE, strTemp);
 
-  strTemp = m_recordItem->GetTVRecordingInfoTag()->RecordingTime().GetAsLocalizedDate(true); strTemp.Trim();
+  strTemp = m_recordItem->GetPVRRecordingInfoTag()->RecordingTime().GetAsLocalizedDate(true); strTemp.Trim();
   SetLabel(CONTROL_REC_DATE, strTemp);
 
-  strTemp = m_recordItem->GetTVRecordingInfoTag()->RecordingTime().GetAsLocalizedTime("", false); strTemp.Trim();
+  strTemp = m_recordItem->GetPVRRecordingInfoTag()->RecordingTime().GetAsLocalizedTime("", false); strTemp.Trim();
   SetLabel(CONTROL_REC_STARTTIME, strTemp);
 
-  strTemp.Format("%i", m_recordItem->GetTVRecordingInfoTag()->GetDuration()/60); strTemp.Trim();
+  strTemp.Format("%i", m_recordItem->GetPVRRecordingInfoTag()->GetDuration()/60); strTemp.Trim();
   SetLabel(CONTROL_REC_DURATION, strTemp);
 
-  strTemp = m_recordItem->GetTVRecordingInfoTag()->m_strGenre; strTemp.Trim();
+  strTemp = m_recordItem->GetPVRRecordingInfoTag()->m_strGenre; strTemp.Trim();
   SetLabel(CONTROL_REC_GENRE, strTemp);
 
-  strTemp = m_recordItem->GetTVRecordingInfoTag()->ChannelName(); strTemp.Trim();
+  strTemp = m_recordItem->GetPVRRecordingInfoTag()->ChannelName(); strTemp.Trim();
   SetLabel(CONTROL_REC_CHANNEL, strTemp);
 
   // programme subtitle
-  strTemp = m_recordItem->GetTVRecordingInfoTag()->m_strPlotOutline; strTemp.Trim();
+  strTemp = m_recordItem->GetPVRRecordingInfoTag()->m_strPlotOutline; strTemp.Trim();
 
   if (strTemp.IsEmpty())
   {
@@ -140,7 +140,7 @@ void CGUIDialogTVRecordingInfo::Update()
   }
 
   // programme description
-  strTemp = m_recordItem->GetTVRecordingInfoTag()->m_strPlot; strTemp.Trim();
+  strTemp = m_recordItem->GetPVRRecordingInfoTag()->m_strPlot; strTemp.Trim();
 
   SetLabel(CONTROL_TEXTAREA, strTemp);
 }

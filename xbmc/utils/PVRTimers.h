@@ -28,7 +28,7 @@
 #include "../addons/include/xbmc_pvr_types.h"
 
 class CFileItem;
-class CTVEPGInfoTag;
+class cPVREPGInfoTag;
 class CGUIDialogTVTimerSettings;
 
 class cPVRTimerInfoTag
@@ -54,7 +54,7 @@ private:
   int             m_Weekdays;             /// Bit based store of weekdays to repeat
   CStdString      m_strFileNameAndPath;   /// Filename is only for reference
   
-  const CTVEPGInfoTag *m_EpgInfo;
+  const cPVREPGInfoTag *m_EpgInfo;
 
   void DisplayError(PVR_ERROR err) const;
 
@@ -106,8 +106,8 @@ public:
   void SetSummary(CStdString Summary) { m_Summary = Summary; }
   CStdString Path(void) const { return m_strFileNameAndPath; }
   void SetPath(CStdString path) { m_strFileNameAndPath = path; }
-  const CTVEPGInfoTag *Epg() const { return m_EpgInfo;}
-  void SetEpg(const CTVEPGInfoTag *tag);
+  const cPVREPGInfoTag *Epg() const { return m_EpgInfo;}
+  void SetEpg(const cPVREPGInfoTag *tag);
 
   bool Add() const;
   bool Delete(bool force = false) const;
@@ -129,7 +129,7 @@ public:
   cPVRTimerInfoTag *GetTimer(cPVRTimerInfoTag *Timer);
   cPVRTimerInfoTag *GetMatch(CDateTime t);
   cPVRTimerInfoTag *GetMatch(time_t t);
-  cPVRTimerInfoTag *GetMatch(const CTVEPGInfoTag *Epg, int *Match = NULL);
+  cPVRTimerInfoTag *GetMatch(const cPVREPGInfoTag *Epg, int *Match = NULL);
   cPVRTimerInfoTag *GetNextActiveTimer(void);
   static bool AddTimer(const CFileItem &item);
   static bool DeleteTimer(const CFileItem &item, bool force = false);

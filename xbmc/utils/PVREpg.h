@@ -67,7 +67,7 @@ struct EPGSearchFilter
   bool          m_PreventRepeats;
 };
 
-class CTVEPGInfoTag : public CVideoInfoTag
+class cPVREPGInfoTag : public CVideoInfoTag
 {
   friend class cPVREpg;
 private:
@@ -87,8 +87,8 @@ private:
   long          m_uniqueBroadcastID; // db's unique identifier for this tag
 
 public:
-  CTVEPGInfoTag(long uniqueBroadcastID);
-  CTVEPGInfoTag() { Reset(); };
+  cPVREPGInfoTag(long uniqueBroadcastID);
+  cPVREPGInfoTag() { Reset(); };
   void Reset();
 
   long GetUniqueBroadcastID(void) const { return m_uniqueBroadcastID; }
@@ -136,20 +136,20 @@ class cPVREpg
 private:
   long m_channelID;
   const cPVRChannelInfoTag *m_Channel;
-  std::vector<CTVEPGInfoTag> tags;
+  std::vector<cPVREPGInfoTag> tags;
 
 public:
   cPVREpg(long ChannelID);
   long ChannelID(void) const { return m_channelID; }
-  CTVEPGInfoTag *AddInfoTag(CTVEPGInfoTag *Tag);
-  void DelInfoTag(CTVEPGInfoTag *tag);
+  cPVREPGInfoTag *AddInfoTag(cPVREPGInfoTag *Tag);
+  void DelInfoTag(cPVREPGInfoTag *tag);
   void Cleanup(CDateTime Time);
   void Cleanup(void);
-  const std::vector<CTVEPGInfoTag> *InfoTags(void) const { return &tags; }
-  const CTVEPGInfoTag *GetInfoTagNow(void) const;
-  const CTVEPGInfoTag *GetInfoTagNext(void) const;
-  const CTVEPGInfoTag *GetInfoTag(long uniqueID, CDateTime StartTime) const;
-  const CTVEPGInfoTag *GetInfoTagAround(CDateTime Time) const;
+  const std::vector<cPVREPGInfoTag> *InfoTags(void) const { return &tags; }
+  const cPVREPGInfoTag *GetInfoTagNow(void) const;
+  const cPVREPGInfoTag *GetInfoTagNext(void) const;
+  const cPVREPGInfoTag *GetInfoTag(long uniqueID, CDateTime StartTime) const;
+  const cPVREPGInfoTag *GetInfoTagAround(CDateTime Time) const;
   static bool Add(const PVR_PROGINFO *data, cPVREpg *Epg);
 };
 
@@ -178,7 +178,7 @@ private:
   static cPVREpgs m_epgs;
   int m_locked;
   virtual void Process();
-  static bool FilterEntry(const CTVEPGInfoTag &tag, const EPGSearchFilter &filter);
+  static bool FilterEntry(const cPVREPGInfoTag &tag, const EPGSearchFilter &filter);
 
 public:
   static const cPVREpgs *EPGs(cPVREpgsLock &PVREpgsLock);
