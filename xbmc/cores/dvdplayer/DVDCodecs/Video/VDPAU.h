@@ -112,7 +112,7 @@ public:
   int        tmpDeint;
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
-  bool       interlaced;
+  bool       interlaced,m_bPixmapCreated;
   int        OutWidth, OutHeight;
   int        lastDisplayedSurface;
 
