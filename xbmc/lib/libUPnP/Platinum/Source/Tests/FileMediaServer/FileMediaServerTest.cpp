@@ -123,7 +123,7 @@ main(int /* argc */, char** argv)
             Options.path, 
             Options.friendly_name?Options.friendly_name:"Platinum UPnP Media Server",
             false,
-            "SAMEDEVICEGUID",
+            "SAMEDEVICEGUID", // NULL for random ID
             (NPT_UInt16)Options.port)
             );
 

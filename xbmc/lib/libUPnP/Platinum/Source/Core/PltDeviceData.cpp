@@ -216,13 +216,10 @@ PLT_DeviceData::GetLeaseTimeLastUpdate()
 }
 
 /*----------------------------------------------------------------------
-|   PLT_DeviceData::ToLog
+|   PLT_DeviceData::operator const char*()
 +---------------------------------------------------------------------*/
-NPT_Result
-PLT_DeviceData::ToLog(int level /* = NPT_LOG_LEVEL_FINE */)
+PLT_DeviceData::operator const char*()
 {
-    NPT_COMPILER_UNUSED(level);
-
     NPT_StringOutputStreamReference stream(new NPT_StringOutputStream);
     stream->WriteString("Device GUID: ");
     stream->WriteString((const char*)m_UUID);
@@ -236,31 +233,30 @@ PLT_DeviceData::ToLog(int level /* = NPT_LOG_LEVEL_FINE */)
     stream->WriteString("Device Friendly Name: ");
     stream->WriteString((const char*)m_FriendlyName);
 
-    NPT_LOG_1(level, "%s", (const char*)stream->GetString());
-    return NPT_SUCCESS;
+    m_Representation = stream->GetString();
+    return m_Representation;
 }
 
 /*----------------------------------------------------------------------
-|   PLT_DeviceData::AddDevice
+|   PLT_DeviceData::AddEmbeddedDevice
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_DeviceData::AddDevice(PLT_DeviceDataReference& device)
+PLT_DeviceData::AddEmbeddedDevice(PLT_DeviceDataReference& device)
 {
     device->m_ParentUUID = m_UUID;
     return m_EmbeddedDevices.Add(device);
 }
 
 /*----------------------------------------------------------------------
-|   PLT_DeviceData::RemoveDevice
+|   PLT_DeviceData::RemoveEmbeddedDevice
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_DeviceData::RemoveDevice(PLT_DeviceDataReference& device)
+PLT_DeviceData::RemoveEmbeddedDevice(PLT_DeviceDataReference& device)
 {
     for (NPT_Cardinal i=0;
          i<m_EmbeddedDevices.GetItemCount();
          i++) {
-        if (m_EmbeddedDevices[i] == device) 
-            return m_EmbeddedDevices.Erase(i);
+        if (m_EmbeddedDevices[i] == device) return m_EmbeddedDevices.Erase(i);
     }
 
     return NPT_ERROR_NO_SUCH_ITEM;
@@ -542,7 +538,7 @@ PLT_DeviceData::SetDescriptionDevice(NPT_XmlElementNode* device_node)
         for (int k = 0; k<(int)devices.GetItemCount(); k++) {    
             PLT_DeviceDataReference device(new PLT_DeviceData(m_URLDescription, "", m_LeaseTime));
             NPT_CHECK_SEVERE(device->SetDescriptionDevice(devices[k]));
-            AddDevice(device);
+            AddEmbeddedDevice(device);
         }
     }
 
@@ -600,19 +596,11 @@ PLT_DeviceData::FindEmbeddedDeviceByType(const char*              type,
 NPT_Result
 PLT_DeviceData::FindServiceById(const char* id, PLT_Service*& service)
 {
-    NPT_Result res = NPT_ContainerFind(m_Services, 
+    // do not try to find it within embedded devices, since different
+    // embedded devices could have an identical service
+    return NPT_ContainerFind(m_Services, 
         PLT_ServiceIDFinder(id),
         service);
-    if (NPT_SUCCEEDED(res)) return res;
-
-    for (int i=0; i<(int)m_EmbeddedDevices.GetItemCount(); i++) {
-        res = m_EmbeddedDevices[i]->FindServiceById(
-            id, 
-            service);
-        if (NPT_SUCCEEDED(res)) return res;
-    }
-
-    return NPT_FAILURE;
 }
 
 /*----------------------------------------------------------------------
@@ -621,42 +609,25 @@ PLT_DeviceData::FindServiceById(const char* id, PLT_Service*& service)
 NPT_Result
 PLT_DeviceData::FindServiceByType(const char* type, PLT_Service*& service)
 {
-    NPT_Result res = NPT_ContainerFind(m_Services, 
+    // do not try to find it within embedded devices, since different
+    // embedded devices could have an identical service
+    return NPT_ContainerFind(m_Services, 
         PLT_ServiceTypeFinder(type), 
         service);
-    if (NPT_SUCCEEDED(res)) return res;
-
-    for (int i=0; i<(int)m_EmbeddedDevices.GetItemCount(); i++) {
-        res = m_EmbeddedDevices[i]->FindServiceByType(
-            type, 
-            service);
-        if (NPT_SUCCEEDED(res)) return res;
-    }
-
-    return NPT_FAILURE;
 }
 
 /*----------------------------------------------------------------------
-|   PLT_DeviceData::FindServiceByDescriptionURL
+|   PLT_DeviceData::FindServiceBySCPDURL
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_DeviceData::FindServiceByDescriptionURL(const char*   url, 
-                                            PLT_Service*& service)
+PLT_DeviceData::FindServiceBySCPDURL(const char* url, PLT_Service*& service)
 {
-    NPT_Result res = NPT_ContainerFind(
+    // do not try to find it within embedded devices, since different
+    // embedded devices could have an identical service
+    return NPT_ContainerFind(
         m_Services, 
         PLT_ServiceSCPDURLFinder(url), 
         service);
-    if (NPT_SUCCEEDED(res)) return res;
-
-    for (int i=0; i<(int)m_EmbeddedDevices.GetItemCount(); i++) {
-        res = m_EmbeddedDevices[i]->FindServiceByDescriptionURL(
-            url, 
-            service);
-        if (NPT_SUCCEEDED(res)) return res;
-    }
-
-    return NPT_FAILURE;
 }
 
 /*----------------------------------------------------------------------
@@ -664,18 +635,22 @@ PLT_DeviceData::FindServiceByDescriptionURL(const char*   url,
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_DeviceData::FindServiceByControlURL(const char*   url, 
-                                        PLT_Service*& service)
+                                        PLT_Service*& service, 
+                                        bool          recursive /* = false */)
 {
     NPT_Result res = NPT_ContainerFind(m_Services, 
         PLT_ServiceControlURLFinder(url), 
         service);
     if (NPT_SUCCEEDED(res)) return res;
 
-    for (int i=0; i<(int)m_EmbeddedDevices.GetItemCount(); i++) {
-        res = m_EmbeddedDevices[i]->FindServiceByControlURL(
-            url, 
-            service);
-        if (NPT_SUCCEEDED(res)) return res;
+    if (recursive) {
+            for (int i=0; i<(int)m_EmbeddedDevices.GetItemCount(); i++) {
+            res = m_EmbeddedDevices[i]->FindServiceByControlURL(
+                url, 
+                service,
+                recursive);
+            if (NPT_SUCCEEDED(res)) return res;
+        }
     }
 
     return NPT_FAILURE;
@@ -686,18 +661,22 @@ PLT_DeviceData::FindServiceByControlURL(const char*   url,
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_DeviceData::FindServiceByEventSubURL(const char*   url, 
-                                         PLT_Service*& service)
+                                         PLT_Service*& service, 
+                                         bool          recursive /* = false */)
 {       
     NPT_Result res = NPT_ContainerFind(m_Services, 
         PLT_ServiceEventSubURLFinder(url), 
         service);
-   if (NPT_SUCCEEDED(res)) return res;
+    if (NPT_SUCCEEDED(res)) return res;
 
-    for (int i=0; i<(int)m_EmbeddedDevices.GetItemCount(); i++) {
-        res = m_EmbeddedDevices[i]->FindServiceByEventSubURL(
-            url, 
-            service);
-        if (NPT_SUCCEEDED(res)) return res;
+    if (recursive) {
+        for (int i=0; i<(int)m_EmbeddedDevices.GetItemCount(); i++) {
+            res = m_EmbeddedDevices[i]->FindServiceByEventSubURL(
+                url, 
+                service,
+                recursive);
+            if (NPT_SUCCEEDED(res)) return res;
+        }
     }
 
     return NPT_FAILURE;

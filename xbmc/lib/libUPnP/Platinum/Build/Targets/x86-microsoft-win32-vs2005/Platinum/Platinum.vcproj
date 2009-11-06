@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\ThirdParty\Neptune\Source\Config;..\..\..\..\ThirdParty\Neptune\Source\Core;..\..\..\..\ThirdParty\Neptune\Source\Neptune;..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaServer"
+				AdditionalIncludeDirectories="..\..\..\..\Source\Platinum;..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\..\Neptune\Source\Core"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -107,7 +107,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\ThirdParty\Neptune\Source\Config;..\..\..\..\ThirdParty\Neptune\Source\Core;..\..\..\..\ThirdParty\Neptune\Source\Neptune;..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaServer"
+				AdditionalIncludeDirectories="..\..\..\..\Source\Platinum;..\..\..\..\Source\Core;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\..\Neptune\Source\Core"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
@@ -157,10 +157,6 @@
 			<Filter
 				Name="Core"
 				>
-				<File
-					RelativePath="..\..\..\..\Source\Core\Platinum.cpp"
-					>
-				</File>
 				<File
 					RelativePath="..\..\..\..\Source\Core\PltAction.cpp"
 					>
@@ -262,6 +258,36 @@
 				Name="MediaServer"
 				>
 				<File
+					RelativePath="..\..\..\..\Source\Devices\MediaServer\ConnectionManagerSCPD.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\MediaServer\ContentDirectorySCPD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\MediaServer\ContentDirectorywSearchSCPD.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\..\Source\Devices\MediaServer\PltDidl.cpp"
 					>
 				</File>
@@ -290,10 +316,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\MediaServer\PltMediaServerSCPDs.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\..\Source\Devices\MediaServer\PltSyncMediaBrowser.cpp"
 					>
 				</File>
@@ -301,6 +323,14 @@
 			<Filter
 				Name="MediaRenderer"
 				>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\MediaRenderer\AVTransportSCPD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\MediaRenderer\ConnectionManagerSCPD.cpp"
+					>
+				</File>
 				<File
 					RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaController.cpp"
 					>
@@ -310,7 +340,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\MediaRenderer\PltMediaRendererSCPDs.cpp"
+					RelativePath="..\..\..\..\Source\Devices\MediaRenderer\RenderingControlSCPD.cpp"
 					>
 				</File>
 			</Filter>
@@ -322,7 +352,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Source\Devices\MediaConnect\PltMediaConnectSCPDs.cpp"
+					RelativePath="..\..\..\..\Source\Devices\MediaConnect\X_MS_MediaReceiverRegistrarSCPD.cpp"
 					>
 				</File>
 			</Filter>

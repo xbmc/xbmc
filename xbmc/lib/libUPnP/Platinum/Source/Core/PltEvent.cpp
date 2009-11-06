@@ -262,39 +262,10 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
 }
 
 /*----------------------------------------------------------------------
-|   PLT_EventSubscriber::Renew
-+---------------------------------------------------------------------*/
-NPT_Result
-PLT_EventSubscriber::Renew(PLT_CtrlPoint* ctrl_point)
-{
-    NPT_LOG_FINE_3("Renewing subscriber \"%s\" for service \"%s\" of device \"%s\"", 
-        (const char*)GetSID(),
-        (const char*)m_Service->GetServiceID(),
-        (const char*)m_Service->GetDevice()->GetFriendlyName());
-
-    NPT_HttpUrl url(m_Service->GetEventSubURL(true));
-    
-    // create the request
-    NPT_HttpRequest* request = new NPT_HttpRequest(url, "SUBSCRIBE", NPT_HTTP_PROTOCOL_1_1);
-
-    PLT_UPnPMessageHelper::SetSID(*request, GetSID());
-    PLT_UPnPMessageHelper::SetTimeOut(*request, (NPT_Timeout)PLT_Constants::GetInstance().m_DefaultSubscribeLease);
-        
-    // Prepare the request
-    // create a task to post the request
-    PLT_ThreadTask* task = new PLT_CtrlPointSubscribeEventTask(
-        request,
-        ctrl_point, 
-        m_Service);
-    return m_TaskManager->StartTask(task);
-}
-
-/*----------------------------------------------------------------------
 |   PLT_EventSubscriberFinderByService::operator()
 +---------------------------------------------------------------------*/
 bool 
 PLT_EventSubscriberFinderByService::operator()(PLT_EventSubscriber* const & eventSub) const 
 {
-    return m_Service->GetDevice()->GetUUID().Compare(
-        eventSub->GetService()->GetDevice()->GetUUID(), true) ? false : true;
+    return (m_Service == eventSub->GetService());
 }

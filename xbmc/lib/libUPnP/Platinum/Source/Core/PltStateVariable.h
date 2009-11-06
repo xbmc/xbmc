@@ -70,10 +70,13 @@ public:
     NPT_Result   SetRate(NPT_TimeInterval rate);
     NPT_Result   SetValue(const char* value);
     NPT_Result   ValidateValue(const char* value);
+	NPT_Result   Serialize(NPT_XmlElementNode& node);
+	NPT_Result   SetExtraAttribute(const char* name, const char* value);
 
     const NPT_String& GetName()     const { return m_Name;     }
     const NPT_String& GetValue()    const { return m_Value;    }
     const NPT_String& GetDataType() const { return m_DataType; }
+	const NPT_AllowedValueRange* GetAllowedValueRange() const { return m_AllowedValueRange; }
 
     static PLT_StateVariable* Find(NPT_List<PLT_StateVariable*>& vars, 
                                    const char*                   name);
@@ -96,6 +99,8 @@ protected:
     NPT_TimeStamp           m_LastEvent;
     NPT_Array<NPT_String*>  m_AllowedValues;
     NPT_String              m_Value;
+
+	NPT_Map<NPT_String,NPT_String> m_ExtraAttributes;
 };
 
 /*----------------------------------------------------------------------

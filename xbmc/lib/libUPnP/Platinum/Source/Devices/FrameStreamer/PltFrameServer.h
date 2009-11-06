@@ -38,7 +38,7 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "Neptune.h"
-#include "PltFileMediaServer.h"
+#include "PltHttpServer.h"
 #include "PltFrameBuffer.h"
 
 /*----------------------------------------------------------------------
@@ -57,63 +57,59 @@ public:
 };
 
 /*----------------------------------------------------------------------
-|   PLT_FrameServer class
+|   PLT_HttpStreamRequestHandler
 +---------------------------------------------------------------------*/
-class PLT_FrameServer : public PLT_FileMediaServer
+class PLT_HttpStreamRequestHandler : public NPT_HttpRequestHandler
 {
 public:
-    PLT_FrameServer(PLT_FrameBuffer& frame_buffer, 
-                    const char*      www_root,
-                    const char*      friendly_name,
-                    bool             show_ip = false,
-                    const char*      uuid = NULL,
-                    NPT_UInt16       port = 0,
+    // constructor
+    PLT_HttpStreamRequestHandler(PLT_FrameBuffer&     frame_buffer, 
+                                 PLT_StreamValidator* stream_validator = NULL) :
+        m_FrameBuffer(frame_buffer),
+        m_StreamValidator(stream_validator) {}
+
+    // NPT_HttpRequestHandler methods
+    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request, 
+                                     const NPT_HttpRequestContext& context,
+                                     NPT_HttpResponse&             response);
+
+private:
+    PLT_FrameBuffer&     m_FrameBuffer;
+    PLT_StreamValidator* m_StreamValidator;
+};
+
+/*----------------------------------------------------------------------
+|   PLT_FrameServer class
++---------------------------------------------------------------------*/
+class PLT_FrameServer : public PLT_HttpServer
+{
+public:
+    PLT_FrameServer(PLT_FrameBuffer&     frame_buffer, 
+                    const char*          friendly_name,
+                    const char*          www_root,
+                    const char*          resource_name,
+                    NPT_UInt16           port = 0,
                     PLT_StreamValidator* stream_validator = NULL);
-
-protected:
     virtual ~PLT_FrameServer();
-
-    // overridable
-    virtual NPT_Result ProcessStreamRequest(NPT_HttpRequest&              request, 
-                                            const NPT_HttpRequestContext& context,
-                                            NPT_HttpResponse&             response);
-    // PLT_DeviceHost methods
-    virtual NPT_Result SetupDevice();
+    
+    virtual NPT_Result Start();
+    
+protected:
+    // PLT_HttpServer methods
     virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest&              request, 
                                           const NPT_HttpRequestContext& context,
-                                          NPT_HttpResponse&             response);
-    
-    // PLT_FileMediaServer methods
-    virtual NPT_String BuildResourceUri(const NPT_HttpUrl& base_uri, const char* host, const char* file_path);
-
-    // PLT_MediaServer methods
-    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference&          action, 
-                                        const char*                   object_id, 
-                                        const char*                   filter,
-                                        NPT_UInt32                    starting_index,
-                                        NPT_UInt32                    requested_count,
-                                        const NPT_List<NPT_String>&   sort_criteria,
-                                        const PLT_HttpRequestContext& context);
-    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference&          action, 
-                                              const char*                   object_id, 
-                                              const char*                   filter,
-                                              NPT_UInt32                    starting_index,
-                                              NPT_UInt32                    requested_count,
-                                              const NPT_List<NPT_String>&   sort_criteria,
-                                              const PLT_HttpRequestContext& context);
-    virtual PLT_MediaObject* BuildFromID(const char* id,
-                                         const NPT_SocketAddress* req_local_address /* = NULL */);
+                                          NPT_HttpResponse*&            response,
+                                          bool&                         headers_only);
 
 private:
     NPT_Result Replace(const char* input, NPT_MemoryStream& output);
     NPT_Result ProcessTemplate(NPT_HttpRequest&              request, 
                                const NPT_HttpRequestContext& context,
-                               NPT_HttpResponse&             response);
+                               NPT_HttpResponse*&            response,
+                               bool&                         headers_only);
 protected:
-    friend class PLT_MediaItem;
-
-    PLT_FrameBuffer&        m_FrameBuffer;
-    NPT_HttpUrl             m_StreamBaseUri;
+    NPT_String              m_FriendlyName;
+    NPT_String              m_RootFilePath;
     PLT_SocketPolicyServer* m_PolicyServer;
     PLT_StreamValidator*    m_StreamValidator;
 };

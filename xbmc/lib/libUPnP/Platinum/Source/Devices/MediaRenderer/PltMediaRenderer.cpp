@@ -96,13 +96,13 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         service->SetStateVariable("CurrentTransportActions", "Play,Pause,Stop,Seek,Next,Previous");
 
         // GetDeviceCapabilities
-        service->SetStateVariable("PossiblePlaybackStorageMedia", "NONE,NETWORK");
+        service->SetStateVariable("PossiblePlaybackStorageMedia", "NONE,NETWORK,HDD,CD-DA,UNKNOWN");
         service->SetStateVariable("PossibleRecordStorageMedia", "NOT_IMPLEMENTED");
         service->SetStateVariable("PossibleRecordQualityModes", "NOT_IMPLEMENTED");
 
         // GetMediaInfo
         service->SetStateVariable("NumberOfTracks", "0");
-        service->SetStateVariable("CurrentMediaDuration", "00:00:00");;
+        service->SetStateVariable("CurrentMediaDuration", "00:00:00");
         service->SetStateVariable("AVTransportURI", "");
         service->SetStateVariable("AVTransportURIMetadata", "");;
         service->SetStateVariable("NextAVTransportURI", "NOT_IMPLEMENTED");
@@ -133,7 +133,7 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         if (var) var->DisableIndirectEventing();
 
         // GetTransportInfo
-        service->SetStateVariable("TransportState", "STOPPED");
+        service->SetStateVariable("TransportState", "NO_MEDIA_PRESENT");
         service->SetStateVariable("TransportStatus", "OK");
         service->SetStateVariable("TransportPlaySpeed", "1");
 
@@ -173,7 +173,13 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         service->SetStateVariableRate("LastChange", NPT_TimeInterval(0.2f));
 
         service->SetStateVariable("Mute", "0");
+        service->SetStateVariableExtraAttribute("Mute", "Channel", "Master");
         service->SetStateVariable("Volume", "100");
+        service->SetStateVariableExtraAttribute("Volume", "Channel", "Master");
+        service->SetStateVariable("VolumeDB", "0");
+        service->SetStateVariableExtraAttribute("VolumeDB", "Channel", "Master");
+
+        service->SetStateVariable("PresetNameList", "FactoryDefaults");
     }
 
     return NPT_SUCCESS;
@@ -189,18 +195,18 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference&          action,
     NPT_COMPILER_UNUSED(context);
 
     /* parse the action name */
-    NPT_String name = action->GetActionDesc()->GetName();
+    NPT_String name = action->GetActionDesc().GetName();
 
     // since all actions take an instance ID and we only support 1 instance
     // verify that the Instance ID is 0 and return an error here now if not
-    NPT_String serviceType = action->GetActionDesc()->GetService()->GetServiceType();
+    NPT_String serviceType = action->GetActionDesc().GetService()->GetServiceType();
     if (serviceType.Compare("urn:schemas-upnp-org:service:AVTransport:1", true) == 0) {
         if (NPT_FAILED(action->VerifyArgumentValue("InstanceID", "0"))) {
             action->SetError(718, "Not valid InstanceID");
             return NPT_FAILURE;
         }
     }
-	serviceType = action->GetActionDesc()->GetService()->GetServiceType();
+	serviceType = action->GetActionDesc().GetService()->GetServiceType();
 	if (serviceType.Compare("urn:schemas-upnp-org:service:RenderingControl:1", true) == 0) {
 		if (NPT_FAILED(action->VerifyArgumentValue("InstanceID", "0"))) {
 			action->SetError(702, "Not valid InstanceID");
@@ -243,6 +249,13 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference&          action,
     if (name.Compare("SetVolume", true) == 0) {
           return OnSetVolume(action);
     }
+	if (name.Compare("SetVolumeDB", true) == 0) {
+		return OnSetVolumeDB(action);
+    }
+	if (name.Compare("GetVolumeDBRange", true) == 0) {
+		return OnGetVolumeDBRange(action);
+
+	}
     if (name.Compare("SetMute", true) == 0) {
           return OnSetMute(action);
     }
@@ -273,7 +286,7 @@ PLT_MediaRenderer::OnGetCurrentConnectionInfo(PLT_ActionReference& action)
     if (NPT_FAILED(action->SetArgumentValue("AVTransportID", "0"))) {
         return NPT_FAILURE;
     }
-    if (NPT_FAILED(action->SetArgumentValue("ProtocolInfo", ""))) {
+    if (NPT_FAILED(action->SetArgumentOutFromStateVariable("ProtocolInfo"))) {
         return NPT_FAILURE;
     }
     if (NPT_FAILED(action->SetArgumentValue("PeerConnectionManager", "/"))) {
@@ -382,6 +395,24 @@ PLT_MediaRenderer::OnSetPlayMode(PLT_ActionReference& /* action */)
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_MediaRenderer::OnSetVolume(PLT_ActionReference& /* action */)
+{
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaRenderer::OnSetVolumeDB
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaRenderer::OnSetVolumeDB(PLT_ActionReference& /* action */)
+{
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaRenderer::OnGetVolumeDBRange
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaRenderer::OnGetVolumeDBRange(PLT_ActionReference& /* action */)
 {
     return NPT_SUCCESS;
 }

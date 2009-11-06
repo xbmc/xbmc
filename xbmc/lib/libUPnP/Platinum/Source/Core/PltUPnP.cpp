@@ -126,10 +126,11 @@ PLT_UPnP::PLT_UPnP(NPT_UInt32 port, bool multicast /* = true */) :
     m_Started(false),
     m_Port(port),
     m_Multicast(multicast),
-    m_SsdpListenTask(NULL)
+    m_SsdpListenTask(NULL),
+	m_IgnoreLocalUUIDs(true)
 {
-    NPT_HttpClient::m_UserAgentHeader = "Platinum/" PLT_PLATINUM_VERSION_STRING ", DLNADOC/1.50";
-    NPT_HttpServer::m_ServerHeader    = "UPnP/1.0, DLNADOC/1.50, Platinum/" PLT_PLATINUM_VERSION_STRING;
+    NPT_HttpClient::m_UserAgentHeader = "Platinum/" PLT_PLATINUM_SDK_VERSION_STRING ", DLNADOC/1.50";
+    NPT_HttpServer::m_ServerHeader    = "UPnP/1.0, DLNADOC/1.50, Platinum/" PLT_PLATINUM_SDK_VERSION_STRING;
 }
     
 /*----------------------------------------------------------------------
@@ -161,11 +162,15 @@ PLT_UPnP::Start()
     //NPT_List<NPT_IpAddress> ips;
     //PLT_UPnPMessageHelper::GetIPAddresses(ips);
     //NPT_CHECK_SEVERE(socket->Bind(NPT_SocketAddress(*ips.GetFirstItem(), m_Port)));
+    
+    //NPT_IpAddress ip;
+    //ip.Parse("127.0.0.1");
+    //NPT_CHECK_SEVERE(socket->Bind(NPT_SocketAddress(ip, m_Port)));
 
     NPT_CHECK_SEVERE(socket->Bind(NPT_SocketAddress(NPT_IpAddress::Any, m_Port)));
 
     /* create the ssdp listener */
-    m_SsdpListenTask = new PLT_SsdpListenTask(socket, m_Multicast);
+    m_SsdpListenTask = new PLT_SsdpListenTask(socket, m_Multicast, true);
     NPT_CHECK_SEVERE(m_TaskManager.StartTask(m_SsdpListenTask));
 
     /* start devices & ctrlpoints */
@@ -207,6 +212,15 @@ PLT_UPnP::AddDevice(PLT_DeviceHostReference& device)
 {
     NPT_AutoLock lock(m_Lock);
 
+	if (m_IgnoreLocalUUIDs) {
+		for (NPT_List<PLT_CtrlPointReference>::Iterator iter = 
+                 m_CtrlPoints.GetFirstItem(); 
+             iter; 
+             iter++) {
+		    (*iter)->IgnoreUUID(device->GetUUID());
+		}
+	}
+
     if (m_Started) {
         NPT_LOG_INFO("Starting Device...");
         NPT_CHECK_SEVERE(device->Start(m_SsdpListenTask));
@@ -238,6 +252,15 @@ NPT_Result
 PLT_UPnP::AddCtrlPoint(PLT_CtrlPointReference& ctrl_point)
 {
     NPT_AutoLock lock(m_Lock);
+
+	if (m_IgnoreLocalUUIDs) {
+		for (NPT_List<PLT_DeviceHostReference>::Iterator iter = 
+                 m_Devices.GetFirstItem(); 
+             iter; 
+             iter++) {
+			ctrl_point->IgnoreUUID((*iter)->GetUUID());
+		}
+	}
 
     if (m_Started) {
         NPT_LOG_INFO("Starting Ctrlpoint...");
