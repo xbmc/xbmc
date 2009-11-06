@@ -1572,13 +1572,13 @@ void CApplication::StartUPnP()
 #endif
 }
 
-void CApplication::StopUPnP()
+void CApplication::StopUPnP(bool bWait)
 {
 #ifdef HAS_UPNP
   if (CUPnP::IsInstantiated())
   {
     CLog::Log(LOGNOTICE, "stopping upnp");
-    CUPnP::ReleaseInstance();
+    CUPnP::ReleaseInstance(bWait);
   }
 #endif
 }

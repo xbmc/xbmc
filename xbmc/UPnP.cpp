@@ -366,13 +366,20 @@ CUPnPServer::GetContentType(const CFileItem& item,
     ext.TrimLeft('.');
     ext = ext.ToLowercase();
 
-    /* we need a valid extension to retrieve the mimetype for the protocol info */
-    NPT_String content = item.GetContentType().c_str();
-    if (content == "application/octet-stream") content = "";
+    NPT_String content;
 
-    if (content.IsEmpty()) {
+    /* We always use Platinum content type first
+       as it is defined to map extension to DLNA compliant content type
+       or custom according to context (who asked for it) */
+    if (!ext.IsEmpty()) {
         content = PLT_MediaObject::GetMimeTypeFromExtension(ext, context);
-        if (content == "application/unknown") content = "";
+    if (content == "application/octet-stream") content = "";
+    }
+
+    /* if Platinum couldn't map it, default to XBMC mapping */
+    if (content.IsEmpty()) {
+        NPT_String content = item.GetContentType().c_str();
+        if (content == "application/octet-stream") content = "";
     }
 
     /* fallback to generic content type if not found */
@@ -397,7 +404,8 @@ CUPnPServer::GetContentType(const CFileItem& item,
 |   CUPnPServer::GetProtocolInfo
 +---------------------------------------------------------------------*/
 NPT_String
-CUPnPServer::GetProtocolInfo(const CFileItem& item, const char* protocol,
+CUPnPServer::GetProtocolInfo(const CFileItem&              item, 
+                             const char*                   protocol,
                              const PLT_HttpRequestContext* context /* = NULL */)
 {
     NPT_String proto = protocol;
@@ -592,8 +600,9 @@ CUPnPServer::BuildObject(const CFileItem&              item,
             // through http file server
             NPT_List<NPT_IpAddress>::Iterator ip = ips.GetFirstItem();
             while (ip) {
-                resource.m_ProtocolInfo = GetProtocolInfo(item, "http", context);
-                resource.m_Uri = PLT_FileMediaServer::BuildSafeResourceUri(upnp_server->m_FileBaseUri, (*ip).ToString(), file_path);
+                resource.m_ProtocolInfo = PLT_ProtocolInfo(GetProtocolInfo(item, "http", context));
+                resource.m_Uri = PLT_FileMediaServer::BuildSafeResourceUri(
+                    upnp_server->m_FileBaseUri, (*ip).ToString(), file_path);
                 object->m_Resources.Add(resource);
                 ++ip;
             }
@@ -601,12 +610,13 @@ CUPnPServer::BuildObject(const CFileItem&              item,
 
         // if the item is remote, add a direct link to the item
         if (CUtil::IsRemote((const char*)file_path)) {
-            resource.m_ProtocolInfo = CUPnPServer::GetProtocolInfo(item, item.GetAsUrl().GetProtocol(), context);
+            resource.m_ProtocolInfo = PLT_ProtocolInfo(
+                CUPnPServer::GetProtocolInfo(item, item.GetAsUrl().GetProtocol(), context));
             resource.m_Uri = file_path;
 
             // if the direct link can be served directly using http, then push it in front
             // otherwise keep the xbmc-get resource last and let a compatible client look for it
-            if (resource.m_ProtocolInfo.StartsWith("xbmc", true)) {
+            if (resource.m_ProtocolInfo.ToString().StartsWith("xbmc", true)) {
                 object->m_Resources.Add(resource);
             } else {
                 object->m_Resources.Insert(object->m_Resources.GetFirstItem(), resource);
@@ -1127,7 +1137,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
     // Don't pass parent_id if action is Search not BrowseDirectChildren, as
     // we want the engine to determine the best parent id, not necessarily the one
     // passed
-    NPT_String action_name = action->GetActionDesc()->GetName();
+    NPT_String action_name = action->GetActionDesc().GetName();
     return BuildResponse(
         action, 
         items, 
@@ -1465,11 +1475,6 @@ public:
 
 private:
     NPT_Result SetupServices(PLT_DeviceData& data);
-    NPT_Result ParseProtocolInfo(NPT_String& info,
-                                 NPT_String& proto,
-                                 NPT_String& mask,
-                                 NPT_String& content,
-                                 NPT_String& extra);
     NPT_Result GetMetadata(NPT_String& meta);
     NPT_Result PlayMedia(const char* uri,
                          const char* metadata = NULL,
@@ -1551,6 +1556,7 @@ CUPnPRenderer::SetupServices(PLT_DeviceData& data)
         ",http-get:*:image/ief:*"
         ",http-get:*:image/png:*"
         ",http-get:*:image/tiff:*"
+        ",http-get:*:video/avi:*"
         ",http-get:*:video/mpeg:*"
         ",http-get:*:video/fli:*"
         ",http-get:*:video/flv:*"
@@ -1844,24 +1850,6 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
 }
 
 /*----------------------------------------------------------------------
-|   CUPnPRenderer::ParseProtocolInfo
-+---------------------------------------------------------------------*/
-NPT_Result
-CUPnPRenderer::ParseProtocolInfo(NPT_String& info, 
-                                 NPT_String& proto, 
-                                 NPT_String& mask, 
-                                 NPT_String& content, 
-                                 NPT_String& extra)
-{
-  NPT_List<NPT_String> data = info.Split(":");
-  NPT_CHECK_FATAL(data.Get(0, proto));
-  NPT_CHECK      (data.Get(1, mask));
-  NPT_CHECK      (data.Get(2, content));
-  NPT_CHECK      (data.Get(3, extra));
-  return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
 |   CUPnPRenderer::PlayMedia
 +---------------------------------------------------------------------*/
 NPT_Result
@@ -1878,8 +1866,9 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
     PLT_MediaObjectListReference list;
     PLT_MediaObject*             object = NULL;
 
-    if(meta && NPT_SUCCEEDED(PLT_Didl::FromDidl(meta, list)))
+    if (meta && NPT_SUCCEEDED(PLT_Didl::FromDidl(meta, list))) {
       list->Get(0, object);
+    }
 
     if(object) {
         CFileItem item(uri, false);
@@ -1892,7 +1881,7 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
           }
         }
         for(NPT_Cardinal i = 0; i < object->m_Resources.GetItemCount(); i++) {
-          if(object->m_Resources[i].m_ProtocolInfo.StartsWith("xbmc-get:")) {
+            if(object->m_Resources[i].m_ProtocolInfo.ToString().StartsWith("xbmc-get:")) {
             res = &object->m_Resources[i];
             item.m_strPath = res->m_Uri;
             break;
@@ -1900,9 +1889,8 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
         }
 
         NPT_String proto, mask, content, extra;
-        if(res) {
-          NPT_CHECK(ParseProtocolInfo(res->m_ProtocolInfo, proto, mask, content, extra));
-          item.SetContentType((const char*)content);
+        if (res && res->m_ProtocolInfo.IsValid()) {
+            item.SetContentType((const char*)res->m_ProtocolInfo.GetContentType());
         }
 
         item.m_dateTime.SetFromDateString((const char*)object->m_Date);
@@ -2060,12 +2048,6 @@ CUPnP::CUPnP() :
     m_RendererHolder(new CRendererReferenceHolder()),
     m_CtrlPointHolder(new CCtrlPointReferenceHolder())
 {
-//#ifdef HAS_XBOX_HARDWARE
-//    broadcast = true;
-//#else
-//    broadcast = false;
-//#endif
-    // xbox can't receive multicast, but it can send it
     broadcast = false;
 
     // initialize upnp in broadcast listening mode for xbmc
@@ -2114,16 +2096,20 @@ CUPnP::GetInstance()
 |   CUPnP::ReleaseInstance
 +---------------------------------------------------------------------*/
 void
-CUPnP::ReleaseInstance()
+CUPnP::ReleaseInstance(bool bWait)
 {
     if (upnp) {
         CUPnP* _upnp = upnp;
         upnp = NULL;
 
-        // since it takes a while to clean up
-        // starts a detached thread to do this
-        CUPnPCleaner* cleaner = new CUPnPCleaner(_upnp);
-        cleaner->Start();
+        if (bWait) {
+            delete _upnp;
+        } else {
+            // since it takes a while to clean up
+            // starts a detached thread to do this
+            CUPnPCleaner* cleaner = new CUPnPCleaner(_upnp);
+            cleaner->Start();
+        }
     }
 }
 
@@ -2148,6 +2134,7 @@ CUPnP::StartClient()
 
     // start browser
     m_MediaBrowser = new CMediaBrowser(m_CtrlPointHolder->m_CtrlPoint);
+
 #ifdef _XBOX
     // Issue a search request on the every 6 seconds, both on broadcast and multicast
     // xbox can't receive multicast, but it can send it so upnp clients know we are here

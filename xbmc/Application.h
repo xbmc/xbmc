@@ -78,7 +78,7 @@ public:
   void StartTimeServer();
   void StopTimeServer();
   void StartUPnP();
-  void StopUPnP();
+  void StopUPnP(bool bWait = false);
   void StartUPnPRenderer();
   void StopUPnPRenderer();
   void StartUPnPClient();
