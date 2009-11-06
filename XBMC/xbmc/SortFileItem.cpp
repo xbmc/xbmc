@@ -126,8 +126,8 @@ void SSortFileItem::ByDate(CFileItemPtr &item)
   if (!item) return;
 
   CStdString label;
-  if (item->IsTVEPG())
-    label.Format("%s %s", item->GetTVEPGInfoTag()->Start().GetAsDBDateTime().c_str(), item->GetLabel().c_str());
+  if (item->IsEPG())
+    label.Format("%s %s", item->GetEPGInfoTag()->Start().GetAsDBDateTime().c_str(), item->GetLabel().c_str());
   else
     label.Format("%s %s", item->m_dateTime.GetAsDBDateTime().c_str(), item->GetLabel().c_str());
 
@@ -434,6 +434,6 @@ void SSortFileItem::ByChannel(CFileItemPtr &item)
 {
   if (!item) return;
 
-  if (item->IsTVEPG())
-    item->SetSortLabel(item->GetTVEPGInfoTag()->ChannelName());
+  if (item->IsEPG())
+    item->SetSortLabel(item->GetEPGInfoTag()->ChannelName());
 }

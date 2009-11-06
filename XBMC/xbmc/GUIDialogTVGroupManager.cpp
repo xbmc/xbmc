@@ -158,7 +158,7 @@ bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
           {
             CFileItemPtr pItemGroup   = m_channelGroupItems->Get(m_iSelectedGroup);
             CFileItemPtr pItemChannel = m_channelLeftItems->Get(m_iSelectedLeft);
-            PVRChannelGroups.ChannelToGroup(*pItemChannel->GetTVChannelInfoTag(), atoi(pItemGroup->m_strPath.c_str()));
+            PVRChannelGroups.ChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), atoi(pItemGroup->m_strPath.c_str()));
             Update();
           }
           return true;
@@ -174,7 +174,7 @@ bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
           if (m_channelRightItems->GetFileCount() > 0)
           {
             CFileItemPtr pItemChannel = m_channelRightItems->Get(m_iSelectedRight);
-            PVRChannelGroups.ChannelToGroup(*pItemChannel->GetTVChannelInfoTag(), 0);
+            PVRChannelGroups.ChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), 0);
             Update();
           }
           return true;

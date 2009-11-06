@@ -144,9 +144,9 @@ bool CGUIDialogTVEPGSearch::OnMessage(CGUIMessage& message)
 
           for (int i = 0; i < channelslist_tv.Size(); i++)
           {
-            int chanNumber = channelslist_tv[i]->GetTVChannelInfoTag()->Number();
+            int chanNumber = channelslist_tv[i]->GetPVRChannelInfoTag()->Number();
             CStdString string;
-            string.Format("%i %s", chanNumber, channelslist_tv[i]->GetTVChannelInfoTag()->Name().c_str());
+            string.Format("%i %s", chanNumber, channelslist_tv[i]->GetPVRChannelInfoTag()->Name().c_str());
             pSpin->AddLabel(string, chanNumber);
           }
         }
@@ -356,9 +356,9 @@ void CGUIDialogTVEPGSearch::Update()
 
     for (int i = 0; i < channelslist_tv.Size(); i++)
     {
-      int chanNumber = channelslist_tv[i]->GetTVChannelInfoTag()->Number();
+      int chanNumber = channelslist_tv[i]->GetPVRChannelInfoTag()->Number();
       CStdString string;
-      string.Format("%i %s", chanNumber, channelslist_tv[i]->GetTVChannelInfoTag()->Name().c_str());
+      string.Format("%i %s", chanNumber, channelslist_tv[i]->GetPVRChannelInfoTag()->Name().c_str());
       pSpin->AddLabel(string, chanNumber);
     }
     pSpin->SetValue(m_searchfilter->m_ChannelNumber);

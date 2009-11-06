@@ -3847,11 +3847,11 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     options.starttime = item.m_lStartOffset / 75.0;
 
-    if (item.HasTVChannelInfoTag())
+    if (item.HasPVRChannelInfoTag())
     {
       CTVDatabase dbs;
       dbs.Open();
-      dbs.GetChannelSettings(item.GetTVChannelInfoTag()->ChannelID(), g_stSettings.m_currentVideoSettings);
+      dbs.GetChannelSettings(item.GetPVRChannelInfoTag()->ChannelID(), g_stSettings.m_currentVideoSettings);
       dbs.Close();
     }
     else if (item.IsVideo())
@@ -4176,13 +4176,13 @@ void CApplication::SaveFileState()
 
   if (progressTrackingFile != "")
   {
-    if (m_progressTrackingItem->HasTVChannelInfoTag())
+    if (m_progressTrackingItem->HasPVRChannelInfoTag())
     {
       if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
       {
         CTVDatabase dbs;
         dbs.Open();
-        dbs.SetChannelSettings(m_progressTrackingItem->GetTVChannelInfoTag()->ChannelID(), g_stSettings.m_currentVideoSettings);
+        dbs.SetChannelSettings(m_progressTrackingItem->GetPVRChannelInfoTag()->ChannelID(), g_stSettings.m_currentVideoSettings);
         dbs.Close();
       }
     }
@@ -5453,14 +5453,14 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
 
 void CApplication::SaveCurrentFileSettings()
 {
-  if (m_itemCurrentFile->HasTVChannelInfoTag())
+  if (m_itemCurrentFile->HasPVRChannelInfoTag())
   {
     // save video settings
     if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
     {
       CTVDatabase dbs;
       dbs.Open();
-      dbs.SetChannelSettings(m_itemCurrentFile->GetTVChannelInfoTag()->ChannelID(), g_stSettings.m_currentVideoSettings);
+      dbs.SetChannelSettings(m_itemCurrentFile->GetPVRChannelInfoTag()->ChannelID(), g_stSettings.m_currentVideoSettings);
       dbs.Close();
     }
   }

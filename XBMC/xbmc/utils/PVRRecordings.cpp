@@ -247,26 +247,26 @@ int cPVRRecordings::GetRecordings(CFileItemList* results)
 bool cPVRRecordings::DeleteRecording(const CFileItem &item)
 {
   /* Check if a cPVRRecordingInfoTag is inside file item */
-  if (!item.IsTVRecording())
+  if (!item.IsPVRRecording())
   {
     CLog::Log(LOGERROR, "cPVRRecordings: DeleteRecording no RecordingInfoTag given!");
     return false;
   }
 
-  const cPVRRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
+  const cPVRRecordingInfoTag* tag = item.GetPVRRecordingInfoTag();
   return tag->Delete();
 }
 
 bool cPVRRecordings::RenameRecording(CFileItem &item, CStdString &newname)
 {
   /* Check if a cPVRRecordingInfoTag is inside file item */
-  if (!item.IsTVRecording())
+  if (!item.IsPVRRecording())
   {
     CLog::Log(LOGERROR, "cPVRRecordings: RenameRecording no RecordingInfoTag given!");
     return false;
   }
 
-  cPVRRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
+  cPVRRecordingInfoTag* tag = item.GetPVRRecordingInfoTag();
   if (tag->Rename(newname))
   {
     tag->SetTitle(newname);
@@ -277,13 +277,13 @@ bool cPVRRecordings::RenameRecording(CFileItem &item, CStdString &newname)
 
 bool cPVRRecordings::RemoveRecording(const CFileItem &item)
 {
-  if (!item.IsTVRecording())
+  if (!item.IsPVRRecording())
   {
     CLog::Log(LOGERROR, "cPVRRecordings: RemoveRecording no RecordingInfoTag given!");
     return false;
   }
 
-  const cPVRRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
+  const cPVRRecordingInfoTag* tag = item.GetPVRRecordingInfoTag();
 
   for (unsigned int i = 0; i < size(); ++i)
   {

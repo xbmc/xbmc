@@ -517,7 +517,7 @@ void cPVRChannels::HideChannel(unsigned int number)
     }
   }
 
-  if (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio() && g_PVRManager.GetCurrentPlayingItem()->GetTVChannelInfoTag()->Number() == number)
+  if (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio() && g_PVRManager.GetCurrentPlayingItem()->GetPVRChannelInfoTag()->Number() == number)
   {
     CGUIDialogOK::ShowAndGetInput(18090,18097,0,18098);
     return;

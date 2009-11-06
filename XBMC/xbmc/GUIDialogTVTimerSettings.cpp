@@ -56,7 +56,7 @@ CGUIDialogTVTimerSettings::~CGUIDialogTVTimerSettings(void)
 
 void CGUIDialogTVTimerSettings::CreateSettings()
 {
-  cPVRTimerInfoTag* tag = m_timerItem->GetTVTimerInfoTag();
+  cPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
 
   // clear out any old settings
   m_settings.clear();
@@ -79,7 +79,7 @@ void CGUIDialogTVTimerSettings::CreateSettings()
     {
       CStdString string;
       CFileItemPtr item = channelslist_tv[i];
-      string.Format("%i %s", item->GetTVChannelInfoTag()->Number(), item->GetTVChannelInfoTag()->Name().c_str());
+      string.Format("%i %s", item->GetPVRChannelInfoTag()->Number(), item->GetPVRChannelInfoTag()->Name().c_str());
       channelstrings_tv.push_back(string);
     }
 
@@ -97,7 +97,7 @@ void CGUIDialogTVTimerSettings::CreateSettings()
     {
       CStdString string;
       CFileItemPtr item = channelslist_radio[i];
-      string.Format("%i %s", item->GetTVChannelInfoTag()->Number(), item->GetTVChannelInfoTag()->Name().c_str());
+      string.Format("%i %s", item->GetPVRChannelInfoTag()->Number(), item->GetPVRChannelInfoTag()->Name().c_str());
       channelstrings_radio.push_back(string);
     }
 
@@ -220,7 +220,7 @@ void CGUIDialogTVTimerSettings::CreateSettings()
 
 void CGUIDialogTVTimerSettings::OnSettingChanged(SettingInfo &setting)
 {
-  cPVRTimerInfoTag* tag = m_timerItem->GetTVTimerInfoTag();
+  cPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
 
   if (setting.id == CONTROL_TMR_NAME)
   {
@@ -371,10 +371,10 @@ void CGUIDialogTVTimerSettings::SetTimer(CFileItem *item)
   m_timerItem         = item;
   m_cancelled         = true;
 
-  m_timerItem->GetTVTimerInfoTag()->m_StartTime.GetAsSystemTime(timerStartTime);
-  m_timerItem->GetTVTimerInfoTag()->m_StopTime.GetAsSystemTime(timerEndTime);
-  timerStartTimeStr   = m_timerItem->GetTVTimerInfoTag()->m_StartTime.GetAsLocalizedTime("", false);
-  timerEndTimeStr     = m_timerItem->GetTVTimerInfoTag()->m_StopTime.GetAsLocalizedTime("", false);
+  m_timerItem->GetPVRTimerInfoTag()->m_StartTime.GetAsSystemTime(timerStartTime);
+  m_timerItem->GetPVRTimerInfoTag()->m_StopTime.GetAsSystemTime(timerEndTime);
+  timerStartTimeStr   = m_timerItem->GetPVRTimerInfoTag()->m_StartTime.GetAsLocalizedTime("", false);
+  timerEndTimeStr     = m_timerItem->GetPVRTimerInfoTag()->m_StopTime.GetAsLocalizedTime("", false);
 
   m_tmp_iStartTime    = 0;
   m_tmp_iStopTime     = 0;
@@ -385,7 +385,7 @@ void CGUIDialogTVTimerSettings::SetTimer(CFileItem *item)
 void CGUIDialogTVTimerSettings::OnOkay()
 {
   m_cancelled = false;
-  cPVRTimerInfoTag* tag = m_timerItem->GetTVTimerInfoTag();
+  cPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
   if (tag->Title() == g_localizeStrings.Get(18072))
     tag->SetTitle(cPVRChannels::GetByClientFromAll(tag->ClientNumber(), tag->ClientID())->Name());
 }
