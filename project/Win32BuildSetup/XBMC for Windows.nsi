@@ -34,6 +34,7 @@
   Var StartMenuFolder
   Var PageProfileState
   Var RunArgs
+  Var DirectXSetupError
   
 ;--------------------------------
 ;Interface Settings
@@ -359,3 +360,25 @@ Section "Uninstall"
   DeleteRegKey /ifempty HKCU "Software\XBMC"
 
 SectionEnd
+
+;--------------------------------
+;DirectX webinstaller Section
+
+!if "${xbmc_target}" == "dx"
+Section "DirectX Install" SEC_DIRECTX
+ 
+ SectionIn RO
+ 
+ SetOutPath "$TEMP"
+ File "${xbmc_root}\Xbmc\dxwebsetup.exe"
+ DetailPrint "Running DirectX Setup..."
+ ExecWait '"$TEMP\dxwebsetup.exe" /Q' $DirectXSetupError
+ DetailPrint "Finished DirectX Setup"
+ 
+ Delete "$TEMP\dxwebsetup.exe"
+ 
+ SetOutPath "$INSTDIR"
+ 
+SectionEnd
+!endif
+
