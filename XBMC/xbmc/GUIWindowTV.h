@@ -33,8 +33,7 @@ enum TVWindow
   TV_WINDOW_CHANNELS_RADIO  = 3,
   TV_WINDOW_RECORDINGS      = 4,
   TV_WINDOW_TIMERS          = 5,
-  TV_WINDOW_SEARCH          = 6,
-  TV_WINDOW_SETTINGS        = 7
+  TV_WINDOW_SEARCH          = 6
 };
 
 class CGUIWindowTV : public CGUIMediaWindow

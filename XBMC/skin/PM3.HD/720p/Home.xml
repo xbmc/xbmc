@@ -641,7 +641,7 @@
 				<item id="1">
 					<label>18000</label>
 					<onclick>ActivateWindow(TV)</onclick>
-					<icon>special://skin/backgrounds/tv.png</icon>
+					<icon>special://skin/backgrounds/tv.jpg</icon>
 					<thumb>$INFO[Skin.String(Home_Custom_Back_TV_Folder)]</thumb>
 					<visible>System.GetBool(pvrmanager.enabled)</visible>
 				</item>

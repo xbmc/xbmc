@@ -4,7 +4,7 @@
 	<controls>
 		<include>CommonBackground</include>
 		<control type="group">
-			<visible>![Control.HasFocus(31) | Control.HasFocus(35) | Control.HasFocus(36) | Control.HasFocus(37)] + ![Control.IsVisible(9005) | Control.IsVisible(9006) | Control.IsVisible(9001)]</visible>
+			<visible>![Control.HasFocus(31) | Control.HasFocus(35) | Control.HasFocus(36)] + ![Control.IsVisible(9005) | Control.IsVisible(9006) | Control.IsVisible(9001)]</visible>
 		<control type="videowindow">
 				<posx>0</posx>
 				<posy>95</posy>
@@ -25,7 +25,7 @@
 				<width>850</width>
 				<height>540</height>
 				<aspectratio scalediffuse="false">scale</aspectratio>
-				<texture>special://skin/backgrounds/tv.png</texture>
+				<texture>special://skin/backgrounds/tv.jpg</texture>
 				<timeperimage>7000</timeperimage>
 				<randomize>true</randomize>
 				<fadetime>1000</fadetime>
@@ -1717,7 +1717,7 @@
 					<label>18050</label>
 					<onleft>10</onleft>
 					<onright>10</onright>
-					<onup>37</onup>
+					<onup>36</onup>
 					<ondown>32</ondown>
 				</control>
 				<control type="button" id="32">
@@ -1773,17 +1773,6 @@
 					<onleft>17</onleft>
 					<onright>17</onright>
 					<onup>35</onup>
-					<ondown>37</ondown>
-				</control>
-				<control type="button" id="37">
-					<description>Settings</description>
-					<posx>0</posx>
-					<posy>270</posy>
-					<include>ButtonCommonValues</include>
-					<label>5</label>
-					<onleft>36</onleft>
-					<onright>36</onright>
-					<onup>36</onup>
 					<ondown>31</ondown>
 				</control>
 				<control type="group">

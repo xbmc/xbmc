@@ -339,7 +339,8 @@ IMAGES= \
 	Wide_Icon_Diffuse.png \
 	xbmc-logo.png \
 	ruler-side-horiz.png \
-	ruler-side-vert.png
+	ruler-side-vert.png \
+	icon_tv.png
 
 all: $(TARGET)
 

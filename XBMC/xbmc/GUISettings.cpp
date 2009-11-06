@@ -411,8 +411,8 @@ void CGUISettings::Initialize()
 
   AddBool(0, "videolibrary.enabled", 418, true);
   AddBool(3, "videolibrary.hideplots", 20369, false);
-  AddBool(0, "videolibrary.seasonthumbs", 20382, true);                   
-  AddBool(0, "videolibrary.actorthumbs", 20402, true);  
+  AddBool(0, "videolibrary.seasonthumbs", 20382, true);
+  AddBool(0, "videolibrary.actorthumbs", 20402, true);
   AddInt(0, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddSeparator(7, "videolibrary.sep2");
   AddBool(8, "videolibrary.updateonstartup", 22000, false);
@@ -557,10 +557,6 @@ void CGUISettings::Initialize()
   AddSeparator(3,"upnp.sep1");
   AddBool(4, "upnp.server", 21360, false);
 
-  AddCategory(6, "pvrmanager", 18000);
-  AddBool(1, "pvrmanager.enabled", 449  , false);
-  AddString(2, "pvrmanager.pvrsources", 18001, "", BUTTON_CONTROL_STANDARD);
-
   // remote events settings
 #ifdef HAS_EVENT_SERVER
   AddCategory(6, "remoteevents", 790);
@@ -653,6 +649,9 @@ void CGUISettings::Initialize()
 
   // tv settings (access over TV menu from home window)
   AddGroup(8, 18000);
+  AddCategory(8, "pvrmanager", 128);
+  AddBool(1, "pvrmanager.enabled", 449  , false);
+  AddString(2, "pvrmanager.pvrsources", 18001, "", BUTTON_CONTROL_STANDARD);
   AddCategory(8,"pvrmenu", 18004);
   AddInt(1, "pvrmenu.daystodisplay", 18005, 2, 1, 1, 4, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
   AddInt(2, "pvrmenu.lingertime", 18006, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);
