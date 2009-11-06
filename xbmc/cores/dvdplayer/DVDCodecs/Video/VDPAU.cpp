@@ -984,8 +984,6 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   vdpau_render_state * render = NULL;
 
   vdp->Create(avctx->width,avctx->height);
-  // make sure device is recovered
-  vdp->CheckRecover();
 
   // find unused surface
   for(unsigned int i = 0; i < vdp->m_videoSurfaces.size(); i++)
@@ -1193,10 +1191,10 @@ void CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
   {
     CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
     if (vdpauConfigured && !VDPAUSwitching) 
-      CheckRecover(true);
+      recover = true;
   }
   if (vdp_st == VDP_STATUS_HANDLE_DEVICE_MISMATCH)
-    CheckRecover(true);
+    recover = true;
 }
 
 #endif
