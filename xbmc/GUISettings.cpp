@@ -239,7 +239,7 @@ void CGUISettings::Initialize()
   AddString(1, "mymusic.visualisation", 250, "opengl_spectrum.vis", SPIN_CONTROL_TEXT);
 #elif defined(_WIN32)
 #ifdef HAS_DX
-  AddString(1, "mymusic.visualisation", 250, "Waveform_win32dx.vis", SPIN_CONTROL_TEXT);
+  AddString(1, "mymusic.visualisation", 250, "MilkDrop_win32dx.vis", SPIN_CONTROL_TEXT);
 #else
   AddString(1, "mymusic.visualisation", 250, "opengl_spectrum_win32.vis", SPIN_CONTROL_TEXT);
 #endif
