@@ -699,6 +699,11 @@
     <posx>492</posx>
     <posy>510</posy>
   </include>
+  
+  <include name="VideoOSDWebKitDims">
+    <posx>541</posx>
+    <posy>510</posy>
+  </include>
 
   <constant name="VideOSDControlButtonWidth">49</constant>
 
@@ -708,6 +713,7 @@
   </include>
 
   <constant name="VideoOSDPlayerControlsSeparatorWidth">248</constant>
+  <constant name="VideoOSDWebKitPlayerControlsSeparatorWidth">444</constant>
 
   <include name="VideoOSDBkmkBtnsGroupDims">
     <posx>200</posx>

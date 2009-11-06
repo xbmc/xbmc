@@ -1,79 +1,19 @@
 <window id="2901">
-  <defaultcontrol>211</defaultcontrol>
+  <defaultcontrol>217</defaultcontrol>
 
   <controls>
     <!-- OSD Controls -->
     <control type="group">
+      <visible>!Player.IsWebkit</visible>
       <include>VideoOSDDims</include>
       <include>VideoOSDSlide</include>
-
-      <control type="grouplist">
-        <posy>69</posy>
-        <orientation>horizontal</orientation>
-        <itemgap>0</itemgap>
-
-        <include>OSDPlayerControls</include>
-
-        <control type="label" id="209">
-          <width>VideoOSDPlayerControlsSeparatorWidth</width>
-          <label></label>
-        </control>
-
-        <control type="button" id="211">
-          <description>BookMarks button</description>
-          <visible>![Player.Forwarding | Player.Rewinding]</visible>
-          <include>VideOSDControlButton</include>
-          <texturefocus>OSDBookmarksFO.png</texturefocus>
-          <texturenofocus>OSDBookmarksNF.png</texturenofocus>
-          <onclick>XBMC.ActivateWindow(125)</onclick>
-          <onleft>220</onleft>
-          <onright>212</onright>
-        </control>
-
-        <control type="button" id="212">
-          <description>Audio Settings button</description>
-          <visible>![Player.Forwarding | Player.Rewinding]</visible>
-          <include>VideOSDControlButton</include>
-          <texturefocus>OSDAudioFO.png</texturefocus>
-          <texturenofocus>OSDAudioNF.png</texturenofocus>
-          <onclick>XBMC.ActivateWindow(124)</onclick>
-          <onleft>211</onleft>
-          <onright>213</onright>
-        </control>
-
-        <control type="button" id="213">
-          <description>Video Settings button</description>
-          <visible>![Player.Forwarding | Player.Rewinding]</visible>
-          <include>VideOSDControlButton</include>
-          <texturefocus>OSDVideoFO.png</texturefocus>
-          <texturenofocus>OSDVideoNF.png</texturenofocus>
-          <onclick>XBMC.ActivateWindow(123)</onclick>
-          <onleft>212</onleft>
-          <onright>214</onright>
-        </control>
-
-        <control type="image" id="210">
-          <description>dvd button Fake</description>
-          <visible>![Player.Forwarding | Player.Rewinding]</visible>
-          <include>VideOSDControlButton</include>
-          <texture>OSDDvdNF.png</texture>
-          <colordiffuse>44FFFFFF</colordiffuse>
-          <visible>!VideoPlayer.HasMenu</visible>
-        </control>
-
-        <control type="button" id="214">
-          <description>dvd button</description>
-          <visible>![Player.Forwarding | Player.Rewinding]</visible>
-          <include>VideOSDControlButton</include>
-          <texturefocus>OSDDvdFO.png</texturefocus>
-          <texturenofocus>OSDDvdNF.png</texturenofocus>
-          <onclick>XBMC.PlayerControl(ShowVideoMenu)</onclick>
-          <onleft>213</onleft>
-          <onright>215</onright>
-          <visible>VideoPlayer.HasMenu</visible>
-        </control>
-      </control>
+      <include>OSDGroup</include>
     </control>
-
+    <control type="group">
+      <visible>Player.IsWebkit</visible>
+      <include>VideoOSDWebKitDims</include>
+      <include>VideoOSDSlide</include>
+      <include>OSDWebKitGroup</include>
+    </control>
   </controls>
 </window>
