@@ -32,6 +32,7 @@
 #include "GUISettings.h"
 #include "Settings.h"
 #include "StringUtils.h"
+#include "SystemInfo.h"
 #include "XMLUtils.h"
 #include "utils/log.h"
 
@@ -517,6 +518,7 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
 
+  if (g_sysinfo.IsAppleTV())
   { 
     // backward compatibility with Launcher install script on AppleTV platforms
     // AppleTV OS < 2.4 needs this set for getting XBMC in front of Frontrow.
