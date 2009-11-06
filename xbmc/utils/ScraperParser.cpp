@@ -48,6 +48,7 @@ CScraperParser::CScraperParser()
   m_language = NULL;
   m_framework = NULL;
   m_date = NULL;
+  m_requiressettings = false;
   m_SearchStringEncoding = "UTF-8";
 }
 
@@ -85,6 +86,7 @@ void CScraperParser::Clear()
 
   m_document = NULL;
   m_name = m_thumb = m_content = m_language = m_framework = m_date = NULL;
+  m_requiressettings = false;
   m_settings = NULL;
   m_strFile.Empty();
 }
@@ -126,6 +128,9 @@ bool CScraperParser::LoadFromXML()
     m_language = m_pRootElement->Attribute("language");
     m_framework = m_pRootElement->Attribute("framework");
     m_date = m_pRootElement->Attribute("date");
+   
+    const char* requiressettings;
+    m_requiressettings = ((requiressettings = m_pRootElement->Attribute("requiressettings")) && strnicmp("true", requiressettings, 4) == 0);
 
     if (m_name && m_content) // FIXME
     {
