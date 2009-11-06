@@ -897,6 +897,13 @@ int CBuiltins::Execute(const CStdString& execString)
     else if (execute.Equals("skin.setfile"))
     {
       CStdString strMask = (params.size() > 1) ? params[1] : "";
+      if (strMask.Find(".py") > -1)
+      {
+        CMediaSource source;
+        source.strPath = "special://home/scripts/";
+        source.strName = g_localizeStrings.Get(247);
+        localShares.push_back(source);
+      }
     
       if (params.size() > 2)
       {
