@@ -113,23 +113,29 @@ void CSMB::Init()
     if (f != NULL)
     {
       fprintf(f, "[global]\n");
+
+      // make sure we're not acting like a server
+      fprintf(f, "preferred master = no\n");
+      fprintf(f, "local master = no\n");
+      fprintf(f, "domain master = no\n");
+
+      // use the weaker LANMAN password hash in order to be compatible with older servers
       fprintf(f, "client lanman auth = yes\n");
       fprintf(f, "lanman auth = yes\n");
-      // if a wins-server is set, we have to change name resolve order to
-      if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
-      {
-        fprintf(f, "  wins server = %s\n", g_guiSettings.GetString("smb.winsserver").c_str());
-        fprintf(f, "  name resolve order = bcast wins host\n");
-      }
-      else
-        fprintf(f, "name resolve order = bcast host\n");
 
+      // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
+      // if no WINS server has been specified the wins method will be ignored.
+      if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
+        fprintf(f, "  wins server = %s\n", g_guiSettings.GetString("smb.winsserver").c_str());
+
+      // use user-configured charset. if no charset is specified,
+      // samba tries to use charset 850 but falls back to ASCII in case it is not available
       if (g_advancedSettings.m_sambadoscodepage.length() > 0)
         fprintf(f, "dos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
-      else
-        fprintf(f, "dos charset = CP850\n");
 
-      fprintf(f, "workgroup = %s\n", g_guiSettings.GetString("smb.workgroup").c_str());
+      // if no workgroup string is specified, samba will use the default value 'WORGROUP'
+      if ( g_guiSettings.GetString("smb.workgroup").length() > 0 )
+        fprintf(f, "workgroup = %s\n", g_guiSettings.GetString("smb.workgroup").c_str());
       fclose(f);
     }
 #endif
