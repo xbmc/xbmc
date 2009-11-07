@@ -956,6 +956,10 @@ int CBuiltins::Execute(const CStdString& execString)
     if (musicScan && musicScan->IsScanning())
       musicScan->StopScanning();
 
+    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (videoScan && videoScan->IsScanning())
+      videoScan->StopScanning();
+
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_settings.LoadProfile(0); // login screen always runs as default user
     g_passwordManager.bMasterUser = false;
