@@ -108,6 +108,10 @@ Section "XBMC" SecXBMC
   SetOutPath "$INSTDIR\system"
   File /r /x *.so /x mplayer "${xbmc_root}\Xbmc\system\*.*"
   
+  ; delete  msvc?90.dll's in INSTDIR, we use the vcredist installer later
+  Delete "$INSTDIR\msvcr90.dll"
+  Delete "$INSTDIR\msvcp90.dll"
+  
   ;Turn off overwrite to prevent files in xbmc\userdata\ from being overwritten
   SetOverwrite off
   
