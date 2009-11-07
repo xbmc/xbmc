@@ -602,6 +602,12 @@ unsigned int CFileSMB::Read(void *lpBuf, int64_t uiBufSize)
 
   int bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
 
+  if ( bytesRead < 0 && errno == EINVAL )
+  {
+    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s ) - Retrying", __FUNCTION__, bytesRead, errno, strerror(errno));
+    bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
+  }
+
   if ( bytesRead < 0 )
   {
 #ifndef _LINUX
