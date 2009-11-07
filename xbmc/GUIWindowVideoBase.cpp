@@ -1386,7 +1386,14 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems->Size())
     return;
 
-  CFileItemPtr item = m_vecItems->Get(iItem);
+  OnDeleteItem(m_vecItems->Get(iItem));
+
+  Update(m_vecItems->m_strPath);
+  m_viewControl.SetSelectedItem(iItem);
+}
+
+void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
+{
   // HACK: stacked files need to be treated as folders in order to be deleted
   if (item->IsStack())
     item->m_bIsFolder = true;
@@ -1399,9 +1406,6 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
 
   if (!CGUIWindowFileManager::DeleteItem(item.get()))
     return;
-
-  Update(m_vecItems->m_strPath);
-  m_viewControl.SetSelectedItem(iItem);
 }
 
 void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)

@@ -842,56 +842,46 @@ void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   CGUIWindowVideoBase::OnInfo(pItem,info2);
 }
 
-void CGUIWindowVideoNav::OnDeleteItem(int iItem)
+void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
 {
-  if (iItem < 0 || iItem >= (int)m_vecItems->Size()) return;
-
   if (m_vecItems->IsPlugin())
     return;
 
   if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
-  {
-    CGUIWindowVideoBase::OnDeleteItem(iItem);
-    return;
-  }
-
-  CFileItemPtr pItem = m_vecItems->Get(iItem);
-  if (pItem->m_strPath.Left(14).Equals("videodb://1/7/") && pItem->m_strPath.size() > 14 && pItem->m_bIsFolder)
+    CGUIWindowVideoBase::OnDeleteItem(pItem);
+  else if (pItem->m_strPath.Left(14).Equals("videodb://1/7/") && pItem->m_strPath.size() > 14 && pItem->m_bIsFolder)
   {
     CFileItemList items;
     CDirectory::GetDirectory(pItem->m_strPath,items);
     for (int i=0;i<items.Size();++i)
-    {
-      *pItem = *items[i];
-      OnDeleteItem(iItem);
-    }
+      OnDeleteItem(items[i]);
+
     CVideoDatabaseDirectory dir;
     CQueryParams params;
     dir.GetQueryParams(pItem->m_strPath,params);
     m_database.DeleteSet(params.GetSetId());
-    return;
   }
-  if (!DeleteItem(pItem.get()))
+  else 
+  {
+    if (!DeleteItem(pItem.get()))
     return;
 
-  CStdString strDeletePath;
-  if (pItem->m_bIsFolder)
-    strDeletePath=pItem->GetVideoInfoTag()->m_strPath;
-  else
-    strDeletePath=pItem->GetVideoInfoTag()->m_strFileNameAndPath;
+    CStdString strDeletePath;
+    if (pItem->m_bIsFolder)
+      strDeletePath=pItem->GetVideoInfoTag()->m_strPath;
+    else
+      strDeletePath=pItem->GetVideoInfoTag()->m_strFileNameAndPath;
 
-  if (g_guiSettings.GetBool("filelists.allowfiledeletion") &&
-      CUtil::SupportsFileOperations(strDeletePath))
-  {
-    pItem->m_strPath = strDeletePath;
-    CGUIWindowVideoBase::OnDeleteItem(iItem);
+    if (g_guiSettings.GetBool("filelists.allowfiledeletion") &&
+        CUtil::SupportsFileOperations(strDeletePath))
+    {
+      pItem->m_strPath = strDeletePath;
+      CGUIWindowVideoBase::OnDeleteItem(pItem);
+    }
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
-
   DisplayEmptyDatabaseMessage(!m_database.HasContent());
-  Update( m_vecItems->m_strPath );
-  m_viewControl.SetSelectedItem(iItem);
 }
 
 bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = false */)
