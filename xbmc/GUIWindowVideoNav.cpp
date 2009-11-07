@@ -50,6 +50,7 @@
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "MediaManager.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -1526,8 +1527,10 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       items.Add(noneitem);
 
+      VECSOURCES sources=g_settings.m_videoSources;
+      g_mediaManager.GetLocalDrives(sources);
       CStdString result;
-      if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_videoSources,
+      if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources,
                                                   g_localizeStrings.Get(20019), result))
       {
         return false;   // user cancelled
