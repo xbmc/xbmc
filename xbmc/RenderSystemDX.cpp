@@ -50,6 +50,7 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   m_inScene = false;
   m_needNewDevice = false;
   m_adapter = D3DADAPTER_DEFAULT;
+  m_screenHeight = 0;
 
   ZeroMemory(&m_D3DPP, sizeof(D3DPRESENT_PARAMETERS));
 }
@@ -299,6 +300,12 @@ bool CRenderSystemDX::CreateDevice()
     }
   }
 
+  D3DDISPLAYMODE mode;
+  if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))
+    m_screenHeight = mode.Height;
+  else
+    m_screenHeight = m_nBackBufferHeight;
+
   m_pD3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
   m_pD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
 
@@ -323,6 +330,12 @@ bool CRenderSystemDX::PresentRenderImpl()
   if(m_nDeviceStatus != S_OK)
     return false;
 
+  if (g_advancedSettings.m_sleepBeforeFlip)
+  {
+    D3DRASTER_STATUS rasterStatus;
+    while (SUCCEEDED(m_pD3DDevice->GetRasterStatus(0, &rasterStatus)) && !rasterStatus.InVBlank && rasterStatus.ScanLine < 0.9*m_screenHeight)
+      Sleep(1);
+  }
   hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
 
   if( D3DERR_DEVICELOST == hr )

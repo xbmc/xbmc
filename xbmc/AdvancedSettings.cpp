@@ -238,6 +238,7 @@ void CAdvancedSettings::Initialize()
 #else
   m_fakeFullScreen = false;
 #endif
+  m_sleepBeforeFlip = false;
   m_bVirtualShares = true;
 
 //caused lots of jerks
@@ -529,6 +530,7 @@ bool CAdvancedSettings::Load()
   }
 
   XMLUtils::GetBoolean(pRootElement,"fakefullscreen", m_fakeFullScreen);
+  XMLUtils::GetBoolean(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
 
   //Tuxbox
