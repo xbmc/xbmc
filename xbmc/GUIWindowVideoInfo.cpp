@@ -872,7 +872,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
   VECSOURCES sources(g_settings.m_videoSources);
   g_mediaManager.GetLocalDrives(sources);
   bool flip=false;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result, &flip) || result.Equals("fanart://Current"))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip) || result.Equals("fanart://Current"))
     return;   // user cancelled
 
   if (CFile::Exists(cachedThumb))
