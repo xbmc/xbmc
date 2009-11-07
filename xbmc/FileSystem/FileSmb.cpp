@@ -104,7 +104,9 @@ void CSMB::Init()
   if (!m_context)
   {
 #ifdef _LINUX
-    // Create ~/.smb/smb.conf
+    // Create ~/.smb/smb.conf. This file is used by libsmbclient.
+    // http://us1.samba.org/samba/docs/man/manpages-3/libsmbclient.7.html
+    // http://us1.samba.org/samba/docs/man/manpages-3/smb.conf.5.html
     char smb_conf[MAX_PATH];
     sprintf(smb_conf, "%s/.smb", getenv("HOME"));
     mkdir(smb_conf, 0755);
@@ -113,23 +115,29 @@ void CSMB::Init()
     if (f != NULL)
     {
       fprintf(f, "[global]\n");
-      fprintf(f, "client lanman auth = yes\n");
-      fprintf(f, "lanman auth = yes\n");
-      // if a wins-server is set, we have to change name resolve order to
+
+      // make sure we're not acting like a server
+      fprintf(f, "\tpreferred master = no\n");
+      fprintf(f, "\tlocal master = no\n");
+      fprintf(f, "\tdomain master = no\n");
+
+      // use the weaker LANMAN password hash in order to be compatible with older servers
+      fprintf(f, "\tclient lanman auth = yes\n");
+      fprintf(f, "\tlanman auth = yes\n");
+
+      // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
+      // if no WINS server has been specified the wins method will be ignored.
       if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
-      {
-        fprintf(f, "  wins server = %s\n", g_guiSettings.GetString("smb.winsserver").c_str());
-        fprintf(f, "  name resolve order = bcast wins host\n");
-      }
-      else
-        fprintf(f, "name resolve order = bcast host\n");
+        fprintf(f, "\twins server = %s\n", g_guiSettings.GetString("smb.winsserver").c_str());
 
+      // use user-configured charset. if no charset is specified,
+      // samba tries to use charset 850 but falls back to ASCII in case it is not available
       if (g_advancedSettings.m_sambadoscodepage.length() > 0)
-        fprintf(f, "dos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
-      else
-        fprintf(f, "dos charset = CP850\n");
+        fprintf(f, "\tdos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
 
-      fprintf(f, "workgroup = %s\n", g_guiSettings.GetString("smb.workgroup").c_str());
+      // if no workgroup string is specified, samba will use the default value 'WORKGROUP'
+      if ( g_guiSettings.GetString("smb.workgroup").length() > 0 )
+        fprintf(f, "\tworkgroup = %s\n", g_guiSettings.GetString("smb.workgroup").c_str());
       fclose(f);
     }
 #endif
@@ -602,12 +610,18 @@ unsigned int CFileSMB::Read(void *lpBuf, int64_t uiBufSize)
 
   int bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
 
+  if ( bytesRead < 0 && errno == EINVAL )
+  {
+    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s ) - Retrying", __FUNCTION__, bytesRead, errno, strerror(errno));
+    bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
+  }
+
   if ( bytesRead < 0 )
   {
 #ifndef _LINUX
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
-    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s )", __FUNCTION__, bytesRead, errno, strerror(errno));
 #endif
     return 0;
   }
@@ -632,7 +646,7 @@ int64_t CFileSMB::Seek(int64_t iFilePosition, int iWhence)
 #ifndef _LINUX
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
-    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s )", __FUNCTION__, pos, errno, strerror(errno));
 #endif
     return -1;
   }
