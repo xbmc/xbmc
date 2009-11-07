@@ -2136,6 +2136,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
     if (dlg->IsConfirmed())
     {
+      g_settings.Save();
       g_application.getApplicationMessenger().RestartApp();
     }
   }
