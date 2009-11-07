@@ -1525,6 +1525,12 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         }
       }
 
+      if (button == CONTEXT_BUTTON_SET_MOVIESET_THUMB)
+      {
+        noneitem->SetIconImage("DefaultVideo.png");
+        noneitem->SetLabel(g_localizeStrings.Get(20018));
+      }
+
       items.Add(noneitem);
 
       VECSOURCES sources=g_settings.m_videoSources;
