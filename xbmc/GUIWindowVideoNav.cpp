@@ -995,8 +995,8 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
 
     if(filterWatched)
     {
-      if(g_stSettings.m_iMyVideoWatchMode==VIDEO_SHOW_WATCHED   && item->GetVideoInfoTag()->m_playCount== 0
-      || g_stSettings.m_iMyVideoWatchMode==VIDEO_SHOW_UNWATCHED && item->GetVideoInfoTag()->m_playCount > 0)
+      if((g_stSettings.m_iMyVideoWatchMode==VIDEO_SHOW_WATCHED   && item->GetVideoInfoTag()->m_playCount== 0)
+      || (g_stSettings.m_iMyVideoWatchMode==VIDEO_SHOW_UNWATCHED && item->GetVideoInfoTag()->m_playCount > 0))
       {
         items.Remove(i);
         i--;
