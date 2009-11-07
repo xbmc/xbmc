@@ -26,7 +26,7 @@
 #include "utils/RegExp.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowVideoInfo.h"
-#include "GUIWindowVideoNav.h" 
+#include "GUIWindowVideoNav.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogSmartPlaylistEditor.h"
@@ -718,7 +718,7 @@ void CGUIWindowVideoBase::OnManualIMDB()
 
 bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel)
 {
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
   if (pCdInfo == NULL)
     return false;
@@ -729,7 +729,7 @@ bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, co
   int iLabelDB = strDVDLabel.GetLength();
   if (iLabelDB < iLabelCD)
     return false;
-  CStdString dbLabel = strDVDLabel.Left(iLabelCD); 
+  CStdString dbLabel = strDVDLabel.Left(iLabelCD);
   return (dbLabel == label);
 #else
   return false;
@@ -972,7 +972,7 @@ bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
   }
   if (resumeItem)
     item.m_lStartOffset = STARTOFFSET_RESUME;
-  
+
   return true;
 }
 
@@ -980,7 +980,7 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size()) return;
   CFileItemPtr item = m_vecItems->Get(iItem);
-  
+
   // Show menu asking the user
   if ( OnResumeShowMenu(*item) )
     CGUIMediaWindow::OnClick(iItem);
@@ -1528,7 +1528,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
   //Get the new title
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false))
     return;
-  
+
   database.UpdateMovieTitle(iDbId, strInput, iType);
 }
 

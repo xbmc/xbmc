@@ -861,7 +861,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     dir.GetQueryParams(pItem->m_strPath,params);
     m_database.DeleteSet(params.GetSetId());
   }
-  else 
+  else
   {
     if (!DeleteItem(pItem.get()))
     return;
@@ -1015,7 +1015,7 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
   bool filter = false;
   if (node == NODE_TYPE_TITLE_MOVIES
   ||  node == NODE_TYPE_TITLE_MUSICVIDEOS
-  ||  node == NODE_TYPE_RECENTLY_ADDED_MOVIES 
+  ||  node == NODE_TYPE_RECENTLY_ADDED_MOVIES
   ||  node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
   { // need to filter no matter to get rid of duplicates - price to pay for not filtering in db
     filter = true;
@@ -1205,7 +1205,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
         if (m_vecItems->m_strPath.Equals("plugin://video/"))
           buttons.Add(CONTEXT_BUTTON_SET_PLUGIN_THUMB, 1044);
-          
+
         if (item->m_strPath.Left(14).Equals("videodb://1/7/") && item->m_strPath.size() > 14 && item->m_bIsFolder) // sets
         {
           buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
