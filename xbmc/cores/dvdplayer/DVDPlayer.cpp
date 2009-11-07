@@ -1928,6 +1928,9 @@ void CDVDPlayer::HandleMessages()
           if(result)
           {
             FlushBuffers(false);
+#ifdef HAVE_LIBVDPAU
+            if (!g_VDPAU)
+#endif
             CloseVideoStream(false);
             CloseAudioStream(false);
             CloseSubtitleStream(false);

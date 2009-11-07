@@ -359,7 +359,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       pd.filename = strFile.c_str();
 
       // read data using avformat's buffers
-      if(context->is_streamed && !m_pInput->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+      if(context->is_streamed)
         pd.buf_size = m_dllAvFormat.get_partial_buffer(m_ioContext, pd.buf, context->max_packet_size);
       else
         pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, context->max_packet_size);
