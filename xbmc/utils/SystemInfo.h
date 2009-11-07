@@ -56,9 +56,7 @@ class CSysInfo : public CInfoLoader
     CStdString GetUnameVersion();
 #endif    
     CStdString GetUserAgent();
-#if defined(__APPLE__)
     bool IsAppleTV();
-#endif
     CStdString GetSystemUpTime(bool bTotalUptime);
     CStdString GetCPUFreqInfo();
     CStdString GetXBVerInfo();

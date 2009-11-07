@@ -624,10 +624,10 @@ CStdString CSysInfo::GetUserAgent()
   return result;
 }
 
-#if defined(__APPLE__)
 bool CSysInfo::IsAppleTV()
 {
   bool        result = false;
+#if defined(__APPLE__)
   char        buffer[512];
   size_t      len = 512;
   std::string hw_model = "unknown";
@@ -637,9 +637,8 @@ bool CSysInfo::IsAppleTV()
   
   if (hw_model.find("AppleTV") != std::string::npos)
     result = true;
-
+#endif
   return result;
 }
-#endif
 
 
