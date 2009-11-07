@@ -139,6 +139,10 @@ Section "XBMC" SecXBMC
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   ;Create shortcuts
   SetOutPath "$INSTDIR"
+  
+  ; delete old windowed link
+  Delete "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk"
+  
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
   ${If} $PageProfileState == "1"
     StrCpy $RunArgs "-p"
@@ -352,6 +356,7 @@ Section "Uninstall"
   
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
   Delete "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\XBMC (Portable).lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall XBMC.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\Visit XBMC Online.url"
