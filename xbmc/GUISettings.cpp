@@ -1012,6 +1012,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   {
     SetInt("videoscreen.vsync", VSYNC_ALWAYS);
   }
+#endif
   // if AppleTV, trap any previous highqualityupscaling setting and set to zero
   if (g_sysinfo.IsAppleTV())
   {
@@ -1020,7 +1021,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
       SetInt("videoplayer.highqualityupscaling", SOFTWARE_UPSCALING_DISABLED);
     }
   }
-#endif
  // DXMERGE: This might have been useful?
  // g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);

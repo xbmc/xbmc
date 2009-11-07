@@ -23,12 +23,6 @@
 #include <string.h>
 #include "RegExp.h"
 #include "StdString.h"
-
-#if defined (_WIN32) || defined (__APPLE__)
-#include "lib/libpcre/pcre.h"
-#else
-#include <pcre.h>
-#endif
 #include "log.h"
 
 using namespace PCRE;
@@ -42,6 +36,35 @@ CRegExp::CRegExp(bool caseless)
 
   m_bMatched    = false;
   m_iMatchCount = 0;
+}
+
+CRegExp::CRegExp(const CRegExp& re)
+{
+  m_re = NULL;
+  m_iOptions = re.m_iOptions;
+  *this = re;
+}
+
+const CRegExp& CRegExp::operator=(const CRegExp& re)
+{
+  size_t size;
+  Cleanup();
+  m_pattern = re.m_pattern;
+  if (re.m_re)
+  {
+    if (pcre_fullinfo(re.m_re, NULL, PCRE_INFO_SIZE, &size) >= 0)
+    {
+      if ((m_re = (pcre*)malloc(size)))
+      {
+        memcpy(m_re, re.m_re, size);
+        memcpy(m_iOvector, re.m_iOvector, OVECCOUNT*sizeof(int));
+        m_iMatchCount = re.m_iMatchCount;
+        m_bMatched = re.m_bMatched;
+        m_subject = re.m_subject;
+      }
+    }
+  }
+  return *this;
 }
 
 CRegExp::~CRegExp()
@@ -64,10 +87,13 @@ CRegExp* CRegExp::RegComp(const char *re)
   m_re = pcre_compile(re, m_iOptions, &errMsg, &errOffset, NULL);
   if (!m_re)
   {
+    m_pattern.clear();
     CLog::Log(LOGERROR, "PCRE: %s. Compilation failed at offset %d in expression '%s'",
               errMsg, errOffset, re);
     return NULL;
   }
+
+  m_pattern = re;
 
   return this;
 }

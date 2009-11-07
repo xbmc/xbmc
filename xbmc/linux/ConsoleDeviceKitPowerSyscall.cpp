@@ -33,7 +33,7 @@ CConsoleDeviceKitPowerSyscall::CConsoleDeviceKitPowerSyscall()
   m_CanPowerdown = ConsoleKitMethodCall("CanStop");
   m_CanSuspend   = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power",    "org.freedesktop.DeviceKit.Power", "can_suspend");
   m_CanHibernate = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power",    "org.freedesktop.DeviceKit.Power", "can_hibernate");
-  m_CanReboot    = ConsoleKitMethodCall("CanReboot");
+  m_CanReboot    = ConsoleKitMethodCall("CanRestart");
 }
 
 bool CConsoleDeviceKitPowerSyscall::Powerdown()
@@ -80,7 +80,7 @@ bool CConsoleDeviceKitPowerSyscall::CanReboot()
 bool CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit()
 {
   bool hasConsoleKitManager = false;
-  CDBusMessage consoleKitMessage("org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit.Manager", "CanReboot");
+  CDBusMessage consoleKitMessage("org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit.Manager", "CanStop");
 
   DBusError error;
   dbus_error_init (&error);
