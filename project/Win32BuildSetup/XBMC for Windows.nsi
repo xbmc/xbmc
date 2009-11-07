@@ -387,12 +387,13 @@ SectionEnd
 ;vs redist installer Section
 
 Section "Microsoft Visual C++ 2008 Redistributable Package (x86)" SEC_VCREDIST
-  SectionIn RO
+
+  SectionIn 1 2
   
   SetOutPath "$TEMP"
   File "${xbmc_root}\Xbmc\vcredist_x86.exe"
   DetailPrint "Running VS Redist Setup..."
-  ExecWait '"$TEMP\vcredist_x86.exe" /Q' $VSRedistSetupError
+  ExecWait '"$TEMP\vcredist_x86.exe" /q' $VSRedistSetupError
   DetailPrint "Finished VS Redist Setup"
  
   Delete "$TEMP\vcredist_x86.exe"
