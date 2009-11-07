@@ -93,10 +93,10 @@ void CGUIVisualisationControl::UpdateVisibility(const CGUIListItem *item)
     FreeVisualisation();
 }
 
-void CGUIVisualisationControl::SetInvalid()
+/*void CGUIVisualisationControl::SetInvalid()
 {
   FreeResources();
-}
+}*/
 
 void CGUIVisualisationControl::Render()
 {

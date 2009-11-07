@@ -123,7 +123,7 @@ namespace ADDON
     bool RequestRemoval(const IAddon* addon);
 
     /* Addon access */
-    bool GetDefaultScraper(CScraperPtr &scaper, const CONTENT_TYPE & content);
+    bool GetDefaultScraper(CScraperPtr &scaper, const CONTENT_TYPE &content);
     bool GetDefaultScraper(AddonPtr &scraper, const CONTENT_TYPE &content);
     bool GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addon);
     bool GetAddonFromPath(const CStdString &path, AddonPtr &addon);

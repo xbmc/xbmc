@@ -442,7 +442,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         CLog::Log(LOGDEBUG, "WindowVideoNav::GetDirectory");
         // grab the show thumb
         CFileItem showItem;
-        m_database.GetFilePathById(params.GetTvShowId(),showItem.m_strPath,CONTENT_TVSHOWS);
+        m_database.GetFilePathById(params.GetTvShowId(),showItem.m_strPath,VIDEODB_CONTENT_TVSHOWS);
         showItem.SetVideoThumb();
         items.SetProperty("tvshowthumb", showItem.GetThumbnailImage());
         // Grab fanart data
@@ -911,24 +911,24 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
     return false;
   }
 
-  CONTENT_TYPE iType=CONTENT_MOVIES;
+  VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty())
-    iType = CONTENT_TVSHOWS;
+    iType = VIDEODB_CONTENT_TVSHOWS;
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
-    iType = CONTENT_EPISODES;
+    iType = VIDEODB_CONTENT_EPISODES;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
-    iType = CONTENT_MUSICVIDEOS;
+    iType = VIDEODB_CONTENT_MUSICVIDEOS;
 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!pDialog)
     return false;
-  if (iType == CONTENT_MOVIES)
+  if (iType == VIDEODB_CONTENT_MOVIES)
     pDialog->SetHeading(432);
-  if (iType == CONTENT_EPISODES)
+  if (iType == VIDEODB_CONTENT_EPISODES)
     pDialog->SetHeading(20362);
-  if (iType == CONTENT_TVSHOWS)
+  if (iType == VIDEODB_CONTENT_TVSHOWS)
     pDialog->SetHeading(20363);
-  if (iType == CONTENT_MUSICVIDEOS)
+  if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     pDialog->SetHeading(20392);
 
   if(bUnavailable)
@@ -958,16 +958,16 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
   database.GetFilePathById(pItem->GetVideoInfoTag()->m_iDbId, path, iType);
   if (path.IsEmpty())
     return false;
-  if (iType == CONTENT_MOVIES)
+  if (iType == VIDEODB_CONTENT_MOVIES)
     database.DeleteMovie(path);
-  if (iType == CONTENT_EPISODES)
+  if (iType == VIDEODB_CONTENT_EPISODES)
     database.DeleteEpisode(path, pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == CONTENT_TVSHOWS)
+  if (iType == VIDEODB_CONTENT_TVSHOWS)
    database.DeleteTvShow(path);
-  if (iType == CONTENT_MUSICVIDEOS)
+  if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     database.DeleteMusicVideo(path);
 
-  if (iType == CONTENT_TVSHOWS)
+  if (iType == VIDEODB_CONTENT_TVSHOWS)
     database.SetPathHash(path,"");
   else
   {
@@ -1190,7 +1190,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           if (node != NODE_TYPE_SEASONS)
             buttons.Add(CONTEXT_BUTTON_EDIT, 16105); //Edit Title
         }
-        if (m_database.HasContent(CONTENT_TVSHOWS) && item->HasVideoInfoTag() &&
+        if (m_database.HasContent(VIDEODB_CONTENT_TVSHOWS) && item->HasVideoInfoTag() &&
            !item->m_bIsFolder && item->GetVideoInfoTag()->m_iEpisode == -1 &&
             item->GetVideoInfoTag()->m_strArtist.IsEmpty()) // movie entry
         {

@@ -48,7 +48,7 @@ protected:
   void Refresh();
   void Update();
   void SetLabel(int iControl, const CStdString& strLabel);
-  CONTENT_TYPE GetContent(const CFileItem *pItem) const;
+  VIDEODB_CONTENT_TYPE GetContent(const CFileItem *pItem) const;
 
   // link cast to movies
   void ClearCastList();

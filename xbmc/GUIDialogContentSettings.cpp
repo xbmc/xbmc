@@ -23,17 +23,12 @@
 #include "GUIDialogAddonSettings.h"
 #include "GUIDialogOK.h"
 #include "GUISettings.h"
-#include "Util.h"
-#include "VideoDatabase.h"
-#include "VideoInfoScanner.h"
-#include "FileSystem/Directory.h"
-#include "FileSystem/MultiPathDirectory.h"
 #include "GUIWindowManager.h"
-#include "utils/ScraperParser.h"
 #include "utils/IAddon.h"
 #include "FileItem.h"
+#include "VideoDatabase.h"
+#include "VideoInfoScanner.h"
 #include "GUISettings.h"
-#include "LocalizeStrings.h"
 
 #define CONTROL_CONTENT_TYPE        3
 #define CONTROL_SCRAPER_LIST        4
@@ -69,72 +64,24 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     }
     break;
 
-  case GUI_MSG_ITEM_SELECT:
+  /*case GUI_MSG_ITEM_SELECT:
     {
       if (message.GetControlId() == CONTROL_SCRAPER_LIST)
       {
         m_scraper = boost::dynamic_pointer_cast<CScraper>(m_scrapers[m_content][message.GetParam1()]);
       }
     }
-    break;
+    break;*/
 
   case GUI_MSG_CLICKED:
     int iControl = message.GetSenderId();
-    if (iControl == 500)
-      Close();
-    if (iControl == 501)
-    {
-      m_bNeedSave = false;
-      Close();
-    }
 
     if (iControl == CONTROL_CONTENT_TYPE)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_CONTENT_TYPE);
       g_windowManager.SendMessage(msg);
-      int iSelected = msg.GetParam1();
-
-      m_bNeedSave = true;
-      CStdString strLabel;
-      switch (iSelected)
-      {
-      case 0: m_scraper.reset();
-              OnSettingChanged(0);
-              SetupPage();
-              break;
-      case 1: strLabel = g_localizeStrings.Get(20342);
-              m_content = CONTENT_MOVIES;
-              if (CAddonMgr::Get()->GetDefaultScraper(m_scraper, CONTENT_MOVIES))
-              {
-                CreateSettings();
-                SetupPage();
-              }
-              break;
-      case 2: strLabel = g_localizeStrings.Get(20343);
-              m_content = CONTENT_TVSHOWS;
-              if (CAddonMgr::Get()->GetDefaultScraper(m_scraper, CONTENT_TVSHOWS))
-              {
-                CreateSettings();
-                SetupPage();
-              }
-              break;
-      case 3: strLabel = g_localizeStrings.Get(20389);
-              m_content = CONTENT_MUSICVIDEOS;
-              if (CAddonMgr::Get()->GetDefaultScraper(m_scraper, CONTENT_MUSICVIDEOS))
-              {
-                CreateSettings();
-                SetupPage();
-              }              
-              break;
-      case 4: strLabel = g_localizeStrings.Get(132);
-              m_content = CONTENT_ALBUMS;
-              if (CAddonMgr::Get()->GetDefaultScraper(m_scraper, CONTENT_ALBUMS))
-              {
-                CreateSettings();
-                SetupPage();
-              }
-              break;
-      }
+      m_content = (CONTENT_TYPE) msg.GetParam1();
+      SetupPage();
     }
     if (iControl == CONTROL_SCRAPER_LIST)
     {
@@ -142,49 +89,29 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       g_windowManager.SendMessage(msg);
       int iSelected = msg.GetParam1();
 
+      AddonPtr last = m_scraper;
       m_scraper = m_scrapers[m_content][iSelected];
-      FillListControl();
+      m_bNeedSave = m_scraper != last;
       SET_CONTROL_FOCUS(30,0);
-      m_bNeedSave = true;
     }
-    CStdString scraperPath = GetScraperDirectory(m_info);
     if (iControl == CONTROL_SCRAPER_SETTINGS)
     {
       if (CGUIDialogAddonSettings::ShowAndGetInput(m_scraper))
-      {
+      { // settings are changed, but not saved
         m_bNeedSave = true;
         return true;
       }
       return false;
     }
-    if (m_scraper && m_scraper->HasSettings())
-      CONTROL_ENABLE(CONTROL_SCRAPER_SETTINGS);
-    else
-      CONTROL_DISABLE(CONTROL_SCRAPER_SETTINGS);
-    break;
   }
   return CGUIDialogSettings::OnMessage(message);
 }
 
 void CGUIDialogContentSettings::OnWindowLoaded()
-{
+{//TODO right order?
   CGUIDialogSettings::OnWindowLoaded();
-
   FillContentTypes();
-
-  if (m_content != CONTENT_NONE && !m_scraper)
-  { // select the default scraper for this contentype
-    AddonPtr defaultScraper;
-    if (CAddonMgr::Get()->GetDefaultScraper(degaultScraper, m_content))
-    {
-      m_scraper = boost::dynamic_pointer_cast<CScraper>(defaultScraper->Clone());
-    }
-  }
-
-  if (m_scraper && m_scraper->HasSettings())
-    CONTROL_ENABLE(CONTROL_SCRAPER_SETTINGS);
-  else
-    CONTROL_DISABLE(CONTROL_SCRAPER_SETTINGS);
+  SetupPage();
 }
 
 void CGUIDialogContentSettings::SetupPage()
@@ -195,72 +122,20 @@ void CGUIDialogContentSettings::SetupPage()
   g_windowManager.SendMessage(msg);
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_CONTENT_TYPE);
 
-  if (m_content != CONTENT_ALBUMS) // none does not apply to music
-  {
-    msg2.SetLabel("<"+g_localizeStrings.Get(231)+">");
-    msg2.SetParam1(0);
-    g_windowManager.SendMessage(msg2);
-  }
+  msg2.SetLabel("<"+g_localizeStrings.Get(231)+">");
+  msg2.SetParam1(0);
+  g_windowManager.SendMessage(msg2);
 
-  if (m_scrapers.find(CONTENT_MOVIES) != m_scrapers.end())
-  {
-    msg2.SetLabel(g_localizeStrings.Get(20342));
-    msg2.SetParam1(1);
-    g_windowManager.SendMessage(msg2);
-    if (m_conent == CONTENT_MOVIES)
-    {
-      SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,g_localizeStrings.Get(20342));
-      CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 1);
-    }
-  }
+  CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 1);
 
-  if (m_scrapers.find(CONTENT_TVSHOWS) != m_scrapers.end())
-  {
-    msg2.SetLabel(g_localizeStrings.Get(20343));
-    msg2.SetParam1(2);
-    g_windowManager.SendMessage(msg2);
-    if (m_info.strContent.Equalsi(CONTENT_TVSHOWS))
-    {
-      CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 2);
-    }
-  }
-  if (m_scrapers.find(CONTENT_MUSICVIDEOS) != m_scrapers.end())
-  {
-    msg2.SetLabel(g_localizeStrings.Get(20389));
-    msg2.SetParam1(3);
-    g_windowManager.SendMessage(msg2);
-    if (m_content == CONTENT_MUSICVIDEOS)
-    {
-      SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,g_localizeStrings.Get(20389));
-      CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 3);
-    }
-  }
-  if (m_scrapers.find(CONTENT_ALBUMS) != m_scrapers.end())
-  {
-    msg2.SetLabel(m_strContentType);
-    msg2.SetParam1(4);
-    g_windowManager.SendMessage(msg2);
-    if (m_content == CONTENT_ALBUMS)
-    {
-      SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE, ADDON::TranslateContent(m_content));
-      CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 3);
-    }
-  }
-  SET_CONTROL_VISIBLE(CONTROL_CONTENT_TYPE);
-  // now add them scrapers to the list control
   if (m_content == CONTENT_NONE)
   {
-    CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SCRAPER_LIST);
-    OnMessage(msgReset);
-    CONTROL_DISABLE(CONTROL_SCRAPER_LIST);
+    SET_CONTROL_HIDDEN(CONTROL_SCRAPER_LIST);
   }
   else
   {
-    CONTROL_ENABLE(CONTROL_SCRAPER_LIST);
-    FillListControl();
+    SET_CONTROL_VISIBLE(CONTROL_SCRAPER_LIST);
   }
-
-  OnSettingChanged(0);
 }
 
 void CGUIDialogContentSettings::CreateSettings()
@@ -280,7 +155,7 @@ void CGUIDialogContentSettings::CreateSettings()
     {
       AddBool(1,20345,&m_bRunScan);
       AddBool(2,20379,&m_bSingleItem);
-      AddBool(3,20432,&m_bUpdate);
+      AddBool(3,20432,&m_bNoUpdate);
       break;
     }
   case CONTENT_MOVIES:
@@ -289,14 +164,14 @@ void CGUIDialogContentSettings::CreateSettings()
       AddBool(2,20330,&m_bUseDirNames);
       AddBool(3,20346,&m_bScanRecursive);
       AddBool(4,20383,&m_bSingleItem, m_bUseDirNames);
-      AddBool(5,20432,&m_bUpdate);
+      AddBool(5,20432,&m_bNoUpdate);
       break;
     }
   case CONTENT_MUSICVIDEOS:
     {
       AddBool(1,20345,&m_bRunScan);
       AddBool(2,20346,&m_bScanRecursive);
-      AddBool(3,20432,&m_bUpdate);
+      AddBool(3,20432,&m_bNoUpdate);
     }
   case CONTENT_ALBUMS:
     {
@@ -307,27 +182,18 @@ void CGUIDialogContentSettings::CreateSettings()
   }
 }
 
-void CGUIDialogContentSettings::OnSettingChanged(unsigned int num)
-{
-  // setting has changed - update anything that needs it
-  if (num >= m_settings.size())
-    return;
-
-  SettingInfo &setting = m_settings.at(num);
-  OnSettingChanged(setting);
-}
-
 void CGUIDialogContentSettings::OnSettingChanged(SettingInfo &setting)
 {
   // check and update anything that needs it
-  if (setting.id == 1 || setting.id == 2)
+  if (setting.id == 3) // scan recursive
   {
-    CreateSettings();
-    UpdateSetting(1);
-    UpdateSetting(2);
-    UpdateSetting(3);
+    m_bSingleItem = false;
     UpdateSetting(4);
-    UpdateSetting(5);
+  }
+  else if (setting.id == 4)
+  {
+    m_bScanRecursive = false;
+    UpdateSetting(3);
   }
 
   m_bNeedSave = true;
@@ -354,7 +220,6 @@ void CGUIDialogContentSettings::FillContentTypes()
   FillContentTypes(CONTENT_MUSICVIDEOS);
   FillContentTypes(CONTENT_ALBUMS);
   FillContentTypes(CONTENT_ARTISTS);
-  FillContentTypes(CONTENT_MUSIC);
 }
 
 void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
@@ -412,18 +277,12 @@ void CGUIDialogContentSettings::FillListControl()
   if (m_scrapers.size() == 0)
     return;
 
-  if (!m_scraper)
+  for (IVECADDONS iter=m_scrapers.find(m_content)->second.begin();iter!=m_scrapers.find(m_content)->second.end();++iter)
   {
-    if (!Addon::CAddonMgr::Get()->GetDefaultScraper(m_scraper, m_content))
-      return;
-  }
-
-  for (IVECADDONS iter=m_scrapers.find(m_content)->second.begin();iter!=m_scrapers.find(content)->second.end();++iter)
-  {
-    CFileItemPtr item(new CFileITem((*iter)->Name()));
+    CFileItemPtr item(new CFileItem((*iter)->Name()));
     item->m_strPath = (*iter)->UUID();
     item->SetThumbnailImage((*iter)->Icon());
-    if (m_scraper && (*iter)->UUID == m_scraper->UUID())
+    if (m_scraper && (*iter)->UUID() == m_scraper->UUID())
     {
       CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_SCRAPER_LIST, iIndex);
       OnMessage(msg2);
@@ -471,95 +330,84 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
   return bResult;
 }
 
-bool CGUIDialogContentSettings::Show(ADDON::CScraperPtr& scraper, bool& bRunScan, int iLabel)
+bool CGUIDialogContentSettings::Show(ADDON::CScraperPtr& scraper, bool& bRunScan, CONTENT_TYPE musicContext/*=CONTENT_NONE*/)
 {
   VIDEO::SScanSettings dummy;
   dummy.recurse = -1;
   dummy.parent_name = false;
   dummy.parent_name_root = false;
   dummy.noupdate = false;
-  return Show(scraper,dummy,bRunScan,iLabel);
+  return Show(scraper,dummy,bRunScan,musicContext);
 }
 
-bool CGUIDialogContentSettings::Show(ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, int iLabel)
+bool CGUIDialogContentSettings::Show(ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, CONTENT_TYPE musicContext/*=CONTENT_NONE*/)
 {
   CGUIDialogContentSettings *dialog = (CGUIDialogContentSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTENT_SETTINGS);
   if (!dialog)
     return false;
 
-  if (scraper)
+  if (musicContext != CONTENT_NONE)
   {
-    dialog->m_scraper = scraper;
-    dialog->m_content = scraper->Content();
+    dialog->m_content = musicContext;
   }
 
-  if (iLabel != -1) // to switch between albums and artists
-    dialog->m_strContentType = g_localizeStrings.Get(iLabel);
-
-  dialog->m_scraperSettings = scraper.settings;
+  dialog->m_scraper = scraper;
   dialog->m_bRunScan = bRunScan;
   dialog->m_bScanRecursive = (settings.recurse > 0 && !settings.parent_name) || (settings.recurse > 1 && settings.parent_name);
   dialog->m_bUseDirNames   = settings.parent_name;
-  dialog->m_bExclude       = scraper && (scraper->Content() == CONTENT_NONE);
+  dialog->m_bExclude       = settings.exclude; 
   dialog->m_bSingleItem    = settings.parent_name_root;
+  dialog->m_bNoUpdate      = settings.noupdate;
   dialog->m_bNeedSave = false;
-  dialog->m_bUpdate = settings.noupdate;
   dialog->DoModal();
   if (dialog->m_bNeedSave)
   {
-    scraper = boost::dyhnamic_pointer_cast<CScraper>(dialog->m_scraper);
-    if (!scraper)
-      return true; //TODO not false??
-
-    scraper->m_pathContent = dialog->m_content;
-    settings.noupdate = dialog->m_bUpdate;
-
-    if (scraper->Content() == CONTENT_TVSHOWS)
+    scraper = boost::dynamic_pointer_cast<CScraper>(dialog->m_scraper);
+    CONTENT_TYPE content = dialog->m_content;
+    if (!scraper || content == CONTENT_NONE)
     {
-      settings.parent_name = dialog->m_bSingleItem;
-      settings.parent_name_root = dialog->m_bSingleItem;
-      settings.recurse = 0;
-
-      bRunScan = dialog->m_bRunScan;
+      bRunScan = false;
+      settings.exclude = dialog->m_bExclude;
     }
-    else if (scraper->Content() == CONTENT_MOVIES)
+    else 
     {
-      if (dialog->m_bUseDirNames)
-      {
-        settings.parent_name = true;
-        settings.parent_name_root = false;
-        settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 1;
+      settings.exclude = false;
+      bRunScan = dialog->m_bRunScan;
+      scraper->m_pathContent = content;
 
-        if (dialog->m_bSingleItem)
+      if (content == CONTENT_TVSHOWS)
+      {
+        settings.parent_name = dialog->m_bSingleItem;
+        settings.parent_name_root = dialog->m_bSingleItem;
+        settings.recurse = 0;
+      }
+      else if (content == CONTENT_MOVIES)
+      {
+        if (dialog->m_bUseDirNames)
         {
-          settings.parent_name_root = true;
-          settings.recurse = 0;
+          settings.parent_name = true;
+          settings.parent_name_root = false;
+          settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 1;
+
+          if (dialog->m_bSingleItem)
+          {
+            settings.parent_name_root = true;
+            settings.recurse = 0;
+          }
+        }
+        else
+        {
+          settings.parent_name = false;
+          settings.parent_name_root = false;
+          settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 0;
         }
       }
-      else
+      else if (content == CONTENT_MUSICVIDEOS)
       {
         settings.parent_name = false;
         settings.parent_name_root = false;
         settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 0;
       }
-
-      bRunScan = dialog->m_bRunScan;
-    }
-    else if (scraper->Content() == CONTENT_MUSICVIDEOS)
-    {
-      settings.parent_name = false;
-      settings.parent_name_root = false;
-      settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 0;
-
-      bRunScan = dialog->m_bRunScan;
-    }
-    else if (scraper->Content() == CONTENT_ALBUMS)
-    {
-      bRunScan = dialog->m_bRunScan;
-    }
-    else if (dialog->m_bExclude)
-    {
-      bRunScan = false;
     }
 
     return true;
@@ -567,30 +415,3 @@ bool CGUIDialogContentSettings::Show(ADDON::CScraperPtr& scraper, VIDEO::SScanSe
   return false;
 }
 
-//TODO who calls these?
-/*SScraperInfo CGUIDialogContentSettings::FindDefault(const CStdString& strType, const CStdString& strDefault)
-{
-  SScraperInfo result = m_scrapers[strType][0]; // default to first
-  for (unsigned int i=0;i<m_scrapers[strType].size();++i)
-  {
-    if (m_scrapers[strType][i].strPath.Equals(strDefault))
-    {
-      result = m_scrapers[strType][i];
-      break;
-    }
-  }
-
-  return result;
-}
-
-CStdString CGUIDialogContentSettings::GetScraperDirectory(const SScraperInfo &scraper)
-{
-  CStdString dir = "video/";
-
-  if (scraper.strContent.Equals("albums"))
-    dir = "music/";
-  else if (scraper.strContent.Equals("None"))
-    return "";
-  return "special://xbmc/system/scrapers/" + dir;
-}
-*/

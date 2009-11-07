@@ -448,7 +448,7 @@ bool CPluginDirectory::HasPlugins(const CStdString &type)
   else if (type == "video")
     CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_MOVIES);
   else if (type == "music")
-    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_MUSIC);
+    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_ALBUMS);
   else if (type == "pictures")
     CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_PICTURES);
   else if (type == "programs")
@@ -468,7 +468,7 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
   else if (type == "video")
     CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_MOVIES);
   else if (type == "music")
-    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_MUSIC);
+    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_ALBUMS);
   else if (type == "pictures")
     CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_PICTURES);
   else if (type == "programs")

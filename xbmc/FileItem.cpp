@@ -2682,7 +2682,7 @@ CStdString CFileItem::GetCachedFanart() const
       database.Open();
       int iShowId = database.GetTvShowId(GetVideoInfoTag()->m_strPath);
       CStdString showPath;
-      database.GetFilePathById(iShowId,showPath,CONTENT_TVSHOWS);
+      database.GetFilePathById(iShowId,showPath,VIDEODB_CONTENT_TVSHOWS);
       return GetCachedThumb(showPath,g_settings.GetVideoFanartFolder());
     }
     return GetCachedThumb(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath,g_settings.GetVideoFanartFolder());

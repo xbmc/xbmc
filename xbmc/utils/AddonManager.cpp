@@ -870,10 +870,6 @@ bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &p
       CONTENT_TYPE content = TranslateContent(element->GetText());
       if (content != CONTENT_NONE)
       {
-        //TODO fix the music vs albums content type issue
-        if (content == CONTENT_ALBUMS || content == CONTENT_ARTISTS)
-          contents.insert(CONTENT_MUSIC);
-
         contents.insert(content);
       }
       element = element->NextSiblingElement("content");

@@ -558,7 +558,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   // music video share
   CVideoDatabase database;
   database.Open();
-  if (database.HasContent(CONTENT_MUSICVIDEOS))
+  if (database.HasContent(VIDEODB_CONTENT_MUSICVIDEOS))
   {
     share.strName = g_localizeStrings.Get(20389);
     share.strPath = "videodb://3/";

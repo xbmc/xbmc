@@ -1496,30 +1496,30 @@ void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
   dir.GetQueryParams(pItem->m_strPath,params);
   int iDbId = pItem->GetVideoInfoTag()->m_iDbId;
 
-  CONTENT_TYPE iType=CONTENT_MOVIES;
+  VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
   if (pItem->HasVideoInfoTag() && (!pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty() ||
       pItem->GetVideoInfoTag()->m_iEpisode > 0))
   {
-    iType = CONTENT_TVSHOWS;
+    iType = VIDEODB_CONTENT_TVSHOWS;
   }
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder)
-    iType = CONTENT_EPISODES;
+    iType = VIDEODB_CONTENT_EPISODES;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
-    iType = CONTENT_MUSICVIDEOS;
+    iType = VIDEODB_CONTENT_MUSICVIDEOS;
   if (params.GetSetId() != -1 && params.GetMovieId() == -1)
     iType = VIDEODB_CONTENT_MOVIE_SETS;
-  if (iType == CONTENT_MOVIES)
+  if (iType == VIDEODB_CONTENT_MOVIES)
     database.GetMovieInfo("", detail, pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == CONTENT_MOVIE_SETS)
+  if (iType == VIDEODB_CONTENT_MOVIE_SETS)
   {
     database.GetSetById(params.GetSetId(),detail.m_strTitle);
     iDbId = params.GetSetId();
   }
-  if (iType == CONTENT_EPISODES)
+  if (iType == VIDEODB_CONTENT_EPISODES)
     database.GetEpisodeInfo(pItem->m_strPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == CONTENT_TVSHOWS)
+  if (iType == VIDEODB_CONTENT_TVSHOWS)
     database.GetTvShowInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
-  if (iType == CONTENT_MUSICVIDEOS)
+  if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     database.GetMusicVideoInfo(pItem->GetVideoInfoTag()->m_strFileNameAndPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
 
   CStdString strInput;
