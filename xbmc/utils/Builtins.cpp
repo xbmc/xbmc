@@ -69,7 +69,7 @@
 #endif
 
 #if defined(__APPLE__)
-#include "SpecialProtocol.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "CocoaInterface.h"
 #endif
 
