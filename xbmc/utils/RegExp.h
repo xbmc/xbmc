@@ -48,8 +48,10 @@ public:
   CRegExp(const CRegExp& re);
   ~CRegExp();
 
-  CRegExp *RegComp( const char *re);
+  CRegExp* RegComp(const char *re);
+  CRegExp* RegComp(const std::string& re) { return RegComp(re.c_str()); }
   int RegFind(const char *str, int startoffset = 0);
+  int RegFind(const std::string& str, int startoffset = 0) { return RegFind(str.c_str(), startoffset); }
   char* GetReplaceString( const char* sReplaceExp );
   int GetFindLen()
   {
