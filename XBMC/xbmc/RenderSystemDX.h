@@ -104,6 +104,7 @@ protected:
   bool m_needNewDevice;
   unsigned int m_adapter;
   LPDIRECT3DDEVICE9 m_pD3DDevice;
+  unsigned int m_screenHeight;
 
   D3DPRESENT_PARAMETERS m_D3DPP;
   HWND m_hFocusWnd;

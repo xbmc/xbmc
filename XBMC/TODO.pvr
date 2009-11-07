@@ -45,6 +45,7 @@ things to do:
 - Fix seeking inside Recordings
 - Code cleanup's
 - Add Channelswitch timers if a selected show is upcoming
+- Openening Radiostream crash sometimes with a segmentation fault (thanks to cobradevil)
 
 and a lot more
 
