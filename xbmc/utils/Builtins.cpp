@@ -41,9 +41,11 @@
 #include "Settings.h"
 #include "StringUtils.h"
 #include "Util.h"
+#include "VideoDatabase.h"
 
 #include "FileSystem/PluginDirectory.h"
 #include "FileSystem/RarManager.h"
+#include "FileSystem/VideoDatabaseDirectory.h"
 #include "FileSystem/ZipManager.h"
 
 #include "GUIWindowManager.h"
@@ -54,9 +56,7 @@
 #include "common/LIRC.h"
 #endif
 #ifdef HAS_IRSERVERSUITE
-
   #include "common/IRServerSuite/IRServerSuite.h"
-
 #endif
 
 #ifdef HAS_PYTHON
@@ -66,11 +66,6 @@
 #ifdef HAS_WEB_SERVER
 #include "lib/libGoAhead/XBMChttp.h"
 #include "lib/libGoAhead/WebServer.h"
-#endif
-
-#if defined(__APPLE__)
-#include "SpecialProtocol.h"
-#include "CocoaInterface.h"
 #endif
 
 #include <vector>
@@ -104,9 +99,6 @@ const BUILT_IN commands[] = {
   { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
   { "TakeScreenshot",             false,  "Takes a Screenshot" },
   { "RunScript",                  true,   "Run the specified script" },
-#if defined(__APPLE__)
-  { "RunAppleScript",             true,   "Run the specified AppleScript command" },
-#endif
   { "RunPlugin",                  true,   "Run the specified plugin" },
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
@@ -143,7 +135,6 @@ const BUILT_IN commands[] = {
   { "Resolution",                 true,   "Change XBMC's Resolution" },
   { "SetFocus",                   true,   "Change current focus to a different control id" },
   { "UpdateLibrary",              true,   "Update the selected library (music or video)" },
-  { "CleanLibrary",               true,   "Clean the video library" },
   { "PageDown",                   true,   "Send a page down event to the pagecontrol with given id" },
   { "PageUp",                     true,   "Send a page up event to the pagecontrol with given id" },
   { "LastFM.Love",                false,  "Add the current playing last.fm radio track to the last.fm loved tracks" },
@@ -207,8 +198,6 @@ int CBuiltins::Execute(const CStdString& execString)
   CUtil::SplitExecFunction(execString, execute, params);
   execute.ToLower();
   CStdString parameter = params.size() ? params[0] : "";
-  CStdString strParameterCaseIntact = parameter;
-
   if (execute.Equals("reboot") || execute.Equals("restart"))  //Will reboot the xbox, aka cold reboot
   {
     g_application.getApplicationMessenger().Restart();
@@ -322,35 +311,19 @@ int CBuiltins::Execute(const CStdString& execString)
 #ifdef HAS_PYTHON
   else if (execute.Equals("runscript") && params.size())
   {
-#if defined(__APPLE__)
-    if (CUtil::GetExtension(strParameterCaseIntact) == ".applescript")
-    {
-      CStdString osxPath = CSpecialProtocol::TranslatePath(strParameterCaseIntact);
-      Cocoa_DoAppleScriptFile(osxPath.c_str());
-    }
-    else
-#endif
-		{
-      unsigned int argc = params.size();
-      char ** argv = new char*[argc];
+    unsigned int argc = params.size();
+    char ** argv = new char*[argc];
 
-      vector<CStdString> path;
-      //split the path up to find the filename
-      StringUtils::SplitString(params[0],"\\",path);
-      argv[0] = path.size() > 0 ? (char*)path[path.size() - 1].c_str() : (char*)params[0].c_str();
+    vector<CStdString> path;
+    //split the path up to find the filename
+    StringUtils::SplitString(params[0],"\\",path);
+    argv[0] = path.size() > 0 ? (char*)path[path.size() - 1].c_str() : (char*)params[0].c_str();
 
-      for(unsigned int i = 1; i < argc; i++)
-        argv[i] = (char*)params[i].c_str();
+    for(unsigned int i = 1; i < argc; i++)
+      argv[i] = (char*)params[i].c_str();
 
-      g_pythonParser.evalFile(params[0].c_str(), argc, (const char**)argv);
-      delete [] argv;
-    }
-  }
-#endif
-#if defined(__APPLE__)
-  else if (execute.Equals("runapplescript"))
-  {
-    Cocoa_DoAppleScript(strParameterCaseIntact.c_str());
+    g_pythonParser.evalFile(params[0].c_str(), argc, (const char**)argv);
+    delete [] argv;
   }
 #endif
   else if (execute.Equals("system.exec"))
@@ -398,7 +371,7 @@ int CBuiltins::Execute(const CStdString& execString)
     else if (CUtil::IsRAR(params[0]))
       g_RarManager.ExtractArchive(params[0],strDestDirect);
     else
-      CLog::Log(LOGERROR, "XBMC.Extract, No archive given");
+      CLog::Log(LOGERROR, "CUtil::ExecuteBuiltin: No archive given");
   }
   else if (execute.Equals("runplugin"))
   {
@@ -413,7 +386,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else
     {
-      CLog::Log(LOGERROR, "XBMC.RunPlugin called with no arguments.");
+      CLog::Log(LOGERROR, "CUtil::ExecBuiltIn, runplugin called with no arguments.");
     }
   }
   else if (execute.Equals("playmedia"))
@@ -965,6 +938,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_settings.LoadProfile(0); // login screen always runs as default user
+    g_passwordManager.m_mapSMBPasswordCache.clear();
     g_passwordManager.bMasterUser = false;
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
     g_application.StartEventServer(); // event server could be needed in some situations
@@ -1005,22 +979,6 @@ int CBuiltins::Execute(const CStdString& execString)
         else
           CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",settings);
       }
-    }
-  }
-  else if (execute.Equals("cleanlibrary"))
-  {
-    CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    if (scanner)
-    {
-      if (!scanner->IsScanning())
-      {
-         CVideoDatabase videodatabase;
-         videodatabase.Open();
-         videodatabase.CleanDatabase();
-         videodatabase.Close();
-      }
-      else
-        CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
     }
   }
   else if (execute.Equals("lastfm.love"))
