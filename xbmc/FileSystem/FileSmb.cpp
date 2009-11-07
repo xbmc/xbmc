@@ -135,7 +135,7 @@ void CSMB::Init()
       if (g_advancedSettings.m_sambadoscodepage.length() > 0)
         fprintf(f, "\tdos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
 
-      // if no workgroup string is specified, samba will use the default value 'WORGROUP'
+      // if no workgroup string is specified, samba will use the default value 'WORKGROUP'
       if ( g_guiSettings.GetString("smb.workgroup").length() > 0 )
         fprintf(f, "\tworkgroup = %s\n", g_guiSettings.GetString("smb.workgroup").c_str());
       fclose(f);
