@@ -1891,6 +1891,10 @@
   <string id="20435">Set movieset thumb</string>
   <string id="20436">Export actor thumbs</string>
   <string id="20437">Choose fanart</string>
+  <string id="20438">Local fanart</string>
+  <string id="20439">No fanart</string>
+  <string id="20440">Current fanart</string>
+  <string id="20441">Remote fanart</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

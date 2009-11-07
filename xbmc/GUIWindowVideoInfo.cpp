@@ -835,7 +835,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
     item->GetVideoInfoTag()->m_fanart = m_movieItem->GetVideoInfoTag()->m_fanart;
     item->SetProperty("fanart_number", (int)i);
     item->SetLabel(g_localizeStrings.Get(415));
-    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20015));
+    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20441));
 
     // make sure any previously cached thumb is removed
     if (CFile::Exists(item->GetCachedPictureThumb()))
@@ -851,7 +851,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
   {
     CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
     itemLocal->SetThumbnailImage(strLocal);
-    itemLocal->SetLabel(g_localizeStrings.Get(20017));
+    itemLocal->SetLabel(g_localizeStrings.Get(20438));
     items.Add(itemLocal);
   }
 
@@ -859,13 +859,13 @@ void CGUIWindowVideoInfo::OnGetFanart()
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
     itemCurrent->SetThumbnailImage(cachedThumb);
-    itemCurrent->SetLabel(g_localizeStrings.Get(20016));
+    itemCurrent->SetLabel(g_localizeStrings.Get(20440));
     items.Add(itemCurrent);
   }
 
   CFileItemPtr itemNone(new CFileItem("fanart://None", false));
   itemNone->SetIconImage("DefaultVideo.png");
-  itemNone->SetLabel(g_localizeStrings.Get(20018));
+  itemNone->SetLabel(g_localizeStrings.Get(20439));
   items.Add(itemNone);
 
   CStdString result;
