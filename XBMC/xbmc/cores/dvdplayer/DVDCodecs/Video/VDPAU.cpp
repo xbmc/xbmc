@@ -225,22 +225,21 @@ bool CVDPAU::MakePixmap(int width, int height)
 
 void CVDPAU::BindPixmap()
 {
-  CSingleLock lock(g_graphicsContext);
-  if (!m_glPixmap)
+  if (m_glPixmap)
   {
-    return;
+    glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
+    glXBindTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
   }
-  XLockDisplay(m_Display);
-  glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
-  glXBindTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
-  VerifyGLState();
-  XUnlockDisplay(m_Display);
+  else CLog::Log(LOGERROR,"(VDPAU) BindPixmap called without valid pixmap");
 }
 
 void CVDPAU::ReleasePixmap()
 {
-  glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
-  VerifyGLState();
+  if (m_glPixmap)
+  {
+    glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
+  }
+  else CLog::Log(LOGERROR,"(VDPAU) ReleasePixmap called without valid pixmap");
 }
 
 void CVDPAU::Create(int width, int height)

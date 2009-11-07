@@ -25,6 +25,7 @@
 #include "StringUtils.h"
 #include "utils/CharsetConverter.h"
 #include "utils/RegExp.h"
+#include "utils/log.h"
 #ifndef _LINUX
 #include "cores/dllloader/exports/emu_msvcrt.h"
 #endif

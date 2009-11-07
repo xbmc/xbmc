@@ -518,7 +518,6 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
 
-#ifdef __APPLE__
   if (g_sysinfo.IsAppleTV())
   { 
     // backward compatibility with Launcher install script on AppleTV platforms
@@ -528,7 +527,7 @@ bool CAdvancedSettings::Load()
     if (oldOSXFullScreen)
       m_fakeFullScreen = false;
   }
-#endif
+
   XMLUtils::GetBoolean(pRootElement,"fakefullscreen", m_fakeFullScreen);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
 

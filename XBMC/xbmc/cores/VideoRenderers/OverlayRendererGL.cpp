@@ -316,8 +316,8 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
-  glScalef    (state.width, state.height, 1.0f);
   glTranslatef(state.x    , state.y     , 0.0);
+  glScalef    (state.width, state.height, 1.0f);
 
   VerifyGLState();
 
