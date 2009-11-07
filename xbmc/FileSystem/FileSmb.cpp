@@ -607,7 +607,7 @@ unsigned int CFileSMB::Read(void *lpBuf, int64_t uiBufSize)
 #ifndef _LINUX
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
-    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s )", __FUNCTION__, bytesRead, errno, strerror(errno));
 #endif
     return 0;
   }
@@ -632,7 +632,7 @@ int64_t CFileSMB::Seek(int64_t iFilePosition, int iWhence)
 #ifndef _LINUX
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
-    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s )", __FUNCTION__, pos, errno, strerror(errno));
 #endif
     return -1;
   }
