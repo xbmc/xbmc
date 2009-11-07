@@ -536,7 +536,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
         }
         else
         {
-          if (g_guiSettings.GetBool("pvrplayback.timshift") && g_guiSettings.GetString("pvrplayback.timshiftpath") == "")
+          if (g_guiSettings.GetBool("pvrplayback.timeshift") && g_guiSettings.GetString("pvrplayback.timeshiftpath") == "")
           {
             CGUIDialogOK::ShowAndGetInput(18100,18124,0,18125);
             return false;
@@ -1153,7 +1153,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV ||
         m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
     {
-      if (g_guiSettings.GetBool("pvrplayback.timshift") && g_guiSettings.GetString("pvrplayback.timshiftpath") == "")
+      if (g_guiSettings.GetBool("pvrplayback.timeshift") && g_guiSettings.GetString("pvrplayback.timeshiftpath") == "")
       {
         CGUIDialogOK::ShowAndGetInput(18100,18124,0,18125);
         return false;
@@ -1187,7 +1187,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (ret_channels > 0)
       {
-        if (g_guiSettings.GetBool("pvrplayback.timshift") && g_guiSettings.GetString("pvrplayback.timshiftpath") == "")
+        if (g_guiSettings.GetBool("pvrplayback.timeshift") && g_guiSettings.GetString("pvrplayback.timeshiftpath") == "")
         {
           CGUIDialogOK::ShowAndGetInput(18100,18124,0,18125);
           return false;
