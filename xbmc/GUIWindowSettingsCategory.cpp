@@ -448,7 +448,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("musiclibrary.defaultscraper"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("musiclibrary.defaultscraper"), CONTENT_MUSIC);
+      FillInScrapers(pControl, g_guiSettings.GetString("musiclibrary.defaultscraper"), CONTENT_ALBUMS);
     }
     else if (strSetting.Equals("scrapers.moviedefault"))
     {
@@ -1594,7 +1594,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("mymusic.manageplugin"))
   {
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN, true, CONTENT_MUSIC))
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN, true, CONTENT_ALBUMS))
       CAddonMgr::Get()->SaveAddonsXML(ADDON_PLUGIN);
     else
       CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
@@ -1609,16 +1609,16 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("musiclibrary.defaultscraper"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_MUSIC);
+    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_ALBUMS);
   }
   else if (strSetting.Equals("musiclibrary.managescraper"))
   {
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCRAPER, true, CONTENT_MUSIC))
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCRAPER, true, CONTENT_ALBUMS))
     {
       CAddonMgr::Get()->SaveAddonsXML(ADDON_SCRAPER);
       CSetting *pSetting = g_guiSettings.GetSetting("musiclibrary.defaultscraper");
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_MUSIC);
+      FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_ALBUMS);
     }
     else
     { // reload the existing list
@@ -2477,14 +2477,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       // Nothing todo here
     }
   }
-  else if (strSetting.Equals("musicfiles.savefolderviews"))
-  {
-    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_MUSIC_FILES);
-  }
-  else if (strSetting.Equals("myvideos.savefolderviews"))
-  {
-    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_VIDEO_FILES);
-  }
   else if (strSetting.Equals("myvideos.manageplugin"))
   {
     if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN, true, CONTENT_MOVIES))
@@ -2492,20 +2484,12 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     else
       CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
   }
-  else if (strSetting.Equals("programfiles.savefolderviews"))
-  {
-    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PROGRAMS);
-  }
   else if (strSetting.Equals("programfiles.manageplugin"))
   {
     if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN, true, CONTENT_PROGRAMS))
       CAddonMgr::Get()->SaveAddonsXML(ADDON_PLUGIN);
     else
       CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
-  }
-  else if (strSetting.Equals("pictures.savefolderviews"))
-  {
-    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PICTURES);
   }
   else if (strSetting.Equals("network.interface"))
   {
@@ -3682,8 +3666,8 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
   //TODO rewrite this whole function
   CAddonMgr::Get()->LoadAddonsXML(ADDON_SCRAPER);
 
-  if (content == CONTENT_MUSIC || content == CONTENT_ALBUMS || content == CONTENT_ARTISTS)
-    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_MUSIC);
+  if (content == CONTENT_ALBUMS || content == CONTENT_ALBUMS || content == CONTENT_ARTISTS)
+    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_ALBUMS);
   else if (content == CONTENT_MOVIES)
     CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_MOVIES);
   else if (content == CONTENT_TVSHOWS || content == CONTENT_EPISODES)
@@ -3707,12 +3691,12 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
   {
     //TODO confirm music vs albums content 
-    //if (parser.GetContent() != content && content == CONTENT_MUSIC)
+    //if (parser.GetContent() != content && content == CONTENT_ALBUMS)
     //  continue;
 
     if ((*it)->Name().Equals(strSelected))
     {
-      if (content == CONTENT_MUSIC) // native strContent would be albums or artists but we're using the same scraper for both
+      if (content == CONTENT_ALBUMS) // native strContent would be albums or artists but we're using the same scraper for both
         g_guiSettings.SetString("musiclibrary.defaultscraper", (*it)->Name());
       else if (content == CONTENT_MOVIES)
         g_guiSettings.SetString("scrapers.moviedefault", (*it)->Name());

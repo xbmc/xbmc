@@ -51,6 +51,7 @@
 #include "LangInfo.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "utils/Addon.h"
 #ifdef _WIN32
 #include "win32/WIN32Util.h"
 #endif

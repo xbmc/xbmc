@@ -35,7 +35,6 @@ typedef enum
   CONTENT_TVSHOWS         = 2,
   CONTENT_MUSICVIDEOS     = 3,
   CONTENT_EPISODES        = 4,
-  CONTENT_MUSIC           = 5,
   CONTENT_ALBUMS          = 6,
   CONTENT_ARTISTS         = 7,
   CONTENT_PROGRAMS        = 8,

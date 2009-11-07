@@ -565,7 +565,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
     // enable query all artist button only in album view
     if (dir.IsArtistDir(item->m_strPath)        && !dir.IsAllItem(item->m_strPath) &&
-      item->m_bIsFolder && !item->IsVideoDb() && info->Supports(CONTENT_MUSIC))
+      item->m_bIsFolder && !item->IsVideoDb() && info->Supports(CONTENT_ALBUMS))
     {
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 21884);
     }
@@ -754,7 +754,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (!m_musicdatabase.GetScraperForPath(item->m_strPath, scraper))
       {
         ADDON::AddonPtr defaultScraper;
-        if (ADDON::CAddonMgr::Get()->GetDefaultScraper(defaultScraper, CONTENT_MUSIC))
+        if (ADDON::CAddonMgr::Get()->GetDefaultScraper(defaultScraper, CONTENT_ALBUMS))
         {
           scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
         }

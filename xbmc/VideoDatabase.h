@@ -82,6 +82,14 @@ namespace VIDEO
 #define VIDEODB_TYPE_BOOL 4
 #define VIDEODB_TYPE_COUNT 5
 
+typedef enum
+{
+  VIDEODB_CONTENT_MOVIES = 1,
+  VIDEODB_CONTENT_TVSHOWS = 2,
+  VIDEODB_CONTENT_MUSICVIDEOS = 3,
+  VIDEODB_CONTENT_EPISODES = 4
+} VIDEODB_CONTENT_TYPE;
+
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
 {
   VIDEODB_ID_MIN = -1,
