@@ -165,7 +165,7 @@
   <string id="221">Network is not connected</string>
   <string id="222">Cancel</string>
   <string id="224">Speed</string>
-  <string id="225">Transition time</string>
+  <string id="225"></string>
   <string id="226">Test patterns...</string>
   <string id="227">Lookup audio CDs on the Internet</string>
   <string id="228">Shuffle playlist on load</string>
@@ -950,7 +950,7 @@
   <string id="12373">Settings &amp; file manager</string>
   <string id="12376">Set as default for all movies</string>
   <string id="12377">This will reset any previously saved values</string>
-  <string id="12378">Show each image for</string>
+  <string id="12378">Amount of time to display each image</string>
   <string id="12379">Use pan and zoom effects</string>
   <string id="12380">Play NTSC videos at PAL rates</string>
   <string id="12381">Play PAL videos at NTSC rates</string>
@@ -1165,7 +1165,7 @@
   <string id="13357">High quality pixel shader</string>
   <string id="13358">Play item</string>
   <string id="13359">Set artist thumb</string>
-  <string id="13360">Generate thumbs</string>
+  <string id="13360">Automatically generate thumbnails</string>
   <string id="13361">Enable voice</string>
   <string id="13375">Enable device</string>
   <string id="13376">Volume</string>
@@ -1283,8 +1283,8 @@
   <string id="14041">Post processing</string>
   <string id="14042"></string>
   <string id="14043">- Shutdown while playing</string>
-  <string id="14044">%i mins</string>
-  <string id="14045">%i secs</string>
+  <string id="14044">%i min</string>
+  <string id="14045">%i sec</string>
   <string id="14046">%i ms</string>
   <string id="14047">%i %%</string>
   <string id="14048">%i kbps</string>
@@ -1320,6 +1320,8 @@
   <string id="14078">- Colours</string>
   <string id="14079">Timezone country</string>
   <string id="14080">Timezone</string>
+  <string id="14081">File lists</string>
+  <string id="14082">Show EXIF picture information</string>
 
   <string id="15000"></string>
   <string id="15001"></string>
@@ -1730,7 +1732,7 @@
   <string id="20181">Backspace</string>
   <string id="20182">Space</string>
   <string id="20183">Reload skin</string>
-  <string id="20184">Rotate using EXIF information</string>
+  <string id="20184">Orientate pictures using EXIF information</string>
   <string id="20185">Use poster view styles for TV shows</string>
   <string id="20186">Please wait</string>
   <string id="20187">Backing up EEPROM</string>
@@ -2105,7 +2107,7 @@
   <string id="22019">Recordings by title</string>
   <string id="22020">Guide</string>
   <string id="22021">Allowed error in aspect ratio (%)</string>
-  <string id="22022">Include video files in listings</string>
+  <string id="22022">Show video files in listings</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Font</string>
