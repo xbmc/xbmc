@@ -21,6 +21,10 @@
  *
  */
 
+#if defined(HAVE_CONFIG_H) && !defined(_WIN32)
+#include "../config.h"
+#endif
+
 /*****************
  * All platforms
  *****************/
@@ -33,7 +37,6 @@
 #define HAS_DVDPLAYER
 #define HAS_EVENT_SERVER
 #define HAS_KARAOKE
-#define HAS_RAR
 #define HAS_SCREENSAVER
 #define HAS_PYTHON
 #define HAS_SHOUTCAST
@@ -57,6 +60,18 @@
 #define HAS_FILESYSTEM_HTSP
 #define HAS_FILESYSTEM_MMS
 #define HAS_CCXSTREAM
+
+/**********************
+ * Non-free Components
+ **********************/
+
+#if defined(_LINUX) || defined(__APPLE__)
+  #if defined(HAVE_XBMC_NONFREE)
+    #define HAS_RAR
+  #endif
+#else
+  #define HAS_RAR
+#endif
 
 /*****************
  * Win32 Specific
@@ -90,8 +105,9 @@
 #ifndef HAS_SDL_OPENGL
 #define HAS_SDL_OPENGL
 #endif
-#ifdef HAS_AVAHI
+#if defined(HAVE_LIBAVAHI_COMMON) && defined(HAVE_LIBAVAHI_CLIENT)
 #define HAS_ZEROCONF
+#define HAS_AVAHI
 #endif
 #define HAS_LCD
 #define HAS_HAL
@@ -103,6 +119,12 @@
 #define HAS_SDL_AUDIO
 #define HAS_LIRC
 #define HAS_SDL_WIN_EVENTS
+#ifdef HAVE_LIBPULSE
+#define HAS_PULSEAUDIO
+#endif
+#ifdef HAVE_LIBXRANDR
+#define HAS_XRANDR
+#endif
 #endif
 
 /*****************
@@ -115,10 +137,6 @@
 
 #ifndef SVN_REV
 #define SVN_REV "Unknown"
-#endif
-
-#if defined(_LINUX) || defined(__APPLE__)
-#include "../config.h"
 #endif
 
 /****************************************

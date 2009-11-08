@@ -74,6 +74,7 @@ public:
   static CStdString GetFriendlyName(const char* combinedName);
   static CStdString GetCombinedName(const char* strVisz, const char* strSubModule);
   static CStdString GetCombinedName(const char* friendlyName);
+  static bool IsValidVisualisation(const CStdString& strVisz);
 
   CStdString m_strVisualisationName;
   CStdString m_strSubModuleName;

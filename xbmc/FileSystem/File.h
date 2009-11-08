@@ -93,6 +93,7 @@ public:
   static bool Delete(const CStdString& strFileName);
   static bool Rename(const CStdString& strFileName, const CStdString& strNewFileName);
   static bool Cache(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback = NULL, void* pContext = NULL);
+  static bool SetHidden(const CStdString& fileName, bool hidden);
 
 private:
   unsigned int m_flags;

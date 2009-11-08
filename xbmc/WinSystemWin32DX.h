@@ -43,7 +43,7 @@ public:
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
 
 protected:
-
+  virtual void UpdateMonitor();
 };
 
 extern CWinSystemWin32DX g_RenderSystem;

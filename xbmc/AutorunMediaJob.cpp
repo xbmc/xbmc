@@ -30,7 +30,7 @@ CAutorunMediaJob::CAutorunMediaJob(const CStdString &label, const CStdString &pa
   m_path  = path;
 }
 
-void CAutorunMediaJob::DoWork()
+bool CAutorunMediaJob::DoWork()
 {
   CGUIDialogSelect* pDialog= (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
 
@@ -54,6 +54,8 @@ void CAutorunMediaJob::DoWork()
     strAction.Format("ActivateWindow(%s, %s)", GetWindowString(selection), m_path.c_str());
     CBuiltins::Execute(strAction);
   }
+
+  return true;
 }
 
 const char *CAutorunMediaJob::GetWindowString(int selection)

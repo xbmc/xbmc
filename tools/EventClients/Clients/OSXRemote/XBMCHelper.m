@@ -169,6 +169,7 @@
       break;
     case kHIDRemoteButtonCodeMenu:
       if(isPressed){
+        [self checkAndLaunchApp]; //launch mp_app_path if it's not running
         [mp_wrapper handleEvent:ATV_BUTTON_MENU];
       }
       break;

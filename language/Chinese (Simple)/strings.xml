@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 10/25/2009-->
+<!--Date of translation: 11/5/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 23958 -->
+<!--Based on english strings version 24272 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -74,7 +74,7 @@
   <string id="125">删除这些文件？</string>
   <string id="126">状态</string>
   <string id="127">对象</string>
-  <string id="128">常规设置</string>
+  <string id="128">常用</string>
   <string id="129">幻灯片播放</string>
   <string id="130">系统信息</string>
   <string id="131">屏幕</string>
@@ -381,7 +381,7 @@
   <string id="444">视频</string>
   <string id="445">音频</string>
   <string id="446">DVD</string>
-  <string id="447">自动运行光盘</string>
+  <string id="447">自动运行媒体</string>
   <string id="448">液晶屏设置</string>
   <string id="449">开启</string>
   <string id="450">列</string>
@@ -814,7 +814,7 @@
 
   <string id="2100">脚本错误！：%s</string>
 
-  <string id="4501">LCD 类型</string>
+  <string id="4501">启用LCD</string>
 
   <string id="10000">首页</string>
   <string id="10001">程序</string>
@@ -903,7 +903,7 @@
   <string id="12021">从头开始播放</string>
   <string id="12022">从 %s 处继续播放</string>
   <string id="12023">正在验证金手指…</string>
-  <string id="12024">自动为没有封面的视频生成缩略图</string>
+  <string id="12024"></string>
 
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -1293,8 +1293,8 @@
   <string id="14050">%i.0dB</string>
   <string id="14051">时间显示格式</string>
   <string id="14052">日期显示格式</string>
-  <string id="14053">图像界面滤镜</string>
-  <string id="14054">启用互联网信息查询</string>
+  <string id="14053">图形界面滤镜</string>
+  <string id="14054"></string>
   <string id="14055">使用后台搜寻</string>
   <string id="14056">停止搜寻</string>
   <string id="14057">无法搜寻媒体信息</string>
@@ -1837,7 +1837,7 @@
   <string id="20379">被选文件夹包含单个电视节目</string>
   <string id="20380">扫描时排除文件夹</string>
   <string id="20381">特别</string>
-  <string id="20382"></string>
+  <string id="20382">自动获取剧集分季缩略图</string>
   <string id="20383">被选文件夹为单个视频</string>
   <string id="20384">链接到电视节目</string>
   <string id="20385">移除电视节目链接</string>
@@ -1857,7 +1857,7 @@
   <string id="20399">从专辑进入音乐视频</string>
   <string id="20400">按艺人进入音乐视频</string>
   <string id="20401">播放音乐视频</string>
-  <string id="20402"></string>
+  <string id="20402">自动获取演员缩略图</string>
   <string id="20403">设置演员缩略图</string>
   <string id="20404"></string>
   <string id="20405">移除剧集书签</string>
@@ -1888,9 +1888,10 @@
   <string id="20430">导出缩略图和同人图？</string>
   <string id="20431">覆盖原文件？</string>
   <string id="20432">资料库更新时排除的路径</string>
-  <string id="20433">提取媒体元数据信息</string>
+  <string id="20433">提取缩略图和媒体标识</string>
   <string id="20434">影片集</string>
   <string id="20435">设置影片集缩略图</string>
+  <string id="20436">导出演员缩略图</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -2081,9 +2082,9 @@
   <string id="22000">在启动时更新资料库</string>
   <string id="22001">总是在后台更新资料库</string>
   <string id="22002">- DNS 后缀</string>
-  <string id="22003">允许编辑和选择列表</string>
-  <string id="22004">延迟： %2.3fs</string>
-  <string id="22005">提前： %2.3fs</string>
+  <string id="22003"></string>
+  <string id="22004">延迟：%2.3fs</string>
+  <string id="22005">提前：%2.3fs</string>
   <string id="22006">字幕位置</string>
   <string id="22007">OpenGL 提供商：</string>
   <string id="22008">OpenGL 渲染器：</string>

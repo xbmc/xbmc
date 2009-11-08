@@ -17,6 +17,38 @@ char g_visName[512];
 char m_szPresetSave[256] = "";
 char g_packFolder[256] = "Milkdrop";
 
+
+void SetPresetDir(const char *pack)
+{
+  int len = strlen(pack);
+  if (len >= 4 && strcmpi(pack + len - 4, ".zip") == 0)
+  {
+    // Zip file
+    strcpy(g_plugin->m_szPresetDir, "zip://special%3A%2F%2Fxbmc%2Fvisualisations%2F"); 
+    strcat(g_plugin->m_szPresetDir,  g_packFolder);
+    strcat(g_plugin->m_szPresetDir,  "%2F");
+    strcat(g_plugin->m_szPresetDir,  pack);
+    strcat(g_plugin->m_szPresetDir, "/");
+  }
+  else if (len >= 4 && strcmpi(pack + len - 4, ".rar") == 0)
+  {
+    // Rar file
+    strcpy(g_plugin->m_szPresetDir, "rar://special%3A%2F%2Fxbmc%2Fvisualisations%2F"); 
+    strcat(g_plugin->m_szPresetDir,  g_packFolder);
+    strcat(g_plugin->m_szPresetDir,  "%2F");
+    strcat(g_plugin->m_szPresetDir,  pack);
+    strcat(g_plugin->m_szPresetDir, "/");
+  }
+  else
+  {
+    // Normal folder
+    strcpy(g_plugin->m_szPresetDir,  PRESETS_DIR);
+    strcat(g_plugin->m_szPresetDir,  "/");
+    strcat(g_plugin->m_szPresetDir,  pack);
+    strcat(g_plugin->m_szPresetDir, "/");
+  }
+}
+
 extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio, const char *szSubModuleName)
 {
 	strcpy(g_visName, szVisualisationName);
@@ -185,34 +217,7 @@ void LoadSettings()
 				char* nodeStr = doc.GetNodeText(node);
 				
 				// Check if its a zip or a folder
-				int len = strlen(nodeStr);
-
-        if (len >= 4 && strcmpi(nodeStr + len - 4, ".zip") == 0)
-        {
-          // Zip file
-          strcpy(g_plugin->m_szPresetDir, "zip://q%3A%5Cvisualisations%5C"); 
-          strcat(g_plugin->m_szPresetDir,  g_packFolder);
-          strcat(g_plugin->m_szPresetDir,  "%5C");
-          strcat(g_plugin->m_szPresetDir,  nodeStr);
-          strcat(g_plugin->m_szPresetDir, "/");
-        }
-        else if (len >= 4 && strcmpi(nodeStr + len - 4, ".rar") == 0)
-        {
-          // Rar file
-          strcpy(g_plugin->m_szPresetDir, "rar://q%3A%5Cvisualisations%5C"); 
-          strcat(g_plugin->m_szPresetDir,  g_packFolder);
-          strcat(g_plugin->m_szPresetDir,  "%5C");
-          strcat(g_plugin->m_szPresetDir,  nodeStr);
-          strcat(g_plugin->m_szPresetDir, "/");
-        }
-        else        
-				{
-					// Normal folder
-					strcpy(g_plugin->m_szPresetDir,  PRESETS_DIR);
-          strcat(g_plugin->m_szPresetDir,  "/");
-					strcat(g_plugin->m_szPresetDir,  nodeStr);
-					strcat(g_plugin->m_szPresetDir, "/");
-        }
+        SetPresetDir(nodeStr);
         // save dir so that we can resave the .xml file
         strcpy(m_szPresetSave, nodeStr);
       }
@@ -326,8 +331,7 @@ void LoadSettings()
     FindPresetPacks();
     if(strcmp(m_szPresetSave,"") != 0)
     {
-      strcat(g_plugin->m_szPresetDir, m_szPresetSave);
-      strcat(g_plugin->m_szPresetDir, "/");
+      SetPresetDir(m_szPresetSave);
     }
   }
 
@@ -493,34 +497,7 @@ extern "C" void UpdateSetting(int num, StructSetting*** sSet)
   {
     
     // Check if its a zip or a folder
-    int len = strlen(setting.entry[setting.current]);
-
-    if (len >= 4 && strcmpi(setting.entry[setting.current] + len - 4, ".zip") == 0)
-    {
-      // Zip file
-      strcpy(g_plugin->m_szPresetDir, "zip://q%3A%5Cvisualisations%5C"); 
-      strcat(g_plugin->m_szPresetDir,  g_packFolder);
-      strcat(g_plugin->m_szPresetDir,  "%5C");
-      strcat(g_plugin->m_szPresetDir,  setting.entry[setting.current]);
-      strcat(g_plugin->m_szPresetDir, "/");
-    }
-    else if (len >= 4 && strcmpi(setting.entry[setting.current] + len - 4, ".rar") == 0)
-    {
-      // Rar file
-      strcpy(g_plugin->m_szPresetDir, "rar://q%3A%5Cvisualisations%5C"); 
-      strcat(g_plugin->m_szPresetDir,  g_packFolder);
-      strcat(g_plugin->m_szPresetDir,  "%5C");
-      strcat(g_plugin->m_szPresetDir,  setting.entry[setting.current]);
-      strcat(g_plugin->m_szPresetDir, "/");
-    }
-    else        
-    {
-      // Normal folder
-      strcpy(g_plugin->m_szPresetDir,  PRESETS_DIR);
-      strcat(g_plugin->m_szPresetDir,  "/");
-      strcat(g_plugin->m_szPresetDir,  setting.entry[setting.current]);
-      strcat(g_plugin->m_szPresetDir, "/");
-    }
+    SetPresetDir(setting.entry[setting.current]);
 
     // save dir so that we can resave the .xml file
     sprintf(m_szPresetSave, "%s", setting.entry[setting.current]);

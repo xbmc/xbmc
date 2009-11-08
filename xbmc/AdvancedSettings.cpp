@@ -32,6 +32,7 @@
 #include "GUISettings.h"
 #include "Settings.h"
 #include "StringUtils.h"
+#include "SystemInfo.h"
 #include "XMLUtils.h"
 #include "utils/log.h"
 
@@ -49,7 +50,7 @@ void CAdvancedSettings::Initialize()
 
   m_audioHeadRoom = 0;
   m_ac3Gain = 12.0f;
-  m_audioApplyDrc = true;      
+  m_audioApplyDrc = true;
 
   m_karaokeSyncDelayCDG = 0.0f;
   m_karaokeSyncDelayLRC = 0.0f;
@@ -122,7 +123,7 @@ void CAdvancedSettings::Initialize()
 #endif
   m_cddbAddress = "freedb.freedb.org";
 
-  m_handleMounting = g_application.IsStandAlone();
+  m_handleMounting = false;
 
   m_fullScreenOnMovieStart = true;
   m_noDVDROM = false;
@@ -138,9 +139,11 @@ void CAdvancedSettings::Initialize()
   m_moviesExcludeFromScanRegExps.push_back("[-._ ]sample");
   m_tvshowExcludeFromScanRegExps.push_back("[-._ ]sample[-._ ]");
 
-  m_videoStackRegExps.push_back("()[ _.-]*?(?:cd|dvd|p(?:ar)t|dis[ck])[ _.-]*?([0-9a-d]+)(.*\\....?.?)$");
-  m_videoStackRegExps.push_back("()[ ._-]*?([a-c0-3]+)(\\....?.?)$");
-  m_videoStackRegExps.push_back("()[ ._-]+(0?[a-c1-3])[ ._-]+(.*?\\....?.?)$");
+  m_videoStackRegExps.push_back("(.*?)([ _.-]?(?:cd|dvd|p(?:ar)t|dis[ck])[ _.-]*[1-4a-d]+)(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ ._-]?[a-d])([ ._-]?.*?)(\\.[^.]+)$");
+  // This one is a bit too greedy to enable by default.  It will stack sequels
+  // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
+  //m_videoStackRegExps.push_back("(.*?)([ ._-]?[0-9])([ ._-]?.*?)(\\.[^.]+)$");
 
   // foo_[s01]_[e01]
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
@@ -171,6 +174,8 @@ void CAdvancedSettings::Initialize()
   m_sambastatfiles = true;
 
   m_bHTTPDirectoryStatFilesize = false;
+
+  m_bFTPThumbs = false;
 
   m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
   m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
@@ -224,7 +229,12 @@ void CAdvancedSettings::Initialize()
   m_playlistTimeout = 20; // 20 seconds timeout
   m_GLRectangleHack = false;
   m_iSkipLoopFilter = 0;
-  m_osx_GLFullScreen = false;
+#ifdef __APPLE__
+  m_fakeFullScreen = true;
+#else
+  m_fakeFullScreen = false;
+#endif
+  m_sleepBeforeFlip = false;
   m_bVirtualShares = true;
 
 //caused lots of jerks
@@ -314,7 +324,7 @@ bool CAdvancedSettings::Load()
       GetCustomRegexps(pAudioExcludes, m_audioExcludeFromScanRegExps);
 
     XMLUtils::GetString(pElement, "audiohost", m_audioHost);
-    XMLUtils::GetBoolean(pElement, "applydrc", m_audioApplyDrc);        
+    XMLUtils::GetBoolean(pElement, "applydrc", m_audioApplyDrc);
   }
 
   pElement = pRootElement->FirstChildElement("karaoke");
@@ -465,6 +475,12 @@ bool CAdvancedSettings::Load()
   if (pElement)
     XMLUtils::GetBoolean(pElement, "statfilesize", m_bHTTPDirectoryStatFilesize);
 
+  pElement = pRootElement->FirstChildElement("ftp");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "remotethumbs", m_bFTPThumbs);
+  }
+
   pElement = pRootElement->FirstChildElement("loglevel");
   if (pElement)
   { // read the loglevel setting, so set the setting advanced to hide it in GUI
@@ -477,6 +493,7 @@ bool CAdvancedSettings::Load()
       if (!((hide = pElement->Attribute("hide")) && strnicmp("false", hide, 4) == 0))
         setting->SetAdvanced();
     }
+    g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
   }
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
 
@@ -497,7 +514,19 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetBoolean(pRootElement,"glrectanglehack", m_GLRectangleHack);
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
-  XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", m_osx_GLFullScreen);
+
+  if (g_sysinfo.IsAppleTV())
+  { 
+    // backward compatibility with Launcher install script on AppleTV platforms
+    // AppleTV OS < 2.4 needs this set for getting XBMC in front of Frontrow.
+    bool oldOSXFullScreen = false;
+    XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", oldOSXFullScreen);
+    if (oldOSXFullScreen)
+      m_fakeFullScreen = false;
+  }
+
+  XMLUtils::GetBoolean(pRootElement,"fakefullscreen", m_fakeFullScreen);
+  XMLUtils::GetBoolean(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
 
   //Tuxbox

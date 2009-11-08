@@ -67,8 +67,7 @@ namespace DIRECTORY
     {
       CVideoDatabase db;
       db.Open();
-      CStdString whereOrder = playlist.GetWhereClause() + " " + playlist.GetOrderClause();
-      success = db.GetMoviesByWhere("videodb://1/2/", whereOrder, items);
+      success = db.GetMoviesByWhere("videodb://1/2/", playlist.GetWhereClause(), playlist.GetOrderClause(), items, true);
       items.SetContent("movies");
       db.Close();
     }

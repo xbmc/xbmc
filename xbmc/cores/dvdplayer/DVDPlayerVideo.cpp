@@ -547,31 +547,25 @@ void CDVDPlayerVideo::Process()
               pts = picture.pts;
             }
 
-            int iResult;
-            do
+            if(pulldown.enabled())
             {
-              if(pulldown.enabled())
-              {
-                picture.iDuration = pulldown.dur();
-                pulldown.next();
-              }
-
-              try
-              {
-                iResult = OutputPicture(&picture, pts);
-              }
-              catch (...)
-              {
-                CLog::Log(LOGERROR, "%s - Exception caught when outputing picture", __FUNCTION__);
-                iResult = EOS_ABORT;
-              }
-
-              if (iResult == EOS_ABORT) break;
-
-              // guess next frame pts. iDuration is always valid
-              pts += picture.iDuration * m_speed / abs(m_speed);
+              picture.iDuration = pulldown.dur();
+              pulldown.next();
             }
-            while (!m_bStop && picture.iRepeatPicture-- > 0);
+
+            if (picture.iRepeatPicture > 0)
+              picture.iDuration *= picture.iRepeatPicture + 1;
+
+            int iResult;
+            try
+            {
+              iResult = OutputPicture(&picture, pts);
+            }
+            catch (...)
+            {
+              CLog::Log(LOGERROR, "%s - Exception caught when outputing picture", __FUNCTION__);
+              iResult = EOS_ABORT;
+            }
 
             if( iResult & EOS_ABORT )
             {
@@ -744,9 +738,6 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     // on some mesa intel drivers
     if(m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA) && pSource->format == DVDVideoPicture::FMT_YUV420P)
       render = OVERLAY_VID;
-#elif defined(HAS_DX)
-    // fixme: GPU overlay disabled for now until it's implemented
-    render = OVERLAY_VID;
 #endif
 
     if(render == OVERLAY_VID)
@@ -1144,8 +1135,11 @@ void CDVDPlayerVideo::CalcFrameRate()
     {
       //store the calculated framerate if it differs too much from m_fFrameRate
       if (fabs(1.0 - (m_fFrameRate / (m_fStableFrameRate / m_iFrameRateCount))) > MAXFRAMERATEDIFF)
+      {
+        CLog::Log(LOGDEBUG,"%s framerate was:%f calculated:%f", __FUNCTION__, m_fFrameRate, m_fStableFrameRate / m_iFrameRateCount);
         m_fFrameRate = m_fStableFrameRate / m_iFrameRateCount;
-      
+      }
+
       //reset the stored framerates
       m_fStableFrameRate = 0.0;
       m_iFrameRateCount = 0;

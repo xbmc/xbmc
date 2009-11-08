@@ -106,6 +106,7 @@
 #include "LocalizeStrings.h"
 #include "LangInfo.h"
 #include "StringUtils.h"
+#include "WindowingFactory.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -126,6 +127,8 @@ using namespace ADDON;
 #define CONTROL_START_CONTROL           -80
 
 #define PREDEFINED_SCREENSAVERS          5
+
+#define RSSEDITOR_PATH "special://home/scripts/RSS Editor/default.py"
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
     : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml")
@@ -570,7 +573,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(int(pSettingInt->GetData()));
     }
-    else if (strSetting.Equals("servers.webserverusername"))
+    else if (strSetting.Equals("services.webserverusername"))
     {
 #ifdef HAS_WEB_SERVER
       // get password from the webserver if it's running (and update our settings)
@@ -581,7 +584,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
 #endif
     }
-    else if (strSetting.Equals("servers.webserverpassword"))
+    else if (strSetting.Equals("services.webserverpassword"))
     {
 #ifdef HAS_WEB_SERVER
       // get password from the webserver if it's running (and update our settings)
@@ -941,13 +944,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
       {
-        int value1 = g_guiSettings.GetInt("videoplayer.upscalingalgorithm");
-        int value2 = g_guiSettings.GetInt("videoplayer.highqualityupscaling");
-
-        if (value1 == VS_SCALINGMETHOD_VDPAU_HARDWARE && value2 != SOFTWARE_UPSCALING_DISABLED)
-          pControl->SetEnabled(true);
-        else
-          pControl->SetEnabled(false);
+        pControl->SetEnabled(true);
       }
     }
 #endif
@@ -974,7 +971,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       // if it's not disabled, start the event server or else apple remote won't work
       if ( remoteMode != APPLE_REMOTE_DISABLED )
       {
-        g_guiSettings.SetBool("remoteevents.enabled", true);
+        g_guiSettings.SetBool("services.esenabled", true);
         g_application.StartEventServer();
       }
 
@@ -1045,40 +1042,16 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser);
     }
-    else if (strSetting.Equals("masterlock.startuplock") || strSetting.Equals("masterlock.automastermode"))
+    else if (strSetting.Equals("masterlock.startuplock"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE);
     }
-    else if (strSetting.Equals("masterlock.loginlock"))
+    else if (!strSetting.Equals("services.esenabled")
+             && strSetting.Left(11).Equals("services.es"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_settings.bUseLoginScreen);
-    }
-    else if (strSetting.Equals("screensaver.uselock"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE                                    &&
-                                         g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE &&
-                                         !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
-    }
-    else if (!strSetting.Equals("pvr.enabled")
-      && strSetting.Left(4).Equals("pvr."))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvr.enabled"));
-      if (strSetting.Equals("pvr.infotime"))
-      {
-        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-        if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvr.enabled") && g_guiSettings.GetBool("pvr.infoswitch"));
-
-      }
-    }
-    else if (!strSetting.Equals("remoteevents.enabled")
-             && strSetting.Left(13).Equals("remoteevents."))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("remoteevents.enabled"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("services.esenabled"));
     }
     else if (strSetting.Equals("cddaripper.quality"))
     { // only visible if we are doing non-WAV ripping
@@ -1116,22 +1089,22 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("system.autotemperature"));
     }
-    else if (strSetting.Equals("servers.webserverusername"))
+    else if (strSetting.Equals("services.webserverusername"))
     {
       CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
       if (pControl)
-        pControl->SetEnabled(g_guiSettings.GetBool("servers.webserver"));
+        pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
     }
-    else if (strSetting.Equals("servers.webserverpassword"))
+    else if (strSetting.Equals("services.webserverpassword"))
     {
       CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
       if (pControl)
-        pControl->SetEnabled(g_guiSettings.GetBool("servers.webserver"));
+        pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
     }
-    else if (strSetting.Equals("servers.webserverport"))
+    else if (strSetting.Equals("services.webserverport"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("servers.webserver"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
     }
     else if (strSetting.Equals("network.ipaddress") || strSetting.Equals("network.subnet") || strSetting.Equals("network.gateway") || strSetting.Equals("network.dns"))
     {
@@ -1313,21 +1286,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("locale.timeserver"));
     }
-    else if (strSetting.Equals("locale.time") || strSetting.Equals("locale.date"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(!g_guiSettings.GetBool("locale.timeserver"));
-      SYSTEMTIME curTime;
-      GetLocalTime(&curTime);
-      CStdString time;
-      if (strSetting.Equals("locale.time"))
-        time = g_infoManager.GetTime();
-      else
-        time = g_infoManager.GetDate();
-      CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
-      pSettingString->SetData(time);
-      pSettingControl->Update();
-    }
 #endif
     else if (strSetting.Equals("autodetect.nickname") || strSetting.Equals("autodetect.senduserpw"))
     {
@@ -1344,7 +1302,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.useexternaldvdplayer"));
     }
-    else if (strSetting.Equals("cddaripper.path") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("pictures.screenshotpath"))
+    else if (strSetting.Equals("cddaripper.path") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("system.screenshotpath"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
@@ -1356,7 +1314,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("lookandfeel.rssedit"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(XFILE::CFile::Exists("special://home/scripts/RssTicker/default.py"));
+      pControl->SetEnabled(XFILE::CFile::Exists(RSSEDITOR_PATH) && g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
     else if (strSetting.Equals("videoplayer.synctype"))
     {
@@ -1414,28 +1372,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 
 void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
 {
-  for (unsigned int i = 0; i < m_vecSettings.size(); i++)
-  {
-    CBaseSettingControl *pSettingControl = m_vecSettings[i];
-    CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-    if (strSetting.Equals("locale.time") || strSetting.Equals("locale.date"))
-    {
-#ifdef HAS_TIME_SERVER
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(!g_guiSettings.GetBool("locale.timeserver"));
-#endif
-      SYSTEMTIME curTime;
-      GetLocalTime(&curTime);
-      CStdString time;
-      if (strSetting.Equals("locale.time"))
-        time = g_infoManager.GetTime();
-      else
-        time = g_infoManager.GetDate();
-      CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
-      pSettingString->SetData(time);
-      pSettingControl->Update();
-    }
-  }
+  // date and time used to be here
 }
 
 void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
@@ -1468,16 +1405,17 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_weatherManager.Refresh();
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
-    CBuiltins::Execute("RunScript(special://home/scripts/RssTicker/default.py)");
+    CBuiltins::Execute("RunScript("RSSEDITOR_PATH")");
   else if (strSetting.Equals("musiclibrary.defaultscraper"))
-  { //FIXME surely there's a better way to handle this..
-    /*CMusicDatabase database;
+  {
+    CMusicDatabase database;
     database.Open();
     CScraperPtr scraper;
     AddonPtr defaultScraper;
     CAddonMgr::Get()->GetDefaultScraper(defaultScraper, CONTENT_ALBUMS);
     if (database.GetScraperForPath("musicdb://",scraper))
-    {
+    {a
+      //TODO merge error??
 
     }
     if (!scraper->Parent().Equals(defaultScraper->UUID()))
@@ -1486,10 +1424,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     }
     if (scraper->HasSettings())
     {
-      if (strSetting.Equals("musiclibrary.scrapersettings"))
-        CGUIDialogAddonSettings::ShowAndGetInput(scraper);
+      CGUIDialogAddonSettings::ShowAndGetInput(scraper);
     }
-    database.SetScraperForPath("musicdb://",scraper);*/
+
+    database.SetScraperForPath("musicdb://",scraper);
+    database.Close();
   }
 
   // if OnClick() returns false, the setting hasn't changed or doesn't
@@ -1740,19 +1679,29 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_mediaManager.GetLocalDrives(shares);
     bool singleFile;
     bool thumbs=false;
+    bool actorThumbs=false;
     bool overwrite=false;
     bool cancelled;
+
     singleFile = CGUIDialogYesNo::ShowAndGetInput(iHeading,20426,20427,-1,20428,20429,cancelled);
     if (cancelled)
       return;
+
     if (singleFile)
       thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20430,-1,-1,cancelled);
     if (cancelled)
       return;
+
+    if (thumbs)
+      actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20436,-1,-1,cancelled);
+    if (cancelled)
+      return;
+
     if (singleFile)
       overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
     if (cancelled)
       return;
+
     if (singleFile || CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
     {
       if (strSetting.Equals("videolibrary.export"))
@@ -1760,7 +1709,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
         CUtil::AddFileToFolder(path, "videodb.xml", path);
         CVideoDatabase videodatabase;
         videodatabase.Open();
-        videodatabase.ExportToXML(path,singleFile,thumbs,overwrite);
+        videodatabase.ExportToXML(path, singleFile, thumbs, actorThumbs, overwrite);
         videodatabase.Close();
       }
       else
@@ -1768,7 +1717,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
         CUtil::AddFileToFolder(path, "musicdb.xml", path);
         CMusicDatabase musicdatabase;
         musicdatabase.Open();
-        musicdatabase.ExportToXML(path,singleFile,thumbs,overwrite);
+        musicdatabase.ExportToXML(path, singleFile, thumbs, overwrite);
         musicdatabase.Close();
       }
     }
@@ -1932,10 +1881,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_lcd->Initialize();
   }
 #endif
-  else if ( strSetting.Equals("servers.webserver") || strSetting.Equals("servers.webserverport") ||
-            strSetting.Equals("servers.webserverusername") || strSetting.Equals("servers.webserverpassword"))
+  else if ( strSetting.Equals("services.webserver") || strSetting.Equals("services.webserverport") || 
+            strSetting.Equals("services.webserverusername") || strSetting.Equals("services.webserverpassword"))
   {
-    if (strSetting.Equals("servers.webserverport"))
+    if (strSetting.Equals("services.webserverport"))
     {
       CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
       // check that it's a valid port
@@ -1949,24 +1898,24 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
 #ifdef HAS_WEB_SERVER
     g_application.StopWebServer(true);
-    if (g_guiSettings.GetBool("servers.webserver"))
+    if (g_guiSettings.GetBool("services.webserver"))
     {
       g_application.StartWebServer();
       if (g_application.m_pWebServer) {
-        if (strSetting.Equals("servers.webserverusername"))
-          g_application.m_pWebServer->SetUserName(g_guiSettings.GetString("servers.webserverusername").c_str());
+        if (strSetting.Equals("services.webserverusername"))
+          g_application.m_pWebServer->SetUserName(g_guiSettings.GetString("services.webserverusername").c_str());
         else
-          g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
+          g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("services.webserverpassword").c_str());
       }
     }
 #endif
   } 
-  else if (strSetting.Equals("network.zeroconf"))
+  else if (strSetting.Equals("services.zeroconf"))
   {
 #ifdef HAS_ZEROCONF
     //ifdef zeroconf here because it's only found in guisettings if defined
     CZeroconf::GetInstance()->Stop();
-    if(g_guiSettings.GetBool("network.zeroconf"))
+    if(g_guiSettings.GetBool("services.zeroconf"))
       CZeroconf::GetInstance()->Start();
 #endif
   }
@@ -2277,7 +2226,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       CAddonMgr::Get()->LoadAddonsXML(ADDON_SCREENSAVER);
     }
   }
-  else if (strSetting.Equals("pictures.screenshotpath") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath"))
+  else if (strSetting.Equals("system.screenshotpath") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = g_guiSettings.GetString(strSetting,false);
@@ -2329,28 +2278,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_application.StartTimeServer();
   }
 #endif
-  else if (strSetting.Equals("locale.time"))
-  {
-    SYSTEMTIME curTime;
-    GetLocalTime(&curTime);
-    if (CGUIDialogNumeric::ShowAndGetTime(curTime, g_localizeStrings.Get(14066)))
-    { // yay!
-      SYSTEMTIME curDate;
-      GetLocalTime(&curDate);
-      CUtil::SetSysDateTimeYear(curDate.wYear, curDate.wMonth, curDate.wDay, curTime.wHour, curTime.wMinute);
-    }
-  }
-  else if (strSetting.Equals("locale.date"))
-  {
-    SYSTEMTIME curDate;
-    GetLocalTime(&curDate);
-    if (CGUIDialogNumeric::ShowAndGetDate(curDate, g_localizeStrings.Get(14067)))
-    { // yay!
-      SYSTEMTIME curTime;
-      GetLocalTime(&curTime);
-      CUtil::SetSysDateTimeYear(curDate.wYear, curDate.wMonth, curDate.wDay, curTime.wHour, curTime.wMinute);
-    }
-  }
   else if (strSetting.Equals("smb.winsserver") || strSetting.Equals("smb.workgroup") )
   {
     if (g_guiSettings.GetString("smb.winsserver") == "0.0.0.0")
@@ -2369,61 +2296,53 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
     if (dlg->IsConfirmed())
     {
+      g_settings.Save();
       g_application.getApplicationMessenger().RestartApp();
     }
   }
-  else if (strSetting.Equals("upnp.client"))
+  else if (strSetting.Equals("services.upnpserver"))
   {
 #ifdef HAS_UPNP
-    if (g_guiSettings.GetBool("upnp.client"))
-      g_application.StartUPnPClient();
-    else
-      g_application.StopUPnPClient();
-#endif
-  }
-  else if (strSetting.Equals("upnp.server"))
-  {
-#ifdef HAS_UPNP
-    if (g_guiSettings.GetBool("upnp.server"))
+    if (g_guiSettings.GetBool("services.upnpserver"))
       g_application.StartUPnPServer();
     else
       g_application.StopUPnPServer();
 #endif
   }
-  else if (strSetting.Equals("upnp.renderer"))
+  else if (strSetting.Equals("services.upnprenderer"))
   {
 #ifdef HAS_UPNP
-    if (g_guiSettings.GetBool("upnp.renderer"))
+    if (g_guiSettings.GetBool("services.upnprenderer"))
       g_application.StartUPnPRenderer();
     else
       g_application.StopUPnPRenderer();
 #endif
   }
-  else if (strSetting.Equals("remoteevents.enabled"))
+  else if (strSetting.Equals("services.esenabled"))
   {
 #ifdef HAS_EVENT_SERVER
-    if (g_guiSettings.GetBool("remoteevents.enabled"))
+    if (g_guiSettings.GetBool("services.esenabled"))
       g_application.StartEventServer();
     else
     {
       if (!g_application.StopEventServer(true, true))
       {
-        g_guiSettings.SetBool("remoteevents.enabled", true);
+        g_guiSettings.SetBool("services.esenabled", true);
         CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
         if (pControl) pControl->SetEnabled(true);
       }
     }
 #endif
   }
-  else if (strSetting.Equals("remoteevents.port"))
+  else if (strSetting.Equals("services.esport"))
   {
 #ifdef HAS_EVENT_SERVER
-    CStdString port_string = g_guiSettings.GetString("remoteevents.port");
+    CStdString port_string = g_guiSettings.GetString("services.esport");
     int port = 0;
     if(port_string.length() == 0)
     {
       CLog::Log(LOGERROR, "ES: No port specified, defaulting to 9777");
-      g_guiSettings.SetString("remoteevents.port", "9777");
+      g_guiSettings.SetString("services.esport", "9777");
     }
     else
       port = atoi(port_string);
@@ -2431,7 +2350,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (port > 65535 || port < 1)
     {
       CLog::Log(LOGERROR, "ES: Invalid port specified %d, defaulting to 9777", port);
-      g_guiSettings.SetString("remoteevents.port", "9777");
+      g_guiSettings.SetString("services.esport", "9777");
     }
     //restart eventserver without asking user
     if (g_application.StopEventServer(true, false))
@@ -2442,27 +2361,27 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #endif
 #endif
   }
-  else if (strSetting.Equals("remoteevents.allinterfaces"))
+  else if (strSetting.Equals("services.esallinterfaces"))
   {
 #ifdef HAS_EVENT_SERVER
-    if (g_guiSettings.GetBool("remoteevents.enabled"))
+    if (g_guiSettings.GetBool("services.esenabled"))
     {
       if (g_application.StopEventServer(true, true))
         g_application.StartEventServer();
       else
       {
-        g_guiSettings.SetBool("remoteevents.enabled", true);
+        g_guiSettings.SetBool("services.esenabled", true);
         CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
         if (pControl) pControl->SetEnabled(true);
       }
     }
 #endif
   }
-  else if (strSetting.Equals("remoteevents.initialdelay") ||
-           strSetting.Equals("remoteevents.continuousdelay"))
+  else if (strSetting.Equals("services.esinitialdelay") ||
+           strSetting.Equals("services.escontinuousdelay"))
   {
 #ifdef HAS_EVENT_SERVER
-    if (g_guiSettings.GetBool("remoteevents.enabled"))
+    if (g_guiSettings.GetBool("services.esenabled"))
     {
       g_application.RefreshEventServer();
     }
@@ -3077,8 +2996,43 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   {
     for (unsigned int i = 0; i < addons.size(); i++)
     {
+      //TODO fix this merge
       const AddonPtr addon = addons.at(i);
       vecVis.push_back(addon->Name());
+      const char *visPath = (const char*)pItem->m_strPath;
+
+      CUtil::GetExtension(pItem->m_strPath, strExtension);
+      if (strExtension == ".vis")  // normal visualisation
+      {
+        if(!CVisualisation::IsValidVisualisation(pItem->m_strPath))
+          continue;
+        CStdString strLabel = pItem->GetLabel();
+        vecVis.push_back( CVisualisation::GetFriendlyName( strLabel ) );
+      }
+      else if ( strExtension == ".mvis" )  // multi visualisation with sub modules
+      {
+        CVisualisation* vis = visFactory.LoadVisualisation( visPath );
+        if ( vis )
+        {
+          map<string, string> subModules;
+          map<string, string>::iterator iter;
+          string moduleName, path;
+          CStdString visName = pItem->GetLabel();
+          visName = visName.Mid(0, visName.size() - 5);
+
+          // get list of sub modules from the visualisation
+          vis->GetSubModules( subModules );
+
+          for ( iter=subModules.begin() ; iter!=subModules.end() ; iter++ )
+          {
+            // each pair of the map is of the format 'module name' => 'module path'
+            moduleName = iter->first;
+            vecVis.push_back( CVisualisation::GetFriendlyName( visName.c_str(), moduleName.c_str() ).c_str() );
+            CLog::Log(LOGDEBUG, "Module %s for visualisation %s", moduleName.c_str(), visPath);
+          }
+          delete vis;
+        }
+      }
     }
   } 
 
@@ -3251,9 +3205,12 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool play
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
   pControl->Clear();
 
-  pControl->AddLabel(g_settings.m_ResInfo[RES_WINDOW].strMode, RES_WINDOW);  
+  pControl->AddLabel(g_settings.m_ResInfo[RES_WINDOW].strMode, RES_WINDOW);
   pControl->AddLabel(g_settings.m_ResInfo[RES_DESKTOP].strMode, RES_DESKTOP);
-  for (size_t i = RES_CUSTOM ; i < g_settings.m_ResInfo.size(); i++)
+  size_t maxRes = g_settings.m_ResInfo.size();
+  if (g_Windowing.GetNumScreens())
+    maxRes = std::min(maxRes, (size_t)RES_DESKTOP + g_Windowing.GetNumScreens());
+  for (size_t i = RES_CUSTOM ; i < maxRes; i++)
   {
     pControl->AddLabel(g_settings.m_ResInfo[i].strMode, i);
   }
@@ -3265,7 +3222,7 @@ void CGUIWindowSettingsCategory::FillInVSyncs(CSetting *pSetting)
   CSettingInt *pSettingInt = (CSettingInt*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(_WIN32)
   pControl->AddLabel(g_localizeStrings.Get(13101) , VSYNC_DRIVER);
 #endif
   pControl->AddLabel(g_localizeStrings.Get(13106) , VSYNC_DISABLED);
@@ -3892,12 +3849,7 @@ void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pContro
 
 void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
 {
-  if (!g_application.IsStandAlone())
-    return;
-
-#ifdef __APPLE__
   return;
-#endif
 
    NetworkAssignment iAssignment;
    CStdString sIPAddress;

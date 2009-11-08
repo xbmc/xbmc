@@ -158,33 +158,33 @@
 					</item>
 					<item>
 						<label>$LOCALIZE[175]:</label>
-						<label2>$INFO[ListItem.Property(AlbumMoods)]</label2>
+						<label2>$INFO[ListItem.Property(Album_Mood)]</label2>
 						<onclick>-</onclick>
-						<visible>!IsEmpty(ListItem.Property(AlbumMoods))</visible>
+						<visible>!IsEmpty(ListItem.Property(Album_Mood))</visible>
 					</item>
 					<item>
 						<label>$LOCALIZE[176]:</label>
-						<label2>$INFO[ListItem.Property(AlbumStyles)]</label2>
+						<label2>$INFO[ListItem.Property(Album_Style)]</label2>
 						<onclick>-</onclick>
-						<visible>!IsEmpty(ListItem.Property(AlbumStyles))</visible>
+						<visible>!IsEmpty(ListItem.Property(Album_Style))</visible>
 					</item>
 					<item>
 						<label>$LOCALIZE[21895]:</label>
-						<label2>$INFO[ListItem.Property(AlbumThemes)]</label2>
+						<label2>$INFO[ListItem.Property(Album_Theme)]</label2>
 						<onclick>-</onclick>
-						<visible>!IsEmpty(ListItem.Property(AlbumThemes))</visible>
+						<visible>!IsEmpty(ListItem.Property(Album_Theme))</visible>
 					</item>
 					<item>
 						<label>146</label>
-						<label2>$INFO[ListItem.Property(AlbumType)]</label2>
+						<label2>$INFO[ListItem.Property(Album_Type)]</label2>
 						<onclick>-</onclick>
-						<visible>!IsEmpty(ListItem.Property(AlbumType))</visible>
+						<visible>!IsEmpty(ListItem.Property(Album_Type))</visible>
 					</item>
 					<item>
 						<label>$LOCALIZE[21899]:</label>
-						<label2>$INFO[ListItem.Property(AlbumLabel)]</label2>
+						<label2>$INFO[ListItem.Property(Album_Label)]</label2>
 						<onclick>-</onclick>
-						<visible>!IsEmpty(ListItem.Property(AlbumLabel))</visible>
+						<visible>!IsEmpty(ListItem.Property(Album_Label))</visible>
 					</item>
 					<item>
 						<label>$LOCALIZE[562]:</label>
@@ -356,15 +356,15 @@
 					<content>
 						<item>
 							<label>$LOCALIZE[21893]:</label>
-							<label2>$INFO[ListItem.Property(Born)]</label2>
+							<label2>$INFO[ListItem.Property(Artist_Born)]</label2>
 							<onclick>-</onclick>
-							<visible>!IsEmpty(ListItem.Property(Born))</visible>
+							<visible>!IsEmpty(ListItem.Property(Artist_Born))</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[21894]:</label>
-							<label2>$INFO[ListItem.Property(Formed)]</label2>
+							<label2>$INFO[ListItem.Property(Artist_Formed)]</label2>
 							<onclick>-</onclick>
-							<visible>!IsEmpty(ListItem.Property(Formed))</visible>
+							<visible>!IsEmpty(ListItem.Property(Artist_Formed))</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[515]:</label>
@@ -374,39 +374,39 @@
 						</item>
 						<item>
 							<label>$LOCALIZE[175]:</label>
-							<label2>$INFO[ListItem.Property(Moods)]</label2>
+							<label2>$INFO[ListItem.Property(Artist_Mood)]</label2>
 							<onclick>-</onclick>
-							<visible>!IsEmpty(ListItem.Property(Moods))</visible>
+							<visible>!IsEmpty(ListItem.Property(Artist_Mood))</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[176]:</label>
-							<label2>$INFO[ListItem.Property(Styles)]</label2>
+							<label2>$INFO[ListItem.Property(Artist_Style)]</label2>
 							<onclick>-</onclick>
-							<visible>!IsEmpty(ListItem.Property(Styles))</visible>
+							<visible>!IsEmpty(ListItem.Property(Artist_Style))</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[21892]:</label>
-							<label2>$INFO[ListItem.Property(Instruments)]</label2>
+							<label2>$INFO[ListItem.Property(Artist_Instrument)]</label2>
 							<onclick>-</onclick>
-							<visible>!IsEmpty(ListItem.Property(Instruments))</visible>
+							<visible>!IsEmpty(ListItem.Property(Artist_Instrument))</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[21897]:</label>
-							<label2>$INFO[ListItem.Property(Died)]</label2>
+							<label2>$INFO[ListItem.Property(Artist_Died)]</label2>
 							<onclick>-</onclick>
-							<visible>!IsEmpty(ListItem.Property(Died))</visible>
+							<visible>!IsEmpty(ListItem.Property(Artist_Died))</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[21896]:</label>
-							<label2>$INFO[ListItem.Disbanded]</label2>
+							<label2>$INFO[ListItem.Property(Artist_Disbanded)]</label2>
 							<onclick>-</onclick>
-							<visible>!IsEmpty(ListItem.Disbanded)</visible>
+							<visible>!IsEmpty(ListItem.Property(Artist_Disbanded))</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[21898]:</label>
-							<label2>$INFO[ListItem.YearsActive]</label2>
+							<label2>$INFO[ListItem.Property(Artist_YearsActive)]</label2>
 							<onclick>-</onclick>
-							<visible>!IsEmpty(ListItem.YearsActive)</visible>
+							<visible>!IsEmpty(ListItem.Property(Artist_YearsActive))</visible>
 						</item>
 					</content>
 				</control>

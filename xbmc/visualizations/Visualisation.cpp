@@ -26,6 +26,12 @@
 #include "MusicInfoTag.h"
 #include "Settings.h"
 #include "WindowingFactory.h"
+#include "Util.h"
+#ifdef _LINUX
+#include <dlfcn.h>
+#include "FileSystem/SpecialProtocol.h"
+#include "FileSystem/File.h"
+#endif
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -397,4 +403,92 @@ char *CVisualisation::GetPreset()
   GetCurrentPreset(&preset, &locked);
   return preset;
 }
+
+/*CStdString CVisualisation::GetFriendlyName(const char* strVisz,
+                                           const char* strSubModule)
+{
+  // should be of the format "moduleName (visName)"
+  return CStdString(strSubModule) + " (" + CStdString(strVisz) + ")";
+}
+
+CStdString CVisualisation::GetFriendlyName(const char* combinedName)
+{
+  CStdString moduleName;
+  CStdString visName  = combinedName;
+  int        colonPos = visName.ReverseFind(":");
+
+  if ( colonPos > 0 )
+  {
+    visName    = visName.Mid( colonPos + 1 );
+    moduleName = visName.Mid( 0, colonPos - 5 );  // remove .mvis
+
+    // should be of the format "moduleName (visName)"
+    return moduleName + " (" + visName + ")";
+  }
+  return visName.Left( visName.size() - 4 );
+}
+
+CStdString CVisualisation::GetCombinedName(const char* strVisz,
+                                           const char* strSubModule)
+{
+  // should be of the format "visName.mvis:moduleName"
+  return CStdString(strVisz) + ":" + CStdString(strSubModule);
+}
+
+CStdString CVisualisation::GetCombinedName(const char* friendlyName)
+{
+  CStdString moduleName;
+  CStdString fName  = friendlyName;
+
+  // convert from "module name (vis name)" to "vis name.mvis:module name"
+  int startPos = fName.ReverseFind(" (");
+
+  if ( startPos > 0 )
+  {
+    int endPos = fName.ReverseFind(")");
+    CStdString moduleName = fName.Left( startPos );
+    CStdString visName    = fName.Mid( startPos+2, endPos-startPos-2 );
+    return visName + ".mvis" + ":" + moduleName;
+  }
+  return fName + ".vis";
+}
+
+bool CVisualisation::IsValidVisualisation(const CStdString& strVisz)
+{
+  bool bRet = true;
+  CStdString strExtension;
+
+  if(strVisz.Equals("None"))
+    return true;
+
+  CUtil::GetExtension(strVisz, strExtension);
+  if (strExtension == ".mvis")
+    return true; // assume multivis are OK
+
+  if (strExtension != ".vis")
+    return false;
+
+#ifdef _LINUX
+  CStdString visPath(strVisz);
+  if(visPath.Find("/") == -1)
+  {
+    visPath.Format("%s%s", "special://xbmc/visualisations/", strVisz);
+    if(!XFILE::CFile::Exists(visPath))
+      visPath.Format("%s%s", "special://home/visualisations/", strVisz);
+  }
+  void *handle = dlopen( _P(strVisz).c_str(), RTLD_LAZY );
+  if (!handle)
+    bRet = false;
+  else
+    dlclose(handle);
+#elif defined(HAS_DX)
+  if(strVisz.Right(11).CompareNoCase("win32dx.vis") != 0)
+    bRet = false;
+#elif defined(_WIN32)
+  if(strVisz.Right(9).CompareNoCase("win32.vis") != 0)
+    bRet = false;
+#endif
+
+  return bRet;
+}*/
 

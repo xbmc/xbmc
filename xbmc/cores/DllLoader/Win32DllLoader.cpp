@@ -79,6 +79,8 @@ Export win32_exports[] =
   { "_findclose",                 -1, (void*)dll_findclose,                 NULL },
   { "_findfirst",                 -1, (void*)dll_findfirst,                 NULL },
   { "_findnext",                  -1, (void*)dll_findnext,                  NULL },
+  { "_findfirst64i32",            -1, (void*)dll_findfirst64i32,            NULL },
+  { "_findnext64i32",             -1, (void*)dll_findnext64i32,             NULL },
   { "fclose",                     -1, (void*)dll_fclose,                    (void*)track_fclose},
   { "feof",                       -1, (void*)dll_feof,                      NULL },
   { "fgets",                      -1, (void*)dll_fgets,                     NULL },

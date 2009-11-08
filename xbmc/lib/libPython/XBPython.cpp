@@ -433,8 +433,6 @@ void XBPython::FreeResources()
 
 void XBPython::Process()
 {
-  CSingleLock lock(m_critSection);
-
   if (m_bStartup)
   {
     m_bStartup = false;
@@ -472,6 +470,8 @@ void XBPython::Process()
     else
       CLog::Log(LOGDEBUG, "%s - no profile autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy.c_str());
   }
+
+  CSingleLock lock(m_critSection);
 
   if (m_bInitialized)
   {

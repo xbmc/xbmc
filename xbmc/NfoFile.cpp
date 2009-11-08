@@ -128,11 +128,13 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, CScraperPtr& inf
       parser2.Load(addons[i]);
       CONTENT_TYPE content = parser2.GetContent();
 
-      // skip wrong content type
-      if (info->Content() != content && (info->Content() == CONTENT_MOVIES 
-                                                || info->Content() == CONTENT_TVSHOWS 
-                                                || info->Content() == CONTENT_MUSICVIDEOS))
-        continue;
+        // skip if scraper requires settings and there's nothing set yet
+        if (parser2.RequiresSettings() && info2.settings.GetSettings().IsEmpty())
+          continue;
+
+        // skip wrong content type
+        if (info.strContent != info2.strContent && (info.strContent.Equals("movies") || info.strContent.Equals("tvshows") || info.strContent.Equals("musicvideos")))
+          continue;
 
       // add same language, multi-language and music scrapers
       // TODO addons language handling

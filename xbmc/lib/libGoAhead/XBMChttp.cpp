@@ -21,6 +21,7 @@
 #include "PlayList.h"
 #include "FileSystem/HDDirectory.h" 
 #include "FileSystem/CDDADirectory.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "VideoDatabase.h"
 #include "GUIButtonControl.h"
 #include "utils/GUIInfoManager.h"
@@ -184,9 +185,9 @@ bool CXbmcHttp::decodeBase64ToFile( const CStdString &inString, const CStdString
   try
   {
     if (append)
-      outfile = fopen_utf8( outfilename.c_str(), "ab" );
+      outfile = fopen_utf8(_P(outfilename).c_str(), "ab" );
     else
-      outfile = fopen_utf8( outfilename.c_str(), "wb" );
+      outfile = fopen_utf8(_P(outfilename).c_str(), "wb" );
     while( ptr < inString.length() )
     {
       for( len = 0, i = 0; i < 4 && ptr < inString.length(); i++ ) 
@@ -1042,7 +1043,7 @@ int CXbmcHttp::xbmcAddToPlayListFromDB(int numParas, CStdString paras[])
       return SetResponse(openTag+"Error: Could not open video database");
 
     if (type.Equals("movies"))
-      videodatabase.GetMoviesByWhere("", where, filelist);
+      videodatabase.GetMoviesByWhere("", where, "", filelist);
     else if (type.Equals("episodes"))
       videodatabase.GetEpisodesByWhere("", where, filelist);
     else if (type.Equals("musicvideos"))
@@ -2885,7 +2886,7 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
     if (numParas>5)
     {
       CStdString tmpFile = "special://temp/temp.bmp";
-      CUtil::TakeScreenshot(tmpFile, paras[1].ToLower()=="true");
+      CUtil::TakeScreenshot(tmpFile);
       int height, width;
       if (paras[4]=="")
         if (paras[3]=="")

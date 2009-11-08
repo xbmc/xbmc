@@ -136,7 +136,7 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
       }*/
       setting.max = 2;
       for (int i = 0; i <= setting.max; i++)
-        setting.entry.push_back(g_localizeStrings.Get(13320 + i));
+        setting.entry.push_back(make_pair(setting.entry.size(), g_localizeStrings.Get(13320 + i)));
       m_audioStream = -g_stSettings.m_currentVideoSettings.m_AudioStream - 1;
       m_settings.push_back(setting);
       return;
@@ -153,13 +153,13 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
       strName = "Unnamed";
 
     strItem.Format("%s (%i/%i)", strName.c_str(), i + 1, (int)setting.max + 1);
-    setting.entry.push_back(strItem);
+    setting.entry.push_back(make_pair(setting.entry.size(), strItem));
   }
 
   if( setting.max < 0 )
   {
     setting.max = 0;
-    setting.entry.push_back(g_localizeStrings.Get(231).c_str());
+    setting.entry.push_back(make_pair(setting.entry.size(), g_localizeStrings.Get(231)));
   }
 
   m_settings.push_back(setting);
@@ -192,14 +192,14 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
 
     strItem.Format("%s (%i/%i)", strName.c_str(), i + 1, (int)setting.max + 1);
 
-    setting.entry.push_back(strItem);
+    setting.entry.push_back(make_pair(setting.entry.size(), strItem));
   }
 
   if (setting.max < 0)
   { // no subtitle streams - just add a "None" entry
     m_subtitleStream = 0;
     setting.max = 0;
-    setting.entry.push_back(g_localizeStrings.Get(231).c_str());
+    setting.entry.push_back(make_pair(setting.entry.size(), g_localizeStrings.Get(231)));
   }
   m_settings.push_back(setting);
 }
@@ -261,11 +261,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   {
     g_stSettings.m_currentVideoSettings.m_SubtitleOn = m_subtitleVisible;
     g_application.m_pPlayer->SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
-    if (!g_stSettings.m_currentVideoSettings.m_SubtitleCached && g_stSettings.m_currentVideoSettings.m_SubtitleOn)
-    {
-      g_application.Restart(true); // cache subtitles
-      Close();
-    }
   }
   else if (setting.id == SUBTITLE_SETTINGS_DELAY)
   {

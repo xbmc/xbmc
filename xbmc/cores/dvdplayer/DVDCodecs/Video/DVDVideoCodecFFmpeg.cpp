@@ -95,7 +95,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 #ifdef HAVE_LIBVDPAU
   int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
-  if(requestedMethod == RENDER_METHOD_VDPAU
+  if((requestedMethod == RENDER_METHOD_VDPAU || requestedMethod == RENDER_METHOD_AUTO)
   && !hints.software)
   {
     while((pCodec = m_dllAvCodec.av_codec_next(pCodec)))

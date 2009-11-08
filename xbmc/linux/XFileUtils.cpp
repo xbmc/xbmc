@@ -42,21 +42,31 @@
 
 #include "../utils/log.h"
 #include "utils/RegExp.h"
+#include "utils/AliasShortcutUtils.h"
 
-HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
+HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
+{
   if (lpFindData == NULL || szPath == NULL)
     return NULL;
 
   CStdString strPath(szPath);
 
+  if (IsAliasShortcut(strPath))
+    TranslateAliasShortcut(strPath);
+
   if (strPath.empty())
     return INVALID_HANDLE_VALUE;
 
-        strPath.Replace("\\","/");
+  strPath.Replace("\\","/");
 
   // if the file name is a directory then we add a * to look for all files in this directory
+#ifdef __APPLE__
+  DIR *testDir = opendir(strPath.c_str());
+#else
   DIR *testDir = opendir(szPath);
-  if (testDir) {
+#endif
+  if (testDir)
+  {
     strPath += "/*";
     closedir(testDir);
   }
@@ -66,13 +76,14 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
   CStdString strDir = ".";
   CStdString strFiles = strPath;
 
-  if (nFilePos > 0) {
+  if (nFilePos > 0)
+  {
     strDir = strPath.substr(0,nFilePos);
     strFiles = strPath.substr(nFilePos + 1);
   }
 
-        if (strFiles == "*.*")
-           strFiles = "*";
+  if (strFiles == "*.*")
+     strFiles = "*";
 
   strFiles = CStdString("^") + strFiles + "$";
   strFiles.Replace(".","\\.");
@@ -91,7 +102,8 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
   CXHandle *pHandle = new CXHandle(CXHandle::HND_FIND_FILE);
     pHandle->m_FindFileDir = strDir;
 
-  while (n-- > 0) {
+  while (n-- > 0)
+  {
     CStdString strComp(namelist[n]->d_name);
     strComp.MakeLower();
 
@@ -101,7 +113,8 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
   }
   free(namelist);
 
-  if (pHandle->m_FindFileResults.size() == 0) {
+  if (pHandle->m_FindFileResults.size() == 0)
+  {
     delete pHandle;
     return INVALID_HANDLE_VALUE;
   }
@@ -111,7 +124,8 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
   return pHandle;
 }
 
-BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData) {
+BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
+{
   if (lpFindData == NULL || hHandle == NULL || hHandle->GetType() != CXHandle::HND_FIND_FILE)
     return FALSE;
 
@@ -119,13 +133,18 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData) {
     return FALSE;
 
   CStdString strFileName = hHandle->m_FindFileResults[hHandle->m_nFindFileIterator++];
-        CStdString strFileNameTest = hHandle->m_FindFileDir + '/' + strFileName;
+  CStdString strFileNameTest = hHandle->m_FindFileDir + strFileName;
+
+  if (IsAliasShortcut(strFileNameTest))
+    TranslateAliasShortcut(strFileNameTest);
 
   struct stat64 fileStat;
+  memset(&fileStat, 0, sizeof(fileStat));
   stat64(strFileNameTest, &fileStat);
 
   bool bIsDir = false;
-  if (S_ISDIR(fileStat.st_mode)) {
+  if (S_ISDIR(fileStat.st_mode))
+  {
     bIsDir = true;
   }
 
@@ -153,7 +172,8 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData) {
   return TRUE;
 }
 
-BOOL   FindClose(HANDLE hFindFile) {
+BOOL FindClose(HANDLE hFindFile)
+{
   return CloseHandle(hFindFile);
 }
 
@@ -175,7 +195,8 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   }
 
   int flags = 0, mode=S_IRUSR | S_IRGRP | S_IROTH;
-  if (dwDesiredAccess & FILE_WRITE_DATA) {
+  if (dwDesiredAccess & FILE_WRITE_DATA)
+  {
     flags = O_RDWR;
     mode |= S_IWUSR;
   }
@@ -265,7 +286,7 @@ if (errno == 20)
   // if FILE_FLAG_DELETE_ON_CLOSE then "unlink" the file (delete)
   // the file will be deleted when the last open descriptor is closed.
   if (dwFlagsAndAttributes & FILE_FLAG_DELETE_ON_CLOSE)
-  unlink(strResultFile);
+    unlink(strResultFile);
 
   return result;
 }
@@ -278,9 +299,11 @@ BOOL DeleteFile(LPCTSTR lpFileName)
   if (unlink(lpFileName) == 0)
     return 1;
 
-  if (errno == EACCES) {
+  if (errno == EACCES)
+  {
     CLog::Log(LOGERROR,"%s - cant delete file, trying to change mode <%s>", __FUNCTION__, lpFileName);
-    if (chmod(lpFileName, 0600) != 0) {
+    if (chmod(lpFileName, 0600) != 0)
+    {
       CLog::Log(LOGERROR,"%s - failed to change mode <%s>", __FUNCTION__, lpFileName);
       return 0;
     }
@@ -290,11 +313,13 @@ BOOL DeleteFile(LPCTSTR lpFileName)
     if (unlink(lpFileName) == 0)
       return 1;
   }
-  else if (errno == ENOENT) {
+  else if (errno == ENOENT)
+  {
     CStdString strLower(lpFileName);
     strLower.MakeLower();
     CLog::Log(LOGERROR,"%s - cant delete file <%s>. trying lower case <%s>", __FUNCTION__, lpFileName, strLower.c_str());
-    if (unlink(strLower.c_str()) == 0) {
+    if (unlink(strLower.c_str()) == 0)
+    {
       CLog::Log(LOGDEBUG,"%s - successfuly removed file <%s>", __FUNCTION__, strLower.c_str());
       return 1;
     }
@@ -311,9 +336,11 @@ BOOL MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
   if (rename(lpExistingFileName, lpNewFileName) == 0)
     return 1;
 
-  if (errno == EACCES) {
+  if (errno == EACCES)
+  {
     CLog::Log(LOGERROR,"%s - cant move file, trying to change mode <%s>", __FUNCTION__, lpExistingFileName);
-    if (chmod(lpExistingFileName, 0600) != 0) {
+    if (chmod(lpExistingFileName, 0600) != 0)
+    {
       CLog::Log(LOGERROR,"%s - failed to change mode <%s>", __FUNCTION__, lpExistingFileName);
       return 0;
     }
@@ -323,7 +350,8 @@ BOOL MoveFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
     if (rename(lpExistingFileName, lpNewFileName) == 0)
       return 1;
   }
-  else if (errno == ENOENT) {
+  else if (errno == ENOENT)
+  {
     CStdString strLower(lpExistingFileName);
     strLower.MakeLower();
     CLog::Log(LOGERROR,"%s - cant move file <%s>. trying lower case <%s>", __FUNCTION__, lpExistingFileName, strLower.c_str());
@@ -367,7 +395,8 @@ BOOL CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExi
     // failed to open file. maybe due to case sensitivity. try opening the same name in lower case.
     CLog::Log(LOGWARNING,"%s, cant open file <%s>. trying to use lowercase <%s>", __FUNCTION__, lpExistingFileName, strLower.c_str());
     sf = open(strLower.c_str(), O_RDONLY);
-    if (sf != -1) {
+    if (sf != -1)
+    {
       CLog::Log(LOGDEBUG,"%s, successfuly opened <%s>", __FUNCTION__, strLower.c_str());
       strResultFile = strLower;
     }
@@ -384,7 +413,8 @@ BOOL CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExi
   {
     if (errno == EACCES) {
       CLog::Log(LOGWARNING,"%s - cant write to dest file, trying to change mode <%s>", __FUNCTION__, lpNewFileName);
-      if (chmod(lpNewFileName, 0600) != 0) {
+      if (chmod(lpNewFileName, 0600) != 0)
+      {
         CLog::Log(LOGWARNING,"%s - failed to change mode <%s>", __FUNCTION__, lpNewFileName);
         close(sf);
         return 0;
@@ -434,7 +464,7 @@ BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
   {
     CLog::Log(LOGERROR, "ReadFile does not support overlapped I/O");
     return 0;
- }
+  }
 
   size_t bytesRead = read(hFile->fd, lpBuffer, nNumberOfBytesToRead);
   if (bytesRead == (size_t) -1)
@@ -453,7 +483,7 @@ BOOL WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
   {
     CLog::Log(LOGERROR, "ReadFile does not support overlapped I/O");
     return 0;
- }
+  }
 
   size_t bytesWritten = write(hFile->fd, lpBuffer, nNumberOfBytesToWrite);
 
@@ -470,7 +500,8 @@ BOOL   CreateDirectory(LPCTSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttri
   if (mkdir(lpPathName, 0755) == 0)
     return 1;
 
-  if (errno == ENOENT) {
+  if (errno == ENOENT)
+  {
     CLog::Log(LOGWARNING,"%s, cant create dir <%s>. trying lower case.", __FUNCTION__, lpPathName);
     CStdString strLower(lpPathName);
     strLower.MakeLower();
@@ -487,7 +518,8 @@ BOOL   RemoveDirectory(LPCTSTR lpPathName)
   if (rmdir(lpPathName) == 0)
     return 1;
 
-  if (errno == ENOENT) {
+  if (errno == ENOENT)
+  {
     CLog::Log(LOGWARNING,"%s, cant remove dir <%s>. trying lower case.", __FUNCTION__, lpPathName);
     CStdString strLower(lpPathName);
     strLower.MakeLower();
@@ -505,7 +537,8 @@ DWORD  SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
     return 0;
 
   LONGLONG offset = lDistanceToMove;
-  if (lpDistanceToMoveHigh) {
+  if (lpDistanceToMoveHigh)
+  {
     LONGLONG helper = *lpDistanceToMoveHigh;
     helper <<= 32;
     offset &= 0xFFFFFFFF;   // Zero out the upper half (sign ext)
@@ -525,7 +558,8 @@ DWORD  SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
   currOff = lseek64(hFile->fd, offset, nMode);
 #endif
 
-  if (lpDistanceToMoveHigh) {
+  if (lpDistanceToMoveHigh)
+  {
     *lpDistanceToMoveHigh = (int32_t)(currOff >> 32);
   }
 
@@ -557,7 +591,8 @@ BOOL GetDiskFreeSpaceEx(
   return true;
 }
 
-DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation ) {
+DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
+{
   if (lpTimeZoneInformation == NULL)
     return TIME_ZONE_ID_INVALID;
   
@@ -580,7 +615,8 @@ DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation ) {
   return TIME_ZONE_ID_UNKNOWN;
 }
 
-BOOL SetEndOfFile(HANDLE hFile) {
+BOOL SetEndOfFile(HANDLE hFile)
+{
   if (hFile == NULL)
     return false;
 
@@ -593,7 +629,8 @@ BOOL SetEndOfFile(HANDLE hFile) {
   return (ftruncate(hFile->fd, currOff) == 0);
 }
 
-DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable) {
+DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable)
+{
   usleep(dwMilliseconds * 1000);
   return 0;
 }
@@ -601,7 +638,8 @@ DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable) {
 BOOL SetFilePointerEx(  HANDLE hFile,
             LARGE_INTEGER liDistanceToMove,
             PLARGE_INTEGER lpNewFilePointer,
-            DWORD dwMoveMethod ) {
+            DWORD dwMoveMethod )
+{
 
   int nMode = SEEK_SET;
   if (dwMoveMethod == FILE_CURRENT)
@@ -623,7 +661,8 @@ BOOL SetFilePointerEx(  HANDLE hFile,
   return true;
 }
 
-BOOL GetFileSizeEx( HANDLE hFile, PLARGE_INTEGER lpFileSize) {
+BOOL GetFileSizeEx( HANDLE hFile, PLARGE_INTEGER lpFileSize)
+{
   if (hFile == NULL || lpFileSize == NULL) {
     return false;
   }
@@ -637,8 +676,10 @@ BOOL GetFileSizeEx( HANDLE hFile, PLARGE_INTEGER lpFileSize) {
   return true;
 }
 
-BOOL FlushFileBuffers( HANDLE hFile ) {
-  if (hFile == NULL) {
+BOOL FlushFileBuffers( HANDLE hFile )
+{
+  if (hFile == NULL)
+  {
     return 0;
   }
 
@@ -653,7 +694,8 @@ int _fstat64(int fd, struct __stat64 *buffer)
   return fstat64(fd, buffer);
 }
 
-int _stat64(   const char *path,   struct __stat64 *buffer ) {
+int _stat64(   const char *path,   struct __stat64 *buffer )
+{
 
   if (buffer == NULL || path == NULL)
     return -1;
@@ -663,7 +705,8 @@ int _stat64(   const char *path,   struct __stat64 *buffer ) {
 
 DWORD  GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh)
 {
-  if (hFile == NULL) {
+  if (hFile == NULL)
+  {
     return 0;
   }
 
@@ -672,7 +715,8 @@ DWORD  GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh)
   if (fstat64(hFile->fd, &fileStat) != 0)
     return 0;
 
-  if (lpFileSizeHigh) {
+  if (lpFileSizeHigh)
+  {
     *lpFileSizeHigh = (DWORD)(fileStat.st_size >> 32);
   }
 
@@ -681,13 +725,15 @@ DWORD  GetFileSize(HANDLE hFile, LPDWORD lpFileSizeHigh)
 
 DWORD  GetFileAttributes(LPCTSTR lpFileName)
 {
-  if (lpFileName == NULL) {
+  if (lpFileName == NULL)
+  {
     return 0;
   }
 
   DWORD dwAttr = FILE_ATTRIBUTE_NORMAL;
   DIR *tmpDir = opendir(lpFileName);
-  if (tmpDir) {
+  if (tmpDir)
+  {
     dwAttr |= FILE_ATTRIBUTE_DIRECTORY;
     closedir(tmpDir);
   }

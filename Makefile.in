@@ -379,11 +379,15 @@ OBJSXBMC=	\
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
 	xbmc/lib/sqLite/sqllite.a \
-	xbmc/lib/UnrarXLib/UnrarXLib.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
 	xbmc/visualizations/visualization.a
+
+ifeq (@HAVE_XBMC_NONFREE@,1)
+OBJSXBMC+= \
+	xbmc/lib/UnrarXLib/UnrarXLib.a
+endif
 
 DYNOBJSXBMC= \
 	xbmc/lib/libcmyth/libcmyth.a \

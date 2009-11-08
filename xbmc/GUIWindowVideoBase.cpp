@@ -287,17 +287,8 @@ void CGUIWindowVideoBase::UpdateButtons()
   int nWindow = g_stSettings.m_iVideoStartWindow-WINDOW_VIDEO_FILES;
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
-  // disable scan and manual imdb controls if internet lookups are disabled
-  if (g_guiSettings.GetBool("network.enableinternet"))
-  {
-    CONTROL_ENABLE(CONTROL_BTNSCAN);
-    CONTROL_ENABLE(CONTROL_IMDB);
-  }
-  else
-  {
-    CONTROL_DISABLE(CONTROL_BTNSCAN);
-    CONTROL_DISABLE(CONTROL_IMDB);
-  }
+  CONTROL_ENABLE(CONTROL_BTNSCAN);
+  CONTROL_ENABLE(CONTROL_IMDB);
 
   CGUIMediaWindow::UpdateButtons();
 }
@@ -457,7 +448,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   }
 
   // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("network.enableinternet")) return false;
   if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
     return false;
 
@@ -720,7 +710,7 @@ void CGUIWindowVideoBase::OnManualIMDB()
 
 bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel)
 {
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
   if (pCdInfo == NULL)
     return false;
@@ -731,7 +721,7 @@ bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, co
   int iLabelDB = strDVDLabel.GetLength();
   if (iLabelDB < iLabelCD)
     return false;
-  CStdString dbLabel = strDVDLabel.Left(iLabelCD); 
+  CStdString dbLabel = strDVDLabel.Left(iLabelCD);
   return (dbLabel == label);
 #else
   return false;
@@ -974,7 +964,7 @@ bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
   }
   if (resumeItem)
     item.m_lStartOffset = STARTOFFSET_RESUME;
-  
+
   return true;
 }
 
@@ -982,7 +972,7 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size()) return;
   CFileItemPtr item = m_vecItems->Get(iItem);
-  
+
   // Show menu asking the user
   if ( OnResumeShowMenu(*item) )
     CGUIMediaWindow::OnClick(iItem);
@@ -990,8 +980,6 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
 
 void CGUIWindowVideoBase::OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId)
 {
-  m_bStreamDetailsChanged = true;
-
   CVideoDatabase db;
   if (db.Open())
   {
@@ -1390,7 +1378,14 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems->Size())
     return;
 
-  CFileItemPtr item = m_vecItems->Get(iItem);
+  OnDeleteItem(m_vecItems->Get(iItem));
+
+  Update(m_vecItems->m_strPath);
+  m_viewControl.SetSelectedItem(iItem);
+}
+
+void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
+{
   // HACK: stacked files need to be treated as folders in order to be deleted
   if (item->IsStack())
     item->m_bIsFolder = true;
@@ -1401,11 +1396,7 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
       return;
   }
 
-  if (!CGUIWindowFileManager::DeleteItem(item.get()))
-    return;
-
-  Update(m_vecItems->m_strPath);
-  m_viewControl.SetSelectedItem(iItem);
+  CGUIWindowFileManager::DeleteItem(item.get());
 }
 
 void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
@@ -1528,7 +1519,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
   //Get the new title
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false))
     return;
-  
+
   database.UpdateMovieTitle(iDbId, strInput, iType);
 }
 

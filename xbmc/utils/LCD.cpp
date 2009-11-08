@@ -427,9 +427,9 @@ void ILCD::LoadSkin(const CStdString &xmlFile)
   // load our settings
   CStdString disableOnPlay;
   XMLUtils::GetString(element, "disableonplay", disableOnPlay);
-  if (disableOnPlay.Find("video") != CStdString::npos)
+  if (disableOnPlay.Find("video") != (int)CStdString::npos)
     m_disableOnPlay |= DISABLE_ON_PLAY_VIDEO;
-  if (disableOnPlay.Find("music") != CStdString::npos)
+  if (disableOnPlay.Find("music") != (int)CStdString::npos)
     m_disableOnPlay |= DISABLE_ON_PLAY_MUSIC;
 
   TiXmlElement *mode = element->FirstChildElement();

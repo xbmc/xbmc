@@ -1092,12 +1092,13 @@ ass_track_t *ass_read_memory(ass_library_t *library, char *buf,
         return 0;
 
 #ifdef CONFIG_ICONV
-    if (codepage)
+    if (codepage) {
         buf = sub_recode(library, buf, bufsize, codepage);
-    if (!buf)
-        return 0;
-    else
-        need_free = 1;
+        if (!buf)
+            return 0;
+        else
+            need_free = 1;
+    }
 #endif
     track = parse_memory(library, buf);
     if (need_free)

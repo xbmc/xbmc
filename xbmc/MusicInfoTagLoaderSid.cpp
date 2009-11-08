@@ -21,6 +21,7 @@
 
 #include "MusicInfoTagLoaderSid.h"
 #include "utils/RegExp.h"
+#include "utils/log.h"
 #include "Util.h"
 #include "MusicInfoTag.h"
 #include "Settings.h"

@@ -22,6 +22,7 @@
 #ifdef HAS_DBUS
 #include "Util.h"
 #include "AdvancedSettings.h"
+#include "LocalizeStrings.h"
 
 void CDeviceKitDiskDeviceOldAPI::Update()
 {
@@ -39,7 +40,7 @@ void CDeviceKitDiskDeviceOldAPI::Update()
     m_isMounted   = properties["device-is-mounted"].Equals("true");
     m_isRemovable = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", properties["partition-slave"].c_str(), "org.freedesktop.DeviceKit.Disks.Device", "device-is-removable");
 
-    m_PartitionSizeGiB = (atol(properties["partition-size"].c_str()) / 1024.0 / 1024.0 / 1024.0);
+    m_PartitionSizeGiB = (strtoull(properties["partition-size"].c_str(), NULL, 10) / 1024.0 / 1024.0 / 1024.0);
   }
 }
 
@@ -59,7 +60,7 @@ void CDeviceKitDiskDeviceNewAPI::Update()
     m_isMounted   = properties["DeviceIsMounted"].Equals("true");
     m_isRemovable = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable");
 
-    m_PartitionSizeGiB = (atol(properties["PartitionSize"].c_str()) / 1024.0 / 1024.0 / 1024.0);
+    m_PartitionSizeGiB = (strtoull(properties["PartitionSize"].c_str(), NULL, 10) / 1024.0 / 1024.0 / 1024.0);
   }
 }
 
@@ -126,8 +127,11 @@ bool CDeviceKitDiskDevice::UnMount()
 CMediaSource CDeviceKitDiskDevice::ToMediaShare()
 {
   CMediaSource source;
-  source.strPath = m_MountPath.c_str();
-  source.strName = CUtil::GetFileName(m_MountPath.c_str());
+  source.strPath = m_MountPath;
+  if (m_Label.empty())
+    source.strName.Format("%.1f GB %s", m_PartitionSizeGiB, g_localizeStrings.Get(13376).c_str());
+  else
+    source.strName = m_Label;
   source.m_iDriveType =  m_isRemovable ? CMediaSource::SOURCE_TYPE_REMOVABLE : CMediaSource::SOURCE_TYPE_LOCAL;
   source.m_ignore = true;
   return source;
@@ -209,7 +213,7 @@ std::vector<CStdString> CDeviceKitDisksProvider::GetDiskUsage()
     if (device->IsApproved())
     {
       CStdString str;
-      str.Format("%s %lu GiB", device->m_MountPath.c_str(), device->m_PartitionSizeGiB);
+      str.Format("%s %.1f GiB", device->m_MountPath.c_str(), device->m_PartitionSizeGiB);
       devices.push_back(str);
     }
   }

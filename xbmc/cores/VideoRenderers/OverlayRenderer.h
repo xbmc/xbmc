@@ -78,6 +78,15 @@ namespace OVERLAY {
     long m_references;
   };
 
+  class COverlayMainThread
+      : public COverlay
+  {
+  public:
+    virtual ~COverlayMainThread() {}
+    virtual long Release();
+  };
+
+
   class CRenderer
   {
   public:
@@ -121,5 +130,4 @@ namespace OVERLAY {
 
     COverlayV        m_cleanup;
   };
-
 }

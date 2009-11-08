@@ -37,6 +37,7 @@
 #include "GUIWindowVideoNav.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
+#include "GUIWindowFileManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIEditControl.h"
@@ -593,8 +594,12 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
     }
     NODE_TYPE childtype = dir.GetDirectoryChildType(item->m_strPath);
-    if (childtype == NODE_TYPE_ALBUM || childtype == NODE_TYPE_ARTIST ||
-        nodetype == NODE_TYPE_GENRE  || nodetype == NODE_TYPE_ALBUM)
+    if (childtype == NODE_TYPE_ALBUM               ||
+        childtype == NODE_TYPE_ARTIST              ||
+        nodetype == NODE_TYPE_GENRE                ||
+        nodetype == NODE_TYPE_ALBUM                ||
+        nodetype == NODE_TYPE_ALBUM_RECENTLY_ADDED ||
+        nodetype == NODE_TYPE_ALBUM_COMPILATIONS)
     {
       // we allow the user to set content for
       // 1. general artist and album nodes
@@ -632,6 +637,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         buttons.Add(CONTEXT_BUTTON_DELETE, 646);
       }
     }
+    if (inPlaylists && !CUtil::GetFileName(item->m_strPath).Equals("PartyMode.xsp")
+                    && item->IsPlayList())
+      buttons.Add(CONTEXT_BUTTON_DELETE, 117);
   }
   // noncontextual buttons
 
@@ -742,8 +750,16 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_DELETE:
-    CGUIWindowVideoNav::DeleteItem(item.get());
-    CUtil::DeleteVideoDatabaseDirectoryCache();
+    if (item->IsPlayList())
+    {
+      item->m_bIsFolder = false;
+      CGUIWindowFileManager::DeleteItem(item.get());
+    }
+    else
+    {
+      CGUIWindowVideoNav::DeleteItem(item.get());
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+    }
     Update(m_vecItems->m_strPath);
     return true;
 
@@ -752,6 +768,22 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       bool bScan=false;
       ADDON::CScraperPtr scraper;
       if (!m_musicdatabase.GetScraperForPath(item->m_strPath, scraper))
+/*
+      SScraperInfo info;
+      CStdString path(item->m_strPath);
+      CQueryParams params;
+      CDirectoryNode::GetDatabaseInfo(item->m_strPath, params);
+      if (params.GetAlbumId() != -1)
+        path.Format("musicdb://3/%i/",params.GetAlbumId());
+      else if (params.GetArtistId() != -1)
+        path.Format("musicdb://2/%i/",params.GetArtistId());
+
+      if (!m_musicdatabase.GetScraperForPath(path,info))
+        info.strContent = "albums";
+
+      int iLabel=132;
+      // per genre or for all artists
+      if (m_vecItems->m_strPath.Equals("musicdb://1/") || item->m_strPath.Equals("musicdb://2/"))*/
       {
         ADDON::AddonPtr defaultScraper;
         if (ADDON::CAddonMgr::Get()->GetDefaultScraper(defaultScraper, CONTENT_ALBUMS))
@@ -769,6 +801,8 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (CGUIDialogContentSettings::Show(scraper, bScan, context))
       {
         m_musicdatabase.SetScraperForPath(item->m_strPath, scraper);
+/*
+        m_musicdatabase.SetScraperForPath(path,info); */
         if (bScan)
           OnInfoAll(itemNumber,true);
       }

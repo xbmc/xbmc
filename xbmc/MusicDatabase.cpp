@@ -2069,6 +2069,8 @@ bool CMusicDatabase::CleanupArtists()
     strSQL2.Format(" and idArtist<>%i", idVariousArtists);
     strSQL += strSQL2;
     m_pDS->exec(strSQL.c_str());
+    m_pDS->exec("delete from artistinfo where idArtist not in (select idArtist from artist)");
+    m_pDS->exec("delete from discography where idArtist not in (select idArtist from artist)");
     return true;
   }
   catch (...)
@@ -2257,7 +2259,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
     return false;
 
   // check network connectivity
-  if (!g_guiSettings.GetBool("network.enableinternet") || !g_application.getNetwork().IsAvailable())
+  if (!g_application.getNetwork().IsAvailable())
     return false;
 
   // Get information for the inserted disc
@@ -2727,6 +2729,8 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       pItem->SetIconImage("DefaultArtist.png");
       CArtist artist;
       GetArtistInfo(idArtist,artist,false);
+
+      /* TODO: remove when we remove old property names */ 
       pItem->SetProperty("instrument",artist.strInstruments);
       pItem->SetProperty("style",artist.strStyles);
       pItem->SetProperty("mood",artist.strMoods);
@@ -2737,6 +2741,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       pItem->SetProperty("died",artist.strDied);
       pItem->SetProperty("disbanded",artist.strDisbanded);
       pItem->SetProperty("yearsactive",artist.strYearsActive);
+      SetPropertiesFromArtist(*pItem,artist);
       items.Add(pItem);
 
       m_pDS->next();
@@ -3836,7 +3841,7 @@ bool CMusicDatabase::GetPathHash(const CStdString &path, CStdString &hash)
   return false;
 }
 
-bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs)
+bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs, bool exact)
 {
   // We need to remove all songs from this path, as their tags are going
   // to be re-read.  We need to remove all songs from the song table + all links to them
@@ -3861,6 +3866,9 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs
   // we also remove the path at this point as it will be added later on if the
   // path still exists.
   // After scanning we then remove the orphaned artists, genres and thumbs.
+
+  // Note: when used to remove all songs from a path and its subpath (exact=false), this
+  // does miss archived songs.
   try
   {
     if (!CUtil::HasSlashAtEnd(path))
@@ -3869,7 +3877,7 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString sql=FormatSQL("select * from songview where strPath like '%s'", path.c_str() );
+    CStdString sql=FormatSQL("select * from songview where strPath like '%s%s'", path.c_str(), (exact?"":"%"));
     if (!m_pDS->query(sql.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound > 0)
@@ -3898,7 +3906,7 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs
       m_pDS->exec(sql.c_str());
     }
     // and remove the path as well (it'll be re-added later on with the new hash if it's non-empty)
-    sql = FormatSQL("delete from path where strPath like '%s'", path.c_str());
+    sql = FormatSQL("delete from path where strPath like '%s%s'", path.c_str(), (exact?"":"%"));
     m_pDS->exec(sql.c_str());
     return iRowsFound > 0;
   }
@@ -4093,6 +4101,7 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::CScrape
           if (!info)
             return false;
         }
+      info.strLanguage = parser.GetLanguage();
 
         // store this path's settings
         info->m_pathContent = content;
@@ -4725,4 +4734,53 @@ int CMusicDatabase::GetKaraokeSongsCount()
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
   return 0;
+}
+
+void CMusicDatabase::SetPropertiesFromArtist(CFileItem& item, const CArtist& artist)
+{
+  item.SetProperty("artist_instrument",artist.strInstruments);
+  item.SetProperty("artist_style",artist.strStyles);
+  item.SetProperty("artist_mood",artist.strMoods);
+  item.SetProperty("artist_born",artist.strBorn);
+  item.SetProperty("artist_formed",artist.strFormed);
+  item.SetProperty("artist_description",artist.strBiography);
+  item.SetProperty("artist_genre",artist.strGenre);
+  item.SetProperty("artist_died",artist.strDied);
+  item.SetProperty("artist_disbanded",artist.strDisbanded);
+  item.SetProperty("artist_yearsactive",artist.strYearsActive);
+}
+
+void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album)
+{
+  item.SetProperty("album_description", album.strReview);
+  item.SetProperty("album_theme", album.strThemes);
+  item.SetProperty("album_mood", album.strMoods);
+  item.SetProperty("album_style", album.strStyles);
+  item.SetProperty("album_type", album.strType);
+  item.SetProperty("album_label", album.strLabel);
+  if (album.iRating > 0)
+    item.SetProperty("album_rating", album.iRating);
+}
+
+int CMusicDatabase::GetVariousArtistsAlbumsCount()
+{
+  CStdString strVariousArtists = g_localizeStrings.Get(340);
+  int idVariousArtists=AddArtist(strVariousArtists);
+  CStdString strSQL = FormatSQL("select count(idAlbum) from album where idArtist=%i", idVariousArtists);
+  int result=0;
+  try
+  {
+    if (NULL == m_pDB.get()) return 0;
+    if (NULL == m_pDS.get()) return 0;
+    m_pDS->query(strSQL.c_str());
+    if (!m_pDS->eof())
+      result = m_pDS->fv(0).get_asInt();
+    m_pDS->close(); 
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+
+  return result;
 }

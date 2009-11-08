@@ -135,16 +135,6 @@ CStdString CWIN32Util::URLEncode(const CURL &url)
     flat += url.GetPassWord();
     flat += "@";
   }
-  else if( !url.GetHostName().IsEmpty() && !g_guiSettings.GetString("smb.username").IsEmpty() )
-  {
-    /* okey this is abit uggly to do this here, as we don't really only url encode */
-    /* but it's the simplest place to do so */
-    flat += g_guiSettings.GetString("smb.username");
-    flat += ":";
-    flat += g_guiSettings.GetString("smb.password");
-    flat += "@";
-  }
-
   flat += url.GetHostName();
 
   /* okey sadly since a slash is an invalid name we have to tokenize */
@@ -864,23 +854,6 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
     if( pcBuffer != NULL)
       delete[] pcBuffer;
   }
-}
-
-void CWIN32Util::AddRemovableDrives()
-{
-  VECSOURCES vShare;
-  VECSOURCES::const_iterator it;
-  GetDrivesByType(vShare, REMOVABLE_DRIVES);
-  for(it=vShare.begin();it!=vShare.end();++it)
-    g_mediaManager.AddAutoSource(*it);
-  vShare.clear();
-  GetDrivesByType(vShare, DVD_DRIVES);
-  if(!vShare.empty())
-    g_mediaManager.SetHasOpticalDrive(true);
-
-  for(it=vShare.begin();it!=vShare.end();++it)
-    if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
-      g_application.getApplicationMessenger().OpticalMount(it->strPath);
 }
 
 bool CWIN32Util::IsAudioCD(const CStdString& strPath)

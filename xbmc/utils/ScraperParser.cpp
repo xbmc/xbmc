@@ -45,6 +45,7 @@ CScraperParser::CScraperParser()
 {
   m_pRootElement = NULL;
   m_document = NULL;
+  m_requiressettings = false;
   m_SearchStringEncoding = "UTF-8";
 }
 
@@ -81,6 +82,8 @@ void CScraperParser::Clear()
   delete m_document;
 
   m_document = NULL;
+  m_requiressettings = false;
+  m_settings = NULL;
   m_strFile.Empty();
 }
 
@@ -137,6 +140,9 @@ bool CScraperParser::LoadFromXML()
   if (strValue == "scraper")
   {
     CONTENT_TYPE content = TranslateContent(m_pRootElement->Attribute("content"));
+   
+    const char* requiressettings;
+    m_requiressettings = ((requiressettings = m_pRootElement->Attribute("requiressettings")) && strnicmp("true", requiressettings, 4) == 0);
 
     // check for known content
     if ( content == CONTENT_TVSHOWS ||

@@ -395,8 +395,8 @@ void CLinuxRendererGL::LoadTextures(int source)
 #ifdef HAVE_LIBVDPAU
   if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU)
   {
-    g_VDPAU->CheckRecover();
     SetEvent(m_eventTexturesDone[source]);
+    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
     return;
   }
 #endif
@@ -842,13 +842,14 @@ unsigned int CLinuxRendererGL::PreInit()
   m_bValidated = false;
   UnInit();
   m_resolution = RES_PAL_4x3;
+  m_crop.x1 = m_crop.x2 = 0.0f;
+  m_crop.y1 = m_crop.y2 = 0.0f;
 
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 2;
 
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
-  m_aspecterror = g_guiSettings.GetFloat("videoplayer.aspecterror") * 0.01;
 
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
@@ -931,6 +932,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_LANCZOS_SOFTWARE:
   case VS_SCALINGMETHOD_SINC_SOFTWARE:
     InitializeSoftwareUpscaling();
+    m_renderQuality = RQ_SINGLEPASS;
     return;
 
   default:
@@ -1170,123 +1172,7 @@ void CLinuxRendererGL::AutoCrop(bool bCrop)
   if(!m_bValidated) return;
 
   if (bCrop)
-  {
-    YV12Image &im = m_buffers[m_iYV12RenderBuffer].image;
-    crop.left   = g_stSettings.m_currentVideoSettings.m_CropLeft;
-    crop.right  = g_stSettings.m_currentVideoSettings.m_CropRight;
-    crop.top    = g_stSettings.m_currentVideoSettings.m_CropTop;
-    crop.bottom = g_stSettings.m_currentVideoSettings.m_CropBottom;
-
-    int black  = 16; // what is black in the image
-    int level  = 8;  // how high above this should we detect
-    int multi  = 4;  // what multiple of last line should failing line be to accept
-    BYTE *s;
-    int last, detect, black2;
-
-    // top and bottom levels
-    black2 = black * im.width;
-    detect = level * im.width + black2;
-
-    // Crop top
-    s      = im.plane[0];
-    last   = black2;
-    for (unsigned int y = 0; y < im.height/2; y++)
-    {
-      int total = 0;
-      for (unsigned int x = 0; x < im.width; x++)
-        total += s[x];
-      s += im.stride[0];
-
-      if (total > detect)
-      {
-        if (total - black2 > (last - black2) * multi)
-          crop.top = y;
-        break;
-      }
-      last = total;
-    }
-
-    // Crop bottom
-    s    = im.plane[0] + (im.height-1)*im.stride[0];
-    last = black2;
-    for (unsigned int y = (int)im.height; y > im.height/2; y--)
-    {
-      int total = 0;
-      for (unsigned int x = 0; x < im.width; x++)
-        total += s[x];
-      s -= im.stride[0];
-
-      if (total > detect)
-      {
-        if (total - black2 > (last - black2) * multi)
-          crop.bottom = im.height - y;
-        break;
-      }
-      last = total;
-    }
-
-    // left and right levels
-    black2 = black * im.height;
-    detect = level * im.height + black2;
-
-
-    // Crop left
-    s    = im.plane[0];
-    last = black2;
-    for (unsigned int x = 0; x < im.width/2; x++)
-    {
-      int total = 0;
-      for (unsigned int y = 0; y < im.height; y++)
-        total += s[y * im.stride[0]];
-      s++;
-      if (total > detect)
-      {
-        if (total - black2 > (last - black2) * multi)
-          crop.left = x;
-        break;
-      }
-      last = total;
-    }
-
-    // Crop right
-    s    = im.plane[0] + (im.width-1);
-    last = black2;
-    for (unsigned int x = (int)im.width-1; x > im.width/2; x--)
-    {
-      int total = 0;
-      for (unsigned int y = 0; y < im.height; y++)
-        total += s[y * im.stride[0]];
-      s--;
-
-      if (total > detect)
-      {
-        if (total - black2 > (last - black2) * multi)
-          crop.right = im.width - x;
-        break;
-      }
-      last = total;
-    }
-
-    // We always crop equally on each side to get zoom
-    // effect intead of moving the image. Aslong as the
-    // max crop isn't much larger than the min crop
-    // use that.
-    int min, max;
-
-    min = std::min(crop.left, crop.right);
-    max = std::max(crop.left, crop.right);
-    if(10 * (max - min) / im.width < 1)
-      crop.left = crop.right = max;
-    else
-      crop.left = crop.right = min;
-
-    min = std::min(crop.top, crop.bottom);
-    max = std::max(crop.top, crop.bottom);
-    if(10 * (max - min) / im.height < 1)
-      crop.top = crop.bottom = max;
-    else
-      crop.top = crop.bottom = min;
-  }
+    CBaseRenderer::AutoCrop(m_buffers[m_iYV12RenderBuffer].image, crop);
   else
   { // reset to defaults
     crop.left   = 0;
@@ -1610,7 +1496,13 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
     g_graphicsContext.ClipToViewWindow();
 
   glEnable(m_textureTarget);
-
+  
+  if (!g_VDPAU->m_glPixmapTexture)
+  {
+    glGenTextures (1, &(g_VDPAU->m_glPixmapTexture));
+    CLog::Log(LOGNOTICE,"Created m_glPixmapTexture (%i)",(int)g_VDPAU->m_glPixmapTexture);
+  }
+  
   glBindTexture(m_textureTarget, g_VDPAU->m_glPixmapTexture);
   g_VDPAU->BindPixmap();
 
@@ -1628,17 +1520,17 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   glBegin(GL_QUADS);
   if (m_textureTarget==GL_TEXTURE_2D)
   {
-    glTexCoord2f(0.0, 0.0);  glVertex2d(m_destRect.x1, m_destRect.y1);
-    glTexCoord2f(1.0, 0.0);  glVertex2d(m_destRect.x2, m_destRect.y1);
-    glTexCoord2f(1.0, 1.0);  glVertex2d(m_destRect.x2, m_destRect.y2);
-    glTexCoord2f(0.0, 1.0);  glVertex2d(m_destRect.x1, m_destRect.y2);
+    glTexCoord2f(0.0, 0.0);  glVertex2f(m_destRect.x1, m_destRect.y1);
+    glTexCoord2f(1.0, 0.0);  glVertex2f(m_destRect.x2, m_destRect.y1);
+    glTexCoord2f(1.0, 1.0);  glVertex2f(m_destRect.x2, m_destRect.y2);
+    glTexCoord2f(0.0, 1.0);  glVertex2f(m_destRect.x1, m_destRect.y2);
   }
   else
   {
-    glTexCoord2f(m_sourceRect.x1, m_sourceRect.y1); glVertex4f(m_destRect.x1, m_destRect.y1, 0.0f, 0.0f);
-    glTexCoord2f(m_sourceRect.x2, m_sourceRect.y1); glVertex4f(m_destRect.x2, m_destRect.y1, 1.0f, 0.0f);
-    glTexCoord2f(m_sourceRect.x2, m_sourceRect.y2); glVertex4f(m_destRect.x2, m_destRect.y2, 1.0f, 1.0f);
-    glTexCoord2f(m_sourceRect.x1, m_sourceRect.y2); glVertex4f(m_destRect.x1, m_destRect.y2, 0.0f, 1.0f);
+    glTexCoord2f(m_destRect.x1, m_destRect.y1); glVertex4f(m_destRect.x1, m_destRect.y1, 0.0f, 0.0f);
+    glTexCoord2f(m_destRect.x2, m_destRect.y1); glVertex4f(m_destRect.x2, m_destRect.y1, 1.0f, 0.0f);
+    glTexCoord2f(m_destRect.x2, m_destRect.y2); glVertex4f(m_destRect.x2, m_destRect.y2, 1.0f, 1.0f);
+    glTexCoord2f(m_destRect.x1, m_destRect.y2); glVertex4f(m_destRect.x1, m_destRect.y2, 0.0f, 1.0f);
   }
   glEnd();
   VerifyGLState();
@@ -1959,6 +1851,52 @@ bool CLinuxRendererGL::SupportsGamma()
 bool CLinuxRendererGL::SupportsMultiPassRendering()
 {
   return glewIsSupported("GL_EXT_framebuffer_object") && glCreateProgram;
+}
+
+bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
+{
+  if(method == VS_INTERLACEMETHOD_NONE
+  || method == VS_INTERLACEMETHOD_AUTO
+  || method == VS_INTERLACEMETHOD_DEINTERLACE)
+    return true;
+
+  if(method == VS_INTERLACEMETHOD_RENDER_BLEND
+  || method == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED
+  || method == VS_INTERLACEMETHOD_RENDER_WEAVE
+  || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
+  || method == VS_INTERLACEMETHOD_RENDER_BOB)
+    return true;
+
+  if(method == VS_INTERLACEMETHOD_VDPAU && m_renderMethod == RENDER_METHOD_VDPAU)
+    return true;
+
+  return false;
+}
+
+bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
+{
+  if(method == VS_SCALINGMETHOD_NEAREST
+  || method == VS_SCALINGMETHOD_LINEAR)
+    return true;
+
+
+  if(method == VS_SCALINGMETHOD_CUBIC 
+  && glewIsSupported("GL_ARB_texture_float")
+  && glewIsSupported("GL_EXT_framebuffer_object")
+  && m_renderMethod == RENDER_GLSL)
+    return true;
+
+#if 0
+  if(method == VS_SCALINGMETHOD_BICUBIC_SOFTWARE
+  || method == VS_SCALINGMETHOD_LANCZOS_SOFTWARE
+  || method == VS_SCALINGMETHOD_SINC_SOFTWARE)
+    return true;
+#endif
+
+  if(method == VS_SCALINGMETHOD_VDPAU_HARDWARE && m_renderMethod == RENDER_METHOD_VDPAU)
+    return true;
+
+  return false;
 }
 
 #endif
