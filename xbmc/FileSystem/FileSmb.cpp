@@ -64,6 +64,7 @@ SMBCSRV* xb_smbc_cache(SMBCCTX* c, const char* server, const char* share, const 
 CSMB::CSMB()
 {
   m_context = NULL;
+  smbc_init(xb_smbc_auth, 0);
 }
 
 CSMB::~CSMB()
@@ -149,7 +150,6 @@ void CSMB::Init()
 
     // setup our context
     m_context = smbc_new_context();
-    smbc_init(xb_smbc_auth, 0);
 #ifdef DEPRECATED_SMBC_INTERFACE
     smbc_setDebug(m_context, g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0);
     smbc_setFunctionAuthData(m_context, xb_smbc_auth);
