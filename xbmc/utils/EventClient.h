@@ -157,8 +157,8 @@ namespace EVENTCLIENT
 
     void RefreshSettings()
     {
-      m_iRepeatDelay = g_guiSettings.GetInt("remoteevents.initialdelay");
-      m_iRepeatSpeed = g_guiSettings.GetInt("remoteevents.continuousdelay");
+      m_iRepeatDelay = g_guiSettings.GetInt("services.esinitialdelay");
+      m_iRepeatSpeed = g_guiSettings.GetInt("services.escontinuousdelay");
     }
 
     SOCKETS::CAddress& Address()

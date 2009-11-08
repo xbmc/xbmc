@@ -1128,7 +1128,7 @@ HRESULT CApplication::Initialize()
     g_guiSettings.SetString("network.subnet", "255.255.255.0");
     g_guiSettings.SetString("network.gateway", "192.168.0.1");
     g_guiSettings.SetString("network.dns", "192.168.0.1");
-    g_guiSettings.SetBool("servers.webserver", false);
+    g_guiSettings.SetBool("services.webserver", false);
     g_guiSettings.SetBool("locale.timeserver", false);
   }
 
@@ -1330,9 +1330,9 @@ HRESULT CApplication::Initialize()
 void CApplication::StartWebServer()
 {
 #ifdef HAS_WEB_SERVER
-  if (g_guiSettings.GetBool("servers.webserver") && m_network.IsAvailable())
+  if (g_guiSettings.GetBool("services.webserver") && m_network.IsAvailable())
   {
-    int webPort = atoi(g_guiSettings.GetString("servers.webserverport"));
+    int webPort = atoi(g_guiSettings.GetString("services.webserverport"));
     CLog::Log(LOGNOTICE, "Webserver: Starting...");
 #ifdef _LINUX
     if (webPort < 1024 && geteuid() != 0)
@@ -1349,8 +1349,8 @@ void CApplication::StartWebServer()
     }
     if (m_pWebServer)
     {
-      m_pWebServer->SetUserName(g_guiSettings.GetString("servers.webserverusername").c_str());
-      m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
+      m_pWebServer->SetUserName(g_guiSettings.GetString("services.webserverusername").c_str());
+      m_pWebServer->SetPassword(g_guiSettings.GetString("services.webserverpassword").c_str());
 
       // publish web frontend and API services
       CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
@@ -1379,8 +1379,8 @@ void CApplication::StopWebServer(bool bWait)
       m_pWebServer = NULL;
       CSectionLoader::Unload("LIBHTTP");
       CLog::Log(LOGNOTICE, "Webserver: Stopped...");
-      CZeroconf::GetInstance()->RemoveService("servers.webserver");
-      CZeroconf::GetInstance()->RemoveService("servers.webapi");
+      CZeroconf::GetInstance()->RemoveService("services.webserver");
+      CZeroconf::GetInstance()->RemoveService("services.webapi");
     }
   }
 #endif
@@ -1418,9 +1418,8 @@ void CApplication::StopTimeServer()
 void CApplication::StartUPnP()
 {
 #ifdef HAS_UPNP
-    StartUPnPClient();
-    StartUPnPServer();
-    StartUPnPRenderer();
+  StartUPnPServer();
+  StartUPnPRenderer();
 #endif
 }
 
@@ -1444,7 +1443,7 @@ void CApplication::StartEventServer()
     CLog::Log(LOGERROR, "ES: Out of memory");
     return;
   }
-  if (g_guiSettings.GetBool("remoteevents.enabled"))
+  if (g_guiSettings.GetBool("services.esenabled"))
   {
     CLog::Log(LOGNOTICE, "ES: Starting event server");
     server->StartServer();
@@ -1493,7 +1492,7 @@ bool CApplication::StopEventServer(bool bWait, bool promptuser)
 void CApplication::RefreshEventServer()
 {
 #ifdef HAS_EVENT_SERVER
-  if (g_guiSettings.GetBool("remoteevents.enabled"))
+  if (g_guiSettings.GetBool("services.esenabled"))
   {
     CEventServer::GetInstance()->RefreshSettings();
   }
@@ -1531,7 +1530,7 @@ bool CApplication::StopDbusServer(bool bWait)
 void CApplication::StartUPnPRenderer()
 {
 #ifdef HAS_UPNP
-  if (g_guiSettings.GetBool("upnp.renderer"))
+  if (g_guiSettings.GetBool("services.upnprenderer"))
   {
     CLog::Log(LOGNOTICE, "starting upnp renderer");
     CUPnP::GetInstance()->StartRenderer();
@@ -1550,32 +1549,10 @@ void CApplication::StopUPnPRenderer()
 #endif
 }
 
-void CApplication::StartUPnPClient()
-{
-#ifdef HAS_UPNP
-  if (g_guiSettings.GetBool("upnp.client"))
-  {
-    CLog::Log(LOGNOTICE, "starting upnp client");
-    CUPnP::GetInstance()->StartClient();
-  }
-#endif
-}
-
-void CApplication::StopUPnPClient()
-{
-#ifdef HAS_UPNP
-  if (CUPnP::IsInstantiated())
-  {
-    CLog::Log(LOGNOTICE, "stopping upnp client");
-    CUPnP::GetInstance()->StopClient();
-  }
-#endif
-}
-
 void CApplication::StartUPnPServer()
 {
 #ifdef HAS_UPNP
-  if (g_guiSettings.GetBool("upnp.server"))
+  if (g_guiSettings.GetBool("services.upnpserver"))
   {
     CLog::Log(LOGNOTICE, "starting upnp server");
     CUPnP::GetInstance()->StartServer();
@@ -1598,7 +1575,7 @@ void CApplication::StartZeroconf()
 {
 #ifdef HAS_ZEROCONF
   //entry in guisetting only present if HAS_ZEROCONF is set
-  if(g_guiSettings.GetBool("network.zeroconf"))
+  if(g_guiSettings.GetBool("services.zeroconf"))
   {
     CLog::Log(LOGNOTICE, "starting zeroconf publishing");
     CZeroconf::GetInstance()->Start();

@@ -498,8 +498,43 @@ void CGUISettings::Initialize()
 
   // network settings
   AddGroup(6, 705);
-  AddCategory(6, "network", 705);
 
+  AddCategory(6, "services", 14036);
+  AddBool(1, "services.upnpserver", 21360, false);
+  AddBool(2, "services.upnprenderer", 21881, false);
+  AddSeparator(3,"services.sep3");
+#ifdef HAS_WEB_SERVER
+  AddBool(4,  "services.webserver",        263, false);
+#ifdef _LINUX
+  AddString(5,"services.webserverport",    730, (geteuid()==0)?"80":"8080", EDIT_CONTROL_NUMBER_INPUT, false, 730);
+#else
+  AddString(5,"services.webserverport",    730, "80", EDIT_CONTROL_NUMBER_INPUT, false, 730);
+#endif
+  AddString(6,"services.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
+  AddString(7,"services.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
+  AddSeparator(8,"services.sep1");
+#endif
+#ifdef HAS_EVENT_SERVER
+  AddBool(9,  "services.esenabled",         791, true);
+  AddString(0,"services.esport",            792, "9777", EDIT_CONTROL_NUMBER_INPUT, false, 792);
+  AddInt(0,   "services.esportrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
+  AddInt(0,   "services.esmaxclients",      797, 20, 1, 1, 100, SPIN_CONTROL_INT);
+  AddBool(10,  "services.esallinterfaces",   794, false);
+  AddInt(0,   "services.esinitialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
+  AddInt(0,   "services.escontinuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
+  AddSeparator(11, "services.sep2");
+#endif
+#ifdef HAS_ZEROCONF
+  AddBool(12, "services.zeroconf", 1260, true);
+#endif
+
+#ifndef _WIN32
+  AddCategory(6, "smb", 1200);
+  AddString(3, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
+  AddString(4, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
+#endif
+
+  AddCategory(6, "network", 798);
   if (g_application.IsStandAlone())
   {
 #ifndef __APPLE__
@@ -521,55 +556,9 @@ void CGUISettings::Initialize()
   }
   AddBool(13, "network.usehttpproxy", 708, false);
   AddString(14, "network.httpproxyserver", 706, "", EDIT_CONTROL_INPUT);
-  AddString(15, "network.httpproxyport", 707, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 707);
-  AddString(16, "network.httpproxyusername", 709, "", EDIT_CONTROL_INPUT);
-  AddString(17, "network.httpproxypassword", 710, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);
-
-  AddSeparator(18, "network.sep2");
-
-  // zeroconf publishing
-#ifdef HAS_ZEROCONF
-  AddSeparator(20, "network.sep1");
-  AddBool(21, "network.zeroconf", 1260, true);
-#endif
-
-  AddCategory(6, "servers", 14036);
-#ifdef HAS_WEB_SERVER
-  AddBool(6,  "servers.webserver",        263, false);
-#ifdef _LINUX
-  AddString(7,"servers.webserverport",    730, (geteuid()==0)?"80":"8080", EDIT_CONTROL_NUMBER_INPUT, false, 730);
-#else
-  AddString(7,"servers.webserverport",    730, "80", EDIT_CONTROL_NUMBER_INPUT, false, 730);
-#endif
-  AddString(8,"servers.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
-  AddString(9,"servers.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
-#endif
-
-  AddCategory(6, "smb", 1200);
-  AddString(1, "smb.username",    1203,   "", EDIT_CONTROL_INPUT, true, 1203);
-  AddString(2, "smb.password",    1204,   "", EDIT_CONTROL_HIDDEN_INPUT, true, 1204);
-#ifndef _WIN32
-  AddString(3, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
-  AddString(4, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
-#endif
-
-  AddCategory(6, "upnp", 20110);
-  AddBool(1,    "upnp.client", 20111, false);
-  AddBool(2, "upnp.renderer", 21881, false);
-  AddSeparator(3,"upnp.sep1");
-  AddBool(4, "upnp.server", 21360, false);
-
-  // remote events settings
-#ifdef HAS_EVENT_SERVER
-  AddCategory(6, "remoteevents", 790);
-  AddBool(1,  "remoteevents.enabled",         791, true);
-  AddString(0,"remoteevents.port",            792, "9777", EDIT_CONTROL_NUMBER_INPUT, false, 792);
-  AddInt(0,   "remoteevents.portrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
-  AddInt(0,   "remoteevents.maxclients",      797, 20, 1, 1, 100, SPIN_CONTROL_INT);
-  AddBool(6,  "remoteevents.allinterfaces",   794, false);
-  AddInt(0,   "remoteevents.initialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
-  AddInt(0,   "remoteevents.continuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
-#endif
+  AddString(15, "network.httpproxyport", 730, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 707);
+  AddString(16, "network.httpproxyusername", 1048, "", EDIT_CONTROL_INPUT);
+  AddString(17, "network.httpproxypassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);
 
   // appearance settings
   AddGroup(7, 480);
