@@ -2066,6 +2066,8 @@ bool CMusicDatabase::CleanupArtists()
     strSQL2.Format(" and idArtist<>%i", idVariousArtists);
     strSQL += strSQL2;
     m_pDS->exec(strSQL.c_str());
+    m_pDS->exec("delete from artistinfo where idArtist not in (select idArtist from artist)");
+    m_pDS->exec("delete from discography where idArtist not in (select idArtist from artist)");
     return true;
   }
   catch (...)
