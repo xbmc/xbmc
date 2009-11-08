@@ -515,7 +515,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   if (m_bArtistInfo)
     item->SetIconImage("DefaultArtist.png");
   else
-    item->SetIconImage("DefaultAlbum.png");
+    item->SetIconImage("DefaultAlbumCover.png");
   item->SetLabel(g_localizeStrings.Get(20018));
   items.Add(item);
 
