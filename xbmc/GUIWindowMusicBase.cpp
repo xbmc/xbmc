@@ -396,30 +396,29 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
 
   // check cache
   CArtist artistInfo;
-  if (!bRefresh && m_musicdatabase.GetArtistInfo(artist.idArtist, artistInfo))
+  artistInfo.strArtist = artist.strArtist;
+  if (m_musicdatabase.GetArtistInfo(artist.idArtist, artistInfo) && !bShowInfo)
+    return;
+
+  CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)g_windowManager.GetWindow(WINDOW_MUSIC_INFO);
+  if (pDlgAlbumInfo)
   {
-    if (!bShowInfo)
-      return;
+    pDlgAlbumInfo->SetArtist(artistInfo, path);
+    
+    if (bShowInfo)
+      pDlgAlbumInfo->DoModal();
+    else
+      pDlgAlbumInfo->RefreshThumb();  // downloads the thumb if we don't already have one
 
-    CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)g_windowManager.GetWindow(WINDOW_MUSIC_INFO);
-    if (pDlgAlbumInfo)
+    if (!pDlgAlbumInfo->NeedRefresh())
     {
-      pDlgAlbumInfo->SetArtist(artistInfo, path);
-      if (bShowInfo)
-        pDlgAlbumInfo->DoModal();
-      else
-        pDlgAlbumInfo->RefreshThumb();  // downloads the thumb if we don't already have one
+      if (pDlgAlbumInfo->HasUpdatedThumb())
+        Update(m_vecItems->m_strPath);
 
-      if (!pDlgAlbumInfo->NeedRefresh())
-      {
-        if (pDlgAlbumInfo->HasUpdatedThumb())
-          Update(m_vecItems->m_strPath);
-
-        return;
-      }
-      bRefresh = true;
-      m_musicdatabase.DeleteArtistInfo(artistInfo.idArtist);
+      return;
     }
+    bRefresh = true;
+    m_musicdatabase.DeleteArtistInfo(artistInfo.idArtist);
   }
 
   // If we are scanning for music info in the background,
