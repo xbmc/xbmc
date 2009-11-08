@@ -49,7 +49,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 33
+#define VIDEO_DATABASE_VERSION 34
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 
@@ -3716,6 +3716,18 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("CREATE TABLE setlinkmovie ( idSet integer, idMovie integer)\n");
       m_pDS->exec("CREATE UNIQUE INDEX ix_setlinkmovie_1 ON setlinkmovie ( idSet, idMovie)\n");
       m_pDS->exec("CREATE UNIQUE INDEX ix_setlinkmovie_2 ON setlinkmovie ( idMovie, idSet)\n");
+    }
+    if (iVersion < 34)
+    {
+      // fake bump to correct tvdb urls
+      CStdString strSQL = FormatSQL("update tvshow set c%02d = replace(c%02d,'images.thetvdb.com','thetvdb.com')",VIDEODB_ID_TV_THUMBURL,VIDEODB_ID_TV_THUMBURL);
+      m_pDS->exec(strSQL.c_str());
+      strSQL = FormatSQL("update tvshow set c%02d = replace(c%02d,'images.thetvdb.com','thetvdb.com')",VIDEODB_ID_TV_FANART,VIDEODB_ID_TV_FANART);
+      m_pDS->exec(strSQL.c_str());
+      strSQL = FormatSQL("update actors set strThumb = replace(strThumb,'images.thetvdb.com','thetvdb.com')");
+      m_pDS->exec(strSQL.c_str());
+      strSQL = FormatSQL("update episode set c%02d = replace(c%02d,'images.thetvdb.com','thetvdb.com')",VIDEODB_ID_EPISODE_THUMBURL,VIDEODB_ID_EPISODE_THUMBURL);
+      m_pDS->exec(strSQL.c_str());
     }
   }
   catch (...)
