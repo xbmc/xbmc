@@ -108,6 +108,10 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   m_sourceHeight = height;
   m_flags = flags;
 
+  // need to recreate textures
+  m_NumYV12Buffers = 0;
+  m_iYV12RenderBuffer = 0;
+
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
@@ -289,9 +293,6 @@ unsigned int CWinRenderer::PreInit()
   UnInit();
   m_resolution = RES_PAL_4x3;
 
-  m_iYV12RenderBuffer = 0;
-  m_NumYV12Buffers = 0;
-
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
 
@@ -305,6 +306,9 @@ void CWinRenderer::UnInit()
 
   m_YUV2RGBEffect.Release();
   m_bConfigured = false;
+  for(int i = 0; i < NUM_BUFFERS; i++)
+    DeleteYV12Texture(i);
+  m_NumYV12Buffers = 0;
 }
 
 bool CWinRenderer::LoadEffect()
