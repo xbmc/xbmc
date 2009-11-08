@@ -521,7 +521,9 @@ void CGUIWindowMusicInfo::OnGetThumb()
 
   CStdString result;
   bool flip=false;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_musicSources, g_localizeStrings.Get(1030), result, &flip))
+  VECSOURCES sources(g_settings.m_musicSources);
+  g_mediaManager.GetLocalDrives(sources);
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(1030), result, &flip))
     return;   // user cancelled
 
   if (result == "thumb://Current")
