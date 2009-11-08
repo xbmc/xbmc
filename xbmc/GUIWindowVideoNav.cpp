@@ -22,6 +22,7 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowVideoNav.h"
 #include "GUIWindowVideoFiles.h"
+#include "GUIWindowMusicNav.h"
 #include "utils/GUIInfoManager.h"
 #include "Util.h"
 #include "utils/RegExp.h"
@@ -966,11 +967,17 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
 void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowVideoBase::OnPrepareFileItems(items);
-
-  // now filter as necessary
+  
+  // set fanart
+  CQueryParams params;
   CVideoDatabaseDirectory dir;
-  NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
+  dir.GetQueryParams(items.m_strPath,params);
+  if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+    CGUIWindowMusicNav::SetupFanart(items);
 
+  NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
+  
+  // now filter as necessary
   bool filterWatched=false;
   if (node == NODE_TYPE_EPISODES
   ||  node == NODE_TYPE_TITLE_MOVIES

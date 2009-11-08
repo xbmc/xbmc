@@ -5343,14 +5343,8 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
     else
       where.Format(" %s %s%s",where.Mid(0).c_str(),"and",str2.c_str());
   }
-  bool bResult = GetMusicVideosByWhere(strBaseDir, where, items);
-  if (bResult && idArtist > -1 && items.Size())
-  {
-   if (CFile::Exists(items[0]->GetCachedFanart()))
-     items.SetProperty("fanart_image",items[0]->GetCachedFanart());
-  }
-
-  return bResult;
+  
+  return GetMusicVideosByWhere(strBaseDir, where, items);
 }
 
 bool CVideoDatabase::GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFileItemList& items)
@@ -6049,8 +6043,6 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const CStd
         CFileItemPtr item(new CFileItem(musicvideo));
         item->m_strPath.Format("%s%ld",baseDir,idMVideo);
         item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,musicvideo.m_playCount > 0);
-        if (CFile::Exists(item->GetCachedFanart()))
-          item->SetProperty("fanart_image",item->GetCachedFanart());
         items.Add(item);
       }
       m_pDS->next();

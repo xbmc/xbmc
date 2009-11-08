@@ -1087,6 +1087,12 @@ void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowMusicBase::OnPrepareFileItems(items);
   // set fanart
+  SetupFanart(items);
+}
+
+void CGUIWindowMusicNav::SetupFanart(CFileItemList& items)
+{
+  // set fanart
   map<CStdString, CStdString> artists;
   for (int i = 0; i < items.Size(); i++)
   {
