@@ -37,6 +37,7 @@
 #include "GUIWindowVideoNav.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
+#include "GUIWindowFileManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIEditControl.h"
@@ -636,6 +637,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         buttons.Add(CONTEXT_BUTTON_DELETE, 646);
       }
     }
+    if (inPlaylists && !CUtil::GetFileName(item->m_strPath).Equals("PartyMode.xsp")
+                    && item->IsPlayList())
+      buttons.Add(CONTEXT_BUTTON_DELETE, 117);
   }
   // noncontextual buttons
 
@@ -746,8 +750,16 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_DELETE:
-    CGUIWindowVideoNav::DeleteItem(item.get());
-    CUtil::DeleteVideoDatabaseDirectoryCache();
+    if (item->IsPlayList())
+    {
+      item->m_bIsFolder = false;
+      CGUIWindowFileManager::DeleteItem(item.get());
+    }
+    else
+    {
+      CGUIWindowVideoNav::DeleteItem(item.get());
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+    }
     Update(m_vecItems->m_strPath);
     return true;
 
