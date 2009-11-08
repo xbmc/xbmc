@@ -4736,3 +4736,25 @@ void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album
     item.SetProperty("album_rating", album.iRating);
 }
 
+int CMusicDatabase::GetVariousArtistsAlbumsCount()
+{
+  CStdString strVariousArtists = g_localizeStrings.Get(340);
+  int idVariousArtists=AddArtist(strVariousArtists);
+  CStdString strSQL = FormatSQL("select count(idAlbum) from album where idArtist=%i", idVariousArtists);
+  int result=0;
+  try
+  {
+    if (NULL == m_pDB.get()) return 0;
+    if (NULL == m_pDS.get()) return 0;
+    m_pDS->query(strSQL.c_str());
+    if (!m_pDS->eof())
+      result = m_pDS->fv(0).get_asInt();
+    m_pDS->close(); 
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+
+  return result;
+}

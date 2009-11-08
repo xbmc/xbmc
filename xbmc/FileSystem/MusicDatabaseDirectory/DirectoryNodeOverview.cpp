@@ -67,7 +67,6 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
   {
     if (musicDatabase.GetSongsCount("where idAlbum in (select idAlbum from album where strAlbum='')") > 0)
       showSingles = true;
-    musicDatabase.Close();
   }
 
   rootItems.push_back(make_pair(1, 135));
@@ -80,7 +79,8 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
   rootItems.push_back(make_pair(5, 271));
   rootItems.push_back(make_pair(6, 359));
   rootItems.push_back(make_pair(7, 517));
-  rootItems.push_back(make_pair(8, 521));
+  if (musicDatabase.GetVariousArtistsAlbumsCount() > 0)
+    rootItems.push_back(make_pair(8, 521));
 
   for (unsigned int i = 0; i < rootItems.size(); ++i)
   {
