@@ -117,8 +117,8 @@ double CXBMCRenderManager::GetPresentTime()
 
 static double wrap(double x, double minimum, double maximum)
 {
-  if(x < minimum
-  && x > maximum)
+  if(x >= minimum
+  && x <= maximum)
     return x;
   x = fmod(x - minimum, maximum - minimum) + minimum;
   if(x < minimum)
