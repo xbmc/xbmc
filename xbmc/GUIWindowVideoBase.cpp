@@ -1404,8 +1404,7 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
       return;
   }
 
-  if (!CGUIWindowFileManager::DeleteItem(item.get()))
-    return;
+  CGUIWindowFileManager::DeleteItem(item.get());
 }
 
 void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
