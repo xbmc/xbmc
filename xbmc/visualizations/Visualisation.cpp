@@ -300,7 +300,7 @@ bool CVisualisation::IsValidVisualisation(const CStdString& strVisz)
 
 #ifdef _LINUX
   CStdString visPath(strVisz);
-  if(visPath.Find("/") == string::npos)
+  if(visPath.Find("/") == -1)
   {
     visPath.Format("%s%s", "special://xbmc/visualisations/", strVisz);
     if(!XFILE::CFile::Exists(visPath))
