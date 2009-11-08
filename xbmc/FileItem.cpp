@@ -2046,8 +2046,8 @@ void CFileItemList::Stack()
   // Precompile our REs
   VECCREGEXP stackRegExps;
   CRegExp tmpRegExp(true);
-  CStdStringArray& strStackRegExps = g_advancedSettings.m_videoStackRegExps;
-  CStdStringArray::iterator strRegExp = strStackRegExps.begin();
+  const CStdStringArray& strStackRegExps = g_advancedSettings.m_videoStackRegExps;
+  CStdStringArray::const_iterator strRegExp = strStackRegExps.begin();
   while (strRegExp != strStackRegExps.end())
   {
     if (tmpRegExp.RegComp(*strRegExp))
@@ -2061,7 +2061,8 @@ void CFileItemList::Stack()
   }
 
   // now stack the files, some of which may be from the previous stack iteration
-  for (i = 0; i < Size(); i++)
+  i = 0;
+  while (i < Size())
   {
     CFileItemPtr item1 = Get(i);
 
@@ -2110,7 +2111,8 @@ void CFileItemList::Stack()
                     Extension1  = expr->GetMatch(4);
         if (offset)
           Title1 = file1.substr(0, expr->GetSubStart(2));
-        for (j = i+1; j < Size(); j++)
+        j = i + 1;
+        while (j < Size())
         {
           CFileItemPtr item2 = Get(j);
 
@@ -2122,6 +2124,7 @@ void CFileItemList::Stack()
             )
           {
             // increment index
+            j++;
             continue;
           }
 
@@ -2193,6 +2196,7 @@ void CFileItemList::Stack()
             expr++;
             break;
           }
+          j++;
         }
         if (j == Size())
           expr = stackRegExps.end();
@@ -2226,6 +2230,7 @@ void CFileItemList::Stack()
         break;
       }
     }
+    i++;
   }
 }
 
