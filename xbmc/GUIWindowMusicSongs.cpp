@@ -584,5 +584,6 @@ void CGUIWindowMusicSongs::OnRemoveSource(int iItem)
     database.Open();
     database.RemoveSongsFromPath(m_vecItems->Get(iItem)->m_strPath,songs,false);
     database.CleanupOrphanedItems();
+    g_infoManager.ResetLibraryBools();
   }
 }
