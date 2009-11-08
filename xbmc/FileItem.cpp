@@ -54,6 +54,7 @@
 #include "AdvancedSettings.h"
 #include "Settings.h"
 #include "utils/TimeUtils.h"
+#include "utils/RegExp.h"
 #include "karaoke/karaokelyricsfactory.h"
 
 using namespace std;
@@ -2042,21 +2043,36 @@ void CFileItemList::Stack()
     }
   }
 
+  // Precompile our REs
+  VECCREGEXP stackRegExps;
+  CRegExp tmpRegExp(true);
+  CStdStringArray& strStackRegExps = g_advancedSettings.m_videoStackRegExps;
+  CStdStringArray::iterator strRegExp = strStackRegExps.begin();
+  while (strRegExp != strStackRegExps.end())
+  {
+    if (tmpRegExp.RegComp(*strRegExp))
+    {
+      if (tmpRegExp.GetCaptureTotal() == 4)
+        stackRegExps.push_back(tmpRegExp);
+      else
+        CLog::Log(LOGERROR, "Invalid video stack RE (%s). Must have 4 captures.", strRegExp->c_str());
+    }
+    strRegExp++;
+  }
 
   // now stack the files, some of which may be from the previous stack iteration
-  i = 0;
-  while (i < Size())
+  for (i = 0; i < Size(); i++)
   {
-    CFileItemPtr item = Get(i);
+    CFileItemPtr item1 = Get(i);
 
     // set property
-    item->SetProperty("isstacked", "1");
-
+    item1->SetProperty("isstacked", "1");
+    
     // skip folders, nfo files, playlists
-    if (item->m_bIsFolder
-      || item->IsParentFolder()
-      || item->IsNFO()
-      || item->IsPlayList()
+    if (item1->m_bIsFolder
+      || item1->IsParentFolder()
+      || item1->IsNFO()
+      || item1->IsPlayList()
       )
     {
       // increment index
@@ -2067,48 +2083,125 @@ void CFileItemList::Stack()
     if (isDVDFolder)
     {
       // remove any other ifo files in this folder
-      if (item->IsDVDFile(false, true) && !item->GetLabel().Equals("VIDEO_TS.IFO"))
+      if (item1->IsDVDFile(false, true) && item1->GetLabel().Equals("VIDEO_TS.IFO"))
       {
         Remove(i);
         continue;
       }
     }
 
-    CStdString fileName, filePath;
-    CUtil::Split(item->m_strPath, filePath, fileName);
-    CStdString fileTitle, volumeNumber;
-    // hmmm... should this use GetLabel() or fileName?
-    if (CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber))
+    int64_t               size        = 0;
+    size_t                offset      = 0;
+    CStdString            stackName;
+    CStdString            file1;
+    CStdString            filePath;
+    vector<int>           stack;
+    VECCREGEXP::iterator  expr        = stackRegExps.begin();
+
+    CUtil::Split(item1->m_strPath, filePath, file1);
+    int j; 
+    while (expr != stackRegExps.end())
     {
-      vector<int> stack;
-      stack.push_back(i);
-      int64_t size = item->m_dwSize;
-
-      int j = i + 1;
-      while (j < Size())
+      if (expr->RegFind(file1, offset) != -1)
       {
-        CFileItemPtr item2 = Get(j);
-        CStdString fileName2, filePath2;
-        CUtil::Split(item2->m_strPath, filePath2, fileName2);
-        // only do a stacking comparison if the first letter of the filename is the same
-        if (fileName2.size() && fileName2.at(0) != fileName.at(0))
-          break;
-
-        CStdString fileTitle2, volumeNumber2;
-        // hmmm... should this use GetLabel() or fileName2?
-        if (CUtil::GetVolumeFromFileName(item2->GetLabel(), fileTitle2, volumeNumber2))
+        CStdString  Title1      = expr->GetMatch(1),
+                    Volume1     = expr->GetMatch(2),
+                    Ignore1     = expr->GetMatch(3),
+                    Extension1  = expr->GetMatch(4);
+        if (offset)
+          Title1 = file1.substr(0, expr->GetSubStart(2));
+        for (j = i+1; j < Size(); j++)
         {
-          if (fileTitle2.Equals(fileTitle))
+          CFileItemPtr item2 = Get(j);
+
+          // skip folders, nfo files, playlists
+          if (item2->m_bIsFolder
+            || item2->IsParentFolder()
+            || item2->IsNFO()
+            || item2->IsPlayList()
+            )
           {
-            stack.push_back(j);
-            size += item2->m_dwSize;
+            // increment index
+            continue;
+          }
+
+          if (isDVDFolder)
+          {
+            // remove any other ifo files in this folder
+            if (item2->IsDVDFile(false, true) && item2->GetLabel().Equals("VIDEO_TS.IFO"))
+            {
+              Remove(j);
+              continue;
+            }
+          }
+
+          CStdString file2, filePath2;
+          CUtil::Split(item2->m_strPath, filePath2, file2);
+
+          if (expr->RegFind(file2, offset) != -1)
+          {
+            CStdString  Title2      = expr->GetMatch(1),
+                        Volume2     = expr->GetMatch(2),
+                        Ignore2     = expr->GetMatch(3),
+                        Extension2  = expr->GetMatch(4);
+            if (offset)
+              Title2 = file2.substr(0, expr->GetSubStart(2));
+            if (Title1.Equals(Title2))
+            {
+              if (!Volume1.Equals(Volume2))
+              {
+                if (Ignore1.Equals(Ignore2) && Extension1.Equals(Extension2))
+                {
+                  if (stack.size() == 0)
+                  {
+                    stackName = Title1 + Extension1;
+                    stack.push_back(i);
+                    size += item1->m_dwSize;
+                  }
+                  stack.push_back(j);
+                  size += item2->m_dwSize;
+                }
+                else // Sequel
+                {
+                  offset = 0;
+                  expr++;
+                  break;
+                }
+              }
+              else if (!Ignore1.Equals(Ignore2)) // False positive, try again with offset
+              {
+                offset = expr->GetSubStart(3);
+                break;
+              }
+              else // Extension mismatch
+              {
+                offset = 0;
+                expr++;
+                break;
+              }
+            }
+            else // Title mismatch
+            {
+              offset = 0;
+              expr++;
+              break;
+            }
+          }
+          else // No match 2, next expression
+          {
+            offset = 0;
+            expr++;
+            break;
           }
         }
-
-        // increment index
-        j++;
+        if (j == Size())
+          expr = stackRegExps.end();
       }
-
+      else // No match 1
+      {
+        offset = 0;
+        expr++;
+      }
       if (stack.size() > 1)
       {
         // have a stack, remove the items and add the stacked item
@@ -2119,25 +2212,20 @@ void CFileItemList::Stack()
           stackPath = Get(stack[0])->m_strPath;
         else
           stackPath = dir.ConstructStackPath(*this, stack);
-        item->m_strPath = stackPath;
+        item1->m_strPath = stackPath;
         // clean up list
-        for (unsigned int k = stack.size() - 1; k > 0; --k)
-        {
-          Remove(stack[k]);
-        }
+        for (unsigned k = 1; k < stack.size(); k++)
+          Remove(i+1);
         // item->m_bIsFolder = true;  // don't treat stacked files as folders
         // the label may be in a different char set from the filename (eg over smb
         // the label is converted from utf8, but the filename is not)
-        CUtil::GetVolumeFromFileName(item->GetLabel(), fileTitle, volumeNumber);
         if (g_guiSettings.GetBool("filelists.hideextensions"))
-          CUtil::RemoveExtension(fileTitle);
-        item->SetLabel(fileTitle);
-        item->m_dwSize = size;
+          CUtil::RemoveExtension(stackName);
+        item1->SetLabel(stackName);
+        item1->m_dwSize = size;
+        break;
       }
     }
-
-    // increment index
-    i++;
   }
 }
 
