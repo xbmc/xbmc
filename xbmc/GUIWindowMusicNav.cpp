@@ -400,7 +400,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     if (node == NODE_TYPE_ALBUM ||
         node == NODE_TYPE_ALBUM_RECENTLY_ADDED ||
         node == NODE_TYPE_ALBUM_RECENTLY_PLAYED ||
-        node == NODE_TYPE_ALBUM_TOP100 || 
+        node == NODE_TYPE_ALBUM_TOP100 ||
         node == NODE_TYPE_ALBUM_COMPILATIONS ||
         node == NODE_TYPE_YEAR_ALBUM)
       items.SetContent("albums");
@@ -500,7 +500,7 @@ void CGUIWindowMusicNav::OnWindowLoaded()
 
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_BTN_FILTER, CGUIEditControl::INPUT_TYPE_FILTER);
   CGUIWindowMusicBase::OnWindowLoaded();
-  
+
   if (m_searchWithEdit)
   {
     SendMessage(GUI_MSG_SET_TYPE, CONTROL_SEARCH, CGUIEditControl::INPUT_TYPE_SEARCH);

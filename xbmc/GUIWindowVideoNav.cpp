@@ -967,7 +967,7 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
 void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowVideoBase::OnPrepareFileItems(items);
-  
+
   // set fanart
   CQueryParams params;
   CVideoDatabaseDirectory dir;
@@ -976,7 +976,7 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
     CGUIWindowMusicNav::SetupFanart(items);
 
   NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
-  
+
   // now filter as necessary
   bool filterWatched=false;
   if (node == NODE_TYPE_EPISODES
