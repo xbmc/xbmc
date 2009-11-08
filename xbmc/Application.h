@@ -248,10 +248,7 @@ public:
     return m_bPlatformDirectories;
   }
 
-  void SetStandAlone(bool value)
-  {
-    m_bStandalone = value;
-  }
+  void SetStandAlone(bool value);
 
   bool IsStandAlone()
   {

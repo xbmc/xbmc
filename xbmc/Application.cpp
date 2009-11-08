@@ -2232,6 +2232,12 @@ void CApplication::Render()
 #endif
 }
 
+
+void CApplication::SetStandAlone(bool value)
+{
+  g_advancedSettings.m_handleMounting = m_bStandalone = value;
+}
+
 void CApplication::RenderMemoryStatus()
 {
   MEASURE_FUNCTION;
