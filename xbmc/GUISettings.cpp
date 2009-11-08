@@ -37,6 +37,7 @@
 #include "SystemInfo.h"
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
+#include "visualizations/Visualisation.h"
 
 using namespace std;
 
@@ -54,6 +55,16 @@ using namespace std;
 #define TEXT_OFF 351
 
 class CGUISettings g_guiSettings;
+
+#ifdef _LINUX
+#define DEFAULT_VISUALISATION "opengl_spectrum.vis"
+#elif defined(_WIN32)
+#ifdef HAS_DX
+#define DEFAULT_VISUALISATION "MilkDrop_win32dx.vis"
+#else
+#define DEFAULT_VISUALISATION "opengl_spectrum_win32.vis"
+#endif
+#endif
 
 struct sortsettings
 {
@@ -231,15 +242,9 @@ void CGUISettings::Initialize()
   // My Music Settings
   AddGroup(3, 2);
   AddCategory(3, "mymusic", 16000);
-#ifdef _LINUX
-  AddString(1, "mymusic.visualisation", 250, "opengl_spectrum.vis", SPIN_CONTROL_TEXT);
-#elif defined(_WIN32)
-#ifdef HAS_DX
-  AddString(1, "mymusic.visualisation", 250, "MilkDrop_win32dx.vis", SPIN_CONTROL_TEXT);
-#else
-  AddString(1, "mymusic.visualisation", 250, "opengl_spectrum_win32.vis", SPIN_CONTROL_TEXT);
-#endif
-#endif
+
+  AddString(1, "mymusic.visualisation", 250, DEFAULT_VISUALISATION, SPIN_CONTROL_TEXT);
+
   AddSeparator(2, "mymusic.sep1");
   AddBool(3, "mymusic.autoplaynextitem", 489, true);
   AddSeparator(6, "mymusic.sep2");
@@ -990,6 +995,10 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");
   m_replayGain.iType = GetInt("musicplayer.replaygaintype");
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
+
+  // check if we load the right vis
+  if(!CVisualisation::IsValidVisualisation(g_guiSettings.GetString("mymusic.visualisation")))
+    g_guiSettings.SetString("mymusic.visualisation", DEFAULT_VISUALISATION);
 
 #if defined(_LINUX) && !defined(__APPLE__)
   CStdString timezone = GetString("locale.timezone");

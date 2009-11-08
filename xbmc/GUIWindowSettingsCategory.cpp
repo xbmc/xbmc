@@ -2829,18 +2829,8 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
       CUtil::GetExtension(pItem->m_strPath, strExtension);
       if (strExtension == ".vis")  // normal visualisation
       {
-#ifdef _LINUX
-        void *handle = dlopen( _P(visPath).c_str(), RTLD_LAZY );
-        if (!handle)
+        if(!CVisualisation::IsValidVisualisation(pItem->m_strPath))
           continue;
-        dlclose(handle);
-#elif defined(HAS_DX)
-        if(pItem->m_strPath.Right(11).CompareNoCase("win32dx.vis") != 0)
-          continue;
-#elif defined(_WIN32)
-        if(pItem->m_strPath.Right(9).CompareNoCase("win32.vis") != 0)
-          continue;
-#endif
         CStdString strLabel = pItem->GetLabel();
         vecVis.push_back( CVisualisation::GetFriendlyName( strLabel ) );
       }

@@ -28,6 +28,12 @@
 #include "MusicInfoTag.h"
 #include "Settings.h"
 #include "WindowingFactory.h"
+#include "Util.h"
+#ifdef _LINUX
+#include <dlfcn.h>
+#include "FileSystem/SpecialProtocol.h"
+#include "FileSystem/File.h"
+#endif
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -275,4 +281,43 @@ CStdString CVisualisation::GetCombinedName(const char* friendlyName)
     return visName + ".mvis" + ":" + moduleName;
   }
   return fName + ".vis";
+}
+
+bool CVisualisation::IsValidVisualisation(const CStdString& strVisz)
+{
+  bool bRet = true;
+  CStdString strExtension;
+
+  if(strVisz.Equals("None"))
+    return true;
+
+  CUtil::GetExtension(strVisz, strExtension);
+  if (strExtension == ".mvis")
+    return true; // assume multivis are OK
+
+  if (strExtension != ".vis")
+    return false;
+
+#ifdef _LINUX
+  CStdString visPath(strVisz);
+  if(visPath.Find("/") == string::npos)
+  {
+    visPath.Format("%s%s", "special://xbmc/visualisations/", strVisz);
+    if(!XFILE::CFile::Exists(visPath))
+      visPath.Format("%s%s", "special://home/visualisations/", strVisz);
+  }
+  void *handle = dlopen( _P(strVisz).c_str(), RTLD_LAZY );
+  if (!handle)
+    bRet = false;
+  else
+    dlclose(handle);
+#elif defined(HAS_DX)
+  if(strVisz.Right(11).CompareNoCase("win32dx.vis") != 0)
+    bRet = false;
+#elif defined(_WIN32)
+  if(strVisz.Right(9).CompareNoCase("win32.vis") != 0)
+    bRet = false;
+#endif
+
+  return bRet;
 }
