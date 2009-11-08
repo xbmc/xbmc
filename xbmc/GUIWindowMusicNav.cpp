@@ -1091,8 +1091,15 @@ void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items[i];
-    if (!item->HasMusicInfoTag() || item->HasProperty("fanart_image"))
+    CStdString strArtist;
+    if (item->HasProperty("fanart_image"))
       continue;
+    if (item->HasMusicInfoTag())
+      strArtist = item->GetMusicInfoTag()->GetArtist();
+   if (item->HasVideoInfoTag())
+     strArtist = item->GetVideoInfoTag()->m_strArtist;
+   if (strArtist.IsEmpty())
+     continue;
     map<CStdString, CStdString>::iterator artist = artists.find(item->GetMusicInfoTag()->GetArtist());
     if (artist == artists.end())
     {
@@ -1101,7 +1108,7 @@ void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
         item->SetProperty("fanart_image",strFanart);
       else
         strFanart = "";
-      artists.insert(make_pair(item->GetMusicInfoTag()->GetArtist(), strFanart));
+      artists.insert(make_pair(strArtist, strFanart));
     }
     else
       item->SetProperty("fanart_image",artist->second);
