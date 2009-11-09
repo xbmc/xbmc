@@ -428,8 +428,10 @@ public:
   void SaveXML(TiXmlNode *pRootNode);
   void LoadMasterLock(TiXmlElement *pRootElement);
 
-  //m_LookAndFeelResolution holds the real gui resolution,
-  //also when g_guiSettings.GetInt("videoscreen.resolution") is set to RES_AUTORES
+  RESOLUTION GetResolution() const;
+  void SetResolution(RESOLUTION res);
+
+  //m_LookAndFeelResolution holds the real gui resolution
   RESOLUTION m_LookAndFeelResolution;
   ReplayGainSettings m_replayGain;
 

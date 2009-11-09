@@ -817,8 +817,6 @@ void CGUISettings::SetInt(const char *strSetting, int iSetting)
   if (it != settingsMap.end())
   {
     ((CSettingInt *)(*it).second)->SetData(iSetting);
-    if (stricmp(strSetting, "videoscreen.resolution") == 0)
-      g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)iSetting;
     return ;
   }
   // Assert here and write debug output
@@ -952,7 +950,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("audiooutput.ac3passthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
 
-  g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("videoscreen.resolution");
+  g_guiSettings.m_LookAndFeelResolution = GetResolution();
 #ifdef __APPLE__
   // trap any previous vsync by driver setting, does not exist on OSX
   if (GetInt("videoscreen.vsync") == VSYNC_DRIVER)
@@ -971,23 +969,10 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
  // DXMERGE: This might have been useful?
  // g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
-  if (
-    (g_guiSettings.m_LookAndFeelResolution == RES_AUTORES) ||
-    (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
-  )
+  if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
-    RESOLUTION newRes = RES_DESKTOP;
-    if (g_guiSettings.m_LookAndFeelResolution == RES_AUTORES)
-    {
-      //"videoscreen.resolution" will stay at RES_AUTORES, m_LookAndFeelResolution will be the real mode
-      CLog::Log(LOGNOTICE, "Setting RES_AUTORESolution mode %i", newRes);
-      g_guiSettings.m_LookAndFeelResolution = newRes;
-    }
-    else
-    {
-      CLog::Log(LOGNOTICE, "Setting safe mode %i", newRes);
-      SetInt("videoscreen.resolution", newRes);
-    }
+    CLog::Log(LOGNOTICE, "Setting safe mode %i", RES_DESKTOP);
+    SetResolution(RES_DESKTOP);
   }
 
   // Move replaygain settings into our struct
@@ -1090,5 +1075,13 @@ void CGUISettings::Clear()
   settingsGroups.clear();
 }
 
+RESOLUTION CGUISettings::GetResolution() const
+{
+  return (RESOLUTION)GetInt("videoscreen.resolution");
+}
 
-
+void CGUISettings::SetResolution(RESOLUTION res)
+{
+  SetInt("videoscreen.resolution", (int)res);
+  m_LookAndFeelResolution = res;
+}

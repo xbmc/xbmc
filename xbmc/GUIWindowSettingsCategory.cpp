@@ -324,9 +324,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       {
         // Cancel delayed setting - it's only used for res changing anyway
         m_delayedSetting = NULL;
-        if (IsActive() && g_guiSettings.GetInt("videoscreen.resolution") != g_graphicsContext.GetVideoResolution())
+        if (IsActive() && g_guiSettings.GetResolution() != g_graphicsContext.GetVideoResolution())
         {
-          g_guiSettings.SetInt("videoscreen.resolution", g_graphicsContext.GetVideoResolution());
+          g_guiSettings.SetResolution(g_graphicsContext.GetVideoResolution());
           CreateSettings();
         }
       }
@@ -943,7 +943,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
       {
-        int value = g_guiSettings.GetInt("videoscreen.resolution");
+        int value = g_guiSettings.GetResolution();
         if (g_settings.m_ResInfo[value].strMode.Equals("Full Screen"))
           pControl->SetEnabled(true);
         else
@@ -1947,15 +1947,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_windowManager.SendMessage(msg);
     RESOLUTION nextRes = (RESOLUTION)msg.GetParam1();
     RESOLUTION lastRes = g_graphicsContext.GetVideoResolution();
-    g_guiSettings.SetInt("videoscreen.resolution", nextRes);
+    g_guiSettings.SetResolution(nextRes);
     g_graphicsContext.SetVideoResolution(nextRes);
-    g_guiSettings.m_LookAndFeelResolution = nextRes;
     bool cancelled = false;
     if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
     {
-      g_guiSettings.m_LookAndFeelResolution = lastRes;
+      g_guiSettings.SetResolution(lastRes);
       g_graphicsContext.SetVideoResolution(lastRes);
-      g_guiSettings.SetInt("videoscreen.resolution", lastRes);
     }
   }
   else if (strSetting.Equals("videoscreen.vsync"))

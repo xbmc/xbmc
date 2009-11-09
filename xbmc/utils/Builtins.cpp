@@ -374,11 +374,8 @@ int CBuiltins::Execute(const CStdString& execString)
     else if (parameter.Equals("1080i")) res = RES_HDTV_1080i;
     if (g_graphicsContext.IsValidResolution(res))
     {
-      g_guiSettings.SetInt("videoscreen.resolution", res);
-      //set the gui resolution, if newRes is RES_AUTORES newRes will be set to the highest available resolution
+      g_guiSettings.SetResolution(res);
       g_graphicsContext.SetVideoResolution(res);
-      //set our lookandfeelres to the resolution set in graphiccontext
-      g_guiSettings.m_LookAndFeelResolution = res;
       g_application.ReloadSkin();
     }
   }
