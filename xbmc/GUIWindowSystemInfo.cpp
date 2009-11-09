@@ -141,7 +141,9 @@ void CGUIWindowSystemInfo::Render()
     SetControlLabel(i++, "%s %s", 22007, SYSTEM_OPENGL_VENDOR);
     SetControlLabel(i++, "%s %s", 22009, SYSTEM_OPENGL_VERSION);
 #else
-    // TODO: reporting of DirectX version?
+    // TODO: reporting of DirectX version information
+    //SET_CONTROL_LABEL(i++, 22023);
+    SET_CONTROL_LABEL(i++, 22024);
 #endif
     SetControlLabel(i++, "%s %s", 22010, SYSTEM_GPU_TEMPERATURE);
   }
