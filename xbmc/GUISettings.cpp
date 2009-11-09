@@ -38,6 +38,7 @@
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
 #include "visualizations/Visualisation.h"
+#include "WindowingFactory.h"
 
 using namespace std;
 
@@ -596,7 +597,7 @@ void CGUISettings::Initialize()
 #endif
 
   AddCategory(7, "videoscreen", 131);
-  AddInt(1, "videoscreen.resolution",169, (int)RES_DESKTOP, (int)RES_WINDOW, 1, (int)RES_CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
+  AddString(1, "videoscreen.screenmode", 169, "DESKTOP", SPIN_CONTROL_TEXT);
 
 #if defined (__APPLE__) || defined(_WIN32)
   AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);
@@ -1075,13 +1076,71 @@ void CGUISettings::Clear()
   settingsGroups.clear();
 }
 
+float square_error(float x, float y)
+{
+  float yonx = (x > 0) ? y / x : 0;
+  float xony = (y > 0) ? x / y : 0;
+  return std::max(yonx, xony);
+}
+
 RESOLUTION CGUISettings::GetResolution() const
 {
-  return (RESOLUTION)GetInt("videoscreen.resolution");
+  return GetResFromString(GetString("videoscreen.screenmode"));
+}
+
+RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
+{
+  if (res == "DESKTOP")
+    return RES_DESKTOP;
+  else if (res == "WINDOW")
+    return RES_WINDOW;
+  else if (res.GetLength()==20)
+  {
+    // format: SWWWWWHHHHHRRR.RRRRR, where S = screen, W = width, H = height, R = refresh
+    int screen = atol(res.Mid(0,1).c_str());
+    int width = atol(res.Mid(1,5).c_str());
+    int height = atol(res.Mid(6,5).c_str());
+    float refresh = (float)atof(res.Mid(11).c_str());
+    // find the closest match to these in our res vector.  If we have the screen, we score the res
+    RESOLUTION bestRes = RES_DESKTOP;
+    float bestScore = 0.0f;
+    size_t maxRes = g_settings.m_ResInfo.size();
+    if (g_Windowing.GetNumScreens())
+      maxRes = std::min(maxRes, (size_t)RES_DESKTOP + g_Windowing.GetNumScreens());
+    for (unsigned int i = RES_DESKTOP; i < maxRes; ++i)
+    {
+      const RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
+      if (info.iScreen != screen)
+        continue;
+      float score = 10*(square_error((float)info.iWidth, (float)width) + square_error((float)info.iHeight, (float)height)) + square_error(info.fRefreshRate, refresh);
+      if (score > bestScore)
+      {
+        bestScore = score;
+        bestRes = (RESOLUTION)i;
+      }
+    }
+    return bestRes;
+  }
+  return RES_DESKTOP;
 }
 
 void CGUISettings::SetResolution(RESOLUTION res)
 {
-  SetInt("videoscreen.resolution", (int)res);
+  CStdString mode;
+  if (res == RES_DESKTOP)
+    mode = "DESKTOP";
+  else if (res == RES_WINDOW)
+    mode = "WINDOW";
+  else if (res >= RES_CUSTOM && res < (RESOLUTION)g_settings.m_ResInfo.size())
+  {
+    const RESOLUTION_INFO &info = g_settings.m_ResInfo[res];
+    mode.Format("%1i%05i%05i%09.5f", info.iScreen, info.iWidth, info.iHeight, info.fRefreshRate);
+  }
+  else
+  {
+    CLog::Log(LOGWARNING, "%s, setting invalid resolution %i", __FUNCTION__, res);
+    mode = "DESKTOP";
+  }
+  SetString("videoscreen.screenmode", mode);
   m_LookAndFeelResolution = res;
 }

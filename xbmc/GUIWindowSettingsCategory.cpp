@@ -681,7 +681,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(myTimezoneIndex);
     }
 #endif
-    else if (strSetting.Equals("videoscreen.resolution"))
+    else if (strSetting.Equals("videoscreen.screenmode"))
     {
       FillInResolutions(pSetting, false);
     }
@@ -1940,7 +1940,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
   }
-  else if (strSetting.Equals("videoscreen.resolution"))
+  else if (strSetting.Equals("videoscreen.screenmode"))
   { // new resolution choosen... - update if necessary
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
@@ -3022,7 +3022,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
 
 void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool playbackSetting)
 {
-  CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+  CSettingString *pSettingString = (CSettingString*)pSetting;
   CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
   control->SetDelayed();
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
@@ -3037,7 +3037,7 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool play
   {
     pControl->AddLabel(g_settings.m_ResInfo[i].strMode, i);
   }
-  pControl->SetValue(pSettingInt->GetData());
+  pControl->SetValue(CGUISettings::GetResFromString(pSettingString->GetData()));
 }
 
 void CGUIWindowSettingsCategory::FillInVSyncs(CSetting *pSetting)

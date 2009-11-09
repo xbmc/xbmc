@@ -429,6 +429,7 @@ public:
   void LoadMasterLock(TiXmlElement *pRootElement);
 
   RESOLUTION GetResolution() const;
+  static RESOLUTION GetResFromString(const CStdString &res);
   void SetResolution(RESOLUTION res);
 
   //m_LookAndFeelResolution holds the real gui resolution
