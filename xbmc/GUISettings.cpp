@@ -1017,10 +1017,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.iType = GetInt("musicplayer.replaygaintype");
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
 
-  // check if we load the right vis
-  if(!CVisualisation::IsValidVisualisation(g_guiSettings.GetString("mymusic.visualisation")))
-    g_guiSettings.SetString("mymusic.visualisation", DEFAULT_VISUALISATION);
-
 #if defined(_LINUX) && !defined(__APPLE__)
   CStdString timezone = GetString("locale.timezone");
   if(timezone == "0" || timezone.IsEmpty())

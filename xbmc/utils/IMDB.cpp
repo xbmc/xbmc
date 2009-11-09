@@ -67,11 +67,8 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
 
   movieTitle.ToLower();
 
-  if (m_info.strContent.Equals("musicvideos"))
+  if (m_info->Content() == CONTENT_MUSICVIDEOS)
     movieTitle.Replace("-"," ");
-
-  CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s', language: '%s', date: '%s', framework: '%s')",
-    __FUNCTION__, movieTitle.c_str(), m_info.strTitle.c_str(), m_info.strPath.c_str(), m_info.strContent.c_str(), m_info.strLanguage.c_str(), m_info.strDate.c_str(), m_info.strFramework.c_str());
 
   if (!pUrl)
   {
@@ -465,7 +462,7 @@ void CIMDB::GetURL(const CStdString &movieFile, const CStdString &movieName, con
   {
     if (!movieYear.IsEmpty())
       m_parser.m_param[1] = movieYear;
-
+  }
   // convert to the encoding requested by the parser
   g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), movieName, m_parser.m_param[0]);
   CUtil::URLEncode(m_parser.m_param[0]);

@@ -1414,7 +1414,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     AddonPtr defaultScraper;
     CAddonMgr::Get()->GetDefaultScraper(defaultScraper, CONTENT_ALBUMS);
     if (database.GetScraperForPath("musicdb://",scraper))
-    {a
+    {
       //TODO merge error??
 
     }
@@ -2996,43 +2996,8 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   {
     for (unsigned int i = 0; i < addons.size(); i++)
     {
-      //TODO fix this merge
       const AddonPtr addon = addons.at(i);
       vecVis.push_back(addon->Name());
-      const char *visPath = (const char*)pItem->m_strPath;
-
-      CUtil::GetExtension(pItem->m_strPath, strExtension);
-      if (strExtension == ".vis")  // normal visualisation
-      {
-        if(!CVisualisation::IsValidVisualisation(pItem->m_strPath))
-          continue;
-        CStdString strLabel = pItem->GetLabel();
-        vecVis.push_back( CVisualisation::GetFriendlyName( strLabel ) );
-      }
-      else if ( strExtension == ".mvis" )  // multi visualisation with sub modules
-      {
-        CVisualisation* vis = visFactory.LoadVisualisation( visPath );
-        if ( vis )
-        {
-          map<string, string> subModules;
-          map<string, string>::iterator iter;
-          string moduleName, path;
-          CStdString visName = pItem->GetLabel();
-          visName = visName.Mid(0, visName.size() - 5);
-
-          // get list of sub modules from the visualisation
-          vis->GetSubModules( subModules );
-
-          for ( iter=subModules.begin() ; iter!=subModules.end() ; iter++ )
-          {
-            // each pair of the map is of the format 'module name' => 'module path'
-            moduleName = iter->first;
-            vecVis.push_back( CVisualisation::GetFriendlyName( visName.c_str(), moduleName.c_str() ).c_str() );
-            CLog::Log(LOGDEBUG, "Module %s for visualisation %s", moduleName.c_str(), visPath);
-          }
-          delete vis;
-        }
-      }
     }
   } 
 

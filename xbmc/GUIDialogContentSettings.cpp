@@ -199,6 +199,10 @@ void CGUIDialogContentSettings::OnSettingChanged(SettingInfo &setting)
   m_bNeedSave = true;
 }
 
+void CGUIDialogContentSettings::OnOkay()
+{
+}
+
 void CGUIDialogContentSettings::OnCancel()
 {
   m_bNeedSave = false;

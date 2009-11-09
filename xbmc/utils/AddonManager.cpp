@@ -588,7 +588,7 @@ void CAddonMgr::FindAddons(const ADDON::TYPE &type, const bool refresh)
       break;
     }
   case ADDON_VIZ:
-    {
+    { //TODO fix mvis handling
       if (!isHome)
         CDirectory::GetDirectory("special://home/addons/visualisations", items, ADDON_VIZ_EXT, false);
       CDirectory::GetDirectory("special://xbmc/addons/visualisations", items, ADDON_VIZ_EXT, false);
@@ -923,6 +923,9 @@ bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &p
     addonProps.libname = element->GetText();
 #endif
 
+  //TODO mvis extension handling
+  /*
+    
   addonProps.icon = path + "default.tbn";
 
   /*** end of optional fields ***/

@@ -4101,7 +4101,6 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::CScrape
           if (!info)
             return false;
         }
-      info.strLanguage = parser.GetLanguage();
 
         // store this path's settings
         info->m_pathContent = content;

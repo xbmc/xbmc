@@ -83,7 +83,6 @@ void CScraperParser::Clear()
 
   m_document = NULL;
   m_requiressettings = false;
-  m_settings = NULL;
   m_strFile.Empty();
 }
 
