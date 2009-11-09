@@ -647,9 +647,4 @@ bool CVideoInfoTag::HasStreamDetails() const
   return m_streamDetails.HasItems();
 }
 
-bool CVideoInfoTag::IsEmpty() const
-{
-  return (m_strTitle.IsEmpty() &&
-          m_strFile.IsEmpty() &&
-          m_strPath.IsEmpty());
-}
+

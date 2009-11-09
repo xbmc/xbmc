@@ -39,7 +39,6 @@ public:
 
   virtual void ClearFileItems();
   virtual void OnFinalizeFileItems(CFileItemList &items);
-  virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void OnInfo(CFileItem* pItem, const SScraperInfo&info);
   static bool DeleteItem(CFileItem* pItem, bool bUnavailable=false);
 
@@ -51,7 +50,7 @@ protected:
   virtual void UpdateButtons();
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
   virtual void PlayItem(int iItem);
-  virtual void OnDeleteItem(CFileItemPtr pItem);
+  virtual void OnDeleteItem(int iItem);
   virtual void OnWindowLoaded();
   virtual void OnFilterItems();
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);

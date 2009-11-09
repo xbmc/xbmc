@@ -1,34 +1,9 @@
-/*
- *      Copyright (C) 2005-2009 Team XBMC
- *      http://www.xbmc.org
- *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
- *
- */
 #include "DBusUtil.h"
 #ifdef HAS_DBUS
 
 bool CDBusUtil::GetBoolean(const char *destination, const char *object, const char *interface, const char *property)
 {
   return GetVariant(destination, object, interface, property).Equals("true");
-}
-
-int CDBusUtil::GetInt32(const char *destination, const char *object, const char *interface, const char *property)
-{
-  return atoi(GetVariant(destination, object, interface, property).c_str());
 }
 
 CStdString CDBusUtil::GetVariant(const char *destination, const char *object, const char *interface, const char *property)
@@ -113,10 +88,7 @@ CStdString CDBusUtil::ParseType(DBusMessageIter *itr)
   CStdString value;
   const char *    string  = NULL;
   dbus_int32_t    int32   = 0;
-  dbus_uint32_t   uint32  = 0;
-  dbus_int64_t    int64   = 0;
-  dbus_uint64_t   uint64  = 0;
-  dbus_bool_t     boolean = false;
+  dbus_bool_t boolean = false;
 
   int type = dbus_message_iter_get_arg_type(itr);
 
@@ -130,20 +102,9 @@ CStdString CDBusUtil::ParseType(DBusMessageIter *itr)
 
   case DBUS_TYPE_BYTE:
   case DBUS_TYPE_UINT32:
-    dbus_message_iter_get_basic(itr, &uint32);
-    value.Format("%u", uint32);
-    break;
   case DBUS_TYPE_INT32:
     dbus_message_iter_get_basic(itr, &int32);
-    value.Format("%d", int32);
-    break;
-  case DBUS_TYPE_UINT64:
-    dbus_message_iter_get_basic(itr, &uint64);
-    value.Format("%"PRIu64, uint64);
-    break;
-  case DBUS_TYPE_INT64:
-    dbus_message_iter_get_basic(itr, &int64);
-    value.Format("%"PRId64, int64);
+    value.Format("%i", (int)int32);
     break;
   case DBUS_TYPE_BOOLEAN:
     dbus_message_iter_get_basic(itr, &boolean);

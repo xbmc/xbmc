@@ -166,7 +166,7 @@ size_t
 htsbuf_find(htsbuf_queue_t *hq, uint8_t v)
 {
   htsbuf_data_t *hd;
-  unsigned int i, o = 0;
+  int i, o = 0;
 
   TAILQ_FOREACH(hd, &hq->hq_q, hd_link) {
     for(i = hd->hd_data_off; i < hd->hd_data_len; i++) {

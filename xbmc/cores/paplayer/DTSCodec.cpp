@@ -320,7 +320,7 @@ bool DTSCodec::Init(const CStdString &strFile, unsigned int filecache)
     m_iDataStart = -1;
     Decode(m_readBuffer + istart, m_readBufferPos - istart);
     //decoding error, could still be a valid dts-stream, try again at next byte
-    istart += std::max(m_iDataStart + 1, 1);
+    istart += m_iDataStart + 1;
   } while (m_DecoderError && (m_decodedDataSize == 0) && (m_readBufferPos - istart > 0) );
   if (m_DecoderError || m_decodedDataSize == 0)
   {

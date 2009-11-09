@@ -135,6 +135,16 @@ CStdString CWIN32Util::URLEncode(const CURL &url)
     flat += url.GetPassWord();
     flat += "@";
   }
+  else if( !url.GetHostName().IsEmpty() && !g_guiSettings.GetString("smb.username").IsEmpty() )
+  {
+    /* okey this is abit uggly to do this here, as we don't really only url encode */
+    /* but it's the simplest place to do so */
+    flat += g_guiSettings.GetString("smb.username");
+    flat += ":";
+    flat += g_guiSettings.GetString("smb.password");
+    flat += "@";
+  }
+
   flat += url.GetHostName();
 
   /* okey sadly since a slash is an invalid name we have to tokenize */
@@ -775,22 +785,22 @@ BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
 void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType)
 {
   CMediaSource share;
-  WCHAR* pcBuffer= NULL;
-  DWORD dwStrLength= GetLogicalDriveStringsW( 0, pcBuffer );
+  char* pcBuffer= NULL;
+  DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
   if( dwStrLength != 0 )
   {
     dwStrLength+= 1;
-    pcBuffer= new WCHAR [dwStrLength];
-    GetLogicalDriveStringsW( dwStrLength, pcBuffer );
+    pcBuffer= new char [dwStrLength];
+    GetLogicalDriveStrings( dwStrLength, pcBuffer );
 
     UINT uDriveType;
     int iPos= 0, nResult;
-    WCHAR cVolumeName[100];
+    char cVolumeName[100];
     do{
-      cVolumeName[0]= L'\0';
-      uDriveType= GetDriveTypeW( pcBuffer + iPos  );
+      cVolumeName[0]= '\0';
+      uDriveType= GetDriveType( pcBuffer + iPos  );
       if(uDriveType != DRIVE_REMOVABLE)
-        nResult= GetVolumeInformationW( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
+        nResult= GetVolumeInformation( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
       share.strPath= share.strName= "";
 
       bool bUseDCD= false;
@@ -801,8 +811,7 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
          ( eDriveType == DVD_DRIVES && ( uDriveType == DRIVE_CDROM ))))
       {
         share.strPath= pcBuffer + iPos;
-        if( cVolumeName[0] != L'\0' )
-          g_charsetConverter.wToUTF8(cVolumeName, share.strName);
+        if( cVolumeName[0] != '\0' ) share.strName= cVolumeName;
         if( uDriveType == DRIVE_CDROM && nResult)
         {
           // Has to be the same as auto mounted devices
@@ -849,11 +858,28 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
 
         localDrives.push_back(share);
       }
-      iPos += (wcslen( pcBuffer + iPos) + 1 );
-    } while( wcslen( pcBuffer + iPos ) > 0 );
+      iPos += (strlen( pcBuffer + iPos) + 1 );
+    } while( strlen( pcBuffer + iPos ) > 0 );
     if( pcBuffer != NULL)
       delete[] pcBuffer;
   }
+}
+
+void CWIN32Util::AddRemovableDrives()
+{
+  VECSOURCES vShare;
+  VECSOURCES::const_iterator it;
+  GetDrivesByType(vShare, REMOVABLE_DRIVES);
+  for(it=vShare.begin();it!=vShare.end();++it)
+    g_mediaManager.AddAutoSource(*it);
+  vShare.clear();
+  GetDrivesByType(vShare, DVD_DRIVES);
+  if(!vShare.empty())
+    g_mediaManager.SetHasOpticalDrive(true);
+
+  for(it=vShare.begin();it!=vShare.end();++it)
+    if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
+      g_application.getApplicationMessenger().OpticalMount(it->strPath);
 }
 
 bool CWIN32Util::IsAudioCD(const CStdString& strPath)

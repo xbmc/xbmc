@@ -290,6 +290,7 @@ protected:
   CSelectionStreams m_SelectionStreams;
 
   int m_playSpeed;
+  time_t m_tmLastSeek;
   struct SSpeedState
   {
     double lastpts;  // holds last display pts during ff/rw operations

@@ -42,8 +42,6 @@ public:
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void OnFinalizeFileItems(CFileItemList &items);
 
-  static void SetupFanart(CFileItemList& items);
-
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
   // override base class methods

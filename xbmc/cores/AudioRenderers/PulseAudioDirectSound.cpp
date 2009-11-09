@@ -26,48 +26,41 @@
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "utils/log.h"
-#include "Util.h"
 
 static const char *ContextStateToString(pa_context_state s)
 {
-  switch (s)
-  {
-    case PA_CONTEXT_UNCONNECTED:
+    if (s == PA_CONTEXT_UNCONNECTED)
       return "unconnected";
-    case PA_CONTEXT_CONNECTING:
+    if (s == PA_CONTEXT_CONNECTING)
       return "connecting";
-    case PA_CONTEXT_AUTHORIZING:
+    if (s == PA_CONTEXT_AUTHORIZING)
       return "authorizing";
-    case PA_CONTEXT_SETTING_NAME:
+    if (s == PA_CONTEXT_SETTING_NAME)
       return "setting name";
-    case PA_CONTEXT_READY:
+    if (s == PA_CONTEXT_READY)
       return "ready";
-    case PA_CONTEXT_FAILED:
+    if (s == PA_CONTEXT_FAILED)
       return "failed";
-    case PA_CONTEXT_TERMINATED:
+    if (s == PA_CONTEXT_TERMINATED)
       return "terminated";
-    default:
-      return "none";
-  }
+
+    return "none";
 }
 
 static const char *StreamStateToString(pa_stream_state s)
 {
-  switch(s)
-  {
-    case PA_STREAM_UNCONNECTED:
+    if (s == PA_STREAM_UNCONNECTED)
       return "unconnected";
-    case PA_STREAM_CREATING:
+    if (s == PA_STREAM_CREATING)
       return "creating";
-    case PA_STREAM_READY:
+    if (s == PA_STREAM_READY)
       return "ready";
-    case PA_STREAM_FAILED:
+    if (s == PA_STREAM_FAILED)
       return "failed";
-    case PA_STREAM_TERMINATED:
+    if (s == PA_STREAM_TERMINATED)
       return "terminated";
-    default:
-      return "none";
-  }
+
+    return "none";
 }
 
 /* Static callback functions */
@@ -116,26 +109,6 @@ static void StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
   pa_threaded_mainloop_signal(m, 0);
 }
 
-struct SinkInfoStruct
-{
-  AudioSinkList *list;
-  pa_threaded_mainloop *mainloop;
-};
-
-static void SinkInfo(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
-{
-  SinkInfoStruct *sinkStruct = (SinkInfoStruct *)userdata;
-  if (i && i->name)
-  {
-    CStdString descr = i->description;
-    CStdString sink;
-    sink.Format("pulse:%s@default", i->name);
-    sinkStruct->list->push_back(AudioSink(descr, sink));
-    CLog::Log(LOGDEBUG, "PulseAudio: Found %s with devicestring %s", descr.c_str(), sink.c_str());
-  }
-
-  pa_threaded_mainloop_signal(sinkStruct->mainloop, 0);
-}
 
 /* PulseAudio class memberfunctions*/
 
@@ -143,9 +116,9 @@ CPulseAudioDirectSound::CPulseAudioDirectSound()
 {
 }
 
-bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
-  CLog::Log(LOGDEBUG,"PulseAudio: Opening Channels: %i - SampleRate: %i - SampleBit: %i - Resample %s - Codec %s - IsMusic %s - IsPassthrough %s - device: %s", iChannels, uiSamplesPerSec, uiBitsPerSample, bResample ? "true" : "false", strAudioCodec, bIsMusic ? "true" : "false", bPassthrough ? "true" : "false", device.c_str());
+  CLog::Log(LOGDEBUG,"PulseAudio: Opening Channels: %i - SampleRate: %i - SampleBit: %i - Resample %s - Codec %s - IsMusic %s - IsPassthrough %s - audioHost: %s - audioDevice: %s", iChannels, uiSamplesPerSec, uiBitsPerSample, bResample ? "true" : "false", strAudioCodec, bIsMusic ? "true" : "false", bPassthrough ? "true" : "false", g_advancedSettings.m_audioHost.c_str(), g_guiSettings.GetString("audiooutput.audiodevice").c_str());
   if (iChannels == 0)
     iChannels = 2;
 
@@ -157,8 +130,6 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   m_Stream = NULL;
   m_MainLoop = NULL;
   m_bPause = false;
-  m_bRecentlyFlushed = true;
-  m_bAutoResume = false;
   m_bIsAllocated = false;
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
@@ -173,24 +144,28 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   m_dwNumPackets = 16;
 
   /* Open the device */
-  if (m_bPassthrough)
+  CStdString device, deviceuse;
+  if (!m_bPassthrough)
   {
-    CLog::Log(LOGWARNING, "PulseAudio: Does not support passthrough");
-    return false;
-  }
- 
-  std::vector<CStdString> hostdevice;
-  CUtil::Tokenize(device, hostdevice, "@");
-
-  const char *host = (hostdevice.size() < 2 || hostdevice[1].Equals("default") ? NULL : hostdevice[1].c_str());
-  if (!SetupContext(host, &m_Context, &m_MainLoop))
+    if (!g_guiSettings.GetString("audiooutput.audiodevice").Equals("custom"))
+      device = g_guiSettings.GetString("audiooutput.customdevice");
+    else
+      device = g_guiSettings.GetString("audiooutput.audiodevice");
+  } 
+  else
   {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to create context");
-    Deinitialize();
-    return false;
+    if (!g_guiSettings.GetString("audiooutput.passthroughdevice").Equals("custom"))
+      device = g_guiSettings.GetString("audiooutput.custompassthrough");
+    else
+      device = g_guiSettings.GetString("audiooutput.passthroughdevice");
   }
 
-  pa_threaded_mainloop_lock(m_MainLoop);
+  const char *host = NULL;
+  if (strcmp(g_advancedSettings.m_audioHost, "default") != 0)
+    host = g_advancedSettings.m_audioHost.c_str();
+  const char *sink = NULL;
+  if (strcmp(device, "default") != 0)
+    sink = device.c_str();
 
   struct pa_channel_map map;
 
@@ -212,10 +187,61 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
 
   pa_cvolume_reset(&m_Volume, m_SampleSpec.channels);
 
+  if ((m_MainLoop = pa_threaded_mainloop_new()) == NULL)
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Failed to allocate main loop");
+    Deinitialize();
+    return false;
+  }
+
+  if ((m_Context = pa_context_new(pa_threaded_mainloop_get_api(m_MainLoop), "XBMC")) == NULL)
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Failed to allocate context");
+    Deinitialize();
+    return false;
+  }
+
+  pa_context_set_state_callback(m_Context, ContextStateCallback, m_MainLoop);
+
+  if (pa_context_connect(m_Context, host, (pa_context_flags_t)0, NULL) < 0)
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Failed to connect context");
+    Deinitialize();
+    return false;
+  }
+  pa_threaded_mainloop_lock(m_MainLoop);
+
+  if (pa_threaded_mainloop_start(m_MainLoop) < 0)
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Failed to start MainLoop");
+    if (m_MainLoop)
+      pa_threaded_mainloop_unlock(m_MainLoop);
+    Deinitialize();
+    return false;
+  }
+
+  /* Wait until the context is ready */
+  do
+  {  
+    pa_threaded_mainloop_wait(m_MainLoop);
+    CLog::Log(LOGDEBUG, "PulseAudio: Context %s", ContextStateToString(pa_context_get_state(m_Context)));
+  }
+  while (pa_context_get_state(m_Context) != PA_CONTEXT_READY && pa_context_get_state(m_Context) != PA_CONTEXT_FAILED);
+
+  if (pa_context_get_state(m_Context) == PA_CONTEXT_FAILED)
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Waited for the Context but it failed");
+    if (m_MainLoop)
+      pa_threaded_mainloop_unlock(m_MainLoop);
+    Deinitialize();
+    return false;
+  }
+
   if ((m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map)) == NULL)
   {
     CLog::Log(LOGERROR, "PulseAudio: Could not create a stream");
-    pa_threaded_mainloop_unlock(m_MainLoop);
+    if (m_MainLoop)
+      pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
     return false;
   }
@@ -224,11 +250,11 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   pa_stream_set_write_callback(m_Stream, StreamRequestCallback, m_MainLoop);
   pa_stream_set_latency_update_callback(m_Stream, StreamLatencyUpdateCallback, m_MainLoop);
 
-  const char *sink = hostdevice.size() < 1 || hostdevice[0].Equals("default") ? NULL : hostdevice[0].c_str();
   if (pa_stream_connect_playback(m_Stream, sink, NULL, ((pa_stream_flags)(PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE)), &m_Volume, NULL) < 0)
   {
     CLog::Log(LOGERROR, "PulseAudio: Failed to connect stream to output");
-    pa_threaded_mainloop_unlock(m_MainLoop);
+    if (m_MainLoop)
+      pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
     return false;
   }
@@ -244,7 +270,8 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   if (pa_stream_get_state(m_Stream) == PA_STREAM_FAILED)
   {
     CLog::Log(LOGERROR, "PulseAudio: Waited for the stream but it failed");
-    pa_threaded_mainloop_unlock(m_MainLoop);
+    if (m_MainLoop)
+      pa_threaded_mainloop_unlock(m_MainLoop);
     Deinitialize();
     return false;
   }
@@ -256,7 +283,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   else
   {
     m_dwPacketSize = a->minreq;
-    CLog::Log(LOGDEBUG, "PulseAudio: Default buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u", a->maxlength, a->tlength, a->prebuf, a->minreq);
+  CLog::Log(LOGDEBUG, "PulseAudio: Default buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u", a->maxlength, a->tlength, a->prebuf, a->minreq);
     pa_buffer_attr b;
     b.prebuf = a->minreq * 10;
     b.minreq = a->minreq;
@@ -264,7 +291,8 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
     b.maxlength = a->maxlength;
     b.fragsize = a->fragsize;
 
-    WaitForOperation(pa_stream_set_buffer_attr(m_Stream, &b, NULL, NULL), m_MainLoop, "SetBuffer");
+    WaitForOperation(pa_stream_set_buffer_attr(m_Stream, &b, NULL, NULL), "SetBuffer");
+
 
     if (!(a = pa_stream_get_buffer_attr(m_Stream)))
         CLog::Log(LOGERROR, "PulseAudio: %s", pa_strerror(pa_context_errno(m_Context)));
@@ -281,7 +309,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   m_bIsAllocated = true;
 
   SetCurrentVolume(m_nCurrentVolume);
-  Resume();
+  m_bPause = Cork(false);
   return true;
 }
 
@@ -293,38 +321,40 @@ CPulseAudioDirectSound::~CPulseAudioDirectSound()
 bool CPulseAudioDirectSound::Deinitialize()
 {
   m_bIsAllocated = false;
-
-  if (m_Stream)
-    WaitCompletion();
-
-  if (m_MainLoop)
-    pa_threaded_mainloop_stop(m_MainLoop);
-
-  if (m_Stream)
-  {
-    pa_stream_disconnect(m_Stream);
-    pa_stream_unref(m_Stream);
-    m_Stream = NULL;
-  }
-
   if (m_Context)
   {
-    pa_context_disconnect(m_Context);
-    pa_context_unref(m_Context);
-    m_Context = NULL;
-  }
+    if (m_Stream)
+      WaitCompletion();
 
-  if (m_MainLoop)
-  {
-    pa_threaded_mainloop_free(m_MainLoop);
-    m_MainLoop = NULL;
+    if (m_MainLoop)
+        pa_threaded_mainloop_stop(m_MainLoop);
+
+    if (m_Stream)
+    {
+        pa_stream_disconnect(m_Stream);
+        pa_stream_unref(m_Stream);
+        m_Stream = NULL;
+    }
+
+    if (m_Context)
+    {
+      pa_context_disconnect(m_Context);
+      pa_context_unref(m_Context);
+      m_Context = NULL;
+    }
+
+    if (m_MainLoop)
+    {
+      pa_threaded_mainloop_free(m_MainLoop);
+      m_MainLoop = NULL;
+    }
   }
 
   g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
   return true;
 }
 
-inline bool CPulseAudioDirectSound::WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry = "")
+inline bool CPulseAudioDirectSound::WaitForOperation(pa_operation *op, const char *LogEntry = "")
 {
   if (op == NULL)
     return false;
@@ -332,7 +362,7 @@ inline bool CPulseAudioDirectSound::WaitForOperation(pa_operation *op, pa_thread
   bool sucess = true;
 
   while (pa_operation_get_state(op) == PA_OPERATION_RUNNING)
-    pa_threaded_mainloop_wait(mainloop);
+    pa_threaded_mainloop_wait(m_MainLoop);
 
   if (pa_operation_get_state(op) != PA_OPERATION_DONE)
   {
@@ -349,11 +379,8 @@ void CPulseAudioDirectSound::Flush()
   if (!m_bIsAllocated)
      return;
 
-  Pause();
-
   pa_threaded_mainloop_lock(m_MainLoop);
-  WaitForOperation(pa_stream_flush(m_Stream, NULL, NULL), m_MainLoop, "Flush");
-  m_bRecentlyFlushed = true;
+  WaitForOperation(pa_stream_flush(m_Stream, NULL, NULL), "Flush");
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
@@ -361,7 +388,7 @@ bool CPulseAudioDirectSound::Cork(bool cork)
 {
   pa_threaded_mainloop_lock(m_MainLoop);
 
-  if (!WaitForOperation(pa_stream_cork(m_Stream, cork ? 1 : 0, NULL, NULL), m_MainLoop, cork ? "Pause" : "Resume"))
+  if (!WaitForOperation(pa_stream_cork(m_Stream, cork ? 1 : 0, NULL, NULL), cork ? "Pause" : "Resume"))
     cork = !cork;
 
   pa_threaded_mainloop_unlock(m_MainLoop);
@@ -385,27 +412,21 @@ bool CPulseAudioDirectSound::Pause()
 bool CPulseAudioDirectSound::Resume()
 {
   if (!m_bIsAllocated)
-     return false;
-
-  bool result = false;
-
-  if(m_bPause && !m_bRecentlyFlushed)
-  {
+     return -1;
+  if(m_bPause)
     m_bPause = Cork(false);
-    result = !m_bPause;
-  }
-  else if (m_bPause)
-    result = m_bAutoResume = true;
 
-  return result;
+  return !m_bPause;
 }
 
 bool CPulseAudioDirectSound::Stop()
 {
   if (!m_bIsAllocated)
-    return false;
+    return -1;
 
   Flush();
+
+  m_bPause = false;
 
   return true;
 }
@@ -470,15 +491,7 @@ unsigned int CPulseAudioDirectSound::AddPackets(const void* data, unsigned int l
 
   int rtn = pa_stream_write(m_Stream, data, length, NULL, 0, PA_SEEK_RELATIVE);
 
-
-  if (rtn < length && m_bRecentlyFlushed)
-    m_bRecentlyFlushed = false;
-
   pa_threaded_mainloop_unlock(m_MainLoop);
-
-  if (m_bAutoResume)   
-    m_bAutoResume = !Resume();
-
   return length - rtn;
 }
 
@@ -534,102 +547,12 @@ void CPulseAudioDirectSound::WaitCompletion()
     return;
 
   pa_threaded_mainloop_lock(m_MainLoop);
-  WaitForOperation(pa_stream_drain(m_Stream, NULL, NULL), m_MainLoop, "Drain");
+  WaitForOperation(pa_stream_drain(m_Stream, NULL, NULL), "Drain");
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
 void CPulseAudioDirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 {
-}
-
-void CPulseAudioDirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough)
-{
-  pa_context *context;
-  pa_threaded_mainloop *mainloop;
-
-  if (!SetupContext(NULL, &context, &mainloop))
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to create context");
-    return;
-  }
-
-  if (!passthrough)
-  {
-    pa_threaded_mainloop_lock(mainloop);
-
-    SinkInfoStruct sinkStruct;
-    sinkStruct.mainloop = mainloop;
-    sinkStruct.list = &vAudioSinks;
-    vAudioSinks.push_back(AudioSink("default", "pulse:default@default"));
-    WaitForOperation(pa_context_get_sink_info_list(context,	SinkInfo, &sinkStruct), mainloop, "EnumerateAudioSinks");
-
-    pa_threaded_mainloop_unlock(mainloop);
-  }
-
-  if (mainloop)
-    pa_threaded_mainloop_stop(mainloop);
-
-  if (context)
-  {
-    pa_context_disconnect(context);
-    pa_context_unref(context);
-    context = NULL;
-  }
-
-  if (mainloop)
-  {
-    pa_threaded_mainloop_free(mainloop);
-    mainloop = NULL;
-  }
-}
-
-bool CPulseAudioDirectSound::SetupContext(const char *host, pa_context **context, pa_threaded_mainloop **mainloop)
-{
-  if ((*mainloop = pa_threaded_mainloop_new()) == NULL)
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to allocate main loop");
-    return false;
-  }
-
-  if (((*context) = pa_context_new(pa_threaded_mainloop_get_api(*mainloop), "XBMC")) == NULL)
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to allocate context");
-    return false;
-  }
-
-  pa_context_set_state_callback(*context, ContextStateCallback, *mainloop);
-
-  if (pa_context_connect(*context, host, (pa_context_flags_t)0, NULL) < 0)
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to connect context");
-    return false;
-  }
-  pa_threaded_mainloop_lock(*mainloop);
-
-  if (pa_threaded_mainloop_start(*mainloop) < 0)
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to start MainLoop");
-    pa_threaded_mainloop_unlock(*mainloop);
-    return false;
-  }
-
-  /* Wait until the context is ready */
-  do
-  {  
-    pa_threaded_mainloop_wait(*mainloop);
-    CLog::Log(LOGDEBUG, "PulseAudio: Context %s", ContextStateToString(pa_context_get_state(*context)));
-  }
-  while (pa_context_get_state(*context) != PA_CONTEXT_READY && pa_context_get_state(*context) != PA_CONTEXT_FAILED);
-
-  if (pa_context_get_state(*context) == PA_CONTEXT_FAILED)
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Waited for the Context but it failed");
-    pa_threaded_mainloop_unlock(*mainloop);
-    return false;
-  }
-
-  pa_threaded_mainloop_unlock(*mainloop);
-  return true;
 }
 #endif
 

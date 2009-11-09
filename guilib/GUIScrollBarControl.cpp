@@ -180,16 +180,6 @@ void CGUIScrollBar::AllocResources()
   m_guiNibFocus.AllocResources();
 }
 
-void CGUIScrollBar::SetInvalid()
-{
-  CGUIControl::SetInvalid();
-  m_guiBackground.SetInvalid();
-  m_guiBarFocus.SetInvalid();
-  m_guiBarFocus.SetInvalid();
-  m_guiNibNoFocus.SetInvalid();
-  m_guiNibFocus.SetInvalid();
-}
-
 void CGUIScrollBar::UpdateBarSize()
 {
   // scale our textures to suit

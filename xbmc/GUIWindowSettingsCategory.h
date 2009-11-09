@@ -24,7 +24,6 @@
 #include "GUIWindow.h"
 #include "SettingsControls.h"
 #include "GUISettings.h"
-#include "utils/Stopwatch.h"
 
 class CGUIWindowSettingsCategory :
       public CGUIWindow
@@ -56,9 +55,11 @@ protected:
   void FillInVSyncs(CSetting *pSetting);
   void FillInScreenSavers(CSetting *pSetting);
   void FillInRegions(CSetting *pSetting);
+  void FillInFTPServerUser(CSetting *pSetting);
   void FillInStartupWindow(CSetting *pSetting);
   void FillInViewModes(CSetting *pSetting, int windowID);
   void FillInSortMethods(CSetting *pSetting, int windowID);
+  bool SetFTPServerUserPass();
 
   void FillInSkinThemes(CSetting *pSetting);
   void FillInSkinColors(CSetting *pSetting);
@@ -85,10 +86,14 @@ protected:
 
   void JumpToSection(int windowID, const CStdString &section);
   void JumpToPreviousSection();
+#if defined(_LINUX) && !defined(__APPLE__)
+  void GenSoundLabel(const CStdString& device, const CStdString& card, const int labelValue, CGUISpinControlEx* pControl, bool Passthrough);
+#endif //defined(_LINUX) && !defined(__APPLE__)
 
   std::vector<CBaseSettingControl *> m_vecSettings;
   int m_iSection;
   int m_iScreen;
+  RESOLUTION m_NewResolution;
   vecSettingsCategory m_vecSections;
   CGUISpinControlEx *m_pOriginalSpin;
   CGUIRadioButtonControl *m_pOriginalRadioButton;
@@ -114,9 +119,6 @@ protected:
   CStdString m_strOldTrackFormat;
   CStdString m_strOldTrackFormatRight;
 
-  std::map<CStdString, CStdString> m_AnalogAudioSinkMap;
-  std::map<CStdString, CStdString> m_DigitalAudioSinkMap;
-
   // state of the window saved in JumpToSection()
   // to get to the previous settings screen when
   // using JumpToPreviousSection()
@@ -125,8 +127,5 @@ protected:
   int m_iWindowBeforeJump;
 
   bool m_returningFromSkinLoad; // true if we are returning from loading the skin
-
-  CBaseSettingControl *m_delayedSetting; ///< Current delayed setting \sa CBaseSettingControl::SetDelayed()
-  CStopWatch           m_delayedTimer;   ///< Delayed setting timer
 };
 

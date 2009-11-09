@@ -78,12 +78,6 @@ void CGUISettingsSliderControl::AllocResources()
   m_buttonControl.AllocResources();
 }
 
-void CGUISettingsSliderControl::SetInvalid()
-{
-  CGUISliderControl::SetInvalid();
-  m_buttonControl.SetInvalid();
-}
-
 void CGUISettingsSliderControl::SetPosition(float posX, float posY)
 {
   m_buttonControl.SetPosition(posX, posY);

@@ -68,9 +68,7 @@ windows:
     /Library/Tcl/darwinports1.0 \
     /Library/Tcl/macports1.0
 
-Install MacPorts 1.7 (see http://code.google.com/p/xbmc-port-depends/). No NOT
-install the versions from http://www.macports.org, they were hopelessly broke
-for XBMC usage when their devs released MacPorts 1.8. If you are going to run
+Install MacPorts 1.7 (http://www.macports.org/). If you are going to run
 under the same OSX version as you build under, just install the required port
 packages without the extra flags. No modifications of MacPorts is required.
 That means skip 1), 2), 3) and 4) below and don't add "+universal" or 

@@ -7,9 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E449C9DA1090622500783487 /* HIDRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = E449C9D91090622500783487 /* HIDRemote.m */; };
+		E45F2B1C0F95191E007BCC0B /* IRKeyboardEmu.m in Sources */ = {isa = PBXBuildFile; fileRef = E45F2B1B0F95191E007BCC0B /* IRKeyboardEmu.m */; };
 		E4E62F370F83DB760066AF9D /* xbmchelper_main.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F340F83DB760066AF9D /* xbmchelper_main.mm */; };
 		E4E62F380F83DB760066AF9D /* XBMCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F360F83DB760066AF9D /* XBMCHelper.m */; };
+		E4E62F4A0F83DB830066AF9D /* AppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F3D0F83DB830066AF9D /* AppleRemote.m */; };
+		E4E62F4B0F83DB830066AF9D /* GlobalKeyboardDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F3F0F83DB830066AF9D /* GlobalKeyboardDevice.m */; };
+		E4E62F4C0F83DB830066AF9D /* HIDRemoteControlDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F410F83DB830066AF9D /* HIDRemoteControlDevice.m */; };
+		E4E62F4D0F83DB830066AF9D /* KeyspanFrontRowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F430F83DB830066AF9D /* KeyspanFrontRowControl.m */; };
+		E4E62F4E0F83DB830066AF9D /* MultiClickRemoteBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F450F83DB830066AF9D /* MultiClickRemoteBehavior.m */; };
+		E4E62F4F0F83DB830066AF9D /* RemoteControl.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F470F83DB830066AF9D /* RemoteControl.m */; };
+		E4E62F500F83DB830066AF9D /* RemoteControlContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F490F83DB830066AF9D /* RemoteControlContainer.m */; };
 		E4E62F600F83FB8C0066AF9D /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E62F5F0F83FB8C0066AF9D /* IOKit.framework */; };
 		E4E62F690F83FBB40066AF9D /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E62F680F83FBB40066AF9D /* Carbon.framework */; };
 		E4E62FD40F83FD7C0066AF9D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E62FD30F83FD7C0066AF9D /* Cocoa.framework */; };
@@ -31,12 +38,25 @@
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMCHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMCHelper; sourceTree = BUILT_PRODUCTS_DIR; };
-		E424E23710877D5400659D45 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
-		E449C9D81090622500783487 /* HIDRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HIDRemote.h; path = HIDRemote/HIDRemote.h; sourceTree = "<group>"; };
-		E449C9D91090622500783487 /* HIDRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HIDRemote.m; path = HIDRemote/HIDRemote.m; sourceTree = "<group>"; };
+		E45F2B1A0F95191E007BCC0B /* IRKeyboardEmu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRKeyboardEmu.h; sourceTree = "<group>"; };
+		E45F2B1B0F95191E007BCC0B /* IRKeyboardEmu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRKeyboardEmu.m; sourceTree = "<group>"; };
 		E4E62F340F83DB760066AF9D /* xbmchelper_main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = xbmchelper_main.mm; sourceTree = "<group>"; };
 		E4E62F350F83DB760066AF9D /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E4E62F360F83DB760066AF9D /* XBMCHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBMCHelper.m; sourceTree = "<group>"; };
+		E4E62F3C0F83DB830066AF9D /* AppleRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppleRemote.h; sourceTree = "<group>"; };
+		E4E62F3D0F83DB830066AF9D /* AppleRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppleRemote.m; sourceTree = "<group>"; };
+		E4E62F3E0F83DB830066AF9D /* GlobalKeyboardDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalKeyboardDevice.h; sourceTree = "<group>"; };
+		E4E62F3F0F83DB830066AF9D /* GlobalKeyboardDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalKeyboardDevice.m; sourceTree = "<group>"; };
+		E4E62F400F83DB830066AF9D /* HIDRemoteControlDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HIDRemoteControlDevice.h; sourceTree = "<group>"; };
+		E4E62F410F83DB830066AF9D /* HIDRemoteControlDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HIDRemoteControlDevice.m; sourceTree = "<group>"; };
+		E4E62F420F83DB830066AF9D /* KeyspanFrontRowControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyspanFrontRowControl.h; sourceTree = "<group>"; };
+		E4E62F430F83DB830066AF9D /* KeyspanFrontRowControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyspanFrontRowControl.m; sourceTree = "<group>"; };
+		E4E62F440F83DB830066AF9D /* MultiClickRemoteBehavior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiClickRemoteBehavior.h; sourceTree = "<group>"; };
+		E4E62F450F83DB830066AF9D /* MultiClickRemoteBehavior.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiClickRemoteBehavior.m; sourceTree = "<group>"; };
+		E4E62F460F83DB830066AF9D /* RemoteControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteControl.h; sourceTree = "<group>"; };
+		E4E62F470F83DB830066AF9D /* RemoteControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteControl.m; sourceTree = "<group>"; };
+		E4E62F480F83DB830066AF9D /* RemoteControlContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteControlContainer.h; sourceTree = "<group>"; };
+		E4E62F490F83DB830066AF9D /* RemoteControlContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteControlContainer.m; sourceTree = "<group>"; };
 		E4E62F5F0F83FB8C0066AF9D /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		E4E62F680F83FBB40066AF9D /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		E4E62FD30F83FD7C0066AF9D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -63,7 +83,6 @@
 		08FB7794FE84155DC02AAC07 /* XBMCHelper */ = {
 			isa = PBXGroup;
 			children = (
-				E424E23710877D5400659D45 /* Makefile.in */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6859E96029091FE04C91782 /* Documentation */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
@@ -78,7 +97,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				E449C9D71090621100783487 /* HIDRemote */,
+				E4E62F3B0F83DB830066AF9D /* RemoteControlWrapper */,
 				E4E630030F8406900066AF9D /* xbmcclient.h */,
 				E4E62F340F83DB760066AF9D /* xbmchelper_main.mm */,
 				E4E62F350F83DB760066AF9D /* XBMCHelper.h */,
@@ -113,13 +132,27 @@
 			name = Documentation;
 			sourceTree = "<group>";
 		};
-		E449C9D71090621100783487 /* HIDRemote */ = {
+		E4E62F3B0F83DB830066AF9D /* RemoteControlWrapper */ = {
 			isa = PBXGroup;
 			children = (
-				E449C9D81090622500783487 /* HIDRemote.h */,
-				E449C9D91090622500783487 /* HIDRemote.m */,
+				E4E62F3C0F83DB830066AF9D /* AppleRemote.h */,
+				E4E62F3D0F83DB830066AF9D /* AppleRemote.m */,
+				E4E62F3E0F83DB830066AF9D /* GlobalKeyboardDevice.h */,
+				E4E62F3F0F83DB830066AF9D /* GlobalKeyboardDevice.m */,
+				E4E62F400F83DB830066AF9D /* HIDRemoteControlDevice.h */,
+				E4E62F410F83DB830066AF9D /* HIDRemoteControlDevice.m */,
+				E4E62F420F83DB830066AF9D /* KeyspanFrontRowControl.h */,
+				E4E62F430F83DB830066AF9D /* KeyspanFrontRowControl.m */,
+				E4E62F440F83DB830066AF9D /* MultiClickRemoteBehavior.h */,
+				E4E62F450F83DB830066AF9D /* MultiClickRemoteBehavior.m */,
+				E4E62F460F83DB830066AF9D /* RemoteControl.h */,
+				E4E62F470F83DB830066AF9D /* RemoteControl.m */,
+				E4E62F480F83DB830066AF9D /* RemoteControlContainer.h */,
+				E4E62F490F83DB830066AF9D /* RemoteControlContainer.m */,
+				E45F2B1A0F95191E007BCC0B /* IRKeyboardEmu.h */,
+				E45F2B1B0F95191E007BCC0B /* IRKeyboardEmu.m */,
 			);
-			name = HIDRemote;
+			path = RemoteControlWrapper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -167,8 +200,15 @@
 			files = (
 				E4E62F370F83DB760066AF9D /* xbmchelper_main.mm in Sources */,
 				E4E62F380F83DB760066AF9D /* XBMCHelper.m in Sources */,
+				E4E62F4A0F83DB830066AF9D /* AppleRemote.m in Sources */,
+				E4E62F4B0F83DB830066AF9D /* GlobalKeyboardDevice.m in Sources */,
+				E4E62F4C0F83DB830066AF9D /* HIDRemoteControlDevice.m in Sources */,
+				E4E62F4D0F83DB830066AF9D /* KeyspanFrontRowControl.m in Sources */,
+				E4E62F4E0F83DB830066AF9D /* MultiClickRemoteBehavior.m in Sources */,
+				E4E62F4F0F83DB830066AF9D /* RemoteControl.m in Sources */,
+				E4E62F500F83DB830066AF9D /* RemoteControlContainer.m in Sources */,
 				E4E62FE80F83FDD90066AF9D /* xbmcclientwrapper.mm in Sources */,
-				E449C9DA1090622500783487 /* HIDRemote.m in Sources */,
+				E45F2B1C0F95191E007BCC0B /* IRKeyboardEmu.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

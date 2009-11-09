@@ -82,9 +82,9 @@ namespace PYXBMC
 
     if (!PyArg_ParseTuple(args, (char*)"OO|Ob", &pyOXMLname, &pyOname, &pyDName, &bForceDefaultSkin )) return NULL;
 
-    PyXBMCGetUnicodeString(strXMLname, pyOXMLname);
-    PyXBMCGetUnicodeString(strFallbackPath, pyOname);
-    if (pyDName) PyXBMCGetUnicodeString(strDefault, pyDName);
+    PyGetUnicodeString(strXMLname, pyOXMLname);
+    PyGetUnicodeString(strFallbackPath, pyOname);
+    if (pyDName) PyGetUnicodeString(strDefault, pyDName);
 
     RESOLUTION res;
     CStdString strSkinPath;
@@ -168,9 +168,9 @@ namespace PYXBMC
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
     // Tells the window to remove the item at the specified position from the FileItem vector
-    PyXBMCGUILock();
+    PyGUILock();
     pwx->RemoveItem(itemPosition);
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -206,7 +206,7 @@ namespace PYXBMC
     else
     {
       // object is probably a text item
-      if (!PyXBMCGetUnicodeString(strText, pObject, 1)) return NULL;
+      if (!PyGetUnicodeString(strText, pObject, 1)) return NULL;
       // object is a unicode string now, create a new ListItem
       pListItem = ListItem_FromString(strText);
     }
@@ -214,9 +214,9 @@ namespace PYXBMC
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
     // Tells the window to add the item to FileItem vector
-    PyXBMCGUILock();
+    PyGUILock();
     pwx->AddItem(pListItem->item, itemPosition);
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -242,9 +242,9 @@ namespace PYXBMC
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
-    PyXBMCGUILock();
+    PyGUILock();
     pwx->ClearList();
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -268,9 +268,9 @@ namespace PYXBMC
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
-    PyXBMCGUILock();
+    PyGUILock();
     pwx->SetCurrentListPosition(listPos);
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -289,9 +289,9 @@ namespace PYXBMC
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
-    PyXBMCGUILock();
+    PyGUILock();
     int listPos = pwx->GetCurrentListPosition();
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_BuildValue((char*)"l", listPos);
@@ -315,19 +315,19 @@ namespace PYXBMC
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
-    PyXBMCGUILock();
+    PyGUILock();
     CFileItemPtr fi = pwx->GetListItem(listPos);
 
     if (fi == NULL)
     {
-      PyXBMCGUIUnlock();
+      PyGUIUnlock();
       PyErr_SetString(PyExc_TypeError, "Index out of range");
       return NULL;
     }
 
     ListItem* sListItem = (ListItem*)ListItem_Type.tp_alloc(&ListItem_Type, 0);
     sListItem->item = fi;
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
 
     Py_INCREF(sListItem);
     return (PyObject *)sListItem;
@@ -346,9 +346,9 @@ namespace PYXBMC
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
 
-    PyXBMCGUILock();
+    PyGUILock();
     int listSize = pwx->GetListSize();
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_BuildValue((char*)"l", listSize);
@@ -387,15 +387,15 @@ namespace PYXBMC
     if (!key || !value) return NULL;
 
     CStdString uText;
-    if (!PyXBMCGetUnicodeString(uText, value, 1))
+    if (!PyGetUnicodeString(uText, value, 1))
       return NULL;
 
     CGUIPythonWindowXML * pwx = (CGUIPythonWindowXML*)self->pWindow;
     CStdString lowerKey = key;
 
-    PyXBMCGUILock();
+    PyGUILock();
     pwx->SetProperty(lowerKey.ToLower(), uText.c_str());
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -441,7 +441,7 @@ namespace PYXBMC
 
   void initWindowXML_Type()
   {
-    PyXBMCInitializeTypeObject(&WindowXML_Type);
+    PyInitializeTypeObject(&WindowXML_Type);
 
     WindowXML_Type.tp_name = (char*)"xbmcgui.WindowXML";
     WindowXML_Type.tp_basicsize = sizeof(WindowXML);

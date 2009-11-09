@@ -82,7 +82,7 @@ void CURL::Parse(const CStdString& strURL1)
   if (!strURL.size()) return ;
   if (strURL.Equals("?", true)) return;
 
-  if (strURL.size() > 1 && strURL[1] == ':')
+  if (strURL[1] == ':')
   {
     // form is drive:directoryandfile
 

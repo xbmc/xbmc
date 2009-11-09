@@ -30,6 +30,7 @@
 #include "Util.h"
 #include "utils/md5.h"
 #include "utils/GUIInfoManager.h"
+#include "xbox/XKGeneral.h"
 #include "NfoFile.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
@@ -95,7 +96,7 @@ void CMusicInfoScanner::Process()
       m_itemCount=-1;
 
       // Create the thread to count all files to be scanned
-      SetPriority( GetMinPriority() );
+      SetPriority(THREAD_PRIORITY_IDLE);
       CThread fileCountReader(this);
       if (m_pObserver)
         fileCountReader.Create();
@@ -1201,7 +1202,8 @@ void CMusicInfoScanner::GetArtistArtwork(long id, const CStdString &artistName, 
   if (!CFile::Exists(cachedImage))
   { // check for local fanart
     CLog::Log(LOGDEBUG, "%s looking for fanart for artist %s in folder %s", __FUNCTION__, artistName.c_str(), item2.m_strPath.c_str());
-    CStdString strFanart = item2.CacheFanart(true);
+    item2.m_bIsFolder = true;
+    CStdString strFanart = item.CacheFanart(true);
     if (!strFanart.IsEmpty())
       CPicture::CacheImage(strFanart,cachedImage);
     else

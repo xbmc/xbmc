@@ -18,10 +18,24 @@ namespace Shaders { class BaseVideoFilterShader; }
 
 #define NUM_BUFFERS 3
 
+#define MAX_PLANES 3
+#define MAX_FIELDS 3
 
 #undef ALIGN
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
+
+typedef struct YV12Image
+{
+  BYTE *   plane[MAX_PLANES];
+  unsigned stride[MAX_PLANES];
+  unsigned width;
+  unsigned height;
+  unsigned flags;
+
+  unsigned cshift_x; /* this is the chroma shift used */
+  unsigned cshift_y;
+} YV12Image;
 
 #define AUTOSOURCE -1
 
@@ -123,8 +137,6 @@ public:
   virtual bool SupportsContrast();
   virtual bool SupportsGamma();
   virtual bool SupportsMultiPassRendering();
-  virtual bool Supports(EINTERLACEMETHOD method);
-  virtual bool Supports(ESCALINGMETHOD method);
 
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
@@ -228,6 +240,7 @@ protected:
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
 
   CRect m_crop;
+  float m_aspecterror;
 };
 
 

@@ -2099,7 +2099,7 @@ CUPnP::CreateServer(int port /* = 0 */)
     // but it doesn't work anyways as it requires multicast for XP to detect us
     device->m_PresentationURL =
         NPT_HttpUrl(m_IP,
-                    atoi(g_guiSettings.GetString("services.webserverport")),
+                    atoi(g_guiSettings.GetString("servers.webserverport")),
                     "/").ToString();
 
     device->m_ModelName        = "XBMC Media Center";
@@ -2192,7 +2192,7 @@ CUPnP::CreateRenderer(int port /* = 0 */)
 
     device->m_PresentationURL =
         NPT_HttpUrl(m_IP,
-                    atoi(g_guiSettings.GetString("services.webserverport")),
+                    atoi(g_guiSettings.GetString("servers.webserverport")),
                     "/").ToString();
     device->m_ModelName = "XBMC";
     device->m_ModelNumber = "2.0";

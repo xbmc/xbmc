@@ -34,7 +34,7 @@ public:
 
   virtual bool InitRenderSystem();
   virtual bool DestroyRenderSystem();
-  virtual bool ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate);
+  virtual bool ResetRenderSystem(int width, int height);  
 
   virtual bool BeginRender();
   virtual bool EndRender();
@@ -56,6 +56,8 @@ public:
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix);
   virtual void RestoreHardwareTransform();
 
+  bool IsDeviceReady() const { return true; };
+  
   virtual bool TestRender();
   
 protected:

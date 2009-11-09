@@ -69,7 +69,7 @@ public:
   /// clears the maps
   void Clear();
 
-  void GetAction(int window, const CKey &key, CAction &action, bool fallback = true);
+  void GetAction(int window, const CKey &key, CAction &action);
 
   //static helpers
   static int TranslateWindowString(const char *szWindow);

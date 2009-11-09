@@ -270,6 +270,8 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_pSubtitleDemuxer = NULL;
   m_pInputStream = NULL;
 
+  m_tmLastSeek = time(NULL);
+
   m_hReadyEvent = CreateEvent(NULL, true, false, NULL);
 
   InitializeCriticalSection(&m_critStreamSection);
@@ -452,17 +454,19 @@ bool CDVDPlayer::OpenInputStream()
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV)
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
   {
-    // find any available external subtitles
-    std::vector<std::string> filenames;
-    CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
-    for(unsigned int i=0;i<filenames.size();i++)
-      AddSubtitleFile(filenames[i]);
+    if(g_stSettings.m_currentVideoSettings.m_SubtitleOn)
+    {
+      // find any available external subtitles
+      std::vector<std::string> filenames;
+      CDVDFactorySubtitle::GetSubtitles(filenames, m_filename);
+      for(unsigned int i=0;i<filenames.size();i++)
+        AddSubtitleFile(filenames[i]);
 
-    g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
+      g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
+    }
   }
 
   SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
-  SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
   m_clock.Discontinuity(CLOCK_DISC_FULL);
   m_dvd.Clear();
   m_errorCount = 0;
@@ -553,28 +557,30 @@ void CDVDPlayer::OpenDefaultStreams()
   }
 
   // open subtitle stream
-  count = m_SelectionStreams.Count(STREAM_SUBTITLE);
-  valid = false;
-  if(g_stSettings.m_currentVideoSettings.m_SubtitleStream >= 0
-  && g_stSettings.m_currentVideoSettings.m_SubtitleStream < count)
-  {
-    SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
-    if(OpenSubtitleStream(s.id, s.source))
-      valid = true;
-    else
-      CLog::Log(LOGWARNING, "%s - failed to restore selected subtitle stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
-  }
-
-  for(int i = 0;i<count && !valid; i++)
-  {
-    SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
-    if(OpenSubtitleStream(s.id, s.source))
-      valid = true;
-  }
-  if(!valid)
-    CloseSubtitleStream(false);
   if(g_stSettings.m_currentVideoSettings.m_SubtitleOn && !m_PlayerOptions.video_only)
+  {
     m_dvdPlayerVideo.EnableSubtitle(true);
+    count = m_SelectionStreams.Count(STREAM_SUBTITLE);
+    valid = false;
+    if(g_stSettings.m_currentVideoSettings.m_SubtitleStream >= 0
+    && g_stSettings.m_currentVideoSettings.m_SubtitleStream < count)
+    {
+      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
+      if(OpenSubtitleStream(s.id, s.source))
+        valid = true;
+      else
+        CLog::Log(LOGWARNING, "%s - failed to restore selected subtitle stream (%d)", __FUNCTION__, g_stSettings.m_currentVideoSettings.m_SubtitleStream);
+    }
+
+    for(int i = 0;i<count && !valid; i++)
+    {
+      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, i);
+      if(OpenSubtitleStream(s.id, s.source))
+        valid = true;
+    }
+    if(!valid)
+      CloseSubtitleStream(false);
+  }
   else
     m_dvdPlayerVideo.EnableSubtitle(false);
 
@@ -791,16 +797,23 @@ void CDVDPlayer::Process()
   // look for any EDL files
   m_Edl.Clear();
   m_EdlAutoSkipMarkers.Clear();
-  float fFramesPerSecond;
-  if (m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
-    fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
-  else
+  if (g_guiSettings.GetBool("videoplayer.editdecision"))
   {
-    fFramesPerSecond = 25.0; // TODO: Default to one of 50.0, 29.97, 25.0, or 23.976 fps. Advanced setting?
-    CLog::Log(LOGWARNING, "%s - Could not detect frame rate for: %s. Using default of %.3f fps for conversion of any commercial break frame markers to times.",
-              __FUNCTION__, m_filename.c_str(), fFramesPerSecond);
+    float fFramesPerSecond;
+    if (m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
+      fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
+    else
+    {
+      fFramesPerSecond = 25.0; // TODO: Default to one of 50.0, 29.97, 25.0, or 23.976 fps. Advanced setting?
+      CLog::Log(LOGWARNING, "%s - Could not detect frame rate for: %s. Using default of %.3f fps for conversion of any commercial break frame markers to times.",
+                __FUNCTION__, m_filename.c_str(), fFramesPerSecond);
+    }
+
+    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_FILE))
+      m_Edl.ReadFiles(m_filename, fFramesPerSecond);
+    else if (m_item.IsMythTV())
+      m_Edl.ReadMythCommBreaks(m_item.GetAsUrl(), fFramesPerSecond);
   }
-  m_Edl.ReadEditDecisionLists(m_filename, fFramesPerSecond);
 
   if( m_PlayerOptions.starttime > 0 )
   {
@@ -2102,6 +2115,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 
   m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false, restore));
   SyncronizeDemuxer(100);
+  m_tmLastSeek = time(NULL);
 }
 
 bool CDVDPlayer::SeekScene(bool bPlus)
@@ -2158,7 +2172,8 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
       dDiff = (apts - vpts) / DVD_TIME_BASE;
 
     CStdString strEDL;
-    strEDL.AppendFormat(", edl:%s", m_Edl.GetInfo().c_str());
+    if (g_guiSettings.GetBool("videoplayer.editdecision"))
+      strEDL.AppendFormat(", edl:%s", m_Edl.GetInfo().c_str());
 
     strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%% )"
                          , dDelay
@@ -2178,6 +2193,7 @@ void CDVDPlayer::SeekPercentage(float iPercent)
     return;
 
   SeekTime((__int64)(iTotalTime * iPercent / 100));
+  m_tmLastSeek = time(NULL);
 }
 
 float CDVDPlayer::GetPercentage()
@@ -2314,6 +2330,7 @@ void CDVDPlayer::SeekTime(__int64 iTime)
 {
   m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, true, true, true));
   SyncronizeDemuxer(100);
+  m_tmLastSeek = time(NULL);
 }
 
 // return the time in milliseconds
@@ -3156,6 +3173,7 @@ int CDVDPlayer::SeekChapter(int iChapter)
     // Seek to the chapter.
     m_messenger.Put(new CDVDMsgPlayerSeekChapter(iChapter));
     SyncronizeDemuxer(100);
+    m_tmLastSeek = time(NULL);
   }
   else
   {

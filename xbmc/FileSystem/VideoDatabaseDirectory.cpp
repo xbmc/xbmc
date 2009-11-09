@@ -59,7 +59,7 @@ bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
     {
       CStdString strImage = GetIcon(item->m_strPath);
       if (!strImage.IsEmpty() && g_TextureManager.HasTexture(strImage))
-        item->SetIconImage(strImage);
+        item->SetThumbnailImage(strImage);
     }
   }
 

@@ -74,7 +74,7 @@ namespace PYXBMC
 
     if (!PyArg_ParseTuple(args, "llll|Oss", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
       &pObjectText, &cTextureFocus, &cTextureNoFocus)) return NULL;
-    if (!PyXBMCGetUnicodeString(self->strText, pObjectText, 5)) return NULL;
+    if (!PyGetUnicodeString(self->strText, pObjectText, 5)) return NULL;
 
     // SetLabel(const CStdString& strFontName,const CStdString& strLabel,D3DCOLOR dwColor)
     self->strFont = "font13";
@@ -108,10 +108,10 @@ namespace PYXBMC
     self->dwHeight = 16;
 
     // get default images
-    self->strTextureUp = PyXBMCGetDefaultImage((char*)"listcontrol", (char*)"textureup", (char*)"scroll-up.png");
-    self->strTextureDown = PyXBMCGetDefaultImage((char*)"listcontrol", (char*)"texturedown", (char*)"scroll-down.png");
-    self->strTextureUpFocus = PyXBMCGetDefaultImage((char*)"listcontrol", (char*)"textureupfocus", (char*)"scroll-up-focus.png");
-    self->strTextureDownFocus = PyXBMCGetDefaultImage((char*)"listcontrol", (char*)"texturedownfocus", (char*)"scroll-down-focus.png");
+    self->strTextureUp = PyGetDefaultImage((char*)"listcontrol", (char*)"textureup", (char*)"scroll-up.png");
+    self->strTextureDown = PyGetDefaultImage((char*)"listcontrol", (char*)"texturedown", (char*)"scroll-down.png");
+    self->strTextureUpFocus = PyGetDefaultImage((char*)"listcontrol", (char*)"textureupfocus", (char*)"scroll-up-focus.png");
+    self->strTextureDownFocus = PyGetDefaultImage((char*)"listcontrol", (char*)"texturedownfocus", (char*)"scroll-down-focus.png");
 
     return (PyObject*)self;
   }
@@ -133,10 +133,10 @@ namespace PYXBMC
 
     if (cColor) sscanf(cColor, "%x", &self->color);
 
-    PyXBMCGUILock();
+    PyGUILock();
     //if (self->pGUIControl)
       //((CGUISpinControl*)self->pGUIControl)->SetColor(self->dwDColor);
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -162,12 +162,12 @@ namespace PYXBMC
     self->strTextureUpFocus = cLine[2];
     self->strTextureDownFocus = cLine[3];
     /*
-    PyXBMCGUILock();
+    PyGUILock();
     if (self->pGUIControl)
     {
       CGUISpinControl* pControl = (CGUISpinControl*)self->pGUIControl;
       pControl->se
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
     */
     Py_INCREF(Py_None);
     return Py_None;
@@ -198,7 +198,7 @@ namespace PYXBMC
 
   void initControlSpin_Type()
   {
-    PyXBMCInitializeTypeObject(&ControlSpin_Type);
+    PyInitializeTypeObject(&ControlSpin_Type);
 
     ControlSpin_Type.tp_name = (char*)"xbmcgui.ControlSpin";
     ControlSpin_Type.tp_basicsize = sizeof(ControlSpin);

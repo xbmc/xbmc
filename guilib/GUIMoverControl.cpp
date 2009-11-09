@@ -196,13 +196,6 @@ void CGUIMoverControl::DynamicResourceAlloc(bool bOnOff)
   m_imgNoFocus.DynamicResourceAlloc(bOnOff);
 }
 
-void CGUIMoverControl::SetInvalid()
-{
-  CGUIControl::SetInvalid();
-  m_imgFocus.SetInvalid();
-  m_imgNoFocus.SetInvalid();
-}
-
 void CGUIMoverControl::Move(int iX, int iY)
 {
   int iLocX = m_iLocationX + iX;

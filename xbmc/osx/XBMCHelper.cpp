@@ -111,7 +111,7 @@ void XBMCHelper::Configure()
   m_mode = g_guiSettings.GetInt("appleremote.mode");
   m_sequenceDelay = g_guiSettings.GetInt("appleremote.sequencetime");
   m_alwaysOn = g_guiSettings.GetBool("appleremote.alwayson");
-  CStdString port_string = g_guiSettings.GetString("services.esport");
+  CStdString port_string = g_guiSettings.GetString("remoteevents.port");
   m_port = atoi(port_string.c_str());
 
 

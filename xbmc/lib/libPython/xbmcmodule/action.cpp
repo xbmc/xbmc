@@ -187,7 +187,7 @@ namespace PYXBMC
 
   void initAction_Type()
   {
-    PyXBMCInitializeTypeObject(&Action_Type);
+    PyInitializeTypeObject(&Action_Type);
 
     Action_Type.tp_name = (char*)"xbmcgui.Action";
     Action_Type.tp_basicsize = sizeof(Action);

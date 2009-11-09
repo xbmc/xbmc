@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="guilib"
 	ProjectGUID="{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}"
 	RootNamespace="guilib"
@@ -117,7 +117,7 @@
 				AdditionalOptions="/EHa"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\lib\freetype\include\freetype2;..\..\lib\freetype\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;D3D_DEBUG_INFO"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
 				StringPooling="false"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -323,14 +323,6 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\AudioContext.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\D3DResource.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\D3DResource.h"
 				>
 			</File>
 			<File

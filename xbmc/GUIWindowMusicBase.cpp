@@ -396,29 +396,30 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
 
   // check cache
   CArtist artistInfo;
-  artistInfo.strArtist = artist.strArtist;
-  if (m_musicdatabase.GetArtistInfo(artist.idArtist, artistInfo) && !bShowInfo)
-    return;
-
-  CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)g_windowManager.GetWindow(WINDOW_MUSIC_INFO);
-  if (pDlgAlbumInfo)
+  if (!bRefresh && m_musicdatabase.GetArtistInfo(artist.idArtist, artistInfo))
   {
-    pDlgAlbumInfo->SetArtist(artistInfo, path);
-    
-    if (bShowInfo)
-      pDlgAlbumInfo->DoModal();
-    else
-      pDlgAlbumInfo->RefreshThumb();  // downloads the thumb if we don't already have one
-
-    if (!pDlgAlbumInfo->NeedRefresh())
-    {
-      if (pDlgAlbumInfo->HasUpdatedThumb())
-        Update(m_vecItems->m_strPath);
-
+    if (!bShowInfo)
       return;
+
+    CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)g_windowManager.GetWindow(WINDOW_MUSIC_INFO);
+    if (pDlgAlbumInfo)
+    {
+      pDlgAlbumInfo->SetArtist(artistInfo, path);
+      if (bShowInfo)
+        pDlgAlbumInfo->DoModal();
+      else
+        pDlgAlbumInfo->RefreshThumb();  // downloads the thumb if we don't already have one
+
+      if (!pDlgAlbumInfo->NeedRefresh())
+      {
+        if (pDlgAlbumInfo->HasUpdatedThumb())
+          Update(m_vecItems->m_strPath);
+
+        return;
+      }
+      bRefresh = true;
+      m_musicdatabase.DeleteArtistInfo(artistInfo.idArtist);
     }
-    bRefresh = true;
-    m_musicdatabase.DeleteArtistInfo(artistInfo.idArtist);
   }
 
   // If we are scanning for music info in the background,
@@ -777,6 +778,9 @@ void CGUIWindowMusicBase::UpdateButtons()
 
 bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, const SScraperInfo& info, ALLOW_SELECTION allowSelection)
 {
+  // quietly return if Internet lookups are disabled
+  if (!g_guiSettings.GetBool("network.enableinternet")) return false;
+
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)
   {
@@ -826,6 +830,9 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
 
 bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArtistInfo& artist, const SScraperInfo& info, ALLOW_SELECTION allowSelection)
 {
+  // quietly return if Internet lookups are disabled
+  if (!g_guiSettings.GetBool("network.enableinternet")) return false;
+
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)
   {

@@ -35,8 +35,17 @@ class CDVDOverlaySSA;
 
 namespace OVERLAY {
 
+  class COverlayGL
+      : public COverlay
+  {
+  public:
+    virtual ~COverlayGL() {}
+    virtual long Release();
+  };
+
+
   class COverlayTextureGL
-      : public COverlayMainThread
+      : public COverlayGL
   {
   public:
      COverlayTextureGL(CDVDOverlayImage* o);
@@ -51,7 +60,7 @@ namespace OVERLAY {
   };
 
   class COverlayGlyphGL
-     : public COverlayMainThread
+     : public COverlayGL
   {
   public:
    COverlayGlyphGL(CDVDOverlaySSA* o, double pts);
@@ -59,15 +68,15 @@ namespace OVERLAY {
 
    void Render(SRenderState& state);
 
-    struct VERTEX
-    {
-       GLfloat u, v;
-       GLubyte r, g, b, a;    
-       GLfloat x, y, z;
-    };
+   struct SVertex
+   {
+     GLfloat u, v;
+     GLubyte r, g, b, a;    
+     GLfloat x, y, z;
+   };
 
-   VERTEX* m_vertex;
-   int     m_count;
+   SVertex* m_vertex;
+   int      m_count;
 
    GLuint m_texture;
    float  m_u;

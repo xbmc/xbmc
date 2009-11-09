@@ -134,7 +134,6 @@ CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
   m_textureHeight = newTexture->GetHeight();
   m_textureWidth = newTexture->GetWidth();
 
-  memset(newTexture->GetPixels(), 0, m_textureHeight * newTexture->GetPitch());
   if (m_texture)
   {
     unsigned char* src = (unsigned char*) m_texture->GetPixels();

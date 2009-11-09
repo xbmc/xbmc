@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: olympia-->
 <!--Email: nadasbence@msn.com-->
-<!--Date of translation: 10/04/2009-->
+<!--Date of translation: 05/01/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">Programok</string>
@@ -33,13 +33,6 @@
   <string id="30">Október</string>
   <string id="31">November</string>
   <string id="32">December</string>
-  <string id="41">Hétf</string>
-  <string id="42">Kedd</string>
-  <string id="43">Szer</string>
-  <string id="44">Csüt</string>
-  <string id="45">Pén</string>
-  <string id="46">Szom</string>
-  <string id="47">Vas</string>
   <string id="98">Nézet: Auto</string>
   <string id="99">Nézet: Auto nagy</string>
   <string id="100">Nézet: Ikon</string>
@@ -557,7 +550,6 @@
   <string id="661">Export mappa választása</string>
   <string id="662">A fájl már nem elérhető</string>
   <string id="663">Eltávolítás a médiatárból?</string>
-  <string id="664">Szkript keresése</string>
   <string id="700">Médiatár tisztítása</string>
   <string id="701">Régi dalok eltávolítása a médiatárból</string>
   <string id="702">Ez az elérési út már át lett vizsgálva korábban.</string>
@@ -698,8 +690,6 @@
   <string id="1046">Hozzáférési pont</string>
   <string id="1047">Más...</string>
   <string id="1048">Web szerver felhasználónév</string>
-  <string id="1049">Szkript beállítások</string>
-  <string id="1050">Kislemezek</string>
   <string id="1200">SMB kliens</string>
   <string id="1202">Munkacsoport</string>
   <string id="1203">Alapértelmezett felhasználónév</string>
@@ -765,10 +755,7 @@
   <string id="1415">Szemerkél</string>
   <string id="1416">Ködös</string>
   <string id="1417">Grains</string>
-  <string id="1418">Viharok</string>
-  <string id="1419">Viharos esőzések</string>
   <string id="2050">Üzemidő:</string>
-  <string id="2100">Szkript hiba: %s</string>
   <string id="4501">LCD típusa</string>
   <string id="10000">Főképernyő</string>
   <string id="10001">Programok</string>
@@ -948,7 +935,6 @@
   <string id="13012">Kilépés</string>
   <string id="13013">Újraindítás</string>
   <string id="13014">Kicsinyítés</string>
-  <string id="13015">Be(ki)kapcsoló gomb művelet</string>
   <string id="13020">Is another session active, perhaps over ssh?</string>
   <string id="13021">Cserélhető háttértár csatlakoztatva</string>
   <string id="13022">Nem biztonságos eszköz eltávolítás</string>
@@ -972,9 +958,7 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
-  <string id="13120">VDPAU</string>
-  <string id="13121">VDPAU HQ felskálázás szintje</string>
-  <string id="13122">VDPAU Studio szint szín konverzió</string>
+  <string id="13120">Strict Pixmap-Texture Binding (újraindítás szükséges)</string>
   <string id="13130">Üres képernyő megjelenítése</string>
   <string id="13131">Letiltva</string>
   <string id="13132">Képernyő törlése</string>
@@ -1163,17 +1147,6 @@ ehhez a vizualizációhoz</string>
   <string id="13419">Szoftveres</string>
   <string id="13420">Biztonságos eltávolítás</string>
   <string id="13421">VDPAU</string>
-  <string id="13500">A/V szinkronizáció módja</string>
-  <string id="13501">Audió </string>
-  <string id="13502">Videó (Drop/Dupe)</string>
-  <string id="13503">Videó (Audió újrakeverés)</string>
-  <string id="13504">Maximális újrakeverés (%)</string>
-  <string id="13505">Újrakeverés minősége</string>
-  <string id="13506">Alacsony(gyors)</string>
-  <string id="13507">Közepes</string>
-  <string id="13508">Magas</string>
-  <string id="13509">Nagyon magas(lassú!)</string>
-  <string id="13510">Lejátszás szinkronizálása a megjelenítéshez</string>
   <string id="13600">Apple távirányító</string>
   <string id="13601">Mód</string>
   <string id="13602">Állandó</string>
@@ -1181,7 +1154,6 @@ ehhez a vizualizációhoz</string>
   <string id="13610">Letiltva</string>
   <string id="13611">Standard</string>
   <string id="13612">Univerzális távirányító</string>
-  <string id="13613">Multi távirányító (Harmony)</string>
   <string id="13620">Apple távirányító hiba</string>
   <string id="13621">Apple távirányító támogatás engedélyezhető</string>
   <string id="14000">Egyesítés: be</string>
@@ -1714,7 +1686,7 @@ ehhez a vizualizációhoz</string>
   <string id="20407">Scraper beállítások</string>
   <string id="20408">Klip információ letöltése</string>
   <string id="20409">TV műsor információ letöltése</string>
-  <string id="20410">Filmajánló</string>
+  <string id="20410">Bemutató</string>
   <string id="20411">Szűkít</string>
   <string id="20412">Szűkít (TV műsor)</string>
   <string id="20413">Fanart letöltése</string>
@@ -1727,7 +1699,7 @@ ehhez a vizualizációhoz</string>
   <string id="20420">Soha</string>
   <string id="20421">Csak, ha egy évad van</string>
   <string id="20422">Mindig</string>
-  <string id="20423">Van filmajánló</string>
+  <string id="20423">Van bemutatója</string>
   <string id="20424">Hibás</string>
   <string id="20425">Fanart vetítés</string>
   <string id="20426">Exportálás egyetlen fájlba, vagy</string>
@@ -1737,8 +1709,6 @@ ehhez a vizualizációhoz</string>
   <string id="20430">Bélyegképek és fanartok exportálása</string>
   <string id="20431">Korábbi fájlok felülírása?</string>
   <string id="20432">Elérési út kihagyása a médiatár frissítésekor</string>
-  <string id="20433">Média meta adatok vizsgálata</string>
-  <string id="20434">Sets</string>
   <string id="21330">Rejtett fájlok és mappák megjelenítése</string>
   <string id="21331">TuxBox kliens</string>
   <string id="21332">FIGYELEM:TuxBox céleszköz felvétel módban lesz!</string>
@@ -1807,7 +1777,6 @@ ehhez a vizualizációhoz</string>
   <string id="21414">Alapértelmezett TV műsor scraper</string>
   <string id="21415">Alapértelmezett klip scraper</string>
   <string id="21416">Fallback engedélyezése a scraper nyelv alapján</string>
-  <string id="21417">- Scraper beállítások</string>
   <string id="21420">Kívánt érték</string>
   <string id="21421">Intellingens lejátszási lista szabály</string>
   <string id="21422">Elemek összehosonlítása, ahol</string>
@@ -1831,12 +1800,6 @@ ehhez a vizualizációhoz</string>
   <string id="21440">Saját mappa</string>
   <string id="21441">Lejátszási számláló</string>
   <string id="21442">Epizódcím</string>
-  <string id="21443">Felbontás</string>
-  <string id="21444">Audió csatornák</string>
-  <string id="21445">Videó codec</string>
-  <string id="21446">Audió codec</string>
-  <string id="21447">Audió nyelve</string>
-  <string id="21448">Felirat nyelve</string>
   <string id="21800">Fájlnév</string>
   <string id="21801">Fájl elérési útja</string>
   <string id="21802">Fájlméret</string>
@@ -1932,8 +1895,6 @@ ehhez a vizualizációhoz</string>
   <string id="22018">TV csatornák</string>
   <string id="22019">Felvételek cím szerint</string>
   <string id="22020">Műsor</string>
-  <string id="22021">Megengedett képarány hiba (%)</string>
-  <string id="22022">Videó fájlokat is megjelenít</string>
   <string id="22030">Betűtípus</string>
   <string id="22031">- Méret</string>
   <string id="22032">- Szín</string>
@@ -1948,68 +1909,7 @@ ehhez a vizualizációhoz</string>
   <string id="22041">fehér/vörös</string>
   <string id="22042">fehér/kék</string>
   <string id="22043">fekete/fehér</string>
-  <string id="23000">Időjárás beépülő</string>
-  <string id="23001">- Beépülő beállításai</string>
-  <string id="23050">Teletext aktiválása</string>
-  <string id="23100">Külső lejátszó aktív</string>
-  <string id="23101">A lejátszó megszakításához klikkelj az OK-ra</string>
-  <string id="23104">Lejátszás végén klikkelj az OK-ra</string>
   <string id="29800">Médiatár mód</string>
   <string id="29801">QWERTY billentyűzet</string>
-  <string id="29802">Passthrough Audio használatban</string>
   <string id="29999">Villogás szűrő alkalmazása játékokra</string>
-  <string id="30011">Keresési idő</string>
-  <string id="33001">Filmajánló minőség</string>
-  <string id="33002">Lejátszás</string>
-  <string id="33003">Letöltés</string>
-  <string id="33004">Letöltés és lejátszás</string>
-  <string id="33005">Letöltés és mentés</string>
-  <string id="33006">Ma</string>
-  <string id="33007">Holnap</string>
-  <string id="33008">Mentés</string>
-  <string id="33009">Másolás</string>
-  <string id="33010">Letöltés könyvtár meghatározása</string>
-  <string id="33012">Rövid</string>
-  <string id="33013">Hosszú</string>
-  <string id="33014">DVD lejátszó használata az általános lejátszó helyett</string>
-  <string id="33015">Kérdezzen rá a letöltésre a videó lejásztása előtt</string>
-  <string id="33016">Klippek</string>
-  <string id="33017">Az érvényesítéshez a plugin újraindítása szükséges</string>
-  <string id="33018">Ma este</string>
-  <string id="33019">Holnap este</string>
-  <string id="33020">Körülmény</string>
-  <string id="33021">Csapadék</string>
-  <string id="33022">Csapadékos</string>
-  <string id="33023">Párás</string>
-  <string id="33024">Érzet</string>
-  <string id="33026">Eltérés a megszokottól</string>
-  <string id="33027">Napfelkelte</string>
-  <string id="33028">Naplemente</string>
-  <string id="33029">Részletek</string>
-  <string id="33030">Összefoglaló</string>
-  <string id="33031">Coverflow</string>
-  <string id="33032">Szöveg lefordítása</string>
-  <string id="33034">36 órás</string>
-  <string id="33035">Térképek</string>
-  <string id="33036">Óránként</string>
-  <string id="33037">Hétvége</string>
-  <string id="33038">%s nap</string>
-  <string id="33049">Riasztás</string>
-  <string id="33050">Riasztások</string>
-  <string id="33052">Ellenőrzés</string>
-  <string id="33054">Évszakok</string>
-  <string id="33061">Menü</string>
-  <string id="33063">Beállítások</string>
-  <string id="33065">Szerkesztő</string>
-  <string id="33068">Háttér</string>
-  <string id="33069">Hátterek</string>
-  <string id="33070">Testreszabott háttér</string>
-  <string id="33071">Testreszabott hátterek</string>
-  <string id="33072">Readme megtekintése</string>
-  <string id="33073">Változási napló megtekintése</string>
-  <string id="33074">A %s ezen verziójához</string>
-  <string id="33075">%s vagy magasabb XBMC verzió szükséges.</string>
-  <string id="33076">Frissítsd az XBMC-t!</string>
-  <string id="33077">Nincs adat!</string>
-  <string id="33078">Következő oldal</string>
 </strings>

@@ -60,7 +60,6 @@ class CGUIDialog;
 #define TMSG_RESTARTAPP           307
 #define TMSG_SWITCHTOFULLSCREEN   308
 #define TMSG_MINIMIZE             309
-#define TMSG_TOGGLEFULLSCREEN     310
 
 #define TMSG_HTTPAPI              400
 
@@ -71,7 +70,6 @@ class CGUIDialog;
 #define TMSG_GUI_WIN_MANAGER_PROCESS  602
 #define TMSG_GUI_WIN_MANAGER_RENDER   603
 #define TMSG_GUI_ACTIVATE_WINDOW      604
-#define TMSG_GUI_PYTHON_DIALOG        605
 
 #define TMSG_OPTICAL_MOUNT        700 
 #define TMSG_OPTICAL_UNMOUNT      701 
@@ -124,9 +122,8 @@ public:
   void RestartApp();
   void Reset();
   void SwitchToFullscreen(); //
-  void Minimize(bool wait = false);
+  void Minimize(bool wait = false); 
   void ExecOS(const CStdString command, bool waitExit = false);  
-  void UserEvent(int code);
 
   CStdString GetResponse();
   int SetResponse(CStdString response);

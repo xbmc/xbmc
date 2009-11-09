@@ -85,8 +85,6 @@ void 	  gnet_uri_set_path	(GURI* uri, const char* path);
 void 	  gnet_uri_set_query 	(GURI* uri, const char* query);
 void 	  gnet_uri_set_fragment (GURI* uri, const char* fragment);
 
-char*     gnet_mms_helper(const GURI* uri);
-
 #ifdef __cplusplus
 }
 #endif				/* __cplusplus */

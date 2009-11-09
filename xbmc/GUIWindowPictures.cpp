@@ -619,9 +619,8 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
       items.Randomize();
 
       if (items.Size() < 4 || pItem->IsCBR() || pItem->IsCBZ())
-      { // less than 4 items, so just grab the first thumb
+      { // less than 4 items, so just grab a single random thumb
         CStdString folderThumb(pItem->GetCachedPictureThumb());
-        items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
         CPicture::CreateThumbnail(items[0]->m_strPath, folderThumb);
       }
       else

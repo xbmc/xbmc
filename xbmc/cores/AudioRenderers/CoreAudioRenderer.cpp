@@ -21,7 +21,6 @@
  */
 
 #include "CoreAudioRenderer.h"
-#include "AudioContext.h"
 #include "GUISettings.h"
 #include "Settings.h"
 #include "utils/Atomics.h"
@@ -324,16 +323,11 @@ CCoreAudioRenderer::~CCoreAudioRenderer()
 if (!m_Initialized) \
 return x
 
-bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {  
   if (m_Initialized) // Have to clean house before we start again. TODO: Should we return failure instead?
     Deinitialize();
   
-  if(bPassthrough)
-    g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE_DIGITAL);
-  else
-    g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
-
   // TODO: If debugging, output information about all devices/streams
   
   // Attempt to find the configured output device

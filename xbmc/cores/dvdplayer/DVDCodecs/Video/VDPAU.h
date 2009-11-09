@@ -90,16 +90,15 @@ public:
   void Present();
   int  ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();
-  void InitCSCMatrix(int Height);
+  void InitCSCMatrix();
   void CheckStatus(VdpStatus vdp_st, int line);
 
   void CheckRecover(bool force = false);
   void CheckFeatures();
-  void SetColor(int Height);
+  void SetColor();
   void SetNoiseReduction();
   void SetSharpness();
   void SetDeinterlacing();
-  void SetHWUpscaling();
   bool VDPAURecovered, VDPAUSwitching;
 
   VdpTime    lastSwapTime, frameLagTime, frameLagTimeRunning, frameLagAverage;
@@ -112,8 +111,8 @@ public:
   int        tmpDeint;
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
-  bool       interlaced,m_bPixmapCreated;
-  int        OutWidth, OutHeight;
+  bool       interlaced;
+  int        outWidth, outHeight;
   int        lastDisplayedSurface;
 
   VdpProcamp    m_Procamp;
@@ -149,7 +148,6 @@ public:
   VdpVideoMixerCreate *                vdp_video_mixer_create;
   VdpVideoMixerSetFeatureEnables *     vdp_video_mixer_set_feature_enables;
   VdpVideoMixerQueryParameterSupport * vdp_video_mixer_query_parameter_support;
-  VdpVideoMixerQueryFeatureSupport *   vdp_video_mixer_query_feature_support;
   VdpVideoMixerDestroy *               vdp_video_mixer_destroy;
   VdpVideoMixerRender *                vdp_video_mixer_render;
   VdpVideoMixerSetAttributeValues *    vdp_video_mixer_set_attribute_values;

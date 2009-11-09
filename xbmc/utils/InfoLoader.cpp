@@ -29,12 +29,10 @@ CInfoJob::CInfoJob(CInfoLoader *loader)
   m_loader = loader;
 }
 
-bool CInfoJob::DoWork()
+void CInfoJob::DoWork()
 {
   if (m_loader)
-    return m_loader->DoWork();
-
-  return false;
+    m_loader->DoWork();
 }
 
 CInfoLoader::CInfoLoader(unsigned int timeToRefresh)
@@ -48,7 +46,7 @@ CInfoLoader::~CInfoLoader()
 {
 }
 
-void CInfoLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+void CInfoLoader::OnJobComplete(unsigned int jobID, CJob *job)
 {
   m_refreshTime = CTimeUtils::GetFrameTime() + m_timeToRefresh;
   m_busy = false;

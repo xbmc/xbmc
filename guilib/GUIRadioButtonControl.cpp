@@ -95,13 +95,6 @@ void CGUIRadioButtonControl::DynamicResourceAlloc(bool bOnOff)
   m_imgRadioOff.DynamicResourceAlloc(bOnOff);
 }
 
-void CGUIRadioButtonControl::SetInvalid()
-{
-  CGUIButtonControl::SetInvalid();
-  m_imgRadioOn.SetInvalid();
-  m_imgRadioOff.SetInvalid();
-}
-
 void CGUIRadioButtonControl::SetPosition(float posX, float posY)
 {
   CGUIButtonControl::SetPosition(posX, posY);

@@ -34,8 +34,6 @@
   Var StartMenuFolder
   Var PageProfileState
   Var RunArgs
-  Var DirectXSetupError
-  Var VSRedistSetupError
   
 ;--------------------------------
 ;Interface Settings
@@ -108,10 +106,6 @@ Section "XBMC" SecXBMC
   SetOutPath "$INSTDIR\system"
   File /r /x *.so /x mplayer "${xbmc_root}\Xbmc\system\*.*"
   
-  ; delete  msvc?90.dll's in INSTDIR, we use the vcredist installer later
-  Delete "$INSTDIR\msvcr90.dll"
-  Delete "$INSTDIR\msvcp90.dll"
-  
   ;Turn off overwrite to prevent files in xbmc\userdata\ from being overwritten
   SetOverwrite off
   
@@ -128,8 +122,6 @@ Section "XBMC" SecXBMC
     File /nonfatal /r "${xbmc_root}\Xbmc\visualisations\projectM\*.*"
   !else
     File "${xbmc_root}\Xbmc\visualisations\*_win32dx.vis"
-    SetOutPath "$INSTDIR\visualisations\Milkdrop"
-    File /nonfatal /r "${xbmc_root}\Xbmc\visualisations\Milkdrop\*.*"
   !endif
   SetOutPath "$INSTDIR\web"
   File /r "${xbmc_root}\Xbmc\web\*.*"
@@ -143,21 +135,23 @@ Section "XBMC" SecXBMC
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   ;Create shortcuts
   SetOutPath "$INSTDIR"
-  
-  ; delete old windowed link
-  Delete "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk"
-  
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
   ${If} $PageProfileState == "1"
-    StrCpy $RunArgs "-p"
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC (Portable).lnk" "$INSTDIR\XBMC.exe" \
-      "-p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
-      "" "Start XBMC (Portable)."
-  ${Else}
-    StrCpy $RunArgs ""
+    StrCpy $RunArgs "-fs -p"
     CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk" "$INSTDIR\XBMC.exe" \
+      "-fs -p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
+      "" "Start XBMC in fullscreen."
+    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk" "$INSTDIR\XBMC.exe" \
+      "-p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
+      "" "Start XBMC in windowed mode."
+  ${Else}
+    StrCpy $RunArgs "-fs"
+    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk" "$INSTDIR\XBMC.exe" \
+      "-fs" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
+      "" "Start XBMC in fullscreen."
+    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk" "$INSTDIR\XBMC.exe" \
       "" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
-      "" "Start XBMC."
+      "" "Start XBMC in windowed mode."
   ${EndIf}
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall XBMC.lnk" "$INSTDIR\Uninstall.exe" \
     "" "$INSTDIR\Uninstall.exe" 0 SW_SHOWNORMAL \
@@ -360,7 +354,6 @@ Section "Uninstall"
   
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
   Delete "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk"
-  Delete "$SMPROGRAMS\$StartMenuFolder\XBMC (Portable).lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall XBMC.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\Visit XBMC Online.url"
@@ -369,43 +362,4 @@ Section "Uninstall"
 
   DeleteRegKey /ifempty HKCU "Software\XBMC"
 
-SectionEnd
-
-;--------------------------------
-;DirectX webinstaller Section
-
-!if "${xbmc_target}" == "dx"
-Section "DirectX Install" SEC_DIRECTX
- 
-  SectionIn RO
- 
-  SetOutPath "$TEMP"
-  File "${xbmc_root}\Xbmc\dxwebsetup.exe"
-  DetailPrint "Running DirectX Setup..."
-  ExecWait '"$TEMP\dxwebsetup.exe" /Q' $DirectXSetupError
-  DetailPrint "Finished DirectX Setup"
- 
-  Delete "$TEMP\dxwebsetup.exe"
- 
-  SetOutPath "$INSTDIR"
- 
-SectionEnd
-!endif
-
-;--------------------------------
-;vs redist installer Section
-
-Section "Microsoft Visual C++ 2008 Redistributable Package (x86)" SEC_VCREDIST
-
-  SectionIn 1 2
-  
-  SetOutPath "$TEMP"
-  File "${xbmc_root}\Xbmc\vcredist_x86.exe"
-  DetailPrint "Running VS Redist Setup..."
-  ExecWait '"$TEMP\vcredist_x86.exe" /q' $VSRedistSetupError
-  DetailPrint "Finished VS Redist Setup"
- 
-  Delete "$TEMP\vcredist_x86.exe"
- 
-  SetOutPath "$INSTDIR"
 SectionEnd

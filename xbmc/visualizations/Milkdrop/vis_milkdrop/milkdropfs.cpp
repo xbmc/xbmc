@@ -1683,8 +1683,8 @@ void CPlugin::DrawCustomShapes()
                 SPRITEVERTEX v[512];  // for textured shapes (has texcoords)
                 WFVERTEX v2[512];     // for untextured shapes + borders
 
-                v[0].x = (float)(*pState->m_shape[i].var_pf_x* 2-1);// * ASPECT;
-                v[0].y = (float)(*pState->m_shape[i].var_pf_y*-2+1);
+                v[0].x = (*pState->m_shape[i].var_pf_x* 2-1);// * ASPECT;
+                v[0].y = (*pState->m_shape[i].var_pf_y*-2+1);
                 v[0].z = 0;
                 v[0].tu = 0.5f;
                 v[0].tv = 0.5f;
@@ -1702,11 +1702,11 @@ void CPlugin::DrawCustomShapes()
                 for (int j=1; j<sides+1; j++)
                 {
                     float t = (j-1)/(float)sides;
-                    v[j].x = v[0].x + (float)*pState->m_shape[i].var_pf_rad*cosf(t*3.1415927f*2 + (float)*pState->m_shape[i].var_pf_ang + 3.1415927f*0.25f)*ASPECT;  // DON'T TOUCH!
-                    v[j].y = v[0].y + (float)*pState->m_shape[i].var_pf_rad*sinf(t*3.1415927f*2 + (float)*pState->m_shape[i].var_pf_ang + 3.1415927f*0.25f);         // DON'T TOUCH!
+                    v[j].x = v[0].x + *pState->m_shape[i].var_pf_rad*cosf(t*3.1415927f*2 + *pState->m_shape[i].var_pf_ang + 3.1415927f*0.25f)*ASPECT;  // DON'T TOUCH!
+                    v[j].y = v[0].y + *pState->m_shape[i].var_pf_rad*sinf(t*3.1415927f*2 + *pState->m_shape[i].var_pf_ang + 3.1415927f*0.25f);         // DON'T TOUCH!
                     v[j].z = 0;
-                    v[j].tu = 0.5f + 0.5f*cosf(t*3.1415927f*2 + (float)*pState->m_shape[i].var_pf_tex_ang + 3.1415927f*0.25f)/((float)*pState->m_shape[i].var_pf_tex_zoom) * ASPECT; // DON'T TOUCH!
-                    v[j].tv = 0.5f + 0.5f*sinf(t*3.1415927f*2 + (float)*pState->m_shape[i].var_pf_tex_ang + 3.1415927f*0.25f)/((float)*pState->m_shape[i].var_pf_tex_zoom);   // DON'T TOUCH!
+                    v[j].tu = 0.5f + 0.5f*cosf(t*3.1415927f*2 + *pState->m_shape[i].var_pf_tex_ang + 3.1415927f*0.25f)/(*pState->m_shape[i].var_pf_tex_zoom) * ASPECT; // DON'T TOUCH!
+                    v[j].tv = 0.5f + 0.5f*sinf(t*3.1415927f*2 + *pState->m_shape[i].var_pf_tex_ang + 3.1415927f*0.25f)/(*pState->m_shape[i].var_pf_tex_zoom);   // DON'T TOUCH!
                     v[j].Diffuse = v[1].Diffuse;
                 }
                 v[sides+1] = v[1];
@@ -1992,8 +1992,8 @@ void CPlugin::DrawCustomWaves()
                             executeCode(pState->m_wave[i].m_pp_codehandle);
                         #endif
 
-                        v[j].x = (float)(*pState->m_wave[i].var_pp_x* 2-1);//*ASPECT;
-                        v[j].y = (float)(*pState->m_wave[i].var_pp_y*-2+1);
+                        v[j].x = (*pState->m_wave[i].var_pp_x* 2-1);//*ASPECT;
+                        v[j].y = (*pState->m_wave[i].var_pp_y*-2+1);
                         v[j].z = 0;
                         v[j].Diffuse = 
                             ((((int)(*pState->m_wave[i].var_pp_a * 255 * alpha_mult)) & 0xFF) << 24) |
@@ -2023,7 +2023,7 @@ void CPlugin::DrawCustomWaves()
 	                lpDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
                     lpDevice->SetRenderState(D3DRS_DESTBLEND, pState->m_wave[i].bAdditive ? D3DBLEND_ONE : D3DBLEND_INVSRCALPHA);
                 
-                    float ptsize = ((m_nTexSize >= 1024) ? 2.0f : 1.0f) + (pState->m_wave[i].bDrawThick ? 1.0f : 0.0f);
+                    float ptsize = ((m_nTexSize >= 1024) ? 2 : 1) + (pState->m_wave[i].bDrawThick ? 1 : 0);
                     if (pState->m_wave[i].bUseDots)
                         lpDevice->SetRenderState(D3DRS_POINTSIZE, *((DWORD*)&ptsize) ); 
 
@@ -3206,7 +3206,7 @@ void CPlugin::ShowToUser(int bRedraw)
         // NOTE: gamma IS now supported (As of v1.04), but it's really slow.
         //           -no biggie though; 3d effect dies w/high gamma, so it won't get used beyond 2.0X.
 
-        float fGammaAdj = (float)*m_pState->var_pf_gamma;//m_pState->m_fGammaAdj.eval(GetTime());
+        float fGammaAdj = *m_pState->var_pf_gamma;//m_pState->m_fGammaAdj.eval(GetTime());
         int gamma_passes = (int)(fGammaAdj + 0.999f);
 
 		lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);

@@ -31,6 +31,7 @@
 #include "GUIPassword.h"
 #include "utils/md5.h"
 #include "utils/TimeUtils.h"
+#include "xbox/XKGeneral.h"
 #include "Application.h"
 #include "AdvancedSettings.h"
 #include "LocalizeStrings.h"
@@ -153,6 +154,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     }
     else if (b == 0x08) Backspace();    // backspace
     else if (b == 0x1B) Close();        // escape
+    else if (b == 0x20) Character(b);   // space
   }
   else if (action.id >= KEY_ASCII)
   { // input from the keyboard

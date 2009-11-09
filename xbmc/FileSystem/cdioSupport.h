@@ -35,7 +35,7 @@
 
 #ifdef HAS_DVD_DRIVE
 
-#include "../utils/IoSupport.h"
+#include "xbox/IoSupport.h"
 
 #ifndef _LINUX
 #include "lib/libcdio/cdio.h"

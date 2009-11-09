@@ -486,8 +486,6 @@ Order of Function Calls
 //#include "../XmlDocument.h"
 
 #define FRAND ((rand() % 7381)/7380.0f)
-#define strnicmp _strnicmp
-#define strcmpi  _strcmpi
 
 //extern CSoundData*   pg_sound;	// declared in main.cpp
 extern CPlugin* g_plugin;		// declared in MilkDropXBMC.cpp
@@ -1160,7 +1158,6 @@ int CPlugin::AllocateMyDX8Stuff()
 	    // reallocate
 	    bool bSuccess = false;
 	    int nOrigTexSize = m_nTexSize;
-
 	    do
 	    {
 		    SafeRelease(m_lpVS[0]);
@@ -1169,13 +1166,11 @@ int CPlugin::AllocateMyDX8Stuff()
 			LPDIRECT3DSURFACE9 pBackBuffer, pZBuffer;
 			GetDevice()->GetRenderTarget(0, &pBackBuffer );
 			//GetDevice()->GetDepthStencilSurface( &pZBuffer );
-      D3DVIEWPORT9 pVP;
-      GetDevice()->GetViewport(&pVP);
-      bSuccess = (GetDevice()->CreateDepthStencilSurface((pVP.Width>m_nTexSize) ? pVP.Width:m_nTexSize, (pVP.Height>m_nTexSize) ? pVP.Height:m_nTexSize, D3DFMT_D24X8, D3DMULTISAMPLE_NONE, 0, FALSE, &pZBuffer, NULL) == D3D_OK);
+      bSuccess = (GetDevice()->CreateDepthStencilSurface((g_plugin->GetWidth()>m_nTexSize) ? g_plugin->GetWidth():m_nTexSize, (g_plugin->GetHeight()>m_nTexSize) ? g_plugin->GetHeight():m_nTexSize, D3DFMT_D24X8, D3DMULTISAMPLE_NONE, 0, FALSE, &pZBuffer, NULL) == D3D_OK);
       bSuccess = (GetDevice()->SetDepthStencilSurface(pZBuffer) == D3D_OK);
 		  // create VS1 and VS2
       bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[0], NULL) == D3D_OK);
-      if (bSuccess)
+			if (bSuccess)
 			{
 				IDirect3DSurface9* pNewTarget = NULL;
 				if (m_lpVS[0]->GetSurfaceLevel(0, &pNewTarget) == D3D_OK) 
@@ -1185,8 +1180,8 @@ int CPlugin::AllocateMyDX8Stuff()
 					pNewTarget->Release();
 				}
 
-        bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[1], NULL) == D3D_OK);
-        if (bSuccess)
+                bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[1], NULL) == D3D_OK);
+				if (bSuccess)
 				{
 					if (m_lpVS[1]->GetSurfaceLevel(0, &pNewTarget) == D3D_OK) 
 					{
@@ -2193,7 +2188,7 @@ void CPlugin::MyRenderUI(
 //----------------------------------------------------------------------
 
 LRESULT CPlugin::MyWindowProc(HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lParam)
-{
+{ 
 #if 0
     // You can handle Windows messages here while the plugin is running, 
     //   such as mouse events (WM_MOUSEMOVE/WM_LBUTTONDOWN), keypresses 
@@ -4609,7 +4604,7 @@ void CPlugin::RandomizeBlendPattern()
     else if (mixtype==3)
     {
         // radial blend
-        float band = 0.02f + 0.14f*FRAND + 0.34f*FRAND;
+        float band = 0.02f + 0.14f*FRAND + 0.34*FRAND;
         float inv_band = 1.0f/band;
         float dir = (rand()%2)*2 - 1;
 
@@ -4719,7 +4714,7 @@ void CPlugin::UpdatePresetList()
 {
 	struct _finddata_t c_file;
 	long hFile;
-	//HANDLE hFindFile;
+	HANDLE hFindFile;
 
 	char szMask[512];
 	char szPath[512];
@@ -4743,12 +4738,15 @@ void CPlugin::UpdatePresetList()
 */
 	strcpy(szPath, m_szPresetDir);
 	int len = strlen(szPath);
-	if (len>0 && szPath[len-1] != '/') 
+	if (len>0 && szPath[len-1] != '\\') 
 	{
-		strcat(szPath, "/");
+		strcat(szPath, "\\");
 	}
 	strcpy(szMask, szPath);
-	strcat(szMask, "*.*");
+	//if (m_UI_mode == UI_CHANGEDIR)
+		strcat(szMask, "*.*");
+	//else
+	//	strcat(szMask, "*.milk");
 
 
 	WIN32_FIND_DATA ffd;

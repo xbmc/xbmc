@@ -473,6 +473,7 @@ fc_instance_t *fontconfig_init(ass_library_t *library,
         process_fontdata(priv, library, ftlibrary, i);
 
     if (dir) {
+        if (FcDirCacheValid((const FcChar8 *) dir) == FcFalse) {
             ass_msg(library, MSGL_INFO, "Updating font cache");
             if (FcGetVersion() >= 20390 && FcGetVersion() < 20400)
                 ass_msg(library, MSGL_WARN, "Beta versions of fontconfig"
@@ -505,6 +506,7 @@ fc_instance_t *fontconfig_init(ass_library_t *library,
               ErrorFontCache:
                 ;
             }
+        }
 
         rc = FcConfigAppFontAddDir(priv->config, (const FcChar8 *) dir);
         if (!rc) {

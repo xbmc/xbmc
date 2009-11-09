@@ -62,7 +62,7 @@ public:
 
   virtual bool InitRenderSystem() = 0;
   virtual bool DestroyRenderSystem() = 0;
-  virtual bool ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate) = 0;
+  virtual bool ResetRenderSystem(int width, int height) = 0;
 
   virtual bool BeginRender() = 0;
   virtual bool EndRender() = 0;

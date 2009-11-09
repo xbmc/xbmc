@@ -21,7 +21,7 @@ bool g_verbose_mode = false;
 
 //
 const char* PROGNAME="XBMCHelper";
-const char* PROGVERS="0.6";
+const char* PROGVERS="0.5";
 
 void ParseOptions(int argc, char** argv);
 void ReadConfig();
@@ -170,7 +170,7 @@ void ParseOptions(int argc, char** argv)
 }
 
 //----------------------------------------------------------------------------
-void ConfigureHelper(){
+void StartHelper(){
   [gp_xbmchelper enableVerboseMode:g_verbose_mode];
   
   //set apppath to startup when pressing Menu
@@ -186,7 +186,7 @@ void Reconfigure(int nSignal)
 {
 	if (nSignal == SIGHUP){
 		ReadConfig();
-    ConfigureHelper();
+    StartHelper();
   }
 	else {
     QuitEventLoop(GetMainEventLoop());
@@ -197,26 +197,21 @@ void Reconfigure(int nSignal)
 int main (int argc,  char * argv[]) {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
   
-  ParseOptions(argc,argv);
-
   NSLog(@"%s %s starting up...", PROGNAME, PROGVERS);
   gp_xbmchelper = [[XBMCHelper alloc] init];  
-  if(gp_xbmchelper){
-    signal(SIGHUP, Reconfigure);
-    signal(SIGINT, Reconfigure);
-    signal(SIGTERM, Reconfigure);
-    
-    ConfigureHelper();
-    
-    //run event loop in this thread
-    RunCurrentEventLoop(kEventDurationForever);
-    NSLog(@"%s %s exiting...", PROGNAME, PROGVERS);
-    //cleanup
-    [gp_xbmchelper release];    
-  } else {
-    NSLog(@"%s %s failed to initialize remote.", PROGNAME, PROGVERS);  
-    return -1;
-  }
+  
+  signal(SIGHUP, Reconfigure);
+	signal(SIGINT, Reconfigure);
+	signal(SIGTERM, Reconfigure);
+  
+  ParseOptions(argc,argv);
+  StartHelper();
+  
+  //run event loop in this thread
+  RunCurrentEventLoop(kEventDurationForever);
+  NSLog(@"%s %s exiting...", PROGNAME, PROGVERS);
+  //cleanup
+  [gp_xbmchelper release];
   [pool drain];
   return 0;
 }

@@ -173,13 +173,6 @@ bool CWinEventsSDL::MessagePump()
       newEvent.resize.type = event.resize.type;
       ret |= g_application.OnEvent(newEvent);
     }
-    case SDL_USEREVENT:
-    {
-      XBMC_Event newEvent;
-      newEvent.type = XBMC_USEREVENT;
-      newEvent.user.code = event.user.code;
-      ret |= g_application.OnEvent(newEvent);
-    }
     
     }
     memset(&event, 0, sizeof(XBMC_Event));

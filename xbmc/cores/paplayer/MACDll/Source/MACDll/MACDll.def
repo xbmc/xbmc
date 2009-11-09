@@ -27,6 +27,8 @@ EXPORTS
 
 	; helpers / miscellaneous
 	GetVersionNumber
+	GetInterfaceCompatibility
+	ShowFileInfoDialog
 	RemoveTag
 	TagFileSimple
 	GetID3Tag

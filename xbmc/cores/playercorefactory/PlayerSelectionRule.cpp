@@ -3,7 +3,6 @@
 #include "VideoInfoTag.h"
 #include "StreamDetails.h"
 #include "GUISettings.h"
-#include "utils/log.h"
 
 CPlayerSelectionRule::CPlayerSelectionRule(TiXmlElement* pRule)
 {

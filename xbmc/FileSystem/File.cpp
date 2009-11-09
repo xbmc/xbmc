@@ -182,6 +182,11 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     /* larger then 1 meg, let's do rendering async */
     // Async render cannot be done in SDL builds because of the resulting ThreadMessage deadlock
     // we should call CAsyncFileCopy::Copy() instead.
+#if defined(_XBOX)
+    if( file.GetLength() > 1024*1024 )
+      helper = new CAsyncFileCallback(pCallback, pContext);
+#endif
+
     // 128k is optimal for xbox
     int iBufferSize = 128 * 1024;
 
@@ -825,24 +830,6 @@ bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileNa
     CLog::Log(LOGERROR, "%s - Unhandled exception ", __FUNCTION__);
   }
   CLog::Log(LOGERROR, "%s - Error renaming file %s", __FUNCTION__, strFileName.c_str());
-  return false;
-}
-
-bool CFile::SetHidden(const CStdString& fileName, bool hidden)
-{
-  try
-  {
-    CURL url(fileName);
-
-    auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
-    if (!pFile.get()) return false;
-
-    return pFile->SetHidden(url, hidden);
-  }
-  catch(...)
-  {
-    CLog::Log(LOGERROR, "%s(%s) - Unhandled exception", __FUNCTION__, fileName.c_str());
-  }
   return false;
 }
 

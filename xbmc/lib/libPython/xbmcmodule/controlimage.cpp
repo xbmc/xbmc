@@ -132,11 +132,11 @@ namespace PYXBMC
 
     self->strFileName = cImage;
 
-    PyXBMCGUILock();
+    PyGUILock();
     if (self->pGUIControl)
       ((CGUIImage*)self->pGUIControl)->SetFileName(self->strFileName);
 
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -158,11 +158,11 @@ namespace PYXBMC
     if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->colorDiffuse);
     else self->colorDiffuse = 0;
 
-    PyXBMCGUILock();
+    PyGUILock();
     if (self->pGUIControl)
       ((CGUIImage *)self->pGUIControl)->SetColorDiffuse(self->colorDiffuse);
 
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -208,7 +208,7 @@ namespace PYXBMC
 
   void initControlImage_Type()
   {
-    PyXBMCInitializeTypeObject(&ControlImage_Type);
+    PyInitializeTypeObject(&ControlImage_Type);
 
     ControlImage_Type.tp_name = (char*)"xbmcgui.ControlImage";
     ControlImage_Type.tp_basicsize = sizeof(ControlImage);

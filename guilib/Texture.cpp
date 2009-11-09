@@ -32,9 +32,7 @@
 /************************************************************************/
 CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int format)
 {
-#ifndef HAS_DX
   m_texture = NULL;
-#endif
   m_pixels = NULL;
   m_loadedToGPU = false;
   Allocate(width, height, format);

@@ -48,7 +48,7 @@ CImageLoader::~CImageLoader()
   delete(m_texture);
 }
 
-bool CImageLoader::DoWork()
+void CImageLoader::DoWork()
 {
   CFileItem file(m_path, false);
   if (file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) // ignore non-pictures
@@ -76,8 +76,6 @@ bool CImageLoader::DoWork()
       m_texture = NULL;
     }
   }
-
-  return true;
 }
 
 CGUILargeTextureManager::CLargeTexture::CLargeTexture(const CStdString &path)
@@ -220,11 +218,11 @@ void CGUILargeTextureManager::QueueImage(const CStdString &path)
 
   // queue the item
   CLargeTexture *image = new CLargeTexture(path);
-  unsigned int jobID = CJobManager::GetInstance().AddJob(new CImageLoader(path), this, CJob::PRIORITY_NORMAL);
+  unsigned int jobID = CJobManager::GetInstance().AddJob(new CImageLoader(path), this);
   m_queued.push_back(make_pair(jobID, image));
 }
 
-void CGUILargeTextureManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+void CGUILargeTextureManager::OnJobComplete(unsigned int jobID, CJob *job)
 {
   // see if we still have this job id
   CSingleLock lock(m_listSection);

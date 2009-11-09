@@ -26,7 +26,6 @@
 #include "FileSystem/cdioSupport.h"
 #endif
 #include "URL.h"
-#include "utils/Job.h"
 #include "IStorageProvider.h"
 
 #ifdef HAS_DVD_DRIVE
@@ -41,7 +40,7 @@ public:
   CStdString path;
 };
 
-class CMediaManager : public IStorageEventsCallback, public IJobCallback
+class CMediaManager
 {
 public:
   CMediaManager();
@@ -79,16 +78,10 @@ public:
   void ProcessEvents();
 
   std::vector<CStdString> GetDiskUsage();
-
-  virtual void OnStorageAdded(const CStdString &label, const CStdString &path);
-  virtual void OnStorageSafelyRemoved(const CStdString &label);
-  virtual void OnStorageUnsafelyRemoved(const CStdString &label);
-
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job) { }
 protected:
   std::vector<CNetworkLocation> m_locations;
 
-  CCriticalSection m_muAutoSource, m_CritSecStorageProvider;
+  CCriticalSection m_muAutoSource;
 #ifdef HAS_DVD_DRIVE
   std::map<CStdString,CCdInfo*> m_mapCdInfo;
 #endif

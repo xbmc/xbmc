@@ -12,7 +12,7 @@ the dumb source code. The project was modified to have a dll as target.
 
 extern "C"
 {
-  __declspec(dllexport) DUH *DLL_LoadModule(const char *szFileName)
+  DUH * __declspec(dllexport) DLL_LoadModule(const char *szFileName)
   {
     dumb_register_stdfiles();
     DUH* duh;
@@ -40,33 +40,33 @@ extern "C"
     return duh;
   }
 
-  __declspec(dllexport) void DLL_FreeModule(DUH *duh)
+  void __declspec(dllexport) DLL_FreeModule(DUH *duh)
   {
     unload_duh(duh);
   }
 
-  __declspec(dllexport) long DLL_GetModuleLength(DUH *duh)
+  long __declspec(dllexport) DLL_GetModuleLength(DUH *duh)
   {
     return duh_get_length(duh);
   }
 
-  __declspec(dllexport) long DLL_GetModulePosition(DUH_SIGRENDERER *sig)
+  long __declspec(dllexport) DLL_GetModulePosition(DUH_SIGRENDERER *sig)
   {
     return duh_sigrenderer_get_position(sig);
   }
 
-  __declspec(dllexport) DUH_SIGRENDERER *DLL_StartPlayback(DUH *duh, long pos)
+  DUH_SIGRENDERER * __declspec(dllexport) DLL_StartPlayback(DUH *duh, long pos)
   {
     return duh_start_sigrenderer(duh, 0, 2, pos);
   }
 
-  __declspec(dllexport) void DLL_StopPlayback(DUH_SIGRENDERER *sig)
+  void __declspec(dllexport) DLL_StopPlayback(DUH_SIGRENDERER *sig)
   {
     duh_end_sigrenderer(sig);
   }
 
-  __declspec(dllexport) long DLL_FillBuffer(DUH_SIGRENDERER *sig, char *buffer, int size, float volume)
+  long __declspec(dllexport) DLL_FillBuffer(DUH_SIGRENDERER *sig, char *buffer, int size, float volume)
   {
-    return duh_render(sig, 16, 0, volume, 65536.0f/48000.0f, size/4, buffer);
+    return duh_render(sig, 16, 0, volume, 65536.0/48000.0, size/4, buffer);
   }
 }

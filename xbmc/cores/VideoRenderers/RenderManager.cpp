@@ -30,6 +30,7 @@
 #include "Application.h"
 #include "Settings.h"
 #include "GUISettings.h"
+#include "WindowingFactory.h"
 
 #ifdef _LINUX
 #include "PlatformInclude.h"
@@ -115,19 +116,6 @@ double CXBMCRenderManager::GetPresentTime()
   return CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;
 }
 
-static double wrap(double x, double minimum, double maximum)
-{
-  if(x >= minimum
-  && x <= maximum)
-    return x;
-  x = fmod(x - minimum, maximum - minimum) + minimum;
-  if(x < minimum)
-    x += maximum - minimum;
-  if(x > maximum)
-    x -= maximum - minimum;
-  return x;
-}
-
 void CXBMCRenderManager::WaitPresentTime(double presenttime)
 {
   int fps = g_VideoReferenceClock.GetRefreshRate();
@@ -149,7 +137,8 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   m_presenterr   = error;
 
   // correct error so it targets the closest vblank
-  error = wrap(error, 0.0 - target, 1.0 - target);
+  while(error >   target) error -= 1.0;
+  while(error < - target) error += 1.0;
 
   // scale the error used for correction, 
   // based on how much buffer we have on
@@ -159,7 +148,12 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   if(error < 0)
     error /= 2.0 * (0.0 + target);
 
-  m_presentcorr = wrap(m_presentcorr + error * 0.02, target - 1.0, target);
+  m_presentcorr += error * 0.02;
+
+  // make sure we wrap correction properly
+  while(m_presentcorr > target)       m_presentcorr -= 1.0;
+  while(m_presentcorr < target - 1.0) m_presentcorr += 1.0;
+
   //printf("%f %f % 2.0f%% % f % f\n", presenttime, clock, m_presentcorr * 100, error, error_org);
 }
 
@@ -251,7 +245,7 @@ unsigned int CXBMCRenderManager::PreInit()
 #if defined(HAS_GL)
     m_pRenderer = new CLinuxRendererGL();
 #elif defined(HAS_DX)
-    m_pRenderer = new CPixelShaderRenderer();
+    m_pRenderer = new CPixelShaderRenderer(g_Windowing.Get3DDevice());
 #elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();
 #endif

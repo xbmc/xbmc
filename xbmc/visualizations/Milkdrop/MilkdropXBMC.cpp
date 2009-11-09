@@ -5,49 +5,11 @@
 #include "../../../visualisations/xbmc_vis.h"
 #include "XmlDocument.h"
 
-#define strnicmp _strnicmp
-#define strcmpi  _strcmpi
-
 CPlugin* g_plugin;
 char g_visName[512];
 
-#define PRESETS_DIR "special://xbmc/visualisations/Milkdrop"
-#define CONFIG_FILE "special://profile/visualisations/Milkdrop.conf"
-
-char m_szPresetSave[256] = "";
+char m_szPresetSave[256] = "Milkdrop";
 char g_packFolder[256] = "Milkdrop";
-
-
-void SetPresetDir(const char *pack)
-{
-  int len = strlen(pack);
-  if (len >= 4 && strcmpi(pack + len - 4, ".zip") == 0)
-  {
-    // Zip file
-    strcpy(g_plugin->m_szPresetDir, "zip://special%3A%2F%2Fxbmc%2Fvisualisations%2F"); 
-    strcat(g_plugin->m_szPresetDir,  g_packFolder);
-    strcat(g_plugin->m_szPresetDir,  "%2F");
-    strcat(g_plugin->m_szPresetDir,  pack);
-    strcat(g_plugin->m_szPresetDir, "/");
-  }
-  else if (len >= 4 && strcmpi(pack + len - 4, ".rar") == 0)
-  {
-    // Rar file
-    strcpy(g_plugin->m_szPresetDir, "rar://special%3A%2F%2Fxbmc%2Fvisualisations%2F"); 
-    strcat(g_plugin->m_szPresetDir,  g_packFolder);
-    strcat(g_plugin->m_szPresetDir,  "%2F");
-    strcat(g_plugin->m_szPresetDir,  pack);
-    strcat(g_plugin->m_szPresetDir, "/");
-  }
-  else
-  {
-    // Normal folder
-    strcpy(g_plugin->m_szPresetDir,  PRESETS_DIR);
-    strcat(g_plugin->m_szPresetDir,  "/");
-    strcat(g_plugin->m_szPresetDir,  pack);
-    strcat(g_plugin->m_szPresetDir, "/");
-  }
-}
 
 extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio, const char *szSubModuleName)
 {
@@ -146,7 +108,7 @@ void FindPresetPacks()
   int numPacks = 0;
   VisSetting setting10(VisSetting::SPIN, "Preset Pack");
   char searchFolder[255];
-  sprintf(searchFolder, "%s/*", PRESETS_DIR);
+  sprintf(searchFolder, "special://xbmc/visualisations/%s/*", g_packFolder);
 
   if( (hFile = _findfirst(searchFolder, &c_file )) != -1L )		// note: returns filename -without- path
   {
@@ -173,8 +135,8 @@ void FindPresetPacks()
       {
         setting10.AddEntry(szFilename);
 
-        if(strcmp(m_szPresetSave, "") == 0)
-          strcpy(m_szPresetSave, szFilename);
+        char nameCmp[512];
+        sprintf(nameCmp, "%s/%s", g_packFolder, szFilename);
 
         if (strcmpi(m_szPresetSave, szFilename) == 0)
         {
@@ -199,12 +161,20 @@ void LoadSettings()
 	CXmlDocument doc;
 
 	char szXMLFile[1024];
-  strcpy(szXMLFile,CONFIG_FILE);
+  strcpy(szXMLFile,"special://xbmc/visualisations/");
+  strcat(szXMLFile,g_visName);
+  strcat(szXMLFile,".xml");
+  FILE *f = fopen(szXMLFile,"r");
+  if (!f)
+  {
+    /*strcpy(szXMLFile,"T:\\Visualisations\\");
+    strcat(szXMLFile,g_visName);
+    strcat(szXMLFile,".xml");*/
+  }
+  else
+    fclose(f);
 
-  // update our settings structure
-  // setup our settings structure (passable to GUI)
-  m_vecSettings.clear();
-  m_uiVisElements = 0;
+	//strcpy(szXMLFile, "d:\\milkdrop.xml");
 
 	// Load the config file
 	if (doc.Load(szXMLFile) >= 0)
@@ -217,7 +187,35 @@ void LoadSettings()
 				char* nodeStr = doc.GetNodeText(node);
 				
 				// Check if its a zip or a folder
-        SetPresetDir(nodeStr);
+				int len = strlen(nodeStr);
+
+        if (len >= 4 && strcmpi(nodeStr + len - 4, ".zip") == 0)
+        {
+          // Zip file
+          strcpy(g_plugin->m_szPresetDir, "zip://q%3A%5Cvisualisations%5C"); 
+          strcat(g_plugin->m_szPresetDir,  g_packFolder);
+          strcat(g_plugin->m_szPresetDir,  "%5C");
+          strcat(g_plugin->m_szPresetDir,  nodeStr);
+          strcat(g_plugin->m_szPresetDir, "/");
+        }
+        else if (len >= 4 && strcmpi(nodeStr + len - 4, ".rar") == 0)
+        {
+          // Rar file
+          strcpy(g_plugin->m_szPresetDir, "rar://q%3A%5Cvisualisations%5C"); 
+          strcat(g_plugin->m_szPresetDir,  g_packFolder);
+          strcat(g_plugin->m_szPresetDir,  "%5C");
+          strcat(g_plugin->m_szPresetDir,  nodeStr);
+          strcat(g_plugin->m_szPresetDir, "/");
+        }
+        else        
+				{
+					// Normal folder
+					strcpy(g_plugin->m_szPresetDir,  "special://xbmc/visualisations/");
+          strcat(g_plugin->m_szPresetDir,  g_packFolder);
+          strcat(g_plugin->m_szPresetDir,  "/");
+					strcat(g_plugin->m_szPresetDir,  nodeStr);
+					strcat(g_plugin->m_szPresetDir, "/");
+        }
         // save dir so that we can resave the .xml file
         strcpy(m_szPresetSave, nodeStr);
       }
@@ -324,18 +322,13 @@ void LoadSettings()
     }
 
     doc.Close();
-    FindPresetPacks();
   }
-  else
-  {
-    FindPresetPacks();
-    if(strcmp(m_szPresetSave,"") != 0)
-    {
-      SetPresetDir(m_szPresetSave);
-    }
-  }
+  // update our settings structure
+  // setup our settings structure (passable to GUI)
+  m_vecSettings.clear();
+  m_uiVisElements = 0;
 
-  g_plugin->UpdatePresetList();
+  FindPresetPacks();
 
   VisSetting setting(VisSetting::SPIN, "Automatic Blend Time");
   for (int i=0; i < 50; i++)
@@ -407,7 +400,9 @@ void LoadSettings()
 void SaveSettings()
 {
   char szXMLFile[1024];
-  strcpy(szXMLFile,CONFIG_FILE);
+  strcpy(szXMLFile,"special://xbmc/visualisations/");
+  strcat(szXMLFile,g_visName);
+  strcat(szXMLFile,".xml");
 
   WriteXML doc;
   if (!doc.Open(szXMLFile, "visualisation"))
@@ -497,7 +492,35 @@ extern "C" void UpdateSetting(int num, StructSetting*** sSet)
   {
     
     // Check if its a zip or a folder
-    SetPresetDir(setting.entry[setting.current]);
+    int len = strlen(setting.entry[setting.current]);
+
+    if (len >= 4 && strcmpi(setting.entry[setting.current] + len - 4, ".zip") == 0)
+    {
+      // Zip file
+      strcpy(g_plugin->m_szPresetDir, "zip://q%3A%5Cvisualisations%5C"); 
+      strcat(g_plugin->m_szPresetDir,  g_packFolder);
+      strcat(g_plugin->m_szPresetDir,  "%5C");
+      strcat(g_plugin->m_szPresetDir,  setting.entry[setting.current]);
+      strcat(g_plugin->m_szPresetDir, "/");
+    }
+    else if (len >= 4 && strcmpi(setting.entry[setting.current] + len - 4, ".rar") == 0)
+    {
+      // Rar file
+      strcpy(g_plugin->m_szPresetDir, "rar://q%3A%5Cvisualisations%5C"); 
+      strcat(g_plugin->m_szPresetDir,  g_packFolder);
+      strcat(g_plugin->m_szPresetDir,  "%5C");
+      strcat(g_plugin->m_szPresetDir,  setting.entry[setting.current]);
+      strcat(g_plugin->m_szPresetDir, "/");
+    }
+    else        
+    {
+      // Normal folder
+      strcpy(g_plugin->m_szPresetDir,  "special://xbmc/visualisations/");
+      strcat(g_plugin->m_szPresetDir,  g_packFolder);
+      strcat(g_plugin->m_szPresetDir,  "/");
+      strcat(g_plugin->m_szPresetDir,  setting.entry[setting.current]);
+      strcat(g_plugin->m_szPresetDir, "/");
+    }
 
     // save dir so that we can resave the .xml file
     sprintf(m_szPresetSave, "%s", setting.entry[setting.current]);

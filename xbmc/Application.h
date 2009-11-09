@@ -98,12 +98,16 @@ public:
   void StopServices();
   void StartWebServer();
   void StopWebServer(bool bWait);
+  void StartFtpServer();
+  void StopFtpServer();
   void StartTimeServer();
   void StopTimeServer();
   void StartUPnP();
   void StopUPnP(bool bWait);
   void StartUPnPRenderer();
   void StopUPnPRenderer();
+  void StartUPnPClient();
+  void StopUPnPClient();
   void StartUPnPServer();
   void StopUPnPServer();
   void StartEventServer();
@@ -248,7 +252,10 @@ public:
     return m_bPlatformDirectories;
   }
 
-  void SetStandAlone(bool value);
+  void SetStandAlone(bool value)
+  {
+    m_bStandalone = value;
+  }
 
   bool IsStandAlone()
   {
@@ -338,6 +345,7 @@ protected:
 
   bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
 
+  void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
   void CheckForTitleChange();
   static bool AlwaysProcess(const CAction& action);

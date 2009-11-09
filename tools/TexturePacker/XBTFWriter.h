@@ -8,7 +8,7 @@
 class CXBTFWriter
 {
 public:
-  CXBTFWriter(CXBTF& xbtf, const std::string& outputFile);
+  CXBTFWriter(CXBTF& xbtf, const std::string outputFile);
   bool Create();
   bool Close();
   bool AppendContent(unsigned char const* data, size_t length);

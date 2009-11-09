@@ -80,8 +80,6 @@ extern "C"
   intptr_t dll_findfirst(const char *file, struct _finddata_t *data);
   int dll_findnext(intptr_t f, _finddata_t* data);
   int dll_findclose(intptr_t handle);
-  intptr_t dll_findfirst64i32(const char *file, struct _finddata64i32_t *data);
-  int dll_findnext64i32(intptr_t f, _finddata64i32_t* data);
   void dll__security_error_handler(int code, void *data);
 #endif
   char * dll_fgets (char* pszString, int num , FILE * stream);

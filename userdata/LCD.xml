@@ -1,6 +1,4 @@
 <lcd>
-   <!-- set this to video,music to disable the LCD on playback of music and video-->
-   <disableonplay>video</disableonplay>
    <navigation>
       <line>$INFO[System.CurrentWindow]</line>
       <line>$INFO[System.CurrentControl]</line>

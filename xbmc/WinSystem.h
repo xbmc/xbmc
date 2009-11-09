@@ -65,7 +65,6 @@ public:
   // resolution interfaces
   unsigned int GetWidth() { return m_nWidth; }
   unsigned int GetHeight() { return m_nHeight; }
-  virtual int GetNumScreens() { return 0; }
   bool IsFullScreen() { return m_bFullScreen; } 
 
   virtual void UpdateResolutions();

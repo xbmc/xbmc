@@ -637,13 +637,13 @@ bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice
 }
 #endif
 
-void CButtonTranslator::GetAction(int window, const CKey &key, CAction &action, bool fallback)
+void CButtonTranslator::GetAction(int window, const CKey &key, CAction &action)
 {
   CStdString strAction;
   // try to get the action from the current window
   int actionID = GetActionCode(window, key, strAction);
   // if it's invalid, try to get it from the global map
-  if (actionID == 0 && fallback)
+  if (actionID == 0)
     actionID = GetActionCode( -1, key, strAction);
   // Now fill our action structure
   action.id = actionID;

@@ -1,50 +1,23 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="7.10"
 	Name="libfaad2_dll"
-	ProjectGUID="{482DA264-EE88-4575-B208-87C4CB80CD08}"
-	RootNamespace="libfaad2"
-	TargetFrameworkVersion="131072"
-	>
+	SccProjectName=""
+	SccLocalPath="">
 	<Platforms>
 		<Platform
-			Name="Win32"
-		/>
+			Name="Win32"/>
 	</Platforms>
-	<ToolFiles>
-	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\DebugDLL"
 			IntermediateDirectory=".\DebugDLL"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\DebugDLL/libfaad2_dll.tlb"
-			/>
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions=""
@@ -52,159 +25,125 @@
 				AdditionalIncludeDirectories="fftw"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;libfaad2_dll_EXPORTS"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\DebugDLL/libfaad2_dll.pch"
 				AssemblerListingLocation=".\DebugDLL/"
 				ObjectFile=".\DebugDLL/"
 				ProgramDataBaseFileName=".\DebugDLL/"
 				WarningLevel="3"
-				SuppressStartupBanner="true"
+				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
-				CompileAs="0"
-			/>
+				CompileAs="0"/>
 			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1031"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
+				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile="../../../../../../system/players/dvdplayer/libfaad.dll"
+				OutputFile="DebugDLL/libfaad2.dll"
 				LinkIncremental="2"
-				SuppressStartupBanner="true"
+				SuppressStartupBanner="TRUE"
 				ModuleDefinitionFile=".\libfaad2.def"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\DebugDLL/libfaad2.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary=".\DebugDLL/libfaad2.lib"
-			/>
+				ImportLibrary=".\DebugDLL/libfaad2.lib"/>
 			<Tool
-				Name="VCALinkTool"
-			/>
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\DebugDLL/libfaad2_dll.tlb"/>
 			<Tool
-				Name="VCManifestTool"
-			/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
-				Name="VCXDCMakeTool"
-			/>
+				Name="VCPreBuildEventTool"/>
 			<Tool
-				Name="VCBscMakeTool"
-			/>
+				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCFxCopTool"
-			/>
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1031"/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
+				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-			/>
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory=".\ReleaseDLL"
 			IntermediateDirectory=".\ReleaseDLL"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\ReleaseDLL/libfaad2_dll.tlb"
-			/>
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions=""
+				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="1"
-				EnableIntrinsicFunctions="true"
+				EnableIntrinsicFunctions="TRUE"
 				FavorSizeOrSpeed="1"
+				OptimizeForProcessor="0"
 				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;libfaad2_dll_EXPORTS"
-				StringPooling="true"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\ReleaseDLL/libfaad2_dll.pch"
 				AssemblerListingLocation=".\ReleaseDLL/"
 				ObjectFile=".\ReleaseDLL/"
 				ProgramDataBaseFileName=".\ReleaseDLL/"
 				WarningLevel="3"
-				SuppressStartupBanner="true"
-				CompileAs="0"
-			/>
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
 			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1031"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
+				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				OutputFile="../../../../../../system/players/dvdplayer/libfaad.dll"
+				OutputFile="ReleaseDLL/libfaad2.dll"
 				LinkIncremental="1"
-				SuppressStartupBanner="true"
+				SuppressStartupBanner="TRUE"
 				ModuleDefinitionFile=".\libfaad2.def"
 				ProgramDatabaseFile=".\ReleaseDLL/libfaad2.pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary=".\ReleaseDLL/libfaad2.lib"
-			/>
+				ImportLibrary=".\ReleaseDLL/libfaad2.lib"/>
 			<Tool
-				Name="VCALinkTool"
-			/>
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\ReleaseDLL/libfaad2_dll.tlb"/>
 			<Tool
-				Name="VCManifestTool"
-			/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
-				Name="VCXDCMakeTool"
-			/>
+				Name="VCPreBuildEventTool"/>
 			<Tool
-				Name="VCBscMakeTool"
-			/>
+				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCFxCopTool"
-			/>
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1031"/>
 			<Tool
-				Name="VCAppVerifierTool"
-			/>
+				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-			/>
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
 	<References>
@@ -212,403 +151,305 @@
 	<Files>
 		<Filter
 			Name="Source Files"
-			>
+			Filter="">
 			<File
-				RelativePath=".\bits.c"
-				>
+				RelativePath=".\bits.c">
 			</File>
 			<File
-				RelativePath=".\cfft.c"
-				>
+				RelativePath=".\cfft.c">
 			</File>
 			<File
-				RelativePath=".\common.c"
-				>
+				RelativePath=".\common.c">
 			</File>
 			<File
-				RelativePath=".\decoder.c"
-				>
+				RelativePath=".\decoder.c">
 			</File>
 			<File
-				RelativePath=".\drc.c"
-				>
+				RelativePath=".\drc.c">
 			</File>
 			<File
-				RelativePath=".\drm_dec.c"
-				>
+				RelativePath=".\drm_dec.c">
 			</File>
 			<File
-				RelativePath=".\error.c"
-				>
+				RelativePath=".\error.c">
 			</File>
 			<File
-				RelativePath=".\filtbank.c"
-				>
+				RelativePath=".\filtbank.c">
 			</File>
 			<File
-				RelativePath=".\hcr.c"
-				>
+				RelativePath=".\hcr.c">
 			</File>
 			<File
-				RelativePath=".\huffman.c"
-				>
+				RelativePath=".\huffman.c">
 			</File>
 			<File
-				RelativePath=".\ic_predict.c"
-				>
+				RelativePath=".\ic_predict.c">
 			</File>
 			<File
-				RelativePath=".\is.c"
-				>
+				RelativePath=".\is.c">
 			</File>
 			<File
-				RelativePath=".\lt_predict.c"
-				>
+				RelativePath=".\lt_predict.c">
 			</File>
 			<File
-				RelativePath=".\mdct.c"
-				>
+				RelativePath=".\mdct.c">
 			</File>
 			<File
-				RelativePath=".\mp4.c"
-				>
+				RelativePath=".\mp4.c">
 			</File>
 			<File
-				RelativePath=".\ms.c"
-				>
+				RelativePath=".\ms.c">
 			</File>
 			<File
-				RelativePath=".\output.c"
-				>
+				RelativePath=".\output.c">
 			</File>
 			<File
-				RelativePath=".\pns.c"
-				>
+				RelativePath=".\pns.c">
 			</File>
 			<File
-				RelativePath=".\ps_dec.c"
-				>
+				RelativePath=".\ps_dec.c">
 			</File>
 			<File
-				RelativePath=".\ps_syntax.c"
-				>
+				RelativePath=".\ps_syntax.c">
 			</File>
 			<File
-				RelativePath=".\pulse.c"
-				>
+				RelativePath=".\pulse.c">
 			</File>
 			<File
-				RelativePath=".\rvlc.c"
-				>
+				RelativePath=".\rvlc.c">
 			</File>
 			<File
-				RelativePath=".\sbr_dct.c"
-				>
+				RelativePath=".\sbr_dct.c">
 			</File>
 			<File
-				RelativePath=".\sbr_dec.c"
-				>
+				RelativePath=".\sbr_dec.c">
 			</File>
 			<File
-				RelativePath=".\sbr_e_nf.c"
-				>
+				RelativePath=".\sbr_e_nf.c">
 			</File>
 			<File
-				RelativePath=".\sbr_fbt.c"
-				>
+				RelativePath=".\sbr_fbt.c">
 			</File>
 			<File
-				RelativePath=".\sbr_hfadj.c"
-				>
+				RelativePath=".\sbr_hfadj.c">
 			</File>
 			<File
-				RelativePath=".\sbr_hfgen.c"
-				>
+				RelativePath=".\sbr_hfgen.c">
 			</File>
 			<File
-				RelativePath=".\sbr_huff.c"
-				>
+				RelativePath=".\sbr_huff.c">
 			</File>
 			<File
-				RelativePath=".\sbr_qmf.c"
-				>
+				RelativePath=".\sbr_qmf.c">
 			</File>
 			<File
-				RelativePath=".\sbr_syntax.c"
-				>
+				RelativePath=".\sbr_syntax.c">
 			</File>
 			<File
-				RelativePath=".\sbr_tf_grid.c"
-				>
+				RelativePath=".\sbr_tf_grid.c">
 			</File>
 			<File
-				RelativePath=".\specrec.c"
-				>
+				RelativePath=".\specrec.c">
 			</File>
 			<File
-				RelativePath=".\ssr.c"
-				>
+				RelativePath=".\ssr.c">
 			</File>
 			<File
-				RelativePath=".\ssr_fb.c"
-				>
+				RelativePath=".\ssr_fb.c">
 			</File>
 			<File
-				RelativePath=".\ssr_ipqf.c"
-				>
+				RelativePath=".\ssr_ipqf.c">
 			</File>
 			<File
-				RelativePath=".\syntax.c"
-				>
+				RelativePath=".\syntax.c">
 			</File>
 			<File
-				RelativePath=".\tns.c"
-				>
+				RelativePath=".\tns.c">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
-			>
+			Filter="">
 			<File
-				RelativePath=".\analysis.h"
-				>
+				RelativePath=".\analysis.h">
 			</File>
 			<File
-				RelativePath=".\bits.h"
-				>
+				RelativePath=".\bits.h">
 			</File>
 			<File
-				RelativePath=".\cfft.h"
-				>
+				RelativePath=".\cfft.h">
 			</File>
 			<File
-				RelativePath=".\cfft_tab.h"
-				>
+				RelativePath=".\cfft_tab.h">
 			</File>
 			<File
-				RelativePath=".\common.h"
-				>
+				RelativePath=".\common.h">
 			</File>
 			<File
-				RelativePath=".\decoder.h"
-				>
+				RelativePath=".\decoder.h">
 			</File>
 			<File
-				RelativePath=".\drc.h"
-				>
+				RelativePath=".\drc.h">
 			</File>
 			<File
-				RelativePath=".\drm_dec.h"
-				>
+				RelativePath=".\drm_dec.h">
 			</File>
 			<File
-				RelativePath=".\error.h"
-				>
+				RelativePath=".\error.h">
 			</File>
 			<File
-				RelativePath=".\filtbank.h"
-				>
+				RelativePath=".\filtbank.h">
 			</File>
 			<File
-				RelativePath=".\fixed.h"
-				>
+				RelativePath=".\fixed.h">
 			</File>
 			<File
-				RelativePath=".\codebook\hcb.h"
-				>
+				RelativePath=".\codebook\hcb.h">
 			</File>
 			<File
-				RelativePath=".\codebook\hcb_1.h"
-				>
+				RelativePath=".\codebook\hcb_1.h">
 			</File>
 			<File
-				RelativePath=".\codebook\hcb_10.h"
-				>
+				RelativePath=".\codebook\hcb_10.h">
 			</File>
 			<File
-				RelativePath=".\codebook\hcb_11.h"
-				>
+				RelativePath=".\codebook\hcb_11.h">
 			</File>
 			<File
-				RelativePath=".\codebook\hcb_2.h"
-				>
+				RelativePath=".\codebook\hcb_2.h">
 			</File>
 			<File
-				RelativePath=".\codebook\hcb_3.h"
-				>
+				RelativePath=".\codebook\hcb_3.h">
 			</File>
 			<File
-				RelativePath=".\codebook\hcb_4.h"
-				>
+				RelativePath=".\codebook\hcb_4.h">
 			</File>
 			<File
-				RelativePath=".\codebook\hcb_5.h"
-				>
+				RelativePath=".\codebook\hcb_5.h">
 			</File>
 			<File
-				RelativePath=".\codebook\hcb_6.h"
-				>
+				RelativePath=".\codebook\hcb_6.h">
 			</File>
 			<File
-				RelativePath=".\codebook\hcb_7.h"
-				>
+				RelativePath=".\codebook\hcb_7.h">
 			</File>
 			<File
-				RelativePath=".\codebook\hcb_8.h"
-				>
+				RelativePath=".\codebook\hcb_8.h">
 			</File>
 			<File
-				RelativePath=".\codebook\hcb_9.h"
-				>
+				RelativePath=".\codebook\hcb_9.h">
 			</File>
 			<File
-				RelativePath=".\codebook\hcb_sf.h"
-				>
+				RelativePath=".\codebook\hcb_sf.h">
 			</File>
 			<File
-				RelativePath=".\huffman.h"
-				>
+				RelativePath=".\huffman.h">
 			</File>
 			<File
-				RelativePath=".\ic_predict.h"
-				>
+				RelativePath=".\ic_predict.h">
 			</File>
 			<File
-				RelativePath=".\iq_table.h"
-				>
+				RelativePath=".\iq_table.h">
 			</File>
 			<File
-				RelativePath=".\is.h"
-				>
+				RelativePath=".\is.h">
 			</File>
 			<File
-				RelativePath=".\kbd_win.h"
-				>
+				RelativePath=".\kbd_win.h">
 			</File>
 			<File
-				RelativePath=".\lt_predict.h"
-				>
+				RelativePath=".\lt_predict.h">
 			</File>
 			<File
-				RelativePath=".\mdct.h"
-				>
+				RelativePath=".\mdct.h">
 			</File>
 			<File
-				RelativePath=".\mdct_tab.h"
-				>
+				RelativePath=".\mdct_tab.h">
 			</File>
 			<File
-				RelativePath=".\mp4.h"
-				>
+				RelativePath=".\mp4.h">
 			</File>
 			<File
-				RelativePath=".\ms.h"
-				>
+				RelativePath=".\ms.h">
 			</File>
 			<File
-				RelativePath=".\output.h"
-				>
+				RelativePath=".\output.h">
 			</File>
 			<File
-				RelativePath=".\pns.h"
-				>
+				RelativePath=".\pns.h">
 			</File>
 			<File
-				RelativePath=".\ps_tables.h"
-				>
+				RelativePath=".\ps_tables.h">
 			</File>
 			<File
-				RelativePath=".\pulse.h"
-				>
+				RelativePath=".\pulse.h">
 			</File>
 			<File
-				RelativePath=".\sbr_dct.h"
-				>
+				RelativePath=".\sbr_dct.h">
 			</File>
 			<File
-				RelativePath=".\sbr_dec.h"
-				>
+				RelativePath=".\sbr_dec.h">
 			</File>
 			<File
-				RelativePath=".\sbr_e_nf.h"
-				>
+				RelativePath=".\sbr_e_nf.h">
 			</File>
 			<File
-				RelativePath=".\sbr_fbt.h"
-				>
+				RelativePath=".\sbr_fbt.h">
 			</File>
 			<File
-				RelativePath=".\sbr_hfadj.h"
-				>
+				RelativePath=".\sbr_hfadj.h">
 			</File>
 			<File
-				RelativePath=".\sbr_hfgen.h"
-				>
+				RelativePath=".\sbr_hfgen.h">
 			</File>
 			<File
-				RelativePath=".\sbr_huff.h"
-				>
+				RelativePath=".\sbr_huff.h">
 			</File>
 			<File
-				RelativePath=".\sbr_noise.h"
-				>
+				RelativePath=".\sbr_noise.h">
 			</File>
 			<File
-				RelativePath=".\sbr_qmf.h"
-				>
+				RelativePath=".\sbr_qmf.h">
 			</File>
 			<File
-				RelativePath=".\sbr_qmf_c.h"
-				>
+				RelativePath=".\sbr_qmf_c.h">
 			</File>
 			<File
-				RelativePath=".\sbr_syntax.h"
-				>
+				RelativePath=".\sbr_syntax.h">
 			</File>
 			<File
-				RelativePath=".\sbr_tf_grid.h"
-				>
+				RelativePath=".\sbr_tf_grid.h">
 			</File>
 			<File
-				RelativePath=".\sine_win.h"
-				>
+				RelativePath=".\sine_win.h">
 			</File>
 			<File
-				RelativePath=".\specrec.h"
-				>
+				RelativePath=".\specrec.h">
 			</File>
 			<File
-				RelativePath=".\ssr.h"
-				>
+				RelativePath=".\ssr.h">
 			</File>
 			<File
-				RelativePath=".\ssr_fb.h"
-				>
+				RelativePath=".\ssr_fb.h">
 			</File>
 			<File
-				RelativePath=".\ssr_ipqf.h"
-				>
+				RelativePath=".\ssr_ipqf.h">
 			</File>
 			<File
-				RelativePath=".\ssr_win.h"
-				>
+				RelativePath=".\ssr_win.h">
 			</File>
 			<File
-				RelativePath=".\structs.h"
-				>
+				RelativePath=".\structs.h">
 			</File>
 			<File
-				RelativePath=".\syntax.h"
-				>
+				RelativePath=".\syntax.h">
 			</File>
 			<File
-				RelativePath=".\tns.h"
-				>
+				RelativePath=".\tns.h">
 			</File>
 		</Filter>
 		<File
-			RelativePath=".\libfaad2.def"
-			>
+			RelativePath=".\libfaad2.def">
 		</File>
 	</Files>
 	<Globals>

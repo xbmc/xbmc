@@ -24,35 +24,22 @@
 #include "Thread.h"
 #include "utils/CriticalSection.h"
 
-//TODO: get rid of #ifdef hell, abstract implementations in separate classes
-
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
   #include <X11/X.h>
   #include <X11/Xlib.h>
   #include <GL/glx.h>
-#elif defined(_WIN32) && defined(HAS_DX)
+#elif defined(_WIN32)
+  #ifdef _DEBUG
+    #define D3D_DEBUG_INFO
+  #endif
   #include <d3d9.h>
-  #include "D3DResource.h"
-
-class CD3DCallback : public ID3DResource
-{
-  public:
-    void Reset();
-    void OnDestroyDevice();
-    void OnCreateDevice();
-    void Aquire();
-    void Release();
-    bool IsValid();
-
-  private:
-    bool m_devicevalid;
-    bool m_deviceused;
-
-    CCriticalSection m_critsection;
-    CEvent           m_createevent;
-    CEvent           m_releaseevent;
-};
-
+  #if(DIRECT3D_VERSION > 0x0900)
+    #include <Dxerr.h>
+  #else
+    #include <dxerr9.h>
+    #define DXGetErrorString(hr)      DXGetErrorString9(hr)
+    #define DXGetErrorDescription(hr) DXGetErrorDescription9(hr)
+  #endif
 #endif
 
 class CVideoReferenceClock : public CThread
@@ -69,7 +56,9 @@ class CVideoReferenceClock : public CThread
     bool    WaitStarted(int MSecs);
     bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed, int& RefreshRate);
 
-#if defined(__APPLE__)
+#ifdef _WIN32
+    void SetMonitor(MONITORINFOEX &Monitor);
+#elif defined(__APPLE__)
     void VblankHandler(int64_t nowtime, double fps);
 #endif
     
@@ -88,7 +77,7 @@ class CVideoReferenceClock : public CThread
 
     bool    m_UseVblank;         //set to true when vblank is used as clock source
     int64_t m_RefreshRate;       //current refreshrate
-    int     m_PrevRefreshRate;   //previous refreshrate, used for log printing and getting refreshrate from nvidia-settings
+    int     m_PrevRefreshRate;   //previous refresrate, used for log printing and getting refreshrate from nvidia-settings
     int     m_MissedVblanks;     //number of clock updates missed by the vblank clock
     int     m_TotalMissedVblanks;//total number of clock updates missed, used by codec information screen
     int64_t m_VblankTime;        //last time the clock was updated when using vblank as clock
@@ -116,17 +105,25 @@ class CVideoReferenceClock : public CThread
 
     bool         m_UseNvSettings;
 
-#elif defined(_WIN32) && defined(HAS_DX)
+#elif defined(_WIN32)
+    bool   CreateHiddenWindow();
     bool   SetupD3D();
     double MeasureRefreshrate(int MSecs);
     void   RunD3D();
     void   CleanupD3D();
+    void   HandleWindowMessages();
 
+    LPDIRECT3D9       m_D3d;
     LPDIRECT3DDEVICE9 m_D3dDev;
-    CD3DCallback      m_D3dCallback;
 
+    HWND          m_Hwnd;
+    WNDCLASSEX    m_WinCl;
+    bool          m_HasWinCl;
     unsigned int  m_Width;
     unsigned int  m_Height;
+    unsigned int  m_Adapter;
+    MONITORINFOEX m_Monitor;
+    MONITORINFOEX m_PrevMonitor;
 
 #elif defined(__APPLE__)
     bool SetupCocoa();

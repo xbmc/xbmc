@@ -377,7 +377,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     lastScreen = [[lastView window] screen];
     screen_index = res.iScreen;
     
-    if (!g_advancedSettings.m_fakeFullScreen)
+    if (g_advancedSettings.m_osx_GLFullScreen)
     {
       // hide the window
       view_size = [lastView frame].size;
@@ -498,7 +498,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     if (fullScreenDisplayID == kCGDirectMainDisplay)
       ShowMenuBar();
 
-    if (!g_advancedSettings.m_fakeFullScreen)
+    if (g_advancedSettings.m_osx_GLFullScreen)
     {
       // release displays
       CGReleaseAllDisplays();

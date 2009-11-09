@@ -253,10 +253,10 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
     if ((m_iFailedSongs >= g_advancedSettings.m_playlistRetries && g_advancedSettings.m_playlistRetries >= 0)
         || ((CTimeUtils::GetTimeMS() - m_failedSongsStart  >= (unsigned int)g_advancedSettings.m_playlistTimeout * 1000) && g_advancedSettings.m_playlistTimeout))
     {
-      CLog::Log(LOGDEBUG,"Playlist Player: one or more items failed to play... aborting playback");
+      CLog::Log(LOGDEBUG,"Playlist Player: too many consecutive failures... aborting playback");
 
       // open error dialog
-      CGUIDialogOK::ShowAndGetInput(16026, 16027, 16030, 0);
+      CGUIDialogOK::ShowAndGetInput(257, 16026, 16027, 0);
 
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
       g_windowManager.SendThreadMessage(msg);

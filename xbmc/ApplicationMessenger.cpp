@@ -54,8 +54,6 @@
 #include "MediaManager.h"
 #include "LocalizeStrings.h"
 #include "SingleLock.h"
-#include "lib/libPython/xbmcmodule/GUIPythonWindowDialog.h"
-#include "lib/libPython/xbmcmodule/GUIPythonWindowXMLDialog.h"
 
 using namespace std;
 
@@ -401,12 +399,6 @@ case TMSG_POWERDOWN:
         g_application.SwitchToFullScreen();
       break;
 
-    case TMSG_TOGGLEFULLSCREEN:
-      g_graphicsContext.Lock();
-      g_graphicsContext.ToggleFullScreenRoot();
-      g_graphicsContext.Unlock();
-      break;
-      
     case TMSG_MINIMIZE:
       g_application.Minimize();
       break;
@@ -523,18 +515,6 @@ case TMSG_POWERDOWN:
     case TMSG_GUI_ACTIVATE_WINDOW:
       {
         g_windowManager.ActivateWindow(pMsg->dwParam1, pMsg->params, pMsg->dwParam2 > 0);
-      }
-      break;
-
-    case TMSG_GUI_PYTHON_DIALOG:
-      {
-        if (pMsg->lpVoid)
-        { // TODO: This is ugly - really these python dialogs should just be normal XBMC dialogs
-          if (pMsg->dwParam1)
-            ((CGUIPythonWindowXMLDialog *)pMsg->lpVoid)->Show_Internal(pMsg->dwParam2 > 0);
-          else
-            ((CGUIPythonWindowDialog *)pMsg->lpVoid)->Show_Internal(pMsg->dwParam2 > 0);
-        }
       }
       break;
 
@@ -807,11 +787,6 @@ void CApplicationMessenger::ExecOS(const CStdString command, bool waitExit)
   SendMessage(tMsg, false);
 }
 
-void CApplicationMessenger::UserEvent(int code)
-{
-  ThreadMessage tMsg = {code};
-  SendMessage(tMsg, false);
-}
 
 void CApplicationMessenger::Show(CGUIDialog *pDialog)
 {

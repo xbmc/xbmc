@@ -50,11 +50,7 @@ void CGUIViewStateWindowScripts::SaveViewState()
 
 CStdString CGUIViewStateWindowScripts::GetExtensions()
 {
-#if defined(__APPLE__)
-  return ".py|.applescript";
-#else
   return ".py";
-#endif
 }
 
 VECSOURCES& CGUIViewStateWindowScripts::GetSources()

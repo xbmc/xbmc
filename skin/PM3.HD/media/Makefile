@@ -114,6 +114,8 @@ IMAGES= \
 	DefaultRecentlyAddedEpisodes.png \
 	DefaultRecentlyAddedMovies.png \
 	DefaultRecentlyAddedMusicVideos.png \
+	DefaultRemovableDriveFirewire.png \
+	DefaultRemovableDriveUSB.png \
 	DefaultScript.png \
 	DefaultShortcut.png \
 	DefaultTVShows.png \

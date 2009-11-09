@@ -308,13 +308,6 @@ void CGUIButtonScroller::DynamicResourceAlloc(bool bOnOff)
   m_imgNoFocus.DynamicResourceAlloc(bOnOff);
 }
 
-void CGUIButtonScroller::SetInvalid()
-{
-  CGUIControl::SetInvalid();
-  m_imgFocus.SetInvalid();
-  m_imgNoFocus.SetInvalid();
-}
-
 void CGUIButtonScroller::Render()
 {
   if (m_bInvalidated)

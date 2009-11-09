@@ -39,7 +39,6 @@
 #include "URL.h"
 #include "XMLUtils.h"
 #include "utils/TimeUtils.h"
-#include "utils/log.h"
 #if defined(_WIN32)
   #include "Windows.h"
   #ifdef HAS_IRSERVERSUITE

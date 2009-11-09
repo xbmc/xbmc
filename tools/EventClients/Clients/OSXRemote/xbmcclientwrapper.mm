@@ -148,7 +148,9 @@ void XBMCClientWrapperImpl::restartTimer(){
 }
 
 XBMCClientWrapperImpl::XBMCClientWrapperImpl(eRemoteMode f_mode, const std::string& fcr_address, int f_port, bool f_verbose_mode): 
-m_mode(f_mode), m_address(fcr_address), m_port(f_port), m_timer(0), m_sequence_timeout(0.5), m_device_id(150), m_verbose_mode(f_verbose_mode){	
+m_mode(f_mode), m_address(fcr_address), m_port(f_port), m_timer(0), m_sequence_timeout(0.5), m_device_id(150), m_verbose_mode(f_verbose_mode){
+	PRINT_SIGNATURE();
+	
   if(m_mode == MULTIREMOTE_MODE){
     if(m_verbose_mode)
       NSLog(@"XBMCClientWrapperImpl started in multiremote mode sending to address %s, port %i", fcr_address.c_str(), f_port);
@@ -181,6 +183,7 @@ namespace {
  };
 }
 XBMCClientWrapperImpl::~XBMCClientWrapperImpl(){
+	PRINT_SIGNATURE();
   resetTimer();
   shutdown(m_socket, SHUT_RDWR);
   std::for_each(m_event_map.begin(), m_event_map.end(), delete_second());
@@ -397,6 +400,7 @@ void XBMCClientWrapperImpl::populateMultiRemoteModeMap(){
   return [self initWithMode:DEFAULT_MODE serverAddress:@"localhost" port:9777 verbose: false];
 }
 - (id) initWithMode:(eRemoteMode) f_mode serverAddress:(NSString*) fp_server port:(int) f_port verbose:(bool) f_verbose{
+	PRINT_SIGNATURE();
 	if( ![super init] )
 		return nil; 
 	mp_impl = new XBMCClientWrapperImpl(f_mode, [fp_server UTF8String], f_port, f_verbose);
@@ -408,6 +412,7 @@ void XBMCClientWrapperImpl::populateMultiRemoteModeMap(){
 }
 
 - (void)dealloc{
+	PRINT_SIGNATURE();
   delete mp_impl;
 	[super dealloc];
 }

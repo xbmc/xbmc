@@ -95,7 +95,7 @@ CAPETag::CAPETag(const str_utf16 * pFilename, BOOL bAnalyze)
     }
 }
 
-CAPETag::CAPETag(CIO * pIO, BOOL bAnalyze, BOOL bCheckID3Tag)
+CAPETag::CAPETag(CIO * pIO, BOOL bAnalyze)
 {
     m_spIO.Assign(pIO, FALSE, FALSE); // we don't own the IO source
     m_bAnalyzed = FALSE;
@@ -104,7 +104,7 @@ CAPETag::CAPETag(CIO * pIO, BOOL bAnalyze, BOOL bCheckID3Tag)
     
     if (bAnalyze)
     {
-        Analyze(bCheckID3Tag);
+        Analyze();
     }
 }
 
@@ -197,7 +197,7 @@ int CAPETag::WriteBufferToEndOfIO(void * pBuffer, int nBytes)
     return nRetVal;
 }
 
-int CAPETag::Analyze(BOOL bCheckID3Tag)
+int CAPETag::Analyze()
 {
     // clean-up
     ID3_TAG ID3Tag;
@@ -228,7 +228,7 @@ int CAPETag::Analyze(BOOL bCheckID3Tag)
     }
     
     // set the fields
-    if (bCheckID3Tag && m_bHasID3Tag)
+    if (m_bHasID3Tag)
     {
         SetFieldID3String(APE_TAG_FIELD_ARTIST, ID3Tag.Artist, 30);
         SetFieldID3String(APE_TAG_FIELD_ALBUM, ID3Tag.Album, 30);
@@ -246,29 +246,10 @@ int CAPETag::Analyze(BOOL bCheckID3Tag)
     }
 
     // try loading the APE tag
+    if (m_bHasID3Tag == FALSE)
     {
-        //  Check for a id3 v2 lyrics tag to skip it
-        struct Lyrics3TagFooterStruct
-        {
-            unsigned char   Length  [6];
-            unsigned char   ID      [9];
-        } T;
-        int lyricslen=0;
-        m_spIO->Seek((m_bHasID3Tag ? -int(ID3_TAG_BYTES) : 0) - sizeof (T), FILE_END);
-        m_spIO->Read(&T, sizeof(T), &nBytesRead);
-
-        if ( memcmp (T.ID, "LYRICS200", sizeof (T.ID))==0 )
-        {
-            lyricslen = ( T.Length[0] - '0') * 100000 +
-                        ( T.Length[1] - '0') * 10000 +
-                        ( T.Length[2] - '0') * 1000 +
-                        ( T.Length[3] - '0') * 100 +
-                        ( T.Length[4] - '0') * 10 +
-                        ( T.Length[5] - '0') * 1 +
-                          + sizeof(T);;
-        }
         APE_TAG_FOOTER APETagFooter;
-        m_spIO->Seek(-int(APE_TAG_FOOTER_BYTES) - (m_bHasID3Tag ? ID3_TAG_BYTES : 0) - lyricslen, FILE_END);
+        m_spIO->Seek(-int(APE_TAG_FOOTER_BYTES), FILE_END);
         nRetVal = m_spIO->Read((unsigned char *) &APETagFooter, APE_TAG_FOOTER_BYTES, &nBytesRead);
         if ((nBytesRead == APE_TAG_FOOTER_BYTES) && (nRetVal == 0))
         {
@@ -281,7 +262,7 @@ int CAPETag::Analyze(BOOL bCheckID3Tag)
                 m_nTagBytes += APETagFooter.GetTotalTagBytes();
                 
                 CSmartPtr<char> spRawTag(new char [nRawFieldBytes], TRUE);
-                m_spIO->Seek(-(APETagFooter.GetTotalTagBytes() - APETagFooter.GetFieldsOffset()) - (m_bHasID3Tag ? ID3_TAG_BYTES : 0) - lyricslen, FILE_END);
+                m_spIO->Seek(-(APETagFooter.GetTotalTagBytes() - APETagFooter.GetFieldsOffset()), FILE_END);
                 nRetVal = m_spIO->Read((unsigned char *) spRawTag.GetPtr(), nRawFieldBytes, &nBytesRead);
 
                 if ((nRetVal == 0) && (nRawFieldBytes == int(nBytesRead)))

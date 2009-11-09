@@ -178,7 +178,7 @@
   </VideoOSD>
   <VideoMenu>
     <joystick name="WiiRemote">
-      <button id="5">Select</button>
+      <button id="5">OSD</button>
       <button id="10">Info</button>
       <button id="11">AspectRatio</button>
     </joystick>

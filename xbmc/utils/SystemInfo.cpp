@@ -39,7 +39,7 @@
 
 CSysInfo g_sysinfo;
 
-bool CSysInfo::DoWork()
+void CSysInfo::DoWork()
 {
   //Request always
   m_systemuptime      = GetSystemUpTime(false);
@@ -54,7 +54,6 @@ bool CSysInfo::DoWork()
     m_macadress         = GetMACAddress();
   }
   m_bRequestDone = true;
-  return true;
 }
 
 CStdString CSysInfo::TranslateInfo(int info) const
@@ -624,10 +623,10 @@ CStdString CSysInfo::GetUserAgent()
   return result;
 }
 
+#if defined(__APPLE__)
 bool CSysInfo::IsAppleTV()
 {
   bool        result = false;
-#if defined(__APPLE__)
   char        buffer[512];
   size_t      len = 512;
   std::string hw_model = "unknown";
@@ -637,8 +636,9 @@ bool CSysInfo::IsAppleTV()
   
   if (hw_model.find("AppleTV") != std::string::npos)
     result = true;
-#endif
+
   return result;
 }
+#endif
 
 

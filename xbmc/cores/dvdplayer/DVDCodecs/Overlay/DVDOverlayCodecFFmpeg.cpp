@@ -27,7 +27,6 @@
 #include "DVDClock.h"
 #include "utils/Win32Exception.h"
 #include "utils/log.h"
-#include "utils/EndianSwap.h"
 
 CDVDOverlayCodecFFmpeg::CDVDOverlayCodecFFmpeg() : CDVDOverlayCodec("FFmpeg Subtitle Decoder")
 {
@@ -174,17 +173,6 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
   if(m_SubtitleIndex<0)
     return NULL;
 
-  if(m_Subtitle.num_rects == 0 && m_SubtitleIndex == 0)
-  {
-    // we must add an empty overlay to replace the previous one
-    CDVDOverlay* o = new CDVDOverlay(DVDOVERLAY_TYPE_NONE);
-    o->iPTSStartTime = 0;
-    o->iPTSStopTime  = 0;
-    o->replace  = true;
-    m_SubtitleIndex++;
-    return o;
-  }
-
   if(m_Subtitle.format == 0)
   {
     if(m_SubtitleIndex >= (int)m_Subtitle.num_rects)
@@ -205,7 +193,7 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     overlay->replace  = true;
     overlay->linesize = rect.w;
     overlay->data     = (BYTE*)malloc(rect.w * rect.h);
-    overlay->palette  = (uint32_t*)malloc(rect.nb_colors*4);
+    overlay->palette  = (DWORD*)malloc(rect.nb_colors*4);
     overlay->palette_colors = rect.nb_colors;
     overlay->x        = rect.x;
     overlay->y        = rect.y;
@@ -260,9 +248,7 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
       t += overlay->linesize;
     }
 
-    for(int i=0;i<rect.nb_colors;i++)
-      overlay->palette[i] = Endian_SwapLE32(((uint32_t *)rect.pict.data[1])[i]);
-
+    memcpy(overlay->palette, rect.pict.data[1], rect.nb_colors*4);
     m_dllAvUtil.av_free(rect.pict.data[0]);
     m_dllAvUtil.av_free(rect.pict.data[1]);
     m_dllAvUtil.av_freep(&m_Subtitle.rects[m_SubtitleIndex]);

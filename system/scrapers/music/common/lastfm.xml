@@ -7,23 +7,4 @@
 			<expression noclean="1"/>
 		</RegExp>
 	</GetLastFMDiscography>
-	<GetLastFMArtistThumbs dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="2">
-				<expression noclean="1" repeat="yes">&lt;size name=&quot;original&quot;[^&gt;]*&gt;([^&lt;]*)&lt;/size&gt;</expression>
-			</RegExp>
-			<expression noclean="1"></expression>
-		</RegExp>
-	</GetLastFMArtistThumbs>
-	<GetLastFMAlbumThumbs dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="2">
-				<expression noclean="1">&lt;image size=&quot;extralarge&quot;&gt;([^&lt;]*)&lt;/image&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="2+">
-				<expression noclean="1">&lt;image size=&quot;large&quot;&gt;([^&lt;]*)&lt;/image&gt;</expression>
-			</RegExp>
-			<expression noclean="1"></expression>
-		</RegExp>
-	</GetLastFMAlbumThumbs>	
 </scraperfunctions>

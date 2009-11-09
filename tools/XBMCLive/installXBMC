@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
   "XBMC Live" installer
-  V1.007 - 20091023
+  V1.006 - 20091007
   Luigi Capriotti @2009
 
 """ 
@@ -281,12 +281,10 @@ def mountDevice(aDevice, mountOpts, aDirectory):
 
 	outStr, retCode = runSilent("mount " + mountOpts + " " + aDevice + " " + aDirectory)
 	if retCode > 0:
-		outStr, retCode = runSilent("mount -o remount " + mountOpts + " " + aDevice + " " + aDirectory)
-		if retCode > 0:
-			print "Error mounting device: " + aDevice + " - Exiting."
-			writeLog("Error mounting device: " + aDevice + " - Exiting.")
-			runSilent("sleep 5")
-			sys.exit(-1)
+		print "Error mounting device: " + aDevice + " - Exiting."
+		writeLog("Error mounting device: " + aDevice + " - Exiting.")
+		runSilent("sleep 5")
+		sys.exit(-1)
 
 def umountDevice(aDirectory, removeMountPoint=True):
 	outStr, retCode = runSilent("umount " + aDirectory)
@@ -457,19 +455,17 @@ def copySystemFilesV2(srcDirectory, dstDirectory, bIsRemovableDisk, skipLargeFil
 		hasNVIDIA, retCode = runSilent("lspci -nn | grep 0300 | grep 10de")
 
 		if len(hasNVIDIA):
-			if os.path.exists(srcDirectory + "/live/restrictedDrivers/nvidia.ext3"):
-				print "Installing NVIDIA restricted drivers..."
-				writeLog("Installing NVIDIA restricted drivers...")
-				mountDevice(srcDirectory + "/live/restrictedDrivers/nvidia.ext3", "-o ro,loop", tmpMountPoint)
-				runSilent("cp -a " + tmpMountPoint + "/* " + dstDirectory)
-				umountDevice(tmpMountPoint)
+			print "Installing NVIDIA restricted drivers..."
+			writeLog("Installing NVIDIA restricted drivers...")
+			mountDevice(srcDirectory + "/live/restrictedDrivers/nvidia.ext3", "-o ro,loop", tmpMountPoint)
+			runSilent("cp -a " + tmpMountPoint + "/* " + dstDirectory)
+			umountDevice(tmpMountPoint)
 		elif len(hasAMD):
-			if os.path.exists(srcDirectory + "/live/restrictedDrivers/amd.ext3"):
-				print "Installing ATI/AMD restricted drivers..."
-				writeLog("Installing ATI/AMD restricted drivers...")
-				mountDevice(srcDirectory + "/live/restrictedDrivers/amd.ext3", "-o ro,loop", tmpMountPoint)
-				runSilent("cp -a " + tmpMountPoint + "/* " + dstDirectory)
-				umountDevice(tmpMountPoint)
+			print "Installing ATI/AMD restricted drivers..."
+			writeLog("Installing ATI/AMD restricted drivers...")
+			mountDevice(srcDirectory + "/live/restrictedDrivers/amd.ext3", "-o ro,loop", tmpMountPoint)
+			runSilent("cp -a " + tmpMountPoint + "/* " + dstDirectory)
+			umountDevice(tmpMountPoint)
 
 		if not os.path.exists(dstDirectory + "/boot"):
 			os.mkdir(dstDirectory + "/boot")
@@ -609,13 +605,11 @@ def modifyGrubMenuV2(useGrubLegacy, basePath, isaRemovableDrive, bootPartition):
 			content += ("fi" + "\n")
 			content += ("\n")
 			content += ('menuentry "XBMCLive" {' + "\n")
-			content += ('set quiet=1' + "\n")
-			content += (" linux /vmlinuz root=UUID=" + findUUID(bootPartition) + " quiet splash xbmc=autostart,nodiskmount,setvolume,noredir,wakeOnUSBRemote loglevel=0" + "\n")
+			content += (" linux /vmlinuz root=UUID=" + findUUID(bootPartition) + " quiet splash xbmc=nodiskmount,setvolume,noredir loglevel=0" + "\n")
 			content += (" initrd /initrd.img" + "\n")
 			content += ("}" + "\n")
 			content += ("\n")
 			content += ('menuentry "XBMCLive - SAFE MODE" {' + "\n")
-			content += ('set quiet=1' + "\n")
 			content += (" linux /vmlinuz root=UUID=" + findUUID(bootPartition) + " xbmc=nodiskmount,noredir loglevel=0" + "\n")
 			content += (" initrd /initrd.img" + "\n")
 			content += ("}" + "\n")
@@ -850,12 +844,10 @@ def main():
 		mountDevice(availableDisks[diskIndex] + "1", "", gLivePartMountPoint)
 
 		if cmdLineOptions.isoFileName == None:
-			outString, retCode = runSilent('mount | grep iso9660')
-			if len(outString):
-				mountOpts = "-o ro -t iso9660"
-			else:
+			bootMedia = getKernelParameter('boot')
+			mountOpts = "-o ro -t iso9660"
+			if bootMedia == 'disk' or bootMedia == 'usb':
 				mountOpts = "-t vfat"
-
 			mountDevice(bootVolume, mountOpts, gBootPartMountPoint)
 		else:
 			mountDevice(cmdLineOptions.isoFileName, "-o loop", gBootPartMountPoint)

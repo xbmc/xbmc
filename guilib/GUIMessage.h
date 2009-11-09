@@ -87,26 +87,7 @@
 
 #define GUI_MSG_SET_TYPE     33 ///< Instruct a control to set it's type appropriately
 
-/*!
- \brief Message indicating the window has been resized
- Any controls that keep stored sizing information based on aspect ratio or window size should
- recalculate sizing information
- */
-#define GUI_MSG_WINDOW_RESIZE  34
-
-/*!
- \brief Message indicating loss of renderer, prior to reset
- Any controls that keep shared resources should free them on receipt of this message, as the renderer
- is about to be reset.
- */
-#define GUI_MSG_RENDERER_LOST  35
-
-/*!
- \brief Message indicating regain of renderer, after reset
- Any controls that keep shared resources may reallocate them now that the renderer is back
- */
-#define GUI_MSG_RENDERER_RESET 36
-
+#define GUI_MSG_INVALIDATE   34 ///< Instruct all controls to refresh - usually due to sizing changes
 
 #define GUI_MSG_USER         1000
 

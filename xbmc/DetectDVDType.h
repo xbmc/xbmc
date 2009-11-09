@@ -33,7 +33,7 @@
 
 #ifdef HAS_DVD_DRIVE
 
-#include "utils/IoSupport.h"
+#include "xbox/IoSupport.h"
 #include "FileSystem/cdioSupport.h"
 #include "utils/CriticalSection.h"
 

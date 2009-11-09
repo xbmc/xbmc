@@ -26,7 +26,7 @@
 #include "utils/RegExp.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowVideoInfo.h"
-#include "GUIWindowVideoNav.h"
+#include "GUIWindowVideoNav.h" 
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogSmartPlaylistEditor.h"
@@ -289,8 +289,17 @@ void CGUIWindowVideoBase::UpdateButtons()
   int nWindow = g_stSettings.m_iVideoStartWindow-WINDOW_VIDEO_FILES;
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
-  CONTROL_ENABLE(CONTROL_BTNSCAN);
-  CONTROL_ENABLE(CONTROL_IMDB);
+  // disable scan and manual imdb controls if internet lookups are disabled
+  if (g_guiSettings.GetBool("network.enableinternet"))
+  {
+    CONTROL_ENABLE(CONTROL_BTNSCAN);
+    CONTROL_ENABLE(CONTROL_IMDB);
+  }
+  else
+  {
+    CONTROL_DISABLE(CONTROL_BTNSCAN);
+    CONTROL_DISABLE(CONTROL_IMDB);
+  }
 
   CGUIMediaWindow::UpdateButtons();
 }
@@ -392,6 +401,18 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     }
     else
     {
+      // !! WORKAROUND !!
+      // As we cannot add an episode to a non-existing tvshow entry, we have to check the parent directory
+      // to see if it`s already in our video database. If it's not yet part of the database we will exit here.
+      // (Ticket #4764)
+      CStdString strParentDirectory;
+      CUtil::GetParentPath(item->m_strPath,strParentDirectory);
+      if (m_database.GetTvShowId(strParentDirectory) < 0)
+      {
+        CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
+        return false;
+      }
+
       int EpisodeHint=-1;
       if (item->HasVideoInfoTag())
         EpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
@@ -400,24 +421,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       {
         bHasInfo = true;
         m_database.GetEpisodeInfo(item->m_strPath, movieDetails, idEpisode);
-      }
-      else
-      {
-        // !! WORKAROUND !!
-        // As we cannot add an episode to a non-existing tvshow entry, we have to check the parent directory
-        // to see if it`s already in our video database. If it's not yet part of the database we will exit here.
-        // (Ticket #4764)
-        //
-        // NOTE: This will fail for episodes on multipath shares, as the parent path isn't what is stored in the
-        //       database.  Possible solutions are to store the paths in the db separately and rely on the show
-        //       stacking stuff, or to modify GetTvShowId to do support multipath:// shares
-        CStdString strParentDirectory;
-        CUtil::GetParentPath(item->m_strPath, strParentDirectory);
-        if (m_database.GetTvShowId(strParentDirectory) < 0)
-        {
-          CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
-          return false;
-        }
       }
     }
   }
@@ -453,6 +456,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   }
 
   // quietly return if Internet lookups are disabled
+  if (!g_guiSettings.GetBool("network.enableinternet")) return false;
   if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
     return false;
 
@@ -718,7 +722,7 @@ void CGUIWindowVideoBase::OnManualIMDB()
 
 bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel)
 {
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_DVD_DRIVE  
   CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
   if (pCdInfo == NULL)
     return false;
@@ -729,7 +733,7 @@ bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, co
   int iLabelDB = strDVDLabel.GetLength();
   if (iLabelDB < iLabelCD)
     return false;
-  CStdString dbLabel = strDVDLabel.Left(iLabelCD);
+  CStdString dbLabel = strDVDLabel.Left(iLabelCD); 
   return (dbLabel == label);
 #else
   return false;
@@ -972,7 +976,7 @@ bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
   }
   if (resumeItem)
     item.m_lStartOffset = STARTOFFSET_RESUME;
-
+  
   return true;
 }
 
@@ -980,7 +984,7 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size()) return;
   CFileItemPtr item = m_vecItems->Get(iItem);
-
+  
   // Show menu asking the user
   if ( OnResumeShowMenu(*item) )
     CGUIMediaWindow::OnClick(iItem);
@@ -988,6 +992,8 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
 
 void CGUIWindowVideoBase::OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId)
 {
+  m_bStreamDetailsChanged = true;
+
   CVideoDatabase db;
   if (db.Open())
   {
@@ -1386,14 +1392,7 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems->Size())
     return;
 
-  OnDeleteItem(m_vecItems->Get(iItem));
-
-  Update(m_vecItems->m_strPath);
-  m_viewControl.SetSelectedItem(iItem);
-}
-
-void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
-{
+  CFileItemPtr item = m_vecItems->Get(iItem);
   // HACK: stacked files need to be treated as folders in order to be deleted
   if (item->IsStack())
     item->m_bIsFolder = true;
@@ -1404,7 +1403,11 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
       return;
   }
 
-  CGUIWindowFileManager::DeleteItem(item.get());
+  if (!CGUIWindowFileManager::DeleteItem(item.get()))
+    return;
+
+  Update(m_vecItems->m_strPath);
+  m_viewControl.SetSelectedItem(iItem);
 }
 
 void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
@@ -1527,7 +1530,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
   //Get the new title
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false))
     return;
-
+  
   database.UpdateMovieTitle(iDbId, strInput, iType);
 }
 

@@ -53,10 +53,6 @@ CGUIAudioManager::~CGUIAudioManager()
 
 void CGUIAudioManager::Initialize(int iDevice)
 {
-#if defined(__APPLE__)
-  // disabled gui sounds under osx, this is broke until SDL_Mixer is replaced.
-  return;
-#endif
   if (m_bInitialized || !m_bEnabled)
     return;
 
@@ -83,10 +79,6 @@ void CGUIAudioManager::Initialize(int iDevice)
 
 void CGUIAudioManager::DeInitialize(int iDevice)
 {
-#if defined(__APPLE__)
-  // disabled gui sounds under osx, this is broke until SDL_Mixer is replaced.
-  return;
-#endif
   if (!(iDevice == CAudioContext::DIRECTSOUND_DEVICE || iDevice == CAudioContext::DEFAULT_DEVICE)) return;
 
   if (!m_bInitialized)

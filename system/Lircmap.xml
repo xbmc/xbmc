@@ -188,46 +188,4 @@
 		<yellow>yellow</yellow>
 		<blue>blue</blue>
 	</remote>
-	<remote device="iMON-PAD">
-		<power>Power</power>
-		<record>Record</record>
-		<play>Play</play>
-		<reverse>Rewind</reverse>
-		<pause>Pause</pause>
-		<stop>Stop</stop>
-		<forward>FastForward</forward>
-		<left>Left</left>
-		<right>Right</right>
-		<up>Up</up>
-		<down>Down</down>
-		<select>Enter</select>
-		<pageplus>Ch+</pageplus>
-		<pageminus>Ch-</pageminus>
-		<back>Esc</back>
-		<back>Backspace</back>
-		<menu>Multimon</menu>
-		<title>MouseMenu</title>
-		<info>SelectSpace</info>
-		<skipplus>NextChapter</skipplus>
-		<skipminus>PrevChapter</skipminus>
-		<display>FullScreen</display>
-		<start>Multimon</start>
-		<volumeplus>Vol+</volumeplus>
-		<volumeminus>Vol-</volumeminus>
-		<mute>Mute</mute>
-		<myvideo>MyMovie</myvideo>
-		<mymusic>MyMusic</mymusic>
-		<mypictures>MyPhoto</mypictures>
-		<mytv>MyTV</mytv>
-		<one>1</one>
-		<two>2</two>
-		<three>3</three>
-		<four>4</four>
-		<five>5</five>
-		<six>6</six>
-		<seven>7</seven>
-		<eight>8</eight>
-		<nine>9</nine>
-		<zero>0</zero>
-	</remote>
 </lircmap>

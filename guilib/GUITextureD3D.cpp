@@ -103,6 +103,7 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
   {
     x[i] -= 0.5f;
     y[i] -= 0.5f;
+    z[i] -= 0.5f;
   };
 
   CUSTOMVERTEX verts[4];

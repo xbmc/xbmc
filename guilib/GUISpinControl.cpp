@@ -340,15 +340,6 @@ void CGUISpinControl::DynamicResourceAlloc(bool bOnOff)
   m_imgspinDownFocus.DynamicResourceAlloc(bOnOff);
 }
 
-void CGUISpinControl::SetInvalid()
-{
-  CGUIControl::SetInvalid();
-  m_imgspinUp.SetInvalid();
-  m_imgspinUpFocus.SetInvalid();
-  m_imgspinDown.SetInvalid();
-  m_imgspinDownFocus.SetInvalid();
-}
-
 void CGUISpinControl::Render()
 {
   if (!HasFocus())

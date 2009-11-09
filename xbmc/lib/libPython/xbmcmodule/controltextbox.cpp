@@ -136,7 +136,7 @@ namespace PYXBMC
     PyObject *pObjectText;
     string strText;
     if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText))	return NULL;
-    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
+    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     // create message
     ControlTextBox *pControl = (ControlTextBox*)self;
@@ -144,9 +144,9 @@ namespace PYXBMC
     msg.SetLabel(strText);
 
     // send message
-    PyXBMCGUILock();
+    PyGUILock();
     if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -187,9 +187,9 @@ namespace PYXBMC
     CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
 
     // send message
-    PyXBMCGUILock();
+    PyGUILock();
     if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -233,7 +233,7 @@ namespace PYXBMC
 
   void initControlTextBox_Type()
   {
-    PyXBMCInitializeTypeObject(&ControlTextBox_Type);
+    PyInitializeTypeObject(&ControlTextBox_Type);
 
     ControlTextBox_Type.tp_name = (char*)"xbmcgui.ControlTextBox";
     ControlTextBox_Type.tp_basicsize = sizeof(ControlTextBox);

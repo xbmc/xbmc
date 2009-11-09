@@ -19,12 +19,11 @@
 #ifndef MD5SUM_MD5_H
 #define MD5SUM_MD5_H
 
-#ifdef _WIN32
-typedef unsigned int uint32_t;
-typedef unsigned char uint8_t;
-#else
+//typedef unsigned int uint32_t;
+//typedef unsigned char uint8_t;
+//
 #include <inttypes.h>
-#endif
+
 /*
  *  Define the MD5 context structure
  *  Please DO NOT change the order or contents of the structure as various assembler files depend on it !!

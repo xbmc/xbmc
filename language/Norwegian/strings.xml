@@ -180,13 +180,13 @@
   <string id="237">Forminsking</string>
   <string id="238">Forstørring</string>
   <string id="239">Tøm spilleliste når den er ferdigspilt</string>
-  <string id="240"></string>
-  <string id="241"></string>
-  <string id="242"></string>
-  <string id="243"></string>
-  <string id="244"></string>
-  <string id="245"></string>
-  <string id="246"></string>
+  <string id="240">Start DVD'er automatisk</string>
+  <string id="241">Start VCD/SVCD'er automatisk</string>
+  <string id="242">Start musikk-CD'er automatisk</string>
+  <string id="243">Start spill automatisk</string>
+  <string id="244">Start filmer automatisk</string>
+  <string id="245">Start musikk automatisk</string>
+  <string id="246">Start bilder automatisk</string>
   <string id="247">Skript</string>
   <string id="248">Språk</string>
   <string id="249">Musikk</string>
@@ -349,7 +349,7 @@
   <string id="415">Laster ned miniatyrbilde...</string>
   <string id="416">Ikke tilgengelig</string>
   <string id="417">Viser: Store ikoner</string>
-  <string id="418"></string>
+  <string id="418">Aktivér bibliotek</string>
   <string id="419"></string>
   <string id="420"></string>
   <string id="421"></string>
@@ -378,7 +378,7 @@
   <string id="444">Film</string>
   <string id="445">Lyd</string>
   <string id="446">DVD</string>
-  <string id="447">Autospill media</string>
+  <string id="447">Automatisk start</string>
   <string id="448">LCD</string>
   <string id="449">Aktivert</string>
   <string id="450">Kolonner</string>
@@ -440,7 +440,7 @@
   <string id="513">Hovedmeny</string>
   <string id="514">Manuelle innstillinger</string>
   <string id="515">Sjanger</string>
-  <string id="516"></string>
+  <string id="516">Gjør lagrede arkiver med én fil gjennomsiktig</string>
   <string id="517">Nylig spilte album</string>
   <string id="518">Start</string>
   <string id="519">Start som..</string>
@@ -722,7 +722,6 @@
   <string id="1047">Andre..</string>
   <string id="1048">Brukernavn på webserver</string>
   <string id="1049">Skript-innstillinger</string>  
-  <string id="1050">Singler</string>
 
   <string id="1200">SMB-klient</string>
   <string id="1202">Arbeidsgruppe</string>
@@ -771,10 +770,6 @@
   <string id="1257">Ønsker du å koble til det oppdagede systemet?</string>
 
   <string id="1260">Zeroconf publisering</string>  
-
-  <string id="1300">Egen audioenhet</string>
-  <string id="1301">Egen gjennomgående enhet</string>
-
   <string id="1396">forbigående</string>
   <string id="1397">og</string>
   <string id="1398">kjølig</string>
@@ -805,10 +800,8 @@
   <string id="1450">Aktivér strømsparing i ventemodus</string>  
 
   <string id="2050">Spilletid</string>
-
-  <string id="2100">Skript feilet: %s</string>
   
-  <string id="4501">Aktivér LCD</string>
+  <string id="4501">LCD-type</string>
   
   <string id="10000">Forside</string>
   <string id="10001">Programmer</string>
@@ -999,7 +992,7 @@
   <string id="13110">Lagre oppløsning?</string>
   <string id="13111">Vil du beholde denne oppløsningen?</string>
   
-  <string id="13112">Høykvalitetsoppskalering</string>
+  <string id="13112">Høykvalitets programvareoppskalering</string>
   <string id="13113">Deaktivert</string>
   <string id="13114">Aktivert for SD materiale</string>
   <string id="13115">Alltid aktivert</string>
@@ -1008,9 +1001,8 @@
   <string id="13117">Bikubisk</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
-  <string id="13120">VDPAU</string>
-  <string id="13121">VDPAU HQ oppskaleringsnivå</string> 
-  <string id="13122">VDPAU studionivå fargekonvertering</string>  
+  <string id="13120">Streng pixmap-tekstur-binding (krever omstart)</string>
+ 
   <string id="13130">Skjermblanking</string>
   <string id="13131">Deaktivert</string>
   <string id="13132">Blank skjermer</string>
@@ -1197,7 +1189,7 @@
   <string id="13409">Topp 250</string>
   <string id="13410">Still inn Last.FM</string>
   <string id="13411">Minimum viftehastighet</string>
-  <string id="13412"></string>
+  <string id="13412">- RSS feeden har tekst fra høyre mot venstre</string>
   <string id="13413">Laster ned</string>
   <string id="13414">Skjul artist som bare vises i samlinger</string>
   <string id="13415">Rendringsmetode</string>
@@ -1205,10 +1197,8 @@
   <string id="13417">Grunnleggende shadere (ARB)</string>
   <string id="13418">Avanserte shadere (GLSL)</string>
   <string id="13419">Programvare</string>
-  <string id="13420">Løs trygt ut</string>
+  <string id="13420">Løs ut</string>
   <string id="13421">VDPAU</string>
-  <string id="13422">Start bildevisning her</string>
-  <string id="13423">Husk for denne katalogen</string>
 
   <string id="13500">A/V synkmetode</string>
   <string id="13501">Lydklokke</string>
@@ -1216,10 +1206,10 @@
   <string id="13503">Videoklokke (resamplet lyd)</string>
   <string id="13504">Maksimal resampling (%)</string>
   <string id="13505">Resamplingskvalitet</string>
-  <string id="13506">Lav (rask)</string>
+  <string id="13506">Lav</string>
   <string id="13507">Medium</string>
   <string id="13508">Høy</string>
-  <string id="13509">Veldig høy (sakte)</string>
+  <string id="13509">Veldig høy</string>
   <string id="13510">Synkronisér avspilling til bilde</string>
 
   <string id="13600">Apple fjernkontroll</string>
@@ -1382,7 +1372,7 @@
   <string id="15103">* Alle artister</string>
   <string id="15104">* Alle sanger</string>
   <string id="15105">* Alle sjangre</string>
-  <string id="15106"></string>
+  <string id="15106">Husk valgt fil ved videre navigasjon</string>
   <string id="15107">Mellomlagrer...</string>
   <string id="15108">Navigasjonslyder</string>
   <string id="15109">Standard for skinnet</string>
@@ -1472,7 +1462,7 @@
   <string id="15311">Sti:</string>
   
   <string id="16000">Generelt</string>
-  <string id="16001"></string>
+  <string id="16001">Konfigurér lydmaskinvare...</string>
   <string id="16002">Internettoppslag</string>
   <string id="16003">Spiller</string>
   <string id="16004">Spill media fra plate</string>
@@ -1495,11 +1485,10 @@
   <string id="16023">Behandling av sammenfletting</string>
   <string id="16024">Avbryter...</string>
   <string id="16025">Skriv inn artistnavn</string>
-  <string id="16026">Avspilling feilet</string>
-  <string id="16027">En eller flere objekter kunne ikke spilles</string>
+  <string id="16026">Avspilling av spilleliste avbrutt</string>
+  <string id="16027">For mange feilende enheter på rad</string>
   <string id="16028">Skriv inn verdi</string>
   
-  <string id="16029">Sjekk loggfila for detaljer</string>
   <string id="16030">Partymodus avbrutt.</string>
   <string id="16031">Ingen matchende sanger i bibliotek.</string>
   <string id="16032">Kunne ikke initialisere databasen.</string>
@@ -1546,8 +1535,6 @@
 
   <string id="17500">Skjermdvaletid </string>
   
-  <string id="19000">Bytt til kanal</string>
-
   <string id="20000">CDDA rip-mappe</string>
   <string id="20001">Bruk ekstern DVD-spiller</string>
   <string id="20002">Ekstern DVD-spiller</string>
@@ -1579,7 +1566,6 @@
   
   <!-- string id's 20027 thru 20034 are reserved for temperaturestrings  (LocalizeStrings.cpp)-->
   
-  <string id="20027">Sammendrag</string>
   <string id="20038">Lås musikksekjson</string>
   <string id="20039">Lås filmseksjon</string>
   <string id="20040">Lås bildeseksjon</string>
@@ -1695,7 +1681,7 @@
   <string id="20151">Avbryt slå-av-timer</string>
   <string id="20152">Lås innstillinger for %s</string>
   <string id="20153">Bla...</string>
-  <string id="20154">Sammendrag av informasjon</string>
+  <string id="20154">Grunnleggende informasjon</string>
   <string id="20155">Lagringsinformasjon</string>
   <string id="20156">Harddiskinformasjon</string>
   <string id="20157">DVD-spillerinformasjon</string>
@@ -1733,8 +1719,8 @@
   <string id="20189">Aktivér autorulling for handling og vurdering</string>
   <string id="20190">Egendefinert</string>
   <string id="20191">Aktiver debuglogging</string>
-  <string id="20192">Hent ned tilleggsinformasjon når biblioteket oppdateres</string>
-  <string id="20193"></string>
+  <string id="20192">Hent albuminformasjon når album legges til bibliotek</string>
+  <string id="20193">Hent artistinformasjon når artist legges til bibliotek</string>
   <string id="20194">Standardskraper</string>
   <string id="20195">Bytt skraper</string>
   <string id="20196">Eksportér musikkbibliotek</string>
@@ -1831,7 +1817,7 @@
   <string id="20379">Valgt katalog inneholder kun én TV-serie</string>
   <string id="20380">Ekskludér valgt katalog fra skanning</string>
   <string id="20381">Ekstra</string>
-  <string id="20382"></string>
+  <string id="20382">Hent miniatyrbilder for sesong automatisk</string>
   <string id="20383">Valgt katalog inneholder kun én video.</string>
   <string id="20384">Linke til TV-serie</string>
   <string id="20385">Fjern linken til TV-serie</string>
@@ -1851,7 +1837,7 @@
   <string id="20399">Gå til musikkvideoer fra album</string>
   <string id="20400">Gå til musikkvideoer av artist</string>
   <string id="20401">Spill musikkvideo</string>
-  <string id="20402"></string>
+  <string id="20402">Hent miniatyrbilder for skuespiller automatisk</string>
   <string id="20403">Velg miniatyrbilder for skuespiller</string>
   <string id="20404"></string>
   <string id="20405">Fjern bokmerke for episode</string>
@@ -1868,7 +1854,7 @@
   <string id="20416">Første gang sendt</string>
   <string id="20417">Forfatter</string>
   <string id="20418">Rens fil- og katalognavn</string>
-  <string id="20419"></string>
+  <string id="20419">Stable lignende TV-serier</string>
   <string id="20420">Aldri</string>
   <string id="20421">Hvis bare én sesong</string>
   <string id="20422">Alltid</string>
@@ -1883,9 +1869,6 @@
   <string id="20431">Overskriv gamle filer?</string>
   <string id="20432">Ekskludér fil fra biblioteksoppdateringer</string> 
   <string id="20433">Ekstrahér metadatainformasjon for media</string>
-  <string id="20434">Sett</string>
-  <string id="20435">Sett filmsettminiatyr</string>
-
   <!-- up to 21329 is reserved for the video db !! !-->
   
   <string id="21330">Vis skjulte filer og mapper</string>
@@ -1960,8 +1943,6 @@
   <string id="21414">Standard TV-serie-skraper</string> 
   <string id="21415">Standard musikkvideo-skraper</string> 
   <string id="21416">Aktivér retrett basert på skraper-språk</string> 
-  <string id="21417">- Skraperinnstillinger</string>
-  <string id="21418">Flerspråklig</string>
 
   <string id="21420">Verdi som er lik</string>
   <string id="21421">Smart spillelisteoppsett</string>
@@ -1992,8 +1973,7 @@
   <string id="21446">Lydkodek</string> 
   <string id="21447">Lydspråk</string> 
   <string id="21448">Språk for undertekster</string> 
-  <string id="21449">Fjernkontroll sender tastetrykk</string> 
-
+ 
   <string id="21800">Filnavn</string>
   <string id="21801">Filsti</string>
   <string id="21802">Filstørrelse</string>
@@ -2095,7 +2075,6 @@
   <string id="22019">Innspiller på tittel</string>
   <string id="22020">Guide</string>
   <string id="22021">Tillatt avvik i aspektforhold (i prosent)</string>
-  <string id="22022">Inkludér videofiler i lister</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Skrifttype for tekst</string>
@@ -2115,8 +2094,6 @@
 
   <string id="23000">Værplugin</string>
   <string id="23001">- Plugininnstillinger</string>
-
-  <string id="23050">Aktivér tekst-tv</string>
 
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">Ekstern spiller aktiv</string>

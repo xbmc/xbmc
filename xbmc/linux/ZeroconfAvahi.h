@@ -20,8 +20,6 @@
  *
  */
 
-#include "system.h"
-
 #ifdef HAS_AVAHI
 
 #include <memory>

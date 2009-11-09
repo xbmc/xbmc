@@ -78,7 +78,7 @@ namespace PYXBMC
 
   PyObject* XBMCGUI_Lock(PyObject *self, PyObject *args)
   {
-    PyXBMCGUILock();
+    PyGUILock();
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -92,7 +92,7 @@ namespace PYXBMC
 
   PyObject* XBMCGUI_Unlock(PyObject *self, PyObject *args)
   {
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -106,9 +106,9 @@ namespace PYXBMC
 
   PyObject* XBMCGUI_GetCurrentWindowId(PyObject *self, PyObject *args)
   {
-    PyXBMCGUILock();
+    PyGUILock();
     int id = g_windowManager.GetActiveWindow();
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
     return Py_BuildValue((char*)"l", id);
   }
 
@@ -121,9 +121,9 @@ namespace PYXBMC
 
   PyObject* XBMCGUI_GetCurrentWindowDialogId(PyObject *self, PyObject *args)
   {
-    PyXBMCGUILock();
+    PyGUILock();
     int id = g_windowManager.GetTopMostModalDialogID();
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
     return Py_BuildValue((char*)"l", id);
   }
 

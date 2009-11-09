@@ -53,7 +53,6 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetInvalid();
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetPosition(float posX, float posY);
   void SetPercentage(float fPercent);

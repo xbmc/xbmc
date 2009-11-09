@@ -44,7 +44,7 @@ public:
   virtual float GetDelay();
   virtual float GetCacheTime();
   CWin32DirectSound();
-  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
+  virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bAudioPassthrough=false);
   virtual ~CWin32DirectSound();
 
   virtual unsigned int AddPackets(const void* data, unsigned int len);
@@ -61,7 +61,6 @@ public:
   virtual void WaitCompletion();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
-  static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough) { };
 private:
   void UpdateCacheStatus();
   void CheckPlayStatus();

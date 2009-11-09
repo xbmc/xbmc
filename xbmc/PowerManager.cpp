@@ -177,7 +177,11 @@ void CPowerManager::Resume()
   // restart and undim lcd
 #ifdef HAS_LCD
   CLog::Log(LOGNOTICE, "%s: Restarting lcd", __FUNCTION__);
+#ifdef _LINUX
   g_lcd->SetBackLight(1);
+#else
+  g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
+#endif
   g_lcd->Stop();
   g_lcd->Initialize();
 #endif

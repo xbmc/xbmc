@@ -43,48 +43,4 @@
 		<mypictures>31650</mypictures> <!-- yellow -->
 		<myvideo>31649</myvideo> <!-- blue -->
 	</remote>
-	<remote device="Abstract">
-		<!-- This is a default remote used by IR Server Suite to send english names instead of remote codes -->
-		<!-- And should allow for more remotes to work out of the box with newer IR Server Suite installed  -->
-		<pause>Pause</pause>
-		<stop>Stop</stop>
-		<play>Play</play>
-		<forward>FastForward</forward>
-		<reverse>Rewind</reverse>
-		<left>Left</left>
-		<right>Right</right>
-		<up>Up</up>
-		<down>Down</down>
-		<select>OK</select>
-		<pageplus>ChannelUp</pageplus>
-		<pageminus>ChannelDown</pageminus>
-		<back>Back</back>
-		<menu>DVD</menu>
-		<title>RecordedTV</title>
-		<info>Info</info>
-		<skipplus>NextChapter</skipplus>
-		<skipminus>PreviousChapter</skipminus>
-		<display>Guide</display>
-		<start>Start</start>
-		<record>Record</record>
-		<volumeplus>VolumeUp</volumeplus>
-		<volumeminus>VolumeDown</volumeminus>
-		<mute>Mute</mute>
-		<power>Power</power>
-		<mytv>LiveTV</mytv>
-		<one>Number1</one>
-		<two>Number2</two>
-		<three>Number3</three>
-		<four>Number4</four>
-		<five>Number5</five>
-		<six>Number6</six>
-		<seven>Number7</seven>
-		<eight>Number8</eight>
-		<nine>Number9</nine>
-		<zero>Number0</zero>
-		<mytv>Red</mytv>
-		<mymusic>Green</mymusic>
-		<mypictures>Yellow</mypictures>
-		<myvideo>Blue</myvideo>
-	</remote>
 </irssmap>

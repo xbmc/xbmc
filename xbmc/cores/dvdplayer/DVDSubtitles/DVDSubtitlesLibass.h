@@ -22,7 +22,6 @@
  */
 
 #include "DllLibass.h"
-#include "utils/CriticalSection.h"
 
 /** Wrapper for Libass **/
 
@@ -51,6 +50,5 @@ private:
   ASS_Library* m_library;
   ASS_Track* m_track;
   ASS_Renderer* m_renderer;
-  CCriticalSection m_section;
 };
 

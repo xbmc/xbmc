@@ -260,6 +260,14 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
 
   // user successfully entered mastercode
   UpdateMasterLockRetryCount(true);
+  if (g_guiSettings.GetBool("masterlock.automastermode") &&
+      g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+  {
+      LockSources(false);
+      bMasterUser = true;
+      g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),
+                                                          g_localizeStrings.Get(20054));
+  }
   return true;
 }
 
@@ -282,6 +290,13 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
       {
         // user has run out of retry attempts
         g_passwordManager.iMasterLockRetriesLeft = 0;
+        if (g_guiSettings.GetBool("masterlock.enableshutdown"))
+        {
+          // Shutdown enabled, tell the user we're shutting off
+          CGUIDialogOK::ShowAndGetInput(12345, 12346, 12347, 0);
+          g_application.getApplicationMessenger().Shutdown();
+          return ;
+        }
         // Tell the user they ran out of retry attempts
         CGUIDialogOK::ShowAndGetInput(12345, 12346, 0, 0);
         return ;

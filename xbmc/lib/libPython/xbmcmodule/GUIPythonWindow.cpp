@@ -41,6 +41,9 @@ PyXBMCAction::~PyXBMCAction() {
 CGUIPythonWindow::CGUIPythonWindow(int id)
 : CGUIWindow(id, "")
 {
+#ifdef _LINUX
+  PyInitPendingCalls();
+#endif
   pCallbackWindow = NULL;
   m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
@@ -69,7 +72,7 @@ bool CGUIPythonWindow::OnAction(const CAction &action)
     inf->pCallbackWindow = pCallbackWindow;
 
     // aquire lock?
-    PyXBMC_AddPendingCall(Py_XBMC_Event_OnAction, inf);
+    Py_AddPendingCall(Py_XBMC_Event_OnAction, inf);
     PulseActionEvent();
   }
   return ret;
@@ -125,7 +128,7 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
             inf->pCallbackWindow = pCallbackWindow;
 
             // aquire lock?
-            PyXBMC_AddPendingCall(Py_XBMC_Event_OnControl, inf);
+            Py_AddPendingCall(Py_XBMC_Event_OnControl, inf);
             PulseActionEvent();
 
             // return true here as we are handling the event

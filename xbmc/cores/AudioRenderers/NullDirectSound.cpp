@@ -41,7 +41,7 @@ void CNullDirectSound::DoWork()
 CNullDirectSound::CNullDirectSound()
 {
 }
-bool CNullDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+bool CNullDirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
   CLog::Log(LOGERROR,"Creating a Null Audio Renderer, Check your audio settings as this should not happen");
   if (iChannels == 0)
@@ -77,7 +77,6 @@ void CNullDirectSound::Flush()
 {
   m_lastUpdate = CTimeUtils::GetTimeMS();
   m_packetsSent = 0;
-  Pause();
 }
 
 //***********************************************************************************************
@@ -97,7 +96,6 @@ bool CNullDirectSound::Resume()
 //***********************************************************************************************
 bool CNullDirectSound::Stop()
 {
-  Flush();
   return true;
 }
 

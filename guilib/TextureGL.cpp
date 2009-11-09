@@ -122,8 +122,7 @@ void CGLTexture::LoadToGPU()
   }
   else
   {
-    // changed from glCompressedTexImage2D to support GL < 1.3
-    glCompressedTexImage2DARB(GL_TEXTURE_2D, 0, format, 
+    glCompressedTexImage2D(GL_TEXTURE_2D, 0, format, 
       m_textureWidth, m_textureHeight, 0, GetPitch() * GetRows(), m_pixels);
   }
 

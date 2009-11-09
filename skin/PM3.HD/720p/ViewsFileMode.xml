@@ -637,7 +637,7 @@
 				<posy>25</posy>
 				<width>770</width>
 				<height>25</height>
-				<label fallback="416">$INFO[ListItem.Property(Album_Mood)]</label>
+				<label fallback="416">$INFO[ListItem.Property(mood)]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font11</font>
@@ -661,7 +661,7 @@
 				<posy>50</posy>
 				<width>770</width>
 				<height>25</height>
-				<label fallback="416">$INFO[listitem.Property(Album_Style)]</label>
+				<label fallback="416">$INFO[listitem.Property(style)]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font11</font>
@@ -685,7 +685,7 @@
 				<posy>75</posy>
 				<width>480</width>
 				<height>25</height>
-				<label fallback="416">$INFO[listitem.Property(Album_Label)]</label>
+				<label fallback="416">$INFO[listitem.Property(label)]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font11</font>
@@ -782,7 +782,7 @@
 				<posy>25</posy>
 				<width>770</width>
 				<height>25</height>
-				<label fallback="416">$INFO[ListItem.Property(Artist_Mood)]</label>
+				<label fallback="416">$INFO[ListItem.Property(mood)]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font11</font>
@@ -806,7 +806,7 @@
 				<posy>50</posy>
 				<width>770</width>
 				<height>25</height>
-				<label fallback="416">$INFO[listitem.Property(Artist_Style)]</label>
+				<label fallback="416">$INFO[listitem.Property(style)]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font11</font>
@@ -823,7 +823,6 @@
 				<aligny>center</aligny>
 				<font>font11</font>
 				<textcolor>grey2</textcolor>
-				<visible>!IsEmpty(listitem.Property(Artist_Born))</visible>
 			</control>
 			<control type="label">
 				<description>Born Value</description>
@@ -831,38 +830,11 @@
 				<posy>75</posy>
 				<width>770</width>
 				<height>25</height>
-				<label fallback="416">$INFO[listitem.Property(Artist_Born)]</label>
+				<label fallback="416">$INFO[listitem.Property(born)]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font11</font>
 				<scroll>true</scroll>
-				<visible>!IsEmpty(listitem.Property(Artist_Born))</visible>
-			</control>
-			<control type="label">
-				<description>Formed txt</description>
-				<posx>150</posx>
-				<posy>75</posy>
-				<width>140</width>
-				<height>25</height>
-				<label>$LOCALIZE[21894]:</label>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font11</font>
-				<textcolor>grey2</textcolor>
-				<visible>!IsEmpty(listitem.Property(Artist_Formed))</visible>
-			</control>
-			<control type="label">
-				<description>Formed Value</description>
-				<posx>165</posx>
-				<posy>75</posy>
-				<width>770</width>
-				<height>25</height>
-				<label fallback="416">$INFO[listitem.Property(Artist_Formed)]</label>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font11</font>
-				<scroll>true</scroll>
-				<visible>!IsEmpty(listitem.Property(Artist_Formed))</visible>
 			</control>
 		</control>
 	</include>

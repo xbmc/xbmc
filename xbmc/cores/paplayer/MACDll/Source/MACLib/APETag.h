@@ -220,11 +220,7 @@ public:
     // create an APE tag 
     // bAnalyze determines whether it will analyze immediately or on the first request
     // be careful with multiple threads / file pointer movement if you don't analyze immediately
-#if 0 // XBMC
     CAPETag(CIO * pIO, BOOL bAnalyze = TRUE);
-#else
-    CAPETag(CIO * pIO, BOOL bAnalyze = TRUE, BOOL bCheckID3Tag = TRUE);
-#endif
     CAPETag(const str_utf16 * pFilename, BOOL bAnalyze = TRUE);
     
     // destructor
@@ -277,11 +273,7 @@ public:
 private:
 
     // private functions
-#if 0 // XBMC
     int Analyze();
-#else
-    int Analyze(BOOL bCheckID3Tag = TRUE);
-#endif
     int GetTagFieldIndex(const str_utf16 * pFieldName);
     int WriteBufferToEndOfIO(void * pBuffer, int nBytes);
     int LoadField(const char * pBuffer, int nMaximumBytes, int * pBytes);

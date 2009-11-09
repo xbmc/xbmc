@@ -22,44 +22,9 @@
 #ifndef THUMBLOADER_H
 #define THUMBLOADER_H
 #include "BackgroundInfoLoader.h"
-#include "utils/JobManager.h"
-#include "FileItem.h"
 
 class CStreamDetails;
 class IStreamDetailsObserver;
-
-/*!
- \ingroup thumbs,jobs
- \brief Thumb extractor job class
-
- Used by the CVideoThumbLoader to perform asynchronous generation of thumbs
-
- \sa CVideoThumbLoader and CJob
- */
-class CThumbExtractor : public CJob
-{
-public:
-  CThumbExtractor(const CFileItem& item, const CStdString& listpath, bool thumb, const CStdString& path="", const CStdString& strTarget="");
-  virtual ~CThumbExtractor();
-
-  /*!
-   \brief Work function that extracts thumb.
-   */
-  virtual bool DoWork();
-
-  virtual const char* GetType() const
-  {
-    return "mediaflags";
-  }
- 
-  virtual bool operator==(const CJob* job) const;
- 
-  CStdString m_path; ///< path of video to extract thumb from
-  CStdString m_target; ///< thumbpath
-  CStdString m_listpath; ///< path used in fileitem list
-  CFileItem  m_item;
-  bool       m_thumb; ///< extract thumb?
-};
 
 class CThumbLoader : public CBackgroundInfoLoader
 {
@@ -70,22 +35,14 @@ public:
   bool LoadRemoteThumb(CFileItem *pItem);
 };
 
-class CVideoThumbLoader : public CThumbLoader, public CJobQueue
+class CVideoThumbLoader : public CThumbLoader
 {
 public:
   CVideoThumbLoader();
   virtual ~CVideoThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
+  bool ExtractThumb(const CStdString &strPath, const CStdString &strTarget, CStreamDetails *pStreamDetails);
   void SetStreamDetailsObserver(IStreamDetailsObserver *pObs) { m_pStreamDetailsObs = pObs; }
-
-  /*!
-   \brief Callback from CThumbExtractor on completion of a generated image
-   
-   Performs the callbacks and updates the GUI.
-   
-   \sa CImageLoader, IJobCallback
-   */
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
 protected:
   virtual void OnLoaderStart() ;

@@ -743,7 +743,7 @@ void CDVDPlayerAudio::SetSpeed(int speed)
 void CDVDPlayerAudio::Flush()
 {
   m_messageQueue.Flush();
-  m_messageQueue.Put( new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 1);
+  m_messageQueue.Put( new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
 }
 
 void CDVDPlayerAudio::WaitForBuffers()

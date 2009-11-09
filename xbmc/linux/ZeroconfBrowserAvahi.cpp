@@ -18,11 +18,9 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#include "ZeroconfBrowserAvahi.h"
-
 #ifdef HAS_AVAHI
 
+#include "ZeroconfBrowserAvahi.h"
 #include <utils/log.h>
 #include <SingleLock.h>
 #include <GUIWindowManager.h>

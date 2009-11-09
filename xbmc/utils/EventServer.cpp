@@ -84,13 +84,13 @@ void CEventServer::StartServer()
     return;
     
   // set default port
-  string port = (const char*)g_guiSettings.GetString("services.esport");
+  string port = (const char*)g_guiSettings.GetString("remoteevents.port");
   assert(port.length());
   m_iPort = atoi(port.c_str());
   assert(m_iPort <= 65535 && m_iPort >= 1);
 
   // max clients
-  m_iMaxClients = g_guiSettings.GetInt("services.esmaxclients");
+  m_iMaxClients = g_guiSettings.GetInt("remoteevents.maxclients");
   if (m_iMaxClients < 0)
   {
     CLog::Log(LOGERROR, "ES: Invalid maximum number of clients specified %d", m_iMaxClients);
@@ -103,7 +103,7 @@ void CEventServer::StartServer()
 
 void CEventServer::StopServer(bool bWait)
 {
-  CZeroconf::GetInstance()->RemoveService("services.eventserver");
+  CZeroconf::GetInstance()->RemoveService("servers.eventserver");
   StopThread(bWait);
 }
 
@@ -148,7 +148,7 @@ void CEventServer::Process()
   int packetSize = 0;
 
 #ifndef _XBOX
-  if (!g_guiSettings.GetBool("services.esallinterfaces"))
+  if (!g_guiSettings.GetBool("remoteevents.allinterfaces"))
     any_addr.SetAddress ("127.0.0.1");  // only listen on localhost
 #endif
 
@@ -172,7 +172,7 @@ void CEventServer::Process()
   }
 
   // bind to IP and start listening on port
-  int port_range = g_guiSettings.GetInt("services.esportrange");
+  int port_range = g_guiSettings.GetInt("remoteevents.portrange");
   if (port_range < 1 || port_range > 100)
   {
     CLog::Log(LOGERROR, "ES: Invalid port range specified %d, defaulting to 10", port_range);

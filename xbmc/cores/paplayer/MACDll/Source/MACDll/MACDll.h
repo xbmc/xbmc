@@ -34,9 +34,10 @@ Helper functions
 *****************************************************************************************/
 #if defined(__linux__) || defined(__APPLE__)
 #define __declspec(x) 
+#endif
+
 #ifndef __int64
 typedef int64_t __int64;
-#endif
 #endif
 
 extern "C"

@@ -275,14 +275,6 @@ void CGUISliderControl::AllocResources()
   m_guiMidFocus.AllocResources();
 }
 
-void CGUISliderControl::SetInvalid()
-{
-  CGUIControl::SetInvalid();
-  m_guiBackground.SetInvalid();
-  m_guiMid.SetInvalid();
-  m_guiMidFocus.SetInvalid();
-}
-
 bool CGUISliderControl::HitTest(const CPoint &point) const
 {
   if (m_guiBackground.HitTest(point)) return true;

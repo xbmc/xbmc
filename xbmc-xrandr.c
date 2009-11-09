@@ -35,7 +35,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include <stdint.h>
 #include <math.h>
 
 #if RANDR_MAJOR > 1 || (RANDR_MAJOR == 1 && RANDR_MINOR >= 2)
@@ -582,6 +581,16 @@ find_mode_by_xid (RRMode mode)
 }
 
 static XRRModeInfo *
+find_mode_by_name (char *name)
+{
+    name_t  mode_name;
+    init_name (&mode_name);
+    set_name_string (&mode_name, name);
+    return find_mode (&mode_name, 0);
+}
+
+static
+XRRModeInfo *
 find_mode_for_output (output_t *output, name_t *name)
 {
     XRROutputInfo   *output_info = output->output_info;
@@ -684,6 +693,32 @@ crtc_can_use_rotation (crtc_t *crtc, Rotation rotation)
     if (((rotations & dir) != 0) && ((rotations & reflect) == reflect))
 	return True;
     return False;
+}
+
+/*
+ * Report only rotations that are supported by all crtcs
+ */
+static Rotation
+output_rotations (output_t *output)
+{
+    Bool	    found = False;
+    Rotation	    rotation = RR_Rotate_0;
+    XRROutputInfo   *output_info = output->output_info;
+    int		    c;
+    
+    for (c = 0; c < output_info->ncrtc; c++)
+    {
+	crtc_t	*crtc = find_crtc_by_xid (output_info->crtcs[c]);
+	if (crtc)
+	{
+	    if (!found) {
+		rotation = crtc->crtc_info->rotations;
+		found = True;
+	    } else
+		rotation &= crtc->crtc_info->rotations;
+	}
+    }
+    return rotation;
 }
 
 static Bool
@@ -1558,7 +1593,7 @@ main (int argc, char **argv)
     int		rot = -1;
     int		query = 0;
     Rotation	rotation, current_rotation, rotations;
-    XRRScreenChangeNotifyEvent event;
+    XEvent	event;
     XRRScreenChangeNotifyEvent *sce;    
     char          *display_name = NULL;
     int 		i, j;
@@ -2048,8 +2083,8 @@ main (int argc, char **argv)
 		Atom		name = XInternAtom (dpy, prop->name, False);
 		Atom		type;
 		int		format;
-		unsigned char	*data = NULL;
-		int		nelements = 0;
+		unsigned char	*data;
+		int		nelements;
 		int		int_value;
 		unsigned long	ulong_value;
 		unsigned char	*prop_data;
@@ -2192,6 +2227,7 @@ main (int argc, char **argv)
     if (query_1_2 || (query && has_1_2 && !query_1))
     {
 	output_t    *output;
+	int	    m;
 	
 #define ModeShown   0x80000000
 	
@@ -2211,6 +2247,7 @@ main (int argc, char **argv)
 	    Atom	    *props;
 	    int		    j, k, nprop;
 	    Bool	    *mode_shown;
+	    Rotation	    rotations = output_rotations (output);
 
 	    printf ("  <output name=\"%s\" connected=\"%s\"", output_info->name, connection[output_info->connection]);
 	    if (mode)
@@ -2220,7 +2257,7 @@ main (int argc, char **argv)
 			mode_height (mode, output->rotation),
 			output->x, output->y);
 		if (verbose)
-		    printf (" id=\"%lx\"", mode->id);
+		    printf (" id=\"%x\"", mode->id);
 		if (output->rotation != RR_Rotate_0 || verbose)
 		{
 		    printf (" rotation=\"%s\"", 
@@ -2256,15 +2293,15 @@ main (int argc, char **argv)
 */
 	    if (mode)
 	    {
-		printf (" wmm=\"%lu\" hmm=\"%lu\"",
+		printf (" wmm=\"%d\" hmm=\"%d\"",
 			output_info->mm_width, output_info->mm_height);
 	    }
 	    printf (">\n");
 
 	    if (verbose)
 	    {
-		printf ("\tIdentifier: 0x%lx\n", output->output.xid);
-		printf ("\tTimestamp:  %lu\n", output_info->timestamp);
+		printf ("\tIdentifier: 0x%x\n", output->output.xid);
+		printf ("\tTimestamp:  %d\n", output_info->timestamp);
 		printf ("\tSubpixel:   %s\n", order[output_info->subpixel_order]);
 		printf ("\tClones:    ");
 		for (j = 0; j < output_info->nclone; j++)
@@ -2321,14 +2358,14 @@ main (int argc, char **argv)
 		    {
 			printf("\t%s: %d (0x%08x)",
 			       XGetAtomName (dpy, props[j]),
-			       *(int32_t*)prop, *(uint32_t*)prop);
+			       *(INT32 *)prop, *(INT32 *)prop);
 
  			if (propinfo->range && propinfo->num_values > 0) {
 			    printf(" range%s: ",
 				   (propinfo->num_values == 2) ? "" : "s");
 
 			    for (k = 0; k < propinfo->num_values / 2; k++)
-				printf(" (%ld,%ld)", propinfo->values[k * 2],
+				printf(" (%d,%d)", propinfo->values[k * 2],
 				       propinfo->values[k * 2 + 1]);
 			}
 
@@ -2372,7 +2409,7 @@ main (int argc, char **argv)
 		    XRRModeInfo	*mode = find_mode_by_xid (output_info->modes[j]);
 		    int		f;
 		    
-		    printf ("  %s (0x%lx) %6.1fMHz",
+		    printf ("  %s (0x%x) %6.1fMHz",
 			    mode->name, mode->id,
 			    (float)mode->dotClock / 1000000.0);
 		    for (f = 0; mode_flags[f].flag; f++)
@@ -2406,7 +2443,7 @@ main (int argc, char **argv)
 			if (strcmp (jmode->name, kmode->name) != 0) continue;
 			mode_shown[k] = True;
 			kmode->modeFlags |= ModeShown;
-			printf ("    <mode id=\"0x%lx\" name=\"%s\" w=\"%d\" h=\"%d\" hz=\"%.5f\"", kmode->id, kmode->name, kmode->width, kmode->height, mode_refresh (kmode));
+			printf ("    <mode id=\"0x%x\" name=\"%s\" w=\"%d\" h=\"%d\" hz=\"%.5f\"", kmode->id, kmode->name, kmode->width, kmode->height, mode_refresh (kmode));
 			if (kmode == output->mode_info)
 			    printf (" current=\"true\"");
 			else
@@ -2603,7 +2640,7 @@ main (int argc, char **argv)
 
 		printf ("Event received, type = %d\n", event.type);
 		/* update Xlib's knowledge of the event */
-		XRRUpdateConfiguration ((XEvent*)&event);
+		XRRUpdateConfiguration (&event);
 		if (event.type == ConfigureNotify)
 		    printf("Received ConfigureNotify Event!\n");
 

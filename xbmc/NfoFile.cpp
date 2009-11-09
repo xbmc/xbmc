@@ -148,10 +148,6 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, SScraperInfo& in
         info2.strContent = parser2.GetContent();
         info2.strLanguage = parser2.GetLanguage();
 
-        // skip if scraper requires settings and there's nothing set yet
-        if (parser2.RequiresSettings() && info2.settings.GetSettings().IsEmpty())
-          continue;
-
         // skip wrong content type
         if (info.strContent != info2.strContent && (info.strContent.Equals("movies") || info.strContent.Equals("tvshows") || info.strContent.Equals("musicvideos")))
           continue;

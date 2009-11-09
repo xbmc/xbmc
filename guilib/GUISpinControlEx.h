@@ -52,7 +52,6 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetInvalid();
   const CStdString GetCurrentLabel() const;
   void SetText(const std::string & aLabel) {m_buttonControl.SetLabel(aLabel);};
   virtual void SetVisible(bool bVisible);

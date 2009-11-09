@@ -96,8 +96,10 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
         else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
           int iItem = m_viewControl.GetSelectedItem();
+          bool bOkay = !g_guiSettings.GetBool("masterlock.loginlock");
           bool bCanceled;
-          bool bOkay = g_passwordManager.IsProfileLockUnlocked(m_viewControl.GetSelectedItem(), bCanceled);
+          if (!bOkay)
+            bOkay = g_passwordManager.IsProfileLockUnlocked(m_viewControl.GetSelectedItem(), bCanceled);
 
           if (bOkay)
           {

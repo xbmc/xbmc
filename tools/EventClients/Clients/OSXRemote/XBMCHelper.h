@@ -8,10 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 #import "xbmcclientwrapper.h"
-#import "HIDRemote/HIDRemote.h"
 
-@interface XBMCHelper : NSObject<HIDRemoteDelegate> {
-  HIDRemote *remote;
+@class AppleRemote, MultiClickRemoteBehavior;
+
+@interface XBMCHelper : NSObject {
+  AppleRemote* mp_remote_control;
   XBMCClientWrapper* mp_wrapper;
   NSString* mp_app_path;
   NSString* mp_home_path;

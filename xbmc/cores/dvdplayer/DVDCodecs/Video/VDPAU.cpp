@@ -71,14 +71,13 @@ CVDPAU::CVDPAU(int width, int height)
   m_glPixmapTexture = 0;
   m_Pixmap = 0;
   m_glContext = 0;
-  m_bPixmapCreated = false;
   if (!glXBindTexImageEXT)
     glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
   if (!glXReleaseTexImageEXT)
     glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
 
   totalAvailableOutputSurfaces = outputSurface = presentSurface = 0;
-  vid_width = vid_height = OutWidth = OutHeight = 0;
+  vid_width = vid_height = outWidth = outHeight = 0;
   memset(&outRect, 0, sizeof(VdpRect));
   memset(&outRectVid, 0, sizeof(VdpRect));
   m_Display = g_Windowing.GetDisplay();
@@ -92,7 +91,7 @@ CVDPAU::CVDPAU(int width, int height)
   max_references = 0;
 
   if (vdp_device)
-    InitCSCMatrix(height);
+    InitCSCMatrix();
 
   for (int i = 0; i < NUM_OUTPUT_SURFACES; i++)
     outputSurfaces[i] = VDP_INVALID_HANDLE;
@@ -109,7 +108,7 @@ CVDPAU::~CVDPAU()
     glXDestroyPixmap(m_Display, m_glPixmap);
     m_glPixmap = NULL;
   }
-  if (m_Pixmap && m_bPixmapCreated)
+  if (m_Pixmap)
   {
     CLog::Log(LOGINFO, "GLX: Destroying XPixmap");
     XFreePixmap(m_Display, m_Pixmap);
@@ -153,12 +152,12 @@ bool CVDPAU::MakePixmap(int width, int height)
     GLX_BIND_TO_TEXTURE_RGBA_EXT, True,
     GLX_DOUBLEBUFFER, True,
     GLX_Y_INVERTED_EXT, True,
-    GLX_X_RENDERABLE, True,
+    GLX_X_RENDERABLE, True, // Added by Rob
     None
   };
 
-  OutWidth = g_graphicsContext.GetWidth();
-  OutHeight = g_graphicsContext.GetHeight();
+  int OutWidth = g_graphicsContext.GetWidth();
+  int OutHeight = g_graphicsContext.GetHeight();
 
   CLog::Log(LOGNOTICE,"Creating %ix%i pixmap", OutWidth, OutHeight);
   int pixmapAttribs[] = {
@@ -167,9 +166,12 @@ bool CVDPAU::MakePixmap(int width, int height)
     None
   };
 
-  fbConfigs = glXChooseFBConfig(m_Display, DefaultScreen(m_Display), doubleVisAttributes, &num);
+//  if (m_bDoublebuffer)
+    fbConfigs = glXChooseFBConfig(m_Display, DefaultScreen(m_Display), doubleVisAttributes, &num);
+//  else
+//    fbConfigs = glXChooseFBConfig(m_Display, DefaultScreen(m_Display), singleVisAttributes, &num);
 
-    // Get our window attribs.
+  // Get our window attribs.
   XWindowAttributes wndattribs;
   XGetWindowAttributes(m_Display, DefaultRootWindow(m_Display), &wndattribs); // returns a status but I don't know what success is
 
@@ -207,7 +209,23 @@ bool CVDPAU::MakePixmap(int width, int height)
     CLog::Log(LOGINFO, "GLX: Creating Pixmap context");
     m_glContext = glXCreateContext(m_Display, visInfo, NULL, True);
     XFree(visInfo);
-    if (!glXMakeCurrent(m_Display, m_glPixmap, m_glContext))
+    if (glXMakeCurrent(m_Display, m_glPixmap, m_glContext))
+    {
+      CLog::Log(LOGINFO, "GL: Initialised Pixmap");
+      GLenum glErr;
+      if (!m_glPixmapTexture)
+      {
+        CLog::Log(LOGINFO, "GL: Generated Pixmap Texture");
+        glGenTextures (1, &m_glPixmapTexture);
+        glErr = glGetError();
+        if ((glErr == GL_INVALID_VALUE) | (glErr == GL_INVALID_OPERATION))
+        {
+          CLog::Log(LOGINFO, "glGenTextures returned an error!");
+          status = false;
+        }
+      }
+    }
+    else
     {
       CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
       status = false;
@@ -219,27 +237,23 @@ bool CVDPAU::MakePixmap(int width, int height)
     status = false;
   }
   XFree(fbConfigs);
-  m_bPixmapCreated = true;
   return status;
 }
 
 void CVDPAU::BindPixmap()
 {
-  if (m_glPixmap)
-  {
-    glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
-    glXBindTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
-  }
-  else CLog::Log(LOGERROR,"(VDPAU) BindPixmap called without valid pixmap");
+  CSingleLock lock(g_graphicsContext);
+  XLockDisplay(m_Display);
+  glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
+  glXBindTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
+  VerifyGLState();
+  XUnlockDisplay(m_Display);
 }
 
 void CVDPAU::ReleasePixmap()
 {
-  if (m_glPixmap)
-  {
-    glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
-  }
-  else CLog::Log(LOGERROR,"(VDPAU) ReleasePixmap called without valid pixmap");
+  glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
+  VerifyGLState();
 }
 
 void CVDPAU::Create(int width, int height)
@@ -302,16 +316,15 @@ void CVDPAU::CheckFeatures()
     tmpNoiseReduction = 0;
     tmpSharpness = 0;
     int featuresCount = 0;
-    VdpVideoMixerFeature features[6];
+    VdpVideoMixerFeature features[5];
 
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION;
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_SHARPNESS;
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-    if (g_guiSettings.GetBool("videoplayer.vdpauUpscalingLevel"))
-    {
-      CLog::Log(LOGNOTICE,"(VDPAU) enabling VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1");
-      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1;
-    }
+    if ( (g_guiSettings.GetInt("videoplayer.upscalingalgorithm") == 10) &&
+          (g_guiSettings.GetInt("videoplayer.highqualityupscaling") > 0) )
+      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 + g_guiSettings.GetInt("videoplayer.vdpauUpscalingLevel");
+    CLog::Log(LOGNOTICE,"upscalingalgoritm = %i vdpauUpscalingLevel = %i",g_guiSettings.GetInt("videoplayer.upscalingalgorithm"),g_guiSettings.GetInt("videoplayer.vdpauUpscalingLevel"));
 #endif
     if (interlaced && tmpDeint)
     {
@@ -330,18 +343,12 @@ void CVDPAU::CheckFeatures()
                                     parameter_values,
                                     &videoMixer);
     CheckStatus(vdp_st, __LINE__);
-#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-    if (g_guiSettings.GetBool("videoplayer.vdpauUpscalingLevel"))
-    {
-      SetHWUpscaling();
-    }
-#endif
   }
 
   if (tmpBrightness != g_stSettings.m_currentVideoSettings.m_Brightness ||
       tmpContrast   != g_stSettings.m_currentVideoSettings.m_Contrast)
   {
-    SetColor(vid_height);
+    SetColor();
     tmpBrightness = g_stSettings.m_currentVideoSettings.m_Brightness;
     tmpContrast = g_stSettings.m_currentVideoSettings.m_Contrast;
   }
@@ -363,7 +370,7 @@ void CVDPAU::CheckFeatures()
   }
 }
 
-void CVDPAU::SetColor(int Height)
+void CVDPAU::SetColor()
 {
   VdpStatus vdp_st;
 
@@ -372,7 +379,7 @@ void CVDPAU::SetColor(int Height)
   if (tmpContrast != g_stSettings.m_currentVideoSettings.m_Contrast)
     m_Procamp.contrast = (float)((g_stSettings.m_currentVideoSettings.m_Contrast)+50) / 100;
   vdp_st = vdp_generate_csc_matrix(&m_Procamp, 
-                                   (Height < 720)? VDP_COLOR_STANDARD_ITUR_BT_601 : VDP_COLOR_STANDARD_ITUR_BT_709,
+                                   VDP_COLOR_STANDARD_ITUR_BT_709,
                                    &m_CSCMatrix);
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
   if (g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
@@ -432,27 +439,6 @@ void CVDPAU::SetSharpness()
   CheckStatus(vdp_st, __LINE__);
 }
 
-void CVDPAU::SetHWUpscaling()
-{
-#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-  CLog::Log(LOGNOTICE,"Enabling VDPAU HQ Upscaling");
-  VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
-  VdpStatus vdp_st;
-  VdpBool available;
-  
-  vdp_st = vdp_video_mixer_query_feature_support(vdp_device, VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1, &available);
-  
-  if ( (vdp_st != VDP_STATUS_OK) || !available )
-  {
-    CLog::Log(LOGNOTICE,"VDPAU HQ upscaling not available");
-    return;
-  }
-  
-  VdpBool enabled[]={1};
-  vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-  CheckStatus(vdp_st, __LINE__);
-#endif
-}
 
 void CVDPAU::SetDeinterlacing()
 {
@@ -509,15 +495,7 @@ void CVDPAU::InitVDPAUProcs()
                                  mScreen, //x_screen,
                                  &vdp_device,
                                  &vdp_get_proc_address);
-
-  CLog::Log(LOGNOTICE,"vdp_device = 0x%08x vdp_st = 0x%08x",vdp_device,vdp_st);
-  if (vdp_st != VDP_STATUS_OK)
-  {
-    CLog::Log(LOGERROR,"(VDPAU) unable to init VDPAU - vdp_st = 0x%x.  Falling back.",vdp_st);
-    vdp_device = NULL;
-    return;
-  }
-  
+  CheckStatus(vdp_st, __LINE__);
   if (vdp_st != VDP_STATUS_OK) 
   {
     CLog::Log(LOGERROR,"(VDPAU) - Unable to create X11 device in %s",__FUNCTION__);
@@ -644,13 +622,6 @@ void CVDPAU::InitVDPAUProcs()
                                 (void **)&vdp_video_mixer_query_parameter_support
                                 );
   CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_MIXER_QUERY_FEATURE_SUPPORT,
-                                (void **)&vdp_video_mixer_query_feature_support
-                                );
-  CheckStatus(vdp_st, __LINE__);  
 
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
@@ -788,7 +759,7 @@ void CVDPAU::InitVDPAUOutput()
   CheckStatus(vdp_st, __LINE__);
 }
 
-void CVDPAU::InitCSCMatrix(int Height)
+void CVDPAU::InitCSCMatrix()
 {
   VdpStatus vdp_st;
   m_Procamp.struct_version = VDP_PROCAMP_VERSION;
@@ -797,7 +768,7 @@ void CVDPAU::InitCSCMatrix(int Height)
   m_Procamp.saturation     = 1.0;
   m_Procamp.hue            = 0;
   vdp_st = vdp_generate_csc_matrix(&m_Procamp,
-                                   (Height < 720)? VDP_COLOR_STANDARD_ITUR_BT_601 : VDP_COLOR_STANDARD_ITUR_BT_709,
+                                   VDP_COLOR_STANDARD_ITUR_BT_709,
                                    &m_CSCMatrix);
   CheckStatus(vdp_st, __LINE__);
 }
@@ -885,8 +856,8 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   vid_height = avctx->height;
 
   past[1] = past[0] = current = future = VDP_INVALID_HANDLE;
-  CLog::Log(LOGNOTICE, " (VDPAU) screenWidth:%i vidWidth:%i",OutWidth,vid_width);
-  CLog::Log(LOGNOTICE, " (VDPAU) screenHeight:%i vidHeight:%i",OutHeight,vid_height);
+  CLog::Log(LOGNOTICE, " (VDPAU) screenWidth:%i vidWidth:%i",g_graphicsContext.GetWidth(),vid_width);
+  CLog::Log(LOGNOTICE, " (VDPAU) screenHeight:%i vidHeight:%i",g_graphicsContext.GetHeight(),vid_height);
   ReadFormatOf(avctx->pix_fmt, vdp_decoder_profile, vdp_chroma_type);
 
   if(avctx->pix_fmt == PIX_FMT_VDPAU_H264)
@@ -922,8 +893,8 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   {
     vdp_st = vdp_output_surface_create(vdp_device,
                                        VDP_RGBA_FORMAT_B8G8R8A8,
-                                       OutWidth,
-                                       OutHeight,
+                                       g_graphicsContext.GetWidth(),
+                                       g_graphicsContext.GetHeight(),
                                        &outputSurfaces[i]);
     CheckStatus(vdp_st, __LINE__);
 
@@ -969,6 +940,7 @@ enum PixelFormat CVDPAU::FFGetFormat(struct AVCodecContext * avctx,
                                                      const PixelFormat * fmt)
 {
   //CLog::Log(LOGNOTICE," (VDPAU) %s",__FUNCTION__);
+  //pSingleton->CheckRecover();
   avctx->get_buffer      = FFGetBuffer;
   avctx->release_buffer  = FFReleaseBuffer;
   avctx->draw_horiz_band = FFDrawSlice;
@@ -987,6 +959,8 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   vdpau_render_state * render = NULL;
 
   vdp->Create(avctx->width,avctx->height);
+  // make sure device is recovered
+  vdp->CheckRecover();
 
   // find unused surface
   for(unsigned int i = 0; i < vdp->m_videoSurfaces.size(); i++)
@@ -1113,48 +1087,73 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   vdpau_render_state * render = (vdpau_render_state*)pFrame->data[0];
   VdpVideoMixerPictureStructure structure;
   VdpStatus vdp_st;
-  VdpTime time;
 
   if (!vdpauConfigured)
     return;
 
   outputSurface = outputSurfaces[surfaceNum];
+  interlaced = pFrame->interlaced_frame;
 
   CheckFeatures();
+  if (interlaced && tmpDeint)
+  {
+    past[1] = past[0];
+    past[0] = current;
+    current = future;
+    future = render->surface;
+  }
+  else
+    current = render->surface;
 
   if (interlaced && tmpDeint)
     structure = pFrame->top_field_first ? VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD :
                                           VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
   else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME; 
 
-  past[0] = past[1];
-  past[1] = current;
-  current = render->surface;
+  if (interlaced && tmpDeint)
+  {
+    past[1] = past[0];
+    past[0] = current;
+    current = future;
+    future = render->surface;
+  }
 
-  if (( (int)outRectVid.x1 != OutWidth ) ||
-      ( (int)outRectVid.y1 != OutHeight ))
+  if (( (int)outRectVid.x1 != g_graphicsContext.GetWidth() ) ||
+      ( (int)outRectVid.y1 != g_graphicsContext.GetHeight() ))
   {
     CSingleLock lock(g_graphicsContext);
     outRectVid.x0 = 0;
     outRectVid.y0 = 0;
-    outRectVid.x1 = OutWidth;
-    outRectVid.y1 = OutHeight;
-  }
-  
-  if (current == VDP_INVALID_HANDLE)
-    current = render->surface;
-  
-  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
+    outRectVid.x1 = g_graphicsContext.GetWidth();
+    outRectVid.y1 = g_graphicsContext.GetHeight();
 
+    /*if(g_graphicsContext.GetViewWindow().right < (long)vid_width)
+      outWidth = vid_width;
+    else
+      outWidth = g_graphicsContext.GetViewWindow().right;
+    if(g_graphicsContext.GetViewWindow().bottom < (long)vid_height)
+      outHeight = vid_height;
+    else
+      outHeight = g_graphicsContext.GetViewWindow().bottom;
+
+    outRect.x0 = 0;
+    outRect.y0 = 0;
+    outRect.x1 = outWidth;
+    outRect.y1 = outHeight;
+    */
+  }
+  //CLog::Log(LOGNOTICE,"surfaceNum %i",surfaceNum);
+//  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
+//  CheckStatus(vdp_st, __LINE__);
   vdp_st = vdp_video_mixer_render(videoMixer,
                                   VDP_INVALID_HANDLE,
                                   0,
                                   structure,
-                                  2,
-                                  past,
+                                  (interlaced && tmpDeint)? ARSIZE(past) : 0, //2,
+                                  (interlaced && tmpDeint)? past : NULL, //past,
                                   current,
-                                  0,
-                                  NULL,
+                                  (interlaced && tmpDeint)? 1 : 0, //1,
+                                  (interlaced && tmpDeint)? &(future) : NULL, //&(future),
                                   NULL,
                                   outputSurface,
                                   &(outRectVid),
@@ -1162,7 +1161,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
                                   0,
                                   NULL);
   CheckStatus(vdp_st, __LINE__);
-  
+
   surfaceNum++;
   if (surfaceNum >= totalAvailableOutputSurfaces) surfaceNum = 0;
 }
@@ -1170,14 +1169,17 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
 void CVDPAU::Present()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
+  //CLog::Log(LOGNOTICE,"presentSurfaceNum %i",presentSurfaceNum);
   VdpStatus vdp_st;
-
+  presentSurface = outputSurfaces[presentSurfaceNum];
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
                                           outputSurface,
                                           0,
                                           0,
                                           0);
   CheckStatus(vdp_st, __LINE__);
+  presentSurfaceNum++;
+  if (presentSurfaceNum >= totalAvailableOutputSurfaces) presentSurfaceNum = 0;
 }
 
 void CVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)
@@ -1194,10 +1196,10 @@ void CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
   {
     CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
     if (vdpauConfigured && !VDPAUSwitching) 
-      recover = true;
+      CheckRecover(true);
   }
   if (vdp_st == VDP_STATUS_HANDLE_DEVICE_MISMATCH)
-    recover = true;
+    CheckRecover(true);
 }
 
 #endif

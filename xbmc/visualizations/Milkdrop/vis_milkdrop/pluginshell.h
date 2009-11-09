@@ -269,8 +269,6 @@ public:
     int  PluginInitialize(LPDIRECT3DDEVICE9 device, int iPosX, int iPosY, int iWidth, int iHeight, float pixelRatio);                                                
     int  PluginRender(unsigned char *pWaveL, unsigned char *pWaveR);
     void PluginQuit();
-    int  AllocateDX8Stuff();
-    void CleanUpDX8Stuff(int final_cleanup);
 
     void ToggleHelp();
     void TogglePlaylist();
@@ -297,6 +295,8 @@ private:
     void CleanUpDirectX();
     int  InitGDIStuff();
     void CleanUpGDIStuff();
+    int  AllocateDX8Stuff();
+    void CleanUpDX8Stuff(int final_cleanup);
     int  InitNonDx8Stuff();
     void CleanUpNonDx8Stuff();
     int  InitVJStuff(RECT* pClientRect=NULL);

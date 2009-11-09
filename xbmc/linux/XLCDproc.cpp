@@ -47,7 +47,7 @@ XLCDproc::~XLCDproc()
 
 void XLCDproc::Initialize()
 {
-  if (!g_guiSettings.GetBool("system.haslcd"))
+  if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE)
     return ;//nothing to do
 
   // don't try to initialize too often
@@ -256,28 +256,24 @@ void XLCDproc::SetLine(int iLine, const CStdString& strLine)
   if (iLine < 0 || iLine >= (int)m_iRows)
     return;
 
-  CStdString cmd;
+  char cmd[1024];
   CStdString strLineLong = strLine;
   strLineLong.Trim();
   StringToLCDCharSet(strLineLong);
 
-  //make string fit the display if it's smaller than the width
-  if (strLineLong.size() < m_iColumns)
-    strLineLong.append(m_iColumns - strLineLong.size(), ' ');
-  //else if the string doesn't fit the display, lcdproc will scroll it, so we need a space
-  else if (strLineLong.size() > m_iColumns)
+  while (strLineLong.size() < m_iColumns)
     strLineLong += " ";
-  
+
   if (strLineLong != m_strLine[iLine])
   {
     int ln = iLine + 1;
 
     if (g_advancedSettings.m_lcdScrolldelay != 0)
-      cmd.Format("widget_set xbmc line%i 1 %i %i %i m %i \"%s\"\n", ln, ln, m_iColumns, ln, g_advancedSettings.m_lcdScrolldelay, strLineLong.c_str());
+      sprintf(cmd, "widget_set xbmc line%i 1 %i %i %i m %i \"%s\"\n", ln, ln, m_iColumns, ln, g_advancedSettings.m_lcdScrolldelay, strLineLong.c_str());
     else
-      cmd.Format("widget_set xbmc line%i 1 %i \"%s\"\n", ln, ln, strLineLong.c_str());
+      sprintf(cmd, "widget_set xbmc line%i 1 %i \"%s\"\n", ln, ln, strLineLong.c_str());
 
-    if (write(sockfd, cmd.c_str(), cmd.size()) < 0)
+    if (write(sockfd, cmd, strlen(cmd)) < 0)
     {
         m_bStop = true;
         CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket, LCDd not running?", __FUNCTION__);

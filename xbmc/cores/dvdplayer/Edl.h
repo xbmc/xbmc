@@ -48,8 +48,10 @@ public:
     Action action;
   };
 
-  bool ReadEditDecisionLists(const CStdString& strMovie, const float fFramesPerSecond);
+  bool ReadFiles(const CStdString& strMovie, const float fFramesPerSecond);
   void Clear();
+
+  bool ReadMythCommBreaks(const CURL& url, const float fFramesPerSecond);
 
   bool HasCut();
   bool HasSceneMarker();
@@ -61,8 +63,6 @@ public:
   bool InCut(int64_t iSeek, Cut *pCut = NULL);
 
   bool GetNextSceneMarker(bool bPlus, const int64_t iClock, int64_t *iSceneMarker);
-
-  static CStdString GetMPlayerEdl();
 
   static CStdString MillisecondsToTimeString(const int64_t iMilliseconds);
 
@@ -76,7 +76,6 @@ private:
   bool ReadComskip(const CStdString& strMovie, const float fFramesPerSecond);
   bool ReadVideoReDo(const CStdString& strMovie);
   bool ReadBeyondTV(const CStdString& strMovie);
-  bool ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPerSecond);
 
   bool AddCut(const Cut& NewCut);
   bool AddSceneMarker(const int64_t sceneMarker);

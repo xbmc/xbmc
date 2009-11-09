@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -47,7 +47,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;Py_NO_ENABLE_SHARED"
 				StringPooling="false"
 				MinimalRebuild="false"
 				ExceptionHandling="0"
@@ -142,7 +142,7 @@
 				AdditionalOptions="/EHa"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;Py_NO_ENABLE_SHARED;D3D_DEBUG_INFO"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;Py_NO_ENABLE_SHARED"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="0"
@@ -236,7 +236,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;Py_NO_ENABLE_SHARED"
 				StringPooling="false"
 				MinimalRebuild="false"
 				ExceptionHandling="0"
@@ -1974,27 +1974,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.h"
 					>
 				</File>
 				<File
@@ -2710,14 +2694,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\AliasShortcutUtils.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\AliasShortcutUtils.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\ApplicationMessenger.cpp"
 					>
 				</File>
@@ -2755,10 +2731,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\Autorun.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\AutorunMediaJob.cpp"
 					>
 				</File>
 				<File
@@ -4998,7 +4970,7 @@
 				Name="common"
 				>
 				<File
-					RelativePath="..\..\xbmc\utils\IoSupport.cpp"
+					RelativePath="..\..\xbmc\xbox\IoSupport.cpp"
 					>
 				</File>
 				<File
@@ -5007,6 +4979,10 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\Network.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\xbox\XKGeneral.cpp"
 					>
 				</File>
 			</Filter>
@@ -5284,10 +5260,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\Autorun.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\AutorunMediaJob.h"
 				>
 			</File>
 			<File
@@ -5615,7 +5587,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\utils\IoSupport.h"
+				RelativePath="..\..\xbmc\xbox\IoSupport.h"
 				>
 			</File>
 			<File
@@ -5832,6 +5804,10 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\XBAudioConfig.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\xbox\XKGeneral.h"
 				>
 			</File>
 		</Filter>

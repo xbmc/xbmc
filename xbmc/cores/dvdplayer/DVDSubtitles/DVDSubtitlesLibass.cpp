@@ -24,7 +24,6 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "GUISettings.h"
 #include "utils/log.h"
-#include "utils/SingleLock.h"
 
 using namespace std;
 
@@ -100,7 +99,7 @@ CDVDSubtitlesLibass::~CDVDSubtitlesLibass()
 /*Decode Header of SSA, needed to properly decode demux packets*/
 bool CDVDSubtitlesLibass::DecodeHeader(char* data, int size)
 {
-  CSingleLock lock(m_section);
+
   if(!m_library || !data)
     return false;
 
@@ -116,7 +115,6 @@ bool CDVDSubtitlesLibass::DecodeHeader(char* data, int size)
 
 bool CDVDSubtitlesLibass::DecodeDemuxPkt(char* data, int size, double start, double duration)
 {
-  CSingleLock lock(m_section);
   if(!m_track)
   {
     CLog::Log(LOGERROR, "CDVDSubtitlesLibass: No SSA header found.");
@@ -129,7 +127,6 @@ bool CDVDSubtitlesLibass::DecodeDemuxPkt(char* data, int size, double start, dou
 
 bool CDVDSubtitlesLibass::CreateTrack(char* buf)
 {
-  CSingleLock lock(m_section);
   if(!m_library)
   {
     CLog::Log(LOGERROR, "CDVDSubtitlesLibass: %s - No ASS library struct", __FUNCTION__);
@@ -168,7 +165,6 @@ long CDVDSubtitlesLibass::GetNrOfReferences()
 
 ASS_Image* CDVDSubtitlesLibass::RenderImage(int imageWidth, int imageHeight, double pts)
 {
-  CSingleLock lock(m_section);
   if(!m_renderer || !m_track)
   {
     CLog::Log(LOGERROR, "CDVDSubtitlesLibass: %s - Missing ASS structs(m_track or m_renderer)", __FUNCTION__);
@@ -181,7 +177,6 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(int imageWidth, int imageHeight, dou
 
 ASS_Event* CDVDSubtitlesLibass::GetEvents()
 {
-  CSingleLock lock(m_section);
   if(!m_track)
   {
     CLog::Log(LOGERROR, "CDVDSubtitlesLibass: %s -  Missing ASS structs(m_track)", __FUNCTION__);
@@ -192,7 +187,6 @@ ASS_Event* CDVDSubtitlesLibass::GetEvents()
 
 int CDVDSubtitlesLibass::GetNrOfEvents()
 {
-  CSingleLock lock(m_section);
   if(!m_track)
     return 0;
   return m_track->n_events;

@@ -65,7 +65,6 @@ protected:
   virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info, VIDEO::SScanSettings& settings) {};
   virtual void OnUnAssignContent(int iItem) {};
   virtual void OnQueueItem(int iItem);
-  virtual void OnDeleteItem(CFileItemPtr pItem);
   virtual void OnDeleteItem(int iItem);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items) {};
   virtual CStdString GetQuickpathName(const CStdString& strPath) const {return strPath;};
@@ -93,4 +92,5 @@ protected:
   CVideoDatabase m_database;
 
   CVideoThumbLoader m_thumbLoader;
+  bool m_bStreamDetailsChanged;
 };

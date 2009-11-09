@@ -31,7 +31,6 @@
 #include "../MediaManager.h"
 #include "File.h"
 #include "FileItem.h"
-#include "TextureManager.h"
 #ifdef _WIN32
 #include "WIN32Util.h"
 #endif
@@ -134,8 +133,6 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
       strIcon = "DefaultDVDRom.png";
     else if (pItem->IsCDDA())
       strIcon = "DefaultCDDA.png";
-    else if (pItem->IsRemovable() && g_TextureManager.HasTexture("DefaultRemovableDisk.png"))
-      strIcon = "DefaultRemovableDisk.png";
     else
       strIcon = "DefaultHardDisk.png";
 
@@ -219,7 +216,11 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
   // add our plug n play shares
 
   if (m_allowNonLocalSources)
+  {
     g_mediaManager.GetRemovableDrives(shares);
+
+    CUtil::AutoDetectionGetSource(shares);
+  }
 
 #ifdef HAS_DVD_DRIVE
   // and update our dvd share

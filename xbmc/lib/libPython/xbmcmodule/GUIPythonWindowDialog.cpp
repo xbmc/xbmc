@@ -21,7 +21,6 @@
 
 #include "GUIPythonWindowDialog.h"
 #include "GUIWindowManager.h"
-#include "Application.h"
 
 CGUIPythonWindowDialog::CGUIPythonWindowDialog(int id)
 :CGUIPythonWindow(id)
@@ -32,6 +31,16 @@ CGUIPythonWindowDialog::CGUIPythonWindowDialog(int id)
 
 CGUIPythonWindowDialog::~CGUIPythonWindowDialog(void)
 {
+}
+
+void CGUIPythonWindowDialog::Activate(int parentId)
+{
+  g_windowManager.RouteToWindow(this);
+
+  // active this dialog...
+  CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
+  OnMessage(msg);
+  m_bRunning = true;
 }
 
 bool CGUIPythonWindowDialog::OnMessage(CGUIMessage& message)
@@ -56,32 +65,11 @@ bool CGUIPythonWindowDialog::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIPythonWindowDialog::Show(bool show /* = true */)
+void CGUIPythonWindowDialog::Close()
 {
-  int count = ExitCriticalSection(g_graphicsContext);
-  ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, 0, show ? 1 : 0};
-  tMsg.lpVoid = this;
-  g_application.getApplicationMessenger().SendMessage(tMsg, true);
-  RestoreCriticalSection(g_graphicsContext, count);
-}
+  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
+  OnMessage(msg);
 
-void CGUIPythonWindowDialog::Show_Internal(bool show /* = true */)
-{
-  if (show)
-  {
-    g_windowManager.RouteToWindow(this);
-
-    // active this dialog...
-    CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
-    OnMessage(msg);
-    m_bRunning = true;
-  }
-  else // hide
-  {
-    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
-    OnMessage(msg);
-
-    g_windowManager.RemoveDialog(GetID());
-    m_bRunning = false;
-  }
+  g_windowManager.RemoveDialog(GetID());
+  m_bRunning = false;
 }

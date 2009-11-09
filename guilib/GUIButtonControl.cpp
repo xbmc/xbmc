@@ -198,13 +198,6 @@ void CGUIButtonControl::DynamicResourceAlloc(bool bOnOff)
   m_imgNoFocus.DynamicResourceAlloc(bOnOff);
 }
 
-void CGUIButtonControl::SetInvalid()
-{
-  CGUIControl::SetInvalid();
-  m_imgFocus.SetInvalid();
-  m_imgNoFocus.SetInvalid();
-}
-
 void CGUIButtonControl::SetLabel(const string &label)
 { // NOTE: No fallback for buttons at this point
   m_info.SetLabel(label, "");

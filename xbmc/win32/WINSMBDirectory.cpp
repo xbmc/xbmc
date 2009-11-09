@@ -373,6 +373,11 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
   {
     // noop
   }
+  else if(urlIn.GetUserNameA().empty() && !g_guiSettings.GetString("smb.username").IsEmpty())
+  {
+    urlIn.SetPassword(g_guiSettings.GetString("smb.password"));
+    urlIn.SetUserName(g_guiSettings.GetString("smb.username"));
+  }
 
   CStdString strAuth = URLEncode(urlIn);
 
@@ -434,6 +439,16 @@ CStdString CWINSMBDirectory::URLEncode(const CURL &url)
     flat += url.GetPassWord();
     flat += "@";
   }
+  else if( !url.GetHostName().IsEmpty() && !g_guiSettings.GetString("smb.username").IsEmpty() )
+  {
+    /* okey this is abit uggly to do this here, as we don't really only url encode */
+    /* but it's the simplest place to do so */
+    flat += g_guiSettings.GetString("smb.username");
+    flat += ":";
+    flat += g_guiSettings.GetString("smb.password");
+    flat += "@";
+  }
+
   flat += url.GetHostName();
 
   /* okey sadly since a slash is an invalid name we have to tokenize */

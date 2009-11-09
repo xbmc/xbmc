@@ -27,16 +27,11 @@
 #endif
 #include "GUIWindowScriptsInfo.h"
 #include "GUIWindowManager.h"
-#include "GUIWindowFileManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "ScriptSettings.h"
 #include "GUIDialogPluginSettings.h"
 #include "Settings.h"
-#if defined(__APPLE__)
-#include "SpecialProtocol.h"
-#include "CocoaInterface.h"
-#endif
 
 using namespace XFILE;
 
@@ -126,15 +121,6 @@ bool CGUIWindowScripts::OnPlayMedia(int iItem)
   CFileItemPtr pItem=m_vecItems->Get(iItem);
   CStdString strPath = pItem->m_strPath;
 
-#if defined(__APPLE__)
-  if (CUtil::GetExtension(pItem->m_strPath) == ".applescript")
-  {
-    CStdString osxPath = CSpecialProtocol::TranslatePath(pItem->m_strPath);
-    Cocoa_DoAppleScriptFile(osxPath.c_str());
-    return true;
-  }
-#endif
-
 #ifdef HAS_PYTHON
   /* execute script...
     * if script is already running do not run it again but stop it.
@@ -217,17 +203,6 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
       items.Remove(i);
       i--;
     }
-
-#if defined(__APPLE__)
-    // Remove extension & set thumbnail AppleScripts
-    CStdString itemLabel = item->GetLabel();
-    if (CUtil::GetExtension(itemLabel) == ".applescript")
-    {
-      CUtil::RemoveExtension(itemLabel);
-      item->SetLabel(itemLabel);
-      item->SetThumbnailImage(Cocoa_GetIconFromBundle("/Applications/AppleScript/Script Editor.app", "SECompiledScript"));
-    }
-#endif
   }
 
   items.SetProgramThumbs();
@@ -250,7 +225,6 @@ void CGUIWindowScripts::GetContextButtons(int itemNumber, CContextButtons &butto
   }
 
   buttons.Add(CONTEXT_BUTTON_INFO, 654);
-  buttons.Add(CONTEXT_BUTTON_DELETE, 117);
 }
 
 bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -265,16 +239,6 @@ bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     CStdString path, filename;
     CUtil::Split(m_vecItems->Get(itemNumber)->m_strPath, path, filename);
     CGUIDialogPluginSettings::ShowAndGetInput(path);
-    return true;
-  }
-  else if (button == CONTEXT_BUTTON_DELETE)
-  {
-    CStdString path;
-    CUtil::GetDirectory(m_vecItems->Get(itemNumber)->m_strPath,path);
-    CFileItem item2(path,true);
-    if (CGUIWindowFileManager::DeleteItem(&item2))
-      Update(m_vecItems->m_strPath);
-
     return true;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);

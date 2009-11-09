@@ -61,7 +61,6 @@ public:
   virtual void UpdateResolutions();
   virtual bool CenterWindow();
   virtual void NotifyAppFocusChange(bool bGaining);
-  virtual int GetNumScreens() { return m_nMonitorsCount; };
 
   virtual bool Minimize();
   virtual bool Restore();
@@ -76,11 +75,10 @@ public:
   HWND GetHwnd() { return m_hWnd; }
 
 protected:
-  virtual bool ResizeInternal(bool forceRefresh = false);
+  virtual bool ResizeInternal();
   virtual bool UpdateResolutionsInternal();
   virtual bool CreateBlankWindow();
   virtual bool BlankNonActiveMonitor(bool bBlank);
-  const MONITOR_DETAILS &GetMonitor(int screen) const;
 
   HWND m_hWnd;
   HWND m_hBlankWindow;

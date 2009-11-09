@@ -230,64 +230,7 @@ void Cocoa_DoAppleScript(const char* scriptSource)
   returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
   [scriptObject release];
 }
-  
-void Cocoa_DoAppleScriptFile(const char* filePath)
-{
-  NSString* scriptFile = [NSString stringWithUTF8String:filePath];
-  NSString* userScriptsPath = [@"~/Library/Application Support/Plex/scripts" stringByExpandingTildeInPath];
-  NSString* bundleScriptsPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/Plex/scripts"];
-  NSString* bundleSysScriptsPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"Contents/Resources/Plex/system/AppleScripts"];
-
-  // Check whether a script exists in the app bundle's AppleScripts folder
-  if ([[NSFileManager defaultManager] fileExistsAtPath:[bundleSysScriptsPath stringByAppendingPathComponent:scriptFile]])
-    scriptFile = [bundleSysScriptsPath stringByAppendingPathComponent:scriptFile];
-
-  // Check whether a script exists in app support
-  else if ([[NSFileManager defaultManager] fileExistsAtPath:[userScriptsPath stringByAppendingPathComponent:scriptFile]]) // Check whether a script exists in the app bundle
-    scriptFile = [userScriptsPath stringByAppendingPathComponent:scriptFile];
-
-  // Check whether a script exists in the app bundle's Scripts folder
-  else if ([[NSFileManager defaultManager] fileExistsAtPath:[bundleScriptsPath stringByAppendingPathComponent:scriptFile]])
-    scriptFile = [bundleScriptsPath stringByAppendingPathComponent:scriptFile];
-
-  // If no script could be found, check if we were given a full path
-  else if (![[NSFileManager defaultManager] fileExistsAtPath:scriptFile])
-    return;
-
-  NSAppleScript* appleScript = [[NSAppleScript alloc] initWithContentsOfURL:[NSURL fileURLWithPath:scriptFile] error:nil];
-  [appleScript executeAndReturnError:nil];
-  [appleScript release];
-}
-
-const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconName)
-{
-  NSString* bundlePath = [NSString stringWithCString:_bundlePath];
-  NSString* iconName = [NSString stringWithCString:_iconName];
-  NSBundle* bundle = [NSBundle bundleWithPath:bundlePath];
-  NSString* iconPath = [bundle pathForResource:iconName ofType:@"icns"];
-  NSString* bundleIdentifier = [bundle bundleIdentifier];
-
-  if (![[NSFileManager defaultManager] fileExistsAtPath:iconPath]) return NULL;
-
-  // Get the path to the target PNG icon
-  NSString* pngFile = [[NSString stringWithFormat:@"~/Library/Application Support/XBMC/userdata/Thumbnails/%@-%@.png",
-    bundleIdentifier, iconName] stringByExpandingTildeInPath];
-
-  // If no PNG has been created, open the ICNS file & convert
-  if (![[NSFileManager defaultManager] fileExistsAtPath:pngFile])
-  {
-    NSImage* icon = [[NSImage alloc] initWithContentsOfFile:iconPath];
-    if (!icon) return NULL;
-    NSBitmapImageRep* rep = [[NSBitmapImageRep alloc] initWithData:[icon TIFFRepresentation]];
-    NSData* png = [rep representationUsingType:NSPNGFileType properties:nil];
-    [png writeToFile:pngFile atomically:YES];
-    [png release];
-    [rep release];
-    [icon release];
-  }
-  return [pngFile UTF8String];
-}
-
+                   
 void Cocoa_MountPoint2DeviceName(char* path)
 {
   // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,

@@ -134,6 +134,9 @@ void CNetwork::StartServices()
 #ifdef HAS_WEB_SERVER
   g_application.StartWebServer();
 #endif
+#ifdef HAS_FTP_SERVER
+  g_application.StartFtpServer();
+#endif
 #ifdef HAS_UPNP
   g_application.StartUPnP();
 #endif
@@ -157,6 +160,9 @@ void CNetwork::StopServices(bool bWait)
   {
 #ifdef HAS_TIME_SERVER
     g_application.StopTimeServer();
+#endif
+#ifdef HAS_FTP_SERVER
+    g_application.StopFtpServer();
 #endif
 #ifdef HAS_UPNP
     g_application.StopUPnP(bWait);

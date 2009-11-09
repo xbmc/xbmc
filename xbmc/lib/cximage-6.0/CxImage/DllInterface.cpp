@@ -272,7 +272,7 @@ extern "C"
     return false;
   }
 
-  __declspec(dllexport) bool ReleaseImage(ImageInfo *info) 
+  bool __declspec(dllexport) ReleaseImage(ImageInfo *info) 
   {
     if (info && info->context)
     {
@@ -283,7 +283,7 @@ extern "C"
 	  return false;
   }
 
-  __declspec(dllexport) bool LoadImage(const char *file, unsigned int maxwidth, unsigned int maxheight, ImageInfo *info)
+  bool __declspec(dllexport) LoadImage(const char *file, unsigned int maxwidth, unsigned int maxheight, ImageInfo *info)
   {
     if (!file || !info) return false;
 
@@ -343,7 +343,7 @@ extern "C"
   };
 
 
-  __declspec(dllexport) bool CreateThumbnail(const char *file, const char *thumb, int maxWidth, int maxHeight, bool rotateExif)
+  bool __declspec(dllexport) CreateThumbnail(const char *file, const char *thumb, int maxWidth, int maxHeight, bool rotateExif)
   {
     if (!file || !thumb) return false;
 
@@ -387,7 +387,7 @@ extern "C"
     return SaveThumb(image, file, thumb, maxWidth, maxHeight, bNeedToConvert, rotateExif);
   };
 
-  __declspec(dllexport) bool CreateThumbnailFromMemory(BYTE *buffer, unsigned int size, const char *ext, const char *thumb, int maxWidth, int maxHeight)
+  bool __declspec(dllexport) CreateThumbnailFromMemory(BYTE *buffer, unsigned int size, const char *ext, const char *thumb, int maxWidth, int maxHeight)
   {
     if (!buffer || !size || !ext || !thumb) return false;
     // load the image
@@ -427,7 +427,7 @@ extern "C"
     return SaveThumb(image, "", thumb, maxWidth, maxHeight);
   };
 
-  __declspec(dllexport) bool CreateFolderThumbnail(const char **file, const char *thumb, int maxWidth, int maxHeight)
+  bool __declspec(dllexport) CreateFolderThumbnail(const char **file, const char *thumb, int maxWidth, int maxHeight)
   {
     if (!file || !file[0] || !file[1] || !file[2] || !file[3] || !thumb) return false;
 
@@ -503,7 +503,7 @@ extern "C"
   };
 
 
-  __declspec(dllexport) bool CreateThumbnailFromSurface(BYTE *buffer, unsigned int width, unsigned int height, unsigned int stride, const char *thumb)
+  bool __declspec(dllexport) CreateThumbnailFromSurface(BYTE *buffer, unsigned int width, unsigned int height, unsigned int stride, const char *thumb)
   {
     if (!buffer || !thumb) return false;
     // creates an image, and copies the surface data into it.
@@ -512,7 +512,6 @@ extern "C"
     image.AlphaCreate();
     if (!image.AlphaIsValid()) return false;
     bool fullyTransparent(true);
-    bool fullyOpaque(true);
     for (unsigned int y = 0; y < height; y++)
     {
       BYTE *ptr = buffer + (y * stride);
@@ -522,15 +521,12 @@ extern "C"
         BYTE g = *ptr++;
         BYTE r = *ptr++;
         BYTE a = *ptr++;  // alpha
-        if (a)
-          fullyTransparent = false;
-        if (a != 0xff)
-          fullyOpaque = false;
+        if (a) fullyTransparent = false;
         image.SetPixelColor(x, height - 1 - y, RGB(r, g, b));
         image.AlphaSet(x, height - 1 - y, a);
       }
     }
-    if (fullyTransparent || fullyOpaque)
+    if (fullyTransparent)
       image.AlphaDelete();
     image.SetJpegQuality(90);
     if (!image.Save(thumb, image.AlphaIsValid() ? CXIMAGE_FORMAT_PNG : CXIMAGE_FORMAT_JPG))
@@ -540,7 +536,7 @@ extern "C"
     }
     return true;
   };
-  __declspec(dllexport) int ConvertFile(const char *srcfile, const char *destfile, float rotateDegrees, int destwidth, int destheight, unsigned int destquality, bool mirror)
+   int __declspec(dllexport) ConvertFile(const char *srcfile, const char *destfile, float rotateDegrees, int destwidth, int destheight, unsigned int destquality, bool mirror)
   {
     if (!srcfile || !destfile || (destwidth ==-1 && destheight==-1)) return false;
     DWORD dwImageType = GetImageType(srcfile);

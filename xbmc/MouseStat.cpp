@@ -145,6 +145,11 @@ void CMouseStat::SetResolution(int maxX, int maxY, float speedX, float speedY)
   // speed is currently unused
   m_speedX = speedX;
   m_speedY = speedY;
+
+  // reset the coordinates
+  m_mouseState.x = m_maxX / 2;
+  m_mouseState.y = m_maxY / 2;
+  SetActive();
 }
 
 void CMouseStat::SetActive(bool active /*=true*/)

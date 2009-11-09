@@ -45,7 +45,6 @@ public:
   virtual bool IsAllowed(const CStdString &strFile) const { return true; };
 
   static bool SupportsFileOperations(const CStdString& strPath);
-  static bool IsLiveTV(const CStdString& strPath);
 
 private:
   void Release();

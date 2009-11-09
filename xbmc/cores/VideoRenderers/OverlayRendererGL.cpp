@@ -22,13 +22,13 @@
  */
 #include "system.h"
 #include "OverlayRenderer.h"
-#include "OverlayRendererUtil.h"
 #include "OverlayRendererGL.h"
 #include "LinuxRendererGL.h"
 #include "RenderManager.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
+#include "Application.h"
 #include "WindowingFactory.h"
 
 #ifdef HAS_GL
@@ -45,7 +45,6 @@ static void LoadTexture(GLenum target
   int width2  = NP2(width);
   int height2 = NP2(height);
 
-  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
   if(format == GL_RGBA)
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 4);
   else if(format == GL_RGB)
@@ -80,17 +79,71 @@ static void LoadTexture(GLenum target
   *v = (GLfloat)height / height2;
 }
 
+static uint32_t build_rgba(int a, int r, int g, int b)
+{
+#if USE_PREMULTIPLIED_ALPHA
+    return      a        << PIXEL_ASHIFT
+         | (r * a / 255) << PIXEL_RSHIFT
+         | (g * a / 255) << PIXEL_GSHIFT
+         | (b * a / 255) << PIXEL_BSHIFT;
+#else
+    return a << PIXEL_ASHIFT
+         | r << PIXEL_RSHIFT
+         | g << PIXEL_GSHIFT
+         | b << PIXEL_BSHIFT;
+#endif
+}
+
+#define clamp(x) (x) > 255.0 ? 255 : ((x) < 0.0 ? 0 : (int)(x+0.5f))
+static uint32_t build_rgba(int yuv[3], int alpha)
+{
+  int    a = alpha + ( (alpha << 4) & 0xff );
+  double r = 1.164 * (yuv[0] - 16)                          + 1.596 * (yuv[2] - 128);
+  double g = 1.164 * (yuv[0] - 16) - 0.391 * (yuv[1] - 128) - 0.813 * (yuv[2] - 128);
+  double b = 1.164 * (yuv[0] - 16) + 2.018 * (yuv[1] - 128);
+  return build_rgba(a, clamp(r), clamp(g), clamp(b));
+}
+
+
+long COverlayGL::Release()
+{
+  long count = InterlockedDecrement(&m_references);
+  if (count == 0)
+  {
+    if (g_application.IsCurrentThread())
+      delete this;
+    else
+      g_renderManager.AddCleanup(this);
+  }
+  return count;
+}
+
 COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
 {
   m_texture = 0;
 
-  uint32_t* rgba = convert_rgba(o, USE_PREMULTIPLIED_ALPHA);
+  uint32_t* rgba = (uint32_t*)malloc(o->width * o->height * sizeof(uint32_t));
 
   if(!rgba)
   {
-    CLog::Log(LOGERROR, "COverlayTextureGL::COverlayTextureGL - failed to convert overlay to rgb");
+    CLog::Log(LOGERROR, "COverlayTextureGL::COverlayTextureGL - failed to allocate data for rgb buffer");
     return;
   }
+
+  uint32_t palette[256];
+  memset(palette, 0, 256 * sizeof(palette[0]));
+  for(int i = 0; i < o->palette_colors; i++)
+    palette[i] = build_rgba((o->palette[i] >> PIXEL_ASHIFT) & 0xff
+                          , (o->palette[i] >> PIXEL_RSHIFT) & 0xff
+                          , (o->palette[i] >> PIXEL_GSHIFT) & 0xff
+                          , (o->palette[i] >> PIXEL_BSHIFT) & 0xff);
+
+  /* convert to bgra, glTexImage2D should be *
+   * able to load paletted formats directly, *
+   * not sure how one does that thou         */
+  for(int row = 0; row < o->height; row++)
+    for(int col = 0; col < o->width; col++)
+      rgba[row * o->width + col] = palette[ o->data[row * o->linesize + col] ];
 
   glGenTextures(1, &m_texture);
   glEnable(GL_TEXTURE_2D);
@@ -122,7 +175,6 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
     m_height = (float)o->height / o->source_height;
     m_pos    = POSITION_RELATIVE;
 
-#if 0
     if(center_x > 0.4 && center_x < 0.6
     && center_y > 0.8 && center_y < 1.0)
     {
@@ -132,7 +184,6 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
       m_y      = - 0.5 * m_height;
     }
     else
-#endif
     {
       /* render aligned to screen to avoid cropping problems */
       m_align  = ALIGN_SCREEN;
@@ -155,14 +206,97 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
 {
   m_texture = 0;
 
-  int min_x, max_x, min_y, max_y;
-  uint32_t* rgba = convert_rgba(o, USE_PREMULTIPLIED_ALPHA
-                              , min_x, max_x, min_y, max_y);
+  uint32_t* rgba = (uint32_t*)malloc(o->width * o->height * sizeof(uint32_t));
 
   if(!rgba)
   {
-    CLog::Log(LOGERROR, "COverlayTextureGL::COverlayTextureGL - failed to convert overlay to rgb");
+    CLog::Log(LOGERROR, "COverlayTextureGL::COverlayTextureGL - failed to allocate data for rgb buffer");
     return;
+  }
+
+  uint32_t palette[8];
+  for(int i = 0; i < 4; i++)
+  {
+    palette[i]   = build_rgba(o->color[i]          , o->alpha[i]);
+    palette[i+4] = build_rgba(o->highlight_color[i], o->highlight_alpha[i]);
+  }
+
+  uint32_t  color;
+  uint32_t* trg;
+  uint16_t* src;
+
+  int len, idx, draw;
+
+  int btn_x_start = 0
+    , btn_x_end   = 0
+    , btn_y_start = 0
+    , btn_y_end   = 0;
+
+  if(o->bForced)
+  {
+    btn_x_start = o->crop_i_x_start;
+    btn_x_end   = o->crop_i_x_end;
+    btn_y_start = o->crop_i_y_start;
+    btn_y_end   = o->crop_i_y_end;
+  }
+
+  int min_x = o->width
+    , max_x = 0
+    , min_y = o->height
+    , max_y = 0;
+
+  trg = rgba;
+  src = (uint16_t*)o->result;
+
+  for (int y = 0; y < o->height; y++)
+  {
+    for (int x = 0; x < o->width ; x += len)
+    {
+      /* Get the RLE part, then draw the line */
+      idx = *src & 0x3;
+      len = *src++ >> 2;
+
+      while( len > 0 )
+      {
+        draw  = len;
+        color = palette[idx];
+
+        if (y > btn_y_start && y < btn_y_end)
+        {
+          if     ( x <  btn_x_start && x + len >= btn_x_start) // starts outside
+            draw = btn_x_start - x;
+          else if( x >= btn_x_start && x       <= btn_x_end)   // starts inside
+          {
+            color = palette[idx + 4];
+            draw  = btn_x_end - x + 1;
+          }
+        }
+        /* make sure we are not requested to draw to far */
+        /* that part will be taken care of in next pass */
+        if( draw > len )
+          draw = len;
+
+        /* calculate cropping */
+        if(color & 0xff000000)
+        {
+          if(x < min_x)
+            min_x = x;
+          if(y < min_y)
+            min_y = y;
+          if(x + draw > max_x)
+            max_x = x + draw;
+          if(y > max_y)
+            max_y = y;
+        }
+
+        for(int i = 0; i < draw; i++)
+          trg[x + i] = color;
+
+        len -= draw;
+        x   += draw;
+      }
+    }
+    trg += o->width;
   }
 
   glGenTextures(1, &m_texture);
@@ -206,12 +340,136 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   m_x      = (float)0.0f;
   m_y      = (float)0.0f;
 
+  ASS_Image* images = o->m_libass->RenderImage((int)m_width, (int)m_height, pts);
+  ASS_Image* img;
+
   m_texture = ~(GLuint)0;
 
-  SQuads quads;
-  if(!convert_quad(o, pts, (int)m_width, (int)m_height, quads))
+  if (!images)
     return;
+    
+  // first calculate how many glyph we have and the total x length
 
+  int count  = 0;
+  int size_x = 0;
+  int size_y = 0;
+
+  for(img = images; img; img = img->next)
+  {
+    if((img->color & 0xff) == 0xff)
+      continue;
+
+    size_x += img->w;
+    count++;
+  }
+
+  while(size_x > (int)g_Windowing.GetMaxTextureSize())
+    size_x /= 2;
+
+  int curr_x = 0;
+  int curr_y = 0;
+
+  // calculate the y size of the texture
+
+  for(img = images; img; img = img->next)
+  {
+    if((img->color & 0xff) == 0xff)
+      continue;
+
+    // check if we need to split to new line
+    if (curr_x + img->w >= size_x)
+    {
+      size_y += curr_y + 1;
+      curr_x = 0;
+      curr_y = 0;
+    }
+
+    curr_x += img->w + 1;
+
+    if (img->h > curr_y)
+      curr_y = img->h;
+  }
+
+  size_y += curr_y + 1;
+
+  // allocate space for the glyph positions and texturedata
+
+  m_count  = count;
+  m_vertex = (SVertex*)calloc(count * 4, sizeof(SVertex));
+  SVertex* v = m_vertex;
+
+  unsigned char* srca = (unsigned char*)calloc(size_x * size_y, 1);
+  unsigned char* data = srca;
+
+  int y = 0;
+
+  curr_x = 0;
+  curr_y = 0;
+
+  for(img = images; img; img = img->next)
+  {
+    unsigned int color = img->color;
+    unsigned int alpha = (color & 0xff);
+    if(alpha == 0xff)
+      continue;
+
+    if (curr_x + img->w >= size_x)
+    {
+      curr_y += y + 1;
+      curr_x  = 0;
+      y       = 0;
+      data    = srca + curr_y * size_x;
+    }
+
+    unsigned int r = ((color >> 24) & 0xff);
+    unsigned int g = ((color >> 16) & 0xff);
+    unsigned int b = ((color >> 8 ) & 0xff);
+
+    for(int i = 0; i < 4; i++)
+    {
+      v[i].a = 255 - alpha;
+      v[i].r = r;
+      v[i].g = g;
+      v[i].b = b;
+    }
+
+    v[0].u = (float)(curr_x);
+    v[0].v = (float)(curr_y);
+
+    v[1].u = (float)(curr_x + img->w);
+    v[1].v = (float)(curr_y);
+
+    v[2].u = (float)(curr_x + img->w);
+    v[2].v = (float)(curr_y + img->h);
+
+    v[3].u = (float)(curr_x);
+    v[3].v = (float)(curr_y + img->h);
+
+    v[0].x = (float)(img->dst_x);
+    v[0].y = (float)(img->dst_y);
+
+    v[1].x = (float)(img->dst_x + img->w);
+    v[1].y = (float)(img->dst_y);
+
+    v[2].x = (float)(img->dst_x + img->w);
+    v[2].y = (float)(img->dst_y + img->h);
+
+    v[3].x = (float)(img->dst_x);
+    v[3].y = (float)(img->dst_y + img->h);
+
+    v += 4;
+
+    for(int i=0; i<img->h; i++)
+      memcpy(data        + size_x      * i
+           , img->bitmap + img->stride * i
+           , img->w);
+
+    if (img->h > y)
+      y = img->h;
+
+    curr_x += img->w + 1;
+    data   += img->w + 1;
+  }
   glGenTextures(1, &m_texture);
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, m_texture);
@@ -221,65 +479,16 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  LoadTexture(GL_TEXTURE_2D
-            , quads.size_x
-            , quads.size_y
-            , quads.size_x
-            , &m_u, &m_v
-            , GL_ALPHA
-            , quads.data);
+  LoadTexture(GL_TEXTURE_2D, size_x, size_y, size_x, &m_u, &m_v, GL_ALPHA, srca);
 
+  free(srca);
 
-  float scale_u = m_u / quads.size_x;
-  float scale_v = m_v / quads.size_y;
-
-  float scale_x = 1.0f / m_width;
-  float scale_y = 1.0f / m_height;
-
-  m_count  = quads.count;
-  m_vertex = (VERTEX*)calloc(m_count * 4, sizeof(VERTEX));
-
-  VERTEX* vt = m_vertex;
-  SQuad*  vs = quads.quad;
-
-  for(int i=0; i < quads.count; i++)
+  float scale_u = m_u / size_x;
+  float scale_v = m_v / size_y;
+  for(int i=0; i < count * 4; i++)
   {
-    for(int s = 0; s < 4; s++)
-    {
-      vt[s].a = vs->a;
-      vt[s].r = vs->r;
-      vt[s].g = vs->g;
-      vt[s].b = vs->b;
-
-      vt[s].x = scale_x;
-      vt[s].y = scale_y;
-      vt[s].z = 0.0f;
-      vt[s].u = scale_u;
-      vt[s].v = scale_v;
-    }
-
-    vt[0].x *= vs->x;
-    vt[0].u *= vs->u;
-    vt[0].y *= vs->y;
-    vt[0].v *= vs->v;
-
-    vt[1].x *= vs->x + vs->w;
-    vt[1].u *= vs->u + vs->w;
-    vt[1].y *= vs->y;
-    vt[1].v *= vs->v;
-
-    vt[2].x *= vs->x + vs->w;
-    vt[2].u *= vs->u + vs->w;
-    vt[2].y *= vs->y + vs->h;
-    vt[2].v *= vs->v + vs->h;
-
-    vt[3].x *= vs->x;
-    vt[3].u *= vs->u;
-    vt[3].y *= vs->y + vs->h;
-    vt[3].v *= vs->v + vs->h;
-
-    vs += 1;
-    vt += 4;
+    m_vertex[i].u *= scale_u;
+    m_vertex[i].v *= scale_v;
   }
 
   glBindTexture(GL_TEXTURE_2D, 0);
@@ -316,16 +525,16 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
-  glTranslatef(state.x    , state.y     , 0.0);
-  glScalef    (state.width, state.height, 1.0f);
+  glTranslatef(state.x, state.y, 0.0);
+  glScalef(state.width / m_width, state.height / m_height, 1.0f);
 
   VerifyGLState();
 
   glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
 
-  glColorPointer   (4, GL_UNSIGNED_BYTE, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, r));
-  glVertexPointer  (3, GL_FLOAT        , sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, x));
-  glTexCoordPointer(2, GL_FLOAT        , sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, u));
+  glColorPointer   (4, GL_UNSIGNED_BYTE, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
+  glVertexPointer  (3, GL_FLOAT        , sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, x));
+  glTexCoordPointer(2, GL_FLOAT        , sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, u));
   glEnableClientState(GL_COLOR_ARRAY);
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);

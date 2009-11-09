@@ -25,7 +25,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "system.h"
-#include "AdvancedSettings.h"
 #include "Application.h"
 #include "FileShoutcast.h"
 #include "GUISettings.h"
@@ -376,16 +375,7 @@ unsigned int CFileShoutcast::Read(void* lpBuf, int64_t uiBufSize)
     OutputDebugString("Read done\n");
     return 0;
   }
-
-  int slept=0;
-  while (m_ringbuf.GetMaxReadSize() <= 0 && slept < g_advancedSettings.m_curlconnecttimeout*1000)
-  {
-    Sleep(10);
-    slept += 10;
-  }
-  if (slept >= g_advancedSettings.m_curlconnecttimeout*1000)
-    return -1;
-
+  while (m_ringbuf.GetMaxReadSize() <= 0) Sleep(10);
   int iRead = m_ringbuf.GetMaxReadSize();
   if (iRead > uiBufSize) iRead = (int)uiBufSize;
   m_ringbuf.ReadBinary((char*)lpBuf, iRead);

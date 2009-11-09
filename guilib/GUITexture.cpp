@@ -462,11 +462,6 @@ void CGUITextureBase::DynamicResourceAlloc(bool allocateDynamically)
   m_allocateDynamically = allocateDynamically;
 }
 
-void CGUITextureBase::SetInvalid()
-{
-  m_invalid = true;
-}
-
 void CGUITextureBase::UpdateAnimFrame()
 {
   m_frameCounter++;

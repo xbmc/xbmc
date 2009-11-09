@@ -386,6 +386,13 @@ void CGUIWindowMusicPlayList::UpdateButtons()
       CONTROL_DISABLE(CONTROL_BTNNEXT);
       CONTROL_DISABLE(CONTROL_BTNPREVIOUS);
     }
+
+    // disable repeat options if clear on end is enabled
+    if (g_guiSettings.GetBool("mymusic.clearplaylistsonend"))
+    {
+      g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
+      CONTROL_DISABLE(CONTROL_BTNREPEAT);
+    }
   }
   else
   {

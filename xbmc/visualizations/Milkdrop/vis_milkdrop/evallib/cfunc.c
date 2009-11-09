@@ -33,7 +33,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <math.h>
 #include "Compiler.h"
 #include "eval.h"
-#pragma warning(disable: 4312)
+
 
 static float g_cmpaddtab[2]={0.0,1.0};
 static double g_closefact = 0.00001, g_half=0.5;

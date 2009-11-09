@@ -56,7 +56,6 @@ public:
   virtual void SetBackLight(int iLight) = 0;
   virtual void SetContrast(int iContrast) = 0;
   virtual void SetLine(int iLine, const CStdString& strLine) = 0;
-  virtual void DisableOnPlayback(bool playingVideo, bool playingMusic);
   CStdString GetProgressBar(double tCurrent, double tTotal);
   void SetCharset( UINT nCharset );
   CStdString GetBigDigit( UINT _nCharset, int _nDigit, UINT _nLine, UINT _nMinSize, UINT _nMaxSize, bool _bSpacePadding );
@@ -69,9 +68,6 @@ protected:
   unsigned char GetLCDCharsetCharacter( UINT _nCharacter, int _nCharset=-1);
   void LoadMode(TiXmlNode *node, LCD_MODE mode);
 private:
-  enum DISABLE_ON_PLAY { DISABLE_ON_PLAY_NONE = 0, DISABLE_ON_PLAY_VIDEO = 1, DISABLE_ON_PLAY_MUSIC = 2 };
-  int m_disableOnPlay;
-
   std::vector<CGUIInfoLabel> m_lcdMode[LCD_MODE_MAX];
   UINT m_eCurrentCharset;
 };

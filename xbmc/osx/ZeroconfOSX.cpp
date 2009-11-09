@@ -22,7 +22,6 @@
 #include "ZeroconfOSX.h"
 
 #include <string>
-#include <sstream>
 #include <SingleLock.h>
 #include <utils/log.h>
 
@@ -38,7 +37,6 @@ CZeroconfOSX::~CZeroconfOSX()
   doStop();
 }
 
-
 //methods to implement for concrete implementations
 bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
                       const std::string& fcr_type,
@@ -49,7 +47,7 @@ bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
             fcr_type.c_str(), fcr_name.c_str(), f_port);
 
   CFStringRef name = CFStringCreateWithCString (NULL,
-                                                assemblePublishedName(fcr_name).c_str(),
+                                                fcr_name.c_str(),
                                                 kCFStringEncodingUTF8
                                                 );
   CFStringRef type = CFStringCreateWithCString (NULL,
@@ -139,25 +137,3 @@ void CZeroconfOSX::cancelRegistration(CFNetServiceRef theService)
   CFNetServiceCancel(theService);
   CFRelease(theService);
 }
-
-
-std::string CZeroconfOSX::assemblePublishedName(const std::string& fcr_given_name)
-{
-  std::stringstream ss;
-  ss << fcr_given_name << '@';
-
-  // get our hostname
-  char lp_hostname[256];
-  if (gethostname(lp_hostname, sizeof(lp_hostname)))
-  {
-    //TODO
-    CLog::Log(LOGERROR, "CZeroconfAvahi::assemblePublishedName: could not get hostname.. hm... waaaah! PANIC!");
-    ss << "DummyThatCantResolveItsName";
-  }
-  else
-  {
-    ss << lp_hostname;
-  }
-  return ss.str();
-}
-

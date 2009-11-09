@@ -50,24 +50,25 @@ extern "C" {
 
 namespace PYXBMC
 {
-  int   PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, int pos = -1);
-  void  PyXBMCGUILock();
-  void  PyXBMCGUIUnlock();
-  const char* PyXBMCGetDefaultImage(char* controlType, char* textureType, char* cDefault);
-  bool  PyXBMCWindowIsNull(void* pWindow);
+  int   PyGetUnicodeString(std::string& buf, PyObject* pObject, int pos = -1);
+  void  PyGUILock();
+  void  PyGUIUnlock();
+  const char* PyGetDefaultImage(char* controlType, char* textureType, char* cDefault);
+  bool  PyWindowIsNull(void* pWindow);
 
-  void  PyXBMCInitializeTypeObject(PyTypeObject* type_object);
+  void  PyInitializeTypeObject(PyTypeObject* type_object);
 }
 
-// Python doesn't play nice with PyXBMC_AddPendingCall
-// and PyXBMC_MakePendingCalls as it only allows them from
+// Python doesn't play nice with Py_AddPendingCall
+// and Py_MakePendingCalls as it only allows them from
 // the main python thread, which isn't what we want, so we have our own versions.
 
-#define PyXBMC_AddPendingCall _PyXBMC_AddPendingCall
-#define PyXBMC_MakePendingCalls _PyXBMC_MakePendingCalls
+#define Py_AddPendingCall _Py_AddPendingCall
+#define Py_MakePendingCalls _Py_MakePendingCalls
   
-void _PyXBMC_AddPendingCall(int(*func)(void*), void *arg);
-void _PyXBMC_MakePendingCalls();
+void _Py_AddPendingCall(int(*func)(void*), void *arg);
+void _Py_MakePendingCalls();
+void PyInitPendingCalls();
 
 #ifdef __cplusplus
 }

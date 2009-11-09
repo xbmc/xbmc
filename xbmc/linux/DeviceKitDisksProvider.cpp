@@ -1,68 +1,7 @@
-/*
- *      Copyright (C) 2005-2009 Team XBMC
- *      http://www.xbmc.org
- *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
- *
- */
 #include "DeviceKitDisksProvider.h"
 #ifdef HAS_DBUS
 #include "Util.h"
 #include "AdvancedSettings.h"
-#include "LocalizeStrings.h"
-
-void CDeviceKitDiskDeviceOldAPI::Update()
-{
-  m_isPartition = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "device-is-partition");
-
-  if (m_isPartition)
-  {
-    PropertyMap properties;
-    CDBusUtil::GetAll(properties, "org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device");
-
-    m_UDI         = properties["id-uuid"];
-    m_Label       = properties["id-label"];
-    m_FileSystem  = properties["id-type"];
-    m_MountPath   = properties["device-mount-paths"];
-    m_isMounted   = properties["device-is-mounted"].Equals("true");
-    m_isRemovable = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", properties["partition-slave"].c_str(), "org.freedesktop.DeviceKit.Disks.Device", "device-is-removable");
-
-    m_PartitionSizeGiB = (strtoull(properties["partition-size"].c_str(), NULL, 10) / 1024.0 / 1024.0 / 1024.0);
-  }
-}
-
-void CDeviceKitDiskDeviceNewAPI::Update()
-{
-  PropertyMap properties;
-  
-  m_isPartition = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsPartition");
-  if (m_isPartition)
-  {
-    CDBusUtil::GetAll(properties, "org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device");
-
-    m_UDI         = properties["IdUuid"];
-    m_Label       = properties["IdLabel"];
-    m_FileSystem  = properties["IdType"];
-    m_MountPath   = properties["DeviceMountPaths"];
-    m_isMounted   = properties["DeviceIsMounted"].Equals("true");
-    m_isRemovable = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable");
-
-    m_PartitionSizeGiB = (strtoull(properties["PartitionSize"].c_str(), NULL, 10) / 1024.0 / 1024.0 / 1024.0);
-  }
-}
 
 CDeviceKitDiskDevice::CDeviceKitDiskDevice(const char *DeviceKitUDI)
 {
@@ -73,7 +12,26 @@ CDeviceKitDiskDevice::CDeviceKitDiskDevice(const char *DeviceKitUDI)
   m_isMounted = false;
   m_isMountedByUs = false;
   m_isRemovable = false;
-  m_isPartition = false;
+
+  m_isPartition = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsPartition");
+
+  Update();
+}
+
+void CDeviceKitDiskDevice::Update()
+{
+  PropertyMap properties;
+
+  if (m_isPartition)
+  {
+    CDBusUtil::GetAll(properties, "org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device");
+
+    m_UDI         = properties["IdUuid"];
+    m_MountPath   = properties["DeviceMountPaths"];
+    m_FileSystem  = properties["IdType"];
+    m_isMounted   = properties["DeviceIsMounted"].Equals("true");
+    m_isRemovable = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable");
+  }
 }
 
 bool CDeviceKitDiskDevice::Mount()
@@ -116,7 +74,9 @@ bool CDeviceKitDiskDevice::UnMount()
 
     DBusMessage *reply = message.SendSystem();
     if (reply)
+    {
       m_isMountedByUs = m_isMounted = false;
+    }
 
     return !m_isMounted;
   }
@@ -127,11 +87,8 @@ bool CDeviceKitDiskDevice::UnMount()
 CMediaSource CDeviceKitDiskDevice::ToMediaShare()
 {
   CMediaSource source;
-  source.strPath = m_MountPath;
-  if (m_Label.empty())
-    source.strName.Format("%.1f GB %s", m_PartitionSizeGiB, g_localizeStrings.Get(13376).c_str());
-  else
-    source.strName = m_Label;
+  source.strPath = m_MountPath.c_str();
+  source.strName = CUtil::GetFileName(m_MountPath.c_str());
   source.m_iDriveType =  m_isRemovable ? CMediaSource::SOURCE_TYPE_REMOVABLE : CMediaSource::SOURCE_TYPE_LOCAL;
   source.m_ignore = true;
   return source;
@@ -161,8 +118,16 @@ CDeviceKitDisksProvider::~CDeviceKitDisksProvider()
 {
   DeviceMap::iterator itr;
 
-  for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
+	for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
+	{
+    CDeviceKitDiskDevice *device = itr->second;
+/* DeviceKit.Disks isn't able to enumerate unmounted devices even if they still are plugged in
+   So as a failsafe we don't unmount on exit, even if it's a good thing safetywise to do. */
+/*    if (device->m_isMountedByUs)
+      device->UnMount();*/
+
     delete m_AvailableDevices[itr->first];
+	}
 
   m_AvailableDevices.clear();
 
@@ -177,13 +142,10 @@ CDeviceKitDisksProvider::~CDeviceKitDisksProvider()
 
 void CDeviceKitDisksProvider::Initialize()
 {
-  m_DaemonVersion = CDBusUtil::GetInt32("org.freedesktop.DeviceKit.Disks", "/org/freedesktop/DeviceKit/Disks", "org.freedesktop.DeviceKit.Disks", "DaemonVersion");
-  CLog::Log(LOGDEBUG, "DeviceKit.Disks: DaemonVersion %i", m_DaemonVersion);
-
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: Querying available devices");
   std::vector<CStdString> devices = EnumerateDisks();
   for (unsigned int i = 0; i < devices.size(); i++)
-    DeviceAdded(devices[i].c_str(), NULL);
+    DeviceAdded(devices[i].c_str());
 }
 
 bool CDeviceKitDisksProvider::Eject(CStdString mountpath)
@@ -192,8 +154,8 @@ bool CDeviceKitDisksProvider::Eject(CStdString mountpath)
   CStdString path(mountpath);
   CUtil::RemoveSlashAtEnd(path);
 
-  for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
-  {
+	for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
+	{
     CDeviceKitDiskDevice *device = itr->second;
     if (device->m_MountPath.Equals(path))
       return device->UnMount();
@@ -204,24 +166,10 @@ bool CDeviceKitDisksProvider::Eject(CStdString mountpath)
 
 std::vector<CStdString> CDeviceKitDisksProvider::GetDiskUsage()
 {
-  std::vector<CStdString> devices;
-  DeviceMap::iterator itr;
-
-  for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
-  {
-    CDeviceKitDiskDevice *device = itr->second;
-    if (device->IsApproved())
-    {
-      CStdString str;
-      str.Format("%s %.1f GiB", device->m_MountPath.c_str(), device->m_PartitionSizeGiB);
-      devices.push_back(str);
-    }
-  }
-
-  return devices;
+  return std::vector<CStdString>();
 }
 
-bool CDeviceKitDisksProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
+bool CDeviceKitDisksProvider::PumpDriveChangeEvents()
 {
   bool result = false;
   if (m_connection)
@@ -236,11 +184,11 @@ bool CDeviceKitDisksProvider::PumpDriveChangeEvents(IStorageEventsCallback *call
       {
         result = true;
         if (dbus_message_is_signal(msg, "org.freedesktop.DeviceKit.Disks", "DeviceAdded"))
-          DeviceAdded(object, callback);
+          DeviceAdded(object);
         else if (dbus_message_is_signal(msg, "org.freedesktop.DeviceKit.Disks", "DeviceRemoved"))
-          DeviceRemoved(object, callback);
+          DeviceRemoved(object);
         else if (dbus_message_is_signal(msg, "org.freedesktop.DeviceKit.Disks", "DeviceChanged"))
-          DeviceChanged(object, callback);
+          DeviceChanged(object);
       }
       dbus_message_unref(msg);
     }
@@ -270,7 +218,7 @@ bool CDeviceKitDisksProvider::HasDeviceKitDisks()
   return hasDeviceKitDisks;
 }
 
-void CDeviceKitDisksProvider::DeviceAdded(const char *object, IStorageEventsCallback *callback)
+void CDeviceKitDisksProvider::DeviceAdded(const char *object)
 {
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: DeviceAdded (%s)", object);
 
@@ -280,36 +228,29 @@ void CDeviceKitDisksProvider::DeviceAdded(const char *object, IStorageEventsCall
     delete m_AvailableDevices[object];
   }
 
-  CDeviceKitDiskDevice *device = NULL;
-  if (m_DaemonVersion >= 7)
-    device = new CDeviceKitDiskDeviceNewAPI(object);
-  else
-    device = new CDeviceKitDiskDeviceOldAPI(object);
+  CDeviceKitDiskDevice *device = new CDeviceKitDiskDevice(object);
   m_AvailableDevices[object] = device;
 
   if (g_advancedSettings.m_handleMounting)
     device->Mount();
-
-  if (device->m_isMounted && callback)
-    callback->OnStorageAdded(device->m_Label, device->m_MountPath);
 }
 
-void CDeviceKitDisksProvider::DeviceRemoved(const char *object, IStorageEventsCallback *callback)
+void CDeviceKitDisksProvider::DeviceRemoved(const char *object)
 {
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: DeviceRemoved (%s)", object);
 
   CDeviceKitDiskDevice *device = m_AvailableDevices[object];
   if (device)
   {
-    if (device->m_isMounted && callback)
-      callback->OnStorageUnsafelyRemoved(device->m_Label);
+    if (device->m_isMountedByUs)
+      CLog::Log(LOGWARNING, "DeviceKit.Disks: Unsafe removal of %s", object);
 
     delete m_AvailableDevices[object];
-    m_AvailableDevices.erase(object);
+    m_AvailableDevices[object] = NULL;
   }
 }
 
-void CDeviceKitDisksProvider::DeviceChanged(const char *object, IStorageEventsCallback *callback)
+void CDeviceKitDisksProvider::DeviceChanged(const char *object)
 {
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: DeviceChanged (%s)", object);
 
@@ -317,17 +258,10 @@ void CDeviceKitDisksProvider::DeviceChanged(const char *object, IStorageEventsCa
   if (device == NULL)
   {
     CLog::Log(LOGWARNING, "DeviceKit.Disks: Inconsistency found! DeviceChanged on an unindexed disk");
-    DeviceAdded(object, callback);
+    DeviceAdded(object);
   }
   else
-  {
-    bool mounted = device->m_isMounted;
     device->Update();
-    if (!mounted && device->m_isMounted && callback)
-      callback->OnStorageAdded(device->m_MountPath, device->m_Label);
-    else if (mounted && !device->m_isMounted && callback)
-      callback->OnStorageSafelyRemoved(device->m_Label);
-  }
 }
 
 std::vector<CStdString> CDeviceKitDisksProvider::EnumerateDisks()
@@ -337,11 +271,11 @@ std::vector<CStdString> CDeviceKitDisksProvider::EnumerateDisks()
   DBusMessage *reply = message.SendSystem();
   if (reply)
   {
-    char** disks  = NULL;
-    int    length = 0;
+    char** disks = NULL;
+    int    length     = 0;
     
     if (dbus_message_get_args (reply, NULL, DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &disks, &length, DBUS_TYPE_INVALID))
-    {
+	  {
       for (int i = 0; i < length; i++)
         devices.push_back(disks[i]);
 
@@ -356,11 +290,11 @@ void CDeviceKitDisksProvider::GetDisks(VECSOURCES& devices, bool EnumerateRemova
 {
   DeviceMap::iterator itr;
 
-  for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
-  {
+	for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
+	{
     CDeviceKitDiskDevice *device = itr->second;
-    if (device && device->IsApproved() && device->m_isRemovable == EnumerateRemovable)
+    if (device->IsApproved() && device->m_isRemovable == EnumerateRemovable)
       devices.push_back(device->ToMediaShare());
-  }
+	}
 }
 #endif

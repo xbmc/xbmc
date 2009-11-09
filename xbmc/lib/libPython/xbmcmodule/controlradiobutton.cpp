@@ -129,7 +129,7 @@ namespace PYXBMC
       return NULL;
     }
 
-    if (!PyXBMCGetUnicodeString(self->strText, pObjectText, 5))
+    if (!PyGetUnicodeString(self->strText, pObjectText, 5))
     {
       Py_DECREF( self );
       return NULL;
@@ -138,16 +138,16 @@ namespace PYXBMC
     // if texture is supplied use it, else get default ones
     self->strTextureFocus = cTextureFocus ?
       cTextureFocus :
-      PyXBMCGetDefaultImage((char*)"radiobutton", (char*)"texturefocus", (char*)"radiobutton-focus.png");
+      PyGetDefaultImage((char*)"radiobutton", (char*)"texturefocus", (char*)"radiobutton-focus.png");
     self->strTextureNoFocus = cTextureNoFocus ?
       cTextureNoFocus :
-      PyXBMCGetDefaultImage((char*)"radiobutton", (char*)"texturenofocus", (char*)"radiobutton-nofocus.jpg");
+      PyGetDefaultImage((char*)"radiobutton", (char*)"texturenofocus", (char*)"radiobutton-nofocus.jpg");
     self->strTextureRadioFocus = cTextureRadioFocus ?
       cTextureRadioFocus :
-      PyXBMCGetDefaultImage((char*)"radiobutton", (char*)"textureradiofocus", (char*)"radiobutton-focus.png");
+      PyGetDefaultImage((char*)"radiobutton", (char*)"textureradiofocus", (char*)"radiobutton-focus.png");
     self->strTextureRadioNoFocus = cTextureRadioNoFocus ?
       cTextureRadioNoFocus :
-      PyXBMCGetDefaultImage((char*)"radiobutton", (char*)"textureradionofocus", (char*)"radiobutton-nofocus.jpg");
+      PyGetDefaultImage((char*)"radiobutton", (char*)"textureradionofocus", (char*)"radiobutton-nofocus.jpg");
 
     if (cFont) self->strFont = cFont;
     if (cTextColor) sscanf( cTextColor, "%x", &self->textColor );
@@ -231,10 +231,10 @@ namespace PYXBMC
       return NULL;
     }
 
-    PyXBMCGUILock();
+    PyGUILock();
     if (self->pGUIControl)
       ((CGUIRadioButtonControl*)self->pGUIControl)->SetSelected(0 != selected);
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -251,10 +251,10 @@ namespace PYXBMC
   {
     bool isSelected = false;
 
-    PyXBMCGUILock();
+    PyGUILock();
     if (self->pGUIControl)
       isSelected = ((CGUIRadioButtonControl*)self->pGUIControl)->IsSelected();
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
 
     return Py_BuildValue((char*)"b", isSelected);
   }
@@ -308,7 +308,7 @@ namespace PYXBMC
       return NULL;
     }
 
-    if (!PyXBMCGetUnicodeString(self->strText, pObjectText, 1))
+    if (!PyGetUnicodeString(self->strText, pObjectText, 1))
     {
       return NULL;
     }
@@ -319,14 +319,14 @@ namespace PYXBMC
     if (cShadowColor) sscanf(cShadowColor, "%x", &self->shadowColor);
     if (cFocusedColor) sscanf(cFocusedColor, "%x", &self->focusedColor);
 
-    PyXBMCGUILock();
+    PyGUILock();
     if (self->pGUIControl)
     {
       ((CGUIRadioButtonControl*)self->pGUIControl)->PythonSetLabel(
         self->strFont, self->strText, self->textColor, self->shadowColor, self->focusedColor );
       ((CGUIRadioButtonControl*)self->pGUIControl)->PythonSetDisabledColor(self->disabledColor);
     }
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -369,10 +369,10 @@ namespace PYXBMC
       return NULL;
     }
 
-    PyXBMCGUILock();
+    PyGUILock();
     if (self->pGUIControl)
       ((CGUIRadioButtonControl*)self->pGUIControl)->SetRadioDimensions((float)self->dwPosX, (float)self->dwPosY, (float)self->dwWidth, (float)self->dwHeight);
-    PyXBMCGUIUnlock();
+    PyGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -432,7 +432,7 @@ namespace PYXBMC
 
   void initControlRadioButton_Type()
   {
-    PyXBMCInitializeTypeObject(&ControlRadioButton_Type);
+    PyInitializeTypeObject(&ControlRadioButton_Type);
 
     ControlRadioButton_Type.tp_name = (char*)"xbmcgui.ControlRadioButton";
     ControlRadioButton_Type.tp_basicsize = sizeof(ControlRadioButton);

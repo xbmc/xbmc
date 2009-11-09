@@ -1133,7 +1133,7 @@
 				<height>32</height>
 				<aspectratio>keep</aspectratio>
 				<info>ListItem.Overlay</info>
-			</control>
+		</control>
 		</control>
 	</include>
 	<include name="MusicLibraryMediaInfo">
@@ -1328,7 +1328,7 @@
 				<height>22</height>
 				<font>special13</font>
 				<align>right</align>
-				<label>$INFO[ListItem.Property(Artist_Formed)]</label>
+				<label>$INFO[ListItem.Property(formed)]</label>
 				<visible>Control.IsVisible(51) + container.content(Artists)</visible>
 				<scroll>true</scroll>
 			</control>
@@ -1338,7 +1338,7 @@
 				<width>480</width>
 				<height>22</height>
 				<font>special13</font>
-				<label>$INFO[ListItem.Property(Artist_Style)]</label>
+				<label>$INFO[ListItem.Property(style)]</label>
 				<visible>Control.IsVisible(51) + container.content(Artists)</visible>
 				<scroll>true</scroll>
 			</control>
@@ -1354,31 +1354,31 @@
 				<scroll>true</scroll>
 			</control>
 			<control type="textbox">
-				<description>Textbox when for Artist</description>
+				<description>Textbox when scrollbar is visible</description>
 				<posx>200</posx>
 				<posy>373</posy>
-				<width>460</width>
+				<width>450</width>
 				<height>127</height>
 				<font>font13</font>
 				<pagecontrol>611</pagecontrol>
-				<label>$INFO[ListItem.Property(Artist_Description)]</label>
-				<visible>Control.IsVisible(51) + Container.Content(Artists)</visible>
+				<label>$INFO[ListItem.Property(Description)]</label>
+				<visible>Control.IsVisible(51) + Control.IsVisible(611)</visible>
 				<include>autoscrollmedium</include>
 			</control>
 			<control type="textbox">
-				<description>Textbox when for Albums</description>
+				<description>Textbox when scrollbar is not visible</description>
 				<posx>200</posx>
 				<posy>373</posy>
-				<width>460</width>
+				<width>480</width>
 				<height>127</height>
 				<font>font13</font>
 				<pagecontrol>611</pagecontrol>
-				<label>$INFO[ListItem.Property(Album_Description)]</label>
-				<visible>Control.IsVisible(51) + Container.Content(Albums)</visible>
+				<label>$INFO[ListItem.Property(Description)]</label>
+				<visible>Control.IsVisible(51) + !Control.IsVisible(611)</visible>
 				<include>autoscrollmedium</include>
 			</control>
 			<control type="label">
-				<description>Label when Artist textboxes are empty</description>
+				<description>Label when both textboxes (Plot) are empty</description>
 				<posx>200</posx>
 				<posy>420</posy>
 				<width>480</width>
@@ -1386,10 +1386,10 @@
 				<align>center</align>
 				<font>font13</font>
 				<label>$LOCALIZE[21887] - $LOCALIZE[416]</label>
-				<visible>Control.IsVisible(51) + IsEmpty(ListItem.Property(Description)) + Container.Content(Artists)</visible>
+				<visible>Control.IsVisible(51) + IsEmpty(ListItem.Property(Description)) + IsEmpty(ListItem.Album)</visible>
 			</control>
 			<control type="label">
-				<description>Label when Album textboxes are empty</description>
+				<description>Label when both textboxes (Plot) are empty</description>
 				<posx>200</posx>
 				<posy>420</posy>
 				<width>480</width>
@@ -1397,7 +1397,7 @@
 				<align>center</align>
 				<font>font13</font>
 				<label>$LOCALIZE[183] - $LOCALIZE[416]</label>
-				<visible>Control.IsVisible(51) + IsEmpty(ListItem.Property(Description)) + Container.Content(Albums)</visible>
+				<visible>Control.IsVisible(51) + IsEmpty(ListItem.Property(Description)) + !IsEmpty(ListItem.album)</visible>
 			</control>
 			<control type="button">
 				<posx>663</posx>

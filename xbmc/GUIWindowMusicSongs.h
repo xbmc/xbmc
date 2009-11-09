@@ -43,7 +43,7 @@ protected:
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void OnScan(int iItem);
-  virtual void OnRemoveSource(int iItem);
+
 
   // new method
   virtual void PlayItem(int iItem);

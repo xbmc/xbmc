@@ -21,8 +21,6 @@
 #ifndef _OSX_INTERFACE_H_
 #define _OSX_INTERFACE_H_
 
-#include <string>
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -47,10 +45,6 @@ extern "C"
   // AppleScript
   //
   void Cocoa_DoAppleScript(const char* scriptSource);
-  void Cocoa_DoAppleScriptFile(const char* filePath);
-  
-  // Application support
-  const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconName);
   
   // Devices
   //

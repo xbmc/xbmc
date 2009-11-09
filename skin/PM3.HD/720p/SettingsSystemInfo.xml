@@ -15,7 +15,7 @@
 				<control type="button" id="95">
 					<description>Button Default Values</description>
 					<include>ButtonCommonValues</include>
-					<label>20037</label>
+					<label>13278</label>
 				</control>
 				<control type="button" id="94">
 					<description>Button Storage</description>

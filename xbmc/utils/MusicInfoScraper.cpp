@@ -88,7 +88,7 @@ void CMusicInfoScraper::FindAlbuminfo()
   m_vecAlbums.erase(m_vecAlbums.begin(), m_vecAlbums.end());
 
   CScraperParser parser;
-  if (!parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath) || !parser.HasFunction("CreateAlbumSearchUrl"))
+  if (!parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath))
     return;
 
   if (!m_info.settings.GetPluginRoot() && m_info.settings.GetSettings().IsEmpty() && parser.HasFunction("GetSettings"))
@@ -102,9 +102,8 @@ void CMusicInfoScraper::FindAlbuminfo()
   CUtil::URLEncode(parser.m_param[0]);
   CUtil::URLEncode(parser.m_param[1]);
 
-  CLog::Log(LOGDEBUG, "%s: Searching for '%s - %s' using %s scraper (file: '%s', content: '%s', language: '%s', date: '%s', framework: '%s')",
-    __FUNCTION__, m_strArtist.c_str(), strAlbum.c_str(), m_info.strTitle.c_str(), m_info.strPath.c_str(), m_info.strContent.c_str(), m_info.strLanguage.c_str(), m_info.strDate.c_str(), m_info.strFramework.c_str());
-
+  CLog::Log(LOGDEBUG, "%s: Searching for '%s - %s' using %s scraper (file: '%s', content: '%s', date: '%s', framework: '%s')",
+    __FUNCTION__, m_strArtist.c_str(), strAlbum.c_str(), m_info.strTitle.c_str(), m_info.strPath.c_str(), m_info.strContent.c_str(), m_info.strDate.c_str(), m_info.strFramework.c_str());
 
   CScraperUrl scrURL;
   scrURL.ParseString(parser.Parse("CreateAlbumSearchUrl",&m_info.settings));
@@ -199,7 +198,7 @@ void CMusicInfoScraper::FindArtistinfo()
   m_vecArtists.erase(m_vecArtists.begin(), m_vecArtists.end());
 
   CScraperParser parser;
-  if (!parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath) || !parser.HasFunction("CreateArtistSearchUrl"))
+  if (!parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath))
     return;
 
   if (!m_info.settings.GetPluginRoot() && m_info.settings.GetSettings().IsEmpty() && parser.HasFunction("GetSettings"))

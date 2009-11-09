@@ -72,7 +72,6 @@ public:
   static CStdString GetFriendlyName(const char* combinedName);
   static CStdString GetCombinedName(const char* strVisz, const char* strSubModule);
   static CStdString GetCombinedName(const char* friendlyName);
-  static bool IsValidVisualisation(const CStdString& strVisz);
 
 protected:
   std::auto_ptr<struct Visualisation> m_pVisz;

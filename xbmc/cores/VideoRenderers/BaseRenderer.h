@@ -24,21 +24,6 @@
 #include "Resolution.h"
 #include "Geometry.h"
 
-#define MAX_PLANES 3
-#define MAX_FIELDS 3
-
-typedef struct YV12Image
-{
-  BYTE *   plane[MAX_PLANES];
-  unsigned stride[MAX_PLANES];
-  unsigned width;
-  unsigned height;
-  unsigned flags;
-
-  unsigned cshift_x; /* this is the chroma shift used */
-  unsigned cshift_y;
-} YV12Image;
-
 class CBaseRenderer
 {
 public:
@@ -56,7 +41,6 @@ protected:
   void CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount);
   void CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
   void ManageDisplay();
-  void AutoCrop(YV12Image &im, RECT& crop);
 
   RESOLUTION m_resolution;    // the resolution we're running in
   unsigned int m_sourceWidth;

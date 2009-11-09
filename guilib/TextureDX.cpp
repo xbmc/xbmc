@@ -64,12 +64,14 @@ void CDXTexture::CreateTextureObject()
     return;
   }
 
-  m_texture.Create(m_textureWidth, m_textureHeight, 1, 0, format, D3DPOOL_MANAGED);
+  SAFE_RELEASE(m_texture);
+
+  D3DXCreateTexture(g_Windowing.Get3DDevice(), m_textureWidth, m_textureHeight, 1, 0, format, D3DPOOL_MANAGED , &m_texture);
 }
 
 void CDXTexture::DestroyTextureObject()
 {
-  m_texture.Release();
+  SAFE_RELEASE(m_texture);
 }
 
 void CDXTexture::LoadToGPU()
@@ -80,10 +82,10 @@ void CDXTexture::LoadToGPU()
     return;
   }
 
-  if (m_texture.Get() == NULL)
+  if (m_texture == NULL)
   {
     CreateTextureObject();
-    if (m_texture.Get() == NULL)
+    if (m_texture == NULL)
     {
       CLog::Log(LOGDEBUG, "CDXTexture::CDXTexture: Error creating new texture for size %d x %d", m_textureWidth, m_textureHeight);
       return;
@@ -91,7 +93,7 @@ void CDXTexture::LoadToGPU()
   }
 
   D3DLOCKED_RECT lr;
-  if (m_texture.LockRect( 0, &lr, NULL, 0 ))
+  if ( D3D_OK == m_texture->LockRect( 0, &lr, NULL, 0 ))
   {
     unsigned char *dst = (unsigned char *)lr.pBits;
     unsigned char *src = m_pixels;
@@ -113,7 +115,7 @@ void CDXTexture::LoadToGPU()
       }
     }
   }
-  m_texture.UnlockRect(0);
+  m_texture->UnlockRect(0);
 
   delete [] m_pixels;
   m_pixels = NULL;

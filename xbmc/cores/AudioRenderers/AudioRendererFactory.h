@@ -31,9 +31,8 @@
 class CAudioRendererFactory
 {
 public:
-  static IAudioRenderer *Create(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough);
-  static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough);
+static IAudioRenderer *Create(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough);
 private:
-  static IAudioRenderer *CreateFromUri(const CStdString &soundsystem);
+static IAudioRenderer *CreateAudioRenderer(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough);
 };
 #endif

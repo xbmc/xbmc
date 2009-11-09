@@ -25,12 +25,10 @@
 #include "SkinInfo.h"
 #include "tinyXML/tinyxml.h"
 #include "utils/CharsetConverter.h"
-#include "CriticalSection.h"
-#include "SingleLock.h"
 
 using namespace std;
 
-static int iPyXBMCGUILockRef = 0;
+static int iPyGUILockRef = 0;
 static TiXmlDocument pySkinReferences; 
 
 #ifndef __GNUC__
@@ -42,7 +40,7 @@ static TiXmlDocument pySkinReferences;
 
 namespace PYXBMC
 {
-  int PyXBMCGetUnicodeString(string& buf, PyObject* pObject, int pos)
+  int PyGetUnicodeString(string& buf, PyObject* pObject, int pos)
   {
     // TODO: UTF-8: Does python use UTF-16?
     //              Do we need to convert from the string charset to UTF-8
@@ -75,18 +73,18 @@ namespace PYXBMC
     return 0;
   }
 
-  void PyXBMCGUILock()
+  void PyGUILock()
   {
-    if (iPyXBMCGUILockRef == 0) g_graphicsContext.Lock();
-    iPyXBMCGUILockRef++;
+    if (iPyGUILockRef == 0) g_graphicsContext.Lock();
+    iPyGUILockRef++;
   }
 
-  void PyXBMCGUIUnlock()
+  void PyGUIUnlock()
   {
-    if (iPyXBMCGUILockRef > 0)
+    if (iPyGUILockRef > 0)
     {
-      iPyXBMCGUILockRef--;
-      if (iPyXBMCGUILockRef == 0) g_graphicsContext.Unlock();
+      iPyGUILockRef--;
+      if (iPyGUILockRef == 0) g_graphicsContext.Unlock();
     }
   }
 
@@ -95,7 +93,7 @@ namespace PYXBMC
    * Looks in references.xml for image name
    * If none exist return default image name
    */
-  const char *PyXBMCGetDefaultImage(char* cControlType, char* cTextureType, char* cDefault)
+  const char *PyGetDefaultImage(char* cControlType, char* cTextureType, char* cDefault)
   {
     // create an xml block so that we can resolve our defaults
     // <control type="type">
@@ -122,7 +120,7 @@ namespace PYXBMC
     return cDefault;
   }
 
-  bool PyXBMCWindowIsNull(void* pWindow)
+  bool PyWindowIsNull(void* pWindow)
   {
     if (pWindow == NULL)
     {
@@ -132,7 +130,7 @@ namespace PYXBMC
     return false;
   }
 
-  void PyXBMCInitializeTypeObject(PyTypeObject* type_object)
+  void PyInitializeTypeObject(PyTypeObject* type_object)
   {
     static PyTypeObject py_type_object_header = { PyObject_HEAD_INIT(NULL) 0};
     int size = (long*)&(py_type_object_header.tp_name) - (long*)&py_type_object_header;
@@ -146,29 +144,44 @@ namespace PYXBMC
 typedef std::pair<int(*)(void*), void*> Func;
 typedef std::vector<Func> CallQueue;
 CallQueue g_callQueue;
-CCriticalSection g_critSectionPyCall;
+CRITICAL_SECTION g_critSectionPyCall;
 
-void _PyXBMC_AddPendingCall(int(*func)(void*), void *arg)
+void PyInitPendingCalls()
 {
-  CSingleLock lock(g_critSectionPyCall);
-  g_callQueue.push_back(Func(func, arg));
+  static bool first_call = true;
+  if (first_call) 
+  {
+    InitializeCriticalSection(&g_critSectionPyCall);
+    first_call = false;
+  }
 }
 
-void _PyXBMC_MakePendingCalls()
+void _Py_AddPendingCall(int(*func)(void*), void *arg)
 {
-  CSingleLock lock(g_critSectionPyCall);
+  PyInitPendingCalls();
+  EnterCriticalSection(&g_critSectionPyCall);
+  g_callQueue.push_back(Func(func, arg));
+  LeaveCriticalSection(&g_critSectionPyCall);
+}
+
+void _Py_MakePendingCalls()
+{
+  PyInitPendingCalls();
+  EnterCriticalSection(&g_critSectionPyCall);
+
   CallQueue::iterator iter = g_callQueue.begin();
   while (iter != g_callQueue.end())
   {
     int(*f)(void*) = (*iter).first;
     void* arg = (*iter).second;
     g_callQueue.erase(iter);
-    lock.Leave();
+    LeaveCriticalSection(&g_critSectionPyCall);
     if (f)
       f(arg);
     //(*((*iter).first))((*iter).second);
-    lock.Enter();
+    EnterCriticalSection(&g_critSectionPyCall);
     iter = g_callQueue.begin();
   }  
+  LeaveCriticalSection(&g_critSectionPyCall);
 }
 

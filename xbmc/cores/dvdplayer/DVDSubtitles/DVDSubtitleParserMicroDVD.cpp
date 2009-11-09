@@ -25,7 +25,6 @@
 #include "utils/RegExp.h"
 #include "DVDStreamInfo.h"
 #include "StdString.h"
-#include "utils/log.h"
 
 using namespace std;
 

@@ -29,9 +29,11 @@
 #include "Util.h"
 #include "lib/libscrobbler/lastfmscrobbler.h"
 #include "Weather.h"
+#include "PlayListPlayer.h"
 #include "PartyModeManager.h"
 #include "visualizations/Visualisation.h"
 #include "ButtonTranslator.h"
+#include "MusicDatabase.h"
 #include "utils/AlarmClock.h"
 #ifdef HAS_LCD
 #include "utils/LCD.h"
@@ -42,10 +44,13 @@
 #include "GUIButtonScroller.h"
 #include "GUITextBox.h"
 #include "GUIInfoManager.h"
+#include <stack>
+#include "../utils/Network.h"
 #include "GUIWindowSlideShow.h"
 #include "LastFmManager.h"
 #include "PictureInfoTag.h"
 #include "MusicInfoTag.h"
+#include "VideoDatabase.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIWindowManager.h"
@@ -59,6 +64,7 @@
 #include "LocalizeStrings.h"
 #include "CPUInfo.h"
 #include "StringUtils.h"
+#include "TeletextDefines.h"
 
 // stuff for current song
 #include "MusicInfoTagLoaderFactory.h"
@@ -426,10 +432,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, compareString));
   }
-  else if (strTest.Left(19).Equals("integergreaterthan("))
+  else if (strTest.Left(18).Equals("integergreaterthan("))
   {
     int pos = strTest.Find(",");
-    int info = TranslateString(strTest.Mid(19, pos-19));
+    int info = TranslateString(strTest.Mid(18, pos-18));
     int compareInt = atoi(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)).c_str());
     return AddMultiInfo(GUIInfo(bNegate ? -INTEGER_GREATER_THAN: INTEGER_GREATER_THAN, info, compareInt));
   }
@@ -493,7 +499,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Left(9).Equals("timespeed")) return AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(info.Mid(9))));
     else if (info.Left(4).Equals("time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(info.Mid(4))));
     else if (info.Left(8).Equals("duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(info.Mid(8))));
-    else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10), MUSICPLAYER_PROPERTY_OFFSET);
     else
       ret = TranslateMusicPlayerString(strTest.Mid(12));
   }
@@ -673,21 +678,21 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     int offset = atoi(strCategory.Mid(9, strCategory.GetLength() - 10));
     ret = TranslateListItem(strTest.Mid(strCategory.GetLength() + 1));
-    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
+    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING)
       return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
   }
   else if (strCategory.Left(16).Equals("listitemposition"))
   {
     int offset = atoi(strCategory.Mid(17, strCategory.GetLength() - 18));
     ret = TranslateListItem(strCategory.Mid(strCategory.GetLength()+1));
-    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
+    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING)
       return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset, INFOFLAG_LISTITEM_POSITION));
   }
   else if (strCategory.Left(14).Equals("listitemnowrap"))
   {
     int offset = atoi(strCategory.Mid(15, strCategory.GetLength() - 16));
     ret = TranslateListItem(strTest.Mid(strCategory.GetLength() + 1));
-    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
+    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING)
       return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset));
   }
   else if (strCategory.Equals("visualisation"))
@@ -898,7 +903,6 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("audiochannels")) return LISTITEM_AUDIO_CHANNELS;
   else if (info.Equals("audiolanguage")) return LISTITEM_AUDIO_LANGUAGE;
   else if (info.Equals("subtitlelanguage")) return LISTITEM_SUBTITLE_LANGUAGE;
-  else if (info.Equals("isfolder")) return LISTITEM_IS_FOLDER;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -951,15 +955,6 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 
   if (info >= SLIDE_INFO_START && info <= SLIDE_INFO_END)
     return GetPictureLabel(info);
-
-  if (info >= LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET)
-  { // grab the property
-    if (!m_currentFile)
-      return "";
-
-    CStdString property = m_listitemProperties[info - LISTITEM_PROPERTY_START-MUSICPLAYER_PROPERTY_OFFSET];
-    return m_currentFile->GetProperty(property);
-  }
 
   if (info >= LISTITEM_START && info <= LISTITEM_END)
   {
@@ -1200,7 +1195,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
-        strLabel = CURL(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath).GetWithoutUserDetails();
+        CURL(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath).GetWithoutUserDetails();
         if (info==CONTAINER_FOLDERNAME)
         {
           CUtil::RemoveSlashAtEnd(strLabel);
@@ -1789,7 +1784,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasThumbnail();
   }
   else if (condition == VIDEOPLAYER_HAS_INFO)
-    bReturn = (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->IsEmpty());
+    bReturn = m_currentFile->HasVideoInfoTag();
   else if (condition == CONTAINER_ON_NEXT || condition == CONTAINER_ON_PREVIOUS)
   {
     // no parameters, so we assume it's just requested for a media window.  It therefore
@@ -2245,7 +2240,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case VIDEOPLAYER_CONTENT:
         {
           CStdString strContent="movies";
-          if (!m_currentFile->HasVideoInfoTag() || m_currentFile->GetVideoInfoTag()->IsEmpty())
+          if (!m_currentFile->HasVideoInfoTag())
             strContent = "files";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_iSeason > -1) // episode
             strContent = "episodes";
@@ -3182,7 +3177,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)",item.m_strPath.c_str());
   *m_currentFile = item;
 
-  if (!m_currentFile->HasVideoInfoTag() || m_currentFile->GetVideoInfoTag()->IsEmpty())
+  if (!m_currentFile->HasVideoInfoTag())
   { // attempt to get some information
     CVideoDatabase dbs;
     dbs.Open();
@@ -3502,16 +3497,16 @@ void CGUIInfoManager::UpdateFPS()
   }
 }
 
-int CGUIInfoManager::AddListItemProp(const CStdString &str, int offset)
+int CGUIInfoManager::AddListItemProp(const CStdString &str)
 {
   for (int i=0; i < (int)m_listitemProperties.size(); i++)
     if (m_listitemProperties[i] == str)
-      return (LISTITEM_PROPERTY_START+offset + i);
+      return (LISTITEM_PROPERTY_START + i);
 
   if (m_listitemProperties.size() < LISTITEM_PROPERTY_END - LISTITEM_PROPERTY_START)
   {
     m_listitemProperties.push_back(str);
-    return LISTITEM_PROPERTY_START + offset + m_listitemProperties.size() - 1;
+    return LISTITEM_PROPERTY_START + m_listitemProperties.size() - 1;
   }
 
   CLog::Log(LOGERROR,"%s - not enough listitem property space!", __FUNCTION__);
@@ -3658,9 +3653,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
       {
         CStdString strRatingAndVotes;
-        if (item->GetVideoInfoTag()->m_strVotes.IsEmpty())
-          strRatingAndVotes.Format("%2.2f", item->GetVideoInfoTag()->m_fRating);
-        else
           strRatingAndVotes.Format("%2.2f (%s %s)", item->GetVideoInfoTag()->m_fRating, item->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
         return strRatingAndVotes;
       }
@@ -3940,8 +3932,6 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   }
   else if (condition == LISTITEM_ISSELECTED)
     return item->IsSelected();
-  else if (condition == LISTITEM_IS_FOLDER)
-    return item->m_bIsFolder;
   return false;
 }
 
