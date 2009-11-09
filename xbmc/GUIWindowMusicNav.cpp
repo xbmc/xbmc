@@ -638,7 +638,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       }
     }
     if (inPlaylists && !CUtil::GetFileName(item->m_strPath).Equals("PartyMode.xsp")
-                    && item->IsPlayList())
+                    && (item->IsPlayList() || item->IsSmartPlayList()))
       buttons.Add(CONTEXT_BUTTON_DELETE, 117);
   }
   // noncontextual buttons
@@ -750,7 +750,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_DELETE:
-    if (item->IsPlayList())
+    if (item->IsPlayList() || item->IsSmartPlayList())
     {
       item->m_bIsFolder = false;
       CGUIWindowFileManager::DeleteItem(item.get());
