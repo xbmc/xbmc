@@ -61,9 +61,9 @@ public:
   virtual void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnMouseOver(const CPoint &point);
+  virtual bool OnMouseOver(const XbmcCPoint &point);
   virtual bool CanFocus() const;
-  virtual bool CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const;
+  virtual bool CanFocusFromPoint(const XbmcCPoint &point, CGUIControl **control, XbmcCPoint &controlPoint) const;
 
   CVisualisation *GetVisualisation();
 private:

@@ -1239,7 +1239,7 @@ HRESULT CApplication::Initialize()
   }
   else
   {
-    RESOLUTION res = RES_INVALID;
+    int res = RES_INVALID;
     CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml", &res);
     int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
     // test for a startup window, and activate that instead of home
@@ -1864,7 +1864,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_audioManager.Load();
 
   CGUIDialogFullScreenInfo* pDialog = NULL;
-  RESOLUTION res;
+  int res;
   CStdString strPath = g_SkinInfo.GetSkinPath("DialogFullScreenInfo.xml", &res);
   if (CFile::Exists(strPath))
     pDialog = new CGUIDialogFullScreenInfo;
@@ -1934,7 +1934,7 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
   WIN32_FIND_DATA NextFindFileData;
   HANDLE hFind;
   TiXmlDocument xmlDoc;
-  RESOLUTION resToUse = RES_INVALID;
+  int resToUse = RES_INVALID;
 
   // Start from wherever home.xml is
   g_SkinInfo.GetSkinPath("Home.xml", &resToUse);
@@ -2176,7 +2176,7 @@ void CApplication::RenderScreenSaver()
   if (draw)
   {
     color_t color = ((color_t)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
-    CGUITexture::DrawQuad(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()), color);
+    CGUITexture::DrawQuad(XbmcCRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()), color);
   }
 }
 
@@ -2322,7 +2322,7 @@ void CApplication::RenderMemoryStatus()
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
   {
     // reset the window scaling and fade status
-    RESOLUTION res = g_graphicsContext.GetVideoResolution();
+    int res = g_graphicsContext.GetVideoResolution();
     g_graphicsContext.SetRenderingResolution(res, 0, 0, false);
 
     CStdString info;
@@ -3085,7 +3085,7 @@ bool CApplication::ProcessHTTPApiButtons()
       {
         CAction action;
         action.id = ACTION_MOUSE;
-        g_Mouse.SetLocation(CPoint(keyHttp.GetLeftThumbX(), keyHttp.GetLeftThumbY()));
+        g_Mouse.SetLocation(XbmcCPoint(keyHttp.GetLeftThumbX(), keyHttp.GetLeftThumbY()));
         if (keyHttp.GetLeftTrigger()!=0)
           g_Mouse.bClick[keyHttp.GetLeftTrigger()-1]=true;
         if (keyHttp.GetRightTrigger()!=0)
@@ -3184,7 +3184,7 @@ bool CApplication::ProcessEventServer(float frameTime)
     action.id = ACTION_MOUSE;
     if (es->GetMousePos(action.amount1, action.amount2) && g_Mouse.IsEnabled())
     {
-      CPoint point;
+      XbmcCPoint point;
       point.x = action.amount1;
       point.y = action.amount2;
       g_Mouse.SetLocation(point, true);

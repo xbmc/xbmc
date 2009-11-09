@@ -51,9 +51,9 @@ public:
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool CanFocus() const;
 
-  virtual bool HitTest(const CPoint &point) const;
-  virtual bool CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const;
-  virtual void UnfocusFromPoint(const CPoint &point);
+  virtual bool HitTest(const XbmcCPoint &point) const;
+  virtual bool CanFocusFromPoint(const XbmcCPoint &point, CGUIControl **control, XbmcCPoint &controlPoint) const;
+  virtual void UnfocusFromPoint(const XbmcCPoint &point);
 
   virtual void SetInitialVisibility();
 

@@ -251,7 +251,7 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
 
   //use temporary rect for calculation to avoid messing with module-rect while other functions might be using it.
   DRAWRECT osdRect;
-  RESOLUTION res = GetResolution();
+  XBMCRESOLUTION res = GetResolution();
 
   if (w > m_iOSDTextureWidth)
   {
@@ -488,7 +488,7 @@ void CXBoxRenderer::RenderOSD()
 
 //********************************************************************************************************
 //Get resolution based on current mode.
-RESOLUTION CXBoxRenderer::GetResolution()
+XBMCRESOLUTION CXBoxRenderer::GetResolution()
 {
   if (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating())
   {
@@ -657,7 +657,7 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
   // If the display resolution was specified by the user then use it, unless
   // it's a PAL setting, whereby we use the above setting to autoswitch to PAL60
   // if appropriate
-  RESOLUTION DisplayRes = (RESOLUTION) g_guiSettings.GetInt("videoplayer.displayresolution");
+  XBMCRESOLUTION DisplayRes = (XBMCRESOLUTION) g_guiSettings.GetInt("videoplayer.displayresolution");
   if ( DisplayRes != AUTORES )
   {
     if (bPal60)

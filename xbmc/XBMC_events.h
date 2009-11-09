@@ -224,4 +224,23 @@ typedef union XBMC_Event {
 	XBMC_SysWMEvent syswm;
 } XBMC_Event;
 
+/* DSPlayer command */
+#define ID_PLAY_PLAY                    887
+#define ID_PLAY_PAUSE                   888
+#define ID_PLAY_PLAYPAUSE               889
+#define ID_PLAY_STOP                    890
+#define ID_SEEK_PERCENT                 899
+#define ID_SEEK_FORWARDSMALL            900
+#define ID_SEEK_FORWARDLARGE            901
+#define ID_SEEK_BACKWARDSMALL           902
+#define ID_SEEK_BACKWARDLARGE           903
+#define ID_SET_SPEEDRATE                904
+#define ID_PLAY_INCAUDDELAY             905
+#define ID_PLAY_DECAUDDELAY             906
+#define ID_VOLUME_UP                    907
+#define ID_VOLUME_DOWN                  908
+#define ID_VOLUME_MUTE                  909
+#define ID_STOP_DSPLAYER                910
+
+
 #endif /* _XBMC_events_h */

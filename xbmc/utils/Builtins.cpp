@@ -337,7 +337,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("resolution"))
   {
-    RESOLUTION res = RES_PAL_4x3;
+    int res = RES_PAL_4x3;
     if (parameter.Equals("pal")) res = RES_PAL_4x3;
     else if (parameter.Equals("pal16x9")) res = RES_PAL_16x9;
     else if (parameter.Equals("ntsc")) res = RES_NTSC_4x3;

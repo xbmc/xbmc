@@ -186,21 +186,21 @@ bool CMouseStat::HasMoved(bool detectAllMoves /* = false */) const
   return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy * m_mouseState.dy >= MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
 }
 
-CPoint CMouseStat::GetLocation() const
+XbmcCPoint CMouseStat::GetLocation() const
 {
-  return CPoint((float)m_mouseState.x, (float)m_mouseState.y);
+  return XbmcCPoint((float)m_mouseState.x, (float)m_mouseState.y);
 }
 
-void CMouseStat::SetLocation(const CPoint &point, bool activate)
+void CMouseStat::SetLocation(const XbmcCPoint &point, bool activate)
 {
   m_mouseState.x = (int)point.x;
   m_mouseState.y = (int)point.y;
   SetActive();
 }
 
-CPoint CMouseStat::GetLastMove() const
+XbmcCPoint CMouseStat::GetLastMove() const
 {
-  return CPoint(m_mouseState.dx, m_mouseState.dy);
+  return XbmcCPoint(m_mouseState.dx, m_mouseState.dy);
 }
 
 char CMouseStat::GetWheel() const
@@ -214,13 +214,13 @@ void CMouseStat::UpdateMouseWheel(char dir)
   SetActive();
 }
 
-void CMouseStat::SetExclusiveAccess(const CGUIControl *control, int windowID, const CPoint &point)
+void CMouseStat::SetExclusiveAccess(const CGUIControl *control, int windowID, const XbmcCPoint &point)
 {
   m_exclusiveControl = control;
   m_exclusiveWindowID = windowID;
   // convert posX, posY to screen coords...
   // NOTE: This relies on the window resolution having been set correctly beforehand in CGUIWindow::OnMouseAction()
-  CPoint mouseCoords(GetLocation());
+  XbmcCPoint mouseCoords(GetLocation());
   g_graphicsContext.InvertFinalCoords(mouseCoords.x, mouseCoords.y);
   m_exclusiveOffset = point - mouseCoords;
 }
@@ -228,7 +228,7 @@ void CMouseStat::SetExclusiveAccess(const CGUIControl *control, int windowID, co
 void CMouseStat::EndExclusiveAccess(const CGUIControl *control, int windowID)
 {
   if (m_exclusiveControl == control && m_exclusiveWindowID == windowID)
-    SetExclusiveAccess(NULL, WINDOW_INVALID, CPoint(0, 0));
+    SetExclusiveAccess(NULL, WINDOW_INVALID, XbmcCPoint(0, 0));
 }
 
 void CMouseStat::Acquire()

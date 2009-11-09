@@ -592,7 +592,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_Resolution = (RESOLUTION) g_guiSettings.GetInt("pictures.displayresolution");
+      m_Resolution = (int) g_guiSettings.GetInt("pictures.displayresolution");
 
       //FIXME: Use GUI resolution for now
       if (0 /*m_Resolution != g_guiSettings.m_LookAndFeelResolution && m_Resolution != INVALID && m_Resolution!=AUTORES*/)

@@ -79,8 +79,8 @@ void CSettings::Initialize()
 
   for (int i = RES_HDTV_1080i; i <= RES_PAL60_16x9; i++)
   {
-    g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
-    g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].Overscan);
+    g_graphicsContext.ResetScreenParameters((int)i);
+    g_graphicsContext.ResetOverscan((int)i, m_ResInfo[i].Overscan);
   }
 
   g_stSettings.m_iMyVideoStack = STACK_NONE;

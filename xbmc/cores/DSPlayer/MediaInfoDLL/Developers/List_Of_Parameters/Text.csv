@@ -1,0 +1,95 @@
+Count;;;N NI;;;Count of objects available in this stream
+StreamCount;;;N NI;;;Count of streams of that kind available
+StreamKind;Text;;N NI;;;Stream type name
+StreamKind/String;;;N NI;;;Stream type name
+StreamKindID;;;N NI;;;Number of the stream (base=0)
+StreamKindPos;;;N NI;;;When multiple streams, number of the stream (base=1)
+Inform;;;N NT;;;Last **Inform** call
+ID;;;N YI;;;A ID for this stream in this file
+ID/String;;;Y NT;;;A ID for this stream in this file
+UniqueID;;;N YI;;;A unique ID for this stream, should be copied with stream copy
+MenuID;;;N YI;;;A menu ID for this stream in this file
+MenuID/String;;;Y NT;;;A menu ID for this stream in this file
+Format;;;Y YT;;;Format used
+Format/Info;;;Y NT;;;Info about Format
+Format/Url;;;N NT;;;Link
+Format_Version;;;Y NT;;;Version of this format
+Format_Profile;;;Y NT;;;Profile of the Format
+Format_Settings;;;Y NT;;;Settings needed for decoder used
+MuxingMode;;;Y NT;;;How this stream is muxed in the container
+MuxingMode_MoreInfo;;;Y NT;;;More info (text) about the muxing mode
+CodecID;;;Y YT;;;Codec ID (found in some containers)
+CodecID/Info;;;Y NT;;;Info about codec ID
+CodecID/Hint;;;Y NT;;;A hint for this codec ID
+CodecID/Url;;;N NT;;;A link for more details about this codec ID
+CodecID_Description;;;Y NT;;;Manual description given by the container
+Codec;;;N YT;;;Deprecated
+Codec/String;;;N NT;;;Deprecated
+Codec/Info;;;N NT;;;Deprecated
+Codec/Url;;;N NT;;;Deprecated
+Codec/CC;;;N NT;;;Deprecated
+Duration;; ms;N YI;;;Play time of the stream
+Duration/String;;;Y NT;;;Play time (formated)
+Duration/String1;;;N NT;;;Play time in format : HHh MMmn SSs MMMms, XX omited if zero
+Duration/String2;;;N NT;;;Play time in format : XXx YYy only, YYy omited if zero
+Duration/String3;;;N NT;;;Play time in format : HH:MM:SS.MMM
+BitRate_Mode;;;N YT;;;Bit rate mode (VBR, CBR)
+BitRate_Mode/String;;;Y NT;;;Bit rate mode (Constant, Variable)
+BitRate;; bps;N YF;;;Bit rate in bps
+BitRate/String;;;Y NT;;;Bit rate (with measurement)
+BitRate_Minimum;; bps;N YF;;;Minimum Bit rate in bps
+BitRate_Minimum/String;;;Y NT;;;Minimum Bit rate (with measurement)
+BitRate_Nominal;; bps;N YF;;;Nominal Bit rate in bps
+BitRate_Nominal/String;;;Y NT;;;Nominal Bit rate (with measurement)
+BitRate_Maximum;; bps;N YF;;;Maximum Bit rate in bps
+BitRate_Maximum/String;;;Y NT;;;Maximum Bit rate (with measurement)
+Width;; pixel;N YI;;;Width
+Width/String;;;Y NT;;;
+Height;; pixel;N YI;;;Height
+Height/String;;;Y NT;;;
+FrameCount;;;N NI;;;Frame count
+Resolution;; bit;N YI;;;
+Resolution/String;;;Y NT;;;
+Delay;; ms;N YI;;;Delay fixed in the stream (relative)
+Delay/String;;;N NT;;;
+Delay/String1;;;N NT;;;
+Delay/String2;;;N NT;;;
+Delay/String3;;;N NT;;;
+Delay_Original;; ms;N NI;;;Delay fixed in the raw stream (relative) IN MS
+Delay_Original/String;;;N NT;;;Delay with measurement
+Delay_Original/String1;;;N NT;;;Delay with measurement
+Delay_Original/String2;;;N NT;;;Delay with measurement
+Delay_Original/String3;;;N NT;;;format : HH:MM:SS.MMM
+Delay_Original_Settings;;;N NT;;;Delay settings (in case of timecode for example)
+Video_Delay;; ms;N NI;;;Delay fixed in the stream (absolute / video)
+Video_Delay/String;;;Y NT;;;
+Video_Delay/String1;;;N NT;;;
+Video_Delay/String2;;;N NT;;;
+Video_Delay/String3;;;N NT;;;
+Video0_Delay;; ms;N NI;;;Deprecated
+Video0_Delay/String;;;N NT;;;Deprecated
+Video0_Delay/String1;;;N NT;;;Deprecated
+Video0_Delay/String2;;;N NT;;;Deprecated
+Video0_Delay/String3;;;N NT;;;Deprecated
+StreamSize;; byte;N YI;;;Stream size in bytes
+StreamSize/String;;;Y NT;;;
+StreamSize/String1;;;N NT;;;
+StreamSize/String2;;;N NT;;;
+StreamSize/String3;;;N NT;;;
+StreamSize/String4;;;N NT;;;
+StreamSize/String5;;;N NT;;;With proportion
+StreamSize_Proportion;;;N NT;;;Stream size divided by file size;;
+Title;;;Y YI;;;Name of the track;;
+Encoded_Library;;;N YT;;;Software used to create the file;;
+Encoded_Library/String;;;Y NT;;;Software used to create the file;;
+Encoded_Library/Name;;;N NT;;;Info from the software;;
+Encoded_Library/Version;;;N NT;;;Version of software;;
+Encoded_Library/Date;;;N NT;;;Release date of software;;
+Encoded_Library_Settings;;;Y YT;;;Parameters used by the software;;
+Language;;;N YT;;;Language (2-letter ISO 639-1 if exists, else 3-letter ISO 639-2, and with optional ISO 3166-1 country separated by a dash if available, e.g. en, en-us, zh-cn);;
+Language/String;;;Y NT;;;Language (full);;
+Language_More;;;Y YT;;;More info about Language (e.g. Director's Comment);;
+Summary;;;N NT;;;;;
+Encoded_Date;;;Y YT;;;The time that the encoding of this item was completed began.;;Temporal
+Tagged_Date;;;Y YT;;;The time that the tags were done for this item.;;Temporal
+Encryption;;;Y YT;;;;;

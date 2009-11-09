@@ -43,9 +43,9 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void OnLeft();
   virtual void OnRight();
-  virtual bool HitTest(const CPoint &point) const;
-  virtual bool OnMouseOver(const CPoint &point);
-  virtual bool OnMouseClick(int button, const CPoint &point);
+  virtual bool HitTest(const XbmcCPoint &point) const;
+  virtual bool OnMouseOver(const XbmcCPoint &point);
+  virtual bool OnMouseClick(int button, const XbmcCPoint &point);
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
 
   virtual CStdString GetDescription() const;
@@ -54,7 +54,7 @@ public:
   void UpdateText(const CStdString &text);
   bool MoveLeft();
   bool MoveRight();
-  void SelectItemFromPoint(const CPoint &point);
+  void SelectItemFromPoint(const XbmcCPoint &point);
   unsigned int GetFocusedItem() const;
   void SetFocusedItem(unsigned int item);
 
@@ -66,7 +66,7 @@ protected:
   void AddString(const CStdString &text, bool selectable, const CStdString &clickAction = "");
   void PositionButtons();
   unsigned int GetNumSelectable() const;
-  int GetItemFromPoint(const CPoint &point) const;
+  int GetItemFromPoint(const XbmcCPoint &point) const;
   void ScrollToItem(unsigned int item);
 
   // the static strings and buttons strings

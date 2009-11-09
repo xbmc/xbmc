@@ -75,17 +75,17 @@ public:
   bool IsEnabled() const;
   bool HasMoved(bool allMoves = false) const;
   void SetActive(bool active = true);
-  void SetExclusiveAccess(const CGUIControl *control, int windowID, const CPoint &point);
+  void SetExclusiveAccess(const CGUIControl *control, int windowID, const XbmcCPoint &point);
   void EndExclusiveAccess(const CGUIControl *control, int windowID);
   int GetExclusiveWindowID() const { return m_exclusiveWindowID; };
   const CGUIControl *GetExclusiveControl() const { return m_exclusiveControl; };
-  const CPoint &GetExclusiveOffset() const { return m_exclusiveOffset; };
+  const XbmcCPoint &GetExclusiveOffset() const { return m_exclusiveOffset; };
   void SetState(MOUSE_STATE state) { m_pointerState = state; };
   void SetEnabled(bool enabled = true);
   MOUSE_STATE GetState() const { return m_pointerState; };
-  CPoint GetLocation() const;
-  void SetLocation(const CPoint &point, bool activate=false);
-  CPoint GetLastMove() const;
+  XbmcCPoint GetLocation() const;
+  void SetLocation(const XbmcCPoint &point, bool activate=false);
+  XbmcCPoint GetLastMove() const;
   char GetWheel() const;
   void UpdateMouseWheel(char dir);
   void Update(XBMC_Event& newEvent);
@@ -97,7 +97,7 @@ private:
   // exclusive access to mouse from a control
   int m_exclusiveWindowID;
   const CGUIControl *m_exclusiveControl;
-  CPoint m_exclusiveOffset;
+  XbmcCPoint m_exclusiveOffset;
 
   // state of the mouse
   MOUSE_STATE m_pointerState;

@@ -33,6 +33,6 @@ public:
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual bool OnMouse(const CPoint &point);
+  virtual bool OnMouse(const XbmcCPoint &point);
   virtual void OnWindowLoaded();
 };

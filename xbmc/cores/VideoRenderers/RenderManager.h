@@ -41,7 +41,7 @@ public:
   ~CXBMCRenderManager();
 
   // Functions called from the GUI
-  void GetVideoRect(CRect &source, CRect &dest) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->GetVideoRect(source, dest); };
+  void GetVideoRect(XbmcCRect &source, XbmcCRect &dest) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->GetVideoRect(source, dest); };
   float GetAspectRatio() { CSharedLock lock(m_sharedSection); if (m_pRenderer) return m_pRenderer->GetAspectRatio(); else return 1.0f; };
   void AutoCrop(bool bCrop = true) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->AutoCrop(bCrop); };
   void Update(bool bPauseDrawing);
@@ -70,6 +70,14 @@ public:
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
       m_pRenderer->ReleaseImage(source, preserve);
+  }
+  inline void PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+	{
+      m_pRenderer->PaintVideoTexture(videoTexture,videoSurface);
+    }
   }
   inline unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
   {
@@ -101,7 +109,7 @@ public:
     if (m_pRenderer)
       m_pRenderer->Reset();
   }
-  RESOLUTION GetResolution()
+  int GetResolution()
   {
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
@@ -139,7 +147,6 @@ public:
   void Recover(); // called after resolution switch if something special is needed
 
   CSharedSection& GetSection() { return m_sharedSection; };
-
 protected:
 
   void PresentSingle();
@@ -148,8 +155,8 @@ protected:
   void PresentBlend();
 
   bool m_bPauseDrawing;   // true if we should pause rendering
-
   bool m_bIsStarted;
+  bool m_bDirectShowReady;
   CSharedSection m_sharedSection;
 
   bool m_bReconfigured;

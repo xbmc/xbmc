@@ -52,7 +52,7 @@ public:
   bool MoveLeft();
   bool MoveRight();
   void SetState(bool selected, bool focused);
-  void SelectItemFromPoint(const CPoint &point);
+  void SelectItemFromPoint(const XbmcCPoint &point);
 
 protected:
   const CGUIListItem *m_item;

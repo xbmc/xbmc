@@ -107,7 +107,7 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-class CLinuxRendererGL : public CBaseRenderer
+class CLinuxRendererGL : public CVideoBaseRenderer
 {
 public:
   CLinuxRendererGL();  
@@ -192,7 +192,7 @@ protected:
   struct YUVPLANE
   {
     GLuint id;
-    CRect  rect;
+    XbmcCRect  rect;
 
     float  width;
     float  height;
@@ -239,7 +239,7 @@ protected:
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
 
-  CRect m_crop;
+  XbmcCRect m_crop;
   float m_aspecterror;
 };
 

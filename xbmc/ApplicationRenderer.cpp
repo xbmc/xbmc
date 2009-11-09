@@ -98,7 +98,7 @@ void CApplicationRenderer::Process()
         }
 
         SAFE_RELEASE(m_lpSurface);
-        CRect rect = m_pWindow->GetScaledBounds();
+        XbmcCRect rect = m_pWindow->GetScaledBounds();
         m_pWindow->ClearAll(); //unload
 
         iLeft = (int)floor(rect.x1);

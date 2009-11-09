@@ -84,7 +84,7 @@ void CGUITextureGL::End()
   glDisable(GL_TEXTURE_2D);
 }
 
-void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, color_t color, int orientation)
+void CGUITextureGL::Draw(float *x, float *y, float *z, const XbmcCRect &texture, const XbmcCRect &diffuse, color_t color, int orientation)
 {
   GLubyte a = (GLubyte)GET_A(color);
   GLubyte r = (GLubyte)GET_R(color);
@@ -136,7 +136,7 @@ void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, con
   glVertex3f(x[3], y[3], z[3]);
 }
 
-void CGUITextureGL::DrawQuad(const CRect &rect, color_t color, CBaseTexture *texture, const CRect *texCoords)
+void CGUITextureGL::DrawQuad(const XbmcCRect &rect, color_t color, CBaseTexture *texture, const XbmcCRect *texCoords)
 {
   if (texture)
   {
@@ -171,7 +171,7 @@ void CGUITextureGL::DrawQuad(const CRect &rect, color_t color, CBaseTexture *tex
 
   glColor4ub((GLubyte)GET_R(color), (GLubyte)GET_G(color), (GLubyte)GET_B(color), (GLubyte)GET_A(color));
 
-  CRect coords = texCoords ? *texCoords : CRect(0.0f, 0.0f, 1.0f, 1.0f);
+  XbmcCRect coords = texCoords ? *texCoords : XbmcCRect(0.0f, 0.0f, 1.0f, 1.0f);
   glTexCoord2f(coords.x1, coords.y1);
   glVertex3f(rect.x1, rect.y1, 0);
   glTexCoord2f(coords.x2, coords.y1);

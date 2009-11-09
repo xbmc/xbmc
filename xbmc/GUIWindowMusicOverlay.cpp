@@ -53,7 +53,7 @@ bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-bool CGUIWindowMusicOverlay::OnMouse(const CPoint &point)
+bool CGUIWindowMusicOverlay::OnMouse(const XbmcCPoint &point)
 {
   CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_LOGO_PIC);
   if (pControl && pControl->HitTest(point))

@@ -1,0 +1,47 @@
+Count;;;N NI;;;Count of objects available in this stream
+StreamCount;;;N NI;;;Count of streams of that kind available
+StreamKind;Menu;;N NI;;;Stream type name
+StreamKind/String;;;N NI;;;Stream type name
+StreamKindID;;;N NI;;;Number of the stream (base=0)
+StreamKindPos;;;N NI;;;When multiple streams, number of the stream (base=1)
+Inform;;;N NT;;;Last **Inform** call
+ID;;;N YI;;;A ID for this stream in this file
+ID/String;;;Y NT;;;A ID for this stream in this file
+UniqueID;;;N YI;;;A unique ID for this stream, should be copied with stream copy
+MenuID;;;N YI;;;A menu ID for this stream in this file
+MenuID/String;;;Y NT;;;A menu ID for this stream in this file
+Format;;;N YT;;;Format used
+Format/Info;;;N NT;;;Info about Format
+Format/Url;;;N NT;;;Link
+Format_Version;;;Y NT;;;Version of this format
+Format_Profile;;;Y NT;;;Profile of the Format
+Format_Settings;;;Y NT;;;Settings needed for decoder used
+CodecID;;;Y YT;;;Codec ID (found in some containers)
+CodecID/Info;;;Y NT;;;Info about this codec
+CodecID/Hint;;;Y NT;;;A hint/popular name for this codec
+CodecID/Url;;;N NT;;;A link to more details about this codec ID
+CodecID_Description;;;Y NT;;;Manual description given by the container
+Codec;;;N YT;;;Deprecated
+Codec/String;;;N NT;;;Deprecated
+Codec/Info;;;N NT;;;Deprecated
+Codec/Url;;;N NT;;;Deprecated
+List_StreamKind;;;N YT;;;List of programs available
+List_StreamPos;;;N YT;;;List of programs available
+List;;;N YT;;;List of programs available
+List/String;;;Y NT;;;List of programs available
+Title;;;Y YI;;;Name of this menu
+Language;;;N YT;;;Language (2-letter ISO 639-1 if exists, else 3-letter ISO 639-2, and with optional ISO 3166-1 country separated by a dash if available, e.g. en, en-us, zh-cn);;
+Language/String;;;N NT;;;Language (full);;
+Language_More;;;Y YT;;;More info about Language (e.g. Director's Comment);;
+ServiceName;;;Y YT;;;;;Legal
+ServiceChannel;;;Y YT;;;;;Legal
+Service/Url;;;Y YT;;;;;Legal
+ServiceProvider;;;Y YT;;;;;Legal
+ServiceProviderr/Url;;;Y YT;;;;;Legal
+ServiceType;;;Y YT;;;;;Legal
+NetworkName;;;Y YT;;;;;Legal
+Original/NetworkName;;;Y YT;;;;;Legal
+Countries;;;Y YT;;;;;Legal
+TimeZones;;;Y YT;;;;;Legal
+Chapters_Pos_Begin;;;N NI;;;Used by third-party developpers to know about the begining of the chapters list, to be used by Get(Stream_Menu, x, Pos), where Pos is an Integer between Chapters_Pos_Begin and Chapters_Pos_End;;
+Chapters_Pos_End;;;N NI;;;Used by third-party developpers to know about the end of the chapters list (this position excluded);;

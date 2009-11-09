@@ -94,7 +94,7 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_pRenderer = NULL;
   m_bPauseDrawing = false;
   m_bIsStarted = false;
-
+  m_bDirectShowReady = false;
   m_presentfield = FS_NONE;
   m_presenttime = 0;
   m_presentstep = 0;
@@ -496,7 +496,7 @@ void CXBMCRenderManager::UpdateResolution()
   {
     if (g_graphicsContext.IsFullScreenVideo() && g_graphicsContext.IsFullScreenRoot())
     {
-      RESOLUTION res = GetResolution();
+      int res = GetResolution();
       g_graphicsContext.SetVideoResolution(res);
     }
     m_bReconfigured = false;

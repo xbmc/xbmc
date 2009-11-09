@@ -47,13 +47,13 @@ public:
 
   virtual void SetVSync(bool vsync);
 
-  virtual void SetViewPort(CRect& viewPort);
-  virtual void GetViewPort(CRect& viewPort);
+  virtual void SetViewPort(XbmcCRect& viewPort);
+  virtual void GetViewPort(XbmcCRect& viewPort);
 
   virtual void CaptureStateBlock();
   virtual void ApplyStateBlock();
 
-  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight);
+  virtual void SetCameraPosition(const XbmcCPoint &camera, int screenWidth, int screenHeight);
 
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix);
   virtual void RestoreHardwareTransform();
@@ -66,6 +66,7 @@ public:
   virtual void SetBackBufferSize(unsigned int width, unsigned int height) { m_nBackBufferWidth = width; m_nBackBufferHeight = height; };
   virtual void SetDeviceFullScreen(bool bFullScreen){ m_bFullScreenDevice = bFullScreen; };
   virtual LPDIRECT3DDEVICE9 Get3DDevice() { return m_pD3DDevice; }
+  virtual LPDIRECT3D9 Get3DObject() { return m_pD3D; }
   int GetBackbufferCount() const { return m_D3DPP.BackBufferCount; }
   bool IsDeviceReady() const { return m_nDeviceStatus == S_OK; }
   virtual bool CreateEffect(CStdString& name, ID3DXEffect** pEffect);

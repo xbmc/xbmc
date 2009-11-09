@@ -29,7 +29,7 @@
 class CGUIBorderedImage : public CGUIImage
 {
 public:
-  CGUIBorderedImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, const CTextureInfo& borderTexture, const CRect &borderSize);
+  CGUIBorderedImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, const CTextureInfo& borderTexture, const XbmcCRect &borderSize);
   CGUIBorderedImage(const CGUIBorderedImage &right);
   virtual ~CGUIBorderedImage(void);
   virtual CGUIBorderedImage *Clone() const { return new CGUIBorderedImage(*this); };
@@ -41,7 +41,7 @@ public:
 
 protected:
   CGUITexture m_borderImage;
-  CRect m_borderSize;
+  XbmcCRect m_borderSize;
 };
 
 #endif

@@ -408,7 +408,7 @@ void CSlideShowPic::Render()
   Process();
   // calculate where we should render (and how large it should be)
   // calculate aspect ratio correction factor
-  RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
+  int iRes = g_graphicsContext.GetVideoResolution();
   float fOffsetX = (float)g_settings.m_ResInfo[iRes].Overscan.left;
   float fOffsetY = (float)g_settings.m_ResInfo[iRes].Overscan.top;
   float fScreenWidth = (float)g_settings.m_ResInfo[iRes].Overscan.right - g_settings.m_ResInfo[iRes].Overscan.left;

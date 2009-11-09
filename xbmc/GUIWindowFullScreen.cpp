@@ -549,7 +549,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
+bool CGUIWindowFullScreen::OnMouse(const XbmcCPoint &point)
 {
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go back to GUI
@@ -713,7 +713,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       OnMessage(msg);
     }
     // show sizing information
-    CRect SrcRect, DestRect;
+    XbmcCRect SrcRect, DestRect;
     float fAR;
     g_application.m_pPlayer->GetVideoRect(SrcRect, DestRect);
     g_application.m_pPlayer->GetVideoAspectRatio(fAR);
@@ -821,7 +821,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       subtitleText.Replace("</b", "[/B]");
       subtitleText.Replace("</u", "");
 
-      RESOLUTION res = g_graphicsContext.GetVideoResolution();
+      int res = g_graphicsContext.GetVideoResolution();
       g_graphicsContext.SetRenderingResolution(res, 0, 0, false);
 
       float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;

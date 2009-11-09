@@ -100,7 +100,7 @@ void CGUIListGroup::UpdateInfo(const CGUIListItem *item)
     if (m_children[i]->GetControlType() == CGUIControl::GUICONTROL_LISTLABEL && m_children[i]->IsVisible())
     {
       CGUIListLabel &label1 = *(CGUIListLabel *)m_children[i];
-      CRect rect1(label1.GetRenderRect());
+      XbmcCRect rect1(label1.GetRenderRect());
       for (unsigned int j = i + 1; j < m_children.size(); j++)
       {
         if (m_children[j]->GetControlType() == CGUIControl::GUICONTROL_LISTLABEL && m_children[j]->IsVisible())
@@ -116,8 +116,8 @@ void CGUIListGroup::UpdateInfo(const CGUIListItem *item)
 // [1       [2...[2  1].|..........1]         2]
 // [1       [2.....[2   |      1]..1]         2]
 // [1       [2..........|.[2   1]..1]         2]
-              CRect leftRect(left.GetRenderRect());
-              CRect rightRect(right.GetRenderRect());
+              XbmcCRect leftRect(left.GetRenderRect());
+              XbmcCRect rightRect(right.GetRenderRect());
               if (rightRect.x1 > chopPoint)
                 chopPoint = rightRect.x1 - 5;
               else if (leftRect.x2 < chopPoint)
@@ -197,9 +197,9 @@ void CGUIListGroup::SetState(bool selected, bool focused)
   }
 }
 
-void CGUIListGroup::SelectItemFromPoint(const CPoint &point)
+void CGUIListGroup::SelectItemFromPoint(const XbmcCPoint &point)
 {
-  CPoint controlCoords(point);
+  XbmcCPoint controlCoords(point);
   m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {

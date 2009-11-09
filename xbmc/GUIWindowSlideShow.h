@@ -113,6 +113,6 @@ private:
   bool m_bLoadNextPic;
   bool m_bReloadImage;
   DllImageLib m_ImageLib;
-  RESOLUTION m_Resolution;
+  int m_Resolution;
   CCriticalSection m_slideSection;
 };

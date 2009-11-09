@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -121,6 +121,7 @@
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
+			ManagedExtensions="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -141,9 +142,9 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\cores\dsplayer;..\..\xbmc\cores\dsplayer\BaseClasses;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;Py_NO_ENABLE_SHARED"
-				MinimalRebuild="true"
+				MinimalRebuild="false"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
@@ -151,7 +152,7 @@
 				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				DisableSpecificWarnings="4996"
 				ForcedIncludeFiles="pch.h"
 				ShowIncludes="false"
@@ -168,13 +169,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
-				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
+				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib strmiids.lib quartz.lib strmbasd.lib msdmo.lib Dmoguids.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;"
-				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
+				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;;..\..\xbmc\cores\DSPlayer\Libs"
+				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt;msvcrtd"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
+				AssemblyDebug="1"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
 				LargeAddressAware="2"
@@ -235,7 +237,7 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\cores\dsplayer;..\..\xbmc\cores\dsplayer\BaseClasses;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\boost\"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;Py_NO_ENABLE_SHARED"
 				StringPooling="false"
 				MinimalRebuild="false"
@@ -266,10 +268,10 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="false"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
-				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
+				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib strmiids.lib quartz.lib strmbase.lib msdmo.lib Dmoguids.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\lib\libSDL-WIN32\lib"
+				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;;..\..\xbmc\cores\DSPlayer\Libs"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
@@ -2121,6 +2123,186 @@
 					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerSelectionRule.h"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="DSPlayer"
+				>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\DSGraph.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\DSGraph.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\DSPlayer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\DSPlayer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\FGFilter.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\FGFilter.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\FGManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\FGManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\IGraphBuilder2.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.h"
+					>
+				</File>
+				<Filter
+					Name="Helpers"
+					>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Helpers\CommonDshowXbmc.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Helpers\CommonDshowXbmc.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DshowCommon.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\MediaInfoDLL\MediaInfoDLL.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypeEx.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypeEx.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Helpers\XbmcDhowGuid.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Filters"
+					>
+					<Filter
+						Name="Renderers"
+						>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.h"
+							>
+						</File>
+						<Filter
+							Name="Source"
+							>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncflt.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncio.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncio.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.h"
+								>
+							</File>
+						</Filter>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="GraphBuilder"
+					>
+					<Filter
+						Name="Config"
+						>
+						<File
+							RelativePath="..\..\system\players\dsplayer\dsfilterconfig.xml"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="ISubPic"
+					>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\subpic\CoordGeom.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\subpic\CoordGeom.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\subpic\DX9SubPic.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\subpic\DX9SubPic.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\subpic\ISubPic.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\subpic\ISubPic.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\subpic\MemSubPic.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\subpic\MemSubPic.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter

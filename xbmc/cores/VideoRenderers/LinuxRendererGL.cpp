@@ -1673,10 +1673,10 @@ void CLinuxRendererGL::RenderSoftware(int index, int field)
 void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width, unsigned int height)
 {
   // get our screen rect
-  const CRect& rv = g_graphicsContext.GetViewWindow();
+  const XbmcCRect& rv = g_graphicsContext.GetViewWindow();
 
   // save current video rect
-  CRect saveSize = m_destRect;
+  XbmcCRect saveSize = m_destRect;
 
   // new video rect is thumbnail size
   m_destRect.SetRect(0, 0, (float)width, (float)height);

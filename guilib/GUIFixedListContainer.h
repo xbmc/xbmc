@@ -47,7 +47,7 @@ protected:
   virtual bool MoveDown(bool wrapAround);
   virtual bool MoveUp(bool wrapAround);
   virtual void ValidateOffset();
-  virtual bool SelectItemFromPoint(const CPoint &point);
+  virtual bool SelectItemFromPoint(const XbmcCPoint &point);
   virtual void SelectItem(int item);
   virtual bool HasNextPage() const;
   virtual bool HasPreviousPage() const;

@@ -1,0 +1,148 @@
+Count;;;N NI;;;Number of objects available in this stream
+StreamCount;;;N NI;;;Number of streams of this kind available
+StreamKind;Video;;N NI;;;Stream type name
+StreamKind/String;;;N NI;;;Stream type name
+StreamKindID;;;N NI;;;Number of the stream (base=0)
+StreamKindPos;;;N NI;;;When multiple streams, number of the stream (base=1)
+Inform;;;N NT;;;Last **Inform** call
+ID;;;N YI;;;The ID for this stream in this file
+ID/String;;;Y NT;;;The ID for this stream in this file
+UniqueID;;;N YI;;;The unique ID for this stream, should be copied with stream copy
+MenuID;;;N YI;;;The menu ID for this stream in this file
+MenuID/String;;;Y NT;;;The menu ID for this stream in this file
+Format;;;Y YT;;;Format used
+Format/Info;;;Y NT;;;Info about Format
+Format/Url;;;N NT;;;Link
+Format_Version;;;Y NT;;;Version of this format
+Format_Profile;;;Y NT;;;Profile of the Format
+Format_Settings;;;N NT;;;Settings needed for decoder used, summary
+Format_Settings_BVOP;;Yes;N YT;;;Settings needed for decoder used, detailled
+Format_Settings_BVOP/String;;;Y NT;;;Settings needed for decoder used, detailled
+Format_Settings_QPel;;Yes;N YT;;;Settings needed for decoder used, detailled
+Format_Settings_QPel/String;;;Y NT;;;Settings needed for decoder used, detailled
+Format_Settings_GMC;; warppoint;N YI;;;Settings needed for decoder used, detailled
+Format_Settings_GMC/String;;;Y NT;;;
+Format_Settings_Matrix;;;N YT;;;Settings needed for decoder used, detailled
+Format_Settings_Matrix/String;;;Y NT;;;Settings needed for decoder used, detailled
+Format_Settings_Matrix_Data;;;N NT;;;Matrix, in binary format encoded BASE64. Order = intra, non-intra, gray intra, gray non-intra
+Format_Settings_CABAC;;Yes;N YT;;;Settings needed for decoder used, detailled
+Format_Settings_CABAC/String;;;Y NT;;;Settings needed for decoder used, detailled
+Format_Settings_RefFrames;; frame;N YI;;;Settings needed for decoder used, detailled
+Format_Settings_RefFrames/String;;;Y NT;;;Settings needed for decoder used, detailled
+Format_Settings_Pulldown;;;Y YT;;;Settings needed for decoder used, detailled
+Format_Settings_FrameMode;;;Y YT;;;Settings needed for decoder used, detailled
+MuxingMode;;;Y NT;;;How this file is muxed in the container
+CodecID;;;Y YT;;;Codec ID (found in some containers)
+CodecID/Info;;;Y NT;;;Info on the codec
+CodecID/Hint;;;Y NT;;;Hint/popular name for this codec
+CodecID/Url;;;N NT;;;Homepage for more details about this codec
+CodecID_Description;;;Y NT;;;Manual description given by the container
+Codec;;;N NT;;;Deprecated, do not use in new projects
+Codec/String;;;N NT;;;Deprecated, do not use in new projects
+Codec/Family;;;N NT;;;Deprecated, do not use in new projects
+Codec/Info;;;N NT;;;Deprecated, do not use in new projects
+Codec/Url;;;N NT;;;Deprecated, do not use in new projects
+Codec/CC;;;N NT;;;Deprecated, do not use in new projects
+Codec_Profile;;;N NT;;;Deprecated, do not use in new projects
+Codec_Description;;;N NT;;;Deprecated, do not use in new projects
+Codec_Settings;;;N NT;;;Deprecated, do not use in new projects
+Codec_Settings_PacketBitStream;;;N NT;;;Deprecated, do not use in new projects
+Codec_Settings_BVOP;;;N NT;;;Deprecated, do not use in new projects
+Codec_Settings_QPel;;;N NT;;;Deprecated, do not use in new projects
+Codec_Settings_GMC;; warppoint;N NT;;;Deprecated, do not use in new projects
+Codec_Settings_GMC/String;;;N NT;;;Deprecated, do not use in new projects
+Codec_Settings_Matrix;;;N NT;;;Deprecated, do not use in new projects
+Codec_Settings_Matrix_Data;;;N NT;;;Deprecated, do not use in new projects
+Codec_Settings_CABAC;;;N NT;;;Deprecated, do not use in new projects
+Codec_Settings_RefFrames;;;N NT;;;Deprecated, do not use in new projects
+Duration;; ms;N YI;;;Play time of the stream in ms
+Duration/String;;;Y NT;;;Play time in format : XXx YYy only, YYy omited if zero
+Duration/String1;;;N NT;;;Play time in format : HHh MMmn SSs MMMms, XX omited if zero
+Duration/String2;;;N NT;;;Play time in format : XXx YYy only, YYy omited if zero
+Duration/String3;;;N NT;;;Play time in format : HH:MM:SS.MMM
+BitRate_Mode;;;N YT;;;Bit rate mode (VBR, CBR)
+BitRate_Mode/String;;;Y NT;;;Bit rate mode (Variable, Cconstant)
+BitRate;; bps;N YF;;;Bit rate in bps
+BitRate/String;;;Y NT;;;Bit rate (with measurement)
+BitRate_Minimum;; bps;N YF;;;Minimum Bit rate in bps
+BitRate_Minimum/String;;;Y NT;;;Minimum Bit rate (with measurement)
+BitRate_Nominal;; bps;N YF;;;Nominal Bit rate in bps
+BitRate_Nominal/String;;;Y NT;;;Nominal Bit rate (with measurement)
+BitRate_Maximum;; bps;N YF;;;Maximum Bit rate in bps
+BitRate_Maximum/String;;;Y NT;;;Maximum Bit rate (with measurement)
+Width;; pixel;N YI;;;Width in pixel
+Width/String;;;Y NT;;;Width with measurement (pixel)
+Height;; pixel;N YI;;;Height in pixel
+Height/String;;;Y NT;;;Width with measurement (pixel)
+PixelAspectRatio;;;N YF;;;Pixel Aspect ratio
+PixelAspectRatio/String;;;N NT;;;Pixel Aspect ratio
+PixelAspectRatio_Original;;;N YF;;;Original (in the raw stream) Pixel Aspect ratio
+PixelAspectRatio_Original/String;;;N NT;;;Original (in the raw stream) Pixel Aspect ratio
+DisplayAspectRatio;;;N YF;;;Display Aspect ratio
+DisplayAspectRatio/String;;;Y NT;;;Display Aspect ratio
+DisplayAspectRatio_Original;;;N YF;;;Original (in the raw stream) Display Aspect ratio
+DisplayAspectRatio_Original/String;;;Y NT;;;Original (in the raw stream) Display Aspect ratio
+Rotation;;;N YT;;;Rotation
+Rotation/String;;;Y NT;;;Rotation (if not horizontal)
+FrameRate_Mode;;;N YT;;;Frame rate mode (CFR, VFR)
+FrameRate_Mode/String;;;Y NT;;;Frame rate mode (Constant, Variable)
+FrameRate;; fps;N YF;;;Frames per second
+FrameRate/String;;;Y NT;;;Frames per second (with measurement)
+FrameRate_Minimum;; fps;N YF;;;Minimum Frames per second
+FrameRate_Minimum/String;;;Y NT;;;Minimum Frames per second (with measurement)
+FrameRate_Nominal;; fps;N YF;;;Nominal Frames per second
+FrameRate_Nominal/String;;;Y NT;;;Nominal Frames per second (with measurement)
+FrameRate_Maximum;; fps;N YF;;;Maximum Frames per second
+FrameRate_Maximum/String;;;Y NT;;;Maximum Frames per second (with measurement)
+FrameRate_Original;; fps;N YF;;;Original (in the raw stream) Frames per second
+FrameRate_Original/String;;;Y NT;;;Original (in the raw stream) Frames per second (with measurement)
+FrameCount;;;N NI;;;Number of frames
+Standard;;;Y NT;;;NTSC or PAL
+Resolution;; bit;N YI;;;16/24/32 
+Resolution/String;;;Y NT;;;16/24/32 bits
+Colorimetry;;;Y YT;;;
+ScanType;;;N YT;;;
+ScanType/String;;;Y NT;;;
+ScanOrder;;;N YT;;;
+ScanOrder/String;;;Y NT;;;
+Interlacement;;;N NT;;;Deprecated, do not use in new projects
+Interlacement/String;;;N NT;;;Deprecated, do not use in new projects
+Bits-(Pixel*Frame);;;Y YF;;;bits/(Pixel*Frame) (like Gordian Knot)
+Delay;; ms;N NI;;;Delay fixed in the stream (relative) IN MS
+Delay/String;;;N NT;;;Delay with measurement
+Delay/String1;;;N NT;;;Delay with measurement
+Delay/String2;;;N NT;;;Delay with measurement
+Delay/String3;;;N NT;;;format : HH:MM:SS.MMM
+Delay_Settings;;;N NT;;;Delay settings (in case of timecode for example)
+Delay_Original;; ms;N NI;;;Delay fixed in the raw stream (relative) IN MS
+Delay_Original/String;;;N NT;;;Delay with measurement
+Delay_Original/String1;;;N NT;;;Delay with measurement
+Delay_Original/String2;;;N NT;;;Delay with measurement
+Delay_Original/String3;;;N NT;;;format : HH:MM:SS.MMM
+Delay_Original_Settings;;;N NT;;;Delay settings (in case of timecode for example)
+StreamSize;; byte;N YI;;;Stream size in bytes
+StreamSize/String;;;Y NT;;;Streamsize in with percentage value
+StreamSize/String1;;;N NT;;;Streamsize with measurement
+StreamSize/String2;;;N NT;;;Streamsize with measurement
+StreamSize/String3;;;N NT;;;Streamsize with measurement
+StreamSize/String4;;;N NT;;;Streamsize with measurement
+StreamSize/String5;;;N NT;;;Streamsize in with percentage value;;
+StreamSize_Proportion;;;N NT;;;Stream size divided by file size;;
+Alignment;;;Y NT;;;How this stream file is aligned in the container;;
+Alignment/String;;;N YT;;;;;
+Title;;;Y YI;;;Name of the track;;
+Encoded_Application;;;Y YT;;;Software. Identifies the name of the software package used to create the file, such as Microsoft WaveEdit.;;Technical
+Encoded_Application/Url;;;N YT;;;Software. Identifies the name of the software package used to create the file, such as Microsoft WaveEdit.;;Technical
+Encoded_Library;;;N YT;;;Software used to create the file;;
+Encoded_Library/String;;;Y NT;;;Software used to create the file;;
+Encoded_Library/Name;;;N NT;;;Info from the software;;
+Encoded_Library/Version;;;N NT;;;Version of software;;
+Encoded_Library/Date;;;N NT;;;Release date of software;;
+Encoded_Library_Settings;;;Y YT;;;Parameters used by the software;;
+Language;;;N YT;;;Language (2-letter ISO 639-1 if exists, else 3-letter ISO 639-2, and with optional ISO 3166-1 country separated by a dash if available, e.g. en, en-us, zh-cn);;
+Language/String;;;Y NT;;;Language (full);;
+Language_More;;;Y YT;;;More info about Language (e.g. Director's Comment);;
+Encoded_Date;;;Y YT;;;UTC time that the encoding of this item was completed began.;;Temporal
+Tagged_Date;;;Y YT;;;UTC time that the tags were done for this item.;;Temporal
+Encryption;;;Y YT;;;;;
+BufferSize;;;N YT;;;Defines the size of the buffer needed to decode the sequence.;;

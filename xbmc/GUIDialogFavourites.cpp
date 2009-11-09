@@ -117,10 +117,10 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
     (*m_favourites)[item]->Select(true);
 
     // initialize the positioning
-    CPoint pos;
+    XbmcCPoint pos;
     const CGUIControl *pList = GetControl(FAVOURITES_LIST);
     if (pList)
-      pos = pList->GetRenderPosition() + CPoint(pList->GetWidth() * 0.5f, pList->GetHeight() * 0.5f);
+      pos = pList->GetRenderPosition() + XbmcCPoint(pList->GetWidth() * 0.5f, pList->GetHeight() * 0.5f);
     pMenu->Initialize();
 
     int btn_MoveUp = m_favourites->Size() > 1 ? pMenu->AddButton(13332) : 0;

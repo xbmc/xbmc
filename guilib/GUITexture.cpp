@@ -223,9 +223,9 @@ void CGUITextureBase::Render()
 
 void CGUITextureBase::Render(float left, float top, float right, float bottom, float u1, float v1, float u2, float v2, float u3, float v3)
 {
-  CRect diffuse(u1, v1, u2, v2);
-  CRect texture(u1, v1, u2, v2);
-  CRect vertex(left, top, right, bottom);
+  XbmcCRect diffuse(u1, v1, u2, v2);
+  XbmcCRect texture(u1, v1, u2, v2);
+  XbmcCRect vertex(left, top, right, bottom);
   g_graphicsContext.ClipRect(vertex, texture, m_diffuse.size() ? &diffuse : NULL);
 
   if (vertex.IsEmpty())
@@ -417,7 +417,7 @@ void CGUITextureBase::CalculateSize()
     {
       m_diffuseScaleU = m_diffuseU;
       m_diffuseScaleV = m_diffuseV;
-      m_diffuseOffset = CPoint(0,0);
+      m_diffuseOffset = XbmcCPoint(0,0);
     }
     else // stretch'ing diffuse
     { // scale diffuse up or down to match output rect size, rather than image size
@@ -427,7 +427,7 @@ void CGUITextureBase::CalculateSize()
       // -> u = (m_posX - m_fX) * m_fU * m_diffuseScaleU / m_fNW
       m_diffuseScaleU = m_diffuseU * m_vertex.Width() / m_width;
       m_diffuseScaleV = m_diffuseV * m_vertex.Height() / m_height;
-      m_diffuseOffset = CPoint((m_vertex.x1 - m_posX) / m_vertex.Width() * m_diffuseScaleU, (m_vertex.y1 - m_posY) / m_vertex.Height() * m_diffuseScaleV);
+      m_diffuseOffset = XbmcCPoint((m_vertex.x1 - m_posX) / m_vertex.Width() * m_diffuseScaleU, (m_vertex.y1 - m_posY) / m_vertex.Height() * m_diffuseScaleV);
     }
   }
   m_invalid = false;
@@ -513,7 +513,7 @@ bool CGUITextureBase::ReadyToRender() const
   return m_texture.size() > 0;
 }
 
-void CGUITextureBase::OrientateTexture(CRect &rect, float width, float height, int orientation)
+void CGUITextureBase::OrientateTexture(XbmcCRect &rect, float width, float height, int orientation)
 {
   switch (orientation & 3)
   {

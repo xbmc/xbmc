@@ -58,7 +58,7 @@ private:
   LPDIRECT3DSURFACE9 m_lpSurface;
 #endif
   CGUIDialogBusy* m_pWindow;
-  RESOLUTION m_Resolution;
+  int m_Resolution;
 };
 extern CApplicationRenderer g_ApplicationRenderer;
 

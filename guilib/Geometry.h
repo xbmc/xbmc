@@ -29,44 +29,44 @@
 #endif
 
 
-class CPoint
+class XbmcCPoint
 {
 public:
-  CPoint()
+  XbmcCPoint()
   {
     x = 0; y = 0;
   };
 
-  CPoint(float a, float b)
+  XbmcCPoint(float a, float b)
   {
     x = a;
     y = b;
   };
 
-  CPoint operator+(const CPoint &point) const
+  XbmcCPoint operator+(const XbmcCPoint &point) const
   {
-    CPoint ans;
+    XbmcCPoint ans;
     ans.x = x + point.x;
     ans.y = y + point.y;
     return ans;
   };
 
-  const CPoint &operator+=(const CPoint &point)
+  const XbmcCPoint &operator+=(const XbmcCPoint &point)
   {
     x += point.x;
     y += point.y;
     return *this;
   };
 
-  CPoint operator-(const CPoint &point) const
+  XbmcCPoint operator-(const XbmcCPoint &point) const
   {
-    CPoint ans;
+    XbmcCPoint ans;
     ans.x = x - point.x;
     ans.y = y - point.y;
     return ans;
   };
 
-  const CPoint &operator-=(const CPoint &point)
+  const XbmcCPoint &operator-=(const XbmcCPoint &point)
   {
     x -= point.x;
     y -= point.y;
@@ -76,22 +76,22 @@ public:
   float x, y;
 };
 
-class CRect
+class XbmcCRect
 {
 public:
-  CRect() { x1 = y1 = x2 = y2 = 0;};
-  CRect(float left, float top, float right, float bottom) { x1 = left; y1 = top; x2 = right; y2 = bottom; };
+  XbmcCRect() { x1 = y1 = x2 = y2 = 0;};
+  XbmcCRect(float left, float top, float right, float bottom) { x1 = left; y1 = top; x2 = right; y2 = bottom; };
 
   void SetRect(float left, float top, float right, float bottom) { x1 = left; y1 = top; x2 = right; y2 = bottom; };
 
-  bool PtInRect(const CPoint &point) const
+  bool PtInRect(const XbmcCPoint &point) const
   {
     if (x1 <= point.x && point.x <= x2 && y1 <= point.y && point.y <= y2)
       return true;
     return false;
   };
 
-  inline const CRect &operator -=(const CPoint &point) XBMC_FORCE_INLINE
+  inline const XbmcCRect &operator -=(const XbmcCPoint &point) XBMC_FORCE_INLINE
   {
     x1 -= point.x;
     y1 -= point.y;
@@ -100,7 +100,7 @@ public:
     return *this;
   };
 
-  inline const CRect &operator +=(const CPoint &point) XBMC_FORCE_INLINE
+  inline const XbmcCRect &operator +=(const XbmcCPoint &point) XBMC_FORCE_INLINE
   {
     x1 += point.x;
     y1 += point.y;
@@ -109,7 +109,7 @@ public:
     return *this;
   };
 
-  const CRect &Intersect(const CRect &rect)
+  const XbmcCRect &Intersect(const XbmcCRect &rect)
   {
     if (rect.x2 < x2) x2 = rect.x2;
     if (rect.y2 < y2) y2 = rect.y2;
@@ -135,7 +135,7 @@ public:
     return y2 - y1;
   };
 
-  bool operator !=(const CRect &rect) const
+  bool operator !=(const XbmcCRect &rect) const
   {
     if (x1 != rect.x1) return true;
     if (x2 != rect.x2) return true;

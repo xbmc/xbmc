@@ -869,7 +869,7 @@ void CGUISettings::SetInt(const char *strSetting, int iSetting)
   {
     ((CSettingInt *)(*it).second)->SetData(iSetting);
     if (stricmp(strSetting, "videoscreen.resolution") == 0)
-      g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)iSetting;
+      g_guiSettings.m_LookAndFeelResolution = (int)iSetting;
     return ;
   }
   // Assert here and write debug output
@@ -1021,7 +1021,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("audiooutput.ac3passthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
 
-  g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("videoscreen.resolution");
+  g_guiSettings.m_LookAndFeelResolution = (int)GetInt("videoscreen.resolution");
 #ifdef __APPLE__
   // trap any previous vsync by driver setting, does not exist on OSX
   if (GetInt("videoscreen.vsync") == VSYNC_DRIVER)
@@ -1037,7 +1037,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   )
   {
-    RESOLUTION newRes = RES_DESKTOP;
+    int newRes = RES_DESKTOP;
     if (g_guiSettings.m_LookAndFeelResolution == RES_AUTORES)
     {
       //"videoscreen.resolution" will stay at RES_AUTORES, m_LookAndFeelResolution will be the real mode

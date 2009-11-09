@@ -115,7 +115,7 @@ void CGUIDialogTeletext::OnInitWindow()
   m_bClose            = false;
   m_windowLoaded      = true;
 
-  RESOLUTION res = g_graphicsContext.GetVideoResolution();
+  int res = g_graphicsContext.GetVideoResolution();
   m_vertCoords.SetRect((float)g_settings.m_ResInfo[res].Overscan.left,
                        (float)g_settings.m_ResInfo[res].Overscan.top,
                        (float)g_settings.m_ResInfo[res].Overscan.right,

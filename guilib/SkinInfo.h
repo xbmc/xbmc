@@ -21,7 +21,7 @@
  *
  */
 
-#include "GraphicContext.h" // needed for the RESOLUTION members
+#include "GraphicContext.h" // needed for the int members
 #include "GUIIncludes.h"    // needed for the GUIInclude member
 
 #define CREDIT_LINE_LENGTH 50
@@ -47,10 +47,10 @@ public:
   bool Check(const CStdString& strSkinDir); // checks if everything is present and accounted for without loading the skin
 
   bool HasSkinFile(const CStdString &strFile);
-  CStdString GetSkinPath(const CStdString& strFile, RESOLUTION *res, const CStdString& strBaseDir="");  // retrieve the best skin file for the resolution we are in - res will be made the resolution we are loading from
+  CStdString GetSkinPath(const CStdString& strFile, int *res, const CStdString& strBaseDir="");  // retrieve the best skin file for the resolution we are in - res will be made the resolution we are loading from
   wchar_t* GetCreditsLine(int i);
 
-  CStdString GetDirFromRes(RESOLUTION res);
+  CStdString GetDirFromRes(int res);
   CStdString GetBaseDir();
   double GetMinVersion();
   double GetVersion(){ return m_Version;};
@@ -68,8 +68,8 @@ public:
 
   inline float GetSkinZoom() { return m_skinzoom; };
 
-  inline const RESOLUTION& GetDefaultWideResolution() { return m_DefaultResolutionWide; };
-  inline const RESOLUTION& GetDefaultResolution() { return m_DefaultResolution; };
+  inline const int& GetDefaultWideResolution() { return m_DefaultResolutionWide; };
+  inline const int& GetDefaultResolution() { return m_DefaultResolution; };
 
   void SetDefaults();
 protected:
@@ -78,8 +78,8 @@ protected:
 
   wchar_t credits[6][CREDIT_LINE_LENGTH];  // credits info
   int m_iNumCreditLines;  // number of credit lines
-  RESOLUTION m_DefaultResolution; // default resolution for the skin in 4:3 modes
-  RESOLUTION m_DefaultResolutionWide; // default resolution for the skin in 16:9 modes
+  int m_DefaultResolution; // default resolution for the skin in 4:3 modes
+  int m_DefaultResolutionWide; // default resolution for the skin in 16:9 modes
   CStdString m_strBaseDir;
   double m_Version;
 

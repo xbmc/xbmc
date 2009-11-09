@@ -46,8 +46,8 @@ public:
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
   virtual void SetFocus(bool focus);
 
-  const CRect &GetRenderRect() const { return m_renderRect; };
-  void SetRenderRect(const CRect &rect) { m_renderRect = rect; };
+  const XbmcCRect &GetRenderRect() const { return m_renderRect; };
+  void SetRenderRect(const XbmcCRect &rect) { m_renderRect = rect; };
   void SetLabel(const CStdString &label);
   void SetSelected(bool selected);
   void SetScrolling(bool scrolling);
@@ -66,5 +66,5 @@ protected:
   bool        m_alwaysScroll;
   bool        m_selected;
   CScrollInfo m_scrollInfo;
-  CRect       m_renderRect;   // render location
+  XbmcCRect       m_renderRect;   // render location
 };

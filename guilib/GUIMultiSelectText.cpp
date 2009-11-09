@@ -224,7 +224,7 @@ bool CGUIMultiSelectTextControl::MoveRight()
   return true;
 }
 
-void CGUIMultiSelectTextControl::SelectItemFromPoint(const CPoint &point)
+void CGUIMultiSelectTextControl::SelectItemFromPoint(const XbmcCPoint &point)
 {
   int item = GetItemFromPoint(point);
   if (item != -1)
@@ -236,18 +236,18 @@ void CGUIMultiSelectTextControl::SelectItemFromPoint(const CPoint &point)
     SetFocus(false);
 }
 
-bool CGUIMultiSelectTextControl::HitTest(const CPoint &point) const
+bool CGUIMultiSelectTextControl::HitTest(const XbmcCPoint &point) const
 {
   return (GetItemFromPoint(point) != -1);
 }
 
-bool CGUIMultiSelectTextControl::OnMouseOver(const CPoint &point)
+bool CGUIMultiSelectTextControl::OnMouseOver(const XbmcCPoint &point)
 {
   ScrollToItem(GetItemFromPoint(point));
   return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUIMultiSelectTextControl::OnMouseClick(int button, const CPoint &point)
+bool CGUIMultiSelectTextControl::OnMouseClick(int button, const XbmcCPoint &point)
 {
   if (button == MOUSE_LEFT_BUTTON)
   {
@@ -261,7 +261,7 @@ bool CGUIMultiSelectTextControl::OnMouseClick(int button, const CPoint &point)
   return false;
 }
 
-int CGUIMultiSelectTextControl::GetItemFromPoint(const CPoint &point) const
+int CGUIMultiSelectTextControl::GetItemFromPoint(const XbmcCPoint &point) const
 {
   if (!m_label.font) return -1;
   float posX = m_posX;
@@ -271,7 +271,7 @@ int CGUIMultiSelectTextControl::GetItemFromPoint(const CPoint &point) const
     const CSelectableString &string = m_items[i];
     if (string.m_selectable)
     {
-      CRect rect(posX, m_posY, posX + string.m_length, m_posY + m_height);
+      XbmcCRect rect(posX, m_posY, posX + string.m_length, m_posY + m_height);
       if (rect.PtInRect(point))
         return selectable;
       selectable++;

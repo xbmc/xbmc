@@ -103,7 +103,7 @@ unsigned int CGUIListItemLayout::GetFocusedItem() const
   return m_group.GetFocusedItem();
 }
 
-void CGUIListItemLayout::SelectItemFromPoint(const CPoint &point)
+void CGUIListItemLayout::SelectItemFromPoint(const XbmcCPoint &point)
 {
   m_group.SelectItemFromPoint(point);
 }
@@ -122,7 +122,7 @@ void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *grou
 {
   if (!group) return;
 
-  CRect rect(group->GetXPosition(), group->GetYPosition(), group->GetXPosition() + group->GetWidth(), group->GetYPosition() + group->GetHeight());
+  XbmcCRect rect(group->GetXPosition(), group->GetYPosition(), group->GetXPosition() + group->GetWidth(), group->GetYPosition() + group->GetHeight());
 
   CGUIControlFactory factory;
   CGUIControl *control = factory.Create(0, rect, child, true);  // true indicating we're inside a list for the

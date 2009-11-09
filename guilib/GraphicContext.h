@@ -42,7 +42,7 @@
 #include <map>
 #include "utils/CriticalSection.h"  // base class
 #include "TransformMatrix.h"        // for the members m_guiTransform etc.
-#include "Geometry.h"               // for CRect/CPoint
+#include "Geometry.h"               // for XbmcCRect/XbmcCPoint
 #include "gui3d.h"
 #include "StdString.h"
 #include "Resolution.h"
@@ -79,7 +79,7 @@ public:
   bool IsWidescreen() const { return m_bWidescreen; }
   bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);
   void RestoreViewPort();
-  const CRect& GetViewWindow() const;
+  const XbmcCRect& GetViewWindow() const;
   void SetViewWindow(float left, float top, float right, float bottom);
   bool IsFullScreenRoot() const;
   bool ToggleFullScreenRoot();
@@ -87,23 +87,23 @@ public:
   bool IsFullScreenVideo() const;
   bool IsCalibrating() const;
   void SetCalibrating(bool bOnOff);
-  bool IsValidResolution(RESOLUTION res);
-  void SetVideoResolution(RESOLUTION res, bool forceUpdate = false);
-  RESOLUTION GetVideoResolution() const;
-  void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
+  bool IsValidResolution(int res);
+  void SetVideoResolution(int res, bool forceUpdate = false);
+  int GetVideoResolution() const;
+  void ResetOverscan(int res, OVERSCAN &overscan);
   void ResetOverscan(RESOLUTION_INFO &resinfo);
-  void ResetScreenParameters(RESOLUTION res);
+  void ResetScreenParameters(int res);
   void Lock() { EnterCriticalSection(*this);  }
   void Unlock() { LeaveCriticalSection(*this); }
-  float GetPixelRatio(RESOLUTION iRes) const;
+  float GetPixelRatio(int iRes) const;
   void CaptureStateBlock();
   void ApplyStateBlock();
   void Clear();
-  void GetAllowedResolutions(std::vector<RESOLUTION> &res);
+  void GetAllowedResolutions(std::vector<int> &res);
 
   // output scaling
-  void SetRenderingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  ///< Sets scaling up for rendering
-  void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);    ///< Sets scaling up for skin loading etc.
+  void SetRenderingResolution(int res, float posX, float posY, bool needsScaling);  ///< Sets scaling up for rendering
+  void SetScalingResolution(int res, float posX, float posY, bool needsScaling);    ///< Sets scaling up for skin loading etc.
   float GetScalingPixelRatio() const;
   void Flip();
   void InvertFinalCoords(float &x, float &y) const;
@@ -124,13 +124,13 @@ public:
 
   void SetOrigin(float x, float y);
   void RestoreOrigin();
-  void SetCameraPosition(const CPoint &camera);
+  void SetCameraPosition(const XbmcCPoint &camera);
   void RestoreCameraPosition();
   bool SetClipRegion(float x, float y, float w, float h);
   void RestoreClipRegion();
   void ApplyHardwareTransform();
   void RestoreHardwareTransform();
-  void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
+  void ClipRect(XbmcCRect &vertex, XbmcCRect &texture, XbmcCRect *diffuse = NULL);
   void ClipToViewWindow();
   inline void ResetWindowTransform()
   {
@@ -159,9 +159,9 @@ public:
   }
 
 protected:
-  void SetFullScreenViewWindow(RESOLUTION &res);
+  void SetFullScreenViewWindow(int &res);
 
-  std::stack<CRect> m_viewStack;
+  std::stack<XbmcCRect> m_viewStack;
 
   int m_iScreenHeight;
   int m_iScreenWidth;
@@ -169,21 +169,21 @@ protected:
   int m_iBackBufferCount;
   bool m_bWidescreen;
   CStdString m_strMediaDir;
-  CRect m_videoRect;
+  XbmcCRect m_videoRect;
   bool m_bFullScreenRoot;
   bool m_bFullScreenVideo;
   bool m_bCalibrating;
-  RESOLUTION m_Resolution;
+  int m_Resolution;
 
 private:
-  void UpdateCameraPosition(const CPoint &camera);
+  void UpdateCameraPosition(const XbmcCPoint &camera);
   void UpdateFinalTransform(const TransformMatrix &matrix);
-  RESOLUTION m_windowResolution;
+  int m_windowResolution;
   float m_guiScaleX;
   float m_guiScaleY;
-  std::stack<CPoint> m_cameras;
-  std::stack<CPoint> m_origins;
-  std::stack<CRect>  m_clipRegions;
+  std::stack<XbmcCPoint> m_cameras;
+  std::stack<XbmcCPoint> m_origins;
+  std::stack<XbmcCRect>  m_clipRegions;
 
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;

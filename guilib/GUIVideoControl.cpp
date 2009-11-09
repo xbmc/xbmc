@@ -67,7 +67,7 @@ void CGUIVideoControl::Render()
   CGUIControl::Render();
 }
 
-bool CGUIVideoControl::OnMouseClick(int button, const CPoint &point)
+bool CGUIVideoControl::OnMouseClick(int button, const XbmcCPoint &point)
 { // mouse has clicked in the video control
   // switch to fullscreen video
   if (!g_application.IsPlayingVideo()) return false;
@@ -90,7 +90,7 @@ bool CGUIVideoControl::OnMouseClick(int button, const CPoint &point)
   return false;
 }
 
-bool CGUIVideoControl::OnMouseOver(const CPoint &point)
+bool CGUIVideoControl::OnMouseOver(const XbmcCPoint &point)
 {
   // unfocusable, so return true
   CGUIControl::OnMouseOver(point);
@@ -102,7 +102,7 @@ bool CGUIVideoControl::CanFocus() const
   return false;
 }
 
-bool CGUIVideoControl::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
+bool CGUIVideoControl::CanFocusFromPoint(const XbmcCPoint &point, CGUIControl **control, XbmcCPoint &controlPoint) const
 { // mouse is allowed to focus this control, but it doesn't actually receive focus
   controlPoint = point;
   m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);

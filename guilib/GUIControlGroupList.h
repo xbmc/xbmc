@@ -41,8 +41,8 @@ public:
 
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const;
-  virtual void UnfocusFromPoint(const CPoint &point);
+  virtual bool CanFocusFromPoint(const XbmcCPoint &point, CGUIControl **control, XbmcCPoint &controlPoint) const;
+  virtual void UnfocusFromPoint(const XbmcCPoint &point);
 
   virtual void AddControl(CGUIControl *control, int position = -1);
   virtual void ClearAll();

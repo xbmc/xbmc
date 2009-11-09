@@ -99,7 +99,7 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-class CLinuxRenderer : public CBaseRenderer
+class CLinuxRenderer : public CVideoBaseRenderer
 {
 public:
   CLinuxRenderer();

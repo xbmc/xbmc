@@ -27,7 +27,7 @@
 #include "MathUtils.h"
 
 
-CBaseRenderer::CBaseRenderer()
+CVideoBaseRenderer::CVideoBaseRenderer()
 {
   m_sourceFrameRatio = 1.0f;
   m_sourceWidth = 720;
@@ -35,11 +35,11 @@ CBaseRenderer::CBaseRenderer()
   m_resolution = RES_DESKTOP;
 }
 
-CBaseRenderer::~CBaseRenderer()
+CVideoBaseRenderer::~CVideoBaseRenderer()
 {
 }
 
-void CBaseRenderer::ChooseBestResolution(float fps)
+void CVideoBaseRenderer::ChooseBestResolution(float fps)
 {
   m_resolution = g_guiSettings.m_LookAndFeelResolution;
   if ( m_resolution == RES_WINDOW )
@@ -66,7 +66,7 @@ void CBaseRenderer::ChooseBestResolution(float fps)
       // Closer the better, prefer higher refresh rate if the same
       if ((i_weight <  c_weight)
       ||  (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate))
-        m_resolution = (RESOLUTION)i;
+        m_resolution = (int)i;
     }
 
     CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d)", g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution);
@@ -76,7 +76,7 @@ void CBaseRenderer::ChooseBestResolution(float fps)
     CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)", m_resolution == RES_DESKTOP ? "DESKTOP" : "USER", g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution);
 }
 
-RESOLUTION CBaseRenderer::GetResolution() const
+int CVideoBaseRenderer::GetResolution() const
 {
   if (g_graphicsContext.IsFullScreenRoot() && (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating()))
     return m_resolution;
@@ -84,20 +84,20 @@ RESOLUTION CBaseRenderer::GetResolution() const
   return g_graphicsContext.GetVideoResolution();
 }
 
-float CBaseRenderer::GetAspectRatio() const
+float CVideoBaseRenderer::GetAspectRatio() const
 {
   float width = (float)m_sourceWidth - g_stSettings.m_currentVideoSettings.m_CropLeft - g_stSettings.m_currentVideoSettings.m_CropRight;
   float height = (float)m_sourceHeight - g_stSettings.m_currentVideoSettings.m_CropTop - g_stSettings.m_currentVideoSettings.m_CropBottom;
   return m_sourceFrameRatio * width / height * m_sourceHeight / m_sourceWidth;
 }
 
-void CBaseRenderer::GetVideoRect(CRect &source, CRect &dest)
+void CVideoBaseRenderer::GetVideoRect(XbmcCRect &source, XbmcCRect &dest)
 {
   source = m_sourceRect;
   dest = m_destRect;
 }
 
-void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount)
+void CVideoBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount)
 {
   // scale up image as much as possible
   // and keep the aspect ratio (introduces with black bars)
@@ -140,7 +140,7 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
 // defined to be the same ratio as the intended display pixels.
 // These formats are determined by frame size.
 //***************************************************************************************
-void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height)
+void CVideoBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height)
 {
   m_sourceFrameRatio = (float)desired_width / desired_height;
 
@@ -193,9 +193,9 @@ void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsign
   }
 }
 
-void CBaseRenderer::ManageDisplay()
+void CVideoBaseRenderer::ManageDisplay()
 {
-  const CRect& view = g_graphicsContext.GetViewWindow();
+  const XbmcCRect& view = g_graphicsContext.GetViewWindow();
 
   AutoCrop(g_stSettings.m_currentVideoSettings.m_Crop);
 
@@ -207,7 +207,7 @@ void CBaseRenderer::ManageDisplay()
   CalcNormalDisplayRect(view.x1, view.y1, view.Width(), view.Height(), GetAspectRatio() * g_stSettings.m_fPixelRatio, g_stSettings.m_fZoomAmount);
 }
 
-void CBaseRenderer::SetViewMode(int viewMode)
+void CVideoBaseRenderer::SetViewMode(int viewMode)
 {
   if (viewMode < VIEW_MODE_NORMAL || viewMode > VIEW_MODE_CUSTOM)
     viewMode = VIEW_MODE_NORMAL;

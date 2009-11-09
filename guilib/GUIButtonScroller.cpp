@@ -817,7 +817,7 @@ void CGUIButtonScroller::GetScrollZone(float &fStartAlpha, float &fEndAlpha)
   }
 }
 
-bool CGUIButtonScroller::OnMouseOver(const CPoint &point)
+bool CGUIButtonScroller::OnMouseOver(const XbmcCPoint &point)
 {
   float fStartAlpha, fEndAlpha;
   GetScrollZone(fStartAlpha, fEndAlpha);
@@ -880,7 +880,7 @@ bool CGUIButtonScroller::OnMouseOver(const CPoint &point)
   return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUIButtonScroller::OnMouseClick(int button, const CPoint &point)
+bool CGUIButtonScroller::OnMouseClick(int button, const XbmcCPoint &point)
 {
   if (button != MOUSE_LEFT_BUTTON && button != MOUSE_RIGHT_BUTTON) return false;
   // check if we are in the clickable button zone
@@ -917,7 +917,7 @@ bool CGUIButtonScroller::OnMouseClick(int button, const CPoint &point)
   return false;
 }
 
-bool CGUIButtonScroller::OnMouseWheel(char wheel, const CPoint &point)
+bool CGUIButtonScroller::OnMouseWheel(char wheel, const XbmcCPoint &point)
 {
   // check if we are within the clickable button zone
   float fStartAlpha, fEndAlpha;

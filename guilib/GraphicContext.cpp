@@ -21,7 +21,6 @@
 
 #include "system.h"
 #include "GraphicContext.h"
-#include "GUIFontManager.h"
 #include "utils/SingleLock.h"
 #include "Application.h"
 #include "GUISettings.h"
@@ -32,6 +31,7 @@
 #include "SkinInfo.h"
 #include "TextureManager.h"
 #include "MouseStat.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 
@@ -61,9 +61,9 @@ CGraphicContext::~CGraphicContext(void)
 void CGraphicContext::SetOrigin(float x, float y)
 {
   if (m_origins.size())
-    m_origins.push(CPoint(x,y) + m_origins.top());
+    m_origins.push(XbmcCPoint(x,y) + m_origins.top());
   else
-    m_origins.push(CPoint(x,y));
+    m_origins.push(XbmcCPoint(x,y));
   
   AddTransform(TransformMatrix::CreateTranslation(x, y));
 }
@@ -77,12 +77,12 @@ void CGraphicContext::RestoreOrigin()
 // add a new clip region, intersecting with the previous clip region.
 bool CGraphicContext::SetClipRegion(float x, float y, float w, float h)
 { // transform from our origin
-  CPoint origin;
+  XbmcCPoint origin;
   if (m_origins.size())
     origin = m_origins.top();
   
   // ok, now intersect with our old clip region
-  CRect rect(x, y, x + w, y + h);
+  XbmcCRect rect(x, y, x + w, y + h);
   rect += origin;
   if (m_clipRegions.size())
   { 
@@ -107,7 +107,7 @@ void CGraphicContext::RestoreClipRegion()
   // here we could reset the hardware clipping, if applicable
 }
 
-void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
+void CGraphicContext::ClipRect(XbmcCRect &vertex, XbmcCRect &texture, XbmcCRect *texture2)
 {
   // this is the software clipping routine.  If the graphics hardware is set to do the clipping
   // (eg via SetClipPlane in D3D for instance) then this routine is unneeded.
@@ -115,10 +115,10 @@ void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
   {
     // take a copy of the vertex rectangle and intersect
     // it with our clip region (moved to the same coordinate system)
-    CRect clipRegion(m_clipRegions.top());
+    XbmcCRect clipRegion(m_clipRegions.top());
     if (m_origins.size())
       clipRegion -= m_origins.top();
-    CRect original(vertex);
+    XbmcCRect original(vertex);
     vertex.Intersect(clipRegion);
     // and use the original to compute the texture coordinates
     if (original != vertex)
@@ -144,7 +144,7 @@ void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
 
 bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheight, bool intersectPrevious /* = false */)
 {
-  CRect oldviewport;
+  XbmcCRect oldviewport;
   g_Windowing.GetViewPort(oldviewport);
 
   // transform coordinates - we may have a rotation which changes the positioning of the
@@ -205,7 +205,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheigh
   ASSERT(newLeft < newRight);
   ASSERT(newTop < newBottom);
 
-  CRect newviewport((float)newLeft, (float)newTop, (float)newRight, (float)newBottom);
+  XbmcCRect newviewport((float)newLeft, (float)newTop, (float)newRight, (float)newBottom);
   g_Windowing.SetViewPort(newviewport);
 
   m_viewStack.push(oldviewport);
@@ -218,7 +218,7 @@ void CGraphicContext::RestoreViewPort()
 {
   if (!m_viewStack.size()) return;
 
-  CRect oldviewport = m_viewStack.top();
+  XbmcCRect oldviewport = m_viewStack.top();
   g_Windowing.SetViewPort(oldviewport);
 
   m_viewStack.pop();
@@ -226,7 +226,7 @@ void CGraphicContext::RestoreViewPort()
   UpdateCameraPosition(m_cameras.top());
 }
 
-const CRect& CGraphicContext::GetViewWindow() const
+const XbmcCRect& CGraphicContext::GetViewWindow() const
 {
   return m_videoRect;
 }
@@ -246,7 +246,7 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
   }
 }
 
-void CGraphicContext::SetFullScreenViewWindow(RESOLUTION &res)
+void CGraphicContext::SetFullScreenViewWindow(int &res)
 {
   m_videoRect.x1 = (float)g_settings.m_ResInfo[res].Overscan.left;
   m_videoRect.y1 = (float)g_settings.m_ResInfo[res].Overscan.top;
@@ -292,7 +292,7 @@ void CGraphicContext::SetCalibrating(bool bOnOff)
   m_bCalibrating = bOnOff;
 }
 
-bool CGraphicContext::IsValidResolution(RESOLUTION res)
+bool CGraphicContext::IsValidResolution(int res)
 {
   if (res >= RES_WINDOW && (size_t) res <= g_settings.m_ResInfo.size())
   {
@@ -302,9 +302,9 @@ bool CGraphicContext::IsValidResolution(RESOLUTION res)
   return false;
 }
 
-void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
+void CGraphicContext::SetVideoResolution(int res, bool forceUpdate)
 {
-  RESOLUTION lastRes = m_Resolution;
+  int lastRes = m_Resolution;
   
   // If the user asked us to guess, go with desktop
   if (res == RES_AUTORES || !IsValidResolution(res))
@@ -350,17 +350,17 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   else
     g_Windowing.ResizeWindow(m_iScreenWidth, m_iScreenHeight, -1, -1);
 
-  // set the mouse resolution
+  // update anyone that relies on sizing information
   g_renderManager.Recover();
   g_Mouse.SetResolution(m_iScreenWidth, m_iScreenHeight, 1, 1);
-  g_fontManager.ReloadTTFFonts();
+  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
 
   SetFullScreenViewWindow(res);
 
   Unlock();
 }
 
-RESOLUTION CGraphicContext::GetVideoResolution() const
+int CGraphicContext::GetVideoResolution() const
 {
   return m_Resolution;
 }
@@ -373,7 +373,7 @@ void CGraphicContext::ResetOverscan(RESOLUTION_INFO &res)
   res.Overscan.bottom = res.iHeight;
 }
 
-void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
+void CGraphicContext::ResetOverscan(int res, OVERSCAN &overscan)
 {
   overscan.left = 0;
   overscan.top = 0;
@@ -408,7 +408,7 @@ void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
   }
 }
 
-void CGraphicContext::ResetScreenParameters(RESOLUTION res)
+void CGraphicContext::ResetScreenParameters(int res)
 {
   // For now these are all on the first screen.
   g_settings.m_ResInfo[res].iScreen = 0;
@@ -502,7 +502,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
   ResetOverscan(res, g_settings.m_ResInfo[res].Overscan);
 }
 
-float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
+float CGraphicContext::GetPixelRatio(int iRes) const
 {
   if (iRes >= 0 && iRes < (int)g_settings.m_ResInfo.size())
     return g_settings.m_ResInfo[iRes].fPixelRatio;
@@ -524,7 +524,7 @@ void CGraphicContext::ApplyStateBlock()
   g_Windowing.ApplyStateBlock();
 }
 
-void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling)
+void CGraphicContext::SetScalingResolution(int res, float posX, float posY, bool needsScaling)
 {
   Lock();
   m_windowResolution = res;
@@ -582,17 +582,17 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
   // reset our origin and camera
   while (m_origins.size())
     m_origins.pop();
-  m_origins.push(CPoint(posX, posY));
+  m_origins.push(XbmcCPoint(posX, posY));
   while (m_cameras.size())
     m_cameras.pop();
-  m_cameras.push(CPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
+  m_cameras.push(XbmcCPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
 
   // and reset the final transform
   UpdateFinalTransform(m_guiTransform);
   Unlock();
 }
 
-void CGraphicContext::SetRenderingResolution(RESOLUTION res, float posX, float posY, bool needsScaling)
+void CGraphicContext::SetRenderingResolution(int res, float posX, float posY, bool needsScaling)
 {
   Lock();
   SetScalingResolution(res, posX, posY, needsScaling);
@@ -618,7 +618,7 @@ float CGraphicContext::GetScalingPixelRatio() const
   if (m_Resolution == m_windowResolution)
     return GetPixelRatio(m_windowResolution);
 
-  RESOLUTION checkRes = m_windowResolution;
+  int checkRes = m_windowResolution;
   if (checkRes == RES_INVALID)
     checkRes = m_Resolution;
   // resolutions are different - we want to return the aspect ratio of the video resolution
@@ -632,15 +632,15 @@ float CGraphicContext::GetScalingPixelRatio() const
   return outPR * (outWidth / outHeight) / (winWidth / winHeight);
 }
 
-void CGraphicContext::SetCameraPosition(const CPoint &camera)
+void CGraphicContext::SetCameraPosition(const XbmcCPoint &camera)
 {
   // offset the camera from our current location (this is in XML coordinates) and scale it up to
   // the screen resolution
-  CPoint cam(camera);
+  XbmcCPoint cam(camera);
   if (m_origins.size())
     cam += m_origins.top();
 
-  RESOLUTION windowRes = (m_windowResolution == RES_INVALID) ? m_Resolution : m_windowResolution;
+  int windowRes = (m_windowResolution == RES_INVALID) ? m_Resolution : m_windowResolution;
   cam.x *= (float)m_iScreenWidth / g_settings.m_ResInfo[windowRes].iWidth;
   cam.y *= (float)m_iScreenHeight / g_settings.m_ResInfo[windowRes].iHeight;
 
@@ -662,7 +662,7 @@ void CGraphicContext::RestoreCameraPosition()
 //       the camera has changed, and if so, changes it.  Similarly, it could set
 //       the world transform at that point as well (or even combine world + view
 //       to cut down on one setting)
-void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
+void CGraphicContext::UpdateCameraPosition(const XbmcCPoint &camera)
 {
   g_Windowing.SetCameraPosition(camera, m_iScreenWidth, m_iScreenHeight);
 }
@@ -706,7 +706,7 @@ bool CGraphicContext::IsFullScreenRoot () const
 
 bool CGraphicContext::ToggleFullScreenRoot ()
 {
-  RESOLUTION newRes;
+  int newRes;
   
   if (m_bFullScreenRoot)
   {
@@ -761,7 +761,7 @@ void CGraphicContext::ClipToViewWindow()
 {
 }
 
-void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res)
+void CGraphicContext::GetAllowedResolutions(vector<int> &res)
 {
   res.clear();  
 
@@ -769,7 +769,7 @@ void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res)
   res.push_back(RES_DESKTOP);
   for (size_t r = (size_t) RES_CUSTOM; r < g_settings.m_ResInfo.size(); r++)
   {
-    res.push_back((RESOLUTION) r);
+    res.push_back((int) r);
   }
 }
 

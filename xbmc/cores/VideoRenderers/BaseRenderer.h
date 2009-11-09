@@ -24,15 +24,15 @@
 #include "Resolution.h"
 #include "Geometry.h"
 
-class CBaseRenderer
+class CVideoBaseRenderer
 {
 public:
-  CBaseRenderer();
-  virtual ~CBaseRenderer();
+  CVideoBaseRenderer();
+  virtual ~CVideoBaseRenderer();
 
   void SetViewMode(int viewMode);
-  RESOLUTION GetResolution() const;
-  void GetVideoRect(CRect &source, CRect &dest);
+  int GetResolution() const;
+  void GetVideoRect(XbmcCRect &source, XbmcCRect &dest);
   float GetAspectRatio() const;
   virtual void AutoCrop(bool bCrop) {};
 
@@ -42,11 +42,11 @@ protected:
   void CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
   void ManageDisplay();
 
-  RESOLUTION m_resolution;    // the resolution we're running in
+  int m_resolution;    // the resolution we're running in
   unsigned int m_sourceWidth;
   unsigned int m_sourceHeight;
   float m_sourceFrameRatio;
 
-  CRect m_destRect;
-  CRect m_sourceRect;
+  XbmcCRect m_destRect;
+  XbmcCRect m_sourceRect;
 };

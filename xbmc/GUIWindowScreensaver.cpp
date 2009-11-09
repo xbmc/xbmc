@@ -91,7 +91,7 @@ bool CGUIWindowScreensaver::OnAction(const CAction &action)
 }
 
 // called when the mouse is moved/clicked etc. etc.
-bool CGUIWindowScreensaver::OnMouse(const CPoint &point)
+bool CGUIWindowScreensaver::OnMouse(const XbmcCPoint &point)
 {
   g_windowManager.PreviousWindow();
   return true;
@@ -120,7 +120,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       m_bInitialized = false;
 
       // remove z-buffer
-//      RESOLUTION res = g_graphicsContext.GetVideoResolution();
+//      int res = g_graphicsContext.GetVideoResolution();
  //     g_graphicsContext.SetVideoResolution(res, FALSE);
 
       // enable the overlay
@@ -157,7 +157,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       }
 #endif
       // setup a z-buffer
-//      RESOLUTION res = g_graphicsContext.GetVideoResolution();
+//      int res = g_graphicsContext.GetVideoResolution();
 //      g_graphicsContext.SetVideoResolution(res, TRUE);
 
       // disable the overlay

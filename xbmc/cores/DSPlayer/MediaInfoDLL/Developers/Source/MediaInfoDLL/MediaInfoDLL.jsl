@@ -1,0 +1,110 @@
+// MediaInfoDLL - All info about media files, for DLL
+// Copyright (C) 2002-2009 Jerome Martinez, Zen@MediaArea.net
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+// Microsoft Visual J# wrapper for MediaInfo Library
+// See MediaInfo.h for help
+//
+// To make it working, you must put MediaInfo.Dll
+// in the executable folder
+//
+// Warning : not tested with J# 64-bit, will not work!
+//
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+import System.Runtime.InteropServices.*;
+import System.IntPtr;
+
+public enum StreamKind
+{
+	General,
+	Visual,
+	Audio,
+	Text,
+	Chapters,
+	Image,
+	Menu,
+	Max
+}
+
+public enum InfoKind
+{
+	Name,
+	Text,
+	Measure,
+	Options,
+	NameText,
+	MeasureText,
+	Info,
+	HowTo,
+	Max
+}
+
+public enum InfoOptions
+{
+	ShowInInform,
+	Reserved,
+	ShowInSupported,
+	TypeOfValue,
+	Max
+}
+
+public class MediaInfo
+{
+	/**@attribute DllImport("MediaInfo.dll")*/
+	public static native IntPtr MediaInfo_New();
+	/**@attribute DllImport("MediaInfo.dll")*/
+	public static native void MediaInfo_Delete(IntPtr Handle);
+	/**@attribute DllImport("MediaInfo.dll")*/
+	public static native int MediaInfo_Open(IntPtr Handle, /** @attribute MarshalAs(UnmanagedType.LPWStr)*/ String File);
+	/**@attribute DllImport("MediaInfo.dll")*/
+	public static native void MediaInfo_Close(IntPtr Handle);
+	/**@attribute DllImport("MediaInfo.dll")*/
+	public static native IntPtr MediaInfo_Inform(IntPtr Handle, int Options); //WARNING : This is a wchar* value
+	/**@attribute DllImport("MediaInfo.dll")*/
+	public static native IntPtr MediaInfo_GetI(IntPtr Handle, StreamKind StreamKind, int StreamNumber, int Parameter, InfoKind KindOfInfo); //WARNING : This is a wchar* value, see MediaInfoDLL.h for enumeration values
+	/**@attribute DllImport("MediaInfo.dll")*/
+	public static native IntPtr MediaInfo_Get(IntPtr Handle, StreamKind StreamKind, int StreamNumber, /** @attribute MarshalAs(UnmanagedType.LPWStr)*/ String Parameter, InfoKind KindOfInfo, InfoKind KindOfSearch); //WARNING : This is a wchar* value, see MediaInfoDLL.h for enumeration values
+	/**@attribute DllImport("MediaInfo.dll")*/
+	public static native IntPtr MediaInfo_Option(IntPtr Handle, /** @attribute MarshalAs(UnmanagedType.LPWStr)*/ String Option, /** @attribute MarshalAs(UnmanagedType.LPWStr)*/ String Value); //WARNING : This is a wchar* value, see MediaInfoDLL.h for enumeration values
+	/**@attribute DllImport("MediaInfo.dll")*/
+	public static native int MediaInfo_State_Get(IntPtr Handle); //see MediaInfoDLL.h for details
+	/**@attribute DllImport("MediaInfo.dll")*/
+	public static native int MediaInfo_Count_Get(IntPtr Handle, StreamKind StreamKind, int StreamNumber); //see MediaInfoDLL.h for enumeration values
+
+	//MediaInfo class
+	public MediaInfo() { Handle = MediaInfo_New(); }
+	void Dispose(boolean disposing) { MediaInfo_Delete(Handle); }
+	public int Open(String FileName) { return MediaInfo_Open(Handle, FileName); }
+	public void Close() { MediaInfo_Close(Handle); }
+	public String Inform() { return Marshal.PtrToStringUni(MediaInfo_Inform(Handle, 0)); }
+	public String Get(StreamKind StreamKind, int StreamNumber, String Parameter, InfoKind KindOfInfo, InfoKind KindOfSearch) { return Marshal.PtrToStringUni(MediaInfo_Get(Handle, StreamKind, StreamNumber, Parameter, KindOfInfo, KindOfSearch)); }
+	public String Get(StreamKind StreamKind, int StreamNumber, int Parameter, InfoKind KindOfInfo) { return Marshal.PtrToStringUni(MediaInfo_GetI(Handle, StreamKind, StreamNumber, Parameter, KindOfInfo)); }
+	public String Option(String Option, String Value) { return Marshal.PtrToStringUni(MediaInfo_Option(Handle, Option, Value)); }
+	public int State_Get() { return MediaInfo_State_Get(Handle); }
+	public int Count_Get(StreamKind StreamKind, int StreamNumber) { return MediaInfo_Count_Get(Handle, StreamKind, StreamNumber); }
+	private IntPtr Handle;
+
+	//Default values, if you know how to set default values in J#, say me
+	public String Get(StreamKind StreamKind, int StreamNumber, String Parameter, InfoKind KindOfInfo) { return Get(StreamKind, StreamNumber, Parameter, KindOfInfo, InfoKind.Name); }
+	public String Get(StreamKind StreamKind, int StreamNumber, String Parameter) { return Get(StreamKind, StreamNumber, Parameter, InfoKind.Text, InfoKind.Name); }
+	public String Get(StreamKind StreamKind, int StreamNumber, int Parameter) { return Get(StreamKind, StreamNumber, Parameter, InfoKind.Text); }
+	public String Option(String Option) { return Option(Option, ""); }
+	public int Count_Get(StreamKind StreamKind) { return Count_Get(StreamKind, -1); }
+}

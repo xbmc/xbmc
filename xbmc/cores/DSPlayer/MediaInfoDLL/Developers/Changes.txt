@@ -1,0 +1,83 @@
+I changed some elements in the interface.
+No break in binary compatibily (no crash), but some details.
+
+
+0.7.18 --> 0.7.19
+-----------------
+- XML output: track names are changed, for a better usability by XML parsers (<track type="x" streamid="x">)
+
+0.7.12 --> 0.7.13
+-----------------
+- Chapters has now language type per item, another string format, and moved to the menu part
+  Old string format was "Chapter number             : Time - chapter string"
+  New string format is  "Time                       : chapter string / Optional info / Optional info" (optional info is separated by " / ")
+  Note: if the language of the string is available, the string has the form "en:chapter string" (ISO-639 2-letter if available, else 3-letter)
+  Note: if there is multiple languages, they are separated by " - "
+        example of complex string: "Time                       : en:English - fr:Francais / en:More info - fr:plus d'infos"
+  Note: for MPEG-TS EPG (Electronic program), string has this optional info (and Date/Time instead of time only):
+        "UTC YYYY-MM-DD HH:MM:SS          : Name / Description / Content type / Classification / Duration / Running status"
+  For third-party software, Chapters_Pos_Begin and Chapters_Pos_End fields are include for informing about the field positions of chapters
+
+0.7.8 --> 0.7.9
+---------------
+- Windows DLL C++ namespace has changed from MediaInfoLib to MediaInfoDLL
+
+0.7.6.4 --> 0.7.7.0
+-------------------
+- (General) BitRate is replaced by OveralBitRate (Overal bitrate for ALL streams) (General BitRate field is DEPRECATED)
+- PlayTime is replaced by Duration (PlayTime field is DEPRECATED)
+- Codec is replaced by 2 fields:
+ - Format is the real format string (ie "MPEG-4 Visual")
+ - CodecID is the codec string filled in the container (ie "DX50")
+ - CodecID/Hint is a hint for it (ie "DivX 5")
+ (Codec fields are DEPRECATED)
+- Interlacement field is replaced by 2 fields:
+ - ScanType for "Progressive" or "Interlaced"
+ - ScanOrder for "TFF" or "BFF"
+ (Interlacement field is DEPRECATED)
+- Chroma is replaced by Colorimetry (Chroma field is DEPRECATED)
+- Video0_Delay is replaced by Video_Delay (I will try to calculate it from the corresponding video when multiple streams) (Video0_Delay0 field is DEPRECATED)
+- Format_Settings_PacketBitStream is replaced by Format_Settings_MuxingMode set to "Packet Bitstream" (Format_Settings_PacketBitStream  field is DEPRECATED)
+
+0.7.5.3 --> 0.7.5.4
+-------------------
+- (Video) AspectRatio --> DisplayAspectRatio (AspectRatio tag is DEPRECATED)
+- (Video) PixelAspectRatio added
+- AAC #defines has been splitted in ADTS and ADIF
+
+0.7.2.1 --> 0.7.2.2
+-------------------
+- (General) OveralBitRate --> BitRate
+- Visual --> Video (yes, I come back to the old style, Image streams are back, merging video and image was not a good idea)
+- Bits/(Pixel*Frame) --> Bits-(Pixel*Frame)  (I need the special character "/" elsewhere...)
+
+0.7.0.x --> 0.7.2.1
+-------------------
+- MediaInfo_Stream_Video --> MediaInfo_Stream_Visual
+  (conformance with MPEG consortium names, Visual = Video or Image)
+  Note: this is only if you use named options, the number is always "1",
+  old programs will not have problems with this.
+- To detect if this is a video or an image, you can test "Animated".
+  Is 1 if this is a video, 0 if this is an Image
+- MediaInfo_FileOption_Close --> MediaInfo_FileOption_CloseAll
+  Note: better name only, the number is always 2
+  old programs will not have problems with this.
+- Values of MediaInfo_FileOption_* are precised
+  (because these are binary flags)
+  Note: precision only, numbers are always same
+  old programs will not have problems with this.
+
+0.6.x.x --> 0.7.0.x
+-------------------
+- Inform() : Option_Custom is deprecated
+  - if "Inform" option is set, it is used. Unset it to have a "normal" view.
+  - To have a HTML output, use Option("Inform", "HTML") before.
+  I will change the documentation as soon as possible
+- Tags : Somes tags have changed :
+  - "Channels" is now "Channel(s)"
+  - "Track" is now "Track/Position". Be warned : "Track" is used, but for other things
+  - "Title" is now a generic name for 2 different names :
+    - "Movie" for a movie (video and audio) name
+    - "Track" for a track (audio only) name
+    "Title" will always exist, you can continue to use it for a generic access
+  - "XXX_String" are now "XXX/String"

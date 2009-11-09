@@ -298,7 +298,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
   if(g_uQueryCancelAutoPlay != 0 && uMsg == g_uQueryCancelAutoPlay)
     return S_FALSE;
-
+  if (uMsg == WM_COMMAND)
+  {    
+    g_application.m_pPlayer->ProcessDsWmCommand(wParam,lParam);
+  }
   switch (uMsg) 
   {
     case WM_CLOSE:
@@ -339,9 +342,13 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       break;
     case WM_SETFOCUS:
     case WM_KILLFOCUS:
-      g_application.m_AppFocused = uMsg == WM_SETFOCUS;
-      CLog::Log(LOGDEBUG, __FUNCTION__"Window %s focus", g_application.m_AppFocused ? "gained" : "lost");
-      g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
+      //This is making the directshow player stuttering
+      if ( g_application.GetCurrentPlayer() != PCID_DSPLAYER )
+	  {
+        g_application.m_AppFocused = uMsg == WM_SETFOCUS;
+        CLog::Log(LOGDEBUG, __FUNCTION__"Window %s focus", g_application.m_AppFocused ? "gained" : "lost");
+        g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
+	  }
       break;
     case WM_SYSKEYDOWN:
       switch (wParam) 

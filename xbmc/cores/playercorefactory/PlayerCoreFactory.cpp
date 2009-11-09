@@ -36,6 +36,7 @@
 #include "AdvancedSettings.h"
 #include "AutoPtrHandle.h"
 #include "ExternalPlayer/ExternalPlayer.h"
+#include "DSPlayer/DSPlayer.h"
 #include "PlayerCoreConfig.h"
 #include "PlayerSelectionRule.h"
 #include "LocalizeStrings.h"
@@ -305,6 +306,10 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
     paplayer->m_bPlaysAudio = true;
     s_vecCoreConfigs.push_back(paplayer);
 
+    CPlayerCoreConfig* dsplayer = new CPlayerCoreConfig("DSPlayer", EPC_DSPLAYER, NULL);
+    dsplayer->m_bPlaysAudio = dsplayer->m_bPlaysVideo = true;
+    s_vecCoreConfigs.push_back(dsplayer);
+
     s_vecCoreSelectionRules.clear();
   }
 
@@ -329,7 +334,7 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
       if (type == "dvdplayer" || type == "mplayer") eCore = EPC_DVDPLAYER;
       if (type == "paplayer" ) eCore = EPC_PAPLAYER;
       if (type == "externalplayer" ) eCore = EPC_EXTPLAYER;
-
+      if (type == "dsplayer" ) eCore = EPC_DSPLAYER;
       if (eCore != EPC_NONE)
       {
         s_vecCoreConfigs.push_back(new CPlayerCoreConfig(name, eCore, pPlayer));

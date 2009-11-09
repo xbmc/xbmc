@@ -26,6 +26,7 @@
 #include "RenderSystemDX.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 
@@ -101,7 +102,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height)
   m_nBackBufferWidth = width;
   m_nBackBufferHeight = height;
 
-  CRect rc;
+  XbmcCRect rc;
   rc.SetRect(0, 0, width, height);
 
   SetViewPort(rc);
@@ -141,7 +142,9 @@ void CRenderSystemDX::DeleteResources()
 
 void CRenderSystemDX::OnDeviceLost()
 {
-  // notify all objects
+g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
+  SAFE_RELEASE(m_stateBlock);
+// notify all objects
   for(unsigned int i = 0; i < m_vecEffects.size(); i++)
   {
     m_vecEffects[i]->OnLostDevice();
@@ -157,8 +160,11 @@ void CRenderSystemDX::OnDeviceReset()
   {
     m_vecEffects[i]->OnResetDevice();
   }
+  if (m_nDeviceStatus == S_OK)
+  { // we're back
+    g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
+  }
 }
-
 bool CRenderSystemDX::CreateDevice()
 {
   // Code based on Ogre 3D engine
@@ -179,13 +185,18 @@ bool CRenderSystemDX::CreateDevice()
 
   ZeroMemory( &m_D3DPP, sizeof(D3DPRESENT_PARAMETERS) );
   m_D3DPP.Windowed					= true;
+  //D3DSWAPEFFECT_COPY desync mkv audio|| D3DSWAPEFFECT_FLIP only stutters
+  //but this is only when Windowed is false
   m_D3DPP.SwapEffect				= D3DSWAPEFFECT_DISCARD;
-  m_D3DPP.BackBufferCount			= 1;
+  m_D3DPP.BackBufferCount			= 3;//Was 1
   m_D3DPP.EnableAutoDepthStencil	= true;
   m_D3DPP.hDeviceWindow			= m_hDeviceWnd;
+
   m_D3DPP.BackBufferWidth			= m_nBackBufferWidth;
   m_D3DPP.BackBufferHeight			= m_nBackBufferHeight;
-  m_D3DPP.Flags   =   D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+  //added D3DPRESENTFLAG_VIDEO for directshow 
+  m_D3DPP.Flags   =   D3DPRESENTFLAG_VIDEO;
+  m_D3DPP.Flags   |=   D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
   if (m_bVSync)
   {
     m_D3DPP.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
@@ -229,21 +240,21 @@ bool CRenderSystemDX::CreateDevice()
   m_D3DPP.MultiSampleQuality = 0;
 
   hr = m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, devType, m_hFocusWnd,
-    D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_D3DPP, &m_pD3DDevice );
+    D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
   if (FAILED(hr))
   {
     // Try a second time, may fail the first time due to back buffer count,
     // which will be corrected down to 1 by the runtime
     hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, devType, m_hFocusWnd,
-      D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_D3DPP, &m_pD3DDevice );
+      D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
     if( FAILED( hr ) )
     {
       hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, devType, m_hFocusWnd,
-        D3DCREATE_MIXED_VERTEXPROCESSING, &m_D3DPP, &m_pD3DDevice );
+        D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
       if( FAILED( hr ) )
       {
         hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, devType, m_hFocusWnd,
-          D3DCREATE_SOFTWARE_VERTEXPROCESSING, &m_D3DPP, &m_pD3DDevice );
+          D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
       }
       if(FAILED( hr ) )
         return false;
@@ -307,15 +318,16 @@ bool CRenderSystemDX::BeginRender()
       }
     }
   }
-
-  if(FAILED (m_pD3DDevice->BeginScene()))
+  if (FAILED(m_pD3DDevice->BeginScene()))
   {
-    CLog::Log(LOGERROR, "m_pD3DDevice->BeginScene() failed");
+	CLog::Log(LOGERROR, "m_pD3DDevice->BeginScene() failed");
     return false;
   }
 
   return true;
 }
+
+
 
 bool CRenderSystemDX::EndRender()
 {
@@ -402,7 +414,7 @@ void CRenderSystemDX::ApplyStateBlock()
     m_stateBlock->Apply();
 }
 
-void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight)
+void CRenderSystemDX::SetCameraPosition(const XbmcCPoint &camera, int screenWidth, int screenHeight)
 { 
   if (!m_bRenderCreated)
     return;
@@ -413,7 +425,7 @@ void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, i
   float w = viewport.Width*0.5f;
   float h = viewport.Height*0.5f;
 
-  CPoint offset = camera - CPoint(screenWidth*0.5f, screenHeight*0.5f);
+  XbmcCPoint offset = camera - XbmcCPoint(screenWidth*0.5f, screenHeight*0.5f);
 
   // world view.  Until this is moved onto the GPU (via a vertex shader for instance), we set it to the identity
   // here.
@@ -518,7 +530,7 @@ void CRenderSystemDX::CalculateMaxTexturesize()
  
 }
 
-void CRenderSystemDX::GetViewPort(CRect& viewPort)
+void CRenderSystemDX::GetViewPort(XbmcCRect& viewPort)
 {
   if (!m_bRenderCreated)
     return;
@@ -532,7 +544,7 @@ void CRenderSystemDX::GetViewPort(CRect& viewPort)
   viewPort.y2 = (float)d3dviewport.Y + d3dviewport.Height;
 }
 
-void CRenderSystemDX::SetViewPort(CRect& viewPort)
+void CRenderSystemDX::SetViewPort(XbmcCRect& viewPort)
 {
   if (!m_bRenderCreated)
     return;

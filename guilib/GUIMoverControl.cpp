@@ -135,7 +135,7 @@ void CGUIMoverControl::OnRight()
   Move((int)m_fSpeed, 0);
 }
 
-bool CGUIMoverControl::OnMouseDrag(const CPoint &offset, const CPoint &point)
+bool CGUIMoverControl::OnMouseDrag(const XbmcCPoint &offset, const XbmcCPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_DRAG);
   g_Mouse.SetExclusiveAccess(this, GetParentID(), point);
@@ -143,7 +143,7 @@ bool CGUIMoverControl::OnMouseDrag(const CPoint &offset, const CPoint &point)
   return true;
 }
 
-bool CGUIMoverControl::OnMouseClick(int button, const CPoint &point)
+bool CGUIMoverControl::OnMouseClick(int button, const XbmcCPoint &point)
 {
   if (button != MOUSE_LEFT_BUTTON) return false;
   g_Mouse.EndExclusiveAccess(this, GetParentID());

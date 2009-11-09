@@ -141,7 +141,7 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
 
   //use temporary rect for calculation to avoid messing with module-rect while other functions might be using it.
   DRAWRECT osdRect;
-  RESOLUTION res = GetResolution();
+  int res = GetResolution();
 
   if (w > m_iOSDTextureWidth)
   {
@@ -163,7 +163,7 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
   }
 
   // scale to fit screen
-  const CRect& rv = g_graphicsContext.GetViewWindow();
+  const XbmcCRect& rv = g_graphicsContext.GetViewWindow();
 
   // Vobsubs are defined to be 720 wide.
   // NOTE: This will not work nicely if we are allowing mplayer to render text based subs

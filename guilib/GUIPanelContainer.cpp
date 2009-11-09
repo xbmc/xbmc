@@ -401,7 +401,7 @@ int CGUIPanelContainer::CorrectOffset(int offset, int cursor) const
   return offset * m_itemsPerRow + cursor;
 }
 
-bool CGUIPanelContainer::SelectItemFromPoint(const CPoint &point)
+bool CGUIPanelContainer::SelectItemFromPoint(const XbmcCPoint &point)
 {
   if (!m_layout)
     return false;

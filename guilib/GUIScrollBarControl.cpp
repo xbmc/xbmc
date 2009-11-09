@@ -233,14 +233,14 @@ void CGUIScrollBar::UpdateBarSize()
   }
 }
 
-bool CGUIScrollBar::HitTest(const CPoint &point) const
+bool CGUIScrollBar::HitTest(const XbmcCPoint &point) const
 {
   if (m_guiBackground.HitTest(point)) return true;
   if (m_guiBarNoFocus.HitTest(point)) return true;
   return false;
 }
 
-void CGUIScrollBar::SetFromPosition(const CPoint &point)
+void CGUIScrollBar::SetFromPosition(const XbmcCPoint &point)
 {
   float fPercent;
   if (m_orientation == VERTICAL)
@@ -255,7 +255,7 @@ void CGUIScrollBar::SetFromPosition(const CPoint &point)
   SetInvalid();
 }
 
-bool CGUIScrollBar::OnMouseClick(int button, const CPoint &point)
+bool CGUIScrollBar::OnMouseClick(int button, const XbmcCPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_CLICK);
   // turn off any exclusive access, if it's on...
@@ -268,7 +268,7 @@ bool CGUIScrollBar::OnMouseClick(int button, const CPoint &point)
   return false;
 }
 
-bool CGUIScrollBar::OnMouseDrag(const CPoint &offset, const CPoint &point)
+bool CGUIScrollBar::OnMouseDrag(const XbmcCPoint &offset, const XbmcCPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_DRAG);
   // get exclusive access to the mouse
@@ -278,7 +278,7 @@ bool CGUIScrollBar::OnMouseDrag(const CPoint &offset, const CPoint &point)
   return true;
 }
 
-bool CGUIScrollBar::OnMouseWheel(char wheel, const CPoint &point)
+bool CGUIScrollBar::OnMouseWheel(char wheel, const XbmcCPoint &point)
 {
   Move(-wheel);
   return true;

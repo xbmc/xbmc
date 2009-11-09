@@ -31,7 +31,7 @@ class Tweener;
 class CGUIListItem;
 
 #include "TransformMatrix.h"  // needed for the TransformMatrix member
-#include "Geometry.h"         // for CPoint, CRect
+#include "Geometry.h"         // for XbmcCPoint, XbmcCRect
 #include "StdString.h"
 
 enum ANIMATION_TYPE
@@ -58,8 +58,8 @@ public:
   virtual ~CAnimEffect();
   const CAnimEffect &operator=(const CAnimEffect &src);
 
-  void Calculate(unsigned int time, const CPoint &center);
-  void ApplyState(ANIMATION_STATE state, const CPoint &center);
+  void Calculate(unsigned int time, const XbmcCPoint &center);
+  void ApplyState(ANIMATION_STATE state, const XbmcCPoint &center);
 
   unsigned int GetDelay() const { return m_delay; };
   unsigned int GetLength() const { return m_delay + m_length; };
@@ -71,7 +71,7 @@ protected:
   EFFECT_TYPE m_effect;
 
 private:
-  virtual void ApplyEffect(float offset, const CPoint &center)=0;
+  virtual void ApplyEffect(float offset, const XbmcCPoint &center)=0;
 
   // timing variables
   unsigned int m_length;
@@ -87,7 +87,7 @@ public:
   CFadeEffect(float start, float end, unsigned int delay, unsigned int length);
   virtual ~CFadeEffect() {};
 private:
-  virtual void ApplyEffect(float offset, const CPoint &center);
+  virtual void ApplyEffect(float offset, const XbmcCPoint &center);
 
   float m_startAlpha;
   float m_endAlpha;
@@ -99,7 +99,7 @@ public:
   CSlideEffect(const TiXmlElement *node);
   virtual ~CSlideEffect() {};
 private:
-  virtual void ApplyEffect(float offset, const CPoint &center);
+  virtual void ApplyEffect(float offset, const XbmcCPoint &center);
 
   float m_startX;
   float m_startY;
@@ -113,22 +113,22 @@ public:
   CRotateEffect(const TiXmlElement *node, EFFECT_TYPE effect);
   virtual ~CRotateEffect() {};
 private:
-  virtual void ApplyEffect(float offset, const CPoint &center);
+  virtual void ApplyEffect(float offset, const XbmcCPoint &center);
 
   float m_startAngle;
   float m_endAngle;
 
   bool m_autoCenter;
-  CPoint m_center;
+  XbmcCPoint m_center;
 };
 
 class CZoomEffect : public CAnimEffect
 {
 public:
-  CZoomEffect(const TiXmlElement *node, const CRect &rect);
+  CZoomEffect(const TiXmlElement *node, const XbmcCRect &rect);
   virtual ~CZoomEffect() {};
 private:
-  virtual void ApplyEffect(float offset, const CPoint &center);
+  virtual void ApplyEffect(float offset, const XbmcCPoint &center);
 
   float m_startX;
   float m_startY;
@@ -136,7 +136,7 @@ private:
   float m_endY;
 
   bool m_autoCenter;
-  CPoint m_center;
+  XbmcCPoint m_center;
 };
 
 class CAnimation
@@ -151,16 +151,16 @@ public:
 
   static CAnimation *CreateFader(float start, float end, unsigned int delay, unsigned int length);
 
-  void Create(const TiXmlElement *node, const CRect &rect);
+  void Create(const TiXmlElement *node, const XbmcCRect &rect);
 
   void Animate(unsigned int time, bool startAnim);
   void ResetAnimation();
   void ApplyAnimation();
   inline void RenderAnimation(TransformMatrix &matrix)
   {
-    RenderAnimation(matrix, CPoint());
+    RenderAnimation(matrix, XbmcCPoint());
   }
-  void RenderAnimation(TransformMatrix &matrix, const CPoint &center);
+  void RenderAnimation(TransformMatrix &matrix, const XbmcCPoint &center);
   void QueueAnimation(ANIMATION_PROCESS process);
 
   inline bool IsReversible() const { return m_reversible; };
@@ -174,8 +174,8 @@ public:
   void SetInitialCondition(int contextWindow);
 
 private:
-  void Calculate(const CPoint &point);
-  void AddEffect(const CStdString &type, const TiXmlElement *node, const CRect &rect);
+  void Calculate(const XbmcCPoint &point);
+  void AddEffect(const CStdString &type, const TiXmlElement *node, const XbmcCRect &rect);
   void AddEffect(CAnimEffect *effect);
 
   enum ANIM_REPEAT { ANIM_REPEAT_NONE = 0, ANIM_REPEAT_PULSE, ANIM_REPEAT_LOOP };

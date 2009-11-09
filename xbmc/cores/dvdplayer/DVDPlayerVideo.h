@@ -71,7 +71,7 @@ public:
   void EnableFullscreen(bool bEnable)               { m_bAllowFullscreen = bEnable; }
 
 #ifdef HAS_VIDEO_PLAYBACK
-  void GetVideoRect(CRect& SrcRect, CRect& DestRect)  { g_renderManager.GetVideoRect(SrcRect, DestRect); }
+  void GetVideoRect(XbmcCRect& SrcRect, XbmcCRect& DestRect)  { g_renderManager.GetVideoRect(SrcRect, DestRect); }
   float GetAspectRatio()                            { return g_renderManager.GetAspectRatio(); }
 #endif
 

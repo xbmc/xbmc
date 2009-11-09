@@ -52,7 +52,7 @@ void CGUIWindowVideoOverlay::Render()
   CGUIDialog::Render();
 }
 
-bool CGUIWindowVideoOverlay::OnMouse(const CPoint &point)
+bool CGUIWindowVideoOverlay::OnMouse(const XbmcCPoint &point)
 {
   return false;
 }

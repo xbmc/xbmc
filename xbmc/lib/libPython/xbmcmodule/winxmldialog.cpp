@@ -86,7 +86,7 @@ namespace PYXBMC
     PyGetUnicodeString(strFallbackPath, pyOname);
     if (pyDName) PyGetUnicodeString(strDefault, pyDName);
 
-    RESOLUTION res;
+    int res;
     CStdString strSkinPath;
     if (!bForceDefaultSkin)
     {

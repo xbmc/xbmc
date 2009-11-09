@@ -174,7 +174,7 @@ int CGUIWrappingListContainer::GetSelectedItem() const
   return 0;
 }
 
-bool CGUIWrappingListContainer::SelectItemFromPoint(const CPoint &point)
+bool CGUIWrappingListContainer::SelectItemFromPoint(const XbmcCPoint &point)
 {
   if (!m_focusedLayout || !m_layout)
     return false;

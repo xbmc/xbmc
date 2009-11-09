@@ -48,7 +48,7 @@ protected:
   virtual bool MoveUp(bool wrapAround);
   virtual void ValidateOffset();
   virtual int  CorrectOffset(int offset, int cursor) const;
-  virtual bool SelectItemFromPoint(const CPoint &point);
+  virtual bool SelectItemFromPoint(const XbmcCPoint &point);
   virtual void SelectItem(int item);
   virtual void Reset();
   virtual unsigned int GetNumItems() const { return m_items.size() - m_extraItems; };

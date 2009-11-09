@@ -1,0 +1,55 @@
+Count;;;N YI;;;Count of objects available in this stream
+StreamCount;;;N YI;;;Count of streams of that kind available
+StreamKind;Image;;N NI;;;Stream type name
+StreamKind/String;;;N NI;;;Stream type name
+StreamKindID;;;N NI;;;Number of the stream (base=0)
+StreamKindPos;;;N NI;;;When multiple streams, number of the stream (base=1)
+Inform;;;N NT;;;Last **Inform** call
+ID;;;N YI;;;A ID for this stream in this file
+ID/String;;;Y NT;;;The ID for this stream in this file
+UniqueID;;;N YI;;;A unique ID for this stream, should be copied with stream copy
+MenuID;;;N YI;;;The menu ID for this stream in this file
+MenuID/String;;;Y NT;;;The menu ID for this stream in this file
+Title;;;Y YI;;;Name of the track
+Format;;;Y YT;;;Format used
+Format/Info;;;Y NT;;;Info about Format
+Format/Url;;;N NT;;;Link
+Format_Version;;;Y NT;;;Version of this format
+Format_Profile;;;Y NT;;;Profile of the Format
+Format_Settings;;;Y NT;;;Settings needed for decoder used
+CodecID;;;Y YT;;;Codec ID (found in some containers)
+CodecID/Info;;;Y NT;;;Info about codec ID
+CodecID/Hint;;;Y NT;;;A hint for this codec ID
+CodecID/Url;;;N NT;;;A link for more details about this codec ID
+CodecID_Description;;;Y NT;;;Manual description given by the container
+Codec;;;N NT;;;Deprecated
+Codec/String;;;N NT;;;Deprecated
+Codec/Family;;;N NT;;;Deprecated
+Codec/Info;;;N NT;;;Deprecated
+Codec/Url;;;N NT;;;Deprecated
+Width;; pixel;N YI;;;Width
+Width/String;;;Y NT;;;
+Height;; pixel;N YI;;;Height
+Height/String;;;Y NT;;;
+Resolution;; bit;N YI;;;
+Resolution/String;;;Y NT;;;
+StreamSize;; byte;N YI;;;Stream size in bytes
+StreamSize/String;;;Y NT;;;
+StreamSize/String1;;;N NT;;;
+StreamSize/String2;;;N NT;;;
+StreamSize/String3;;;N NT;;;
+StreamSize/String4;;;N NT;;;
+StreamSize/String5;;;N NT;;;With proportion
+StreamSize_Proportion;;;N NT;;;Stream size divided by file size
+Encoded_Library;;;N YT;;;Software used to create the file
+Encoded_Library/String;;;Y NT;;;Software used to create the file
+Encoded_Library/Name;;;N NT;;;Info from the software
+Encoded_Library/Version;;;N NT;;;Version of software
+Encoded_Library/Date;;;N NT;;;Release date of software
+Encoded_Library_Settings;;;Y YT;;;Parameters used by the software;;
+Language;;;N YT;;;Language (2-letter ISO 639-1 if exists, else 3-letter ISO 639-2, and with optional ISO 3166-1 country separated by a dash if available, e.g. en, en-us, zh-cn);;
+Language/String;;;Y NT;;;Language (full);;
+Summary;;;N NT;;;;;
+Encoded_Date;;;Y YT;;;The time that the encoding of this item was completed began.;;Temporal
+Tagged_Date;;;Y YT;;;The time that the tags were done for this item.;;Temporal
+Encryption;;;Y YT;;;;;

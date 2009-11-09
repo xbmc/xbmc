@@ -732,7 +732,7 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
   return;
 }
 
-int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, const CPoint *pos)
+int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, const XbmcCPoint *pos)
 {
   // no choices??
   if (choices.size() == 0)
@@ -770,7 +770,7 @@ void CGUIDialogContextMenu::PositionAtCurrentFocus()
     const CGUIControl *focusedControl = window->GetFocusedControl();
     if (focusedControl)
     {
-      CPoint pos = focusedControl->GetRenderPosition() + CPoint(focusedControl->GetWidth() * 0.5f, focusedControl->GetHeight() * 0.5f);
+      XbmcCPoint pos = focusedControl->GetRenderPosition() + XbmcCPoint(focusedControl->GetWidth() * 0.5f, focusedControl->GetHeight() * 0.5f);
       OffsetPosition(pos.x,pos.y);
       return;
     }

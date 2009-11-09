@@ -97,8 +97,8 @@ public:
   // and does not need to be passed further down the line (to our global action handlers)
   virtual bool OnAction(const CAction &action);
 
-  virtual bool OnMouse(const CPoint &point);
-  bool HandleMouse(CGUIControl *pControl, const CPoint &point);
+  virtual bool OnMouse(const XbmcCPoint &point);
+  bool HandleMouse(CGUIControl *pControl, const XbmcCPoint &point);
   bool OnMove(int fromControl, int moveAction);
   virtual bool OnMessage(CGUIMessage& message);
 
@@ -107,7 +107,7 @@ public:
   void SetIDRange(int range) { m_idRange = range; };
   int GetIDRange() const { return m_idRange; };
   int GetPreviousWindow() { return m_previousWindow; };
-  CRect GetScaledBounds() const;
+  XbmcCRect GetScaledBounds() const;
   virtual void ClearAll();
   virtual void AllocResources(bool forceLoad = false);
   virtual void FreeResources(bool forceUnLoad = false);
@@ -120,8 +120,8 @@ public:
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return CFileItemPtr(); };
   virtual int GetViewContainerID() const { return 0; };
   virtual bool IsActive() const;
-  void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
-  RESOLUTION GetCoordsRes() const { return m_coordsRes; };
+  void SetCoordsRes(int res) { m_coordsRes = res; };
+  int GetCoordsRes() const { return m_coordsRes; };
   void SetXMLFile(const CStdString &xmlFile) { m_xmlFile = xmlFile; };
   const CStdString &GetXMLFile() const { return m_xmlFile; };
   void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
@@ -206,7 +206,7 @@ protected:
   int m_idRange;
   bool m_bRelativeCoords;
   OVERLAY_STATE m_overlayState;
-  RESOLUTION m_coordsRes; // resolution that the window coordinates are in.
+  int m_coordsRes; // resolution that the window coordinates are in.
   bool m_needsScaling;
   CStdString m_xmlFile;  // xml file to load
   bool m_windowLoaded;  // true if the window's xml file has been loaded

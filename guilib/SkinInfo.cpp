@@ -210,7 +210,7 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
   return false;
 }
 
-CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, const CStdString& strBaseDir /* = "" */)
+CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, int *res, const CStdString& strBaseDir /* = "" */)
 {
   CStdString strPathToUse = m_strBaseDir;
   if (!strBaseDir.IsEmpty())
@@ -270,11 +270,11 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
 
 bool CSkinInfo::HasSkinFile(const CStdString &strFile)
 {
-  RESOLUTION res = RES_INVALID;
+  int res = RES_INVALID;
   return CFile::Exists(GetSkinPath(strFile, &res));
 }
 
-CStdString CSkinInfo::GetDirFromRes(RESOLUTION res)
+CStdString CSkinInfo::GetDirFromRes(int res)
 {
   CStdString strRes;
   switch (res)
@@ -327,7 +327,7 @@ double CSkinInfo::GetMinVersion()
 
 void CSkinInfo::LoadIncludes()
 {
-  RESOLUTION res;
+  int res;
   CStdString includesPath = PTH_IC(GetSkinPath("includes.xml", &res));
   CLog::Log(LOGINFO, "Loading skin includes from %s", includesPath.c_str());
   m_includes.ClearIncludes();

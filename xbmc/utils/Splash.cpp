@@ -52,7 +52,7 @@ void CSplash::Show()
   g_graphicsContext.Lock();
   g_graphicsContext.Clear();
 
-  g_graphicsContext.SetCameraPosition(CPoint(0, 0));
+  g_graphicsContext.SetCameraPosition(XbmcCPoint(0, 0));
   float w = g_graphicsContext.GetWidth() * 0.5f;
   float h = g_graphicsContext.GetHeight() * 0.5f;
   CGUIImage* image = new CGUIImage(0, 0, w*0.5f, h*0.5f, w, h, m_ImageName);

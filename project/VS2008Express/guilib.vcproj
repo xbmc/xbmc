@@ -90,7 +90,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug (DirectX)|Win32"
-			OutputDirectory="guilib\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="guilib\$(ConfigurationName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"

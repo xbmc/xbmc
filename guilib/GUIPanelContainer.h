@@ -58,7 +58,7 @@ protected:
   virtual void CalculateLayout();
   unsigned int GetRows() const;
   virtual int  CorrectOffset(int offset, int cursor) const;
-  virtual bool SelectItemFromPoint(const CPoint &point);
+  virtual bool SelectItemFromPoint(const XbmcCPoint &point);
   void SetCursor(int cursor);
   virtual void SelectItem(int item);
   virtual bool HasPreviousPage() const;

@@ -893,7 +893,7 @@ namespace PYXBMC
     CGUIWindow* pWindow = (CGUIWindow*)g_windowManager.GetWindow(self->iWindowId);
     if (PyWindowIsNull(pWindow)) return NULL;
 
-    pWindow->SetCoordsRes((RESOLUTION)res);
+    pWindow->SetCoordsRes((int)res);
 
     Py_INCREF(Py_None);
     return Py_None;

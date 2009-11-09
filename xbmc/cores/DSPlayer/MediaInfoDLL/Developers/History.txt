@@ -1,0 +1,1022 @@
+Notes:
+------
++ Added
+- Deleted
+x Correction
+#number is the identifier of bug report/requested feature/patch
+bug reports and feature request are here:
+http://sourceforge.net/tracker/?group_id=86862
+
+Version 0.7.24, 2009-10-30
+--------------
++ MPEG-4: DVCPRO HD detection
++ WAV: better handling of Wave Extension codec IDs
++ MPEG Audio: profile and extension display
++ MPEG-TS: More information for ADTS in non-audio PES ID.
++ FLV: test of video bitrate info integrity
++ MPEG-4: "sbtl" subtitles support
++ MPEG-4: old-style Apple language codes support
++ MPEG-4: XDCAM support
++ MPEG Video: vbv_buffer_size info
++ AVC: cpb_size_value info
++ VC-1: hrd_buffer info
+x #2882376, AVCHD: reports some incorrect AVCHD framerate
+x MPEG-4: some Pixel Aspect Ratio settings were not handled
+x Customized output: respect of carriage return from the platform
+x MPEG-TS demuxer: more tolerance of bad blocks
+
+Version 0.7.23, 2009-10-16
+--------------
++ OGG: more details for MPEG-4 Visual, MPEG Audio and AC-3
++ MPEG-4: more information for MPEG Audio streams
++ MPEG-4: more information for ADTS streams
++ MPEG-TS: more information for ADTS streams
++ QCP (RFC 3625) format support
++ Refactoring of parsers, for more speed and less false-positives
++ WAV: INFO chunk parsing
+x Blu-ray directory analyzing was broken
+x VC-1: some streams were not detected
+x AMR in MP4: Resolution set to 13 or 14 bits instead of default 16 bits
+x Help, Known parameters was hanging up
+x AVC: frame rate was wrong for progressive streams with frame doubling
+x MPEG-TS: crash while parsing some streams with specific ATSC event_id
+
+Version 0.7.22, 2009-09-25
+--------------
++ MPEG-TS: KLV data detection
+x #2859504, 3GPP: some files were not detected
+x Some corrections about AVI Display Aspect Ratio
+x QuickTime: external files were completely parsed, too long
+x DV: Support of 4 mono channel configuration
+
+Version 0.7.21, 2009-09-04
+--------------
++ More permissive license for redistribution only
+  Redistribution license is intended for companies
+  with legal issues (if they can not deal with LGPL)
++ AVC: Support of frame doubling/tripling
++ AVC: Colour description
++ QuickTime: support of external files parsing
+x #2828430, Quicktime: 180 degrees rotation display was not displayed
+x MPEG-TS: whole file was parsed (long)
+x MPEG Video / MPEG-4 Visual: new algorithm for library name detection
+x #2844911, AAC in 3GP: false detection of SBR and PS
+x MKV: some chapters had timecode issues
+
+Version 0.7.20, 2009-07-31
+--------------
++ TAK format support, thanks to Lionel Duchateau
++ #2822681, Quicktime: Rotation display (from iPhone...)
++ ASP.net web application example
++ Java/JNA, Linux: dynamic load of libzen if not in LD_PATH
+x MPEG-PS: Some durations were a bit too long
+x MPEG-PS: Better handling of PTS/DTS for private and extension streams
+x ADTS: Handling of SBR and/or PS streams
+
+Version 0.7.19, 2009-07-17
+--------------
++ ALS raw files support, thanks to Lionel Duchateau
++ LA (Lossless Audio, old) support, thanks to Lionel Duchateau
++ SLS detection, thanks to Lionel Duchateau
++ AAC: forcing SBR/PS when it is implicit (if <=24KHz, if 1 channel)
++ AVC: Closed captions detection
++ #2813919, APE: CompressionLevel
++ XML output: track names are changed, for a better usability by XML parsers
+x MKV: Original display aspect ratio was not displayed
+x #2817479, Blu-ray/M2Ts: crash with some specific file names
+x MXF: the whole file was parsed, parsing now only the useful part
+
+Version 0.7.18, 2009-07-03
+--------------
++ MXF support
++ Blu-ray: BDMV directory parsing
++ Blu-ray: clpi/mpls files support
++ M2TS: Language if the .clpi blu-ray file is found
++ OpenSolaris support
++ MPEG-4 Visual: support of Sony SMC (security video) tags
++ MPEG-4 Visual: ASP profile was wrongly displayed
++ Mac OS X: Creation of universal and 10.4 compatible binaries option
+x Mac OS X: no more double-carriage return in Text view
+
+Version 0.7.17, 2009-06-19
+--------------
++ Python : adaptation for version 3
++ XML output (thanks to Steen Jost Jensen)
++ MPEG-PS/TS: ATSC Closed captions (both EIA-608 and EIA-708) detection
++ MPEG-PS/TS: Language of closed caption (ATSC)
++ DV: camera settings
++ DV: Closed captions detection (raw DV, or in .mp4 and AVI container)
++ JPEG 2000 support
++ MPEG-4: support of JPEG 2000 embedded in a MPEG-4 container
++ MPEG-4: support of ProRes 422 / ProRes 422 HQ codecs
++ MPEG-4, AMR: Vendor and version
++ Blu-ray: support of PCM (Frequency, resolution, bitrate)
++ MPEG-TS: speed improvements
+x #2803396, sometimes crash with tiny (40-79 bytes) files
+x #2801211, MPEG-4/3GP: support of 3GP tags
+x #2795345, MPEG-4 Visual: crash with some specific user_data
+x #2793960, MKV: some MKV renamed as .ac3 were detected as AC-3
+x #2796417, MPEG-4: Some files with Camera user data were not detected
+x so interface was not working since some releases on Linux
+x MPEG Video: better detection of 2:3 Pulldown
+x MPEG-4: Forcing AMR to 8KHz/Mono whatever the container says
+
+Version 0.7.16, 2009-05-20
+-------------
++ MPEG-4: More information for Avid DV streams
++ MPEG-4: more complete parsing (raw stream) of files with compressed headers
++ VC-1 and MPEG-Video: displaying the original framerate for streams with 2:3 pulldown
++ WMA: Handling of Mutual Excluded streams
+x MPEG-4: some files with compressed headers were not parsed
+x MPEG-4: Kodak files with EXIF data were not parsed
+x MPEG-4 (Quicktime): some files with compressed header were not well parsed
+x MPEG-4: Some files with a TimeCode track had wrong duration
+x MPEG-PS: some files with wrong timestamp were not well parsed
+x MPEG Audio with APE tags: crash with big tags
+
+Version 0.7.15, 2009-04-30
+-------------
++ Wave64 (.w64) support
++ MPEG-4: Better handling of 4GiB+ files
++ MPEG-4: audio parts from a DV stream are displayed
++ MPEG-4: better DV analyzing
++ DV: parser improvement (speed, accuracy)
+x DTS: 768/1536 Kbps streams are corrected to the real bitrate (755/1510 Kbps)
+x MPEG-TS: some stream durations were not well computed (few seconds only)
+x AVC: freeze with some malformed encoder settings
+
+Version 0.7.14, 2009-04-17
+-------------
++ #2738780, local time display for modified/created date
++ DLL installers (both 32 and 64 bits)
++ WAV: RF64 (Wav files >4 GiB) support
++ AVI: Audio delay from the container
+x #2734021, E-AC-3: some files were not detected
+x FLAC: some files with big attachments were not well detected
+x MKV: some huge video (3840*2160) were not well parsed (no encoding settings)
+
+Version 0.7.13, 2009-04-03
+-------------
++ #2635230, MPEG audio: Lame encoder settings
++ #2706146, WMV: detection of container wanted aspect ratio
++ #2611726, MKV: Audio delay detection
++ #2721811, MKV: TrueHD detection
++ Java: JNA (Java Native Access) binding
++ Exported "stream" interface for analyzing streams in memory (beta)
++ SHN (Shorten) detection
++ TAK (Tom's lossless audio compressor) detection
++ MPEG-TS parser optimizations
++ SWF: better handling of videos
++ WAV: better handling of 4GiB+ files
++ WAV: Extensible Wave support
++ MKV: Handling of chapters in multiple languages
++ Stream size for all streams when 1 video and all audio streams are CBR
++ Chapters are moved to menu part for better coherency with MPEG-TS, developers see Changes.txt for more info
+x #2712761, AVI: unsupported SalmonSoft text codec makes MediaInfo silently fail
+x #2719534, MKV: handling "modified" headers (zero padding)
+x #2720822, MPEG Audio: was freezing with 1 malformed file
+x #2721949, IFO: some stream IDs were false
+x #2725808, MPEG-PS: some "OTA" files were detected with TrueHD instead of normal AC-3 audio
+
+Version 0.7.12, 2009-03-20
+-------------
++ Complete refactoring of the code for speed improvements and future features
++ #2686943, MPEG-4: ISMV (IIS Smooth Streaming Media Video) basic support
++ MPEG-4 Visual: distinction between MPEG and H.263 default matrices
++ MPEG-TS: ATSC and DVB EPG support
+x MPEG-PS: duplicate stream infos with some AC-3 streams (with program map)
+
+Version 0.7.11, 2009-02-13
+-------------
++ OGG: Better Kate and CMML codecs support
++ AVI: Detecting wrong aspect ratio from a broken AVI header
++ DTS: Handling of Little Endian and 14-bit streams
++ WAV: ID3v2 tags parsing
++ MPEG Video: frame order even for progressive sequence
+x #2559346, MKV: Detection of framerate in MKV without framerate header
+x #2474280, OGG: some streams had bad stream size
+x MPEG-TS: some buggy file may corrupt memory
+x MP3/Id3v2: crash with one malformed file
+
+Version 0.7.10, 2009-01-30
+-------------
++ Mono (C#/Linux) binding
++ MPEG-4: Encoding library name
++ #2474280, OGG: Old version of Dirac identifier support
++ MPEG-TS: Encoded date for HDV
++ DVR-MS: Delay between two tracks
++ WAV: EBU Broadcast Wave format v1 support
++ CMP4: Basic support
+x #2529963: Infinite loop on one file
+x #2473140, DTS: error preventing 96/24 DTS detection
+x MPEG-4: Better support of Aspect ratio
+x Output was unstranslated and weird when $LANG is not set
+x C++ binding error in 0.7.9
+x Python binding improved and corrected (no more crash with Linux)
+
+Version 0.7.9, 2009-01-19
+-------------
++ OGG: Dirac support
++ OGG: Speex support
++ OGG: other formats (JNG, Kate, MIDI, PCM...) detection
++ SWF: detection of more audio streams
++ MPEG-PS: Handling of PlayStation2 audio
++ #2474119, Minimal MZ (PE) and ELF detection
++ SMV (WAV/ADPCM+JPG files) file format support
++ DPG (Nintendo DS) file format support
++ QuickTime: TimeCode track analysis
++ MPEG-4 subtitles: difference between 'text' and 'tx3g' codecIDs
+x Python binding update for more compatibilty
+x #2474280, OGG: handling of files with Skeleton Metadata
+x #2445654, OGG: better false-positives detection
+x #2493685, AVI: Wrong video duration for some malformed 4GB+ AVI/DV files
+x #2516007, "Language" raw tag was sometimes 3 letter long instead of 2-letter long
+x Floating point overflow correction
+
+Version 0.7.8, 2008-12-09
+-------------
++ Changing version schema, only 3 numbers (next versions will 0.7.9, 0.7.10...)
++ Better Linux integration
++ rpm stuff (thanks to oc2pus http://packman.links2linux.org)
++ deb stuff
++ #2259421, FLAC and OGG: Encoding library name and version
++ FLV: version 10 support
++ FLV: duration of files without metatags
++ MPEG-4: Delay (useful when multiple videos are present)
++ Dirac: profiles updated from the latest specification
++ MPEG-4: more precise detection of OGG based codecs
++ MKV: better newest codecs handling
++ MKV: RealVideo/Audio support improvements
++ mipsel CPU support
+x MPEG-PS: Trying to have a better precision for duration
+x WMV: crash with some malformed files
+x MPEG-TS: some channel names where not shown
+x MPEG Video (version 2): some streams were misdetected as CBR
+
+Version 0.7.7.8, 2008-11-10
+---------------
++ #2216498, LPCM in VOB: more attributes (channels count, sampling rate, bitrate)
++ #2182135, Wavpack: support of multichannel files
++ AVC: detection of the newest profiles
++ DTS: detection of DTS-HRA, DTS-MA, DTS-Express, thanks to http://madshi.net
++ AES3 PCM in MPEG-TS detection
++ Wavpack: Encoder settings
++ WMV with "WVC1" codec identifier: video interlacement
++ MPEG-4: E-AC-3 support
+x #2186682, MPEG-2 Video: Wrong PAR and DAR for Panasonic MPEG2 Files
+x MPEG-4: some AC-3 and AAC specific files reported wrong channels value
+
+Version 0.7.7.7, 2008-10-17
+---------------
++ Support of VP5 file format
++ MPEG-4 Visual and MPEG Video: can now display the custom matrices data
++ WM: interlacement detection for VC-1 based codecs (WMV3...)
++ #2148321, PNG: more info
++ AVI: Better association of abcAVI tags to MediaInfo tags
++ PureBasic binding
++ Delphi binding: dynamic load (by default) of the library, thanks to Icebob
+x #2142995, MPEG-4: handling the Display Aspect Ratio from the track Header (tkhd)
+x #2141277, MPEG-PS/TS: Audio ID was hex for MPEG-PS but decimal for MPEG-TS streams
+x #2109107, Tags in Flac or Ogg: modification of the tag types priorities
+x #2120224, MPEG-4: some specific files were not parsed completely (missing info)
+x MPEG-TS with Dirac: some specific files were not parsed completely (missing info)
+x MPEG-4: Crash on MPEG-4 Visual format without DecDecoder stuff
+x Command line: was not reading custom template in UTF-8 codepage
+x DV: some files were not well detected
+x MPEG Video: some files were badly detected with 3:2 pulldown
+x AVS (Chinese): some corrections, thanks to Tom's translation of documents
+
+Version 0.7.7.6, 2008-09-12
+---------------
++ [2088009] Flac: Picture tag support
++ Flac: Support of Id3v1&2 in a Flac file
++ WM (ASF/WMV/WMA): detection of wrong framerate in header, trusting now the timestamp instead of the header
++ WM (ASF/WMV/WMA): detection of framerate from the timestamp when the framerate info is not available in the header
++ MPEG-4 with AVC: Added information about buggy files readable by all players except iPods
++ OGG: OGG with FLAC (pre- and post-FLAC 1.1.1) support
+x FLI/FLC: were not correctly detected
+x MPEG-TS without PAT/PMT: the complete stream was parsed, may be very long
+x Wavpack: duration and bitrate were false
+x #2071681, MPEG Audio: handling of truncated MPEG audio frames at the end of a file
+x #2032760, MPEG Audio: handling of MPEG Audio files with junk at the end
+x #2085149, Id3v2: was crashing with some malformed tags
+
+Version 0.7.7.5, 2008-08-22
+---------------
++ #2044174, AVS (Chinese Audio Video Standard) support
++ #2030684, AVI: Support of malformed chunks
++ Matroska: delay between audio and video calculation (for AC-3, DTS, MPEG Audio)
++ Full Replay gain support (gain/peak, track/album) for Flac/Ogg/MP3
++ MPEG-TS without PAT/PMT (example: stream captured by some satellite TV receivers) support
++ MPEG-TS: Service info (name, provider, channel number) for both DVB and ATSC tags
++ Dot and thousand separator localized
++ Matroska: Handling of audio Delay
+x #2023872, DV: Crash with floating point exception on some files
+x #2024706, BDAV: Some QuickTime files misidentified as BDAV
+x #2033307, MPEG Video: Some raw files with high bitrate were not detected
+x #2040411, Id3v2: Crash with some malformed Id3v2 fields
+x #2036580, Id3v2: Problem when parsing big (>1M) Id3v2 tags, file was no more detected
+x #1893830, WMA/WMV: there was textual info (Linux/Mac only)
+x Video, Resolution/bits per pixel was sometimes per color entity, sometimes per pixel, now always per pixel
+x MPEG Video, the "Component" video standard was not detected
+x DLL only, the "by buffer" interface was broken
+
+Version 0.7.7.4, 2008-07-11
+---------------
++ #1995653, AVI: Delay of interleaves (example: "64 ms (1.53 video frames)")
++ #1995574, AVI: Report if the audio frames are split across or aligned on
++ MPEG-Video (raw): handling of "not started at the beginning" time_code
++ MPEG-PS: Trying to prevent errors with time code reset in the stream
++ AVC: Trying to detect raw AVC streams without SPS/PPS
++ [2013746] AAC in MPEG-TS: complete parsing of ADTS stream for more info about AAC
++ AAC in MPEG-TS: complete parsing of IOD based stream for more info about AAC
++ MPEG-TS: better detection of PCR time code
++ AAC: specifying the muxing mode (ADIF, ADTS or LATM)
++ MediaInfo DLL: NetBeans java binding example
+
+Version 0.7.7.3, 2008-06-27
+---------------
++ MPEG-TS: Detection of scrambled streams
++ #1995566: AVi, Identify ODML files
++ AC-3/DTS/AAC: Added another Channel configuration string (example: "3/2.1") in advanced mode
++ #1995569: Added proportion of each stream in the file (example: "500 MiB (90%)")
+x MPEG-TS: Handling of multiple programs in one PMT PID
+x MPEG-TS: Handling of streams in multiple programs
+
+Version 0.7.7.2, 2008-06-13
+---------------
++ FLV: detection of AVC and AAC
+x #1981032, Visual C++ 2008 binary is not compatible with Win9X, coming back to Visual C++ 2005
+x #1964299, Never-ending 100% CPU if input file doesn't exist
+
+Version 0.7.7.1, 2008-05-30
+---------------
++ MPEG Video: Detection of 2:3 and 2:2:2:2:2:2:2:2:2:2:2:3 Pulldown
++ VC-1: Detection of 2:3 and 2:2:2:2:2:2:2:2:2:2:2:3 Pulldown
++ AVC: Detection of MBAFF
++ Translations: more words can be translated
++ MPEG-4 files: More info (profile, format settings, encoder name, x264 settings) for some well-known stream formats
++ MPEG-4 files: Better handling of not common formats (ALS, PNG, AC-3, DTS... in .mp4)
++ Bluray: detection of subtitles
++ Additional formats detected: Module, Extended module, Impulse Tracker, Scream Tracker 3
+x #1967663, mp4: some specific iTunes atoms were not correctly parsed
+
+Version 0.7.7.0, 2008-05-16
+---------------
++ Third-party developpers: some MediaInfo fields have changed, please look at Changes.txt for more info
++ Python (Windows) binding
++ AC-3 TrueHD in bluray detection (even if the stream is splitted in 2 sub-streams)
++ Original framerate is shown if the framerate from the video stream and the one in the container are different
++ #1955061, Bluray: Duration
++ #1953908, FLV with audio delay detection
+x Linux with UTF-8 locale was not accepting non-English characters in filenames
+x #1954663, Some mono HE-AAC audio track detected as 2 channels with PS
+x VC-1 in TS detection even if the stream_type is not declared
+x xxxBSD compatibility
+
+Version 0.7.6.4, 2008-04-27
+---------------
++ About the library : Java/Linux binding is available
++ DV (raw) files support
++ Better support of DV in AVI container (type 1 and 2)
++ AVC: Handling of SEI which is before a SPS
++ AVC in AVI: reading more info (Profile, Cabac...) from streams created by FFMpeg
++ Vorbis in AVI: reading more info (Max bitrate, tags...) from streams created by FFMpeg
++ Detection of VC-1 in MPEG-TS from MainConcept encoder
++ MediaInfoLib is now thread-safe
+x #1943743, AVI with MPEG-Audio VBR and delay: delay was incorrect
+x Pixel Aspect Ratio was sometimes inverted (1/x)
+x XviD CodecID was redirected on Koepi website, no more available, changed to official XviD webpage
+x #1946098, DV in AVI: DV aspect ratio errors
+
+Version 0.7.6.3, 2008-04-12
+---------------
++ AVC: Count of reference frames
++ AU: Comments
++ Some global speed improvement
+x #1931844, Id3v2: Unsynchronized frames support (v2.3 & v2.4)
+
+Version 0.7.6.2, 2008-03-28
+---------------
++ MKV: handling of files created for streaming
++ MPEG-4: Handling of corrupted stream size info with some PCM streams
++ DVD video: Hebrew patch ("iw" code is mapped to Hebrew)
+x MPEG-4: better handling of bitrate mode (VBR or CBR)
+x AVI: MediaInfo reads now the framerate value from the container rather than the stream value
+
+Version 0.7.6.1, 2008-03-14
+---------------
++ AC3: TrueHD detection
++ MPEG-TS (or Bluray): VC-1, AC3+ and AC3 TrueHD detection
++ AVC in MKV: all SEI userdata infos from x264/eavc in Writing library settings
++ EVO: Better detection of duration
++ Dirac: raw files parsing
++ MPEG-TS: Dirac management
++ MPEG-TS: DVB subtitles/Teletext management
+x MPEG-4 Visual (DivX/XviD): writing library name was missing
+x MPEG-Video: some DTS files with wrong extension were detected as MPEG-Video
+x SWF: Compressed SWF files support is back
+x "Inform" option with file as parameter was not well parsed
+
+Version 0.7.6.0, 2008-02-29
+---------------
++ ID3v2 cover reading
++ Id3v2.2 (yes, it is old...) support
++ Id3v2: TXXX tags support
++ RMP3 (japanese MP3 based format?) support
++ SAMR in .mp4: some files have wrong sampling rate, forcing it to 8000 Hz
++ File_Created_Date and File_Modified_Date tags added (in advanced mode only)
++ MP3 encoded by Lame: Minimal (VBR) or Nominal (ABR) bitrate
+x Better detection of Lame encoder
+x AVC Display Aspect Ratio was not well detected if AVC is in a .mp4 container
+x Matroska Display Aspect Ratio was deleted if AVC aspect ratio was set, now Matroska has priority
+x "Subwoofer" term has been replaced by "LFE", more relevant
+
+Version 0.7.5.9, 2008-02-08
+---------------
++ AVC: CABAC detection
++ #1886241: AVC: all SEI userdata infos from x264/eavc in Writing library settings
++ ADPCM: compagny which created the stream is now shown in the codec section
++ PCM: precision about Little/Big endianess, Integer/Floating point method
++ #1882691: AC3+: raw files are now detected
+x AVC: FPS were sometimes 2x the reality
+x RealMedia parser was brocken
+x FLV parser was crashing
+x FLV: Better detection of Nellymoser audio
+x FLV: Disabling Framerate estimation if a VFR file is detected (estimation was false in this case)
+x Better false-positive MP3 detection (NSV files are no more detected as MP3)
+x IFO: there was a mistake betwwen NTSC and PAL framerates
+x Win9X support was (again) brocken in 0.7.5.8
+
+Version 0.7.5.8, 2008-02-01
+---------------
++ Matroska: Full parsing of DivX/XviD/H264/AVC settings (profile...)
++ AVI: Full parsing of AVC settings (profile...)
++ AVI: Added a tag "OpenDML" (for example, the PlayStation 3 doesn't support OpenDML files)
++ AVC: Framerate, Interlacement, writing library (only for eavc, x264 and MainConcept encoders)
++ TwinVQ : channels, bitrate and sampling rate
++ Musepack SV8 support
++ Musepack and Musepack SV8: tags support
++ AIFF and AIFC format support
++ MIDI format detection
++ FLV: FrameRate even if the tag is not in the header
++ AU/SND audio formats support
++ Vodei encrypted AVI files detection
++ Linux/MacOS: support of 2GiB+ files
++ FLV: Video parsing even if the container says there is no video
+x APE Tags v1 are detected again
+x MPEG-PS: some malformed files were not well parsed, fixed
+x AVC: Cropping was not well handled (example: height was 1088 instead of 1080)
+
+Version 0.7.5.7, 2008-01-09
+---------------
++ SWF: Tags version 9 support
++ MPEG-TS: DegiCipher 2 (DCII) support
++ DVR-MS format support (with MPEG Audio or AC3)
++ WMV: language tag
++ MPEG-2 Video: Nominal bitrate
+x AVI: some speed improvments
+
+Version 0.7.5.6, 2007-12-10
+---------------
++ AVI, Interlacement for M-JPEG codec
++ AVI, Interleaved tag
++ Better showing of well know values ("44.1 KHz", "22.05 KHz"...)
+x AVI, was parsing the whole file in case of non-interleaved files
+x MP3, was freezing on specific files
+x #1838202: Flac, Resolution was 1 less the the real value (15 bits instead of 16...)
+
+Version 0.7.5.5, 2007-11-09
+---------------
++ #1799859: Flac, tags are case insensitive
++ Matroska format parsing improvements
++ .mp4 speed improvement
+x BDAV (Bluray) parser compilation was forgotten in the previous version
+x AVI, Bitrate and stream size were false
+x #1825218: IFO parser was brocken
+x #1825521: .mp4 chapters times were wrong
+x #1801549: DLL was crashing during Delphi/C# debugging sessions
+
+Version 0.7.5.4, 2007-11-02
+---------------
++ Aspect Ratio is renamed Display Aspect Ratio
++ Pixel Aspect Ratio added (in advanced mode)
++ More attributes for AC3+
++ More attributes for VC-1
++ Profile and level for MPEG-4 Visual based formats (DivX...), AVC and VC1
++ Speed improvement for MPEG-TS, MPEG-PS, DVD-Video (.vob), HD-DVD, BluRay
++ MPEG-4 AAC, Channels position
++ AAC (ADIF), More info
++ AAC (ADTS), More info
+x FLV, there was bad dates on some specific metatags.
+x #1818404: WAV with "float" PCM, bad detection
+x CDXA (.dat) files parsing is back
+
+Version 0.7.5.3, 2007-10-08
+---------------
++ Better OGG/OGM parsing
++ Better .ifo (DVD-Video) parsing
++ .rmvb files are now detected in Windows Explorer
++ Win9X/98/Me support does not request Microsoft unicows.lib anymore
+x Win95/98/Me support was brocken since 0.7.4.6. It works again.
+x #1798997: MPEG-4, some Apple codecs were wrongly reported
+x Lot of memory leak correction, you can now parse 1000+ files without problems
+
+Version 0.7.5.2, 2007-08-16
+---------------
++ Now accept AVI files with junk at the end
+x #1770477: Video info for some low-bitrate MPEG files were not shown
+x #1770509: MPEG 2 Audio Layer 2 was not well detected
+x #1763282: FLV, wrong playtime on PPC based machine
+x #1734113: IFO, crash with some specific files
+x Tooltip extension was requesting development tools since 0.7.4.6. No more requested.
+
+Version 0.7.5.1, 2007-07-23
+---------------
++ AVI: 24/30 fps (aka 120 fps hack or dual frame rate video) detection
++ TruAudio (.tta) support
++ Wavpack (.wv) support
++ MPEG-4 based containers: Codec/CC tag support
++ #1754143: AC3 & DTS detection in a .mp4 container made with the Haali's gdsmux tool
++ #1754140: AC3 detection in a .mp4 container from Nero Digital
++ #1754905: iPhone files support
+x #1750275: HD-DTS was no more detected in a .m2ts (bluray) file
+x AVI: AAC profile name was no more detected
+
+Version 0.7.5.0, 2007-07-09
+---------------
++ Licence changed from LGPLv2 to LGPLv3
++ More information about mpeg-4 based (Nero...) files
++ MediaInfo analyses longer a .vob file to be able to find hidden tracks (subtitles...)
++ #1747633: Encrypted WMV detection
++ FLV: more attributes
+x Memory leaks correction
+x #1720404: MPEG, rare crashes with some files
+x #1721846: AAC ADTS were no more detected
+x MPEG Audio: No detection if there is some specific junk before the real audio data
+x #1728059: Delphi DLL overflow with big files
+x Crash with Youtube FLV files
+x AVI: Delay for AC3, DTS and MP3 is back
+
+Version 0.7.4.7, 2007-05-14
+---------------
++ OGG Vorbis, "Floor" value (useful for some players which don't support Floor 0)
++ MPEG-Audio, Lyrics3v1/v2, ApeTagv1/v2 parsing
++ MPEG-TS, handling of complex files (multiple programs, 8+ channels...)
++ #1704008: handling of AVC or MPEG-4 Video in a MPEG-TS file without program map
++ VC-1 basic parsing
++ DTS True HD detection
++ AC3+ detection
++ HD-DVD (decyphered) support
++ BluRay (decyphered) support
+x MPEG-TS, Duration calculation problem on very rare files
+x MPEG-4/iTunes, Tags where not well parsed in 0.7.4.6
+x FLV, freezes or crashes with some files
+x #1718269: MPEG-4 Video, Framerate of 65535/2733 is transformed to 23.976
+x Windows Media (ASF/WMA/WMV) with file size more than 4GB were not well handled
+x MP4 with file size more than 4GB were not well handled
+
+Version 0.7.4.6, 2007-04-28
+---------------
++ Windows 64-bit version of the command line tool and DLL
++ Linux 64-bit version of the command line tool
++ More Musepack properties
++ Detection of Musepack v8 files
++ Complete parsing of Real Media files (all tags)
++ Improved Windows Media (ASF/WMA/WMV) parsing
++ MonkeyAudio tags (APETagv1/v2, Id3v1) parsing
++ Ogg/Theora : Video bitrate
++ MPEG audio : More encoder detection (bitstream parsing)
++ SWF (Flash) parsing
+x #1665981: Mov - PCM audio (digital camera) was detected as RGB
+x #1672896: Wave file with .mp3 extension was detected as MP3
+x #1689570 and #1633237: Better JPEG parsing
+
+Version 0.7.4.5, 2007-02-23
+---------------
++ Program file size reduction
++ WAV : Support of some special tags at the end of the file
++ AVC : Display Aspect Ratio
+x #1653325: Wrong Resolution with AVC High Profile
+x #1662890: Problem with tag adaptation parser (mainly for ID3v1 genre)
+x Better support of corrupted MOV files
+
+Version 0.7.4.4, 2007-02-05
+---------------
++ FLV format support
++ Basic support of multiple programs in a MPEG Transport Stream (Satellite broadcast)
++ Basic detection of TwinVQ (.vqf) files (+tag parsing)
++ Better handling of corrupted .mp4 files
++ Better handling of corrupted .avi files
+x Crash with corrupted "COMM" Id3v2 tags
+x Crash with some audio files
+x #1633524: MOV, Crash on files with corrupted Descriptors
+x #1630907: MP3, Crash on files with corrupted (empty) Id3v2 tag
+x #1637838, 1634549, 1635131: Crash with some audio-only files
+x AVI, Better detection of writing application found in a "JUNK" chunk
+x AVI, sometimes wrong playtime
+x #1637191: AC3 delay in AVIs is back
+x #1635134: some freezes with MPEG-7 files (but this format is not yet supported)
+x #1635087: some files were wrongly detected as AC3
+x Russian (or other non-latin language) AVI tag parsing is back.
+
+Version 0.7.4.3 2006-12-22
+---------------
+x #1622477 : Wrong Time Values for Chapters in mp4 files
++ Linux shared object available
++ MPEG-TS : Detect encrypted stream, and show the codec
++ id3v2 with UTF-16 frames
++ AVC in MPEG-TS AVC parsing
++ AVC : Width and Height
++ MacIntel version
+x Matroska, some crashing files (with chapters)
+
+Version 0.7.4.2 2006-12-09
+---------------
++ Encoders database updated with 20 new encoder versions
++ Codecs database updated with 100 new codecs (video or audio)
+x Matroska, sometimes wrong Playtime 
+x MPEG-4 : some Titles were not well parsed
+x MPEG PS : some video stream were missing
+x Crash with some malformed files
+x Some debug files were created
+
+Version 0.7.4.1 2006-12-08
+---------------
++ MPEG Transport Stream : Video info (Standard, Chroma, Interlacement...) and PlayTime
++ CDXA : PlayTime
++ MPEG-4 Video embedded in MPEG Program Stream support
++ MPEG-1 stream embedded in a Quictime file
++ MPEG-4 AAC Parametric Stereo (SBR-PS) detection
++ Detection of encrypted MPEG-4 (like iTunes)
++ Support of MPEG TS with lot of synchro errors
++ AVI : Exact Stream size calculation (but currently OpenDML files are not supported)
++ MPEG-4 : Exact Stream size calculation
++ Basic support of Korean mobilephone provider Sky (.skm)
+x MPEG Program Stream : PlayTime, Delay are corrected
+x #1601787 : MOV tracks issues (and crash)
+x MOV : was stopping on too big "free" atoms
+x MOV : Aspect Ration of DV is corrected
+x MPEG : Handling of negative Delays between Audio and Video
+x Musepack parser was doing too much "false positives" with some MPEG files
+
+Version 0.7.4.0 2006-11-24
+---------------
++ Linux i386 version
++ AutoIt example
++ AVI with AAC-SBR : detection of real SamplingRate (not the sampling rate in header)
++ AVI with DV : basic information about audio
++ AVI with DV : detection of duplicated audio stream
++ Google Video : metadatas
++ AVI : now able to read metadatas at the end of the file
++ AVI : Bitrate computed is based on filesize in header instead of real filesize (for broked files)
++ AVI (DivX) : Menu detection (yes or no)
++ AVI : detection of VBR MP3 (useful for DVD players, sometimes they don't accept it)
++ AVI : detection of Delay between Audio and Video (for MPEG Audio, AC3 and DTS)
++ PlayStationPortable MPEG-4 files support
++ 3GPP5 files support
++ MPEG-4 : Detection of MP3, Vorbis streams embeded in a 'mp4a' atom
++ MPEG-4 : Detection of AVC streams embeded in a 'mp4v' atom
++ MPEG-2TS with MPEG-4 and AC3 detection
++ Speed improvements
++ MPEG-4 with Variable FrameRate detection, min and max
+x #1551482 "\n" in filename get replaced by newline in "Text" output
+x AVI : infinite loop on one example file
+x AVI : some bad detections corrected
+x MPEG-PS : infinite loop in intra Matrix on one example file
+x MPEG TS : better detection of streams
+
+Version 0.7.3.1 2006-07-30
+---------------
++ MPEG-1/2 PS : more files have a duration
++ AVI with MPEG-4 Video based codecs (DivX, XviD...), more encoder string detections
++ Microsoft Visual Basic binding : wrapper class added around methods
++ Microsoft J# binding : wrapper class added around methods
++ Microsoft C# binding : default values for methods, to cleanup code example
+x Matroska, crash with big (>4GB) files
+
+Version 0.7.3.0 2006-07-19
+---------------
++ MPEG-1 and 2 Transport Stream support
++ MPEG-1 and 2 Video : Custom Matrix detection
++ MPEG-4 Video : Custom Matrix detection
++ Google Video (GVI) support
++ AMV/MTV (Chinese) detection (if you have specifications of theses formats, email me)
++ AVI/DivX/GoogleVideo and MPEG-4 Video : packed bistream detection.
+  Now you can know if your DVD player can read the file before burning. Next step: a database of DVD player capacities ;-)
++ Java binding
++ C/C++ dynamic loading (instead of static linkage) binding
++ MPEG-4 : Language
++ MPEG-4 : Text streams (subtitles)
++ C# binding : wrapper class added around methods
+x #1523005 : C# crashes because I did not use PtrToStringUni() to handle char pointers
+x #1485003 : MP3, "Title" tag was sometimes forgotten
+x #1485804 : Wrong bitrate and time in PCM files
+x #1485810 : wrong playtime on CBR MP3 files with big id3v2 tags
+x #1485803 : some WMA tags were forgotten
+x #1488449 : crash on very rare buggy MP3 files
+x #1482686 : ShellExtension, crash when moving a directory
+x #1488770 : PlayTime, some "minutes" formating were forgotten
+x #1485044 : some .ico files were detected as MPEG Audio
+x AVI, handle some malformed timestamps in tags (carriage return at the end...)
+x MPEG-1 and 2 : incoherancy of PlayTime
+
+Version 0.7.2.1 2005-05-08
+---------------
++ MPEG-4 : Chroma ("4:2:0"...)
++ MPEG-4 : Interlacement mode ("Top field first", "bottom field first", or "Progressive")
++ MPEG-2 : Chroma ("4:2:0"...)
++ MPEG-2 : Interlacement mode ("Top field first", "bottom field first", or "Progressive")
++ MPEG-2 : Profile and Level ("Main@Main"...)
++ MPEG-2 : Standard (NTSC, PAL, SECAM, or MAC)
+x #1482346 : Incorrect playback time in OGG files (was not enough precise).
+x #1482602 : MPEG-4 video false positive files
+x #1479344 : Problems with DLL interface, ToolTip shell extension DLL extension are in another DLL to keep compatibility
+x #1479317 : stop if debuging in Borland IDEs when opening an AVI file
+
+Version 0.7.2.0 2005-04-30
+---------------
++ ToolTip shell extension (if you have the mouse on a multimedia (AVI/MKV/OGG...) file, a ToolTip will be showed
++ AVI with DivX or XviD : Encoder name, GMC/QPel/B-frames indicator if present (beta)
++ AVI and WAV with MP3 : encoder name, precise version and layer number, VBR indication
++ Matroska: support of anamorphic videos (right Aspect Ration even if pixel aspect ratio is not 1:1)
++ AVI/WAV : support of extended wave files (20 bit per sample and more than 2 channels) and channel position
++ AVI : support of Exif tag format
++ AVI : more tags are supported
++ Genres can be translated by translators
++ Real : detect RealAudio Lossless Format
+x #1454009 : AC3, sometimes wrong AC3 playtime
+x #1469423 : MP3 with cyrilic filenames, Id3 tags can be read
+x #1464066 : Hang ups with raw h264 streams
+x #1462647 : Quicktime files with preview image, crash
+x #1445150 : crash with some malformed MusePack files (workaround, this is a the Musepack bug, not yet corrected)
+
+Version 0.7.1.2 2005-03-10
+---------------
++ #1438441: show TV format (PAL/NTSC) for DVD and DV
++ #1343147: Matroska, Show Chapter names
++ MPEG-1 and 2, more precise playtime
++ MPEG-1 and 2, Added Encoded_Application if it is in video user data
++ Quicktime: Support of Quicktime "wide" (header at the end of the file)
++ MPEG Audio: Detect small (examples, less than 200K) MPEG Audio files with Id3v1 tag
++ #1441661: AVI, Handling of DV Type 1
+x #1440480: No Audio Found in MPEG-2 after 0.7.0.4
+x #1438987: Infinite loop with some Matroska files
+x Matroska, Recorded date is now in UTC format, rather than the number of seconds since 1970
+x AC3 noted 5 channels (because of 5.1) are now noted 6 channels (more realistic)
+x Quicktime: "ima4" or "twos" codecs were detected as Video stream instead of Audio stream
+x Crash of third-party softwares with some specific files
+
+Version 0.7.1.1 2005-02-24
+---------------
++ Now ~900 codec names (Audio/video/Text) are known (instead of 500)
++ Matroska : Framerate is now for all kinds of codec (and not only FourCC based ones)
++ MPEG-4 (m4V, Quicktime...) with unicode filename are now handled (before : crash on htis kind of file)
++ #1326802: MOV with 3GPP datas.
++ Meta-tags of Quickime HD files
++ #1244215: bit-rate details for MPEG-1 Video (VBR) (calculated with other CBR streams)
++ Detection of MXF files
++ #785338: Huge work on RealMedia parser (bitrate, channels, sampling rate, fps...)
+x #1435086: Translation problems if the program is launched directly with a filename
+x #1361647: Complete rewrite of MPEG-4 (newest Quicktime, 3GPP, iTunes...) parser to be more robust.
+x Some minor (but crashing :( ) bug fixes
+x AVI with DV was not well parsed
+x ActiveX DLL was forgotten
+
+Version 0.7.1.0 2005-02-12
+---------------
++ Speed improvements
++ #1383832: support of last version of Quicktime files
++ Support of Musepack files
++ Support of Flic (FLI/FLV) video files
++ Support of files with more than 8 audio streams or 32 text streams
++ Support of DTS-HD (DTS at 96 KHz / 24 bits)
++ Support of ID3 tags (v1 and v2) in .AAC files
++ Support of all Tags in AVI files
++ Detection of QuickTime image files and QuickTime compressed archives
++ Detection of AVC files (3GPP, 3GPP Mobile or JVT)
++ Detection of iTunes protected files
++ Detection of H264 files (Raw, 3GPP or JVT)
++ Detection of Dirac raw video files
++ Detection of TrueAudio files
++ Detection of WavePack files
+x #1420672: No WMV bitrate
+x Crash with some corrupted MPEG files
+x Crash with some MP3 files with corrupted ID3v2 tags
+x Crash with some Quicktime files with corrupted tags
+x #1257550 (again:) ): with AVI, rounding of FPS had an impact of FrameCount, based on FPS. Now based on AVI file (better ;-) )
+x #1381652: Reported some GIF files as Mpeg audio
+x #1381619: UPX compressor is no more used, to prevent Virus checker to use 100% CPU
+x 2nd Video framerate forgotten
+x Video languages were not parsed (example: "en" should be "English")
+x FrameRate/String was forgeting measure (example: "at 25" should be "at 25 fps")
+x Some case sensitive problems (example: "KBps" instead of "Kbps", 8 times more)
+x DTS and AC3 channels position names were changed to be more human readable
++ Added .lib files needed for Borland and MS C++ compilers (no need to use "implib" anymore)
++ Added Contrib directory: ActiveX component (warning: no support from me)
+
+Version 0.7.0.3 2005-10-25
+---------------
+x Matroska: "ID" and "UniqueID" tags were not assigne to the right stream.
++ Text: URL for Text codecs
+
+Version 0.7.0.2 2005-10-17
+---------------
++ Support of ISO-639 language names (more than 200 language names can be translated)
++ Support of "multilanguage" language name (ISO-639 "mul")
+x #1260619 Delphi Example was incorrect
+
+Version 0.7.0.2 2005-10-17
+---------------
+x #1323208: Video Bitrate for OGM files with VBR audio was incorrect
++ Better detection and handling of DivX container
++ #1327902: More meta data properties for RIFF files
+x #1327468: RIFF (AVI) files with not-padded (INFO) sub chunks can't be parsed
++ More "generic" tags added
+x Some other minor bugs
+
+Version 0.7.0.1 2005-07-24
+---------------
+x #1257550: rounding of FPS was 2 digit precise, not enougth, upgraded to 3 digits, and exact number is given (23.97 before, 23.970 or 23.976 now)
+x Better false positive detection (mainly in MPEG1, MPEG2, MP3)
+x some memory leaks if you use MediaInfo a long time
+x MPEG Audio: VBR bitrate corrected for MPEG **1** streams
+x MPEG Audio: VBR bitrate corrected for monochannel streams
+x #1274999: mp3Pro timing was wrong (2x the real timing)
++ "BitRate_Mode" with MP3 (VBR or CBR)
++ "PlayTime" with AC3
++ "PlayTime" with WAV
+
+Version 0.7.0.0 2005-07-23
+---------------
++ DLL: New(), Delete() added. Open() modified. WARNING: this break the interface
+x Some changes in the name of Get() varaibles. WARNING: this break the interface
++ Better documentation (still in beta version), with a quick "How To"
++ DLL: MediaInfoList interface (multiple files with one Handle)
++ DLL: C++ wrapper
+
+Version 0.6.1.1 2005-06-25
+---------------
+x Open Folder option is comming back
+x File with an unknown format were detected as MP3
+x Corrected hang up on Matroska files
+x Corrected crash on AVI with subtitles only
+x Corrected crash on some corrupted or unknown files
++ Added 3GPP files support
+
+Version 0.6.1.0 2005-06-23
+---------------
++ #1210433: in WMVA, Genre
++ #785349: Added Video->FrameCount (in advanced mode only, and developers)
++ #785349: Added BitRate mode when the codec is know to be only one (AC3 is CBR, Vorbis is VBR...)
+x in WMA/WMV, Tags>255
+x #1210425: bugs in MP3 (Genre, Track) (thanks to Ingo Brueckl)
+x #1210412: MS Windows DLL didn't work under Win9X (no crash, but "Not a good file" reply) because of UnicoWS.dll linking problem.
+x #1209291: IFO, Incorrect BitRate_Mode and Resolution (bit shifting), example 704*480
+x #1209293: Incorrect Month in General/Date (UTC stamp was 1 month earlier)  (thanks to Ingo Brueckl)
+x #1215142: SamplingRate for MPEG audio streams in MPEG container was false
+x #1222414: Video BitRate for AVI is back
+x #1215939: Added a Format "MPEG x" if MPEG version can't be detected
+x #1215840: Better version detection of MPEG Video. But still a workaround, if you know how to detect MPEG1 or 2 in a video only file, please contact me!
+x #1210546: For developers, you can know which type is the value returned (Text, Integer, Float, Date, Binary)
+
+Version 0.6.0.0 2005-05-18
+---------------
++ PCM support in VOB files
++ Complete rewrite of MPEG1/MPEg2 (and DVD) parser
++ Complete rewrite of AVI parser: internal parser in place of Win32 API
++ #1123025: Escape codes at custom text (for comma, [, ], parenthesis...)
++ Begin of adaptation with GCC: tested with MinGW and Knoppix (Core library, and OGG)
+x (I hope) all CSV bugs (quotes...) are corrected
+x Unicode decoding in WMV/WMA/ASF formats
+x #1195325: Memory leaks of 500 KiB/opened file
+x #1192446: Incorect duration in some AVI files
+x #1172817: Options in Inform method was "forgotten":(. Warning: this modification breaks compatibility with older DLL (this is why this version is named 0.6 in place of 0.5.x)
+x #1201430: Should work with files having broken video stream header
+x #1183702: Should work with files having broken video stream header
+
+Version 0.5.1.0 2005-02-09
+---------------
+New
+- Better management of Inform() options
+- Added more language names decoding for audio and text streams
+- Language names for audio and text streams are translated
+
+Bug fixes:
+- Inform: hangups in Inform() with customized Option("Inform") settings
+- Options: inversion between Infos_Parameters and Infos_Parameters_CSV
+- Some problems with CreateFile: if CreateFile doesn't work, I use WxFile instead
+- MPEG Video and MPEG Audio: bug between version 0.4 and version 0.5 corrected
+- PlayTime Calculation for OGM was false
+
+Version 0.5.0.1 2005-01-10
+---------------
+Bug fixes:
+- Win95/Win98/WinMe support again! (problem with Unicode)
+- AVI files were not well released (file locked)
+- Better MPEG4 support
+- Better coherency tests: no more file with 10 MP3 streams ;-)
+
+Version 0.5.0.0 2005-01-10
+---------------
+New
+- Developpers, you can exactly choose the format you want support (wit #defines)
+- UNICODE support (you should use it) (thanks to Jasper van de Gronde)
+- UNICODE filenames support (problem with wxWidgets:( )
+- APE support (thanks to Jasper van de Gronde)
+- FLAC support (thanks to Jasper van de Gronde)
+- AAC support (but no tags, too rare)
+- DTS support
+- AC3 support
+- MPEG4 support
+- CDXA (XCD) support (with partial subformats, no Matroska for example, too rare)
+- A lot of rare and old audio formats: aiff, aifc, au, iff, paf, sd2, irca, w64, matlab, pvf, Fasttracker, sds, avr...
+- Visual C++ 7.1 support
+- Visual C# 7.1 example
+- Visual J# 7.1 example
+- Visual Basic 7.1 example
+
+Bug fixes
+- All C++ classes are in the namespace MediaInfoLib
+- OGG format: UTF8 was not well decoded outside of US-ASCII codepage
+- Better handling of language files (but really not perfect)
+- Better handling of Real media files (encoder, codec)
+- #936964: Error handling no video or no audio files
+- #899692: WM, File Properties Object: Preroll was not used (usualy, playtime was 2-4 seconds too long)
+- #868365: PlayTime - 2h12s is 2:12.00, not 2:00:12.00. PlayTime is better handled
+- #840508: OGM crash if file is corrupted
+- #1026978: Bitrate --> BitRate, OveralBitrate --> OveralBitRate
+
+Version 0.4.0.1 2003-08-25
+---------------
+Bug fixes
+- .Lib for Visual C++ compilers was forgotten
+- History and Licence was forgotten
+- Compiler changed from Borland to Microsoft for size efficiency (help for reducing code in Borland compiler would be appreciated)
+
+Version 0.4.0 2003-08-01
+-------------
+New
+- Open-Source (GPL)
+- Matroska partial Support
+- Better interraction with a FrontEnd Interface
+
+Bug fixes
+- MPEG1 and 2: huge bugfixes: now you can believe what it say:)
+- Files > 4 GigaBytes (OK for file size, but duration calculation is sometimes NOK)
+- Quicktime: bad codec in Audio if based of Microsoft 2cc 
+- Quicktime: sometimes don't handle compressed headers
+- multiple video streams: second streams was not displayed 
+- A lot of other minor bugs...
+
+
+Version 0.3.0 2003-03-03
+-------------
+New
+- New engine for having a lot more format available and be able to write in files
+- MPEG2 support (.MPG and .VOB)
+- AC3 support
+- DTS support
+- DVD Video (IFO files) support
+
+Bug fixes
+- Too much...
+
+Version 0.2.1 2003-01-12
+-------------
+New
+- MPEG support
+- WAV support
+- OGG/OGM duration
+
+Bug fixes
+- Too much...
+
+Version 0.2.0 2003-01-05
+-------------
+New
+- List of 400+ codecs (audio or video)
+- Multiple files opening
+- Multi-language (English / French)
+- OGG/OGM: Video bitrate, Play time
+- More tags (OGG/MP3)
+
+Version 0.1.1.c, 2002-12-31
+---------------
+Bug fixes
+- OGG/OGM, comments: bug if comments were not in the same order than streams
+- Summary: problems with roundness of audio bitrate (was floor method, now it is a round method)
+
+Version 0.1.1.a, 2002-12-30
+---------------
+Bug fixes
+- OGG, audio stream except vorbis: the bitrate was in byte in place of bits
+
+Version 0.1.1, 2002-12-29
+-------------
+Bug fixes
+- MP3: Url tag not well implemented
+
+Version 0.1.0, 2002-12-28
+-------------
+Initial public release

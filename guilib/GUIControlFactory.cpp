@@ -239,7 +239,7 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
   return true;
 }
 
-void CGUIControlFactory::GetRectFromString(const CStdString &string, CRect &rect)
+void CGUIControlFactory::GetRectFromString(const CStdString &string, XbmcCRect &rect)
 {
   // format is rect="left[,top,right,bottom]"
   CStdStringArray strRect;
@@ -339,7 +339,7 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode *control, int 
   return GetConditionalVisibility(control, condition, allowHiddenFocus);
 }
 
-bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, const CRect &rect, vector<CAnimation> &animations)
+bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, const XbmcCRect &rect, vector<CAnimation> &animations)
 {
   const TiXmlElement* node = control->FirstChildElement("animation");
   bool ret = false;
@@ -379,7 +379,7 @@ bool CGUIControlFactory::GetAnimations(const TiXmlNode *control, const CRect &re
   return ret;
 }
 
-bool CGUIControlFactory::GetHitRect(const TiXmlNode *control, CRect &rect)
+bool CGUIControlFactory::GetHitRect(const TiXmlNode *control, XbmcCRect &rect)
 {
   const TiXmlElement* node = control->FirstChildElement("hitrect");
   if (node)
@@ -537,7 +537,7 @@ CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
   return type;
 }
 
-CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlElement* pControlNode, bool insideContainer)
+CGUIControl* CGUIControlFactory::Create(int parentID, const XbmcCRect &rect, TiXmlElement* pControlNode, bool insideContainer)
 {
   // resolve any <include> tag's in this control
   g_SkinInfo.ResolveIncludes(pControlNode);
@@ -594,7 +594,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CTextureInfo textureRadioOn, textureRadioOff;
   CTextureInfo imageNoFocus, imageFocus;
   CGUIInfoLabel texturePath;
-  CRect borderSize;
+  XbmcCRect borderSize;
 
   float itemWidth = 16, itemHeight = 16;
   float sliderWidth = 150, sliderHeight = 16;
@@ -676,8 +676,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   bool useControlCoords = false;
   bool renderFocusedLast = false;
 
-  CRect hitRect;
-  CPoint camera;
+  XbmcCRect hitRect;
+  XbmcCPoint camera;
   bool   hasCamera = false;
   int scrollSpeed = CScrollInfo::defaultSpeed;
   bool resetOnLabelChange = true;
@@ -740,7 +740,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetConditionalVisibility(pControlNode, iVisibleCondition, allowHiddenFocus);
   GetCondition(pControlNode, "enable", enableCondition);
 
-  CRect animRect(posX, posY, posX + width, posY + height);
+  XbmcCRect animRect(posX, posY, posX + width, posY + height);
   GetAnimations(pControlNode, animRect, animations);
 
   GetInfoColor(pControlNode, "textcolor", labelInfo.textColor);
@@ -1341,7 +1341,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   return control;
 }
 
-void CGUIControlFactory::ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes)
+void CGUIControlFactory::ScaleElement(TiXmlElement *element, int fileRes, int destRes)
 {
   if (element->FirstChild())
   {

@@ -1,0 +1,179 @@
+// MediaInfoDLL - All info about media files
+// This software is provided 'as-is', without any express or implied
+// warranty.  In no event will the authors be held liable for any damages
+// arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it
+// freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented; you must not
+//    claim that you wrote the original software. If you use this software
+//    in a product, an acknowledgment in the product documentation would be
+//    appreciated but is not required.
+// 2. Altered source versions must be plainly marked as such, and must not be
+//    misrepresented as being the original software.
+// 3. This notice may not be removed or altered from any source distribution.
+//
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+// Microsoft Visual J# example
+//
+// To make this example working, you must put MediaInfo.Dll and Example.ogg
+// in the "./Bin/__ConfigurationName__" folder
+// and add MediaInfoDll.jsl to your project
+//
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+package Example;
+
+import System.Drawing.*;
+import System.Collections.*;
+import System.ComponentModel.*;
+import System.Windows.Forms.*;
+import System.Data.*;
+import System.Text.*;
+
+/**
+ * Summary description for Form1.
+ */
+public class Form1 extends System.Windows.Forms.Form
+{
+	private System.Windows.Forms.RichTextBox richTextBox1;
+	/**
+	 * Required designer variable.
+	 */
+	private System.ComponentModel.Container components = null;
+
+	public Form1()
+	{
+		//
+		// Required for Windows Form Designer support
+		//
+		InitializeComponent();
+
+		//
+		// TODO: Add any constructor code after InitializeComponent call
+		//
+	}
+
+	/**
+	 * Clean up any resources being used.
+	 */
+	protected void Dispose(boolean disposing)
+	{
+		if (disposing)
+		{
+			if (components != null)
+			{
+				components.Dispose();
+			}
+		}
+		super.Dispose(disposing);
+	}
+
+	#region Windows Form Designer generated code
+	/**
+	 * Required method for Designer support - do not modify
+	 * the contents of this method with the code editor.
+	 */
+	private void InitializeComponent()
+	{
+		this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+		this.SuspendLayout();
+		// 
+		// richTextBox1
+		// 
+		this.richTextBox1.set_Font(new System.Drawing.Font("Microsoft Sans Serif", 8.25F));
+		this.richTextBox1.set_Location(new System.Drawing.Point(0, 0));
+		this.richTextBox1.set_Name("richTextBox1");
+		this.richTextBox1.set_Size(new System.Drawing.Size(768, 512));
+		this.richTextBox1.set_TabIndex(0);
+		this.richTextBox1.set_Text("");
+		// 
+		// Form1
+		// 
+		this.set_AutoScaleBaseSize(new System.Drawing.Size(5, 13));
+		this.set_ClientSize(new System.Drawing.Size(774, 514));
+		this.get_Controls().Add(this.richTextBox1);
+		this.set_FormBorderStyle(System.Windows.Forms.FormBorderStyle.Fixed3D);
+		this.set_Name("Form1");
+		this.set_StartPosition(System.Windows.Forms.FormStartPosition.CenterScreen);
+		this.set_Text("MediaInfo.Dll Example");
+		this.add_Load( new System.EventHandler(this.Form1_Load) );
+		this.ResumeLayout(false);
+
+	}
+	#endregion
+
+	/**
+	 * The main entry point for the application.
+	 */
+
+	public static void main(String[] args) 
+	{
+		Application.Run(new Form1());
+	}
+
+	private void Form1_Load (Object sender, System.EventArgs e)
+	{
+		//Test if version of DLL is compatible : 3rd argument is "version of DLL tested;Your application name;Your application version"
+		String ToDisplay;
+		MediaInfo MI = new MediaInfo();
+
+		ToDisplay = MI.Option("Info_Version", "0.7.0.0;MediaInfoDLL_Example_MSJS;0.7.0.0");
+		if (ToDisplay.length() == 0)
+		{
+			richTextBox1.set_Text("MediaInfo.Dll: this version of the DLL is not compatible");
+			return;
+		}
+
+		//Information about MediaInfo
+		ToDisplay += "\r\n\r\nInfo_Parameters\r\n";
+		ToDisplay += MI.Option("Info_Parameters");
+
+		ToDisplay += "\r\n\r\nInfo_Capacities\r\n";
+		ToDisplay += MI.Option("Info_Capacities");
+
+		ToDisplay += "\r\n\r\nInfo_Codecs\r\n";
+		ToDisplay += MI.Option("Info_Codecs");
+
+		//An example of how to use the library
+		ToDisplay += "\r\n\r\nOpen\r\n";
+		MI.Open("Example.ogg");
+
+		ToDisplay += "\r\n\r\nInform with Complete=false\r\n";
+		MI.Option("Complete");
+		ToDisplay += MI.Inform();
+
+		ToDisplay += "\r\n\r\nInform with Complete=true\r\n";
+		MI.Option("Complete", "1");
+		ToDisplay += MI.Inform();
+
+		ToDisplay += "\r\n\r\nCustom Inform\r\n";
+		MI.Option("Inform", "General;Example : FileSize=%FileSize%");
+		ToDisplay += MI.Inform();
+
+		ToDisplay += "\r\n\r\nGet with Stream=General and Parameter=//FileSize//\r\n";
+		ToDisplay += MI.Get(StreamKind.General, 0, "FileSize");
+
+		ToDisplay += "\r\n\r\nGetI with Stream=General and Parameter=46\r\n";
+		ToDisplay += MI.Get(StreamKind.General, 0, 46);
+
+		ToDisplay += "\r\n\r\nCount_Get with StreamKind=Stream_Audio\r\n";
+		ToDisplay += MI.Count_Get(StreamKind.Audio);
+
+		ToDisplay += "\r\n\r\nGet with Stream=General and Parameter=//AudioCount//\r\n";
+		ToDisplay += MI.Get(StreamKind.General, 0, "AudioCount");
+
+		ToDisplay += "\r\n\r\nGet with Stream=Audio and Parameter=//StreamCount//\r\n";
+		ToDisplay += MI.Get(StreamKind.Audio, 0, "StreamCount");
+
+		ToDisplay += "\r\n\r\nClose\r\n";
+		MI.Close();
+
+		//Displaying the text
+		richTextBox1.set_Text(ToDisplay);
+	}
+}

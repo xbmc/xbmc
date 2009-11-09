@@ -41,7 +41,7 @@
 class CDVDDemuxSPU;
 class CSPUInfo;
 class CDVDOverlayPicture;
-class CPoint;
+class XbmcCPoint;
 
 struct dvdnav_s;
 
@@ -84,8 +84,8 @@ public:
   void OnBack();
   void OnNext();
   void OnPrevious();
-  bool OnMouseMove(const CPoint &point);
-  bool OnMouseClick(const CPoint &point);
+  bool OnMouseMove(const XbmcCPoint &point);
+  bool OnMouseClick(const XbmcCPoint &point);
 
   int GetCurrentButton();
   int GetTotalButtons();

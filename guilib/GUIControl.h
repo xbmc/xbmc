@@ -121,21 +121,21 @@ public:
   virtual void OnUnFocus() {};
 
   /// \brief Called when the mouse is over the control.  Default implementation selects the control.
-  virtual bool OnMouseOver(const CPoint &point);
+  virtual bool OnMouseOver(const XbmcCPoint &point);
   /// \brief Called when the mouse is dragging over the control.  Default implementation does nothing.
-  virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point) { return false; };
+  virtual bool OnMouseDrag(const XbmcCPoint &offset, const XbmcCPoint &point) { return false; };
   /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
-  virtual bool OnMouseClick(int button, const CPoint &point) { return false; };
+  virtual bool OnMouseClick(int button, const XbmcCPoint &point) { return false; };
   /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
-  virtual bool OnMouseDoubleClick(int button, const CPoint &point) { return false; };
+  virtual bool OnMouseDoubleClick(int button, const XbmcCPoint &point) { return false; };
   /// \brief Called when the mouse wheel has moved whilst over the control.  Default implementation does nothing
-  virtual bool OnMouseWheel(char wheel, const CPoint &point) { return false; };
+  virtual bool OnMouseWheel(char wheel, const XbmcCPoint &point) { return false; };
   /// \brief Used to test whether the pointer location (fPosX, fPosY) is inside the control.  For mouse events.
-  virtual bool HitTest(const CPoint &point) const;
+  virtual bool HitTest(const XbmcCPoint &point) const;
   /// \brief Focus a control from a screen location.  Returns the coordinates of the screen location relative to the control and a pointer to the control.
-  virtual bool CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const;
+  virtual bool CanFocusFromPoint(const XbmcCPoint &point, CGUIControl **control, XbmcCPoint &controlPoint) const;
   /// \brief Unfocus a control if it's not in a screen location.
-  virtual void UnfocusFromPoint(const CPoint &point);
+  virtual void UnfocusFromPoint(const XbmcCPoint &point);
 
   virtual bool OnMessage(CGUIMessage& message);
   virtual int GetID(void) const;
@@ -153,10 +153,10 @@ public:
   bool IsVisibleFromSkin() const { return m_visibleFromSkinCondition; };
   virtual bool IsDisabled() const;
   virtual void SetPosition(float posX, float posY);
-  virtual void SetHitRect(const CRect &rect);
-  virtual void SetCamera(const CPoint &camera);
+  virtual void SetHitRect(const XbmcCRect &rect);
+  virtual void SetCamera(const XbmcCPoint &camera);
   void SetColorDiffuse(const CGUIInfoColor &color);
-  CPoint GetRenderPosition() const;
+  XbmcCPoint GetRenderPosition() const;
   virtual float GetXPosition() const;
   virtual float GetYPosition() const;
   virtual float GetWidth() const;
@@ -282,7 +282,7 @@ protected:
   float m_posY;
   float m_height;
   float m_width;
-  CRect m_hitRect;
+  XbmcCRect m_hitRect;
   CGUIInfoColor m_diffuseColor;
   int m_controlID;
   int m_parentID;
@@ -309,7 +309,7 @@ protected:
 
   // animation effects
   std::vector<CAnimation> m_animations;
-  CPoint m_camera;
+  XbmcCPoint m_camera;
   bool m_hasCamera;
   TransformMatrix m_transform;
 };

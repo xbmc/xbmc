@@ -49,7 +49,7 @@ GUIFontManager::~GUIFontManager(void)
   Clear();
 }
 
-CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, float lineSpacing, float aspect, RESOLUTION sourceRes)
+CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, float lineSpacing, float aspect, int sourceRes)
 {
   float originalAspect = aspect;
 
@@ -192,7 +192,7 @@ void GUIFontManager::ReloadTTFFonts(void)
 
   m_bFontsNeedReloading = false;
   // send a message to our controls telling them they need to refresh.
-  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_INVALIDATE);
+  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
 }
 
 void GUIFontManager::Unload(const CStdString& strFontName)

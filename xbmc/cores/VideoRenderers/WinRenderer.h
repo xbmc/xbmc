@@ -22,11 +22,13 @@
  */
 
 #if !defined(_LINUX) && !defined(HAS_GL)
-
+#include "resolution.h"
 #include "GraphicContext.h"
 #include "RenderFlags.h"
 #include "BaseRenderer.h"
 
+#include "../dsplayer/subpic/CoordGeom.h"
+#include <atlbase.h>
 //#define MP_DIRECTRENDERING
 
 #ifdef MP_DIRECTRENDERING
@@ -83,6 +85,10 @@ typedef struct YV12Image
 
 #define CONF_FLAGS_YUV_FULLRANGE 0x08
 #define CONF_FLAGS_FULLSCREEN    0x10
+#define CONF_FLAGS_USE_DIRECTSHOW    0x20
+
+//for dsplayer
+#define countof(array) (sizeof(array)/sizeof(array[0]))
 
 class CBaseTexture;
 
@@ -124,7 +130,7 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-class CWinRenderer : public CBaseRenderer
+class CWinRenderer : public CVideoBaseRenderer
 {
 public:
   CWinRenderer(LPDIRECT3DDEVICE9 pDevice);
@@ -146,6 +152,7 @@ public:
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual bool         IsConfigured() { return m_bConfigured; }
 
+  virtual void         PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface);
   // TODO:DIRECTX - implement these
   virtual bool         SupportsBrightness() { return false; }
   virtual bool         SupportsContrast() { return false; }
@@ -175,7 +182,7 @@ protected:
   int m_NumYV12Buffers;
 
   bool m_bConfigured;
-
+  bool m_bDshow;
   // OSD stuff
   LPDIRECT3DTEXTURE9 m_pOSDYTexture[NUM_BUFFERS];
   LPDIRECT3DTEXTURE9 m_pOSDATexture[NUM_BUFFERS];
@@ -192,6 +199,15 @@ protected:
   typedef BYTE*                   YUVMEMORYPLANES[MAX_PLANES];
   typedef YUVVIDEOPLANES          YUVVIDEOBUFFERS[NUM_BUFFERS];
   typedef YUVMEMORYPLANES         YUVMEMORYBUFFERS[NUM_BUFFERS];
+
+  //dsplayer
+  HRESULT TextureCopy(CComPtr<IDirect3DTexture9> pTexture);
+  
+  void RenderDshowBuffer(DWORD flags);
+
+  CComPtr<IDirect3DTexture9> m_D3DVideoTexture;
+  CComPtr<IDirect3DSurface9> m_D3DMemorySurface;
+
 
   #define PLANE_Y 0
   #define PLANE_U 1

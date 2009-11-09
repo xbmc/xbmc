@@ -59,6 +59,82 @@ YUVCOEF yuv_coef_smtp240m = {
   1.8270f,     0.0f,  
 };
 
+#ifndef max
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
+
+#define D3DFVF_CUSTOMVERTEX ( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1 )
+#pragma pack(push, 1)
+template<int texcoords>
+struct MYD3DVERTEX {float x, y, z, rhw; struct {float u, v;} t[texcoords];};
+template<>
+struct MYD3DVERTEX<0> 
+{
+  float x, y, z, rhw; 
+  DWORD Diffuse;
+};
+#pragma pack(pop)
+
+template<int texcoords>
+static HRESULT TextureBlt(CComPtr<IDirect3DDevice9> m_pD3DDevice, MYD3DVERTEX<texcoords> v[4], D3DTEXTUREFILTERTYPE filter = D3DTEXF_LINEAR)
+{
+  if(!m_pD3DDevice)
+    return E_POINTER;
+
+  DWORD FVF = 0;
+  switch(texcoords)
+  {
+    case 1: FVF = D3DFVF_TEX1; break;
+    case 2: FVF = D3DFVF_TEX2; break;
+    case 3: FVF = D3DFVF_TEX3; break;
+    case 4: FVF = D3DFVF_TEX4; break;
+    case 5: FVF = D3DFVF_TEX5; break;
+    case 6: FVF = D3DFVF_TEX6; break;
+    case 7: FVF = D3DFVF_TEX7; break;
+    case 8: FVF = D3DFVF_TEX8; break;
+    default: return E_FAIL;
+  }
+
+  HRESULT hr;
+  do
+  {
+    /* Those 6 lines fixed the freaking bug of a white screen when i add any font ttfdx on the screen*/
+	hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+    hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+    hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+    hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+    hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+    hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+    
+    hr = m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+    hr = m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+    hr = m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
+    hr = m_pD3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
+    hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
+    hr = m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE); 
+    hr = m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
+	for(int i = 0; i < texcoords; i++)
+    {
+	  hr = m_pD3DDevice->SetSamplerState(i, D3DSAMP_MAGFILTER, filter);
+      hr = m_pD3DDevice->SetSamplerState(i, D3DSAMP_MINFILTER, filter);
+      hr = m_pD3DDevice->SetSamplerState(i, D3DSAMP_MIPFILTER, filter);
+
+      hr = m_pD3DDevice->SetSamplerState(i, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+      hr = m_pD3DDevice->SetSamplerState(i, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+    }
+    hr = m_pD3DDevice->SetFVF(D3DFVF_XYZRHW | FVF);
+    MYD3DVERTEX<texcoords> tmp = v[2]; v[2] = v[3]; v[3] = tmp;
+    hr = m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, v, sizeof(v[0]));  
+    for(int i = 0; i < texcoords; i++)
+    {
+      m_pD3DDevice->SetTexture(i, NULL);
+    }
+    return S_OK;
+  }
+  while(0);
+  return E_FAIL;
+}
 
 CWinRenderer::CWinRenderer(LPDIRECT3DDEVICE9 pDevice)
 {
@@ -158,7 +234,7 @@ void CWinRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, u
 
   //use temporary rect for calculation to avoid messing with module-rect while other functions might be using it.
   DRAWRECT osdRect;
-  RESOLUTION res = GetResolution();
+  int res = (int) GetResolution();
 
   if (w > m_iOSDTextureWidth)
   {
@@ -180,7 +256,7 @@ void CWinRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, u
   }
 
   // scale to fit screen
-  const CRect& rv = g_graphicsContext.GetViewWindow();
+  const XbmcCRect& rv = g_graphicsContext.GetViewWindow();
 
   // Vobsubs are defined to be 720 wide.
   // NOTE: This will not work nicely if we are allowing mplayer to render text based subs
@@ -369,7 +445,8 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
 
   ManageDisplay();
-
+  if (flags & CONF_FLAGS_USE_DIRECTSHOW)
+    m_NumOSDBuffers=2;
   return true;
 }
 
@@ -551,6 +628,7 @@ unsigned int CWinRenderer::PreInit()
 {
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
+  m_bDshow = false;
   UnInit();
   m_resolution = RES_PAL_4x3;
 
@@ -582,7 +660,12 @@ void CWinRenderer::UnInit()
     DeleteYV12Texture(i);
     DeleteOSDTextures(i);
   }
-
+  m_D3DVideoTexture.Release();
+  m_D3DMemorySurface.Release();
+  /*if (m_D3DVideoTexture)
+    SAFE_RELEASE(m_D3DVideoTexture);
+  if (m_D3DMemorySurface)
+    SAFE_RELEASE(m_D3DMemorySurface);*/
   g_Windowing.ReleaseEffect(m_pYUV2RGBEffect);
   m_pYUV2RGBEffect = NULL;
   m_bConfigured = false;
@@ -755,6 +838,93 @@ void CWinRenderer::AutoCrop(bool bCrop)
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
 }
 
+HRESULT CWinRenderer::TextureCopy(CComPtr<IDirect3DTexture9> pTexture)
+{
+  HRESULT hr;
+  D3DSURFACE_DESC desc;
+  if(!pTexture || FAILED(pTexture->GetLevelDesc(0, &desc)))
+    return E_FAIL;
+
+  float w = (float)desc.Width;
+  float h = (float)desc.Height;
+  MYD3DVERTEX<1> v[] =
+  {
+    {//m_destRect    m_sourceRect
+      (float)m_destRect.x1      , (float)m_destRect.y1 ,
+      0.5f   , 2.0f, 
+      0      , 0
+    },
+    {
+      (float)m_destRect.x2      , (float)m_destRect.y1 ,
+      0.5f   , 2.0f ,
+      1      , 0
+    },
+    {
+      (float)m_destRect.x1      , (float)m_destRect.y2 ,
+      0.5f   , 2.0f ,
+      0      , 1
+    },
+    {
+      (float)m_destRect.x2      , (float)m_destRect.y2 ,
+      0.5f   , 2.0f, 
+      1      , 1
+    },
+  };
+  for(int i = 0; i < countof(v); i++)
+  {
+    v[i].x -= 0.5;
+    v[i].y -= 0.5;
+  }
+
+  hr = m_pD3DDevice->SetTexture(0, pTexture);
+
+  return TextureBlt(m_pD3DDevice, v, D3DTEXF_LINEAR);
+}
+
+void CWinRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface)
+{
+  int source = NextYV12Texture();
+  if( source < 0 )
+    source = 0;
+  try
+  {
+    if (videoTexture)
+      m_D3DVideoTexture = videoTexture;
+	if (videoSurface)
+      m_D3DMemorySurface = videoSurface;
+
+    
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "PaintVideoTexture Error");
+  }
+}
+
+void CWinRenderer::RenderDshowBuffer(DWORD flags)
+{
+  m_pD3DDevice->SetPixelShader( NULL );
+  CSingleLock lock(g_graphicsContext);
+  
+  // set scissors if we are not in fullscreen video
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+  {
+    g_graphicsContext.ClipToViewWindow();
+  }
+  if (!m_D3DVideoTexture)
+    return;
+  CComPtr<IDirect3DSurface9> pBackBuffer; //was CComPtr
+  if ( FAILED( m_pD3DDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackBuffer) ) )
+    return;
+  if ( FAILED( m_pD3DDevice->SetRenderTarget(0, pBackBuffer ) ) )
+    return;
+  m_pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0);
+
+  if FAILED(TextureCopy(m_D3DVideoTexture))
+    CLog::Log(LOGDEBUG,"RenderDshowBuffer TextureCopy CWinRenderer::RenderDshowBuffer"); 
+  pBackBuffer.Release();
+}
+
 void CWinRenderer::RenderLowMem(DWORD flags)
 {
   if(m_pYUV2RGBEffect == NULL)
@@ -889,7 +1059,7 @@ void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, un
   if (D3D_OK == m_pD3DDevice->CreateRenderTarget(width, height, D3DFMT_LIN_A8R8G8B8, D3DMULTISAMPLE_NONE, 0, TRUE, &surface, NULL))
   {
     LPDIRECT3DSURFACE9 oldRT;
-    CRect saveSize = m_destRect;
+    XbmcCRect saveSize = m_destRect;
     m_destRect.SetRect(0, 0, (float)width, (float)height);
     m_pD3DDevice->GetRenderTarget(0, &oldRT);
     m_pD3DDevice->SetRenderTarget(0, surface);
@@ -998,7 +1168,10 @@ bool CPixelShaderRenderer::Configure(unsigned int width, unsigned int height, un
 {
   if(!CWinRenderer::Configure(width, height, d_width, d_height, fps, flags))
     return false;
-
+  if (flags & CONF_FLAGS_USE_DIRECTSHOW)
+    m_bDshow = true;
+  else
+    m_bDshow = false;
   m_bConfigured = true;
   return true;
 }
@@ -1006,9 +1179,16 @@ bool CPixelShaderRenderer::Configure(unsigned int width, unsigned int height, un
 
 void CPixelShaderRenderer::Render(DWORD flags)
 {
-  // this is the low memory renderer
-  CWinRenderer::RenderLowMem(flags);
-  CWinRenderer::Render(flags);
+  // this is the low memory renderer	
+  if (!m_bDshow)
+  {
+    CWinRenderer::RenderLowMem(flags);
+	CWinRenderer::Render(flags);
+  }
+  else
+  {
+    CWinRenderer::RenderDshowBuffer(flags);
+  }
 }
 
 #endif
