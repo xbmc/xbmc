@@ -1,0 +1,75 @@
+Index: src/filters/transform/mpcvideodec/MPCFfmpegDec.cpp
+===================================================================
+--- src/filters/transform/mpcvideodec/MPCFfmpegDec.cpp	(revision 1330)
++++ src/filters/transform/mpcvideodec/MPCFfmpegDec.cpp	(working copy)
+@@ -40,7 +40,7 @@
+ 
+ const AMOVIESETUP_FILTER sudFilters[] =
+ {
+-	{&__uuidof(CMPCVideoDecFilter), L"MPC - Video decoder", /*MERIT_DO_NOT_USE*/0x40000001, countof(sudpPinsVideoDec), sudpPinsVideoDec}
++	{&__uuidof(CMPCVideoDecFilter), L"XBMC - Video decoder", /*MERIT_DO_NOT_USE*/0x40000001, countof(sudpPinsVideoDec), sudpPinsVideoDec}
+ };
+ 
+ 
+Index: src/filters/transform/mpcvideodec/MPCVideoDecFilter.cpp
+===================================================================
+--- src/filters/transform/mpcvideodec/MPCVideoDecFilter.cpp	(revision 1330)
++++ src/filters/transform/mpcvideodec/MPCVideoDecFilter.cpp	(working copy)
+@@ -51,7 +51,7 @@
+ 
+ /////
+ #define MAX_SUPPORTED_MODE			5
+-#define MPCVD_CAPTION				_T("MPC Video decoder")
++#define MPCVD_CAPTION				_T("XBMC Video decoder")
+ 
+ #define ROUND_FRAMERATE(var,FrameRate)	if (labs ((long)(var - FrameRate)) < FrameRate*1/100) var = FrameRate;
+ 
+@@ -455,7 +455,7 @@
+ 	GetWindowThreadProcessId (hwnd, &procid);
+ 	GetClassName (hwnd, WindowClass, countof(WindowClass));
+ 	
+-	if (procid == GetCurrentProcessId() && _tcscmp (WindowClass, _T("MediaPlayerClassicW")) == 0)
++	if (procid == GetCurrentProcessId() && _tcscmp (WindowClass, _T("XBMC")) == 0)
+ 	{
+ 		HWND*		pWnd = (HWND*) lParam;
+ 		*pWnd = hwnd;
+@@ -465,7 +465,7 @@
+ }
+ 
+ CMPCVideoDecFilter::CMPCVideoDecFilter(LPUNKNOWN lpunk, HRESULT* phr) 
+-	: CBaseVideoFilter(NAME("MPC - Video decoder"), lpunk, phr, __uuidof(this))
++	: CBaseVideoFilter(NAME("XBMC - Video decoder"), lpunk, phr, __uuidof(this))
+ {
+ 	HWND		hWnd = NULL;
+ 	for (int i=0; i<countof(ffCodecs); i++)
+@@ -524,7 +524,7 @@
+ 	m_sar.SetSize(1,1);
+ 	
+ 	CRegKey key;
+-	if(ERROR_SUCCESS == key.Open(HKEY_CURRENT_USER, _T("Software\\Gabest\\Filters\\MPC Video Decoder"), KEY_READ))
++	if(ERROR_SUCCESS == key.Open(HKEY_CURRENT_USER, _T("Software\\Gabest\\Filters\\XBMC Video Decoder"), KEY_READ))
+ 	{
+ 		DWORD dw;
+ 		if(ERROR_SUCCESS == key.QueryDWORDValue(_T("ThreadNumber"), dw)) m_nThreadNumber = dw;
+@@ -1949,7 +1949,7 @@
+ STDMETHODIMP CMPCVideoDecFilter::Apply()
+ {
+ 	CRegKey key;
+-	if(ERROR_SUCCESS == key.Create(HKEY_CURRENT_USER, _T("Software\\Gabest\\Filters\\MPC Video Decoder")))
++	if(ERROR_SUCCESS == key.Create(HKEY_CURRENT_USER, _T("Software\\Gabest\\Filters\\XBMC Video Decoder")))
+ 	{
+ 		key.SetDWORDValue(_T("ThreadNumber"), m_nThreadNumber);
+ 		key.SetDWORDValue(_T("DiscardMode"), m_nDiscardMode);
+Index: src/filters/transform/mpcvideodec/MPCVideoDecFilter.h
+===================================================================
+--- src/filters/transform/mpcvideodec/MPCVideoDecFilter.h	(revision 1330)
++++ src/filters/transform/mpcvideodec/MPCVideoDecFilter.h	(working copy)
+@@ -57,7 +57,7 @@
+ 	REFERENCE_TIME	rtStop;
+ } B_FRAME;
+ 
+-[uuid("008BAC12-FBAF-497b-9670-BC6F6FBAE2C4")]
++[uuid("8277FF39-0EF0-4aff-8F06-38B94B581ABF")]
+ class CMPCVideoDecFilter 
+ 	: public CBaseVideoFilter
+ 	, public TlibavcodecExt

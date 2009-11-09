@@ -1,0 +1,54 @@
+<dsfilterconfig>
+<!-- -->
+  <filters>
+    
+    <!-- Sources -->
+    <filter name="avisource" type="source">
+      <path>AviSplitter.ax</path>
+	  <guid>{2684CBF7-4809-4B94-B617-AECECA1B6FCF}</guid>
+    </filter>
+	<filter name="flvsource" type="source">
+      <path>FLVSplitter.ax</path>
+	  <guid>{AB00F1D2-AA4B-42EB-AABC-207E60EFBF3E}</guid>
+    </filter>
+	<filter name="mkvsource" type="source">
+      <path>MatroskaSplitter.ax</path>
+	  <guid>{B2094D46-FEA8-45B7-9764-F36E40C0DF21}</guid>
+    </filter>
+	<!-- splitters -->
+	<filter name="avisplitter" type="splitter">
+      <path>AviSplitter.ax</path>
+      <guid>{8ACCB6D4-72E8-4E78-94D9-0E152C7DDB59}</guid>
+	  <filetype>avi</filetype>
+	</filter>
+	<filter name="flvsplitter" type="splitter">
+      <path>FLVSplitter.ax</path>
+      <guid>{F0B7B1F5-B8DE-4B27-B9F3-23BE86B8120D}</guid>
+	  <filetype>flv</filetype>
+	</filter>
+	<filter name="mkvsplitter" type="splitter">
+      <path>MatroskaSplitter.ax</path>
+      <guid>{FB41B8BC-888D-4D0F-B998-014F054BE5CB}</guid>
+	  <filetype>mkv</filetype>
+	</filter>
+	<!-- Video decoders-->
+	<filter name="mpcvideodec" type="videodec">
+      <path>MPCVideoDec.ax</path>
+      <guid>{8277FF39-0EF0-4AFF-8F06-38B94B581ABF}</guid>
+	</filter>
+	<!-- Audio decoders-->
+	<filter name="mpcaudiodec" type="audiodec">
+      <path>MpaDecFilter.ax</path>
+      <guid>{29EAAD0D-DA56-4DA1-B8EB-7DD01279AC82}</guid>
+	</filter>
+	<!-- Video renderers-->
+	<!--<filter></>-->
+	<!-- Audio renderers-->
+	<!--<filter></>-->
+  </filters>
+  <rules><!-- Still need to fix the source and splitter only the video and audio decoder are used for rules -->
+    <rule filetypes="avi" source="avisource" splitter="avisplitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
+	<rule filetypes="flv" source="flvsource" splitter="flvsplitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
+	<rule filetypes="mkv" source="mkvsource" splitter="mkvsplitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
+  </rules>
+</dsfilterconfig>
