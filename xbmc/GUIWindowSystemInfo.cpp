@@ -30,6 +30,9 @@
 #endif
 #include "MediaManager.h"
 
+#define CONTROL_START       CONTROL_BT_STORAGE
+#define CONTROL_END         CONTROL_BT_HARDWARE
+
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
 {
@@ -66,9 +69,13 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       m_diskUsage.clear();
     }
     break;
-  case GUI_MSG_CLICKED:
+  case GUI_MSG_SETFOCUS:
     {
-      iControl=message.GetSenderId();
+      CGUIWindow::OnMessage(message);
+      int focusedControl = GetFocusedControlID();
+      if (focusedControl >= CONTROL_START && focusedControl <= CONTROL_END)
+        iControl = focusedControl;
+      return true;
     }
     break;
   }
