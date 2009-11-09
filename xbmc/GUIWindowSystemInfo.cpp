@@ -30,13 +30,19 @@
 #endif
 #include "MediaManager.h"
 
+#define CONTROL_BT_STORAGE  94
+#define CONTROL_BT_DEFAULT  95
+#define CONTROL_BT_NETWORK  96
+#define CONTROL_BT_VIDEO    97
+#define CONTROL_BT_HARDWARE 98
+
 #define CONTROL_START       CONTROL_BT_STORAGE
 #define CONTROL_END         CONTROL_BT_HARDWARE
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
 {
-  iControl = CONTROL_BT_DEFAULT;
+  m_section = CONTROL_BT_DEFAULT;
 }
 CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 {
@@ -57,16 +63,17 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      SetLabelDummy();
+      ResetLabels();
+      SET_CONTROL_LABEL(52, "XBMC " + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) +
+                            " (Compiled : " + g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
       return true;
     }
     break;
   case GUI_MSG_WINDOW_DEINIT:
     {
-      // call base class
       CGUIWindow::OnMessage(message);
-      // clean up
       m_diskUsage.clear();
+      return true;
     }
     break;
   case GUI_MSG_SETFOCUS:
@@ -74,7 +81,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       int focusedControl = GetFocusedControlID();
       if (focusedControl >= CONTROL_START && focusedControl <= CONTROL_END)
-        iControl = focusedControl;
+        m_section = focusedControl;
       return true;
     }
     break;
@@ -84,11 +91,11 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
 
 void CGUIWindowSystemInfo::Render()
 {
-  if(iControl == CONTROL_BT_DEFAULT)
+  ResetLabels();
+  int i = 2;
+  if (m_section == CONTROL_BT_DEFAULT)
   {
-    SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20154));
-    int i = 2;
     SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
     SetControlLabel(i++, "%s: %s", 150, NETWORK_IP_ADDRESS);
     SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
@@ -98,11 +105,9 @@ void CGUIWindowSystemInfo::Render()
     SetControlLabel(i++, "%s: %s", 12390, SYSTEM_UPTIME);
     SetControlLabel(i++, "%s: %s", 12394, SYSTEM_TOTALUPTIME);
   }
-  else if(iControl == CONTROL_BT_STORAGE)
+  else if (m_section == CONTROL_BT_STORAGE)
   {
-    SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20155));
-    int i = 2;
     if (m_diskUsage.size() == 0)
       m_diskUsage = g_mediaManager.GetDiskUsage();
 
@@ -111,11 +116,9 @@ void CGUIWindowSystemInfo::Render()
       SET_CONTROL_LABEL(i++, m_diskUsage[d]);
     }
   }
-  else if(iControl == CONTROL_BT_NETWORK)
+  else if (m_section == CONTROL_BT_NETWORK)
   {
-    SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20158));
-    int i = 2;
 #ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(NETWORK_LINK_STATE));
     SetControlLabel(i++, "%s: %s", 149, NETWORK_MAC_ADDRESS);
@@ -127,11 +130,9 @@ void CGUIWindowSystemInfo::Render()
     SetControlLabel(i++, "%s: %s", 20307, NETWORK_DNS2_ADDRESS);
     SetControlLabel(i++, "%s %s", 13295, SYSTEM_INTERNET_STATE);
   }
-  else if(iControl == CONTROL_BT_VIDEO)
+  else if (m_section == CONTROL_BT_VIDEO)
   {
-    SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20159));
-    int i = 2;
 #ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(i++,g_infoManager.GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
     SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
@@ -140,11 +141,9 @@ void CGUIWindowSystemInfo::Render()
     SetControlLabel(i++, "%s %s", 22009, SYSTEM_OPENGL_VERSION);
     SetControlLabel(i++, "%s %s", 22010, SYSTEM_GPU_TEMPERATURE);
   }
-  else if(iControl == CONTROL_BT_HARDWARE)
+  else if (m_section == CONTROL_BT_HARDWARE)
   {
-    SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20160));
-    int i = 2;
 #ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(i++, g_sysinfo.GetXBVerInfo());
     SetControlLabel(i++, "%s %s", 22011, SYSTEM_CPU_TEMPERATURE);
@@ -155,19 +154,14 @@ void CGUIWindowSystemInfo::Render()
     SetControlLabel(i++, "%s: %s", 22012, SYSTEM_TOTAL_MEMORY);
     SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
   }
-  SET_CONTROL_LABEL(52, "XBMC "+g_infoManager.GetLabel(SYSTEM_BUILD_VERSION)+" (Compiled : "+g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
   CGUIWindow::Render();
 }
-void CGUIWindowSystemInfo::SetLabelDummy()
+
+void CGUIWindowSystemInfo::ResetLabels()
 {
-  // Set Label Dummy Entry! ""
-  for (int i=2; i<12; i++ )
+  for (int i = 2; i < 12; i++)
   {
-#ifdef HAS_SYSINFO
     SET_CONTROL_LABEL(i,"");
-#else
-    SET_CONTROL_LABEL(i,"PC version");
-#endif
   }
 }
 
