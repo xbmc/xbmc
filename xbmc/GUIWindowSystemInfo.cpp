@@ -137,8 +137,12 @@ void CGUIWindowSystemInfo::Render()
     SET_CONTROL_LABEL(i++,g_infoManager.GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
     SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
 #endif
+#ifndef HAS_DX
     SetControlLabel(i++, "%s %s", 22007, SYSTEM_OPENGL_VENDOR);
     SetControlLabel(i++, "%s %s", 22009, SYSTEM_OPENGL_VERSION);
+#else
+    // TODO: reporting of DirectX version?
+#endif
     SetControlLabel(i++, "%s %s", 22010, SYSTEM_GPU_TEMPERATURE);
   }
   else if (m_section == CONTROL_BT_HARDWARE)
