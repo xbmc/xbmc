@@ -518,13 +518,20 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       else if (node == NODE_TYPE_GENRE)
         items.SetContent("genres");
      else if (node == NODE_TYPE_ACTOR)
-       items.SetContent("actors");
+     {
+       if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+         items.SetContent("artists");
+       else
+         items.SetContent("actors");
+     }
      else if (node == NODE_TYPE_DIRECTOR)
        items.SetContent("directors");
      else if (node == NODE_TYPE_STUDIO)
        items.SetContent("studios");
      else if (node == NODE_TYPE_YEAR)
        items.SetContent("years");
+     else if (node == NODE_TYPE_MUSICVIDEOS_ALBUM)
+       items.SetContent("albums");
      else
         items.SetContent("");
     }
