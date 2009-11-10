@@ -295,14 +295,6 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
         SelectItem(message.GetParam1());
         return true;
       }
-      if (message.GetMessage() == GUI_MSG_ADD_PYTHON && message.GetItem())
-      {
-        CGUIListItemPtr item = message.GetItem();
-        m_items.push_back(item);
-        UpdateScrollByLetter();
-        SetPageControlRange();
-        return true;
-      }
       else if (message.GetMessage() == GUI_MSG_LABEL_RESET)
       {
         Reset();
