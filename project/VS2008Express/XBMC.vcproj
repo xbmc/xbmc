@@ -3346,6 +3346,14 @@
 				Name="GUI Dialog"
 				>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogAccessPoints.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogAccessPoints.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogAudioSubtitleSettings.cpp"
 					>
 				</File>

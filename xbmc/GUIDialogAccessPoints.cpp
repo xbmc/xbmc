@@ -21,7 +21,9 @@
 
 #include "GUIDialogAccessPoints.h"
 #include "GUIDialogKeyboard.h"
+#ifdef _LINUX
 #include "NetworkLinux.h"
+#endif
 #include "Application.h"
 #include "FileItem.h"
 #include "LocalizeStrings.h"
@@ -31,10 +33,13 @@
 CGUIDialogAccessPoints::CGUIDialogAccessPoints(void)
     : CGUIDialog(WINDOW_DIALOG_ACCESS_POINTS, "DialogAccessPoints.xml")
 {
+  m_accessPoints = new CFileItemList;
 }
 
 CGUIDialogAccessPoints::~CGUIDialogAccessPoints(void)
-{}
+{
+  delete m_accessPoints;
+}
 
 bool CGUIDialogAccessPoints::OnAction(const CAction &action)
 {
@@ -77,6 +82,8 @@ void CGUIDialogAccessPoints::OnInitWindow()
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_ACCESS_POINTS);
   OnMessage(msgReset);
 
+  m_accessPoints->Clear();
+
   CStdString ifaceName(m_interfaceName);
   CNetworkInterface* iface = g_application.getNetwork().GetInterfaceByName(ifaceName);
   m_aps = iface->GetAccessPoints();
@@ -95,12 +102,13 @@ void CGUIDialogAccessPoints::OnInitWindow()
       if (m_aps[i].getEncryptionMode() != ENC_NONE)
          item->SetIconImage("ap-lock.png");
 
-      CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_ACCESS_POINTS, 0, 0, item);
-      OnMessage(msg);
+      m_accessPoints->Add(item);
   }
 
   CFileItemPtr item(new CFileItem(g_localizeStrings.Get(1047)));
-  CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_ACCESS_POINTS, 0, 0, item);
+  m_accessPoints->Add(item);
+
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_ACCESS_POINTS, 0, 0, m_accessPoints);
   OnMessage(msg);
 }
 
