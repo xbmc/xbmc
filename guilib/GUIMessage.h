@@ -108,6 +108,9 @@
 #define GUI_MSG_RENDERER_RESET 36
 
 
+// DO NOT USE THIS MESSAGE - it is here for python and python only.
+#define GUI_MSG_ADD_PYTHON    999
+
 #define GUI_MSG_USER         1000
 
 /*!
