@@ -636,7 +636,7 @@ int64_t CFileSMB::Seek(int64_t iFilePosition, int iWhence)
 #ifndef _LINUX
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
-    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s )", __FUNCTION__, pos, errno, strerror(errno));
+    CLog::Log(LOGERROR, "%s - Error( %"PRId64", %d, %s )", __FUNCTION__, pos, errno, strerror(errno));
 #endif
     return -1;
   }
