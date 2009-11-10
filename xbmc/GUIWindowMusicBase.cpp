@@ -279,7 +279,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
 
 void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
 {
-  if (pItem->IsParentFolder())
+  if (!pItem->HasMusicInfoTag() || pItem->IsParentFolder())
     return; // nothing to do
 
   if (!pItem->m_bIsFolder)
@@ -368,10 +368,17 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
       m_dlgProgress->Close();
   }
 
-  if (album.idAlbum == -1 && foundAlbum == false)
+  if (artist.idArtist > -1 && !artist.strArtist.IsEmpty())
+  {
     ShowArtistInfo(artist, pItem->m_strPath, false, bShowInfo);
-  else
+    return;
+  }
+
+  if (album.idAlbum > -1 && !album.strAlbum.IsEmpty())
+  {
     ShowAlbumInfo(album, strPath, false, bShowInfo);
+    return;
+  }
 }
 
 void CGUIWindowMusicBase::OnManualAlbumInfo()
