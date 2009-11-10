@@ -482,9 +482,9 @@ void CGUIDialogMediaSource::UpdateButtons()
     path = url.GetWithoutUserDetails();
     if (path.IsEmpty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
     item->SetLabel(path);
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PATH, 0, 0, item);
-    OnMessage(msg);
   }
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PATH, 0, 0, m_paths);
+  OnMessage(msg);
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_PATH, currentItem);
 
   if (m_type.Equals("video"))
