@@ -1884,14 +1884,14 @@ static void av_estimate_timings(AVFormatContext *ic, int64_t old_offset)
         file_size && !url_is_streamed(ic->pb)) {
         /* get accurate estimate from the PTSes */
         av_estimate_timings_from_pts(ic, old_offset);
-    } else if (ic->iformat->read_timestamp && 
-        file_size && !url_is_streamed(ic->pb)) {
-        /* get accurate estimate from the PTSes */
-        av_estimate_timings_from_pts2(ic, old_offset);
     } else if (av_has_duration(ic)) {
         /* at least one component has timings - we use them for all
            the components */
         fill_all_stream_timings(ic);
+    } else if (ic->iformat->read_timestamp && 
+        file_size && !url_is_streamed(ic->pb)) {
+        /* get accurate estimate from the PTSes */
+        av_estimate_timings_from_pts2(ic, old_offset);
     } else {
         /* less precise: use bitrate info */
         av_estimate_timings_from_bit_rate(ic);
