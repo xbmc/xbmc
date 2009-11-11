@@ -611,6 +611,16 @@ void CGUISettings::Initialize()
 #else
   AddInt(6, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
 #endif
+#ifdef _WIN32
+  // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
+  // as it works nicer with switching to other applications. However on some systems vsync is broken
+  // when we do this (eg WinXP on ATI in particular) so for now we give the user the option.
+  bool fakeFullScreen = true;
+  if (g_sysinfo.IsWindowsXP())
+    fakeFullScreen = false;
+  AddBool(7, "videoscreen.fakefullscreen", 14083, fakeFullScreen);
+#endif
+
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
   AddBool(2, "filelists.hideextensions", 497, false);
