@@ -57,6 +57,7 @@ class CSysInfo : public CInfoLoader
 #endif    
     CStdString GetUserAgent();
     bool IsAppleTV();
+    bool IsWindowsXP();
     CStdString GetSystemUpTime(bool bTotalUptime);
     CStdString GetCPUFreqInfo();
     CStdString GetXBVerInfo();
