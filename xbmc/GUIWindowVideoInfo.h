@@ -25,6 +25,7 @@
 #include "GUIListItem.h"
 #include "GUIWindowVideoBase.h"
 #include "GUIWindowVideoFiles.h"
+#include "ThumbLoader.h"
 
 class CFileItem;
 
@@ -67,4 +68,5 @@ protected:
   bool m_bRefreshAll;
   bool m_hasUpdatedThumb;
   CGUIDialogProgress* m_dlgProgress;
+  CVideoThumbLoader m_loader;
 };
