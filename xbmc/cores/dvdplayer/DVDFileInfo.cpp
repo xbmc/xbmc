@@ -72,24 +72,30 @@ bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
 
 bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &strTarget, CStreamDetails *pStreamDetails)
 {
+  CStdString strFile;
+  if (CUtil::IsStack(strPath))
+    strFile = DIRECTORY::CStackDirectory::GetFirstStackedFile(strPath);
+  else
+    strFile = strPath;
+
   int nTime = CTimeUtils::GetTimeMS();
-  CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strPath, "");
+  CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strFile, "");
   if (!pInputStream)
   {
-    CLog::Log(LOGERROR, "InputStream: Error creating stream for %s", strPath.c_str());
+    CLog::Log(LOGERROR, "InputStream: Error creating stream for %s", strFile.c_str());
     return false;
   }
 
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
-    CLog::Log(LOGERROR, "InputStream: dvd streams not supported for thumb extraction, file: %s", strPath.c_str());
+    CLog::Log(LOGERROR, "InputStream: dvd streams not supported for thumb extraction, file: %s", strFile.c_str());
     delete pInputStream;
     return false;
   }
 
-  if (!pInputStream->Open(strPath.c_str(), ""))
+  if (!pInputStream->Open(strFile.c_str(), ""))
   {
-    CLog::Log(LOGERROR, "InputStream: Error opening, %s", strPath.c_str());
+    CLog::Log(LOGERROR, "InputStream: Error opening, %s", strFile.c_str());
     if (pInputStream)
       delete pInputStream;
     return false;
@@ -155,7 +161,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
       int nTotalLen = pDemuxer->GetStreamLength();
       int nSeekTo = nTotalLen / 3;
 
-      CLog::Log(LOGDEBUG,"%s - seeking to pos %dms (total: %dms) in %s", __FUNCTION__, nSeekTo, nTotalLen, strPath.c_str());
+      CLog::Log(LOGDEBUG,"%s - seeking to pos %dms (total: %dms) in %s", __FUNCTION__, nSeekTo, nTotalLen, strFile.c_str());
       if (pDemuxer->SeekTime(nSeekTo, true))
       {
         DemuxPacket* pPacket = NULL;
@@ -219,13 +225,13 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
               }
               else
               {
-                CLog::Log(LOGDEBUG,"%s - coudln't get picture from decoder in  %s", __FUNCTION__, strPath.c_str());
+                CLog::Log(LOGDEBUG,"%s - coudln't get picture from decoder in  %s", __FUNCTION__, strFile.c_str());
               }
             }
           }
           else
           {
-            CLog::Log(LOGDEBUG,"%s - decode failed in %s", __FUNCTION__, strPath.c_str());
+            CLog::Log(LOGDEBUG,"%s - decode failed in %s", __FUNCTION__, strFile.c_str());
             break;
           }
 
@@ -241,7 +247,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   delete pInputStream;
 
   int nTotalTime = CTimeUtils::GetTimeMS() - nTime;
-  CLog::Log(LOGDEBUG,"%s - measured %d ms to extract thumb from file <%s> ", __FUNCTION__, nTotalTime, strPath.c_str());
+  CLog::Log(LOGDEBUG,"%s - measured %d ms to extract thumb from file <%s> ", __FUNCTION__, nTotalTime, strFile.c_str());
   return bOk;
 }
 
