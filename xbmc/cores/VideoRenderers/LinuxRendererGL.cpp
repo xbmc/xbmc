@@ -1870,9 +1870,10 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
   || method == VS_INTERLACEMETHOD_RENDER_BOB)
     return true;
-
+#ifdef HAVE_LIBVDPAU
   if((method == VS_INTERLACEMETHOD_VDPAU) && g_VDPAU)
     return true;
+#endif
 
   return false;
 }
