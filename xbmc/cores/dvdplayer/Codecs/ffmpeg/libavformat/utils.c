@@ -1841,7 +1841,9 @@ static void av_estimate_timings_from_pts2(AVFormatContext *ic, int64_t old_offse
         ts = ic->iformat->read_timestamp(ic, i, &pos, DURATION_MAX_READ_SIZE);
         if (ts == AV_NOPTS_VALUE)
             continue;
-        st->start_time = ts;
+        if (st->start_time == AV_NOPTS_VALUE || 
+            st->start_time > ts)
+            st->start_time = ts;
 
         pos = url_fsize(ic->pb) - 1;
         do {
@@ -1850,7 +1852,11 @@ static void av_estimate_timings_from_pts2(AVFormatContext *ic, int64_t old_offse
             step += step;
         } while (ts == AV_NOPTS_VALUE && pos >= step && step < DURATION_MAX_READ_SIZE);
 
-        if (ts != AV_NOPTS_VALUE)
+        if (ts == AV_NOPTS_VALUE)
+            continue;
+
+        if (st->duration == AV_NOPTS_VALUE
+        ||  st->duration < ts - st->start_time)
             st->duration = ts - st->start_time;
     }
 
