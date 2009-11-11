@@ -65,16 +65,16 @@ public:
   float GetFloatValue() const;
   void SetFloatInterval(float fInterval);
   void SetType(int iType) { m_iType = iType; };
-  virtual bool HitTest(const XbmcCPoint &point) const;
-  virtual bool OnMouseClick(int button, const XbmcCPoint &point);
-  virtual bool OnMouseDrag(const XbmcCPoint &offset, const XbmcCPoint &point);
-  virtual bool OnMouseWheel(char wheel, const XbmcCPoint &point);
+  virtual bool HitTest(const CPoint &point) const;
+  virtual bool OnMouseClick(int button, const CPoint &point);
+  virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point);
+  virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual CStdString GetDescription() const;
   void SetTextValue(const CStdString &textValue) { m_textValue = textValue; };
 protected:
   virtual void UpdateColors();
   virtual void Move(int iNumSteps);
-  virtual void SetFromPosition(const XbmcCPoint &point);
+  virtual void SetFromPosition(const CPoint &point);
 
   CGUITexture m_guiBackground;
   CGUITexture m_guiMid;

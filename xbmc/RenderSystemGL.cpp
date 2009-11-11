@@ -319,14 +319,14 @@ void CRenderSystemGL::ApplyStateBlock()
   glEnable(GL_SCISSOR_TEST);  
 }
 
-void CRenderSystemGL::SetCameraPosition(const XbmcCPoint &camera, int screenWidth, int screenHeight)
+void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight)
 { 
   if (!m_bRenderCreated)
     return;
   
   g_graphicsContext.BeginPaint();
   
-  XbmcCPoint offset = camera - XbmcCPoint(screenWidth*0.5f, screenHeight*0.5f);
+  CPoint offset = camera - CPoint(screenWidth*0.5f, screenHeight*0.5f);
   
   GLint viewport[4];
   glGetIntegerv(GL_VIEWPORT, viewport);
@@ -427,7 +427,7 @@ void CRenderSystemGL::CalculateMaxTexturesize()
   CLog::Log(LOGINFO, "GL: Maximum texture width: %u", m_maxTextureSize);
 }
 
-void CRenderSystemGL::GetViewPort(XbmcCRect& viewPort)
+void CRenderSystemGL::GetViewPort(CRect& viewPort)
 {
   if (!m_bRenderCreated)
     return;
@@ -441,7 +441,7 @@ void CRenderSystemGL::GetViewPort(XbmcCRect& viewPort)
   viewPort.y2 = viewPort.y1 + glvp[3];
 }
 
-void CRenderSystemGL::SetViewPort(XbmcCRect& viewPort)
+void CRenderSystemGL::SetViewPort(CRect& viewPort)
 {
   if (!m_bRenderCreated)
     return;

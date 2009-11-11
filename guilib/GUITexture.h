@@ -75,7 +75,7 @@ public:
   CTextureInfo(const CStdString &file);
   void operator=(const CTextureInfo &right);
   bool       useLarge;
-  XbmcCRect      border;      // scaled  - unneeded if we get rid of scale on load
+  CRect      border;      // scaled  - unneeded if we get rid of scale on load
   int        orientation; // orientation of the texture (0 - 7 == EXIForientation - 1)
   CStdString diffuse;     // diffuse overlay texture
   CStdString filename;    // main texture file
@@ -111,10 +111,10 @@ public:
   float GetXPosition() const { return m_posX; };
   float GetYPosition() const { return m_posY; };
   int GetOrientation() const;
-  const XbmcCRect &GetRenderRect() const { return m_vertex; };
+  const CRect &GetRenderRect() const { return m_vertex; };
   bool IsLazyLoaded() const { return m_info.useLarge; };
 
-  bool HitTest(const XbmcCPoint &point) const { return XbmcCRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height).PtInRect(point); };
+  bool HitTest(const CPoint &point) const { return CRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height).PtInRect(point); };
   bool IsAllocated() const { return m_isAllocated != NO; };
   bool FailedToAlloc() const { return m_isAllocated == NORMAL_FAILED || m_isAllocated == LARGE_FAILED; };
   bool ReadyToRender() const;
@@ -124,13 +124,13 @@ protected:
   void AllocateOnDemand();
   void UpdateAnimFrame();
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2, float u3, float v3);
-  void OrientateTexture(XbmcCRect &rect, float width, float height, int orientation);
+  void OrientateTexture(CRect &rect, float width, float height, int orientation);
 
   // functions that our implementation classes handle
   virtual void Allocate() {}; ///< called after our textures have been allocated
   virtual void Free() {};     ///< called after our textures have been freed
   virtual void Begin() {};
-  virtual void Draw(float *x, float *y, float *z, const XbmcCRect &texture, const XbmcCRect &diffuse, color_t color, int orientation)=0;
+  virtual void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, color_t color, int orientation)=0;
   virtual void End() {};
 
   bool m_visible;
@@ -141,7 +141,7 @@ protected:
   float m_width;
   float m_height;
 
-  XbmcCRect m_vertex;       // vertex coords to render
+  CRect m_vertex;       // vertex coords to render
   bool m_invalid;       // if true, we need to recalculate
 
   unsigned char m_alpha;
@@ -156,7 +156,7 @@ protected:
 
   float m_diffuseU, m_diffuseV;           // size of the diffuse frame (in tex coords)
   float m_diffuseScaleU, m_diffuseScaleV; // scale factor of the diffuse frame (from texture coords to diffuse tex coords)
-  XbmcCPoint m_diffuseOffset;                 // offset into the diffuse frame (it's not always the origin)
+  CPoint m_diffuseOffset;                 // offset into the diffuse frame (it's not always the origin)
 
   bool m_allocateDynamically;
   enum ALLOCATE_TYPE { NO = 0, NORMAL, LARGE, NORMAL_FAILED, LARGE_FAILED };

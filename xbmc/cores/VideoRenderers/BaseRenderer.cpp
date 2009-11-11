@@ -91,7 +91,7 @@ float CVideoBaseRenderer::GetAspectRatio() const
   return m_sourceFrameRatio * width / height * m_sourceHeight / m_sourceWidth;
 }
 
-void CVideoBaseRenderer::GetVideoRect(XbmcCRect &source, XbmcCRect &dest)
+void CVideoBaseRenderer::GetVideoRect(CRect &source, CRect &dest)
 {
   source = m_sourceRect;
   dest = m_destRect;
@@ -195,7 +195,7 @@ void CVideoBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, u
 
 void CVideoBaseRenderer::ManageDisplay()
 {
-  const XbmcCRect& view = g_graphicsContext.GetViewWindow();
+  const CRect& view = g_graphicsContext.GetViewWindow();
 
   AutoCrop(g_stSettings.m_currentVideoSettings.m_Crop);
 

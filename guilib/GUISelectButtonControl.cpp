@@ -332,7 +332,7 @@ void CGUISelectButtonControl::OnRight()
   }
 }
 
-bool CGUISelectButtonControl::OnMouseOver(const XbmcCPoint &point)
+bool CGUISelectButtonControl::OnMouseOver(const CPoint &point)
 {
   bool ret = CGUIControl::OnMouseOver(point);
   m_bLeftSelected = false;
@@ -350,7 +350,7 @@ bool CGUISelectButtonControl::OnMouseOver(const XbmcCPoint &point)
   return ret;
 }
 
-bool CGUISelectButtonControl::OnMouseClick(int button, const XbmcCPoint &point)
+bool CGUISelectButtonControl::OnMouseClick(int button, const CPoint &point)
 { // only left click handled
   if (button != MOUSE_LEFT_BUTTON) return false;
   if (m_bShowSelect && m_imgLeft.HitTest(point))
@@ -368,7 +368,7 @@ bool CGUISelectButtonControl::OnMouseClick(int button, const XbmcCPoint &point)
   return true;
 }
 
-bool CGUISelectButtonControl::OnMouseWheel(char wheel, const XbmcCPoint &point)
+bool CGUISelectButtonControl::OnMouseWheel(char wheel, const CPoint &point)
 {
   if (wheel > 0)
     OnLeft();

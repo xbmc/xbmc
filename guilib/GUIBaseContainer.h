@@ -49,10 +49,10 @@ public:
   virtual void OnUp();
   virtual void OnLeft();
   virtual void OnRight();
-  virtual bool OnMouseOver(const XbmcCPoint &point);
-  virtual bool OnMouseClick(int button, const XbmcCPoint &point);
-  virtual bool OnMouseDoubleClick(int button, const XbmcCPoint &point);
-  virtual bool OnMouseWheel(char wheel, const XbmcCPoint &point);
+  virtual bool OnMouseOver(const CPoint &point);
+  virtual bool OnMouseClick(int button, const CPoint &point);
+  virtual bool OnMouseDoubleClick(int button, const CPoint &point);
+  virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
   virtual void AllocResources();
@@ -91,7 +91,7 @@ public:
 #endif
 protected:
   bool OnClick(int actionID);
-  virtual bool SelectItemFromPoint(const XbmcCPoint &point);
+  virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void Render();
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
   virtual void Scroll(int amount);
@@ -108,7 +108,7 @@ protected:
   virtual void Reset();
   virtual unsigned int GetNumItems() const { return m_items.size(); };
   virtual int GetCurrentPage() const;
-  bool InsideLayout(const CGUIListItemLayout *layout, const XbmcCPoint &point);
+  bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point);
 
   inline float Size() const;
   void MoveToRow(int row);

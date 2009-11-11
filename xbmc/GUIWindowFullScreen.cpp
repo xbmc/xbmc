@@ -549,7 +549,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-bool CGUIWindowFullScreen::OnMouse(const XbmcCPoint &point)
+bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
 {
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go back to GUI
@@ -713,7 +713,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       OnMessage(msg);
     }
     // show sizing information
-    XbmcCRect SrcRect, DestRect;
+    CRect SrcRect, DestRect;
     float fAR;
     g_application.m_pPlayer->GetVideoRect(SrcRect, DestRect);
     g_application.m_pPlayer->GetVideoAspectRatio(fAR);

@@ -23,7 +23,7 @@
 
 #include <atlbase.h>
 #include <atlcoll.h>
-#include <atltypes.h>
+#include "dshowutil/DSGeometry.h"
 #include "CoordGeom.h"
 #include "streams.h"
 #pragma pack(push, 1)
@@ -82,12 +82,12 @@ class ISubPicImpl : public CUnknown, public ISubPic
 protected:
 	REFERENCE_TIME m_rtStart, m_rtStop;
 	REFERENCE_TIME m_rtSegmentStart, m_rtSegmentStop;
-	CRect	m_rcDirty;
-	CSize	m_maxsize;
-	CSize	m_size;
-	CRect	m_vidrect;
-	CSize	m_VirtualTextureSize;
-	CPoint	m_VirtualTextureTopLeft;
+	tagRECT	m_rcDirty;
+	tagSIZE	m_maxsize;
+	tagSIZE	m_size;
+	tagRECT	m_vidrect;
+	tagSIZE	m_VirtualTextureSize;
+	tagPOINT	m_VirtualTextureTopLeft;
 
 /*
 
@@ -182,8 +182,8 @@ class ISubPicAllocatorImpl : public CUnknown, public ISubPicAllocator
 	CComPtr<ISubPic> m_pStatic;
 
 private:
-	CSize m_cursize;
-	CRect m_curvidrect;
+	tagSIZE m_cursize;
+	tagRECT m_curvidrect;
 	bool m_fDynamicWriteOnly;
 
 	virtual bool Alloc(bool fStatic, ISubPic** ppSubPic) = 0;
@@ -411,12 +411,12 @@ class ISubPicAllocatorPresenterImpl
 {
 protected:
 	HWND m_hWnd;
-	CSize m_spMaxSize; // TODO:
+	tagSIZE m_spMaxSize; // TODO:
 	int m_spMaxQueued; // TODO:
 	REFERENCE_TIME m_rtSubtitleDelay;
 
-	CSize m_NativeVideoSize, m_AspectRatio;
-	CRect m_VideoRect, m_WindowRect;
+	tagSIZE m_NativeVideoSize, m_AspectRatio;
+	tagRECT m_VideoRect, m_WindowRect;
 
 	REFERENCE_TIME m_rtNow;
 	double m_fps;
@@ -425,10 +425,10 @@ protected:
 	CComPtr<ISubPicAllocator> m_pAllocator;
 	CComPtr<ISubPicQueue> m_pSubPicQueue;
 
-	void AlphaBltSubPic(CSize size, SubPicDesc* pTarget = NULL);
+	void AlphaBltSubPic(tagSIZE size, SubPicDesc* pTarget = NULL);
 
     XForm m_xform;
-	void Transform(CRect r, Vector v[4]);
+	void Transform(tagRECT r, Vector v[4]);
 
 public:
 	ISubPicAllocatorPresenterImpl(HWND hWnd, HRESULT& hr, CStdString *_pError);

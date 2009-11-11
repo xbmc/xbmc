@@ -156,12 +156,12 @@ void CKaraokeLyricsCDG::Render()
   delete [] buf;
 
   // Convert texture coordinates to (0..1)
-  XbmcCRect texCoords((float)BORDERWIDTH / WIDTH, (float)BORDERHEIGHT  / HEIGHT,
+  CRect texCoords((float)BORDERWIDTH / WIDTH, (float)BORDERHEIGHT  / HEIGHT,
                   (float)(WIDTH - BORDERWIDTH) / WIDTH, (float)(HEIGHT - BORDERHEIGHT) / HEIGHT);
 
   // Get screen coordinates
   int res = g_graphicsContext.GetVideoResolution();
-  XbmcCRect vertCoords((float)g_settings.m_ResInfo[res].Overscan.left,
+  CRect vertCoords((float)g_settings.m_ResInfo[res].Overscan.left,
                    (float)g_settings.m_ResInfo[res].Overscan.top,
                    (float)g_settings.m_ResInfo[res].Overscan.right,
                    (float)g_settings.m_ResInfo[res].Overscan.bottom);

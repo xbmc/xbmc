@@ -167,6 +167,10 @@
 	</References>
 	<Files>
 		<File
+			RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DSGeometry.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DShowUtil.cpp"
 			>
 		</File>

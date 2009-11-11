@@ -840,14 +840,14 @@ int CGUISpinControl::GetMaximum() const
   return 100;
 }
 
-bool CGUISpinControl::HitTest(const XbmcCPoint &point) const
+bool CGUISpinControl::HitTest(const CPoint &point) const
 {
   if (m_imgspinUpFocus.HitTest(point) || m_imgspinDownFocus.HitTest(point))
     return true;
   return CGUIControl::HitTest(point);
 }
 
-bool CGUISpinControl::OnMouseOver(const XbmcCPoint &point)
+bool CGUISpinControl::OnMouseOver(const CPoint &point)
 {
   if (m_imgspinUpFocus.HitTest(point))
   {
@@ -867,7 +867,7 @@ bool CGUISpinControl::OnMouseOver(const XbmcCPoint &point)
   return true;
 }
 
-bool CGUISpinControl::OnMouseClick(int button, const XbmcCPoint &point)
+bool CGUISpinControl::OnMouseClick(int button, const CPoint &point)
 { // only left button handled
   if (button != MOUSE_LEFT_BUTTON) return false;
   if (m_imgspinUpFocus.HitTest(point))
@@ -881,7 +881,7 @@ bool CGUISpinControl::OnMouseClick(int button, const XbmcCPoint &point)
   return true;
 }
 
-bool CGUISpinControl::OnMouseWheel(char wheel, const XbmcCPoint &point)
+bool CGUISpinControl::OnMouseWheel(char wheel, const CPoint &point)
 {
   for (int i = 0; i < abs(wheel); i++)
   {

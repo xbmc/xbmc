@@ -542,7 +542,7 @@ CGUIListItemLayout *CGUIBaseContainer::GetFocusedLayout() const
   return NULL;
 }
 
-bool CGUIBaseContainer::SelectItemFromPoint(const XbmcCPoint &point)
+bool CGUIBaseContainer::SelectItemFromPoint(const CPoint &point)
 {
   if (!m_focusedLayout || !m_layout)
     return false;
@@ -561,7 +561,7 @@ bool CGUIBaseContainer::SelectItemFromPoint(const XbmcCPoint &point)
       CGUIListItemLayout *focusedLayout = GetFocusedLayout();
       if (focusedLayout)
       {
-        XbmcCPoint pt(point);
+        CPoint pt(point);
         if (m_orientation == VERTICAL)
           pt.y = pos;
         else
@@ -576,16 +576,16 @@ bool CGUIBaseContainer::SelectItemFromPoint(const XbmcCPoint &point)
   return false;
 }
 
-bool CGUIBaseContainer::OnMouseOver(const XbmcCPoint &point)
+bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
 {
   // select the item under the pointer
-  SelectItemFromPoint(point - XbmcCPoint(m_posX, m_posY));
+  SelectItemFromPoint(point - CPoint(m_posX, m_posY));
   return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUIBaseContainer::OnMouseClick(int button, const XbmcCPoint &point)
+bool CGUIBaseContainer::OnMouseClick(int button, const CPoint &point)
 {
-  if (SelectItemFromPoint(point - XbmcCPoint(m_posX, m_posY)))
+  if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
   { // send click message to window
     OnClick(ACTION_MOUSE_CLICK + button);
     return true;
@@ -593,9 +593,9 @@ bool CGUIBaseContainer::OnMouseClick(int button, const XbmcCPoint &point)
   return false;
 }
 
-bool CGUIBaseContainer::OnMouseDoubleClick(int button, const XbmcCPoint &point)
+bool CGUIBaseContainer::OnMouseDoubleClick(int button, const CPoint &point)
 {
-  if (SelectItemFromPoint(point - XbmcCPoint(m_posX, m_posY)))
+  if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
   { // send double click message to window
     OnClick(ACTION_MOUSE_DOUBLE_CLICK + button);
     return true;
@@ -638,7 +638,7 @@ bool CGUIBaseContainer::OnClick(int actionID)
   return SendWindowMessage(msg);
 }
 
-bool CGUIBaseContainer::OnMouseWheel(char wheel, const XbmcCPoint &point)
+bool CGUIBaseContainer::OnMouseWheel(char wheel, const CPoint &point)
 {
   Scroll(-wheel);
   return true;
@@ -1041,7 +1041,7 @@ void CGUIBaseContainer::FreeMemory(int keepStart, int keepEnd)
   }
 }
 
-bool CGUIBaseContainer::InsideLayout(const CGUIListItemLayout *layout, const XbmcCPoint &point)
+bool CGUIBaseContainer::InsideLayout(const CGUIListItemLayout *layout, const CPoint &point)
 {
   if (!layout) return false;
   if ((m_orientation == VERTICAL && layout->Size(HORIZONTAL) && point.x > layout->Size(HORIZONTAL)) ||

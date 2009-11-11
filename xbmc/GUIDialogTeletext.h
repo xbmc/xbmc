@@ -39,6 +39,6 @@ public:
 protected:
   bool                m_bClose;           /* Close sendet, needed for fade out */
   CBaseTexture*       m_pTxtTexture;      /* Texture info class to render to screen */
-  XbmcCRect               m_vertCoords;       /* Coordinates of teletext field on screen */
+  CRect               m_vertCoords;       /* Coordinates of teletext field on screen */
   CTeletextDecoder    m_TextDecoder;      /* Decoding class for teletext code */
 };

@@ -97,8 +97,8 @@ public:
   // and does not need to be passed further down the line (to our global action handlers)
   virtual bool OnAction(const CAction &action);
 
-  virtual bool OnMouse(const XbmcCPoint &point);
-  bool HandleMouse(CGUIControl *pControl, const XbmcCPoint &point);
+  virtual bool OnMouse(const CPoint &point);
+  bool HandleMouse(CGUIControl *pControl, const CPoint &point);
   bool OnMove(int fromControl, int moveAction);
   virtual bool OnMessage(CGUIMessage& message);
 
@@ -107,7 +107,7 @@ public:
   void SetIDRange(int range) { m_idRange = range; };
   int GetIDRange() const { return m_idRange; };
   int GetPreviousWindow() { return m_previousWindow; };
-  XbmcCRect GetScaledBounds() const;
+  CRect GetScaledBounds() const;
   virtual void ClearAll();
   virtual void AllocResources(bool forceLoad = false);
   virtual void FreeResources(bool forceUnLoad = false);

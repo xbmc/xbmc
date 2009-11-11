@@ -61,9 +61,9 @@ CGraphicContext::~CGraphicContext(void)
 void CGraphicContext::SetOrigin(float x, float y)
 {
   if (m_origins.size())
-    m_origins.push(XbmcCPoint(x,y) + m_origins.top());
+    m_origins.push(CPoint(x,y) + m_origins.top());
   else
-    m_origins.push(XbmcCPoint(x,y));
+    m_origins.push(CPoint(x,y));
   
   AddTransform(TransformMatrix::CreateTranslation(x, y));
 }
@@ -77,12 +77,12 @@ void CGraphicContext::RestoreOrigin()
 // add a new clip region, intersecting with the previous clip region.
 bool CGraphicContext::SetClipRegion(float x, float y, float w, float h)
 { // transform from our origin
-  XbmcCPoint origin;
+  CPoint origin;
   if (m_origins.size())
     origin = m_origins.top();
   
   // ok, now intersect with our old clip region
-  XbmcCRect rect(x, y, x + w, y + h);
+  CRect rect(x, y, x + w, y + h);
   rect += origin;
   if (m_clipRegions.size())
   { 
@@ -107,7 +107,7 @@ void CGraphicContext::RestoreClipRegion()
   // here we could reset the hardware clipping, if applicable
 }
 
-void CGraphicContext::ClipRect(XbmcCRect &vertex, XbmcCRect &texture, XbmcCRect *texture2)
+void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
 {
   // this is the software clipping routine.  If the graphics hardware is set to do the clipping
   // (eg via SetClipPlane in D3D for instance) then this routine is unneeded.
@@ -115,10 +115,10 @@ void CGraphicContext::ClipRect(XbmcCRect &vertex, XbmcCRect &texture, XbmcCRect 
   {
     // take a copy of the vertex rectangle and intersect
     // it with our clip region (moved to the same coordinate system)
-    XbmcCRect clipRegion(m_clipRegions.top());
+    CRect clipRegion(m_clipRegions.top());
     if (m_origins.size())
       clipRegion -= m_origins.top();
-    XbmcCRect original(vertex);
+    CRect original(vertex);
     vertex.Intersect(clipRegion);
     // and use the original to compute the texture coordinates
     if (original != vertex)
@@ -144,7 +144,7 @@ void CGraphicContext::ClipRect(XbmcCRect &vertex, XbmcCRect &texture, XbmcCRect 
 
 bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheight, bool intersectPrevious /* = false */)
 {
-  XbmcCRect oldviewport;
+  CRect oldviewport;
   g_Windowing.GetViewPort(oldviewport);
 
   // transform coordinates - we may have a rotation which changes the positioning of the
@@ -205,7 +205,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheigh
   ASSERT(newLeft < newRight);
   ASSERT(newTop < newBottom);
 
-  XbmcCRect newviewport((float)newLeft, (float)newTop, (float)newRight, (float)newBottom);
+  CRect newviewport((float)newLeft, (float)newTop, (float)newRight, (float)newBottom);
   g_Windowing.SetViewPort(newviewport);
 
   m_viewStack.push(oldviewport);
@@ -218,7 +218,7 @@ void CGraphicContext::RestoreViewPort()
 {
   if (!m_viewStack.size()) return;
 
-  XbmcCRect oldviewport = m_viewStack.top();
+  CRect oldviewport = m_viewStack.top();
   g_Windowing.SetViewPort(oldviewport);
 
   m_viewStack.pop();
@@ -226,7 +226,7 @@ void CGraphicContext::RestoreViewPort()
   UpdateCameraPosition(m_cameras.top());
 }
 
-const XbmcCRect& CGraphicContext::GetViewWindow() const
+const CRect& CGraphicContext::GetViewWindow() const
 {
   return m_videoRect;
 }
@@ -582,10 +582,10 @@ void CGraphicContext::SetScalingResolution(int res, float posX, float posY, bool
   // reset our origin and camera
   while (m_origins.size())
     m_origins.pop();
-  m_origins.push(XbmcCPoint(posX, posY));
+  m_origins.push(CPoint(posX, posY));
   while (m_cameras.size())
     m_cameras.pop();
-  m_cameras.push(XbmcCPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
+  m_cameras.push(CPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
 
   // and reset the final transform
   UpdateFinalTransform(m_guiTransform);
@@ -632,11 +632,11 @@ float CGraphicContext::GetScalingPixelRatio() const
   return outPR * (outWidth / outHeight) / (winWidth / winHeight);
 }
 
-void CGraphicContext::SetCameraPosition(const XbmcCPoint &camera)
+void CGraphicContext::SetCameraPosition(const CPoint &camera)
 {
   // offset the camera from our current location (this is in XML coordinates) and scale it up to
   // the screen resolution
-  XbmcCPoint cam(camera);
+  CPoint cam(camera);
   if (m_origins.size())
     cam += m_origins.top();
 
@@ -662,7 +662,7 @@ void CGraphicContext::RestoreCameraPosition()
 //       the camera has changed, and if so, changes it.  Similarly, it could set
 //       the world transform at that point as well (or even combine world + view
 //       to cut down on one setting)
-void CGraphicContext::UpdateCameraPosition(const XbmcCPoint &camera)
+void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
 {
   g_Windowing.SetCameraPosition(camera, m_iScreenWidth, m_iScreenHeight);
 }

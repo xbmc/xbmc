@@ -231,7 +231,7 @@ void CGUIButtonControl::UpdateColors()
   m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
 }
 
-bool CGUIButtonControl::OnMouseClick(int button, const XbmcCPoint &point)
+bool CGUIButtonControl::OnMouseClick(int button, const CPoint &point)
 {
   if (button == MOUSE_LEFT_BUTTON)
   {

@@ -173,7 +173,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
     }
     else if (strValue == "animation" && pChild->FirstChild())
     {
-      XbmcCRect rect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight);
+      CRect rect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight);
       CAnimation anim;
       anim.Create(pChild, rect);
       m_animations.push_back(anim);
@@ -250,7 +250,7 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
   // get control type
   CGUIControlFactory factory;
 
-  XbmcCRect rect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight);
+  CRect rect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight);
   if (pGroup)
   {
     rect.x1 = pGroup->GetXPosition();
@@ -387,7 +387,7 @@ bool CGUIWindow::OnMouseAction()
     }
   }
   g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
-  XbmcCPoint mousePoint(g_Mouse.GetLocation());
+  CPoint mousePoint(g_Mouse.GetLocation());
   g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
   m_transform.InverseTransformPosition(mousePoint.x, mousePoint.y);
 
@@ -412,7 +412,7 @@ bool CGUIWindow::OnMouseAction()
   {
     CGUIControl *pControl = *i;
     CGUIControl *focusableControl = NULL;
-    XbmcCPoint controlPoint;
+    CPoint controlPoint;
     if (pControl->CanFocusFromPoint(mousePoint, &focusableControl, controlPoint))
     {
       controlUnderPointer = focusableControl->OnMouseOver(controlPoint);
@@ -435,7 +435,7 @@ bool CGUIWindow::OnMouseAction()
 // Handles any mouse actions that are not handled by a control
 // default is to go back a window on a right click.
 // This function should be overridden for other windows
-bool CGUIWindow::OnMouse(const XbmcCPoint &point)
+bool CGUIWindow::OnMouse(const CPoint &point)
 {
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go to previous menu
@@ -446,7 +446,7 @@ bool CGUIWindow::OnMouse(const XbmcCPoint &point)
   return false;
 }
 
-bool CGUIWindow::HandleMouse(CGUIControl *pControl, const XbmcCPoint &point)
+bool CGUIWindow::HandleMouse(CGUIControl *pControl, const CPoint &point)
 {
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // Left click
@@ -864,11 +864,11 @@ void CGUIWindow::SetDefaults()
   m_animationsEnabled = true;
 }
 
-XbmcCRect CGUIWindow::GetScaledBounds() const
+CRect CGUIWindow::GetScaledBounds() const
 {
   CSingleLock lock(g_graphicsContext);
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_posX, m_posY, m_needsScaling);
-  XbmcCRect rect(0, 0, m_width, m_height);
+  CRect rect(0, 0, m_width, m_height);
   float z = 0;
   g_graphicsContext.ScaleFinalCoords(rect.x1, rect.y1, z);
   g_graphicsContext.ScaleFinalCoords(rect.x2, rect.y2, z);

@@ -56,7 +56,7 @@ public:
 };
 
 class CFileItem;
-class XbmcCRect;
+class CRect;
 
 class IPlayer
 {
@@ -87,7 +87,7 @@ public:
   virtual void GetVideoInfo( CStdString& strVideoInfo) = 0;
   virtual void GetGeneralInfo( CStdString& strVideoInfo) = 0;
   virtual void Update(bool bPauseDrawing = false) = 0;
-  virtual void GetVideoRect(XbmcCRect& SrcRect, XbmcCRect& DestRect) {}
+  virtual void GetVideoRect(CRect& SrcRect, CRect& DestRect) {}
   virtual void GetVideoAspectRatio(float& fAR) { fAR = 1.0f; }
   virtual bool CanRecord() { return false;};
   virtual bool IsRecording() { return false;};

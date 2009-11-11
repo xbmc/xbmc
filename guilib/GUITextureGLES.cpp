@@ -41,12 +41,12 @@ void CGUITextureGLES::End()
   // TODO: OpenGLES
 }
 
-void CGUITextureGLES::Draw(float *x, float *y, float *z, const XbmcCRect &texture, const XbmcCRect &diffuse, DWORD color, int orientation)
+void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)
 {
   // TODO: OpenGLES
 }
 
-void CGUITextureGLES::DrawQuad(const XbmcCRect &rect, DWORD color)
+void CGUITextureGLES::DrawQuad(const CRect &rect, DWORD color)
 {
   // TODO: OpenGLES 
 }

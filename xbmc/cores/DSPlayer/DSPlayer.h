@@ -59,7 +59,7 @@ public:
   virtual void GetVideoInfo(CStdString& strVideoInfo);
   virtual void GetGeneralInfo(CStdString& strGeneralInfo);
   void Update(bool bPauseDrawing)                               { m_pDsGraph.Update(bPauseDrawing); }
-  void GetVideoRect(XbmcCRect& SrcRect, XbmcCRect& DestRect)  { m_pDsGraph.GetVideoRect(SrcRect, DestRect); }
+  void GetVideoRect(CRect& SrcRect, CRect& DestRect)  { m_pDsGraph.GetVideoRect(SrcRect, DestRect); }
   virtual void GetVideoAspectRatio(float& fAR)                  { fAR = m_pDsGraph.GetAspectRatio(); }
   //virtual void SetAVDelay(float fValue = 0.0f);
   //virtual float GetAVDelay();

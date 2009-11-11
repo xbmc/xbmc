@@ -37,7 +37,7 @@ public:
   virtual void FreeResources(bool forceUnLoad = false);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual bool OnMouse(const XbmcCPoint &point);
+  virtual bool OnMouse(const CPoint &point);
   virtual void Render();
   virtual void OnWindowLoaded();
   void RenderFullScreen();

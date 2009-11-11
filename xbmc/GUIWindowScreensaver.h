@@ -40,7 +40,7 @@ public:
 
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual bool OnMouse(const XbmcCPoint &point);
+  virtual bool OnMouse(const CPoint &point);
   virtual void Render();
 
 private:

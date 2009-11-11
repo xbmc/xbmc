@@ -356,40 +356,40 @@ bool CGUIControlGroup::HasAnimation(ANIMATION_TYPE animType)
   return false;
 }
 
-bool CGUIControlGroup::HitTest(const XbmcCPoint &point) const
+bool CGUIControlGroup::HitTest(const CPoint &point) const
 {
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
-    if (child->HitTest(point - XbmcCPoint(m_posX, m_posX)))
+    if (child->HitTest(point - CPoint(m_posX, m_posX)))
       return true;
   }
   return false;
 }
 
-bool CGUIControlGroup::CanFocusFromPoint(const XbmcCPoint &point, CGUIControl **control, XbmcCPoint &controlPoint) const
+bool CGUIControlGroup::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 {
   if (!CGUIControl::CanFocus()) return false;
-  XbmcCPoint controlCoords(point);
+  CPoint controlCoords(point);
   m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
   for (crControls it = m_children.rbegin(); it != m_children.rend(); ++it)
   {
     CGUIControl *child = *it;
-    if (child->CanFocusFromPoint(controlCoords - XbmcCPoint(m_posX, m_posY), control, controlPoint))
+    if (child->CanFocusFromPoint(controlCoords - CPoint(m_posX, m_posY), control, controlPoint))
       return true;
   }
   *control = NULL;
   return false;
 }
 
-void CGUIControlGroup::UnfocusFromPoint(const XbmcCPoint &point)
+void CGUIControlGroup::UnfocusFromPoint(const CPoint &point)
 {
-  XbmcCPoint controlCoords(point);
+  CPoint controlCoords(point);
   m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
-    child->UnfocusFromPoint(controlCoords - XbmcCPoint(m_posX, m_posY));
+    child->UnfocusFromPoint(controlCoords - CPoint(m_posX, m_posY));
   }
   CGUIControl::UnfocusFromPoint(point);
 }

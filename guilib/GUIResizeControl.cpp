@@ -124,7 +124,7 @@ void CGUIResizeControl::OnRight()
   Resize(m_fSpeed, 0);
 }
 
-bool CGUIResizeControl::OnMouseDrag(const XbmcCPoint &offset, const XbmcCPoint &point)
+bool CGUIResizeControl::OnMouseDrag(const CPoint &offset, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_DRAG);
   g_Mouse.SetExclusiveAccess(this, GetParentID(), point);
@@ -132,7 +132,7 @@ bool CGUIResizeControl::OnMouseDrag(const XbmcCPoint &offset, const XbmcCPoint &
   return true;
 }
 
-bool CGUIResizeControl::OnMouseClick(int button, const XbmcCPoint &point)
+bool CGUIResizeControl::OnMouseClick(int button, const CPoint &point)
 {
   if (button != MOUSE_LEFT_BUTTON) return false;
   g_Mouse.EndExclusiveAccess(this, GetParentID());

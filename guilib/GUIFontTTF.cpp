@@ -618,12 +618,12 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
 
   // posX and posY are relative to our origin, and the textcell is offset
   // from our (posX, posY).  Plus, these are unscaled quantities compared to the underlying GUI resolution
-  XbmcCRect vertex((posX + ch->offsetX) * g_graphicsContext.GetGUIScaleX(),
+  CRect vertex((posX + ch->offsetX) * g_graphicsContext.GetGUIScaleX(),
                (posY + ch->offsetY) * g_graphicsContext.GetGUIScaleY(),
                (posX + ch->offsetX + width) * g_graphicsContext.GetGUIScaleX(),
                (posY + ch->offsetY + height) * g_graphicsContext.GetGUIScaleY());
-  vertex += XbmcCPoint(m_originX, m_originY);
-  XbmcCRect texture(ch->left, ch->top, ch->right, ch->bottom);
+  vertex += CPoint(m_originX, m_originY);
+  CRect texture(ch->left, ch->top, ch->right, ch->bottom);
   g_graphicsContext.ClipRect(vertex, texture);
 
   // transform our positions - note, no scaling due to GUI calibration/resolution occurs

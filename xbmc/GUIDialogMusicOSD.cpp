@@ -123,7 +123,7 @@ bool CGUIDialogMusicOSD::OnAction(const CAction &action)
   return CGUIDialog::OnAction(action);
 }
 
-bool CGUIDialogMusicOSD::OnMouse(const XbmcCPoint &point)
+bool CGUIDialogMusicOSD::OnMouse(const CPoint &point)
 {
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // pause

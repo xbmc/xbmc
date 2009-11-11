@@ -142,9 +142,10 @@ public:
 	{
 		if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
 		{
-			CRect s, d;
+			tagRECT s, d;
 			HRESULT hr = pWC9->GetVideoPosition(&s, &d);
-			*pWidth = d.Width();
+			*pWidth = d.right-d.left;
+			//*pWidth = d.Width();
 			return hr;
 		}
 
@@ -157,9 +158,9 @@ public:
 	{
 		if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
 		{
-			CRect s, d;
+			tagRECT s, d;
 			HRESULT hr = pWC9->GetVideoPosition(&s, &d);
-			*pHeight = d.Height();
+			*pHeight = GeometryHelper::GetHeight(d);
 			return hr;
 		}
 
@@ -216,7 +217,7 @@ public:
 /*
 		if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
 		{
-			CRect s, d;
+			tagRECT s, d;
 			HRESULT hr = pWC9->GetVideoPosition(&s, &d);
 			*pLeft = s.left;
 			*pTop = s.top;
@@ -233,12 +234,12 @@ public:
 	{
 		if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
 		{
-			CRect s, d;
+			tagRECT s, d;
 			HRESULT hr = pWC9->GetVideoPosition(&s, &d);
 			*pLeft = d.left;
 			*pTop = d.top;
-			*pWidth = d.Width();
-			*pHeight = d.Height();
+			*pWidth = GeometryHelper::GetWidth(d);
+			*pHeight = GeometryHelper::GetHeight(d);
 			return hr;
 		}
 
@@ -764,7 +765,7 @@ void CDX9AllocatorPresenter::UpdateAlphaBitmap()
 		if (!::GetObject(hBitmap, sizeof( DIBSECTION ), &info ))
 			return;
 
-		m_VMR9AlphaBitmapRect = CRect(0, 0, info.dsBm.bmWidth, info.dsBm.bmHeight);
+		m_VMR9AlphaBitmapRect = GeometryHelper::CreateRect(0, 0, info.dsBm.bmWidth, info.dsBm.bmHeight);
 		m_VMR9AlphaBitmapWidthBytes = info.dsBm.bmWidthBytes;
 
 		if (m_VMR9AlphaBitmapData.Allocate(info.dsBm.bmWidthBytes * info.dsBm.bmHeight))

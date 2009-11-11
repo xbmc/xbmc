@@ -2989,18 +2989,18 @@ bool CDVDPlayer::OnAction(const CAction &action)
           action2.amount1 = g_Mouse.GetLocation().x;
           action2.amount2 = g_Mouse.GetLocation().y;
 
-          XbmcCRect rs, rd;
+          CRect rs, rd;
           GetVideoRect(rs, rd);
           if (action2.amount1 < rd.x1 || action2.amount1 > rd.x2 ||
               action2.amount2 < rd.y1 || action2.amount2 > rd.y2)
             return false; // out of bounds
           THREAD_ACTION(action2);
           // convert to video coords...
-          XbmcCPoint pt(action2.amount1, action2.amount2);
-          pt -= XbmcCPoint(rd.x1, rd.y1);
+          CPoint pt(action2.amount1, action2.amount2);
+          pt -= CPoint(rd.x1, rd.y1);
           pt.x *= rs.Width() / rd.Width();
           pt.y *= rs.Height() / rd.Height();
-          pt += XbmcCPoint(rs.x1, rs.y1);
+          pt += CPoint(rs.x1, rs.y1);
           if (action2.buttonCode)
             return pStream->OnMouseClick(pt);
           return pStream->OnMouseMove(pt);

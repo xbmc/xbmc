@@ -172,7 +172,7 @@ void CRenderer::Render()
 
 void CRenderer::Render(COverlay* o)
 {
-  XbmcCRect rs, rd, rv;
+  CRect rs, rd, rv;
   RESOLUTION_INFO res;
   g_renderManager.GetVideoRect(rs, rd);
   rv  = g_graphicsContext.GetViewWindow();

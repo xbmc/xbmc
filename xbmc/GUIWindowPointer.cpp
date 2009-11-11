@@ -75,7 +75,7 @@ void CGUIWindowPointer::OnWindowLoaded()
 
 void CGUIWindowPointer::Render()
 {
-  XbmcCPoint location(g_Mouse.GetLocation());
+  CPoint location(g_Mouse.GetLocation());
   SetPosition(location.x, location.y);
   SetPointer(g_Mouse.GetState());
   CGUIWindow::Render();

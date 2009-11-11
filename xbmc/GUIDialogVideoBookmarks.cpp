@@ -297,7 +297,7 @@ void CGUIDialogVideoBookmarks::AddEpisodeBookmark()
 {
   vector<CVideoInfoTag> episodes;
   CVideoDatabase videoDatabase;
-  XbmcCPoint pos;
+  CPoint pos;
   videoDatabase.Open();
   videoDatabase.GetEpisodesByFile(g_application.CurrentFile(), episodes);
   videoDatabase.Close();
@@ -307,7 +307,7 @@ void CGUIDialogVideoBookmarks::AddEpisodeBookmark()
     map<int, CVideoInfoTag*> buttons;
     const CGUIControl *pList = GetControl(CONTROL_ADD_EPISODE_BOOKMARK);
     if (pList)
-      pos = pList->GetRenderPosition() + XbmcCPoint(pList->GetWidth() * 0.5f, pList->GetHeight() * 0.5f);
+      pos = pList->GetRenderPosition() + CPoint(pList->GetWidth() * 0.5f, pList->GetHeight() * 0.5f);
     if (pMenu)
     {
       pMenu->Initialize();

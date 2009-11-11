@@ -192,7 +192,7 @@ protected:
   struct YUVPLANE
   {
     GLuint id;
-    XbmcCRect  rect;
+    CRect  rect;
 
     float  width;
     float  height;
@@ -239,7 +239,7 @@ protected:
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
 
-  XbmcCRect m_crop;
+  CRect m_crop;
   float m_aspecterror;
 };
 

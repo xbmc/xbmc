@@ -175,7 +175,7 @@ void CGUIFixedListContainer::ValidateOffset()
   }
 }
 
-bool CGUIFixedListContainer::SelectItemFromPoint(const XbmcCPoint &point)
+bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
 {
   if (!m_focusedLayout || !m_layout)
     return false;

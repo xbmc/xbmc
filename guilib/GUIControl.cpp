@@ -415,7 +415,7 @@ void CGUIControl::SetPosition(float posX, float posY)
 {
   if ((m_posX != posX) || (m_posY != posY))
   {
-    m_hitRect += XbmcCPoint(posX - m_posX, posY - m_posY);
+    m_hitRect += CPoint(posX - m_posX, posY - m_posY);
     m_posX = posX;
     m_posY = posY;
     SetInvalid();
@@ -505,13 +505,13 @@ void CGUIControl::SetVisible(bool bVisible)
   }*/
 }
 
-bool CGUIControl::HitTest(const XbmcCPoint &point) const
+bool CGUIControl::HitTest(const CPoint &point) const
 {
   return m_hitRect.PtInRect(point);
 }
 
 // override this function to implement custom mouse behaviour
-bool CGUIControl::OnMouseOver(const XbmcCPoint &point)
+bool CGUIControl::OnMouseOver(const CPoint &point)
 {
   if (g_Mouse.GetState() != MOUSE_STATE_DRAG)
     g_Mouse.SetState(MOUSE_STATE_FOCUS);
@@ -744,7 +744,7 @@ void CGUIControl::Animate(unsigned int currentTime)
   // check visible state outside the loop, as it could change
   GUIVISIBLE visible = m_visible;
   m_transform.Reset();
-  XbmcCPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
+  CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
@@ -814,7 +814,7 @@ int CGUIControl::GetNextControl(int direction) const
 
 // input the point with respect to this control to hit, and return
 // the control and the point with respect to his control if we have a hit
-bool CGUIControl::CanFocusFromPoint(const XbmcCPoint &point, CGUIControl **control, XbmcCPoint &controlPoint) const
+bool CGUIControl::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 {
   controlPoint = point;
   m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
@@ -827,9 +827,9 @@ bool CGUIControl::CanFocusFromPoint(const XbmcCPoint &point, CGUIControl **contr
   return false;
 }
 
-void CGUIControl::UnfocusFromPoint(const XbmcCPoint &point)
+void CGUIControl::UnfocusFromPoint(const CPoint &point)
 {
-  XbmcCPoint controlPoint(point);
+  CPoint controlPoint(point);
   m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
   if (!HitTest(controlPoint))
     SetFocus(false);
@@ -850,12 +850,12 @@ void CGUIControl::SaveStates(vector<CControlState> &states)
   // empty for now - do nothing with the majority of controls
 }
 
-void CGUIControl::SetHitRect(const XbmcCRect &rect)
+void CGUIControl::SetHitRect(const CRect &rect)
 {
   m_hitRect = rect;
 }
 
-void CGUIControl::SetCamera(const XbmcCPoint &camera)
+void CGUIControl::SetCamera(const CPoint &camera)
 {
   m_camera = camera;
   m_hasCamera = true;
@@ -876,10 +876,10 @@ void CGUIControl::ExecuteActions(const vector<CGUIActionDescriptor> &actions)
   }
 }
 
-XbmcCPoint CGUIControl::GetRenderPosition() const
+CPoint CGUIControl::GetRenderPosition() const
 {
   float z = 0;
-  XbmcCPoint point(m_posX, m_posY);
+  CPoint point(m_posX, m_posY);
   m_transform.TransformPosition(point.x, point.y, z);
   if (m_parentControl)
     point += m_parentControl->GetRenderPosition();

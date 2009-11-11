@@ -64,9 +64,9 @@ public:
   virtual void OnLeft();
   virtual void OnRight();
   virtual void OnDown();
-  virtual bool OnMouseOver(const XbmcCPoint &point);
-  virtual bool OnMouseClick(int button, const XbmcCPoint &point);
-  virtual bool OnMouseWheel(char wheel, const XbmcCPoint &point);
+  virtual bool OnMouseOver(const CPoint &point);
+  virtual bool OnMouseClick(int button, const CPoint &point);
+  virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual void Render();
   virtual void AllocResources();
   virtual void FreeResources();

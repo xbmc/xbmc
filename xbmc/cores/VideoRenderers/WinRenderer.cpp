@@ -256,7 +256,7 @@ void CWinRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, u
   }
 
   // scale to fit screen
-  const XbmcCRect& rv = g_graphicsContext.GetViewWindow();
+  const CRect& rv = g_graphicsContext.GetViewWindow();
 
   // Vobsubs are defined to be 720 wide.
   // NOTE: This will not work nicely if we are allowing mplayer to render text based subs
@@ -1059,7 +1059,7 @@ void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, un
   if (D3D_OK == m_pD3DDevice->CreateRenderTarget(width, height, D3DFMT_LIN_A8R8G8B8, D3DMULTISAMPLE_NONE, 0, TRUE, &surface, NULL))
   {
     LPDIRECT3DSURFACE9 oldRT;
-    XbmcCRect saveSize = m_destRect;
+    CRect saveSize = m_destRect;
     m_destRect.SetRect(0, 0, (float)width, (float)height);
     m_pD3DDevice->GetRenderTarget(0, &oldRT);
     m_pD3DDevice->SetRenderTarget(0, surface);

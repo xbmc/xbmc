@@ -70,7 +70,7 @@ bool CGUIWindowOSD::OnAction(const CAction &action)
   return CGUIDialog::OnAction(action);
 }
 
-bool CGUIWindowOSD::OnMouse(const XbmcCPoint &point)
+bool CGUIWindowOSD::OnMouse(const CPoint &point)
 {
   if (g_Mouse.GetWheel())
   { // Mouse wheel

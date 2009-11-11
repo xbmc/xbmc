@@ -73,40 +73,6 @@ public:
   STDMETHODIMP_(void) SetPosition(RECT w, RECT v);
   STDMETHODIMP_(bool) Paint(bool fAll);
   STDMETHODIMP_(void) SetTime(REFERENCE_TIME rtNow);
-
-
-// IBasicVideo2
-  STDMETHODIMP get_AvgTimePerFrame(REFTIME* pAvgTimePerFrame) {return E_NOTIMPL;}
-  STDMETHODIMP get_BitRate(long* pBitRate) {return E_NOTIMPL;}
-  STDMETHODIMP get_BitErrorRate(long* pBitErrorRate) {return E_NOTIMPL;}
-  STDMETHODIMP get_VideoWidth(long* pVideoWidth) {return E_NOTIMPL;}
-  STDMETHODIMP get_VideoHeight(long* pVideoHeight) {return E_NOTIMPL;}
-  STDMETHODIMP put_SourceLeft(long SourceLeft) {return E_NOTIMPL;}
-  STDMETHODIMP get_SourceLeft(long* pSourceLeft) {return E_NOTIMPL;}
-  STDMETHODIMP put_SourceWidth(long SourceWidth) {return E_NOTIMPL;}
-  STDMETHODIMP get_SourceWidth(long* pSourceWidth) {return E_NOTIMPL;}
-  STDMETHODIMP put_SourceTop(long SourceTop) {return E_NOTIMPL;}
-  STDMETHODIMP get_SourceTop(long* pSourceTop) {return E_NOTIMPL;}
-  STDMETHODIMP put_SourceHeight(long SourceHeight) {return E_NOTIMPL;}
-  STDMETHODIMP get_SourceHeight(long* pSourceHeight) {return E_NOTIMPL;}
-  STDMETHODIMP put_DestinationLeft(long DestinationLeft) {return E_NOTIMPL;}
-  STDMETHODIMP get_DestinationLeft(long* pDestinationLeft) {return E_NOTIMPL;}
-  STDMETHODIMP put_DestinationWidth(long DestinationWidth) {return E_NOTIMPL;}
-  STDMETHODIMP get_DestinationWidth(long* pDestinationWidth) {return E_NOTIMPL;}
-  STDMETHODIMP put_DestinationTop(long DestinationTop) {return E_NOTIMPL;}
-  STDMETHODIMP get_DestinationTop(long* pDestinationTop) {return E_NOTIMPL;}
-  STDMETHODIMP put_DestinationHeight(long DestinationHeight) {return E_NOTIMPL;}
-  STDMETHODIMP get_DestinationHeight(long* pDestinationHeight) {return E_NOTIMPL;}
-  STDMETHODIMP SetSourcePosition(long Left, long Top, long Width, long Height) {return E_NOTIMPL;}
-  STDMETHODIMP GetSourcePosition(long* pLeft, long* pTop, long* pWidth, long* pHeight){return E_NOTIMPL;}
-  STDMETHODIMP SetDefaultSourcePosition() {return E_NOTIMPL;}
-  STDMETHODIMP SetDestinationPosition(long Left, long Top, long Width, long Height) {return E_NOTIMPL;}
-  STDMETHODIMP GetDestinationPosition(long* pLeft, long* pTop, long* pWidth, long* pHeight){return E_NOTIMPL;}
-  STDMETHODIMP SetDefaultDestinationPosition() {return E_NOTIMPL;}
-  STDMETHODIMP GetVideoSize(long* pWidth, long* pHeight) {return E_NOTIMPL;}
-
-//IDispatch
-  
   
 protected:
   HRESULT CreateDevice();
@@ -118,7 +84,7 @@ protected:
   bool m_ReadyToPaint;
   VMR9AlphaBitmap      m_VMR9AlphaBitmap;
   CAutoVectorPtr<BYTE>  m_VMR9AlphaBitmapData;
-  CRect          m_VMR9AlphaBitmapRect;
+  tagRECT          m_VMR9AlphaBitmapRect;
   int            m_VMR9AlphaBitmapWidthBytes;
   bool m_fUseInternalTimer;
 private:

@@ -92,7 +92,7 @@ public:
 class CDX9SubPicAllocator : public ISubPicAllocatorImpl, public CCritSec
 {
 	CComPtr<IDirect3DDevice9> m_pD3DDev;
-	CSize m_maxsize;
+	tagSIZE m_maxsize;
 
 
 	bool Alloc(bool fStatic, ISubPic** ppSubPic);

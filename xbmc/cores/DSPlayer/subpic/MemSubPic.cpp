@@ -95,8 +95,12 @@ void ColorConvInit()
 CMemSubPic::CMemSubPic(SubPicDesc& spd)
 	: m_spd(spd)
 {
-	m_maxsize.SetSize(spd.w, spd.h);
-	m_rcDirty.SetRect(0, 0, spd.w, spd.h);
+    m_maxsize.cx = spd.w;
+	m_maxsize.cy = spd.h;
+	m_rcDirty.left = 0;
+	m_rcDirty.right = spd.w;
+	m_rcDirty.top = 0;
+	m_rcDirty.bottom = spd.h;
 }
 
 CMemSubPic::~CMemSubPic()
@@ -136,7 +140,7 @@ STDMETHODIMP CMemSubPic::CopyTo(ISubPic* pSubPic)
 	if(FAILED(GetDesc(src)) || FAILED(pSubPic->GetDesc(dst)))
 		return E_FAIL;
 
-	int w = m_rcDirty.Width(), h = m_rcDirty.Height();
+	int w = GeometryHelper::GetWidth(m_rcDirty), h = GeometryHelper::GetHeight(m_rcDirty);
 
 	BYTE* s = (BYTE*)src.bits + src.pitch*m_rcDirty.top + m_rcDirty.left*4;
 	BYTE* d = (BYTE*)dst.bits + dst.pitch*m_rcDirty.top + m_rcDirty.left*4;
@@ -149,15 +153,15 @@ STDMETHODIMP CMemSubPic::CopyTo(ISubPic* pSubPic)
 
 STDMETHODIMP CMemSubPic::ClearDirtyRect(DWORD color)
 {
-	if(m_rcDirty.IsRectEmpty())
+	if(IsRectEmpty(&m_rcDirty))
 		return S_FALSE;
 
 	BYTE* p = (BYTE*)m_spd.bits + m_spd.pitch*m_rcDirty.top + m_rcDirty.left*(m_spd.bpp>>3);
-	for(int j = 0, h = m_rcDirty.Height(); j < h; j++, p += m_spd.pitch)
+	for(int j = 0, h = GeometryHelper::GetHeight(m_rcDirty); j < h; j++, p += m_spd.pitch)
 	{
 //        memsetd(p, 0, m_rcDirty.Width());
 
-		int w = m_rcDirty.Width();
+		int w = GeometryHelper::GetWidth(m_rcDirty);
 #ifdef _WIN64
 		ASSERT(FALSE);	// TODOX64
 #else
@@ -172,7 +176,7 @@ STDMETHODIMP CMemSubPic::ClearDirtyRect(DWORD color)
 #endif
 	}
 	
-	m_rcDirty.SetRectEmpty();
+	SetRectEmpty(&m_rcDirty);
 
 	return S_OK;
 }
@@ -184,9 +188,9 @@ STDMETHODIMP CMemSubPic::Lock(SubPicDesc& spd)
 
 STDMETHODIMP CMemSubPic::Unlock(RECT* pDirtyRect)
 {
-	m_rcDirty = pDirtyRect ? *pDirtyRect : CRect(0,0,m_spd.w,m_spd.h);
+	m_rcDirty = pDirtyRect ? *pDirtyRect : GeometryHelper::CreateRect(0,0,m_spd.w,m_spd.h);
 
-	if(m_rcDirty.IsRectEmpty())
+	if(IsRectEmpty(&m_rcDirty))
 		return S_OK;
 	
     if(m_spd.type == MSP_YUY2 || m_spd.type == MSP_YV12 || m_spd.type == MSP_IYUV || m_spd.type == MSP_AYUV)
@@ -206,7 +210,7 @@ STDMETHODIMP CMemSubPic::Unlock(RECT* pDirtyRect)
 		}
 	}
 
-	int w = m_rcDirty.Width(), h = m_rcDirty.Height();
+	int w = GeometryHelper::GetWidth(m_rcDirty), h = GeometryHelper::GetHeight(m_rcDirty);
 
 	BYTE* top = (BYTE*)m_spd.bits + m_spd.pitch*m_rcDirty.top + m_rcDirty.left*4;
 	BYTE* bottom = top + m_spd.pitch*h;
@@ -304,7 +308,7 @@ STDMETHODIMP CMemSubPic::AlphaBlt(RECT* pSrc, RECT* pDst, SubPicDesc* pTarget)
 	if(src.type != dst.type)
 		return E_INVALIDARG;
 
-	CRect rs(*pSrc), rd(*pDst);
+	tagRECT rs(*pSrc), rd(*pDst);
 
 	if(dst.h < 0)
 	{
@@ -313,10 +317,10 @@ STDMETHODIMP CMemSubPic::AlphaBlt(RECT* pSrc, RECT* pDst, SubPicDesc* pTarget)
 		rd.top = dst.h - rd.top;
 	}
 
-	if(rs.Width() != rd.Width() || rs.Height() != abs(rd.Height()))
+	if(GeometryHelper::GetWidth(rs) != GeometryHelper::GetWidth(rd) || GeometryHelper::GetHeight(rs) != abs(GeometryHelper::GetHeight(rd)))
 		return E_INVALIDARG;
 
-	int w = rs.Width(), h = rs.Height();
+	int w = GeometryHelper::GetWidth(rs), h = GeometryHelper::GetHeight(rs);
 
 	BYTE* s = (BYTE*)src.bits + src.pitch*rs.top + rs.left*4;
 	BYTE* d = (BYTE*)dst.bits + dst.pitch*rd.top + ((rd.left*dst.bpp)>>3);

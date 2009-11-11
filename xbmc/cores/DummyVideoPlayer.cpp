@@ -260,7 +260,7 @@ bool CDummyVideoPlayer::SetPlayerState(CStdString state)
 
 void CDummyVideoPlayer::Render()
 {
-  const XbmcCRect vw = g_graphicsContext.GetViewWindow();
+  const CRect vw = g_graphicsContext.GetViewWindow();
 #ifdef HAS_DX
   D3DVIEWPORT9 newviewport;
   D3DVIEWPORT9 oldviewport;

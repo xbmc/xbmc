@@ -46,7 +46,7 @@ public:
   void CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CTextureInfo &texture, const CTextureInfo &textureFocus, float texHeight, float iconWidth, float iconHeight, int nofocusCondition, int focusCondition);
 //#endif
 
-  void SelectItemFromPoint(const XbmcCPoint &point);
+  void SelectItemFromPoint(const CPoint &point);
   bool MoveLeft();
   bool MoveRight();
 

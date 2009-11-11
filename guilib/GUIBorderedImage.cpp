@@ -21,7 +21,7 @@
 
 #include "GUIBorderedImage.h"
 
-CGUIBorderedImage::CGUIBorderedImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, const CTextureInfo& borderTexture, const XbmcCRect &borderSize)
+CGUIBorderedImage::CGUIBorderedImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, const CTextureInfo& borderTexture, const CRect &borderSize)
    : CGUIImage(parentID, controlID, posX + borderSize.x1, posY + borderSize.y1, width - borderSize.x1 - borderSize.x2, height - borderSize.y1 - borderSize.y2, texture),
      m_borderImage(posX, posY, width, height, borderTexture),
      m_borderSize(borderSize)
@@ -44,7 +44,7 @@ void CGUIBorderedImage::Render()
 {
   if (!m_borderImage.GetFileName().IsEmpty() && m_texture.IsAllocated())
   {
-    XbmcCRect rect = XbmcCRect(m_texture.GetXPosition(), m_texture.GetYPosition(), m_texture.GetXPosition() + m_texture.GetWidth(), m_texture.GetYPosition() + m_texture.GetHeight());
+    CRect rect = CRect(m_texture.GetXPosition(), m_texture.GetYPosition(), m_texture.GetXPosition() + m_texture.GetWidth(), m_texture.GetYPosition() + m_texture.GetHeight());
     rect.Intersect(m_texture.GetRenderRect());
     m_borderImage.SetPosition(rect.x1 - m_borderSize.x1, rect.y1 - m_borderSize.y1);
     m_borderImage.SetWidth(rect.Width() + m_borderSize.x1 + m_borderSize.x2);

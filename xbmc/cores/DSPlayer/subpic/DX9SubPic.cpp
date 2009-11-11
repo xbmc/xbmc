@@ -37,8 +37,8 @@ CDX9SubPic::CDX9SubPic(IDirect3DSurface9* pSurface, CDX9SubPicAllocator *pAlloca
 	ZeroMemory(&d3dsd, sizeof(d3dsd));
 	if(SUCCEEDED(m_pSurface->GetDesc(&d3dsd)))
 	{
-		m_maxsize.SetSize(d3dsd.Width, d3dsd.Height);
-		m_rcDirty.SetRect(0, 0, d3dsd.Width, d3dsd.Height);
+		m_maxsize = GeometryHelper::CreateSize(d3dsd.Width, d3dsd.Height);
+		m_rcDirty = GeometryHelper::CreateRect(0, 0, d3dsd.Width, d3dsd.Height);
 	}
 }
 
@@ -102,7 +102,7 @@ STDMETHODIMP CDX9SubPic::CopyTo(ISubPic* pSubPic)
 	if(FAILED(hr = __super::CopyTo(pSubPic)))
 		return hr;
 
-	if(m_rcDirty.IsRectEmpty())
+	if(IsRectEmpty(&m_rcDirty))
 		return S_FALSE;
 
 	CComPtr<IDirect3DDevice9> pD3DDev;
@@ -117,7 +117,7 @@ STDMETHODIMP CDX9SubPic::CopyTo(ISubPic* pSubPic)
 
 STDMETHODIMP CDX9SubPic::ClearDirtyRect(DWORD color)
 {
-	if(m_rcDirty.IsRectEmpty())
+	if(IsRectEmpty(&m_rcDirty))
 		return S_FALSE;
 
 	CComPtr<IDirect3DDevice9> pD3DDev;
@@ -127,7 +127,7 @@ STDMETHODIMP CDX9SubPic::ClearDirtyRect(DWORD color)
 	SubPicDesc spd;
 	if(SUCCEEDED(Lock(spd)))
 	{
-		int h = m_rcDirty.Height();
+		int h = GeometryHelper::GetHeight(m_rcDirty);
 
 		BYTE* ptr = (BYTE*)spd.bits + spd.pitch*m_rcDirty.top + (m_rcDirty.left*spd.bpp>>3);
 
@@ -136,7 +136,7 @@ STDMETHODIMP CDX9SubPic::ClearDirtyRect(DWORD color)
 			while(h-- > 0)
 			{
 				WORD* start = (WORD*)ptr;
-				WORD* end = start + m_rcDirty.Width();
+				WORD* end = start + GeometryHelper::GetWidth(m_rcDirty);
 				while(start < end) *start++ = (WORD)color;
 				ptr += spd.pitch;
 			}
@@ -146,7 +146,7 @@ STDMETHODIMP CDX9SubPic::ClearDirtyRect(DWORD color)
 			while(h-- > 0)
 			{
 				DWORD* start = (DWORD*)ptr;
-				DWORD* end = start + m_rcDirty.Width();
+				DWORD* end = start + GeometryHelper::GetWidth(m_rcDirty);
 				while(start < end) *start++ = color;
 				ptr += spd.pitch;
 			}
@@ -160,9 +160,8 @@ STDMETHODIMP CDX9SubPic::ClearDirtyRect(DWORD color)
 	}
 
 //		HRESULT hr = pD3DDev->ColorFill(m_pSurface, m_rcDirty, color);
-	
-	m_rcDirty.SetRectEmpty();
 
+    SetRectEmpty(&m_rcDirty);
 	return S_OK;
 }
 
@@ -199,16 +198,18 @@ STDMETHODIMP CDX9SubPic::Unlock(RECT* pDirtyRect)
 	if(pDirtyRect)
 	{
 		m_rcDirty = *pDirtyRect;
-		m_rcDirty.InflateRect(1, 1);
+		//m_rcDirty.InflateRect(1, 1);
+		InflateRect(&m_rcDirty,1,1);
 		m_rcDirty.left &= ~127;
 		m_rcDirty.top &= ~63;
 		m_rcDirty.right = (m_rcDirty.right + 127) & ~127;
 		m_rcDirty.bottom = (m_rcDirty.bottom + 63) & ~63;
-		m_rcDirty &= CRect(CPoint(0, 0), m_size);
+		IntersectRect(&m_rcDirty,&m_rcDirty,&GeometryHelper::CreateRect(GeometryHelper::CreatePoint(0,0),m_size));
+		//m_rcDirty &= CRect(CPoint(0, 0), m_size);
 	}
 	else
 	{
-		m_rcDirty = CRect(CPoint(0, 0), m_size);
+		m_rcDirty = GeometryHelper::CreateRect(GeometryHelper::CreatePoint(0, 0), m_size);
 	}
 
 	CComPtr<IDirect3DTexture9> pTexture = (IDirect3DTexture9*)GetObject();
@@ -225,7 +226,7 @@ STDMETHODIMP CDX9SubPic::AlphaBlt(RECT* pSrc, RECT* pDst, SubPicDesc* pTarget)
 	if(!pSrc || !pDst)
 		return E_POINTER;
 
-	CRect src(*pSrc), dst(*pDst);
+	tagRECT src(*pSrc), dst(*pDst);
 
 	CComPtr<IDirect3DDevice9> pD3DDev;
 	CComPtr<IDirect3DTexture9> pTexture = (IDirect3DTexture9*)GetObject();

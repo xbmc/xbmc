@@ -58,8 +58,8 @@ public:
   virtual void OnDown();
   virtual void OnLeft();
   virtual void OnRight();
-  virtual bool OnMouseDrag(const XbmcCPoint &offset, const XbmcCPoint &point);
-  virtual bool OnMouseClick(int button, const XbmcCPoint &point);
+  virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point);
+  virtual bool OnMouseClick(int button, const CPoint &point);
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);

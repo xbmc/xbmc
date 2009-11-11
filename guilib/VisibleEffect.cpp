@@ -126,7 +126,7 @@ const CAnimEffect &CAnimEffect::operator=(const CAnimEffect &src)
   return *this;
 }
 
-void CAnimEffect::Calculate(unsigned int time, const XbmcCPoint &center)
+void CAnimEffect::Calculate(unsigned int time, const CPoint &center)
 {
   assert(m_delay + m_length);
   // calculate offset and tweening
@@ -141,7 +141,7 @@ void CAnimEffect::Calculate(unsigned int time, const XbmcCPoint &center)
   ApplyEffect(offset, center);
 }
 
-void CAnimEffect::ApplyState(ANIMATION_STATE state, const XbmcCPoint &center)
+void CAnimEffect::ApplyState(ANIMATION_STATE state, const CPoint &center)
 {
   float offset = (state == ANIM_STATE_APPLIED) ? 1.0f : 0.0f;
   ApplyEffect(offset, center);
@@ -173,7 +173,7 @@ CFadeEffect::CFadeEffect(float start, float end, unsigned int delay, unsigned in
   m_endAlpha = end;
 }
 
-void CFadeEffect::ApplyEffect(float offset, const XbmcCPoint &center)
+void CFadeEffect::ApplyEffect(float offset, const CPoint &center)
 {
   m_matrix.SetFader(((m_endAlpha - m_startAlpha) * offset + m_startAlpha) * 0.01f);
 }
@@ -202,7 +202,7 @@ CSlideEffect::CSlideEffect(const TiXmlElement *node) : CAnimEffect(node, EFFECT_
   }
 }
 
-void CSlideEffect::ApplyEffect(float offset, const XbmcCPoint &center)
+void CSlideEffect::ApplyEffect(float offset, const CPoint &center)
 {
   m_matrix.SetTranslation((m_endX - m_startX)*offset + m_startX, (m_endY - m_startY)*offset + m_startY, 0);
 }
@@ -234,7 +234,7 @@ CRotateEffect::CRotateEffect(const TiXmlElement *node, EFFECT_TYPE effect) : CAn
   }
 }
 
-void CRotateEffect::ApplyEffect(float offset, const XbmcCPoint &center)
+void CRotateEffect::ApplyEffect(float offset, const CPoint &center)
 {
   static const float degree_to_radian = 0.01745329252f;
   if (m_autoCenter)
@@ -247,12 +247,12 @@ void CRotateEffect::ApplyEffect(float offset, const XbmcCPoint &center)
     m_matrix.SetZRotation(((m_endAngle - m_startAngle)*offset + m_startAngle) * degree_to_radian, m_center.x, m_center.y, g_graphicsContext.GetScalingPixelRatio());
 }
 
-CZoomEffect::CZoomEffect(const TiXmlElement *node, const XbmcCRect &rect) : CAnimEffect(node, EFFECT_TYPE_ZOOM)
+CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEffect(node, EFFECT_TYPE_ZOOM)
 {
   // effect defaults
   m_startX = m_startY = 100;
   m_endX = m_endY = 100;
-  m_center = XbmcCPoint(0,0);
+  m_center = CPoint(0,0);
   m_autoCenter = false;
 
   float startPosX = rect.x1;
@@ -347,7 +347,7 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const XbmcCRect &rect) : CAni
   }
 }
 
-void CZoomEffect::ApplyEffect(float offset, const XbmcCPoint &center)
+void CZoomEffect::ApplyEffect(float offset, const CPoint &center)
 {
   if (m_autoCenter)
     m_center = center;
@@ -526,10 +526,10 @@ void CAnimation::ApplyAnimation()
     m_currentState = ANIM_STATE_APPLIED;
     m_amount = m_length;
   }
-  Calculate(XbmcCPoint());
+  Calculate(CPoint());
 }
 
-void CAnimation::Calculate(const XbmcCPoint &center)
+void CAnimation::Calculate(const CPoint &center)
 {
   for (unsigned int i = 0; i < m_effects.size(); i++)
   {
@@ -546,7 +546,7 @@ void CAnimation::Calculate(const XbmcCPoint &center)
   }
 }
 
-void CAnimation::RenderAnimation(TransformMatrix &matrix, const XbmcCPoint &center)
+void CAnimation::RenderAnimation(TransformMatrix &matrix, const CPoint &center)
 {
   if (m_currentProcess != ANIM_PROCESS_NONE)
     Calculate(center);
@@ -607,7 +607,7 @@ void CAnimation::SetInitialCondition(int contextWindow)
     ResetAnimation();
 }
 
-void CAnimation::Create(const TiXmlElement *node, const XbmcCRect &rect)
+void CAnimation::Create(const TiXmlElement *node, const CRect &rect)
 {
   if (!node || !node->FirstChild())
     return;
@@ -670,7 +670,7 @@ void CAnimation::Create(const TiXmlElement *node, const XbmcCRect &rect)
   }
 }
 
-void CAnimation::AddEffect(const CStdString &type, const TiXmlElement *node, const XbmcCRect &rect)
+void CAnimation::AddEffect(const CStdString &type, const TiXmlElement *node, const CRect &rect)
 {
   CAnimEffect *effect = NULL;
   if (type.Equals("fade"))

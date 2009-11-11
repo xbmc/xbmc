@@ -32,7 +32,7 @@ public:
 
   void SetViewMode(int viewMode);
   int GetResolution() const;
-  void GetVideoRect(XbmcCRect &source, XbmcCRect &dest);
+  void GetVideoRect(CRect &source, CRect &dest);
   float GetAspectRatio() const;
   virtual void AutoCrop(bool bCrop) {};
 
@@ -47,6 +47,6 @@ protected:
   unsigned int m_sourceHeight;
   float m_sourceFrameRatio;
 
-  XbmcCRect m_destRect;
-  XbmcCRect m_sourceRect;
+  CRect m_destRect;
+  CRect m_sourceRect;
 };

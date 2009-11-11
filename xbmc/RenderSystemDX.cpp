@@ -102,7 +102,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height)
   m_nBackBufferWidth = width;
   m_nBackBufferHeight = height;
 
-  XbmcCRect rc;
+  CRect rc;
   rc.SetRect(0, 0, width, height);
 
   SetViewPort(rc);
@@ -414,7 +414,7 @@ void CRenderSystemDX::ApplyStateBlock()
     m_stateBlock->Apply();
 }
 
-void CRenderSystemDX::SetCameraPosition(const XbmcCPoint &camera, int screenWidth, int screenHeight)
+void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight)
 { 
   if (!m_bRenderCreated)
     return;
@@ -425,7 +425,7 @@ void CRenderSystemDX::SetCameraPosition(const XbmcCPoint &camera, int screenWidt
   float w = viewport.Width*0.5f;
   float h = viewport.Height*0.5f;
 
-  XbmcCPoint offset = camera - XbmcCPoint(screenWidth*0.5f, screenHeight*0.5f);
+  CPoint offset = camera - CPoint(screenWidth*0.5f, screenHeight*0.5f);
 
   // world view.  Until this is moved onto the GPU (via a vertex shader for instance), we set it to the identity
   // here.
@@ -530,7 +530,7 @@ void CRenderSystemDX::CalculateMaxTexturesize()
  
 }
 
-void CRenderSystemDX::GetViewPort(XbmcCRect& viewPort)
+void CRenderSystemDX::GetViewPort(CRect& viewPort)
 {
   if (!m_bRenderCreated)
     return;
@@ -544,7 +544,7 @@ void CRenderSystemDX::GetViewPort(XbmcCRect& viewPort)
   viewPort.y2 = (float)d3dviewport.Y + d3dviewport.Height;
 }
 
-void CRenderSystemDX::SetViewPort(XbmcCRect& viewPort)
+void CRenderSystemDX::SetViewPort(CRect& viewPort)
 {
   if (!m_bRenderCreated)
     return;

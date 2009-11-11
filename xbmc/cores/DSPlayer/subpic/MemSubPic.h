@@ -52,7 +52,7 @@ public:
 class CMemSubPicAllocator : public ISubPicAllocatorImpl
 {
 	int m_type;
-	CSize m_maxsize;
+	tagSIZE m_maxsize;
 
 	bool Alloc(bool fStatic, ISubPic** ppSubPic);
 

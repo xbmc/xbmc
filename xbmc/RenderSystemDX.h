@@ -47,13 +47,13 @@ public:
 
   virtual void SetVSync(bool vsync);
 
-  virtual void SetViewPort(XbmcCRect& viewPort);
-  virtual void GetViewPort(XbmcCRect& viewPort);
+  virtual void SetViewPort(CRect& viewPort);
+  virtual void GetViewPort(CRect& viewPort);
 
   virtual void CaptureStateBlock();
   virtual void ApplyStateBlock();
 
-  virtual void SetCameraPosition(const XbmcCPoint &camera, int screenWidth, int screenHeight);
+  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight);
 
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix);
   virtual void RestoreHardwareTransform();

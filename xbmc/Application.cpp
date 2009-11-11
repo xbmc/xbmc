@@ -2176,7 +2176,7 @@ void CApplication::RenderScreenSaver()
   if (draw)
   {
     color_t color = ((color_t)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
-    CGUITexture::DrawQuad(XbmcCRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()), color);
+    CGUITexture::DrawQuad(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()), color);
   }
 }
 
@@ -3085,7 +3085,7 @@ bool CApplication::ProcessHTTPApiButtons()
       {
         CAction action;
         action.id = ACTION_MOUSE;
-        g_Mouse.SetLocation(XbmcCPoint(keyHttp.GetLeftThumbX(), keyHttp.GetLeftThumbY()));
+        g_Mouse.SetLocation(CPoint(keyHttp.GetLeftThumbX(), keyHttp.GetLeftThumbY()));
         if (keyHttp.GetLeftTrigger()!=0)
           g_Mouse.bClick[keyHttp.GetLeftTrigger()-1]=true;
         if (keyHttp.GetRightTrigger()!=0)
@@ -3184,7 +3184,7 @@ bool CApplication::ProcessEventServer(float frameTime)
     action.id = ACTION_MOUSE;
     if (es->GetMousePos(action.amount1, action.amount2) && g_Mouse.IsEnabled())
     {
-      XbmcCPoint point;
+      CPoint point;
       point.x = action.amount1;
       point.y = action.amount2;
       g_Mouse.SetLocation(point, true);

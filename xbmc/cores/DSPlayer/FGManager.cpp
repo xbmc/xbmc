@@ -90,6 +90,11 @@ CFGManager::~CFGManager()
   while(!m_source.IsEmpty()) delete m_source.RemoveHead();
   while(!m_transform.IsEmpty()) delete m_transform.RemoveHead();
   while(!m_override.IsEmpty()) delete m_override.RemoveHead();
+  while(!m_configfilter.IsEmpty()) delete m_configfilter.RemoveHead();
+  while(!m_splitter.IsEmpty()) delete m_splitter.RemoveHead();
+  m_FileSource.Release();
+  m_Splitter.Release();
+  m_XbmcVideoDec.Release();
   m_pUnks.RemoveAll();
   m_pUnkInner.Release();
 }

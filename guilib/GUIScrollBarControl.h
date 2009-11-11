@@ -58,17 +58,17 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   void SetValue(int value);
   int GetValue() const;
-  virtual bool HitTest(const XbmcCPoint &point) const;
-  virtual bool OnMouseClick(int button, const XbmcCPoint &point);
-  virtual bool OnMouseDrag(const XbmcCPoint &offset, const XbmcCPoint &point);
-  virtual bool OnMouseWheel(char wheel, const XbmcCPoint &point);
+  virtual bool HitTest(const CPoint &point) const;
+  virtual bool OnMouseClick(int button, const CPoint &point);
+  virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point);
+  virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual CStdString GetDescription() const;
   virtual bool IsVisible() const;
 protected:
   virtual void UpdateColors();
   void UpdateBarSize();
   virtual void Move(int iNumSteps);
-  virtual void SetFromPosition(const XbmcCPoint &point);
+  virtual void SetFromPosition(const CPoint &point);
 
   CGUITexture m_guiBackground;
   CGUITexture m_guiBarNoFocus;

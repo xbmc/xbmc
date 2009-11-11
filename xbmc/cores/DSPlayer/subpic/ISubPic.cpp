@@ -31,9 +31,11 @@ ISubPicImpl::ISubPicImpl()
 	: CUnknown(NAME("ISubPicImpl"), NULL)
 	, m_rtStart(0), m_rtStop(0)
 	, m_rtSegmentStart(0), m_rtSegmentStop(0)
-	, m_rcDirty(0, 0, 0, 0), m_maxsize(0, 0), m_size(0, 0), m_vidrect(0, 0, 0, 0)
-	, m_VirtualTextureSize(0, 0), m_VirtualTextureTopLeft (0, 0)
+	, m_rcDirty(GeometryHelper::CreateRect(0, 0, 0, 0)), m_maxsize(GeometryHelper::CreateSize(0, 0)), m_size(GeometryHelper::CreateSize(0, 0)), m_vidrect(GeometryHelper::CreateRect(0, 0, 0, 0))
+	, m_VirtualTextureSize(GeometryHelper::CreateSize(0, 0)), m_VirtualTextureTopLeft (GeometryHelper::CreatePoint(0, 0))
 {
+
+
 }
 
 STDMETHODIMP ISubPicImpl::NonDelegatingQueryInterface(REFIID riid, void** ppv)
@@ -100,7 +102,7 @@ STDMETHODIMP ISubPicImpl::CopyTo(ISubPic* pSubPic)
 	pSubPic->SetStop(m_rtStop);
 	pSubPic->SetSegmentStart(m_rtSegmentStart);
 	pSubPic->SetSegmentStop(m_rtSegmentStop);
-	pSubPic->SetDirtyRect(m_rcDirty);
+	pSubPic->SetDirtyRect(&m_rcDirty);
 	pSubPic->SetSize(m_size, m_vidrect);
 	pSubPic->SetVirtualTextureSize(m_VirtualTextureSize, m_VirtualTextureTopLeft);
 
@@ -119,18 +121,18 @@ STDMETHODIMP ISubPicImpl::GetSourceAndDest(SIZE* pSize, RECT* pRcSource, RECT* p
 
 	if(m_size.cx > 0 && m_size.cy > 0)
 	{
-		CRect		rcTemp = m_rcDirty;
+		tagRECT		rcTemp = m_rcDirty;
 
 		// FIXME
-		rcTemp.DeflateRect(1, 1);
+		InflateRect(&rcTemp,-1, -1);
 
 		*pRcSource = rcTemp;
 
-		rcTemp.OffsetRect (m_VirtualTextureTopLeft);
-		*pRcDest = CRect (rcTemp.left   * pSize->cx / m_VirtualTextureSize.cx,
-						  rcTemp.top    * pSize->cy / m_VirtualTextureSize.cy,
-						  rcTemp.right  * pSize->cx / m_VirtualTextureSize.cx,
-						  rcTemp.bottom * pSize->cy / m_VirtualTextureSize.cy);
+		OffsetRect(&rcTemp,m_VirtualTextureTopLeft.x,m_VirtualTextureTopLeft.y);
+		*pRcDest = GeometryHelper::CreateRect(rcTemp.left   * pSize->cx / m_VirtualTextureSize.cx,
+						                      rcTemp.top    * pSize->cy / m_VirtualTextureSize.cy,
+						                      rcTemp.right  * pSize->cx / m_VirtualTextureSize.cx,
+						                      rcTemp.bottom * pSize->cy / m_VirtualTextureSize.cy);
 
 		return S_OK;
 	}
@@ -179,8 +181,10 @@ STDMETHODIMP ISubPicImpl::SetSize(SIZE size, RECT vidrect)
 
 STDMETHODIMP ISubPicImpl::SetVirtualTextureSize (const SIZE pSize, const POINT pTopLeft)
 {
-	m_VirtualTextureSize.SetSize (pSize.cx, pSize.cy);
-	m_VirtualTextureTopLeft.SetPoint (pTopLeft.x, pTopLeft.y);
+	m_VirtualTextureSize.cx = pSize.cx;
+	m_VirtualTextureSize.cy = pSize.cy;
+	m_VirtualTextureTopLeft.x = pTopLeft.x;
+    m_VirtualTextureTopLeft.y = pTopLeft.y;
 	
 	return S_OK;
 }
@@ -195,7 +199,7 @@ ISubPicAllocatorImpl::ISubPicAllocatorImpl(SIZE cursize, bool fDynamicWriteOnly,
 	, m_fDynamicWriteOnly(fDynamicWriteOnly)
 	, m_fPow2Textures(fPow2Textures)
 {
-	m_curvidrect = CRect(CPoint(0,0), m_cursize);
+	m_curvidrect = GeometryHelper::CreateRect(0,0,m_cursize.cx,m_cursize.cy);
 }
 
 STDMETHODIMP ISubPicAllocatorImpl::NonDelegatingQueryInterface(REFIID riid, void** ppv)
@@ -389,13 +393,13 @@ HRESULT ISubPicQueueImpl::RenderTo(ISubPic* pSubPic, REFERENCE_TIME rtStart, REF
 	if(SUCCEEDED(pSubPic->ClearDirtyRect(0xFF000000))
 	&& SUCCEEDED(pSubPic->Lock(spd)))
 	{
-		CRect r(0,0,0,0);
+		tagRECT r = GeometryHelper::CreateRect(0,0,0,0);
 		hr = pSubPicProvider->Render(spd, bIsAnimated ? rtStart : ((rtStart+rtStop)/2), fps, r);
 
 		pSubPic->SetStart(rtStart);
 		pSubPic->SetStop(rtStop);
 
-		pSubPic->Unlock(r);
+		pSubPic->Unlock(&r);
 	}
 
 	pSubPicProvider->Unlock();
@@ -525,7 +529,7 @@ STDMETHODIMP_(bool) CSubPicQueue::LookupSubPic(REFERENCE_TIME rtNow, CComPtr<ISu
 #if DSubPicTraceLevel > 0
 		REFERENCE_TIME rtStart = (ppSubPic)->GetStart();
 		REFERENCE_TIME rtSegmentStop = (ppSubPic)->GetSegmentStop();
-		CRect r;
+		tagRECT r;
 		(ppSubPic)->GetDirtyRect(&r);
 		TRACE("Display: %f->%f   %f    %dx%d\n", double(rtStart) / 10000000.0, double(rtSegmentStop) / 10000000.0, double(rtNow) / 10000000.0, r.Width(), r.Height());
 #endif
@@ -739,7 +743,7 @@ DWORD CSubPicQueue::ThreadProc()
 							pStatic->SetSegmentStart(rtStart);
 							pStatic->SetSegmentStop(rtStop);
 #if DSubPicTraceLevel > 0
-							CRect r;
+							tagRECT r;
 							pStatic->GetDirtyRect(&r);
 							TRACE("Render: %f->%f    %f->%f      %dx%d\n", double(rtCurrent) / 10000000.0, double(rtEndThis) / 10000000.0, double(rtStart) / 10000000.0, double(rtStop) / 10000000.0, r.Width(), r.Height());
 #endif
@@ -971,8 +975,8 @@ STDMETHODIMP CSubPicQueueNoThread::GetStats(int nSubPic, REFERENCE_TIME& rtStart
 ISubPicAllocatorPresenterImpl::ISubPicAllocatorPresenterImpl(HWND hWnd, HRESULT& hr, CStdString *_pError)
 	: CUnknown(NAME("ISubPicAllocatorPresenterImpl"), NULL)
 	, m_hWnd(hWnd)
-	, m_NativeVideoSize(0, 0), m_AspectRatio(0, 0)
-	, m_VideoRect(0, 0, 0, 0), m_WindowRect(0, 0, 0, 0)
+	, m_NativeVideoSize(GeometryHelper::CreateSize(0, 0)), m_AspectRatio(GeometryHelper::CreateSize(0, 0))
+	, m_VideoRect(GeometryHelper::CreateRect(0, 0, 0, 0)), m_WindowRect(GeometryHelper::CreateRect(0, 0, 0, 0))
 	, m_fps(25.0)
 	, m_rtSubtitleDelay(0)
 {
@@ -1001,26 +1005,26 @@ STDMETHODIMP ISubPicAllocatorPresenterImpl::NonDelegatingQueryInterface(REFIID r
 		__super::NonDelegatingQueryInterface(riid, ppv);
 }
 
-void ISubPicAllocatorPresenterImpl::AlphaBltSubPic(CSize size, SubPicDesc* pTarget)
+void ISubPicAllocatorPresenterImpl::AlphaBltSubPic(tagSIZE size, SubPicDesc* pTarget)
 {
 	CComPtr<ISubPic> pSubPic;
 	if(m_pSubPicQueue->LookupSubPic(m_rtNow, pSubPic))
 	{
-		CRect rcSource, rcDest;
-		if (SUCCEEDED (pSubPic->GetSourceAndDest(&size, rcSource, rcDest)))
-			pSubPic->AlphaBlt(rcSource, rcDest, pTarget);
+		tagRECT rcSource, rcDest;
+		if (SUCCEEDED (pSubPic->GetSourceAndDest(&size, &rcSource, &rcDest)))
+			pSubPic->AlphaBlt(&rcSource, &rcDest, pTarget);
 /*		SubPicDesc spd;
 		pSubPic->GetDesc(spd);
 
 		if(spd.w > 0 && spd.h > 0)
 		{
-			CRect r;
+			tagRECT r;
 			pSubPic->GetDirtyRect(r);
 
 			// FIXME
 			r.DeflateRect(1, 1);
 
-			CRect rDstText(
+			tagRECT rDstText(
 				r.left * size.cx / spd.w,
 				r.top * size.cy / spd.h,
 				r.right * size.cx / spd.w,
@@ -1035,7 +1039,7 @@ void ISubPicAllocatorPresenterImpl::AlphaBltSubPic(CSize size, SubPicDesc* pTarg
 
 STDMETHODIMP_(SIZE) ISubPicAllocatorPresenterImpl::GetVideoSize(bool fCorrectAR)
 {
-	CSize VideoSize(m_NativeVideoSize);
+	tagSIZE VideoSize(m_NativeVideoSize);
 
 	if(fCorrectAR && m_AspectRatio.cx > 0 && m_AspectRatio.cy > 0)
 		VideoSize.cx = (LONGLONG(VideoSize.cy)*LONGLONG(m_AspectRatio.cx))/LONGLONG(m_AspectRatio.cy);
@@ -1045,12 +1049,12 @@ STDMETHODIMP_(SIZE) ISubPicAllocatorPresenterImpl::GetVideoSize(bool fCorrectAR)
 
 STDMETHODIMP_(void) ISubPicAllocatorPresenterImpl::SetPosition(RECT w, RECT v)
 {
-	bool fWindowPosChanged = !!(m_WindowRect != w);
-	bool fWindowSizeChanged = !!(m_WindowRect.Size() != CRect(w).Size());
+	bool fWindowPosChanged = !!(GeometryHelper::PosChanged(m_WindowRect,w));
+	bool fWindowSizeChanged = !!(GeometryHelper::SizeChanged(m_WindowRect,w));
 
 	m_WindowRect = w;
 
-	bool fVideoRectChanged = !!(m_VideoRect != v);
+	bool fVideoRectChanged = !!(GeometryHelper::RectChanged(m_VideoRect,v));
 
 	m_VideoRect = v;
 
@@ -1058,7 +1062,7 @@ STDMETHODIMP_(void) ISubPicAllocatorPresenterImpl::SetPosition(RECT w, RECT v)
 	{
 		if(m_pAllocator)
 		{
-			m_pAllocator->SetCurSize(m_WindowRect.Size());
+			m_pAllocator->SetCurSize(GeometryHelper::GetSize(m_WindowRect));
 			m_pAllocator->SetCurVidRect(m_VideoRect);
 		}
 
@@ -1117,15 +1121,18 @@ STDMETHODIMP_(void) ISubPicAllocatorPresenterImpl::Invalidate(REFERENCE_TIME rtI
 
 #include <math.h>
 
-void ISubPicAllocatorPresenterImpl::Transform(CRect r, Vector v[4])
+void ISubPicAllocatorPresenterImpl::Transform(tagRECT r, Vector v[4])
 {
 	v[0] = Vector(r.left, r.top, 0);
 	v[1] = Vector(r.right, r.top, 0);
 	v[2] = Vector(r.left, r.bottom, 0);
 	v[3] = Vector(r.right, r.bottom, 0);
-
-	Vector center(r.CenterPoint().x, r.CenterPoint().y, 0);
-	int l = (int)(Vector(r.Size().cx, r.Size().cy, 0).Length()*1.5f)+1;
+    tagPOINT rCenterPoint;
+	tagSIZE rSize;
+	rSize = GeometryHelper::GetSize(r);
+    rCenterPoint = GeometryHelper::GetCenterPoint(r);
+	Vector center(rCenterPoint.x, rCenterPoint.y, 0);
+	int l = (int)(Vector(rSize.cx, rSize.cy, 0).Length()*1.5f)+1;
 
 	for(int i = 0; i < 4; i++)
 	{

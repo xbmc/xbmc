@@ -305,11 +305,11 @@ void CGUIControlGroupList::ScrollTo(float offset)
   m_scrollSpeed = (m_scrollOffset - m_offset) / TIME_TO_SCROLL;
 }
 
-bool CGUIControlGroupList::CanFocusFromPoint(const XbmcCPoint &point, CGUIControl **control, XbmcCPoint &controlPoint) const
+bool CGUIControlGroupList::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
 {
   if (!CGUIControl::CanFocus()) return false;
   float pos = 0;
-  XbmcCPoint controlCoords(point);
+  CPoint controlCoords(point);
   m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
   float alignOffset = GetAlignOffset();
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
@@ -321,7 +321,7 @@ bool CGUIControlGroupList::CanFocusFromPoint(const XbmcCPoint &point, CGUIContro
       { // we're on screen
         float offsetX = m_orientation == VERTICAL ? m_posX : m_posX + alignOffset + pos - m_offset;
         float offsetY = m_orientation == VERTICAL ? m_posY + alignOffset + pos - m_offset : m_posY;
-        if (child->CanFocusFromPoint(controlCoords - XbmcCPoint(offsetX, offsetY), control, controlPoint))
+        if (child->CanFocusFromPoint(controlCoords - CPoint(offsetX, offsetY), control, controlPoint))
           return true;
       }
       pos += Size(child) + m_itemGap;
@@ -331,10 +331,10 @@ bool CGUIControlGroupList::CanFocusFromPoint(const XbmcCPoint &point, CGUIContro
   return false;
 }
 
-void CGUIControlGroupList::UnfocusFromPoint(const XbmcCPoint &point)
+void CGUIControlGroupList::UnfocusFromPoint(const CPoint &point)
 {
   float pos = 0;
-  XbmcCPoint controlCoords(point);
+  CPoint controlCoords(point);
   m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
   float alignOffset = GetAlignOffset();
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
@@ -344,7 +344,7 @@ void CGUIControlGroupList::UnfocusFromPoint(const XbmcCPoint &point)
     {
       if (pos + Size(child) > m_offset && pos < m_offset + Size())
       { // we're on screen
-        XbmcCPoint offset = (m_orientation == VERTICAL) ? XbmcCPoint(m_posX, m_posY + alignOffset + pos - m_offset) : XbmcCPoint(m_posX + alignOffset + pos - m_offset, m_posY);
+        CPoint offset = (m_orientation == VERTICAL) ? CPoint(m_posX, m_posY + alignOffset + pos - m_offset) : CPoint(m_posX + alignOffset + pos - m_offset, m_posY);
         child->UnfocusFromPoint(controlCoords - offset);
       }
       pos += Size(child) + m_itemGap;

@@ -74,13 +74,13 @@ public:
   virtual void SetVSync(bool vsync) = 0;
   bool GetVSync() { return m_bVSync; }
 
-  virtual void SetViewPort(XbmcCRect& viewPort) = 0;
-  virtual void GetViewPort(XbmcCRect& viewPort) = 0;
+  virtual void SetViewPort(CRect& viewPort) = 0;
+  virtual void GetViewPort(CRect& viewPort) = 0;
 
   virtual void CaptureStateBlock() = 0;
   virtual void ApplyStateBlock() = 0;
 
-  virtual void SetCameraPosition(const XbmcCPoint &camera, int screenWidth, int screenHeight) = 0;
+  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight) = 0;
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix) = 0;
   virtual void RestoreHardwareTransform() = 0;
 
