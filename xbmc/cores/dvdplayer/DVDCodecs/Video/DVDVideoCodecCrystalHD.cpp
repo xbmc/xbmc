@@ -24,6 +24,7 @@
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
+#include "GUISettings.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodecCrystalHD.h"
@@ -132,29 +133,37 @@ CDVDVideoCodecCrystalHD::~CDVDVideoCodecCrystalHD()
 
 bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  BCM_CODEC_TYPE codec_type;
-  BCM_STREAM_TYPE stream_type;
-  
-  codec_type = hints.codec;
-  stream_type = BC_STREAM_TYPE_ES;
-  
-  //m_insert_sps_pps = init_h264_mp4toannexb_filter(hints);
-
-  m_Device = new CCrystalHD();
-  if (!m_Device)
+  //int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
+  //if((requestedMethod == RENDER_METHOD_CRYSTALHD || requestedMethod == RENDER_METHOD_AUTO)
+  if ((true)
+    && !hints.software)
   {
-    CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD", __MODULE_NAME__);
-    return false;
+    BCM_CODEC_TYPE codec_type;
+    BCM_STREAM_TYPE stream_type;
+    
+    codec_type = hints.codec;
+    stream_type = BC_STREAM_TYPE_ES;
+    
+    //m_insert_sps_pps = init_h264_mp4toannexb_filter(hints);
+
+    m_Device = new CCrystalHD();
+    if (!m_Device)
+    {
+      CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD", __MODULE_NAME__);
+      return false;
+    }
+    
+    if (!m_Device->Open(stream_type, codec_type))
+    {
+      CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD", __MODULE_NAME__);
+      return false;
+    }
+
+    CLog::Log(LOGDEBUG, "%s: Opened Broadcom Crystal HD", __MODULE_NAME__);
+    return true;
   }
   
-  if (!m_Device->Open(stream_type, codec_type))
-  {
-    CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD", __MODULE_NAME__);
-    return false;
-  }
-
-  CLog::Log(LOGDEBUG, "%s: Opened Broadcom Crystal HD", __MODULE_NAME__);
-  return true;
+  return false;
 }
 
 void CDVDVideoCodecCrystalHD::Dispose()
