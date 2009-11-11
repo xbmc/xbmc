@@ -59,8 +59,6 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_scrapers.clear();
-      m_scraper.reset();
-      m_content = m_origContent = CONTENT_NONE;
       m_vecItems->Clear();
       CGUIDialogSettings::OnMessage(message);
     }
@@ -74,7 +72,6 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(), CONTROL_CONTENT_TYPE);
       g_windowManager.SendMessage(msg);
       m_content = (CONTENT_TYPE) msg.GetParam1();
-      //CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, (int) m_content);
       SetupPage();
     }
     if (iControl == CONTROL_SCRAPER_LIST)
