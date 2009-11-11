@@ -470,6 +470,13 @@ void CUtil::GetCommonPath(CStdString& strParent, const CStdString& strPath)
   }
 }
 
+CStdString CUtil::GetParentPath(const CStdString& strPath)
+{
+  CStdString strReturn;
+  GetParentPath(strPath, strReturn);
+  return strReturn;
+}
+
 bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 {
   strParent = "";
