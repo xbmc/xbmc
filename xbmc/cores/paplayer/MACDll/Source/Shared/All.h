@@ -67,9 +67,19 @@ Global compiler settings (useful for porting)
     typedef unsigned char                               str_utf8;
     typedef wchar_t                                     str_utf16;
 
+#if 0 // XBMC
     #define IO_USE_WIN_FILE_IO
     #define IO_HEADER_FILE                              "WinFileIO.h"
     #define IO_CLASS_NAME                               CWinFileIO
+#else
+    #define IO_USE_STD_LIB_FILE_IO
+    #define IO_HEADER_FILE                              "StdLibFileIO.h"
+    #define IO_CLASS_NAME                               CStdLibFileIO
+    #ifdef MAX_PATH
+      #undef MAX_PATH
+      #define MAX_PATH 1024
+    #endif
+#endif
     #define DLLEXPORT                                   __declspec(dllexport)
     #define SLEEP(MILLISECONDS)                         ::Sleep(MILLISECONDS)
     #define MESSAGEBOX(PARENT, TEXT, CAPTION, TYPE)     ::MessageBox(PARENT, TEXT, CAPTION, TYPE)

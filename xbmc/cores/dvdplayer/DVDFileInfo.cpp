@@ -28,6 +28,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
+#include "DVDClock.h"
 #include "DVDFileInfo.h"
 #include "DVDStreamInfo.h"
 #include "DVDInputStreams/DVDInputStream.h"
@@ -177,7 +178,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
               break;
           }   while (!bFound);
 
-          if (pPacket)
+          if (pPacket && pPacket->pts != DVD_NOPTS_VALUE)
           {
             int iDecoderState = pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->pts);
             CDVDDemuxUtils::FreeDemuxPacket(pPacket);

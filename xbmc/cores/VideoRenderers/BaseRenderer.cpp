@@ -19,6 +19,8 @@
  *
  */
  
+#include "system.h"
+
 #include "BaseRenderer.h"
 #include "Settings.h"
 #include "GUISettings.h"
@@ -137,6 +139,22 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
   m_destRect.x2 = m_destRect.x1 + MathUtils::round_int(newWidth);
   m_destRect.y1 = (float)MathUtils::round_int(posY + offsetY);
   m_destRect.y2 = m_destRect.y1 + MathUtils::round_int(newHeight);
+
+  // clip as needed
+  if (!(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating()))
+  {
+    CRect original(m_destRect);
+    m_destRect.Intersect(CRect(offsetX, offsetY, offsetX + screenWidth, offsetY + screenHeight));
+    if (m_destRect != original)
+    {
+      float scaleX = m_sourceRect.Width() / original.Width();
+      float scaleY = m_sourceRect.Height() / original.Height();
+      m_sourceRect.x1 += (m_destRect.x1 - original.x1) * scaleX;
+      m_sourceRect.y1 += (m_destRect.y1 - original.y1) * scaleY;
+      m_sourceRect.x2 += (m_destRect.x2 - original.x2) * scaleX;
+      m_sourceRect.y2 += (m_destRect.y2 - original.y2) * scaleY;
+    }
+  }
 }
 
 //***************************************************************************************
@@ -321,4 +339,122 @@ void CBaseRenderer::SetViewMode(int viewMode)
     // now work out the zoom amount so that no zoom is done
     g_stSettings.m_fZoomAmount = (m_sourceHeight - g_stSettings.m_currentVideoSettings.m_CropTop - g_stSettings.m_currentVideoSettings.m_CropBottom) / newHeight;
   }
+}
+
+void CBaseRenderer::AutoCrop(YV12Image &im, RECT &crop)
+{
+  crop.left   = g_stSettings.m_currentVideoSettings.m_CropLeft;
+  crop.right  = g_stSettings.m_currentVideoSettings.m_CropRight;
+  crop.top    = g_stSettings.m_currentVideoSettings.m_CropTop;
+  crop.bottom = g_stSettings.m_currentVideoSettings.m_CropBottom;
+
+  int black  = 16; // what is black in the image
+  int level  = 8;  // how high above this should we detect
+  int multi  = 4;  // what multiple of last line should failing line be to accept
+  BYTE *s;
+  int last, detect, black2;
+
+  // top and bottom levels
+  black2 = black * im.width;
+  detect = level * im.width + black2;
+
+  // Crop top
+  s      = im.plane[0];
+  last   = black2;
+  for (unsigned int y = 0; y < im.height/2; y++)
+  {
+    int total = 0;
+    for (unsigned int x = 0; x < im.width; x++)
+      total += s[x];
+    s += im.stride[0];
+
+    if (total > detect)
+    {
+      if (total - black2 > (last - black2) * multi)
+        crop.top = y;
+      break;
+    }
+    last = total;
+  }
+
+  // Crop bottom
+  s    = im.plane[0] + (im.height-1)*im.stride[0];
+  last = black2;
+  for (unsigned int y = (int)im.height; y > im.height/2; y--)
+  {
+    int total = 0;
+    for (unsigned int x = 0; x < im.width; x++)
+      total += s[x];
+    s -= im.stride[0];
+
+    if (total > detect)
+    {
+      if (total - black2 > (last - black2) * multi)
+        crop.bottom = im.height - y;
+      break;
+    }
+    last = total;
+  }
+
+  // left and right levels
+  black2 = black * im.height;
+  detect = level * im.height + black2;
+
+
+  // Crop left
+  s    = im.plane[0];
+  last = black2;
+  for (unsigned int x = 0; x < im.width/2; x++)
+  {
+    int total = 0;
+    for (unsigned int y = 0; y < im.height; y++)
+      total += s[y * im.stride[0]];
+    s++;
+    if (total > detect)
+    {
+      if (total - black2 > (last - black2) * multi)
+        crop.left = x;
+      break;
+    }
+    last = total;
+  }
+
+  // Crop right
+  s    = im.plane[0] + (im.width-1);
+  last = black2;
+  for (unsigned int x = (int)im.width-1; x > im.width/2; x--)
+  {
+    int total = 0;
+    for (unsigned int y = 0; y < im.height; y++)
+      total += s[y * im.stride[0]];
+    s--;
+
+    if (total > detect)
+    {
+      if (total - black2 > (last - black2) * multi)
+        crop.right = im.width - x;
+      break;
+    }
+    last = total;
+  }
+
+  // We always crop equally on each side to get zoom
+  // effect intead of moving the image. Aslong as the
+  // max crop isn't much larger than the min crop
+  // use that.
+  int min, max;
+
+  min = std::min(crop.left, crop.right);
+  max = std::max(crop.left, crop.right);
+  if(10 * (max - min) / im.width < 1)
+    crop.left = crop.right = max;
+  else
+    crop.left = crop.right = min;
+
+  min = std::min(crop.top, crop.bottom);
+  max = std::max(crop.top, crop.bottom);
+  if(10 * (max - min) / im.height < 1)
+    crop.top = crop.bottom = max;
+  else
+    crop.top = crop.bottom = min;
 }

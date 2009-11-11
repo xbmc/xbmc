@@ -133,6 +133,18 @@ bool CGUIEditControl::OnAction(const CAction &action)
   {
     // input from the keyboard (vkey, not ascii)
     BYTE b = action.id & 0xFF;
+    if (b == 0x24) // home
+    {
+      m_cursorPos = 0;
+      UpdateText(false);
+      return true;
+    }
+    else if (b == 0x23) // end
+    {
+      m_cursorPos = m_text2.length();
+      UpdateText(false);
+      return true;
+    }
     if (b == 0x25 && m_cursorPos > 0)
     { // left
       m_cursorPos--;
@@ -400,9 +412,9 @@ void CGUIEditControl::RenderText()
       // virtual keyboard only)
       CStdStringW col;
       if ((m_focusCounter % 64) > 32)
-        col.Format(L"|");
+        col = L"|";
       else
-        col.Format(L"[COLOR %x]|[/COLOR]", 0x1000000);
+        col = L"[COLOR 00FFFFFF]|[/COLOR]";
       text.Insert(m_cursorPos, col);
     }
 

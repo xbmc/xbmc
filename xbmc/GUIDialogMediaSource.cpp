@@ -338,7 +338,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   {
     CMediaSource share1;
     share1.m_ignore = true;
-    if (g_guiSettings.GetString("pictures.screenshotpath",false)!= "")
+    if (g_guiSettings.GetString("system.screenshotpath",false)!= "")
     {
       share1.strPath = "special://screenshots/";
       share1.strName = g_localizeStrings.Get(20008);
@@ -482,9 +482,9 @@ void CGUIDialogMediaSource::UpdateButtons()
     path = url.GetWithoutUserDetails();
     if (path.IsEmpty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
     item->SetLabel(path);
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PATH, 0, 0, item);
-    OnMessage(msg);
   }
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PATH, 0, 0, m_paths);
+  OnMessage(msg);
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_PATH, currentItem);
 
   if (m_type.Equals("video"))

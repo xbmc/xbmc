@@ -51,7 +51,7 @@ protected:
   virtual void UpdateButtons();
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items);
   virtual void PlayItem(int iItem);
-  virtual void OnDeleteItem(int iItem);
+  virtual void OnDeleteItem(CFileItemPtr pItem);
   virtual void OnWindowLoaded();
   virtual void OnFilterItems();
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);

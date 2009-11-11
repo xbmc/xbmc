@@ -209,8 +209,10 @@ void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* jo
   CThumbExtractor* loader = (CThumbExtractor*)job;
   loader->m_item.m_strPath = loader->m_listpath;
   CVideoInfoTag* info = loader->m_item.GetVideoInfoTag();
-  m_pStreamDetailsObs->OnStreamDetails(info->m_streamDetails, info->m_strFileNameAndPath, info->m_iFileId);
-  m_pObserver->OnItemLoaded(&loader->m_item);
+  if (m_pStreamDetailsObs)
+    m_pStreamDetailsObs->OnStreamDetails(info->m_streamDetails, info->m_strFileNameAndPath, info->m_iFileId);
+  if (m_pObserver)
+    m_pObserver->OnItemLoaded(&loader->m_item);
   CFileItemPtr pItem(new CFileItem(loader->m_item));
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
   g_windowManager.SendThreadMessage(msg);

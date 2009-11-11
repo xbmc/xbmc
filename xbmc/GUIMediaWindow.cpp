@@ -1241,6 +1241,13 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   {
     if (CPluginSettings::SettingsExist(item->m_strPath))
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
+    if (m_vecItems->m_strPath.Equals("plugin://music/")    ||
+        m_vecItems->m_strPath.Equals("plugin://video/")    ||
+        m_vecItems->m_strPath.Equals("plugin://pictures/") ||
+        m_vecItems->m_strPath.Equals("plugin://programs/")   )
+    {
+      buttons.Add(CONTEXT_BUTTON_DELETE_PLUGIN, 117);
+    }
   }
 
   if (item->GetPropertyBOOL("pluginreplacecontextitems"))
@@ -1270,6 +1277,16 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CURL url(m_vecItems->Get(itemNumber)->m_strPath);
       CGUIDialogPluginSettings::ShowAndGetInput(url);
+      return true;
+    }
+  case CONTEXT_BUTTON_DELETE_PLUGIN:
+    {
+      CStdString path;
+      CUtil::GetDirectory(m_vecItems->Get(itemNumber)->m_strPath,path);
+      CFileItem item2(path,true);
+      if (CGUIWindowFileManager::DeleteItem(&item2))
+        Update(m_vecItems->m_strPath);
+
       return true;
     }
   case CONTEXT_BUTTON_USER1:

@@ -94,6 +94,7 @@ public:
   bool GetDataSources(CoreAudioDataSourceList* pList);
   Float64 GetNominalSampleRate();
   bool SetNominalSampleRate(Float64 sampleRate);
+  UInt32 GetNumLatencyFrames();
 protected:
   AudioDeviceID m_DeviceId;
   bool m_Started;
@@ -117,7 +118,7 @@ public:
   AudioStreamID GetId() {return m_StreamId;}
   UInt32 GetDirection();
   UInt32 GetTerminalType();
-  UInt32 GetLatency(); // Returns number of frames
+  UInt32 GetNumLatencyFrames();
   bool GetVirtualFormat(AudioStreamBasicDescription* pDesc);
   bool GetPhysicalFormat(AudioStreamBasicDescription* pDesc);
   bool SetVirtualFormat(AudioStreamBasicDescription* pDesc);

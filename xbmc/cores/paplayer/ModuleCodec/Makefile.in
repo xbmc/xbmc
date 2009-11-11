@@ -24,6 +24,6 @@ else
 endif
 
 dumb/lib/unix/libdumb.a: compile
-	$(MAKE) -C dumb CC="$(CC)" CFLAGS="$(CFLAGS) -Iinclude -Wall -W -Wwrite-strings -Wstrict-prototypes -Wmissing-declarations -DDUMB_DECLARE_DEPRECATED -O2 -ffast-math -fomit-frame-pointer"
+	$(MAKE) -C dumb CC="$(CC)" CFLAGS="$(CFLAGS) -Iinclude -DDUMB_DECLARE_DEPRECATED"
 
 include ../../../../Makefile.include

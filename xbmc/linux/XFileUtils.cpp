@@ -139,6 +139,7 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
     TranslateAliasShortcut(strFileNameTest);
 
   struct stat64 fileStat;
+  memset(&fileStat, 0, sizeof(fileStat));
   stat64(strFileNameTest, &fileStat);
 
   bool bIsDir = false;

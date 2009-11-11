@@ -104,8 +104,6 @@ public:
   void StopUPnP(bool bWait);
   void StartUPnPRenderer();
   void StopUPnPRenderer();
-  void StartUPnPClient();
-  void StopUPnPClient();
   void StartUPnPServer();
   void StopUPnPServer();
   void StartEventServer();
@@ -250,10 +248,7 @@ public:
     return m_bPlatformDirectories;
   }
 
-  void SetStandAlone(bool value)
-  {
-    m_bStandalone = value;
-  }
+  void SetStandAlone(bool value);
 
   bool IsStandAlone()
   {

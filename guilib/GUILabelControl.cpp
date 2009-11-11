@@ -76,9 +76,9 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
     g_charsetConverter.utf8ToW(label, utf16);
     CStdStringW col;
     if ((++m_dwCounter % 50) > 25)
-      col.Format(L"|");
+      col = L"|";
     else
-      col.Format(L"[COLOR %x]|[/COLOR]", 0x1000000);
+      col = L"[COLOR 00FFFFFF]|[/COLOR]";
     utf16.Insert(m_iCursorPos, col);
     g_charsetConverter.wToUTF8(utf16, label);
   }

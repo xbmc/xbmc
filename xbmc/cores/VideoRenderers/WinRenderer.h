@@ -37,23 +37,8 @@
 #define NUM_BUFFERS 2
 #endif
 
-#define MAX_PLANES 3
-#define MAX_FIELDS 3
-
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
-
-typedef struct YV12Image
-{
-  BYTE *   plane[MAX_PLANES];
-  unsigned stride[MAX_PLANES];
-  unsigned width;
-  unsigned height;
-  unsigned flags;
-
-  unsigned cshift_x; /* this is the chroma shift used */
-  unsigned cshift_y;
-} YV12Image;
 
 #define AUTOSOURCE -1
 
@@ -190,6 +175,7 @@ protected:
   // clear colour for "black" bars
   DWORD m_clearColour;
   unsigned int m_flags;
+  CRect m_crop;
 };
 
 

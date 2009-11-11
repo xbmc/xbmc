@@ -1252,6 +1252,8 @@ namespace VIDEO
         nfoFile = CUtil::AddFileToFolder(strPath,"mymovies.xml");
         if (CFile::Exists(nfoFile))
           return nfoFile;
+        else
+          nfoFile.clear();
       }
     }
     if (item->m_bIsFolder || (bGrabAny && nfoFile.IsEmpty()))

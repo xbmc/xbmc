@@ -85,6 +85,7 @@
 #include "WindowingFactory.h"
 #include "LocalizeStrings.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -467,6 +468,13 @@ void CUtil::GetCommonPath(CStdString& strParent, const CStdString& strPath)
     CUtil::GetDirectory(strParent.Mid(0), strParent);
     CUtil::AddSlashAtEnd(strParent);
   }
+}
+
+CStdString CUtil::GetParentPath(const CStdString& strPath)
+{
+  CStdString strReturn;
+  GetParentPath(strPath, strReturn);
+  return strReturn;
 }
 
 bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
@@ -1827,7 +1835,7 @@ void CUtil::TakeScreenshot()
 
   bool promptUser = false;
   // check to see if we have a screenshot folder yet
-  CStdString strDir = g_guiSettings.GetString("pictures.screenshotpath", false);
+  CStdString strDir = g_guiSettings.GetString("system.screenshotpath", false);
   if (strDir.IsEmpty())
   {
     strDir = "special://temp/";
@@ -1851,7 +1859,7 @@ void CUtil::TakeScreenshot()
         screenShots.push_back(file);
       if (promptUser)
       { // grab the real directory
-        CStdString newDir = g_guiSettings.GetString("pictures.screenshotpath");
+        CStdString newDir = g_guiSettings.GetString("system.screenshotpath");
         if (!newDir.IsEmpty())
         {
           for (unsigned int i = 0; i < screenShots.size(); i++)

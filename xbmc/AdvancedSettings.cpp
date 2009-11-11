@@ -32,6 +32,7 @@
 #include "GUISettings.h"
 #include "Settings.h"
 #include "StringUtils.h"
+#include "SystemInfo.h"
 #include "XMLUtils.h"
 #include "utils/log.h"
 
@@ -122,7 +123,7 @@ void CAdvancedSettings::Initialize()
 #endif
   m_cddbAddress = "freedb.freedb.org";
 
-  m_handleMounting = g_application.IsStandAlone();
+  m_handleMounting = false;
 
   m_fullScreenOnMovieStart = true;
   m_noDVDROM = false;
@@ -138,15 +139,11 @@ void CAdvancedSettings::Initialize()
   m_moviesExcludeFromScanRegExps.push_back("[-._ ]sample");
   m_tvshowExcludeFromScanRegExps.push_back("[-._ ]sample[-._ ]");
 
-  m_videoStackRegExps.push_back("()[ _.-]+?(?:cd|dvd|p(?:ar)t|dis[ck])[ _.-]*([0-9a-d]+)(.*\\....?.?)$");
-
-  // foocd1.bar foocd 2.bar
-  m_videoStackRegExps.push_back("()(cd[0 ]?[1-3])(?:[ ._-]?.*)(.*?\\....?.?)$");
-  m_videoStackRegExps.push_back("()(cd[0 ]?[1-3])(\\....?.?)$");
-
-  // fooa.bar foob.bar
-  m_videoStackRegExps.push_back("()([a-c])(?:[ ._-]?.*)(.*?\\....?.?)$");
-  m_videoStackRegExps.push_back("()([a-c])(\\....?.?)$");
+  m_videoStackRegExps.push_back("(.*?)([ _.-]?(?:cd|dvd|p(?:ar)t|dis[ck])[ _.-]*[1-4a-d]+)(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ ._-]?[a-d])([ ._-]?.*?)(\\.[^.]+)$");
+  // This one is a bit too greedy to enable by default.  It will stack sequels
+  // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
+  //m_videoStackRegExps.push_back("(.*?)([ ._-]?[0-9])([ ._-]?.*?)(\\.[^.]+)$");
 
   // foo_[s01]_[e01]
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
@@ -237,6 +234,7 @@ void CAdvancedSettings::Initialize()
 #else
   m_fakeFullScreen = false;
 #endif
+  m_sleepBeforeFlip = false;
   m_bVirtualShares = true;
 
 //caused lots of jerks
@@ -517,6 +515,7 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
 
+  if (g_sysinfo.IsAppleTV())
   { 
     // backward compatibility with Launcher install script on AppleTV platforms
     // AppleTV OS < 2.4 needs this set for getting XBMC in front of Frontrow.
@@ -525,7 +524,9 @@ bool CAdvancedSettings::Load()
     if (oldOSXFullScreen)
       m_fakeFullScreen = false;
   }
+
   XMLUtils::GetBoolean(pRootElement,"fakefullscreen", m_fakeFullScreen);
+  XMLUtils::GetBoolean(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
 
   //Tuxbox

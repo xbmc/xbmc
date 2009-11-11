@@ -853,6 +853,8 @@ unsigned int CLinuxRendererGL::PreInit()
   m_bValidated = false;
   UnInit();
   m_resolution = RES_PAL_4x3;
+  m_crop.x1 = m_crop.x2 = 0.0f;
+  m_crop.y1 = m_crop.y2 = 0.0f;
 
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 2;
@@ -1252,123 +1254,7 @@ void CLinuxRendererGL::AutoCrop(bool bCrop)
   if(!m_bValidated) return;
 
   if (bCrop)
-  {
-    YV12Image &im = m_buffers[m_iYV12RenderBuffer].image;
-    crop.left   = g_stSettings.m_currentVideoSettings.m_CropLeft;
-    crop.right  = g_stSettings.m_currentVideoSettings.m_CropRight;
-    crop.top    = g_stSettings.m_currentVideoSettings.m_CropTop;
-    crop.bottom = g_stSettings.m_currentVideoSettings.m_CropBottom;
-
-    int black  = 16; // what is black in the image
-    int level  = 8;  // how high above this should we detect
-    int multi  = 4;  // what multiple of last line should failing line be to accept
-    BYTE *s;
-    int last, detect, black2;
-
-    // top and bottom levels
-    black2 = black * im.width;
-    detect = level * im.width + black2;
-
-    // Crop top
-    s      = im.plane[0];
-    last   = black2;
-    for (unsigned int y = 0; y < im.height/2; y++)
-    {
-      int total = 0;
-      for (unsigned int x = 0; x < im.width; x++)
-        total += s[x];
-      s += im.stride[0];
-
-      if (total > detect)
-      {
-        if (total - black2 > (last - black2) * multi)
-          crop.top = y;
-        break;
-      }
-      last = total;
-    }
-
-    // Crop bottom
-    s    = im.plane[0] + (im.height-1)*im.stride[0];
-    last = black2;
-    for (unsigned int y = (int)im.height; y > im.height/2; y--)
-    {
-      int total = 0;
-      for (unsigned int x = 0; x < im.width; x++)
-        total += s[x];
-      s -= im.stride[0];
-
-      if (total > detect)
-      {
-        if (total - black2 > (last - black2) * multi)
-          crop.bottom = im.height - y;
-        break;
-      }
-      last = total;
-    }
-
-    // left and right levels
-    black2 = black * im.height;
-    detect = level * im.height + black2;
-
-
-    // Crop left
-    s    = im.plane[0];
-    last = black2;
-    for (unsigned int x = 0; x < im.width/2; x++)
-    {
-      int total = 0;
-      for (unsigned int y = 0; y < im.height; y++)
-        total += s[y * im.stride[0]];
-      s++;
-      if (total > detect)
-      {
-        if (total - black2 > (last - black2) * multi)
-          crop.left = x;
-        break;
-      }
-      last = total;
-    }
-
-    // Crop right
-    s    = im.plane[0] + (im.width-1);
-    last = black2;
-    for (unsigned int x = (int)im.width-1; x > im.width/2; x--)
-    {
-      int total = 0;
-      for (unsigned int y = 0; y < im.height; y++)
-        total += s[y * im.stride[0]];
-      s--;
-
-      if (total > detect)
-      {
-        if (total - black2 > (last - black2) * multi)
-          crop.right = im.width - x;
-        break;
-      }
-      last = total;
-    }
-
-    // We always crop equally on each side to get zoom
-    // effect intead of moving the image. Aslong as the
-    // max crop isn't much larger than the min crop
-    // use that.
-    int min, max;
-
-    min = std::min(crop.left, crop.right);
-    max = std::max(crop.left, crop.right);
-    if(10 * (max - min) / im.width < 1)
-      crop.left = crop.right = max;
-    else
-      crop.left = crop.right = min;
-
-    min = std::min(crop.top, crop.bottom);
-    max = std::max(crop.top, crop.bottom);
-    if(10 * (max - min) / im.height < 1)
-      crop.top = crop.bottom = max;
-    else
-      crop.top = crop.bottom = min;
-  }
+    CBaseRenderer::AutoCrop(m_buffers[m_iYV12RenderBuffer].image, crop);
   else
   { // reset to defaults
     crop.left   = 0;

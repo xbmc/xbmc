@@ -890,7 +890,9 @@ static int64_t rm_read_dts(AVFormatContext *s, int stream_index,
     if(rm->old_format)
         return AV_NOPTS_VALUE;
 
-    url_fseek(s->pb, pos, SEEK_SET);
+    if (url_fseek(s->pb, pos, SEEK_SET) < 0)
+        return AV_NOPTS_VALUE;
+
     rm->remaining_len=0;
     for(;;){
         int seq=1;
