@@ -321,14 +321,13 @@ void CAddonMgr::UnregisterAddonCallback(ADDON::TYPE type)
 }
 
 /*****************************************************************************/
-bool CAddonMgr::GetAddons(const ADDON::TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content, bool enabled, bool refresh)
+bool CAddonMgr::GetAddons(const ADDON::TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabled/*= true*/, bool refresh/*= false*/)
 {
   // recheck addon folders if necessary
   FindAddons(type, refresh);
 
   addons.clear();
-  bool found = (m_addons.find(type) != m_addons.end());
-  if (found)
+  if (m_addons.find(type) != m_addons.end())
   {
     IVECADDONS itr = m_addons[type].begin();
     while (itr != m_addons[type].end())
@@ -344,7 +343,7 @@ bool CAddonMgr::GetAddons(const ADDON::TYPE &type, VECADDONS &addons, const CONT
       ++itr;
     }
   }
-  return found; 
+  return !addons.empty(); 
 }
 
 bool CAddonMgr::GetAddons(const TYPE &type, VECADDONPROPS &props, const CONTENT_TYPE &content, bool enabled, bool refresh)
