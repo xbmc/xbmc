@@ -25,6 +25,8 @@
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {
+  m_layout = NULL;
+  m_focusedLayout = NULL;
   *this = item;
   SetInvalid();
 }
