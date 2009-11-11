@@ -141,7 +141,7 @@ bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
   if (tag->m_strShowTitle.length() > 0)
     tag->m_strTitle += " : " + tag->m_strShowTitle;
 
-  CDateTimeSpan span = GetValue(m_dll->proginfo_rec_start(info)) - GetValue(m_dll->proginfo_rec_end(info));
+  CDateTimeSpan span = GetValue(m_dll->proginfo_rec_end(info)) - GetValue(m_dll->proginfo_rec_start(info));
   StringUtils::SecondsToTimeString(span.GetSeconds() +
                                    span.GetMinutes() * 60 +
                                    span.GetHours() * 3600, tag->m_strRuntime, TIME_FORMAT_GUESS);
