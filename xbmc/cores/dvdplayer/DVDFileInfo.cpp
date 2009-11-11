@@ -28,6 +28,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
+#include "DVDClock.h"
 #include "DVDFileInfo.h"
 #include "DVDStreamInfo.h"
 #include "DVDInputStreams/DVDInputStream.h"
