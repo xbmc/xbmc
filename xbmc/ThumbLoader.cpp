@@ -160,7 +160,7 @@ void CVideoThumbLoader::SetWatchedOverlay(CFileItem *item)
       int file_id = dbs.GetFileId(item->m_strPath);
       if (file_id > -1)
         item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (dbs.GetPlayCount(file_id) > 0));
-        
+
       dbs.Close();
     }
   }
