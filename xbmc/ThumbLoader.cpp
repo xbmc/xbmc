@@ -122,8 +122,6 @@ bool CThumbExtractor::DoWork()
     CDVDFileInfo::GetFileStreamDetails(&m_item);
   }
 
-  CVideoThumbLoader::SetWatchedOverlay(&m_item);
-
   return true;
 }
 
@@ -184,6 +182,8 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     item = CFileItem(*pItem->GetVideoInfoTag());
   }
   CStdString cachedThumb(item.GetCachedVideoThumb());
+  
+  SetWatchedOverlay(pItem);
 
   if (!pItem->HasThumbnail())
   {
@@ -222,8 +222,6 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     if (CFile::Exists(pItem->GetCachedFanart()))
       pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
   }
-
-  SetWatchedOverlay(pItem);
 
   if (!pItem->m_bIsFolder && !pItem->IsInternetStream() &&
        pItem->HasVideoInfoTag() &&
