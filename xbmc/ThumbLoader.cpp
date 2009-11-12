@@ -107,6 +107,12 @@ bool CThumbExtractor::DoWork()
   {
     CLog::Log(LOGDEBUG,"%s - trying to extract thumb from video file %s", __FUNCTION__, m_path.c_str());
     CDVDFileInfo::ExtractThumb(m_path, m_target, &m_item.GetVideoInfoTag()->m_streamDetails);
+    if (CFile::Exists(m_target))
+    {
+      m_item.SetProperty("HasAutoThumb", "1");
+      m_item.SetProperty("AutoThumbImage", m_target);
+      m_item.SetThumbnailImage(m_target);
+    }
   }
   else if (m_item.HasVideoInfoTag() &&
            g_guiSettings.GetBool("myvideos.extractflags")   &&
