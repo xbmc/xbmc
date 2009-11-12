@@ -248,6 +248,7 @@ void CGUISettings::Initialize()
 
   AddSeparator(2, "mymusic.sep1");
   AddBool(3, "mymusic.autoplaynextitem", 489, true);
+  AddBool(4, "mymusic.queuebydefault", 14084, false);
   AddSeparator(6, "mymusic.sep2");
   AddPath(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
