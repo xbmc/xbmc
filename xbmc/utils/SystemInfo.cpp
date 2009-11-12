@@ -204,6 +204,22 @@ CStdString CSysInfo::GetXBVerInfo()
   return "CPU: " + g_cpuInfo.getCPUModel();
 }
 
+bool CSysInfo::IsWindowsXP()
+{
+#ifdef _WIN32
+  OSVERSIONINFOEX osvi;
+  ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+  osvi.dwOSVersionInfoSize = sizeof(osvi);
+
+  if (GetVersionEx((OSVERSIONINFO *)&osvi))
+  {
+    if (osvi.dwMajorVersion == 5)
+      return true;
+  }
+#endif
+  return false;
+}
+
 CStdString CSysInfo::GetKernelVersion()
 {
 #if defined (_LINUX)

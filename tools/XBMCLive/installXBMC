@@ -749,9 +749,9 @@ def main():
 			print "File: " + cmdLineOptions.isoFileName + " does not exist, exiting..."
 			sys.exit(-1)
 
-		cmdLine = 'file -b -i ' + cmdLineOptions.isoFileName
+		cmdLine = 'file -b ' + cmdLineOptions.isoFileName
 		aType, retCode = runSilent(cmdLine)
-		if not aType.find("iso9660") >0:
+		if not aType.find("9660") >0:
 			print "File: " + cmdLineOptions.isoFileName + " is not a valid ISO image, exiting..."
 			sys.exit(-1)
 

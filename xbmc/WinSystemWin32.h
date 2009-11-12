@@ -76,6 +76,7 @@ public:
   HWND GetHwnd() { return m_hWnd; }
 
 protected:
+  bool ChangeRefreshRate(int screen, float refresh);
   virtual bool ResizeInternal(bool forceRefresh = false);
   virtual bool UpdateResolutionsInternal();
   virtual bool CreateBlankWindow();

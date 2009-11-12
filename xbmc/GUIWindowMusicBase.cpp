@@ -1206,8 +1206,15 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
     return true;
   }
   else if (!pItem->IsPlayList() && !pItem->IsInternetStream())
-  { // single music file - if we get here then we have autoplaynextitem turned off, but we
-    // still want to use the playlist player in order to handle more queued items following etc.
+  { // single music file - if we get here then we have autoplaynextitem turned off or queuebydefault
+    // turned on, but we still want to use the playlist player in order to handle more queued items
+    // following etc.
+    if (g_guiSettings.GetBool("mymusic.queuebydefault") && g_windowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST_EDITOR)
+    {
+      // TODO: Should the playlist be cleared if nothing is already playing?
+      OnQueueItem(iItem);
+      return true;
+    }
     g_playlistPlayer.Reset();
     g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.Add(PLAYLIST_MUSIC, pItem);

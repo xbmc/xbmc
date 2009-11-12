@@ -248,6 +248,7 @@ void CGUISettings::Initialize()
 
   AddSeparator(2, "mymusic.sep1");
   AddBool(3, "mymusic.autoplaynextitem", 489, true);
+  AddBool(4, "mymusic.queuebydefault", 14084, false);
   AddSeparator(6, "mymusic.sep2");
   AddPath(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
@@ -611,6 +612,23 @@ void CGUISettings::Initialize()
 #else
   AddInt(6, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
 #endif
+#if defined(_WIN32) || defined (__APPLE__)
+  // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
+  // as it works nicer with switching to other applications. However on some systems vsync is broken
+  // when we do this (eg WinXP on ATI in particular) and on others (AppleTV) we can't get XBMC to
+  // the front
+  bool fakeFullScreen = true;
+  bool showSetting = false;
+  if (g_sysinfo.IsWindowsXP())
+    fakeFullScreen = false;
+  if (g_sysinfo.IsAppleTV())
+  {
+    fakeFullScreen = false;
+    showSetting = false;
+  }
+  AddBool(showSetting ? 7 : 0, "videoscreen.fakefullscreen", 14083, fakeFullScreen);
+#endif
+
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
   AddBool(2, "filelists.hideextensions", 497, false);

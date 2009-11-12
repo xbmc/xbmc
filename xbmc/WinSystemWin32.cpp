@@ -23,6 +23,7 @@
 #include "WinEventsWin32.h"
 #include "Settings.h"
 #include "resource.h"
+#include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "utils/log.h"
 
@@ -252,12 +253,16 @@ void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
 
 bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
+  CLog::Log(LOGDEBUG, "%s(%s) on screen %d with size %dx%d, refresh %f", __FUNCTION__, fullScreen ? "fullscreen" : "windowed", res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate);
   m_bFullScreen = fullScreen;
   bool forceResize = (m_nScreen != res.iScreen);
   m_nScreen = res.iScreen;
   m_nWidth  = res.iWidth;
   m_nHeight = res.iHeight;
   m_bBlankOtherDisplay = blankOtherDisplays;
+
+  if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
+    ChangeRefreshRate(m_nScreen, res.fRefreshRate);
 
   ResizeInternal(forceResize);
 
@@ -328,6 +333,22 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
     ValidateRect(NULL, NULL);
   }
   return true;
+}
+
+bool CWinSystemWin32::ChangeRefreshRate(int screen, float refresh)
+{
+  const MONITOR_DETAILS &details = GetMonitor(screen);
+
+  // grab the mode we want
+  DEVMODE sDevMode;
+  ZeroMemory(&sDevMode, sizeof(DEVMODE));
+  sDevMode.dmSize = sizeof(DEVMODE);
+  EnumDisplaySettings(details.DeviceName, ENUM_CURRENT_SETTINGS, &sDevMode);
+  // update the display frequency
+  sDevMode.dmDisplayFrequency = (int)refresh;
+  sDevMode.dmFields |= DM_DISPLAYFREQUENCY;
+
+  return (DISP_CHANGE_SUCCESSFUL == ChangeDisplaySettingsEx(details.DeviceName, &sDevMode, NULL, 0, NULL));
 }
 
 void CWinSystemWin32::UpdateResolutions()

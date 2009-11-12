@@ -209,6 +209,7 @@ URLProtocol dvd_file_protocol = {
 CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
 {
   m_pFormatContext = NULL;
+  m_pFilterContext = NULL;
   m_pInput = NULL;
   m_ioContext = NULL;
   InitializeCriticalSection(&m_critSection);
@@ -495,8 +496,10 @@ void CDVDDemuxFFmpeg::Dispose()
 
 #if defined(HAVE_LIBCRYSTALHD)
   if (m_pFilterContext)
+  {
     m_dllAvCodec.av_bitstream_filter_close(m_pFilterContext);
     m_pFilterContext = NULL;
+  }
 #endif
 
   if (m_pFormatContext)
@@ -549,7 +552,7 @@ void CDVDDemuxFFmpeg::Flush()
   if (m_pFormatContext)
   {
     // reset any dts interpolation
-    for(int i=0;i<MAX_STREAMS;i++)
+    for(int i=0;i<m_pFormatContext->nb_streams;i++)
     {
       if(m_pFormatContext->streams[i])
       {
@@ -937,7 +940,7 @@ bool CDVDDemuxFFmpeg::SeekByte(__int64 pos)
 void CDVDDemuxFFmpeg::UpdateCurrentPTS()
 {
   m_iCurrentPts = DVD_NOPTS_VALUE;
-  for(int i=0;i<MAX_STREAMS;i++)
+  for(int i=0;i<m_pFormatContext->nb_streams;i++)
   {
     AVStream *stream = m_pFormatContext->streams[i];
     if(stream && stream->cur_dts != (int64_t)AV_NOPTS_VALUE)

@@ -1964,6 +1964,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 // DXMERGE: This may be useful
 //    g_videoConfig.SetVSyncMode((VSYNC)msg.GetParam1());
   }
+  else if (strSetting.Equals("videoscreen.fakefullscreen"))
+  {
+    if (g_graphicsContext.IsFullScreenRoot())
+      g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
+  }
   else if (strSetting.Equals("locale.language"))
   { // new language chosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
