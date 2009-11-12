@@ -31,6 +31,7 @@
 #include "GUIWindowManager.h"
 #include "TextureManager.h"
 #include "VideoInfoTag.h"
+#include "VideoDatabase.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
 
@@ -121,6 +122,8 @@ bool CThumbExtractor::DoWork()
     CDVDFileInfo::GetFileStreamDetails(&m_item);
   }
 
+  CVideoThumbLoader::SetWatchedOverlay(&m_item);
+
   return true;
 }
 
@@ -140,6 +143,27 @@ void CVideoThumbLoader::OnLoaderStart()
 
 void CVideoThumbLoader::OnLoaderFinish()
 {
+}
+
+/**
+* Reads watched status from the database and sets the watched overlay accordingly
+*/
+void CVideoThumbLoader::SetWatchedOverlay(CFileItem *item)
+{
+  // do this only for video files and exclude everything else.
+  if (item->IsVideo() && !item->IsVideoDb() && !item->IsInternetStream()
+      && !item->IsFileFolder() && !item->IsPlugin())
+  {
+    CVideoDatabase dbs;
+    if (dbs.Open())
+    {
+      int file_id = dbs.GetFileId(item->m_strPath);
+      if (file_id > -1)
+        item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (dbs.GetPlayCount(file_id) > 0));
+        
+      dbs.Close();
+    }
+  }
 }
 
 /**
@@ -198,6 +222,8 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     if (CFile::Exists(pItem->GetCachedFanart()))
       pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
   }
+
+  SetWatchedOverlay(pItem);
 
   if (!pItem->m_bIsFolder && !pItem->IsInternetStream() &&
        pItem->HasVideoInfoTag() &&
