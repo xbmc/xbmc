@@ -23,6 +23,7 @@
 #include "Util.h"
 #include "AdvancedSettings.h"
 #include "LocalizeStrings.h"
+#include "log.h"
 
 void CDeviceKitDiskDeviceOldAPI::Update()
 {
@@ -101,6 +102,8 @@ bool CDeviceKitDiskDevice::Mount()
 
     return m_isMounted;
   }
+  else
+    CLog::Log(LOGDEBUG, "DeviceKit.Disks: Is not able to mount %s", toString().c_str());
 
   return false;
 }
@@ -120,6 +123,8 @@ bool CDeviceKitDiskDevice::UnMount()
 
     return !m_isMounted;
   }
+  else
+    CLog::Log(LOGDEBUG, "DeviceKit.Disks: Is not able to unmount %s", toString().c_str());
 
   return false;
 }
@@ -140,6 +145,14 @@ CMediaSource CDeviceKitDiskDevice::ToMediaShare()
 bool CDeviceKitDiskDevice::IsApproved()
 {
   return (m_isPartition && m_UDI.length() > 0 && (m_FileSystem.length() > 0 && !m_FileSystem.Equals("swap")) && m_isMounted && !m_MountPath.Equals("/"));
+}
+
+CStdString CDeviceKitDiskDevice::toString()
+{
+  CStdString str;
+  str.Format("DeviceUDI %s: HasFileSystem %s IsMounted %s IsRemovable %s IsPartition %s", m_DeviceKitUDI.c_str(), m_FileSystem, m_isMounted ? "true" : "false", m_isRemovable ? "true" : "false", m_isPartition ? "true" : "false");
+
+  return str;
 }
 
 CDeviceKitDisksProvider::CDeviceKitDisksProvider()
@@ -177,6 +190,7 @@ CDeviceKitDisksProvider::~CDeviceKitDisksProvider()
 
 void CDeviceKitDisksProvider::Initialize()
 {
+  CLog::Log(LOGDEBUG, "Selected DeviceKit.Disks as storage provider");
   m_DaemonVersion = CDBusUtil::GetInt32("org.freedesktop.DeviceKit.Disks", "/org/freedesktop/DeviceKit/Disks", "org.freedesktop.DeviceKit.Disks", "DaemonVersion");
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: DaemonVersion %i", m_DaemonVersion);
 
@@ -290,8 +304,12 @@ void CDeviceKitDisksProvider::DeviceAdded(const char *object, IStorageEventsCall
   if (g_advancedSettings.m_handleMounting)
     device->Mount();
 
-  if (device->m_isMounted && callback)
-    callback->OnStorageAdded(device->m_Label, device->m_MountPath);
+  if (device->m_isMounted && device->IsApproved())
+  {
+    CLog::Log(LOGNOTICE, "DeviceKit.Disks: Added %s", device->m_MountPath.c_str());
+    if (callback)
+      callback->OnStorageAdded(device->m_Label, device->m_MountPath);
+  }
 }
 
 void CDeviceKitDisksProvider::DeviceRemoved(const char *object, IStorageEventsCallback *callback)
