@@ -1316,23 +1316,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     g_settings.Save();
     return true;
 
-  case CONTEXT_BUTTON_MARK_WATCHED:
-    // If we're about to hide this item, select the next one
-    if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED)
-      m_viewControl.SetSelectedItem((itemNumber+1) % m_vecItems->Size());
-    MarkWatched(item);
-    CUtil::DeleteVideoDatabaseDirectoryCache();
-    Update(m_vecItems->m_strPath);
-    return true;
-
-  case CONTEXT_BUTTON_MARK_UNWATCHED:
-    {
-      MarkUnWatched(item);
-      CUtil::DeleteVideoDatabaseDirectoryCache();
-      Update(m_vecItems->m_strPath);
-    }
-    return true;
-
   case CONTEXT_BUTTON_EDIT:
     UpdateVideoTitle(item.get());
     CUtil::DeleteVideoDatabaseDirectoryCache();
