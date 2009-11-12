@@ -229,7 +229,6 @@ void CAdvancedSettings::Initialize()
   m_playlistTimeout = 20; // 20 seconds timeout
   m_GLRectangleHack = false;
   m_iSkipLoopFilter = 0;
-  m_fakeFullScreen = true;
   m_sleepBeforeFlip = true;    // test for Alpha2 - always have this enabled.
   m_bVirtualShares = true;
 
@@ -511,30 +510,6 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
 
-  bool hideUISetting = false;
-  if (g_sysinfo.IsAppleTV())
-  { 
-    // backward compatibility with Launcher install script on AppleTV platforms
-    // AppleTV OS < 2.4 needs this set for getting XBMC in front of Frontrow.
-    bool oldOSXFullScreen = false;
-    if (XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", oldOSXFullScreen))
-      hideUISetting = true;
-    if (oldOSXFullScreen)
-      m_fakeFullScreen = false;
-  }
-
-  if (XMLUtils::GetBoolean(pRootElement,"fakefullscreen", m_fakeFullScreen))
-    hideUISetting = true;
-
-  if (hideUISetting)
-  { // have the advanced setting - make sure we override the UI setting
-    CSetting *setting = g_guiSettings.GetSetting("videoscreen.fakefullscreen");
-    if (setting)
-    {
-      g_guiSettings.SetBool("videoscreen.fakefullscreen", m_fakeFullScreen);
-      setting->SetAdvanced();
-    }
-  }
   XMLUtils::GetBoolean(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
 
