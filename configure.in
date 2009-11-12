@@ -331,6 +331,8 @@ AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for
 AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([ssl],         [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([MAD],        [mad],
                   [INCLUDES+=" $MAD_CFLAGS"; LIBS+=" $MAD_LIBS"],
                   AC_MSG_ERROR($missing_library))
