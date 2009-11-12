@@ -27,7 +27,7 @@ public:
   CPosixMountProvider();
   virtual ~CPosixMountProvider() { }
 
-  virtual void Initialize() { }
+  virtual void Initialize();
   virtual void Stop() { }
 
   virtual void GetLocalDrives(VECSOURCES &localDrives) { GetDrives(localDrives); }
