@@ -566,6 +566,7 @@ STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
 {
   CAutoLock cAutoLock(this);
   HRESULT hr;
+  CInterfaceList<IUnknown, &IID_IUnknown> ppUnk;
   if(m_File.Open(pFileItem.GetAsUrl().GetFileName().c_str(), READ_TRUNCATED | READ_BUFFERED))
   {
     CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File);
@@ -584,8 +585,11 @@ STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
     CFGFilterFile* pFGF = m_splitter.GetNext(Pos);
 	if (pFGF->GetXFileType().Equals(pFileItem.GetAsUrl().GetFileType().c_str(),false))
 	{ 
-	  if (SUCCEEDED(::AddFilterByCLSID(this,pFGF->GetCLSID(),&ppSBF, L"XBMC Splitter" )))
+      if(SUCCEEDED(pFGF->Create(&ppSBF, ppUnk)))
 	  {
+        this->AddFilter(ppSBF,L"XBMC Splitter");
+	  //if (SUCCEEDED(::AddFilterByCLSID(this,pFGF->GetCLSID(),&ppSBF, L"XBMC Splitter" )))
+	  //{
         hr = ::ConnectFilters(this,m_FileSource,ppSBF);
         if ( SUCCEEDED( hr ) )
 		{
@@ -602,14 +606,13 @@ STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   }
   
   //Load the rules from the xml
-  CInterfaceList<IUnknown, &IID_IUnknown> pUnk;
   TiXmlDocument graphConfigXml;
   if (!graphConfigXml.LoadFile(m_xbmcConfigFilePath))
     return false;
   TiXmlElement* graphConfigRoot = graphConfigXml.RootElement();
   if ( !graphConfigRoot)
     return false;
-
+  CInterfaceList<IUnknown, &IID_IUnknown> pUnk;
   TiXmlElement *pRules = graphConfigRoot->FirstChildElement("rules");
   pRules = pRules->FirstChildElement("rule");
   while (pRules)
