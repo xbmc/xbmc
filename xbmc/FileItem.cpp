@@ -2157,7 +2157,7 @@ void CFileItemList::Stack()
                 {
                   if (stack.size() == 0)
                   {
-                    stackName = Title1 + Extension1;
+                    stackName = Title1 + Ignore1 + Extension1;
                     stack.push_back(i);
                     size += item1->m_dwSize;
                   }
