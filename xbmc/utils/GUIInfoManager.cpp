@@ -1742,7 +1742,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_INTERNET_STATE)
   {
     g_sysinfo.GetInfo(condition);
-    bReturn = g_sysinfo.m_bInternetState;
+    bReturn = g_sysinfo.HasInternet();
   }
   else if (condition == SKIN_HAS_VIDEO_OVERLAY)
   {

@@ -39,22 +39,125 @@
 
 CSysInfo g_sysinfo;
 
-bool CSysInfo::DoWork()
+CSysInfoJob::CSysInfoJob()
 {
-  //Request always
-  m_systemuptime      = GetSystemUpTime(false);
-  m_systemtotaluptime = GetSystemUpTime(true);
-  m_InternetState     = GetInternetState();
-  if (!m_bRequestDone)
-  { // request once
-    m_videoencoder      = GetVideoEncoder();
-    m_xboxversion       = GetXBVerInfo();
-    m_cpufrequency      = GetCPUFreqInfo();
-    m_kernelversion     = GetKernelVersion();
-    m_macadress         = GetMACAddress();
-  }
-  m_bRequestDone = true;
+}
+
+bool CSysInfoJob::DoWork()
+{
+  m_info.systemUptime      = GetSystemUpTime(false);
+  m_info.systemTotalUptime = GetSystemUpTime(true);
+  m_info.internetState     = GetInternetState();
+  m_info.videoEncoder      = GetVideoEncoder();
+  m_info.cpuFrequency      = GetCPUFreqInfo();
+  m_info.kernelVersion     = CSysInfo::GetKernelVersion();
+  m_info.macAddress        = GetMACAddress();
   return true;
+}
+
+const CSysData &CSysInfoJob::GetData() const
+{
+  return m_info;
+}
+
+CStdString CSysInfoJob::GetCPUFreqInfo()
+{
+  CStdString strCPUFreq;
+  double CPUFreq = GetCPUFrequency();
+  strCPUFreq.Format("%4.2fMHz", CPUFreq);
+  return strCPUFreq;
+}
+
+CStdString CSysInfoJob::GetInternetState()
+{
+  // Internet connection state!
+  XFILE::CFileCurl http;
+  m_info.haveInternetState = http.IsInternet();
+  if (m_info.haveInternetState)
+    return g_localizeStrings.Get(13296);
+  else if (http.IsInternet(false))
+    return g_localizeStrings.Get(13274);
+  else // NOT Connected to the Internet!
+    return g_localizeStrings.Get(13297);
+}
+
+CStdString CSysInfoJob::GetMACAddress()
+{
+#if defined(HAS_LINUX_NETWORK)
+  CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
+  if (iface)
+    return iface->GetMacAddress();
+#endif
+  return "";
+}
+
+CStdString CSysInfoJob::GetVideoEncoder()
+{
+  return "GPU: " + g_Windowing.GetRenderRenderer();
+}
+
+double CSysInfoJob::GetCPUFrequency()
+{
+#if defined (_LINUX) || defined(_WIN32)
+  return double (g_cpuInfo.getCPUFrequency());
+#else
+  return 0;
+#endif
+}
+
+bool CSysInfoJob::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
+{
+  iMinutes=0;iHours=0;iDays=0;
+  iMinutes = iInputMinutes;
+  if (iMinutes >= 60) // Hour's
+  {
+    iHours = iMinutes / 60;
+    iMinutes = iMinutes - (iHours *60);
+  }
+  if (iHours >= 24) // Days
+  {
+    iDays = iHours / 24;
+    iHours = iHours - (iDays * 24);
+  }
+  return true;
+}
+
+CStdString CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
+{
+  CStdString strSystemUptime;
+  int iInputMinutes, iMinutes,iHours,iDays;
+
+  if(bTotalUptime)
+  {
+    //Total Uptime
+    iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(CTimeUtils::GetTimeMS() / 60000));
+  }
+  else
+  {
+    //Current UpTime
+    iInputMinutes = (int)(CTimeUtils::GetTimeMS() / 60000);
+  }
+
+  SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
+  if (iDays > 0)
+  {
+    strSystemUptime.Format("%i %s, %i %s, %i %s",
+      iDays,g_localizeStrings.Get(12393),
+      iHours,g_localizeStrings.Get(12392),
+      iMinutes, g_localizeStrings.Get(12391));
+  }
+  else if (iDays == 0 && iHours >= 1 )
+  {
+    strSystemUptime.Format("%i %s, %i %s",
+      iHours,g_localizeStrings.Get(12392),
+      iMinutes, g_localizeStrings.Get(12391));
+  }
+  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0)
+  {
+    strSystemUptime.Format("%i %s",
+      iMinutes, g_localizeStrings.Get(12391));
+  }
+  return strSystemUptime;
 }
 
 CStdString CSysInfo::TranslateInfo(int info) const
@@ -62,40 +165,27 @@ CStdString CSysInfo::TranslateInfo(int info) const
   switch(info)
   {
   case SYSTEM_VIDEO_ENCODER_INFO:
-    if (m_bRequestDone) return m_videoencoder;
-    else return CInfoLoader::BusyInfo(info);
-    break;
+    return m_info.videoEncoder;
   case NETWORK_MAC_ADDRESS:
-    if (m_bRequestDone) return m_macadress;
-    else return CInfoLoader::BusyInfo(info);
-    break;
+    return m_info.macAddress;
   case SYSTEM_KERNEL_VERSION:
-    if (m_bRequestDone) return m_kernelversion;
-    else return CInfoLoader::BusyInfo(info);
-    break;
+    return m_info.kernelVersion;
   case SYSTEM_CPUFREQUENCY:
-    if (m_bRequestDone) return m_cpufrequency;
-    else return CInfoLoader::BusyInfo(info);
-    break;
+    return m_info.cpuFrequency;
   case SYSTEM_UPTIME:
-    if (!m_systemuptime.IsEmpty()) return m_systemuptime;
-    else return CInfoLoader::BusyInfo(info);
+    return m_info.systemUptime;
   case SYSTEM_TOTALUPTIME:
-     if (!m_systemtotaluptime.IsEmpty()) return m_systemtotaluptime;
-    else return CInfoLoader::BusyInfo(info);
+    return m_info.systemTotalUptime;
   case SYSTEM_INTERNET_STATE:
-    if (!m_InternetState.IsEmpty())return m_InternetState;
-    else return g_localizeStrings.Get(503); //Busy text
-
+    return m_info.internetState;
   default:
-    return g_localizeStrings.Get(503); //Busy text
+    return "";
   }
 }
 
 void CSysInfo::Reset()
 {
-  m_bInternetState = false;
-  m_InternetState = "";
+  m_info.Reset();
 }
 
 CSysInfo::CSysInfo(void) : CInfoLoader(15 * 1000)
@@ -173,30 +263,6 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
   }
 
   return bRet;
-}
-
-double CSysInfo::GetCPUFrequency()
-{
-#if defined (_LINUX) || defined(_WIN32)
-  return double (g_cpuInfo.getCPUFrequency());
-#else
-  return 0;
-#endif
-}
-
-CStdString CSysInfo::GetMACAddress()
-{
-#if defined(HAS_LINUX_NETWORK)
-  CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
-  if (iface)
-    return iface->GetMacAddress();
-#endif
-  return "";
-}
-
-CStdString CSysInfo::GetVideoEncoder()
-{
-  return "GPU: " + g_Windowing.GetRenderRenderer();
 }
 
 CStdString CSysInfo::GetXBVerInfo()
@@ -308,12 +374,9 @@ CStdString CSysInfo::GetKernelVersion()
 #endif
 }
 
-CStdString CSysInfo::GetCPUFreqInfo()
+bool CSysInfo::HasInternet() const
 {
-  CStdString strCPUFreq;
-  double CPUFreq = GetCPUFrequency();
-  strCPUFreq.Format("%4.2fMHz", CPUFreq);
-  return strCPUFreq;
+  return m_info.haveInternetState;
 }
 
 CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)
@@ -502,74 +565,6 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
   return strRet;
 }
 
-bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays)
-{
-  iMinutes=0;iHours=0;iDays=0;
-  iMinutes = iInputMinutes;
-  if (iMinutes >= 60) // Hour's
-  {
-    iHours = iMinutes / 60;
-    iMinutes = iMinutes - (iHours *60);
-  }
-  if (iHours >= 24) // Days
-  {
-    iDays = iHours / 24;
-    iHours = iHours - (iDays * 24);
-  }
-  return true;
-}
-
-CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
-{
-  CStdString strSystemUptime;
-  int iInputMinutes, iMinutes,iHours,iDays;
-
-  if(bTotalUptime)
-  {
-    //Total Uptime
-    iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(CTimeUtils::GetTimeMS() / 60000));
-  }
-  else
-  {
-    //Current UpTime
-    iInputMinutes = (int)(CTimeUtils::GetTimeMS() / 60000);
-  }
-
-  SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
-  if (iDays > 0)
-  {
-    strSystemUptime.Format("%i %s, %i %s, %i %s",
-      iDays,g_localizeStrings.Get(12393),
-      iHours,g_localizeStrings.Get(12392),
-      iMinutes, g_localizeStrings.Get(12391));
-  }
-  else if (iDays == 0 && iHours >= 1 )
-  {
-    strSystemUptime.Format("%i %s, %i %s",
-      iHours,g_localizeStrings.Get(12392),
-      iMinutes, g_localizeStrings.Get(12391));
-  }
-  else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0)
-  {
-    strSystemUptime.Format("%i %s",
-      iMinutes, g_localizeStrings.Get(12391));
-  }
-  return strSystemUptime;
-}
-
-CStdString CSysInfo::GetInternetState()
-{
-  // Internet connection state!
-  XFILE::CFileCurl http;
-  m_bInternetState = http.IsInternet();
-  if (m_bInternetState)
-    return g_localizeStrings.Get(13296);
-  else if (http.IsInternet(false))
-    return g_localizeStrings.Get(13274);
-  else // NOT Connected to the Internet!
-    return g_localizeStrings.Get(13297);
-}
-
 #if defined(_LINUX) && !defined(__APPLE__)
 CStdString CSysInfo::GetLinuxDistro()
 {
@@ -657,4 +652,13 @@ bool CSysInfo::IsAppleTV()
   return result;
 }
 
+CJob *CSysInfo::GetJob() const
+{
+  return new CSysInfoJob();
+}
 
+void CSysInfo::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+{
+  m_info = ((CSysInfoJob *)job)->GetData();
+  CInfoLoader::OnJobComplete(jobID, success, job);
+}
