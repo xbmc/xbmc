@@ -1528,12 +1528,21 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     strLabel = g_Windowing.GetRenderRenderer();
     break;
   case SYSTEM_OPENGL_VERSION:
-  {
-    unsigned int major, minor;
-    g_Windowing.GetRenderVersion(major, minor);
-    strLabel.Format("%d.%d", major, minor);
-    break;
-  }
+    {
+      unsigned int major, minor;
+      g_Windowing.GetRenderVersion(major, minor);
+      strLabel.Format("%d.%d", major, minor);
+      break;
+    }
+#ifdef HAS_DX
+  case SYSTEM_DIRECT3D_VERSION:
+    {
+      unsigned int major, minor;
+      g_Windowing.GetRenderVersion(major, minor);
+      strLabel.Format("%d.%d.%d.%04d", HIWORD(major), LOWORD(major), HIWORD(minor), LOWORD(minor));
+      break;
+    }
+#endif
   }
 
   return strLabel;
