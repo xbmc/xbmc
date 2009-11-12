@@ -1900,6 +1900,9 @@
   <string id="20439">No fanart</string>
   <string id="20440">Current fanart</string>
   <string id="20441">Remote fanart</string>
+  <string id="20442">Change content</string>
+  <string id="20443">Do you want to refresh info for all</string>
+  <string id="20444">items within this path?</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

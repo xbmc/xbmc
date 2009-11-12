@@ -481,13 +481,14 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
   }
 }
 
-void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)
+bool CGUIWindowVideoFiles::OnUnAssignContent(int iItem, int label1, int label2, int label3)
 {
   bool bCanceled;
-  if (CGUIDialogYesNo::ShowAndGetInput(20375,20340,20341,20022,bCanceled))
+  if (CGUIDialogYesNo::ShowAndGetInput(label1,label2,label3,20022,bCanceled))
   {
     m_database.RemoveContentForPath(m_vecItems->Get(iItem)->m_strPath,m_dlgProgress);
     CUtil::DeleteVideoDatabaseDirectoryCache();
+    return true;
   }
   else
   {
@@ -498,6 +499,8 @@ void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)
       m_database.SetScraperForPath(m_vecItems->Get(iItem)->m_strPath,info,settings);
     }
   }
+
+  return false;
 }
 
 void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& info, SScanSettings& settings)
@@ -516,7 +519,16 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
     if((info2.strContent.IsEmpty() || info2.strContent.Equals("None")) &&
       (!info.strContent.IsEmpty() && !info.strContent.Equals("None")))
     {
-      OnUnAssignContent(iItem);
+      OnUnAssignContent(iItem,20375,20340,20341);
+    }
+    if (!info.strContent.IsEmpty()      && 
+        !info2.strContent.IsEmpty()     &&
+        !info.strContent.Equals("None") && 
+       (info2.strContent != info.strContent ||
+        !info.strPath.Equals(info2.strPath)))
+    {
+      if (OnUnAssignContent(iItem,20442,20443,20444))
+        bScan = true;
     }
 
     m_database.Open();
@@ -709,7 +721,7 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     if (CGUIDialogContextMenu::OnContextButton("video", item, button))
     {
       if (button == CONTEXT_BUTTON_REMOVE_SOURCE)
-        OnUnAssignContent(itemNumber);
+      OnUnAssignContent(itemNumber,20375,20340,20341);
       Update("");
       return true;
     }
