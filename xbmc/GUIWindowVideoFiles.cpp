@@ -223,6 +223,18 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
   return CGUIWindowVideoBase::OnMessage(message);
 }
 
+bool CGUIWindowVideoFiles::OnAction(const CAction &action)
+{
+  if (action.id == ACTION_TOGGLE_WATCHED)
+  {
+    CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
+    if (pItem && pItem->GetOverlayImage().Equals("OverlayUnWatched.png")) 
+      return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_WATCHED);
+    if (pItem && pItem->GetOverlayImage().Equals("OverlayWatched.png"))
+      return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_UNWATCHED);
+  }
+  return CGUIWindowVideoBase::OnAction(action);
+}
 
 void CGUIWindowVideoFiles::UpdateButtons()
 {

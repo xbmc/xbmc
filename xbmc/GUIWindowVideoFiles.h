@@ -34,6 +34,7 @@ public:
   CGUIWindowVideoFiles(void);
   virtual ~CGUIWindowVideoFiles(void);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction &action);
 
   void GetStackedDirectory(const CStdString &strPath, CFileItemList &items);
   virtual void OnInfo(CFileItem* pItem, const SScraperInfo& info);

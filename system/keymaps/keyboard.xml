@@ -357,6 +357,7 @@
     <keyboard>
       <space>Playlist</space>
       <q>Queue</q>
+      <w>ToggleWatched</w>
     </keyboard>
   </MyVideoFiles>
   <MyVideoPlaylist>
