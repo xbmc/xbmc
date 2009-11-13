@@ -1528,12 +1528,21 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     strLabel = g_Windowing.GetRenderRenderer();
     break;
   case SYSTEM_OPENGL_VERSION:
-  {
-    unsigned int major, minor;
-    g_Windowing.GetRenderVersion(major, minor);
-    strLabel.Format("%d.%d", major, minor);
-    break;
-  }
+    {
+      unsigned int major, minor;
+      g_Windowing.GetRenderVersion(major, minor);
+      strLabel.Format("%d.%d", major, minor);
+      break;
+    }
+#ifdef HAS_DX
+  case SYSTEM_DIRECT3D_VERSION:
+    {
+      unsigned int major, minor;
+      g_Windowing.GetRenderVersion(major, minor);
+      strLabel.Format("%d.%d.%d.%04d", HIWORD(major), LOWORD(major), HIWORD(minor), LOWORD(minor));
+      break;
+    }
+#endif
   }
 
   return strLabel;
@@ -1742,7 +1751,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_INTERNET_STATE)
   {
     g_sysinfo.GetInfo(condition);
-    bReturn = g_sysinfo.m_bInternetState;
+    bReturn = g_sysinfo.HasInternet();
   }
   else if (condition == SKIN_HAS_VIDEO_OVERLAY)
   {

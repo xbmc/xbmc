@@ -36,6 +36,8 @@ public:
 
   bool IsApproved();
 
+  CStdString toString();
+
   CMediaSource ToMediaShare();
 
   CStdString m_UDI, m_DeviceKitUDI, m_MountPath, m_FileSystem, m_Label;

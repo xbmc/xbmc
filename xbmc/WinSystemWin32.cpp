@@ -532,6 +532,12 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
   return 0;
 }
 
+void CWinSystemWin32::ShowOSMouse(bool show)
+{
+  static int counter = 0;
+  if ((counter < 0 && show) || (counter >= 0 && !show))
+    counter = ShowCursor(show);
+}
 
 bool CWinSystemWin32::Minimize()
 {

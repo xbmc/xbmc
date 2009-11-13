@@ -764,4 +764,9 @@ void CWinSystemOSX::GetVideoModes(void)
   }
 }
 
+void CWinSystemOSX::ShowOSMouse(bool show)
+{
+  SDL_ShowCursor(show ? 1 : 0);
+}
+
 #endif

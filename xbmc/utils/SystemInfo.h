@@ -31,63 +31,91 @@
 
 #define MAX_KNOWN_ATTRIBUTES  46
 
+
+class CSysData
+{
+public:
+  CSysData()
+  {
+    Reset();
+  };
+
+  void Reset()
+  {
+    haveInternetState = false;
+    internetState = "";
+  };
+
+  bool haveInternetState;
+  CStdString systemUptime;
+  CStdString systemTotalUptime;
+  CStdString internetState;
+  CStdString videoEncoder;
+  CStdString cpuFrequency;
+  CStdString kernelVersion;
+  CStdString macAddress;
+};
+
+class CSysInfoJob : public CJob
+{
+public:
+  CSysInfoJob();
+
+  virtual bool DoWork();
+  const CSysData &GetData() const;
+
+private:
+  bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
+  double GetCPUFrequency();
+  CStdString GetInternetState();
+  CStdString GetSystemUpTime(bool bTotalUptime);
+  CStdString GetCPUFreqInfo();
+  CStdString GetMACAddress();
+  CStdString GetVideoEncoder();
+
+  CSysData m_info;
+};
+
 class CSysInfo : public CInfoLoader
 {
-  public:
-    CSysInfo(void);
-    virtual ~CSysInfo();
+public:
+  CSysInfo(void);
+  virtual ~CSysInfo();
 
-    char MD5_Sign[32 + 1];
+  char MD5_Sign[32 + 1];
 
-    bool GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware);
-    bool GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState);
-    bool GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_PowerCycleCount);
+  bool GetDVDInfo(CStdString& strDVDModel, CStdString& strDVDFirmware);
+  bool GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState);
+  bool GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_PowerCycleCount);
 
-    bool CreateBiosBackup();
-    bool CreateEEPROMBackup();
-    void WriteTXTInfoFile();
+  bool CreateBiosBackup();
+  bool CreateEEPROMBackup();
+  void WriteTXTInfoFile();
 
-    CStdString GetVideoEncoder();
-    CStdString GetKernelVersion();
 #if defined(_LINUX) && !defined(__APPLE__)
-    CStdString GetLinuxDistro();
+  CStdString GetLinuxDistro();
 #endif
 #ifdef _LINUX
-    CStdString GetUnameVersion();
+  CStdString GetUnameVersion();
 #endif    
-    CStdString GetUserAgent();
-    bool IsAppleTV();
-    bool IsWindowsXP();
-    CStdString GetSystemUpTime(bool bTotalUptime);
-    CStdString GetCPUFreqInfo();
-    CStdString GetXBVerInfo();
-    CStdString GetMACAddress();
-    bool GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
-    CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
-    CStdString GetHddSpaceInfo(int drive, bool shortText=false);
-    CStdString GetInternetState();
-
-    CStdString m_kernelversion;
-    CStdString m_cpufrequency;
-    CStdString m_videoencoder;
-    CStdString m_macadress;
-    CStdString m_InternetState;
-    CStdString m_systemtotaluptime;
-    CStdString m_systemuptime;
-    CStdString m_xboxversion;
-
-    bool m_bInternetState;
-    bool m_bRequestDone;
-
-  private:
-    double GetCPUFrequency();
-    bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
-
-    void Reset();
+  CStdString GetUserAgent();
+  bool HasInternet() const;
+  bool IsAppleTV();
+  bool IsWindowsXP();
+  static CStdString GetKernelVersion();
+  CStdString GetXBVerInfo();
+  bool GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
+  CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
+  CStdString GetHddSpaceInfo(int drive, bool shortText=false);
 
 protected:
-  virtual bool DoWork();
+  virtual CJob *GetJob() const;
   virtual CStdString TranslateInfo(int info) const;
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+
+private:
+  CSysData m_info;
+  void Reset();
 };
 
 extern CSysInfo g_sysinfo;

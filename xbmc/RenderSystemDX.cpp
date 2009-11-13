@@ -78,7 +78,11 @@ bool CRenderSystemDX::InitRenderSystem()
   CreateDevice();
 
   if(m_pD3D->GetAdapterIdentifier(m_adapter, 0, &AIdentifier) == D3D_OK)
+  {
     m_RenderRenderer = (const char*)AIdentifier.Description;
+    m_RenderVersionMajor = (int)AIdentifier.DriverVersion.HighPart;
+    m_RenderVersionMinor = (int)AIdentifier.DriverVersion.LowPart;
+  }
 
   // get our render capabilities
   D3DCAPS9 caps;

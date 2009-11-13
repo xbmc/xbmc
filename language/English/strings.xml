@@ -1899,6 +1899,9 @@
   <string id="20439">No fanart</string>
   <string id="20440">Current fanart</string>
   <string id="20441">Remote fanart</string>
+  <string id="20442">Change content</string>
+  <string id="20443">Do you want to refresh info for all</string>
+  <string id="20444">items within this path?</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -2110,7 +2113,7 @@
   <string id="22021">Allowed error in aspect ratio (%)</string>
   <string id="22022">Show video files in listings</string>
   <string id="22023">DirectX vendor</string>
-  <string id="22024">DirectX version</string>
+  <string id="22024">Direct3D version</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Font</string>
