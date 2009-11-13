@@ -15,6 +15,10 @@
       <path>MatroskaSplitter.ax</path>
 	  <guid>{0A68C3B5-9164-4A54-AFAF-995B2FF0E0D4}</guid>
     </filter>
+    <filter name="mp4source" type="source">
+      <path>MP4Splitter.ax</path>
+	  <guid>{3CCC052E-BDEE-408A-BEA7-90914EF2964B}</guid>
+    </filter>
 	<!-- splitters -->
 	<filter name="avisplitter" type="splitter">
       <path>AviSplitter.ax</path>
@@ -26,6 +30,11 @@
       <guid>{47E792CF-0BBE-4F7A-859C-194B0768650A}</guid>
 	  <filetype>flv</filetype>
 	</filter>
+    <filter name="mp4splitter" type="splitter">
+      <path>MP4Splitter.ax</path>
+      <guid>{61F47056-E400-43D3-AF1E-AB7DFFD4C4AD}</guid>
+	  <filetype>mp4</filetype>
+    </filter>
 	<filter name="mkvsplitter" type="splitter">
       <path>MatroskaSplitter.ax</path>
       <guid>{149D2E01-C32E-4939-80F6-C07B81015A7A}</guid>
@@ -49,6 +58,7 @@
   <rules><!-- Still need to fix the source and splitter only the video and audio decoder are used for rules -->
     <rule filetypes="avi" source="avisource" splitter="avisplitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
 	<rule filetypes="flv" source="flvsource" splitter="flvsplitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
+    <rule filetypes="mp4" source="mp4source" splitter="mp4splitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
 	<rule filetypes="mkv" source="mkvsource" splitter="mkvsplitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
   </rules>
 </dsfilterconfig>

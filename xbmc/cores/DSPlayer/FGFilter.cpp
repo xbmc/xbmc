@@ -381,26 +381,6 @@ void CFGFilterRegistry::ExtractFilterData(BYTE* p, UINT len)
   }
 }
 
-template<class T>
-class CFGFilterInternal : public CFGFilter
-{
-public:
-  CFGFilterInternal(CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE) : CFGFilter(__uuidof(T), name, merit) {}
-
-  HRESULT Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_IUnknown>& pUnks)
-  {
-    CheckPointer(ppBF, E_POINTER);
-
-    HRESULT hr = S_OK;
-    CComPtr<IBaseFilter> pBF = DNew T(NULL, &hr);
-    if(FAILED(hr)) return hr;
-
-    *ppBF = pBF.Detach();
-
-    return hr;
-  }
-};
-
 //
 // CFGFilterFile
 //

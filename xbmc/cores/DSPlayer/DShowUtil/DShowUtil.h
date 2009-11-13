@@ -46,6 +46,9 @@
 
 typedef enum {CDROM_NotFound, CDROM_Audio, CDROM_VideoCD, CDROM_DVDVideo, CDROM_Unknown} cdrom_t;
 
+static const GUID CLSID_NullRenderer =
+	{ 0xC1F400A4, 0x3F08, 0x11D3, { 0x9F, 0x0B, 0x00, 0x60, 0x08, 0x03, 0x9E, 0x37 } };
+
 class  DShowUtil
 {
 public:

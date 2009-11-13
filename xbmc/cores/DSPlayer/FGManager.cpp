@@ -37,6 +37,7 @@
 #include <D3d9.h>
 #include <Vmr9.h>
 
+#include "dshowutil/NullRenderers.h"
 //XML CONFIG HEADERS
 #include "Log.h"
 #include "tinyXML/tinyxml.h"
@@ -587,9 +588,8 @@ STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
 	{ 
       if(SUCCEEDED(pFGF->Create(&ppSBF, ppUnk)))
 	  {
+        //TODO Fix the name output
         this->AddFilter(ppSBF,L"XBMC Splitter");
-	  //if (SUCCEEDED(::AddFilterByCLSID(this,pFGF->GetCLSID(),&ppSBF, L"XBMC Splitter" )))
-	  //{
         hr = ::ConnectFilters(this,m_FileSource,ppSBF);
         if ( SUCCEEDED( hr ) )
 		{
@@ -647,6 +647,9 @@ STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
 	}
     pRules = pRules->NextSiblingElement();
   }
+  
+  InsertSubtitleNullRender(ppSBF);
+
   this->ConnectFilter(ppSBF,NULL);
   //Getting the mpc video dec filter.
   //This filter interface is required to get the info for the current dxva rendering status
@@ -716,38 +719,36 @@ bool CFGManager::LoadFiltersFromXml(CStdString configFile, CStdString xbmcPath)
   }
 }
 
-bool CFGManager::ConnectFiltersXbmc()
+void CFGManager::InsertSubtitleNullRender(IBaseFilter* pBF)
 {
-  CAtlList<IPin*> pinlist;
-  if (m_Splitter)
+  //This is just a workaround to make shut up matroska subtitles
+  HRESULT hr;
+  CComPtr<IBaseFilter> ppBF;
+  BeginEnumPins(pBF, pEP, pPin)
   {
-    if (SUCCEEDED(ConnectFilter(m_Splitter,NULL)))
-      return true;
-    IEnumPins *epins;
-  IPin *pin;
-  ULONG    f;
-    if (FAILED(m_Splitter->EnumPins(&epins)))
-      return false;
-  epins->Reset();
-  while (epins->Next(1, &pin, &f) == NOERROR) 
-  {
-      try
+    if(DShowUtil::GetPinName(pPin)[0] != '~'
+    && S_OK == IsPinDirection(pPin, PINDIR_OUTPUT)
+    && S_OK != IsPinConnected(pPin))
     {
-        PIN_DIRECTION  dir;
-        PIN_INFO    info;
-        pin->QueryDirection(&dir);
-      pin->QueryPinInfo(&info);
-        if (dir == PINDIR_OUTPUT)
-    {
-          this->Render(pin);
+      IEnumMediaTypes	*emt;
+	  AM_MEDIA_TYPE	*pmt;
+	  ULONG			f;
+      hr = pPin->EnumMediaTypes(&emt);
+	  emt->Reset();
+      while (emt->Next(1, &pmt, &f) == NOERROR) 
+      {
+        CMediaType		mt(*pmt);
+        if (mt.majortype == MEDIATYPE_Subtitle)
+        {
+          hr = CoCreateInstance(CLSID_NullRenderer, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)&ppBF);
+		  hr = ppBF->JoinFilterGraph(this,L"NULL RENDERER");
+        }
+        DeleteMediaType(pmt);
       }
+      emt->Release();
     }
-    catch (...)
-    {
-    }
-      pin->Release();
   }
-  }
+  EndEnumPins
 }
 
 STDMETHODIMP CFGManager::RenderFile(LPCWSTR lpcwstrFile, LPCWSTR lpcwstrPlayList)
@@ -1454,7 +1455,7 @@ CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd,CStd
   CStdString fileconfigtmp;
   fileconfigtmp.Format("%s\\system\\players\\dsplayer\\dsfilterconfig.xml",pXbmcPath.c_str());
   //Load the config for the xml
-  bool testtest;
+  
   if (LoadFiltersFromXml(fileconfigtmp,pXbmcPath))
     CLog::Log(LOGNOTICE,"Successfully loaded %s",fileconfigtmp.c_str());
   else

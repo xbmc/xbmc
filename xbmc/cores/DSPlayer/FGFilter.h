@@ -79,16 +79,14 @@ public:
 };
 
 template<class T>
-class CFGFilterCustom : public CFGFilter
+class CFGFilterInternal : public CFGFilter
 {
 public:
-	CFGFilterCustom(CStdString name = L"", UINT64 merit = MERIT64_DO_USE) : CFGFilter(__uuidof(T), name, merit) {}
+	CFGFilterInternal(CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE) : CFGFilter(__uuidof(T), name, merit) {}
 
-	HRESULT Create(IBaseFilter** ppBF, IUnknown** ppUnk)
+	HRESULT Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_IUnknown>& pUnks)
 	{
 		CheckPointer(ppBF, E_POINTER);
-
-		if(ppUnk) *ppUnk = NULL;
 
 		HRESULT hr = S_OK;
 		CComPtr<IBaseFilter> pBF = new T(NULL, &hr);

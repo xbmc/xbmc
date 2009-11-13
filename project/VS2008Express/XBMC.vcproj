@@ -2206,10 +2206,6 @@
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypeEx.h"
 						>
 					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Helpers\XbmcDhowGuid.h"
-						>
-					</File>
 				</Filter>
 				<Filter
 					Name="Filters"

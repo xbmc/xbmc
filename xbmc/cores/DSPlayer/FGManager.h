@@ -124,7 +124,7 @@ protected:
 	STDMETHODIMP GetXbmcVideoDecFilter(IMPCVideoDecFilter** pBF);
 	STDMETHODIMP RenderFileXbmc(const CFileItem& pFileItem);
 	bool LoadFiltersFromXml(CStdString configFile, CStdString xbmcPath);
-	bool ConnectFiltersXbmc();
+	void InsertSubtitleNullRender(IBaseFilter* pBF);
 	CFile                m_File;
 	CComPtr<IBaseFilter> m_FileSource;
 	CComPtr<IBaseFilter> m_Splitter;
