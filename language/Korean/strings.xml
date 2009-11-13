@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 11/04/2009-->
+<!--Date of translation: 11/10/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -151,7 +151,6 @@
   <string id="221">네트워크가 연결되지 않음</string>
   <string id="222">취소</string>
   <string id="224">속도</string>
-  <string id="225">전환 시간</string>
   <string id="226">패턴 테스트...</string>
   <string id="227">인터넷에서 오디오 CD 검색</string>
   <string id="228">읽을때 재생목록 섞기</string>
@@ -182,7 +181,7 @@
   <string id="260">샤우트캐스트</string>
   <string id="261">시작 대기중....</string>
   <string id="262">스크립트 출력</string>
-  <string id="263">웹서버 사용</string>
+  <string id="263">HTTP 를 통해 XBMC 제어 허용</string>
   <string id="264">녹음</string>
   <string id="265">녹음 중지</string>
   <string id="266">정렬: 트랙</string>
@@ -539,11 +538,8 @@
   <string id="701">라이브러리에서 오래된 노래 제거</string>
   <string id="702">이 경로는 이미 검색 되었습니다</string>
   <string id="705">네트워크</string>
-  <string id="706">HTTP 프록시 호스트</string>
-  <string id="707">HTTP 프록시 포트</string>
-  <string id="708">HTTP 프록시 사용</string>
-  <string id="709">HTTP 프록시 사용자명</string>
-  <string id="710">HTTP 프록시 비밀번호</string>
+  <string id="706">- 서버</string>
+  <string id="708">인터넷 접속에 HTTP 프록시 서버 사용</string>
   <string id="711">인터텟 프로토콜(IP)</string>
   <string id="712">잘못된 포트를 지정했음. 1 과 65535사이의 값 이어야 합니다.</string>
   <string id="713">HTTP 프록시</string>
@@ -562,10 +558,10 @@
   <string id="727">웹 서버</string>
   <string id="728">FTP 서버</string>
   <string id="729">인터넷 시간</string>
-  <string id="730">웹 서버 포트</string>
+  <string id="730">- 포트</string>
   <string id="731">시간 서버 주소</string>
   <string id="732">저장 &amp;  적용</string>
-  <string id="733">웹 서버 비밀번호</string>
+  <string id="733">- 비밀번호</string>
   <string id="734">암호 없음</string>
   <string id="735">- 문자집합</string>
   <string id="736">- 형식</string>
@@ -619,14 +615,14 @@
   <string id="787">인터페이스 중지됨</string>
   <string id="788">정상적으로 네트워크 인터페이스가 중지 되었습니다.</string>
   <string id="789">무선 네트워크 이름 (ESSID)</string>
-  <string id="790">이벤트 서버</string>
-  <string id="791">이벤트 서버 사용</string>
+  <string id="791">XBMC 를 제어하기 위해 이 시스템의 원격 제어 프로그램 허용</string>
   <string id="792">포트</string>
   <string id="793">포트 범위</string>
-  <string id="794">다른 컴퓨터 접속 허용</string>
+  <string id="794">XBMC 를 제어 하기 위해 다른 시스템의 프로그램 허용</string>
   <string id="795">초기 반복 지연(밀리초)</string>
   <string id="796">연속 반복 지연(밀리초)</string>
   <string id="797">최대 클라이언트 수</string>
+  <string id="798">인터넷 접속</string>
   <string id="1000">화면보호기 미리보기</string>
   <string id="1001">연결할수 없음</string>
   <string id="1002">XBMC가 네트워크에 연결할수 없습니다.</string>
@@ -674,7 +670,7 @@
   <string id="1045">플러그인 설정</string>
   <string id="1046">액세스 포인트</string>
   <string id="1047">기타...</string>
-  <string id="1048">웹 서버 사용자명</string>
+  <string id="1048">- 사용자명</string>
   <string id="1049">스크립트 설정</string>
   <string id="1050">단일</string>
   <string id="1200">SMB 클라이언트</string>
@@ -717,7 +713,7 @@
   <string id="1255">FTP 사용자 및 비밀번호 전송</string>
   <string id="1256">핑 간격</string>
   <string id="1257">자동감지된 시스템에 연결 하시겠습니까?</string>
-  <string id="1260">제로컨프 게시</string>
+  <string id="1260">제로컨프를 통해 이 서비스를 다른 시스템에 알림</string>
   <string id="1300">사용자 지정 오디오 장치</string>
   <string id="1301">사용자 지정 패스스루 장치</string>
   <string id="1396">뜬</string>
@@ -867,7 +863,7 @@
   <string id="12373">설정 &amp; 파일 관리자</string>
   <string id="12376">모든 영화에 기본값으로 설정</string>
   <string id="12377">이전에 저장된 모든 값을 초기화합니다</string>
-  <string id="12378">개별 이미지 보기</string>
+  <string id="12378">각각의 이미지를 표시할 시간</string>
   <string id="12379">회전 및 축소/확대 효과 사용</string>
   <string id="12380">PAL 비율로 NTSC 비디오 재생</string>
   <string id="12381">NTSC 비율로 PAL 비디오 재생</string>
@@ -1063,7 +1059,7 @@
   <string id="13357">고화질 픽셀 셰이더</string>
   <string id="13358">항목 재생</string>
   <string id="13359">아티스트 미리보기 설정</string>
-  <string id="13360">미리보기 생성</string>
+  <string id="13360">자동 미리보기 생성</string>
   <string id="13361">음성 사용</string>
   <string id="13375">장치 사용</string>
   <string id="13376">음량</string>
@@ -1168,7 +1164,7 @@
   <string id="14032">- 인터넷</string>
   <string id="14034">DVD 캐시 - DVD-롬</string>
   <string id="14035">- 로컬 네트워크</string>
-  <string id="14036">서버</string>
+  <string id="14036">서비스</string>
   <string id="14037">모양 &amp; 느낌</string>
   <string id="14038">네트워크 설정이 변경되었습니다</string>
   <string id="14039">네트워크 설정을 변경하려면 XBMC</string>
@@ -1209,6 +1205,8 @@
   <string id="14078">- 색깔</string>
   <string id="14079">시간대 국가</string>
   <string id="14080">시간대</string>
+  <string id="14081">파일 목록</string>
+  <string id="14082">EXIF 사진 정보 보이기</string>
   <string id="15015">제거</string>
   <string id="15016">게임</string>
   <string id="15019">추가</string>
@@ -1536,7 +1534,7 @@
   <string id="20181">백스페이스</string>
   <string id="20182">사이띄개</string>
   <string id="20183">스킨 새로고침</string>
-  <string id="20184">EXIF 정보를 이용해 회전</string>
+  <string id="20184">EXIF 정보를 이용해 사진 방향전환</string>
   <string id="20185">TV 쇼에서 포스터 보기 형식 사용</string>
   <string id="20186">기다려 주세요</string>
   <string id="20187">EEPROM 백업</string>
@@ -1633,6 +1631,7 @@
   <string id="20379">선택된 폴더는 하나의 TV 쇼 포함</string>
   <string id="20380">검색 제외 폴더</string>
   <string id="20381">스페셜</string>
+  <string id="20382">자동으로 시즌 미리보기 가져오기</string>
   <string id="20383">선택된 폴더는 하나의 비디오 포함</string>
   <string id="20384">TV 쇼 연결</string>
   <string id="20385">TV 쇼 연결 제거</string>
@@ -1652,6 +1651,7 @@
   <string id="20399">앨범에서 뮤직비디오로 가기</string>
   <string id="20400">아티스트의 뮤직비디오로 가기</string>
   <string id="20401">뮤직비디오 재생</string>
+  <string id="20402">자동으로 배우 미리보기 가져오기</string>
   <string id="20403">배우 미리보기 설정</string>
   <string id="20405">에피소드 북마크 제거</string>
   <string id="20406">에피소드 북마크 설정</string>
@@ -1661,7 +1661,7 @@
   <string id="20410">예고편</string>
   <string id="20411">병합</string>
   <string id="20412">TV 쇼 병합</string>
-  <string id="20413">팬아트 가져옴</string>
+  <string id="20413">팬아트 가져오기</string>
   <string id="20414">비디오 및 음악 라이브러리에 팬아트 보이기</string>
   <string id="20415">새 컨텐츠 검색</string>
   <string id="20416">초연</string>
@@ -1677,13 +1677,18 @@
   <string id="20427">파일로 내보낼까요?</string>
   <string id="20428">단일 파일</string>
   <string id="20429">분리 파일</string>
-  <string id="20430">미리보기 및 팬아트 내보내기?</string>
+  <string id="20430">미리보기 및 팬아트를 내보내시겠습니까?</string>
   <string id="20431">기존 파일에 덮어쓰겠습니까?</string>
   <string id="20432">라이브러리 업데이트 제외 경로</string>
   <string id="20433">미리보기 및 플래그 추출</string>
   <string id="20434">세트</string>
   <string id="20435">영화세트 미리보기 설정</string>
   <string id="20436">배우 미리보기 내보내기</string>
+  <string id="20437">팬아트 선택</string>
+  <string id="20438">로컬 팬아트</string>
+  <string id="20439">팬아트 없음</string>
+  <string id="20440">현재 팬아트</string>
+  <string id="20441">원격 팬아트</string>
   <string id="21330">숨김 파일 및 디렉토리 보기</string>
   <string id="21331">TuxBox 클라이언트</string>
   <string id="21332">경고: 대상 TuxBox 장치가 녹음-상태!</string>
@@ -1692,14 +1697,8 @@
   <string id="21335">스트림을 시작 하시겠습니까?</string>
   <string id="21336">연결: %s</string>
   <string id="21337">TuxBox 장치</string>
-  <string id="21356">UPnP 음악</string>
-  <string id="21357">UPnP 비디오</string>
-  <string id="21358">UPnP 사진</string>
   <string id="21359">미디어 공유 추가...</string>
-  <string id="21360">UPnP 서버 사용</string>
-  <string id="21361">UPnP 음악 공유 관리</string>
-  <string id="21362">UPnP 비디오 공유 관리</string>
-  <string id="21363">UPnP 사진 공유 관리</string>
+  <string id="21360">UPnP 를 통해 비디오 및 음악 라이브러리 공유</string>
   <string id="21364">미디어 공유 수정</string>
   <string id="21365">미디어 공유 제거</string>
   <string id="21366">사용자 지정 자막 디렉토리</string>
@@ -1769,7 +1768,7 @@
   <string id="21432">지능형 재생목록 수정</string>
   <string id="21433">재생목록 이름</string>
   <string id="21434">찾은 항목:</string>
-  <string id="21435">수정</string>
+  <string id="21435">- 수정</string>
   <string id="21436">%i 항목</string>
   <string id="21437">새 지능형 재생목록...</string>
   <string id="21438">%c 드라이브</string>
@@ -1838,7 +1837,7 @@
   <string id="21878">저작권 표기</string>
   <string id="21879">국가 코드</string>
   <string id="21880">참고 업무</string>
-  <string id="21881">UPnP 렌더러 사용</string>
+  <string id="21881">XBMC 제어에 UPnP 제어기 허용</string>
   <string id="21882">DVD 메뉴 전의 도입부 건너뛰기 시도</string>
   <string id="21883">추출된 오디오 CD</string>
   <string id="21884">모든 아티스트 정보 요청</string>
@@ -1879,7 +1878,9 @@
   <string id="22019">제목별 녹음</string>
   <string id="22020">가이드</string>
   <string id="22021">가로세로 비에 허용된 오류 (%)</string>
-  <string id="22022">목록에 비디오 파일 허용</string>
+  <string id="22022">목록에 비디오 파일 보이기</string>
+  <string id="22023">DirectX 공급자</string>
+  <string id="22024">DirectX 버전</string>
   <string id="22030">글꼴</string>
   <string id="22031">- 크기</string>
   <string id="22032">- 색깔</string>
