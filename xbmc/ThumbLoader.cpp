@@ -174,6 +174,8 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 {
   if (pItem->m_bIsShareOrDrive) return false;
 
+  SetWatchedOverlay(pItem);
+
   CFileItem item(*pItem);
   if (pItem->IsVideoDb() && pItem->HasVideoInfoTag() && !pItem->HasThumbnail())
   {
@@ -183,8 +185,6 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   }
   CStdString cachedThumb(item.GetCachedVideoThumb());
   
-  SetWatchedOverlay(pItem);
-
   if (!pItem->HasThumbnail())
   {
     item.SetUserVideoThumb();
