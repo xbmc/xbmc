@@ -615,11 +615,11 @@ void CGUISettings::Initialize()
 #if defined(_WIN32) || defined (__APPLE__)
   // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
   // as it works nicer with switching to other applications. However on some systems vsync is broken
-  // when we do this (eg WinXP on ATI in particular) and on others (AppleTV) we can't get XBMC to
+  // when we do this (eg non-Aero on ATI in particular) and on others (AppleTV) we can't get XBMC to
   // the front
   bool fakeFullScreen = true;
-  bool showSetting = false;
-  if (g_sysinfo.IsWindowsXP())
+  bool showSetting = true;
+  if (g_sysinfo.IsAeroDisabled())
     fakeFullScreen = false;
   if (g_sysinfo.IsAppleTV())
   {
