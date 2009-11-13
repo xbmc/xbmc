@@ -556,16 +556,7 @@ void CDVDPlayerVideo::Process()
             if (picture.iRepeatPicture > 0)
               picture.iDuration *= picture.iRepeatPicture + 1;
 
-            int iResult;
-            try
-            {
-              iResult = OutputPicture(&picture, pts);
-            }
-            catch (...)
-            {
-              CLog::Log(LOGERROR, "%s - Exception caught when outputing picture", __FUNCTION__);
-              iResult = EOS_ABORT;
-            }
+            int iResult = OutputPicture(&picture, pts);
 
             // guess next frame pts. iDuration is always valid
             pts += picture.iDuration * m_speed / abs(m_speed);
