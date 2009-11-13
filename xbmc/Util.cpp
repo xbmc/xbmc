@@ -2116,7 +2116,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
       { // start of function
         inFunction++;
       }
-      if (!inFunction && ch == ',')
+      if (!inFunction && !IsStack(paramString) && ch == ',')
       { // not in a function, so a comma signfies the end of this parameter
         if (whiteSpacePos)
           parameter = parameter.Left(whiteSpacePos);
