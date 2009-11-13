@@ -567,6 +567,9 @@ void CDVDPlayerVideo::Process()
               iResult = EOS_ABORT;
             }
 
+            // guess next frame pts. iDuration is always valid
+            pts += picture.iDuration * m_speed / abs(m_speed);
+
             if( iResult & EOS_ABORT )
             {
               //if we break here and we directly try to decode again wihout
