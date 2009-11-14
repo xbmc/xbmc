@@ -1485,7 +1485,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
   case VISUALISATION_NAME:
     {
-      strLabel = g_guiSettings.GetString("mymusic.visualisation");
+      strLabel = g_guiSettings.GetString("musicplayer.visualisation");
       if (strLabel != "None" && strLabel.size() > 4)
       { // make it look pretty
         strLabel = strLabel.Left(strLabel.size() - 4);
@@ -1968,7 +1968,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       }
     break;
     case VISUALISATION_ENABLED:
-      bReturn = g_guiSettings.GetString("mymusic.visualisation") != "None";
+      bReturn = g_guiSettings.GetString("musicplayer.visualisation") != "None";
     break;
     default: // default, use integer value different from 0 as true
       bReturn = GetInt(condition) != 0;

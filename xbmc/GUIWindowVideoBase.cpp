@@ -1447,8 +1447,9 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool mark)
     CFileItemPtr pItem=items[i];
     if (pItem->IsVideoDb())
     {
-      if ((pItem->HasVideoInfoTag() &&
-          pItem->GetVideoInfoTag()->m_playCount == mark?1:0))
+      if (pItem->HasVideoInfoTag() &&
+          (( mark && pItem->GetVideoInfoTag()->m_playCount) ||
+           (!mark && pItem->GetVideoInfoTag()->m_playCount > 0)))
         continue;
     }
 
