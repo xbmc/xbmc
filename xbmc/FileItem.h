@@ -126,7 +126,6 @@ public:
   void SetCanQueue(bool bYesNo);
   bool IsParentFolder() const;
   bool IsFileFolder() const;
-  bool IsMemoryUnit() const;
   bool IsRemovable() const;
   bool IsTuxBox() const;
   bool IsMythTV() const;
