@@ -338,7 +338,7 @@ bool CRenderSystemDX::PresentRenderImpl()
   if (g_advancedSettings.m_sleepBeforeFlip)
   {
     D3DRASTER_STATUS rasterStatus;
-    while (SUCCEEDED(m_pD3DDevice->GetRasterStatus(0, &rasterStatus)) && !rasterStatus.InVBlank && rasterStatus.ScanLine < 0.9*m_screenHeight)
+    while (SUCCEEDED(m_pD3DDevice->GetRasterStatus(0, &rasterStatus)) && rasterStatus.ScanLine < 0.9*m_screenHeight)
       Sleep(1);
   }
   hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
