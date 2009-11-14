@@ -942,7 +942,7 @@ bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
 bool CUtil::IsSpecial(const CStdString& strFile)
 {
   CURL url(strFile);
-  return strFile.Left(8).Equals("special:");
+  return url.GetProtocol().Equals("special");
 }
 
 bool CUtil::IsPlugin(const CStdString& strFile)
