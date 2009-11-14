@@ -76,7 +76,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
-  case GUI_MSG_SETFOCUS:
+  case GUI_MSG_FOCUSED:
     {
       CGUIWindow::OnMessage(message);
       int focusedControl = GetFocusedControlID();
