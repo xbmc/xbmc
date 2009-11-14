@@ -208,7 +208,7 @@ void CGUISettings::Initialize()
   AddBool(0, "slideshow.shuffle", 13319, false);
 
   // Programs settings
-//  AddGroup(1, 0);
+  AddGroup(1, 0);
   AddCategory(1, "myprograms", 16000);
   AddBool(1, "myprograms.autoffpatch", 29999, false);
   AddSeparator(2,"myprograms.sep1");
@@ -396,10 +396,7 @@ void CGUISettings::Initialize()
   AddCategory(5, "myvideos", 16000);
   AddBool(0, "myvideos.treatstackasfile", 20051, true);
   AddInt(2, "myvideos.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
-// Disabled since Xbox doesn't work properly with them
-/*
   AddBool(4, "myvideos.extractflags",20433,false);
-*/
   AddBool(5, "myvideos.cleanstrings", 20418, false);
 
   AddCategory(5, "videolibrary", 14022);
