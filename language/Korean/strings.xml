@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 11/10/2009-->
+<!--Date of translation: 11/13/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -108,7 +108,7 @@
   <string id="167">FTP 서버 사용</string>
   <string id="168">인터넷 시간 동기화 사용</string>
   <string id="169">해상도</string>
-  <string id="170">새로 고침 비율 조정</string>
+  <string id="170">새로고침 비율 조정</string>
   <string id="172">개봉일</string>
   <string id="175">분위기</string>
   <string id="176">형식</string>
@@ -117,7 +117,7 @@
   <string id="181">앨범 선택</string>
   <string id="182">트랙</string>
   <string id="183">리뷰</string>
-  <string id="184">새로 고침</string>
+  <string id="184">새로고침</string>
   <string id="185">앨범 찾기</string>
   <string id="186">확인</string>
   <string id="187">앨범 찾지 못함!</string>
@@ -305,7 +305,7 @@
   <string id="394">안개</string>
   <string id="395">흐린 안개</string>
   <string id="396">지역 선택</string>
-  <string id="397">새로 고침 시간</string>
+  <string id="397">새로고침 시간</string>
   <string id="398">온도 단위</string>
   <string id="399">속도 단위</string>
   <string id="400">날씨</string>
@@ -1207,6 +1207,8 @@
   <string id="14080">시간대</string>
   <string id="14081">파일 목록</string>
   <string id="14082">EXIF 사진 정보 보이기</string>
+  <string id="14083">트루 전체화면 모드 대신 전체화면 윈도우 사용</string>
+  <string id="14084">선택시 노래 대기열에 추가</string>
   <string id="15015">제거</string>
   <string id="15016">게임</string>
   <string id="15019">추가</string>
@@ -1626,8 +1628,8 @@
   <string id="20373">시즌</string>
   <string id="20374">영화 정보 다운로드</string>
   <string id="20375">컨텐츠 할당해제</string>
-  <string id="20377">TV 쇼 정보 새로 고침</string>
-  <string id="20378">모든 에피소트 정보를 새로 고치시겠습니까?</string>
+  <string id="20377">TV 쇼 정보 새로고침</string>
+  <string id="20378">모든 에피소트 정보를 새로고치겠습니까?</string>
   <string id="20379">선택된 폴더는 하나의 TV 쇼 포함</string>
   <string id="20380">검색 제외 폴더</string>
   <string id="20381">스페셜</string>
@@ -1689,6 +1691,9 @@
   <string id="20439">팬아트 없음</string>
   <string id="20440">현재 팬아트</string>
   <string id="20441">원격 팬아트</string>
+  <string id="20442">컨텐츠 변경</string>
+  <string id="20443">이 경로의 모든 항목 정보를</string>
+  <string id="20444">새로고치겠습니까?</string>
   <string id="21330">숨김 파일 및 디렉토리 보기</string>
   <string id="21331">TuxBox 클라이언트</string>
   <string id="21332">경고: 대상 TuxBox 장치가 녹음-상태!</string>
@@ -1880,7 +1885,7 @@
   <string id="22021">가로세로 비에 허용된 오류 (%)</string>
   <string id="22022">목록에 비디오 파일 보이기</string>
   <string id="22023">DirectX 공급자</string>
-  <string id="22024">DirectX 버전</string>
+  <string id="22024">Direct3D 버전</string>
   <string id="22030">글꼴</string>
   <string id="22031">- 크기</string>
   <string id="22032">- 색깔</string>
