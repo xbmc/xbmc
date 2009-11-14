@@ -109,9 +109,9 @@ void CGUIDialogTrainerSettings::CreateSettings()
     setting.name = "";
     setting.type = SettingInfo::SPIN;
     setting.data = &m_iTrainer;
-    setting.entry.push_back(g_localizeStrings.Get(231));
+    setting.entry.push_back(make_pair(setting.entry.size(), g_localizeStrings.Get(231)));
     for (unsigned int i = 0; i < m_vecTrainers.size(); i++)
-      setting.entry.push_back(m_vecTrainers[i]->GetName());
+      setting.entry.push_back(make_pair(setting.entry.size(), m_vecTrainers[i]->GetName()));
     m_settings.push_back(setting);
 
     AddSeparator(2);

@@ -1072,7 +1072,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.useexternaldvdplayer"));
     }
-    else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("pictures.screenshotpath"))
+    else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("system.screenshotpath"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
@@ -1995,6 +1995,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
     if (dlg->IsConfirmed())
     {
+      g_settings.Save();
       g_applicationMessenger.RestartApp();
     }
   }

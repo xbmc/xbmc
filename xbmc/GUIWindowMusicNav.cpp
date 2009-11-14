@@ -590,8 +590,12 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
     }
     NODE_TYPE childtype = dir.GetDirectoryChildType(item->m_strPath);
-    if (childtype == NODE_TYPE_ALBUM || childtype == NODE_TYPE_ARTIST ||
-        nodetype == NODE_TYPE_GENRE  || nodetype == NODE_TYPE_ALBUM)
+    if (childtype == NODE_TYPE_ALBUM               ||
+        childtype == NODE_TYPE_ARTIST              ||
+        nodetype == NODE_TYPE_GENRE                ||
+        nodetype == NODE_TYPE_ALBUM                ||
+        nodetype == NODE_TYPE_ALBUM_RECENTLY_ADDED ||
+        nodetype == NODE_TYPE_ALBUM_COMPILATIONS)
     {
       // we allow the user to set content for
       // 1. general artist and album nodes
@@ -748,7 +752,15 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       bool bScan=false;
       SScraperInfo info;
-      if (!m_musicdatabase.GetScraperForPath(item->m_strPath,info))
+      CStdString path(item->m_strPath);
+      CQueryParams params;
+      CDirectoryNode::GetDatabaseInfo(item->m_strPath, params);
+      if (params.GetAlbumId() != -1)
+        path.Format("musicdb://3/%i/",params.GetAlbumId());
+      else if (params.GetArtistId() != -1)
+        path.Format("musicdb://2/%i/",params.GetArtistId());
+
+      if (!m_musicdatabase.GetScraperForPath(path,info))
         info.strContent = "albums";
 
       int iLabel=132;
@@ -760,7 +772,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (CGUIDialogContentSettings::Show(info, bScan,iLabel))
       {
-        m_musicdatabase.SetScraperForPath(item->m_strPath,info);
+        m_musicdatabase.SetScraperForPath(path,info);
         if (bScan)
           OnInfoAll(itemNumber,true);
       }

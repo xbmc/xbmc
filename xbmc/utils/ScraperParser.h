@@ -50,6 +50,7 @@ public:
   const CStdString GetSearchStringEncoding() { return m_SearchStringEncoding; }
   const CStdString Parse(const CStdString& strTag, const CScraperSettings* pSettings=NULL);
   bool HasFunction(const CStdString& strTag);
+  bool RequiresSettings() { return m_requiressettings; }
 
   CStdString m_param[MAX_SCRAPER_BUFFERS];
   static void ClearCache();
@@ -75,6 +76,7 @@ private:
   const char* m_framework;
   const char* m_date;
   const char* m_SearchStringEncoding;
+  bool m_requiressettings;
 
   CStdString m_strFile;
 

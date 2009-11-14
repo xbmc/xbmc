@@ -450,7 +450,7 @@ public:
   CStdString GetCachedThumb(const CFileItem& item) const;
 
   // smart playlists and main retrieval work in these functions
-  bool GetMoviesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items, bool fetchSets = false);
+  bool GetMoviesByWhere(const CStdString& strBaseDir, const CStdString &where, const CStdString &order, CFileItemList& items, bool fetchSets = false);
   bool GetTvShowsByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
   bool GetEpisodesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items, bool appendFullShowPath = true);
   bool GetMusicVideosByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items, bool checkLocks = true);

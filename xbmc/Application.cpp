@@ -1188,7 +1188,7 @@ HRESULT CApplication::Initialize()
 
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
   CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("mymusic.recordingpath",false).c_str());
-  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("pictures.screenshotpath",false).c_str());
+  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("system.screenshotpath",false).c_str());
 
   // UserData folder layout:
   // UserData/
@@ -4372,12 +4372,10 @@ bool CApplication::ResetScreenSaverWindow()
   {
     int iProfile = g_settings.m_iLastLoadedProfileIndex;
     if (m_iScreenSaveLock == 0)
-      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE        &&
+      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE &&
+          (g_settings.bUseLoginScreen || g_guiSettings.GetBool("masterlock.startuplock")) &&
           g_settings.m_vecProfiles[iProfile].getLockMode() != LOCK_MODE_EVERYONE &&
-         !g_guiSettings.GetString("screensaver.mode").Equals("Black")            &&
-        !(g_guiSettings.GetBool("screensaver.usemusicvisinstead")                &&
-         !g_guiSettings.GetString("screensaver.mode").Equals("Black")            &&
-          g_application.IsPlayingAudio())                                          )
+          m_screenSaverMode != "Dim" && m_screenSaverMode != "Black" && m_screenSaverMode != "Visualisation")
       {
         m_iScreenSaveLock = 2;
         CGUIMessage msg(GUI_MSG_CHECK_LOCK,0,0);

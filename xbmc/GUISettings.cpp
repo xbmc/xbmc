@@ -195,20 +195,16 @@ void CGUISettings::Initialize()
 
   // Pictures settings
   AddGroup(0, 1);
-  AddCategory(0, "pictures", 16000);
-  AddBool(2, "pictures.showvideos", 22022, false);
-  AddBool(4,"pictures.generatethumbs",13360,true);
-  AddSeparator(5,"pictures.sep1");
-  AddBool(6, "pictures.useexifrotation", 20184, true);
-  AddBool(7, "pictures.usetags", 258, true);
+  AddCategory(0, "pictures", 14081);
+  AddBool(1, "pictures.usetags", 14082, true);
+  AddBool(2,"pictures.generatethumbs",13360,true);
+  AddBool(3, "pictures.useexifrotation", 20184, true);
+  AddBool(4, "pictures.showvideos", 22022, false);
   AddInt(8, "pictures.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
-  AddSeparator(9,"pictures.sep2");
-  AddPath(10,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  AddInt(2, "slideshow.transistiontime", 225, 3, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  AddBool(3, "slideshow.displayeffects", 12379, true);
+  AddBool(2, "slideshow.displayeffects", 12379, true);
   AddBool(0, "slideshow.shuffle", 13319, false);
 
   // Programs settings
@@ -317,20 +313,21 @@ void CGUISettings::Initialize()
   AddCategory(4, "system", 13281);
   // advanced only configuration
   AddBool(1, "system.debuglogging", 20191, false);
-  AddInt(2, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
-  AddSeparator(3, "system.sep2");
-  AddInt(4, "system.ledcolour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
-  AddInt(5, "system.leddisableonplayback", 13345, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
-  AddBool(6, "system.ledenableonpaused", 20313, true);
-  AddSeparator(7, "system.sep3");
-  AddBool(8, "system.fanspeedcontrol", 13302, false);
+  AddPath(2, "system.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddSeparator(3, "system.sep1");
+  AddInt(4, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddInt(5, "system.ledcolour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
+  AddInt(6, "system.leddisableonplayback", 13345, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
+  AddBool(7, "system.ledenableonpaused", 20313, true);
+  AddSeparator(8, "system.sep3");
+  AddBool(9, "system.fanspeedcontrol", 13302, false);
 #ifdef HAS_XBOX_HARDWARE
-  AddInt(9, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 5, 50, SPIN_CONTROL_TEXT);
+  AddInt(10, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 5, 50, SPIN_CONTROL_TEXT);
 #endif
-  AddSeparator(10, "system.sep4");
-  AddBool(11, "system.autotemperature", 13301, false);
-  AddInt(12, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
-  AddInt(13, "system.minfanspeed", 13411, 1, 1, 1, 50, SPIN_CONTROL_TEXT);
+  AddSeparator(11, "system.sep4");
+  AddBool(12, "system.autotemperature", 13301, false);
+  AddInt(13, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
+  AddInt(14, "system.minfanspeed", 13411, 1, 1, 1, 50, SPIN_CONTROL_TEXT);
 
   AddCategory(4, "lcd", 448);
   AddInt(2, "lcd.type", 4501, LCD_TYPE_NONE, LCD_TYPE_NONE, 1, LCD_TYPE_VFD, SPIN_CONTROL_TEXT);

@@ -25,6 +25,7 @@
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowScriptsInfo.h"
 #include "GUIWindowManager.h"
+#include "GUIWindowFileManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "ScriptSettings.h"
@@ -213,6 +214,7 @@ void CGUIWindowScripts::GetContextButtons(int itemNumber, CContextButtons &butto
   }
 
   buttons.Add(CONTEXT_BUTTON_INFO, 654);
+  buttons.Add(CONTEXT_BUTTON_DELETE, 117);
 }
 
 bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -227,6 +229,16 @@ bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     CStdString path, filename;
     CUtil::Split(m_vecItems->Get(itemNumber)->m_strPath, path, filename);
     CGUIDialogPluginSettings::ShowAndGetInput(path);
+    return true;
+  }
+  else if (button == CONTEXT_BUTTON_DELETE)
+  {
+    CStdString path;
+    CUtil::GetDirectory(m_vecItems->Get(itemNumber)->m_strPath,path);
+    CFileItem item2(path,true);
+    if (CGUIWindowFileManager::DeleteItem(&item2))
+      Update(m_vecItems->m_strPath);
+
     return true;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);

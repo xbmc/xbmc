@@ -55,6 +55,7 @@ void CGUIVideoControl::Render()
       g_application.ResetScreenSaver();
 
     g_graphicsContext.SetViewWindow(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
+    g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
 
 #ifdef HAS_VIDEO_PLAYBACK
     color_t alpha = g_graphicsContext.MergeAlpha(0xFF000000) >> 24;
@@ -62,6 +63,7 @@ void CGUIVideoControl::Render()
 #else
     ((CDummyVideoPlayer *)g_application.m_pPlayer)->Render();
 #endif
+    g_graphicsContext.RestoreViewPort();
   }
   CGUIControl::Render();
 }

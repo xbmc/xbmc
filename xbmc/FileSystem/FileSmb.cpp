@@ -59,6 +59,7 @@ SMBCSRV* xb_smbc_cache(SMBCCTX* c, const char* server, const char* share, const 
 CSMB::CSMB()
 {
   m_context = NULL;
+  smbc_init(xb_smbc_auth, 0);
 }
 
 CSMB::~CSMB()
@@ -109,7 +110,6 @@ void CSMB::Init()
     // setup our context
     m_context = smbc_new_context();
     m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0;
-    smbc_init(xb_smbc_auth, 0);
     m_context->callbacks.auth_fn = xb_smbc_auth;
     orig_cache = m_context->callbacks.get_cached_srv_fn;
     m_context->callbacks.get_cached_srv_fn = xb_smbc_cache;
@@ -519,6 +519,12 @@ unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
     uiBufSize = 64*1024-2;
 
   int bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
+
+  if ( bytesRead < 0 && errno == EINVAL )
+  {
+    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s ) - Retrying", __FUNCTION__, bytesRead, errno, strerror(errno));
+    bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
+  }
 
   if ( bytesRead < 0 )
   {

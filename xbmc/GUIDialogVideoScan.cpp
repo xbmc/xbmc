@@ -127,7 +127,10 @@ void CGUIDialogVideoScan::StartScanning(const CStdString& strDirectory, const SS
 void CGUIDialogVideoScan::StopScanning()
 {
   if (m_videoInfoScanner.IsScanning())
+  {
     m_videoInfoScanner.Stop();
+    Close();
+  }
 }
 
 bool CGUIDialogVideoScan::IsScanning()

@@ -26,11 +26,14 @@
 #include "FileSystem/DirectoryCache.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/MusicDatabaseDirectory/DirectoryNode.h"
+#include "FileSystem/MusicDatabaseDirectory/QueryParams.h"
 #include "Util.h"
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "Artist.h"
+#include "Album.h"
 
 using namespace std;
 using namespace XFILE;
@@ -84,7 +87,22 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
 
   CStdString path(pItem->m_strPath);
   if (pItem->IsMusicDb())
+  {
+    // set the artist / album properties
+    DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams param;
+    DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->m_strPath,param);
+    CArtist artist;
+    CMusicDatabase database;
+    database.Open();
+    if (database.GetArtistInfo(param.GetArtistId(),artist,false))
+      CMusicDatabase::SetPropertiesFromArtist(*pItem,artist);
+    
+    CAlbum album;
+    if (database.GetAlbumInfo(param.GetAlbumId(),album,NULL))
+      CMusicDatabase::SetPropertiesFromAlbum(*pItem,album);
+
     path = pItem->GetMusicInfoTag()->GetURL();
+  }
 
   CLog::Log(LOGDEBUG, "Loading additional tag info for file %s", path.c_str());
 

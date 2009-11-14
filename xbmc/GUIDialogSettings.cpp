@@ -37,6 +37,8 @@
 #define CONTROL_START              30
 #define CONTROL_PAGE               60
 
+using namespace std;
+
 CGUIDialogSettings::CGUIDialogSettings(int id, const char *xmlFile)
     : CGUIDialog(id, xmlFile)
 {
@@ -298,7 +300,7 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     ((CGUISpinControlEx *)pControl)->SetText(setting.name);
     pControl->SetWidth(width);
     for (unsigned int i = 0; i < setting.entry.size(); i++)
-      ((CGUISpinControlEx *)pControl)->AddLabel(setting.entry[i], i);
+      ((CGUISpinControlEx *)pControl)->AddLabel(setting.entry[i].second, setting.entry[i].first);
     if (setting.data) ((CGUISpinControlEx *)pControl)->SetValue(*(int *)setting.data);
   }
   else if (setting.type == SettingInfo::SLIDER)
@@ -363,7 +365,7 @@ void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, unsig
   setting.type = SettingInfo::SPIN;
   setting.data = current;
   for (unsigned int i = 0; i < max; i++)
-    setting.entry.push_back(g_localizeStrings.Get(entries[i]));
+    setting.entry.push_back(make_pair(i, g_localizeStrings.Get(entries[i])));
   m_settings.push_back(setting);
 }
 
@@ -381,9 +383,28 @@ void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, unsig
       format = minLabel;
     else
       format.Format("%i", i);
-    setting.entry.push_back(format);
+    setting.entry.push_back(make_pair(i, format));
   }
   m_settings.push_back(setting);
+}
+
+void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, vector<pair<int, CStdString> > &values)
+{
+  SettingInfo setting;
+  setting.id = id;
+  setting.name = g_localizeStrings.Get(label);
+  setting.type = SettingInfo::SPIN;
+  setting.data = current;
+  setting.entry = values;
+  m_settings.push_back(setting);
+}
+
+void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, vector<pair<int, int> > &values)
+{
+  vector<pair<int, CStdString> > entries;
+  for(unsigned i = 0; i < values.size(); i++)
+    entries.push_back(make_pair(values[i].first, g_localizeStrings.Get(values[i].second)));
+  AddSpin(id, label, current, entries);
 }
 
 void CGUIDialogSettings::AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, FORMATFUNCTION function, bool allowPopup /* = true*/)

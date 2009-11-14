@@ -144,7 +144,10 @@ void CGUIDialogMusicScan::StartArtistScan(const CStdString& strDirectory)
 void CGUIDialogMusicScan::StopScanning()
 {
   if (m_musicInfoScanner.IsScanning())
+  {
     m_musicInfoScanner.Stop();
+    Close();
+  }
 }
 
 bool CGUIDialogMusicScan::IsScanning()

@@ -4190,7 +4190,10 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
+        {
           pItem->GetVideoInfoTag()->m_playCount = it->second.second;
+          pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
+        }
         if (!items.Contains(pItem->m_strPath))
         {
           pItem->SetLabelPreformated(true);
@@ -4851,7 +4854,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     }
     // now add any linked movies
     CStdString where = FormatSQL("join movielinktvshow on movielinktvshow.idMovie=movieview.idMovie where movielinktvshow.idShow %s", strIn.c_str());
-    GetMoviesByWhere("videodb://1/2/", where, items);
+    GetMoviesByWhere("videodb://1/2/", where, "", items);
     return true;
   }
   catch (...)
@@ -4877,10 +4880,10 @@ bool CVideoDatabase::GetMoviesNav(const CStdString& strBaseDir, CFileItemList& i
   else if (idSet != -1)
     where = FormatSQL("join setlinkmovie on setlinkmovie.idMovie=movieview.idmovie where setlinkmovie.idSet=%u",idSet);
 
-  return GetMoviesByWhere(strBaseDir, where, items, idSet == -1);
+  return GetMoviesByWhere(strBaseDir, where, "", items, idSet == -1);
 }
 
-bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items, bool fetchSets)
+bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdString &where, const CStdString &order, CFileItemList& items, bool fetchSets)
 {
   try
   {
@@ -4907,6 +4910,8 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
     else
       strSQL += where;
 
+    if (order.size())
+      strSQL += " " + order;
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
@@ -5236,7 +5241,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
   if (idSeason == -1)
   { // add any linked movies
     CStdString where = FormatSQL("join movielinktvshow on movielinktvshow.idMovie=movieview.idMovie where movielinktvshow.idShow %s", strIn.c_str());
-    GetMoviesByWhere("videodb://1/2/", where, items);
+    GetMoviesByWhere("videodb://1/2/", where, "", items);
   }
   return ret;
 }
@@ -5339,8 +5344,8 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
 
 bool CVideoDatabase::GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFileItemList& items)
 {
-  CStdString where = FormatSQL("order by idMovie desc limit %i", g_advancedSettings.m_iVideoLibraryRecentlyAddedItems);
-  return GetMoviesByWhere(strBaseDir, where, items);
+  CStdString order = FormatSQL("order by idMovie desc limit %i", g_advancedSettings.m_iVideoLibraryRecentlyAddedItems);
+  return GetMoviesByWhere(strBaseDir, "", order, items);
 }
 
 bool CVideoDatabase::GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, CFileItemList& items)

@@ -888,6 +888,13 @@ int CBuiltins::Execute(const CStdString& execString)
     else if (execute.Equals("skin.setfile"))
     {
       CStdString strMask = (params.size() > 1) ? params[1] : "";
+      if (strMask.Find(".py") > -1)
+      {
+        CMediaSource source;
+        source.strPath = "special://home/scripts/";
+        source.strName = g_localizeStrings.Get(247);
+        localShares.push_back(source);
+      }
     
       if (params.size() > 2)
       {
@@ -939,6 +946,10 @@ int CBuiltins::Execute(const CStdString& execString)
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && musicScan->IsScanning())
       musicScan->StopScanning();
+
+    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (videoScan && videoScan->IsScanning())
+      videoScan->StopScanning();
 
     g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_network.Deinitialize();
