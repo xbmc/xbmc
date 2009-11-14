@@ -87,7 +87,7 @@
    			        <expression repeat ="yes">&lt;a href=&quot;/kino/film/([0-9]*)/([^\/]*)/plakate.html&quot;&gt;</expression>
     			</RegExp>
 			<!--IMDB URL-->
-			<RegExp conditional="fanart" input="$$8" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fanart" input="$$8" output="&lt;url function=&quot;GetTMDBFanartById&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="5+">
 				<RegExp input="$$1" output="&quot;\2&quot;+\1+||+&quot;\2&quot;" dest="7">
 					<expression>&lt;h1&gt;[^&lt;]*&lt;/h1&gt;[^0-9]*([0-9]*) &lt;/li&gt;[^:]*:&lt;/dt&gt;[^&lt;]*&lt;dd class=&quot;first&quot;&gt;(.[^&lt;]*)&lt;/dd&gt;</expression>
 				</RegExp>

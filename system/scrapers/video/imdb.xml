@@ -132,7 +132,7 @@
 			<RegExp conditional="fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetIMDBWriters&quot;&gt;$$3fullcredits&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp conditional="tmdbthumbs" input="$$2" output="&lt;url function=&quot;GetTMDBThumbsByIMDBId&quot;&gt;$$3&lt;/url&gt;" dest="5+">
+			<RegExp conditional="tmdbthumbs" input="$$2" output="&lt;url function=&quot;GetTMDBThumbsById&quot;&gt;$$3&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<RegExp conditional="impawards" input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMPALink&quot;&gt;$$3posters&lt;/url&gt;" dest="5+">
@@ -150,7 +150,7 @@
 			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMDBThumbs&quot;&gt;$$3posters&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;$$3&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetTMDBFanartById&quot;&gt;$$3&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<expression noclean="1"/>
