@@ -122,7 +122,7 @@
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="1"
 				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"

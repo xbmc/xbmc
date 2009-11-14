@@ -426,7 +426,10 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF, CInterfaceList<IUnkno
 
   CComPtr<ISubPicAllocatorPresenter> pCAP;
   CStdString __err;
-  pCAP = new CDX9AllocatorPresenter(hr,m_hWnd,__err,g_Windowing.Get3DObject(),g_Windowing.Get3DDevice());
+  if (m_clsid == CLSID_VMR9AllocatorPresenter)
+    pCAP = new CDX9AllocatorPresenter(hr,m_hWnd,__err,g_Windowing.Get3DObject(),g_Windowing.Get3DDevice());
+  //if (m_clsid == CLSID_EVRAllocatorPresenter)
+  //  pCAP = new CDX9AllocatorPresenter(hr,m_hWnd,__err,g_Windowing.Get3DObject(),g_Windowing.Get3DDevice());
   if(pCAP == NULL)
     return E_FAIL;
   CComPtr<IUnknown> pRenderer;
