@@ -426,7 +426,7 @@
   <string id="496">Calibration</string>
   <string id="497">Hide media extensions</string>
   <string id="498">Sort by: Type</string>
-  <string id="499">Unable to connect to online lookup service</string>529
+  <string id="499">Unable to connect to online lookup service</string>
   <string id="500">Downloading album information failed</string>
   <string id="501">Looking for album names...</string>
   <string id="502">Open</string>
@@ -1736,7 +1736,7 @@
   <string id="20181">Backspace</string>
   <string id="20182">Space</string>
   <string id="20183">Reload skin</string>
-  <string id="20184">Orientate pictures using EXIF information</string>
+  <string id="20184">Orient pictures using EXIF information</string>
   <string id="20185">Use poster view styles for TV shows</string>
   <string id="20186">Please wait</string>
   <string id="20187">Backing up EEPROM</string>
