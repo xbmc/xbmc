@@ -21,6 +21,7 @@
 
 #include "GUISettings.h"
 #include <limits.h>
+#include <float.h>
 #include "Settings.h"
 #include "GUIDialogFileBrowser.h"
 #include "XBAudioConfig.h"
