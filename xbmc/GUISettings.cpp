@@ -1121,7 +1121,7 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
     float refresh = (float)atof(res.Mid(11).c_str());
     // find the closest match to these in our res vector.  If we have the screen, we score the res
     RESOLUTION bestRes = RES_DESKTOP;
-    float bestScore = 0.0f;
+    float bestScore = FLT_MAX;
     size_t maxRes = g_settings.m_ResInfo.size();
     if (g_Windowing.GetNumScreens())
       maxRes = std::min(maxRes, (size_t)RES_DESKTOP + g_Windowing.GetNumScreens());
@@ -1131,7 +1131,7 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
       if (info.iScreen != screen)
         continue;
       float score = 10*(square_error((float)info.iWidth, (float)width) + square_error((float)info.iHeight, (float)height)) + square_error(info.fRefreshRate, refresh);
-      if (score > bestScore)
+      if (score < bestScore)
       {
         bestScore = score;
         bestRes = (RESOLUTION)i;
