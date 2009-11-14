@@ -48,9 +48,8 @@ class XBMCHelper
 
   bool ErrorStarting() { return m_errorStarting; }
 
- private:
-
   int GetProcessPid(const char* processName);
+ private:
 
   std::string ReadFile(const char* fileName);
   void WriteFile(const char* fileName, const std::string& data);
