@@ -850,22 +850,22 @@ HRESULT CWinRenderer::TextureCopy(CComPtr<IDirect3DTexture9> pTexture)
   MYD3DVERTEX<1> v[] =
   {
     {//m_destRect    m_sourceRect
-      (float)m_destRect.x1      , (float)m_destRect.y1 ,
+      m_destRect.x1      , m_destRect.y1 ,
       0.5f   , 2.0f, 
       0      , 0
     },
     {
-      (float)m_destRect.x2      , (float)m_destRect.y1 ,
+      m_destRect.x2      , m_destRect.y1 ,
       0.5f   , 2.0f ,
       1      , 0
     },
     {
-      (float)m_destRect.x1      , (float)m_destRect.y2 ,
+      m_destRect.x1      , m_destRect.y2 ,
       0.5f   , 2.0f ,
       0      , 1
     },
     {
-      (float)m_destRect.x2      , (float)m_destRect.y2 ,
+      m_destRect.x2      , m_destRect.y2 ,
       0.5f   , 2.0f, 
       1      , 1
     },
@@ -877,6 +877,7 @@ HRESULT CWinRenderer::TextureCopy(CComPtr<IDirect3DTexture9> pTexture)
   }
 
   hr = m_pD3DDevice->SetTexture(0, pTexture);
+  hr = m_pD3DDevice->SetPixelShader(NULL);
 
   return TextureBlt(m_pD3DDevice, v, D3DTEXF_LINEAR);
 }

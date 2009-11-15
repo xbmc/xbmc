@@ -556,11 +556,34 @@ STDMETHODIMP CFGManager::Render(IPin* pPinOut)
   return RenderEx(pPinOut, 0, NULL);*/
 }
 
-STDMETHODIMP CFGManager::GetXbmcVideoDecFilter(IMPCVideoDecFilter** pBF)
+STDMETHODIMP CFGManager::GetXbmcVideoDecFilter(IMPCVideoDecFilter** ppBF)
 {
-  CheckPointer(pBF,E_POINTER);
-  *pBF = NULL;
-  m_XbmcVideoDec.QueryInterface(pBF);
+  CheckPointer(ppBF,E_POINTER);
+  IMPCVideoDecFilter* mpcvfilter;
+
+  *ppBF = NULL;
+  //Getting the mpc video dec filter.
+  //This filter interface is required to get the info for the current dxva rendering status
+  CLSID mpcvid;
+  BeginEnumFilters(this, pEF, pBF)
+  {
+    if (SUCCEEDED(pBF->GetClassID(&mpcvid)))
+  {
+	  if (mpcvid == DShowUtil::GUIDFromCString("{008BAC12-FBAF-497B-9670-BC6F6FBAE2C4}"))
+    {
+      
+      //m_XbmcVideoDec = ppBF;
+	  HRESULT hr;
+	  hr = pBF->QueryInterface(__uuidof(IMPCVideoDecFilter),(void**) &mpcvfilter);
+	  *ppBF = mpcvfilter;
+
+      break;
+    }
+  
+  }
+  }
+  EndEnumFilters
+
 }
 
 STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
@@ -581,29 +604,6 @@ STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   //Connecting the splitter for the current filetype
   POSITION Pos = m_splitter.GetHeadPosition();
   CComPtr<IBaseFilter> ppSBF;
-  while (Pos)
-  {
-    CFGFilterFile* pFGF = m_splitter.GetNext(Pos);
-	if (pFGF->GetXFileType().Equals(pFileItem.GetAsUrl().GetFileType().c_str(),false))
-	{ 
-      if(SUCCEEDED(pFGF->Create(&ppSBF, ppUnk)))
-	  {
-        //TODO Fix the name output
-        this->AddFilter(ppSBF,L"XBMC Splitter");
-        hr = ::ConnectFilters(this,m_FileSource,ppSBF);
-        if ( SUCCEEDED( hr ) )
-		{
-          //Now the source filter is connected to the splitter lets load the rules from the xml
-          break;
-        }
-	    else
-		{
-          CLog::Log(LOGERROR,"%s Failed to connect the source to the spliter",__FUNCTION__);
-          return hr;
-        }
-	  }
-	}
-  }
   
   //Load the rules from the xml
   TiXmlDocument graphConfigXml;
@@ -623,7 +623,25 @@ STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
       while(pos)
       {
         CFGFilterFile* pFGF = m_configfilter.GetNext(pos);
-		if ( ((CStdString)pRules->Attribute("videodec")).Equals(pFGF->GetXFilterName().c_str(),false) )
+        if ( ((CStdString)pRules->Attribute("splitter")).Equals(pFGF->GetXFilterName().c_str(),false) )
+		{
+		  if(SUCCEEDED(pFGF->Create(&ppSBF, pUnk)))
+		  {
+            //TODO Fix the name of the filters to make it look cleaner in the graph
+            this->AddFilter(ppSBF,L"XBMC SPLITTER");
+			hr = ::ConnectFilters(this,m_FileSource,ppSBF);
+        if ( SUCCEEDED( hr ) )
+          //Now the source filter is connected to the splitter lets load the rules from the xml
+          CLog::Log(LOGDEBUG,"%s Connected the source to the spillter",__FUNCTION__);
+	    else
+		{
+          CLog::Log(LOGERROR,"%s Failed to connect the source to the spliter",__FUNCTION__);
+          return hr;
+          }
+
+		  }
+		}
+		else if ( ((CStdString)pRules->Attribute("videodec")).Equals(pFGF->GetXFilterName().c_str(),false) )
 		{
 		  CComPtr<IBaseFilter> ppBF;
 		  if(SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
@@ -647,27 +665,10 @@ STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
 	}
     pRules = pRules->NextSiblingElement();
   }
-  
-  InsertSubtitleNullRender(ppSBF);
+  /*if (pFileItem.GetAsUrl().GetFileType().Equals("mkv",false))
+    InsertSubtitleNullRender(ppSBF);*/
 
   this->ConnectFilter(ppSBF,NULL);
-  //Getting the mpc video dec filter.
-  //This filter interface is required to get the info for the current dxva rendering status
-  CLSID mpcvid;
-  BeginEnumFilters(this, pEF, pBF)
-  {
-    if (SUCCEEDED(pBF->GetClassID(&mpcvid)))
-  {
-    if (mpcvid == m_mpcVideoDecGuid)
-    {
-      m_XbmcVideoDec = pBF;
-      break;
-    }
-  
-  }
-  }
-  EndEnumFilters
-  
 return hr;
   
 }
@@ -709,8 +710,8 @@ bool CFGManager::LoadFiltersFromXml(CStdString configFile, CStdString xbmcPath)
   {
     if (strTmpFilterType.Equals("source",false))
         m_source.AddTail(pFGF);
-    else if (strTmpFilterType.Equals("splitter",false))
-        m_splitter.AddTail(pFGF);
+    /*else if (strTmpFilterType.Equals("splitter",false))
+        m_splitter.AddTail(pFGF);*/
     else
       m_configfilter.AddTail(pFGF);
   }
@@ -741,7 +742,8 @@ void CFGManager::InsertSubtitleNullRender(IBaseFilter* pBF)
         if (mt.majortype == MEDIATYPE_Subtitle)
         {
           hr = CoCreateInstance(CLSID_NullRenderer, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)&ppBF);
-		  hr = ppBF->JoinFilterGraph(this,L"NULL RENDERER");
+		  hr = ppBF->JoinFilterGraph(this,L"Null Renderer");
+		  hr = ConnectFilterDirect(pPin,ppBF,pmt);
         }
         DeleteMediaType(pmt);
       }
@@ -1300,45 +1302,37 @@ CFGManagerCustom::CFGManagerCustom(LPCTSTR pName, LPUNKNOWN pUnk,CStdString pXbm
   WORD merit_low = 1;
   ULONGLONG merit;
   merit = MERIT64_ABOVE_DSHOW + merit_low++;
-// Source filters
 
-//WMAsfReader
-  pFGF = new CFGFilterRegistry(CLSID_WMAsfReader);
-  pFGF->m_chkbytes.AddTail(_T("0,4,,3026B275"));
-  pFGF->m_chkbytes.AddTail(_T("0,4,,D129E2D6"));    
-  m_source.AddTail(pFGF);
 
-  //Skipping this part of CFGManagerCustom Since the use of dsfilterconfig.xml
-  return;
 // Blocked filters
-
+  
 // "Subtitle Mixer" makes an access violation around the 
 // 11-12th media type when enumerating them on its output.
-  m_transform.AddTail(DNew CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{00A95963-3BE5-48C0-AD9F-3356D67EA09D}")), MERIT64_DO_NOT_USE));
+  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{00A95963-3BE5-48C0-AD9F-3356D67EA09D}")), MERIT64_DO_NOT_USE));
 
 // DiracSplitter.ax is crashing MPC-HC when opening invalid files...
-  m_transform.AddTail(DNew CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{09E7F58E-71A1-419D-B0A0-E524AE1454A9}")), MERIT64_DO_NOT_USE));
-  m_transform.AddTail(DNew CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{5899CFB9-948F-4869-A999-5544ECB38BA5}")), MERIT64_DO_NOT_USE));
-  m_transform.AddTail(DNew CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{F78CF248-180E-4713-B107-B13F7B5C31E1}")), MERIT64_DO_NOT_USE));
+  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{09E7F58E-71A1-419D-B0A0-E524AE1454A9}")), MERIT64_DO_NOT_USE));
+  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{5899CFB9-948F-4869-A999-5544ECB38BA5}")), MERIT64_DO_NOT_USE));
+  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{F78CF248-180E-4713-B107-B13F7B5C31E1}")), MERIT64_DO_NOT_USE));
 
 // ISCR suxx
-  m_transform.AddTail(DNew CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{48025243-2D39-11CE-875D-00608CB78066}")), MERIT64_DO_NOT_USE));
+  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{48025243-2D39-11CE-875D-00608CB78066}")), MERIT64_DO_NOT_USE));
 
 // Samsung's "mpeg-4 demultiplexor" can even open matroska files, amazing...
-  m_transform.AddTail(DNew CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{99EC0C72-4D1B-411B-AB1F-D561EE049D94}")), MERIT64_DO_NOT_USE));
+  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{99EC0C72-4D1B-411B-AB1F-D561EE049D94}")), MERIT64_DO_NOT_USE));
 
 // LG Video Renderer (lgvid.ax) just crashes when trying to connect it
-  m_transform.AddTail(DNew CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{9F711C60-0668-11D0-94D4-0000C02BA972}")), MERIT64_DO_NOT_USE));
+  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{9F711C60-0668-11D0-94D4-0000C02BA972}")), MERIT64_DO_NOT_USE));
 
 // palm demuxer crashes (even crashes graphedit when dropping an .ac3 onto it)
-  m_transform.AddTail(DNew CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{BE2CF8A7-08CE-4A2C-9A25-FD726A999196}")), MERIT64_DO_NOT_USE));
+  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{BE2CF8A7-08CE-4A2C-9A25-FD726A999196}")), MERIT64_DO_NOT_USE));
 
 // mainconcept color space converter
-  m_transform.AddTail(DNew CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{272D77A0-A852-4851-ADA4-9091FEAD4C86}")), MERIT64_DO_NOT_USE));
+  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{272D77A0-A852-4851-ADA4-9091FEAD4C86}")), MERIT64_DO_NOT_USE));
 //TODO
 //Block if vmr9 is used
   if(1)
-    m_transform.AddTail(DNew CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{9852A670-F845-491B-9BE6-EBD841B8A613}")), MERIT64_DO_NOT_USE));
+    m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{9852A670-F845-491B-9BE6-EBD841B8A613}")), MERIT64_DO_NOT_USE));
   
 }
 

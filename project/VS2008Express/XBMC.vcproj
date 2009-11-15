@@ -2164,6 +2164,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IMPCVideoDecFilter.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.cpp"
 					>
 				</File>
@@ -2219,14 +2223,6 @@
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.h"
 							>
 						</File>
 						<Filter

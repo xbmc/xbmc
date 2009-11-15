@@ -65,8 +65,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file)
   hr = m_pGraphBuilder->RenderFileXbmc(file);
   
   //This 
-  m_pGraphBuilder->GetXbmcVideoDecFilter(&m_pIMpcDecFilter);
-  
+  hr = m_pGraphBuilder->GetXbmcVideoDecFilter(&m_pIMpcDecFilter);
   hr = m_pGraphBuilder.QueryInterface(&m_pMediaSeeking);
   hr = m_pMediaSeeking->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
   //-->> TIME_FORMAT_FRAME for frame by frame
@@ -74,6 +73,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file)
   hr = m_pGraphBuilder.QueryInterface(&m_pMediaEvent);
   hr = m_pGraphBuilder.QueryInterface(&m_pBasicAudio);
   hr = m_pGraphBuilder.QueryInterface(&m_pBasicVideo);
+  
   
   UpdateCurrentVideoInfo(file.GetAsUrl().GetFileName());
 
