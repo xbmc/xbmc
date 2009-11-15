@@ -32,6 +32,7 @@
 #include "Settings.h"
 #include "GUIWindowManager.h"
 #include "../utils/RssReader.h"
+#include "../utils/Weather.h"
 
 // global network variable
 CNetwork g_network;
@@ -431,6 +432,8 @@ bool CNetwork::IsEthernetConnected()
 bool CNetwork::WaitForSetup(DWORD timeout)
 {
 #ifdef HAS_XBOX_NETWORK
+  CSingleLock lock (m_critSection);
+
   // Wait until the net is inited
   DWORD timestamp = GetTickCount() + timeout;
 
@@ -533,7 +536,7 @@ void CNetwork::LogState()
 
 bool CNetwork::IsAvailable(bool wait)
 {
-  /* if network isn't up, wait for it to setup */
+  // if network isn't up, wait for it to setup
   if( !m_networkup && wait )
     WaitForSetup(WAIT_TIME);
 
@@ -559,6 +562,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       CLastfmScrobbler::GetInstance()->Init();
       CLibrefmScrobbler::GetInstance()->Init();
       g_rssManager.Start();
+      g_weatherManager.Refresh();
     }
     break;
     case SERVICES_DOWN:

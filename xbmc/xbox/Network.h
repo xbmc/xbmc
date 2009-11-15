@@ -81,6 +81,7 @@ protected:
 private:
   void NetworkDown();
   void NetworkUp();
+  CCriticalSection  m_critSection;
 };
 
 extern CNetwork g_network;
