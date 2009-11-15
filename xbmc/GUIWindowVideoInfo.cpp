@@ -865,6 +865,9 @@ void CGUIWindowVideoInfo::OnGetFanart()
     CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
     itemLocal->SetThumbnailImage(strLocal);
     itemLocal->SetLabel(g_localizeStrings.Get(20438));
+    // make sure any previously cached thumb is removed
+    if (CFile::Exists(itemLocal->GetCachedPictureThumb()))
+      CFile::Delete(itemLocal->GetCachedPictureThumb());
     items.Add(itemLocal);
   }
 
