@@ -39,6 +39,10 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   share.strName = g_localizeStrings.Get(21440);
   share.m_ignore = true;
   localDrives.push_back(share);
+  share.strPath = "/";
+  share.strName = g_localizeStrings.Get(20108);
+  share.m_ignore = true;
+  localDrives.push_back(share);
 
   GetDrives(localDrives);
 }
