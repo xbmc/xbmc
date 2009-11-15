@@ -218,8 +218,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
   if (!pItem->HasProperty("fanart_image"))
   {
-    pItem->CacheFanart();
-    if (CFile::Exists(pItem->GetCachedFanart()))
+    if (pItem->CacheLocalFanart())
       pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
   }
 

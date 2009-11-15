@@ -596,7 +596,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
   CStdString strArtistPath;
   database.GetArtistPath(m_artist.idArtist,strArtistPath);
   CFileItem item(strArtistPath,true);
-  CStdString strLocal = item.CacheFanart(true);
+  CStdString strLocal = item.GetLocalFanart();
   if (!strLocal.IsEmpty())
   {
     CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
