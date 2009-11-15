@@ -1663,10 +1663,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       musicdatabase.Close();
     }
   }
-  else if (strSetting.Equals("weather.jumptolocale"))
-  {
-    JumpToSection(WINDOW_SETTINGS_APPEARANCE, "locale");
-  }
   else if (strSetting.Equals("scrobbler.lastfmsubmit") || strSetting.Equals("scrobbler.lastfmsubmitradio") || strSetting.Equals("scrobbler.lastfmusername") || strSetting.Equals("scrobbler.lastfmpassword"))
   {
     CStdString strPassword=g_guiSettings.GetString("scrobbler.lastfmpassword");

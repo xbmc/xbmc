@@ -239,8 +239,6 @@ void CGUISettings::Initialize()
   AddSeparator(4, "weather.sep1");
   AddString(5, "weather.plugin", 23000, "", SPIN_CONTROL_TEXT, true);
   AddString(6, "weather.pluginsettings", 23001, "", BUTTON_CONTROL_STANDARD, true);
-  AddSeparator(7, "weather.sep2");
-  AddString(8, "weather.jumptolocale", 20026, "", BUTTON_CONTROL_STANDARD);
 
   // My Music Settings
   AddGroup(3, 2);
