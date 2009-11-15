@@ -130,9 +130,9 @@ void CGUIDialogVisualisationPresetList::Update()
         pItem->RemoveExtension();
         pItem->SetLabel2(" ");
         m_vecPresets->Add(pItem);
-        CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, pItem);
-        OnMessage(msg);
       }
+      CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_vecPresets);
+      OnMessage(msg);
     }
   }
   // update our settings label

@@ -52,6 +52,7 @@ public:
   virtual bool IsCreated(){ return m_bWindowCreated; }
   virtual void NotifyAppFocusChange(bool bGaining) {}
   virtual void NotifyAppActiveChange(bool bActivated) {}
+  virtual void ShowOSMouse(bool show) {};
 
   virtual bool Minimize() { return false; }
   virtual bool Restore() { return false; }

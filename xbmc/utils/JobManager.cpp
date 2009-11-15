@@ -41,6 +41,10 @@ CJobWorker::CJobWorker(CJobManager *manager)
 
 CJobWorker::~CJobWorker()
 {
+  // while we should already be removed from the job manager, if an exception
+  // occurs during processing, we may skip over that step.  Thus, before we
+  // go out of scope, ensure the job manager knows we're gone.
+  m_jobManager->RemoveWorker(this);
   StopThread();
 }
 

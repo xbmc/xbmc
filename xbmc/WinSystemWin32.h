@@ -62,6 +62,7 @@ public:
   virtual bool CenterWindow();
   virtual void NotifyAppFocusChange(bool bGaining);
   virtual int GetNumScreens() { return m_nMonitorsCount; };
+  virtual void ShowOSMouse(bool show);
 
   virtual bool Minimize();
   virtual bool Restore();
@@ -76,11 +77,17 @@ public:
   HWND GetHwnd() { return m_hWnd; }
 
 protected:
+  bool ChangeRefreshRate(int screen, float refresh);
   virtual bool ResizeInternal(bool forceRefresh = false);
   virtual bool UpdateResolutionsInternal();
   virtual bool CreateBlankWindow();
   virtual bool BlankNonActiveMonitor(bool bBlank);
   const MONITOR_DETAILS &GetMonitor(int screen) const;
+  /*!
+   \brief Adds a resolution to the list of resolutions if we don't already have it
+   \param res resolution to add.
+   */
+  void AddResolution(const RESOLUTION_INFO &res);
 
   HWND m_hWnd;
   HWND m_hBlankWindow;

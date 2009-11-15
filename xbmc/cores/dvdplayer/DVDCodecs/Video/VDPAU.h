@@ -120,6 +120,8 @@ public:
   VdpCSCMatrix  m_CSCMatrix;
   VdpDevice     GetVdpDevice() { return vdp_device; };
   VdpChromaType vdp_chroma_type;
+  VdpVideoMixerPictureStructure structure;
+
 
   //  protected:
   void      InitVDPAUProcs();

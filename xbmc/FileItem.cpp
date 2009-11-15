@@ -476,13 +476,7 @@ bool CFileItem::IsVideo() const
   if( m_contenttype.Left(6).Equals("video/") )
     return true;
 
-  if (m_strPath.Left(7).Equals("tuxbox:"))
-    return true;
-
-  if (m_strPath.Left(10).Equals("hdhomerun:"))
-    return true;
-
-  if (m_strPath.Left(4).Equals("dvd:"))
+  if (IsHDHomeRun() || IsTuxBox() || CUtil::IsDVD(m_strPath))
     return true;
 
   CStdString extension;
@@ -578,27 +572,22 @@ bool CFileItem::IsPicture() const
 
 bool CFileItem::IsLyrics() const
 {
-  CStdString strExtension;
-  CUtil::GetExtension(m_strPath, strExtension);
-  return (strExtension.CompareNoCase(".cdg") == 0 || strExtension.CompareNoCase(".lrc") == 0);
+  return CUtil::GetExtension(m_strPath).Equals(".cdg", false) || CUtil::GetExtension(m_strPath).Equals(".lrc", false);
 }
 
 bool CFileItem::IsCUESheet() const
 {
-  CStdString strExtension;
-  CUtil::GetExtension(m_strPath, strExtension);
-  return (strExtension.CompareNoCase(".cue") == 0);
+  return CUtil::GetExtension(m_strPath).Equals(".cue", false);
 }
 
 bool CFileItem::IsShoutCast() const
 {
-  if (strstr(m_strPath.c_str(), "shout:") ) return true;
-  return false;
+  return CUtil::IsShoutCast(m_strPath);
 }
+
 bool CFileItem::IsLastFM() const
 {
-  if (strstr(m_strPath.c_str(), "lastfm:") ) return true;
-  return false;
+  return CUtil::IsLastFM(m_strPath);
 }
 
 bool CFileItem::IsInternetStream() const
@@ -718,15 +707,12 @@ bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
 
 bool CFileItem::IsRAR() const
 {
-  CStdString strExtension;
-  CUtil::GetExtension(m_strPath, strExtension);
-  if ( (strExtension.CompareNoCase(".rar") == 0) || ((strExtension.Equals(".001") && m_strPath.Mid(m_strPath.length()-7,7).CompareNoCase(".ts.001"))) ) return true; // sometimes the first rar is named .001
-  return false;
+  return CUtil::IsRAR(m_strPath);
 }
 
 bool CFileItem::IsZIP() const
 {
-  return CUtil::GetExtension(m_strPath).Equals(".zip", false);
+  return CUtil::IsZIP(m_strPath);
 }
 
 bool CFileItem::IsCBZ() const
@@ -746,14 +732,12 @@ bool CFileItem::IsStack() const
 
 bool CFileItem::IsPlugin() const
 {
-  CURL url(m_strPath);
-  return url.GetProtocol().Equals("plugin") && !url.GetFileName().IsEmpty();
+  return CUtil::IsPlugin(m_strPath);
 }
 
 bool CFileItem::IsPluginRoot() const
 {
-  CURL url(m_strPath);
-  return url.GetProtocol().Equals("plugin") && url.GetFileName().IsEmpty();
+  return CUtil::IsPluginRoot(m_strPath);
 }
 
 bool CFileItem::IsMultiPath() const
@@ -833,14 +817,14 @@ bool CFileItem::IsHD() const
 
 bool CFileItem::IsMusicDb() const
 {
-  if (strstr(m_strPath.c_str(), "musicdb:") ) return true;
-  return false;
+  CURL url(m_strPath);
+  return url.GetProtocol().Equals("musicdb");
 }
 
 bool CFileItem::IsVideoDb() const
 {
-  if (strstr(m_strPath.c_str(), "videodb:") ) return true;
-  return false;
+  CURL url(m_strPath);
+  return url.GetProtocol().Equals("videodb");
 }
 
 bool CFileItem::IsVirtualDirectoryRoot() const
@@ -848,15 +832,9 @@ bool CFileItem::IsVirtualDirectoryRoot() const
   return (m_bIsFolder && m_strPath.IsEmpty());
 }
 
-bool CFileItem::IsMemoryUnit() const
-{
-  CURL url(m_strPath);
-  return url.GetProtocol().Left(3).Equals("mem");
-}
-
 bool CFileItem::IsRemovable() const
 {
-  return IsOnDVD() || IsCDDA() || IsMemoryUnit() || m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
+  return IsOnDVD() || IsCDDA() || m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
 }
 
 bool CFileItem::IsReadOnly() const
@@ -2157,7 +2135,7 @@ void CFileItemList::Stack()
                 {
                   if (stack.size() == 0)
                   {
-                    stackName = Title1 + Extension1;
+                    stackName = Title1 + Ignore1 + Extension1;
                     stack.push_back(i);
                     size += item1->m_dwSize;
                   }

@@ -5,7 +5,9 @@
 
 #include "IO.h"
 
+#ifndef _WIN32
 typedef char* LPCTSTR;
+#endif
 
 class CStdLibFileIO : public CIO
 {
