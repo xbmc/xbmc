@@ -863,7 +863,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInAudioDevices(pSetting,true);
     }
-    else if (strSetting.Equals("myvideos.resumeautomatically"))
+    else if (strSetting.Equals("videoplayer.resumeautomatically"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -1662,10 +1662,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       musicdatabase.ImportKaraokeInfo(path);
       musicdatabase.Close();
     }
-  }
-  else if (strSetting.Equals("videoplayer.jumptocache"))
-  {
-    JumpToSection(WINDOW_SETTINGS_SYSTEM, "cache");
   }
   else if (strSetting.Equals("weather.jumptolocale"))
   {
