@@ -2668,20 +2668,28 @@ void CFileItem::SetUserVideoThumb()
 /// and cache that image as our fanart.
 CStdString CFileItem::CacheFanart(bool probe) const
 {
-  if (IsVideoDb())
-  {
-    if (!HasVideoInfoTag())
-      return ""; // nothing can be done
-    CFileItem dbItem(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath, m_bIsFolder);
-    return dbItem.CacheFanart();
-  }
-
   CStdString cachedFanart(GetCachedFanart());
   if (!probe)
   {
     // first check for an already cached fanart image
     if (CFile::Exists(cachedFanart))
       return "";
+  }
+  // we don't have a cached image, so let's see if the user has a local image ..
+  CStdString localFanart(GetLocalFanart());
+  if (!localFanart.IsEmpty() && !probe)
+    CPicture::CacheImage(localFanart, cachedFanart);
+  return localFanart;
+}
+
+CStdString CFileItem::GetLocalFanart() const
+{
+  if (IsVideoDb())
+  {
+    if (!HasVideoInfoTag())
+      return ""; // nothing can be done
+    CFileItem dbItem(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath, m_bIsFolder);
+    return dbItem.GetLocalFanart();
   }
 
   CStdString strFile2;
@@ -2716,9 +2724,6 @@ CStdString CFileItem::CacheFanart(bool probe) const
    || m_strPath.IsEmpty())
     return "";
 
-  CStdString localFanart;
-
-  // we don't have a cached image, so let's see if the user has a local image ..
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
 
@@ -2747,24 +2752,11 @@ CStdString CFileItem::CacheFanart(bool probe) const
       CStdString strFanart = fanarts[i];
       CUtil::RemoveExtension(strFanart);
       if (strCandidate.CompareNoCase(strFanart) == 0)
-      {
-        localFanart = items[j]->m_strPath;
-        break;
-      }
+        return items[j]->m_strPath;
     }
-    // exit main loop if fanart was found
-    if (!localFanart.IsEmpty())
-      break;
   }
 
-  // no local fanart found
-  if(localFanart.IsEmpty())
-    return "";
-
-  if (!probe)
-    CPicture::CacheImage(localFanart, cachedFanart);
-
-  return localFanart;
+  return "";
 }
 
 CStdString CFileItem::GetCachedFanart() const
