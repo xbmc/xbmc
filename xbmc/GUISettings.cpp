@@ -318,8 +318,7 @@ void CGUISettings::Initialize()
 
   // System settings
   AddGroup(4, 13000);
-  AddCategory(4, "system", 13281);
-  // advanced only configuration
+  AddCategory(4, "system", 128);
   AddBool(1, "system.debuglogging", 20191, false);
   AddPath(2, "system.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
   AddSeparator(3, "system.sep1");
