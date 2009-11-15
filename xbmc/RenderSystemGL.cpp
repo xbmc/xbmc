@@ -67,7 +67,10 @@ bool CRenderSystemGL::InitRenderSystem()
 
   const char* ver = (const char*)glGetString(GL_VERSION);
   if (ver != 0)
+  {
     sscanf(ver, "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
+    m_RenderVersion = ver;
+  }
   
   // Get our driver vendor and renderer
   m_RenderVendor = (const char*) glGetString(GL_VENDOR);

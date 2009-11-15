@@ -80,8 +80,9 @@ bool CRenderSystemDX::InitRenderSystem()
   if(m_pD3D->GetAdapterIdentifier(m_adapter, 0, &AIdentifier) == D3D_OK)
   {
     m_RenderRenderer = (const char*)AIdentifier.Description;
-    m_RenderVersionMajor = (int)AIdentifier.DriverVersion.HighPart;
-    m_RenderVersionMinor = (int)AIdentifier.DriverVersion.LowPart;
+    m_RenderVendor = (const char*)AIdentifier.Driver;
+    m_RenderVersion.Format("%d.%d.%d.%04d", HIWORD(AIdentifier.DriverVersion.HighPart), LOWORD(AIdentifier.DriverVersion.HighPart),
+                                            HIWORD(AIdentifier.DriverVersion.LowPart), LOWORD(AIdentifier.DriverVersion.LowPart));
   }
 
   // get our render capabilities
