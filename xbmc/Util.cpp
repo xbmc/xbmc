@@ -814,14 +814,19 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
 {
   if(IsMultiPath(strPath))
     return CUtil::IsOnLAN(CMultiPathDirectory::GetFirstPath(strPath));
+
   if(IsStack(strPath))
     return CUtil::IsOnLAN(CStackDirectory::GetFirstStackedFile(strPath));
+
   if(IsSpecial(strPath))
     return CUtil::IsOnLAN(CSpecialProtocol::TranslatePath(strPath));
+
   if(IsDAAP(strPath))
     return true;
+
   if(IsTuxBox(strPath))
     return true;
+
   if(IsUPnP(strPath))
     return true;
 
@@ -867,8 +872,9 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
 
 bool CUtil::IsMultiPath(const CStdString& strPath)
 {
-  if (strPath.Left(12).Equals("multipath://")) return true;
-  return false;
+  CURL url(strPath);
+
+  return url.GetProtocol() == "multipath";
 }
 
 bool CUtil::IsDVD(const CStdString& strFile)
@@ -888,14 +894,16 @@ bool CUtil::IsDVD(const CStdString& strFile)
 
 bool CUtil::IsVirtualPath(const CStdString& strFile)
 {
-  if (strFile.Left(14).Equals("virtualpath://")) return true;
-  return false;
+  CURL url(strFile);
+
+  return url.GetProtocol() == "virtualpath";
 }
 
 bool CUtil::IsStack(const CStdString& strFile)
 {
-  if (strFile.Left(8).Equals("stack://")) return true;
-  return false;
+  CURL url(strFile);
+
+  return url.GetProtocol() == "stack";
 }
 
 bool CUtil::IsRAR(const CStdString& strFile)
@@ -920,13 +928,25 @@ bool CUtil::IsInArchive(const CStdString &strFile)
 
 bool CUtil::IsInZIP(const CStdString& strFile)
 {
-  CURL url(strFile);
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  CURL url(strFile2);
+
   return url.GetProtocol() == "zip" && url.GetFileName() != "";
 }
 
 bool CUtil::IsInRAR(const CStdString& strFile)
 {
-  CURL url(strFile);
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  CURL url(strFile2);
+
   return url.GetProtocol() == "rar" && url.GetFileName() != "";
 }
 
@@ -941,7 +961,13 @@ bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
 
 bool CUtil::IsSpecial(const CStdString& strFile)
 {
-  CURL url(strFile);
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  CURL url(strFile2);
+
   return url.GetProtocol().Equals("special");
 }
 
@@ -971,9 +997,28 @@ bool CUtil::IsISO9660(const CStdString& strFile)
 
 bool CUtil::IsSmb(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("iso9660");
-  return strFile.Left(4).Equals("smb:");
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  CURL url(strFile2);
+
+  return url.GetProtocol().Equals("smb");
+}
+
+bool CUtil::IsFTP(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  CURL url(strFile2);
+
+  return url.GetProtocol() == "ftp"  ||
+         url.GetProtocol() == "ftpx" ||
+         url.GetProtocol() == "ftps";
 }
 
 bool CUtil::IsDAAP(const CStdString& strFile)
@@ -2527,23 +2572,6 @@ int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
     }
   }
   return iHourUTC;
-}
-
-bool CUtil::IsFTP(const CStdString& strFile)
-{
-  CStdString strFile2(strFile);
-
-  if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
-
-  CURL url(strFile2);
-
-  if (url.GetProtocol() == "ftp"  ||
-      url.GetProtocol() == "ftpx" ||
-      url.GetProtocol() == "ftps")
-  return true;
-
-  return false;
 }
 
 void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories)
