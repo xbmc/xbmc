@@ -553,7 +553,7 @@ void CDVDPlayerVideo::Process()
               pulldown.next();
             }
 
-            if (picture.iRepeatPicture > 0)
+            if (picture.iRepeatPicture)
               picture.iDuration *= picture.iRepeatPicture + 1;
 
             int iResult = OutputPicture(&picture, pts);

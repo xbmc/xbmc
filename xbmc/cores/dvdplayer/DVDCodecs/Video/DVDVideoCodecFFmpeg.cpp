@@ -459,7 +459,7 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     for (int i = 0; i < 4; i++)
       pDvdVideoPicture->iLineSize[i] = frame->linesize[i];
   }
-  pDvdVideoPicture->iRepeatPicture = frame->repeat_pict;
+  pDvdVideoPicture->iRepeatPicture = 0.5 * frame->repeat_pict;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iFlags |= frame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
   pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
