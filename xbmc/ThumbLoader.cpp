@@ -177,12 +177,6 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   SetWatchedOverlay(pItem);
 
   CFileItem item(*pItem);
-  if (pItem->IsVideoDb() && pItem->HasVideoInfoTag() && !pItem->HasThumbnail())
-  {
-    if (pItem->m_bIsFolder && pItem->GetVideoInfoTag()->m_iSeason > -1)
-      return false;
-    item = CFileItem(*pItem->GetVideoInfoTag());
-  }
   CStdString cachedThumb(item.GetCachedVideoThumb());
   
   if (!pItem->HasThumbnail())
