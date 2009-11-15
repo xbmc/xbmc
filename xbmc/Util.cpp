@@ -2531,10 +2531,19 @@ int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
 
 bool CUtil::IsFTP(const CStdString& strFile)
 {
-  if( strFile.Left(6).Equals("ftp://") ) return true;
-  else if( strFile.Left(7).Equals("ftpx://") ) return true;
-  else if( strFile.Left(7).Equals("ftps://") ) return true;
-  else return false;
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  CURL url(strFile2);
+
+  if (url.GetProtocol() == "ftp"  ||
+      url.GetProtocol() == "ftpx" ||
+      url.GetProtocol() == "ftps")
+  return true;
+
+  return false;
 }
 
 void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories)
