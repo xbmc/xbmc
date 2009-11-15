@@ -303,6 +303,7 @@ public:
   // editing functions
   void MarkAsWatched(const CFileItem &item);
   void MarkAsUnWatched(const CFileItem &item);
+  int GetPlayCount(int id);
   void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
 
   bool HasMovieInfo(const CStdString& strFilenameAndPath);
@@ -321,6 +322,7 @@ public:
   void GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMVideo=-1);
   bool GetStreamDetailsForFileId(CStreamDetails& details, int idFile) const;
 
+  int GetFileId(const CStdString& strFilenameAndPath);
   int GetPathId(const CStdString& strPath);
   int GetTvShowId(const CStdString& strPath);
   int GetEpisodeId(const CStdString& strFilenameAndPath, int idEpisode=-1, int idSeason=-1); // idEpisode, idSeason are used for multipart episodes as hints
@@ -461,7 +463,6 @@ public:
   bool GetRandomMusicVideo(CFileItem* item, int& idSong, const CStdString& strWhere);
 
 protected:
-  int GetFileId(const CStdString& strFilenameAndPath);
   int GetMovieId(const CStdString& strFilenameAndPath);
   int GetMusicVideoId(const CStdString& strFilenameAndPath);
 
@@ -501,7 +502,6 @@ protected:
 
   void AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, std::vector<int>& vecDirectors, std::vector<int>& vecGenres, std::vector<int>& vecStudios);
 
-  int GetPlayCount(int id);
   void DeleteStreamDetails(int idFile);
   CVideoInfoTag GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, int id);
   CVideoInfoTag GetDetailsForMovie(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);

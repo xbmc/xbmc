@@ -43,7 +43,7 @@
 					<height>2</height>
 					<texture>separator.png</texture>
 				</control>
-				<control type="radiobutton" id="109">
+				<control type="radiobutton" id="103">
 					<width>950</width>
 					<height>35</height>
 					<font>font12</font>
@@ -56,7 +56,7 @@
 					<onclick>Skin.ToggleSetting(ShutdownUseHibernate)</onclick>
 					<selected>Skin.HasSetting(ShutdownUseHibernate)</selected>
 				</control>
-				<control type="radiobutton" id="103">
+				<control type="radiobutton" id="104">
 					<width>950</width>
 					<height>35</height>
 					<font>font12</font>
@@ -69,7 +69,7 @@
 					<onclick>Skin.ToggleSetting(AutoScroll)</onclick>
 					<selected>Skin.HasSetting(AutoScroll)</selected>
 				</control>
-				<control type="radiobutton" id="104">
+				<control type="radiobutton" id="105">
 					<width>950</width>
 					<height>35</height>
 					<font>font12</font>
@@ -82,7 +82,7 @@
 					<onclick>Skin.ToggleSetting(Show_SlideShow_Paused)</onclick>
 					<selected>!Skin.HasSetting(Show_SlideShow_Paused)</selected>
 				</control>
-				<control type="radiobutton" id="105">
+				<control type="radiobutton" id="106">
 					<width>950</width>
 					<height>35</height>
 					<font>font12</font>
@@ -95,12 +95,12 @@
 					<onclick>Skin.ToggleSetting(No_Media_Titles_In_Scanner)</onclick>
 					<selected>!Skin.HasSetting(No_Media_Titles_In_Scanner)</selected>
 				</control>
-				<control type="image" id="111">
+				<control type="image" id="107">
 					<width>950</width>
 					<height>2</height>
 					<texture>separator.png</texture>
 				</control>
-				<control type="radiobutton" id="110">
+				<control type="radiobutton" id="108">
 					<width>950</width>
 					<height>35</height>
 					<font>font12</font>
@@ -113,12 +113,25 @@
 					<onclick>Skin.ToggleSetting(Media_Titles_WideIcons)</onclick>
 					<selected>!Skin.HasSetting(Media_Titles_WideIcons)</selected>
 				</control>
-				<control type="image" id="106">
+				<control type="radiobutton" id="109">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>31116</label>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<onclick>Skin.ToggleSetting(Hide_Video_Flags)</onclick>
+					<selected>Skin.HasSetting(Hide_Video_Flags)</selected>
+				</control>
+				<control type="image" id="110">
 					<width>950</width>
 					<height>2</height>
 					<texture>separator.png</texture>
 				</control>
-				<control type="radiobutton" id="107">
+				<control type="radiobutton" id="111">
 					<width>950</width>
 					<height>35</height>
 					<font>font12</font>
@@ -131,7 +144,7 @@
 					<onclick>Skin.ToggleSetting(Use_Startup_Playlist)</onclick>
 					<selected>Skin.HasSetting(Use_Startup_Playlist)</selected>
 				</control>
-				<control type="button" id="108">
+				<control type="button" id="112">
 					<description>Startup Playlist Path</description>
 					<width>950</width>
 					<height>35</height>
@@ -143,6 +156,24 @@
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
+				</control>
+				<control type="image" id="113">
+					<width>950</width>
+					<height>2</height>
+					<texture>separator.png</texture>
+				</control>
+				<control type="radiobutton" id="114">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>31115</label>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<onclick>Skin.ToggleSetting(Player_Show_Teletext_Button)</onclick>
+					<selected>Skin.HasSetting(Player_Show_Teletext_Button)</selected>
 				</control>
 			</control>
 			<control type="grouplist" id="9002">

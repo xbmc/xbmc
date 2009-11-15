@@ -119,16 +119,14 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
     CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), FileName, translatedPath);
   else if (RootDir.Equals("thumbnails"))
     CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), FileName, translatedPath);
-  else if (RootDir.Equals("recordings"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("mymusic.recordingpath", false), FileName, translatedPath);
+  else if (RootDir.Equals("recordings") || RootDir.Equals("cdrips"))
+    CUtil::AddFileToFolder(g_guiSettings.GetString("audiocds.recordingpath", false), FileName, translatedPath);
   else if (RootDir.Equals("screenshots"))
     CUtil::AddFileToFolder(g_guiSettings.GetString("system.screenshotpath", false), FileName, translatedPath);
   else if (RootDir.Equals("musicplaylists"))
     CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), FileName, translatedPath);
   else if (RootDir.Equals("videoplaylists"))
     CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), FileName, translatedPath);
-  else if (RootDir.Equals("cdrips"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("cddaripper.path"), FileName, translatedPath);
   else if (RootDir.Equals("skin"))
     CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), FileName, translatedPath);
 

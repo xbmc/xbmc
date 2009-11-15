@@ -38,6 +38,7 @@
 #include "GUIWindowVideoNav.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
+#include "GUIWindowFileManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIEditControl.h"
@@ -396,7 +397,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     if (node == NODE_TYPE_ALBUM ||
         node == NODE_TYPE_ALBUM_RECENTLY_ADDED ||
         node == NODE_TYPE_ALBUM_RECENTLY_PLAYED ||
-        node == NODE_TYPE_ALBUM_TOP100 || 
+        node == NODE_TYPE_ALBUM_TOP100 ||
         node == NODE_TYPE_ALBUM_COMPILATIONS ||
         node == NODE_TYPE_YEAR_ALBUM)
       items.SetContent("albums");
@@ -496,7 +497,7 @@ void CGUIWindowMusicNav::OnWindowLoaded()
 
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_BTN_FILTER, CGUIEditControl::INPUT_TYPE_FILTER);
   CGUIWindowMusicBase::OnWindowLoaded();
-  
+
   if (m_searchWithEdit)
   {
     SendMessage(GUI_MSG_SET_TYPE, CONTROL_SEARCH, CGUIEditControl::INPUT_TYPE_SEARCH);
@@ -555,6 +556,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     if (dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath) &&
         item->m_bIsFolder && !item->IsVideoDb() && !item->IsParentFolder()   &&
        !item->IsLastFM() &&  !item->IsShoutCast()                            &&
+       !item->IsPluginRoot() && !item->IsPlugin()                            &&
        !item->m_strPath.Left(14).Equals("musicsearch://"))
     {
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
@@ -626,13 +628,16 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
       else
         buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases()
-       || g_passwordManager.bMasterUser)
+      if ((g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) &&
+          !item->IsPluginRoot() && !item->IsPlugin() && !item->IsShoutCast())
       {
         buttons.Add(CONTEXT_BUTTON_RENAME, 16105);
         buttons.Add(CONTEXT_BUTTON_DELETE, 646);
       }
     }
+    if (inPlaylists && !CUtil::GetFileName(item->m_strPath).Equals("PartyMode.xsp")
+                    && (item->IsPlayList() || item->IsSmartPlayList()))
+      buttons.Add(CONTEXT_BUTTON_DELETE, 117);
   }
   // noncontextual buttons
 
@@ -725,13 +730,13 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_MARK_WATCHED:
-    CGUIWindowVideoBase::MarkWatched(item);
+    CGUIWindowVideoBase::MarkWatched(item,true);
     CUtil::DeleteVideoDatabaseDirectoryCache();
     Update(m_vecItems->m_strPath);
     return true;
 
   case CONTEXT_BUTTON_MARK_UNWATCHED:
-    CGUIWindowVideoBase::MarkUnWatched(item);
+    CGUIWindowVideoBase::MarkWatched(item,false);
     CUtil::DeleteVideoDatabaseDirectoryCache();
     Update(m_vecItems->m_strPath);
     return true;
@@ -743,8 +748,16 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_DELETE:
-    CGUIWindowVideoNav::DeleteItem(item.get());
-    CUtil::DeleteVideoDatabaseDirectoryCache();
+    if (item->IsPlayList() || item->IsSmartPlayList())
+    {
+      item->m_bIsFolder = false;
+      CGUIWindowFileManager::DeleteItem(item.get());
+    }
+    else
+    {
+      CGUIWindowVideoNav::DeleteItem(item.get());
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+    }
     Update(m_vecItems->m_strPath);
     return true;
 
@@ -1074,12 +1087,25 @@ void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowMusicBase::OnPrepareFileItems(items);
   // set fanart
+  SetupFanart(items);
+}
+
+void CGUIWindowMusicNav::SetupFanart(CFileItemList& items)
+{
+  // set fanart
   map<CStdString, CStdString> artists;
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items[i];
-    if (!item->HasMusicInfoTag() || item->HasProperty("fanart_image"))
+    CStdString strArtist;
+    if (item->HasProperty("fanart_image"))
       continue;
+    if (item->HasMusicInfoTag())
+      strArtist = item->GetMusicInfoTag()->GetArtist();
+   if (item->HasVideoInfoTag())
+     strArtist = item->GetVideoInfoTag()->m_strArtist;
+   if (strArtist.IsEmpty())
+     continue;
     map<CStdString, CStdString>::iterator artist = artists.find(item->GetMusicInfoTag()->GetArtist());
     if (artist == artists.end())
     {
@@ -1088,7 +1114,7 @@ void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
         item->SetProperty("fanart_image",strFanart);
       else
         strFanart = "";
-      artists.insert(make_pair(item->GetMusicInfoTag()->GetArtist(), strFanart));
+      artists.insert(make_pair(strArtist, strFanart));
     }
     else
       item->SetProperty("fanart_image",artist->second);

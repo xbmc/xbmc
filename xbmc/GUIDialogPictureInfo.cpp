@@ -94,10 +94,10 @@ void CGUIDialogPictureInfo::UpdatePictureInfo()
       CFileItemPtr item(new CFileItem(g_localizeStrings.Get(SLIDE_STRING_BASE + info)));
       item->SetLabel2(picInfo);
       m_pictureInfo->Add(item);
-      CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PICTURE_INFO, 0, 0, item);
-      OnMessage(msg);
     }
   }
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PICTURE_INFO, 0, 0, m_pictureInfo);
+  OnMessage(msg);
 }
 
 void CGUIDialogPictureInfo::OnDeinitWindow(int nextWindowID)

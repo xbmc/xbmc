@@ -79,14 +79,6 @@ protected:
   void DrawTextInternal(float x, float y, const vecColors &colors, const vecText &text,
                             uint32_t alignment, float maxPixelWidth, bool scrolling);
 
-  void DrawTextInternal(float x, float y, color_t color, const vecText &text,
-                            uint32_t alignment, float maxPixelWidth, bool scrolling)
-  {
-    vecColors colors;
-    colors.push_back(color);
-    DrawTextInternal(x, y, colors, text, alignment, maxPixelWidth, scrolling);
-  }
-
   float m_height;
   CStdString m_strFilename;
 

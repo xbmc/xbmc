@@ -4305,19 +4305,22 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
 
       for (it=mapAlbums.begin();it != mapAlbums.end();++it)
       {
-        CFileItemPtr pItem(new CFileItem(it->second.first));
-        CStdString strDir;
-        strDir.Format("%ld/", it->first);
-        pItem->m_strPath=strBaseDir + strDir;
-        pItem->m_bIsFolder=true;
-        pItem->SetLabelPreformated(true);
-        if (!items.Contains(pItem->m_strPath))
+        if (!it->second.first.IsEmpty())
         {
-          pItem->GetVideoInfoTag()->m_strArtist = m_pDS->fv(2).get_asString();
-          CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),pItem->GetVideoInfoTag()->m_strArtist);
-          if (CFile::Exists(strThumb))
-            pItem->SetThumbnailImage(strThumb);
-          items.Add(pItem);
+          CFileItemPtr pItem(new CFileItem(it->second.first));
+          CStdString strDir;
+          strDir.Format("%ld/", it->first);
+          pItem->m_strPath=strBaseDir + strDir;
+          pItem->m_bIsFolder=true;
+          pItem->SetLabelPreformated(true);
+          if (!items.Contains(pItem->m_strPath))
+          {
+            pItem->GetVideoInfoTag()->m_strArtist = m_pDS->fv(2).get_asString();
+            CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),pItem->GetVideoInfoTag()->m_strArtist);
+            if (CFile::Exists(strThumb))
+              pItem->SetThumbnailImage(strThumb);
+            items.Add(pItem);
+          }
         }
       }
     }
@@ -4325,27 +4328,26 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
     {
       while (!m_pDS->eof())
       {
-        CFileItemPtr pItem(new CFileItem(m_pDS->fv(0).get_asString()));
-        CStdString strDir;
-        strDir.Format("%ld/", m_pDS->fv(1).get_asInt());
-        pItem->m_strPath=strBaseDir + strDir;
-        pItem->m_bIsFolder=true;
-        pItem->SetLabelPreformated(true);
-        if (!items.Contains(pItem->m_strPath))
+        if (!m_pDS->fv(0).get_asString().empty())
         {
-          CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),m_pDS->fv(2).get_asString());
-          if (CFile::Exists(strThumb))
-            pItem->SetThumbnailImage(strThumb);
-          items.Add(pItem);
+          CFileItemPtr pItem(new CFileItem(m_pDS->fv(0).get_asString()));
+          CStdString strDir;
+          strDir.Format("%ld/", m_pDS->fv(1).get_asInt());
+          pItem->m_strPath=strBaseDir + strDir;
+          pItem->m_bIsFolder=true;
+          pItem->SetLabelPreformated(true);
+          if (!items.Contains(pItem->m_strPath))
+          {
+            pItem->GetVideoInfoTag()->m_strArtist = m_pDS->fv(2).get_asString();
+            CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),m_pDS->fv(2).get_asString());
+            if (CFile::Exists(strThumb))
+              pItem->SetThumbnailImage(strThumb);
+            items.Add(pItem);
+          }
         }
         m_pDS->next();
       }
       m_pDS->close();
-    }
-    if (idArtist > -1 && items.Size())
-    {
-      if (CFile::Exists(items[0]->GetCachedFanart()))
-        items.SetProperty("fanart_image",items[0]->GetCachedFanart());
     }
 
 //    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", timeGetTime() - time);
@@ -4380,8 +4382,6 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
         if (CFile::Exists(pItem->GetCachedArtistThumb()))
           pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
         pItem->SetIconImage("DefaultArtist.png");
-        if (CFile::Exists(pItem->GetCachedFanart()))
-          pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
       }
       else
       {
@@ -4509,6 +4509,8 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
             // only if the number of videos watched is equal to the total number (i.e. every video watched)
             pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(4).get_asInt() == m_pDS->fv(3).get_asInt()) ? 1 : 0;
           }
+          if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
+            pItem->GetVideoInfoTag()->m_strArtist = pItem->GetLabel();
           items.Add(pItem);
           m_pDS->next();
         }
@@ -5332,14 +5334,8 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
     else
       where.Format(" %s %s%s",where.Mid(0).c_str(),"and",str2.c_str());
   }
-  bool bResult = GetMusicVideosByWhere(strBaseDir, where, items);
-  if (bResult && idArtist > -1 && items.Size())
-  {
-   if (CFile::Exists(items[0]->GetCachedFanart()))
-     items.SetProperty("fanart_image",items[0]->GetCachedFanart());
-  }
-
-  return bResult;
+  
+  return GetMusicVideosByWhere(strBaseDir, where, items);
 }
 
 bool CVideoDatabase::GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFileItemList& items)
@@ -6038,8 +6034,6 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const CStd
         CFileItemPtr item(new CFileItem(musicvideo));
         item->m_strPath.Format("%s%ld",baseDir,idMVideo);
         item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,musicvideo.m_playCount > 0);
-        if (CFile::Exists(item->GetCachedFanart()))
-          item->SetProperty("fanart_image",item->GetCachedFanart());
         items.Add(item);
       }
       m_pDS->next();

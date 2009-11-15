@@ -945,11 +945,17 @@ int CBuiltins::Execute(const CStdString& execString)
     g_application.StopPlaying();
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && musicScan->IsScanning())
+    {
       musicScan->StopScanning();
+      musicScan->Close(true);
+    }
 
     CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
     if (videoScan && videoScan->IsScanning())
+    {
       videoScan->StopScanning();
+      videoScan->Close(true);
+    }
 
     g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_network.Deinitialize();

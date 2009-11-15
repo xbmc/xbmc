@@ -437,6 +437,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       else if (!inPlaylists && !m_vecItems->IsInternetStream()           && 
                !item->IsLastFM() && !item->IsShoutCast()                 && 
                !item->m_strPath.Equals("add") && !item->IsParentFolder() &&
+               !item->IsPluginRoot() && !item->IsPlugin()                &&
               (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
@@ -576,5 +577,6 @@ void CGUIWindowMusicSongs::OnRemoveSource(int iItem)
     database.Open();
     database.RemoveSongsFromPath(m_vecItems->Get(iItem)->m_strPath,songs,false);
     database.CleanupOrphanedItems();
+    g_infoManager.ResetLibraryBools();
   }
 }

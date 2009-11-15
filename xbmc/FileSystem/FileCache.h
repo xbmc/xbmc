@@ -66,7 +66,7 @@ namespace XFILE
   private:
     CCacheStrategy *m_pCache;
     bool      m_bDeleteCache;
-    bool      m_bSeekPossible;
+    int64_t    m_seekPossible;
     CFile      m_source;
     CStdString    m_sourcePath;
     CEvent      m_seekEvent;

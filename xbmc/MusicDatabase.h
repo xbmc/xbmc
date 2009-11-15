@@ -188,6 +188,7 @@ public:
 
   bool GetVariousArtistsAlbums(const CStdString& strBaseDir, CFileItemList& items);
   bool GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, CFileItemList& items);
+  int GetVariousArtistsAlbumsCount();
 
   bool SetSongRating(const CStdString &filePath, char rating);
   bool SetScraperForPath(const CStdString& strPath, const SScraperInfo& info);

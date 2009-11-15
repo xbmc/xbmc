@@ -694,6 +694,13 @@ void CUtil::GetCommonPath(CStdString& strParent, const CStdString& strPath)
   }
 }
 
+CStdString CUtil::GetParentPath(const CStdString& strPath)
+{
+  CStdString strReturn;
+  GetParentPath(strPath, strReturn);
+  return strReturn;
+}
+
 bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 {
   strParent = "";
@@ -1838,26 +1845,38 @@ bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
 
 bool CUtil::IsSpecial(const CStdString& strFile)
 {
-  return strFile.Left(8).Equals("special:");
+  CURL url(strFile);
+  return url.GetProtocol().Equals("special");
 }
 
 bool CUtil::IsPlugin(const CStdString& strFile)
 {
-  return strFile.Left(7).Equals("plugin:");
+  CURL url(strFile);
+  return url.GetProtocol().Equals("plugin") && !url.GetFileName().IsEmpty();
+}
+
+bool CUtil::IsPluginRoot(const CStdString& strFile)
+{
+  CURL url(strFile);
+  return url.GetProtocol().Equals("plugin") && url.GetFileName().IsEmpty();
 }
 
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
-  return strFile.Left(5).Equals("cdda:");
+  CURL url(strFile);
+  return url.GetProtocol().Equals("cdda") && !url.GetFileName().IsEmpty();
 }
 
 bool CUtil::IsISO9660(const CStdString& strFile)
 {
-  return strFile.Left(8).Equals("iso9660:");
+  CURL url(strFile);
+  return url.GetProtocol().Equals("iso9660");
 }
 
 bool CUtil::IsSmb(const CStdString& strFile)
 {
+  CURL url(strFile);
+  return url.GetProtocol().Equals("iso9660");
   return strFile.Left(4).Equals("smb:");
 }
 
@@ -1910,6 +1929,30 @@ bool CUtil::IsLiveTV(const CStdString& strFile)
     return true;
 
   return false;
+}
+
+bool CUtil::IsMusicDb(const CStdString& strFile)
+{
+  CURL url(strFile);
+  return url.GetProtocol().Equals("musicdb");
+}
+
+bool CUtil::IsVideoDb(const CStdString& strFile)
+{
+  CURL url(strFile);
+  return url.GetProtocol().Equals("videodb");
+}
+
+bool CUtil::IsShoutCast(const CStdString& strFile)
+{
+  CURL url(strFile);
+  return url.GetProtocol().Equals("shout");
+}
+
+bool CUtil::IsLastFM(const CStdString& strFile)
+{
+  CURL url(strFile);
+  return url.GetProtocol().Equals("lastfm");
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
@@ -3473,7 +3516,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
       { // start of function
         inFunction++;
       }
-      if (!inFunction && ch == ',')
+      if (!inFunction && !IsStack(paramString) && ch == ',')
       { // not in a function, so a comma signfies the end of this parameter
         if (whiteSpacePos)
           parameter = parameter.Left(whiteSpacePos);

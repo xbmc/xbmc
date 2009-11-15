@@ -63,7 +63,7 @@
 			<RegExp input="$$2" output="&lt;url function=&quot;Getfdblink&quot;&gt;http://fdb.pl/katalog?catalog[query]=$$6&amp;amp;catalog[year_from]=$$7&amp;amp;catalog[order]=votes&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://www.imdb.com/title/$$2&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" output="&lt;url function=&quot;GetTMDBFanartById&quot;&gt;http://www.imdb.com/title/$$2&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<expression noclean="1"/>
@@ -74,18 +74,18 @@
 			<RegExp input="$$1" output="\1" dest="4">
 				<expression noclean="1">class=&quot;results&quot;([^~]*)class=&quot;clear&quot;</expression>
 			</RegExp>
-            <RegExp input="$$4" output="\1" dest="6">
-                <expression clear="yes" noclean="1,2">a href=&quot;([^&gt;]+)&quot;&gt;([^&lt;]+)[^(]+\(([0-9]+)</expression>
-            </RegExp>
-            <RegExp input="$$6" output="&lt;url function=&quot;GetDetailsfdb&quot;&gt;$$6&lt;/url&gt;" dest="2">
+			<RegExp input="$$4" output="\1" dest="6">
+				<expression clear="yes" noclean="1,2">a href=&quot;([^&gt;]+)&quot;&gt;([^&lt;]+)[^(]+\(([0-9]+)</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;url function=&quot;GetDetailsfdb&quot;&gt;$$6&lt;/url&gt;" dest="2">
 				<expression/>
-            </RegExp>
-            <RegExp input="$$6" output="&lt;url function=&quot;GetPlotfdb&quot;&gt;$$6/opisy&lt;/url&gt;" dest="2+">
+			</RegExp>
+			<RegExp input="$$6" output="&lt;url function=&quot;GetPlotfdb&quot;&gt;$$6/opisy&lt;/url&gt;" dest="2+">
 				<expression/>
-            </RegExp>
-            <RegExp input="$$6" output="&lt;url function=&quot;GetPosterfdb&quot;&gt;$$6/plakaty&lt;/url&gt;" dest="2+">
+			</RegExp>
+			<RegExp input="$$6" output="&lt;url function=&quot;GetPosterfdb&quot;&gt;$$6/plakaty&lt;/url&gt;" dest="2+">
 				<expression/>
-            </RegExp>
+			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
 	</Getfdblink>

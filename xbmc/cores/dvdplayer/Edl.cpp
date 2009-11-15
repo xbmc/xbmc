@@ -64,9 +64,6 @@ void CEdl::Clear()
 
 bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFramesPerSecond)
 {
-  CLog::Log(LOGDEBUG, "%s - checking for any edit decision lists (EDL) for: %s", __FUNCTION__,
-            strMovie.c_str());
-
   bool bFound = false;
 
   /*
@@ -76,6 +73,9 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrames
   if (CUtil::IsHD(strMovie)
   ||  CUtil::IsSmb(strMovie))
   {
+    CLog::Log(LOGDEBUG, "%s - checking for any edit decision lists (EDL) on local drive or remote share for: %s", __FUNCTION__,
+              strMovie.c_str());
+
     /*
      * Read any available file format until a valid EDL related file is found.
      */
@@ -97,6 +97,8 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrames
   else if (CUtil::IsMythTV(strMovie)
   &&      !CUtil::IsLiveTV(strMovie))
   {
+    CLog::Log(LOGDEBUG, "%s - checking for any commercial breaks within MythTV for: %s", __FUNCTION__,
+              strMovie.c_str());
     bFound = ReadMythCommBreaks(strMovie, fFramesPerSecond);
   }
 

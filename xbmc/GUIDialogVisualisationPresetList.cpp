@@ -138,13 +138,13 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisual
         pItem->RemoveExtension();
         pItem->SetLabel2(" ");
         m_vecPresets->Add(pItem);
-        CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, pItem);
-        OnMessage(msg);
       }
+      CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_vecPresets);
+      OnMessage(msg);
     }
   }
   // update our settings label
-  CStdString strVis = g_guiSettings.GetString("mymusic.visualisation");
+  CStdString strVis = g_guiSettings.GetString("musicplayer.visualisation");
   if (strVis != "None" && strVis.size() > 4)
   { // make it look pretty
     strVis = strVis.Left(strVis.size() - 4);

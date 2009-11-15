@@ -138,7 +138,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   else if (action.id >= KEY_VKEY && action.id < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
     uint8_t b = action.id & 0xFF;
-    if (b == 0x25) // left
+    if (b == 0x24) // home
     {
       if (g_advancedSettings.m_bNavVKeyboard)
       {

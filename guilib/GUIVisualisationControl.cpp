@@ -144,7 +144,7 @@ void CGUIVisualisationControl::LoadVisualisation()
 
   CVisualisationFactory factory;
   CStdString strVisz;
-  m_currentVis = g_guiSettings.GetString("mymusic.visualisation");
+  m_currentVis = g_guiSettings.GetString("musicplayer.visualisation");
 
 #ifdef HAS_KARAOKE
   if (g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
@@ -220,7 +220,7 @@ void CGUIVisualisationControl::Render()
       CGUIControl::Render();
       return;
     }
-    else if (!m_currentVis.Equals(g_guiSettings.GetString("mymusic.visualisation")))
+    else if (!m_currentVis.Equals(g_guiSettings.GetString("musicplayer.visualisation")))
     { // vis changed - reload
       LoadVisualisation();
 

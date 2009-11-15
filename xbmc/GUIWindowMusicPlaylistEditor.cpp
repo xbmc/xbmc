@@ -66,15 +66,6 @@ bool CGUIWindowMusicPlaylistEditor::OnAction(const CAction &action)
     g_windowManager.PreviousWindow();
     return true;
   }
-  if (action.id == ACTION_CONTEXT_MENU && GetFocusedControlID() == CONTROL_PLAYLIST)
-  {
-    int item = GetCurrentPlaylistItem();
-    if (item >= 0)
-      m_playlist->Get(item)->Select(true);
-    if (!OnPopupMenu(-1) && item >= 0 && item < m_playlist->Size())
-      m_playlist->Get(item)->Select(false);
-    return true;
-  }
   return CGUIWindowMusicBase::OnAction(action);
 }
 
@@ -117,7 +108,9 @@ bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
       {
         int item = GetCurrentPlaylistItem();
         int action = message.GetParam1();
-        if (action == ACTION_QUEUE_ITEM || action == ACTION_DELETE_ITEM || action == ACTION_MOUSE_MIDDLE_CLICK)
+        if (action == ACTION_CONTEXT_MENU || action == ACTION_MOUSE_RIGHT_CLICK)
+          OnPlaylistContext();
+        else if (action == ACTION_QUEUE_ITEM || action == ACTION_DELETE_ITEM || action == ACTION_MOUSE_MIDDLE_CLICK)
           OnDeletePlaylistItem(item);
         else if (action == ACTION_MOVE_ITEM_UP)
           OnMovePlaylistItem(item, -1);
@@ -432,4 +425,13 @@ void CGUIWindowMusicPlaylistEditor::AppendToPlaylist(CFileItemList &newItems)
   FormatItemLabels(newItems, LABEL_MASKS(g_guiSettings.GetString("musicfiles.trackformat"), g_guiSettings.GetString("musicfiles.trackformatright"), "%L", ""));
   m_playlist->Append(newItems);
   UpdatePlaylist();
+}
+
+void CGUIWindowMusicPlaylistEditor::OnPlaylistContext()
+{
+  int item = GetCurrentPlaylistItem();
+  if (item >= 0)
+    m_playlist->Get(item)->Select(true);
+  if (!OnPopupMenu(-1) && item >= 0 && item < m_playlist->Size())
+    m_playlist->Get(item)->Select(false);
 }

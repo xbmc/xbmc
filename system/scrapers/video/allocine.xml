@@ -175,7 +175,7 @@
 	</GetActorThumb>
 	<GetTagline clearbuffers="no" dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;tagline&gt;\1&lt;/tagline&gt;&lt;/details&gt;" dest="5+">
-				<expression clean="1" trim="1">&lt;div align=&quot;justify&quot; style=&quot;padding: 5 0 5 0&quot;&gt;&lt;h4&gt;([^&lt;]*)</expression>
+			<expression clean="1" trim="1">&lt;div align=&quot;justify&quot; style=&quot;padding: 5 0 5 0&quot;&gt;&lt;h4&gt;([^&lt;]*)</expression>
 		</RegExp>
 	</GetTagline>
 </scraper>

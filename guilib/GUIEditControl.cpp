@@ -313,9 +313,9 @@ void CGUIEditControl::RenderText()
       // virtual keyboard only)
       CStdStringW col;
       if ((m_dwFocusCounter % 64) > 32)
-        col.Format(L"|");
+        col = L"|";
       else
-        col.Format(L"[COLOR %x]|[/COLOR]", 0x1000000);
+        col = L"[COLOR 00FFFFFF]|[/COLOR]";
       text.Insert(m_cursorPos, col);
     }
 

@@ -552,7 +552,7 @@ void CGUIDialogFileBrowser::OnWindowUnload()
   m_viewControl.Reset();
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURCES &shares, const CStdString &heading, CStdString &result, bool* flip)
+bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURCES &shares, const CStdString &heading, CStdString &result, bool* flip, int label)
 {
   CStdString mask = ".png|.jpg|.bmp|.gif";
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
@@ -582,7 +582,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURC
     { // "Browse for thumb"
       g_windowManager.Remove(browser->GetID());
       delete browser;
-      return ShowAndGetImage(shares, g_localizeStrings.Get(21371), result);
+      return ShowAndGetImage(shares, g_localizeStrings.Get(label), result);
     }
   }
 

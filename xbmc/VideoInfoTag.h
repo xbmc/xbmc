@@ -44,6 +44,7 @@ public:
   virtual void Serialize(CArchive& ar);
   const CStdString GetCast(bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
+  bool IsEmpty() const;
 
   CStdString m_strDirector;
   CStdString m_strWritingCredits;

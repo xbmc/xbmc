@@ -346,3 +346,14 @@ CStdString CGUITextBox::GetLabel(int info) const
   }
   return label;
 }
+
+void CGUITextBox::UpdateVisibility(const CGUIListItem *item)
+{
+  // we have to update the page control when we become visible
+  // as another control may be sharing the same page control when we're
+  // not visible
+  bool wasVisible = IsVisible();
+  CGUIControl::UpdateVisibility(item);
+  if (IsVisible() && !wasVisible)
+    UpdatePageControl();
+}

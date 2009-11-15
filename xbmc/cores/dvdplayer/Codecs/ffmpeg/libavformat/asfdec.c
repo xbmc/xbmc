@@ -943,7 +943,8 @@ static int64_t asf_read_pts(AVFormatContext *s, int stream_index, int64_t *ppos,
 
     pos= (pos+asf->packet_size-1-s->data_offset)/asf->packet_size*asf->packet_size+ s->data_offset;
     *ppos= pos;
-    url_fseek(s->pb, pos, SEEK_SET);
+    if (url_fseek(s->pb, pos, SEEK_SET) < 0)
+        return AV_NOPTS_VALUE;
 
 //printf("asf_read_pts\n");
     asf_reset_header(s);
@@ -989,7 +990,10 @@ static void asf_build_simple_index(AVFormatContext *s, int stream_index)
 
     current_pos = url_ftell(s->pb);
 
-    url_fseek(s->pb, asf->data_object_offset + asf->data_object_size, SEEK_SET);
+    if(url_fseek(s->pb, asf->data_object_offset + asf->data_object_size, SEEK_SET) < 0) {
+      asf->index_read=-1;
+      return;
+    }
     get_guid(s->pb, &g);
     if (!memcmp(&g, &index_guid, sizeof(GUID))) {
         gsize = get_le64(s->pb);
@@ -1026,8 +1030,8 @@ static int asf_read_seek(AVFormatContext *s, int stream_index, int64_t pts, int 
     if (pts == 0) {
       // this is a hack since av_gen_search searches the entire file in this case
       av_log(s, AV_LOG_DEBUG, "SEEKTO: %"PRId64"\n", s->data_offset);
-      if(url_fseek(s->pb, s->data_offset, SEEK_SET) < 0)
-        return -1;
+      if (url_fseek(s->pb, s->data_offset, SEEK_SET) < 0)
+          return -1;
       return 0;
     }
 

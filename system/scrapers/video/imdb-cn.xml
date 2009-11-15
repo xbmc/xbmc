@@ -65,8 +65,8 @@
 			</RegExp>
 			<RegExp input="$$4" output="\1" dest="5+">
 				<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;\n" dest="4">
-				<expression>MPAA[^&lt;]*&lt;/span&gt;&lt;br&gt;(.[^&lt;]*)</expression>
-			</RegExp>
+					<expression>MPAA[^&lt;]*&lt;/span&gt;&lt;br&gt;(.[^&lt;]*)</expression>
+				</RegExp>
 				<expression repeat="yes" noclean="1">(.*?)\n</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;certification&gt;\1&lt;/certification&gt;" dest="5+">
@@ -74,8 +74,8 @@
 			</RegExp>
 			<RegExp input="$$4" output="\1" dest="5+">
 				<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;\n" dest="4">
-				<expression trim="1">&lt;td colspan=&quot;2&quot;&gt;&lt;font color=red&gt;([^&lt;]*)</expression>
-			</RegExp>
+					<expression trim="1">&lt;td colspan=&quot;2&quot;&gt;&lt;font color=red&gt;([^&lt;]*)</expression>
+				</RegExp>
 				<expression repeat="yes" noclean="1">(.*?)\n</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;" dest="5+">
@@ -96,7 +96,7 @@
 			<RegExp input="$$1" output="&lt;url function=&quot;GetIMDBCNPoster&quot;&gt;\1&lt;/url&gt;" dest="5+">
 				<expression>&lt;a href=(http://posters.imdb.cn/poster/[0-9]*)</expression>
 			</RegExp>
-			<RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;$$3&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetTMDBFanartById&quot;&gt;$$3&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<expression noclean="1"/>

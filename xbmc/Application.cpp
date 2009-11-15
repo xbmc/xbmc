@@ -1187,7 +1187,7 @@ HRESULT CApplication::Initialize()
   CLog::Log(LOGINFO, "creating subdirectories");
 
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
-  CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("mymusic.recordingpath",false).c_str());
+  CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
   CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("system.screenshotpath",false).c_str());
 
   // UserData folder layout:
@@ -4481,7 +4481,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     if (g_windowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")))
       m_screenSaverMode = "Dim";
     // Check if we are Playing Audio and Vis instead Screensaver!
-    else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && g_guiSettings.GetString("mymusic.visualisation") != "None")
+    else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && g_guiSettings.GetString("musicplayer.visualisation") != "None")
     { // activate the visualisation
       m_screenSaverMode = "Visualisation";
       g_windowManager.ActivateWindow(WINDOW_VISUALISATION);

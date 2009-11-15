@@ -415,7 +415,7 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
   if (!m_font)
     return;
 
-  int nMaxLines = (m_maxHeight > 0 && m_font->GetLineHeight() > 0)?(int)(m_maxHeight / m_font->GetLineHeight()):-1;
+  int nMaxLines = (m_maxHeight > 0 && m_font->GetLineHeight() > 0)?(int)ceilf(m_maxHeight / m_font->GetLineHeight()):-1;
 
   m_lines.clear();
 
@@ -429,7 +429,7 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
     vecText::const_iterator pos = line.m_text.begin();
     unsigned int lastSpaceInLine = 0;
     vecText curLine;
-    while (pos != line.m_text.end() && (nMaxLines <= 0 || m_lines.size() <= (size_t)nMaxLines))
+    while (pos != line.m_text.end() && (nMaxLines <= 0 || m_lines.size() < (size_t)nMaxLines))
     {
       // Get the current letter in the string
       character_t letter = *pos;
@@ -485,9 +485,10 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
 
 void CGUITextLayout::LineBreakText(const vecText &text, vector<CGUIString> &lines)
 {
+  int nMaxLines = (m_maxHeight > 0 && m_font->GetLineHeight() > 0)?(int)ceilf(m_maxHeight / m_font->GetLineHeight()):-1;
   vecText::const_iterator lineStart = text.begin();
   vecText::const_iterator pos = text.begin();
-  while (pos != text.end())
+  while (pos != text.end() && (nMaxLines <= 0 || lines.size() < (size_t)nMaxLines))
   {
     // Get the current letter in the string
     character_t letter = *pos;

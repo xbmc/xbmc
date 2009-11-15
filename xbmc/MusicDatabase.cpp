@@ -2243,7 +2243,7 @@ void CMusicDatabase::DeleteAlbumInfo()
 
 bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
 {
-  if (!g_guiSettings.GetBool("musicfiles.usecddb"))
+  if (!g_guiSettings.GetBool("audiocds.usecddb"))
     return false;
 
   // check network connectivity
@@ -4098,6 +4098,21 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
     }
     if (info.strPath.IsEmpty() && !strPath.Equals("musicdb://")) // default fallback
       GetScraperForPath("musicdb://",info);
+    else
+    { // none available yet (user wisely left defaults as is and didn't touch 'em)
+      CScraperParser parser;
+      if (parser.Load("special://xbmc/system/scrapers/music/" + g_guiSettings.GetString("musiclibrary.defaultscraper")))
+      {
+        info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
+        info.strContent = "albums";
+        info.strTitle = parser.GetName();
+        info.strDate = parser.GetDate();
+        info.strFramework = parser.GetFramework();
+        info.strLanguage = parser.GetLanguage();
+        info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + info.strPath);
+        SetScraperForPath("musicdb://",info);
+      }
+    }
 
     m_pDS->close();
     return true;
@@ -4737,3 +4752,25 @@ void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album
     item.SetProperty("album_rating", album.iRating);
 }
 
+int CMusicDatabase::GetVariousArtistsAlbumsCount()
+{
+  CStdString strVariousArtists = g_localizeStrings.Get(340);
+  int idVariousArtists=AddArtist(strVariousArtists);
+  CStdString strSQL = FormatSQL("select count(idAlbum) from album where idArtist=%i", idVariousArtists);
+  int result=0;
+  try
+  {
+    if (NULL == m_pDB.get()) return 0;
+    if (NULL == m_pDS.get()) return 0;
+    m_pDS->query(strSQL.c_str());
+    if (!m_pDS->eof())
+      result = m_pDS->fv(0).get_asInt();
+    m_pDS->close(); 
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+
+  return result;
+}
