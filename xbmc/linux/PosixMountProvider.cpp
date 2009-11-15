@@ -22,17 +22,11 @@
 #include "RegExp.h"
 #include "StdString.h"
 #include "Util.h"
-#include "log.h"
 
 CPosixMountProvider::CPosixMountProvider()
 {
   m_removableLength = 0;
   PumpDriveChangeEvents(NULL);
-}
-
-void CPosixMountProvider::Initialize()
-{
-  CLog::Log(LOGDEBUG, "Selected Posix mount as storage provider");
 }
 
 void CPosixMountProvider::GetDrives(VECSOURCES &drives)

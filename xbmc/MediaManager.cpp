@@ -462,7 +462,7 @@ std::vector<CStdString> CMediaManager::GetDiskUsage()
 
 void CMediaManager::OnStorageAdded(const CStdString &label, const CStdString &path)
 {
-  if (g_guiSettings.GetBool("audiocds.autorun") || g_guiSettings.GetBool("lookandfeel.autorun"))
+  if (g_guiSettings.GetBool("lookandfeel.autorun"))
     CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_HIGH);
   else
     g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13021), label);

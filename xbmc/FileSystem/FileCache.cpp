@@ -40,7 +40,6 @@ CFileCache::CFileCache()
    m_seekPos = 0;
    m_readPos = 0;
    m_pCache = new CacheMemBuffer();
-   m_seekPossible = 0;
 }
 
 CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache)
@@ -105,7 +104,7 @@ bool CFileCache::Open(const CURL& url)
   }
 
   // check if source can seek
-  m_seekPossible = m_source.Seek(0, SEEK_POSSIBLE) > 0 ? true : false;
+  m_bSeekPossible = m_source.Seek(0, SEEK_POSSIBLE) > 0 ? true : false;
 
   m_readPos = 0;
   m_seekEvent.Reset();
@@ -298,7 +297,7 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
   else if (iWhence == SEEK_CUR)
     iTarget = iCurPos + iTarget;
   else if (iWhence == SEEK_POSSIBLE)
-    return m_seekPossible;
+    return m_bSeekPossible;
   else if (iWhence != SEEK_SET)
     return -1;
 
@@ -307,7 +306,7 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
 
   if ((m_nSeekResult = m_pCache->Seek(iTarget, SEEK_SET)) != iTarget)
   {
-    if(m_seekPossible == 0)
+    if(!m_bSeekPossible)
       return m_nSeekResult;
 
     m_seekPos = iTarget;

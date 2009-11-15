@@ -21,7 +21,6 @@
 
 #include "GUISettings.h"
 #include <limits.h>
-#include <float.h>
 #include "Settings.h"
 #include "GUIDialogFileBrowser.h"
 #include "XBAudioConfig.h"
@@ -39,7 +38,6 @@
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
 #include "visualizations/Visualisation.h"
-#include "WindowingFactory.h"
 
 using namespace std;
 
@@ -254,9 +252,21 @@ void CGUISettings::Initialize()
 
   // My Music Settings
   AddGroup(3, 2);
+  AddCategory(3, "mymusic", 16000);
+  AddString(1, "mymusic.visualisation", 250, DEFAULT_VISUALISATION, SPIN_CONTROL_TEXT);
+  AddString(2, "mymusic.managevisual", 23061, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(3, "mymusic.sep1");
+  AddBool(4, "mymusic.autoplaynextitem", 489, true);
+  //AddBool(5, "musicfiles.repeat", 488, false);
+  AddBool(6, "mymusic.clearplaylistsonend",239,false);
+  AddSeparator(7, "mymusic.sep2");
+  AddPath(8,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddSeparator(9, "mymusic.sep3");
+  AddString(10, "mymusic.manageplugin", 23072, "", BUTTON_CONTROL_STANDARD);
+
   AddCategory(3,"musiclibrary",14022);
   AddBool(0, "musiclibrary.enabled", 418, true);
-  AddBool(2, "musiclibrary.showcompilationartists", 13414, true);
+  AddBool(2, "musiclibrary.albumartistsonly", 13414, false);
   AddString(7, "musiclibrary.managescraper", 23067, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.downloadinfo", 20192, false);
@@ -268,21 +278,19 @@ void CGUISettings::Initialize()
   AddString(11, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
   AddString(12, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(3, "musicplayer", 14086);
-  AddBool(1, "musicplayer.autoplaynextitem", 489, true);
-  AddBool(2, "musicplayer.queuebydefault", 14084, false);
+  AddCategory(3, "musicplayer", 16003);
   AddSeparator(3, "musicplayer.sep1");
   AddInt(4, "musicplayer.replaygaintype", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
   AddInt(0, "musicplayer.replaygainpreamp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
   AddInt(0, "musicplayer.replaygainnogainpreamp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
   AddBool(0, "musicplayer.replaygainavoidclipping", 643, false);
-  AddInt(5, "musicplayer.crossfade", 13314, 0, 0, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
-  AddBool(6, "musicplayer.crossfadealbumtracks", 13400, true);
-  AddSeparator(7, "musicplayer.sep3");
-  AddString(8, "musicplayer.visualisation", 250, DEFAULT_VISUALISATION, SPIN_CONTROL_TEXT);
-  AddString(9, "musicplayer.managevisual", 23061, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(8, "musicplayer.sep2");
+  AddInt(9, "musicplayer.crossfade", 13314, 0, 0, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+  AddBool(10, "musicplayer.crossfadealbumtracks", 13400, true);
+  AddSeparator(11, "musicplayer.sep3");
+  AddString(0, "musicplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(3, "musicfiles", 14081);
+  AddCategory(3, "musicfiles", 744);
   AddBool(1, "musicfiles.usetags", 258, true);
   AddString(2, "musicfiles.trackformat", 13307, "[%N. ]%A - %T", EDIT_CONTROL_INPUT, false, 16016);
   AddString(3, "musicfiles.trackformatright", 13387, "%D", EDIT_CONTROL_INPUT, false, 16016);
@@ -291,7 +299,9 @@ void CGUISettings::Initialize()
   AddString(0, "musicfiles.nowplayingtrackformatright", 13387, "", EDIT_CONTROL_INPUT, false, 16016);
   AddString(0, "musicfiles.librarytrackformat", 13307, "", EDIT_CONTROL_INPUT, false, 16016);
   AddString(0, "musicfiles.librarytrackformatright", 13387, "", EDIT_CONTROL_INPUT, false, 16016);
-  AddBool(4, "musicfiles.findremotethumbs", 14059, true);
+  AddSeparator(4, "musicfiles.sep1");
+  AddBool(10, "musicfiles.usecddb", 227, true);
+  AddBool(11, "musicfiles.findremotethumbs", 14059, true);
 
   AddCategory(3, "scrobbler", 15221);
   AddBool(1, "scrobbler.lastfmsubmit", 15201, false);
@@ -303,15 +313,12 @@ void CGUISettings::Initialize()
   AddString(7, "scrobbler.librefmusername", 15218, "", EDIT_CONTROL_INPUT, false, 15218);
   AddString(8, "scrobbler.librefmpassword", 15219, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15219);
 
-  AddCategory(3, "audiocds", 620);
-  AddBool(1, "audiocds.autorun", 14085, false);
-  AddBool(2, "audiocds.usecddb", 227, true);
-  AddSeparator(3, "audiocds.sep1");
-  AddPath(4,"audiocds.recordingpath",20000,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
-  AddString(5, "audiocds.trackformat", 13307, "[%N. ]%T - %A", EDIT_CONTROL_INPUT, false, 16016);
-  AddInt(6, "audiocds.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
-  AddInt(7, "audiocds.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
-  AddInt(8, "audiocds.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
+  AddCategory(3, "cddaripper", 620);
+  AddPath(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddString(2, "cddaripper.trackformat", 13307, "[%N. ]%T - %A", EDIT_CONTROL_INPUT, false, 16016);
+  AddInt(3, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
+  AddInt(4, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
+  AddInt(5, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
 
 #ifdef HAS_KARAOKE
   AddCategory(3, "karaoke", 13327);
@@ -598,7 +605,7 @@ void CGUISettings::Initialize()
   AddString(3, "locale.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
 #if defined(_LINUX) && !defined(__APPLE__)
   AddSeparator(4, "locale.sep1");
-  AddString(8, "locale.timezone", 14079, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
+  AddString(8, "locale.timezone", 14081, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
   AddString(7, "locale.timezonecountry", 14080, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
 #endif
 #ifdef HAS_TIME_SERVER
@@ -608,7 +615,7 @@ void CGUISettings::Initialize()
 #endif
 
   AddCategory(7, "videoscreen", 131);
-  AddString(1, "videoscreen.screenmode", 169, "DESKTOP", SPIN_CONTROL_TEXT);
+  AddInt(1, "videoscreen.resolution",169, (int)RES_DESKTOP, (int)RES_WINDOW, 1, (int)RES_CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
 
 #if defined (__APPLE__) || defined(_WIN32)
   AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);
@@ -622,23 +629,6 @@ void CGUISettings::Initialize()
 #else
   AddInt(6, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
 #endif
-#if defined(_WIN32) || defined (__APPLE__)
-  // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
-  // as it works nicer with switching to other applications. However on some systems vsync is broken
-  // when we do this (eg non-Aero on ATI in particular) and on others (AppleTV) we can't get XBMC to
-  // the front
-  bool fakeFullScreen = true;
-  bool showSetting = true;
-  if (g_sysinfo.IsAeroDisabled())
-    fakeFullScreen = false;
-  if (g_sysinfo.IsAppleTV())
-  {
-    fakeFullScreen = false;
-    showSetting = false;
-  }
-  AddBool(showSetting ? 7 : 0, "videoscreen.fakefullscreen", 14083, fakeFullScreen);
-#endif
-
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
   AddBool(2, "filelists.hideextensions", 497, false);
@@ -848,6 +838,8 @@ void CGUISettings::SetInt(const char *strSetting, int iSetting)
   if (it != settingsMap.end())
   {
     ((CSettingInt *)(*it).second)->SetData(iSetting);
+    if (stricmp(strSetting, "videoscreen.resolution") == 0)
+      g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)iSetting;
     return ;
   }
   // Assert here and write debug output
@@ -981,7 +973,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("audiooutput.ac3passthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
 
-  g_guiSettings.m_LookAndFeelResolution = GetResolution();
+  g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("videoscreen.resolution");
 #ifdef __APPLE__
   // trap any previous vsync by driver setting, does not exist on OSX
   if (GetInt("videoscreen.vsync") == VSYNC_DRIVER)
@@ -1000,10 +992,23 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
  // DXMERGE: This might have been useful?
  // g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
-  if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
+  if (
+    (g_guiSettings.m_LookAndFeelResolution == RES_AUTORES) ||
+    (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
+  )
   {
-    CLog::Log(LOGNOTICE, "Setting safe mode %i", RES_DESKTOP);
-    SetResolution(RES_DESKTOP);
+    RESOLUTION newRes = RES_DESKTOP;
+    if (g_guiSettings.m_LookAndFeelResolution == RES_AUTORES)
+    {
+      //"videoscreen.resolution" will stay at RES_AUTORES, m_LookAndFeelResolution will be the real mode
+      CLog::Log(LOGNOTICE, "Setting RES_AUTORESolution mode %i", newRes);
+      g_guiSettings.m_LookAndFeelResolution = newRes;
+    }
+    else
+    {
+      CLog::Log(LOGNOTICE, "Setting safe mode %i", newRes);
+      SetInt("videoscreen.resolution", newRes);
+    }
   }
 
   // Move replaygain settings into our struct
@@ -1102,71 +1107,5 @@ void CGUISettings::Clear()
   settingsGroups.clear();
 }
 
-float square_error(float x, float y)
-{
-  float yonx = (x > 0) ? y / x : 0;
-  float xony = (y > 0) ? x / y : 0;
-  return std::max(yonx, xony);
-}
 
-RESOLUTION CGUISettings::GetResolution() const
-{
-  return GetResFromString(GetString("videoscreen.screenmode"));
-}
 
-RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
-{
-  if (res == "DESKTOP")
-    return RES_DESKTOP;
-  else if (res == "WINDOW")
-    return RES_WINDOW;
-  else if (res.GetLength()==20)
-  {
-    // format: SWWWWWHHHHHRRR.RRRRR, where S = screen, W = width, H = height, R = refresh
-    int screen = atol(res.Mid(0,1).c_str());
-    int width = atol(res.Mid(1,5).c_str());
-    int height = atol(res.Mid(6,5).c_str());
-    float refresh = (float)atof(res.Mid(11).c_str());
-    // find the closest match to these in our res vector.  If we have the screen, we score the res
-    RESOLUTION bestRes = RES_DESKTOP;
-    float bestScore = FLT_MAX;
-    size_t maxRes = g_settings.m_ResInfo.size();
-    if (g_Windowing.GetNumScreens())
-      maxRes = std::min(maxRes, (size_t)RES_DESKTOP + g_Windowing.GetNumScreens());
-    for (unsigned int i = RES_DESKTOP; i < maxRes; ++i)
-    {
-      const RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
-      if (info.iScreen != screen)
-        continue;
-      float score = 10*(square_error((float)info.iWidth, (float)width) + square_error((float)info.iHeight, (float)height)) + square_error(info.fRefreshRate, refresh);
-      if (score < bestScore)
-      {
-        bestScore = score;
-        bestRes = (RESOLUTION)i;
-      }
-    }
-    return bestRes;
-  }
-  return RES_DESKTOP;
-}
-
-void CGUISettings::SetResolution(RESOLUTION res)
-{
-  CStdString mode;
-  if (res == RES_DESKTOP)
-    mode = "DESKTOP";
-  else if (res == RES_WINDOW)
-    mode = "WINDOW";
-  else if (res >= RES_CUSTOM && res < (RESOLUTION)g_settings.m_ResInfo.size())
-  {
-    const RESOLUTION_INFO &info = g_settings.m_ResInfo[res];
-    mode.Format("%1i%05i%05i%09.5f", info.iScreen, info.iWidth, info.iHeight, info.fRefreshRate);
-  }
-  else
-  {
-    CLog::Log(LOGWARNING, "%s, setting invalid resolution %i", __FUNCTION__, res);
-    mode = "DESKTOP";
-  }
-  SetString("videoscreen.screenmode", mode);
-  m_LookAndFeelResolution = res;
-}

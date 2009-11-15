@@ -330,7 +330,7 @@ bool CWinRenderer::LoadEffect()
 
   if (!m_YUV2RGBEffect.Create(pStrEffect))
   {
-    CLog::Log(LOGERROR, "D3DXCreateEffectFromFile %s failed", pStrEffect.c_str());
+    CLog::Log(LOGERROR, "D3DXCreateEffectFromFile %s failed", pStrEffect);
     return false;
   }
 

@@ -37,9 +37,9 @@ bool CEncoderVorbis::Init(const char* strFile, int iInChannels, int iInRate, int
   if (!CEncoder::Init(strFile, iInChannels, iInRate, iInBits)) return false;
 
   float fQuality = 0.5f;
-  if (g_guiSettings.GetInt("audiocds.quality") == CDDARIP_QUALITY_MEDIUM) fQuality = 0.4f;
-  if (g_guiSettings.GetInt("audiocds.quality") == CDDARIP_QUALITY_STANDARD) fQuality = 0.5f;
-  if (g_guiSettings.GetInt("audiocds.quality") == CDDARIP_QUALITY_EXTREME) fQuality = 0.7f;
+  if (g_guiSettings.GetInt("cddaripper.quality") == CDDARIP_QUALITY_MEDIUM) fQuality = 0.4f;
+  if (g_guiSettings.GetInt("cddaripper.quality") == CDDARIP_QUALITY_STANDARD) fQuality = 0.5f;
+  if (g_guiSettings.GetInt("cddaripper.quality") == CDDARIP_QUALITY_EXTREME) fQuality = 0.7f;
 
   if (!m_VorbisEncDll.Load() || !m_OggDll.Load() || !m_VorbisDll.Load())
   {
@@ -49,10 +49,10 @@ bool CEncoderVorbis::Init(const char* strFile, int iInChannels, int iInRate, int
   }
 
   m_VorbisDll.vorbis_info_init(&m_sVorbisInfo);
-  if (g_guiSettings.GetInt("audiocds.quality") == CDDARIP_QUALITY_CBR)
+  if (g_guiSettings.GetInt("cddaripper.quality") == CDDARIP_QUALITY_CBR)
   {
     // not realy cbr, but abr in this case
-    int iBitRate = g_guiSettings.GetInt("audiocds.bitrate") * 1000;
+    int iBitRate = g_guiSettings.GetInt("cddaripper.bitrate") * 1000;
     m_VorbisEncDll.vorbis_encode_init(&m_sVorbisInfo, m_iInChannels, m_iInSampleRate, -1, iBitRate, -1);
   }
   else

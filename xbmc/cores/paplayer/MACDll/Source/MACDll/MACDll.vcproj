@@ -31,7 +31,7 @@
 				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories="..\MACLib\,..\Shared\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MACDLL_EXPORTS"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Release/MACDll.pch"
 				AssemblerListingLocation=".\Release/"
@@ -50,7 +50,7 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\MACLib\Release"
-				IgnoreDefaultLibraryNames="libcmt.lib;kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;secur32.lib;oleacc.lib;oledlg.lib;sensapi.lib"
+				IgnoreDefaultLibraryNames="kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;secur32.lib;oleacc.lib;oledlg.lib;sensapi.lib"
 				ModuleDefinitionFile=".\MACDll.def"
 				ProgramDatabaseFile=".\Release/MACDll.pdb"
 				ImportLibrary=".\Release/MACDll.lib"
@@ -64,7 +64,9 @@
 				TypeLibraryName=".\Release/MACDll.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Performing post build step..."
+				CommandLine="copy Release\MACDll.dll c:\Windows\System32\MACDll.dll"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -160,6 +162,25 @@
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath="..\Shared\APEInfoDialog.cpp">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="3"
+						AdditionalIncludeDirectories=""
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
 			<File
 				RelativePath="MACDll.cpp">
 				<FileConfiguration

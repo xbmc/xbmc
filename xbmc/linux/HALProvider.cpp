@@ -21,7 +21,6 @@
 #include "HALProvider.h"
 #ifdef HAS_HAL
 #include "HALManager.h"
-#include "log.h"
 #include "PosixMountProvider.h"
 
 CHALProvider::CHALProvider()
@@ -31,7 +30,6 @@ CHALProvider::CHALProvider()
 
 void CHALProvider::Initialize()
 {
-  CLog::Log(LOGDEBUG, "Selected HAL as storage provider");
   g_HalManager.Initialize();
   PumpDriveChangeEvents(NULL);
 }

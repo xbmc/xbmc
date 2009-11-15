@@ -23,7 +23,6 @@
 #include "WinEventsWin32.h"
 #include "Settings.h"
 #include "resource.h"
-#include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "utils/log.h"
 
@@ -253,16 +252,12 @@ void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
 
 bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  CLog::Log(LOGDEBUG, "%s(%s) on screen %d with size %dx%d, refresh %f", __FUNCTION__, fullScreen ? "fullscreen" : "windowed", res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate);
   m_bFullScreen = fullScreen;
   bool forceResize = (m_nScreen != res.iScreen);
   m_nScreen = res.iScreen;
   m_nWidth  = res.iWidth;
   m_nHeight = res.iHeight;
   m_bBlankOtherDisplay = blankOtherDisplays;
-
-  if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
-    ChangeRefreshRate(m_nScreen, res.fRefreshRate);
 
   ResizeInternal(forceResize);
 
@@ -335,22 +330,6 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
   return true;
 }
 
-bool CWinSystemWin32::ChangeRefreshRate(int screen, float refresh)
-{
-  const MONITOR_DETAILS &details = GetMonitor(screen);
-
-  // grab the mode we want
-  DEVMODE sDevMode;
-  ZeroMemory(&sDevMode, sizeof(DEVMODE));
-  sDevMode.dmSize = sizeof(DEVMODE);
-  EnumDisplaySettings(details.DeviceName, ENUM_CURRENT_SETTINGS, &sDevMode);
-  // update the display frequency
-  sDevMode.dmDisplayFrequency = (int)refresh;
-  sDevMode.dmFields |= DM_DISPLAYFREQUENCY;
-
-  return (DISP_CHANGE_SUCCESSFUL == ChangeDisplaySettingsEx(details.DeviceName, &sDevMode, NULL, 0, NULL));
-}
-
 void CWinSystemWin32::UpdateResolutions()
 {
 
@@ -415,19 +394,12 @@ void CWinSystemWin32::UpdateResolutions()
         refreshRate = (float)(devmode.dmDisplayFrequency);
       RESOLUTION_INFO res;
       UpdateDesktopResolution(res, monitor, devmode.dmPelsWidth, devmode.dmPelsHeight, refreshRate);
-      AddResolution(res);
+      g_settings.m_ResInfo.push_back(res);
       CLog::Log(LOGNOTICE, "Found mode: %s", res.strMode.c_str());
     }
   }
 }
 
-void CWinSystemWin32::AddResolution(const RESOLUTION_INFO &res)
-{
-  for (unsigned int i = 0; i < g_settings.m_ResInfo.size(); i++)
-    if (g_settings.m_ResInfo[i].strMode == res.strMode)
-      return; // already have this resolution
-  g_settings.m_ResInfo.push_back(res);
-}
 
 bool CWinSystemWin32::UpdateResolutionsInternal()
 {
@@ -539,12 +511,6 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
   return 0;
 }
 
-void CWinSystemWin32::ShowOSMouse(bool show)
-{
-  static int counter = 0;
-  if ((counter < 0 && show) || (counter >= 0 && !show))
-    counter = ShowCursor(show);
-}
 
 bool CWinSystemWin32::Minimize()
 {

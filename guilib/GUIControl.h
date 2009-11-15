@@ -163,18 +163,8 @@ public:
   virtual float GetHeight() const;
   virtual void SetNavigation(int up, int down, int left, int right);
   virtual void SetTabNavigation(int next, int prev);
-
-  /*! \brief Set actions to perform on navigation
-   Navigations are set if replace is true or if there is no previously set action
-   \param up vector of CGUIActionDescriptors to execute on up
-   \param down vector of CGUIActionDescriptors to execute on down
-   \param left vector of CGUIActionDescriptors to execute on left
-   \param right vector of CGUIActionDescriptors to execute on right
-   \param replace Actions are set only if replace is true or there is no previously set action.  Defaults to true
-   \sa SetNavigation, ExecuteActions
-   */
   virtual void SetNavigationActions(const std::vector<CGUIActionDescriptor> &up, const std::vector<CGUIActionDescriptor> &down,
-                                    const std::vector<CGUIActionDescriptor> &left, const std::vector<CGUIActionDescriptor> &right, bool replace = true);
+                                    const std::vector<CGUIActionDescriptor> &left, const std::vector<CGUIActionDescriptor> &right);
   void ExecuteActions(const std::vector<CGUIActionDescriptor> &actions);
   int GetControlIdUp() const { return m_controlUp;};
   int GetControlIdDown() const { return m_controlDown;};

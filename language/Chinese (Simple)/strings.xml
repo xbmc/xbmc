@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 11/13/2009-->
+<!--Date of translation: 11/5/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 24554 -->
+<!--Based on english strings version 24272 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -168,7 +168,7 @@
   <string id="221">网络未连接</string>
   <string id="222">取消</string>
   <string id="224">速度</string>
-  <string id="225"></string>
+  <string id="225">特效过渡时间</string>
   <string id="226">测试图案...</string>
   <string id="227">在互联网查找音乐 CD 信息</string>
   <string id="228">载入播放列表时打乱顺序</string>
@@ -206,7 +206,7 @@
   <string id="260">Shoutcast 网络音乐台</string>
   <string id="261">等待开始…</string>
   <string id="262">脚本程序输出</string>
-  <string id="263">允许通过 HTTP 控制 XBMC</string>
+  <string id="263">启用 Web 服务器</string>
   <string id="264">录音</string>
   <string id="265">停止录音.</string>
   <string id="266">排序：音轨</string>
@@ -581,11 +581,11 @@
   <string id="701">清除资料库中的旧歌曲</string>
   <string id="702">当前路径曾被扫瞄过</string>
   <string id="705">网络</string>
-  <string id="706">- 服务器</string>
-  <string id="707"></string>
-  <string id="708">使用 HTTP 代理服务器访问互联网</string>
-  <string id="709"></string>
-  <string id="710"></string>
+  <string id="706">HTTP 代理服务器地址</string>
+  <string id="707">HTTP 代理服务器端口</string>
+  <string id="708">启用 HTTP 代理</string>
+  <string id="709">HTTP 代理用户名</string>
+  <string id="710">HTTP 代理密码</string>
   <string id="711">网络地址(IP)</string>
   <string id="712">无效端口！必须在 1 至 65535 之间。</string>
   <string id="713">HTTP 代理</string>
@@ -605,10 +605,10 @@
   <string id="727">Web 服务器</string>
   <string id="728">FTP 服务器</string>
   <string id="729">互联网时间</string>
-  <string id="730">- 端口</string>
+  <string id="730">Web 服务器端口</string>
   <string id="731">网络校时服务器地址</string>
   <string id="732">保存和应用</string>
-  <string id="733">- 密码</string>
+  <string id="733">Web 服务器密码</string>
   <string id="734">无密码</string>
   <string id="735">- 字符集</string>
   <string id="736">- 字形</string>
@@ -666,15 +666,14 @@
   <string id="788">网卡停用完成.</string>
   <string id="789">无线网络名 (ESSID)</string>
   
-  <string id="790"></string>
-  <string id="791">允许本机远程控制程序控制 XBMC</string>
-  <string id="792">端口</string>
-  <string id="793">端口范围</string>
-  <string id="794">允许异地远程控制程序控制 XBMC</string>
+  <string id="790">远程控制</string>
+  <string id="791">允许远程控制</string>
+  <string id="792">远程控制端口</string>
+  <string id="793">远程控制端口范围</string>
+  <string id="794">从其他计算机接收远程控制信息</string>
   <string id="795">初始重复等待时间(ms)</string>
   <string id="796">持续等待时间(ms)</string>
-  <string id="797">最大客户端数</string>
-  <string id="798">互联网访问</string>
+  <string id="797">最大客户数</string>
   
   <string id="998"></string>
   <string id="999"></string>
@@ -726,7 +725,7 @@
   <string id="1045">插件设置</string>
   <string id="1046">接入点</string>
   <string id="1047">其它...</string> 
-  <string id="1048">- 用户名</string>
+  <string id="1048">Web 服务器用户名</string>
   <string id="1049">脚本设置</string>
   <string id="1050">单曲</string>
 
@@ -776,7 +775,7 @@
   <string id="1256">Ping 间隔</string>
   <string id="1257">是否连接到自动发现的系统？</string>
 
-  <string id="1260">通过 Zeroconf 协议发布这些服务</string>
+  <string id="1260">Zeroconf 协议发布</string>
 
   <string id="1300">自定义音频设备</string>
   <string id="1301">自定义直通输出设备</string>
@@ -953,7 +952,7 @@
   <string id="12373">系统设置和文件管理</string>
   <string id="12376">作为所有视频的默认设置</string>
   <string id="12377">将要初始化所有配置</string>
-  <string id="12378">每幅图片显示时间</string>
+  <string id="12378">每副图片显示时间</string>
   <string id="12379">使用移动和缩放特效</string>
   <string id="12380">在 PAL 制式播放 NTSC 视频</string>
   <string id="12381">在 NTSC 制式播放 PAL 视频</string>
@@ -1167,7 +1166,7 @@
   <string id="13357">高品质像素着色器</string>
   <string id="13358">播放项目</string>
   <string id="13359">设置艺人缩略图</string>
-  <string id="13360">自动获取缩略图</string>
+  <string id="13360">创建缩略图</string>
   <string id="13361">开启语音</string>
   <string id="13375">启用装置</string>
   <string id="13376">音量</string>
@@ -1322,10 +1321,6 @@
   <string id="14078">皮肤颜色</string>
   <string id="14079">时区-国家</string>
   <string id="14080">时区</string>
-  <string id="14081">文件列表</string>
-  <string id="14082">显示 EXIF 图片信息</string>
-  <string id="14083">使用全屏窗口而非真正全屏模式</string>
-  <string id="14084">选中歌曲加入播放列表</string>
 
   <string id="15000"></string>
   <string id="15001"></string>
@@ -1890,21 +1885,13 @@
   <string id="20427">每个文件项目数？</string>
   <string id="20428">单个文件</string>
   <string id="20429">多文件</string>
-  <string id="20430">导出缩略图和同人画？</string>
+  <string id="20430">导出缩略图和同人图？</string>
   <string id="20431">覆盖原文件？</string>
   <string id="20432">资料库更新时排除的路径</string>
   <string id="20433">提取缩略图和媒体标识</string>
   <string id="20434">影片集</string>
   <string id="20435">设置影片集缩略图</string>
   <string id="20436">导出演员缩略图</string>
-  <string id="20437">选择同人画</string>
-  <string id="20438">本地同人画</string>
-  <string id="20439">无同人画</string>
-  <string id="20440">当前同人画</string>
-  <string id="20441">远程同人画</string>
-  <string id="20442">更新内容</string>
-  <string id="20443">要刷新此目录下的所有项目吗？</string>
-  <string id="20444"></string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -1918,14 +1905,14 @@
   <string id="21337">TuxBox 设备</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
 
-  <string id="21356"></string>
-  <string id="21357"></string>
-  <string id="21358"></string>
+  <string id="21356">UPnP 音乐</string>
+  <string id="21357">UPnP 视频</string>
+  <string id="21358">UPnP 图片</string>
   <string id="21359">添加共享媒体…</string>
-  <string id="21360">通过 UPnP 共享视频和音乐库</string>
-  <string id="21361"></string>
-  <string id="21362"></string>
-  <string id="21363"></string>
+  <string id="21360">启用 UPnP 服务器</string>
+  <string id="21361">管理 UPnP 音乐共享</string>
+  <string id="21362">管理 UPnP 视频共享</string>
+  <string id="21363">管理 UPnP 图片共享</string>
   <string id="21364">编辑媒体共享</string>
   <string id="21365">移除媒体共享</string>
   <string id="21366">自定义字幕目录</string>
@@ -1997,7 +1984,7 @@
   <string id="21432">编辑智能播放列表</string>
   <string id="21433">播放列表名称</string>
   <string id="21434">查找满足条件的歌曲</string>
-  <string id="21435">- 编辑</string>
+  <string id="21435">编辑</string>
   <string id="21436">%i首歌曲</string>
   <string id="21437">新的智能播放列表…</string>
   <string id="21438">%c磁盘</string>
@@ -2069,7 +2056,7 @@
   <string id="21878">版权标志</string>
   <string id="21879">国家代码</string>
   <string id="21880">参考服务</string>
-  <string id="21881">允许 UPnP 控制器控制 XBMC</string>
+  <string id="21881">启用 UPnP 播放器</string>
   <string id="21882">尝试略过介绍直接跳至 DVD 菜单</string>
   <string id="21883">压缩音乐 CD</string>
   <string id="21884">查询所有艺人信息</string>
@@ -2114,9 +2101,7 @@
   <string id="22019">录音的标题</string>
   <string id="22020">节目表</string>
   <string id="22021">高宽比允许误差 (%)</string>
-  <string id="22022">在列表中显示视频文件</string>
-  <string id="22023">DirectX 提供商</string>
-  <string id="22024">Direct3D 版本</string>
+  <string id="22022">列表包含视频文件</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">字体</string>

@@ -275,12 +275,12 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
     if (m_orientation == VERTICAL)
     {
       control->SetNavigation(beforeID, afterID, GetControlIdLeft(), GetControlIdRight());
-      control->SetNavigationActions(empty, empty, m_leftActions, m_rightActions, false);
+      control->SetNavigationActions(empty, empty, m_leftActions, m_rightActions);
     }
     else
     {
       control->SetNavigation(GetControlIdUp(), GetControlIdDown(), beforeID, afterID);
-      control->SetNavigationActions(m_upActions, m_downActions, empty, empty, false);
+      control->SetNavigationActions(m_upActions, m_downActions, empty, empty);
     }
 
     if (!m_useControlPositions)

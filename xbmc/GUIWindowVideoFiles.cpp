@@ -223,18 +223,6 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
   return CGUIWindowVideoBase::OnMessage(message);
 }
 
-bool CGUIWindowVideoFiles::OnAction(const CAction &action)
-{
-  if (action.id == ACTION_TOGGLE_WATCHED)
-  {
-    CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
-    if (pItem && pItem->GetOverlayImage().Equals("OverlayUnWatched.png")) 
-      return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_WATCHED);
-    if (pItem && pItem->GetOverlayImage().Equals("OverlayWatched.png"))
-      return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_UNWATCHED);
-  }
-  return CGUIWindowVideoBase::OnAction(action);
-}
 
 void CGUIWindowVideoFiles::UpdateButtons()
 {
@@ -471,14 +459,13 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
   }
 }
 
-bool CGUIWindowVideoFiles::OnUnAssignContent(int iItem, int label1, int label2, int label3)
+void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)
 {
   bool bCanceled;
-  if (CGUIDialogYesNo::ShowAndGetInput(label1,label2,label3,20022,bCanceled))
+  if (CGUIDialogYesNo::ShowAndGetInput(20375,20340,20341,20022,bCanceled))
   {
     m_database.RemoveContentForPath(m_vecItems->Get(iItem)->m_strPath,m_dlgProgress);
     CUtil::DeleteVideoDatabaseDirectoryCache();
-    return true;
   }
   else
   {
@@ -490,8 +477,6 @@ bool CGUIWindowVideoFiles::OnUnAssignContent(int iItem, int label1, int label2, 
       m_database.SetScraperForPath(m_vecItems->Get(iItem)->m_strPath,info,settings);
     }
   }
-
-  return false;
 }
 
 void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, ADDON::CScraperPtr& scraper, SScanSettings& settings)
@@ -507,24 +492,15 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, ADDON::CScrape
   {
     if(settings.exclude)
     {
-      OnUnAssignContent(iItem,20375,20340,20341);
+      OnUnAssignContent(iItem);
     }
     else
-    {/* todo remove this */
+    {
       m_database.Open();
       m_database.SetScraperForPath(item->m_strPath,scraper,settings);
       m_database.Close();
     }
-    /* TODO merge this
-    if (!info.strContent.IsEmpty()      && 
-        !info2.strContent.IsEmpty()     &&
-        !info.strContent.Equals("None") && 
-       (info2.strContent != info.strContent ||
-        !info.strPath.Equals(info2.strPath)))
-    {
-      if (OnUnAssignContent(iItem,20442,20443,20444))
-        bScan = true;
-    }*/
+
     if (!settings.exclude && bScan)
     {
       GetScraperForItem(item.get(),scraper,settings);
@@ -684,10 +660,6 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       }
       if (m_vecItems->IsPlugin() && item->HasVideoInfoTag() && !item->GetPropertyBOOL("pluginreplacecontextitems"))
         buttons.Add(CONTEXT_BUTTON_INFO,13346); // only movie information for now
-      if (item->GetOverlayImage().Equals("OverlayWatched.png"))
-        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-      if (item->GetOverlayImage().Equals("OverlayUnWatched.png"))
-        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
     }
   }
   else
@@ -714,7 +686,7 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     if (CGUIDialogContextMenu::OnContextButton("video", item, button))
     {
       if (button == CONTEXT_BUTTON_REMOVE_SOURCE)
-      OnUnAssignContent(itemNumber,20375,20340,20341);
+        OnUnAssignContent(itemNumber);
       Update("");
       return true;
     }

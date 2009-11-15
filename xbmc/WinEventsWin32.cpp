@@ -469,10 +469,6 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       if (wParam == VK_RETURN) //stop system beep on alt-return
         return 0;
       break;
-    case WM_SETCURSOR:
-      if (HTCLIENT != LOWORD(lParam))
-        g_Windowing.ShowOSMouse(true);
-      break;
     case WM_MOUSEMOVE:
       newEvent.type = XBMC_MOUSEMOTION;
       newEvent.motion.x = GET_X_LPARAM(lParam);
@@ -535,6 +531,13 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       if (newEvent.resize.w * newEvent.resize.h)
         m_pEventFunc(newEvent);
       return(0);
+    case WM_SETCURSOR:
+      if (HTCLIENT == LOWORD(lParam))
+      {
+        SetCursor(NULL);
+        return(1);
+      }
+      break;
     case WM_DEVICECHANGE:
       PDEV_BROADCAST_HDR lpdb = (PDEV_BROADCAST_HDR)lParam;
       switch(wParam)

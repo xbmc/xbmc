@@ -153,7 +153,6 @@ class CCoreAudioRenderer : public IAudioRenderer
     // Stream format
     size_t m_AvgBytesPerSec;
     size_t m_BytesPerFrame; // Input frame size
-    UInt32 m_NumLatencyFrames;
     
     // Performace Monitoring
     CCoreAudioPerformance m_PerfMon;

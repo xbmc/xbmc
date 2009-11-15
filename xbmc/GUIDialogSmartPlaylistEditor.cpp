@@ -283,10 +283,11 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
     else
       item->SetLabel(m_playlist.m_playlistRules[i].GetLocalizedRule());
     m_ruleLabels->Add(item);
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_RULE_LIST, 0, 0, item);
+    OnMessage(msg);
   }
-  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_RULE_LIST, 0, 0, m_ruleLabels);
+  CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_RULE_LIST, currentItem);
   OnMessage(msg);
-  SendMessage(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_RULE_LIST, currentItem);
 
   if (m_playlist.m_orderAscending)
   {

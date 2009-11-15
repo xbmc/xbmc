@@ -158,7 +158,7 @@ bool CShoutcastRipFile::Record()
   if ( m_logFile == NULL ) //will be done only the first time or if path not set!
   {
     char logFilename[1024];
-    CStdString strHomePath = g_guiSettings.GetString("audiocds.recordingpath");
+    CStdString strHomePath = g_guiSettings.GetString("mymusic.recordingpath");
 #ifndef _LINUX
     sprintf(logFilename, "%s\\recordings.log", strHomePath.c_str() );
 #else
@@ -276,7 +276,7 @@ void CShoutcastRipFile::PrepareRecording( )
     //The filename of RM will be something like "Oasis - Champagne Supernova", thus
     //So, we will make a file i.e "f:music\Record\Limbik Frequencies\Oasis - Champagne Supernova.mp3"
 
-    CStdString strHomePath = g_guiSettings.GetString("audiocds.recordingpath");
+    CStdString strHomePath = g_guiSettings.GetString("mymusic.recordingpath");
     char szFilePath[1024];
 #ifndef _LINUX
     sprintf( szFilePath, "%s\\%s", strHomePath.c_str(), directoryName );
@@ -330,7 +330,7 @@ void CShoutcastRipFile::PrepareRecording( )
   else
   {
     //here we will make a file i.e "f:music\Record\Jazzmusique\Jazzmusique - 3.mp3"
-    CStdString strHomePath = g_guiSettings.GetString("audiocds.recordingpath");
+    CStdString strHomePath = g_guiSettings.GetString("mymusic.recordingpath");
     char szFilePath[1024];
     char szTitle[1124];             //i.e.
 

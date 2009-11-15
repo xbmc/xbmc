@@ -518,20 +518,13 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       else if (node == NODE_TYPE_GENRE)
         items.SetContent("genres");
      else if (node == NODE_TYPE_ACTOR)
-     {
-       if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
-         items.SetContent("artists");
-       else
-         items.SetContent("actors");
-     }
+       items.SetContent("actors");
      else if (node == NODE_TYPE_DIRECTOR)
        items.SetContent("directors");
      else if (node == NODE_TYPE_STUDIO)
        items.SetContent("studios");
      else if (node == NODE_TYPE_YEAR)
        items.SetContent("years");
-     else if (node == NODE_TYPE_MUSICVIDEOS_ALBUM)
-       items.SetContent("albums");
      else
         items.SetContent("");
     }
@@ -983,7 +976,6 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
 
   bool filterWatched=false;
   if (node == NODE_TYPE_EPISODES
-  ||  node == NODE_TYPE_SEASONS
   ||  node == NODE_TYPE_TITLE_MOVIES
   ||  node == NODE_TYPE_TITLE_TVSHOWS
   ||  node == NODE_TYPE_TITLE_MUSICVIDEOS
@@ -1310,6 +1302,23 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_CLEAR_DEFAULT:
     g_settings.m_defaultVideoLibSource.Empty();
     g_settings.Save();
+    return true;
+
+  case CONTEXT_BUTTON_MARK_WATCHED:
+    // If we're about to hide this item, select the next one
+    if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED)
+      m_viewControl.SetSelectedItem((itemNumber+1) % m_vecItems->Size());
+    MarkWatched(item);
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    Update(m_vecItems->m_strPath);
+    return true;
+
+  case CONTEXT_BUTTON_MARK_UNWATCHED:
+    {
+      MarkUnWatched(item);
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+      Update(m_vecItems->m_strPath);
+    }
     return true;
 
   case CONTEXT_BUTTON_EDIT:

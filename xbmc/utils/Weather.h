@@ -38,7 +38,7 @@ class TiXmlElement;
 #define WEATHER_LABEL_CURRENT_DEWP 27
 #define WEATHER_LABEL_CURRENT_HUMI 28
 
-struct day_forecast
+struct day_forcast
 {
   CStdString m_icon;
   CStdString m_overview;
@@ -49,55 +49,29 @@ struct day_forecast
 
 #define NUM_DAYS 4
 
-class CWeatherInfo
+class CWeather : public CInfoLoader
 {
 public:
-  day_forecast forecast[NUM_DAYS];
+  CWeather(void);
+  virtual ~CWeather(void);
+  static bool GetSearchResults(const CStdString &strSearch, CStdString &strResult);
 
-  void Reset()
-  {
-    lastUpdateTime = "";
-    currentIcon = "";
-    currentConditions = "";
-    currentTemperature = "";
-    currentFeelsLike = "";
-    currentWind = "";
-    currentHumidity = "";
-    currentUVIndex = "";
-    currentDewPoint = "";
+  CStdString GetLocation(int iLocation);
+  const CStdString &GetLastUpdateTime() const { return m_lastUpdateTime; };
+  bool IsFetched();
+  void Reset();
 
-    for (int i = 0; i < NUM_DAYS; i++)
-    {
-      forecast[i].m_icon = "";
-      forecast[i].m_overview = "";
-      forecast[i].m_day = "";
-      forecast[i].m_high = "";
-      forecast[i].m_low = "";
-    }
-  };
+  void SetArea(int iArea) { m_iCurWeather = iArea; };
+  int GetArea() const { return m_iCurWeather; };
+  CStdString GetAreaCode(const CStdString &codeAndCity) const;
+  CStdString GetAreaCity(const CStdString &codeAndCity) const;
 
-  CStdString lastUpdateTime;
-  CStdString location;
-  CStdString currentIcon;
-  CStdString currentConditions;
-  CStdString currentTemperature;
-  CStdString currentFeelsLike;
-  CStdString currentUVIndex;
-  CStdString currentWind;
-  CStdString currentDewPoint;
-  CStdString currentHumidity;
-  CStdString busyString;
-  CStdString naIcon;
-};
-
-class CWeatherJob : public CJob
-{
-public:
-  CWeatherJob(const CStdString &areaCode);
-
+  day_forcast m_dfForcast[NUM_DAYS];
+protected:
   virtual bool DoWork();
+  virtual CStdString TranslateInfo(int info) const;
+  virtual CStdString BusyInfo(int info) const;
 
-  const CWeatherInfo &GetInfo() const;
 private:
   bool LoadWeather(const CStdString& strWeatherFile); //parse strWeatherFile
   void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value, const CStdString& strDefaultValue);
@@ -110,43 +84,24 @@ private:
   std::map<CStdString, int> m_localizedTokens;
   typedef std::map<CStdString, int>::const_iterator ilocalizedTokens;
 
-  CWeatherInfo m_info;
-  CStdString m_areaCode;
-
-  static bool m_imagesOkay;
-};
-
-class CWeather : public CInfoLoader
-{
-public:
-  CWeather(void);
-  virtual ~CWeather(void);
-  static bool GetSearchResults(const CStdString &strSearch, CStdString &strResult);
-
-  CStdString GetLocation(int iLocation);
-  const CStdString &GetLastUpdateTime() const { return m_info.lastUpdateTime; };
-  const day_forecast &GetForecast(int day) const;
-  bool IsFetched();
-  void Reset();
-
-  void SetArea(int iArea) { m_iCurWeather = iArea; };
-  int GetArea() const { return m_iCurWeather; };
-
-  static CStdString GetAreaCode(const CStdString &codeAndCity);
-  static CStdString GetAreaCity(const CStdString &codeAndCity);
-
-protected:
-  virtual CJob *GetJob() const;
-  virtual CStdString TranslateInfo(int info) const;
-  virtual CStdString BusyInfo(int info) const;
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
-
-private:
-
   CStdString m_location[3];
-  unsigned int m_iCurWeather;
 
-  CWeatherInfo m_info;
+  // Last updated
+  CStdString m_lastUpdateTime;
+  // Now weather
+  CStdString m_currentIcon;
+  CStdString m_currentConditions;
+  CStdString m_currentTemperature;
+  CStdString m_currentFeelsLike;
+  CStdString m_currentUVIndex;
+  CStdString m_currentWind;
+  CStdString m_currentDewPoint;
+  CStdString m_currentHumidity;
+  CStdString m_busyString;
+  CStdString m_naIcon;
+
+  unsigned int m_iCurWeather;
+  bool m_bImagesOkay;
 };
 
 extern CWeather g_weatherManager;

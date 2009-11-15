@@ -215,7 +215,6 @@
 				<posx>310</posx>
 				<posy>215</posy>
 				<width>361</width>
-				<height>17</height>
 				<label>-</label>
 				<font>font11</font>
 				<visible>!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)</visible>

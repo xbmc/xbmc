@@ -99,14 +99,7 @@ FIXME'S
 
 CWeather g_weatherManager;
 
-bool CWeatherJob::m_imagesOkay = false;
-
-CWeatherJob::CWeatherJob(const CStdString &areaCode)
-{
-  m_areaCode = areaCode;
-}
-
-bool CWeatherJob::DoWork()
+bool CWeather::DoWork()
 {
   // wait for the network
   if (!g_application.getNetwork().IsAvailable(true))
@@ -117,20 +110,23 @@ bool CWeatherJob::DoWork()
   XFILE::CFileCurl httpUtil;
   CStdString strURL;
 
+  CStdString strSetting;
+  strSetting.Format("weather.areacode%i", GetArea() + 1);
+  CStdString areaCode = GetAreaCode(g_guiSettings.GetString(strSetting));
   strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=m&dayf=4&prod=xoap&link=xoap&par=%s&key=%s",
-                m_areaCode.c_str(), PARTNER_ID, PARTNER_KEY);
+                areaCode.c_str(), PARTNER_ID, PARTNER_KEY);
   CStdString xml;
   if (httpUtil.Get(strURL, xml))
   {
     CLog::Log(LOGINFO, "WEATHER: Weather download successful");
-    if (!m_imagesOkay)
+    if (!m_bImagesOkay)
     {
       CDirectory::Create(WEATHER_BASE_PATH);
       if (WEATHER_USE_ZIP)
         g_ZipManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
       else if (WEATHER_USE_RAR)
         g_RarManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
-      m_imagesOkay = true;
+      m_bImagesOkay = true;
     }
     LoadWeather(xml);
     // and send a message that we're done
@@ -143,12 +139,17 @@ bool CWeatherJob::DoWork()
   return true;
 }
 
-const CWeatherInfo &CWeatherJob::GetInfo() const
+CWeather::CWeather(void) : CInfoLoader(30 * 60 * 1000) // 30 minutes
 {
-  return m_info;
+  m_bImagesOkay = false;
+  Reset();
 }
 
-void CWeatherJob::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value, const CStdString& strDefaultValue)
+CWeather::~CWeather(void)
+{
+}
+
+void CWeather::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value, const CStdString& strDefaultValue)
 {
   value = "";
   const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
@@ -162,13 +163,13 @@ void CWeatherJob::GetString(const TiXmlElement* pRootElement, const CStdString& 
     value = strDefaultValue;
 }
 
-void CWeatherJob::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue)
+void CWeather::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue)
 {
   if (!XMLUtils::GetInt(pRootElement, strTagName.c_str(), iValue))
     iValue = 0;
 }
 
-void CWeatherJob::LocalizeOverviewToken(CStdString &token)
+void CWeather::LocalizeOverviewToken(CStdString &token)
 {
   // NOTE: This routine is case-sensitive.  Reason is std::less<CStdString> uses a case-sensitive
   //       < operator.  Thus, some tokens may have to be duplicated in strings.xml (see drizzle vs Drizzle).
@@ -187,7 +188,7 @@ void CWeatherJob::LocalizeOverviewToken(CStdString &token)
   token = strLocStr;
 }
 
-void CWeatherJob::LocalizeOverview(CStdString &str)
+void CWeather::LocalizeOverview(CStdString &str)
 {
   CStdStringArray words;
   StringUtils::SplitString(str, " ", words);
@@ -201,7 +202,7 @@ void CWeatherJob::LocalizeOverview(CStdString &str)
 }
 
 // input param must be kmh
-int CWeatherJob::ConvertSpeed(int curSpeed)
+int CWeather::ConvertSpeed(int curSpeed)
 {
   switch (g_langInfo.GetSpeedUnit())
   {
@@ -265,7 +266,7 @@ int CWeatherJob::ConvertSpeed(int curSpeed)
   return curSpeed;
 }
 
-bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
+bool CWeather::LoadWeather(const CStdString &weatherXML)
 {
   int iTmpInt;
   CStdString iTmpStr;
@@ -305,7 +306,7 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
   TiXmlElement *pElement = pRootElement->FirstChildElement("loc");
   if (pElement)
   {
-    GetString(pElement, "dnam", m_info.location, "");
+    GetString(pElement, "dnam", m_location[m_iCurWeather], "");
   }
 
   //current weather
@@ -314,26 +315,26 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
   {
     // Use the local date/time the file is parsed...
     CDateTime time=CDateTime::GetCurrentDateTime();
-    m_info.lastUpdateTime = time.GetAsLocalizedDateTime(false, false);
+    m_lastUpdateTime = time.GetAsLocalizedDateTime(false, false);
 
     // ...and not the date/time from weather.com
     //GetString(pElement, "lsup", m_szLastUpdateTime, "");
 
     GetString(pElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
     if (iTmpStr == "N/A")
-      m_info.currentIcon.Format("%s128x128/na.png", WEATHER_BASE_PATH);
+      m_currentIcon.Format("%s128x128/na.png", WEATHER_BASE_PATH);
     else
-      m_info.currentIcon.Format("%s128x128/%s.png", WEATHER_BASE_PATH, iTmpStr.c_str());
+      m_currentIcon.Format("%s128x128/%s.png", WEATHER_BASE_PATH, iTmpStr.c_str());
 
-    GetString(pElement, "t", m_info.currentConditions, "");   //current condition
-    LocalizeOverview(m_info.currentConditions);
+    GetString(pElement, "t", m_currentConditions, "");   //current condition
+    LocalizeOverview(m_currentConditions);
 
     GetInteger(pElement, "tmp", iTmpInt);    //current temp
     CTemperature temp=CTemperature::CreateFromCelsius(iTmpInt);
-    m_info.currentTemperature.Format("%2.0f", temp.ToLocale());
+    m_currentTemperature.Format("%2.0f", temp.ToLocale());
     GetInteger(pElement, "flik", iTmpInt);    //current 'Feels Like'
     CTemperature tempFlik=CTemperature::CreateFromCelsius(iTmpInt);
-    m_info.currentFeelsLike.Format("%2.0f", tempFlik.ToLocale());
+    m_currentFeelsLike.Format("%2.0f", tempFlik.ToLocale());
 
     TiXmlElement *pNestElement = pElement->FirstChildElement("wind"); //current wind
     if (pNestElement)
@@ -349,15 +350,15 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
       CStdString szCalm = g_localizeStrings.Get(1410);
 
       if (iTmpStr ==  "CALM")
-        m_info.currentWind = szCalm;
+        m_currentWind = szCalm;
       else
-        m_info.currentWind.Format("%s %s %s %i %s",
+        m_currentWind.Format("%s %s %s %i %s",
               szWindFrom.c_str(), iTmpStr,
               szWindAt.c_str(), iTmpInt, g_langInfo.GetSpeedUnitString().c_str());
     }
 
     GetInteger(pElement, "hmid", iTmpInt);    //current humidity
-    m_info.currentHumidity.Format("%i%%", iTmpInt);
+    m_currentHumidity.Format("%i%%", iTmpInt);
 
     pNestElement = pElement->FirstChildElement("uv"); //current UV index
     if (pNestElement)
@@ -365,12 +366,12 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
       GetInteger(pNestElement, "i", iTmpInt);
       GetString(pNestElement, "t", iTmpStr, "");
       LocalizeOverviewToken(iTmpStr);
-      m_info.currentUVIndex.Format("%i %s", iTmpInt, iTmpStr);
+      m_currentUVIndex.Format("%i %s", iTmpInt, iTmpStr);
     }
 
     GetInteger(pElement, "dewp", iTmpInt);    //current dew point
     CTemperature dewPoint=CTemperature::CreateFromCelsius(iTmpInt);
-    m_info.currentDewPoint.Format("%2.0f", dewPoint.ToLocale());
+    m_currentDewPoint.Format("%2.0f", dewPoint.ToLocale());
   }
   //future forcast
   pElement = pRootElement->FirstChildElement("dayf");
@@ -384,26 +385,26 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
         const char *attr = pOneDayElement->Attribute("t");
         if (attr)
         {
-          m_info.forecast[i].m_day = attr;
-          LocalizeDay(m_info.forecast[i].m_day);
+          m_dfForcast[i].m_day = attr;
+          LocalizeDay(m_dfForcast[i].m_day);
         }
 
         GetString(pOneDayElement, "hi", iTmpStr, ""); //string cause i've seen it return N/A
         if (iTmpStr == "N/A")
-          m_info.forecast[i].m_high = "";
+          m_dfForcast[i].m_high = "";
         else
         {
           CTemperature temp=CTemperature::CreateFromCelsius(atoi(iTmpStr));
-          m_info.forecast[i].m_high.Format("%2.0f", temp.ToLocale());
+          m_dfForcast[i].m_high.Format("%2.0f", temp.ToLocale());
         }
 
         GetString(pOneDayElement, "low", iTmpStr, "");
         if (iTmpStr == "N/A")
-          m_info.forecast[i].m_high = "";
+          m_dfForcast[i].m_high = "";
         else
         {
           CTemperature temp=CTemperature::CreateFromCelsius(atoi(iTmpStr));
-          m_info.forecast[i].m_low.Format("%2.0f", temp.ToLocale());
+          m_dfForcast[i].m_low.Format("%2.0f", temp.ToLocale());
         }
 
         TiXmlElement *pDayTimeElement = pOneDayElement->FirstChildElement("part"); //grab the first day/night part (should be day)
@@ -414,12 +415,12 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
 
           GetString(pDayTimeElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
           if (iTmpStr == "N/A")
-            m_info.forecast[i].m_icon.Format("%s128x128/na.png", WEATHER_BASE_PATH);
+            m_dfForcast[i].m_icon.Format("%s128x128/na.png", WEATHER_BASE_PATH);
           else
-            m_info.forecast[i].m_icon.Format("%s128x128/%s.png", WEATHER_BASE_PATH, iTmpStr);
+            m_dfForcast[i].m_icon.Format("%s128x128/%s.png", WEATHER_BASE_PATH, iTmpStr);
 
-          GetString(pDayTimeElement, "t", m_info.forecast[i].m_overview, "");
-          LocalizeOverview(m_info.forecast[i].m_overview);
+          GetString(pDayTimeElement, "t", m_dfForcast[i].m_overview, "");
+          LocalizeOverview(m_dfForcast[i].m_overview);
         }
 
         pOneDayElement = pOneDayElement->NextSiblingElement("day");
@@ -432,7 +433,7 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
 }
 
 //convert weather.com day strings into localized string id's
-void CWeatherJob::LocalizeDay(CStdString &day)
+void CWeather::LocalizeDay(CStdString &day)
 {
   if (day == "Monday")   //monday is localized string 11
     day = g_localizeStrings.Get(11);
@@ -453,7 +454,7 @@ void CWeatherJob::LocalizeDay(CStdString &day)
 }
 
 
-void CWeatherJob::LoadLocalizedToken()
+void CWeather::LoadLocalizedToken()
 {
   // We load the english strings in to get our tokens
   CStdString strLanguagePath = "special://xbmc/language/English/strings.xml";
@@ -498,16 +499,6 @@ void CWeatherJob::LoadLocalizedToken()
     }
     pChild = pChild->NextSiblingElement();
   }
-}
-
-
-CWeather::CWeather(void) : CInfoLoader(30 * 60 * 1000) // 30 minutes
-{
-  Reset();
-}
-
-CWeather::~CWeather(void)
-{
 }
 
 bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResult)
@@ -641,19 +632,19 @@ CStdString CWeather::BusyInfo(int info) const
 
 CStdString CWeather::TranslateInfo(int info) const
 {
-  if (info == WEATHER_LABEL_CURRENT_COND) return m_info.currentConditions;
-  else if (info == WEATHER_IMAGE_CURRENT_ICON) return m_info.currentIcon;
-  else if (info == WEATHER_LABEL_CURRENT_TEMP) return m_info.currentTemperature;
-  else if (info == WEATHER_LABEL_CURRENT_FEEL) return m_info.currentFeelsLike;
-  else if (info == WEATHER_LABEL_CURRENT_UVID) return m_info.currentUVIndex;
-  else if (info == WEATHER_LABEL_CURRENT_WIND) return m_info.currentWind;
-  else if (info == WEATHER_LABEL_CURRENT_DEWP) return m_info.currentDewPoint;
-  else if (info == WEATHER_LABEL_CURRENT_HUMI) return m_info.currentHumidity;
-  else if (info == WEATHER_LABEL_LOCATION) return m_info.location;
+  if (info == WEATHER_LABEL_CURRENT_COND) return m_currentConditions;
+  else if (info == WEATHER_IMAGE_CURRENT_ICON) return m_currentIcon;
+  else if (info == WEATHER_LABEL_CURRENT_TEMP) return m_currentTemperature;
+  else if (info == WEATHER_LABEL_CURRENT_FEEL) return m_currentFeelsLike;
+  else if (info == WEATHER_LABEL_CURRENT_UVID) return m_currentUVIndex;
+  else if (info == WEATHER_LABEL_CURRENT_WIND) return m_currentWind;
+  else if (info == WEATHER_LABEL_CURRENT_DEWP) return m_currentDewPoint;
+  else if (info == WEATHER_LABEL_CURRENT_HUMI) return m_currentHumidity;
+  else if (info == WEATHER_LABEL_LOCATION) return m_location[m_iCurWeather];
   return "";
 }
 
-CStdString CWeather::GetAreaCity(const CStdString &codeAndCity)
+CStdString CWeather::GetAreaCity(const CStdString &codeAndCity) const
 {
   CStdString areaCode(codeAndCity);
   int pos = areaCode.Find(" - ");
@@ -662,7 +653,7 @@ CStdString CWeather::GetAreaCity(const CStdString &codeAndCity)
   return areaCode;
 }
 
-CStdString CWeather::GetAreaCode(const CStdString &codeAndCity)
+CStdString CWeather::GetAreaCode(const CStdString &codeAndCity) const
 {
   CStdString areaCode(codeAndCity);
   int pos = areaCode.Find(" - ");
@@ -684,7 +675,24 @@ CStdString CWeather::GetLocation(int iLocation)
 
 void CWeather::Reset()
 {
-  m_info.Reset();
+  m_lastUpdateTime = "";
+  m_currentIcon = "";
+  m_currentConditions = "";
+  m_currentTemperature = "";
+  m_currentFeelsLike = "";
+  m_currentWind = "";
+  m_currentHumidity = "";
+  m_currentUVIndex = "";
+  m_currentDewPoint = "";
+
+  for (int i = 0; i < NUM_DAYS; i++)
+  {
+    m_dfForcast[i].m_icon = "";
+    m_dfForcast[i].m_overview = "";
+    m_dfForcast[i].m_day = "";
+    m_dfForcast[i].m_high = "";
+    m_dfForcast[i].m_low = "";
+  }
   for (int i = 0; i < MAX_LOCATION; i++)
     m_location[i] = "";
 }
@@ -693,23 +701,6 @@ bool CWeather::IsFetched()
 {
   // call GetInfo() to make sure that we actually start up
   GetInfo(0);
-  return !m_info.lastUpdateTime.IsEmpty();
+  return !m_lastUpdateTime.IsEmpty();
 }
 
-const day_forecast &CWeather::GetForecast(int day) const
-{
-  return m_info.forecast[day];
-}
-
-CJob *CWeather::GetJob() const
-{
-  CStdString strSetting;
-  strSetting.Format("weather.areacode%i", m_iCurWeather + 1);
-  return new CWeatherJob(GetAreaCode(g_guiSettings.GetString(strSetting)));
-}
-
-void CWeather::OnJobComplete(unsigned int jobID, bool success, CJob *job)
-{
-  m_info = ((CWeatherJob *)job)->GetInfo();
-  CInfoLoader::OnJobComplete(jobID, success, job);
-}

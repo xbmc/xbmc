@@ -24,6 +24,17 @@
 #include "StdString.h"
 #include "Job.h"
 
+class CInfoLoader;
+
+class CInfoJob : public CJob
+{
+public:
+  CInfoJob(CInfoLoader *loader);
+  virtual bool DoWork();
+private:
+  CInfoLoader *m_loader;  
+};
+
 class CInfoLoader : public IJobCallback
 {
 public:
@@ -34,8 +45,8 @@ public:
   void Refresh();
   
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  virtual bool DoWork()=0;
 protected:
-  virtual CJob *GetJob() const=0;
   virtual CStdString TranslateInfo(int info) const;
   virtual CStdString BusyInfo(int info) const;
 private:

@@ -21,7 +21,7 @@
 #pragma once
 #include "IPowerSyscall.h"
 #include "system.h"
-#ifdef HAS_HAL
+#ifdef HAS_DBUS
 
 class CHALPowerSyscall : public IPowerSyscall
 {

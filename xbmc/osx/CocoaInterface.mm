@@ -117,6 +117,19 @@ void Cocoa_UpdateSystemActivity(void)
   UpdateSystemActivity(UsrActivity);   
 }
 
+void Cocoa_DisableOSXScreenSaver(void)
+{
+  // If we don't call this, the screen saver will just stop and then start up again.
+  UpdateSystemActivity(UsrActivity);      
+
+  NSDictionary* errorDict;
+  NSAppleEventDescriptor* returnDescriptor = NULL;
+  NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
+    @"tell application \"ScreenSaverEngine\" to quit"];
+  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
+  [scriptObject release];
+}
+
 bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkContext)
 {
   CVReturn status = kCVReturnError;

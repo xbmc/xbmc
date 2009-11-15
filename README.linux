@@ -46,13 +46,13 @@ Build-Depends: debhelper (>= 7.0.50), quilt, python-support, cmake,
  libmysqlclient-dev, libasound-dev, libpng-dev, libpcre3-dev, liblzo2-dev,
  libcdio-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev, libenca-dev,
  libjasper-dev, libxt-dev, libxtst-dev, libxmu-dev, libxinerama-dev, libcurl3,
- libcurl4-openssl-dev | libcurl-dev, libdbus-1-dev, libhal-storage-dev,
+ libcurl4-gnutls-dev | libcurl-dev, libdbus-1-dev, libhal-storage-dev,
  libhal-dev, libpulse-dev, libavahi-common-dev, libavahi-client-dev,
  libxrandr-dev, libavcodec-dev, libavformat-dev, libavutil-dev, libpostproc-dev,
  libswscale-dev, liba52-dev, libdts-dev, libfaad-dev, libmp4ff-dev,
  libmpeg2-4-dev, libass-dev, libflac-dev, libwavpack-dev,
  python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
- zlib1g-dev, libmms-dev, libsmbclient-dev, libtiff4-dev, libiso9660-dev, libssl-dev
+ zlib1g-dev, libmms-dev, libsmbclient-dev, libtiff4-dev, libiso9660-dev
 
 *** For developers and anyone else who compiles frequently it is recommended to
 use ccache

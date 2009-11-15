@@ -323,10 +323,6 @@ bool CWinSystemX11::RefreshGlxContext()
   return retVal;
 }
 
-void CWinSystemX11::ShowOSMouse(bool show)
-{
-  SDL_ShowCursor(show ? 1 : 0);
-}
 
 void CWinSystemX11::NotifyAppActiveChange(bool bActivated)
 {

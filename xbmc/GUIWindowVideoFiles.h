@@ -34,7 +34,6 @@ public:
   CGUIWindowVideoFiles(void);
   virtual ~CGUIWindowVideoFiles(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
 
   void GetStackedDirectory(const CStdString &strPath, CFileItemList &items);
   virtual void OnInfo(CFileItem* pItem, const ADDON::CScraperPtr& scraper);
@@ -49,7 +48,7 @@ protected:
 
   virtual void OnQueueItem(int iItem);
   virtual void OnAssignContent(int iItem, int iFound, ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings);
-  virtual bool OnUnAssignContent(int iItem, int label1, int label2, int label3);
+  virtual void OnUnAssignContent(int iItem);
 
   virtual void LoadPlayList(const CStdString& strFileName);
   void PlayFolder(const CFileItem* pItem);

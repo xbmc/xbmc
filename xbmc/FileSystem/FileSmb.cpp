@@ -129,12 +129,7 @@ void CSMB::Init()
       // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
       // if no WINS server has been specified the wins method will be ignored.
       if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
-      {
         fprintf(f, "\twins server = %s\n", g_guiSettings.GetString("smb.winsserver").c_str());
-        fprintf(f, "\tname resolve order = bcast wins host\n");
-      }
-      else
-        fprintf(f, "\tname resolve order = bcast host\n");
 
       // use user-configured charset. if no charset is specified,
       // samba tries to use charset 850 but falls back to ASCII in case it is not available
@@ -641,7 +636,7 @@ int64_t CFileSMB::Seek(int64_t iFilePosition, int iWhence)
 #ifndef _LINUX
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
-    CLog::Log(LOGERROR, "%s - Error( %"PRId64", %d, %s )", __FUNCTION__, pos, errno, strerror(errno));
+    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s )", __FUNCTION__, pos, errno, strerror(errno));
 #endif
     return -1;
   }

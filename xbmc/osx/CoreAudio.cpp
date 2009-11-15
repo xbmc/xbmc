@@ -289,7 +289,6 @@ void CCoreAudioDevice::RemoveIOProc()
     return;
   
   Stop();
-
   OSStatus ret = AudioDeviceRemoveIOProc(m_DeviceId, m_IoProc);  
   if (ret)
     CLog::Log(LOGERROR, "CCoreAudioDevice::RemoveIOProc: Unable to remove IOProc. Error = 0x%08x (%4.4s).", ret, CONVERT_OSSTATUS(ret));
@@ -526,38 +525,6 @@ bool CCoreAudioDevice::SetNominalSampleRate(Float64 sampleRate)
   return true;
 }
 
-UInt32 CCoreAudioDevice::GetNumLatencyFrames()
-{
-  UInt32 i_param, i_param_size, num_latency_frames = 0;
-  if (!m_DeviceId)
-    return 0;  
-
-  i_param_size = sizeof(uint32_t);
-
-  // number of frames of latency in the AudioDevice
-  if (noErr == AudioDeviceGetProperty(m_DeviceId, 0, false, 
-    kAudioDevicePropertyLatency, &i_param_size, &i_param))
-  {
-    num_latency_frames += i_param;
-  }
- 
-  // number of frames in the IO buffers
-  if (noErr == AudioDeviceGetProperty(m_DeviceId, 0, false,
-    kAudioDevicePropertyBufferFrameSize, &i_param_size, &i_param))
-  {
-    num_latency_frames += i_param;
-  }
- 
-  // number for frames in ahead the current hardware position that is safe to do IO
-  if (noErr == AudioDeviceGetProperty(m_DeviceId, 0, false, 
-    kAudioDevicePropertySafetyOffset, &i_param_size, &i_param))
- 	{
-    num_latency_frames += i_param;
-  }
-  
-  return(num_latency_frames);
-}
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioStream
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -628,22 +595,16 @@ UInt32 CCoreAudioStream::GetTerminalType()
   return val;  
 }
 
-UInt32 CCoreAudioStream::GetNumLatencyFrames()
+UInt32 CCoreAudioStream::GetLatency()
 {
-  UInt32 i_param, i_param_size, num_latency_frames = 0;
   if (!m_StreamId)
+    return 0;  
+  UInt32 size = sizeof(UInt32);
+  UInt32 val = 0;
+  OSStatus ret = AudioStreamGetProperty(m_StreamId, 0, kAudioStreamPropertyLatency, &size, &val);
+  if (ret)
     return 0;
-
-  i_param_size = sizeof(uint32_t);
-
-  // number of frames of latency in the AudioStream
-  if (noErr == AudioStreamGetProperty(m_StreamId, 0, 
-    kAudioStreamPropertyLatency, &i_param_size, &i_param))
-  {
-    num_latency_frames += i_param;
-  }
-
-  return(num_latency_frames);
+  return val;  
 }
 
 bool CCoreAudioStream::GetVirtualFormat(AudioStreamBasicDescription* pDesc)

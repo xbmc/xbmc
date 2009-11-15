@@ -35,7 +35,7 @@ str_utf16 * GetUTF16FromANSI(const str_ansi * pANSI)
     const int nCharacters = pANSI ? strlen(pANSI) : 0;
     str_utf16 * pUTF16 = new str_utf16 [nCharacters + 1];
 
-    #if 0 // XBMC was #ifdef _WIN32
+    #ifdef _WIN32
         memset(pUTF16, 0, sizeof(str_utf16) * (nCharacters + 1));
         if (pANSI)
             MultiByteToWideChar(CP_ACP, 0, pANSI, -1, pUTF16, nCharacters);

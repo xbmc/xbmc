@@ -1044,7 +1044,7 @@ namespace VIDEO
       ApplyIMDBThumbToFolder(strDirectory,strThumb);
 
     if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
-      FetchActorThumbs(movieDetails.m_cast,strDirectory);
+    FetchActorThumbs(movieDetails.m_cast,strDirectory);
     m_database.Close();
     return lResult;
   }
@@ -1241,8 +1241,6 @@ namespace VIDEO
         nfoFile = CUtil::AddFileToFolder(strPath,"mymovies.xml");
         if (CFile::Exists(nfoFile))
           return nfoFile;
-        else
-          nfoFile.clear();
       }
     }
     if (item->m_bIsFolder || (bGrabAny && nfoFile.IsEmpty()))

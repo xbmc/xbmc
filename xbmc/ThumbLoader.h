@@ -51,9 +51,9 @@ public:
   {
     return "mediaflags";
   }
-
+ 
   virtual bool operator==(const CJob* job) const;
-
+ 
   CStdString m_path; ///< path of video to extract thumb from
   CStdString m_target; ///< thumbpath
   CStdString m_listpath; ///< path used in fileitem list
@@ -80,13 +80,12 @@ public:
 
   /*!
    \brief Callback from CThumbExtractor on completion of a generated image
-
+   
    Performs the callbacks and updates the GUI.
-
+   
    \sa CImageLoader, IJobCallback
    */
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
-  static void SetWatchedOverlay(CFileItem *item);
 
 protected:
   virtual void OnLoaderStart() ;

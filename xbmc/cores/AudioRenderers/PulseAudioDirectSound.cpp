@@ -432,10 +432,10 @@ bool CPulseAudioDirectSound::SetCurrentVolume(long nVolume)
     return -1;
 
   pa_threaded_mainloop_lock(m_MainLoop);
-  pa_volume_t volume = pa_sw_volume_from_dB((float)nVolume*1.5f / 200.0f);
-  if ( nVolume <= VOLUME_MINIMUM )
+  pa_volume_t volume = pa_sw_volume_from_dB((float)nVolume / 200.0f);
+  /*if ( nVolume <= GetMinimumVolume())
     pa_cvolume_mute(&m_Volume, m_SampleSpec.channels);
-  else
+  else */
     pa_cvolume_set(&m_Volume, m_SampleSpec.channels, volume);
   pa_operation *op = pa_context_set_sink_input_volume(m_Context, pa_stream_get_index(m_Stream), &m_Volume, NULL, NULL);
   if (op == NULL)

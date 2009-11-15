@@ -470,13 +470,6 @@ void CUtil::GetCommonPath(CStdString& strParent, const CStdString& strPath)
   }
 }
 
-CStdString CUtil::GetParentPath(const CStdString& strPath)
-{
-  CStdString strReturn;
-  GetParentPath(strPath, strReturn);
-  return strReturn;
-}
-
 bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
 {
   strParent = "";
@@ -743,7 +736,7 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 
 bool CUtil::IsRemote(const CStdString& strFile)
 {
-  if (IsCDDA(strFile) || IsISO9660(strFile) || IsPlugin(strFile))
+  if (IsMemCard(strFile) || IsCDDA(strFile) || IsISO9660(strFile) || IsPlugin(strFile))
     return false;
 
   if (IsSpecial(strFile))
@@ -941,38 +934,26 @@ bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
 
 bool CUtil::IsSpecial(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("special");
+  return strFile.Left(8).Equals("special:");
 }
 
 bool CUtil::IsPlugin(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("plugin") && !url.GetFileName().IsEmpty();
-}
-
-bool CUtil::IsPluginRoot(const CStdString& strFile)
-{
-  CURL url(strFile);
-  return url.GetProtocol().Equals("plugin") && url.GetFileName().IsEmpty();
+  return strFile.Left(7).Equals("plugin:");
 }
 
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("cdda") && !url.GetFileName().IsEmpty();
+  return strFile.Left(5).Equals("cdda:");
 }
 
 bool CUtil::IsISO9660(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("iso9660");
+  return strFile.Left(8).Equals("iso9660:");
 }
 
 bool CUtil::IsSmb(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("iso9660");
   return strFile.Left(4).Equals("smb:");
 }
 
@@ -984,6 +965,11 @@ bool CUtil::IsDAAP(const CStdString& strFile)
 bool CUtil::IsUPnP(const CStdString& strFile)
 {
   return strFile.Left(5).Equals("upnp:");
+}
+
+bool CUtil::IsMemCard(const CStdString& strFile)
+{
+  return strFile.Left(3).Equals("mem");
 }
 
 bool CUtil::IsTuxBox(const CStdString& strFile)
@@ -1020,30 +1006,6 @@ bool CUtil::IsLiveTV(const CStdString& strFile)
     return true;
 
   return false;
-}
-
-bool CUtil::IsMusicDb(const CStdString& strFile)
-{
-  CURL url(strFile);
-  return url.GetProtocol().Equals("musicdb");
-}
-
-bool CUtil::IsVideoDb(const CStdString& strFile)
-{
-  CURL url(strFile);
-  return url.GetProtocol().Equals("videodb");
-}
-
-bool CUtil::IsShoutCast(const CStdString& strFile)
-{
-  CURL url(strFile);
-  return url.GetProtocol().Equals("shout");
-}
-
-bool CUtil::IsLastFM(const CStdString& strFile)
-{
-  CURL url(strFile);
-  return url.GetProtocol().Equals("lastfm");
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
@@ -2147,7 +2109,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
       { // start of function
         inFunction++;
       }
-      if (!inFunction && !IsStack(paramString) && ch == ',')
+      if (!inFunction && ch == ',')
       { // not in a function, so a comma signfies the end of this parameter
         if (whiteSpacePos)
           parameter = parameter.Left(whiteSpacePos);

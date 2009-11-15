@@ -35,6 +35,7 @@ extern "C"
   // Power and Screen
   //
   void Cocoa_UpdateSystemActivity(void);
+  void Cocoa_DisableOSXScreenSaver(void);
   
   // DisplayLink
   //

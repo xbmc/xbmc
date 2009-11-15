@@ -23,7 +23,7 @@
 #include "HALPowerSyscall.h"
 #include "utils/log.h"
 
-#ifdef HAS_HAL
+#ifdef HAS_DBUS
 #include "Application.h"
 #include "LocalizeStrings.h"
 #include <dbus/dbus.h>

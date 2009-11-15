@@ -45,7 +45,6 @@ protected:
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void OnQueueItem(int iItem);
 
-  void OnPlaylistContext();
   int GetCurrentPlaylistItem();
   void OnDeletePlaylistItem(int item);
   void UpdatePlaylist();

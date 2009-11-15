@@ -248,12 +248,8 @@ PyDoc_STRVAR(addItem__doc__,
     // add item to objects vector
     self->vecItems.push_back(pListItem);
 
-    // construct a CFileItemList to pass 'em on to the list
-    CFileItemList items;
-    for (unsigned int i = 0; i < self->vecItems.size(); i++)
-      items.Add(self->vecItems[i]->item);
-
-    CGUIMessage msg(GUI_MSG_LABEL_BIND, self->iParentId, self->iControlId, 0, 0, &items);
+    // create message
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, self->iParentId, self->iControlId, 0, 0, pListItem->item);
 
     // send message
     PyXBMCGUILock();

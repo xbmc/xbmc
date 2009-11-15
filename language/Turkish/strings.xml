@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 12/11/2009-->
-<!--Based on English strings revision 24554-->
+<!--Date of translation: 05/11/2009-->
+<!--Based on English strings revision 24272-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -171,7 +171,7 @@
   <string id="221">Ağ bağlantısı yok</string>
   <string id="222">İptal</string>
   <string id="224">Hız</string>
-  <string id="225"></string>
+  <string id="225">Geçiş zamanı</string>
   <string id="226">Desenleri test et...</string>
   <string id="227">Ses CD'lerini İnternet'te ara</string>
   <string id="228">Çalma listesini karıştır</string>
@@ -209,7 +209,7 @@
   <string id="260">Shoutcast</string>
   <string id="261">Başlamayı bekle...</string>
   <string id="262">Betik çıktısı</string>
-  <string id="263">XBMC'nin HTTP üzerinden kontrolüne izin ver</string>
+  <string id="263">Web sunucusunu etkinleştir</string>
   <string id="264">Kaydet</string>
   <string id="265">Kaydı Durdur</string>
   <string id="266">Sırala: Parça</string>
@@ -584,11 +584,11 @@
   <string id="701">Eski şarkılar kitaplıktan kaldırılıyor</string>
   <string id="702">Bu dizin daha önceden taranmıştı</string>
   <string id="705">Ağ Bağlantıları</string>
-  <string id="706">- Sunucu</string>
-  <string id="707"></string>
-  <string id="708">İnternet erişimi için HTTP vekil sunucusu kullan</string>
-  <string id="709"></string>
-  <string id="710"></string>
+  <string id="706">HTTP vekil sunucu makinesi</string>
+  <string id="707">HTTP vekil sunucu portu</string>
+  <string id="708">HTTP vekil sunucusunu etkinleştir</string>
+  <string id="709">HTTP vekil sunucu kullanıcı adı</string>
+  <string id="710">HTTP vekil sunucu şifresi</string>
   <string id="711">İnternet Protokolü (IP)</string>
   <string id="712">Geçersiz port numarası girildi. Değerler 1 ile 65535 arası olmalı.</string>
   <string id="713">HTTP vekil sunucu</string>
@@ -608,10 +608,10 @@
   <string id="727">Web sunucusu</string>
   <string id="728">FTP sunucusu</string>
   <string id="729">İnternet zamanı</string>
-  <string id="730">- Port</string>
+  <string id="730">Web sunucusu portu</string>
   <string id="731">Saat sunucu makinesi</string>
   <string id="732">Kaydet ve uygula</string>
-  <string id="733">- Şifre</string>
+  <string id="733">Web sunucusu şifresi</string>
   <string id="734">Şifre yok</string>
   <string id="735">- Karakter Kodlaması</string>
   <string id="736">- Stil</string>
@@ -669,15 +669,14 @@
   <string id="788">Ağ arayüzü başarıyla devre dışı bırakıldı.</string>
   <string id="789">Kablosuz ağın adı (ESSID)</string>
 
-  <string id="790"></string>
-  <string id="791">XBMC'yi kontrol etmek için uzaktan kontrol programlarına izin ver</string>
+  <string id="790">Olay sunucusu</string>
+  <string id="791">Olay sunucusunu etkinleştir</string>
   <string id="792">Port</string>
   <string id="793">Port aralığı</string>
-  <string id="794">XBMC'yi kontrol etmek için diğer sistemlerdeki programlara izin ver</string>
+  <string id="794">Diğer bilgisayarların bağlanmasına izin ver</string>
   <string id="795">Başlangıçtaki tekrar gecikmesi (ms)</string>
   <string id="796">Kesintisiz tekrar gecikmesi (ms)</string>
   <string id="797">Azami istemci sayısı</string>
-  <string id="798">İnternet erişimi</string>
 
   <string id="998"></string>
   <string id="999"></string>
@@ -729,7 +728,7 @@
   <string id="1045">Eklenti ayarları</string>
   <string id="1046">Giriş noktaları</string>
   <string id="1047">Diğer...</string>
-  <string id="1048">- Kullanıcı adı</string>
+  <string id="1048">Web sunucusu kullanıcı adı</string>
   <string id="1049">Betik ayarları</string>
   <string id="1050">Singles</string>
 
@@ -779,7 +778,7 @@
   <string id="1256">Ping süresi</string>
   <string id="1257">Otomatik olarak tanımlanan sistem'e bağlamak ister misiniz?</string>
 
-  <string id="1260">Bu hizmetleri Zeroconf üzerinden diğer sistemlere bildir</string>
+  <string id="1260">Zeroconf yayınlama</string>
 
   <string id="1300">Özel ses aygıtı</string>
   <string id="1301">Özel passthrough aygıtı</string>
@@ -956,7 +955,7 @@
   <string id="12373">Ayarlar ve dosya yöneticisi</string>
   <string id="12376">Tüm videolar için varsayılan olarak ayarla</string>
   <string id="12377">Bu işlem önceki kayıtları silecek</string>
-  <string id="12378">Her resim için görüntüleme zamanı miktarı</string>
+  <string id="12378">Resimlerin gösterim zamanı</string>
   <string id="12379">Kaydırma ve yakınlaştırma efekti kullan</string>
   <string id="12380">NTSC videoları PAL formatında oynat</string>
   <string id="12381">PAL videoları NTSC formatında oynat</string>
@@ -1171,7 +1170,7 @@
   <string id="13357">Yüksek kalite pixel shader</string>
   <string id="13358">Oynat</string>
   <string id="13359">Sanatçı küçük resmini ayarla</string>
-  <string id="13360">Küçük resimleri otomatik olarak oluştur</string>
+  <string id="13360">Küçük resimleri oluştur</string>
   <string id="13361">Sesi etkinleştir</string>
   <string id="13375">Donanımı etkinleştir</string>
   <string id="13376">Ses Şiddeti</string>
@@ -1281,7 +1280,7 @@
   <string id="14032">- İnternet</string>
   <string id="14034">DVD önbelleği - DVD-ROM</string>
   <string id="14035">- Yerel Ağ</string>
-  <string id="14036">Hizmetler</string>
+  <string id="14036">Sunucular</string>
   <string id="14037">Görünüm</string>
   <string id="14038">Ağ ayarları dDeğişti</string>
   <string id="14039">Ayarların etkili olabilmesi için yeniden başlatmak gerekli.</string>
@@ -1326,10 +1325,6 @@
   <string id="14078">- Renkler</string>
   <string id="14079">Ülke zaman dilimi</string>
   <string id="14080">Zaman dilimi</string>
-  <string id="14081">Dosya listesi</string>
-  <string id="14082">EXIF resim bilgilerini göster</string>
-  <string id="14083">Gerçek tam ekran yerine tam ekran penceresini kullanın</string>
-  <string id="14084">Kuyruğa eklenen şarkılar</string>
 
   <string id="15000"></string>
   <string id="15001"></string>
@@ -1740,7 +1735,7 @@
   <string id="20181">Sil</string>
   <string id="20182">Boşluk</string>
   <string id="20183">Arayüzü yeniden yükle</string>
-  <string id="20184">EXIF bilgilerini kullanarak resmi çevir</string>
+  <string id="20184">EXIF bilgilerini kullanarak döndür</string>
   <string id="20185">TV programları için poster görünümünü kullan</string>
   <string id="20186">Lütfen bekleyin</string>
   <string id="20187">EEPROM yedekleniyor</string>
@@ -1901,14 +1896,6 @@
   <string id="20434">Setler</string>
   <string id="20435">Set movieset thumb</string>
   <string id="20436">Aktör küçük resimlerini çıkart</string>
-  <string id="20437">Fanart seç</string>
-  <string id="20438">Yerel fanart</string>
-  <string id="20439">Fanart yok</string>
-  <string id="20440">Varsayılan fanart</string>
-  <string id="20441">Uzak fanart</string>
-  <string id="20442">İçeriği değiştir</string>
-  <string id="20443">Bu yolun içindeki tüm öğelerin bilgilerini</string>
-  <string id="20444">yenilemek istiyor musunuz?</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Gizli dosya ve dizinleri göster</string>
@@ -1922,14 +1909,14 @@
   <string id="21337">TuxBox aygıtı</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
 
-  <string id="21356"></string>
-  <string id="21357"></string>
-  <string id="21358"></string>
+  <string id="21356">UPnP müzik</string>
+  <string id="21357">UPnP video</string>
+  <string id="21358">UPnP resimler</string>
   <string id="21359">Ortam paylaşımı ekle...</string>
-  <string id="21360">Video ve müzik kitaplıklarını UPnP üzerinden paylaş</string>
-  <string id="21361"></string>
-  <string id="21362"></string>
-  <string id="21363"></string>
+  <string id="21360">UPnP sunucusunu etkinleştir</string>
+  <string id="21361">UPnP müzik paylaşımlarını yönet</string>
+  <string id="21362">UPnP video paylaşımlarını yönet</string>
+  <string id="21363">UPnP resim paylaşımlarını yönet</string>
   <string id="21364">Ortam paylaşımını düzenle</string>
   <string id="21365">Ortam paylaşımını kaldır</string>
   <string id="21366">Özel altyazı klasörü</string>
@@ -2001,7 +1988,7 @@
   <string id="21432">Akıllı çalma listesini düzenle</string>
   <string id="21433">Çalma listesinin adı</string>
   <string id="21434">Ögeleri bulun</string>
-  <string id="21435">- Düzenle</string>
+  <string id="21435">Düzenle</string>
   <string id="21436">%i ögeleri</string>
   <string id="21437">Yeni akıllı çalma listesi...</string>
   <string id="21438">%c Sürücüsü</string>
@@ -2073,7 +2060,7 @@
   <string id="21878">Telif hakkı</string>
   <string id="21879">Ülke kodu</string>
   <string id="21880">Referans servisi</string>
-  <string id="21881">UPnP denetleyicilerinin XBMC'yi kontrol etmesine izin ver</string>
+  <string id="21881">UPnP tarayıcısını etkinleştir</string>
   <string id="21882">DVD menüsünden önceki tanıtımı geçmeyi dene</string>
   <string id="21883">Aktarılmış ses CD'leri</string>
   <string id="21884">Bütün sanatçılar için bilgileri sorgula</string>
@@ -2118,9 +2105,7 @@
   <string id="22019">Başlığa göre kayıtlar</string>
   <string id="22020">Rehber</string>
   <string id="22021">İzin verilen görüntü oranı hatası (%)</string>
-  <string id="22022">Listelerde video dosyalarını göster</string>
-  <string id="22023">DirectX üreticisi</string>
-  <string id="22024">Direct3D sürümü</string>
+  <string id="22022">Include video files in listings</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Yazı tipi</string>

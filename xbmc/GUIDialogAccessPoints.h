@@ -28,8 +28,6 @@
 #include "GUIDialog.h"
 #include "utils/Network.h"
 
-class CFileItemList;
-
 class CGUIDialogAccessPoints : public CGUIDialog
 {
 public:
@@ -48,7 +46,6 @@ private:
   CStdString m_selectedAPEssId;
   EncMode m_selectedAPEncMode;
   bool m_wasItemSelected;
-  CFileItemList *m_accessPoints;
 };
 
 #endif

@@ -55,16 +55,17 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
       m_iSelectedFile = -1;
       if (GetControl(STACK_LIST))
       { // have the new stack list instead - fill it up
-        SendMessage(GUI_MSG_LABEL_RESET, GetID(), STACK_LIST);
+        CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), STACK_LIST);
+        OnMessage(msg);
         for (int i = 0; i < m_iNumberOfFiles; i++)
         {
           CStdString label;
           label.Format("Part %i", i+1);
           CFileItemPtr item(new CFileItem(label));
           m_stackItems->Add(item);
+          CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), STACK_LIST, 0, 0, item);
+          OnMessage(msg);
         }
-        CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), STACK_LIST, 0, 0, m_stackItems);
-        OnMessage(msg);
       }
       return true;
     }

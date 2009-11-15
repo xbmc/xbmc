@@ -100,8 +100,8 @@ CDateTime CCMythSession::GetValue(cmyth_timestamp_t t)
   if (t)
   {
     time_t time = m_dll->timestamp_to_unixtime(t);
-    if (time)
-      result = *localtime(&time); // Convert to local time
+    tm *local = localtime(&time); // Convert to local time
+    result = *local;
     m_dll->ref_release(t);
   }
   return result;
@@ -141,7 +141,7 @@ bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
   if (tag->m_strShowTitle.length() > 0)
     tag->m_strTitle += " : " + tag->m_strShowTitle;
 
-  CDateTimeSpan span = GetValue(m_dll->proginfo_rec_end(info)) - GetValue(m_dll->proginfo_rec_start(info));
+  CDateTimeSpan span = GetValue(m_dll->proginfo_rec_start(info)) - GetValue(m_dll->proginfo_rec_end(info));
   StringUtils::SecondsToTimeString(span.GetSeconds() +
                                    span.GetMinutes() * 60 +
                                    span.GetHours() * 3600, tag->m_strRuntime, TIME_FORMAT_GUESS);

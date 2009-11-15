@@ -632,7 +632,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
   VECSOURCES sources(g_settings.m_musicSources);
   g_mediaManager.GetLocalDrives(sources);
   bool flip=false;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip))
     return;   // user cancelled
 
   // delete the thumbnail if that's what the user wants, else overwrite with the

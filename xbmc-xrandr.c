@@ -190,7 +190,7 @@ reflection_name (Rotation rotation)
 
 #if HAS_RANDR_1_2
 typedef enum _policy {
-    cloned, extend
+    clone, extend
 } policy_t;
 
 typedef enum _relation {
@@ -1576,7 +1576,7 @@ main (int argc, char **argv)
     int		ret = 0;
 #if HAS_RANDR_1_2
     output_t	*output = NULL;
-    policy_t	policy = cloned;
+    policy_t	policy = clone;
     Bool    	setit_1_2 = False;
     Bool    	query_1_2 = False;
     Bool	modeit = False;
@@ -1837,7 +1837,7 @@ main (int argc, char **argv)
 	    continue;
 	}
 	if (!strcmp ("--clone", argv[i])) {
-	    policy = cloned;
+	    policy = clone;
 	    setit_1_2 = True;
 	    continue;
 	}
@@ -2269,9 +2269,9 @@ main (int argc, char **argv)
 		printf ("\tClones:    ");
 		for (j = 0; j < output_info->nclone; j++)
 		{
-		    output_t	*cloned = find_output_by_xid (output_info->clones[j]);
+		    output_t	*clone = find_output_by_xid (output_info->clones[j]);
 
-		    if (cloned) printf (" %s", cloned->output.string);
+		    if (clone) printf (" %s", clone->output.string);
 		}
 		printf ("\n");
 		if (output->crtc_info)

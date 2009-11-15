@@ -34,7 +34,7 @@ public:
 
 protected:
   virtual void OnInitWindow();
-  CFileItemList *m_listItems;
+  std::vector<CFileItemPtr> m_vecListItems;
 
   void OnPopupMenu(int iItem);
   void DoRename(int iItem);

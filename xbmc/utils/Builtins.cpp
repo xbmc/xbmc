@@ -374,8 +374,11 @@ int CBuiltins::Execute(const CStdString& execString)
     else if (parameter.Equals("1080i")) res = RES_HDTV_1080i;
     if (g_graphicsContext.IsValidResolution(res))
     {
-      g_guiSettings.SetResolution(res);
+      g_guiSettings.SetInt("videoscreen.resolution", res);
+      //set the gui resolution, if newRes is RES_AUTORES newRes will be set to the highest available resolution
       g_graphicsContext.SetVideoResolution(res);
+      //set our lookandfeelres to the resolution set in graphiccontext
+      g_guiSettings.m_LookAndFeelResolution = res;
       g_application.ReloadSkin();
     }
   }
@@ -951,17 +954,11 @@ int CBuiltins::Execute(const CStdString& execString)
     g_application.StopPlaying();
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && musicScan->IsScanning())
-    {
       musicScan->StopScanning();
-      musicScan->Close(true);
-    }
 
     CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
     if (videoScan && videoScan->IsScanning())
-    {
       videoScan->StopScanning();
-      videoScan->Close(true);
-    }
 
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_settings.LoadProfile(0); // login screen always runs as default user

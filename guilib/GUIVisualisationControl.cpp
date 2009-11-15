@@ -63,6 +63,7 @@ void CGUIVisualisationControl::LoadVisualisation()
       return;
 
   m_addon = boost::dynamic_pointer_cast<CVisualisation>(addon);
+
   if (!m_addon)
     return;
 

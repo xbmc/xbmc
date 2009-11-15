@@ -897,9 +897,8 @@ int64_t CFileCurl::Seek(int64_t iFilePosition, int iWhence)
   SetRequestHeaders(m_state);
 
   m_state->m_filePos = nextPos;
-  m_state->m_fileSize = oldstate->m_fileSize;
   long response = m_state->Connect(m_bufferSize);
-  if(response < 0 && (m_state->m_fileSize == 0 || m_state->m_fileSize != m_state->m_filePos))
+  if(response < 0)
   {
     m_seekable = false;
     if(oldstate)

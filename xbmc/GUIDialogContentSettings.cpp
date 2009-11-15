@@ -286,7 +286,6 @@ void CGUIDialogContentSettings::FillListControl()
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SCRAPER_LIST);
   OnMessage(msgReset);
   int iIndex=0;
-  int selectedIndex = 0;
   m_vecItems->Clear();
 
   if (m_scrapers.size() == 0)
@@ -299,16 +298,15 @@ void CGUIDialogContentSettings::FillListControl()
     item->SetThumbnailImage((*iter)->Icon());
     if (m_scraper && (*iter)->UUID() == m_scraper->UUID())
     {
+      CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_SCRAPER_LIST, iIndex);
+      OnMessage(msg2);
       item->Select(true);
-      selectedIndex = iIndex;
     }
     m_vecItems->Add(item);
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_SCRAPER_LIST, 0, 0, item);
+    OnMessage(msg);
     iIndex++;
   }
-  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_SCRAPER_LIST, 0, 0, m_vecItems);
-  OnMessage(msg);
-  CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_SCRAPER_LIST, selectedIndex);
-  OnMessage(msg2);
 }
 
 CFileItemPtr CGUIDialogContentSettings::GetCurrentListItem(int offset)
