@@ -201,6 +201,8 @@ void CGUISettings::Initialize()
   AddBool(3, "pictures.useexifrotation", 20184, true);
   AddBool(4, "pictures.showvideos", 22022, false);
   AddInt(8, "pictures.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddSeparator(9, "pictures.sep2");
+  AddPath(10, "pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -308,8 +310,6 @@ void CGUISettings::Initialize()
   AddCategory(4, "system", 13281);
   // advanced only configuration
   AddBool(1, "system.debuglogging", 20191, false);
-  AddPath(2, "system.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
-  AddSeparator(3, "system.sep1");
   AddInt(4, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
   AddInt(5, "system.ledcolour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
   AddInt(6, "system.leddisableonplayback", 13345, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
@@ -378,7 +378,7 @@ void CGUISettings::Initialize()
   AddBool(2,  "videooutput.hd480p", 21378, true);
   AddBool(3,  "videooutput.hd720p", 21379, true);
   AddBool(4,  "videooutput.hd1080i", 21380, true);
-  
+
   AddCategory(4, "masterlock", 12360);
   AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
   AddBool(4, "masterlock.startuplock"      , 20076,false);
@@ -396,10 +396,10 @@ void CGUISettings::Initialize()
 
   AddCategory(5, "videolibrary", 14022);
 
-  AddBool(0, "videolibrary.enabled", 418, true); 
+  AddBool(0, "videolibrary.enabled", 418, true);
   AddBool(3, "videolibrary.hideplots", 20369, false);
-  AddBool(4, "videolibrary.seasonthumbs", 20382, false);                   
-  AddBool(5, "videolibrary.actorthumbs", 20402, false);  
+  AddBool(4, "videolibrary.seasonthumbs", 20382, false);
+  AddBool(5, "videolibrary.actorthumbs", 20402, false);
   AddInt(0, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddSeparator(7, "videolibrary.sep2");
   AddBool(8, "videolibrary.updateonstartup", 22000, false);
@@ -408,7 +408,7 @@ void CGUISettings::Initialize()
   AddString(11, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
-  
+
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
   AddString(2, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -953,7 +953,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
       SetInt("videoscreen.resolution", newRes);
     }
   }
-  
+
   // Move replaygain settings into our struct
   m_replayGain.iPreAmp = GetInt("musicplayer.replaygainpreamp");
   m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");

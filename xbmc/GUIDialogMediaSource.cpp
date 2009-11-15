@@ -322,7 +322,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   {
     CMediaSource share1;
     share1.m_ignore = true;
-    if (g_guiSettings.GetString("system.screenshotpath",false)!= "")
+    if (g_guiSettings.GetString("pictures.screenshotpath",false)!= "")
     {
       share1.strPath = "special://screenshots/";
       share1.strName = g_localizeStrings.Get(20008);

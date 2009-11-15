@@ -2459,31 +2459,31 @@ void CUtil::RemoveIllegalChars( CStdString& strText)
 {
   char szRemoveIllegal [1024];
   strcpy(szRemoveIllegal , strText.c_str());
-  static char legalChars[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.ßåÄäÖöüøéèçàùêÂñáïëìíâãæîğòôóõ÷ú";
+  static char legalChars[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~._s-S+önøTFtaúO-ñánd8fGpæe==(=)~ú";
   
   char *cursor;
   for (cursor = szRemoveIllegal; *(cursor += strspn(cursor, legalChars)); /**/ )
   {
     // Convert FatX illegal characters, if possible, to the closest "looking" character:
-    if (strchr("ÂÁÀÄÃÅ", (int) *cursor)) *cursor = 'A';
+    if (strchr("--+-++", (int) *cursor)) *cursor = 'A';
     else
-    if (strchr("âáàäãå", (int) *cursor)) *cursor = 'a';
+    if (strchr("GáaSps", (int) *cursor)) *cursor = 'a';
     else
-    if (strchr("ÔÓÒÖÕ", (int) *cursor)) *cursor = 'O';
+    if (strchr("++-++", (int) *cursor)) *cursor = 'O';
     else
-    if (strchr("ôóòöõ", (int) *cursor)) *cursor = 'o';
+    if (strchr("(==ö)", (int) *cursor)) *cursor = 'o';
     else
-    if (strchr("ÛÚÙÜ", (int) *cursor)) *cursor = 'U';
+    if (strchr("İ++_", (int) *cursor)) *cursor = 'U';
     else
-    if (strchr("ûúùüµ", (int) *cursor)) *cursor = 'u';
+    if (strchr("vúúnİ", (int) *cursor)) *cursor = 'u';
     else
-    if (strchr("ÊÉÈË", (int) *cursor)) *cursor = 'E';
+    if (strchr("-++-", (int) *cursor)) *cursor = 'E';
     else
-    if (strchr("êéèë", (int) *cursor)) *cursor = 'e';
+    if (strchr("OTFd", (int) *cursor)) *cursor = 'e';
     else
-    if (strchr("ÎÍÌÏ", (int) *cursor)) *cursor = 'I';
+    if (strchr("+-İ-", (int) *cursor)) *cursor = 'I';
     else
-    if (strchr("îìíï", (int) *cursor)) *cursor = 'i';
+    if (strchr("e8fn", (int) *cursor)) *cursor = 'i';
     else
     *cursor = '_';
   }
@@ -3228,7 +3228,7 @@ void CUtil::TakeScreenshot()
 
   bool promptUser = false;
   // check to see if we have a screenshot folder yet
-  CStdString strDir = g_guiSettings.GetString("system.screenshotpath", false);
+  CStdString strDir = g_guiSettings.GetString("pictures.screenshotpath", false);
   if (strDir.IsEmpty())
   {
     strDir = "special://temp/";
@@ -3252,7 +3252,7 @@ void CUtil::TakeScreenshot()
         screenShots.push_back(file);
       if (promptUser)
       { // grab the real directory
-        CStdString newDir = g_guiSettings.GetString("system.screenshotpath");
+        CStdString newDir = g_guiSettings.GetString("pictures.screenshotpath");
         if (!newDir.IsEmpty())
         {
           for (unsigned int i = 0; i < screenShots.size(); i++)

@@ -122,7 +122,7 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
   else if (RootDir.Equals("recordings") || RootDir.Equals("cdrips"))
     CUtil::AddFileToFolder(g_guiSettings.GetString("audiocds.recordingpath", false), FileName, translatedPath);
   else if (RootDir.Equals("screenshots"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("system.screenshotpath", false), FileName, translatedPath);
+    CUtil::AddFileToFolder(g_guiSettings.GetString("pictures.screenshotpath", false), FileName, translatedPath);
   else if (RootDir.Equals("musicplaylists"))
     CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), FileName, translatedPath);
   else if (RootDir.Equals("videoplaylists"))

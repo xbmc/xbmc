@@ -1072,7 +1072,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.useexternaldvdplayer"));
     }
-    else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("system.screenshotpath"))
+    else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("pictures.screenshotpath"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
