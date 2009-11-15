@@ -23,12 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "RegExp.h"
-
-#if defined (_WIN32) || defined (__APPLE__)
-#include "lib/libpcre/pcre.h"
-#else
-#include <pcre.h>
-#endif
 #include "include.h"
 #include "log.h"
 

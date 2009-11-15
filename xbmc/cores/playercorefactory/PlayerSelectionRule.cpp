@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "URL.h"
 #include "PlayerSelectionRule.h"
+#include "utils/log.h"
 
 CPlayerSelectionRule::CPlayerSelectionRule(TiXmlElement* pRule)
 {

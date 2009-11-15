@@ -27,8 +27,8 @@
 #include <xtl.h>
 #endif
 
-#include <stdio.h>
 #include <string>
+#include <vector>
 
 namespace PCRE {
 #ifdef _WIN32

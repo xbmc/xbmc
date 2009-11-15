@@ -24,6 +24,7 @@
 #include "FileSystem/File.h"
 #include "Util.h"
 #include "utils/RegExp.h"
+#include "utils/log.h"
 #include "cores/dllloader/exports/emu_msvcrt.h"
 #include "AdvancedSettings.h"
 #include "MusicInfoTag.h"

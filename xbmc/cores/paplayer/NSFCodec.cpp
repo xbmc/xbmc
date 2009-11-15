@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "Util.h"
 #include "utils/RegExp.h"
+#include "utils/log.h"
 #include "NSFCodec.h"
 
 NSFCodec::NSFCodec()

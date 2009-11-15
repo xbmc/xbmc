@@ -25,6 +25,7 @@
 #include "FileSystem/File.h"
 #include "Util.h"
 #include "utils/RegExp.h"
+#include "utils/log.h"
 #include "XMLUtils.h"
 #ifndef _LINUX
 #include "cores/dllloader/exports/emu_msvcrt.h"

@@ -1849,8 +1849,10 @@ void CFileItemList::FilterCueItems()
                   if (tag.Loaded())
                   {
                     if (song.strAlbum.empty() && !tag.GetAlbum().empty()) song.strAlbum = tag.GetAlbum();
+                    if (song.strAlbumArtist.empty() && !tag.GetAlbumArtist().empty()) song.strAlbumArtist = tag.GetAlbumArtist();
                     if (song.strGenre.empty() && !tag.GetGenre().empty()) song.strGenre = tag.GetGenre();
                     if (song.strArtist.empty() && !tag.GetArtist().empty()) song.strArtist = tag.GetArtist();
+                    if (tag.GetDiscNumber()) song.iTrack |= (tag.GetDiscNumber() << 16); // see CMusicInfoTag::GetDiscNumber()
                     SYSTEMTIME dateTime;
                     tag.GetReleaseDate(dateTime);
                     if (dateTime.wYear) song.iYear = dateTime.wYear;
@@ -2266,13 +2268,13 @@ CStdString CFileItemList::GetDiscCacheFile() const
 
   CStdString cacheFile;
   if (IsCDDA() || IsOnDVD())
-    cacheFile.Format("Z:\\r-%08x.fi", (unsigned __int32)crc);
+    cacheFile.Format("special://temp/r-%08x.fi", (unsigned __int32)crc);
   else if (IsMusicDb())
-    cacheFile.Format("Z:\\mdb-%08x.fi", (unsigned __int32)crc);
+    cacheFile.Format("special://temp/mdb-%08x.fi", (unsigned __int32)crc);
   else if (IsVideoDb())
-    cacheFile.Format("Z:\\vdb-%08x.fi", (unsigned __int32)crc);
+    cacheFile.Format("special://temp/vdb-%08x.fi", (unsigned __int32)crc);
   else
-    cacheFile.Format("Z:\\%08x.fi", (unsigned __int32)crc);
+    cacheFile.Format("special://temp/%08x.fi", (unsigned __int32)crc);
   return cacheFile;
 }
 
@@ -2922,16 +2924,14 @@ void CFileItem::SetUserProgramThumb()
     {
       // use the shortcut's thumb
       if (!shortcut.m_strThumb.IsEmpty())
-      {
         m_strThumbnailImage = shortcut.m_strThumb;
-        return;
-	  }
       else
       {
         CFileItem item(shortcut.m_strPath,false);
         item.SetUserProgramThumb();
         m_strThumbnailImage = item.m_strThumbnailImage;
       }
+      return;
     }
   }
   // 1.  Try <filename>.tbn
@@ -3222,4 +3222,5 @@ CStdString CFileItem::FindTrailer() const
 
   return strTrailer;
 }
+
 
