@@ -415,12 +415,19 @@ void CWinSystemWin32::UpdateResolutions()
         refreshRate = (float)(devmode.dmDisplayFrequency);
       RESOLUTION_INFO res;
       UpdateDesktopResolution(res, monitor, devmode.dmPelsWidth, devmode.dmPelsHeight, refreshRate);
-      g_settings.m_ResInfo.push_back(res);
+      AddResolution(res);
       CLog::Log(LOGNOTICE, "Found mode: %s", res.strMode.c_str());
     }
   }
 }
 
+void CWinSystemWin32::AddResolution(const RESOLUTION_INFO &res)
+{
+  for (unsigned int i = 0; i < g_settings.m_ResInfo.size(); i++)
+    if (g_settings.m_ResInfo[i].strMode == res.strMode)
+      return; // already have this resolution
+  g_settings.m_ResInfo.push_back(res);
+}
 
 bool CWinSystemWin32::UpdateResolutionsInternal()
 {

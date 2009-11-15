@@ -6637,7 +6637,6 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
       // delete all removable media + ftp/http streams
       CURL url(fullPath);
       if (CUtil::IsOnDVD(fullPath) ||
-          CUtil::IsMemCard(fullPath) ||
           url.GetProtocol() == "http" ||
           url.GetProtocol() == "https" ||
           !CFile::Exists(fullPath))

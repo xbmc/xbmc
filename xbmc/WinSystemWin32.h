@@ -83,6 +83,11 @@ protected:
   virtual bool CreateBlankWindow();
   virtual bool BlankNonActiveMonitor(bool bBlank);
   const MONITOR_DETAILS &GetMonitor(int screen) const;
+  /*!
+   \brief Adds a resolution to the list of resolutions if we don't already have it
+   \param res resolution to add.
+   */
+  void AddResolution(const RESOLUTION_INFO &res);
 
   HWND m_hWnd;
   HWND m_hBlankWindow;

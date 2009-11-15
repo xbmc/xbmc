@@ -39,7 +39,15 @@ public:
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual void UpdateResolutions();
+  virtual void NotifyAppFocusChange(bool bGaining);
   virtual void ShowOSMouse(bool show);
+  virtual bool Minimize();
+  virtual bool Restore();
+  virtual bool Hide();
+  virtual bool Show(bool raise = true);
+
+  virtual void EnableSystemScreenSaver(bool bEnable);
+  virtual bool IsSystemScreenSaverEnabled();
 
 protected:
   void* CreateWindowedContext(void* shareCtx);

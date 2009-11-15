@@ -21,6 +21,7 @@
 
 #include "GUISettings.h"
 #include <limits.h>
+#include <float.h>
 #include "Settings.h"
 #include "GUIDialogFileBrowser.h"
 #include "XBAudioConfig.h"
@@ -242,19 +243,9 @@ void CGUISettings::Initialize()
 
   // My Music Settings
   AddGroup(3, 2);
-  AddCategory(3, "mymusic", 16000);
-
-  AddString(1, "mymusic.visualisation", 250, DEFAULT_VISUALISATION, SPIN_CONTROL_TEXT);
-
-  AddSeparator(2, "mymusic.sep1");
-  AddBool(3, "mymusic.autoplaynextitem", 489, true);
-  AddBool(4, "mymusic.queuebydefault", 14084, false);
-  AddSeparator(6, "mymusic.sep2");
-  AddPath(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
-
   AddCategory(3,"musiclibrary",14022);
   AddBool(0, "musiclibrary.enabled", 418, true);
-  AddBool(2, "musiclibrary.albumartistsonly", 13414, false);
+  AddBool(2, "musiclibrary.showcompilationartists", 13414, true);
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.downloadinfo", 20192, false);
   AddString(6, "musiclibrary.defaultscraper", 20194, "discogs.xml", SPIN_CONTROL_TEXT);
@@ -266,19 +257,20 @@ void CGUISettings::Initialize()
   AddString(11, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
   AddString(12, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(3, "musicplayer", 16003);
+  AddCategory(3, "musicplayer", 14086);
+  AddBool(1, "musicplayer.autoplaynextitem", 489, true);
+  AddBool(2, "musicplayer.queuebydefault", 14084, false);
   AddSeparator(3, "musicplayer.sep1");
   AddInt(4, "musicplayer.replaygaintype", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
   AddInt(0, "musicplayer.replaygainpreamp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
   AddInt(0, "musicplayer.replaygainnogainpreamp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
   AddBool(0, "musicplayer.replaygainavoidclipping", 643, false);
-  AddSeparator(8, "musicplayer.sep2");
-  AddInt(9, "musicplayer.crossfade", 13314, 0, 0, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
-  AddBool(10, "musicplayer.crossfadealbumtracks", 13400, true);
-  AddSeparator(11, "musicplayer.sep3");
-  AddString(0, "musicplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
+  AddInt(5, "musicplayer.crossfade", 13314, 0, 0, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+  AddBool(6, "musicplayer.crossfadealbumtracks", 13400, true);
+  AddSeparator(7, "musicplayer.sep3");
+  AddString(8, "musicplayer.visualisation", 250, DEFAULT_VISUALISATION, SPIN_CONTROL_TEXT);
 
-  AddCategory(3, "musicfiles", 744);
+  AddCategory(3, "musicfiles", 14081);
   AddBool(1, "musicfiles.usetags", 258, true);
   AddString(2, "musicfiles.trackformat", 13307, "[%N. ]%A - %T", EDIT_CONTROL_INPUT, false, 16016);
   AddString(3, "musicfiles.trackformatright", 13387, "%D", EDIT_CONTROL_INPUT, false, 16016);
@@ -287,9 +279,7 @@ void CGUISettings::Initialize()
   AddString(0, "musicfiles.nowplayingtrackformatright", 13387, "", EDIT_CONTROL_INPUT, false, 16016);
   AddString(0, "musicfiles.librarytrackformat", 13307, "", EDIT_CONTROL_INPUT, false, 16016);
   AddString(0, "musicfiles.librarytrackformatright", 13387, "", EDIT_CONTROL_INPUT, false, 16016);
-  AddSeparator(4, "musicfiles.sep1");
-  AddBool(10, "musicfiles.usecddb", 227, true);
-  AddBool(11, "musicfiles.findremotethumbs", 14059, true);
+  AddBool(4, "musicfiles.findremotethumbs", 14059, true);
 
   AddCategory(3, "scrobbler", 15221);
   AddBool(1, "scrobbler.lastfmsubmit", 15201, false);
@@ -301,12 +291,15 @@ void CGUISettings::Initialize()
   AddString(7, "scrobbler.librefmusername", 15218, "", EDIT_CONTROL_INPUT, false, 15218);
   AddString(8, "scrobbler.librefmpassword", 15219, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15219);
 
-  AddCategory(3, "cddaripper", 620);
-  AddPath(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddString(2, "cddaripper.trackformat", 13307, "[%N. ]%T - %A", EDIT_CONTROL_INPUT, false, 16016);
-  AddInt(3, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
-  AddInt(4, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
-  AddInt(5, "cddaripper.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
+  AddCategory(3, "audiocds", 620);
+  AddBool(1, "audiocds.autorun", 14085, false);
+  AddBool(2, "audiocds.usecddb", 227, true);
+  AddSeparator(3, "audiocds.sep1");
+  AddPath(4,"audiocds.recordingpath",20000,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddString(5, "audiocds.trackformat", 13307, "[%N. ]%T - %A", EDIT_CONTROL_INPUT, false, 16016);
+  AddInt(6, "audiocds.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
+  AddInt(7, "audiocds.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
+  AddInt(8, "audiocds.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
 
 #ifdef HAS_KARAOKE
   AddCategory(3, "karaoke", 13327);
@@ -615,11 +608,11 @@ void CGUISettings::Initialize()
 #if defined(_WIN32) || defined (__APPLE__)
   // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
   // as it works nicer with switching to other applications. However on some systems vsync is broken
-  // when we do this (eg WinXP on ATI in particular) and on others (AppleTV) we can't get XBMC to
+  // when we do this (eg non-Aero on ATI in particular) and on others (AppleTV) we can't get XBMC to
   // the front
   bool fakeFullScreen = true;
-  bool showSetting = false;
-  if (g_sysinfo.IsWindowsXP())
+  bool showSetting = true;
+  if (g_sysinfo.IsAeroDisabled())
     fakeFullScreen = false;
   if (g_sysinfo.IsAppleTV())
   {
@@ -1001,8 +994,8 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
 
   // check if we load the right vis
-  if(!CVisualisation::IsValidVisualisation(g_guiSettings.GetString("mymusic.visualisation")))
-    g_guiSettings.SetString("mymusic.visualisation", DEFAULT_VISUALISATION);
+  if(!CVisualisation::IsValidVisualisation(g_guiSettings.GetString("musicplayer.visualisation")))
+    g_guiSettings.SetString("musicplayer.visualisation", DEFAULT_VISUALISATION);
 
 #if defined(_LINUX) && !defined(__APPLE__)
   CStdString timezone = GetString("locale.timezone");
@@ -1121,7 +1114,7 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
     float refresh = (float)atof(res.Mid(11).c_str());
     // find the closest match to these in our res vector.  If we have the screen, we score the res
     RESOLUTION bestRes = RES_DESKTOP;
-    float bestScore = 0.0f;
+    float bestScore = FLT_MAX;
     size_t maxRes = g_settings.m_ResInfo.size();
     if (g_Windowing.GetNumScreens())
       maxRes = std::min(maxRes, (size_t)RES_DESKTOP + g_Windowing.GetNumScreens());
@@ -1131,7 +1124,7 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
       if (info.iScreen != screen)
         continue;
       float score = 10*(square_error((float)info.iWidth, (float)width) + square_error((float)info.iHeight, (float)height)) + square_error(info.fRefreshRate, refresh);
-      if (score > bestScore)
+      if (score < bestScore)
       {
         bestScore = score;
         bestRes = (RESOLUTION)i;

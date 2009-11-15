@@ -119,7 +119,7 @@
 			<RegExp input="$$6" output="+\1" dest="12+">
 				<expression repeat="yes">([^ ,]+)</expression>
 			</RegExp>
-			<RegExp conditional="thumbs" input="$$12" output="&lt;url cache=&quot;rottentomatoes_temp.xml&quot; function=&quot;GetTMDBThumbsByIMDBId&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="8+">
+			<RegExp conditional="thumbs" input="$$12" output="&lt;url cache=&quot;rottentomatoes_temp.xml&quot; function=&quot;GetTMDBThumbsById&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="8+">
 				<RegExp input="$$1" output="&quot;\1&quot;+\2" dest="4+">
 					<expression>www\.imdb\.com/title/(tt[0-9]*)/\s</expression>
 				</RegExp>
@@ -128,7 +128,7 @@
 				</RegExp>
 				<expression></expression>
 			</RegExp>
-			<RegExp conditional="fanart" input="$$12" output="&lt;url cache=&quot;rottentomatoes_temp.xml&quot; function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="8+">
+			<RegExp conditional="fanart" input="$$12" output="&lt;url cache=&quot;rottentomatoes_temp.xml&quot; function=&quot;GetTMDBFanartById&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="8+">
 				<RegExp input="$$1" output="&quot;\1&quot;+\2" dest="4+">
 					<expression>www\.imdb\.com/title/(tt[0-9]*)/\s</expression>
 				</RegExp>

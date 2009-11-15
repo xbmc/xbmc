@@ -36,6 +36,9 @@
 #include "LocalizeStrings.h"
 #include "CPUInfo.h"
 #include "utils/TimeUtils.h"
+#ifdef _WIN32
+#include "dwmapi.h"
+#endif
 
 CSysInfo g_sysinfo;
 
@@ -270,7 +273,7 @@ CStdString CSysInfo::GetXBVerInfo()
   return "CPU: " + g_cpuInfo.getCPUModel();
 }
 
-bool CSysInfo::IsWindowsXP()
+bool CSysInfo::IsAeroDisabled()
 {
 #ifdef _WIN32
   OSVERSIONINFOEX osvi;
@@ -280,7 +283,12 @@ bool CSysInfo::IsWindowsXP()
   if (GetVersionEx((OSVERSIONINFO *)&osvi))
   {
     if (osvi.dwMajorVersion == 5)
-      return true;
+      return true; // windows XP -> no Aero
+
+    BOOL aeroEnabled = FALSE;
+    HRESULT res = DwmIsCompositionEnabled(&aeroEnabled);
+    if (SUCCEEDED(res))
+      return !aeroEnabled;
   }
 #endif
   return false;

@@ -54,7 +54,17 @@ CPowerManager g_powerManager;
 
 CPowerManager::CPowerManager()
 {
-  m_instance = NULL;
+  m_instance = new CNullPowerSyscall();
+}
+
+CPowerManager::~CPowerManager()
+{
+  delete m_instance;
+}
+
+void CPowerManager::Initialize()
+{
+  delete m_instance;
 
 #ifdef __APPLE__
   m_instance = new CCocoaPowerSyscall();
@@ -67,19 +77,10 @@ CPowerManager::CPowerManager()
 #endif
 #elif defined(_WIN32)
   m_instance = new CWin32PowerSyscall();
+#else
+  m_instance = new CNullPowerSyscall();
 #endif
 
-  if (m_instance == NULL)
-    m_instance = new CNullPowerSyscall();
-}
-
-CPowerManager::~CPowerManager()
-{
-  delete m_instance;
-}
-
-void CPowerManager::Initialize()
-{
   int defaultShutdown = g_guiSettings.GetInt("system.shutdownstate");
 
   switch (defaultShutdown)

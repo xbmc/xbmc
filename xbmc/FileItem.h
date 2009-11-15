@@ -126,7 +126,6 @@ public:
   void SetCanQueue(bool bYesNo);
   bool IsParentFolder() const;
   bool IsFileFolder() const;
-  bool IsMemoryUnit() const;
   bool IsRemovable() const;
   bool IsTuxBox() const;
   bool IsMythTV() const;
@@ -196,6 +195,12 @@ public:
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
   CStdString CacheFanart(bool probe=false) const;
+  /*!
+   \brief Get the local fanart for this item if it exists
+   \return path to the local fanart for this item
+   \sa CacheFanart, GetCachedFanart
+   */
+  CStdString GetLocalFanart() const;
 
   // Sets the cached thumb for the item if it exists
   void SetCachedVideoThumb();

@@ -141,7 +141,7 @@ void CGUIVisualisationControl::LoadVisualisation()
 
   CVisualisationFactory factory;
   CStdString strVisz, strModule;
-  m_currentVis = g_guiSettings.GetString("mymusic.visualisation");
+  m_currentVis = g_guiSettings.GetString("musicplayer.visualisation");
 
   if (m_currentVis.Equals("None"))
     return;
@@ -222,7 +222,7 @@ void CGUIVisualisationControl::Render()
       CGUIControl::Render();
       return;
     }
-    else if (!m_currentVis.Equals(g_guiSettings.GetString("mymusic.visualisation")))
+    else if (!m_currentVis.Equals(g_guiSettings.GetString("musicplayer.visualisation")))
     { // vis changed - reload
       LoadVisualisation();
 

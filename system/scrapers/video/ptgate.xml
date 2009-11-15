@@ -236,7 +236,7 @@
 				<expression/>
 			</RegExp>
 			<!-- Fanart -->
-			<RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;$$3&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetTMDBFanartById&quot;&gt;$$3&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<expression noclean="1"/>

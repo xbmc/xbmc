@@ -25,7 +25,7 @@
 using namespace std;
 
 CGUILabelControl::CGUILabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath)
-    : CGUIControl(parentID, controlID, posX, posY, width, height), m_textLayout(labelInfo.font, wrapMultiLine)
+    : CGUIControl(parentID, controlID, posX, posY, width, height), m_textLayout(labelInfo.font, wrapMultiLine, height)
 {
   m_bHasPath = bHasPath;
   m_iCursorPos = 0;
