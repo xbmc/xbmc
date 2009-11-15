@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 12/11/2009-->
-<!--Based on English strings revision 24554-->
+<!--Date of translation: 15/11/2009-->
+<!--Based on English strings revision 24625-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -119,7 +119,7 @@
   <string id="167">FTP sunucusunu etkinleştir</string>
   <string id="168">İnternet'ten saat senkronizasyonunu etkinleştir</string>
   <string id="169">Çözünürlük</string>
-  <string id="170">Tazeleme oranını ayarla</string>
+  <string id="170">Ekran tazeleme oranını videoyla eşleşecek şekilde ayarla</string>
   <string id="171"></string>
   <string id="172">Çıkış tarihi</string>
   <string id="173"></string>
@@ -173,7 +173,7 @@
   <string id="224">Hız</string>
   <string id="225"></string>
   <string id="226">Desenleri test et...</string>
-  <string id="227">Ses CD'lerini İnternet'te ara</string>
+  <string id="227">Ses CD'lerinin parça isimlerini freedb.org'da ara</string>
   <string id="228">Çalma listesini karıştır</string>
   <string id="229">Sabit disk yavaşlatma zamanı</string>
   <string id="230">Video filtreleri</string>
@@ -423,7 +423,7 @@
   <string id="486">Tekrarla</string>
   <string id="487">Tekrarla: Birini</string>
   <string id="488">Tekrarla: Klasörü</string>
-  <string id="489">Otomatik olarak sonraki parçayı çal</string>
+  <string id="489">Sonraki şarkıyı otomatik olarak çal</string>
   <string id="491">- Büyük simge kullan</string>
   <string id="492">Altyazı Büyüklüğünü Ayarla</string>
   <string id="493">Gelişmiş ayarlar (Uzmanlar İçin!)</string>
@@ -537,7 +537,7 @@
   <string id="610">Parçayı aktar</string>
   <string id="611">Numara gir</string>
 
-  <string id="620">CD Aktarma</string>
+  <string id="620">Ses CD'leri</string>
   <string id="621">Kodlayıcı</string>
   <string id="622">Kalite</string>
   <string id="623">Bit Oranı</string>
@@ -552,7 +552,7 @@
   <string id="635">Orijinal Boyut</string>
   <string id="636">Kişisel</string>
   <string id="637">Replay gain</string>
-  <string id="638">Replay gain mode</string>
+  <string id="638">Replaygain ses ayarlamalarını uygula</string>
   <string id="639">Parça seviyesini kullan</string>
   <string id="640">Albüm seviyesini kullan</string>
   <string id="641">PreAmp Level - Replay gained files</string>
@@ -900,7 +900,7 @@
   <string id="12014">Hiç hile bulunamadı</string>
   <string id="12015">Hile ayarları</string>
   <string id="12016">Bütün kayıtlı hileler kayıp. Listeyi güncelleyin</string>
-  <string id="12017">Son konumdan devam et</string>
+  <string id="12017">Son durdurulan yerden devam et</string>
   <string id="12018">Hayır</string>
   <string id="12019">Evet</string>
   <string id="12020">Sor</string>
@@ -1126,7 +1126,7 @@
   <string id="13311">Kaydırma efekti</string>
   <string id="13312">Siyah yerleri daralt</string>
   <string id="13313">Yeniden Başlat</string>
-  <string id="13314">Kesintisiz geçiş</string>
+  <string id="13314">Şarkılar arasında sesi azaltarak geçiş yap</string>
   <string id="13315">Küçük resimleri yeniden oluştur</string>
   <string id="13316">Özyinelemeli küçük resimler</string>
   <string id="13317">Slayt Gösterisi</string>
@@ -1185,7 +1185,7 @@
   <string id="13384">Ses maskesi - Port 3</string>
   <string id="13385">Ses maskesi - Port 4</string>
   <string id="13386">Zamana göre ara</string>
-  <string id="13387">Doğru parça isim kalıbı</string>
+  <string id="13387">Parça isim kalıbı - sağ</string>
   <string id="13388">Hazır gelenler</string>
   <string id="13389">Bu görsel efekt için hazır gelen hiçbir şey yok</string>
   <string id="13390">Bu görsel efekt için hiçbir ayar yok</string>
@@ -1198,7 +1198,7 @@
   <string id="13397">Altyazıları etkinleştir</string>
   <string id="13398">Yer İmleri</string>
   <string id="13399">Sıralarken "The" yı yok say</string>
-  <string id="13400">Albüm parçalarında yumuşak geçiş kullan</string>
+  <string id="13400">Aynı albümdeki parçalar arasında sesi azaltarak geçiş yap</string>
   <string id="13401">%s gözat</string>
   <string id="13402">Şarkı pozisyonunu göster</string>
   <string id="13403">Varsayılanı temizle</string>
@@ -1212,7 +1212,7 @@
   <string id="13411">Asgari fan hızı</string>
   <string id="13412">- RSS beslemeleri sağdan sola yazı içeriyor</string>
   <string id="13413">İndiriliyor</string>
-  <string id="13414">Hide artists who appear only on compilations</string>
+  <string id="13414">Sadece derlemelerde görünen sanatçıları göster</string>
   <string id="13415">Render yöntemi</string>
   <string id="13416">Otomatik algıla</string>
   <string id="13417">Basit gölgeleme (ARB)</string>
@@ -1262,8 +1262,8 @@
   <string id="14012">- Büyük Simgeler</string>
   <string id="14013">- Orijinal Boyut</string>
   <string id="14014">- Kişisel Boyut</string>
-  <string id="14015">No Files and at least one Thumb</string>
-  <string id="14016">At least one File and Thumb</string>
+  <string id="14015">Dosya yok ve en az bir Küçük resim</string>
+  <string id="14016">En az bir Dosya ve Küçük resim</string>
   <string id="14017">Küçük resimlerin boyutu</string>
   <string id="14018">Görünüm ayarları</string>
   <string id="14019">1. Bölge Kodunu Değiştir</string>
@@ -1304,7 +1304,7 @@
   <string id="14056">Taramayı durdur</string>
   <string id="14057">Tarama yaparken ortam bilgisine ulaşılamaz</string>
   <string id="14058">Film toz efekti</string>
-  <string id="14059">Uzak bağlantılardan küçük resimleri al</string>
+  <string id="14059">Küçük resimleri uzak bağlantılarda ara</string>
   <string id="14060">Bilinmeyen dosya tipi önbelleği - İnternet</string>
   <string id="14061">Otomatik</string>
   <string id="14062">Kullanıcı adı girin</string>
@@ -1328,8 +1328,13 @@
   <string id="14080">Zaman dilimi</string>
   <string id="14081">Dosya listesi</string>
   <string id="14082">EXIF resim bilgilerini göster</string>
-  <string id="14083">Gerçek tam ekran yerine tam ekran penceresini kullanın</string>
+  <string id="14083">Gerçek tam ekran yerine tam ekran penceresini kullan</string>
   <string id="14084">Kuyruğa eklenen şarkılar</string>
+  <string id="14085">Ses CD'lerini otomatik olarak çal</string>
+  <string id="14086">Playback</string>
+  <string id="14087">DVDler</string>
+  <string id="14088">DVDleri otomatik olarak oynat</string>
+  <string id="14089">Altyazı metini için kullanılacak yazıtipi</string>
 
   <string id="15000"></string>
   <string id="15001"></string>
@@ -1427,9 +1432,9 @@
   <string id="15218">Libre.fm kullanıcı adı</string>
   <string id="15219">Libre.fm şifresi</string>
   <string id="15220">Libre.fm</string>
-  <string id="15221">Scrobbler</string>
+  <string id="15221">Şarkı sunumu</string>
 
-  <string id="15250">Last.fm Radyoya Bağlan</string>
+  <string id="15250">Last.fm radyoyu Last.fm'e gönder</string>
   <string id="15251">Last.fm'e bağlanılıyor...</string>
   <string id="15252">İstasyon seçiliyor...</string>
   <string id="15253">Benzer sanatçıları ara...</string>
@@ -1563,12 +1568,12 @@
 
   <string id="19000">Kanal değiştir</string>
 
-  <string id="20000">CDDA aktarma klasörü</string>
+  <string id="20000">Kaydedilen müzik klasörü</string>
   <string id="20001">Harici DVD oynatıcıyı kullan</string>
   <string id="20002">Harici DVD oynatıcı</string>
   <string id="20003">Hile klasörü</string>
   <string id="20004">Ekran görüntüsü klasörü</string>
-  <string id="20005">Kayıtlar klasörü</string>
+  <string id="20005"></string>
   <string id="20006">Çalma listesi klasörü</string>
   <string id="20007">Kayıtlar</string>
   <string id="20008">Ekran görüntüsü</string>
@@ -1748,9 +1753,9 @@
   <string id="20189">İçerik ve değerlendirmeler için otomatik kaydırmayı etkinleştir</string>
   <string id="20190">Özel</string>
   <string id="20191">Hata ayıklama günlüğünü etkinleştir</string>
-  <string id="20192">Kitaplığa ekleyince albüm bilgilerini al</string>
-  <string id="20193">Kitaplığa ekleyince sanatçı bilgilerini al</string>
-  <string id="20194">Varsayılan scraper</string>
+  <string id="20192">Güncellemeler sırasında ek bilgileri indir</string>
+  <string id="20193"></string>
+  <string id="20194">Müzik bilgileri için varsayılan servis</string>
   <string id="20195">Scraper'ı değiştir</string>
   <string id="20196">Müzik kitaplığını dışa aktar</string>
   <string id="20197">Müzik kitaplığını içe aktar</string>
@@ -1833,7 +1838,7 @@
   <string id="20366">* Bütün sezonlar</string>
   <string id="20367">İzlenenleri gizle</string>
   <string id="20368">Üretim kodu</string>
-  <string id="20369">Seyredilmeyen ögeler için içeriği sakla</string>
+  <string id="20369">Seyredilmeyen ögelerin içeriğini göster</string>
   <string id="20370">* Gizli spoilerleri önlemek için *</string>
   <string id="20371">Sezon küçük resimlerini ayarla</string>
   <string id="20372">Sezon resmi</string>
@@ -1866,7 +1871,7 @@
   <string id="20399">Albümden müzik videosuna git</string>
   <string id="20400">Artiste göre müzik videosuna git</string>
   <string id="20401">Müzik videosunu oynat</string>
-  <string id="20402">Aktör küçük resimlerini otomatik olarak al</string>
+  <string id="20402">Kitaplığa eklendiğinde aktör küçük resimlerini indir</string>
   <string id="20403">Aktör küçük resimlerini ayarla</string>
   <string id="20404"></string>
   <string id="20405">Bölüm yer imini kaldır</string>
@@ -1897,7 +1902,7 @@
   <string id="20430">Küçük resimler ve fanart dışarı aktarılsın mı?</string>
   <string id="20431">Eski dosyaların üzerine yazılsın mı?</string>
   <string id="20432">Bu dizini kitaplık güncellemelerine dahil etme</string>
-  <string id="20433">Küçük resimleri ve etiketleri çıkart</string>
+  <string id="20433">Küçük resimleri ve video bilgilerini çıkart</string>
   <string id="20434">Setler</string>
   <string id="20435">Set movieset thumb</string>
   <string id="20436">Aktör küçük resimlerini çıkart</string>
@@ -1909,6 +1914,7 @@
   <string id="20442">İçeriği değiştir</string>
   <string id="20443">Bu yolun içindeki tüm öğelerin bilgilerini</string>
   <string id="20444">yenilemek istiyor musunuz?</string>
+  <string id="20445">Fanart</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Gizli dosya ve dizinleri göster</string>
@@ -1932,7 +1938,7 @@
   <string id="21363"></string>
   <string id="21364">Ortam paylaşımını düzenle</string>
   <string id="21365">Ortam paylaşımını kaldır</string>
-  <string id="21366">Özel altyazı klasörü</string>
+  <string id="21366">Altyazı klasörü</string>
   <string id="21367">Film ve alternatif altyazı klasörü</string>
 
   <string id="21369">Fareyi etkinleştir</string>
@@ -1983,7 +1989,7 @@
   <string id="21414">Varsayılan tv programı scraper</string>
   <string id="21415">Varsayılan müzik video scraper</string>
   <string id="21416">Scraper diline dayalı başvurmayı etkinleştir</string>
-  <string id="21417">- Scraper ayarları</string>
+  <string id="21417">- Ayarlar</string>
   <string id="21418">Çok dilli</string>
 
   <string id="21420">Değer eşleşmelidir</string>
@@ -2075,7 +2081,7 @@
   <string id="21880">Referans servisi</string>
   <string id="21881">UPnP denetleyicilerinin XBMC'yi kontrol etmesine izin ver</string>
   <string id="21882">DVD menüsünden önceki tanıtımı geçmeyi dene</string>
-  <string id="21883">Aktarılmış ses CD'leri</string>
+  <string id="21883">Kaydedilen müzik</string>
   <string id="21884">Bütün sanatçılar için bilgileri sorgula</string>
   <string id="21885">Albüm bilgisi indiriliyor</string>
   <string id="21886">Sanatçı bilgisi indiriliyor</string>
@@ -2117,7 +2123,7 @@
   <string id="22018">Canlı kanallar</string>
   <string id="22019">Başlığa göre kayıtlar</string>
   <string id="22020">Rehber</string>
-  <string id="22021">İzin verilen görüntü oranı hatası (%)</string>
+  <string id="22021">Siyah şeritleri en aza indirmek için izin verilen görüntü oranı hatası</string>
   <string id="22022">Listelerde video dosyalarını göster</string>
   <string id="22023">DirectX üreticisi</string>
   <string id="22024">Direct3D sürümü</string>
@@ -2130,7 +2136,7 @@
   <string id="22034">Karaoke başlıklarını HTML olarak dışa aktar</string>
   <string id="22035">Karaoke başlıklarını CVS olarak dışa aktar</string>
   <string id="22036">Karaoke başlıklarını içe aktar...</string>
-  <string id="22037">Otomatik açılır pencere şarkı seçicisi</string>
+  <string id="22037">Şarkı seçiciyi otomatik olarak göster</string>
   <string id="22038">Karaoke başlıklarını dışa aktar...</string>
   <string id="22039">Şarkı numarasını girin</string>
   <string id="22040">beyaz/yeşil</string>
