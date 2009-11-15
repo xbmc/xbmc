@@ -909,17 +909,14 @@ bool CUtil::IsStack(const CStdString& strFile)
 bool CUtil::IsRAR(const CStdString& strFile)
 {
   CStdString strExtension;
-  CStdString strFile2(strFile);
+  CUtil::GetExtension(strFile,strExtension);
 
-  if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
-
-  CUtil::GetExtension(strFile2,strExtension);
-
-  if (strExtension.Equals(".001") && strFile2.Mid(strFile2.length()-7,7).CompareNoCase(".ts.001"))
+  if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001"))
     return true;
+  
   if (strExtension.CompareNoCase(".cbr") == 0)
     return true;
+  
   if (strExtension.CompareNoCase(".rar") == 0)
     return true;
 
@@ -948,14 +945,14 @@ bool CUtil::IsInRAR(const CStdString& strFile)
 bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
 {
   CStdString strExtension;
-  CStdString strFile2(strFile);
+  CUtil::GetExtension(strFile,strExtension);
 
-  if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+  if (strExtension.CompareNoCase(".zip") == 0)
+    return true;
 
-  CUtil::GetExtension(strFile2,strExtension);
-  if (strExtension.CompareNoCase(".zip") == 0) return true;
-  if (strExtension.CompareNoCase(".cbz") == 0) return true;
+  if (strExtension.CompareNoCase(".cbz") == 0)
+    return true;
+
   return false;
 }
 
