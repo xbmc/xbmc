@@ -1108,7 +1108,9 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
             CLog::Log(LOGDEBUG, "%s: curl failed with code %i", __FUNCTION__, msg->data.result);
 
             // We need to check the data.result here as we don't want to retry on every error
-            if (msg->data.result == CURLE_OPERATION_TIMEDOUT || msg->data.result == CURLE_PARTIAL_FILE)
+            if ( (msg->data.result == CURLE_OPERATION_TIMEDOUT ||
+                  msg->data.result == CURLE_PARTIAL_FILE) &&
+                  !m_bFirstLoop)
               CURLresult=msg->data.result;
             else
               return false;
@@ -1143,23 +1145,6 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
 
         CLog::Log(LOGDEBUG, "%s: Reconnect, (re)try %i", __FUNCTION__, retry);
         
-        // On timeout, when we have to retry more than 2 times in a row
-        // we increase the Curl low speed timeout, but only at start
-        if (m_bFirstLoop && retry > 1 && CURLresult == CURLE_OPERATION_TIMEDOUT && m_fileSize != 0)
-        {
-          int newlowspeedtime;
-
-          if (g_advancedSettings.m_curllowspeedtime<5)
-            newlowspeedtime = 5;
-          else
-            newlowspeedtime = g_advancedSettings.m_curllowspeedtime;
-
-          newlowspeedtime += (5*(retry-1));
-          
-          CLog::Log(LOGDEBUG, "%s: Setting low-speed-time to %i seconds", __FUNCTION__, newlowspeedtime);
-          g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_LOW_SPEED_TIME, newlowspeedtime);
-        }
-
         // Connect + seek to current position (again)
         g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, m_filePos);
         g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
