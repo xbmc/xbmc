@@ -83,8 +83,13 @@
 # define SETBINARY_IN(__fp)     (setmode   ( FILENO ((__fp)), _O_BINARY ), (__fp))
 # define SETBINARY_OUT(__fp)    (setmode   ( FILENO ((__fp)), _O_BINARY ), (__fp))
 #elif defined _WIN32
-# define SETBINARY_IN(__fp)     (_setmode  ( FILENO ((__fp)), _O_BINARY ), (__fp))
+#if 0 // XBMC
 # define SETBINARY_OUT(__fp)    (_setmode  ( FILENO ((__fp)), _O_BINARY ), (__fp))
+# define SETBINARY_OUT(__fp)    (_setmode  ( FILENO ((__fp)), _O_BINARY ), (__fp))
+#else
+# define SETBINARY_IN(__fp)     (__fp)
+# define SETBINARY_OUT(__fp)    (__fp)
+#endif
 #elif defined _MSC_VER
 # define SETBINARY_IN(__fp)     (setmode   ( FILENO ((__fp)),  O_BINARY ), (__fp))
 # define SETBINARY_OUT(__fp)    (setmode   ( FILENO ((__fp)),  O_BINARY ), (__fp))
@@ -185,7 +190,12 @@ int CStdLibFileIO::Seek(int nDistance, unsigned int nMoveMode)
 
 int CStdLibFileIO::SetEOF()
 {
+#ifndef _WIN32 // XBMC
     return ftruncate(GetHandle(), GetPosition());
+#else
+    printf("!!!!!!!!ERROR!!!!!!!!!! - Unimplemented CStdLibFileIO::SetEOF()\n");
+    return -1;
+#endif
 }
 
 int CStdLibFileIO::GetPosition()

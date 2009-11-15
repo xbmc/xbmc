@@ -129,7 +129,7 @@
 				<expression>(imdb.com/)Title\?([0-9]+)</expression>
 			</RegExp>
 			<!--URL to Fanart-->
-			<RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://www.imdb.de/title/tt\2&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBFanartById&quot;&gt;http://www.imdb.de/title/tt\2&lt;/url&gt;" dest="5+">
 				<expression>(imdb.com/)Title\?([0-9]+)</expression>
 			</RegExp>
 			<!--URL to MoviePosterDB -->

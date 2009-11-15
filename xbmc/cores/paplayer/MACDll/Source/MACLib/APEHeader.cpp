@@ -3,7 +3,7 @@
 #include "MACLib.h"
 #include "APEInfo.h"
 
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(_WIN32)
 #include <linux/smbno.h>
 #endif
 

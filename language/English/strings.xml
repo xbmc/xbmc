@@ -113,7 +113,7 @@
   <string id="167">Enable FTP server</string>
   <string id="168">Enable Internet time synchronization</string>
   <string id="169">Resolution</string>
-  <string id="170">Adjust refresh rate</string>
+  <string id="170">Adjust screen refresh rate to match video</string>
   <string id="171"></string>
   <string id="172">Release date</string>
   <string id="173"></string>
@@ -167,7 +167,7 @@
   <string id="224">Speed</string>
   <string id="225"></string>
   <string id="226">Test patterns...</string>
-  <string id="227">Lookup audio CDs on the Internet</string>
+  <string id="227">Lookup audio CD track names from freedb.org</string>
   <string id="228">Shuffle playlist on load</string>
   <string id="229">HDD spindown time</string>
   <string id="230">Video filters</string>
@@ -417,7 +417,7 @@
   <string id="486">Repeat</string>
   <string id="487">Repeat one</string>
   <string id="488">Repeat folder</string>
-  <string id="489">Auto play next item</string>
+  <string id="489">Play the next song automatically</string>
   <string id="491">- Use big icons</string>
   <string id="492">Resize VobSubs</string>
   <string id="493">Advanced options (Experts Only!)</string>
@@ -426,7 +426,7 @@
   <string id="496">Calibration</string>
   <string id="497">Hide media extensions</string>
   <string id="498">Sort by: Type</string>
-  <string id="499">Unable to connect to online lookup service</string>529
+  <string id="499">Unable to connect to online lookup service</string>
   <string id="500">Downloading album information failed</string>
   <string id="501">Looking for album names...</string>
   <string id="502">Open</string>
@@ -531,7 +531,7 @@
   <string id="610">Rip audio track</string>
   <string id="611">Enter number</string>
 
-  <string id="620">CD Ripping</string>
+  <string id="620">Audio CDs</string>
   <string id="621">Encoder</string>
   <string id="622">Quality</string>
   <string id="623">Bitrate</string>
@@ -546,7 +546,7 @@
   <string id="635">Original Size</string>
   <string id="636">Custom</string>
   <string id="637">Replay gain</string>
-  <string id="638">Replay gain mode</string>
+  <string id="638">Apply Replaygain volume adjustments</string>
   <string id="639">Use track levels</string>
   <string id="640">Use album levels</string>
   <string id="641">PreAmp Level - Replay gained files</string>
@@ -894,7 +894,7 @@
   <string id="12014">No trainers found</string>
   <string id="12015">Trainer settings</string>
   <string id="12016">All registered trainers are missing. Update your list</string>
-  <string id="12017">Auto resume from last position</string>
+  <string id="12017">Resume from where last stopped</string>
   <string id="12018">No</string>
   <string id="12019">Yes</string>
   <string id="12020">Ask</string>
@@ -1120,7 +1120,7 @@
   <string id="13311">Float effect</string>
   <string id="13312">Black bar reduction</string>
   <string id="13313">Restart</string>
-  <string id="13314">Crossfade</string>
+  <string id="13314">Crossfade between songs</string>
   <string id="13315">Regenerate thumbnails</string>
   <string id="13316">Recursive thumbnails</string>
   <string id="13317">View slideshow</string>
@@ -1179,7 +1179,7 @@
   <string id="13384">Voice mask - Port 3</string>
   <string id="13385">Voice mask - Port 4</string>
   <string id="13386">Use time based seeking</string>
-  <string id="13387">Track naming template right</string>
+  <string id="13387">Track naming template - right</string>
   <string id="13388">Preset</string>
   <string id="13389">There are no presets available&#10;for this visualization</string>
   <string id="13390">There are no settings available&#10;for this visualization</string>
@@ -1192,7 +1192,7 @@
   <string id="13397">Enable subtitles</string>
   <string id="13398">Shortcuts</string>
   <string id="13399">Ignore tokens when sorting</string>
-  <string id="13400">Crossfade album tracks</string>
+  <string id="13400">Crossfade between songs on the same album</string>
   <string id="13401">Browse for %s</string>
   <string id="13402">Show track position</string>
   <string id="13403">Clear default</string>
@@ -1206,7 +1206,7 @@
   <string id="13411">Minimum fan speed</string>
   <string id="13412"></string>
   <string id="13413">Downloading</string>
-  <string id="13414">Hide artists who appear only on compilations</string>
+  <string id="13414">Show artists who appear only on compilations</string>
   <string id="13415">Render method</string>
   <string id="13416">Auto detect</string>
   <string id="13417">Basic shaders (ARB)</string>
@@ -1298,7 +1298,7 @@
   <string id="14056">Stop scan</string>
   <string id="14057">Not possible while scanning for media info</string>
   <string id="14058">Film grain effect</string>
-  <string id="14059">Look for thumbs on remote shares</string>
+  <string id="14059">Search for thumbnails on remote shares</string>
   <string id="14060">Unknown type cache - Internet</string>
   <string id="14061">Auto</string>
   <string id="14062">Enter username for</string>
@@ -1322,6 +1322,13 @@
   <string id="14080">Timezone</string>
   <string id="14081">File lists</string>
   <string id="14082">Show EXIF picture information</string>
+  <string id="14083">Use a fullscreen window rather than true fullscreen mode</string>
+  <string id="14084">Queue songs on selection</string>
+  <string id="14085">Play audio CDs automatically</string>
+  <string id="14086">Playback</string>
+  <string id="14087">DVDs</string>
+  <string id="14088">Play DVDs automatically</string>
+  <string id="14089">Font to use for text subtitles</string>
 
   <string id="15000"></string>
   <string id="15001"></string>
@@ -1419,9 +1426,9 @@
   <string id="15218">Libre.fm username</string>
   <string id="15219">Libre.fm password</string>
   <string id="15220">Libre.fm</string>
-  <string id="15221">Scrobbler</string>
+  <string id="15221">Song submission</string>
 
-  <string id="15250">Submit Last.fm Radio to Last.fm</string>
+  <string id="15250">Submit Last.fm radio to Last.fm</string>
   <string id="15251">Connecting to Last.fm...</string>
   <string id="15252">Selecting station...</string>
   <string id="15253">Search similar artists...</string>
@@ -1555,12 +1562,12 @@
 
   <string id="19000">Switch to channel</string>
 
-  <string id="20000">CDDA rip folder</string>
+  <string id="20000">Saved music folder</string>
   <string id="20001">Use external DVD player</string>
   <string id="20002">External DVD player</string>
   <string id="20003">Trainers folder</string>
   <string id="20004">Screenshot folder</string>
-  <string id="20005">Recordings folder</string>
+  <string id="20005"></string>
   <string id="20006">Playlists folder</string>
   <string id="20007">Recordings</string>
   <string id="20008">Screenshots</string>
@@ -1732,7 +1739,7 @@
   <string id="20181">Backspace</string>
   <string id="20182">Space</string>
   <string id="20183">Reload skin</string>
-  <string id="20184">Orientate pictures using EXIF information</string>
+  <string id="20184">Rotate pictures using EXIF information</string>
   <string id="20185">Use poster view styles for TV shows</string>
   <string id="20186">Please wait</string>
   <string id="20187">Backing up EEPROM</string>
@@ -1740,9 +1747,9 @@
   <string id="20189">Enable auto scrolling for plot &amp; review</string>
   <string id="20190">Custom</string>
   <string id="20191">Enable debug logging</string>
-  <string id="20192">Download additional info on library updates</string>
+  <string id="20192">Download additional information during updates</string>
   <string id="20193"></string>
-  <string id="20194">Default scraper</string>
+  <string id="20194">Default service for music information</string>
   <string id="20195">Change scraper</string>
   <string id="20196">Export music library</string>
   <string id="20197">Import music library</string>
@@ -1825,7 +1832,7 @@
   <string id="20366">* All seasons</string>
   <string id="20367">Hide watched</string>
   <string id="20368">Prod code</string>
-  <string id="20369">Hide plot for unwatched items</string>
+  <string id="20369">Show plot for unwatched items</string>
   <string id="20370">* Hidden to prevent spoilers *</string>
   <string id="20371">Set season thumb</string>
   <string id="20372">Season image</string>
@@ -1858,7 +1865,7 @@
   <string id="20399">Go to music videos from album</string>
   <string id="20400">Go to music videos by artist</string>
   <string id="20401">Play music video</string>
-  <string id="20402">Automatically grab actor thumbs</string>
+  <string id="20402">Download actor thumbnails when adding to library</string>
   <string id="20403">Set actor thumb</string>
   <string id="20404"></string>
   <string id="20405">Remove episode bookmark</string>
@@ -1886,10 +1893,10 @@
   <string id="20427">files per entry?</string>
   <string id="20428">Single file</string>
   <string id="20429">Separate</string>
-  <string id="20430">Export thumbs and fanart?</string>
+  <string id="20430">Export thumbnails and fanart?</string>
   <string id="20431">Overwrite old files?</string>
   <string id="20432">Exclude path from library updates</string>
-  <string id="20433">Extract thumbs and flags</string>
+  <string id="20433">Extract thumbnails and video information</string>
   <string id="20434">Sets</string>
   <string id="20435">Set movieset thumb</string>
   <string id="20436">Export actor thumbs</string>
@@ -1898,6 +1905,10 @@
   <string id="20439">No fanart</string>
   <string id="20440">Current fanart</string>
   <string id="20441">Remote fanart</string>
+  <string id="20442">Change content</string>
+  <string id="20443">Do you want to refresh info for all</string>
+  <string id="20444">items within this path?</string>
+  <string id="20445">Fanart</string>>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -1921,7 +1932,7 @@
   <string id="21363"></string>
   <string id="21364">Edit media share</string>
   <string id="21365">Remove media share</string>
-  <string id="21366">Custom subtitle directory</string>
+  <string id="21366">Subtitle folder</string>
   <string id="21367">Movie &amp; alternate subtitle directory</string>
 
   <string id="21369">Enable mouse</string>
@@ -1973,7 +1984,7 @@
   <string id="21414">Default tvshow scraper</string>
   <string id="21415">Default musicvideo scraper</string>
   <string id="21416">Enable fallback based on scraper language</string>
-  <string id="21417">- Scraper settings</string>
+  <string id="21417">- Settings</string>
   <string id="21418">Multilingual</string>
 
   <string id="21420">Value to match</string>
@@ -2065,7 +2076,7 @@
   <string id="21880">Reference service</string>
   <string id="21881">Allow UPnP controllers to control XBMC</string>
   <string id="21882">Attempt to skip introduction before DVD menu</string>
-  <string id="21883">Ripped audio CDs</string>
+  <string id="21883">Saved music</string>
   <string id="21884">Query info for all artists</string>
   <string id="21885">Downloading album information</string>
   <string id="21886">Downloading artist information</string>
@@ -2107,8 +2118,10 @@
   <string id="22018">Live channels</string>
   <string id="22019">Recordings by title</string>
   <string id="22020">Guide</string>
-  <string id="22021">Allowed error in aspect ratio (%)</string>
+  <string id="22021">Allowed error in aspect ratio to minimize black bars</string>
   <string id="22022">Show video files in listings</string>
+  <string id="22023">DirectX vendor</string>
+  <string id="22024">Direct3D version</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Font</string>
@@ -2118,7 +2131,7 @@
   <string id="22034">Export karaoke titles as HTML</string>
   <string id="22035">Export karaoke titles as CSV</string>
   <string id="22036">Import karaoke titles...</string>
-  <string id="22037">Auto popup song selector</string>
+  <string id="22037">Show song selector automatically</string>
   <string id="22038">Export karaoke titles...</string>
   <string id="22039">Enter song number</string>
   <string id="22040">white/green</string>

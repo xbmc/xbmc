@@ -41,8 +41,7 @@ public:
   static void OnScan(const CStdString& strPath, const VIDEO::SScanSettings& settings);
   virtual void OnInfo(CFileItem* pItem, const ADDON::CScraperPtr& scraper);
   virtual void OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId);
-  static void MarkUnWatched(const CFileItemPtr &pItem);
-  static void MarkWatched(const CFileItemPtr &pItem);
+  static void MarkWatched(const CFileItemPtr &pItem, bool mark);
   static void UpdateVideoTitle(const CFileItem* pItem);
 
   //! Shows the resume menu following the 'resumeautomatically' guisettig (also checks if there is a bookmark on the file)

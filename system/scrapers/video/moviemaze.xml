@@ -88,7 +88,7 @@
 				<expression>/media/trailer/([0-9]+,[a-zA-Z0-9\-]+).html. ti</expression>
 			</RegExp>
 			<!--URL to Google and Fanart-->
-			<RegExp conditional="fanart" input="$$8" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://www.google.com/search?q=site:imdb.com+moviemaze\1&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fanart" input="$$8" output="&lt;url function=&quot;GetTMDBFanartById&quot;&gt;http://www.google.com/search?q=site:imdb.com+moviemaze\1&lt;/url&gt;" dest="5+">
 				<RegExp input="$$1" output="&quot;\1&quot;" dest="7">
 					<expression>&lt;h2&gt;\(([^,]*)</expression>
 				</RegExp>

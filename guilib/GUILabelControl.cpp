@@ -25,7 +25,7 @@
 using namespace std;
 
 CGUILabelControl::CGUILabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath)
-    : CGUIControl(parentID, controlID, posX, posY, width, height), m_textLayout(labelInfo.font, wrapMultiLine)
+    : CGUIControl(parentID, controlID, posX, posY, width, height), m_textLayout(labelInfo.font, wrapMultiLine, height)
 {
   m_bHasPath = bHasPath;
   m_iCursorPos = 0;
@@ -76,9 +76,9 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
     g_charsetConverter.utf8ToW(label, utf16);
     CStdStringW col;
     if ((++m_dwCounter % 50) > 25)
-      col.Format(L"|");
+      col = L"|";
     else
-      col.Format(L"[COLOR %x]|[/COLOR]", 0x1000000);
+      col = L"[COLOR 00FFFFFF]|[/COLOR]";
     utf16.Insert(m_iCursorPos, col);
     g_charsetConverter.wToUTF8(utf16, label);
   }

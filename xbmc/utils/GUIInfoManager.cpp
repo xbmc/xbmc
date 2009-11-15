@@ -423,7 +423,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     int pos = strTest.Find(",");
     int info = TranslateString(strTest.Mid(14, pos-14));
-    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    CStdString compare = CGUIInfoLabel::ReplaceLocalize(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    int compareString = ConditionalStringParameter(compare);
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, compareString));
   }
   else if (strTest.Left(19).Equals("integergreaterthan("))
@@ -1514,19 +1515,15 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
         return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_image");
     }
     break;
-  case SYSTEM_OPENGL_VENDOR:
+  case SYSTEM_RENDER_VENDOR:
     strLabel = g_Windowing.GetRenderVendor();
     break;
-  case SYSTEM_OPENGL_RENDERER:
+  case SYSTEM_RENDER_RENDERER:
     strLabel = g_Windowing.GetRenderRenderer();
     break;
-  case SYSTEM_OPENGL_VERSION:
-  {
-    unsigned int major, minor;
-    g_Windowing.GetRenderVersion(major, minor);
-    strLabel.Format("%d.%d", major, minor);
+  case SYSTEM_RENDER_VERSION:
+    strLabel = g_Windowing.GetRenderVersionString();
     break;
-  }
   }
 
   return strLabel;
@@ -1735,7 +1732,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_INTERNET_STATE)
   {
     g_sysinfo.GetInfo(condition);
-    bReturn = g_sysinfo.m_bInternetState;
+    bReturn = g_sysinfo.HasInternet();
   }
   else if (condition == SKIN_HAS_VIDEO_OVERLAY)
   {
@@ -1952,7 +1949,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       }
     break;
     case VISUALISATION_ENABLED:
-      bReturn = g_guiSettings.GetString("mymusic.visualisation") != "None";
+      bReturn = g_guiSettings.GetString("musicplayer.visualisation") != "None";
     break;
     default: // default, use integer value different from 0 as true
       bReturn = GetInt(condition) != 0;
@@ -3684,7 +3681,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasVideoInfoTag())
     {
       if (!(!item->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && item->GetVideoInfoTag()->m_iSeason == -1)) // dont apply to tvshows
-        if (item->GetVideoInfoTag()->m_playCount == 0 && g_guiSettings.GetBool("videolibrary.hideplots"))
+        if (item->GetVideoInfoTag()->m_playCount == 0 && !g_guiSettings.GetBool("videolibrary.showunwatchedplots"))
           return g_localizeStrings.Get(20370);
 
       return item->GetVideoInfoTag()->m_strPlot;

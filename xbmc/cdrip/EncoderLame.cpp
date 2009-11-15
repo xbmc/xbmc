@@ -58,9 +58,9 @@ bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int i
   }
 
   // setup parmaters, see lame.h for possibilities
-  if (g_guiSettings.GetInt("cddaripper.quality") == CDDARIP_QUALITY_CBR)
+  if (g_guiSettings.GetInt("audiocds.quality") == CDDARIP_QUALITY_CBR)
   {
-    int bitrate = g_guiSettings.GetInt("cddaripper.bitrate");
+    int bitrate = g_guiSettings.GetInt("audiocds.bitrate");
     // use cbr and specified bitrate from settings
     CLog::Log(LOGDEBUG, "Lame setting CBR bitrate %d", bitrate);
     m_dll.lame_set_brate(m_pGlobalFlags, bitrate);
@@ -70,7 +70,7 @@ bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int i
     // use presets (VBR)
     CStdString strSettings;
     int preset;
-    switch (g_guiSettings.GetInt("cddaripper.quality"))
+    switch (g_guiSettings.GetInt("audiocds.quality"))
     {
     case CDDARIP_QUALITY_MEDIUM:
       preset = MEDIUM;

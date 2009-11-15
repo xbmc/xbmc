@@ -2255,7 +2255,7 @@ void CMusicDatabase::DeleteAlbumInfo()
 bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
 {
 #ifdef HAS_DVD_DRIVE  
-  if (!g_guiSettings.GetBool("musicfiles.usecddb"))
+  if (!g_guiSettings.GetBool("audiocds.usecddb"))
     return false;
 
   // check network connectivity
@@ -4120,6 +4120,21 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::CScrape
       }
     }
     m_pDS->close();
+    else
+    { // none available yet (user wisely left defaults as is and didn't touch 'em)
+      CScraperParser parser;
+      if (parser.Load("special://xbmc/system/scrapers/music/" + g_guiSettings.GetString("musiclibrary.defaultscraper")))
+      {
+        info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
+        info.strContent = "albums";
+        info.strTitle = parser.GetName();
+        info.strDate = parser.GetDate();
+        info.strFramework = parser.GetFramework();
+        info.strLanguage = parser.GetLanguage();
+        info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + info.strPath);
+        SetScraperForPath("musicdb://",info);
+      }
+    }
 
     if (!info)
     { // use default music scraper instead

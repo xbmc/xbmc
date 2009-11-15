@@ -415,7 +415,7 @@ bool CGUIViewStateWindowVideoNav::AutoPlayNextItem()
   CQueryParams params;
   CVideoDatabaseDirectory::GetQueryParams(m_items.m_strPath,params);
   if (params.GetContentType() == CONTENT_MUSICVIDEOS || params.GetContentType() == 6) // recently added musicvideos
-    return g_guiSettings.GetBool("mymusic.autoplaynextitem");
+    return g_guiSettings.GetBool("musicplayer.autoplaynextitem");
 
   return false;
 }

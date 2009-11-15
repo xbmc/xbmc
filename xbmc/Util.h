@@ -75,6 +75,7 @@ public:
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
   static bool IsDOSPath(const CStdString &path);
   static bool IsHD(const CStdString& strFileName);
+  static CStdString GetParentPath(const CStdString& strPath);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static void RunShortcut(const char* szPath);
@@ -97,14 +98,18 @@ public:
   static bool IsInArchive(const CStdString& strFile);
   static bool IsSpecial(const CStdString& strFile);
   static bool IsPlugin(const CStdString& strFile); 
+  static bool IsPluginRoot(const CStdString& strFile); 
   static bool IsCDDA(const CStdString& strFile);
-  static bool IsMemCard(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
   static bool IsMythTV(const CStdString& strFile);
   static bool IsHDHomeRun(const CStdString& strFile);
   static bool IsVTP(const CStdString& strFile);
   static bool IsHTSP(const CStdString& strFile);
   static bool IsLiveTV(const CStdString& strFile);
+  static bool IsMusicDb(const CStdString& strFile);
+  static bool IsVideoDb(const CStdString& strFile);
+  static bool IsShoutCast(const CStdString& strFile);
+  static bool IsLastFM(const CStdString& strFile);
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);

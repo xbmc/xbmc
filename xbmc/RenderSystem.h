@@ -89,6 +89,7 @@ public:
   void GetRenderVersion(unsigned int& major, unsigned int& minor) const;
   const CStdString& GetRenderVendor() const { return m_RenderVendor; }
   const CStdString& GetRenderRenderer() const { return m_RenderRenderer; }
+  const CStdString& GetRenderVersionString() const { return m_RenderVersion; }
   bool SupportsDXT() const;
   bool SupportsNPOT(bool dxt) const;
   unsigned int GetMaxTextureSize() const { return m_maxTextureSize; }
@@ -101,6 +102,7 @@ protected:
 
   CStdString   m_RenderRenderer;
   CStdString   m_RenderVendor;
+  CStdString   m_RenderVersion;
   int          m_RenderVersionMinor;
   int          m_RenderVersionMajor;
   unsigned int m_renderCaps;

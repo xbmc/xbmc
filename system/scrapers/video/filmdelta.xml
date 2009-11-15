@@ -63,7 +63,7 @@
 				</RegExp>
 				<expression repeat="yes" trim="1">type=category'&gt;([^&lt;]*)&lt;/a&gt;&lt;/h5&gt;</expression>
 			</RegExp>
-                        <RegExp input="$$9" output="&lt;url cache=&quot;filmdelta-trans.xml&quot; function=&quot;GetTMDBThumbsByIMDBId&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="5+">                                                                
+                        <RegExp input="$$9" output="&lt;url cache=&quot;filmdelta-trans.xml&quot; function=&quot;GetTMDBThumbsById&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="5+">                                                                
                                 <RegExp input="$$1" output="&quot;\1&quot;+\2" dest="4+">
                                         <expression>&lt;h4&gt;Originaltitel&lt;/h4&gt;[^&lt;]*&lt;h5&gt;([^&lt;]*)&lt;/h5&gt;.*?/filmarkiv/([0-9]*)/</expression>
                                 </RegExp>
@@ -72,7 +72,7 @@
                                 </RegExp>
                                 <expression/>
                         </RegExp>
-                        <RegExp conditional="fanart" input="$$9" output="&lt;url cache=&quot;filmdelta-trans.xml&quot; function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="5+">             
+                        <RegExp conditional="fanart" input="$$9" output="&lt;url cache=&quot;filmdelta-trans.xml&quot; function=&quot;GetTMDBFanartById&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="5+">             
                                 <RegExp input="$$1" output="&quot;\1&quot;+\2" dest="4+">
                                         <expression>&lt;h4&gt;Originaltitel&lt;/h4&gt;[^&lt;]*&lt;h5&gt;([^&lt;]*)&lt;/h5&gt;.*?/filmarkiv/([0-9]*)/</expression>
                                 </RegExp>

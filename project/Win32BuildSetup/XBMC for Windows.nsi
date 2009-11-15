@@ -382,7 +382,7 @@ Section "DirectX Install" SEC_DIRECTX
   SetOutPath "$TEMP"
   File "${xbmc_root}\Xbmc\dxwebsetup.exe"
   DetailPrint "Running DirectX Setup..."
-  ExecWait '"$TEMP\dxwebsetup.exe" /Q' $DirectXSetupError
+  ExecWait '"$TEMP\dxwebsetup.exe" /Q /r:n' $DirectXSetupError
   DetailPrint "Finished DirectX Setup"
  
   Delete "$TEMP\dxwebsetup.exe"

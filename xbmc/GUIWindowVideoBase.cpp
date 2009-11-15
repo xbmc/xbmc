@@ -917,7 +917,7 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 
 bool CGUIWindowVideoBase::OnClick(int iItem)
 {
-  if (g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_NO)
+  if (g_guiSettings.GetInt("videoplayer.resumeautomatically") != RESUME_NO)
     OnResumeItem(iItem);
   else
     return CGUIMediaWindow::OnClick(iItem);
@@ -934,7 +934,7 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem)
 bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
 {
   // we always resume the movie if the user doesn't want us to ask
-  bool resumeItem = g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_ASK;
+  bool resumeItem = g_guiSettings.GetInt("videoplayer.resumeautomatically") != RESUME_ASK;
 
   if (!item.m_bIsFolder && !item.IsLiveTV() && !resumeItem)
   {
@@ -1048,9 +1048,9 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       // check to see if the Resume Video button is applicable
       if (GetResumeItemOffset(item.get()) > 0)
       {
-        if (g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_YES)
+        if (g_guiSettings.GetInt("videoplayer.resumeautomatically") == RESUME_YES)
           buttons.Add(CONTEXT_BUTTON_RESTART_ITEM, 20132);    // Restart Video
-        if (g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_NO)
+        if (g_guiSettings.GetInt("videoplayer.resumeautomatically") == RESUME_NO)
           buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 13381);     // Resume Video
       }
       if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
@@ -1212,6 +1212,17 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_RENAME:
     OnRenameItem(itemNumber);
+    return true;
+  case CONTEXT_BUTTON_MARK_WATCHED:
+    MarkWatched(item,true);
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    Update(m_vecItems->m_strPath);
+    return true;
+
+  case CONTEXT_BUTTON_MARK_UNWATCHED:
+    MarkWatched(item,false);
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    Update(m_vecItems->m_strPath);
     return true;
   default:
     break;
@@ -1399,7 +1410,7 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
   CGUIWindowFileManager::DeleteItem(item.get());
 }
 
-void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
+void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool mark)
 {
   // dont allow update while scanning
   CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
@@ -1426,45 +1437,18 @@ void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
   for (int i=0;i<items.Size();++i)
   {
     CFileItemPtr pItem=items[i];
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount == 0)
-      continue;
+    if (pItem->IsVideoDb())
+    {
+      if (pItem->HasVideoInfoTag() &&
+          (( mark && pItem->GetVideoInfoTag()->m_playCount) ||
+           (!mark && pItem->GetVideoInfoTag()->m_playCount > 0)))
+        continue;
+    }
 
-    database.MarkAsUnWatched(*pItem);
-  }
-}
-
-//Add Mark a Title as watched
-void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item)
-{
-  // dont allow update while scanning
-  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  if (pDialogScan && pDialogScan->IsScanning())
-  {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
-    return;
-  }
-
-  CVideoDatabase database;
-  database.Open();
-  CFileItemList items;
-  if (item->m_bIsFolder)
-  {
-    CVideoDatabaseDirectory dir;
-    CStdString strPath = item->m_strPath;
-    if (dir.GetDirectoryChildType(item->m_strPath) == NODE_TYPE_SEASONS)
-      strPath += "-1/";
-    dir.GetDirectory(strPath,items);
-  }
-  else
-    items.Add(item);
-
-  for (int i=0;i<items.Size();++i)
-  {
-    CFileItemPtr pItem=items[i];
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount > 0)
-      continue;
-
-    database.MarkAsWatched(*pItem);
+    if (mark)
+      database.MarkAsWatched(*pItem);
+    else
+      database.MarkAsUnWatched(*pItem);
   }
 }
 

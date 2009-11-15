@@ -367,9 +367,9 @@ class CDateTime;
 #define SYSTEM_GET_BOOL             704
 #define SYSTEM_GET_CORE_USAGE       705
 #define SYSTEM_HAS_CORE_ID          706
-#define SYSTEM_OPENGL_VENDOR        707
-#define SYSTEM_OPENGL_RENDERER      708
-#define SYSTEM_OPENGL_VERSION       709
+#define SYSTEM_RENDER_VENDOR        707
+#define SYSTEM_RENDER_RENDERER      708
+#define SYSTEM_RENDER_VERSION       709
 #define SYSTEM_SETTING              710
 
 #define LIBRARY_HAS_MUSIC           720
@@ -420,7 +420,7 @@ class CDateTime;
 
 // Version string MUST NOT contain spaces.  It is used
 // in the HTTP request user agent.
-#define VERSION_STRING "9.11-alpha1"
+#define VERSION_STRING "9.11-alpha2"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)

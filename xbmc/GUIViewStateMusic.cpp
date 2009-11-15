@@ -48,7 +48,8 @@ int CGUIViewStateWindowMusic::GetPlaylist()
 
 bool CGUIViewStateWindowMusic::AutoPlayNextItem()
 {
-  return g_guiSettings.GetBool("mymusic.autoplaynextitem");
+  return g_guiSettings.GetBool("musicplayer.autoplaynextitem") &&
+         !g_guiSettings.GetBool("musicplayer.queuebydefault");
 }
 
 CStdString CGUIViewStateWindowMusic::GetLockType()
