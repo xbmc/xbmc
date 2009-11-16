@@ -172,7 +172,9 @@ void CVideoThumbLoader::SetWatchedOverlay(CFileItem *item)
  */
 bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 {
-  if (pItem->m_bIsShareOrDrive) return false;
+  if (pItem->m_bIsShareOrDrive
+  ||  pItem->IsParentFolder())
+    return false;
 
   SetWatchedOverlay(pItem);
 
