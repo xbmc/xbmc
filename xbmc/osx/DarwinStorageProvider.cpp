@@ -54,7 +54,7 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   localDrives.push_back(share);
 
   // Volumes (all mounts are present here)
-  share.strPath = "\Volumes";
+  share.strPath = "/Volumes";
   share.strName = "Volumes";
   share.m_ignore = true;
   localDrives.push_back(share);
