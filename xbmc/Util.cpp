@@ -877,6 +877,17 @@ bool CUtil::IsMultiPath(const CStdString& strPath)
   return url.GetProtocol() == "multipath";
 }
 
+bool CUtil::IsHD(const CStdString& strFileName)
+{
+  CStdString strFileName2(strFileName);
+
+  if (IsStack(strFileName))
+    strFileName2 = CStackDirectory::GetFirstStackedFile(strFileName);
+  
+  CURL url(_P(strFileName2));
+  return url.IsLocal();
+}
+
 bool CUtil::IsDVD(const CStdString& strFile)
 {
   CStdString strFileLow = strFile;
@@ -1277,12 +1288,6 @@ void CUtil::RemoveTempFiles()
       CFile::Delete(CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), wfd.cFileName));
   }
   while (FindNextFile(hFind, &wfd));
-}
-
-bool CUtil::IsHD(const CStdString& strFileName)
-{
-  CURL url(_P(strFileName));
-  return url.IsLocal();
 }
 
 void CUtil::ClearSubtitles()
