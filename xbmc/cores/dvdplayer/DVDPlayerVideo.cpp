@@ -525,7 +525,9 @@ void CDVDPlayerVideo::Process()
             //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
             //this video
             EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
-            if( mInt == VS_INTERLACEMETHOD_DEINTERLACE )
+            if( mInt == VS_INTERLACEMETHOD_DEINTERLACE
+            ||  mInt == VS_INTERLACEMETHOD_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED) 
+                                                && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB))
             {
               if(mDeinterlace.Process(&picture))
                 mDeinterlace.GetPicture(&picture);
