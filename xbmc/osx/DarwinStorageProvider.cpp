@@ -63,6 +63,7 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   Cocoa_GetVolumeNameFromMountPoint("/", share.strName);
   if (!share.strName.empty())
   {
+    share.strPath = "/";
     share.m_ignore = true;
     localDrives.push_back(share);
   }
