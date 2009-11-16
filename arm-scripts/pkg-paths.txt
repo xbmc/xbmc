@@ -50,8 +50,10 @@ http://ftp.uk.debian.org/debian/pool/main/e/e2fsprogs/libcomerr2_1.41.3-1_armel.
 http://ftp.uk.debian.org/debian/pool/main/c/cmake/cmake_2.6.0-6_armel.deb
 http://ftp.uk.debian.org/debian/pool/main/n/nasm/nasm_2.03.01-1_armel.deb
 http://ftp.uk.debian.org/debian/pool/main/libj/libjpeg6b/libjpeg62-dev_6b-14_armel.deb
+http://ftp.uk.debian.org/debian/pool/main/libj/libjpeg6b/libjpeg62_6b-14_armel.deb
 http://ftp.uk.debian.org/debian/pool/main/t/tiff/libtiff4_3.8.2-11_armel.deb
 http://ftp.uk.debian.org/debian/pool/main/p/python2.4/python2.4-dev_2.4.6-1_armel.deb
 http://ftp.uk.debian.org/debian/pool/main/p/python2.4/python2.4_2.4.6-1_armel.deb
 http://ftp.uk.debian.org/debian/pool/main/s/sdl-image1.2/libsdl-image1.2-dev_1.2.6-3_armel.deb
 http://ftp.uk.debian.org/debian/pool/main/s/sdl-image1.2/libsdl-image1.2_1.2.6-3_armel.deb
+http://security.debian.org/debian-security/pool/updates/main/s/samba/libsmbclient-dev_3.2.5-4lenny7_armel.deb
