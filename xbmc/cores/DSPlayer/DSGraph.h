@@ -40,6 +40,7 @@
 #include "igraphbuilder2.h"
 #include "filters/dx9allocatorpresenter.h"
 #include "Filters/IMPCVideoDecFilter.h"
+#include "Filters/IffdshowDecVideo.h"
 
 
 #include <atlcoll.h>
@@ -168,6 +169,7 @@ private:
   CComQIPtr<IBasicAudio>                m_pBasicAudio;
   CComQIPtr<IBasicVideo2>               m_pBasicVideo;
   CComPtr<IMPCVideoDecFilter>	        m_pIMpcDecFilter;
+  CComPtr<IffdshowDecVideoA>	        m_pIffdDecFilter;
   CComPtr<ISubPicAllocatorPresenter>    m_pAllocator;
 protected:
   

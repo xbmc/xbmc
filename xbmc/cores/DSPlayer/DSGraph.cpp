@@ -66,6 +66,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file)
   
   //This 
   hr = m_pGraphBuilder->GetXbmcVideoDecFilter(&m_pIMpcDecFilter);
+  hr = m_pGraphBuilder->GetFfdshowVideoDecFilter(&m_pIffdDecFilter);
   hr = m_pGraphBuilder.QueryInterface(&m_pMediaSeeking);
   hr = m_pMediaSeeking->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
   //-->> TIME_FORMAT_FRAME for frame by frame
@@ -184,6 +185,10 @@ void CDSGraph::UpdateState()
 }
 void CDSGraph::UpdateCurrentVideoInfo(CStdString currentFile)
 {
+  if (m_pIffdDecFilter)
+  {
+    //Im not sure if its the best interface to work with from ffdshow but at least the interface is correctly queried
+  }
   if (m_pIMpcDecFilter)
     m_VideoInfo.dxva_info=DShowUtil::GetDXVAMode(m_pIMpcDecFilter->GetDXVADecoderGuid());
   MediaInfo MI;

@@ -2160,14 +2160,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\DSPlayer\IGraphBuilder2.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IMPCVideoDecFilter.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.cpp"
 					>
 				</File>
@@ -2258,6 +2250,14 @@
 				<Filter
 					Name="GraphBuilder"
 					>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\FGLoader.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\FGLoader.h"
+						>
+					</File>
 					<Filter
 						Name="Config"
 						>
@@ -2300,6 +2300,22 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\subpic\MemSubPic.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Interfaces"
+					>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecVideo.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\IGraphBuilder2.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IMPCVideoDecFilter.h"
 						>
 					</File>
 				</Filter>

@@ -30,6 +30,10 @@
       <path>MPCVideoDec.ax</path>
       <guid>{008BAC12-FBAF-497B-9670-BC6F6FBAE2C4}</guid>
 	</filter>
+  <filter name="ffdvideodec" type="videodec">
+    <path>ffdshow.ax</path>
+    <guid>{04FE9017-F873-410E-871E-AB91661A4EF7}</guid>
+  </filter>
 	<!-- Audio decoders-->
 	<filter name="mpcaudiodec" type="audiodec">
       <path>MpaDecFilter.ax</path>
@@ -46,7 +50,7 @@
 	<!--<filter></>-->
   </filters>
   <rules><!-- Still need to fix the source and splitter only the video and audio decoder are used for rules -->
-    <rule filetypes="avi" splitter="avisplitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
+    <rule filetypes="avi" splitter="avisplitter" videodec="ffdvideodec" audiodec="mpcaudiodec"/>
 	  <rule filetypes="flv" splitter="flvsplitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
     <rule filetypes="mp4" splitter="mp4splitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
 	  <rule filetypes="mkv" splitter="mkvsplitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>

@@ -28,8 +28,10 @@
 #include "FGFilter.h"
 #include "IGraphBuilder2.h"
 #include "Filters/IMPCVideoDecFilter.h"
+#include "Filters/IffdshowDecVideo.h"
 #include "File.h"
 #include "FileItem.h"
+#include "FGLoader.h"
 using namespace XFILE;
 
 class CFGManager
@@ -69,17 +71,17 @@ protected:
 	CAtlList<CFGFilterFile*> m_splitter;
 
 	virtual HRESULT CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF, IUnknown** ppUnk);
-	HRESULT AddXbmcSourceFilter(const CFileItem& pFileItem);
-    STDMETHODIMP GetXbmcVideoDecFilter(IMPCVideoDecFilter** pBF);
+  HRESULT AddXbmcSourceFilter(const CFileItem& pFileItem);
+  STDMETHODIMP GetXbmcVideoDecFilter(IMPCVideoDecFilter** pBF);
+  STDMETHODIMP GetFfdshowVideoDecFilter(IffdshowDecVideoA** pBF);
 	STDMETHODIMP RenderFileXbmc(const CFileItem& pFileItem);
-	bool LoadFiltersFromXml(CStdString configFile, CStdString xbmcPath);
 	void InsertSubtitleNullRender(IBaseFilter* pBF);
 	CFile                m_File;
 	CComPtr<IBaseFilter> m_FileSource;
 	CComPtr<IBaseFilter> m_Splitter;
 	CComPtr<IBaseFilter> m_XbmcVideoDec;
+    CFGLoader*           m_CfgLoader;
 	CStdString           m_xbmcConfigFilePath;
-	GUID                 m_mpcVideoDecGuid;
 	// IFilterGraph
 
 	STDMETHODIMP AddFilter(IBaseFilter* pFilter, LPCWSTR pName);

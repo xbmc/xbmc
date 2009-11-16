@@ -26,6 +26,7 @@
 #include "File.h"
 #include "FileItem.h"
 #include "filters/IMPCVideoDecFilter.h"
+#include "Filters/IffdshowDecVideo.h"
 using namespace XFILE;
 
 [uuid("165BE9D6-0929-4363-9BA3-580D735AA0F6")]
@@ -42,6 +43,7 @@ interface IGraphBuilder2 : public IFilterGraph2
 	STDMETHOD(RemoveFromROT) () = 0;
 	STDMETHOD(RenderFileXbmc) (const CFileItem& pFileItem) = 0;
 	STDMETHOD(GetXbmcVideoDecFilter) (IMPCVideoDecFilter** pBF) = 0;
+    STDMETHOD(GetFfdshowVideoDecFilter) (IffdshowDecVideoA** pBF) = 0;
 };
 
 // private use only
