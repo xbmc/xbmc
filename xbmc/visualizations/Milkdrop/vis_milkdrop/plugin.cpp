@@ -1194,8 +1194,6 @@ int CPlugin::AllocateMyDX8Stuff()
 						GetDevice()->Clear(0, 0, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0);
 						pNewTarget->Release();
 					}
-
-					GetDevice()->SetRenderTarget(0, pNewTarget);
 					GetDevice()->Clear(0, 0, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0);
 				}
 			}
