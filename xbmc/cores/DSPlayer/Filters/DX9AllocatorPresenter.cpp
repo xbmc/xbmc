@@ -631,8 +631,10 @@ HRESULT CDX9AllocatorPresenter::PresentImage(
     g_renderManager.PaintVideoTexture(m_privateTexture, m_pVideoSurface);
   }
   g_application.NewFrame();
+  while( !g_application.WaitFrame(5) ) {}
+  
   //Without the 1ms sec flip the gui keep flickering
-  Sleep(1);
+  //Sleep(1);
   return hr;
 }
 

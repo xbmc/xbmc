@@ -67,8 +67,6 @@ protected:
 	CComPtr<IFilterMapper2> m_pFM;
 	CInterfaceList<IUnknown, &IID_IUnknown> m_pUnks;
 	CAtlList<CFGFilter*> m_source, m_transform, m_override;
-	CAtlList<CFGFilterFile*> m_configfilter;
-	CAtlList<CFGFilterFile*> m_splitter;
 
 	virtual HRESULT CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF, IUnknown** ppUnk);
   HRESULT AddXbmcSourceFilter(const CFileItem& pFileItem);
@@ -78,7 +76,6 @@ protected:
 	void InsertSubtitleNullRender(IBaseFilter* pBF);
 	CFile                m_File;
 	CComPtr<IBaseFilter> m_FileSource;
-	CComPtr<IBaseFilter> m_Splitter;
 	CComPtr<IBaseFilter> m_XbmcVideoDec;
     CFGLoader*           m_CfgLoader;
 	CStdString           m_xbmcConfigFilePath;

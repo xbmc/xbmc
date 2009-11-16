@@ -42,12 +42,12 @@
   #define DNew new
 #endif
 
-#define LCID_NOSUBTITLES			-1
+#define LCID_NOSUBTITLES      -1
 
 typedef enum {CDROM_NotFound, CDROM_Audio, CDROM_VideoCD, CDROM_DVDVideo, CDROM_Unknown} cdrom_t;
 
 static const GUID CLSID_NullRenderer =
-	{ 0xC1F400A4, 0x3F08, 0x11D3, { 0x9F, 0x0B, 0x00, 0x60, 0x08, 0x03, 0x9E, 0x37 } };
+  { 0xC1F400A4, 0x3F08, 0x11D3, { 0x9F, 0x0B, 0x00, 0x60, 0x08, 0x03, 0x9E, 0x37 } };
 
 class  DShowUtil
 {
@@ -137,8 +137,8 @@ typedef enum {CDROM_NotFound, CDROM_Audio, CDROM_VideoCD, CDROM_DVDVideo, CDROM_
 REFERENCE_TIME StringToReftime(LPCTSTR strVal);
   static COLORREF YCrCbToRGB_Rec601(BYTE Y, BYTE Cr, BYTE Cb);
   static COLORREF YCrCbToRGB_Rec709(BYTE Y, BYTE Cr, BYTE Cb);
-  static DWORD	YCrCbToRGB_Rec601(BYTE A, BYTE Y, BYTE Cr, BYTE Cb);
-  static DWORD	YCrCbToRGB_Rec709(BYTE A, BYTE Y, BYTE Cr, BYTE Cb);
+  static DWORD  YCrCbToRGB_Rec601(BYTE A, BYTE Y, BYTE Cr, BYTE Cb);
+  static DWORD  YCrCbToRGB_Rec709(BYTE A, BYTE Y, BYTE Cr, BYTE Cb);
 };
 
 class DShowVideoInfo
@@ -150,63 +150,63 @@ public:
 class CPinInfo : public PIN_INFO
 {
 public:
-	CPinInfo() {pFilter = NULL;}
-	~CPinInfo() {if(pFilter) pFilter->Release();}
+  CPinInfo() {pFilter = NULL;}
+  ~CPinInfo() {if(pFilter) pFilter->Release();}
 };
 
 class CFilterInfo : public FILTER_INFO
 {
 public:
-	CFilterInfo() {pGraph = NULL;}
-	~CFilterInfo() {if(pGraph) pGraph->Release();}
+  CFilterInfo() {pGraph = NULL;}
+  ~CFilterInfo() {if(pGraph) pGraph->Release();}
 };
 
 #define BeginEnumFilters(pFilterGraph, pEnumFilters, pBaseFilter) \
-	{CComPtr<IEnumFilters> pEnumFilters; \
-	if(pFilterGraph && SUCCEEDED(pFilterGraph->EnumFilters(&pEnumFilters))) \
-	{ \
-		for(CComPtr<IBaseFilter> pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
-		{ \
+  {CComPtr<IEnumFilters> pEnumFilters; \
+  if(pFilterGraph && SUCCEEDED(pFilterGraph->EnumFilters(&pEnumFilters))) \
+  { \
+    for(CComPtr<IBaseFilter> pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
+    { \
 
 #define EndEnumFilters }}}
 
 #define BeginEnumCachedFilters(pGraphConfig, pEnumFilters, pBaseFilter) \
-	{CComPtr<IEnumFilters> pEnumFilters; \
-	if(pGraphConfig && SUCCEEDED(pGraphConfig->EnumCacheFilter(&pEnumFilters))) \
-	{ \
-		for(CComPtr<IBaseFilter> pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
-		{ \
+  {CComPtr<IEnumFilters> pEnumFilters; \
+  if(pGraphConfig && SUCCEEDED(pGraphConfig->EnumCacheFilter(&pEnumFilters))) \
+  { \
+    for(CComPtr<IBaseFilter> pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
+    { \
 
 #define EndEnumCachedFilters }}}
 
 #define BeginEnumPins(pBaseFilter, pEnumPins, pPin) \
-	{CComPtr<IEnumPins> pEnumPins; \
-	if(pBaseFilter && SUCCEEDED(pBaseFilter->EnumPins(&pEnumPins))) \
-	{ \
-		for(CComPtr<IPin> pPin; S_OK == pEnumPins->Next(1, &pPin, 0); pPin = NULL) \
-		{ \
+  {CComPtr<IEnumPins> pEnumPins; \
+  if(pBaseFilter && SUCCEEDED(pBaseFilter->EnumPins(&pEnumPins))) \
+  { \
+    for(CComPtr<IPin> pPin; S_OK == pEnumPins->Next(1, &pPin, 0); pPin = NULL) \
+    { \
 
 #define EndEnumPins }}}
 
 #define BeginEnumMediaTypes(pPin, pEnumMediaTypes, pMediaType) \
-	{CComPtr<IEnumMediaTypes> pEnumMediaTypes; \
-	if(pPin && SUCCEEDED(pPin->EnumMediaTypes(&pEnumMediaTypes))) \
-	{ \
-		AM_MEDIA_TYPE* pMediaType = NULL; \
-		for(; S_OK == pEnumMediaTypes->Next(1, &pMediaType, NULL); DeleteMediaType(pMediaType), pMediaType = NULL) \
-		{ \
+  {CComPtr<IEnumMediaTypes> pEnumMediaTypes; \
+  if(pPin && SUCCEEDED(pPin->EnumMediaTypes(&pEnumMediaTypes))) \
+  { \
+    AM_MEDIA_TYPE* pMediaType = NULL; \
+    for(; S_OK == pEnumMediaTypes->Next(1, &pMediaType, NULL); DeleteMediaType(pMediaType), pMediaType = NULL) \
+    { \
 
 #define EndEnumMediaTypes(pMediaType) } if(pMediaType) DeleteMediaType(pMediaType); }}
 
 #define BeginEnumSysDev(clsid, pMoniker) \
-	{CComPtr<ICreateDevEnum> pDevEnum4$##clsid; \
-	pDevEnum4$##clsid.CoCreateInstance(CLSID_SystemDeviceEnum); \
-	CComPtr<IEnumMoniker> pClassEnum4$##clsid; \
-	if(SUCCEEDED(pDevEnum4$##clsid->CreateClassEnumerator(clsid, &pClassEnum4$##clsid, 0)) \
-	&& pClassEnum4$##clsid) \
-	{ \
-		for(CComPtr<IMoniker> pMoniker; pClassEnum4$##clsid->Next(1, &pMoniker, 0) == S_OK; pMoniker = NULL) \
-		{ \
+  {CComPtr<ICreateDevEnum> pDevEnum4$##clsid; \
+  pDevEnum4$##clsid.CoCreateInstance(CLSID_SystemDeviceEnum); \
+  CComPtr<IEnumMoniker> pClassEnum4$##clsid; \
+  if(SUCCEEDED(pDevEnum4$##clsid->CreateClassEnumerator(clsid, &pClassEnum4$##clsid, 0)) \
+  && pClassEnum4$##clsid) \
+  { \
+    for(CComPtr<IMoniker> pMoniker; pClassEnum4$##clsid->Next(1, &pMoniker, 0) == S_OK; pMoniker = NULL) \
+    { \
 
 #define EndEnumSysDev }}}
 
@@ -224,8 +224,8 @@ template <typename T> __inline void INITDDSTRUCT(T& dd)
 template <class T>
 static CUnknown* WINAPI CreateInstance(LPUNKNOWN lpunk, HRESULT* phr)
 {
-	*phr = S_OK;
+  *phr = S_OK;
     CUnknown* punk = DNew T(lpunk, phr);
     if(punk == NULL) *phr = E_OUTOFMEMORY;
-	return punk;
+  return punk;
 }
