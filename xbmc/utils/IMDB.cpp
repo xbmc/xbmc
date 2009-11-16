@@ -216,7 +216,8 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
       IMDB_MOVIELIST::iterator iter=movielist.begin();
       while (iter != movielist.end())
       {
-        if (iter->m_url[0].m_url.Equals(url.m_url[0].m_url))
+        if (iter->m_url[0].m_url.Equals(url.m_url[0].m_url) &&
+            iter->strTitle.Equals(url.strTitle))
           break;
         ++iter;
       }
