@@ -6990,7 +6990,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         }
       }
 
-      if (!CUtil::IsFTP(movie.m_strFileNameAndPath))
+      if (CUtil::IsWritable(movie.m_strFileNameAndPath))
       {
         if (singleFiles)
         {
@@ -7083,7 +7083,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         }
       }
 
-      if (!CUtil::IsFTP(movie.m_strFileNameAndPath))
+      if (CUtil::IsWritable(movie.m_strFileNameAndPath))
       {
         if (singleFiles)
         {
@@ -7167,7 +7167,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       }
 
 
-      if (!CUtil::IsFTP(tvshow.m_strPath))
+      if (CUtil::IsWritable(tvshow.m_strPath))
       {
         if (singleFiles)
         {

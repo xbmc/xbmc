@@ -1088,6 +1088,11 @@ bool CUtil::IsLastFM(const CStdString& strFile)
   return url.GetProtocol().Equals("lastfm");
 }
 
+bool CUtil::IsWritable(const CStdString& strFile)
+{
+  return ( IsHD(strFile) || IsSmb(strFile) ) && !IsDVD(strFile);
+}
+
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
 {
   if (strFileOrFolder.IsEmpty())
