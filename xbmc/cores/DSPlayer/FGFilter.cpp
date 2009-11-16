@@ -398,7 +398,6 @@ HRESULT CFGFilterFile::Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_
 {
   CheckPointer(ppBF, E_POINTER);
 
-  //if(ppUnk) *ppUnk = NULL;
   HRESULT hr;
   hr = DShowUtil::LoadExternalFilter(m_path, m_clsid, ppBF);
   if (FAILED(hr))
@@ -429,7 +428,7 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF, CInterfaceList<IUnkno
   if (m_clsid == CLSID_VMR9AllocatorPresenter)
     pCAP = new CDX9AllocatorPresenter(hr,m_hWnd,__err,g_Windowing.Get3DObject(),g_Windowing.Get3DDevice());
   //if (m_clsid == CLSID_EVRAllocatorPresenter)
-  //  pCAP = new CDX9AllocatorPresenter(hr,m_hWnd,__err,g_Windowing.Get3DObject(),g_Windowing.Get3DDevice());
+  //  pCAP = new CEVRAllocatorPresenter(hr,m_hWnd,__err,g_Windowing.Get3DObject(),g_Windowing.Get3DDevice());
   if(pCAP == NULL)
     return E_FAIL;
   CComPtr<IUnknown> pRenderer;
@@ -441,44 +440,6 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF, CInterfaceList<IUnkno
   if(!*ppBF) hr = E_FAIL;
 
   return hr;
-  /*if(m_clsid == CLSID_VMR7AllocatorPresenter 
-  || m_clsid == CLSID_VMR9AllocatorPresenter 
-  || m_clsid == CLSID_DXRAllocatorPresenter
-  || m_clsid == CLSID_madVRAllocatorPresenter
-  || m_clsid == CLSID_EVRAllocatorPresenter)
-  {
-    if(SUCCEEDED(CreateAP7(m_clsid, m_hWnd, &pCAP))
-    || SUCCEEDED(CreateAP9(m_clsid, m_hWnd, &pCAP))
-    || SUCCEEDED(CreateEVR(m_clsid, m_hWnd, &pCAP)))
-    {
-      CComPtr<IUnknown> pRenderer;
-      if(SUCCEEDED(hr = pCAP->CreateRenderer(&pRenderer)))
-      {
-        *ppBF = CComQIPtr<IBaseFilter>(pRenderer).Detach();
-        pUnks.AddTail(pCAP);
-      }
-    }
-  }*/
-  /*else
-  {
-    CComPtr<IBaseFilter> pBF;
-    if(SUCCEEDED(pBF.CoCreateInstance(m_clsid)))
-    {
-      BeginEnumPins(pBF, pEP, pPin)
-      {
-        if(CComQIPtr<IMixerPinConfig, &IID_IMixerPinConfig> pMPC = pPin)
-        {
-          pUnks.AddTail(pMPC);
-          break;
-        }
-      }
-      EndEnumPins
-
-      *ppBF = pBF.Detach();
-    }
-  }*/
-
-  
 }
 
 //

@@ -24,8 +24,6 @@
 #pragma once
 
 #include "streams.h"
-
-#define _ATL_EX_CONVERSION_MACROS_ONLY
 #include <atlcomcli.h>
 
 

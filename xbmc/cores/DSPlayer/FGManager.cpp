@@ -44,33 +44,6 @@
 #include "XMLUtils.h"
 //END XML CONFIG HEADERS
 
-enum
-{
-  SRC_CDDA      = 1, 
-  SRC_CDXA      = SRC_CDDA<<1,
-  SRC_VTS       = SRC_CDXA<<1,
-  SRC_FLIC      = SRC_VTS<<1,
-  SRC_D2V       = SRC_FLIC<<1,
-  SRC_DTSAC3    = SRC_D2V<<1,
-  SRC_MATROSKA  = SRC_DTSAC3<<1,
-  SRC_SHOUTCAST = SRC_MATROSKA<<1,
-  SRC_REALMEDIA = SRC_SHOUTCAST<<1,
-  SRC_AVI       = SRC_REALMEDIA<<1,
-  SRC_RADGT     = SRC_AVI<<1,
-  SRC_ROQ       = SRC_RADGT<<1,
-  SRC_OGG       = SRC_ROQ<<1,
-  SRC_NUT       = SRC_OGG<<1,
-  SRC_MPEG      = SRC_NUT<<1,
-  SRC_DIRAC     = SRC_MPEG<<1,
-  SRC_MPA       = SRC_DIRAC<<1,
-  SRC_DSM       = SRC_MPA<<1,
-  SRC_SUBS      = SRC_DSM<<1,
-  SRC_MP4       = SRC_SUBS<<1,
-  SRC_FLV       = SRC_MP4<<1,  
-  SRC_FLAC      = SRC_FLV<<1,
-  SRC_LAST      = SRC_FLAC<<1
-};
-
 using namespace std;
 
 //
@@ -142,58 +115,6 @@ bool CFGManager::CStreamPath::Compare(const CStreamPath& path)
   return true;
 }
 
-bool CFGManager::CheckBytes(HANDLE hFile, CStdString chkbytes)
-{
-  
-  CAtlList<CStdString> sl;
-  Explode(chkbytes, sl, ',');
-
-  if(sl.GetCount() < 4)
-    return false;
-
-  LARGE_INTEGER size = {0, 0};
-  size.LowPart = GetFileSize(hFile, (DWORD*)&size.HighPart);
-
-  POSITION pos = sl.GetHeadPosition();
-  while(sl.GetCount() >= 4)
-  {
-    CStdString offsetstr = sl.RemoveHead();
-    CStdString cbstr = sl.RemoveHead();
-    CStdString maskstr = sl.RemoveHead();
-    CStdString valstr = sl.RemoveHead();
-
-    long cb = _ttol(cbstr);
-
-    if(offsetstr.IsEmpty() || cbstr.IsEmpty() 
-    || valstr.IsEmpty() || (valstr.GetLength() & 1)
-    || cb*2 != valstr.GetLength())
-      return false;
-
-    LARGE_INTEGER offset;
-    offset.QuadPart = _ttoi64(offsetstr);
-    if(offset.QuadPart < 0) offset.QuadPart = size.QuadPart - offset.QuadPart;
-    SetFilePointer(hFile, offset.LowPart, &offset.HighPart, FILE_BEGIN);
-
-    // LAME
-    while(maskstr.GetLength() < valstr.GetLength())
-      maskstr += 'F';
-
-    CAtlArray<BYTE> mask, val;
-    DShowUtil::CStringToBin(maskstr, mask);
-    DShowUtil::CStringToBin(valstr, val);
-
-    for(size_t i = 0; i < val.GetCount(); i++)
-    {
-      BYTE b;
-      DWORD r;
-      if(!ReadFile(hFile, &b, 1, &r, NULL) || (b & mask[i]) != val[i])
-        return false;
-    }
-  }
-
-  return true;
-}
-
 HRESULT CFGManager::CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF, IUnknown** ppUnk)
 {
   CheckPointer(pFGF, E_POINTER);
@@ -201,62 +122,30 @@ HRESULT CFGManager::CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF, IUnknown**
   CheckPointer(ppUnk, E_POINTER);
 
   CComPtr<IBaseFilter> pBF;
-  //CComPtr<IUnknown> pUnk;
   CInterfaceList<IUnknown, &IID_IUnknown> pUnk;
   if(FAILED(pFGF->Create(&pBF, pUnk)))
     return E_FAIL;
 
   *ppBF = pBF.Detach();
-  //if(pUnk) *ppUnk = pUnk.Detach();
   m_pUnks.AddTailList(&pUnk);
 
   return S_OK;
 }
 
-HRESULT CFGManager::AddSourceFilter(CFGFilter* pFGF, LPCWSTR lpcwstrFileName, LPCWSTR lpcwstrFilterName, IBaseFilter** ppBF)
+HRESULT CFGManager::AddXbmcSourceFilter(const CFileItem& pFileItem)
 {
-  //TRACE(_T("FGM: AddSourceFilter trying '%s'\n"), CStringFromGUID(pFGF->GetCLSID()));
-
-  CheckPointer(lpcwstrFileName, E_POINTER);
-  CheckPointer(ppBF, E_POINTER);
-
-  ASSERT(*ppBF == NULL);
-
   HRESULT hr;
-
-  CComPtr<IBaseFilter> pBF;
-  CComPtr<IUnknown> pUnk;
-  if(FAILED(hr = CreateFilter(pFGF, &pBF, &pUnk)))
-    return hr;
-
-  CComQIPtr<IFileSourceFilter> pFSF = pBF;
-  if(!pFSF) return E_NOINTERFACE;
-
-  if(FAILED(hr = AddFilter(pBF, lpcwstrFilterName)))
-    return hr;
-
-  const AM_MEDIA_TYPE* pmt = NULL;
-
-  CMediaType mt;
-  const CAtlList<GUID>& types = pFGF->GetTypes();
-  if(types.GetCount() == 2 && (types.GetHead() != GUID_NULL || types.GetTail() != GUID_NULL))
+  if(m_File.Open(pFileItem.GetAsUrl().GetFileName().c_str(), READ_TRUNCATED | READ_BUFFERED))
   {
-    mt.majortype = types.GetHead();
-    mt.subtype = types.GetTail();
-    pmt = &mt;
-  }
-
-  if(FAILED(hr = pFSF->Load(lpcwstrFileName, pmt)))
-  {
-    RemoveFilter(pBF);
+    CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File);
+    CXBMCFileReader* pXBMCReader = new CXBMCFileReader(pXBMCStream, NULL, &hr);
+    if (!pXBMCReader)
+      CLog::Log(LOGERROR,"%s Failed Loading XBMC File Source filter",__FUNCTION__);
+    m_FileSource = pXBMCReader;
+    this->AddFilter(m_FileSource, L"XBMC File Source");
     return hr;
   }
-
-  *ppBF = pBF.Detach();
-
-  if(pUnk) m_pUnks.AddTail(pUnk);
-
-  return S_OK;
+  return E_FAIL;
 }
 
 // IFilterGraph
@@ -266,7 +155,6 @@ STDMETHODIMP CFGManager::AddFilter(IBaseFilter* pFilter, LPCWSTR pName)
   CAutoLock cAutoLock(this);
 
   HRESULT hr;
-
   if(FAILED(hr = CComQIPtr<IFilterGraph2>(m_pUnkInner)->AddFilter(pFilter, pName)))
     return hr;
 
@@ -560,7 +448,6 @@ STDMETHODIMP CFGManager::GetXbmcVideoDecFilter(IMPCVideoDecFilter** ppBF)
 {
   CheckPointer(ppBF,E_POINTER);
   IMPCVideoDecFilter* mpcvfilter;
-
   *ppBF = NULL;
   //Getting the mpc video dec filter.
   //This filter interface is required to get the info for the current dxva rendering status
@@ -568,22 +455,16 @@ STDMETHODIMP CFGManager::GetXbmcVideoDecFilter(IMPCVideoDecFilter** ppBF)
   BeginEnumFilters(this, pEF, pBF)
   {
     if (SUCCEEDED(pBF->GetClassID(&mpcvid)))
-  {
-	  if (mpcvid == DShowUtil::GUIDFromCString("{008BAC12-FBAF-497B-9670-BC6F6FBAE2C4}"))
     {
-      
-      //m_XbmcVideoDec = ppBF;
-	  HRESULT hr;
-	  hr = pBF->QueryInterface(__uuidof(IMPCVideoDecFilter),(void**) &mpcvfilter);
-	  *ppBF = mpcvfilter;
-
+    if (mpcvid == DShowUtil::GUIDFromCString("{008BAC12-FBAF-497B-9670-BC6F6FBAE2C4}"))
+      {
+        if ( SUCCEEDED(pBF->QueryInterface(__uuidof(IMPCVideoDecFilter),(void**) &mpcvfilter)))
+          *ppBF = mpcvfilter;
       break;
+      }
     }
-  
-  }
   }
   EndEnumFilters
-
 }
 
 STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
@@ -591,20 +472,11 @@ STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   CAutoLock cAutoLock(this);
   HRESULT hr;
   CInterfaceList<IUnknown, &IID_IUnknown> ppUnk;
-  if(m_File.Open(pFileItem.GetAsUrl().GetFileName().c_str(), READ_TRUNCATED | READ_BUFFERED))
-  {
-    CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File);
-    CXBMCFileReader* pXBMCReader = new CXBMCFileReader(pXBMCStream, NULL, &hr);
-    if (!pXBMCReader)
-      CLog::Log(LOGERROR,"%s Failed Loading XBMC File Source filter",__FUNCTION__);
-    m_FileSource = pXBMCReader;
-    this->AddFilter(m_FileSource, L"XBMC File Source");
-  }
-
-  //Connecting the splitter for the current filetype
-  POSITION Pos = m_splitter.GetHeadPosition();
-  CComPtr<IBaseFilter> ppSBF;
   
+  if (FAILED(AddXbmcSourceFilter(pFileItem)))
+    return E_FAIL;
+    
+  CComPtr<IBaseFilter> ppSBF;
   //Load the rules from the xml
   TiXmlDocument graphConfigXml;
   if (!graphConfigXml.LoadFile(m_xbmcConfigFilePath))
@@ -618,51 +490,50 @@ STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   while (pRules)
   {
     if (((CStdString)pRules->Attribute("filetypes")).Equals(pFileItem.GetAsUrl().GetFileType().c_str(),false))
-	{
-	  POSITION pos = m_configfilter.GetHeadPosition();
+    {
+      POSITION pos = m_configfilter.GetHeadPosition();
       while(pos)
       {
         CFGFilterFile* pFGF = m_configfilter.GetNext(pos);
         if ( ((CStdString)pRules->Attribute("splitter")).Equals(pFGF->GetXFilterName().c_str(),false) )
-		{
-		  if(SUCCEEDED(pFGF->Create(&ppSBF, pUnk)))
-		  {
+        {
+          if(SUCCEEDED(pFGF->Create(&ppSBF, pUnk)))
+          {
             //TODO Fix the name of the filters to make it look cleaner in the graph
-            this->AddFilter(ppSBF,L"XBMC SPLITTER");
-			hr = ::ConnectFilters(this,m_FileSource,ppSBF);
-        if ( SUCCEEDED( hr ) )
-          //Now the source filter is connected to the splitter lets load the rules from the xml
-          CLog::Log(LOGDEBUG,"%s Connected the source to the spillter",__FUNCTION__);
-	    else
-		{
-          CLog::Log(LOGERROR,"%s Failed to connect the source to the spliter",__FUNCTION__);
-          return hr;
+            this->AddFilter(ppSBF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());//L"XBMC SPLITTER");
+            hr = ::ConnectFilters(this,m_FileSource,ppSBF);
+            if ( SUCCEEDED( hr ) )
+              //Now the source filter is connected to the splitter lets load the rules from the xml
+              CLog::Log(LOGDEBUG,"%s Connected the source to the spillter",__FUNCTION__);
+            else
+            {
+              CLog::Log(LOGERROR,"%s Failed to connect the source to the spliter",__FUNCTION__);
+              return hr;
+            }
           }
-
-		  }
 		}
-		else if ( ((CStdString)pRules->Attribute("videodec")).Equals(pFGF->GetXFilterName().c_str(),false) )
-		{
-		  CComPtr<IBaseFilter> ppBF;
-		  if(SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
-		  {
-            //TODO Fix the name of the filters to make it look cleaner in the graph
-            this->AddFilter(ppBF,L"video decoder");
-		  }
-		  ppBF.Release();
-		}
-		else if ( ((CStdString)pRules->Attribute("audiodec")).Equals(pFGF->GetXFilterName().c_str(),false) )
-		{
-		  CComPtr<IBaseFilter> ppBF;
-		  if(SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
-		  {
-            //TODO Fix the name of the filters to make it look cleaner in the graph
-		    this->AddFilter(ppBF,L"audio decoder");
-		  }
-		  ppBF.Release();
-		}
-	  }
-	}
+        else if ( ((CStdString)pRules->Attribute("videodec")).Equals(pFGF->GetXFilterName().c_str(),false) )
+        {
+        CComPtr<IBaseFilter> ppBF;
+        if(SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
+        {
+          //TODO Fix the name of the filters to make it look cleaner in the graph
+          this->AddFilter(ppBF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
+        }
+        ppBF.Release();
+      }
+      else if ( ((CStdString)pRules->Attribute("audiodec")).Equals(pFGF->GetXFilterName().c_str(),false) )
+      {
+        CComPtr<IBaseFilter> ppBF;
+        if(SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
+        {
+          //TODO Fix the name of the filters to make it look cleaner in the graph
+          this->AddFilter(ppBF,L"audio decoder");
+        }
+        ppBF.Release();
+      }
+    }
+  }
     pRules = pRules->NextSiblingElement();
   }
   /*if (pFileItem.GetAsUrl().GetFileType().Equals("mkv",false))
@@ -699,8 +570,10 @@ bool CFGManager::LoadFiltersFromXml(CStdString configFile, CStdString xbmcPath)
     strTmpFilterType = pFilters->Attribute("type");
     XMLUtils::GetString(pFilters,"path",strFPath);
     if (!CFile::Exists(strFPath))
+	{
       strFPath.Format("%s\\\\system\\\\players\\\\dsplayer\\\\%s",xbmcPath.c_str(),strFPath.c_str());
-    XMLUtils::GetString(pFilters,"guid",strFGuid);
+	}
+	XMLUtils::GetString(pFilters,"guid",strFGuid);
     XMLUtils::GetString(pFilters,"filetype",strFileType);
     pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,L"",MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
     if (strTmpFilterName.Equals("mpcvideodec",false))
@@ -710,8 +583,6 @@ bool CFGManager::LoadFiltersFromXml(CStdString configFile, CStdString xbmcPath)
   {
     if (strTmpFilterType.Equals("source",false))
         m_source.AddTail(pFGF);
-    /*else if (strTmpFilterType.Equals("splitter",false))
-        m_splitter.AddTail(pFGF);*/
     else
       m_configfilter.AddTail(pFGF);
   }
@@ -731,19 +602,19 @@ void CFGManager::InsertSubtitleNullRender(IBaseFilter* pBF)
     && S_OK == IsPinDirection(pPin, PINDIR_OUTPUT)
     && S_OK != IsPinConnected(pPin))
     {
-      IEnumMediaTypes	*emt;
-	  AM_MEDIA_TYPE	*pmt;
-	  ULONG			f;
+      IEnumMediaTypes  *emt;
+    AM_MEDIA_TYPE  *pmt;
+    ULONG      f;
       hr = pPin->EnumMediaTypes(&emt);
-	  emt->Reset();
+    emt->Reset();
       while (emt->Next(1, &pmt, &f) == NOERROR) 
       {
-        CMediaType		mt(*pmt);
+        CMediaType    mt(*pmt);
         if (mt.majortype == MEDIATYPE_Subtitle)
         {
           hr = CoCreateInstance(CLSID_NullRenderer, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)&ppBF);
-		  hr = ppBF->JoinFilterGraph(this,L"Null Renderer");
-		  hr = ConnectFilterDirect(pPin,ppBF,pmt);
+      hr = ppBF->JoinFilterGraph(this,L"Null Renderer");
+      hr = ConnectFilterDirect(pPin,ppBF,pmt);
         }
         DeleteMediaType(pmt);
       }
@@ -751,240 +622,6 @@ void CFGManager::InsertSubtitleNullRender(IBaseFilter* pBF)
     }
   }
   EndEnumPins
-}
-
-STDMETHODIMP CFGManager::RenderFile(LPCWSTR lpcwstrFile, LPCWSTR lpcwstrPlayList)
-{
-  CAutoLock cAutoLock(this);
-
-  m_streampath.RemoveAll();
-  m_deadends.RemoveAll();
-
-  HRESULT hr;
-
-  CComPtr<IBaseFilter> pBF;
-  hr = this->AddSourceFilter(lpcwstrFile,lpcwstrFile,&pBF);
-  //hr = ::AddSourceFilter(this,lpcwstrFile,DS_AVISOURCE,&pBF);
-  if (FAILED(hr))
-    return hr;
-
-  return ConnectFilter(pBF, NULL);
-}
-
-STDMETHODIMP CFGManager::AddSourceFilter(LPCWSTR lpcwstrFileName, LPCWSTR lpcwstrFilterName, IBaseFilter** ppFilter)
-{
-  CAutoLock cAutoLock(this);
-
-  // TODO: use overrides
-
-  CheckPointer(lpcwstrFileName, E_POINTER);
-  CheckPointer(ppFilter, E_POINTER);
-
-  HRESULT hr;
-
-  CStdString fn = CStdString(lpcwstrFileName).TrimLeft();
-  //CStdString protocol = fn.Left(fn.Find(':')+1).TrimRight(':').MakeLower();
-  CStdString protocol = fn.Left(fn.Find(':')+1).TrimRight(':');
-  //CStdString ext = CPathW(fn).GetExtension();
-  CStdString ext = CPath(fn.c_str()).GetExtension();
-
-  TCHAR buff[256], buff2[256];
-  ULONG len, len2;
-
-  CFGFilterList fl;
-
-  HANDLE hFile = CreateFile(fn, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, (HANDLE)NULL);
-
-  // internal / protocol
-
-  if( protocol.GetLength() > 1 && (!protocol.Equals("file",false)) )
-  {
-    POSITION pos = m_source.GetHeadPosition();
-    while(pos)
-    {
-      CFGFilter* pFGF = m_source.GetNext(pos);
-      if(pFGF->m_protocols.Find(CStdString(protocol)))
-        fl.Insert(pFGF, 0, false, false);
-    }
-  }
-
-  // internal / check bytes
-
-  if(hFile != INVALID_HANDLE_VALUE)
-  {
-    POSITION pos = m_source.GetHeadPosition();
-    while(pos)
-    {
-      CFGFilter* pFGF = m_source.GetNext(pos);
-
-      POSITION pos2 = pFGF->m_chkbytes.GetHeadPosition();
-      while(pos2)
-      {
-        if(CheckBytes(hFile, pFGF->m_chkbytes.GetNext(pos2)))
-        {
-          fl.Insert(pFGF, 1, false, false);
-          break;
-        }
-      }
-    }
-  }
-
-  // insernal / file extension
-
-  if(!ext.IsEmpty())
-  {
-    POSITION pos = m_source.GetHeadPosition();
-    while(pos)
-    {
-      CFGFilter* pFGF = m_source.GetNext(pos);
-      if(pFGF->m_extensions.Find(CStdString(ext)))
-        fl.Insert(pFGF, 2, false, false);
-    }
-  }
-
-  // internal / the rest
-
-  {
-    POSITION pos = m_source.GetHeadPosition();
-    while(pos)
-    {
-      CFGFilter* pFGF = m_source.GetNext(pos);
-      if(pFGF->m_protocols.IsEmpty() && pFGF->m_chkbytes.IsEmpty() && pFGF->m_extensions.IsEmpty())
-        fl.Insert(pFGF, 3, false, false);
-    }
-  }
-
-  // protocol
-
-  if(protocol.GetLength() > 1 && (!protocol.Equals("file",false)) )
-  {
-    CRegKey key;
-    if(ERROR_SUCCESS == key.Open(HKEY_CLASSES_ROOT, protocol, KEY_READ))
-    {
-      CRegKey exts;
-      if(ERROR_SUCCESS == exts.Open(key, _T("Extensions"), KEY_READ))
-      {
-        len = countof(buff);
-        if(ERROR_SUCCESS == exts.QueryStringValue(CString(ext), buff, &len))
-          fl.Insert(new CFGFilterRegistry( DShowUtil::GUIDFromCString(buff)), 4);
-      }
-
-      len = countof(buff);
-      if(ERROR_SUCCESS == key.QueryStringValue(_T("Source Filter"), buff, &len))
-        fl.Insert(new CFGFilterRegistry( DShowUtil::GUIDFromCString(buff)), 5);
-    }
-
-    fl.Insert(new CFGFilterRegistry(CLSID_URLReader), 6);
-  }
-
-  // check bytes
-
-  if(hFile != INVALID_HANDLE_VALUE)
-  {
-    CRegKey key;
-    if(ERROR_SUCCESS == key.Open(HKEY_CLASSES_ROOT, _T("Media Type"), KEY_READ))
-    {
-      FILETIME ft;
-      len = countof(buff);
-      for(DWORD i = 0; ERROR_SUCCESS == key.EnumKey(i, buff, &len, &ft); i++, len = countof(buff))
-      {
-        GUID majortype;
-        if(FAILED( DShowUtil::GUIDFromCString(buff, majortype)))
-          continue;
-
-        CRegKey majorkey;
-        if(ERROR_SUCCESS == majorkey.Open(key, buff, KEY_READ))
-        {
-          len = countof(buff);
-          for(DWORD j = 0; ERROR_SUCCESS == majorkey.EnumKey(j, buff, &len, &ft); j++, len = countof(buff))
-          {
-            GUID subtype;
-            if(FAILED( DShowUtil::GUIDFromCString(buff, subtype)))
-              continue;
-
-            CRegKey subkey;
-            if(ERROR_SUCCESS == subkey.Open(majorkey, buff, KEY_READ))
-            {
-              len = countof(buff);
-              if(ERROR_SUCCESS != subkey.QueryStringValue(_T("Source Filter"), buff, &len))
-                continue;
-
-              GUID clsid = DShowUtil::GUIDFromCString(buff);
-
-              len = countof(buff);
-              len2 = sizeof(buff2);
-              for(DWORD k = 0, type; 
-                clsid != GUID_NULL && ERROR_SUCCESS == RegEnumValue(subkey, k, buff2, &len2, 0, &type, (BYTE*)buff, &len); 
-                k++, len = countof(buff), len2 = sizeof(buff2))
-              {
-                if(CheckBytes(hFile, CStdString(buff)))
-                {
-                  CFGFilter* pFGF = new CFGFilterRegistry(clsid);
-                  pFGF->AddType(majortype, subtype);
-                  fl.Insert(pFGF, 7);
-                  break;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // file extension
-
-  if(!ext.IsEmpty())
-  {
-    CRegKey key;
-    if(ERROR_SUCCESS == key.Open(HKEY_CLASSES_ROOT, _T("Media Type\\Extensions\\") + CString(ext), KEY_READ))
-    {
-      ULONG len = countof(buff);
-      if(ERROR_SUCCESS == key.QueryStringValue(_T("Source Filter"), buff, &len))
-      {
-        GUID clsid = DShowUtil::GUIDFromCString(buff);
-        GUID majortype = GUID_NULL;
-        GUID subtype = GUID_NULL;
-
-        len = countof(buff);
-        if(ERROR_SUCCESS == key.QueryStringValue(_T("Media Type"), buff, &len))
-          majortype = DShowUtil::GUIDFromCString(buff);
-
-        len = countof(buff);
-        if(ERROR_SUCCESS == key.QueryStringValue(_T("Subtype"), buff, &len))
-          subtype = DShowUtil::GUIDFromCString(buff);
-
-        CFGFilter* pFGF = new CFGFilterRegistry(clsid);
-        pFGF->AddType(majortype, subtype);
-        fl.Insert(pFGF, 8);
-      }
-    }
-  }
-
-  if(hFile != INVALID_HANDLE_VALUE)
-  {
-    CloseHandle(hFile);
-  }
-
-  CFGFilter* pFGF = new CFGFilterRegistry(CLSID_AsyncReader);
-  pFGF->AddType(MEDIATYPE_Stream, MEDIASUBTYPE_None);
-  fl.Insert(pFGF, 9);
-
-  POSITION pos = fl.GetHeadPosition();
-  while(pos)
-  {
-    if(SUCCEEDED(hr = AddSourceFilter(fl.GetNext(pos), lpcwstrFileName, lpcwstrFilterName, ppFilter)))
-      return hr;
-  }
-
-  return hFile == INVALID_HANDLE_VALUE ? VFW_E_NOT_FOUND : VFW_E_CANNOT_LOAD_SOURCE_FILTER;
-}
-
-STDMETHODIMP CFGManager::SetLogFile(DWORD_PTR hFile)
-{
-  CAutoLock cAutoLock(this);
-
-  return CComQIPtr<IFilterGraph2>(m_pUnkInner)->SetLogFile(hFile);
 }
 
 STDMETHODIMP CFGManager::Abort()
@@ -1298,7 +935,6 @@ CFGManagerCustom::CFGManagerCustom(LPCTSTR pName, LPUNKNOWN pUnk,CStdString pXbm
   , m_armerit(MERIT64(MERIT_PREFERRED))
 
 {
-  CFGFilter* pFGF;
   WORD merit_low = 1;
   ULONGLONG merit;
   merit = MERIT64_ABOVE_DSHOW + merit_low++;
@@ -1397,10 +1033,6 @@ CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd,CStd
   , m_vrmerit(MERIT64(MERIT_PREFERRED))
   , m_armerit(MERIT64(MERIT_PREFERRED))
 {
-  CFGFilter* pFGF;
-
-  //AppSettings& s = AfxGetAppSettings();
-
   if(m_pFM)
   {
     CComPtr<IEnumMoniker> pEM;

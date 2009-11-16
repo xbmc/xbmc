@@ -26,7 +26,6 @@
 #define NO_DSHOW_STRSAFE
 #include <dshow.h> //needed for CLSID_VideoRenderer
 
-#define _ATL_EX_CONVERSION_MACROS_ONLY
 #include <atlbase.h>
 #include <atlstr.h>
 

@@ -32,9 +32,7 @@
 #include <commdlg.h>
 
 // DirectShow Header Files
-//#include <dshow.h>
-//#include <streams.h>
-#define _ATL_EX_CONVERSION_MACROS_ONLY
+
 #include "Helpers/streamsxbmc.h"
 #include <atlcoll.h>
 //#include <Helpers/streamsxbmc.h>//its streams.h modified without the int TIMER causing too much problems to compile with xbmc

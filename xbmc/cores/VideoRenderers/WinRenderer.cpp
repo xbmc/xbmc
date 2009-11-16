@@ -81,7 +81,7 @@ static HRESULT TextureBlt(CComPtr<IDirect3DDevice9> m_pD3DDevice, MYD3DVERTEX<te
   if(!m_pD3DDevice)
     return E_POINTER;
 
-  DWORD FVF = 0;
+  DWORD FVF = 1;
   switch(texcoords)
   {
     case 1: FVF = D3DFVF_TEX1; break;
@@ -909,16 +909,16 @@ void CWinRenderer::RenderDshowBuffer(DWORD flags)
   
   // set scissors if we are not in fullscreen video
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-  {
     g_graphicsContext.ClipToViewWindow();
-  }
+
   if (!m_D3DVideoTexture)
     return;
-  CComPtr<IDirect3DSurface9> pBackBuffer; //was CComPtr
+  CComPtr<IDirect3DSurface9> pBackBuffer;
   if ( FAILED( m_pD3DDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackBuffer) ) )
     return;
   if ( FAILED( m_pD3DDevice->SetRenderTarget(0, pBackBuffer ) ) )
     return;
+
   m_pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0);
 
   if FAILED(TextureCopy(m_D3DVideoTexture))

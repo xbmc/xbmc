@@ -24,7 +24,6 @@
 
 #include "Mpeg2Def.h"
 #include "dxva.h"
-#define _ATL_EX_CONVERSION_MACROS_ONLY
 #include <atlcoll.h>
 enum BDVM_VideoFormat
 {

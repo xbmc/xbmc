@@ -11,6 +11,19 @@
 
 #include "log.h"
 
+CStdStringW DShowUtil::AnsiToUTF16(const CStdString strFrom)
+{
+  CStdStringW strTo;
+  int nLen = MultiByteToWideChar(CP_ACP, 0, strFrom.c_str(), -1, NULL, NULL);
+  wchar_t* strBuffer = strTo.GetBuffer(nLen + 1);
+  strBuffer[0] = 0;
+  MultiByteToWideChar(CP_ACP, 0, strFrom.c_str(), -1, strBuffer, nLen);
+  strTo.ReleaseBuffer();
+  return strTo;
+
+}
+
+
 int DShowUtil::CountPins(IBaseFilter* pBF, int& nIn, int& nOut, int& nInC, int& nOutC)
 {
 	nIn = nOut = 0;

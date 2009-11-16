@@ -20,9 +20,7 @@
  */
 
 #pragma once
-//#include "helpers/XbmcDhowGuid.h"
 
-#define _ATL_EX_CONVERSION_MACROS_ONLY
 #include <atlcomcli.h>
 #include <atlcoll.h>
 #include <atlpath.h>
@@ -70,11 +68,18 @@ protected:
 	CAtlList<CFGFilterFile*> m_configfilter;
 	CAtlList<CFGFilterFile*> m_splitter;
 
-	static bool CheckBytes(HANDLE hFile, CStdString chkbytes);
-
 	virtual HRESULT CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF, IUnknown** ppUnk);
-	HRESULT AddSourceFilter(CFGFilter* pFGF, LPCWSTR lpcwstrFileName, LPCWSTR lpcwstrFilterName, IBaseFilter** ppBF);
-
+	HRESULT AddXbmcSourceFilter(const CFileItem& pFileItem);
+    STDMETHODIMP GetXbmcVideoDecFilter(IMPCVideoDecFilter** pBF);
+	STDMETHODIMP RenderFileXbmc(const CFileItem& pFileItem);
+	bool LoadFiltersFromXml(CStdString configFile, CStdString xbmcPath);
+	void InsertSubtitleNullRender(IBaseFilter* pBF);
+	CFile                m_File;
+	CComPtr<IBaseFilter> m_FileSource;
+	CComPtr<IBaseFilter> m_Splitter;
+	CComPtr<IBaseFilter> m_XbmcVideoDec;
+	CStdString           m_xbmcConfigFilePath;
+	GUID                 m_mpcVideoDecGuid;
 	// IFilterGraph
 
 	STDMETHODIMP AddFilter(IBaseFilter* pFilter, LPCWSTR pName);
@@ -90,9 +95,9 @@ protected:
 
 	STDMETHODIMP Connect(IPin* pPinOut, IPin* pPinIn);
 	STDMETHODIMP Render(IPin* pPinOut);
-	STDMETHODIMP RenderFile(LPCWSTR lpcwstrFile, LPCWSTR lpcwstrPlayList);
-	STDMETHODIMP AddSourceFilter(LPCWSTR lpcwstrFileName, LPCWSTR lpcwstrFilterName, IBaseFilter** ppFilter);
-	STDMETHODIMP SetLogFile(DWORD_PTR hFile);
+	STDMETHODIMP RenderFile(LPCWSTR lpcwstrFile, LPCWSTR lpcwstrPlayList) { return E_NOTIMPL; };
+	STDMETHODIMP AddSourceFilter(LPCWSTR lpcwstrFileName, LPCWSTR lpcwstrFilterName, IBaseFilter** ppFilter) { return E_NOTIMPL; };
+	STDMETHODIMP SetLogFile(DWORD_PTR hFile) {return E_NOTIMPL; };
 	STDMETHODIMP Abort();
 	STDMETHODIMP ShouldOperationContinue();
 
@@ -119,18 +124,6 @@ protected:
 
 	STDMETHODIMP_(size_t) GetCount();
 	STDMETHODIMP GetDeadEnd(int iIndex, CAtlList<CStdStringW>& path, CAtlList<CMediaType>& mts);
-
-	// Xbmc Addition
-	STDMETHODIMP GetXbmcVideoDecFilter(IMPCVideoDecFilter** pBF);
-	STDMETHODIMP RenderFileXbmc(const CFileItem& pFileItem);
-	bool LoadFiltersFromXml(CStdString configFile, CStdString xbmcPath);
-	void InsertSubtitleNullRender(IBaseFilter* pBF);
-	CFile                m_File;
-	CComPtr<IBaseFilter> m_FileSource;
-	CComPtr<IBaseFilter> m_Splitter;
-	CComPtr<IBaseFilter> m_XbmcVideoDec;
-	CStdString           m_xbmcConfigFilePath;
-	GUID                 m_mpcVideoDecGuid;
 public:
 	CFGManager(LPCTSTR pName, LPUNKNOWN pUnk);
 	virtual ~CFGManager();

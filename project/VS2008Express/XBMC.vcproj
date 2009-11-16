@@ -2225,34 +2225,34 @@
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.h"
 							>
 						</File>
-						<Filter
-							Name="Source"
+					</Filter>
+					<Filter
+						Name="Source"
+						>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncflt.h"
 							>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncflt.h"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncio.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncio.h"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.h"
-								>
-							</File>
-						</Filter>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncio.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncio.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.h"
+							>
+						</File>
 					</Filter>
 				</Filter>
 				<Filter

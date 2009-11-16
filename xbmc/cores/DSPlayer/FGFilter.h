@@ -20,10 +20,8 @@
  */
 
 #pragma once
-#define _ATL_EX_CONVERSION_MACROS_ONLY
 #include <atlcomcli.h>
 #include <atlcoll.h>
-//#include "helpers/streamsxbmc.h"
 #include "streams.h"
 #define MERIT64(merit) (((UINT64)(merit))<<16)
 #define MERIT64_DO_NOT_USE MERIT64(MERIT_DO_NOT_USE)

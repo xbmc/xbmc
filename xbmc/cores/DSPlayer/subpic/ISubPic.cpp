@@ -1123,16 +1123,16 @@ STDMETHODIMP_(void) ISubPicAllocatorPresenterImpl::Invalidate(REFERENCE_TIME rtI
 
 void ISubPicAllocatorPresenterImpl::Transform(tagRECT r, Vector v[4])
 {
-	v[0] = Vector(r.left, r.top, 0);
-	v[1] = Vector(r.right, r.top, 0);
-	v[2] = Vector(r.left, r.bottom, 0);
-	v[3] = Vector(r.right, r.bottom, 0);
+	v[0] = Vector((float)r.left, (float)r.top, 0);
+	v[1] = Vector((float)r.right, (float)r.top, 0);
+	v[2] = Vector((float)r.left, (float)r.bottom, 0);
+	v[3] = Vector((float)r.right, (float)r.bottom, 0);
     tagPOINT rCenterPoint;
 	tagSIZE rSize;
 	rSize = GeometryHelper::GetSize(r);
     rCenterPoint = GeometryHelper::GetCenterPoint(r);
-	Vector center(rCenterPoint.x, rCenterPoint.y, 0);
-	int l = (int)(Vector(rSize.cx, rSize.cy, 0).Length()*1.5f)+1;
+	Vector center((float)rCenterPoint.x, (float)rCenterPoint.y, 0);
+	int l = (int)(Vector((float)rSize.cx, (float)rSize.cy, 0).Length()*1.5f)+1;
 
 	for(int i = 0; i < 4; i++)
 	{

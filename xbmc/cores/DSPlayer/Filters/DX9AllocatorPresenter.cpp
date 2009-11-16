@@ -573,9 +573,9 @@ HRESULT CDX9AllocatorPresenter::PresentImage(
   
   if (!g_renderManager.IsConfigured())
   {
-    CComPtr<IBaseFilter>  pVMR9;
-    CComPtr<IPin>      pPin;
-  CMediaType        mt;
+    CComPtr<IBaseFilter> pVMR9;
+    CComPtr<IPin> pPin;
+    CMediaType mt;
     if (SUCCEEDED (m_lpIVMRSurfAllocNotify->QueryInterface (__uuidof(IBaseFilter), (void**)&pVMR9)) &&
         SUCCEEDED (pVMR9->FindPin(L"VMR Input0", &pPin)) &&
         SUCCEEDED (pPin->ConnectionMediaType(&mt)) )
@@ -619,10 +619,8 @@ HRESULT CDX9AllocatorPresenter::PresentImage(
   hr = lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
   if(pTexture)
   {
-    // when using 
-  // ----->> lpAllocInfo->dwFlags |= VMR9AllocFlag_TextureSurface;
-    // the method work but the screen keep flickering
-    
+    // when using lpAllocInfo->dwFlags |= VMR9AllocFlag_TextureSurface;
+    // pTexture will be allocated still need to code this
     //g_renderManager.PaintVideoTexture(pTexture);
     //hr = m_D3DDev->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);
   }
@@ -630,9 +628,8 @@ HRESULT CDX9AllocatorPresenter::PresentImage(
   {
     
     hr = m_D3DDev->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);
-  g_renderManager.PaintVideoTexture(m_privateTexture, m_pVideoSurface);
+    g_renderManager.PaintVideoTexture(m_privateTexture, m_pVideoSurface);
   }
-  
   g_application.NewFrame();
   //Without the 1ms sec flip the gui keep flickering
   Sleep(1);
@@ -773,16 +770,6 @@ STDMETHODIMP CDX9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   while(0);
 
     return E_FAIL;
-}
-
-STDMETHODIMP_(void) CDX9AllocatorPresenter::SetPosition(RECT w, RECT v)
-{
-  
-}
-
-STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
-{
-  return E_NOTIMPL;
 }
 
 STDMETHODIMP_(void) CDX9AllocatorPresenter::SetTime(REFERENCE_TIME rtNow)

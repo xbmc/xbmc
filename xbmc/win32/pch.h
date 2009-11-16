@@ -15,7 +15,6 @@
 #define DIRECTINPUT_VERSION 0x0800
 #include "DInput.h"
 #define _ATL_EX_CONVERSION_MACROS_ONLY
-//#include "DSound.h"
 #include "D3D9.h"
 #include "D3DX9.h"
 #include "boost/shared_ptr.hpp"

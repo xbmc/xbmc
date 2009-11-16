@@ -1,24 +1,8 @@
 <dsfilterconfig>
 <!-- -->
-  <filters>
+<filters>
     
     <!-- Sources -->
-  <filter name="avisource" type="source">
-    <path>AviSplitter.ax</path>
-	  <guid>{CEA8DEFF-0AF7-4DB9-9A38-FB3C3AEFC0DE}</guid>
-  </filter>
-	<filter name="flvsource" type="source">
-      <path>FLVSplitter.ax</path>
-	  <guid>{C9ECE7B3-1D8E-41F5-9F24-B255DF16C087}</guid>
-    </filter>
-	<filter name="mkvsource" type="source">
-      <path>MatroskaSplitter.ax</path>
-	    <guid>{0A68C3B5-9164-4A54-AFAF-995B2FF0E0D4}</guid>
-  </filter>
-  <filter name="mp4source" type="source">
-    <path>MP4Splitter.ax</path>
-	  <guid>{3CCC052E-BDEE-408A-BEA7-90914EF2964B}</guid>
-  </filter>
   <filter name="wmasfreader" type="source">
     <path>qasf.dll</path>
 	  <guid>{187463A0-5BB7-11D3-ACBE-0080C75E246E}</guid>
@@ -63,9 +47,9 @@
   </filters>
   <rules><!-- Still need to fix the source and splitter only the video and audio decoder are used for rules -->
     <rule filetypes="avi" splitter="avisplitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
-	<rule filetypes="flv" splitter="flvsplitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
+	  <rule filetypes="flv" splitter="flvsplitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
     <rule filetypes="mp4" splitter="mp4splitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
-	<rule filetypes="mkv" splitter="mkvsplitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
-	<rule filetypes="wmv" source="wmasfreader" videodec="mpcvideodec" audiodec="wmaudiodecoder"/>
+	  <rule filetypes="mkv" splitter="mkvsplitter" videodec="mpcvideodec" audiodec="mpcaudiodec"/>
+	  <rule filetypes="wmv" source="wmasfreader" videodec="mpcvideodec" audiodec="wmaudiodecoder"/>
   </rules>
 </dsfilterconfig>
