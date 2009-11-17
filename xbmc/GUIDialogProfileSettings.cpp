@@ -373,9 +373,12 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
         {
           // create some new settings
           CGUISettings localSettings;
+          localSettings.Initialize();
           CStdString path = CUtil::AddFileToFolder("special://masterprofile/", dialog->m_strDirectory);
           path = CUtil::AddFileToFolder(path, "guisettings.xml");
-          g_settings.SaveSettings(path, &localSettings);
+          CSettings settings;
+          settings.Initialize();
+          settings.SaveSettings(path, &localSettings);
         }
       }
 
