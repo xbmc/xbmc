@@ -31,9 +31,7 @@ using namespace std;
 using namespace MediaInfoDLL;
 
 CDSGraph::CDSGraph() :
-                 m_pMode(MOVIE_NOTOPENED),
-                 m_pGraphBuilder(NULL),
-                 m_pAllocator(NULL)
+                 m_pGraphBuilder(NULL)
 {
   m_PlaybackRate = 1;
   g_userId = 0xACDCACDC;
@@ -74,8 +72,6 @@ HRESULT CDSGraph::SetFile(const CFileItem& file)
   hr = m_pGraphBuilder.QueryInterface(&m_pMediaEvent);
   hr = m_pGraphBuilder.QueryInterface(&m_pBasicAudio);
   hr = m_pGraphBuilder.QueryInterface(&m_pBasicVideo);
-  
-  
   UpdateCurrentVideoInfo(file.GetAsUrl().GetFileName());
 
   SetVolume(g_stSettings.m_nVolumeLevel);
@@ -91,7 +87,6 @@ HRESULT CDSGraph::SetFile(const CFileItem& file)
 void CDSGraph::CloseFile()
 {
   OnPlayStop();
-  m_pAllocator.Release();
   m_pMediaControl.Release();
   m_pMediaEvent.Release();
   m_pMediaSeeking.Release();
@@ -129,8 +124,6 @@ HRESULT CDSGraph::CloseGraph()
 	  CLog::Log(LOGERROR,"%s error while closing graph",__FUNCTION__);
   }
   m_File.Close();
-  
-  m_pAllocator.Release();
   m_pMediaControl.Release();
   m_pBasicAudio.Release();
   m_pGraphBuilder.Release();
@@ -454,6 +447,11 @@ float CDSGraph::GetPercentage()
 std::string CDSGraph::GetGeneralInfo()
 {
   return m_VideoInfo.dxva_info.c_str();
+}
+
+std::string CDSGraph::GetVideoInfo()
+{
+  return m_VideoInfo.codec_video.c_str();
 }
 
 bool CDSGraph::CanSeek()

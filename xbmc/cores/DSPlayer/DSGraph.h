@@ -108,7 +108,7 @@ public:
 //INFORMATION REQUESTED FOR THE GUI
   std::string GetGeneralInfo();
   std::string GetAudioInfo() { return m_VideoInfo.codec_audio.c_str(); };
-  std::string GetVideoInfo() { return m_VideoInfo.codec_video.c_str(); };
+  std::string GetVideoInfo();
 
   
  
@@ -159,8 +159,6 @@ protected:
   } m_VideoInfo;
 
 private:
-  VideoStateMode                    m_pMode;
-  
   //Direct Show Filters
   CComPtr<IGraphBuilder2>               m_pGraphBuilder;
   CComQIPtr<IMediaControl>              m_pMediaControl;  
@@ -170,7 +168,6 @@ private:
   CComQIPtr<IBasicVideo2>               m_pBasicVideo;
   CComPtr<IMPCVideoDecFilter>	        m_pIMpcDecFilter;
   CComPtr<IffdshowDecVideoA>	        m_pIffdDecFilter;
-  CComPtr<ISubPicAllocatorPresenter>    m_pAllocator;
 protected:
   
   
