@@ -123,6 +123,12 @@ void CSettings::Initialize()
   m_stSettings.m_bMyMusicIsScanning = false;
 
   m_stSettings.iAdditionalSubtitleDirectoryChecked = 0;
+  m_stSettings.m_iMyMusicStartWindow = WINDOW_MUSIC_FILES;
+  m_stSettings.m_iVideoStartWindow = WINDOW_VIDEO_FILES;
+  m_stSettings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
+  m_stSettings.m_iSystemTimeTotalUp = 0;
+  m_stSettings.m_HttpApiBroadcastLevel = 0;
+  m_stSettings.m_HttpApiBroadcastPort = 8278;
 
   bUseLoginScreen = false;
 }
