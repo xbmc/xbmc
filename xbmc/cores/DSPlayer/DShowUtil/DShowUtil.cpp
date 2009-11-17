@@ -11,6 +11,15 @@
 
 #include "log.h"
 
+bool DShowUtil::IsVistaOrAbove()
+{
+  OSVERSIONINFO osver;
+  osver.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );	
+  if (::GetVersionEx( &osver ) && osver.dwPlatformId == VER_PLATFORM_WIN32_NT && (osver.dwMajorVersion >= 6 ) )
+    return true;
+
+  return false;
+}
 CStdStringW DShowUtil::AnsiToUTF16(const CStdString strFrom)
 {
   CStdStringW strTo;

@@ -55,6 +55,7 @@ public:
 //This is not needed its for getting the output format of a capture filter
 //and  also require  mfc for cfile
 //static void DumpStreamConfig(TCHAR* fn, IAMStreamConfig* pAMVSCCap);
+  static bool IsVistaOrAbove();
   static CStdStringW AnsiToUTF16(const CStdString strFrom);
   static int CountPins(IBaseFilter* pBF, int& nIn, int& nOut, int& nInC, int& nOutC);
   static bool IsSplitter(IBaseFilter* pBF, bool fCountConnectedOnly = false);

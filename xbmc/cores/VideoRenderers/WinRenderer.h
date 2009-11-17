@@ -201,8 +201,6 @@ protected:
   typedef YUVMEMORYPLANES         YUVMEMORYBUFFERS[NUM_BUFFERS];
 
   //dsplayer
-  HRESULT TextureCopy(CComPtr<IDirect3DTexture9> pTexture);
-  
   void RenderDshowBuffer(DWORD flags);
 
   CComPtr<IDirect3DTexture9> m_D3DVideoTexture;

@@ -63,79 +63,6 @@ YUVCOEF yuv_coef_smtp240m = {
 #define max(a,b)            (((a) > (b)) ? (a) : (b))
 #endif
 
-#define D3DFVF_CUSTOMVERTEX ( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1 )
-#pragma pack(push, 1)
-template<int texcoords>
-struct MYD3DVERTEX {float x, y, z, rhw; struct {float u, v;} t[texcoords];};
-template<>
-struct MYD3DVERTEX<0> 
-{
-  float x, y, z, rhw; 
-  DWORD Diffuse;
-};
-#pragma pack(pop)
-
-template<int texcoords>
-static HRESULT TextureBlt(CComPtr<IDirect3DDevice9> m_pD3DDevice, MYD3DVERTEX<texcoords> v[4], D3DTEXTUREFILTERTYPE filter = D3DTEXF_LINEAR)
-{
-  if(!m_pD3DDevice)
-    return E_POINTER;
-
-  DWORD FVF = 1;
-  switch(texcoords)
-  {
-    case 1: FVF = D3DFVF_TEX1; break;
-    case 2: FVF = D3DFVF_TEX2; break;
-    case 3: FVF = D3DFVF_TEX3; break;
-    case 4: FVF = D3DFVF_TEX4; break;
-    case 5: FVF = D3DFVF_TEX5; break;
-    case 6: FVF = D3DFVF_TEX6; break;
-    case 7: FVF = D3DFVF_TEX7; break;
-    case 8: FVF = D3DFVF_TEX8; break;
-    default: return E_FAIL;
-  }
-
-  HRESULT hr;
-  do
-  {
-    /* Those 6 lines fixed the freaking bug of a white screen when i add any font ttfdx on the screen*/
-	hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-    hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-    hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-    hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-    hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-    hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-    
-    hr = m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-    hr = m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-    hr = m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
-    hr = m_pD3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
-    hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
-    hr = m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE); 
-    hr = m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
-	for(int i = 0; i < texcoords; i++)
-    {
-	  hr = m_pD3DDevice->SetSamplerState(i, D3DSAMP_MAGFILTER, filter);
-      hr = m_pD3DDevice->SetSamplerState(i, D3DSAMP_MINFILTER, filter);
-      hr = m_pD3DDevice->SetSamplerState(i, D3DSAMP_MIPFILTER, filter);
-
-      hr = m_pD3DDevice->SetSamplerState(i, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-      hr = m_pD3DDevice->SetSamplerState(i, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
-    }
-    hr = m_pD3DDevice->SetFVF(D3DFVF_XYZRHW | FVF);
-    MYD3DVERTEX<texcoords> tmp = v[2]; v[2] = v[3]; v[3] = tmp;
-    hr = m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, v, sizeof(v[0]));  
-    for(int i = 0; i < texcoords; i++)
-    {
-      m_pD3DDevice->SetTexture(i, NULL);
-    }
-    return S_OK;
-  }
-  while(0);
-  return E_FAIL;
-}
-
 CWinRenderer::CWinRenderer(LPDIRECT3DDEVICE9 pDevice)
 {
   m_pD3DDevice = pDevice;
@@ -838,16 +765,41 @@ void CWinRenderer::AutoCrop(bool bCrop)
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
 }
 
-HRESULT CWinRenderer::TextureCopy(CComPtr<IDirect3DTexture9> pTexture)
+void CWinRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface)
 {
+  if (videoTexture)
+    m_D3DVideoTexture = videoTexture;
+  if (videoSurface)
+    m_D3DMemorySurface = videoSurface;
+}
+
+void CWinRenderer::RenderDshowBuffer(DWORD flags)
+{
+  m_pD3DDevice->SetPixelShader( NULL );
+  CSingleLock lock(g_graphicsContext);
+  
+  // set scissors if we are not in fullscreen video
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+    g_graphicsContext.ClipToViewWindow();
+
   HRESULT hr;
+  CComPtr<IDirect3DSurface9> pBackBuffer;
+  hr = m_pD3DDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
+  hr = m_pD3DDevice->SetRenderTarget(0, pBackBuffer );
+  hr = m_pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0);
+
   D3DSURFACE_DESC desc;
-  if(!pTexture || FAILED(pTexture->GetLevelDesc(0, &desc)))
-    return E_FAIL;
+  if(!m_D3DVideoTexture || FAILED(m_D3DVideoTexture->GetLevelDesc(0, &desc)))
+    return;
 
   float w = (float)desc.Width;
   float h = (float)desc.Height;
-  MYD3DVERTEX<1> v[] =
+  struct CUSTOMVERTEX {
+      float x, y, z;
+	  float rhw; 
+	  float tu, tv;
+  };
+  CUSTOMVERTEX verts[4] =
   {
     {//m_destRect    m_sourceRect
       m_destRect.x1      , m_destRect.y1 ,
@@ -870,58 +822,33 @@ HRESULT CWinRenderer::TextureCopy(CComPtr<IDirect3DTexture9> pTexture)
       1      , 1
     },
   };
-  for(int i = 0; i < countof(v); i++)
+  for(int i = 0; i < countof(verts); i++)
   {
-    v[i].x -= 0.5;
-    v[i].y -= 0.5;
+    verts[i].x -= 0.5;
+    verts[i].y -= 0.5;
   }
-
-  hr = m_pD3DDevice->SetTexture(0, pTexture);
-  hr = m_pD3DDevice->SetPixelShader(NULL);
-
-  return TextureBlt(m_pD3DDevice, v, D3DTEXF_LINEAR);
-}
-
-void CWinRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface)
-{
-  int source = NextYV12Texture();
-  if( source < 0 )
-    source = 0;
-  try
-  {
-    if (videoTexture)
-      m_D3DVideoTexture = videoTexture;
-	if (videoSurface)
-      m_D3DMemorySurface = videoSurface;
-
+  //D3DFVF_TEX1
+  hr = m_pD3DDevice->SetTexture(0, m_D3DVideoTexture);
+hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+    hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+    hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+    hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+    hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+    hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
     
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "PaintVideoTexture Error");
-  }
-}
-
-void CWinRenderer::RenderDshowBuffer(DWORD flags)
-{
-  m_pD3DDevice->SetPixelShader( NULL );
-  CSingleLock lock(g_graphicsContext);
-  
-  // set scissors if we are not in fullscreen video
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
-
-  if (!m_D3DVideoTexture)
-    return;
-  CComPtr<IDirect3DSurface9> pBackBuffer;
-  if ( FAILED( m_pD3DDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackBuffer) ) )
-    return;
-  if ( FAILED( m_pD3DDevice->SetRenderTarget(0, pBackBuffer ) ) )
-    return;
-
-  m_pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0);
-
-  if FAILED(TextureCopy(m_D3DVideoTexture))
+    hr = m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+    hr = m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+    hr = m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
+    hr = m_pD3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
+    hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
+    hr = m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE); 
+    hr = m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
+  hr = m_pD3DDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
+  CUSTOMVERTEX tmp = verts[2]; verts[2] = verts[3]; verts[3] = tmp;
+  hr = m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(verts[0]));
+  m_pD3DDevice->SetTexture(1, NULL);
+  if (FAILED(hr))
     CLog::Log(LOGDEBUG,"RenderDshowBuffer TextureCopy CWinRenderer::RenderDshowBuffer"); 
   pBackBuffer.Release();
 }

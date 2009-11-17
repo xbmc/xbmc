@@ -48,7 +48,7 @@ class CDX9AllocatorPresenter  : public  ISubPicAllocatorPresenterImpl,
 public:
   CCritSec        m_VMR9AlphaBitmapLock;
   void          UpdateAlphaBitmap();
-  CDX9AllocatorPresenter(HRESULT& hr, HWND wnd, CStdString &_Error,IDirect3D9* d3d = NULL, IDirect3DDevice9* d3dd = NULL);
+  CDX9AllocatorPresenter(HRESULT& hr, HWND wnd, CStdString &_Error, IDirect3D9* d3d = NULL, IDirect3DDevice9* d3dd = NULL);
   virtual ~CDX9AllocatorPresenter();
 
   // IVMRSurfaceAllocator9
@@ -72,7 +72,7 @@ public:
   UINT GetAdapter(IDirect3D9 *pD3D);
   STDMETHODIMP_(void) SetPosition(RECT w, RECT v) {} ;
   STDMETHODIMP_(bool) Paint(bool fAll) { return true; } ;
-  STDMETHODIMP_(void) SetTime(REFERENCE_TIME rtNow);
+  STDMETHODIMP_(void) SetTime(REFERENCE_TIME rtNow) {};
   
 protected:
   HRESULT CreateDevice();
@@ -92,7 +92,6 @@ private:
   HWND        m_window;
   long        m_refCount;
   int   m_iVideoWidth, m_iVideoHeight;
-  int   m_iARX, m_iARY;
   REFERENCE_TIME previousEndFrame;
   float m_fps;
   CComPtr<IDirect3D9>                     m_D3D;

@@ -430,9 +430,7 @@ HRESULT CDX9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9Allocat
     return hr;
   }
   m_iVideoWidth=lpAllocInfo->dwWidth;
-    m_iVideoHeight=lpAllocInfo->dwHeight;
-    m_iARX=lpAllocInfo->szAspectRatio.cx;
-    m_iARY=lpAllocInfo->szAspectRatio.cy;
+  m_iVideoHeight=lpAllocInfo->dwHeight;
 
   //INITIALIZE VIDEO SURFACE THERE
   if(FAILED(hr = AllocVideoSurface()))
@@ -568,8 +566,6 @@ HRESULT CDX9AllocatorPresenter::PresentImage(
   }
   previousEndFrame=lpPresInfo->rtEnd;
   m_fps = 10000000.0 / (lpPresInfo->rtEnd - lpPresInfo->rtStart);
-  m_iARX=lpPresInfo->szAspectRatio.cx;
-  m_iARY=lpPresInfo->szAspectRatio.cy;
   
   if (!g_renderManager.IsConfigured())
   {
@@ -631,10 +627,9 @@ HRESULT CDX9AllocatorPresenter::PresentImage(
     g_renderManager.PaintVideoTexture(m_privateTexture, m_pVideoSurface);
   }
   g_application.NewFrame();
-  while( !g_application.WaitFrame(5) ) {}
+  //Give .1 sec to the gui to render
+  g_application.WaitFrame(100);
   
-  //Without the 1ms sec flip the gui keep flickering
-  //Sleep(1);
   return hr;
 }
 
@@ -745,7 +740,7 @@ STDMETHODIMP CDX9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
         // See http://msdn.microsoft.com/en-us/library/dd390928(VS.85).aspx
         dwPrefs |= MixerPref9_NonSquareMixing;
         dwPrefs |= MixerPref9_NoDecimation;
-        if(0)//s.fVMR9MixerYUV && !AfxGetMyApp()->IsVistaOrAbove())
+		if(DShowUtil::IsVistaOrAbove())//s.fVMR9MixerYUV && !AfxGetMyApp()->IsVistaOrAbove())
         {
           dwPrefs &= ~MixerPref9_RenderTargetMask; 
           dwPrefs |= MixerPref9_RenderTargetYUV;
@@ -772,11 +767,6 @@ STDMETHODIMP CDX9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   while(0);
 
     return E_FAIL;
-}
-
-STDMETHODIMP_(void) CDX9AllocatorPresenter::SetTime(REFERENCE_TIME rtNow)
-{
-  
 }
 
 void CDX9AllocatorPresenter::UpdateAlphaBitmap()

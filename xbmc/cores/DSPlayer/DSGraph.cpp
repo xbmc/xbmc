@@ -312,6 +312,7 @@ void CDSGraph::Pause()
   }
 }
 
+//The fastforward is based on mediaportal fastforward
 void CDSGraph::DoFFRW(int currentSpeed)
 {
   if (!m_pMediaSeeking)
@@ -394,9 +395,10 @@ void CDSGraph::SetPlaySpeed(int iSpeed)
 //VFW_E_UNSUPPORTED_AUDIO Audio device or filter does not support this rate.
 }
 
+
 void CDSGraph::Seek(bool bPlus, bool bLargeStep)
 {
-  if (!m_pMediaSeeking)
+  if (!m_pMediaSeeking || !m_pMediaControl)
     return;
   __int64 seek;
   if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
