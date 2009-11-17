@@ -40,7 +40,6 @@ public:
 
   virtual bool IsAllowed(const CStdString &strFile) const { return true; };
   virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const;
-  virtual bool Exists(const char* strPath) { return true; }
 protected:
   void AddEntry(int iString, CStdString strPath, CStdString strIconPath, bool bFolder, CFileItemList &items);
   void AddListEntry(const char *name, const char *artist, const char *count, const char *date, const char *icon, CStdString strPath, CFileItemList &items);

@@ -527,20 +527,13 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     items.Clear();
 
   CStdString strParentPath=m_history.GetParentPath();
-  CStdString strDir = strDirectory;
 
   CLog::Log(LOGDEBUG,"CGUIMediaWindow::GetDirectory (%s)", strDirectory.c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", strParentPath.c_str());
 
-  if (!strDir.IsEmpty() && !DIRECTORY::CDirectory::Exists(strDirectory))
-  {
-    CLog::Log(LOGWARNING, "CGUIMediaWindow: Failed to find directory %s. Going back to root.", strDirectory.c_str());
-    strDir = "";
-    m_history.ClearPathHistory();
-  }
   // see if we can load a previously cached folder
   CFileItemList cachedItems(strDirectory);
-  if (!strDir.IsEmpty() && cachedItems.Load())
+  if (!strDirectory.IsEmpty() && cachedItems.Load())
   {
     items.Assign(cachedItems);
   }
@@ -548,7 +541,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   {
     unsigned int time = CTimeUtils::GetTimeMS();
 
-    if (!m_rootDir.GetDirectory(strDir, items))
+    if (!m_rootDir.GetDirectory(strDirectory, items))
       return false;
 
     // took over a second, and not normally cached, so cache it
