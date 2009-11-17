@@ -365,7 +365,15 @@ case TMSG_POWERDOWN:
           pSlideShow->Shuffle();
 
         if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
-          g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+        {
+          if(items.Size() == 0)
+          {
+            g_guiSettings.SetString("screensaver.mode", "Dim");
+            g_application.ActivateScreenSaver();
+          }
+          else
+            g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+        }
 
         g_graphicsContext.Unlock();
       }
