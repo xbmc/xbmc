@@ -120,9 +120,9 @@ HRESULT CFGLoader::LoadFilterRules(CStdString fileType , CComPtr<IBaseFilter> fi
             {
               CLog::Log(LOGERROR,"%s Failed to connect the source to the spliter",__FUNCTION__);
               return hr;
-			}
-		  }
-		}
+            }
+		      }
+    		}
         else if ( ((CStdString)pRules->Attribute("videodec")).Equals(pFGF->GetXFilterName().c_str(),false) )
         {
         CComPtr<IBaseFilter> ppBF;
