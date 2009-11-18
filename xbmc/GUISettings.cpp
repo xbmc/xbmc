@@ -377,12 +377,12 @@ void CGUISettings::Initialize()
 #endif
 
   AddCategory(4, "input", 14094);
-//#ifdef __APPLE__
+#ifdef __APPLE__
   AddInt(1, "input.appleremotemode", 13600, APPLE_REMOTE_STANDARD, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_MULTIREMOTE, SPIN_CONTROL_TEXT);
   AddBool(2, "input.appleremotealwayson", 13602, false);
   AddInt(0, "input.appleremotesequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
   AddSeparator(3, "input.sep1");
-//#endif
+#endif
   AddBool(4, "input.remoteaskeyboard", 21449, false);
   AddBool(5, "input.enablemouse", 21369, true);
 
