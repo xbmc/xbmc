@@ -209,7 +209,9 @@ URLProtocol dvd_file_protocol = {
 CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
 {
   m_pFormatContext = NULL;
+#if defined(HAVE_LIBCRYSTALHD)
   m_pFilterContext = NULL;
+#endif
   m_pInput = NULL;
   m_ioContext = NULL;
   InitializeCriticalSection(&m_critSection);
