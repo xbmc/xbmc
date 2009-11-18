@@ -143,6 +143,11 @@ HRESULT CFGLoader::LoadFilterRules(CStdString fileType , CComPtr<IBaseFilter> fi
   }
     pRules = pRules->NextSiblingElement();
   }
+  if(!ppSBF)
+  {
+    CLog::Log(LOGERROR,"%s Failed to create ppSBF",__FUNCTION__);
+    return E_FAIL;
+  }
   *pBFSplitter = ppSBF;
   (*pBFSplitter)->AddRef();
   SAFE_RELEASE(ppSBF);
