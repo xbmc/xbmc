@@ -22,7 +22,6 @@
  */
 
 #pragma once
-#include <atlcoll.h>
 #include "File.h"
 #include "FileItem.h"
 #include "filters/IMPCVideoDecFilter.h"

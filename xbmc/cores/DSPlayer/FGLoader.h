@@ -20,7 +20,6 @@
  */
 
 #pragma once
-#include <atlcoll.h>
 #include "streams.h"
 #include "IGraphBuilder2.h"
 #include "FgFilter.h"

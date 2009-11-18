@@ -22,7 +22,7 @@
 #pragma once
 
 #include <atlbase.h>
-#include <atlcoll.h>
+
 #include "dshowutil/DSGeometry.h"
 #include "CoordGeom.h"
 #include "streams.h"

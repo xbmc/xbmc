@@ -33,8 +33,7 @@
 
 // DirectShow Header Files
 
-#include "Helpers/streamsxbmc.h"
-#include <atlcoll.h>
+#include "streams.h"
 //#include <Helpers/streamsxbmc.h>//its streams.h modified without the int TIMER causing too much problems to compile with xbmc
 
 #include <d3d9.h>
