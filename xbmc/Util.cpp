@@ -881,6 +881,9 @@ bool CUtil::IsHD(const CStdString& strFileName)
 {
   CURL url(strFileName);
 
+  if (IsSpecial(strFileName))
+    return IsHD(CSpecialProtocol::TranslatePath(strFileName));
+
   if(IsStack(strFileName))
     return IsHD(CStackDirectory::GetFirstStackedFile(strFileName));
 
