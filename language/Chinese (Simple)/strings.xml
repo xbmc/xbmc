@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 11/15/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 24625 -->
+<!--Based on english strings version 24717 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -427,7 +425,7 @@
   <string id="494">总体音量</string>
   <string id="495">以桌面的分辨率播放视频</string>
   <string id="496">校准</string>
-  <string id="497">隐藏媒体扩展名</string>
+  <string id="497">显示扩展文件名</string>
   <string id="498">排序：类型</string>
   <string id="499">无法连接到在线搜索服务</string>
   <string id="500">下载专辑信息失败...</string>
@@ -1113,8 +1111,8 @@
   <string id="13302">指定风扇转速</string>
   <string id="13303">皮肤字体</string>
   <string id="13304">开启转换双向字串</string>
-  <string id="13305">启用 RSS 显示</string>
-  <string id="13306">隐藏上层目录图标</string>
+  <string id="13305">显示 RSS 新闻</string>
+  <string id="13306">显示上级目录图标</string>
   <string id="13307">音轨命名参数</string>
   <string id="13308">你想重新启动系统</string>
   <string id="13309">以重新启动 XBMC 吗？</string>
@@ -1193,7 +1191,7 @@
   <string id="13396">声音和字幕设置</string>
   <string id="13397">启用字幕</string>
   <string id="13398">快捷方式</string>
-  <string id="13399">排序时忽略符号</string>
+  <string id="13399">排序时忽略冠词（如 "the"）</string>
   <string id="13400">同一专辑内歌曲淡入淡出</string>
   <string id="13401">浏览%s</string>
   <string id="13402">显示音轨位置</string>
@@ -1278,7 +1276,7 @@
   <string id="14034">DVD 缓存 - DVD 驱动器</string>
   <string id="14035">- 局域网</string>
   <string id="14036">服务</string>
-  <string id="14037">外观设置</string>
+  <string id="14037"></string>
   <string id="14038">网络设置已改变</string>
   <string id="14039">XBMC 需要重启改变你的网络设置。</string>
   <string id="14040">你想现在就重启吗？</string>
@@ -1331,6 +1329,8 @@
   <string id="14087">DVD</string>
   <string id="14088">自动播放 DVD</string>
   <string id="14089">文本字幕字体</string>
+  <string id="14090">界面语言</string>
+  <string id="14091">字符集</string>
 
   <string id="15000"></string>
   <string id="15001"></string>
@@ -1950,8 +1950,8 @@
   <string id="21379">开启 720p</string>
   <string id="21380">开启 1080i</string>
   <string id="21381">输入新播放列表的名称</string>
-  <string id="21382">停用文件列表的新增来源按钮</string>
-  <string id="21383">启用页面卷轴</string>
+  <string id="21382">在文件列表中显示“添加目录”按钮</string>
+  <string id="21383">启用滚动条</string>
   <string id="21384">视频资料库使用浏览过滤按钮</string>
   <string id="21385">打开</string>
   <string id="21386">噪音管理</string>
