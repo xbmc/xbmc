@@ -783,9 +783,6 @@ void CWinRenderer::RenderDshowBuffer(DWORD flags)
     g_graphicsContext.ClipToViewWindow();
 
   HRESULT hr;
-  CComPtr<IDirect3DSurface9> pBackBuffer;
-  hr = m_pD3DDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
-  hr = m_pD3DDevice->SetRenderTarget(0, pBackBuffer );
   hr = m_pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0);
 
   D3DSURFACE_DESC desc;
@@ -849,7 +846,6 @@ hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
   m_pD3DDevice->SetTexture(1, NULL);
   if (FAILED(hr))
     CLog::Log(LOGDEBUG,"RenderDshowBuffer TextureCopy CWinRenderer::RenderDshowBuffer"); 
-  pBackBuffer.Release();
 }
 
 void CWinRenderer::RenderLowMem(DWORD flags)
