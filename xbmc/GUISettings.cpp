@@ -223,7 +223,7 @@ void CGUISettings::Initialize()
   AddInt(0, "pictures.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
 
   AddCategory(0, "slideshow", 108);
-  AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddInt(1, "slideshow.staytime", 12378, 5, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddBool(2, "slideshow.displayeffects", 12379, true);
   AddBool(0, "slideshow.shuffle", 13319, false);
 
