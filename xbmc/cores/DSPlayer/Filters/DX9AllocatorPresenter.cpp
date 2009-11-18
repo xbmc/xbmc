@@ -740,7 +740,7 @@ STDMETHODIMP CDX9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
         // See http://msdn.microsoft.com/en-us/library/dd390928(VS.85).aspx
         dwPrefs |= MixerPref9_NonSquareMixing;
         dwPrefs |= MixerPref9_NoDecimation;
-		if(DShowUtil::IsVistaOrAbove())//s.fVMR9MixerYUV && !AfxGetMyApp()->IsVistaOrAbove())
+		if(1)//DShowUtil::IsVistaOrAbove())
         {
           dwPrefs &= ~MixerPref9_RenderTargetMask; 
           dwPrefs |= MixerPref9_RenderTargetYUV;
