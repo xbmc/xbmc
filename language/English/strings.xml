@@ -203,7 +203,7 @@
   <string id="260">Shoutcast</string>
   <string id="261">Waiting for start...</string>
   <string id="262">Scripts output</string>
-  <string id="263">Allow control of XBMC over HTTP</string>
+  <string id="263">Allow control of XBMC via HTTP</string>
   <string id="264">Record</string>
   <string id="265">Stop Rec.</string>
   <string id="266">Sort by: Track</string>
@@ -546,7 +546,7 @@
   <string id="635">Original Size</string>
   <string id="636">Custom</string>
   <string id="637">Replay gain</string>
-  <string id="638">Apply Replaygain volume adjustments</string>
+  <string id="638">Replaygain volume adjustments</string>
   <string id="639">Use track levels</string>
   <string id="640">Use album levels</string>
   <string id="641">PreAmp Level - Replay gained files</string>
@@ -664,7 +664,7 @@
   <string id="789">Wireless network name (ESSID)</string>
 
   <string id="790"></string>
-  <string id="791">Allow remote control programs on this system to control XBMC</string>
+  <string id="791">Allow programs on this system to control XBMC</string>
   <string id="792">Port</string>
   <string id="793">Port range</string>
   <string id="794">Allow programs on other systems to control XBMC</string>
@@ -1231,7 +1231,7 @@
 
   <string id="13600">Apple remote</string>
   <string id="13601"></string>
-  <string id="13602">Allow start of XBMC with the remote</string>
+  <string id="13602">Allow start of XBMC using the remote</string>
   <string id="13603">Sequence delay time</string>
 
   <string id="13610">Disabled</string>
@@ -1322,7 +1322,7 @@
   <string id="14080">Timezone</string>
   <string id="14081">File lists</string>
   <string id="14082">Show EXIF picture information</string>
-  <string id="14083">Use a fullscreen window rather than true fullscreen mode</string>
+  <string id="14083">Use a fullscreen window rather than true fullscreen</string>
   <string id="14084">Queue songs on selection</string>
   <string id="14085">Play audio CDs automatically</string>
   <string id="14086">Playback</string>
@@ -2079,7 +2079,7 @@
   <string id="21878">Copyright flag</string>
   <string id="21879">Country code</string>
   <string id="21880">Reference service</string>
-  <string id="21881">Allow UPnP controllers to control XBMC</string>
+  <string id="21881">Allow control of XBMC via UPnP</string>
   <string id="21882">Attempt to skip introduction before DVD menu</string>
   <string id="21883">Saved music</string>
   <string id="21884">Query info for all artists</string>
