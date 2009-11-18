@@ -803,23 +803,23 @@ void CWinRenderer::RenderDshowBuffer(DWORD flags)
   {
     {//m_destRect    m_sourceRect
       m_destRect.x1      , m_destRect.y1 ,
-      0.5f   , 2.0f, 
+      0.0f   , 1.0f, 
       0      , 0
     },
     {
       m_destRect.x2      , m_destRect.y1 ,
-      0.5f   , 2.0f ,
+      0.0f   , 1.0f,
       1      , 0
     },
     {
-      m_destRect.x1      , m_destRect.y2 ,
-      0.5f   , 2.0f ,
-      0      , 1
+      m_destRect.x2      , m_destRect.y2 ,
+      0.0f   , 1.0f, 
+      1      , 1
     },
     {
-      m_destRect.x2      , m_destRect.y2 ,
-      0.5f   , 2.0f, 
-      1      , 1
+      m_destRect.x1      , m_destRect.y2 ,
+      0.0f   , 1.0f,
+      0      , 1
     },
   };
   for(int i = 0; i < countof(verts); i++)
@@ -845,7 +845,6 @@ hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
     hr = m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE); 
     hr = m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
   hr = m_pD3DDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
-  CUSTOMVERTEX tmp = verts[2]; verts[2] = verts[3]; verts[3] = tmp;
   hr = m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(verts[0]));
   m_pD3DDevice->SetTexture(1, NULL);
   if (FAILED(hr))
