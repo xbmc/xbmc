@@ -52,6 +52,7 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   m_needNewDevice = false;
   m_adapter = D3DADAPTER_DEFAULT;
   m_screenHeight = 0;
+  m_systemFreq = CurrentHostFrequency();
 
   ZeroMemory(&m_D3DPP, sizeof(D3DPRESENT_PARAMETERS));
 }
@@ -338,9 +339,31 @@ bool CRenderSystemDX::PresentRenderImpl()
 
   if (g_advancedSettings.m_sleepBeforeFlip)
   {
+    //save current thread priority and set thread priority to THREAD_PRIORITY_TIME_CRITICAL
+    int priority = GetThreadPriority(GetCurrentThread());
+    if (priority != THREAD_PRIORITY_ERROR_RETURN)
+      SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+
     D3DRASTER_STATUS rasterStatus;
-    while (SUCCEEDED(m_pD3DDevice->GetRasterStatus(0, &rasterStatus)) && rasterStatus.ScanLine < 0.9*m_screenHeight)
+    int64_t          prev = CurrentHostCounter();
+
+    while (SUCCEEDED(m_pD3DDevice->GetRasterStatus(0, &rasterStatus)))
+    {
+      //wait for the scanline to go over the 0.5 * m_screenHeight mark
+      if (!rasterStatus.InVBlank && rasterStatus.ScanLine >= 0.5 * m_screenHeight)
+        break;
+
+      //in theory it's possible this loop never exits, so don't let it run for longer than 100 ms
+      int64_t now = CurrentHostCounter();
+      if ((now - prev) * 10 > m_systemFreq)
+        break;
+
       Sleep(1);
+    }
+
+    //restore thread priority
+    if (priority != THREAD_PRIORITY_ERROR_RETURN)
+      SetThreadPriority(GetCurrentThread(), priority);
   }
   hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
 

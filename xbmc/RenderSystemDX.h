@@ -115,6 +115,7 @@ protected:
   float m_refreshRate;
   HRESULT m_nDeviceStatus;
   IDirect3DStateBlock9* m_stateBlock;
+  int64_t m_systemFreq;
 
   CCriticalSection m_resourceSection;
   std::vector<ID3DResource*>  m_resources;
