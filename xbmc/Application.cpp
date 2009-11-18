@@ -1968,11 +1968,16 @@ void CApplication::RenderNoPresent()
 //  int vsync_mode = g_videoConfig.GetVSyncMode();
   int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
 
+  if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && vsync_mode == VSYNC_VIDEO)
+    g_Windowing.SetVSync(true);
+  else if (vsync_mode == VSYNC_ALWAYS)
+    g_Windowing.SetVSync(true);
+  else if (vsync_mode != VSYNC_DRIVER)
+    g_Windowing.SetVSync(false);
+
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
-    if (vsync_mode == VSYNC_VIDEO)
-      g_Windowing.SetVSync(true);
     if (m_bPresentFrame)
       g_renderManager.Present();
     else
@@ -1989,11 +1994,6 @@ void CApplication::RenderNoPresent()
 
 // DXMERGE: This may have been important?
 //  g_graphicsContext.AcquireCurrentContext();
-
-  if (vsync_mode==VSYNC_ALWAYS)
-    g_Windowing.SetVSync(true);
-  else if (vsync_mode!=VSYNC_DRIVER)
-    g_Windowing.SetVSync(false);
 
   g_ApplicationRenderer.Render();
 
@@ -4091,10 +4091,6 @@ void CApplication::SaveFileState()
 
 void CApplication::UpdateFileState()
 {
-  // No resume for livetv
-  if (m_progressTrackingItem->IsLiveTV())
-    return;
-
   // Did the file change?
   if (m_progressTrackingItem->m_strPath != "" && m_progressTrackingItem->m_strPath != CurrentFile())
   {

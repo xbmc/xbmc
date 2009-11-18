@@ -13,8 +13,9 @@ public:
     int GetData(char * pBuffer, int nBlocks, int * pBlocksRetrieved);
     int Seek(int nBlockOffset);
 
-    int GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1 = 0, int nParam2 = 0);
-    
+    int GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1 = 0, void *pParam2 = NULL);
+    void *GetPointer(APE_DECOMPRESS_FIELDS Field);
+
 protected:
 
     // buffer

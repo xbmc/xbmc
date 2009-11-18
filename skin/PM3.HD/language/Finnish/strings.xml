@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
   <!-- Translator: Mika Pirinen -->
-  <!-- Date of translation: 6/11/2009 -->
-  <!-- Finnish strings based on English strings version 23729 -->
+  <!-- Date of translation: 15/11/2009 -->
+  <!-- Finnish strings based on English strings version 24569 -->
 <strings>
   <string id="31000">Ääni vaimennettu</string>
   <string id="31001">Suoritetaan...</string>
@@ -65,7 +65,7 @@
   <string id="31057">Sulje soittolista</string>
   <string id="31058">Järjestelmän musiikkitiedostot</string>
   <string id="31059">Nykyinen soittolista</string>
-  <string id="31060">Tämä tiedosto on ryhmitetty, valitse osa jonka haluat toistaa.</string>
+  <string id="31060">Tämä tiedosto on pinottu, valitse osa jonka haluat toistaa.</string>
   
   <!-- Skin Settings labels -->
   <string id="31100">Taustan asetukset</string>
@@ -84,6 +84,7 @@
   <string id="31113">Yksittäinen kuva</string>
   <string id="31114">Vaihtuva kuva</string>
   <string id="31115">Korvaa ääniasetus-painike teksti-TV:llä</string>
+  <string id="31116">Piilota video-lippujen kuvat media näkymissä</string>
 
   <!-- Script Settings labels -->
   <string id="31200">Skripti asetukset</string>

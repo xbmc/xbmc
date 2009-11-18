@@ -318,8 +318,10 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     {
       if(m_presentfield == FS_NONE)
         m_presentmethod = VS_INTERLACEMETHOD_NONE;
-      else
+      else if(m_pRenderer->Supports(VS_INTERLACEMETHOD_RENDER_BOB))
         m_presentmethod = VS_INTERLACEMETHOD_RENDER_BOB;
+      else
+        m_presentmethod = VS_INTERLACEMETHOD_NONE;
     }
 
     /* default to odd field if we want to deinterlace and don't know better */

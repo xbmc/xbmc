@@ -18,11 +18,15 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
 #include "DarwinStorageProvider.h"
 #include "RegExp.h"
 #include "StdString.h"
 #include "Util.h"
 #include "LocalizeStrings.h"
+
+#include <sys/mount.h>
+#include "CocoaInterface.h"
 
 bool CDarwinStorageProvider::m_event = false;
 
@@ -35,10 +39,34 @@ CDarwinStorageProvider::CDarwinStorageProvider()
 void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 {
   CMediaSource share;
+
+  // User home folder
   share.strPath = getenv("HOME");
   share.strName = g_localizeStrings.Get(21440);
   share.m_ignore = true;
   localDrives.push_back(share);
+
+  // User desktop folder
+  share.strPath = getenv("HOME");
+  share.strPath += "/Desktop";
+  share.strName = "Desktop";
+  share.m_ignore = true;
+  localDrives.push_back(share);
+
+  // Volumes (all mounts are present here)
+  share.strPath = "/Volumes";
+  share.strName = "Volumes";
+  share.m_ignore = true;
+  localDrives.push_back(share);
+
+  // Root Disk
+  Cocoa_GetVolumeNameFromMountPoint("/", share.strName);
+  if (!share.strName.empty())
+  {
+    share.strPath = "/";
+    share.m_ignore = true;
+    localDrives.push_back(share);
+  }
 
   GetDrives(localDrives);
 }
@@ -148,4 +176,3 @@ bool CDarwinStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callb
   return changed;
 }
 */
-

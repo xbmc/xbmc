@@ -97,49 +97,16 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
         {
           int iItem = m_viewControl.GetSelectedItem();
           bool bCanceled;
-          bool bOkay = g_passwordManager.IsProfileLockUnlocked(m_viewControl.GetSelectedItem(), bCanceled);
+          bool bOkay = g_passwordManager.IsProfileLockUnlocked(iItem, bCanceled);
 
           if (bOkay)
           {
-            if (CFile::Exists("special://scripts/autoexec.py") && watch.GetElapsedMilliseconds() < 5000.f)
-              while (watch.GetElapsedMilliseconds() < 5000) ;
-            if (iItem != 0 || g_settings.m_iLastLoadedProfileIndex != 0)
+            if (CFile::Exists("special://scripts/autoexec.py") && 
+                watch.GetElapsedMilliseconds() < 5000.f)
             {
-              g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
-              g_settings.LoadProfile(m_viewControl.GetSelectedItem());
-              g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_UP,1);
+              while (watch.GetElapsedMilliseconds() < 5000) Sleep(10);
             }
-            else
-            {
-              CGUIWindow* pWindow = g_windowManager.GetWindow(WINDOW_HOME);
-              if (pWindow)
-                pWindow->ResetControlStates();
-            }
-
-            g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate();
-            g_settings.SaveProfiles(PROFILES_FILE);
-
-            g_weatherManager.Refresh();
-#ifdef HAS_PYTHON
-            g_pythonParser.m_bLogin = true;
-#endif
-            RESOLUTION res=RES_INVALID;
-            CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml", &res);
-            int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
-            // test for a startup window, and activate that instead of home
-            if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
-            {
-              g_windowManager.ChangeActiveWindow(WINDOW_STARTUP);
-            }
-            else
-            {
-              g_windowManager.ChangeActiveWindow(WINDOW_HOME);
-              g_windowManager.ActivateWindow(g_guiSettings.GetInt("lookandfeel.startupwindow"));
-            }
-
-            g_application.UpdateLibraries();
-
-            return true;
+            LoadProfile(iItem);
           }
           else
           {
@@ -308,4 +275,43 @@ CFileItemPtr CGUIWindowLoginScreen::GetCurrentListItem(int offset)
   item = (item + offset) % m_vecItems->Size();
   if (item < 0) item += m_vecItems->Size();
   return m_vecItems->Get(item);
+}
+
+void CGUIWindowLoginScreen::LoadProfile(int profile)
+{
+  if (profile != 0 || g_settings.m_iLastLoadedProfileIndex != 0)
+  {
+    g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
+    g_settings.LoadProfile(profile);
+    g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_UP,1);
+  }
+  else
+  {
+    CGUIWindow* pWindow = g_windowManager.GetWindow(WINDOW_HOME);
+    if (pWindow)
+      pWindow->ResetControlStates();
+  }
+
+  g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate();
+  g_settings.SaveProfiles(PROFILES_FILE);
+
+  g_weatherManager.Refresh();
+#ifdef HAS_PYTHON
+  g_pythonParser.m_bLogin = true;
+#endif
+  RESOLUTION res=RES_INVALID;
+  CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml", &res);
+  int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
+  // test for a startup window, and activate that instead of home
+  if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
+  {
+    g_windowManager.ChangeActiveWindow(WINDOW_STARTUP);
+  }
+  else
+  {
+    g_windowManager.ChangeActiveWindow(WINDOW_HOME);
+    g_windowManager.ActivateWindow(g_guiSettings.GetInt("lookandfeel.startupwindow"));
+  }
+
+  g_application.UpdateLibraries();
 }

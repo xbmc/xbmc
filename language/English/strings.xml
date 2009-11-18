@@ -113,7 +113,7 @@
   <string id="167">Enable FTP server</string>
   <string id="168">Enable Internet time synchronization</string>
   <string id="169">Resolution</string>
-  <string id="170">Adjust refresh rate</string>
+  <string id="170">Adjust screen refresh rate to match video</string>
   <string id="171"></string>
   <string id="172">Release date</string>
   <string id="173"></string>
@@ -378,7 +378,7 @@
   <string id="444">Video</string>
   <string id="445">Audio</string>
   <string id="446">DVD</string>
-  <string id="447">Autorun DVDs</string>
+  <string id="447">Autorun media</string>
   <string id="448">LCD</string>
   <string id="449">Enabled</string>
   <string id="450">Columns</string>
@@ -812,7 +812,7 @@
 
   <string id="2100">Script failed! : %s</string>
 
-  <string id="4501">LCD type</string>
+  <string id="4501">Enable LCD</string>
 
   <string id="10000">Home</string>
   <string id="10001">Programs</string>
@@ -894,14 +894,14 @@
   <string id="12014">No trainers found</string>
   <string id="12015">Trainer settings</string>
   <string id="12016">All registered trainers are missing. Update your list</string>
-  <string id="12017">Auto resume from last position</string>
+  <string id="12017">Resume from where last stopped</string>
   <string id="12018">No</string>
   <string id="12019">Yes</string>
   <string id="12020">Ask</string>
   <string id="12021">Start from beginning</string>
   <string id="12022">Resume from %s</string>
   <string id="12023">Validating existing trainers...</string>
-  <string id="12024">Automatically generate thumbs for videos with no cover art</string>
+  <string id="12024"></string>
   
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -1293,7 +1293,7 @@
   <string id="14051">Time format</string>
   <string id="14052">Date format</string>
   <string id="14053">GUI filters</string>
-  <string id="14054">Enable internet lookups</string>
+  <string id="14054"></string>
   <string id="14055">Use background scanning</string>
   <string id="14056">Stop scan</string>
   <string id="14057">Not possible while scanning for media info</string>
@@ -1326,6 +1326,9 @@
   <string id="14084">Queue songs on selection</string>
   <string id="14085">Play audio CDs automatically</string>
   <string id="14086">Playback</string>
+  <string id="14087">DVDs</string>
+  <string id="14088">Play DVDs automatically</string>
+  <string id="14089">Font to use for text subtitles</string>
 
   <string id="15000"></string>
   <string id="15001"></string>
@@ -1507,10 +1510,10 @@
   <string id="16023">Interlaced handling</string>
   <string id="16024">Canceling...</string>
   <string id="16025">Enter the artist name</string>
-  <string id="16026">Playlist playback aborted</string>
-  <string id="16027">Too many consecutive failed items</string>
+  <string id="16026">Playback failed</string>
+  <string id="16027">One or more items failed to play.</string>
   <string id="16028">Enter value</string>
-
+  <string id="16029">Check the log file for details.</string>
   <string id="16030">Party mode aborted.</string>
   <string id="16031">No matching songs in the library.</string>
   <string id="16032">Could not initialize database.</string>
@@ -1590,6 +1593,7 @@
 
   <!-- string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)-->
 
+  <string id="20037">Summary</string>
   <string id="20038">Lock music window</string>
   <string id="20039">Lock videos window</string>
   <string id="20040">Lock pictures window</string>
@@ -1705,7 +1709,7 @@
   <string id="20151">Cancel shutdown timer</string>
   <string id="20152">Lock preferences for %s</string>
   <string id="20153">Browse...</string>
-  <string id="20154">Basic information</string>
+  <string id="20154">Summary information</string>
   <string id="20155">Storage information</string>
   <string id="20156">Hard disk information</string>
   <string id="20157">DVD-ROM information</string>
@@ -1828,7 +1832,7 @@
   <string id="20366">* All seasons</string>
   <string id="20367">Hide watched</string>
   <string id="20368">Prod code</string>
-  <string id="20369">Hide plot for unwatched items</string>
+  <string id="20369">Show plot for unwatched items</string>
   <string id="20370">* Hidden to prevent spoilers *</string>
   <string id="20371">Set season thumb</string>
   <string id="20372">Season image</string>
@@ -1861,7 +1865,7 @@
   <string id="20399">Go to music videos from album</string>
   <string id="20400">Go to music videos by artist</string>
   <string id="20401">Play music video</string>
-  <string id="20402">Automatically grab actor thumbs</string>
+  <string id="20402">Download actor thumbnails when adding to library</string>
   <string id="20403">Set actor thumb</string>
   <string id="20404"></string>
   <string id="20405">Remove episode bookmark</string>
@@ -1889,10 +1893,10 @@
   <string id="20427">files per entry?</string>
   <string id="20428">Single file</string>
   <string id="20429">Separate</string>
-  <string id="20430">Export thumbs and fanart?</string>
+  <string id="20430">Export thumbnails and fanart?</string>
   <string id="20431">Overwrite old files?</string>
   <string id="20432">Exclude path from library updates</string>
-  <string id="20433">Extract media metadata information</string>
+  <string id="20433">Extract thumbnails and video information</string>
   <string id="20434">Sets</string>
   <string id="20435">Set movieset thumb</string>
   <string id="20436">Export actor thumbs</string>
@@ -1928,7 +1932,7 @@
   <string id="21363"></string>
   <string id="21364">Edit media share</string>
   <string id="21365">Remove media share</string>
-  <string id="21366">Custom subtitle directory</string>
+  <string id="21366">Subtitle folder</string>
   <string id="21367">Movie &amp; alternate subtitle directory</string>
 
   <string id="21369">Enable mouse</string>
@@ -2095,7 +2099,7 @@
   <string id="22000">Update library on startup</string>
   <string id="22001">Always update library in background</string>
   <string id="22002">- DNS suffix</string>
-  <string id="22003">Enable edit and decision lists</string>
+  <string id="22003"></string>
   <string id="22004">Delayed by: %2.3fs</string>
   <string id="22005">Ahead by: %2.3fs</string>
   <string id="22006">Subtitle offset</string>
@@ -2113,7 +2117,7 @@
   <string id="22018">Live channels</string>
   <string id="22019">Recordings by title</string>
   <string id="22020">Guide</string>
-  <string id="22021">Allowed error in aspect ratio (%)</string>
+  <string id="22021">Allowed error in aspect ratio to minimize black bars</string>
   <string id="22022">Show video files in listings</string>
   <string id="22023">DirectX vendor</string>
   <string id="22024">Direct3D version</string>

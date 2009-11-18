@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: airplanez-->
-<!--Email: airplanez@gmail.com-->
-<!--Date of translation: 10/27/2009-->
+<!--Date of translation: 11/16/2009-->
 <!--$Revision$-->
 <strings>
   <string id="31000">소리꺼짐</string>
@@ -97,6 +95,7 @@
   <string id="31113">단일 이미지</string>
   <string id="31114">다중 이미지</string>
   <string id="31115">오디오 설정 버튼을 문자다중방송으로 교체</string>
+  <string id="31116">미디어 보기에서 비디오 플래그 이미지 숨김</string>
   <string id="31200">사용자 지정 스크립트 옵션</string>
   <string id="31201">
   </string>

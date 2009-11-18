@@ -211,7 +211,7 @@
 		<skipplus>NextChapter</skipplus>
 		<skipminus>PrevChapter</skipminus>
 		<display>FullScreen</display>
-		<start>Multimon</start>
+		<start>MultiMon</start>
 		<volumeplus>Vol+</volumeplus>
 		<volumeminus>Vol-</volumeminus>
 		<mute>Mute</mute>

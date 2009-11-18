@@ -23,7 +23,7 @@ CAPEDecompress::CAPEDecompress(int * pErrorCode, CAPEInfo * pAPEInfo, int nStart
     }
 
     // get format information
-    GetInfo(APE_INFO_WAVEFORMATEX, (long) &m_wfeInput);
+    GetInfo(APE_INFO_WAVEFORMATEX, 0, &m_wfeInput);
     m_nBlockAlign = GetInfo(APE_INFO_BLOCK_ALIGN);
 
     // initialize other stuff
@@ -367,7 +367,7 @@ int CAPEDecompress::SeekToFrame(int nFrameIndex)
 /*****************************************************************************************
 Get information from the decompressor
 *****************************************************************************************/
-int CAPEDecompress::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, int nParam2)
+int CAPEDecompress::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, void *pParam2)
 {
     int nRetVal = 0;
     BOOL bHandled = TRUE;
@@ -443,8 +443,8 @@ int CAPEDecompress::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, int nParam
             break;
         case APE_INFO_WAV_HEADER_DATA:
         {
-            char * pBuffer = (char *) nParam1;
-            int nMaxBytes = nParam2;
+            char * pBuffer = (char *) pParam2;
+            int nMaxBytes = nParam1;
             
             if (sizeof(WAVE_HEADER) > nMaxBytes)
             {
@@ -452,7 +452,7 @@ int CAPEDecompress::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, int nParam
             }
             else
             {
-                WAVEFORMATEX wfeFormat; GetInfo(APE_INFO_WAVEFORMATEX, (long) &wfeFormat, 0);
+                WAVEFORMATEX wfeFormat; GetInfo(APE_INFO_WAVEFORMATEX, 0, &wfeFormat);
                 WAVE_HEADER WAVHeader; FillWaveHeader(&WAVHeader, 
                     (m_nFinishBlock - m_nStartBlock) * GetInfo(APE_INFO_BLOCK_ALIGN), 
                     &wfeFormat,    0);
@@ -473,7 +473,12 @@ int CAPEDecompress::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, int nParam
     }
 
     if (bHandled == FALSE)
-        nRetVal = m_spAPEInfo->GetInfo(Field, nParam1, nParam2);
+        nRetVal = m_spAPEInfo->GetInfo(Field, nParam1, pParam2);
 
     return nRetVal;
+}
+
+void *CAPEDecompress::GetPointer(APE_DECOMPRESS_FIELDS Field)
+{
+    return m_spAPEInfo->GetPointer(Field);
 }

@@ -60,58 +60,11 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen
   newRes.fPixelRatio = 1.0f;  
   newRes.iWidth = width;
   newRes.iHeight = height;
-  
-  bool stdRes = false;
-  if (width == 1280 && height == 720)
-  {
-    newRes.strMode = "720";
-    stdRes = true;
-  }
-  if (width == 1366 && height == 768)
-  {
-    newRes.strMode = "720";
-    stdRes = true;
-  }
-  else if (width == 720 && height == 480)
-  {
-    newRes.strMode = "480";
-    stdRes = true;
-  }
-  else if (width == 1920 && height == 1080)
-  {
-    newRes.strMode = "1080";
-    stdRes = true;
-  }
-
-  if (stdRes)
-  {
-    if (refreshRate > 23 && refreshRate < 31)
-    {
-      newRes.strMode += "i";
-    }
-    else
-    {
-      newRes.strMode += "p";
-    }
-      
-    if (refreshRate > 1)
-    {
-      newRes.strMode.Format("%s%2.f (Full Screen)",  newRes.strMode, refreshRate);
-    }
-  }  
-  else
-  {
-    newRes.strMode.Format("%dx%d", width, height);
-    if (refreshRate > 1)
-    {
-	    newRes.strMode.Format("%s @ %.2f - Full Screen", newRes.strMode, refreshRate);
-    }
-  }
-  
+  newRes.strMode.Format("%dx%d", width, height);
+  if (refreshRate > 1)
+    newRes.strMode.Format("%s @ %.2f - Full Screen", newRes.strMode, refreshRate);
   if (screen > 0)
-  {
-    newRes.strMode.Format("%s #%d", newRes.strMode, screen + 1);    
-  }  
+    newRes.strMode.Format("%s #%d", newRes.strMode, screen + 1);
 }
 
 void CWinSystemBase::UpdateResolutions()

@@ -177,9 +177,14 @@ int __stdcall c_APEDecompress_Seek(APE_DECOMPRESS_HANDLE hAPEDecompress, int nBl
 	return ((IAPEDecompress *) hAPEDecompress)->Seek(nBlockOffset);
 }
 
-int __stdcall c_APEDecompress_GetInfo(APE_DECOMPRESS_HANDLE hAPEDecompress, APE_DECOMPRESS_FIELDS Field, int nParam1, int nParam2)
+int __stdcall c_APEDecompress_GetInfo(APE_DECOMPRESS_HANDLE hAPEDecompress, APE_DECOMPRESS_FIELDS Field, int nParam1, void *pParam2)
 {
-	return ((IAPEDecompress *) hAPEDecompress)->GetInfo(Field, nParam1, nParam2);
+	return ((IAPEDecompress *) hAPEDecompress)->GetInfo(Field, nParam1, pParam2);
+}
+
+CAPETag *__stdcall c_APEDecompress_GetTag(APE_DECOMPRESS_HANDLE hAPEDecompress)
+{
+	return (CAPETag *)((IAPEDecompress *) hAPEDecompress)->GetPointer(APE_INFO_TAG);
 }
 
 /*****************************************************************************************

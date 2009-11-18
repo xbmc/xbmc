@@ -2325,8 +2325,19 @@ bool CLinuxRendererGL::SupportsMultiPassRendering()
 bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
 {
   if(method == VS_INTERLACEMETHOD_NONE
-  || method == VS_INTERLACEMETHOD_AUTO
-  || method == VS_INTERLACEMETHOD_DEINTERLACE)
+  || method == VS_INTERLACEMETHOD_AUTO)
+    return true;
+
+  if(m_renderMethod == RENDER_METHOD_VDPAU)
+  {
+    if(method == VS_INTERLACEMETHOD_VDPAU
+    || method == VS_INTERLACEMETHOD_RENDER_BLEND
+    || method == VS_INTERLACEMETHOD_INVERSE_TELECINE)
+      return true;
+    return false;
+  }
+
+  if(method == VS_INTERLACEMETHOD_DEINTERLACE)
     return true;
 
   if(method == VS_INTERLACEMETHOD_RENDER_BLEND
@@ -2335,10 +2346,6 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
   || method == VS_INTERLACEMETHOD_RENDER_BOB)
     return true;
-#ifdef HAVE_LIBVDPAU
-  if((method == VS_INTERLACEMETHOD_VDPAU) && g_VDPAU)
-    return true;
-#endif
 
   return false;
 }

@@ -76,12 +76,14 @@ HANDLE WINAPI CreateThread(
     h = NULL;
   }
 #ifdef __APPLE__
+/*
   int policy;
   struct sched_param param;
   pthread_getschedparam(h->m_hThread, &policy, &param );
   // change from default SCHED_OTHER to SCHED_RR
   policy = SCHED_RR;
   pthread_setschedparam(h->m_hThread, policy, &param );
+*/
 #endif
   pthread_attr_destroy(&attr);
   if (h && lpThreadId)

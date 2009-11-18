@@ -207,6 +207,8 @@ public:
     VOICE_MASK m_karaokeVoiceMask[4];
   };
 
+  stSettings m_stSettings;
+
   struct RssSet
   {
     bool rtl;
@@ -311,4 +313,4 @@ protected:
 };
 
 extern class CSettings g_settings;
-extern struct CSettings::stSettings g_stSettings;
+extern struct CSettings::stSettings& g_stSettings;

@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT("xbmc", 9.04, http://xbmc.org/trac/)
+AC_INIT("xbmc", 9.11, http://xbmc.org/trac/)
 AC_CONFIG_HEADERS([config.h])
 AH_TOP([#pragma once])
 
@@ -1189,6 +1189,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-pthreads \
       --enable-runtime-cpudetect \
       --cc="$CC" &&
+    sed -i "" -e "s#define HAVE_POSIX_MEMALIGN 1#define HAVE_POSIX_MEMALIGN 0#" config.h &&
     sed -i "" -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak &&
     sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak &&
     sed -i "" -e "s#libswscale_VERSION_MAJOR=0#libswscale_VERSION_MAJOR=0.7.1#" config.mak &&
