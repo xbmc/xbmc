@@ -143,7 +143,7 @@ void CVisualisation::Render()
 
 void CVisualisation::Stop()
 {
-  // ask visz. to cleanup
+  if (g_application.m_pPlayer) g_application.m_pPlayer->UnRegisterAudioCallback();
   if (m_initialized) m_pStruct->Stop();
 }
 
@@ -340,8 +340,7 @@ bool CVisualisation::GetPresetList(std::vector<CStdString> &vecpresets)
 bool CVisualisation::GetPresets()
 {
   m_presets.clear();
-  //TODO fix linking problems
-/*  viz_preset_list_t presets = NULL;
+  viz_preset_list_t presets = NULL;
   try
   {
     presets = m_pStruct->GetPresets();
@@ -366,7 +365,7 @@ bool CVisualisation::GetPresets()
     }
     viz_release(presets);
   }
-  return (!m_presets.empty());*/
+  return (!m_presets.empty());
   return false;
 }
 

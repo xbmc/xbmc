@@ -73,7 +73,7 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
       g_windowManager.SendMessage(msg);
       m_addon.reset();
       ADDON::AddonPtr viz;
-      if (ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_VIZ, g_guiSettings.GetString("mymusic.visualisation"), viz))
+      if (ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_VIZ, g_guiSettings.GetString("musicplayer.visualisation"), viz))
       {
         m_addon = boost::dynamic_pointer_cast<CVisualisation>(viz);
         Update();

@@ -200,8 +200,6 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
     }
   }
 
-  scale = 1.0 / log(256.0);
-
   x_speed = 0.0;
   y_speed = 0.5;
   z_speed = 0.0;

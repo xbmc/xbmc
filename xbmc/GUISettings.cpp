@@ -279,7 +279,7 @@ void CGUISettings::Initialize()
   AddBool(6, "musicplayer.crossfadealbumtracks", 13400, true);
   AddSeparator(7, "musicplayer.sep3");
   AddString(8, "musicplayer.visualisation", 250, DEFAULT_VISUALISATION, SPIN_CONTROL_TEXT);
-  AddString(9, "musicplayer.manageplugin", 23072, "", BUTTON_CONTROL_STANDARD);
+  AddString(9, "musicplayer.managevisual", 23061, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicfiles", 14081);
   AddBool(1, "musicfiles.usetags", 258, true);

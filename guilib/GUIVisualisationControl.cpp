@@ -59,10 +59,11 @@ void CGUIVisualisationControl::LoadVisualisation()
   m_bInitialized = false;
 
   AddonPtr addon;
-  if (!CAddonMgr::Get()->GetAddon(ADDON_VIZ, g_guiSettings.GetString("mymusic.visualisation"), addon))
+  if (!CAddonMgr::Get()->GetAddon(ADDON_VIZ, g_guiSettings.GetString("musicplayer.visualisation"), addon))
       return;
 
   m_addon = boost::dynamic_pointer_cast<CVisualisation>(addon);
+  m_currentVis = m_addon->Name();
 
   if (!m_addon)
     return;
@@ -77,9 +78,12 @@ void CGUIVisualisationControl::LoadVisualisation()
   if (x + w > g_graphicsContext.GetWidth()) w = g_graphicsContext.GetWidth() - x;
   if (y + h > g_graphicsContext.GetHeight()) h = g_graphicsContext.GetHeight() - y;
 
-  m_addon->Create((int)(x+0.5f), (int)(y+0.5f), (int)(w+0.5f), (int)(h+0.5f));
-  g_graphicsContext.ApplyStateBlock();
-  VerifyGLState();
+  if (m_addon->Create((int)(x+0.5f), (int)(y+0.5f), (int)(w+0.5f), (int)(h+0.5f)))
+  {
+    g_graphicsContext.ApplyStateBlock();
+    VerifyGLState();
+    m_bInitialized = true;
+  }
 
   // tell our app that we're back
   //TODO need to pass shrd_ptr<Vis> instead CGUIMessage msg(GUI_MSG_VISUALISATION_LOADED, 0, 0, 0, 0, m_pVisualisation);
@@ -93,14 +97,9 @@ void CGUIVisualisationControl::UpdateVisibility(const CGUIListItem *item)
     FreeVisualisation();
 }
 
-/*void CGUIVisualisationControl::SetInvalid()
-{
-  FreeResources();
-}*/
-
 void CGUIVisualisationControl::Render()
 {
-  if (!m_addon || !m_currentVis.Equals(g_guiSettings.GetString("mymusic.visualisation")))
+  if (!m_addon || !m_currentVis.Equals(g_guiSettings.GetString("musicplayer.visualisation")))
   { // check if we need to load
     LoadVisualisation();
     CGUIControl::Render();

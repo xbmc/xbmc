@@ -366,7 +366,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
   if (iWindowID == WINDOW_DIALOG_VIS_SETTINGS)
   {
     ADDON::AddonPtr addon;
-    if (ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_VIZ, g_guiSettings.GetString("mymusic.visualisation"), addon))
+    if (ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_VIZ, g_guiSettings.GetString("musicplayer.visualisation"), addon))
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
 

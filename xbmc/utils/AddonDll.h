@@ -225,7 +225,6 @@ template<class TheDll, typename TheStruct, typename Props>
 bool CAddonDll<TheDll, TheStruct, Props>::HasSettings()
 {
   if (!LoadDll())
-
     return false;
 
   try
