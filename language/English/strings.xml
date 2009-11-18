@@ -74,7 +74,7 @@
   <string id="128">General</string>
   <string id="129">Slideshow</string>
   <string id="130">System info</string>
-  <string id="131">Screen</string>
+  <string id="131">Display</string>
   <string id="132">Albums</string>
   <string id="133">Artists</string>
   <string id="134">Songs</string>
@@ -113,7 +113,7 @@
   <string id="167">Enable FTP server</string>
   <string id="168">Enable Internet time synchronization</string>
   <string id="169">Resolution</string>
-  <string id="170">Adjust screen refresh rate to match video</string>
+  <string id="170">Adjust display refresh rate to match video</string>
   <string id="171"></string>
   <string id="172">Release date</string>
   <string id="173"></string>
@@ -644,7 +644,7 @@
   <string id="769">Reserved</string>
   <string id="770">Error %i: share not available</string>
   <string id="771">- Auto FATX limiter</string>
-  <string id="772">Audio hardware</string>
+  <string id="772">Audio output</string>
   <string id="773">Seeking</string>
   <string id="774">Slideshow folder</string>
   <string id="775">Network interface</string>
@@ -805,14 +805,14 @@
 
   <!-- strings through to 1450 reserved for weather translation -->
 
-  <string id="1450">Enable power saving when idle</string>
+  <string id="1450">Put display to sleep when idle</string>
   <!-- strings through to 1470 reserved for power-saving -->
 
   <string id="2050">Runtime</string>
 
   <string id="2100">Script failed! : %s</string>
 
-  <string id="4501">Enable LCD</string>
+  <string id="4501">Enable LCD/VFD</string>
 
   <string id="10000">Home</string>
   <string id="10001">Programs</string>
@@ -945,8 +945,8 @@
   <string id="12358">Password entry was blank. Try again.</string>
   <string id="12360">Master lock</string>
   <string id="12362">Shutdown system if Master Lock retries exceeded</string>
-  <string id="12367">Master code is not valid!</string>
-  <string id="12368">Please enter a valid master code!</string>
+  <string id="12367">Master code is not valid</string>
+  <string id="12368">Please enter a valid master code</string>
   <string id="12373">Settings &amp; file manager</string>
   <string id="12376">Set as default for all movies</string>
   <string id="12377">This will reset any previously saved values</string>
@@ -1018,7 +1018,7 @@
   <string id="13121">VDPAU HQ Upscaling level</string>
   <string id="13122">VDPAU Studio level color conversion</string>
 
-  <string id="13130">Display blanking</string>
+  <string id="13130">Blank other displays</string>
   <string id="13131">Disabled</string>
   <string id="13132">Blank displays</string>
 
@@ -1229,9 +1229,9 @@
   <string id="13509">Really high(slow!)</string>
   <string id="13510">Sync playback to display</string>
 
-  <string id="13600">Apple Remote</string>
-  <string id="13601">Mode</string>
-  <string id="13602">Always running</string>
+  <string id="13600">Apple remote</string>
+  <string id="13601"></string>
+  <string id="13602">Allow start of XBMC with the remote</string>
   <string id="13603">Sequence delay time</string>
 
   <string id="13610">Disabled</string>
@@ -1331,6 +1331,10 @@
   <string id="14089">Font to use for text subtitles</string>
   <string id="14090">International</string>
   <string id="14091">Character set</string>
+  <string id="14092">Debugging</string>
+  <string id="14093">Security</string>
+  <string id="14094">Input devices</string>
+  <string id="14095">Power saving</string>
 
   <string id="15000"></string>
   <string id="15001"></string>
@@ -1941,7 +1945,7 @@
   <string id="21370">Play navigation sounds during media playback</string>
   <string id="21371">Thumbnail</string>
   <string id="21372">Forced DVD player region</string>
-  <string id="21373">Video hardware</string>
+  <string id="21373">Video output</string>
   <string id="21374">Video aspect</string>
   <string id="21375">Normal</string>
   <string id="21376">Letterbox</string>

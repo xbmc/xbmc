@@ -721,7 +721,7 @@ HRESULT CApplication::Create(HWND hWnd)
             g_settings.m_ResInfo[iResolution].strMode.c_str());
   g_windowManager.Initialize();
 
-  g_Mouse.SetEnabled(g_guiSettings.GetBool("system.enablemouse"));
+  g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
 
   CUtil::InitRandomSeed();
 
@@ -1082,7 +1082,7 @@ HRESULT CApplication::Initialize()
 
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
   CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
-  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("system.screenshotpath",false).c_str());
+  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("debug.screenshotpath",false).c_str());
 
   // UserData folder layout:
   // UserData/
@@ -1136,9 +1136,7 @@ HRESULT CApplication::Initialize()
 
   // Init DPMS, before creating the corresponding setting control.
   m_dpms = new DPMSSupport();
-  g_guiSettings.GetSetting("system.sep_powersaving")->SetVisible(
-      m_dpms->IsSupported());
-  g_guiSettings.GetSetting("system.powersavingtime")->SetVisible(
+  g_guiSettings.GetSetting("powermanagement.displaysoff")->SetVisible(
       m_dpms->IsSupported());
 
   g_windowManager.Add(new CGUIWindowHome);                     // window id = 0
@@ -2371,7 +2369,7 @@ bool CApplication::OnKey(CKey& key)
     if (useKeyboard)
     {
       action.id = 0;
-      if (g_guiSettings.GetBool("system.remoteaskeyboard"))
+      if (g_guiSettings.GetBool("input.remoteaskeyboard"))
       {
         // users remote is executing keyboard commands, so use the virtualkeyboard section of keymap.xml
         // and send those rather than actual keyboard presses.  Only for navigation-type commands though
@@ -2772,7 +2770,7 @@ void CApplication::UpdateLCD()
 #ifdef HAS_LCD
   static long lTickCount = 0;
 
-  if (!g_lcd || !g_guiSettings.GetBool("system.haslcd"))
+  if (!g_lcd || !g_guiSettings.GetBool("videoscreen.haslcd"))
     return ;
   long lTimeOut = 1000;
   if ( m_iPlaySpeed != 1)
@@ -4308,7 +4306,7 @@ void CApplication::CheckScreenSaverAndDPMS()
       && g_guiSettings.GetString("screensaver.mode") != "None";
   bool maybeDPMS =
       !m_dpmsIsActive && m_dpms->IsSupported()
-      && g_guiSettings.GetInt("system.powersavingtime") > 0;
+      && g_guiSettings.GetInt("powermanagement.displaysoff") > 0;
 
   // Has the screen saver window become active?
   if (maybeScreensaver && g_windowManager.IsWindowActive(WINDOW_SCREENSAVER))
@@ -4333,7 +4331,7 @@ void CApplication::CheckScreenSaverAndDPMS()
 
   // DPMS has priority (it makes the screensaver not needed)
   if (maybeDPMS
-      && elapsed > g_guiSettings.GetInt("system.powersavingtime") * 60)
+      && elapsed > g_guiSettings.GetInt("powermanagement.displaysoff") * 60)
   {
     m_dpms->EnablePowerSaving(m_dpms->GetSupportedModes()[0]);
     m_dpmsIsActive = true;
@@ -4409,7 +4407,7 @@ void CApplication::CheckShutdown()
     return;
   }
 
-  if ( m_shutdownTimer.GetElapsedSeconds() > g_guiSettings.GetInt("system.shutdowntime") * 60 )
+  if ( m_shutdownTimer.GetElapsedSeconds() > g_guiSettings.GetInt("powermanagement.shutdowntime") * 60 )
   {
     // Since it is a sleep instead of a shutdown, let's set everything to reset when we wake up.
     m_shutdownTimer.Stop();
@@ -4744,9 +4742,9 @@ void CApplication::ProcessSlow()
 
   // Check if we need to shutdown (if enabled).
 #ifdef __APPLE__
-  if (g_guiSettings.GetInt("system.shutdowntime") && g_advancedSettings.m_fullScreen)
+  if (g_guiSettings.GetInt("powermanagement.shutdowntime") && g_advancedSettings.m_fullScreen)
 #else
-  if (g_guiSettings.GetInt("system.shutdowntime"))
+  if (g_guiSettings.GetInt("powermanagement.shutdowntime"))
 #endif
   {
     CheckShutdown();

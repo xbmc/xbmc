@@ -1923,7 +1923,7 @@ void CUtil::TakeScreenshot()
 
   bool promptUser = false;
   // check to see if we have a screenshot folder yet
-  CStdString strDir = g_guiSettings.GetString("system.screenshotpath", false);
+  CStdString strDir = g_guiSettings.GetString("debug.screenshotpath", false);
   if (strDir.IsEmpty())
   {
     strDir = "special://temp/";
@@ -1947,7 +1947,7 @@ void CUtil::TakeScreenshot()
         screenShots.push_back(file);
       if (promptUser)
       { // grab the real directory
-        CStdString newDir = g_guiSettings.GetString("system.screenshotpath");
+        CStdString newDir = g_guiSettings.GetString("debug.screenshotpath");
         if (!newDir.IsEmpty())
         {
           for (unsigned int i = 0; i < screenShots.size(); i++)

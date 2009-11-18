@@ -81,7 +81,7 @@ void CPowerManager::Initialize()
   m_instance = new CNullPowerSyscall();
 #endif
 
-  int defaultShutdown = g_guiSettings.GetInt("system.shutdownstate");
+  int defaultShutdown = g_guiSettings.GetInt("powermanagement.shutdownstate");
 
   switch (defaultShutdown)
   {
@@ -120,7 +120,7 @@ void CPowerManager::Initialize()
     break;
   }
 
-  g_guiSettings.SetInt("system.shutdownstate", defaultShutdown);
+  g_guiSettings.SetInt("powermanagement.shutdownstate", defaultShutdown);
 }
   
 bool CPowerManager::Powerdown()
