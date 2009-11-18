@@ -783,8 +783,6 @@ void CWinRenderer::RenderDshowBuffer(DWORD flags)
     g_graphicsContext.ClipToViewWindow();
 
   HRESULT hr;
-  hr = m_pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0);
-
   D3DSURFACE_DESC desc;
   if(!m_D3DVideoTexture || FAILED(m_D3DVideoTexture->GetLevelDesc(0, &desc)))
     return;
@@ -843,7 +841,7 @@ hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
     hr = m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
   hr = m_pD3DDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
   hr = m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(verts[0]));
-  m_pD3DDevice->SetTexture(1, NULL);
+  m_pD3DDevice->SetTexture(0, NULL);
   if (FAILED(hr))
     CLog::Log(LOGDEBUG,"RenderDshowBuffer TextureCopy CWinRenderer::RenderDshowBuffer"); 
 }
