@@ -543,9 +543,9 @@ void CGUISettings::Initialize()
 #endif
   AddString(6,"services.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
   AddString(7,"services.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
-  AddSeparator(8,"services.sep1");
 #endif
 #ifdef HAS_EVENT_SERVER
+  AddSeparator(8,"services.sep1");
   AddBool(9,  "services.esenabled",         791, true);
   AddString(0,"services.esport",            792, "9777", EDIT_CONTROL_NUMBER_INPUT, false, 792);
   AddInt(0,   "services.esportrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
@@ -553,9 +553,9 @@ void CGUISettings::Initialize()
   AddBool(10,  "services.esallinterfaces",   794, false);
   AddInt(0,   "services.esinitialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
   AddInt(0,   "services.escontinuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
-  AddSeparator(11, "services.sep2");
 #endif
 #ifdef HAS_ZEROCONF
+  AddSeparator(11, "services.sep2");
   AddBool(12, "services.zeroconf", 1260, true);
 #endif
 
