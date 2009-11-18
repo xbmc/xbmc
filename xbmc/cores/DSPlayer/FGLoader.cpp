@@ -25,6 +25,7 @@
 #include "XMLUtils.h"
 #include "charsetconverter.h"
 #include "Log.h"
+#include "FileSystem/SpecialProtocol.h"
 using namespace std;
 CFGLoader::CFGLoader(IGraphBuilder2* gb,CStdString xbmcPath)
 :m_pGraphBuilder(gb)
@@ -63,10 +64,12 @@ HRESULT CFGLoader::LoadConfig(CStdString configFile)
     strTmpFilterName = pFilters->Attribute("name");
     strTmpFilterType = pFilters->Attribute("type");
     XMLUtils::GetString(pFilters,"path",strFPath);
-    if (!CFile::Exists(strFPath))
-	{
-      strFPath.Format("%s\\\\system\\\\players\\\\dsplayer\\\\%s",m_xbmcPath.c_str(),strFPath.c_str());
-	}
+
+    CStdString strPath2;
+    strPath2.Format("special://xbmc/system/players/dsplayer/%s", strFPath.c_str());
+    if (!CFile::Exists(strFPath) && CFile::Exists(strPath2))
+      strFPath = _P(strPath2);
+
 	XMLUtils::GetString(pFilters,"guid",strFGuid);
     XMLUtils::GetString(pFilters,"filetype",strFileType);
     pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,L"",MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);

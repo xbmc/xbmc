@@ -39,6 +39,7 @@
 
 #include "dshowutil/NullRenderers.h"
 #include "Log.h"
+#include "FileSystem/SpecialProtocol.h"
 //XML CONFIG HEADERS
 #include "tinyXML/tinyxml.h"
 #include "XMLUtils.h"
@@ -995,7 +996,7 @@ CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd,CStd
   }
 
   CStdString fileconfigtmp;
-  fileconfigtmp.Format("%s\\system\\players\\dsplayer\\dsfilterconfig.xml",pXbmcPath.c_str());
+  fileconfigtmp = _P("special://xbmc/system/players/dsplayer/dsfilterconfig.xml");
   //Load the config for the xml
   m_CfgLoader = new CFGLoader(this,pXbmcPath);
   //if (LoadFiltersFromXml(fileconfigtmp,pXbmcPath))
