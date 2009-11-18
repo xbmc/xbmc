@@ -342,7 +342,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
     bool blankOtherDisplays = g_guiSettings.GetBool("videoscreen.blankdisplays");
     g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], blankOtherDisplays);
 #else
-    g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], BLANKING_DISABLED);
+    g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], false);
 #endif
   }
   else if (lastRes >= RES_DESKTOP )
