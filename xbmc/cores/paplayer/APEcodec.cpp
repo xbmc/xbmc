@@ -62,7 +62,7 @@ bool APECodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Bitrate = m_dll.GetInfo(m_handle, APE_INFO_AVERAGE_BITRATE, 0, 0) * 1000;
 
   // Get the replay gain data
-  IAPETag *pTag = (IAPETag *)m_dll.GetInfo(m_handle, APE_INFO_TAG, 0, 0);
+  IAPETag *pTag = (IAPETag *)m_dll.GetTag(m_handle);
   if (pTag)
   {
     CAPEv2Tag tag;

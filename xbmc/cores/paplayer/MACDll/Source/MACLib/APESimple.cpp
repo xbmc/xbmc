@@ -158,7 +158,7 @@ int __stdcall VerifyFileW(const str_utf16 * pInputFilename, int * pPercentageDon
             spAPEDecompress.Assign(CreateIAPEDecompress(pInputFilename, &nFunctionRetVal));
             if (spAPEDecompress == NULL || nFunctionRetVal != ERROR_SUCCESS) throw(nFunctionRetVal);
 
-            APE_FILE_INFO * pInfo = (APE_FILE_INFO *) spAPEDecompress->GetInfo(APE_INTERNAL_INFO);
+            APE_FILE_INFO * pInfo = (APE_FILE_INFO *) spAPEDecompress->GetPointer(APE_INTERNAL_INFO);
             if ((pInfo->nVersion < 3980) || (pInfo->spAPEDescriptor == NULL))
                 throw(ERROR_UPSUPPORTED_FILE_VERSION);
         }
@@ -185,7 +185,7 @@ int __stdcall VerifyFileW(const str_utf16 * pInputFilename, int * pPercentageDon
             CMD5Helper MD5Helper;
             
             CIO * pIO = GET_IO(spAPEDecompress);
-            APE_FILE_INFO * pInfo = (APE_FILE_INFO *) spAPEDecompress->GetInfo(APE_INTERNAL_INFO);
+            APE_FILE_INFO * pInfo = (APE_FILE_INFO *) spAPEDecompress->GetPointer(APE_INTERNAL_INFO);
 
             if ((pInfo->nVersion < 3980) || (pInfo->spAPEDescriptor == NULL))
                 throw(ERROR_UPSUPPORTED_FILE_VERSION);

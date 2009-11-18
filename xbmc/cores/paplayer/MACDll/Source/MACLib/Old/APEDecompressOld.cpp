@@ -276,5 +276,10 @@ int CAPEDecompressOld::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, void *p
     return nRetVal;
 }
 
+void *CAPEDecompressOld::GetPointer(APE_DECOMPRESS_FIELDS Field)
+{
+    return m_spAPEInfo->GetPointer(Field);
+}
+
 #endif // #ifdef BACKWARDS_COMPATIBILITY
 

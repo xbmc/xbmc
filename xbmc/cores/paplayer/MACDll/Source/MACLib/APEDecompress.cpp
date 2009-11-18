@@ -477,3 +477,8 @@ int CAPEDecompress::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, void *pPar
 
     return nRetVal;
 }
+
+void *CAPEDecompress::GetPointer(APE_DECOMPRESS_FIELDS Field)
+{
+    return m_spAPEInfo->GetPointer(Field);
+}
