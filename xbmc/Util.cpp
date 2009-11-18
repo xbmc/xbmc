@@ -243,7 +243,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
     strFilename = g_localizeStrings.Get(20012);
 
   // now remove the extension if needed
-  if (g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
+  if (!g_guiSettings.GetBool("filelists.showextensions") && !bIsFolder)
   {
     RemoveExtension(strFilename);
     return strFilename;
@@ -449,7 +449,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     strTitleAndYear = strTitle + " (" + strYear + ")";
 
   // restore extension if needed
-  if (!g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
+  if (g_guiSettings.GetBool("filelists.showextensions") && !bIsFolder)
     strTitleAndYear += strExtension;
 
 }

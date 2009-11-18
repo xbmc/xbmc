@@ -285,14 +285,14 @@
   <string id="352">Dim</string>
   <string id="353">Black</string>
   <string id="354">Matrix trails</string>
-  <string id="355">Screensaver idle timeout</string>
+  <string id="355">Screensaver time</string>
   <string id="356">Screensaver mode</string>
   <string id="357">Shutdown function timer</string>
   <string id="358">All albums</string>
   <string id="359">Recently added albums</string>
   <string id="360">Screensaver</string>
   <string id="361">R. Slideshow</string>
-  <string id="362">Screensaver fade level</string>
+  <string id="362">Screensaver dim level</string>
   <string id="363">Sort by: File</string>
   <string id="364">- Dolby Digital (AC3) capable receiver</string>
   <string id="365">Sort by: Name</string>
@@ -408,7 +408,7 @@
   <string id="477">Unable to load playlist</string>
   <string id="478">OSD</string>
   <string id="479">Skin &amp; language</string>
-  <string id="480">Appearance</string>
+  <string id="480">Look and feel</string>
   <string id="481">Audio options</string>
   <string id="482">About XBMC</string>
   <string id="483"></string>
@@ -424,7 +424,7 @@
   <string id="494">Overall audio headroom</string>
   <string id="495">Upsample videos to GUI resolution</string>
   <string id="496">Calibration</string>
-  <string id="497">Hide media extensions</string>
+  <string id="497">Show file extensions</string>
   <string id="498">Sort by: Type</string>
   <string id="499">Unable to connect to online lookup service</string>
   <string id="500">Downloading album information failed</string>
@@ -607,7 +607,7 @@
   <string id="732">Save &amp; apply</string>
   <string id="733">- Password</string>
   <string id="734">No pass</string>
-  <string id="735">- Charset</string>
+  <string id="735">- Character set</string>
   <string id="736">- Style</string>
   <string id="737">- Colour</string>
   <string id="738">Normal</string>
@@ -1111,8 +1111,8 @@
   <string id="13302">Fan speed override</string>
   <string id="13303">- Fonts</string>
   <string id="13304">Enable flipping bi-directional strings</string>
-  <string id="13305">Enable RSS feeds</string>
-  <string id="13306">Hide parent folder items</string>
+  <string id="13305">Show RSS news feeds</string>
+  <string id="13306">Show parent folder items</string>
   <string id="13307">Track naming template</string>
   <string id="13308">Do you wish to reboot your system</string>
   <string id="13309">instead of just XBMC?</string>
@@ -1191,7 +1191,7 @@
   <string id="13396">Audio and subtitle settings</string>
   <string id="13397">Enable subtitles</string>
   <string id="13398">Shortcuts</string>
-  <string id="13399">Ignore tokens when sorting</string>
+  <string id="13399">Ignore articles when sorting (e.g. "the")</string>
   <string id="13400">Crossfade between songs on the same album</string>
   <string id="13401">Browse for %s</string>
   <string id="13402">Show track position</string>
@@ -1276,7 +1276,7 @@
   <string id="14034">DVD cache - DVD-ROM</string>
   <string id="14035">- Local Network</string>
   <string id="14036">Services</string>
-  <string id="14037">Look &amp; feel</string>
+  <string id="14037"></string>
   <string id="14038">Network settings changed</string>
   <string id="14039">XBMC requires to restart to change your</string>
   <string id="14040">network setup.  Would you like to restart now?</string>
@@ -1329,6 +1329,8 @@
   <string id="14087">DVDs</string>
   <string id="14088">Play DVDs automatically</string>
   <string id="14089">Font to use for text subtitles</string>
+  <string id="14090">International</string>
+  <string id="14091">Character set</string>
 
   <string id="15000"></string>
   <string id="15001"></string>
@@ -1948,7 +1950,7 @@
   <string id="21379">Enable 720p</string>
   <string id="21380">Enable 1080i</string>
   <string id="21381">Enter name of new playlist</string>
-  <string id="21382">Disable add source buttons in file lists</string>
+  <string id="21382">Show "Add source" buttons in file lists</string>
   <string id="21383">Enable scrollbars</string>
   <string id="21384">Make watched filtering a toggle in video library</string>
   <string id="21385">Open</string>

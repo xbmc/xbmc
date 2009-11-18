@@ -1026,7 +1026,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked() || g_passwordManager.bMasterUser);
     }
-    else if (strSetting.Equals("filelists.disableaddsourcebuttons"))
+    else if (strSetting.Equals("filelists.showaddsourcebuttons"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser);
@@ -1297,7 +1297,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
         pControl->SetLabel2("");
     }
-    else if (strSetting.Equals("lookandfeel.enablemouse"))
+    else if (strSetting.Equals("system.enablemouse"))
     {
     }
     else if (strSetting.Equals("lookandfeel.rssedit"))
@@ -1928,9 +1928,9 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
     g_audioManager.Load();
   }
-  else if (strSetting.Equals("lookandfeel.enablemouse"))
+  else if (strSetting.Equals("system.enablemouse"))
   {
-    g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
+    g_Mouse.SetEnabled(g_guiSettings.GetBool("system.enablemouse"));
   }
   else if (strSetting.Equals("videoscreen.screenmode"))
   { // new resolution choosen... - update if necessary

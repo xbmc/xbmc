@@ -721,7 +721,7 @@ HRESULT CApplication::Create(HWND hWnd)
             g_settings.m_ResInfo[iResolution].strMode.c_str());
   g_windowManager.Initialize();
 
-  g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
+  g_Mouse.SetEnabled(g_guiSettings.GetBool("system.enablemouse"));
 
   CUtil::InitRandomSeed();
 
@@ -1136,9 +1136,9 @@ HRESULT CApplication::Initialize()
 
   // Init DPMS, before creating the corresponding setting control.
   m_dpms = new DPMSSupport();
-  g_guiSettings.GetSetting("screensaver.sep_powersaving")->SetVisible(
+  g_guiSettings.GetSetting("system.sep_powersaving")->SetVisible(
       m_dpms->IsSupported());
-  g_guiSettings.GetSetting("screensaver.powersavingtime")->SetVisible(
+  g_guiSettings.GetSetting("system.powersavingtime")->SetVisible(
       m_dpms->IsSupported());
 
   g_windowManager.Add(new CGUIWindowHome);                     // window id = 0
@@ -2371,7 +2371,7 @@ bool CApplication::OnKey(CKey& key)
     if (useKeyboard)
     {
       action.id = 0;
-      if (g_guiSettings.GetBool("lookandfeel.remoteaskeyboard"))
+      if (g_guiSettings.GetBool("system.remoteaskeyboard"))
       {
         // users remote is executing keyboard commands, so use the virtualkeyboard section of keymap.xml
         // and send those rather than actual keyboard presses.  Only for navigation-type commands though
@@ -4308,7 +4308,7 @@ void CApplication::CheckScreenSaverAndDPMS()
       && g_guiSettings.GetString("screensaver.mode") != "None";
   bool maybeDPMS =
       !m_dpmsIsActive && m_dpms->IsSupported()
-      && g_guiSettings.GetInt("screensaver.powersavingtime") > 0;
+      && g_guiSettings.GetInt("system.powersavingtime") > 0;
 
   // Has the screen saver window become active?
   if (maybeScreensaver && g_windowManager.IsWindowActive(WINDOW_SCREENSAVER))
@@ -4333,7 +4333,7 @@ void CApplication::CheckScreenSaverAndDPMS()
 
   // DPMS has priority (it makes the screensaver not needed)
   if (maybeDPMS
-      && elapsed > g_guiSettings.GetInt("screensaver.powersavingtime") * 60)
+      && elapsed > g_guiSettings.GetInt("system.powersavingtime") * 60)
   {
     m_dpms->EnablePowerSaving(m_dpms->GetSupportedModes()[0]);
     m_dpmsIsActive = true;
