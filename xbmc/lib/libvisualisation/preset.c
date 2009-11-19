@@ -133,7 +133,7 @@ viz_preset_name(viz_preset_t preset)
 * Failure: 0
 */
 int
-viz_preset_set_type(viz_preset_t preset, char* name)
+viz_preset_set_name(viz_preset_t preset, char* name)
 {
   if (!preset) {
     viz_dbg(REFMEM_ERROR, "%s: NULL preset structure\n",
