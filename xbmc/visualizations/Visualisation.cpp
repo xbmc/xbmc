@@ -306,7 +306,7 @@ bool CVisualisation::IsValidVisualisation(const CStdString& strVisz)
     if(!XFILE::CFile::Exists(visPath))
       visPath.Format("%s%s", "special://home/visualisations/", strVisz);
   }
-  void *handle = dlopen( _P(strVisz).c_str(), RTLD_LAZY );
+  void *handle = dlopen( _P(visPath).c_str(), RTLD_LAZY );
   if (!handle)
     bRet = false;
   else
