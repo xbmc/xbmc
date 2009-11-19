@@ -102,7 +102,7 @@ public:
   /*
    * returns if the codec requests to use passtrough
    */
-  virtual bool NeedPasstrough() { return false; }
+  virtual bool NeedPassthrough() { return false; }
 
   /*
    * should return codecs name

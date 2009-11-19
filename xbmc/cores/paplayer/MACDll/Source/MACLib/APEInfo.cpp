@@ -247,10 +247,10 @@ long CAPEInfo::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, void *pParam2)
     {
         char * pBuffer = (char *) pParam2;
         int nMaxBytes = nParam1;
-        
+
         if (m_APEFileInfo.nFormatFlags & MAC_FORMAT_FLAG_CREATE_WAV_HEADER)
         {
-            if (sizeof(WAVE_HEADER) > nMaxBytes)
+            if (sizeof(WAVE_HEADER) > (size_t)nMaxBytes)
             {
                 nRetVal = -1;
             }
@@ -348,6 +348,8 @@ long CAPEInfo::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, void *pParam2)
         }
         break;
     }
+    default:
+        break;
     }
 
     return nRetVal;
@@ -367,6 +369,8 @@ void *CAPEInfo::GetPointer(APE_DECOMPRESS_FIELDS Field)
         break;
     case APE_INTERNAL_INFO:
         nRetVal = &m_APEFileInfo;
+        break;
+    default:
         break;
     }
 

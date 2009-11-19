@@ -601,6 +601,44 @@ void CWinSystemOSX::UpdateResolutions()
   //GetVideoModes();
 }
 
+/*
+void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx)
+{
+  if (!pixFmt)
+    return nil;
+    
+  NSOpenGLContext* newContext = [[NSOpenGLContext alloc] initWithFormat:(NSOpenGLPixelFormat*)pixFmt
+    shareContext:(NSOpenGLContext*)shareCtx];
+
+  // snipit from SDL_cocoaopengl.m
+  //
+  // Wisdom from Apple engineer in reference to UT2003's OpenGL performance:
+  //  "You are blowing a couple of the internal OpenGL function caches. This
+  //  appears to be happening in the VAO case.  You can tell OpenGL to up
+  //  the cache size by issuing the following calls right after you create
+  //  the OpenGL context.  The default cache size is 16."    --ryan.
+  //
+  
+  #ifndef GLI_ARRAY_FUNC_CACHE_MAX
+  #define GLI_ARRAY_FUNC_CACHE_MAX 284
+  #endif
+
+  #ifndef GLI_SUBMIT_FUNC_CACHE_MAX
+  #define GLI_SUBMIT_FUNC_CACHE_MAX 280
+  #endif
+
+  {
+      long cache_max = 64;
+      CGLContextObj ctx = (CGLContextObj)[newContext CGLContextObj];
+      CGLSetParameter(ctx, (CGLContextParameter)GLI_SUBMIT_FUNC_CACHE_MAX, &cache_max);
+      CGLSetParameter(ctx, (CGLContextParameter)GLI_ARRAY_FUNC_CACHE_MAX, &cache_max);
+  }
+  
+  // End Wisdom from Apple Engineer section. --ryan.
+  return newContext;
+}
+*/
+
 void* CWinSystemOSX::CreateWindowedContext(void* shareCtx)
 {
   NSOpenGLPixelFormatAttribute wattrs[] =

@@ -242,9 +242,7 @@ int CAPEDecompressOld::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, void *p
         case APE_INFO_WAV_HEADER_DATA:
         {
             char * pBuffer = (char *) pParam2;
-            int nMaxBytes = nParam1;
-            
-            if (sizeof(WAVE_HEADER) > nMaxBytes)
+            if (sizeof(WAVE_HEADER) > (size_t)nParam1)
             {
                 nRetVal = -1;
             }

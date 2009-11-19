@@ -99,10 +99,10 @@
   <string id="151">Verbindung:</string>
   <string id="152">Halbduplex</string>
   <string id="153">Vollduplex</string>
-  <string id="154">Laufwerke:</string>
+  <string id="154">Laufwerke</string>
   <string id="155">Laufwerk</string>
   <string id="156">Frei</string>
-  <string id="157">Bildschirm:</string>
+  <string id="157">Bildschirm</string>
   <string id="158">Freier Hauptspeicher</string>
   <string id="159">Keine Verbindung</string>
   <string id="160">Frei</string>
@@ -118,7 +118,7 @@
   <string id="170">Bildwiederholrate anpassen</string>
   <string id="171">
   </string>
-  <string id="172">Veröffentlichung:</string>
+  <string id="172">Veröffentlichung</string>
   <string id="173">
   </string>
   <string id="174">
@@ -155,8 +155,8 @@
   </string>
   <string id="201">
   </string>
-  <string id="202">Beschreibung:</string>
-  <string id="203">Handlung:</string>
+  <string id="202">Beschreibung</string>
+  <string id="203">Handlung</string>
   <string id="204">
   </string>
   <string id="205">Stimmen:</string>
@@ -435,7 +435,7 @@
   <string id="494">Übersteuerungsreserve</string>
   <string id="495">Videos in GUI-Auflösung abspielen</string>
   <string id="496">Kalibrierung</string>
-  <string id="497">Dateityp-Erweiterungen ausblenden</string>
+  <string id="497">Dateityp-Erweiterungen anzeigen</string>
   <string id="498">Nach Typ</string>
   <string id="499">Verbindung mit Online-Service nicht möglich</string>
   <string id="500">Fehler beim Herunterladen der Album-Informationen!</string>
@@ -478,7 +478,7 @@
   <string id="541">Album 2</string>
   <string id="542">DVD 2</string>
   <string id="543">DVD</string>
-  <string id="544">Medieninfos</string>
+  <string id="544">Infos</string>
   <string id="545">Audio Ausgabegerät</string>
   <string id="546">Digitales Ausgabegerät für Passthrough</string>
   <string id="547">Keine Biografie für diesen Interpreten</string>
@@ -561,7 +561,7 @@
   <string id="643">Übersteuerung bei Wiedergabeverstärkung vermeiden</string>
   <string id="644">Schwarze Balken entfernen</string>
   <string id="645">Eine große Datei muss entpackt werden. Fortfahren?</string>
-  <string id="646">Titel aus Datenbank entfernen</string>
+  <string id="646">Aus Datenbank entfernen</string>
   <string id="647">Video-Datenbank exportieren...</string>
   <string id="648">Video-Datenbank importieren...</string>
   <string id="649">Datenbank wird importiert...</string>
@@ -1095,7 +1095,7 @@
   <string id="13303">Schriftart</string>
   <string id="13304">Links-/Rechtsläufige Zeichenfolgen ermöglichen</string>
   <string id="13305">RSS-Newsfeeds aktivieren</string>
-  <string id="13306">Symbol zum übergeordneten Ordner ausblenden</string>
+  <string id="13306">Symbol zum übergeordneten Ordner anzeigen</string>
   <string id="13307">Formatvorlage für Musiktitel-Dateinamen</string>
   <string id="13308">Soll das System neu gestartet werden?</string>
   <string id="13309">'Nein' wählen, um nur XBMC neu zu starten.</string>
@@ -1256,7 +1256,7 @@
   <string id="14034">DVD-Cache - DVD-Rom</string>
   <string id="14035">- Lokales Netzwerk</string>
   <string id="14036">Server</string>
-  <string id="14037">Darstellung</string>
+  <string id="14037"></string>
   <string id="14038">Netzwerkeinstellungen wurden geändert</string>
   <string id="14039">XBMC muss neu gestartet werden, damit die Änderung</string>
   <string id="14040">wirksam wird. Soll jetzt neu gestartet werden?</string>
@@ -1304,6 +1304,8 @@
   <string id="14080">Zeitzone</string>
   <string id="14081">Dateilisten</string>
   <string id="14082">EXIF Bildinformationen zeigen</string>
+  <string id="14090">Sprache &amp; Region</string>
+  <string id="14091">Zeichensatz</string>
   <string id="15000">
   </string>
   <string id="15001">
@@ -1949,7 +1951,7 @@
   <string id="21379">720p-Auflösung aktivieren</string>
   <string id="21380">1080i-Auflösung aktivieren</string>
   <string id="21381">Bitte einen Namen für die Playliste eingeben</string>
-  <string id="21382">'Quelle hinzufügen'-Symbol im Haupt-Ordner ausblenden</string>
+  <string id="21382">'Quelle hinzufügen'-Symbol im Haupt-Ordner anzeigen</string>
   <string id="21383">Scrollbalken aktivieren</string>
   <string id="21384">Filter für 'Gesehen' als Einstellung in Datenbank aktivieren</string>
   <string id="21385">Öffnen</string>

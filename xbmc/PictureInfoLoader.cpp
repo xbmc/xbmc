@@ -54,6 +54,8 @@ bool CPictureInfoLoader::LoadItem(CFileItem* pItem)
   if (m_pProgressCallback && !pItem->m_bIsFolder)
     m_pProgressCallback->SetProgressAdvance();
 
+  pItem->SetCachedPictureThumb();
+
   if (pItem->m_bIsFolder || pItem->IsZIP() || pItem->IsRAR() || pItem->IsCBR() || pItem->IsCBZ() || pItem->IsInternetStream() || pItem->IsVideo())
     return false;
 

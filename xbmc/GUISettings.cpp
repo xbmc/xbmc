@@ -223,7 +223,7 @@ void CGUISettings::Initialize()
   AddInt(0, "pictures.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
 
   AddCategory(0, "slideshow", 108);
-  AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddInt(1, "slideshow.staytime", 12378, 5, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddBool(2, "slideshow.displayeffects", 12379, true);
   AddBool(0, "slideshow.shuffle", 13319, false);
 
@@ -317,27 +317,97 @@ void CGUISettings::Initialize()
 
   // System settings
   AddGroup(4, 13000);
-  AddCategory(4, "system", 128);
-  AddBool(1, "system.debuglogging", 20191, false);
-  AddPath(2, "system.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
-  AddSeparator(3, "system.sep1");
-  AddInt(4, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddCategory(4, "videoscreen", 21373);
+#if defined(_WIN32) || defined (__APPLE__)
+  AddString(1, "videoscreen.screenmode", 131, "DESKTOP", SPIN_CONTROL_TEXT);
+#else
+  AddString(1, "videoscreen.screenmode", 169, "DESKTOP", SPIN_CONTROL_TEXT);
+#endif
+#if defined(_WIN32) || defined (__APPLE__)
+  // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
+  // as it works nicer with switching to other applications. However on some systems vsync is broken
+  // when we do this (eg non-Aero on ATI in particular) and on others (AppleTV) we can't get XBMC to
+  // the front
+  bool fakeFullScreen = true;
+  bool showSetting = true;
+  if (g_sysinfo.IsAeroDisabled())
+    fakeFullScreen = false;
+  if (g_sysinfo.IsAppleTV())
+  {
+    fakeFullScreen = false;
+    showSetting = false;
+  }
+  AddBool(showSetting ? 2 : 0, "videoscreen.fakefullscreen", 14083, fakeFullScreen);
+  AddBool(3, "videoscreen.blankdisplays", 13130, false);
+  AddSeparator(4, "videoscreen.sep1");
+#endif
+#if defined(__APPLE__) || defined(_WIN32)
+  // OSX does not use a driver set vsync
+  AddInt(5, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_ALWAYS, SPIN_CONTROL_TEXT);
+#else
+  AddInt(5, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
+#endif
+  AddString(6, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
+  AddString(7, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
+#if defined(_LINUX) && !defined(__APPLE__)
+  AddSeparator(8, "videoscreen.sep2");
+  AddBool(9, "videoscreen.haslcd", 4501, false);
+#endif
+
+  AddCategory(4, "audiooutput", 772);
+  AddInt(3, "audiooutput.mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
+  AddBool(4, "audiooutput.ac3passthrough", 364, true);
+  AddBool(5, "audiooutput.dtspassthrough", 254, true);
+#ifdef __APPLE__
+  AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  //AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
+  AddBool(7, "audiooutput.downmixmultichannel", 548, true);
+#elif defined(_LINUX)
+  AddSeparator(6, "audiooutput.sep1");
+  AddString(7, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
+  AddString(8, "audiooutput.customdevice", 1300, "", EDIT_CONTROL_INPUT);
+  AddSeparator(9, "audiooutput.sep2");
+  AddString(10, "audiooutput.passthroughdevice", 546, "iec958", SPIN_CONTROL_TEXT);
+  AddString(11, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
+  AddSeparator(12, "audiooutput.sep3");
+  AddBool(13, "audiooutput.downmixmultichannel", 548, true);
+#elif defined(_WIN32)
+  AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  AddBool(7, "audiooutput.downmixmultichannel", 548, true);
+#endif
+
+  AddCategory(4, "input", 14094);
+#ifdef __APPLE__
+  AddInt(1, "input.appleremotemode", 13600, APPLE_REMOTE_STANDARD, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_MULTIREMOTE, SPIN_CONTROL_TEXT);
+  AddBool(2, "input.appleremotealwayson", 13602, false);
+  AddInt(0, "input.appleremotesequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
+  AddSeparator(3, "input.sep1");
+#endif
+  AddBool(4, "input.remoteaskeyboard", 21449, false);
+  AddBool(5, "input.enablemouse", 21369, true);
+
+  AddCategory(4, "powermanagement", 14095);
+  // Note: Application.cpp might hide powersaving settings if not supported.
+  AddInt(1, "powermanagement.displaysoff", 1450, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddInt(2, "powermanagement.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
   // In standalone mode we default to another.
   if (g_application.IsStandAlone())
-    AddInt(5, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT);
+    AddInt(3, "powermanagement.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT);
   else
-    AddInt(5, "system.shutdownstate", 13008, POWERSTATE_QUIT, 0, 1, 5, SPIN_CONTROL_TEXT);
+    AddInt(3, "powermanagement.shutdownstate", 13008, POWERSTATE_QUIT, 0, 1, 5, SPIN_CONTROL_TEXT);
 #if defined(_LINUX) && !defined(__APPLE__)
-  AddInt(6, "system.powerbuttonaction", 13015, POWERSTATE_NONE, 0, 1, 5, SPIN_CONTROL_TEXT);
+  AddInt(4, "powermanagement.powerbuttonaction", 13015, POWERSTATE_NONE, 0, 1, 5, SPIN_CONTROL_TEXT);
 #endif
-  AddBool(7, "system.haslcd", 4501, false);
 
-#ifdef __APPLE__
-  AddCategory(4, "appleremote", 13600);
-  AddInt(1, "appleremote.mode", 13601, APPLE_REMOTE_STANDARD, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_MULTIREMOTE, SPIN_CONTROL_TEXT);
-  AddBool(2, "appleremote.alwayson", 13602, false);
-  AddInt(0, "appleremote.sequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
-#endif
+  AddCategory(4, "debug", 14092);
+  AddBool(1, "debug.showloginfo", 20191, false);
+  AddPath(2, "debug.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+
+  AddCategory(4, "masterlock", 12360);
+  AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
+  AddBool(4, "masterlock.startuplock"      , 20076,false);
+  // hidden masterlock settings
+  AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT);
 
   //AddCategory(4, "autorun", 447);
   AddBool(1, "autorun.dvd", 240, true);
@@ -362,34 +432,6 @@ void CGUISettings::Initialize()
   AddInt(0, "cachedvd.lan", 14035, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
   AddSeparator(0, "cache.sep4");
   AddInt(0, "cacheunknown.internet", 14060, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
-
-  AddCategory(4, "audiooutput", 772);
-  AddInt(3, "audiooutput.mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
-  AddBool(4, "audiooutput.ac3passthrough", 364, true);
-  AddBool(5, "audiooutput.dtspassthrough", 254, true);
-#ifdef __APPLE__
-  AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
-  //AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
-  AddBool(7, "audiooutput.downmixmultichannel", 548, true);
-#elif defined(_LINUX)
-  AddSeparator(6, "audiooutput.sep1");
-  AddString(7, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
-  AddString(8, "audiooutput.customdevice", 1300, "", EDIT_CONTROL_INPUT);
-  AddSeparator(9, "audiooutput.sep2");
-  AddString(10, "audiooutput.passthroughdevice", 546, "iec958", SPIN_CONTROL_TEXT);
-  AddString(11, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
-  AddSeparator(12, "audiooutput.sep3");
-  AddBool(13, "audiooutput.downmixmultichannel", 548, true);
-#elif defined(_WIN32)
-  AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
-  AddBool(7, "audiooutput.downmixmultichannel", 548, true);
-#endif
-
-  AddCategory(4, "masterlock", 12360);
-  AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
-  AddBool(4, "masterlock.startuplock"      , 20076,false);
-  // hidden masterlock settings
-  AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT);
 
   // video settings
   AddGroup(5, 3);
@@ -501,9 +543,9 @@ void CGUISettings::Initialize()
 #endif
   AddString(6,"services.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
   AddString(7,"services.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
-  AddSeparator(8,"services.sep1");
 #endif
 #ifdef HAS_EVENT_SERVER
+  AddSeparator(8,"services.sep1");
   AddBool(9,  "services.esenabled",         791, true);
   AddString(0,"services.esport",            792, "9777", EDIT_CONTROL_NUMBER_INPUT, false, 792);
   AddInt(0,   "services.esportrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
@@ -511,9 +553,9 @@ void CGUISettings::Initialize()
   AddBool(10,  "services.esallinterfaces",   794, false);
   AddInt(0,   "services.esinitialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
   AddInt(0,   "services.escontinuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
-  AddSeparator(11, "services.sep2");
 #endif
 #ifdef HAS_ZEROCONF
+  AddSeparator(11, "services.sep2");
   AddBool(12, "services.zeroconf", 1260, true);
 #endif
 
@@ -551,26 +593,22 @@ void CGUISettings::Initialize()
 
   // appearance settings
   AddGroup(7, 480);
-  AddCategory(7,"lookandfeel", 14037);
+  AddCategory(7,"lookandfeel", 166);
   AddString(1, "lookandfeel.skin",166,DEFAULT_SKIN, SPIN_CONTROL_TEXT);
   AddString(2, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(3, "lookandfeel.skincolors",14078, "SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(4, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);
   AddInt(5, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
   AddInt(6, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
-  AddSeparator(7, "lookandfeel.sep1");
-  AddString(8, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddSeparator(10, "lookandfeel.sep2");
-  AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
-  AddString(13, "lookandfeel.rssedit", 21435, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(14, "lookandfeel.sep3");
-  AddBool(15, "lookandfeel.enablemouse", 21369, true);
-  AddBool(16, "lookandfeel.remoteaskeyboard", 21449, false);
+  AddString(7, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
+  AddSeparator(8, "lookandfeel.sep2");
+  AddBool(9, "lookandfeel.enablerssfeeds",13305,  true);
+  AddString(10, "lookandfeel.rssedit", 21435, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(7, "locale", 20026);
-  AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
-  AddString(2, "locale.language",248,"english", SPIN_CONTROL_TEXT);
-  AddString(3, "locale.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
+  AddCategory(7, "locale", 14090);
+  AddString(1, "locale.language",248,"english", SPIN_CONTROL_TEXT);
+  AddString(2, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
+  AddString(3, "locale.charset", 14091, "DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
 #if defined(_LINUX) && !defined(__APPLE__)
   AddSeparator(4, "locale.sep1");
   AddString(8, "locale.timezone", 14079, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
@@ -582,60 +620,24 @@ void CGUISettings::Initialize()
   AddString(11, "locale.timeserveraddress", 731, "pool.ntp.org", EDIT_CONTROL_INPUT);
 #endif
 
-  AddCategory(7, "videoscreen", 131);
-  AddString(1, "videoscreen.screenmode", 169, "DESKTOP", SPIN_CONTROL_TEXT);
-
-#if defined (__APPLE__) || defined(_WIN32)
-  AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);
-#endif
-
-  AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
-  AddString(4, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
-#if defined(__APPLE__) || defined(_WIN32)
-  // OSX does not use a driver set vsync
-  AddInt(6, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_ALWAYS, SPIN_CONTROL_TEXT);
-#else
-  AddInt(6, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
-#endif
-#if defined(_WIN32) || defined (__APPLE__)
-  // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
-  // as it works nicer with switching to other applications. However on some systems vsync is broken
-  // when we do this (eg non-Aero on ATI in particular) and on others (AppleTV) we can't get XBMC to
-  // the front
-  bool fakeFullScreen = true;
-  bool showSetting = true;
-  if (g_sysinfo.IsAeroDisabled())
-    fakeFullScreen = false;
-  if (g_sysinfo.IsAppleTV())
-  {
-    fakeFullScreen = false;
-    showSetting = false;
-  }
-  AddBool(showSetting ? 7 : 0, "videoscreen.fakefullscreen", 14083, fakeFullScreen);
-#endif
-
-  AddCategory(7, "filelists", 14018);
-  AddBool(1, "filelists.hideparentdiritems", 13306, false);
-  AddBool(2, "filelists.hideextensions", 497, false);
+  AddCategory(7, "filelists", 14081);
+  AddBool(1, "filelists.showparentdiritems", 13306, true);
+  AddBool(2, "filelists.showextensions", 497, true);
   AddBool(3, "filelists.ignorethewhensorting", 13399, true);
-  AddSeparator(6, "filelists.sep1");
-  AddBool(7, "filelists.allowfiledeletion", 14071, false);
-  AddBool(8, "filelists.disableaddsourcebuttons", 21382,  false);
-  AddSeparator(9, "filelists.sep2");
-  AddBool(10, "filelists.showhidden", 21330, false);
+  AddBool(4, "filelists.allowfiledeletion", 14071, false);
+  AddBool(5, "filelists.showaddsourcebuttons", 21382,  true);
+  AddBool(6, "filelists.showhidden", 21330, false);
 
   AddCategory(7, "screensaver", 360);
-  AddString(1, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
-  AddString(2, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
-  AddInt(3, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
+  AddInt(1, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddString(2, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
+  AddBool(3, "screensaver.usemusicvisinstead", 13392, true);
   AddBool(4, "screensaver.usedimonpause", 22014, true);
-  // Note: Application.cpp might hide powersaving settings if not supported.
-  AddSeparator(6, "screensaver.sep_powersaving");
-  AddInt(7, "screensaver.powersavingtime", 1450, 0, 0, 5, 4 * 60, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
-  AddSeparator(8, "screensaver.sep1");
-  AddInt(9, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddPath(10, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddSeparator(5, "screensaver.sep1");
+  AddInt(6, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddPath(7, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddSeparator(8, "screensaver.sep2");
+  AddString(9, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(7, "window", 0);
   AddInt(0, "window.width",  0, 720, 10, 1, INT_MAX, SPIN_CONTROL_INT);
@@ -694,11 +696,16 @@ void CGUISettings::AddBool(int iOrder, const char *strSetting, int iLabel, bool 
 bool CGUISettings::GetBool(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
-  constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
+  CStdString lower(strSetting);
+  lower.ToLower();
+  constMapIter it = settingsMap.find(lower);
   if (it != settingsMap.end())
   { // old category
     return ((CSettingBool*)(*it).second)->GetData();
   }
+  // Backward compatibility (skins use this setting)
+  if (lower == "lookandfeel.enablemouse")
+    return GetBool("input.enablemouse");
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return false;
@@ -938,7 +945,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     LoadFromXML(pRootElement, it, hideSettings);
   }
   // setup logging...
-  if (GetBool("system.debuglogging"))
+  if (GetBool("debug.showloginfo"))
   {
     g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
     CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting (%d)", g_advancedSettings.m_logLevel);

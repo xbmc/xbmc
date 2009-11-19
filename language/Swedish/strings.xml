@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 11/15/2009-->
+<!--Date of translation: 11/18/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 24625-->
+<!--Based on english strings version 24717-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -110,7 +110,7 @@
   <string id="167">Aktivera FTP-server</string>
   <string id="168">Aktivera tidssynkronisering via Internet</string>
   <string id="169">Upplösning</string>
-  <string id="170">Justera uppdateringsfrekvens</string>
+  <string id="170">Justera uppdateringsfrekvens till att matcha video</string>
   <string id="172">Utgivningsdatum</string>
   <string id="175">Sinnesstämning</string>
   <string id="176">Stilar</string>
@@ -154,7 +154,7 @@
   <string id="222">Avbryt</string>
   <string id="224">Hastighet</string>
   <string id="226">Testmönster...</string>
-  <string id="227">Slå upp CD på Internet</string>
+  <string id="227">Slå upp låtnamn till musikskivor på freedb.org</string>
   <string id="228">Blanda spellistor när de laddas</string>
   <string id="229">Tid innan sänkt HD-hastighet</string>
   <string id="230">Videofilter</string>
@@ -350,7 +350,7 @@
   <string id="444">Grafik</string>
   <string id="445">Ljud</string>
   <string id="446">DVD</string>
-  <string id="447">Autostart</string>
+  <string id="447">Autostarta media</string>
   <string id="448">LCD</string>
   <string id="449">På</string>
   <string id="450">Kolumner</string>
@@ -387,14 +387,14 @@
   <string id="486">Repetera</string>
   <string id="487">Repetera en</string>
   <string id="488">Repetera mappar</string>
-  <string id="489">Spela kommande</string>
+  <string id="489">Spela kommande låt automatiskt</string>
   <string id="491">- Använd stora ikoner</string>
   <string id="492">Förstora VOB-undertexter</string>
   <string id="493">Avancerade val (Bara Experter!)</string>
   <string id="494">Totalt ljudutrymme (dB)</string>
   <string id="495">Sampla upp video till GUI-upplösning</string>
   <string id="496">Kalibrering</string>
-  <string id="497">Göm filändelse för media</string>
+  <string id="497">Visa filändelser</string>
   <string id="498">Sort: Typ</string>
   <string id="499">Kunde inte kontakta informationsserver</string>
   <string id="500">Nedladdning av albuminfo misslyckades</string>
@@ -495,7 +495,7 @@
   <string id="609">CDDA-sökväg inte angiven.</string>
   <string id="610">Rippa ljudspår</string>
   <string id="611">Ange nummer</string>
-  <string id="620">CD rippning</string>
+  <string id="620">Ljud CD</string>
   <string id="621">Omkodare</string>
   <string id="622">Kvalitet</string>
   <string id="623">Bitrate</string>
@@ -510,7 +510,7 @@
   <string id="635">Original storlek</string>
   <string id="636">Egen storlek</string>
   <string id="637">Replay Gain</string>
-  <string id="638">Replay Gain läge</string>
+  <string id="638">Applicera Replay Gain volymjusteringar</string>
   <string id="639">Använd låtnivåer</string>
   <string id="640">Använd albumnivåer</string>
   <string id="641">Förstärkarnivå - Replay Gain filer</string>
@@ -620,7 +620,7 @@
   <string id="791">Tillåt fjärrkontrollsprogram på detta system att kontrollera XBMC</string>
   <string id="792">Port</string>
   <string id="793">Portområde</string>
-  <string id="794">Acceptera anslutningar från andra system att kontrollera XBMC</string>
+  <string id="794">Acceptera anslutningar från program på andra system att kontrollera XBMC</string>
   <string id="795">Begynnande repetitionsfördröjning (ms)</string>
   <string id="796">Kontinuerligt repititionsfördröjning (ms)</string>
   <string id="797">Maximalt antal klienter</string>
@@ -808,7 +808,7 @@
   <string id="12014">Inga hjälpprogram hittade</string>
   <string id="12015">Inställningar för hjälpprogram</string>
   <string id="12016">Alla registrerade hjälpprogram saknas. Uppdatera din lista</string>
-  <string id="12017">Automatiskt återuppta från senaste position</string>
+  <string id="12017">Återuppta från senaste position</string>
   <string id="12018">Nej</string>
   <string id="12019">Ja</string>
   <string id="12020">Fråga</string>
@@ -862,7 +862,7 @@
   <string id="12373">Inställningar &amp; Filhanterare</string>
   <string id="12376">Använd som standard för alla filmer</string>
   <string id="12377">Detta kommer att ta bort alla tidigare sparade värden</string>
-  <string id="12378">Visa varje bild i</string>
+  <string id="12378">Tid att visa varje bild</string>
   <string id="12379">Använd Pan och Zoom effekter</string>
   <string id="12380">Spela NTSC filmer i PAL</string>
   <string id="12381">Spela PAL filmer i NTSC</string>
@@ -1004,8 +1004,8 @@
   <string id="13302">Styr fläkthastighet</string>
   <string id="13303">- Typsnitt</string>
   <string id="13304">Vänd textriktning</string>
-  <string id="13305">Aktivera RSS-nyheter</string>
-  <string id="13306">Göm föremål i överordnad mapp</string>
+  <string id="13305">Visa RSS-nyheter</string>
+  <string id="13306">Visa föremål i överordnad mapp</string>
   <string id="13307">Låtnamn enligt</string>
   <string id="13308">Vill du starta om systemet</string>
   <string id="13309">istället för endast XBMC?</string>
@@ -1086,8 +1086,8 @@ den här visualiseringen</string>
   <string id="13396">Ljud- och text-inställningar</string>
   <string id="13397">Aktivera undertexter</string>
   <string id="13398">Genvägar</string>
-  <string id="13399">Ignorera "tokens" vid sortering</string>
-  <string id="13400">Använd crossfade på albumspår</string>
+  <string id="13399">Ignorera "tokens" vid sortering (ex: "the")</string>
+  <string id="13400">Använd crossfade på låtar på samma album</string>
   <string id="13401">Bläddra efter %s</string>
   <string id="13402">Visa spårposition</string>
   <string id="13403">Rensa standard</string>
@@ -1163,8 +1163,7 @@ den här visualiseringen</string>
   <string id="14032">- Internet</string>
   <string id="14034">DVDbuffert - DVDRom</string>
   <string id="14035">- Lokalt Nätverk</string>
-  <string id="14036">Servrar</string>
-  <string id="14037">Utseende</string>
+  <string id="14036">Tjänster</string>
   <string id="14038">Nätverksinställningar ändrade</string>
   <string id="14039">XBMC behöver startas om för att slutföra din</string>
   <string id="14040">nätverksinställning. Vill du starta om nu?</string>
@@ -1213,6 +1212,8 @@ den här visualiseringen</string>
   <string id="14087">DVDer</string>
   <string id="14088">Spela DVDer automatiskt</string>
   <string id="14089">Typsnitt att använda för undertexter</string>
+  <string id="14090">Internationell</string>
+  <string id="14091">Teckenuppsättning</string>
   <string id="15015">Ta bort</string>
   <string id="15016">Spel</string>
   <string id="15019">Lägg till</string>
@@ -1249,8 +1250,8 @@ den här visualiseringen</string>
   <string id="15218">Libre.fm användarnamn</string>
   <string id="15219">Libre.fm lösenord</string>
   <string id="15220">Libre.fm</string>
-  <string id="15221">Scrobbler</string>
-  <string id="15250">Skicka radio till Last.fm</string>
+  <string id="15221">Låtinlämning</string>
+  <string id="15250">Skicka Last.fm radio till Last.fm</string>
   <string id="15251">Ansluter till Last.fm...</string>
   <string id="15252">Väljer station...</string>
   <string id="15253">Sök liknande artister...</string>
@@ -1327,8 +1328,8 @@ den här visualiseringen</string>
   <string id="16023">Flätningshantering</string>
   <string id="16024">Avbryter...</string>
   <string id="16025">Ange artistnamnet</string>
-  <string id="16026">Uppspelning av spellista avbruten</string>
-  <string id="16027">För många felaktiga objekt i följd</string>
+  <string id="16026">Uppspelning misslyckades</string>
+  <string id="16027">En eller flera objekt spelades inte.</string>
   <string id="16028">Ange värde</string>
   <string id="16029">Kontrollera loggfilen för detaljer.</string>
   <string id="16030">Festläge avbrutet.</string>
@@ -1372,7 +1373,7 @@ den här visualiseringen</string>
   <string id="16314">Inverse Telecine</string>
   <string id="17500">Visa insommningstimeout</string>
   <string id="19000">Byt till kanal</string>
-  <string id="20000">Inspelningsmapp</string>
+  <string id="20000">Mapp för sparad musik</string>
   <string id="20001">Använd extern DVD spelare</string>
   <string id="20002">Extern DVD spelare</string>
   <string id="20003">Mapp för hjälpprogram</string>
@@ -1509,7 +1510,7 @@ den här visualiseringen</string>
   <string id="20151">Avbryt avstängningstimer</string>
   <string id="20152">Låsinställningar för %s</string>
   <string id="20153">Bläddra...</string>
-  <string id="20154">Allmän information</string>
+  <string id="20154">Sammanfattad information</string>
   <string id="20155">Lagringsinformation</string>
   <string id="20156">Hårddiskinformation</string>
   <string id="20157">DVD-Rom information</string>
@@ -1547,8 +1548,8 @@ den här visualiseringen</string>
   <string id="20189">Aktivera automatisk rullning för handling &amp; recension</string>
   <string id="20190">Egen</string>
   <string id="20191">Aktivera debug-loggning</string>
-  <string id="20192">Hämta albuminformation under tilläggning till bibliotek</string>
-  <string id="20194">Standard skrapa</string>
+  <string id="20192">Hämta tilläggsinformation under uppdateringar</string>
+  <string id="20194">Standard skrapa för musikinformation</string>
   <string id="20195">Byt skrapa</string>
   <string id="20196">Exportera musikbibliotek</string>
   <string id="20197">Importera musikbibliotek</string>
@@ -1624,7 +1625,7 @@ den här visualiseringen</string>
   <string id="20366">* Alla säsonger</string>
   <string id="20367">Dölj sedda</string>
   <string id="20368">Prod. kod</string>
-  <string id="20369">Dölj handling för osedda objekt</string>
+  <string id="20369">Visa handling för osedda objekt</string>
   <string id="20370">* Dold för att inte förstöra handlingen *</string>
   <string id="20371">Sätt säsongsminiatyr</string>
   <string id="20372">Säsongsbild</string>
@@ -1656,7 +1657,7 @@ den här visualiseringen</string>
   <string id="20399">Gå till musikvideor från album</string>
   <string id="20400">Gå till musikvideor av artist</string>
   <string id="20401">Spela musikvideo</string>
-  <string id="20402">Hämta skådespelarminiatyrer automatiskt</string>
+  <string id="20402">Hämta skådespelarminiatyrer automatiskt vid tillägg till biblioteket</string>
   <string id="20403">Ange skådespelarminiatyr</string>
   <string id="20405">Ta bort avsnittsbokmärke</string>
   <string id="20406">Lägg till avsnittsbokmärke</string>
@@ -1725,7 +1726,7 @@ den här visualiseringen</string>
   <string id="21379">Aktivera 720p</string>
   <string id="21380">Aktivera 1080i</string>
   <string id="21381">Ange namn på den nya spellistan</string>
-  <string id="21382">Inaktivera lägg till källa knappar i fillistan</string>
+  <string id="21382">Visa "Lägg till källa" knappar i fillistan</string>
   <string id="21383">Aktivera skrollhandtag</string>
   <string id="21384">Gör visad-filter ett val i filmbibliotek</string>
   <string id="21385">Öppna</string>
@@ -1760,7 +1761,7 @@ den här visualiseringen</string>
   <string id="21414">Standard TV-serieskrapa</string>
   <string id="21415">Standard musikvideoskrapa</string>
   <string id="21416">Aktivera reträtt baserat på skrap-språk</string>
-  <string id="21417">- Skrapinställningar</string>
+  <string id="21417">- Inställningar</string>
   <string id="21418">Flerspråkig</string>
   <string id="21420">Värde att matcha</string>
   <string id="21421">Smart spellisteregel</string>
@@ -1887,7 +1888,7 @@ den här visualiseringen</string>
   <string id="22019">Inspelningar efter titel</string>
   <string id="22020">Guide</string>
   <string id="22021">Tillåten felmarginal i bildförhållande för att minimera svarta ränder</string>
-  <string id="22022">Inkludera videofiler i listningar</string>
+  <string id="22022">Visa videofiler i listningar</string>
   <string id="22023">DirectX tillverkare</string>
   <string id="22024">Direct3D version</string>
   <string id="22030">Typsnitt</string>
@@ -1897,7 +1898,7 @@ den här visualiseringen</string>
   <string id="22034">Exportera karaoke titlar som HTML</string>
   <string id="22035">Exportera karaoke titlar som CSV</string>
   <string id="22036">Importera karaoke titlar...</string>
-  <string id="22037">Auto popup låtväljare</string>
+  <string id="22037">Visa låtväljare automatiskt</string>
   <string id="22038">Exportera karaoke titlar...</string>
   <string id="22039">Ange låtnummer</string>
   <string id="22040">vit/grön</string>

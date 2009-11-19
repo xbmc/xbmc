@@ -243,7 +243,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
     strFilename = g_localizeStrings.Get(20012);
 
   // now remove the extension if needed
-  if (g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
+  if (!g_guiSettings.GetBool("filelists.showextensions") && !bIsFolder)
   {
     RemoveExtension(strFilename);
     return strFilename;
@@ -449,7 +449,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     strTitleAndYear = strTitle + " (" + strYear + ")";
 
   // restore extension if needed
-  if (!g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
+  if (g_guiSettings.GetBool("filelists.showextensions") && !bIsFolder)
     strTitleAndYear += strExtension;
 
 }
@@ -879,12 +879,17 @@ bool CUtil::IsMultiPath(const CStdString& strPath)
 
 bool CUtil::IsHD(const CStdString& strFileName)
 {
-  CStdString strFileName2(strFileName);
+  CURL url(strFileName);
 
-  if (IsStack(strFileName))
-    strFileName2 = CStackDirectory::GetFirstStackedFile(strFileName);
-  
-  CURL url(_P(strFileName2));
+  if (IsSpecial(strFileName))
+    return IsHD(CSpecialProtocol::TranslatePath(strFileName));
+
+  if(IsStack(strFileName))
+    return IsHD(CStackDirectory::GetFirstStackedFile(strFileName));
+
+  if (IsInArchive(strFileName))
+    return IsHD(url.GetHostName());
+
   return url.IsLocal();
 }
 
@@ -1918,7 +1923,7 @@ void CUtil::TakeScreenshot()
 
   bool promptUser = false;
   // check to see if we have a screenshot folder yet
-  CStdString strDir = g_guiSettings.GetString("system.screenshotpath", false);
+  CStdString strDir = g_guiSettings.GetString("debug.screenshotpath", false);
   if (strDir.IsEmpty())
   {
     strDir = "special://temp/";
@@ -1942,7 +1947,7 @@ void CUtil::TakeScreenshot()
         screenShots.push_back(file);
       if (promptUser)
       { // grab the real directory
-        CStdString newDir = g_guiSettings.GetString("system.screenshotpath");
+        CStdString newDir = g_guiSettings.GetString("debug.screenshotpath");
         if (!newDir.IsEmpty())
         {
           for (unsigned int i = 0; i < screenShots.size(); i++)

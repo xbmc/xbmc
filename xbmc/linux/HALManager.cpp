@@ -78,7 +78,7 @@ void CHALManager::DeviceCondition(LibHalContext *ctx, const char *udi, const cha
   CLog::Log(LOGDEBUG, "HAL: Device (%s) Condition %s | %s", udi, condition_name, condition_details);
   if (!strcmp(condition_name, "ButtonPressed") && !strcmp(condition_details, "power"))
   {
-    switch (g_guiSettings.GetInt("system.powerbuttonaction"))
+    switch (g_guiSettings.GetInt("powermanagement.powerbuttonaction"))
     {
       case POWERSTATE_ASK:
         CBuiltins::Execute("XBMC.ActivateWindow(ShutdownMenu)");

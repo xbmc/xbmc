@@ -211,7 +211,7 @@ class CAdvancedSettings
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
 
-    bool m_sleepBeforeFlip; ///< if true, XBMC waits for raster to be close to the end of the display before flipping.
+    float m_sleepBeforeFlip; ///< if greather than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
     bool m_bVirtualShares;
 
     float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s
