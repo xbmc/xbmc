@@ -337,7 +337,7 @@ bool CRenderSystemDX::PresentRenderImpl()
   if(m_nDeviceStatus != S_OK)
     return false;
 
-  if (g_advancedSettings.m_sleepBeforeFlip)
+  if (g_advancedSettings.m_sleepBeforeFlip > 0)
   {
     //save current thread priority and set thread priority to THREAD_PRIORITY_TIME_CRITICAL
     int priority = GetThreadPriority(GetCurrentThread());
@@ -349,8 +349,8 @@ bool CRenderSystemDX::PresentRenderImpl()
 
     while (SUCCEEDED(m_pD3DDevice->GetRasterStatus(0, &rasterStatus)))
     {
-      //wait for the scanline to go over the 0.5 * m_screenHeight mark
-      if (!rasterStatus.InVBlank && rasterStatus.ScanLine >= 0.5 * m_screenHeight)
+      //wait for the scanline to go over the given proportion of m_screenHeight mark
+      if (!rasterStatus.InVBlank && rasterStatus.ScanLine >= g_advancedSettings.m_sleepBeforeFlip * m_screenHeight)
         break;
 
       //in theory it's possible this loop never exits, so don't let it run for longer than 100 ms

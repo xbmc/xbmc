@@ -229,7 +229,7 @@ void CAdvancedSettings::Initialize()
   m_playlistTimeout = 20; // 20 seconds timeout
   m_GLRectangleHack = false;
   m_iSkipLoopFilter = 0;
-  m_sleepBeforeFlip = true;    // test for Alpha2 - always have this enabled.
+  m_sleepBeforeFlip = 0;
   m_bVirtualShares = true;
 
 //caused lots of jerks
@@ -510,7 +510,7 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
 
-  XMLUtils::GetBoolean(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip);
+  XMLUtils::GetFloat(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip, 0.0f, 1.0f);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
 
   //Tuxbox
