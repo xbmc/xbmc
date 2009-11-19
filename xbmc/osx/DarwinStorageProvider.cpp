@@ -26,6 +26,7 @@
 #include "LocalizeStrings.h"
 
 #include <sys/mount.h>
+#include <DiskArbitration/DiskArbitration.h>
 #include "CocoaInterface.h"
 
 bool CDarwinStorageProvider::m_event = false;
@@ -73,7 +74,43 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 
 void CDarwinStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
-  /*GetDrives(removableDrives);*/
+  DASessionRef session = DASessionCreate(kCFAllocatorDefault);
+  if (session)
+  {
+    unsigned i, count = 0;
+    struct statfs *buf = NULL;
+    CStdString mountpoint, devicepath;
+
+    count = getmntinfo(&buf, 0);
+    for (i=0; i<count; i++)
+    {
+      mountpoint = buf[i].f_mntonname;
+      devicepath = buf[i].f_mntfromname;
+
+      DADiskRef disk = DADiskCreateFromBSDName(kCFAllocatorDefault, session, devicepath.c_str());
+      if (disk)
+      {
+        CFDictionaryRef details = DADiskCopyDescription(disk);
+        if (details)
+        {
+          // kDADiskDescriptionMediaEjectableKey
+          if (kCFBooleanTrue == CFDictionaryGetValue(details, kDADiskDescriptionMediaRemovableKey))
+          {
+            CMediaSource share;
+
+            share.strPath = mountpoint;
+            Cocoa_GetVolumeNameFromMountPoint(mountpoint, share.strName);
+            share.m_ignore = true;
+            removableDrives.push_back(share);
+          }
+          CFRelease(details);
+        }
+        CFRelease(disk);
+      }
+    }
+
+    CFRelease(session);
+  }
 }
 
 void CDarwinStorageProvider::GetDrives(VECSOURCES &drives)

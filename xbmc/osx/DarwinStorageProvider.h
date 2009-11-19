@@ -19,6 +19,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "StdString.h"
 #include "IStorageProvider.h"
 
 class CDarwinStorageProvider : public IStorageProvider
