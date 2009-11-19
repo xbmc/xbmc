@@ -2152,6 +2152,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\FGLoader.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\FGLoader.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\DSPlayer\FGManager.cpp"
 					>
 				</File>
@@ -2243,26 +2251,6 @@
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.h"
-							>
-						</File>
-					</Filter>
-				</Filter>
-				<Filter
-					Name="GraphBuilder"
-					>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\FGLoader.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\FGLoader.h"
-						>
-					</File>
-					<Filter
-						Name="Config"
-						>
-						<File
-							RelativePath="..\..\system\players\dsplayer\dsfilterconfig.xml"
 							>
 						</File>
 					</Filter>

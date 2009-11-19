@@ -73,7 +73,6 @@ protected:
   STDMETHODIMP GetXbmcVideoDecFilter(IMPCVideoDecFilter** pBF);
   STDMETHODIMP GetFfdshowVideoDecFilter(IffdshowDecVideoA** pBF);
 	STDMETHODIMP RenderFileXbmc(const CFileItem& pFileItem);
-	void InsertSubtitleNullRender(IBaseFilter* pBF);
 	CFile                m_File;
 	CComPtr<IBaseFilter> m_FileSource;
 	CComPtr<IBaseFilter> m_XbmcVideoDec;

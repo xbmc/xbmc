@@ -11,6 +11,29 @@
 
 #include "log.h"
 
+
+CStdString DShowUtil::GetFilterPath(CStdString pClsid)
+{
+  int ret = -1;
+  CStdString strReg,strResult;
+  strReg = _T("\\CLSID\\") + pClsid + _T("\\InprocServer32");
+  CRegKey reg;
+  
+  if (reg.Open(HKEY_CLASSES_ROOT, strReg, KEY_READ) == ERROR_SUCCESS) 
+  {
+
+			TCHAR		val[1024];
+			ULONG		len;
+			reg.QueryStringValue(_T(""), val, &len);
+			strResult = val;
+
+			ret = 0;
+			reg.Close();
+  }
+		return strResult;
+}
+
+
 bool DShowUtil::IsVistaOrAbove()
 {
   OSVERSIONINFO osver;
@@ -149,6 +172,47 @@ bool DShowUtil::IsAudioWaveRenderer(IBaseFilter* pBF)
 
   return(clsid == CLSID_DSoundRender || clsid == CLSID_AudioRender || clsid == CLSID_ReClock
     || clsid == __uuidof(CNullAudioRenderer) || clsid == __uuidof(CNullUAudioRenderer));
+}
+
+
+HRESULT DShowUtil::RemoveUnconnectedFilters(IGraphBuilder *pGraph)
+{
+if (pGraph == NULL)
+    {
+        return E_POINTER;
+    }
+
+    HRESULT hr = S_OK;
+
+    IEnumFilters *pEnum = NULL;
+    IBaseFilter *pFilter = NULL;
+    IPin *pPin = NULL;
+
+    CHECK_HR(hr = pGraph->EnumFilters(&pEnum));
+
+    // Go through the list of filters in the graph.
+    while (S_OK == pEnum->Next(1, &pFilter, NULL))
+    {
+        // Find a connected pin on this filter.
+        HRESULT hr2 = FindMatchingPin(pFilter, MatchPinConnection(TRUE), &pPin);
+        if (SUCCEEDED(hr2))
+        {
+            // If it's connected, don't remove the filter.
+            SAFE_RELEASE(pPin);
+            continue;
+        }
+        assert(pPin == NULL);
+        CHECK_HR(hr = RemoveFilter(pGraph, pFilter));
+
+        // The previous call made the enumerator stale. 
+        pEnum->Reset(); 
+    }
+
+done:
+    SAFE_RELEASE(pEnum);
+    SAFE_RELEASE(pFilter);
+    SAFE_RELEASE(pPin);
+    return hr;
 }
 
 IBaseFilter* DShowUtil::GetUpStreamFilter(IBaseFilter* pBF, IPin* pInputPin)

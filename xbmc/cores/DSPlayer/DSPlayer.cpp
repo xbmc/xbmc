@@ -60,6 +60,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   HRESULT hr;
   ResetEvent(m_hReadyEvent);
   //Creating the graph and querying every filter required for the playback
+  m_Filename = file.GetAsUrl();
   hr = m_pDsGraph.SetFile(file);
   m_currentSpeed = 10000;
   m_currentRate = 1.0;
@@ -162,7 +163,6 @@ void CDSPlayer::Process()
   //UpdateApplication(0);
   //UpdatePlayState(0);
   SetEvent(m_hReadyEvent);
-  
   while (!m_bAbortRequest)
   {
     if (m_bAbortRequest)

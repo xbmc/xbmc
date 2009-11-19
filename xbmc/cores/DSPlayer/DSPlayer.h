@@ -88,7 +88,7 @@ protected:
   int m_currentSpeed;
   double m_currentRate;
   CDSGraph m_pDsGraph;
-  std::string m_Filename;
+  CURL m_Filename;
   bool m_bAbortRequest;
   HANDLE m_hReadyEvent;
   

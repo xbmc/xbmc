@@ -491,48 +491,12 @@ STDMETHODIMP CFGManager::GetFfdshowVideoDecFilter(IffdshowDecVideoA** ppBF)
 STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
 {
   CAutoLock cAutoLock(this);
-  HRESULT hr;
-  CInterfaceList<IUnknown, &IID_IUnknown> ppUnk;
-  
-  if (FAILED(AddXbmcSourceFilter(pFileItem)))
+  HRESULT hr = S_OK;
+  if (FAILED(m_CfgLoader->LoadFilterRules(pFileItem) ))
     return E_FAIL;
-  if (FAILED(m_CfgLoader->LoadFilterRules(pFileItem.GetAsUrl().GetFileType(),m_FileSource) ))
-    return E_FAIL;
+  DShowUtil::RemoveUnconnectedFilters(this);
 return hr;
   
-}
-
-void CFGManager::InsertSubtitleNullRender(IBaseFilter* pBF)
-{
-  //This is just a workaround to make shut up matroska subtitles
-  HRESULT hr;
-  CComPtr<IBaseFilter> ppBF;
-  BeginEnumPins(pBF, pEP, pPin)
-  {
-    if(DShowUtil::GetPinName(pPin)[0] != '~'
-    && S_OK == IsPinDirection(pPin, PINDIR_OUTPUT)
-    && S_OK != IsPinConnected(pPin))
-    {
-      IEnumMediaTypes  *emt;
-    AM_MEDIA_TYPE  *pmt;
-    ULONG      f;
-      hr = pPin->EnumMediaTypes(&emt);
-    emt->Reset();
-      while (emt->Next(1, &pmt, &f) == NOERROR) 
-      {
-        CMediaType    mt(*pmt);
-        if (mt.majortype == MEDIATYPE_Subtitle)
-        {
-          hr = CoCreateInstance(CLSID_NullRenderer, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)&ppBF);
-      hr = ppBF->JoinFilterGraph(this,L"Null Renderer");
-      hr = ConnectFilterDirect(pPin,ppBF,pmt);
-        }
-        DeleteMediaType(pmt);
-      }
-      emt->Release();
-    }
-  }
-  EndEnumPins
 }
 
 STDMETHODIMP CFGManager::Abort()

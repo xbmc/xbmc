@@ -55,6 +55,7 @@ public:
 //This is not needed its for getting the output format of a capture filter
 //and  also require  mfc for cfile
 //static void DumpStreamConfig(TCHAR* fn, IAMStreamConfig* pAMVSCCap);
+  static CStdString GetFilterPath(CStdString pClsid);
   static bool IsVistaOrAbove();
   static CStdStringW AnsiToUTF16(const CStdString strFrom);
   static int CountPins(IBaseFilter* pBF, int& nIn, int& nOut, int& nInC, int& nOutC);
@@ -64,6 +65,7 @@ public:
   static bool IsStreamEnd(IBaseFilter* pBF);
   static bool IsVideoRenderer(IBaseFilter* pBF);
   static bool IsAudioWaveRenderer(IBaseFilter* pBF);
+  static HRESULT RemoveUnconnectedFilters(IGraphBuilder *pGraph);
   static IBaseFilter* GetUpStreamFilter(IBaseFilter* pBF, IPin* pInputPin = NULL);
   static IPin* GetUpStreamPin(IBaseFilter* pBF, IPin* pInputPin = NULL);
   static IPin* GetFirstPin(IBaseFilter* pBF, PIN_DIRECTION dir = PINDIR_INPUT);

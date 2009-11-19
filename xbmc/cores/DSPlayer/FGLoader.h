@@ -23,6 +23,8 @@
 #include "streams.h"
 #include "IGraphBuilder2.h"
 #include "FgFilter.h"
+#include "File.h"
+#include "FileItem.h"
 #include "tinyXML/tinyxml.h"
 class CFGLoader
 {
@@ -30,9 +32,9 @@ public:
   CFGLoader(IGraphBuilder2* gb,CStdString xbmcPath);
   virtual ~CFGLoader();
   HRESULT LoadConfig(CStdString configFile);
-  HRESULT LoadFilterRules(CStdString fileType,CComPtr<IBaseFilter> fileSource);
-  HRESULT InsertSource(TiXmlElement *pRule);
-  HRESULT InsertSplitter(TiXmlElement *pRule, CComPtr<IBaseFilter> fileSource);
+  HRESULT LoadFilterRules(const CFileItem& pFileItem);
+  HRESULT InsertSourceFilter(const CFileItem& pFileItem,TiXmlElement *pRule);
+  HRESULT InsertSplitter(TiXmlElement *pRule);
   HRESULT InsertAudioDecoder(TiXmlElement *pRule);
   HRESULT InsertVideoDecoder(TiXmlElement *pRule);
 protected:
@@ -42,6 +44,8 @@ protected:
   GUID                     m_mpcVideoDecGuid;
   CAtlList<CFGFilterFile*> m_configFilter;
   CInterfaceList<IUnknown, &IID_IUnknown> pUnk;
+  CFile                    m_File;
+  CComPtr<IBaseFilter>     m_SourceF;
   IBaseFilter              *m_SplitterF;
 };
 
