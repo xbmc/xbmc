@@ -20,7 +20,7 @@
     </filter>
     <filter name="mkvsource" type="source">
       <path>MatroskaSplitter.ax</path>
-      <guid>{C9ECE7B3-1D8E-41F5-9F24-B255DF16C087}</guid>
+      <guid>{0A68C3B5-9164-4A54-AFAF-995B2FF0E0D4}</guid>
     </filter>
     <!-- splitters -->
     <filter name="avisplitter" type="splitter">
