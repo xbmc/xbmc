@@ -1,20 +1,16 @@
 INCLUDES=-I. -I../../addons/include -I../librefmem
-LIB=libvisualisation.a
-DIRS=../librefmem
-SLIBS=../librefmem/librefmem.a
-OBJS+=track.o
-OBJS+=preset.o
-OBJS+=presets.o
-OBJS+=debug.o
+CFLAGS=-fPIC
+SYSDIR=../../../system
+SO=libvisualisation.so
+SLIB=$(SYSDIR)/$(SO)
 
-.PHONY: compile
+SLIBS=$(SYSDIR)/librefmem.so
+SRCS=track.c preset.c presets.c debug.c
 
-$(LIB): $(SLIBS)
-	$(CC) $(LIB) $(SLIBS)
-
-$(SLIBS): compile
-
-librefmem.a:
+$(SLIB): $(SLIBS)
+	$(CC) $(CFLAGS) $(INCLUDES) $(SRCS) -shared -o $(SLIB) -Wl,-L$(SYSDIR) -lrefmem 
+	
+$(SLIBS):
 	$(MAKE) -C ../librefmem
 
-include ../../../Makefile.include
+-include ../../../Makefile.include

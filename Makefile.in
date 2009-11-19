@@ -27,18 +27,15 @@ BIN_DIRS=	\
 	xbmc/FileSystem/MusicDatabaseDirectory \
 	xbmc/FileSystem/VideoDatabaseDirectory \
 	xbmc/karaoke \
-	xbmc/lib/libaddon \
 	xbmc/lib/libcmyth \
 	xbmc/lib/libhts \
 	xbmc/lib/libGoAhead \
 	xbmc/lib/libPython \
 	xbmc/lib/libPython/xbmcmodule \
-	xbmc/lib/librefmem \
 	xbmc/lib/libRTMP \
 	xbmc/lib/libRTV \
 	xbmc/lib/libscrobbler \
 	xbmc/lib/libshout \
-	xbmc/lib/libvisualisation \
 	xbmc/lib/libUPnP \
 	xbmc/lib/libXBMS \
 	xbmc/lib/libXDAAP \
@@ -205,12 +202,8 @@ xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a: force
 	$(MAKE) -C xbmc/FileSystem/VideoDatabaseDirectory
 xbmc/karaoke/karaoke.a: force
 	$(MAKE) -C xbmc/karaoke
-xbmc/lib/libaddon/libaddon.a: force
-	$(MAKE) -C xbmc/lib/libaddon
 xbmc/lib/libcmyth/libcmyth.a: force
 	$(MAKE) -C xbmc/lib/libcmyth
-xbmc/lib/librefmem/librefmem.a: force
-	$(MAKE) -C xbmc/lib/librefmem
 xbmc/lib/libhts/libhts.a: force
 	$(MAKE) -C xbmc/lib/libhts
 xbmc/lib/libPython/python.a: force
@@ -229,8 +222,6 @@ xbmc/lib/libUPnP/libupnp-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libUPnP
 xbmc/lib/libXBMS/libxbms-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libXBMS
-xbmc/lib/libvisualisation/libvisualisation.a: force
-	$(MAKE) -C xbmc/lib/libvisualisation
 xbmc/lib/libXDAAP/libxdaap-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libXDAAP
 xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a: force
@@ -365,16 +356,13 @@ OBJSXBMC=	\
 	xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
 	xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a \
 	xbmc/karaoke/karaoke.a \
-	xbmc/lib/libaddon/libaddon.a \
 	xbmc/lib/libhts/libhts.a \
-	xbmc/lib/librefmem/librefmem.a \
 	xbmc/lib/libPython/xbmcmodule/xbmcmodule.a \
 	xbmc/lib/libRTMP/librtmp.a \
 	xbmc/lib/libscrobbler/scrobbler.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
-	xbmc/lib/libvisualisation/libvisualisation.a \
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
@@ -403,6 +391,9 @@ OBJSXBMC += \
 	xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a \
 	xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a
 endif
+
+# addon dll libraries
+LIBS+=-Lsystem -lrefmem -laddon -lvisualisation
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,$(ARCH)), osx)

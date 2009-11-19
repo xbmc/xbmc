@@ -1,25 +1,16 @@
 INCLUDES=-I. -I../../addons/include -I../librefmem
-
-ARCH=@ARCH@
-SO=AddonLib-$(ARCH).so
-ARCHIVE=$(SO:.so=.a)
+CFLAGS=-fPIC
 SYSDIR=../../../system
+SO=libaddon.so
 SLIB=$(SYSDIR)/$(SO)
 
-#DIRS=../librefmem
 SLIBS=$(SYSDIR)/librefmem.so
-OBJS+=setting.o
-OBJS+=settings.o
-OBJS+=debug.o
-
-.PHONY: compile
+SRCS=setting.c settings.c debug.c
 
 $(SLIB): $(SLIBS)
-	$(CXX) $(CFLAGS) -shared -o $(SLIB) -Wl, -lrefmem 
+	$(CC) $(CFLAGS) $(INCLUDES) $(SRCS) -shared -o $(SLIB) -Wl,-L$(SYSDIR) -lrefmem 
 	
-$(SLIBS): compile
-
-librefmem.so:
+$(SLIBS):
 	$(MAKE) -C ../librefmem
 
 -include ../../../Makefile.include
