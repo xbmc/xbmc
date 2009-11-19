@@ -98,7 +98,8 @@ bool CNetworkInterfaceLinux::IsConnected()
       return false;
 
    // return only interfaces which has ip address
-   return iRunning && (*(int*)&ifr.ifr_addr.sa_data != 0) ;
+   struct in_addr out;
+   return iRunning && inet_aton(ifr.ifr_addr.sa_data, &out) != 0;
 }
 
 CStdString CNetworkInterfaceLinux::GetMacAddress()
