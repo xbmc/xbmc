@@ -57,6 +57,12 @@
 #define GUARD_MAGIC 0xe3
 #endif /* DEBUG */
 
+/* Disable optimization on OSX ppc
+   Compilation fails in release mode both with Apple gcc build 5490 and 5493 */
+#if defined(__APPLE__) && defined(__ppc__)
+#pragma GCC optimization_level 0
+#endif
+
 /*
  * struct refcounter
  *
@@ -327,7 +333,7 @@ ref_set_destroy(void *data, ref_destroy_t func)
 }
 
 /*
- * ref_strdup(char *str)
+ * ref_strdup(const char *str)
  * 
  * Scope: PUBLIC
  *
@@ -344,7 +350,7 @@ ref_set_destroy(void *data, ref_destroy_t func)
  * Failure: A NULL pointer.
  */
 char *
-ref_strdup(char *str)
+ref_strdup(const char *str)
 {
 	size_t len;
 	char *ret = NULL;
@@ -470,3 +476,7 @@ ref_release(void *p)
 	}
 	refmem_dbg(REF_DBG_DEBUG, "%s(%p) }\n", __FUNCTION__, p);
 }
+
+#if defined(__APPLE__) && defined(__ppc__)
+#pragma GCC optimization_level reset
+#endif
