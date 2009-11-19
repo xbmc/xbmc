@@ -23,18 +23,25 @@
 #include "streams.h"
 #include "IGraphBuilder2.h"
 #include "FgFilter.h"
+#include "tinyXML/tinyxml.h"
 class CFGLoader
 {
 public:
   CFGLoader(IGraphBuilder2* gb,CStdString xbmcPath);
   virtual ~CFGLoader();
   HRESULT LoadConfig(CStdString configFile);
-  HRESULT LoadFilterRules(CStdString fileType,CComPtr<IBaseFilter> fileSource,IBaseFilter** pBFSplitter);
+  HRESULT LoadFilterRules(CStdString fileType,CComPtr<IBaseFilter> fileSource);
+  HRESULT InsertSource(TiXmlElement *pRule);
+  HRESULT InsertSplitter(TiXmlElement *pRule, CComPtr<IBaseFilter> fileSource);
+  HRESULT InsertAudioDecoder(TiXmlElement *pRule);
+  HRESULT InsertVideoDecoder(TiXmlElement *pRule);
 protected:
   CComPtr<IGraphBuilder2>  m_pGraphBuilder;
   CStdString               m_xbmcPath;
   CStdString               m_xbmcConfigFilePath;
   GUID                     m_mpcVideoDecGuid;
   CAtlList<CFGFilterFile*> m_configFilter;
+  CInterfaceList<IUnknown, &IID_IUnknown> pUnk;
+  IBaseFilter              *m_SplitterF;
 };
 

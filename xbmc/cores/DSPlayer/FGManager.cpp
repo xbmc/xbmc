@@ -496,14 +496,8 @@ STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   
   if (FAILED(AddXbmcSourceFilter(pFileItem)))
     return E_FAIL;
-  CComPtr<IBaseFilter> ppSBF;
-  if (FAILED(m_CfgLoader->LoadFilterRules(pFileItem.GetAsUrl().GetFileType(),m_FileSource,&ppSBF) ))
+  if (FAILED(m_CfgLoader->LoadFilterRules(pFileItem.GetAsUrl().GetFileType(),m_FileSource) ))
     return E_FAIL;
-  
-  /*if (pFileItem.GetAsUrl().GetFileType().Equals("mkv",false))
-    InsertSubtitleNullRender(ppSBF);*/
-
-  this->ConnectFilter(ppSBF,NULL);
 return hr;
   
 }

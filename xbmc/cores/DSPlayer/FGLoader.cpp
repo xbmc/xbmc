@@ -21,7 +21,7 @@
 
 #include "FGLoader.h"
 #include "dshowutil/dshowutil.h"
-#include "tinyXML/tinyxml.h"
+
 #include "XMLUtils.h"
 #include "charsetconverter.h"
 #include "Log.h"
@@ -84,11 +84,95 @@ HRESULT CFGLoader::LoadConfig(CStdString configFile)
   }
 }
 
-HRESULT CFGLoader::LoadFilterRules(CStdString fileType , CComPtr<IBaseFilter> fileSource ,IBaseFilter **pBFSplitter)
+HRESULT CFGLoader::InsertSplitter(TiXmlElement *pRule,CComPtr<IBaseFilter> fileSource)
+{
+  HRESULT hr = S_OK;
+  POSITION pos = m_configFilter.GetHeadPosition();
+  m_SplitterF = NULL;
+  CFGFilterFile* pFGF;
+  while(pos)
+  {
+    pFGF = m_configFilter.GetNext(pos);
+	if ( ( (CStdString)pRule->Attribute("splitter")).Equals(pFGF->GetXFilterName().c_str(),false ) )
+    {
+      if(SUCCEEDED(pFGF->Create(&m_SplitterF, pUnk)))
+        break;
+	  else
+	  {
+        CLog::Log(LOGERROR,"DSPlayer %s Failed to create spliter",__FUNCTION__);
+        return E_FAIL;
+	  }
+	}
+  }
+  
+  m_pGraphBuilder->AddFilter(m_SplitterF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
+  hr = ::ConnectFilters(m_pGraphBuilder,fileSource,m_SplitterF);
+  //If the splitter successully connected to the source
+  if ( SUCCEEDED( hr ) )
+    CLog::Log(LOGNOTICE,"DSPlayer %s Connected the source to the spillter",__FUNCTION__);
+  else
+  {
+    CLog::Log(LOGERROR,"DSPlayer %s Failed to connect the source to the spliter",__FUNCTION__);
+    return hr;
+  }
+  return hr;
+}
+
+HRESULT CFGLoader::InsertAudioDecoder(TiXmlElement *pRule)
+{
+  HRESULT hr = S_OK;
+  POSITION pos = m_configFilter.GetHeadPosition();
+  CComPtr<IBaseFilter> ppBF;
+  CFGFilterFile* pFGF;
+  while(pos)
+  {
+    pFGF = m_configFilter.GetNext(pos);
+    if ( ((CStdString)pRule->Attribute("audiodec")).Equals(pFGF->GetXFilterName().c_str(),false) )
+    {
+      if(SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
+        break;
+	  else
+	  {
+        CLog::Log(LOGERROR,"DSPlayer %s Failed to create the audio decoder filter",__FUNCTION__);
+        return E_FAIL;
+      }
+	}
+  }
+  m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
+  ppBF.Release();
+  CLog::Log(LOGDEBUG,"DSPlayer %s Sucessfully added the audio decoder filter",__FUNCTION__);
+  return hr;
+}
+
+HRESULT CFGLoader::InsertVideoDecoder(TiXmlElement *pRule)
+{
+  HRESULT hr = S_OK;
+  POSITION pos = m_configFilter.GetHeadPosition();
+  CComPtr<IBaseFilter> ppBF;
+  CFGFilterFile* pFGF;
+  while(pos)
+  {
+    pFGF = m_configFilter.GetNext(pos);
+    if ( ((CStdString)pRule->Attribute("videodec")).Equals(pFGF->GetXFilterName().c_str(),false) )
+    {
+      if(SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
+        break;
+	  else
+	  {
+        CLog::Log(LOGERROR,"DSPlayer %s Failed to create the video decoder filter",__FUNCTION__);
+        return E_FAIL;
+      }
+    }
+  }
+  m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
+  ppBF.Release();
+  CLog::Log(LOGDEBUG,"DSPlayer %s Sucessfully added the video decoder filter",__FUNCTION__);
+  return hr;
+}
+
+HRESULT CFGLoader::LoadFilterRules(CStdString fileType , CComPtr<IBaseFilter> fileSource)
 {
   HRESULT hr;
-  CheckPointer(pBFSplitter,E_POINTER);
-  IBaseFilter *ppSBF = NULL;
   //Load the rules from the xml
   TiXmlDocument graphConfigXml;
   if (!graphConfigXml.LoadFile(m_xbmcConfigFilePath))
@@ -96,60 +180,29 @@ HRESULT CFGLoader::LoadFilterRules(CStdString fileType , CComPtr<IBaseFilter> fi
   TiXmlElement* graphConfigRoot = graphConfigXml.RootElement();
   if ( !graphConfigRoot)
     return false;
-  CInterfaceList<IUnknown, &IID_IUnknown> pUnk;
+  
   TiXmlElement *pRules = graphConfigRoot->FirstChildElement("rules");
   pRules = pRules->FirstChildElement("rule");
   while (pRules)
   {
     if (((CStdString)pRules->Attribute("filetypes")).Equals(fileType.c_str(),false))
     {
-      POSITION pos = m_configFilter.GetHeadPosition();
-      while(pos)
-      {
-        CFGFilterFile* pFGF = m_configFilter.GetNext(pos);
-        if ( ((CStdString)pRules->Attribute("splitter")).Equals(pFGF->GetXFilterName().c_str(),false) )
-        {
-          if(SUCCEEDED(pFGF->Create(&ppSBF, pUnk)))
-          {
-            m_pGraphBuilder->AddFilter(ppSBF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());//L"XBMC SPLITTER");
-            hr = ::ConnectFilters(m_pGraphBuilder,fileSource,ppSBF);
-            if ( SUCCEEDED( hr ) )
-              //Now the source filter is connected to the splitter lets load the rules from the xml
-              CLog::Log(LOGDEBUG,"%s Connected the source to the spillter",__FUNCTION__);
-            else
-            {
-              CLog::Log(LOGERROR,"%s Failed to connect the source to the spliter",__FUNCTION__);
-              return hr;
-            }
-		      }
-    		}
-        else if ( ((CStdString)pRules->Attribute("videodec")).Equals(pFGF->GetXFilterName().c_str(),false) )
-        {
-        CComPtr<IBaseFilter> ppBF;
-        if(SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
-          m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
-        ppBF.Release();
-      }
-      else if ( ((CStdString)pRules->Attribute("audiodec")).Equals(pFGF->GetXFilterName().c_str(),false) )
-      {
-        CComPtr<IBaseFilter> ppBF;
-        if(SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
-        {
-          m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
-        }
-        ppBF.Release();
-      }
+      if (FAILED(InsertSplitter(pRules,fileSource)))
+        hr = E_FAIL;
+      if (FAILED(InsertVideoDecoder(pRules)))
+        hr = E_FAIL;
+	  if (FAILED(InsertAudioDecoder(pRules)))
+        hr = E_FAIL;
     }
-  }
     pRules = pRules->NextSiblingElement();
   }
-  if(!ppSBF)
+  
+  if (( m_SplitterF ) && (FAILED(m_pGraphBuilder->ConnectFilter(m_SplitterF,NULL))))
   {
-    CLog::Log(LOGERROR,"%s Failed to create ppSBF",__FUNCTION__);
-    return E_FAIL;
+    CLog::Log(LOGERROR,"DSPlayer %s Failed to connect every filter together",__FUNCTION__);
+    return hr;
   }
-  *pBFSplitter = ppSBF;
-  (*pBFSplitter)->AddRef();
-  SAFE_RELEASE(ppSBF);
+  CLog::Log(LOGDEBUG,"DSPlayer %s Successfuly connected every filters",__FUNCTION__);
   return hr;
 }
+
