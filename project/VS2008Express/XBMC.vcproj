@@ -2128,6 +2128,10 @@
 				Name="DSPlayer"
 				>
 				<File
+					RelativePath="..\..\system\players\dsplayer\dsfilterconfig.xml"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\DSPlayer\DSGraph.cpp"
 					>
 				</File>
