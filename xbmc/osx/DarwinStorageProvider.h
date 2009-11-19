@@ -43,8 +43,5 @@ public:
   static void SetEvent(void);
 
 private:
-  void GetDrives(VECSOURCES &drives);
-
-  unsigned int m_removableLength;
   static bool m_event;
 };
