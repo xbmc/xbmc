@@ -1,6 +1,17 @@
 INCLUDES=-I.
-LIB=librefmem.a
+ARCH=@ARCH@
+SO=RefMem-$(ARCH).so
+ARCHIVE=$(SO:.so=.a)
+SYSDIR=../../../system
+SLIB=$(SYSDIR)/$(SO)
+
+#DIRS=../librefmem
 OBJS+=alloc.o
 OBJS+=debug.o
 
-include ../../../Makefile.include
+.PHONY: compile
+
+$(SLIB)
+	$(CXX) $(CFLAGS) -shared -o $(SLIB)
+	
+-include ../../../Makefile.include
