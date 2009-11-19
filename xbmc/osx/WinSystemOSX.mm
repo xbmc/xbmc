@@ -739,31 +739,49 @@ void CWinSystemOSX::EnableVSync(bool enable)
 
 bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate)
 {
-  CGDirectDisplayID displayID = kCGDirectMainDisplay;
-  CFDictionaryRef dispMode = NULL;
   int match = 0;
+  CFDictionaryRef dispMode = NULL;
+  // Figure out the screen size. (default to main screen)
+  CGDirectDisplayID display_id = kCGDirectMainDisplay;
+  
+  NSOpenGLContext* context = [NSOpenGLContext currentContext];
+  if (context)
+  {
+    NSView* view;
+  
+    view = [context view];
+    if (view)
+    {
+      NSWindow* window;
+      window = [view window];
+      if (window)
+      {
+        display_id = GetDisplayIDFromScreen( [window screen] );      
+      }
+    }
+  }
 
   // find mode that matches the desired size
   dispMode = CGDisplayBestModeForParametersAndRefreshRate(
-    displayID, 32, width, height, (CGRefreshRate)(refreshrate), &match);
+    display_id, 32, width, height, (CGRefreshRate)(refreshrate), &match);
 
   if (!match)
-    dispMode = CGDisplayBestModeForParameters(displayID, 32, width, height, &match);
+    dispMode = CGDisplayBestModeForParameters(display_id, 32, width, height, &match);
 
   if (!match)
-    dispMode = CGDisplayBestModeForParameters(displayID, 16, width, height, &match);
+    dispMode = CGDisplayBestModeForParameters(display_id, 16, width, height, &match);
 
   if (!match)
     return false;
 
   // switch mode and return success
-  CGDisplayCapture(displayID);
+  CGDisplayCapture(display_id);
   CGDisplayConfigRef cfg;
   CGBeginDisplayConfiguration(&cfg);
   CGConfigureDisplayFadeEffect(cfg, 0.3f, 0.5f, 0, 0, 0);
-  CGConfigureDisplayMode(cfg, displayID, dispMode);
+  CGConfigureDisplayMode(cfg, display_id, dispMode);
   CGError err = CGCompleteDisplayConfiguration(cfg, kCGConfigureForAppOnly);
-  CGDisplayRelease(displayID);
+  CGDisplayRelease(display_id);
   
   return (err == kCGErrorSuccess);
 }
