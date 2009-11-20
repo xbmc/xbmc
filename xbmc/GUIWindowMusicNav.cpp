@@ -781,7 +781,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       int iLabel=132;
       // per genre or for all artists
-      if (m_vecItems->m_strPath.Equals("musicdb://1/") || item->m_strPath.Equals("musicdb://2/"))
+      if (m_vecItems->m_strPath.Left(12).Equals("musicdb://1/") || item->m_strPath.Left(12).Equals("musicdb://2/"))
       {
         iLabel = 133;
       }
