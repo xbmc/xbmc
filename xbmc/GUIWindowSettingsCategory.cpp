@@ -1529,7 +1529,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (cancelled)
       return;
 
-    if (thumbs)
+    if (thumbs && strSetting.Equals("videolibrary.export"))
       actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20436,-1,-1,cancelled);
     if (cancelled)
       return;
