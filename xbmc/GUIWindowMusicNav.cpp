@@ -625,7 +625,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (database.GetMatchingMusicVideo(item->GetMusicInfoTag()->GetArtist(),item->GetMusicInfoTag()->GetAlbum(),item->GetMusicInfoTag()->GetTitle()) > -1)
         buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 20401);
     }
-    if (item->HasVideoInfoTag() && item->IsVideoDb() && !item->m_bIsFolder)
+    if (item->HasVideoInfoTag() && !item->m_bIsFolder)
     {
       if (item->GetVideoInfoTag()->m_playCount > 0)
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
