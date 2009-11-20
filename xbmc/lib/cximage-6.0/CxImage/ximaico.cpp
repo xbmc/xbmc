@@ -161,8 +161,6 @@ bool CxImageICO::Decode(CxFile *hFile)
 
 						//check if there is only one transparent color
 						RGBQUAD cc,ct;
-						long* pcc = (long*)&cc;
-						long* pct = (long*)&ct;
 						int nTransColors=0;
 						int nTransIndex=0;
 						for (y = 0; y < head.biHeight; y++){
@@ -174,7 +172,7 @@ bool CxImageICO::Decode(CxFile *hFile)
 										nTransColors++;
 										ct = cc;
 									} else {
-										if (*pct!=*pcc){
+										if (memcmp(&cc, &ct, sizeof(RGBQUAD)) != 0){
 											nTransColors++;
 										}
 									}

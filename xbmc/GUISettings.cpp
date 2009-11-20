@@ -395,9 +395,6 @@ void CGUISettings::Initialize()
     AddInt(3, "powermanagement.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT);
   else
     AddInt(3, "powermanagement.shutdownstate", 13008, POWERSTATE_QUIT, 0, 1, 5, SPIN_CONTROL_TEXT);
-#if defined(_LINUX) && !defined(__APPLE__)
-  AddInt(4, "powermanagement.powerbuttonaction", 13015, POWERSTATE_NONE, 0, 1, 5, SPIN_CONTROL_TEXT);
-#endif
 
   AddCategory(4, "debug", 14092);
   AddBool(1, "debug.showloginfo", 20191, false);
