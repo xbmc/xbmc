@@ -1911,6 +1911,7 @@ den här visualiseringen</string>
   <string id="23000">Vädertillägg</string>
   <string id="23001">- Tilläggsinställningar</string>
   <string id="23050">Aktivera teletext</string>
+  <string id="23051">Del</string>
   <string id="23100">Extern spelare är aktiv</string>
   <string id="23101">Klicka OK för att avsluta spelaren</string>
   <string id="23104">Klicka OK när uppspelningen har slutat</string>
@@ -1985,4 +1986,9 @@ den här visualiseringen</string>
   <string id="33076">Var god uppdatera XBMC.</string>
   <string id="33077">Ingen data hittades!</string>
   <string id="33078">Nästa sida</string>
+  <string id="33079">Älska</string>
+  <string id="33080">Hata</string>
+  <string id="33081">Denna fil är ihoplagd, välj den del du vill spela.</string>
+  <string id="33082">Sökväg till skript</string>
+  <string id="33083">Aktivera egen skriptknapp</string>
 </strings>
