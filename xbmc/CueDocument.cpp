@@ -99,6 +99,12 @@ bool CCueDocument::Parse(const CStdString &strFile)
       break;
     if (strLine.Left(7) == "INDEX 0")
     {
+      if (bCurrentFileChanged)
+      {
+        OutputDebugString("Track split over multiple files, unsupported");
+        return false;
+      }
+
       // find the end of the number section
       time = ExtractTimeFromIndex(strLine);
       if (time == -1)
