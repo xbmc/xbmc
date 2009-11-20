@@ -81,8 +81,10 @@ void CAudioContext::SetActiveDevice(int iDevice)
     {
       DSCAPS devCaps = {0};
       devCaps.dwSize = sizeof(devCaps);
-      if (SUCCEEDED(m_pDirectSoundDevice->GetCaps(&devCaps))) // Make sure the DirectSound interface is still valid.
+      HRESULT hr = m_pDirectSoundDevice->GetCaps(&devCaps);
+      if (SUCCEEDED(hr)) // Make sure the DirectSound interface is still valid.
         return;
+      CLog::Log(LOGDEBUG, "%s - DirectSoundDevice no longer valid and is going to be recreated (0x%08x)", __FUNCTION__, hr);
     }
   }
 
@@ -91,6 +93,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
     return;
 #endif
 
+  CLog::Log(LOGDEBUG, "%s - SetActiveDevice from %i to %i", __FUNCTION__, m_iDevice, iDevice);
   /* deinit current device */
   RemoveActiveDevice();
 
@@ -178,6 +181,7 @@ int CAudioContext::GetActiveDevice()
 // \brief Remove the current sound device, eg. to setup new speaker config
 void CAudioContext::RemoveActiveDevice()
 {
+  CLog::Log(LOGDEBUG, "%s - Removing device %i", __FUNCTION__, m_iDevice);
   g_audioManager.DeInitialize(m_iDevice);
   m_iDevice=NONE;
 
@@ -252,6 +256,7 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
 
   /* speaker config identical, no need to do anything */
   if(spconfig == spconfig_old) return;
+  CLog::Log(LOGDEBUG, "%s - Speakerconfig changed from %i to %i", __FUNCTION__, spconfig_old, spconfig);
 #endif
 
   /* speaker config has changed, caller need to recreate it */
