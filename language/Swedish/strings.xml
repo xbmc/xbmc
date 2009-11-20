@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 11/18/2009-->
+<!--Date of translation: 11/20/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 24717-->
+<!--Based on english strings version 24738-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -183,7 +183,7 @@
   <string id="260">Shoutcast</string>
   <string id="261">Väntar på start...</string>
   <string id="262">Skript utdata</string>
-  <string id="263">Tillåt kontroll av XBMC över HTTP</string>
+  <string id="263">Tillåt kontroll av XBMC via HTTP</string>
   <string id="264">Spela in</string>
   <string id="265">Stoppa insp.</string>
   <string id="266">Sort: Låtar</string>
@@ -510,7 +510,7 @@
   <string id="635">Original storlek</string>
   <string id="636">Egen storlek</string>
   <string id="637">Replay Gain</string>
-  <string id="638">Applicera Replay Gain volymjusteringar</string>
+  <string id="638">Replay Gain volymjusteringar</string>
   <string id="639">Använd låtnivåer</string>
   <string id="640">Använd albumnivåer</string>
   <string id="641">Förstärkarnivå - Replay Gain filer</string>
@@ -599,7 +599,7 @@
   <string id="769">Reserverad</string>
   <string id="770">Fel %i: utdelningen inte tillgänglig</string>
   <string id="771">- Automatisk FATX begränsare</string>
-  <string id="772">Ljudhårdvara</string>
+  <string id="772">Ljudutgång</string>
   <string id="773">Söker</string>
   <string id="774">Mapp för bildspels-skärmsläckare</string>
   <string id="775">Nätverksgränssnitt</string>
@@ -617,7 +617,7 @@
   <string id="787">Gränssnitt inaktiverat</string>
   <string id="788">Inaktivering av nätverkgränssnittet lyckades.</string>
   <string id="789">Trådlöst nätverksnamn (ESSID)</string>
-  <string id="791">Tillåt fjärrkontrollsprogram på detta system att kontrollera XBMC</string>
+  <string id="791">Tillåt program på detta system att kontrollera XBMC</string>
   <string id="792">Port</string>
   <string id="793">Portområde</string>
   <string id="794">Acceptera anslutningar från program på andra system att kontrollera XBMC</string>
@@ -741,10 +741,10 @@
   <string id="1417">Grynigt</string>
   <string id="1418">Åskstorm</string>
   <string id="1419">Åskskurar</string>
-  <string id="1450">Aktivera strömspar under inaktivitet</string>
+  <string id="1450">Slå av bildskärm vid inaktivitet</string>
   <string id="2050">Speltid</string>
   <string id="2100">Skript misslyckades! : %s</string>
-  <string id="4501">Aktivera LCD</string>
+  <string id="4501">Aktivera LCD/VFD</string>
   <string id="10000">Hem</string>
   <string id="10001">Program</string>
   <string id="10002">Bilder</string>
@@ -857,8 +857,8 @@
   <string id="12358">Lösenordet var tomt. Försök igen.</string>
   <string id="12360">Huvudlås</string>
   <string id="12362">Stäng av systemet om låsförsök överskrids</string>
-  <string id="12367">Huvudkoden är ogiltig!</string>
-  <string id="12368">Var god ange korrekt huvudkod!</string>
+  <string id="12367">Huvudkoden är ogiltig</string>
+  <string id="12368">Var god ange korrekt huvudkod</string>
   <string id="12373">Inställningar &amp; Filhanterare</string>
   <string id="12376">Använd som standard för alla filmer</string>
   <string id="12377">Detta kommer att ta bort alla tidigare sparade värden</string>
@@ -921,7 +921,7 @@
   <string id="13120">VDPAU</string>
   <string id="13121">VDPAU HQ uppskalningsnivå</string>
   <string id="13122">VDPAU studionivåfärgkonvertering</string>
-  <string id="13130">Skärmrensning</string>
+  <string id="13130">Mörka övriga skärmar</string>
   <string id="13131">Inaktivera</string>
   <string id="13132">Rensa skärmar</string>
   <string id="13140">Aktiva anslutningar detekterade!</string>
@@ -1122,8 +1122,7 @@ den här visualiseringen</string>
   <string id="13509">Riktigt hög (långsam!)</string>
   <string id="13510">Synkronisera uppspelning till display</string>
   <string id="13600">Apple fjärrkontroll</string>
-  <string id="13601">Läge</string>
-  <string id="13602">Körs alltid</string>
+  <string id="13602">Tillåt start av XBMC med fjärrkontroll</string>
   <string id="13603">Sekvensfördröjningstid</string>
   <string id="13610">Inaktiverad</string>
   <string id="13611">Standard</string>
@@ -1205,7 +1204,7 @@ den här visualiseringen</string>
   <string id="14080">Tidzon</string>
   <string id="14081">Fillistor</string>
   <string id="14082">Visa EXIF bildinformation</string>
-  <string id="14083">Använd helskärmsfönster hellre än riktigt fullskärmsläge</string>
+  <string id="14083">Använd helskärmsfönster hellre än riktig helskärm</string>
   <string id="14084">Köa låtar vid markering</string>
   <string id="14085">Spela musikskivor automatiskt</string>
   <string id="14086">Uppspelning</string>
@@ -1214,6 +1213,10 @@ den här visualiseringen</string>
   <string id="14089">Typsnitt att använda för undertexter</string>
   <string id="14090">Internationell</string>
   <string id="14091">Teckenuppsättning</string>
+  <string id="14092">Debuggning</string>
+  <string id="14093">Säkerhet</string>
+  <string id="14094">Inmatningsenheter</string>
+  <string id="14095">Strömbesparing</string>
   <string id="15015">Ta bort</string>
   <string id="15016">Spel</string>
   <string id="15019">Lägg till</string>
@@ -1717,7 +1720,7 @@ den här visualiseringen</string>
   <string id="21370">Spela navigationsljud under mediauppspelning</string>
   <string id="21371">Miniatyrbild</string>
   <string id="21372">Tvingad DVD region</string>
-  <string id="21373">Grafikhårdvara</string>
+  <string id="21373">Grafikutgång</string>
   <string id="21374">Bildläge</string>
   <string id="21375">Normal</string>
   <string id="21376">Letterbox</string>
@@ -1847,7 +1850,7 @@ den här visualiseringen</string>
   <string id="21878">Upphovsrättsflagga</string>
   <string id="21879">Landskod</string>
   <string id="21880">Referenstjänst</string>
-  <string id="21881">Tillåt UPnP kontroller att kontrollera XBMC</string>
+  <string id="21881">Tillåt kontroll av XBMC via UPnP</string>
   <string id="21882">Försök hoppa över introduktion före DVD menyn</string>
   <string id="21883">Sparad musik</string>
   <string id="21884">Fråga info för alla artister</string>
