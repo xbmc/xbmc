@@ -491,6 +491,7 @@ void CGUISettings::Initialize()
   AddBool(0, "myvideos.treatstackasfile", 20051, true);
   AddBool(2, "myvideos.extractflags",20433, true);
   AddBool(3, "myvideos.cleanstrings", 20418, false);
+  AddBool(0, "myvideos.extractthumbs",20433, true);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 14089, "arial.ttf", SPIN_CONTROL_TEXT);
