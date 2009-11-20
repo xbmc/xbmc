@@ -75,6 +75,8 @@ void CAudioContext::SetActiveDevice(int iDevice)
 {
   /* if device is the same, no need to bother */
 #ifdef _WIN32
+  if (iDevice == DEFAULT_DEVICE)
+    iDevice = DIRECTSOUND_DEVICE; // default device on win32 is directsound device
   if(m_iDevice == iDevice && g_guiSettings.GetString("audiooutput.audiodevice").Equals(m_strDevice))
   {
     if (iDevice != NONE && m_pDirectSoundDevice)
