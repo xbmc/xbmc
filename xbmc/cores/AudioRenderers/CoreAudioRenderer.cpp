@@ -467,6 +467,7 @@ bool CCoreAudioRenderer::Deinitialize()
     m_AudioDevice.RemoveIOProc();
   m_AudioUnit.Close();
   m_OutputStream.Close();
+  Sleep(10);
   m_AudioDevice.Close();
   delete m_pCache;
   m_pCache = NULL;
@@ -475,6 +476,8 @@ bool CCoreAudioRenderer::Deinitialize()
   m_RunoutEvent = kInvalidID;
   m_DoRunout = 0;
   m_EnableVolumeControl = true;
+  
+  g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
   
   CLog::Log(LOGINFO, "CoreAudioRenderer::Deinitialize: Renderer has been shut down.");
   

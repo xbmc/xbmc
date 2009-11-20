@@ -308,7 +308,7 @@ const char* CCoreAudioDevice::GetName(CStdString& name)
   OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyDeviceName, &size, name.GetBufferSetLength(size));  
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to get device name - id: 0x%04x Error = 0x%08x (%4.4s)", m_DeviceId, ret, CONVERT_OSSTATUS(ret));
+    CLog::Log(LOGERROR, "CCoreAudioDevice::GetName: Unable to get device name - id: 0x%04x Error = 0x%08x (%4.4s)", m_DeviceId, ret, CONVERT_OSSTATUS(ret));
     return NULL;
   }
   return name.c_str();
@@ -368,6 +368,9 @@ bool CCoreAudioDevice::IsRunning()
 
 bool CCoreAudioDevice::SetHogStatus(bool hog)
 {
+  // According to Jeff Moore (Core Audio, Apple), Setting kAudioDevicePropertyHogMode
+  // is a toggle and the only way to tell if you do get hog mode is to compare
+  // the returned pid against getpid, if the match, you have hog mode, if not you don't.
   if (!m_DeviceId)
     return false;
   
@@ -377,7 +380,7 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
     {
       CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: Setting 'hog' status on device 0x%04x", m_DeviceId);
       OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyHogMode, sizeof(m_Hog), &m_Hog);
-      if (ret)
+      if (ret || m_Hog != getpid())
       {
         CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to set 'hog' status. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
         return false;
@@ -392,7 +395,7 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
       CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: Releasing 'hog' status on device 0x%04x", m_DeviceId);
       pid_t hogPid = -1;
       OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyHogMode, sizeof(hogPid), &hogPid);
-      if (ret)
+      if (ret || hogPid == getpid())
       {
         CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to release 'hog' status. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
         return false;

@@ -91,13 +91,6 @@ void CAudioContext::SetActiveDevice(int iDevice)
     return;
 #endif
 
-  if (iDevice==DEFAULT_DEVICE)
-  {
-    /* we just tell callbacks to init, it will setup audio */
-    g_audioManager.Initialize(iDevice);
-    return;
-  }
-
   /* deinit current device */
   RemoveActiveDevice();
 
