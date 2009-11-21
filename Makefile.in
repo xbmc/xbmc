@@ -101,11 +101,11 @@ ifneq (@BUILD_GOOM@,1)
 VIS_DIRS+=xbmc/visualizations/Goom
 endif
 
-PM3_MEDIA=skin/Project\ Mayhem\ III/media
+CONFLUENCE_MEDIA=skin/Confluence/media
 PM3HD_MEDIA=skin/PM3.HD/media
 
 SKIN_DIRS=\
-	$(PM3_MEDIA) \
+	$(CONFLUENCE_MEDIA) \
 	$(PM3HD_MEDIA)
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
@@ -144,7 +144,7 @@ configure: configure.in
 
 # skin textures
 skins: tools/TexturePacker/TexturePacker force
-	 $(MAKE) -C $(PM3_MEDIA)
+	 $(MAKE) -C $(CONFLUENCE_MEDIA)
 	 $(MAKE) -C $(PM3HD_MEDIA)
 
 guilib/guilib.a: force

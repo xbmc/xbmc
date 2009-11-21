@@ -438,8 +438,10 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
   m_MaxCacheLen = m_AvgBytesPerSec;     // Set the max cache size to 1 second of data. TODO: Make this more intelligent
   m_Pause = true;                       // Suspend rendering. We will start once we have some data.
   m_pCache = new CSliceQueue(m_ChunkLen); // Initialize our incoming data cache
+#ifdef _DEBUG
   m_PerfMon.Init(m_AvgBytesPerSec, 1000, CCoreAudioPerformance::FlagDefault); // Set up the performance monitor
   m_PerfMon.SetPreroll(2.0f); // Disable underrun detection for the first 2 seconds (after start and after resume)
+#endif
   m_Initialized = true;
   MPCreateEvent(&m_RunoutEvent); // Create a waitable event for use by clients when draining the cache
   m_DoRunout = 0;
@@ -500,7 +502,9 @@ bool CCoreAudioRenderer::Pause()
       m_AudioUnit.Stop();
     m_Pause = true;
   }
+#ifdef _DEBUG
   m_PerfMon.EnableWatchdog(false); // Stop monitoring, we're paused
+#endif
   return true;
 }
 
@@ -517,7 +521,9 @@ bool CCoreAudioRenderer::Resume()
      m_AudioUnit.Start();
     m_Pause = false;
   }
+#ifdef _DEBUG
   m_PerfMon.EnableWatchdog(true); // Resume monitoring
+#endif
   return true;
 }
 
@@ -531,7 +537,9 @@ bool CCoreAudioRenderer::Stop()
     m_AudioUnit.Stop();
 
   m_Pause = true;
+#ifdef _DEBUG
   m_PerfMon.EnableWatchdog(false);
+#endif
   m_pCache->Clear();
 
   return true;
@@ -593,8 +601,10 @@ unsigned int CCoreAudioRenderer::AddPackets(const void* data, DWORD len)
   
   size_t bytesUsed = m_pCache->AddData((void*)data, len);
   
+#ifdef _DEBUG
   // Update tracking variable
   m_PerfMon.ReportData(bytesUsed, 0);
+#endif
   Resume();  // We have some data. Attmept to resume playback
   
   return bytesUsed; // Number of bytes added to cache;
@@ -685,9 +695,10 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   else
     ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = bytesRead;
   
+#ifdef _DEBUG
   // Calculate stats and perform a sanity check
   m_PerfMon.ReportData(0, bytesRead); // TODO: Should we check the result?
-
+#endif
   return noErr;
 }
 

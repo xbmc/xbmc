@@ -12,7 +12,7 @@
 			<posy>-320</posy>
 			<width>36</width>
 			<height>32</height>
-			<visible>system.getbool(lookandfeel.enablemouse)</visible>
+			<visible>system.getbool(input.enablemouse)</visible>
 			<control type="image">
 				<description>Button background image</description>
 				<posx>-5</posx>

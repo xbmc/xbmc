@@ -1,0 +1,20 @@
+<window id="2009">
+	<controls>
+		<control type="karvisualisation" id="1">
+			<description>visualisation</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<visibility>false</visibility>
+		</control>
+		<control type="image" id="2">
+			<description>fullscreen image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<visibility>false</visibility>
+		</control>
+	</controls>
+</window>

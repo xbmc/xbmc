@@ -201,6 +201,12 @@ SectionEnd
 SectionGroupEnd
 
 SectionGroup "Skins" SecSkins
+Section "Confluence" SecSkinConfluence
+  SectionIn 1 2 #section is in installtype Full and Minimal
+  SectionIn RO
+  SetOutPath "$INSTDIR\skin\Confluence"
+  File /r "${xbmc_root}\Xbmc\skin\Confluence\*.*"
+SectionEnd
 Section "PM3.HD" SecSkinPM3.HD
   SectionIn 1 2 #section is in installtype Full and Minimal
   SectionIn RO
