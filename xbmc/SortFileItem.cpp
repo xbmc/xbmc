@@ -436,4 +436,6 @@ void SSortFileItem::ByChannel(CFileItemPtr &item)
 
   if (item->IsEPG())
     item->SetSortLabel(item->GetEPGInfoTag()->ChannelName());
+  else if (item->IsPVRChannel())
+    item->SetSortLabel(item->GetPVRChannelInfoTag()->Name());
 }
