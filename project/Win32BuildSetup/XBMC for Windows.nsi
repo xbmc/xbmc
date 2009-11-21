@@ -14,7 +14,7 @@
 ;General
 
   ;Name and file
-  Name "XBMC Media Center"
+  Name "XBMC"
   OutFile "XBMCSetup-Rev${xbmc_revision}-${xbmc_target}.exe"
 
   XPStyle on
@@ -168,7 +168,7 @@ Section "XBMC" SecXBMC
   
   ;add entry to add/remove programs
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
-                 "DisplayName" "XBMC Media Center"
+                 "DisplayName" "XBMC"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
                  "UninstallString" "$INSTDIR\uninstall.exe"
   WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
@@ -182,9 +182,7 @@ Section "XBMC" SecXBMC
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
                  "Publisher" "Team XBMC"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
-                 "HelpLink" "http://xbmc.org/forum/index.php"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
-                 "HelpLink" "http://xbmc.org/forum/index.php"
+                 "HelpLink" "http://xbmc.org/support"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
                  "URLInfoAbout" "http://xbmc.org"
 SectionEnd
@@ -231,7 +229,7 @@ SectionGroupEnd
 ;Descriptions
 
   ;Language strings
-  LangString DESC_SecXBMC ${LANG_ENGLISH} "XBMC Media Center."
+  LangString DESC_SecXBMC ${LANG_ENGLISH} "XBMC"
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -290,7 +288,7 @@ Var UnPageProfileCheckbox_State
 Var UnPageProfileEditBox
 
 Function un.UnPageProfile
-    !insertmacro MUI_HEADER_TEXT "Uninstall XBMC Media Center" "Remove XBMC's profile folder from your computer."
+    !insertmacro MUI_HEADER_TEXT "Uninstall XBMC" "Remove XBMC's profile folder from your computer."
   nsDialogs::Create /NOUNLOAD 1018
   Pop $UnPageProfileDialog
 
