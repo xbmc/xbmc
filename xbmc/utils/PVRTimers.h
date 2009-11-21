@@ -29,12 +29,12 @@
 
 class CFileItem;
 class cPVREPGInfoTag;
-class CGUIDialogTVTimerSettings;
+class CGUIDialogPVRTimerSettings;
 
 class cPVRTimerInfoTag
 {
 private:
-  friend class CGUIDialogTVTimerSettings;
+  friend class CGUIDialogPVRTimerSettings;
 
   CStdString      m_strTitle;             /// Name of this timer
   CStdString      m_Summary;              /// Summary string with the time to show inside a GUI list

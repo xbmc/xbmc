@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -27,11 +26,11 @@
 
 class CFileItem;
 
-class CGUIDialogTVTimerSettings : public CGUIDialogSettings
+class CGUIDialogPVRTimerSettings : public CGUIDialogSettings
 {
 public:
-  CGUIDialogTVTimerSettings(void);
-  virtual ~CGUIDialogTVTimerSettings(void);
+  CGUIDialogPVRTimerSettings(void);
+  virtual ~CGUIDialogPVRTimerSettings(void);
   void SetTimer(CFileItem *item);
   bool GetOK() { return !m_cancelled; }
 
