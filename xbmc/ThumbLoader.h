@@ -45,7 +45,6 @@ public:
   CVideoThumbLoader();
   virtual ~CVideoThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
-  bool ExtractThumb(const CStdString &strPath, const CStdString &strTarget, CStreamDetails *pStreamDetails);
   void SetStreamDetailsObserver(IStreamDetailsObserver *pObs) { m_pStreamDetailsObs = pObs; }
 
   static void SetWatchedOverlay(CFileItem *item);
