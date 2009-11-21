@@ -45,7 +45,6 @@ CGUIDialogNumeric::CGUIDialogNumeric(void)
 
   m_mode = INPUT_PASSWORD;
   m_block = 0;
-  m_integer = 0;
   memset(&m_datetime, 0, sizeof(SYSTEMTIME));
   m_dirty = false;
 }
@@ -146,14 +145,10 @@ void CGUIDialogNumeric::OnBackSpace()
     m_block--;
     return;
   }
-  if (m_mode == INPUT_NUMBER)
+  if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
   { // just go back one character
-    m_integer /= 10;
-  }
-  else if (m_mode == INPUT_PASSWORD)
-  {
-    if (!m_password.IsEmpty())
-      m_password.Delete(m_password.GetLength() - 1);
+    if (!m_number.IsEmpty())
+      m_number.Delete(m_number.GetLength() - 1);
   }
   else if (m_mode == INPUT_IP_ADDRESS)
   {
@@ -239,12 +234,12 @@ void CGUIDialogNumeric::Render()
   unsigned int end = 0;
   if (m_mode == INPUT_PASSWORD)
   {
-    for (unsigned int i=0; i < m_password.size(); i++)
+    for (unsigned int i=0; i < m_number.size(); i++)
       strLabel += '*';
   }
   else if (m_mode == INPUT_NUMBER)
   { // simple - just render text directly
-    strLabel.Format("%d", m_integer);
+    strLabel = m_number;
   }
   else if (m_mode == INPUT_TIME)
   { // format up the time
@@ -283,14 +278,9 @@ void CGUIDialogNumeric::Render()
 
 void CGUIDialogNumeric::OnNumber(unsigned int num)
 {
-  if (m_mode == INPUT_NUMBER)
+  if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
   {
-    m_integer *= 10;
-    m_integer += num;
-  }
-  else if (m_mode == INPUT_PASSWORD)
-  {
-    m_password += num + '0';
+    m_number += num + '0';
   }
   else if (m_mode == INPUT_TIME)
   {
@@ -489,20 +479,9 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, void *initial)
       }
     }
   }
-  if (m_mode == INPUT_NUMBER)
-  { // convert number from string to number
-    m_integer = 0;
-    CStdString password = *(CStdString *)initial;
-    unsigned int ch = 0;
-    while (ch < password.size() && isdigit(password[ch]))
-    {
-      m_integer *= 10;
-      m_integer += password[ch++] - '0';
-    }
-  }
-  if (m_mode == INPUT_PASSWORD)
+  if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
   {
-    m_password = *(CStdString *)initial;
+    m_number = *(CStdString *)initial;
   }
 }
 
@@ -516,15 +495,10 @@ void CGUIDialogNumeric::GetOutput(void *output)
     CStdString *ipaddress = (CStdString *)output;
     ipaddress->Format("%d.%d.%d.%d", m_ip[0], m_ip[1], m_ip[2], m_ip[3]);
   }
-  if (m_mode == INPUT_NUMBER)
+  if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
   {
     CStdString *number = (CStdString *)output;
-    number->Format("%d", m_integer);
-  }
-  if (m_mode == INPUT_PASSWORD)
-  {
-    CStdString *pass = (CStdString *)output;
-    *pass = m_password;
+    *number = m_number;
   }
 }
 
