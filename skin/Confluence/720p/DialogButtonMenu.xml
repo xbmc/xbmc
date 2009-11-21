@@ -64,7 +64,7 @@
 				<onright>13</onright>
 				<onup>13</onup>
 				<ondown>13</ondown>
-				<visible>system.getbool(lookandfeel.enablemouse)</visible>
+				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="label" id="3100">
 				<description>Label control</description>

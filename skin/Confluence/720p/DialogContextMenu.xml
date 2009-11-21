@@ -43,7 +43,7 @@
 			<onright>1000</onright>
 			<onup>1000</onup>
 			<ondown>1000</ondown>
-			<visible>system.getbool(lookandfeel.enablemouse)</visible>
+			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
 		<control type="image">
 			<posx>34</posx>

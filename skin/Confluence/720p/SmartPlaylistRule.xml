@@ -39,7 +39,7 @@
 			<onright>9001</onright>
 			<onup>9001</onup>
 			<ondown>9001</ondown>
-			<visible>system.getbool(lookandfeel.enablemouse)</visible>
+			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
 		<control type="label">
 			<description>header label</description>

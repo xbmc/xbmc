@@ -26,7 +26,7 @@
 				<onright>61</onright>
 				<onup>61</onup>
 				<ondown>61</ondown>
-				<visible>system.getbool(lookandfeel.enablemouse)</visible>
+				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="group">
 				<animation effect="fade" delay="400" start="0" end="100" time="200">WindowOpen</animation>

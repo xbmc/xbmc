@@ -42,7 +42,7 @@
 				<onright>22</onright>
 				<onup>22</onup>
 				<ondown>22</ondown>
-				<visible>system.getbool(lookandfeel.enablemouse)</visible>
+				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="label" id="2">
 				<description>header label</description>

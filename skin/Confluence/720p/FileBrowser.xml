@@ -38,7 +38,7 @@
 				<onright>450</onright>
 				<onup>450</onup>
 				<ondown>450</ondown>
-				<visible>system.getbool(lookandfeel.enablemouse)</visible>
+				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="image">
 				<description>media info background image</description>

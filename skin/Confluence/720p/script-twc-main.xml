@@ -73,7 +73,7 @@
 				<onright>1</onright>
 				<onup>1</onup>
 				<ondown>1</ondown>
-				<visible>system.getbool(lookandfeel.enablemouse)</visible>
+				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="label">
 				<description>header label</description>
