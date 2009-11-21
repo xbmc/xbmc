@@ -1703,7 +1703,7 @@ bool CGUIWindowTV::ShowTimerSettings(CFileItem *item)
   }
 
   /* Load timer settings dialog */
-  CGUIDialogTVTimerSettings* pDlgInfo = (CGUIDialogTVTimerSettings*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_TIMER_SETTING);
+  CGUIDialogPVRTimerSettings* pDlgInfo = (CGUIDialogPVRTimerSettings*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_TIMER_SETTING);
 
   if (!pDlgInfo)
     return false;

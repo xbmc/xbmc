@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,7 +19,7 @@
  *
  */
 
-#include "GUIDialogTVTimerSettings.h"
+#include "GUIDialogPVRTimerSettings.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogNumeric.h"
 #include "GUISettings.h"
@@ -41,8 +41,8 @@ using namespace std;
 #define CONTROL_TMR_RADIO               50
 #define CONTROL_TMR_CHNAME_RADIO        51
 
-CGUIDialogTVTimerSettings::CGUIDialogTVTimerSettings(void)
-    : CGUIDialogSettings(WINDOW_DIALOG_TV_TIMER_SETTING, "DialogTimerSettings.xml")
+CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings(void)
+    : CGUIDialogSettings(WINDOW_DIALOG_TV_TIMER_SETTING, "DialogPVRTimerSettings.xml")
 {
   m_cancelled         = true;
   m_tmp_day           = 11;
@@ -50,11 +50,11 @@ CGUIDialogTVTimerSettings::CGUIDialogTVTimerSettings(void)
   m_tmp_iStopTime     = 0;
 }
 
-CGUIDialogTVTimerSettings::~CGUIDialogTVTimerSettings(void)
+CGUIDialogPVRTimerSettings::~CGUIDialogPVRTimerSettings(void)
 {
 }
 
-void CGUIDialogTVTimerSettings::CreateSettings()
+void CGUIDialogPVRTimerSettings::CreateSettings()
 {
   cPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
 
@@ -218,7 +218,7 @@ void CGUIDialogTVTimerSettings::CreateSettings()
   }
 }
 
-void CGUIDialogTVTimerSettings::OnSettingChanged(SettingInfo &setting)
+void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
 {
   cPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
 
@@ -366,7 +366,7 @@ void CGUIDialogTVTimerSettings::OnSettingChanged(SettingInfo &setting)
   }
 }
 
-void CGUIDialogTVTimerSettings::SetTimer(CFileItem *item)
+void CGUIDialogPVRTimerSettings::SetTimer(CFileItem *item)
 {
   m_timerItem         = item;
   m_cancelled         = true;
@@ -382,7 +382,7 @@ void CGUIDialogTVTimerSettings::SetTimer(CFileItem *item)
   m_tmp_day           = 11;
 }
 
-void CGUIDialogTVTimerSettings::OnOkay()
+void CGUIDialogPVRTimerSettings::OnOkay()
 {
   m_cancelled = false;
   cPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
