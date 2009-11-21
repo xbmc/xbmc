@@ -196,7 +196,7 @@
 #include "GUIDialogButtonMenu.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMusicScan.h"
-#include "GUIDialogEpgScan.h"
+#include "GUIDialogPVRUpdateProgressBar.h"
 #include "GUIDialogPlayerControls.h"
 #include "GUIDialogSongInfo.h"
 #include "GUIDialogSmartPlaylistEditor.h"
