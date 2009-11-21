@@ -210,7 +210,7 @@
 #include "GUIDialogPVRGuideSearch.h"
 #include "GUIDialogTVEPGProgInfo.h"
 #include "GUIDialogTVRecordingInfo.h"
-#include "GUIDialogTVTimerSettings.h"
+#include "GUIDialogPVRTimerSettings.h"
 #include "GUIDialogTVChannels.h"
 #include "GUIDialogTVGuide.h"
 #include "GUIDialogPVRGroupManager.h"
