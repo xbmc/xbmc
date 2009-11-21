@@ -2026,6 +2026,7 @@
   <string id="23000">Wetter-Plugin</string>
   <string id="23001">- Plugin Einstellungen</string>
   <string id="23050">Videotext aktivtieren</string>
+  <string id="23051">Teil</string> 
   <string id="23100">External Player ist aktiv</string>
   <string id="23101">Drücke OK um den Player zu beenden</string>
   <string id="23102"></string>
@@ -2104,4 +2105,7 @@
   <string id="33076">Bitte aktualisiere XBMC.</string>
   <string id="33077">Keine Daten gefunden!</string>
   <string id="33078">Nächste Seite</string>
+  <string id="33081">Diese Datei ist gestapelt, wähle den Teil der abgespielt werden soll.</string> 
+  <string id="33082">Skriptpfad</string> 
+  <string id="33083">Benutzerdefinierten Skript Button aktivieren</string> 
 </strings>

@@ -104,7 +104,8 @@ bool CThumbExtractor::DoWork()
   if (CUtil::IsRemote(m_path) && !CUtil::IsOnLAN(m_path))
     return false;
 
-  if (m_thumb && g_guiSettings.GetBool("myvideos.extractflags"))
+  if (m_thumb && g_guiSettings.GetBool("myvideos.extractflags") && 
+      g_guiSettings.GetBool("myvideos.extractthumb"))
   {
     CLog::Log(LOGDEBUG,"%s - trying to extract thumb from video file %s", __FUNCTION__, m_path.c_str());
     CDVDFileInfo::ExtractThumb(m_path, m_target, &m_item.GetVideoInfoTag()->m_streamDetails);

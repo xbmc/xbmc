@@ -491,6 +491,7 @@ void CGUISettings::Initialize()
   AddBool(0, "myvideos.treatstackasfile", 20051, true);
   AddBool(2, "myvideos.extractflags",20433, true);
   AddBool(3, "myvideos.cleanstrings", 20418, false);
+  AddBool(0, "myvideos.extractthumbs",20433, true);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 14089, "arial.ttf", SPIN_CONTROL_TEXT);
@@ -522,7 +523,7 @@ void CGUISettings::Initialize()
   AddString(2, "scrapers.tvshowdefault", 21414, "tvdb.xml", SPIN_CONTROL_TEXT);
   AddString(3, "scrapers.musicvideodefault", 21415, "mtv.xml", SPIN_CONTROL_TEXT);
   AddSeparator(4,"scrapers.sep2");
-  AddBool(5, "scrapers.langfallback", 21416, true);
+  AddBool(5, "scrapers.langfallback", 21416, false);
 
   // network settings
   AddGroup(6, 705);

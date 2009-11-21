@@ -619,7 +619,5 @@ bool CCMythDirectory::SupportsFileOperations(const CStdString& strPath)
 bool CCMythDirectory::IsLiveTV(const CStdString& strPath)
 {
   CURL url(strPath);
-  CStdString filename = url.GetFileName();
-  CUtil::RemoveSlashAtEnd(filename);
-  return filename.Left(9) == "channels/";
+  return url.GetFileName().Left(9) == "channels/";
 }

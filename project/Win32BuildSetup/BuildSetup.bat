@@ -15,7 +15,7 @@ rem Config
 rem If you get an error that Visual studio was not found, SET your path for VSNET main executable.
 rem -------------------------------------------------------------
 rem	CONFIG START
-SET target=gl
+SET target=dx
 SET buildmode=ask
 FOR %%b in (%1, %2, %3, %4) DO (
 	IF %%b==dx SET target=dx

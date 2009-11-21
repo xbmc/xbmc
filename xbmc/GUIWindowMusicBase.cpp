@@ -915,7 +915,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
 
         if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
           buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
-        else if (item->IsPlayList() || m_vecItems->IsPlayList())
+        else if ((item->IsPlayList() || m_vecItems->IsPlayList()) && !item->IsShoutCast())
           buttons.Add(CONTEXT_BUTTON_EDIT, 586);
       }
     }
