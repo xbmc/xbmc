@@ -86,12 +86,10 @@ std::vector<CStdString> CHALProvider::GetDiskUsage()
 bool CHALProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
 //Pump HalManager dry of events
-  while(g_HalManager.Update()) ;
+  bool changed = false;
+  while (g_HalManager.Update())
+    changed = true;
 
-  VECSOURCES drives;
-  GetRemovableDrives(drives);
-  bool changed = drives.size() != m_removableLength;
-  m_removableLength = drives.size();
   return changed;
 }
 #endif
