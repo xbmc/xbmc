@@ -40,10 +40,14 @@ public:
     CStdString description;
     CStdString imagefile;
     unsigned int displayTime;
+    bool withSound;
   };
 
+  enum eMessageType { mtStatus = 0, mtInfo, mtWarning, mtError };
+
+  void QueueNotification(eMessageType eType, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime = TOAST_DISPLAY_TIME, bool withSound = true);
   void QueueNotification(const CStdString& aCaption, const CStdString& aDescription);
-  void QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime = TOAST_DISPLAY_TIME);
+  void QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime = TOAST_DISPLAY_TIME, bool withSound = true);
   bool DoWork();
 
   virtual bool OnMessage(CGUIMessage& message);

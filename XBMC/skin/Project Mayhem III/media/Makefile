@@ -112,6 +112,10 @@ IMAGES= \
 	dialog-panelprofile.png \
 	diffuse_mirror.png \
 	dvdview_bottom.png \
+	DefaultIconError.png \
+	DefaultIconInfo.png \
+	DefaultIconStatus.png \
+	DefaultIconWarning.png \
 	filemanager_Panel_Sel.png \
 	filemanager.png \
 	folder-focus.png \

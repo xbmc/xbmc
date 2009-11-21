@@ -123,6 +123,10 @@ IMAGES= \
 	DefaultVideoPlugins.png \
 	DefaultVideo.png \
 	DefaultXboxDVD.png \
+	DefaultIconError.png \
+	DefaultIconInfo.png \
+	DefaultIconStatus.png \
+	DefaultIconWarning.png \
 	DialogBack.png \
 	DialogFront.png \
 	DialogLeft.png \
@@ -274,6 +278,9 @@ IMAGES= \
 	ProgressBuffer.png \
 	ProgressFront2.png \
 	ProgressFront.png \
+	ProgressGreen.png \
+	ProgressRed.png \
+	ProgressYellow.png \
 	radiobutton-focus-2.png \
 	radiobutton-focus.png \
 	radiobutton-nofocus.png \
