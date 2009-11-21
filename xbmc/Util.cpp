@@ -1876,8 +1876,7 @@ bool CUtil::IsISO9660(const CStdString& strFile)
 bool CUtil::IsSmb(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("iso9660");
-  return strFile.Left(4).Equals("smb:");
+  return url.GetProtocol().Equals("smb");
 }
 
 bool CUtil::IsDAAP(const CStdString& strFile)
