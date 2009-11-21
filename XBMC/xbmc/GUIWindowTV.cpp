@@ -102,25 +102,16 @@ CGUIWindowTV::CGUIWindowTV(void) : CGUIMediaWindow(WINDOW_TV, "MyTV.xml")
   m_bSearchConfirmed              = false;
   m_iGuideView                    = GUIDE_VIEW_CHANNEL;
   m_guideGrid                     = NULL;
+  m_iSortOrder_RECORDINGS         = SORT_ORDER_ASC;
+  m_iSortMethod_RECORDINGS        = SORT_METHOD_LABEL;
   m_iSortOrder_SEARCH             = SORT_ORDER_ASC;
   m_iSortMethod_SEARCH            = SORT_METHOD_DATE;
 }
 
-/**
- * \brief Class destructor
- */
 CGUIWindowTV::~CGUIWindowTV()
 {
 }
 
-/**
- * \brief GUI action handler
- * \param const CAction &action     = GUI action class
- * \return bool                     = true if ok
- * Info:
- * Actions handled:
- * ACTION_PREVIOUS_MENU             goes to previous window
- */
 bool CGUIWindowTV::OnAction(const CAction &action)
 {
   if (action.id == ACTION_MOVE_LEFT || action.id == ACTION_MOVE_RIGHT)
@@ -156,11 +147,6 @@ bool CGUIWindowTV::OnAction(const CAction &action)
   return CGUIMediaWindow::OnAction(action);
 }
 
-/**
- * \brief GUI message handler
- * \param CGUIMessage& message      = GUI message class
- * \return bool                     = true if ok
- */
 bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 {
   unsigned int iControl = 0;
@@ -168,6 +154,9 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 
   if (iMessage == GUI_MSG_WINDOW_INIT)
   {
+    /* Make sure we have active running clients, otherwise return to
+     * Previous Window.
+     */
     if (!g_PVRManager.HaveActiveClients())
     {
       g_windowManager.PreviousWindow();
@@ -175,6 +164,10 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       return true;
     }
 
+    /* This is a bad way but the SetDefaults function use the first and last
+     * epg date which is not available on construction time, thats why we
+     * but it to Window initialization.
+     */
     if (!m_bSearchStarted)
     {
       m_bSearchStarted = true;
@@ -530,8 +523,6 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
            open channel with player */
         if (pItem->m_strPath == g_localizeStrings.Get(18061))
         {
-          cPVRChannelInfoTag newchannel;
-          CFileItem *item = new CFileItem(newchannel);
           CGUIDialogOK::ShowAndGetInput(18100,0,18059,0);
         }
         else
@@ -844,14 +835,6 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
-/**
- * \brief Perform popup menu
- * \param int iItem                 = Index number inside global file item list
- * \return bool                     = true if ok
- * Note:
- * Is a copy from CGUIMediaWindow with a little change for the window position
- * without it the context menu is always in the left upper corner. Why ?????
- */
 bool CGUIWindowTV::OnPopupMenu(int iItem)
 {
   /* Check if it is inside a list */
@@ -959,11 +942,6 @@ bool CGUIWindowTV::OnPopupMenu(int iItem)
   return false;
 }
 
-/**
- * \brief Get context button names for given sub window
- * \param int itemNumber            = Index number inside global file item list
- * \param CContextButtons &buttons  = context button class
- */
 void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   /* Perform file item for specified sub window */
@@ -992,18 +970,19 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       if (pItem->m_strPath == g_localizeStrings.Get(18061))
       {
         /* If yes show only "New Channel" on context menu */
-        buttons.Add(CONTEXT_BUTTON_ADD, 18049); /* NEW CHANNEL */
+        buttons.Add(CONTEXT_BUTTON_ADD, 18049);               /* Add new channel */
       }
       else
       {
-        buttons.Add(CONTEXT_BUTTON_INFO, 18163);          /* Channel info button */
-        buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);   /* switch to channel */
-        buttons.Add(CONTEXT_BUTTON_SET_THUMB, 18161);   /* Set icon */
-        buttons.Add(CONTEXT_BUTTON_GROUP_MANAGER, 18126);       /* Group managment */
+        buttons.Add(CONTEXT_BUTTON_INFO, 18163);              /* Channel info button */
+        buttons.Add(CONTEXT_BUTTON_FIND, 19003);              /* Find similar program */
+        buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);         /* switch to channel */
+        buttons.Add(CONTEXT_BUTTON_SET_THUMB, 18161);         /* Set icon */
+        buttons.Add(CONTEXT_BUTTON_GROUP_MANAGER, 18126);     /* Group managment */
         buttons.Add(CONTEXT_BUTTON_HIDE, m_bShowHiddenChannels ? 18193 : 18198);        /* HIDE CHANNEL */
 
         if (m_vecItems->Size() > 1 && !m_bShowHiddenChannels)
-          buttons.Add(CONTEXT_BUTTON_MOVE, 116);          /* MOVE CHANNEL */
+          buttons.Add(CONTEXT_BUTTON_MOVE, 116);              /* Move channel up or down */
 
         if ((m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV && PVRChannelsTV.GetNumHiddenChannels() > 0) ||
             (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO && PVRChannelsRadio.GetNumHiddenChannels() > 0) ||
@@ -1015,11 +994,14 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_RECORDINGS)           /* Add recordings context buttons */
     {
-      buttons.Add(CONTEXT_BUTTON_INFO, 18073);
-      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021);
+      buttons.Add(CONTEXT_BUTTON_INFO, 18073);              /* Get Information of this recording */
+      buttons.Add(CONTEXT_BUTTON_FIND, 19003);              /* Find similar program */
+      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021);         /* Play this recording */
 //            buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 12022);
-      buttons.Add(CONTEXT_BUTTON_RENAME, 118);
-      buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+      buttons.Add(CONTEXT_BUTTON_USER2, 103);               /* Sort by Name */
+      buttons.Add(CONTEXT_BUTTON_USER3, 104);               /* Sort by Date */
+      buttons.Add(CONTEXT_BUTTON_RENAME, 118);              /* Rename this recording */
+      buttons.Add(CONTEXT_BUTTON_DELETE, 117);              /* Delete this recording */
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_TIMERS)           /* Add timer context buttons */
     {
@@ -1028,16 +1010,16 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       if (pItem->m_strPath == "pvr://timers/add.timer")
       {
         /* If yes show only "New Timer" on context menu */
-        buttons.Add(CONTEXT_BUTTON_ADD, 18072); /* NEW TIMER */
+        buttons.Add(CONTEXT_BUTTON_ADD, 18072);             /* NEW TIMER */
       }
       else
       {
         /* If any timers are present show more */
-        buttons.Add(CONTEXT_BUTTON_EDIT, 18068);
-        buttons.Add(CONTEXT_BUTTON_ADD, 18072); /* NEW TIMER */
-        buttons.Add(CONTEXT_BUTTON_ACTIVATE, 18070); /* ON/OFF */
-        buttons.Add(CONTEXT_BUTTON_RENAME, 118);
-        buttons.Add(CONTEXT_BUTTON_DELETE, 117);
+        buttons.Add(CONTEXT_BUTTON_EDIT, 18068);            /* Edit Timer */
+        buttons.Add(CONTEXT_BUTTON_ADD, 18072);             /* NEW TIMER */
+        buttons.Add(CONTEXT_BUTTON_ACTIVATE, 18070);        /* ON/OFF */
+        buttons.Add(CONTEXT_BUTTON_RENAME, 118);            /* Rename Timer */
+        buttons.Add(CONTEXT_BUTTON_DELETE, 117);            /* Delete Timer */
       }
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
@@ -1068,12 +1050,13 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
         }
       }
 
-      buttons.Add(CONTEXT_BUTTON_INFO, 658);              /* Epg info button */
-      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);           /* Switch channel */
+      buttons.Add(CONTEXT_BUTTON_INFO, 658);               /* Epg info button */
+      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);        /* Switch channel */
+      buttons.Add(CONTEXT_BUTTON_FIND, 19003);             /* Find similar program */
       if (m_iGuideView == GUIDE_VIEW_TIMELINE)
       {
-        buttons.Add(CONTEXT_BUTTON_USER4, 18166);           /* Go to begin */
-        buttons.Add(CONTEXT_BUTTON_USER5, 18167);           /* Go to end */
+        buttons.Add(CONTEXT_BUTTON_BEGIN, 18166);          /* Go to begin */
+        buttons.Add(CONTEXT_BUTTON_END, 18167);            /* Go to end */
       }
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
@@ -1090,27 +1073,27 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
             }
             else
             {
-              buttons.Add(CONTEXT_BUTTON_START_RECORD, 18416);
+              buttons.Add(CONTEXT_BUTTON_START_RECORD, 18416);    /* Create a Timer */
             }
           }
           else
           {
             if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
             {
-              buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 18414);
+              buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 18414);     /* Stop recording */
             }
             else
             {
-              buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 18415);
+              buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 18415);     /* Delete Timer */
             }
           }
         }
 
         buttons.Add(CONTEXT_BUTTON_INFO, 658);              /* Epg info button */
-        buttons.Add(CONTEXT_BUTTON_USER1, 18165);
-        buttons.Add(CONTEXT_BUTTON_USER2, 103);
-        buttons.Add(CONTEXT_BUTTON_USER3, 104);
-        buttons.Add(CONTEXT_BUTTON_CLEAR, 20375);
+        buttons.Add(CONTEXT_BUTTON_USER1, 18165);           /* Sort by channel */
+        buttons.Add(CONTEXT_BUTTON_USER2, 103);             /* Sort by Name */
+        buttons.Add(CONTEXT_BUTTON_USER3, 104);             /* Sort by Date */
+        buttons.Add(CONTEXT_BUTTON_CLEAR, 20375);           /* Clear search results */
       }
     }
   }
@@ -1118,12 +1101,6 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
   return;
 }
 
-/**
- * \brief Do functions for given context menu button for current subwindow
- * \param int itemNumber            = Index number inside global file item list
- * \param CONTEXT_BUTTON button     = button type pressed
- * \return bool                     = true if ok
- */
 bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   CFileItemPtr pItem;
@@ -1311,8 +1288,6 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO ||
         m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
     {
-      cPVRChannelInfoTag newchannel;
-      CFileItem *item = new CFileItem(newchannel);
       CGUIDialogOK::ShowAndGetInput(18100,0,18059,0);
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_TIMERS)
@@ -1553,7 +1528,20 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
   else if (button == CONTEXT_BUTTON_USER2)
   {
-    if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
+    if (m_iCurrSubTVWindow == TV_WINDOW_RECORDINGS)
+    {
+      if (m_iSortMethod_RECORDINGS != SORT_METHOD_LABEL)
+      {
+        m_iSortMethod_RECORDINGS = SORT_METHOD_LABEL;
+        m_iSortOrder_RECORDINGS  = SORT_ORDER_ASC;
+      }
+      else
+      {
+        m_iSortOrder_RECORDINGS = m_iSortOrder_RECORDINGS == SORT_ORDER_ASC ? SORT_ORDER_DESC : SORT_ORDER_ASC;
+      }
+      UpdateRecordings();
+    }
+    else if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
     {
       if (m_iSortMethod_SEARCH != SORT_METHOD_LABEL)
       {
@@ -1569,7 +1557,20 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
   else if (button == CONTEXT_BUTTON_USER3)
   {
-    if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
+    if (m_iCurrSubTVWindow == TV_WINDOW_RECORDINGS)
+    {
+      if (m_iSortMethod_RECORDINGS != SORT_METHOD_DATE)
+      {
+        m_iSortMethod_RECORDINGS = SORT_METHOD_DATE;
+        m_iSortOrder_RECORDINGS  = SORT_ORDER_ASC;
+      }
+      else
+      {
+        m_iSortOrder_RECORDINGS = m_iSortOrder_RECORDINGS == SORT_ORDER_ASC ? SORT_ORDER_DESC : SORT_ORDER_ASC;
+      }
+      UpdateRecordings();
+    }
+    else if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
     {
       if (m_iSortMethod_SEARCH != SORT_METHOD_DATE)
       {
@@ -1583,22 +1584,38 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       UpdateSearch();
     }
   }
-  else if (button == CONTEXT_BUTTON_USER4)
+  else if (button == CONTEXT_BUTTON_BEGIN)
   {
     m_guideGrid->GoToBegin();
   }
-  else if (button == CONTEXT_BUTTON_USER5)
+  else if (button == CONTEXT_BUTTON_END)
   {
     m_guideGrid->GoToEnd();
+  }
+  else if (button == CONTEXT_BUTTON_FIND)
+  {
+    m_searchfilter.SetDefaults();
+    if (pItem->IsEPG())
+    {
+      m_searchfilter.m_SearchString = "\"" + pItem->GetEPGInfoTag()->Title() + "\"";
+    }
+    else if (pItem->IsPVRChannel())
+    {
+      m_searchfilter.m_SearchString = "\"" + pItem->GetPVRChannelInfoTag()->Title() + "\"";
+    }
+    else if (pItem->IsPVRRecording())
+    {
+      m_searchfilter.m_SearchString = "\"" + pItem->GetPVRRecordingInfoTag()->Title() + "\"";
+    }
+    m_bSearchConfirmed = true;
+    SET_CONTROL_FOCUS(CONTROL_BTNSEARCH, 0);
+    UpdateSearch();
+    SET_CONTROL_FOCUS(CONTROL_LIST_SEARCH, 0);
   }
 
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
-/**
- * \brief Show programme summary information dialog for given epg or channel info tag
- * \param CFileItem *item           = pointer to file item with TV epg or channel info tag
- */
 void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
 {
   /* Check item is TV epg or channel information tag */
@@ -1651,10 +1668,6 @@ void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
 
 }
 
-/**
- * \brief Show recording summary information dialog for given record info tag
- * \param CFileItem *item           = pointer to file item with TV recording info tag
- */
 void CGUIWindowTV::ShowRecordingInfo(CFileItem *item)
 {
   /* Check item is TV record information tag */
@@ -1680,11 +1693,6 @@ void CGUIWindowTV::ShowRecordingInfo(CFileItem *item)
   return;
 }
 
-/**
- * \brief Show Timer settings dialog for given timer info tag
- * \param CFileItem *item           = pointer to file item with TV timer info tag
- * \return bool                     = true if tag is changed, false for no change
- */
 bool CGUIWindowTV::ShowTimerSettings(CFileItem *item)
 {
   /* Check item is TV timer information tag */
@@ -1710,9 +1718,6 @@ bool CGUIWindowTV::ShowTimerSettings(CFileItem *item)
   return pDlgInfo->GetOK();
 }
 
-/**
- * \brief Show Channel group managment
- */
 void CGUIWindowTV::ShowGroupManager(bool IsRadio)
 {
   /* Load timer settings dialog */
@@ -1751,9 +1756,6 @@ void CGUIWindowTV::ShowSearchResults()
   return;
 }
 
-/**
- * \brief Update TV Guide list
- */
 void CGUIWindowTV::UpdateGuide()
 {
   CStdString strLabel;
@@ -1866,9 +1868,6 @@ void CGUIWindowTV::UpdateGuide()
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
 }
 
-/**
- * \brief Update TV Channels list
- */
 void CGUIWindowTV::UpdateChannelsTV()
 {
   SET_CONTROL_HIDDEN(CONTROL_LIST_CHANNELS_TV);
@@ -1913,9 +1912,6 @@ void CGUIWindowTV::UpdateChannelsTV()
   SET_CONTROL_VISIBLE(CONTROL_LIST_CHANNELS_TV);
 }
 
-/**
- * \brief Update Radio Channels list
- */
 void CGUIWindowTV::UpdateChannelsRadio()
 {
   SET_CONTROL_HIDDEN(CONTROL_LIST_CHANNELS_RADIO);
@@ -1960,9 +1956,6 @@ void CGUIWindowTV::UpdateChannelsRadio()
   SET_CONTROL_VISIBLE(CONTROL_LIST_CHANNELS_RADIO);
 }
 
-/**
- * \brief Update Radio Channels list
- */
 void CGUIWindowTV::UpdateRecordings()
 {
   SET_CONTROL_HIDDEN(CONTROL_LIST_RECORDINGS);
@@ -1970,6 +1963,7 @@ void CGUIWindowTV::UpdateRecordings()
   m_vecItems->Clear();
   PVRRecordings.GetRecordings(m_vecItems);
   {
+    m_vecItems->Sort(m_iSortMethod_RECORDINGS, m_iSortOrder_RECORDINGS);
     CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_RECORDINGS, 0, 0, m_vecItems);
     g_windowManager.SendMessage(msg);
   }
@@ -1987,9 +1981,6 @@ void CGUIWindowTV::UpdateRecordings()
   SET_CONTROL_VISIBLE(CONTROL_LIST_RECORDINGS);
 }
 
-/**
- * \brief Update Radio Channels list
- */
 void CGUIWindowTV::UpdateTimers()
 {
   PVRTimers.Update();

@@ -1792,6 +1792,7 @@
   <string id="19000">Switch to channel</string>
   <string id="19001">Separate different search words using AND, OR and/or NOT to specify your search.</string>
   <string id="19002">Or use Phrases to find a full text e.G.: "The wizard of Oz".</string>
+  <string id="19003">Find similar program</string>
 
   <string id="20000">CDDA rip folder</string>
   <string id="20001">Use external DVD player</string>
