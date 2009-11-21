@@ -116,7 +116,7 @@ viz_preset_name(viz_preset_t preset)
 }
 
 /*
-* viz_preset_set_name(viz_preset_t preset, viz_preset_type_t name)
+* viz_preset_set_name(viz_preset_t preset, const char* name)
 *
 *
 * Scope: PUBLIC
@@ -133,7 +133,7 @@ viz_preset_name(viz_preset_t preset)
 * Failure: 0
 */
 int
-viz_preset_set_name(viz_preset_t preset, char* name)
+viz_preset_set_name(viz_preset_t preset, const char* name)
 {
   if (!preset) {
     viz_dbg(REFMEM_ERROR, "%s: NULL preset structure\n",
