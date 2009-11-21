@@ -1,4 +1,4 @@
-<window id="146">
+<window id="611">
 	<defaultcontrol>1</defaultcontrol>
 	<include>dialogeffect</include>
 	<coordinates>
@@ -20,14 +20,14 @@
 				<bordertexture border="3">NoCover_1.png</bordertexture>
 				<bordersize>4</bordersize>
 			</control>
-			<control type="label">
+			<control type="label" id="30">
 				<description>Header label</description>
 				<posx>10</posx>
 				<posy>4</posy>
 				<width>380</width>
 				<height>20</height>
 				<font>font10</font>
-				<label>18032</label>
+				<label>-</label>
 				<align>left</align>
 				<aligny>center</aligny>
 			</control>
@@ -39,6 +39,7 @@
 				<height>20</height>
 				<font>font10</font>
 				<label>-</label>
+				<textcolor>green</textcolor>
 				<align>left</align>
 				<aligny>center</aligny>
 			</control>

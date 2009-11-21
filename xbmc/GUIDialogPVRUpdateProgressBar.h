@@ -23,20 +23,22 @@
 
 #include "GUIDialog.h"
 
-class CGUIDialogEpgScan : public CGUIDialog
+class CGUIDialogPVRUpdateProgressBar : public CGUIDialog
 {
 public:
-  CGUIDialogEpgScan(void);
-  virtual ~CGUIDialogEpgScan(void);
+  CGUIDialogPVRUpdateProgressBar(void);
+  virtual ~CGUIDialogPVRUpdateProgressBar(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   void SetProgress(int currentItem, int itemCount);
-  void SetTitle(CStdString strTitle);
+  void SetHeader(const CStdString& strHeader);
+  void SetTitle(const CStdString& strTitle);
   void UpdateState();
 
 protected:
   CStdString m_strTitle;
+  CStdString m_strHeader;
   CCriticalSection m_critical;
 
   float m_fPercentDone;
