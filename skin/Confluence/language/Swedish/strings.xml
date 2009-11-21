@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: blittan-->
+<!--Email: blittan@xbmc.org-->
+<!--Date of translation: 11/16/2009-->
+<!--$Revision$-->
+<strings>
+  <string id="31000">Ändra din</string>
+  <string id="31001">Älska</string>
+  <string id="31002">Hata</string>
+  <string id="31003">Strömalternativ</string>
+  <string id="31007">Tillägg</string>
+  <string id="31020">Nyligen tillagda</string>
+  <string id="31021">Filmer - Filer</string>
+  <string id="31022">Musik - Filer</string>
+  <string id="31023">Spelar</string>
+  <string id="31024">Sida</string>
+  <string id="31025">Objekt</string>
+  <string id="31026">Övr. alternativ</string>
+  <string id="31027">Plats</string>
+  <string id="31028">Omslagssvep</string>
+  <string id="31029">Fankonst</string>
+  <string id="31030">Full lista</string>
+  <string id="31031">Bildminiatyrer</string>
+  <string id="31032">Bildsvep</string>
+  <string id="31040">Nu spelas</string>
+  <string id="31042">SPELAR</string>
+  <string id="31043">PAUSAD</string>
+  <string id="31044">SPOLA FRAMÅT</string>
+  <string id="31045">SPOLA BAKÅT</string>
+  <string id="31046">Ljudegenskaper</string>
+  <string id="31047">Nuvarande förval</string>
+  <string id="31048">Visualiseringsförval</string>
+  <string id="31049">Sluttid</string>
+  <string id="31055">Öppna spellista</string>
+  <string id="31056">Spara spellista</string>
+  <string id="31057">Stäng spellista</string>
+  <string id="31058">Systemmusikfiler</string>
+  <string id="31059">Nuvarande spellista</string>
+  <string id="31060">Denna fil är ihoplagd, välj den del du vill spela.</string>
+  <string id="31101">Hemskärmsalternativ</string>
+  <string id="31102">Bakgrund</string>
+  <string id="31103">Visa "Pausad" i bildspel</string>
+  <string id="31105">Visa mediatitlar i bakgrundsscannern</string>
+  <string id="31106">Övriga alternativ</string>
+  <string id="31108">Dölj huvudmenyknappar</string>
+  <string id="31109">Hemskärmsbakgrunder</string>
+  <string id="31110">Ändra hemknappsbakgrund</string>
+  <string id="31111">Göm</string>
+  <string id="31112">Alternativ</string>
+  <string id="31113">Solobild</string>
+  <string id="31114">Flerbild</string>
+  <string id="31115">Anpassare</string>
+  <string id="31116">Tilläggsskript</string>
+  <string id="31117">Visa nyligen tillagda filmer</string>
+  <string id="31118">Hemsidsundermeny</string>
+  <string id="31119">Aktivera egen skriptknapp</string>
+  <string id="31120">KNAPPETIKETT</string>
+  <string id="31121">SÖKVÄG TILL SKRIPT</string>
+  <string id="31122">Vädersida</string>
+  <string id="31123">Använd omslag istället för banner för TV-serier</string>
+  <string id="31124">Visa bakgrund "Nu spelas" filmer</string>
+  <string id="31125">Visa bakgrund "Nu spelas" visualisering</string>
+  <string id="31126">Aktivera sångtexter i musik OSD</string>
+  <string id="31127">SÖKVÄG TILL SÅNGTEXTSKRIPT</string>
+  <string id="31128">XBMC Sångtexter</string>
+  <string id="31200">Genvägar</string>
+  <string id="31201">Kategorier</string>
+  <string id="31202">Visa rollista</string>
+  <string id="31203">Välj din låt</string>
+  <string id="31204">Sektionslänkar</string>
+  <string id="31205">Sångtextskälla</string>
+  <string id="31250">Radar &amp; prognos</string>
+  <string id="31251">Prognos</string>
+  <string id="31252">TWC skript</string>
+  <string id="31300">Nuvarande temp</string>
+  <string id="31301">Sist uppdaterad</string>
+  <string id="31302">Meny</string>
+  <string id="31304">Bild</string>
+  <string id="31305">Ingen diskmedia upptäckt</string>
+  <string id="31306">Mata ut</string>
+  <string id="31307">Dölj fankonst</string>
+  <string id="31308">Filmdetaljer</string>
+  <string id="31309">Använt minne</string>
+  <string id="31310">Spårnummer</string>
+  <string id="31311">FANKONST BILD[CR][CR]INTE TILLGÄNGLIG[CR][CR]KLICKA PÅ KNAPPEN FÖR ATT ANGE</string>
+  <string id="31312">Nuvarande skrapa</string>
+  <string id="31313">Välj en skrapa</string>
+  <string id="31314">Innehållsskrapealternativ</string>
+  <string id="31315">Grundläggande</string>
+  <string id="31317">Sätt fankonstsökväg</string>
+  <string id="31318">Liten fankonst</string>
+  <string id="31319">Vald profil</string>
+  <string id="31320">Sist inloggad</string>
+  <string id="31321">Karaoke låtväljare</string>
+  <string id="31322">Sänt</string>
+  <string id="31323">Senaste filmerna</string>
+  <string id="31324">Senaste avsnitten</string>
+  <string id="31325">Spellistsalternativ</string>
+  <string id="31326">Skapad</string>
+  <string id="31327">Upplösning</string>
+  <string id="31328">Nyligen tillagda</string>
+  <string id="31329">[B]TIMER SATT![/B] [COLOR=grey2] - SYSTEM AUTO AVSTÄNGNING OM[/COLOR]</string>
+  <string id="31400">[B]ÄNDRA DINA UTSEENDEINSTÄLLNINGAR, SOM.[/B][CR][CR]Kalibrera GUI · Ändra skalet · Ange skärmsläckare · Ändra dina regionala inställningar · Ange globala visningsalternativ</string>
+  <string id="31401">[B]ÄNDRA DINA GRAFIKINSTÄLLNINGAR, SOM.[/B][CR][CR]Hantera ditt filmbibliotek · Filmuppspelarkvalitet och renderare · Konfigurera undertextsfonter · Ange filmautoåterupptagning</string>
+  <string id="31402">[B]ÄNDRA DINA MUSIKINSTÄLLNINGAR, SOM.[/B][CR][CR] Välja visualisering · Hantera ditt musikbibliotek · Ange ditt Last.FM konto · Ändra Karaokefonter och inställningar</string>
+  <string id="31403">[B]ÄNDRA DINA BILDINSTÄLLNINGAR, SOM.[/B][CR][CR]Aktivera automatisk minatyrskapning och EXIF taggläsning · Justera bildspelsövergångseffekter · Ange din XBMC skärmdumpsmapp</string>
+  <string id="31404">[B]ÄNDRA DINA VÄDERINSTÄLLNINGAR, SOM.[/B][CR][CR]Ange dom tre städer som XBMC visar på väderskärmen · Ändra dina regionala inställningar, inklusive temperaturenheter</string>
+  <string id="31405">[B]ÄNDRA DINA NÄTVERKSINSTÄLLNINGAR, SOM.[/B][CR][CR]Aktivera XBMC interna webbserver · Ange Sambainställningar · Aktivera/Konfigurera UPNP server och klient · Konfigurera händelseservern</string>
+  <string id="31406">[B]ÄNDRA DINA SYSTEMINSTÄLLNINGAR, SOM.[/B][CR][CR]Ändra standarden för avstängningsläge · Konfigurera Autospelning · Ställa in din ljudhårdvara · Konfigurera huvudanvändarens lösenord och systemlåsningar</string>
+  <string id="31407">[B]ÄNDRA SKALINSTÄLLNINGAR, SOM.[/B][CR][CR]Lägga till och ta bort hemmenyknappar · Ändra bakgrunder för varje sektion · Skapa genvägar till skript i hela skalet</string>
+  <string id="31420">[B][COLOR=white]XBMC har inte upptäckt en disk.[/COLOR][/B][CR][CR]Vänligen sätt i en disk i din läsare och försök igen eller avbryt</string>
+  <string id="31421">Välj din XBMC användarprofil[CR]för att logga in  och fortsätta</string>
+</strings>
