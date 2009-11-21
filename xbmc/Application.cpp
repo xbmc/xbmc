@@ -1238,7 +1238,7 @@ HRESULT CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogTVChannels);               // window id = 603
   g_windowManager.Add(new CGUIDialogTVGuide);                  // window id = 603
   g_windowManager.Add(new CGUIDialogTVRecordingInfo);          // window id = 603
-  g_windowManager.Add(new CGUIDialogTVGroupManager);           // window id = 603
+  g_windowManager.Add(new CGUIDialogPVRGroupManager);           // window id = 603
   g_windowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
 #ifdef HAS_GL
   g_windowManager.Add(new CGUIWindowTestPatternGL);      // window id = 8

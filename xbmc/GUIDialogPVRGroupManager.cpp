@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,19 +19,13 @@
  *
  */
 
-#include "GUIDialogTVGroupManager.h"
-#include "PVRManager.h"
+#include "GUIDialogPVRGroupManager.h"
 #include "utils/PVRChannels.h"
 #include "Application.h"
-#include "Util.h"
-#include "Picture.h"
-#include "GUIDialogContextMenu.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
 #include "GUIWindowManager.h"
-#include "ViewState.h"
-#include "Settings.h"
 #include "FileItem.h"
 #include "LocalizeStrings.h"
 
@@ -48,29 +42,28 @@ using namespace std;
 #define BUTTON_DELGROUP               28
 #define BUTTON_OK                     29
 
-CGUIDialogTVGroupManager::CGUIDialogTVGroupManager()
-    : CGUIDialog(WINDOW_DIALOG_TV_GROUP_MANAGER, "DialogTVGroupManager.xml")
+CGUIDialogPVRGroupManager::CGUIDialogPVRGroupManager()
+    : CGUIDialog(WINDOW_DIALOG_TV_GROUP_MANAGER, "DialogPVRGroupManager.xml")
 {
   m_channelLeftItems  = new CFileItemList;
   m_channelRightItems = new CFileItemList;
   m_channelGroupItems = new CFileItemList;
 }
 
-CGUIDialogTVGroupManager::~CGUIDialogTVGroupManager()
+CGUIDialogPVRGroupManager::~CGUIDialogPVRGroupManager()
 {
   delete m_channelLeftItems;
   delete m_channelRightItems;
   delete m_channelGroupItems;
 }
 
-bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
+bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
 {
   unsigned int iControl = 0;
   unsigned int iMessage = message.GetMessage();
 
   switch (iMessage)
   {
-
     case GUI_MSG_WINDOW_DEINIT:
     {
       Clear();
@@ -110,12 +103,11 @@ bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
       }
       else if (iControl == BUTTON_DELGROUP && m_channelGroupItems->GetFileCount() != 0)
       {
-        m_iSelectedGroup      = m_viewControlGroup.GetSelectedItem();
-        CFileItemPtr pItemGroup   = m_channelGroupItems->Get(m_iSelectedGroup);
+        m_iSelectedGroup        = m_viewControlGroup.GetSelectedItem();
+        CFileItemPtr pItemGroup = m_channelGroupItems->Get(m_iSelectedGroup);
 
         // prompt user for confirmation of channel record
         CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-
         if (pDialog)
         {
           pDialog->SetHeading(117);
@@ -139,14 +131,14 @@ bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
           if (m_CurrentGroupName != "")
           {
             PVRChannelGroups.RenameGroup(atoi(m_channelGroupItems->Get(m_iSelectedGroup)->m_strPath.c_str()), m_CurrentGroupName);
+            Update();
           }
-          Update();
         }
       }
       else if (m_viewControlLeft.HasControl(iControl))   // list/thumb control
       {
         m_iSelectedLeft = m_viewControlLeft.GetSelectedItem();
-        int iAction         = message.GetParam1();
+        int iAction     = message.GetParam1();
 
         if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
@@ -167,7 +159,7 @@ bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
       else if (m_viewControlRight.HasControl(iControl))   // list/thumb control
       {
         m_iSelectedRight = m_viewControlRight.GetSelectedItem();
-        int iAction          = message.GetParam1();
+        int iAction      = message.GetParam1();
 
         if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
@@ -182,7 +174,7 @@ bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
       }
       else if (m_viewControlGroup.HasControl(iControl))   // list/thumb control
       {
-        int iAction      = message.GetParam1();
+        int iAction = message.GetParam1();
 
         if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
@@ -198,7 +190,7 @@ bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogTVGroupManager::OnWindowLoaded()
+void CGUIDialogPVRGroupManager::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
 
@@ -215,7 +207,7 @@ void CGUIDialogTVGroupManager::OnWindowLoaded()
   m_viewControlGroup.AddView(GetControl(CONTROL_LIST_CHANNEL_GROUPS));
 }
 
-void CGUIDialogTVGroupManager::OnWindowUnload()
+void CGUIDialogPVRGroupManager::OnWindowUnload()
 {
   CGUIDialog::OnWindowUnload();
   m_viewControlLeft.Reset();
@@ -223,7 +215,7 @@ void CGUIDialogTVGroupManager::OnWindowUnload()
   m_viewControlGroup.Reset();
 }
 
-void CGUIDialogTVGroupManager::Update()
+void CGUIDialogPVRGroupManager::Update()
 {
   m_CurrentGroupName = "";
 
@@ -264,7 +256,7 @@ void CGUIDialogTVGroupManager::Update()
   g_graphicsContext.Unlock();
 }
 
-void CGUIDialogTVGroupManager::Clear()
+void CGUIDialogPVRGroupManager::Clear()
 {
   m_viewControlLeft.Clear();
   m_viewControlRight.Clear();
@@ -275,7 +267,7 @@ void CGUIDialogTVGroupManager::Clear()
   m_channelGroupItems->Clear();
 }
 
-void CGUIDialogTVGroupManager::SetRadio(bool IsRadio)
+void CGUIDialogPVRGroupManager::SetRadio(bool IsRadio)
 {
   m_bIsRadio = IsRadio;
 }
