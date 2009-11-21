@@ -39,7 +39,7 @@
 #include "GUIDialogTVEPGProgInfo.h"
 #include "GUIDialogTVRecordingInfo.h"
 #include "GUIDialogTVTimerSettings.h"
-#include "GUIDialogTVGroupManager.h"
+#include "GUIDialogPVRGroupManager.h"
 #include "GUIDialogPVRGuideSearch.h"
 
 /* self include */
