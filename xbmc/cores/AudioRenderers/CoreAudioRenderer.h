@@ -155,9 +155,10 @@ class CCoreAudioRenderer : public IAudioRenderer
     size_t m_BytesPerFrame; // Input frame size
     UInt32 m_NumLatencyFrames;
     
+#ifdef _DEBUG
     // Performace Monitoring
     CCoreAudioPerformance m_PerfMon;
-    
+#endif
     // Thread synchronization
     MPEventID m_RunoutEvent;
     long m_DoRunout;
