@@ -213,7 +213,7 @@
 #include "GUIDialogTVTimerSettings.h"
 #include "GUIDialogTVChannels.h"
 #include "GUIDialogTVGuide.h"
-#include "GUIDialogTVGroupManager.h"
+#include "GUIDialogPVRGroupManager.h"
 #include "GUIDialogTeletext.h"
 #include "GUIDialogSlider.h"
 #include "cores/dlgcache.h"
