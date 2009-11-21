@@ -1721,7 +1721,7 @@ bool CGUIWindowTV::ShowTimerSettings(CFileItem *item)
 void CGUIWindowTV::ShowGroupManager(bool IsRadio)
 {
   /* Load timer settings dialog */
-  CGUIDialogTVGroupManager* pDlgInfo = (CGUIDialogTVGroupManager*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_GROUP_MANAGER);
+  CGUIDialogPVRGroupManager* pDlgInfo = (CGUIDialogPVRGroupManager*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_GROUP_MANAGER);
 
   if (!pDlgInfo)
     return;
