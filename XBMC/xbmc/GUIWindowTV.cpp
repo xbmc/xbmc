@@ -40,7 +40,7 @@
 #include "GUIDialogTVRecordingInfo.h"
 #include "GUIDialogTVTimerSettings.h"
 #include "GUIDialogTVGroupManager.h"
-#include "GUIDialogTVGuideSearch.h"
+#include "GUIDialogPVRGuideSearch.h"
 
 /* self include */
 #include "GUIWindowTV.h"
@@ -1732,7 +1732,7 @@ void CGUIWindowTV::ShowGroupManager(bool IsRadio)
 void CGUIWindowTV::ShowSearchResults()
 {
   /* Load timer settings dialog */
-  CGUIDialogTVEPGSearch* pDlgInfo = (CGUIDialogTVEPGSearch*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_SEARCH);
+  CGUIDialogPVRGuideSearch* pDlgInfo = (CGUIDialogPVRGuideSearch*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_SEARCH);
 
   if (!pDlgInfo)
     return;

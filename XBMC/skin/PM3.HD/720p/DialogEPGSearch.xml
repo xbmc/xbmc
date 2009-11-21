@@ -3,7 +3,7 @@
 	<coordinates>
 		<system>1</system>
 		<posx>190</posx>
-		<posy>100</posy>
+		<posy>70</posy>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
@@ -12,7 +12,7 @@
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>900</width>
-			<height>520</height>
+			<height>590</height>
 			<texture border="40">DialogBack.png</texture>
 		</control>
 		<control type="image">
@@ -20,7 +20,7 @@
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>900</width>
-			<height>520</height>
+			<height>590</height>
 			<texture border="40">DialogFront.png</texture>
 		</control>
 		<control type="label">
@@ -45,7 +45,7 @@
     <control type="label">
       <description>Search string</description>
       <posx>55</posx>
-      <posy>100</posy>
+      <posy>90</posy>
       <width>180</width>
       <height>25</height>
       <align>left</align>
@@ -57,7 +57,7 @@
     <control type="edit" id="9">
       <description>Search string</description>
       <posx>60</posx>
-      <posy>135</posy>
+      <posy>120</posy>
       <width>780</width>
       <height>40</height>
       <font>font12</font>
@@ -70,10 +70,21 @@
       <onup>26</onup>
       <ondown>10</ondown>
     </control>
+    <control type="textbox">
+      <description>Search help</description>
+      <posx>55</posx>
+      <posy>165</posy>
+      <width>790</width>
+      <height>100</height>
+      <align>left</align>
+      <font>font12</font>
+      <textcolor>grey</textcolor>
+      <label>$LOCALIZE[19001] $LOCALIZE[19002]</label>
+    </control>
     <control type="radiobutton" id="10">
       <description>Include Description</description>
       <posx>50</posx>
-      <posy>180</posy>
+      <posy>240</posy>
       <height>30</height>
       <width>400</width>
       <font>font12</font>
@@ -91,7 +102,7 @@
     <control type="radiobutton" id="11">
       <description>No repeat</description>
       <posx>50</posx>
-      <posy>210</posy>
+      <posy>270</posy>
       <height>30</height>
       <width>400</width>
       <font>font12</font>
@@ -109,7 +120,7 @@
     <control type="spincontrolex" id="12">
       <description>Min Duration</description>
       <posx>450</posx>
-      <posy>180</posy>
+      <posy>240</posy>
       <width>400</width>
       <height>30</height>
       <font>font12</font>
@@ -124,7 +135,7 @@
     <control type="spincontrolex" id="13">
       <description>Max Duration</description>
       <posx>450</posx>
-      <posy>210</posy>
+      <posy>270</posy>
       <width>400</width>
       <height>30</height>
       <font>font12</font>
@@ -139,7 +150,7 @@
     <control type="edit" id="14">
       <description>Start Date</description>
       <posx>50</posx>
-      <posy>240</posy>
+      <posy>300</posy>
       <width>400</width>
       <height>30</height>
       <font>font12</font>
@@ -157,7 +168,7 @@
     <control type="edit" id="15">
       <description>Stop Date</description>
       <posx>50</posx>
-      <posy>270</posy>
+      <posy>330</posy>
       <width>400</width>
       <height>30</height>
       <font>font12</font>
@@ -175,7 +186,7 @@
     <control type="edit" id="16">
       <description>Start time</description>
       <posx>450</posx>
-      <posy>240</posy>
+      <posy>300</posy>
       <width>400</width>
       <height>30</height>
       <font>font12</font>
@@ -193,7 +204,7 @@
     <control type="edit" id="17">
       <description>Stop time</description>
       <posx>450</posx>
-      <posy>270</posy>
+      <posy>330</posy>
       <width>400</width>
       <height>30</height>
       <font>font12</font>
@@ -211,7 +222,7 @@
     <control type="spincontrolex" id="18">
       <description>Genre</description>
       <posx>50</posx>
-      <posy>300</posy>
+      <posy>360</posy>
       <width>400</width>
       <height>30</height>
       <font>font12</font>
@@ -223,16 +234,22 @@
       <onup>15</onup>
       <ondown>20</ondown>
     </control>
-    <control type="spincontrolex" id="19">
-      <description>Sub Category</description>
+    <control type="radiobutton" id="19">
+      <description>avoid repeats</description>
       <posx>450</posx>
-      <posy>300</posy>
+      <posy>360</posy>
       <width>400</width>
       <height>30</height>
       <font>font12</font>
-      <texturefocus border="3">button-focus.png</texturefocus>
-      <texturenofocus border="3">button-nofocus.png</texturenofocus>
-      <label>18153</label>
+      <textcolor>white</textcolor>
+      <focusedcolor>white</focusedcolor>
+      <shadowcolor>black</shadowcolor>
+      <align>left</align>
+      <aligny>center</aligny>
+      <texturefocus border="2">button-focus.png</texturefocus>
+      <texturenofocus border="2">button-nofocus.png</texturenofocus>
+      <pulseonselect>no</pulseonselect>
+      <label>18160</label>
       <onright>18</onright>
       <onleft>18</onleft>
       <onup>17</onup>
@@ -241,7 +258,7 @@
     <control type="radiobutton" id="20">
       <description>Include unknown Genres</description>
       <posx>50</posx>
-      <posy>330</posy>
+      <posy>390</posy>
       <height>30</height>
       <width>400</width>
       <font>font12</font>
@@ -262,7 +279,7 @@
     <control type="spincontrolex" id="21">
       <description>Groups</description>
       <posx>450</posx>
-      <posy>330</posy>
+      <posy>390</posy>
       <width>400</width>
       <height>30</height>
       <font>font12</font>
@@ -277,7 +294,7 @@
     <control type="radiobutton" id="22">
       <description>FTA only</description>
       <posx>50</posx>
-      <posy>360</posy>
+      <posy>420</posy>
       <height>30</height>
       <width>400</width>
       <font>font12</font>
@@ -293,12 +310,12 @@
       <onleft>23</onleft>
       <onright>23</onright>
       <onup>20</onup>
-      <ondown>25</ondown>
+      <ondown>24</ondown>
     </control>
     <control type="spincontrolex" id="23">
       <description>Channels</description>
       <posx>450</posx>
-      <posy>360</posy>
+      <posy>420</posy>
       <width>400</width>
       <height>30</height>
       <font>font12</font>
@@ -313,7 +330,7 @@
     <control type="radiobutton" id="24">
       <description>Ignore Timers</description>
       <posx>50</posx>
-      <posy>390</posy>
+      <posy>450</posy>
       <height>30</height>
       <width>400</width>
       <font>font12</font>
@@ -334,7 +351,7 @@
     <control type="radiobutton" id="27">
       <description>Ignore Recordings</description>
       <posx>450</posx>
-      <posy>390</posy>
+      <posy>450</posy>
       <height>30</height>
       <width>400</width>
       <font>font12</font>
@@ -355,7 +372,7 @@
 		<control type="group" id="9000">
 			<control type="image">
 				<posx>40</posx>
-				<posy>425</posy>
+				<posy>485</posy>
 				<width>820</width>
 				<height>4</height>
 				<texture>separator.png</texture>
@@ -363,7 +380,7 @@
 			<control type="button" id ="28">
 				<description>Defaults button</description>
 				<posx>252</posx>
-				<posy>440</posy>
+				<posy>500</posy>
 				<width>200</width>
 				<height>32</height>
 				<label>409</label>
@@ -379,7 +396,7 @@
 			<control type="button" id ="25">
 				<description>Cancel button</description>
 				<posx>452</posx>
-				<posy>440</posy>
+				<posy>500</posy>
 				<width>200</width>
 				<height>32</height>
 				<label>222</label>
@@ -395,7 +412,7 @@
 			<control type="button" id ="26">
 				<description>Search button</description>
 				<posx>652</posx>
-				<posy>440</posy>
+				<posy>500</posy>
 				<width>200</width>
 				<height>32</height>
 				<label>137</label>
@@ -404,7 +421,7 @@
 				<texturenofocus border="3">button-nofocus.png</texturenofocus>
 				<texturefocus border="3">button-focus2.png</texturefocus>
 				<onleft>25</onleft>
-				<onright>25</onright>
+				<onright>28</onright>
 				<onup>27</onup>
 				<ondown>9</ondown>
 			</control>

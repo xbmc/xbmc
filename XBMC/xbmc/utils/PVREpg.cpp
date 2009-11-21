@@ -60,7 +60,7 @@ void EPGSearchFilter::SetDefaults()
   m_Group             = -1;
   m_IgnPresentTimers  = true;
   m_IgnPresentRecords = true;
-  m_PreventRepeats    = true;
+  m_PreventRepeats    = false;
 }
 
 cPVREPGInfoTag::cPVREPGInfoTag(long uniqueBroadcastID)
@@ -478,16 +478,6 @@ bool cPVREpgs::FilterEntry(const cPVREPGInfoTag &tag, const EPGSearchFilter &fil
     {
       return false;
     }
-
-    if (filter.m_GenreSubType != -1)
-    {
-      if (tag.GenreSubType() != filter.m_GenreSubType &&
-          (!filter.m_IncUnknGenres &&
-          ((tag.GenreSubType() < EVCONTENTMASK_USERDEFINED || tag.GenreSubType() >= EVCONTENTMASK_MOVIEDRAMA))))
-      {
-        return false;
-      }
-    }
   }
   if (filter.m_minDuration != -1)
   {
@@ -650,6 +640,35 @@ int cPVREpgs::GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter
             results->Remove(j);
             j--;
           }
+        }
+      }
+    }
+
+    if (filter.m_PreventRepeats)
+    {
+      unsigned int size = results->Size();
+      for (unsigned int i = 0; i < size; i++)
+      {
+        const cPVREPGInfoTag *epgentry_1 = results->Get(i)->GetEPGInfoTag();
+        for (unsigned int j = 0; j < size; j++)
+        {
+          const cPVREPGInfoTag *epgentry_2 = results->Get(j)->GetEPGInfoTag();
+          if (i == j)
+            continue;
+
+          if (epgentry_1->Title() != epgentry_2->Title())
+            continue;
+
+          if (epgentry_1->Plot() != epgentry_2->Plot())
+            continue;
+
+          if (epgentry_1->PlotOutline() != epgentry_2->PlotOutline())
+            continue;
+
+          results->Remove(j);
+          size = results->Size();
+          i--;
+          j--;
         }
       }
     }
