@@ -716,8 +716,8 @@ namespace PYXBMC
       strPath = strText;
       strPath.Replace("plugin://","special://home/plugins/");  
     }
-    else
-      strPath = CSpecialProtocol::TranslatePath(strText);
+
+    strPath = CSpecialProtocol::TranslatePath(strText);
 
     return Py_BuildValue((char*)"s", strPath.c_str());
   }
