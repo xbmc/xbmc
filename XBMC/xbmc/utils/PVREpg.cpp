@@ -376,8 +376,9 @@ void cPVREpgs::Process()
   cPVREpgs *s = (cPVREpgs *)EPGs(EpgsLock);
   if (s)
   {
-    CGUIDialogEpgScan *scanner = (CGUIDialogEpgScan *)g_windowManager.GetWindow(WINDOW_DIALOG_EPG_SCAN);
+    CGUIDialogPVRUpdateProgressBar *scanner = (CGUIDialogPVRUpdateProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EPG_SCAN);
     scanner->Show();
+    scanner->SetHeader(g_localizeStrings.Get(19004));
     int channelcount = PVRChannelsTV.size() + PVRChannelsRadio.size();
 
     time_t start;

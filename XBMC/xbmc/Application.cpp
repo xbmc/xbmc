@@ -1293,7 +1293,7 @@ HRESULT CApplication::Initialize()
 #ifdef HAS_LINUX_NETWORK
   g_windowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
 #endif
-  g_windowManager.Add(new CGUIDialogEpgScan);      // window id = 146
+  g_windowManager.Add(new CGUIDialogPVRUpdateProgressBar);      // window id = 146
 
   g_windowManager.Add(new CGUIDialogLockSettings); // window id = 131
 

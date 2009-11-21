@@ -19,69 +19,73 @@
  *
  */
 
-#include "GUIDialogEpgScan.h"
+#include "GUIDialogPVRUpdateProgressBar.h"
 #include "GUISliderControl.h"
 #include "GUIProgressControl.h"
 #include "utils/SingleLock.h"
 
-#define CONTROL_CHANNELNAME       31
+#define CONTROL_LABELHEADER       30
+#define CONTROL_LABELTITLE        31
 #define CONTROL_PROGRESS          32
 
-CGUIDialogEpgScan::CGUIDialogEpgScan(void)
-    : CGUIDialog(WINDOW_DIALOG_EPG_SCAN, "DialogEpgScan.xml")
+CGUIDialogPVRUpdateProgressBar::CGUIDialogPVRUpdateProgressBar(void)
+    : CGUIDialog(WINDOW_DIALOG_EPG_SCAN, "DialogPVRUpdateProgressBar.xml")
 {
   m_loadOnDemand = false;
 }
 
-CGUIDialogEpgScan::~CGUIDialogEpgScan(void)
+CGUIDialogPVRUpdateProgressBar::~CGUIDialogPVRUpdateProgressBar(void)
 {}
 
-bool CGUIDialogEpgScan::OnAction(const CAction &action)
+bool CGUIDialogPVRUpdateProgressBar::OnAction(const CAction &action)
 {
   return CGUIDialog::OnAction(action);
 }
 
-bool CGUIDialogEpgScan::OnMessage(CGUIMessage& message)
+bool CGUIDialogPVRUpdateProgressBar::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      //resources are allocated in g_application
       CGUIDialog::OnMessage(message);
 
       m_strTitle.Empty();
-      m_fPercentDone=-1.0f;
+      m_strHeader.Empty();
+      m_fPercentDone = -1.0f;
 
       UpdateState();
       return true;
     }
     break;
-
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-      //don't deinit, g_application handles it
-      return CGUIDialog::OnMessage(message);
-    }
-    break;
   }
-  return false; // don't process anything other than what we need!
+
+  return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogEpgScan::Render()
+void CGUIDialogPVRUpdateProgressBar::Render()
 {
-  // and render the controls
+  if (m_bRunning)
+    UpdateState();
+
   CGUIDialog::Render();
 }
 
-void CGUIDialogEpgScan::SetTitle(CStdString strTitle)
+void CGUIDialogPVRUpdateProgressBar::SetHeader(const CStdString& strHeader)
+{
+  CSingleLock lock (m_critical);
+
+  m_strHeader = strHeader;
+}
+
+void CGUIDialogPVRUpdateProgressBar::SetTitle(const CStdString& strTitle)
 {
   CSingleLock lock (m_critical);
 
   m_strTitle = strTitle;
 }
 
-void CGUIDialogEpgScan::SetProgress(int currentItem, int itemCount)
+void CGUIDialogPVRUpdateProgressBar::SetProgress(int currentItem, int itemCount)
 {
   CSingleLock lock (m_critical);
 
@@ -89,11 +93,12 @@ void CGUIDialogEpgScan::SetProgress(int currentItem, int itemCount)
   if (m_fPercentDone>100.0F) m_fPercentDone=100.0F;
 }
 
-void CGUIDialogEpgScan::UpdateState()
+void CGUIDialogPVRUpdateProgressBar::UpdateState()
 {
   CSingleLock lock (m_critical);
 
-  SET_CONTROL_LABEL(CONTROL_CHANNELNAME, m_strTitle);
+  SET_CONTROL_LABEL(CONTROL_LABELHEADER, m_strHeader);
+  SET_CONTROL_LABEL(CONTROL_LABELTITLE, m_strTitle);
 
   if (m_fPercentDone>-1.0f)
   {

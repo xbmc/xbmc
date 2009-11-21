@@ -1600,7 +1600,6 @@
   <string id="18029">Unknown Channel %u</string>
   <string id="18030">PVR information</string>
   <string id="18031">PVR service</string>
-  <string id="18032">Loading EPG from clients</string>
   <string id="18033">Rescan for missing icons</string>
   <string id="18034">Switch channel without pressing OK</string>
 
@@ -1793,6 +1792,7 @@
   <string id="19001">Separate different search words using AND, OR and/or NOT to specify your search.</string>
   <string id="19002">Or use Phrases to find a full text e.G.: "The wizard of Oz".</string>
   <string id="19003">Find similar program</string>
+  <string id="19004">Loading EPG from clients</string>
 
   <string id="20000">CDDA rip folder</string>
   <string id="20001">Use external DVD player</string>
