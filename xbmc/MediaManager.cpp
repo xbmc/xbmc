@@ -22,7 +22,7 @@
 #include "system.h"
 #include "LocalizeStrings.h"
 #include "MediaManager.h"
-#include "xbox/IoSupport.h"
+#include "utils/IoSupport.h"
 #include "URL.h"
 #include "Util.h"
 #ifdef _WIN32
@@ -42,9 +42,13 @@
 #include "tinyXML/tinyxml.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "Application.h"
+#include "utils/JobManager.h"
+#include "AutorunMediaJob.h"
+#include "GUISettings.h"
 
 #ifdef __APPLE__
-#include "PosixMountProvider.h"
+#include "DarwinStorageProvider.h"
 #elif defined(_LINUX)
 #include "LinuxStorageProvider.h"
 #elif _WIN32
@@ -60,7 +64,7 @@ class CMediaManager g_mediaManager;
 CMediaManager::CMediaManager()
 {
 #ifdef __APPLE__
-  m_platformStorage = new CPosixMountProvider();
+  m_platformStorage = new CDarwinStorageProvider();
 #elif defined(_LINUX)
   m_platformStorage = new CLinuxStorageProvider();
 #elif _WIN32
@@ -145,11 +149,13 @@ bool CMediaManager::SaveSources()
 
 void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
 {
+  CSingleLock lock(m_CritSecStorageProvider);
   m_platformStorage->GetLocalDrives(localDrives);
 }
 
 void CMediaManager::GetRemovableDrives(VECSOURCES &removableDrives)
 {
+  CSingleLock lock(m_CritSecStorageProvider);
   m_platformStorage->GetRemovableDrives(removableDrives);
 }
 
@@ -434,19 +440,40 @@ void CMediaManager::SetHasOpticalDrive(bool bstatus)
 
 bool CMediaManager::Eject(CStdString mountpath)
 {
+  CSingleLock lock(m_CritSecStorageProvider);
   return m_platformStorage->Eject(mountpath);
 }
 
 void CMediaManager::ProcessEvents()
 {
-  if (m_platformStorage->PumpDriveChangeEvents())
+  CSingleLock lock(m_CritSecStorageProvider);
+  if (m_platformStorage->PumpDriveChangeEvents(this))
   {
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REMOVED_MEDIA);
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
     g_windowManager.SendThreadMessage(msg);
   }
 }
 
 std::vector<CStdString> CMediaManager::GetDiskUsage()
 {
+  CSingleLock waitLock(m_muAutoSource);
   return m_platformStorage->GetDiskUsage();
+}
+
+void CMediaManager::OnStorageAdded(const CStdString &label, const CStdString &path)
+{
+  if (g_guiSettings.GetBool("audiocds.autorun") || g_guiSettings.GetBool("dvds.autorun"))
+    CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_HIGH);
+  else
+    g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13021), label);
+}
+
+void CMediaManager::OnStorageSafelyRemoved(const CStdString &label)
+{
+  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13023), label);
+}
+
+void CMediaManager::OnStorageUnsafelyRemoved(const CStdString &label)
+{
+  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13022), label);
 }

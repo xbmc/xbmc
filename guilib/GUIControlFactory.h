@@ -47,7 +47,7 @@ public:
   virtual ~CGUIControlFactory(void);
   static CStdString GetType(const TiXmlElement *pControlNode);
   CGUIControl* Create(int parentID, const CRect &rect, TiXmlElement* pControlNode, bool insideContainer = false);
-  void ScaleElement(TiXmlElement *element, int fileRes, int destRes);
+  void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
   static bool GetUnsigned(const TiXmlNode* pRootNode, const char* strTag, unsigned int& value);
   static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspectRatio);

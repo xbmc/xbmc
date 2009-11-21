@@ -263,30 +263,22 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strName = "Zeroconf Browser";
     extraShares.push_back(share1);
 
-    if (g_guiSettings.GetString("mymusic.recordingpath",false) != "")
+    if (g_guiSettings.GetString("audiocds.recordingpath",false) != "")
     {
       share1.strPath = "special://recordings/";
-      share1.strName = g_localizeStrings.Get(20007);
-      extraShares.push_back(share1);
-    }
-    if (g_guiSettings.GetString("cddaripper.path",false) != "")
-    {
-      share1.strPath = "special://cdrips/";
       share1.strName = g_localizeStrings.Get(21883);
       extraShares.push_back(share1);
     }
-    if (g_guiSettings.GetBool("network.enableinternet"))
-    {
-      share1.strName = "Shoutcast";
-      share1.strPath = SHOUTCAST_MASTER_LINK;
-      extraShares.push_back(share1);
 
-      if (g_guiSettings.GetString("scrobbler.lastfmusername") != "")
-      {
-        share1.strName = "Last.FM";
-        share1.strPath = "lastfm://";
-        extraShares.push_back(share1);
-      }
+    share1.strName = "Shoutcast";
+    share1.strPath = SHOUTCAST_MASTER_LINK;
+    extraShares.push_back(share1);
+
+    if (g_guiSettings.GetString("scrobbler.lastfmusername") != "")
+    {
+      share1.strName = "Last.FM";
+      share1.strPath = "lastfm://";
+      extraShares.push_back(share1);
     }
     // add the plugins dir as needed
     if (CPluginDirectory::HasPlugins("music"))
@@ -340,7 +332,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   {
     CMediaSource share1;
     share1.m_ignore = true;
-    if (g_guiSettings.GetString("pictures.screenshotpath",false)!= "")
+    if (g_guiSettings.GetString("debug.screenshotpath",false)!= "")
     {
       share1.strPath = "special://screenshots/";
       share1.strName = g_localizeStrings.Get(20008);
@@ -484,9 +476,9 @@ void CGUIDialogMediaSource::UpdateButtons()
     path = url.GetWithoutUserDetails();
     if (path.IsEmpty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
     item->SetLabel(path);
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PATH, 0, 0, item);
-    OnMessage(msg);
   }
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PATH, 0, 0, m_paths);
+  OnMessage(msg);
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_PATH, currentItem);
 
   if (m_type.Equals("video"))

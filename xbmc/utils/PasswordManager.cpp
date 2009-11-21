@@ -42,7 +42,12 @@ bool CPasswordManager::AuthenticateURL(CURL &url)
 {
   if (!m_loaded)
     Load();
-  map<CStdString, CStdString>::const_iterator it = m_temporaryCache.find(GetLookupPath(url));
+  CStdString lookup(GetLookupPath(url));
+  map<CStdString, CStdString>::const_iterator it = m_temporaryCache.find(lookup);
+  if (it == m_temporaryCache.end())
+  { // second step, try something that doesn't quite match
+    it = m_temporaryCache.find(GetServerLookup(lookup));
+  }
   if (it != m_temporaryCache.end())
   {
     CURL auth(it->second);
@@ -78,7 +83,9 @@ bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
     Save();
   }
 
+  // save for both this path and more generally the server as a whole.
   m_temporaryCache[path] = authenticatedPath;
+  m_temporaryCache[GetServerLookup(path)] = authenticatedPath;
   return true;
 }
 
@@ -107,6 +114,7 @@ void CPasswordManager::Load()
     {
       m_permanentCache[from] = to;
       m_temporaryCache[from] = to;
+      m_temporaryCache[GetServerLookup(from)] = to;
     }
     path = path->NextSiblingElement("path");
   }
@@ -138,4 +146,10 @@ void CPasswordManager::Save() const
 CStdString CPasswordManager::GetLookupPath(const CURL &url) const
 {
   return "smb://" + url.GetHostName() + "/" + url.GetShareName();
+}
+
+CStdString CPasswordManager::GetServerLookup(const CStdString &path) const
+{
+  CURL url(path);
+  return "smb://" + url.GetHostName() + "/";
 }

@@ -32,7 +32,14 @@ log_begin_msg "Executing custom hook script"
 # live-initramfs script
 
 cd /root
-chroot /root wget "${HOOK}"
+
+if [ $(echo "${HOOK}" | grep file:\/\/) ]
+then
+       LOCALFILE=$(echo ${HOOK} | sed "s/file\:\/\///")
+       cp ${LOCALFILE} /root
+else
+       chroot /root wget "${HOOK}"
+fi
 
 FILE="$(basename ${HOOK})"
 

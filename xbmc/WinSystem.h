@@ -52,6 +52,7 @@ public:
   virtual bool IsCreated(){ return m_bWindowCreated; }
   virtual void NotifyAppFocusChange(bool bGaining) {}
   virtual void NotifyAppActiveChange(bool bActivated) {}
+  virtual void ShowOSMouse(bool show) {};
 
   virtual bool Minimize() { return false; }
   virtual bool Restore() { return false; }
@@ -65,6 +66,7 @@ public:
   // resolution interfaces
   unsigned int GetWidth() { return m_nWidth; }
   unsigned int GetHeight() { return m_nHeight; }
+  virtual int GetNumScreens() { return 0; }
   bool IsFullScreen() { return m_bFullScreen; } 
 
   virtual void UpdateResolutions();

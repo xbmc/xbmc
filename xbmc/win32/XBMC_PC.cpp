@@ -38,7 +38,8 @@ LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp )
   // Create the dump file where the xbmc.exe resides
   CStdString errorMsg;
   CStdString dumpFile;
-  dumpFile.Format("xbmc.r%s.dmp", SVN_REV);
+  CDateTime now(CDateTime::GetCurrentDateTime());
+  dumpFile.Format("%s\\XBMC\\xbmc_crashlog-%04i%02i%02i-%02i%02i%02i.dmp", CWIN32Util::GetProfilePath().c_str(), now.GetYear(), now.GetMonth(), now.GetDay(), now.GetHour(), now.GetMinute(), now.GetSecond());
   HANDLE hFile = CreateFile(dumpFile.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL ); 
 
   // Call MiniDumpWriteDump api with the dump file
@@ -129,7 +130,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   LPWSTR *szArglist;
   int nArgs;
 
-  g_advancedSettings.m_startFullScreen = false;
+  g_advancedSettings.Initialize();
   szArglist = CommandLineToArgvW(strcl.c_str(), &nArgs);
   if(szArglist != NULL)
   {
@@ -158,8 +159,10 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   // Create and run the app
   g_application.Create(NULL);
 
+#ifndef _DEBUG
   // we don't want to see the "no disc in drive" windows message box
   SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
+#endif
 
   g_application.Run();
 

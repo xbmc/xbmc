@@ -49,7 +49,6 @@ public:
   void HandleAutorun();
   static void ExecuteAutorun(bool bypassSettings = false, bool ignoreplaying=false);
 protected:
-  static void ExecuteXBE(const CStdString &xbeFile);
   static void RunCdda();
   static void RunMedia(bool bypassSettings = false);
   static bool RunDisc(DIRECTORY::IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings = false);

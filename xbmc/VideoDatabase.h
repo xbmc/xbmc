@@ -304,6 +304,7 @@ public:
   // editing functions
   void MarkAsWatched(const CFileItem &item);
   void MarkAsUnWatched(const CFileItem &item);
+  int GetPlayCount(int id);
   void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
 
   bool HasMovieInfo(const CStdString& strFilenameAndPath);
@@ -311,9 +312,9 @@ public:
   bool HasEpisodeInfo(const CStdString& strFilenameAndPath);
   bool HasMusicVideoInfo(const CStdString& strFilenameAndPath);
 
-  void GetFilePathById(int id, CStdString &filePath, VIDEODB_CONTENT_TYPE iType);
-  bool GetGenreById(int id, CStdString& strGenre);
-  bool GetSetById(int id, CStdString& strSet);
+  void GetFilePathById(int idMovie, CStdString &filePath, VIDEODB_CONTENT_TYPE iType);
+  bool GetGenreById(int idGenre, CStdString& strGenre);
+  bool GetSetById(int idSet, CStdString& strSet);
   int GetTvShowForEpisode(int idEpisode);
 
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMovie = -1);
@@ -322,6 +323,7 @@ public:
   void GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMVideo=-1);
   bool GetStreamDetailsForFileId(CStreamDetails& details, int idFile) const;
 
+  int GetFileId(const CStdString& strFilenameAndPath);
   int GetPathId(const CStdString& strPath);
   int GetTvShowId(const CStdString& strPath);
   int GetEpisodeId(const CStdString& strFilenameAndPath, int idEpisode=-1, int idSeason=-1); // idEpisode, idSeason are used for multipart episodes as hints
@@ -342,7 +344,7 @@ public:
   void DeleteDetailsForTvShow(const CStdString& strPath);
   void RemoveContentForPath(const CStdString& strPath,CGUIDialogProgress *progress = NULL);
   void UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE type);
-  void DeleteSet(long lSetId);
+  void DeleteSet(int idSet);
 
   // per-file video settings
   bool GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings);
@@ -423,7 +425,7 @@ public:
   bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
   bool GetWritersNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
-  bool GetSetsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
+  bool GetSetsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1, const CStdString &where = "");
   bool GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idArtist);
 
   bool GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idActor=-1, int idDirector=-1, int idStudio=-1, int idSet=-1);
@@ -443,15 +445,15 @@ public:
   void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<int>* paths=NULL);
 
   int AddFile(const CStdString& strFileName);
-  void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool overwrite=false);
+  void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool actorThumbs=false, bool overwrite=false);
   bool ExportSkipEntry(const CStdString &nfoFile);
-  void ExportActorThumbs(const CVideoInfoTag& tag);
+  void ExportActorThumbs(const CVideoInfoTag& tag, bool overwrite=false);
   void ImportFromXML(const CStdString &xmlFile);
   void DumpToDummyFiles(const CStdString &path);
   CStdString GetCachedThumb(const CFileItem& item) const;
 
   // smart playlists and main retrieval work in these functions
-  bool GetMoviesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
+  bool GetMoviesByWhere(const CStdString& strBaseDir, const CStdString &where, const CStdString &order, CFileItemList& items, bool fetchSets = false);
   bool GetTvShowsByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
   bool GetEpisodesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items, bool appendFullShowPath = true);
   bool GetMusicVideosByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items, bool checkLocks = true);
@@ -462,7 +464,6 @@ public:
   bool GetRandomMusicVideo(CFileItem* item, int& idSong, const CStdString& strWhere);
 
 protected:
-  int GetFileId(const CStdString& strFilenameAndPath);
   int GetMovieId(const CStdString& strFilenameAndPath);
   int GetMusicVideoId(const CStdString& strFilenameAndPath);
 
@@ -502,7 +503,6 @@ protected:
 
   void AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, std::vector<int>& vecDirectors, std::vector<int>& vecGenres, std::vector<int>& vecStudios);
 
-  int GetPlayCount(int id);
   void DeleteStreamDetails(int idFile);
   CVideoInfoTag GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, int id);
   CVideoInfoTag GetDetailsForMovie(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);

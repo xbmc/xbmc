@@ -852,11 +852,20 @@ CStdString CDateTime::GetAsDBDateTime() const
 void CDateTime::SetFromDBDate(const CStdString &date)
 {
   // assumes format:
-  // YYYY-MM-DD
+  // YYYY-MM-DD or DD-MM-YYYY
   int year = 0, month = 0, day = 0;
-  year = atoi(date.Mid(0,4).c_str());
-  month = atoi(date.Mid(5,2).c_str());
-  day = atoi(date.Mid(8,2).c_str());
+  if (date.size() > 2 && (date[2] == '-' || date[2] == '.'))
+  {
+    day = atoi(date.Mid(0,2).c_str());
+    month = atoi(date.Mid(3,2).c_str());
+    year = atoi(date.Mid(6,4).c_str());
+  }
+  else
+  {
+    year = atoi(date.Mid(0,4).c_str());
+    month = atoi(date.Mid(5,2).c_str());
+    day = atoi(date.Mid(8,2).c_str());
+  }
   SetDate(year, month, day);
 }
 

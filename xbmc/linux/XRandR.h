@@ -22,6 +22,8 @@
  *
  */
 
+#include "system.h"
+
 #ifdef HAS_XRANDR
 
 #include "StdString.h"

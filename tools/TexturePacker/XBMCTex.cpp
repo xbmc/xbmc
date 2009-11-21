@@ -327,7 +327,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
         continue;
       }
 
-      printf(output.c_str());
+      printf("%s", output.c_str());
 
       CXBTFFrame frame = createXBTFFrame(image, writer, maxMSE, flags);
 

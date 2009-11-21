@@ -120,8 +120,8 @@ public:
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return CFileItemPtr(); };
   virtual int GetViewContainerID() const { return 0; };
   virtual bool IsActive() const;
-  void SetCoordsRes(int res) { m_coordsRes = res; };
-  int GetCoordsRes() const { return m_coordsRes; };
+  void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
+  RESOLUTION GetCoordsRes() const { return m_coordsRes; };
   void SetXMLFile(const CStdString &xmlFile) { m_xmlFile = xmlFile; };
   const CStdString &GetXMLFile() const { return m_xmlFile; };
   void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
@@ -206,7 +206,7 @@ protected:
   int m_idRange;
   bool m_bRelativeCoords;
   OVERLAY_STATE m_overlayState;
-  int m_coordsRes; // resolution that the window coordinates are in.
+  RESOLUTION m_coordsRes; // resolution that the window coordinates are in.
   bool m_needsScaling;
   CStdString m_xmlFile;  // xml file to load
   bool m_windowLoaded;  // true if the window's xml file has been loaded

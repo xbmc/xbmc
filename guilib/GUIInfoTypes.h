@@ -81,6 +81,14 @@ public:
   const CStdString GetFallback() const { return m_fallback; };
 
   static CStdString GetLabel(const CStdString &label, bool preferImage = false);
+
+  /*!
+   \brief Replaces instances of $LOCALIZE[number] with the appropriate localized string
+   \param label text to replace
+   \return text with any localized strings filled in.
+   */
+  static CStdString ReplaceLocalize(const CStdString &label);
+
 private:
   void Parse(const CStdString &label);
 

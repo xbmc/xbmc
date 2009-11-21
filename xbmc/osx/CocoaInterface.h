@@ -21,6 +21,9 @@
 #ifndef _OSX_INTERFACE_H_
 #define _OSX_INTERFACE_H_
 
+#include <string>
+#include "StdString.h"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -33,7 +36,6 @@ extern "C"
   // Power and Screen
   //
   void Cocoa_UpdateSystemActivity(void);
-  void Cocoa_DisableOSXScreenSaver(void);
   
   // DisplayLink
   //
@@ -45,22 +47,25 @@ extern "C"
   // AppleScript
   //
   void Cocoa_DoAppleScript(const char* scriptSource);
+  void Cocoa_DoAppleScriptFile(const char* filePath);
+  
+  // Application support
+  //
+  const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char *_iconName);
   
   // Devices
   //
-  void Cocoa_MountPoint2DeviceName(char* path);
-  
-  //
+  void Cocoa_MountPoint2DeviceName(char *path);
+  bool Cocoa_GetVolumeNameFromMountPoint(const char *mountPoint, CStdString &volumeName);
+
   // Mouse.
   //
   void Cocoa_HideMouse();
 
-  //
   // Smart folders.
   //
   void Cocoa_GetSmartFolderResults(const char* strFile, void (*)(void* userData, void* userData2, const char* path), void* userData, void* userData2);
 
-  //
   // Version.
   //
   const char* Cocoa_GetAppVersion();

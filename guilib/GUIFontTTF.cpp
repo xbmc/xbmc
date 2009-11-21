@@ -597,7 +597,7 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   {
     CopyCharToTexture(bitGlyph, ch);
   }
-  m_posX += (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance + 1);
+  m_posX += 1 + (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance);
   m_numChars++;
 
   m_textureScaleX = 1.0f / m_textureWidth;

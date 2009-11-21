@@ -289,6 +289,7 @@ void CCoreAudioDevice::RemoveIOProc()
     return;
   
   Stop();
+
   OSStatus ret = AudioDeviceRemoveIOProc(m_DeviceId, m_IoProc);  
   if (ret)
     CLog::Log(LOGERROR, "CCoreAudioDevice::RemoveIOProc: Unable to remove IOProc. Error = 0x%08x (%4.4s).", ret, CONVERT_OSSTATUS(ret));
@@ -307,7 +308,7 @@ const char* CCoreAudioDevice::GetName(CStdString& name)
   OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyDeviceName, &size, name.GetBufferSetLength(size));  
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to get device name - id: 0x%04x Error = 0x%08x (%4.4s)", m_DeviceId, ret, CONVERT_OSSTATUS(ret));
+    CLog::Log(LOGERROR, "CCoreAudioDevice::GetName: Unable to get device name - id: 0x%04x Error = 0x%08x (%4.4s)", m_DeviceId, ret, CONVERT_OSSTATUS(ret));
     return NULL;
   }
   return name.c_str();
@@ -367,6 +368,9 @@ bool CCoreAudioDevice::IsRunning()
 
 bool CCoreAudioDevice::SetHogStatus(bool hog)
 {
+  // According to Jeff Moore (Core Audio, Apple), Setting kAudioDevicePropertyHogMode
+  // is a toggle and the only way to tell if you do get hog mode is to compare
+  // the returned pid against getpid, if the match, you have hog mode, if not you don't.
   if (!m_DeviceId)
     return false;
   
@@ -376,7 +380,7 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
     {
       CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: Setting 'hog' status on device 0x%04x", m_DeviceId);
       OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyHogMode, sizeof(m_Hog), &m_Hog);
-      if (ret)
+      if (ret || m_Hog != getpid())
       {
         CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to set 'hog' status. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
         return false;
@@ -391,7 +395,7 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
       CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: Releasing 'hog' status on device 0x%04x", m_DeviceId);
       pid_t hogPid = -1;
       OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyHogMode, sizeof(hogPid), &hogPid);
-      if (ret)
+      if (ret || hogPid == getpid())
       {
         CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to release 'hog' status. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
         return false;
@@ -525,6 +529,38 @@ bool CCoreAudioDevice::SetNominalSampleRate(Float64 sampleRate)
   return true;
 }
 
+UInt32 CCoreAudioDevice::GetNumLatencyFrames()
+{
+  UInt32 i_param, i_param_size, num_latency_frames = 0;
+  if (!m_DeviceId)
+    return 0;  
+
+  i_param_size = sizeof(uint32_t);
+
+  // number of frames of latency in the AudioDevice
+  if (noErr == AudioDeviceGetProperty(m_DeviceId, 0, false, 
+    kAudioDevicePropertyLatency, &i_param_size, &i_param))
+  {
+    num_latency_frames += i_param;
+  }
+ 
+  // number of frames in the IO buffers
+  if (noErr == AudioDeviceGetProperty(m_DeviceId, 0, false,
+    kAudioDevicePropertyBufferFrameSize, &i_param_size, &i_param))
+  {
+    num_latency_frames += i_param;
+  }
+ 
+  // number for frames in ahead the current hardware position that is safe to do IO
+  if (noErr == AudioDeviceGetProperty(m_DeviceId, 0, false, 
+    kAudioDevicePropertySafetyOffset, &i_param_size, &i_param))
+ 	{
+    num_latency_frames += i_param;
+  }
+  
+  return(num_latency_frames);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioStream
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -595,16 +631,22 @@ UInt32 CCoreAudioStream::GetTerminalType()
   return val;  
 }
 
-UInt32 CCoreAudioStream::GetLatency()
+UInt32 CCoreAudioStream::GetNumLatencyFrames()
 {
+  UInt32 i_param, i_param_size, num_latency_frames = 0;
   if (!m_StreamId)
-    return 0;  
-  UInt32 size = sizeof(UInt32);
-  UInt32 val = 0;
-  OSStatus ret = AudioStreamGetProperty(m_StreamId, 0, kAudioStreamPropertyLatency, &size, &val);
-  if (ret)
     return 0;
-  return val;  
+
+  i_param_size = sizeof(uint32_t);
+
+  // number of frames of latency in the AudioStream
+  if (noErr == AudioStreamGetProperty(m_StreamId, 0, 
+    kAudioStreamPropertyLatency, &i_param_size, &i_param))
+  {
+    num_latency_frames += i_param;
+  }
+
+  return(num_latency_frames);
 }
 
 bool CCoreAudioStream::GetVirtualFormat(AudioStreamBasicDescription* pDesc)

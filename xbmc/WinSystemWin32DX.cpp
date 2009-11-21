@@ -46,17 +46,21 @@ bool CWinSystemWin32DX::CreateNewWindow(CStdString name, bool fullScreen, RESOLU
 
   SetFocusWnd(m_hWnd);
   SetDeviceWnd(m_hWnd);
-
-  SetBackBufferSize(m_nWidth, m_nHeight);
-  SetDeviceFullScreen(fullScreen);
+  SetRenderParams(m_nWidth, m_nHeight, fullScreen, res.fRefreshRate);
+  SetMonitor(GetMonitor(res.iScreen).hMonitor);
 
   return true;
+}
+
+void CWinSystemWin32DX::UpdateMonitor()
+{
+  SetMonitor(GetMonitor(m_nScreen).hMonitor);
 }
 
 bool CWinSystemWin32DX::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
   CWinSystemWin32::ResizeWindow(newWidth, newHeight, newLeft, newTop);
-  CRenderSystemDX::ResetRenderSystem(newWidth, newHeight);  
+  CRenderSystemDX::ResetRenderSystem(newWidth, newHeight, false, 0);
 
   return true;
 }
@@ -64,7 +68,8 @@ bool CWinSystemWin32DX::ResizeWindow(int newWidth, int newHeight, int newLeft, i
 bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   CWinSystemWin32::SetFullScreen(fullScreen, res, blankOtherDisplays);
-  CRenderSystemDX::ResetRenderSystem(res.iWidth, res.iHeight);  
+  SetMonitor(GetMonitor(res.iScreen).hMonitor);
+  CRenderSystemDX::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
 
   return true;
 }

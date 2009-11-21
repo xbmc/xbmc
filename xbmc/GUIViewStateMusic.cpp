@@ -48,7 +48,8 @@ int CGUIViewStateWindowMusic::GetPlaylist()
 
 bool CGUIViewStateWindowMusic::AutoPlayNextItem()
 {
-  return g_guiSettings.GetBool("mymusic.autoplaynextitem");
+  return g_guiSettings.GetBool("musicplayer.autoplaynextitem") &&
+         !g_guiSettings.GetBool("musicplayer.queuebydefault");
 }
 
 CStdString CGUIViewStateWindowMusic::GetLockType()
@@ -458,10 +459,10 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
   }
   else
   {
-    if (items.IsVideoDb() && items.Size() > (g_guiSettings.GetBool("filelists.hideparentdiritems")?0:1))
+    if (items.IsVideoDb() && items.Size() > (g_guiSettings.GetBool("filelists.showparentdiritems")?1:0))
     {
       DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
-      DIRECTORY::CVideoDatabaseDirectory::GetQueryParams(items[g_guiSettings.GetBool("filelists.hideparentdiritems")?0:1]->m_strPath,params);
+      DIRECTORY::CVideoDatabaseDirectory::GetQueryParams(items[g_guiSettings.GetBool("filelists.showparentdiritems")?1:0]->m_strPath,params);
       if (params.GetMVideoId() != -1)
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
@@ -508,7 +509,6 @@ void CGUIViewStateWindowMusicNav::SaveViewState()
 
 void CGUIViewStateWindowMusicNav::AddOnlineShares()
 {
-  if (!g_guiSettings.GetBool("network.enableinternet")) return;
   if (!g_advancedSettings.m_bVirtualShares) return;
   for (int i = 0; i < (int)g_settings.m_musicSources.size(); ++i)
   {
@@ -533,7 +533,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
     CMediaSource share;
     share.strName=item->GetLabel();
     share.strPath = item->m_strPath;
-    share.m_strThumbnailImage = item->GetThumbnailImage();
+    share.m_strThumbnailImage = item->GetIconImage();
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);
   }

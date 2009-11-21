@@ -63,35 +63,45 @@ void CEdl::Clear()
   m_iTotalCutTime = 0;
 }
 
-bool CEdl::ReadFiles(const CStdString& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFramesPerSecond)
 {
-  /*
-   * Read any available format until a valid EDL related file is found, except HDHomeRun. Its
-   * Exists() implementation returns true for all of the EDL files that are checked for, which are
-   * then opened and read within the EDL code causing chaos.
-   */
-  if (CUtil::IsHDHomeRun(strMovie))
-    return false;
-
-  CLog::Log(LOGDEBUG, "%s - checking for any edit decision list (EDL) files for: %s", __FUNCTION__,
-            strMovie.c_str());
-
-  /*
-   * TODO: Surely there's a better way to do this bFound shenanigans.
-   */
   bool bFound = false;
 
-  if (!bFound)
-    bFound = ReadVideoReDo(strMovie);
+  /*
+   * Only check for edit decision lists if the movie is on the local hard drive, or accessed over a
+   * network share.
+   */
+  if (CUtil::IsHD(strMovie)
+  ||  CUtil::IsSmb(strMovie))
+  {
+    CLog::Log(LOGDEBUG, "%s - checking for any edit decision lists (EDL) on local drive or remote share for: %s", __FUNCTION__,
+              strMovie.c_str());
 
-  if (!bFound)
-    bFound = ReadEdl(strMovie);
+    /*
+     * Read any available file format until a valid EDL related file is found.
+     */
+    if (!bFound)
+      bFound = ReadVideoReDo(strMovie);
 
-  if (!bFound)
-    bFound = ReadComskip(strMovie, fFramesPerSecond);
+    if (!bFound)
+      bFound = ReadEdl(strMovie);
 
-  if (!bFound)
-    bFound = ReadBeyondTV(strMovie);
+    if (!bFound)
+      bFound = ReadComskip(strMovie, fFramesPerSecond);
+
+    if (!bFound)
+      bFound = ReadBeyondTV(strMovie);
+  }
+  /*
+   * Or if the movie points to MythTV and isn't live TV.
+   */
+  else if (CUtil::IsMythTV(strMovie)
+  &&      !CUtil::IsLiveTV(strMovie))
+  {
+    CLog::Log(LOGDEBUG, "%s - checking for any commercial breaks within MythTV for: %s", __FUNCTION__,
+              strMovie.c_str());
+    bFound = ReadMythCommBreaks(strMovie, fFramesPerSecond);
+  }
 
   if (bFound)
   {
@@ -360,7 +370,8 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 {
   Clear();
 
-  CStdString beyondTVFilename = strMovie + ".chapters.xml";
+  CStdString beyondTVFilename;
+  CUtil::ReplaceExtension(strMovie, CUtil::GetExtension(strMovie) + ".chapters.xml", beyondTVFilename);
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
@@ -566,6 +577,11 @@ bool CEdl::WriteMPlayerEdl()
   return true;
 }
 
+CStdString CEdl::GetMPlayerEdl()
+{
+  return MPLAYER_EDL_FILENAME;
+}
+
 bool CEdl::HasCut()
 {
   return !m_vecCuts.empty();
@@ -725,7 +741,7 @@ CStdString CEdl::MillisecondsToTimeString(const int64_t iMilliseconds)
   return strTimeString;
 }
 
-bool CEdl::ReadMythCommBreaks(const CURL& url, const float fFramesPerSecond)
+bool CEdl::ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPerSecond)
 {
   Clear();
 
@@ -733,6 +749,7 @@ bool CEdl::ReadMythCommBreaks(const CURL& url, const float fFramesPerSecond)
    * Exists() sets up all the internal bits needed for GetCommBreakList().
    */
   CCMythFile mythFile;
+  CURL url(strMovie);
   if (!mythFile.Exists(url))
     return false;
 
@@ -778,10 +795,6 @@ bool CEdl::ReadMythCommBreaks(const CURL& url, const float fFramesPerSecond)
   {
     CLog::Log(LOGDEBUG, "%s - Added %i commercial breaks from MythTV for: %s. Used detected frame rate of %.3f fps to calculate times from the frame markers.",
               __FUNCTION__, m_vecCuts.size(), url.GetFileName().c_str(), fFramesPerSecond);
-    MergeShortCommBreaks();
-    /*
-     * No point writing the MPlayer EDL file as it won't be able to play the MythTV files anyway.
-     */
     return true;
   }
   else
@@ -794,6 +807,21 @@ bool CEdl::ReadMythCommBreaks(const CURL& url, const float fFramesPerSecond)
 
 void CEdl::MergeShortCommBreaks()
 {
+  /*
+   * mythcommflag routinely seems to put a 20-40ms commercial break at the start of the recording.
+   *
+   * Remove any spurious short commercial breaks at the very start so they don't interfere with
+   * the algorithms below.
+   */
+  if (!m_vecCuts.empty()
+  &&  m_vecCuts[0].action == COMM_BREAK
+  && (m_vecCuts[0].end - m_vecCuts[0].start) < 5 * 1000) // 5 seconds
+  {
+    CLog::Log(LOGDEBUG, "%s - Removing short commercial break at start [%s - %s]. <5 seconds", __FUNCTION__,
+              MillisecondsToTimeString(m_vecCuts[0].start).c_str(), MillisecondsToTimeString(m_vecCuts[0].end).c_str());
+    m_vecCuts.erase(m_vecCuts.begin());
+  }
+
   if (g_advancedSettings.m_bEdlMergeShortCommBreaks)
   {
     for (int i = 0; i < (int)m_vecCuts.size() - 1; i++)
@@ -820,6 +848,21 @@ void CEdl::MergeShortCommBreaks()
 
         i--; // Reduce i to see if the next break is also within the max commercial break length.
       }
+    }
+
+    /*
+     * To cater for recordings that are started early and then have a commercial break identified
+     * before the TV show starts, expand the first commercial break to the very beginning if it
+     * starts within the maximum start gap. This is done outside of the consolidation to prevent
+     * the maximum commercial break length being triggered.
+     */
+    if (!m_vecCuts.empty()
+    &&  m_vecCuts[0].action == COMM_BREAK
+    &&  m_vecCuts[0].start < g_advancedSettings.m_iEdlMaxStartGap * 1000)
+    {
+      CLog::Log(LOGDEBUG, "%s - Expanding first commercial break back to start [%s - %s].", __FUNCTION__,
+                MillisecondsToTimeString(m_vecCuts[0].start).c_str(), MillisecondsToTimeString(m_vecCuts[0].end).c_str());
+      m_vecCuts[0].start = 0;
     }
 
     /*

@@ -322,7 +322,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       audioframe.channels = m_pAudioCodec->GetChannels();
       audioframe.bits_per_sample = m_pAudioCodec->GetBitsPerSample();
       audioframe.sample_rate = m_pAudioCodec->GetSampleRate();
-      audioframe.passthrough = m_pAudioCodec->NeedPasstrough();
+      audioframe.passthrough = m_pAudioCodec->NeedPassthrough();
 
       if (audioframe.size <= 0)
         continue;
@@ -743,7 +743,7 @@ void CDVDPlayerAudio::SetSpeed(int speed)
 void CDVDPlayerAudio::Flush()
 {
   m_messageQueue.Flush();
-  m_messageQueue.Put( new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
+  m_messageQueue.Put( new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 1);
 }
 
 void CDVDPlayerAudio::WaitForBuffers()
@@ -775,5 +775,5 @@ int CDVDPlayerAudio::GetAudioBitrate()
   
 bool CDVDPlayerAudio::IsPassthrough() const
 {
-  return m_pAudioCodec && m_pAudioCodec->NeedPasstrough();
+  return m_pAudioCodec && m_pAudioCodec->NeedPassthrough();
 }

@@ -27,6 +27,7 @@
 #include "CueDocument.h"
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
+#include "GUIDialogYesNo.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include "FileItem.h"
@@ -442,6 +443,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       else if (!inPlaylists && !m_vecItems->IsInternetStream()           &&
                !item->IsLastFM() && !item->IsShoutCast()                 &&
                !item->m_strPath.Equals("add") && !item->IsParentFolder() &&
+               !item->IsPluginRoot() && !item->IsPlugin()                &&
               (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
@@ -462,6 +464,9 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
   {
     if (CGUIDialogContextMenu::OnContextButton("music", item, button))
     {
+      if (button == CONTEXT_BUTTON_REMOVE_SOURCE)
+        OnRemoveSource(itemNumber);
+
       Update("");
       return true;
     }
@@ -568,4 +573,18 @@ bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
   m_thumbLoader.Load(*m_vecItems);
 
   return true;
+}
+
+void CGUIWindowMusicSongs::OnRemoveSource(int iItem)
+{
+  bool bCanceled;
+  if (CGUIDialogYesNo::ShowAndGetInput(522,20340,20341,20022,bCanceled))
+  {
+    CSongMap songs;
+    CMusicDatabase database;
+    database.Open();
+    database.RemoveSongsFromPath(m_vecItems->Get(iItem)->m_strPath,songs,false);
+    database.CleanupOrphanedItems();
+    g_infoManager.ResetLibraryBools();
+  }
 }

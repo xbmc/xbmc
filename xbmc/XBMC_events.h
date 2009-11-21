@@ -53,7 +53,7 @@ typedef enum {
        XBMC_EVENT_RESERVEDB,		/* Reserved for future use.. */
        XBMC_VIDEORESIZE,			/* User resized video mode */
        XBMC_VIDEOEXPOSE,			/* Screen needs to be redrawn */
-       XBMC_EVENT_RESERVED2,		/* Reserved for future use.. */
+       XBMC_APPCOMMAND,            /* Media commands, such as WM_APPCOMMAND on Windows for media keys. */
        XBMC_EVENT_RESERVED3,		/* Reserved for future use.. */
        XBMC_EVENT_RESERVED4,		/* Reserved for future use.. */
        XBMC_EVENT_RESERVED5,		/* Reserved for future use.. */
@@ -206,6 +206,12 @@ typedef struct XBMC_SysWMEvent {
 	XBMC_SysWMmsg *msg;
 } XBMC_SysWMEvent;
 
+/* Multimedia keys on keyboards / remotes are mapped to APPCOMMAND events */
+typedef struct XBMC_AppCommandEvent {
+  unsigned char type; /* XBMC_APPCOMMAND */
+  unsigned int action; /* One of ACTION_... */  
+} XBMC_AppCommandEvent;
+
 /* General event structure */
 typedef union XBMC_Event {
 	unsigned char type;
@@ -222,6 +228,7 @@ typedef union XBMC_Event {
 	XBMC_QuitEvent quit;
 	XBMC_UserEvent user;
 	XBMC_SysWMEvent syswm;
+  XBMC_AppCommandEvent appcommand;
 } XBMC_Event;
 
 /* DSPlayer command */

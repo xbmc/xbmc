@@ -150,6 +150,8 @@ class CAdvancedSettings
 
     bool m_bHTTPDirectoryStatFilesize;
 
+    bool m_bFTPThumbs;
+
     CStdString m_musicThumbs;
     CStdString m_dvdThumbs;
     CStdString m_fanartImages;
@@ -193,6 +195,7 @@ class CAdvancedSettings
     int m_iEdlMaxCommBreakLength;   // seconds
     int m_iEdlMinCommBreakLength;   // seconds
     int m_iEdlMaxCommBreakGap;      // seconds
+    int m_iEdlMaxStartGap;          // seconds
 
     bool m_bFirstLoop;
     int m_curlconnecttimeout;
@@ -208,7 +211,7 @@ class CAdvancedSettings
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
 
-    bool m_osx_GLFullScreen;
+    float m_sleepBeforeFlip; ///< if greather than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
     bool m_bVirtualShares;
 
     float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s

@@ -105,7 +105,7 @@ class CCoreAudioRenderer : public IAudioRenderer
     virtual ~CCoreAudioRenderer();
     virtual unsigned int GetChunkLen();
     virtual float GetDelay();
-    virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
+    virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
     virtual bool Deinitialize();
     virtual unsigned int AddPackets(const void* data, unsigned int len);
     virtual unsigned int GetSpace();
@@ -124,6 +124,8 @@ class CCoreAudioRenderer : public IAudioRenderer
     virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers) {};
     virtual void UnRegisterAudioCallback() {};
     virtual void RegisterAudioCallback(IAudioCallback* pCallback) {};
+
+    static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough) {};
   private:
     OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
     static OSStatus RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
@@ -151,10 +153,12 @@ class CCoreAudioRenderer : public IAudioRenderer
     // Stream format
     size_t m_AvgBytesPerSec;
     size_t m_BytesPerFrame; // Input frame size
+    UInt32 m_NumLatencyFrames;
     
+#ifdef _DEBUG
     // Performace Monitoring
     CCoreAudioPerformance m_PerfMon;
-    
+#endif
     // Thread synchronization
     MPEventID m_RunoutEvent;
     long m_DoRunout;

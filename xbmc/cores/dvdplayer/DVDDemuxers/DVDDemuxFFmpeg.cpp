@@ -538,7 +538,7 @@ void CDVDDemuxFFmpeg::Flush()
   if (m_pFormatContext)
   {
     // reset any dts interpolation
-    for(int i=0;i<MAX_STREAMS;i++)
+    for(unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
     {
       if(m_pFormatContext->streams[i])
       {
@@ -897,7 +897,7 @@ bool CDVDDemuxFFmpeg::SeekByte(__int64 pos)
 void CDVDDemuxFFmpeg::UpdateCurrentPTS()
 {
   m_iCurrentPts = DVD_NOPTS_VALUE;
-  for(int i=0;i<MAX_STREAMS;i++)
+  for(unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
   {
     AVStream *stream = m_pFormatContext->streams[i];
     if(stream && stream->cur_dts != (int64_t)AV_NOPTS_VALUE)
@@ -1194,7 +1194,9 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
   if (stream)
   {
     unsigned int in = stream->codec_fourcc;
-    // audio codecs have 2 byte IDs that don't make much sense so only use FourCC for video
+    // FourCC codes are only valid on video streams, audio codecs in AVI/WAV 
+    // are 2 bytes and audio codecs in transport streams have subtle variation
+    // e.g AC-3 instead of ac3
     if (stream->type == STREAM_VIDEO && in != 0)
     {
       char fourcc[5];
@@ -1204,13 +1206,19 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
       fourcc[2] = (in >> 16) & 0xff;
       fourcc[3] = (in >> 24) & 0xff;
 #else
-      *(unsigned int*)fourcc = in;
+      memcpy(fourcc, &in, 4);
 #endif
       fourcc[4] = 0;
-      strName = fourcc;
-      strName.MakeLower();
+      // fourccs have to be 4 characters
+      if (strlen(fourcc) == 4)
+      {
+        strName = fourcc;
+        strName.MakeLower();
+        return;
+      }
     }
-    else if (m_dllAvCodec.IsLoaded())
+
+    if (m_dllAvCodec.IsLoaded())
     {
       AVCodec *codec = m_dllAvCodec.avcodec_find_decoder(stream->codec);
       if (codec)

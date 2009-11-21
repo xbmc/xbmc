@@ -57,7 +57,9 @@
 #define GUARD_MAGIC 0xe3
 #endif /* DEBUG */
 
-#if __APPLE_CC__ == 5490
+/* Disable optimization on OSX ppc
+   Compilation fails in release mode both with Apple gcc build 5490 and 5493 */
+#if defined(__APPLE__) && defined(__ppc__)
 #pragma GCC optimization_level 0
 #endif
 
@@ -475,6 +477,6 @@ ref_release(void *p)
 	refmem_dbg(REF_DBG_DEBUG, "%s(%p) }\n", __FUNCTION__, p);
 }
 
-#if __APPLE_CC__ == 5490
+#if defined(__APPLE__) && defined(__ppc__)
 #pragma GCC optimization_level reset
 #endif

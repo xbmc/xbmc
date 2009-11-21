@@ -108,10 +108,10 @@ void XBMCHelper::Configure()
 
   // Read the new configuration.
   m_errorStarting = false;
-  m_mode = g_guiSettings.GetInt("appleremote.mode");
-  m_sequenceDelay = g_guiSettings.GetInt("appleremote.sequencetime");
-  m_alwaysOn = g_guiSettings.GetBool("appleremote.alwayson");
-  CStdString port_string = g_guiSettings.GetString("remoteevents.port");
+  m_mode = g_guiSettings.GetInt("input.appleremotemode");
+  m_sequenceDelay = g_guiSettings.GetInt("input.appleremotesequencetime");
+  m_alwaysOn = g_guiSettings.GetBool("input.appleremotealwayson");
+  CStdString port_string = g_guiSettings.GetString("services.esport");
   m_port = atoi(port_string.c_str());
 
 
@@ -123,7 +123,7 @@ void XBMCHelper::Configure()
       m_errorStarting = true;
 
     m_mode = APPLE_REMOTE_DISABLED;
-    g_guiSettings.SetInt("appleremote.mode", APPLE_REMOTE_DISABLED);
+    g_guiSettings.SetInt("input.appleremotemode", APPLE_REMOTE_DISABLED);
   }
 
   // New configuration.

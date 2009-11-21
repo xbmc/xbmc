@@ -405,16 +405,16 @@ bool CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const CStdString&
 // \brief Enable/Disable nav sounds
 void CGUIAudioManager::Enable(bool bEnable)
 {
-  m_bEnabled=bEnable;
-
   // always deinit audio when we don't want gui sounds
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
     bEnable = false;
 
-  if (bEnable)
+  if (bEnable && !m_bInitialized)
     Initialize(CAudioContext::DEFAULT_DEVICE);
-  else if (!bEnable)
+  else if (!bEnable && m_bInitialized)
     DeInitialize(CAudioContext::DEFAULT_DEVICE);
+
+  m_bEnabled=bEnable;
 }
 
 // \brief Sets the volume of all playing sounds

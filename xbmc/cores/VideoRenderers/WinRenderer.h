@@ -22,10 +22,12 @@
  */
 
 #if !defined(_LINUX) && !defined(HAS_GL)
-#include "resolution.h"
+
 #include "GraphicContext.h"
 #include "RenderFlags.h"
 #include "BaseRenderer.h"
+#include "D3DResource.h"
+#include "settings/VideoSettings.h"
 
 #include "../dsplayer/subpic/CoordGeom.h"
 #include <atlbase.h>
@@ -37,23 +39,8 @@
 #define NUM_BUFFERS 2
 #endif
 
-#define MAX_PLANES 3
-#define MAX_FIELDS 3
-
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
-
-typedef struct YV12Image
-{
-  BYTE *   plane[MAX_PLANES];
-  unsigned stride[MAX_PLANES];
-  unsigned width;
-  unsigned height;
-  unsigned flags;
-
-  unsigned cshift_x; /* this is the chroma shift used */
-  unsigned cshift_y;
-} YV12Image;
 
 #define AUTOSOURCE -1
 
@@ -116,24 +103,13 @@ struct YUVRANGE
   int v_min, v_max;
 };
 
-struct YUVCOEF
-{
-  float r_up, r_vp;
-  float g_up, g_vp;
-  float b_up, b_vp;
-};
-
 extern YUVRANGE yuv_range_lim;
 extern YUVRANGE yuv_range_full;
-extern YUVCOEF yuv_coef_bt601;
-extern YUVCOEF yuv_coef_bt709;
-extern YUVCOEF yuv_coef_ebu;
-extern YUVCOEF yuv_coef_smtp240m;
 
-class CWinRenderer : public CVideoBaseRenderer
+class CWinRenderer : public CBaseRenderer
 {
 public:
-  CWinRenderer(LPDIRECT3DDEVICE9 pDevice);
+  CWinRenderer();
   ~CWinRenderer();
 
   virtual void Update(bool bPauseDrawing);
@@ -145,7 +121,6 @@ public:
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
-  virtual void         DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride);
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
@@ -154,9 +129,11 @@ public:
 
   virtual void         PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface);
   // TODO:DIRECTX - implement these
-  virtual bool         SupportsBrightness() { return false; }
-  virtual bool         SupportsContrast() { return false; }
+  virtual bool         SupportsBrightness() { return true; }
+  virtual bool         SupportsContrast() { return true; }
   virtual bool         SupportsGamma() { return false; }
+  virtual bool         Supports(EINTERLACEMETHOD method);
+  virtual bool         Supports(ESCALINGMETHOD method);
 
   virtual void AutoCrop(bool bCrop);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
@@ -165,9 +142,6 @@ protected:
   virtual void Render(DWORD flags);
   void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
-  void DeleteOSDTextures(int index);
-  void Setup_Y8A8Render();
-  void RenderOSD();
   void DeleteYV12Texture(int index);
   void ClearYV12Texture(int index);
   bool CreateYV12Texture(int index);
@@ -183,19 +157,8 @@ protected:
 
   bool m_bConfigured;
   bool m_bDshow;
-  // OSD stuff
-  LPDIRECT3DTEXTURE9 m_pOSDYTexture[NUM_BUFFERS];
-  LPDIRECT3DTEXTURE9 m_pOSDATexture[NUM_BUFFERS];
-  float m_OSDWidth;
-  float m_OSDHeight;
-  DRAWRECT m_OSDRect;
-  int m_iOSDRenderBuffer;
-  int m_iOSDTextureWidth;
-  int m_iOSDTextureHeight[NUM_BUFFERS];
-  int m_NumOSDBuffers;
-  bool m_OSDRendered;
 
-  typedef LPDIRECT3DTEXTURE9      YUVVIDEOPLANES[MAX_PLANES];
+  typedef CD3DTexture             YUVVIDEOPLANES[MAX_PLANES];
   typedef BYTE*                   YUVMEMORYPLANES[MAX_PLANES];
   typedef YUVVIDEOPLANES          YUVVIDEOBUFFERS[NUM_BUFFERS];
   typedef YUVMEMORYPLANES         YUVMEMORYBUFFERS[NUM_BUFFERS];
@@ -222,19 +185,19 @@ protected:
   YUVVIDEOBUFFERS m_YUVVideoTexture;
   YUVMEMORYBUFFERS m_YUVMemoryTexture;
 
-  // render device
-  LPDIRECT3DDEVICE9 m_pD3DDevice;
-  ID3DXEffect*  m_pYUV2RGBEffect;
+  CD3DEffect  m_YUV2RGBEffect;
 
   // clear colour for "black" bars
   DWORD m_clearColour;
+  unsigned int m_flags;
+  CRect m_crop;
 };
 
 
 class CPixelShaderRenderer : public CWinRenderer
 {
 public:
-  CPixelShaderRenderer(LPDIRECT3DDEVICE9 pDevice);
+  CPixelShaderRenderer();
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
 
 protected:

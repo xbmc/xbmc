@@ -28,6 +28,7 @@
 #include "utils/Network.h"
 #include "utils/Weather.h"
 #include "GUIPassword.h"
+#include "GUIWindowLoginScreen.h"
 #include "GUIWindowManager.h"
 #include "FileSystem/Directory.h"
 #include "FileItem.h"
@@ -44,10 +45,13 @@ using namespace DIRECTORY;
 CGUIWindowSettingsProfile::CGUIWindowSettingsProfile(void)
     : CGUIWindow(WINDOW_SETTINGS_PROFILES, "SettingsProfile.xml")
 {
+  m_listItems = new CFileItemList;
 }
 
 CGUIWindowSettingsProfile::~CGUIWindowSettingsProfile(void)
-{}
+{
+  delete m_listItems;
+}
 
 bool CGUIWindowSettingsProfile::OnAction(const CAction &action)
 {
@@ -104,20 +108,8 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, g_windowManager.GetActiveWindow(), iCtrlID);
     g_windowManager.SendMessage(msg2);
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
-    bool bOldMaster = g_passwordManager.bMasterUser;
-    g_passwordManager.bMasterUser = true;
-    g_settings.LoadProfile(iItem);
-    g_application.StartEventServer(); // event server could be needed in some situations
-
-    g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate();
-    g_settings.SaveProfiles(PROFILES_FILE); // to set last loaded
-
-    g_passwordManager.bMasterUser = bOldMaster;
-    CGUIMessage msg3(GUI_MSG_SETFOCUS, g_windowManager.GetActiveWindow(), iCtrlID, 0);
-    OnMessage(msg3);
-    CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, g_windowManager.GetActiveWindow(), iCtrlID, msg2.GetParam1(), msg2.GetParam2());
-    OnMessage(msgSelect);
-    g_weatherManager.Refresh();
+    CGUIWindowLoginScreen::LoadProfile(iItem);
+    return;
   }
 
   if (iButton == btnDelete)
@@ -221,17 +213,15 @@ void CGUIWindowSettingsProfile::LoadList()
     item->SetLabel2(profile.getDate());
     item->SetThumbnailImage(profile.getThumb());
     item->SetOverlayImage(profile.getLockMode() == LOCK_MODE_EVERYONE ? CGUIListItem::ICON_OVERLAY_NONE : CGUIListItem::ICON_OVERLAY_LOCKED);
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, item);
-    g_windowManager.SendMessage(msg);
-    m_vecListItems.push_back(item);
+    m_listItems->Add(item);
   }
   {
     CFileItemPtr item(new CFileItem(g_localizeStrings.Get(20058)));
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, item);
-    g_windowManager.SendMessage(msg);
     item->m_strPath.Empty();
-    m_vecListItems.push_back(item);
+    m_listItems->Add(item);
   }
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PROFILES, 0, 0, m_listItems);
+  OnMessage(msg);
 
   if (g_settings.bUseLoginScreen)
   {
@@ -248,7 +238,7 @@ void CGUIWindowSettingsProfile::ClearListItems()
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PROFILES);
   g_windowManager.SendMessage(msg);
 
-  m_vecListItems.erase(m_vecListItems.begin(), m_vecListItems.end());
+  m_listItems->Clear();
 }
 
 void CGUIWindowSettingsProfile::OnInitWindow()

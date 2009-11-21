@@ -148,7 +148,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       { // don't allow resolution switching if we are playing a video
 
 #ifdef HAS_VIDEO_PLAYBACK
-        int res = g_renderManager.GetResolution();
+        RESOLUTION res = g_renderManager.GetResolution();
         g_graphicsContext.SetVideoResolution(res);
         // Inform the renderer so we can update the resolution
         g_renderManager.Update(false);
@@ -164,7 +164,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
         m_iCurRes = (unsigned int)-1;
         g_graphicsContext.GetAllowedResolutions(m_Res);
         // find our starting resolution
-        int curRes = g_graphicsContext.GetVideoResolution();
+        RESOLUTION curRes = g_graphicsContext.GetVideoResolution();
         for (UINT i = 0; i < m_Res.size(); i++)
         {
           // If it's a CUSTOM (monitor) resolution, then g_graphicsContext.GetAllowedResolutions()

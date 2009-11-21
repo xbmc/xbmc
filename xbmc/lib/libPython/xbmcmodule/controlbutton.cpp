@@ -124,7 +124,7 @@ namespace PYXBMC
     }
 
 
-    if (!PyGetUnicodeString(self->strText, pObjectText, 5))
+    if (!PyXBMCGetUnicodeString(self->strText, pObjectText, 5))
     {
       Py_DECREF( self );
       return NULL;
@@ -133,10 +133,10 @@ namespace PYXBMC
     // if texture is supplied use it, else get default ones
     self->strTextureFocus = cTextureFocus ?
       cTextureFocus :
-      PyGetDefaultImage((char*)"button", (char*)"texturefocus", (char*)"button-focus.png");
+      PyXBMCGetDefaultImage((char*)"button", (char*)"texturefocus", (char*)"button-focus.png");
     self->strTextureNoFocus = cTextureNoFocus ?
       cTextureNoFocus :
-      PyGetDefaultImage((char*)"button", (char*)"texturenofocus", (char*)"button-nofocus.jpg");
+      PyXBMCGetDefaultImage((char*)"button", (char*)"texturenofocus", (char*)"button-nofocus.jpg");
 
     if (cFont) self->strFont = cFont;
     if (cTextColor) sscanf( cTextColor, "%x", &self->textColor );
@@ -207,12 +207,12 @@ namespace PYXBMC
 
     if (cDisabledColor) sscanf(cDisabledColor, "%x", &self->disabledColor);
 
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl)
     {
       ((CGUIButtonControl*)self->pGUIControl)->PythonSetDisabledColor(self->disabledColor);
     }
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -270,15 +270,15 @@ namespace PYXBMC
     {
       return NULL;
     }
-    if (pObjectText) PyGetUnicodeString(self->strText, pObjectText, 1);
-    if (pObjectText2) PyGetUnicodeString(self->strText2, pObjectText2, 1);
+    if (pObjectText) PyXBMCGetUnicodeString(self->strText, pObjectText, 1);
+    if (pObjectText2) PyXBMCGetUnicodeString(self->strText2, pObjectText2, 1);
     if (cFont) self->strFont = cFont;
     if (cTextColor) sscanf(cTextColor, "%x", &self->textColor);
     if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->disabledColor );
     if (cShadowColor) sscanf(cShadowColor, "%x", &self->shadowColor);
     if (cFocusedColor) sscanf(cFocusedColor, "%x", &self->focusedColor);
 
-    PyGUILock();
+    PyXBMCGUILock();
     if (self->pGUIControl)
     {
       ((CGUIButtonControl*)self->pGUIControl)->PythonSetLabel(
@@ -286,7 +286,7 @@ namespace PYXBMC
       ((CGUIButtonControl*)self->pGUIControl)->SetLabel2(self->strText2);
       ((CGUIButtonControl*)self->pGUIControl)->PythonSetDisabledColor(self->disabledColor);
     }
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -303,10 +303,10 @@ namespace PYXBMC
   {
     if (!self->pGUIControl) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     CStdStringW label;
     g_charsetConverter.utf8ToW(((CGUIButtonControl*) self->pGUIControl)->GetLabel(), label);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     return Py_BuildValue((char*)"u", label.c_str());
   }
@@ -322,10 +322,10 @@ namespace PYXBMC
   {
     if (!self->pGUIControl) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     CStdStringW label;
     g_charsetConverter.utf8ToW(((CGUIButtonControl*) self->pGUIControl)->GetLabel2(), label);
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     return Py_BuildValue((char*)"u", label.c_str());
   }
@@ -381,7 +381,7 @@ namespace PYXBMC
 
   void initControlButton_Type()
   {
-    PyInitializeTypeObject(&ControlButton_Type);
+    PyXBMCInitializeTypeObject(&ControlButton_Type);
 
     ControlButton_Type.tp_name = (char*)"xbmcgui.ControlButton";
     ControlButton_Type.tp_basicsize = sizeof(ControlButton);

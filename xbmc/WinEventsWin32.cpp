@@ -23,6 +23,7 @@
 #include "Windowsx.h"
 #include "WinEvents.h"
 #include "WIN32Util.h"
+#include "Win32StorageProvider.h"
 #include "Application.h"
 #include "XBMC_vkeys.h"
 #include "MouseStat.h"
@@ -434,9 +435,50 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       m_pEventFunc(newEvent);
     }
     return(0);
+    case WM_APPCOMMAND: // MULTIMEDIA keys are mapped to APPCOMMANDS
+    {
+      CLog::Log(LOGDEBUG, "WinEventsWin32.cpp: APPCOMMAND %d", GET_APPCOMMAND_LPARAM(lParam));
+      newEvent.appcommand.type = XBMC_APPCOMMAND;
+      newEvent.appcommand.action = 0;
+
+      switch (GET_APPCOMMAND_LPARAM(lParam))
+      {
+        case APPCOMMAND_MEDIA_PLAY:
+          newEvent.appcommand.action = ACTION_PLAYER_PLAY;
+          break;
+        case APPCOMMAND_MEDIA_PAUSE:
+          newEvent.appcommand.action = ACTION_PAUSE;
+          break;
+        case APPCOMMAND_MEDIA_PLAY_PAUSE:
+          if (g_application.IsPaused())
+            newEvent.appcommand.action = ACTION_PLAYER_PLAY;
+          else
+            newEvent.appcommand.action = ACTION_PAUSE;
+          break;
+        case APPCOMMAND_MEDIA_STOP:
+          newEvent.appcommand.action = ACTION_STOP;
+          break;
+        case APPCOMMAND_MEDIA_PREVIOUSTRACK:
+          newEvent.appcommand.action = ACTION_PREV_ITEM;
+          break;
+        case APPCOMMAND_MEDIA_NEXTTRACK:
+          newEvent.appcommand.action = ACTION_NEXT_ITEM;
+          break;
+      }
+      if (newEvent.appcommand.action != 0)
+      {
+        m_pEventFunc(newEvent);
+        return 1; // should return TRUE if application handled the event
+      }
+      break;
+    }
     case WM_SYSCHAR:
       if (wParam == VK_RETURN) //stop system beep on alt-return
         return 0;
+      break;
+    case WM_SETCURSOR:
+      if (HTCLIENT != LOWORD(lParam))
+        g_Windowing.ShowOSMouse(true);
       break;
     case WM_MOUSEMOVE:
       newEvent.type = XBMC_MOUSEMOTION;
@@ -500,13 +542,6 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       if (newEvent.resize.w * newEvent.resize.h)
         m_pEventFunc(newEvent);
       return(0);
-    case WM_SETCURSOR:
-      if (HTCLIENT == LOWORD(lParam))
-      {
-        SetCursor(NULL);
-        return(1);
-      }
-      break;
     case WM_DEVICECHANGE:
       PDEV_BROADCAST_HDR lpdb = (PDEV_BROADCAST_HDR)lParam;
       switch(wParam)
@@ -527,12 +562,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
               else
               {
                 // USB drive inserted
-                CMediaSource share;
-                share.strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-                share.strName.Format("%s (%s)", g_localizeStrings.Get(437), share.strPath);
-                share.m_ignore = true;
-                share.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
-                g_mediaManager.AddAutoSource(share);
+                CWin32StorageProvider::SetEvent();
               }
            }
            break;
@@ -553,10 +583,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
               else
               {
                 // USB drive was removed
-                CMediaSource share;
-                share.strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-                share.strName.Format("%s (%s)", g_localizeStrings.Get(437), share.strPath);
-                g_mediaManager.RemoveAutoSource(share);
+                CWin32StorageProvider::SetEvent();
               }
            }
            break;

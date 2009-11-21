@@ -367,9 +367,9 @@ class CDateTime;
 #define SYSTEM_GET_BOOL             704
 #define SYSTEM_GET_CORE_USAGE       705
 #define SYSTEM_HAS_CORE_ID          706
-#define SYSTEM_OPENGL_VENDOR        707
-#define SYSTEM_OPENGL_RENDERER      708
-#define SYSTEM_OPENGL_VERSION       709
+#define SYSTEM_RENDER_VENDOR        707
+#define SYSTEM_RENDER_RENDERER      708
+#define SYSTEM_RENDER_VERSION       709
 #define SYSTEM_SETTING              710
 
 #define LIBRARY_HAS_MUSIC           720
@@ -418,7 +418,9 @@ class CDateTime;
 #define CONTROL_HAS_FOCUS           30000
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
-#define VERSION_STRING "pre-9.10"
+// Version string MUST NOT contain spaces.  It is used
+// in the HTTP request user agent.
+#define VERSION_STRING "9.11-alpha2"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
@@ -474,10 +476,13 @@ class CDateTime;
 #define LISTITEM_AUDIO_CHANNELS     (LISTITEM_START + 50)
 #define LISTITEM_AUDIO_LANGUAGE     (LISTITEM_START + 51)
 #define LISTITEM_SUBTITLE_LANGUAGE  (LISTITEM_START + 52)
+#define LISTITEM_IS_FOLDER          (LISTITEM_START + 53)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
 #define LISTITEM_END                (LISTITEM_PROPERTY_END)
+
+#define MUSICPLAYER_PROPERTY_OFFSET 900 // last 100 id's reserved for musicplayer props.
 
 // the multiple information vector
 #define MULTI_INFO_START              40000
@@ -630,7 +635,7 @@ protected:
   // The offset into the string parameters array is returned.
   int ConditionalStringParameter(const CStdString &strParameter);
   int AddMultiInfo(const GUIInfo &info);
-  int AddListItemProp(const CStdString &str);
+  int AddListItemProp(const CStdString &str, int offset=0);
 
   CStdString GetAudioScrobblerLabel(int item);
 

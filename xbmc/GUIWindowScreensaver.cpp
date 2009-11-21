@@ -120,7 +120,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       m_bInitialized = false;
 
       // remove z-buffer
-//      int res = g_graphicsContext.GetVideoResolution();
+//      RESOLUTION res = g_graphicsContext.GetVideoResolution();
  //     g_graphicsContext.SetVideoResolution(res, FALSE);
 
       // enable the overlay
@@ -157,7 +157,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       }
 #endif
       // setup a z-buffer
-//      int res = g_graphicsContext.GetVideoResolution();
+//      RESOLUTION res = g_graphicsContext.GetVideoResolution();
 //      g_graphicsContext.SetVideoResolution(res, TRUE);
 
       // disable the overlay

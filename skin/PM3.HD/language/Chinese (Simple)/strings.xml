@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Based on english strings version 24569 -->
 <strings>
   <string id="31000">静音</string>
   <string id="31001">工作中...</string>
@@ -62,7 +63,7 @@
   <string id="31057">关闭播放列表</string>
   <string id="31058">系统音乐文件</string>
   <string id="31059">当前播放列表</string>
-  <string id="31060">这是一个堆叠文件,请选择要播放的部分.</string>
+  <string id="31060">这是一个堆叠文件，请选择要播放的片段。</string>
   
   <!-- Skin Settings labels -->
   <string id="31100">背景选项</string>
@@ -75,24 +76,25 @@
   <string id="31107">除掉背景中的扫描线</string>
   <string id="31108">视频播放时除掉背景中的扫描线</string>
   <string id="31109">主屏幕背景</string>
-  <string id="31110">按键 - 定制背景</string>
+  <string id="31110">按钮 - 定制背景</string>
   <string id="31111">歌词中始终显示音乐信息</string>
   <string id="31112">在宽屏图标中显示媒体标题</string>
   <string id="31113">单个图片</string>
   <string id="31114">多个图片</string>
   <string id="31115">将音频设置按钮改为图文电视</string>
+  <string id="31116">在媒体视图隐藏视频标识</string>
 
   <!-- Script Settings labels -->
-  <string id="31200">定制脚本程序选项选项</string>
+  <string id="31200">定制脚本程序选项</string>
   <string id="31201"></string>
   <string id="31202"></string>
-  <string id="31203">设置按键标签</string>
+  <string id="31203">设置按钮标签</string>
   <string id="31204">脚本程序目录</string>
   <string id="31205"></string>
   <string id="31206"></string>
-  <string id="31207">在OSD中显示字幕下载按钮</string>
-  <string id="31208">在视频OSD中显示歌词脚本按钮</string>
-  <string id="31209">启用快速运行脚本按键为 -</string>
+  <string id="31207">在OSD菜单显示字幕下载按钮</string>
+  <string id="31208">在OSD菜单显示歌词脚本按钮</string>
+  <string id="31209">启用快速运行脚本按钮为 -</string>
 
   <!-- AMT Script Extra labels -->
   <string id="31300">显示演员表</string>

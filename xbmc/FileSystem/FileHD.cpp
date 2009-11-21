@@ -23,6 +23,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "GUISettings.h"
+#include "utils/AliasShortcutUtils.h"
 #ifdef _LINUX
 #include "XHandle.h"
 #endif
@@ -35,6 +36,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #endif
+
 
 using namespace XFILE;
 
@@ -75,6 +77,9 @@ CStdString CFileHD::GetLocal(const CURL &url)
 #ifndef _LINUX
   path.Replace('/', '\\');
 #endif
+
+  if (IsAliasShortcut(path))
+    TranslateAliasShortcut(path);
 
   return path;
 }
@@ -145,22 +150,23 @@ int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 #endif
 }
 
+bool CFileHD::SetHidden(const CURL &url, bool hidden)
+{
+#ifdef _WIN32
+  CStdStringW path;
+  g_charsetConverter.utf8ToW(GetLocal(url), path, false);
+  DWORD attributes = hidden ? FILE_ATTRIBUTE_HIDDEN : FILE_ATTRIBUTE_NORMAL;
+  if (SetFileAttributesW(path.c_str(), attributes))
+    return true;
+#endif
+  return false;
+}
 
 //*********************************************************************************************
 bool CFileHD::OpenForWrite(const CURL& url, bool bOverWrite)
 {
   // make sure it's a legal FATX filename (we are writing to the harddisk)
   CStdString strPath = GetLocal(url);
-
-#ifdef HAS_FTP_SERVER
-  if (g_guiSettings.GetBool("servers.ftpautofatx")) // allow overriding
-  {
-    CStdString strPathOriginal = strPath;
-    CUtil::GetFatXQualifiedPath(strPath);
-    if (strPathOriginal != strPath)
-      CLog::Log(LOGINFO,"CFileHD::OpenForWrite: WARNING: Truncated filename %s %s", strPathOriginal.c_str(), strPath.c_str());
-  }
-#endif
 
 #ifdef _WIN32
   CStdStringW strWPath;

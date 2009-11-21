@@ -38,6 +38,7 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "FileSystem/MultiPathDirectory.h"
+#include "AdvancedSettings.h"
 #include "Settings.h"
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
@@ -80,7 +81,10 @@ bool CGUIDialogFileBrowser::OnAction(const CAction &action)
 {
   if (action.id == ACTION_PARENT_DIR)
   {
-    GoParentFolder();
+    if (m_vecItems->IsVirtualDirectoryRoot() && g_advancedSettings.m_bUseEvilB)
+      Close();
+    else
+      GoParentFolder();
     return true;
   }
   if ((action.id == ACTION_CONTEXT_MENU || action.id == ACTION_MOUSE_RIGHT_CLICK) && m_Directory->m_strPath.IsEmpty())
@@ -329,7 +333,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
 
     // check if current directory is a root share
-/*    if (!g_guiSettings.GetBool("filelists.hideparentdiritems"))
+/*    if (g_guiSettings.GetBool("filelists.showparentdiritems"))
     {*/
       if ( !m_rootDir.IsSource(strDirectory))
       {
@@ -576,7 +580,7 @@ void CGUIDialogFileBrowser::OnWindowUnload()
   m_viewControl.Reset();
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURCES &shares, const CStdString &heading, CStdString &result, bool* flip)
+bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURCES &shares, const CStdString &heading, CStdString &result, bool* flip, int label)
 {
   CStdString mask = ".png|.jpg|.bmp|.gif";
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
@@ -606,7 +610,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURC
     { // "Browse for thumb"
       g_windowManager.Remove(browser->GetID());
       delete browser;
-      return ShowAndGetImage(shares, g_localizeStrings.Get(21371), result);
+      return ShowAndGetImage(shares, g_localizeStrings.Get(label), result);
     }
   }
 
@@ -632,7 +636,7 @@ bool CGUIDialogFileBrowser::ShowAndGetDirectory(const VECSOURCES &shares, const 
     VECSOURCES shareWritable;
     for (unsigned int i=0;i<shares.size();++i)
     {
-      if (shares[i].isWritable())
+      if (shares[i].IsWritable())
         shareWritable.push_back(shares[i]);
     }
 
@@ -814,6 +818,7 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
       share.strPath = path; //setPath(path);
       CURL url(path);
       share.strName = url.GetWithoutUserDetails();
+      CUtil::RemoveSlashAtEnd(share.strName);
       m_shares.push_back(share);
       // add to our location manager...
       g_mediaManager.AddNetworkLocation(path);

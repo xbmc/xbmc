@@ -14,6 +14,7 @@ EXPORTS
 	c_APEDecompress_GetData
 	c_APEDecompress_Seek
 	c_APEDecompress_GetInfo
+	c_APEDecompress_GetTag
 
 	c_APECompress_Create
 	c_APECompress_Destroy
@@ -27,8 +28,6 @@ EXPORTS
 
 	; helpers / miscellaneous
 	GetVersionNumber
-	GetInterfaceCompatibility
-	ShowFileInfoDialog
 	RemoveTag
 	TagFileSimple
 	GetID3Tag

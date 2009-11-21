@@ -34,10 +34,9 @@ Helper functions
 *****************************************************************************************/
 #if defined(__linux__) || defined(__APPLE__)
 #define __declspec(x) 
-#endif
-
 #ifndef __int64
 typedef int64_t __int64;
+#endif
 #endif
 
 extern "C"
@@ -110,7 +109,8 @@ extern "C"
 	__declspec( dllexport ) void __stdcall c_APEDecompress_Destroy(APE_DECOMPRESS_HANDLE hAPEDecompress);
 	__declspec( dllexport ) int __stdcall c_APEDecompress_GetData(APE_DECOMPRESS_HANDLE hAPEDecompress, char * pBuffer, int nBlocks, int * pBlocksRetrieved);
 	__declspec( dllexport ) int __stdcall c_APEDecompress_Seek(APE_DECOMPRESS_HANDLE hAPEDecompress, int nBlockOffset);
-	__declspec( dllexport ) int __stdcall c_APEDecompress_GetInfo(APE_DECOMPRESS_HANDLE hAPEDecompress, APE_DECOMPRESS_FIELDS Field, int nParam1 = 0, int nParam2 = 0);
+	__declspec( dllexport ) int __stdcall c_APEDecompress_GetInfo(APE_DECOMPRESS_HANDLE hAPEDecompress, APE_DECOMPRESS_FIELDS Field, int nParam1 = 0, void *pParam2 = 0);
+	__declspec( dllexport ) CAPETag *__stdcall c_APEDecompress_GetTag(APE_DECOMPRESS_HANDLE hAPEDecompress);
 }
 
 #endif // #ifndef APE_MACDLL_H

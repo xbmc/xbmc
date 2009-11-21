@@ -91,7 +91,7 @@ bool CxImageBMP::Decode(CxFile * hFile)
 	bf.bfSize = my_ntohl(bf.bfSize); 
 	bf.bfOffBits = my_ntohl(bf.bfOffBits); 
 
-    if (bf.bfType != BFT_BITMAP) { //do we have a RC HEADER?
+    if (my_ntohs(bf.bfType) != BFT_BITMAP) { //do we have a RC HEADER?
         bf.bfOffBits = 0L;
         hFile->Seek(off,SEEK_SET);
     }

@@ -87,23 +87,23 @@ public:
   bool IsFullScreenVideo() const;
   bool IsCalibrating() const;
   void SetCalibrating(bool bOnOff);
-  bool IsValidResolution(int res);
-  void SetVideoResolution(int res, bool forceUpdate = false);
-  int GetVideoResolution() const;
-  void ResetOverscan(int res, OVERSCAN &overscan);
+  bool IsValidResolution(RESOLUTION res);
+  void SetVideoResolution(RESOLUTION res, bool forceUpdate = false);
+  RESOLUTION GetVideoResolution() const;
+  void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetOverscan(RESOLUTION_INFO &resinfo);
-  void ResetScreenParameters(int res);
+  void ResetScreenParameters(RESOLUTION res);
   void Lock() { EnterCriticalSection(*this);  }
   void Unlock() { LeaveCriticalSection(*this); }
-  float GetPixelRatio(int iRes) const;
+  float GetPixelRatio(RESOLUTION iRes) const;
   void CaptureStateBlock();
   void ApplyStateBlock();
   void Clear();
-  void GetAllowedResolutions(std::vector<int> &res);
+  void GetAllowedResolutions(std::vector<RESOLUTION> &res);
 
   // output scaling
-  void SetRenderingResolution(int res, float posX, float posY, bool needsScaling);  ///< Sets scaling up for rendering
-  void SetScalingResolution(int res, float posX, float posY, bool needsScaling);    ///< Sets scaling up for skin loading etc.
+  void SetRenderingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  ///< Sets scaling up for rendering
+  void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);    ///< Sets scaling up for skin loading etc.
   float GetScalingPixelRatio() const;
   void Flip();
   void InvertFinalCoords(float &x, float &y) const;
@@ -159,7 +159,7 @@ public:
   }
 
 protected:
-  void SetFullScreenViewWindow(int &res);
+  void SetFullScreenViewWindow(RESOLUTION &res);
 
   std::stack<CRect> m_viewStack;
 
@@ -173,12 +173,12 @@ protected:
   bool m_bFullScreenRoot;
   bool m_bFullScreenVideo;
   bool m_bCalibrating;
-  int m_Resolution;
+  RESOLUTION m_Resolution;
 
 private:
   void UpdateCameraPosition(const CPoint &camera);
   void UpdateFinalTransform(const TransformMatrix &matrix);
-  int m_windowResolution;
+  RESOLUTION m_windowResolution;
   float m_guiScaleX;
   float m_guiScaleY;
   std::stack<CPoint> m_cameras;

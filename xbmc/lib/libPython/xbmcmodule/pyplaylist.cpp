@@ -184,7 +184,7 @@ namespace PYXBMC
     }
 
     CStdString strUrl = "";
-    if (!PyGetUnicodeString(strUrl, pObjectUrl)) return NULL;
+    if (!PyXBMCGetUnicodeString(strUrl, pObjectUrl)) return NULL;
 
     if (pObjectListItem != NULL && !ListItem_CheckExact(pObjectListItem))
     {
@@ -437,7 +437,7 @@ namespace PYXBMC
 
   void initPlayListItem_Type()
   {
-    PyInitializeTypeObject(&PlayListItem_Type);
+    PyXBMCInitializeTypeObject(&PlayListItem_Type);
 
     PlayListItem_Type.tp_name = (char*)"xbmc.PlayListItem";
     PlayListItem_Type.tp_basicsize = sizeof(PlayListItem);
@@ -453,7 +453,7 @@ namespace PYXBMC
 
   void initPlayList_Type()
   {
-    PyInitializeTypeObject(&PlayList_Type);
+    PyXBMCInitializeTypeObject(&PlayList_Type);
 
     PlayList_Type.tp_name = (char*)"xbmc.PlayList";
     PlayList_Type.tp_basicsize = sizeof(PlayList);

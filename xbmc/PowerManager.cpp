@@ -36,7 +36,9 @@
 #include "osx/CocoaPowerSyscall.h"
 #elif defined(_LINUX) && defined(HAS_DBUS)
 #include "linux/ConsoleDeviceKitPowerSyscall.h"
+#ifdef HAS_HAL
 #include "linux/HALPowerSyscall.h"
+#endif
 #elif defined(_WIN32)
 #include "win32/Win32PowerSyscall.h"
 #endif
@@ -52,21 +54,7 @@ CPowerManager g_powerManager;
 
 CPowerManager::CPowerManager()
 {
-  m_instance = NULL;
-
-#ifdef __APPLE__
-  m_instance = new CCocoaPowerSyscall();
-#elif defined(_LINUX) && defined(HAS_DBUS)
-  if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
-    m_instance = new CConsoleDeviceKitPowerSyscall();
-  else
-    m_instance = new CHALPowerSyscall();
-#elif defined(_WIN32)
-  m_instance = new CWin32PowerSyscall();
-#endif
-
-  if (m_instance == NULL)
-    m_instance = new CNullPowerSyscall();
+  m_instance = new CNullPowerSyscall();
 }
 
 CPowerManager::~CPowerManager()
@@ -76,7 +64,24 @@ CPowerManager::~CPowerManager()
 
 void CPowerManager::Initialize()
 {
-  int defaultShutdown = g_guiSettings.GetInt("system.shutdownstate");
+  delete m_instance;
+
+#ifdef __APPLE__
+  m_instance = new CCocoaPowerSyscall();
+#elif defined(_LINUX) && defined(HAS_DBUS)
+  if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
+    m_instance = new CConsoleDeviceKitPowerSyscall();
+#ifdef HAS_HAL
+  else
+    m_instance = new CHALPowerSyscall();
+#endif
+#elif defined(_WIN32)
+  m_instance = new CWin32PowerSyscall();
+#else
+  m_instance = new CNullPowerSyscall();
+#endif
+
+  int defaultShutdown = g_guiSettings.GetInt("powermanagement.shutdownstate");
 
   switch (defaultShutdown)
   {
@@ -115,7 +120,7 @@ void CPowerManager::Initialize()
     break;
   }
 
-  g_guiSettings.SetInt("system.shutdownstate", defaultShutdown);
+  g_guiSettings.SetInt("powermanagement.shutdownstate", defaultShutdown);
 }
   
 bool CPowerManager::Powerdown()
@@ -177,11 +182,7 @@ void CPowerManager::Resume()
   // restart and undim lcd
 #ifdef HAS_LCD
   CLog::Log(LOGNOTICE, "%s: Restarting lcd", __FUNCTION__);
-#ifdef _LINUX
   g_lcd->SetBackLight(1);
-#else
-  g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
-#endif
   g_lcd->Stop();
   g_lcd->Initialize();
 #endif

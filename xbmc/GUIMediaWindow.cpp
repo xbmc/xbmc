@@ -793,7 +793,10 @@ bool CGUIMediaWindow::OnClick(int iItem)
       return true;
     }
 
-    if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList())
+    // If karaoke song is being played AND popup autoselector is enabled, the playlist should not be added
+    bool do_not_add_karaoke = pItem->IsKaraoke() && g_guiSettings.GetBool("karaoke.autopopupselector");
+
+    if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList() && !do_not_add_karaoke )
     {
       // TODO: music videos!
       if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026) && m_guiState->GetPlaylist() == PLAYLIST_MUSIC) // 'add source button' in empty root
@@ -1238,6 +1241,13 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   {
     if (CPluginSettings::SettingsExist(item->m_strPath))
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
+    if (m_vecItems->m_strPath.Equals("plugin://music/")    ||
+        m_vecItems->m_strPath.Equals("plugin://video/")    ||
+        m_vecItems->m_strPath.Equals("plugin://pictures/") ||
+        m_vecItems->m_strPath.Equals("plugin://programs/")   )
+    {
+      buttons.Add(CONTEXT_BUTTON_DELETE_PLUGIN, 117);
+    }
   }
 
   if (item->GetPropertyBOOL("pluginreplacecontextitems"))
@@ -1267,6 +1277,16 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CURL url(m_vecItems->Get(itemNumber)->m_strPath);
       CGUIDialogPluginSettings::ShowAndGetInput(url);
+      return true;
+    }
+  case CONTEXT_BUTTON_DELETE_PLUGIN:
+    {
+      CStdString path;
+      CUtil::GetDirectory(m_vecItems->Get(itemNumber)->m_strPath,path);
+      CFileItem item2(path,true);
+      if (CGUIWindowFileManager::DeleteItem(&item2))
+        Update(m_vecItems->m_strPath);
+
       return true;
     }
   case CONTEXT_BUTTON_USER1:

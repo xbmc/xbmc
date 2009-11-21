@@ -24,7 +24,7 @@
 #include <stdint.h>
 #include "StdString.h"
 
-enum XBMCRESOLUTION : int{
+enum RESOLUTION {
   RES_INVALID = -1,
   RES_HDTV_1080i = 0,
   RES_HDTV_720p = 1,

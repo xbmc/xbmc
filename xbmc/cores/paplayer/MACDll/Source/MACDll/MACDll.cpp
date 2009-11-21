@@ -1,6 +1,6 @@
 #include "MACDll.h"
 #include "resource.h"
-#if !defined(_LINUX) && !defined(__APPLE__)
+#if 0 // XBMC
 #include "WinFileIO.h"
 #include "APEInfoDialog.h"
 #include "WAVInfoDialog.h"
@@ -20,7 +20,7 @@ int __stdcall GetVersionNumber()
 	return MAC_VERSION_NUMBER;
 }
 
-#if !defined(_LINUX) && !defined(__APPLE__)
+#if 0 // XBMC
 int __stdcall GetInterfaceCompatibility(int nVersion, BOOL bDisplayWarningsOnFailure, HWND hwndParent)
 {
 	int nRetVal = 0;
@@ -177,9 +177,14 @@ int __stdcall c_APEDecompress_Seek(APE_DECOMPRESS_HANDLE hAPEDecompress, int nBl
 	return ((IAPEDecompress *) hAPEDecompress)->Seek(nBlockOffset);
 }
 
-int __stdcall c_APEDecompress_GetInfo(APE_DECOMPRESS_HANDLE hAPEDecompress, APE_DECOMPRESS_FIELDS Field, int nParam1, int nParam2)
+int __stdcall c_APEDecompress_GetInfo(APE_DECOMPRESS_HANDLE hAPEDecompress, APE_DECOMPRESS_FIELDS Field, int nParam1, void *pParam2)
 {
-	return ((IAPEDecompress *) hAPEDecompress)->GetInfo(Field, nParam1, nParam2);
+	return ((IAPEDecompress *) hAPEDecompress)->GetInfo(Field, nParam1, pParam2);
+}
+
+CAPETag *__stdcall c_APEDecompress_GetTag(APE_DECOMPRESS_HANDLE hAPEDecompress)
+{
+	return (CAPETag *)((IAPEDecompress *) hAPEDecompress)->GetPointer(APE_INFO_TAG);
 }
 
 /*****************************************************************************************
@@ -245,9 +250,9 @@ CAPETag * __stdcall c_GetAPETag(const str_ansi * pFilename, bool bCheckID3Tag)
 	IO_CLASS_NAME FileIO;
 	if (FileIO.Open(spFilename) != 0)
 		return NULL;
-
-	CAPETag *pAPETag = new CAPETag(&FileIO, TRUE);
-
+	
+	CAPETag *pAPETag = new CAPETag(&FileIO, TRUE, bCheckID3Tag);
+	
 	return pAPETag;
 }
 

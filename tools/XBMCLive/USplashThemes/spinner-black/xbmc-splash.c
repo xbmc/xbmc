@@ -85,21 +85,6 @@ struct usplash_theme usplash_theme = {
 	.background             = 0x01,
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
-	.text_background        = 0x01,
-	.text_foreground        = 0xB9,
-	.text_success           = 0x23,
-	.text_failure           = 0x24,
-
-	/* Text box position and size in pixels */
-	.text_x      			= 300,
-	.text_y      			= 650,
-	.text_width  			= 680,
-	.text_height 			= 300,
-
-	/* Text details */
-	.line_height  			= 15,
-	.line_length  			= 32,
-	.status_width 			= 50,
 
 	/* Functions */
 	.init = t_init,
@@ -121,21 +106,6 @@ struct usplash_theme usplash_theme_1920_1080 = {
 	.background             = 0x01,
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
-	.text_background        = 0x01,
-	.text_foreground        = 0xB9,
-	.text_success           = 0x23,
-	.text_failure           = 0x24,
-
-	/* Text box position and size in pixels */
-	.text_x      			= 300,
-	.text_y      			= 650,
-	.text_width  			= 680,
-	.text_height 			= 300,
-
-	/* Text details */
-	.line_height  			= 15,
-	.line_length  			= 32,
-	.status_width 			= 50,
 
 	/* Functions */
 	.init = t_init,
@@ -157,21 +127,6 @@ struct usplash_theme usplash_theme_1680_1050 = {
 	.background             = 0x01,
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
-	.text_background        = 0x01,
-	.text_foreground        = 0xB9,
-	.text_success           = 0x23,
-	.text_failure           = 0x24,
-
-	/* Text box position and size in pixels */
-	.text_x      			= 300,
-	.text_y      			= 650,
-	.text_width  			= 680,
-	.text_height 			= 300,
-
-	/* Text details */
-	.line_height  			= 15,
-	.line_length  			= 32,
-	.status_width 			= 50,
 
 	/* Functions */
 	.init = t_init,
@@ -193,21 +148,6 @@ struct usplash_theme usplash_theme_1440_900 = {
 	.background             = 0x01,
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
-	.text_background        = 0x01,
-	.text_foreground        = 0xB9,
-	.text_success           = 0x23,
-	.text_failure           = 0x24,
-
-	/* Text box position and size in pixels */
-	.text_x      			= 300,
-	.text_y      			= 650,
-	.text_width  			= 680,
-	.text_height 			= 300,
-
-	/* Text details */
-	.line_height  			= 15,
-	.line_length  			= 32,
-	.status_width 			= 50,
 
 	/* Functions */
 	.init = t_init,
@@ -229,21 +169,6 @@ struct usplash_theme usplash_theme_1280_1024 = {
 	.background             = 0x01,
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
-	.text_background        = 0x01,
-	.text_foreground        = 0xB9,
-	.text_success           = 0x23,
-	.text_failure           = 0x24,
-
-	/* Text box position and size in pixels */
-	.text_x      			= 300,
-	.text_y      			= 650,
-	.text_width  			= 680,
-	.text_height 			= 300,
-
-	/* Text details */
-	.line_height  			= 15,
-	.line_length  			= 32,
-	.status_width 			= 50,
 
 	/* Functions */
 	.init = t_init,
@@ -265,21 +190,6 @@ struct usplash_theme usplash_theme_1366_768 = {
 	.background             = 0x01,
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
-	.text_background        = 0x01,
-	.text_foreground        = 0xB9,
-	.text_success           = 0x23,
-	.text_failure           = 0x24,
-
-	/* Text box position and size in pixels */
-	.text_x      			= 300,
-	.text_y      			= 650,
-	.text_width  			= 680,
-	.text_height 			= 300,
-
-	/* Text details */
-	.line_height  			= 15,
-	.line_length  			= 32,
-	.status_width 			= 50,
 
 	/* Functions */
 	.init = t_init,
@@ -301,21 +211,6 @@ struct usplash_theme usplash_theme_1280_720 = {
 	.background             = 0x01,
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
-	.text_background        = 0x01,
-	.text_foreground        = 0xB9,
-	.text_success           = 0x23,
-	.text_failure           = 0x24,
-
-	/* Text box position and size in pixels */
-	.text_x      			= 300,
-	.text_y      			= 650,
-	.text_width  			= 680,
-	.text_height 			= 300,
-
-	/* Text details */
-	.line_height  			= 15,
-	.line_length  			= 32,
-	.status_width 			= 50,
 
 	/* Functions */
 	.init = t_init,
@@ -337,21 +232,6 @@ struct usplash_theme usplash_theme_1024_768 = {
 	.background             = 0x01,
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
-	.text_background        = 0x01,
-	.text_foreground        = 0xB9,
-	.text_success           = 0x23,
-	.text_failure           = 0x24,
-
-	/* Text box position and size in pixels */
-	.text_x      			= 300,
-	.text_y      			= 650,
-	.text_width  			= 680,
-	.text_height 			= 300,
-
-	/* Text details */
-	.line_height  			= 15,
-	.line_length  			= 32,
-	.status_width 			= 50,
 
 	/* Functions */
 	.init = t_init,
@@ -373,22 +253,7 @@ struct usplash_theme usplash_theme_800_600 = {
 	.background             = 0x01,
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
-	.text_background        = 0x01,
-	.text_foreground        = 0xB9,
-	.text_success           = 0x23,
-	.text_failure           = 0x24,
-
-	/* Text box position and size in pixels */
-	.text_x      			= 300,
-	.text_y      			= 650,
-	.text_width  			= 680,
-	.text_height 			= 300,
-
-	/* Text details */
-	.line_height  			= 15,
-	.line_length  			= 32,
-	.status_width 			= 50,
-
+	
 	/* Functions */
 	.init = t_init,
 	.clear_progressbar = t_clear_progressbar,
@@ -409,21 +274,6 @@ struct usplash_theme usplash_theme_640_480 = {
 	.background             = 0x01,
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
-	.text_background        = 0x01,
-	.text_foreground        = 0xB9,
-	.text_success           = 0x23,
-	.text_failure           = 0x24,
-
-	/* Text box position and size in pixels */
-	.text_x      			= 300,
-	.text_y      			= 650,
-	.text_width  			= 680,
-	.text_height 			= 300,
-
-	/* Text details */
-	.line_height  			= 15,
-	.line_length  			= 32,
-	.status_width 			= 50,
 
 	/* Functions */
 	.init = t_init,
@@ -443,19 +293,20 @@ void t_init(struct usplash_theme *theme) {
 	spinner_y = (theme->pixmap->height / 2) + (((theme->pixmap->height / 2) / 4) / 2) - (pixmap_xbmc_spinner.height / 2);
 	
 	// set text box dimensions and size
-	theme->text_width = 600;
-	theme->text_x = (theme->pixmap->width / 2) - (theme->text_width / 2);
-	theme->text_y = 50;
-	theme->text_height = 250;
+	theme->text_width = 450;
+	//theme->text_x = (theme->pixmap->width / 2) - (theme->text_width / 2);
+	theme->text_x = 20;
+	theme->text_y = (theme->pixmap->height * 0.60);
+	theme->text_height = 60;
 	
 	// set theme color indexes
 	theme->background             = 0;
 	theme->progressbar_background = 0;
-	theme->progressbar_foreground = 30;
+	theme->progressbar_foreground = 243;
 	theme->text_background        = 0;
-	theme->text_foreground        = 1;
-	theme->text_success           = 35;
-	theme->text_failure           = 36;
+	theme->text_foreground        = 243;
+	theme->text_success           = 243;
+	theme->text_failure           = 243;
 }
 
 /******

@@ -24,9 +24,13 @@
 #include "system.h"
 #include "utils/log.h"
 #include "WindowingFactory.h"
+#include "SystemInfo.h"
 
 #include <assert.h>
 #include <string>
+#ifdef _WIN32
+#include "GraphicContext.h"
+#endif
 
 //////// Generic, non-platform-specific code
 
@@ -202,6 +206,11 @@ void DPMSSupport::PlatformSpecificInit()
 
 bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 {
+  if(!g_graphicsContext.IsFullScreenRoot())
+  {
+    CLog::Log(LOGDEBUG, "DPMS: not in fullscreen, power saving disabled");
+    return false;
+  }
   switch(mode)
   {
   case OFF:
@@ -229,8 +238,12 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 
 void DPMSSupport::PlatformSpecificInit()
 {
-  m_supportedModes.push_back(OFF);
-  m_supportedModes.push_back(STANDBY);
+  //releasing the display on ATV is an instant reboot
+  //so allow only non AppleTVs to go into powersaving
+  if(!g_sysinfo.IsAppleTV()) {
+    m_supportedModes.push_back(OFF);
+    m_supportedModes.push_back(STANDBY);
+  }
 }
 
 bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)

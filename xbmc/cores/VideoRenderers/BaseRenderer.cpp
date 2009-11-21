@@ -19,6 +19,8 @@
  *
  */
  
+#include "system.h"
+
 #include "BaseRenderer.h"
 #include "Settings.h"
 #include "GUISettings.h"
@@ -27,7 +29,7 @@
 #include "MathUtils.h"
 
 
-CVideoBaseRenderer::CVideoBaseRenderer()
+CBaseRenderer::CBaseRenderer()
 {
   m_sourceFrameRatio = 1.0f;
   m_sourceWidth = 720;
@@ -35,17 +37,17 @@ CVideoBaseRenderer::CVideoBaseRenderer()
   m_resolution = RES_DESKTOP;
 }
 
-CVideoBaseRenderer::~CVideoBaseRenderer()
+CBaseRenderer::~CBaseRenderer()
 {
 }
 
-void CVideoBaseRenderer::ChooseBestResolution(float fps)
+void CBaseRenderer::ChooseBestResolution(float fps)
 {
   m_resolution = g_guiSettings.m_LookAndFeelResolution;
   if ( m_resolution == RES_WINDOW )
     m_resolution = RES_DESKTOP;
   // Adjust refreshrate to match source fps
-#if !defined(__APPLE__) && !defined(_WIN32)
+#if !defined(__APPLE__)
   if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
   {
     // Find closest refresh rate
@@ -54,8 +56,9 @@ void CVideoBaseRenderer::ChooseBestResolution(float fps)
       RESOLUTION_INFO &curr = g_settings.m_ResInfo[m_resolution];
       RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
 
-      if (info.iWidth  != curr.iWidth 
-      ||  info.iHeight != curr.iHeight)
+      if (info.iWidth  != curr.iWidth
+      ||  info.iHeight != curr.iHeight
+      ||  info.iScreen != curr.iScreen)
         continue;
 
       // we assume just a tad lower fps since this calculation will discard
@@ -66,7 +69,7 @@ void CVideoBaseRenderer::ChooseBestResolution(float fps)
       // Closer the better, prefer higher refresh rate if the same
       if ((i_weight <  c_weight)
       ||  (i_weight == c_weight && info.fRefreshRate > curr.fRefreshRate))
-        m_resolution = (int)i;
+        m_resolution = (RESOLUTION)i;
     }
 
     CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d)", g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution);
@@ -76,7 +79,7 @@ void CVideoBaseRenderer::ChooseBestResolution(float fps)
     CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)", m_resolution == RES_DESKTOP ? "DESKTOP" : "USER", g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution);
 }
 
-int CVideoBaseRenderer::GetResolution() const
+RESOLUTION CBaseRenderer::GetResolution() const
 {
   if (g_graphicsContext.IsFullScreenRoot() && (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating()))
     return m_resolution;
@@ -84,20 +87,20 @@ int CVideoBaseRenderer::GetResolution() const
   return g_graphicsContext.GetVideoResolution();
 }
 
-float CVideoBaseRenderer::GetAspectRatio() const
+float CBaseRenderer::GetAspectRatio() const
 {
   float width = (float)m_sourceWidth - g_stSettings.m_currentVideoSettings.m_CropLeft - g_stSettings.m_currentVideoSettings.m_CropRight;
   float height = (float)m_sourceHeight - g_stSettings.m_currentVideoSettings.m_CropTop - g_stSettings.m_currentVideoSettings.m_CropBottom;
   return m_sourceFrameRatio * width / height * m_sourceHeight / m_sourceWidth;
 }
 
-void CVideoBaseRenderer::GetVideoRect(CRect &source, CRect &dest)
+void CBaseRenderer::GetVideoRect(CRect &source, CRect &dest)
 {
   source = m_sourceRect;
   dest = m_destRect;
 }
 
-void CVideoBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount)
+void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount)
 {
   // scale up image as much as possible
   // and keep the aspect ratio (introduces with black bars)
@@ -105,6 +108,14 @@ void CVideoBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, flo
   // and the output pixel ratio setting)
 
   float outputFrameRatio = inputFrameRatio / g_settings.m_ResInfo[GetResolution()].fPixelRatio;
+
+  // allow a certain error to maximize screen size
+  float fCorrection = screenWidth / screenHeight / outputFrameRatio - 1.0f;
+  float fAllowed    = g_guiSettings.GetInt("videoplayer.aspecterror") * 0.01f;
+  if(fCorrection >   fAllowed) fCorrection =   fAllowed;
+  if(fCorrection < - fAllowed) fCorrection = - fAllowed;
+
+  outputFrameRatio *= 1.0f + fCorrection;
 
   // maximize the movie width
   float newWidth = screenWidth;
@@ -128,6 +139,22 @@ void CVideoBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, flo
   m_destRect.x2 = m_destRect.x1 + MathUtils::round_int(newWidth);
   m_destRect.y1 = (float)MathUtils::round_int(posY + offsetY);
   m_destRect.y2 = m_destRect.y1 + MathUtils::round_int(newHeight);
+
+  // clip as needed
+  if (!(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating()))
+  {
+    CRect original(m_destRect);
+    m_destRect.Intersect(CRect(offsetX, offsetY, offsetX + screenWidth, offsetY + screenHeight));
+    if (m_destRect != original)
+    {
+      float scaleX = m_sourceRect.Width() / original.Width();
+      float scaleY = m_sourceRect.Height() / original.Height();
+      m_sourceRect.x1 += (m_destRect.x1 - original.x1) * scaleX;
+      m_sourceRect.y1 += (m_destRect.y1 - original.y1) * scaleY;
+      m_sourceRect.x2 += (m_destRect.x2 - original.x2) * scaleX;
+      m_sourceRect.y2 += (m_destRect.y2 - original.y2) * scaleY;
+    }
+  }
 }
 
 //***************************************************************************************
@@ -140,7 +167,7 @@ void CVideoBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, flo
 // defined to be the same ratio as the intended display pixels.
 // These formats are determined by frame size.
 //***************************************************************************************
-void CVideoBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height)
+void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height)
 {
   m_sourceFrameRatio = (float)desired_width / desired_height;
 
@@ -193,7 +220,7 @@ void CVideoBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, u
   }
 }
 
-void CVideoBaseRenderer::ManageDisplay()
+void CBaseRenderer::ManageDisplay()
 {
   const CRect& view = g_graphicsContext.GetViewWindow();
 
@@ -207,7 +234,7 @@ void CVideoBaseRenderer::ManageDisplay()
   CalcNormalDisplayRect(view.x1, view.y1, view.Width(), view.Height(), GetAspectRatio() * g_stSettings.m_fPixelRatio, g_stSettings.m_fZoomAmount);
 }
 
-void CVideoBaseRenderer::SetViewMode(int viewMode)
+void CBaseRenderer::SetViewMode(int viewMode)
 {
   if (viewMode < VIEW_MODE_NORMAL || viewMode > VIEW_MODE_CUSTOM)
     viewMode = VIEW_MODE_NORMAL;
@@ -312,4 +339,122 @@ void CVideoBaseRenderer::SetViewMode(int viewMode)
     // now work out the zoom amount so that no zoom is done
     g_stSettings.m_fZoomAmount = (m_sourceHeight - g_stSettings.m_currentVideoSettings.m_CropTop - g_stSettings.m_currentVideoSettings.m_CropBottom) / newHeight;
   }
+}
+
+void CBaseRenderer::AutoCrop(YV12Image &im, RECT &crop)
+{
+  crop.left   = g_stSettings.m_currentVideoSettings.m_CropLeft;
+  crop.right  = g_stSettings.m_currentVideoSettings.m_CropRight;
+  crop.top    = g_stSettings.m_currentVideoSettings.m_CropTop;
+  crop.bottom = g_stSettings.m_currentVideoSettings.m_CropBottom;
+
+  int black  = 16; // what is black in the image
+  int level  = 8;  // how high above this should we detect
+  int multi  = 4;  // what multiple of last line should failing line be to accept
+  BYTE *s;
+  int last, detect, black2;
+
+  // top and bottom levels
+  black2 = black * im.width;
+  detect = level * im.width + black2;
+
+  // Crop top
+  s      = im.plane[0];
+  last   = black2;
+  for (unsigned int y = 0; y < im.height/2; y++)
+  {
+    int total = 0;
+    for (unsigned int x = 0; x < im.width; x++)
+      total += s[x];
+    s += im.stride[0];
+
+    if (total > detect)
+    {
+      if (total - black2 > (last - black2) * multi)
+        crop.top = y;
+      break;
+    }
+    last = total;
+  }
+
+  // Crop bottom
+  s    = im.plane[0] + (im.height-1)*im.stride[0];
+  last = black2;
+  for (unsigned int y = (int)im.height; y > im.height/2; y--)
+  {
+    int total = 0;
+    for (unsigned int x = 0; x < im.width; x++)
+      total += s[x];
+    s -= im.stride[0];
+
+    if (total > detect)
+    {
+      if (total - black2 > (last - black2) * multi)
+        crop.bottom = im.height - y;
+      break;
+    }
+    last = total;
+  }
+
+  // left and right levels
+  black2 = black * im.height;
+  detect = level * im.height + black2;
+
+
+  // Crop left
+  s    = im.plane[0];
+  last = black2;
+  for (unsigned int x = 0; x < im.width/2; x++)
+  {
+    int total = 0;
+    for (unsigned int y = 0; y < im.height; y++)
+      total += s[y * im.stride[0]];
+    s++;
+    if (total > detect)
+    {
+      if (total - black2 > (last - black2) * multi)
+        crop.left = x;
+      break;
+    }
+    last = total;
+  }
+
+  // Crop right
+  s    = im.plane[0] + (im.width-1);
+  last = black2;
+  for (unsigned int x = (int)im.width-1; x > im.width/2; x--)
+  {
+    int total = 0;
+    for (unsigned int y = 0; y < im.height; y++)
+      total += s[y * im.stride[0]];
+    s--;
+
+    if (total > detect)
+    {
+      if (total - black2 > (last - black2) * multi)
+        crop.right = im.width - x;
+      break;
+    }
+    last = total;
+  }
+
+  // We always crop equally on each side to get zoom
+  // effect intead of moving the image. Aslong as the
+  // max crop isn't much larger than the min crop
+  // use that.
+  int min, max;
+
+  min = std::min(crop.left, crop.right);
+  max = std::max(crop.left, crop.right);
+  if(10 * (max - min) / im.width < 1)
+    crop.left = crop.right = max;
+  else
+    crop.left = crop.right = min;
+
+  min = std::min(crop.top, crop.bottom);
+  max = std::max(crop.top, crop.bottom);
+  if(10 * (max - min) / im.height < 1)
+    crop.top = crop.bottom = max;
+  else
+    crop.top = crop.bottom = min;
 }

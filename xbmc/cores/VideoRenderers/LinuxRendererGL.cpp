@@ -194,6 +194,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 
   m_bConfigured = true;
   m_bImageReady = false;
+  m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
 
   // Ensure that textures are recreated and rendering starts only after the 1st 
   // frame is loaded after every call to Configure().
@@ -394,8 +395,8 @@ void CLinuxRendererGL::LoadTextures(int source)
 #ifdef HAVE_LIBVDPAU
   if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU)
   {
-    g_VDPAU->CheckRecover();
     SetEvent(m_eventTexturesDone[source]);
+    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
     return;
   }
 #endif
@@ -427,10 +428,10 @@ void CLinuxRendererGL::LoadTextures(int source)
     struct SwsContext *context = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
                                                              im->width, im->height, PIX_FMT_BGRA,
                                                              SWS_FAST_BILINEAR, NULL, NULL, NULL);
-    uint8_t *src[] = { im->plane[0], im->plane[1], im->plane[2] };
-    int     srcStride[] = { im->stride[0], im->stride[1], im->stride[2] };
-    uint8_t *dst[] = { m_rgbBuffer, 0, 0 };
-    int     dstStride[] = { m_sourceWidth*4, 0, 0 };
+    uint8_t *src[] = { im->plane[0], im->plane[1], im->plane[2], 0 };
+    int     srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
+    uint8_t *dst[] = { m_rgbBuffer, 0, 0, 0 };
+    int     dstStride[] = { m_sourceWidth*4, 0, 0, 0 };
     m_dllSwScale.sws_scale(context, src, srcStride, 0, im->height, dst, dstStride);
     m_dllSwScale.sws_freeContext(context);
     SetEvent(m_eventTexturesDone[source]);
@@ -438,10 +439,10 @@ void CLinuxRendererGL::LoadTextures(int source)
   else if (IsSoftwareUpscaling()) // FIXME: s/w upscaling + RENDER_SW => broken
   {
     // Perform the scaling.
-    uint8_t* src[] =       { im->plane[0],  im->plane[1],  im->plane[2] };
-    int      srcStride[] = { im->stride[0], im->stride[1], im->stride[2] };
-    uint8_t* dst[] =       { m_imScaled.plane[0],  m_imScaled.plane[1],  m_imScaled.plane[2] };
-    int      dstStride[] = { m_imScaled.stride[0], m_imScaled.stride[1], m_imScaled.stride[2] };
+    uint8_t* src[] =       { im->plane[0],  im->plane[1],  im->plane[2], 0 };
+    int      srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
+    uint8_t* dst[] =       { m_imScaled.plane[0],  m_imScaled.plane[1],  m_imScaled.plane[2], 0 };
+    int      dstStride[] = { m_imScaled.stride[0], m_imScaled.stride[1], m_imScaled.stride[2], 0 };
     int      algorithm   = 0;
 
     switch (m_scalingMethod)
@@ -841,13 +842,14 @@ unsigned int CLinuxRendererGL::PreInit()
   m_bValidated = false;
   UnInit();
   m_resolution = RES_PAL_4x3;
+  m_crop.x1 = m_crop.x2 = 0.0f;
+  m_crop.y1 = m_crop.y2 = 0.0f;
 
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 2;
 
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
-  m_aspecterror = g_guiSettings.GetFloat("videoplayer.aspecterror") * 0.01;
 
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
@@ -865,6 +867,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
 {
   if (m_scalingMethod == g_stSettings.m_currentVideoSettings.m_ScalingMethod)
     return;
+  m_scalingMethod = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
 
   if (m_pVideoFilterShader)
   {
@@ -872,62 +875,82 @@ void CLinuxRendererGL::UpdateVideoFilter()
     delete m_pVideoFilterShader;
     m_pVideoFilterShader = NULL;
   }
-
   m_fbo.Cleanup();
 
   VerifyGLState();
-  m_scalingMethod = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
 
   switch (g_stSettings.m_currentVideoSettings.m_ScalingMethod)
   {
   case VS_SCALINGMETHOD_NEAREST:
-    m_renderQuality = RQ_SINGLEPASS;
     SetTextureFilter(GL_NEAREST);
-    break;
+    m_renderQuality = RQ_SINGLEPASS;
+    return;
 
   case VS_SCALINGMETHOD_LINEAR:
     SetTextureFilter(GL_LINEAR);
     m_renderQuality = RQ_SINGLEPASS;
-    break;
+    return;
 
   case VS_SCALINGMETHOD_CUBIC:
-    SetTextureFilter(GL_LINEAR);
-    m_renderQuality = RQ_MULTIPASS;
-    m_pVideoFilterShader = new BicubicFilterShader(0.3f, 0.3f);
-
-    if (!m_pVideoFilterShader->CompileAndLink())
+    if(!glewIsSupported("GL_ARB_texture_float"))
     {
-      CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
-      m_pVideoFilterShader->Free();
-      delete m_pVideoFilterShader;
-      m_pVideoFilterShader = NULL;
+      CLog::Log(LOGERROR, "GL: hardware doesn't support GL_ARB_texture_float");
+      break;
     }
 
     if (!m_fbo.Initialize())
+    {
       CLog::Log(LOGERROR, "GL: Error initializing FBO");
+      break;
+    }
 
     if (!m_fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
+    {
       CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
+      break;
+    }
 
-    break;
+    m_pVideoFilterShader = new BicubicFilterShader(0.3f, 0.3f);
+    if (!m_pVideoFilterShader->CompileAndLink())
+    {
+      CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
+      break;
+    }
+
+    SetTextureFilter(GL_LINEAR);
+    m_renderQuality = RQ_MULTIPASS;
+    return;
 
   case VS_SCALINGMETHOD_LANCZOS2:
   case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_SINC8:
   case VS_SCALINGMETHOD_NEDI:
     CLog::Log(LOGERROR, "GL: TODO: This scaler has not yet been implemented");
-    m_renderQuality = RQ_SINGLEPASS;
     break;
 
   case VS_SCALINGMETHOD_BICUBIC_SOFTWARE:
   case VS_SCALINGMETHOD_LANCZOS_SOFTWARE:
   case VS_SCALINGMETHOD_SINC_SOFTWARE:
     InitializeSoftwareUpscaling();
-    break;
+    m_renderQuality = RQ_SINGLEPASS;
+    return;
 
   default:
     break;
   }
+
+  g_application.m_guiDialogKaiToast.QueueNotification("Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
+  CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
+  if (m_pVideoFilterShader)
+  {
+    m_pVideoFilterShader->Free();
+    delete m_pVideoFilterShader;
+    m_pVideoFilterShader = NULL;
+  }
+  m_fbo.Cleanup();
+
+  SetTextureFilter(GL_LINEAR);
+  m_renderQuality = RQ_SINGLEPASS;
 }
 
 void CLinuxRendererGL::LoadShaders(int field)
@@ -1149,123 +1172,7 @@ void CLinuxRendererGL::AutoCrop(bool bCrop)
   if(!m_bValidated) return;
 
   if (bCrop)
-  {
-    YV12Image &im = m_buffers[m_iYV12RenderBuffer].image;
-    crop.left   = g_stSettings.m_currentVideoSettings.m_CropLeft;
-    crop.right  = g_stSettings.m_currentVideoSettings.m_CropRight;
-    crop.top    = g_stSettings.m_currentVideoSettings.m_CropTop;
-    crop.bottom = g_stSettings.m_currentVideoSettings.m_CropBottom;
-
-    int black  = 16; // what is black in the image
-    int level  = 8;  // how high above this should we detect
-    int multi  = 4;  // what multiple of last line should failing line be to accept
-    BYTE *s;
-    int last, detect, black2;
-
-    // top and bottom levels
-    black2 = black * im.width;
-    detect = level * im.width + black2;
-
-    // Crop top
-    s      = im.plane[0];
-    last   = black2;
-    for (unsigned int y = 0; y < im.height/2; y++)
-    {
-      int total = 0;
-      for (unsigned int x = 0; x < im.width; x++)
-        total += s[x];
-      s += im.stride[0];
-
-      if (total > detect)
-      {
-        if (total - black2 > (last - black2) * multi)
-          crop.top = y;
-        break;
-      }
-      last = total;
-    }
-
-    // Crop bottom
-    s    = im.plane[0] + (im.height-1)*im.stride[0];
-    last = black2;
-    for (unsigned int y = (int)im.height; y > im.height/2; y--)
-    {
-      int total = 0;
-      for (unsigned int x = 0; x < im.width; x++)
-        total += s[x];
-      s -= im.stride[0];
-
-      if (total > detect)
-      {
-        if (total - black2 > (last - black2) * multi)
-          crop.bottom = im.height - y;
-        break;
-      }
-      last = total;
-    }
-
-    // left and right levels
-    black2 = black * im.height;
-    detect = level * im.height + black2;
-
-
-    // Crop left
-    s    = im.plane[0];
-    last = black2;
-    for (unsigned int x = 0; x < im.width/2; x++)
-    {
-      int total = 0;
-      for (unsigned int y = 0; y < im.height; y++)
-        total += s[y * im.stride[0]];
-      s++;
-      if (total > detect)
-      {
-        if (total - black2 > (last - black2) * multi)
-          crop.left = x;
-        break;
-      }
-      last = total;
-    }
-
-    // Crop right
-    s    = im.plane[0] + (im.width-1);
-    last = black2;
-    for (unsigned int x = (int)im.width-1; x > im.width/2; x--)
-    {
-      int total = 0;
-      for (unsigned int y = 0; y < im.height; y++)
-        total += s[y * im.stride[0]];
-      s--;
-
-      if (total > detect)
-      {
-        if (total - black2 > (last - black2) * multi)
-          crop.right = im.width - x;
-        break;
-      }
-      last = total;
-    }
-
-    // We always crop equally on each side to get zoom
-    // effect intead of moving the image. Aslong as the
-    // max crop isn't much larger than the min crop
-    // use that.
-    int min, max;
-
-    min = std::min(crop.left, crop.right);
-    max = std::max(crop.left, crop.right);
-    if(10 * (max - min) / im.width < 1)
-      crop.left = crop.right = max;
-    else
-      crop.left = crop.right = min;
-
-    min = std::min(crop.top, crop.bottom);
-    max = std::max(crop.top, crop.bottom);
-    if(10 * (max - min) / im.height < 1)
-      crop.top = crop.bottom = max;
-    else
-      crop.top = crop.bottom = min;
-  }
+    CBaseRenderer::AutoCrop(m_buffers[m_iYV12RenderBuffer].image, crop);
   else
   { // reset to defaults
     crop.left   = 0;
@@ -1589,7 +1496,13 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
     g_graphicsContext.ClipToViewWindow();
 
   glEnable(m_textureTarget);
-
+  
+  if (!g_VDPAU->m_glPixmapTexture)
+  {
+    glGenTextures (1, &(g_VDPAU->m_glPixmapTexture));
+    CLog::Log(LOGNOTICE,"Created m_glPixmapTexture (%i)",(int)g_VDPAU->m_glPixmapTexture);
+  }
+  
   glBindTexture(m_textureTarget, g_VDPAU->m_glPixmapTexture);
   g_VDPAU->BindPixmap();
 
@@ -1607,17 +1520,17 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   glBegin(GL_QUADS);
   if (m_textureTarget==GL_TEXTURE_2D)
   {
-    glTexCoord2f(0.0, 0.0);  glVertex2d(m_destRect.x1, m_destRect.y1);
-    glTexCoord2f(1.0, 0.0);  glVertex2d(m_destRect.x2, m_destRect.y1);
-    glTexCoord2f(1.0, 1.0);  glVertex2d(m_destRect.x2, m_destRect.y2);
-    glTexCoord2f(0.0, 1.0);  glVertex2d(m_destRect.x1, m_destRect.y2);
+    glTexCoord2f(0.0, 0.0);  glVertex2f(m_destRect.x1, m_destRect.y1);
+    glTexCoord2f(1.0, 0.0);  glVertex2f(m_destRect.x2, m_destRect.y1);
+    glTexCoord2f(1.0, 1.0);  glVertex2f(m_destRect.x2, m_destRect.y2);
+    glTexCoord2f(0.0, 1.0);  glVertex2f(m_destRect.x1, m_destRect.y2);
   }
   else
   {
-    glTexCoord2f(m_sourceRect.x1, m_sourceRect.y1); glVertex4f(m_destRect.x1, m_destRect.y1, 0.0f, 0.0f);
-    glTexCoord2f(m_sourceRect.x2, m_sourceRect.y1); glVertex4f(m_destRect.x2, m_destRect.y1, 1.0f, 0.0f);
-    glTexCoord2f(m_sourceRect.x2, m_sourceRect.y2); glVertex4f(m_destRect.x2, m_destRect.y2, 1.0f, 1.0f);
-    glTexCoord2f(m_sourceRect.x1, m_sourceRect.y2); glVertex4f(m_destRect.x1, m_destRect.y2, 0.0f, 1.0f);
+    glTexCoord2f(m_destRect.x1, m_destRect.y1); glVertex4f(m_destRect.x1, m_destRect.y1, 0.0f, 0.0f);
+    glTexCoord2f(m_destRect.x2, m_destRect.y1); glVertex4f(m_destRect.x2, m_destRect.y1, 1.0f, 0.0f);
+    glTexCoord2f(m_destRect.x2, m_destRect.y2); glVertex4f(m_destRect.x2, m_destRect.y2, 1.0f, 1.0f);
+    glTexCoord2f(m_destRect.x1, m_destRect.y2); glVertex4f(m_destRect.x1, m_destRect.y2, 0.0f, 1.0f);
   }
   glEnd();
   VerifyGLState();
@@ -1682,7 +1595,11 @@ void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width
   m_destRect.SetRect(0, 0, (float)width, (float)height);
 
   // clear framebuffer and invert Y axis to get non-inverted image
+  glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT);
+  glClearColor(0, 0, 0, 0);
+  glDisable(GL_BLEND);
+  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   glTranslatef(0, height, 0);
@@ -1938,6 +1855,60 @@ bool CLinuxRendererGL::SupportsGamma()
 bool CLinuxRendererGL::SupportsMultiPassRendering()
 {
   return glewIsSupported("GL_EXT_framebuffer_object") && glCreateProgram;
+}
+
+bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
+{
+  if(method == VS_INTERLACEMETHOD_NONE
+  || method == VS_INTERLACEMETHOD_AUTO)
+    return true;
+
+  if(m_renderMethod == RENDER_METHOD_VDPAU)
+  {
+    if(method == VS_INTERLACEMETHOD_VDPAU
+    || method == VS_INTERLACEMETHOD_RENDER_BLEND
+    || method == VS_INTERLACEMETHOD_INVERSE_TELECINE)
+      return true;
+    return false;
+  }
+
+  if(method == VS_INTERLACEMETHOD_DEINTERLACE)
+    return true;
+
+  if(method == VS_INTERLACEMETHOD_RENDER_BLEND
+  || method == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED
+  || method == VS_INTERLACEMETHOD_RENDER_WEAVE
+  || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
+  || method == VS_INTERLACEMETHOD_RENDER_BOB)
+    return true;
+
+  return false;
+}
+
+bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
+{
+  if(method == VS_SCALINGMETHOD_NEAREST
+  || method == VS_SCALINGMETHOD_LINEAR)
+    return true;
+
+
+  if(method == VS_SCALINGMETHOD_CUBIC 
+  && glewIsSupported("GL_ARB_texture_float")
+  && glewIsSupported("GL_EXT_framebuffer_object")
+  && m_renderMethod == RENDER_GLSL)
+    return true;
+
+#if 0
+  if(method == VS_SCALINGMETHOD_BICUBIC_SOFTWARE
+  || method == VS_SCALINGMETHOD_LANCZOS_SOFTWARE
+  || method == VS_SCALINGMETHOD_SINC_SOFTWARE)
+    return true;
+#endif
+
+  if(method == VS_SCALINGMETHOD_VDPAU_HARDWARE && m_renderMethod == RENDER_METHOD_VDPAU)
+    return true;
+
+  return false;
 }
 
 #endif

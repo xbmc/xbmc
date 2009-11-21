@@ -1038,7 +1038,7 @@ void RunCredits()
     D3DDevice::SetGammaRamp(D3DSGR_IMMEDIATE, &Ramp);
   }
 
-  XBMCRESOLUTION res = g_graphicsContext.GetVideoResolution();
+  RESOLUTION res = g_graphicsContext.GetVideoResolution();
   g_graphicsContext.SetVideoResolution(res);
   float fFrameTime;
   if (res == PAL_4x3 || res == PAL_16x9)

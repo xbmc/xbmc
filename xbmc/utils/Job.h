@@ -51,10 +51,11 @@ public:
    the CJobManager will destroy this job.
    
    \param jobID the unique id of the job (as retrieved from CJobManager::AddJob)
+   \param success the result from the DoWork call
    \param job the job that has been processed.  The job will be destroyed after this function returns
    \sa CJobManager and CJob
    */
-  virtual void OnJobComplete(unsigned int jobID, CJob *job)=0;
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job)=0;
 
   /*!
    \brief An optional callback function that a job may call while processing.
@@ -125,7 +126,24 @@ public:
    
    \sa CJobManager, IJobCallback::OnJobComplete()
    */
-  virtual void DoWork() = 0;  // function to do the work
+  virtual bool DoWork() = 0;  // function to do the work
+
+  /*!
+   \brief Function that returns the type of job.
+   
+   CJob subclasses may optionally implement this function to specify the type of job.
+   This is useful for the CJobManager::AddLIFOJob() routine, which preempts similar jobs
+   with the new job.
+   
+   \return a unique character string describing the job.
+   \sa CJobManager
+   */
+  virtual const char *GetType() const { return ""; };
+
+  virtual bool operator==(const CJob* job) const
+  {
+    return false;
+  }
 
   /*!
    \brief Function for longer jobs to report progress and check whether they have been cancelled.

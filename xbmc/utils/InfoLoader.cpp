@@ -24,17 +24,6 @@
 #include "JobManager.h"
 #include "TimeUtils.h"
 
-CInfoJob::CInfoJob(CInfoLoader *loader)
-{
-  m_loader = loader;
-}
-
-void CInfoJob::DoWork()
-{
-  if (m_loader)
-    m_loader->DoWork();
-}
-
 CInfoLoader::CInfoLoader(unsigned int timeToRefresh)
 {
   m_refreshTime = 0;
@@ -46,7 +35,7 @@ CInfoLoader::~CInfoLoader()
 {
 }
 
-void CInfoLoader::OnJobComplete(unsigned int jobID, CJob *job)
+void CInfoLoader::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   m_refreshTime = CTimeUtils::GetFrameTime() + m_timeToRefresh;
   m_busy = false;
@@ -58,7 +47,7 @@ CStdString CInfoLoader::GetInfo(int info)
   if (m_refreshTime < CTimeUtils::GetFrameTime() && !m_busy)
   { // queue up the job
     m_busy = true;
-    CJobManager::GetInstance().AddJob(new CInfoJob(this), this);
+    CJobManager::GetInstance().AddJob(GetJob(), this);
   }
   if (m_busy)
   {

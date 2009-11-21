@@ -47,6 +47,7 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
+  virtual void SetInvalid();
   virtual void SetPosition(float posX, float posY);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
@@ -59,7 +60,6 @@ public:
 protected:
   virtual void UpdateColors();
   virtual void OnClick();
-  virtual void SetInvalid();
   CGUIButtonControl m_selectButton;
   int m_toggleSelect;
 };

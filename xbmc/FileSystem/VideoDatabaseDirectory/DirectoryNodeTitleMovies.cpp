@@ -42,8 +42,6 @@ bool CDirectoryNodeTitleMovies::GetContent(CFileItemList& items)
 
   CStdString strBaseDir=BuildPath();
   bool bSuccess=videodatabase.GetMoviesNav(strBaseDir, items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(),params.GetStudioId(),params.GetSetId());
-  if (params.GetSetId() == -1)
-    videodatabase.GetSetsNav("videodb://1/7/",items,params.GetContentType());
 
   videodatabase.Close();
 

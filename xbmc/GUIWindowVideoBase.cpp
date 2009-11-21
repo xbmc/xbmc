@@ -26,7 +26,7 @@
 #include "utils/RegExp.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowVideoInfo.h"
-#include "GUIWindowVideoNav.h" 
+#include "GUIWindowVideoNav.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogSmartPlaylistEditor.h"
@@ -289,17 +289,8 @@ void CGUIWindowVideoBase::UpdateButtons()
   int nWindow = g_stSettings.m_iVideoStartWindow-WINDOW_VIDEO_FILES;
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
-  // disable scan and manual imdb controls if internet lookups are disabled
-  if (g_guiSettings.GetBool("network.enableinternet"))
-  {
-    CONTROL_ENABLE(CONTROL_BTNSCAN);
-    CONTROL_ENABLE(CONTROL_IMDB);
-  }
-  else
-  {
-    CONTROL_DISABLE(CONTROL_BTNSCAN);
-    CONTROL_DISABLE(CONTROL_IMDB);
-  }
+  CONTROL_ENABLE(CONTROL_BTNSCAN);
+  CONTROL_ENABLE(CONTROL_IMDB);
 
   CGUIMediaWindow::UpdateButtons();
 }
@@ -401,18 +392,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     }
     else
     {
-      // !! WORKAROUND !!
-      // As we cannot add an episode to a non-existing tvshow entry, we have to check the parent directory
-      // to see if it`s already in our video database. If it's not yet part of the database we will exit here.
-      // (Ticket #4764)
-      CStdString strParentDirectory;
-      CUtil::GetParentPath(item->m_strPath,strParentDirectory);
-      if (m_database.GetTvShowId(strParentDirectory) < 0)
-      {
-        CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
-        return false;
-      }
-
       int EpisodeHint=-1;
       if (item->HasVideoInfoTag())
         EpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
@@ -421,6 +400,24 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       {
         bHasInfo = true;
         m_database.GetEpisodeInfo(item->m_strPath, movieDetails, idEpisode);
+      }
+      else
+      {
+        // !! WORKAROUND !!
+        // As we cannot add an episode to a non-existing tvshow entry, we have to check the parent directory
+        // to see if it`s already in our video database. If it's not yet part of the database we will exit here.
+        // (Ticket #4764)
+        //
+        // NOTE: This will fail for episodes on multipath shares, as the parent path isn't what is stored in the
+        //       database.  Possible solutions are to store the paths in the db separately and rely on the show
+        //       stacking stuff, or to modify GetTvShowId to do support multipath:// shares
+        CStdString strParentDirectory;
+        CUtil::GetParentPath(item->m_strPath, strParentDirectory);
+        if (m_database.GetTvShowId(strParentDirectory) < 0)
+        {
+          CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
+          return false;
+        }
       }
     }
   }
@@ -456,7 +453,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   }
 
   // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("network.enableinternet")) return false;
   if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
     return false;
 
@@ -651,6 +647,17 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
             m_database.GetEpisodeInfo(item->m_strPath,movieDetails);
         }
 
+        // set path hash
+	if (info.strContent.Equals("movies") || info.strContent.Equals("musicvideos"))
+        {
+          CStdString hash, strParent;
+          CFileItemList items;
+	  CUtil::GetParentPath(list.m_strPath,strParent);
+          CDirectory::GetDirectory(strParent,items,g_stSettings.m_videoExtensions);
+          scanner.GetPathHash(items, hash);
+          m_database.SetPathHash(strParent, hash);
+        }
+
         // got all movie details :-)
         OutputDebugString("got details\n");
         pDlgProgress->Close();
@@ -722,7 +729,7 @@ void CGUIWindowVideoBase::OnManualIMDB()
 
 bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel)
 {
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
   if (pCdInfo == NULL)
     return false;
@@ -733,7 +740,7 @@ bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, co
   int iLabelDB = strDVDLabel.GetLength();
   if (iLabelDB < iLabelCD)
     return false;
-  CStdString dbLabel = strDVDLabel.Left(iLabelCD); 
+  CStdString dbLabel = strDVDLabel.Left(iLabelCD);
   return (dbLabel == label);
 #else
   return false;
@@ -929,7 +936,7 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 
 bool CGUIWindowVideoBase::OnClick(int iItem)
 {
-  if (g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_NO)
+  if (g_guiSettings.GetInt("videoplayer.resumeautomatically") != RESUME_NO)
     OnResumeItem(iItem);
   else
     return CGUIMediaWindow::OnClick(iItem);
@@ -946,7 +953,7 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem)
 bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
 {
   // we always resume the movie if the user doesn't want us to ask
-  bool resumeItem = g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_ASK;
+  bool resumeItem = g_guiSettings.GetInt("videoplayer.resumeautomatically") != RESUME_ASK;
 
   if (!item.m_bIsFolder && !item.IsLiveTV() && !resumeItem)
   {
@@ -976,7 +983,7 @@ bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
   }
   if (resumeItem)
     item.m_lStartOffset = STARTOFFSET_RESUME;
-  
+
   return true;
 }
 
@@ -984,7 +991,7 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size()) return;
   CFileItemPtr item = m_vecItems->Get(iItem);
-  
+
   // Show menu asking the user
   if ( OnResumeShowMenu(*item) )
     CGUIMediaWindow::OnClick(iItem);
@@ -992,8 +999,6 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
 
 void CGUIWindowVideoBase::OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId)
 {
-  m_bStreamDetailsChanged = true;
-
   CVideoDatabase db;
   if (db.Open())
   {
@@ -1062,9 +1067,9 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       // check to see if the Resume Video button is applicable
       if (GetResumeItemOffset(item.get()) > 0)
       {
-        if (g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_YES)
+        if (g_guiSettings.GetInt("videoplayer.resumeautomatically") == RESUME_YES)
           buttons.Add(CONTEXT_BUTTON_RESTART_ITEM, 20132);    // Restart Video
-        if (g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_NO)
+        if (g_guiSettings.GetInt("videoplayer.resumeautomatically") == RESUME_NO)
           buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 13381);     // Resume Video
       }
       if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
@@ -1226,6 +1231,17 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_RENAME:
     OnRenameItem(itemNumber);
+    return true;
+  case CONTEXT_BUTTON_MARK_WATCHED:
+    MarkWatched(item,true);
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    Update(m_vecItems->m_strPath);
+    return true;
+
+  case CONTEXT_BUTTON_MARK_UNWATCHED:
+    MarkWatched(item,false);
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    Update(m_vecItems->m_strPath);
     return true;
   default:
     break;
@@ -1392,7 +1408,14 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems->Size())
     return;
 
-  CFileItemPtr item = m_vecItems->Get(iItem);
+  OnDeleteItem(m_vecItems->Get(iItem));
+
+  Update(m_vecItems->m_strPath);
+  m_viewControl.SetSelectedItem(iItem);
+}
+
+void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
+{
   // HACK: stacked files need to be treated as folders in order to be deleted
   if (item->IsStack())
     item->m_bIsFolder = true;
@@ -1403,14 +1426,10 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
       return;
   }
 
-  if (!CGUIWindowFileManager::DeleteItem(item.get()))
-    return;
-
-  Update(m_vecItems->m_strPath);
-  m_viewControl.SetSelectedItem(iItem);
+  CGUIWindowFileManager::DeleteItem(item.get());
 }
 
-void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
+void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool mark)
 {
   // dont allow update while scanning
   CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
@@ -1437,45 +1456,18 @@ void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
   for (int i=0;i<items.Size();++i)
   {
     CFileItemPtr pItem=items[i];
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount == 0)
-      continue;
+    if (pItem->IsVideoDb())
+    {
+      if (pItem->HasVideoInfoTag() &&
+          (( mark && pItem->GetVideoInfoTag()->m_playCount) ||
+           (!mark && !(pItem->GetVideoInfoTag()->m_playCount))))
+        continue;
+    }
 
-    database.MarkAsUnWatched(*pItem);
-  }
-}
-
-//Add Mark a Title as watched
-void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item)
-{
-  // dont allow update while scanning
-  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  if (pDialogScan && pDialogScan->IsScanning())
-  {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
-    return;
-  }
-
-  CVideoDatabase database;
-  database.Open();
-  CFileItemList items;
-  if (item->m_bIsFolder)
-  {
-    CVideoDatabaseDirectory dir;
-    CStdString strPath = item->m_strPath;
-    if (dir.GetDirectoryChildType(item->m_strPath) == NODE_TYPE_SEASONS)
-      strPath += "-1/";
-    dir.GetDirectory(strPath,items);
-  }
-  else
-    items.Add(item);
-
-  for (int i=0;i<items.Size();++i)
-  {
-    CFileItemPtr pItem=items[i];
-    if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount > 0)
-      continue;
-
-    database.MarkAsWatched(*pItem);
+    if (mark)
+      database.MarkAsWatched(*pItem);
+    else
+      database.MarkAsUnWatched(*pItem);
   }
 }
 
@@ -1530,7 +1522,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
   //Get the new title
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16105), false))
     return;
-  
+
   database.UpdateMovieTitle(iDbId, strInput, iType);
 }
 

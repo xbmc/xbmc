@@ -279,7 +279,7 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
 
 void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
 {
-  if (pItem->IsParentFolder())
+  if (!pItem->HasMusicInfoTag() || pItem->IsParentFolder())
     return; // nothing to do
 
   if (!pItem->m_bIsFolder)
@@ -368,10 +368,17 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
       m_dlgProgress->Close();
   }
 
-  if (album.idAlbum == -1 && foundAlbum == false)
+  if (artist.idArtist > -1 && !artist.strArtist.IsEmpty())
+  {
     ShowArtistInfo(artist, pItem->m_strPath, false, bShowInfo);
-  else
+    return;
+  }
+
+  if (album.idAlbum > -1 && !album.strAlbum.IsEmpty())
+  {
     ShowAlbumInfo(album, strPath, false, bShowInfo);
+    return;
+  }
 }
 
 void CGUIWindowMusicBase::OnManualAlbumInfo()
@@ -396,30 +403,29 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
 
   // check cache
   CArtist artistInfo;
-  if (!bRefresh && m_musicdatabase.GetArtistInfo(artist.idArtist, artistInfo))
+  artistInfo.strArtist = artist.strArtist;
+  if (m_musicdatabase.GetArtistInfo(artist.idArtist, artistInfo) && !bShowInfo)
+    return;
+
+  CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)g_windowManager.GetWindow(WINDOW_MUSIC_INFO);
+  if (pDlgAlbumInfo)
   {
-    if (!bShowInfo)
-      return;
+    pDlgAlbumInfo->SetArtist(artistInfo, path);
+    
+    if (bShowInfo)
+      pDlgAlbumInfo->DoModal();
+    else
+      pDlgAlbumInfo->RefreshThumb();  // downloads the thumb if we don't already have one
 
-    CGUIWindowMusicInfo *pDlgAlbumInfo = (CGUIWindowMusicInfo*)g_windowManager.GetWindow(WINDOW_MUSIC_INFO);
-    if (pDlgAlbumInfo)
+    if (!pDlgAlbumInfo->NeedRefresh())
     {
-      pDlgAlbumInfo->SetArtist(artistInfo, path);
-      if (bShowInfo)
-        pDlgAlbumInfo->DoModal();
-      else
-        pDlgAlbumInfo->RefreshThumb();  // downloads the thumb if we don't already have one
+      if (pDlgAlbumInfo->HasUpdatedThumb())
+        Update(m_vecItems->m_strPath);
 
-      if (!pDlgAlbumInfo->NeedRefresh())
-      {
-        if (pDlgAlbumInfo->HasUpdatedThumb())
-          Update(m_vecItems->m_strPath);
-
-        return;
-      }
-      bRefresh = true;
-      m_musicdatabase.DeleteArtistInfo(artistInfo.idArtist);
+      return;
     }
+    bRefresh = true;
+    m_musicdatabase.DeleteArtistInfo(artistInfo.idArtist);
   }
 
   // If we are scanning for music info in the background,
@@ -778,9 +784,6 @@ void CGUIWindowMusicBase::UpdateButtons()
 
 bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, const SScraperInfo& info, ALLOW_SELECTION allowSelection)
 {
-  // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("network.enableinternet")) return false;
-
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)
   {
@@ -830,9 +833,6 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
 
 bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArtistInfo& artist, const SScraperInfo& info, ALLOW_SELECTION allowSelection)
 {
-  // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("network.enableinternet")) return false;
-
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)
   {
@@ -915,7 +915,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
 
         if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
           buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
-        else if (item->IsPlayList() || m_vecItems->IsPlayList())
+        else if ((item->IsPlayList() || m_vecItems->IsPlayList()) && !item->IsShoutCast())
           buttons.Add(CONTEXT_BUTTON_EDIT, 586);
       }
     }
@@ -1206,8 +1206,15 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem)
     return true;
   }
   else if (!pItem->IsPlayList() && !pItem->IsInternetStream())
-  { // single music file - if we get here then we have autoplaynextitem turned off, but we
-    // still want to use the playlist player in order to handle more queued items following etc.
+  { // single music file - if we get here then we have autoplaynextitem turned off or queuebydefault
+    // turned on, but we still want to use the playlist player in order to handle more queued items
+    // following etc.
+    if (g_guiSettings.GetBool("musicplayer.queuebydefault") && g_windowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST_EDITOR)
+    {
+      // TODO: Should the playlist be cleared if nothing is already playing?
+      OnQueueItem(iItem);
+      return true;
+    }
     g_playlistPlayer.Reset();
     g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.Add(PLAYLIST_MUSIC, pItem);

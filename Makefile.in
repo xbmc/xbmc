@@ -47,7 +47,6 @@ BIN_DIRS=	\
 	xbmc/utils \
 	xbmc/settings \
 	xbmc/linux \
-	xbmc/xbox \
 	xbmc/osx
 
 EC_DIRS= \
@@ -101,11 +100,11 @@ ifneq (@BUILD_GOOM@,1)
 VIS_DIRS+=xbmc/visualizations/Goom
 endif
 
-PM3_MEDIA=skin/Project\ Mayhem\ III/media
+CONFLUENCE_MEDIA=skin/Confluence/media
 PM3HD_MEDIA=skin/PM3.HD/media
 
 SKIN_DIRS=\
-	$(PM3_MEDIA) \
+	$(CONFLUENCE_MEDIA) \
 	$(PM3HD_MEDIA)
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
@@ -144,7 +143,7 @@ configure: configure.in
 
 # skin textures
 skins: tools/TexturePacker/TexturePacker force
-	 $(MAKE) -C $(PM3_MEDIA)
+	 $(MAKE) -C $(CONFLUENCE_MEDIA)
 	 $(MAKE) -C $(PM3HD_MEDIA)
 
 guilib/guilib.a: force
@@ -241,8 +240,6 @@ xbmc/utils/utils.a: force
 	$(MAKE) -C xbmc/utils
 xbmc/visualizations/visualization.a: force
 	$(MAKE) -C xbmc/visualizations
-xbmc/xbox/xbox.a: force
-	$(MAKE) -C xbmc/xbox
 xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
 
@@ -366,12 +363,15 @@ OBJSXBMC=	\
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
 	xbmc/lib/sqLite/sqllite.a \
-	xbmc/lib/UnrarXLib/UnrarXLib.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
-	xbmc/visualizations/visualization.a \
-	xbmc/xbox/xbox.a
+	xbmc/visualizations/visualization.a
+
+ifeq (@HAVE_XBMC_NONFREE@,1)
+OBJSXBMC+= \
+	xbmc/lib/UnrarXLib/UnrarXLib.a
+endif
 
 DYNOBJSXBMC= \
 	xbmc/lib/libcmyth/libcmyth.a \
@@ -443,7 +443,7 @@ install-datas:
 	@# Arch independent files
 	@find language media scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Arch dependent files
-	@find system screensavers visualisations -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find system screensavers visualisations -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Skins
 	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %-75.75f\r"
 

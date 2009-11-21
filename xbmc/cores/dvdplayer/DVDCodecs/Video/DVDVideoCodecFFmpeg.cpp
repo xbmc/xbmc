@@ -66,7 +66,6 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
 {
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_graphicsContext);
   if (g_VDPAU && !m_UsingSoftware) {
     delete g_VDPAU;
     g_VDPAU = NULL;
@@ -95,7 +94,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 #ifdef HAVE_LIBVDPAU
   int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
-  if(requestedMethod == RENDER_METHOD_VDPAU
+  if((requestedMethod == RENDER_METHOD_VDPAU || requestedMethod == RENDER_METHOD_AUTO)
   && !hints.software)
   {
     while((pCodec = m_dllAvCodec.av_codec_next(pCodec)))
@@ -108,7 +107,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   if(pCodec && !hints.software)
   {
-    CSingleLock lock(g_graphicsContext);
     CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating VDPAU(%ix%i)",hints.width, hints.height);
     g_VDPAU = new CVDPAU(hints.width, hints.height);
     if(!g_VDPAU->GetVdpDevice())
@@ -461,7 +459,7 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     for (int i = 0; i < 4; i++)
       pDvdVideoPicture->iLineSize[i] = frame->linesize[i];
   }
-  pDvdVideoPicture->iRepeatPicture = frame->repeat_pict;
+  pDvdVideoPicture->iRepeatPicture = 0.5 * frame->repeat_pict;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iFlags |= frame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
   pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;

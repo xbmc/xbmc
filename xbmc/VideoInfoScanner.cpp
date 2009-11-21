@@ -28,7 +28,6 @@
 #include "utils/md5.h"
 #include "Picture.h"
 #include "FileSystem/StackDirectory.h"
-#include "xbox/XKGeneral.h"
 #include "utils/IMDB.h"
 #include "utils/GUIInfoManager.h"
 #include "FileSystem/File.h"
@@ -81,7 +80,7 @@ namespace VIDEO
       m_itemCount=-1;
 
       // Create the thread to count all files to be scanned
-      SetPriority(THREAD_PRIORITY_IDLE);
+      SetPriority( GetMinPriority() );
       CThread fileCountReader(this);
       if (m_pObserver)
         fileCountReader.Create();
@@ -568,7 +567,7 @@ namespace VIDEO
               m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
             long lResult = AddMovieAndGetThumb(pItem.get(), info2.strContent, *pItem->GetVideoInfoTag(), -1, bDirNames, pDlgProgress);
-            if (bRefresh && info.strContent.Equals("tvshows"))
+            if (bRefresh && info.strContent.Equals("tvshows") && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
               FetchSeasonThumbs(lResult);
             if (!bRefresh && info2.strContent.Equals("tvshows"))
               i--;
@@ -623,7 +622,8 @@ namespace VIDEO
                     m_database.SetPathHash(pItem->m_strPath,pItem->GetProperty("hash"));
                 }
                 else
-                  FetchSeasonThumbs(lResult);
+                  if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
+                    FetchSeasonThumbs(lResult);
               }
               Return = true;
             }
@@ -988,9 +988,8 @@ namespace VIDEO
     {
       m_database.SetDetailsForMusicVideo(pItem->m_strPath, movieDetails);
     }
-    pItem->CacheFanart();
     // get & save fanart image
-    if (!CFile::Exists(pItem->GetCachedFanart()))
+    if (!pItem->CacheLocalFanart())
     {
       if (!movieDetails.m_fanart.m_xml.IsEmpty() && !movieDetails.m_fanart.DownloadImage(pItem->GetCachedFanart()))
         CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedFanart().c_str());
@@ -1054,7 +1053,8 @@ namespace VIDEO
     if (bApplyToDir && !strThumb.IsEmpty())
       ApplyIMDBThumbToFolder(strDirectory,strThumb);
 
-    FetchActorThumbs(movieDetails.m_cast,strDirectory);
+    if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
+      FetchActorThumbs(movieDetails.m_cast,strDirectory);
     m_database.Close();
     return lResult;
   }
@@ -1173,7 +1173,8 @@ namespace VIDEO
         AddMovieAndGetThumb(&item,"tvshows",episodeDetails,idShow);
       }
     }
-    FetchSeasonThumbs(idShow);
+    if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
+      FetchSeasonThumbs(idShow);
     m_database.Close();
     return true;
   }
@@ -1198,13 +1199,8 @@ namespace VIDEO
         return GetnfoFile(&item2,bGrabAny);
       }
 
-      // mymovies.xml precedes any nfo file
       CStdString strPath;
       CUtil::GetDirectory(item->m_strPath,strPath);
-      nfoFile = CUtil::AddFileToFolder(strPath,"mymovies.xml");
-      if (CFile::Exists(nfoFile) && !item->m_bIsFolder) // "our" mymovies.xml only work for movies, not shows (mymovies.dk vs windows mce
-        return nfoFile;
-
       nfoFile = CUtil::AddFileToFolder(strPath,"movie.nfo");
       if (CFile::Exists(nfoFile))
         return nfoFile;
@@ -1250,6 +1246,13 @@ namespace VIDEO
           CUtil::AddFileToFolder(strPath,CUtil::GetFileName(item->m_strPath),item2.m_strPath);
           return GetnfoFile(&item2,bGrabAny);
         }
+
+        // finally try mymovies.xml
+        nfoFile = CUtil::AddFileToFolder(strPath,"mymovies.xml");
+        if (CFile::Exists(nfoFile))
+          return nfoFile;
+        else
+          nfoFile.clear();
       }
     }
     if (item->m_bIsFolder || (bGrabAny && nfoFile.IsEmpty()))

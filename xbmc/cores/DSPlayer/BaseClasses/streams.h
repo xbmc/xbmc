@@ -159,7 +159,7 @@ typedef struct {
 #include <source.h>	// Generic source filter
 #include <outputq.h>    // Output pin queueing
 #include <errors.h>     // HRESULT status and error definitions
-#include <renbase.h>    // Base class for writing ActiveX renderers
+//#include <renbase.h>    // Base class for writing ActiveX renderers
 #include <winutil.h>    // Helps with filters that manage windows
 #include <winctrl.h>    // Implements the IVideoWindow interface
 #include <videoctl.h>   // Specifically video related classes

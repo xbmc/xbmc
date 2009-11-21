@@ -26,7 +26,6 @@
 
 #include <d3d9.h>
 #include <d3dx9.h>
-#include <dxerr.h>
 #include <dxdiag.h>
 #include "WinSystemWin32.h"
 #include "RenderSystemDX.h"
@@ -44,7 +43,7 @@ public:
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
 
 protected:
-
+  virtual void UpdateMonitor();
 };
 
 extern CWinSystemWin32DX g_RenderSystem;

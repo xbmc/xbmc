@@ -31,6 +31,7 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIUserMessages.h"
+#include "GUIWindowLoginScreen.h"
 #include "GUIWindowVideoBase.h"
 #include "LastFmManager.h"
 #include "LCD.h"
@@ -54,7 +55,9 @@
 #include "common/LIRC.h"
 #endif
 #ifdef HAS_IRSERVERSUITE
+
   #include "common/IRServerSuite/IRServerSuite.h"
+
 #endif
 
 #ifdef HAS_PYTHON
@@ -64,6 +67,11 @@
 #ifdef HAS_WEB_SERVER
 #include "lib/libGoAhead/XBMChttp.h"
 #include "lib/libGoAhead/WebServer.h"
+#endif
+
+#if defined(__APPLE__)
+#include "FileSystem/SpecialProtocol.h"
+#include "CocoaInterface.h"
 #endif
 
 #include <vector>
@@ -97,6 +105,9 @@ const BUILT_IN commands[] = {
   { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
   { "TakeScreenshot",             false,  "Takes a Screenshot" },
   { "RunScript",                  true,   "Run the specified script" },
+#if defined(__APPLE__)
+  { "RunAppleScript",             true,   "Run the specified AppleScript command" },
+#endif
   { "RunPlugin",                  true,   "Run the specified plugin" },
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
@@ -197,6 +208,8 @@ int CBuiltins::Execute(const CStdString& execString)
   CUtil::SplitExecFunction(execString, execute, params);
   execute.ToLower();
   CStdString parameter = params.size() ? params[0] : "";
+  CStdString strParameterCaseIntact = parameter;
+
   if (execute.Equals("reboot") || execute.Equals("restart"))  //Will reboot the xbox, aka cold reboot
   {
     g_application.getApplicationMessenger().Restart();
@@ -235,9 +248,7 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       if (g_settings.m_vecProfiles[i].getName().Equals(parameter))
       {
-        g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
-        g_settings.LoadProfile(i);
-        g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_UP,1);
+        CGUIWindowLoginScreen::LoadProfile(i);
         break;
       }
     }
@@ -310,19 +321,35 @@ int CBuiltins::Execute(const CStdString& execString)
 #ifdef HAS_PYTHON
   else if (execute.Equals("runscript") && params.size())
   {
-    unsigned int argc = params.size();
-    char ** argv = new char*[argc];
+#if defined(__APPLE__)
+    if (CUtil::GetExtension(strParameterCaseIntact) == ".applescript")
+    {
+      CStdString osxPath = CSpecialProtocol::TranslatePath(strParameterCaseIntact);
+      Cocoa_DoAppleScriptFile(osxPath.c_str());
+    }
+    else
+#endif
+		{
+      unsigned int argc = params.size();
+      char ** argv = new char*[argc];
 
-    vector<CStdString> path;
-    //split the path up to find the filename
-    StringUtils::SplitString(params[0],"\\",path);
-    argv[0] = path.size() > 0 ? (char*)path[path.size() - 1].c_str() : (char*)params[0].c_str();
+      vector<CStdString> path;
+      //split the path up to find the filename
+      StringUtils::SplitString(params[0],"\\",path);
+      argv[0] = path.size() > 0 ? (char*)path[path.size() - 1].c_str() : (char*)params[0].c_str();
 
-    for(unsigned int i = 1; i < argc; i++)
-      argv[i] = (char*)params[i].c_str();
+      for(unsigned int i = 1; i < argc; i++)
+        argv[i] = (char*)params[i].c_str();
 
-    g_pythonParser.evalFile(params[0].c_str(), argc, (const char**)argv);
-    delete [] argv;
+      g_pythonParser.evalFile(params[0].c_str(), argc, (const char**)argv);
+      delete [] argv;
+    }
+  }
+#endif
+#if defined(__APPLE__)
+  else if (execute.Equals("runapplescript"))
+  {
+    Cocoa_DoAppleScript(strParameterCaseIntact.c_str());
   }
 #endif
   else if (execute.Equals("system.exec"))
@@ -337,7 +364,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("resolution"))
   {
-    int res = RES_PAL_4x3;
+    RESOLUTION res = RES_PAL_4x3;
     if (parameter.Equals("pal")) res = RES_PAL_4x3;
     else if (parameter.Equals("pal16x9")) res = RES_PAL_16x9;
     else if (parameter.Equals("ntsc")) res = RES_NTSC_4x3;
@@ -346,11 +373,8 @@ int CBuiltins::Execute(const CStdString& execString)
     else if (parameter.Equals("1080i")) res = RES_HDTV_1080i;
     if (g_graphicsContext.IsValidResolution(res))
     {
-      g_guiSettings.SetInt("videoscreen.resolution", res);
-      //set the gui resolution, if newRes is RES_AUTORES newRes will be set to the highest available resolution
+      g_guiSettings.SetResolution(res);
       g_graphicsContext.SetVideoResolution(res);
-      //set our lookandfeelres to the resolution set in graphiccontext
-      g_guiSettings.m_LookAndFeelResolution = res;
       g_application.ReloadSkin();
     }
   }
@@ -869,6 +893,13 @@ int CBuiltins::Execute(const CStdString& execString)
     else if (execute.Equals("skin.setfile"))
     {
       CStdString strMask = (params.size() > 1) ? params[1] : "";
+      if (strMask.Find(".py") > -1)
+      {
+        CMediaSource source;
+        source.strPath = "special://home/scripts/";
+        source.strName = g_localizeStrings.Get(247);
+        localShares.push_back(source);
+      }
     
       if (params.size() > 2)
       {
@@ -919,7 +950,17 @@ int CBuiltins::Execute(const CStdString& execString)
     g_application.StopPlaying();
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && musicScan->IsScanning())
+    {
       musicScan->StopScanning();
+      musicScan->Close(true);
+    }
+
+    CGUIDialogVideoScan *videoScan = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (videoScan && videoScan->IsScanning())
+    {
+      videoScan->StopScanning();
+      videoScan->Close(true);
+    }
 
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_settings.LoadProfile(0); // login screen always runs as default user

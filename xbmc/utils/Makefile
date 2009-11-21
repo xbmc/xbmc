@@ -13,6 +13,7 @@ SRCS=AlarmClock.cpp \
      HttpHeader.cpp \
      IMDB.cpp \
      InfoLoader.cpp \
+     IoSupport.cpp \
      log.cpp \
      MusicAlbumInfo.cpp \
      MusicInfoScraper.cpp \
@@ -58,7 +59,8 @@ SRCS=AlarmClock.cpp \
      JobManager.cpp \
      Teletext.cpp \
      fastmemcpy.cpp \
-     PasswordManager.cpp
+     PasswordManager.cpp \
+     AliasShortcutUtils.cpp
 
 LIB=utils.a
 

@@ -109,7 +109,7 @@ public:
     if (m_pRenderer)
       m_pRenderer->Reset();
   }
-  int GetResolution()
+  RESOLUTION GetResolution()
   {
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
@@ -124,6 +124,24 @@ public:
   bool SupportsBrightness();
   bool SupportsContrast();
   bool SupportsGamma();
+
+  bool Supports(EINTERLACEMETHOD method)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      return m_pRenderer->Supports(method);
+    else
+      return false;
+  }
+
+  bool Supports(ESCALINGMETHOD method)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      return m_pRenderer->Supports(method);
+    else
+      return false;
+  }
 
   double GetPresentTime();
   void  WaitPresentTime(double presenttime);

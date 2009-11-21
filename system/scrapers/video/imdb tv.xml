@@ -5,22 +5,16 @@
 	<include>common/imdb.xml</include>
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Full Cast Credits&quot; type=&quot;bool&quot; id=&quot;fullcredits&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable full cast credits&quot; type=&quot;bool&quot; id=&quot;fullcredits&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Enable IMPAwards&quot; type=&quot;bool&quot; id=&quot;impawards&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable posters from IMPAwards&quot; type=&quot;bool&quot; id=&quot;impawards&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Enable MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable posters from MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;IMDB Poster &amp;amp; Actor Thumb(s) Size&quot; type=&quot;labelenum&quot; values=&quot;192|256|384|512|1024&quot; id=&quot;imdbscale&quot; default=&quot;192&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Input Alternative IMDb Source&quot; type=&quot;text&quot; id=&quot;url&quot; default=&quot;akas.imdb.com&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;IMDb Poster &amp;amp; Actor Thumb(s) Size&quot; type=&quot;labelenum&quot; values=&quot;192|256|384|512|1024&quot; id=&quot;imdbscale&quot; default=&quot;192&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<expression noclean="1"/>
@@ -35,7 +29,7 @@
 		</RegExp>
 	</NfoUrl>
 	<CreateSearchUrl dest="3">
-		<RegExp input="$$1" output="&lt;url&gt;http://$INFO[url]/find?s=tt;q=\1&lt;/url&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://akas.imdb.com/find?s=tt;q=\1&lt;/url&gt;" dest="3">
 			<expression noclean="1"/>
 		</RegExp>
 	</CreateSearchUrl>
@@ -44,13 +38,13 @@
 			<RegExp input="$$1" output="\1" dest="7">
 				<expression clear="yes">/title/([t0-9]*)/faq</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1 (\2)&lt;/title&gt;&lt;url&gt;http://$INFO[url]/title/$$7/&lt;/url&gt;&lt;id&gt;$$7&lt;/id&gt;&lt;/entity&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1 (\2)&lt;/title&gt;&lt;url&gt;http://akas.imdb.com/title/$$7/&lt;/url&gt;&lt;id&gt;$$7&lt;/id&gt;&lt;/entity&gt;" dest="5">
 				<expression clear="yes" noclean="1">&lt;meta name=&quot;title&quot; content=&quot;([^&quot;]*) \(([0-9]*)\)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="4">
 				<expression noclean="1">(&gt;&lt;a href=&quot;/title.*)</expression>
 			</RegExp>
-			<RegExp input="$$4" output="&lt;entity&gt;&lt;title&gt;\2 (\3)&lt;/title&gt;&lt;url&gt;http://$INFO[url]/title/\1/&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
+			<RegExp input="$$4" output="&lt;entity&gt;&lt;title&gt;\2 (\3)&lt;/title&gt;&lt;url&gt;http://akas.imdb.com/title/\1/&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
 				<expression repeat="yes" noclean="1,2">&gt;&lt;a href=&quot;/title/([t0-9]*)/[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt; *\(([0-9]*)</expression>
 			</RegExp>
 			<expression clear="yes" noclean="1"/>
@@ -70,25 +64,25 @@
 			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
 				<expression repeat="yes">&quot;/Sections/Genres/[^/]*/&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetSeriesPremiered&quot;&gt;http://$INFO[url]/title/\1/episodes&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" output="&lt;url function=&quot;GetSeriesPremiered&quot;&gt;http://akas.imdb.com/title/\1/episodes&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetSeriesPlot&quot;&gt;http://$INFO[url]/title/\1/plotsummary&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" output="&lt;url function=&quot;GetSeriesPlot&quot;&gt;http://akas.imdb.com/title/\1/plotsummary&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp conditional="!fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetSeriesCast&quot;&gt;http://$INFO[url]/title/\1/&lt;/url&gt;" dest="5+">
+			<RegExp conditional="!fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetSeriesCast&quot;&gt;http://akas.imdb.com/title/\1/&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp conditional="fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetSeriesCast&quot;&gt;http://$INFO[url]/title/\1/fullcredits#cast&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetSeriesCast&quot;&gt;http://akas.imdb.com/title/\1/fullcredits#cast&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp conditional="impawards" input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMPALink&quot;&gt;http://$INFO[url]/title/\1/posters&lt;/url&gt;" dest="5+">
+			<RegExp conditional="impawards" input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMPALink&quot;&gt;http://akas.imdb.com/title/\1/posters&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/browse/search?type=movies&amp;amp;query=\1&lt;/url&gt;" dest="5+">
 				<expression>/title/tt([t0-9]*)/faq</expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMDBThumbs&quot;&gt;http://$INFO[url]/title/\1/posters&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMDBThumbs&quot;&gt;http://akas.imdb.com/title/\1/posters&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;episodeguide&gt;&lt;url&gt;http://www.imdb.com/title/\1/episodes&lt;/url&gt;&lt;/episodeguide&gt;" dest="5+">
@@ -126,7 +120,7 @@
 	</GetSeriesCast>
 	<GetEpisodeList dest="9">
  	  <RegExp input="$$4" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="9">
- 		<RegExp input="$$1" output="&lt;episode&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url&gt;http://$INFO[url]/title/\3/&lt;/url&gt;&lt;epnum&gt;\2&lt;/epnum&gt;&lt;season&gt;\1&lt;/season&gt;&lt;id&gt;\3&lt;/id&gt;&lt;/episode&gt;" dest="4">
+ 		<RegExp input="$$1" output="&lt;episode&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url&gt;http://akas.imdb.com/title/\3/&lt;/url&gt;&lt;epnum&gt;\2&lt;/epnum&gt;&lt;season&gt;\1&lt;/season&gt;&lt;id&gt;\3&lt;/id&gt;&lt;/episode&gt;" dest="4">
  			<expression repeat="yes">&lt;a name=&quot;year-[0-9]+&quot;&gt; &lt;/a&gt;&lt;h4&gt;Season ([0-9]*), Episode ([0-9]*): &lt;a href=&quot;/title/([^&quot;]*)/&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
  		</RegExp>
  	    <expression noclean="1"/>
@@ -170,16 +164,16 @@
 			<RegExp input="$$1" output="\1" dest="7">
 				<expression noclean="1">first billed only: &lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;(.*)</expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetEpisodePlot&quot;&gt;http://$INFO[url]/title/\1/plotsummary&lt;/url&gt;" dest="4+">
+			<RegExp input="$$2" output="&lt;url function=&quot;GetEpisodePlot&quot;&gt;http://akas.imdb.com/title/\1/plotsummary&lt;/url&gt;" dest="4+">
 				<expression/>
 			</RegExp>
-			<RegExp conditional="!fullcredits" input="$$2" output="&lt;url function=&quot;GetEpisodeCast&quot;&gt;http://$INFO[url]/title/\1/&lt;/url&gt;" dest="4+">
+			<RegExp conditional="!fullcredits" input="$$2" output="&lt;url function=&quot;GetEpisodeCast&quot;&gt;http://akas.imdb.com/title/\1/&lt;/url&gt;" dest="4+">
 				<expression/>
 			</RegExp>
-			<RegExp conditional="fullcredits" input="$$2" output="&lt;url function=&quot;GetEpisodeCast&quot;&gt;http://$INFO[url]/title/\1/fullcredits#cast&lt;/url&gt;" dest="4+">
+			<RegExp conditional="fullcredits" input="$$2" output="&lt;url function=&quot;GetEpisodeCast&quot;&gt;http://akas.imdb.com/title/\1/fullcredits#cast&lt;/url&gt;" dest="4+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;GetEpisodeRuntime&quot;&gt;http://$INFO[url]/title/\1&lt;/url&gt;" dest="4+">
+			<RegExp input="$$1" output="&lt;url function=&quot;GetEpisodeRuntime&quot;&gt;http://akas.imdb.com/title/\1&lt;/url&gt;" dest="4+">
 				<expression>&lt;h5&gt;TV Series:&lt;/h5&gt;[^&lt;]*&lt;a href=&quot;/title/([^/]*)/&quot;&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>

@@ -1,0 +1,67 @@
+<window type="dialog" id="143">
+	<include>dialogeffect</include>
+	<coordinates>
+		<system>1</system>
+		<posx>415</posx>
+		<posy>275</posy>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>450</width>
+				<height>170</height>
+				<texture border="20">OverlayDialogBackground.png</texture>
+			</control>
+			<control type="label" id="1">
+				<description>header label</description>
+				<posx>20</posx>
+				<posy>18</posy>
+				<width>410</width>
+				<height>30</height>
+				<font>font13caps_title</font>
+				<label>31321</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>heading label2</description>
+				<posx>20</posx>
+				<posy>50</posy>
+				<width>410</width>
+				<height>25</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<label>22039</label>
+				<textcolor>grey2</textcolor>
+			</control>
+			<control type="label" id="401">
+				<description>Song Number Label</description>
+				<posx>20</posx>
+				<posy>85</posy>
+				<width>410</width>
+				<height>30</height>
+				<font>font24caps_title</font>
+				<textcolor>selected</textcolor>
+				<align>left</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="label" id="402">
+				<description>Song Name Label</description>
+				<posx>20</posx>
+				<posy>125</posy>
+				<width>410</width>
+				<height>20</height>
+				<font>font22</font>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textcolor>blue</textcolor>
+				<scroll>true</scroll>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -41,7 +41,7 @@ GUIFontManager::GUIFontManager(void)
 {
   m_skinResolution=RES_INVALID;
   m_fontsetUnicode=false;
-  m_bFontsNeedReloading = false;
+  m_canReload = true;
 }
 
 GUIFontManager::~GUIFontManager(void)
@@ -49,7 +49,7 @@ GUIFontManager::~GUIFontManager(void)
   Clear();
 }
 
-CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, float lineSpacing, float aspect, int sourceRes)
+CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, float lineSpacing, float aspect, RESOLUTION sourceRes)
 {
   float originalAspect = aspect;
 
@@ -135,24 +135,48 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   fontInfo.aspect = originalAspect;
   fontInfo.fontFilePath = strPath;
   fontInfo.fileName = strFilename;
+  fontInfo.sourceRes = sourceRes;
   m_vecFontInfo.push_back(fontInfo);
 
   return pNewFont;
+}
+
+bool GUIFontManager::OnMessage(CGUIMessage &message)
+{
+  if (message.GetMessage() != GUI_MSG_NOTIFY_ALL)
+    return false;
+
+  if (message.GetParam1() == GUI_MSG_RENDERER_LOST)
+  {
+    m_canReload = false;
+    return true;
+  }
+
+  if (message.GetParam1() == GUI_MSG_RENDERER_RESET)
+  { // our device has been reset - we have to reload our ttf fonts, and send
+    // a message to controls that we have done so
+    ReloadTTFFonts();
+    g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
+    m_canReload = true;
+    return true;
+  }
+
+  if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
+  { // we need to reload our fonts
+    if (m_canReload)
+    {
+      ReloadTTFFonts();
+      // no need to send a resize message, as this message will do the rounds
+      return true;
+    }
+  }
+  return false;
 }
 
 void GUIFontManager::ReloadTTFFonts(void)
 {
   if (!m_vecFonts.size())
     return;   // we haven't even loaded fonts in yet
-
-  // check if the device is ready
-  if (!g_Windowing.IsDeviceReady())
-  {
-    m_bFontsNeedReloading = true;
-    return;
-  }
-
-  g_graphicsContext.SetScalingResolution(m_skinResolution, 0, 0, true);
 
   for (unsigned int i = 0; i < m_vecFonts.size(); i++)
   {
@@ -164,7 +188,9 @@ void GUIFontManager::ReloadTTFFonts(void)
     CStdString& strPath = fontInfo.fontFilePath;
     CStdString& strFilename = fontInfo.fileName;
 
-    if (m_skinResolution == RES_PAL_16x9 || m_skinResolution == RES_PAL60_16x9 || m_skinResolution == RES_NTSC_16x9 || m_skinResolution == RES_HDTV_480p_16x9)
+    g_graphicsContext.SetScalingResolution(fontInfo.sourceRes, 0, 0, true);
+
+    if (fontInfo.sourceRes == RES_PAL_16x9 || fontInfo.sourceRes == RES_PAL60_16x9 || fontInfo.sourceRes == RES_NTSC_16x9 || fontInfo.sourceRes == RES_HDTV_480p_16x9)
       aspect *= 0.75f;
 
     aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();
@@ -189,10 +215,6 @@ void GUIFontManager::ReloadTTFFonts(void)
 
     font->SetFont(pFontFile);
   }
-
-  m_bFontsNeedReloading = false;
-  // send a message to our controls telling them they need to refresh.
-  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
 }
 
 void GUIFontManager::Unload(const CStdString& strFontName)

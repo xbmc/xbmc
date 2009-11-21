@@ -23,9 +23,7 @@
 #include "utils/GUIInfoManager.h"
 #include "GUIControlProfiler.h"
 
-#define TIME_TO_SCROLL 200;
-
-CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment)
+CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment, unsigned int scrollTime)
 : CGUIControlGroup(parentID, controlID, posX, posY, width, height)
 {
   m_itemGap = itemGap;
@@ -36,7 +34,8 @@ CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float po
   m_alignment = alignment;
   m_scrollOffset = 0;
   m_scrollSpeed = 0;
-  m_scrollTime = 0;
+  m_scrollLastTime = 0;
+  m_scrollTime = scrollTime ? scrollTime : 1;
   m_renderTime = 0;
   m_useControlPositions = useControlPositions;
   ControlType = GUICONTROL_GROUPLIST;
@@ -50,7 +49,7 @@ void CGUIControlGroupList::Render()
 {
   if (m_scrollSpeed != 0)
   {
-    m_offset += m_scrollSpeed * (m_renderTime - m_scrollTime);
+    m_offset += m_scrollSpeed * (m_renderTime - m_scrollLastTime);
     if ((m_scrollSpeed < 0 && m_offset < m_scrollOffset) ||
         (m_scrollSpeed > 0 && m_offset > m_scrollOffset))
     {
@@ -58,7 +57,7 @@ void CGUIControlGroupList::Render()
       m_scrollSpeed = 0;
     }
   }
-  m_scrollTime = m_renderTime;
+  m_scrollLastTime = m_renderTime;
 
   // first we update visibility of all our items, to ensure our size and
   // alignment computations are correct.
@@ -272,10 +271,17 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
       }
     }
     // now the control's nav
+    std::vector<CGUIActionDescriptor> empty;
     if (m_orientation == VERTICAL)
+    {
       control->SetNavigation(beforeID, afterID, GetControlIdLeft(), GetControlIdRight());
+      control->SetNavigationActions(empty, empty, m_leftActions, m_rightActions, false);
+    }
     else
+    {
       control->SetNavigation(GetControlIdUp(), GetControlIdDown(), beforeID, afterID);
+      control->SetNavigationActions(m_upActions, m_downActions, empty, empty, false);
+    }
 
     if (!m_useControlPositions)
       control->SetPosition(0,0);
@@ -302,7 +308,7 @@ inline float CGUIControlGroupList::Size() const
 void CGUIControlGroupList::ScrollTo(float offset)
 {
   m_scrollOffset = offset;
-  m_scrollSpeed = (m_scrollOffset - m_offset) / TIME_TO_SCROLL;
+  m_scrollSpeed = (m_scrollOffset - m_offset) / m_scrollTime;
 }
 
 bool CGUIControlGroupList::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const

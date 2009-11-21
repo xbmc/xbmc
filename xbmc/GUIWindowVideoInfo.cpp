@@ -46,6 +46,7 @@
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
+#include "GUIUserMessages.h"
 
 using namespace std;
 using namespace XFILE;
@@ -244,6 +245,20 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       }
     }
     break;
+  case GUI_MSG_NOTIFY_ALL:
+    {
+      if (IsActive() && message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
+      {
+        CFileItemPtr item = boost::static_pointer_cast<CFileItem>(message.GetItem());
+        if (item && m_movieItem->m_strPath.Equals(item->m_strPath))
+        { // Just copy over the stream details and the thumb if we don't already have one
+          if (!m_movieItem->HasThumbnail())
+            m_movieItem->SetThumbnailImage(item->GetThumbnailImage());
+          m_movieItem->GetVideoInfoTag()->m_streamDetails = item->GetVideoInfoTag()->m_streamDetails;
+        }
+        return true;
+      }
+    }
   }
 
   return CGUIDialog::OnMessage(message);
@@ -251,7 +266,6 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 
 void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
 {
-  CVideoThumbLoader loader;
   *m_movieItem = *item;
   // setup cast list + determine type.  We need to do this here as it makes
   // sure that content type (among other things) is set correctly for the
@@ -292,8 +306,7 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
     // set fanart property for tvshows and movies
     if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
     {
-      m_movieItem->CacheFanart();
-      if (CFile::Exists(m_movieItem->GetCachedFanart()))
+      if (m_movieItem->CacheLocalFanart())
         m_movieItem->SetProperty("fanart_image",m_movieItem->GetCachedFanart());
     }
     // determine type:
@@ -345,7 +358,7 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
     else if (type == VIDEODB_CONTENT_MOVIES)
       m_castList->SetContent("movies");
   }
-  loader.LoadItem(m_movieItem.get());
+  m_loader.LoadItem(m_movieItem.get());
 }
 
 void CGUIWindowVideoInfo::Update()
@@ -401,7 +414,7 @@ void CGUIWindowVideoInfo::Update()
   // setup plot text area
   strTmp = m_movieItem->GetVideoInfoTag()->m_strPlot;
   if (!(!m_movieItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && m_movieItem->GetVideoInfoTag()->m_iSeason == 0)) // dont apply to tvshows
-    if (m_movieItem->GetVideoInfoTag()->m_playCount == 0 && g_guiSettings.GetBool("videolibrary.hideplots"))
+    if (m_movieItem->GetVideoInfoTag()->m_playCount == 0 && !g_guiSettings.GetBool("videolibrary.showunwatchedplots"))
       strTmp = g_localizeStrings.Get(20370);
 
   strTmp.Trim();
@@ -460,13 +473,6 @@ void CGUIWindowVideoInfo::Update()
 
 void CGUIWindowVideoInfo::Refresh()
 {
-  // quietly return if Internet lookups are disabled
-  if (!g_guiSettings.GetBool("network.enableinternet"))
-  {
-    Update();
-    return ;
-  }
-
   try
   {
     OutputDebugString("Refresh\n");
@@ -842,7 +848,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
     item->GetVideoInfoTag()->m_fanart = m_movieItem->GetVideoInfoTag()->m_fanart;
     item->SetProperty("fanart_number", (int)i);
     item->SetLabel(g_localizeStrings.Get(415));
-    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20015));
+    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20441));
 
     // make sure any previously cached thumb is removed
     if (CFile::Exists(item->GetCachedPictureThumb()))
@@ -853,12 +859,15 @@ void CGUIWindowVideoInfo::OnGetFanart()
   CFileItem item(*m_movieItem->GetVideoInfoTag());
   CStdString cachedThumb(item.GetCachedFanart());
 
-  CStdString strLocal = item.CacheFanart(true);
+  CStdString strLocal = item.GetLocalFanart();
   if (!strLocal.IsEmpty())
   {
     CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
     itemLocal->SetThumbnailImage(strLocal);
-    itemLocal->SetLabel(g_localizeStrings.Get(20017));
+    itemLocal->SetLabel(g_localizeStrings.Get(20438));
+    // make sure any previously cached thumb is removed
+    if (CFile::Exists(itemLocal->GetCachedPictureThumb()))
+      CFile::Delete(itemLocal->GetCachedPictureThumb());
     items.Add(itemLocal);
   }
 
@@ -866,20 +875,20 @@ void CGUIWindowVideoInfo::OnGetFanart()
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
     itemCurrent->SetThumbnailImage(cachedThumb);
-    itemCurrent->SetLabel(g_localizeStrings.Get(20016));
+    itemCurrent->SetLabel(g_localizeStrings.Get(20440));
     items.Add(itemCurrent);
   }
 
   CFileItemPtr itemNone(new CFileItem("fanart://None", false));
   itemNone->SetIconImage("DefaultVideo.png");
-  itemNone->SetLabel(g_localizeStrings.Get(20018));
+  itemNone->SetLabel(g_localizeStrings.Get(20439));
   items.Add(itemNone);
 
   CStdString result;
   VECSOURCES sources(g_settings.m_videoSources);
   g_mediaManager.GetLocalDrives(sources);
   bool flip=false;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20019), result, &flip) || result.Equals("fanart://Current"))
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) || result.Equals("fanart://Current"))
     return;   // user cancelled
 
   if (CFile::Exists(cachedThumb))

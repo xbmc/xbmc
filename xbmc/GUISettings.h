@@ -41,19 +41,11 @@ class TiXmlElement;
 #define SOFTWARE_UPSCALING_SD_CONTENT 1
 #define SOFTWARE_UPSCALING_ALWAYS     2
 
-// Display blanking options.
-#define BLANKING_DISABLED     0
-#define BLANKING_ALL_DISPLAYS 1
-
-#ifdef __APPLE__
-
 // Apple Remote options.
 #define APPLE_REMOTE_DISABLED     0
 #define APPLE_REMOTE_STANDARD     1
 #define APPLE_REMOTE_UNIVERSAL    2
 #define APPLE_REMOTE_MULTIREMOTE  3
-
-#endif
 
 // Subtitle colours
 
@@ -428,9 +420,12 @@ public:
   void SaveXML(TiXmlNode *pRootNode);
   void LoadMasterLock(TiXmlElement *pRootElement);
 
-  //m_LookAndFeelResolution holds the real gui resolution,
-  //also when g_guiSettings.GetInt("videoscreen.resolution") is set to RES_AUTORES
-  int m_LookAndFeelResolution;
+  RESOLUTION GetResolution() const;
+  static RESOLUTION GetResFromString(const CStdString &res);
+  void SetResolution(RESOLUTION res);
+
+  //m_LookAndFeelResolution holds the real gui resolution
+  RESOLUTION m_LookAndFeelResolution;
   ReplayGainSettings m_replayGain;
 
   void Clear();

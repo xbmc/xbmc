@@ -37,7 +37,6 @@
 #include <D3d9.h>
 #include <Vmr9.h>
 
-#include "dshowutil/NullRenderers.h"
 #include "Log.h"
 #include "FileSystem/SpecialProtocol.h"
 //XML CONFIG HEADERS

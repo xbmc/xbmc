@@ -23,7 +23,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "xbox/IoSupport.h"
+#include "utils/IoSupport.h"
 #include "system.h" // for win32 types
 
 #ifdef _WIN32
@@ -32,7 +32,7 @@
 typedef uint32_t iso723_t;
 typedef uint64_t iso733_t;
 #else
-#include "lib/libcdio/iso9660.h"
+#include <cdio/iso9660.h>
 #endif
 
 #pragma pack(1)

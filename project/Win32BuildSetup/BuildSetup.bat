@@ -15,7 +15,7 @@ rem Config
 rem If you get an error that Visual studio was not found, SET your path for VSNET main executable.
 rem -------------------------------------------------------------
 rem	CONFIG START
-SET target=gl
+SET target=dx
 SET buildmode=ask
 FOR %%b in (%1, %2, %3, %4) DO (
 	IF %%b==dx SET target=dx
@@ -164,6 +164,7 @@ IF %target%==dx SET buildconfig=Release (DirectX)
     xcopy ..\..\visualisations\projectM BUILD_WIN32\Xbmc\visualisations\projectM /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   ) else (
     xcopy ..\..\visualisations\*_win32dx.vis BUILD_WIN32\Xbmc\visualisations /Q /I /Y /EXCLUDE:exclude.txt > NUL
+    xcopy ..\..\visualisations\Milkdrop BUILD_WIN32\Xbmc\visualisations\Milkdrop /Q /I /Y /EXCLUDE:exclude.txt > NUL
   )
   xcopy ..\..\system BUILD_WIN32\Xbmc\system /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\media BUILD_WIN32\Xbmc\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL

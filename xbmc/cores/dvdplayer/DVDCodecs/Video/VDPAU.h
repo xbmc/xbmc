@@ -90,15 +90,16 @@ public:
   void Present();
   int  ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();
-  void InitCSCMatrix();
+  void InitCSCMatrix(int Height);
   void CheckStatus(VdpStatus vdp_st, int line);
 
   void CheckRecover(bool force = false);
   void CheckFeatures();
-  void SetColor();
+  void SetColor(int Height);
   void SetNoiseReduction();
   void SetSharpness();
   void SetDeinterlacing();
+  void SetHWUpscaling();
   bool VDPAURecovered, VDPAUSwitching;
 
   VdpTime    lastSwapTime, frameLagTime, frameLagTimeRunning, frameLagAverage;
@@ -111,14 +112,16 @@ public:
   int        tmpDeint;
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
-  bool       interlaced;
-  int        outWidth, outHeight;
+  bool       interlaced,m_bPixmapCreated;
+  int        OutWidth, OutHeight;
   int        lastDisplayedSurface;
 
   VdpProcamp    m_Procamp;
   VdpCSCMatrix  m_CSCMatrix;
   VdpDevice     GetVdpDevice() { return vdp_device; };
   VdpChromaType vdp_chroma_type;
+  VdpVideoMixerPictureStructure structure;
+
 
   //  protected:
   void      InitVDPAUProcs();
@@ -148,6 +151,7 @@ public:
   VdpVideoMixerCreate *                vdp_video_mixer_create;
   VdpVideoMixerSetFeatureEnables *     vdp_video_mixer_set_feature_enables;
   VdpVideoMixerQueryParameterSupport * vdp_video_mixer_query_parameter_support;
+  VdpVideoMixerQueryFeatureSupport *   vdp_video_mixer_query_feature_support;
   VdpVideoMixerDestroy *               vdp_video_mixer_destroy;
   VdpVideoMixerRender *                vdp_video_mixer_render;
   VdpVideoMixerSetAttributeValues *    vdp_video_mixer_set_attribute_values;

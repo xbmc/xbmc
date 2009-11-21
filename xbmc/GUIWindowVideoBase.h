@@ -41,8 +41,7 @@ public:
   static void OnScan(const CStdString& strPath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
   virtual void OnInfo(CFileItem* pItem, const SScraperInfo& info);
   virtual void OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId);
-  static void MarkUnWatched(const CFileItemPtr &pItem);
-  static void MarkWatched(const CFileItemPtr &pItem);
+  static void MarkWatched(const CFileItemPtr &pItem, bool mark);
   static void UpdateVideoTitle(const CFileItem* pItem);
 
   //! Shows the resume menu following the 'resumeautomatically' guisettig (also checks if there is a bookmark on the file)
@@ -65,6 +64,7 @@ protected:
   virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info, VIDEO::SScanSettings& settings) {};
   virtual void OnUnAssignContent(int iItem) {};
   virtual void OnQueueItem(int iItem);
+  virtual void OnDeleteItem(CFileItemPtr pItem);
   virtual void OnDeleteItem(int iItem);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items) {};
   virtual CStdString GetQuickpathName(const CStdString& strPath) const {return strPath;};
@@ -92,5 +92,4 @@ protected:
   CVideoDatabase m_database;
 
   CVideoThumbLoader m_thumbLoader;
-  bool m_bStreamDetailsChanged;
 };

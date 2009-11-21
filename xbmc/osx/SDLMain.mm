@@ -18,7 +18,11 @@
 //hack around problem with xbmc's typedef int BOOL
 // and obj-c's typedef unsigned char BOOL
 #define BOOL XBMC_BOOL 
+#import "StdString.h"
 #import "PlatformDefs.h"
+#import "ApplicationMessenger.h"
+#import "DarwinStorageProvider.h"
+#import "WindowingFactory.h"
 #undef BOOL
 
 /* For some reaon, Apple removed setAppleMenu from the headers in 10.4,
@@ -118,6 +122,16 @@ static void setupWindowMenu(void)
 
     windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
     
+    /* "Full/Windowed Toggle" item */
+    menuItem = [[NSMenuItem alloc] initWithTitle:@"Full/Windowed Toggle" action:@selector(fullScreenToggle:) keyEquivalent:@"f"];
+    [windowMenu addItem:menuItem];
+    [menuItem release];
+
+    /* "Full/Windowed Toggle" item */
+    menuItem = [[NSMenuItem alloc] initWithTitle:@"Float on Top" action:@selector(floatOnTopToggle:) keyEquivalent:@"t"];
+    [windowMenu addItem:menuItem];
+    [menuItem release];
+
     /* "Minimize" item */
     menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize" action:@selector(performMiniaturize:) keyEquivalent:@"m"];
     [windowMenu addItem:menuItem];
@@ -158,6 +172,31 @@ static void setupWindowMenu(void)
     SDL_Event event;
     event.type = SDL_QUIT;
     SDL_PushEvent(&event);
+}
+
+- (void)fullScreenToggle:(id)sender
+{
+  // Post an toggle full-screen event to the application thread.
+  SDL_Event event;
+  memset(&event, 0, sizeof(event));
+  event.type = SDL_USEREVENT;
+  event.user.code = TMSG_TOGGLEFULLSCREEN;
+  SDL_PushEvent(&event);
+}
+
+- (void)floatOnTopToggle:(id)sender
+{
+  NSWindow* window = [[[NSOpenGLContext currentContext] view] window];
+  if ([window level] == NSFloatingWindowLevel)
+  {
+    [window setLevel:NSNormalWindowLevel];
+    [sender setState:NSOffState];
+  }
+  else
+  {
+    [window setLevel:NSFloatingWindowLevel];
+    [sender setState:NSOnState];
+  }
 }
 @end
 
@@ -260,6 +299,11 @@ static void setupWindowMenu(void)
       name:NSWindowDidMoveNotification
       object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+      selector:@selector(windowDidReSize:)
+      name:NSWindowDidResizeNotification
+      object:nil];
+      
     // We're going to manually manage the screensaver.
     setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
 
@@ -285,6 +329,17 @@ static void setupWindowMenu(void)
 
 - (void) workspaceDidWake:(NSNotification *) note
 {
+  if (g_Windowing.IsFullScreen())
+  {
+    CStdString tmp_str;
+    
+    // keep the dock hidden using applescript.
+    tmp_str = "tell application \"System Events\" \n";
+    tmp_str += "keystroke \"d\" using {command down, option down} \n";
+    tmp_str += "end tell \n";
+    
+    Cocoa_DoAppleScript( tmp_str.c_str() );
+  }
 }
 
 - (void) workspaceWillSleep:(NSNotification *) note
@@ -295,20 +350,8 @@ static void setupWindowMenu(void)
 {
   // calling into c++ code, need to use autorelease pools
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
-  //NSLog(@"Device did mount: %@", devicePath);
-  
-  // check for physical DVD with VIDEO_TS structure
-  NSFileManager *fileManager = [NSFileManager defaultManager];
-  NSString *video_tsFolder = [devicePath stringByAppendingString:@"/VIDEO_TS"];
-  // Check if the mounted volume is a DVD
-  NSArray *contents = [fileManager directoryContentsAtPath:video_tsFolder];
-  if (contents != nil)
-  {
-    //const CStdString strDrive = [devicePath cString];
-    // TODO: might need to translate devicePath into what CDetectDVDMedia::AddMedia wants
-    //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->AddMedia(strDrive);
-  }
+
+  CDarwinStorageProvider::SetEvent();
   [pool release];
 }
 
@@ -316,16 +359,36 @@ static void setupWindowMenu(void)
 {
   // calling into c++ code, need to use autorelease pools
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  //NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
-  //NSLog(@"Device did unmount: %@", devicePath);
-  //const CStdString strDrive = [devicePath cString];
-  //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->RemoveMedia(strDrive);
+
+  CDarwinStorageProvider::SetEvent();
   [pool release];
 }
 
 - (void) windowDidMove:(NSNotification*) note
 {
   Cocoa_CVDisplayLinkUpdate();
+}
+
+- (void) windowDidReSize:(NSNotification*) note
+{
+  /* 
+  // SDL_PushEvent is not working but
+  // this is how one would pass update events in response to grow events.
+  NSOpenGLContext* context = [NSOpenGLContext currentContext];
+  if (context)
+  {
+    NSView *view = [context view];
+    if (view)
+    {
+      XBMC_Event event;
+      memset(&event, 0, sizeof(event));
+      event.resize.type = XBMC_VIDEORESIZE;
+      event.resize.w = [view frame].size.width;
+      event.resize.h = [view frame].size.height;
+      SDL_PushEvent(&event);
+    }
+  }
+  */
 }
 
 @end

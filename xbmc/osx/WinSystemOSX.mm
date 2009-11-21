@@ -26,9 +26,10 @@
 #define BOOL XBMC_BOOL 
 #include "WinSystemOSX.h"
 #include "Settings.h"
-#include "AdvancedSettings.h"
+#include "GUISettings.h"
 #include "KeyboardStat.h"
 #include "utils/log.h"
+#include "XBMCHelper.h"
 #undef BOOL
 
 #import <Cocoa/Cocoa.h>
@@ -253,7 +254,7 @@ bool CWinSystemOSX::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   // Enable vertical sync to avoid any tearing.
   SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);  
 
-  m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, SDL_OPENGL | (m_bFullScreen ? 0 : SDL_RESIZABLE));
+  m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, SDL_OPENGL | SDL_RESIZABLE);
   if (!m_SDLSurface)
     return false;
 
@@ -377,7 +378,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     lastScreen = [[lastView window] screen];
     screen_index = res.iScreen;
     
-    if (g_advancedSettings.m_osx_GLFullScreen)
+    if (!g_guiSettings.GetBool("videoscreen.fakefullscreen"))
     {
       // hide the window
       view_size = [lastView frame].size;
@@ -498,7 +499,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     if (fullScreenDisplayID == kCGDirectMainDisplay)
       ShowMenuBar();
 
-    if (g_advancedSettings.m_osx_GLFullScreen)
+    if (!g_guiSettings.GetBool("videoscreen.fakefullscreen"))
     {
       // release displays
       CGReleaseAllDisplays();
@@ -600,6 +601,44 @@ void CWinSystemOSX::UpdateResolutions()
   //GetVideoModes();
 }
 
+/*
+void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx)
+{
+  if (!pixFmt)
+    return nil;
+    
+  NSOpenGLContext* newContext = [[NSOpenGLContext alloc] initWithFormat:(NSOpenGLPixelFormat*)pixFmt
+    shareContext:(NSOpenGLContext*)shareCtx];
+
+  // snipit from SDL_cocoaopengl.m
+  //
+  // Wisdom from Apple engineer in reference to UT2003's OpenGL performance:
+  //  "You are blowing a couple of the internal OpenGL function caches. This
+  //  appears to be happening in the VAO case.  You can tell OpenGL to up
+  //  the cache size by issuing the following calls right after you create
+  //  the OpenGL context.  The default cache size is 16."    --ryan.
+  //
+  
+  #ifndef GLI_ARRAY_FUNC_CACHE_MAX
+  #define GLI_ARRAY_FUNC_CACHE_MAX 284
+  #endif
+
+  #ifndef GLI_SUBMIT_FUNC_CACHE_MAX
+  #define GLI_SUBMIT_FUNC_CACHE_MAX 280
+  #endif
+
+  {
+      long cache_max = 64;
+      CGLContextObj ctx = (CGLContextObj)[newContext CGLContextObj];
+      CGLSetParameter(ctx, (CGLContextParameter)GLI_SUBMIT_FUNC_CACHE_MAX, &cache_max);
+      CGLSetParameter(ctx, (CGLContextParameter)GLI_ARRAY_FUNC_CACHE_MAX, &cache_max);
+  }
+  
+  // End Wisdom from Apple Engineer section. --ryan.
+  return newContext;
+}
+*/
+
 void* CWinSystemOSX::CreateWindowedContext(void* shareCtx)
 {
   NSOpenGLPixelFormatAttribute wattrs[] =
@@ -700,31 +739,49 @@ void CWinSystemOSX::EnableVSync(bool enable)
 
 bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate)
 {
-  CGDirectDisplayID displayID = kCGDirectMainDisplay;
-  CFDictionaryRef dispMode = NULL;
   int match = 0;
+  CFDictionaryRef dispMode = NULL;
+  // Figure out the screen size. (default to main screen)
+  CGDirectDisplayID display_id = kCGDirectMainDisplay;
+  
+  NSOpenGLContext* context = [NSOpenGLContext currentContext];
+  if (context)
+  {
+    NSView* view;
+  
+    view = [context view];
+    if (view)
+    {
+      NSWindow* window;
+      window = [view window];
+      if (window)
+      {
+        display_id = GetDisplayIDFromScreen( [window screen] );      
+      }
+    }
+  }
 
   // find mode that matches the desired size
   dispMode = CGDisplayBestModeForParametersAndRefreshRate(
-    displayID, 32, width, height, (CGRefreshRate)(refreshrate), &match);
+    display_id, 32, width, height, (CGRefreshRate)(refreshrate), &match);
 
   if (!match)
-    dispMode = CGDisplayBestModeForParameters(displayID, 32, width, height, &match);
+    dispMode = CGDisplayBestModeForParameters(display_id, 32, width, height, &match);
 
   if (!match)
-    dispMode = CGDisplayBestModeForParameters(displayID, 16, width, height, &match);
+    dispMode = CGDisplayBestModeForParameters(display_id, 16, width, height, &match);
 
   if (!match)
     return false;
 
   // switch mode and return success
-  CGDisplayCapture(displayID);
+  CGDisplayCapture(display_id);
   CGDisplayConfigRef cfg;
   CGBeginDisplayConfiguration(&cfg);
   CGConfigureDisplayFadeEffect(cfg, 0.3f, 0.5f, 0, 0, 0);
-  CGConfigureDisplayMode(cfg, displayID, dispMode);
+  CGConfigureDisplayMode(cfg, display_id, dispMode);
   CGError err = CGCompleteDisplayConfiguration(cfg, kCGConfigureForAppOnly);
-  CGDisplayRelease(displayID);
+  CGDisplayRelease(display_id);
   
   return (err == kCGErrorSuccess);
 }
@@ -762,6 +819,128 @@ void CWinSystemOSX::GetVideoModes(void)
         refreshrate = 150.0;      // Divisible by 25Hz and 30Hz to minimise AV sync waiting
     }
   }
+}
+
+void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
+{
+  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+  
+  if (m_bFullScreen && bGaining)
+  {
+    // find the window
+    NSOpenGLContext* context = [NSOpenGLContext currentContext];
+    if (context)
+    {
+      NSView* view;
+    
+      view = [context view];
+      if (view)
+      {
+        NSWindow* window;
+        window = [view window];
+        if (window)
+        {
+          // find the screenID
+          NSDictionary* screenInfo = [[window screen] deviceDescription];
+          NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
+          if ((CGDirectDisplayID)[screenID longValue] == kCGDirectMainDisplay)
+          {
+            HideMenuBar();
+          }
+          [window orderFront:nil];
+        }
+      }
+    }
+  }
+  [pool release];
+}
+
+void CWinSystemOSX::ShowOSMouse(bool show)
+{
+  SDL_ShowCursor(show ? 1 : 0);
+}
+
+bool CWinSystemOSX::Minimize()
+{
+  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+  
+  [[NSApplication sharedApplication] miniaturizeAll:nil];
+
+  [pool release];
+  return true;
+}
+
+bool CWinSystemOSX::Restore()
+{
+  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+  
+  [[NSApplication sharedApplication] unhide:nil];
+
+  [pool release];
+  return true;
+}
+
+bool CWinSystemOSX::Hide()
+{
+  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+  
+  [[NSApplication sharedApplication] hide:nil];
+  
+  [pool release];
+  return true;
+}
+
+bool CWinSystemOSX::Show(bool raise)
+{
+  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+  if (raise)
+  {
+    [[NSApplication sharedApplication] unhide:nil];
+    [[NSApplication sharedApplication] activateIgnoringOtherApps: YES];
+    [[NSApplication sharedApplication] arrangeInFront:nil];
+  }
+  else
+  {
+    [[NSApplication sharedApplication] unhideWithoutActivation];
+  }
+      
+  [pool release];
+  return true;
+}
+
+void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
+{
+  NSDictionary* errorDict;
+  NSAppleScript* scriptObject;
+  NSAppleEventDescriptor* returnDescriptor;
+
+  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+  // If we don't call this, the screen saver will just stop and then start up again.
+  UpdateSystemActivity(UsrActivity);
+  
+  if (bEnable)
+  {
+    // tell application id "com.apple.ScreenSaver.Engine" to launch
+    scriptObject = [[NSAppleScript alloc] initWithSource:
+      @"launch application \"ScreenSaverEngine\""];
+  }
+  else
+  {
+    // tell application id "com.apple.ScreenSaver.Engine" to quit
+    scriptObject = [[NSAppleScript alloc] initWithSource:
+      @"tell application \"ScreenSaverEngine\" to quit"];
+  }
+  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
+  [scriptObject release];
+
+  [pool release];
+}
+
+bool CWinSystemOSX::IsSystemScreenSaverEnabled()
+{
+  return (g_xbmcHelper.GetProcessPid("ScreenSaverEngine") != -1);
 }
 
 #endif

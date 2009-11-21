@@ -1289,6 +1289,8 @@ static int rv34_decode_slice(RV34DecContext *r, int end, const uint8_t* buf, int
             s->height = r->si.height;
             if(MPV_common_init(s) < 0)
                 return -1;
+            s->avctx->width = s->width;
+            s->avctx->height = s->height;
             r->intra_types_stride = s->mb_width*4 + 4;
             r->intra_types_hist = av_realloc(r->intra_types_hist, r->intra_types_stride * 4 * 2 * sizeof(*r->intra_types_hist));
             r->intra_types = r->intra_types_hist + r->intra_types_stride * 4;

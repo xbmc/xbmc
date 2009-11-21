@@ -627,7 +627,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   int iNumSlots = 7;
   float buttonGap = 5;
   int iDefaultSlot = 2;
-  int iMovementRange = 2;
+  int iMovementRange = 0;
   bool bHorizontal = false;
   int iAlpha = 0;
   bool bWrapAround = true;
@@ -1031,7 +1031,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   else if (strType == "grouplist")
   {
     control = new CGUIControlGroupList(
-      parentID, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords, labelInfo.align);
+      parentID, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords, labelInfo.align, scrollTime);
     ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
   }
   else if (strType == "label")
@@ -1252,7 +1252,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   else if (strType == "fixedlist")
   {
-    control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition);
+    control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition, iMovementRange);
     ((CGUIFixedListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIFixedListContainer *)control)->LoadContent(pControlNode);
     ((CGUIFixedListContainer *)control)->SetType(viewType, viewLabel);
@@ -1341,7 +1341,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   return control;
 }
 
-void CGUIControlFactory::ScaleElement(TiXmlElement *element, int fileRes, int destRes)
+void CGUIControlFactory::ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes)
 {
   if (element->FirstChild())
   {

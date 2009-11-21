@@ -29,6 +29,10 @@ class CKaraokeLyricsTextLRC : public CKaraokeLyricsText
     bool Load();
 
   private:
+    bool checkMultiTime(char *lyricData, unsigned int lyricSize);
+    bool ParserNormal(char *lyricData, unsigned int lyricSize, int timing_correction);
+    bool ParserMultiTime(char *lyricData, unsigned int lyricSize, int timing_correction);
+
     CStdString     m_lyricsFile;
 };
 

@@ -53,6 +53,7 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
+  virtual void SetInvalid();
   virtual void SetRange(int iStart, int iEnd);
   virtual void SetFloatRange(float fStart, float fEnd);
   virtual bool OnMessage(CGUIMessage& message);

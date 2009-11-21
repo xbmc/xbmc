@@ -145,18 +145,17 @@ void CMouseStat::SetResolution(int maxX, int maxY, float speedX, float speedY)
   // speed is currently unused
   m_speedX = speedX;
   m_speedY = speedY;
-
-  // reset the coordinates
-  m_mouseState.x = m_maxX / 2;
-  m_mouseState.y = m_maxY / 2;
-  SetActive();
 }
 
 void CMouseStat::SetActive(bool active /*=true*/)
 {
   m_lastActiveTime = CTimeUtils::GetFrameTime();
   m_mouseState.active = active;
-  SDL_ShowCursor(m_mouseState.active && !(IsEnabled() || g_Windowing.IsFullScreen()));
+  // we show the OS mouse if:
+  // 1. The mouse is active (it has been moved) AND
+  // 2. The XBMC mouse is disabled in settings AND
+  // 3. XBMC is not in fullscreen.
+  g_Windowing.ShowOSMouse(m_mouseState.active && !IsEnabled() && !g_Windowing.IsFullScreen());
 }
 
 // IsActive - returns true if we have been active in the last MOUSE_ACTIVE_LENGTH period

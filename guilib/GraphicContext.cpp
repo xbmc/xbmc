@@ -246,7 +246,7 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
   }
 }
 
-void CGraphicContext::SetFullScreenViewWindow(int &res)
+void CGraphicContext::SetFullScreenViewWindow(RESOLUTION &res)
 {
   m_videoRect.x1 = (float)g_settings.m_ResInfo[res].Overscan.left;
   m_videoRect.y1 = (float)g_settings.m_ResInfo[res].Overscan.top;
@@ -292,7 +292,7 @@ void CGraphicContext::SetCalibrating(bool bOnOff)
   m_bCalibrating = bOnOff;
 }
 
-bool CGraphicContext::IsValidResolution(int res)
+bool CGraphicContext::IsValidResolution(RESOLUTION res)
 {
   if (res >= RES_WINDOW && (size_t) res <= g_settings.m_ResInfo.size())
   {
@@ -302,9 +302,9 @@ bool CGraphicContext::IsValidResolution(int res)
   return false;
 }
 
-void CGraphicContext::SetVideoResolution(int res, bool forceUpdate)
+void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
 {
-  int lastRes = m_Resolution;
+  RESOLUTION lastRes = m_Resolution;
   
   // If the user asked us to guess, go with desktop
   if (res == RES_AUTORES || !IsValidResolution(res))
@@ -339,10 +339,10 @@ void CGraphicContext::SetVideoResolution(int res, bool forceUpdate)
   if (g_advancedSettings.m_fullScreen)
   {
 #if defined (__APPLE__) || defined (_WIN32)
-    bool blankOtherDisplays = g_guiSettings.GetInt("videoscreen.displayblanking")  == BLANKING_ALL_DISPLAYS;
+    bool blankOtherDisplays = g_guiSettings.GetBool("videoscreen.blankdisplays");
     g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], blankOtherDisplays);
 #else
-    g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], BLANKING_DISABLED);
+    g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], false);
 #endif
   }
   else if (lastRes >= RES_DESKTOP )
@@ -360,7 +360,7 @@ void CGraphicContext::SetVideoResolution(int res, bool forceUpdate)
   Unlock();
 }
 
-int CGraphicContext::GetVideoResolution() const
+RESOLUTION CGraphicContext::GetVideoResolution() const
 {
   return m_Resolution;
 }
@@ -373,7 +373,7 @@ void CGraphicContext::ResetOverscan(RESOLUTION_INFO &res)
   res.Overscan.bottom = res.iHeight;
 }
 
-void CGraphicContext::ResetOverscan(int res, OVERSCAN &overscan)
+void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
 {
   overscan.left = 0;
   overscan.top = 0;
@@ -408,7 +408,7 @@ void CGraphicContext::ResetOverscan(int res, OVERSCAN &overscan)
   }
 }
 
-void CGraphicContext::ResetScreenParameters(int res)
+void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 {
   // For now these are all on the first screen.
   g_settings.m_ResInfo[res].iScreen = 0;
@@ -502,7 +502,7 @@ void CGraphicContext::ResetScreenParameters(int res)
   ResetOverscan(res, g_settings.m_ResInfo[res].Overscan);
 }
 
-float CGraphicContext::GetPixelRatio(int iRes) const
+float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
 {
   if (iRes >= 0 && iRes < (int)g_settings.m_ResInfo.size())
     return g_settings.m_ResInfo[iRes].fPixelRatio;
@@ -524,7 +524,7 @@ void CGraphicContext::ApplyStateBlock()
   g_Windowing.ApplyStateBlock();
 }
 
-void CGraphicContext::SetScalingResolution(int res, float posX, float posY, bool needsScaling)
+void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling)
 {
   Lock();
   m_windowResolution = res;
@@ -592,7 +592,7 @@ void CGraphicContext::SetScalingResolution(int res, float posX, float posY, bool
   Unlock();
 }
 
-void CGraphicContext::SetRenderingResolution(int res, float posX, float posY, bool needsScaling)
+void CGraphicContext::SetRenderingResolution(RESOLUTION res, float posX, float posY, bool needsScaling)
 {
   Lock();
   SetScalingResolution(res, posX, posY, needsScaling);
@@ -618,7 +618,7 @@ float CGraphicContext::GetScalingPixelRatio() const
   if (m_Resolution == m_windowResolution)
     return GetPixelRatio(m_windowResolution);
 
-  int checkRes = m_windowResolution;
+  RESOLUTION checkRes = m_windowResolution;
   if (checkRes == RES_INVALID)
     checkRes = m_Resolution;
   // resolutions are different - we want to return the aspect ratio of the video resolution
@@ -640,7 +640,7 @@ void CGraphicContext::SetCameraPosition(const CPoint &camera)
   if (m_origins.size())
     cam += m_origins.top();
 
-  int windowRes = (m_windowResolution == RES_INVALID) ? m_Resolution : m_windowResolution;
+  RESOLUTION windowRes = (m_windowResolution == RES_INVALID) ? m_Resolution : m_windowResolution;
   cam.x *= (float)m_iScreenWidth / g_settings.m_ResInfo[windowRes].iWidth;
   cam.y *= (float)m_iScreenHeight / g_settings.m_ResInfo[windowRes].iHeight;
 
@@ -706,7 +706,7 @@ bool CGraphicContext::IsFullScreenRoot () const
 
 bool CGraphicContext::ToggleFullScreenRoot ()
 {
-  int newRes;
+  RESOLUTION newRes;
   
   if (m_bFullScreenRoot)
   {
@@ -732,6 +732,7 @@ bool CGraphicContext::ToggleFullScreenRoot ()
   }
 
   SetVideoResolution(newRes);
+  g_guiSettings.SetResolution(newRes);
   
   return  m_bFullScreenRoot;
 }
@@ -761,7 +762,7 @@ void CGraphicContext::ClipToViewWindow()
 {
 }
 
-void CGraphicContext::GetAllowedResolutions(vector<int> &res)
+void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res)
 {
   res.clear();  
 
@@ -769,7 +770,7 @@ void CGraphicContext::GetAllowedResolutions(vector<int> &res)
   res.push_back(RES_DESKTOP);
   for (size_t r = (size_t) RES_CUSTOM; r < g_settings.m_ResInfo.size(); r++)
   {
-    res.push_back((int) r);
+    res.push_back((RESOLUTION) r);
   }
 }
 

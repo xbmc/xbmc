@@ -82,7 +82,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   int64_t start;
   start = CurrentHostCounter();
 
-  int resToUse = RES_INVALID;
+  RESOLUTION resToUse = RES_INVALID;
   CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
   TiXmlDocument xmlDoc;
   // Find appropriate skin folder + resolution to load from
@@ -647,6 +647,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
         }
         if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
         {
+          // invalidate controls to get them to recalculate sizing information
           SetInvalid();
           return true;
         }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -47,7 +47,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;Py_NO_ENABLE_SHARED"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL"
 				StringPooling="false"
 				MinimalRebuild="false"
 				ExceptionHandling="0"
@@ -77,11 +77,12 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="false"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
-				AdditionalDependencies="SDL.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
+				AdditionalDependencies="SDL.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
+				DelayLoadDLLs="dwmapi.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
@@ -97,6 +98,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				AdditionalManifestFiles="DeclareDPIAware.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -143,8 +145,8 @@
 				AdditionalOptions="/EHa"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\cores\dsplayer;..\..\xbmc\cores\dsplayer\BaseClasses;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;Py_NO_ENABLE_SHARED"
-				MinimalRebuild="false"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;Py_NO_ENABLE_SHARED;D3D_DEBUG_INFO"
+				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
@@ -152,7 +154,7 @@
 				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
+				DebugInformationFormat="4"
 				DisableSpecificWarnings="4996"
 				ForcedIncludeFiles="pch.h"
 				ShowIncludes="false"
@@ -169,14 +171,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
-				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib strmiids.lib quartz.lib strmbasd.lib msdmo.lib Dmoguids.lib mfuuid.lib dxva2.lib evr.lib mf.lib"
+				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib strmiids.lib quartz.lib strmbasd.lib msdmo.lib Dmoguids.lib mfuuid.lib dxva2.lib evr.lib mf.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;;..\..\xbmc\cores\DSPlayer\Libs"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt;msvcrtd"
 				ModuleDefinitionFile=""
+				DelayLoadDLLs="dwmapi.dll"
 				GenerateDebugInformation="true"
-				AssemblyDebug="1"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
 				LargeAddressAware="2"
@@ -190,6 +192,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				AdditionalManifestFiles="DeclareDPIAware.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -238,7 +241,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\cores\dsplayer;..\..\xbmc\cores\dsplayer\BaseClasses;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\boost\"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;Py_NO_ENABLE_SHARED"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
 				StringPooling="false"
 				MinimalRebuild="false"
 				ExceptionHandling="0"
@@ -268,11 +271,12 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="false"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
-				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib strmiids.lib quartz.lib strmbase.lib msdmo.lib Dmoguids.lib mfuuid.lib dxva2.lib evr.lib mf.lib"
+				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib strmiids.lib quartz.lib strmbase.lib msdmo.lib Dmoguids.lib mfuuid.lib dxva2.lib evr.lib mf.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;;..\..\xbmc\cores\DSPlayer\Libs"
+				AdditionalLibraryDirectories="..\..\lib\libSDL-WIN32\lib"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
+				DelayLoadDLLs="dwmapi.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
@@ -288,6 +292,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				AdditionalManifestFiles="DeclareDPIAware.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -360,12 +365,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
-				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
+				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
 				ModuleDefinitionFile=""
+				DelayLoadDLLs="dwmapi.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
@@ -380,6 +386,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				AdditionalManifestFiles="DeclareDPIAware.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -1976,11 +1983,27 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.h"
 					>
 				</File>
 				<File
@@ -2884,6 +2907,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\AliasShortcutUtils.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AliasShortcutUtils.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\ApplicationMessenger.cpp"
 					>
 				</File>
@@ -2921,6 +2952,10 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\Autorun.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\AutorunMediaJob.cpp"
 					>
 				</File>
 				<File
@@ -3507,6 +3542,14 @@
 			<Filter
 				Name="GUI Dialog"
 				>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogAccessPoints.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogAccessPoints.h"
+					>
+				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogAudioSubtitleSettings.cpp"
 					>
@@ -5160,7 +5203,7 @@
 				Name="common"
 				>
 				<File
-					RelativePath="..\..\xbmc\xbox\IoSupport.cpp"
+					RelativePath="..\..\xbmc\utils\IoSupport.cpp"
 					>
 				</File>
 				<File
@@ -5169,10 +5212,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\Network.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\xbox\XKGeneral.cpp"
 					>
 				</File>
 			</Filter>
@@ -5450,6 +5489,10 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\Autorun.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\AutorunMediaJob.h"
 				>
 			</File>
 			<File
@@ -5777,7 +5820,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\xbox\IoSupport.h"
+				RelativePath="..\..\xbmc\utils\IoSupport.h"
 				>
 			</File>
 			<File
@@ -5994,10 +6037,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\XBAudioConfig.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\xbox\XKGeneral.h"
 				>
 			</File>
 		</Filter>

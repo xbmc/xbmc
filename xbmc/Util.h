@@ -61,14 +61,6 @@ struct sortstringbyname
   }
 };
 
-struct XBOXDETECTION
-{
-  std::vector<CStdString> client_ip;
-  std::vector<CStdString> client_info;
-  std::vector<unsigned int> client_lookup_count;
-  std::vector<bool> client_informed;
-};
-
 class CUtil
 {
 public:
@@ -83,6 +75,7 @@ public:
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
   static bool IsDOSPath(const CStdString &path);
   static bool IsHD(const CStdString& strFileName);
+  static CStdString GetParentPath(const CStdString& strPath);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static void RunShortcut(const char* szPath);
@@ -105,14 +98,18 @@ public:
   static bool IsInArchive(const CStdString& strFile);
   static bool IsSpecial(const CStdString& strFile);
   static bool IsPlugin(const CStdString& strFile); 
+  static bool IsPluginRoot(const CStdString& strFile); 
   static bool IsCDDA(const CStdString& strFile);
-  static bool IsMemCard(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
   static bool IsMythTV(const CStdString& strFile);
   static bool IsHDHomeRun(const CStdString& strFile);
   static bool IsVTP(const CStdString& strFile);
   static bool IsHTSP(const CStdString& strFile);
   static bool IsLiveTV(const CStdString& strFile);
+  static bool IsMusicDb(const CStdString& strFile);
+  static bool IsVideoDb(const CStdString& strFile);
+  static bool IsShoutCast(const CStdString& strFile);
+  static bool IsLastFM(const CStdString& strFile);
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
@@ -121,8 +118,10 @@ public:
   static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
   static bool IsISO9660(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);
+  static bool IsFTP(const CStdString& strFile);  
   static bool IsDAAP(const CStdString& strFile);
   static bool IsUPnP(const CStdString& strFile);
+  static bool IsWritable(const CStdString& strFile);
   static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
   static void RemoveTempFiles();
 
@@ -149,13 +148,8 @@ public:
   static void PlayDVD();
   static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static void TakeScreenshot();
-  static void TakeScreenshot(const char* fn, bool flash);
-  static void SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate);
-  static void SetBrightnessContrastGammaPercent(float brightness, float contrast, float gamma, bool immediate);
+  static void TakeScreenshot(const CStdString &filename);
   static void Tokenize(const CStdString& path, std::vector<CStdString>& tokens, const std::string& delimiters);
-  static void FlashScreen(bool bImmediate, bool bOn);
-  static void RestoreBrightnessContrastGamma();
-  static void InitGamma();
   static void ClearCache();
   static void StatToStatI64(struct _stati64 *result, struct stat *stat);
   static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
@@ -184,12 +178,6 @@ public:
 
   static bool SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute);
   static int GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew);
-  static bool IsFTP(const CStdString& strFile);
-  static bool GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax );
-  static bool SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword);
-  static bool AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort);
-  static bool AutoDetection();
-  static void AutoDetectionGetSource(VECSOURCES &share);
   static void GetSkinThemes(std::vector<CStdString>& vecTheme);
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories=false);
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);

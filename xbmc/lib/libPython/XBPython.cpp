@@ -433,27 +433,29 @@ void XBPython::FreeResources()
 
 void XBPython::Process()
 {
-  CStdString strAutoExecPy;
-
   if (m_bStartup)
   {
     m_bStartup = false;
 
     // autoexec.py - userdata
-    strAutoExecPy = "special://home/scripts/autoexec.py";
+    CStdString strAutoExecPy = _P("special://home/scripts/autoexec.py");
 
-    if (XFILE::CFile::Exists(strAutoExecPy))
+    if ( XFILE::CFile::Exists(strAutoExecPy) )
       evalFile(strAutoExecPy);
     else
-      CLog::Log(LOGDEBUG, "%s - no user autoexec.py (%s) found, skipping", __FUNCTION__, CSpecialProtocol::TranslatePath(strAutoExecPy).c_str());
+      CLog::Log(LOGDEBUG, "%s - no user autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy.c_str());
 
     // autoexec.py - system
-    strAutoExecPy = "special://xbmc/scripts/autoexec.py";
+    CStdString strAutoExecPy2 = _P("special://xbmc/scripts/autoexec.py");
 
-    if (XFILE::CFile::Exists(strAutoExecPy))
-      evalFile(strAutoExecPy);
-    else
-      CLog::Log(LOGDEBUG, "%s - no system autoexec.py (%s) found, skipping", __FUNCTION__, CSpecialProtocol::TranslatePath(strAutoExecPy).c_str());
+    // Make sure special://xbmc & special://home don't point to the same location
+    if (strAutoExecPy != strAutoExecPy2)
+    {
+      if ( XFILE::CFile::Exists(strAutoExecPy2) )
+        evalFile(strAutoExecPy2);
+      else
+        CLog::Log(LOGDEBUG, "%s - no system autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy2.c_str());
+    }
   }
 
   if (m_bLogin)
@@ -461,12 +463,12 @@ void XBPython::Process()
     m_bLogin = false;
 
     // autoexec.py - profile
-    strAutoExecPy = "special://profile/scripts/autoexec.py";
+    CStdString strAutoExecPy = _P("special://profile/scripts/autoexec.py");
 
-    if (XFILE::CFile::Exists(strAutoExecPy))
+    if ( XFILE::CFile::Exists(strAutoExecPy) )
       evalFile(strAutoExecPy);
     else
-      CLog::Log(LOGDEBUG, "%s - no profile autoexec.py (%s) found, skipping", __FUNCTION__, CSpecialProtocol::TranslatePath(strAutoExecPy).c_str());
+      CLog::Log(LOGDEBUG, "%s - no profile autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy.c_str());
   }
 
   CSingleLock lock(m_critSection);
@@ -502,10 +504,12 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
 
   // check if locked
   int profile = g_settings.m_iLastLoadedProfileIndex;
-  if (g_settings.m_vecProfiles[profile].programsLocked() &&
-      g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
-    if (!g_passwordManager.IsMasterLockUnlocked(true))
+  if (profile < (int)g_settings.m_vecProfiles.size() &&
+      g_settings.m_vecProfiles[profile].programsLocked() &&
+      !g_passwordManager.IsMasterLockUnlocked(true))
+  {
       return -1;
+  }
 
   Initialize();
 

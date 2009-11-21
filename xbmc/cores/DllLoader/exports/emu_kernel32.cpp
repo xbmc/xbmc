@@ -23,7 +23,7 @@
 #include "emu_dummy.h"
 #include "utils/log.h"
 
-#include "xbox/IoSupport.h"
+#include "utils/IoSupport.h"
 
 #ifndef _LINUX
 #include <process.h>

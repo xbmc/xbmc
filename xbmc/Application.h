@@ -98,16 +98,12 @@ public:
   void StopServices();
   void StartWebServer();
   void StopWebServer(bool bWait);
-  void StartFtpServer();
-  void StopFtpServer();
   void StartTimeServer();
   void StopTimeServer();
   void StartUPnP();
   void StopUPnP(bool bWait);
   void StartUPnPRenderer();
   void StopUPnPRenderer();
-  void StartUPnPClient();
-  void StopUPnPClient();
   void StartUPnPServer();
   void StopUPnPServer();
   void StartEventServer();
@@ -133,8 +129,13 @@ public:
   PLAYERCOREID GetCurrentPlayer();
   virtual void OnPlayBackEnded();
   virtual void OnPlayBackStarted();
+  virtual void OnPlayBackPaused();
+  virtual void OnPlayBackResumed();
   virtual void OnPlayBackStopped();
   virtual void OnQueueNextItem();
+  virtual void OnPlayBackSeek(int iTime);
+  virtual void OnPlayBackSeekChapter(int iChapter);
+  virtual void OnPlayBackSpeedChanged(int iSpeed);
   bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist);
@@ -252,10 +253,7 @@ public:
     return m_bPlatformDirectories;
   }
 
-  void SetStandAlone(bool value)
-  {
-    m_bStandalone = value;
-  }
+  void SetStandAlone(bool value);
 
   bool IsStandAlone()
   {
@@ -345,7 +343,6 @@ protected:
 
   bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
 
-  void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
   void CheckForTitleChange();
   static bool AlwaysProcess(const CAction& action);

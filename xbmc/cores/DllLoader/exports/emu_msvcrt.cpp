@@ -59,6 +59,9 @@
 #include "emu_kernel32.h"
 #include "util/EmuFileWrapper.h"
 #include "utils/log.h"
+#ifndef _LINUX
+#include "utils/CharsetConverter.h"
+#endif
 
 using namespace std;
 using namespace XFILE;
@@ -655,9 +658,26 @@ extern "C"
   // should be moved to CFile classes
   intptr_t dll_findfirst(const char *file, struct _finddata_t *data)
   {
+    struct _finddata64i32_t data64i32;
+    intptr_t ret = dll_findfirst64i32(file, &data64i32);
+    if (ret != -1)
+    {
+      int size = sizeof(data->name);
+      strncpy(data->name, data64i32.name, size);
+      if (size)
+        data->name[size - 1] = '\0';
+      data->size = (_fsize_t)data64i32.size;
+      data->time_write = (time_t)data64i32.time_write;
+      data->time_access = (time_t)data64i32.time_access;
+    }
+    return ret;
+  }
+
+  intptr_t dll_findfirst64i32(const char *file, struct _finddata64i32_t *data)
+  {
     char str[1024];
     int size = sizeof(str);
-    CURL url(file);
+    CURL url(_P(file));
     if (url.IsLocal())
     {
       // move to CFile classes
@@ -679,7 +699,7 @@ extern "C"
       }
 
       // Make sure the slashes are correct & translate the path
-      return _findfirst(_P(CURL::ValidatePath(str)), data);
+      return _findfirst64i32(_P(CURL::ValidatePath(str)), data);
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -697,8 +717,8 @@ extern "C"
     }
     int iDirSlot=0; // locate next free directory
     while ((vecDirsOpen[iDirSlot].Directory) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
-    if (iDirSlot > MAX_OPEN_DIRS)
-      return 0xFFFF; // no free slots
+    if (iDirSlot >= MAX_OPEN_DIRS)
+      return -1; // no free slots
     if (url.GetProtocol().Equals("filereader"))
     {
       CURL url2(url.GetFileName());
@@ -721,41 +741,79 @@ extern "C"
       data->size = static_cast<_fsize_t>(vecDirsOpen[iDirSlot].items[0]->m_dwSize);
       data->time_write = iDirSlot; // save for later lookups
       data->time_access = 0;
-      delete vecDirsOpen[iDirSlot].Directory;
-      vecDirsOpen[iDirSlot].Directory = NULL;
-      return NULL;
+      return (intptr_t)&vecDirsOpen[iDirSlot];
     }
     delete vecDirsOpen[iDirSlot].Directory;
     vecDirsOpen[iDirSlot].Directory = NULL;
-    return 0xFFFF; // whatever != NULL
+    return -1; // whatever != NULL
   }
 
   // should be moved to CFile classes
   int dll_findnext(intptr_t f, _finddata_t* data)
   {
-    if ((data->time_write < 0) || (data->time_write > MAX_OPEN_DIRS)) // assume not one of our's
-      return _findnext(f, data); // local dir
-
-    // we have a valid data struture. get next item!
-    int iItem=data->time_access;
-    if (iItem+1 < vecDirsOpen[data->time_write].items.Size()) // we have a winner!
+    struct _finddata64i32_t data64i32;
+    int ret = dll_findnext64i32(f, &data64i32);
+    if (ret == 0)
     {
       int size = sizeof(data->name);
-      strncpy(data->name,vecDirsOpen[data->time_write].items[iItem+1]->GetLabel().c_str(), size);
+      strncpy(data->name, data64i32.name, size);
       if (size)
         data->name[size - 1] = '\0';
-      data->size = static_cast<_fsize_t>(vecDirsOpen[data->time_write].items[iItem+1]->m_dwSize);
+      data->size = (_fsize_t)data64i32.size;
+      data->time_write = (time_t)data64i32.time_write;
+      data->time_access = (time_t)data64i32.time_access;
+    }
+    return ret;
+  }
+
+  int dll_findnext64i32(intptr_t f, _finddata64i32_t* data)
+  {
+    int found = MAX_OPEN_DIRS;
+    for (int i = 0; i < MAX_OPEN_DIRS; i++)
+    {
+      if (f == (intptr_t)&vecDirsOpen[i] && vecDirsOpen[i].Directory)
+      {
+        found = i;
+        break;
+      }
+    }
+    if (found >= MAX_OPEN_DIRS)
+      return _findnext64i32(f, data); // local dir
+
+    // we have a valid data struture. get next item!
+    int iItem=(int)data->time_access;
+    if (iItem+1 < vecDirsOpen[found].items.Size()) // we have a winner!
+    {
+      int size = sizeof(data->name);
+      strncpy(data->name,vecDirsOpen[found].items[iItem+1]->GetLabel().c_str(), size);
+      if (size)
+        data->name[size - 1] = '\0';
+      data->size = static_cast<_fsize_t>(vecDirsOpen[found].items[iItem+1]->m_dwSize);
       data->time_access++;
       return 0;
     }
 
-    vecDirsOpen[data->time_write].items.Clear();
+    vecDirsOpen[found].items.Clear();
     return -1;
   }
 
   int dll_findclose(intptr_t handle)
   {
-    _findclose(handle);
+    int found = MAX_OPEN_DIRS;
+    for (int i = 0; i < MAX_OPEN_DIRS; i++)
+    {
+      if (handle == (intptr_t)&vecDirsOpen[i] && vecDirsOpen[i].Directory)
+      {
+        found = i;
+        break;
+      }
+    }
+    if (found >= MAX_OPEN_DIRS)
+      return _findclose(handle);
+
+    delete vecDirsOpen[found].Directory;
+    vecDirsOpen[found].Directory = NULL;
+    vecDirsOpen[found].items.Clear();
     return 0;
   }
 
@@ -1563,12 +1621,14 @@ extern "C"
   {
     if (!dir) return -1;
 
-#ifndef _LINUX
     // Make sure the slashes are correct & translate the path
-    return mkdir(_P(CURL::ValidatePath(dir)).c_str());
+    CStdString strPath = _P(CURL::ValidatePath(dir));
+#ifndef _LINUX
+    CStdStringW strWPath;
+    g_charsetConverter.utf8ToW(strPath, strWPath, false);
+    return _wmkdir(strWPath.c_str());
 #else
-    // Make sure the slashes are correct & translate the path 
-    return mkdir(_P(CURL::ValidatePath(dir)).c_str(), 0755);
+    return mkdir(strPath.c_str(), 0755);
 #endif
   }
 

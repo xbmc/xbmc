@@ -31,7 +31,6 @@
 #include "GUIPassword.h"
 #include "utils/md5.h"
 #include "utils/TimeUtils.h"
-#include "xbox/XKGeneral.h"
 #include "Application.h"
 #include "AdvancedSettings.h"
 #include "LocalizeStrings.h"
@@ -140,7 +139,15 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   else if (action.id >= KEY_VKEY && action.id < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
     uint8_t b = action.id & 0xFF;
-    if (b == 0x25) // left
+    if (b == 0x24) // home
+    {
+      MoveCursor(-GetCursorPos());
+    }
+    else if (b == 0x23) // end
+    {
+      MoveCursor(m_strEdit.GetLength() - GetCursorPos());
+    }
+    else if (b == 0x25) // left
     {
       MoveCursor( -1);
     }
@@ -154,7 +161,6 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     }
     else if (b == 0x08) Backspace();    // backspace
     else if (b == 0x1B) Close();        // escape
-    else if (b == 0x20) Character(b);   // space
   }
   else if (action.id >= KEY_ASCII)
   { // input from the keyboard
