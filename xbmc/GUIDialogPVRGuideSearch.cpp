@@ -19,33 +19,12 @@
  *
  */
 
-
-/* Standart includes */
 #include "Application.h"
 #include "GUIWindowManager.h"
-#include "GUISettings.h"
-#include "GUIDialogOK.h"
-#include "Util.h"
 #include "LocalizeStrings.h"
-
-/* self include */
-#include "GUIDialogTVGuideSearch.h"
-
-/* TV control */
-#include "PVRManager.h"
-
-/* TV information tags */
+#include "GUIDialogPVRGuideSearch.h"
 #include "utils/PVREpg.h"
 #include "utils/PVRChannels.h"
-#include "utils/PVRRecordings.h"
-#include "utils/PVRTimers.h"
-
-/* Dialog windows includes */
-#include "GUIDialogProgress.h"
-#include "GUIDialogYesNo.h"
-#include "GUIDialogOK.h"
-#include "GUIDialogNumeric.h"
-#include "GUIDialogKeyboard.h"
 #include "GUISpinControlEx.h"
 #include "GUIEditControl.h"
 #include "GUIRadioButtonControl.h"
@@ -62,39 +41,34 @@ using namespace std;
 #define CONTROL_EDIT_START_TIME   16
 #define CONTROL_EDIT_STOP_TIME    17
 #define CONTROL_SPIN_GENRE        18
-#define CONTROL_SPIN_SUB_CAT      19
+#define CONTROL_SPIN_NO_REPEATS   19
 #define CONTROL_BTN_UNK_GENRE     20
 #define CONTROL_SPIN_GROUPS       21
 #define CONTROL_BTN_FTA_ONLY      22
 #define CONTROL_SPIN_CHANNELS     23
-#define CONTROL_BTN_INGNORE_TMR   24
+#define CONTROL_BTN_IGNORE_TMR    24
 #define CONTROL_BTN_CANCEL        25
 #define CONTROL_BTN_SEARCH        26
-#define CONTROL_BTN_INGNORE_REC   27
+#define CONTROL_BTN_IGNORE_REC    27
 #define CONTROL_BTN_DEFAULTS      28
 
-CGUIDialogTVEPGSearch::CGUIDialogTVEPGSearch(void)
+CGUIDialogPVRGuideSearch::CGUIDialogPVRGuideSearch(void)
     : CGUIDialog(WINDOW_DIALOG_TV_GUIDE_SEARCH, "DialogEPGSearch.xml")
 {
-  m_bConfirmed = false;
+  m_bConfirmed   = false;
   m_searchfilter = NULL;
 }
 
-CGUIDialogTVEPGSearch::~CGUIDialogTVEPGSearch(void)
+CGUIDialogPVRGuideSearch::~CGUIDialogPVRGuideSearch(void)
 {
 }
 
-bool CGUIDialogTVEPGSearch::OnMessage(CGUIMessage& message)
+bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
 {
   CGUIDialog::OnMessage(message);
 
   switch (message.GetMessage())
   {
-    case GUI_MSG_WINDOW_DEINIT:
-    {
-    }
-    break;
-
     case GUI_MSG_WINDOW_INIT:
     {
       m_bConfirmed = false;
@@ -159,27 +133,18 @@ bool CGUIDialogTVEPGSearch::OnMessage(CGUIMessage& message)
   return false;
 }
 
-void CGUIDialogTVEPGSearch::OnWindowLoaded()
+void CGUIDialogPVRGuideSearch::OnWindowLoaded()
 {
   Update();
   return CGUIDialog::OnWindowLoaded();
 }
 
-void CGUIDialogTVEPGSearch::OnWindowUnload()
-{
-
-
-  return CGUIDialog::OnWindowUnload();
-}
-
-void CGUIDialogTVEPGSearch::OnSearch()
+void CGUIDialogPVRGuideSearch::OnSearch()
 {
   CGUISpinControlEx      *pSpin;
   CGUIEditControl        *pEdit;
   CGUIRadioButtonControl *pRadioButton;
   CDateTime               dateTime;
-
-  m_bConfirmed = true;
 
   if (!m_searchfilter)
     return;
@@ -199,11 +164,14 @@ void CGUIDialogTVEPGSearch::OnSearch()
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_UNK_GENRE);
   if (pRadioButton) m_searchfilter->m_IncUnknGenres = pRadioButton->IsSelected();
 
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_INGNORE_REC);
+  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_IGNORE_REC);
   if (pRadioButton) m_searchfilter->m_IgnPresentRecords = pRadioButton->IsSelected();
 
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_INGNORE_TMR);
+  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_IGNORE_TMR);
   if (pRadioButton) m_searchfilter->m_IgnPresentTimers = pRadioButton->IsSelected();
+
+  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_SPIN_NO_REPEATS);
+  if (pRadioButton) m_searchfilter->m_PreventRepeats = pRadioButton->IsSelected();
 
   pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_GENRE);
   if (pSpin) m_searchfilter->m_GenreType = pSpin->GetValue();
@@ -247,9 +215,11 @@ void CGUIDialogTVEPGSearch::OnSearch()
     dateTime.SetFromDBDate(pEdit->GetLabel2());
     dateTime.GetAsSystemTime(m_searchfilter->m_endDate);
   }
+
+  m_bConfirmed = true;
 }
 
-void CGUIDialogTVEPGSearch::Update()
+void CGUIDialogPVRGuideSearch::Update()
 {
   CGUISpinControlEx      *pSpin;
   CGUIEditControl        *pEdit;
@@ -277,11 +247,14 @@ void CGUIDialogTVEPGSearch::Update()
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_UNK_GENRE);
   if (pRadioButton) pRadioButton->SetSelected(m_searchfilter->m_IncUnknGenres);
 
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_INGNORE_REC);
+  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_IGNORE_REC);
   if (pRadioButton) pRadioButton->SetSelected(m_searchfilter->m_IgnPresentRecords);
 
-  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_INGNORE_TMR);
+  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_IGNORE_TMR);
   if (pRadioButton) pRadioButton->SetSelected(m_searchfilter->m_IgnPresentTimers);
+
+  pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_SPIN_NO_REPEATS);
+  if (pRadioButton) pRadioButton->SetSelected(m_searchfilter->m_PreventRepeats);
 
   /* Set duration list spin */
   pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_MIN_DURATION);
@@ -400,27 +373,19 @@ void CGUIDialogTVEPGSearch::Update()
     pSpin->AddLabel(g_localizeStrings.Get(18119), EVCONTENTMASK_USERDEFINED);
     pSpin->SetValue(m_searchfilter->m_GenreType);
   }
-
-  /* Set Sub Category list spin */
-  pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_SUB_CAT);
-  if (pSpin)
-  {
-    pSpin->Clear();
-    pSpin->AddLabel(g_localizeStrings.Get(13205), -1);
-  }
 }
 
-bool CGUIDialogTVEPGSearch::IsConfirmed() const
+bool CGUIDialogPVRGuideSearch::IsConfirmed() const
 {
   return m_bConfirmed;
 }
 
-bool CGUIDialogTVEPGSearch::IsCanceled() const
+bool CGUIDialogPVRGuideSearch::IsCanceled() const
 {
   return m_bCanceled;
 }
 
-void CGUIDialogTVEPGSearch::SetFilterData(EPGSearchFilter *searchfilter)
+void CGUIDialogPVRGuideSearch::SetFilterData(EPGSearchFilter *searchfilter)
 {
   m_searchfilter = searchfilter;
 }

@@ -21,19 +21,16 @@
  */
 
 #include "GUIDialog.h"
-#include "GUIListItem.h"
-#include "utils/PVREpg.h"
 
-class CFileItem;
+struct EPGSearchFilter;
 
-class CGUIDialogTVEPGSearch : public CGUIDialog
+class CGUIDialogPVRGuideSearch : public CGUIDialog
 {
 public:
-  CGUIDialogTVEPGSearch(void);
-  virtual ~CGUIDialogTVEPGSearch(void);
+  CGUIDialogPVRGuideSearch(void);
+  virtual ~CGUIDialogPVRGuideSearch(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void OnWindowLoaded();
-  virtual void OnWindowUnload();
   void SetFilterData(EPGSearchFilter *searchfilter);
   void OnSearch();
 
