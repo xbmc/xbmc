@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "LocalizeStrings.h"
+#include "TextSearch.h"
 
 using namespace std;
 
@@ -168,7 +169,6 @@ const cPVREPGInfoTag *cPVREpg::GetInfoTagNow(void) const
 
 const cPVREPGInfoTag *cPVREpg::GetInfoTagNext(void) const
 {
-  const cPVREPGInfoTag *TagNext = NULL;
   CDateTime now = CDateTime::GetCurrentDateTime();
 
   if (tags.size() == 0)
@@ -540,40 +540,22 @@ bool cPVREpgs::FilterEntry(const cPVREPGInfoTag &tag, const EPGSearchFilter &fil
 
   if (filter.m_SearchString != "")
   {
-    CStdString title = tag.Title();
-    CStdString searchStr = filter.m_SearchString;
-    if (!filter.m_CaseSensitive)
-    {
-      title.ToLower();
-      searchStr.ToLower();
-    }
-
-    if (title.Find(searchStr) < 0)
+    cTextSearch search(tag.Title(), filter.m_SearchString, filter.m_CaseSensitive);
+    if (!search.DoSearch())
     {
       if (filter.m_SearchDescription)
       {
-        title = tag.PlotOutline();
-        if (!filter.m_CaseSensitive)
-          title.ToLower();
-
-        if (title.Find(searchStr) < 0)
+        search.SetText(tag.PlotOutline(), filter.m_SearchString, filter.m_CaseSensitive);
+        if (!search.DoSearch())
         {
-          title = tag.Plot();
-          if (!filter.m_CaseSensitive)
-            title.ToLower();
-
-          if (title.Find(searchStr) < 0)
-          {
+          search.SetText(tag.Plot(), filter.m_SearchString, filter.m_CaseSensitive);
+          if (!search.DoSearch())
             return false;
-          }
         }
       }
       else
-      {
         return false;
-      }
     }
-
   }
   return true;
 }

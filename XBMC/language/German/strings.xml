@@ -1779,6 +1779,8 @@
   <string id="18813">Bitte aktualisieren sie ihre Einstellungen.</string>
 
   <string id="19000">Zum Kanal schalten</string>
+  <string id="19001">Benutzen Sie AND, OR und NOT in Verbindung mit Ihren Suchbegriffen, um detaillierter zu suchen.</string>
+  <string id="19002">Oder benutzen Sie ganze Sätze in Ausrufezeichen z.B.: "Der Zauberer von Oz".</string>
 
   <string id="20000">Ordner für CD-Kopien</string>
   <string id="20001">Externen DVD-Player verwenden</string>
