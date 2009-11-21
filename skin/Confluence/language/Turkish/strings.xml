@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--Translator: Özgür BASKIN (queeup)-->
+<!--Email: ozgur.baskin@gmail.com-->
+<!--Date of translation: 21/11/2009-->
+<!--Turkish strings based on English strings revision 24808-->
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">Değiştir</string>
+  <string id="31001">Aşk</string>
+  <string id="31002">Nefret</string>
+  <string id="31003">Güç Seçenekleri</string>
+
+  <string id="31007">Eklentiler</string>
+
+  <string id="31020">Son Eklenenler</string>
+  <string id="31021">Video - Dosyalar</string>
+  <string id="31022">Müzik - Dosyalar</string>
+  <string id="31023">Oynatılıyor</string>
+  <string id="31024">Sayfa</string>
+  <string id="31025">Nesne</string>
+  <string id="31026">Çeşitli Ayarlar</string>
+  <string id="31027">Yer</string>
+
+  <!-- View Type labels -->
+  <string id="31028">Poster</string>
+  <string id="31029">Fanart</string>
+  <string id="31030">Tam Liste</string>
+  <string id="31031">Küçük Resimler</string>
+  <string id="31032">Resim</string>
+
+  <!-- Extra labels -->
+  <string id="31040">Şimdi Çalınıyor</string>
+
+  <string id="31042">OYNATILIYOR</string>
+  <string id="31043">DURAKLATILDI</string>
+  <string id="31044">İLERİ SAR</string>
+  <string id="31045">GERİ SAR</string>
+  <string id="31046">Ses Özellikleri</string>
+  <string id="31047">Geçerli Öntanımlı Ayarlar</string>
+  <string id="31048">Görsel Öge Öntanımlı Ayarları</string>
+  <string id="31049">Bitiş Zamanı</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Çalma listesini aç</string>
+  <string id="31056">Çalma listesini kaydet</string>
+  <string id="31057">Çalma listesini kapat</string>
+  <string id="31058">Sistem müzik dosyaları</string>
+  <string id="31059">Geçerli çalma listesi</string>
+  <string id="31060">Bu dosya istiflendi, oynatmak istediğiniz bölümü seçin.</string>
+
+  <!-- Skin Settings labels -->
+  <string id="31100"></string>
+  <string id="31101">Ana ekran seçenekleri</string>
+  <string id="31102">Arkaplanlar</string>
+  <string id="31103">Resim slayt gösterisinde "DURAKLATILDI"yı göster</string>
+  <string id="31104"></string>
+  <string id="31105">Ortam başlıklarını arkaplan tarayıcısında göster</string>
+  <string id="31106">Çeşitli seçenekler</string>
+  <string id="31107"></string>
+  <string id="31108">Ana Menü Tuşlarını Gizle</string>
+  <string id="31109">Ana ekran arkaplanları</string>
+  <string id="31110">Ana Menü Tuşlarının Arkaplanlarını değiştir</string>
+  <string id="31111">Gizle</string>
+  <string id="31112">Seçenekler</string>
+  <string id="31113">Tek Resim</string>
+  <string id="31114">Çoklu Resim</string>
+  <string id="31115">Özelleştir</string>
+  <string id="31116">Betik Eklentileri</string>
+  <string id="31117">Son Eklenen Videoları Göster</string>
+  <string id="31118">Ana Sayfa Altmenüsü</string>
+  <string id="31119">Özel Betik Tuşunu Etkinleştir</string>
+  <string id="31120">TUŞ ETİKETİ</string>
+  <string id="31121">BETİK YOLU</string>
+  <string id="31122">Hava Durumu Sayfası</string>
+  <string id="31123">TV Programları için "Afiş" yerine "Poster" kullan</string>
+  <string id="31124">Arkaplanda Oynatılan Videoyu göster</string>
+  <string id="31125">Arkaplanda Görsel Ögeyi göster</string>
+
+  <string id="31126">Müzik OSD'de Lyrics'i etkinleştir</string>
+  <string id="31127">LYRICS BETİK YOLU</string>
+  <string id="31128">XBMC Lyrics</string>
+
+  <!-- Script labels -->
+  <string id="31200">Kısayollar</string>
+  <string id="31201">Kategoriler</string>
+  <string id="31202">Oyuncuları Göster</string>
+  <string id="31203">Şarkını Seç</string>
+  <string id="31204">Bölge Bağlantıları</string>
+  <string id="31205">Lyrics Kaynağı</string>
+
+  <!-- The Weather Channel Script labels -->
+  <string id="31250">Radar ve Hava Tahmini</string>
+  <string id="31251">Hava Tahmini</string>
+  <string id="31252">TWC Betiği</string>
+
+  <!-- Extra labels -->
+  <string id="31300">Mevcut Sıcaklık</string>
+  <string id="31301">Son Güncelleme</string>
+  <string id="31302">Menü</string>
+  <string id="31303"></string>
+  <string id="31304">Resim</string>
+  <string id="31305">Disk Ortamı Algılanmadı</string>
+  <string id="31306">Çıkart</string>
+  <string id="31307">Fanart'ı gizle</string>
+  <string id="31308">Film Detayları</string>
+  <string id="31309">Kullanılan Bellek</string>
+  <string id="31310">Parça Numarası</string>
+  <string id="31311">FANART RESMİ[CR][CR]MEVCUT DEĞİL[CR][CR] AYARLAMAK İÇİN DÜĞMEYE BASIN</string>
+  <string id="31312">Geçerli Scraper</string>
+  <string id="31313">Scraper Seç</string>
+  <string id="31314">İçerik Tarama Seçenekleri</string>
+  <string id="31315">Temel Bilgiler</string>
+  <string id="31316"></string>
+  <string id="31317">Fanart Yolunu Ayarla</string>
+  <string id="31318">Küçük Fanart</string>
+  <string id="31319">Seçilen Profil</string>
+  <string id="31320">Son Giriş Yapan</string>
+  <string id="31321">Karaoke Şarkı Seçici</string>
+  <string id="31322">Gösterim</string>
+  <string id="31323">En Son Filmler</string>
+  <string id="31324">En Son Bölümler</string>
+  <string id="31325">Çalma Listesi Seçenekleri</string>
+  <string id="31326">Oluşturma</string>
+  <string id="31327">Çözünürlük</string>
+  <string id="31328">Son Eklenenler</string>
+  <string id="31329">[B]ZAMANLAYICI AYARLANDI![/B] [COLOR=grey2] - SİSTEM'İN OTOMATİK KAPANMA SÜRESİ[/COLOR]</string>
+
+  <!-- Description Labels  -->
+  <string id="31400">[B]GÖRÜNÜM AYARLARINI DÜZENLE, İÇERİK.[/B][CR][CR]Arayüzü ayarla · Arayüzü değiştir · Ekran korucuyu ayarla · Bölgesel ayarları değiştir · Genel Görünüm seçeneklerini ayarla</string>
+  <string id="31401">[B]VİDEO AYARLARINI DÜZENLE, İÇERİK.[/B][CR][CR]Video Kitaplığını Yönet · Video Oynatıcı Renderer ve Kalite · Altyazıları Yapılandır · Video otomatik devam etme seçeneklerini ayarla</string>
+  <string id="31402">[B]MÜZİK AYARLARINI DÜZENLE, İÇERİK.[/B][CR][CR]Görsel Öge Seç · Müzik Kitaplığını Yönet · Last.FM Hesabını ayarla · Karaoke Yazıtiplerini ve Ayarlarını Değiştir</string>
+  <string id="31403">[B]RESİM AYARLARINI DÜZENLE, İÇERİK.[/B][CR][CR]Otomatik Küçük Resim Oluşturmayı ve EXIF etiket okumasını etkinleştir · Slayt Gösterisi Geçiş Efektlerini Ayarla · XBMC ekran görüntüsü klasörünü ayarla</string>
+  <string id="31404">[B]HAVA DURUMU AYARLARINI DÜZENLEE, İÇERİK.[/B][CR][CR]XBMC'nin Hava Durumu ekranında göstermek için üç şehir seçin · Bölgesel ayarları değiştir, Sıcaklık birimleri dahil</string>
+  <string id="31405">[B]AĞ AYARLARINI DÜZENLE, İÇERİK.[/B][CR][CR]XBMC Dahili Web Sunucusunu Etkinleştir · Samba Ayarları · UPNP Sunucusu ve İstemcisini Etkinleştir/Yapılandır · Olay Sunucusunu Yapılandır</string>
+  <string id="31406">[B]SİSTEM AYARLARINI DÜZENLE, İÇERİK.[/B][CR][CR]Varsayılan kapatma biçimini değiştir · Otomatik Oynatmayı Yapılandır · Ses donanımını ayarla · Yönetici Şifresini ve Sistem Kilitlerini Yapılandır</string>
+  <string id="31407">[B]ARAYÜZ AYARLARINI DEĞİŞTİR, İÇERİK.[/B][CR][CR]Ana menü Tuşlarını Ekle ve Kaldır · Bütün bölümlerin Arkaplanlarını değiştir · Arayüz için betik kısayolları oluştur</string>
+
+
+  <string id="31420">[B][COLOR=white]XBMC takılı bir Disk algılayamadı.[/COLOR][/B][CR][CR]Lütfen sürücüye Disk takıp tekrar deneyin veya İptal edin</string>
+  <string id="31421">Oturum açıp devam etmek için[CR]XBMC kullanıcı profilinizi seçin</string>
+</strings>
