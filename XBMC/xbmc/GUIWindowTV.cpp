@@ -38,7 +38,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogTVEPGProgInfo.h"
 #include "GUIDialogTVRecordingInfo.h"
-#include "GUIDialogTVTimerSettings.h"
+#include "GUIDialogPVRTimerSettings.h"
 #include "GUIDialogPVRGroupManager.h"
 #include "GUIDialogPVRGuideSearch.h"
 
