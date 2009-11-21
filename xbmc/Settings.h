@@ -22,7 +22,7 @@
 
 #define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
 
-#define DEFAULT_SKIN        "PM3.HD"
+#define DEFAULT_SKIN        "Confluence"
 #ifdef MID
 #define DEFAULT_VSYNC       VSYNC_DISABLED
 #define DEFAULT_THUMB_SIZE  256
