@@ -24,7 +24,7 @@
 #include "PVRChannels.h"
 #include "PVRManager.h"
 #include "GUISettings.h"
-#include "GUIDialogEpgScan.h"
+#include "GUIDialogPVRUpdateProgressBar.h"
 #include "GUIWindowManager.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"

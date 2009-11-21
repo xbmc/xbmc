@@ -138,6 +138,7 @@ SRCS=Application.cpp \
      GUIDialogSubMenu.cpp \
      GUIDialogTVGuide.cpp \
      GUIDialogPVRGuideSearch.cpp \
+     GUIDialogPVRUpdateProgressBar.cpp \
      GUIDialogTeletext.cpp \
      GUIDialogVideoBookmarks.cpp \
      GUIDialogVideoSettings.cpp \
@@ -210,7 +211,6 @@ SRCS=Application.cpp \
      GUIDialogTVTimerSettings.cpp \
      GUIDialogTVChannels.cpp \
      GUIDialogTVGroupManager.cpp \
-     GUIDialogEpgScan.cpp \
      PVRManager.cpp \
      TVDatabase.cpp \
      ScriptSettings.cpp \
