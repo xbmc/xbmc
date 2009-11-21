@@ -60,7 +60,7 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
         for (int i = 0; i < m_iNumberOfFiles; i++)
         {
           CStdString label;
-          label.Format("%s %i", g_localizeStrings.Get(23051), i+1);
+          label.Format(g_localizeStrings.Get(23051).c_str(), i+1);
           CFileItemPtr item(new CFileItem(label));
           m_stackItems->Add(item);
         }

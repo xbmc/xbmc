@@ -1911,7 +1911,7 @@ den här visualiseringen</string>
   <string id="23000">Vädertillägg</string>
   <string id="23001">- Tilläggsinställningar</string>
   <string id="23050">Aktivera teletext</string>
-  <string id="23051">Del</string>
+  <string id="23051">Del %i</string>
   <string id="23100">Extern spelare är aktiv</string>
   <string id="23101">Klicka OK för att avsluta spelaren</string>
   <string id="23104">Klicka OK när uppspelningen har slutat</string>
