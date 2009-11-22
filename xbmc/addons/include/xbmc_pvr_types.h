@@ -28,8 +28,6 @@
 
 #define MIN_XBMC_PVRDLL_API 1
 
-//#define __cdecl
-//#define __declspec(x)
 #include <string.h>
 #include <time.h>
 #include "xbmc_addon_types.h"
@@ -98,7 +96,11 @@ extern "C" {
     PVR_EVENT_CLOSE                = 1,
     PVR_EVENT_RECORDINGS_CHANGE    = 2,
     PVR_EVENT_CHANNELS_CHANGE      = 3,
-    PVR_EVENT_TIMERS_CHANGE        = 4
+    PVR_EVENT_TIMERS_CHANGE        = 4,
+    PVR_EVENT_MSG_STATUS           = 5,
+    PVR_EVENT_MSG_INFO             = 6,
+    PVR_EVENT_MSG_WARNING          = 7,
+    PVR_EVENT_MSG_ERROR            = 8,
   } PVR_EVENT;
 
 #if PRAGMA_PACK
@@ -137,7 +139,7 @@ extern "C" {
     const char     *callsign;           /* Channel name provided by the user (if present) */
     const char     *iconpath;           /* Path to the channel icon (if present) */
 
-    bool            encrypted;          /* This is a encrypted channel */
+    int             encryption;         /* This is a encrypted channel and have a CA Id */
     bool            radio;              /* This is a radio channel */
     bool            hide;               /* This channel is hidden by the user */
     bool            recording;          /* This channel is currently recording */
@@ -187,7 +189,6 @@ extern "C" {
     const char   *description;
     time_t        starttime;
     time_t        endtime;
-    const char   *genre;
     int           genre_type;
     int           genre_sub_type;
   } ATTRIBUTE_PACKED PVR_PROGINFO;
@@ -235,7 +236,7 @@ extern "C" {
     PVR_STREAM_DATA,    // data stream
     PVR_STREAM_SUBTITLE // subtitle stream
   };
-  
+
   enum stream_source {
     PVR_STREAM_SOURCE_NONE          = 0x000,
     PVR_STREAM_SOURCE_DEMUX         = 0x100,
@@ -264,7 +265,7 @@ extern "C" {
     int           block_align;
     int           bit_rate;
     int           bits_per_sample;
-    
+
     /* Video Stream information, only set for "type==STREAM_VIDEO" */
     int           fps_scale;        // scale of 1000 and a rate of 29970 will result in 29.97 fps
     int           fps_rate;
@@ -308,8 +309,8 @@ extern "C" {
     PVR_ERROR (__cdecl* GetDriveSpace)(long long *total, long long *used);
 
     /** PVR EPG Functions **/
-    PVR_ERROR (__cdecl* RequestEPGForChannel)(PVRHANDLE handle, unsigned int number, time_t start, time_t end);
-  
+    PVR_ERROR (__cdecl* RequestEPGForChannel)(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
+
     /** PVR Bouquets Functions **/
     int (__cdecl* GetNumBouquets)();
 
@@ -364,7 +365,7 @@ extern "C" {
     demux_packet_t* (__cdecl* ReadDemux)();
     bool (__cdecl* SeekDemuxTime)(int time, bool backwords, double* startpts);
     int (__cdecl* GetDemuxStreamLength)();
-  
+
   } PVRClient;
 
 #ifdef __cplusplus

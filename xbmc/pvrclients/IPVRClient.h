@@ -55,13 +55,13 @@ public:
   virtual ADDON_STATUS GetStatus(void)=0;
   virtual bool ReInit()=0;
   virtual bool ReadyToUse()=0;
-  
+
   virtual const std::string GetBackendName(void)=0;
   virtual const std::string GetBackendVersion(void)=0;
   virtual const std::string GetConnectionString()=0;
   virtual PVR_ERROR GetDriveSpace(long long *total, long long *used)=0;
 
-  virtual PVR_ERROR GetEPGForChannel(unsigned int number, cPVREpg *epg, time_t start = NULL, time_t end = NULL)=0;
+  virtual PVR_ERROR GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cPVREpg *epg, time_t start = NULL, time_t end = NULL)=0;
 
   virtual int GetNumChannels()=0;
   virtual PVR_ERROR GetChannelList(cPVRChannels &channels, bool radio)=0;

@@ -284,7 +284,7 @@ PVR_ERROR CPVRClient::GetDriveSpace(long long *total, long long *used)
  * EPG PVR Functions
  */
 
-PVR_ERROR CPVRClient::GetEPGForChannel(unsigned int number, cPVREpg *epg, time_t start, time_t end)
+PVR_ERROR CPVRClient::GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cPVREpg *epg, time_t start, time_t end)
 {
   CSingleLock lock(m_critSection);
 
@@ -294,8 +294,10 @@ PVR_ERROR CPVRClient::GetEPGForChannel(unsigned int number, cPVREpg *epg, time_t
   {
     try
     {
+      PVR_CHANNEL tag;
       const PVRHANDLE handle = (cPVREpg*) epg;
-      ret = m_pClient->RequestEPGForChannel(handle, number, start, end);
+      WriteClientChannelInfo(channelinfo, tag);
+      ret = m_pClient->RequestEPGForChannel(handle, tag, start, end);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -399,7 +401,7 @@ void CPVRClient::PVRTransferChannelEntry(void *userData, const PVRHANDLE handle,
   tag.SetName(channel->name);
   tag.SetClientName(channel->callsign);
   tag.SetIcon(channel->iconpath);
-  tag.SetEncrypted(channel->encrypted);
+  tag.SetEncryptionSystem(channel->encryption);
   tag.SetRadio(channel->radio);
   tag.SetHidden(channel->hide);
   tag.SetRecording(channel->recording);
@@ -1093,7 +1095,7 @@ void CPVRClient::WriteClientChannelInfo(const cPVRChannelInfoTag &channelinfo, P
   tag.name              = channelinfo.Name().c_str();
   tag.callsign          = channelinfo.ClientName().c_str();
   tag.iconpath          = channelinfo.Icon().c_str();
-  tag.encrypted         = channelinfo.IsEncrypted();
+  tag.encryption        = channelinfo.EncryptionSystem();
   tag.radio             = channelinfo.IsRadio();
   tag.hide              = channelinfo.IsHidden();
   tag.recording         = channelinfo.IsRecording();
