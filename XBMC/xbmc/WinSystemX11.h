@@ -40,6 +40,7 @@ public:
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual void UpdateResolutions();
+  virtual void ShowOSMouse(bool show);
   
   virtual void NotifyAppActiveChange(bool bActivated);
 

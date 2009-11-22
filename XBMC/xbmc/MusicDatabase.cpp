@@ -2252,7 +2252,7 @@ void CMusicDatabase::DeleteAlbumInfo()
 bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
 {
 #ifdef HAS_DVD_DRIVE  
-  if (!g_guiSettings.GetBool("musicfiles.usecddb"))
+  if (!g_guiSettings.GetBool("audiocds.usecddb"))
     return false;
 
   // check network connectivity

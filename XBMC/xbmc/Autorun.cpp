@@ -70,7 +70,7 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
 
   if ( pInfo->IsAudio( 1 ) )
   {
-    if( !bypassSettings && !g_guiSettings.GetBool("autorun.cdda") && !g_guiSettings.GetBool("lookandfeel.autorun") )
+    if( !bypassSettings && !g_guiSettings.GetBool("autorun.cdda") && !g_guiSettings.GetBool("audiocds.autorun") )
       return;
 
     if (!g_passwordManager.IsMasterLockUnlocked(false))
@@ -104,7 +104,7 @@ void CAutorun::RunCdda()
 
 void CAutorun::RunMedia(bool bypassSettings)
 {
-  if ( !bypassSettings && !g_guiSettings.GetBool("autorun.dvd") && !g_guiSettings.GetBool("autorun.vcd") && !g_guiSettings.GetBool("autorun.video") && !g_guiSettings.GetBool("autorun.music") && !g_guiSettings.GetBool("autorun.pictures") && !g_guiSettings.GetBool("lookandfeel.autorun"))
+  if ( !bypassSettings && !g_guiSettings.GetBool("autorun.dvd") && !g_guiSettings.GetBool("autorun.vcd") && !g_guiSettings.GetBool("autorun.video") && !g_guiSettings.GetBool("autorun.music") && !g_guiSettings.GetBool("autorun.pictures") && !g_guiSettings.GetBool("audiocds.autorun") && !g_guiSettings.GetBool("lookandfeel.autorun"))
     return ;
 
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
@@ -258,7 +258,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     }
   }
   // then music
-  if (!bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.music") || g_guiSettings.GetBool("lookandfeel.autorun")) && bAllowMusic)
+  if (!bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.music") || g_guiSettings.GetBool("audiocds.autorun")) && bAllowMusic)
   {
     for (int i = 0; i < vecItems.Size(); i++)
     {

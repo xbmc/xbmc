@@ -46,13 +46,14 @@ case "$1" in
 
 	# Add xbmc to the sudoers file (if not already done)
 	if [ ! $(grep -i XBMC-specific /etc/sudoers) ]; then
-		echo "#" >> /etc/sudoers
+		echo "" >> /etc/sudoers
+		echo "# XBMC" >> /etc/sudoers
 		echo "# XBMC-specific configuration" >> /etc/sudoers
-		echo "#" >> /etc/sudoers
-		echo "Cmnd_Alias SHUTDOWN_CMDS = /sbin/shutdown, /sbin/reboot, /sbin/halt"  >> /etc/sudoers
-		echo "Cmnd_Alias MOUNT_CMDS = /bin/mount, /bin/umount"  >> /etc/sudoers
+		echo "# XBMC" >> /etc/sudoers
+		echo "Cmnd_Alias SHUTDOWN_CMDS = /sbin/shutdown, /sbin/reboot, /sbin/halt # XBMC"  >> /etc/sudoers
+		echo "Cmnd_Alias MOUNT_CMDS = /bin/mount, /bin/umount # XBMC" >> /etc/sudoers
 		echo "xbmc ALL=(ALL) ALL" >> /etc/sudoers
-		echo "xbmc ALL=NOPASSWD: SHUTDOWN_CMDS, MOUNT_CMDS" >> /etc/sudoers
+		echo "xbmc ALL=NOPASSWD: SHUTDOWN_CMDS, MOUNT_CMDS # XBMC" >> /etc/sudoers
 	fi
 
 	# Our set of PolicyKit actions

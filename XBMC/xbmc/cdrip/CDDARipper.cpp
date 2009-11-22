@@ -64,7 +64,7 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
 {
   m_cdReader.Init(strTrackFile);
 
-  switch (g_guiSettings.GetInt("cddaripper.encoder"))
+  switch (g_guiSettings.GetInt("audiocds.encoder"))
   {
   case CDDARIP_ENCODER_WAV:
     m_pEncoder = new CEncoderWav();
@@ -247,7 +247,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
 // rip a single track from cd
 bool CCDDARipper::RipTrack(CFileItem* pItem)
 {
-  CStdString strDirectory = g_guiSettings.GetString("cddaripper.path");
+  CStdString strDirectory = g_guiSettings.GetString("audiocds.recordingpath");
   CUtil::AddSlashAtEnd(strDirectory);
   CFileItem ripPath(strDirectory, true);
 
@@ -291,7 +291,7 @@ bool CCDDARipper::RipCD()
   int iTrack = 0;
   bool bResult = true;
   CStdString strFile;
-  CStdString strDirectory = g_guiSettings.GetString("cddaripper.path");
+  CStdString strDirectory = g_guiSettings.GetString("audiocds.recordingpath");
   CUtil::AddSlashAtEnd(strDirectory);
   CFileItem ripPath(strDirectory, true);
   bool bIsFATX = !ripPath.IsSmb();
@@ -423,14 +423,14 @@ CStdString CCDDARipper::GetTrackName(CFileItem *item, int LegalType)
   // Format up our ripped file label
   CFileItem destItem(*item);
   destItem.SetLabel("");
-  CLabelFormatter formatter(g_guiSettings.GetString("cddaripper.trackformat"), "");
+  CLabelFormatter formatter(g_guiSettings.GetString("audiocds.trackformat"), "");
   formatter.FormatLabel(&destItem);
 
   // grab the label to use it as our ripped filename
   CStdString track = destItem.GetLabel();
   if (track.IsEmpty())
     track.Format("%s%02i", "Track-", trackNumber);
-  track += GetExtension(g_guiSettings.GetInt("cddaripper.encoder"));
+  track += GetExtension(g_guiSettings.GetInt("audiocds.encoder"));
 
   // make sure the filename is legal
   track = CUtil::MakeLegalFileName(track, LegalType);
