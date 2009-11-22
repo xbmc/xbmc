@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,35 +19,30 @@
  *
  */
 
-#include "GUIDialogTVGuide.h"
+#include "GUIDialogPVRGuideOSD.h"
 #include "PVRManager.h"
 #include "Application.h"
-#include "Util.h"
-#include "Picture.h"
-#include "GUIDialogContextMenu.h"
-#include "GUIDialogOK.h"
 #include "GUIDialogPVRGuideInfo.h"
 #include "GUIWindowManager.h"
-#include "ViewState.h"
-#include "Settings.h"
 #include "FileItem.h"
+#include "ViewState.h"
 
 using namespace std;
 
-#define CONTROL_LIST                  11
+#define CONTROL_LIST  11
 
-CGUIDialogTVGuide::CGUIDialogTVGuide()
-    : CGUIDialog(WINDOW_DIALOG_PVR_OSD_GUIDE, "VideoOSDTVGuide.xml")
+CGUIDialogPVRGuideOSD::CGUIDialogPVRGuideOSD()
+    : CGUIDialog(WINDOW_DIALOG_PVR_OSD_GUIDE, "DialogPVRGuideOSD.xml")
 {
   m_vecItems = new CFileItemList;
 }
 
-CGUIDialogTVGuide::~CGUIDialogTVGuide()
+CGUIDialogPVRGuideOSD::~CGUIDialogPVRGuideOSD()
 {
   delete m_vecItems;
 }
 
-bool CGUIDialogTVGuide::OnMessage(CGUIMessage& message)
+bool CGUIDialogPVRGuideOSD::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
@@ -97,7 +92,7 @@ bool CGUIDialogTVGuide::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogTVGuide::Update()
+void CGUIDialogPVRGuideOSD::Update()
 {
   // lock our display, as this window is rendered from the player thread
   g_graphicsContext.Lock();
@@ -115,13 +110,13 @@ void CGUIDialogTVGuide::Update()
   g_graphicsContext.Unlock();
 }
 
-void CGUIDialogTVGuide::Clear()
+void CGUIDialogPVRGuideOSD::Clear()
 {
   m_viewControl.Clear();
   m_vecItems->Clear();
 }
 
-void CGUIDialogTVGuide::ShowInfo(int item)
+void CGUIDialogPVRGuideOSD::ShowInfo(int item)
 {
   /* Check file item is in list range and get his pointer */
   if (item < 0 || item >= (int)m_vecItems->Size()) return;
@@ -130,18 +125,15 @@ void CGUIDialogTVGuide::ShowInfo(int item)
 
   /* Load programme info dialog */
   CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
-
   if (!pDlgInfo)
     return;
 
-  /* inform dialog about the file item */
+  /* inform dialog about the file item and open dialog window */
   pDlgInfo->SetProgInfo(pItem.get());
-
-  /* Open dialog window */
   pDlgInfo->DoModal();
 }
 
-void CGUIDialogTVGuide::OnWindowLoaded()
+void CGUIDialogPVRGuideOSD::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
   m_viewControl.Reset();
@@ -149,13 +141,13 @@ void CGUIDialogTVGuide::OnWindowLoaded()
   m_viewControl.AddView(GetControl(CONTROL_LIST));
 }
 
-void CGUIDialogTVGuide::OnWindowUnload()
+void CGUIDialogPVRGuideOSD::OnWindowUnload()
 {
   CGUIDialog::OnWindowUnload();
   m_viewControl.Reset();
 }
 
-CGUIControl *CGUIDialogTVGuide::GetFirstFocusableControl(int id)
+CGUIControl *CGUIDialogPVRGuideOSD::GetFirstFocusableControl(int id)
 {
   if (m_viewControl.HasControl(id))
     id = m_viewControl.GetCurrentControl();
