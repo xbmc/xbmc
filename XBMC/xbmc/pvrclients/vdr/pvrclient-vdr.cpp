@@ -323,12 +323,11 @@ PVR_ERROR PVRClientVDR::GetDriveSpace(long long *total, long long *used)
 /************************************************************/
 /** EPG handling */
 
-PVR_ERROR PVRClientVDR::RequestEPGForChannel(unsigned int number, PVRHANDLE handle, time_t start, time_t end)
+PVR_ERROR PVRClientVDR::RequestEPGForChannel(const PVR_CHANNEL &channel, PVRHANDLE handle, time_t start, time_t end)
 {
   vector<string> lines;
   int            code;
   char           buffer[1024];
-  int            found;
   cEpg           epg;
 
   if (!m_transceiver->IsOpen())
@@ -337,9 +336,9 @@ PVR_ERROR PVRClientVDR::RequestEPGForChannel(unsigned int number, PVRHANDLE hand
   pthread_mutex_lock(&m_critSection);
 
   if (start != 0)
-    sprintf(buffer, "LSTE %d from %lu to %lu", number, (long)start, (long)end);
+    sprintf(buffer, "LSTE %d from %lu to %lu", channel.number, (long)start, (long)end);
   else
-    sprintf(buffer, "LSTE %d", number);
+    sprintf(buffer, "LSTE %d", channel.number);
   while (!m_transceiver->SendCommand(buffer, code, lines))
   {
     if (code != 451)
@@ -362,14 +361,13 @@ PVR_ERROR PVRClientVDR::RequestEPGForChannel(unsigned int number, PVRHANDLE hand
     if (isEnd && epg.StartTime() != 0)
     {
       PVR_PROGINFO broadcast;
-      broadcast.channum         = number;
+      broadcast.channum         = channel.number;
       broadcast.uid             = epg.UniqueId();
       broadcast.title           = epg.Title();
       broadcast.subtitle        = epg.ShortText();
       broadcast.description     = epg.Description();
       broadcast.starttime       = epg.StartTime();
       broadcast.endtime         = epg.EndTime();
-      broadcast.genre           = epg.Genre();
       broadcast.genre_type      = epg.GenreType();
       broadcast.genre_sub_type  = epg.GenreSubType();
       PVR_transfer_epg_entry(handle, &broadcast);
@@ -445,18 +443,18 @@ PVR_ERROR PVRClientVDR::RequestChannelList(PVRHANDLE handle, bool radio)
       continue;
 
     PVR_CHANNEL tag;
-    tag.uid = channel.Sid();
-    tag.number = channel.Number();
-    tag.name = channel.Name();
-    tag.callsign = channel.Name();
-    tag.iconpath = "";
-    tag.encrypted = channel.Ca() ? true : false;
-    tag.radio = (channel.Vpid() == 0) && (channel.Apid(0) != 0) ? true : false;
-    tag.hide = false;
-    tag.recording = false;
-    tag.bouquet = 0;
-    tag.multifeed = false;
-    tag.stream_url = "";
+    tag.uid         = channel.Sid();
+    tag.number      = channel.Number();
+    tag.name        = channel.Name();
+    tag.callsign    = channel.Name();
+    tag.iconpath    = "";
+    tag.encryption  = channel.Ca();
+    tag.radio       = (channel.Vpid() == 0) && (channel.Apid(0) != 0) ? true : false;
+    tag.hide        = false;
+    tag.recording   = false;
+    tag.bouquet     = 0;
+    tag.multifeed   = false;
+    tag.stream_url  = "";
 
     if (radio == tag.radio)
       PVR_transfer_channel_entry(handle, &tag);

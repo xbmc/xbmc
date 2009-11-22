@@ -48,7 +48,7 @@ private:
 
   CStdString          m_IconPath;             /// Path to the logo image
 
-  bool                m_encrypted;            /// Encrypted channel
+  bool                m_encryptionSystem;     /// Encrypted channel
   bool                m_radio;                /// Radio channel
   bool                m_hide;                 /// Channel is hide inside filelists
   bool                m_isRecording;
@@ -89,12 +89,20 @@ public:
   void SetUniqueID(long id) { m_iIdUnique = id; }
   long GroupID(void) const { return m_iGroupID; }
   void SetGroupID(long group) { m_iGroupID = group; }
-  bool IsEncrypted(void) const { return m_encrypted; }
-  void SetEncrypted(bool encrypted) { m_encrypted = encrypted; }
   bool IsRadio(void) const { return m_radio; }
   void SetRadio(bool radio) { m_radio = radio; }
   bool IsRecording(void) const { return m_isRecording; }
   void SetRecording(bool rec) { m_isRecording = rec; }
+  bool IsEncrypted(void) const { return m_encryptionSystem > 0; }
+       ///< Return true if this channel is encrypted. Does not inform if XBMC can play it,
+       ///< decryption is done by the client associated backend.
+  int EncryptionSystem(void) const { return m_encryptionSystem; }
+       ///< Return the encryption system ID for this channel, 0 for FTA. Is based
+       ///< upon: http://www.dvb.org/index.php?id=174.
+  CStdString EncryptionName() const;
+       ///< Return a human understandable name for the used encryption system.
+  void SetEncryptionSystem(int system) { m_encryptionSystem = system; }
+       ///< Set the encryption ID for this channel.
   CStdString Stream(void) const { return m_strStreamURL; }
   void SetStream(CStdString stream) { m_strStreamURL = stream; }
   CStdString Path(void) const { return m_strFileNameAndPath; }

@@ -59,7 +59,7 @@ bool CTVDatabase::CreateTables()
     CLog::Log(LOGINFO, "TV: Creating Channels table");
     m_pDS->exec("CREATE TABLE Channels (idClient integer, idChannel integer primary key,"
                 "XBMCNumber integer, Name text, ClientName text, ClientNumber integer,"
-                "UniqueId integer, IconPath text, GroupID integer, encrypted bool,"
+                "UniqueId integer, IconPath text, GroupID integer, encryption integer,"
                 "radio bool, hide bool, strFileNameAndPath text)\n");
 
     CLog::Log(LOGINFO, "TV: Creating GuideData table");
@@ -221,11 +221,11 @@ long CTVDatabase::AddDBChannel(const cPVRChannelInfoTag &info)
     if (channelId < 0)
     {
       CStdString SQL = FormatSQL("insert into Channels (idClient, idChannel, XBMCNumber, Name, ClientName,"
-                                 "ClientNumber, UniqueId, IconPath, GroupID, encrypted, radio, hide, strFileNameAndPath) "
+                                 "ClientNumber, UniqueId, IconPath, GroupID, encryption, radio, hide, strFileNameAndPath) "
                                  "values ('%i', NULL, '%i', '%s', '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%s')\n",
                                  info.ClientID(), info.Number(), info.Name().c_str(), info.ClientName().c_str(),
                                  info.ClientNumber(), info.UniqueID(), info.m_IconPath.c_str(), info.m_iGroupID,
-                                 info.m_encrypted, info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str());
+                                 info.EncryptionSystem(), info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str());
 
       m_pDS->exec(SQL.c_str());
       channelId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
@@ -312,11 +312,11 @@ long CTVDatabase::UpdateDBChannel(const cPVRChannelInfoTag &info)
       m_pDS->close();
       // update the item
       SQL = FormatSQL("update Channels set idClient=%i,XBMCNumber=%i,Name='%s',ClientName='%s',"
-                      "ClientNumber=%i,UniqueId=%i,IconPath='%s',GroupID=%i,encrypted=%i,radio=%i,"
+                      "ClientNumber=%i,UniqueId=%i,IconPath='%s',GroupID=%i,encryption=%i,radio=%i,"
                       "hide=%i,strFileNameAndPath='%s' where idChannel=%i",
                       info.ClientID(), info.Number(), info.Name().c_str(), info.ClientName().c_str(),
                       info.ClientNumber(), info.UniqueID(), info.m_IconPath.c_str(), info.m_iGroupID,
-                      info.m_encrypted, info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str(),
+                      info.EncryptionSystem(), info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str(),
                       channelId);
 
       m_pDS->exec(SQL.c_str());
@@ -326,11 +326,11 @@ long CTVDatabase::UpdateDBChannel(const cPVRChannelInfoTag &info)
     {
       m_pDS->close();
       SQL = FormatSQL("insert into Channels (idClient, idChannel, XBMCNumber, Name, ClientName,"
-                      "ClientNumber, UniqueId, IconPath, GroupID, encrypted, radio, hide, strFileNameAndPath) "
+                      "ClientNumber, UniqueId, IconPath, GroupID, encryption, radio, hide, strFileNameAndPath) "
                       "values ('%i', NULL, '%i', '%s', '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%s')\n",
                       info.ClientID(), info.Number(), info.Name().c_str(), info.ClientName().c_str(),
                       info.ClientNumber(), info.UniqueID(), info.m_IconPath.c_str(), info.m_iGroupID,
-                      info.m_encrypted, info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str());
+                      info.EncryptionSystem(), info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str());
 
       m_pDS->exec(SQL.c_str());
       channelId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
@@ -445,7 +445,7 @@ bool CTVDatabase::GetDBChannelList(cPVRChannels &results, bool radio)
       broadcast.m_iIdUnique           = m_pDS->fv("UniqueId").get_asInt();
       broadcast.m_IconPath            = m_pDS->fv("IconPath").get_asString();
       broadcast.m_iGroupID            = m_pDS->fv("GroupID").get_asInt();
-      broadcast.m_encrypted           = m_pDS->fv("encrypted").get_asBool();
+      broadcast.m_encryptionSystem    = m_pDS->fv("encryption").get_asBool();
       broadcast.m_radio               = m_pDS->fv("radio").get_asBool();
       broadcast.m_hide                = m_pDS->fv("hide").get_asBool();
       broadcast.m_strFileNameAndPath  = m_pDS->fv("strFileNameAndPath").get_asString();

@@ -56,7 +56,7 @@ bool cPVRChannelInfoTag::operator==(const cPVRChannelInfoTag& right) const
           m_iClientNum            == right.m_iClientNum &&
           m_strChannel            == right.m_strChannel &&
           m_IconPath              == right.m_IconPath &&
-          m_encrypted             == right.m_encrypted &&
+          m_encryptionSystem      == right.m_encryptionSystem &&
           m_radio                 == right.m_radio &&
           m_hide                  == right.m_hide &&
           m_isRecording           == right.m_isRecording &&
@@ -70,7 +70,7 @@ bool cPVRChannelInfoTag::operator!=(const cPVRChannelInfoTag &right) const
   if (m_iClientNum            != right.m_iClientNum) return true;
   if (m_strChannel            != right.m_strChannel) return true;
   if (m_IconPath              != right.m_IconPath) return true;
-  if (m_encrypted             != right.m_encrypted) return true;
+  if (m_encryptionSystem      != right.m_encryptionSystem) return true;
   if (m_radio                 != right.m_radio) return true;
   if (m_hide                  != right.m_hide) return true;
   if (m_isRecording           != right.m_isRecording) return true;
@@ -92,7 +92,7 @@ void cPVRChannelInfoTag::Reset()
   m_strClientName         = "";
   m_IconPath              = "";
   m_radio                 = false;
-  m_encrypted             = false;
+  m_encryptionSystem      = -1;
   m_hide                  = false;
   m_isRecording           = false;
   m_startTime             = NULL;
@@ -103,6 +103,94 @@ void cPVRChannelInfoTag::Reset()
   m_Epg                   = NULL;
 
   CVideoInfoTag::Reset();
+}
+
+CStdString cPVRChannelInfoTag::EncryptionName() const
+{
+  // http://www.dvb.org/index.php?id=174
+  // http://en.wikipedia.org/wiki/Conditional_access_system
+  CStdString strName;
+
+  if (m_encryptionSystem == 0x0000)
+    strName = g_localizeStrings.Get(18177);  /* Free To Air */
+  else if (m_encryptionSystem < 0x0000)
+    strName = g_localizeStrings.Get(13205);   /* Unknown */
+  else if (m_encryptionSystem >= 0x0001 && m_encryptionSystem <= 0x009F)
+    strName.Format("%s (%X)", g_localizeStrings.Get(18177).c_str(), m_encryptionSystem);  /* Fixed */
+  else if (m_encryptionSystem >= 0x00A0 && m_encryptionSystem <= 0x00A1)
+    strName.Format("%s (%X)", g_localizeStrings.Get(338).c_str(), m_encryptionSystem);    /* Analog */
+  else if (m_encryptionSystem >= 0x00A2 && m_encryptionSystem <= 0x00FF)
+    strName.Format("%s (%X)", g_localizeStrings.Get(18177).c_str(), m_encryptionSystem);  /* Fixed */
+  else if (m_encryptionSystem >= 0x0100 && m_encryptionSystem <= 0x01FF)
+    strName.Format("%s (%X)", "SECA Mediaguard", m_encryptionSystem);              // Canal Plus
+  else if (m_encryptionSystem == 0x0464)
+    strName.Format("%s (%X)", "EuroDec", m_encryptionSystem);                      // EuroDec
+  else if (m_encryptionSystem >= 0x0500 && m_encryptionSystem <= 0x05FF)
+    strName.Format("%s (%X)", "Viaccess", m_encryptionSystem);                     // France Telecom
+  else if (m_encryptionSystem >= 0x0600 && m_encryptionSystem <= 0x06FF)
+    strName.Format("%s (%X)", "Irdeto", m_encryptionSystem);                       // Irdeto
+  else if (m_encryptionSystem >= 0x0900 && m_encryptionSystem <= 0x09FF)
+    strName.Format("%s (%X)", "NDS Videoguard", m_encryptionSystem);               // News Datacom
+  else if (m_encryptionSystem >= 0x0B00 && m_encryptionSystem <= 0x0BFF)
+    strName.Format("%s (%X)", "Conax", m_encryptionSystem);                        // Norwegian Telekom
+  else if (m_encryptionSystem >= 0x0D00 && m_encryptionSystem <= 0x0DFF)
+    strName.Format("%s (%X)", "CryptoWorks", m_encryptionSystem);                  // Philips
+  else if (m_encryptionSystem >= 0x0E00 && m_encryptionSystem <= 0x0EFF)
+    strName.Format("%s (%X)", "PowerVu", m_encryptionSystem);                      // Scientific Atlanta
+  else if (m_encryptionSystem == 0x1000)
+    strName.Format("%s (%X)", "RAS", m_encryptionSystem);                          // Tandberg Television
+  else if (m_encryptionSystem >= 0x1200 && m_encryptionSystem <= 0x12FF)
+    strName.Format("%s (%X)", "NagraVision", m_encryptionSystem);                  // BellVu Express
+  else if (m_encryptionSystem >= 0x1700 && m_encryptionSystem <= 0x17FF)
+    strName.Format("%s (%X)", "BetaCrypt", m_encryptionSystem);                    // BetaTechnik
+  else if (m_encryptionSystem >= 0x1800 && m_encryptionSystem <= 0x18FF)
+    strName.Format("%s (%X)", "NagraVision", m_encryptionSystem);                  // Kudelski SA
+  else if (m_encryptionSystem == 0x22F0)
+    strName.Format("%s (%X)", "Codicrypt", m_encryptionSystem);                    // Scopus Network Technologies
+  else if (m_encryptionSystem == 0x2600)
+    strName.Format("%s (%X)", "BISS", m_encryptionSystem);                         // European Broadcasting Union
+  else if (m_encryptionSystem == 0x4347)
+    strName.Format("%s (%X)", "CryptOn", m_encryptionSystem);                      // CryptOn
+  else if (m_encryptionSystem == 0x4800)
+    strName.Format("%s (%X)", "Accessgate", m_encryptionSystem);                   // Telemann
+  else if (m_encryptionSystem == 0x4900)
+    strName.Format("%s (%X)", "China Crypt", m_encryptionSystem);                  // CryptoWorks
+  else if (m_encryptionSystem == 0x4A10)
+    strName.Format("%s (%X)", "EasyCas", m_encryptionSystem);                      // EasyCas
+  else if (m_encryptionSystem == 0x4A20)
+    strName.Format("%s (%X)", "AlphaCrypt", m_encryptionSystem);                   // AlphaCrypt
+  else if (m_encryptionSystem == 0x4A70)
+    strName.Format("%s (%X)", "DreamCrypt", m_encryptionSystem);                   // Dream Multimedia
+  else if (m_encryptionSystem == 0x4A60)
+    strName.Format("%s (%X)", "SkyCrypt", m_encryptionSystem);                     // @Sky
+  else if (m_encryptionSystem == 0x4A61)
+    strName.Format("%s (%X)", "Neotioncrypt", m_encryptionSystem);                 // Neotion
+  else if (m_encryptionSystem == 0x4A62)
+    strName.Format("%s (%X)", "SkyCrypt", m_encryptionSystem);                     // @Sky
+  else if (m_encryptionSystem == 0x4A63)
+    strName.Format("%s (%X)", "Neotion SHL", m_encryptionSystem);                  // Neotion
+  else if (m_encryptionSystem >= 0x4A64 && m_encryptionSystem <= 0x4A6F)
+    strName.Format("%s (%X)", "SkyCrypt", m_encryptionSystem);                     // @Sky
+  else if (m_encryptionSystem == 0x4A80)
+    strName.Format("%s (%X)", "ThalesCrypt", m_encryptionSystem);                  // TPS
+  else if (m_encryptionSystem == 0x4AA1)
+    strName.Format("%s (%X)", "KeyFly", m_encryptionSystem);                       // SIDSA
+  else if (m_encryptionSystem == 0x4ABF)
+    strName.Format("%s (%X)", "DG-Crypt", m_encryptionSystem);                     // Beijing Compunicate Technology Inc.
+  else if (m_encryptionSystem >= 0x4AD0 && m_encryptionSystem <= 0x4AD1)
+    strName.Format("%s (%X)", "X-Crypt", m_encryptionSystem);                      // XCrypt Inc.
+  else if (m_encryptionSystem == 0x4AD4)
+    strName.Format("%s (%X)", "OmniCrypt", m_encryptionSystem);                    // Widevine Technologies, Inc.
+  else if (m_encryptionSystem == 0x4AE0)
+    strName.Format("%s (%X)", "RossCrypt", m_encryptionSystem);                    // Digi Raum Electronics Co. Ltd.
+  else if (m_encryptionSystem == 0x5500)
+    strName.Format("%s (%X)", "Z-Crypt", m_encryptionSystem);                      // Digi Raum Electronics Co. Ltd.
+  else if (m_encryptionSystem == 0x5501)
+    strName.Format("%s (%X)", "Griffin", m_encryptionSystem);                      // Griffin
+  else
+    strName.Format("%s (%X)", g_localizeStrings.Get(19499).c_str(), m_encryptionSystem);   // Other/Unknown
+
+  return strName;
 }
 
 int cPVRChannelInfoTag::GetDuration() const

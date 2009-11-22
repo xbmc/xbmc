@@ -104,11 +104,9 @@ public:
   CStdString Plot(void) const { return m_strPlot; }
   void SetPlot(CStdString Plot) { m_strPlot = Plot; }
   int GenreType(void) const { return m_GenreType; }
-  void SetGenreType(int GenreType) { m_GenreType = GenreType; }
   int GenreSubType(void) const { return m_GenreSubType; }
-  void SetGenreSubType(int GenreSubType) { m_GenreSubType = GenreSubType; }
   CStdString Genre(void) const { return m_strGenre; }
-  void SetGenre(CStdString Genre) { m_strGenre = Genre; }
+  void SetGenre(int ID, int subID);
   CStdString Icon(void) const { return m_IconPath; }
   void SetIcon(CStdString icon) { m_IconPath = icon; }
   CStdString Path(void) const { return m_strFileNameAndPath; }
@@ -127,6 +125,8 @@ public:
   /* Scheduled recording related Data */
   void SetTimer(const cPVRTimerInfoTag *Timer) { m_Timer = Timer; }
   const cPVRTimerInfoTag *Timer(void) const { return m_Timer; }
+
+  CStdString ConvertGenreIdToString(int ID, int subID) const;
 };
 
 class cPVREpg

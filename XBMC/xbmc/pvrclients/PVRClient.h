@@ -51,7 +51,7 @@ public:
   virtual PVR_ERROR GetDriveSpace(long long *total, long long *used);
 
   /* TV Guide */
-  virtual PVR_ERROR GetEPGForChannel(unsigned int number, cPVREpg *epg, time_t start, time_t end);
+  virtual PVR_ERROR GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cPVREpg *epg, time_t start, time_t end);
 
   /* Channels */
   virtual int GetNumChannels();

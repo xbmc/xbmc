@@ -547,10 +547,31 @@ unsigned long CPVRManager::GetFirstClientID()
 void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg)
 {
   /* here the manager reacts to messages sent from any of the clients via the IPVRClientCallback */
+  CStdString clientName = m_clients[clientID]->GetBackendName() + ":" + m_clients[clientID]->GetConnectionString();
   switch (clientEvent)
   {
     case PVR_EVENT_UNKNOWN:
       CLog::Log(LOGDEBUG, "%s - PVR: client_%ld unknown event : %s", __FUNCTION__, clientID, msg);
+      break;
+
+    case PVR_EVENT_MSG_STATUS:
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtStatus, clientName, msg, 3000, false);
+      CLog::Log(LOGDEBUG, "%s - PVR: client_%ld Status Message : %s", __FUNCTION__, clientID, msg);
+      break;
+
+    case PVR_EVENT_MSG_INFO:
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtInfo, clientName, msg, 3000, false);
+      CLog::Log(LOGDEBUG, "%s - PVR: client_%ld Info Message : %s", __FUNCTION__, clientID, msg);
+      break;
+
+    case PVR_EVENT_MSG_WARNING:
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtWarning, clientName, msg, 3000, false);
+      CLog::Log(LOGDEBUG, "%s - PVR: client_%ld Warning Message : %s", __FUNCTION__, clientID, msg);
+      break;
+
+    case PVR_EVENT_MSG_ERROR:
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtError, clientName, msg, 3000, true);
+      CLog::Log(LOGDEBUG, "%s - PVR: client_%ld Error Message : %s", __FUNCTION__, clientID, msg);
       break;
 
     case PVR_EVENT_TIMERS_CHANGE:

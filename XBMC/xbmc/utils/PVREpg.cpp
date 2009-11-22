@@ -76,7 +76,6 @@ void cPVREPGInfoTag::Reset()
   m_strPlot             = "";
   m_GenreType           = 0;
   m_GenreSubType        = 0;
-  m_strGenre            = "";
   m_strFileNameAndPath  = "";
   m_IconPath            = "";
   m_isRecording         = false;
@@ -104,6 +103,97 @@ int cPVREPGInfoTag::GetDuration() const
   m_endTime.GetAsTime(end);
   return end - start;
 }
+
+void cPVREPGInfoTag::SetGenre(int ID, int subID)
+{
+  m_GenreType    = ID;
+  m_GenreSubType = subID;
+  m_strGenre     = ConvertGenreIdToString(ID, subID);
+}
+
+CStdString cPVREPGInfoTag::ConvertGenreIdToString(int ID, int subID) const
+{
+  CStdString str = g_localizeStrings.Get(19499);
+  switch (ID)
+  {
+    case EVCONTENTMASK_MOVIEDRAMA:
+      if (subID <= 8)
+        str = g_localizeStrings.Get(19500 + subID);
+      else
+        str = g_localizeStrings.Get(19500) + " (undefined)";
+      break;
+    case EVCONTENTMASK_NEWSCURRENTAFFAIRS:
+      if (subID <= 4)
+        str = g_localizeStrings.Get(19516 + subID);
+      else
+        str = g_localizeStrings.Get(19516) + " (undefined)";
+      break;
+    case EVCONTENTMASK_SHOW:
+      if (subID <= 3)
+        str = g_localizeStrings.Get(19532 + subID);
+      else
+        str = g_localizeStrings.Get(19532) + " (undefined)";
+      break;
+    case EVCONTENTMASK_SPORTS:
+      if (subID <= 0x0B)
+        str = g_localizeStrings.Get(19548 + subID);
+      else
+        str = g_localizeStrings.Get(19548) + " (undefined)";
+      break;
+    case EVCONTENTMASK_CHILDRENYOUTH:
+      if (subID <= 5)
+        str = g_localizeStrings.Get(19564 + subID);
+      else
+        str = g_localizeStrings.Get(19564) + " (undefined)";
+      break;
+    case EVCONTENTMASK_MUSICBALLETDANCE:
+      if (subID <= 6)
+        str = g_localizeStrings.Get(19580 + subID);
+      else
+        str = g_localizeStrings.Get(19580) + " (undefined)";
+      break;
+    case EVCONTENTMASK_ARTSCULTURE:
+      if (subID <= 0x0B)
+        str = g_localizeStrings.Get(19596 + subID);
+      else
+        str = g_localizeStrings.Get(19596) + " (undefined)";
+      break;
+    case EVCONTENTMASK_SOCIALPOLITICALECONOMICS:
+      if (subID <= 0x03)
+        str = g_localizeStrings.Get(19612 + subID);
+      else
+        str = g_localizeStrings.Get(19612) + " (undefined)";
+      break;
+    case EVCONTENTMASK_EDUCATIONALSCIENCE:
+      if (subID <= 0x07)
+        str = g_localizeStrings.Get(19628 + subID);
+      else
+        str = g_localizeStrings.Get(19628) + " (undefined)";
+      break;
+    case EVCONTENTMASK_LEISUREHOBBIES:
+      if (subID <= 0x07)
+        str = g_localizeStrings.Get(19644 + subID);
+      else
+        str = g_localizeStrings.Get(19644) + " (undefined)";
+      break;
+    case EVCONTENTMASK_SPECIAL:
+      if (subID <= 0x03)
+        str = g_localizeStrings.Get(19660 + subID);
+      else
+        str = g_localizeStrings.Get(19660) + " (undefined)";
+      break;
+    case EVCONTENTMASK_USERDEFINED:
+      if (subID <= 0x03)
+        str = g_localizeStrings.Get(19676 + subID);
+      else
+        str = g_localizeStrings.Get(19676) + " (undefined)";
+      break;
+    default:
+      break;
+  }
+  return str;
+}
+
 
 cPVREpg::cPVREpg(long ChannelID)
 {
@@ -250,9 +340,7 @@ bool cPVREpg::Add(const PVR_PROGINFO *data, cPVREpg *Epg)
       InfoTag->SetTitle(data->title);
       InfoTag->SetPlotOutline(data->subtitle);
       InfoTag->SetPlot(data->description);
-      InfoTag->SetGenreType(data->genre_type);
-      InfoTag->SetGenreSubType(data->genre_sub_type);
-      InfoTag->SetGenre(data->genre);
+      InfoTag->SetGenre(data->genre_type, data->genre_sub_type);
       InfoTag->SetChannel(Epg->m_Channel);
       InfoTag->SetIcon(Epg->m_Channel->Icon());
       InfoTag->m_Epg = Epg;
@@ -396,7 +484,7 @@ void cPVREpgs::Process()
       cPVREpg *p = s->AddEPG(PVRChannelsTV[i].ChannelID());
       if (p)
       {
-        PVR_ERROR err = clients->find(PVRChannelsTV[i].ClientID())->second->GetEPGForChannel(PVRChannelsTV[i].ClientNumber(), p, start, end);
+        PVR_ERROR err = clients->find(PVRChannelsTV[i].ClientID())->second->GetEPGForChannel(PVRChannelsTV[i], p, start, end);
         if (err == PVR_ERROR_NO_ERROR)
         {
           // Initialize the channels' schedule pointers, so that the first WhatsOn menu will come up faster:
@@ -413,7 +501,7 @@ void cPVREpgs::Process()
       cPVREpg *p = s->AddEPG(PVRChannelsRadio[i].ChannelID());
       if (p)
       {
-        PVR_ERROR err = clients->find(PVRChannelsRadio[i].ClientID())->second->GetEPGForChannel(PVRChannelsRadio[i].ClientNumber(), p, start, end);
+        PVR_ERROR err = clients->find(PVRChannelsRadio[i].ClientID())->second->GetEPGForChannel(PVRChannelsRadio[i], p, start, end);
         if (err == PVR_ERROR_NO_ERROR)
         {
           // Initialize the channels' schedule pointers, so that the first WhatsOn menu will come up faster:

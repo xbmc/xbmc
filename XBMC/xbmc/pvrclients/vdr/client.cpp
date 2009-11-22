@@ -264,9 +264,9 @@ extern "C" int GetNumBouquets()
   return 0;
 }
 
-extern "C" PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, unsigned int number, time_t start, time_t end)
+extern "C" PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end)
 {
-  return g_client->RequestEPGForChannel(number, handle, start, end);
+  return g_client->RequestEPGForChannel(channel, handle, start, end);
 }
 
 extern "C" int GetNumChannels()
@@ -383,7 +383,7 @@ extern "C" __int64 LengthLiveStream(void)
 {
   return -1;
 }
-  
+
 extern "C" int GetCurrentClientChannel()
 {
   return g_client->GetCurrentClientChannel();
@@ -468,4 +468,4 @@ extern "C" int GetDemuxStreamLength()
 {
   return 0;
 }
-  
+

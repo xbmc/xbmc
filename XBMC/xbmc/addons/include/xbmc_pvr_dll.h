@@ -14,7 +14,7 @@ extern "C"
   const char* GetBackendVersion();
   const char* GetConnectionString();
   PVR_ERROR GetDriveSpace(long long *total, long long *used);
-  PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, unsigned int number, time_t start, time_t end);
+  PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
   int GetNumBouquets();
   int GetNumChannels();
   int GetNumRecordings();
