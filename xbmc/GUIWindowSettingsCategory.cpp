@@ -445,7 +445,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("mymusic.visualisation"))
+    else if (strSetting.Equals("musicplayer.visualisation"))
     {
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
     }
@@ -503,7 +503,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(21377), VIDEO_WIDESCREEN);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("cddaripper.encoder"))
+    else if (strSetting.Equals("audiocds.encoder"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -512,7 +512,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel("Wav", CDDARIP_ENCODER_WAV);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("cddaripper.quality"))
+    else if (strSetting.Equals("audiocds.quality"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -1069,16 +1069,16 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("services.esenabled"));
     }
-    else if (strSetting.Equals("cddaripper.quality"))
+    else if (strSetting.Equals("audiocds.quality"))
     { // only visible if we are doing non-WAV ripping
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("cddaripper.encoder") != CDDARIP_ENCODER_WAV);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiocds.encoder") != CDDARIP_ENCODER_WAV);
     }
-    else if (strSetting.Equals("cddaripper.bitrate"))
+    else if (strSetting.Equals("audiocds.bitrate"))
     { // only visible if we are ripping to CBR
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled((g_guiSettings.GetInt("cddaripper.encoder") != CDDARIP_ENCODER_WAV) &&
-                                           (g_guiSettings.GetInt("cddaripper.quality") == CDDARIP_QUALITY_CBR));
+      if (pControl) pControl->SetEnabled((g_guiSettings.GetInt("audiocds.encoder") != CDDARIP_ENCODER_WAV) &&
+                                           (g_guiSettings.GetInt("audiocds.quality") == CDDARIP_QUALITY_CBR));
     }
     else if (strSetting.Equals("audiooutput.ac3passthrough") || strSetting.Equals("audiooutput.dtspassthrough") || strSetting.Equals("audiooutput.passthroughdevice"))
     { // only visible if we are in digital mode
@@ -1270,7 +1270,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CSettingString *pSetting = (CSettingString *)GetSetting(strSetting)->GetSetting();
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetLabel2(g_weatherManager.GetAreaCity(pSetting->GetData()));
+      pControl->SetLabel2(CWeather::GetAreaCity(pSetting->GetData()));
     }
     else if (strSetting.Equals("weather.plugin"))
     {
@@ -1318,7 +1318,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.useexternaldvdplayer"));
     }
-    else if (strSetting.Equals("cddaripper.path") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("system.screenshotpath"))
+    else if (strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("system.screenshotpath"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
@@ -1479,7 +1479,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
 
   // ok, now check the various special things we need to do
-  if (strSetting.Equals("mymusic.visualisation"))
+  if (strSetting.Equals("musicplayer.visualisation"))
   { // new visualisation choosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1690,7 +1690,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       musicdatabase.Close();
     }
   }
-  else if (strSetting.Equals("musicplayer.jumptocache") || strSetting.Equals("videoplayer.jumptocache"))
+  else if (strSetting.Equals("videoplayer.jumptocache"))
   {
     JumpToSection(WINDOW_SETTINGS_SYSTEM, "cache");
   }
@@ -1991,6 +1991,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 // DXMERGE: This may be useful
 //    g_videoConfig.SetVSyncMode((VSYNC)msg.GetParam1());
   }
+  else if (strSetting.Equals("videoscreen.fakefullscreen"))
+  {
+    if (g_graphicsContext.IsFullScreenRoot())
+      g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
+  }
   else if (strSetting.Equals("locale.language"))
   { // new language chosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
@@ -2096,7 +2101,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_pictureSources, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
-  else if (strSetting.Equals("system.screenshotpath") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath") || strSetting.Equals("pvrmenu.iconpath") || strSetting.Equals("pvrplayback.timeshiftpath"))
+  else if (strSetting.Equals("system.screenshotpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("subtitles.custompath") || strSetting.Equals("pvrmenu.iconpath") || strSetting.Equals("pvrplayback.timeshiftpath"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = g_guiSettings.GetString(strSetting,false);

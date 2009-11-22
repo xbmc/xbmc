@@ -77,7 +77,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
-  case GUI_MSG_SETFOCUS:
+  case GUI_MSG_FOCUSED:
     {
       CGUIWindow::OnMessage(message);
       int focusedControl = GetFocusedControlID();
@@ -144,7 +144,7 @@ void CGUIWindowSystemInfo::Render()
 #else
     // TODO: reporting of DirectX version information
     //SET_CONTROL_LABEL(i++, 22023);
-    SET_CONTROL_LABEL(i++, 22024);
+    SetControlLabel(i++, "%s %s", 22024, SYSTEM_DIRECT3D_VERSION);
 #endif
     SetControlLabel(i++, "%s %s", 22010, SYSTEM_GPU_TEMPERATURE);
   }

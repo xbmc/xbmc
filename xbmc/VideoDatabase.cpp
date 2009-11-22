@@ -4320,19 +4320,22 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
 
       for (it=mapAlbums.begin();it != mapAlbums.end();++it)
       {
-        CFileItemPtr pItem(new CFileItem(it->second.first));
-        CStdString strDir;
-        strDir.Format("%ld/", it->first);
-        pItem->m_strPath=strBaseDir + strDir;
-        pItem->m_bIsFolder=true;
-        pItem->SetLabelPreformated(true);
-        if (!items.Contains(pItem->m_strPath))
+        if (!it->second.first.IsEmpty())
         {
-          pItem->GetVideoInfoTag()->m_strArtist = m_pDS->fv(2).get_asString();
-          CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),pItem->GetVideoInfoTag()->m_strArtist);
-          if (CFile::Exists(strThumb))
-            pItem->SetThumbnailImage(strThumb);
-          items.Add(pItem);
+          CFileItemPtr pItem(new CFileItem(it->second.first));
+          CStdString strDir;
+          strDir.Format("%ld/", it->first);
+          pItem->m_strPath=strBaseDir + strDir;
+          pItem->m_bIsFolder=true;
+          pItem->SetLabelPreformated(true);
+          if (!items.Contains(pItem->m_strPath))
+          {
+            pItem->GetVideoInfoTag()->m_strArtist = m_pDS->fv(2).get_asString();
+            CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),pItem->GetVideoInfoTag()->m_strArtist);
+            if (CFile::Exists(strThumb))
+              pItem->SetThumbnailImage(strThumb);
+            items.Add(pItem);
+          }
         }
       }
     }
@@ -4340,19 +4343,22 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
     {
       while (!m_pDS->eof())
       {
-        CFileItemPtr pItem(new CFileItem(m_pDS->fv(0).get_asString()));
-        CStdString strDir;
-        strDir.Format("%ld/", m_pDS->fv(1).get_asInt());
-        pItem->m_strPath=strBaseDir + strDir;
-        pItem->m_bIsFolder=true;
-        pItem->SetLabelPreformated(true);
-        if (!items.Contains(pItem->m_strPath))
+        if (!m_pDS->fv(0).get_asString().empty())
         {
-          pItem->GetVideoInfoTag()->m_strArtist = m_pDS->fv(2).get_asString();
-          CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),m_pDS->fv(2).get_asString());
-          if (CFile::Exists(strThumb))
-            pItem->SetThumbnailImage(strThumb);
-          items.Add(pItem);
+          CFileItemPtr pItem(new CFileItem(m_pDS->fv(0).get_asString()));
+          CStdString strDir;
+          strDir.Format("%ld/", m_pDS->fv(1).get_asInt());
+          pItem->m_strPath=strBaseDir + strDir;
+          pItem->m_bIsFolder=true;
+          pItem->SetLabelPreformated(true);
+          if (!items.Contains(pItem->m_strPath))
+          {
+            pItem->GetVideoInfoTag()->m_strArtist = m_pDS->fv(2).get_asString();
+            CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),m_pDS->fv(2).get_asString());
+            if (CFile::Exists(strThumb))
+              pItem->SetThumbnailImage(strThumb);
+            items.Add(pItem);
+          }
         }
         m_pDS->next();
       }
@@ -6631,7 +6637,6 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
       // delete all removable media + ftp/http streams
       CURL url(fullPath);
       if (CUtil::IsOnDVD(fullPath) ||
-          CUtil::IsMemCard(fullPath) ||
           url.GetProtocol() == "http" ||
           url.GetProtocol() == "https" ||
           !CFile::Exists(fullPath))

@@ -144,7 +144,7 @@ namespace DIRECTORY
                 if (Ignore1.Equals(Ignore2) && Extension1.Equals(Extension2))
                 {
                   // got it
-                  strStackTitle = Title1 + Extension1;
+                  strStackTitle = Title1 + Ignore1 + Extension1;
                   itRegExp = RegExps.end();
                   break;
                 }

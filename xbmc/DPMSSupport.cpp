@@ -28,6 +28,9 @@
 
 #include <assert.h>
 #include <string>
+#ifdef _WIN32
+#include "GraphicContext.h"
+#endif
 
 //////// Generic, non-platform-specific code
 
@@ -203,6 +206,11 @@ void DPMSSupport::PlatformSpecificInit()
 
 bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 {
+  if(!g_graphicsContext.IsFullScreenRoot())
+  {
+    CLog::Log(LOGDEBUG, "DPMS: not in fullscreen, power saving disabled");
+    return false;
+  }
   switch(mode)
   {
   case OFF:

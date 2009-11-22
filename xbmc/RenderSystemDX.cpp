@@ -29,6 +29,7 @@
 #include "GUIWindowManager.h"
 #include "SingleLock.h"
 #include "D3DResource.h"
+#include "GUISettings.h"
 #include "AdvancedSettings.h"
 
 using namespace std;
@@ -77,7 +78,11 @@ bool CRenderSystemDX::InitRenderSystem()
   CreateDevice();
 
   if(m_pD3D->GetAdapterIdentifier(m_adapter, 0, &AIdentifier) == D3D_OK)
+  {
     m_RenderRenderer = (const char*)AIdentifier.Description;
+    m_RenderVersionMajor = (int)AIdentifier.DriverVersion.HighPart;
+    m_RenderVersionMinor = (int)AIdentifier.DriverVersion.LowPart;
+  }
 
   // get our render capabilities
   D3DCAPS9 caps;
@@ -119,7 +124,7 @@ void CRenderSystemDX::SetMonitor(HMONITOR monitor)
     return;
 
   // fake fullscreen mode
-  if (g_advancedSettings.m_fakeFullScreen)
+  if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
     return;
 
   // find the appropriate screen
@@ -154,7 +159,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
 void CRenderSystemDX::BuildPresentParameters()
 {
   ZeroMemory( &m_D3DPP, sizeof(D3DPRESENT_PARAMETERS) );
-  bool useWindow = g_advancedSettings.m_fakeFullScreen || !m_bFullScreenDevice;
+  bool useWindow = g_guiSettings.GetBool("videoscreen.fakefullscreen") || !m_bFullScreenDevice;
   m_D3DPP.Windowed					= useWindow;
   m_D3DPP.SwapEffect				= D3DSWAPEFFECT_DISCARD;
   m_D3DPP.BackBufferCount			= 1;

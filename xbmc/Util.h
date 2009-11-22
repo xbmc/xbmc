@@ -98,8 +98,8 @@ public:
   static bool IsInArchive(const CStdString& strFile);
   static bool IsSpecial(const CStdString& strFile);
   static bool IsPlugin(const CStdString& strFile); 
+  static bool IsPluginRoot(const CStdString& strFile); 
   static bool IsCDDA(const CStdString& strFile);
-  static bool IsMemCard(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
   static bool IsMythTV(const CStdString& strFile);
   static bool IsHDHomeRun(const CStdString& strFile);
@@ -107,6 +107,10 @@ public:
   static bool IsPVR(const CStdString& strFile);
   static bool IsHTSP(const CStdString& strFile);
   static bool IsLiveTV(const CStdString& strFile);
+  static bool IsMusicDb(const CStdString& strFile);
+  static bool IsVideoDb(const CStdString& strFile);
+  static bool IsShoutCast(const CStdString& strFile);
+  static bool IsLastFM(const CStdString& strFile);
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);

@@ -5,22 +5,22 @@
 	<include>common/imdb.xml</include>
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Full Cast Credits&quot; type=&quot;bool&quot; id=&quot;fullcredits&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable full cast credits&quot; type=&quot;bool&quot; id=&quot;fullcredits&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Enable IMPAwards&quot; type=&quot;bool&quot; id=&quot;impawards&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable posters from IMPAwards&quot; type=&quot;bool&quot; id=&quot;impawards&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Enable MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable posters from MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;IMDB Poster &amp;amp; Actor Thumb(s) Size&quot; type=&quot;labelenum&quot; values=&quot;192|256|384|512|1024&quot; id=&quot;imdbscale&quot; default=&quot;192&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;IMDb Poster &amp;amp; Actor Thumb(s) Size&quot; type=&quot;labelenum&quot; values=&quot;192|256|384|512|1024&quot; id=&quot;imdbscale&quot; default=&quot;192&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Input Alternative IMDb Source&quot; type=&quot;text&quot; id=&quot;url&quot; default=&quot;akas.imdb.com&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Input alternative IMDb source&quot; type=&quot;text&quot; id=&quot;url&quot; default=&quot;akas.imdb.com&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<expression noclean="1"/>

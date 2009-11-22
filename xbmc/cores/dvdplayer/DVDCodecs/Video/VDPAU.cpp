@@ -81,8 +81,7 @@ CVDPAU::CVDPAU(int width, int height)
   vid_width = vid_height = OutWidth = OutHeight = 0;
   memset(&outRect, 0, sizeof(VdpRect));
   memset(&outRectVid, 0, sizeof(VdpRect));
-  m_Display = g_Windowing.GetDisplay();
-
+  
   InitVDPAUProcs();
 
   tmpBrightness  = 0;
@@ -261,10 +260,7 @@ void CVDPAU::CheckRecover(bool force)
     FiniVDPAUOutput();
     FiniVDPAUProcs();
 
-    CSingleLock lock(g_graphicsContext);
-    XLockDisplay(m_Display);
     InitVDPAUProcs();
-    XUnlockDisplay(m_Display);
 
     VDPAURecovered = true;
     VDPAUSwitching = false;
@@ -498,6 +494,12 @@ void CVDPAU::InitVDPAUProcs()
     CLog::Log(LOGERROR,"(VDPAU) - %s in %s",error,__FUNCTION__);
     vdp_device = NULL;
     return;
+  }
+
+  if (dl_vdp_device_create_x11)
+  {
+    CSingleLock lock(g_graphicsContext);
+    m_Display = g_Windowing.GetDisplay();
   }
 
   int mScreen = DefaultScreen(m_Display);
@@ -941,6 +943,7 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   outputSurface = outputSurfaces[surfaceNum];
 
   SpewHardwareAvailable();
+  vdpauConfigured = true;
   return 0;
 }
 
@@ -987,6 +990,7 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   vdp->Create(avctx->width,avctx->height);
 
+
   // find unused surface
   for(unsigned int i = 0; i < vdp->m_videoSurfaces.size(); i++)
   {
@@ -1002,7 +1006,6 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   VdpStatus vdp_st = VDP_STATUS_ERROR;
   if (render == NULL)
   {
-    CSingleLock lock(g_graphicsContext);
     while(vdp_st != VDP_STATUS_OK && tries < NUM_VIDEO_SURFACES_MAX_TRIES)
     {
       tries++;
@@ -1092,7 +1095,6 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   || vdp->vdpauConfigured == false
   || vdp->max_references < max_refs)
   {
-    CSingleLock lock(g_graphicsContext);
     vdp->FiniVDPAUOutput();
     vdp->ConfigVDPAU(s, max_refs);
   }
@@ -1103,7 +1105,6 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
                                    render->bitstream_buffers_used,
                                    render->bitstream_buffers);
   vdp->CheckStatus(vdp_st, __LINE__);
-  vdp->vdpauConfigured = true;
 }
 
 void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
@@ -1133,7 +1134,6 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   if (( (int)outRectVid.x1 != OutWidth ) ||
       ( (int)outRectVid.y1 != OutHeight ))
   {
-    CSingleLock lock(g_graphicsContext);
     outRectVid.x0 = 0;
     outRectVid.y0 = 0;
     outRectVid.x1 = OutWidth;

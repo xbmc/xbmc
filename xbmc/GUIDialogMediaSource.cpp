@@ -263,15 +263,9 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strName = "Zeroconf Browser";
     extraShares.push_back(share1);
 
-    if (g_guiSettings.GetString("mymusic.recordingpath",false) != "")
+    if (g_guiSettings.GetString("audiocds.recordingpath",false) != "")
     {
       share1.strPath = "special://recordings/";
-      share1.strName = g_localizeStrings.Get(20007);
-      extraShares.push_back(share1);
-    }
-    if (g_guiSettings.GetString("cddaripper.path",false) != "")
-    {
-      share1.strPath = "special://cdrips/";
       share1.strName = g_localizeStrings.Get(21883);
       extraShares.push_back(share1);
     }

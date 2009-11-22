@@ -34,7 +34,7 @@
 			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Input Alternative IMDb Source&quot; type=&quot;text&quot; id=&quot;url&quot; default=&quot;akas.imdb.com&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Input alternative IMDb source&quot; type=&quot;text&quot; id=&quot;url&quot; default=&quot;akas.imdb.com&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<expression noclean="1"/>
@@ -79,7 +79,7 @@
 				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
-				<expression trim="1" noclean="1">&lt;title&gt;([^&lt;|^(]*)</expression>
+				<expression trim="1" noclean="1">&lt;h1&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
 				<expression>a href=&quot;/Sections/Years/([0-9]*)</expression>
