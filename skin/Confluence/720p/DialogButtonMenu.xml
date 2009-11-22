@@ -117,6 +117,7 @@
 					<height>90</height>
 					<texturefocus>ButtonMenuLogOffFO.png</texturefocus>
 					<texturenofocus>ButtonMenuLogOffNF.png</texturenofocus>
+					<onclick>dialog.close(all,true)</onclick>
 					<onclick>System.LogOff</onclick>
 					<pulseonselect>no</pulseonselect>
 					<font>-</font>

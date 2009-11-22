@@ -71,10 +71,14 @@ bool CFileZip::Open(const CURL&url)
     return false;
   }
 
-  if (mZipItem.usize > ZIP_CACHE_LIMIT && strOpts != "?cache=no")
+  if (mZipItem.method != 0 && mZipItem.usize > ZIP_CACHE_LIMIT && strOpts != "?cache=no")
   {
     if (!CFile::Exists("special://temp/" + CUtil::GetFileName(strPath)))
-      CFile::Cache(strPath + "?cache=no", "special://temp/" + CUtil::GetFileName(strPath));
+    {
+      url2.SetOptions("?cache=no");
+      if (!CFile::Cache(url2.Get(), "special://temp/" + CUtil::GetFileName(strPath)))
+        return false;
+    }
     m_bCached = true;
     return mFile.Open("special://temp/" + CUtil::GetFileName(strPath));
   }

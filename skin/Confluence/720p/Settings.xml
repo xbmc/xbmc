@@ -126,7 +126,7 @@
 						<icon>special://skin/backgrounds/system.jpg</icon>
 					</item>
 					<item id="8">
-						<label>166</label>
+						<label>31129</label>
 						<label2>31407</label2>
 						<onclick>ActivateWindow(1111)</onclick>
 						<icon>special://skin/backgrounds/skinsetting.jpg</icon>

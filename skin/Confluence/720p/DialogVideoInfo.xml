@@ -1048,15 +1048,15 @@
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>184</label>
 					</control>
-					<control type="button" id="12">
-						<description>Get Fanart</description>
-						<include>ButtonInfoDialogsCommonValues</include>
-						<label>20413</label>
-					</control>
 					<control type="button" id="10">
 						<description>Get Thumb</description>
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>13405</label>
+					</control>
+					<control type="button" id="12">
+						<description>Get Fanart</description>
+						<include>ButtonInfoDialogsCommonValues</include>
+						<label>20413</label>
 					</control>
 					<control type="button" id="11">
 						<description>Play Trailer</description>

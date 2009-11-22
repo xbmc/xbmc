@@ -167,7 +167,7 @@ PLT_HttpClientSocketTask::DoAbort()
 void
 PLT_HttpClientSocketTask::DoRun()
 {
-    NPT_HttpRequest*       request;
+    NPT_HttpRequest*       request = NULL;
     NPT_HttpRequestContext context;
     bool                   using_previous_connector = false;
     NPT_Result             res;
