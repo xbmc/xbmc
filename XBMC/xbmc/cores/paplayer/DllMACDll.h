@@ -111,12 +111,7 @@ class DllMACDll : public DllDynamic, DllMACDllInterface
     RESOLVE_METHOD_RENAME(c_APEDecompress_GetData, GetData)
     RESOLVE_METHOD_RENAME(c_APEDecompress_Seek, Seek)
     RESOLVE_METHOD_RENAME(c_APEDecompress_GetInfo, GetInfo)
-#ifdef _LINUX
     RESOLVE_METHOD_RENAME(c_GetAPEDuration, GetDuration)
     RESOLVE_METHOD_RENAME(c_GetAPETag, GetAPETag)
-#else
-    RESOLVE_METHOD_RENAME(_GetAPEDuration@4, GetDuration)
-    RESOLVE_METHOD_RENAME(_GetAPETag@8, GetAPETag)
-#endif
   END_METHOD_RESOLVE()
 };

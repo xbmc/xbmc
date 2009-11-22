@@ -44,10 +44,13 @@ using namespace DIRECTORY;
 CGUIWindowSettingsProfile::CGUIWindowSettingsProfile(void)
     : CGUIWindow(WINDOW_SETTINGS_PROFILES, "SettingsProfile.xml")
 {
+  m_listItems = new CFileItemList;
 }
 
 CGUIWindowSettingsProfile::~CGUIWindowSettingsProfile(void)
-{}
+{
+  delete m_listItems;
+}
 
 bool CGUIWindowSettingsProfile::OnAction(const CAction &action)
 {
@@ -221,17 +224,15 @@ void CGUIWindowSettingsProfile::LoadList()
     item->SetLabel2(profile.getDate());
     item->SetThumbnailImage(profile.getThumb());
     item->SetOverlayImage(profile.getLockMode() == LOCK_MODE_EVERYONE ? CGUIListItem::ICON_OVERLAY_NONE : CGUIListItem::ICON_OVERLAY_LOCKED);
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, item);
-    g_windowManager.SendMessage(msg);
-    m_vecListItems.push_back(item);
+    m_listItems->Add(item);
   }
   {
     CFileItemPtr item(new CFileItem(g_localizeStrings.Get(20058)));
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, item);
-    g_windowManager.SendMessage(msg);
     item->m_strPath.Empty();
-    m_vecListItems.push_back(item);
+    m_listItems->Add(item);
   }
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PROFILES, 0, 0, m_listItems);
+  OnMessage(msg);
 
   if (g_settings.bUseLoginScreen)
   {
@@ -248,7 +249,7 @@ void CGUIWindowSettingsProfile::ClearListItems()
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PROFILES);
   g_windowManager.SendMessage(msg);
 
-  m_vecListItems.erase(m_vecListItems.begin(), m_vecListItems.end());
+  m_listItems->Clear();
 }
 
 void CGUIWindowSettingsProfile::OnInitWindow()

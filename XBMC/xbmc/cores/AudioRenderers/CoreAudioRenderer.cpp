@@ -307,7 +307,24 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
   m_RunoutEvent(kInvalidID),
   m_DoRunout(0)
 {
+  SInt32 major,  minor;
+  Gestalt(gestaltSystemVersionMajor, &major);
+  Gestalt(gestaltSystemVersionMinor, &minor);
   
+  // By default, kAudioHardwarePropertyRunLoop points at the process's main thread on SnowLeopard,
+  // If your process lacks such a run loop, you can set kAudioHardwarePropertyRunLoop to NULL which
+  // tells the HAL to run it's own thread for notifications (which was the default prior to SnowLeopard).
+  // So tell the HAL to use its own thread for similar behavior under all supported versions of OSX.
+  if (major == 10 && minor >=6)
+  {
+    CFRunLoopRef theRunLoop = NULL;
+    AudioObjectPropertyAddress theAddress = { kAudioHardwarePropertyRunLoop, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
+    OSStatus theError = AudioObjectSetPropertyData (kAudioObjectSystemObject, &theAddress, 0, NULL, sizeof(CFRunLoopRef), &theRunLoop);
+    if (theError != noErr)
+    {
+      CLog::Log(LOGERROR, "CoreAudioRenderer::constructor: kAudioHardwarePropertyRunLoop error.");
+    }
+  }
 }
 
 CCoreAudioRenderer::~CCoreAudioRenderer()
@@ -353,7 +370,11 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
 
   // If this is a passthrough (AC3/DTS) stream, attempt to handle it natively
   if (bPassthrough)
+  {
     m_Passthrough = InitializeEncoded(outputDevice, uiSamplesPerSec);
+    // TODO: wait for audio device startup
+    Sleep(100);
+  }
 
   // If this is a PCM stream, or we failed to handle a passthrough stream natively, 
   // prepare the standard interleaved PCM interface
@@ -374,9 +395,16 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
     {
       CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: No suitable AC3 output format found. Attempting DD-Wav.");
       configured = InitializePCMEncoded(uiSamplesPerSec);
+      // TODO: wait for audio device startup
+      Sleep(100);
     }
-    else // Standard PCM data
+    else
+    { 
+      // Standard PCM data
       configured = InitializePCM(iChannels, uiSamplesPerSec, uiBitsPerSample);
+      // TODO: wait for audio device startup
+      Sleep(100);
+    }
     
     if (!configured) // No suitable output format was able to be configured
       return false;
@@ -406,6 +434,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
     CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Output Stream Format % s", StreamDescriptionToString(outputDesc_end, formatString));    
   }
   
+  m_NumLatencyFrames = m_AudioDevice.GetNumLatencyFrames();
   m_MaxCacheLen = m_AvgBytesPerSec;     // Set the max cache size to 1 second of data. TODO: Make this more intelligent
   m_Pause = true;                       // Suspend rendering. We will start once we have some data.
   m_pCache = new CSliceQueue(m_ChunkLen); // Initialize our incoming data cache
@@ -419,6 +448,8 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
   
   CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Renderer Configuration - Chunk Len: %u, Max Cache: %lu (%0.0fms).", m_ChunkLen, m_MaxCacheLen, 1000.0 *(float)m_MaxCacheLen/(float)m_AvgBytesPerSec);
   CLog::Log(LOGINFO, "CoreAudioRenderer::Initialize: Successfully configured audio output.");  
+
+  
   return true;
 }
 
@@ -572,6 +603,8 @@ float CCoreAudioRenderer::GetDelay()
   // Calculate the duration of the data in the cache
   float delay = (float)m_pCache->GetTotalBytes()/(float)m_AvgBytesPerSec;
   // TODO: Obtain hardware/os latency for better accuracy
+  delay += (float)m_NumLatencyFrames/(float)m_AvgBytesPerSec;
+  
   return delay;
 }
 
@@ -685,6 +718,7 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
   inputFormat.mBytesPerFrame = (bitsPerSample>>3) * channels; // Size of a frame == 1 sample per channel		
   inputFormat.mFramesPerPacket = 1;                         // The smallest amount of indivisible data. Always 1 for uncompressed audio 	
   inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket; 
+  inputFormat.mReserved = 0;
   if (!m_AudioUnit.SetInputFormat(&inputFormat))
     return false;
 
@@ -788,6 +822,7 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sa
     m_AudioDevice.SetHogStatus(true); // Hog the device if it is not set to be done automatically
     m_AudioDevice.SetMixingSupport(false); // Try to disable mixing. If we cannot, it may not be a problem
   }
+  m_NumLatencyFrames = m_AudioDevice.GetNumLatencyFrames();
   
   // Configure the output stream object
   m_OutputStream.Open(outputStream); // This is the one we will keep
@@ -795,6 +830,7 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sa
   m_OutputStream.GetPhysicalFormat(&previousFormat);
   CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Previous Physical Format: %s (%lu Bytes/sec.)", StreamDescriptionToString(previousFormat, formatString), m_AvgBytesPerSec);
   m_OutputStream.SetPhysicalFormat(&outputFormat); // Set the active format (the old one will be reverted when we close)
+  m_NumLatencyFrames += m_OutputStream.GetNumLatencyFrames();
   
   // Register for data request callbacks from the driver
   m_AudioDevice.AddIOProc(DirectRenderCallback, this);

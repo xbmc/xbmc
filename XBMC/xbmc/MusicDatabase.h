@@ -150,7 +150,7 @@ public:
   bool GetRecentlyPlayedAlbums(VECALBUMS& albums);
   bool GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, CFileItemList& item);
   bool IncrTop100CounterByFileName(const CStdString& strFileName1);
-  bool RemoveSongsFromPath(const CStdString &path, CSongMap &songs);
+  bool RemoveSongsFromPath(const CStdString &path, CSongMap &songs, bool exact=true);
   bool CleanupOrphanedItems();
   bool GetPaths(std::set<CStdString> &paths);
   bool SetPathHash(const CStdString &path, const CStdString &hash);
@@ -185,6 +185,7 @@ public:
 
   bool GetVariousArtistsAlbums(const CStdString& strBaseDir, CFileItemList& items);
   bool GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, CFileItemList& items);
+  int GetVariousArtistsAlbumsCount();
 
   bool SetSongRating(const CStdString &filePath, char rating);
   bool SetScraperForPath(const CStdString& strPath, const SScraperInfo& info);

@@ -37,6 +37,8 @@
 #include "SystemInfo.h"
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
+#include "visualizations/Visualisation.h"
+#include "WindowingFactory.h"
 
 using namespace std;
 
@@ -57,6 +59,16 @@ using namespace std;
 #define TEXT_OFF 351
 
 class CGUISettings g_guiSettings;
+
+#ifdef _LINUX
+#define DEFAULT_VISUALISATION "opengl_spectrum.vis"
+#elif defined(_WIN32)
+#ifdef HAS_DX
+#define DEFAULT_VISUALISATION "MilkDrop_win32dx.vis"
+#else
+#define DEFAULT_VISUALISATION "opengl_spectrum_win32.vis"
+#endif
+#endif
 
 struct sortsettings
 {
@@ -203,22 +215,17 @@ void CGUISettings::Initialize()
 
   // Pictures settings
   AddGroup(0, 1);
-  AddCategory(0, "pictures", 16000);
-  AddBool(2, "pictures.showvideos", 22022, false);
-  AddBool(4,"pictures.generatethumbs",13360,true);
-  AddSeparator(5,"pictures.sep1");
-  AddBool(6, "pictures.useexifrotation", 20184, true);
-  AddBool(7, "pictures.usetags", 258, true);
+  AddCategory(0, "pictures", 14081);
+  AddBool(1, "pictures.usetags", 14082, true);
+  AddBool(2,"pictures.generatethumbs",13360,true);
+  AddBool(3, "pictures.useexifrotation", 20184, true);
+  AddBool(4, "pictures.showvideos", 22022, false);
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
-  //AddInt(8, "pictures.displayresolution", 169, (int)RES_AUTORES, (int)RES_HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(0, "pictures.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
-  AddSeparator(9,"pictures.sep2");
-  AddPath(10,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  AddInt(2, "slideshow.transistiontime", 225, 3, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  AddBool(3, "slideshow.displayeffects", 12379, true);
+  AddBool(2, "slideshow.displayeffects", 12379, true);
   AddBool(0, "slideshow.shuffle", 13319, false);
 
   // Programs settings
@@ -239,15 +246,9 @@ void CGUISettings::Initialize()
   // My Music Settings
   AddGroup(3, 2);
   AddCategory(3, "mymusic", 16000);
-#ifdef _LINUX
-  AddString(1, "mymusic.visualisation", 250, "opengl_spectrum.vis", SPIN_CONTROL_TEXT);
-#elif defined(_WIN32)
-#ifdef HAS_DX
-  AddString(1, "mymusic.visualisation", 250, "MilkDrop_win32dx.vis", SPIN_CONTROL_TEXT);
-#else
-  AddString(1, "mymusic.visualisation", 250, "opengl_spectrum_win32.vis", SPIN_CONTROL_TEXT);
-#endif
-#endif
+
+  AddString(1, "mymusic.visualisation", 250, DEFAULT_VISUALISATION, SPIN_CONTROL_TEXT);
+
   AddSeparator(2, "mymusic.sep1");
   AddBool(3, "mymusic.autoplaynextitem", 489, true);
   AddSeparator(6, "mymusic.sep2");
@@ -329,17 +330,18 @@ void CGUISettings::Initialize()
   AddCategory(4, "system", 13281);
   // advanced only configuration
   AddBool(1, "system.debuglogging", 20191, false);
-  AddSeparator(2, "system.sep1");
-  AddInt(3, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddPath(2, "system.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddSeparator(3, "system.sep1");
+  AddInt(4, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
   // In standalone mode we default to another.
   if (g_application.IsStandAlone())
-    AddInt(4, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT);
+    AddInt(5, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT);
   else
-    AddInt(4, "system.shutdownstate", 13008, POWERSTATE_QUIT, 0, 1, 5, SPIN_CONTROL_TEXT);
+    AddInt(5, "system.shutdownstate", 13008, POWERSTATE_QUIT, 0, 1, 5, SPIN_CONTROL_TEXT);
 #if defined(_LINUX) && !defined(__APPLE__)
-  AddInt(5, "system.powerbuttonaction", 13015, POWERSTATE_NONE, 0, 1, 5, SPIN_CONTROL_TEXT);
+  AddInt(6, "system.powerbuttonaction", 13015, POWERSTATE_NONE, 0, 1, 5, SPIN_CONTROL_TEXT);
 #endif
-  AddBool(6, "system.haslcd", 4501, false);
+  AddBool(7, "system.haslcd", 4501, false);
 
 #ifdef __APPLE__
   AddCategory(4, "appleremote", 13600);
@@ -412,8 +414,8 @@ void CGUISettings::Initialize()
 
   AddBool(0, "videolibrary.enabled", 418, true);
   AddBool(3, "videolibrary.hideplots", 20369, false);
-  AddBool(0, "videolibrary.seasonthumbs", 20382, true);
-  AddBool(0, "videolibrary.actorthumbs", 20402, true);
+  AddBool(4, "videolibrary.seasonthumbs", 20382, true);
+  AddBool(5, "videolibrary.actorthumbs", 20402, true);
   AddInt(0, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddSeparator(7, "videolibrary.sep2");
   AddBool(8, "videolibrary.updateonstartup", 22000, false);
@@ -501,8 +503,43 @@ void CGUISettings::Initialize()
 
   // network settings
   AddGroup(6, 705);
-  AddCategory(6, "network", 705);
 
+  AddCategory(6, "services", 14036);
+  AddBool(1, "services.upnpserver", 21360, false);
+  AddBool(2, "services.upnprenderer", 21881, false);
+  AddSeparator(3,"services.sep3");
+#ifdef HAS_WEB_SERVER
+  AddBool(4,  "services.webserver",        263, false);
+#ifdef _LINUX
+  AddString(5,"services.webserverport",    730, (geteuid()==0)?"80":"8080", EDIT_CONTROL_NUMBER_INPUT, false, 730);
+#else
+  AddString(5,"services.webserverport",    730, "80", EDIT_CONTROL_NUMBER_INPUT, false, 730);
+#endif
+  AddString(6,"services.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
+  AddString(7,"services.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
+  AddSeparator(8,"services.sep1");
+#endif
+#ifdef HAS_EVENT_SERVER
+  AddBool(9,  "services.esenabled",         791, true);
+  AddString(0,"services.esport",            792, "9777", EDIT_CONTROL_NUMBER_INPUT, false, 792);
+  AddInt(0,   "services.esportrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
+  AddInt(0,   "services.esmaxclients",      797, 20, 1, 1, 100, SPIN_CONTROL_INT);
+  AddBool(10,  "services.esallinterfaces",   794, false);
+  AddInt(0,   "services.esinitialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
+  AddInt(0,   "services.escontinuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
+  AddSeparator(11, "services.sep2");
+#endif
+#ifdef HAS_ZEROCONF
+  AddBool(12, "services.zeroconf", 1260, true);
+#endif
+
+#ifndef _WIN32
+  AddCategory(6, "smb", 1200);
+  AddString(3, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
+  AddString(4, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
+#endif
+
+  AddCategory(6, "network", 798);
   if (g_application.IsStandAlone())
   {
 #ifndef __APPLE__
@@ -524,55 +561,9 @@ void CGUISettings::Initialize()
   }
   AddBool(13, "network.usehttpproxy", 708, false);
   AddString(14, "network.httpproxyserver", 706, "", EDIT_CONTROL_INPUT);
-  AddString(15, "network.httpproxyport", 707, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 707);
-  AddString(16, "network.httpproxyusername", 709, "", EDIT_CONTROL_INPUT);
-  AddString(17, "network.httpproxypassword", 710, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);
-
-  AddSeparator(18, "network.sep2");
-
-  // zeroconf publishing
-#ifdef HAS_ZEROCONF
-  AddSeparator(20, "network.sep1");
-  AddBool(21, "network.zeroconf", 1260, true);
-#endif
-
-  AddCategory(6, "servers", 14036);
-#ifdef HAS_WEB_SERVER
-  AddBool(6,  "servers.webserver",        263, false);
-#ifdef _LINUX
-  AddString(7,"servers.webserverport",    730, (geteuid()==0)?"80":"8080", EDIT_CONTROL_NUMBER_INPUT, false, 730);
-#else
-  AddString(7,"servers.webserverport",    730, "80", EDIT_CONTROL_NUMBER_INPUT, false, 730);
-#endif
-  AddString(8,"servers.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
-  AddString(9,"servers.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
-#endif
-
-  AddCategory(6, "smb", 1200);
-  AddString(1, "smb.username",    1203,   "", EDIT_CONTROL_INPUT, true, 1203);
-  AddString(2, "smb.password",    1204,   "", EDIT_CONTROL_HIDDEN_INPUT, true, 1204);
-#ifndef _WIN32
-  AddString(3, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
-  AddString(4, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
-#endif
-
-  AddCategory(6, "upnp", 20110);
-  AddBool(1,    "upnp.client", 20111, false);
-  AddBool(2, "upnp.renderer", 21881, false);
-  AddSeparator(3,"upnp.sep1");
-  AddBool(4, "upnp.server", 21360, false);
-
-  // remote events settings
-#ifdef HAS_EVENT_SERVER
-  AddCategory(6, "remoteevents", 790);
-  AddBool(1,  "remoteevents.enabled",         791, true);
-  AddString(0,"remoteevents.port",            792, "9777", EDIT_CONTROL_NUMBER_INPUT, false, 792);
-  AddInt(0,   "remoteevents.portrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
-  AddInt(0,   "remoteevents.maxclients",      797, 20, 1, 1, 100, SPIN_CONTROL_INT);
-  AddBool(6,  "remoteevents.allinterfaces",   794, false);
-  AddInt(0,   "remoteevents.initialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
-  AddInt(0,   "remoteevents.continuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
-#endif
+  AddString(15, "network.httpproxyport", 730, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 707);
+  AddString(16, "network.httpproxyusername", 1048, "", EDIT_CONTROL_INPUT);
+  AddString(17, "network.httpproxypassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);
 
   // appearance settings
   AddGroup(7, 480);
@@ -599,7 +590,7 @@ void CGUISettings::Initialize()
   AddString(3, "locale.charset",735,"DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
 #if defined(_LINUX) && !defined(__APPLE__)
   AddSeparator(4, "locale.sep1");
-  AddString(8, "locale.timezone", 14081, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
+  AddString(8, "locale.timezone", 14079, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
   AddString(7, "locale.timezonecountry", 14080, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
 #endif
 #ifdef HAS_TIME_SERVER
@@ -609,7 +600,7 @@ void CGUISettings::Initialize()
 #endif
 
   AddCategory(7, "videoscreen", 131);
-  AddInt(1, "videoscreen.resolution",169, (int)RES_DESKTOP, (int)RES_WINDOW, 1, (int)RES_CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
+  AddString(1, "videoscreen.screenmode", 169, "DESKTOP", SPIN_CONTROL_TEXT);
 
 #if defined (__APPLE__) || defined(_WIN32)
   AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);
@@ -870,8 +861,6 @@ void CGUISettings::SetInt(const char *strSetting, int iSetting)
   if (it != settingsMap.end())
   {
     ((CSettingInt *)(*it).second)->SetData(iSetting);
-    if (stricmp(strSetting, "videoscreen.resolution") == 0)
-      g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)iSetting;
     return ;
   }
   // Assert here and write debug output
@@ -1005,7 +994,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("audiooutput.ac3passthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
 
-  g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("videoscreen.resolution");
+  g_guiSettings.m_LookAndFeelResolution = GetResolution();
 #ifdef __APPLE__
   // trap any previous vsync by driver setting, does not exist on OSX
   if (GetInt("videoscreen.vsync") == VSYNC_DRIVER)
@@ -1024,23 +1013,10 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
  // DXMERGE: This might have been useful?
  // g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
-  if (
-    (g_guiSettings.m_LookAndFeelResolution == RES_AUTORES) ||
-    (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
-  )
+  if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
-    RESOLUTION newRes = RES_DESKTOP;
-    if (g_guiSettings.m_LookAndFeelResolution == RES_AUTORES)
-    {
-      //"videoscreen.resolution" will stay at RES_AUTORES, m_LookAndFeelResolution will be the real mode
-      CLog::Log(LOGNOTICE, "Setting RES_AUTORESolution mode %i", newRes);
-      g_guiSettings.m_LookAndFeelResolution = newRes;
-    }
-    else
-    {
-      CLog::Log(LOGNOTICE, "Setting safe mode %i", newRes);
-      SetInt("videoscreen.resolution", newRes);
-    }
+    CLog::Log(LOGNOTICE, "Setting safe mode %i", RES_DESKTOP);
+    SetResolution(RES_DESKTOP);
   }
 
   // Move replaygain settings into our struct
@@ -1048,6 +1024,10 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");
   m_replayGain.iType = GetInt("musicplayer.replaygaintype");
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
+
+  // check if we load the right vis
+  if(!CVisualisation::IsValidVisualisation(g_guiSettings.GetString("mymusic.visualisation")))
+    g_guiSettings.SetString("mymusic.visualisation", DEFAULT_VISUALISATION);
 
 #if defined(_LINUX) && !defined(__APPLE__)
   CStdString timezone = GetString("locale.timezone");
@@ -1139,5 +1119,71 @@ void CGUISettings::Clear()
   settingsGroups.clear();
 }
 
+float square_error(float x, float y)
+{
+  float yonx = (x > 0) ? y / x : 0;
+  float xony = (y > 0) ? x / y : 0;
+  return std::max(yonx, xony);
+}
 
+RESOLUTION CGUISettings::GetResolution() const
+{
+  return GetResFromString(GetString("videoscreen.screenmode"));
+}
 
+RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
+{
+  if (res == "DESKTOP")
+    return RES_DESKTOP;
+  else if (res == "WINDOW")
+    return RES_WINDOW;
+  else if (res.GetLength()==20)
+  {
+    // format: SWWWWWHHHHHRRR.RRRRR, where S = screen, W = width, H = height, R = refresh
+    int screen = atol(res.Mid(0,1).c_str());
+    int width = atol(res.Mid(1,5).c_str());
+    int height = atol(res.Mid(6,5).c_str());
+    float refresh = (float)atof(res.Mid(11).c_str());
+    // find the closest match to these in our res vector.  If we have the screen, we score the res
+    RESOLUTION bestRes = RES_DESKTOP;
+    float bestScore = 0.0f;
+    size_t maxRes = g_settings.m_ResInfo.size();
+    if (g_Windowing.GetNumScreens())
+      maxRes = std::min(maxRes, (size_t)RES_DESKTOP + g_Windowing.GetNumScreens());
+    for (unsigned int i = RES_DESKTOP; i < maxRes; ++i)
+    {
+      const RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
+      if (info.iScreen != screen)
+        continue;
+      float score = 10*(square_error((float)info.iWidth, (float)width) + square_error((float)info.iHeight, (float)height)) + square_error(info.fRefreshRate, refresh);
+      if (score > bestScore)
+      {
+        bestScore = score;
+        bestRes = (RESOLUTION)i;
+      }
+    }
+    return bestRes;
+  }
+  return RES_DESKTOP;
+}
+
+void CGUISettings::SetResolution(RESOLUTION res)
+{
+  CStdString mode;
+  if (res == RES_DESKTOP)
+    mode = "DESKTOP";
+  else if (res == RES_WINDOW)
+    mode = "WINDOW";
+  else if (res >= RES_CUSTOM && res < (RESOLUTION)g_settings.m_ResInfo.size())
+  {
+    const RESOLUTION_INFO &info = g_settings.m_ResInfo[res];
+    mode.Format("%1i%05i%05i%09.5f", info.iScreen, info.iWidth, info.iHeight, info.fRefreshRate);
+  }
+  else
+  {
+    CLog::Log(LOGWARNING, "%s, setting invalid resolution %i", __FUNCTION__, res);
+    mode = "DESKTOP";
+  }
+  SetString("videoscreen.screenmode", mode);
+  m_LookAndFeelResolution = res;
+}

@@ -139,6 +139,14 @@ int CRegExp::RegFind(const char* str, int startoffset)
   return m_iOvector[0];
 }
 
+int CRegExp::GetCaptureTotal()
+{
+  int c = -1;
+  if (m_re)
+    pcre_fullinfo(m_re, NULL, PCRE_INFO_CAPTURECOUNT, &c);
+  return c;
+}
+
 char* CRegExp::GetReplaceString( const char* sReplaceExp )
 {
   char *src = (char *)sReplaceExp;

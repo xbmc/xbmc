@@ -30,6 +30,7 @@
 #include "SingleLock.h"
 #include "utils/log.h"
 #include "FileSystem/File.h"
+#include "MathUtils.h"
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
@@ -107,6 +108,10 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   m_sourceWidth = width;
   m_sourceHeight = height;
   m_flags = flags;
+
+  // need to recreate textures
+  m_NumYV12Buffers = 0;
+  m_iYV12RenderBuffer = 0;
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
@@ -288,9 +293,8 @@ unsigned int CWinRenderer::PreInit()
   m_bConfigured = false;
   UnInit();
   m_resolution = RES_PAL_4x3;
-
-  m_iYV12RenderBuffer = 0;
-  m_NumYV12Buffers = 0;
+  m_crop.x1 = m_crop.x2 = 0.0f;
+  m_crop.y1 = m_crop.y2 = 0.0f;
 
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
@@ -305,6 +309,9 @@ void CWinRenderer::UnInit()
 
   m_YUV2RGBEffect.Release();
   m_bConfigured = false;
+  for(int i = 0; i < NUM_BUFFERS; i++)
+    DeleteYV12Texture(i);
+  m_NumYV12Buffers = 0;
 }
 
 bool CWinRenderer::LoadEffect()
@@ -339,88 +346,51 @@ void CWinRenderer::AutoCrop(bool bCrop)
 {
   if (!m_YUVMemoryTexture[0][PLANE_Y]) return ;
 
+  RECT crop;
+
   if (bCrop)
   {
-    CSingleLock lock(g_graphicsContext);
+    YV12Image im;
+    if(GetImage(&im, m_iYV12RenderBuffer, true) < 0)
+      return;
 
-    // apply auto-crop filter - only luminance needed, and we run vertically down 'n'
-    // runs down the image.
-    int min_detect = 8;                                // reasonable amount (what mplayer uses)
-    int detect = (min_detect + 16)*m_sourceWidth;     // luminance should have minimum 16
-    D3DLOCKED_RECT lr;
-    lr.pBits = m_YUVMemoryTexture[0][PLANE_Y];
-    lr.Pitch = m_sourceWidth;
-   
-    int total;
-    // Crop top
-    BYTE *s = (BYTE *)lr.pBits;
-    g_stSettings.m_currentVideoSettings.m_CropTop = m_sourceHeight/2;
-    for (unsigned int y = 0; y < m_sourceHeight/2; y++)
-    {
-      total = 0;
-      for (unsigned int x = 0; x < m_sourceWidth; x++)
-        total += s[x];
-      s += lr.Pitch;
-      if (total > detect)
-      {
-        g_stSettings.m_currentVideoSettings.m_CropTop = y;
-        break;
-      }
-    }
-    // Crop bottom
-    s = (BYTE *)lr.pBits + (m_sourceHeight-1)*lr.Pitch;
-    g_stSettings.m_currentVideoSettings.m_CropBottom = m_sourceHeight/2;
-    for (unsigned int y = (int)m_sourceHeight; y > m_sourceHeight/2; y--)
-    {
-      total = 0;
-      for (unsigned int x = 0; x < m_sourceWidth; x++)
-        total += s[x];
-      s -= lr.Pitch;
-      if (total > detect)
-      {
-        g_stSettings.m_currentVideoSettings.m_CropBottom = m_sourceHeight - y;
-        break;
-      }
-    }
-    // Crop left
-    s = (BYTE *)lr.pBits;
-    g_stSettings.m_currentVideoSettings.m_CropLeft = m_sourceWidth/2;
-    for (unsigned int x = 0; x < m_sourceWidth/2; x++)
-    {
-      total = 0;
-      for (unsigned int y = 0; y < m_sourceHeight; y++)
-        total += s[y * lr.Pitch];
-      s++;
-      if (total > detect)
-      {
-        g_stSettings.m_currentVideoSettings.m_CropLeft = x;
-        break;
-      }
-    }
-    // Crop right
-    s = (BYTE *)lr.pBits + (m_sourceWidth-1);
-    g_stSettings.m_currentVideoSettings.m_CropRight= m_sourceWidth/2;
-    for (unsigned int x = (int)m_sourceWidth-1; x > m_sourceWidth/2; x--)
-    {
-      total = 0;
-      for (unsigned int y = 0; y < m_sourceHeight; y++)
-        total += s[y * lr.Pitch];
-      s--;
-      if (total > detect)
-      {
-        g_stSettings.m_currentVideoSettings.m_CropRight = m_sourceWidth - x;
-        break;
-      }
-    }
+    CBaseRenderer::AutoCrop(im, crop);
+
+    ReleaseImage(m_iYV12RenderBuffer, false);
   }
   else
   { // reset to defaults
-    g_stSettings.m_currentVideoSettings.m_CropLeft = 0;
-    g_stSettings.m_currentVideoSettings.m_CropRight = 0;
-    g_stSettings.m_currentVideoSettings.m_CropTop = 0;
-    g_stSettings.m_currentVideoSettings.m_CropBottom = 0;
+    crop.left   = 0;
+    crop.right  = 0;
+    crop.top    = 0;
+    crop.bottom = 0;
   }
-  SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+
+  m_crop.x1 += ((float)crop.left   - m_crop.x1) * 0.1f;
+  m_crop.x2 += ((float)crop.right  - m_crop.x2) * 0.1f;
+  m_crop.y1 += ((float)crop.top    - m_crop.y1) * 0.1f;
+  m_crop.y2 += ((float)crop.bottom - m_crop.y2) * 0.1f;
+
+  crop.left   = MathUtils::round_int(m_crop.x1);
+  crop.right  = MathUtils::round_int(m_crop.x2);
+  crop.top    = MathUtils::round_int(m_crop.y1);
+  crop.bottom = MathUtils::round_int(m_crop.y2);
+
+  //compare with hysteresis
+# define HYST(n, o) ((n) > (o) || (n) + 1 < (o))
+  if(HYST(g_stSettings.m_currentVideoSettings.m_CropLeft  , crop.left)
+  || HYST(g_stSettings.m_currentVideoSettings.m_CropRight , crop.right)
+  || HYST(g_stSettings.m_currentVideoSettings.m_CropTop   , crop.top)
+  || HYST(g_stSettings.m_currentVideoSettings.m_CropBottom, crop.bottom))
+  {
+    g_stSettings.m_currentVideoSettings.m_CropLeft   = crop.left;
+    g_stSettings.m_currentVideoSettings.m_CropRight  = crop.right;
+    g_stSettings.m_currentVideoSettings.m_CropTop    = crop.top;
+    g_stSettings.m_currentVideoSettings.m_CropBottom = crop.bottom;
+    SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+  }
+# undef HYST
+
 }
 
 void CWinRenderer::RenderLowMem(DWORD flags)
