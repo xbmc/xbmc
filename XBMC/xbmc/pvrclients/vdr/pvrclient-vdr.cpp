@@ -2629,6 +2629,53 @@ bool cPVRClientVDR::SwitchChannel(const PVR_CHANNEL &channelinfo)
   return true;
 }
 
+PVR_ERROR cPVRClientVDR::SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
+{
+  vector<string> lines;
+  int            code;
+  char           buffer[32];
+
+  if (!m_transceiver->IsOpen())
+    return PVR_ERROR_SERVER_ERROR;
+
+  pthread_mutex_lock(&m_critSection);
+
+  sprintf(buffer, "LSTQ %i", m_iCurrentChannel);
+  if (!m_transceiver->SendCommand(buffer, code, lines))
+  {
+    pthread_mutex_unlock(&m_critSection);
+    return PVR_ERROR_SERVER_ERROR;
+  }
+
+  for (vector<string>::iterator it = lines.begin(); it < lines.end(); it++)
+  {
+    string& data(*it);
+    CStdString str_result = data;
+
+    const char *s = str_result.c_str();
+    if (!strncasecmp(s, "Device", 6))
+      strncpy(qualityinfo.frontend_name, s + 9, sizeof(qualityinfo.frontend_name));
+    else if (!strncasecmp(s, "Status", 6))
+      strncpy(qualityinfo.frontend_status, s + 9, sizeof(qualityinfo.frontend_status));
+    else if (!strncasecmp(s, "Signal", 6))
+      qualityinfo.signal = (uint16_t)strtol(s + 9, NULL, 16);
+    else if (!strncasecmp(s, "SNR", 3))
+      qualityinfo.snr = (uint16_t)strtol(s + 9, NULL, 16);
+    else if (!strncasecmp(s, "BER", 3))
+      qualityinfo.ber = (uint32_t)strtol(s + 9, NULL, 16);
+    else if (!strncasecmp(s, "UNC", 3))
+      qualityinfo.unc = (uint32_t)strtol(s + 9, NULL, 16);
+    else if (!strncasecmp(s, "Video", 5))
+      qualityinfo.video_bitrate = strtod(s + 9, NULL);
+    else if (!strncasecmp(s, "Audio", 5))
+      qualityinfo.audio_bitrate = strtod(s + 9, NULL);
+    else if (!strncasecmp(s, "Dolby", 5))
+      qualityinfo.dolby_bitrate = strtod(s + 9, NULL);
+  }
+  pthread_mutex_unlock(&m_critSection);
+  return PVR_ERROR_NO_ERROR;
+}
+
 
 /************************************************************/
 /** Record stream handling */
@@ -2701,7 +2748,6 @@ void cPVRClientVDR::CloseRecordedStream(void)
 
 int cPVRClientVDR::ReadRecordedStream(BYTE* buf, int buf_size)
 {
-
   vector<string> lines;
   int            code;
   char           buffer[1024];

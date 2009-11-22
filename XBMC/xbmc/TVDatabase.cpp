@@ -445,7 +445,7 @@ bool CTVDatabase::GetDBChannelList(cPVRChannels &results, bool radio)
       broadcast.m_iIdUnique           = m_pDS->fv("UniqueId").get_asInt();
       broadcast.m_IconPath            = m_pDS->fv("IconPath").get_asString();
       broadcast.m_iGroupID            = m_pDS->fv("GroupID").get_asInt();
-      broadcast.m_encryptionSystem    = m_pDS->fv("encryption").get_asBool();
+      broadcast.m_encryptionSystem    = m_pDS->fv("encryption").get_asInt();
       broadcast.m_radio               = m_pDS->fv("radio").get_asBool();
       broadcast.m_hide                = m_pDS->fv("hide").get_asBool();
       broadcast.m_strFileNameAndPath  = m_pDS->fv("strFileNameAndPath").get_asString();

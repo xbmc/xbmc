@@ -127,15 +127,15 @@ CStdString cPVRChannelInfoTag::EncryptionName() const
   CStdString strName;
 
   if (m_encryptionSystem == 0x0000)
-    strName = g_localizeStrings.Get(18177);  /* Free To Air */
+    strName = g_localizeStrings.Get(19013);  /* Free To Air */
   else if (m_encryptionSystem < 0x0000)
     strName = g_localizeStrings.Get(13205);   /* Unknown */
   else if (m_encryptionSystem >= 0x0001 && m_encryptionSystem <= 0x009F)
-    strName.Format("%s (%X)", g_localizeStrings.Get(18177).c_str(), m_encryptionSystem);  /* Fixed */
+    strName.Format("%s (%X)", g_localizeStrings.Get(19014).c_str(), m_encryptionSystem);  /* Fixed */
   else if (m_encryptionSystem >= 0x00A0 && m_encryptionSystem <= 0x00A1)
     strName.Format("%s (%X)", g_localizeStrings.Get(338).c_str(), m_encryptionSystem);    /* Analog */
   else if (m_encryptionSystem >= 0x00A2 && m_encryptionSystem <= 0x00FF)
-    strName.Format("%s (%X)", g_localizeStrings.Get(18177).c_str(), m_encryptionSystem);  /* Fixed */
+    strName.Format("%s (%X)", g_localizeStrings.Get(19014).c_str(), m_encryptionSystem);  /* Fixed */
   else if (m_encryptionSystem >= 0x0100 && m_encryptionSystem <= 0x01FF)
     strName.Format("%s (%X)", "SECA Mediaguard", m_encryptionSystem);              // Canal Plus
   else if (m_encryptionSystem == 0x0464)

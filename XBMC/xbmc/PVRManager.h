@@ -161,6 +161,7 @@ private:
   void GetClientProperties(long clientID);      /* request the PVR_SERVERPROPS struct from each client */
   void SaveCurrentChannelSettings();
   void LoadCurrentChannelSettings();
+  void ResetQualityData();
 
   /*--- General PVRManager data ---*/
   CLIENTMAP           m_clients;                /* pointer to each enabled client's interface */
@@ -190,6 +191,7 @@ private:
   CStdString          m_playingDuration;
   CStdString          m_playingTime;
   CStdString          m_timeshiftTime;
+  CStdString          m_playingClientName;
   bool                m_isRecording;
   bool                m_hasRecordings;
   bool                m_hasTimers;
@@ -208,6 +210,7 @@ private:
   CFileItem          *m_currentPlayingRecording;  /* The current playing recording or NULL */
   int                 m_CurrentGroupID;           /* The current selected Channel group list */
   DWORD               m_scanStart;                /* Scan start time to check for non present streams */
+  PVR_SIGNALQUALITY   m_qualityInfo;              /* Stream quality information */
 
   /*--- Timeshift data ---*/
   bool                CreateInternalTimeshift();

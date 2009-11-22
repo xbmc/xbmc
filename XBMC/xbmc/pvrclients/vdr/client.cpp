@@ -394,6 +394,11 @@ extern "C" bool SwitchChannel(const PVR_CHANNEL &channelinfo)
   return g_client->SwitchChannel(channelinfo);
 }
 
+extern "C" PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
+{
+  return g_client->SignalQuality(qualityinfo);
+}
+
 extern "C" bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
 {
   return g_client->OpenRecordedStream(recinfo);

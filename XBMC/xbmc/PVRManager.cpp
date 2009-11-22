@@ -808,6 +808,12 @@ void CPVRManager::Process()
         g_application.OnAction(action);
       }
     }
+
+    /* Get Signal information of the current playing channel */
+    if (m_currentPlayingChannel)
+    {
+      m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->SignalQuality(m_qualityInfo);
+    }
     LeaveCriticalSection(&m_critSection);
 
     Sleep(1000);
@@ -1034,6 +1040,78 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
     StringUtils::SecondsToTimeString(GetStartTime()/1000, m_playingTime, TIME_FORMAT_GUESS);
     return m_playingTime.c_str();
   }
+  else if (dwInfo == PVR_ACTUAL_STREAM_VIDEO_BR)
+  {
+    static CStdString strBitrate = "";
+    if (m_qualityInfo.video_bitrate > 0)
+      strBitrate.Format("%.2f Mbit/s", m_qualityInfo.video_bitrate);
+    return strBitrate;
+  }
+  else if (dwInfo == PVR_ACTUAL_STREAM_AUDIO_BR)
+  {
+    CStdString strBitrate = "";
+    if (m_qualityInfo.audio_bitrate > 0)
+      strBitrate.Format("%.0f kbit/s", m_qualityInfo.audio_bitrate);
+    return strBitrate;
+  }
+  else if (dwInfo == PVR_ACTUAL_STREAM_DOLBY_BR)
+  {
+    CStdString strBitrate = "";
+    if (m_qualityInfo.dolby_bitrate > 0)
+      strBitrate.Format("%.0f kbit/s", m_qualityInfo.dolby_bitrate);
+    return strBitrate;
+  }
+  else if (dwInfo == PVR_ACTUAL_STREAM_SIG)
+  {
+    CStdString strSignal = "";
+    if (m_qualityInfo.signal > 0)
+      strSignal.Format("%d %%", m_qualityInfo.signal / 655);
+    return strSignal;
+  }
+  else if (dwInfo == PVR_ACTUAL_STREAM_SNR)
+  {
+    CStdString strSNR = "";
+    if (m_qualityInfo.snr > 0)
+      strSNR.Format("%d %%", m_qualityInfo.snr / 655);
+    return strSNR;
+  }
+  else if (dwInfo == PVR_ACTUAL_STREAM_BER)
+  {
+    CStdString strBER;
+    strBER.Format("%08X", m_qualityInfo.ber);
+    return strBER;
+  }
+  else if (dwInfo == PVR_ACTUAL_STREAM_UNC)
+  {
+    CStdString strUNC;
+    strUNC.Format("%08X", m_qualityInfo.unc);
+    return strUNC;
+  }
+  else if (dwInfo == PVR_ACTUAL_STREAM_CLIENT)
+  {
+    return m_playingClientName;
+  }
+  else if (dwInfo == PVR_ACTUAL_STREAM_DEVICE)
+  {
+    CStdString string = m_qualityInfo.frontend_name;
+    if (string == "")
+      return g_localizeStrings.Get(13205);
+    else
+      return string;
+  }
+  else if (dwInfo == PVR_ACTUAL_STREAM_STATUS)
+  {
+    CStdString string = m_qualityInfo.frontend_status;
+    if (string == "")
+      return g_localizeStrings.Get(13205);
+    else
+      return string;
+  }
+  else if (dwInfo == PVR_ACTUAL_STREAM_CRYPTION)
+  {
+    if (m_currentPlayingChannel)
+      return m_currentPlayingChannel->GetPVRChannelInfoTag()->EncryptionName();
+  }
   return "";
 }
 
@@ -1059,6 +1137,14 @@ int CPVRManager::TranslateIntInfo(DWORD dwInfo)
   {
     return (float)(((float)GetStartTime() / GetTotalTime()) * 100);
   }
+  else if (dwInfo == PVR_ACTUAL_STREAM_SIG_PROGR)
+  {
+    return (float)(((float)m_qualityInfo.signal / 0xFFFF) * 100);
+  }
+  else if (dwInfo == PVR_ACTUAL_STREAM_SNR_PROGR)
+  {
+    return (float)(((float)m_qualityInfo.snr / 0xFFFF) * 100);
+  }
   return 0;
 }
 
@@ -1081,6 +1167,11 @@ bool CPVRManager::TranslateBoolInfo(DWORD dwInfo)
     return IsPlayingRecording();
   else if (dwInfo == PVR_IS_TIMESHIFTING)
     return m_timeshiftInt;
+  else if (dwInfo == PVR_ACTUAL_STREAM_ENCRYPTED)
+  {
+    if (m_currentPlayingChannel)
+      return m_currentPlayingChannel->GetPVRChannelInfoTag()->IsEncrypted();
+  }
 
   return false;
 }
@@ -1503,6 +1594,24 @@ void CPVRManager::SetPlayingGroup(int GroupId)
 }
 
 /********************************************************************
+/* CPVRManager ResetQualityData
+/*
+/* Reset the Signal Quality data structure to initial values
+/********************************************************************/
+void CPVRManager::ResetQualityData()
+{
+  strncpy(m_qualityInfo.frontend_name, g_localizeStrings.Get(13205).c_str(), 1024);
+  strncpy(m_qualityInfo.frontend_status, g_localizeStrings.Get(13205).c_str(), 1024);
+  m_qualityInfo.snr           = 0;
+  m_qualityInfo.signal        = 0;
+  m_qualityInfo.ber           = 0;
+  m_qualityInfo.unc           = 0;
+  m_qualityInfo.video_bitrate = 0;
+  m_qualityInfo.audio_bitrate = 0;
+  m_qualityInfo.dolby_bitrate = 0;
+}
+
+/********************************************************************
 /* CPVRManager GetPlayingGroup
 /*
 /* Get the current playing group ID, used to load the right channel
@@ -1553,6 +1662,7 @@ bool CPVRManager::OpenLiveStream(unsigned int channel, bool radio)
   m_currentPlayingChannel   = new CFileItem(radio ? PVRChannelsRadio[channel-1] : PVRChannelsTV[channel-1]);
   m_currentPlayingRecording = NULL;
   m_scanStart               = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
+  ResetQualityData();
 
   /* Open the stream on the Client */
   const cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetPVRChannelInfoTag();
@@ -1648,9 +1758,10 @@ void CPVRManager::CloseStream()
       m_TimeshiftReceiver = NULL;
       m_pTimeshiftFile    = NULL;
     }
-    m_timeshiftInt    = false;
-    m_timeshiftExt    = false;
-    m_playbackStarted = -1;
+    m_timeshiftInt      = false;
+    m_timeshiftExt      = false;
+    m_playbackStarted   = -1;
+    m_playingClientName = "";
 
     /* Save channel number in database */
     m_database.Open();
@@ -1659,6 +1770,9 @@ void CPVRManager::CloseStream()
 
     /* Store current settings inside Database */
     SaveCurrentChannelSettings();
+
+    /* Set quality data to undefined defaults */
+    ResetQualityData();
 
     /* Close the Client connection */
     m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->CloseLiveStream();
@@ -1993,6 +2107,8 @@ bool CPVRManager::UpdateItem(CFileItem& item)
       m_PreviousChannel[m_PreviousChannelIndex ^= 1] = tagPrev->Number();
   }
 
+  m_playingClientName = m_clients[tagNow->ClientID()]->GetBackendName() + ":" + m_clients[tagNow->ClientID()]->GetConnectionString();
+
   return false;
 }
 
@@ -2073,6 +2189,9 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
   /* Load now the new channel settings from Database */
   LoadCurrentChannelSettings();
 
+  /* Set quality data to undefined defaults */
+  ResetQualityData();
+
   LeaveCriticalSection(&m_critSection);
   return true;
 }
@@ -2138,6 +2257,9 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
 
         /* Load now the new channel settings from Database */
         LoadCurrentChannelSettings();
+
+        /* Set quality data to undefined defaults */
+        ResetQualityData();
 
         /* Timeshift related code */
         /* Check if Client handles timeshift itself */
@@ -2228,6 +2350,9 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel)
 
         /* Load now the new channel settings from Database */
         LoadCurrentChannelSettings();
+
+        /* Set quality data to undefined defaults */
+        ResetQualityData();
 
         /* Timeshift related code */
         /* Check if Client handles timeshift itself */

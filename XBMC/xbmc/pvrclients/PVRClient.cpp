@@ -1088,6 +1088,33 @@ bool CPVRClient::SwitchChannel(const cPVRChannelInfoTag &channelinfo)
   return m_pClient->SwitchChannel(tag);
 }
 
+bool CPVRClient::SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_ReadyToUse)
+  {
+    PVR_ERROR ret = PVR_ERROR_UNKOWN;
+    try
+    {
+      ret = m_pClient->SignalQuality(qualityinfo);
+      if (ret != PVR_ERROR_NO_ERROR)
+        throw ret;
+
+      return true;
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during SignalQuality occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+    catch (PVR_ERROR ret)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad error (%i) after SignalQuality", m_strName.c_str(), m_hostName.c_str(), ret);
+    }
+  }
+  return false;
+}
+
 void CPVRClient::WriteClientChannelInfo(const cPVRChannelInfoTag &channelinfo, PVR_CHANNEL &tag)
 {
   tag.uid               = channelinfo.UniqueID();

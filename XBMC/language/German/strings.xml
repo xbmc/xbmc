@@ -1783,6 +1783,17 @@
   <string id="19002">Oder benutzen Sie ganze Sätze in Ausrufezeichen z.B.: "Der Zauberer von Oz".</string>
   <string id="19003">Finde ähnliche Sendung</string>
   <string id="19004">Lade EPG von den PVR-Klienten</string>
+  <string id="19005">PVR Empfang-Informationen</string>
+  <string id="19006">Empfangsgerät</string>
+  <string id="19007">Empfangsstatus</string>
+  <string id="19008">Signal Qualität</string>
+  <string id="19009">SNR</string>
+  <string id="19010">BER</string>
+  <string id="19011">UNC</string>
+  <string id="19012">Backend</string>
+  <string id="19013">Frei empfangbar</string>
+  <string id="19014">Fest</string>
+  <string id="19015">Verschlüsselung</string>
 
   <string id="19499">Andere/Unbekannt</string>
   <string id="19500">Movie/Drama</string>
