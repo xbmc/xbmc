@@ -26,7 +26,7 @@
 #include "Picture.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogOK.h"
-#include "GUIDialogTVEPGProgInfo.h"
+#include "GUIDialogPVRGuideInfo.h"
 #include "GUIWindowManager.h"
 #include "ViewState.h"
 #include "Settings.h"

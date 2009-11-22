@@ -208,7 +208,7 @@
 #endif
 #include "GUIDialogFullScreenInfo.h"
 #include "GUIDialogPVRGuideSearch.h"
-#include "GUIDialogTVEPGProgInfo.h"
+#include "GUIDialogPVRGuideInfo.h"
 #include "GUIDialogTVRecordingInfo.h"
 #include "GUIDialogPVRTimerSettings.h"
 #include "GUIDialogTVChannels.h"
