@@ -1367,7 +1367,7 @@ CFileItemPtr CFileItemList::Get(int iItem)
 {
   CSingleLock lock(m_lock);
 
-  if (iItem > -1 && iItem < m_items.size())
+  if (iItem > -1 && iItem < (int)m_items.size())
     return m_items[iItem];
 
   return CFileItemPtr();
@@ -1377,7 +1377,7 @@ const CFileItemPtr CFileItemList::Get(int iItem) const
 {
   CSingleLock lock(m_lock);
 
-  if (iItem > -1 && iItem < m_items.size())
+  if (iItem > -1 && iItem < (int)m_items.size())
     return m_items[iItem];
 
   return CFileItemPtr();
