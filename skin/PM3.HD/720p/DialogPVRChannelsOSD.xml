@@ -1,4 +1,4 @@
-<window id="606">
+<window id="609">
 	<defaultcontrol always="true">11</defaultcontrol>
 	<coordinates>
 		<system>1</system>
@@ -106,7 +106,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<selectedcolor>white</selectedcolor>
-					<info>ListItem.Label</info>
+					<info>ListItem.ChannelName</info>
 				</control>
 				<control type="label">
 					<posx>675</posx>
@@ -156,7 +156,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<selectedcolor>white</selectedcolor>
-					<info>ListItem.Label</info>
+					<info>ListItem.ChannelName</info>
 				</control>
 				<control type="label">
 					<posx>675</posx>

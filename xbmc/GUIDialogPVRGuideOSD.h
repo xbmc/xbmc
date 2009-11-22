@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -26,11 +25,11 @@
 
 class CFileItemList;
 
-class CGUIDialogTVGuide : public CGUIDialog
+class CGUIDialogPVRGuideOSD : public CGUIDialog
 {
 public:
-  CGUIDialogTVGuide(void);
-  virtual ~CGUIDialogTVGuide(void);
+  CGUIDialogPVRGuideOSD(void);
+  virtual ~CGUIDialogPVRGuideOSD(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();

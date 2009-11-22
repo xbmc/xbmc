@@ -38,7 +38,7 @@ bool CGUIDialogPVRCutterOSD::OnAction(const CAction& action)
 {
   if (action.id == ACTION_PREVIOUS_MENU || action.id == ACTION_CLOSE_DIALOG)
   {
-    m_bClose = true;
+    Close();
     return true;
   }
 

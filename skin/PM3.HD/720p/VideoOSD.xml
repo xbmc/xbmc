@@ -123,7 +123,7 @@
 				<ondown>210</ondown>
 				<onclick>RunScript($INFO[Skin.String(SubtitleScript_Path)])</onclick>
 				<visible>!VideoPlayer.HasMenu + !Player.CanRecord + !Player.Recording + Skin.HasSetting(SubtitleScript_Enable)</visible>
-			</control> 
+			</control>
 			<control type="button" id="209">
 				<description>Subtitle button 2</description>
 				<posx>10</posx>
@@ -140,7 +140,7 @@
 				<ondown>211</ondown>
 				<onclick>RunScript($INFO[Skin.String(SubtitleScript_Path)])</onclick>
 				<visible>!VideoPlayer.HasMenu + !Player.CanRecord + !Player.Recording + Skin.HasSetting(SubtitleScript_Enable)</visible>
-			</control> 
+			</control>
 			<control type="image" id="1">
 				<description>Panel</description>
 				<posx>0</posx>
@@ -264,14 +264,14 @@
 				<texturenofocus>-</texturenofocus>
 				<alttexturefocus>osd_button_channels.png</alttexturefocus>
 				<alttexturenofocus>-</alttexturenofocus>
-				<usealttexture>Window.IsActive(606)</usealttexture>
+				<usealttexture>Window.IsActive(PVROSDChannels)</usealttexture>
 				<label>-</label>
 				<font>-</font>
 				<onleft>211</onleft>
 				<onright>214</onright>
 				<onup>921</onup>
 				<ondown>920</ondown>
-				<onclick>XBMC.ActivateWindow(606)</onclick>
+				<onclick>XBMC.ActivateWindow(PVROSDChannels)</onclick>
 			</control>
 			<control type="togglebutton" id="214">
 				<description>tv channel up</description>
@@ -341,8 +341,8 @@
 				<texturenofocus>-</texturenofocus>
 				<alttexturefocus>osd_button_epg.png</alttexturefocus>
 				<alttexturenofocus>-</alttexturenofocus>
-				<usealttexture>Window.IsActive(607)</usealttexture>
-				<onclick>XBMC.ActivateWindow(607)</onclick>
+				<usealttexture>Window.IsActive(PVROSDGuide)</usealttexture>
+				<onclick>XBMC.ActivateWindow(PVROSDGuide)</onclick>
 				<label>-</label>
 				<font>-</font>
 				<onleft>214</onleft>
@@ -436,8 +436,8 @@
 			<texturenofocus>-</texturenofocus>
 			<alttexturefocus>osd_button_portal.png</alttexturefocus>
 			<alttexturenofocus>-</alttexturenofocus>
-			<usealttexture>Window.IsActive(609)</usealttexture>
-			<onclick>XBMC.ActivateWindow(609)</onclick>
+			<usealttexture>Window.IsActive(PVROSDDirector)</usealttexture>
+			<onclick>XBMC.ActivateWindow(PVROSDDirector)</onclick>
 			<label>-</label>
 			<font>-</font>
 			<onleft>210</onleft>
