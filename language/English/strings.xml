@@ -178,7 +178,7 @@
   <string id="221">Network is not connected</string>
   <string id="222">Cancel</string>
   <string id="224">Speed</string>
-  <string id="225">Transition time</string>
+  <string id="225"></string>
   <string id="226">Test patterns...</string>
   <string id="227">Lookup audio CDs on the Internet</string>
   <string id="228">Shuffle playlist on load</string>
@@ -216,7 +216,7 @@
   <string id="260">Shoutcast</string>
   <string id="261">Waiting for start...</string>
   <string id="262">Scripts output</string>
-  <string id="263">Enable webserver</string>
+  <string id="263">Allow control of XBMC over HTTP</string>
   <string id="264">Record</string>
   <string id="265">Stop Rec.</string>
   <string id="266">Sort by: Track</string>
@@ -591,11 +591,11 @@
   <string id="701">Removing old songs from the library</string>
   <string id="702">This path has been scanned before</string>
   <string id="705">Network</string>
-  <string id="706">HTTP proxy host</string>
-  <string id="707">HTTP proxy port</string>
-  <string id="708">Enable HTTP proxy</string>
-  <string id="709">HTTP proxy username</string>
-  <string id="710">HTTP proxy password</string>
+  <string id="706">- Server</string>
+  <string id="707"></string>
+  <string id="708">Use an HTTP proxy server to access the internet</string>
+  <string id="709"></string>
+  <string id="710"></string>
   <string id="711">Internet Protocol (IP)</string>
   <string id="712">Invalid port specified. Value must be between 1 and 65535.</string>
   <string id="713">HTTP proxy</string>
@@ -615,10 +615,10 @@
   <string id="727">Web server</string>
   <string id="728">FTP server</string>
   <string id="729">Internet time</string>
-  <string id="730">Web server port</string>
+  <string id="730">- Port</string>
   <string id="731">Time server host</string>
   <string id="732">Save &amp; apply</string>
-  <string id="733">Web server password</string>
+  <string id="733">- Password</string>
   <string id="734">No pass</string>
   <string id="735">- Charset</string>
   <string id="736">- Style</string>
@@ -676,14 +676,15 @@
   <string id="788">Network interface disabled successfully.</string>
   <string id="789">Wireless network name (ESSID)</string>
 
-  <string id="790">Event server</string>
-  <string id="791">Enable event server</string>
+  <string id="790"></string>
+  <string id="791">Allow remote control programs on this system to control XBMC</string>
   <string id="792">Port</string>
   <string id="793">Port range</string>
-  <string id="794">Allow other computers to connect</string>
+  <string id="794">Allow programs on other systems to control XBMC</string>
   <string id="795">Initial repeat delay (ms)</string>
   <string id="796">Continuous repeat delay (ms)</string>
   <string id="797">Maximum number of clients</string>
+  <string id="798">Internet access</string>
 
   <string id="998"></string>
   <string id="999"></string>
@@ -735,7 +736,7 @@
   <string id="1045">Plugin settings</string>
   <string id="1046">Access points</string>
   <string id="1047">Other...</string>
-  <string id="1048">Web server username</string>
+  <string id="1048">- Username</string>
   <string id="1049">Script settings</string>
   <string id="1050">Singles</string>
 
@@ -785,7 +786,7 @@
   <string id="1256">Ping interval</string>
   <string id="1257">Would you like to connect to the auto-detected system?</string>
 
-  <string id="1260">Zeroconf publishing</string>
+  <string id="1260">Announce these services to other systems via Zeroconf</string>
 
   <string id="1300">Custom audio device</string>
   <string id="1301">Custom passthrough device</string>
@@ -962,7 +963,7 @@
   <string id="12373">Settings &amp; file manager</string>
   <string id="12376">Set as default for all movies</string>
   <string id="12377">This will reset any previously saved values</string>
-  <string id="12378">Show each image for</string>
+  <string id="12378">Amount of time to display each image</string>
   <string id="12379">Use pan and zoom effects</string>
   <string id="12380">Play NTSC videos at PAL rates</string>
   <string id="12381">Play PAL videos at NTSC rates</string>
@@ -1177,7 +1178,7 @@
   <string id="13357">High quality pixel shader</string>
   <string id="13358">Play item</string>
   <string id="13359">Set artist thumb</string>
-  <string id="13360">Generate thumbs</string>
+  <string id="13360">Automatically generate thumbnails</string>
   <string id="13361">Enable voice</string>
   <string id="13375">Enable device</string>
   <string id="13376">Volume</string>
@@ -1287,7 +1288,7 @@
   <string id="14032">- Internet</string>
   <string id="14034">DVD cache - DVD-ROM</string>
   <string id="14035">- Local Network</string>
-  <string id="14036">Servers</string>
+  <string id="14036">Services</string>
   <string id="14037">Look &amp; feel</string>
   <string id="14038">Network settings changed</string>
   <string id="14039">XBMC requires to restart to change your</string>
@@ -1295,8 +1296,8 @@
   <string id="14041">Post processing</string>
   <string id="14042"></string>
   <string id="14043">- Shutdown while playing</string>
-  <string id="14044">%i mins</string>
-  <string id="14045">%i secs</string>
+  <string id="14044">%i min</string>
+  <string id="14045">%i sec</string>
   <string id="14046">%i ms</string>
   <string id="14047">%i %%</string>
   <string id="14048">%i kbps</string>
@@ -1332,6 +1333,8 @@
   <string id="14078">- Colours</string>
   <string id="14079">Timezone country</string>
   <string id="14080">Timezone</string>
+  <string id="14081">File lists</string>
+  <string id="14082">Show EXIF picture information</string>
 
   <string id="15000"></string>
   <string id="15001"></string>
@@ -2176,7 +2179,7 @@
   <string id="20181">Backspace</string>
   <string id="20182">Space</string>
   <string id="20183">Reload skin</string>
-  <string id="20184">Rotate using EXIF information</string>
+  <string id="20184">Orientate pictures using EXIF information</string>
   <string id="20185">Use poster view styles for TV shows</string>
   <string id="20186">Please wait</string>
   <string id="20187">Backing up EEPROM</string>
@@ -2337,6 +2340,11 @@
   <string id="20434">Sets</string>
   <string id="20435">Set movieset thumb</string>
   <string id="20436">Export actor thumbs</string>
+  <string id="20437">Choose fanart</string>
+  <string id="20438">Local fanart</string>
+  <string id="20439">No fanart</string>
+  <string id="20440">Current fanart</string>
+  <string id="20441">Remote fanart</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -2350,14 +2358,14 @@
   <string id="21337">TuxBox device</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
 
-  <string id="21356">UPnP music</string>
-  <string id="21357">UPnP video</string>
-  <string id="21358">UPnP pictures</string>
+  <string id="21356"></string>
+  <string id="21357"></string>
+  <string id="21358"></string>
   <string id="21359">Add media share...</string>
-  <string id="21360">Enable UPnP server</string>
-  <string id="21361">Manage UPnP music shares</string>
-  <string id="21362">Manage UPnP video shares</string>
-  <string id="21363">Manage UPnP picture shares</string>
+  <string id="21360">Share video and music libraries through UPnP</string>
+  <string id="21361"></string>
+  <string id="21362"></string>
+  <string id="21363"></string>
   <string id="21364">Edit media share</string>
   <string id="21365">Remove media share</string>
   <string id="21366">Custom subtitle directory</string>
@@ -2501,7 +2509,7 @@
   <string id="21878">Copyright flag</string>
   <string id="21879">Country code</string>
   <string id="21880">Reference service</string>
-  <string id="21881">Enable UPnP renderer</string>
+  <string id="21881">Allow UPnP controllers to control XBMC</string>
   <string id="21882">Attempt to skip introduction before DVD menu</string>
   <string id="21883">Ripped audio CDs</string>
   <string id="21884">Query info for all artists</string>
@@ -2546,7 +2554,9 @@
   <string id="22019">Recordings by title</string>
   <string id="22020">Guide</string>
   <string id="22021">Allowed error in aspect ratio (%)</string>
-  <string id="22022">Include video files in listings</string>
+  <string id="22022">Show video files in listings</string>
+  <string id="22023">DirectX vendor</string>
+  <string id="22024">DirectX version</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Font</string>

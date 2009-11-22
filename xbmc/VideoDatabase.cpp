@@ -49,7 +49,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 33
+#define VIDEO_DATABASE_VERSION 34
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 
@@ -3717,6 +3717,18 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("CREATE UNIQUE INDEX ix_setlinkmovie_1 ON setlinkmovie ( idSet, idMovie)\n");
       m_pDS->exec("CREATE UNIQUE INDEX ix_setlinkmovie_2 ON setlinkmovie ( idMovie, idSet)\n");
     }
+    if (iVersion < 34)
+    {
+      // fake bump to correct tvdb urls
+      CStdString strSQL = FormatSQL("update tvshow set c%02d = replace(c%02d,'images.thetvdb.com','thetvdb.com')",VIDEODB_ID_TV_THUMBURL,VIDEODB_ID_TV_THUMBURL);
+      m_pDS->exec(strSQL.c_str());
+      strSQL = FormatSQL("update tvshow set c%02d = replace(c%02d,'images.thetvdb.com','thetvdb.com')",VIDEODB_ID_TV_FANART,VIDEODB_ID_TV_FANART);
+      m_pDS->exec(strSQL.c_str());
+      strSQL = FormatSQL("update actors set strThumb = replace(strThumb,'images.thetvdb.com','thetvdb.com')");
+      m_pDS->exec(strSQL.c_str());
+      strSQL = FormatSQL("update episode set c%02d = replace(c%02d,'images.thetvdb.com','thetvdb.com')",VIDEODB_ID_EPISODE_THUMBURL,VIDEODB_ID_EPISODE_THUMBURL);
+      m_pDS->exec(strSQL.c_str());
+    }
   }
   catch (...)
   {
@@ -4336,6 +4348,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
         pItem->SetLabelPreformated(true);
         if (!items.Contains(pItem->m_strPath))
         {
+          pItem->GetVideoInfoTag()->m_strArtist = m_pDS->fv(2).get_asString();
           CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),m_pDS->fv(2).get_asString());
           if (CFile::Exists(strThumb))
             pItem->SetThumbnailImage(strThumb);
@@ -4344,11 +4357,6 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
         m_pDS->next();
       }
       m_pDS->close();
-    }
-    if (idArtist > -1 && items.Size())
-    {
-      if (CFile::Exists(items[0]->GetCachedFanart()))
-        items.SetProperty("fanart_image",items[0]->GetCachedFanart());
     }
 
 //    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", CTimeUtils::GetTimeMS() - time);
@@ -4383,8 +4391,6 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
         if (CFile::Exists(pItem->GetCachedArtistThumb()))
           pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
         pItem->SetIconImage("DefaultArtist.png");
-        if (CFile::Exists(pItem->GetCachedFanart()))
-          pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
       }
       else
       {
@@ -4512,6 +4518,8 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
             // only if the number of videos watched is equal to the total number (i.e. every video watched)
             pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(4).get_asInt() == m_pDS->fv(3).get_asInt()) ? 1 : 0;
           }
+          if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
+            pItem->GetVideoInfoTag()->m_strArtist = pItem->GetLabel();
           items.Add(pItem);
           m_pDS->next();
         }
@@ -5335,14 +5343,8 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
     else
       where.Format(" %s %s%s",where.Mid(0).c_str(),"and",str2.c_str());
   }
-  bool bResult = GetMusicVideosByWhere(strBaseDir, where, items);
-  if (bResult && idArtist > -1 && items.Size())
-  {
-   if (CFile::Exists(items[0]->GetCachedFanart()))
-     items.SetProperty("fanart_image",items[0]->GetCachedFanart());
-  }
-
-  return bResult;
+  
+  return GetMusicVideosByWhere(strBaseDir, where, items);
 }
 
 bool CVideoDatabase::GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFileItemList& items)
@@ -6041,8 +6043,6 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const CStd
         CFileItemPtr item(new CFileItem(musicvideo));
         item->m_strPath.Format("%s%ld",baseDir,idMVideo);
         item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,musicvideo.m_playCount > 0);
-        if (CFile::Exists(item->GetCachedFanart()))
-          item->SetProperty("fanart_image",item->GetCachedFanart());
         items.Add(item);
       }
       m_pDS->next();

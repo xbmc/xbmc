@@ -462,12 +462,12 @@ void CGUIControl::SetTabNavigation(int next, int prev)
 }
 
 void CGUIControl::SetNavigationActions(const vector<CGUIActionDescriptor> &up, const vector<CGUIActionDescriptor> &down,
-                                       const vector<CGUIActionDescriptor> &left, const vector<CGUIActionDescriptor> &right)
+                                       const vector<CGUIActionDescriptor> &left, const vector<CGUIActionDescriptor> &right, bool replace)
 {
-  m_leftActions = left;
-  m_rightActions = right;
-  m_upActions = up;
-  m_downActions = down;
+  if (m_leftActions.empty()  || replace) m_leftActions  = left;
+  if (m_rightActions.empty() || replace) m_rightActions = right;
+  if (m_upActions.empty()    || replace) m_upActions    = up;
+  if (m_downActions.empty()  || replace) m_downActions  = down;
 }
 
 void CGUIControl::SetWidth(float width)

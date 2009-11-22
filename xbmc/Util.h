@@ -75,6 +75,7 @@ public:
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
   static bool IsDOSPath(const CStdString &path);
   static bool IsHD(const CStdString& strFileName);
+  static CStdString GetParentPath(const CStdString& strPath);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static void RunShortcut(const char* szPath);

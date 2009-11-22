@@ -64,6 +64,7 @@ SMBCSRV* xb_smbc_cache(SMBCCTX* c, const char* server, const char* share, const 
 CSMB::CSMB()
 {
   m_context = NULL;
+  smbc_init(xb_smbc_auth, 0);
 }
 
 CSMB::~CSMB()
@@ -128,7 +129,12 @@ void CSMB::Init()
       // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
       // if no WINS server has been specified the wins method will be ignored.
       if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
+      {
         fprintf(f, "\twins server = %s\n", g_guiSettings.GetString("smb.winsserver").c_str());
+        fprintf(f, "\tname resolve order = bcast wins host\n");
+      }
+      else
+        fprintf(f, "\tname resolve order = bcast host\n");
 
       // use user-configured charset. if no charset is specified,
       // samba tries to use charset 850 but falls back to ASCII in case it is not available
@@ -149,7 +155,6 @@ void CSMB::Init()
 
     // setup our context
     m_context = smbc_new_context();
-    smbc_init(xb_smbc_auth, 0);
 #ifdef DEPRECATED_SMBC_INTERFACE
     smbc_setDebug(m_context, g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0);
     smbc_setFunctionAuthData(m_context, xb_smbc_auth);
@@ -254,16 +259,6 @@ CStdString CSMB::URLEncode(const CURL &url)
     flat += URLEncode(url.GetPassWord());
     flat += "@";
   }
-  else if( !url.GetHostName().IsEmpty() && !g_guiSettings.GetString("smb.username").IsEmpty() )
-  {
-    /* okey this is abit uggly to do this here, as we don't really only url encode */
-    /* but it's the simplest place to do so */
-    flat += URLEncode(g_guiSettings.GetString("smb.username"));
-    flat += ":";
-    flat += URLEncode(g_guiSettings.GetString("smb.password"));
-    flat += "@";
-  }
-
   flat += URLEncode(url.GetHostName());
 
   /* okey sadly since a slash is an invalid name we have to tokenize */
@@ -646,7 +641,7 @@ int64_t CFileSMB::Seek(int64_t iFilePosition, int iWhence)
 #ifndef _LINUX
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
-    CLog::Log(LOGERROR, "%s - Error( %d, %d, %s )", __FUNCTION__, pos, errno, strerror(errno));
+    CLog::Log(LOGERROR, "%s - Error( %"PRId64", %d, %s )", __FUNCTION__, pos, errno, strerror(errno));
 #endif
     return -1;
   }

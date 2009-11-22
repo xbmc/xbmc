@@ -1933,7 +1933,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasThumbnail();
   }
   else if (condition == VIDEOPLAYER_HAS_INFO)
-    bReturn = m_currentFile->HasVideoInfoTag() || m_currentFile->HasPVRChannelInfoTag();
+    bReturn = (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->IsEmpty() ||
+               m_currentFile->HasPVRChannelInfoTag() && !m_currentFile->GetPVRChannelInfoTag()->IsEmpty());
   else if (condition == CONTAINER_ON_NEXT || condition == CONTAINER_ON_PREVIOUS)
   {
     // no parameters, so we assume it's just requested for a media window.  It therefore
@@ -2389,7 +2390,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case VIDEOPLAYER_CONTENT:
         {
           CStdString strContent="movies";
-          if (!m_currentFile->HasVideoInfoTag())
+          if (!m_currentFile->HasVideoInfoTag() || m_currentFile->GetVideoInfoTag()->IsEmpty())
             strContent = "files";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_iSeason > -1) // episode
             strContent = "episodes";
@@ -3410,7 +3411,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)",item.m_strPath.c_str());
   *m_currentFile = item;
 
-  if (!m_currentFile->HasVideoInfoTag())
+  if (!m_currentFile->HasVideoInfoTag() || m_currentFile->GetVideoInfoTag()->IsEmpty())
   { // attempt to get some information
     CVideoDatabase dbs;
     dbs.Open();

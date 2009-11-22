@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "FileItem.h"
 #include "StringUtils.h"
+#include "AdvancedSettings.h"
 
 #define PRE_2_1_STACK_COMPATIBILITY
 
@@ -79,19 +80,93 @@ namespace DIRECTORY
 
   CStdString CStackDirectory::GetStackedTitlePath(const CStdString &strPath)
   {
-    CStdString path, file, folder;
-    int pos = strPath.Find(" , ");
-    // remove "stack://" from the folder
-    if (pos > 0)
+    // Load up our REs
+    VECCREGEXP  RegExps;
+    CRegExp     tempRE(true);
+    const CStdStringArray& strRegExps = g_advancedSettings.m_videoStackRegExps;
+    CStdStringArray::const_iterator itRegExp = strRegExps.begin();
+    vector<pair<int, CStdString> > badStacks;
+    while (itRegExp != strRegExps.end())
     {
-      CUtil::Split(strPath.Left(pos), folder, file);
-      file.Replace(",,", ",");
-      folder = folder.Mid(8);
-      CStdString title, volume;
-      CUtil::GetVolumeFromFileName(file, title, volume);
-      CUtil::AddFileToFolder(folder, title, path);
+      tempRE.RegComp(*itRegExp);
+      if (tempRE.GetCaptureTotal() == 4)
+        RegExps.push_back(tempRE);
+      else
+        CLog::Log(LOGERROR, "Invalid video stack RE (%s). Must have exactly 4 captures.", itRegExp->c_str());
+      itRegExp++;
     }
-    return path;
+    return GetStackedTitlePath(strPath, RegExps);
+  }
+
+  CStdString CStackDirectory::GetStackedTitlePath(const CStdString &strPath, VECCREGEXP& RegExps)
+  {
+    CStackDirectory stack;
+    CFileItemList   files;
+    CStdString      File1,
+                    File2,
+                    strStackTitlePath,
+                    strStackTitle,
+                    strCommonDir        = CUtil::GetParentPath(strPath);
+    
+    stack.GetDirectory(strPath, files);
+
+    if (files.Size() > 1)
+    {
+
+      File1 = CUtil::GetFileName(files[0]->m_strPath);
+      File2 = CUtil::GetFileName(files[1]->m_strPath);
+
+      std::vector<CRegExp>::iterator itRegExp = RegExps.begin();
+      int offset = 0;
+
+      while (itRegExp != RegExps.end())
+      {
+        if (itRegExp->RegFind(File1, offset) != -1)
+        {
+          CStdString Title1     = itRegExp->GetMatch(1),
+                     Volume1    = itRegExp->GetMatch(2),
+                     Ignore1    = itRegExp->GetMatch(3),
+                     Extension1 = itRegExp->GetMatch(4);
+          if (offset)
+            Title1 = File1.substr(0, itRegExp->GetSubStart(2));
+          if (itRegExp->RegFind(File2, offset) != -1)
+          {
+            CStdString Title2     = itRegExp->GetMatch(1),
+                       Volume2    = itRegExp->GetMatch(2),
+                       Ignore2    = itRegExp->GetMatch(3),
+                       Extension2 = itRegExp->GetMatch(4);
+            if (offset)
+              Title2 = File2.substr(0, itRegExp->GetSubStart(2));
+            if (Title1.Equals(Title2))
+            {
+              if (!Volume1.Equals(Volume2))
+              {
+                if (Ignore1.Equals(Ignore2) && Extension1.Equals(Extension2))
+                {
+                  // got it
+                  strStackTitle = Title1 + Extension1;
+                  itRegExp = RegExps.end();
+                  break;
+                }
+                else // Invalid stack
+                  break;
+              }
+              else // Early match, retry with offset
+              {
+                offset = itRegExp->GetSubStart(3);
+                continue;
+              }
+            }
+          }
+        }
+        offset = 0;
+        itRegExp++;
+      }
+      if (!strCommonDir.empty() && !strStackTitle.empty())
+        strStackTitlePath = strCommonDir + strStackTitle;
+    }
+
+    return strStackTitlePath;
   }
 
   CStdString CStackDirectory::GetFirstStackedFile(const CStdString &strPath)
