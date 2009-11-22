@@ -58,7 +58,7 @@ bool CDVDSubtitleParserVplayer::Open(CDVDStreamInfo &hints)
 
   CDVDOverlayText* pPrevOverlay = NULL;
 
-  while (m_stringstream.getline(line, sizeof(line)))
+  while (m_pStream->ReadLine(line, sizeof(line)))
   {
     if (reg.RegFind(line) > -1)
     {

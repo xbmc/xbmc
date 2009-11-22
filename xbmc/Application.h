@@ -131,8 +131,13 @@ public:
   PLAYERCOREID GetCurrentPlayer();
   virtual void OnPlayBackEnded();
   virtual void OnPlayBackStarted();
+  virtual void OnPlayBackPaused();
+  virtual void OnPlayBackResumed();
   virtual void OnPlayBackStopped();
   virtual void OnQueueNextItem();
+  virtual void OnPlayBackSeek(int iTime);
+  virtual void OnPlayBackSeekChapter(int iChapter);
+  virtual void OnPlayBackSpeedChanged(int iSpeed);
   bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist);

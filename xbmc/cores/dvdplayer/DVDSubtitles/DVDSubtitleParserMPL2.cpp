@@ -53,7 +53,7 @@ bool CDVDSubtitleParserMPL2::Open(CDVDStreamInfo &hints)
   if (!reg.RegComp("\\[([0-9]+)\\]\\[([0-9]+)\\](\\{C:\\$[0-9a-f]+\\})?/?([^|]*?)(\\|/?([^|]*?))?$"))
     return false;
 
-  while (m_stringstream.getline(line, sizeof(line)))
+  while (m_pStream->ReadLine(line, sizeof(line)))
   {
     if (reg.RegFind(line) > -1)
     {

@@ -106,6 +106,10 @@ void CDummyVideoPlayer::Process()
 
 void CDummyVideoPlayer::Pause()
 {
+  if (m_paused)
+    m_callback.OnPlayBackResumed();
+  else
+	  m_callback.OnPlayBackPaused();
   m_paused = !m_paused;
 }
 
@@ -225,6 +229,7 @@ float CDummyVideoPlayer::GetSubTitleDelay()
 void CDummyVideoPlayer::SeekTime(__int64 iTime)
 {
   m_clock = iTime;
+  m_callback.OnPlayBackSeek((int)iTime);
 }
 
 // return the time in milliseconds
@@ -242,6 +247,7 @@ int CDummyVideoPlayer::GetTotalTime()
 void CDummyVideoPlayer::ToFFRW(int iSpeed)
 {
   m_speed = iSpeed;
+  m_callback.OnPlayBackSpeedChanged(iSpeed);
 }
 
 void CDummyVideoPlayer::ShowOSD(bool bOnoff)

@@ -4113,6 +4113,93 @@ void CApplication::OnPlayBackStopped()
   g_windowManager.SendThreadMessage(msg);
 }
 
+void CApplication::OnPlayBackPaused()
+{
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackPaused();
+#endif
+
+#ifdef HAS_WEB_SERVER
+  // Let's tell the outside world as well
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+    getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackPaused;1");
+#endif
+
+  CLog::Log(LOGDEBUG, "%s - Playback was paused", __FUNCTION__);
+}
+
+void CApplication::OnPlayBackResumed()
+{
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackResumed();
+#endif
+
+#ifdef HAS_WEB_SERVER
+  // Let's tell the outside world as well
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+    getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackResumed;1");
+#endif
+
+  CLog::Log(LOGDEBUG, "%s - Playback was resumed", __FUNCTION__);
+}
+
+void CApplication::OnPlayBackSpeedChanged(int iSpeed)
+{
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackSpeedChanged(iSpeed);
+#endif
+
+#ifdef HAS_WEB_SERVER
+  // Let's tell the outside world as well
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+  {
+    CStdString tmp;
+    tmp.Format("broadcastlevel; OnPlayBackSpeedChanged:%i;1",iSpeed);
+    getApplicationMessenger().HttpApi(tmp);
+  }
+#endif
+
+  CLog::Log(LOGDEBUG, "%s - Playback speed changed", __FUNCTION__);
+}
+
+void CApplication::OnPlayBackSeek(int iTime)
+{
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackSeek(iTime);
+#endif
+
+#ifdef HAS_WEB_SERVER
+  // Let's tell the outside world as well
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+  {
+    CStdString tmp;
+    tmp.Format("broadcastlevel; OnPlayBackSeek:%i;1",iTime);
+    getApplicationMessenger().HttpApi(tmp);
+  }
+#endif
+
+  CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
+}
+
+void CApplication::OnPlayBackSeekChapter(int iChapter)
+{
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackSeekChapter(iChapter);
+#endif
+
+#ifdef HAS_WEB_SERVER
+  // Let's tell the outside world as well
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+  {
+    CStdString tmp;
+    tmp.Format("broadcastlevel; OnPlayBackSkeekChapter:%i;1",iChapter);
+    getApplicationMessenger().HttpApi(tmp);
+  }
+#endif
+
+  CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
+}
+
 bool CApplication::IsPlaying() const
 {
   if (!m_pPlayer)

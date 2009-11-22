@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 24738 -->
+<!--Based on english strings version 24799 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -2148,6 +2148,7 @@
   <string id="23001">- 插件设置</string>
 
   <string id="23050">开启图文电视</string>
+  <string id="23051">片段 %i</string>
 
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">外部播放器激活</string>
@@ -2236,4 +2237,9 @@
   <string id="33076">请升级XBMC。</string>
   <string id="33077">未找到数据！</string>
   <string id="33078">下一页</string>
+  <string id="33079">爱</string>
+  <string id="33080">恨</string>
+  <string id="33081">这是一个堆叠文件，请选择要播放的片段。</string>
+  <string id="33082">脚本目录</string>
+  <string id="33083">启用自定义脚本按钮</string>
 </strings>

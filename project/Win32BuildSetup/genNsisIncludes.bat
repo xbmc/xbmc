@@ -28,8 +28,8 @@ IF EXIST skins.nsi del skins.nsi > NUL
 SETLOCAL ENABLEDELAYEDEXPANSION
 SET Counter=1
 FOR /F "tokens=*" %%S IN ('dir /B /AD BUILD_WIN32\Xbmc\Skin') DO (
-  rem PM3.HD is already included as default skin
-  IF "%%S" NEQ "PM3.HD" (
+  rem Confluence and PM3.HD is already included as default skin
+  IF "%%S" NEQ "Confluence" IF "%%S" NEQ "PM3.HD" (
     ECHO Section "%%S" SecSkin!Counter! >> skins.nsi
     ECHO SectionIn 1 #section is in installtype Full >> skins.nsi
     ECHO SetOutPath "$INSTDIR\skin\%%S" >> skins.nsi

@@ -202,6 +202,7 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
   bAudioOnAllSpeakers = false;
 
 #ifdef HAS_AUDIO
+  return; //not implemented
   DWORD spconfig = DSSPEAKER_USE_DEFAULT;
   if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
   {

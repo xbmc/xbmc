@@ -56,7 +56,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
     return false;
 
   CDVDOverlayText* pOverlay = NULL;
-  while (m_stringstream.getline(line, sizeof(line)))
+  while (m_pStream->ReadLine(line, sizeof(line)))
   {
     int pos = reg.RegFind(line);
     const char* text = line;

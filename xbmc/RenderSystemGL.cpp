@@ -427,6 +427,20 @@ void CRenderSystemGL::CalculateMaxTexturesize()
       break;
     }
   }
+  
+#ifdef __APPLE__
+  // Max Texture size reported on some apple machines seems incorrect
+  // Displaying a picture with that resolution results in a corrupted output
+  // So force it to a lower value
+  // Problem noticed on:
+  // iMac with ATI Radeon X1600, both on 10.5.8 (GL_VERSION: 2.0 ATI-1.5.48)
+  // and 10.6.2 (GL_VERSION: 2.0 ATI-1.6.6)
+  if (strcmp(m_RenderRenderer, "ATI Radeon X1600 OpenGL Engine") == 0)
+    m_maxTextureSize = 2048;
+  // Mac mini G4 with ATI Radeon 9200 (GL_VERSION: 1.3 ATI-1.5.48)
+  else if (strcmp(m_RenderRenderer, "ATI Radeon 9200 OpenGL Engine") == 0)
+    m_maxTextureSize = 1024;
+#endif  
 
   CLog::Log(LOGINFO, "GL: Maximum texture width: %u", m_maxTextureSize);
 }
