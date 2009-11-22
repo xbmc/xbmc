@@ -123,15 +123,14 @@
   <string id="31329">[B]TIMER SET![/B] [COLOR=grey2] - SYSTEM AUTO SHUTDOWN IN[/COLOR]</string>
 
   <!-- Description Labels  -->
-  <string id="31400">[B]EDIT YOUR APPEARANCE SETTINGS, INCLUDING.[/B][CR][CR]Calibrate the GUI · Change the Skin · Set up a screensaver · Change your regional settings · Set global Viewing options</string>
-  <string id="31401">[B]EDIT YOUR VIDEO SETTINGS, INCLUDING.[/B][CR][CR]Manage Your Video Library · Video Players Renderer and Quality · Configure Subtitle Fonts · Set Video Auto resume Options</string>
-  <string id="31402">[B]EDIT YOUR MUSIC SETTINGS, INCLUDING.[/B][CR][CR] Select the Visualization · Manage Your Music Library · Set up your Last.FM Account · Change Karaoke Fonts and Settings</string>
-  <string id="31403">[B]EDIT YOUR PICTURE SETTINGS, INCLUDING.[/B][CR][CR]Enable Auto Thumbnail Creation and EXIF tag reading · Adjust Slideshow Transition effects · Set Your XBMC screenshot folder</string>
-  <string id="31404">[B]EDIT YOUR WEATHER SETTINGS, INCLUDING.[/B][CR][CR]Set The Three cities that XBMC will show in its weather Screen · Change your regional settings, Including Temperature units</string>
-  <string id="31405">[B]EDIT YOUR NETWORK SETTINGS, INCLUDING.[/B][CR][CR]Enable XBMC Internal Web Server · Set Samba Settings · Enable/Configure the UPNP Server and Client · Configure the Event Server</string>
-  <string id="31406">[B]EDIT YOUR SYSTEM SETTINGS, INCLUDING.[/B][CR][CR]Change the default shutdown mode · Configure Auto Play · Set up your Audio hardware · Configure the Master User Password and System Locks</string>
-  <string id="31407">[B]CHANGE THE SKINS SETTINGS, INCLUDING.[/B][CR][CR]Add and Remove Home menu Buttons · Change Backgrounds for every section  · Create shortcuts to scripts throughout the skin</string>
-
+  <string id="31400">[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver</string>
+  <string id="31401">[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts</string>
+  <string id="31402">[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options</string>
+  <string id="31403">[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows</string>
+  <string id="31404">[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information</string>
+  <string id="31405">[B]CONFIGURE NETWORK SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Set internet access options</string>
+  <string id="31406">[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock</string>
+  <string id="31407">[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds</string>
 
   <string id="31420">[B][COLOR=white]XBMC has not detected a Disc.[/COLOR][/B][CR][CR]Please Insert a disc into your drive and try again or Cancel</string>
   <string id="31421">Select your XBMC user Profile[CR]to login and continue</string>
