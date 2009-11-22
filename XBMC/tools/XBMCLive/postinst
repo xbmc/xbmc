@@ -6,13 +6,14 @@ case "$1" in
     configure)
 	sed -i.bak-xbmc-live s/allowed_users=console/allowed_users=anybody/ /etc/X11/Xwrapper.config
 
-	# Add the 'xbmc' user
-	if ! getent passwd xbmc >/dev/null; then
-            adduser \
-                --gecos "XBMC Live User" \
-                xbmc
+	# Add the 'xbmc' user if the primary one is missing
+	xbmcUser=$(getent passwd 1000 | sed -e 's/\:.*//')
+	if [ ! -n "$xbmcUser" ]; then
+		adduser --gecos "XBMC Live User" xbmc
+		xbmcUser=xbmc
 	fi
-	# Add 'xbmc' user to the appropriate groups
+
+	# Add 'xbmcUser' user to the appropriate groups
 	# Below is a listing of groups and their purpose
 	# adm - For reading system logs (minimal systems may have this user only)
 	# sudo - allow optional passwordless sudo (with trivial intervention on /etc/sudoers)
@@ -39,8 +40,8 @@ case "$1" in
 	# used
 	for GROUP in $GROUPS; do
 		if getent group $GROUP >/dev/null && \
-			! getent group $GROUP | grep -q xbmc; then
-			adduser xbmc $GROUP
+			! getent group $GROUP | grep -q $xbmcUser; then
+			adduser $xbmcUser $GROUP
 		fi
 	done
 
@@ -52,8 +53,8 @@ case "$1" in
 		echo "# XBMC" >> /etc/sudoers
 		echo "Cmnd_Alias SHUTDOWN_CMDS = /sbin/shutdown, /sbin/reboot, /sbin/halt # XBMC"  >> /etc/sudoers
 		echo "Cmnd_Alias MOUNT_CMDS = /bin/mount, /bin/umount # XBMC" >> /etc/sudoers
-		echo "xbmc ALL=(ALL) ALL" >> /etc/sudoers
-		echo "xbmc ALL=NOPASSWD: SHUTDOWN_CMDS, MOUNT_CMDS # XBMC" >> /etc/sudoers
+		echo "$xbmcUser ALL=(ALL) ALL" >> /etc/sudoers
+		echo "$xbmcUser ALL=NOPASSWD: SHUTDOWN_CMDS, MOUNT_CMDS # XBMC" >> /etc/sudoers
 	fi
 
 	# Our set of PolicyKit actions
@@ -102,9 +103,9 @@ case "$1" in
 
 	# Grant the 'xbmc' user each action from the list if not done already
 	for ACTION in $POLKIT_ACTIONS; do
-		if polkit-auth --user xbmc --show-obtainable | \
+		if polkit-auth --user $xbmcUser --show-obtainable | \
 			grep -q $ACTION; then
-			polkit-auth --user xbmc --grant $ACTION
+			polkit-auth --user $xbmcUser --grant $ACTION
 		fi
 	done
     ;;

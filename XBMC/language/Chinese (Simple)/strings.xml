@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 11/15/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 24625 -->
+<!--Based on english strings version 24738 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -77,7 +75,7 @@
   <string id="128">常用</string>
   <string id="129">幻灯片播放</string>
   <string id="130">系统信息</string>
-  <string id="131">屏幕</string>
+  <string id="131">显示器</string>
   <string id="132">专辑</string>
   <string id="133">艺人</string>
   <string id="134">歌曲</string>
@@ -116,7 +114,7 @@
   <string id="167">启用 FTP 服务器</string>
   <string id="168">启用网络时间同步</string>
   <string id="169">分辨率</string>
-  <string id="170">调整刷新率适应视频</string>
+  <string id="170">调整显示器刷新率适应视频</string>
   <string id="171"></string>
   <string id="172">发行时间</string>
   <string id="173"></string>
@@ -427,7 +425,7 @@
   <string id="494">总体音量</string>
   <string id="495">以桌面的分辨率播放视频</string>
   <string id="496">校准</string>
-  <string id="497">隐藏媒体扩展名</string>
+  <string id="497">显示扩展文件名</string>
   <string id="498">排序：类型</string>
   <string id="499">无法连接到在线搜索服务</string>
   <string id="500">下载专辑信息失败...</string>
@@ -549,7 +547,7 @@
   <string id="635">视频原始像素比例</string>
   <string id="636">自定义</string>
   <string id="637">回放增益</string>
-  <string id="638">应用回放增益音量调整</string>
+  <string id="638">回放增益音量调整</string>
   <string id="639">使用音轨增益等级</string>
   <string id="640">使用专辑增益等级</string>
   <string id="641">音量 - 重复播放的文件</string>
@@ -647,7 +645,7 @@
   <string id="769">保留</string>
   <string id="770">错误 %i：不能共享</string>
   <string id="771">- FTP 服务器限定工作在 FATX 格式</string>
-  <string id="772">音频硬件</string>
+  <string id="772">音频输出</string>
   <string id="773">搜索中</string>
   <string id="774">幻灯图片目录</string>
   <string id="775">网卡</string>
@@ -667,10 +665,10 @@
   <string id="789">无线网络名 (ESSID)</string>
   
   <string id="790"></string>
-  <string id="791">允许本机远程控制程序控制 XBMC</string>
+  <string id="791">允许本机程序控制 XBMC</string>
   <string id="792">端口</string>
   <string id="793">端口范围</string>
-  <string id="794">允许异地远程控制程序控制 XBMC</string>
+  <string id="794">允许异地程序控制 XBMC</string>
   <string id="795">初始重复等待时间(ms)</string>
   <string id="796">持续等待时间(ms)</string>
   <string id="797">最大客户端数</string>
@@ -808,14 +806,14 @@
  
   <!-- strings through to 1450 reserved for weather translation -->
 
-  <string id="1450">启用空闲省电模式</string>
+  <string id="1450">空闲时显示器休眠</string>
   <!-- strings through to 1470 reserved for power-saving -->
 
   <string id="2050">影片长度</string>
 
   <string id="2100">脚本错误！：%s</string>
 
-  <string id="4501">启用LCD</string>
+  <string id="4501">启用 LCD/VFD</string>
 
   <string id="10000">首页</string>
   <string id="10001">程序</string>
@@ -948,8 +946,8 @@
   <string id="12358">密码不能为空，请重试！</string>
   <string id="12360">主机锁定</string>
   <string id="12362">超过重试次数就关机</string>
-  <string id="12367">管理员密码错误！</string>
-  <string id="12368">请输入正确的管理员密码！</string>
+  <string id="12367">管理员密码错误</string>
+  <string id="12368">请输入正确的管理员密码</string>
   <string id="12373">系统设置和文件管理</string>
   <string id="12376">作为所有视频的默认设置</string>
   <string id="12377">将要初始化所有配置</string>
@@ -1021,7 +1019,7 @@
   <string id="13121">VDPAU 高品质倍线等级</string>
   <string id="13122">VDPAU 演播室级色彩转换</string>
 
-  <string id="13130">显示空白</string>
+  <string id="13130">其他显示器空白显示</string>
   <string id="13131">禁止</string>
   <string id="13132">空白显示</string>
 
@@ -1113,8 +1111,8 @@
   <string id="13302">指定风扇转速</string>
   <string id="13303">皮肤字体</string>
   <string id="13304">开启转换双向字串</string>
-  <string id="13305">启用 RSS 显示</string>
-  <string id="13306">隐藏上层目录图标</string>
+  <string id="13305">显示 RSS 新闻</string>
+  <string id="13306">显示上级目录图标</string>
   <string id="13307">音轨命名参数</string>
   <string id="13308">你想重新启动系统</string>
   <string id="13309">以重新启动 XBMC 吗？</string>
@@ -1193,11 +1191,11 @@
   <string id="13396">声音和字幕设置</string>
   <string id="13397">启用字幕</string>
   <string id="13398">快捷方式</string>
-  <string id="13399">排序时忽略符号</string>
+  <string id="13399">排序时忽略冠词（如 "the"）</string>
   <string id="13400">同一专辑内歌曲淡入淡出</string>
   <string id="13401">浏览%s</string>
   <string id="13402">显示音轨位置</string>
-  <string id="13403">清除为缺省值</string>
+  <string id="13403">清除默认</string>
   <string id="13404">继续播放</string>
   <string id="13405">取得缩略图</string>
   <string id="13406">图片资讯</string>
@@ -1232,8 +1230,8 @@
   <string id="13510">同步回放显示</string>
 
   <string id="13600">Apple 遥控器</string>
-  <string id="13601">模式</string>
-  <string id="13602">始终运行</string>
+  <string id="13601"></string>
+  <string id="13602">允许用遥控器启动 XBMC</string>
   <string id="13603">序列延时</string>
 
   <string id="13610">关闭</string>
@@ -1278,7 +1276,7 @@
   <string id="14034">DVD 缓存 - DVD 驱动器</string>
   <string id="14035">- 局域网</string>
   <string id="14036">服务</string>
-  <string id="14037">外观设置</string>
+  <string id="14037"></string>
   <string id="14038">网络设置已改变</string>
   <string id="14039">XBMC 需要重启改变你的网络设置。</string>
   <string id="14040">你想现在就重启吗？</string>
@@ -1324,13 +1322,19 @@
   <string id="14080">时区</string>
   <string id="14081">文件列表</string>
   <string id="14082">显示 EXIF 图片信息</string>
-  <string id="14083">使用全屏窗口而非真正全屏模式</string>
+  <string id="14083">使用全屏窗口而非真正全屏显示</string>
   <string id="14084">选中歌曲加入播放列表</string>
   <string id="14085">自动播放音乐 CD</string>
   <string id="14086">播放</string>
   <string id="14087">DVD</string>
   <string id="14088">自动播放 DVD</string>
   <string id="14089">文本字幕字体</string>
+  <string id="14090">界面语言</string>
+  <string id="14091">字符集</string>
+  <string id="14092">调试</string>
+  <string id="14093">安全</string>
+  <string id="14094">输入设备</string>
+  <string id="14095">省电模式</string>
 
   <string id="15000"></string>
   <string id="15001"></string>
@@ -1910,7 +1914,7 @@
   <string id="20442">更新内容</string>
   <string id="20443">要刷新此目录下的所有项目吗？</string>
   <string id="20444"></string>
-  <string id="20445">同人画</string>>
+  <string id="20445">同人画</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -1941,7 +1945,7 @@
   <string id="21370">在播放媒体文件时播放导航声效</string>
   <string id="21371">缩略图</string>
   <string id="21372">强制 DVD 播放器区码</string>
-  <string id="21373">视频硬件</string>
+  <string id="21373">视频输出</string>
   <string id="21374">视频模式</string>
   <string id="21375">一般</string>
   <string id="21376">信箱模式</string>
@@ -1950,8 +1954,8 @@
   <string id="21379">开启 720p</string>
   <string id="21380">开启 1080i</string>
   <string id="21381">输入新播放列表的名称</string>
-  <string id="21382">停用文件列表的新增来源按钮</string>
-  <string id="21383">启用页面卷轴</string>
+  <string id="21382">在文件列表中显示“添加目录”按钮</string>
+  <string id="21383">启用滚动条</string>
   <string id="21384">视频资料库使用浏览过滤按钮</string>
   <string id="21385">打开</string>
   <string id="21386">噪音管理</string>
@@ -2075,7 +2079,7 @@
   <string id="21878">版权标志</string>
   <string id="21879">国家代码</string>
   <string id="21880">参考服务</string>
-  <string id="21881">允许 UPnP 控制器控制 XBMC</string>
+  <string id="21881">允许通过 UPnP 控制 XBMC</string>
   <string id="21882">尝试略过介绍直接跳至 DVD 菜单</string>
   <string id="21883">保存音乐</string>
   <string id="21884">查询所有艺人信息</string>

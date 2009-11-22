@@ -339,10 +339,10 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   if (g_advancedSettings.m_fullScreen)
   {
 #if defined (__APPLE__) || defined (_WIN32)
-    bool blankOtherDisplays = g_guiSettings.GetInt("videoscreen.displayblanking")  == BLANKING_ALL_DISPLAYS;
+    bool blankOtherDisplays = g_guiSettings.GetBool("videoscreen.blankdisplays");
     g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], blankOtherDisplays);
 #else
-    g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], BLANKING_DISABLED);
+    g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], false);
 #endif
   }
   else if (lastRes >= RES_DESKTOP )

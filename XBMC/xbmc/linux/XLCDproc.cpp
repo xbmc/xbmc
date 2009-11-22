@@ -47,7 +47,7 @@ XLCDproc::~XLCDproc()
 
 void XLCDproc::Initialize()
 {
-  if (!g_guiSettings.GetBool("system.haslcd"))
+  if (!g_guiSettings.GetBool("videoscreen.haslcd"))
     return ;//nothing to do
 
   // don't try to initialize too often

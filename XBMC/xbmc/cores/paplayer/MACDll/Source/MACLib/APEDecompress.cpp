@@ -444,9 +444,7 @@ int CAPEDecompress::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, void *pPar
         case APE_INFO_WAV_HEADER_DATA:
         {
             char * pBuffer = (char *) pParam2;
-            int nMaxBytes = nParam1;
-            
-            if (sizeof(WAVE_HEADER) > nMaxBytes)
+            if (sizeof(WAVE_HEADER) > (size_t)nParam1)
             {
                 nRetVal = -1;
             }
@@ -476,4 +474,9 @@ int CAPEDecompress::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, void *pPar
         nRetVal = m_spAPEInfo->GetInfo(Field, nParam1, pParam2);
 
     return nRetVal;
+}
+
+void *CAPEDecompress::GetPointer(APE_DECOMPRESS_FIELDS Field)
+{
+    return m_spAPEInfo->GetPointer(Field);
 }

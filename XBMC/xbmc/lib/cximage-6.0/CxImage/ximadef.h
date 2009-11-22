@@ -90,13 +90,15 @@ typedef struct tagcomplex {
 
 #if !defined(WIN32) && !defined(_WIN32_WCE)
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
 typedef unsigned char  BYTE;
 typedef unsigned short WORD;
-typedef unsigned long  DWORD;
+typedef uint32_t       DWORD;
+typedef int32_t        LONG;
 typedef unsigned int   UINT;
 
 typedef DWORD          COLORREF;
@@ -122,16 +124,16 @@ typedef void*          HRGN;
 
 typedef struct tagRECT
 {
-	long    left;
-	long    top;
-	long    right;
-	long    bottom;
+	LONG    left;
+	LONG    top;
+	LONG    right;
+	LONG    bottom;
 } RECT;
 
 typedef struct tagPOINT
 {
-	long  x;
-	long  y;
+	LONG  x;
+	LONG  y;
 } POINT;
 
 typedef struct tagRGBQUAD {
@@ -145,14 +147,14 @@ typedef struct tagRGBQUAD {
 
 typedef struct tagBITMAPINFOHEADER{
 	DWORD      biSize;
-	long       biWidth;
-	long       biHeight;
+	LONG       biWidth;
+	LONG       biHeight;
 	WORD       biPlanes;
 	WORD       biBitCount;
 	DWORD      biCompression;
 	DWORD      biSizeImage;
-	long       biXPelsPerMeter;
-	long       biYPelsPerMeter;
+	LONG       biXPelsPerMeter;
+	LONG       biYPelsPerMeter;
 	DWORD      biClrUsed;
 	DWORD      biClrImportant;
 } BITMAPINFOHEADER;

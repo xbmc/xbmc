@@ -26,13 +26,13 @@
 #include "LocalizeStrings.h"
 
 #include <sys/mount.h>
+#include <DiskArbitration/DiskArbitration.h>
 #include "CocoaInterface.h"
 
 bool CDarwinStorageProvider::m_event = false;
 
 CDarwinStorageProvider::CDarwinStorageProvider()
 {
-  m_removableLength = 0;
   PumpDriveChangeEvents(NULL);
 }
 
@@ -59,74 +59,82 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   share.m_ignore = true;
   localDrives.push_back(share);
 
-  // Root Disk
-  Cocoa_GetVolumeNameFromMountPoint("/", share.strName);
-  if (!share.strName.empty())
+  // This will pick up all local non-removable disks including the Root Disk.
+  DASessionRef session = DASessionCreate(kCFAllocatorDefault);
+  if (session)
   {
-    share.strPath = "/";
-    share.m_ignore = true;
-    localDrives.push_back(share);
-  }
+    unsigned i, count = 0;
+    struct statfs *buf = NULL;
+    CStdString mountpoint, devicepath;
 
-  GetDrives(localDrives);
+    count = getmntinfo(&buf, 0);
+    for (i=0; i<count; i++)
+    {
+      mountpoint = buf[i].f_mntonname;
+      devicepath = buf[i].f_mntfromname;
+
+      DADiskRef disk = DADiskCreateFromBSDName(kCFAllocatorDefault, session, devicepath.c_str());
+      if (disk)
+      {
+        CFDictionaryRef details = DADiskCopyDescription(disk);
+        if (details)
+        {
+          if (kCFBooleanFalse == CFDictionaryGetValue(details, kDADiskDescriptionMediaRemovableKey))
+          {
+            CMediaSource share;
+
+            share.strPath = mountpoint;
+            Cocoa_GetVolumeNameFromMountPoint(mountpoint, share.strName);
+            share.m_ignore = true;
+            localDrives.push_back(share);
+          }
+          CFRelease(details);
+        }
+        CFRelease(disk);
+      }
+    }
+
+    CFRelease(session);
+  }
 }
 
 void CDarwinStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
-  /*GetDrives(removableDrives);*/
-}
-
-void CDarwinStorageProvider::GetDrives(VECSOURCES &drives)
-{
-  std::vector<CStdString> result;
-
-  CRegExp reMount;
-  
-  reMount.RegComp("on (.+) \\(([^,]+)");
-  
-  char line[1024];
-
-  FILE* pipe = popen("mount", "r");
-
-  if (pipe)
+  DASessionRef session = DASessionCreate(kCFAllocatorDefault);
+  if (session)
   {
-    while (fgets(line, sizeof(line) - 1, pipe))
+    unsigned i, count = 0;
+    struct statfs *buf = NULL;
+    CStdString mountpoint, devicepath;
+
+    count = getmntinfo(&buf, 0);
+    for (i=0; i<count; i++)
     {
-      if (reMount.RegFind(line) != -1)
+      mountpoint = buf[i].f_mntonname;
+      devicepath = buf[i].f_mntfromname;
+
+      DADiskRef disk = DADiskCreateFromBSDName(kCFAllocatorDefault, session, devicepath.c_str());
+      if (disk)
       {
-        bool accepted = false;
-        char* mount = reMount.GetReplaceString("\\1");
-        char* fs    = reMount.GetReplaceString("\\2");
-          
-        // Here we choose which filesystems are approved
-        if (strcmp(fs, "fuseblk") == 0 || strcmp(fs, "vfat") == 0
-            || strcmp(fs, "ext2") == 0 || strcmp(fs, "ext3") == 0
-            || strcmp(fs, "reiserfs") == 0 || strcmp(fs, "xfs") == 0
-            || strcmp(fs, "ntfs-3g") == 0 || strcmp(fs, "iso9660") == 0
-            || strcmp(fs, "fusefs") == 0 || strcmp(fs, "hfs") == 0)
-          accepted = true;
+        CFDictionaryRef details = DADiskCopyDescription(disk);
+        if (details)
+        {
+          if (kCFBooleanTrue == CFDictionaryGetValue(details, kDADiskDescriptionMediaRemovableKey))
+          {
+            CMediaSource share;
 
-        // Ignore root
-        if (strcmp(mount, "/") == 0)
-          accepted = false;          
-        
-        if(accepted)
-          result.push_back(mount);
-
-        free(fs);
-        free(mount);
+            share.strPath = mountpoint;
+            Cocoa_GetVolumeNameFromMountPoint(mountpoint, share.strName);
+            share.m_ignore = true;
+            removableDrives.push_back(share);
+          }
+          CFRelease(details);
+        }
+        CFRelease(disk);
       }
     }
-    pclose(pipe);
-  }
 
-  for (unsigned int i = 0; i < result.size(); i++)
-  {
-    CMediaSource share;
-    share.strPath = result[i];
-    share.strName = CUtil::GetFileName(result[i]);
-    share.m_ignore = true;
-    drives.push_back(share);
+    CFRelease(session);
   }
 }
 
@@ -165,14 +173,3 @@ void CDarwinStorageProvider::SetEvent(void)
 {
   CDarwinStorageProvider::m_event = true;
 }
-
-/*
-bool CDarwinStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
-{
-  VECSOURCES drives;
-  GetRemovableDrives(drives);
-  bool changed = drives.size() != m_removableLength;
-  m_removableLength = drives.size();
-  return changed;
-}
-*/

@@ -44,6 +44,8 @@ public:
 
   /*!
    \brief Authenticate a URL by looking the URL up in the temporary and permanent caches
+   First looks up based on host and share name.  If that fails, it will try a match purely
+   on the host name (eg different shares on the same host with the same credentials)
    \param url a CURL to authenticate
    \return true if we have details in the cache, false otherwise.
    \sa CURL
@@ -79,6 +81,7 @@ private:
   void Load();
   void Save() const;
   CStdString GetLookupPath(const CURL &url) const;
+  CStdString GetServerLookup(const CStdString &path) const;
 
   std::map<CStdString, CStdString>  m_temporaryCache;
   std::map<CStdString, CStdString>  m_permanentCache;
