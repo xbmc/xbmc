@@ -2119,7 +2119,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 
   m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false, restore));
   SyncronizeDemuxer(100);
-  m_callback.OnPlayBackSeek(seek);
+  m_callback.OnPlayBackSeek((int)seek);
 }
 
 bool CDVDPlayer::SeekScene(bool bPlus)
@@ -2332,7 +2332,7 @@ void CDVDPlayer::SeekTime(__int64 iTime)
 {
   m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, true, true, true));
   SyncronizeDemuxer(100);
-  m_callback.OnPlayBackSeek(iTime);
+  m_callback.OnPlayBackSeek((int)iTime);
 }
 
 // return the time in milliseconds
