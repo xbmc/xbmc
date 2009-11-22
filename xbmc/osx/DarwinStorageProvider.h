@@ -19,6 +19,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "StdString.h"
 #include "IStorageProvider.h"
 
 class CDarwinStorageProvider : public IStorageProvider
@@ -42,8 +43,5 @@ public:
   static void SetEvent(void);
 
 private:
-  void GetDrives(VECSOURCES &drives);
-
-  unsigned int m_removableLength;
   static bool m_event;
 };

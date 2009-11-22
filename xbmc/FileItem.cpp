@@ -2439,7 +2439,7 @@ void CFileItemList::Stack()
         // item->m_bIsFolder = true;  // don't treat stacked files as folders
         // the label may be in a different char set from the filename (eg over smb
         // the label is converted from utf8, but the filename is not)
-        if (g_guiSettings.GetBool("filelists.hideextensions"))
+        if (!g_guiSettings.GetBool("filelists.showextensions"))
           CUtil::RemoveExtension(stackName);
         item1->SetLabel(stackName);
         item1->m_dwSize = size;

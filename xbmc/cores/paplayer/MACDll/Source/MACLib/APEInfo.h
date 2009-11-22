@@ -66,8 +66,8 @@ Helper macros (sort of hacky)
 #define GET_USES_CRC(APE_INFO) (((APE_INFO)->GetInfo(APE_INFO_FORMAT_FLAGS) & MAC_FORMAT_FLAG_CRC) ? TRUE : FALSE)
 #define GET_FRAMES_START_ON_BYTES_BOUNDARIES(APE_INFO) (((APE_INFO)->GetInfo(APE_INFO_FILE_VERSION) > 3800) ? TRUE : FALSE)
 #define GET_USES_SPECIAL_FRAMES(APE_INFO) (((APE_INFO)->GetInfo(APE_INFO_FILE_VERSION) > 3820) ? TRUE : FALSE)
-#define GET_IO(APE_INFO) ((CIO *) (APE_INFO)->GetInfo(APE_INFO_IO_SOURCE))
-#define GET_TAG(APE_INFO) ((CAPETag *) (APE_INFO)->GetInfo(APE_INFO_TAG))
+#define GET_IO(APE_INFO) ((CIO *) (APE_INFO)->GetPointer(APE_INFO_IO_SOURCE))
+#define GET_TAG(APE_INFO) ((CAPETag *) (APE_INFO)->GetPointer(APE_INFO_TAG))
 
 /*****************************************************************************************
 CAPEInfo - use this for all work with APE files
@@ -83,6 +83,7 @@ public:
 
     // query for information
     long GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1 = 0, void *pParam2 = NULL);
+    void *GetPointer(APE_DECOMPRESS_FIELDS Field);
     
 private:
 

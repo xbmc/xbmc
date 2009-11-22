@@ -540,7 +540,7 @@ void CDVDDemuxFFmpeg::Flush()
   if (m_pFormatContext)
   {
     // reset any dts interpolation
-    for(int i=0;i<m_pFormatContext->nb_streams;i++)
+    for(unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
     {
       if(m_pFormatContext->streams[i])
       {
@@ -915,7 +915,7 @@ bool CDVDDemuxFFmpeg::SeekByte(__int64 pos)
 void CDVDDemuxFFmpeg::UpdateCurrentPTS()
 {
   m_iCurrentPts = DVD_NOPTS_VALUE;
-  for(int i=0;i<m_pFormatContext->nb_streams;i++)
+  for(unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
   {
     AVStream *stream = m_pFormatContext->streams[i];
     if(stream && stream->cur_dts != (int64_t)AV_NOPTS_VALUE)
@@ -1231,7 +1231,7 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
       fourcc[2] = (in >> 16) & 0xff;
       fourcc[3] = (in >> 24) & 0xff;
 #else
-      *(unsigned int*)fourcc = in;
+      memcpy(fourcc, &in, 4);
 #endif
       fourcc[4] = 0;
       // fourccs have to be 4 characters

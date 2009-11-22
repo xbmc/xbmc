@@ -24,7 +24,7 @@
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
     </region>
-<region name="Nagykanizsa, Hungary">
+    <region name="Nagykanizsa, Hungary">
       <dateshort>YYYY.MM.DD.</dateshort>
       <datelong>YYYY. MMMM D.</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
@@ -40,4 +40,11 @@
       <speedunit>kmh</speedunit>
     </region>
   </regions>
+  
+  <sorttokens>
+    <token>The</token>
+    <token>A</token>
+    <token>Az</token>
+  </sorttokens>
+
 </language>

@@ -99,6 +99,12 @@ bool CCueDocument::Parse(const CStdString &strFile)
       break;
     if (strLine.Left(7) == "INDEX 0")
     {
+      if (bCurrentFileChanged)
+      {
+        OutputDebugString("Track split over multiple files, unsupported");
+        return false;
+      }
+
       // find the end of the number section
       time = ExtractTimeFromIndex(strLine);
       if (time == -1)
@@ -350,10 +356,12 @@ int CCueDocument::ExtractNumericInfo(const CStdString &info)
 bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
 {
   CStdString strDirectory;
-  CStdString strFilename;
   CUtil::GetDirectory(strBase, strDirectory);
-  // TODO: GETDIR - check whether we need RemoveSlashAtEnd() here - we shouldn't!!
-  CUtil::RemoveSlashAtEnd(strDirectory);
-  CUtil::GetQualifiedFilename(strDirectory, strPath);
+  
+  CStdString strFilename = strPath;
+  CUtil::GetFileName(strFilename);
+
+  CUtil::AddFileToFolder(strDirectory, strFilename, strPath);
+
   return true;
 }

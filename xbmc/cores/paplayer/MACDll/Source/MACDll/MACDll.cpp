@@ -182,6 +182,11 @@ int __stdcall c_APEDecompress_GetInfo(APE_DECOMPRESS_HANDLE hAPEDecompress, APE_
 	return ((IAPEDecompress *) hAPEDecompress)->GetInfo(Field, nParam1, pParam2);
 }
 
+CAPETag *__stdcall c_APEDecompress_GetTag(APE_DECOMPRESS_HANDLE hAPEDecompress)
+{
+	return (CAPETag *)((IAPEDecompress *) hAPEDecompress)->GetPointer(APE_INFO_TAG);
+}
+
 /*****************************************************************************************
 CAPECompress wrapper(s)
 *****************************************************************************************/

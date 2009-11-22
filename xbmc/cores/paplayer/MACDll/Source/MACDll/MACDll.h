@@ -110,6 +110,7 @@ extern "C"
 	__declspec( dllexport ) int __stdcall c_APEDecompress_GetData(APE_DECOMPRESS_HANDLE hAPEDecompress, char * pBuffer, int nBlocks, int * pBlocksRetrieved);
 	__declspec( dllexport ) int __stdcall c_APEDecompress_Seek(APE_DECOMPRESS_HANDLE hAPEDecompress, int nBlockOffset);
 	__declspec( dllexport ) int __stdcall c_APEDecompress_GetInfo(APE_DECOMPRESS_HANDLE hAPEDecompress, APE_DECOMPRESS_FIELDS Field, int nParam1 = 0, void *pParam2 = 0);
+	__declspec( dllexport ) CAPETag *__stdcall c_APEDecompress_GetTag(APE_DECOMPRESS_HANDLE hAPEDecompress);
 }
 
 #endif // #ifndef APE_MACDLL_H
