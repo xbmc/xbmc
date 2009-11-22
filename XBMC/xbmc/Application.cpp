@@ -1338,6 +1338,8 @@ HRESULT CApplication::Initialize()
 
   /* window id's 3000 - 3100 are reserved for python */
 
+  StartPVRManager();
+
   SAFE_DELETE(m_splash);
 
   if (g_guiSettings.GetBool("masterlock.startuplock") &&
@@ -1410,8 +1412,6 @@ HRESULT CApplication::Initialize()
 
   if (!g_settings.bUseLoginScreen)
     UpdateLibraries();
-
-  StartPVRManager();
 
   m_slowTimer.StartZero();
 

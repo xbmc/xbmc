@@ -388,6 +388,7 @@ bool CSkinInfo::LoadStartupWindows(const TiXmlElement *startup)
   if (!m_startupWindows.size())
   { // nope - add the default ones
     m_startupWindows.push_back(CStartupWindow(WINDOW_HOME, "513"));
+    m_startupWindows.push_back(CStartupWindow(WINDOW_TV, "18000"));
     m_startupWindows.push_back(CStartupWindow(WINDOW_PROGRAMS, "0"));
     m_startupWindows.push_back(CStartupWindow(WINDOW_PICTURES, "1"));
     m_startupWindows.push_back(CStartupWindow(WINDOW_MUSIC, "2"));
