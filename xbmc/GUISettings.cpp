@@ -247,7 +247,7 @@ void CGUISettings::Initialize()
   AddBool(2, "musiclibrary.showcompilationartists", 13414, true);
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.downloadinfo", 20192, false);
-  AddString(6, "musiclibrary.defaultscraper", 20194, "discogs.xml", SPIN_CONTROL_TEXT);
+  AddString(6, "musiclibrary.scraper", 20194, "allmusic.xml", SPIN_CONTROL_TEXT);
   AddString(7, "musiclibrary.scrapersettings", 21417, "", BUTTON_CONTROL_STANDARD);
   AddBool(8, "musiclibrary.updateonstartup", 22000, false);
   AddBool(0, "musiclibrary.backgroundupdate", 22001, false);

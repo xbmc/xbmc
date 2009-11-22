@@ -4104,9 +4104,9 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       else
       { // none available yet (user wisely left defaults as is and didn't touch 'em)
         CScraperParser parser;
-        if (parser.Load("special://xbmc/system/scrapers/music/" + g_guiSettings.GetString("musiclibrary.defaultscraper")))
+        if (parser.Load("special://xbmc/system/scrapers/music/" + g_guiSettings.GetString("musiclibrary.scraper")))
         {
-          info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
+          info.strPath = g_guiSettings.GetString("musiclibrary.scraper");
           info.strContent = "albums";
           info.strTitle = parser.GetName();
           info.strDate = parser.GetDate();

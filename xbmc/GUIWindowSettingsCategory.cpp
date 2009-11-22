@@ -447,10 +447,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
     }
-    else if (strSetting.Equals("musiclibrary.defaultscraper"))
+    else if (strSetting.Equals("musiclibrary.scraper"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("musiclibrary.defaultscraper"), "music");
+      FillInScrapers(pControl, g_guiSettings.GetString("musiclibrary.scraper"), "music");
     }
     else if (strSetting.Equals("scrapers.moviedefault"))
     {
@@ -1275,7 +1275,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CScraperParser parser;
       bool enabled=false;
-      if (parser.Load("special://xbmc/system/scrapers/music/"+g_guiSettings.GetString("musiclibrary.defaultscraper")))
+      if (parser.Load("special://xbmc/system/scrapers/music/"+g_guiSettings.GetString("musiclibrary.scraper")))
         enabled = parser.HasFunction("GetSettings");
 
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1476,7 +1476,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     musicdatabase.Clean();
     CUtil::DeleteMusicDatabaseDirectoryCache();
   }
-  else if (strSetting.Equals("musiclibrary.defaultscraper"))
+  else if (strSetting.Equals("musiclibrary.scraper"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     FillInScrapers(pControl, pControl->GetCurrentLabel(), "music");
@@ -3449,14 +3449,14 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
       {
         if (strContent.Equals("music")) // native strContent would be albums or artists but we're using the same scraper for both
         {
-          if (g_guiSettings.GetString("musiclibrary.defaultscraper") != strSelected)
+          if (g_guiSettings.GetString("musiclibrary.scraper") != strSelected)
           {
-            g_guiSettings.SetString("musiclibrary.defaultscraper", CUtil::GetFileName(items[i]->m_strPath));
+            g_guiSettings.SetString("musiclibrary.scraper", CUtil::GetFileName(items[i]->m_strPath));
 
             SScraperInfo info;
             CMusicDatabase database;
 
-            info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
+            info.strPath = g_guiSettings.GetString("musiclibrary.scraper");
             info.strContent = "albums";
             info.strTitle = parser.GetName();
 
