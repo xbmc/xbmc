@@ -882,9 +882,10 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("videolibrary")) windowID = WINDOW_VIDEO_NAV;
   else if (strWindow.Equals("videoplaylist")) windowID = WINDOW_VIDEO_PLAYLIST;
   else if (strWindow.Equals("tv")) windowID = WINDOW_TV;
-  else if (strWindow.Equals("tvosdchannels")) windowID = WINDOW_DIALOG_TV_OSD_CHANNELS;
-  else if (strWindow.Equals("tvosdguide")) windowID = WINDOW_DIALOG_TV_OSD_GUIDE;
-  else if (strWindow.Equals("tvosddirector")) windowID = WINDOW_DIALOG_TV_OSD_DIRECTOR;
+  else if (strWindow.Equals("pvrosdchannels")) windowID = WINDOW_DIALOG_PVR_OSD_CHANNELS;
+  else if (strWindow.Equals("pvrosdguide")) windowID = WINDOW_DIALOG_PVR_OSD_GUIDE;
+  else if (strWindow.Equals("pvrosddirector")) windowID = WINDOW_DIALOG_PVR_OSD_DIRECTOR;
+  else if (strWindow.Equals("pvrosdcutter")) windowID = WINDOW_DIALOG_PVR_OSD_CUTTER;
   else if (strWindow.Equals("systeminfo")) windowID = WINDOW_SYSTEM_INFORMATION;
   else if (strWindow.Equals("teletext")) windowID = WINDOW_DIALOG_OSD_TELETEXT;
   else if (strWindow.Equals("guicalibration")) windowID = WINDOW_SCREEN_CALIBRATION;

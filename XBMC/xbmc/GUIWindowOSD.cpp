@@ -48,9 +48,10 @@ void CGUIWindowOSD::Render()
     if (g_Mouse.HasMoved() || g_windowManager.IsWindowActive(WINDOW_DIALOG_AUDIO_OSD_SETTINGS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_BOOKMARKS)
-                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_TV_OSD_CHANNELS)
-                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_TV_OSD_GUIDE)
-                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_TV_OSD_DIRECTOR)
+                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_CHANNELS)
+                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_GUIDE)
+                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_DIRECTOR)
+                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_CUTTER)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_OSD_TELETEXT))
       SetAutoClose(3000);
   }
@@ -112,11 +113,13 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_BOOKMARKS);
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
-      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_TV_OSD_CHANNELS);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_CHANNELS);
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
-      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_TV_OSD_GUIDE);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_GUIDE);
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
-      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_TV_OSD_DIRECTOR);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_DIRECTOR);
+      if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_CUTTER);
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_OSD_TELETEXT);
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);

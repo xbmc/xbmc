@@ -53,7 +53,7 @@ using namespace std;
 #define CONTROL_BTN_DEFAULTS      28
 
 CGUIDialogPVRGuideSearch::CGUIDialogPVRGuideSearch(void)
-    : CGUIDialog(WINDOW_DIALOG_TV_GUIDE_SEARCH, "DialogPVRGuideSearch.xml")
+    : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_SEARCH, "DialogPVRGuideSearch.xml")
 {
   m_bConfirmed   = false;
   m_searchfilter = NULL;

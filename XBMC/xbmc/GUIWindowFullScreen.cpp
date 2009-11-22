@@ -451,7 +451,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     {
       CFileItem item(g_application.CurrentFileItem());
       if (item.HasPVRChannelInfoTag())
-        g_windowManager.ActivateWindow(WINDOW_DIALOG_TV_OSD_CHANNELS);
+        g_windowManager.ActivateWindow(WINDOW_DIALOG_PVR_OSD_CHANNELS);
       else
         g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     }
@@ -561,11 +561,13 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       if (pDialog) pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
       if (pDialog) pDialog->Close(true);
-      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_TV_OSD_CHANNELS);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_CHANNELS);
       if (pDialog) pDialog->Close(true);
-      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_TV_OSD_GUIDE);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_GUIDE);
       if (pDialog) pDialog->Close(true);
-      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_TV_OSD_DIRECTOR);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_DIRECTOR);
+      if (pDialog) pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_OSD_CUTTER);
       if (pDialog) pDialog->Close(true);
 
       FreeResources(true);

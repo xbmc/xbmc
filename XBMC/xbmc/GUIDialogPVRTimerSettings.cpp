@@ -42,7 +42,7 @@ using namespace std;
 #define CONTROL_TMR_CHNAME_RADIO        51
 
 CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings(void)
-    : CGUIDialogSettings(WINDOW_DIALOG_TV_TIMER_SETTING, "DialogPVRTimerSettings.xml")
+    : CGUIDialogSettings(WINDOW_DIALOG_PVR_TIMER_SETTING, "DialogPVRTimerSettings.xml")
 {
   m_cancelled         = true;
   m_tmp_day           = 11;

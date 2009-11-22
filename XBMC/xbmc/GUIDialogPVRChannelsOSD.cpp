@@ -19,14 +19,13 @@
  *
  */
 
-#include "GUIDialogTVGuide.h"
+#include "GUIDialogTVChannels.h"
 #include "PVRManager.h"
 #include "Application.h"
 #include "Util.h"
 #include "Picture.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogOK.h"
-#include "GUIDialogPVRGuideInfo.h"
 #include "GUIWindowManager.h"
 #include "ViewState.h"
 #include "Settings.h"
@@ -36,18 +35,18 @@ using namespace std;
 
 #define CONTROL_LIST                  11
 
-CGUIDialogTVGuide::CGUIDialogTVGuide()
-    : CGUIDialog(WINDOW_DIALOG_TV_OSD_GUIDE, "VideoOSDTVGuide.xml")
+CGUIDialogTVChannels::CGUIDialogTVChannels()
+    : CGUIDialog(WINDOW_DIALOG_PVR_OSD_CHANNELS, "VideoOSDTVChannels.xml")
 {
   m_vecItems = new CFileItemList;
 }
 
-CGUIDialogTVGuide::~CGUIDialogTVGuide()
+CGUIDialogTVChannels::~CGUIDialogTVChannels()
 {
   delete m_vecItems;
 }
 
-bool CGUIDialogTVGuide::OnMessage(CGUIMessage& message)
+bool CGUIDialogTVChannels::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
@@ -76,7 +75,7 @@ bool CGUIDialogTVGuide::OnMessage(CGUIMessage& message)
 
         if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
-          ShowInfo(iItem);
+          GotoChannel(iItem);
           return true;
         }
       }
@@ -97,7 +96,7 @@ bool CGUIDialogTVGuide::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogTVGuide::Update()
+void CGUIDialogTVChannels::Update()
 {
   // lock our display, as this window is rendered from the player thread
   g_graphicsContext.Lock();
@@ -106,42 +105,50 @@ void CGUIDialogTVGuide::Update()
   // empty the list ready for population
   Clear();
 
+  if (g_PVRManager.IsPlayingTV())
+  {
+    PVRChannelsTV.GetChannels(m_vecItems, g_PVRManager.GetPlayingGroup());
+  }
+  else if (g_PVRManager.IsPlayingRadio())
+  {
+    PVRChannelsRadio.GetChannels(m_vecItems, g_PVRManager.GetPlayingGroup());
+  }
+
   bool RadioPlaying;
   int CurrentChannel;
   g_PVRManager.GetCurrentChannel(&CurrentChannel, &RadioPlaying);
-  cPVREpgs::GetEPGChannel(CurrentChannel, m_vecItems, RadioPlaying);
 
   m_viewControl.SetItems(*m_vecItems);
+  m_viewControl.SetSelectedItem(CurrentChannel-1);
   g_graphicsContext.Unlock();
 }
 
-void CGUIDialogTVGuide::Clear()
+void CGUIDialogTVChannels::Clear()
 {
   m_viewControl.Clear();
   m_vecItems->Clear();
 }
 
-void CGUIDialogTVGuide::ShowInfo(int item)
+void CGUIDialogTVChannels::GotoChannel(int item)
 {
   /* Check file item is in list range and get his pointer */
   if (item < 0 || item >= (int)m_vecItems->Size()) return;
 
   CFileItemPtr pItem = m_vecItems->Get(item);
 
-  /* Load programme info dialog */
-  CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_INFO);
-
-  if (!pDlgInfo)
+  if (pItem->m_strPath == g_application.CurrentFile())
+  {
+    Close();
     return;
+  }
 
-  /* inform dialog about the file item */
-  pDlgInfo->SetProgInfo(pItem.get());
-
-  /* Open dialog window */
-  pDlgInfo->DoModal();
+  if (!g_application.PlayFile(*pItem))
+  {
+    CGUIDialogOK::ShowAndGetInput(18100,0,18134,0);
+  }
 }
 
-void CGUIDialogTVGuide::OnWindowLoaded()
+void CGUIDialogTVChannels::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
   m_viewControl.Reset();
@@ -149,13 +156,13 @@ void CGUIDialogTVGuide::OnWindowLoaded()
   m_viewControl.AddView(GetControl(CONTROL_LIST));
 }
 
-void CGUIDialogTVGuide::OnWindowUnload()
+void CGUIDialogTVChannels::OnWindowUnload()
 {
   CGUIDialog::OnWindowUnload();
   m_viewControl.Reset();
 }
 
-CGUIControl *CGUIDialogTVGuide::GetFirstFocusableControl(int id)
+CGUIControl *CGUIDialogTVChannels::GetFirstFocusableControl(int id)
 {
   if (m_viewControl.HasControl(id))
     id = m_viewControl.GetCurrentControl();
