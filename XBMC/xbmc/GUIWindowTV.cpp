@@ -37,7 +37,7 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogPVRGuideInfo.h"
-#include "GUIDialogTVRecordingInfo.h"
+#include "GUIDialogPVRRecordingInfo.h"
 #include "GUIDialogPVRTimerSettings.h"
 #include "GUIDialogPVRGroupManager.h"
 #include "GUIDialogPVRGuideSearch.h"
@@ -1677,7 +1677,7 @@ void CGUIWindowTV::ShowRecordingInfo(CFileItem *item)
   }
 
   /* Load record info dialog */
-  CGUIDialogTVRecordingInfo* pDlgInfo = (CGUIDialogTVRecordingInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_RECORDING_INFO);
+  CGUIDialogPVRRecordingInfo* pDlgInfo = (CGUIDialogPVRRecordingInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_RECORDING_INFO);
 
   if (!pDlgInfo)
     return;

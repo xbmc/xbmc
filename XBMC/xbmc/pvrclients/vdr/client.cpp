@@ -25,7 +25,7 @@
 
 using namespace std;
 
-PVRClientVDR *g_client  = NULL;
+cPVRClientVDR *g_client = NULL;
 bool m_bCreated         = false;
 ADDON_STATUS curStatus  = STATUS_UNKNOWN;
 int g_clientID          = -1;
@@ -55,7 +55,7 @@ extern "C" ADDON_STATUS Create(ADDON_HANDLE hdl, int ClientID)
   //XBMC_log(LOG_DEBUG, "Creating VDR PVR-Client");
 
   curStatus     = STATUS_UNKNOWN;
-  g_client      = new PVRClientVDR();
+  g_client      = new cPVRClientVDR();
   g_clientID    = ClientID;
 
   /* Read setting "host" from settings.xml */

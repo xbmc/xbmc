@@ -119,7 +119,7 @@ const tChannelParameterMap RollOffValues[] = {
 
 cChannel::cChannel(const PVR_CHANNEL *Channel)
 {
-  
+
 }
 
 cChannel::cChannel()
@@ -155,13 +155,13 @@ bool cChannel::ReadFromVTP(int channel)
   int            code;
   char           buffer[1024];
 
-  if (!PVRClientVDR::GetTransceiver()->IsOpen())
+  if (!cPVRClientVDR::GetTransceiver()->IsOpen())
     return false;
 
   pthread_mutex_lock(&m_critSection);
-  
+
   sprintf(buffer, "LSTC %i", channel);
-  while (!PVRClientVDR::GetTransceiver()->SendCommand(buffer, code, lines))
+  while (!cPVRClientVDR::GetTransceiver()->SendCommand(buffer, code, lines))
   {
     if (code != 451)
     {
@@ -228,7 +228,7 @@ bool cChannel::StringToParameters(const char *s)
 {
   while (s && *s)
   {
-    switch (toupper(*s)) 
+    switch (toupper(*s))
     {
       case 'A': s = SkipDigits(s); break; // for compatibility with the "multiproto" approach - may be removed in future versions
       case 'B': s = ParseParameter(s, bandwidth, BandwidthValues); break;
@@ -265,7 +265,7 @@ bool cChannel::Parse(const char *s)
   char apidbuf[128];
   char caidbuf[128];
   int fields = sscanf(s, "%d %[^:]:%d:%[^:]:%[^:]:%d :%[^:]:%[^:]:%d :%[^:]:%d :%d :%d :%d ", &number, namebuf, &frequency, parambuf, sourcebuf, &srate, vpidbuf, apidbuf, &tpid, caidbuf, &sid, &nid, &tid, &rid);
-  if (fields >= 9) 
+  if (fields >= 9)
   {
     if (fields == 9)
     {
@@ -309,7 +309,7 @@ bool cChannel::Parse(const char *s)
       char *q;
       int NumApids = 0;
       char *strtok_next;
-      while ((q = strtok_r(p, ",", &strtok_next)) != NULL) 
+      while ((q = strtok_r(p, ",", &strtok_next)) != NULL)
       {
         if (NumApids < MAXAPIDS) {
         char *l = strchr(q, '=');
@@ -336,7 +336,7 @@ bool cChannel::Parse(const char *s)
         char *strtok_next;
         while ((q = strtok_r(p, ",", &strtok_next)) != NULL)
         {
-          if (NumDpids < MAXDPIDS) 
+          if (NumDpids < MAXDPIDS)
           {
             char *l = strchr(q, '=');
             if (l)

@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,29 +20,20 @@
  *
  */
 
-#include "GUIDialogSettings.h"
-#include "GUIListItem.h"
-#include "DateTime.h"
-
 #include "GUIDialog.h"
-#include "GUIListItem.h"
 
-class CFileItem;
-
-class CGUIDialogTVRecordingInfo : public CGUIDialog
+class CGUIDialogPVRRecordingInfo : public CGUIDialog
 {
 public:
-  CGUIDialogTVRecordingInfo(void);
-  virtual ~CGUIDialogTVRecordingInfo(void);
+  CGUIDialogPVRRecordingInfo(void);
+  virtual ~CGUIDialogPVRRecordingInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
-  void SetRecording(const CFileItem *item);
-  virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_recordItem; }
   virtual bool HasListItems() const { return true; };
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+
+  void SetRecording(const CFileItem *item);
 
 protected:
-  void Update();
-  void SetLabel(int iControl, const CStdString& strLabel);
-
   CFileItemPtr        m_recordItem;
 };
 
