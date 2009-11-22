@@ -414,7 +414,22 @@ bool CVTPTransceiver::SendCommand(const string &command, int &code, vector<strin
   return true;
 }
 
-SOCKET CVTPTransceiver::GetStreamLive(int channel)
+bool CVTPTransceiver::SetChannel(unsigned int channel)
+{
+  char        buffer[64];
+  string      result;
+  int         code;
+
+  sprintf(buffer, "TUNE %d", channel);
+  if(!SendCommand(buffer, code, result))
+  {
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::SetChannel - server is unable to tune to said channel '%i'", channel);
+		return false;
+	}
+	return true;
+}
+
+SOCKET CVTPTransceiver::GetStreamLive(unsigned int channel)
 {
   sockaddr_in address;
   SOCKET      sock;
@@ -432,14 +447,14 @@ SOCKET CVTPTransceiver::GetStreamLive(int channel)
   sprintf(buffer, "PROV %d %d", 100, channel);
   if(!SendCommand(buffer, code, result))
   {
-    XBMC_log(LOG_ERROR, "CVTPTransceiver::GetStreamLive - server is unable to provide channel");
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::GetStreamLive - server is unable to provide channel '%i'", channel);
     return INVALID_SOCKET;
   }
 
   sprintf(buffer, "TUNE %d", channel);
   if(!SendCommand(buffer, code, result))
   {
-    XBMC_log(LOG_ERROR, "CVTPTransceiver::GetStreamLive - server is unable to tune to said channel");
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::GetStreamLive - server is unable to tune to said channel '%i'", channel);
     return INVALID_SOCKET;
   }
 
@@ -616,7 +631,7 @@ bool CVTPTransceiver::CanStreamLive(int channel)
   if(m_socket == INVALID_SOCKET)
     return false;
 
-  char   buffer[1024];
+  char   buffer[64];
   string line;
   int    code;
 

@@ -20,9 +20,6 @@
  *
  */
 
-#ifndef VTPSESSION_H
-#define VTPSESSION_H
-
 #include <string>
 #include <vector>
 
@@ -44,7 +41,8 @@ public:
   bool SendCommand(const std::string &command, int &code, std::string line);
   bool SendCommand(const std::string &command, int &code, std::vector<std::string> &lines);
 
-  SOCKET GetStreamLive(int channel);
+  bool   SetChannel(unsigned int channel);
+  SOCKET GetStreamLive(unsigned int channel);
   SOCKET GetStreamRecording(int recording, uint64_t *size, uint32_t *frames);
   SOCKET GetStreamData();
   void   AbortStreamLive();
@@ -64,5 +62,3 @@ private:
 
   SOCKET m_socket;
 };
-
-#endif
