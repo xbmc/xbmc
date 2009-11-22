@@ -35,7 +35,7 @@ using namespace std;
 #define CONTROL_BTN_OK                  7
 
 CGUIDialogPVRGuideInfo::CGUIDialogPVRGuideInfo(void)
-    : CGUIDialog(WINDOW_DIALOG_TV_GUIDE_INFO, "DialogPVRGuideInfo.xml")
+    : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_INFO, "DialogPVRGuideInfo.xml")
     , m_progItem(new CFileItem)
 {
 }

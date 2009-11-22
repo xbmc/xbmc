@@ -1622,7 +1622,7 @@ void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
   if (item->IsEPG())
   {
     /* Load programme info dialog */
-    CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_INFO);
+    CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
 
     if (!pDlgInfo)
       return;
@@ -1644,7 +1644,7 @@ void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
       CFileItem *itemNow  = new CFileItem(*epgnow);
 
       /* Load programme info dialog */
-      CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_INFO);
+      CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
 
       if (!pDlgInfo)
         return;
@@ -1677,7 +1677,7 @@ void CGUIWindowTV::ShowRecordingInfo(CFileItem *item)
   }
 
   /* Load record info dialog */
-  CGUIDialogPVRRecordingInfo* pDlgInfo = (CGUIDialogPVRRecordingInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_RECORDING_INFO);
+  CGUIDialogPVRRecordingInfo* pDlgInfo = (CGUIDialogPVRRecordingInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_RECORDING_INFO);
 
   if (!pDlgInfo)
     return;
@@ -1702,7 +1702,7 @@ bool CGUIWindowTV::ShowTimerSettings(CFileItem *item)
   }
 
   /* Load timer settings dialog */
-  CGUIDialogPVRTimerSettings* pDlgInfo = (CGUIDialogPVRTimerSettings*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_TIMER_SETTING);
+  CGUIDialogPVRTimerSettings* pDlgInfo = (CGUIDialogPVRTimerSettings*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_TIMER_SETTING);
 
   if (!pDlgInfo)
     return false;
@@ -1720,7 +1720,7 @@ bool CGUIWindowTV::ShowTimerSettings(CFileItem *item)
 void CGUIWindowTV::ShowGroupManager(bool IsRadio)
 {
   /* Load timer settings dialog */
-  CGUIDialogPVRGroupManager* pDlgInfo = (CGUIDialogPVRGroupManager*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_GROUP_MANAGER);
+  CGUIDialogPVRGroupManager* pDlgInfo = (CGUIDialogPVRGroupManager*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GROUP_MANAGER);
 
   if (!pDlgInfo)
     return;
@@ -1736,7 +1736,7 @@ void CGUIWindowTV::ShowGroupManager(bool IsRadio)
 void CGUIWindowTV::ShowSearchResults()
 {
   /* Load timer settings dialog */
-  CGUIDialogPVRGuideSearch* pDlgInfo = (CGUIDialogPVRGuideSearch*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_SEARCH);
+  CGUIDialogPVRGuideSearch* pDlgInfo = (CGUIDialogPVRGuideSearch*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_SEARCH);
 
   if (!pDlgInfo)
     return;

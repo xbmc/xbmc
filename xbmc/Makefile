@@ -136,8 +136,13 @@ SRCS=Application.cpp \
      GUIDialogSelect.cpp \
      GUIDialogSettings.cpp \
      GUIDialogSubMenu.cpp \
+     GUIDialogPVRChannelManager.cpp \
+     GUIDialogPVRChannelsOSD.cpp \
+     GUIDialogPVRCutterOSD.cpp \
+     GUIDialogPVRDirectorOSD.cpp \
      GUIDialogPVRGroupManager.cpp \
      GUIDialogPVRGuideInfo.cpp \
+     GUIDialogPVRGuideOSD.cpp \
      GUIDialogPVRGuideSearch.cpp \
      GUIDialogPVRRecordingInfo.cpp \
      GUIDialogPVRTimerSettings.cpp \
@@ -209,7 +214,6 @@ SRCS=Application.cpp \
      ZeroconfBrowser.cpp \
      VideoReferenceClock.cpp \
      DPMSSupport.cpp \
-     GUIDialogTVChannels.cpp \
      PVRManager.cpp \
      TVDatabase.cpp \
      ScriptSettings.cpp \

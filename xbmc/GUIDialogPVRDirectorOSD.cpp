@@ -19,47 +19,50 @@
  *
  */
 
-/* Standart includes */
-#include "GUIWindowManager.h"
-#include "GUIDialogPVRRecordingInfo.h"
-#include "utils/PVRRecordings.h"
+/*
+ * DESCRIPTION:
+ *
+ * Used in Fullscreen view to control, multifeed channel groups.
+ *
+ */
+
+#include "GUIDialogPVRDirectorOSD.h"
+#include "utils/log.h"
+#include "Application.h"
 
 using namespace std;
 
-#define CONTROL_BTN_OK  10
-
-CGUIDialogPVRRecordingInfo::CGUIDialogPVRRecordingInfo(void)
-    : CGUIDialog(WINDOW_DIALOG_PVR_RECORDING_INFO, "DialogPVRRecordingInfo.xml")
-    , m_recordItem(new CFileItem)
+CGUIDialogPVRDirectorOSD::CGUIDialogPVRDirectorOSD()
+    : CGUIDialog(WINDOW_DIALOG_PVR_OSD_DIRECTOR, "DialogPVRDirectorOSD.xml")
 {
 }
 
-CGUIDialogPVRRecordingInfo::~CGUIDialogPVRRecordingInfo(void)
+CGUIDialogPVRDirectorOSD::~CGUIDialogPVRDirectorOSD()
 {
 }
 
-bool CGUIDialogPVRRecordingInfo::OnMessage(CGUIMessage& message)
+bool CGUIDialogPVRDirectorOSD::OnAction(const CAction& action)
 {
-  if (message.GetMessage() == GUI_MSG_CLICKED)
+  if (action.id == ACTION_PREVIOUS_MENU || action.id == ACTION_CLOSE_DIALOG)
   {
-    int iControl = message.GetSenderId();
-
-    if (iControl == CONTROL_BTN_OK)
-    {
-      Close();
-      return true;
-    }
+    m_bClose = true;
+    return true;
   }
 
+  return CGUIDialog::OnAction(action);
+}
+
+bool CGUIDialogPVRDirectorOSD::OnMessage(CGUIMessage& message)
+{
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogPVRRecordingInfo::SetRecording(const CFileItem *item)
+void CGUIDialogPVRDirectorOSD::OnInitWindow()
 {
-  *m_recordItem = *item;
+  CGUIDialog::OnInitWindow();
 }
 
-CFileItemPtr CGUIDialogPVRRecordingInfo::GetCurrentListItem(int offset)
+void CGUIDialogPVRDirectorOSD::OnDeinitWindow(int nextWindowID)
 {
-  return m_recordItem;
+  CGUIDialog::OnDeinitWindow(nextWindowID);
 }

@@ -71,7 +71,6 @@
 #include "ApplicationRenderer.h"
 #include "GUILargeTextureManager.h"
 #include "LastFmManager.h"
-#include "PVRManager.h"
 #include "SmartPlaylist.h"
 #include "FileSystem/RarManager.h"
 #include "PlayList.h"
@@ -196,7 +195,6 @@
 #include "GUIDialogButtonMenu.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMusicScan.h"
-#include "GUIDialogPVRUpdateProgressBar.h"
 #include "GUIDialogPlayerControls.h"
 #include "GUIDialogSongInfo.h"
 #include "GUIDialogSmartPlaylistEditor.h"
@@ -207,15 +205,24 @@
 #include "GUIDialogAccessPoints.h"
 #endif
 #include "GUIDialogFullScreenInfo.h"
-#include "GUIDialogPVRGuideSearch.h"
+#include "GUIDialogSlider.h"
+
+/* PVR related include Files */
+#include "PVRManager.h"
+#include "GUIWindowTV.h"
+#include "GUIDialogPVRChannelManager.h"
+#include "GUIDialogPVRChannelsOSD.h"
+#include "GUIDialogPVRCutterOSD.h"
+#include "GUIDialogPVRDirectorOSD.h"
+#include "GUIDialogPVRGroupManager.h"
 #include "GUIDialogPVRGuideInfo.h"
+#include "GUIDialogPVRGuideOSD.h"
+#include "GUIDialogPVRGuideSearch.h"
 #include "GUIDialogPVRRecordingInfo.h"
 #include "GUIDialogPVRTimerSettings.h"
-#include "GUIDialogTVChannels.h"
-#include "GUIDialogTVGuide.h"
-#include "GUIDialogPVRGroupManager.h"
+#include "GUIDialogPVRUpdateProgressBar.h"
 #include "GUIDialogTeletext.h"
-#include "GUIDialogSlider.h"
+
 #include "cores/dlgcache.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -1231,14 +1238,6 @@ HRESULT CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowFileManager);      // window id = 3
   g_windowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   g_windowManager.Add(new CGUIWindowSettings);                 // window id = 4
-  g_windowManager.Add(new CGUIWindowTV);                       // window id = 9
-  g_windowManager.Add(new CGUIDialogPVRGuideInfo);            // window id = 600
-  g_windowManager.Add(new CGUIDialogPVRGuideSearch);              // window id = 611
-  g_windowManager.Add(new CGUIDialogPVRTimerSettings);          // window id = 602
-  g_windowManager.Add(new CGUIDialogTVChannels);               // window id = 603
-  g_windowManager.Add(new CGUIDialogTVGuide);                  // window id = 603
-  g_windowManager.Add(new CGUIDialogPVRRecordingInfo);          // window id = 603
-  g_windowManager.Add(new CGUIDialogPVRGroupManager);           // window id = 603
   g_windowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
 #ifdef HAS_GL
   g_windowManager.Add(new CGUIWindowTestPatternGL);      // window id = 8
@@ -1293,8 +1292,6 @@ HRESULT CApplication::Initialize()
 #ifdef HAS_LINUX_NETWORK
   g_windowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
 #endif
-  g_windowManager.Add(new CGUIDialogPVRUpdateProgressBar);      // window id = 146
-
   g_windowManager.Add(new CGUIDialogLockSettings); // window id = 131
 
   g_windowManager.Add(new CGUIDialogContentSettings);        // window id = 132
@@ -1303,6 +1300,21 @@ HRESULT CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
   g_windowManager.Add(new CGUIWindowMusicNav);               // window id = 502
   g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);    // window id = 503
+
+  /* Load PVR related Windows and Dialogs */
+  g_windowManager.Add(new CGUIWindowTV);                       // window id = 600
+  g_windowManager.Add(new CGUIDialogPVRGuideInfo);             // window id = 601
+  g_windowManager.Add(new CGUIDialogPVRRecordingInfo);         // window id = 602
+  g_windowManager.Add(new CGUIDialogPVRTimerSettings);         // window id = 603
+  g_windowManager.Add(new CGUIDialogPVRGroupManager);          // window id = 604
+  g_windowManager.Add(new CGUIDialogPVRChannelManager);        // window id = 605
+  g_windowManager.Add(new CGUIDialogPVRGuideSearch);           // window id = 606
+  g_windowManager.Add(new CGUIDialogPVRUpdateProgressBar);     // window id = 608
+  g_windowManager.Add(new CGUIDialogPVRChannelsOSD);           // window id = 609
+  g_windowManager.Add(new CGUIDialogPVRGuideOSD);              // window id = 610
+  g_windowManager.Add(new CGUIDialogPVRDirectorOSD);           // window id = 611
+  g_windowManager.Add(new CGUIDialogPVRCutterOSD);             // window id = 612
+  g_windowManager.Add(new CGUIDialogTeletext);                 // window id = 613
 
   g_windowManager.Add(new CGUIDialogSelect);             // window id = 2000
   g_windowManager.Add(new CGUIWindowMusicInfo);                // window id = 2001
@@ -1399,10 +1411,7 @@ HRESULT CApplication::Initialize()
   if (!g_settings.bUseLoginScreen)
     UpdateLibraries();
 
-  if (g_guiSettings.GetBool("pvrmanager.enabled"))
-  {
-    StartPVRManager();
-  }
+  StartPVRManager();
 
   m_slowTimer.StartZero();
 
@@ -3395,16 +3404,20 @@ HRESULT CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_ACCESS_POINTS);
     g_windowManager.Delete(WINDOW_DIALOG_SLIDER);
 
-    g_windowManager.Delete(WINDOW_DIALOG_PVRCLIENT_SETTINGS);
-    g_windowManager.Delete(WINDOW_DIALOG_TV_GUIDE_INFO);
-    g_windowManager.Delete(WINDOW_DIALOG_TV_RECORDING_INFO);
-    g_windowManager.Delete(WINDOW_DIALOG_TV_TIMER_SETTING);
-    g_windowManager.Delete(WINDOW_DIALOG_TV_GROUP_MANAGER);
-    g_windowManager.Delete(WINDOW_DIALOG_TV_CHANNEL_MANAGER);
-    g_windowManager.Delete(WINDOW_DIALOG_TV_OSD_CHANNELS);
-    g_windowManager.Delete(WINDOW_DIALOG_TV_OSD_GUIDE);
-    g_windowManager.Delete(WINDOW_DIALOG_TV_OSD_DIRECTOR);
-
+    /* Delete PVR related windows and dialogs */
+    g_windowManager.Delete(WINDOW_TV);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_GUIDE_INFO);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_RECORDING_INFO);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_TIMER_SETTING);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_GROUP_MANAGER);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_GUIDE_SEARCH);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_CHANNEL_SCAN);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_UPDATE_PROGRESS);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_CHANNELS);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_GUIDE);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_DIRECTOR);
+    g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_CUTTER);
     g_windowManager.Delete(WINDOW_DIALOG_OSD_TELETEXT);
 
     g_windowManager.Delete(WINDOW_STARTUP);
@@ -3423,8 +3436,6 @@ HRESULT CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_VIDEO_OVERLAY);
     g_windowManager.Delete(WINDOW_SCRIPTS_INFO);
     g_windowManager.Delete(WINDOW_SLIDESHOW);
-    g_windowManager.Delete(WINDOW_DIALOG_EPG_SCAN);
-    g_windowManager.Delete(WINDOW_DIALOG_TV_GUIDE_SEARCH);
 
     g_windowManager.Delete(WINDOW_HOME);
     g_windowManager.Delete(WINDOW_PROGRAMS);

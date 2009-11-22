@@ -43,7 +43,7 @@ using namespace std;
 #define BUTTON_OK                     29
 
 CGUIDialogPVRGroupManager::CGUIDialogPVRGroupManager()
-    : CGUIDialog(WINDOW_DIALOG_TV_GROUP_MANAGER, "DialogPVRGroupManager.xml")
+    : CGUIDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER, "DialogPVRGroupManager.xml")
 {
   m_channelLeftItems  = new CFileItemList;
   m_channelRightItems = new CFileItemList;

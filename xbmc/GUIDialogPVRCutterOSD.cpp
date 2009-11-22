@@ -19,47 +19,43 @@
  *
  */
 
-/* Standart includes */
-#include "GUIWindowManager.h"
-#include "GUIDialogPVRRecordingInfo.h"
-#include "utils/PVRRecordings.h"
+#include "GUIDialogPVRCutterOSD.h"
+#include "utils/log.h"
+#include "Application.h"
 
 using namespace std;
 
-#define CONTROL_BTN_OK  10
-
-CGUIDialogPVRRecordingInfo::CGUIDialogPVRRecordingInfo(void)
-    : CGUIDialog(WINDOW_DIALOG_PVR_RECORDING_INFO, "DialogPVRRecordingInfo.xml")
-    , m_recordItem(new CFileItem)
+CGUIDialogPVRCutterOSD::CGUIDialogPVRCutterOSD()
+    : CGUIDialog(WINDOW_DIALOG_PVR_OSD_CUTTER, "DialogPVRCutterOSD.xml")
 {
 }
 
-CGUIDialogPVRRecordingInfo::~CGUIDialogPVRRecordingInfo(void)
+CGUIDialogPVRCutterOSD::~CGUIDialogPVRCutterOSD()
 {
 }
 
-bool CGUIDialogPVRRecordingInfo::OnMessage(CGUIMessage& message)
+bool CGUIDialogPVRCutterOSD::OnAction(const CAction& action)
 {
-  if (message.GetMessage() == GUI_MSG_CLICKED)
+  if (action.id == ACTION_PREVIOUS_MENU || action.id == ACTION_CLOSE_DIALOG)
   {
-    int iControl = message.GetSenderId();
-
-    if (iControl == CONTROL_BTN_OK)
-    {
-      Close();
-      return true;
-    }
+    m_bClose = true;
+    return true;
   }
 
+  return CGUIDialog::OnAction(action);
+}
+
+bool CGUIDialogPVRCutterOSD::OnMessage(CGUIMessage& message)
+{
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogPVRRecordingInfo::SetRecording(const CFileItem *item)
+void CGUIDialogPVRCutterOSD::OnInitWindow()
 {
-  *m_recordItem = *item;
+  CGUIDialog::OnInitWindow();
 }
 
-CFileItemPtr CGUIDialogPVRRecordingInfo::GetCurrentListItem(int offset)
+void CGUIDialogPVRCutterOSD::OnDeinitWindow(int nextWindowID)
 {
-  return m_recordItem;
+  CGUIDialog::OnDeinitWindow(nextWindowID);
 }
