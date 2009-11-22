@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 19/11/2009 -->
-<!--Finnish strings based on English strings revision 24738-->
+<!--Date of translation: 21/11/2009 -->
+<!--Finnish strings based on English strings revision 24799-->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -981,7 +981,7 @@
   <string id="13004">- Tiedoston vähimmäiskesto</string>
   <string id="13005">Sammuta</string>
   <string id="13006">Käynnistä dashboard</string>
-  <string id="13007">Vaihtoehtoinen dashboardin polku</string>
+  <string id="13007">Valinnainen dashboardin polku</string>
   <string id="13008">Sammutusmuoto</string>
   <string id="13009">Poistu</string>
   <string id="13010">Horrostila</string>
@@ -1964,7 +1964,7 @@
   <string id="21386">Äänekkyyden tason säätö</string>
   <string id="21387">Nopea</string>
   <string id="21388">Hiljainen</string>
-  <string id="21389">Omavalintainen taustakuva</string>
+  <string id="21389">Valinnainen taustakuva käytössä</string>
   <string id="21390">Energiatehokkuuden tason säätö</string>
   <string id="21391">Tehotila</string>
   <string id="21392">Säästötila</string>
@@ -2151,6 +2151,7 @@
   <string id="23001">- Lisäosan asetukset</string>
 
   <string id="23050">Teksti-tv käytössä</string>
+  <string id="23051">Osa %i</string>
 
  <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">Ulkoinen toisto-ohjelma käytössä</string>
@@ -2239,4 +2240,9 @@
   <string id="33076">Päivitä XBMC uudempaan versioon.</string>
   <string id="33077">Tietoja ei löydy!</string>
   <string id="33078">Seuraava sivu</string>
+  <string id="33079">Pitää</string>
+  <string id="33080">Inhoaa</string>
+  <string id="33081">Tämä tiedosto on pinottu, valitse osa jonka haluat toistaa</string> 
+  <string id="33082">Polku</string>
+  <string id="33083">Skriptin omavalintainen painike käytössä</string> 
 </strings>

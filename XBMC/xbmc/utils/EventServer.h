@@ -72,6 +72,7 @@ namespace EVENTSERVER
   protected:
     CEventServer();
     void Cleanup();
+    void Run();
     void ProcessPacket(SOCKETS::CAddress& addr, int packetSize);
     void ProcessEvents();
     void RefreshClients();

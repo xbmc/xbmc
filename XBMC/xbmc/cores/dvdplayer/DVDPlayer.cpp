@@ -1781,6 +1781,7 @@ void CDVDPlayer::HandleMessages()
         {
           FlushBuffers(false);
           SyncronizePlayers(SYNCSOURCE_ALL, start);
+          m_callback.OnPlayBackSeekChapter(msg.GetChapter());
         }
       }
       else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
@@ -1891,6 +1892,16 @@ void CDVDPlayer::HandleMessages()
           m_State.timestamp =  CDVDClock::GetAbsoluteClock();
         }
 
+        if (speed != DVD_PLAYSPEED_PAUSE)
+        {
+          if (m_playSpeed != DVD_PLAYSPEED_PAUSE)
+          {
+            if ((m_playSpeed != DVD_PLAYSPEED_NORMAL * 32 && speed == DVD_PLAYSPEED_NORMAL) ||
+                (m_playSpeed != DVD_PLAYSPEED_NORMAL * -32 && speed == DVD_PLAYSPEED_NORMAL))
+              m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL );
+          }
+        }
+
         // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
         // audioplayer, stops outputing audio to audiorendere, but still tries to
         // sleep an correct amount for each packet
@@ -1994,9 +2005,15 @@ void CDVDPlayer::Pause()
 
   // return to normal speed if it was paused before, pause otherwise
   if (m_playSpeed == DVD_PLAYSPEED_PAUSE)
+  {
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
+    m_callback.OnPlayBackResumed();
+  }
   else
+  {
     SetPlaySpeed(DVD_PLAYSPEED_PAUSE);
+    m_callback.OnPlayBackPaused();
+  }
 }
 
 bool CDVDPlayer::IsPaused() const
@@ -2130,6 +2147,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 
   m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, accurate, restore));
   SyncronizeDemuxer(100);
+  m_callback.OnPlayBackSeek((int)seek);
 }
 
 bool CDVDPlayer::SeekScene(bool bPlus)
@@ -2342,6 +2360,7 @@ void CDVDPlayer::SeekTime(__int64 iTime)
 {
   m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, true, true, true));
   SyncronizeDemuxer(100);
+  m_callback.OnPlayBackSeek((int)iTime);
 }
 
 // return the time in milliseconds

@@ -1281,10 +1281,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParser.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParser.h"
 						>
 					</File>

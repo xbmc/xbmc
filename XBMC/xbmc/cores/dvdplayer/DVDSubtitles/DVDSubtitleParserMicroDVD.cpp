@@ -60,7 +60,7 @@ bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
   if (!reg.RegComp("\\{([0-9]+)\\}\\{([0-9]+)\\}([^|]*?)(\\|([^|]*?))?$"))//(\\|([^|]*?))?$"))
     return false;
 
-  while (m_stringstream.getline(line, sizeof(line)))
+  while (m_pStream->ReadLine(line, sizeof(line)))
   {
     if (reg.RegFind(line) > -1)
     {

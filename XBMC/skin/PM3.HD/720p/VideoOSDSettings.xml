@@ -54,7 +54,7 @@
 				<onright>5</onright>
 				<onup>5</onup>
 				<ondown>5</ondown>
-				<visible>system.getbool(lookandfeel.enablemouse)</visible>
+				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="image">
 				<posx>40</posx>

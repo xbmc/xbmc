@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+  <!-- Translator: Mika Pirinen -->
+  <!-- Date of translation: 21/11/2009 -->
+  <!-- Finnish strings -->
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">Vaihda sinun</string>
+  <string id="31001">Pitää</string>
+  <string id="31002">Inhoaa</string>
+  <string id="31003">Virta-asetukset</string>
+
+  <string id="31007">Lisäosat</string>
+
+  <string id="31020">Viimeksi lisätyt</string>
+  <string id="31021">Video - Tiedostot</string>
+  <string id="31022">Musiikki - Tiedostot</string>
+  <string id="31023">Toistetaan</string>
+  <string id="31024">Sivu</string>
+  <string id="31025">Kohdetta</string>
+  <string id="31026">Muita asetuksia</string>
+  <string id="31027">Sijainti</string>
+ 
+  <!-- View Type labels -->
+  <string id="31028">Julisteen kierto</string>
+  <string id="31029">Fanitaide</string>
+  <string id="31030">Täysi lista</string>
+  <string id="31031">Kuvien kuvakkeet</string>
+  <string id="31032">Kuvan kierto</string>
+
+  <!-- Extra labels -->
+  <string id="31040">Nyt toistetaan</string>
+
+  <string id="31042">TOISTETAAN</string>
+  <string id="31043">TAUKO</string>
+  <string id="31044">KELAUS ETEENPÄIN</string>
+  <string id="31045">KELAUS TAAKSEPÄIN</string>
+  <string id="31046">Ääniasetukset</string>
+  <string id="31047">Nykyinen esiasetus</string>
+  <string id="31048">Visualisoinnin esiasetukset</string>
+  <string id="31049">Päättymisaika</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Avaa soittolista</string>
+  <string id="31056">Tallenna soittolista</string>
+  <string id="31057">Sulje soittolista</string>
+  <string id="31058">Järjestelmän musiikkitiedostot</string>
+  <string id="31059">Nykyinen soittolista</string>
+  <string id="31060">Tämä tiedosto on pinottu, valitse osa jonka haluat toistaa.</string>
+
+  <!-- Skin Settings labels -->
+  <string id="31100"></string>
+  <string id="31101">Koti-ikkunan asetukset</string>
+  <string id="31102">Tausta</string>
+  <string id="31103">Näytä "Tauko" kuvaesityksessä</string>
+  <string id="31104"></string>
+  <string id="31105">Näytä median nimet taustahaussa</string>
+  <string id="31106">Yleiset asetukset</string>
+  <string id="31107"></string>
+  <string id="31108">Piilota päävalikon painikkeet</string>
+  <string id="31109">Koti-ikkunan taustakuvat</string>
+  <string id="31110">Muokkaa koti-painikkeen taustakuvaa</string>
+  <string id="31111">Piilota</string>
+  <string id="31112">Asetukset</string>
+  <string id="31113">Yksittäinen kuva</string>
+  <string id="31114">Vaihtuva kuva</string>
+  <string id="31115">Muokautettu</string>
+  <string id="31116">Lisätyt skriptit</string>
+  <string id="31117">Näytä viimeksi lisätyt videot</string>
+  <string id="31118">Kotisivun alivalikko</string>
+  <string id="31119">Valinnainen skripti-painike käytössä</string>
+  <string id="31120">Painikkeen teksti</string>
+  <string id="31121">Polku</string>
+  <string id="31122">Sääsivu</string>
+  <string id="31123">Käytä TV-ohjelmilla "Juliste"-näkymää</string>
+  <string id="31124">Näytä taustalla "Nyt toistetaan"-video</string>
+  <string id="31125">Näytä taustalla "Nyt toistetaan"-visualisointi</string>
+
+  <string id="31126">Näytä Lyrics -skriptin painike kuvaruutuvalikossa</string>
+  <string id="31127">Polku</string>
+  <string id="31128">XBMC Lyrics</string>
+
+  <!-- Script labels -->
+  <string id="31200">Pikavalinnat</string>
+  <string id="31201">Kategoriat</string>
+  <string id="31202">Näytä näyttelijät</string>
+  <string id="31203">Valitse kappale</string>
+  <string id="31204">Valinnan linkit</string>
+  <string id="31205">Lyrics lähde</string>
+
+  <!-- The Weather Channel Script labels -->
+  <string id="31250">Tutka ja sääennuste</string>
+  <string id="31251">Sääennuste</string>
+  <string id="31252">TWC -skripti</string>
+
+  <!-- Extra labels -->
+  <string id="31300">Nykyinen lämpötila</string>
+  <string id="31301">Viimeksi päivitetty</string>
+  <string id="31302">Valikko</string>
+  <string id="31303"></string>
+  <string id="31304">Kuva</string>
+  <string id="31305">Levyä ei löydetty</string>
+  <string id="31306">Poista</string>
+  <string id="31307">Piilota fanitaide</string>
+  <string id="31308">Elokuvan tiedot</string>
+  <string id="31309">Käytetty muisti</string>
+  <string id="31310">Kappalenumero</string>
+  <string id="31011">FANITAIDE[CR]KUVAA[CR]EI OLE[CR]SAATAVILLA[CR]KLIKKAA VAIHTAAKSESI</string>
+  <string id="31312">Nykyinen hakupaikka</string>
+  <string id="31313">Valitse hakupaikka</string>
+  <string id="31314">Sisällön hakuasetukset</string>
+  <string id="31315">Perus</string>
+  <string id="31316"></string>
+  <string id="31317">Polku</string>
+  <string id="31318">Pieni fanitaide</string>
+  <string id="31319">Valittu profiili</string>
+  <string id="31320">Viimeksi sisään kirjauduttu</string>
+  <string id="31321">Karaoke kappaleen valinta</string>
+  <string id="31322">Esitetty</string>
+  <string id="31323">Viimeisimmät elokuvat</string>
+  <string id="31324">Viimeisimmät jaksot</string>
+  <string id="31325">Soittolistan asetukset</string>
+  <string id="31326">Luotu</string>
+  <string id="31327">Resoluutio</string>
+  <string id="31328">Viimeksi lisätty</string>
+  <string id="31329">[B]Ajastus[/B] [COLOR=grey2] - Aikaa järjestelmän sammuttamiseen[/COLOR]</string>
+
+  <!-- Description Labels  -->
+  <string id="31400">[B]Muokkaa ulkoasun asetuksia, sisältää.[/B][CR][CR]Kalibroi käyttöliittymä · Vaihda ulkoasua · Aseta ruudunsäästäjä · Vaihda kieliasetuksia · Aseta näkymän asetukset</string>
+  <string id="31401">[B]Muokkaa video-asetuksia, sisältää.[/B][CR][CR]Huolla videokirjastoa · Videotoiston asetukset Tekstitys asetukset · Aseta videon toistoasetukset</string>
+  <string id="31402">[B]Muokkaa musiikki-asetuksia, sisältää.[/B][CR][CR]Valitse visualisointi · Huolla musiikkikirjastoa · Aseta Last.FM tilin asetukset · Vaihda karaoke-asetuksia</string>
+  <string id="31403">[B]Muokkaa kuva-asetuksia, sisältää.[/B][CR][CR]Aseta kuvakkeiden luonti· Aseta kuvaesityksen asetuksia · Aseta XBMC ruudunsäästäjän asetukset</string>
+  <string id="31404">[B]Muokkaa sää-asetuksia, sisältää.[/B][CR][CR]Aseta kolme kaupunkia jotka XBMC esittää sää-ikkunassa · Vaihda alueelliset asetukset, sisältäen lämpötilayksiköt</string>
+  <string id="31405">[B]Muokkaa verkkoasetuksia, sisältää.[/B][CR][CR]Ota käyttöön XBMC Web-ohjus · Aseta samba asetukset · Määritä UPNP palvelin ja asiakas · Muokkaa ohjauspalvelinta</string>
+  <string id="31406">[B]Muokkaa järjestelmän asetuksia, sisältää.[/B][CR][CR]Vaihda sammutus asetuksia · Määritä automaattinen median toisto · Aseta äänilaitteisto· Muokkaa pääkäyttäjän salasanaa ja järjestelmän lukituksia</string>
+  <string id="31407">[B]Vaihda ulkoasun asetuksia, sisältää.[/B][CR][CR]Lisää ja poista painikkeita · Vaihda taustan asetuksia · Luo skriptien pikakäynnistimet</string>
+
+
+  <string id="31420">[B][COLOR=white]XBMC ei löytänyt levyä.[/COLOR][/B][CR][CR]Aseta levy asemaan ja yritä uudelleen tai peruuta</string>
+  <string id="31421">Valitse XBMC käyttäjäprofiili[CR]kirjautuaksesi sisään</string>
+</strings>
