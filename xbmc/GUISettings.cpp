@@ -57,7 +57,8 @@ using namespace std;
 
 #define MAX_RESOLUTIONS 128
 
-#define TEXT_OFF 351
+#define TEXT_OFF  351
+#define TEXT_NONE 231
 
 class CGUISettings g_guiSettings;
 
@@ -241,8 +242,6 @@ void CGUISettings::Initialize()
   AddSeparator(4, "weather.sep1");
   AddString(5, "weather.plugin", 23030, "", SPIN_CONTROL_TEXT, true);
   AddString(6, "weather.pluginsettings", 23031, "", BUTTON_CONTROL_STANDARD, true);
-  AddSeparator(7, "weather.sep2");
-  AddString(8, "weather.jumptolocale", 20026, "", BUTTON_CONTROL_STANDARD);
 
   // My Music Settings
   AddGroup(3, 2);
@@ -321,8 +320,7 @@ void CGUISettings::Initialize()
 
   // System settings
   AddGroup(4, 13000);
-  AddCategory(4, "system", 13281);
-  // advanced only configuration
+  AddCategory(4, "system", 128);
   AddBool(1, "system.debuglogging", 20191, false);
   AddPath(2, "system.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
   AddSeparator(3, "system.sep1");
@@ -398,20 +396,12 @@ void CGUISettings::Initialize()
 
   // video settings
   AddGroup(5, 3);
-  AddCategory(5, "myvideos", 16000);
-  AddBool(0, "myvideos.treatstackasfile", 20051, true);
-  AddInt(2, "myvideos.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
-  AddBool(4, "myvideos.extractflags",20433, true);
-  AddBool(5, "myvideos.cleanstrings", 20418, false);
-
   AddCategory(5, "videolibrary", 14022);
-
   AddBool(0, "videolibrary.enabled", 418, true);
-  AddBool(3, "videolibrary.hideplots", 20369, false);
-  AddBool(4, "videolibrary.seasonthumbs", 20382, true);
+  AddBool(3, "videolibrary.showunwatchedplots", 20369, true);
+  AddBool(0, "videolibrary.seasonthumbs", 20382, true);
   AddBool(5, "videolibrary.actorthumbs", 20402, true);
   AddInt(0, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
-  AddSeparator(7, "videolibrary.sep2");
   AddBool(8, "videolibrary.updateonstartup", 22000, false);
   AddBool(0, "videolibrary.backgroundupdate", 22001, false);
   AddSeparator(10, "videolibrary.sep3");
@@ -419,25 +409,38 @@ void CGUISettings::Initialize()
   AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
 
-  AddCategory(5, "videoplayer", 16003);
-  AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(3, "videoplayer.sep1");
+  AddCategory(5, "videoplayer", 14086);
+  AddInt(1, "videoplayer.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
+  AddSeparator(2, "videoplayer.sep1");
 #ifdef HAVE_LIBVDPAU
-  AddInt(4, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_VDPAU, SPIN_CONTROL_TEXT);
+  AddInt(3, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_VDPAU, SPIN_CONTROL_TEXT);
+#elif defined(_WIN32) && defined(HAS_DX)
+  // No render methods other than AUTO on win32 DirectX
+  AddInt(0, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_AUTO, SPIN_CONTROL_TEXT);
 #else
-  AddInt(4, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_SOFTWARE, SPIN_CONTROL_TEXT);
+  AddInt(3, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_SOFTWARE, SPIN_CONTROL_TEXT);
 #endif
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
-  AddBool(5, "videoplayer.adjustrefreshrate", 170, false);
-  AddFloat(6, "videoplayer.aspecterror", 22021, 3.0f, 0.0f, 1.0f, 20.0f);
+  AddBool(4, "videoplayer.adjustrefreshrate", 170, false);
+  //sync settings not available on windows gl build
+#if defined(_WIN32) && defined(HAS_GL)
+  #define SYNCSETTINGS 0
+#else
+  #define SYNCSETTINGS 1
+#endif
+  AddBool(SYNCSETTINGS ? 5 : 0, "videoplayer.usedisplayasclock", 13510, false);
+  AddInt(SYNCSETTINGS ? 6 : 0, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
+  AddFloat(0, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
+  AddInt(0, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
+  AddInt(7, "videoplayer.aspecterror", 22021, 3, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_PERCENT, TEXT_NONE);
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.strictbinding", 13120, false);
   AddBool(0, "videoplayer.vdpau_allow_xrandr", 13122, false);
 #endif
 #ifdef HAS_GL
-  AddSeparator(7, "videoplayer.sep1.5");
+  AddSeparator(8, "videoplayer.sep1.5");
   AddInt(0, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
@@ -445,37 +448,27 @@ void CGUISettings::Initialize()
   AddBool(11, "videoplayer.vdpaustudiolevel", 13122, true);
 #endif
 #endif
+  AddSeparator(12, "videoplayer.sep5");
+  AddBool(13, "videoplayer.teletextenabled", 23050, true);
 
-  AddSeparator(12, "videoplayer.sep2");
-  AddString(0, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(13, "videoplayer.sep3");
-  AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
-  AddBool(16, "videoplayer.dvdautomenu", 21882, false);
-
-  AddSeparator(18, "videoplayer.sep4");
-
-  //sync settings not available on windows gl build
-#if defined(_WIN32) && defined(HAS_GL)
-  #define SYNCSETTINGS 0
-#else
-  #define SYNCSETTINGS 1
-#endif
-  AddBool(SYNCSETTINGS ? 19 : 0, "videoplayer.usedisplayasclock", 13510, false);
-  AddInt(SYNCSETTINGS ? 20 : 0, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
-  AddFloat(SYNCSETTINGS ? 0 : 0, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
-  AddInt(SYNCSETTINGS ? 0 : 0, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
-
-  AddSeparator(23, "videoplayer.sep5");
-  AddBool(24, "videoplayer.teletextenabled", 23090, true);
+  AddCategory(5, "myvideos", 14081);
+  AddBool(0, "myvideos.treatstackasfile", 20051, true);
+  AddBool(2, "myvideos.extractflags",20433, true);
+  AddBool(3, "myvideos.cleanstrings", 20418, false);
 
   AddCategory(5, "subtitles", 287);
-  AddString(1, "subtitles.font", 288, "arial.ttf", SPIN_CONTROL_TEXT);
+  AddString(1, "subtitles.font", 14089, "arial.ttf", SPIN_CONTROL_TEXT);
   AddInt(2, "subtitles.height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
   AddInt(3, "subtitles.style", 736, FONT_STYLE_BOLD, FONT_STYLE_NORMAL, 1, FONT_STYLE_BOLD_ITALICS, SPIN_CONTROL_TEXT);
   AddInt(4, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
   AddString(5, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(7, "subtitles.sep1");
   AddPath(11, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+
+  AddCategory(5, "dvds", 14087);
+  AddBool(1, "dvds.autorun", 14088, false);
+  AddInt(2, "dvds.playerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddBool(3, "dvds.automenu", 21882, false);
 
   // Don't add the category - makes them hidden in the GUI
   //AddCategory(5, "postprocessing", 14041);
@@ -576,7 +569,6 @@ void CGUISettings::Initialize()
   AddSeparator(14, "lookandfeel.sep3");
   AddBool(15, "lookandfeel.enablemouse", 21369, true);
   AddBool(16, "lookandfeel.remoteaskeyboard", 21449, false);
-  AddBool(17, "lookandfeel.autorun", 447, false);
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);

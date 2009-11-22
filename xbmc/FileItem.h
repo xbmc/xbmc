@@ -251,12 +251,28 @@ public:
   CStdString GetCachedProfileThumb() const;
   CStdString GetCachedSeasonThumb() const;
   CStdString GetCachedActorThumb() const;
+  /*!
+   \brief Get the cached fanart path for this item if it exists
+   \return path to the cached fanart for this item, or empty if none exists
+   \sa CacheLocalFanart, GetLocalFanart
+   */
   CStdString GetCachedFanart() const;
   static CStdString GetCachedThumb(const CStdString &path, const CStdString& strPath2, bool split=false);
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
-  CStdString CacheFanart(bool probe=false) const;
+  /*!
+   \brief Cache a copy of the local fanart for this item if we don't already have an image cached
+   \return true if we already have cached fanart or if the caching was successful, false if no image is cached.
+   \sa GetLocalFanart, GetCachedFanart
+   */
+  bool CacheLocalFanart() const;
+  /*!
+   \brief Get the local fanart for this item if it exists
+   \return path to the local fanart for this item, or empty if none exists
+   \sa CacheLocalFanart, GetCachedFanart
+   */
+  CStdString GetLocalFanart() const;
 
   // Sets the cached thumb for the item if it exists
   void SetCachedVideoThumb();

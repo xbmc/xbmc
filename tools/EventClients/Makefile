@@ -19,6 +19,7 @@ install:
 	cp -a Clients/J2ME\ Client/j2me_remote.py $(prefix)/bin/xbmc-j2meremote
 	cp -a Clients/PS3\ BD\ Remote/ps3_remote.py $(prefix)/bin/xbmc-ps3remote
 	#cp -a Clients/PS3\ Sixaxis\ Controller/ps3d.py $(prefix)/bin/xbmc-ps3d
+	cp -a Clients/XBMC\ Send/xbmc-send.py $(prefix)/bin/xbmc-send
 	mkdir -p $(prefix)/lib/python2.5/site-packages/xbmc
 	echo 'ICON_PATH="$(installdir)/share/pixmaps/xbmc/"' > $(prefix)/lib/python2.5/site-packages/xbmc/defs.py
 	cp -a lib/python/* $(prefix)/lib/python2.5/site-packages/xbmc/

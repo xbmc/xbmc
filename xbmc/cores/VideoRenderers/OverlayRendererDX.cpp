@@ -275,6 +275,7 @@ COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o)
     return;
   }
   Load(rgba, o->width, o->height, o->width * 4);
+  free(rgba);
 
   if(o->source_width && o->source_height)
   {
@@ -325,6 +326,7 @@ COverlayImageDX::COverlayImageDX(CDVDOverlaySpu* o)
     return;
   }
   Load(rgba + min_x + min_y * o->width, max_x - min_x, max_y - min_y, o->width * 4);
+  free(rgba);
 
   m_align  = ALIGN_VIDEO;
   m_pos    = POSITION_ABSOLUTE;

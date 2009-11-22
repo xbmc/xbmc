@@ -297,7 +297,7 @@ void t_init(struct usplash_theme *theme) {
 	//theme->text_x = (theme->pixmap->width / 2) - (theme->text_width / 2);
 	theme->text_x = 20;
 	theme->text_y = (theme->pixmap->height * 0.60);
-	theme->text_height = 20;
+	theme->text_height = 60;
 	
 	// set theme color indexes
 	theme->background             = 0;

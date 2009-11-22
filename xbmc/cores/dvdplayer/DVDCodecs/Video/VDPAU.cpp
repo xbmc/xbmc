@@ -102,7 +102,7 @@ CVDPAU::CVDPAU(int width, int height)
 CVDPAU::~CVDPAU()
 {
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
-  if (m_glPixmap)
+  if (m_glPixmap && m_bPixmapCreated)
   {
     CLog::Log(LOGINFO, "GLX: Destroying glPixmap");
     glXDestroyPixmap(m_Display, m_glPixmap);

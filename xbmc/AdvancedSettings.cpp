@@ -221,7 +221,7 @@ void CAdvancedSettings::Initialize()
 
   m_curlconnecttimeout = 10;
   m_curllowspeedtime = 5;
-  m_curlretries = 3;
+  m_curlretries = 2;
 
   m_fullScreen = m_startFullScreen = false;
 

@@ -85,7 +85,7 @@
 			<RegExp conditional="imdbrank" input="$$1" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="5+">
 				<expression trim="1" repeat="no">Star_IMDB.*?&lt;span.*?&gt;([0-9]+?) מדרגים&lt;/span&gt;</expression>
 			</RegExp>
-			<RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://www.imdb.com/title/\1&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBFanartById&quot;&gt;http://www.imdb.com/title/\1&lt;/url&gt;" dest="5+">
 				<expression trim="1" repeat="no">http://www\.imdb\.com/title/(tt\d+?)'</expression>
 			</RegExp>
 			<expression noclean="1"/>

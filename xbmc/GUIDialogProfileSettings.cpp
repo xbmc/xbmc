@@ -134,11 +134,11 @@ void CGUIDialogProfileSettings::CreateSettings()
     setting2.name = g_localizeStrings.Get(20094);
     setting2.data = &m_iSourcesMode;
     setting2.type = SettingInfo::SPIN;
-    setting2.entry.push_back(make_pair(setting.entry.size(), g_localizeStrings.Get(20062)));
-    setting2.entry.push_back(make_pair(setting.entry.size(), g_localizeStrings.Get(20063)));
-    setting2.entry.push_back(make_pair(setting.entry.size(), g_localizeStrings.Get(20061)));
+    setting2.entry.push_back(make_pair(setting2.entry.size(), g_localizeStrings.Get(20062)));
+    setting2.entry.push_back(make_pair(setting2.entry.size(), g_localizeStrings.Get(20063)));
+    setting2.entry.push_back(make_pair(setting2.entry.size(), g_localizeStrings.Get(20061)));
     if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
-      setting2.entry.push_back(make_pair(setting.entry.size(), g_localizeStrings.Get(20107)));
+      setting2.entry.push_back(make_pair(setting2.entry.size(), g_localizeStrings.Get(20107)));
 
     m_settings.push_back(setting2);
   }
@@ -375,9 +375,12 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
         {
           // create some new settings
           CGUISettings localSettings;
+          localSettings.Initialize();
           CStdString path = CUtil::AddFileToFolder("special://masterprofile/", dialog->m_strDirectory);
           path = CUtil::AddFileToFolder(path, "guisettings.xml");
-          g_settings.SaveSettings(path, &localSettings);
+          CSettings settings;
+          settings.Initialize();
+          settings.SaveSettings(path, &localSettings);
         }
       }
 
