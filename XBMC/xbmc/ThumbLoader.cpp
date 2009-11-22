@@ -172,17 +172,13 @@ void CVideoThumbLoader::SetWatchedOverlay(CFileItem *item)
  */
 bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 {
-  if (pItem->m_bIsShareOrDrive) return false;
+  if (pItem->m_bIsShareOrDrive
+  ||  pItem->IsParentFolder())
+    return false;
 
   SetWatchedOverlay(pItem);
 
   CFileItem item(*pItem);
-  if (pItem->IsVideoDb() && pItem->HasVideoInfoTag() && !pItem->HasThumbnail())
-  {
-    if (pItem->m_bIsFolder && pItem->GetVideoInfoTag()->m_iSeason > -1)
-      return false;
-    item = CFileItem(*pItem->GetVideoInfoTag());
-  }
   CStdString cachedThumb(item.GetCachedVideoThumb());
   
   if (!pItem->HasThumbnail())
@@ -218,8 +214,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
   if (!pItem->HasProperty("fanart_image"))
   {
-    pItem->CacheFanart();
-    if (CFile::Exists(pItem->GetCachedFanart()))
+    if (pItem->CacheLocalFanart())
       pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
   }
 

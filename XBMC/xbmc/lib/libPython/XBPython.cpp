@@ -504,10 +504,12 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
 
   // check if locked
   int profile = g_settings.m_iLastLoadedProfileIndex;
-  if (g_settings.m_vecProfiles[profile].programsLocked() &&
-      g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
-    if (!g_passwordManager.IsMasterLockUnlocked(true))
+  if (profile < g_settings.m_vecProfiles.size() &&
+      g_settings.m_vecProfiles[profile].programsLocked() &&
+      !g_passwordManager.IsMasterLockUnlocked(true))
+  {
       return -1;
+  }
 
   Initialize();
 

@@ -80,8 +80,9 @@ bool CRenderSystemDX::InitRenderSystem()
   if(m_pD3D->GetAdapterIdentifier(m_adapter, 0, &AIdentifier) == D3D_OK)
   {
     m_RenderRenderer = (const char*)AIdentifier.Description;
-    m_RenderVersionMajor = (int)AIdentifier.DriverVersion.HighPart;
-    m_RenderVersionMinor = (int)AIdentifier.DriverVersion.LowPart;
+    m_RenderVendor = (const char*)AIdentifier.Driver;
+    m_RenderVersion.Format("%d.%d.%d.%04d", HIWORD(AIdentifier.DriverVersion.HighPart), LOWORD(AIdentifier.DriverVersion.HighPart),
+                                            HIWORD(AIdentifier.DriverVersion.LowPart), LOWORD(AIdentifier.DriverVersion.LowPart));
   }
 
   // get our render capabilities
@@ -338,7 +339,7 @@ bool CRenderSystemDX::PresentRenderImpl()
   if (g_advancedSettings.m_sleepBeforeFlip)
   {
     D3DRASTER_STATUS rasterStatus;
-    while (SUCCEEDED(m_pD3DDevice->GetRasterStatus(0, &rasterStatus)) && !rasterStatus.InVBlank && rasterStatus.ScanLine < 0.9*m_screenHeight)
+    while (SUCCEEDED(m_pD3DDevice->GetRasterStatus(0, &rasterStatus)) && rasterStatus.ScanLine < 0.9*m_screenHeight)
       Sleep(1);
   }
   hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );

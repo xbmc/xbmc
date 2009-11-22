@@ -305,6 +305,58 @@ void Cocoa_MountPoint2DeviceName(char* path)
   }
 }
 
+bool Cocoa_GetVolumeNameFromMountPoint(const char *mountPoint, CStdString &volumeName)
+{
+  unsigned i, count = 0;
+  struct statfs *buf = NULL;
+  CStdString mountpoint, devicepath;
+
+  count = getmntinfo(&buf, 0);
+  for (i=0; i<count; i++)
+  {
+    mountpoint = buf[i].f_mntonname;
+    if (mountpoint == mountPoint)
+    {
+      devicepath = buf[i].f_mntfromname;
+      break;
+    }
+  }
+  if (devicepath.empty())
+  {
+    return false;
+  }
+
+  DASessionRef session = DASessionCreate(kCFAllocatorDefault);
+  if (!session)
+  {
+      return false;
+  }
+
+  DADiskRef disk = DADiskCreateFromBSDName(kCFAllocatorDefault, session, devicepath.c_str());
+  if (!disk)
+  {
+      CFRelease(session);
+      return false;
+  }
+
+  NSDictionary *dd = (NSDictionary*) DADiskCopyDescription(disk);
+  if (!dd)
+  {
+      CFRelease(session);
+      CFRelease(disk);
+      return false;
+  }
+
+  NSString *volumename = [[dd objectForKey:(NSString*)kDADiskDescriptionVolumeNameKey] copy];
+  volumeName = [volumename cString];
+
+  CFRelease(session);		        
+  CFRelease(disk);		        
+  [dd release];
+
+  return true ;
+}
+
 /*
 void SetPIDFrontProcess(pid_t pid) {
     ProcessSerialNumber psn;

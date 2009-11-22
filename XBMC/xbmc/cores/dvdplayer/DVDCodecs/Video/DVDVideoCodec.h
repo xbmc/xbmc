@@ -42,7 +42,7 @@ struct DVDVideoPicture
 
   unsigned int iFlags;
 
-  unsigned int iRepeatPicture;
+  double       iRepeatPicture;
   double       iDuration;
   unsigned int iFrameType         : 4; // see defines above // 1->I, 2->P, 3->B, 0->Undef
   unsigned int color_matrix       : 4;

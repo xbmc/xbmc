@@ -28,25 +28,9 @@
 using namespace std;
 using namespace DIRECTORY;
 
-bool CMediaSource::isWritable() const
+bool CMediaSource::IsWritable() const
 {
-#ifdef _WIN32
-  if(CUtil::IsDOSPath(strPath) && !CUtil::IsDVD(strPath))
-#else
-  if (strPath[1] == ':' && (strPath[0] != 'D' && strPath[0] != 'd'))
-#endif
-    return true; // local disk
-  if (strPath.size() > 4)
-  {
-    if (strPath.substr(0,4) == "smb:")
-      return true; // smb path
-  }
-#ifdef _LINUX
-  if (strPath == getenv("HOME"))
-    return true;
-#endif
-
-  return false;
+  return CUtil::IsWritable(strPath);
 }
 
 void CMediaSource::FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths)

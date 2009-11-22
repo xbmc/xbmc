@@ -139,12 +139,11 @@ void CGUIWindowSystemInfo::Render()
     SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
 #endif
 #ifndef HAS_DX
-    SetControlLabel(i++, "%s %s", 22007, SYSTEM_OPENGL_VENDOR);
-    SetControlLabel(i++, "%s %s", 22009, SYSTEM_OPENGL_VERSION);
+    SetControlLabel(i++, "%s %s", 22007, SYSTEM_RENDER_VENDOR);
+    SetControlLabel(i++, "%s %s", 22009, SYSTEM_RENDER_VERSION);
 #else
-    // TODO: reporting of DirectX version information
-    //SET_CONTROL_LABEL(i++, 22023);
-    SetControlLabel(i++, "%s %s", 22024, SYSTEM_DIRECT3D_VERSION);
+    SetControlLabel(i++, "%s %s", 22023, SYSTEM_RENDER_VENDOR);
+    SetControlLabel(i++, "%s %s", 22024, SYSTEM_RENDER_VERSION);
 #endif
     SetControlLabel(i++, "%s %s", 22010, SYSTEM_GPU_TEMPERATURE);
   }

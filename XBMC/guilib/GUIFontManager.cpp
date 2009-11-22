@@ -135,6 +135,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   fontInfo.aspect = originalAspect;
   fontInfo.fontFilePath = strPath;
   fontInfo.fileName = strFilename;
+  fontInfo.sourceRes = sourceRes;
   m_vecFontInfo.push_back(fontInfo);
 
   return pNewFont;
@@ -177,8 +178,6 @@ void GUIFontManager::ReloadTTFFonts(void)
   if (!m_vecFonts.size())
     return;   // we haven't even loaded fonts in yet
 
-  g_graphicsContext.SetScalingResolution(m_skinResolution, 0, 0, true);
-
   for (unsigned int i = 0; i < m_vecFonts.size(); i++)
   {
     CGUIFont* font = m_vecFonts[i];
@@ -189,7 +188,9 @@ void GUIFontManager::ReloadTTFFonts(void)
     CStdString& strPath = fontInfo.fontFilePath;
     CStdString& strFilename = fontInfo.fileName;
 
-    if (m_skinResolution == RES_PAL_16x9 || m_skinResolution == RES_PAL60_16x9 || m_skinResolution == RES_NTSC_16x9 || m_skinResolution == RES_HDTV_480p_16x9)
+    g_graphicsContext.SetScalingResolution(fontInfo.sourceRes, 0, 0, true);
+
+    if (fontInfo.sourceRes == RES_PAL_16x9 || fontInfo.sourceRes == RES_PAL60_16x9 || fontInfo.sourceRes == RES_NTSC_16x9 || fontInfo.sourceRes == RES_HDTV_480p_16x9)
       aspect *= 0.75f;
 
     aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();

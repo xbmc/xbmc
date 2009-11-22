@@ -120,15 +120,19 @@ esac
 
 # Upstart scripts tested on karmic only and not backward compatible ATM
 if [ "$(lsb_release -c | grep karmic)" ]; then
-	if [ -x "/etc/init.d/xbmc-live" ]; then
-		rm /etc/init.d/xbmc-live
+	if [ -f "/etc/init.d/xbmc-live" ]; then
+		rm /etc/init.d/xbmc-live >/dev/null
 		update-rc.d -f xbmc-live remove >/dev/null
 	fi
 
 	ln -s /lib/init/upstart-job /etc/init.d/xbmc-live
 else
-	rm /etc/init/xbmc-live.conf
-	rm /etc/init/xbmc-live-install.conf
+	if [ -f "/etc/init/xbmc-live.conf" ]; then
+		rm /etc/init/xbmc-live.conf >/dev/null
+	fi
+	if [ -f "/etc/init/xbmc-live-install" ]; then
+		rm /etc/init/xbmc-live-install.conf >/dev/null
+	fi
 
 	if [ -x "/etc/init.d/xbmc-live" ]; then
 		update-rc.d xbmc-live defaults >/dev/null

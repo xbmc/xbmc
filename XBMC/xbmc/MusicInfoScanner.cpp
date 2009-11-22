@@ -1201,10 +1201,7 @@ void CMusicInfoScanner::GetArtistArtwork(long id, const CStdString &artistName, 
   if (!CFile::Exists(cachedImage))
   { // check for local fanart
     CLog::Log(LOGDEBUG, "%s looking for fanart for artist %s in folder %s", __FUNCTION__, artistName.c_str(), item2.m_strPath.c_str());
-    CStdString strFanart = item2.CacheFanart(true);
-    if (!strFanart.IsEmpty())
-      CPicture::CacheImage(strFanart,cachedImage);
-    else
+    if (!item2.CacheLocalFanart())
     {
       CLog::Log(LOGDEBUG, "%s no local fanart found for artist %s", __FUNCTION__, artistName.c_str());
       if (artist && !artist->fanart.m_xml.IsEmpty() && !artist->fanart.DownloadImage(item2.GetCachedFanart()))

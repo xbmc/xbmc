@@ -732,6 +732,7 @@ bool CGraphicContext::ToggleFullScreenRoot ()
   }
 
   SetVideoResolution(newRes);
+  g_guiSettings.SetResolution(newRes);
   
   return  m_bFullScreenRoot;
 }

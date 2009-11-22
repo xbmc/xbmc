@@ -135,8 +135,10 @@ bool CGUIInfoManager::OnMessage(CGUIMessage &message)
 /// efficient retrieval of data. Can handle combined strings on the form
 /// Player.Caching + VideoPlayer.IsFullscreen (Logical and)
 /// Player.HasVideo | Player.HasAudio (Logical or)
-int CGUIInfoManager::TranslateString(const CStdString &strCondition)
+int CGUIInfoManager::TranslateString(const CStdString &condition)
 {
+  // translate $LOCALIZE as required
+  CStdString strCondition(CGUIInfoLabel::ReplaceLocalize(condition));
   if (strCondition.find_first_of("|") != strCondition.npos ||
       strCondition.find_first_of("+") != strCondition.npos ||
       strCondition.find_first_of("[") != strCondition.npos ||
@@ -1657,28 +1659,15 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
         return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_image");
     }
     break;
-  case SYSTEM_OPENGL_VENDOR:
+  case SYSTEM_RENDER_VENDOR:
     strLabel = g_Windowing.GetRenderVendor();
     break;
-  case SYSTEM_OPENGL_RENDERER:
+  case SYSTEM_RENDER_RENDERER:
     strLabel = g_Windowing.GetRenderRenderer();
     break;
-  case SYSTEM_OPENGL_VERSION:
-    {
-      unsigned int major, minor;
-      g_Windowing.GetRenderVersion(major, minor);
-      strLabel.Format("%d.%d", major, minor);
-      break;
-    }
-#ifdef HAS_DX
-  case SYSTEM_DIRECT3D_VERSION:
-    {
-      unsigned int major, minor;
-      g_Windowing.GetRenderVersion(major, minor);
-      strLabel.Format("%d.%d.%d.%04d", HIWORD(major), LOWORD(major), HIWORD(minor), LOWORD(minor));
-      break;
-    }
-#endif
+  case SYSTEM_RENDER_VERSION:
+    strLabel = g_Windowing.GetRenderVersionString();
+    break;
   }
 
   return strLabel;
@@ -3972,7 +3961,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasVideoInfoTag())
     {
       if (!(!item->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && item->GetVideoInfoTag()->m_iSeason == -1)) // dont apply to tvshows
-        if (item->GetVideoInfoTag()->m_playCount == 0 && g_guiSettings.GetBool("videolibrary.hideplots"))
+        if (item->GetVideoInfoTag()->m_playCount == 0 && !g_guiSettings.GetBool("videolibrary.showunwatchedplots"))
           return g_localizeStrings.Get(20370);
 
       return item->GetVideoInfoTag()->m_strPlot;
