@@ -2596,36 +2596,37 @@ int PVRClientVDR::GetCurrentClientChannel()
 
 bool PVRClientVDR::SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
-  unsigned int channel = channelinfo.number;
-
   if (!m_transceiver->IsOpen())
     return false;
 
   pthread_mutex_lock(&m_critSection);
 
-  if (!m_transceiver->CanStreamLive(channel))
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return false;
-  }
-
   if (m_socket_video != INVALID_SOCKET)
   {
-    shutdown(m_socket_video, SD_BOTH);
-    m_transceiver->AbortStreamLive();
-    closesocket(m_socket_video);
+    if (!m_transceiver->CanStreamLive(channelinfo.number))
+    {
+      pthread_mutex_unlock(&m_critSection);
+      return false;
+    }
+
+    if (!m_transceiver->SetChannel(channelinfo.number))
+    {
+      pthread_mutex_unlock(&m_critSection);
+      return false;
+    }
   }
-
-  m_socket_video = m_transceiver->GetStreamLive(channel);
-
-  if (m_socket_video == INVALID_SOCKET)
+  else
   {
-    XBMC_log(LOG_ERROR, "PCRClient-vdr: Couldn't get socket for live tv");
-    pthread_mutex_unlock(&m_critSection);
-    return false;
+    m_socket_video = m_transceiver->GetStreamLive(channelinfo.number);
+    if (m_socket_video == INVALID_SOCKET)
+    {
+      XBMC_log(LOG_ERROR, "PCRClient-vdr: Couldn't get socket for live tv");
+      pthread_mutex_unlock(&m_critSection);
+      return false;
+    }
   }
 
-  m_iCurrentChannel = channel;
+  m_iCurrentChannel = channelinfo.number;
 
   pthread_mutex_unlock(&m_critSection);
   return true;
