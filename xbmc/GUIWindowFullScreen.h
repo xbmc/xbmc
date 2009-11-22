@@ -43,6 +43,7 @@ public:
   void RenderFullScreen();
   bool NeedRenderFullScreen();
   void ChangetheTimeCode(int remote);
+  void ChangetheTVGroup(bool next);
 
   virtual void OnSliderChange(void *data, CGUISliderControl *slider);
 protected:
@@ -54,6 +55,7 @@ private:
   void SeekChapter(int iChapter);
   void PreloadDialog(unsigned int windowID);
   void UnloadDialog(unsigned int windowID);
+  void FillInTVGroups();
 
   bool m_bShowViewModeInfo;
   unsigned int m_dwShowViewModeTimeout;
@@ -61,6 +63,7 @@ private:
   bool m_bShowCurrentTime;
   bool m_bLastRender;
 
+  bool m_bGroupSelectShow;
   bool m_timeCodeShow;
   unsigned int m_timeCodeTimeout;
   int m_timeCodeStamp[5];

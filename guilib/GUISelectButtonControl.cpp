@@ -189,6 +189,7 @@ bool CGUISelectButtonControl::OnMessage(CGUIMessage& message)
 
 bool CGUISelectButtonControl::OnAction(const CAction &action)
 {
+    fprintf(stderr, "mm  %i %i\n", action.id, m_bShowSelect);
   if (!m_bShowSelect)
   {
     if (action.id == ACTION_SELECT_ITEM)
