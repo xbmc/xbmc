@@ -28,7 +28,6 @@
 #include "settings/AddonSettings.h"
 #include "PVRManager.h"
 #include "pvrclients/PVRClientFactory.h"
-#include "MusicInfoTag.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -37,6 +36,7 @@
 #include "FileSystem/File.h"
 #include "StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "MusicInfoTag.h"
 
 /* GUI Messages includes */
 #include "GUIDialogOK.h"
@@ -46,8 +46,8 @@
 #define RECORDINGCHECKDELTA   450 // seconds before checking for changes inside recordings list
 
 using namespace std;
-using namespace MUSIC_INFO;
 using namespace XFILE;
+using namespace MUSIC_INFO;
 using namespace ADDON;
 
 /**********************************************************************
@@ -833,19 +833,26 @@ void CPVRManager::SyncInfo()
   if (m_hasTimers)
   {
     cPVRTimerInfoTag *nextRec = PVRTimers.GetNextActiveTimer();
-
-    m_nextRecordingTitle    = nextRec->Title();
-    m_nextRecordingChannel  = PVRChannelsTV.GetNameForChannel(nextRec->Number());
-    m_nextRecordingDateTime = nextRec->Start().GetAsLocalizedDateTime(false, false);
-
-    if (nextRec->IsRecording() == true)
+    if (nextRec)
     {
-      m_isRecording = true;
-      CLog::Log(LOGDEBUG, "%s - PVR: next timer is currently recording", __FUNCTION__);
+      m_nextRecordingTitle    = nextRec->Title();
+      m_nextRecordingChannel  = PVRChannelsTV.GetNameForChannel(nextRec->Number());
+      m_nextRecordingDateTime = nextRec->Start().GetAsLocalizedDateTime(false, false);
+
+      if (nextRec->IsRecording() == true)
+      {
+        m_isRecording = true;
+        CLog::Log(LOGDEBUG, "%s - PVR: next timer is currently recording", __FUNCTION__);
+      }
+      else
+      {
+        m_isRecording = false;
+      }
     }
     else
     {
-      m_isRecording = false;
+      /* We have timers but nothing is active, this is why we set it to false here */
+      m_hasTimers = false;
     }
   }
 
@@ -1315,99 +1322,6 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
 }
 
 /********************************************************************
-/* CPVRManager SetCurrentPlayingProgram
-/*
-/* Write information of current playing program to the given FileItem.
-/********************************************************************/
-void CPVRManager::SetCurrentPlayingProgram(CFileItem& item)
-{
-  /* Check if a cPVRChannelInfoTag is inside file item */
-  if (!item.IsPVRChannel())
-  {
-    CLog::Log(LOGERROR, "CPVRManager: SetCurrentPlayingProgram no TVChannelTag given!");
-    return;
-  }
-
-  cPVRChannelInfoTag* tag = item.GetPVRChannelInfoTag();
-  if (tag != NULL)
-  {
-    if (tag->Number() != m_PreviousChannel[m_PreviousChannelIndex])
-      m_PreviousChannel[m_PreviousChannelIndex ^= 1] = tag->Number();
-
-    const cPVREPGInfoTag *epgnow = NULL;
-    const cPVREPGInfoTag *epgnext = NULL;
-    cPVREpgsLock EpgsLock;
-    cPVREpgs *s = (cPVREpgs *)cPVREpgs::EPGs(EpgsLock);
-    if (s)
-    {
-      epgnow = s->GetEPG(tag, true)->GetInfoTagNow();
-      epgnext = s->GetEPG(tag, true)->GetInfoTagNext();
-    }
-
-    if (epgnow)
-    {
-      tag->m_strTitle          = epgnow->Title();
-      tag->m_strOriginalTitle  = epgnow->Title();
-      tag->m_strPlotOutline    = epgnow->PlotOutline();
-      tag->m_strPlot           = epgnow->Plot();
-      tag->m_strGenre          = epgnow->Genre();
-      tag->SetStartTime(epgnow->Start());
-      tag->SetEndTime(epgnow->End());
-      if (epgnext)
-        tag->SetNextTitle(epgnext->Title());
-      else
-        tag->SetNextTitle("");
-
-      if (tag->m_strPlot.Left(tag->m_strPlotOutline.length()) != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
-        tag->m_strPlot = tag->m_strPlotOutline + '\n' + tag->m_strPlot;
-
-      CDateTimeSpan span = tag->StartTime() - tag->EndTime();
-
-      StringUtils::SecondsToTimeString(span.GetSeconds()
-                                       + span.GetMinutes() * 60.
-                                       + span.GetHours() * 3600, tag->m_strRuntime, TIME_FORMAT_GUESS);
-    }
-    else
-    {
-      tag->m_strTitle          = g_localizeStrings.Get(18074);
-      tag->m_strOriginalTitle  = g_localizeStrings.Get(18074);
-      tag->m_strPlotOutline    = "";
-      tag->m_strPlot           = "";
-      tag->m_strGenre          = "";
-      tag->SetStartTime(CDateTime::GetCurrentDateTime()+CDateTimeSpan(0, 0, 0, 0)-CDateTimeSpan(0, 1, 0, 0));
-      tag->SetEndTime(CDateTime::GetCurrentDateTime()+CDateTimeSpan(0, 23, 0, 0));
-      tag->SetDuration(CDateTimeSpan(0, 1, 0, 0));
-      tag->SetNextTitle("");
-    }
-
-    if (tag->IsRadio())
-    {
-      CMusicInfoTag* musictag = item.GetMusicInfoTag();
-
-      musictag->SetURL(tag->Path());
-      musictag->SetTitle(tag->m_strTitle);
-      musictag->SetArtist(tag->Name());
-    //    musictag->SetAlbum(tag->m_strBouquet);
-      musictag->SetAlbumArtist(tag->Name());
-      musictag->SetGenre(tag->m_strGenre);
-      musictag->SetDuration(tag->GetDuration());
-      musictag->SetLoaded(true);
-      musictag->SetComment("");
-      musictag->SetLyrics("");
-    }
-
-    tag->m_strAlbum = tag->Name();
-    tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
-    tag->m_iEpisode = 0;
-    tag->m_strShowTitle.Format("%i", tag->Number());
-
-    item.m_strTitle = tag->Name();
-    item.m_dateTime = tag->StartTime();
-    item.m_strPath  = tag->Path();
-  }
-}
-
-/********************************************************************
 /* CPVRManager SaveCurrentChannelSettings
 /*
 /* Write the current Video and Audio settings of playing channel
@@ -1651,16 +1565,12 @@ bool CPVRManager::OpenLiveStream(unsigned int channel, bool radio)
     return false;
   }
 
-  /* Set information like the EPG for this channel to have program information
-     in Fullscreen info */
-  SetCurrentPlayingProgram(*m_currentPlayingChannel);
-
   /* Clear the timeshift flags */
   m_timeshiftExt            = false;
   m_timeshiftInt            = false;
   m_timeshiftLastWrapAround = 0;
   m_timeshiftCurrWrapAround = 0;
-  m_playbackStarted         = tag->GetTime()*1000;
+  m_playbackStarted         = tag->NowPlayTime()*1000;
 
   /* Load now the new channel settings from Database */
   LoadCurrentChannelSettings();
@@ -2054,42 +1964,36 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     return false;
   }
 
-  cPVRChannelInfoTag* tag = item.GetPVRChannelInfoTag();
-  cPVRChannelInfoTag* current = m_currentPlayingChannel->GetPVRChannelInfoTag();
+  g_application.CurrentFileItem() = *m_currentPlayingChannel;
+  g_infoManager.SetCurrentItem(*m_currentPlayingChannel);
 
-  tag->m_strAlbum         = current->Name();
-  tag->m_strTitle         = current->m_strTitle;
-  tag->m_strOriginalTitle = current->m_strTitle;
-  tag->m_strPlotOutline   = current->m_strPlotOutline;
-  tag->m_strPlot          = current->m_strPlot;
-  tag->m_strGenre         = current->m_strGenre;
-  tag->m_strPath          = current->Path();
-  tag->m_strShowTitle.Format("%i", current->Number());
-  tag->SetNextTitle(current->NextTitle());
-  tag->SetPath(current->Path());
-
-  item.m_strTitle = current->Name();
-  item.m_dateTime = current->StartTime();
-  item.m_strPath  = current->Path();
-
-  CDateTimeSpan span = current->StartTime() - current->EndTime();
-  StringUtils::SecondsToTimeString(span.GetSeconds() + span.GetMinutes() * 60 + span.GetHours() * 3600,
-                                   tag->m_strRuntime,
-                                   TIME_FORMAT_GUESS);
-
-  if (current->Icon() != "")
+  cPVRChannelInfoTag* tagNow = item.GetPVRChannelInfoTag();
+  if (tagNow->IsRadio())
   {
-    item.SetThumbnailImage(current->Icon());
-  }
-  else
-  {
-    item.SetThumbnailImage("");
-    item.FillInDefaultIcon();
+    CMusicInfoTag* musictag = item.GetMusicInfoTag();
+    if (musictag)
+    {
+      musictag->SetURL(tagNow->Path());
+      musictag->SetTitle(tagNow->NowTitle());
+      musictag->SetArtist(tagNow->Name());
+    //    musictag->SetAlbum(tag->m_strBouquet);
+      musictag->SetAlbumArtist(tagNow->Name());
+      musictag->SetGenre(tagNow->NowGenre());
+      musictag->SetDuration(tagNow->NowDuration());
+      musictag->SetLoaded(true);
+      musictag->SetComment("");
+      musictag->SetLyrics("");
+    }
   }
 
-  g_infoManager.SetCurrentItem(item);
-  g_application.CurrentFileItem().m_strPath = item.m_strPath;
-  return true;
+  cPVRChannelInfoTag* tagPrev = item.GetPVRChannelInfoTag();
+  if ((tagPrev != NULL) && (tagPrev->Number() != m_currentPlayingChannel->GetPVRChannelInfoTag()->Number()))
+  {
+    if (tagPrev->Number() != m_PreviousChannel[m_PreviousChannelIndex])
+      m_PreviousChannel[m_PreviousChannelIndex ^= 1] = tagPrev->Number();
+  }
+
+  return false;
 }
 
 /********************************************************************
@@ -2164,8 +2068,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
   delete m_currentPlayingChannel;
   m_currentPlayingChannel = new CFileItem(*tag);
   m_scanStart             = CTimeUtils::GetTimeMS();
-  SetCurrentPlayingProgram(*m_currentPlayingChannel);
-  m_playbackStarted       = m_currentPlayingChannel->GetPVRChannelInfoTag()->GetTime()*1000 - (__int64)(g_application.GetTime()*1000);
+  m_playbackStarted       = m_currentPlayingChannel->GetPVRChannelInfoTag()->NowPlayTime()*1000 - (__int64)(g_application.GetTime()*1000);
 
   /* Load now the new channel settings from Database */
   LoadCurrentChannelSettings();
@@ -2231,8 +2134,7 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
         delete m_currentPlayingChannel;
         m_currentPlayingChannel = new CFileItem(*tag);
         m_scanStart             = CTimeUtils::GetTimeMS();
-        SetCurrentPlayingProgram(*m_currentPlayingChannel);
-        m_playbackStarted       = m_currentPlayingChannel->GetPVRChannelInfoTag()->GetTime()*1000 - (__int64)(g_application.GetTime()*1000);
+        m_playbackStarted       = m_currentPlayingChannel->GetPVRChannelInfoTag()->NowPlayTime()*1000 - (__int64)(g_application.GetTime()*1000);
 
         /* Load now the new channel settings from Database */
         LoadCurrentChannelSettings();
@@ -2322,8 +2224,7 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel)
         delete m_currentPlayingChannel;
         m_currentPlayingChannel = new CFileItem(*tag);
         m_scanStart             = CTimeUtils::GetTimeMS();
-        SetCurrentPlayingProgram(*m_currentPlayingChannel);
-        m_playbackStarted       = m_currentPlayingChannel->GetPVRChannelInfoTag()->GetTime()*1000 - (__int64)(g_application.GetTime()*1000);
+        m_playbackStarted       = m_currentPlayingChannel->GetPVRChannelInfoTag()->NowPlayTime()*1000 - (__int64)(g_application.GetTime()*1000);
 
         /* Load now the new channel settings from Database */
         LoadCurrentChannelSettings();
@@ -2365,7 +2266,7 @@ int CPVRManager::GetTotalTime()
   int duration = 1;
 
   if (m_currentPlayingChannel)
-    duration = m_currentPlayingChannel->GetPVRChannelInfoTag()->GetDuration() * 1000;
+    duration = m_currentPlayingChannel->GetPVRChannelInfoTag()->NowDuration() * 1000;
 
    /* Use 1 instead of 0 to prevent divide by NULL floating point exception */
   if (duration <= 0)
@@ -2385,15 +2286,12 @@ int CPVRManager::GetStartTime()
     return 0;
 
   cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetPVRChannelInfoTag();
-  if (tag->EndTime() < CDateTime::GetCurrentDateTime())
+  if (tag->NowEndTime() < CDateTime::GetCurrentDateTime())
   {
     EnterCriticalSection(&m_critSection);
 
     int oldchannel  = tag->Number();
-    int oldduration = tag->GetDuration();
-
-    /* Set the new program information */
-    SetCurrentPlayingProgram(*m_currentPlayingChannel);
+    int oldduration = tag->NowDuration();
 
     /* Correct the playback started time */
     if (m_timeshiftInt && oldchannel == tag->Number())
@@ -2415,7 +2313,7 @@ int CPVRManager::GetStartTime()
   }
   else
   {
-    CDateTimeSpan time = CDateTime::GetCurrentDateTime() - tag->StartTime();
+    CDateTimeSpan time = CDateTime::GetCurrentDateTime() - tag->NowStartTime();
     return time.GetDays()    * 1000 * 60 * 60 * 24
          + time.GetHours()   * 1000 * 60 * 60
          + time.GetMinutes() * 1000 * 60

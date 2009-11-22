@@ -1601,7 +1601,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
     else if (pItem->IsPVRChannel())
     {
-      m_searchfilter.m_SearchString = "\"" + pItem->GetPVRChannelInfoTag()->Title() + "\"";
+      m_searchfilter.m_SearchString = "\"" + pItem->GetPVRChannelInfoTag()->NowTitle() + "\"";
     }
     else if (pItem->IsPVRRecording())
     {
@@ -1622,13 +1622,14 @@ void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
   if (item->IsEPG())
   {
     /* Load programme info dialog */
-    CGUIDialogTVEPGProgInfo* pDlgInfo = (CGUIDialogTVEPGProgInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_INFO);
+    CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_INFO);
 
     if (!pDlgInfo)
       return;
 
     /* inform dialog about the file item */
     pDlgInfo->SetProgInfo(item);
+    cPVREpgs::SetVariableData(m_vecItems);
 
     /* Open dialog window */
     pDlgInfo->DoModal();
@@ -1643,7 +1644,7 @@ void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
       CFileItem *itemNow  = new CFileItem(*epgnow);
 
       /* Load programme info dialog */
-      CGUIDialogTVEPGProgInfo* pDlgInfo = (CGUIDialogTVEPGProgInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_INFO);
+      CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_INFO);
 
       if (!pDlgInfo)
         return;
@@ -1653,8 +1654,6 @@ void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
 
       /* Open dialog window */
       pDlgInfo->DoModal();
-
-      cPVREpgs::SetVariableData(m_vecItems);
     }
   }
   else

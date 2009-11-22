@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,32 +20,22 @@
  *
  */
 
-#include "GUIDialogSettings.h"
-#include "GUIListItem.h"
-#include "DateTime.h"
-
 #include "GUIDialog.h"
-#include "GUIListItem.h"
 
-class CFileItem;
-
-class CGUIDialogTVEPGProgInfo : public CGUIDialog
+class CGUIDialogPVRGuideInfo : public CGUIDialog
 {
 public:
-  CGUIDialogTVEPGProgInfo(void);
-  virtual ~CGUIDialogTVEPGProgInfo(void);
+  CGUIDialogPVRGuideInfo(void);
+  virtual ~CGUIDialogPVRGuideInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
-  void SetProgInfo(const CFileItem *item);
-
-  virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_progItem; }
-
   virtual bool HasListItems() const { return true; };
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+
+  void SetProgInfo(const CFileItem *item);
 
 protected:
   void Update();
-  void SetLabel(int iControl, const CStdString& strLabel);
 
-  CFileItemPtr        m_progItem;
-  bool                m_viewDescription;
+  CFileItemPtr m_progItem;
 };
 

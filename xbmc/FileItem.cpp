@@ -179,7 +179,7 @@ CFileItem::CFileItem(const cPVRChannelInfoTag& channel)
   m_bIsFolder = false;
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.Name());
-  m_strLabel2 = channel.m_strTitle;
+  m_strLabel2 = channel.NowTitle();
   SetThumbnailImage(channel.Icon());
   //FillInDefaultIcon();
   //SetVideoThumb();

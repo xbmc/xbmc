@@ -914,6 +914,7 @@
 					<shadowcolor>black</shadowcolor>
 					<pagecontrol>9999999999</pagecontrol>
 					<label>$INFO[Container(11).ListItem.Plot]</label>
+					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
 				</control>
 			</control>
 			<control type="scrollbar" id="75">
@@ -1130,6 +1131,7 @@
 					<shadowcolor>black</shadowcolor>
 					<pagecontrol>9999999999</pagecontrol>
 					<label>$INFO[Container(12).ListItem.Plot]</label>
+					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
 				</control>
 			</control>
 			<control type="scrollbar" id="75">
@@ -1346,6 +1348,7 @@
 					<shadowcolor>black</shadowcolor>
 					<pagecontrol>9999999999</pagecontrol>
 					<label>$INFO[Container(13).ListItem.Plot]</label>
+					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
 				</control>
 			</control>
 			<control type="scrollbar" id="75">

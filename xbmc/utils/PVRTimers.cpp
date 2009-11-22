@@ -485,6 +485,23 @@ void cPVRTimerInfoTag::SetEpg(const cPVREPGInfoTag *tag)
   }
 }
 
+unsigned int cPVRTimerInfoTag::ChannelNumber() const
+{
+  cPVRChannelInfoTag *channeltag = cPVRChannels::GetByClientFromAll(m_clientNum, m_clientID);
+  if (channeltag)
+    return channeltag->Number();
+  else
+    return 0;
+}
+
+CStdString cPVRTimerInfoTag::ChannelName() const
+{
+  cPVRChannelInfoTag *channeltag = cPVRChannels::GetByClientFromAll(m_clientNum, m_clientID);
+  if (channeltag)
+    return channeltag->Name();
+  else
+    return "";
+}
 
 // --- cPVRTimers ---------------------------------------------------------------
 

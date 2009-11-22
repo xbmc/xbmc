@@ -119,7 +119,6 @@ public:
   bool IsRecording() { return m_isRecording; }
   bool IsRecordingOnPlayingChannel();
   bool StartRecordingOnPlayingChannel(bool bOnOff);
-  void SetCurrentPlayingProgram(CFileItem& item);
   void SetPlayingGroup(int GroupId);
   int GetPlayingGroup();
   void TriggerRecordingsUpdate(bool force=true);

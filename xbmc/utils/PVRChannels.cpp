@@ -39,70 +39,85 @@
 
 using namespace XFILE;
 
-/**
- * Create a blank unmodified channel tag
- */
-cPVRChannelInfoTag::cPVRChannelInfoTag()
-{
-  Reset();
-}
+
+// --- cPVRChannelInfoTag ---------------------------------------------------------
 
 bool cPVRChannelInfoTag::operator==(const cPVRChannelInfoTag& right) const
 {
   if (this == &right) return true;
 
   return (m_iIdChannel            == right.m_iIdChannel &&
+          m_iIdUnique             == right.m_iIdUnique &&
           m_iChannelNum           == right.m_iChannelNum &&
           m_iClientNum            == right.m_iClientNum &&
+          m_strClientName         == right.m_strClientName &&
+          m_clientID              == right.m_clientID &&
+          m_iGroupID              == right.m_iGroupID &&
           m_strChannel            == right.m_strChannel &&
           m_IconPath              == right.m_IconPath &&
-          m_encryptionSystem      == right.m_encryptionSystem &&
           m_radio                 == right.m_radio &&
           m_hide                  == right.m_hide &&
           m_isRecording           == right.m_isRecording &&
+          m_encryptionSystem      == right.m_encryptionSystem &&
+          m_strStreamURL          == right.m_strStreamURL &&
           m_strFileNameAndPath    == right.m_strFileNameAndPath);
 }
 
 bool cPVRChannelInfoTag::operator!=(const cPVRChannelInfoTag &right) const
 {
   if (m_iIdChannel            != right.m_iIdChannel) return true;
+  if (m_iIdUnique             != right.m_iIdUnique) return true;
   if (m_iChannelNum           != right.m_iChannelNum) return true;
   if (m_iClientNum            != right.m_iClientNum) return true;
+  if (m_strClientName         != right.m_strClientName) return true;
+  if (m_clientID              != right.m_clientID) return true;
+  if (m_iGroupID              != right.m_iGroupID) return true;
   if (m_strChannel            != right.m_strChannel) return true;
   if (m_IconPath              != right.m_IconPath) return true;
-  if (m_encryptionSystem      != right.m_encryptionSystem) return true;
   if (m_radio                 != right.m_radio) return true;
   if (m_hide                  != right.m_hide) return true;
   if (m_isRecording           != right.m_isRecording) return true;
+  if (m_encryptionSystem      != right.m_encryptionSystem) return true;
+  if (m_strStreamURL          != right.m_strStreamURL) return true;
   if (m_strFileNameAndPath    != right.m_strFileNameAndPath) return true;
-
   return false;
 }
 
-/**
- * Initialize blank cPVRChannelInfoTag
- */
 void cPVRChannelInfoTag::Reset()
 {
   m_iIdChannel            = -1;
   m_iChannelNum           = -1;
-  m_iClientNum            = -1;
   m_iGroupID              = 0;
   m_strChannel            = "";
-  m_strClientName         = "";
-  m_IconPath              = "";
-  m_radio                 = false;
   m_encryptionSystem      = -1;
+  m_iIdUnique             = -1;
+  m_radio                 = false;
   m_hide                  = false;
   m_isRecording           = false;
-  m_startTime             = NULL;
-  m_endTime               = NULL;
-  m_strFileNameAndPath    = "";
-  m_strNextTitle          = "";
-  m_clientID              = -1;
-  m_Epg                   = NULL;
 
-  CVideoInfoTag::Reset();
+  m_clientID              = -1;
+  m_iClientNum            = -1;
+  m_strClientName         = "";
+
+  m_Epg                   = NULL;
+  m_epgNow                = NULL;
+  m_epgNext               = NULL;
+
+  m_IconPath              = "";
+  m_strFileNameAndPath    = "";
+  m_strStreamURL          = "";
+}
+
+void cPVRChannelInfoTag::UpdateRunningEvents()
+{
+  if (m_Epg == NULL)
+    return;
+
+  if (m_epgNow == NULL || m_epgNow->End() < CDateTime::GetCurrentDateTime())
+  {
+    m_epgNow  = m_Epg->GetInfoTagNow();
+    m_epgNext = m_Epg->GetInfoTagNext();
+  }
 }
 
 CStdString cPVRChannelInfoTag::EncryptionName() const
@@ -193,21 +208,148 @@ CStdString cPVRChannelInfoTag::EncryptionName() const
   return strName;
 }
 
-int cPVRChannelInfoTag::GetDuration() const
+CStdString cPVRChannelInfoTag::NowTitle(void) const
 {
+  if (m_Epg == NULL)
+    return g_localizeStrings.Get(18074);
+
+  if (m_epgNow == NULL || m_epgNow->End() < CDateTime::GetCurrentDateTime())
+  {
+    m_epgNow  = m_Epg->GetInfoTagNow();
+    m_epgNext = m_Epg->GetInfoTagNext();
+  }
+
+  if (m_epgNow == NULL)
+    return g_localizeStrings.Get(18074);
+
+  return m_epgNow->Title();
+}
+
+CStdString cPVRChannelInfoTag::NowPlotOutline(void) const
+{
+  if (m_epgNow == NULL)
+    return "";
+
+  return m_epgNow->PlotOutline();
+}
+
+CStdString cPVRChannelInfoTag::NowPlot(void) const
+{
+  if (m_epgNow == NULL)
+    return "";
+
+  return m_epgNow->Plot();
+}
+
+CDateTime cPVRChannelInfoTag::NowStartTime(void) const
+{
+  if (m_epgNow == NULL)
+    return CDateTime::GetCurrentDateTime();
+
+  return m_epgNow->Start();
+}
+
+CDateTime cPVRChannelInfoTag::NowEndTime(void) const
+{
+  if (m_epgNow == NULL)
+    return CDateTime::GetCurrentDateTime()+CDateTimeSpan(0,1,0,0);
+
+  return m_epgNow->End();
+}
+
+int cPVRChannelInfoTag::NowDuration() const
+{
+  if (m_epgNow == NULL)
+    return 3600; /* One hour */
+
   time_t start, end;
-  m_startTime.GetAsTime(start);
-  m_endTime.GetAsTime(end);
+  m_epgNow->Start().GetAsTime(start);
+  m_epgNow->End().GetAsTime(end);
   return end - start;
 }
 
-int cPVRChannelInfoTag::GetTime() const
+int cPVRChannelInfoTag::NowPlayTime() const
 {
-  CDateTimeSpan time = CDateTime::GetCurrentDateTime() - StartTime();
+  if (m_epgNow == NULL)
+    return 0;
+
+  CDateTimeSpan time = CDateTime::GetCurrentDateTime() - m_epgNow->Start();
   return time.GetDays()    * 60 * 60 * 24
        + time.GetHours()   * 60 * 60
        + time.GetMinutes() * 60
        + time.GetSeconds();
+}
+
+CStdString cPVRChannelInfoTag::NowGenre(void) const
+{
+  if (m_epgNow == NULL)
+    return "";
+
+  return m_epgNow->Genre();
+}
+
+CStdString cPVRChannelInfoTag::NextTitle(void) const
+{
+  if (m_epgNext == NULL)
+    return g_localizeStrings.Get(18074);
+
+  return m_epgNext->Title();
+}
+
+CStdString cPVRChannelInfoTag::NextPlotOutline(void) const
+{
+  if (m_epgNext == NULL)
+    return "";
+
+  return m_epgNext->PlotOutline();
+}
+
+CStdString cPVRChannelInfoTag::NextPlot(void) const
+{
+  if (m_epgNext == NULL)
+    return "";
+
+  return m_epgNext->Plot();
+}
+
+CDateTime cPVRChannelInfoTag::NextStartTime(void) const
+{
+  if (m_epgNext == NULL)
+    return CDateTime::GetCurrentDateTime()+CDateTimeSpan(0,1,0,0);
+
+  return m_epgNext->Start();
+}
+
+CDateTime cPVRChannelInfoTag::NextEndTime(void) const
+{
+  if (m_epgNow == NULL || m_epgNext == NULL || m_Epg == NULL)
+    return CDateTime::GetCurrentDateTime()+CDateTimeSpan(0,2,0,0);
+
+  if (m_epgNow->End() < CDateTime::GetCurrentDateTime())
+  {
+    m_epgNow  = m_Epg->GetInfoTagNow();
+    m_epgNext = m_Epg->GetInfoTagNext();
+  }
+  return m_epgNext->End();
+}
+
+int cPVRChannelInfoTag::NextDuration() const
+{
+  if (m_epgNext == NULL)
+    return 3600; /* One hour */
+
+  time_t start, end;
+  m_epgNext->Start().GetAsTime(start);
+  m_epgNext->End().GetAsTime(end);
+  return end - start;
+}
+
+CStdString cPVRChannelInfoTag::NextGenre(void) const
+{
+  if (m_epgNext == NULL)
+    return "";
+
+  return m_epgNext->Genre();
 }
 
 
@@ -490,7 +632,6 @@ void cPVRChannels::ReNumberAndCheck(void)
       path.Format("pvr://channelsradio/%i.ts", Number);
 
     at(i).SetPath(path);
-    at(i).m_strStatus = "livetv";
     Number++;
   }
 }
@@ -508,7 +649,6 @@ int cPVRChannels::GetChannels(CFileItemList* results, int group_id)
       continue;
 
     CFileItemPtr channel(new CFileItem(at(i)));
-    g_PVRManager.SetCurrentPlayingProgram(*channel);
 
     results->Add(channel);
     cnt++;
@@ -605,7 +745,7 @@ void cPVRChannels::HideChannel(unsigned int number)
     }
   }
 
-  if (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio() && g_PVRManager.GetCurrentPlayingItem()->GetPVRChannelInfoTag()->Number() == number)
+  if ((g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) && (g_PVRManager.GetCurrentPlayingItem()->GetPVRChannelInfoTag()->Number() == number))
   {
     CGUIDialogOK::ShowAndGetInput(18090,18097,0,18098);
     return;
@@ -701,8 +841,6 @@ CStdString cPVRChannels::GetChannelIcon(unsigned int Number)
 
 void cPVRChannels::SetChannelIcon(unsigned int Number, CStdString Icon)
 {
-  CTVDatabase *database = g_PVRManager.GetTVDatabase();
-
   if (Number > size()+1)
     return;
 

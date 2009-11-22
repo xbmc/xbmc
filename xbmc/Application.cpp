@@ -1232,7 +1232,7 @@ HRESULT CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   g_windowManager.Add(new CGUIWindowSettings);                 // window id = 4
   g_windowManager.Add(new CGUIWindowTV);                       // window id = 9
-  g_windowManager.Add(new CGUIDialogTVEPGProgInfo);            // window id = 600
+  g_windowManager.Add(new CGUIDialogPVRGuideInfo);            // window id = 600
   g_windowManager.Add(new CGUIDialogPVRGuideSearch);              // window id = 611
   g_windowManager.Add(new CGUIDialogPVRTimerSettings);          // window id = 602
   g_windowManager.Add(new CGUIDialogTVChannels);               // window id = 603

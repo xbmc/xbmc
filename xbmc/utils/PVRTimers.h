@@ -53,7 +53,7 @@ private:
   CDateTime       m_FirstDay;             /// If it is a repeating timer the first date it starts
   int             m_Weekdays;             /// Bit based store of weekdays to repeat
   CStdString      m_strFileNameAndPath;   /// Filename is only for reference
-  
+
   const cPVREPGInfoTag *m_EpgInfo;
 
   void DisplayError(PVR_ERROR err) const;
@@ -109,13 +109,18 @@ public:
   const cPVREPGInfoTag *Epg() const { return m_EpgInfo;}
   void SetEpg(const cPVREPGInfoTag *tag);
 
+  /* Channel related Info data */
+  unsigned int ChannelNumber(void) const;
+  CStdString ChannelName(void) const;
+
+  /* Client control functions */
   bool Add() const;
   bool Delete(bool force = false) const;
   bool Rename(CStdString &newname) const;
   bool Update() const;
 };
 
-class cPVRTimers : public std::vector<cPVRTimerInfoTag> 
+class cPVRTimers : public std::vector<cPVRTimerInfoTag>
 {
 private:
   CCriticalSection  m_critSection;

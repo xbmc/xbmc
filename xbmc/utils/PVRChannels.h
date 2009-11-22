@@ -31,68 +31,84 @@
 
 class cPVREpg;
 
-class cPVRChannelInfoTag : public CVideoInfoTag
+class cPVRChannelInfoTag
 {
   friend class cPVREpgs;
   friend class CTVDatabase;
 
 private:
+  void UpdateRunningEvents();
+  void DisplayError(PVR_ERROR err) const;
+
   mutable const cPVREpg *m_Epg;
+  mutable const cPVREPGInfoTag *m_epgNow;
+  mutable const cPVREPGInfoTag *m_epgNext;
 
-  int                 m_iIdChannel;           /// Database number
-  int                 m_iChannelNum;          /// Channel number for channels on XBMC
-  int                 m_iGroupID;             /// Channel group identfier
+  /* XBMC related channel data */
+  int                 m_iIdChannel;           ///> Database number
+  int                 m_iChannelNum;          ///> Channel number for channels on XBMC
+  int                 m_iGroupID;             ///> Channel group identfier
+  int                 m_encryptionSystem;     ///> Encryption System, 0 for FreeToAir, -1 unknown
+  bool                m_radio;                ///> Radio channel
+  bool                m_hide;                 ///> Channel is hide inside filelists
+  bool                m_isRecording;          ///> True if channel is currently recording
+  CStdString          m_IconPath;             ///> Path to the logo image
+  CStdString          m_strChannel;           ///> Channel name
 
-  CStdString          m_strChannel;           /// Channel name
-  CStdString          m_strClientName;
+  /* Client related channel data */
+  long                m_iIdUnique;            ///> Unique Id for this channel
+  int                 m_clientID;             ///> Id of client channel come from
+  int                 m_iClientNum;           ///> Channel number on client
+  CStdString          m_strClientName;        ///> Channel name on client
 
-  CStdString          m_IconPath;             /// Path to the logo image
-
-  bool                m_encryptionSystem;     /// Encrypted channel
-  bool                m_radio;                /// Radio channel
-  bool                m_hide;                 /// Channel is hide inside filelists
-  bool                m_isRecording;
-
-  CStdString          m_strNextTitle;
-
-  CDateTime           m_startTime;            /// Start time
-  CDateTime           m_endTime;              /// End time
-  CDateTimeSpan       m_duration;             /// Duration
-
-  long                m_iIdUnique;            /// Unique Id for this channel
-  int                 m_clientID;             /// Id of client channel come from
-  int                 m_iClientNum;           /// Channel number on client
-
-  CStdString          m_strStreamURL;         /// URL of the stream, if empty use Client to read stream
-  CStdString          m_strFileNameAndPath;   /// Filename for PVRManager to open and read stream
+  CStdString          m_strStreamURL;         ///> URL of the stream, if empty use Client to read stream
+  CStdString          m_strFileNameAndPath;   ///> Filename for PVRManager to open and read stream
 
 public:
-  cPVRChannelInfoTag();
+  cPVRChannelInfoTag() { Reset(); };
   void Reset();
+       ///< Set the tag to it's initial values.
 
   bool operator ==(const cPVRChannelInfoTag &right) const;
   bool operator !=(const cPVRChannelInfoTag &right) const;
 
+  /* Channel information */
   CStdString Name(void) const { return m_strChannel; }
+       ///< Return the currently by XBMC used name for this channel.
   void SetName(CStdString name) { m_strChannel = name; }
-  CStdString ClientName(void) const { return m_strClientName; }
-  void SetClientName(CStdString name) { m_strClientName = name; }
+       ///< Set the name, XBMC uses for this channel.
   int Number(void) const { return m_iChannelNum; }
+       ///< Return the currently by XBMC used channel number for this channel.
   void SetNumber(int Number) { m_iChannelNum = Number; }
+       ///< Change the XBMC number for this channel.
+  CStdString ClientName(void) const { return m_strClientName; }
+       ///< Return the name used by the client driver on the backend.
+  void SetClientName(CStdString name) { m_strClientName = name; }
+       ///< Set the name used by the client (is changed only in this tag,
+       ///< no client action to change name is performed ).
   int ClientNumber(void) const { return m_iClientNum; }
+       ///< Return the channel number used by the client driver.
   void SetClientNumber(int Number) { m_iClientNum = Number; }
+       ///< Change the client number for this channel (is changed only in this tag,
+       ///< no client action to change name is performed ).
   long ClientID(void) const { return m_clientID; }
+       ///< The client ID this channel belongs to.
   void SetClientID(int ClientId) { m_clientID = ClientId; }
+       ///< Set the client ID for this channel.
   long ChannelID(void) const { return m_iIdChannel; }
+       ///< Return XBMC own channel ID for this channel which is used in the
+       ///< TV Database.
   void SetChannelID(int ChannelID) { m_iIdChannel = ChannelID; }
+       ///< Change the channel ID for this channel (no Action to the Database
+       ///< are taken)
   long UniqueID(void) const { return m_iIdUnique; }
+       ///< A UniqueID for this channel provider to identify same channels on different clients.
   void SetUniqueID(long id) { m_iIdUnique = id; }
+       ///< Change the Unique ID for this channel.
   long GroupID(void) const { return m_iGroupID; }
+       ///< The Group this channel belongs to, -1 for undefined.
   void SetGroupID(long group) { m_iGroupID = group; }
-  bool IsRadio(void) const { return m_radio; }
-  void SetRadio(bool radio) { m_radio = radio; }
-  bool IsRecording(void) const { return m_isRecording; }
-  void SetRecording(bool rec) { m_isRecording = rec; }
+       ///< Set the group ID for this channel.
   bool IsEncrypted(void) const { return m_encryptionSystem > 0; }
        ///< Return true if this channel is encrypted. Does not inform if XBMC can play it,
        ///< decryption is done by the client associated backend.
@@ -103,24 +119,57 @@ public:
        ///< Return a human understandable name for the used encryption system.
   void SetEncryptionSystem(int system) { m_encryptionSystem = system; }
        ///< Set the encryption ID for this channel.
+  bool IsRadio(void) const { return m_radio; }
+       ///< Return true if this is a Radio channel.
+  void SetRadio(bool radio) { m_radio = radio; }
+       ///< Set the radio flag.
+  bool IsRecording(void) const { return m_isRecording; }
+       ///< True if this channel is currently recording.
+  void SetRecording(bool rec) { m_isRecording = rec; }
+       ///< Set the recording state.
   CStdString Stream(void) const { return m_strStreamURL; }
+       ///< The Stream URL to access this channel, it can be all types of protocol and types
+       ///< are supported by XBMC or in case the client read the stream use pvr://client_>>ClientID<</channels/>>number<<
+       ///< as URL.
+       ///< Examples:
+       ///< Open a Transport Stream over the Client reading functions where client_"1" is the Client ID and
+       ///< 123 the channel number.
+       ///<   pvr://client_1/channels/123.ts
+       ///< Open a VOB file over http and use XBMC's own filereader.
+       ///<   http://192.168.0.120:3000/PS/C-61441-10008-53621+1.vob
   void SetStream(CStdString stream) { m_strStreamURL = stream; }
+       ///< Set the stream URL
   CStdString Path(void) const { return m_strFileNameAndPath; }
+       ///< Return the path in the XBMC virtual Filesystem.
   void SetPath(CStdString path) { m_strFileNameAndPath = path; }
+       ///< Set the path in XBMC Virtual Filesystem.
   CStdString Icon(void) const { return m_IconPath; }
+       ///< Return Path with Filename of the Icon for this channel.
   void SetIcon(CStdString icon) { m_IconPath = icon; }
+       ///< Set the path and filename for this channel Icon
   bool IsHidden(void) const { return m_hide; }
+       ///< If this channel is hidden from view it is true.
   void SetHidden(bool hide) { m_hide = hide; }
-  int GetDuration() const;
-  int GetTime() const;
-  void SetDuration(CDateTimeSpan duration) { m_duration = duration; }
-  CDateTime StartTime(void) const { return m_startTime; }
-  void SetStartTime(CDateTime time) { m_startTime = time; }
-  CDateTime EndTime(void) const { return m_endTime; }
-  void SetEndTime(CDateTime time) { m_endTime = time; }
-  CStdString NextTitle(void) const { return m_strNextTitle; }
-  void SetNextTitle(CStdString title) { m_strNextTitle = title; }
-  CStdString Title(void) const { return m_strTitle; }
+       ///< Mask this channel hidden.
+
+  /* EPG information for now playing event */
+  CStdString NowTitle() const;
+  CStdString NowPlotOutline() const;
+  CStdString NowPlot() const;
+  CDateTime  NowStartTime(void) const;
+  CDateTime  NowEndTime(void) const;
+  int        NowDuration() const;
+  int        NowPlayTime() const;
+  CStdString NowGenre(void) const;
+
+  /* EPG information for next playing event */
+  CStdString NextTitle() const;
+  CStdString NextPlotOutline() const;
+  CStdString NextPlot() const;
+  CDateTime  NextStartTime(void) const;
+  CDateTime  NextEndTime(void) const;
+  int        NextDuration() const;
+  CStdString NextGenre(void) const;
 };
 
 class cPVRChannels : public std::vector<cPVRChannelInfoTag>
