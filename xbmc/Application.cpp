@@ -209,7 +209,7 @@
 #include "GUIDialogFullScreenInfo.h"
 #include "GUIDialogPVRGuideSearch.h"
 #include "GUIDialogPVRGuideInfo.h"
-#include "GUIDialogTVRecordingInfo.h"
+#include "GUIDialogPVRRecordingInfo.h"
 #include "GUIDialogPVRTimerSettings.h"
 #include "GUIDialogTVChannels.h"
 #include "GUIDialogTVGuide.h"
@@ -1237,7 +1237,7 @@ HRESULT CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogPVRTimerSettings);          // window id = 602
   g_windowManager.Add(new CGUIDialogTVChannels);               // window id = 603
   g_windowManager.Add(new CGUIDialogTVGuide);                  // window id = 603
-  g_windowManager.Add(new CGUIDialogTVRecordingInfo);          // window id = 603
+  g_windowManager.Add(new CGUIDialogPVRRecordingInfo);          // window id = 603
   g_windowManager.Add(new CGUIDialogPVRGroupManager);           // window id = 603
   g_windowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
 #ifdef HAS_GL

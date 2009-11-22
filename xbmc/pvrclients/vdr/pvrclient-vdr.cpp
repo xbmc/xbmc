@@ -37,16 +37,16 @@ using namespace std;
 
 pthread_mutex_t m_critSection;
 
-bool PVRClientVDR::m_bStop						= true;
-SOCKET PVRClientVDR::m_socket_data				= INVALID_SOCKET;
-SOCKET PVRClientVDR::m_socket_video				= INVALID_SOCKET;
-CVTPTransceiver *PVRClientVDR::m_transceiver    = NULL;
-bool PVRClientVDR::m_bConnected					= false;
+bool cPVRClientVDR::m_bStop						= true;
+SOCKET cPVRClientVDR::m_socket_data				= INVALID_SOCKET;
+SOCKET cPVRClientVDR::m_socket_video				= INVALID_SOCKET;
+CVTPTransceiver *cPVRClientVDR::m_transceiver    = NULL;
+bool cPVRClientVDR::m_bConnected					= false;
 
 /************************************************************/
 /** Class interface */
 
-PVRClientVDR::PVRClientVDR()
+cPVRClientVDR::cPVRClientVDR()
 {
   m_iCurrentChannel   = 1;
   m_transceiver       = new CVTPTransceiver();
@@ -58,7 +58,7 @@ PVRClientVDR::PVRClientVDR()
   pthread_mutex_init(&m_critSection, NULL);
 }
 
-PVRClientVDR::~PVRClientVDR()
+cPVRClientVDR::~cPVRClientVDR()
 {
   Disconnect();
 }
@@ -67,7 +67,7 @@ PVRClientVDR::~PVRClientVDR()
 /************************************************************/
 /** Server handling */
 
-PVR_ERROR PVRClientVDR::GetProperties(PVR_SERVERPROPS *props)
+PVR_ERROR cPVRClientVDR::GetProperties(PVR_SERVERPROPS *props)
 {
   props->SupportChannelLogo        = false;
   props->SupportTimeShift          = false;
@@ -85,7 +85,7 @@ PVR_ERROR PVRClientVDR::GetProperties(PVR_SERVERPROPS *props)
   return PVR_ERROR_NO_ERROR;
 }
 
-bool PVRClientVDR::Connect()
+bool cPVRClientVDR::Connect()
 {
   /* Open Streamdev-Server VTP-Connection to VDR Backend Server */
   if (!m_transceiver->Open(m_sHostname, m_iPort))
@@ -112,7 +112,7 @@ bool PVRClientVDR::Connect()
 
   /* Start VTP Listening Thread */
 //  m_bStop = false;
-//  if (pthread_create(&m_thread, NULL, &Process, (void *)"PVRClientVDR VTP-Listener") != 0) {
+//  if (pthread_create(&m_thread, NULL, &Process, (void *)"cPVRClientVDR VTP-Listener") != 0) {
 //    return false;
 //  }
 
@@ -120,7 +120,7 @@ bool PVRClientVDR::Connect()
   return true;
 }
 
-void PVRClientVDR::Disconnect()
+void cPVRClientVDR::Disconnect()
 {
   m_bStop = true;
 //  pthread_join(m_thread, NULL);
@@ -146,7 +146,7 @@ void PVRClientVDR::Disconnect()
   m_transceiver->Close();
 }
 
-bool PVRClientVDR::IsUp()
+bool cPVRClientVDR::IsUp()
 {
   if (m_bConnected || m_transceiver->IsOpen())
   {
@@ -155,7 +155,7 @@ bool PVRClientVDR::IsUp()
   return false;
 }
 
-void* PVRClientVDR::Process(void*)
+void* cPVRClientVDR::Process(void*)
 {
   char   		 data[1024];
   fd_set         set_r, set_e;
@@ -166,7 +166,7 @@ void* PVRClientVDR::Process(void*)
   {
 	if ((!m_transceiver->IsOpen()) || (m_socket_data == INVALID_SOCKET))
 	{
-	  XBMC_log(LOG_ERROR, "PVRClientVDR::Process - Loosed connectio to VDR");
+	  XBMC_log(LOG_ERROR, "cPVRClientVDR::Process - Loosed connectio to VDR");
 	  m_bConnected = false;
 	  return NULL;
 	}
@@ -181,7 +181,7 @@ void* PVRClientVDR::Process(void*)
 	res = select(FD_SETSIZE, &set_r, NULL, &set_e, &tv);
 	if (res < 0)
 	{
-	  XBMC_log(LOG_ERROR, "PVRClientVDR::Process - select failed");
+	  XBMC_log(LOG_ERROR, "cPVRClientVDR::Process - select failed");
 	  continue;
 	}
 
@@ -191,7 +191,7 @@ void* PVRClientVDR::Process(void*)
 	res = recv(m_socket_data, (char*)data, sizeof(data), 0);
 	if (res < 0)
 	{
-	  XBMC_log(LOG_ERROR, "PVRClientVDR::Process - failed");
+	  XBMC_log(LOG_ERROR, "cPVRClientVDR::Process - failed");
 	  continue;
 	}
 
@@ -225,7 +225,7 @@ void* PVRClientVDR::Process(void*)
 	}
 	else
 	{
-	  XBMC_log(LOG_ERROR, "PVRClientVDR::Process - Unkown respond command %s", respStr.c_str());
+	  XBMC_log(LOG_ERROR, "cPVRClientVDR::Process - Unkown respond command %s", respStr.c_str());
 	}
   }
   return NULL;
@@ -235,7 +235,7 @@ void* PVRClientVDR::Process(void*)
 /************************************************************/
 /** General handling */
 
-const char* PVRClientVDR::GetBackendName()
+const char* cPVRClientVDR::GetBackendName()
 {
   if (!m_transceiver->IsOpen())
     return "";
@@ -258,7 +258,7 @@ const char* PVRClientVDR::GetBackendName()
   return data.c_str();
 }
 
-const char* PVRClientVDR::GetBackendVersion()
+const char* cPVRClientVDR::GetBackendVersion()
 {
   if (!m_transceiver->IsOpen())
     return "";
@@ -282,12 +282,12 @@ const char* PVRClientVDR::GetBackendVersion()
   return data.c_str();
 }
 
-const char* PVRClientVDR::GetConnectionString()
+const char* cPVRClientVDR::GetConnectionString()
 {
   return m_connectionString.c_str();
 }
 
-PVR_ERROR PVRClientVDR::GetDriveSpace(long long *total, long long *used)
+PVR_ERROR cPVRClientVDR::GetDriveSpace(long long *total, long long *used)
 {
   if (!m_transceiver->IsOpen())
     return PVR_ERROR_SERVER_ERROR;
@@ -323,7 +323,7 @@ PVR_ERROR PVRClientVDR::GetDriveSpace(long long *total, long long *used)
 /************************************************************/
 /** EPG handling */
 
-PVR_ERROR PVRClientVDR::RequestEPGForChannel(const PVR_CHANNEL &channel, PVRHANDLE handle, time_t start, time_t end)
+PVR_ERROR cPVRClientVDR::RequestEPGForChannel(const PVR_CHANNEL &channel, PVRHANDLE handle, time_t start, time_t end)
 {
   vector<string> lines;
   int            code;
@@ -384,7 +384,7 @@ PVR_ERROR PVRClientVDR::RequestEPGForChannel(const PVR_CHANNEL &channel, PVRHAND
 /************************************************************/
 /** Channel handling */
 
-int PVRClientVDR::GetNumChannels()
+int cPVRClientVDR::GetNumChannels()
 {
   vector<string>  lines;
   int             code;
@@ -407,7 +407,7 @@ int PVRClientVDR::GetNumChannels()
   return atol(data.c_str());
 }
 
-PVR_ERROR PVRClientVDR::RequestChannelList(PVRHANDLE handle, bool radio)
+PVR_ERROR cPVRClientVDR::RequestChannelList(PVRHANDLE handle, bool radio)
 {
   vector<string> lines;
   int            code;
@@ -464,7 +464,7 @@ PVR_ERROR PVRClientVDR::RequestChannelList(PVRHANDLE handle, bool radio)
   return PVR_ERROR_NO_ERROR;
 }
 /*
-PVR_ERROR PVRClientVDR::GetChannelSettings(cPVRChannelInfoTag *result)
+PVR_ERROR cPVRClientVDR::GetChannelSettings(cPVRChannelInfoTag *result)
 {
 
   vector<string> lines;
@@ -1202,7 +1202,7 @@ PVR_ERROR PVRClientVDR::GetChannelSettings(cPVRChannelInfoTag *result)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo)
+PVR_ERROR cPVRClientVDR::UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo)
 {
   CStdString     m_Summary;
   CStdString     m_Summary_2;
@@ -1462,7 +1462,7 @@ PVR_ERROR PVRClientVDR::UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::AddChannel(const cPVRChannelInfoTag &info)
+PVR_ERROR cPVRClientVDR::AddChannel(const cPVRChannelInfoTag &info)
 {
 
   CStdString m_Summary;
@@ -1766,7 +1766,7 @@ PVR_ERROR PVRClientVDR::AddChannel(const cPVRChannelInfoTag &info)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::DeleteChannel(unsigned int number)
+PVR_ERROR cPVRClientVDR::DeleteChannel(unsigned int number)
 {
 
   vector<string> lines;
@@ -1809,7 +1809,7 @@ PVR_ERROR PVRClientVDR::DeleteChannel(unsigned int number)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::RenameChannel(unsigned int number, CStdString &newname)
+PVR_ERROR cPVRClientVDR::RenameChannel(unsigned int number, CStdString &newname)
 {
 
   CStdString     str_part1;
@@ -1884,7 +1884,7 @@ PVR_ERROR PVRClientVDR::RenameChannel(unsigned int number, CStdString &newname)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::MoveChannel(unsigned int number, unsigned int newnumber)
+PVR_ERROR cPVRClientVDR::MoveChannel(unsigned int number, unsigned int newnumber)
 {
   vector<string> lines;
   int            code;
@@ -1928,7 +1928,7 @@ PVR_ERROR PVRClientVDR::MoveChannel(unsigned int number, unsigned int newnumber)
   return PVR_ERROR_NO_ERROR;
 }
 
-bool PVRClientVDR::GetChannel(unsigned int number, PVR_CHANNEL &channeldata)
+bool cPVRClientVDR::GetChannel(unsigned int number, PVR_CHANNEL &channeldata)
 {
   vector<string> lines;
   int            code;
@@ -1975,7 +1975,7 @@ bool PVRClientVDR::GetChannel(unsigned int number, PVR_CHANNEL &channeldata)
 /************************************************************/
 /** Record handling **/
 
-int PVRClientVDR::GetNumRecordings(void)
+int cPVRClientVDR::GetNumRecordings(void)
 {
   vector<string>  lines;
   int             code;
@@ -1999,7 +1999,7 @@ int PVRClientVDR::GetNumRecordings(void)
   return atol(data.c_str());
 }
 
-PVR_ERROR PVRClientVDR::RequestRecordingsList(PVRHANDLE handle)
+PVR_ERROR cPVRClientVDR::RequestRecordingsList(PVRHANDLE handle)
 {
   vector<string> linesShort;
   int            code;
@@ -2066,7 +2066,7 @@ PVR_ERROR PVRClientVDR::RequestRecordingsList(PVRHANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::DeleteRecording(const PVR_RECORDINGINFO &recinfo)
+PVR_ERROR cPVRClientVDR::DeleteRecording(const PVR_RECORDINGINFO &recinfo)
 {
   vector<string> lines;
   int            code;
@@ -2108,7 +2108,7 @@ PVR_ERROR PVRClientVDR::DeleteRecording(const PVR_RECORDINGINFO &recinfo)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname)
+PVR_ERROR cPVRClientVDR::RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname)
 {
   vector<string> lines;
   int            code;
@@ -2155,7 +2155,7 @@ PVR_ERROR PVRClientVDR::RenameRecording(const PVR_RECORDINGINFO &recinfo, const 
 /************************************************************/
 /** Timer handling */
 
-int PVRClientVDR::GetNumTimers(void)
+int cPVRClientVDR::GetNumTimers(void)
 {
   vector<string>  lines;
   int             code;
@@ -2179,7 +2179,7 @@ int PVRClientVDR::GetNumTimers(void)
   return atol(data.c_str());
 }
 
-PVR_ERROR PVRClientVDR::RequestTimerList(PVRHANDLE handle)
+PVR_ERROR cPVRClientVDR::RequestTimerList(PVRHANDLE handle)
 {
   vector<string> lines;
   int            code;
@@ -2235,7 +2235,7 @@ PVR_ERROR PVRClientVDR::RequestTimerList(PVRHANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::GetTimerInfo(unsigned int timernumber, PVR_TIMERINFO &tag)
+PVR_ERROR cPVRClientVDR::GetTimerInfo(unsigned int timernumber, PVR_TIMERINFO &tag)
 {
   vector<string>  lines;
   int             code;
@@ -2281,7 +2281,7 @@ PVR_ERROR PVRClientVDR::GetTimerInfo(unsigned int timernumber, PVR_TIMERINFO &ta
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::AddTimer(const PVR_TIMERINFO &timerinfo)
+PVR_ERROR cPVRClientVDR::AddTimer(const PVR_TIMERINFO &timerinfo)
 {
   vector<string> lines;
   int            code;
@@ -2345,7 +2345,7 @@ PVR_ERROR PVRClientVDR::AddTimer(const PVR_TIMERINFO &timerinfo)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
+PVR_ERROR cPVRClientVDR::DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
 {
   vector<string> lines;
   int            code;
@@ -2410,7 +2410,7 @@ PVR_ERROR PVRClientVDR::DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname)
+PVR_ERROR cPVRClientVDR::RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname)
 {
   if (!m_transceiver->IsOpen())
     return PVR_ERROR_SERVER_ERROR;
@@ -2424,7 +2424,7 @@ PVR_ERROR PVRClientVDR::RenameTimer(const PVR_TIMERINFO &timerinfo, const char *
   return UpdateTimer(timerinfo1);
 }
 
-PVR_ERROR PVRClientVDR::UpdateTimer(const PVR_TIMERINFO &timerinfo)
+PVR_ERROR cPVRClientVDR::UpdateTimer(const PVR_TIMERINFO &timerinfo)
 {
   vector<string> lines;
   int            code;
@@ -2475,7 +2475,7 @@ PVR_ERROR PVRClientVDR::UpdateTimer(const PVR_TIMERINFO &timerinfo)
 /************************************************************/
 /** Live stream handling */
 
-bool PVRClientVDR::OpenLiveStream(const PVR_CHANNEL &channelinfo)
+bool cPVRClientVDR::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
   unsigned int channel = channelinfo.number;
 
@@ -2520,7 +2520,7 @@ bool PVRClientVDR::OpenLiveStream(const PVR_CHANNEL &channelinfo)
   return true;
 }
 
-void PVRClientVDR::CloseLiveStream()
+void cPVRClientVDR::CloseLiveStream()
 {
   if (!m_transceiver->IsOpen())
     return;
@@ -2538,7 +2538,7 @@ void PVRClientVDR::CloseLiveStream()
   return;
 }
 
-int PVRClientVDR::ReadLiveStream(BYTE* buf, int buf_size)
+int cPVRClientVDR::ReadLiveStream(BYTE* buf, int buf_size)
 {
   if (!m_transceiver->IsOpen())
     return 0;
@@ -2562,13 +2562,13 @@ int PVRClientVDR::ReadLiveStream(BYTE* buf, int buf_size)
 
   if (res < 0)
   {
-    XBMC_log(LOG_ERROR, "PVRClientVDR::Read - select failed");
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - select failed");
     return 0;
   }
 
   if (res == 0)
   {
-    XBMC_log(LOG_ERROR, "PVRClientVDR::Read - timeout waiting for data");
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - timeout waiting for data");
     return 0;
   }
 
@@ -2576,25 +2576,25 @@ int PVRClientVDR::ReadLiveStream(BYTE* buf, int buf_size)
 
   if (res < 0)
   {
-    XBMC_log(LOG_ERROR, "PVRClientVDR::Read - failed");
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - failed");
     return 0;
   }
 
   if (res == 0)
   {
-    XBMC_log(LOG_ERROR, "PVRClientVDR::Read - eof");
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - eof");
     return 0;
   }
 
   return res;
 }
 
-int PVRClientVDR::GetCurrentClientChannel()
+int cPVRClientVDR::GetCurrentClientChannel()
 {
   return m_iCurrentChannel;
 }
 
-bool PVRClientVDR::SwitchChannel(const PVR_CHANNEL &channelinfo)
+bool cPVRClientVDR::SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
   if (!m_transceiver->IsOpen())
     return false;
@@ -2636,7 +2636,7 @@ bool PVRClientVDR::SwitchChannel(const PVR_CHANNEL &channelinfo)
 /************************************************************/
 /** Record stream handling */
 
-bool PVRClientVDR::OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
+bool cPVRClientVDR::OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
 {
   if (!m_transceiver->IsOpen())
   {
@@ -2681,7 +2681,7 @@ bool PVRClientVDR::OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
   return true;
 }
 
-void PVRClientVDR::CloseRecordedStream(void)
+void cPVRClientVDR::CloseRecordedStream(void)
 {
 
   if (!m_transceiver->IsOpen())
@@ -2702,7 +2702,7 @@ void PVRClientVDR::CloseRecordedStream(void)
   return;
 }
 
-int PVRClientVDR::ReadRecordedStream(BYTE* buf, int buf_size)
+int cPVRClientVDR::ReadRecordedStream(BYTE* buf, int buf_size)
 {
 
   vector<string> lines;
@@ -2743,13 +2743,13 @@ int PVRClientVDR::ReadRecordedStream(BYTE* buf, int buf_size)
 
   if (res < 0)
   {
-    XBMC_log(LOG_ERROR, "PVRClientVDR::ReadRecordedStream - select failed");
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::ReadRecordedStream - select failed");
     return 0;
   }
 
   if (res == 0)
   {
-    XBMC_log(LOG_ERROR, "PVRClientVDR::ReadRecordedStream - timeout waiting for data");
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::ReadRecordedStream - timeout waiting for data");
     return 0;
   }
 
@@ -2757,13 +2757,13 @@ int PVRClientVDR::ReadRecordedStream(BYTE* buf, int buf_size)
 
   if (res < 0)
   {
-    XBMC_log(LOG_ERROR, "PVRClientVDR::ReadRecordedStream - failed");
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::ReadRecordedStream - failed");
     return 0;
   }
 
   if (res == 0)
   {
-    XBMC_log(LOG_ERROR, "PVRClientVDR::ReadRecordedStream - eof");
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::ReadRecordedStream - eof");
     return 0;
   }
 
@@ -2772,7 +2772,7 @@ int PVRClientVDR::ReadRecordedStream(BYTE* buf, int buf_size)
   return res;
 }
 
-__int64 PVRClientVDR::SeekRecordedStream(__int64 pos, int whence)
+__int64 cPVRClientVDR::SeekRecordedStream(__int64 pos, int whence)
 {
 
   if (!m_transceiver->IsOpen())
@@ -2819,7 +2819,7 @@ __int64 PVRClientVDR::SeekRecordedStream(__int64 pos, int whence)
   return currentPlayingRecordPosition;
 }
 
-__int64 PVRClientVDR::LengthRecordedStream(void)
+__int64 cPVRClientVDR::LengthRecordedStream(void)
 {
   return currentPlayingRecordBytes;
 }

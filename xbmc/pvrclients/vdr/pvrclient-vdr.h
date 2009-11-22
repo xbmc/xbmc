@@ -37,12 +37,12 @@
 
 extern pthread_mutex_t m_critSection;
 
-class PVRClientVDR
+class cPVRClientVDR
 {
 public:
   /* Class interface */
-  PVRClientVDR();
-  ~PVRClientVDR();
+  cPVRClientVDR();
+  ~cPVRClientVDR();
 
   /* VTP Listening Thread */
   static void* Process(void*);
