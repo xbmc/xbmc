@@ -498,7 +498,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
       CUtil::AddFileToFolder(strArtistPath,"folder.jpg",localThumb);
   }
   else
-    CStdString localThumb = m_albumItem->GetUserMusicThumb();
+    localThumb = m_albumItem->GetUserMusicThumb();
   if (CFile::Exists(localThumb))
   {
     CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
@@ -510,15 +510,17 @@ void CGUIWindowMusicInfo::OnGetThumb()
       items.Add(item);
     }
   }
-
-  CFileItemPtr item(new CFileItem("thumb://None", false));
-  if (m_bArtistInfo)
-    item->SetIconImage("DefaultArtist.png");
   else
-    item->SetIconImage("DefaultAlbumCover.png");
-  item->SetLabel(g_localizeStrings.Get(20018));
-  items.Add(item);
-
+  {
+    CFileItemPtr item(new CFileItem("thumb://None", false));
+    if (m_bArtistInfo)
+      item->SetIconImage("DefaultArtist.png");
+    else
+      item->SetIconImage("DefaultAlbumCover.png");
+    item->SetLabel(g_localizeStrings.Get(20018));
+    items.Add(item);
+  }
+  
   CStdString result;
   bool flip=false;
   VECSOURCES sources(g_settings.m_musicSources);
@@ -577,12 +579,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
 {
   CFileItemList items;
 
-  CFileItemPtr itemNone(new CFileItem("fanart://None", false));
-  itemNone->SetIconImage("DefaultArtist.png");
-  itemNone->SetLabel(g_localizeStrings.Get(20439));
-  items.Add(itemNone);
-
-  CStdString cachedThumb(itemNone->GetCachedThumb(m_artist.strArtist,g_settings.GetMusicFanartFolder()));
+  CStdString cachedThumb(CFileItem::GetCachedThumb(m_artist.strArtist,g_settings.GetMusicFanartFolder()));
   if (CFile::Exists(cachedThumb))
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
@@ -591,23 +588,6 @@ void CGUIWindowMusicInfo::OnGetFanart()
     items.Add(itemCurrent);
   }
 
-  CMusicDatabase database;
-  database.Open();
-  CStdString strArtistPath;
-  database.GetArtistPath(m_artist.idArtist,strArtistPath);
-  CFileItem item(strArtistPath,true);
-  CStdString strLocal = item.GetLocalFanart();
-  if (!strLocal.IsEmpty())
-  {
-    CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
-    itemLocal->SetThumbnailImage(strLocal);
-    itemLocal->SetLabel(g_localizeStrings.Get(20438));
-    // make sure any previously cached thumb is removed
-    if (CFile::Exists(itemLocal->GetCachedPictureThumb()))
-      CFile::Delete(itemLocal->GetCachedPictureThumb());
-    items.Add(itemLocal);
-  }
-  
   // Grab the thumbnails from the web
   CStdString strPath;
   CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"fanartthumbs",strPath);
@@ -630,7 +610,32 @@ void CGUIWindowMusicInfo::OnGetFanart()
       CFile::Delete(item->GetCachedPictureThumb());
     items.Add(item);
   }
-
+  
+  // Grab a local thumb
+  CMusicDatabase database;
+  database.Open();
+  CStdString strArtistPath;
+  database.GetArtistPath(m_artist.idArtist,strArtistPath);
+  CFileItem item(strArtistPath,true);
+  CStdString strLocal = item.GetLocalFanart();
+  if (!strLocal.IsEmpty())
+  {
+    CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
+    itemLocal->SetThumbnailImage(strLocal);
+    itemLocal->SetLabel(g_localizeStrings.Get(20438));
+    // make sure any previously cached thumb is removed
+    if (CFile::Exists(itemLocal->GetCachedPictureThumb()))
+      CFile::Delete(itemLocal->GetCachedPictureThumb());
+    items.Add(itemLocal);
+  }
+  else
+  {
+    CFileItemPtr itemNone(new CFileItem("fanart://None", false));
+    itemNone->SetIconImage("DefaultArtist.png");
+    itemNone->SetLabel(g_localizeStrings.Get(20439));
+    items.Add(itemNone);
+  }
+  
   CStdString result;
   VECSOURCES sources(g_settings.m_musicSources);
   g_mediaManager.GetLocalDrives(sources);
