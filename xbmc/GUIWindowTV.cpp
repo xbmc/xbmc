@@ -1641,6 +1641,9 @@ void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
     if (s)
     {
       const cPVREPGInfoTag *epgnow = s->GetEPG(item->GetPVRChannelInfoTag(), true)->GetInfoTagNow();
+      if (!epgnow)
+        return;
+
       CFileItem *itemNow  = new CFileItem(*epgnow);
 
       /* Load programme info dialog */

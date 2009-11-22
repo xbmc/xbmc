@@ -110,6 +110,13 @@ void CGUIListItemLayout::SetWidth(float width)
   SetInvalid();
 }
 
+void CGUIListItemLayout::SetHeight(float height)
+{
+  m_group.EnlargeHeight(height - m_height);
+  m_height = height;
+  SetInvalid();
+}
+
 void CGUIListItemLayout::SelectItemFromPoint(const CPoint &point)
 {
   m_group.SelectItemFromPoint(point);

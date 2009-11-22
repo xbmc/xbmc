@@ -1793,6 +1793,17 @@
   <string id="19002">Or use Phrases to find a full text e.G.: "The wizard of Oz".</string>
   <string id="19003">Find similar program</string>
   <string id="19004">Loading EPG from clients</string>
+  <string id="19005">PVR Stream Information</string>
+  <string id="19006">Receiving Device</string>
+  <string id="19007">Receiving Status</string>
+  <string id="19008">Signal Quality</string>
+  <string id="19009">SNR</string>
+  <string id="19010">BER</string>
+  <string id="19011">UNC</string>
+  <string id="19012">Backend</string>
+  <string id="19013">Free To Air</string>
+  <string id="19014">Fixed</string>
+  <string id="19015">Encryption</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>

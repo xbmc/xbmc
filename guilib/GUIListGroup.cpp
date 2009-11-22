@@ -150,6 +150,22 @@ void CGUIListGroup::EnlargeWidth(float difference)
   SetInvalid();
 }
 
+void CGUIListGroup::EnlargeHeight(float difference)
+{
+  // Alters the width of the controls that have an ID of 1
+  for (iControls it = m_children.begin(); it != m_children.end(); it++)
+  {
+    CGUIControl *child = *it;
+    if (child->GetID() >= 1 && child->GetID() <= 14)
+    {
+      child->SetHeight(child->GetHeight() + difference);
+      if (child->GetID() == 1) // label
+        child->SetVisible(child->GetHeight() > 10); ///
+    }
+  }
+  SetInvalid();
+}
+
 void CGUIListGroup::SetFocusedItem(unsigned int focus)
 {
   for (iControls it = m_children.begin(); it != m_children.end(); it++)

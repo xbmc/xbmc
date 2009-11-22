@@ -48,6 +48,7 @@ public:
   virtual void UpdateInfo(const CGUIListItem *item);
 
   void EnlargeWidth(float difference);
+  void EnlargeHeight(float difference);
   void SetFocusedItem(unsigned int subfocus);
   unsigned int GetFocusedItem() const;
   bool MoveLeft();

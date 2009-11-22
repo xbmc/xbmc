@@ -95,6 +95,7 @@ public:
   int ReadLiveStream(BYTE* buf, int buf_size);
   int GetCurrentClientChannel();
   bool SwitchChannel(const PVR_CHANNEL &channelinfo);
+  PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo);
 
   /* Record stream handling */
   bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo);

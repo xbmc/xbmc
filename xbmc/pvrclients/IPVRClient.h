@@ -91,6 +91,7 @@ public:
   virtual __int64 LengthLiveStream(void)=0;
   virtual int GetCurrentClientChannel()=0;
   virtual bool SwitchChannel(const cPVRChannelInfoTag &channelinfo)=0;
+  virtual bool SignalQuality(PVR_SIGNALQUALITY &qualityinfo)=0;
 
   virtual bool OpenRecordedStream(const cPVRRecordingInfoTag &recinfo)=0;
   virtual void CloseRecordedStream(void)=0;

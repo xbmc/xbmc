@@ -228,13 +228,31 @@ extern "C" {
 
   } ATTRIBUTE_PACKED PVR_RECORDINGINFO;
 
-  enum stream_type
-  {
-    PVR_STREAM_NONE,    // if unknown
-    PVR_STREAM_AUDIO,   // audio stream
-    PVR_STREAM_VIDEO,   // video stream
-    PVR_STREAM_DATA,    // data stream
-    PVR_STREAM_SUBTITLE // subtitle stream
+  /**
+   * TV Stream Signal Quality Information
+   */
+  typedef struct PVR_SIGNALQUALITY {
+    char          frontend_name[1024];
+    char          frontend_status[1024];
+    uint16_t      snr;
+    uint16_t      signal;
+    uint32_t      ber;
+    uint32_t      unc;
+    double        video_bitrate;
+    double        audio_bitrate;
+    double        dolby_bitrate;
+  } ATTRIBUTE_PACKED PVR_SIGNALQUALITY;
+
+
+  /**
+   * PVR Client driver demuxer Definition
+   */
+  enum stream_type {
+    PVR_STREAM_NONE,                    /* if unknown */
+    PVR_STREAM_AUDIO,                   /* audio stream */
+    PVR_STREAM_VIDEO,                   /* video stream */
+    PVR_STREAM_DATA,                    /* data stream */
+    PVR_STREAM_SUBTITLE                 /* subtitle stream */
   };
 
   enum stream_source {
@@ -245,19 +263,16 @@ extern "C" {
     PVR_STREAM_SOURCE_TEXT          = 0x400
   };
 
-  /**
-   * TV Recording Definition
-   */
   typedef struct PVR_DEMUXSTREAMINFO {
     /* General Stream information */
     int           index;
     stream_type   type;
     stream_source source;
-    CodecID       codec;            // FFMPEG Codec ID
-    unsigned int  codec_fourcc;     // if available
-    char          language[4];      // ISO 639 3-letter language code (empty string if undefined)
+    CodecID       codec;                /* FFMPEG Codec ID */
+    unsigned int  codec_fourcc;         /* if available */
+    char          language[4];          /* ISO 639 3-letter language code (empty string if undefined) */
     const char   *name;
-    int           duration;         // in mseconds
+    int           duration;             /* in mseconds */
 
     /* Audio Stream information, only set for "type==STREAM_AUDIO" */
     int           channels;
@@ -267,36 +282,37 @@ extern "C" {
     int           bits_per_sample;
 
     /* Video Stream information, only set for "type==STREAM_VIDEO" */
-    int           fps_scale;        // scale of 1000 and a rate of 29970 will result in 29.97 fps
+    int           fps_scale;            /* scale of 1000 and a rate of 29970 will result in 29.97 fps */
     int           fps_rate;
-    int           height;           // height of the stream reported by the demuxer
-    int           width;            // width of the stream reported by the demuxer
-    float         aspect;           // display aspect of stream
-    bool          vfr;              // variable framerate
+    int           height;               /* height of the stream reported by the demuxer */
+    int           width;                /* width of the stream reported by the demuxer */
+    float         aspect;               /* display aspect of stream */
+    bool          vfr;                  /* variable framerate */
   } ATTRIBUTE_PACKED PVR_DEMUXSTREAMINFO;
 
 #if PRAGMA_PACK
 #pragma pack()
 #endif
 
-
   /* WARNING: MAKE SURE IF "DemuxPacket" INSIDE "DVDDemux.h" IS CHANGED THIS STRUCT MUST
    *          ALSO CHANGED
    * TODO:    Is there a better way to do this???
    */
-  typedef struct demux_packet
-  {
-    BYTE* pData;   // data
-    int iSize;     // data size
-    int iStreamId; // integer representing the stream index
-    int iGroupId;  // the group this data belongs to, used to group data from different streams together
+  typedef struct demux_packet {
+    BYTE* pData;                        /* data */
+    int iSize;                          /* data size */
+    int iStreamId;                      /* integer representing the stream index */
+    int iGroupId;                       /* the group this data belongs to, used to group data from different streams together */
 
-    double pts; // pts in DVD_TIME_BASE
-    double dts; // dts in DVD_TIME_BASE
-    double duration; // duration in DVD_TIME_BASE if available
+    double pts;                         /* pts in DVD_TIME_BASE */
+    double dts;                         /* dts in DVD_TIME_BASE */
+    double duration;                    /* duration in DVD_TIME_BASE if available */
   } demux_packet_t;
 
-  // Structure to transfer the above functions to XBMC
+
+  /**
+   * Structure to transfer the PVR functions to XBMC
+   */
   typedef struct PVRClient
   {
     ADDON_STATUS (__cdecl* Create)(ADDON_HANDLE hdl, int ClientID);
@@ -346,6 +362,7 @@ extern "C" {
     __int64 (__cdecl* LengthLiveStream)(void);
     int (__cdecl* GetCurrentClientChannel)();
     bool (__cdecl* SwitchChannel)(const PVR_CHANNEL &channelinfo);
+    PVR_ERROR (__cdecl* SignalQuality)(PVR_SIGNALQUALITY &qualityinfo);
 
     /** PVR Recording Stream Functions **/
     bool (__cdecl* OpenRecordedStream)(const PVR_RECORDINGINFO &recinfo);
