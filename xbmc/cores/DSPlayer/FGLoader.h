@@ -29,7 +29,7 @@
 class CFGLoader
 {
 public:
-  CFGLoader(IGraphBuilder2* gb,CStdString xbmcPath);
+  CFGLoader(IGraphBuilder2* gb);
   virtual ~CFGLoader();
   HRESULT LoadConfig(CStdString configFile);
   HRESULT LoadFilterRules(const CFileItem& pFileItem);
@@ -39,7 +39,6 @@ public:
   HRESULT InsertVideoDecoder(TiXmlElement *pRule);
 protected:
   CComPtr<IGraphBuilder2>  m_pGraphBuilder;
-  CStdString               m_xbmcPath;
   CStdString               m_xbmcConfigFilePath;
   GUID                     m_mpcVideoDecGuid;
   CAtlList<CFGFilterFile*> m_configFilter;

@@ -32,9 +32,8 @@
 
 #include "FileSystem/SpecialProtocol.h"
 using namespace std;
-CFGLoader::CFGLoader(IGraphBuilder2* gb,CStdString xbmcPath)
+CFGLoader::CFGLoader(IGraphBuilder2* gb)
 :m_pGraphBuilder(gb)
-,m_xbmcPath(xbmcPath)
 {
 }
 
@@ -226,7 +225,6 @@ HRESULT CFGLoader::LoadConfig(CStdString configFile)
 {
   HRESULT hr = S_OK;
   m_xbmcConfigFilePath = configFile;
-  m_xbmcPath.Replace("\\","\\\\");
   if (!CFile::Exists(configFile))
     return false;
   TiXmlDocument graphConfigXml;

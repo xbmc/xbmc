@@ -956,7 +956,7 @@ CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd,CStd
   CStdString fileconfigtmp;
   fileconfigtmp = _P("special://xbmc/system/players/dsplayer/dsfilterconfig.xml");
   //Load the config for the xml
-  m_CfgLoader = new CFGLoader(this,pXbmcPath);
+  m_CfgLoader = new CFGLoader(this);
   //if (LoadFiltersFromXml(fileconfigtmp,pXbmcPath))
   if (SUCCEEDED(m_CfgLoader->LoadConfig(fileconfigtmp)))
     CLog::Log(LOGNOTICE,"Successfully loaded %s",fileconfigtmp.c_str());
@@ -964,39 +964,11 @@ CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd,CStd
     CLog::Log(LOGERROR,"Failed loading %s",fileconfigtmp.c_str());
 
   // Renderers
-  m_transform.AddTail(new CFGFilterVideoRenderer(m_hWnd, __uuidof(CEVRAllocatorPresenter), L"Xbmc EVR", m_vrmerit));
-  //m_transform.AddTail(new CFGFilterVideoRenderer(m_hWnd, CLSID_VMR9AllocatorPresenter, L"Xbmc VMR9 (Renderless)", m_vrmerit));
-/*
-  {
-    pFGF = new CFGFilterCustom<CNullVideoRenderer>(L"Null Video Renderer (Any)", MERIT64_ABOVE_DSHOW+2);
-    pFGF->AddType(MEDIATYPE_Video, MEDIASUBTYPE_NULL);
-    m_transform.AddTail(pFGF);
-  }
-  else if(s.iDSVideoRendererType == VIDRNDT_DS_NULL_UNCOMP)
-  {
-    pFGF = new CFGFilterCustom<CNullUVideoRenderer>(L"Null Video Renderer (Uncompressed)", MERIT64_ABOVE_DSHOW+2);
-    pFGF->AddType(MEDIATYPE_Video, MEDIASUBTYPE_NULL);
-    m_transform.AddTail(pFGF);
-  }
-
-  if(s.AudioRendererDisplayName == AUDRNDT_NULL_COMP)
-  {
-    pFGF = new CFGFilterCustom<CNullAudioRenderer>(AUDRNDT_NULL_COMP, MERIT64_ABOVE_DSHOW+2);
-    pFGF->AddType(MEDIATYPE_Audio, MEDIASUBTYPE_NULL);
-    m_transform.AddTail(pFGF);
-  }
-  else if(s.AudioRendererDisplayName == AUDRNDT_NULL_UNCOMP)
-  {
-    pFGF = new CFGFilterCustom<CNullUAudioRenderer>(AUDRNDT_NULL_UNCOMP, MERIT64_ABOVE_DSHOW+2);
-    pFGF->AddType(MEDIATYPE_Audio, MEDIASUBTYPE_NULL);
-    m_transform.AddTail(pFGF);
-  }
-  else if(!s.AudioRendererDisplayName.IsEmpty())
-  {
-    pFGF = new CFGFilterRegistry(s.AudioRendererDisplayName, m_armerit);
-    pFGF->AddType(MEDIATYPE_Audio, MEDIASUBTYPE_NULL);
-    m_transform.AddTail(pFGF);
-  }*/
+  if (0)//(DShowUtil::IsVistaOrAbove())
+    m_transform.AddTail(new CFGFilterVideoRenderer(m_hWnd, __uuidof(CEVRAllocatorPresenter), L"Xbmc EVR", m_vrmerit));
+  else
+    m_transform.AddTail(new CFGFilterVideoRenderer(m_hWnd, __uuidof(CDX9AllocatorPresenter), L"Xbmc VMR9 (Renderless)", m_vrmerit));
+  
 }
 
 HRESULT CFGManagerPlayer::CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF, IUnknown** ppUnk)
@@ -1005,20 +977,6 @@ HRESULT CFGManagerPlayer::CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF, IUnk
 
   if(FAILED(hr = __super::CreateFilter(pFGF, ppBF, ppUnk)))
     return hr;
-
-  if(ppBF && *ppBF && ppUnk && !*ppUnk)
-  {
-    //AppSettings& s = AfxGetAppSettings();
-
-    /*if(CComQIPtr<IAudioSwitcherFilter> pASF = *ppBF)
-    {
-      pASF->SetSpeakerConfig(s.fCustomChannelMapping, s.pSpeakerToChannelMap);
-      pASF->EnableDownSamplingTo441(s.fDownSampleTo441);
-      pASF->SetAudioTimeShift(s.fAudioTimeShift ? 10000i64*s.tAudioTimeShift : 0);
-      *ppUnk = pASF.Detach();
-    }*/
-  }
-
   return hr;
 }
 
