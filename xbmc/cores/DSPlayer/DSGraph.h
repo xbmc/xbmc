@@ -36,9 +36,8 @@
 #include <wxdebug.h>
 #include <combase.h>
 #include "util.h"
-#include "subpic/isubpic.h"
+
 #include "igraphbuilder2.h"
-#include "filters/dx9allocatorpresenter.h"
 #include "Filters/IMPCVideoDecFilter.h"
 #include "Filters/IffdshowDecVideo.h"
 

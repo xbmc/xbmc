@@ -1,6 +1,6 @@
 #pragma once
 
-#include "helpers/CommonDshowXbmc.h"
+#include "streams.h"
 
 
 class CMediaTypeEx : public CMediaType

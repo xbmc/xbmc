@@ -28,11 +28,12 @@
 #include "DShowUtil/DshowCommon.h"
 
 #include "filters/DX9AllocatorPresenter.h"
+#include "filters/evrAllocatorPresenter.h"
 #include "filters/xbmcfilesource.h"
 #include "filters/asyncflt.h"
 #include "filters/asyncio.h"
 #include <initguid.h>
-#include "helpers/moreuuids.h"
+#include "moreuuids.h"
 #include <dmodshow.h>
 #include <D3d9.h>
 #include <Vmr9.h>
@@ -963,7 +964,8 @@ CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd,CStd
     CLog::Log(LOGERROR,"Failed loading %s",fileconfigtmp.c_str());
 
   // Renderers
-  m_transform.AddTail(new CFGFilterVideoRenderer(m_hWnd, CLSID_VMR9AllocatorPresenter, L"Xbmc VMR9 (Renderless)", m_vrmerit));
+  m_transform.AddTail(new CFGFilterVideoRenderer(m_hWnd, __uuidof(CEVRAllocatorPresenter), L"Xbmc EVR", m_vrmerit));
+  //m_transform.AddTail(new CFGFilterVideoRenderer(m_hWnd, CLSID_VMR9AllocatorPresenter, L"Xbmc VMR9 (Renderless)", m_vrmerit));
 /*
   {
     pFGF = new CFGFilterCustom<CNullVideoRenderer>(L"Null Video Renderer (Any)", MERIT64_ABOVE_DSHOW+2);

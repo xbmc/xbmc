@@ -20,7 +20,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
+#ifndef _GEOMETRYHELPER_H
+#define _GEOMETRYHELPER_H
 class GeometryHelper
 {
 public:
@@ -114,3 +115,6 @@ public:
   
   }
 };
+
+extern GeometryHelper g_geometryHelper;
+#endif

@@ -78,8 +78,6 @@ HRESULT CDSGraph::SetFile(const CFileItem& file)
   
   m_pGraphBuilder = new CFGManagerPlayer(_T("CFGManagerPlayer"), NULL, g_hWnd,homepath);
   hr = m_pGraphBuilder->AddToROT();
-
-  //hr = m_pGraphBuilder->AddToROT(&g_userId);
   //Adding every filters required for this file into the igraphbuilder
   hr = m_pGraphBuilder->RenderFileXbmc(file);
   

@@ -1,13 +1,27 @@
-//------------------------------------------------------------------------------
-// File: DX9AllocatorPresenter.cpp
-//
-// Desc: DirectShow sample code - implementation of the CDX9AllocatorPresenter class
-//
-// Copyright (c) Microsoft Corporation.  All rights reserved.
-//------------------------------------------------------------------------------
-#include "Helpers/CommonDshowXbmc.h"
-//#include "externalfilter/util.h"
+/*
+ *
+ * (C) 2003-2006 Gabest
+ * (C) 2006-2007 see AUTHORS
+ *
+ * This file is part of mplayerc.
+ *
+ * Mplayerc is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Mplayerc is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 #include "DShowUtil/dshowutil.h"
+#include "DShowUtil/DSGeometry.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "DX9AllocatorPresenter.h"
 #include "application.h"
@@ -15,12 +29,7 @@
 #include "utils/log.h"
 #include "MacrovisionKicker.h"
 #include "IPinHook.h"
-#define D3DFVF_CUSTOMVERTEX ( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1 )
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
 
-// ISubPicAllocatorPresenter
 
 class COuterVMR9
   : public CUnknown
@@ -160,7 +169,7 @@ public:
     {
       tagRECT s, d;
       HRESULT hr = pWC9->GetVideoPosition(&s, &d);
-      *pHeight = GeometryHelper::GetHeight(d);
+      *pHeight = g_geometryHelper.GetHeight(d);
       return hr;
     }
 
@@ -238,8 +247,8 @@ public:
       HRESULT hr = pWC9->GetVideoPosition(&s, &d);
       *pLeft = d.left;
       *pTop = d.top;
-      *pWidth = GeometryHelper::GetWidth(d);
-      *pHeight = GeometryHelper::GetHeight(d);
+      *pWidth = g_geometryHelper.GetWidth(d);
+      *pHeight = g_geometryHelper.GetHeight(d);
       return hr;
     }
 
@@ -251,8 +260,6 @@ public:
     if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
     {
       LONG aw, ah;
-//      return pWC9->GetNativeVideoSize(pWidth, pHeight, &aw, &ah);
-      // DVD Nav. bug workaround fix
       HRESULT hr = pWC9->GetNativeVideoSize(pWidth, pHeight, &aw, &ah);
       *pWidth = *pHeight * aw / ah;
       return hr;
@@ -308,40 +315,17 @@ public:
 };
 
 CDX9AllocatorPresenter::CDX9AllocatorPresenter(HRESULT& hr, HWND wnd, CStdString &_Error,IDirect3D9* d3d, IDirect3DDevice9* d3dd)
-: ISubPicAllocatorPresenterImpl(wnd,hr, &_Error)
-, m_refCount(1)
+: m_refCount(1)
 , m_D3D(d3d)
 , m_D3DDev(d3dd)
 , m_window( wnd )
 {
-  g_renderManager.PreInit();
-  m_ReadyToPaint=false;
+  
+  hr = S_OK;
   CAutoLock Lock(&m_ObjectLock);
-    hr = E_FAIL;
-
-    if( IsWindow( wnd ) == FALSE )
-    {
-        hr = E_INVALIDARG;
-        return;
-    }
-
-    if( m_D3D == NULL )
-    {
-        ASSERT( d3dd ==  NULL ); 
-
-        m_D3D.Attach( Direct3DCreate9(D3D_SDK_VERSION) );
-        if (m_D3D == NULL) {
-            hr = E_FAIL;
-            return;
-        }
-    }
-
-    if( m_D3DDev == NULL )
-    {
-        hr = CreateDevice();
-    }
+  g_renderManager.PreInit();
   m_renderTarget = NULL; 
-    hr = m_D3DDev->GetRenderTarget( 0, & m_renderTarget );
+  hr = m_D3DDev->GetRenderTarget( 0, &m_renderTarget );
 
 }
 
@@ -349,32 +333,6 @@ CDX9AllocatorPresenter::~CDX9AllocatorPresenter()
 {
     DeleteSurfaces();
   g_renderManager.UnInit();
-}
-
-HRESULT CDX9AllocatorPresenter::CreateDevice()
-{
-    HRESULT hr;
-    m_D3DDev = NULL;
-    D3DDISPLAYMODE dm;
-
-    hr = m_D3D->GetAdapterDisplayMode( D3DADAPTER_DEFAULT, &dm);
-    D3DPRESENT_PARAMETERS pp;
-    ZeroMemory(&pp, sizeof(pp));
-    pp.Windowed = TRUE;
-    pp.hDeviceWindow = m_window;
-    pp.SwapEffect = D3DSWAPEFFECT_COPY;
-    pp.BackBufferFormat = dm.Format;
-
-    FAIL_RET( m_D3D->CreateDevice(  D3DADAPTER_DEFAULT,
-                                    D3DDEVTYPE_HAL,
-                                    m_window,
-                                    D3DCREATE_SOFTWARE_VERTEXPROCESSING | 
-                                    D3DCREATE_MULTITHREADED,
-                                    &pp,
-                                    &m_D3DDev) );
-
-    m_renderTarget = NULL; 
-    return m_D3DDev->GetRenderTarget( 0, & m_renderTarget );
 }
 
 void CDX9AllocatorPresenter::DeleteSurfaces()
@@ -517,14 +475,10 @@ HRESULT CDX9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID ,DWORD SurfaceInde
 HRESULT CDX9AllocatorPresenter::AdviseNotify(IVMRSurfaceAllocatorNotify9 *lpIVMRSurfAllocNotify)
 {
     CAutoLock Lock(&m_ObjectLock);
-
     HRESULT hr;
-
     m_lpIVMRSurfAllocNotify = lpIVMRSurfAllocNotify;
-    
-    HMONITOR hMonitor = m_D3D->GetAdapterMonitor(GetAdapter(m_D3D));//GetAdapterMonitor( D3DADAPTER_DEFAULT );
-    FAIL_RET( m_lpIVMRSurfAllocNotify->SetD3DDevice( m_D3DDev, hMonitor ) );
-
+    HMONITOR hMonitor = m_D3D->GetAdapterMonitor(GetAdapter(m_D3D));
+    hr = m_lpIVMRSurfAllocNotify->SetD3DDevice( m_D3DDev, hMonitor);
     return hr;
 }
 
@@ -782,7 +736,7 @@ void CDX9AllocatorPresenter::UpdateAlphaBitmap()
     if (!::GetObject(hBitmap, sizeof( DIBSECTION ), &info ))
       return;
 
-    m_VMR9AlphaBitmapRect = GeometryHelper::CreateRect(0, 0, info.dsBm.bmWidth, info.dsBm.bmHeight);
+    m_VMR9AlphaBitmapRect = g_geometryHelper.CreateRect(0, 0, info.dsBm.bmWidth, info.dsBm.bmHeight);
     m_VMR9AlphaBitmapWidthBytes = info.dsBm.bmWidthBytes;
 
     if (m_VMR9AlphaBitmapData.Allocate(info.dsBm.bmWidthBytes * info.dsBm.bmHeight))

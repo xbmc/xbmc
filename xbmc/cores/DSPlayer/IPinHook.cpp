@@ -26,7 +26,7 @@
 #include <d3dx9.h>
 #include <dxva.h>
 #include <dxva2api.h>
-#include <helpers/moreuuids.h>
+#include <moreuuids.h>
 
 #include "IPinHook.h"
 #include "dshowutil/dshowutil.h"

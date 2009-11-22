@@ -29,7 +29,7 @@
 #include "D3DResource.h"
 #include "settings/VideoSettings.h"
 
-#include "../dsplayer/subpic/CoordGeom.h"
+
 #include <atlbase.h>
 //#define MP_DIRECTRENDERING
 

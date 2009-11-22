@@ -26,6 +26,7 @@
 #include "FileItem.h"
 #include "filters/IMPCVideoDecFilter.h"
 #include "Filters/IffdshowDecVideo.h"
+#include <atlcoll.h>
 using namespace XFILE;
 
 [uuid("165BE9D6-0929-4363-9BA3-580D735AA0F6")]

@@ -1,46 +1,26 @@
-//------------------------------------------------------------------------------
-// File: DX9AllocatorPresenter.h
-//
-// Desc: DirectShow sample code - interface for the CDX9AllocatorPresenter class
-//
-// Copyright (c) Microsoft Corporation.  All rights reserved.
-//------------------------------------------------------------------------------
-
-#if !defined(AFX_ALLOCATOR_H__F675D766_1E57_4269_A4B9_C33FB672B856__INCLUDED_)
-#define AFX_ALLOCATOR_H__F675D766_1E57_4269_A4B9_C33FB672B856__INCLUDED_
-
-#if _MSC_VER > 1000
+#ifndef _DXALLOCATORPRESENTER_H
+#define _DXALLOCATORPRESNETER_H
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <vmr9.h>
 #include <wxdebug.h>
 #include <Wxutil.h>
 #pragma warning(push, 2)
 
-// C4995'function': name was marked as #pragma deprecated
-//
-// The version of vector which shipped with Visual Studio .NET 2003 
-// indirectly uses some deprecated functions.  Warning C4995 is disabled 
-// because the file cannot be changed and we do not want to 
-// display warnings which the user cannot fix.
 #pragma warning(disable : 4995)
 
 #include <vector>
 #pragma warning(pop)
 using namespace std;
 
-//#include "PlaneScene.h"
 #include <d3d9.h>
-// Common files
-//#include "helpers/CComPtr.h"
-#include "subpic/isubpic.h"
-DEFINE_GUID(CLSID_VMR9AllocatorPresenter,
-0x4e4834fa, 0x22c2, 0x40e2, 0x94, 0x46, 0xf7, 0x7d, 0xd0, 0x5d, 0x24, 0x5e);
+
+#include "IDsRenderer.h"
 #define VMRBITMAP_UPDATE            0x80000000
 class CDSGraph;
 
-class CDX9AllocatorPresenter  : public  ISubPicAllocatorPresenterImpl,
+[uuid("A2636B41-5E3C-4426-B6BC-CD8616600912")]
+class CDX9AllocatorPresenter  : public  IDsRenderer,
                                         IVMRSurfaceAllocator9,
                                         IVMRImagePresenter9
                     
@@ -75,13 +55,11 @@ public:
   STDMETHODIMP_(void) SetTime(REFERENCE_TIME rtNow) {};
   
 protected:
-  HRESULT CreateDevice();
   void DeleteSurfaces();
   HRESULT AllocVideoSurface(D3DFORMAT Format = D3DFMT_A8R8G8B8);
   D3DFORMAT            m_SurfaceType;
   D3DFORMAT            m_BackbufferType;
   D3DFORMAT            m_DisplayType;
-  bool m_ReadyToPaint;
   VMR9AlphaBitmap      m_VMR9AlphaBitmap;
   CAutoVectorPtr<BYTE>  m_VMR9AlphaBitmapData;
   tagRECT          m_VMR9AlphaBitmapRect;

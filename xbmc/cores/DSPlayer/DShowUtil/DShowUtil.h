@@ -8,9 +8,9 @@
 
 #include "HdmvClipInfo.h"
 #include "H264Nalu.h"
-//#include "MediaTypes.h"
-#include ".\MediaTypeEx.h"
-#include "helpers/moreuuids.h"
+
+#include "MediaTypeEx.h"
+#include "moreuuids.h"
 #include "vd.h"
 #include "text.h"
 
@@ -89,7 +89,8 @@ public:
   static void CStringToBin(CStdString str, CAtlArray<BYTE>& data);
   static CStdString BinToCString(BYTE* ptr, int len);
 typedef enum {CDROM_NotFound, CDROM_Audio, CDROM_VideoCD, CDROM_DVDVideo, CDROM_Unknown} cdrom_t;
-  static cdrom_t GetCDROMType(TCHAR drive, CAtlList<CStdString>& files);
+  //GetCDROMType need devioctl.h
+  //static cdrom_t GetCDROMType(TCHAR drive, CAtlList<CStdString>& files);
   static CStdString GetDriveLabel(TCHAR drive);
   //this one require mfc
   //static bool GetKeyFrames(CStdString fn, CUIntArray& kfs);

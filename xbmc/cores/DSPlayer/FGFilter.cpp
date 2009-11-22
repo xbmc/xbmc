@@ -22,8 +22,9 @@
 #include "FGFilter.h"
 #include "dshowutil/dshowutil.h"
 
-#include "subpic/isubpic.h"
+
 #include "Filters/DX9AllocatorPresenter.h"
+#include "Filters/EVRAllocatorPresenter.h"
 #include "WindowingFactory.h"
 #include "utils/log.h"
 
@@ -423,12 +424,15 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF, CInterfaceList<IUnkno
 
   HRESULT hr = S_OK;
 
-  CComPtr<ISubPicAllocatorPresenter> pCAP;
+  CComPtr<IDsRenderer> pCAP;
   CStdString __err;
-  if (m_clsid == CLSID_VMR9AllocatorPresenter)
+  if (m_clsid == __uuidof(CDX9AllocatorPresenter))
     pCAP = new CDX9AllocatorPresenter(hr,m_hWnd,__err,g_Windowing.Get3DObject(),g_Windowing.Get3DDevice());
-  //if (m_clsid == CLSID_EVRAllocatorPresenter)
-  //  pCAP = new CEVRAllocatorPresenter(hr,m_hWnd,__err,g_Windowing.Get3DObject(),g_Windowing.Get3DDevice());
+  if (m_clsid == __uuidof(CEVRAllocatorPresenter))
+  {
+    pCAP = new CEVRAllocatorPresenter(hr,m_hWnd,__err,g_Windowing.Get3DObject(),g_Windowing.Get3DDevice());
+  }
+
   if(pCAP == NULL)
     return E_FAIL;
   CComPtr<IUnknown> pRenderer;
