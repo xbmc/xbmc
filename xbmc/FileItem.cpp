@@ -2483,7 +2483,13 @@ void CFileItem::SetCachedVideoThumb()
 {
   if (IsParentFolder()) return;
   CStdString cachedThumb(GetCachedVideoThumb());
-  if (CFile::Exists(cachedThumb))
+  if (HasVideoInfoTag() && !m_bIsFolder  &&
+      GetVideoInfoTag()->m_iEpisode > -1 &&
+      CFile::Exists(GetCachedEpisodeThumb()))
+  {
+    SetThumbnailImage(GetCachedEpisodeThumb());
+  }
+  else if (CFile::Exists(cachedThumb))
     SetThumbnailImage(cachedThumb);
 }
 
