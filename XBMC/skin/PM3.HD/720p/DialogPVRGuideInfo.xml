@@ -43,8 +43,8 @@
 			<texture>separator.png</texture>
 		</control>
 		<control type="group">
-			<control type="label" id="20">
-				<description>ProgInfo Title value</description>
+			<control type="label">
+				<description>Title value</description>
 				<posx>40</posx>
 				<posy>90</posy>
 				<width>820</width>
@@ -52,11 +52,11 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<font>font18</font>
-				<label>-</label>
+				<info>ListItem.Title</info>
 				<textcolor>green</textcolor>
 			</control>
 			<control type="label">
-				<description>ProgInfo StartTime</description>
+				<description>Start Date</description>
 				<posx>70</posx>
 				<posy>140</posy>
 				<width>180</width>
@@ -67,8 +67,8 @@
 				<textcolor>grey2</textcolor>
 				<label>$LOCALIZE[552]:</label>
 			</control>
-			<control type="label" id="24">
-				<description>ProgInfo StartTime value</description>
+			<control type="label">
+				<description>Start date value</description>
 				<posx>200</posx>
 				<posy>140</posy>
 				<width>370</width>
@@ -77,10 +77,10 @@
 				<aligny>center</aligny>
 				<font>font12</font>
 				<textcolor>white</textcolor>
-				<label>-</label>
+				<label>$INFO[ListItem.StartDate]</label>
 			</control>
 			<control type="label">
-				<description>ProgInfo StartTime</description>
+				<description>Start time</description>
 				<posx>70</posx>
 				<posy>170</posy>
 				<width>180</width>
@@ -91,8 +91,8 @@
 				<textcolor>grey2</textcolor>
 				<label>$LOCALIZE[142]</label>
 			</control>
-			<control type="label" id="23">
-				<description>ProgInfo StartTime value</description>
+			<control type="label">
+				<description>Start Time value</description>
 				<posx>200</posx>
 				<posy>170</posy>
 				<width>370</width>
@@ -101,7 +101,7 @@
 				<aligny>center</aligny>
 				<font>font12</font>
 				<textcolor>white</textcolor>
-				<label>-</label>
+				<label>$INFO[ListItem.StartTime]</label>
 			</control>
 			<control type="label">
 				<description>Channel Name</description>
@@ -115,7 +115,7 @@
 				<textcolor>grey2</textcolor>
 				<label>$LOCALIZE[18075]:</label>
 			</control>
-			<control type="fadelabel" id="27">
+			<control type="fadelabel">
 				<description>Channel Value</description>
 				<posx>600</posx>
 				<posy>140</posy>
@@ -125,7 +125,8 @@
 				<aligny>center</aligny>
 				<font>font12</font>
 				<textcolor>white</textcolor>
-				<label fallback="161">-</label>
+				<label fallback="161">$LOCALIZE[18075]: $INFO[ListItem.ChannelNumber]</label>
+				<info>ListItem.ChannelName</info>
 			</control>
 			<control type="label">
 				<description>Duration</description>
@@ -139,18 +140,18 @@
 				<textcolor>grey2</textcolor>
 				<label>$LOCALIZE[180]:</label>
 			</control>
-			<control type="label" id="25">
+			<control type="label">
 				<description>Duration value</description>
 				<posx>400</posx>
 				<posy>170</posy>
 				<width>70</width>
-				<label>-</label>
+				<label>$INFO[ListItem.Duration]</label>
 				<align>left</align>
 				<font>font12</font>
 				<scroll>true</scroll>
 			</control>
 			<control type="label">
-				<description>ProgInfo Genre</description>
+				<description>Genre</description>
 				<posx>500</posx>
 				<posy>170</posy>
 				<width>90</width>
@@ -161,29 +162,29 @@
 				<textcolor>grey2</textcolor>
 				<label>$LOCALIZE[135]:</label>
 			</control>
-			<control type="label" id="26">
-				<description>ProgInfo Genre value</description>
+			<control type="label">
+				<description>Genre value</description>
 				<posx>600</posx>
 				<posy>170</posy>
 				<width>250</width>
-				<label>-</label>
+				<label fallback="161">$INFO[ListItem.Genre]</label>
 				<align>left</align>
 				<font>font12</font>
 				<scroll>true</scroll>
 			</control>
 		</control>
 		<control type="label" id="21">
-				<description>ProgInfo Subtitle value</description>
+				<description>Subtitle value</description>
 				<posx>70</posx>
 				<posy>230</posy>
 				<width>760</width>
-				<label>-</label>
+				<label>$INFO[ListItem.PlotOutline]</label>
 				<align>left</align>
 				<font>font12</font>
 				<scroll>true</scroll>
-				<visible>!Control.IsVisible(50)</visible>
+				<visible>!IsEmpty(ListItem.PlotOutline)</visible>
 		</control>
-		<control type="textbox" id="22">
+		<control type="textbox">
 			<description>Textbox when scrollbar is visible & subtitle is hidden</description>
 			<posx>70</posx>
 			<posy>230</posy>
@@ -194,10 +195,11 @@
 			<onup>7</onup>
 			<ondown>7</ondown>
 			<pagecontrol>61</pagecontrol>
+			<label fallback="161">$INFO[ListItem.Plot]</label>
 			<visible>Control.IsVisible(61) + !Control.IsVisible(21)</visible>
 			<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 		</control>
-		<control type="textbox" id="22">
+		<control type="textbox">
 			<description>Textbox when scrollbar is NOT visible & subtitle is hidden</description>
 			<posx>70</posx>
 			<posy>230</posy>
@@ -208,10 +210,11 @@
 			<onup>7</onup>
 			<ondown>7</ondown>
 			<pagecontrol>61</pagecontrol>
+			<label fallback="161">$INFO[ListItem.Plot]</label>
 			<visible>!Control.IsVisible(61) + !Control.IsVisible(21)</visible>
 			<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 		</control>
-		<control type="textbox" id="22">
+		<control type="textbox">
 			<description>Textbox when scrollbar is visible & subtitle is visible</description>
 			<posx>70</posx>
 			<posy>276</posy>
@@ -222,10 +225,11 @@
 			<onup>7</onup>
 			<ondown>7</ondown>
 			<pagecontrol>61</pagecontrol>
+			<label fallback="161">$INFO[ListItem.Plot]</label>
 			<visible>Control.IsVisible(61) + Control.IsVisible(21)</visible>
 			<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 		</control>
-		<control type="textbox" id="22">
+		<control type="textbox">
 			<description>Textbox when scrollbar is NOT visible & subtitle is visible</description>
 			<posx>70</posx>
 			<posy>276</posy>
@@ -236,6 +240,7 @@
 			<onup>7</onup>
 			<ondown>7</ondown>
 			<pagecontrol>61</pagecontrol>
+			<label fallback="161">$INFO[ListItem.Plot]</label>
 			<visible>!Control.IsVisible(61) + Control.IsVisible(21)</visible>
 			<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 		</control>
@@ -299,12 +304,12 @@
 				<ondown>6</ondown>
 			</control>
 			<control type="button" id ="6">
-				<description>Record</description>
+				<description>Record button</description>
 				<posx>452</posx>
 				<posy>440</posy>
 				<width>200</width>
 				<height>32</height>
-				<label>264</label>
+				<label>-</label>
 				<font>font13</font>
 				<align>center</align>
 				<texturenofocus border="3">button-nofocus.png</texturenofocus>

@@ -208,7 +208,6 @@ SRCS=Application.cpp \
      ZeroconfBrowser.cpp \
      VideoReferenceClock.cpp \
      DPMSSupport.cpp \
-     GUIDialogTVEPGProgInfo.cpp \
      GUIDialogTVRecordingInfo.cpp \
      GUIDialogTVChannels.cpp \
      PVRManager.cpp \

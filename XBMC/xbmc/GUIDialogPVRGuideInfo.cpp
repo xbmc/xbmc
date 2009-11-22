@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,85 +19,44 @@
  *
  */
 
-
-/* Standart includes */
 #include "Application.h"
 #include "GUIWindowManager.h"
-#include "GUISettings.h"
-#include "GUIDialogOK.h"
-#include "Util.h"
-
-/* self include */
-#include "GUIDialogTVEPGProgInfo.h"
-
-/* TV control */
-#include "PVRManager.h"
-
-/* TV information tags */
+#include "GUIDialogPVRGuideInfo.h"
 #include "utils/PVREpg.h"
 #include "utils/PVRChannels.h"
-#include "utils/PVRRecordings.h"
 #include "utils/PVRTimers.h"
-
-/* Dialog windows includes */
-#include "GUIDialogProgress.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
-#include "GUIDialogNumeric.h"
-#include "GUIDialogKeyboard.h"
 
 using namespace std;
-
-#define CONTROL_PROG_TITLE              20 // from db
-#define CONTROL_PROG_SUBTITLE           21
-#define CONTROL_PROG_STARTTIME          23
-#define CONTROL_PROG_DATE               24
-#define CONTROL_PROG_DURATION           25
-#define CONTROL_PROG_GENRE              26
-#define CONTROL_PROG_CHANNEL            27
-#define CONTROL_PROG_CHANNELCALLSIGN    28
-#define CONTROL_PROG_CHANNELNUM         29
-
-#define CONTROL_PROG_RECSTATUS          30 // from pvrmanager
-#define CONTROL_PROG_JOBSTATUS          31
-
-#define CONTROL_TEXTAREA                22
 
 #define CONTROL_BTN_SWITCH              5
 #define CONTROL_BTN_RECORD              6
 #define CONTROL_BTN_OK                  7
 
-
-CGUIDialogTVEPGProgInfo::CGUIDialogTVEPGProgInfo(void)
-    : CGUIDialog(WINDOW_DIALOG_TV_GUIDE_INFO, "DialogEPGProgInfo.xml")
+CGUIDialogPVRGuideInfo::CGUIDialogPVRGuideInfo(void)
+    : CGUIDialog(WINDOW_DIALOG_TV_GUIDE_INFO, "DialogPVRGuideInfo.xml")
     , m_progItem(new CFileItem)
 {
 }
 
-CGUIDialogTVEPGProgInfo::~CGUIDialogTVEPGProgInfo(void)
+CGUIDialogPVRGuideInfo::~CGUIDialogPVRGuideInfo(void)
 {
 }
 
-bool CGUIDialogTVEPGProgInfo::OnMessage(CGUIMessage& message)
+bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-  case GUI_MSG_WINDOW_DEINIT:
-  {
-  }
-  break;
   case GUI_MSG_WINDOW_INIT:
-  {
-    CGUIDialog::OnMessage(message);
-    m_viewDescription = true;
-    Update();
-    return true;
-  }
-
-  break;
-  case GUI_MSG_CLICKED:
-    int iControl = message.GetSenderId();
     {
+      CGUIDialog::OnMessage(message);
+      Update();
+      break;
+    }
+  case GUI_MSG_CLICKED:
+    {
+      int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTN_OK)
       {
         Close();
@@ -105,9 +64,7 @@ bool CGUIDialogTVEPGProgInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_RECORD)
       {
-        int iChannel = m_progItem->GetEPGInfoTag()->ChannelNumber();
-
-        if (iChannel != -1)
+        if (m_progItem->GetEPGInfoTag()->ChannelNumber() > 0)
         {
           if (m_progItem->GetEPGInfoTag()->Timer() == NULL)
           {
@@ -126,7 +83,6 @@ bool CGUIDialogTVEPGProgInfo::OnMessage(CGUIMessage& message)
               {
                 cPVRTimerInfoTag newtimer(*m_progItem.get());
                 CFileItem *item = new CFileItem(newtimer);
-
                 cPVRTimers::AddTimer(*item);
               }
             }
@@ -136,9 +92,7 @@ bool CGUIDialogTVEPGProgInfo::OnMessage(CGUIMessage& message)
             CGUIDialogOK::ShowAndGetInput(18100,18107,0,0);
           }
         }
-
         Close();
-
         return true;
       }
       else if (iControl == CONTROL_BTN_SWITCH)
@@ -170,67 +124,37 @@ bool CGUIDialogTVEPGProgInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogTVEPGProgInfo::SetProgInfo(const CFileItem *item)
+void CGUIDialogPVRGuideInfo::SetProgInfo(const CFileItem *item)
 {
   *m_progItem = *item;
 }
 
-void CGUIDialogTVEPGProgInfo::Update()
+CFileItemPtr CGUIDialogPVRGuideInfo::GetCurrentListItem(int offset)
 {
-  CStdString strTemp;
-
-  strTemp = m_progItem->GetEPGInfoTag()->Title(); strTemp.Trim();
-  SetLabel(CONTROL_PROG_TITLE, strTemp);
-
-  strTemp = m_progItem->GetEPGInfoTag()->Start().GetAsLocalizedDate(true); strTemp.Trim();
-  SetLabel(CONTROL_PROG_DATE, strTemp);
-
-  strTemp = m_progItem->GetEPGInfoTag()->Start().GetAsLocalizedTime("", false); strTemp.Trim();
-  SetLabel(CONTROL_PROG_STARTTIME, strTemp);
-
-  strTemp.Format("%i", m_progItem->GetEPGInfoTag()->GetDuration()/60);
-  strTemp.Trim();
-  SetLabel(CONTROL_PROG_DURATION, strTemp);
-
-  strTemp = m_progItem->GetEPGInfoTag()->Genre(); strTemp.Trim();
-  SetLabel(CONTROL_PROG_GENRE, strTemp);
-
-  strTemp = m_progItem->GetEPGInfoTag()->ChannelName();
-  strTemp.Trim();
-  SetLabel(CONTROL_PROG_CHANNEL, strTemp);
-
-  strTemp.Format("%u", m_progItem->GetEPGInfoTag()->ChannelNumber()); // int value
-  SetLabel(CONTROL_PROG_CHANNELNUM, strTemp);
-
-  // programme subtitle
-  strTemp = m_progItem->GetEPGInfoTag()->PlotOutline(); strTemp.Trim();
-
-  if (strTemp.IsEmpty())
-  {
-    SET_CONTROL_HIDDEN(CONTROL_PROG_SUBTITLE);
-  }
-  else
-  {
-    SetLabel(CONTROL_PROG_SUBTITLE, strTemp);
-    SET_CONTROL_VISIBLE(CONTROL_PROG_SUBTITLE);
-  }
-
-  // programme description
-  strTemp = m_progItem->GetEPGInfoTag()->Plot(); strTemp.Trim();
-
-  SetLabel(CONTROL_TEXTAREA, strTemp);
-
-  SET_CONTROL_VISIBLE(CONTROL_BTN_RECORD);
+  return m_progItem;
 }
 
-void CGUIDialogTVEPGProgInfo::SetLabel(int iControl, const CStdString &strLabel)
+void CGUIDialogPVRGuideInfo::Update()
 {
-  if (strLabel.IsEmpty())
+  // set recording button label
+  cPVREPGInfoTag* tag = m_progItem->GetEPGInfoTag();
+  if (tag->End() > CDateTime::GetCurrentDateTime())
   {
-    SET_CONTROL_LABEL(iControl, 416); /// disable instead? // "Not available"
+    if (tag->Timer() == NULL)
+    {
+      if (tag->Start() < CDateTime::GetCurrentDateTime())
+        SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264);
+      else
+        SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 18416);
+    }
+    else
+    {
+      if (tag->Start() < CDateTime::GetCurrentDateTime())
+        SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 18414);
+      else
+        SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 18415);
+    }
   }
   else
-  {
-    SET_CONTROL_LABEL(iControl, strLabel);
-  }
+    SET_CONTROL_HIDDEN(CONTROL_BTN_RECORD);
 }
