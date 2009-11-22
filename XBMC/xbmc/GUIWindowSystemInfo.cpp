@@ -160,9 +160,8 @@ void CGUIWindowSystemInfo::Render()
     SetControlLabel(i++, "%s: %s", 22012, SYSTEM_TOTAL_MEMORY);
     SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
   }
-  else if(iControl == CONTROL_BT_PVR)
+  else if(m_section == CONTROL_BT_PVR)
   {
-    SetLabelDummy();
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(18030));
     int i = 2;
 

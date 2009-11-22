@@ -68,6 +68,8 @@ public:
   cPVRChannelInfoTag() { Reset(); };
   void Reset();
        ///< Set the tag to it's initial values.
+  bool IsEmpty() const;
+       ///< True if no required data is present inside the tag.
 
   bool operator ==(const cPVRChannelInfoTag &right) const;
   bool operator !=(const cPVRChannelInfoTag &right) const;
