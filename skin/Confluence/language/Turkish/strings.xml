@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 21/11/2009-->
-<!--Turkish strings based on English strings revision 24808-->
+<!--Date of translation: 22/11/2009-->
+<!--Turkish strings based on English strings revision 24877-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Değiştir</string>
@@ -127,14 +127,14 @@
   <string id="31329">[B]ZAMANLAYICI AYARLANDI![/B] [COLOR=grey2] - SİSTEM'İN OTOMATİK KAPANMA SÜRESİ[/COLOR]</string>
 
   <!-- Description Labels  -->
-  <string id="31400">[B]GÖRÜNÜM AYARLARINI DÜZENLE, İÇERİK.[/B][CR][CR]Arayüzü ayarla · Arayüzü değiştir · Ekran korucuyu ayarla · Bölgesel ayarları değiştir · Genel Görünüm seçeneklerini ayarla</string>
-  <string id="31401">[B]VİDEO AYARLARINI DÜZENLE, İÇERİK.[/B][CR][CR]Video Kitaplığını Yönet · Video Oynatıcı Renderer ve Kalite · Altyazıları Yapılandır · Video otomatik devam etme seçeneklerini ayarla</string>
-  <string id="31402">[B]MÜZİK AYARLARINI DÜZENLE, İÇERİK.[/B][CR][CR]Görsel Öge Seç · Müzik Kitaplığını Yönet · Last.FM Hesabını ayarla · Karaoke Yazıtiplerini ve Ayarlarını Değiştir</string>
-  <string id="31403">[B]RESİM AYARLARINI DÜZENLE, İÇERİK.[/B][CR][CR]Otomatik Küçük Resim Oluşturmayı ve EXIF etiket okumasını etkinleştir · Slayt Gösterisi Geçiş Efektlerini Ayarla · XBMC ekran görüntüsü klasörünü ayarla</string>
-  <string id="31404">[B]HAVA DURUMU AYARLARINI DÜZENLEE, İÇERİK.[/B][CR][CR]XBMC'nin Hava Durumu ekranında göstermek için üç şehir seçin · Bölgesel ayarları değiştir, Sıcaklık birimleri dahil</string>
-  <string id="31405">[B]AĞ AYARLARINI DÜZENLE, İÇERİK.[/B][CR][CR]XBMC Dahili Web Sunucusunu Etkinleştir · Samba Ayarları · UPNP Sunucusu ve İstemcisini Etkinleştir/Yapılandır · Olay Sunucusunu Yapılandır</string>
-  <string id="31406">[B]SİSTEM AYARLARINI DÜZENLE, İÇERİK.[/B][CR][CR]Varsayılan kapatma biçimini değiştir · Otomatik Oynatmayı Yapılandır · Ses donanımını ayarla · Yönetici Şifresini ve Sistem Kilitlerini Yapılandır</string>
-  <string id="31407">[B]ARAYÜZ AYARLARINI DEĞİŞTİR, İÇERİK.[/B][CR][CR]Ana menü Tuşlarını Ekle ve Kaldır · Bütün bölümlerin Arkaplanlarını değiştir · Arayüz için betik kısayolları oluştur</string>
+  <string id="31400">[B]GÖRÜNÜM AYARLARINI YAPILANDIR[/B][CR][CR]Arayüzü değiştir · Dil ve bölgesel ayarları değiştir · Dosya listeleme seçeneklerini değiştir[CR]Ekran koruyucuyu ayarla</string>
+  <string id="31401">[B]VİDEO AYARLARINI YAPILANDIR[/B][CR][CR]Video kitaplığını yönet · Video oynatma seçeneklerini ayarla · Video listeleme seçeneklerini değiştir[CR]Altyazı karakterlerini ayarla</string>
+  <string id="31402">[B]MÜZİK AYARLARINI YAPILANDIR[/B][CR][CR]Müzik kitaplığını yönet · Müzik çalma seçeneklerini ayarla · Müzik listeleme seçeneklerini değiştir[CR]Şarkı sunumu ayarları · Karaoke seçeneklerini ayarla</string>
+  <string id="31403">[B]RESİM AYARLARINI YAPILANDIR[/B][CR][CR]Resim listeleme seçeneklerini değiştir · Slayt gösterisi ayarlarını yapılandır</string>
+  <string id="31404">[B]HAVA DURUMU AYARLARINI YAPILANDIR[/B][CR][CR]Hava Durumu bilgilerini almak için üç şehir seçin</string>
+  <string id="31405">[B]AĞ AYARLARINI YAPILANDIR[/B][CR][CR]UPnP ve HTTP üzerinden XBMC kontrolü ayarları · Dosya paylaşımını yapılandır[CR]İnternet erişim seçeneklerini ayarla</string>
+  <string id="31406">[B]SİSTEM AYARLARINI YAPILANDIR[/B][CR][CR]Görünüm ayarları · Ses çıkış ayarlarını yapılandır · Uzaktan kumandaları ayarla[CR]Güç tasarrufu seçeneklerini ayarla · Hata ayıklamayı etkinleştir · Sistem kilit ayarları</string>
+  <string id="31407">[B]ARAYÜZ AYARLARINI YAPILANDIR[/B][CR][CR]Confluence arayüzü ayarları · Ana menü ögelerini ekle ve kaldır[CR]Arayüz arkaplanlarını değiştir</string>
 
 
   <string id="31420">[B][COLOR=white]XBMC takılı bir Disk algılayamadı.[/COLOR][/B][CR][CR]Lütfen sürücüye Disk takıp tekrar deneyin veya İptal edin</string>
