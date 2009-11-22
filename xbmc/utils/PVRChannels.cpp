@@ -352,6 +352,12 @@ CStdString cPVRChannelInfoTag::NextGenre(void) const
   return m_epgNext->Genre();
 }
 
+bool cPVRChannelInfoTag::IsEmpty() const
+{
+  return (NowTitle().IsEmpty() &&
+          m_strFileNameAndPath.IsEmpty() &&
+          m_strStreamURL.IsEmpty());
+}
 
 // --- cPVRChannels ---------------------------------------------------------------
 
