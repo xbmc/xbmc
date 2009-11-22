@@ -707,10 +707,11 @@ bool CGraphicContext::IsFullScreenRoot () const
 bool CGraphicContext::ToggleFullScreenRoot ()
 {
   RESOLUTION newRes;
+  RESOLUTION uiRes;  ///< resolution to save - not necessarily the same as the one we switch to (e.g. during video playback)
   
   if (m_bFullScreenRoot)
   {
-    newRes = RES_WINDOW;
+    newRes = uiRes = RES_WINDOW;
   }
   else
   {
@@ -718,6 +719,7 @@ bool CGraphicContext::ToggleFullScreenRoot ()
       newRes = g_guiSettings.m_LookAndFeelResolution;
     else
       newRes = RES_DESKTOP;      
+    uiRes = newRes;
 
 #if defined(HAS_VIDEO_PLAYBACK)
     if (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating())
@@ -732,7 +734,7 @@ bool CGraphicContext::ToggleFullScreenRoot ()
   }
 
   SetVideoResolution(newRes);
-  g_guiSettings.SetResolution(newRes);
+  g_guiSettings.SetResolution(uiRes);
   
   return  m_bFullScreenRoot;
 }
