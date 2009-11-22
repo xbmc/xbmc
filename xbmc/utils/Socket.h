@@ -171,6 +171,10 @@ typedef int socklen_t;
   /**********************************************************************/
   /* Listens on multiple sockets for reads                              */
   /**********************************************************************/
+
+#define LISTENERROR 1
+#define LISTENEMPTY 2
+
   class CSocketListener
   {
   public:
