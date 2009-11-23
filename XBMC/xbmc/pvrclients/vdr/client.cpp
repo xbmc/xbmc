@@ -41,6 +41,7 @@ bool m_bRadioEnabled    = DEFAULT_RADIO;
 bool m_bCharsetConv     = DEFAULT_CHARCONV;
 int m_iConnectTimeout   = DEFAULT_TIMEOUT;
 bool m_bNoBadChannels   = DEFAULT_BADCHANNELS;
+bool m_bHandleMessages  = DEFAULT_HANDLE_MSG;
 
 
 //-- Create -------------------------------------------------------------------
@@ -119,6 +120,14 @@ extern "C" ADDON_STATUS Create(ADDON_HANDLE hdl, int ClientID)
     /* If setting is unknown fallback to defaults */
     XBMC_log(LOG_ERROR, "Couldn't get 'ignorechannels' setting, falling back to 'true' as default");
     m_bNoBadChannels = DEFAULT_BADCHANNELS;
+  }
+
+  /* Read setting "ignorechannels" from settings.xml */
+  if (!XBMC_get_setting("handlemessages", &m_bHandleMessages))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC_log(LOG_ERROR, "Couldn't get 'handlemessages' setting, falling back to 'true' as default");
+    m_bHandleMessages = DEFAULT_HANDLE_MSG;
   }
 
   /* Create connection to streamdev-server */
@@ -215,6 +224,11 @@ extern "C" ADDON_STATUS SetSetting(const char *settingName, const void *settingV
     XBMC_log(LOG_INFO, "Changed Setting 'ignorechannels' from %u to %u", m_bNoBadChannels, *(bool*) settingValue);
     m_bNoBadChannels = *(bool*) settingValue;
   }
+  else if (str == "handlemessages")
+  {
+    XBMC_log(LOG_INFO, "Changed Setting 'handlemessages' from %u to %u", m_bHandleMessages, *(bool*) settingValue);
+    m_bHandleMessages = *(bool*) settingValue;
+  }
 
   return STATUS_OK;
 }
@@ -278,37 +292,7 @@ extern "C" PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio)
 {
   return g_client->RequestChannelList(handle, radio);
 }
-/*
-extern "C" PVR_ERROR GetChannelSettings(cPVRChannelInfoTag *result)
-{
-  return g_client->GetChannelSettings(result);
-}
 
-extern "C" PVR_ERROR UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo)
-{
-  return g_client->UpdateChannelSettings(chaninfo);
-}
-
-extern "C" PVR_ERROR AddChannel(const cPVRChannelInfoTag &info)
-{
-  return g_client->AddChannel(info);
-}
-
-extern "C" PVR_ERROR DeleteChannel(unsigned int number)
-{
-  return g_client->DeleteChannel(number);
-}
-
-extern "C" PVR_ERROR RenameChannel(unsigned int number, CStdString &newname)
-{
-  return g_client->RenameChannel(number, newname);
-}
-
-extern "C" PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber)
-{
-  return g_client->MoveChannel(number, newnumber);
-}
-*/
 extern "C" int GetNumRecordings(void)
 {
   return g_client->GetNumRecordings();

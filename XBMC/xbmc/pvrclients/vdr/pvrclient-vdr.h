@@ -67,12 +67,6 @@ public:
   /* Channel handling */
   int GetNumChannels(void);
   PVR_ERROR RequestChannelList(PVRHANDLE handle, bool radio = false);
-//  PVR_ERROR GetChannelSettings(cPVRChannelInfoTag *result);
-//  PVR_ERROR UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo);
-//  PVR_ERROR AddChannel(const cPVRChannelInfoTag &info);
-//  PVR_ERROR DeleteChannel(unsigned int number);
-//  PVR_ERROR RenameChannel(unsigned int number, CStdString &newname);
-//  PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber);
 
   /* Record handling **/
   int GetNumRecordings(void);
@@ -112,7 +106,17 @@ protected:
   static SOCKET           m_socket_data;
 
 private:
-  bool GetChannel(unsigned int number, PVR_CHANNEL &channeldata);
+  /* VDR to XBMC Callback functions */
+  static void* CallbackRcvThread(void* arg);
+  bool VDRToXBMCCommand(char *Cmd);
+  bool CallBackMODT(const char *Option);
+  bool CallBackDELT(const char *Option);
+  bool CallBackADDT(const char *Option);
+  bool CallBackSMSG(const char *Option);
+  bool CallBackIMSG(const char *Option);
+  bool CallBackWMSG(const char *Option);
+  bool CallBackEMSG(const char *Option);
+
   int                     m_iCurrentChannel;
   static bool             m_bConnected;
   pthread_t               m_thread;

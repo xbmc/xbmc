@@ -421,6 +421,11 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       g_PVRManager.TriggerRecordingsUpdate();
       UpdateRecordings();
     }
+    else if (iControl == CONTROL_BTNTIMERS)
+    {
+      PVRTimers.Update();
+      UpdateTimers();
+    }
     else if (iControl == CONTROL_LIST_TIMELINE ||
              iControl == CONTROL_LIST_GUIDE_CHANNEL ||
              iControl == CONTROL_LIST_GUIDE_NOW_NEXT)
@@ -1985,8 +1990,6 @@ void CGUIWindowTV::UpdateRecordings()
 
 void CGUIWindowTV::UpdateTimers()
 {
-  PVRTimers.Update();
-
   SET_CONTROL_HIDDEN(CONTROL_LIST_TIMERS);
 
   m_vecItems->Clear();

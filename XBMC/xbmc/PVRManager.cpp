@@ -577,6 +577,7 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
     case PVR_EVENT_TIMERS_CHANGE:
       {
         CLog::Log(LOGDEBUG, "%s - PVR: client_%ld timers changed", __FUNCTION__, clientID);
+        PVRTimers.Update();
         SyncInfo();
 
         CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
