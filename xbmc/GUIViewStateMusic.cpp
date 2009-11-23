@@ -618,7 +618,6 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
 
 VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
 {
-  bool bIsSourceName = true;
   // plugins share
   if (CPluginDirectory::HasPlugins("music") && g_advancedSettings.m_bVirtualShares)
   {

@@ -87,7 +87,6 @@ void CGUIViewStateWindowVideoFiles::SaveViewState()
 
 VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
 {
-  bool bIsSourceName = true;
   // plugins share
   if (CPluginDirectory::HasPlugins("video") && g_advancedSettings.m_bVirtualShares)
   {
