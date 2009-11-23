@@ -1839,6 +1839,7 @@ void CApplication::UnloadSkin()
   g_windowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
   g_TextureManager.Cleanup();
+  g_largeTextureManager.CleanupUnusedImages(true);
 
   g_fontManager.Clear();
 
