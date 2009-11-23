@@ -94,7 +94,8 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
 {
   if (action.id == ACTION_PARENT_DIR)
   {
-    if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
+    if (g_advancedSettings.m_bUseEvilB &&
+        m_vecItems->m_strPath == m_startDirectory)
     {
       g_windowManager.PreviousWindow();
       return true;
@@ -507,7 +508,8 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
           items.SetThumbnailImage(showItem.GetThumbnailImage());
         }
       }
-      else if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_RECENTLY_ADDED_MOVIES)
+      else if (node == NODE_TYPE_TITLE_MOVIES ||
+               node == NODE_TYPE_RECENTLY_ADDED_MOVIES)
         items.SetContent("movies");
       else if (node == NODE_TYPE_TITLE_TVSHOWS)
         items.SetContent("tvshows");
@@ -883,7 +885,8 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     CFileItem item2(path,true);
     CGUIWindowFileManager::DeleteItem(&item2);
   }
-  else if (pItem->m_strPath.Left(14).Equals("videodb://1/7/") && pItem->m_strPath.size() > 14 && pItem->m_bIsFolder)
+  else if (pItem->m_strPath.Left(14).Equals("videodb://1/7/") &&
+           pItem->m_strPath.size() > 14 && pItem->m_bIsFolder)
   {
     CFileItemList items;
     CDirectory::GetDirectory(pItem->m_strPath,items);
@@ -898,7 +901,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   else
   {
     if (!DeleteItem(pItem.get()))
-    return;
+      return;
 
     CStdString strDeletePath;
     if (pItem->m_bIsFolder)
