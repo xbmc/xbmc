@@ -58,6 +58,7 @@ bool CRenderSystemGL::InitRenderSystem()
   if (GLEW_OK != err)
   {
     // Problem: glewInit failed, something is seriously wrong
+    CLog::Log(LOGERROR, "InitRenderSystem() glewInit returned %i: %s", err, glewGetErrorString(err));
     return false;
   }
  
