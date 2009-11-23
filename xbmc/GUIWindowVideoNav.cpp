@@ -888,15 +888,25 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   else if (pItem->m_strPath.Left(14).Equals("videodb://1/7/") &&
            pItem->m_strPath.size() > 14 && pItem->m_bIsFolder)
   {
-    CFileItemList items;
-    CDirectory::GetDirectory(pItem->m_strPath,items);
-    for (int i=0;i<items.Size();++i)
-      OnDeleteItem(items[i]);
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    pDialog->SetLine(0, g_localizeStrings.Get(432));
+    CStdString strLabel;
+    strLabel.Format(g_localizeStrings.Get(433),pItem->GetLabel());
+    pDialog->SetLine(1, strLabel);
+    pDialog->SetLine(2, "");;
+    pDialog->DoModal();
+    if (pDialog->IsConfirmed())
+    {
+      CFileItemList items;
+      CDirectory::GetDirectory(pItem->m_strPath,items);
+      for (int i=0;i<items.Size();++i)
+        OnDeleteItem(items[i]);
 
-    CVideoDatabaseDirectory dir;
-    CQueryParams params;
-    dir.GetQueryParams(pItem->m_strPath,params);
-    m_database.DeleteSet(params.GetSetId());
+       CVideoDatabaseDirectory dir;
+       CQueryParams params;
+       dir.GetQueryParams(pItem->m_strPath,params);
+       m_database.DeleteSet(params.GetSetId());
+    }
   }
   else
   {
