@@ -849,6 +849,21 @@ void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   CGUIWindowVideoBase::OnInfo(pItem,info2);
 }
 
+bool CGUIWindowVideoNav::CanDelete(const CStdString& strPath)
+{
+  CQueryParams params;
+  CVideoDatabaseDirectory::GetQueryParams(strPath,params);
+
+  if (params.GetMovieId()   != -1 ||
+      params.GetEpisodeId() != -1 ||
+      params.GetMVideoId()  != -1 ||
+      (params.GetTvShowId() != -1 && params.GetSeason() == -1
+              && !CVideoDatabaseDirectory::IsAllItem(strPath)))
+    return true;
+
+  return false;
+}
+
 void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
 {
   if (m_vecItems->IsPlugin())
@@ -893,13 +908,8 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
 
 bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = false */)
 {
-  // dont allow update while scanning
-  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  if (pDialogScan && pDialogScan->IsScanning())
-  {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+  if (!pItem->HasVideoInfoTag() || !CanDelete(pItem->m_strPath))
     return false;
-  }
 
   VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty())
@@ -908,6 +918,15 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
     iType = VIDEODB_CONTENT_EPISODES;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
     iType = VIDEODB_CONTENT_MUSICVIDEOS;
+
+  // dont allow update while scanning
+  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  if (pDialogScan && pDialogScan->IsScanning())
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    return false;
+  }
+
 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!pDialog)
