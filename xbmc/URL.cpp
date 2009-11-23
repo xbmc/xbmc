@@ -316,10 +316,7 @@ void CURL::Parse(const CStdString& strURL1)
     || m_strProtocol.CompareNoCase("musicdb") == 0
     || m_strProtocol.CompareNoCase("videodb") == 0
     || m_strProtocol.CompareNoCase("lastfm") == 0
-    || m_strProtocol.CompareNoCase("tv") == 0
-    || m_strProtocol.CompareNoCase("radio") == 0
-    || m_strProtocol.CompareNoCase("record") == 0
-    || m_strProtocol.CompareNoCase("timer") == 0
+    || m_strProtocol.CompareNoCase("pvr") == 0
     || m_strProtocol.Left(3).CompareNoCase("mem") == 0)
   {
     if (m_strHostName != "" && m_strFileName != "")
