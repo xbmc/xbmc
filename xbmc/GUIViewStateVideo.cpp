@@ -95,8 +95,7 @@ VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
     share.strName = g_localizeStrings.Get(1037);
     share.strPath = "plugin://video/";
     share.m_ignore = true;
-    if (CUtil::GetMatchingSource(share.strName, g_settings.m_videoSources, bIsSourceName) < 0)
-      g_settings.m_videoSources.push_back(share);
+    AddOrReplace(g_settings.m_videoSources,share);
   }
   return g_settings.m_videoSources;
 }

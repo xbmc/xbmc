@@ -77,8 +77,7 @@ VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
     share.strPath = "plugin://programs/";
     share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultProgramPlugins.png");
     share.m_ignore= true;
-    if (CUtil::GetMatchingSource(share.strName, g_settings.m_programSources, bIsSourceName) < 0)
-      g_settings.m_programSources.push_back(share);
+    AddOrReplace(g_settings.m_programSources,share);
   }
   return g_settings.m_programSources;
 }

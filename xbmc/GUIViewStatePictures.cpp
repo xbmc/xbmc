@@ -89,8 +89,7 @@ VECSOURCES& CGUIViewStateWindowPictures::GetSources()
     share.strPath = "plugin://pictures/";
     share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultPicturePlugins.png");
     share.m_ignore = true;
-    if (CUtil::GetMatchingSource(share.strName, g_settings.m_pictureSources, bIsSourceName) < 0)
-      g_settings.m_pictureSources.push_back(share);
+    AddOrReplace(g_settings.m_pictureSources,share);
   }
   return g_settings.m_pictureSources;
 }
