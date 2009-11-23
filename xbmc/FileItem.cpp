@@ -2920,17 +2920,9 @@ void CFileItem::SetUserProgramThumb()
   if (IsShortCut())
   {
     CShortcut shortcut;
-    if ( shortcut.Create( m_strPath ) )
+    if ( shortcut.Create(m_strPath) && !shortcut.m_strThumb.IsEmpty() )
     {
-      // use the shortcut's thumb
-      if (!shortcut.m_strThumb.IsEmpty())
-        m_strThumbnailImage = shortcut.m_strThumb;
-      else
-      {
-        CFileItem item(shortcut.m_strPath,false);
-        item.SetUserProgramThumb();
-        m_strThumbnailImage = item.m_strThumbnailImage;
-      }
+      m_strThumbnailImage = shortcut.m_strThumb;
       return;
     }
   }
