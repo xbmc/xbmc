@@ -107,7 +107,4 @@ private:
   void InitProgressDialog(const CStdString& strUrl);
   void UpdateProgressDialog(const int iStringID);
   void CloseProgressDialog();
-
-  bool m_bLastShuffleState;
-  PLAYLIST::REPEAT_STATE m_LastRepeatState;
 };
