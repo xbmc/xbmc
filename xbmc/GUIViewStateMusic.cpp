@@ -625,7 +625,7 @@ VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
     CMediaSource share;
     share.strName = g_localizeStrings.Get(1038);
     share.strPath = "plugin://music/";
-	AddOrReplace(g_settings.m_musicSources,share);
+    AddOrReplace(g_settings.m_musicSources,share);
   }
   return g_settings.m_musicSources;
 }
