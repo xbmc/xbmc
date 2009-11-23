@@ -179,8 +179,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   }
 
   // clear sources, then load xml file...
-  TiXmlDocument xmlDoc;
-  TiXmlElement *pRootElement = NULL;
   m_fileSources.clear();
   m_musicSources.clear();
   m_pictureSources.clear();
@@ -188,6 +186,8 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   m_videoSources.clear();
   CStdString strXMLFile = GetSourcesFile();
   CLog::Log(LOGNOTICE, "%s", strXMLFile.c_str());
+  TiXmlDocument xmlDoc;
+  TiXmlElement *pRootElement = NULL;
   if ( xmlDoc.LoadFile( strXMLFile ) )
   {
     pRootElement = xmlDoc.RootElement();

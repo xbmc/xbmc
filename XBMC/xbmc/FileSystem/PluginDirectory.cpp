@@ -632,9 +632,8 @@ CStdString CPluginDirectory::TranslatePluginDirectory(const CStdString &strPath)
   CURL url(strPath);
   if (url.GetProtocol() == "plugin")
   {
-    addonFileName = "special://home/plugins/";
-    CUtil::AddFileToFolder(addonFileName, url.GetHostName(), addonFileName);
-    CUtil::AddFileToFolder(addonFileName, url.GetFileName(), addonFileName);
+    addonFileName = CUtil::AddFileToFolder("special://home/plugins/", url.GetHostName());
+    addonFileName = CUtil::AddFileToFolder(addonFileName, url.GetFileName());
   }
   else
   {

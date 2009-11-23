@@ -72,7 +72,7 @@ void CAddon::LoadAddonStrings(const CURL &url)
   CStdString pathToAddon;
   if (url.GetProtocol() == "plugin")
   {
-    pathToAddon = "special://home/addons/plugins/";
+    pathToAddon = "special://home/plugins/";
     CUtil::AddFileToFolder(pathToAddon, url.GetHostName(), pathToAddon);
     CUtil::AddFileToFolder(pathToAddon, url.GetFileName(), pathToAddon);
   }
