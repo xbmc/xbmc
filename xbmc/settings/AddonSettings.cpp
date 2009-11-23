@@ -261,14 +261,21 @@ bool CAddonSettings::SettingsExist(const CStdString& strPath)
 
 CStdString CAddonSettings::GetUserDirectory(const CURL& url)
 {
-  CStdString addonUserName = url.Get();
-  addonUserName = CPluginDirectory::TranslatePluginDirectory(addonUserName);
-  // Remove the special path
-  addonUserName.Replace("special://home/addons/", "");
-  addonUserName.Replace("special://xbmc/addons/", "");
+  CStdString addonUserName;
+  if (url.GetProtocol() == "plugin")
+  {
+    addonUserName.Format("special://profile/plugin_data/%s/%s", url.GetHostName().c_str(), url.GetFileName().c_str());
+  }
+  else
+  {
+    addonUserName = url.Get();
+    // Remove the special path
+    addonUserName.Replace("special://home/addons/", "");
+    addonUserName.Replace("special://xbmc/addons/", "");
 
-  // and create the users filepath
-  addonUserName.Format("special://profile/addon_data/%s", addonUserName.c_str());
+    // and create the users filepath
+    addonUserName.Format("special://profile/addon_data/%s", addonUserName.c_str());
+  }
   CUtil::RemoveSlashAtEnd(addonUserName);
   return addonUserName;
 }

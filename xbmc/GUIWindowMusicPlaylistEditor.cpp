@@ -380,7 +380,8 @@ void CGUIWindowMusicPlaylistEditor::OnLoadPlaylist()
   CMediaSource share;
   share.strName = g_localizeStrings.Get(20011);
   share.strPath = "special://musicplaylists/";
-  shares.push_back(share);
+  if (find(shares.begin(), shares.end(), share) == shares.end())
+    shares.push_back(share);
   if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".m3u|.pls|.b4s|.wpl", g_localizeStrings.Get(656), playlist))
     LoadPlaylist(playlist);
 }

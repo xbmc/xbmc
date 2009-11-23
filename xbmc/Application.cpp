@@ -1126,18 +1126,7 @@ HRESULT CApplication::Initialize()
   {
     CDirectory::Create("special://xbmc/scripts");
     CDirectory::Create("special://xbmc/addons");
-    CDirectory::Create("special://xbmc/addons/multitype");
-    CDirectory::Create("special://xbmc/addons/visualisations");
     CDirectory::Create("special://xbmc/addons/pvr");
-    CDirectory::Create("special://xbmc/addons/scripts");
-    CDirectory::Create("special://xbmc/addons/scrapers");
-    CDirectory::Create("special://xbmc/addons/screensavers");
-    CDirectory::Create("special://xbmc/addons/plugin-pvr");
-    CDirectory::Create("special://xbmc/addons/plugin-music");
-    CDirectory::Create("special://xbmc/addons/plugin-video");
-    CDirectory::Create("special://xbmc/addons/plugin-program");
-    CDirectory::Create("special://xbmc/addons/plugin-pictures");
-    CDirectory::Create("special://xbmc/addons/dsp-audio");
     CDirectory::Create("special://xbmc/plugins");
     CDirectory::Create("special://xbmc/plugins/music");
     CDirectory::Create("special://xbmc/plugins/video");
@@ -3780,14 +3769,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   {
     options.starttime = item.m_lStartOffset / 75.0;
 
-    if (item.HasPVRChannelInfoTag())
-    {
-      CTVDatabase dbs;
-      dbs.Open();
-      dbs.GetChannelSettings(item.GetPVRChannelInfoTag()->ChannelID(), g_stSettings.m_currentVideoSettings);
-      dbs.Close();
-    }
-    else if (item.IsVideo())
+    if (item.IsVideo())
     {
       // open the d/b and retrieve the bookmarks for the current movie
       CVideoDatabase dbs;
@@ -4196,17 +4178,7 @@ void CApplication::SaveFileState()
 
   if (progressTrackingFile != "")
   {
-    if (m_progressTrackingItem->HasPVRChannelInfoTag())
-    {
-      if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
-      {
-        CTVDatabase dbs;
-        dbs.Open();
-        dbs.SetChannelSettings(m_progressTrackingItem->GetPVRChannelInfoTag()->ChannelID(), g_stSettings.m_currentVideoSettings);
-        dbs.Close();
-      }
-    }
-    else if (m_progressTrackingItem->IsVideo())
+    if (m_progressTrackingItem->IsVideo())
     {
       CLog::Log(LOGDEBUG, "%s - Saving file state for video file %s", __FUNCTION__, progressTrackingFile.c_str());
 
@@ -5469,18 +5441,7 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
 
 void CApplication::SaveCurrentFileSettings()
 {
-  if (m_itemCurrentFile->HasPVRChannelInfoTag())
-  {
-    // save video settings
-    if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
-    {
-      CTVDatabase dbs;
-      dbs.Open();
-      dbs.SetChannelSettings(m_itemCurrentFile->GetPVRChannelInfoTag()->ChannelID(), g_stSettings.m_currentVideoSettings);
-      dbs.Close();
-    }
-  }
-  else if (m_itemCurrentFile->IsVideo())
+  if (m_itemCurrentFile->IsVideo())
   {
     // save video settings
     if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
