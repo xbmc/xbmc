@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 21/11/2009-->
-<!--Based on English strings revision 24799-->
+<!--Date of translation: 23/11/2009-->
+<!--Based on English strings revision 24865-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -1233,7 +1233,7 @@
   <string id="13507">Orta</string>
   <string id="13508">Yüksek</string>
   <string id="13509">Gerçekten yüksek(yavaş!)</string>
-  <string id="13510">Sync playback to display</string>
+  <string id="13510">Oynatımı görüntüye senkronla</string>
 
   <string id="13600">Apple kumanda</string>
   <string id="13601"></string>
@@ -1329,9 +1329,9 @@
   <string id="14081">Dosya listesi</string>
   <string id="14082">EXIF resim bilgilerini göster</string>
   <string id="14083">Gerçek tam ekran yerine tam ekran penceresini kullan</string>
-  <string id="14084">Kuyruğa eklenen şarkılar</string>
+  <string id="14084">Seçilen şarkıları kuyruğa ekle</string>
   <string id="14085">Ses CD'lerini otomatik olarak çal</string>
-  <string id="14086">Playback</string>
+  <string id="14086">Oynatım</string>
   <string id="14087">DVDler</string>
   <string id="14088">DVDleri otomatik olarak oynat</string>
   <string id="14089">Altyazı metini için kullanılacak yazıtipi</string>
