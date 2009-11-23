@@ -103,7 +103,6 @@
   <string id="31404">[B]KONFIGURERA VÄDERINSTÄLLNINGAR[/B][CR][CR]Ange dom tre städer som används för att samla in väderinformation</string>
   <string id="31405">[B]KONFIGURERA NÄTVERKSINSTÄLLNINGAR[/B][CR][CR]Ange kontroll av XBMC via UPnP och HTTP · Konfigurera fildelning[CR]Konfigurera internetaccessalternativ</string>
   <string id="31406">[B]KONFIGURERA SYSTEMINSTÄLLNINGAR[/B][CR][CR]Ange och kalibrera skärmar · Konfigurera ljudutgång · Ställa in fjärrkontroller[CR]Ange strömsparsalternativ · Aktivera avbuggning · Konfigurera huvudanvändarlåsningar</string>
-  <string id="31407">[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds</string>
   <string id="31407">[B]KONFIGURERA SKALINSTÄLLNINGAR[/B][CR][CR]Ställa in Confluence skalet · Lägga till och ta bort hemmenyknappar[CR]Ändra skalbakgrunder</string>
   <string id="31420">[B][COLOR=white]XBMC har inte upptäckt en disk.[/COLOR][/B][CR][CR]Vänligen sätt i en disk i din läsare och försök igen eller avbryt</string>
   <string id="31421">Välj din XBMC användarprofil[CR]för att logga in  och fortsätta</string>
