@@ -279,106 +279,99 @@ bool cChannel::Parse(const char *s)
     vtype = 2; // default is MPEG-2
     apids[0] = 0;
     dpids[0] = 0;
-    ok = false;
-    if (parambuf && sourcebuf && vpidbuf && apidbuf)
+
+    ok = StringToParameters(parambuf) >= 0;
+
+    char *p;
+    if ((p = strchr(vpidbuf, '=')) != NULL)
     {
-      ok = StringToParameters(parambuf) >= 0;
+      *p++ = 0;
+      if (sscanf(p, "%d", &vtype) != 1)
+      return false;
+    }
+    if ((p = strchr(vpidbuf, '+')) != NULL)
+    {
+      *p++ = 0;
+      if (sscanf(p, "%d", &ppid) != 1)
+      return false;
+    }
+    if (sscanf(vpidbuf, "%d", &vpid) != 1)
+      return false;
+    if (!ppid)
+      ppid = vpid;
 
-      char *p;
-      if ((p = strchr(vpidbuf, '=')) != NULL)
+    char *dpidbuf = strchr(apidbuf, ';');
+    if (dpidbuf)
+      *dpidbuf++ = 0;
+    p = apidbuf;
+    char *q;
+    int NumApids = 0;
+    char *strtok_next;
+    while ((q = strtok_r(p, ",", &strtok_next)) != NULL)
+    {
+      if (NumApids < MAXAPIDS) {
+      char *l = strchr(q, '=');
+      if (l)
       {
-        *p++ = 0;
-        if (sscanf(p, "%d", &vtype) != 1)
-        return false;
+        *l++ = 0;
+        strn0cpy(alangs[NumApids], l, MAXLANGCODE2);
       }
-      if ((p = strchr(vpidbuf, '+')) != NULL)
-      {
-        *p++ = 0;
-        if (sscanf(p, "%d", &ppid) != 1)
-        return false;
+      else
+        *alangs[NumApids] = 0;
+      apids[NumApids++] = strtol(q, NULL, 10);
       }
-      if (sscanf(vpidbuf, "%d", &vpid) != 1)
-        return false;
-      if (!ppid)
-        ppid = vpid;
+      else
+        XBMC_log(LOG_ERROR, "PCRClient-vdr: too many APIDs!"); // no need to set ok to 'false'
+      p = NULL;
+    }
+    apids[NumApids] = 0;
 
-      char *dpidbuf = strchr(apidbuf, ';');
-      if (dpidbuf)
-        *dpidbuf++ = 0;
-      p = apidbuf;
+    if (dpidbuf)
+    {
+      char *p = dpidbuf;
       char *q;
-      int NumApids = 0;
       char *strtok_next;
+
+      int NumDpids = 0;
       while ((q = strtok_r(p, ",", &strtok_next)) != NULL)
       {
-        if (NumApids < MAXAPIDS) {
-        char *l = strchr(q, '=');
-        if (l)
+        if (NumDpids < MAXDPIDS)
         {
-          *l++ = 0;
-          strn0cpy(alangs[NumApids], l, MAXLANGCODE2);
+          char *l = strchr(q, '=');
+          if (l)
+          {
+            *l++ = 0;
+            strn0cpy(dlangs[NumDpids], l, MAXLANGCODE2);
+          }
+          else
+            *dlangs[NumDpids] = 0;
+          dpids[NumDpids++] = strtol(q, NULL, 10);
         }
         else
-          *alangs[NumApids] = 0;
-        apids[NumApids++] = strtol(q, NULL, 10);
-        }
-        else
-          XBMC_log(LOG_ERROR, "PCRClient-vdr: too many APIDs!"); // no need to set ok to 'false'
+          XBMC_log(LOG_ERROR, "PCRClient-vdr: too many DPIDs!"); // no need to set ok to 'false'
         p = NULL;
       }
-      apids[NumApids] = 0;
-
-      if (dpidbuf)
-      {
-        char *p = dpidbuf;
-        char *q;
-        int NumDpids = 0;
-        char *strtok_next;
-        while ((q = strtok_r(p, ",", &strtok_next)) != NULL)
-        {
-          if (NumDpids < MAXDPIDS)
-          {
-            char *l = strchr(q, '=');
-            if (l)
-            {
-              *l++ = 0;
-              strn0cpy(dlangs[NumDpids], l, MAXLANGCODE2);
-            }
-            else
-              *dlangs[NumDpids] = 0;
-            dpids[NumDpids++] = strtol(q, NULL, 10);
-          }
-          else
-            XBMC_log(LOG_ERROR, "PCRClient-vdr: too many DPIDs!"); // no need to set ok to 'false'
-          p = NULL;
-        }
-        dpids[NumDpids] = 0;
-      }
-
-      if (caidbuf)
-      {
-        char *p = caidbuf;
-        char *q;
-        int NumCaIds = 0;
-        char *strtok_next;
-        while ((q = strtok_r(p, ",", &strtok_next)) != NULL)
-        {
-          if (NumCaIds < MAXCAIDS)
-          {
-            caids[NumCaIds++] = strtol(q, NULL, 16) & 0xFFFF;
-            if (NumCaIds == 1 && caids[0] <= CA_USER_MAX)
-              break;
-          }
-          else
-            XBMC_log(LOG_ERROR, "PCRClient-vdr: too many CA ids!"); // no need to set ok to 'false'
-          p = NULL;
-        }
-        caids[NumCaIds] = 0;
-      }
+      dpids[NumDpids] = 0;
     }
+
+    p = caidbuf;
+    int NumCaIds = 0;
+    while ((q = strtok_r(p, ",", &strtok_next)) != NULL)
+    {
+      if (NumCaIds < MAXCAIDS)
+      {
+        caids[NumCaIds++] = strtol(q, NULL, 16) & 0xFFFF;
+        if (NumCaIds == 1 && caids[0] <= CA_USER_MAX)
+          break;
+      }
+      else
+        XBMC_log(LOG_ERROR, "PCRClient-vdr: too many CA ids!"); // no need to set ok to 'false'
+      p = NULL;
+    }
+    caids[NumCaIds] = 0;
     strreplace(namebuf, '|', ':');
 
-    char *p = strchr(namebuf, ';');
+    p = strchr(namebuf, ';');
     if (p)
     {
       *p++ = 0;

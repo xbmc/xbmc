@@ -27,21 +27,17 @@
 #include "pvrclient-vdr.h"
 #include "pvrclient-vdr_os.h"
 
-#ifdef _LINUX
-#define SD_BOTH SHUT_RDWR
-#endif
-
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
 
 using namespace std;
 
 pthread_mutex_t m_critSection;
 
-bool cPVRClientVDR::m_bStop						= true;
-SOCKET cPVRClientVDR::m_socket_data				= INVALID_SOCKET;
-SOCKET cPVRClientVDR::m_socket_video				= INVALID_SOCKET;
-CVTPTransceiver *cPVRClientVDR::m_transceiver    = NULL;
-bool cPVRClientVDR::m_bConnected					= false;
+bool cPVRClientVDR::m_bStop                     = true;
+SOCKET cPVRClientVDR::m_socket_data             = INVALID_SOCKET;
+SOCKET cPVRClientVDR::m_socket_video            = INVALID_SOCKET;
+CVTPTransceiver *cPVRClientVDR::m_transceiver   = NULL;
+bool cPVRClientVDR::m_bConnected                = false;
 
 /************************************************************/
 /** Class interface */
@@ -1254,7 +1250,7 @@ int cPVRClientVDR::ReadRecordedStream(BYTE* buf, int buf_size)
   if (currentPlayingRecordPosition + buf_size > currentPlayingRecordBytes)
     return 0;
 
-  sprintf(buffer, "READ %llu %u", currentPlayingRecordPosition, buf_size);
+  sprintf(buffer, "READ %llu %u", (unsigned long long)currentPlayingRecordPosition, buf_size);
   if (!m_transceiver->SendCommand(buffer, code, lines))
   {
     return 0;
@@ -1347,7 +1343,7 @@ __int64 cPVRClientVDR::SeekRecordedStream(__int64 pos, int whence)
       return -1;
   }
 
-  if (nextPos > currentPlayingRecordBytes)
+  if (nextPos > (__int64) currentPlayingRecordBytes)
   {
     return 0;
   }
