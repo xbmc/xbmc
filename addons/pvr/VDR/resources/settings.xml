@@ -7,4 +7,5 @@
     <setting id="convertchar" type="bool" label="30004" default="true" />
     <setting id="timeout" type="enum" label="30005" values="0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15" default="3"/>
     <setting id="ignorechannels" type="bool" label="30006" default="true" />
+    <setting id="handlemessages" type="bool" label="30007" default="true" />
 </settings>

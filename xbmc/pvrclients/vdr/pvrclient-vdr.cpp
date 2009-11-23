@@ -111,10 +111,12 @@ bool cPVRClientVDR::Connect()
   m_connectionString.Format("%s:%i", m_sHostname.c_str(), m_iPort);
 
   /* Start VTP Listening Thread */
-//  m_bStop = false;
-//  if (pthread_create(&m_thread, NULL, &Process, (void *)"cPVRClientVDR VTP-Listener") != 0) {
-//    return false;
-//  }
+  m_bStop = false;
+  if (pthread_create(&m_thread, NULL, &CallbackRcvThread, reinterpret_cast<void *>(this)) != 0)
+  {
+    XBMC_log(LOG_ERROR, "PCRClient-vdr: Couldn't start VDR Listening Thread");
+    return false;
+  }
 
   m_bConnected = true;
   return true;
@@ -463,1514 +465,7 @@ PVR_ERROR cPVRClientVDR::RequestChannelList(PVRHANDLE handle, bool radio)
   pthread_mutex_unlock(&m_critSection);
   return PVR_ERROR_NO_ERROR;
 }
-/*
-PVR_ERROR cPVRClientVDR::GetChannelSettings(cPVRChannelInfoTag *result)
-{
 
-  vector<string> lines;
-  int            code;
-  char           buffer[1024];
-
-  if (result->m_iClientNum < 1)
-    return PVR_ERROR_SERVER_ERROR;
-
-  if (!m_transceiver->IsOpen())
-    return PVR_ERROR_SERVER_ERROR;
-
-  pthread_mutex_lock(&m_critSection);
-
-  sprintf(buffer, "LSTC %d", result->m_iClientNum);
-  while (!m_transceiver->SendCommand(buffer, code, lines))
-  {
-    if (code != 451)
-    {
-      pthread_mutex_unlock(&m_critSection);
-      return PVR_ERROR_SERVER_ERROR;
-    }
-    Sleep(750);
-  }
-
-  for (vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
-  {
-    string& data(*it);
-    CStdString str_result = data;
-    int found;
-    int i_tmp;
-
-    result->m_Settings.m_VPID = 0;
-    result->m_Settings.m_APID1 = 0;
-    result->m_Settings.m_APID2 = 0;
-    result->m_Settings.m_DPID1 = 0;
-    result->m_Settings.m_DPID2 = 0;
-    result->m_Settings.m_CAID = 0;
-    CStdString name;
-    int id;
-
-    if (m_bCharsetConv)
-      XBMC_unknown_to_utf8(str_result);
-
-    // Skip Channel number
-    str_result.erase(0, str_result.find(" ", 0) + 1);
-
-    // Channel and provider name
-    found = str_result.find(":", 0);
-    name.assign(str_result, found);
-    str_result.erase(0, found + 1);
-    found = name.find(";", 0);
-
-    if (found != -1)
-    {
-      name.erase(0, found + 1);
-      result->m_Settings.m_strProvider = name;
-    }
-
-    // Channel frequency
-    result->m_Settings.m_Freq = atol(str_result.c_str());
-    found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
-    found = str_result.find(":", 0);
-    result->m_Settings.m_parameter.assign(str_result, found);
-    str_result.erase(0, found);
-
-    // Source Type
-    if (str_result.compare(0, 2, ":C") == 0)
-    {
-      result->m_Settings.m_SourceType = src_DVBC;
-      result->m_Settings.m_satellite = "Cable";
-      str_result.erase(0, 3);
-    }
-    else if (str_result.compare(0, 2, ":T") == 0)
-    {
-      result->m_Settings.m_SourceType = src_DVBT;
-      result->m_Settings.m_satellite = "Terrestrial";
-      str_result.erase(0, 3);
-    }
-    else if (str_result.compare(0, 2, ":S") == 0)
-    {
-      result->m_Settings.m_SourceType = src_DVBS;
-      str_result.erase(0, 2);
-      found = str_result.find(":", 0);
-      result->m_Settings.m_satellite.assign(str_result, found);
-      str_result.erase(0, found + 1);
-    }
-    else if (str_result.compare(0, 2, ":P") == 0)
-    {
-      result->m_Settings.m_SourceType = srcAnalog;
-      result->m_Settings.m_satellite = "Analog";
-      str_result.erase(0, 3);
-    }
-
-    // Channel symbolrate
-    result->m_Settings.m_Symbolrate = atol(str_result.c_str());
-    str_result.erase(0, str_result.find(":", 0) + 1);
-
-    // Channel program id
-    result->m_Settings.m_VPID = atol(str_result.c_str());
-    str_result.erase(0, str_result.find(":", 0) + 1);
-
-    // Channel audio id's
-    found = str_result.find(":", 0);
-    name.assign(str_result, found);
-    str_result.erase(0, found + 1);
-    found = name.find(";", 0);
-
-    if (found == -1)
-    {
-      id = atol(name.c_str());
-
-      if (id == 0)
-      {
-        result->m_Settings.m_APID1 = 0;
-        result->m_Settings.m_APID2 = 0;
-        result->m_Settings.m_DPID1 = 0;
-        result->m_Settings.m_DPID2 = 0;
-      }
-      else
-      {
-        result->m_Settings.m_APID1 = id;
-        found = name.find(",", 0);
-
-        if (found == -1)
-        {
-          result->m_Settings.m_APID2 = 0;
-        }
-        else
-        {
-          name.erase(0, found + 1);
-          result->m_Settings.m_APID2 = atol(name.c_str());
-        }
-        result->m_Settings.m_DPID1 = 0;
-        result->m_Settings.m_DPID2 = 0;
-      }
-    }
-    else
-    {
-      int id;
-
-      id = atol(name.c_str());
-
-      if (id == 0)
-      {
-        result->m_Settings.m_APID1 = 0;
-        result->m_Settings.m_APID2 = 0;
-      }
-      else
-      {
-        result->m_Settings.m_APID1 = id;
-        found = name.find(",", 0);
-
-        if (found == -1)
-        {
-          result->m_Settings.m_APID2 = 0;
-        }
-        else
-        {
-          name.erase(0, found + 1);
-          result->m_Settings.m_APID2 = atol(name.c_str());
-        }
-      }
-
-      found = name.find(";", 0);
-
-      name.erase(0, found + 1);
-      id = atol(name.c_str());
-
-      if (id == 0)
-      {
-        result->m_Settings.m_DPID1 = 0;
-        result->m_Settings.m_DPID2 = 0;
-      }
-      else
-      {
-        result->m_Settings.m_DPID1 = id;
-        found = name.find(",", 0);
-
-        if (found == -1)
-        {
-          result->m_Settings.m_DPID2 = 0;
-        }
-        else
-        {
-          name.erase(0, found + 1);
-          result->m_Settings.m_DPID2 = atol(name.c_str());
-        }
-      }
-    }
-
-    // Teletext id
-    result->m_Settings.m_TPID = atol(str_result.c_str());
-    found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
-
-    // CAID id
-    result->m_Settings.m_CAID = atol(str_result.c_str());
-    found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
-
-    // Service id
-    result->m_Settings.m_SID = atol(str_result.c_str());
-    found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
-
-    // Network id
-    result->m_Settings.m_NID = atol(str_result.c_str());
-    found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
-
-    // Transport id
-    result->m_Settings.m_TID = atol(str_result.c_str());
-    found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
-
-    // Radio id
-    result->m_Settings.m_RID = atol(str_result.c_str());
-    found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
-
-    // DVB-S2 ?
-    if (result->m_Settings.m_SourceType == src_DVBS)
-    {
-      str_result = result->m_Settings.m_parameter;
-      found = str_result.find("S", 0);
-
-      if (found != -1)
-      {
-        str_result.erase(0, found + 1);
-        i_tmp = atol(str_result.c_str());
-
-        if (i_tmp == 1)
-        {
-          result->m_Settings.m_SourceType = src_DVBS2;
-        }
-      }
-    }
-
-    // Inversion
-    str_result = result->m_Settings.m_parameter;
-    found = str_result.find("I", 0);
-    if (found != -1)
-    {
-      str_result.erase(0, found + 1);
-      i_tmp = atol(str_result.c_str());
-
-      if (i_tmp == 0)
-      {
-        result->m_Settings.m_Inversion = InvOff;
-      }
-      else if (i_tmp == 1)
-      {
-        result->m_Settings.m_Inversion = InvOn;
-      }
-      else if (i_tmp == 999)
-      {
-        result->m_Settings.m_Inversion = InvAuto;
-      }
-    }
-    else
-    {
-      result->m_Settings.m_Inversion = InvAuto;
-    }
-
-    // CoderateL
-    if (result->m_Settings.m_SourceType == src_DVBT)
-    {
-      str_result = result->m_Settings.m_parameter;
-      found = str_result.find("D", 0);
-
-      if (found != -1)
-      {
-        str_result.erase(0, found + 1);
-        i_tmp = atol(str_result.c_str());
-
-        if (i_tmp == 0)
-        {
-          result->m_Settings.m_CoderateL = Coderate_None;
-        }
-        else if (i_tmp == 12)
-        {
-          result->m_Settings.m_CoderateL = Coderate_1_2;
-        }
-        else if (i_tmp == 23)
-        {
-          result->m_Settings.m_CoderateL = Coderate_2_3;
-        }
-        else if (i_tmp == 34)
-        {
-          result->m_Settings.m_CoderateL = Coderate_3_4;
-        }
-        else if (i_tmp == 45)
-        {
-          result->m_Settings.m_CoderateL = Coderate_4_5;
-        }
-        else if (i_tmp == 56)
-        {
-          result->m_Settings.m_CoderateL = Coderate_5_6;
-        }
-        else if (i_tmp == 67)
-        {
-          result->m_Settings.m_CoderateL = Coderate_6_7;
-        }
-        else if (i_tmp == 78)
-        {
-          result->m_Settings.m_CoderateL = Coderate_7_8;
-        }
-        else if (i_tmp == 89)
-        {
-          result->m_Settings.m_CoderateL = Coderate_8_9;
-        }
-        else if (i_tmp == 910)
-        {
-          result->m_Settings.m_CoderateL = Coderate_9_10;
-        }
-        else if (i_tmp == 999 || i_tmp == 910)
-        {
-          result->m_Settings.m_CoderateL = Coderate_Auto;
-        }
-      }
-      else
-      {
-        result->m_Settings.m_CoderateL = Coderate_None;
-      }
-    }
-    else
-    {
-      result->m_Settings.m_CoderateL = Coderate_None;
-    }
-
-    // CoderateH
-    str_result = result->m_Settings.m_parameter;
-
-    found = str_result.find("C", 0);
-
-    if (found != -1)
-    {
-      str_result.erase(0, found + 1);
-      i_tmp = atol(str_result.c_str());
-
-      if (i_tmp == 0)
-      {
-        result->m_Settings.m_CoderateH = Coderate_None;
-      }
-      else if (i_tmp == 12)
-      {
-        result->m_Settings.m_CoderateH = Coderate_1_2;
-      }
-      else if (i_tmp == 23)
-      {
-        result->m_Settings.m_CoderateH = Coderate_2_3;
-      }
-      else if (i_tmp == 34)
-      {
-        result->m_Settings.m_CoderateH = Coderate_3_4;
-      }
-      else if (i_tmp == 45)
-      {
-        result->m_Settings.m_CoderateH = Coderate_4_5;
-      }
-      else if (i_tmp == 56)
-      {
-        result->m_Settings.m_CoderateH = Coderate_5_6;
-      }
-      else if (i_tmp == 67)
-      {
-        result->m_Settings.m_CoderateH = Coderate_6_7;
-      }
-      else if (i_tmp == 78)
-      {
-        result->m_Settings.m_CoderateH = Coderate_7_8;
-      }
-      else if (i_tmp == 89)
-      {
-        result->m_Settings.m_CoderateH = Coderate_8_9;
-      }
-      else if (i_tmp == 910)
-      {
-        result->m_Settings.m_CoderateL = Coderate_9_10;
-      }
-      else if (i_tmp == 999 || i_tmp == 910)
-      {
-        result->m_Settings.m_CoderateH = Coderate_Auto;
-      }
-    }
-    else
-    {
-      result->m_Settings.m_CoderateH = Coderate_None;
-    }
-
-    // Modulation
-    str_result = result->m_Settings.m_parameter;
-
-    found = str_result.find("M", 0);
-
-    if (found != -1)
-    {
-      str_result.erase(0, found + 1);
-      i_tmp = atol(str_result.c_str());
-
-      if (i_tmp == 0)
-      {
-        result->m_Settings.m_Modulation = modNone;
-      }
-      else if (i_tmp == 4)
-      {
-        result->m_Settings.m_Modulation = modQAM4;
-      }
-      else if (i_tmp == 16)
-      {
-        result->m_Settings.m_Modulation = modQAM16;
-      }
-      else if (i_tmp == 32)
-      {
-        result->m_Settings.m_Modulation = modQAM32;
-      }
-      else if (i_tmp == 64)
-      {
-        result->m_Settings.m_Modulation = modQAM64;
-      }
-      else if (i_tmp == 128)
-      {
-        result->m_Settings.m_Modulation = modQAM128;
-      }
-      else if (i_tmp == 256)
-      {
-        result->m_Settings.m_Modulation = modQAM256;
-      }
-      else if (i_tmp == 512)
-      {
-        result->m_Settings.m_Modulation = modQAM512;
-      }
-      else if (i_tmp == 1024)
-      {
-        result->m_Settings.m_Modulation = modQAM1024;
-      }
-      else if (i_tmp == 998)
-      {
-        result->m_Settings.m_Modulation = modQAMAuto;
-      }
-      else if (i_tmp == 1)
-      {
-        result->m_Settings.m_Modulation = modBPSK;
-      }
-      else if (i_tmp == 2)
-      {
-        result->m_Settings.m_Modulation = modQPSK;
-      }
-      else if (i_tmp == 3)
-      {
-        result->m_Settings.m_Modulation = modOQPSK;
-      }
-      else if (i_tmp == 5)
-      {
-        result->m_Settings.m_Modulation = mod8PSK;
-      }
-      else if (i_tmp == 6)
-      {
-        result->m_Settings.m_Modulation = mod16APSK;
-      }
-      else if (i_tmp == 7)
-      {
-        result->m_Settings.m_Modulation = mod32APSK;
-      }
-      else if (i_tmp == 8)
-      {
-        result->m_Settings.m_Modulation = modOFDM;
-      }
-      else if (i_tmp == 9)
-      {
-        result->m_Settings.m_Modulation = modCOFDM;
-      }
-      else if (i_tmp == 10)
-      {
-        result->m_Settings.m_Modulation = modVSB8;
-      }
-      else if (i_tmp == 11)
-      {
-        result->m_Settings.m_Modulation = modVSB16;
-      }
-    }
-    else
-    {
-      result->m_Settings.m_Modulation = modNone;
-    }
-
-    // Bandwith
-    str_result = result->m_Settings.m_parameter;
-
-    found = str_result.find("B", 0);
-
-    if (found != -1)
-    {
-      str_result.erase(0, found + 1);
-      i_tmp = atol(str_result.c_str());
-
-      if (i_tmp == 5)
-      {
-        result->m_Settings.m_Bandwidth = bw_5MHz;
-      }
-      else if (i_tmp == 6)
-      {
-        result->m_Settings.m_Bandwidth = bw_6MHz;
-      }
-      else if (i_tmp == 7)
-      {
-        result->m_Settings.m_Bandwidth = bw_7MHz;
-      }
-      else if (i_tmp == 8)
-      {
-        result->m_Settings.m_Bandwidth = bw_8MHz;
-      }
-      else if (i_tmp == 999)
-      {
-        result->m_Settings.m_Bandwidth = bw_Auto;
-      }
-    }
-    else
-    {
-      result->m_Settings.m_Bandwidth = bw_Auto;
-    }
-
-    // Hierarchie
-    str_result = result->m_Settings.m_parameter;
-
-    found = str_result.find("Y", 0);
-
-    if (found != -1)
-    {
-      str_result.erase(0, found + 1);
-      i_tmp = atol(str_result.c_str());
-
-      if (i_tmp == 0)
-      {
-        result->m_Settings.m_Hierarchie = false;
-      }
-      else if (i_tmp == 1)
-      {
-        result->m_Settings.m_Hierarchie = true;
-      }
-    }
-    else
-    {
-      result->m_Settings.m_Hierarchie = false;
-    }
-
-    // Alpha
-    str_result = result->m_Settings.m_parameter;
-
-    found = str_result.find("A", 0);
-
-    if (found != -1)
-    {
-      str_result.erase(0, found + 1);
-      i_tmp = atol(str_result.c_str());
-
-      if (i_tmp == 0)
-      {
-        result->m_Settings.m_Alpha = alpha_0;
-      }
-      else if (i_tmp == 1)
-      {
-        result->m_Settings.m_Alpha = alpha_1;
-      }
-      else if (i_tmp == 2)
-      {
-        result->m_Settings.m_Alpha = alpha_2;
-      }
-      else if (i_tmp == 4)
-      {
-        result->m_Settings.m_Alpha = alpha_4;
-      }
-    }
-    else
-    {
-      result->m_Settings.m_Alpha = alpha_0;
-    }
-
-    // Guard
-    str_result = result->m_Settings.m_parameter;
-
-    found = str_result.find("G", 0);
-
-    if (found != -1)
-    {
-      str_result.erase(0, found + 1);
-      i_tmp = atol(str_result.c_str());
-
-      if (i_tmp == 4)
-      {
-        result->m_Settings.m_Guard = guard_1_4;
-      }
-      else if (i_tmp == 8)
-      {
-        result->m_Settings.m_Guard = guard_1_8;
-      }
-      else if (i_tmp == 16)
-      {
-        result->m_Settings.m_Guard = guard_1_16;
-      }
-      else if (i_tmp == 32)
-      {
-        result->m_Settings.m_Guard = guard_1_32;
-      }
-      else if (i_tmp == 999)
-      {
-        result->m_Settings.m_Guard = guard_Auto;
-      }
-    }
-    else
-    {
-      result->m_Settings.m_Guard = guard_Auto;
-    }
-
-    // Transmission
-    str_result = result->m_Settings.m_parameter;
-
-    found = str_result.find("T", 0);
-
-    if (found != -1)
-    {
-      str_result.erase(0, found + 1);
-      i_tmp = atol(str_result.c_str());
-
-      if (i_tmp == 2)
-      {
-        result->m_Settings.m_Transmission = transmission_2K;
-      }
-      else if (i_tmp == 4)
-      {
-        result->m_Settings.m_Transmission = transmission_4K;
-      }
-      else if (i_tmp == 8)
-      {
-        result->m_Settings.m_Transmission = transmission_8K;
-      }
-      else if (i_tmp == 999)
-      {
-        result->m_Settings.m_Transmission = transmission_Auto;
-      }
-    }
-    else
-    {
-      result->m_Settings.m_Transmission = transmission_Auto;
-    }
-
-    // Priority
-    str_result = result->m_Settings.m_parameter;
-
-    found = str_result.find("P", 0);
-
-    if (found != -1)
-    {
-      str_result.erase(0, found + 1);
-      i_tmp = atol(str_result.c_str());
-
-      if (i_tmp == 0)
-      {
-        result->m_Settings.m_Priority = false;
-      }
-      else if (i_tmp == 1)
-      {
-        result->m_Settings.m_Priority = true;
-      }
-    }
-    else
-    {
-      result->m_Settings.m_Priority = false;
-    }
-
-    // Rolloff
-    str_result = result->m_Settings.m_parameter;
-
-    found = str_result.find("O", 0);
-
-    if (found != -1)
-    {
-      str_result.erase(0, found + 1);
-      i_tmp = atol(str_result.c_str());
-
-      if (i_tmp == 0)
-      {
-        result->m_Settings.m_Rolloff = rolloff_Unknown;
-      }
-      else if (i_tmp == 20)
-      {
-        result->m_Settings.m_Rolloff = rolloff_20;
-      }
-      else if (i_tmp == 25)
-      {
-        result->m_Settings.m_Rolloff = rolloff_25;
-      }
-      else if (i_tmp == 35)
-      {
-        result->m_Settings.m_Rolloff = rolloff_35;
-      }
-    }
-    else
-    {
-      result->m_Settings.m_Rolloff = rolloff_Unknown;
-    }
-
-    // Polarization
-    str_result = result->m_Settings.m_parameter;
-
-    if ((int) str_result.find("H", 0) != -1)
-      result->m_Settings.m_Polarization = pol_H;
-
-    if ((int) str_result.find("h", 0) != -1)
-      result->m_Settings.m_Polarization = pol_H;
-
-    if ((int) str_result.find("V", 0) != -1)
-      result->m_Settings.m_Polarization = pol_V;
-
-    if ((int) str_result.find("v", 0) != -1)
-      result->m_Settings.m_Polarization = pol_V;
-
-    if ((int) str_result.find("L", 0) != -1)
-      result->m_Settings.m_Polarization = pol_L;
-
-    if ((int) str_result.find("l", 0) != -1)
-      result->m_Settings.m_Polarization = pol_L;
-
-    if ((int) str_result.find("R", 0) != -1)
-      result->m_Settings.m_Polarization = pol_R;
-
-    if ((int) str_result.find("r", 0) != -1)
-      result->m_Settings.m_Polarization = pol_R;
-  }
-
-  pthread_mutex_unlock(&m_critSection);
-
-  return PVR_ERROR_NO_ERROR;
-}
-
-PVR_ERROR cPVRClientVDR::UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo)
-{
-  CStdString     m_Summary;
-  CStdString     m_Summary_2;
-  vector<string> lines;
-  int            code;
-  char           buffer[1024];
-
-  pthread_mutex_lock(&m_critSection);
-
-  if (chaninfo.m_iClientNum == -1)
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return PVR_ERROR_NOT_SAVED;
-  }
-
-  m_Summary.Format("%d %s;%s:%i:" , chaninfo.m_iClientNum
-
-                   , chaninfo.m_strChannel.c_str()
-                   , chaninfo.m_Settings.m_strProvider.c_str()
-                   , chaninfo.m_Settings.m_Freq);
-
-  if ((chaninfo.m_Settings.m_SourceType == src_DVBS) ||
-      (chaninfo.m_Settings.m_SourceType == src_DVBS2))
-  {
-    if      (chaninfo.m_Settings.m_Polarization == pol_H)
-      m_Summary += "h";
-    else if (chaninfo.m_Settings.m_Polarization == pol_V)
-      m_Summary += "v";
-    else if (chaninfo.m_Settings.m_Polarization == pol_L)
-      m_Summary += "l";
-    else if (chaninfo.m_Settings.m_Polarization == pol_R)
-      m_Summary += "r";
-  }
-
-  if (chaninfo.m_Settings.m_SourceType == src_DVBT)
-  {
-    if      (chaninfo.m_Settings.m_Inversion == InvOff)
-      m_Summary += "I0";
-    else if (chaninfo.m_Settings.m_Inversion == InvOn)
-      m_Summary += "I1";
-    else if (chaninfo.m_Settings.m_Inversion == InvAuto)
-      m_Summary += "I999";
-  }
-
-  if (chaninfo.m_Settings.m_SourceType == src_DVBT)
-  {
-    if      (chaninfo.m_Settings.m_Bandwidth == bw_5MHz)
-      m_Summary += "B5";
-    else if (chaninfo.m_Settings.m_Bandwidth == bw_6MHz)
-      m_Summary += "B6";
-    else if (chaninfo.m_Settings.m_Bandwidth == bw_7MHz)
-      m_Summary += "B7";
-    else if (chaninfo.m_Settings.m_Bandwidth == bw_8MHz)
-      m_Summary += "B8";
-    else if (chaninfo.m_Settings.m_Bandwidth == bw_Auto)
-      m_Summary += "B999";
-  }
-
-  if      (chaninfo.m_Settings.m_CoderateH == Coderate_None)
-    m_Summary += "C0";
-  else if (chaninfo.m_Settings.m_CoderateH == Coderate_1_2)
-    m_Summary += "C12";
-  else if (chaninfo.m_Settings.m_CoderateH == Coderate_2_3)
-    m_Summary += "C23";
-  else if (chaninfo.m_Settings.m_CoderateH == Coderate_3_4)
-    m_Summary += "C34";
-  else if (chaninfo.m_Settings.m_CoderateH == Coderate_4_5)
-    m_Summary += "C45";
-  else if (chaninfo.m_Settings.m_CoderateH == Coderate_5_6)
-    m_Summary += "C56";
-  else if (chaninfo.m_Settings.m_CoderateH == Coderate_6_7)
-    m_Summary += "C67";
-  else if (chaninfo.m_Settings.m_CoderateH == Coderate_7_8)
-    m_Summary += "C78";
-  else if (chaninfo.m_Settings.m_CoderateH == Coderate_8_9)
-    m_Summary += "C89";
-  else if (chaninfo.m_Settings.m_CoderateH == Coderate_9_10)
-    m_Summary += "C910";
-  else if (chaninfo.m_Settings.m_CoderateH == Coderate_Auto)
-    m_Summary += "C999";
-
-  if (chaninfo.m_Settings.m_SourceType == src_DVBT)
-  {
-    if      (chaninfo.m_Settings.m_CoderateL == Coderate_None)
-      m_Summary += "D0";
-    else if (chaninfo.m_Settings.m_CoderateL == Coderate_1_2)
-      m_Summary += "D12";
-    else if (chaninfo.m_Settings.m_CoderateL == Coderate_2_3)
-      m_Summary += "D23";
-    else if (chaninfo.m_Settings.m_CoderateL == Coderate_3_4)
-      m_Summary += "D34";
-    else if (chaninfo.m_Settings.m_CoderateL == Coderate_4_5)
-      m_Summary += "D45";
-    else if (chaninfo.m_Settings.m_CoderateL == Coderate_5_6)
-      m_Summary += "D56";
-    else if (chaninfo.m_Settings.m_CoderateL == Coderate_6_7)
-      m_Summary += "D67";
-    else if (chaninfo.m_Settings.m_CoderateL == Coderate_7_8)
-      m_Summary += "D78";
-    else if (chaninfo.m_Settings.m_CoderateL == Coderate_8_9)
-      m_Summary += "D89";
-    else if (chaninfo.m_Settings.m_CoderateL == Coderate_9_10)
-      m_Summary += "D910";
-    else if (chaninfo.m_Settings.m_CoderateL == Coderate_Auto)
-      m_Summary += "D999";
-  }
-
-  if      (chaninfo.m_Settings.m_Modulation == modNone)
-    m_Summary += "M0";
-  else if (chaninfo.m_Settings.m_Modulation == modQAM4)
-    m_Summary += "M4";
-  else if (chaninfo.m_Settings.m_Modulation == modQAM16)
-    m_Summary += "M16";
-  else if (chaninfo.m_Settings.m_Modulation == modQAM32)
-    m_Summary += "M32";
-  else if (chaninfo.m_Settings.m_Modulation == modQAM64)
-    m_Summary += "M64";
-  else if (chaninfo.m_Settings.m_Modulation == modQAM128)
-    m_Summary += "M128";
-  else if (chaninfo.m_Settings.m_Modulation == modQAM256)
-    m_Summary += "M256";
-  else if (chaninfo.m_Settings.m_Modulation == modQAM512)
-    m_Summary += "M512";
-  else if (chaninfo.m_Settings.m_Modulation == modQAM1024)
-    m_Summary += "M1024";
-  else if (chaninfo.m_Settings.m_Modulation == modQAMAuto)
-    m_Summary += "M998";
-  else if (chaninfo.m_Settings.m_Modulation == modBPSK)
-    m_Summary += "M1";
-  else if (chaninfo.m_Settings.m_Modulation == modQPSK)
-    m_Summary += "M2";
-  else if (chaninfo.m_Settings.m_Modulation == modOQPSK)
-    m_Summary += "M3";
-  else if (chaninfo.m_Settings.m_Modulation == mod8PSK)
-    m_Summary += "M5";
-  else if (chaninfo.m_Settings.m_Modulation == mod16APSK)
-    m_Summary += "M6";
-  else if (chaninfo.m_Settings.m_Modulation == mod32APSK)
-    m_Summary += "M7";
-  else if (chaninfo.m_Settings.m_Modulation == modOFDM)
-    m_Summary += "M8";
-  else if (chaninfo.m_Settings.m_Modulation == modCOFDM)
-    m_Summary += "M9";
-  else if (chaninfo.m_Settings.m_Modulation == modVSB8)
-    m_Summary += "M10";
-  else if (chaninfo.m_Settings.m_Modulation == modVSB16)
-    m_Summary += "M11";
-
-  if (chaninfo.m_Settings.m_SourceType == src_DVBT)
-  {
-    if      (chaninfo.m_Settings.m_Transmission == transmission_2K)
-      m_Summary += "T2";
-    else if (chaninfo.m_Settings.m_Transmission == transmission_4K)
-      m_Summary += "T4";
-    else if (chaninfo.m_Settings.m_Transmission == transmission_8K)
-      m_Summary += "T8";
-    else if (chaninfo.m_Settings.m_Transmission == transmission_Auto)
-      m_Summary += "T999";
-
-    if      (chaninfo.m_Settings.m_Guard == guard_1_4)
-      m_Summary += "G4";
-    else if (chaninfo.m_Settings.m_Guard == guard_1_8)
-      m_Summary += "G8";
-    else if (chaninfo.m_Settings.m_Guard == guard_1_16)
-      m_Summary += "G16";
-    else if (chaninfo.m_Settings.m_Guard == guard_1_32)
-      m_Summary += "G32";
-    else if (chaninfo.m_Settings.m_Guard == guard_Auto)
-      m_Summary += "G999";
-
-    if      (chaninfo.m_Settings.m_Hierarchie)
-      m_Summary += "Y1";
-    else
-      m_Summary += "Y0";
-
-    if      (chaninfo.m_Settings.m_Alpha == alpha_0)
-      m_Summary += "A0";
-    else if (chaninfo.m_Settings.m_Alpha == alpha_1)
-      m_Summary += "A1";
-    else if (chaninfo.m_Settings.m_Alpha == alpha_2)
-      m_Summary += "A2";
-    else if (chaninfo.m_Settings.m_Alpha == alpha_4)
-      m_Summary += "A4";
-
-    if      (chaninfo.m_Settings.m_Priority)
-      m_Summary += "P1";
-    else
-      m_Summary += "P0";
-  }
-
-  if (chaninfo.m_Settings.m_SourceType == src_DVBS2)
-  {
-    if      (chaninfo.m_Settings.m_Rolloff == rolloff_Unknown)
-      m_Summary += "O0";
-    else if (chaninfo.m_Settings.m_Rolloff == rolloff_20)
-      m_Summary += "O20";
-    else if (chaninfo.m_Settings.m_Rolloff == rolloff_25)
-      m_Summary += "O25";
-    else if (chaninfo.m_Settings.m_Rolloff == rolloff_25)
-      m_Summary += "O35";
-  }
-
-  if      (chaninfo.m_Settings.m_SourceType == src_DVBS)
-    m_Summary += "O35S0:S";
-  else if (chaninfo.m_Settings.m_SourceType == src_DVBS2)
-    m_Summary += "S1:S";
-  else if (chaninfo.m_Settings.m_SourceType == src_DVBC)
-    m_Summary += ":C";
-  else if (chaninfo.m_Settings.m_SourceType == src_DVBT)
-    m_Summary += ":T";
-
-  m_Summary_2.Format(":%i:%i:%i,%i;%i,%i:%i:%i:%i:%i:%i:%i" , chaninfo.m_Settings.m_Symbolrate
-                     , chaninfo.m_Settings.m_VPID
-                     , chaninfo.m_Settings.m_APID1
-                     , chaninfo.m_Settings.m_APID2
-                     , chaninfo.m_Settings.m_DPID1
-                     , chaninfo.m_Settings.m_DPID2
-                     , chaninfo.m_Settings.m_TPID
-                     , chaninfo.m_Settings.m_CAID
-                     , chaninfo.m_Settings.m_SID
-                     , chaninfo.m_Settings.m_NID
-                     , chaninfo.m_Settings.m_TID
-                     , chaninfo.m_Settings.m_RID);
-
-  m_Summary += m_Summary_2;
-
-  sprintf(buffer, "LSTC %d", chaninfo.m_iClientNum);
-
-  if (!m_transceiver->SendCommand(buffer, code, lines))
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return PVR_ERROR_SERVER_ERROR;
-  }
-
-  if (code != 250)
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return PVR_ERROR_NOT_SYNC;
-  }
-
-  sprintf(buffer, "MODC %s", m_Summary.c_str());
-
-  if (!m_transceiver->SendCommand(buffer, code, lines))
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return PVR_ERROR_SERVER_ERROR;
-  }
-
-  if (code != 250)
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return PVR_ERROR_NOT_SAVED;
-  }
-
-  pthread_mutex_unlock(&m_critSection);
-
-  return PVR_ERROR_NO_ERROR;
-}
-
-PVR_ERROR cPVRClientVDR::AddChannel(const cPVRChannelInfoTag &info)
-{
-
-  CStdString m_Summary;
-  CStdString m_Summary_2;
-  bool update_channel;
-  int iChannelNum;
-
-  if (!m_transceiver->IsOpen())
-  {
-    return PVR_ERROR_SERVER_ERROR;
-  }
-
-  if (info.m_iClientNum == -1)
-  {
-    int new_number = GetNumChannels();
-
-    if (new_number == -1)
-    {
-      new_number = 1;
-    }
-
-    iChannelNum = new_number + 1;
-
-    update_channel = false;
-  }
-  else
-  {
-    iChannelNum = info.m_iClientNum;
-    update_channel = true;
-  }
-
-  m_Summary.Format("%d %s;%s:%i:" , iChannelNum
-
-                   , info.m_strChannel.c_str()
-                   , info.m_Settings.m_strProvider.c_str()
-                   , info.m_Settings.m_Freq);
-
-  if ((info.m_Settings.m_SourceType == src_DVBS) ||
-      (info.m_Settings.m_SourceType == src_DVBS2))
-  {
-    if      (info.m_Settings.m_Polarization == pol_H)
-      m_Summary += "h";
-    else if (info.m_Settings.m_Polarization == pol_V)
-      m_Summary += "v";
-    else if (info.m_Settings.m_Polarization == pol_L)
-      m_Summary += "l";
-    else if (info.m_Settings.m_Polarization == pol_R)
-      m_Summary += "r";
-  }
-
-  if (info.m_Settings.m_SourceType == src_DVBT)
-  {
-    if      (info.m_Settings.m_Inversion == InvOff)
-      m_Summary += "I0";
-    else if (info.m_Settings.m_Inversion == InvOn)
-      m_Summary += "I1";
-    else if (info.m_Settings.m_Inversion == InvAuto)
-      m_Summary += "I999";
-  }
-
-  if (info.m_Settings.m_SourceType == src_DVBT)
-  {
-    if      (info.m_Settings.m_Bandwidth == bw_5MHz)
-      m_Summary += "B5";
-    else if (info.m_Settings.m_Bandwidth == bw_6MHz)
-      m_Summary += "B6";
-    else if (info.m_Settings.m_Bandwidth == bw_7MHz)
-      m_Summary += "B7";
-    else if (info.m_Settings.m_Bandwidth == bw_8MHz)
-      m_Summary += "B8";
-    else if (info.m_Settings.m_Bandwidth == bw_Auto)
-      m_Summary += "B999";
-  }
-
-  if      (info.m_Settings.m_CoderateH == Coderate_None)
-    m_Summary += "C0";
-  else if (info.m_Settings.m_CoderateH == Coderate_1_2)
-    m_Summary += "C12";
-  else if (info.m_Settings.m_CoderateH == Coderate_2_3)
-    m_Summary += "C23";
-  else if (info.m_Settings.m_CoderateH == Coderate_3_4)
-    m_Summary += "C34";
-  else if (info.m_Settings.m_CoderateH == Coderate_4_5)
-    m_Summary += "C45";
-  else if (info.m_Settings.m_CoderateH == Coderate_5_6)
-    m_Summary += "C56";
-  else if (info.m_Settings.m_CoderateH == Coderate_6_7)
-    m_Summary += "C67";
-  else if (info.m_Settings.m_CoderateH == Coderate_7_8)
-    m_Summary += "C78";
-  else if (info.m_Settings.m_CoderateH == Coderate_8_9)
-    m_Summary += "C89";
-  else if (info.m_Settings.m_CoderateH == Coderate_9_10)
-    m_Summary += "C910";
-  else if (info.m_Settings.m_CoderateH == Coderate_Auto)
-    m_Summary += "C999";
-
-  if (info.m_Settings.m_SourceType == src_DVBT)
-  {
-    if      (info.m_Settings.m_CoderateL == Coderate_None)
-      m_Summary += "D0";
-    else if (info.m_Settings.m_CoderateL == Coderate_1_2)
-      m_Summary += "D12";
-    else if (info.m_Settings.m_CoderateL == Coderate_2_3)
-      m_Summary += "D23";
-    else if (info.m_Settings.m_CoderateL == Coderate_3_4)
-      m_Summary += "D34";
-    else if (info.m_Settings.m_CoderateL == Coderate_4_5)
-      m_Summary += "D45";
-    else if (info.m_Settings.m_CoderateL == Coderate_5_6)
-      m_Summary += "D56";
-    else if (info.m_Settings.m_CoderateL == Coderate_6_7)
-      m_Summary += "D67";
-    else if (info.m_Settings.m_CoderateL == Coderate_7_8)
-      m_Summary += "D78";
-    else if (info.m_Settings.m_CoderateL == Coderate_8_9)
-      m_Summary += "D89";
-    else if (info.m_Settings.m_CoderateL == Coderate_9_10)
-      m_Summary += "D910";
-    else if (info.m_Settings.m_CoderateL == Coderate_Auto)
-      m_Summary += "D999";
-  }
-
-  if      (info.m_Settings.m_Modulation == modNone)
-    m_Summary += "M0";
-  else if (info.m_Settings.m_Modulation == modQAM4)
-    m_Summary += "M4";
-  else if (info.m_Settings.m_Modulation == modQAM16)
-    m_Summary += "M16";
-  else if (info.m_Settings.m_Modulation == modQAM32)
-    m_Summary += "M32";
-  else if (info.m_Settings.m_Modulation == modQAM64)
-    m_Summary += "M64";
-  else if (info.m_Settings.m_Modulation == modQAM128)
-    m_Summary += "M128";
-  else if (info.m_Settings.m_Modulation == modQAM256)
-    m_Summary += "M256";
-  else if (info.m_Settings.m_Modulation == modQAM512)
-    m_Summary += "M512";
-  else if (info.m_Settings.m_Modulation == modQAM1024)
-    m_Summary += "M1024";
-  else if (info.m_Settings.m_Modulation == modQAMAuto)
-    m_Summary += "M998";
-  else if (info.m_Settings.m_Modulation == modBPSK)
-    m_Summary += "M1";
-  else if (info.m_Settings.m_Modulation == modQPSK)
-    m_Summary += "M2";
-  else if (info.m_Settings.m_Modulation == modOQPSK)
-    m_Summary += "M3";
-  else if (info.m_Settings.m_Modulation == mod8PSK)
-    m_Summary += "M5";
-  else if (info.m_Settings.m_Modulation == mod16APSK)
-    m_Summary += "M6";
-  else if (info.m_Settings.m_Modulation == mod32APSK)
-    m_Summary += "M7";
-  else if (info.m_Settings.m_Modulation == modOFDM)
-    m_Summary += "M8";
-  else if (info.m_Settings.m_Modulation == modCOFDM)
-    m_Summary += "M9";
-  else if (info.m_Settings.m_Modulation == modVSB8)
-    m_Summary += "M10";
-  else if (info.m_Settings.m_Modulation == modVSB16)
-    m_Summary += "M11";
-
-  if (info.m_Settings.m_SourceType == src_DVBT)
-  {
-    if      (info.m_Settings.m_Transmission == transmission_2K)
-      m_Summary += "T2";
-    else if (info.m_Settings.m_Transmission == transmission_4K)
-      m_Summary += "T4";
-    else if (info.m_Settings.m_Transmission == transmission_8K)
-      m_Summary += "T8";
-    else if (info.m_Settings.m_Transmission == transmission_Auto)
-      m_Summary += "T999";
-
-    if      (info.m_Settings.m_Guard == guard_1_4)
-      m_Summary += "G4";
-    else if (info.m_Settings.m_Guard == guard_1_8)
-      m_Summary += "G8";
-    else if (info.m_Settings.m_Guard == guard_1_16)
-      m_Summary += "G16";
-    else if (info.m_Settings.m_Guard == guard_1_32)
-      m_Summary += "G32";
-    else if (info.m_Settings.m_Guard == guard_Auto)
-      m_Summary += "G999";
-
-    if (info.m_Settings.m_Hierarchie)
-      m_Summary += "Y1";
-    else
-      m_Summary += "Y0";
-
-    if      (info.m_Settings.m_Alpha == alpha_0)
-      m_Summary += "A0";
-    else if (info.m_Settings.m_Alpha == alpha_1)
-      m_Summary += "A1";
-    else if (info.m_Settings.m_Alpha == alpha_2)
-      m_Summary += "A2";
-    else if (info.m_Settings.m_Alpha == alpha_4)
-      m_Summary += "A4";
-
-    if (info.m_Settings.m_Priority)
-      m_Summary += "P1";
-    else
-      m_Summary += "P0";
-  }
-
-  if (info.m_Settings.m_SourceType == src_DVBS2)
-  {
-    if      (info.m_Settings.m_Rolloff == rolloff_Unknown)
-      m_Summary += "O0";
-    else if (info.m_Settings.m_Rolloff == rolloff_20)
-      m_Summary += "O20";
-    else if (info.m_Settings.m_Rolloff == rolloff_25)
-      m_Summary += "O25";
-    else if (info.m_Settings.m_Rolloff == rolloff_25)
-      m_Summary += "O35";
-  }
-
-  if      (info.m_Settings.m_SourceType == src_DVBS)
-    m_Summary += "O35S0:S";
-  else if (info.m_Settings.m_SourceType == src_DVBS2)
-    m_Summary += "S1:S";
-  else if (info.m_Settings.m_SourceType == src_DVBC)
-    m_Summary += ":C";
-  else if (info.m_Settings.m_SourceType == src_DVBT)
-    m_Summary += ":T";
-
-  m_Summary_2.Format(":%i:%i:%i,%i;%i,%i:%i:%i:%i:%i:%i:%i" , info.m_Settings.m_Symbolrate
-                     , info.m_Settings.m_VPID
-                     , info.m_Settings.m_APID1
-                     , info.m_Settings.m_APID2
-                     , info.m_Settings.m_DPID1
-                     , info.m_Settings.m_DPID2
-                     , info.m_Settings.m_TPID
-                     , info.m_Settings.m_CAID
-                     , info.m_Settings.m_SID
-                     , info.m_Settings.m_NID
-                     , info.m_Settings.m_TID
-                     , info.m_Settings.m_RID);
-
-  m_Summary += m_Summary_2;
-
-  vector<string> lines;
-
-  int            code;
-
-  char           buffer[1024];
-
-  pthread_mutex_lock(&m_critSection);
-
-  if (!update_channel)
-  {
-    sprintf(buffer, "NEWC %s", m_Summary.c_str());
-
-    if (!m_transceiver->SendCommand(buffer, code, lines))
-    {
-      pthread_mutex_unlock(&m_critSection);
-      return PVR_ERROR_SERVER_ERROR;
-    }
-
-    if (code != 250)
-    {
-      pthread_mutex_unlock(&m_critSection);
-      return PVR_ERROR_NOT_SAVED;
-    }
-  }
-  else
-  {
-    // Modified channel
-    sprintf(buffer, "LSTC %d", iChannelNum);
-
-    if (!m_transceiver->SendCommand(buffer, code, lines))
-    {
-      pthread_mutex_unlock(&m_critSection);
-      return PVR_ERROR_SERVER_ERROR;
-    }
-
-    if (code != 250)
-    {
-      pthread_mutex_unlock(&m_critSection);
-      return PVR_ERROR_NOT_SYNC;
-    }
-
-    sprintf(buffer, "MODC %s", m_Summary.c_str());
-
-    if (!m_transceiver->SendCommand(buffer, code, lines))
-    {
-      pthread_mutex_unlock(&m_critSection);
-      return PVR_ERROR_SERVER_ERROR;
-    }
-
-    if (code != 250)
-    {
-      pthread_mutex_unlock(&m_critSection);
-      return PVR_ERROR_NOT_SAVED;
-    }
-  }
-
-  pthread_mutex_unlock(&m_critSection);
-
-  return PVR_ERROR_NO_ERROR;
-}
-
-PVR_ERROR cPVRClientVDR::DeleteChannel(unsigned int number)
-{
-
-  vector<string> lines;
-  int            code;
-  char           buffer[1024];
-
-  if (!m_transceiver->IsOpen())
-  {
-    return PVR_ERROR_SERVER_ERROR;
-  }
-
-  pthread_mutex_lock(&m_critSection);
-
-  sprintf(buffer, "LSTC %d", number);
-
-  if (!m_transceiver->SendCommand(buffer, code, lines))
-  {
-    return PVR_ERROR_SERVER_ERROR;
-  }
-
-  if (code != 250)
-  {
-    return PVR_ERROR_NOT_SYNC;
-  }
-
-  sprintf(buffer, "DELC %d", number);
-
-  if (!m_transceiver->SendCommand(buffer, code, lines))
-  {
-    return PVR_ERROR_SERVER_ERROR;
-  }
-
-  if (code != 250)
-  {
-    return PVR_ERROR_NOT_DELETED;
-  }
-
-  pthread_mutex_unlock(&m_critSection);
-
-  return PVR_ERROR_NO_ERROR;
-}
-
-PVR_ERROR cPVRClientVDR::RenameChannel(unsigned int number, CStdString &newname)
-{
-
-  CStdString     str_part1;
-  CStdString     str_part2;
-  vector<string> lines;
-  int            code;
-  char           buffer[1024];
-  int            found;
-
-  if (!m_transceiver->IsOpen())
-  {
-    return PVR_ERROR_SERVER_ERROR;
-  }
-
-  pthread_mutex_lock(&m_critSection);
-
-  sprintf(buffer, "LSTC %d", number);
-
-  if (!m_transceiver->SendCommand(buffer, code, lines))
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return PVR_ERROR_SERVER_ERROR;
-  }
-
-  if (code != 250)
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return PVR_ERROR_NOT_SYNC;
-  }
-
-  vector<string>::iterator it = lines.begin();
-
-  string& data(*it);
-  CStdString str_result = data;
-
-  found = str_result.find(" ", 0);
-  str_part1.assign(str_result, found + 1);
-  str_result.erase(0, found + 1);
-
-  /// Channel and provider name
-  found = str_result.find(":", 0);
-  str_part2.assign(str_result, found);
-  str_result.erase(0, found);
-  found = str_part2.find(";", 0);
-
-  if (found == -1)
-  {
-    str_part2 = newname;
-  }
-  else
-  {
-    str_part2.erase(0, found);
-    str_part2.insert(0, newname);
-  }
-
-  sprintf(buffer, "MODC %s %s %s", str_part1.c_str(), str_part2.c_str(), str_result.c_str());
-
-  if (!m_transceiver->SendCommand(buffer, code, lines))
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return PVR_ERROR_SERVER_ERROR;
-  }
-
-  if (code != 250)
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return PVR_ERROR_NOT_SAVED;
-  }
-
-  pthread_mutex_unlock(&m_critSection);
-
-  return PVR_ERROR_NO_ERROR;
-}
-
-PVR_ERROR cPVRClientVDR::MoveChannel(unsigned int number, unsigned int newnumber)
-{
-  vector<string> lines;
-  int            code;
-  char           buffer[1024];
-
-  if (!m_transceiver->IsOpen())
-      return PVR_ERROR_SERVER_ERROR;
-
-  pthread_mutex_lock(&m_critSection);
-
-  sprintf(buffer, "LSTC %d", number);
-
-  if (!m_transceiver->SendCommand(buffer, code, lines))
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return PVR_ERROR_SERVER_ERROR;
-  }
-
-  if (code != 250)
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return PVR_ERROR_NOT_SYNC;
-  }
-
-  sprintf(buffer, "MOVC %d %d", number, newnumber);
-
-  if (!m_transceiver->SendCommand(buffer, code, lines))
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return PVR_ERROR_SERVER_ERROR;
-  }
-
-  if (code != 250)
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return PVR_ERROR_NOT_SAVED;
-  }
-
-  pthread_mutex_unlock(&m_critSection);
-
-  return PVR_ERROR_NO_ERROR;
-}
-
-bool cPVRClientVDR::GetChannel(unsigned int number, PVR_CHANNEL &channeldata)
-{
-  vector<string> lines;
-  int            code;
-  char           buffer[1024];
-
-  if (!m_transceiver->IsOpen())
-    return false;
-
-  sprintf(buffer, "LSTC %d", number);
-  if (!m_transceiver->SendCommand(buffer, code, lines))
-  {
-    if (code != 451)
-    {
-      return false;
-    }
-    Sleep(750);
-  }
-
-  vector<string>::iterator it = lines.begin();
-  string& data(*it);
-  CStdString str_result = data;
-
-  cChannel channel;
-  channel.Parse(str_result.c_str());
-
-  PVR_CHANNEL tag;
-  tag.uid = channel.Sid();
-  tag.number = channel.Number();
-  tag.name = channel.Name();
-  tag.callsign = "";
-  tag.iconpath = "";
-  tag.encrypted = channel.Ca() ? true : false;
-  tag.radio = (channel.Vpid() == 0) && (channel.Apid(0) != 0) ? true : false;
-  tag.hide = false;
-  tag.recording = false;
-  tag.bouquet = 0;
-  tag.multifeed = false;
-  tag.stream_url = "";
-
-  return true;
-}
-*/
 
 /************************************************************/
 /** Record handling **/
@@ -2865,4 +1360,185 @@ __int64 cPVRClientVDR::SeekRecordedStream(__int64 pos, int whence)
 __int64 cPVRClientVDR::LengthRecordedStream(void)
 {
   return currentPlayingRecordBytes;
+}
+
+
+/*************************************************************/
+/** VDR to XBMC Callback functions                          **/
+/**                                                         **/
+/** If streamdev see a relevant event it send a callback    **/
+/** message to the this client.                             **/
+/*************************************************************/
+
+void* cPVRClientVDR::CallbackRcvThread(void* arg)
+{
+  char   		      data[1024];
+  fd_set          set_r, set_e;
+  struct timeval  tv;
+  int             ret;
+  cPVRClientVDR  *PVRClientVDR = reinterpret_cast<cPVRClientVDR *>(arg) ;
+  memset(data,0,1024);
+
+  XBMC_log(LOG_DEBUG, "cPVRClientVDR::CallbackRcvThread - VDR to XBMC Data receiving thread started");
+
+  while (!m_bStop)
+  {
+    if ((!m_transceiver->IsOpen()) || (m_socket_data == INVALID_SOCKET))
+    {
+      XBMC_log(LOG_ERROR, "cPVRClientVDR::CallbackRcvThread - Loosed connection to VDR");
+      m_bConnected = false;
+      return NULL;
+    }
+
+    tv.tv_sec = 5;
+    tv.tv_usec = 0;
+
+    FD_ZERO(&set_r);
+    FD_ZERO(&set_e);
+    FD_SET(m_socket_data, &set_r);
+    FD_SET(m_socket_data, &set_e);
+    ret = select(FD_SETSIZE, &set_r, NULL, &set_e, &tv);
+    if (ret < 0)
+    {
+      XBMC_log(LOG_ERROR, "cPVRClientVDR::CallbackRcvThread - select failed");
+      continue;
+    }
+    else if (ret == 0)
+      continue;
+
+    ret = recv(m_socket_data, (char*)data, sizeof(data), 0);
+    if (ret < 0)
+    {
+      XBMC_log(LOG_ERROR, "cPVRClientVDR::CallbackRcvThread - receive failed");
+      continue;
+    }
+    else if (ret == 0)
+      continue;
+
+    /* Check the received command and perform associated action*/
+    PVRClientVDR->VDRToXBMCCommand(data);
+    memset(data,0,1024);
+  }
+  return NULL;
+}
+
+bool cPVRClientVDR::VDRToXBMCCommand(char *Cmd)
+{
+	char *param = NULL;
+
+	if (Cmd != NULL)
+	{
+		if ((param = strchr(Cmd, ' ')) != NULL)
+			*(param++) = '\0';
+		else
+			param = Cmd + strlen(Cmd);
+	}
+	else
+	{
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::VDRToXBMCCommand - called without command from %s:%d", m_sHostname.c_str(), m_iPort);
+		return false;
+	}
+
+	if      (strcasecmp(Cmd, "MODT") == 0) return CallBackMODT(param);
+	else if (strcasecmp(Cmd, "DELT") == 0) return CallBackDELT(param);
+	else if (strcasecmp(Cmd, "ADDT") == 0) return CallBackADDT(param);
+
+	if (!m_bHandleMessages)
+    return true;
+
+	if (strcasecmp(Cmd, "SMSG") == 0) return CallBackSMSG(param);
+	else if (strcasecmp(Cmd, "IMSG") == 0) return CallBackIMSG(param);
+	else if (strcasecmp(Cmd, "WMSG") == 0) return CallBackWMSG(param);
+	else if (strcasecmp(Cmd, "EMSG") == 0) return CallBackEMSG(param);
+	else
+	{
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::VDRToXBMCCommand - Unkown respond command %s", Cmd);
+		return false;
+	}
+}
+
+bool cPVRClientVDR::CallBackMODT(const char *Option)
+{
+  PVR_event_callback(PVR_EVENT_TIMERS_CHANGE, "");
+  return true;
+}
+
+bool cPVRClientVDR::CallBackDELT(const char *Option)
+{
+  PVR_event_callback(PVR_EVENT_TIMERS_CHANGE, "");
+  return true;
+}
+
+bool cPVRClientVDR::CallBackADDT(const char *Option)
+{
+  PVR_event_callback(PVR_EVENT_TIMERS_CHANGE, "");
+  return true;
+}
+
+bool cPVRClientVDR::CallBackSMSG(const char *Option)
+{
+  if (*Option)
+  {
+    CStdString text = Option;
+    if (m_bCharsetConv)
+      XBMC_unknown_to_utf8(text);
+    PVR_event_callback(PVR_EVENT_MSG_STATUS, text.c_str());
+    return true;
+  }
+  else
+  {
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::CallBackSMSG - missing option");
+    return false;
+  }
+}
+
+bool cPVRClientVDR::CallBackIMSG(const char *Option)
+{
+  if (*Option)
+  {
+    CStdString text = Option;
+    if (m_bCharsetConv)
+      XBMC_unknown_to_utf8(text);
+    PVR_event_callback(PVR_EVENT_MSG_INFO, text.c_str());
+    return true;
+  }
+  else
+  {
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::CallBackIMSG - missing option");
+    return false;
+  }
+}
+
+bool cPVRClientVDR::CallBackWMSG(const char *Option)
+{
+  if (*Option)
+  {
+    CStdString text = Option;
+    if (m_bCharsetConv)
+      XBMC_unknown_to_utf8(text);
+    PVR_event_callback(PVR_EVENT_MSG_WARNING, text.c_str());
+    return true;
+  }
+  else
+  {
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::CallBackWMSG - missing option");
+    return false;
+  }
+}
+
+bool cPVRClientVDR::CallBackEMSG(const char *Option)
+{
+  if (*Option)
+  {
+    CStdString text = Option;
+    if (m_bCharsetConv)
+      XBMC_unknown_to_utf8(text);
+    PVR_event_callback(PVR_EVENT_MSG_ERROR, text.c_str());
+    return true;
+  }
+  else
+  {
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::CallBackEMSG - missing option");
+    return false;
+  }
 }

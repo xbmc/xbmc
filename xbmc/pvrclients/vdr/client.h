@@ -36,6 +36,7 @@
 #define DEFAULT_CHARCONV    false
 #define DEFAULT_TIMEOUT     3
 #define DEFAULT_BADCHANNELS true
+#define DEFAULT_HANDLE_MSG  true
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,6 +50,7 @@ extern bool         m_bRadioEnabled;
 extern bool         m_bCharsetConv;
 extern int          m_iConnectTimeout;
 extern bool         m_bNoBadChannels;
+extern bool         m_bHandleMessages;
 extern int          g_clientID;
 
 #ifdef __cplusplus
