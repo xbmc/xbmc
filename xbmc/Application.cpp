@@ -3830,7 +3830,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
        SwitchToFullScreen();
 
       // Save information about the stream if we currently have no data
-      if (item.HasVideoInfoTag())
+      if (item.HasVideoInfoTag() && !item.IsDVDImage() && !item.IsDVDFile())
       {
         CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
         if (!details->HasStreamDetails())
@@ -4146,7 +4146,16 @@ void CApplication::SaveFileState()
         {
           videodatabase.AddBookMarkToFile(progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
         }
-
+        if ((m_progressTrackingItem->IsDVDImage() ||
+             m_progressTrackingItem->IsDVDFile()    ) &&
+             m_progressTrackingItem->HasVideoInfoTag() &&
+             m_progressTrackingItem->GetVideoInfoTag()->HasStreamDetails())
+        {
+          videodatabase.SetStreamDetailsForFile(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails,progressTrackingFile);
+          CUtil::DeleteVideoDatabaseDirectoryCache();
+          CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
+          g_windowManager.SendMessage(message);
+        }
         videodatabase.Close();
       }
     }
@@ -4205,6 +4214,14 @@ void CApplication::UpdateFileState()
 
     if (m_progressTrackingItem->IsVideo())
     {
+      if ((m_progressTrackingItem->IsDVDImage() ||
+           m_progressTrackingItem->IsDVDFile()    ) &&
+	  m_pPlayer->GetTotalTime() > 15*60)
+
+      {
+        m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.Reset();
+        m_pPlayer->GetStreamDetails(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails);
+      }
       // Update bookmark for save
       m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
       m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
