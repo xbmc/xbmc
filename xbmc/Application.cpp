@@ -1261,11 +1261,7 @@ HRESULT CApplication::Initialize()
     }
     else
     {
-      // We need to Popup the WindowHome to initiate the GUIWindowManger for MasterCode popup dialog!
-      // Then we can start the StartUpWindow! To prevent BlackScreen if the target Window is Protected with MasterCode!
-      g_windowManager.ActivateWindow(WINDOW_HOME);
-      if (startWindow != WINDOW_HOME)
-        g_windowManager.ActivateWindow(startWindow);
+      g_windowManager.ActivateWindow(startWindow);
     }
   }
 
