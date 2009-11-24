@@ -53,7 +53,7 @@
   <string id="31052"></string>
 
   <!-- Lyrics Script Extra labels -->
-  <string id="31053">ΣΤΟΙΧΟΙ XBMC</string> 
+  <string id="31053">ΣΤΙΧΟΙ XBMC</string> 
   <string id="31054">Επιλέξτε τραγούδι από την λίστα</string> 
 
   <!-- Playlist Editor labels -->
@@ -76,11 +76,13 @@
   <string id="31108">Απομάκρυνση διακριτών γραμμών από το υπόβαθρο κατά την αναπαραγωγή βίντεο</string> 
   <string id="31109">Υπόβαθρα αρχικής οθόνης</string> 
   <string id="31110">- Ενεργοποίηση τροποποιημένων υπόβαθρων</string> 
-  <string id="31111">Εμφάνιση πάντα των πληροφοριών τραγουδιού κατά την προβολή των στοίχων</string> 
+  <string id="31111">Εμφάνιση πάντα των πληροφοριών τραγουδιού κατά την προβολή των στίχων</string> 
   <string id="31112">Εμφάνιση τίτλων πολυμέσων στη προβολή “Ευρείες εικόνες”</string>  
-  <string id="31113">Μία εικόνα</string>
-  <string id="31114">Πολλαπλές εικόνες</string>
-
+  <string id="31113">Εικόνα</string>
+  <string id="31114">Φάκελος</string>
+  <string id="31115">Αντικατάσταση πλήκτρου “Ρυθμίσεις ήχου” από το “Teletext”</string>
+  <string id="31116">Απόκρυψη επισήμανσης εικόνων βίντεο στις προβολές πολυμέσων</string>
+  
   <!-- Script Settings labels -->
   <string id="31200">Επιλογές τροποποιημένου Script</string> 
   <string id="31201"></string>
@@ -89,8 +91,8 @@
   <string id="31204">Διαδρομή Script</string> 
   <string id="31205"></string>
   <string id="31206"></string>
-  <string id="31207"></string>
-  <string id="31208">Εμφάνιση πλήκτρου στοίχων στις "Aπεικόνισεις οθόνης (OSD)"</string> 
+  <string id="31207">Εμφάνιση  πλήκτρου λήψης υποτίτλων στις "Aπεικόνισεις οθόνης (OSD)"</string>
+  <string id="31208">Εμφάνιση πλήκτρου στίχων στις "Aπεικόνισεις οθόνης (OSD)"</string> 
   <string id="31209">Ενεργοποίηση πλήκτρου γρήγορης έναρξης -</string> 
 
   <!-- AMT Script Extra labels -->

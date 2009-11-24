@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
   <!-- Translator: Mika Pirinen -->
-  <!-- Date of translation: 21/11/2009 -->
-  <!-- Finnish strings -->
+  <!-- Date of translation: 23/11/2009 -->
+  <!-- Finnish strings based on English strings revision 24877 -->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Vaihda sinun</string>
@@ -50,7 +50,7 @@
 
   <!-- Skin Settings labels -->
   <string id="31100"></string>
-  <string id="31101">Koti-ikkunan asetukset</string>
+  <string id="31101">Päävalikon asetukset</string>
   <string id="31102">Tausta</string>
   <string id="31103">Näytä "Tauko" kuvaesityksessä</string>
   <string id="31104"></string>
@@ -76,7 +76,7 @@
   <string id="31124">Näytä taustalla "Nyt toistetaan"-video</string>
   <string id="31125">Näytä taustalla "Nyt toistetaan"-visualisointi</string>
 
-  <string id="31126">Näytä Lyrics -skriptin painike kuvaruutuvalikossa</string>
+  <string id="31126">Näytä Lyrics -skriptin painike musiikin kuvaruutuvalikossa</string>
   <string id="31127">Polku</string>
   <string id="31128">XBMC Lyrics</string>
 
@@ -99,7 +99,7 @@
   <string id="31302">Valikko</string>
   <string id="31303"></string>
   <string id="31304">Kuva</string>
-  <string id="31305">Levyä ei löydetty</string>
+  <string id="31305">Levyä ei löytynyt</string>
   <string id="31306">Poista</string>
   <string id="31307">Piilota fanitaide</string>
   <string id="31308">Elokuvan tiedot</string>
@@ -126,15 +126,14 @@
   <string id="31329">[B]Ajastus[/B] [COLOR=grey2] - Aikaa järjestelmän sammuttamiseen[/COLOR]</string>
 
   <!-- Description Labels  -->
-  <string id="31400">[B]Muokkaa ulkoasun asetuksia, sisältää.[/B][CR][CR]Kalibroi käyttöliittymä · Vaihda ulkoasua · Aseta ruudunsäästäjä · Vaihda kieliasetuksia · Aseta näkymän asetukset</string>
-  <string id="31401">[B]Muokkaa video-asetuksia, sisältää.[/B][CR][CR]Huolla videokirjastoa · Videotoiston asetukset Tekstitys asetukset · Aseta videon toistoasetukset</string>
-  <string id="31402">[B]Muokkaa musiikki-asetuksia, sisältää.[/B][CR][CR]Valitse visualisointi · Huolla musiikkikirjastoa · Aseta Last.FM tilin asetukset · Vaihda karaoke-asetuksia</string>
-  <string id="31403">[B]Muokkaa kuva-asetuksia, sisältää.[/B][CR][CR]Aseta kuvakkeiden luonti· Aseta kuvaesityksen asetuksia · Aseta XBMC ruudunsäästäjän asetukset</string>
-  <string id="31404">[B]Muokkaa sää-asetuksia, sisältää.[/B][CR][CR]Aseta kolme kaupunkia jotka XBMC esittää sää-ikkunassa · Vaihda alueelliset asetukset, sisältäen lämpötilayksiköt</string>
-  <string id="31405">[B]Muokkaa verkkoasetuksia, sisältää.[/B][CR][CR]Ota käyttöön XBMC Web-ohjus · Aseta samba asetukset · Määritä UPNP palvelin ja asiakas · Muokkaa ohjauspalvelinta</string>
-  <string id="31406">[B]Muokkaa järjestelmän asetuksia, sisältää.[/B][CR][CR]Vaihda sammutus asetuksia · Määritä automaattinen median toisto · Aseta äänilaitteisto· Muokkaa pääkäyttäjän salasanaa ja järjestelmän lukituksia</string>
-  <string id="31407">[B]Vaihda ulkoasun asetuksia, sisältää.[/B][CR][CR]Lisää ja poista painikkeita · Vaihda taustan asetuksia · Luo skriptien pikakäynnistimet</string>
-
+  <string id="31400">[B]Muokkaa käyttöliittymän asetuksia.[/B][CR][CR]Vaihda ulkoasua · Vaihda kieliasetuksia · Aseta tiedostolistauksen asetukset[CR]Aseta ruudunsäästäjä</string>
+  <string id="31401">[B]Muokkaa video-asetuksia.[/B][CR][CR]Huolla videokirjastoa · Aseta videotoiston asetukset · Vaihda videolistauksen asetuksia[CR]Aseta tekstitys asetukset</string>
+  <string id="31402">[B]Muokkaa musiikki-asetuksia.[/B][CR][CR]Huolla musiikkikirjastoa   Aseta musiikkitoiston asetukset · Vaihda musiikkilistauksen asetuksia[CR]Aseta kappaleen lähetysasetuksia · Aseta karaoke-asetuksia</string>
+  <string id="31403">[B]Muokkaa kuva-asetuksia.[/B][CR][CR]Aseta kuvalistauksen asetuksia · Määritä kuvaesityksiä</string>
+  <string id="31404">[B]Muokkaa sää-asetuksia.[/B][CR][CR]Aseta kolme kaupunkia jotka XBMC esitetään sää-ikkunassa</string>
+  <string id="31405">[B]Muokkaa verkkoasetuksia.[/B][CR][CR]Aseta XBMC ohjaus UPNP:n ja HTTP:n kautta · Määritä tiedostojen jako[CR]Aseta internet asetukset</string>
+  <string id="31406">[B]Muokkaa järjestelmän asetuksia.[/B][CR][CR]Aseta ja kalibroi näyttö · Määritä äänilähtö · Aseta kauko-ohjaus[CR]Aseta sähkönsäästö asetuksia · Ota debuggaus käyttöön · Muokkaa pääkäyttäjän lukituksia</string>
+  <string id="31407">[B]Vaihda ulkoasun asetuksia.[/B][CR][CR]Aseta Confluence-ulkoasun asetukset · Lisää ja poista päävalikon kohteita[CR]Vaihda ulkoasun taustakuvia</string>
 
   <string id="31420">[B][COLOR=white]XBMC ei löytänyt levyä.[/COLOR][/B][CR][CR]Aseta levy asemaan ja yritä uudelleen tai peruuta</string>
   <string id="31421">Valitse XBMC käyttäjäprofiili[CR]kirjautuaksesi sisään</string>

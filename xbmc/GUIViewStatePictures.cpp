@@ -80,7 +80,6 @@ CStdString CGUIViewStateWindowPictures::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowPictures::GetSources()
 {
-  bool bIsSourceName = true;
   // plugins share
   if (CPluginDirectory::HasPlugins("pictures") && g_advancedSettings.m_bVirtualShares)
   {

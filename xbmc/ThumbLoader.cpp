@@ -104,7 +104,7 @@ bool CThumbExtractor::DoWork()
   if (CUtil::IsRemote(m_path) && !CUtil::IsOnLAN(m_path))
     return false;
 
-  if (m_thumb && g_guiSettings.GetBool("myvideos.extractflags") && 
+  if (m_thumb && g_guiSettings.GetBool("myvideos.extractflags") &&
       g_guiSettings.GetBool("myvideos.extractthumb"))
   {
     CLog::Log(LOGDEBUG,"%s - trying to extract thumb from video file %s", __FUNCTION__, m_path.c_str());
@@ -181,7 +181,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
   CFileItem item(*pItem);
   CStdString cachedThumb(item.GetCachedVideoThumb());
-  
+
   if (!pItem->HasThumbnail())
   {
     item.SetUserVideoThumb();
@@ -210,7 +210,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     if (CFile::Exists(cachedThumb))
       pItem->SetThumbnailImage(cachedThumb);
   }
-  else
+  else if (!pItem->GetThumbnailImage().Left(10).Equals("special://"))
     LoadRemoteThumb(pItem);
 
   if (!pItem->HasProperty("fanart_image"))

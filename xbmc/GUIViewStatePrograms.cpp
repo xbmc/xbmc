@@ -68,7 +68,6 @@ CStdString CGUIViewStateWindowPrograms::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
 {
-  bool bIsSourceName = true;
   // plugins share
   if (CPluginDirectory::HasPlugins("programs"))
   {
