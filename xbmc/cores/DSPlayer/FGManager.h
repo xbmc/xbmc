@@ -69,7 +69,7 @@ protected:
 	CAtlList<CFGFilter*> m_source, m_transform, m_override;
 
 	virtual HRESULT CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF, IUnknown** ppUnk);
-  HRESULT AddXbmcSourceFilter(const CFileItem& pFileItem);
+
   STDMETHODIMP GetXbmcVideoDecFilter(IMPCVideoDecFilter** pBF);
   STDMETHODIMP GetFfdshowVideoDecFilter(IffdshowDecVideoA** pBF);
 	STDMETHODIMP RenderFileXbmc(const CFileItem& pFileItem);

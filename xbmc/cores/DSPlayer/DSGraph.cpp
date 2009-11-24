@@ -32,9 +32,6 @@
 #include "AdvancedSettings.h"
 
 #include <streams.h>
-#include "Filters/asyncio.h"
-#include "Filters/asyncrdr.h"
-#include "Filters/XBMCFileSource.h"
 #include "DShowUtil/DShowUtil.h"
 #include "FgManager.h"
 

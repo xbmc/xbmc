@@ -27,10 +27,9 @@
 #include "Log.h"
 
 #include "filters/xbmcfilesource.h"
-#include "filters/asyncflt.h"
-#include "filters/asyncio.h"
 
 #include "FileSystem/SpecialProtocol.h"
+#include "XMLUtils.h"
 using namespace std;
 CFGLoader::CFGLoader(IGraphBuilder2* gb)
 :m_pGraphBuilder(gb)
@@ -46,6 +45,7 @@ CFGLoader::~CFGLoader()
 
 HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *pRule)
 {
+	
   HRESULT hr = S_OK;
   if ( ( (CStdString)pRule->Attribute("source")).length() > 0 )
   {
@@ -82,11 +82,14 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
   {
     if(m_File.Open(pFileItem.GetAsUrl().GetFileName().c_str(), READ_TRUNCATED | READ_BUFFERED))
     {
-    CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File);
-    CXBMCFileReader* pXBMCReader = new CXBMCFileReader(pXBMCStream, NULL, &hr);
-    if (!pXBMCReader)
-      CLog::Log(LOGERROR,"%s Failed Loading XBMC File Source filter",__FUNCTION__);
-    m_SourceF = pXBMCReader;
+      CComPtr<IBaseFilter> pSrc;
+	  
+    CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File,&pSrc);
+    //CXBMCFileReader* pXBMCReader = new CXBMCFileReader(pXBMCStream, NULL, &hr);
+    //if (!pXBMCReader)
+    //  CLog::Log(LOGERROR,"%s Failed Loading XBMC File Source filter",__FUNCTION__);
+    
+    m_SourceF = pSrc;
     m_pGraphBuilder->AddFilter(m_SourceF, L"XBMC File Source");
     return hr;
     }
@@ -192,6 +195,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   
   TiXmlElement *pRules = graphConfigRoot->FirstChildElement("rules");
   pRules = pRules->FirstChildElement("rule");
+  m_SplitterF = NULL;
   while (pRules)
   {
     if (((CStdString)pRules->Attribute("filetypes")).Equals(pFileItem.GetAsUrl().GetFileType().c_str(),false))

@@ -27,6 +27,8 @@ typedef HANDLE  (__stdcall *PTR_AvSetMmThreadCharacteristicsW)(LPCWSTR TaskName,
 typedef BOOL	(__stdcall *PTR_AvSetMmThreadPriority)(HANDLE AvrtHandle, AVRT_PRIORITY Priority);
 typedef BOOL	(__stdcall *PTR_AvRevertMmThreadCharacteristics)(HANDLE AvrtHandle);
 
+// Guid to tag IMFSample with DirectX surface index
+static const GUID GUID_SURFACE_INDEX = { 0x30c8e9f6, 0x415, 0x4b81, { 0xa3, 0x15, 0x1, 0xa, 0xc6, 0xa9, 0xda, 0x19 } };
 class COuterEVR;
 [uuid("7612B889-0929-4363-9BA3-580D735AA0F6")]
 class CEVRAllocatorPresenter : public IDsRenderer,
@@ -37,14 +39,15 @@ class CEVRAllocatorPresenter : public IDsRenderer,
                                public IMFTopologyServiceLookupClient,
                                public IMFVideoDisplayControl,
                                public IEVRTrustedVideoPlugin,
-							   public IQualProp
+							   public IQualProp,
+                               public CCritSec
 {
 public:
   CEVRAllocatorPresenter(HRESULT& hr, HWND wnd, CStdString &_Error,IDirect3D9* d3d = NULL, IDirect3DDevice9* d3dd = NULL);
   virtual ~CEVRAllocatorPresenter();
 
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
-
+  STDMETHODIMP	InitializeDevice(AM_MEDIA_TYPE*	pMediaType);
   //IBaseFilter delegate
   bool GetState( DWORD dwMilliSecsTimeout, FILTER_STATE *State, HRESULT &_ReturnValue);
 
@@ -65,7 +68,7 @@ public:
   STDMETHODIMP ProcessMessage(MFVP_MESSAGE_TYPE eMessage, ULONG_PTR ulParam);
   STDMETHODIMP GetCurrentMediaType(__deref_out  IMFVideoMediaType **ppMediaType);
 
-	// IMFTopologyServiceLookupClient        
+  // IMFTopologyServiceLookupClient        
 	STDMETHODIMP	InitServicePointers(/* [in] */ __in  IMFTopologyServiceLookup *pLookup);
 	STDMETHODIMP	ReleaseServicePointers();
 
@@ -134,12 +137,36 @@ typedef enum
   HANDLE									m_hThread;
   HANDLE									m_hGetMixerThread;
   RENDER_STATE							m_nRenderState;
+  CCritSec								m_SampleQueueLock;
+  CCritSec								m_ImageProcessingLock;
+  CCritSec					m_RenderLock;
 
+  CInterfaceList<IMFSample, &IID_IMFSample>		m_FreeSamples;
+  CInterfaceList<IMFSample, &IID_IMFSample>		m_ScheduledSamples;
+  IMFSample *								m_pCurrentDisplaydSample;
+  bool									m_bWaitingSample;
+  bool									m_bLastSampleOffsetValid;
+  bool									m_bSignaledStarvation; 
+  LONGLONG								m_LastScheduledSampleTime;
+  double									m_LastScheduledSampleTimeFP;
+	LONGLONG								m_LastScheduledUncorrectedSampleTime;
+	LONGLONG								m_MaxSampleDuration;
+	LONGLONG								m_LastSampleOffset;
+	LONGLONG								m_VSyncOffsetHistory[5];
+	LONGLONG								m_LastPredictedSync;
+	int										m_VSyncOffsetHistoryPos;
   void									RenderThread();
   static DWORD WINAPI						PresentThread(LPVOID lpParam);
-
-  void									GetMixerThread();
+  bool									   GetImageFromMixer();
+  void									   GetMixerThread();
   static DWORD WINAPI						GetMixerThreadStatic(LPVOID lpParam);
+  void									RemoveAllSamples();
+  HRESULT									GetFreeSample(IMFSample** ppSample);
+  HRESULT									GetScheduledSample(IMFSample** ppSample, int &_Count);
+  void									MoveToFreeList(IMFSample* pSample, bool bTail);
+  void									MoveToScheduledList(IMFSample* pSample, bool _bSorted);
+  	void									FlushSamples();
+	void									FlushSamplesInternal();
   bool                                      m_bPendingRenegotiate;
   bool                                      m_bPendingMediaFinished;
   bool                                      m_bPendingResetDevice;
@@ -161,11 +188,14 @@ typedef enum
   PTR_AvSetMmThreadCharacteristicsW		pfAvSetMmThreadCharacteristicsW;
   PTR_AvSetMmThreadPriority				pfAvSetMmThreadPriority;
   PTR_AvRevertMmThreadCharacteristics		pfAvRevertMmThreadCharacteristics;
+//coming from dx9allocator
+  long					m_nUsedBuffer;
+  REFERENCE_TIME			m_rtTimePerFrame;
 protected:
   CComPtr<IDirect3D9> m_D3D;
   CComPtr<IDirect3DDevice9> m_D3DDev;
   CComPtr<IDirect3DDeviceManager9> m_pDeviceManager;
-  CComPtr<IMFMediaType> m_pMediaType;
+  CComPtr<IMFVideoMediaType> m_pMediaType;
   CComPtr<IMFTransform> m_pMixer;
   CComPtr<IMediaEventSink> m_pSink;
   CComPtr<IMFClock> m_pClock;

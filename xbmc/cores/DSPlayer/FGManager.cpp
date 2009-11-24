@@ -29,15 +29,12 @@
 
 #include "filters/DX9AllocatorPresenter.h"
 #include "filters/evrAllocatorPresenter.h"
-#include "filters/xbmcfilesource.h"
-#include "filters/asyncflt.h"
-#include "filters/asyncio.h"
 #include <initguid.h>
 #include "moreuuids.h"
 #include <dmodshow.h>
 #include <D3d9.h>
 #include <Vmr9.h>
-
+#include "Filters/IMpaDecFilter.h"
 #include "Log.h"
 #include "FileSystem/SpecialProtocol.h"
 //XML CONFIG HEADERS
@@ -128,22 +125,6 @@ HRESULT CFGManager::CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF, IUnknown**
   m_pUnks.AddTailList(&pUnk);
 
   return S_OK;
-}
-
-HRESULT CFGManager::AddXbmcSourceFilter(const CFileItem& pFileItem)
-{
-  HRESULT hr;
-  if(m_File.Open(pFileItem.GetAsUrl().GetFileName().c_str(), READ_TRUNCATED | READ_BUFFERED))
-  {
-    CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File);
-    CXBMCFileReader* pXBMCReader = new CXBMCFileReader(pXBMCStream, NULL, &hr);
-    if (!pXBMCReader)
-      CLog::Log(LOGERROR,"%s Failed Loading XBMC File Source filter",__FUNCTION__);
-    m_FileSource = pXBMCReader;
-    this->AddFilter(m_FileSource, L"XBMC File Source");
-    return hr;
-  }
-  return E_FAIL;
 }
 
 // IFilterGraph
@@ -856,7 +837,6 @@ STDMETHODIMP CFGManagerCustom::AddFilter(IBaseFilter* pBF, LPCWSTR pName)
   if(FAILED(hr = __super::AddFilter(pBF, pName)))
     return hr;
 
-  //AppSettings& s = AfxGetAppSettings();
 
   if(DShowUtil::GetCLSID(pBF) == CLSID_DMOWrapperFilter)
   {
@@ -881,19 +861,19 @@ STDMETHODIMP CFGManagerCustom::AddFilter(IBaseFilter* pBF, LPCWSTR pName)
   if(CComQIPtr<IMpeg2DecFilter2> m_pM2DF2 = pBF)
   {
     m_pM2DF2->EnableInterlaced(s.mpeginterlaced);
-  }
+  }*/
 
   if(CComQIPtr<IMpaDecFilter> m_pMDF = pBF)
   {
-    m_pMDF->SetSampleFormat((SampleFormat)s.mpasf);
-    m_pMDF->SetNormalize(s.mpanormalize);
-    m_pMDF->SetSpeakerConfig(IMpaDecFilter::ac3, s.ac3sc);
-    m_pMDF->SetDynamicRangeControl(IMpaDecFilter::ac3, s.ac3drc);
-    m_pMDF->SetSpeakerConfig(IMpaDecFilter::dts, s.dtssc);
-    m_pMDF->SetDynamicRangeControl(IMpaDecFilter::dts, s.dtsdrc);
-    m_pMDF->SetSpeakerConfig(IMpaDecFilter::aac, s.aacsc);
-    m_pMDF->SetBoost(s.mpaboost);
-  }*/
+    //m_pMDF->SetSampleFormat((SampleFormat)s.mpasf);
+    m_pMDF->SetNormalize(1);
+    //m_pMDF->SetSpeakerConfig(IMpaDecFilter::ac3, s.ac3sc);
+    //m_pMDF->SetDynamicRangeControl(IMpaDecFilter::ac3, s.ac3drc);
+    //m_pMDF->SetSpeakerConfig(IMpaDecFilter::dts, s.dtssc);
+    //m_pMDF->SetDynamicRangeControl(IMpaDecFilter::dts, s.dtsdrc);
+    //m_pMDF->SetSpeakerConfig(IMpaDecFilter::aac, s.aacsc);
+    m_pMDF->SetBoost(1);
+  }
 
   return hr;
 }

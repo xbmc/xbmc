@@ -84,8 +84,8 @@
   <rules>
     <!-- Still need to add the renderers -->
     <!-- TODO  .mpg .m2ts -->
-    <rule filetypes="avi" source="avisource" splitter="avisplitter" videodec="ffdvideodec" audiodec="ffdaudiodec"/>
-    <rule filetypes="flv" source="flvsource" splitter="flvsplitter" videodec="ffdvideodec" audiodec="ffdaudiodec"/>
+    <rule filetypes="avi" source="avisource" splitter="avisplitter" videodec="ffdvideodec" audiodec="mpaaudiodec"/>
+    <rule filetypes="flv" source="flvsource" splitter="flvsplitter" videodec="ffdvideodec" audiodec="mpaaudiodec"/>
 
     <rule filetypes="mp4" source="mp4source" splitter="mp4splitter" videodec="ffdvideodec" audiodec="mpaaudiodec"/>
     <rule filetypes="mov" source="mp4source" splitter="mp4splitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
@@ -100,4 +100,7 @@
     
     <rule filetypes="wmv" source="wmasfreader" videodec="ffdvideodec" audiodec="wmaudiodecoder"/>
   </rules>
+  <config>
+    
+  </config>
 </dsfilterconfig>

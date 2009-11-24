@@ -7,12 +7,26 @@ using namespace XFILE;
 #include "asyncio.h"
 #include "asyncrdr.h"
 #include "XBMCFileSource.h"
+#include "utils/log.h"
 
-CXBMCFileStream::CXBMCFileStream(CFile *file) :
+CXBMCFileStream::CXBMCFileStream(CFile *file, IBaseFilter **pBF) :
     m_llLength(0)
 {
+  if (! pBF)
+    return;
+  *pBF = 0;
   m_llLength = file->GetLength();
   m_pFile = file;
+  HRESULT hr;
+  CXBMCFileReader* pXBMCReader = new CXBMCFileReader(this, NULL, &hr);
+  if (SUCCEEDED(hr))
+  {
+    *pBF = pXBMCReader;
+	(*pBF)->AddRef();
+	CLog::Log(LOGNOTICE,"%s Added xbmc source filter to graph",__FUNCTION__);
+  }
+  else
+    CLog::Log(LOGERROR,"%s Failed to create xbmc source filter",__FUNCTION__);
 }
 
 HRESULT CXBMCFileStream::SetPointer(LONGLONG llPos)

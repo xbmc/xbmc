@@ -5,11 +5,11 @@
 #include "filters/asyncio.h"
 #include "filters/asyncrdr.h"
 
-
+class CXBMCFileReader;
 class CXBMCFileStream : public CAsyncStream
 {
 public:
-  CXBMCFileStream(CFile *file);
+  CXBMCFileStream(CFile *file, IBaseFilter **pBF);
   HRESULT SetPointer(LONGLONG llPos);
   HRESULT Read(PBYTE pbBuffer, DWORD dwBytesToRead, BOOL bAlign, LPDWORD pdwBytesRead);
   LONGLONG Size(LONGLONG *pSizeAvailable);
