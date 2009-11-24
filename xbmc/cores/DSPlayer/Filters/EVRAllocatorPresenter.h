@@ -49,7 +49,7 @@ public:
 
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
   STDMETHODIMP	InitializeDevice(AM_MEDIA_TYPE*	pMediaType);
-  HRESULT RenderPresent();
+  HRESULT RenderPresent(IMFSample *pSample);
   //IBaseFilter delegate
   bool GetState( DWORD dwMilliSecsTimeout, FILTER_STATE *State, HRESULT &_ReturnValue);
 
@@ -168,11 +168,12 @@ typedef enum
   HRESULT									GetScheduledSample(IMFSample** ppSample, int &_Count);
   void									MoveToFreeList(IMFSample* pSample, bool bTail);
   void									MoveToScheduledList(IMFSample* pSample, bool _bSorted);
-  	void									FlushSamples();
-	void									FlushSamplesInternal();
+  void									FlushSamples();
+  void									FlushSamplesInternal();
   bool                                      m_bPendingRenegotiate;
   bool                                      m_bPendingMediaFinished;
   bool                                      m_bPendingResetDevice;
+  bool										m_bNeedPendingResetDevice;
 
 
   COuterEVR *m_pOuterEVR;
@@ -218,12 +219,20 @@ protected:
   LONGLONG m_ModeratedClockLast;
   CComPtr<IDirect3DTexture9>		m_pVideoTexture[62];
   CComPtr<IDirect3DSurface9>		m_pVideoSurface[62];
+  CComPtr<IDirect3DTexture9>		m_pVideoTexture2;
+  CComPtr<IDirect3DSurface9>		m_pVideoSurface2;
   int                               m_nNbDXSurface;      //Total number of dx surface
   int                               m_nCurSurface;
   int                               m_iVideoWidth;
   int                               m_iVideoHeight;
   int                               m_fps;
   D3DFORMAT                         m_SurfaceType;
+
+  double					m_DetectedFrameTimeStdDev;
+  bool					m_bCorrectedFrameTime;
+  int					m_DetectedFrameTimePos;
+  LONGLONG				m_DetectedFrameTimeHistory[60];
+  double					m_DetectedFrameTimeHistoryHistory[500];
 };
 
 #endif
