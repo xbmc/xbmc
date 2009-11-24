@@ -250,6 +250,8 @@ void CAdvancedSettings::Initialize()
 #endif
 
   m_bgInfoLoaderMaxThreads = 5;
+
+  m_measureRefreshrate = false;
 }
 
 bool CAdvancedSettings::Load()
@@ -690,6 +692,8 @@ bool CAdvancedSettings::Load()
 
   XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", m_bgInfoLoaderMaxThreads);
   m_bgInfoLoaderMaxThreads = std::max(1, m_bgInfoLoaderMaxThreads);
+
+  XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
