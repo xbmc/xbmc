@@ -762,7 +762,10 @@ bool CFileCurl::Open(const CURL& url)
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
-  m_url = url2.GetWithoutUserDetails();
+  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
+    m_url = url2.GetWithoutUserDetails();
+  else
+   m_url = url2.Get();
 
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", (void*)this, m_url.c_str());
 
@@ -956,7 +959,10 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
-  m_url = url2.GetWithoutUserDetails();
+  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
+    m_url = url2.GetWithoutUserDetails();
+  else
+   m_url = url2.Get();
 
   ASSERT(m_state->m_easyHandle == NULL);
   g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, NULL);
