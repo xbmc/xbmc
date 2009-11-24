@@ -114,6 +114,8 @@ bool cPVRClientVDR::Connect()
     return false;
   }
 
+  readNoSignalStream();
+
   m_bConnected = true;
   return true;
 }
@@ -1005,7 +1007,11 @@ bool cPVRClientVDR::OpenLiveStream(const PVR_CHANNEL &channelinfo)
     return false;
   }
 
-  m_iCurrentChannel = channel;
+  m_iCurrentChannel       = channel;
+  m_noSignalStreamReadPos = 0;
+  m_playingNoSignal       = false;
+  m_FirstRead             = true;
+  m_TimeOut               = time(NULL);
 
   pthread_mutex_unlock(&m_critSection);
   return true;
@@ -1032,52 +1038,70 @@ void cPVRClientVDR::CloseLiveStream()
 int cPVRClientVDR::ReadLiveStream(BYTE* buf, int buf_size)
 {
   if (!m_transceiver->IsOpen())
-    return 0;
+    return -1;
 
   if (m_socket_video == INVALID_SOCKET)
-    return 0;
+    return -1;
 
   fd_set         set_r, set_e;
-
   struct timeval tv;
+  int            ret;
 
-  int            res;
-
-  tv.tv_sec = 10;
-  tv.tv_usec = 0;
+  tv.tv_sec = m_FirstRead ? 0 : 3;
+  tv.tv_usec = m_FirstRead ? 25000 : 0;
   FD_ZERO(&set_r);
   FD_ZERO(&set_e);
   FD_SET(m_socket_video, &set_r);
   FD_SET(m_socket_video, &set_e);
-  res = select(FD_SETSIZE, &set_r, NULL, &set_e, &tv);
 
-  if (res < 0)
+  ret = select(FD_SETSIZE, &set_r, NULL, &set_e, &tv);
+  if (ret < 0)
   {
-    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - select failed");
+    if (time(NULL) - m_TimeOut > 2)
+    {
+      return writeNoSignalStream(buf, buf_size);
+    }
+    else
+    {
+      XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - select failed");
+      return 0;
+    }
+  }
+  else if (ret == 0)
+  {
+    if (time(NULL) - m_TimeOut > 2)
+    {
+      return writeNoSignalStream(buf, buf_size);
+    }
+    else
+    {
+      XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - timeout waiting for data");
+      return 0;
+    }
+  }
+
+  m_FirstRead = false;
+  if (m_playingNoSignal)
+  {
+    m_playingNoSignal = false;
+    PVR_reset_player();
     return 0;
   }
 
-  if (res == 0)
-  {
-    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - timeout waiting for data");
-    return 0;
-  }
-
-  res = recv(m_socket_video, (char*)buf, (size_t)buf_size, 0);
-
-  if (res < 0)
+  ret = recv(m_socket_video, (char*)buf, (size_t)buf_size, 0);
+  if (ret < 0)
   {
     XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - failed");
-    return 0;
+    return -1;
   }
-
-  if (res == 0)
+  else if (ret == 0)
   {
     XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - eof");
-    return 0;
+    return -1;
   }
 
-  return res;
+  m_TimeOut = time(NULL);
+  return ret;
 }
 
 int cPVRClientVDR::GetCurrentClientChannel()
@@ -1114,7 +1138,11 @@ bool cPVRClientVDR::SwitchChannel(const PVR_CHANNEL &channelinfo)
     return false;
   }
 
-  m_iCurrentChannel = channelinfo.number;
+  m_iCurrentChannel       = channelinfo.number;
+  m_noSignalStreamReadPos = 0;
+  m_playingNoSignal       = false;
+  m_FirstRead             = true;
+  m_TimeOut               = time(NULL);
 
   pthread_mutex_unlock(&m_critSection);
   return true;
@@ -1195,11 +1223,11 @@ bool cPVRClientVDR::OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
   }
 
   /* Get Stream socked from VDR Backend */
-  m_socket_video = m_transceiver->GetStreamRecording(recinfo.index, &currentPlayingRecordBytes, &currentPlayingRecordFrames);
+  m_socket_video = m_transceiver->GetStreamRecording(recinfo.index, &m_currentPlayingRecordBytes, &m_currentPlayingRecordFrames);
 
   pthread_mutex_unlock(&m_critSection);
 
-  if (!currentPlayingRecordBytes)
+  if (!m_currentPlayingRecordBytes)
   {
     return false;
   }
@@ -1211,18 +1239,15 @@ bool cPVRClientVDR::OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
     return false;
   }
 
-  m_iCurrentChannel               = -1;
-  currentPlayingRecordPosition    = 0;
+  m_iCurrentChannel              = -1;
+  m_currentPlayingRecordPosition = 0;
   return true;
 }
 
 void cPVRClientVDR::CloseRecordedStream(void)
 {
-
   if (!m_transceiver->IsOpen())
-  {
     return;
-  }
 
   pthread_mutex_lock(&m_critSection);
 
@@ -1247,10 +1272,10 @@ int cPVRClientVDR::ReadRecordedStream(BYTE* buf, int buf_size)
   if (!m_transceiver->IsOpen() || m_socket_video == INVALID_SOCKET)
     return 0;
 
-  if (currentPlayingRecordPosition + buf_size > currentPlayingRecordBytes)
+  if (m_currentPlayingRecordPosition + buf_size > m_currentPlayingRecordBytes)
     return 0;
 
-  sprintf(buffer, "READ %llu %u", (unsigned long long)currentPlayingRecordPosition, buf_size);
+  sprintf(buffer, "READ %llu %u", (unsigned long long)m_currentPlayingRecordPosition, buf_size);
   if (!m_transceiver->SendCommand(buffer, code, lines))
   {
     return 0;
@@ -1301,7 +1326,7 @@ int cPVRClientVDR::ReadRecordedStream(BYTE* buf, int buf_size)
     return 0;
   }
 
-  currentPlayingRecordPosition += res;
+  m_currentPlayingRecordPosition += res;
 
   return res;
 }
@@ -1314,7 +1339,7 @@ __int64 cPVRClientVDR::SeekRecordedStream(__int64 pos, int whence)
     return 0;
   }
 
-  __int64 nextPos = currentPlayingRecordPosition;
+  __int64 nextPos = m_currentPlayingRecordPosition;
 
   switch (whence)
   {
@@ -1329,8 +1354,8 @@ __int64 cPVRClientVDR::SeekRecordedStream(__int64 pos, int whence)
 
     case SEEK_END:
 
-      if (currentPlayingRecordBytes)
-        nextPos = currentPlayingRecordBytes - pos;
+      if (m_currentPlayingRecordBytes)
+        nextPos = m_currentPlayingRecordBytes - pos;
       else
         return -1;
 
@@ -1343,19 +1368,19 @@ __int64 cPVRClientVDR::SeekRecordedStream(__int64 pos, int whence)
       return -1;
   }
 
-  if (nextPos > (__int64) currentPlayingRecordBytes)
+  if (nextPos > (__int64) m_currentPlayingRecordBytes)
   {
     return 0;
   }
 
-  currentPlayingRecordPosition = nextPos;
+  m_currentPlayingRecordPosition = nextPos;
 
-  return currentPlayingRecordPosition;
+  return m_currentPlayingRecordPosition;
 }
 
 __int64 cPVRClientVDR::LengthRecordedStream(void)
 {
-  return currentPlayingRecordBytes;
+  return m_currentPlayingRecordBytes;
 }
 
 
@@ -1537,4 +1562,80 @@ bool cPVRClientVDR::CallBackEMSG(const char *Option)
     XBMC_log(LOG_ERROR, "cPVRClientVDR::CallBackEMSG - missing option");
     return false;
   }
+}
+
+bool cPVRClientVDR::readNoSignalStream()
+{
+  CStdString noSignalFileName;
+  noSignalFileName  = XBMC_translate_path(XBMC_get_addon_directory());
+  noSignalFileName += "/resources/data/noSignal.mpg";
+
+  FILE *const f = ::fopen(noSignalFileName.c_str(), "rb");
+  if (f)
+  {
+    m_noSignalStreamSize = ::fread(&m_noSignalStreamData[0] + 9, 1, sizeof (m_noSignalStreamData) - 9 - 9 - 4, f);
+    if (m_noSignalStreamSize == sizeof (m_noSignalStreamData) - 9 - 9 - 4)
+    {
+      XBMC_log(LOG_ERROR, "cPVRClientVDR::readNoSignalStream - '%s' exeeds limit of %ld bytes!", noSignalFileName.c_str(), (long)(sizeof (m_noSignalStreamData) - 9 - 9 - 4 - 1));
+    }
+    else if (m_noSignalStreamSize > 0)
+    {
+      m_noSignalStreamData[ 0 ] = 0x00;
+      m_noSignalStreamData[ 1 ] = 0x00;
+      m_noSignalStreamData[ 2 ] = 0x01;
+      m_noSignalStreamData[ 3 ] = 0xe0;
+      m_noSignalStreamData[ 4 ] = (m_noSignalStreamSize + 3) >> 8;
+      m_noSignalStreamData[ 5 ] = (m_noSignalStreamSize + 3) & 0xff;
+      m_noSignalStreamData[ 6 ] = 0x80;
+      m_noSignalStreamData[ 7 ] = 0x00;
+      m_noSignalStreamData[ 8 ] = 0x00;
+      m_noSignalStreamSize += 9;
+      m_noSignalStreamData[ m_noSignalStreamSize++ ] = 0x00;
+      m_noSignalStreamData[ m_noSignalStreamSize++ ] = 0x00;
+      m_noSignalStreamData[ m_noSignalStreamSize++ ] = 0x01;
+      m_noSignalStreamData[ m_noSignalStreamSize++ ] = 0xe0;
+      m_noSignalStreamData[ m_noSignalStreamSize++ ] = 0x00;
+      m_noSignalStreamData[ m_noSignalStreamSize++ ] = 0x07;
+      m_noSignalStreamData[ m_noSignalStreamSize++ ] = 0x80;
+      m_noSignalStreamData[ m_noSignalStreamSize++ ] = 0x00;
+      m_noSignalStreamData[ m_noSignalStreamSize++ ] = 0x00;
+      m_noSignalStreamData[ m_noSignalStreamSize++ ] = 0x00;
+      m_noSignalStreamData[ m_noSignalStreamSize++ ] = 0x00;
+      m_noSignalStreamData[ m_noSignalStreamSize++ ] = 0x01;
+      m_noSignalStreamData[ m_noSignalStreamSize++ ] = 0xb7;
+    }
+    ::fclose(f);
+    return true;
+  }
+  else
+  {
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::readNoSignalStream - couldn't open '%s'!", noSignalFileName.c_str());
+  }
+
+  return false;
+}
+
+int cPVRClientVDR::writeNoSignalStream(BYTE* buf, int buf_size)
+{
+  if (!m_FirstRead && !m_playingNoSignal)
+  {
+    PVR_reset_player();
+    return 0;
+  }
+
+  int sizeToWrite = m_noSignalStreamSize-m_noSignalStreamReadPos;
+  if (buf_size > sizeToWrite)
+  {
+    memcpy(buf, m_noSignalStreamData+m_noSignalStreamReadPos, sizeToWrite);
+    m_noSignalStreamReadPos = 0;
+    return sizeToWrite;
+  }
+  else
+  {
+    memcpy(buf, m_noSignalStreamData+m_noSignalStreamReadPos, buf_size);
+    m_noSignalStreamReadPos += buf_size;
+    return buf_size;
+  }
+
+  m_playingNoSignal = true;
 }

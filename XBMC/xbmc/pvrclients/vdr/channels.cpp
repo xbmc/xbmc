@@ -28,6 +28,7 @@
 #include "pvrclient-vdr.h"
 #include "pvrclient-vdr_os.h"
 #include "channels.h"
+#include "client.h"
 #include "../../addons/include/xbmc_addon_lib++.h"
 
 using namespace std;
@@ -153,29 +154,28 @@ bool cChannel::ReadFromVTP(int channel)
 {
   vector<string> lines;
   int            code;
-  char           buffer[1024];
+  char           buffer[64];
 
   if (!cPVRClientVDR::GetTransceiver()->IsOpen())
     return false;
-
-  pthread_mutex_lock(&m_critSection);
 
   sprintf(buffer, "LSTC %i", channel);
   while (!cPVRClientVDR::GetTransceiver()->SendCommand(buffer, code, lines))
   {
     if (code != 451)
-    {
-      pthread_mutex_unlock(&m_critSection);
       return false;
-    }
+
     Sleep(750);
   }
 
   vector<string>::iterator it = lines.begin();
   string& data(*it);
-  Parse(data.c_str());
+  CStdString str_result = data;
 
-  pthread_mutex_unlock(&m_critSection);
+  if (m_bCharsetConv)
+    XBMC_unknown_to_utf8(str_result);
+
+  Parse(str_result.c_str());
   return true;
 }
 
