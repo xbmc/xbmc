@@ -104,11 +104,12 @@ bool CThumbExtractor::DoWork()
   if (CUtil::IsRemote(m_path) && !CUtil::IsOnLAN(m_path))
     return false;
 
+  bool result=false;
   if (m_thumb && g_guiSettings.GetBool("myvideos.extractflags") &&
       g_guiSettings.GetBool("myvideos.extractthumb"))
   {
     CLog::Log(LOGDEBUG,"%s - trying to extract thumb from video file %s", __FUNCTION__, m_path.c_str());
-    CDVDFileInfo::ExtractThumb(m_path, m_target, &m_item.GetVideoInfoTag()->m_streamDetails);
+    result=CDVDFileInfo::ExtractThumb(m_path, m_target, &m_item.GetVideoInfoTag()->m_streamDetails);
     if (CFile::Exists(m_target))
     {
       m_item.SetProperty("HasAutoThumb", "1");
@@ -120,10 +121,10 @@ bool CThumbExtractor::DoWork()
            g_guiSettings.GetBool("myvideos.extractflags")   &&
            !m_item.GetVideoInfoTag()->HasStreamDetails())
   {
-    CDVDFileInfo::GetFileStreamDetails(&m_item);
+    result = CDVDFileInfo::GetFileStreamDetails(&m_item);
   }
 
-  return true;
+  return result;
 }
 
 CVideoThumbLoader::CVideoThumbLoader() :
@@ -232,16 +233,19 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
 void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
-  CThumbExtractor* loader = (CThumbExtractor*)job;
-  loader->m_item.m_strPath = loader->m_listpath;
-  CVideoInfoTag* info = loader->m_item.GetVideoInfoTag();
-  if (m_pStreamDetailsObs)
-    m_pStreamDetailsObs->OnStreamDetails(info->m_streamDetails, info->m_strFileNameAndPath, info->m_iFileId);
-  if (m_pObserver)
-    m_pObserver->OnItemLoaded(&loader->m_item);
-  CFileItemPtr pItem(new CFileItem(loader->m_item));
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
-  g_windowManager.SendThreadMessage(msg);
+  if (success)
+  {
+    CThumbExtractor* loader = (CThumbExtractor*)job;
+    loader->m_item.m_strPath = loader->m_listpath;
+    CVideoInfoTag* info = loader->m_item.GetVideoInfoTag();
+    if (m_pStreamDetailsObs)
+      m_pStreamDetailsObs->OnStreamDetails(info->m_streamDetails, info->m_strFileNameAndPath, info->m_iFileId);
+    if (m_pObserver)
+      m_pObserver->OnItemLoaded(&loader->m_item);
+    CFileItemPtr pItem(new CFileItem(loader->m_item));
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
+    g_windowManager.SendThreadMessage(msg);
+  }
   CJobQueue::OnJobComplete(jobID, success, job);
 }
 

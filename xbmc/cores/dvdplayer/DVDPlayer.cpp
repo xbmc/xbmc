@@ -64,6 +64,7 @@
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/StreamDetails.h"
 
 using namespace std;
 
@@ -3416,7 +3417,12 @@ int CDVDPlayer::GetPictureWidth()
 bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
 {
   if (m_pDemuxer)
-    return CDVDFileInfo::DemuxerToStreamDetails(m_pDemuxer, details);
+  {
+    bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pDemuxer, details);
+    if (result) // this is more correct (dvds in particular)
+      GetVideoAspectRatio(((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect);
+    return result;
+  }
   else
     return false;
 }
