@@ -49,6 +49,7 @@ public:
 
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
   STDMETHODIMP	InitializeDevice(AM_MEDIA_TYPE*	pMediaType);
+  HRESULT RenderPresent();
   //IBaseFilter delegate
   bool GetState( DWORD dwMilliSecsTimeout, FILTER_STATE *State, HRESULT &_ReturnValue);
 
@@ -158,6 +159,7 @@ typedef enum
 	int										m_VSyncOffsetHistoryPos;
   void									RenderThread();
   static DWORD WINAPI						PresentThread(LPVOID lpParam);
+  void									CheckWaitingSampleFromMixer();
   bool									   GetImageFromMixer();
   void									   GetMixerThread();
   static DWORD WINAPI						GetMixerThreadStatic(LPVOID lpParam);
@@ -220,6 +222,7 @@ protected:
   int                               m_nCurSurface;
   int                               m_iVideoWidth;
   int                               m_iVideoHeight;
+  int                               m_fps;
   D3DFORMAT                         m_SurfaceType;
 };
 

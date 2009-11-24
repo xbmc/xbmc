@@ -1,11 +1,16 @@
-#include "EVRAllocatorPresenter.h"
+
 #include "MacrovisionKicker.h"
 #include "utils/log.h"
+#include "EVRAllocatorPresenter.h"
+#include "application.h"
+#include "cores/VideoRenderers/RenderManager.h"
 #include "dshowutil/dshowutil.h"
 #include <mfapi.h>
 #include <mferror.h>
 #include "vmr9.h"
 #include "IPinHook.h"
+
+
 class COuterEVR
 	: public CUnknown
 	//, public IVMRMixerBitmap9
@@ -292,10 +297,12 @@ m_rtTimePerFrame(0)
   m_ModeratedTimeLast = -1;
   m_pCurrentDisplaydSample	= NULL;
   m_nStepCount				= 0;
+  g_renderManager.PreInit();
 }
 
 CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
 {
+  g_renderManager.UnInit();
 }
 
 STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
@@ -954,6 +961,10 @@ void CEVRAllocatorPresenter::GetMixerThread()
 					// If framerate not set by Video Decoder choose 23.97...
 					if (m_rtTimePerFrame == 0) 
 						m_rtTimePerFrame = 417166;
+					m_fps = (float)(10000000.0 / m_rtTimePerFrame);
+					if (!g_renderManager.IsConfigured())
+					  g_renderManager.Configure(m_iVideoWidth, m_iVideoHeight, m_iVideoWidth, m_iVideoHeight, m_fps, CONF_FLAGS_USE_DIRECTSHOW |CONF_FLAGS_FULLSCREEN);
+  					
 
 				}
 
@@ -979,6 +990,15 @@ DWORD WINAPI CEVRAllocatorPresenter::PresentThread(LPVOID lpParam)
 	pThis->RenderThread();
 	return 0;
 }
+
+void CEVRAllocatorPresenter::CheckWaitingSampleFromMixer()
+{
+	if (m_bWaitingSample)
+	{
+		m_bWaitingSample = false;
+	}
+}
+
 void CEVRAllocatorPresenter::RenderThread()
 {
   HANDLE				hAvrt;
@@ -1012,7 +1032,7 @@ void CEVRAllocatorPresenter::RenderThread()
     else if (NextSleepTime == 0)
       NextSleepTime = -1;
     switch (dwObject)
-    {
+	{
       case WAIT_OBJECT_0 :
         bQuit = true;
         break;
@@ -1079,7 +1099,7 @@ void CEVRAllocatorPresenter::RenderThread()
 					else if (m_nStepCount > 0)
 					{
 						pMFSample->GetUINT32(GUID_SURFACE_INDEX, (UINT32 *)&m_nCurSurface);
-						//Paint(true);
+						RenderPresent();//Paint(true);
 						bStepForward = true;
 					}
 					else if ((m_nRenderState == Started))
@@ -1089,20 +1109,51 @@ void CEVRAllocatorPresenter::RenderThread()
 							// Just play as fast as possible
 							bStepForward = true;
 							pMFSample->GetUINT32(GUID_SURFACE_INDEX, (UINT32 *)&m_nCurSurface);
-							//Paint(true);
+							RenderPresent();//Paint(true);
 						}
 						else
 						{
 						//to do add sample time correction
 							pMFSample->GetUINT32(GUID_SURFACE_INDEX, (UINT32 *)&m_nCurSurface);
-							//Paint(true);
+							RenderPresent();//Paint(true);
 						}
-			  }
+					}
+					m_pCurrentDisplaydSample = NULL;
+					if (bStepForward)
+					{
+						MoveToFreeList(pMFSample, true);
+						CheckWaitingSampleFromMixer();
+					}
+					else
+						MoveToScheduledList(pMFSample, true);
+
 			}
+			  break;
 			}
-			break;
+			
 		}
 	}
+}
+
+HRESULT CEVRAllocatorPresenter::RenderPresent()
+{
+  HRESULT hr=S_OK;
+  IMFMediaBuffer* pBuffer = NULL;
+  IDirect3DSurface9* pSurface = NULL;
+  CLog::Log(LOGNOTICE,"%s Presenting sample", __FUNCTION__);
+  if (m_pVideoSurface[m_nCurSurface])
+  {
+    g_renderManager.PaintVideoTexture(m_pVideoTexture[m_nCurSurface], m_pVideoSurface[m_nCurSurface]);
+    g_application.NewFrame();
+    //Give .1 sec to the gui to render
+    g_application.WaitFrame(100);
+
+  }
+  else
+  {
+    CLog::Log(LOGERROR,"%s m_pVideoSurface[%i]", __FUNCTION__,m_nCurSurface);
+  }
+  return hr;
 }
 
 // IDirect3DDeviceManager9
@@ -1459,7 +1510,7 @@ STDMETHODIMP CEVRAllocatorPresenter::InitializeDevice(AM_MEDIA_TYPE*	pMediaType)
 	int						h = abs(vih2->bmiHeader.biHeight);
     m_iVideoWidth = w;
 	m_iVideoHeight = h;
-
+  
 	if (0)//m_bHighColorResolution)
 		hr = AllocSurfaces(D3DFMT_A2R10G10B10);
 	else
