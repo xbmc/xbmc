@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: TigerHeart [ua]-->
 <!--Email: admin@irt.pl.ua-->
@@ -1815,16 +1815,16 @@
   <string id="22031">- Розмір</string>
   <string id="22032">- Кольори</string>
   <string id="22033">- Набір символів</string>
-  <string id="22034">Експортувати текст караоке в форматі HTML</string>
-  <string id="22035">Експортувати текст караоке в форматі CSV</string>
-  <string id="22036">Імпортувати текст караоке...</string>
+  <string id="22034">Експортувати лист пісень в форматі HTML</string>
+  <string id="22035">Експортувати лист пісень в форматі CSV</string>
+  <string id="22036">Імпортувати лист пісень...</string>
   <string id="22037">Автоматично спливаючий вибір пісень</string>
-  <string id="22038">Експортувати текст караоке...</string>
+  <string id="22038">Експортувати лист пісень...</string>
   <string id="22039">Введіть номер пісні</string>
-  <string id="22040">біло-зелений</string>
-  <string id="22041">біло-червоний</string>
-  <string id="22042">біло-синій</string>
-  <string id="22043">чорно-білий</string>
+  <string id="22040">білий/зелений</string>
+  <string id="22041">білий/червоний</string>
+  <string id="22042">білий/синій</string>
+  <string id="22043">чорний/білий</string>
   <string id="23000">Додаток погоди</string>
   <string id="23001">- Налаштування додатка</string>
   <string id="29800">Режим Бібліотеки</string>
