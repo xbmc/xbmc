@@ -3858,6 +3858,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // we must have started, otherwise player might send this later
     if(IsPlaying())
       OnPlayBackStarted();
+    else
+      OnPlayBackEnded();
   }
   else
   {
