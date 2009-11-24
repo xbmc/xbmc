@@ -162,6 +162,7 @@ public:
   virtual bool CanRecord();
   virtual bool IsRecording();
   virtual bool Record(bool bOnOff);
+  virtual void PlaybackReset();
   virtual void SetAVDelay(float fValue = 0.0f);
   virtual float GetAVDelay();
 

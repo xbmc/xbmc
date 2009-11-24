@@ -36,6 +36,7 @@
 
 #include <vector>
 #include "../utils/SingleLock.h"
+#include "Application.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
 #include "FileItem.h"
@@ -87,6 +88,7 @@ bool CPVRClient::Init()
   CAddonUtils::CreateAddOnCallbacks(m_callbacks);
 
   /* Write XBMC PVR specific Add-on function addresses to callback table */
+  m_callbacks->PVR.ResetPlayer            = PVRResetPlayer;
   m_callbacks->PVR.EventCallback          = PVREventCallback;
   m_callbacks->PVR.TransferEpgEntry       = PVRTransferEpgEntry;
   m_callbacks->PVR.TransferChannelEntry   = PVRTransferChannelEntry;
@@ -1381,6 +1383,16 @@ ADDON_STATUS CPVRClient::SetSetting(const char *settingName, const void *setting
  * Are independent and can be different for every type of
  * AddOn
  */
+
+void CPVRClient::PVRResetPlayer(void *userData)
+{
+  CPVRClient* client=(CPVRClient*) userData;
+  if (!client)
+    return;
+
+  g_application.m_pPlayer->PlaybackReset();
+  return;
+}
 
 void CPVRClient::PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg)
 {

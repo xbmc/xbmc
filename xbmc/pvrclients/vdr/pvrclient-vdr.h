@@ -106,6 +106,9 @@ protected:
   static SOCKET           m_socket_data;
 
 private:
+  bool readNoSignalStream();
+  int writeNoSignalStream(BYTE* buf, int buf_size);
+
   /* VDR to XBMC Callback functions */
   static void* CallbackRcvThread(void* arg);
   bool VDRToXBMCCommand(char *Cmd);
@@ -123,9 +126,17 @@ private:
   static bool             m_bStop;
 
   /* Following is for recordings streams */
-  uint64_t                currentPlayingRecordBytes;
-  uint32_t                currentPlayingRecordFrames;
-  uint64_t                currentPlayingRecordPosition;
+  uint64_t                m_currentPlayingRecordBytes;
+  uint32_t                m_currentPlayingRecordFrames;
+  uint64_t                m_currentPlayingRecordPosition;
+
+  /* No Signal Stream information */
+  char                    m_noSignalStreamData[ 6 + 0xffff ];
+  long                    m_noSignalStreamSize;
+  long                    m_noSignalStreamReadPos;
+  time_t                  m_TimeOut;
+  bool                    m_playingNoSignal;
+  int                     m_FirstRead;
 
   CStdString              m_connectionString;
 

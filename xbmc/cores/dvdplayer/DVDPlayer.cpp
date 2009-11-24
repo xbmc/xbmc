@@ -482,11 +482,16 @@ bool CDVDPlayer::OpenDemuxStream()
 
   try
   {
-    int attempts = 10;
+    int attempts = m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) ? 100 : 10;
     while(!m_bStop && attempts-- > 0)
     {
       m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
-      if(!m_pDemuxer && m_pInputStream->NextStream())
+      if(!m_pDemuxer && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+      {
+        Sleep(200);
+        continue;
+      }
+      else if(!m_pDemuxer && m_pInputStream->NextStream())
       {
         CLog::Log(LOGDEBUG, "%s - New stream available from input, retry open", __FUNCTION__);
         continue;
@@ -981,7 +986,16 @@ void CDVDPlayer::Process()
         Sleep(100);
         continue;
       }
+      else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+      {
+        CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
 
+        if (pStream->IsEOF())
+          break;
+
+        Sleep(100);
+        continue;
+      }
       // make sure we tell all players to finish it's data
       if(m_CurrentAudio.inited)
         m_dvdPlayerAudio.SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
@@ -1939,15 +1953,19 @@ void CDVDPlayer::HandleMessages()
           if(result)
           {
             FlushBuffers(false);
-#ifdef HAVE_LIBVDPAU
-            if (!g_VDPAU)
-#endif
-            CloseVideoStream(false);
             CloseAudioStream(false);
             CloseSubtitleStream(false);
             SAFE_DELETE(m_pDemuxer);
           }
         }
+      }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_RESET))
+      {
+        CPlayerSeek m_pause(this);
+        FlushBuffers(false);
+        CloseAudioStream(false);
+        CloseSubtitleStream(false);
+        SAFE_DELETE(m_pDemuxer);
       }
       else if (pMsg->IsType(CDVDMsg::GENERAL_GUI_ACTION))
         OnAction(((CDVDMsgType<CAction>*)pMsg)->m_value);
@@ -3438,6 +3456,12 @@ bool CDVDPlayer::Record(bool bOnOff)
   }
   return false;
 }
+
+void CDVDPlayer::PlaybackReset()
+{
+  m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_RESET));
+}
+
 
 int CDVDPlayer::GetChannels()
 {
