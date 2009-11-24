@@ -33,7 +33,7 @@
     <rule name="asf" filetypes="asf" player="MPlayer" />
 
     <!-- dvdplayer generally plays these better -->
-    <rule name="mp4/ogv/flv" filetypes="mp4|ogv|flv" player="DVDPlayer" />
+    <rule name="mp4/ogv/flv/mov" filetypes="mp4|ogv|flv|mov" player="DVDPlayer" />
 
     <!-- Pass these to dvdplayer as we do not know if they are audio or video -->
     <rule name="nsv" filetypes="nsv" player="DVDPlayer" />
