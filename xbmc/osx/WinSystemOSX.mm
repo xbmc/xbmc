@@ -30,6 +30,7 @@
 #include "KeyboardStat.h"
 #include "utils/log.h"
 #include "XBMCHelper.h"
+#include "SystemInfo.h"
 #undef BOOL
 
 #import <Cocoa/Cocoa.h>
@@ -911,36 +912,49 @@ bool CWinSystemOSX::Show(bool raise)
 
 void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
 {
-  NSDictionary* errorDict;
-  NSAppleScript* scriptObject;
-  NSAppleEventDescriptor* returnDescriptor;
-
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
-  // If we don't call this, the screen saver will just stop and then start up again.
-  UpdateSystemActivity(UsrActivity);
-  
-  if (bEnable)
+  if (!g_sysinfo.IsAppleTV() )
   {
-    // tell application id "com.apple.ScreenSaver.Engine" to launch
-    scriptObject = [[NSAppleScript alloc] initWithSource:
-      @"launch application \"ScreenSaverEngine\""];
-  }
-  else
-  {
-    // tell application id "com.apple.ScreenSaver.Engine" to quit
-    scriptObject = [[NSAppleScript alloc] initWithSource:
-      @"tell application \"ScreenSaverEngine\" to quit"];
-  }
-  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
-  [scriptObject release];
+    NSDictionary* errorDict;
+    NSAppleScript* scriptObject;
+    NSAppleEventDescriptor* returnDescriptor;
 
-  [pool release];
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+    // If we don't call this, the screen saver will just stop and then start up again.
+    UpdateSystemActivity(UsrActivity);
+    
+    if (bEnable)
+    {
+      // tell application id "com.apple.ScreenSaver.Engine" to launch
+      scriptObject = [[NSAppleScript alloc] initWithSource:
+        @"launch application \"ScreenSaverEngine\""];
+    }
+    else
+    {
+      // tell application id "com.apple.ScreenSaver.Engine" to quit
+      scriptObject = [[NSAppleScript alloc] initWithSource:
+        @"tell application \"ScreenSaverEngine\" to quit"];
+    }
+    returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
+    [scriptObject release];
+
+    [pool release];
+  }
 }
 
 bool CWinSystemOSX::IsSystemScreenSaverEnabled()
 {
-  return (g_xbmcHelper.GetProcessPid("ScreenSaverEngine") != -1);
+  bool sss_enabled;
+  if (g_sysinfo.IsAppleTV() )
+  {
+    sss_enabled = false;
+  }
+  else
+  {
+    sss_enabled = g_xbmcHelper.GetProcessPid("ScreenSaverEngine") != -1;
+  }
+  
+  return(sss_enabled);
 }
 
 #endif
