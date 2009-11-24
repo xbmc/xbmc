@@ -1251,18 +1251,13 @@ HRESULT CApplication::Initialize()
   }
   else
   {
+    // test for a startup window, and activate that instead of home
     RESOLUTION res = RES_INVALID;
     CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml", &res);
     int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
-    // test for a startup window, and activate that instead of home
     if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
-    {
-      g_windowManager.ActivateWindow(WINDOW_STARTUP);
-    }
-    else
-    {
-      g_windowManager.ActivateWindow(startWindow);
-    }
+      startWindow == WINDOW_STARTUP;
+    g_windowManager.ActivateWindow(startWindow);
   }
 
 #ifdef HAS_PYTHON
@@ -4212,7 +4207,7 @@ void CApplication::UpdateFileState()
     {
       if ((m_progressTrackingItem->IsDVDImage() ||
            m_progressTrackingItem->IsDVDFile()    ) &&
-	  m_pPlayer->GetTotalTime() > 15*60)
+          m_pPlayer->GetTotalTime() > 15*60)
 
       {
         m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.Reset();
