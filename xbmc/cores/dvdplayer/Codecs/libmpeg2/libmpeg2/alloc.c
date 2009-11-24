@@ -1,5 +1,5 @@
 /*
- * mpeg2convert.h
+ * alloc.c
  * Copyright (C) 2000-2003 Michel Lespinasse <walken@zoy.org>
  * Copyright (C) 1999-2000 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
  *
@@ -21,28 +21,50 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef LIBMPEG2_MPEG2CONVERT_H
-#define LIBMPEG2_MPEG2CONVERT_H
+#include <stdlib.h>
+#include <inttypes.h>
 
-mpeg2_convert_t mpeg2convert_rgb32;
-mpeg2_convert_t mpeg2convert_rgb24;
-mpeg2_convert_t mpeg2convert_rgb16;
-mpeg2_convert_t mpeg2convert_rgb15;
-mpeg2_convert_t mpeg2convert_rgb8;
-mpeg2_convert_t mpeg2convert_bgr32;
-mpeg2_convert_t mpeg2convert_bgr24;
-mpeg2_convert_t mpeg2convert_bgr16;
-mpeg2_convert_t mpeg2convert_bgr15;
-mpeg2_convert_t mpeg2convert_bgr8;
+#include "mpeg2.h"
 
-typedef enum {
-    MPEG2CONVERT_RGB = 0,
-    MPEG2CONVERT_BGR = 1
-} mpeg2convert_rgb_order_t;
+static void * (* malloc_hook) (unsigned size, mpeg2_alloc_t reason) = NULL;
+static int (* free_hook) (void * buf) = NULL;
 
-mpeg2_convert_t * mpeg2convert_rgb (mpeg2convert_rgb_order_t order,
-				    unsigned int bpp);
+void * mpeg2_malloc (unsigned size, mpeg2_alloc_t reason)
+{
+    char * buf;
 
-mpeg2_convert_t mpeg2convert_uyvy;
+    if (malloc_hook) {
+	buf = (char *) malloc_hook (size, reason);
+	if (buf)
+	    return buf;
+    }
 
-#endif /* LIBMPEG2_MPEG2CONVERT_H */
+    if (size) {
+	buf = (char *) malloc (size + 63 + sizeof (void **));
+	if (buf) {
+	    char * align_buf;
+
+	    align_buf = buf + 63 + sizeof (void **);
+	    align_buf -= (long)align_buf & 63;
+	    *(((void **)align_buf) - 1) = buf;
+	    return align_buf;
+	}
+    }
+    return NULL;
+}
+
+void mpeg2_free (void * buf)
+{
+    if (free_hook && free_hook (buf))
+	return;
+
+    if (buf)
+	free (*(((void **)buf) - 1));
+}
+
+void mpeg2_malloc_hooks (void * alloc_func (unsigned, mpeg2_alloc_t),
+			 int free_func (void *))
+{
+    malloc_hook = alloc_func;
+    free_hook = free_func;
+}

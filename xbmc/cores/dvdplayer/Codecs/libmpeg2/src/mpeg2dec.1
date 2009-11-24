@@ -1,0 +1,43 @@
+.TH mpeg2dec "1" "mpeg2dec"
+.SH NAME
+mpeg2dec \- decode MPEG and MPEG2 video streams
+.SH SYNOPSIS
+.B mpeg2dec
+[\fI-h\fR] [\fI-s [track]\fR] [\fI-t pid\fR] [\fI-c\fR] [\fI-o mode\fR] [\fIfile\fR]
+.SH DESCRIPTION
+`mpeg2dec' displays MPEG1 and MPEG2 video stream.
+Input is from stdin if no file is given.
+.TP
+\fB\-h\fR
+display help and available video modes
+.TP
+\fB\-s\fR
+use program stream demultiplexer, track 0-0xf or 0xe0-0xef
+.TP
+\fB\-t pid\fR
+use transport stream demultiplexer, pid 0x10-0x1ffe
+.TP
+\fB\-c\fR
+use c implementation, disables all accelerations
+.TP
+\fB\-o\fR \fImode\fR
+use video output driver `mode'.
+.br
+A list of modes is available using the \fB\-h\fR option.
+.SH AUTHORS
+Michel Lespinasse <walken@zoy.org>
+.br
+Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
+.br
+And many others on the net.
+.SH "REPORTING BUGS"
+Report bugs to <libmpeg2-devel@lists.sourceforge.net>.
+.SH COPYRIGHT
+Copyright \(co 2000-2003 Michel Lespinasse
+.br
+Copyright \(co 1999-2000 Aaron Holtzman
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH "SEE ALSO"
+.BR extract_mpeg2 "(1)"

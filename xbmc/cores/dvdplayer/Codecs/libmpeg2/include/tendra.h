@@ -1,5 +1,5 @@
 /*
- * mpeg2convert.h
+ * tendra.h
  * Copyright (C) 2000-2003 Michel Lespinasse <walken@zoy.org>
  * Copyright (C) 1999-2000 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
  *
@@ -21,28 +21,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef LIBMPEG2_MPEG2CONVERT_H
-#define LIBMPEG2_MPEG2CONVERT_H
+#ifndef LIBMPEG2_TENDRA_H
+#define LIBMPEG2_TENDRA_H
 
-mpeg2_convert_t mpeg2convert_rgb32;
-mpeg2_convert_t mpeg2convert_rgb24;
-mpeg2_convert_t mpeg2convert_rgb16;
-mpeg2_convert_t mpeg2convert_rgb15;
-mpeg2_convert_t mpeg2convert_rgb8;
-mpeg2_convert_t mpeg2convert_bgr32;
-mpeg2_convert_t mpeg2convert_bgr24;
-mpeg2_convert_t mpeg2convert_bgr16;
-mpeg2_convert_t mpeg2convert_bgr15;
-mpeg2_convert_t mpeg2convert_bgr8;
+#pragma TenDRA begin
+#pragma TenDRA longlong type warning
 
-typedef enum {
-    MPEG2CONVERT_RGB = 0,
-    MPEG2CONVERT_BGR = 1
-} mpeg2convert_rgb_order_t;
+#ifdef TenDRA_check
 
-mpeg2_convert_t * mpeg2convert_rgb (mpeg2convert_rgb_order_t order,
-				    unsigned int bpp);
+#pragma TenDRA conversion analysis (pointer-int explicit) off
+#pragma TenDRA implicit function declaration off
 
-mpeg2_convert_t mpeg2convert_uyvy;
+/* avoid the "No declarations in translation unit" problem */
+int TenDRA;
 
-#endif /* LIBMPEG2_MPEG2CONVERT_H */
+#endif /* TenDRA_check */
+
+#endif /* LIBMPEG2_TENDRA_H */

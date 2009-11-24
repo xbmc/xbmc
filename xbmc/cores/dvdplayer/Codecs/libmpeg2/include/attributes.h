@@ -1,5 +1,5 @@
 /*
- * mpeg2convert.h
+ * attributes.h
  * Copyright (C) 2000-2003 Michel Lespinasse <walken@zoy.org>
  * Copyright (C) 1999-2000 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
  *
@@ -21,28 +21,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef LIBMPEG2_MPEG2CONVERT_H
-#define LIBMPEG2_MPEG2CONVERT_H
+#ifndef LIBMPEG2_ATTRIBUTES_H
+#define LIBMPEG2_ATTRIBUTES_H
 
-mpeg2_convert_t mpeg2convert_rgb32;
-mpeg2_convert_t mpeg2convert_rgb24;
-mpeg2_convert_t mpeg2convert_rgb16;
-mpeg2_convert_t mpeg2convert_rgb15;
-mpeg2_convert_t mpeg2convert_rgb8;
-mpeg2_convert_t mpeg2convert_bgr32;
-mpeg2_convert_t mpeg2convert_bgr24;
-mpeg2_convert_t mpeg2convert_bgr16;
-mpeg2_convert_t mpeg2convert_bgr15;
-mpeg2_convert_t mpeg2convert_bgr8;
+/* use gcc attribs to align critical data structures */
+#ifdef ATTRIBUTE_ALIGNED_MAX
+#define ATTR_ALIGN(align) __attribute__ ((__aligned__ ((ATTRIBUTE_ALIGNED_MAX < align) ? ATTRIBUTE_ALIGNED_MAX : align)))
+#else
+#define ATTR_ALIGN(align)
+#endif
 
-typedef enum {
-    MPEG2CONVERT_RGB = 0,
-    MPEG2CONVERT_BGR = 1
-} mpeg2convert_rgb_order_t;
+#ifdef HAVE_BUILTIN_EXPECT
+#define likely(x) __builtin_expect ((x) != 0, 1)
+#define unlikely(x) __builtin_expect ((x) != 0, 0)
+#else
+#define likely(x) (x)
+#define unlikely(x) (x)
+#endif
 
-mpeg2_convert_t * mpeg2convert_rgb (mpeg2convert_rgb_order_t order,
-				    unsigned int bpp);
-
-mpeg2_convert_t mpeg2convert_uyvy;
-
-#endif /* LIBMPEG2_MPEG2CONVERT_H */
+#endif /* LIBMPEG2_ATTRIBUTES_H */

@@ -1,5 +1,5 @@
 /*
- * mpeg2convert.h
+ * convert_internal.h
  * Copyright (C) 2000-2003 Michel Lespinasse <walken@zoy.org>
  * Copyright (C) 1999-2000 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
  *
@@ -21,28 +21,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef LIBMPEG2_MPEG2CONVERT_H
-#define LIBMPEG2_MPEG2CONVERT_H
+typedef struct {
+    uint8_t * rgb_ptr;
+    int width;
+    int field;
+    int y_stride, rgb_stride, y_increm, uv_increm, rgb_increm, rgb_slice;
+    int chroma420, convert420;
+    int dither_offset, dither_stride;
+    int y_stride_frame, uv_stride_frame, rgb_stride_frame, rgb_stride_min;
+} convert_rgb_t;
 
-mpeg2_convert_t mpeg2convert_rgb32;
-mpeg2_convert_t mpeg2convert_rgb24;
-mpeg2_convert_t mpeg2convert_rgb16;
-mpeg2_convert_t mpeg2convert_rgb15;
-mpeg2_convert_t mpeg2convert_rgb8;
-mpeg2_convert_t mpeg2convert_bgr32;
-mpeg2_convert_t mpeg2convert_bgr24;
-mpeg2_convert_t mpeg2convert_bgr16;
-mpeg2_convert_t mpeg2convert_bgr15;
-mpeg2_convert_t mpeg2convert_bgr8;
+typedef void mpeg2convert_copy_t (void * id, uint8_t * const * src,
+				  unsigned int v_offset);
 
-typedef enum {
-    MPEG2CONVERT_RGB = 0,
-    MPEG2CONVERT_BGR = 1
-} mpeg2convert_rgb_order_t;
-
-mpeg2_convert_t * mpeg2convert_rgb (mpeg2convert_rgb_order_t order,
-				    unsigned int bpp);
-
-mpeg2_convert_t mpeg2convert_uyvy;
-
-#endif /* LIBMPEG2_MPEG2CONVERT_H */
+mpeg2convert_copy_t * mpeg2convert_rgb_mmxext (int bpp, int mode,
+					       const mpeg2_sequence_t * seq);
+mpeg2convert_copy_t * mpeg2convert_rgb_mmx (int bpp, int mode,
+					    const mpeg2_sequence_t * seq);
+mpeg2convert_copy_t * mpeg2convert_rgb_vis (int bpp, int mode,
+					    const mpeg2_sequence_t * seq);

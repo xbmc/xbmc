@@ -1,5 +1,5 @@
 /*
- * mpeg2convert.h
+ * vo_internal.h
  * Copyright (C) 2000-2003 Michel Lespinasse <walken@zoy.org>
  * Copyright (C) 1999-2000 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
  *
@@ -21,28 +21,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef LIBMPEG2_MPEG2CONVERT_H
-#define LIBMPEG2_MPEG2CONVERT_H
+extern vo_open_t vo_xv_open;
+extern vo_open_t vo_xv2_open;
+extern vo_open_t vo_x11_open;
+extern vo_open_t vo_dxrgb_open;
+extern vo_open_t vo_dx_open;
+extern vo_open_t vo_sdl_open;
+extern vo_open_t vo_null_open;
+extern vo_open_t vo_nullslice_open;
+extern vo_open_t vo_nullskip_open;
+extern vo_open_t vo_nullrgb16_open;
+extern vo_open_t vo_nullrgb32_open;
+extern vo_open_t vo_pgm_open;
+extern vo_open_t vo_pgmpipe_open;
+extern vo_open_t vo_md5_open;
 
-mpeg2_convert_t mpeg2convert_rgb32;
-mpeg2_convert_t mpeg2convert_rgb24;
-mpeg2_convert_t mpeg2convert_rgb16;
-mpeg2_convert_t mpeg2convert_rgb15;
-mpeg2_convert_t mpeg2convert_rgb8;
-mpeg2_convert_t mpeg2convert_bgr32;
-mpeg2_convert_t mpeg2convert_bgr24;
-mpeg2_convert_t mpeg2convert_bgr16;
-mpeg2_convert_t mpeg2convert_bgr15;
-mpeg2_convert_t mpeg2convert_bgr8;
-
-typedef enum {
-    MPEG2CONVERT_RGB = 0,
-    MPEG2CONVERT_BGR = 1
-} mpeg2convert_rgb_order_t;
-
-mpeg2_convert_t * mpeg2convert_rgb (mpeg2convert_rgb_order_t order,
-				    unsigned int bpp);
-
-mpeg2_convert_t mpeg2convert_uyvy;
-
-#endif /* LIBMPEG2_MPEG2CONVERT_H */
