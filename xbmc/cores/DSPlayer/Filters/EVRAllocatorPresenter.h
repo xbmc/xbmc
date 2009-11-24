@@ -9,6 +9,7 @@
 #include <atlcomcli.h>
 #include <streams.h>
 #include <d3d9.h>
+
 #include "idsrenderer.h"
 #include <avrt.h>
 // dxva.dll
@@ -80,11 +81,11 @@ public:
 								/* [in] */ __RPC__in REFIID riid,
 								/* [iid_is][out] */ __RPC__deref_out_opt LPVOID *ppvObject);
   // IMFClockStateSink
-	STDMETHODIMP	OnClockStart(/* [in] */ MFTIME hnsSystemTime, /* [in] */ LONGLONG llClockStartOffset){return E_NOTIMPL;};        
-	STDMETHODIMP	STDMETHODCALLTYPE OnClockStop(/* [in] */ MFTIME hnsSystemTime){return E_NOTIMPL;};
-	STDMETHODIMP	STDMETHODCALLTYPE OnClockPause(/* [in] */ MFTIME hnsSystemTime){return E_NOTIMPL;};
-	STDMETHODIMP	STDMETHODCALLTYPE OnClockRestart(/* [in] */ MFTIME hnsSystemTime){return E_NOTIMPL;};
-	STDMETHODIMP	STDMETHODCALLTYPE OnClockSetRate(/* [in] */ MFTIME hnsSystemTime, /* [in] */ float flRate){return E_NOTIMPL;};
+	STDMETHODIMP	OnClockStart(/* [in] */ MFTIME hnsSystemTime, /* [in] */ LONGLONG llClockStartOffset);
+	STDMETHODIMP	STDMETHODCALLTYPE OnClockStop(/* [in] */ MFTIME hnsSystemTime);
+	STDMETHODIMP	STDMETHODCALLTYPE OnClockPause(/* [in] */ MFTIME hnsSystemTime);
+	STDMETHODIMP	STDMETHODCALLTYPE OnClockRestart(/* [in] */ MFTIME hnsSystemTime);
+	STDMETHODIMP	STDMETHODCALLTYPE OnClockSetRate(/* [in] */ MFTIME hnsSystemTime, /* [in] */ float flRate);
 
 	// IMFVideoDisplayControl
     STDMETHODIMP GetNativeVideoSize(SIZE *pszVideo, SIZE *pszARVideo){return E_NOTIMPL;};    
@@ -111,13 +112,13 @@ public:
     STDMETHODIMP DisableImageExport(BOOL bDisable){return E_NOTIMPL;};
 
 	// IDirect3DDeviceManager9
-	STDMETHODIMP	ResetDevice(IDirect3DDevice9 *pDevice,UINT resetToken){return E_NOTIMPL;};
-	STDMETHODIMP	OpenDeviceHandle(HANDLE *phDevice){return E_NOTIMPL;};
-	STDMETHODIMP	CloseDeviceHandle(HANDLE hDevice){return E_NOTIMPL;}; 
-    STDMETHODIMP	TestDevice(HANDLE hDevice){return E_NOTIMPL;};
-	STDMETHODIMP	LockDevice(HANDLE hDevice, IDirect3DDevice9 **ppDevice, BOOL fBlock){return E_NOTIMPL;};
-	STDMETHODIMP	UnlockDevice(HANDLE hDevice, BOOL fSaveState){return E_NOTIMPL;};
-	STDMETHODIMP	GetVideoService(HANDLE hDevice, REFIID riid, void **ppService){return E_NOTIMPL;};
+	STDMETHODIMP	ResetDevice(IDirect3DDevice9 *pDevice,UINT resetToken);
+	STDMETHODIMP	OpenDeviceHandle(HANDLE *phDevice);
+	STDMETHODIMP	CloseDeviceHandle(HANDLE hDevice); 
+    STDMETHODIMP	TestDevice(HANDLE hDevice);
+	STDMETHODIMP	LockDevice(HANDLE hDevice, IDirect3DDevice9 **ppDevice, BOOL fBlock);
+	STDMETHODIMP	UnlockDevice(HANDLE hDevice, BOOL fSaveState);
+	STDMETHODIMP	GetVideoService(HANDLE hDevice, REFIID riid, void **ppService);
 private:
 typedef enum
 {
@@ -139,7 +140,7 @@ typedef enum
   RENDER_STATE							m_nRenderState;
   CCritSec								m_SampleQueueLock;
   CCritSec								m_ImageProcessingLock;
-  CCritSec					m_RenderLock;
+  
 
   CInterfaceList<IMFSample, &IID_IMFSample>		m_FreeSamples;
   CInterfaceList<IMFSample, &IID_IMFSample>		m_ScheduledSamples;
@@ -188,7 +189,8 @@ typedef enum
   PTR_AvSetMmThreadCharacteristicsW		pfAvSetMmThreadCharacteristicsW;
   PTR_AvSetMmThreadPriority				pfAvSetMmThreadPriority;
   PTR_AvRevertMmThreadCharacteristics		pfAvRevertMmThreadCharacteristics;
-//coming from dx9allocator
+//Dx9Allocator
+  CCritSec					m_RenderLock;
   long					m_nUsedBuffer;
   REFERENCE_TIME			m_rtTimePerFrame;
 protected:
@@ -203,8 +205,22 @@ protected:
 
   //msg handlings
   void StartWorkerThreads();
-  void StopWorkerThreads(){};
+  void StopWorkerThreads();
   HRESULT TRACE_EVR(const char* strTrace);
+//Dx9Allocator
+  virtual HRESULT AllocSurfaces(D3DFORMAT Format = D3DFMT_A8R8G8B8);
+  virtual bool ResetD3dDevice();
+  virtual void DeleteSurfaces();
+  void			OnResetDevice();
+  LONGLONG m_ModeratedTimeLast;
+  LONGLONG m_ModeratedClockLast;
+  CComPtr<IDirect3DTexture9>		m_pVideoTexture[62];
+  CComPtr<IDirect3DSurface9>		m_pVideoSurface[62];
+  int                               m_nNbDXSurface;      //Total number of dx surface
+  int                               m_nCurSurface;
+  int                               m_iVideoWidth;
+  int                               m_iVideoHeight;
+  D3DFORMAT                         m_SurfaceType;
 };
 
 #endif
