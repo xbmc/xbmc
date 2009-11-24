@@ -196,11 +196,6 @@ void CVideoReferenceClock::Process()
 
 bool CVideoReferenceClock::WaitStarted(int MSecs)
 {
-  //we don't wait on windows, because we have to measure the refreshrate
-#if defined(_WIN32) && defined(HAS_DX)
-  return true;
-#endif
-
   //not waiting here can cause issues with alsa
   return m_Started.WaitMSec(MSecs);
 }
