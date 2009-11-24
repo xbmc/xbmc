@@ -158,7 +158,7 @@ void CAdvancedSettings::Initialize()
   // foo.103*, 103 foo
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
 
-  m_tvshowMultiPartStackRegExp = "^[-EeXx]+([0-9]+[^(480p|480i|576p|576i|720p|720i|1080p|1080i)])";
+  m_tvshowMultiPartStackRegExp = "^[-EeXx]+([0-9]+[^ip])";
 
   m_remoteRepeat = 480;
   m_controllerDeadzone = 0.2f;
