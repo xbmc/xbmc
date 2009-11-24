@@ -787,6 +787,9 @@ void CDVDPlayer::Process()
   if (m_pDlgCache && m_pDlgCache->IsCanceled())
     return;
 
+  // allow renderer to switch to fullscreen if requested
+  m_dvdPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
+
   OpenDefaultStreams();
 
   // look for any EDL files
@@ -823,9 +826,6 @@ void CDVDPlayer::Process()
         CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %d", __FUNCTION__, starttime);
     }
   }
-
-  // allow renderer to switch to fullscreen if requested
-  m_dvdPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
 
   // make sure application know our info
   UpdateApplication(0);
