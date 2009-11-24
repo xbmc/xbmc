@@ -912,6 +912,7 @@ bool CWinSystemOSX::Show(bool raise)
 
 void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
 {
+/* not working any more, problems on 10.6 and atv)
   if (!g_sysinfo.IsAppleTV() )
   {
     NSDictionary* errorDict;
@@ -940,11 +941,13 @@ void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
 
     [pool release];
   }
+*/
 }
 
 bool CWinSystemOSX::IsSystemScreenSaverEnabled()
 {
-  bool sss_enabled;
+  bool sss_enabled = false;
+/*
   if (g_sysinfo.IsAppleTV() )
   {
     sss_enabled = false;
@@ -953,7 +956,7 @@ bool CWinSystemOSX::IsSystemScreenSaverEnabled()
   {
     sss_enabled = g_xbmcHelper.GetProcessPid("ScreenSaverEngine") != -1;
   }
-  
+*/
   return(sss_enabled);
 }
 
