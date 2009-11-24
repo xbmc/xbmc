@@ -227,6 +227,9 @@ class CAdvancedSettings
     CStdString m_cpuTempCmd;
     CStdString m_gpuTempCmd;
     int m_bgInfoLoaderMaxThreads;
+
+    bool m_measureRefreshrate; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
+                               //otherwise it will use the windows refreshrate
 };
 
 extern CAdvancedSettings g_advancedSettings;
