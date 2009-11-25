@@ -29,6 +29,8 @@
 
 #include "FileItem.h"
 
+class TiXmlElement;
+
 /**
  * The purpose of this class is to describe an RSS feed
  */
@@ -52,10 +54,13 @@ public:
   bool ReadFeed();
 
 private:
-  time_t ParseDate(const CStdString & strDate);
+  static time_t ParseDate(const CStdString & strDate);
 
-  bool IsPathToMedia(const CStdString& strPath );
-  bool IsPathToThumbnail(const CStdString& strPath );
+  static void ParseItemRSS   (CFileItemPtr& item, TiXmlElement* first);
+  static void ParseItemMRSS  (CFileItemPtr& item, TiXmlElement* first);
+  static void ParseItemItunes(CFileItemPtr& item, TiXmlElement* first);
+  static bool IsPathToMedia(const CStdString& strPath );
+  static bool IsPathToThumbnail(const CStdString& strPath );
 
   CFileItemList items;
 
