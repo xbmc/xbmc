@@ -216,6 +216,7 @@ extern "C" {
    */
   typedef struct PVR_RECORDINGINFO {
     int           index;
+    const char   *directory;
     const char   *title;
     const char   *subtitle;
     const char   *description;

@@ -1737,6 +1737,8 @@
   <string id="19013">Frei empfangbar</string>
   <string id="19014">Fest</string>
   <string id="19015">Verschlüsselung</string>
+  <string id="19016">Server %i - %s</string>
+  <string id="19017">TV Aufnahmen</string>
 
   <string id="19499">Andere/Unbekannt</string>
   <string id="19500">Movie/Drama</string>
@@ -2546,7 +2548,7 @@
   <string id="23090">Videotext aktivtieren</string>
   <string id="23091">Teletext nicht verfügbar</string>
 
-  <string id="23051">Teil</string> 
+  <string id="23051">Teil</string>
   <string id="23100">External Player ist aktiv</string>
   <string id="23101">Drücke OK um den Player zu beenden</string>
   <string id="23102"></string>
@@ -2628,7 +2630,7 @@
   <string id="33076">Bitte aktualisiere XBMC.</string>
   <string id="33077">Keine Daten gefunden!</string>
   <string id="33078">Nächste Seite</string>
-  <string id="33081">Diese Datei ist gestapelt, wähle den Teil der abgespielt werden soll.</string> 
-  <string id="33082">Skriptpfad</string> 
-  <string id="33083">Benutzerdefinierten Skript Button aktivieren</string> 
+  <string id="33081">Diese Datei ist gestapelt, wähle den Teil der abgespielt werden soll.</string>
+  <string id="33082">Skriptpfad</string>
+  <string id="33083">Benutzerdefinierten Skript Button aktivieren</string>
 </strings>

@@ -42,6 +42,7 @@ private:
   int           m_Priority;
   int           m_Lifetime;
   CStdString    m_strFileNameAndPath; /// Filename for PVRManager to open and read stream
+  CStdString    m_strDirectory;
 
   void DisplayError(PVR_ERROR err) const;
 
@@ -73,6 +74,8 @@ public:
   void SetPlotOutline(CStdString PlotOutline) { m_strPlotOutline = PlotOutline; }
   CStdString Plot(void) const { return m_strPlot; }
   void SetPlot(CStdString Plot) { m_strPlot = Plot; }
+  CStdString Directory(void) const { return m_strDirectory; }
+  void SetDirectory(CStdString dir) { m_strDirectory = dir; }
 
   bool Delete(void) const;
   bool Rename(CStdString &newName) const;
@@ -96,6 +99,8 @@ public:
   static bool DeleteRecording(const CFileItem &item);
   static bool RenameRecording(CFileItem &item, CStdString &newname);
   bool RemoveRecording(const CFileItem &item);
+  bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+  cPVRRecordingInfoTag *GetByPath(CStdString &path);
   void Clear();
 };
 

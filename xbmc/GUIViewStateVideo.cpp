@@ -23,6 +23,7 @@
 #include "PlayListPlayer.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
 #include "FileSystem/PluginDirectory.h"
+#include "FileSystem/PVRDirectory.h"
 #include "GUIBaseContainer.h"
 #include "VideoDatabase.h"
 #include "GUISettings.h"
@@ -95,6 +96,18 @@ VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
     share.strName = g_localizeStrings.Get(1037);
     share.strPath = "plugin://video/";
     share.m_ignore = true;
+    if (CUtil::GetMatchingSource(share.strName, g_settings.m_videoSources, bIsSourceName) < 0)
+      g_settings.m_videoSources.push_back(share);
+  }
+
+  // TV recordings share
+  if (CPVRDirectory::HasRecordings() && g_advancedSettings.m_bVirtualShares)
+  {
+    CMediaSource share;
+    share.strName = g_localizeStrings.Get(19017);
+    share.strPath = "pvr://recordings/";
+    share.m_ignore = true;
+    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultTVShows.png");
     if (CUtil::GetMatchingSource(share.strName, g_settings.m_videoSources, bIsSourceName) < 0)
       g_settings.m_videoSources.push_back(share);
   }
@@ -403,6 +416,15 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
     share.strName = g_localizeStrings.Get(1037);
     share.strPath = "plugin://video/";
     share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultVideoPlugins.png");
+    m_sources.push_back(share);
+  }
+
+  // TV Recordings share
+  if (CPVRDirectory::HasRecordings() && g_advancedSettings.m_bVirtualShares)
+  {
+    share.strName = g_localizeStrings.Get(19017);
+    share.strPath = "pvr://recordings/";
+    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultTVShows.png");
     m_sources.push_back(share);
   }
 

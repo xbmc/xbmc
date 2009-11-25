@@ -547,9 +547,25 @@ PVR_ERROR cPVRClientVDR::RequestRecordingsList(PVRHANDLE handle)
       tag.priority        = recording.Priority();
       tag.starttime       = recording.StartTime();
       tag.duration        = recording.Duration();
-      tag.title           = recording.FileName();
       tag.subtitle        = recording.ShortText();
       tag.description     = recording.Description();
+
+      CStdString fileName = recording.FileName();
+      size_t found = fileName.find_last_of("~");
+      if (found != CStdString::npos)
+      {
+        CStdString title = fileName.substr(found+1);
+        tag.title = title.c_str();
+
+        CStdString dir = fileName.substr(0,found);
+        dir.Replace('~','/');;
+        tag.directory = dir.c_str();
+      }
+      else
+      {
+        tag.title = fileName;
+        tag.directory = "";
+      }
 
       PVR_transfer_recording_entry(handle, &tag);
     }
@@ -1460,10 +1476,11 @@ bool cPVRClientVDR::VDRToXBMCCommand(char *Cmd)
 		return false;
 	}
 
+/* !!! DISABLED UNTIL STREAMDEV HAVE SUPPORT FOR IT INSIDE CVS !!!
 	if      (strcasecmp(Cmd, "MODT") == 0) return CallBackMODT(param);
 	else if (strcasecmp(Cmd, "DELT") == 0) return CallBackDELT(param);
 	else if (strcasecmp(Cmd, "ADDT") == 0) return CallBackADDT(param);
-
+*/
 	if (!m_bHandleMessages)
     return true;
 

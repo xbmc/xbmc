@@ -27,6 +27,7 @@
 #include "GUIWindowManager.h"
 #include "Util.h"
 #include "FileSystem/PluginDirectory.h"
+#include "FileSystem/PVRDirectory.h"
 #include "GUIDialogYesNo.h"
 #include "FileSystem/File.h"
 #include "FileSystem/ShoutcastDirectory.h"
@@ -325,6 +326,14 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     {
       share1.strPath = "plugin://video/";
       share1.strName = g_localizeStrings.Get(1037); // Video Plugins
+      extraShares.push_back(share1);
+    }
+
+    // add the recordings dir as needed
+    if (CPVRDirectory::HasRecordings())
+    {
+      share1.strPath = "pvr://recordings/";
+      share1.strName = g_localizeStrings.Get(19017); // TV Recordings
       extraShares.push_back(share1);
     }
   }

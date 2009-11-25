@@ -73,17 +73,20 @@ bool CPVRFile::Open(const CURL& url)
   }
   else if (strURL.Left(17) == "pvr://recordings/")
   {
-    CStdString recording = strURL.Mid(17);
-    CUtil::RemoveExtension(recording);
-    m_playingItem = atoi(recording.c_str());
-
-    if (!g_PVRManager.OpenRecordedStream(m_playingItem))
+    cPVRRecordingInfoTag *tag = PVRRecordings.GetByPath(strURL);
+    if (tag)
     {
+      if (!g_PVRManager.OpenRecordedStream(tag))
+        return false;
+
+      m_isPlayRecording = true;
+      CLog::Log(LOGDEBUG, "%s - Recording has started on filename %s", __FUNCTION__, strURL.c_str());
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "PVRFile - Recording not found with filename %s", strURL.c_str());
       return false;
     }
-    m_isPlayRecording = true;
-
-    CLog::Log(LOGDEBUG, "%s - Recording has started on filename %s", __FUNCTION__, strURL.c_str());
   }
   else
   {

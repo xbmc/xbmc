@@ -1076,7 +1076,13 @@ bool CUtil::IsHTSP(const CStdString& strFile)
 
 bool CUtil::IsLiveTV(const CStdString& strFile)
 {
-  if (IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile) || IsHTSP(strFile) || IsPVR(strFile))
+  // Hack, must be done better on a later time!
+  if (IsPVR(strFile))
+  {
+    return !strFile.Left(15).Equals("pvr://recording");
+  }
+
+  if (IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile) || IsHTSP(strFile))
     return true;
 
   if (IsMythTV(strFile) && CCMythDirectory::IsLiveTV(strFile))
