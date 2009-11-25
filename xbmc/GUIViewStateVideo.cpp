@@ -106,8 +106,7 @@ VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
     share.strPath = "pvr://recordings/";
     share.m_ignore = true;
     share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultTVShows.png");
-    if (CUtil::GetMatchingSource(share.strName, g_settings.m_videoSources, bIsSourceName) < 0)
-      g_settings.m_videoSources.push_back(share);
+    AddOrReplace(g_settings.m_videoSources,share);
   }
   return g_settings.m_videoSources;
 }
