@@ -484,6 +484,7 @@ bool CAddonMgr::EnableAddon(AddonPtr &addon)
     if (addon->UUID() == (*itr)->UUID())
     {
       addon->Enable();
+      CUtil::CreateDirectoryEx(addon->Profile());
       CLog::Log(LOGINFO,"ADDON: Enabled %s: %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str());
       return true; //don't update addons.xml until confirmed
     }
@@ -543,7 +544,7 @@ bool CAddonMgr::LoadAddonsXML(const ADDON::TYPE &type)
     AddonPtr addon;
     if (itr->parent.empty() && GetAddon(type, itr->uuid, addon))
     {
-      addon->Enable();
+      EnableAddon(addon);
     }
     else if (GetAddon(type, itr->parent, addon))
     { // multiple addon configurations

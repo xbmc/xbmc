@@ -94,13 +94,26 @@ bool CVisualisation::Create(int x, int y, int w, int h)
   m_pInfo->width = w;
   m_pInfo->height = h;
   m_pInfo->pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
+  m_pInfo->name = Name().c_str();
+  CStdString presets;
+  CUtil::AddFileToFolder(Path(), "presets", presets);
+  m_pInfo->presets = _P(presets).c_str();
+  CStdString store = _P(Profile());
+  m_pInfo->datastore = store.c_str();
 
   if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())
   {
     // Start the visualisation (this loads settings etc.)
     CStdString strFile = CUtil::GetFileName(g_application.CurrentFile());
     CLog::Log(LOGDEBUG, "Visualisation::Start()\n");
-    m_pStruct->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile);
+    try 
+    {
+      m_pStruct->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile);
+    } catch (std::exception e)
+    {
+      CLog::Log(LOGERROR, "ADDON: Exception");
+      return false;
+    }
     m_initialized = true;
 
     GetPresets();
@@ -120,7 +133,16 @@ void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample
 {
   // notify visz. that new song has been started
   // pass it the nr of audio channels, sample rate, bits/sample and offcourse the songname
-  if (m_initialized) m_pStruct->Start(iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
+  if (m_initialized)
+  {
+    try 
+    {
+      m_pStruct->Start(iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
+    } catch (std::exception e)
+    {
+      CLog::Log(LOGERROR, "ADDON: Exception");
+    }
+  }
 }
 
 void CVisualisation::AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
@@ -130,21 +152,46 @@ void CVisualisation::AudioData(const short* pAudioData, int iAudioDataLength, fl
   // iAudioDataLength = length of audiodata array
   // pFreqData = fft-ed audio data
   // iFreqDataLength = length of pFreqData
-  if (m_initialized) m_pStruct->AudioData(const_cast<short*>(pAudioData), iAudioDataLength, pFreqData, iFreqDataLength);
+  if (m_initialized)
+  {
+    try
+    {
+      m_pStruct->AudioData(const_cast<short*>(pAudioData), iAudioDataLength, pFreqData, iFreqDataLength);
+    }
+    catch (std::exception e)
+    {
+    }
+  }
 }
 
 void CVisualisation::Render()
 {
   // ask visz. to render itself
   g_graphicsContext.BeginPaint();
-  if (m_initialized) m_pStruct->Render();
+  if (m_initialized)
+  {
+    try
+    {
+      m_pStruct->Render();
+    } catch (std::exception e)
+    {
+    }
+  }
   g_graphicsContext.EndPaint();
 }
 
 void CVisualisation::Stop()
 {
   if (g_application.m_pPlayer) g_application.m_pPlayer->UnRegisterAudioCallback();
-  if (m_initialized) m_pStruct->Stop();
+  if (m_initialized)
+  {
+    try
+    {
+      m_pStruct->Stop();
+    } catch (std::exception e)
+    {
+    }
+  }
 }
 
 void CVisualisation::GetInfo(VIS_INFO *info)
@@ -165,10 +212,7 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
     if ( action == VIS_ACTION_UPDATE_TRACK && param )
     {
       const CMusicInfoTag* tag = (const CMusicInfoTag*)param;
-      //TODO fix linking problems
-      /*
       viz_track_t track = viz_track_create();
-
       viz_track_set_title(track, tag->GetTitle().c_str());
       viz_track_set_artist(track, tag->GetArtist().c_str());
       viz_track_set_album(track, tag->GetAlbum().c_str());
@@ -183,10 +227,9 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
       viz_track_set_rating(track, tag->GetRating());
 
       bool result = m_pStruct->OnAction(action, track);
-      viz_release(track); */
-      return true;
+      viz_release(track);
+      return result;
     }
-    return m_pStruct->OnAction(action, NULL);
   }
   return false;
 }
