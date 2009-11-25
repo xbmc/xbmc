@@ -68,6 +68,7 @@ public:
   CStdString Summary() const { return m_summary; }
   CStdString Description() const { return m_strDesc; }
   CStdString Path() const { return m_strPath; }
+  CStdString Profile() const { return m_strProfile; }
   CStdString LibName() const { return m_strLibName; }
   CStdString Author() const { return m_strAuthor; }
   CStdString Icon() const { return m_icon; }
@@ -83,6 +84,7 @@ protected:
   CStdString        m_userSettingsPath;
 
 private:
+  CStdString GetProfilePath();
   CStdString GetUserSettingsPath();
   void Enable() { LoadStrings(); m_disabled = false; }
   void Disable() { m_disabled = true; ClearStrings();}
@@ -97,6 +99,7 @@ private:
   CStdString  m_summary;     ///< Short summary of addon
   CStdString  m_strDesc;     ///< Description of addon
   CStdString  m_strPath;     ///< Path to the addon
+  CStdString  m_strProfile;  ///< Path to the addon's datastore for this profile
   CStdString  m_strLibName;  ///< Name of the library
   CStdString  m_strAuthor;   ///< Author(s) of the addon
   CStdString  m_icon;        ///< Path to icon for the addon, or blank by default

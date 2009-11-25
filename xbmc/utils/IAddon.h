@@ -76,6 +76,7 @@ namespace ADDON
     virtual CStdString Summary() const =0;
     virtual CStdString Description() const =0;
     virtual CStdString Path() const =0;
+    virtual CStdString Profile() const =0;
     virtual CStdString LibName() const =0;
     virtual CStdString Author() const =0;
     virtual CStdString Icon() const =0;

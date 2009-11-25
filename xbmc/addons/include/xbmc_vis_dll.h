@@ -1,24 +1,24 @@
 #ifndef __XBMC_VIS_H__
 #define __XBMC_VIS_H__
 
+#include "xbmc_addon_dll.h"
+#include "xbmc_vis_types.h"
+#include "libvisualisation.h"
+
 #include <ctype.h>
 #ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
+#pragma comment (lib, "lib/xbox_dx8.lib" )
 #else
-#ifdef _LINUX
-#include "../xbmc/linux/PlatformInclude.h"
 #ifndef __APPLE__
 #include <sys/sysinfo.h>
 #endif
-#else
+#ifdef WIN32
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>
 #endif
-#include "xbmc_addon_dll.h"
-#include "xbmc_vis_types.h"
-#include "libvisualisation.h"
 #include <sys/stat.h>
 #include <errno.h>
 #endif
@@ -39,11 +39,6 @@ int htoi(const char *str) /* Convert hex string to integer */
   return number;
 }
 
-//#define NEW_STRING(str, ch) { str = new char[strlen(ch) + 1]; strcpy(str, ch); };
-#ifdef HAS_XBOX_HARDWARE
-#pragma comment (lib, "lib/xbox_dx8.lib" )
-#endif
-
 extern "C"
 {
   // exports for d3d hacks
@@ -63,7 +58,7 @@ extern "C"
   void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
   void Render();
   void Stop();
-  bool OnAction(long action, void *param);
+  bool OnAction(long action, const void *param);
   void GetInfo(VIS_INFO* pInfo);
   viz_preset_list_t GetPresets();
   viz_preset_t GetCurrentPreset();

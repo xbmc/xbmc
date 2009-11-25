@@ -159,6 +159,7 @@ CAddon::CAddon(const AddonProps &props)
   , m_guid_parent(props.parent)
 {
   m_strPath     = props.path;
+  m_strProfile  = GetProfilePath();
   m_disabled    = true;
   m_icon        = props.icon;
   m_stars       = props.stars;
@@ -179,6 +180,7 @@ CAddon::CAddon(const CAddon &rhs)
 {
   m_userXmlDoc  = rhs.m_userXmlDoc;
   m_strPath     = rhs.Path();
+  m_strProfile  = GetProfilePath();
   m_disabled    = false;
   m_icon        = rhs.Icon();
   m_stars       = rhs.Stars();
@@ -411,14 +413,18 @@ TiXmlElement* CAddon::GetSettingsXML()
   return m_addonXmlDoc.RootElement();
 }
 
+CStdString CAddon::GetProfilePath()
+{
+  CStdString profile;
+  profile.Format("special://profile/addon_data/%s", UUID().c_str());
+  return profile;
+}
+
 CStdString CAddon::GetUserSettingsPath()
 {
-  CStdString addonUserName;
-
-  // and create the users filepath
-  addonUserName.Format("special://profile/addon_data/%s", UUID().c_str());
-  CUtil::AddFileToFolder(addonUserName, "settings.xml", addonUserName);
-  return addonUserName;
+  CStdString path;
+  CUtil::AddFileToFolder(Profile(), "settings.xml", path);
+  return path;
 }
 
 } /* namespace ADDON */

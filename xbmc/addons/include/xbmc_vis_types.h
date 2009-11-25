@@ -44,7 +44,9 @@ extern "C"
     int width;
     int height;
     float pixelRatio;
-    char *name;
+    const char *name;
+    const char *presets;
+    const char *datastore;
   };
 
   enum VIS_ACTION
@@ -68,7 +70,7 @@ extern "C"
     void (__cdecl* Render) ();
     void (__cdecl* Stop)();
     void (__cdecl* GetInfo)(VIS_INFO *info);
-    bool (__cdecl* OnAction)(long flags, void *param);
+    bool (__cdecl* OnAction)(long flags, const void *param);
     int (__cdecl* HasPresets)();
     viz_preset_list_t (__cdecl *GetPresets)();
     viz_preset_t (__cdecl *GetCurrentPreset)();
