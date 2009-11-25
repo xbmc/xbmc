@@ -77,7 +77,10 @@ void CHALManager::DeviceCondition(LibHalContext *ctx, const char *udi, const cha
 {
   NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Device (%s) Condition %s | %s", udi, condition_name, condition_details);
-  g_HalManager.UpdateDevice(udi);
+  if (!strcmp(condition_name, "ButtonPressed") && !strcmp(condition_details, "power"))
+    CBuiltins::Execute("XBMC.ShutDown()");
+  else
+    g_HalManager.UpdateDevice(udi);
 }
 
 /* HAL Device added. This is before mount. And here is the place to mount the volume in the future */

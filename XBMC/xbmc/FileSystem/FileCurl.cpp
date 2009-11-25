@@ -300,6 +300,8 @@ CFileCurl::CFileCurl()
   m_bufferSize = 32768;
   m_binary = true;
   m_postdata = "";
+  m_username = "";
+  m_password = "";
   m_state = new CReadState();
 }
 
@@ -344,6 +346,11 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEDATA, state);
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEFUNCTION, write_callback);
 
+  // set username and password for current handle
+  if (m_username.length() > 0)
+    g_curlInterface.easy_setopt(h, CURLOPT_USERNAME, m_username.c_str());
+  if (m_password.length() > 0)
+    g_curlInterface.easy_setopt(h, CURLOPT_PASSWORD, m_password.c_str());
 
   // make sure headers are seperated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
@@ -607,6 +614,11 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
       }
       CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
     }
+
+    // get username and password
+    m_username = url2.GetUserName();
+    m_password = url2.GetPassWord();
+
     // handle any protocol options
     CStdString options = url2.GetProtocolOptions();
     options.TrimRight('/'); // hack for trailing slashes being added from source
@@ -750,7 +762,10 @@ bool CFileCurl::Open(const CURL& url)
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
-  m_url = url2.Get();
+  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
+    m_url = url2.GetWithoutUserDetails();
+  else
+    m_url = url2.Get();
 
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", (void*)this, m_url.c_str());
 
@@ -944,7 +959,10 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
-  m_url = url2.Get();
+  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
+    m_url = url2.GetWithoutUserDetails();
+  else
+    m_url = url2.Get();
 
   ASSERT(m_state->m_easyHandle == NULL);
   g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, NULL);

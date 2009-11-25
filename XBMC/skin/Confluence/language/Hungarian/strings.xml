@@ -1,132 +1,115 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--$Revision: 24793 $-->
-<!-- Translator: Alanwww1 --> 
-<!-- Date of translation: 22/11/2009  --> 
-<!-- Based on English strings revision 24793  --> 
+<!--Language file translated with Team XBMC Translator-->
+<!--Date of translation: 11/23/2009-->
+<!--$Revision$-->
+<!--Based on english strings version 24883-->
 <strings>
-  <!-- Misc labels -->
   <string id="31000">Választható</string>
   <string id="31001">Szeretem</string>
   <string id="31002">Utálom</string>
-  <string id="31003">Power Options</string>
-
+  <string id="31003">Kikapcsolási lehetőségek</string>
   <string id="31007">Beépülők</string>
-
   <string id="31020">Nemrég hozzáadott</string>
   <string id="31021">Videó - Fájlok</string>
   <string id="31022">Zene - Fájlok</string>
-  <string id="31023">Játszva</string>
+  <string id="31023">Lejátszás</string>
   <string id="31024">Oldal</string>
   <string id="31025">Elem</string>
   <string id="31026">Egyéb opciók</string>
   <string id="31027">Fekvés</string>
- 
-  <!-- View Type labels -->
   <string id="31028">Poszter</string>
   <string id="31029">Fanart</string>
   <string id="31030">Full lista</string>
   <string id="31031">Kép Bélyeg</string>
   <string id="31032">Képborító</string>
-
-  <!-- Extra labels -->
-  <string id="31040">Most Játszott</string>
-
+  <string id="31040">Most játszott</string>
   <string id="31042">LEJÁTSZÁS</string>
   <string id="31043">MEGÁLLÍTVA</string>
   <string id="31044">ELŐRETEKERÉS</string>
-  <string id="31045">VISZATEKERÉS</string>
-  <string id="31046">Hang Tulajdonságok</string>
-  <string id="31047">Jelenlegi Beállítás</string>
-  <string id="31048">Vizualizáció Beállítás</string>
+  <string id="31045">VISSZATEKERÉS</string>
+  <string id="31046">Hang tulajdonságok</string>
+  <string id="31047">Jelenlegi beállítás</string>
+  <string id="31048">Vizualizáció beállítás</string>
   <string id="31049">Befejezés időpontja</string>
-
-
-  <!-- Playlist Editor labels -->
   <string id="31055">Játszáslista nyitása</string>
   <string id="31056">Játszáslista mentése</string>
   <string id="31057">Új játszáslista</string>
   <string id="31058">Rendszer zene fájlok</string>
   <string id="31059">Jelenlegi játszáslista</string>
   <string id="31060">Ez a fájl egyesített. Válaszd a részt amelyiket játszani akarod.</string>
-  
-  <!-- Skin Settings labels -->
-  <string id="31100"></string>
+  <string id="31100">
+  </string>
   <string id="31101">Sajátképernyő lehetőségek</string>
   <string id="31102">Háttér</string>
   <string id="31103">Mutasd "Megállítva" a diavetítés közben</string>
-  <string id="31104"></string>
+  <string id="31104">
+  </string>
   <string id="31105">Médiacímek mutatása a háttérszkenner futása alatt</string>
   <string id="31106">Vegyes beállítások</string>
-  <string id="31107"></string>
-  <string id="31108">Főmenügombok Láthatósága</string>
+  <string id="31107">
+  </string>
+  <string id="31108">Főmenügombok láthatósága</string>
   <string id="31109">Sajátképernyő hátterek</string>
   <string id="31110">Háttér szerkesztése ehhez a főmenügombhoz</string>
   <string id="31111">Elrejt</string>
   <string id="31112">Lehetőségek</string>
   <string id="31113">Egyetlen Kép</string>
-  <string id="31114">Több Kép</string>
-  <string id="31115">Testre szabás</string>
+  <string id="31114">Több kép</string>
+  <string id="31115">Testreszabás</string>
   <string id="31116">Szkriptgombok</string>
-  <string id="31117">Nemrég Hozzáadott videók Mutatása</string>
-  <string id="31118">Sajátképernyő Almenü</string>
-  <string id="31119">Egyedi Szkript Gomb Engedélyezése</string>
+  <string id="31117">Nemrég hozzáadott videók mutatása</string>
+  <string id="31118">Sajátképernyő almenü</string>
+  <string id="31119">Egyedi szkriptgomb engedélyezése</string>
   <string id="31120">GOMB FELIRAT</string>
   <string id="31121">SZKRIPT ÚTVONALA</string>
-  <string id="31122">Időjárás Oldal</string>
+  <string id="31122">Időjárás oldal</string>
   <string id="31123">"Poszterek" használata "Bannerek" helyett a TV műsoroknál</string>
   <string id="31124">A háttérben a játszott video megjelenítése</string>
   <string id="31125">A háttérben a futó vizualizáció megjelenítése</string>
-
-  <string id="31126">Dalszöveg Engedélyezése a Zene OSD-n</string>
+  <string id="31126">Dalszöveg engedélyezése a zene OSD-n</string>
   <string id="31127">DALSZÖVEG SZKRIPT ÚTVONALA</string>
   <string id="31128">XBMC Dalszöveg</string>
-
-  <!-- Script labels -->
   <string id="31200">Létrehozása</string>
   <string id="31201">Kategóriák</string>
-  <string id="31202">Szereposztás Mutatása</string>
+  <string id="31202">Szereposztás mutatása</string>
   <string id="31203">Válaszd a dalodat</string>
-  <string id="31204">Section Linkek</string>
-  <string id="31205">Dalszöveg Forrás</string>
-
-  <!-- The Weather Channel Script labels -->
+  <string id="31204">Section linkek</string>
+  <string id="31205">Dalszöveg forrás</string>
   <string id="31250">Radar &amp; Előrejelzés</string>
   <string id="31251">Előrejelzés</string>
   <string id="31252">TWC Szkript</string>
-
-  <!-- Extra labels -->
-  <string id="31300">Hőmérséklet Most</string>
-  <string id="31301">Utoljára Frissítve</string>
+  <string id="31300">Hőmérséklet most</string>
+  <string id="31301">Utoljára frissítve</string>
   <string id="31302">Menü</string>
-  <string id="31303"></string>
+  <string id="31303">
+  </string>
   <string id="31304">Kép</string>
   <string id="31305">Lemez média nem található</string>
   <string id="31306">Nyítás</string>
-  <string id="31307">Fanart Rejtve</string>
-  <string id="31308">Film Részletek</string>
+  <string id="31307">Fanart rejtve</string>
+  <string id="31308">Film részletek</string>
   <string id="31309">Memória használat</string>
   <string id="31310">Zeneszám</string>
   <string id="31311">FANART KÉP[CR][CR]ELÉRHETETLEN[CR][CR] CLICK A BEÁLLÍTÁSHOZ</string>
-  <string id="31312">Jelenlegi Scraper</string>
-  <string id="31313">Válassz Scrapert</string>
-  <string id="31314">Tartalomszken Lehetőségek</string>
+  <string id="31312">Jelenlegi scraper</string>
+  <string id="31313">Válassz scrapert</string>
+  <string id="31314">Tartalomszken lehetőségek</string>
   <string id="31315">Alap</string>
-  <string id="31316"></string>
-  <string id="31317">Fanart Útvonal</string>
-  <string id="31318">Kis Fanart</string>
-  <string id="31319">Választott Profil</string>
-  <string id="31320">Utoljára Bejelentkezve</string>
-  <string id="31321">Karaoke Dal Választó</string>
+  <string id="31316">
+  </string>
+  <string id="31317">Fanart útvonal</string>
+  <string id="31318">Kis fanart</string>
+  <string id="31319">Választott profil</string>
+  <string id="31320">Utoljára bejelentkezve</string>
+  <string id="31321">Karaoke dal választó</string>
   <string id="31322">Játszva</string>
-  <string id="31323">Legfrissebb Filmek</string>
-  <string id="31324">Legfrissebb Epizódok</string>
-  <string id="31325">Játszáslista Opciók</string>
+  <string id="31323">Legfrissebb filmek</string>
+  <string id="31324">Legfrissebb epizódok</string>
+  <string id="31325">Játszáslista opciók</string>
   <string id="31326">Létrehozva</string>
   <string id="31327">Felbontás</string>
-  <string id="31328">Nemrég Hozzáadva</string>
+  <string id="31328">Nemrég hozzáadva</string>
   <string id="31329">[B]IDŐZÍTŐ BEÁLLÍTVA![/B] [COLOR=grey2] - AUTÓMATIKUS LEÁLLÍTÁS[/COLOR]</string>
-
-  <!-- Description Labels  -->
   <string id="31400">[B]MEGJELENÍTÉS MÓDJÁNAK BEÁLLÍTÁSA[/B][CR][CR]Skin váltása · Nyelv, régió váltása · Fájl listázás módjának beállítása[CR]Képernyővédő beállítása</string>
   <string id="31401">[B]VIDEÓ BEÁLLÍTÁSOK[/B][CR][CR]Film médiatár kezelése · Videó lejátszás beállítása · Video listázás módjának beállítása[CR]Feliratok karaktertípusának váltása</string>
   <string id="31402">[B]ZENE BEÁLLÍTÁSOK[/B][CR][CR]Zene médiatár kezelése · Zene lejátszás beállítása · Zene listázási módjának beállítása[CR]Dalszabályok felállítása · Karaoke lehetőségek</string>
@@ -135,7 +118,6 @@
   <string id="31405">[B]HÁLÓZATI BEÁLLÍTÁSOK[/B][CR][CR]XBMC távoli vezérlésének beállítása HTTP-n keresztül · Fájlmegosztás beállítása[CR]Internet elérési lehetőségek</string>
   <string id="31406">[B]RENDSZERBEÁLLÍTÁSOK[/B][CR][CR]Kijelzők beállítása, kalibrálása · Hangkimenet konfigurálása · Távkapcsoló beállítása[CR]Energiagazdálkodási lehetőségek beállítása · Debug bekapcsolása · Mesterzár felállítása</string>
   <string id="31407">[B]SKIN BEÁLLÍTÁSOK[/B][CR][CR]A Confluence skin beállítása · Sajátképernyő elemek hozzádadása/elvétele[CR]Skin hátterek megváltoztatása</string>
-
   <string id="31420">[B][COLOR=white]Az XBMC nem érzékel elérhető lemezt.[/COLOR][/B][CR][CR]Helyezz be egy lemezt és próbáld újra, vagy nyomj: "mégsem"</string>
-  <string id="31421">Válaszd ki az XBMC Fehasználói Profilod[CR]a belépéshez</string>
+  <string id="31421">Válaszd ki az XBMC felhasználói profilod[CR]a belépéshez</string>
 </strings>

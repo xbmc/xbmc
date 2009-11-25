@@ -1,7 +1,5 @@
 #!/usr/bin/make -f
 
-include /usr/share/quilt/quilt.make
-
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
@@ -14,7 +12,7 @@ SVNVERSION ?= $(shell dpkg-parsechangelog | grep '^Version:' | sed 's/.*svn\([[:
 XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
 	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --disable-ccache \
 	--disable-dvdcss --enable-external-libraries --enable-avahi \
-	CFLAGS="$(DEB_CFLAGS)" CXXFLAGS="$(DEB_CXXFLAGS)"
+	--enable-goom CFLAGS="$(DEB_CFLAGS)" CXXFLAGS="$(DEB_CXXFLAGS)"
 
 # Add the SVN revision if it exists in the changelog
 ifeq (,$(findstring Version,$(SVNVERSION)))
@@ -27,14 +25,21 @@ endif
 override_dh_clean:
 	dh_clean
 	rm -f debian/xbmc-live.init
-	debian/rules unpatch
 
-override_dh_auto_configure: patch
-	cp -f tools/XBMCLive/xbmc debian/xbmc-live.init
+override_dh_auto_configure:
+	cp -f tools/XBMCLive/xbmc-live debian/xbmc-live.init
 	./configure $(XBMC_CONFIG_OPTIONS)
 
 override_dh_auto_install:
 	$(MAKE) install install-livedatas prefix=$(CURDIR)/debian/tmp/usr
+	find "debian/tmp/usr/share/xbmc" -regextype posix-extended \
+		-type f -iregex \
+		".*\.so|.*\.vis|.*\.xbs|.*xbmc\.bin|.*xbmc-xrandr" | \
+		while read FILE; do \
+		NEW_LOCATION="$$(echo $$FILE | sed -e 's|usr/share|usr/lib|')"; \
+		install -D "$$FILE" "$$NEW_LOCATION"; \
+		rm "$$FILE"; \
+		done
 	$(MAKE) eventclients prefix=$(CURDIR)/debian/tmp/usr \
 		installdir=/usr WII_EXTRA_OPTS=-DCWIID_OLD
 	mkdir -p $(CURDIR)/debian/tmp/usr/share/applications \
@@ -47,39 +52,22 @@ override_dh_auto_install:
 override_dh_install:
 	dh_install --sourcedir=$(CURDIR)/debian/tmp -XLICENCE \
 		-XLiberationSans-Regular.ttf -XLicence.txt -XLicense.txt
-	# XBMC WEB EFLEXWEB
-	mkdir -p $(CURDIR)/debian/xbmc-web-eflexweb/usr/share/xbmc/web
-	unzip -oq $(CURDIR)/web/WebInterfaceXBMC-0.17.zip \
-		-d $(CURDIR)/debian/xbmc-web-eflexweb/usr/share/xbmc/web
 	# XBMC WEB PM
-	mkdir -p $(CURDIR)/debian/xbmc-web-pm/usr/share/xbmc/web
-	unzip -oq $(CURDIR)/web/Project_Mayhem_webserver_V1.1.2.zip \
-		-d $(CURDIR)/debian/xbmc-web-pm/usr/share/xbmc/web \
-		-x "*/Thumbs.db"
+	dh_install -pxbmc-web-pm ../../web/Project_Mayhem \
+		usr/share/xbmc/web
+	# XBMC WEB PM3
+	dh_install -pxbmc-web-pm3 ../../web/Project_Mayhem_III \
+		usr/share/xbmc/web
 	# XBMC WEB Iphone
-	mkdir -p $(CURDIR)/debian/xbmc-web-iphone-tlrobinson/usr/share/xbmc/web/iphone
-	unzip -oq $(CURDIR)/web/xbmciphone-0.1.zip \
-		-d $(CURDIR)/debian/xbmc-web-iphone-tlrobinson/usr/share/xbmc/web
-	mkdir -p $(CURDIR)/debian/xbmc-web-iphone-tlrobinson/usr/share/doc/xbmc-web-iphone-tlrobinson/ 
-	mv $(CURDIR)/debian/xbmc-web-iphone-tlrobinson/usr/share/xbmc/web/README \
-	    $(CURDIR)/debian/xbmc-web-iphone-tlrobinson/usr/share/doc/xbmc-web-iphone-tlrobinson/
+	dh_install -pxbmc-web-iphone-tlrobinson ../../web/xbmciphone/iphone \
+		usr/share/xbmc/web
 
 override_dh_link:
 	dh_link
-	install -D "debian/xbmc-data/usr/share/xbmc/xbmc.bin" \
-		"debian/xbmc-bin/usr/lib/xbmc/xbmc.bin"
-	dh_link -pxbmc-data "usr/lib/xbmc/xbmc.bin" \
-		"usr/share/xbmc/xbmc.bin"
-	install -D "debian/xbmc-data/usr/share/xbmc/xbmc-xrandr" \
-		"debian/xbmc-bin/usr/lib/xbmc/xbmc-xrandr"
-	dh_link -pxbmc-data "usr/lib/xbmc/xbmc-xrandr" \
-		"usr/share/xbmc/xbmc-xrandr"
-	find "debian/xbmc-data/usr/share/xbmc" -regextype posix-extended \
-		-type f -iregex ".*\.so|.*\.vis|.*\.xbs" | while read FILE; do \
-		NEW_LOCATION="$$(echo $$FILE | sed -e 's|/xbmc-data/usr/share|/xbmc-bin/usr/lib|')"; \
-		LINK_TARGET="$$(echo "$$NEW_LOCATION" | sed -e 's|debian/xbmc-bin/||')"; \
-		LINK_DESTINATION="$$(echo "$$FILE" | sed -e 's|debian/xbmc-data/||')"; \
-		install -D "$$FILE" "$$NEW_LOCATION"; \
+	find "debian/xbmc-bin/usr/lib" -regextype posix-extended -type f | \
+		while read FILE; do \
+		LINK_TARGET="$$(echo "$$FILE" | sed -e 's|debian/xbmc-bin/||')"; \
+		LINK_DESTINATION="$$(echo "$$FILE" | sed -e 's|debian/xbmc-bin/usr/lib|usr/share|')"; \
 		dh_link -pxbmc-data "$$LINK_TARGET" "$$LINK_DESTINATION"; \
 		done
 
@@ -90,3 +78,8 @@ override_dh_makeshlibs:
 	# We don't install shared libraries in standard locations so don't edit
 	# postinst/postrm scripts to call ldconfig
 	dh_makeshlibs -n
+
+override_dh_installdocs:
+	dh_installdocs
+	dh_installdocs -pxbmc-web-iphone-tlrobinson \
+		$(CURDIR)/web/xbmciphone/README

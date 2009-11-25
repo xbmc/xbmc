@@ -23,6 +23,7 @@
 #include "GUIWindowVideoNav.h"
 #include "GUIWindowVideoFiles.h"
 #include "GUIWindowMusicNav.h"
+#include "GUIWindowFileManager.h"
 #include "utils/GUIInfoManager.h"
 #include "Util.h"
 #include "utils/RegExp.h"
@@ -93,7 +94,8 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
 {
   if (action.id == ACTION_PARENT_DIR)
   {
-    if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
+    if (g_advancedSettings.m_bUseEvilB &&
+        m_vecItems->m_strPath == m_startDirectory)
     {
       g_windowManager.PreviousWindow();
       return true;
@@ -506,7 +508,8 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
           items.SetThumbnailImage(showItem.GetThumbnailImage());
         }
       }
-      else if (node == NODE_TYPE_TITLE_MOVIES || node == NODE_TYPE_RECENTLY_ADDED_MOVIES)
+      else if (node == NODE_TYPE_TITLE_MOVIES ||
+               node == NODE_TYPE_RECENTLY_ADDED_MOVIES)
         items.SetContent("movies");
       else if (node == NODE_TYPE_TITLE_TVSHOWS)
         items.SetContent("tvshows");
@@ -849,29 +852,66 @@ void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   CGUIWindowVideoBase::OnInfo(pItem,info2);
 }
 
+bool CGUIWindowVideoNav::CanDelete(const CStdString& strPath)
+{
+  CQueryParams params;
+  CVideoDatabaseDirectory::GetQueryParams(strPath,params);
+
+  if (params.GetMovieId()   != -1 ||
+      params.GetEpisodeId() != -1 ||
+      params.GetMVideoId()  != -1 ||
+      (params.GetTvShowId() != -1 && params.GetSeason() == -1
+              && !CVideoDatabaseDirectory::IsAllItem(strPath)))
+    return true;
+
+  return false;
+}
+
 void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
 {
-  if (m_vecItems->IsPlugin())
+  if (m_vecItems->IsParentFolder())
     return;
 
   if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
-    CGUIWindowVideoBase::OnDeleteItem(pItem);
-  else if (pItem->m_strPath.Left(14).Equals("videodb://1/7/") && pItem->m_strPath.size() > 14 && pItem->m_bIsFolder)
   {
-    CFileItemList items;
-    CDirectory::GetDirectory(pItem->m_strPath,items);
-    for (int i=0;i<items.Size();++i)
-      OnDeleteItem(items[i]);
+    if (!pItem->m_strPath.Equals("newsmartplaylist://video"))
+      CGUIWindowVideoBase::OnDeleteItem(pItem);
+  }
+  else if (m_vecItems->m_strPath.Equals("plugin://video/"))
+  {
+    CStdString path;
+    CUtil::GetDirectory(pItem->m_strPath,path);
+    path.Replace("plugin://","special://home/plugins/");
+    CFileItem item2(path,true);
+    CGUIWindowFileManager::DeleteItem(&item2);
+  }
+  else if (pItem->m_strPath.Left(14).Equals("videodb://1/7/") &&
+           pItem->m_strPath.size() > 14 && pItem->m_bIsFolder)
+  {
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    pDialog->SetLine(0, g_localizeStrings.Get(432));
+    CStdString strLabel;
+    strLabel.Format(g_localizeStrings.Get(433),pItem->GetLabel());
+    pDialog->SetLine(1, strLabel);
+    pDialog->SetLine(2, "");;
+    pDialog->DoModal();
+    if (pDialog->IsConfirmed())
+    {
+      CFileItemList items;
+      CDirectory::GetDirectory(pItem->m_strPath,items);
+      for (int i=0;i<items.Size();++i)
+        OnDeleteItem(items[i]);
 
-    CVideoDatabaseDirectory dir;
-    CQueryParams params;
-    dir.GetQueryParams(pItem->m_strPath,params);
-    m_database.DeleteSet(params.GetSetId());
+       CVideoDatabaseDirectory dir;
+       CQueryParams params;
+       dir.GetQueryParams(pItem->m_strPath,params);
+       m_database.DeleteSet(params.GetSetId());
+    }
   }
   else
   {
     if (!DeleteItem(pItem.get()))
-    return;
+      return;
 
     CStdString strDeletePath;
     if (pItem->m_bIsFolder)
@@ -893,13 +933,8 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
 
 bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = false */)
 {
-  // dont allow update while scanning
-  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-  if (pDialogScan && pDialogScan->IsScanning())
-  {
-    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+  if (!pItem->HasVideoInfoTag() || !CanDelete(pItem->m_strPath))
     return false;
-  }
 
   VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty())
@@ -908,6 +943,15 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
     iType = VIDEODB_CONTENT_EPISODES;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
     iType = VIDEODB_CONTENT_MUSICVIDEOS;
+
+  // dont allow update while scanning
+  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  if (pDialogScan && pDialogScan->IsScanning())
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
+    return false;
+  }
+
 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!pDialog)

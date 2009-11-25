@@ -166,7 +166,7 @@ bool CKaraokeLyricsTextLRC::ParserNormal(char *lyricData, unsigned int lyricSize
     if ( state == PARSER_IN_LYRICS )
     {
       // Lyrics are terminated either by \n or by [
-      if ( *p == '\n' || *p == '[' )
+      if ( *p == '\n' || *p == '[' || *p == '<' )
       {
         // Time must be there
         if ( lyric_time == -1 )
@@ -300,7 +300,6 @@ bool CKaraokeLyricsTextLRC::ParserNormal(char *lyricData, unsigned int lyricSize
         // Set to next char
         state_offset = offset + 1;
         state = PARSER_IN_TIME;
-
         lyric_time = -1;
       }
       else if ( *p == '\n' )
