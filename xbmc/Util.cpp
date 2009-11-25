@@ -41,6 +41,7 @@
 #include "FileSystem/MultiPathDirectory.h"
 #include "FileSystem/DirectoryCache.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "FileSystem/RSSDirectory.h"
 #include "ThumbnailCache.h"
 #include "FileSystem/RarManager.h"
 #include "FileSystem/CMythDirectory.h"
@@ -54,7 +55,6 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #include "utils/RegExp.h"
-#include "utils/RssFeed.h"
 #include "GUISettings.h"
 #include "TextureManager.h"
 #include "utils/fstrcmp.h"
@@ -183,12 +183,10 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
 
   if (url.GetProtocol() == "rss")
   {
-    url.SetProtocol("http");
-    path = url.Get();
-    CRssFeed feed;
-    feed.Init(path);
-    feed.ReadFeed();
-    strFilename = feed.GetFeedTitle();
+    CRSSDirectory dir;
+    CFileItemList items;
+    if(dir.GetDirectory(strFileNameAndPath, items) && items.HasProperty("rss:title"))
+      return items.GetProperty("rss:title");
   }
 
   // LastFM

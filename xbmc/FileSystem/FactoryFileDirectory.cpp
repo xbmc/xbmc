@@ -28,6 +28,7 @@
 #include "NSFFileDirectory.h"
 #include "SIDFileDirectory.h"
 #include "ASAPFileDirectory.h"
+#include "RSSDirectory.h"
 #include "cores/paplayer/ASAPCodec.h"
 #endif
 #include "RarDirectory.h"
@@ -104,6 +105,10 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     delete pDir;
     return NULL;
   }
+
+  if (pItem->IsRSS())
+    return new CRSSDirectory();
+
 #endif
   if (strExtension.Equals(".zip"))
   {
