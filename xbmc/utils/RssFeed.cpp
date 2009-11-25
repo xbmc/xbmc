@@ -283,6 +283,36 @@ void CRssFeed::ParseItemRSS(CFileItemPtr& item, TiXmlElement* item_child, const 
   }
 }
 
+void CRssFeed::ParseItemVoddler(CFileItemPtr& item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
+{
+  CVideoInfoTag* vtag = item->GetVideoInfoTag();
+  CStdString text = S(element->GetText());
+
+  if(name == "trailer")
+  {
+    vtag->m_strTrailer = text;
+
+    CStdString type = S(element->Attribute("type"));
+    if(item->m_strPath.IsEmpty())
+    {
+      item->m_strPath = text;
+      item->SetContentType(type);
+    }
+  }
+  else if(name == "year")
+    vtag->m_iYear = atoi(text);
+  else if(name == "tagline")
+    vtag->m_strTagLine = text;
+  else if(name == "posterwall")
+  {
+    const char* url = element->Attribute("url");
+    if(url)
+      item->SetProperty("fanart_image", url);
+    else if(IsPathToThumbnail(text))
+      item->SetProperty("fanart_image", text);
+  }
+}
+
 bool CRssFeed::ReadFeed()
 {
   // Remove all previous items
@@ -364,6 +394,8 @@ bool CRssFeed::ReadFeed()
         ParseItemMRSS(item, item_child, name, xmlns);
       else if (xmlns == "itunes")
         ParseItemItunes(item, item_child, name, xmlns);
+      else if (xmlns == "voddler")
+        ParseItemVoddler(item, item_child, name, xmlns);
       else
         ParseItemRSS(item, item_child, name, xmlns);
 

@@ -59,6 +59,7 @@ private:
   static void ParseItemRSS   (CFileItemPtr& item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns);
   static void ParseItemMRSS  (CFileItemPtr& item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns);
   static void ParseItemItunes(CFileItemPtr& item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns);
+  static void ParseItemVoddler(CFileItemPtr& item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns);
   static bool IsPathToMedia(const CStdString& strPath );
   static bool IsPathToThumbnail(const CStdString& strPath );
 
