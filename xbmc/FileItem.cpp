@@ -610,6 +610,7 @@ bool CFileItem::IsInternetStream() const
       strProtocol == "http" || /*strProtocol == "ftp" ||*/
       strProtocol == "rtsp" || strProtocol == "rtp" ||
       strProtocol == "udp"  || strProtocol == "lastfm" ||
+      strProtocol == "rss"  ||
       strProtocol == "https" || strProtocol == "rtmp")
     return true;
 
