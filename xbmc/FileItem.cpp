@@ -620,10 +620,9 @@ bool CFileItem::IsInternetStream() const
 bool CFileItem::IsFileFolder() const
 {
   return (
-    m_bIsFolder && (
     IsPlugin() ||
     IsSmartPlayList() ||
-    IsPlayList() ||
+    IsPlayList() && g_advancedSettings.m_playlistAsFolders ||
     IsZIP() ||
     IsRAR() ||
     IsType(".ogg") ||
@@ -631,7 +630,6 @@ bool CFileItem::IsFileFolder() const
     IsType(".sid") ||
     IsType(".sap") ||
     IsShoutCast()
-    )
     );
 }
 
