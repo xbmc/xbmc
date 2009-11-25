@@ -125,7 +125,7 @@ public:
 
   /*--- Stream reading functions ---*/
   bool OpenLiveStream(unsigned int channel, bool radio = false);
-  bool OpenRecordedStream(unsigned int recording);
+  bool OpenRecordedStream(const cPVRRecordingInfoTag* tag);
   void CloseStream();
   int ReadStream(BYTE* buf, int buf_size);
   bool SeekTimeRequired();

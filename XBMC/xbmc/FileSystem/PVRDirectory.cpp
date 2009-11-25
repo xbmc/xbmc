@@ -23,7 +23,11 @@
 #include "FileItem.h"
 #include "Util.h"
 #include "URL.h"
+#include "PVRManager.h"
 #include "utils/log.h"
+#include "utils/PVRChannels.h"
+#include "utils/PVRRecordings.h"
+#include "utils/PVRTimers.h"
 #include "LocalizeStrings.h"
 
 using namespace std;
@@ -39,12 +43,15 @@ CPVRDirectory::~CPVRDirectory()
 
 bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  CURL url(strPath);
   CStdString base(strPath);
   CUtil::RemoveSlashAtEnd(base);
+
+  CURL url(strPath);
+  CStdString fileName = url.GetFileName();
+  CUtil::RemoveSlashAtEnd(fileName);
   CLog::Log(LOGDEBUG, "CPVRDirectory::GetDirectory(%s)", base.c_str());
 
-  if(url.GetFileName().IsEmpty())
+  if (fileName == "")
   {
     CFileItemPtr item;
 
@@ -73,9 +80,21 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     item->SetLabelPreformated(true);
     items.Add(item);
 
+    // Sort by name only. Labels are preformated.
+    items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
+
     return true;
   }
+  else if (fileName.Left(10) == "recordings")
+  {
+    return PVRRecordings.GetDirectory(strPath, items) > 0;
+  }
+
 
   return false;
 }
 
+bool CPVRDirectory::HasRecordings()
+{
+  return PVRRecordings.GetNumRecordings() > 0;
+}

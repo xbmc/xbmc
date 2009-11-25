@@ -1712,8 +1712,11 @@ bool CPVRManager::OpenLiveStream(unsigned int channel, bool radio)
 /*
 /* Returns true if opening was succesfull
 /********************************************************************/
-bool CPVRManager::OpenRecordedStream(unsigned int recording)
+bool CPVRManager::OpenRecordedStream(const cPVRRecordingInfoTag* tag)
 {
+  if (tag == NULL)
+    return false;
+
   EnterCriticalSection(&m_critSection);
 
   bool ret = false;
@@ -1725,12 +1728,11 @@ bool CPVRManager::OpenRecordedStream(unsigned int recording)
     delete m_currentPlayingRecording;
 
   /* Set the new recording information */
-  m_currentPlayingRecording = new CFileItem(PVRRecordings[recording-1]);
+  m_currentPlayingRecording = new CFileItem(tag);
   m_currentPlayingChannel   = NULL;
   m_scanStart               = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
 
   /* Open the recording stream on the Client */
-  const cPVRRecordingInfoTag* tag = m_currentPlayingRecording->GetPVRRecordingInfoTag();
   if (m_clientsProps[tag->ClientID()].HandleInputStream)
     ret = m_clients[tag->ClientID()]->OpenRecordedStream(*tag);
 

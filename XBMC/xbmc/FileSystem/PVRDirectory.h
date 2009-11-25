@@ -36,6 +36,8 @@ public:
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   virtual bool IsAllowed(const CStdString &strFile) const { return true; };
 
+  static bool HasRecordings();
+
 private:
 };
 

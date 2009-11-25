@@ -40,6 +40,8 @@
 #include "PVRManager.h"
 #include "GUIDialogOK.h"
 #include "LocalizeStrings.h"
+#include "Util.h"
+#include "URL.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
 
@@ -66,6 +68,7 @@ bool cPVRRecordingInfoTag::operator ==(const cPVRRecordingInfoTag& right) const
           m_strFileNameAndPath  == right.m_strFileNameAndPath &&
           m_Priority            == right.m_Priority &&
           m_Lifetime            == right.m_Lifetime &&
+          m_strDirectory        == right.m_strDirectory &&
           m_strTitle            == right.m_strTitle);
 }
 
@@ -85,6 +88,7 @@ bool cPVRRecordingInfoTag::operator !=(const cPVRRecordingInfoTag& right) const
   if (m_Priority                != right.m_Priority) return true;
   if (m_Lifetime                != right.m_Lifetime) return true;
   if (m_strTitle                != right.m_strTitle) return true;
+  if (m_strDirectory            != right.m_strDirectory) return true;
 
   return false;
 }
@@ -97,6 +101,7 @@ void cPVRRecordingInfoTag::Reset(void)
   m_clientIndex           = -1;
   m_clientID              = g_PVRManager.GetFirstClientID(); // Temporary until we support multiple backends
   m_strChannel            = "";
+  m_strDirectory          = "";
   m_recordingTime         = NULL;
   m_strFileNameAndPath    = "";
   m_Priority              = -1;
@@ -206,7 +211,12 @@ void cPVRRecordings::Process()
   for (unsigned int i = 0; i < size(); i++)
   {
     CStdString Path;
-    Path.Format("record://%i", i+1);
+    Path.Format("pvr://recordings/client_%04i/", at(i).ClientID());
+    if (at(i).Directory() != "")
+      Path += at(i).Directory();
+
+    CUtil::AddSlashAtEnd(Path);
+    Path += at(i).Title() + ".pvr";
     at(i).SetPath(Path);
   }
 
@@ -294,6 +304,158 @@ bool cPVRRecordings::RemoveRecording(const CFileItem &item)
     }
   }
   return false;
+}
+
+bool cPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &items)
+{
+  CStdString base(strPath);
+  CUtil::RemoveSlashAtEnd(base);
+
+  CURL url(strPath);
+  CStdString fileName = url.GetFileName();
+  CUtil::RemoveSlashAtEnd(fileName);
+
+  if (fileName == "recordings")
+  {
+//    if (g_PVRManager.Clients()->size() > 1)
+    {
+      CLIENTMAPITR itr = g_PVRManager.Clients()->begin();
+      while (itr != g_PVRManager.Clients()->end())
+      {
+        CFileItemPtr item;
+        CStdString dirName;
+        CStdString clientName;
+
+        int clientID = g_PVRManager.Clients()->at((*itr).first)->GetID();
+        clientName.Format(g_localizeStrings.Get(19016), clientID, g_PVRManager.Clients()->at((*itr).first)->GetBackendName());
+        dirName.Format("%s/client_%04i/", base, clientID);
+        item.reset(new CFileItem(dirName, true));
+        item->SetLabel(clientName);
+        item->SetLabelPreformated(true);
+        items.Add(item);
+
+        itr++;
+      }
+      return true;
+    }
+  }
+  else if (fileName.Left(18) == "recordings/client_")
+  {
+    fileName.erase(0,18);
+    int clientID = atoi(fileName.c_str());
+    CStdString curDir = url.GetFileName();
+    CUtil::AddSlashAtEnd(curDir);
+
+    CStdString strBuffer;
+    CStdString strSkip;
+    std::vector<CStdString> baseTokens;
+    if (!curDir.IsEmpty())
+      CUtil::Tokenize(curDir, baseTokens, "/");
+
+    for (unsigned int i = 0; i < size(); ++i)
+    {
+      if (clientID != at(i).ClientID())
+        continue;
+
+      CStdString strEntryName;
+      strEntryName.Format("recordings/client_%04i/%s", clientID, at(i).Directory());
+      CUtil::AddSlashAtEnd(strEntryName);
+      strEntryName += at(i).Title();
+      strEntryName.Replace('\\','/');
+      CStdString strOrginalName = strEntryName;
+
+      if (strEntryName == curDir) // skip the listed dir
+        continue;
+
+      std::vector<CStdString> pathTokens;
+      CUtil::Tokenize(strEntryName, pathTokens, "/");
+      if (pathTokens.size() < baseTokens.size()+1)
+        continue;
+
+      bool bAdd = true;
+      strEntryName = "";
+      for (unsigned int i = 0; i < baseTokens.size(); ++i)
+      {
+        if (pathTokens[i] != baseTokens[i])
+        {
+          bAdd = false;
+          break;
+        }
+        strEntryName += pathTokens[i] + "/";
+      }
+      if (!bAdd)
+        continue;
+
+      strEntryName += pathTokens[baseTokens.size()];
+      char c=strOrginalName[strEntryName.size()];
+      if (c == '/' || c == '\\')
+        strEntryName += '/';
+
+      CFileItemPtr pFileItem;
+      bool bIsFolder = false;
+      if (strEntryName[strEntryName.size()-1] != '/') // this is a file
+      {
+        pFileItem.reset(new CFileItem(at(i)));
+        pFileItem->SetLabel(pathTokens[baseTokens.size()]);
+        pFileItem->m_strPath = "pvr://" + strEntryName + ".pvr";
+      }
+      else
+      { // this is new folder. add if not already added
+        bIsFolder = true;
+        strBuffer = "pvr://" + strEntryName;
+        if (items.Contains(strBuffer)) // already added
+          continue;
+
+        pFileItem.reset(new CFileItem(strBuffer, true));
+        pFileItem->SetLabel(pathTokens[baseTokens.size()]);
+      }
+      pFileItem->SetLabelPreformated(true);
+      items.Add(pFileItem);
+    }
+    return true;
+  }
+  return false;
+}
+
+cPVRRecordingInfoTag *cPVRRecordings::GetByPath(CStdString &path)
+{
+  CURL url(path);
+  CStdString fileName = url.GetFileName();
+  CUtil::RemoveSlashAtEnd(fileName);
+
+  if (fileName.Left(18) == "recordings/client_")
+  {
+    fileName.erase(0,18);
+    int clientID = atoi(fileName.c_str());
+    fileName.erase(0,5);
+
+    if (fileName.IsEmpty())
+      return NULL;
+
+    CStdString title;
+    CStdString dir;
+    size_t found = fileName.find_last_of("/");
+    if (found != CStdString::npos)
+    {
+      title = fileName.substr(found+1);
+      dir = fileName.substr(0, found);
+    }
+    else
+    {
+      title = fileName;
+      dir = "";
+    }
+    CUtil::RemoveExtension(title);
+
+    for (unsigned int i = 0; i < size(); ++i)
+    {
+      if ((title == at(i).Title()) && (dir == at(i).Directory()) && (clientID == at(i).ClientID()))
+        return &at(i);
+    }
+
+  }
+
+  return NULL;
 }
 
 void cPVRRecordings::Clear()

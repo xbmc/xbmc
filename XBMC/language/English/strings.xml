@@ -1820,6 +1820,8 @@
   <string id="19013">Free To Air</string>
   <string id="19014">Fixed</string>
   <string id="19015">Encryption</string>
+  <string id="19016">Server %i - %s</string>
+  <string id="19017">TV Recordings</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>

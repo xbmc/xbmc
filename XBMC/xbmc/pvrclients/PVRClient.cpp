@@ -654,6 +654,7 @@ void CPVRClient::PVRTransferRecordingEntry(void *userData, const PVRHANDLE handl
   tag.SetPriority(recording->priority);
   tag.SetLifetime(recording->lifetime);
   tag.SetTitle(recording->title);
+  tag.SetDirectory(recording->directory);
   tag.SetPlot(recording->description);
   tag.SetPlotOutline(recording->subtitle);
 
