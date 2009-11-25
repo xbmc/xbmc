@@ -21,12 +21,12 @@
 			<RegExp input="$$1" output="&lt;setting label=&quot;Grab album thumbs from Last.fm&quot; type=&quot;bool&quot; id=&quot;lastfmalbumthumbs&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Grab artist thumbs from Discogs&quot; type=&quot;bool&quot; id=&quot;discogsartistthumbs&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+<!--			<RegExp input="$$1" output="&lt;setting label=&quot;Grab artist thumbs from Discogs&quot; type=&quot;bool&quot; id=&quot;discogsartistthumbs&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Grab album thumbs from Discogs&quot; type=&quot;bool&quot; id=&quot;discogsalbumthumbs&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
-			</RegExp>
+			</RegExp> -->
 			<RegExp input="$$1" output="&lt;setting label=&quot;Grab artist thumbs from HTBackdrops&quot; type=&quot;bool&quot; id=&quot;htbthumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>

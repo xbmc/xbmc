@@ -1367,7 +1367,7 @@ CFileItemPtr CFileItemList::Get(int iItem)
 {
   CSingleLock lock(m_lock);
 
-  if (iItem > -1)
+  if (iItem > -1 && iItem < (int)m_items.size())
     return m_items[iItem];
 
   return CFileItemPtr();
@@ -1377,7 +1377,7 @@ const CFileItemPtr CFileItemList::Get(int iItem) const
 {
   CSingleLock lock(m_lock);
 
-  if (iItem > -1)
+  if (iItem > -1 && iItem < (int)m_items.size())
     return m_items[iItem];
 
   return CFileItemPtr();
@@ -2483,7 +2483,13 @@ void CFileItem::SetCachedVideoThumb()
 {
   if (IsParentFolder()) return;
   CStdString cachedThumb(GetCachedVideoThumb());
-  if (CFile::Exists(cachedThumb))
+  if (HasVideoInfoTag() && !m_bIsFolder  &&
+      GetVideoInfoTag()->m_iEpisode > -1 &&
+      CFile::Exists(GetCachedEpisodeThumb()))
+  {
+    SetThumbnailImage(GetCachedEpisodeThumb());
+  }
+  else if (CFile::Exists(cachedThumb))
     SetThumbnailImage(cachedThumb);
 }
 

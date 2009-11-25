@@ -1,9 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Team XBMC Translator-->
-<!--Translator: blittan-->
-<!--Email: blittan@xbmc.org-->
-<!--Date of translation: 11/16/2009-->
-<!--$Revision$-->
 <strings>
   <string id="31000">Ändra din</string>
   <string id="31001">Älska</string>
@@ -101,14 +96,14 @@
   <string id="31327">Upplösning</string>
   <string id="31328">Nyligen tillagda</string>
   <string id="31329">[B]TIMER SATT![/B] [COLOR=grey2] - SYSTEM AUTO AVSTÄNGNING OM[/COLOR]</string>
-  <string id="31400">[B]ÄNDRA DINA UTSEENDEINSTÄLLNINGAR, SOM.[/B][CR][CR]Kalibrera GUI · Ändra skalet · Ange skärmsläckare · Ändra dina regionala inställningar · Ange globala visningsalternativ</string>
-  <string id="31401">[B]ÄNDRA DINA GRAFIKINSTÄLLNINGAR, SOM.[/B][CR][CR]Hantera ditt filmbibliotek · Filmuppspelarkvalitet och renderare · Konfigurera undertextsfonter · Ange filmautoåterupptagning</string>
-  <string id="31402">[B]ÄNDRA DINA MUSIKINSTÄLLNINGAR, SOM.[/B][CR][CR] Välja visualisering · Hantera ditt musikbibliotek · Ange ditt Last.FM konto · Ändra Karaokefonter och inställningar</string>
-  <string id="31403">[B]ÄNDRA DINA BILDINSTÄLLNINGAR, SOM.[/B][CR][CR]Aktivera automatisk minatyrskapning och EXIF taggläsning · Justera bildspelsövergångseffekter · Ange din XBMC skärmdumpsmapp</string>
-  <string id="31404">[B]ÄNDRA DINA VÄDERINSTÄLLNINGAR, SOM.[/B][CR][CR]Ange dom tre städer som XBMC visar på väderskärmen · Ändra dina regionala inställningar, inklusive temperaturenheter</string>
-  <string id="31405">[B]ÄNDRA DINA NÄTVERKSINSTÄLLNINGAR, SOM.[/B][CR][CR]Aktivera XBMC interna webbserver · Ange Sambainställningar · Aktivera/Konfigurera UPNP server och klient · Konfigurera händelseservern</string>
-  <string id="31406">[B]ÄNDRA DINA SYSTEMINSTÄLLNINGAR, SOM.[/B][CR][CR]Ändra standarden för avstängningsläge · Konfigurera Autospelning · Ställa in din ljudhårdvara · Konfigurera huvudanvändarens lösenord och systemlåsningar</string>
-  <string id="31407">[B]ÄNDRA SKALINSTÄLLNINGAR, SOM.[/B][CR][CR]Lägga till och ta bort hemmenyknappar · Ändra bakgrunder för varje sektion · Skapa genvägar till skript i hela skalet</string>
+  <string id="31400">[B]KONFIGURERA UTSEENDEINSTÄLLNINGAR[/B][CR][CR]Ändra skalet · Ange språk och region · Ange fillistningsalternativ[CR]Ange en skärmsläckare</string>
+  <string id="31401">[B]KONFIGURERA GRAFIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt filmbibliotek · Ange filmuppspelningsalternativ · Ändra filmlistningsalternativ[CR]Konfigurera undertextsfonter</string>
+  <string id="31402">[B]KONFIGURERA MUSIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt musikbibliotek · Ange musikuppspelningsalternativ · Ändra musiklistningsalternativ[CR]Ange låtinskickning · Ange karaokealternativ</string>
+  <string id="31403">[B]KONFIGURERA BILDINSTÄLLNINGAR[/B][CR][CR]Ange bildlistningsalternativ · Justera bildspel</string>
+  <string id="31404">[B]KONFIGURERA VÄDERINSTÄLLNINGAR[/B][CR][CR]Ange dom tre städer som används för att samla in väderinformation</string>
+  <string id="31405">[B]KONFIGURERA NÄTVERKSINSTÄLLNINGAR[/B][CR][CR]Ange kontroll av XBMC via UPnP och HTTP · Konfigurera fildelning[CR]Konfigurera internetaccessalternativ</string>
+  <string id="31406">[B]KONFIGURERA SYSTEMINSTÄLLNINGAR[/B][CR][CR]Ange och kalibrera skärmar · Konfigurera ljudutgång · Ställa in fjärrkontroller[CR]Ange strömsparsalternativ · Aktivera avbuggning · Konfigurera huvudanvändarlåsningar</string>
+  <string id="31407">[B]KONFIGURERA SKALINSTÄLLNINGAR[/B][CR][CR]Ställa in Confluence skalet · Lägga till och ta bort hemmenyknappar[CR]Ändra skalbakgrunder</string>
   <string id="31420">[B][COLOR=white]XBMC har inte upptäckt en disk.[/COLOR][/B][CR][CR]Vänligen sätt i en disk i din läsare och försök igen eller avbryt</string>
   <string id="31421">Välj din XBMC användarprofil[CR]för att logga in  och fortsätta</string>
 </strings>

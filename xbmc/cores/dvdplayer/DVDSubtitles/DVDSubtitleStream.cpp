@@ -22,243 +22,115 @@
 #include "DVDSubtitleStream.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"
+#include "utils/CharsetConverter.h"
 
 using namespace std;
 
-char* strnchr(char *s, size_t len, char c)
-{
-  size_t pos;
-
-  for (pos = 0; pos < len; pos++)
-  {
-    if (s[pos] == c) return s + pos;
-  }
-
-  return 0;
-}
-
-char* strnrchr(const char *sp, int c, size_t n)
-{
-  const char *r = 0;
-
-  while (n-- > 0 && *sp)
-  {
-    if (*sp == c)
-      r = sp;
-    sp++;
-  }
-
-  return ((char *)r);
-}
-
-
 CDVDSubtitleStream::CDVDSubtitleStream()
 {
-  m_pInputStream = NULL;
-  m_buffer = NULL;
-  m_iMaxBufferSize = 0;
-  m_iBufferSize = 0;
-  m_iBufferPos = 0;
 }
 
 CDVDSubtitleStream::~CDVDSubtitleStream()
 {
-  if (m_buffer) delete[] m_buffer;
-  if (m_pInputStream) delete m_pInputStream;
 }
 
 bool CDVDSubtitleStream::Open(const string& strFile)
 {
-  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strFile, "");
-  if (m_pInputStream && m_pInputStream->Open(strFile.c_str(), ""))
+  CDVDInputStream* pInputStream;
+  pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strFile, "");
+  if (pInputStream && pInputStream->Open(strFile.c_str(), ""))
   {
-    // set up our buffers
-    int iBlockSize = m_pInputStream->GetBlockSize();
-    m_buffer = new BYTE[iBlockSize];
-
-    if (m_buffer)
+    unsigned char buffer[16384];
+    int size_read = 0;
+    size_read = pInputStream->Read(buffer,3);
+    bool isUTF8 = false;
+    bool isUTF16 = false;
+    if (buffer[0] == 0xEF && buffer[1] == 0xBB && buffer[2] == 0xBF)
+      isUTF8 = true;
+    else if (buffer[0] == 0xFF && buffer[1] == 0xFE)
     {
-      m_iMaxBufferSize = iBlockSize;
-      m_iBufferSize = 0;
-      m_iBufferPos = 0;
-
-      return true;
+      isUTF16 = true;
+      pInputStream->Seek(2, SEEK_SET);
     }
+    else
+      pInputStream->Seek(0, SEEK_SET);
+
+    if (isUTF16)
+    {
+      std::wstringstream wstringstream;
+      while( (size_read = pInputStream->Read(buffer, sizeof(buffer)) ) > 0 )
+      {
+        wstringstream.write((wchar_t *)buffer, size_read / 2);
+      }
+      delete pInputStream;
+
+      CStdString strUTF8;
+      g_charsetConverter.wToUTF8(wstringstream.str(),strUTF8);
+      m_stringstream.str("");
+      m_stringstream << strUTF8;
+    }
+    else
+    {
+      while( (size_read = pInputStream->Read(buffer, sizeof(buffer)-1) ) > 0 )
+      {
+        buffer[size_read] = '\0';
+        m_stringstream << buffer;
+      }
+      delete pInputStream;
+
+      if (!isUTF8)
+        isUTF8 = g_charsetConverter.isValidUtf8(m_stringstream.str());
+ 
+      if (!isUTF8)
+      {
+        CStdStringW strUTF16;
+        CStdString strUTF8;
+        g_charsetConverter.subtitleCharsetToW(m_stringstream.str(), strUTF16);
+        g_charsetConverter.wToUTF8(strUTF16,strUTF8);
+        m_stringstream.str("");
+        m_stringstream << strUTF8;
+      }
+    }
+    return true;
   }
 
+  delete pInputStream;
   return false;
 }
 
-void CDVDSubtitleStream::Close()
+int CDVDSubtitleStream::Read(char* buf, int buf_size)
 {
-  if (m_pInputStream)
-    SAFE_DELETE(m_pInputStream);
-  if (m_buffer)
-    SAFE_DELETE_ARRAY(m_buffer);
-
-  m_iMaxBufferSize = 0;
+  return m_stringstream.readsome(buf, buf_size);
 }
 
-int CDVDSubtitleStream::Read(BYTE* buf, int buf_size)
+long CDVDSubtitleStream::Seek(long offset, int whence)
 {
-  if (m_buffer && m_pInputStream)
+  switch (whence)
   {
-    if (m_iBufferSize == 0)
+    case SEEK_CUR:
     {
-      // need to read more data, buffer is empty
-      m_iBufferPos = 0;
-      m_iBufferSize = 0;
-
-      int iRes = m_pInputStream->Read(m_buffer, m_iMaxBufferSize);
-      if (iRes > 0)
-      {
-        m_iBufferSize = iRes;
-      }
-      else
-      {
-        // error
-        return iRes;
-      }
+      m_stringstream.seekg(offset, ios::cur);
+      break;
     }
-
-    int iBytesToRead = min(buf_size,m_iBufferSize);
-
-    memcpy(buf, m_buffer + m_iBufferPos, iBytesToRead);
-    m_iBufferPos += iBytesToRead;
-    m_iBufferSize -= iBytesToRead;
-
-    return iBytesToRead;
-  }
-
-  return 0;
-}
-
-__int64 CDVDSubtitleStream::Seek(__int64 offset, int whence)
-{
-  if (m_pInputStream)
-  {
-    __int64 iPos = m_pInputStream->Seek(0LL, SEEK_CUR);
-
-    switch (whence)
+    case SEEK_END:
     {
-      case SEEK_CUR:
-      {
-        if ((m_iBufferPos + offset) > m_iBufferSize
-        ||  (m_iBufferPos + offset) < 0)
-        {
-          m_iBufferPos = 0;
-          m_iBufferSize = 0;
-
-          return m_pInputStream->Seek(offset, whence);
-        }
-        else
-        {
-          m_iBufferPos  += (int)offset;
-          m_iBufferSize -= (int)offset;
-
-          return iPos + m_iBufferPos;
-        }
-        break;
-      }
-      case SEEK_END:
-      {
-        // just drop buffer
-        m_iBufferPos = 0;
-        m_iBufferSize = 0;
-
-        return m_pInputStream->Seek(offset, whence);
-      }
-      case SEEK_SET:
-      {
-        if ((offset > iPos)
-        ||  (offset + m_iBufferSize + m_iBufferPos < iPos))
-        {
-          m_iBufferPos = 0;
-          m_iBufferSize = 0;
-
-          return m_pInputStream->Seek(offset, whence);
-        }
-        else
-        {
-          m_iBufferPos  += (int)(offset - iPos) + m_iBufferSize;
-          m_iBufferSize -= (int)(offset - iPos) + m_iBufferSize;
-
-          return offset;
-        }
-        break;
-      }
+      m_stringstream.seekg(offset, ios::end);
+      break;
+    }
+    case SEEK_SET:
+    {
+      m_stringstream.seekg(offset, ios::beg);
+      break;
     }
   }
-  return -1;
+  return m_stringstream.tellg();
 }
 
 char* CDVDSubtitleStream::ReadLine(char* buf, int iLen)
 {
-  char* pBuffer = buf;
-
-  pBuffer[0] = '\0';
-  int residualBytes = 0;
-
-  if (m_buffer)
-  {
-    while (iLen > 0)
-    {
-      if (m_iBufferSize == 0)
-      {
-        // need to read more data, buffer is empty
-        m_iBufferPos = 0;
-        m_iBufferSize = 0;
-
-        int iRes = m_pInputStream->Read(m_buffer+residualBytes, m_iMaxBufferSize-residualBytes);
-        if (iRes > 0)
-        {
-          m_iBufferSize = iRes+residualBytes;
-        }
-        else
-        {
-          // error
-          return NULL;
-        }
-      }
-
-      int iBytesToRead = min(iLen,m_iBufferSize);
-
-      // now find end of string
-      char* pLineStart = (char*)(m_buffer + m_iBufferPos);
-      char* pLineEnd = strnchr(pLineStart, iBytesToRead, '\n');
-      if (pLineEnd)
-      {
-
-        // we have a line
-        int iStringLength = pLineEnd - pLineStart;
-        if (iStringLength > iLen)
-          return NULL;
-
-        if(iStringLength > 0 && pLineStart[iStringLength - 1] == '\r')
-          iStringLength--;
-
-        m_iBufferPos += pLineEnd - pLineStart + 1;
-        m_iBufferSize -= pLineEnd - pLineStart + 1;
-
-        memcpy(pBuffer, pLineStart, iStringLength);
-        pBuffer += iStringLength;
-        pBuffer[0] = 0;
-        return buf;
-      }
-      else
-      {
-        // didn't find new line, copy all data to buffer and try again
-        if (m_iBufferSize > iLen)
-        {
-          // buffer is to small
-          return NULL;
-        }
-
-        memcpy(m_buffer, m_buffer + m_iBufferPos, m_iBufferSize);
-        residualBytes = m_iBufferSize;
-        m_iBufferSize = 0;
-      }
-    }
-  }
-  return buf;
+  if (m_stringstream.getline(buf, iLen))
+    return buf;
+  else
+    return NULL;
 }
+

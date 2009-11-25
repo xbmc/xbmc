@@ -143,6 +143,16 @@ int CEventServer::GetNumberOfClients()
 
 void CEventServer::Process()
 {
+  while(!m_bStop)
+  {
+    Run();
+    if (!m_bStop)
+      Sleep(1000);
+  }
+}
+
+void CEventServer::Run()
+{
   CAddress any_addr;
   CSocketListener listener;
   int packetSize = 0;
@@ -197,14 +207,22 @@ void CEventServer::Process()
 
   while (!m_bStop)
   {
-    // start listening until we timeout
-    if (listener.Listen(m_iListenTimeout))
+    try
     {
-      CAddress addr;
-      if ((packetSize = m_pSocket->Read(addr, PACKET_SIZE, (void *)m_pPacketBuffer)) > -1)
+      // start listening until we timeout
+      if (listener.Listen(m_iListenTimeout))
       {
-        ProcessPacket(addr, packetSize);
+        CAddress addr;
+        if ((packetSize = m_pSocket->Read(addr, PACKET_SIZE, (void *)m_pPacketBuffer)) > -1)
+        {
+          ProcessPacket(addr, packetSize);
+        }
       }
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "ES: Exception caught while listening for socket");
+      break;
     }
 
     // process events and queue the necessary actions and button codes

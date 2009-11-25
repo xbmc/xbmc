@@ -168,8 +168,6 @@
 		7C62F24310505BC7002AD2C1 /* Bookmark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F24010505BC7002AD2C1 /* Bookmark.cpp */; };
 		7C62F45E1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F45C1057A62D002AD2C1 /* DirectoryNodeSingles.cpp */; };
 		7C62F45F1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F45C1057A62D002AD2C1 /* DirectoryNodeSingles.cpp */; };
-		7C62F4D510587E4F002AD2C1 /* DVDSubtitleParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F4D410587E4F002AD2C1 /* DVDSubtitleParser.cpp */; };
-		7C62F4D610587E4F002AD2C1 /* DVDSubtitleParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F4D410587E4F002AD2C1 /* DVDSubtitleParser.cpp */; };
 		7C779DA6104A4B2E00F444C4 /* GUIControlFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D95104A4B2E00F444C4 /* GUIControlFactory.cpp */; };
 		7C779DA8104A4B2E00F444C4 /* GUIFontTTFGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D99104A4B2E00F444C4 /* GUIFontTTFGL.cpp */; };
 		7C779DA9104A4B2E00F444C4 /* GUIImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D9B104A4B2E00F444C4 /* GUIImage.cpp */; };
@@ -2024,7 +2022,6 @@
 		7C62F24110505BC7002AD2C1 /* Bookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bookmark.h; sourceTree = "<group>"; };
 		7C62F45C1057A62D002AD2C1 /* DirectoryNodeSingles.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeSingles.cpp; sourceTree = "<group>"; };
 		7C62F45D1057A62D002AD2C1 /* DirectoryNodeSingles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeSingles.h; sourceTree = "<group>"; };
-		7C62F4D410587E4F002AD2C1 /* DVDSubtitleParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleParser.cpp; sourceTree = "<group>"; };
 		7C779D94104A4B2E00F444C4 /* GUIActionDescriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIActionDescriptor.h; sourceTree = "<group>"; };
 		7C779D95104A4B2E00F444C4 /* GUIControlFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIControlFactory.cpp; sourceTree = "<group>"; };
 		7C779D96104A4B2E00F444C4 /* GUIControlFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIControlFactory.h; sourceTree = "<group>"; };
@@ -5340,7 +5337,6 @@
 		E38E158E0D25F9FA00618676 /* DVDSubtitles */ = {
 			isa = PBXGroup;
 			children = (
-				7C62F4D410587E4F002AD2C1 /* DVDSubtitleParser.cpp */,
 				8883CEA20DD81807004E8B72 /* DllLibass.h */,
 				8883CEA30DD81807004E8B72 /* DVDSubtitleParserSSA.cpp */,
 				8883CEA40DD81807004E8B72 /* DVDSubtitleParserSSA.h */,
@@ -8200,7 +8196,6 @@
 				7C62F22E104FC8B9002AD2C1 /* AdvancedSettings.cpp in Sources */,
 				7C62F24210505BC7002AD2C1 /* Bookmark.cpp in Sources */,
 				7C62F45E1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */,
-				7C62F4D510587E4F002AD2C1 /* DVDSubtitleParser.cpp in Sources */,
 				7CCF7E721067643800992676 /* DirectoryNodeSets.cpp in Sources */,
 				7CCF7F1D1069F3AE00992676 /* Builtins.cpp in Sources */,
 				7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */,
@@ -9080,7 +9075,6 @@
 				7C62F22F104FC8B9002AD2C1 /* AdvancedSettings.cpp in Sources */,
 				7C62F24310505BC7002AD2C1 /* Bookmark.cpp in Sources */,
 				7C62F45F1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */,
-				7C62F4D610587E4F002AD2C1 /* DVDSubtitleParser.cpp in Sources */,
 				7CCF7E731067643800992676 /* DirectoryNodeSets.cpp in Sources */,
 				7CCF7F1E1069F3AE00992676 /* Builtins.cpp in Sources */,
 				7CCF7FCA106A0DF500992676 /* TimeUtils.cpp in Sources */,

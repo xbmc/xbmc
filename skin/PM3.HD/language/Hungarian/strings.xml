@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: alanwww1-->
-<!--Date of translation: 11/17/2009-->
+<!--Date of translation: 11/23/2009-->
 <!--$Revision$-->
+<!--Based on english strings version 24883-->
 <strings>
   <string id="31000">Hangerő némítva</string>
   <string id="31001">Dolgozom...</string>
@@ -96,6 +96,7 @@
   <string id="31113">Egy darab kép</string>
   <string id="31114">Több kép</string>
   <string id="31115">Audiobeállítások gomb cseréje Teletextre</string>
+  <string id="31116">Video-zászló képek elrejtése médianézetekben</string>
   <string id="31200">Egyedi script lehetőségek</string>
   <string id="31201">
   </string>

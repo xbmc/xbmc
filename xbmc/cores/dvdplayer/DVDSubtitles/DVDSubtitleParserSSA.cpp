@@ -42,7 +42,7 @@ bool CDVDSubtitleParserSSA::Open(CDVDStreamInfo &hints)
 
   if (!CDVDSubtitleParserText::Open())
     return false;
-  if(!m_libass->CreateTrack((char* )m_stringstream.str().c_str()))
+  if(!m_libass->CreateTrack((char* )m_pStream->m_stringstream.str().c_str()))
     return false;
 
   //Creating the overlays by going through the list of ass_events

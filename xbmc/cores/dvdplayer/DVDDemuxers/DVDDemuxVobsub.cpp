@@ -117,7 +117,6 @@ bool CDVDDemuxVobsub::Open(const string& filename)
     else
       continue;
   }
-  pStream->Close();
 
   struct sorter s;
   sort(m_Timestamps.begin(), m_Timestamps.end(), s);

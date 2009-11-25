@@ -247,7 +247,7 @@ void CGUISettings::Initialize()
   AddBool(2, "musiclibrary.showcompilationartists", 13414, true);
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.downloadinfo", 20192, false);
-  AddString(6, "musiclibrary.defaultscraper", 20194, "discogs.xml", SPIN_CONTROL_TEXT);
+  AddString(6, "musiclibrary.scraper", 20194, "allmusic.xml", SPIN_CONTROL_TEXT);
   AddString(7, "musiclibrary.scrapersettings", 21417, "", BUTTON_CONTROL_STANDARD);
   AddBool(8, "musiclibrary.updateonstartup", 22000, false);
   AddBool(0, "musiclibrary.backgroundupdate", 22001, false);
@@ -480,7 +480,7 @@ void CGUISettings::Initialize()
   AddInt(0, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
-  AddBool(10, "videoplayer.vdpauUpscalingLevel", 13121, false);
+  AddBool(0, "videoplayer.vdpauUpscalingLevel", 13121, false);
   AddBool(11, "videoplayer.vdpaustudiolevel", 13122, true);
 #endif
 #endif
@@ -609,8 +609,8 @@ void CGUISettings::Initialize()
   AddString(3, "locale.charset", 14091, "DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
 #if defined(_LINUX) && !defined(__APPLE__)
   AddSeparator(4, "locale.sep1");
-  AddString(8, "locale.timezone", 14079, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
-  AddString(7, "locale.timezonecountry", 14080, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
+  AddString(7, "locale.timezonecountry", 14079, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
+  AddString(8, "locale.timezone", 14080, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
 #endif
 #ifdef HAS_TIME_SERVER
   AddSeparator(9, "locale.sep2");

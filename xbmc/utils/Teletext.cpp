@@ -493,8 +493,8 @@ bool CTeletextDecoder::HandleAction(const CAction &action)
     else if (m_RenderInfo.Boxed)
     {
         m_RenderInfo.SubtitleDelay--;
-        if (m_RenderInfo.SubtitleDelay < 0) m_RenderInfo.SubtitleDelay = 0;
-            // display subtitledelay
+        
+        // display subtitledelay
         m_RenderInfo.PosY = 0;
         char ns[10];
         SetPosX(1);

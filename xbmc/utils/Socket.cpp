@@ -160,7 +160,10 @@ void CSocketListener::AddSocket(CBaseSocket *sock)
 bool CSocketListener::Listen(int timeout)
 {
   if (m_sockets.size()==0)
-    return false;
+  {
+    CLog::Log(LOGERROR, "SOCK: No sockets to listen for");
+    throw LISTENEMPTY;
+  }
 
   m_iReadyCount = 0;
   m_iCurrentSocket = 0;
@@ -190,7 +193,7 @@ bool CSocketListener::Listen(int timeout)
   {
     CLog::Log(LOGERROR, "SOCK: Error selecting socket(s)");
     Clear();
-    return false;
+    throw LISTENERROR;
   }
   else
   {

@@ -107,8 +107,8 @@
   </string>
   <string id="31206">
   </string>
-  <string id="31207">Visa nedladdningsknapp för undertexter i OSD</string>
-  <string id="31208">Visa sångtexts-skriptsknappen i OSD</string>
+  <string id="31207">Visa nedladdningsknapp för undertexter i video OSD</string>
+  <string id="31208">Visa sångtexts-skriptsknappen i musik OSD</string>
   <string id="31209">Aktivera snabbstarta skriptknapp för -</string>
   <string id="31300">Visa rollsättning</string>
 </strings>
