@@ -56,9 +56,9 @@ public:
 private:
   static time_t ParseDate(const CStdString & strDate);
 
-  static void ParseItemRSS   (CFileItemPtr& item, TiXmlElement* first);
-  static void ParseItemMRSS  (CFileItemPtr& item, TiXmlElement* first);
-  static void ParseItemItunes(CFileItemPtr& item, TiXmlElement* first);
+  static void ParseItemRSS   (CFileItemPtr& item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns);
+  static void ParseItemMRSS  (CFileItemPtr& item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns);
+  static void ParseItemItunes(CFileItemPtr& item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns);
   static bool IsPathToMedia(const CStdString& strPath );
   static bool IsPathToThumbnail(const CStdString& strPath );
 

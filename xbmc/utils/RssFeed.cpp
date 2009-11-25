@@ -55,9 +55,9 @@ time_t CRssFeed::ParseDate(const CStdString & strDate)
   return mktime(&pubDate);
 }
 
-void CRssFeed::ParseItemMRSS(CFileItemPtr& item, TiXmlElement* item_child)
+void CRssFeed::ParseItemMRSS(CFileItemPtr& item, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
 {
-  if(strcmp(item_child->Value(), "media:content") == 0)
+  if(name == "content")
   {
     const char * url = item_child->Attribute("url");
     if (url && item->m_strPath == "" && IsPathToMedia(url))
@@ -84,7 +84,7 @@ void CRssFeed::ParseItemMRSS(CFileItemPtr& item, TiXmlElement* item_child)
         item->SetThumbnailImage(url);
     }
   }
-  else if(strcmp(item_child->Value(), "media:thumbnail") == 0)
+  else if(name == "thumbnail")
   {
     if(item_child->GetText() && IsPathToThumbnail(item_child->GetText()))
       item->SetThumbnailImage(item_child->GetText());
@@ -97,9 +97,9 @@ void CRssFeed::ParseItemMRSS(CFileItemPtr& item, TiXmlElement* item_child)
   }
 }
 
-void CRssFeed::ParseItemItunes(CFileItemPtr& item, TiXmlElement* item_child)
+void CRssFeed::ParseItemItunes(CFileItemPtr& item, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
 {
-  if(strcmp(item_child->Value(), "itunes:image") == 0)
+  if(name == "image")
   {
     if(item_child->GetText() && IsPathToThumbnail(item_child->GetText()))
       item->SetThumbnailImage(item_child->GetText());
@@ -110,7 +110,7 @@ void CRssFeed::ParseItemItunes(CFileItemPtr& item, TiXmlElement* item_child)
         item->SetThumbnailImage(url);
     }
   }
-  else if(strcmp(item_child->Value(), "itunes:summary") == 0)
+  else if(name == "summary")
   {
     if(item_child->GetText())
     {
@@ -119,7 +119,7 @@ void CRssFeed::ParseItemItunes(CFileItemPtr& item, TiXmlElement* item_child)
       item->SetLabel2(description);
     }
   }
-  else if(strcmp(item_child->Value(), "itunes:subtitle") == 0)
+  else if(name == "subtitle")
   {
     if(item_child->GetText())
     {
@@ -128,36 +128,36 @@ void CRssFeed::ParseItemItunes(CFileItemPtr& item, TiXmlElement* item_child)
       item->SetLabel2(description);
     }
   }
-  else if(strcmp(item_child->Value(), "itunes:author") == 0)
+  else if(name == "author")
   {
     if(item_child->GetText())
       item->SetProperty("author", item_child->GetText());
   }
-  else if(strcmp(item_child->Value(), "itunes:duration") == 0)
+  else if(name == "duration")
   {
     if(item_child->GetText())
       item->SetProperty("duration", item_child->GetText());
   }
-  else if(strcmp(item_child->Value(), "itunes:keywords") == 0)
+  else if(name == "keywords")
   {
     if(item_child->GetText())
       item->SetProperty("keywords", item_child->GetText());
   }
 }
 
-void CRssFeed::ParseItemRSS(CFileItemPtr& item, TiXmlElement* item_child)
+void CRssFeed::ParseItemRSS(CFileItemPtr& item, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
 {
-  if (strcmp(item_child->Value(), "title") == 0)
+  if (name == "title")
   {
     if (item_child->GetText())
       item->SetLabel(item_child->GetText());
   }
-  else if (strcmp(item_child->Value(), "pubDate") == 0)
+  else if (name == "pubDate")
   {
     CDateTime pubDate(ParseDate(item_child->GetText()));
     item->m_dateTime = pubDate;
   }
-  else if (strcmp(item_child->Value(), "link") == 0)
+  else if (name == "link")
   {
     if (item_child->GetText())
     {
@@ -174,7 +174,7 @@ void CRssFeed::ParseItemRSS(CFileItemPtr& item, TiXmlElement* item_child)
         item->m_strPath = strLink;
     }
   }
-  else if(strcmp(item_child->Value(), "enclosure") == 0)
+  else if(name == "enclosure")
   {
     const char * url = item_child->Attribute("url");
     if (url && item->m_strPath.IsEmpty() && IsPathToMedia(url))
@@ -194,14 +194,14 @@ void CRssFeed::ParseItemRSS(CFileItemPtr& item, TiXmlElement* item_child)
     if (len)
       item->m_dwSize = _atoi64(len);
   }
-  else if(strcmp(item_child->Value(), "description") == 0)
+  else if(name == "description")
   {
     CStdString description = item_child->GetText();
     HTML::CHTMLUtil::RemoveTags(description);
     item->SetProperty("description", description);
     item->SetLabel2(description);
   }
-  else if(strcmp(item_child->Value(), "guid") == 0)
+  else if(name == "guid")
   {
     if (item->m_strPath.IsEmpty() && IsPathToMedia(item_child->Value()))
     {
@@ -279,12 +279,21 @@ bool CRssFeed::ReadFeed()
 
     for (item_child = child->FirstChildElement(); item_child; item_child = item_child->NextSiblingElement())
     {
-      if      (strncmp(item_child->Value(), "media:" , 6) == 0)
-        ParseItemMRSS(item, item_child);
-      else if (strncmp(item_child->Value(), "itunes:", 7) == 0)
-        ParseItemItunes(item, item_child);
+      CStdString name = item_child->Value();
+      CStdString xmlns;
+      int pos = name.Find(':');
+      if(pos >= 0)
+      {
+        xmlns = name.Left(pos);
+        name.Delete(0, pos+1);
+      }
+
+      if(xmlns == "media")
+        ParseItemMRSS(item, item_child, name, xmlns);
+      else if (xmlns == "itunes")
+        ParseItemItunes(item, item_child, name, xmlns);
       else
-        ParseItemRSS(item, item_child);
+        ParseItemRSS(item, item_child, name, xmlns);
 
     } // for item
 
