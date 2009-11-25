@@ -2086,22 +2086,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 
   __int64 seek;
   bool accurate = false;
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-  {
-    CDVDInputStreamPVRManager* pStream = (CDVDInputStreamPVRManager*)m_pInputStream;
-    seek     = GetTime();
-    accurate = true;
-
-    int step = pStream->SeekTimeStep(bPlus, bLargeStep, seek);
-    if (step <= 0)
-      return;
-
-    if (bPlus)
-      seek += step;
-    else
-      seek -= step;
-  }
-  else if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
+  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
   {
     if (bLargeStep)
       seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;

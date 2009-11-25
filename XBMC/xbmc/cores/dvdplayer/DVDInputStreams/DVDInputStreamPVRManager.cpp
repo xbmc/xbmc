@@ -184,14 +184,14 @@ int CDVDInputStreamPVRManager::GetTotalTime()
 {
   if (m_pLiveTV)
     return m_pLiveTV->GetTotalTime();
-  return false;
+  return 0;
 }
 
 int CDVDInputStreamPVRManager::GetStartTime()
 {
   if (m_pLiveTV)
     return m_pLiveTV->GetStartTime();
-  return false;
+  return 0;
 }
 
 bool CDVDInputStreamPVRManager::NextChannel()

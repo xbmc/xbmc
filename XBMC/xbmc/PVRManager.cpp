@@ -2391,6 +2391,9 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel)
 /********************************************************************/
 int CPVRManager::GetTotalTime()
 {
+  if (!m_currentPlayingChannel)
+    return 0;
+
   int duration = 1;
 
   if (m_currentPlayingChannel)
