@@ -29,6 +29,7 @@
 
 
 #include "../../addons/include/xbmc_vis_dll.h"
+#include <string.h>
 #include <math.h>
 #include <GL/glew.h>
 
@@ -264,7 +265,7 @@ extern "C" void GetInfo(VIS_INFO* pInfo)
 //-- OnAction -----------------------------------------------------------------
 // Handle XBMC actions such as next preset, lock preset, album art changed etc
 //-----------------------------------------------------------------------------
-extern "C" bool OnAction(long flags, void *param)
+extern "C" bool OnAction(long flags, const void *param)
 {
   bool ret = false;
   return ret;
@@ -314,30 +315,23 @@ extern "C" addon_settings_t GetSettings()
   addon_setting_t setting = NULL;
   addon_setting_t setting2 = NULL;
   addon_setting_t setting3 = NULL;
-  int err = 0;
 
   // allocate the structures
   settings = addon_settings_create();
-  setting = addon_setting_create();
-  setting2 = addon_setting_create();
-  setting3 = addon_setting_create();
+  setting = addon_setting_create(SETTING_ENUM, "Size");
+  setting2 = addon_setting_create(SETTING_ENUM, "Mode");
+  setting3 = addon_setting_create(SETTING_ENUM, "Speed");
 
   if (!settings || !setting || !setting2 || !setting3) {
     return NULL;
   }
 
-  addon_setting_set_id(setting, "Size");
-  addon_setting_set_type(setting, SETTING_ENUM);
   addon_setting_set_label(setting, "30000");
   addon_setting_set_lvalues(setting, "30001|30002|30003|30004");
 
-  addon_setting_set_id(setting2, "Mode");
-  addon_setting_set_type(setting2, SETTING_ENUM);
   addon_setting_set_label(setting2, "30005");
   addon_setting_set_lvalues(setting2, "30006|30007|30008");
 
-  addon_setting_set_id(setting3, "Speed");
-  addon_setting_set_type(setting3, SETTING_ENUM);
   addon_setting_set_label(setting3, "30009");
   addon_setting_set_lvalues(setting3, "30010|30011|30012|30013|30014");
 

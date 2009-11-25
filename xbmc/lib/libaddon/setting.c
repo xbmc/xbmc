@@ -70,7 +70,7 @@ addon_setting_destroy(addon_setting_t p)
 }
 
 /*
- * addon_setting_create(void)
+ * addon_setting_create(addon_setting_type_t type, const char* id)
  *
  * Scope: PUBLIC
  *
@@ -85,7 +85,7 @@ addon_setting_destroy(addon_setting_t p)
  * Failure: A NULL addon_setting_t
  */
 addon_setting_t
-addon_setting_create(void)
+addon_setting_create(addon_setting_type_t type, const char* id)
 {
   addon_setting_t ret = ref_alloc(sizeof(*ret));
 
@@ -95,8 +95,8 @@ addon_setting_create(void)
   }
   ref_set_destroy(ret, (ref_destroy_t)addon_setting_destroy);
 
-  ret->type = 0; // Label type
-  ret->id = NULL;
+  ret->type = type;
+  ret->id = ref_strdup(id);
   ret->label = NULL;
   ret->enable = NULL;
   ret->lvalues = NULL;

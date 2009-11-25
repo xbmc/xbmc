@@ -116,9 +116,11 @@ extern "C"
 //////////// AddOn Setting Operations ////////////
 /**
  * Create a new setting structure
+ * \param type setting type
+ * \param id char* id
  * \return setting handle
  */
- XBMC_API addon_setting_t addon_setting_create(void);
+ XBMC_API addon_setting_t addon_setting_create(addon_setting_type_t type, const char* id);
 
 /**
  * Retrieve the 'ID' field of a setting
