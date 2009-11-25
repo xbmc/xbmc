@@ -880,11 +880,11 @@
 				<width>760</width>
 				<height>361</height>
 				<onleft>2</onleft>
-				<onright>60</onright>
+				<onright>51360</onright>
 				<onup>513</onup>
 				<ondown>513</ondown>
 				<viewtype label="$LOCALIZE[10523]">list</viewtype>
-				<pagecontrol>60</pagecontrol>
+				<pagecontrol>51360</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<visible>Container.Content(Albums)</visible>
 				<itemlayout height="40" width="760">
@@ -974,7 +974,7 @@
 				</focusedlayout>
 			</control>
 			<control type="group">
-				<control type="scrollbar" id="60">
+				<control type="scrollbar" id="51360">
 					<posx>1220</posx>
 					<posy>60</posy>
 					<width>25</width>
@@ -984,8 +984,8 @@
 					<texturesliderbarfocus border="2,16,2,16">ScrollBarV_bar_focus.png</texturesliderbarfocus>
 					<textureslidernib>ScrollBarNib.png</textureslidernib>
 					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-					<onleft>511</onleft>
-					<onright>61</onright>
+					<onleft>513</onleft>
+					<onright>51361</onright>
 					<showonepage>false</showonepage>
 					<orientation>vertical</orientation>
 					<visible>Control.IsVisible(513)</visible>
@@ -1124,12 +1124,12 @@
 					<height>165</height>
 					<font>font12</font>
 					<align>justify</align>
-					<pagecontrol>61</pagecontrol>
+					<pagecontrol>51361</pagecontrol>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Property(Album_Description)]</label>
 					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 				</control>
-				<control type="scrollbar" id="61">
+				<control type="scrollbar" id="51361">
 					<posx>1220</posx>
 					<posy>495</posy>
 					<width>25</width>
@@ -1139,7 +1139,7 @@
 					<texturesliderbarfocus border="2,16,2,16">ScrollBarV_bar_focus.png</texturesliderbarfocus>
 					<textureslidernib>ScrollBarNib.png</textureslidernib>
 					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-					<onleft>60</onleft>
+					<onleft>51360</onleft>
 					<onright>2</onright>
 					<showonepage>false</showonepage>
 					<orientation>vertical</orientation>

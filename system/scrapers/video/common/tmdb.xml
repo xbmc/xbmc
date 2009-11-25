@@ -12,8 +12,8 @@
 	</GetTMDBFanartById>
 	<GetTMDBFanart dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;\2&quot;&gt;\1&lt;/thumb&gt;" dest="2">
-				<expression repeat="yes">&lt;backdrop.*?url=&quot;([^&quot;]*)&quot; size=&quot;original&quot;.*?url=&quot;([^&quot;]*)&quot; size=&quot;poster&quot;.*?&lt;/backdrop&gt;</expression>
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;\1&quot;&gt;\2&lt;/thumb&gt;" dest="2">
+				<expression repeat="yes">&lt;backdrop.*?url=&quot;([^&quot;]*)&quot; size=&quot;poster&quot;.*?url=&quot;([^&quot;]*)&quot; size=&quot;original&quot;.*?&lt;/backdrop&gt;</expression>
 			</RegExp>
 			<expression noclean="1">(.+)</expression>
 		</RegExp>
@@ -31,8 +31,8 @@
 	</GetTMDBThumbsById>
 	<GetTMDBThumbs dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;\2&quot;&gt;\1&lt;/thumb&gt;" dest="2">
-				<expression repeat="yes">&lt;poster.*?url=&quot;([^&quot;]*)&quot; size=&quot;original&quot;.*?url=&quot;([^&quot;]*)&quot; size=&quot;mid&quot;.*?&lt;/poster&gt;</expression>
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;\1&quot;&gt;\2&lt;/thumb&gt;" dest="2">
+				<expression repeat="yes">&lt;poster.*?url=&quot;([^&quot;]*)&quot; size=&quot;mid&quot;.*?url=&quot;([^&quot;]*)&quot; size=&quot;original&quot;.*?&lt;/poster&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>

@@ -46,6 +46,7 @@
     #pragma comment (lib,"Dxerr9.lib")
   #endif
   #include "WindowingFactory.h"
+  #include "AdvancedSettings.h"
 #endif
 
 using namespace std;
@@ -195,11 +196,6 @@ void CVideoReferenceClock::Process()
 
 bool CVideoReferenceClock::WaitStarted(int MSecs)
 {
-  //we don't wait on windows, because we have to measure the refreshrate
-#if defined(_WIN32) && defined(HAS_DX)
-  return true;
-#endif
-
   //not waiting here can cause issues with alsa
   return m_Started.WaitMSec(MSecs);
 }
@@ -609,41 +605,52 @@ bool CVideoReferenceClock::SetupD3D()
   //forced update of windows refreshrate
   UpdateRefreshrate(true);
 
-  //measure the refreshrate a couple times
-  list<double> Measures;
-  for (int i = 0; i < NRMEASURES; i++)
-    Measures.push_back(MeasureRefreshrate(MEASURETIME));
-
-  //build up a string of measured rates
-  CStdString StrRates;
-  for (list<double>::iterator it = Measures.begin(); it != Measures.end(); it++)
-    StrRates.AppendFormat("%.2f ", *it);
-
-  //get the top half of the measured rates
-  Measures.sort();
-  double RefreshRate = 0.0;
-  int    NrMeasurements = 0;
-  while (NrMeasurements < NRMEASURES / 2 && !Measures.empty())
+  if (g_advancedSettings.m_measureRefreshrate)
   {
-    if (Measures.back() > 0.0)
+    //measure the refreshrate a couple times
+    list<double> Measures;
+    for (int i = 0; i < NRMEASURES; i++)
+      Measures.push_back(MeasureRefreshrate(MEASURETIME));
+
+    //build up a string of measured rates
+    CStdString StrRates;
+    for (list<double>::iterator it = Measures.begin(); it != Measures.end(); it++)
+      StrRates.AppendFormat("%.2f ", *it);
+
+    //get the top half of the measured rates
+    Measures.sort();
+    double RefreshRate = 0.0;
+    int    NrMeasurements = 0;
+    while (NrMeasurements < NRMEASURES / 2 && !Measures.empty())
     {
-      RefreshRate += Measures.back();
-      NrMeasurements++;
+      if (Measures.back() > 0.0)
+      {
+        RefreshRate += Measures.back();
+        NrMeasurements++;
+      }
+      Measures.pop_back();
     }
-    Measures.pop_back();
-  }
 
-  if (NrMeasurements < NRMEASURES / 2)
+    if (NrMeasurements < NRMEASURES / 2)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: refreshrate measurements: %s, unable to get a good measurement",
+        StrRates.c_str(), m_RefreshRate);
+      return false;
+    }
+
+    RefreshRate /= NrMeasurements;
+    m_RefreshRate = MathUtils::round_int(RefreshRate);
+
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: refreshrate measurements: %s, assuming %i hertz", StrRates.c_str(), m_RefreshRate);
+  }
+  else
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: refreshrate measurements: %s, unable to get a good measurement",
-      StrRates.c_str(), m_RefreshRate);
-    return false;
+    m_RefreshRate = m_PrevRefreshRate;
+    if (m_RefreshRate == 23 || m_RefreshRate == 29 || m_RefreshRate == 59)
+      m_RefreshRate++;
+
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: detected refreshrate: %i hertz, assuming %i hertz", m_PrevRefreshRate, (int)m_RefreshRate);
   }
-
-  RefreshRate /= NrMeasurements;
-  m_RefreshRate = MathUtils::round_int(RefreshRate);
-
-  CLog::Log(LOGDEBUG, "CVideoReferenceClock: refreshrate measurements: %s, assuming %i hertz", StrRates.c_str(), m_RefreshRate);
 
   m_MissedVblanks = 0;
 

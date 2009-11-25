@@ -6,8 +6,8 @@
 # Common variables used to ease maintenance of this script
 XBMC_TARBALL=""
 XBMC_TARBALL_CHECKSUM=""
-SVN_REVISION="22158"
-XBMC_VERSION="9.04.1+svn$SVN_REVISION~deb1"
+SVN_REVISION="24886"
+XBMC_VERSION="9.11~svn$SVN_REVISION~deb1"
 
 USAGE="\n\
 This script is used to generate the orig tarball used in building\n\
@@ -33,15 +33,8 @@ done
 
 # This will generate the orig.tar.gz
 make_current_tarball() {
-    # We do a checkout of the external-libraries-support branch at a specified
-    # revision
-    svn co -r$SVN_REVISION http://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC xbmc-$XBMC_VERSION
-
-    # Take out the .svn directories
-    echo "Removing .svn directories"
-    find xbmc-$XBMC_VERSION -type d -name .svn | while read TMP; do
-        rm -rf "$TMP"
-    done
+    # We do an export from svn trunk
+    svn export -r$SVN_REVISION https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk xbmc-$XBMC_VERSION
 
     # Remove libdvdcss
     echo "Remove libdvdcss"
@@ -51,6 +44,13 @@ make_current_tarball() {
     echo "Remove empty directories and its empty subdirectories"
     rm -rf xbmc-$XBMC_VERSION/xbmc/cores/dvdplayer/Codecs/libDVDCSS
     rm -rf xbmc-$XBMC_VERSION/xbmc/cores/dvdplayer/Codecs/libdvdnav
+
+    # Run bootstrap and remove cache directories
+    cd xbmc-$XBMC_VERSION
+    ./bootstrap
+    rm -rf autom4te.cache
+    rm -rf xbmc/lib/libass/autom4te.cache
+    cd ..
 
     # Create the tarball
     echo "Create orig tarball"

@@ -2661,6 +2661,8 @@ void CVideoDatabase::DeleteSet(int idSet)
     CStdString strSQL;
     strSQL=FormatSQL("delete from sets where idSet=%i", idSet);
     m_pDS->exec(strSQL.c_str());
+    strSQL=FormatSQL("delete from setlinkmovie where idSet=%i", idSet);
+    m_pDS->exec(strSQL.c_str());
   }
   catch (...)
   {

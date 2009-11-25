@@ -1283,6 +1283,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CStdString path;
       CUtil::GetDirectory(m_vecItems->Get(itemNumber)->m_strPath,path);
+      path.Replace("plugin://","special://home/plugins/");
       CFileItem item2(path,true);
       if (CGUIWindowFileManager::DeleteItem(&item2))
         Update(m_vecItems->m_strPath);

@@ -1,4 +1,4 @@
-xbmc (1:9.04.1+svn22158~deb1-1) experimental; urgency=low
+xbmc (1:9.11~svn24886~deb1-1) experimental; urgency=low
 
   * Package XBMC for Debian. (Closes: #469397)
     (LP: #307162)
@@ -8,9 +8,9 @@ xbmc (1:9.04.1+svn22158~deb1-1) experimental; urgency=low
   * Add DM-Upload-Allowed: yes field.
   * Switch to debhelper 7.
   * Switch to quilt.
-  * Remove unused patch.
+  * Remove unused patches.
   * Completely rewrite debian/rules to take advantage of debhelper 7 and quilt.
-  * Bump to Standards-Version 3.8.2.
+  * Bump to Standards-Version 3.8.3.
   * Changed Architecture field for arch-indep packages to 'all'.
   * Included powerpc and ppc64 for binary packages.
   * Use ${shlibs:Depends} for all binary packages.
@@ -19,8 +19,8 @@ xbmc (1:9.04.1+svn22158~deb1-1) experimental; urgency=low
   * Changed Priority to optional.
   * No need for debian/dirs file, so removing.
   * Rename docs to xbmc-common.docs so documentation installs to xbmc-common.
-  * Rename debug package to xbmc-dbg. Have it debugging symbols for all binary
-    packages.
+  * Rename debug package to xbmc-dbg. xbmc-dbg will have debugging symbols for
+    all binary packages.
   * Rewrite the Build-Depends field, modeling it in order from what is needed
     by configure scripts.
   * Fix --prefix option when calling make install* in debian/rules.
@@ -34,6 +34,11 @@ xbmc (1:9.04.1+svn22158~deb1-1) experimental; urgency=low
   * Add Provides, Replaces, and Conflicts field in xbmc-data for xbmc-common.
   * Placing packages into non-free because of various non-DFSG licensed code
   * being used in XBMC.
+  * Add patch to change Provides field in init script to reflect script name
+    for xbmc-live.
+  * Add patch to fix issue running distclean from a symlinked directory.
+  * Add patch to ensure Windows binaries don't get installed.
+  * Use dh_install instead of unzip to install web skin packages.
   * Various fixes for lintian warnings and errors.
     + Fix not-binnmuable-all-depends-any lintian errors.
     + Fix not-binnmuable-any-depends-all lintian errors.
@@ -50,8 +55,10 @@ xbmc (1:9.04.1+svn22158~deb1-1) experimental; urgency=low
     + Install the subdirectories of tools/EventClients/examples/ in examples for
       xbmc-eventclients-dev package.
     + Create a symlink to LiberationSans-Regular.ttf.
+  * Add Suggests of mesa-utils and x11-utils for use of glxinfo and xdpyinfo.
+  * Convert to source format 3.0 (quilt).
 
- -- Andres Mejia <mcitadel@gmail.com>  Thu, 16 Jul 2009 22:50:52 -0400
+ -- Andres Mejia <mcitadel@gmail.com>  Sun, 22 Nov 2009 17:42:11 -0500
 
 xbmc (9.04.1.0.20670-jaunty1) jaunty; urgency=low
 

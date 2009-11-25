@@ -66,6 +66,7 @@
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/StreamDetails.h"
 
 using namespace std;
 
@@ -793,6 +794,9 @@ void CDVDPlayer::Process()
   if (m_pDlgCache && m_pDlgCache->IsCanceled())
     return;
 
+  // allow renderer to switch to fullscreen if requested
+  m_dvdPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
+
   OpenDefaultStreams();
 
   // look for any EDL files
@@ -829,9 +833,6 @@ void CDVDPlayer::Process()
         CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %d", __FUNCTION__, starttime);
     }
   }
-
-  // allow renderer to switch to fullscreen if requested
-  m_dvdPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
 
   // make sure application know our info
   UpdateApplication(0);
@@ -3504,7 +3505,12 @@ int CDVDPlayer::GetPictureWidth()
 bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
 {
   if (m_pDemuxer)
-    return CDVDFileInfo::DemuxerToStreamDetails(m_pDemuxer, details);
+  {
+    bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pDemuxer, details);
+    if (result) // this is more correct (dvds in particular)
+      GetVideoAspectRatio(((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect);
+    return result;
+  }
   else
     return false;
 }

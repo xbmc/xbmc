@@ -310,7 +310,7 @@ void CGUIButtonControl::OnClick()
 void CGUIButtonControl::OnFocus()
 {
   for (unsigned int i = 0; i < m_focusActions.size(); i++)
-  {
+  { // send using a thread message to ensure the UI is updated prior to message firing.
     CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
     message.SetAction(m_focusActions[i]);
     g_windowManager.SendThreadMessage(message);
@@ -320,7 +320,7 @@ void CGUIButtonControl::OnFocus()
 void CGUIButtonControl::OnUnFocus()
 {
   for (unsigned int i = 0; i < m_unfocusActions.size(); i++)
-  {
+  { // send using a thread message to ensure the UI is updated prior to message firing.
     CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
     message.SetAction(m_unfocusActions[i]);
     g_windowManager.SendThreadMessage(message);
