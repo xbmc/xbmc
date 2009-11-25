@@ -25,6 +25,8 @@
 #include "FileSystem/FileCurl.h"
 #include "tinyXML/tinyxml.h"
 #include "HTMLUtil.h"
+#include "StringUtils.h"
+#include "VideoInfoTag.h"
 
 using namespace std;
 
@@ -55,25 +57,42 @@ time_t CRssFeed::ParseDate(const CStdString & strDate)
   return mktime(&pubDate);
 }
 
+// helper to avoid null dereference
+static inline CStdString S(const char * s)
+{
+  if(s)
+    return s;
+  else
+    return "";
+}
+
 void CRssFeed::ParseItemMRSS(CFileItemPtr& item, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
 {
+  CVideoInfoTag* vtag = item->GetVideoInfoTag();
+  CStdString text = S(item_child->GetText());
+
   if(name == "content")
   {
-    const char * url = item_child->Attribute("url");
+    const char* url  = item_child->Attribute("url");
+    const char* type = item_child->Attribute("type");
+    const char* dur  = item_child->Attribute("duration");
+
     if (url && item->m_strPath == "" && IsPathToMedia(url))
       item->m_strPath = url;
 
-    const char * content_type = item_child->Attribute("type");
-    if (content_type)
+    if (type)
     {
-      item->SetContentType(content_type);
-      CStdString strContentType(content_type);
+      CStdString strType(type);
+      item->SetContentType(strType);
       if (url && item->m_strPath.IsEmpty() &&
-        (strContentType.Left(6).Equals("video/") ||
-         strContentType.Left(6).Equals("audio/")
+        (strType.Left(6).Equals("video/") ||
+         strType.Left(6).Equals("audio/")
         ))
         item->m_strPath = url;
     }
+
+    if(dur)
+      StringUtils::SecondsToTimeString(atoi(dur), vtag->m_strRuntime); 
 
     // Go over all child nodes of the media content and get the thumbnail
     TiXmlElement* media_content_child = item_child->FirstChildElement("media:thumbnail");
@@ -95,6 +114,59 @@ void CRssFeed::ParseItemMRSS(CFileItemPtr& item, TiXmlElement* item_child, const
         item->SetThumbnailImage(url);
     }
   }
+  else if (name == "title")
+  {
+    if(text.IsEmpty())
+      return;
+
+    item->SetLabel(text);
+    vtag->m_strTitle = text;
+  }
+  else if(name == "description")
+  {
+    if(text.IsEmpty())
+      return;
+
+    CStdString description = text;
+    if(S(item_child->Attribute("type")) == "html")
+      HTML::CHTMLUtil::RemoveTags(description);
+    item->SetProperty("description", description);
+    item->SetLabel2(description);
+
+    vtag->m_strPlotOutline = description;
+    vtag->m_strPlot        = description;
+  }
+  else if(name == "category")
+  {
+    if(text.IsEmpty())
+      return;
+
+    vtag->m_strGenre = text;
+  }
+  else if(name == "rating")
+  {
+    if(text.IsEmpty())
+      return;
+    if(atof(text.c_str()) > 0.0f && atof(text.c_str()) <= 10.0f)
+      vtag->m_fRating = (float)atof(text.c_str());
+    else
+      vtag->m_strMPAARating = text;
+  }
+  else if(name == "credit")
+  {
+    CStdString role = S(item_child->Attribute("role"));
+    if(role == "director")
+      vtag->m_strDirector += ", " + text;
+    else if(role == "author")
+      vtag->m_strWritingCredits += ", " + text;
+    else if(role == "actor")
+    {
+      SActorInfo actor;
+      actor.strName = text;
+      vtag->m_cast.push_back(actor);
+    }
+  }
+
 }
 
 void CRssFeed::ParseItemItunes(CFileItemPtr& item, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
@@ -296,6 +368,12 @@ bool CRssFeed::ReadFeed()
         ParseItemRSS(item, item_child, name, xmlns);
 
     } // for item
+
+    if(item->HasVideoInfoTag())
+    {
+      item->GetVideoInfoTag()->m_strDirector.Delete(0, 2);
+      item->GetVideoInfoTag()->m_strWritingCredits.Delete(0, 2);
+    }
 
     item->SetProperty("isrss", "1");
     item->SetProperty("chanthumb",strMediaThumbnail);
