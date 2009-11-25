@@ -94,10 +94,7 @@ SS_DIRS=\
 
 VIS_DIRS=\
 	xbmc/visualizations/OpenGLSpectrum \
-	xbmc/visualizations/WaveForm
-ifneq (@BUILD_PROJM@,1)
-VIS_DIRS+=xbmc/visualizations/XBMCProjectM
-endif
+	xbmc/visualizations/XBMCProjectM
 ifneq (@BUILD_GOOM@,1)
 VIS_DIRS+=xbmc/visualizations/Goom
 endif
@@ -253,10 +250,7 @@ dllloader: exports
 	$(MAKE) xbmc/cores/DllLoader/dllloader.a
 visualizations: exports
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
-	$(MAKE) -C xbmc/visualizations/WaveForm
-ifneq (@BUILD_PROJM@,1)
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
-endif
 ifneq (@BUILD_GOOM@,1)
 ifeq ($(or $(findstring powerpc-linux,$(ARCH)),$(findstring powerpc64-linux,$(ARCH))),)
 	$(MAKE) -C xbmc/visualizations/Goom

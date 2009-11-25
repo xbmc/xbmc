@@ -1,5 +1,5 @@
 
-/* 
+/*
 xmms-projectM v0.99 - xmms-projectm.sourceforge.net
 --------------------------------------------------
 
@@ -7,9 +7,9 @@ Lead Developers:  Carmelo Piccione (cep@andrew.cmu.edu) &
                   Peter Sperl (peter@sperl.com)
 
 We have also been advised by some professors at CMU, namely Roger B. Dannenberg.
-http://www-2.cs.cmu.edu/~rbd/    
-  
-The inspiration for this program was Milkdrop by Ryan Geiss. Obviously. 
+http://www-2.cs.cmu.edu/~rbd/
+
+The inspiration for this program was Milkdrop by Ryan Geiss. Obviously.
 
 This code is distributed under the GPL.
 
@@ -34,7 +34,7 @@ d4rk@xbmc.org
 
 */
 
-#include "xbmc_vis.h"
+#include "xbmc_vis_dll.h"
 #include <GL/glew.h>
 #include "libprojectM/ConfigFile.h"
 #include "libprojectM/projectM.hpp"
@@ -45,15 +45,11 @@ d4rk@xbmc.org
 #include "libprojectM/win32-dirent.h"
 #include <io.h>
 #else
-#include "PlatformDefs.h"
-#include "Util.h"
-#include "system.h"
-#include "FileSystem/SpecialProtocol.h"
 #include <dirent.h>
 #endif
 
 #define PRESETS_DIR "special://xbmc/visualisations/projectM"
-#define CONFIG_FILE "special://profile/visualisations/projectM.conf"
+#define CONFIG_FILE "special://xbmc/visualisations/projectM.conf"
 
 projectM *globalPM = NULL;
 
@@ -81,7 +77,7 @@ std::string g_configFile;
 
 // case-insensitive alpha sort from projectM's win32-dirent.cc
 #ifndef WIN32
-int alphasort(const void* lhs, const void* rhs) 
+int alphasort(const void* lhs, const void* rhs)
 {
   const struct dirent* lhs_ent = *(struct dirent**)lhs;
   const struct dirent* rhs_ent = *(struct dirent**)rhs;
@@ -91,51 +87,47 @@ int alphasort(const void* lhs, const void* rhs)
 
 // check for a valid preset extension
 #ifdef __APPLE__
-int check_valid_extension(struct dirent* ent) 
+int check_valid_extension(struct dirent* ent)
 #else
-int check_valid_extension(const struct dirent* ent) 
+int check_valid_extension(const struct dirent* ent)
 #endif
 {
   const char* ext = 0;
-  
+
   if (!ent) return 0;
-  
+
   ext = strrchr(ent->d_name, '.');
   if (!ext) ext = ent->d_name;
-  
+
   if (0 == strcasecmp(ext, ".milk")) return 1;
   if (0 == strcasecmp(ext, ".prjm")) return 1;
-  
+
   return 0;
 }
 
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-                       float fPixelRatio, const char *szSubModuleName)
+extern "C" ADDON_STATUS Create(void* hdl, void* props)
 {
-  strcpy(g_visName, szVisualisationName);
+  if (!props)
+    return STATUS_UNKNOWN;
 
-  m_vecSettings.clear();
-  m_uiVisElements = 0;
+  strcpy(g_visName, "projectM");
 
-  /** Initialise projectM */
+  VIS_PROPS* visprops = (VIS_PROPS*)props;
 
-#ifdef WIN32
-  g_configFile = string(CONFIG_FILE);
-  std::string presetsDir = string(PRESETS_DIR);
-#else
-  g_configFile = _P(CONFIG_FILE);
-  std::string presetsDir = _P(PRESETS_DIR);
-#endif
+  printf("%s\n", visprops->datastore);
+  printf("%s\n", visprops->presets);
+  g_configFile = string(visprops->datastore) + string("/test.conf");
+  std::string presetsDir = string(visprops->presets);
 
   g_configPM.meshX = gx;
   g_configPM.meshY = gy;
   g_configPM.fps = fps;
   g_configPM.textureSize = texsize;
-  g_configPM.windowWidth = iWidth;
-  g_configPM.windowHeight = iHeight;
+  g_configPM.windowWidth = visprops->width;
+  g_configPM.windowHeight = visprops->height;
   g_configPM.presetURL = presetsDir;
   g_configPM.smoothPresetDuration = 5;
   g_configPM.presetDuration = 15;
@@ -143,38 +135,25 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   g_configPM.aspectCorrection = true;
   g_configPM.easterEgg = 0.0;
   g_configPM.shuffleEnabled = true;
-  g_configPM.windowLeft = iPosX;
-  g_configPM.windowBottom = iPosY;
+  g_configPM.windowLeft = visprops->x;
+  g_configPM.windowBottom = visprops->y;
 
+  // if no config file exists, create a blank one as Config ctor throws an exception!
+  printf("%s", g_configFile.c_str());
+  FILE *f;
+  f = fopen(g_configFile.c_str(), "r");
+  if (!f) f = fopen(g_configFile.c_str(), "w");
+  fclose(f);
+
+  // save our config
+  try
   {
-    FILE *f;
-    f = fopen(g_configFile.c_str(), "r");
-    if (f) {   // Config exists.  Let's preserve settings except for iWidth, iHeight, iPosX, iPosY
-      fclose(f);
-      ConfigFile config(g_configFile.c_str());
-      if (config.keyExists("Mesh X")) g_configPM.meshX = config.read<int> ("Mesh X", gx);
-      if (config.keyExists("Mesh Y")) g_configPM.meshY = config.read<int> ("Mesh Y", gy);
-      if (config.keyExists("Texture Size")) g_configPM.textureSize = config.read<int> ("Texture Size", texsize);
-      if (config.keyExists("Preset Path")) g_configPM.presetURL = config.read<string> ("Preset Path", presetsDir);
-      if (config.keyExists("Smooth Preset Duration")) g_configPM.smoothPresetDuration = config.read<int> ("Smooth Preset Duration", 5);
-      if (config.keyExists("Preset Duration")) g_configPM.presetDuration = config.read<int> ("Preset Duration", 15);
-      if (config.keyExists("FPS")) g_configPM.fps = config.read<int> ("FPS", fps);
-      if (config.keyExists("Hard Cut Sensitivity")) g_configPM.beatSensitivity = config.read<float> ("Hard Cut Sensitivity", 10.0);
-      if (config.keyExists("Aspect Correction")) g_configPM.aspectCorrection = config.read<bool> ("Aspect Correction", true);
-      if (config.keyExists("Easter Egg")) g_configPM.easterEgg = config.read<float> ("Easter Egg", 0.0);
-      if (config.keyExists("Shuffle Enabled")) g_configPM.shuffleEnabled = config.read<bool> ("Shuffle Enabled", true);
-      if (config.keyExists("Use FBO")) g_configPM.useFBO = config.read<bool> ("Use FBO", false);
-    }
-    else {
-#ifndef WIN32
-      CStdString strPath;
-      CUtil::GetDirectory(g_configFile, strPath);
-      CUtil::CreateDirectoryEx(strPath);
-#endif
-      f = fopen(g_configFile.c_str(), "w");   // Config does not exist, but we still need at least a blank file.
-      fclose(f);
-    }
-      projectM::writeConfig(g_configFile, g_configPM);
+    projectM::writeConfig(g_configFile, g_configPM);
+  }
+  catch (...)
+  {
+    printf("exception in projectM::WriteConfig");
+    return STATUS_UNKNOWN;
   }
 
   if (globalPM)
@@ -182,62 +161,7 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
 
   globalPM = new projectM(g_configFile);
 
-  VisSetting quality(VisSetting::SPIN, "Render Quality");
-  quality.AddEntry("Low");
-  quality.AddEntry("Medium");
-  quality.AddEntry("High");
-  quality.AddEntry("Maximum");
-  if (g_configPM.textureSize == 2048)
-  {
-    quality.current = 3;
-  }
-  else if (g_configPM.textureSize == 1024)
-  {
-    quality.current = 2;
-  }
-  else if (g_configPM.textureSize == 512)
-  {
-    quality.current = 1;
-  }
-  else if (g_configPM.textureSize == 256)
-  {
-    quality.current = 0;
-  }
-  m_vecSettings.push_back(quality);
-
-  VisSetting shuffleMode(VisSetting::CHECK, "Shuffle Mode");
-  shuffleMode.current = globalPM->isShuffleEnabled();
-  m_vecSettings.push_back(shuffleMode);
-  
-  VisSetting smoothPresetDuration(VisSetting::SPIN, "Smooth Preset Duration");
-  for (int i=0; i < 50; i++)
-  {
-    char temp[10];
-    sprintf(temp, "%i secs", i);
-    smoothPresetDuration.AddEntry(temp);
-  }
-  smoothPresetDuration.current = (int)(g_configPM.smoothPresetDuration);
-  m_vecSettings.push_back(smoothPresetDuration);
-  
-  VisSetting presetDuration(VisSetting::SPIN, "Preset Duration");
-  for (int i=0; i < 50; i++)
-  {
-    char temp[10];
-    sprintf(temp, "%i secs", i);
-    presetDuration.AddEntry(temp);
-  }
-  presetDuration.current = (int)(g_configPM.presetDuration);
-  m_vecSettings.push_back(presetDuration);
-
-  VisSetting beatSensitivity(VisSetting::SPIN, "Beat Sensitivity");
-  for (int i=0; i <= 100; i++)
-  {
-    char temp[10];
-    sprintf(temp, "%2.1f", (float)(i + 1)/5);
-    beatSensitivity.AddEntry(temp);
-  }
-  beatSensitivity.current = (int)(g_configPM.beatSensitivity * 5 - 1);
-  m_vecSettings.push_back(beatSensitivity);
+  return STATUS_NEED_SETTINGS;
 }
 
 //-- Start --------------------------------------------------------------------
@@ -253,7 +177,7 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
 //-----------------------------------------------------------------------------
 extern "C" void Stop()
 {
-  if (globalPM) 
+  if (globalPM)
   {
     projectM::writeConfig(g_configFile,globalPM->settings());
     delete globalPM;
@@ -268,17 +192,15 @@ extern "C" void Stop()
     free(g_presets);
     g_presets = NULL;
   }
-  m_vecSettings.clear(); 
 }
 
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-extern "C" void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   globalPM->pcm()->addPCM16Data(pAudioData, iAudioDataLength);
 }
-
 
 //-- Render -------------------------------------------------------------------
 // Called once per frame. Do all rendering here.
@@ -300,7 +222,7 @@ extern "C" void GetInfo(VIS_INFO* pInfo)
 //-- OnAction -----------------------------------------------------------------
 // Handle XBMC actions such as next preset, lock preset, album art changed etc
 //-----------------------------------------------------------------------------
-extern "C" bool OnAction(long flags, void *param)
+extern "C" bool OnAction(long flags, const void *param)
 {
   bool ret = false;
 
@@ -315,7 +237,7 @@ extern "C" bool OnAction(long flags, void *param)
 //    switchPreset(ALPHA_NEXT, SOFT_CUT);
     if (!globalPM->isShuffleEnabled())
       globalPM->key_handler(PROJECTM_KEYDOWN, PROJECTM_K_n, PROJECTM_KMOD_CAPS); //ignore PROJECTM_KMOD_CAPS
-    else 
+    else
       globalPM->key_handler(PROJECTM_KEYDOWN, PROJECTM_K_r, PROJECTM_KMOD_CAPS); //ignore PROJECTM_KMOD_CAPS
     ret = true;
   }
@@ -326,7 +248,7 @@ extern "C" bool OnAction(long flags, void *param)
       globalPM->key_handler(PROJECTM_KEYDOWN, PROJECTM_K_p, PROJECTM_KMOD_CAPS); //ignore PROJECTM_KMOD_CAPS
     else
       globalPM->key_handler(PROJECTM_KEYDOWN, PROJECTM_K_r, PROJECTM_KMOD_CAPS); //ignore PROJECTM_KMOD_CAPS
-                        
+
     ret = true;
   }
   else if (flags == VIS_ACTION_RANDOM_PRESET)
@@ -345,7 +267,7 @@ extern "C" bool OnAction(long flags, void *param)
 //-- GetPresets ---------------------------------------------------------------
 // Return a list of presets to XBMC for display
 //-----------------------------------------------------------------------------
-extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
+extern "C" viz_preset_list_t GetPresets()
 {
   if (!g_presets)
   {
@@ -366,88 +288,146 @@ extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets
       }
     }
   }
-        
 
   if (g_presets)
   {
-    *pPresets = g_presets;
-    *numPresets = g_numPresets;
+    viz_preset_list_t presets = viz_preset_list_create();
+    for (int i = 0; i < g_numPresets; i++)
+    {
+      if (g_presets[i])
+      {
+        viz_preset_t preset = viz_preset_create();
+        viz_preset_set_name(preset, g_presets[i]);
+        if (preset)
+          viz_preset_list_add_item(presets, preset);
+        viz_release(preset);
+      }
+    }
+    /*
     unsigned int presetIndex;
     if (globalPM->selectedPresetIndex(presetIndex) && presetIndex >= 0 &&
         (int)presetIndex < g_numPresets)
-      *currentPreset = presetIndex;
+      *currentPreset = presetIndex;*/
+    return presets;
   }
-  *locked = globalPM->isPresetLocked();
+
+  return NULL;
+}
+
+//-- Remove -------------------------------------------------------------------
+// Do everything before unload of this add-on
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+void Remove()
+{
+}
+
+//-- HasSettings --------------------------------------------------------------
+// Returns true if this add-on use settings
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+bool HasSettings()
+{
+  return true;
+}
+
+//-- GetStatus ---------------------------------------------------------------
+// Returns the current Status of this visualisation
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+ADDON_STATUS GetStatus()
+{
+  return STATUS_OK;
 }
 
 //-- GetSettings --------------------------------------------------------------
 // Return the settings for XBMC to display
 //-----------------------------------------------------------------------------
 
-extern "C" unsigned int GetSettings(StructSetting*** sSet)
-{ 
-  m_uiVisElements = VisUtils::VecToStruct(m_vecSettings, &m_structSettings);
-  *sSet = m_structSettings;
-  return m_uiVisElements;
-}
-
-extern "C" void FreeSettings()
+extern "C" addon_settings_t GetSettings()
 {
-  VisUtils::FreeStruct(m_uiVisElements, &m_structSettings);
+
+  addon_settings_t settings = addon_settings_create();
+  addon_setting_t quality = addon_setting_create(SETTING_ENUM, "Quality");
+  addon_setting_set_label(quality, "30000");
+  addon_setting_set_lvalues(quality, "30001|30002|30003|30004");
+
+  addon_setting_t shuffleMode = addon_setting_create(SETTING_BOOL, "Shuffle");
+  addon_setting_set_label(shuffleMode, "30010");
+
+  addon_setting_t smoothPresetDuration = addon_setting_create(SETTING_ENUM, "Smooth Preset Duration");
+  addon_setting_set_label(smoothPresetDuration, "30020");
+
+  addon_settings_add_item(settings, quality);
+  addon_settings_add_item(settings, shuffleMode);
+  addon_settings_add_item(settings, smoothPresetDuration);
+/*  for (int i=0; i < 50; i++)
+  {
+    char temp[10];
+    sprintf(temp, "%i secs", i);
+    smoothPresetDuration.AddEntry(temp);
+  }
+
+  VisSetting presetDuration(VisSetting::SPIN, "Preset Duration");
+  for (int i=0; i < 50; i++)
+  {
+    char temp[10];
+    sprintf(temp, "%i secs", i);
+    presetDuration.AddEntry(temp);
+  }
+  presetDuration.current = (int)(g_configPM.presetDuration);
+  m_vecSettings.push_back(presetDuration);
+
+  VisSetting beatSensitivity(VisSetting::SPIN, "Beat Sensitivity");
+  for (int i=0; i <= 100; i++)
+  {
+    char temp[10];
+    sprintf(temp, "%2.1f", (float)(i + 1)/5);
+    beatSensitivity.AddEntry(temp);
+  }
+  beatSensitivity.current = (int)(g_configPM.beatSensitivity * 5 - 1);
+  m_vecSettings.push_back(beatSensitivity);
+
+  m_uiVisElements = VisUtils::VecToStruct(m_vecSettings, &m_structSettings);
+  *sSet = m_structSettings;*/
+  return settings;
 }
 
 //-- UpdateSetting ------------------------------------------------------------
 // Handle setting change request from XBMC
 //-----------------------------------------------------------------------------
-extern "C" void UpdateSetting(int num, StructSetting*** sSet)
+extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
 {
-  VisUtils::StructToVec(m_uiVisElements, sSet, &m_vecSettings);
-  VisSetting &setting = m_vecSettings[num];
-  if (strcasecmp(setting.name, "Use Preset")==0)
-    OnAction(34, (void*)&setting.current);
-  else if (strcasecmp(setting.name, "Shuffle Mode")==0)
-    OnAction(VIS_ACTION_RANDOM_PRESET, (void*)&setting.current);
-  else {
-    if (globalPM) 
+  if (!id || !value)
+    return STATUS_UNKNOWN;
+
+  if (strcmp(id, "Quality")==0)
+  {
+    switch (*(int*) value)
     {
-      g_configPM = globalPM->settings();
-      projectM::writeConfig(g_configFile,globalPM->settings());
-      delete globalPM;
-      globalPM = NULL;
-    }
-    if (strcasecmp(setting.name, "Smooth Preset Duration")==0)
-      g_configPM.smoothPresetDuration = setting.current;
-    else if (strcasecmp(setting.name,"Preset Duration")==0)
-      g_configPM.presetDuration = setting.current;
-    else if (strcasecmp(setting.name, "Beat Sensitivity")==0)
-      g_configPM.beatSensitivity = (float)(setting.current + 1) / 5.0f;
-    else if (strcasecmp(setting.name, "Render Quality")==0)
-    {
-      if ( setting.current == 0 ) // low
-      {
-        g_configPM.useFBO = false;
+      case 0:
         g_configPM.textureSize = 256;
-      }
-      else if ( setting.current == 1 ) // med
-      {
-        g_configPM.useFBO = false;
+        break;
+      case 1:
         g_configPM.textureSize = 512;
-      }
-      else if ( setting.current == 2 ) // high
-      {
-        g_configPM.useFBO = false;
+        break;
+      case 2:
         g_configPM.textureSize = 1024;
-      }
-      else if ( setting.current == 3 ) // max
-      {
-        g_configPM.useFBO = false;
+        break;
+      case 3:
         g_configPM.textureSize = 2048;
-      }
+        break;
     }
-    projectM::writeConfig(g_configFile, g_configPM);
-    globalPM = new projectM(g_configFile); 
   }
-  
+  else if (strcmp(id, "Shuffle")==0)
+  {
+    if (OnAction(VIS_ACTION_RANDOM_PRESET, value))
+      return STATUS_OK;
+    else
+      return STATUS_UNKNOWN;
+  }
+
+  return STATUS_OK;
 }
 
 //-- GetSubModules ------------------------------------------------------------

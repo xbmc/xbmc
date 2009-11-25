@@ -33,8 +33,6 @@ xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution s
 xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
 goom_enabled="== GOOM enabled. =="
 goom_disabled="== GOOM disabled. =="
-projm_enabled="== ProjectM enabled. =="
-projm_disabled="== ProjectM disabled. =="
 pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
 pulse_disabled="== PulseAudio support manually disabled. =="
 faac_not_found="== Could not find libfaac. FAAC support disabled. =="
@@ -142,12 +140,6 @@ AC_ARG_ENABLE([goom],
                [enable GOOM visualisation (default is no)])],
             [use_goom=$enableval],
             [use_goom=no])
-
-AC_ARG_ENABLE([projm],
-            [AS_HELP_STRING([--enable-projm],
-               [enable ProjectM visualisation (default is no)])],
-            [use_projm=$enableval],
-            [use_projm=no])
 
 AC_PATH_PROG(CCACHE,ccache,none)
 AC_ARG_ENABLE([ccache],
@@ -508,15 +500,6 @@ else
   fi
 fi
 
-# ProjectM 
-if test "$use_projm" = "yes"; then
-  AC_MSG_NOTICE($projm_enabled)
-  BUILD_PROJM=0
-else
-  AC_MSG_NOTICE($projm_disabled)
-  BUILD_PROJM=1
-fi
-
 ### External libraries checks
 if test "$use_external_libraries" = "yes"; then
   AC_MSG_NOTICE($external_libraries_enabled)
@@ -843,12 +826,6 @@ else
   final_message="$final_message\n  GOOM:\t\tNo"
 fi
 
-if test "$use_projm" = "yes"; then
-  final_message="$final_message\n  ProjectM:\tYes"
-else
-  final_message="$final_message\n  ProjectM:\tNo"
-fi
-
 if test "$use_pcre" = "yes"; then
   final_message="$final_message\n  PCRE Support:\tYes"
 else
@@ -1056,7 +1033,6 @@ AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(BUILD_GOOM)
-AC_SUBST(BUILD_PROJM)
 AC_SUBST(USE_EXTERNAL_LIBRARIES)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
 AC_SUBST(USE_EXTERNAL_LIBA52)
