@@ -60,8 +60,6 @@ CVDPAU::CVDPAU(int width, int height)
   glXReleaseTexImageEXT = NULL;
   vdp_device = NULL;
   dl_handle  = NULL;
-  dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
-  if (!dl_handle) return;
   surfaceNum      = presentSurfaceNum = 0;
   picAge.b_age    = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   vdpauConfigured = vdpauInited = false;
@@ -81,6 +79,13 @@ CVDPAU::CVDPAU(int width, int height)
   vid_width = vid_height = OutWidth = OutHeight = 0;
   memset(&outRect, 0, sizeof(VdpRect));
   memset(&outRectVid, 0, sizeof(VdpRect));
+
+  dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
+  if (!dl_handle) 
+  {
+    CLog::Log(LOGNOTICE,"(VDPAU) unable to get handle to libvdpau");
+    return;
+  }
   
   InitVDPAUProcs();
 
