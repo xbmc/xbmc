@@ -100,7 +100,7 @@ bool CPVRDirectory::SupportsFileOperations(const CStdString& strPath)
   CStdString filename = url.GetFileName();
   CUtil::RemoveSlashAtEnd(filename);
 
-  if (filename.Left(11) == "recordings/" && filename[filename.size()-1] != '/')
+  if (filename.Left(11) == "recordings/" && filename.Right(4) == ".pvr")
      return true;
 
   return false;
