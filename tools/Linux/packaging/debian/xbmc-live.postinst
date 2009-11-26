@@ -4,6 +4,8 @@ set -e
 
 case "$1" in
     configure)
+	# TODO: What's the purpose of this line? As I see it, if 'xbmc' can't
+	# get a console session going, we're in trouble anyway. ceros
 	sed -i.bak-xbmc-live s/allowed_users=console/allowed_users=anybody/ /etc/X11/Xwrapper.config
 
 	# Add the 'xbmc' user if the primary one is missing
