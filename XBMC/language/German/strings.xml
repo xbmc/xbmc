@@ -1622,7 +1622,6 @@
   <string id="18009">Anzeigedauer für Kanalinfo</string>
   <string id="18010">Info beim Kanalwechsel</string>
   <string id="18011">Angeforderte Kanalinfo schließen</string>
-  <string id="18012">Ordner für Kanallogos</string>
   <string id="18013">EPG</string>
   <string id="18014">Zeit bis zur EPG-Suche</string>
   <string id="18015">Zeit bis zur EPG-Aktualisierung</string>
@@ -1758,7 +1757,6 @@
   <string id="18158">Kunst/Kultur</string>
   <string id="18159">Bei vorhandener Aufnahmen ignorieren</string>
   <string id="18160">Keine Wiederholungen</string>
-  <string id="18161">Kanallogo festlegen</string>
   <string id="18162">Timer zeichnet auf - trotzdem löschen?</string>
   <string id="18163">Titel-Informationen</string>
   <string id="18164">Es liegen keine Suchergebnisse vor</string>
@@ -1827,7 +1825,6 @@
   <string id="18809">Konnte Kanal nicht speichern!</string>
   <string id="18810">Aufnahmen nicht synchron!</string>
   <string id="18811">Konnte Aufnahme nicht löschen!</string>
-  <string id="18812">Kein Ordner für Logos definiert!</string>
   <string id="18813">Bitte aktualisieren sie ihre Einstellungen.</string>
 
   <string id="19000">Zum Kanal schalten</string>
@@ -1848,6 +1845,7 @@
   <string id="19015">Verschlüsselung</string>
   <string id="19016">Server %i - %s</string>
   <string id="19017">TV Aufnahmen</string>
+  <string id="19018">Standartordner für TV Thumbnails</string>
 
   <string id="19499">Andere/Unbekannt</string>
   <string id="19500">Movie/Drama</string>

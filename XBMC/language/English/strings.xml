@@ -1596,7 +1596,6 @@
   <string id="18009">Channel info time</string>
   <string id="18010">Info on channel switch</string>
   <string id="18011">Timeout requested channel info</string>
-  <string id="18012">Channel Icons Folder</string>
   <string id="18013">EPG</string>
   <string id="18014">EPG scan timeout</string>
   <string id="18015">EPG update timeout</string>
@@ -1731,7 +1730,6 @@
   <string id="18158">Arts/Culture</string>
   <string id="18159">Ignore for by present Recordings</string>
   <string id="18160">Avoid Repeats</string>
-  <string id="18161">Set Channel Icon</string>
   <string id="18162">Timer still recording - really delete?</string>
   <string id="18163">Programme info</string>
   <string id="18164">No search results present</string>
@@ -1800,7 +1798,6 @@
   <string id="18809">Couldn't save channel!</string>
   <string id="18810">Recordings not in sync!</string>
   <string id="18811">Couldn't delete recording!</string>
-  <string id="18812">No Icon Folder defined!</string>
   <string id="18813">Please adjust settings.</string>
   <string id="18814">Timer already set for this event</string>
 
@@ -1822,6 +1819,7 @@
   <string id="19015">Encryption</string>
   <string id="19016">Server %i - %s</string>
   <string id="19017">TV Recordings</string>
+  <string id="19018">Default folder for TV-Thumbnails</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>

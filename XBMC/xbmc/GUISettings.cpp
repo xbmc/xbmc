@@ -660,7 +660,7 @@ void CGUISettings::Initialize()
   AddInt(6, "pvrmenu.infotime", 18009, 5, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddBool(7, "pvrmenu.hidevideolength", 18024, true);
   AddSeparator(8, "pvrmenu.sep1");
-  AddString(9, "pvrmenu.iconpath", 18012, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddString(9, "pvrmenu.iconpath", 19018, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddString(10, "pvrmenu.searchicons", 18033, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(8,"pvrepg", 18013);

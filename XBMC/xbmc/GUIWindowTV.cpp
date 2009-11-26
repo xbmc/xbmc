@@ -20,6 +20,7 @@
  */
 
 /* Standart includes */
+#include "system.h"
 #include "Application.h"
 #include "GUIWindowManager.h"
 #include "URL.h"
@@ -28,6 +29,9 @@
 #include "utils/log.h"
 #include "GUISettings.h"
 #include "Settings.h"
+#include "FileSystem/File.h"
+#include "Picture.h"
+#include "MediaManager.h"
 
 /* Dialog windows includes */
 #include "GUIDialogFileBrowser.h"
@@ -41,6 +45,7 @@
 #include "GUIDialogPVRTimerSettings.h"
 #include "GUIDialogPVRGroupManager.h"
 #include "GUIDialogPVRGuideSearch.h"
+#include "GUIUserMessages.h"
 
 /* self include */
 #include "GUIWindowTV.h"
@@ -982,7 +987,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
         buttons.Add(CONTEXT_BUTTON_INFO, 18163);              /* Channel info button */
         buttons.Add(CONTEXT_BUTTON_FIND, 19003);              /* Find similar program */
         buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);         /* switch to channel */
-        buttons.Add(CONTEXT_BUTTON_SET_THUMB, 18161);         /* Set icon */
+        buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);         /* Set icon */
         buttons.Add(CONTEXT_BUTTON_GROUP_MANAGER, 18126);     /* Group managment */
         buttons.Add(CONTEXT_BUTTON_HIDE, m_bShowHiddenChannels ? 18193 : 18198);        /* HIDE CHANNEL */
 
@@ -1247,31 +1252,79 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
   else if (button == CONTEXT_BUTTON_SET_THUMB)
   {
-    /* Check if a icon path is set inside settings */
-    if (g_guiSettings.GetString("pvrmenu.iconpath") == "")
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+      return false;
+    else if (!g_passwordManager.IsMasterLockUnlocked(true))
+      return false;
+
+    // setup our thumb list
+    CFileItemList items;
+
+    // add the current thumb, if available
+    if (!pItem->GetPVRChannelInfoTag()->Icon().IsEmpty())
     {
-      CGUIDialogOK::ShowAndGetInput(18100,18812,0,18813);
-      return true;
+      CFileItemPtr current(new CFileItem("thumb://Current", false));
+      current->SetThumbnailImage(pItem->GetPVRChannelInfoTag()->Icon());
+      current->SetLabel(g_localizeStrings.Get(20016));
+      items.Add(current);
+    }
+    else if (pItem->HasThumbnail())
+    { // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
+      CFileItemPtr current(new CFileItem("thumb://Current", false));
+      current->SetThumbnailImage(pItem->GetThumbnailImage());
+      current->SetLabel(g_localizeStrings.Get(20016));
+      items.Add(current);
     }
 
-    CStdString strIcon = pItem->GetPVRChannelInfoTag()->Icon() == "" ? g_guiSettings.GetString("pvrmenu.iconpath") : pItem->GetPVRChannelInfoTag()->Icon();
+    // see if there's a local thumb for this item
+    CStdString folderThumb = pItem->GetFolderThumb();
+    if (XFILE::CFile::Exists(folderThumb))
+    { // cache it
+      if (CPicture::CreateThumbnail(folderThumb, pItem->GetCachedProgramThumb()))
+      {
+        CFileItemPtr local(new CFileItem("thumb://Local", false));
+        local->SetThumbnailImage(pItem->GetCachedProgramThumb());
+        local->SetLabel(g_localizeStrings.Get(20017));
+        items.Add(local);
+      }
+    }
+    // and add a "no thumb" entry as well
+    CFileItemPtr nothumb(new CFileItem("thumb://None", false));
+    nothumb->SetIconImage(pItem->GetIconImage());
+    nothumb->SetLabel(g_localizeStrings.Get(20018));
+    items.Add(nothumb);
 
+    CStdString strThumb;
     VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
-
-    if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(1030), strIcon))
+    if (g_guiSettings.GetString("pvrmenu.iconpath") != "")
     {
-      if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
-      {
-        PVRChannelsTV.SetChannelIcon(pItem->GetPVRChannelInfoTag()->Number(), strIcon);
-        UpdateChannelsTV();
-      }
-      else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
-      {
-        PVRChannelsRadio.SetChannelIcon(pItem->GetPVRChannelInfoTag()->Number(), strIcon);
-        UpdateChannelsRadio();
-      }
+      CMediaSource share1;
+      share1.strPath = g_guiSettings.GetString("pvrmenu.iconpath");
+      share1.strName = g_localizeStrings.Get(19018);
+      shares.push_back(share1);
     }
+    g_mediaManager.GetLocalDrives(shares);
+    if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(1030), strThumb))
+      return false;
+
+    if (strThumb == "thumb://Current")
+      return true;
+
+    if (strThumb == "thumb://None")
+      strThumb = "";
+
+    if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
+    {
+      PVRChannelsTV.SetChannelIcon(pItem->GetPVRChannelInfoTag()->Number(), strThumb);
+      UpdateChannelsTV();
+    }
+    else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
+    {
+      PVRChannelsRadio.SetChannelIcon(pItem->GetPVRChannelInfoTag()->Number(), strThumb);
+      UpdateChannelsRadio();
+    }
+
+    return true;
   }
   else if (button == CONTEXT_BUTTON_EDIT)
   {
