@@ -211,6 +211,8 @@ bool CVDPAU::MakePixmap(int width, int height)
       CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
       status = false;
     }
+    else
+      m_bPixmapCreated = true;
   }
   else
   {
@@ -218,7 +220,6 @@ bool CVDPAU::MakePixmap(int width, int height)
     status = false;
   }
   XFree(fbConfigs);
-  m_bPixmapCreated = true;
   return status;
 }
 
@@ -982,6 +983,7 @@ enum PixelFormat CVDPAU::FFGetFormat(struct AVCodecContext * avctx,
 
 int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
+  if (!vdpauConfigured) return 0;
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
   CVDPAU*               vdp        = ctx->GetContextVDPAU();
