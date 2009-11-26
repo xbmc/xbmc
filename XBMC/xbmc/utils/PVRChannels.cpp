@@ -35,6 +35,8 @@
 #include "GUIDialogOK.h"
 #include "LocalizeStrings.h"
 #include "utils/log.h"
+#include "Util.h"
+#include "URL.h"
 #include "FileSystem/File.h"
 
 using namespace XFILE;
@@ -922,6 +924,38 @@ cPVRChannelInfoTag *cPVRChannels::GetByUniqueIDFromAll(long UniqueID)
   channel = PVRChannelsRadio.GetByUniqueID(UniqueID);
   if (channel != NULL)
     return channel;
+
+  return NULL;
+}
+
+cPVRChannelInfoTag *cPVRChannels::GetByPath(CStdString &path)
+{
+  CURL url(path);
+  CStdString fileName = url.GetFileName();
+  CUtil::RemoveSlashAtEnd(fileName);
+
+  if (fileName.Left(11) == "channelstv/")
+  {
+    fileName.erase(0,11);
+    int channelNr = atoi(fileName.c_str());
+
+    for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
+    {
+      if (PVRChannelsTV[i].Number() == channelNr)
+        return &PVRChannelsTV[i];
+    }
+  }
+  else if (fileName.Left(14) == "channelsradio/")
+  {
+    fileName.erase(0,14);
+    int channelNr = atoi(fileName.c_str());
+
+    for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
+    {
+      if (PVRChannelsRadio[i].Number() == channelNr)
+        return &PVRChannelsRadio[i];
+    }
+  }
 
   return NULL;
 }

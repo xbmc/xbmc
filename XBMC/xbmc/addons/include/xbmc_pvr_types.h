@@ -69,7 +69,6 @@ extern "C" {
 #endif
 
   typedef void*         PVRHANDLE;
-  typedef void*         PVRDEMUXHANDLE;
 
   /**
   * PVR Client Error Codes
@@ -151,14 +150,8 @@ extern "C" {
     int             multifeed_number;   /* The own number inside multifeed channel list */
 
     /* The Stream URL to access this channel, it can be all types of protocol and types
-     * are supported by XBMC or in case the client read the stream use pvr://client_>>ClientID<</channels/>>number<<
+     * are supported by XBMC or in case the client read the stream leave it empty
      * as URL.
-     * Examples:
-     * Open a Transport Stream over the Client reading functions where client_"1" is the Client ID and
-     * 123 the channel number.
-     *   pvr://client_1/channels/123.ts
-     * Open a VOB file over http and use XBMC's own filereader.
-     *   http://192.168.0.120:3000/PS/C-61441-10008-53621+1.vob
      */
     const char     *stream_url;
   } ATTRIBUTE_PACKED PVR_CHANNEL;
@@ -220,13 +213,16 @@ extern "C" {
     const char   *title;
     const char   *subtitle;
     const char   *description;
-    const char   *channelName;
-    time_t        starttime;
+    const char   *channel_name;
+    time_t        recording_time;
     int           duration;
-    double        framesPerSecond;
     int           priority;
     int           lifetime;
-
+    /* The Stream URL to access this channel, it can be all types of protocol and types
+     * are supported by XBMC or in case the client read the stream leave it empty
+     * as URL.
+     */
+    const char    *stream_url;
   } ATTRIBUTE_PACKED PVR_RECORDINGINFO;
 
   /**
@@ -244,72 +240,9 @@ extern "C" {
     double        dolby_bitrate;
   } ATTRIBUTE_PACKED PVR_SIGNALQUALITY;
 
-
-  /**
-   * PVR Client driver demuxer Definition
-   */
-  enum stream_type {
-    PVR_STREAM_NONE,                    /* if unknown */
-    PVR_STREAM_AUDIO,                   /* audio stream */
-    PVR_STREAM_VIDEO,                   /* video stream */
-    PVR_STREAM_DATA,                    /* data stream */
-    PVR_STREAM_SUBTITLE                 /* subtitle stream */
-  };
-
-  enum stream_source {
-    PVR_STREAM_SOURCE_NONE          = 0x000,
-    PVR_STREAM_SOURCE_DEMUX         = 0x100,
-    PVR_STREAM_SOURCE_NAV           = 0x200,
-    PVR_STREAM_SOURCE_DEMUX_SUB     = 0x300,
-    PVR_STREAM_SOURCE_TEXT          = 0x400
-  };
-
-  typedef struct PVR_DEMUXSTREAMINFO {
-    /* General Stream information */
-    int           index;
-    stream_type   type;
-    stream_source source;
-    CodecID       codec;                /* FFMPEG Codec ID */
-    unsigned int  codec_fourcc;         /* if available */
-    char          language[4];          /* ISO 639 3-letter language code (empty string if undefined) */
-    const char   *name;
-    int           duration;             /* in mseconds */
-
-    /* Audio Stream information, only set for "type==STREAM_AUDIO" */
-    int           channels;
-    int           sampleRate;
-    int           block_align;
-    int           bit_rate;
-    int           bits_per_sample;
-
-    /* Video Stream information, only set for "type==STREAM_VIDEO" */
-    int           fps_scale;            /* scale of 1000 and a rate of 29970 will result in 29.97 fps */
-    int           fps_rate;
-    int           height;               /* height of the stream reported by the demuxer */
-    int           width;                /* width of the stream reported by the demuxer */
-    float         aspect;               /* display aspect of stream */
-    bool          vfr;                  /* variable framerate */
-  } ATTRIBUTE_PACKED PVR_DEMUXSTREAMINFO;
-
 #if PRAGMA_PACK
 #pragma pack()
 #endif
-
-  /* WARNING: MAKE SURE IF "DemuxPacket" INSIDE "DVDDemux.h" IS CHANGED THIS STRUCT MUST
-   *          ALSO CHANGED
-   * TODO:    Is there a better way to do this???
-   */
-  typedef struct demux_packet {
-    BYTE* pData;                        /* data */
-    int iSize;                          /* data size */
-    int iStreamId;                      /* integer representing the stream index */
-    int iGroupId;                       /* the group this data belongs to, used to group data from different streams together */
-
-    double pts;                         /* pts in DVD_TIME_BASE */
-    double dts;                         /* dts in DVD_TIME_BASE */
-    double duration;                    /* duration in DVD_TIME_BASE if available */
-  } demux_packet_t;
-
 
   /**
    * Structure to transfer the PVR functions to XBMC
@@ -371,19 +304,6 @@ extern "C" {
     int (__cdecl* ReadRecordedStream)(BYTE* buf, int buf_size);
     __int64 (__cdecl* SeekRecordedStream)(__int64 pos, int whence);
     __int64 (__cdecl* LengthRecordedStream)(void);
-
-    /** PVR Demux Stream Functions **/
-    bool (__cdecl* OpenTVDemux)(PVRDEMUXHANDLE handle, const PVR_CHANNEL &channelinfo);
-    bool (__cdecl* OpenRecordingDemux)(PVRDEMUXHANDLE handle, const PVR_RECORDINGINFO &recinfo);
-    void (__cdecl* DisposeDemux)();
-    void (__cdecl* ResetDemux)();
-    void (__cdecl* FlushDemux)();
-    void (__cdecl* AbortDemux)();
-    void (__cdecl* SetDemuxSpeed)(int iSpeed);
-    demux_packet_t* (__cdecl* ReadDemux)();
-    bool (__cdecl* SeekDemuxTime)(int time, bool backwords, double* startpts);
-    int (__cdecl* GetDemuxStreamLength)();
-
   } PVRClient;
 
 #ifdef __cplusplus

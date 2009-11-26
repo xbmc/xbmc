@@ -52,17 +52,6 @@ extern "C"
   __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
   __int64 LengthRecordedStream(void);
 
-  bool OpenTVDemux(PVRDEMUXHANDLE handle, const PVR_CHANNEL &channelinfo);
-  bool OpenRecordingDemux(PVRDEMUXHANDLE handle, const PVR_RECORDINGINFO &recinfo);
-  void DisposeDemux();
-  void ResetDemux();
-  void FlushDemux();
-  void AbortDemux();
-  void SetDemuxSpeed(int iSpeed);
-  demux_packet_t* ReadDemux();
-  bool SeekDemuxTime(int time, bool backwords, double* startpts);
-  int GetDemuxStreamLength();
-
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(struct PVRClient* pClient)
   {
@@ -105,16 +94,6 @@ extern "C"
     pClient->ReadRecordedStream     = ReadRecordedStream;
     pClient->SeekRecordedStream     = SeekRecordedStream;
     pClient->LengthRecordedStream   = LengthRecordedStream;
-    pClient->OpenTVDemux            = OpenTVDemux;
-    pClient->OpenRecordingDemux     = OpenRecordingDemux;
-    pClient->DisposeDemux           = DisposeDemux;
-    pClient->ResetDemux             = ResetDemux;
-    pClient->FlushDemux             = FlushDemux;
-    pClient->AbortDemux             = AbortDemux;
-    pClient->SetDemuxSpeed          = SetDemuxSpeed;
-    pClient->ReadDemux              = ReadDemux;
-    pClient->SeekDemuxTime          = SeekDemuxTime;
-    pClient->GetDemuxStreamLength   = GetDemuxStreamLength;
   };
 };
 

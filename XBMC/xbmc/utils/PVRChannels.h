@@ -129,17 +129,10 @@ public:
        ///< True if this channel is currently recording.
   void SetRecording(bool rec) { m_isRecording = rec; }
        ///< Set the recording state.
-  CStdString Stream(void) const { return m_strStreamURL; }
+  CStdString StreamURL(void) const { return m_strStreamURL; }
        ///< The Stream URL to access this channel, it can be all types of protocol and types
-       ///< are supported by XBMC or in case the client read the stream use pvr://client_>>ClientID<</channels/>>number<<
-       ///< as URL.
-       ///< Examples:
-       ///< Open a Transport Stream over the Client reading functions where client_"1" is the Client ID and
-       ///< 123 the channel number.
-       ///<   pvr://client_1/channels/123.ts
-       ///< Open a VOB file over http and use XBMC's own filereader.
-       ///<   http://192.168.0.120:3000/PS/C-61441-10008-53621+1.vob
-  void SetStream(CStdString stream) { m_strStreamURL = stream; }
+       ///< are supported by XBMC or in case the client read the stream leave it empty
+  void SetStreamURL(CStdString stream) { m_strStreamURL = stream; }
        ///< Set the stream URL
   CStdString Path(void) const { return m_strFileNameAndPath; }
        ///< Return the path in the XBMC virtual Filesystem.
@@ -206,6 +199,7 @@ public:
   static cPVRChannelInfoTag *GetByClientFromAll(int Number, int ClientID);
   static cPVRChannelInfoTag *GetByChannelIDFromAll(long ChannelID);
   static cPVRChannelInfoTag *GetByUniqueIDFromAll(long UniqueID);
+  static cPVRChannelInfoTag *GetByPath(CStdString &path);
 };
 
 class cPVRChannelGroup

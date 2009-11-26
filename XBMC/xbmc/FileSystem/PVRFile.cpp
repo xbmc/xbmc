@@ -235,35 +235,25 @@ bool CPVRFile::UpdateItem(CFileItem& item)
 
 CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
 {
-  int playingItem;
-  CStdString ret;
-
   CStdString FileName = pathFile;
-
-  if (FileName.substr(0, 6) == "pvr://")
+  if (FileName.substr(0, 14) == "pvr://channels")
   {
-    ret = FileName;
+    cPVRChannelInfoTag *tag = cPVRChannels::GetByPath(FileName);
+    if (tag && !tag->StreamURL().IsEmpty())
+      return tag->StreamURL();
+    else
+      return FileName;
   }
-  if (FileName.substr(0, 5) == "tv://")              /* Live TV */
+  else if (FileName.substr(0, 16) == "pvr://recordings")
   {
-    FileName.erase(0, 5);
-    playingItem = atoi(FileName.c_str());
-    ret.Format("pvr://channelstv/%i.ts", playingItem);
+    cPVRRecordingInfoTag *tag = PVRRecordings.GetByPath(FileName);
+    if (tag && !tag->StreamURL().IsEmpty())
+      return tag->StreamURL();
+    else
+      return FileName;
   }
-  else if (FileName.substr(0, 8) == "radio://")     /* Live Radio */
-  {
-    FileName.erase(0, 8);
-    playingItem = atoi(FileName.c_str());
-    ret.Format("pvr://channelsradio/%i.ts", playingItem);
-  }
-  else if (FileName.substr(0, 9) == "record://")     /* Recorded TV */
-  {
-    FileName.erase(0, 9);
-    playingItem = atoi(FileName.c_str());
-    ret.Format("pvr://recordings/%i.ts", playingItem);
-  }
-
-  return ret;
+  else
+    return "";
 }
 
 bool CPVRFile::CanRecord()

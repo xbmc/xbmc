@@ -66,6 +66,16 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
   m_pLiveTV     = ((CPVRFile*)m_pFile)->GetLiveTV();
   m_pRecordable = ((CPVRFile*)m_pFile)->GetRecordable();
 
+  CURL url(strFile);
+  if (!CDVDInputStream::Open(strFile, content)) return false;
+  if (!m_pFile->Open(url))
+  {
+    delete m_pFile;
+    m_pFile = NULL;
+    return false;
+  }
+  m_eof = false;
+
   /*
    * Translate the "pvr://....." entry.
    * The PVR Client can use http or whatever else is supported by DVDPlayer.
@@ -89,19 +99,7 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
       return false;
     }
   }
-  else
-  {
-    if (!CDVDInputStream::Open(transFile.c_str(), content)) return false;
 
-    CURL url(transFile);
-    if (!m_pFile->Open(url))
-    {
-      delete m_pFile;
-      m_pFile = NULL;
-      return false;
-    }
-    m_eof = false;
-  }
   return true;
 }
 
@@ -119,10 +117,7 @@ void CDVDInputStreamPVRManager::Close()
     m_pOtherStream->Close();
     delete m_pOtherStream;
   }
-  else
-  {
-    CDVDInputStream::Close();
-  }
+  CDVDInputStream::Close();
 
   m_pPlayer         = NULL;
   m_pFile           = NULL;

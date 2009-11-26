@@ -60,7 +60,7 @@ bool CTVDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE Channels (idClient integer, idChannel integer primary key,"
                 "XBMCNumber integer, Name text, ClientName text, ClientNumber integer,"
                 "UniqueId integer, IconPath text, GroupID integer, encryption integer,"
-                "radio bool, hide bool, strFileNameAndPath text)\n");
+                "radio bool, hide bool, strStreamURL text, strFileNameAndPath text)\n");
 
     CLog::Log(LOGINFO, "TV: Creating GuideData table");
     m_pDS->exec("CREATE TABLE GuideData (idClient integer, idBouquet integer, idChannel integer, strChannel text, "
@@ -221,11 +221,12 @@ long CTVDatabase::AddDBChannel(const cPVRChannelInfoTag &info)
     if (channelId < 0)
     {
       CStdString SQL = FormatSQL("insert into Channels (idClient, idChannel, XBMCNumber, Name, ClientName,"
-                                 "ClientNumber, UniqueId, IconPath, GroupID, encryption, radio, hide, strFileNameAndPath) "
-                                 "values ('%i', NULL, '%i', '%s', '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%s')\n",
+                                 "ClientNumber, UniqueId, IconPath, GroupID, encryption, radio, hide, strStreamURL, strFileNameAndPath) "
+                                 "values ('%i', NULL, '%i', '%s', '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%s', '%s')\n",
                                  info.ClientID(), info.Number(), info.Name().c_str(), info.ClientName().c_str(),
                                  info.ClientNumber(), info.UniqueID(), info.m_IconPath.c_str(), info.m_iGroupID,
-                                 info.EncryptionSystem(), info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str());
+                                 info.EncryptionSystem(), info.m_radio, info.m_hide, info.m_strStreamURL.c_str(),
+                                 info.m_strFileNameAndPath.c_str());
 
       m_pDS->exec(SQL.c_str());
       channelId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
@@ -313,10 +314,11 @@ long CTVDatabase::UpdateDBChannel(const cPVRChannelInfoTag &info)
       // update the item
       SQL = FormatSQL("update Channels set idClient=%i,XBMCNumber=%i,Name='%s',ClientName='%s',"
                       "ClientNumber=%i,UniqueId=%i,IconPath='%s',GroupID=%i,encryption=%i,radio=%i,"
-                      "hide=%i,strFileNameAndPath='%s' where idChannel=%i",
+                      "hide=%i,strStreamURL='%s',strFileNameAndPath='%s' where idChannel=%i",
                       info.ClientID(), info.Number(), info.Name().c_str(), info.ClientName().c_str(),
                       info.ClientNumber(), info.UniqueID(), info.m_IconPath.c_str(), info.m_iGroupID,
-                      info.EncryptionSystem(), info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str(),
+                      info.EncryptionSystem(), info.m_radio, info.m_hide, info.m_strStreamURL.c_str(),
+                      info.m_strFileNameAndPath.c_str(),
                       channelId);
 
       m_pDS->exec(SQL.c_str());
@@ -326,11 +328,12 @@ long CTVDatabase::UpdateDBChannel(const cPVRChannelInfoTag &info)
     {
       m_pDS->close();
       SQL = FormatSQL("insert into Channels (idClient, idChannel, XBMCNumber, Name, ClientName,"
-                      "ClientNumber, UniqueId, IconPath, GroupID, encryption, radio, hide, strFileNameAndPath) "
-                      "values ('%i', NULL, '%i', '%s', '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%s')\n",
+                      "ClientNumber, UniqueId, IconPath, GroupID, encryption, radio, hide, strStreamURL='%s', strFileNameAndPath) "
+                      "values ('%i', NULL, '%i', '%s', '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%s', '%s')\n",
                       info.ClientID(), info.Number(), info.Name().c_str(), info.ClientName().c_str(),
                       info.ClientNumber(), info.UniqueID(), info.m_IconPath.c_str(), info.m_iGroupID,
-                      info.EncryptionSystem(), info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str());
+                      info.EncryptionSystem(), info.m_radio, info.m_hide, info.m_strStreamURL.c_str(),
+                      info.m_strFileNameAndPath.c_str());
 
       m_pDS->exec(SQL.c_str());
       channelId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
@@ -448,6 +451,7 @@ bool CTVDatabase::GetDBChannelList(cPVRChannels &results, bool radio)
       broadcast.m_encryptionSystem    = m_pDS->fv("encryption").get_asInt();
       broadcast.m_radio               = m_pDS->fv("radio").get_asBool();
       broadcast.m_hide                = m_pDS->fv("hide").get_asBool();
+      broadcast.m_strStreamURL        = m_pDS->fv("strStreamURL").get_asString();
       broadcast.m_strFileNameAndPath  = m_pDS->fv("strFileNameAndPath").get_asString();
 
       results.push_back(broadcast);

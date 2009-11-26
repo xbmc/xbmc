@@ -1667,13 +1667,16 @@ bool CPVRManager::OpenLiveStream(unsigned int channel, bool radio)
 
   /* Open the stream on the Client */
   const cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetPVRChannelInfoTag();
-  if (!m_clientsProps[tag->ClientID()].HandleInputStream ||
-      !m_clients[tag->ClientID()]->OpenLiveStream(*tag))
+  if (tag->StreamURL().IsEmpty())
   {
-    delete m_currentPlayingChannel;
-    m_currentPlayingChannel = NULL;
-    LeaveCriticalSection(&m_critSection);
-    return false;
+    if (!m_clientsProps[tag->ClientID()].HandleInputStream ||
+        !m_clients[tag->ClientID()]->OpenLiveStream(*tag))
+    {
+      delete m_currentPlayingChannel;
+      m_currentPlayingChannel = NULL;
+      LeaveCriticalSection(&m_critSection);
+      return false;
+    }
   }
 
   /* Clear the timeshift flags */
@@ -1688,7 +1691,7 @@ bool CPVRManager::OpenLiveStream(unsigned int channel, bool radio)
 
   /* Timeshift related code */
   /* Check if Client handles timeshift itself */
-  if (m_clientsProps[tag->ClientID()].SupportTimeShift)
+  if (tag->StreamURL().IsEmpty() && m_clientsProps[tag->ClientID()].SupportTimeShift)
   {
     m_timeshiftExt = true;
   }
@@ -1733,8 +1736,13 @@ bool CPVRManager::OpenRecordedStream(const cPVRRecordingInfoTag* tag)
   m_scanStart               = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
 
   /* Open the recording stream on the Client */
-  if (m_clientsProps[tag->ClientID()].HandleInputStream)
-    ret = m_clients[tag->ClientID()]->OpenRecordedStream(*tag);
+  if (tag->StreamURL().IsEmpty())
+  {
+    if (m_clientsProps[tag->ClientID()].HandleInputStream)
+      ret = m_clients[tag->ClientID()]->OpenRecordedStream(*tag);
+  }
+  else
+    ret = true;
 
   LeaveCriticalSection(&m_critSection);
   return ret;
@@ -2450,111 +2458,6 @@ int CPVRManager::GetStartTime()
          + time.GetMinutes() * 1000 * 60
          + time.GetSeconds() * 1000;
   }
-}
-
-
-/*************************************************************/
-/** PVR CLIENT DEMUXER                                      **/
-/**                                                         **/
-/** PVR Client internal demuxer access, is used if inside   **/
-/** PVR_SERVERPROPS the HandleDemuxing is true              **/
-/*************************************************************/
-
-bool CPVRManager::OpenDemux(PVRDEMUXHANDLE handle)
-{
-  EnterCriticalSection(&m_critSection);
-
-  bool ret = false;
-
-  if (m_currentPlayingChannel)
-  {
-    if (GetCurrentClientProps()->HandleDemuxing == true)
-      ret = m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->OpenTVDemux(handle, *m_currentPlayingChannel->GetPVRChannelInfoTag());
-  }
-  else if (m_currentPlayingRecording)
-  {
-    if (GetCurrentClientProps()->HandleDemuxing == true)
-      ret = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->OpenRecordingDemux(handle, *m_currentPlayingRecording->GetPVRRecordingInfoTag());
-  }
-
-  LeaveCriticalSection(&m_critSection);
-  return ret;
-}
-
-void CPVRManager::DisposeDemux()
-{
-  if (m_currentPlayingChannel)
-    m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->DisposeDemux();
-  else if (m_currentPlayingRecording)
-    m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->DisposeDemux();
-}
-
-void CPVRManager::ResetDemux()
-{
-  if (m_currentPlayingChannel)
-    m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->ResetDemux();
-  else if (m_currentPlayingRecording)
-    m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->ResetDemux();
-}
-
-void CPVRManager::FlushDemux()
-{
-  if (m_currentPlayingChannel)
-    m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->FlushDemux();
-  else if (m_currentPlayingRecording)
-    m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->FlushDemux();
-}
-
-void CPVRManager::AbortDemux()
-{
-  if (m_currentPlayingChannel)
-    m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->AbortDemux();
-  else if (m_currentPlayingRecording)
-    m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->AbortDemux();
-}
-
-void CPVRManager::SetDemuxSpeed(int iSpeed)
-{
-  if (m_currentPlayingChannel)
-    m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->SetDemuxSpeed(iSpeed);
-  else if (m_currentPlayingRecording)
-    m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->SetDemuxSpeed(iSpeed);
-}
-
-demux_packet_t* CPVRManager::ReadDemux()
-{
-  demux_packet_t *ret = NULL;
-
-  if (m_currentPlayingChannel)
-    ret = m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->ReadDemux();
-  else if (m_currentPlayingRecording)
-    ret = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->ReadDemux();
-
-  return ret;
-}
-
-bool CPVRManager::SeekDemuxTime(int time, bool backwords, double* startpts)
-{
-  bool ret = false;
-
-  if (m_currentPlayingChannel)
-    ret = m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->SeekDemuxTime(time, backwords, startpts);
-  else if (m_currentPlayingRecording)
-    ret = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->SeekDemuxTime(time, backwords, startpts);
-
-  return ret;
-}
-
-int CPVRManager::GetDemuxStreamLength()
-{
-  int ret = 0;
-
-  if (m_currentPlayingChannel)
-    ret = m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->GetDemuxStreamLength();
-  else if (m_currentPlayingRecording)
-    ret = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->GetDemuxStreamLength();
-
-  return ret;
 }
 
 CPVRManager g_PVRManager;

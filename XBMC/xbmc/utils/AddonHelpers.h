@@ -70,9 +70,6 @@ public:
   static char* GetRegion(int id);
   static char* GetSupportedMedia(int media);
   static bool SkinHasImage(const char *filename);
-  static void FreeDemuxPacket(demux_packet* pPacket);
-  static demux_packet* AllocateDemuxPacket(int iDataSize);
-
 
   /* Add-on Dialog helper functions */
   static bool OpenDialogOK(const char* heading, const char* line1, const char* line2, const char* line3);

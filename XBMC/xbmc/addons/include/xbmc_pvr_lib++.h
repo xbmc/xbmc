@@ -34,10 +34,5 @@ void PVR_transfer_epg_entry(const PVRHANDLE handle, const PVR_PROGINFO *epgentry
 void PVR_transfer_channel_entry(const PVRHANDLE handle, const PVR_CHANNEL *chan);
 void PVR_transfer_timer_entry(const PVRHANDLE handle, const PVR_TIMERINFO *timer);
 void PVR_transfer_recording_entry(const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);
-bool PVR_add_demux_stream(const PVRDEMUXHANDLE handle, const PVR_DEMUXSTREAMINFO *demux);
-void PVR_delete_demux_stream(const PVRDEMUXHANDLE handle, int index);
-void PVR_delete_demux_streams(const PVRDEMUXHANDLE handle);
-void PVR_free_demux_packet(demux_packet* pPacket);
-demux_packet* PVR_allocate_demux_packet(int iDataSize = 0);
 
 #endif /* LIBPVR_PLUS_PLUS_H */

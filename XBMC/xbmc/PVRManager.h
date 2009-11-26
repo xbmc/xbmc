@@ -140,17 +140,6 @@ public:
   int GetTotalTime();
   int GetStartTime();
 
-  /*--- Stream demux functions ---*/
-  bool OpenDemux(PVRDEMUXHANDLE handle);
-  void DisposeDemux();
-  void ResetDemux();
-  void FlushDemux();
-  void AbortDemux();
-  void SetDemuxSpeed(int iSpeed);
-  demux_packet_t* ReadDemux();
-  bool SeekDemuxTime(int time, bool backwords, double* startpts);
-  int GetDemuxStreamLength();
-
 protected:
   virtual void Process();
 
