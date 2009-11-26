@@ -2290,22 +2290,17 @@ bool CApplication::OnKey(CKey& key)
   CButtonTranslator::GetInstance().GetAction(iWin, key, action);
 
   // a key has been pressed.
-  // Reset the screensaver timer
-  // but not for the analog thumbsticks/triggers
-  if (!key.IsAnalogButton())
+  // reset Idle Timer
+  m_idleTimer.StartZero();
+  bool processKey = AlwaysProcess(action);
+
+  ResetScreenSaver();
+
+  // allow some keys to be processed while the screensaver is active
+  if (WakeUpScreenSaverAndDPMS() && !processKey)
   {
-    // reset Idle Timer
-    m_idleTimer.StartZero();
-    bool processKey = AlwaysProcess(action);
-
-    ResetScreenSaver();
-
-    // allow some keys to be processed while the screensaver is active
-    if (WakeUpScreenSaverAndDPMS() && !processKey)
-    {
-      g_Keyboard.Reset();
-      return true;
-    }
+    g_Keyboard.Reset();
+    return true;
   }
 
   // change this if we have a dialog up
