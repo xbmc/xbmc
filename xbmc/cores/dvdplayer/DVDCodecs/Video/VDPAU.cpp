@@ -32,7 +32,7 @@
 #include "GUISettings.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
-CVDPAU*          g_VDPAU;
+CVDPAU*          g_VDPAU=NULL;
 
 CVDPAU::Desc decoder_profiles[] = {
 {"MPEG1",        VDP_DECODER_PROFILE_MPEG1},
