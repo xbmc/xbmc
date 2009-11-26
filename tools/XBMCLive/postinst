@@ -46,7 +46,7 @@ case "$1" in
 	done
 
 	# Add xbmc to the sudoers file (if not already done)
-	if [ ! $(grep -i XBMC-specific /etc/sudoers) ]; then
+	if ! grep -i -q XBMC-specific /etc/sudoers ; then
 		echo "" >> /etc/sudoers
 		echo "# XBMC" >> /etc/sudoers
 		echo "# XBMC-specific configuration" >> /etc/sudoers
