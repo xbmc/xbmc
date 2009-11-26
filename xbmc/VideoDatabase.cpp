@@ -5040,8 +5040,9 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
       m_pDS->next();
     }
 
-    CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d",
+    CLog::Log(LOGDEBUG,"Time to retrieve tvshows from dataset = %d",
               CTimeUtils::GetTimeMS() - time);
+
     CStdString order(where);
     bool maintainOrder = (size_t)order.ToLower().Find("order by") != CStdString::npos;
     Stack(items, VIDEODB_CONTENT_TVSHOWS, maintainOrder);
@@ -5310,7 +5311,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
       m_pDS->next();
     }
 
-    CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d",
+    CLog::Log(LOGDEBUG,"Time to retrieve episodes from dataset = %d",
               CTimeUtils::GetTimeMS() - time);
 
     // cleanup
