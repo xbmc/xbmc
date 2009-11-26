@@ -2863,7 +2863,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
     castTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
     details.m_strPictureURL.Parse();
   }
-  details.m_fanart.Unpack();
   return details;
 }
 
