@@ -2037,7 +2037,6 @@ bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
     return(true);
   }
 
-
   if (g_CrystalHD)
   {
     g_CrystalHD->LoadNV12Pointers(im);
@@ -2222,7 +2221,8 @@ bool CLinuxRendererGL::CreateCrystalHDTexture(int index)
   im.planesize[0] = im.stride[0] * im.height;
   im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );
 
-  if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo"))
+  //if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo"))
+  if (false)
   {
     CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
     m_pboused = true;
