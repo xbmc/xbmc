@@ -946,7 +946,6 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
                        totalAvailableOutputSurfaces,
                        tmpMaxOutputSurfaces,
                        NUM_OUTPUT_SURFACES);
-  assert(totalAvailableOutputSurfaces > 0);
 
   surfaceNum = presentSurfaceNum = 0;
   outputSurface = outputSurfaces[surfaceNum];
