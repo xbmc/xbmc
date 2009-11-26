@@ -41,8 +41,9 @@ private:
   CDateTimeSpan m_duration;           /// Duration
   int           m_Priority;
   int           m_Lifetime;
-  CStdString    m_strFileNameAndPath; /// Filename for PVRManager to open and read stream
-  CStdString    m_strDirectory;
+  CStdString    m_strStreamURL;       ///> Stream URL if empty use pvr client
+  CStdString    m_strDirectory;       ///> Directory of this recording on the client
+  CStdString    m_strFileNameAndPath; ///> Filename for PVRManager to open and read stream
 
   void DisplayError(PVR_ERROR err) const;
 
@@ -52,10 +53,14 @@ public:
   bool operator !=(const cPVRRecordingInfoTag& right) const;
   void Reset(void);
 
-  long ClientID(void) const { return m_clientID; }
-  void SetClientID(int ClientId) { m_clientID = ClientId; }
-  long ClientIndex(void) const { return m_clientIndex; }
-  void SetClientIndex(int ClientIndex) { m_clientIndex = ClientIndex; }
+  CStdString Title(void) const { return m_strTitle; }
+  void SetTitle(CStdString Title) { m_strTitle = Title; }
+  CStdString Directory(void) const { return m_strDirectory; }
+  void SetDirectory(CStdString path) { m_strDirectory = path; }
+  CStdString PlotOutline(void) const { return m_strPlotOutline; }
+  void SetPlotOutline(CStdString PlotOutline) { m_strPlotOutline = PlotOutline; }
+  CStdString Plot(void) const { return m_strPlot; }
+  void SetPlot(CStdString Plot) { m_strPlot = Plot; }
   CStdString ChannelName(void) const { return m_strChannel; }
   void SetChannelName(CStdString name) { m_strChannel = name; }
   CDateTime RecordingTime(void) const { return m_recordingTime; }
@@ -68,14 +73,13 @@ public:
   void SetPriority(int Priority) { m_Priority = Priority; }
   CStdString Path(void) const { return m_strFileNameAndPath; }
   void SetPath(CStdString path) { m_strFileNameAndPath = path; }
-  CStdString Title(void) const { return m_strTitle; }
-  void SetTitle(CStdString Title) { m_strTitle = Title; }
-  CStdString PlotOutline(void) const { return m_strPlotOutline; }
-  void SetPlotOutline(CStdString PlotOutline) { m_strPlotOutline = PlotOutline; }
-  CStdString Plot(void) const { return m_strPlot; }
-  void SetPlot(CStdString Plot) { m_strPlot = Plot; }
-  CStdString Directory(void) const { return m_strDirectory; }
-  void SetDirectory(CStdString dir) { m_strDirectory = dir; }
+
+  long ClientID(void) const { return m_clientID; }
+  void SetClientID(int ClientId) { m_clientID = ClientId; }
+  long ClientIndex(void) const { return m_clientIndex; }
+  void SetClientIndex(int ClientIndex) { m_clientIndex = ClientIndex; }
+  CStdString StreamURL(void) const { return m_strStreamURL; }
+  void SetStreamURL(CStdString stream) { m_strStreamURL = stream; }
 
   bool Delete(void) const;
   bool Rename(CStdString &newName) const;

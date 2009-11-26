@@ -44,7 +44,6 @@
 #include "lib/libGoAhead/XBMChttp.h"
 #endif
 #include "Crc32.h"
-#include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "utils/log.h"
 #include "LocalizeStrings.h"
 #include "GUISettings.h"
@@ -676,15 +675,6 @@ bool CAddonUtils::SkinHasImage(const char *filename)
   return g_TextureManager.HasTexture(filename);
 }
 
-void CAddonUtils::FreeDemuxPacket(demux_packet* pPacket)
-{
-  CDVDDemuxUtils::FreeDemuxPacket((DemuxPacket*) pPacket);
-}
-
-demux_packet* CAddonUtils::AllocateDemuxPacket(int iDataSize)
-{
-  return (demux_packet*) CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
-}
 
 /**
 * XBMC AddOn Dialog callbacks

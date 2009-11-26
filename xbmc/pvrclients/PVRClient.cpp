@@ -45,7 +45,6 @@
 #include "URL.h"
 #include "../utils/log.h"
 #include "../utils/AddonHelpers.h"
-#include "../cores/dvdplayer/DVDDemuxers/DVDDemuxPVRManager.h"
 
 using namespace std;
 using namespace ADDON;
@@ -94,11 +93,6 @@ bool CPVRClient::Init()
   m_callbacks->PVR.TransferChannelEntry   = PVRTransferChannelEntry;
   m_callbacks->PVR.TransferTimerEntry     = PVRTransferTimerEntry;
   m_callbacks->PVR.TransferRecordingEntry = PVRTransferRecordingEntry;
-  m_callbacks->PVR.AddDemuxStream         = CDVDDemuxPVRManager::AddDemuxStream;
-  m_callbacks->PVR.DeleteDemuxStream      = CDVDDemuxPVRManager::DeleteDemuxStream;
-  m_callbacks->PVR.DeleteDemuxStreams     = CDVDDemuxPVRManager::DeleteDemuxStreams;
-  m_callbacks->PVR.FreeDemuxPacket        = CAddonUtils::FreeDemuxPacket;
-  m_callbacks->PVR.AllocateDemuxPacket    = CAddonUtils::AllocateDemuxPacket;
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
@@ -407,7 +401,7 @@ void CPVRClient::PVRTransferChannelEntry(void *userData, const PVRHANDLE handle,
   tag.SetRadio(channel->radio);
   tag.SetHidden(channel->hide);
   tag.SetRecording(channel->recording);
-  tag.SetStream(channel->stream_url);
+  tag.SetStreamURL(channel->stream_url);
 
   xbmcChannels->push_back(tag);
   return;
@@ -648,8 +642,8 @@ void CPVRClient::PVRTransferRecordingEntry(void *userData, const PVRHANDLE handl
 
   tag.SetClientIndex(recording->index);
   tag.SetClientID(client->m_clientID);
-  tag.SetChannelName(recording->channelName);
-  tag.SetRecordingTime(recording->starttime);
+  tag.SetChannelName(recording->channel_name);
+  tag.SetRecordingTime(recording->recording_time);
   tag.SetDuration(CDateTimeSpan(0, 0, recording->duration / 60, recording->duration % 60));
   tag.SetPriority(recording->priority);
   tag.SetLifetime(recording->lifetime);
@@ -657,6 +651,7 @@ void CPVRClient::PVRTransferRecordingEntry(void *userData, const PVRHANDLE handl
   tag.SetDirectory(recording->directory);
   tag.SetPlot(recording->description);
   tag.SetPlotOutline(recording->subtitle);
+  tag.SetStreamURL(recording->stream_url);
 
   xbmcRecordings->push_back(tag);
   return;
@@ -726,16 +721,18 @@ PVR_ERROR CPVRClient::RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdS
 
 void CPVRClient::WriteClientRecordingInfo(const cPVRRecordingInfoTag &recordinginfo, PVR_RECORDINGINFO &tag)
 {
+  time_t recTime;
+  recordinginfo.RecordingTime().GetAsTime(recTime);
+  tag.recording_time= recTime;
   tag.index         = recordinginfo.ClientIndex();
   tag.title         = recordinginfo.Title();
   tag.subtitle      = recordinginfo.PlotOutline();
   tag.description   = recordinginfo.Plot();
-  tag.channelName   = recordinginfo.ChannelName();
+  tag.channel_name  = recordinginfo.ChannelName();
   tag.duration      = recordinginfo.GetDuration();
   tag.priority      = recordinginfo.Priority();
   tag.lifetime      = recordinginfo.Lifetime();
-  time_t recTime    = tag.starttime;
-  recordinginfo.RecordingTime().GetAsTime(recTime);
+  tag.stream_url    = recordinginfo.StreamURL();
   return;
 }
 
@@ -1133,7 +1130,7 @@ void CPVRClient::WriteClientChannelInfo(const cPVRChannelInfoTag &channelinfo, P
   tag.multifeed         = false;
   tag.multifeed_master  = 0;
   tag.multifeed_number  = 0;
-  tag.stream_url        = channelinfo.Stream();
+  tag.stream_url        = channelinfo.StreamURL();
   return;
 }
 
@@ -1166,195 +1163,6 @@ __int64 CPVRClient::SeekRecordedStream(__int64 pos, int whence)
 __int64 CPVRClient::LengthRecordedStream(void)
 {
   return m_pClient->LengthRecordedStream();
-}
-
-bool CPVRClient::OpenTVDemux(PVRDEMUXHANDLE handle, const cPVRChannelInfoTag &channelinfo)
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-      PVR_CHANNEL tag;
-      WriteClientChannelInfo(channelinfo, tag);
-      return m_pClient->OpenTVDemux(handle, tag);
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during OpenTVDemux occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
-    }
-  }
-  return false;
-}
-
-bool CPVRClient::OpenRecordingDemux(PVRDEMUXHANDLE handle, const cPVRRecordingInfoTag &recinfo)
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-      PVR_RECORDINGINFO tag;
-      WriteClientRecordingInfo(recinfo, tag);
-      return m_pClient->OpenRecordingDemux(handle, tag);
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during OpenRecordingDemux occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
-    }
-  }
-  return false;
-}
-
-void CPVRClient::DisposeDemux()
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-      m_pClient->DisposeDemux();
-      return;
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during DisposeDemux occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
-    }
-  }
-  return;
-}
-
-void CPVRClient::ResetDemux()
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-      m_pClient->ResetDemux();
-      return;
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during ResetDemux occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
-    }
-  }
-  return;
-}
-
-void CPVRClient::FlushDemux()
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-      m_pClient->FlushDemux();
-      return;
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during FlushDemux occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
-    }
-  }
-  return;
-}
-
-void CPVRClient::AbortDemux()
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-      m_pClient->AbortDemux();
-      return;
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during AbortDemux occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
-    }
-  }
-  return;
-}
-
-void CPVRClient::SetDemuxSpeed(int iSpeed)
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-      m_pClient->SetDemuxSpeed(iSpeed);
-      return;
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during SetDemuxSpeed occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
-    }
-  }
-  return;
-}
-
-demux_packet_t* CPVRClient::ReadDemux()
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-      return m_pClient->ReadDemux();
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during ReadDemux occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
-    }
-  }
-  return NULL;
-}
-
-bool CPVRClient::SeekDemuxTime(int time, bool backwords, double* startpts)
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-      return m_pClient->SeekDemuxTime(time, backwords, startpts);
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during SeekDemuxTime occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
-    }
-  }
-  return false;
-}
-
-int CPVRClient::GetDemuxStreamLength()
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-      return m_pClient->GetDemuxStreamLength();
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetDemuxStreamLength occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
-    }
-  }
-  return 0;
 }
 
 

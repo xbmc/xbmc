@@ -65,10 +65,11 @@ bool cPVRRecordingInfoTag::operator ==(const cPVRRecordingInfoTag& right) const
           m_duration            == right.m_duration &&
           m_strPlotOutline      == right.m_strPlotOutline &&
           m_strPlot             == right.m_strPlot &&
-          m_strFileNameAndPath  == right.m_strFileNameAndPath &&
+          m_strStreamURL        == right.m_strStreamURL &&
           m_Priority            == right.m_Priority &&
           m_Lifetime            == right.m_Lifetime &&
           m_strDirectory        == right.m_strDirectory &&
+          m_strFileNameAndPath  == right.m_strFileNameAndPath &&
           m_strTitle            == right.m_strTitle);
 }
 
@@ -84,11 +85,12 @@ bool cPVRRecordingInfoTag::operator !=(const cPVRRecordingInfoTag& right) const
   if (m_duration                != right.m_duration) return true;
   if (m_strPlotOutline          != right.m_strPlotOutline) return true;
   if (m_strPlot                 != right.m_strPlot) return true;
-  if (m_strFileNameAndPath      != right.m_strFileNameAndPath) return true;
+  if (m_strStreamURL            != right.m_strStreamURL) return true;
   if (m_Priority                != right.m_Priority) return true;
   if (m_Lifetime                != right.m_Lifetime) return true;
   if (m_strTitle                != right.m_strTitle) return true;
   if (m_strDirectory            != right.m_strDirectory) return true;
+  if (m_strFileNameAndPath      != right.m_strFileNameAndPath) return true;
 
   return false;
 }
@@ -103,9 +105,10 @@ void cPVRRecordingInfoTag::Reset(void)
   m_strChannel            = "";
   m_strDirectory          = "";
   m_recordingTime         = NULL;
-  m_strFileNameAndPath    = "";
+  m_strStreamURL          = "";
   m_Priority              = -1;
   m_Lifetime              = -1;
+  m_strFileNameAndPath    = "";
 
   CVideoInfoTag::Reset();
 }
@@ -208,8 +211,10 @@ void cPVRRecordings::Process()
     itr++;
   }
 
-  for (unsigned int i = 0; i < size(); i++)
+  for (unsigned int i = 0; i < size(); ++i)
   {
+    CFileItemPtr pFileItem(new CFileItem(at(i)));
+
     CStdString Path;
     Path.Format("pvr://recordings/client_%04i/", at(i).ClientID());
     if (at(i).Directory() != "")
@@ -219,7 +224,6 @@ void cPVRRecordings::Process()
     Path += at(i).Title() + ".pvr";
     at(i).SetPath(Path);
   }
-
   return;
 }
 
@@ -248,8 +252,8 @@ int cPVRRecordings::GetRecordings(CFileItemList* results)
 {
   for (unsigned int i = 0; i < size(); ++i)
   {
-    CFileItemPtr record(new CFileItem(at(i)));
-    results->Add(record);
+    CFileItemPtr pFileItem(new CFileItem(at(i)));
+    results->Add(pFileItem);
   }
   return size();
 }
@@ -452,7 +456,6 @@ cPVRRecordingInfoTag *cPVRRecordings::GetByPath(CStdString &path)
       if ((title == at(i).Title()) && (dir == at(i).Directory()) && (clientID == at(i).ClientID()))
         return &at(i);
     }
-
   }
 
   return NULL;

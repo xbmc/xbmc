@@ -92,17 +92,6 @@ public:
   virtual __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
   virtual __int64 LengthRecordedStream(void);
 
-  virtual bool OpenTVDemux(PVRDEMUXHANDLE handle, const cPVRChannelInfoTag &channelinfo);
-  virtual bool OpenRecordingDemux(PVRDEMUXHANDLE handle, const cPVRRecordingInfoTag &recinfo);
-  virtual void DisposeDemux();
-  virtual void ResetDemux();
-  virtual void FlushDemux();
-  virtual void AbortDemux();
-  virtual void SetDemuxSpeed(int iSpeed);
-  virtual demux_packet_t* ReadDemux();
-  virtual bool SeekDemuxTime(int time, bool backwords, double* startpts);
-  virtual int GetDemuxStreamLength();
-
 protected:
   std::auto_ptr<struct PVRClient> m_pClient;
   std::auto_ptr<DllPVRClient> m_pDll;

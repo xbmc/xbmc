@@ -541,14 +541,14 @@ PVR_ERROR cPVRClientVDR::RequestRecordingsList(PVRHANDLE handle)
 
       PVR_RECORDINGINFO tag;
       tag.index           = recording.Index();
-      tag.channelName     = recording.ChannelName();
-      tag.framesPerSecond = recording.FramesPerSecond();
+      tag.channel_name    = recording.ChannelName();
       tag.lifetime        = recording.Lifetime();
       tag.priority        = recording.Priority();
-      tag.starttime       = recording.StartTime();
+      tag.recording_time  = recording.StartTime();
       tag.duration        = recording.Duration();
       tag.subtitle        = recording.ShortText();
       tag.description     = recording.Description();
+      tag.stream_url      = "";
 
       CStdString fileName = recording.FileName();
       size_t found = fileName.find_last_of("~");
