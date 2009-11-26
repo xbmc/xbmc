@@ -1676,7 +1676,7 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
         im.plane[p] = NULL;
         glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
       }
-      glDeleteBuffers(1, pbo + p);
+      glDeleteBuffersARB(1, pbo + p);
       pbo[p] = 0;
     }
     else
