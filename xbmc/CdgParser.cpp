@@ -414,7 +414,7 @@ bool CCdgRenderer::InitGraphics()
 
   // set the colours
   m_bgAlpha = 0;
-  if (g_guiSettings.GetString("mymusic.visualisation").Equals("None"))
+  if (g_guiSettings.GetString("musicplayer.visualisation").Equals("None"))
     m_bgAlpha = 0xff000000;
   m_fgAlpha = 0xff000000;
 

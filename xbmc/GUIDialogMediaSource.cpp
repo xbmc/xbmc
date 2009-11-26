@@ -95,7 +95,7 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
       {
         CMediaSource share;
         share.FromNameAndPaths("video", m_name, GetPaths());
-        
+
         CGUIDialogContentSettings::ShowForDirectory(share.strPath,m_info,m_settings,m_bRunScan);
       }
       return true;
@@ -175,7 +175,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
 bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const CStdString&share)
 {
   VECSOURCES* pShares=NULL;
-  
+
   if (pShares)
   {
     for (unsigned int i=0;i<pShares->size();++i)
@@ -263,11 +263,17 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       share1.strName = g_localizeStrings.Get(21883);
       extraShares.push_back(share1);
     }
+
 #ifdef _XBOX
     share1.strName = "MS Soundtracks";
     share1.strPath = "soundtrack://";
     extraShares.push_back(share1);
 #endif
+
+    share1.strName = "Shoutcast";
+    share1.strPath = SHOUTCAST_MASTER_LINK;
+    extraShares.push_back(share1);
+    
     if (g_guiSettings.GetString("scrobbler.lastfmusername") != "")
     {
       share1.strName = "Last.FM";
@@ -359,7 +365,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   if (CGUIDialogFileBrowser::ShowAndGetSource(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
   {
     if (item < m_paths->Size()) // if the skin does funky things, m_paths may have been cleared
-    m_paths->Get(item)->m_strPath = path;
+      m_paths->Get(item)->m_strPath = path;
     if (!m_bNameChanged || m_name.IsEmpty())
     {
       CURL url(path);
@@ -407,7 +413,7 @@ void CGUIDialogMediaSource::OnOK()
     if (share.strPath.Left(9).Equals("plugin://"))
     {
       CStdString strPath=share.strPath;
-      strPath.Replace("plugin://","Q:\\plugins\\");
+      strPath.Replace("plugin://","special://home/plugins/");
       CFileItem item(strPath,true);
       item.SetCachedProgramThumb();
       if (!item.HasThumbnail())
