@@ -101,19 +101,10 @@ static time_t ParseDate(const CStdString & strDate)
   return mktime(&pubDate);
 }
 
-// helper to avoid null dereference
-static inline CStdString S(const char * s)
-{
-  if(s)
-    return s;
-  else
-    return "";
-}
-
 static void ParseItemMRSS(CFileItemPtr& item, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
 {
   CVideoInfoTag* vtag = item->GetVideoInfoTag();
-  CStdString text = S(item_child->GetText());
+  CStdString text = item_child->GetText();
 
   if(name == "content")
   {
@@ -172,7 +163,7 @@ static void ParseItemMRSS(CFileItemPtr& item, TiXmlElement* item_child, const CS
       return;
 
     CStdString description = text;
-    if(S(item_child->Attribute("type")) == "html")
+    if(CStdString(item_child->Attribute("type")) == "html")
       HTML::CHTMLUtil::RemoveTags(description);
     item->SetProperty("description", description);
     item->SetLabel2(description);
@@ -198,7 +189,7 @@ static void ParseItemMRSS(CFileItemPtr& item, TiXmlElement* item_child, const CS
   }
   else if(name == "credit")
   {
-    CStdString role = S(item_child->Attribute("role"));
+    CStdString role = item_child->Attribute("role");
     if(role == "director")
       vtag->m_strDirector += ", " + text;
     else if(role == "author")
@@ -330,13 +321,13 @@ static void ParseItemRSS(CFileItemPtr& item, TiXmlElement* item_child, const CSt
 static void ParseItemVoddler(CFileItemPtr& item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
 {
   CVideoInfoTag* vtag = item->GetVideoInfoTag();
-  CStdString text = S(element->GetText());
+  CStdString text = element->GetText();
 
   if(name == "trailer")
   {
     vtag->m_strTrailer = text;
 
-    CStdString type = S(element->Attribute("type"));
+    CStdString type = element->Attribute("type");
     if(item->m_strPath.IsEmpty())
     {
       item->m_strPath = text;
