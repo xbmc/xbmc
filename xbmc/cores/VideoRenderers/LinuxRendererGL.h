@@ -215,6 +215,7 @@ protected:
     YUVFIELDS fields;
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
+    GLuint    pbo[MAX_PLANES];
   };
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
@@ -244,6 +245,10 @@ protected:
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
 
   CRect m_crop;
+
+  void BindPbo(YUVBUFFER& buff, int plane);
+  void UnBindPbo(YUVBUFFER& buff, int plane);
+  bool m_pboused;
 };
 
 

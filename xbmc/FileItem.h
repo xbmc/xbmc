@@ -132,6 +132,7 @@ public:
   bool IsHDHomeRun() const;
   bool IsVTP() const;
   bool IsLiveTV() const;
+  bool IsRSS() const;
 
   void RemoveExtension();
   void CleanString();

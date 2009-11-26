@@ -3110,14 +3110,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\RssFeed.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\RssFeed.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\RssReader.cpp"
 					>
 				</File>

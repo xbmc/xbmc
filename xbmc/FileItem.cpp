@@ -610,6 +610,7 @@ bool CFileItem::IsInternetStream() const
       strProtocol == "http" || /*strProtocol == "ftp" ||*/
       strProtocol == "rtsp" || strProtocol == "rtp" ||
       strProtocol == "udp"  || strProtocol == "lastfm" ||
+      strProtocol == "rss"  ||
       strProtocol == "https" || strProtocol == "rtmp")
     return true;
 
@@ -619,18 +620,17 @@ bool CFileItem::IsInternetStream() const
 bool CFileItem::IsFileFolder() const
 {
   return (
-    m_bIsFolder && (
-    IsPlugin() ||
+   (IsPlugin() && m_bIsFolder) ||
     IsSmartPlayList() ||
-    IsPlayList() ||
+   (IsPlayList() && g_advancedSettings.m_playlistAsFolders) ||
     IsZIP() ||
     IsRAR() ||
+    IsRSS() ||
     IsType(".ogg") ||
     IsType(".nsf") ||
     IsType(".sid") ||
     IsType(".sap") ||
     IsShoutCast()
-    )
     );
 }
 
@@ -723,6 +723,13 @@ bool CFileItem::IsCBZ() const
 bool CFileItem::IsCBR() const
 {
   return CUtil::GetExtension(m_strPath).Equals(".cbr", false);
+}
+
+bool CFileItem::IsRSS() const
+{
+  return m_strPath.Left(6).Equals("rss://", false)
+      || CUtil::GetExtension(m_strPath).Equals(".rss", false)
+      || GetContentType() == "application/rss+xml";
 }
 
 bool CFileItem::IsStack() const
