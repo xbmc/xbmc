@@ -5035,8 +5035,6 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
         pItem->SetProperty("unwatchedepisodes", movie.m_iEpisode - movie.m_playCount);
         pItem->GetVideoInfoTag()->m_playCount = (movie.m_iEpisode == movie.m_playCount) ? 1 : 0;
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
-        if (pItem->CacheLocalFanart())
-          pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
         items.Add(pItem);
       }
       m_pDS->next();
