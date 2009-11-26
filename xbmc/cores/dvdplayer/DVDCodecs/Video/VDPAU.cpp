@@ -432,6 +432,7 @@ void CVDPAU::SetSharpness()
 void CVDPAU::SetHWUpscaling()
 {
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+/* Disabled for 9.11
   CLog::Log(LOGNOTICE,"Enabling VDPAU HQ Upscaling");
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
   VdpStatus vdp_st;
@@ -448,6 +449,7 @@ void CVDPAU::SetHWUpscaling()
   VdpBool enabled[]={1};
   vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
+*/
 #endif
 }
 
@@ -983,11 +985,16 @@ enum PixelFormat CVDPAU::FFGetFormat(struct AVCodecContext * avctx,
 
 int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  if (!vdpauConfigured) return 0;
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
   CVDPAU*               vdp        = ctx->GetContextVDPAU();
   struct pictureAge*    pA         = &vdp->picAge;
+  
+  if (!vdp->vdpauConfigured)
+  {
+    CLog::Log(LOGNOTICE,"(VDPAU)FFGetBuffer called without vdpauConfigured");
+    return 0;
+  }
 
   vdpau_render_state * render = NULL;
 
