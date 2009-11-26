@@ -426,7 +426,6 @@ HRESULT CDX9AllocatorPresenter::AllocVideoSurface(D3DFORMAT Format)
   m_privateTexture = NULL;
   m_pVideoSurface = NULL;
   m_SurfaceType = Format;
-  m_SurfaceType = D3DFMT_X8R8G8B8;
   D3DDISPLAYMODE dm;
   hr = m_D3DDev->GetDisplayMode(NULL, &dm);
   

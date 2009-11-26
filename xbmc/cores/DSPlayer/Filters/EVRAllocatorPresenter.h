@@ -30,6 +30,7 @@ typedef BOOL	(__stdcall *PTR_AvRevertMmThreadCharacteristics)(HANDLE AvrtHandle)
 
 // Guid to tag IMFSample with DirectX surface index
 static const GUID GUID_SURFACE_INDEX = { 0x30c8e9f6, 0x415, 0x4b81, { 0xa3, 0x15, 0x1, 0xa, 0xc6, 0xa9, 0xda, 0x19 } };
+
 class COuterEVR;
 [uuid("7612B889-0929-4363-9BA3-580D735AA0F6")]
 class CEVRAllocatorPresenter : public IDsRenderer,
@@ -49,7 +50,6 @@ public:
 
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
   STDMETHODIMP	InitializeDevice(AM_MEDIA_TYPE*	pMediaType);
-  HRESULT RenderPresent(IMFSample *pSample);
   //IBaseFilter delegate
   bool GetState( DWORD dwMilliSecsTimeout, FILTER_STATE *State, HRESULT &_ReturnValue);
 
@@ -142,23 +142,41 @@ typedef enum
   CCritSec								m_SampleQueueLock;
   CCritSec								m_ImageProcessingLock;
   
+	// Stats variable for IQualProp
+  UINT									m_pcFrames;
+  UINT									m_nDroppedUpdate;
+  UINT									m_pcFramesDrawn;	// Retrieves the number of frames drawn since streaming started
+  UINT									m_piAvg;
+  UINT									m_piDev;
 
   CInterfaceList<IMFSample, &IID_IMFSample>		m_FreeSamples;
   CInterfaceList<IMFSample, &IID_IMFSample>		m_ScheduledSamples;
   IMFSample *								m_pCurrentDisplaydSample;
   bool									m_bWaitingSample;
   bool									m_bLastSampleOffsetValid;
-  bool									m_bSignaledStarvation; 
-  LONGLONG								m_LastScheduledSampleTime;
+  bool									m_bSignaledStarvation;
+  //stuff from mediaportal
+  LONGLONG								m_LastFrameTime;
+  LONGLONG								m_FrameTimeDiff;
+  int                                   m_iExpectedFrameDuration;
+  int       m_iMaxFrameTimeDiff;
+  int       m_iMinFrameTimeDiff;
+  int                                   m_iFramesForStats;
+  DWORD                                 m_dwVariance;
+
+
+  LONGLONG								    m_LastScheduledSampleTime;
   double									m_LastScheduledSampleTimeFP;
-	LONGLONG								m_LastScheduledUncorrectedSampleTime;
-	LONGLONG								m_MaxSampleDuration;
-	LONGLONG								m_LastSampleOffset;
-	LONGLONG								m_VSyncOffsetHistory[5];
-	LONGLONG								m_LastPredictedSync;
+  LONGLONG								m_LastScheduledUncorrectedSampleTime;
+  LONGLONG								m_MaxSampleDuration;
+  LONGLONG								m_LastSampleOffset;
+  LONGLONG								m_VSyncOffsetHistory[5];
+  LONGLONG								m_LastPredictedSync;
 	int										m_VSyncOffsetHistoryPos;
   void									RenderThread();
+  void									ResetStats();
   static DWORD WINAPI						PresentThread(LPVOID lpParam);
+  void									CompleteFrameStep(bool bCancel);
   void									CheckWaitingSampleFromMixer();
   bool									   GetImageFromMixer();
   void									   GetMixerThread();
@@ -205,10 +223,12 @@ protected:
   CComPtr<IMediaEventSink> m_pSink;
   CComPtr<IMFClock> m_pClock;
   UINT m_iResetToken;
-
-  //msg handlings
+//Rendering function
+  HRESULT RenderPresent(CComPtr<IDirect3DSurface9> pSurface);
+  HRESULT PresentSample(IMFSample* pSample);
   void StartWorkerThreads();
   void StopWorkerThreads();
+//Trace evr is only temporary TODO Remove it
   HRESULT TRACE_EVR(const char* strTrace);
 //Dx9Allocator
   virtual HRESULT AllocSurfaces(D3DFORMAT Format = D3DFMT_A8R8G8B8);
@@ -217,10 +237,15 @@ protected:
   void			OnResetDevice();
   LONGLONG m_ModeratedTimeLast;
   LONGLONG m_ModeratedClockLast;
-  CComPtr<IDirect3DTexture9>		m_pVideoTexture[62];
-  CComPtr<IDirect3DSurface9>		m_pVideoSurface[62];
-  CComPtr<IDirect3DTexture9>		m_pVideoTexture2;
-  CComPtr<IDirect3DSurface9>		m_pVideoSurface2;
+  CComPtr<IDirect3DTexture9>		m_pVideoTexture;
+  CComPtr<IDirect3DSurface9>		m_pVideoSurface;
+  CComPtr<IDirect3DSwapChain9>      m_pInternalSwapchains[5];
+  CComPtr<IDirect3DTexture9>		m_pInternalVideoTexture[5];
+  CComPtr<IDirect3DSurface9>		m_pInternalVideoSurface[5];
+  CComPtr<IMFSample>                m_pInternalVideoSamples[5];
+  IMFSample*                        m_pInternalFreeSamples[5];
+  int                               m_pFreeSamples;
+
   int                               m_nNbDXSurface;      //Total number of dx surface
   int                               m_nCurSurface;
   int                               m_iVideoWidth;
