@@ -116,6 +116,8 @@ CLinuxRendererGL::CLinuxRendererGL()
 #ifdef HAVE_LIBVDPAU
   m_StrictBinding = g_guiSettings.GetBool("videoplayer.strictbinding");
 #endif
+  
+  m_pboused = false;
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -563,9 +565,11 @@ void CLinuxRendererGL::LoadTextures(int source)
     else
     {
       // Load Y plane
+      BindPbo(buf, 0);
       LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE, buf.flipindex
                , im->width, im->height
                , im->stride[0], im->plane[0] );
+      UnBindPbo(buf, 0);
     }
   }
 
@@ -598,13 +602,17 @@ void CLinuxRendererGL::LoadTextures(int source)
     }
     else
     {
+      BindPbo(buf, 1); 
       LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> im->cshift_y
                , im->stride[1], im->plane[1] );
+      UnBindPbo(buf, 1);
 
+      BindPbo(buf, 2); 
       LoadPlane( fields[FIELD_FULL][2], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> im->cshift_y
                , im->stride[2], im->plane[2] );
+      UnBindPbo(buf, 2);
     }
   }
   SetEvent(m_eventTexturesDone[source]);
@@ -859,6 +867,8 @@ unsigned int CLinuxRendererGL::PreInit()
   #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
     m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
   #endif
+
+  m_pboused = g_guiSettings.GetBool("videoplayer.usepbo");
 
   return true;
 }
@@ -1624,6 +1634,7 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
 {
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
+  GLuint    *pbo    = m_buffers[index].pbo;
 
   if( fields[FIELD_FULL][0].id == 0 ) return;
 
@@ -1649,10 +1660,25 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
 
   for(int p = 0;p<MAX_PLANES;p++)
   {
-    if (im.plane[p])
+    if (pbo[p])
     {
-      delete[] im.plane[p];
-      im.plane[p] = NULL;
+      if (im.plane[p])
+      {
+        glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[p]);
+        glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+        im.plane[p] = NULL;
+        glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+      }
+      glDeleteBuffers(1, pbo + p);
+      pbo[p] = 0;
+    }
+    else
+    {
+      if (im.plane[p])
+      {
+        delete[] im.plane[p];
+        im.plane[p] = NULL;
+      }
     }
   }
 }
@@ -1686,6 +1712,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
+  GLuint    *pbo    = m_buffers[index].pbo;
 
   if (clear)
   {
@@ -1699,9 +1726,35 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     im.stride[0] = im.width;
     im.stride[1] = im.width >> im.cshift_x;
     im.stride[2] = im.width >> im.cshift_x;
-    im.plane[0] = new BYTE[im.stride[0] * im.height];
-    im.plane[1] = new BYTE[im.stride[1] * ( im.height >> im.cshift_y )];
-    im.plane[2] = new BYTE[im.stride[2] * ( im.height >> im.cshift_y )];
+
+    im.planesize[0] = im.stride[0] * im.height;
+    im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );
+    im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
+
+    if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo"))
+    {
+      CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
+      m_pboused = true;
+
+      glGenBuffersARB(3, pbo);
+
+      for (int i = 0; i < 3; i++)
+      {
+        glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
+        glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i], 0, GL_STREAM_DRAW_ARB);
+        im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+      }
+
+      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+    }
+    else
+    {
+      CLog::Log(LOGNOTICE, "GL: Not using GL_ARB_pixel_buffer_object");
+      m_pboused = false;
+
+      for (int i = 0; i < 3; i++)
+        im.plane[i] = new BYTE[im.planesize[i]];
+    }
   }
 
   glEnable(m_textureTarget);
@@ -1875,11 +1928,12 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   if(method == VS_INTERLACEMETHOD_DEINTERLACE)
     return true;
 
-  if(method == VS_INTERLACEMETHOD_RENDER_BLEND
-  || method == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED
-  || method == VS_INTERLACEMETHOD_RENDER_WEAVE
-  || method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
-  || method == VS_INTERLACEMETHOD_RENDER_BOB)
+  if((method == VS_INTERLACEMETHOD_RENDER_BLEND
+  ||  method == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED
+  ||  method == VS_INTERLACEMETHOD_RENDER_WEAVE
+  ||  method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
+  ||  method == VS_INTERLACEMETHOD_RENDER_BOB)
+  && !m_pboused)
     return true;
 
   return false;
@@ -1909,6 +1963,27 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
     return true;
 
   return false;
+}
+
+
+void CLinuxRendererGL::BindPbo(YUVBUFFER& buff, int plane)
+{
+  if (buff.pbo[plane])
+  {
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.pbo[plane]);
+    glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+    buff.image.plane[plane] = NULL;
+  }
+}
+
+void CLinuxRendererGL::UnBindPbo(YUVBUFFER& buff, int plane)
+{
+  if (buff.pbo[plane])
+  {
+    glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.image.planesize[plane], NULL, GL_STREAM_DRAW_ARB);
+    buff.image.plane[plane] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+  }
 }
 
 #endif
