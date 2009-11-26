@@ -94,6 +94,24 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   return false;
 }
 
+bool CPVRDirectory::SupportsFileOperations(const CStdString& strPath)
+{
+  CURL url(strPath);
+  CStdString filename = url.GetFileName();
+  CUtil::RemoveSlashAtEnd(filename);
+
+  if (filename.Left(11) == "recordings/" && filename[filename.size()-1] != '/')
+     return true;
+
+  return false;
+}
+
+bool CPVRDirectory::IsLiveTV(const CStdString& strPath)
+{
+  CURL url(strPath);
+  return url.GetFileName().Left(9) == "channelstv/";
+}
+
 bool CPVRDirectory::HasRecordings()
 {
   return PVRRecordings.GetNumRecordings() > 0;

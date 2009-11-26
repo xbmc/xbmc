@@ -136,6 +136,7 @@ bool cPVRRecordingInfoTag::Delete(void) const
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
 
+    PVRRecordings.Update();
     return true;
   }
   catch (PVR_ERROR err)
@@ -157,6 +158,7 @@ bool cPVRRecordingInfoTag::Rename(CStdString &newName) const
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
 
+    PVRRecordings.Update();
     return true;
   }
   catch (PVR_ERROR err)
@@ -281,12 +283,7 @@ bool cPVRRecordings::RenameRecording(CFileItem &item, CStdString &newname)
   }
 
   cPVRRecordingInfoTag* tag = item.GetPVRRecordingInfoTag();
-  if (tag->Rename(newname))
-  {
-    tag->SetTitle(newname);
-    return true;
-  }
-  return false;
+  return tag->Rename(newname);
 }
 
 bool cPVRRecordings::RemoveRecording(const CFileItem &item)
