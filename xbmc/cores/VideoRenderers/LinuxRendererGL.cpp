@@ -2037,7 +2037,7 @@ bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
     return(true);
   }
 
-/*
+
   if (g_CrystalHD)
   {
     g_CrystalHD->LoadNV12Pointers(im);
@@ -2047,7 +2047,7 @@ bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
     SetEvent(m_eventTexturesDone[source]);
     return(true);
   }
-*/
+
   if (!im->plane[0] || !im->plane[1])
   {
     SetEvent(m_eventTexturesDone[source]);
@@ -2217,6 +2217,7 @@ bool CLinuxRendererGL::CreateCrystalHDTexture(int index)
 
   im.plane[0] = NULL;
   im.plane[1] = NULL;
+  im.plane[2] = NULL;
 
   im.planesize[0] = im.stride[0] * im.height;
   im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );
@@ -2228,7 +2229,7 @@ bool CLinuxRendererGL::CreateCrystalHDTexture(int index)
 
     glGenBuffersARB(3, pbo);
 
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < MAX_PLANES-1; i++)
     {
       glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
       glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i], 0, GL_STREAM_DRAW_ARB);
@@ -2243,7 +2244,8 @@ bool CLinuxRendererGL::CreateCrystalHDTexture(int index)
     m_pboused = false;
 
     for (int i = 0; i < MAX_PLANES-1; i++)
-      im.plane[i] = new BYTE[im.planesize[i]];
+      im.plane[i] = NULL;
+      //im.plane[i] = new BYTE[im.planesize[i]];
   }
 
   glEnable(m_textureTarget);
@@ -2358,7 +2360,7 @@ bool CLinuxRendererGL::DeleteCrystalHDTexture(int index)
     {
       if (im.plane[p])
       {
-        delete[] im.plane[p];
+        //delete[] im.plane[p];
         im.plane[p] = NULL;
       }
     }

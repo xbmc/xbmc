@@ -917,7 +917,7 @@ bool CCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->data[1] = procOut->UVbuff; // UV packed plane
   pDvdVideoPicture->data[2] = NULL;
   pDvdVideoPicture->iLineSize[0] = pDvdVideoPicture->iWidth;
-  pDvdVideoPicture->iLineSize[1] = pDvdVideoPicture->iWidth * 2;
+  pDvdVideoPicture->iLineSize[1] = pDvdVideoPicture->iWidth;
   //CLog::Log(LOGDEBUG, "%s: procOut->Ybuff %p", __MODULE_NAME__, procOut->Ybuff);   
 
   pDvdVideoPicture->iRepeatPicture = 0;
