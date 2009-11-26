@@ -995,12 +995,6 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   CVDPAU*               vdp        = ctx->GetContextVDPAU();
   struct pictureAge*    pA         = &vdp->picAge;
   
-  if (!vdp->vdpauConfigured)
-  {
-    CLog::Log(LOGNOTICE,"(VDPAU)FFGetBuffer called without vdpauConfigured");
-    return 0;
-  }
-
   vdpau_render_state * render = NULL;
 
   vdp->Create(avctx->width,avctx->height);
