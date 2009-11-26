@@ -215,6 +215,7 @@ protected:
   Shaders::BaseYUV2RGBShader     *m_pYUVShader;
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
+  ESCALINGMETHOD m_scalingMethodGui;
 
   // clear colour for "black" bars
   float m_clearColour;
