@@ -620,7 +620,7 @@ bool CFileItem::IsInternetStream() const
 bool CFileItem::IsFileFolder() const
 {
   return (
-    IsPlugin() ||
+   (IsPlugin() && m_bIsFolder) ||
     IsSmartPlayList() ||
    (IsPlayList() && g_advancedSettings.m_playlistAsFolders) ||
     IsZIP() ||
