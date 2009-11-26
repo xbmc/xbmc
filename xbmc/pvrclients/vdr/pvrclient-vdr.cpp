@@ -634,22 +634,25 @@ PVR_ERROR cPVRClientVDR::RenameRecording(const PVR_RECORDINGINFO &recinfo, const
     pthread_mutex_unlock(&m_critSection);
     return PVR_ERROR_SERVER_ERROR;
   }
-
-  if (code != 215)
+  else if (code != 215)
   {
     pthread_mutex_unlock(&m_critSection);
     return PVR_ERROR_NOT_SYNC;
   }
 
-  sprintf(buffer, "RENR %d %s", recinfo.index, newname);
+  CStdString renamedName = recinfo.directory;
+  if (renamedName != "" && renamedName[renamedName.size()-1] != '/')
+    renamedName += "/";
+  renamedName += newname;
+  renamedName.Replace('/','~');;
 
+  sprintf(buffer, "RENR %d %s", recinfo.index, renamedName.c_str());
   if (!m_transceiver->SendCommand(buffer, code, lines))
   {
     pthread_mutex_unlock(&m_critSection);
     return PVR_ERROR_SERVER_ERROR;
   }
-
-  if (code != 250)
+  else if (code != 250)
   {
     pthread_mutex_unlock(&m_critSection);
     return PVR_ERROR_NOT_DELETED;

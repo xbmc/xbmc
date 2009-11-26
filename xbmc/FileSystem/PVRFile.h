@@ -47,7 +47,8 @@ public:
   virtual CStdString    GetContent()                                   { return ""; }
   virtual bool          SkipNext()                                     { return true; }
 
-  virtual bool          Delete(const CURL& url)                        { return false; }
+  virtual bool          Delete(const CURL& url);
+  virtual bool          Rename(const CURL& url, const CURL& urlnew);
   virtual bool          Exists(const CURL& url)                        { return false; }
 
   virtual ILiveTVInterface* GetLiveTV() {return (ILiveTVInterface*)this;}

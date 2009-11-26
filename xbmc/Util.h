@@ -107,6 +107,7 @@ public:
   static bool IsPVR(const CStdString& strFile);
   static bool IsHTSP(const CStdString& strFile);
   static bool IsLiveTV(const CStdString& strFile);
+  static bool IsTVRecording(const CStdString& strFile);
   static bool IsMusicDb(const CStdString& strFile);
   static bool IsVideoDb(const CStdString& strFile);
   static bool IsShoutCast(const CStdString& strFile);

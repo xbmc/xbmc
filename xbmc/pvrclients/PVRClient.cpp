@@ -642,16 +642,16 @@ void CPVRClient::PVRTransferRecordingEntry(void *userData, const PVRHANDLE handl
 
   tag.SetClientIndex(recording->index);
   tag.SetClientID(client->m_clientID);
-  tag.SetChannelName(recording->channel_name);
+  tag.SetTitle(recording->title);
   tag.SetRecordingTime(recording->recording_time);
   tag.SetDuration(CDateTimeSpan(0, 0, recording->duration / 60, recording->duration % 60));
   tag.SetPriority(recording->priority);
   tag.SetLifetime(recording->lifetime);
-  tag.SetTitle(recording->title);
   tag.SetDirectory(recording->directory);
   tag.SetPlot(recording->description);
   tag.SetPlotOutline(recording->subtitle);
   tag.SetStreamURL(recording->stream_url);
+  tag.SetChannelName(recording->channel_name);
 
   xbmcRecordings->push_back(tag);
   return;
@@ -732,6 +732,7 @@ void CPVRClient::WriteClientRecordingInfo(const cPVRRecordingInfoTag &recordingi
   tag.duration      = recordinginfo.GetDuration();
   tag.priority      = recordinginfo.Priority();
   tag.lifetime      = recordinginfo.Lifetime();
+  tag.directory     = recordinginfo.Directory();
   tag.stream_url    = recordinginfo.StreamURL();
   return;
 }

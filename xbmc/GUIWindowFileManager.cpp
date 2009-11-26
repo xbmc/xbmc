@@ -952,6 +952,8 @@ void CGUIWindowFileManager::OnSelectAll(int iList)
 bool CGUIWindowFileManager::RenameFile(const CStdString &strFile)
 {
   CStdString strFileAndPath(strFile);
+  if (CUtil::IsTVRecording(strFileAndPath))
+    CUtil::RemoveExtension(strFileAndPath);
   CUtil::RemoveSlashAtEnd(strFileAndPath);
   CStdString strFileName = CUtil::GetFileName(strFileAndPath);
   CStdString strPath = strFile.Left(strFileAndPath.size() - strFileName.size());
