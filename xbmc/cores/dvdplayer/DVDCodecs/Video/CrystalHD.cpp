@@ -945,14 +945,6 @@ bool CCrystalHD::FreePicture(DVDVideoPicture* pDvdVideoPicture)
 }
 */
 
-bool CCrystalHD::LoadNV12Pointers(YV12Image* pDest)
-{
-  if (m_pOutputThread)
-    m_pOutputThread->UpdateNV12Pointers(pDest);
-
-  return true;
-}
-
 void CCrystalHD::SetDropState(bool bDrop)
 {
   if (m_drop_state != bDrop)

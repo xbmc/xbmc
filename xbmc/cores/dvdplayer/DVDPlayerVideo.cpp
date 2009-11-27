@@ -1080,7 +1080,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
   if(pPicture->format == DVDVideoPicture::FMT_NV12)
   {
-    //CDVDCodecUtils::CopyNV12Picture(&image, pPicture);
+    CDVDCodecUtils::CopyNV12Picture(&image, pPicture);
   }
   else
   {

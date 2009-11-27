@@ -120,8 +120,6 @@ public:
   unsigned int GetReadyCount();
   bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   void SetDropState(bool bDrop);
-  
-  bool LoadNV12Pointers(YV12Image* pDest);
 
 protected:
   void*     m_dl_handle;

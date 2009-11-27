@@ -2036,17 +2036,6 @@ bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
     SetEvent(m_eventTexturesDone[source]);
     return(true);
   }
-
-  if (g_CrystalHD)
-  {
-    g_CrystalHD->LoadNV12Pointers(im);
-  }
-  else
-  {
-    SetEvent(m_eventTexturesDone[source]);
-    return(true);
-  }
-
   if (!im->plane[0] || !im->plane[1])
   {
     SetEvent(m_eventTexturesDone[source]);
@@ -2086,7 +2075,7 @@ bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
   glEnable(m_textureTarget);
   VerifyGLState();
 
-  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
   if (deinterlacing)
   {
@@ -2111,7 +2100,7 @@ bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
 
   VerifyGLState();
 
-  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
   if (deinterlacing)
   {
@@ -2127,11 +2116,11 @@ bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
   }
   else
   {
-    BindPbo(buf, 0);
+    BindPbo(buf, 1);
     LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE_ALPHA, buf.flipindex
              , im->width >> im->cshift_x, im->height >> im->cshift_y
              , im->stride[1], im->plane[1] );
-    UnBindPbo(buf, 0);
+    UnBindPbo(buf, 1);
   }
 
   SetEvent(m_eventTexturesDone[source]);
@@ -2218,16 +2207,17 @@ bool CLinuxRendererGL::CreateCrystalHDTexture(int index)
   im.plane[1] = NULL;
   im.plane[2] = NULL;
 
+  // Y plane
   im.planesize[0] = im.stride[0] * im.height;
-  im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );
+  // packed UV plane
+  im.planesize[1] = im.stride[1] * im.height;
 
-  //if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo"))
-  if (false)
+  if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo"))
   {
     CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
     m_pboused = true;
 
-    glGenBuffersARB(3, pbo);
+    glGenBuffersARB(MAX_PLANES-1, pbo);
 
     for (int i = 0; i < MAX_PLANES-1; i++)
     {
@@ -2244,8 +2234,7 @@ bool CLinuxRendererGL::CreateCrystalHDTexture(int index)
     m_pboused = false;
 
     for (int i = 0; i < MAX_PLANES-1; i++)
-      im.plane[i] = NULL;
-      //im.plane[i] = new BYTE[im.planesize[i]];
+      im.plane[i] = new BYTE[im.planesize[i]];
   }
 
   glEnable(m_textureTarget);
@@ -2353,14 +2342,14 @@ bool CLinuxRendererGL::DeleteCrystalHDTexture(int index)
         im.plane[p] = NULL;
         glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
       }
-      glDeleteBuffers(1, pbo + p);
+      glDeleteBuffersARB(1, pbo + p);
       pbo[p] = 0;
     }
     else
     {
       if (im.plane[p])
       {
-        //delete[] im.plane[p];
+        delete[] im.plane[p];
         im.plane[p] = NULL;
       }
     }
