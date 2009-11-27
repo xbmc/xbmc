@@ -38,6 +38,7 @@ class CEVRAllocatorPresenter : public IDsRenderer,
                                public IMFVideoPresenter,
                                public IDirect3DDeviceManager9,
                                public IMFGetService,
+							   public IMFAsyncCallback,
                                public IMFTopologyServiceLookupClient,
                                public IMFVideoDisplayControl,
                                public IEVRTrustedVideoPlugin,
@@ -66,27 +67,32 @@ public:
   virtual HRESULT STDMETHODCALLTYPE get_Jitter(int *iJitter){return E_NOTIMPL;};
   virtual HRESULT STDMETHODCALLTYPE get_AvgSyncOffset(int *piAvg){return E_NOTIMPL;};
   virtual HRESULT STDMETHODCALLTYPE get_DevSyncOffset(int *piDev){return E_NOTIMPL;};
+
+  //IMFAsyncCallback
+  virtual HRESULT STDMETHODCALLTYPE GetParameters(DWORD *pdwFlags ,DWORD *pdwQueue){return E_NOTIMPL;};
+  virtual HRESULT STDMETHODCALLTYPE Invoke(IMFAsyncResult *pAsyncResult){return E_NOTIMPL;};
+
   //IMFVideoPresenter
   STDMETHODIMP ProcessMessage(MFVP_MESSAGE_TYPE eMessage, ULONG_PTR ulParam);
   STDMETHODIMP GetCurrentMediaType(__deref_out  IMFVideoMediaType **ppMediaType);
 
-  // IMFTopologyServiceLookupClient        
-	STDMETHODIMP	InitServicePointers(/* [in] */ __in  IMFTopologyServiceLookup *pLookup);
-	STDMETHODIMP	ReleaseServicePointers();
+  //IMFTopologyServiceLookupClient
+  STDMETHODIMP	InitServicePointers(/* [in] */ __in  IMFTopologyServiceLookup *pLookup);
+  STDMETHODIMP	ReleaseServicePointers();
 
-	// IMFVideoDeviceID
-	STDMETHODIMP	GetDeviceID(/* [out] */	__out  IID *pDeviceID);
+  //IMFVideoDeviceID
+  STDMETHODIMP  GetDeviceID(/* [out] */ __out  IID *pDeviceID);
 
-	// IMFGetService
-	STDMETHODIMP	GetService (/* [in] */ __RPC__in REFGUID guidService,
-								/* [in] */ __RPC__in REFIID riid,
-								/* [iid_is][out] */ __RPC__deref_out_opt LPVOID *ppvObject);
-  // IMFClockStateSink
-	STDMETHODIMP	OnClockStart(/* [in] */ MFTIME hnsSystemTime, /* [in] */ LONGLONG llClockStartOffset);
-	STDMETHODIMP	STDMETHODCALLTYPE OnClockStop(/* [in] */ MFTIME hnsSystemTime);
-	STDMETHODIMP	STDMETHODCALLTYPE OnClockPause(/* [in] */ MFTIME hnsSystemTime);
-	STDMETHODIMP	STDMETHODCALLTYPE OnClockRestart(/* [in] */ MFTIME hnsSystemTime);
-	STDMETHODIMP	STDMETHODCALLTYPE OnClockSetRate(/* [in] */ MFTIME hnsSystemTime, /* [in] */ float flRate);
+  //IMFGetService
+  STDMETHODIMP  GetService (/* [in] */ __RPC__in REFGUID guidService,
+                            /* [in] */ __RPC__in REFIID riid,
+                            /* [iid_is][out] */ __RPC__deref_out_opt LPVOID *ppvObject);
+  //IMFClockStateSink
+  STDMETHODIMP STDMETHODCALLTYPE OnClockStart(/* [in] */ MFTIME hnsSystemTime, /* [in] */ LONGLONG llClockStartOffset);
+  STDMETHODIMP STDMETHODCALLTYPE OnClockStop(/* [in] */ MFTIME hnsSystemTime);
+  STDMETHODIMP STDMETHODCALLTYPE OnClockPause(/* [in] */ MFTIME hnsSystemTime);
+  STDMETHODIMP STDMETHODCALLTYPE OnClockRestart(/* [in] */ MFTIME hnsSystemTime);
+  STDMETHODIMP STDMETHODCALLTYPE OnClockSetRate(/* [in] */ MFTIME hnsSystemTime, /* [in] */ float flRate);
 
 	// IMFVideoDisplayControl
     STDMETHODIMP GetNativeVideoSize(SIZE *pszVideo, SIZE *pszARVideo){return E_NOTIMPL;};    
@@ -107,10 +113,10 @@ public:
     STDMETHODIMP GetFullscreen(BOOL *pfFullscreen){return E_NOTIMPL;};
 
 		// IEVRTrustedVideoPlugin
-    STDMETHODIMP IsInTrustedVideoMode(BOOL *pYes){return E_NOTIMPL;};
-    STDMETHODIMP CanConstrict(BOOL *pYes){return E_NOTIMPL;};
-    STDMETHODIMP SetConstriction(DWORD dwKPix){return E_NOTIMPL;};
-    STDMETHODIMP DisableImageExport(BOOL bDisable){return E_NOTIMPL;};
+    STDMETHODIMP IsInTrustedVideoMode(BOOL *pYes);
+    STDMETHODIMP CanConstrict(BOOL *pYes);
+    STDMETHODIMP SetConstriction(DWORD dwKPix);
+    STDMETHODIMP DisableImageExport(BOOL bDisable);
 
 	// IDirect3DDeviceManager9
 	STDMETHODIMP	ResetDevice(IDirect3DDevice9 *pDevice,UINT resetToken);
@@ -154,6 +160,7 @@ typedef enum
   IMFSample *								m_pCurrentDisplaydSample;
   bool									m_bWaitingSample;
   bool									m_bLastSampleOffsetValid;
+  LONGLONG								m_StarvationClock;
   bool									m_bSignaledStarvation;
   //stuff from mediaportal
   LONGLONG								m_LastFrameTime;
@@ -224,10 +231,10 @@ protected:
   CComPtr<IMFClock> m_pClock;
   UINT m_iResetToken;
 //Rendering function
-  HRESULT RenderPresent(CComPtr<IDirect3DSurface9> pSurface);
-  HRESULT PresentSample(IMFSample* pSample);
+  HRESULT RenderPresent(int surfaceIndex);
   void StartWorkerThreads();
   void StopWorkerThreads();
+  LONGLONG GetCurrentTimestamp();
 //Trace evr is only temporary TODO Remove it
   HRESULT TRACE_EVR(const char* strTrace);
 //Dx9Allocator
@@ -239,12 +246,10 @@ protected:
   LONGLONG m_ModeratedClockLast;
   CComPtr<IDirect3DTexture9>		m_pVideoTexture;
   CComPtr<IDirect3DSurface9>		m_pVideoSurface;
-  CComPtr<IDirect3DSwapChain9>      m_pInternalSwapchains[5];
-  CComPtr<IDirect3DTexture9>		m_pInternalVideoTexture[5];
-  CComPtr<IDirect3DSurface9>		m_pInternalVideoSurface[5];
-  CComPtr<IMFSample>                m_pInternalVideoSamples[5];
-  IMFSample*                        m_pInternalFreeSamples[5];
-  int                               m_pFreeSamples;
+  CComPtr<IDirect3DSwapChain9>      m_pInternalSwapchains[7];
+  CComPtr<IDirect3DTexture9>		m_pInternalVideoTexture[7];
+  CComPtr<IDirect3DSurface9>		m_pInternalVideoSurface[7];
+  CComPtr<IMFSample>                m_pInternalVideoSamples[7];
 
   int                               m_nNbDXSurface;      //Total number of dx surface
   int                               m_nCurSurface;
@@ -257,6 +262,7 @@ protected:
   bool					m_bCorrectedFrameTime;
   int					m_DetectedFrameTimePos;
   LONGLONG				m_DetectedFrameTimeHistory[60];
+  bool					m_DetectedLock;
   double					m_DetectedFrameTimeHistoryHistory[500];
 };
 
