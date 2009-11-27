@@ -2,3 +2,5 @@ usr/bin/diskmounter
 usr/bin/installXBMC
 usr/bin/runXBMC
 usr/bin/setAlsaVolumes
+etc/init/xbmc-live.conf
+etc/init/xbmc-live-install.conf

@@ -6,7 +6,7 @@ Uploaders: Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>,
            Andres Mejia <mcitadel@gmail.com>
 DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 7.0.50), python-support, cmake,
- autotools-dev, autoconf, automake, unzip, libboost-dev,
+ autotools-dev, autoconf, automake, unzip, libboost-dev, zip, libtool,
  libgl1-mesa-dev | libgl-dev, libglu-dev, libglew-dev, libmad0-dev, libjpeg-dev,
  libsamplerate-dev, libogg-dev, libvorbis-dev, libfreetype6-dev,
  libfontconfig-dev, libbz2-dev, libfribidi-dev, libsqlite3-dev,
@@ -19,7 +19,8 @@ Build-Depends: debhelper (>= 7.0.50), python-support, cmake,
  libswscale-dev, liba52-dev, libdts-dev, libmpeg2-4-dev, libass-dev,
  libmpcdec-dev, libflac-dev, libwavpack-dev, python-dev, gawk, gperf,
  nasm [!amd64], libcwiid1-dev, libbluetooth-dev, zlib1g-dev, libmms-dev,
- libsmbclient-dev, libfaad-dev, libiso9660-dev, libssl-dev,
+ libsmbclient-dev, libfaad-dev, libiso9660-dev, libssl-dev, libfaac-dev,
+ lsb-release,
 Standards-Version: 3.8.3
 Homepage: http://xbmc.org/
 Vcs-Git: git://git.debian.org/git/pkg-multimedia/xbmc.git

@@ -11,12 +11,19 @@ SVNVERSION ?= $(shell dpkg-parsechangelog | grep '^Version:' | sed 's/.*svn\([[:
 # List of options to pass to configure. Can be overridden.
 XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
 	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --disable-ccache \
-	--disable-dvdcss --enable-external-libraries --enable-avahi \
-	--enable-goom CFLAGS="$(DEB_CFLAGS)" CXXFLAGS="$(DEB_CXXFLAGS)"
+	--enable-goom --enable-avahi \
+	 CFLAGS="$(DEB_CFLAGS)" CXXFLAGS="$(DEB_CXXFLAGS)"
 
 # Add the SVN revision if it exists in the changelog
 ifeq (,$(findstring Version,$(SVNVERSION)))
   XBMC_CONFIG_OPTIONS += SVN_REV="$(SVNVERSION)"
+endif
+
+# Ubuntu or Debian specific options
+ifneq (Ubuntu,$(shell lsb_release -is))
+  XBMC_CONFIG_OPTIONS += --disable-dvdcss --enable-external-libraries
+else
+  XBMC_CONFIG_OPTIONS += --enable-vdpau
 endif
 
 %:
@@ -26,10 +33,14 @@ override_dh_clean:
 	dh_clean
 
 override_dh_auto_configure:
+	./bootstrap
 	./configure $(XBMC_CONFIG_OPTIONS)
 
 override_dh_auto_install:
 	$(MAKE) install install-livedatas prefix=$(CURDIR)/debian/tmp/usr
+	mkdir -p $(CURDIR)/debian/tmp/etc/init/
+	cp $(CURDIR)/tools/XBMCLive/xbmc-live.conf $(CURDIR)/debian/tmp/etc/init/
+	cp $(CURDIR)/tools/XBMCLive/xbmc-live-install.conf $(CURDIR)/debian/tmp/etc/init/
 	find "debian/tmp/usr/share/xbmc" -regextype posix-extended \
 		-type f -iregex \
 		".*\.so|.*\.vis|.*\.xbs|.*xbmc\.bin|.*xbmc-xrandr" | \
