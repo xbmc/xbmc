@@ -20,7 +20,6 @@
  */
 
 /* Standart includes */
-#include "system.h"
 #include "Application.h"
 #include "GUIWindowManager.h"
 #include "URL.h"
@@ -66,7 +65,7 @@ using namespace std;
 #define CONTROL_LIST_SEARCH          17
 
 #define CONTROL_LABELHEADER          29
-#define CONTROL_LABELEMPTY           30
+#define CONTROL_LABELGROUP           30
 
 #define CONTROL_BTNGUIDE             31
 #define CONTROL_BTNCHANNELS_TV       32
@@ -1924,8 +1923,9 @@ void CGUIWindowTV::UpdateGuide()
 
   SET_CONTROL_LABEL(CONTROL_BTNGUIDE, strLabel);
 
-  strLabel.Format("%s - %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18050));
+  strLabel.Format("%s", g_localizeStrings.Get(18050));
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
+  SET_CONTROL_LABEL(CONTROL_LABELGROUP, "");
 }
 
 void CGUIWindowTV::UpdateChannelsTV()
@@ -1963,11 +1963,19 @@ void CGUIWindowTV::UpdateChannelsTV()
   g_windowManager.SendMessage(msg);
 
   CStdString strLabel;
+  CStdString strGroup;
   if (m_bShowHiddenChannels)
-    strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18051), g_localizeStrings.Get(18151));
+  {
+    strLabel.Format("%s", g_localizeStrings.Get(18051));
+    strGroup.Format("%s", g_localizeStrings.Get(18151));
+  }
   else
-    strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18051), PVRChannelGroups.GetGroupName(m_iCurrentTVGroup));
+  {
+    strLabel.Format("%s", g_localizeStrings.Get(18051));
+    strGroup.Format("%s", PVRChannelGroups.GetGroupName(m_iCurrentTVGroup));
+  }
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
+  SET_CONTROL_LABEL(CONTROL_LABELGROUP, strGroup);
 
   SET_CONTROL_VISIBLE(CONTROL_LIST_CHANNELS_TV);
 }
@@ -2007,11 +2015,19 @@ void CGUIWindowTV::UpdateChannelsRadio()
   g_windowManager.SendMessage(msg);
 
   CStdString strLabel;
+  CStdString strGroup;
   if (m_bShowHiddenChannels)
-    strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18052), g_localizeStrings.Get(18151));
+  {
+    strLabel.Format("%s", g_localizeStrings.Get(18052));
+    strGroup.Format("%s", g_localizeStrings.Get(18151));
+  }
   else
-    strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18052), PVRChannelGroups.GetGroupName(m_iCurrentTVGroup));
+  {
+    strLabel.Format("%s", g_localizeStrings.Get(18052));
+    strGroup.Format("%s", PVRChannelGroups.GetGroupName(m_iCurrentTVGroup));
+  }
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
+  SET_CONTROL_LABEL(CONTROL_LABELGROUP, strGroup);
 
   SET_CONTROL_VISIBLE(CONTROL_LIST_CHANNELS_RADIO);
 }
@@ -2035,8 +2051,9 @@ void CGUIWindowTV::UpdateRecordings()
   }
 
   CStdString strLabel;
-  strLabel.Format("%s - %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18066));
+  strLabel.Format("%s", g_localizeStrings.Get(18066));
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
+  SET_CONTROL_LABEL(CONTROL_LABELGROUP, "");
 
   SET_CONTROL_VISIBLE(CONTROL_LIST_RECORDINGS);
 }
@@ -2061,8 +2078,9 @@ void CGUIWindowTV::UpdateTimers()
   g_windowManager.SendMessage(msg2);
 
   CStdString strLabel;
-  strLabel.Format("%s - %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18054));
+  strLabel.Format("%s", g_localizeStrings.Get(18054));
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
+  SET_CONTROL_LABEL(CONTROL_LABELGROUP, "");
 
   SET_CONTROL_VISIBLE(CONTROL_LIST_TIMERS);
 }
@@ -2118,8 +2136,9 @@ void CGUIWindowTV::UpdateSearch()
   g_windowManager.SendMessage(msg2);
 
   CStdString strLabel;
-  strLabel.Format("%s - %s", g_localizeStrings.Get(9), g_localizeStrings.Get(283));
+  strLabel.Format("%s", g_localizeStrings.Get(283));
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
+  SET_CONTROL_LABEL(CONTROL_LABELGROUP, "");
 
   SET_CONTROL_VISIBLE(CONTROL_LIST_SEARCH);
 }
