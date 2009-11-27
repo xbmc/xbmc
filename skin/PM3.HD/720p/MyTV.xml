@@ -353,17 +353,6 @@
           <height>580</height>
           <texture border="50,0,0,45">Panel.png</texture>
         </control>
-        <control type="label" id="30">
-          <description>No Info Scanned Label</description>
-          <posx>0</posx>
-          <posy>0</posy>
-          <width>930</width>
-          <height>476</height>
-          <font>Special13</font>
-          <label>-</label>
-          <align>center</align>
-          <aligny>center</aligny>
-        </control>
         <control type="epggrid" id="10">
 			<description>EPG Grid</description>
 			<posx>50</posx>
@@ -1994,9 +1983,33 @@
 			<height>128</height>
 			<texture>Header.png</texture>
 		</control>
-		<control type="label" id="29">
-		<include>WindowTitleCommons</include>
-		<label>$LOCALIZE[9] - $LOCALIZE[18000]</label>
-	</control>
+    <control type="label" id="29">
+      <description>Fake Label so we can pass it value down to the one below</description>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>0</width>
+      <height>0</height>
+      <font>-</font>
+      <visible>false</visible>
+    </control>
+    <control type="label" id="30">
+      <description>Fake Label so we can pass it value down to the one below</description>
+      <posx>0</posx>
+      <posy>0</posy>
+      <width>0</width>
+      <height>0</height>
+      <font>-</font>
+      <visible>false</visible>
+    </control>
+		<control type="label">
+      <include>WindowTitleCommons</include>
+      <visible>!IsEmpty(Control.GetLabel(30))</visible>
+      <label>$LOCALIZE[9] - $INFO[Control.GetLabel(29)]: $INFO[Control.GetLabel(30)]</label>
+    </control>
+		<control type="label">
+      <include>WindowTitleCommons</include>
+      <visible>IsEmpty(Control.GetLabel(30))</visible>
+      <label>$LOCALIZE[9] - $INFO[Control.GetLabel(29)]</label>
+    </control>
 	</controls>
 </window>
