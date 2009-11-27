@@ -24,10 +24,8 @@ endif
 
 override_dh_clean:
 	dh_clean
-	rm -f debian/xbmc-live.init
 
 override_dh_auto_configure:
-	cp -f tools/XBMCLive/xbmc-live debian/xbmc-live.init
 	./configure $(XBMC_CONFIG_OPTIONS)
 
 override_dh_auto_install:
