@@ -36,11 +36,10 @@ MINOR=1
 XBMCPPA=xbmc-svn
 HVERSION=9.11~beta1
 DEBIAN_TAG_OPT=
-BUILD_LOG=debuilder_`date +%F_%T`.log
 
-
-export DEBFULLNAME="Ouattara Oumar Aziz (alias wattazoum)"
-export DEBEMAIL="wattazoum@gmail.com"
+# Packager should have this 
+# export DEBFULLNAME="Ouattara Oumar Aziz (alias wattazoum)"
+# export DEBEMAIL="wattazoum@gmail.com"
 
 parse_options()
 {
@@ -73,9 +72,6 @@ parse_options()
       ;;
       --tag|-t)
         BUILD_TAG=1
-      ;;
-      -debian-tag)
-        DEBIAN_TAG_OPT="-r $PAR"
       ;;
       -prev)
         EXPORT_PREV_REV=1
@@ -123,17 +119,17 @@ builddeb()
   fi
   myEcho "Changelog : $CHNLG"
   cd $DESTSRC
-  dch -v ${VERSION}-$1${MINOR} -D $1 "$CHNLG" 2>&1
+  dch -b -v ${VERSION}-$1${MINOR} -D $1 "$CHNLG" 2>&1
   myEcho "$REVISION" > debian/svnrevision
   myEcho "Building the $1 debian package" 
 
-  if [ $1 -eq "hardy"] ; then
+  if [ $1 == "hardy" ]; then
     tweaks_for_hardy
   fi
 
   # Add vdpau dependencies
   mv debian/control debian/control.orig
-  sed s/"make,"/"make, nvidia-190-libvdpau-dev,"/ debian/control.orig > debian/control
+  sed s/"cmake,"/"cmake, nvidia-190-libvdpau-dev,"/ debian/control.orig > debian/control
   rm debian/control.orig
 
   if [[ $BUILT_ONCE ]]; then
@@ -183,12 +179,11 @@ fi
 
 preparevars()
 {
-  myEcho "Preparing Vars ..."
   echo "Nothing" > test.txt
   gpg -s test.txt
   rm test.txt test.txt.gpg
   
-  BUILD_LOG=$BUILD_DIR/debuilder_`date +%F_%T`.log
+  myEcho "Preparing Vars ..."
   myEcho "Build directory: $BUILD_DIR"
 
   if [[ -z $SVNSRC ]]; then
@@ -227,12 +222,12 @@ preparevars()
   myEcho "Setting SVN Sources: $SVNSRC"
   
   # If the version is not yet set it
-  if [ -z $REVISION ]; then
+  if [[ -z $REVISION ]]; then
     svn update $SVNSRC
     HEAD_REVISION=$(expr $(svn info $SVNSRC --xml 2>&1 | grep -m 1 -e "revision=\"[0-9]*\">") : 'revision="\([0-9]\+\)">')
     REVISION=$HEAD_REVISION
   fi
-  if [ -z $VERSION ]; then
+  if [[ -z $VERSION ]]; then
     VERSION=${HVERSION}+svn$REVISION
   fi
 
@@ -240,7 +235,7 @@ preparevars()
   myEcho "XBMC revision: $REVISION"
 
   # Set Destination folder if not set
-  if [ -z $DESTSRC ]; then
+  if [[ -z $DESTSRC ]]; then
     DESTSRC=xbmc-$VERSION
   fi
 
@@ -254,11 +249,13 @@ preparevars()
 SCRIPTDIR=`pwd`
 
 # We are in the source tree. Go out
-if [ -z $BUILD_DIR ] ; then
+if [[ -z $BUILD_DIR ]] ; then
   BUILD_DIR=$(eval readlink -f ../../../../)
 fi
 
-parse_options
+BUILD_LOG=$BUILD_DIR/debuilder_`date +%F_%T`.log
+
+parse_options $@
 getrootright
 preparevars
 
@@ -269,7 +266,7 @@ if [[ -z $UPDPPA ]] && [[ -z $NO_SRC_GEN ]] ; then
 fi
 
 for distro in "hardy" "intrepid" "jaunty" "karmic"; do 
-  if [ $BUILDALL -eq 1 ] || [ $DIST == "$distro" ]; then
+  if [[ $BUILDALL -eq 1 ]] || [[ $DIST == "$distro" ]]; then
     builddeb $distro
   fi
 done
