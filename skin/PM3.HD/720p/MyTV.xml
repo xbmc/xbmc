@@ -4,7 +4,7 @@
 	<controls>
 		<include>CommonBackground</include>
 		<control type="group">
-			<visible>![Control.HasFocus(31) | Control.HasFocus(35) | Control.HasFocus(36)] + ![Control.IsVisible(9005) | Control.IsVisible(9006) | Control.IsVisible(9001)]</visible>
+			<visible>![Control.HasFocus(31) | Control.HasFocus(35) | Control.HasFocus(36)] + ![Control.IsVisible(14) | Control.IsVisible(17) | Control.IsVisible(9001)]</visible>
 		<control type="videowindow">
 				<posx>0</posx>
 				<posy>95</posy>
@@ -36,8 +36,9 @@
 		</control>
 		<control type="group" id="9001">
 			<description>TV Guide group</description>
-			<control type="group" id="8001">
+			<control type="group">
 				<description>TV Guide Channel</description>
+				<visible>Control.IsVisible(15)</visible>
 				<animation effect="slide" start="0,0" end="40,0" time="300" tween="quadratic" easing="out" condition="true">Conditional</animation>
 				<include>ContentPanel</include>
 				<control type="list" id="15">
@@ -172,8 +173,9 @@
 				<label>$LOCALIZE[18060] ($INFO[Container(15).CurrentPage]/$INFO[Container(15).NumPages])</label>
 			</control>
 			</control>
-			<control type="group" id="8002">
+			<control type="group">
 				<description>TV Guide Now/Next</description>
+				<visible>Control.IsVisible(16)</visible>
 				<animation effect="slide" start="0,0" end="40,0" time="300" tween="quadratic" easing="out" condition="true">Conditional</animation>
 				<include>ContentPanel</include>
 				<control type="list" id="16">
@@ -344,8 +346,9 @@
 				<label>$LOCALIZE[18060] ($INFO[Container(16).CurrentPage]/$INFO[Container(16).NumPages])</label>
 			</control>
 			</control>
-			<control type="group" id="8003">
+			<control type="group">
         <description>TV Guide Timeline</description>
+        <visible>Control.IsVisible(10)</visible>
         <control type="image">
           <posx>15</posx>
           <posy>100</posy>
@@ -722,8 +725,9 @@
 		</control>
 		</control>
 		<!-- TV Channels group -->
-		<control type="group" id="9002">
+		<control type="group">
 			<description>TV Channels group</description>
+			<visible>Control.IsVisible(11)</visible>
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<control type="image">
 				<posx>0</posx>
@@ -939,8 +943,9 @@
 			<include>ScrollOffsetLabel</include>
 		</control>
 		<!-- Radio Channels group -->
-		<control type="group" id="9003">
+		<control type="group">
 			<description>Radio Channels group</description>
+			<visible>Control.IsVisible(12)</visible>
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<control type="image">
 				<posx>0</posx>
@@ -1156,8 +1161,9 @@
 			<include>ScrollOffsetLabel</include>
 		</control>
 		<!-- Recordings group -->
-		<control type="group" id="9004">
+		<control type="group">
 			<description>Recordings group</description>
+			<visible>Control.IsVisible(13)</visible>
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<control type="image">
 				<posx>0</posx>
@@ -1349,8 +1355,9 @@
 			<include>ScrollOffsetLabel</include>
 		</control>
 		<!-- Timers group -->
-		<control type="group" id="9005">
+		<control type="group">
 			<description>Timers group</description>
+			<visible>Control.IsVisible(14)</visible>
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<animation effect="slide" start="0,0" end="40,0" time="300" tween="quadratic" easing="out" condition="true">Conditional</animation>
 			<include>ContentPanel</include>
@@ -1491,8 +1498,9 @@
 			</control>
 		</control>
 		<!-- EGP search group -->
-		<control type="group" id="9006">
+		<control type="group">
 			<description>TV Search group</description>
+        <visible>Control.IsVisible(17)</visible>
 				<animation effect="slide" start="0,0" end="40,0" time="300" tween="quadratic" easing="out" condition="true">Conditional</animation>
 				<include>ContentPanel</include>
 				<control type="list" id="17">
@@ -1668,7 +1676,7 @@
 			<control type="group" id="9000">
 				<posx>0</posx>
 				<posy>130</posy>
-				<animation effect="slide" start="0,0" end="-275,0" time="400" tween="quadratic" easing="out" condition="!ControlGroup(9000).HasFocus + !ControlGroup(8001).HasFocus + !ControlGroup(8002).HasFocus + !Control.IsVisible(9005) + !Control.IsVisible(9006)">Conditional</animation>
+				<animation effect="slide" start="0,0" end="-275,0" time="400" tween="quadratic" easing="out" condition="!ControlGroup(9000).HasFocus + !Control.IsVisible(15) + !Control.IsVisible(16) + !Control.IsVisible(14) + !Control.IsVisible(17)">Conditional</animation>
 				<control type="image">
 					<posx>0</posx>
 					<posy>-30</posy>
@@ -1744,7 +1752,7 @@
 					<ondown>31</ondown>
 				</control>
 				<control type="group">
-					<visible>[Control.HasFocus(31) + Control.IsVisible(8003)]</visible>
+					<visible>[Control.HasFocus(31) + Control.IsVisible(10)]</visible>
 					<control type="image">
 						<posx>17</posx>
 						<posy>325</posy>
