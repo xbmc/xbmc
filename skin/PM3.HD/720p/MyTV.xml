@@ -4,7 +4,7 @@
 	<controls>
 		<include>CommonBackground</include>
 		<control type="group">
-			<visible>![Control.HasFocus(31) | Control.HasFocus(35) | Control.HasFocus(36)] + ![Control.IsVisible(14) | Control.IsVisible(17) | Control.IsVisible(9001)]</visible>
+			<visible>![Control.HasFocus(31) | Control.HasFocus(35) | Control.HasFocus(36)] + ![Control.IsVisible(14) | Control.IsVisible(17) | Control.IsVisible(10) | Control.IsVisible(15) | Control.IsVisible(16)]</visible>
 		<control type="videowindow">
 				<posx>0</posx>
 				<posy>95</posy>
