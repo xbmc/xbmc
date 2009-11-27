@@ -30,6 +30,7 @@
 
 #include <string.h>
 #include <time.h>
+#include <stdint.h>
 #include "xbmc_addon_types.h"
 
 #ifndef _LINUX

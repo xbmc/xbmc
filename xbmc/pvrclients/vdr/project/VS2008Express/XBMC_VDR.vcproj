@@ -73,7 +73,6 @@
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/XBMC_VDR.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -155,7 +154,6 @@
 				EnableCOMDATFolding="0"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/XBMC_VDR.lib"
 				TargetMachine="1"
 			/>
 			<Tool

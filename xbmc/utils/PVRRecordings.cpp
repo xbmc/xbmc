@@ -327,8 +327,8 @@ bool cPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
         CStdString dirName;
         CStdString clientName;
 
-        int clientID = g_PVRManager.Clients()->at((*itr).first)->GetID();
-        clientName.Format(g_localizeStrings.Get(19016), clientID, g_PVRManager.Clients()->at((*itr).first)->GetBackendName());
+        int clientID = g_PVRManager.Clients()->find((*itr).first)->second->GetID();
+        clientName.Format(g_localizeStrings.Get(19016), clientID, g_PVRManager.Clients()->find((*itr).first)->second->GetBackendName());
         dirName.Format("%s/client_%04i/", base, clientID);
         item.reset(new CFileItem(dirName, true));
         item->SetLabel(clientName);

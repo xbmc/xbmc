@@ -39,6 +39,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/PluginDirectory.h"
 #include "Util.h"
+#include "utils/IoSupport.h"
 #include "URL.h"
 #ifdef HAS_WEB_SERVER
 #include "lib/libGoAhead/XBMChttp.h"

@@ -872,7 +872,7 @@ bool CAddonManager::AddonFromInfoXML(const CStdString &path, CAddon &addon)
       CLog::Log(LOGERROR, "Addon: %s is not supported under Linux, ignoring", strPath.c_str());
       return false;
     }
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
     if (platform.Find("windows") < 0)
     {
       CLog::Log(LOGERROR, "Addon: %s is not supported under Windows, ignoring", strPath.c_str());
@@ -932,7 +932,7 @@ bool CAddonManager::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   if (element)
     addon.m_strLibName = element->GetText();
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   /* Retrieve WIN32 library file name in case it is present
    * This is required for no overwrite to the fixed WIN32 add-on's
    * during compile time

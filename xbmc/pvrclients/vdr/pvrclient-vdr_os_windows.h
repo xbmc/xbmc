@@ -45,6 +45,8 @@
 #define LIBTYPE
 #endif
 
+#define strncasecmp strnicmp
+
 typedef int bool_t;
 typedef signed __int8 int8_t;
 typedef signed __int16 int16_t;
