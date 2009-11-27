@@ -871,6 +871,7 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("pictures")) windowID = WINDOW_PICTURES;
   else if (strWindow.Equals("files") || strWindow.Equals("filemanager")) windowID = WINDOW_FILES;
   else if (strWindow.Equals("settings")) windowID = WINDOW_SETTINGS_MENU;
+  else if (strWindow.Equals("addonbrowser")) windowID = WINDOW_DIALOG_ADDON_BROWSER;
   else if (strWindow.Equals("music")) windowID = WINDOW_MUSIC;
   else if (strWindow.Equals("musicfiles")) windowID = WINDOW_MUSIC_FILES;
   else if (strWindow.Equals("musiclibrary")) windowID = WINDOW_MUSIC_NAV;

@@ -526,10 +526,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GUITeletextBox.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\GUITextBox.cpp"
 				>
 			</File>

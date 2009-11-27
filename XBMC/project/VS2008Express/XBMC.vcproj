@@ -1041,14 +1041,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPVRManager.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPVRManager.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxShoutcast.cpp"
 						>
 					</File>
@@ -2194,19 +2186,19 @@
 				Name="Settings"
 				>
 				<File
+					RelativePath="..\..\xbmc\settings\AddonSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\settings\AddonSettings.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\AdvancedSettings.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\xbmc\AdvancedSettings.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPluginSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\settings\AddonSettings.h"
 					>
 				</File>
 				<File
@@ -2263,14 +2255,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowTestPatternGL.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PluginSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PluginSettings.h"
 					>
 				</File>
 				<File
@@ -3246,6 +3230,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\TextSearch.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TextSearch.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\Thread.cpp"
 					>
 				</File>
@@ -3398,19 +3390,19 @@
 				Name="GUI Dialog"
 				>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogAddonBrowser.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogAddonBrowser.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\GUIDialogAccessPoints.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogAccessPoints.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogAddonBrowser.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogAddonBrowser.h"
 					>
 				</File>
 				<File
@@ -5198,59 +5190,91 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogEpgScan.cpp"
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelManager.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogEpgScan.h"
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelManager.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogTVChannels.cpp"
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelsOSD.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogTVChannels.h"
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelsOSD.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogTVEPGProgInfo.cpp"
+					RelativePath="..\..\xbmc\GUIDialogPVRCutterOSD.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogTVEPGProgInfo.h"
+					RelativePath="..\..\xbmc\GUIDialogPVRCutterOSD.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogTVGroupManager.cpp"
+					RelativePath="..\..\xbmc\GUIDialogPVRDirectorOSD.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogTVGroupManager.h"
+					RelativePath="..\..\xbmc\GUIDialogPVRDirectorOSD.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogTVGuide.cpp"
+					RelativePath="..\..\xbmc\GUIDialogPVRGroupManager.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogTVGuide.h"
+					RelativePath="..\..\xbmc\GUIDialogPVRGroupManager.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogTVRecordingInfo.cpp"
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideInfo.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogTVRecordingInfo.h"
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideInfo.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogTVTimerSettings.cpp"
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideOSD.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogTVTimerSettings.h"
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideOSD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideSearch.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideSearch.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRRecordingInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRRecordingInfo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRTimerSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRTimerSettings.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRUpdateProgressBar.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRUpdateProgressBar.h"
 					>
 				</File>
 				<File
