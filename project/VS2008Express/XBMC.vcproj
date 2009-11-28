@@ -271,7 +271,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="false"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
-				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib strmiids.lib quartz.lib strmbase.lib msdmo.lib Dmoguids.lib mfuuid.lib dxva2.lib evr.lib mf.lib Mfplat.lib"
+				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib strmiids.lib strmbase.lib mfuuid.lib dxva2.lib evr.lib mf.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\libSDL-WIN32\lib"

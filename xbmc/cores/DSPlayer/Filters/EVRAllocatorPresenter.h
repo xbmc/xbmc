@@ -191,7 +191,7 @@ typedef enum
   void									CheckWaitingSampleFromMixer();
   HRESULT									GetImageFromMixer();
   void									   GetMixerThread();
-  static DWORD WINAPI						GetMixerThreadStatic(LPVOID lpParam);
+  //static DWORD WINAPI						GetMixerThreadStatic(LPVOID lpParam);
   void									RemoveAllSamples();
   HRESULT									GetFreeSample(IMFSample** ppSample);
   HRESULT									GetScheduledSample(IMFSample** ppSample);
@@ -248,23 +248,17 @@ protected:
 
   CComPtr<IDirect3DTexture9>		m_pVideoTexture;
   CComPtr<IDirect3DSurface9>		m_pVideoSurface;
-  CComPtr<IDirect3DSwapChain9>      m_pInternalSwapchains[7];
   CComPtr<IDirect3DTexture9>		m_pInternalVideoTexture[7];
   CComPtr<IDirect3DSurface9>		m_pInternalVideoSurface[7];
-  CComPtr<IMFSample>                m_pInternalVideoSamples[7];
-
   int                               m_nNbDXSurface;      //Total number of dx surface
-  int                               m_nCurSurface;
+  int                               m_nCurSurface;       //Surface Currently displayed
   int                               m_iVideoWidth;
   int                               m_iVideoHeight;
+  int                               m_iVideoAspectHeight;
+  int                               m_iVideoAspectWidth;
   int                               m_fps;
   D3DFORMAT                         m_SurfaceType;
 
-  HRESULT GetTimeToSchedule(IMFSample* pSample, LONGLONG* pDelta);
-  LONGLONG GetCurrentTimestamp();
-  LONGLONG GetClockTime(LONGLONG PerformanceCounter);
-  double GetFrameTime();
-  double GetFrameRate();
   LONGLONG m_ModeratedTimeLast;
   LONGLONG m_ModeratedClockLast;
   LONGLONG m_ModeratedTimer;
