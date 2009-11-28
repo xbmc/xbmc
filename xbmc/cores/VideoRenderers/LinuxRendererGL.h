@@ -156,9 +156,9 @@ protected:
   bool CreateVDPAUTexture(int index);
   bool DeleteVDPAUTexture(int index);
 
-  bool LoadCrystalHDTextures(int source);
-  bool CreateCrystalHDTexture(int index);
-  bool DeleteCrystalHDTexture(int index);
+  bool LoadNV12Textures(int source);
+  bool CreateNV12Texture(int index);
+  bool DeleteNV12Texture(int index);
 
   // renderers
   void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer

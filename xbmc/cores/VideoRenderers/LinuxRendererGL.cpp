@@ -1141,9 +1141,9 @@ else
   // FIXME: add m_renderMethod for RENDER_CRYSTALHD
   if (m_renderMethod & RENDER_CRYSTALHD)
   {
-    LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadCrystalHDTextures;
-    CreateTextureFuncPtr = &CLinuxRendererGL::CreateCrystalHDTexture;
-    DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteCrystalHDTexture;
+    LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadNV12Textures;
+    CreateTextureFuncPtr = &CLinuxRendererGL::CreateNV12Texture;
+    DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteNV12Texture;
   }
   else
 #endif
@@ -2022,21 +2022,15 @@ bool CLinuxRendererGL::DeleteVDPAUTexture(int index)
 }
 
 //********************************************************************************************************
-// CrystalHD Texture loading, creation and deletion
+// NV12 Texture loading, creation and deletion
 //********************************************************************************************************
-bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
+bool CLinuxRendererGL::LoadNV12Textures(int source)
 {
-#ifdef HAVE_LIBCRYSTALHD
   YUVBUFFER& buf    =  m_buffers[source];
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags & IMAGE_FLAG_READY))
-  {
-    SetEvent(m_eventTexturesDone[source]);
-    return(true);
-  }
-  if (!im->plane[0] || !im->plane[1])
   {
     SetEvent(m_eventTexturesDone[source]);
     return(true);
@@ -2179,13 +2173,11 @@ bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
   }
 
   glDisable(m_textureTarget);
-#endif
 
   return(true);
 }
-bool CLinuxRendererGL::CreateCrystalHDTexture(int index)
+bool CLinuxRendererGL::CreateNV12Texture(int index)
 {
-#ifdef HAVE_LIBCRYSTALHD
   // since we also want the field textures, pitch must be texture aligned
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
@@ -2280,9 +2272,9 @@ bool CLinuxRendererGL::CreateCrystalHDTexture(int index)
       glBindTexture(m_textureTarget, plane.id);
 
       if(m_renderMethod & RENDER_POT)
-        CLog::Log(LOGNOTICE, "GL: Creating YUV POT texture of size %d x %d",  plane.texwidth, plane.texheight);
+        CLog::Log(LOGNOTICE, "GL: Creating NV12 POT texture of size %d x %d",  plane.texwidth, plane.texheight);
       else
-        CLog::Log(LOGDEBUG,  "GL: Creating YUV NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
+        CLog::Log(LOGDEBUG,  "GL: Creating NV12 NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
 
       if (p == 1)
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE_ALPHA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, NULL);
@@ -2298,19 +2290,18 @@ bool CLinuxRendererGL::CreateCrystalHDTexture(int index)
   }
   glDisable(m_textureTarget);
   SetEvent(m_eventTexturesDone[index]);
-#endif
+
   return(true);
 }
-bool CLinuxRendererGL::DeleteCrystalHDTexture(int index)
+bool CLinuxRendererGL::DeleteNV12Texture(int index)
 {
-#ifdef HAVE_LIBCRYSTALHD
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
   if( fields[FIELD_FULL][0].id == 0 ) return(true);
 
-  CLog::Log(LOGDEBUG, "Deleted YV12 texture %i", index);
+  CLog::Log(LOGDEBUG, "Deleted NV12 texture %i", index);
   
   // finish up all textures, and delete them
   g_graphicsContext.BeginPaint();  //FIXME
@@ -2354,7 +2345,6 @@ bool CLinuxRendererGL::DeleteCrystalHDTexture(int index)
       }
     }
   }
-#endif
 
   return(true);
 }
