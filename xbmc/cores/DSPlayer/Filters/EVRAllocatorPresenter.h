@@ -138,9 +138,13 @@ typedef enum
   long m_refCount;
   bool m_fUseInternalTimer;
   int                                       m_nStepCount;
-  HANDLE                                    m_hEvtQuit;			// Stop rendering thread event
+
   bool                                      m_bEvtQuit;
-  HANDLE                                    m_hEvtFlush;		// Discard all buffers
+  	HANDLE									m_hEvtQuit;			// Stop rendering thread event
+	HANDLE									m_hEvtPresent;		// Render next frame (cued order)
+	HANDLE									m_hEvtFrameTimer;	// Render next frame (timer based)
+	HANDLE									m_hEvtFlush;		// Discard all buffers
+	HANDLE									m_hSemPicture;		// Indicate present of buffered frames
   bool                                      m_bEvtFlush;
   HANDLE									m_hThread;
   HANDLE									m_hGetMixerThread;
@@ -185,16 +189,15 @@ typedef enum
   static DWORD WINAPI						PresentThread(LPVOID lpParam);
   void									CompleteFrameStep(bool bCancel);
   void									CheckWaitingSampleFromMixer();
-  bool									   GetImageFromMixer();
+  HRESULT									GetImageFromMixer();
   void									   GetMixerThread();
   static DWORD WINAPI						GetMixerThreadStatic(LPVOID lpParam);
   void									RemoveAllSamples();
   HRESULT									GetFreeSample(IMFSample** ppSample);
-  HRESULT									GetScheduledSample(IMFSample** ppSample, int &_Count);
+  HRESULT									GetScheduledSample(IMFSample** ppSample);
   void									MoveToFreeList(IMFSample* pSample, bool bTail);
-  void									MoveToScheduledList(IMFSample* pSample, bool _bSorted);
+  void									MoveToScheduledList(IMFSample* pSample);
   void									FlushSamples();
-  void									FlushSamplesInternal();
   bool                                      m_bPendingRenegotiate;
   bool                                      m_bPendingMediaFinished;
   bool                                      m_bPendingResetDevice;
@@ -220,7 +223,6 @@ typedef enum
 //Dx9Allocator
   CCritSec					m_RenderLock;
   long					m_nUsedBuffer;
-  REFERENCE_TIME			m_rtTimePerFrame;
 protected:
   CComPtr<IDirect3D9> m_D3D;
   CComPtr<IDirect3DDevice9> m_D3DDev;
@@ -234,7 +236,8 @@ protected:
   HRESULT RenderPresent(int surfaceIndex);
   void StartWorkerThreads();
   void StopWorkerThreads();
-  LONGLONG GetCurrentTimestamp();
+
+
 //Trace evr is only temporary TODO Remove it
   HRESULT TRACE_EVR(const char* strTrace);
 //Dx9Allocator
@@ -242,8 +245,7 @@ protected:
   virtual bool ResetD3dDevice();
   virtual void DeleteSurfaces();
   void			OnResetDevice();
-  LONGLONG m_ModeratedTimeLast;
-  LONGLONG m_ModeratedClockLast;
+
   CComPtr<IDirect3DTexture9>		m_pVideoTexture;
   CComPtr<IDirect3DSurface9>		m_pVideoSurface;
   CComPtr<IDirect3DSwapChain9>      m_pInternalSwapchains[7];
@@ -258,12 +260,50 @@ protected:
   int                               m_fps;
   D3DFORMAT                         m_SurfaceType;
 
+  HRESULT GetTimeToSchedule(IMFSample* pSample, LONGLONG* pDelta);
+  LONGLONG GetCurrentTimestamp();
+  LONGLONG GetClockTime(LONGLONG PerformanceCounter);
+  double GetFrameTime();
+  double GetFrameRate();
+  LONGLONG m_ModeratedTimeLast;
+  LONGLONG m_ModeratedClockLast;
+  LONGLONG m_ModeratedTimer;
+  MFCLOCK_STATE m_LastClockState;
+  float     m_fRate;
   double					m_DetectedFrameTimeStdDev;
   bool					m_bCorrectedFrameTime;
+
+
+  int						m_DetectedRefreshRatePos;
+  UINT  m_RefreshRate;
+
+  LONGLONG				m_PaintTime;
+  LONGLONG				m_PaintTimeMin;
+  LONGLONG				m_PaintTimeMax;
+  
+
+  CCritSec				m_RefreshRateLock;
+  double					m_DetectedRefreshTime;
+  double					m_DetectedRefreshTimePrim;
+  double					m_DetectedScanlineTime;
+  double					m_DetectedScanlineTimePrim;
+  double					m_DetectedScanlinesPerFrame;
+  LONGLONG				m_LastFrameDuration;
+  LONGLONG				m_LastSampleTime;
+
+  REFERENCE_TIME			m_rtTimePerFrame;
+  double					m_DetectedFrameRate;
+  double					m_DetectedFrameTime;
   int					m_DetectedFrameTimePos;
   LONGLONG				m_DetectedFrameTimeHistory[60];
   bool					m_DetectedLock;
+  double					m_TimeChangeHistory[100];
+		double					m_ClockChangeHistory[100];
+		int						m_ClockTimeChangeHistoryPos;
   double					m_DetectedFrameTimeHistoryHistory[500];
+  		double					m_ModeratedTimeSpeed;
+		double					m_ModeratedTimeSpeedPrim;
+		double					m_ModeratedTimeSpeedDiff;
 };
 
 #endif
