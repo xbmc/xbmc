@@ -342,57 +342,6 @@ void CWinRenderer::Render(DWORD flags)
   if( flags & RENDER_FLAG_NOOSD ) return;
 }
 
-void CWinRenderer::AutoCrop(bool bCrop)
-{
-  if (!m_YUVMemoryTexture[0][PLANE_Y]) return ;
-
-  RECT crop;
-
-  if (bCrop)
-  {
-    YV12Image im;
-    if(GetImage(&im, m_iYV12RenderBuffer, true) < 0)
-      return;
-
-    CBaseRenderer::AutoCrop(im, crop);
-
-    ReleaseImage(m_iYV12RenderBuffer, false);
-  }
-  else
-  { // reset to defaults
-    crop.left   = 0;
-    crop.right  = 0;
-    crop.top    = 0;
-    crop.bottom = 0;
-  }
-
-  m_crop.x1 += ((float)crop.left   - m_crop.x1) * 0.1f;
-  m_crop.x2 += ((float)crop.right  - m_crop.x2) * 0.1f;
-  m_crop.y1 += ((float)crop.top    - m_crop.y1) * 0.1f;
-  m_crop.y2 += ((float)crop.bottom - m_crop.y2) * 0.1f;
-
-  crop.left   = MathUtils::round_int(m_crop.x1);
-  crop.right  = MathUtils::round_int(m_crop.x2);
-  crop.top    = MathUtils::round_int(m_crop.y1);
-  crop.bottom = MathUtils::round_int(m_crop.y2);
-
-  //compare with hysteresis
-# define HYST(n, o) ((n) > (o) || (n) + 1 < (o))
-  if(HYST(g_stSettings.m_currentVideoSettings.m_CropLeft  , crop.left)
-  || HYST(g_stSettings.m_currentVideoSettings.m_CropRight , crop.right)
-  || HYST(g_stSettings.m_currentVideoSettings.m_CropTop   , crop.top)
-  || HYST(g_stSettings.m_currentVideoSettings.m_CropBottom, crop.bottom))
-  {
-    g_stSettings.m_currentVideoSettings.m_CropLeft   = crop.left;
-    g_stSettings.m_currentVideoSettings.m_CropRight  = crop.right;
-    g_stSettings.m_currentVideoSettings.m_CropTop    = crop.top;
-    g_stSettings.m_currentVideoSettings.m_CropBottom = crop.bottom;
-    SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
-  }
-# undef HYST
-
-}
-
 void CWinRenderer::RenderLowMem(DWORD flags)
 {
   if (!m_YUV2RGBEffect.Get())

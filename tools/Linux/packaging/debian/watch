@@ -1,0 +1,4 @@
+version=3
+
+opts=uversionmangle=s/\.(tar.*|tgz|zip|gz|bz2)$//i,dversionmangle=s/[-.+~]?(cvs|svn|git|snapshot|pre|hg)(.*)$//i,pasv \
+http://sf.net/xbmc/([\d+\.]+|\d+)-?_?.*?-linux-osx-win32-repack\.(tar.*|tgz|zip|gz|bz2|) debian uupdate

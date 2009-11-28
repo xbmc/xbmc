@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 11/23/2009-->
+<!--Date of translation: 11/26/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -1111,6 +1111,7 @@
   <string id="13421">VDPAU</string>
   <string id="13422">여기에서 슬라이드쇼 시작</string>
   <string id="13423">이 경로 기억</string>
+  <string id="13424">픽셀 버퍼 객체 사용</string>
   <string id="13500">A/V 동기 방식</string>
   <string id="13501">오디오 클럭</string>
   <string id="13502">비디오 클럭 (오디오 버림/반복)</string>

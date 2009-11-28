@@ -27,12 +27,14 @@
 #include "HTMLUtil.h"
 #include "StringUtils.h"
 #include "VideoInfoTag.h"
+#include "MusicInfoTag.h"
 #include "utils/log.h"
 #include "URL.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace std;
+using namespace MUSIC_INFO;
 
 CRSSDirectory::CRSSDirectory()
 {
@@ -100,8 +102,9 @@ static time_t ParseDate(const CStdString & strDate)
   // Check the difference between the time of last check and time of the item
   return mktime(&pubDate);
 }
+static void ParseItem(CFileItem* item, TiXmlElement* root);
 
-static void ParseItemMRSS(CFileItemPtr& item, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
+static void ParseItemMRSS(CFileItem* item, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
 {
   CVideoInfoTag* vtag = item->GetVideoInfoTag();
   CStdString text = item_child->GetText();
@@ -129,14 +132,7 @@ static void ParseItemMRSS(CFileItemPtr& item, TiXmlElement* item_child, const CS
     if(dur)
       StringUtils::SecondsToTimeString(atoi(dur), vtag->m_strRuntime); 
 
-    // Go over all child nodes of the media content and get the thumbnail
-    TiXmlElement* media_content_child = item_child->FirstChildElement("media:thumbnail");
-    if (media_content_child && media_content_child->Value() && strcmp(media_content_child->Value(), "media:thumbnail") == 0)
-    {
-      const char * url = media_content_child->Attribute("url");
-      if (url && IsPathToThumbnail(url))
-        item->SetThumbnailImage(url);
-    }
+    ParseItem(item, item_child);
   }
   else if(name == "thumbnail")
   {
@@ -154,7 +150,6 @@ static void ParseItemMRSS(CFileItemPtr& item, TiXmlElement* item_child, const CS
     if(text.IsEmpty())
       return;
 
-    item->SetLabel(text);
     vtag->m_strTitle = text;
   }
   else if(name == "description")
@@ -166,23 +161,41 @@ static void ParseItemMRSS(CFileItemPtr& item, TiXmlElement* item_child, const CS
     if(CStdString(item_child->Attribute("type")) == "html")
       HTML::CHTMLUtil::RemoveTags(description);
     item->SetProperty("description", description);
-    item->SetLabel2(description);
-
-    vtag->m_strPlotOutline = description;
-    vtag->m_strPlot        = description;
   }
   else if(name == "category")
   {
     if(text.IsEmpty())
       return;
 
-    vtag->m_strGenre = text;
+    CStdString scheme = item_child->Attribute("scheme");
+
+    /* okey this is silly, boxee what did you think?? */
+    if     (scheme == "urn:boxee:genre")
+      vtag->m_strGenre = text;
+    else if(scheme == "urn:boxee:title-type")
+    {
+      if     (text == "tv")
+        item->SetProperty("boxee:istvshow", true);
+      else if(text == "movie")
+        item->SetProperty("boxee:ismovie", true);
+    }
+    else if(scheme == "urn:boxee:episode")
+      vtag->m_iEpisode = atoi(text.c_str());
+    else if(scheme == "urn:boxee:season")
+      vtag->m_iSeason  = atoi(text.c_str());
+    else if(scheme == "urn:boxee:show-title")
+      vtag->m_strShowTitle = text.c_str();
+    else if(scheme == "urn:boxee:view-count")
+      vtag->m_playCount = atoi(text.c_str());
+    else if(scheme == "urn:boxee:source")
+      item->SetProperty("boxee:provider_source", text);
+    else
+      vtag->m_strGenre = text;
   }
   else if(name == "rating")
   {
-    if(text.IsEmpty())
-      return;
-    if(atof(text.c_str()) > 0.0f && atof(text.c_str()) <= 10.0f)
+    CStdString scheme = item_child->Attribute("scheme");
+    if(scheme == "urn:user")
       vtag->m_fRating = (float)atof(text.c_str());
     else
       vtag->m_strMPAARating = text;
@@ -190,9 +203,10 @@ static void ParseItemMRSS(CFileItemPtr& item, TiXmlElement* item_child, const CS
   else if(name == "credit")
   {
     CStdString role = item_child->Attribute("role");
-    if(role == "director")
+    if     (role == "director")
       vtag->m_strDirector += ", " + text;
-    else if(role == "author")
+    else if(role == "author"
+         || role == "writer")
       vtag->m_strWritingCredits += ", " + text;
     else if(role == "actor")
     {
@@ -201,85 +215,59 @@ static void ParseItemMRSS(CFileItemPtr& item, TiXmlElement* item_child, const CS
       vtag->m_cast.push_back(actor);
     }
   }
+  else if(name == "copyright")
+    vtag->m_strStudio = text;
+  else if(name == "keywords")
+    item->SetProperty("keywords", text);
 
 }
 
-static void ParseItemItunes(CFileItemPtr& item, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
+static void ParseItemItunes(CFileItem* item, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
 {
+  CVideoInfoTag* vtag = item->GetVideoInfoTag();
+  CStdString text = item_child->GetText();
+
   if(name == "image")
   {
-    if(item_child->GetText() && IsPathToThumbnail(item_child->GetText()))
-      item->SetThumbnailImage(item_child->GetText());
+    const char * url = item_child->Attribute("href");
+    if(url)
+      item->SetThumbnailImage(url);
     else
-    {
-      const char * url = item_child->Attribute("href");
-      if(url && IsPathToThumbnail(url))
-        item->SetThumbnailImage(url);
-    }
+      item->SetThumbnailImage(text);
   }
   else if(name == "summary")
-  {
-    if(item_child->GetText())
-    {
-      CStdString description = item_child->GetText();
-      item->SetProperty("description", description);
-      item->SetLabel2(description);
-    }
-  }
+    vtag->m_strPlot = text;
   else if(name == "subtitle")
-  {
-    if(item_child->GetText())
-    {
-      CStdString description = item_child->GetText();
-      item->SetProperty("description", description);
-      item->SetLabel2(description);
-    }
-  }
+    vtag->m_strPlotOutline = text;
   else if(name == "author")
-  {
-    if(item_child->GetText())
-      item->SetProperty("author", item_child->GetText());
-  }
+    vtag->m_strWritingCredits += ", " + text;
   else if(name == "duration")
-  {
-    if(item_child->GetText())
-      item->SetProperty("duration", item_child->GetText());
-  }
+    vtag->m_strRuntime = text;
   else if(name == "keywords")
-  {
-    if(item_child->GetText())
-      item->SetProperty("keywords", item_child->GetText());
-  }
+    item->SetProperty("keywords", text);
 }
 
-static void ParseItemRSS(CFileItemPtr& item, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
+static void ParseItemRSS(CFileItem* item, TiXmlElement* item_child, const CStdString& name, const CStdString& xmlns)
 {
+  CStdString text = item_child->GetText();
   if (name == "title")
-  {
-    if (item_child->GetText())
-      item->SetLabel(item_child->GetText());
-  }
+    item->m_strTitle = text;
   else if (name == "pubDate")
   {
-    CDateTime pubDate(ParseDate(item_child->GetText()));
+    CDateTime pubDate(ParseDate(text));
     item->m_dateTime = pubDate;
   }
   else if (name == "link")
   {
-    if (item_child->GetText())
+    string strPrefix = text.substr(0, text.find_first_of(":"));
+    if (strPrefix == "rss")
     {
-      string strLink = item_child->GetText();
-
-      string strPrefix = strLink.substr(0, strLink.find_first_of(":"));
-      if (strPrefix == "rss")
-      {
-        // If this is an rss item, we treat it as another level in the directory
-        item->m_bIsFolder = true;
-        item->m_strPath = strLink;
-      }
-      else if (item->m_strPath == "" && IsPathToMedia(strLink))
-        item->m_strPath = strLink;
+      // If this is an rss item, we treat it as another level in the directory
+      item->m_bIsFolder = true;
+      item->m_strPath = text;
     }
+    else if (item->m_strPath == "" && IsPathToMedia(text))
+      item->m_strPath = text;
   }
   else if(name == "enclosure")
   {
@@ -303,22 +291,18 @@ static void ParseItemRSS(CFileItemPtr& item, TiXmlElement* item_child, const CSt
   }
   else if(name == "description")
   {
-    CStdString description = item_child->GetText();
+    CStdString description = text;
     HTML::CHTMLUtil::RemoveTags(description);
     item->SetProperty("description", description);
-    item->SetLabel2(description);
   }
   else if(name == "guid")
   {
-    if (item->m_strPath.IsEmpty() && IsPathToMedia(item_child->Value()))
-    {
-      if(item_child->GetText())
-        item->m_strPath = item_child->GetText();
-    }
+    if (item->m_strPath.IsEmpty() && IsPathToMedia(text))
+      item->m_strPath = text;
   }
 }
 
-static void ParseItemVoddler(CFileItemPtr& item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
+static void ParseItemVoddler(CFileItem* item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
 {
   CVideoInfoTag* vtag = item->GetVideoInfoTag();
   CStdString text = element->GetText();
@@ -336,6 +320,8 @@ static void ParseItemVoddler(CFileItemPtr& item, TiXmlElement* element, const CS
   }
   else if(name == "year")
     vtag->m_iYear = atoi(text);
+  else if(name == "rating")
+    vtag->m_fRating = (float)atof(text);
   else if(name == "tagline")
     vtag->m_strTagLine = text;
   else if(name == "posterwall")
@@ -348,6 +334,107 @@ static void ParseItemVoddler(CFileItemPtr& item, TiXmlElement* element, const CS
   }
 }
 
+static void ParseItemBoxee(CFileItem* item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
+{
+  CVideoInfoTag* vtag = item->GetVideoInfoTag();
+  CStdString text = element->GetText();
+
+  if     (name == "image")
+    item->SetThumbnailImage(text);
+  else if(name == "user_agent")
+    item->SetProperty("boxee:user_agent", text);
+  else if(name == "content_type")
+    item->SetContentType(text);
+  else if(name == "runtime")
+    vtag->m_strRuntime = text;
+  else if(name == "episode")
+    vtag->m_iEpisode = atoi(text);
+  else if(name == "season")
+    vtag->m_iSeason = atoi(text);
+  else if(name == "view-count")
+    vtag->m_playCount = atoi(text);
+  else if(name == "tv-show-title")
+    vtag->m_strShowTitle = text;
+  else if(name == "release-date")
+    item->SetProperty("boxee:releasedate", text);
+}
+
+static void ParseItemZink(CFileItem* item, TiXmlElement* element, const CStdString& name, const CStdString& xmlns)
+{
+  CVideoInfoTag* vtag = item->GetVideoInfoTag();
+  CStdString text = element->GetText();
+  if     (name == "episode")
+    vtag->m_iEpisode = atoi(text);
+  else if(name == "season")
+    vtag->m_iSeason = atoi(text);
+  else if(name == "views")
+    vtag->m_playCount = atoi(text);
+  else if(name == "airdate")
+    vtag->m_strFirstAired = text;
+  else if(name == "userrating")
+    vtag->m_fRating = (float)atof(text.c_str());
+  else if(name == "duration")
+    StringUtils::SecondsToTimeString(atoi(text), vtag->m_strRuntime);
+  else if(name == "durationstr")
+    vtag->m_strRuntime = text;
+}
+
+static void ParseItem(CFileItem* item, TiXmlElement* root)
+{
+  for (TiXmlElement* child = root->FirstChildElement(); child; child = child->NextSiblingElement())
+  {
+    CStdString name = child->Value();
+    CStdString xmlns;
+    int pos = name.Find(':');
+    if(pos >= 0)
+    {
+      xmlns = name.Left(pos);
+      name.Delete(0, pos+1);
+    }
+
+    if      (xmlns == "media")
+      ParseItemMRSS   (item, child, name, xmlns);
+    else if (xmlns == "itunes")
+      ParseItemItunes (item, child, name, xmlns);
+    else if (xmlns == "voddler")
+      ParseItemVoddler(item, child, name, xmlns);
+    else if (xmlns == "boxee")
+      ParseItemBoxee  (item, child, name, xmlns);
+    else if (xmlns == "zn")
+      ParseItemZink   (item, child, name, xmlns);
+    else
+      ParseItemRSS    (item, child, name, xmlns);
+  }
+
+  if(!item->m_strTitle.IsEmpty())
+    item->SetLabel(item->m_strTitle);
+
+  if(item->HasVideoInfoTag())
+  {
+    CVideoInfoTag* vtag = item->GetVideoInfoTag();
+    // clean up ", " added during build
+    vtag->m_strDirector.Delete(0, 2);
+    vtag->m_strWritingCredits.Delete(0, 2);
+
+    if(item->HasProperty("duration")    && vtag->m_strRuntime.IsEmpty())
+      vtag->m_strRuntime = item->GetProperty("duration");
+
+    if(item->HasProperty("description") && vtag->m_strPlot.IsEmpty())
+      vtag->m_strPlot = item->GetProperty("description");
+
+    if(vtag->m_strPlotOutline.IsEmpty() && !vtag->m_strPlot.IsEmpty())
+    {
+      int pos = vtag->m_strPlot.Find('\n');
+      if(pos >= 0)
+        vtag->m_strPlotOutline = vtag->m_strPlot.Left(pos);
+      else
+        vtag->m_strPlotOutline = vtag->m_strPlot;
+    }
+
+    if(!vtag->m_strRuntime.IsEmpty())
+      item->SetLabel2(vtag->m_strRuntime);
+  }
+}
 
 bool CRSSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
@@ -379,40 +466,10 @@ bool CRSSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if (!rssXmlNode)
     return false;
 
-  CStdString strMediaThumbnail ;
-
   TiXmlHandle docHandle( &xmlDoc );
   TiXmlElement* channelXmlNode = docHandle.FirstChild( "rss" ).FirstChild( "channel" ).Element();
   if (channelXmlNode)
-  {
-    TiXmlElement* aNode = channelXmlNode->FirstChildElement("title");
-    if (aNode && !aNode->NoChildren())
-      items.SetProperty("rss:title", aNode->FirstChild()->Value());
-
-    aNode = channelXmlNode->FirstChildElement("itunes:summary");
-    if (aNode && !aNode->NoChildren())
-      items.SetProperty("rss:description", aNode->FirstChild()->Value());
-
-    if (!items.HasProperty("rss:description"))
-    {
-      aNode = channelXmlNode->FirstChildElement("description");
-      if (aNode && !aNode->NoChildren())
-        items.SetProperty("rss:description", aNode->FirstChild()->Value());
-    }
-
-    // Get channel thumbnail
-    TiXmlHandle chanHandle( channelXmlNode );
-    aNode = chanHandle.FirstChild("image").FirstChild("url").Element();
-    if (aNode && !aNode->NoChildren())
-      items.SetProperty("rss:image", aNode->FirstChild()->Value());
-
-    if (!items.HasProperty("rss:image"))
-    {
-      aNode = chanHandle.FirstChild("itunes:image").Element();
-      if (aNode && !aNode->NoChildren())
-        items.SetProperty("rss:image", aNode->FirstChild()->Value());
-    }
-  }
+    ParseItem(&items, channelXmlNode);
   else
     return false;
 
@@ -422,38 +479,9 @@ bool CRSSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   {
     // Create new item,
     CFileItemPtr item(new CFileItem());
-
-    for (item_child = child->FirstChildElement(); item_child; item_child = item_child->NextSiblingElement())
-    {
-      CStdString name = item_child->Value();
-      CStdString xmlns;
-      int pos = name.Find(':');
-      if(pos >= 0)
-      {
-        xmlns = name.Left(pos);
-        name.Delete(0, pos+1);
-      }
-
-      if(xmlns == "media")
-        ParseItemMRSS(item, item_child, name, xmlns);
-      else if (xmlns == "itunes")
-        ParseItemItunes(item, item_child, name, xmlns);
-      else if (xmlns == "voddler")
-        ParseItemVoddler(item, item_child, name, xmlns);
-      else
-        ParseItemRSS(item, item_child, name, xmlns);
-
-    } // for item
-
-    // clean up ", " added during build
-    if(item->HasVideoInfoTag())
-    {
-      item->GetVideoInfoTag()->m_strDirector.Delete(0, 2);
-      item->GetVideoInfoTag()->m_strWritingCredits.Delete(0, 2);
-    }
+    ParseItem(item.get(), child);
 
     item->SetProperty("isrss", "1");
-    item->SetProperty("chanthumb",strMediaThumbnail);
 
     if (!item->m_strPath.IsEmpty())
       items.Add(item);

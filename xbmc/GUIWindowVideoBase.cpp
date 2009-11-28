@@ -188,7 +188,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return false;
 
           CFileItemPtr item = m_vecItems->Get(iItem);
-          if (m_vecItems->IsPlugin())
+          if (m_vecItems->IsPlugin() || m_vecItems->IsRSS())
             info.strContent = "plugin";
           else if(m_vecItems->IsLiveTV())
             info.strContent = "livetv";
@@ -1860,7 +1860,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info, 
   if (!item)
     return 0;
 
-  if (m_vecItems->IsPlugin())
+  if (m_vecItems->IsPlugin() || m_vecItems->IsRSS())
   {
     info.strContent = "plugin";
     return 0;

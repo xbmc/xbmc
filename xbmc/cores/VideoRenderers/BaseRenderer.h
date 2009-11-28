@@ -50,14 +50,12 @@ public:
   RESOLUTION GetResolution() const;
   void GetVideoRect(CRect &source, CRect &dest);
   float GetAspectRatio() const;
-  virtual void AutoCrop(bool bCrop) {};
 
 protected:
   void ChooseBestResolution(float fps);
   void CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount);
   void CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
   void ManageDisplay();
-  void AutoCrop(YV12Image &im, RECT& crop);
 
   RESOLUTION m_resolution;    // the resolution we're running in
   unsigned int m_sourceWidth;

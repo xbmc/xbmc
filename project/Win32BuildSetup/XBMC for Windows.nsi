@@ -379,7 +379,7 @@ SectionEnd
 ;DirectX webinstaller Section
 
 !if "${xbmc_target}" == "dx"
-Section "DirectX Install" SEC_DIRECTX
+Section "DirectX WebInstall" SEC_DIRECTX
  
   SectionIn RO
  
@@ -401,7 +401,7 @@ SectionEnd
 
 Section "Microsoft Visual C++ 2008 Redistributable Package (x86)" SEC_VCREDIST
 
-  SectionIn 1 2
+  SectionIn RO
   
   SetOutPath "$TEMP"
   File "${xbmc_root}\Xbmc\vcredist_x86.exe"

@@ -106,7 +106,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_pYUVShader = NULL;
   m_pVideoFilterShader = NULL;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
-
+  m_scalingMethodGui = (ESCALINGMETHOD)-1;
   m_upscalingWidth = 0;
   m_upscalingHeight = 0;
   memset(&m_imScaled, 0, sizeof(m_imScaled));
@@ -208,7 +208,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 
   m_bConfigured = true;
   m_bImageReady = false;
-  m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
+  m_scalingMethodGui = (ESCALINGMETHOD)-1;
 
   // Ensure that textures are recreated and rendering starts only after the 1st 
   // frame is loaded after every call to Configure().
@@ -861,8 +861,6 @@ unsigned int CLinuxRendererGL::PreInit()
   m_bValidated = false;
   UnInit();
   m_resolution = RES_PAL_4x3;
-  m_crop.x1 = m_crop.x2 = 0.0f;
-  m_crop.y1 = m_crop.y2 = 0.0f;
 
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 2;
@@ -886,9 +884,16 @@ unsigned int CLinuxRendererGL::PreInit()
 
 void CLinuxRendererGL::UpdateVideoFilter()
 {
-  if (m_scalingMethod == g_stSettings.m_currentVideoSettings.m_ScalingMethod)
+  if (m_scalingMethodGui == g_stSettings.m_currentVideoSettings.m_ScalingMethod)
     return;
-  m_scalingMethod = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
+  m_scalingMethodGui = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
+  m_scalingMethod    = m_scalingMethodGui;
+
+  if(!Supports(m_scalingMethod))
+  {
+    CLog::Log(LOGWARNING, "CLinuxRendererGL::UpdateVideoFilter - choosen scaling method %d, is not supported by renderer", (int)m_scalingMethod);
+    m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
+  }
 
   if (m_pVideoFilterShader)
   {
@@ -900,7 +905,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
   VerifyGLState();
 
-  switch (g_stSettings.m_currentVideoSettings.m_ScalingMethod)
+  switch (m_scalingMethod)
   {
   case VS_SCALINGMETHOD_NEAREST:
     SetTextureFilter(GL_NEAREST);
@@ -1255,48 +1260,6 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     RenderSoftware(renderBuffer, m_currentField);
     VerifyGLState();
   }
-}
-
-void CLinuxRendererGL::AutoCrop(bool bCrop)
-{
-  RECT crop;
-
-  if(!m_bValidated) return;
-
-  if (bCrop)
-    CBaseRenderer::AutoCrop(m_buffers[m_iYV12RenderBuffer].image, crop);
-  else
-  { // reset to defaults
-    crop.left   = 0;
-    crop.right  = 0;
-    crop.top    = 0;
-    crop.bottom = 0;
-  }
-
-  m_crop.x1 += ((float)crop.left   - m_crop.x1) * 0.1;
-  m_crop.x2 += ((float)crop.right  - m_crop.x2) * 0.1;
-  m_crop.y1 += ((float)crop.top    - m_crop.y1) * 0.1;
-  m_crop.y2 += ((float)crop.bottom - m_crop.y2) * 0.1;
-
-  crop.left   = MathUtils::round_int(m_crop.x1);
-  crop.right  = MathUtils::round_int(m_crop.x2);
-  crop.top    = MathUtils::round_int(m_crop.y1);
-  crop.bottom = MathUtils::round_int(m_crop.y2);
-
-  //compare with hysteresis
-# define HYST(n, o) ((n) > (o) || (n) + 1 < (o))
-  if(HYST(g_stSettings.m_currentVideoSettings.m_CropLeft  , crop.left)
-  || HYST(g_stSettings.m_currentVideoSettings.m_CropRight , crop.right)
-  || HYST(g_stSettings.m_currentVideoSettings.m_CropTop   , crop.top)
-  || HYST(g_stSettings.m_currentVideoSettings.m_CropBottom, crop.bottom))
-  {
-    g_stSettings.m_currentVideoSettings.m_CropLeft   = crop.left;
-    g_stSettings.m_currentVideoSettings.m_CropRight  = crop.right;
-    g_stSettings.m_currentVideoSettings.m_CropTop    = crop.top;
-    g_stSettings.m_currentVideoSettings.m_CropBottom = crop.bottom;
-    SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
-  }
-# undef HYST
 }
 
 void CLinuxRendererGL::RenderSinglePass(int index, int field)
@@ -1835,7 +1798,7 @@ bool CLinuxRendererGL::DeleteYV12Texture(int index)
         im.plane[p] = NULL;
         glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
       }
-      glDeleteBuffers(1, pbo + p);
+      glDeleteBuffersARB(1, pbo + p);
       pbo[p] = 0;
     }
     else

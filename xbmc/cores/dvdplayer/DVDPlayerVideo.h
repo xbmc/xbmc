@@ -113,6 +113,10 @@ protected:
 #define EOS_DROPPED 2
 #define EOS_VERYLATE 4
 
+  void AutoCrop(DVDVideoPicture* pPicture);
+  void AutoCrop(DVDVideoPicture *pPicture, RECT &crop);
+  CRect m_crop;
+
   int OutputPicture(DVDVideoPicture* pPicture, double pts);
 #ifdef HAS_VIDEO_PLAYBACK
   void ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, double pts);

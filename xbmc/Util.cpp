@@ -185,8 +185,8 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   {
     CRSSDirectory dir;
     CFileItemList items;
-    if(dir.GetDirectory(strFileNameAndPath, items) && items.HasProperty("rss:title"))
-      return items.GetProperty("rss:title");
+    if(dir.GetDirectory(strFileNameAndPath, items) && !items.m_strTitle.IsEmpty())
+      return items.m_strTitle;
   }
 
   // LastFM
@@ -997,7 +997,7 @@ bool CUtil::IsPluginRoot(const CStdString& strFile)
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("cdda") && !url.GetFileName().IsEmpty();
+  return url.GetProtocol().Equals("cdda");
 }
 
 bool CUtil::IsISO9660(const CStdString& strFile)

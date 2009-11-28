@@ -58,7 +58,6 @@ bool CDirectoryNodeAlbumRecentlyPlayed::GetContent(CFileItemList& items)
     CStdString strDir;
     strDir.Format("%s%ld/", BuildPath().c_str(), album.idAlbum);
     CFileItemPtr pItem(new CFileItem(strDir, album));
-    pItem->SetCanQueue(false);
     items.Add(pItem);
   }
 

@@ -1,0 +1,61 @@
+#!/bin/sh
+
+# This script is used to download the upstream source for xbmc and
+# generate it into an orig source tarball for Debian.
+
+# Common variables used to ease maintenance of this script
+XBMC_TARBALL=""
+XBMC_TARBALL_CHECKSUM=""
+SVN_REVISION="24886"
+XBMC_VERSION="9.11~svn$SVN_REVISION~deb1"
+
+USAGE="\n\
+This script is used to generate the orig tarball used in building\n\
+Debian packages for xbmc-$XBMC_VERSION.\n\
+Usage: xbmc-get-orig-source [OPTION]\n\
+\n\
+ -h, --help                 Display this help message.\n\
+ --remove-upstream-tarball  Remove the upstream source tarball.\n"
+
+while [ "$#" -gt "0" ]
+do
+    case "$1" in
+        --remove-upstream-tarball)
+            REMOVE_UPSTREAM_TARBALL=1
+            shift
+            ;;
+        -h|--help|*)
+            echo "${USAGE}"
+            exit 1
+            ;;
+    esac
+done
+
+# This will generate the orig.tar.gz
+make_current_tarball() {
+    # We do an export from svn trunk
+    svn export -r$SVN_REVISION https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk xbmc-$XBMC_VERSION
+
+    # Remove libdvdcss
+    echo "Remove libdvdcss"
+    rm -rf xbmc-$XBMC_VERSION/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
+
+    # Remove some empty directories and its empty subdirectories
+    echo "Remove empty directories and its empty subdirectories"
+    rm -rf xbmc-$XBMC_VERSION/xbmc/cores/dvdplayer/Codecs/libDVDCSS
+    rm -rf xbmc-$XBMC_VERSION/xbmc/cores/dvdplayer/Codecs/libdvdnav
+
+    # Run bootstrap and remove cache directories
+    cd xbmc-$XBMC_VERSION
+    ./bootstrap
+    rm -rf autom4te.cache
+    rm -rf xbmc/lib/libass/autom4te.cache
+    cd ..
+
+    # Create the tarball
+    echo "Create orig tarball"
+    tar -czf xbmc_$XBMC_VERSION.orig.tar.gz \
+        xbmc-$XBMC_VERSION/
+}
+
+make_current_tarball

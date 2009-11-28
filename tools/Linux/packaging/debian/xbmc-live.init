@@ -1,0 +1,169 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          xbmc-live
+# Required-Start:    $local_fs $network $remote_fs
+# Required-Stop:     $local_fs $network $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: start and stop XBMC Live
+# Description: XBMC Live is the XBMC media center software bundled with an
+#              embedded operating-system, for that set-top-box feeling.
+### END INIT INFO
+
+# Do NOT "set -e"
+
+#/etc/init.d/xbmc
+
+. /lib/lsb/init-functions
+
+get_opt() {
+	echo "$@" | cut -d "=" -f 2
+}
+
+CMDLINE=$(cat /proc/cmdline)
+
+do_start()
+{
+	log_action_begin_msg "Configuring system and starting XBMC"
+
+	#Process command line options
+	XBMC_PARAMS=""
+	for i in ${CMDLINE}; do
+		case "${i}" in
+		xbmc\=*)
+		      XBMC_PARAMS=$(get_opt $i)
+		      ;;
+		esac
+	done
+
+	# Relies on init scripts to mount boot device on a specified directory
+	# TODO hardcode the already mounted directories (speed)
+	# XBMC Live V2 
+	BOOTMEDIADIRECTORY="image"
+	BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
+	if [ ! -n "$BOOTMEDIAMOUNTPOINT" ]; then
+		# XBMC Live V1
+		BOOTMEDIADIRECTORY="bootMedia"
+		BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
+	fi
+
+	# copy xorg.conf from "Config" directory
+	if [ -n "$BOOTMEDIAMOUNTPOINT" ]; then
+		if [ -f $BOOTMEDIAMNTPOINT/config/xorg.conf ]; then
+			cp $BOOTMEDIAMNTPOINT/config/xorg.conf /etc/X11
+		fi
+	fi
+
+	INSTALL="$( echo $XBMC_PARAMS | grep install)"
+	if [ -n "$INSTALL" ]; then
+		# if usplash is runing, make sure to stop it now, yes "start" kills it.
+		if pidof usplash > /dev/null; then
+			DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
+		fi
+		su -c "/usr/bin/installXBMC" -l
+	else
+		# Generates valid xorg.conf for proprietary drivers if missing
+		XBMC_NOGENXCONF="$( echo $XBMC_PARAMS | grep nogenxconf )"
+		if [ ! -e /etc/X11/xorg.conf ] && [ ! -n "$XBMC_NOGENXCONF" ]; then
+			NVIDIA="$(lspci -nn | grep 0300 | grep 10de)"
+			if [ ! -n "$NVIDIA" ]; then
+				AMD="$(lspci -nn | grep 0300 | grep 1002)"
+				if [ -n "$AMD" ]; then
+					# run aticonfig
+					log_warning_msg "Generating xorg.conf for ATI..."
+					/usr/bin/aticonfig --initial --sync-vsync=on -f
+				fi
+			else
+				# run nvidia-xconfig
+				log_warning_msg "Generating xorg.conf for NVIDIA..."
+				/usr/bin/nvidia-xconfig -s --no-logo --force-generate
+			fi
+		fi
+
+		RUNX="$(echo $CMDLINE | grep splash)"
+		if [ ! -n "$RUNX" ]; then
+		        log_warning_msg "Not starting X."
+
+			if [ -f /home/xbmc/.xsession ]; then
+				rm /home/xbmc/.xsession
+			fi
+		else
+			BOOTFROMCD="$(mount | grep iso9660)"
+			if [ ! -n "$BOOTFROMCD" ]; then
+				NOREDIR="$(echo $XBMC_PARAMS | grep noredir)"
+				if [ ! -n "$NOREDIR" ]; then
+					if [ -n "$BOOTMEDIAMOUNTPOINT" ]; then
+						log_warning_msg "Redirect XBMC home folder and logfile to usb flash..."
+						if [ ! -d $BOOTMEDIAMOUNTPOINT/dotXBMC ]; then
+							mkdir $BOOTMEDIAMOUNTPOINT/dotXBMC
+						fi
+
+						if [ -d /home/xbmc/.xbmc ]; then
+							if [ -L /home/xbmc/.xbmc ]; then
+								rm .xbmc
+							else
+								mv /home/xbmc/.xbmc /home/xbmc/.xbmc.previous
+							fi
+						fi
+						ln -s $BOOTMEDIAMOUNTPOINT/dotXBMC /home/xbmc/.xbmc
+					fi
+				fi
+			fi
+
+			/usr/bin/runXBMC &
+
+			XBMC_SETVOLUME="$(echo $XBMC_PARAMS | grep setvolume)"
+			if [ -n "$XBMC_SETVOLUME" ]; then
+				log_warning_msg "Increasing ALSA volumes..."
+				/usr/bin/setAlsaVolumes &
+			fi
+
+			NOMOUNT="$(echo $XBMC_PARAMS | grep nodiskmount)"
+			if [ ! -n "$NOMOUNT" ]; then
+				log_warning_msg "Mounting local disks..."
+				/usr/bin/diskmounter &
+			fi
+
+			# if usplash is running, make sure to stop it now, yes "start" kills it.
+			if pidof usplash > /dev/null; then
+				DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
+			fi
+		fi
+	fi
+	log_action_end_msg 0
+}
+
+do_stop() {
+	touch /tmp/noRestartXBMC
+	if [ -f /home/xbmc/.xsession ]; then
+		rm /home/xbmc/.xsession
+	fi
+
+	if [ "$(pidof xbmc.bin)" ] ; then
+		killall xbmc.bin
+		sleep 1
+	fi
+
+	if [ -f /tmp/noRestartXBMC ]; then
+		rm /tmp/noRestartXBMC
+	fi
+}
+
+case "$1" in
+start)
+	do_start
+	;;
+stop)
+	do_stop
+	;;
+restart|force-reload)
+	do_stop
+	do_start
+	;;
+*)
+	echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload}" >&2
+	exit 3
+	;;
+esac
+
+exit 0
