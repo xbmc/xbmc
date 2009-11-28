@@ -1083,42 +1083,45 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
 void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
 {
-  RECT crop;
-
-  if (g_stSettings.m_currentVideoSettings.m_Crop)
-    AutoCrop(pPicture, crop);
-  else
-  { // reset to defaults
-    crop.left   = 0;
-    crop.right  = 0;
-    crop.top    = 0;
-    crop.bottom = 0;
-  }
-
-  m_crop.x1 += ((float)crop.left   - m_crop.x1) * 0.1;
-  m_crop.x2 += ((float)crop.right  - m_crop.x2) * 0.1;
-  m_crop.y1 += ((float)crop.top    - m_crop.y1) * 0.1;
-  m_crop.y2 += ((float)crop.bottom - m_crop.y2) * 0.1;
-
-  crop.left   = MathUtils::round_int(m_crop.x1);
-  crop.right  = MathUtils::round_int(m_crop.x2);
-  crop.top    = MathUtils::round_int(m_crop.y1);
-  crop.bottom = MathUtils::round_int(m_crop.y2);
-
-  //compare with hysteresis
-# define HYST(n, o) ((n) > (o) || (n) + 1 < (o))
-  if(HYST(g_stSettings.m_currentVideoSettings.m_CropLeft  , crop.left)
-  || HYST(g_stSettings.m_currentVideoSettings.m_CropRight , crop.right)
-  || HYST(g_stSettings.m_currentVideoSettings.m_CropTop   , crop.top)
-  || HYST(g_stSettings.m_currentVideoSettings.m_CropBottom, crop.bottom))
+  if(pPicture->format == DVDVideoPicture::FMT_YUV420P)
   {
-    g_stSettings.m_currentVideoSettings.m_CropLeft   = crop.left;
-    g_stSettings.m_currentVideoSettings.m_CropRight  = crop.right;
-    g_stSettings.m_currentVideoSettings.m_CropTop    = crop.top;
-    g_stSettings.m_currentVideoSettings.m_CropBottom = crop.bottom;
-    g_renderManager.SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+    RECT crop;
+
+    if (g_stSettings.m_currentVideoSettings.m_Crop)
+      AutoCrop(pPicture, crop);
+    else
+    { // reset to defaults
+      crop.left   = 0;
+      crop.right  = 0;
+      crop.top    = 0;
+      crop.bottom = 0;
+    }
+
+    m_crop.x1 += ((float)crop.left   - m_crop.x1) * 0.1;
+    m_crop.x2 += ((float)crop.right  - m_crop.x2) * 0.1;
+    m_crop.y1 += ((float)crop.top    - m_crop.y1) * 0.1;
+    m_crop.y2 += ((float)crop.bottom - m_crop.y2) * 0.1;
+
+    crop.left   = MathUtils::round_int(m_crop.x1);
+    crop.right  = MathUtils::round_int(m_crop.x2);
+    crop.top    = MathUtils::round_int(m_crop.y1);
+    crop.bottom = MathUtils::round_int(m_crop.y2);
+
+    //compare with hysteresis
+    # define HYST(n, o) ((n) > (o) || (n) + 1 < (o))
+    if(HYST(g_stSettings.m_currentVideoSettings.m_CropLeft  , crop.left)
+    || HYST(g_stSettings.m_currentVideoSettings.m_CropRight , crop.right)
+    || HYST(g_stSettings.m_currentVideoSettings.m_CropTop   , crop.top)
+    || HYST(g_stSettings.m_currentVideoSettings.m_CropBottom, crop.bottom))
+    {
+      g_stSettings.m_currentVideoSettings.m_CropLeft   = crop.left;
+      g_stSettings.m_currentVideoSettings.m_CropRight  = crop.right;
+      g_stSettings.m_currentVideoSettings.m_CropTop    = crop.top;
+      g_stSettings.m_currentVideoSettings.m_CropBottom = crop.bottom;
+      g_renderManager.SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+    }
+    # undef HYST
   }
-# undef HYST
 }
 
 void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
