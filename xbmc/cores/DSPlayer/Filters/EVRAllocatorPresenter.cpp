@@ -7,17 +7,14 @@
 #include "dshowutil/dshowutil.h"
 #include <mfapi.h>
 #include <mferror.h>
-#include "vmr9.h"
 #include "IPinHook.h"
 
 
 class COuterEVR
   : public CUnknown
-  //, public IVMRMixerBitmap9
   , public IBaseFilter
 {
   CComPtr<IUnknown>  m_pEVR;
-  VMR9AlphaBitmap*  m_pVMR9AlphaBitmap;
   CEVRAllocatorPresenter *m_pAllocatorPresenter;
 
 public:
@@ -138,7 +135,6 @@ public:
   COuterEVR(const TCHAR* pName, LPUNKNOWN pUnk, HRESULT& hr, CEVRAllocatorPresenter *pAllocatorPresenter) : CUnknown(pName, pUnk)
   {
     hr = m_pEVR.CoCreateInstance(CLSID_EnhancedVideoRenderer, GetOwner());
-    //m_pVMR9AlphaBitmap = pVMR9AlphaBitmap;
     m_pAllocatorPresenter = pAllocatorPresenter;
 
 
@@ -150,10 +146,6 @@ public:
   STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv)
   {
     HRESULT hr;
-
-    if(riid == __uuidof(IVMRMixerBitmap9))
-      return GetInterface((IVMRMixerBitmap9*)this, ppv);
-
     if (riid == __uuidof(IBaseFilter))
     {
       return GetInterface((IBaseFilter*)this, ppv);
@@ -175,13 +167,6 @@ public:
     hr = m_pEVR ? m_pEVR->QueryInterface(riid, ppv) : E_NOINTERFACE;
     return SUCCEEDED(hr) ? hr : __super::NonDelegatingQueryInterface(riid, ppv);
   }
-
-  // IVMRMixerBitmap9
-  /*STDMETHODIMP GetAlphaBitmapParameters(VMR9AlphaBitmap* pBmpParms);
-  
-  STDMETHODIMP SetAlphaBitmap(const VMR9AlphaBitmap*  pBmpParms);
-
-  STDMETHODIMP UpdateAlphaBitmapParameters(const VMR9AlphaBitmap* pBmpParms);*/
 };
 
 HRESULT STDMETHODCALLTYPE COuterEVR::GetState( DWORD dwMilliSecsTimeout, __out  FILTER_STATE *State)
@@ -196,34 +181,6 @@ HRESULT STDMETHODCALLTYPE COuterEVR::GetState( DWORD dwMilliSecsTimeout, __out  
     return pEVRBase->GetState(dwMilliSecsTimeout, State);
   return E_NOTIMPL;
 }
-
-/*STDMETHODIMP COuterEVR::GetAlphaBitmapParameters(VMR9AlphaBitmap* pBmpParms)
-{
-  CheckPointer(pBmpParms, E_POINTER);
-  CAutoLock BitMapLock(&m_pAllocatorPresenter->m_VMR9AlphaBitmapLock);
-  memcpy (pBmpParms, m_pVMR9AlphaBitmap, sizeof(VMR9AlphaBitmap));
-  return S_OK;
-}*/
-
-/*STDMETHODIMP COuterEVR::SetAlphaBitmap(const VMR9AlphaBitmap*  pBmpParms)
-{
-  CheckPointer(pBmpParms, E_POINTER);
-  CAutoLock BitMapLock(&m_pAllocatorPresenter->m_VMR9AlphaBitmapLock);
-  memcpy (m_pVMR9AlphaBitmap, pBmpParms, sizeof(VMR9AlphaBitmap));
-  m_pVMR9AlphaBitmap->dwFlags |= VMRBITMAP_UPDATE;
-  m_pAllocatorPresenter->UpdateAlphaBitmap();
-  return S_OK;
-}*/
-
-/*STDMETHODIMP COuterEVR::UpdateAlphaBitmapParameters(const VMR9AlphaBitmap* pBmpParms)
-{
-  CheckPointer(pBmpParms, E_POINTER);
-  CAutoLock BitMapLock(&m_pAllocatorPresenter->m_VMR9AlphaBitmapLock);
-  memcpy (m_pVMR9AlphaBitmap, pBmpParms, sizeof(VMR9AlphaBitmap));
-  m_pVMR9AlphaBitmap->dwFlags |= VMRBITMAP_UPDATE;
-  m_pAllocatorPresenter->UpdateAlphaBitmap();
-  return S_OK;
-}*/
 
 COuterEVR::~COuterEVR()
 {
@@ -248,6 +205,7 @@ MFVideoArea MakeArea(float x, float y, DWORD width, DWORD height)
 }
 
 CEVRAllocatorPresenter::CEVRAllocatorPresenter(HRESULT& hr, HWND wnd, CStdString &_Error,IDirect3D9* d3d, IDirect3DDevice9* d3dd):
+m_hWnd(wnd),
 m_refCount(1),
 m_D3D(d3d),
 m_D3DDev(d3dd),
@@ -272,13 +230,13 @@ m_rtTimePerFrame(0)
   if (!pfDXVA2CreateDirect3DDeviceManager9 || !pfMFCreateDXSurfaceBuffer || !pfMFCreateVideoSampleFromSurface || !pfMFCreateVideoMediaType)
   {
     if (!pfDXVA2CreateDirect3DDeviceManager9)
-      _Error += L"Could not find DXVA2CreateDirect3DDeviceManager9 (dxva2.dll)\n";
+      CLog::Log(LOGERROR,"Could not find DXVA2CreateDirect3DDeviceManager9 (dxva2.dll)");
     if (!pfMFCreateDXSurfaceBuffer)
-      _Error += L"Could not find MFCreateDXSurfaceBuffer (evr.dll)\n";
+      CLog::Log(LOGERROR,"Could not find MFCreateDXSurfaceBuffer (evr.dll)");
     if (!pfMFCreateVideoSampleFromSurface)
-      _Error += L"Could not find MFCreateVideoSampleFromSurface (evr.dll)\n";
+      CLog::Log(LOGERROR,"Could not find MFCreateVideoSampleFromSurface (evr.dll)");
     if (!pfMFCreateVideoMediaType)
-      _Error += L"Could not find MFCreateVideoMediaType (evr.dll)\n";
+    CLog::Log(LOGERROR,"Could not find MFCreateVideoMediaType (evr.dll)");
     hr = E_FAIL;
     return;
   }
@@ -291,7 +249,7 @@ m_rtTimePerFrame(0)
 
   if (SUCCEEDED(pfDXVA2CreateDirect3DDeviceManager9(&m_iResetToken,&m_pDeviceManager)))
   {
-    CLog::Log(LOGERROR,"Sucess to create DXVA2CreateDirect3DDeviceManager9");
+  CLog::Log(LOGNOTICE,"Sucess to create DXVA2CreateDirect3DDeviceManager9");
     hr = m_pDeviceManager->ResetDevice(d3dd, m_iResetToken);
   }
   CComPtr<IDirectXVideoDecoderService>  pDecoderService;
@@ -304,33 +262,34 @@ m_rtTimePerFrame(0)
     m_pDeviceManager->CloseDeviceHandle (hDevice);
   }
   ResetStats();
-  m_hThread		 = INVALID_HANDLE_VALUE;
-  m_hSemPicture	 = INVALID_HANDLE_VALUE;
-  m_hEvtPresent	 = INVALID_HANDLE_VALUE;
+  m_hThread     = INVALID_HANDLE_VALUE;
+  m_hSemPicture   = INVALID_HANDLE_VALUE;
+  m_hEvtPresent   = INVALID_HANDLE_VALUE;
   m_hEvtFrameTimer = INVALID_HANDLE_VALUE;
-  m_hEvtFlush		 = INVALID_HANDLE_VALUE;
-  m_hEvtQuit		 = INVALID_HANDLE_VALUE;
+  m_hEvtFlush     = INVALID_HANDLE_VALUE;
+  m_hEvtQuit     = INVALID_HANDLE_VALUE;
   m_nRenderState = Shutdown;
  
-  m_bPendingRenegotiate		= false;
-  m_bSignaledStarvation		= false;
-  m_bPendingMediaFinished		= false;
-  m_bWaitingSample			= false;
-  m_StarvationClock			= 0;
+  m_bPendingRenegotiate    = false;
+  m_bSignaledStarvation    = false;
+  m_bPendingMediaFinished    = false;
+  m_bWaitingSample      = false;
+  m_StarvationClock      = 0;
   m_nNbDXSurface = 5;
   m_bEvtQuit = 0;
   m_bEvtFlush = 0;
-  m_ModeratedClockLast = -1;
-  m_ModeratedTimeLast = -1;
-  m_pCurrentDisplaydSample  = NULL;
+
   m_nStepCount        = 0;
-  m_pOuterEVR					= NULL;
-  m_LastScheduledSampleTime	= -1;
+  m_pOuterEVR          = NULL;
+  m_LastScheduledSampleTime  = -1;
   m_LastScheduledUncorrectedSampleTime = -1;
-  m_MaxSampleDuration			= 0;
-  m_LastSampleOffset			= 0;
+  m_MaxSampleDuration      = 0;
+  m_LastSampleOffset      = 0;
+  D3DDISPLAYMODE d3ddm;
+  ZeroMemory(&d3ddm, sizeof(d3ddm));
+  m_D3D->GetAdapterDisplayMode(GetAdapter(m_D3D),&d3ddm);
+  m_RefreshRate = d3ddm.RefreshRate;
   g_renderManager.PreInit();
-  m_fRate = 1.0f;
 }
 
 CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
@@ -340,11 +299,28 @@ CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
 
 void CEVRAllocatorPresenter::ResetStats()
 {
-	m_pcFrames			= 0;
-	m_nDroppedUpdate	= 0;
-	m_pcFramesDrawn		= 0;
-	m_piAvg				= 0;
-	m_piDev				= 0;
+  m_pcFrames      = 0;
+  m_nDroppedUpdate  = 0;
+  m_pcFramesDrawn    = 0;
+  m_piAvg        = 0;
+  m_piDev        = 0;
+}
+
+UINT CEVRAllocatorPresenter::GetAdapter(IDirect3D9* pD3D)
+{
+	if(m_hWnd == NULL || pD3D == NULL)
+		return D3DADAPTER_DEFAULT;
+
+	HMONITOR hMonitor = MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTONEAREST);
+	if(hMonitor == NULL) return D3DADAPTER_DEFAULT;
+
+	for(UINT adp = 0, num_adp = pD3D->GetAdapterCount(); adp < num_adp; ++adp)
+	{
+		HMONITOR hAdpMon = pD3D->GetAdapterMonitor(adp);
+		if(hAdpMon == hMonitor) return adp;
+	}
+
+	return D3DADAPTER_DEFAULT;
 }
 
 STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
@@ -470,26 +446,17 @@ STDMETHODIMP CEVRAllocatorPresenter::NonDelegatingQueryInterface(REFIID riid, vo
   else if(riid == __uuidof(IMFRateSupport))
     hr = GetInterface((IMFRateSupport*)this, ppv);
   else if(riid == __uuidof(IDirect3DDeviceManager9))
-//    hr = GetInterface((IDirect3DDeviceManager9*)this, ppv);
     hr = m_pDeviceManager->QueryInterface (__uuidof(IDirect3DDeviceManager9), (void**) ppv);
-  /*else
-    hr = __super::NonDelegatingQueryInterface(riid, ppv);*/
 
   return hr;
 }
 
 // IUnknown
-HRESULT CEVRAllocatorPresenter::QueryInterface( 
-        REFIID riid,
-        void** ppvObject)
+HRESULT CEVRAllocatorPresenter::QueryInterface(REFIID riid ,void** ppvObject)
 {
 HRESULT hr = E_NOINTERFACE;
-  //Log( "QueryInterface"  );
-  //LogIID( riid );
   if( ppvObject == NULL ) 
-  {
     hr = E_POINTER;
-  } 
   else if( riid == IID_IMFVideoDeviceID) 
   {
     *ppvObject = static_cast<IMFVideoDeviceID*>( this );
@@ -530,14 +497,12 @@ HRESULT hr = E_NOINTERFACE;
   {
     *ppvObject = static_cast<IMFVideoDisplayControl*>( this );
     AddRef();
-    //Log( "QueryInterface:IID_IMFVideoDisplayControl:%x",(*ppvObject) );
     hr = S_OK;
   } 
   else if( riid == IID_IEVRTrustedVideoPlugin ) 
   {
     *ppvObject = static_cast<IEVRTrustedVideoPlugin*>( this );
     AddRef();
-    //Log( "QueryInterface:IID_IEVRTrustedVideoPlugin:%x",(*ppvObject) );
     hr = S_OK;
   } 
   /*else if( riid == IID_IMFVideoPositionMapper ) 
@@ -554,12 +519,11 @@ HRESULT hr = E_NOINTERFACE;
   }
   else
   {
-    //LogIID( riid );
     *ppvObject=NULL;
     hr=E_NOINTERFACE;
   }
   if ( FAILED(hr) ) 
-    CLog::Log(LOGERROR,"Failed to query %s",DShowUtil::CStringFromGUID(riid).c_str());
+    CLog::Log(LOGERROR,"%s Failed to query %s",__FUNCTION__ ,DShowUtil::CStringFromGUID(riid).c_str());
   return hr;
 }
 
@@ -570,13 +534,11 @@ ULONG CEVRAllocatorPresenter::AddRef()
 
 ULONG CEVRAllocatorPresenter::Release()
 {
-    ULONG ret = InterlockedDecrement(& m_refCount);
-    if( ret == 0 )
-    {
-        delete this;
-    }
+  ULONG ret = InterlockedDecrement(& m_refCount);
+  if( ret == 0 )
+    delete this;
 
-    return ret;
+  return ret;
 }
 
 //IMFVideoPresenter
@@ -587,29 +549,29 @@ HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::ProcessMessage(MFVP_MESSAGE_TY
   {
   case MFVP_MESSAGE_BEGINSTREAMING :      // The EVR switched from stopped to paused. The presenter should allocate resources
     ResetStats();
-    TRACE_EVR ("EVR: MFVP_MESSAGE_BEGINSTREAMING\n");
-	SetEvent(m_hEvtPresent);
+    CLog::Log(LOGDEBUG,"%s MFVP_MESSAGE_BEGINSTREAMING",__FUNCTION__);
+  SetEvent(m_hEvtPresent);
     break;
 
   case MFVP_MESSAGE_CANCELSTEP :        // Cancels a frame step
-    TRACE_EVR ("EVR: MFVP_MESSAGE_CANCELSTEP\n");
+	CLog::Log(LOGDEBUG,"%s MFVP_MESSAGE_CANCELSTEP",__FUNCTION__);
     CompleteFrameStep (true);
     break;
 
   case MFVP_MESSAGE_ENDOFSTREAM :        // All input streams have ended. 
-    TRACE_EVR ("EVR: MFVP_MESSAGE_ENDOFSTREAM\n");
+    CLog::Log(LOGDEBUG,"%s MFVP_MESSAGE_ENDOFSTREAM",__FUNCTION__);
     m_pSink->Notify (EC_COMPLETE, 0, 0);
     break;
 
   case MFVP_MESSAGE_ENDSTREAMING :      // The EVR switched from running or paused to stopped. The presenter should free resources
-    TRACE_EVR ("EVR: MFVP_MESSAGE_ENDSTREAMING\n");
+    CLog::Log(LOGDEBUG,"%s MFVP_MESSAGE_ENDSTREAMING",__FUNCTION__);
     break;
 
   case MFVP_MESSAGE_FLUSH :          // The presenter should discard any pending samples
     SetEvent(m_hEvtFlush);
-	TRACE_EVR ("MFVP_MESSAGE_FLUSH\n");
-	while (WaitForSingleObject(m_hEvtFlush, 1) == WAIT_OBJECT_0);
-	SetEvent(m_hEvtPresent);
+    CLog::Log(LOGDEBUG,"%s MFVP_MESSAGE_FLUSH",__FUNCTION__);
+    while (WaitForSingleObject(m_hEvtFlush, 1) == WAIT_OBJECT_0);
+      SetEvent(m_hEvtPresent);
     break;
 
   case MFVP_MESSAGE_INVALIDATEMEDIATYPE :    // The mixer's output format has changed. The EVR will initiate format negotiation, as described previously
@@ -627,7 +589,7 @@ HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::ProcessMessage(MFVP_MESSAGE_TY
     break;
 
   case MFVP_MESSAGE_STEP :          // Requests a frame step.
-    TRACE_EVR ("EVR: MFVP_MESSAGE_STEP\n");
+    CLog::Log(LOGDEBUG,"%s MFVP_MESSAGE_STEP",__FUNCTION__);
     m_nStepCount = ulParam;
     hr = S_OK;
     break;
@@ -718,89 +680,89 @@ void CEVRAllocatorPresenter::StartWorkerThreads()
 
   if (m_nRenderState == Shutdown)
   {
-    m_hEvtQuit		= CreateEvent (NULL, TRUE, FALSE, NULL);
-	m_hEvtPresent	= CreateEvent (NULL, FALSE, FALSE, NULL);
-	m_hEvtFrameTimer= CreateEvent (NULL, FALSE, FALSE, NULL);
-	m_hEvtFlush		= CreateEvent (NULL, TRUE, FALSE, NULL);
-	m_hSemPicture	= CreateSemaphore(NULL, 0, m_nNbDXSurface, NULL);
+    m_hEvtQuit    = CreateEvent (NULL, TRUE, FALSE, NULL);
+  m_hEvtPresent  = CreateEvent (NULL, FALSE, FALSE, NULL);
+  m_hEvtFrameTimer= CreateEvent (NULL, FALSE, FALSE, NULL);
+  m_hEvtFlush    = CreateEvent (NULL, TRUE, FALSE, NULL);
+  m_hSemPicture  = CreateSemaphore(NULL, 0, m_nNbDXSurface, NULL);
 
-	m_hThread		= ::CreateThread(NULL, 0, PresentThread, (LPVOID)this, 0, &dwThreadId);
+  m_hThread    = ::CreateThread(NULL, 0, PresentThread, (LPVOID)this, 0, &dwThreadId);
 
-	m_nRenderState		= Stopped;
-		TRACE_EVR ("Worker threads started...\n");
+  m_nRenderState    = Stopped;
+  CLog::Log(LOGDEBUG,"%s Worker threads started...", __FUNCTION__);
   }
 }
 
 void CEVRAllocatorPresenter::StopWorkerThreads()
 {
   if (m_nRenderState != Shutdown)
-	{
-		SetEvent (m_hEvtFlush);
-		SetEvent (m_hEvtQuit);
-		if ((m_hThread != INVALID_HANDLE_VALUE) && (WaitForSingleObject (m_hThread, 10000) == WAIT_TIMEOUT))
-		{
-			ASSERT (FALSE);
-			TerminateThread (m_hThread, 0xDEAD);
-		}
+  {
+    SetEvent (m_hEvtFlush);
+    SetEvent (m_hEvtQuit);
+    if ((m_hThread != INVALID_HANDLE_VALUE) && (WaitForSingleObject (m_hThread, 10000) == WAIT_TIMEOUT))
+    {
+      ASSERT (FALSE);
+      TerminateThread (m_hThread, 0xDEAD);
+    }
 
-		if (m_hThread		 != INVALID_HANDLE_VALUE) CloseHandle (m_hThread);
-		if (m_hSemPicture	 != INVALID_HANDLE_VALUE) CloseHandle (m_hSemPicture);
-		if (m_hEvtPresent	 != INVALID_HANDLE_VALUE) CloseHandle (m_hEvtPresent);
-		if (m_hEvtFrameTimer != INVALID_HANDLE_VALUE) CloseHandle (m_hEvtFrameTimer);
-		if (m_hEvtFlush		 != INVALID_HANDLE_VALUE) CloseHandle (m_hEvtFlush);
-		if (m_hEvtQuit		 != INVALID_HANDLE_VALUE) CloseHandle (m_hEvtQuit);
+    if (m_hThread     != INVALID_HANDLE_VALUE) CloseHandle (m_hThread);
+    if (m_hSemPicture   != INVALID_HANDLE_VALUE) CloseHandle (m_hSemPicture);
+    if (m_hEvtPresent   != INVALID_HANDLE_VALUE) CloseHandle (m_hEvtPresent);
+    if (m_hEvtFrameTimer != INVALID_HANDLE_VALUE) CloseHandle (m_hEvtFrameTimer);
+    if (m_hEvtFlush     != INVALID_HANDLE_VALUE) CloseHandle (m_hEvtFlush);
+    if (m_hEvtQuit     != INVALID_HANDLE_VALUE) CloseHandle (m_hEvtQuit);
 
-		TRACE_EVR ("Worker threads stopped...\n");
-	}
-	m_nRenderState = Shutdown;
+	CLog::Log(LOGDEBUG,"%s Worker threads stopped", __FUNCTION__);
+  }
+  m_nRenderState = Shutdown;
 }
 
 void CEVRAllocatorPresenter::RemoveAllSamples()
 {
-	FlushSamples();
-	m_ScheduledSamples.RemoveAll();
-	m_FreeSamples.RemoveAll();
+  FlushSamples();
+  m_ScheduledSamples.RemoveAll();
+  m_FreeSamples.RemoveAll();
 }
 
 HRESULT CEVRAllocatorPresenter::GetFreeSample(IMFSample** ppSample)
 {
 CAutoLock lock(this);
-	HRESULT		hr = S_OK;
+  HRESULT    hr = S_OK;
 
-	if (m_FreeSamples.GetCount() > 1)	// <= Cannot use first free buffer (can be currently displayed)
-		*ppSample = m_FreeSamples.RemoveHead().Detach();
-	else
-		hr = MF_E_SAMPLEALLOCATOR_EMPTY;
+  if (m_FreeSamples.GetCount() > 1)  // <= Cannot use first free buffer (can be currently displayed)
+    *ppSample = m_FreeSamples.RemoveHead().Detach();
+  else
+    hr = MF_E_SAMPLEALLOCATOR_EMPTY;
 
-	return hr;}
+  return hr;}
 
 void CEVRAllocatorPresenter::FlushSamples()
 {
-  CAutoLock				lock(this);
+  CAutoLock        lock(this);
 
-	m_nUsedBuffer = 0;
-	while (m_ScheduledSamples.GetCount() > 0)
-	{
-		CComPtr<IMFSample>		pMFSample;
+  m_nUsedBuffer = 0;
+  while (m_ScheduledSamples.GetCount() > 0)
+  {
+    CComPtr<IMFSample>    pMFSample;
 
-		pMFSample = m_ScheduledSamples.RemoveHead();
-		MoveToFreeList (pMFSample, true);
+    pMFSample = m_ScheduledSamples.RemoveHead();
+    MoveToFreeList (pMFSample, true);
 
-		WaitForSingleObject (m_hSemPicture, 0);
-	}
+    WaitForSingleObject (m_hSemPicture, 0);
+  }
 }
 
 HRESULT CEVRAllocatorPresenter::GetScheduledSample(IMFSample** ppSample)
 {
-	CAutoLock lock(this);
-	HRESULT		hr = S_OK;
+  CAutoLock lock(this);
+  HRESULT    hr = S_OK;
 
-	if (m_ScheduledSamples.GetCount() > 0)
-		*ppSample = m_ScheduledSamples.RemoveHead().Detach();
-	else
-		hr = MF_E_SAMPLEALLOCATOR_EMPTY;
+  if (m_ScheduledSamples.GetCount() > 0)
+    *ppSample = m_ScheduledSamples.RemoveHead().Detach();
+  else
+    hr = MF_E_SAMPLEALLOCATOR_EMPTY;
 
-	return hr;
+  return hr;
 }
 
 void CEVRAllocatorPresenter::MoveToFreeList(IMFSample* pSample, bool bTail)
@@ -821,63 +783,63 @@ void CEVRAllocatorPresenter::MoveToFreeList(IMFSample* pSample, bool bTail)
 
 void CEVRAllocatorPresenter::MoveToScheduledList(IMFSample* pSample)
 {
-	CAutoLock lock(this);
-	m_ScheduledSamples.AddTail (pSample);
+  CAutoLock lock(this);
+  m_ScheduledSamples.AddTail (pSample);
 }
 
 HRESULT CEVRAllocatorPresenter::GetImageFromMixer()
 {
-  MFT_OUTPUT_DATA_BUFFER		Buffer;
-	HRESULT						hr = S_OK;
-	DWORD						dwStatus;
-	REFERENCE_TIME				nsSampleTime;
-	MFTIME						nsCurrentTime;
-	LONGLONG					llClockBefore = 0;
-	LONGLONG					llClockAfter  = 0;
-	LONGLONG					llMixerLatency;
-	UINT						dwSurface;
+  MFT_OUTPUT_DATA_BUFFER    Buffer;
+  HRESULT            hr = S_OK;
+  DWORD            dwStatus;
+  REFERENCE_TIME        nsSampleTime;
+  MFTIME            nsCurrentTime;
+  LONGLONG          llClockBefore = 0;
+  LONGLONG          llClockAfter  = 0;
+  LONGLONG          llMixerLatency;
+  UINT            dwSurface;
 
-	while (SUCCEEDED(hr))
-	{
-		CComPtr<IMFSample>		pSample;
+  while (SUCCEEDED(hr))
+  {
+    CComPtr<IMFSample>    pSample;
 
-		if (FAILED (GetFreeSample (&pSample)))
-		{
-			m_bWaitingSample = true;
-			break;
-		}
+    if (FAILED (GetFreeSample (&pSample)))
+    {
+      m_bWaitingSample = true;
+      break;
+    }
 
-		memset (&Buffer, 0, sizeof(Buffer));
-		Buffer.pSample	= pSample;
-		pSample->GetUINT32 (GUID_SURFACE_INDEX, &dwSurface);
+    memset (&Buffer, 0, sizeof(Buffer));
+    Buffer.pSample  = pSample;
+    pSample->GetUINT32 (GUID_SURFACE_INDEX, &dwSurface);
 
-		if (m_pClock) m_pClock->GetCorrelatedTime(0, &llClockBefore, &nsCurrentTime);			
-		hr = m_pMixer->ProcessOutput (0 , 1, &Buffer, &dwStatus);
-		if (m_pClock) m_pClock->GetCorrelatedTime(0, &llClockAfter, &nsCurrentTime);
+    if (m_pClock) m_pClock->GetCorrelatedTime(0, &llClockBefore, &nsCurrentTime);      
+    hr = m_pMixer->ProcessOutput (0 , 1, &Buffer, &dwStatus);
+    if (m_pClock) m_pClock->GetCorrelatedTime(0, &llClockAfter, &nsCurrentTime);
 
-		if (hr == MF_E_TRANSFORM_NEED_MORE_INPUT) 
-		{
-			MoveToFreeList (pSample, false);
-			break;
-		}
+    if (hr == MF_E_TRANSFORM_NEED_MORE_INPUT) 
+    {
+      MoveToFreeList (pSample, false);
+      break;
+    }
 
-		if (m_pSink) 
-		{
-			CAutoLock autolock(this);
-			llMixerLatency = llClockAfter - llClockBefore;
-			m_pSink->Notify (EC_PROCESSING_LATENCY, (LONG_PTR)&llMixerLatency, 0);
-		}
+    if (m_pSink) 
+    {
+      CAutoLock autolock(this);
+      llMixerLatency = llClockAfter - llClockBefore;
+      m_pSink->Notify (EC_PROCESSING_LATENCY, (LONG_PTR)&llMixerLatency, 0);
+    }
 
-		pSample->GetSampleTime (&nsSampleTime);
+    pSample->GetSampleTime (&nsSampleTime);
 
-		//CLog::Log(LOGDEBUG,"%s Get sample from mixer at time %I64d)", __FUNCTION__ ,nsSampleTime);
+    //CLog::Log(LOGDEBUG,"%s Get sample from mixer at time %I64d)", __FUNCTION__ ,nsSampleTime);
 
-		MoveToScheduledList (pSample);
-		ReleaseSemaphore (m_hSemPicture, 1, NULL);
-		InterlockedIncrement (&m_nUsedBuffer);
-	}
+    MoveToScheduledList (pSample);
+    ReleaseSemaphore (m_hSemPicture, 1, NULL);
+    InterlockedIncrement (&m_nUsedBuffer);
+  }
 
-	return hr;
+  return hr;
 }
 
 
@@ -891,137 +853,137 @@ DWORD WINAPI CEVRAllocatorPresenter::PresentThread(LPVOID lpParam)
 void CEVRAllocatorPresenter::CheckWaitingSampleFromMixer()
 {
   if (m_bWaitingSample)
-	{
-		m_bWaitingSample = false;
-		GetImageFromMixer();
-	}
+  {
+    m_bWaitingSample = false;
+    GetImageFromMixer();
+  }
 }
 
 void CEVRAllocatorPresenter::CompleteFrameStep(bool bCancel)
 {
-	if (m_nStepCount > 0)
-	{
-		if (bCancel || (m_nStepCount == 1)) 
-		{
-			m_pSink->Notify(EC_STEP_COMPLETE, bCancel ? TRUE : FALSE, 0);
-			m_nStepCount = 0;
-		}
-		else
-			m_nStepCount--;
-	}
+  if (m_nStepCount > 0)
+  {
+    if (bCancel || (m_nStepCount == 1)) 
+    {
+      m_pSink->Notify(EC_STEP_COMPLETE, bCancel ? TRUE : FALSE, 0);
+      m_nStepCount = 0;
+    }
+    else
+      m_nStepCount--;
+  }
 }
 
 void CEVRAllocatorPresenter::RenderThread()
 {
-  	HANDLE				hAvrt;
-	DWORD				dwTaskIndex	= 0;
-	HANDLE				hEvts[]		= { m_hEvtQuit, m_hEvtFlush, m_hEvtPresent, m_hEvtFrameTimer};
-	HANDLE				hEvtsBuff[]	= { m_hEvtQuit, m_hEvtFlush, m_hSemPicture };
-	bool				bQuit		= false;
-    TIMECAPS			tc;
-	DWORD				dwResolution;
-	MFTIME				nsSampleTime;
-	MFTIME				nsCurrentTime;
-	LONGLONG			llClockTime;
-	long				lDelay;
-	DWORD				dwUser = 0;
-	DWORD				dwObject;
+    HANDLE        hAvrt;
+  DWORD        dwTaskIndex  = 0;
+  HANDLE        hEvts[]    = { m_hEvtQuit, m_hEvtFlush, m_hEvtPresent, m_hEvtFrameTimer};
+  HANDLE        hEvtsBuff[]  = { m_hEvtQuit, m_hEvtFlush, m_hSemPicture };
+  bool        bQuit    = false;
+    TIMECAPS      tc;
+  DWORD        dwResolution;
+  MFTIME        nsSampleTime;
+  MFTIME        nsCurrentTime;
+  LONGLONG      llClockTime;
+  long        lDelay;
+  DWORD        dwUser = 0;
+  DWORD        dwObject;
 
-	UINT				nNbPlayingFrame	= 0;
+  UINT        nNbPlayingFrame  = 0;
 
-	// Tell Vista Multimedia Class Scheduler we are a playback thretad (increase priority)
-	if (pfAvSetMmThreadCharacteristicsW)	hAvrt = pfAvSetMmThreadCharacteristicsW (L"Playback", &dwTaskIndex);
-	if (pfAvSetMmThreadPriority)			pfAvSetMmThreadPriority (hAvrt, AVRT_PRIORITY_HIGH /*AVRT_PRIORITY_CRITICAL*/);
+  // Tell Vista Multimedia Class Scheduler we are a playback thretad (increase priority)
+  if (pfAvSetMmThreadCharacteristicsW)  hAvrt = pfAvSetMmThreadCharacteristicsW (L"Playback", &dwTaskIndex);
+  if (pfAvSetMmThreadPriority)      pfAvSetMmThreadPriority (hAvrt, AVRT_PRIORITY_HIGH /*AVRT_PRIORITY_CRITICAL*/);
 
     timeGetDevCaps(&tc, sizeof(TIMECAPS));
     dwResolution = min(max(tc.wPeriodMin, 0), tc.wPeriodMax);
-    dwUser		= timeBeginPeriod(dwResolution);
+    dwUser    = timeBeginPeriod(dwResolution);
 
-	
-	while (!bQuit)
-	{
-		dwObject = WaitForMultipleObjects (countof(hEvts), hEvts, FALSE, INFINITE);
-		switch (dwObject)
-		{
-		case WAIT_OBJECT_0 :
-			bQuit = true;
-			break;
-		case WAIT_OBJECT_0 + 1 :
-			// Flush pending samples!
-			if (dwUser != -1) timeKillEvent (dwUser);
-			dwUser = -1;		
+  
+  while (!bQuit)
+  {
+    dwObject = WaitForMultipleObjects (countof(hEvts), hEvts, FALSE, INFINITE);
+    switch (dwObject)
+    {
+    case WAIT_OBJECT_0 :
+      bQuit = true;
+      break;
+    case WAIT_OBJECT_0 + 1 :
+      // Flush pending samples!
+      if (dwUser != -1) timeKillEvent (dwUser);
+      dwUser = -1;    
 
-			FlushSamples();
-			ResetEvent(m_hEvtFlush);
-			TRACE_EVR ("Flush done!\n");
-			break;
+      FlushSamples();
+      ResetEvent(m_hEvtFlush);
+	  CLog::Log(LOGDEBUG,"Flush done!");
+      break;
 
-		case WAIT_OBJECT_0 + 2 :
-		case WAIT_OBJECT_0 + 3 :
-			// Discard timer events if playback stop
-			if ((dwObject == WAIT_OBJECT_0 + 3) && (m_nRenderState != Started)) continue;
+    case WAIT_OBJECT_0 + 2 :
+    case WAIT_OBJECT_0 + 3 :
+      // Discard timer events if playback stop
+      if ((dwObject == WAIT_OBJECT_0 + 3) && (m_nRenderState != Started)) continue;
 
-//			TRACE_EVR ("RenderThread ==>> Waiting buffer\n");
-			
-			if (WaitForMultipleObjects (countof(hEvtsBuff), hEvtsBuff, FALSE, INFINITE) == WAIT_OBJECT_0+2)
-			{
-				CComPtr<IMFSample>		pMFSample;
-				if (SUCCEEDED (GetScheduledSample(&pMFSample)))
-				{
-					pMFSample->GetUINT32 (GUID_SURFACE_INDEX, (UINT32*)&m_nCurSurface);
-					pMFSample->GetSampleTime (&nsSampleTime);
+//      TRACE_EVR ("RenderThread ==>> Waiting buffer\n");
+      
+      if (WaitForMultipleObjects (countof(hEvtsBuff), hEvtsBuff, FALSE, INFINITE) == WAIT_OBJECT_0+2)
+      {
+        CComPtr<IMFSample>    pMFSample;
+        if (SUCCEEDED (GetScheduledSample(&pMFSample)))
+        {
+          pMFSample->GetUINT32 (GUID_SURFACE_INDEX, (UINT32*)&m_nCurSurface);
+          pMFSample->GetSampleTime (&nsSampleTime);
 
-					//TRACE_EVR ("RenderThread ==>> Presenting surface %d  (%I64d)\n", m_nCurSurface, nsSampleTime);
+          //TRACE_EVR ("RenderThread ==>> Presenting surface %d  (%I64d)\n", m_nCurSurface, nsSampleTime);
 
-					//__super::SetTime (g_tSegmentStart + nsSampleTime);
-					//Paint(true);
-					RenderPresent(m_nCurSurface);
+          //__super::SetTime (g_tSegmentStart + nsSampleTime);
+          //Paint(true);
+          RenderPresent(m_nCurSurface);
 
-					m_pcFramesDrawn++;
-					InterlockedDecrement (&m_nUsedBuffer);
-					CompleteFrameStep (false);
+          m_pcFramesDrawn++;
+          InterlockedDecrement (&m_nUsedBuffer);
+          CompleteFrameStep (false);
 
-					if ((m_nRenderState == Started) && (m_nStepCount == 0))
-					{
-						// Calculate wake up timer
-						m_pClock->GetCorrelatedTime(0, &llClockTime, &nsCurrentTime);			
+          if ((m_nRenderState == Started) && (m_nStepCount == 0))
+          {
+            // Calculate wake up timer
+            m_pClock->GetCorrelatedTime(0, &llClockTime, &nsCurrentTime);      
 
-						//if (m_rtTimePerFrame == 0) CalculateFrameRate(/*nsSampleTime*/);
-						// Wakup 1/2 refresh rate before next VSync!
-						lDelay = (UINT)((nsSampleTime + m_rtTimePerFrame - llClockTime) / 10000) - (500/m_RefreshRate);
+            //if (m_rtTimePerFrame == 0) CalculateFrameRate(/*nsSampleTime*/);
+            // Wakup 1/2 refresh rate before next VSync!
+            lDelay = (UINT)((nsSampleTime + m_rtTimePerFrame - llClockTime) / 10000) - (500/m_RefreshRate);
 
-						if (lDelay > 0)
-						{
-	//						TRACE_EVR ("RenderThread ==>> Set timer %d   %I64d  Cons=%d \n", lDelay, nsSampleTime, m_nCurSurface);
-							dwUser			= timeSetEvent (lDelay, dwResolution, (LPTIMECALLBACK)m_hEvtFrameTimer, NULL, TIME_CALLBACK_EVENT_SET); 
+            if (lDelay > 0)
+            {
+  //            TRACE_EVR ("RenderThread ==>> Set timer %d   %I64d  Cons=%d \n", lDelay, nsSampleTime, m_nCurSurface);
+              dwUser      = timeSetEvent (lDelay, dwResolution, (LPTIMECALLBACK)m_hEvtFrameTimer, NULL, TIME_CALLBACK_EVENT_SET); 
 
-							// Update statistics
-							nNbPlayingFrame++;
-						}
-						else
-						{
-							dwUser = -1;
-							if (m_nRenderState == Started) m_pcFrames++;
-	//						TRACE_EVR ("RenderThread ==>> immediate display   %I64d  (delay=%d)  Cons=%d\n", nsSampleTime/417188, lDelay, m_nCurSurface);
-							SetEvent (m_hEvtPresent);
-						}
-					}
+              // Update statistics
+              nNbPlayingFrame++;
+            }
+            else
+            {
+              dwUser = -1;
+              if (m_nRenderState == Started) m_pcFrames++;
+                //CLog::Log(LOGDEBUG,"%s immediate display   %I64d  (delay=%d)  Cons=%d\n",__FUNCTION__, nsSampleTime/417188, lDelay, m_nCurSurface);
+              SetEvent (m_hEvtPresent);
+            }
+          }
 
-					MoveToFreeList(pMFSample, true);
-					CheckWaitingSampleFromMixer();
-				}
-			}
-			else
-			{				
-				TRACE_EVR ("RenderThread ==>> Flush before rendering frame!\n");
-			}
+          MoveToFreeList(pMFSample, true);
+          CheckWaitingSampleFromMixer();
+        }
+      }
+      else
+      {        
+        //CLog::Log(LOGDEBUG,"%s Flush before rendering frame!", __FUNCTION__);
+      }
 
-			break;
-		}
-	}
+      break;
+    }
+  }
 
-	timeEndPeriod (dwResolution);
-	if (pfAvRevertMmThreadCharacteristics) pfAvRevertMmThreadCharacteristics (hAvrt);
+  timeEndPeriod (dwResolution);
+  if (pfAvRevertMmThreadCharacteristics) pfAvRevertMmThreadCharacteristics (hAvrt);
 }
 
 HRESULT CEVRAllocatorPresenter::RenderPresent(int surfaceIndex)
@@ -1049,23 +1011,23 @@ HRESULT CEVRAllocatorPresenter::RenderPresent(int surfaceIndex)
 // IEVRTrustedVideoPlugin
 STDMETHODIMP CEVRAllocatorPresenter::IsInTrustedVideoMode(BOOL *pYes)
 {
-	CheckPointer(pYes, E_POINTER);
-	*pYes = TRUE;
-	return S_OK;
+  CheckPointer(pYes, E_POINTER);
+  *pYes = TRUE;
+  return S_OK;
 }
 STDMETHODIMP CEVRAllocatorPresenter::CanConstrict(BOOL *pYes)
 {
-	CheckPointer(pYes, E_POINTER);
-	*pYes = TRUE;
-	return S_OK;
+  CheckPointer(pYes, E_POINTER);
+  *pYes = TRUE;
+  return S_OK;
 }
 STDMETHODIMP CEVRAllocatorPresenter::SetConstriction(DWORD dwKPix)
 {
-	return S_OK;
+  return S_OK;
 }
 STDMETHODIMP CEVRAllocatorPresenter::DisableImageExport(BOOL bDisable)
 {
-	return S_OK;
+  return S_OK;
 }
 
 // IDirect3DDeviceManager9
@@ -1147,9 +1109,10 @@ bool CEVRAllocatorPresenter::ResetD3dDevice()
 void CEVRAllocatorPresenter::DeleteSurfaces()
 {
   CAutoLock cAutoLock(this);
-  CAutoLock cRenderLock(&m_RenderLock);
 
   CLog::Log(LOGDEBUG,"%s Deletings surfaces",__FUNCTION__);
+  m_pVideoTexture = NULL;
+  m_pVideoSurface = NULL;
   for(int i = 0; i < m_nNbDXSurface+2; i++)
   {
     m_pInternalVideoTexture[i] = NULL;
@@ -1185,10 +1148,10 @@ HRESULT CEVRAllocatorPresenter::AllocSurfaces(D3DFORMAT Format)
                                            D3DPOOL_DEFAULT, 
                                            &m_pInternalVideoTexture[i], 
                                            NULL)))
-				return hr;
+        return hr;
 
-			if(FAILED(hr = m_pInternalVideoTexture[i]->GetSurfaceLevel(0, &m_pInternalVideoSurface[i])))
-				return hr;
+      if(FAILED(hr = m_pInternalVideoTexture[i]->GetSurfaceLevel(0, &m_pInternalVideoSurface[i])))
+        return hr;
   }
 
   hr = m_D3DDev->ColorFill(m_pInternalVideoSurface[m_nCurSurface], NULL, 0);
@@ -1326,7 +1289,7 @@ HRESULT CEVRAllocatorPresenter::RenegotiateMediaType()
   {
         // Step 3. Adjust the mixer's type to match our requirements.
     pType = ValidMixerTypes[i];
-	CLog::Log(LOGDEBUG,"%s Valid mixer output type: %ws" , __FUNCTION__ , GetMediaTypeFormatDesc(pType));
+  CLog::Log(LOGDEBUG,"%s Valid mixer output type: %ws" , __FUNCTION__ , GetMediaTypeFormatDesc(pType));
   }
 
   for (int i = 0; i < nValidTypes; ++i)
@@ -1334,10 +1297,10 @@ HRESULT CEVRAllocatorPresenter::RenegotiateMediaType()
         // Step 3. Adjust the mixer's type to match our requirements.
     pType = ValidMixerTypes[i];
 
-	CLog::Log(LOGDEBUG,"%s Trying mixer output type: %ws",__FUNCTION__ ,GetMediaTypeFormatDesc(pType));
+  CLog::Log(LOGDEBUG,"%s Trying mixer output type: %ws",__FUNCTION__ ,GetMediaTypeFormatDesc(pType));
         // Step 5. Try to set the media type on ourselves.
     hr = SetMediaType(pType);
-	
+  
     // Step 6. Set output media type on mixer.
     if (SUCCEEDED(hr))
     {
@@ -1384,43 +1347,43 @@ HRESULT CEVRAllocatorPresenter::SetMediaType(IMFMediaType* pType)
 
 HRESULT CEVRAllocatorPresenter::CreateProposedOutputType(IMFMediaType* pMixerType, IMFMediaType** pType)
 {
-  HRESULT				hr;
-  AM_MEDIA_TYPE*		pAMMedia = NULL;
-  LARGE_INTEGER		i64Size;
-  MFVIDEOFORMAT*		VideoFormat;
+  HRESULT        hr;
+  AM_MEDIA_TYPE*    pAMMedia = NULL;
+  LARGE_INTEGER    i64Size;
+  MFVIDEOFORMAT*    VideoFormat;
   hr = pMixerType->GetRepresentation  (FORMAT_MFVideoFormat, (void**)&pAMMedia);
   if (FAILED(hr))
   {
     CLog::Log(LOGERROR,"%s Failed creating output type",__FUNCTION__);
     return hr;
   }
-	VideoFormat = (MFVIDEOFORMAT*)pAMMedia->pbFormat;
-	hr = pfMFCreateVideoMediaType  (VideoFormat, &m_pMediaType);
+  VideoFormat = (MFVIDEOFORMAT*)pAMMedia->pbFormat;
+  hr = pfMFCreateVideoMediaType  (VideoFormat, &m_pMediaType);
 
-	if (VideoFormat->videoInfo.FramesPerSecond.Numerator != 0)
-		m_rtTimePerFrame = (20000000I64*VideoFormat->videoInfo.FramesPerSecond.Denominator)/VideoFormat->videoInfo.FramesPerSecond.Numerator;
+  if (VideoFormat->videoInfo.FramesPerSecond.Numerator != 0)
+    m_rtTimePerFrame = (20000000I64*VideoFormat->videoInfo.FramesPerSecond.Denominator)/VideoFormat->videoInfo.FramesPerSecond.Numerator;
 
-	m_iVideoAspectWidth = VideoFormat->videoInfo.PixelAspectRatio.Numerator;
-	m_iVideoAspectHeight = VideoFormat->videoInfo.PixelAspectRatio.Denominator;
+  m_iVideoAspectWidth = VideoFormat->videoInfo.PixelAspectRatio.Numerator;
+  m_iVideoAspectHeight = VideoFormat->videoInfo.PixelAspectRatio.Denominator;
 
-	if (SUCCEEDED (hr))
-	{
-		i64Size.HighPart = VideoFormat->videoInfo.dwWidth;
-		i64Size.LowPart	 = VideoFormat->videoInfo.dwHeight;
-		m_pMediaType->SetUINT64 (MF_MT_FRAME_SIZE, i64Size.QuadPart);
+  if (SUCCEEDED (hr))
+  {
+    i64Size.HighPart = VideoFormat->videoInfo.dwWidth;
+    i64Size.LowPart   = VideoFormat->videoInfo.dwHeight;
+    m_pMediaType->SetUINT64 (MF_MT_FRAME_SIZE, i64Size.QuadPart);
 
-		m_pMediaType->SetUINT32 (MF_MT_PAN_SCAN_ENABLED, 0);
+    m_pMediaType->SetUINT32 (MF_MT_PAN_SCAN_ENABLED, 0);
 
-		i64Size.HighPart = m_iVideoAspectWidth;
-		i64Size.LowPart  = m_iVideoAspectHeight;
-		m_pMediaType->SetUINT64 (MF_MT_PIXEL_ASPECT_RATIO, i64Size.QuadPart);
+    i64Size.HighPart = m_iVideoAspectWidth;
+    i64Size.LowPart  = m_iVideoAspectHeight;
+    m_pMediaType->SetUINT64 (MF_MT_PIXEL_ASPECT_RATIO, i64Size.QuadPart);
 
-		MFVideoArea Area = MakeArea (0, 0, VideoFormat->videoInfo.dwWidth, VideoFormat->videoInfo.dwHeight);
-		m_pMediaType->SetBlob(MF_MT_GEOMETRIC_APERTURE, (UINT8*)&Area, sizeof(MFVideoArea));
-	}
+    MFVideoArea Area = MakeArea (0, 0, VideoFormat->videoInfo.dwWidth, VideoFormat->videoInfo.dwHeight);
+    m_pMediaType->SetBlob(MF_MT_GEOMETRIC_APERTURE, (UINT8*)&Area, sizeof(MFVideoArea));
+  }
 
-	pMixerType->FreeRepresentation (FORMAT_MFVideoFormat, (void*)pAMMedia);
-	m_pMediaType->QueryInterface (__uuidof(IMFMediaType), (void**) pType);
+  pMixerType->FreeRepresentation (FORMAT_MFVideoFormat, (void*)pAMMedia);
+  m_pMediaType->QueryInterface (__uuidof(IMFMediaType), (void**) pType);
 }
 
 HRESULT CEVRAllocatorPresenter::IsMediaTypeSupported(IMFMediaType* pMixerType)
@@ -1460,7 +1423,7 @@ STDMETHODIMP CEVRAllocatorPresenter::InitializeDevice(AM_MEDIA_TYPE*  pMediaType
   RemoveAllSamples();
   for(int i = 0; i < m_nNbDXSurface; i++)
   {
-    CComPtr<IMFSample>		pMFSample;
+    CComPtr<IMFSample>    pMFSample;
     hr = pfMFCreateVideoSampleFromSurface (m_pInternalVideoSurface[i], &pMFSample);
 
     if (SUCCEEDED (hr))
@@ -1471,11 +1434,4 @@ STDMETHODIMP CEVRAllocatorPresenter::InitializeDevice(AM_MEDIA_TYPE*  pMediaType
     ASSERT (SUCCEEDED (hr));
   }
   return hr;
-}
-
-
-HRESULT CEVRAllocatorPresenter::TRACE_EVR(const char *strTrace)
-{
-  CLog::Log(LOGNOTICE,"%s",strTrace);
-  return S_OK;
 }
