@@ -128,7 +128,6 @@ public:
   virtual bool         Supports(EINTERLACEMETHOD method);
   virtual bool         Supports(ESCALINGMETHOD method);
 
-  virtual void AutoCrop(bool bCrop);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
 protected:
@@ -175,7 +174,6 @@ protected:
   // clear colour for "black" bars
   DWORD m_clearColour;
   unsigned int m_flags;
-  CRect m_crop;
 };
 
 

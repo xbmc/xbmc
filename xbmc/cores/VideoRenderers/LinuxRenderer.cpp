@@ -645,11 +645,6 @@ void CLinuxRenderer::Render(DWORD flags)
   RenderOSD();
 }
 
-void CLinuxRenderer::AutoCrop(bool bCrop)
-{
-// TODO: AutoCrop not implemented
-}
-
 void CLinuxRenderer::RenderLowMem(DWORD flags)
 {
   CSingleLock lock(g_graphicsContext);

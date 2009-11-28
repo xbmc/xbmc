@@ -850,8 +850,6 @@ unsigned int CLinuxRendererGL::PreInit()
   m_bValidated = false;
   UnInit();
   m_resolution = RES_PAL_4x3;
-  m_crop.x1 = m_crop.x2 = 0.0f;
-  m_crop.y1 = m_crop.y2 = 0.0f;
 
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 2;
@@ -1180,48 +1178,6 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     RenderSoftware(renderBuffer, m_currentField);
     VerifyGLState();
   }
-}
-
-void CLinuxRendererGL::AutoCrop(bool bCrop)
-{
-  RECT crop;
-
-  if(!m_bValidated) return;
-
-  if (bCrop)
-    CBaseRenderer::AutoCrop(m_buffers[m_iYV12RenderBuffer].image, crop);
-  else
-  { // reset to defaults
-    crop.left   = 0;
-    crop.right  = 0;
-    crop.top    = 0;
-    crop.bottom = 0;
-  }
-
-  m_crop.x1 += ((float)crop.left   - m_crop.x1) * 0.1;
-  m_crop.x2 += ((float)crop.right  - m_crop.x2) * 0.1;
-  m_crop.y1 += ((float)crop.top    - m_crop.y1) * 0.1;
-  m_crop.y2 += ((float)crop.bottom - m_crop.y2) * 0.1;
-
-  crop.left   = MathUtils::round_int(m_crop.x1);
-  crop.right  = MathUtils::round_int(m_crop.x2);
-  crop.top    = MathUtils::round_int(m_crop.y1);
-  crop.bottom = MathUtils::round_int(m_crop.y2);
-
-  //compare with hysteresis
-# define HYST(n, o) ((n) > (o) || (n) + 1 < (o))
-  if(HYST(g_stSettings.m_currentVideoSettings.m_CropLeft  , crop.left)
-  || HYST(g_stSettings.m_currentVideoSettings.m_CropRight , crop.right)
-  || HYST(g_stSettings.m_currentVideoSettings.m_CropTop   , crop.top)
-  || HYST(g_stSettings.m_currentVideoSettings.m_CropBottom, crop.bottom))
-  {
-    g_stSettings.m_currentVideoSettings.m_CropLeft   = crop.left;
-    g_stSettings.m_currentVideoSettings.m_CropRight  = crop.right;
-    g_stSettings.m_currentVideoSettings.m_CropTop    = crop.top;
-    g_stSettings.m_currentVideoSettings.m_CropBottom = crop.bottom;
-    SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
-  }
-# undef HYST
 }
 
 void CLinuxRendererGL::RenderSinglePass(int index, int field)
