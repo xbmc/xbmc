@@ -132,7 +132,7 @@ public:
   bool                GetInterlace(void);
   double              GetFrameRate(void);
   double              GetAspectRatio(void);
-  bool                UpdateNV12Pointers(YV12Image* pDest);
+  bool                UpdateNV12Pointers(DVDVideoPicture* pDest);
   
 protected:
   void                SetFrameRate(uint32_t resolution);
@@ -362,11 +362,11 @@ double CMPCOutputThread::GetAspectRatio(void)
   return(m_aspectratio_x/m_aspectratio_y);
 }
 
-bool CMPCOutputThread::UpdateNV12Pointers(YV12Image* pDest)
+bool CMPCOutputThread::UpdateNV12Pointers(DVDVideoPicture* pDest)
 {
-  pDest->plane[0]  = m_y_buffer_ptr;
-  pDest->plane[1]  = m_uv_buffer_ptr;
-  pDest->plane[2]  = NULL;
+  pDest->data[0]  = m_y_buffer_ptr;
+  pDest->data[1]  = m_uv_buffer_ptr;
+  pDest->data[2]  = NULL;
 
   return(true);
 }
@@ -935,6 +935,8 @@ bool CCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   //m_BusyList.Push(pBuffer);
   m_pOutputThread->FreeBuffer(pBuffer);
   
+  m_pOutputThread->UpdateNV12Pointers(pDvdVideoPicture);
+
   return true;
 }
 
