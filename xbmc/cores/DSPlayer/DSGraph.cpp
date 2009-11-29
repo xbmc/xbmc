@@ -65,7 +65,7 @@ CDSGraph::~CDSGraph()
 }
 
 //This is alo creating the Graph
-HRESULT CDSGraph::SetFile(const CFileItem& file)
+HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 {
   HRESULT hr;
   if (m_pGraphBuilder)
@@ -95,9 +95,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file)
   UpdateState();
   if (m_pMediaControl)
     m_pMediaControl->Run();
-  
-  
-  //m_pGraphBuilder
+
   return hr;
 }
 
@@ -151,8 +149,8 @@ void CDSGraph::UpdateTime()
 {
   if (!m_pMediaSeeking)
     return;
-REFTIME rt = (REFTIME) 0;
-    LONGLONG Position;
+  REFTIME rt = (REFTIME) 0;
+  LONGLONG Position;
 // Should we return a media position
   if(m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME)
   {
@@ -286,7 +284,12 @@ void CDSGraph::OnPlayStop()
     m_pMediaControl->Stop();
 
 }
-
+void CDSGraph::Play()
+{
+  UpdateState();
+  if (m_State.current_filter_state != State_Running)
+    m_pMediaControl->Run();
+}
 void CDSGraph::Pause()
 {
   UpdateState();
@@ -391,7 +394,24 @@ void CDSGraph::SetPlaySpeed(int iSpeed)
 //VFW_E_UNSUPPORTED_AUDIO Audio device or filter does not support this rate.
 }
 
+void CDSGraph::SeekInMilliSec(double sec)
+{
+  HRESULT hr;
+  LONGLONG seekrequest,earliest,latest;
+  m_pMediaSeeking->GetAvailable(&earliest,&latest);
+  hr = m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
 
+  seekrequest = ( LONGLONG )( sec * 10000 );
+  if ( seekrequest < 0 )
+    seekrequest = 0;
+  m_pMediaSeeking->SetPositions(&seekrequest, AM_SEEKING_AbsolutePositioning, NULL,AM_SEEKING_NoPositioning);
+  if(m_State.current_filter_state == State_Stopped)
+  {
+    m_pMediaControl->Pause();
+    m_pMediaControl->GetState(INFINITE, (OAFilterState *)&m_State.current_filter_state);
+    m_pMediaControl->Stop();
+  }
+}
 void CDSGraph::Seek(bool bPlus, bool bLargeStep)
 {
   if (!m_pMediaSeeking || !m_pMediaControl)
@@ -416,14 +436,10 @@ void CDSGraph::Seek(bool bPlus, bool bLargeStep)
     seek = (__int64)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
   }
 
-HRESULT hr;
-//hr = pAllocator->StopPresenting(g_userId);
-  LONGLONG earliest,latest;
-  m_pMediaSeeking->GetAvailable(&earliest,&latest);
-  hr = m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
-  UpdateTime();
   
-  LONGLONG seekrequest;
+  UpdateTime();
+  SeekInMilliSec(seek);
+  /*LONGLONG seekrequest;
   seekrequest = ( LONGLONG )( seek * 10000 );
   if ( seekrequest < 0 )
     seekrequest = 0;
@@ -433,10 +449,10 @@ HRESULT hr;
     hr = m_pMediaControl->Pause();
     hr = m_pMediaControl->GetState(INFINITE, (OAFilterState *)&m_State.current_filter_state);
     hr = m_pMediaControl->Stop();
-  }
+  }*/
 }
 
-// return the time in milliseconds
+// return time in ms
 __int64 CDSGraph::GetTime()
 {
   return llrint(m_State.time);
@@ -500,6 +516,9 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
       if (m_pMediaControl)
 	    m_pMediaControl->Run();
 	  break;
+	case ID_SEEK_TO:
+      SeekInMilliSec((LPARAM)lParam);
+      break;
     case ID_SEEK_FORWARDSMALL:
       Seek(true,false);
 	  CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDSMALL",__FUNCTION__);

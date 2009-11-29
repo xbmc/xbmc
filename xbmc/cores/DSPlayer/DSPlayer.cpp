@@ -61,9 +61,15 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   ResetEvent(m_hReadyEvent);
   //Creating the graph and querying every filter required for the playback
   m_Filename = file.GetAsUrl();
-  hr = m_pDsGraph.SetFile(file);
+  m_PlayerOptions = options;
   m_currentSpeed = 10000;
   m_currentRate = 1.0;
+  hr = m_pDsGraph.SetFile(file,m_PlayerOptions);
+  if ( FAILED(hr) )
+  {
+    CLog::Log(LOGERROR,"%s failed to start this file with dsplayer %s",__FUNCTION__,file.GetAsUrl().GetFileName().c_str());
+    return false;
+  }
   Create();
   WaitForSingleObject(m_hReadyEvent, INFINITE);
   return true;
@@ -156,18 +162,25 @@ void CDSPlayer::OnExit()
 void CDSPlayer::Process()
 {
   m_callback.OnPlayBackStarted();
-  
+  bool pStartPosDone = true;
   // allow renderer to switch to fullscreen if requested
   //m_pDsGraph.EnableFullscreen(true);
   // make sure application know our info
   //UpdateApplication(0);
   //UpdatePlayState(0);
+  if (m_PlayerOptions.starttime>0)
+    pStartPosDone=false;
+  
   SetEvent(m_hReadyEvent);
   while (!m_bAbortRequest)
   {
     if (m_bAbortRequest)
       break;
-
+    if (!pStartPosDone)
+	{
+      SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_TO ,((LPARAM)m_PlayerOptions.starttime * 1000 ));
+      pStartPosDone = true;
+	}
 	m_pDsGraph.HandleGraphEvent();
     
 	if (m_currentSpeed != 10000)

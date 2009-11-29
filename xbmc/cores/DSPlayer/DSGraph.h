@@ -50,7 +50,7 @@
 
 
 
-
+#include "cores/IPlayer.h"
 #include "File.h"
 
 using namespace XFILE;
@@ -84,6 +84,8 @@ public:
   virtual void SetPlaySpeed(int iSpeed);
   virtual void DoFFRW(int currentSpeed);
   virtual void Seek(bool bPlus, bool bLargeStep);
+  virtual void SeekInMilliSec(double sec);
+  virtual void Play();
   virtual void Pause();
   virtual void UpdateTime();
   virtual void UpdateState();
@@ -94,7 +96,7 @@ public:
   virtual float GetPercentage();
 
   
-  HRESULT SetFile(const CFileItem& file);
+  HRESULT SetFile(const CFileItem& file, const CPlayerOptions &options);
   void OnPlayStop();
   void CloseFile();
   HRESULT CloseGraph();
@@ -156,7 +158,7 @@ protected:
     CStdString dxva_info;
 	GUID time_format;
   } m_VideoInfo;
-
+  
 private:
   //Direct Show Filters
   CComPtr<IGraphBuilder2>               m_pGraphBuilder;
@@ -167,7 +169,7 @@ private:
   CComQIPtr<IBasicVideo2>               m_pBasicVideo;
   CComPtr<IMPCVideoDecFilter>	        m_pIMpcDecFilter;
   CComPtr<IffdshowDecVideoA>	        m_pIffdDecFilter;
-protected:
+
   
   
 };
