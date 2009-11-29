@@ -15,7 +15,7 @@ endif
 # List of options to pass to configure. Can be overridden.
 XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
 	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --disable-ccache \
-	--enable-goom --enable-avahi \
+	--enable-goom --enable-avahi --enable-external-libraries \
 	 CFLAGS="$(DEB_CFLAGS)" CXXFLAGS="$(DEB_CXXFLAGS)"
 
 # Add the SVN revision if it exists in the changelog
@@ -25,7 +25,7 @@ endif
 
 # Ubuntu or Debian specific options
 ifneq (Ubuntu,$(shell lsb_release -is))
-  XBMC_CONFIG_OPTIONS += --disable-dvdcss --enable-external-libraries
+  XBMC_CONFIG_OPTIONS += --disable-dvdcss
 else
   XBMC_CONFIG_OPTIONS += --enable-vdpau
 endif

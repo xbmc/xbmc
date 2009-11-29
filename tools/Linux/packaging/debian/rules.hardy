@@ -36,7 +36,9 @@ build:
 	dh_testdir
 	# Add here commands to configure the package.
 	./bootstrap
-	dh_auto_configure -- --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --enable-vdpau --enable-avahi SVN_REV="$(SVNVERSION)"
+	dh_auto_configure -- --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
+		--prefix=/usr --enable-external-libraries --enable-goom --enable-vdpau \
+		--enable-avahi SVN_REV="$(SVNVERSION)"
 	dh build --after dh_auto_configure
 
 binary: binary-arch binary-indep
@@ -51,7 +53,6 @@ binary-indep:
 	mkdir -p $(CURDIR)/debian/tmp/etc/init/
 	cp $(CURDIR)/tools/XBMCLive/xbmc-live.conf $(CURDIR)/debian/tmp/etc/init/
 	cp $(CURDIR)/tools/XBMCLive/xbmc-live-install.conf $(CURDIR)/debian/tmp/etc/init/
-
 	dh_install -i --sourcedir=$(CURDIR)/debian/tmp -XLICENCE -XLiberationSans-Regular.ttf -XLicence.txt -XLicense.txt
 	# XBMC WEB PM
 	dh_install -pxbmc-web-pm ../../web/Project_Mayhem usr/share/xbmc/web
