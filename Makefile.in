@@ -423,14 +423,10 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 else
 install: install-binaries install-arch install-datas install-web
 
-install-binaries:
+install-binaries: install-scripts
 	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
 	@install -D xbmc.bin $(prefix)/share/xbmc/xbmc.bin
 	@install -D xbmc-xrandr $(prefix)/share/xbmc/xbmc-xrandr
-	@install -D tools/Linux/xbmc.sh $(prefix)/bin/xbmc
-	@install -D tools/Linux/xbmc-standalone.sh $(prefix)/bin/xbmc-standalone
-	@install -D -m 0644 tools/Linux/FEH.py $(prefix)/share/xbmc/FEH.py
-	@install -D -m 0644 tools/Linux/xbmc-xsession.desktop $(prefix)/share/xsessions/XBMC.desktop
 	@echo "You can run XBMC with the command 'xbmc'"
 endif
 
@@ -438,7 +434,13 @@ install-arch:
 	@# Arch dependent files
 	@find system screensavers visualisations -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"	
 
-install-datas:
+install-scripts:
+	@install -D tools/Linux/xbmc.sh $(prefix)/bin/xbmc
+	@install -D tools/Linux/xbmc-standalone.sh $(prefix)/bin/xbmc-standalone
+	@install -D -m 0644 tools/Linux/FEH.py $(prefix)/share/xbmc/FEH.py
+	@install -D -m 0644 tools/Linux/xbmc-xsession.desktop $(prefix)/share/xsessions/XBMC.desktop
+
+install-datas: install-scripts
 	@echo "Copying support and legal files..."
 	@for FILE in `ls README.linux LICENSE.GPL *.txt`; do \
 		install -D -m 0644 "$$FILE" $(prefix)/share/xbmc/; done
@@ -455,6 +457,7 @@ install-datas:
 
 install-livedatas:
 	@echo "Install Live CD datas in $(prefix) ..."
+	@mkdir -p $(prefix)/bin
 	@install -D tools/XBMCLive/diskmounter $(prefix)/bin
 	@install -D tools/XBMCLive/installXBMC $(prefix)/bin
 	@install -D tools/XBMCLive/runXBMC $(prefix)/bin

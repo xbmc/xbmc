@@ -21,117 +21,74 @@ export DH_OPTIONS
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 #get the svnversion if the file exists
-SVNVERSION ?= $(shell dpkg-parsechangelog | grep '^Version:' | sed 's/.*svn\([[:digit:]]*\).*/\1/')
+SVNVERSION ?= $(shell dpkg-parsechangelog | grep '^Version:' | grep 'svn' | sed 's/.*svn\([[:digit:]]*\).*/\1/')
 
 ifeq "$(SVNVERSION)" ""
-	ifneq "$(shell cat debian/svnrevision)" ""
-	SVNVERSION ?= $(shell cat debian/svnrevision)
-	endif
+	SVNVERSION = $(shell cat debian/svnrevision)
 endif
 
-config-stamp:
+
+clean:
+	dh clean
+	rm -f build-arch-stamp build-indep-stamp config-stamp
+
+build:
 	dh_testdir
 	# Add here commands to configure the package.
 	./bootstrap
 	dh_auto_configure -- --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --enable-vdpau --enable-avahi SVN_REV="$(SVNVERSION)"
-	touch $@
+	dh build --after dh_auto_configure
 
-#Architecture 
-build: build-arch
+binary: binary-arch binary-indep
 
-build-arch: build-arch-stamp
-build-arch-stamp:  config-stamp
-
-	# Add here commands to compile the arch part of the package.
-	dh_auto_build -- externals xbmc.bin xbmc-xrandr
-	touch $@
-
-build-indep: build-indep-stamp
-build-indep-stamp:  config-stamp
-
-	# Add here commands to compile the indep part of the package.
-	$(MAKE) skins
-	touch $@
-
-clean: 
-	dh_testdir
-	dh_testroot
-	rm -f build-arch-stamp build-indep-stamp 
-
-	# Add here commands to clean up after the build process.
-	-$(MAKE) distclean
-	rm -f config-stamp
-
-	dh_clean 
-
-install: install-indep install-arch
-install-indep:	
-	dh_testdir
-	dh_testroot
-	dh_clean -i
-	dh_prep -i
-	dh_installdirs -i
+binary-indep:
+	dh binary-indep --until dh_installdirs 
 	$(MAKE) install-web install-datas install-livedatas prefix=$(CURDIR)/debian/tmp/usr/
-
+	mkdir -p $(CURDIR)/debian/tmp/usr/share/applications $(CURDIR)/debian/tmp/usr/share/pixmaps
+	cp $(CURDIR)/tools/Linux/xbmc.png $(CURDIR)/debian/tmp/usr/share/pixmaps/
+	cp $(CURDIR)/tools/Linux/xbmc.desktop $(CURDIR)/debian/tmp/usr/share/applications/
 	# xbmc Live files 
 	mkdir -p $(CURDIR)/debian/tmp/etc/init/
 	cp $(CURDIR)/tools/XBMCLive/xbmc-live.conf $(CURDIR)/debian/tmp/etc/init/
 	cp $(CURDIR)/tools/XBMCLive/xbmc-live-install.conf $(CURDIR)/debian/tmp/etc/init/
 
+	dh_install -i --sourcedir=$(CURDIR)/debian/tmp -XLICENCE -XLiberationSans-Regular.ttf -XLicence.txt -XLicense.txt
 	# XBMC WEB PM
-	mkdir -p $(CURDIR)/debian/xbmc-web-pm/usr/share/xbmc/web
-	cp -a  $(CURDIR)/web/Project_Mayhem -d $(CURDIR)/debian/xbmc-web-pm/usr/share/xbmc/web
-	# XBMC WEB PM 3
-	mkdir -p $(CURDIR)/debian/xbmc-web-pm3/usr/share/xbmc/web
-	cp -a  $(CURDIR)/web/Project_Mayhem_III -d $(CURDIR)/debian/xbmc-web-pm/usr/share/xbmc/web
+	dh_install -pxbmc-web-pm ../../web/Project_Mayhem usr/share/xbmc/web
+	# XBMC WEB PM3
+	dh_install -pxbmc-web-pm3 ../../web/Project_Mayhem_III usr/share/xbmc/web
 	# XBMC WEB Iphone
-	mkdir -p $(CURDIR)/debian/xbmc-web-iphone-tlrobinson/usr/share/xbmc
-	cp -a $(CURDIR)/web/xbmciphone -d $(CURDIR)/debian/xbmc-web-iphone-tlrobinson/usr/share/xbmc/web
-	mkdir -p $(CURDIR)/debian/xbmc-web-iphone-tlrobinson/usr/share/doc/xbmc-web-iphone-tlrobinson/ 
-	mv $(CURDIR)/debian/xbmc-web-iphone-tlrobinson/usr/share/xbmc/web/README $(CURDIR)/debian/xbmc-web-iphone-tlrobinson/usr/share/doc/xbmc-web-iphone-tlrobinson/
+	dh_install -pxbmc-web-iphone-tlrobinson ../../web/xbmciphone/iphone usr/share/xbmc/web
+	dh_installdocs -i
+	dh_installdocs -pxbmc-web-iphone-tlrobinson $(CURDIR)/web/xbmciphone/README
+	dh binary-indep --after dh_installdocs
 
-install-arch:
-	dh_testdir
-	dh_testroot
-	dh_clean -s
-	dh_prep -s
-	dh_installdirs -s
+binary-arch:
+	dh binary-arch --until dh_installdirs 
+	$(MAKE) install-binaries install-arch prefix=$(CURDIR)/debian/tmp/usr/
+	find "debian/tmp/usr/share/xbmc" -regextype posix-extended \
+		-type f -iregex \
+		".*\.so|.*\.vis|.*\.xbs|.*xbmc\.bin|.*xbmc-xrandr" | \
+		while read FILE; do \
+		NEW_LOCATION="$$(echo $$FILE | sed -e 's|usr/share|usr/lib|')"; \
+		install -D "$$FILE" "$$NEW_LOCATION"; \
+		rm "$$FILE"; \
+		done
+	$(MAKE) eventclients prefix=$(CURDIR)/debian/tmp/usr installdir=/usr WII_EXTRA_OPTS=-DCWIID_OLD
+	dh_install -a --sourcedir=$(CURDIR)/debian/tmp -XLICENCE -XLiberationSans-Regular.ttf -XLicence.txt -XLicense.txt
+	dh binary-arch --after dh_install --until dh_link
+	find "debian/xbmc-bin/usr/lib" -regextype posix-extended -type f | \
+		while read FILE; do \
+		LINK_TARGET="$$(echo "$$FILE" | sed -e 's|debian/xbmc-bin/||')"; \
+		LINK_DESTINATION="$$(echo "$$FILE" | sed -e 's|debian/xbmc-bin/usr/lib|usr/share|')"; \
+		dh_link -pxbmc-bin "$$LINK_TARGET" "$$LINK_DESTINATION"; \
+		done
+	dh binary-arch --after dh_link --before dh_strip
+	dh_strip -a --dbg-package=xbmc-dbg
+	# We don't install shared libraries in standard locations so don't edit
+	# postinst/postrm scripts to call ldconfig
+	dh_makeshlibs -a -n
+	dh binary-arch --after dh_makeshlibs
 
-	# Add here commands to install the arch part of the package into 
-	# debian/tmp/usr/share/xbmc
-	make install-binaries install-arch prefix=$(CURDIR)/debian/tmp/usr/
-
-	make eventclients prefix=$(CURDIR)/debian/tmp/usr/ installdir=/usr WII_EXTRA_OPTS=-DCWIID_OLD
-
-	dh_install -s --sourcedir=$(CURDIR)/debian/tmp
-	
-# Must not depend on anything. This is to be called by
-# binary-arch/binary-indep
-# in another 'make' thread.
-binary-common:
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs 
-	dh_installdocs
-	dh_installexamples
-	dh_installinit
-	dh_pysupport
-	dh_link
-	dh_strip --dbg-package=xbmc-dbg
-	dh_fixperms
-	dh_installdeb
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-# Build architecture independant packages using the common target.
-binary-indep: build-indep install-indep
-	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
-	
-# Build architecture dependant packages using the common target.
-binary-arch: build-arch install-arch
-	$(MAKE) -f debian/rules DH_OPTIONS=-s binary-common
-
-binary: binary-arch binary-indep
-.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch 
+.PHONY: build clean binary-indep binary-arch binary 
 

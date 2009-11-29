@@ -6,7 +6,11 @@ DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 # Get the SVN revision from the changelog
-SVNVERSION ?= $(shell dpkg-parsechangelog | grep '^Version:' | sed 's/.*svn\([[:digit:]]*\).*/\1/')
+SVNVERSION ?= $(shell dpkg-parsechangelog | grep '^Version:' | grep 'svn' | sed 's/.*svn\([[:digit:]]*\).*/\1/')
+
+ifeq "$(SVNVERSION)" ""
+	SVNVERSION = $(shell cat debian/svnrevision)
+endif
 
 # List of options to pass to configure. Can be overridden.
 XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \

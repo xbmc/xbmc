@@ -2,32 +2,17 @@
 
 usage()
 {
-myEcho "For --tag|-t, use the following options:
-  svnsrc=<dir>
-  version=<version> (without 'xbmc-')
-  "
-myEcho "For -u, use:
-  srcdir=<dir>
-  version=<version> (or revision)
-  minor=<minor>
-  "
-myEcho "For -nsg, use:
-  srcdir=<dir>
-  revision=<revision> (or version=<version>)
-  "
-myEcho "For -prev, use:
-  rev=<revision>
-  "
-myEcho "You can use:
-  > -debian-tag=<tag> (to select the debian directory tag to use)
-  "
+echo "The following options are supported: 
+	--ppa=<your ppa in dput.cf>
+	-t, --tag 	: svnsrc=<dir>, version=<version> (without 'xbmc-')
+	-u		: srcdir=<dir> version=<version> revision=<rev> minor=<minor>
+	-nsg		: svnsrc=<dir> revision=<rev>
+	-prev		: revision=<rev> 
+"
 exit 0
 }
 
-myEcho() {
-  echo -e "$1" 
-  echo -e "$1" >> $BUILD_LOG
-}
+alias echo='echo -e'
 
 BUILDALL=1
 FULLDEBUILDOPTS="-S -sa"
@@ -35,14 +20,15 @@ DEBUILDOPTS="-S -sd"
 MINOR=1
 XBMCPPA=xbmc-svn
 HVERSION=9.11~beta1
-DEBIAN_TAG_OPT=
 
-# Packager should have this 
+# Packagers should have these two vars in their environment
 # export DEBFULLNAME="Ouattara Oumar Aziz (alias wattazoum)"
 # export DEBEMAIL="wattazoum@gmail.com"
 
 parse_options()
 {
+  echo "Parse options: $@"
+
   for I in "$@"
   do
     OPT=${I%=*}
@@ -52,6 +38,7 @@ parse_options()
         LOCAL=1
       ;;
       --pbuilder|-p)
+        echo "-p ==> PBUILDER"	
         PBUILDER=1
         LOCAL=1
       ;;
@@ -59,6 +46,7 @@ parse_options()
         BUILDALL=0
         DIST="$OPT"
         DEBUILDOPTS=$FULLDEBUILDOPTS
+        echo "DIST ==> $DIST"
       ;;
       --noclean|-nc)
         NOCLEAN=1
@@ -76,11 +64,14 @@ parse_options()
       -prev)
         EXPORT_PREV_REV=1
       ;;
+      --ppa)
+        XBMCPPA=$PAR
+      ;;
       --help|-h)
         usage
       ;;
       *)
-        myEcho "Setting $OPT=$PAR"
+        echo "Setting $OPT=$PAR"
         export $OPT=$PAR
       ;;
     esac
@@ -90,38 +81,39 @@ parse_options()
 getrootright()
 {
   if [[ $PBUILDER ]]; then 
-    myEcho "Give me the admin rights ... "
+    echo "Give me the admin rights ... "
     sudo echo "Thank you !"
   fi
 }
 
 preparesrc() 
 {
-  myEcho "Exporting the sources at revision $REVISION ... "
+  echo "Exporting the sources at revision $REVISION ... "
   if [[ -z $HEAD_REVISION ]]; then
     # The revision given might not be the head one
-    svn export -r $REVISION $SVNSRC $DESTSRC 2>&1
+    svn export -r $REVISION $SVNSRC $DESTSRC 2>&1 
   else
     svn cleanup $SVNSRC 
     svn export $SVNSRC $DESTSRC 
   fi
-  myEcho "Copying to .orig folder"
+  echo "Copying to .orig folder"
   cp -a $DESTSRC $DESTSRC.orig
 }
 
 builddeb()
 {
-  myEcho "Copy the debian folder to the root"
+  echo "Build $1 deb package"
+  echo "Copy the debian folder to the root"
   cp -a $DESTSRC/tools/Linux/packaging/debian $DESTSRC/debian
 
   if [[ -z $CHNLG ]]; then
     CHNLG="Build of $VERSION"
   fi
-  myEcho "Changelog : $CHNLG"
+  echo "Changelog : $CHNLG"
   cd $DESTSRC
-  dch -b -v ${VERSION}-$1${MINOR} -D $1 "$CHNLG" 2>&1
-  myEcho "$REVISION" > debian/svnrevision
-  myEcho "Building the $1 debian package" 
+  dch -b -v 1:${VERSION}-$1${MINOR} -D $1 "$CHNLG" 2>&1 
+  echo "$REVISION" > debian/svnrevision
+  echo "Building the $1 debian package" 
 
   if [ $1 == "hardy" ]; then
     tweaks_for_hardy
@@ -141,35 +133,37 @@ builddeb()
   
   cd $OLDPWD
   if [[ $PBUILDER ]]; then 
-    myEcho "'pbuilder' is set. Trying into pbuilder"
-    $SCRIPTDIR/pbuilder-dist $1 build xbmc_${VERSION}-$1${MINOR}.dsc 2>&1
+    echo "'pbuilder' is set. Trying into pbuilder"
+    $SCRIPTDIR/pbuilder-dist $1 build xbmc_${VERSION}-$1${MINOR}.dsc 2>&1 | tee -a $BUILD_LOG
     rm -rf $DESTSRC/debian
   fi
   if [[ -z $LOCAL ]]; then 
-    myEcho "'--local' is not set. Uploading to PPA"
-    dput $XBMCPPA xbmc_${VERSION}-$1${MINOR}_source.changes 2>&1
+    echo "'--local' is not set. Uploading to PPA"
+    dput $XBMCPPA xbmc_${VERSION}-$1${MINOR}_source.changes 2>&1 | tee -a $BUILD_LOG
     rm -rf $DESTSRC/debian
   fi
 }
 
 tweaks_for_hardy() 
 {
-  # change debhelper version in control
+  echo "Hardy tweaking ..."
+  echo "change debhelper version in control"
   mv debian/control debian/control.orig
   sed -r s/"debhelper \(>= .+?\)"/"debhelper (>= 7)"/ debian/control.orig > debian/control
   rm debian/control.orig
  
-  # change the rules file.
+  echo "change the rules file."
   rm -f debian/rules
   cp debian/rules.hardy debian/rules
-  # move the format spec to 1.0
+
+  echo "move the format spec to 1.0"
   echo "1.0" > debian/source/format
 }
 
 clean()
 {
 if [[ -z $NOCLEAN ]] && [[ -z $LOCAL ]] ; then
-  myEcho "Cleaning ... "
+  echo "Cleaning ... "
   find . -depth -maxdepth 1 -regex "\./xbmc[-_].+-.+" -not -name "*.orig.tar.gz" -exec rm -rf {} \;
   if [[ -z $UPDPPA ]] && [[ -z $NO_SRC_GEN ]] ; then
     rm -rf xbmc-$VERSION xbmc_$VERSION.orig.tar.gz
@@ -183,8 +177,8 @@ preparevars()
   gpg -s test.txt
   rm test.txt test.txt.gpg
   
-  myEcho "Preparing Vars ..."
-  myEcho "Build directory: $BUILD_DIR"
+  echo "Preparing Vars ..."
+  echo "Build directory: $BUILD_DIR"
 
   if [[ -z $SVNSRC ]]; then
     SVNSRC=$(readlink -f ../../../)
@@ -215,11 +209,11 @@ preparevars()
     VERSION=$version
   fi
   if [[ $EXPORT_PREV_REV ]]; then
-    myEcho "Revision to export: $rev"
+    echo "Revision to export: $rev"
     REVISION=$rev
   fi
 
-  myEcho "Setting SVN Sources: $SVNSRC"
+  echo "Setting SVN Sources: $SVNSRC"
   
   # If the version is not yet set it
   if [[ -z $REVISION ]]; then
@@ -231,16 +225,16 @@ preparevars()
     VERSION=${HVERSION}+svn$REVISION
   fi
 
-  myEcho "XBMC version: $VERSION"
-  myEcho "XBMC revision: $REVISION"
+  echo "XBMC version: $VERSION"
+  echo "XBMC revision: $REVISION"
 
   # Set Destination folder if not set
   if [[ -z $DESTSRC ]]; then
     DESTSRC=xbmc-$VERSION
   fi
 
-  myEcho "XBMC Destination folder: $DESTSRC"
-  myEcho "Package minor version: $MINOR"
+  echo "XBMC Destination folder: $DESTSRC"
+  echo "Package minor version: $MINOR"
 
 }
 
@@ -248,25 +242,25 @@ preparevars()
 
 SCRIPTDIR=`pwd`
 
-# We are in the source tree. Go out
 if [[ -z $BUILD_DIR ]] ; then
   BUILD_DIR=$(eval readlink -f ../../../../)
 fi
 
 BUILD_LOG=$BUILD_DIR/debuilder_`date +%F_%T`.log
 
-parse_options $@
+parse_options $@ 
 getrootright
 preparevars
 
+# We are in the source tree. Go out
 cd $BUILD_DIR
 
 if [[ -z $UPDPPA ]] && [[ -z $NO_SRC_GEN ]] ; then
   preparesrc
 fi
 
-for distro in "hardy" "intrepid" "jaunty" "karmic"; do 
-  if [[ $BUILDALL -eq 1 ]] || [[ $DIST == "$distro" ]]; then
+for distro in hardy intrepid jaunty karmic ; do 
+  if [[ $BUILDALL -eq 1 ]] || [[ $DIST == $distro ]]; then
     builddeb $distro
   fi
 done

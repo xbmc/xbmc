@@ -471,3 +471,28 @@ Description: XBMC Media Center (Event Client PS3 package)
  multimedia jukebox.
  .
  This package is the PS3 package for XBMC Event Client.
+
+Package: xbmc-eventclients-xbmc-send
+Architecture: all
+Depends: xbmc-eventclients-common (= ${binary:Version}),
+         ${python:Depends},
+         ${misc:Depends}
+Description: XBMC Media Center (Event Client XBMC-SEND package)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package is the XBMC-SEND package for XBMC Event Client.
