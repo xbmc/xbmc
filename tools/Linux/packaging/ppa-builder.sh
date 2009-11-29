@@ -118,6 +118,9 @@ builddeb()
   if [ $1 == "hardy" ]; then
     tweaks_for_hardy
   fi
+  
+  echo "move the format spec to 1.0 (Ubuntu PPA doesn't support format 3.0 quilt) "
+  echo "1.0" > debian/source/format
 
   # Add vdpau dependencies
   mv debian/control debian/control.orig
@@ -155,9 +158,6 @@ tweaks_for_hardy()
   echo "change the rules file."
   rm -f debian/rules
   cp debian/rules.hardy debian/rules
-
-  echo "move the format spec to 1.0"
-  echo "1.0" > debian/source/format
 }
 
 clean()
