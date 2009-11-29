@@ -332,8 +332,6 @@ static void setupWindowMenu(void)
   if (g_Windowing.IsFullScreen())
   {
     // Find which display we are on
-    CGDirectDisplayID display_id = kCGDirectMainDisplay;
-  
     NSOpenGLContext* context = [NSOpenGLContext currentContext];
     if (context)
     {
