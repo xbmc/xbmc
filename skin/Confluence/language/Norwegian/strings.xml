@@ -1,14 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Sainty-->
 <!--Email: salsve@nith.no-->
 <!--Date of translation: 11/24/2009-->
+<!-- Based on English rev 25111 -->
 <!--$Revision$-->
 <strings>
-  <string id="31000">Endre din</string>
+  <string id="31000">Endre dine</string>
   <string id="31001">Elsk</string>
   <string id="31002">Hat</string>
-  <string id="31003">Strøm alternativer</string>
+  <string id="31003">Strømalternativer</string>
   <string id="31007">Tillegg</string>
   <string id="31020">Nylig lagt til</string>
   <string id="31021">Filmer - Filer</string>
@@ -37,43 +38,43 @@
   <string id="31057">Lukk spilleliste</string>
   <string id="31058">Systemmusikkfiler</string>
   <string id="31059">Nåværende spilleliste</string>
-  <string id="31060">Denne fil er stablet, velg den del du vil spille.</string>
-  <string id="31101">Hjem skjerm alternativer</string>
+  <string id="31060">Denne fil er stablet, velg den delen du vil spille.</string>
+  <string id="31101">Alternativer for hovedskjerm</string>
   <string id="31102">Bakgrunn</string>
-  <string id="31103">Vise "Pauset" i bildeavspilling</string>
-  <string id="31105">Vise medietitler i bakgrunsscanneren</string>
+  <string id="31103">Vis "Pause" under bildeframvisning</string>
+  <string id="31105">Vis medietitler i bakgrunnsskanneren</string>
   <string id="31106">Øvrige alternativer</string>
-  <string id="31108">Skjul hovedmenyknapper</string>
-  <string id="31109">Hjemmeskjermsbakgrunner</string>
-  <string id="31110">Endre hjemknappsbakgrunn</string>
+  <string id="31108">Inaktive hovedmenyknapper</string>
+  <string id="31109">Hovedskjermsbakgrunner</string>
+  <string id="31110">Endre bakgrunn for hovedskjermknapp</string>
   <string id="31111">Skjul</string>
   <string id="31112">Alternativer</string>
-  <string id="31113">Solobilde</string>
-  <string id="31114">Flerbilde</string>
+  <string id="31113">Enkeltbilde</string>
+  <string id="31114">Multibilde</string>
   <string id="31115">Tilpasser</string>
   <string id="31116">Tilleggsskript</string>
-  <string id="31117">Vise nylig lagt til filmer</string>
-  <string id="31118">Hjemsidesundermeny</string>
-  <string id="31119">Aktivere egen skriptknapp</string>
+  <string id="31117">Vis nylig tillagte filmer</string>
+  <string id="31118">Undermeny for hovedmeny</string>
+  <string id="31119">Aktivér egen skriptknapp</string>
   <string id="31120">KNAPPETIKETT</string>
   <string id="31121">STI TIL SKRIPT</string>
   <string id="31122">Værside</string>
   <string id="31123">Bruk plakat istedet for banner for TV-serier</string>
-  <string id="31124">Vis bakgrunn "Nå spilles" filmer</string>
-  <string id="31125">Vis bakgrunn "Nå spilles" visualisering</string>
-  <string id="31126">Aktivér sangtekster i musikk OSD</string>
+  <string id="31124">Vis "Nå spilles" for filmer i bakgrunnen</string>
+  <string id="31125">Vis visualisering for "Nå spilles" i bakgrunnen</string>
+  <string id="31126">Aktivér sangtekster i musikk-OSD</string>
   <string id="31127">STI TIL SANGTEKSTSKRIPT</string>
-  <string id="31128">XBMC Sangtekster</string>
+  <string id="31128">XBMC sangtekster</string>
   <string id="31200">Hurtigsti</string>
   <string id="31201">Kategorier</string>
   <string id="31202">Vis rolleliste</string>
   <string id="31203">Velg din låt</string>
-  <string id="31204">Seksjonslinker</string>
+  <string id="31204">Seksjonslenker</string>
   <string id="31205">Sangtekstskilde</string>
-  <string id="31250">Radar &amp; prognose</string>
-  <string id="31251">Prognose</string>
+  <string id="31250">Radar &amp; værmelding</string>
+  <string id="31251">Værmelding</string>
   <string id="31252">TWC skript</string>
-  <string id="31300">Nåværende temp</string>
+  <string id="31300">Været nå</string>
   <string id="31301">Sist oppdatert</string>
   <string id="31302">Meny</string>
   <string id="31303">
@@ -84,11 +85,11 @@
   <string id="31307">Skjul fankunst</string>
   <string id="31308">Filmdetaljer</string>
   <string id="31309">Brukt minne</string>
-  <string id="31310">Spor nummer</string>
+  <string id="31310">Spornummer</string>
   <string id="31311">FANKUNST BILDE[CR][CR]IKKE TILGJENGLIG[CR][CR]KLIKK PÅ KNAPPEN FOR Å OPPGI</string>
   <string id="31312">Nåværende skraper</string>
   <string id="31313">Velg en skraper</string>
-  <string id="31314">Innholdsskraperalternativ</string>
+  <string id="31314">Alternativer for innholdsskraper</string>
   <string id="31315">Grunnleggende</string>
   <string id="31316">
   </string>
@@ -96,23 +97,23 @@
   <string id="31318">Liten fankunst</string>
   <string id="31319">Valgt profil</string>
   <string id="31320">Sist innlogget</string>
-  <string id="31321">Karaoke sangvelger</string>
+  <string id="31321">Sangvelger for karaoker</string>
   <string id="31322">Sendt</string>
-  <string id="31323">Seneste filmer</string>
-  <string id="31324">Seneste episoder</string>
-  <string id="31325">Spilleliste alternativer</string>
-  <string id="31326">Lagd</string>
+  <string id="31323">Siste filmer</string>
+  <string id="31324">Siste episoder</string>
+  <string id="31325">Alternativer for spilleliste</string>
+  <string id="31326">Laget</string>
   <string id="31327">Oppløsning</string>
   <string id="31328">Nylig lagt til</string>
-  <string id="31329">[B]TIMER SATT![/B] [COLOR=grey2] - SYSTEM AUTO AVSLUTTNING OM[/COLOR]</string>
-  <string id="31400">[B]ENDRE DINE UTSEENDEINNSTILLINGER, SOM.[/B][CR][CR]Kalibrér GUI · Endre skinnet · Oppgi skjermsparer · Endre dine regionaleinnstillinger · Oppgi globale visningsalternativer</string>
-  <string id="31401">[B]ENDRE DINE GRAFIKKINNSTILLINGER, SOM.[/B][CR][CR]Håndter ditt filmbibliotek · Filmavspillingskvalitet og rendering · Konfigurer undertektsfonter · Oppgi filmautogjenopptaging</string>
-  <string id="31402">[B]ENDRE DINE MUSIKKINNSTILLINGER, SOM.[/B][CR][CR] Velg visualisering · Håndter ditt musikkbibliotek · Oppgi din Last.FM konto · Endre Karaokefonter og innstillinger</string>
-  <string id="31403">[B]ENDRE DINE BILDEINNSTILLINGER, SOM.[/B][CR][CR]Aktiver automatisk miniatyrskaping og EXIF tagglesing · Juster lysbildeovergangseffekter · Oppgi din XBMC skjermdumpsmappe</string>
-  <string id="31404">[B]ENDRE DINE VÆRINSTILLINGER, SOM.[/B][CR][CR]Oppgi de tre steder som XBMC viser på værskjermen · Endre dine regionaleinnstillinger, inklusive temperaturenheter</string>
-  <string id="31405">[B]ENDRE DINE NETTVERKSINSTILLINGER, SOM.[/B][CR][CR]Aktiver XBMC interne webserver · Oppgi Sambainnstillinger · Aktiver/Konfigurer UPNP server og klient · Konfigurer hendelseserveren</string>
-  <string id="31406">[B]ENDRE DINE SYSTEMINNSTILLINGER, SOM.[/B][CR][CR]Endre standarden for strømsparingsmodus · Konfigurer videomaskinvare · Still inn din lydmaskinvare · Konfigurer hovedbrukerens passord og systemlåser</string>
-  <string id="31407">[B]ENDRE SKINNINNSTILLINGER, SOM.[/B][CR][CR]Legge til og ta bort hjem menyknapper · Endre bakgrunner for hver seksjon · Skape sti til skript i hele skinnet</string>
+  <string id="31329">[B]TIDSINNSTILLING SATT![/B] [COLOR=grey2] - AUTO AVSLUTNING OM[/COLOR]</string>
+  <string id="31400">[B]ENDRE DINE UTSEENDEINNSTILLINGER:[/B][CR][CR]Kalibrér GUI · Endre skinnet · Oppgi skjermsparer · Endre dine regionale innstillinger · Oppgi globale visningsalternativer</string>
+  <string id="31401">[B]ENDRE DINE GRAFIKKINNSTILLINGER:[/B][CR][CR]Håndtér ditt filmbibliotek · Filmavspillingskvalitet og rendring · Konfigurér skrifttype for undertekster · Oppgi filmautogjenopptaging</string>
+  <string id="31402">[B]ENDRE DINE MUSIKKINNSTILLINGER:[/B][CR][CR] Velg visualisering · Håndtér ditt musikkbibliotek · Oppgi din Last.FM konto · Endre karaokeskrifttype og -innstillinger</string>
+  <string id="31403">[B]ENDRE DINE BILDEINNSTILLINGER:[/B][CR][CR]Aktivér automatisk miniatyrgenerering og lesing av EXIF-tagger · Justér overgangseffekter for bildeframvising · Oppgi din XBMC skjermdumpsmappe</string>
+  <string id="31404">[B]ENDRE DINE VÆRINSTILLINGER:[/B][CR][CR]Oppgi de tre stedene som XBMC viser på værskjermen · Endre dine regionale innstillinger, inklusive temperaturenheter</string>
+  <string id="31405">[B]ENDRE DINE NETTVERKSINSTILLINGER:[/B][CR][CR]Aktivér XBMC sin interne webserver · Oppgi Sambainnstillinger · Aktivér/konfigurér UPNP-server og -klient · Konfigurér hendelsesserveren</string>
+  <string id="31406">[B]ENDRE DINE SYSTEMINNSTILLINGER:[/B][CR][CR]Endre standarden for strømsparingsmodus · Konfigurér videomaskinvare · Still inn din lydmaskinvare · Konfigurér hovedbrukerens passord- og systemlåser</string>
+  <string id="31407">[B]ENDRE SKINNINNSTILLINGER:[/B][CR][CR]Legge til og ta bort hovedmenyknapper · Endre bakgrunner for hver seksjon · Skape sti til skript i hele skinnet</string>
   <string id="31420">[B][COLOR=white]XBMC har ikke oppdaget en disk.[/COLOR][/B][CR][CR]Vennligst sett i en disk i din leser og prøv igjen eller avbryt</string>
   <string id="31421">Velg din XBMC brukerprofil[CR]for å logge inn og fortsette</string>
 </strings>
