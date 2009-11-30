@@ -135,11 +135,17 @@ private:
   CDateTime m_gridStart;
   CDateTime m_gridEnd;
 
+  struct ItemsPtr
+  {
+    long start;
+    long stop;
+  };
+  std::vector< ItemsPtr > m_epgItemsPtr;
   std::vector< CGUIListItemPtr > m_rulerItems;
   std::vector< CGUIListItemPtr > m_channelItems;
-  std::vector< long > m_epgItemsPtr;
   std::vector< CFileItemPtr > m_items;
   typedef std::vector<CFileItemPtr> ::iterator iItems;
+  CFileItemList* m_FileItems;
   CGUIListItemPtr m_channel;
 
   CFileItemPtr m_gridIndex[MAXCHANNELS][MAXBLOCKS];

@@ -60,6 +60,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int dwParentID, int dwControlId, floa
   m_layout              = NULL;
   m_focusedLayout       = NULL;
   m_channelWrapAround   = true; /// get from settings?
+  m_FileItems           = NULL;
 }
 
 CGUIEPGGridContainer::~CGUIEPGGridContainer(void)
@@ -193,19 +194,18 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
     }
     else if (message.GetMessage() == GUI_MSG_LABEL_BIND && message.GetPointer())
     {
+//      long time = CTimeUtils::GetTimeMS();
       // bind our items
       Reset();
-      CFileItemList *items = (CFileItemList *)message.GetPointer();
-
-      for (int i = 0; i < items->Size(); i++)
-      {
-        m_items.push_back(items->Get(i));
-      }
+      m_FileItems = (CFileItemList *)message.GetPointer();
+      if (m_FileItems == NULL)
+        return false;
 
       UpdateLayout(true); // true to refresh all items
       UpdateChannels();
       UpdateItems();
       //SelectItem(message.GetParam1());
+//      fprintf(stderr, "time: %u\n", CTimeUtils::GetTimeMS()-time);
       return true;
     }
   }
@@ -599,38 +599,62 @@ void CGUIEPGGridContainer::UpdateRuler()
 
 void CGUIEPGGridContainer::UpdateChannels()
 {
+  if (m_FileItems == NULL)
+    return;
+
   if (!m_channelItems.empty())
   {
     m_channelItems.clear();
     m_epgItemsPtr.clear();
   }
 
-  int lastChannel = -1;
+  int ChannelLast = -1;
 
-  for (unsigned int i = 0; i < m_items.size(); ++i)
+  ItemsPtr itemsPointer;
+  itemsPointer.start = 0;
+
+  for (unsigned int i = 0; i < m_FileItems->Size(); ++i)
   {
-    if (m_items[i]->GetEPGInfoTag()->ChannelNumber() != lastChannel)
-    {
-      lastChannel = m_items[i]->GetEPGInfoTag()->ChannelNumber();
+    const cPVREPGInfoTag* tag = m_FileItems->Get(i)->GetEPGInfoTag();
+    int ChannelNow = tag->ChannelNumber();
 
-      CGUIListItemLayout *pChannelLayout = new CGUIListItemLayout(*m_channelLayout);
+    if (ChannelNow != ChannelLast)
+    {
+      if (i > 0)
+      {
+        itemsPointer.stop     = i-1;
+        m_epgItemsPtr.push_back(itemsPointer);
+        itemsPointer.start    = i;
+      }
+
+      ChannelLast = ChannelNow;
+
+      CGUIListItemLayout *pChannelLayout        = new CGUIListItemLayout(*m_channelLayout);
       CGUIListItemLayout *pChannelFocusedLayout = new CGUIListItemLayout(*m_focusedChannelLayout);
       pChannelLayout->SetWidth(m_channelWidth);
       pChannelFocusedLayout->SetWidth(m_channelWidth);
 
-      CGUIListItemPtr item(new CFileItem(m_items[i]->GetEPGInfoTag()->ChannelName()));
-      item->SetLabel2(m_items[i]->GetEPGInfoTag()->ChannelName());
-      item->SetThumbnailImage(m_items[i]->GetEPGInfoTag()->Icon());
+      CGUIListItemPtr item(new CFileItem(tag->ChannelName()));
+      item->SetLabel2(tag->ChannelName());
+      item->SetThumbnailImage(tag->Icon());
       item->SetLayout(pChannelLayout);
       item->SetFocusedLayout(pChannelFocusedLayout);
       m_channelItems.push_back(item);
-      m_epgItemsPtr.push_back(i);
     }
+  }
+
+  if (m_epgItemsPtr.size() > 0)
+  {
+    itemsPointer.stop = m_FileItems->Size()-1;
+    m_epgItemsPtr.push_back(itemsPointer);
   }
 }
 
 void CGUIEPGGridContainer::UpdateItems()
 {
+  if (m_FileItems == NULL)
+    return;
+
   if (!m_gridItems.empty())
     m_gridItems.clear();
 
@@ -657,33 +681,20 @@ void CGUIEPGGridContainer::UpdateItems()
   {
     CDateTime gridCursor = m_gridStart; //reset cursor for new channel
     CFileItemPtr programme;
-    unsigned long progIdx = m_epgItemsPtr[row];
-
-    if (m_items[progIdx]->GetEPGInfoTag() == NULL)
-      continue;
-
-    unsigned int channelnum = m_items[progIdx]->GetEPGInfoTag()->ChannelNumber();
+    unsigned long progIdx   = m_epgItemsPtr[row].start;
+    unsigned long lastIdx   = m_epgItemsPtr[row].stop;
+    unsigned int channelnum = m_FileItems->Get(progIdx)->GetEPGInfoTag()->ChannelNumber();
 
     /** FOR EACH BLOCK **********************************************************************/
 
     for (int block = 0; block < m_blocks; block++)
     {
-      unsigned long lastIdx;
-
-      if (row < m_channelItems.size()-1)
-        lastIdx = m_epgItemsPtr[row+1];
-      else
-        lastIdx = m_items.size();
-
-      while (progIdx < lastIdx)
+      while (progIdx <= lastIdx)
       {
-        if (m_items[progIdx]->GetEPGInfoTag()->ChannelNumber() != channelnum)
+        if (m_FileItems->Get(progIdx)->GetEPGInfoTag()->ChannelNumber() != channelnum)
           break;
 
-        programme = m_items[progIdx];
-
-        if (programme == NULL)
-          progIdx++;
+        programme = m_FileItems->Get(progIdx);
 
         const cPVREPGInfoTag* tag = programme->GetEPGInfoTag();
         if (tag == NULL)
@@ -1052,10 +1063,13 @@ CFileItemPtr CGUIEPGGridContainer::GetSelectedItemPtr() const
 
 int CGUIEPGGridContainer::GetSelectedItem() const
 {
+  if (m_FileItems == NULL)
+    return 0;
+
   CFileItemPtr currentItem = GetSelectedItemPtr();
-  for (int i = 0; i < m_items.size(); i++)
+  for (int i = 0; i < m_FileItems->Size(); i++)
   {
-    if (currentItem == m_items[i])
+    if (currentItem == m_FileItems->Get(i))
       return i;
   }
   return 0;
@@ -1397,7 +1411,7 @@ void CGUIEPGGridContainer::Reset()
 
   m_lastItem    = NULL;
   m_lastChannel = NULL;
-  m_items.clear();
+  m_FileItems   = NULL;
 }
 
 void CGUIEPGGridContainer::GoToBegin()
