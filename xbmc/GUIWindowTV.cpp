@@ -1511,8 +1511,6 @@ void CGUIWindowTV::UpdateGuide()
 
   if (m_iGuideView == GUIDE_VIEW_CHANNEL)
   {
-    m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_CHANNEL);
-
     m_guideGrid = NULL;
 
     CStdString strChannel;
@@ -1532,11 +1530,10 @@ void CGUIWindowTV::UpdateGuide()
       item->SetLabelPreformated(true);
       m_vecItems->Add(item);
     }
+    m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_CHANNEL);
   }
   else if (m_iGuideView == GUIDE_VIEW_NOW)
   {
-    m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
-
     m_guideGrid = NULL;
 
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19030));
@@ -1550,11 +1547,10 @@ void CGUIWindowTV::UpdateGuide()
       item->SetLabelPreformated(true);
       m_vecItems->Add(item);
     }
+    m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
   }
   else if (m_iGuideView == GUIDE_VIEW_NEXT)
   {
-    m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
-
     m_guideGrid = NULL;
 
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19031));
@@ -1568,6 +1564,7 @@ void CGUIWindowTV::UpdateGuide()
       item->SetLabelPreformated(true);
       m_vecItems->Add(item);
     }
+    m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
   }
   else if (m_iGuideView == GUIDE_VIEW_TIMELINE)
   {
