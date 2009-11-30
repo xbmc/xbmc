@@ -9,11 +9,10 @@ $(TARGET): dist/XBMC.dmg
 
 ifeq ($(findstring D_DEBUG,$(CFLAGS)), D_DEBUG)
 dist/XBMC.dmg:
-	umount /Volumes/XBMC
+	if [ -e "/Volumes/XBMC" ] ; then umount /Volumes/XBMC ; fi
 	./dmgmaker.pl ../../build/Debug/XBMC.app
 else
 dist/XBMC.dmg:
-	umount /Volumes/XBMC
+	if [ -e "/Volumes/XBMC" ] ; then umount /Volumes/XBMC ; fi
 	./dmgmaker.pl ../../build/Release/XBMC.app
 endif
-
