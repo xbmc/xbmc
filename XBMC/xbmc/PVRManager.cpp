@@ -1835,7 +1835,7 @@ int CPVRManager::ReadStream(BYTE* buf, int buf_size)
     {
       CLog::Log(LOGERROR,"PVR: No video or audio data available after %i seconds, playback stopped", g_guiSettings.GetInt("pvrplayback.scantime"));
       LeaveCriticalSection(&m_critSection);
-      return -1;
+      return 0;
     }
     else if (g_application.IsPlayingVideo() || g_application.IsPlayingAudio())
       m_scanStart = NULL;

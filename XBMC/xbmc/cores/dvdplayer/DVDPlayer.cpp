@@ -483,16 +483,11 @@ bool CDVDPlayer::OpenDemuxStream()
 
   try
   {
-    int attempts = m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) ? 100 : 10;
+    int attempts = 10;
     while(!m_bStop && attempts-- > 0)
     {
       m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
-      if(!m_pDemuxer && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-      {
-        Sleep(200);
-        continue;
-      }
-      else if(!m_pDemuxer && m_pInputStream->NextStream())
+      if(!m_pDemuxer && m_pInputStream->NextStream())
       {
         CLog::Log(LOGDEBUG, "%s - New stream available from input, retry open", __FUNCTION__);
         continue;
@@ -987,16 +982,7 @@ void CDVDPlayer::Process()
         Sleep(100);
         continue;
       }
-      else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-      {
-        CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
 
-        if (pStream->IsEOF())
-          break;
-
-        Sleep(100);
-        continue;
-      }
       // make sure we tell all players to finish it's data
       if(m_CurrentAudio.inited)
         m_dvdPlayerAudio.SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
