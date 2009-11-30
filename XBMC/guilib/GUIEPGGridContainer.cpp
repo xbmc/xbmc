@@ -202,9 +202,6 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
         m_items.push_back(items->Get(i));
       }
 
-      m_gridStart = (time_t)message.GetParam1();
-
-      m_gridEnd   = (time_t)message.GetParam2();
       UpdateLayout(true); // true to refresh all items
       UpdateChannels();
       UpdateItems();
@@ -1411,4 +1408,10 @@ void CGUIEPGGridContainer::GoToBegin()
 void CGUIEPGGridContainer::GoToEnd()
 {
   ScrollToBlockOffset(m_blocks - m_blocksPerPage);
+}
+
+void CGUIEPGGridContainer::SetStartEnd(CDateTime start, CDateTime end)
+{
+  m_gridStart = start;
+  m_gridEnd = end;
 }
