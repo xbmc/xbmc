@@ -1054,73 +1054,122 @@ void cPVRClientVDR::CloseLiveStream()
   return;
 }
 
+//int cPVRClientVDR::ReadLiveStream(BYTE* buf, int buf_size)
+//{
+//  if (!m_transceiver->IsOpen())
+//    return -1;
+//
+//  if (m_socket_video == INVALID_SOCKET)
+//    return -1;
+//
+//  fd_set         set_r, set_e;
+//  struct timeval tv;
+//  int            ret;
+//
+//  tv.tv_sec = m_FirstRead ? 0 : 3;
+//  tv.tv_usec = m_FirstRead ? 25000 : 0;
+//  FD_ZERO(&set_r);
+//  FD_ZERO(&set_e);
+//  FD_SET(m_socket_video, &set_r);
+//  FD_SET(m_socket_video, &set_e);
+//
+//  ret = select(FD_SETSIZE, &set_r, NULL, &set_e, &tv);
+//  if (ret < 0)
+//  {
+//    if (time(NULL) - m_TimeOut > 2)
+//    {
+//      return writeNoSignalStream(buf, buf_size);
+//    }
+//    else
+//    {
+//      XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - select failed");
+//      return 0;
+//    }
+//  }
+//  else if (ret == 0)
+//  {
+//    if (time(NULL) - m_TimeOut > 2)
+//    {
+//      return writeNoSignalStream(buf, buf_size);
+//    }
+//    else
+//    {
+//      XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - timeout waiting for data");
+//      return 0;
+//    }
+//  }
+//
+//  m_FirstRead = false;
+//  if (m_playingNoSignal)
+//  {
+//    m_playingNoSignal = false;
+//    PVR_reset_player();
+//    return 0;
+//  }
+//
+//  ret = recv(m_socket_video, (char*)buf, (size_t)buf_size, 0);
+//  if (ret < 0)
+//  {
+//    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - failed");
+//    return -1;
+//  }
+//  else if (ret == 0)
+//  {
+//    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - eof");
+//    return -1;
+//  }
+//
+//  m_TimeOut = time(NULL);
+//  return ret;
+//}
+
 int cPVRClientVDR::ReadLiveStream(BYTE* buf, int buf_size)
 {
   if (!m_transceiver->IsOpen())
-    return -1;
+    return 0;
 
   if (m_socket_video == INVALID_SOCKET)
-    return -1;
+    return 0;
 
   fd_set         set_r, set_e;
   struct timeval tv;
-  int            ret;
+  int            res;
 
-  tv.tv_sec = m_FirstRead ? 0 : 3;
-  tv.tv_usec = m_FirstRead ? 25000 : 0;
+  tv.tv_sec = 10;
+  tv.tv_usec = 0;
   FD_ZERO(&set_r);
   FD_ZERO(&set_e);
   FD_SET(m_socket_video, &set_r);
   FD_SET(m_socket_video, &set_e);
+  res = select(FD_SETSIZE, &set_r, NULL, &set_e, &tv);
 
-  ret = select(FD_SETSIZE, &set_r, NULL, &set_e, &tv);
-  if (ret < 0)
+  if (res < 0)
   {
-    if (time(NULL) - m_TimeOut > 2)
-    {
-      return writeNoSignalStream(buf, buf_size);
-    }
-    else
-    {
-      XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - select failed");
-      return 0;
-    }
-  }
-  else if (ret == 0)
-  {
-    if (time(NULL) - m_TimeOut > 2)
-    {
-      return writeNoSignalStream(buf, buf_size);
-    }
-    else
-    {
-      XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - timeout waiting for data");
-      return 0;
-    }
-  }
-
-  m_FirstRead = false;
-  if (m_playingNoSignal)
-  {
-    m_playingNoSignal = false;
-    PVR_reset_player();
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - select failed");
     return 0;
   }
 
-  ret = recv(m_socket_video, (char*)buf, (size_t)buf_size, 0);
-  if (ret < 0)
+  if (res == 0)
   {
-    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - failed");
-    return -1;
-  }
-  else if (ret == 0)
-  {
-    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - eof");
-    return -1;
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - timeout waiting for data");
+    return 0;
   }
 
-  m_TimeOut = time(NULL);
-  return ret;
+  res = recv(m_socket_video, (char*)buf, (size_t)buf_size, 0);
+
+  if (res < 0)
+  {
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - failed");
+    return 0;
+  }
+
+  if (res == 0)
+  {
+    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - eof");
+    return 0;
+  }
+
+  return res;
 }
 
 int cPVRClientVDR::GetCurrentClientChannel()
