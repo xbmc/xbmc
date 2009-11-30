@@ -124,7 +124,7 @@ public:
   void TriggerRecordingsUpdate(bool force=true);
 
   /*--- Stream reading functions ---*/
-  bool OpenLiveStream(unsigned int channel, bool radio = false);
+  bool OpenLiveStream(const cPVRChannelInfoTag* tag);
   bool OpenRecordedStream(const cPVRRecordingInfoTag* tag);
   void CloseStream();
   int ReadStream(BYTE* buf, int buf_size);

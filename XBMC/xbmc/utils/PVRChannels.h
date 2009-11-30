@@ -200,6 +200,7 @@ public:
   static cPVRChannelInfoTag *GetByChannelIDFromAll(long ChannelID);
   static cPVRChannelInfoTag *GetByUniqueIDFromAll(long UniqueID);
   static cPVRChannelInfoTag *GetByPath(CStdString &path);
+  static bool GetDirectory(const CStdString& strPath, CFileItemList &items);
 };
 
 class cPVRChannelGroup
@@ -234,6 +235,7 @@ public:
   bool DeleteGroup(unsigned int GroupId);
   bool ChannelToGroup(const cPVRChannelInfoTag &channel, unsigned int GroupId);
   CStdString GetGroupName(int GroupId);
+  int GetGroupId(CStdString GroupName);
   void Clear();
 };
 

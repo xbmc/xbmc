@@ -59,6 +59,7 @@
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#include "URL.h"
 
 /**
  * Create a blank unmodified timer tag
@@ -121,7 +122,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(bool Init)
   /* Set default timer */
   m_clientIndex   = -1;
   m_Active        = true;
-  m_strTitle      = g_localizeStrings.Get(18072);
+  m_strTitle      = g_localizeStrings.Get(19056);
   m_channelNum    = channel->Number();
   m_clientNum     = channel->ClientNumber();
   m_clientID      = channel->ClientID();
@@ -652,6 +653,37 @@ bool cPVRTimers::UpdateTimer(const CFileItem &item)
 
   const cPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
   return tag->Update();
+}
+
+bool cPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items)
+{
+  CStdString base(strPath);
+  CUtil::RemoveSlashAtEnd(base);
+
+  CURL url(strPath);
+  CStdString fileName = url.GetFileName();
+  CUtil::RemoveSlashAtEnd(fileName);
+
+  if (fileName == "timers")
+  {
+    CFileItemPtr item;
+
+    Update();
+
+    item.reset(new CFileItem(base + "/add.timer", false));
+    item->SetLabel(g_localizeStrings.Get(19026));
+    item->SetLabelPreformated(true);
+    items.Add(item);
+
+    for (unsigned int i = 0; i < size(); ++i)
+    {
+      item.reset(new CFileItem(at(i)));
+      items.Add(item);
+    }
+
+    return true;
+  }
+  return false;
 }
 
 void cPVRTimers::Clear()

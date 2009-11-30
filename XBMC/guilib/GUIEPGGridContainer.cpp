@@ -1053,6 +1053,17 @@ CFileItemPtr CGUIEPGGridContainer::GetSelectedItemPtr() const
   return m_gridIndex[m_channelCursor + m_channelOffset][m_blockCursor + m_blockOffset]; ///
 }
 
+int CGUIEPGGridContainer::GetSelectedItem() const
+{
+  CFileItemPtr currentItem = GetSelectedItemPtr();
+  for (int i = 0; i < m_items.size(); i++)
+  {
+    if (currentItem == m_items[i])
+      return i;
+  }
+  return 0;
+}
+
 CGUIListItemPtr CGUIEPGGridContainer::GetListItem(int offset) const
 {
   if (!m_gridItems.size())
@@ -1128,7 +1139,7 @@ void CGUIEPGGridContainer::GenerateItemLayout(int row, int itemSize, int block)
   {
     cPVREPGInfoTag broadcast(NULL);
 
-//    broadcast.m_strChannel        = g_localizeStrings.Get(18074);
+//    broadcast.m_strChannel        = g_localizeStrings.Get(19055);
 
     CFileItemPtr unknown(new CFileItem(broadcast));
 

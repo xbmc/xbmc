@@ -55,18 +55,13 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   {
     CFileItemPtr item;
 
-    item.reset(new CFileItem(base + "/channelstv/", true));
-    item->SetLabel(g_localizeStrings.Get(18051));
-    item->SetLabelPreformated(true);
-    items.Add(item);
-
-    item.reset(new CFileItem(base + "/channelsradio/", true));
-    item->SetLabel(g_localizeStrings.Get(18052));
+    item.reset(new CFileItem(base + "/channels/", true));
+    item->SetLabel(g_localizeStrings.Get(19019));
     item->SetLabelPreformated(true);
     items.Add(item);
 
     item.reset(new CFileItem(base + "/recordings/", true));
-    item->SetLabel(g_localizeStrings.Get(18066));
+    item->SetLabel(g_localizeStrings.Get(19017));
     item->SetLabelPreformated(true);
     items.Add(item);
 
@@ -89,7 +84,14 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   {
     return PVRRecordings.GetDirectory(strPath, items) > 0;
   }
-
+  else if (fileName.Left(8) == "channels")
+  {
+    return cPVRChannels::GetDirectory(strPath, items) > 0;
+  }
+  else if (fileName.Left(6) == "timers")
+  {
+    return PVRTimers.GetDirectory(strPath, items) > 0;
+  }
 
   return false;
 }

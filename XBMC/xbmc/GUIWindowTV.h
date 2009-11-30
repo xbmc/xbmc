@@ -43,11 +43,13 @@ public:
   virtual ~CGUIWindowTV(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
+  virtual void OnWindowLoaded();
+  virtual void OnWindowUnload();
+  virtual void OnInitWindow();
 
   void UpdateData(TVWindow update);
 
 protected:
-  virtual bool OnPopupMenu(int iItem);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void UpdateButtons();
@@ -65,11 +67,10 @@ private:
   int m_iSelected_CHANNELS_TV;
   int m_iSelected_CHANNELS_RADIO;
   int m_iSelected_RECORDINGS;
+  CStdString m_iSelected_RECORDINGS_Path;
   int m_iSelected_TIMERS;
   int m_iSelected_SEARCH;
 
-  SORT_ORDER m_iSortOrder_RECORDINGS;
-  SORT_METHOD m_iSortMethod_RECORDINGS;
   SORT_ORDER m_iSortOrder_SEARCH;
   SORT_METHOD m_iSortMethod_SEARCH;
 
@@ -89,6 +90,8 @@ private:
   void UpdateRecordings();
   void UpdateTimers();
   void UpdateSearch();
+
+  bool PlayFile(CFileItem *item);
 
   CGUIEPGGridContainer   *m_guideGrid;
 };

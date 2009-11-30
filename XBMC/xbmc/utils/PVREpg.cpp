@@ -71,7 +71,7 @@ cPVREPGInfoTag::cPVREPGInfoTag(long uniqueBroadcastID)
 
 void cPVREPGInfoTag::Reset()
 {
-  m_strTitle            = g_localizeStrings.Get(18074);
+  m_strTitle            = g_localizeStrings.Get(19055);
   m_strPlotOutline      = "";
   m_strPlot             = "";
   m_GenreType           = 0;

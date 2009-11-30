@@ -166,14 +166,14 @@
 					<width>950</width>
 					<height>35</height>
 					<font>font12</font>
-					<label>31115</label>
+					<label>31205</label>
 					<textcolor>grey2</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
-					<onclick>Skin.ToggleSetting(Player_Show_Teletext_Button)</onclick>
-					<selected>Skin.HasSetting(Player_Show_Teletext_Button)</selected>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<onclick>Skin.ToggleSetting(TVWindow_Show_Channels_First)</onclick>
+					<selected>!Skin.HasSetting(TVWindow_Show_Channels_First)</selected>
 				</control>
 			</control>
 			<control type="grouplist" id="9002">

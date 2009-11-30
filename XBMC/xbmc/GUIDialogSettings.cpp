@@ -110,7 +110,7 @@ void CGUIDialogSettings::SetupPage()
   // update our settings label
   if (GetID() == WINDOW_DIALOG_PVR_TIMER_SETTING)
   {
-    SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, g_localizeStrings.Get(18068));
+    SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, g_localizeStrings.Get(19057));
   }
   else
   {
