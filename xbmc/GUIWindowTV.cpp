@@ -45,6 +45,7 @@
 #include "GUIDialogPVRGroupManager.h"
 #include "GUIDialogPVRGuideSearch.h"
 #include "GUIUserMessages.h"
+#include "GUIEPGGridContainer.h"
 
 /* self include */
 #include "GUIWindowTV.h"
@@ -1570,8 +1571,6 @@ void CGUIWindowTV::UpdateGuide()
   }
   else if (m_iGuideView == GUIDE_VIEW_TIMELINE)
   {
-    m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
-
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19032));
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
 
@@ -1580,20 +1579,13 @@ void CGUIWindowTV::UpdateGuide()
       CDateTime now = CDateTime::GetCurrentDateTime();
       CDateTime m_gridStart = now - CDateTimeSpan(0, 0, 0, (now.GetMinute() % 30) * 60 + now.GetSecond()) - CDateTimeSpan(0, g_guiSettings.GetInt("pvrmenu.lingertime") / 60, g_guiSettings.GetInt("pvrmenu.lingertime") % 60, 0);
       CDateTime m_gridEnd = m_gridStart + CDateTimeSpan(g_guiSettings.GetInt("pvrmenu.daystodisplay"), 0, 0, 0);
-
-      time_t time_start;
-      time_t time_end;
-      m_gridStart.GetAsTime(time_start);
-      m_gridEnd.GetAsTime(time_end);
-
-      CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_TIMELINE, time_start, time_end, m_vecItems);
-      g_windowManager.SendMessage(msg);
       m_guideGrid = (CGUIEPGGridContainer*)GetControl(CONTROL_LIST_TIMELINE);
+      m_guideGrid->SetStartEnd(m_gridStart, m_gridEnd);
+      m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
+
+//      m_viewControl.SetSelectedItem(m_iSelected_GUIDE);
     }
   }
-
-  m_viewControl.SetItems(*m_vecItems);
-  m_viewControl.SetSelectedItem(m_iSelected_GUIDE);
 
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, g_localizeStrings.Get(19029));
 }

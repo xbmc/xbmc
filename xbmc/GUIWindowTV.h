@@ -22,8 +22,9 @@
  */
 
 #include "GUIMediaWindow.h"
-#include "GUIEPGGridContainer.h"
 #include "utils/PVREpg.h"
+
+class CGUIEPGGridContainer;
 
 enum TVWindow
 {

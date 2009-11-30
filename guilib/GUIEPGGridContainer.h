@@ -66,6 +66,7 @@ public:
 
   void GoToBegin();
   void GoToEnd();
+  void SetStartEnd(CDateTime start, CDateTime end);
 
 protected:
   bool OnClick(int actionID);
