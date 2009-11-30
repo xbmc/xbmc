@@ -37,7 +37,7 @@ build:
 	# Add here commands to configure the package.
 	./bootstrap
 	dh_auto_configure -- --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
-		--prefix=/usr --enable-external-libraries --enable-goom --enable-vdpau \
+		--prefix=/usr --enable-goom --enable-vdpau \
 		--enable-avahi SVN_REV="$(SVNVERSION)"
 	dh build --after dh_auto_configure
 
