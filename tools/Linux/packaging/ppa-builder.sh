@@ -2,7 +2,11 @@
 
 usage()
 {
-echo "The following options are supported: 
+echo "
+  This script requires debhelper, pbuilder, dput:
+  $ sudo apt-get install debhelper pbuilder dput subversion
+
+  The following options are supported: 
 	--ppa=<your ppa in dput.cf>
 	-t, --tag 	: svnsrc=<dir>, version=<version> (without 'xbmc-')
 	-u		: srcdir=<dir> version=<version> revision=<rev> minor=<minor>
@@ -142,7 +146,7 @@ builddeb()
   fi
   if [[ -z $LOCAL ]]; then 
     echo "'--local' is not set. Uploading to PPA"
-    dput $XBMCPPA xbmc_${VERSION}-$1${MINOR}_source.changes 2>&1 | tee -a $BUILD_LOG
+    dput $XBMCPPA xbmc_${VERSION}-$1${MINOR}_source.changes 2>&1
     rm -rf $DESTSRC/debian
   fi
 }
