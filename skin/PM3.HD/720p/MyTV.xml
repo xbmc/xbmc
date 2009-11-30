@@ -1,5 +1,5 @@
 <window id="600">
-	<defaultcontrol>31</defaultcontrol>
+	<defaultcontrol>9000</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<include>CommonBackground</include>
@@ -1189,10 +1189,17 @@
 					<pagecontrol>75</pagecontrol>
 					<scrolltime>200</scrolltime>
 					<itemlayout height="60" width="400">
-						<control type="label">
+						<control type="image">
 							<posx>5</posx>
+							<posy>4</posy>
+							<width>50</width>
+							<height>50</height>
+							<texture>$INFO[ListItem.Icon]</texture>
+						</control>
+						<control type="label">
+							<posx>60</posx>
 							<posy>0</posy>
-							<width>380</width>
+							<width>330</width>
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>white</textcolor>
@@ -1202,40 +1209,19 @@
 							<label>$INFO[ListItem.Label]</label>
 						</control>
 						<control type="label">
-							<posx>5</posx>
+							<posx>60</posx>
 							<posy>30</posy>
-							<width>380</width>
+							<width>330</width>
 							<height>30</height>
 							<font>font12</font>
 							<textcolor>grey</textcolor>
 							<selectedcolor>grey</selectedcolor>
 							<align>left</align>
 							<aligny>center</aligny>
-							<visible>IsEmpty(Listitem.Icon)</visible>
 							<label>$INFO[ListItem.Date]</label>
 						</control>
-						<control type="label">
-							<posx>5</posx>
-							<posy>30</posy>
-							<width>270</width>
-							<height>30</height>
-							<font>font12</font>
-							<textcolor>grey</textcolor>
-							<selectedcolor>grey</selectedcolor>
-							<align>left</align>
-							<aligny>center</aligny>
-							<visible>!IsEmpty(Listitem.Icon)</visible>
-							<label>$INFO[ListItem.Label2]</label>
-						</control>
-						<control type="image">
-							<posx>330</posx>
-							<posy>4</posy>
-							<width>50</width>
-							<height>50</height>
-							<texture>$INFO[ListItem.Icon]</texture>
-						</control>
 					</itemlayout>
-					<focusedlayout height="60" width="500">
+					<focusedlayout height="60" width="400">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -1245,10 +1231,17 @@
 							<visible>Control.HasFocus(13)</visible>
 							<include>VisibleFadeEffect</include>
 						</control>
-						<control type="label">
+						<control type="image">
 							<posx>5</posx>
+							<posy>4</posy>
+							<width>50</width>
+							<height>50</height>
+							<texture>$INFO[ListItem.Icon]</texture>
+						</control>
+						<control type="label">
+							<posx>60</posx>
 							<posy>0</posy>
-							<width>380</width>
+							<width>330</width>
 							<height>30</height>
 							<font>font13</font>
 							<textcolor>white</textcolor>
@@ -1258,37 +1251,16 @@
 							<label>$INFO[ListItem.Label]</label>
 						</control>
 						<control type="label">
-							<posx>5</posx>
+							<posx>60</posx>
 							<posy>30</posy>
-							<width>380</width>
+							<width>330</width>
 							<height>30</height>
 							<font>font12</font>
 							<textcolor>grey</textcolor>
 							<selectedcolor>grey</selectedcolor>
 							<align>left</align>
 							<aligny>center</aligny>
-							<visible>IsEmpty(Listitem.Icon)</visible>
 							<label>$INFO[ListItem.Date]</label>
-						</control>
-						<control type="label">
-							<posx>5</posx>
-							<posy>30</posy>
-							<width>320</width>
-							<height>30</height>
-							<font>font12</font>
-							<textcolor>grey</textcolor>
-							<selectedcolor>grey</selectedcolor>
-							<align>left</align>
-							<aligny>center</aligny>
-							<visible>!IsEmpty(Listitem.Icon)</visible>
-							<label>$INFO[ListItem.Label2]</label>
-						</control>
-						<control type="image">
-							<posx>330</posx>
-							<posy>4</posy>
-							<width>50</width>
-							<height>50</height>
-							<texture>$INFO[ListItem.Icon]</texture>
 						</control>
 					</focusedlayout>
 				</control>
@@ -1332,26 +1304,14 @@
 				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
 				<textureslidernib>scrollbar_nib.png</textureslidernib>
 				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
-				<onleft>12</onleft>
-				<onright>33</onright>
+				<onleft>13</onleft>
+				<onright>34</onright>
 				<ondown>75</ondown>
 				<onup>75</onup>
 				<showonepage>true</showonepage>
 				<orientation>vertical</orientation>
 			</control>
-			<control type="label">
-				<description>number of files/pages in list text label</description>
-				<posx>50r</posx>
-				<posy>38r</posy>
-				<width>500</width>
-				<height>20</height>
-				<font>font12b</font>
-				<align>right</align>
-				<aligny>center</aligny>
-				<scroll>true</scroll>
-				<textcolor>white</textcolor>
-				<label>$INFO[Container(13).NumItems] $LOCALIZE[18066] - $LOCALIZE[18060] ($INFO[Container(13).CurrentPage]/$INFO[Container(13).NumPages])</label>
-			</control>
+			<include>CommonFileCount</include>
 			<include>ScrollOffsetLabel</include>
 		</control>
 		<!-- Timers group -->
@@ -1469,19 +1429,7 @@
 				<showonepage>true</showonepage>
 				<orientation>vertical</orientation>
 			</control>
-			<control type="label">
-				<description>number of files/pages in list text label</description>
-				<posx>50r</posx>
-				<posy>38r</posy>
-				<width>500</width>
-				<height>20</height>
-				<font>font12b</font>
-				<align>right</align>
-				<aligny>center</aligny>
-				<scroll>true</scroll>
-				<textcolor>white</textcolor>
-				<label>$LOCALIZE[18060] ($INFO[Container(14).CurrentPage]/$INFO[Container(14).NumPages])</label>
-			</control>
+			<include>CommonFileCount</include>
 			<control type="label">
 				<description>Next timer date</description>
 				<posx>310</posx>
@@ -1657,19 +1605,7 @@
 					<showonepage>true</showonepage>
 					<orientation>vertical</orientation>
 				</control>
-				<control type="label">
-				<description>number of files/pages in list text label</description>
-				<posx>50r</posx>
-				<posy>38r</posy>
-				<width>500</width>
-				<height>20</height>
-				<font>font12b</font>
-				<align>right</align>
-				<aligny>center</aligny>
-				<scroll>true</scroll>
-				<textcolor>white</textcolor>
-				<label>$LOCALIZE[18060] ($INFO[Container(17).CurrentPage]/$INFO[Container(17).NumPages])</label>
-			</control>
+				<include>CommonFileCount</include>
     </control>
 		<control type="group">
 			<include>Window_OpenClose_Left_Panel_Animation</include>
@@ -1685,50 +1621,122 @@
 					<texture border="0,0,50,45">Panel2.png</texture>
 					<include>VisibleFadeEffect</include>
 				</control>
-				<control type="button" id="31">
-					<description>TV Guide</description>
-					<posx>0</posx>
-					<posy>0</posy>
-					<include>ButtonCommonValues</include>
-					<label>18050</label>
-					<onleft>10</onleft>
-					<onright>10</onright>
-					<onup>36</onup>
-					<ondown>32</ondown>
-				</control>
-				<control type="button" id="32">
-					<description>Radio Channels</description>
-					<posx>0</posx>
-					<posy>45</posy>
-					<include>ButtonCommonValues</include>
-					<label>18051</label>
-					<onleft>11</onleft>
-					<onright>11</onright>
-					<onup>31</onup>
-					<ondown>33</ondown>
-				</control>
-				<control type="button" id="33">
-					<description>Radio Channels</description>
-					<posx>0</posx>
-					<posy>90</posy>
-					<include>ButtonCommonValues</include>
-					<label>18052</label>
-					<onleft>12</onleft>
-					<onright>12</onright>
-					<onup>32</onup>
-					<ondown>34</ondown>
-				</control>
-				<control type="button" id="34">
-					<description>Recordings</description>
-					<posx>0</posx>
-					<posy>135</posy>
-					<include>ButtonCommonValues</include>
-					<label>18066</label>
-					<onleft>13</onleft>
-					<onright>13</onright>
-					<onup>33</onup>
-					<ondown>35</ondown>
-				</control>
+        <control type="group">
+          <visible>Skin.HasSetting(TVWindow_Show_Channels_First)</visible>
+          <control type="button" id="31">
+            <description>TV Guide</description>
+            <posx>0</posx>
+            <posy>0</posy>
+            <include>ButtonCommonValues</include>
+            <label>18050</label>
+            <onleft>10</onleft>
+            <onright>10</onright>
+            <onup>36</onup>
+            <ondown>32</ondown>
+          </control>
+          <control type="button" id="32">
+            <description>Radio Channels</description>
+            <posx>0</posx>
+            <posy>45</posy>
+            <include>ButtonCommonValues</include>
+            <label>18051</label>
+            <onleft>11</onleft>
+            <onright>11</onright>
+            <onup>31</onup>
+            <ondown>33</ondown>
+          </control>
+          <control type="button" id="33">
+            <description>Radio Channels</description>
+            <posx>0</posx>
+            <posy>90</posy>
+            <include>ButtonCommonValues</include>
+            <label>18052</label>
+            <onleft>12</onleft>
+            <onright>12</onright>
+            <onup>32</onup>
+            <ondown>34</ondown>
+          </control>
+          <control type="button" id="34">
+            <description>Recordings</description>
+            <posx>0</posx>
+            <posy>135</posy>
+            <include>ButtonCommonValues</include>
+            <label>18066</label>
+            <onleft>75</onleft>
+            <onright>13</onright>
+            <onup>33</onup>
+            <ondown>35</ondown>
+          </control>
+          <control type="button" id="36">
+            <description>Search</description>
+            <posx>0</posx>
+            <posy>225</posy>
+            <include>ButtonCommonValues</include>
+            <label>137</label>
+            <onleft>17</onleft>
+            <onright>17</onright>
+            <onup>35</onup>
+            <ondown>31</ondown>
+          </control>
+        </control>
+        <control type="group">
+          <visible>!Skin.HasSetting(TVWindow_Show_Channels_First)</visible>
+          <control type="button" id="32">
+            <description>TV Channels</description>
+            <posx>0</posx>
+            <posy>0</posy>
+            <include>ButtonCommonValues</include>
+            <label>18051</label>
+            <onleft>11</onleft>
+            <onright>11</onright>
+            <onup>36</onup>
+            <ondown>33</ondown>
+          </control>
+          <control type="button" id="33">
+            <description>Radio Channels</description>
+            <posx>0</posx>
+            <posy>45</posy>
+            <include>ButtonCommonValues</include>
+            <label>18052</label>
+            <onleft>12</onleft>
+            <onright>12</onright>
+            <onup>32</onup>
+            <ondown>31</ondown>
+          </control>
+          <control type="button" id="31">
+            <description>TV Guide</description>
+            <posx>0</posx>
+            <posy>90</posy>
+            <include>ButtonCommonValues</include>
+            <label>18050</label>
+            <onleft>10</onleft>
+            <onright>10</onright>
+            <onup>33</onup>
+            <ondown>34</ondown>
+          </control>
+          <control type="button" id="34">
+            <description>Recordings</description>
+            <posx>0</posx>
+            <posy>135</posy>
+            <include>ButtonCommonValues</include>
+            <label>18066</label>
+            <onleft>75</onleft>
+            <onright>13</onright>
+            <onup>31</onup>
+            <ondown>35</ondown>
+          </control>
+          <control type="button" id="36">
+            <description>Search</description>
+            <posx>0</posx>
+            <posy>225</posy>
+            <include>ButtonCommonValues</include>
+            <label>137</label>
+            <onleft>17</onleft>
+            <onright>17</onright>
+            <onup>35</onup>
+            <ondown>32</ondown>
+          </control>
+        </control>
 				<control type="button" id="35">
 					<description>Timers</description>
 					<posx>0</posx>
@@ -1739,17 +1747,6 @@
 					<onright>14</onright>
 					<onup>34</onup>
 					<ondown>36</ondown>
-				</control>
-				<control type="button" id="36">
-					<description>Search</description>
-					<posx>0</posx>
-					<posy>225</posy>
-					<include>ButtonCommonValues</include>
-					<label>137</label>
-					<onleft>17</onleft>
-					<onright>17</onright>
-					<onup>35</onup>
-					<ondown>31</ondown>
 				</control>
 				<control type="group">
 					<visible>[Control.HasFocus(31) + Control.IsVisible(10)]</visible>

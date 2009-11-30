@@ -63,7 +63,7 @@
   <string id="31058">System music files</string>
   <string id="31059">Current playlist</string>
   <string id="31060">This file is stacked, select the part you want to play from.</string>
-  
+
   <!-- Skin Settings labels -->
   <string id="31100">Background options</string>
   <string id="31101">Home screen options</string>
@@ -89,7 +89,7 @@
   <string id="31202"></string>
   <string id="31203">Set button label</string>
   <string id="31204">Script path</string>
-  <string id="31205"></string>
+  <string id="31205">Channels are the first point inside TV Window</string>
   <string id="31206"></string>
   <string id="31207">Show subtitle download button in Video OSD</string>
   <string id="31208">Show lyrics script button in Music OSD</string>

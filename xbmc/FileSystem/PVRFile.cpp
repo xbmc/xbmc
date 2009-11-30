@@ -43,33 +43,39 @@ bool CPVRFile::Open(const CURL& url)
 
   CStdString strURL = url.Get();
 
-  if (strURL.Left(17) == "pvr://channelstv/")
+  if (strURL.Left(18) == "pvr://channels/tv/")
   {
-    CStdString channel = strURL.Mid(17);
-    CUtil::RemoveExtension(channel);
-    m_playingItem = atoi(channel.c_str());
-
-    if (!g_PVRManager.OpenLiveStream(m_playingItem, false))
+    cPVRChannelInfoTag *tag = cPVRChannels::GetByPath(strURL);
+    if (tag)
     {
+      if (!g_PVRManager.OpenLiveStream(tag))
+        return false;
+
+      m_isPlayRecording = false;
+      CLog::Log(LOGDEBUG, "%s - TV Channel has started on filename %s", __FUNCTION__, strURL.c_str());
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "PVRFile - TV Channel not found with filename %s", strURL.c_str());
       return false;
     }
-    m_isPlayRecording = false;
-
-    CLog::Log(LOGDEBUG, "%s - TV Channel has started on filename %s", __FUNCTION__, strURL.c_str());
   }
-  else if (strURL.Left(20) == "pvr://channelsradio/")
+  else if (strURL.Left(21) == "pvr://channels/radio/")
   {
-    CStdString channel = strURL.Mid(20);
-    CUtil::RemoveExtension(channel);
-    m_playingItem = atoi(channel.c_str());
-
-    if (!g_PVRManager.OpenLiveStream(m_playingItem, true))
+    cPVRChannelInfoTag *tag = cPVRChannels::GetByPath(strURL);
+    if (tag)
     {
+      if (!g_PVRManager.OpenLiveStream(tag))
+        return false;
+
+      m_isPlayRecording = false;
+      CLog::Log(LOGDEBUG, "%s - Radio Channel has started on filename %s", __FUNCTION__, strURL.c_str());
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "PVRFile - Radio Channel not found with filename %s", strURL.c_str());
       return false;
     }
-    m_isPlayRecording = false;
-
-    CLog::Log(LOGDEBUG, "%s - Radio Channel has started on filename %s", __FUNCTION__, strURL.c_str());
   }
   else if (strURL.Left(17) == "pvr://recordings/")
   {

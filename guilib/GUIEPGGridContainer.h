@@ -52,7 +52,7 @@ public:
 
   CStdString GetDescription() const;
   const int GetNumChannels()   { return m_channels; };
-  virtual int GetSelectedItem() const { return 0; }; /// doesn't currently store last position
+  virtual int GetSelectedItem() const;
   CFileItemPtr GetSelectedItemPtr() const;
   const int GetSelectedChannel() { return m_channelCursor + m_channelOffset; }
 

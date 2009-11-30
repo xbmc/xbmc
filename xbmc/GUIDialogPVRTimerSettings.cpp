@@ -386,6 +386,6 @@ void CGUIDialogPVRTimerSettings::OnOkay()
 {
   m_cancelled = false;
   cPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
-  if (tag->Title() == g_localizeStrings.Get(18072))
+  if (tag->Title() == g_localizeStrings.Get(19056))
     tag->SetTitle(cPVRChannels::GetByClientFromAll(tag->ClientNumber(), tag->ClientID())->Name());
 }

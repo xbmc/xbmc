@@ -811,7 +811,7 @@ void CPVRManager::Process()
     }
 
     /* Get Signal information of the current playing channel */
-    if (m_currentPlayingChannel)
+    if (m_currentPlayingChannel && g_guiSettings.GetBool("pvrplayback.signalquality"))
     {
       m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->SignalQuality(m_qualityInfo);
     }
@@ -933,7 +933,7 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
           }
           else
           {
-            m_backendDiskspace = g_localizeStrings.Get(18074);
+            m_backendDiskspace = g_localizeStrings.Get(19055);
           }
 
           int NumChannels = m_clients[(*itr).first]->GetNumChannels();
@@ -1601,8 +1601,16 @@ void CPVRManager::SetPlayingGroup(int GroupId)
 /********************************************************************/
 void CPVRManager::ResetQualityData()
 {
-  strncpy(m_qualityInfo.frontend_name, g_localizeStrings.Get(13205).c_str(), 1024);
-  strncpy(m_qualityInfo.frontend_status, g_localizeStrings.Get(13205).c_str(), 1024);
+  if (g_guiSettings.GetBool("pvrplayback.signalquality"))
+  {
+    strncpy(m_qualityInfo.frontend_name, g_localizeStrings.Get(13205).c_str(), 1024);
+    strncpy(m_qualityInfo.frontend_status, g_localizeStrings.Get(13205).c_str(), 1024);
+  }
+  else
+  {
+    strncpy(m_qualityInfo.frontend_name, g_localizeStrings.Get(13106).c_str(), 1024);
+    strncpy(m_qualityInfo.frontend_status, g_localizeStrings.Get(13106).c_str(), 1024);
+  }
   m_qualityInfo.snr           = 0;
   m_qualityInfo.signal        = 0;
   m_qualityInfo.ber           = 0;
@@ -1649,8 +1657,11 @@ void CPVRManager::TriggerRecordingsUpdate(bool force)
 /*
 /* Returns true if opening was succesfull
 /********************************************************************/
-bool CPVRManager::OpenLiveStream(unsigned int channel, bool radio)
+bool CPVRManager::OpenLiveStream(const cPVRChannelInfoTag* tag)
 {
+  if (tag == NULL)
+    return false;
+
   EnterCriticalSection(&m_critSection);
 
   /* Check if a channel or recording is already opened and clear it if yes */
@@ -1660,13 +1671,13 @@ bool CPVRManager::OpenLiveStream(unsigned int channel, bool radio)
     delete m_currentPlayingRecording;
 
   /* Set the new channel information */
-  m_currentPlayingChannel   = new CFileItem(radio ? PVRChannelsRadio[channel-1] : PVRChannelsTV[channel-1]);
+  m_currentPlayingChannel   = new CFileItem(*tag);
   m_currentPlayingRecording = NULL;
   m_scanStart               = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
   ResetQualityData();
 
   /* Open the stream on the Client */
-  const cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetPVRChannelInfoTag();
+//  const cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetPVRChannelInfoTag();
   if (tag->StreamURL().IsEmpty())
   {
     if (!m_clientsProps[tag->ClientID()].HandleInputStream ||
@@ -1731,7 +1742,7 @@ bool CPVRManager::OpenRecordedStream(const cPVRRecordingInfoTag* tag)
     delete m_currentPlayingRecording;
 
   /* Set the new recording information */
-  m_currentPlayingRecording = new CFileItem(tag);
+  m_currentPlayingRecording = new CFileItem(*tag);
   m_currentPlayingChannel   = NULL;
   m_scanStart               = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
 

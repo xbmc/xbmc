@@ -168,6 +168,7 @@ SRCS=Application.cpp \
      GUIWindowScripts.cpp \
      GUIWindowScriptsInfo.cpp \
      GUIWindowSystemInfo.cpp \
+     GUIViewStateTV.cpp \
      GUIWindowTV.cpp \
      GUIWindowVisualisation.cpp \
      GUIWindowWeather.cpp \

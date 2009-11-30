@@ -136,6 +136,7 @@ public:
   cPVRTimerInfoTag *GetMatch(time_t t);
   cPVRTimerInfoTag *GetMatch(const cPVREPGInfoTag *Epg, int *Match = NULL);
   cPVRTimerInfoTag *GetNextActiveTimer(void);
+  bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   static bool AddTimer(const CFileItem &item);
   static bool DeleteTimer(const CFileItem &item, bool force = false);
   static bool RenameTimer(CFileItem &item, CStdString &newname);
