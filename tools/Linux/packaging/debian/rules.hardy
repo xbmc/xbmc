@@ -52,7 +52,6 @@ binary-indep:
 	# xbmc Live files 
 	mkdir -p $(CURDIR)/debian/tmp/etc/init/
 	cp $(CURDIR)/tools/XBMCLive/xbmc-live.conf $(CURDIR)/debian/tmp/etc/init/
-	cp $(CURDIR)/tools/XBMCLive/xbmc-live-install.conf $(CURDIR)/debian/tmp/etc/init/
 	dh_install -i --sourcedir=$(CURDIR)/debian/tmp -XLICENCE -XLiberationSans-Regular.ttf -XLicence.txt -XLicense.txt
 	# XBMC WEB PM
 	dh_install -pxbmc-web-pm ../../web/Project_Mayhem usr/share/xbmc/web

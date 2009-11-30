@@ -44,7 +44,6 @@ override_dh_auto_install:
 	$(MAKE) install install-livedatas prefix=$(CURDIR)/debian/tmp/usr
 	mkdir -p $(CURDIR)/debian/tmp/etc/init/
 	cp $(CURDIR)/tools/XBMCLive/xbmc-live.conf $(CURDIR)/debian/tmp/etc/init/
-	cp $(CURDIR)/tools/XBMCLive/xbmc-live-install.conf $(CURDIR)/debian/tmp/etc/init/
 	find "debian/tmp/usr/share/xbmc" -regextype posix-extended \
 		-type f -iregex \
 		".*\.so|.*\.vis|.*\.xbs|.*xbmc\.bin|.*xbmc-xrandr" | \
