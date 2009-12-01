@@ -99,6 +99,7 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
 {
   try
   {
+    m_bIsPlaying = true;
     m_launchFilename = file.m_strPath;
     CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, m_launchFilename.c_str());
     Create();
@@ -107,6 +108,7 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
   }
   catch(...)
   {
+    m_bIsPlaying = false;
     CLog::Log(LOGERROR,"%s - Exception thrown", __FUNCTION__);
     return false;
   }
@@ -251,8 +253,6 @@ void CExternalPlayer::Process()
     CLog::Log(LOGNOTICE, "%s: Releasing audio device %d", __FUNCTION__, iActiveDevice);
     g_audioContext.SetActiveDevice(CAudioContext::NONE);
   }
-
-  m_bIsPlaying = true;
 
 #if defined(_WIN32)
   if (m_warpcursor)
