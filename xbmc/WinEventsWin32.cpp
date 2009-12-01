@@ -460,6 +460,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         case APPCOMMAND_MEDIA_NEXTTRACK:
           newEvent.appcommand.action = ACTION_NEXT_ITEM;
           break;
+        case APPCOMMAND_LAUNCH_MEDIA_SELECT:
+          // disable launch of external media players
+          return 1;
       }
       if (newEvent.appcommand.action != 0)
       {
