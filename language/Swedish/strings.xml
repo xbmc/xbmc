@@ -625,6 +625,9 @@
   <string id="796">Kontinuerligt repititionsfördröjning (ms)</string>
   <string id="797">Maximalt antal klienter</string>
   <string id="798">Internetaccess</string>
+  <string id="850">Ogiltigt portnummer angivet</string>
+  <string id="851">Giltigt portområde är 1-65535</string>
+  <string id="852">Giltigt portområde är 1024-65535</string>
   <string id="1000">Förhandsgranska skärmsläckare</string>
   <string id="1001">Kunde inte ansluta</string>
   <string id="1002">XBMC kunde inte ansluta till nätverksplatsen.</string>

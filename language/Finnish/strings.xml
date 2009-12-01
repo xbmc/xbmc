@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 21/11/2009 -->
-<!--Finnish strings based on English strings revision 24799-->
+<!--Date of translation: 01/12/2009 -->
+<!--Finnish strings based on English strings revision 25147 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -676,6 +676,10 @@
   <string id="797">Yhteyksien enimmäismäärä</string>
   <string id="798">Internet-yhteys</string>
 
+  <string id="850">Syötetty portin arvo on sopimaton</string>
+  <string id="851">Sallittu portin alue on 1-65535</string>
+  <string id="852">Sallittu portin alue on 1024-65535</string>
+
   <string id="998"></string>
   <string id="999"></string>
   <string id="1000">Näytönsäästäjän esikatselu</string>
@@ -827,7 +831,7 @@
   <string id="10007">Järjestelmän tiedot</string>
   <string id="10008">Asetukset - Yleiset</string>
   <string id="10009">Asetukset - Näyttö</string>
-  <string id="10010">Asetukset - Ulkoasu - Käyttöliittymän kalibrointi</string>
+  <string id="10010">Asetukset - Käyttöliittymä - Käyttöliittymän kalibrointi</string>
   <string id="10011">Asetukset - Videot - Kuvaruudun kalibrointi</string>
   <string id="10012">Asetukset - Kuvat</string>
   <string id="10013">Asetukset - Ohjelmat</string>
@@ -836,7 +840,7 @@
   <string id="10016">Asetukset - Järjestelmä</string>
   <string id="10017">Asetukset - Videot</string>
   <string id="10018">Asetukset - Verkko</string>
-  <string id="10019">Asetukset - Ulkoasu</string>
+  <string id="10019">Asetukset - Käyttöliittymä</string>
   <string id="10020">Skriptit</string>
   <string id="10021"></string>
   <string id="10022"></string>
@@ -1219,8 +1223,9 @@
   <string id="13421">VDPAU</string>
   <string id="13422">Aloita kuvaesitys tästä</string>
   <string id="13423">Muista tämä polku</string>
+  <string id="13424">Pixel buffer objects käytössä</string>
 
-  <string id="13500">A/V-tahdistus menetelmä</string>
+  <string id="13500">A/V-tahdistusmenetelmä</string>
   <string id="13501">Äänen kello</string>
   <string id="13502">Videon kello (poista/lisää ääntä)</string>
   <string id="13503">Videon kello (äänen uudelleennäytteistys)</string>
@@ -1268,7 +1273,7 @@
   <string id="14021">Paikkakunta 3</string>
   <string id="14022">Kirjasto</string>
   <string id="14023">Ei TV:tä</string>
-  <string id="14024">Anna lähin suuri paikkakunta</string>
+  <string id="14024">Lähin suuri paikkakunta</string>
   <string id="14025">Video-/Audio-/DVD-välimuisti: Kiintolevy</string>
   <string id="14026">Videovälimuisti: DVD-ROM</string>
   <string id="14027">Videovälimuisti: Lähiverkko</string>
