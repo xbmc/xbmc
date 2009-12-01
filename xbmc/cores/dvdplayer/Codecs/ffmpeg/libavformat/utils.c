@@ -1296,7 +1296,8 @@ int av_seek_frame_binary(AVFormatContext *s, int stream_index, int64_t target_ts
     AVInputFormat *avif= s->iformat;
     int64_t av_uninit(pos_min), av_uninit(pos_max), pos, pos_limit;
     int64_t ts_min, ts_max, ts;
-    int index, ret;
+    int64_t ret;
+    int index;
     AVStream *st;
 
     if (stream_index < 0)
