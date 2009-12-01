@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 26/11/2009-->
-<!--Based on English strings revision 25040-->
+<!--Date of translation: 01/12/2009-->
+<!--Based on English strings revision 25147-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -678,6 +678,10 @@
   <string id="796">Kesintisiz tekrar gecikmesi (ms)</string>
   <string id="797">Azami istemci sayısı</string>
   <string id="798">İnternet erişimi</string>
+
+  <string id="850">Geçersiz port numarası girildi</string>
+  <string id="851">Geçerli port aralığı 1-65535</string>
+  <string id="852">Geçerli port aralığı 1024-65535</string>
 
   <string id="998"></string>
   <string id="999"></string>
