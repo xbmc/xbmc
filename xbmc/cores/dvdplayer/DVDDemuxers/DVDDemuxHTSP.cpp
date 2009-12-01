@@ -102,7 +102,7 @@ bool CDVDDemuxHTSP::Open(CDVDInputStream* input)
   m_Input       = (CDVDInputStreamHTSP*)input;
   m_StatusCount = 0;
 
-  while(m_Streams.size() == 0 && m_StatusCount < 2)
+  while(m_Streams.size() == 0 && m_StatusCount == 0)
   {
     DemuxPacket* pkg = Read();
     if(!pkg)
@@ -286,10 +286,7 @@ void CDVDDemuxHTSP::SubscriptionStatus(htsmsg_t *m)
     m_StatusCount++;
     m_Status = status;
     CLog::Log(LOGDEBUG, "CDVDDemuxHTSP::SubscriptionStatus - %s", status);
-
-    /* always ignore first status, as that can happen on channel change */
-    if(m_StatusCount > 1)
-      g_application.m_guiDialogKaiToast.QueueNotification("TVHeadend Status", status);
+    g_application.m_guiDialogKaiToast.QueueNotification("TVHeadend Status", status);
   }
 }
 

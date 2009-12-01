@@ -131,14 +131,18 @@ bool CDVDInputStreamHTSP::SetChannel(int channel)
 {
   CLog::Log(LOGDEBUG, "CDVDInputStreamHTSP::SetChannel - changing to channel %d", channel);
 
-  if(!m_session.SendSubscribe(m_subs+1, channel))
-  {
-    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::SetChannel - failed to set channel");
-    return false;
-  }
-
   if(!m_session.SendUnsubscribe(m_subs))
     CLog::Log(LOGERROR, "CDVDInputStreamHTSP::SetChannel - failed to unsubscribe from previous channel");
+
+  if(!m_session.SendSubscribe(m_subs+1, channel))
+  {
+    if(m_session.SendSubscribe(m_subs, m_channel))
+      CLog::Log(LOGERROR, "CDVDInputStreamHTSP::SetChannel - failed to set channel");
+    else
+      CLog::Log(LOGERROR, "CDVDInputStreamHTSP::SetChannel - failed to set channel and restore old channel");
+
+    return false;
+  }
 
   m_channel = channel;
   m_subs    = m_subs+1;
