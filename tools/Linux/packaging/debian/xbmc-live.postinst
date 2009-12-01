@@ -55,18 +55,6 @@ case "$1" in
 		fi
 	done
 
-	# Add xbmc to the sudoers file (if not already done)
-	if ! grep -i -q XBMC-specific /etc/sudoers ; then
-		echo "" >> /etc/sudoers
-		echo "# XBMC" >> /etc/sudoers
-		echo "# XBMC-specific configuration" >> /etc/sudoers
-		echo "# XBMC" >> /etc/sudoers
-		echo "Cmnd_Alias SHUTDOWN_CMDS = /sbin/shutdown, /sbin/reboot, /sbin/halt # XBMC"  >> /etc/sudoers
-		echo "Cmnd_Alias MOUNT_CMDS = /bin/mount, /bin/umount # XBMC" >> /etc/sudoers
-		echo "$xbmcUser ALL=(ALL) ALL" >> /etc/sudoers
-		echo "$xbmcUser ALL=NOPASSWD: SHUTDOWN_CMDS, MOUNT_CMDS # XBMC" >> /etc/sudoers
-	fi
-
 	# Our set of PolicyKit actions
 
 	# This is a list of actions that the 'xbmc' user should be allowed to

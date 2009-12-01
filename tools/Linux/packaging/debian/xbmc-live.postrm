@@ -6,8 +6,6 @@
 set -e
 if [ "$1" = "purge" ]                                                    
 then                            
-	sed -i -e "/XBMC/d" /etc/sudoers
-
 	POLKIT_ACTIONS="org.freedesktop.hal.dockstation.undock
 		org.freedesktop.hal.wol.enabled
 		org.freedesktop.hal.wol.enable
