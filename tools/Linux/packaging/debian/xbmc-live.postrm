@@ -45,7 +45,10 @@ then
 		org.freedesktop.hal.power-management.cpufreq
 		org.freedesktop.hal.power-management.lcd-panel
 		org.freedesktop.hal.power-management.light-sensor
-		org.freedesktop.hal.power-management.keyboard-backlight"
+		org.freedesktop.hal.power-management.keyboard-backlight
+		org.freedesktop.devicekit.power.suspend
+		org.freedesktop.devicekit.power.Hibernate
+		org.freedesktop.consolekit.system.stop"
 
 	# Grant the 'xbmc' user each action from the list if not done already
 	for ACTION in $POLKIT_ACTIONS; do
