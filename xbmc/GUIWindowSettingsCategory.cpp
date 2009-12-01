@@ -1704,12 +1704,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
       // check that it's a valid port
       int port = atoi(pSetting->GetData().c_str());
-      if (port <= 0 || port > 65535)
-#ifndef _LINUX
-        pSetting->SetData("80");
-#else
-        pSetting->SetData((geteuid() == 0)? "80" : "8080");
+#ifdef _LINUX
+      if (geteuid() != 0 && (port <= 1024 || port > 65535))
+        pSetting->SetData("8080");
+      else
 #endif
+      if (port <= 0 || port > 65535)
+        pSetting->SetData("80");
     }
 #ifdef HAS_WEB_SERVER
     g_application.StopWebServer(true);
