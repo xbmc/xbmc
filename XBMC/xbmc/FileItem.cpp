@@ -1098,6 +1098,11 @@ void CFileItem::FillInDefaultIcon()
        * in mind the complexity of the code behind the check in the
        * case of IsWhatater() returns false.
        */
+      if ( IsLiveTV() )
+      {
+        // Live TV Channel
+        return;
+      }
       if ( IsAudio() )
       {
         // audio
