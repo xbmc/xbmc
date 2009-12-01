@@ -14,7 +14,12 @@ case "$1" in
 	# Add the 'xbmc' user if the primary one is missing
 	xbmcUser=$(getent passwd 1000 | sed -e 's/\:.*//')
 	if [ ! -n "$xbmcUser" ]; then
-		adduser --gecos "XBMC Live User" xbmc
+		clearTextPWD=xbmc
+		encryptedPWD=$(echo $clearTextPWD | mkpasswd -s)
+
+		adduser --disabled-password --gecos "XBMC Live User" xbmc
+		usermod -p $encryptedPWD xbmc
+
 		xbmcUser=xbmc
 	fi
 
