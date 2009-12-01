@@ -331,6 +331,8 @@ void CExternalPlayer::Process()
   CLog::Log(LOGNOTICE, "%s: Stop", __FUNCTION__);
 
 #if defined(_WIN32)
+  g_Windowing.Restore();
+
   if (currentStyle & WS_EX_TOPMOST)
   {
     CLog::Log(LOGNOTICE, "%s: Showing XBMC window TOPMOST", __FUNCTION__);
