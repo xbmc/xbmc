@@ -703,177 +703,144 @@ void CGUIWindowTV::OnInitWindow()
 
 void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  /* Perform file item for specified sub window */
-  CFileItemPtr pItem;
-  if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM && m_iGuideView == GUIDE_VIEW_TIMELINE)
-  {
-    /* Get currently selected item from grid container */
-    pItem = m_guideGrid->GetSelectedItemPtr();
-  }
-  else
-  {
-    /* Check file item is in list range and get his pointer */
-    if (itemNumber < 0 || itemNumber >= (int)m_vecItems->Size()) return;
+  /* Check file item is in list range and get his pointer */
+  if (itemNumber < 0 || itemNumber >= (int)m_vecItems->Size()) return;
 
-    pItem = m_vecItems->Get(itemNumber);
-  }
+  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  if (pItem)
+  if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV || m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
   {
-    if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV || m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
+    if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
+      return;
+
+    /* check that file item is in list and get his pointer*/
+    if (pItem->m_strPath == "pvr://channels/.add.channel")
     {
-      if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
-        return;
-
-      /* check that file item is in list and get his pointer*/
-      if (pItem->m_strPath == "pvr://channels/.add.channel")
-      {
-        /* If yes show only "New Channel" on context menu */
-        buttons.Add(CONTEXT_BUTTON_ADD, 19046);               /* Add new channel */
-      }
-      else
-      {
-        buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Channel info button */
-        buttons.Add(CONTEXT_BUTTON_FIND, 19003);              /* Find similar program */
-        buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);         /* switch to channel */
-        buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);         /* Set icon */
-        buttons.Add(CONTEXT_BUTTON_GROUP_MANAGER, 19048);     /* Group managment */
-        buttons.Add(CONTEXT_BUTTON_HIDE, m_bShowHiddenChannels ? 19049 : 19054);        /* HIDE CHANNEL */
-
-        if (m_vecItems->Size() > 1 && !m_bShowHiddenChannels)
-          buttons.Add(CONTEXT_BUTTON_MOVE, 116);              /* Move channel up or down */
-
-        if ((m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV && PVRChannelsTV.GetNumHiddenChannels() > 0) ||
-            (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO && PVRChannelsRadio.GetNumHiddenChannels() > 0) ||
-            m_bShowHiddenChannels)
-          buttons.Add(CONTEXT_BUTTON_SHOW_HIDDEN, m_bShowHiddenChannels ? 19050 : 19051);  /* SHOW HIDDEN CHANNELS */
-
-        CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
-      }
+      /* If yes show only "New Channel" on context menu */
+      buttons.Add(CONTEXT_BUTTON_ADD, 19046);               /* Add new channel */
     }
-    else if (m_iCurrSubTVWindow == TV_WINDOW_RECORDINGS)           /* Add recordings context buttons */
+    else
     {
-      buttons.Add(CONTEXT_BUTTON_INFO, 19053);              /* Get Information of this recording */
+      buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Channel info button */
       buttons.Add(CONTEXT_BUTTON_FIND, 19003);              /* Find similar program */
-      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021);         /* Play this recording */
-//            buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 12022);
-      buttons.Add(CONTEXT_BUTTON_RENAME, 118);              /* Rename this recording */
-      buttons.Add(CONTEXT_BUTTON_DELETE, 117);              /* Delete this recording */
+      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);         /* switch to channel */
+      buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);         /* Set icon */
+      buttons.Add(CONTEXT_BUTTON_GROUP_MANAGER, 19048);     /* Group managment */
+      buttons.Add(CONTEXT_BUTTON_HIDE, m_bShowHiddenChannels ? 19049 : 19054);        /* HIDE CHANNEL */
+
+      if (m_vecItems->Size() > 1 && !m_bShowHiddenChannels)
+        buttons.Add(CONTEXT_BUTTON_MOVE, 116);              /* Move channel up or down */
+
+      if ((m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV && PVRChannelsTV.GetNumHiddenChannels() > 0) ||
+          (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO && PVRChannelsRadio.GetNumHiddenChannels() > 0) ||
+          m_bShowHiddenChannels)
+        buttons.Add(CONTEXT_BUTTON_SHOW_HIDDEN, m_bShowHiddenChannels ? 19050 : 19051);  /* SHOW HIDDEN CHANNELS */
+
+      CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
     }
-    else if (m_iCurrSubTVWindow == TV_WINDOW_TIMERS)           /* Add timer context buttons */
+  }
+  else if (m_iCurrSubTVWindow == TV_WINDOW_RECORDINGS)           /* Add recordings context buttons */
+  {
+    buttons.Add(CONTEXT_BUTTON_INFO, 19053);              /* Get Information of this recording */
+    buttons.Add(CONTEXT_BUTTON_FIND, 19003);              /* Find similar program */
+    buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021);         /* Play this recording */
+//            buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 12022);
+    buttons.Add(CONTEXT_BUTTON_RENAME, 118);              /* Rename this recording */
+    buttons.Add(CONTEXT_BUTTON_DELETE, 117);              /* Delete this recording */
+  }
+  else if (m_iCurrSubTVWindow == TV_WINDOW_TIMERS)           /* Add timer context buttons */
+  {
+    /* Check for a empty file item list, means only a
+        file item with the name "Add timer..." is present */
+    if (pItem->m_strPath == "pvr://timers/add.timer")
     {
-      /* Check for a empty file item list, means only a
-          file item with the name "Add timer..." is present */
-      if (pItem->m_strPath == "pvr://timers/add.timer")
+      /* If yes show only "New Timer" on context menu */
+      buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* NEW TIMER */
+    }
+    else
+    {
+      /* If any timers are present show more */
+      buttons.Add(CONTEXT_BUTTON_EDIT, 19057);            /* Edit Timer */
+      buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* NEW TIMER */
+      buttons.Add(CONTEXT_BUTTON_ACTIVATE, 19058);        /* ON/OFF */
+      buttons.Add(CONTEXT_BUTTON_RENAME, 118);            /* Rename Timer */
+      buttons.Add(CONTEXT_BUTTON_DELETE, 117);            /* Delete Timer */
+    }
+  }
+  else if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
+  {
+    if (pItem->GetEPGInfoTag()->End() > CDateTime::GetCurrentDateTime())
+    {
+      if (pItem->GetEPGInfoTag()->Timer() == NULL)
       {
-        /* If yes show only "New Timer" on context menu */
-        buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* NEW TIMER */
+        if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
+        {
+          buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);             /* RECORD programme */
+        }
+        else
+        {
+          buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061);
+        }
       }
       else
       {
-        /* If any timers are present show more */
-        buttons.Add(CONTEXT_BUTTON_EDIT, 19057);            /* Edit Timer */
-        buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* NEW TIMER */
-        buttons.Add(CONTEXT_BUTTON_ACTIVATE, 19058);        /* ON/OFF */
-        buttons.Add(CONTEXT_BUTTON_RENAME, 118);            /* Rename Timer */
-        buttons.Add(CONTEXT_BUTTON_DELETE, 117);            /* Delete Timer */
+        if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
+        {
+          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);
+        }
+        else
+        {
+          buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060);
+        }
       }
     }
-    else if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
+
+    buttons.Add(CONTEXT_BUTTON_INFO, 658);               /* Epg info button */
+    buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);        /* Switch channel */
+    buttons.Add(CONTEXT_BUTTON_FIND, 19003);             /* Find similar program */
+    if (m_iGuideView == GUIDE_VIEW_TIMELINE)
+    {
+      buttons.Add(CONTEXT_BUTTON_BEGIN, 19063);          /* Go to begin */
+      buttons.Add(CONTEXT_BUTTON_END, 19064);            /* Go to end */
+    }
+  }
+  else if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
+  {
+    if (pItem->GetLabel() != g_localizeStrings.Get(19027))
     {
       if (pItem->GetEPGInfoTag()->End() > CDateTime::GetCurrentDateTime())
       {
         if (pItem->GetEPGInfoTag()->Timer() == NULL)
         {
           if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
-          {
             buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);             /* RECORD programme */
-          }
           else
-          {
-            buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061);
-          }
+            buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061);    /* Create a Timer */
         }
         else
         {
           if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
-          {
-            buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);
-          }
+            buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);     /* Stop recording */
           else
-          {
-            buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060);
-          }
+            buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060);     /* Delete Timer */
         }
       }
 
-      buttons.Add(CONTEXT_BUTTON_INFO, 658);               /* Epg info button */
-      buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);        /* Switch channel */
-      buttons.Add(CONTEXT_BUTTON_FIND, 19003);             /* Find similar program */
-      if (m_iGuideView == GUIDE_VIEW_TIMELINE)
-      {
-        buttons.Add(CONTEXT_BUTTON_BEGIN, 19063);          /* Go to begin */
-        buttons.Add(CONTEXT_BUTTON_END, 19064);            /* Go to end */
-      }
-    }
-    else if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
-    {
-      if (pItem->GetLabel() != g_localizeStrings.Get(19027))
-      {
-        if (pItem->GetEPGInfoTag()->End() > CDateTime::GetCurrentDateTime())
-        {
-          if (pItem->GetEPGInfoTag()->Timer() == NULL)
-          {
-            if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
-            {
-              buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);             /* RECORD programme */
-            }
-            else
-            {
-              buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061);    /* Create a Timer */
-            }
-          }
-          else
-          {
-            if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
-            {
-              buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);     /* Stop recording */
-            }
-            else
-            {
-              buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060);     /* Delete Timer */
-            }
-          }
-        }
-
-        buttons.Add(CONTEXT_BUTTON_INFO, 658);              /* Epg info button */
-        buttons.Add(CONTEXT_BUTTON_USER1, 19062);           /* Sort by channel */
-        buttons.Add(CONTEXT_BUTTON_USER2, 103);             /* Sort by Name */
-        buttons.Add(CONTEXT_BUTTON_USER3, 104);             /* Sort by Date */
-        buttons.Add(CONTEXT_BUTTON_CLEAR, 20375);           /* Clear search results */
-      }
+      buttons.Add(CONTEXT_BUTTON_INFO, 658);              /* Epg info button */
+      buttons.Add(CONTEXT_BUTTON_USER1, 19062);           /* Sort by channel */
+      buttons.Add(CONTEXT_BUTTON_USER2, 103);             /* Sort by Name */
+      buttons.Add(CONTEXT_BUTTON_USER3, 104);             /* Sort by Date */
+      buttons.Add(CONTEXT_BUTTON_CLEAR, 20375);           /* Clear search results */
     }
   }
 }
 
 bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
-  CFileItemPtr pItem;
-  if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM && m_iGuideView == GUIDE_VIEW_TIMELINE)
-  {
-    /* Get currently selected item from grid container */
-    pItem = m_guideGrid->GetSelectedItemPtr();
-  }
-  else
-  {
-    /* Check file item is in list range and get his pointer */
-    if (itemNumber < 0 || itemNumber >= (int)m_vecItems->Size()) return false;
+  /* Check file item is in list range and get his pointer */
+  if (itemNumber < 0 || itemNumber >= (int)m_vecItems->Size()) return false;
 
-    pItem = m_vecItems->Get(itemNumber);
-  }
-
-  if (!pItem)
-    return false;
+  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
   if (button == CONTEXT_BUTTON_PLAY_ITEM)
   {
