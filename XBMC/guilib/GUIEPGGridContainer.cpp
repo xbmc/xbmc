@@ -636,7 +636,7 @@ void CGUIEPGGridContainer::UpdateChannels()
 
       CGUIListItemPtr item(new CFileItem(tag->ChannelName()));
       item->SetLabel2(tag->ChannelName());
-      item->SetThumbnailImage(tag->Icon());
+      item->SetThumbnailImage(tag->ChanneIcon());
       item->SetLayout(pChannelLayout);
       item->SetFocusedLayout(pChannelFocusedLayout);
       m_channelItems.push_back(item);

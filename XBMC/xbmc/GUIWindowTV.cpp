@@ -79,11 +79,6 @@ using namespace std;
 #define CONTROL_BTNGUIDE_NEXT        39
 #define CONTROL_BTNGUIDE_TIMELINE    40
 
-#define GUIDE_VIEW_CHANNEL          0
-#define GUIDE_VIEW_NOW              1
-#define GUIDE_VIEW_NEXT             2
-#define GUIDE_VIEW_TIMELINE         3
-
 /**
  * \brief Class constructor
  */
@@ -103,7 +98,7 @@ CGUIWindowTV::CGUIWindowTV(void) : CGUIMediaWindow(WINDOW_TV, "MyTV.xml")
   m_bShowHiddenChannels           = false;
   m_bSearchStarted                = false;
   m_bSearchConfirmed              = false;
-  m_iGuideView                    = GUIDE_VIEW_CHANNEL;
+  m_iGuideView                    = g_guiSettings.GetInt("pvrmenu.defaultguideview");
   m_guideGrid                     = NULL;
   m_iSortOrder_SEARCH             = SORT_ORDER_ASC;
   m_iSortMethod_SEARCH            = SORT_METHOD_DATE;
@@ -359,7 +354,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             g_PVRManager.SetPlayingGroup(m_iCurrentRadioGroup);
 
           /* Open tv channel by Player and return */
-          return PlayFile(pItem.get());
+          return PlayFile(pItem.get(), g_guiSettings.GetBool("pvrplayback.playminimized"));
         }
       }
       else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
@@ -427,7 +422,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
       {
         /* Open recording with Player and return */
-        return PlayFile(pItem.get());
+        return PlayFile(pItem.get(), false);
       }
       else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
       {
@@ -851,7 +846,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     if (m_iCurrSubTVWindow == TV_WINDOW_RECORDINGS)
     {
-      return PlayFile(pItem.get());
+      return PlayFile(pItem.get(), false);
     }
 
     if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV ||
@@ -862,7 +857,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
         g_PVRManager.SetPlayingGroup(m_iCurrentRadioGroup);
 
-      return PlayFile(pItem.get());
+      return PlayFile(pItem.get(), g_guiSettings.GetBool("pvrplayback.playminimized"));
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
     {
@@ -877,6 +872,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
         return false;
       }
+      return true;
     }
   }
   else if (button == CONTEXT_BUTTON_MOVE)
@@ -1152,15 +1148,6 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM ||
         m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
     {
-
-      if (m_iGuideView == GUIDE_VIEW_TIMELINE)
-      {
-        /* Get currently selected item from grid container */
-        pItem = m_guideGrid->GetSelectedItemPtr();
-
-        if (!pItem) return false;
-      }
-
       ShowEPGInfo(pItem.get());
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_RECORDINGS)
@@ -1709,6 +1696,14 @@ void CGUIWindowTV::UpdateSearch()
 
 void CGUIWindowTV::UpdateButtons()
 {
+  if (m_iGuideView == GUIDE_VIEW_CHANNEL)
+    SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029));
+  else if (m_iGuideView == GUIDE_VIEW_NOW)
+    SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19030));
+  else if (m_iGuideView == GUIDE_VIEW_NEXT)
+    SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19031));
+  else if (m_iGuideView == GUIDE_VIEW_TIMELINE)
+    SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19032));
 }
 
 void CGUIWindowTV::UpdateData(TVWindow update)
@@ -1729,9 +1724,9 @@ void CGUIWindowTV::UpdateData(TVWindow update)
   UpdateButtons();
 }
 
-bool CGUIWindowTV::PlayFile(CFileItem *item)
+bool CGUIWindowTV::PlayFile(CFileItem *item, bool playMinimized)
 {
-  if (g_guiSettings.GetBool("pvrplayback.playminimized"))
+  if (playMinimized)
   {
     if (item->m_strPath == g_application.CurrentFile())
     {

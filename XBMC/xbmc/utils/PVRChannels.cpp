@@ -717,6 +717,9 @@ void cPVRChannels::MoveChannel(unsigned int oldindex, unsigned int newindex)
   CLog::Log(LOGNOTICE, "cPVRChannels: TV Channel %d moved to %d", oldindex, newindex);
   database->Close();
 
+  /* Synchronize channel epg containers */
+  cPVREpgs::AssignChangedChannelTags(m_bRadio);
+
   /* Synchronize channel numbers inside timers */
   for (unsigned int i = 0; i < PVRTimers.size(); i++)
   {

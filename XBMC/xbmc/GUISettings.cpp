@@ -662,6 +662,8 @@ void CGUISettings::Initialize()
   AddSeparator(8, "pvrmenu.sep1");
   AddString(9, "pvrmenu.iconpath", 19018, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddString(10, "pvrmenu.searchicons", 18033, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(11, "pvrmenu.sep2");
+  AddInt(12, "pvrmenu.defaultguideview", 19065, GUIDE_VIEW_CHANNEL, GUIDE_VIEW_CHANNEL, 1, GUIDE_VIEW_TIMELINE, SPIN_CONTROL_TEXT);
 
   AddCategory(8,"pvrepg", 18013);
   AddInt(1, "pvrepg.epgscan", 18014, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);

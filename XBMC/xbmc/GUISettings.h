@@ -120,6 +120,11 @@ class TiXmlElement;
 #define APM_HIPOWER_STANDBY 2
 #define APM_LOPOWER_STANDBY 3
 
+#define GUIDE_VIEW_CHANNEL          0
+#define GUIDE_VIEW_NOW              1
+#define GUIDE_VIEW_NEXT             2
+#define GUIDE_VIEW_TIMELINE         3
+
 #define SETTINGS_TYPE_BOOL      1
 #define SETTINGS_TYPE_FLOAT     2
 #define SETTINGS_TYPE_INT       3

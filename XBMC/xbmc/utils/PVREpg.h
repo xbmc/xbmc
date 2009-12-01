@@ -39,7 +39,7 @@
 #define EVCONTENTMASK_SPECIAL                  0xB0
 #define EVCONTENTMASK_USERDEFINED              0xF0
 
-class cPVREpg;
+class cPVREPGInfoTag;
 class cPVRChannelInfoTag;
 
 /* Filter data to check with a EPGEntry */
@@ -67,12 +67,38 @@ struct EPGSearchFilter
   bool          m_PreventRepeats;
 };
 
+
+class cPVREpg
+{
+  friend class cPVREpgs;
+
+private:
+  long m_channelID;
+  const cPVRChannelInfoTag *m_Channel;
+  std::vector<cPVREPGInfoTag> tags;
+
+public:
+  cPVREpg(long ChannelID);
+  long ChannelID(void) const { return m_channelID; }
+  const cPVRChannelInfoTag *ChannelTag(void) const { return m_Channel; }
+  cPVREPGInfoTag *AddInfoTag(cPVREPGInfoTag *Tag);
+  void DelInfoTag(cPVREPGInfoTag *tag);
+  void Cleanup(CDateTime Time);
+  void Cleanup(void);
+  const std::vector<cPVREPGInfoTag> *InfoTags(void) const { return &tags; }
+  const cPVREPGInfoTag *GetInfoTagNow(void) const;
+  const cPVREPGInfoTag *GetInfoTagNext(void) const;
+  const cPVREPGInfoTag *GetInfoTag(long uniqueID, CDateTime StartTime) const;
+  const cPVREPGInfoTag *GetInfoTagAround(CDateTime Time) const;
+  static bool Add(const PVR_PROGINFO *data, cPVREpg *Epg);
+};
+
+
 class cPVREPGInfoTag : public CVideoInfoTag
 {
   friend class cPVREpg;
 private:
   cPVREpg *m_Epg;     // The Schedule this event belongs to
-  const cPVRChannelInfoTag *m_Channel;
   const cPVRTimerInfoTag   *m_Timer;
 
   CDateTime     m_startTime;
@@ -114,43 +140,19 @@ public:
   bool HasTimer() const;
 
   /* Channel related Data */
-  void SetChannel(const cPVRChannelInfoTag *Channel) { m_Channel = Channel; }
-  long ChannelID(void) const { return m_Channel->ChannelID(); }
-  long ChannelNumber(void) const { return m_Channel->Number(); }
-  CStdString ChannelName(void) const { return m_Channel->Name(); }
-  long GroupID(void) const { return m_Channel->GroupID(); }
-  bool IsEncrypted(void) const { return m_Channel->IsEncrypted(); }
-  bool IsRadio(void) const { return m_Channel->IsRadio(); }
+  long ChannelID(void) const { return m_Epg->ChannelTag()->ChannelID(); }
+  long ChannelNumber(void) const { return m_Epg->ChannelTag()->Number(); }
+  CStdString ChannelName(void) const { return m_Epg->ChannelTag()->Name(); }
+  CStdString ChanneIcon(void) const { return m_Epg->ChannelTag()->Icon(); }
+  long GroupID(void) const { return m_Epg->ChannelTag()->GroupID(); }
+  bool IsEncrypted(void) const { return m_Epg->ChannelTag()->IsEncrypted(); }
+  bool IsRadio(void) const { return m_Epg->ChannelTag()->IsRadio(); }
 
   /* Scheduled recording related Data */
   void SetTimer(const cPVRTimerInfoTag *Timer) { m_Timer = Timer; }
   const cPVRTimerInfoTag *Timer(void) const { return m_Timer; }
 
   CStdString ConvertGenreIdToString(int ID, int subID) const;
-};
-
-class cPVREpg
-{
-  friend class cPVREpgs;
-
-private:
-  long m_channelID;
-  const cPVRChannelInfoTag *m_Channel;
-  std::vector<cPVREPGInfoTag> tags;
-
-public:
-  cPVREpg(long ChannelID);
-  long ChannelID(void) const { return m_channelID; }
-  cPVREPGInfoTag *AddInfoTag(cPVREPGInfoTag *Tag);
-  void DelInfoTag(cPVREPGInfoTag *tag);
-  void Cleanup(CDateTime Time);
-  void Cleanup(void);
-  const std::vector<cPVREPGInfoTag> *InfoTags(void) const { return &tags; }
-  const cPVREPGInfoTag *GetInfoTagNow(void) const;
-  const cPVREPGInfoTag *GetInfoTagNext(void) const;
-  const cPVREPGInfoTag *GetInfoTag(long uniqueID, CDateTime StartTime) const;
-  const cPVREPGInfoTag *GetInfoTagAround(CDateTime Time) const;
-  static bool Add(const PVR_PROGINFO *data, cPVREpg *Epg);
 };
 
 
@@ -198,5 +200,6 @@ public:
   const cPVREpg *GetEPG(long ChannelID) const;
   const cPVREpg *GetEPG(const cPVRChannelInfoTag *Channel, bool AddIfMissing = false) const;
   static void SetVariableData(CFileItemList* results);
+  static void AssignChangedChannelTags(bool radio = false);
   void Add(cPVREpg *entry);
 };

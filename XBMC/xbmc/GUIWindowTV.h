@@ -92,7 +92,7 @@ private:
   void UpdateTimers();
   void UpdateSearch();
 
-  bool PlayFile(CFileItem *item);
+  bool PlayFile(CFileItem *item, bool playMinimized = false);
 
   CGUIEPGGridContainer   *m_guideGrid;
 };
