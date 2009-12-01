@@ -122,6 +122,12 @@ AC_ARG_ENABLE([gl],
                [enable OpenGL rendering (default is yes)])],
             [use_gl=$enableval],
             [use_gl=yes])
+            
+AC_ARG_ENABLE([gles],
+            [AS_HELP_STRING([--enable-gles],
+               [enable OpenGLES rendering (default is no)])],
+            [use_gles=$enableval],
+            [use_gles=no])
 
 AC_ARG_ENABLE([vdpau],
             [AS_HELP_STRING([--enable-vdpau],
@@ -353,23 +359,25 @@ AC_CHECK_HEADER([boost/shared_ptr.hpp],, AC_MSG_ERROR($missing_library))
 AC_LANG_POP([C++])
 
 # Checks for platforms libraries.
-if test "$use_gl" = "yes"; then
-  if test "$host_vendor" = "apple" ; then
-    # linking to OpenGL.framework instead of libGL, libGLU
-    AC_CHECK_LIB([GLEW],    [main],, AC_MSG_ERROR($missing_library))
-  elif test "$host_cpu" != "arm" ; then
-    AC_CHECK_LIB([GL],      [main],, AC_MSG_ERROR($missing_library))
-    AC_CHECK_LIB([GLEW],    [main],, AC_MSG_ERROR($missing_library))
-    AC_CHECK_LIB([GLU],     [main],, AC_MSG_ERROR($missing_library))
-  else
-    AC_CHECK_LIB([EGL],     [main],, AC_MSG_ERROR($missing_library))
-    AC_CHECK_LIB([GLESv2],  [main],, AC_MSG_ERROR($missing_library))
-  fi
+if test "$use_gles" = "yes"; then
+  # GLES overwrites GL if both set to yes.
+  AC_CHECK_LIB([EGL],     [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([GLESv2],  [main],, AC_MSG_ERROR($missing_library))
 else
-  AC_MSG_RESULT(== WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==)
-  AC_CHECK_LIB([SDL_gfx], [main])
+  if test "$use_gl" = "yes"; then
+    if test "$host_vendor" = "apple" ; then
+      # linking to OpenGL.framework instead of libGL, libGLU
+      AC_CHECK_LIB([GLEW],    [main],, AC_MSG_ERROR($missing_library))
+    else
+      AC_CHECK_LIB([GL],      [main],, AC_MSG_ERROR($missing_library))
+      AC_CHECK_LIB([GLEW],    [main],, AC_MSG_ERROR($missing_library))
+      AC_CHECK_LIB([GLU],     [main],, AC_MSG_ERROR($missing_library))
+    fi
+  else
+    AC_MSG_RESULT(== WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==)
+    AC_CHECK_LIB([SDL_gfx], [main])
+  fi
 fi
-
 
 # platform independent libraries
 AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
@@ -420,7 +428,6 @@ fi
   AC_CHECK_LIB([dbus-1],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([HAL], [hal], [INCLUDES="$INCLUDES $HAL_CFLAGS"], AC_MSG_ERROR([$missing_library]))
-#  AC_CHECK_LIB([hal],       [main],INCLUDES="$INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal", AC_MSG_ERROR($missing_library))
 fi
 
 # PulseAudio
@@ -842,12 +849,17 @@ else
   final_message="$final_message\n  Optimization:\tNo"
 fi
 
-if test "$use_gl" = "yes"; then
-  final_message="$final_message\n  OpenGL:\tYes"
+if test "$use_gles" = "yes"; then
+  final_message="$final_message\n  OpenGLES:\tYes"
   SDL_DEFINES=""
 else
-  final_message="$final_message\n  OpenGL:\tNo (Very Slow)"
-  SDL_DEFINES="-DHAS_SDL_2D"
+  if test "$use_gl" = "yes"; then
+    final_message="$final_message\n  OpenGL:\tYes"
+    SDL_DEFINES=""
+  else
+    final_message="$final_message\n  OpenGL:\tNo (Very Slow)"
+    SDL_DEFINES="-DHAS_SDL_2D"
+  fi
 fi
 
 if test "$use_vdpau" = "yes"; then

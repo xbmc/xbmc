@@ -94,10 +94,11 @@ CWinSystemEGL::~CWinSystemEGL()
 
 bool CWinSystemEGL::InitWindowSystem()
 {
+  EGLBoolean val;
   EGLint maj, min;
   if ((m_dpy = XOpenDisplay(NULL)) &&
       (m_eglDisplay = eglGetDisplay((EGLNativeDisplayType)m_dpy)) &&
-      eglInitialize(m_eglDisplay, &maj, &min))
+      (val = eglInitialize(m_eglDisplay, &maj, &min)))
   {
 	SDL_EnableUNICODE(1);
 	// set repeat to 10ms to ensure repeat time < frame time
@@ -113,7 +114,7 @@ bool CWinSystemEGL::InitWindowSystem()
 	return CWinSystemBase::InitWindowSystem();
   }
   else
-    CLog::Log(LOGERROR, "EGL Error: No Display found");
+    CLog::Log(LOGERROR, "EGL Error: No Display found! dpy:%p egl:%p init:%d", m_dpy, m_eglDisplay, val);
 
   return false;
 }
