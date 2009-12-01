@@ -20,7 +20,7 @@ BUILD_DEPENDS="debhelper (>= 7.0.50), python-support, cmake,
  libssl-dev, lsb-release,"
 
 if [ $(lsb_release -is) = "Ubuntu" ]; then
-    BUILD_DEPENDS="$BUILD_DEPENDS libfaac-dev,"
+    BUILD_DEPENDS="$BUILD_DEPENDS libfaac-dev, nvidia-190-libvdpau-dev,"
 fi
 
 case "$1" in

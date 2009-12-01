@@ -118,18 +118,9 @@ builddeb()
   dch -b -v 1:${VERSION}-$1${MINOR} -D $1 "$CHNLG" 2>&1 
   echo "$REVISION" > debian/svnrevision
   echo "Building the $1 debian package" 
-
-  if [ $1 == "hardy" ]; then
-    tweaks_for_hardy
-  fi
   
   echo "move the format spec to 1.0 (Ubuntu PPA doesn't support format 3.0 quilt) "
   echo "1.0" > debian/source/format
-
-  # Add vdpau dependencies
-  mv debian/control debian/control.orig
-  sed s/"cmake,"/"cmake, nvidia-190-libvdpau-dev,"/ debian/control.orig > debian/control
-  rm debian/control.orig
 
   if [[ $BUILT_ONCE ]]; then
     debuild $DEBUILDOPTS 2>&1
@@ -149,19 +140,6 @@ builddeb()
     dput $XBMCPPA xbmc_${VERSION}-$1${MINOR}_source.changes 2>&1
     rm -rf $DESTSRC/debian
   fi
-}
-
-tweaks_for_hardy() 
-{
-  echo "Hardy tweaking ..."
-  echo "change debhelper version in control"
-  mv debian/control debian/control.orig
-  sed -r s/"debhelper \(>= .+?\)"/"debhelper (>= 7)"/ debian/control.orig > debian/control
-  rm debian/control.orig
- 
-  echo "change the rules file."
-  rm -f debian/rules
-  cp debian/rules.hardy debian/rules
 }
 
 clean()
