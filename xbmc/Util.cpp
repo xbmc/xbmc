@@ -1077,11 +1077,8 @@ bool CUtil::IsHTSP(const CStdString& strFile)
 
 bool CUtil::IsLiveTV(const CStdString& strFile)
 {
-  // Hack, must be done better on a later time!
-  if (IsPVR(strFile))
-  {
-    return !strFile.Left(15).Equals("pvr://recording");
-  }
+  if (strFile.Left(14).Equals("pvr://channels"))
+    return true;
 
   if (IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile) || IsHTSP(strFile))
     return true;
