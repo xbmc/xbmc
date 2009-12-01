@@ -862,9 +862,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
     // check if we are on the local subnet
     if (!g_application.getNetwork().GetFirstConnectedInterface())
       return false;
-    unsigned long subnet = ntohl(inet_addr(g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentNetmask()));
-    unsigned long local  = ntohl(inet_addr(g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress()));
-    if( (address & subnet) == (local & subnet) )
+    if (g_application.getNetwork().HasInterfaceForIP(address))
       return true;
   }
   return false;
