@@ -392,7 +392,7 @@ public:
   {
     m_PacketType = PT_NOTIFICATION;
     m_IconData = NULL;
-
+    m_IconSize = 0;
     unsigned int len = 0;
     if (Title != NULL)
     {
@@ -425,10 +425,7 @@ public:
       m_IconSize = size;
     }
     else
-    {
       m_IconType = ICON_NONE;
-      m_IconSize = 0;
-    }
   }
 
   virtual ~CPacketNOTIFICATION()
