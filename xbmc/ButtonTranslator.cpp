@@ -907,7 +907,6 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("progressdialog")) windowID = WINDOW_DIALOG_PROGRESS;
   else if (strWindow.Equals("virtualkeyboard")) windowID = WINDOW_DIALOG_KEYBOARD;
   else if (strWindow.Equals("volumebar")) windowID = WINDOW_DIALOG_VOLUME_BAR;
-  else if (strWindow.Equals("epgscan")) windowID = WINDOW_DIALOG_EPG_SCAN;
   else if (strWindow.Equals("submenu")) windowID = WINDOW_DIALOG_SUB_MENU;
   else if (strWindow.Equals("favourites")) windowID = WINDOW_DIALOG_FAVOURITES;
   else if (strWindow.Equals("contextmenu")) windowID = WINDOW_DIALOG_CONTEXT_MENU;

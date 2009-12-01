@@ -56,14 +56,6 @@ void PVR_event_callback(const PVR_EVENT event, const char* msg)
   m_pvr_cb->PVR.EventCallback(m_pvr_cb->userData, event, msg);
 }
 
-void PVR_reset_player()
-{
-  if (m_pvr_cb == NULL)
-    return;
-
-  m_pvr_cb->PVR.ResetPlayer(m_pvr_cb->userData);
-}
-
 void PVR_transfer_epg_entry(const PVRHANDLE handle, const PVR_PROGINFO *epgentry)
 {
   if (m_pvr_cb == NULL)

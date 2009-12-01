@@ -23,7 +23,6 @@
   #include "config.h"
 #endif
 #include "DVDDemuxUtils.h"
-#include "DVDDemux.h"
 #include "DVDClock.h"
 #include "utils/log.h"
 extern "C" {
