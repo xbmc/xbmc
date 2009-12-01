@@ -332,11 +332,13 @@ void CGUISettings::Initialize()
   bool showSetting = true;
   if (g_sysinfo.IsAeroDisabled())
     fakeFullScreen = false;
+#if defined (__APPLE__)
   if (g_sysinfo.IsAppleTV())
   {
     fakeFullScreen = false;
-    showSetting = false;
   }
+  showSetting = false;
+#endif
   AddBool(showSetting ? 2 : 0, "videoscreen.fakefullscreen", 14083, fakeFullScreen);
   AddBool(3, "videoscreen.blankdisplays", 13130, false);
   AddSeparator(4, "videoscreen.sep1");
