@@ -30,11 +30,22 @@ else
   XBMC_CONFIG_OPTIONS += --enable-vdpau
 endif
 
+# Input files used for generating other files
+INPUT_FILES = debian/control.in \
+
 %:
 	dh $@
 
+# Target for generating control files
+.PHONY: debian/var_info
+%.in: debian/var_info
+	perl -p \
+	-e 's{#BUILD_DEPENDS#}{qx(sh debian/var_info BUILD_DEPENDS)}ge;' \
+	< $@ > $$(echo $@ | sed 's/\.in$$//')
+
 override_dh_clean:
 	dh_clean
+	debian/rules $(INPUT_FILES)
 
 override_dh_auto_configure:
 	./bootstrap
