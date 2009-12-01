@@ -584,6 +584,20 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
 #endif
     }
+    else if (strSetting.Equals("services.webserverport"))
+    {
+#ifdef HAS_WEB_SERVER
+      CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+      control->SetDelayed();
+#endif
+    }
+    else if (strSetting.Equals("services.esport"))
+    {
+#ifdef HAS_EVENT_SERVER
+      CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+      control->SetDelayed();
+#endif
+    }
     else if (strSetting.Equals("network.assignment"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -592,6 +606,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(717), NETWORK_STATIC);
       pControl->AddLabel(g_localizeStrings.Get(787), NETWORK_DISABLED);
       pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("network.httpproxyport"))
+    {
+      CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+      control->SetDelayed();
     }
     else if (strSetting.Equals("subtitles.style"))
     {
@@ -1388,7 +1407,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   if (!pSettingControl->OnClick())
   {
     UpdateSettings();
-    return;
+    if (!pSettingControl->IsDelayed())
+      return;
   }
 
   if (pSettingControl->IsDelayed())
@@ -1700,18 +1720,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
             strSetting.Equals("services.webserverusername") || strSetting.Equals("services.webserverpassword"))
   {
     if (strSetting.Equals("services.webserverport"))
-    {
-      CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
-      // check that it's a valid port
-      int port = atoi(pSetting->GetData().c_str());
-#ifdef _LINUX
-      if (geteuid() != 0 && (port <= 1024 || port > 65535))
-        pSetting->SetData("8080");
-      else
-#endif
-      if (port <= 0 || port > 65535)
-        pSetting->SetData("80");
-    }
+      ValidatePortNumber(pSettingControl, "8080", "80");
 #ifdef HAS_WEB_SERVER
     g_application.StopWebServer(true);
     if (g_guiSettings.GetBool("services.webserver"))
@@ -1751,10 +1760,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("network.httpproxyport"))
   {
     CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
-    // check that it's a valid port
-    int port = atoi(pSetting->GetData().c_str());
-    if (port <= 0 || port > 65535)
-      pSetting->SetData("8080");
+    ValidatePortNumber(pSettingControl, "8080", "8080", false);
   }
   else if (strSetting.Equals("videoplayer.calibrate") || strSetting.Equals("videoscreen.guicalibration"))
   { // activate the video calibration screen
@@ -2141,21 +2147,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("services.esport"))
   {
 #ifdef HAS_EVENT_SERVER
-    CStdString port_string = g_guiSettings.GetString("services.esport");
-    int port = 0;
-    if(port_string.length() == 0)
-    {
-      CLog::Log(LOGERROR, "ES: No port specified, defaulting to 9777");
-      g_guiSettings.SetString("services.esport", "9777");
-    }
-    else
-      port = atoi(port_string);
-    //verify valid port
-    if (port > 65535 || port < 1)
-    {
-      CLog::Log(LOGERROR, "ES: Invalid port specified %d, defaulting to 9777", port);
-      g_guiSettings.SetString("services.esport", "9777");
-    }
+    ValidatePortNumber(pSettingControl, "9777", "9777");
     //restart eventserver without asking user
     if (g_application.StopEventServer(true, false))
       g_application.StartEventServer();
@@ -3708,4 +3700,24 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
       GetSetting("network.essid")->GetSetting()->FromString("");
       GetSetting("network.key")->GetSetting()->FromString("");
    }
+}
+
+void CGUIWindowSettingsCategory::ValidatePortNumber(CBaseSettingControl* pSettingControl, const CStdString& userPort, const CStdString& privPort, bool listening/*=true*/)
+{
+  CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
+  // check that it's a valid port
+  int port = atoi(pSetting->GetData().c_str());
+#ifdef _LINUX
+  if (listening && geteuid() != 0 && (port < 1024 || port > 65535))
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 850, 852, -1);
+    pSetting->SetData(userPort.c_str());
+  }
+  else
+#endif
+  if (port <= 0 || port > 65535)
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 850, 851, -1);
+    pSetting->SetData(privPort.c_str());
+  }
 }
