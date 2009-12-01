@@ -48,16 +48,21 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
 
   HRESULT hr = S_OK;
   CStdString pWinFilePath;
+  bool pForceXbmcSourceFilter=false;
   pWinFilePath = pFileItem.m_strPath;
-  if ((pWinFilePath.Left(6)).Equals("smb://",false))
-  {
-	pWinFilePath.Replace("smb://","\\\\");
-  }
-  pWinFilePath.Replace("/","\\");
-  CLog::Log(LOGNOTICE,"%s Starting this file with dsplayer \"%s\"",__FUNCTION__,pWinFilePath.c_str());
 
-  if ( ( (CStdString)pRule->Attribute("source")).length() > 0 )
+  if ((pWinFilePath.Left(6)).Equals("smb://",false))
+	pWinFilePath.Replace("smb://","\\\\");
+
+  
+  
+  if ((pWinFilePath.Left(6)).Equals("rar://",false))
+    pForceXbmcSourceFilter = true;
+
+  pWinFilePath.Replace("/","\\");
+  if ( (( (CStdString)pRule->Attribute("source")).length() > 0 ) && ( !pForceXbmcSourceFilter ))
   {
+    CLog::Log(LOGNOTICE,"%s Starting this file with dsplayer \"%s\"",__FUNCTION__,pWinFilePath.c_str());
     POSITION pos = m_configFilter.GetHeadPosition();
     CFGFilterFile* pFGF;
     while(pos)
@@ -90,20 +95,24 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
   }
   else
   {
-    if(m_File.Open(pFileItem.GetAsUrl().GetFileName().c_str(), READ_TRUNCATED | READ_BUFFERED))
+    
+    CLog::Log(LOGNOTICE,"%s DSplayer: Inserting xbmc source filter for this file \"%s\"",__FUNCTION__,pWinFilePath.c_str());
+	
+    //if(m_File.Open(pFileItem.GetAsUrl().GetFileName().c_str(), READ_TRUNCATED | READ_BUFFERED))
+    if(m_File.Open(pFileItem.m_strPath, READ_TRUNCATED | READ_BUFFERED))
     {
       CComPtr<IBaseFilter> pSrc;
 	  
-    CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File,&pSrc);
+      CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File,&pSrc);
     //CXBMCFileReader* pXBMCReader = new CXBMCFileReader(pXBMCStream, NULL, &hr);
     //if (!pXBMCReader)
     //  CLog::Log(LOGERROR,"%s Failed Loading XBMC File Source filter",__FUNCTION__);
     
-    m_SourceF = pSrc;
-    m_pGraphBuilder->AddFilter(m_SourceF, L"XBMC File Source");
-    return hr;
+      m_SourceF = pSrc;
+      m_pGraphBuilder->AddFilter(m_SourceF, L"XBMC File Source");
+      return hr;
     }
-    return E_FAIL;
+    return hr;
   }
 }
 HRESULT CFGLoader::InsertSplitter(TiXmlElement *pRule)

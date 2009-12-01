@@ -394,7 +394,8 @@ bool CRenderSystemDX::BeginRender()
     // and try again at a later time.
     if( m_nDeviceStatus == D3DERR_DEVICELOST )
     {
-      CLog::Log(LOGINFO, "D3DERR_DEVICELOST");
+      //Useless creating massive log spamming
+      //CLog::Log(LOGINFO, "D3DERR_DEVICELOST");
       OnDeviceLost();
       return false;
     }
