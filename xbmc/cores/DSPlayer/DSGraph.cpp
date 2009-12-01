@@ -77,7 +77,8 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   hr = m_pGraphBuilder->AddToROT();
   //Adding every filters required for this file into the igraphbuilder
   hr = m_pGraphBuilder->RenderFileXbmc(file);
-  
+  if (FAILED(hr))
+    return hr;
   //This
   hr = m_pGraphBuilder->GetXbmcVideoDecFilter(&m_pIMpcDecFilter);
   hr = m_pGraphBuilder->GetFfdshowVideoDecFilter(&m_pIffdDecFilter);

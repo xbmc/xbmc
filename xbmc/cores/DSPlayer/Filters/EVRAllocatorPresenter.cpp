@@ -932,13 +932,7 @@ void CEVRAllocatorPresenter::RenderThread()
         {
           pMFSample->GetUINT32 (GUID_SURFACE_INDEX, (UINT32*)&m_nCurSurface);
           pMFSample->GetSampleTime (&nsSampleTime);
-
-          //TRACE_EVR ("RenderThread ==>> Presenting surface %d  (%I64d)\n", m_nCurSurface, nsSampleTime);
-
-          //__super::SetTime (g_tSegmentStart + nsSampleTime);
-          //Paint(true);
           RenderPresent(m_nCurSurface);
-
           m_pcFramesDrawn++;
           InterlockedDecrement (&m_nUsedBuffer);
           CompleteFrameStep (false);
@@ -947,24 +941,18 @@ void CEVRAllocatorPresenter::RenderThread()
           {
             // Calculate wake up timer
             m_pClock->GetCorrelatedTime(0, &llClockTime, &nsCurrentTime);      
-
-            //if (m_rtTimePerFrame == 0) CalculateFrameRate(/*nsSampleTime*/);
-            // Wakup 1/2 refresh rate before next VSync!
             lDelay = (UINT)((nsSampleTime + m_rtTimePerFrame - llClockTime) / 10000) - (500/m_RefreshRate);
 
             if (lDelay > 0)
             {
-  //            TRACE_EVR ("RenderThread ==>> Set timer %d   %I64d  Cons=%d \n", lDelay, nsSampleTime, m_nCurSurface);
               dwUser      = timeSetEvent (lDelay, dwResolution, (LPTIMECALLBACK)m_hEvtFrameTimer, NULL, TIME_CALLBACK_EVENT_SET); 
-
-              // Update statistics
               nNbPlayingFrame++;
             }
             else
             {
               dwUser = -1;
-              if (m_nRenderState == Started) m_pcFrames++;
-                //CLog::Log(LOGDEBUG,"%s immediate display   %I64d  (delay=%d)  Cons=%d\n",__FUNCTION__, nsSampleTime/417188, lDelay, m_nCurSurface);
+              if (m_nRenderState == Started) 
+                m_pcFrames++;
               SetEvent (m_hEvtPresent);
             }
           }

@@ -45,8 +45,17 @@ CFGLoader::~CFGLoader()
 
 HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *pRule)
 {
-	
+
   HRESULT hr = S_OK;
+  CStdString pWinFilePath;
+  pWinFilePath = pFileItem.m_strPath;
+  if ((pWinFilePath.Left(6)).Equals("smb://",false))
+  {
+	pWinFilePath.Replace("smb://","\\\\");
+  }
+  pWinFilePath.Replace("/","\\");
+  CLog::Log(LOGNOTICE,"%s Starting this file with dsplayer \"%s\"",__FUNCTION__,pWinFilePath.c_str());
+
   if ( ( (CStdString)pRule->Attribute("source")).length() > 0 )
   {
     POSITION pos = m_configFilter.GetHeadPosition();
@@ -65,11 +74,12 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
         }
 	  }
     }
+
     m_pGraphBuilder->AddFilter(m_SourceF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
 	IFileSourceFilter *pFS = NULL;
 	m_SourceF->QueryInterface(IID_IFileSourceFilter, (void**)&pFS);
     CStdStringW strFileW;
-    g_charsetConverter.subtitleCharsetToW(pFileItem.GetAsUrl().GetFileName(),strFileW);
+    g_charsetConverter.subtitleCharsetToW(pWinFilePath,strFileW);
     hr = pFS->Load(strFileW.c_str(), NULL);
     //If the source filter is the splitter set the splitter the same as source
 	if (DShowUtil::IsSplitter(m_SourceF,false))
@@ -188,10 +198,10 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   //Load the rules from the xml
   TiXmlDocument graphConfigXml;
   if (!graphConfigXml.LoadFile(m_xbmcConfigFilePath))
-    return false;
+    return E_FAIL;
   TiXmlElement* graphConfigRoot = graphConfigXml.RootElement();
   if ( !graphConfigRoot)
-    return false;
+    return E_FAIL;
   
   TiXmlElement *pRules = graphConfigRoot->FirstChildElement("rules");
   pRules = pRules->FirstChildElement("rule");
@@ -202,22 +212,29 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
     {
       if (FAILED(InsertSourceFilter(pFileItem,pRules)))
         hr = E_FAIL;
+
       if (!m_SplitterF)
         if (FAILED(InsertSplitter(pRules)))
           hr = E_FAIL;
+
       if (FAILED(InsertVideoDecoder(pRules)))
         hr = E_FAIL;
-	  if (FAILED(InsertAudioDecoder(pRules)))
+	  
+      if (FAILED(InsertAudioDecoder(pRules)))
         hr = E_FAIL;
     }
     pRules = pRules->NextSiblingElement();
   }
-  
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGERROR,"DSPlayer %s Failed when inserting filters",__FUNCTION__);
+    return hr;
+  }
   if ( m_SplitterF )
   {
   hr = m_pGraphBuilder->ConnectFilter(m_SplitterF,NULL);
   if (FAILED(hr))
-    CLog::Log(LOGERROR,"DSPlayer %s Failed to connect every filter together",__FUNCTION__);
+    CLog::Log(LOGERROR,"DSPlayer %s Failed to connect every filters together",__FUNCTION__);
   else
     CLog::Log(LOGDEBUG,"DSPlayer %s Successfuly connected every filters",__FUNCTION__);
   }
