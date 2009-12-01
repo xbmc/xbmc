@@ -35,9 +35,6 @@ eachother.
 *) DVD images created in a non-standard way (ie. no menus, vob files >1GB) may
 hang at the end of playback or not start at all.
 
-*) Some files that are larger the 2GB will exhibit problems with seeking, fast
-fast-forward and rewind past the 2GB point.
-
 --- Linux Specific Issues -----------------------------------------------------
 *) PulseAudio can cause various audio related problems for XBMC.  It is advised
 you disable or uninstall it if you experience any.
