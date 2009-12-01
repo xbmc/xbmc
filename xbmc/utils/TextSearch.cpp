@@ -75,8 +75,16 @@ bool cTextSearch::DoSearch()
     text.ToLower();
 
   /* Only one word search */
-  if (m_searchText.Find(" ") == CStdString::npos)
+  if (searchStr.Find(" ") == CStdString::npos)
   {
+    if (searchStr[0] == '"')
+      searchStr.erase(0, 1);
+    if (searchStr[searchStr.size()-1] == '"')
+      searchStr.erase(searchStr.size()-1, 1);
+
+    if (!m_CaseSensitive)
+      searchStr.ToLower();
+
     if (text.Find(searchStr) == CStdString::npos)
       return false;
     else
