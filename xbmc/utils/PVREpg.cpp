@@ -80,7 +80,6 @@ void cPVREPGInfoTag::Reset()
   m_IconPath            = "";
   m_isRecording         = false;
   m_Timer               = NULL;
-  m_Channel             = NULL;
   m_Epg                 = NULL;
 
   CVideoInfoTag::Reset();
@@ -341,7 +340,6 @@ bool cPVREpg::Add(const PVR_PROGINFO *data, cPVREpg *Epg)
       InfoTag->SetPlotOutline(data->subtitle);
       InfoTag->SetPlot(data->description);
       InfoTag->SetGenre(data->genre_type, data->genre_sub_type);
-      InfoTag->SetChannel(Epg->m_Channel);
       InfoTag->SetIcon(Epg->m_Channel->Icon());
       InfoTag->m_Epg = Epg;
       CStdString path;
@@ -982,6 +980,21 @@ void cPVREpgs::SetVariableData(CFileItemList* results)
           break;
         }
       }
+    }
+  }
+}
+
+void cPVREpgs::AssignChangedChannelTags(bool radio/* = false*/)
+{
+  cPVRChannels *ch = !radio ? &PVRChannelsTV : &PVRChannelsRadio;
+  cPVREpgsLock EpgsLock;
+  cPVREpgs *s = (cPVREpgs *)EPGs(EpgsLock);
+  if (s)
+  {
+    for (unsigned int i = 0; i < ch->size(); i++)
+    {
+      cPVREpg *Epg = (cPVREpg *) s->GetEPG(&ch->at(i), true);
+      Epg->m_Channel = cPVRChannels::GetByChannelIDFromAll(Epg->ChannelID());
     }
   }
 }

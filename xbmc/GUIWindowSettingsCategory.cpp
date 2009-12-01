@@ -887,6 +887,16 @@ void CGUIWindowSettingsCategory::CreateSettings()
 #endif
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("pvrmenu.defaultguideview"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(19029), GUIDE_VIEW_CHANNEL);
+      pControl->AddLabel(g_localizeStrings.Get(19030), GUIDE_VIEW_NOW);
+      pControl->AddLabel(g_localizeStrings.Get(19031), GUIDE_VIEW_NEXT);
+      pControl->AddLabel(g_localizeStrings.Get(19032), GUIDE_VIEW_TIMELINE);
+      pControl->SetValue(pSettingInt->GetData());
+    }
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
@@ -1723,7 +1733,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_lcd->Initialize();
   }
 #endif
-  else if ( strSetting.Equals("services.webserver") || strSetting.Equals("services.webserverport") || 
+  else if ( strSetting.Equals("services.webserver") || strSetting.Equals("services.webserverport") ||
             strSetting.Equals("services.webserverusername") || strSetting.Equals("services.webserverpassword"))
   {
     if (strSetting.Equals("services.webserverport"))
