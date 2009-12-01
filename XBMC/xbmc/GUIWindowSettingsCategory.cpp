@@ -867,26 +867,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
       FillInWeatherPlugins(pControl, g_guiSettings.GetString("weather.plugin"));
     }
-    else if (strSetting.Equals("pvrplayback.deinterlacemethod"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(16018), VS_INTERLACEMETHOD_NONE);
-      pControl->AddLabel(g_localizeStrings.Get(16019), VS_INTERLACEMETHOD_AUTO);
-      pControl->AddLabel(g_localizeStrings.Get(20131), VS_INTERLACEMETHOD_RENDER_BLEND);
-      pControl->AddLabel(g_localizeStrings.Get(20130), VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED);
-      pControl->AddLabel(g_localizeStrings.Get(20129), VS_INTERLACEMETHOD_RENDER_WEAVE);
-      pControl->AddLabel(g_localizeStrings.Get(16022), VS_INTERLACEMETHOD_RENDER_BOB_INVERTED);
-      pControl->AddLabel(g_localizeStrings.Get(16021), VS_INTERLACEMETHOD_RENDER_BOB);
-      pControl->AddLabel(g_localizeStrings.Get(16020), VS_INTERLACEMETHOD_DEINTERLACE);
-#ifdef HAVE_LIBVDPAU
-      pControl->AddLabel(g_localizeStrings.Get(16310), VS_INTERLACEMETHOD_VDPAU);
-      pControl->AddLabel(g_localizeStrings.Get(16314), VS_INTERLACEMETHOD_INVERSE_TELECINE);
-#else
-      pControl->AddLabel(g_localizeStrings.Get(16314), VS_INTERLACEMETHOD_INVERSE_TELECINE);
-#endif
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting.Equals("pvrmenu.defaultguideview"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;

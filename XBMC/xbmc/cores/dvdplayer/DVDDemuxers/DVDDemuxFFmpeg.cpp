@@ -37,14 +37,12 @@
 #ifdef HAS_FILESYSTEM_MMS
 #include "DVDInputStreams/DVDInputStreamMMS.h"
 #endif
-#include "DVDInputStreams/DVDInputStreamPVRManager.h"
 #include "DVDInputStreams/DVDInputStreamRTMP.h"
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h" // for DVD_TIME_BASE
 #include "utils/Win32Exception.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
-#include "Settings.h"
 #include "FileSystem/File.h"
 #include "utils/log.h"
 #include "Thread.h"
@@ -994,13 +992,6 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
           st->fAspect = 0.0;
         else
           st->fAspect = av_q2d(pStream->sample_aspect_ratio) * pStream->codec->width / pStream->codec->height;
-
-        if (m_pInput->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) &&
-            g_guiSettings.GetBool("pvrplayback.sddeinterlace") &&
-            st->iHeight < 720)
-        {
-          g_stSettings.m_currentVideoSettings.m_InterlaceMethod = (EINTERLACEMETHOD) g_guiSettings.GetInt("pvrplayback.deinterlacemethod");
-        }
 
         break;
       }

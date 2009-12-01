@@ -1103,7 +1103,6 @@ void cPVRClientVDR::CloseLiveStream()
 //  if (m_playingNoSignal)
 //  {
 //    m_playingNoSignal = false;
-//    PVR_reset_player();
 //    return 0;
 //  }
 //
@@ -1688,7 +1687,6 @@ int cPVRClientVDR::writeNoSignalStream(BYTE* buf, int buf_size)
 {
   if (!m_FirstRead && !m_playingNoSignal)
   {
-    PVR_reset_player();
     return 0;
   }
 

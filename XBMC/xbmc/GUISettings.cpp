@@ -674,7 +674,6 @@ void CGUISettings::Initialize()
   AddBool(2, "pvrplayback.playminimized", 18026, true);
   AddInt(3, "pvrplayback.scantime", 18025, 5, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddBool(4, "pvrplayback.sddeinterlace", 18027, false);
-  AddInt(5, "pvrplayback.deinterlacemethod", 16023, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, 1, VS_INTERLACEMETHOD_INVERSE_TELECINE, SPIN_CONTROL_TEXT);
   AddSeparator(6, "pvrplayback.sep1");
   AddBool(7, "pvrplayback.timeshift", 18107, false);
   AddInt(8, "pvrplayback.timeshiftcache", 18108, 1024, 128, 128, 16384, SPIN_CONTROL_INT_PLUS, MASK_MB, TEXT_OFF);

@@ -57,8 +57,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   {
     return (new CDVDInputStreamNavigator(pPlayer));
   }
-  else if(file.substr(0, 6) == "pvr://"
-       || file.substr(0, 9) == "record://")
+  else if(file.substr(0, 6) == "pvr://")
     return new CDVDInputStreamPVRManager(pPlayer);
   else if(file.substr(0, 6) == "rtp://"
        || file.substr(0, 7) == "rtsp://"

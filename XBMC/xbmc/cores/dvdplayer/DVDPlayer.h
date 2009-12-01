@@ -47,7 +47,6 @@ class CDVDInputStream;
 class CDVDDemux;
 class CDemuxStreamVideo;
 class CDemuxStreamAudio;
-class CDemuxStreamData;
 class CStreamInfo;
 
 #define DVDSTATE_NORMAL           0x00000001 // normal dvd state
@@ -162,7 +161,6 @@ public:
   virtual bool CanRecord();
   virtual bool IsRecording();
   virtual bool Record(bool bOnOff);
-  virtual void PlaybackReset();
   virtual void SetAVDelay(float fValue = 0.0f);
   virtual float GetAVDelay();
 
