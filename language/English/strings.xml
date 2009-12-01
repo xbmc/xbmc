@@ -673,6 +673,10 @@
   <string id="797">Maximum number of clients</string>
   <string id="798">Internet access</string>
 
+  <string id="850">Invalid port number entered</string>
+  <string id="851">Valid port range is 1-65535</string>
+  <string id="852">Valid port range is 1024-65535</string>
+
   <string id="998"></string>
   <string id="999"></string>
   <string id="1000">Screensaver preview</string>

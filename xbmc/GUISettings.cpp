@@ -332,11 +332,13 @@ void CGUISettings::Initialize()
   bool showSetting = true;
   if (g_sysinfo.IsAeroDisabled())
     fakeFullScreen = false;
+#if defined (__APPLE__)
   if (g_sysinfo.IsAppleTV())
   {
     fakeFullScreen = false;
-    showSetting = false;
   }
+  showSetting = false;
+#endif
   AddBool(showSetting ? 2 : 0, "videoscreen.fakefullscreen", 14083, fakeFullScreen);
   AddBool(3, "videoscreen.blankdisplays", 13130, false);
   AddSeparator(4, "videoscreen.sep1");
@@ -473,7 +475,7 @@ void CGUISettings::Initialize()
   AddInt(SYNCSETTINGS ? 7 : 0, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
   AddFloat(0, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
   AddInt(0, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
-  AddInt(8, "videoplayer.aspecterror", 22021, 3, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_PERCENT, TEXT_NONE);
+  AddInt(8, "videoplayer.errorinaspect", 22021, 0, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_PERCENT, TEXT_NONE);
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.strictbinding", 13120, false);
   AddBool(0, "videoplayer.vdpau_allow_xrandr", 13122, false);

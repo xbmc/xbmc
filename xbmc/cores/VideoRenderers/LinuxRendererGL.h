@@ -244,8 +244,6 @@ protected:
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
 
-  CRect m_crop;
-
   void BindPbo(YUVBUFFER& buff, int plane);
   void UnBindPbo(YUVBUFFER& buff, int plane);
   bool m_pboused;

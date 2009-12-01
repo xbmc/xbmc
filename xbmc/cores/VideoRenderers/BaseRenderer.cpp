@@ -111,7 +111,7 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
 
   // allow a certain error to maximize screen size
   float fCorrection = screenWidth / screenHeight / outputFrameRatio - 1.0f;
-  float fAllowed    = g_guiSettings.GetInt("videoplayer.aspecterror") * 0.01f;
+  float fAllowed    = g_guiSettings.GetInt("videoplayer.errorinaspect") * 0.01f;
   if(fCorrection >   fAllowed) fCorrection =   fAllowed;
   if(fCorrection < - fAllowed) fCorrection = - fAllowed;
 

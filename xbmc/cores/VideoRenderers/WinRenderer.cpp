@@ -293,8 +293,6 @@ unsigned int CWinRenderer::PreInit()
   m_bConfigured = false;
   UnInit();
   m_resolution = RES_PAL_4x3;
-  m_crop.x1 = m_crop.x2 = 0.0f;
-  m_crop.y1 = m_crop.y2 = 0.0f;
 
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;

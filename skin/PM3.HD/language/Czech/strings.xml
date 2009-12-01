@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: ezechiel1917-->
-<!--Date of translation: 18/10/2009-->
+<!--Date of translation: 30/11/2009-->
 <strings>
   <string id="31000">Ztlumená hlasitost</string>
   <string id="31001">Pracuji...</string>
@@ -64,13 +64,13 @@
   <string id="31057">Zavřít seznam stop</string>
   <string id="31058">Hudební soubory systému</string>
   <string id="31059">Aktuální seznam stop</string>
-  <string id="31060">Soubor byl zařazen, vyberte část od které chcete spustit přehrávání.</string>
+  <string id="31060">Tento soubor se skládá z více částí. Vyberte tu, od které chcete spustit přehrávání.</string>
   
   <!-- Skin Settings labels -->
   <string id="31100">Konfigurace pozadí</string>
   <string id="31101">Konfigurace úvodní obrazovky</string>
   <string id="31102">Pozadí</string>
-  <string id="31103">Zobrazovat "POZASTAVENO" při prezentace obrázků</string>
+  <string id="31103">Zobrazovat "POZASTAVENO" při prezentaci obrázků</string>
   <string id="31104">Použít Hibernaci místo Režimu spánku v menu pro vypnutí</string>
   <string id="31105">Zobrazovat názvy médií při vyhledávání na pozadí</string>
   <string id="31106">Další nastavení</string>
@@ -83,18 +83,19 @@
   <string id="31113">1 pozadí</string>
   <string id="31114">Více pozadí</string>
   <string id="31115">Zobrazovat OSD tlačítko Teletextu místo tlačítka Nastavení zvuku</string>
+  <string id="31116">Nezobrazovat ikony s informacemi o videu v jednotlivých zobrazeních</string>
 
   <!-- Script Settings labels -->
   <string id="31200">Konfigurace vlastních skriptů</string>
   <string id="31201"></string>
   <string id="31202"></string>
-  <string id="31203">Nastavit název tlačítka</string>
+  <string id="31203">Nastavit název položky</string>
   <string id="31204">Cesta ke skriptu</string>
   <string id="31205"></string>
   <string id="31206"></string>
-  <string id="31207">Zobrazovat OSD tlačítko pro stáhnutí titulků</string>
+  <string id="31207">Zobrazovat OSD tlačítko pro stažení titulků</string>
   <string id="31208">Zobrazovat OSD tlačítko pro zobrazení textu skladby</string>
-  <string id="31209">Zobrazovat tlačítko pro rychlé spuštění -</string>
+  <string id="31209">Zobrazovat položku pro rychlé spuštění -</string>
 
   <!-- AMT Script Extra labels -->
   <string id="31300">Zobrazit obsazení</string>

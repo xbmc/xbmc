@@ -230,7 +230,7 @@ distribution.
   the source tree.
 
     1.1. "extras/user" - anything found in this directory will be
-    copied to the user's XBMC directory (~/Library/Application
+    copied to the users XBMC directory (~/Library/Application
     Support/XBMC) on first run. Examples:
 
         extras/user/scripts/XBMC Lyrics
@@ -247,16 +247,10 @@ distribution.
   2. After performing step 1, build XBMC.app from XCode so that the
   application bundle is correctly updated.
 
-  3. Go to tools/PackageMaker and run dmgmaker.pl as follows:
+  3. make -C tools/PackageMaker/
 
-      $ cd tools/PackageMaker
-      $ ./dmgmaker.pl ../../build/Release/XBMC.app
-
-  4. If dmgmaker.pl completed successfully, a disk image will be
-  present in the "dist" subdirectory:
-
-      $ ls dist
-      XBMC.dmg
+  4. If completed successfully, a disk image named XBMC_for_Mac.dmg will be
+  present in the users XBMC build directory:
 
 Remember to unmount/eject XBMC.dmg before attempting to recreate it,
 otherwise dmgmaker.pl will fail.
