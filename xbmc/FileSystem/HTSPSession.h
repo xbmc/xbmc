@@ -129,7 +129,7 @@ struct SChannel
   {
     return std::find(tags.begin(), tags.end(), tag) != tags.end();
   }
-  bool operator<(const SChannel &right)
+  bool operator<(const SChannel &right) const
   {
     return num < right.num;
   }
