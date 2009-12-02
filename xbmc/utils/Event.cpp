@@ -25,9 +25,12 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CEvent::CEvent()
+CEvent::CEvent(bool manual)
 {
-  m_hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+  if(manual)
+    m_hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+  else
+    m_hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 }
 
 CEvent::CEvent(const CEvent& src)
