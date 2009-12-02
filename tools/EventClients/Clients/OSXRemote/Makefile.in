@@ -10,13 +10,9 @@ else
 endif
 
 all: 
-ifeq ($(findstring x86-osx,$(ARCH)), x86-osx)
 	xcodebuild -sdk macosx10.4 -configuration $(CONFIGURATION)
-endif
 
 clean:
-ifeq ($(findstring x86-osx,$(ARCH)), x86-osx)
 	xcodebuild clean -configuration $(CONFIGURATION)
-endif
 
 .PHONY: all clean
