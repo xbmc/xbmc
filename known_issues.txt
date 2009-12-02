@@ -1,4 +1,4 @@
-Known Issues for the 9.04 'Babylon' Release of XBMC
+Known Issues for the 9.11 'Camelot' Release of XBMC
 -------------------------------------------------------------------------------
 ToC
   1) General Issues
