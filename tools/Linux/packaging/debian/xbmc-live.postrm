@@ -31,7 +31,7 @@ if [ "$1" = "purge" ]; then
 	    else
 		# TODO: Use debconf for this message.
 		echo "Couldn't edit /etc/sudoers, must be manually edited."
-		echo "Please edit /etc/sudoers using 'visudo' and add the following"
+		echo "Please edit /etc/sudoers using 'visudo' and remove the following"
 		echo "entries:"
 		echo "$XBMC_ENTRIES"
 	    fi
