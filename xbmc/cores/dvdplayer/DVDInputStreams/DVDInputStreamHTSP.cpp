@@ -150,39 +150,47 @@ bool CDVDInputStreamHTSP::SetChannel(int channel)
   return true;
 }
 
+bool CDVDInputStreamHTSP::GetChannels(SChannelV &channels, SChannelV::iterator &it)
+{
+  for(SChannels::iterator it2 = m_channels.begin(); it2 != m_channels.end(); it2++)
+  {
+    if(m_tag == 0 || it2->second.MemberOf(m_tag))
+      channels.push_back(it2->second);
+  }
+  sort(channels.begin(), channels.end());
+
+  for(it = channels.begin(); it != channels.end(); it++)
+    if(it->id == m_channel)
+      return true;
+  return false;
+}
+
 bool CDVDInputStreamHTSP::NextChannel()
 {
-  if(m_channels.size() == 0)
+  SChannelV channels;
+  SChannelV::iterator it;
+  if(!GetChannels(channels, it))
     return false;
 
-  SChannels::iterator start = m_channels.find(m_channel);
-  const_circular_iter<SChannels::iterator> it(m_channels.begin()
-                                            , m_channels.end()
-                                            , m_channels.find(m_channel));
-  while(++it != start)
-  {
-    if(m_tag == 0 || it->second.MemberOf(m_tag))
-      return SetChannel(it->first);
-  }
-
-  return false;
+  SChannelC circ(channels.begin(), channels.end(), it);
+  if(++circ == it)
+    return false;
+  else
+    return SetChannel(circ->id);
 }
 
 bool CDVDInputStreamHTSP::PrevChannel()
 {
-  if(m_channels.size() == 0)
+  SChannelV channels;
+  SChannelV::iterator it;
+  if(!GetChannels(channels, it))
     return false;
 
-  SChannels::iterator start = m_channels.find(m_channel);
-  const_circular_iter<SChannels::iterator> it(m_channels.begin()
-                                            , m_channels.end()
-                                            , m_channels.find(m_channel));
-  while(--it != start)
-  {
-    if(m_tag == 0 || it->second.MemberOf(m_tag))
-      return SetChannel(it->first);
-  }
-  return false;
+  SChannelC circ(channels.begin(), channels.end(), it);
+  if(--circ == it)
+    return false;
+  else
+    return SetChannel(circ->id);
 }
 
 bool CDVDInputStreamHTSP::SelectChannel(unsigned int channel)

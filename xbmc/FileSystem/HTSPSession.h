@@ -129,6 +129,10 @@ struct SChannel
   {
     return std::find(tags.begin(), tags.end(), tag) != tags.end();
   }
+  bool operator<(const SChannel &right)
+  {
+    return num < right.num;
+  }
 };
 
 struct SEvent

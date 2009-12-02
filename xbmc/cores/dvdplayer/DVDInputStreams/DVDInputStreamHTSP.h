@@ -54,7 +54,9 @@ public:
   htsmsg_t* ReadStream();
 
 private:
-
+  typedef std::vector<HTSP::SChannel> SChannelV;
+  typedef HTSP::const_circular_iter<SChannelV::iterator> SChannelC;
+  bool      GetChannels(SChannelV &channels, SChannelV::iterator &it);
   bool      SetChannel(int channel);
   unsigned           m_subs;
   bool               m_startup;
