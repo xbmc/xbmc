@@ -4,8 +4,40 @@
 # see: dh_installdeb(1)
 
 set -e
-if [ "$1" = "purge" ]                                                    
-then                            
+if [ "$1" = "purge" ]; then
+	SUDOERS="$(cat /etc/sudoers)"
+
+	SUDOERS_TEMPFILE=$(mktemp -q)
+
+	# Check if there are XBMC specific entries in /etc/sudoers and remove
+	# them if so. This makes use of perl for checking and writing a sudoers
+	# file
+	if perl -e '$sudoers=$ARGV[0]; $entries=$ARGV[1];' \
+	    -e '($sudoers =~ m/$entries/ms) ? exit 0 : exit 1;' \
+	    "$SUDOERS" "### XBMC-specific configuration ###"; then
+
+	    # First write a sudoers file to a tempfile.
+	    perl -e '$sudoers=$ARGV[0];' \
+		-e '$sudoers =~ s/\Q### XBMC-specific configuration ###\E\n//g;' \
+		-e '$sudoers =~ s/\n.*# XBMC.*//g;' \
+		-e 'chomp $sudoers;' \
+		-e 'print "$sudoers\n";' \
+		"$SUDOERS" >$SUDOERS_TEMPFILE
+
+	    # Check if sudoers file is ok with visudo and write to /etc/sudoers if
+	    # it is ok, else display a message to the user.
+	    if visudo -c -f $SUDOERS_TEMPFILE >/dev/null 2>&1; then
+		cat $SUDOERS_TEMPFILE >/etc/sudoers
+	    else
+		# TODO: Use debconf for this message.
+		echo "Couldn't edit /etc/sudoers, must be manually edited."
+		echo "Please edit /etc/sudoers using 'visudo' and add the following"
+		echo "entries:"
+		echo "$XBMC_ENTRIES"
+	    fi
+	fi
+	rm $SUDOERS_TEMPFILE
+
 	POLKIT_ACTIONS="org.freedesktop.hal.dockstation.undock
 		org.freedesktop.hal.wol.enabled
 		org.freedesktop.hal.wol.enable
