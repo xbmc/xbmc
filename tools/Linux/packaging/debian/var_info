@@ -7,8 +7,8 @@ BUILD_DEPENDS="debhelper (>= 7.0.50), python-support, cmake,
  libgl1-mesa-dev | libgl-dev, libglu-dev, libglew-dev, libmad0-dev,
  libjpeg-dev, libsamplerate-dev, libogg-dev, libvorbis-dev, libfreetype6-dev,
  libfontconfig-dev, libbz2-dev, libfribidi-dev, libsqlite3-dev,
- libmysqlclient-dev, libasound-dev, libpng-dev, libpcre3-dev, liblzo2-dev,
- libcdio-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev,
+ libmysqlclient-dev, libasound-dev, libpng12-dev | libpng-dev, libpcre3-dev,
+ liblzo2-dev, libcdio-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev,
  libenca-dev, libjasper-dev, libxt-dev, libxtst-dev, libxmu-dev,
  libxinerama-dev, libcurl4-gnutls-dev | libcurl-dev, libdbus-1-dev,
  libhal-storage-dev, libhal-dev, libpulse-dev, libavahi-common-dev,
@@ -17,10 +17,11 @@ BUILD_DEPENDS="debhelper (>= 7.0.50), python-support, cmake,
  libmpeg2-4-dev, libass-dev, libmpcdec-dev, libflac-dev, libwavpack-dev,
  python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
  zlib1g-dev, libmms-dev, libsmbclient-dev, libfaad-dev, libiso9660-dev,
- libssl-dev, lsb-release,"
+ libssl-dev, lsb-release, libvdpau-dev | nvidia-190-libvdpau-dev |
+ nvidia-185-libvdpau-dev | nvidia-180-libvdpau-dev,"
 
 if [ $(lsb_release -is) = "Ubuntu" ]; then
-    BUILD_DEPENDS="$BUILD_DEPENDS libfaac-dev, nvidia-190-libvdpau-dev,"
+    BUILD_DEPENDS="$BUILD_DEPENDS libfaac-dev,"
 fi
 
 case "$1" in
