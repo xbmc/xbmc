@@ -91,7 +91,7 @@ override_dh_link:
 		while read FILE; do \
 		LINK_TARGET="$$(echo "$$FILE" | sed -e 's|debian/xbmc-bin/||')"; \
 		LINK_DESTINATION="$$(echo "$$FILE" | sed -e 's|debian/xbmc-bin/usr/lib|usr/share|')"; \
-		dh_link -pxbmc-data "$$LINK_TARGET" "$$LINK_DESTINATION"; \
+		dh_link -pxbmc-bin "$$LINK_TARGET" "$$LINK_DESTINATION"; \
 		done
 
 override_dh_strip:
