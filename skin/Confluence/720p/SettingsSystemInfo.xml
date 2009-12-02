@@ -40,7 +40,7 @@
 				<onup>9000</onup>
 				<ondown>9000</ondown>
 				<control type="button" id="95">
-					<description>Button Basic Values</description>
+					<description>Button Summary Values</description>
 					<height>60</height>
 					<width>241</width>
 					<textoffsetx>0</textoffsetx>
@@ -52,7 +52,7 @@
 					<texturefocus border="5">MenuItemFO.png</texturefocus>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<pulseonselect>false</pulseonselect>
-					<label>31315</label>
+					<label>20037</label>
 				</control>
 				<control type="button" id="94">
 					<description>Button Storage</description>
