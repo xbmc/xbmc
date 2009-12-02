@@ -37,6 +37,7 @@ public:
   HRESULT InsertSplitter(TiXmlElement *pRule);
   HRESULT InsertAudioDecoder(TiXmlElement *pRule);
   HRESULT InsertVideoDecoder(TiXmlElement *pRule);
+  HRESULT InsertAutoLoad();
 protected:
   CComPtr<IGraphBuilder2>  m_pGraphBuilder;
   CStdString               m_xbmcConfigFilePath;

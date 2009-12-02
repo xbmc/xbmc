@@ -91,12 +91,17 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   hr = m_pGraphBuilder.QueryInterface(&m_pBasicAudio);
   hr = m_pGraphBuilder.QueryInterface(&m_pBasicVideo);
   UpdateCurrentVideoInfo(file.GetAsUrl().GetFileName());
+  
+  
 
   SetVolume(g_stSettings.m_nVolumeLevel);
   UpdateState();
   if (m_pMediaControl)
     m_pMediaControl->Run();
-
+  CComQIPtr<IAMStreamSelect> m_pStreamSelect;
+  m_pGraphBuilder->FindInterface(DShowUtil::GUIDFromCString("{18C16B08-6497-420e-AD14-22D21C2CEAB7}"),(void**)&m_pStreamSelect, true);
+  if ( m_pStreamSelect )
+    CLog::Log(LOGNOTICE,"DSPLAYER WORKING STREAM SELECTOR");
   return hr;
 }
 
@@ -199,7 +204,10 @@ void CDSGraph::UpdateCurrentVideoInfo(CStdString currentFile)
     //Im not sure if its the best interface to work with from ffdshow but at least the interface is correctly queried
   }
   if (m_pIMpcDecFilter)
+  {
     m_VideoInfo.dxva_info=DShowUtil::GetDXVAMode(m_pIMpcDecFilter->GetDXVADecoderGuid());
+  }
+
   MediaInfo MI;
   MI.Open(currentFile.c_str());
   MI.Option(_T("Complete"));

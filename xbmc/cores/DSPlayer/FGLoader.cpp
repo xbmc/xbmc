@@ -201,6 +201,32 @@ HRESULT CFGLoader::InsertVideoDecoder(TiXmlElement *pRule)
   return hr;
 }
 
+HRESULT CFGLoader::InsertAutoLoad()
+{
+  HRESULT hr = S_OK;
+  POSITION pos = m_configFilter.GetHeadPosition();
+  CComPtr<IBaseFilter> ppBF;
+  CFGFilterFile* pFGF;
+  while(pos)
+  {
+    pFGF = m_configFilter.GetNext(pos);
+    
+    if (( pFGF->GetAutoLoad() ) && (SUCCEEDED(pFGF->Create(&ppBF, pUnk))))
+	{
+      m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
+      ppBF = NULL;
+	}
+	else
+	{
+        CLog::Log(LOGDEBUG,"DSPlayer %s Failed to create the auto loading filter called %s",__FUNCTION__,pFGF->GetXFilterName().c_str());
+    }
+  }
+    
+  ppBF.Release();
+  CLog::Log(LOGDEBUG,"DSPlayer %s Is done adding the autoloading filters",__FUNCTION__);
+  return hr;
+}
+
 HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 {
   HRESULT hr;
@@ -230,6 +256,9 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
         hr = E_FAIL;
 	  
       if (FAILED(InsertAudioDecoder(pRules)))
+        hr = E_FAIL;
+
+      if (FAILED(InsertAutoLoad()))
         hr = E_FAIL;
     }
     pRules = pRules->NextSiblingElement();
@@ -265,6 +294,7 @@ HRESULT CFGLoader::LoadConfig(CStdString configFile)
     return false;
   CStdString strFPath;
   CStdString strFGuid;
+  CStdString strFAutoLoad;
   CStdString strFileType;
   CStdString strTrimedPath;
   CStdString strTmpFilterName;
@@ -278,7 +308,6 @@ HRESULT CFGLoader::LoadConfig(CStdString configFile)
     strTmpFilterType = pFilters->Attribute("type");
     if (XMLUtils::GetString(pFilters,"path",strFPath))
 	{
-
 		CStdString strPath2;
 		strPath2.Format("special://xbmc/system/players/dsplayer/%s", strFPath.c_str());
 		if (!CFile::Exists(strFPath) && CFile::Exists(strPath2))
@@ -298,10 +327,16 @@ HRESULT CFGLoader::LoadConfig(CStdString configFile)
 	  strFPath = DShowUtil::GetFilterPath(strFGuid);
 	  pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,L"",MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
 	}
-  if (pFGF)
-    m_configFilter.AddTail(pFGF);
+    if (XMLUtils::GetString(pFilters,"alwaysload",strFAutoLoad))
+	{
+      if ( ( strFAutoLoad.Equals("1",false) ) || ( strFAutoLoad.Equals("true",false) ) )
+        pFGF->SetAutoLoad(true);
+    }
+ 
+    if (pFGF)
+      m_configFilter.AddTail(pFGF);
 
-  pFilters = pFilters->NextSiblingElement();
+    pFilters = pFilters->NextSiblingElement();
   
   }
 }

@@ -392,9 +392,9 @@ CFGFilterFile::CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW na
   , m_xFileType(filetype)
   , m_xFilterName(filtername)
   , m_hInst(NULL)
+  , m_autoload(false)
 {
 }
-
 HRESULT CFGFilterFile::Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_IUnknown>& pUnks)
 {
   CheckPointer(ppBF, E_POINTER);
@@ -405,6 +405,11 @@ HRESULT CFGFilterFile::Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_
 	  CLog::Log(LOGERROR,"%s FAILED clsid:%s path:%s",__FUNCTION__,DShowUtil::CStringFromGUID(m_clsid).c_str(),m_path.c_str());
 
   return hr;
+}
+
+void CFGFilterFile::SetAutoLoad(bool autoload)
+{
+  m_autoload = autoload;
 }
 
 //

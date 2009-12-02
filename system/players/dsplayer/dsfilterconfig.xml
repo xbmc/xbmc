@@ -80,6 +80,13 @@
     <!--<filter><filter/>-->
     <!-- Audio renderers-->
     <!--<filter><filter/>-->
+    
+    <!-- Audio Stream Switcher-->
+    <filter name="audioswitcher" type="audioswitch">
+      <path>audioswitcher.ax</path>
+      <guid>{18C16B08-6497-420E-AD14-22D21C2CEAB7}</guid>
+      <alwaysload>1</alwaysload>
+    </filter>
   </filters>
   <rules>
     <!-- Still need to add the renderers -->

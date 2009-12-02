@@ -99,17 +99,20 @@ public:
 class CFGFilterFile : public CFGFilter
 {
 protected:
-	CStdString m_path;
-	CStdString m_xFileType;
-	CStdString m_xFilterName;
-	HINSTANCE m_hInst;
-
+  CStdString m_path;
+  CStdString m_xFileType;
+  CStdString m_xFilterName;
+  HINSTANCE m_hInst;
+  bool      m_autoload;
 public:
-	CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE,CStdString filtername = "",CStdString filetype = "");
+  CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE,CStdString filtername = "",CStdString filetype = "");
 
-	HRESULT Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_IUnknown>& pUnks);
-	CStdString GetXFileType() { return m_xFileType; };
-	CStdString GetXFilterName() { return m_xFilterName; };
+  HRESULT Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_IUnknown>& pUnks);
+  CStdString GetXFileType() { return m_xFileType; };
+  CStdString GetXFilterName() { return m_xFilterName; };
+  bool GetAutoLoad() { return m_autoload; };
+  void SetAutoLoad(bool autoload);
+  
 };
 
 class CFGFilterVideoRenderer : public CFGFilter
