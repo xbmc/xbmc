@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 11/26/2009-->
+<!--Date of translation: 12/01/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -623,6 +623,9 @@
   <string id="796">연속 반복 지연(밀리초)</string>
   <string id="797">최대 클라이언트 수</string>
   <string id="798">인터넷 접속</string>
+  <string id="850">잘못된 포트 번호가 입력됨</string>
+  <string id="851">유효한 포트 범위는 1-65535 입니다</string>
+  <string id="852">유효한 포트 범위는 1024-65535 입니다</string>
   <string id="1000">화면보호기 미리보기</string>
   <string id="1001">연결할수 없음</string>
   <string id="1002">XBMC가 네트워크에 연결할수 없습니다.</string>

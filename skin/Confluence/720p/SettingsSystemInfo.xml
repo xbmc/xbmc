@@ -300,7 +300,7 @@
 					<posy>480</posy>
 					<width>350</width>
 					<height>25</height>
-					<label>$LOCALIZE[31309]: $INFO[system.memory(used.percent)]</label>
+					<label>$LOCALIZE[31309] $INFO[system.memory(used.percent)]</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
