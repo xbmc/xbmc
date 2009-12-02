@@ -474,7 +474,6 @@ bool CRSSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     return false;
 
   TiXmlElement* child = NULL;
-  TiXmlElement* item_child = NULL;
   for (child = channelXmlNode->FirstChildElement("item"); child; child = child->NextSiblingElement())
   {
     // Create new item,

@@ -1759,7 +1759,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
   else if (strSetting.Equals("network.httpproxyport"))
   {
-    CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
     ValidatePortNumber(pSettingControl, "8080", "8080", false);
   }
   else if (strSetting.Equals("videoplayer.calibrate") || strSetting.Equals("videoscreen.guicalibration"))
