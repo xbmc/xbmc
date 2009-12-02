@@ -3796,7 +3796,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   bool bResult;
   if (m_pPlayer)
+  {
+    // don't hold graphicscontext here since player
+    // may wait on another thread, that requires gfx
+    CSingleExit ex(g_graphicsContext);
     bResult = m_pPlayer->OpenFile(item, options);
+  }
   else
   {
     CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.m_strPath.c_str());
