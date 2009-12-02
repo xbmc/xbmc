@@ -40,26 +40,20 @@ CSharedSection::~CSharedSection()
 void CSharedSection::EnterShared()
 {
   EnterCriticalSection(&m_critSection);
-  if( !m_exclusive )
-  { //exclusve will be set if this thread already owns this object
-    ResetEvent(m_eventFree);
-    m_sharedLock++;
-  }
+  ResetEvent(m_eventFree);
+  m_sharedLock++;
   LeaveCriticalSection(&m_critSection);
 }
 
 void CSharedSection::LeaveShared()
 {
   EnterCriticalSection(&m_critSection);
-  if( !m_exclusive )
+  m_sharedLock--;
+  if (m_sharedLock == 0)
   {
-    m_sharedLock--;
-    if (m_sharedLock == 0)
-    {
-      LeaveCriticalSection(&m_critSection);
-      SetEvent(m_eventFree);
-      return;
-    }
+    LeaveCriticalSection(&m_critSection);
+    SetEvent(m_eventFree);
+    return;
   }
   LeaveCriticalSection(&m_critSection);
 }
