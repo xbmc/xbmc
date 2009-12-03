@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 24799 -->
+<!--Based on english strings version 25165 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -663,7 +663,7 @@
   <string id="787">网卡停用</string>
   <string id="788">网卡停用完成.</string>
   <string id="789">无线网络名 (ESSID)</string>
-  
+
   <string id="790"></string>
   <string id="791">允许本机程序控制 XBMC</string>
   <string id="792">端口</string>
@@ -673,7 +673,11 @@
   <string id="796">持续等待时间(ms)</string>
   <string id="797">最大客户端数</string>
   <string id="798">互联网访问</string>
-  
+
+  <string id="850">输入了无效端口</string>
+  <string id="851">有效端口范围是 1-65535</string>
+  <string id="852">有效端口范围是 1024-65535</string>
+
   <string id="998"></string>
   <string id="999"></string>
   <string id="1000">屏幕保护预览</string>
@@ -1216,6 +1220,7 @@
   <string id="13421">VDPAU 硬解码</string>
   <string id="13422">开始幻灯片播放</string>
   <string id="13423">记住此目录</string>
+  <string id="13424">使用象素缓冲对象</string>
 
   <string id="13500">影音同步方式</string>
   <string id="13501">音频时钟</string>
@@ -2149,6 +2154,7 @@
 
   <string id="23050">开启图文电视</string>
   <string id="23051">片段 %i</string>
+  <string id="23052">缓存 %i 字节</string>
 
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">外部播放器激活</string>

@@ -42,6 +42,7 @@
 #include "FileSystem/DirectoryCache.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/PVRDirectory.h"
+#include "FileSystem/RSSDirectory.h"
 #include "ThumbnailCache.h"
 #include "FileSystem/RarManager.h"
 #include "FileSystem/CMythDirectory.h"
@@ -55,7 +56,6 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #include "utils/RegExp.h"
-#include "utils/RssFeed.h"
 #include "GUISettings.h"
 #include "TextureManager.h"
 #include "utils/fstrcmp.h"
@@ -184,12 +184,10 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
 
   if (url.GetProtocol() == "rss")
   {
-    url.SetProtocol("http");
-    path = url.Get();
-    CRssFeed feed;
-    feed.Init(path);
-    feed.ReadFeed();
-    strFilename = feed.GetFeedTitle();
+    CRSSDirectory dir;
+    CFileItemList items;
+    if(dir.GetDirectory(strFileNameAndPath, items) && !items.m_strTitle.IsEmpty())
+      return items.m_strTitle;
   }
 
   // LastFM
@@ -863,9 +861,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
     // check if we are on the local subnet
     if (!g_application.getNetwork().GetFirstConnectedInterface())
       return false;
-    unsigned long subnet = ntohl(inet_addr(g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentNetmask()));
-    unsigned long local  = ntohl(inet_addr(g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress()));
-    if( (address & subnet) == (local & subnet) )
+    if (g_application.getNetwork().HasInterfaceForIP(address))
       return true;
   }
   return false;
@@ -1000,7 +996,7 @@ bool CUtil::IsPluginRoot(const CStdString& strFile)
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("cdda") && !url.GetFileName().IsEmpty();
+  return url.GetProtocol().Equals("cdda");
 }
 
 bool CUtil::IsISO9660(const CStdString& strFile)

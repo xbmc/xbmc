@@ -625,6 +625,9 @@
   <string id="796">Kontinuerligt repititionsfördröjning (ms)</string>
   <string id="797">Maximalt antal klienter</string>
   <string id="798">Internetaccess</string>
+  <string id="850">Ogiltigt portnummer angivet</string>
+  <string id="851">Giltigt portområde är 1-65535</string>
+  <string id="852">Giltigt portområde är 1024-65535</string>
   <string id="1000">Förhandsgranska skärmsläckare</string>
   <string id="1001">Kunde inte ansluta</string>
   <string id="1002">XBMC kunde inte ansluta till nätverksplatsen.</string>
@@ -1110,6 +1113,7 @@ den här visualiseringen</string>
   <string id="13421">VDPAU</string>
   <string id="13422">Starta bildspel här</string>
   <string id="13423">Kom ihåg för denna sökväg</string>
+  <string id="13424">Använd pixelbufferobjekt</string>
   <string id="13500">A/V synkmetod</string>
   <string id="13501">Ljudklocka</string>
   <string id="13502">Videoklocka (tappat/dubblett ljud)</string>
@@ -1912,6 +1916,7 @@ den här visualiseringen</string>
   <string id="23001">- Tilläggsinställningar</string>
   <string id="23050">Aktivera teletext</string>
   <string id="23051">Del %i</string>
+  <string id="23052">Buffrar %i bytes</string> 
   <string id="23100">Extern spelare är aktiv</string>
   <string id="23101">Klicka OK för att avsluta spelaren</string>
   <string id="23104">Klicka OK när uppspelningen har slutat</string>

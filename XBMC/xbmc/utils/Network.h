@@ -94,6 +94,9 @@ public:
    // Return the first interface which is active
    CNetworkInterface* GetFirstConnectedInterface(void);
 
+   // Return true if there is a interface for the same network as address
+   bool HasInterfaceForIP(unsigned long address);
+
    // Return true if there's at least one defined network interface
    bool IsAvailable(bool wait = false);
 

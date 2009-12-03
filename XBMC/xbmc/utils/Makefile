@@ -49,7 +49,6 @@ SRCS=Addon.cpp \
      Fanart.cpp \
      ScraperUrl.cpp \
      MusicArtistInfo.cpp \
-     RssFeed.cpp \
      Mutex.cpp \
      md5.cpp \
      ArabicShaping.cpp \

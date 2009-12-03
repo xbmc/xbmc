@@ -672,6 +672,10 @@
   <string id="796">Délai répétition continue (ms)</string>
   <string id="797">Nombre maximum de Clients</string>
   <string id="798">Accès Internet</string>
+  
+  <string id="850">Numéro de port invalide</string>
+  <string id="851">Port valid compris entre 1-65535</string>
+  <string id="852">Port valid compris entre 1024-65535</string>
 
   <string id="998"></string>
   <string id="999"></string>
@@ -1216,6 +1220,7 @@
   <string id="13421">VDPAU</string>
   <string id="13422">Démarrer diaporama ici</string>
   <string id="13423">Se souvenir de ce chemin</string>
+  <string id="13424">Utiliser pixel buffer objets</string>
 
   <string id="13500">Méthode synchro. A/V</string>
   <string id="13501">Horloge audio</string>
@@ -1294,8 +1299,8 @@
   <string id="14052">Format de la date</string>
   <string id="14053">Filtres Interface</string>
   <string id="14054"></string>
-  <string id="14055">Utiliser le scanne en tache de fond</string>
-  <string id="14056">Stopper le scanne</string>
+  <string id="14055">Utiliser le scan en tache de fond</string>
+  <string id="14056">Stopper le scan</string>
   <string id="14057">Impossible d'afficher les infos lors du scan</string>
   <string id="14058">Effet de grain sur les films</string>
   <string id="14059">Rechercher les vignettes sur les partages distants</string>
@@ -1480,7 +1485,7 @@
   <string id="15293">Coups de coeur récents de %name%</string>
   <string id="15294">Banni récemment par %name%</string>
   <string id="15295">Supprimé des coups de coeur</string>
-  <string id="15296">Débannir</string>
+  <string id="15296">Dé-bannir</string>
   <string id="15297">Voulez-vous supprimer ce morceau de vos coups de coeur?</string>
   <string id="15298">Voulez-vous débannir ce morceau?</string>
 
@@ -1510,7 +1515,7 @@
   <string id="16017">Saisissez le nom de votre recherche</string>
   <string id="16018">Aucun</string>
   <string id="16019">Sélection automatique</string>
-  <string id="16020">Désentrelacé</string>
+  <string id="16020">Dés-entrelacé</string>
   <string id="16021">Bob</string>
   <string id="16022">Bob (inversé)</string>
   <string id="16023">Méthode d'entrelacement</string>
@@ -1519,6 +1524,7 @@
   <string id="16026">La lecture a échoué</string>
   <string id="16027">Un ou plusieurs éléments n'ont pu être jouer</string>
   <string id="16028">Entrer valeur</string>
+  <string id="16029">Consultez le fichier de log pour plus de détails.</string>
 
   <string id="16030">Mix de soirée annulé.</string>
   <string id="16031">Aucune chanson assortie dans la bibliothèque.</string>
@@ -1593,8 +1599,8 @@
   <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
   <string id="20022"></string>
   <string id="20023">Conflit</string>
-  <string id="20024">Rescanner</string>
-  <string id="20025">Tous scannés</string>
+  <string id="20024">Re-scanner</string>
+  <string id="20025">Tous scanner</string>
   <string id="20026">Région</string>
 
   <!-- string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)-->
@@ -1775,7 +1781,7 @@
   <string id="20304">Flux RSS</string>
   <string id="20305"></string>
 
-  <string id="20306">Inconnu. Merci d'ajouter le MD5 depuis xbmc.log à BiosIDs.ini.</string>
+  <string id="20306">Inconnu. Merci d'ajouter le MD5 de xbmc.log vers BiosIDs.ini.</string>
   <string id="20307">DNS secondaire</string>
   <string id="20308">Serveur DHCP</string>
   <string id="20309">Créer un nouveau dossier</string>
@@ -1804,7 +1810,7 @@
   <string id="20332">Utiliser le nom des dossiers ou fichiers&#10;pour la consultation</string>
   <string id="20333">Catégorie</string>
   <string id="20334">Dossier</string>
-  <string id="20335">Rechercher le contenu récursivement?</string>
+  <string id="20335">Rechercher le contenu de façon récursive ?</string>
   <string id="20336">Déverrouiller Sources</string>
   <string id="20337">Acteur</string>
   <string id="20338">Film</string>
@@ -1850,7 +1856,7 @@
   <string id="20378">Rafraîchir info pour tous les épisodes?</string>
   <string id="20379">Dossier sélectionné contient une seule Série TV</string>
   <string id="20380">Exclure le dossier sélectionné du scan</string>
-  <string id="20381">Spécials</string>
+  <string id="20381">Spéciales</string>
   <string id="20382">Récupérer automatiquement les vignettes saisons</string>
   <string id="20383">Dossier sélectionné contient une seule vidéo</string>
   <string id="20384">Lien vers Série TV</string>

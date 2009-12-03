@@ -72,6 +72,28 @@ CNetworkInterface* CNetwork::GetFirstConnectedInterface()
    return NULL;
 }
 
+bool CNetwork::HasInterfaceForIP(unsigned long address)
+{
+   unsigned long subnet;
+   unsigned long local;
+   vector<CNetworkInterface*>& ifaces = GetInterfaceList();
+   vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
+   while (iter != ifaces.end())
+   {
+      CNetworkInterface* iface = *iter;
+      if (iface && iface->IsConnected())
+      {
+         subnet = ntohl(inet_addr(iface->GetCurrentNetmask()));
+         local = ntohl(inet_addr(iface->GetCurrentIPAddress()));
+         if( (address & subnet) == (local & subnet) )
+            return true;
+      }
+      ++iter;
+   }
+
+   return false;
+}
+
 bool CNetwork::IsAvailable(bool wait /*= false*/)
 {
   if (wait)

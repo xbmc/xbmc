@@ -208,15 +208,6 @@ case TMSG_POWERDOWN:
       break;
 
     case TMSG_RESTART:
-      {
-        g_application.Stop();
-        Sleep(200);
-        g_Windowing.DestroyWindow();
-        g_powerManager.Reboot();
-        exit(66);
-      }
-      break;
-
     case TMSG_RESET:
       {
         g_application.Stop();

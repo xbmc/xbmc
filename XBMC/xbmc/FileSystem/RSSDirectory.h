@@ -22,18 +22,23 @@
 #ifndef CRSSDIRECTORY_H_
 #define CRSSDIRECTORY_H_
 
-#include "IDirectory.h"
+#include "IFileDirectory.h"
+#include "FileItem.h"
 
 namespace DIRECTORY
 {
-  class CRSSDirectory : public IDirectory
+  class CRSSDirectory : public IFileDirectory
   {
   public:
     CRSSDirectory();
     virtual ~CRSSDirectory();
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     virtual bool IsAllowed(const CStdString &strFile) const { return true; };
+    virtual bool ContainsFiles(const CStdString& strPath);
     virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ALWAYS; };
+
+    CFileItemList m_items;
+    CStdString    m_path;
   };
 }
 

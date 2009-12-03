@@ -101,7 +101,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 {
   CURL url(strPath);
 
-  CFileItem item;
+  CFileItem item(strPath, false);
   IFileDirectory* pDir=CFactoryFileDirectory::Create(strPath, &item);
   if (pDir)
     return pDir;
