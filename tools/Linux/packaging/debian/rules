@@ -15,9 +15,11 @@ endif
 
 # List of options to pass to configure. Can be overridden.
 XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
-	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --disable-ccache \
-	--enable-goom --enable-avahi --enable-vdpau \
-	--enable-external-libraries --disable-dvdcss
+	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr \
+	--enable-debug --enable-optimizations --enable-gl --enable-vdpau \
+	--disable-profiling --enable-joystick --enable-xrandr --enable-goom \
+	--disable-ccache --enable-pulse --disable-dvdcss --enable-avahi \
+	--disable-non-free --enable-external-libraries
 
 # Ubuntu or Debian specific options
 ifeq (Ubuntu,$(shell lsb_release -is))
