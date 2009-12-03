@@ -647,9 +647,9 @@
 			</control>
 			<control type="image">
 				<description>Button background image</description>
-				<posx>205r</posx>
+				<posx>227r</posx>
 				<posy>0</posy>
-				<width>85</width>
+				<width>97</width>
 				<height>32</height>
 				<texture border="15,0,15,15">osd-panel-top.png</texture>
 			</control>
@@ -681,8 +681,8 @@
 				<texturefocus>osd_button_info_2.png</texturefocus>
 				<texturenofocus>osd_button_info_2_nofocus.png</texturenofocus>
 				<onleft>1</onleft>
-				<onright>60</onright>
-				<onup>2</onup>
+				<onright>3</onright>
+				<onup>60</onup>
 				<ondown>2</ondown>
 			</control>
 			<control type="button" id="3">
@@ -871,7 +871,7 @@
 					<textureslidernib>scrollbar_nib.png</textureslidernib>
 					<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
 					<onleft>2</onleft>
-					<onright>3</onright>
+					<onright>2</onright>
 					<showonepage>false</showonepage>
 					<orientation>vertical</orientation>
 				</control>
