@@ -2060,9 +2060,9 @@ void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
     result->st_size = 0;
     CLog::Log(LOGWARNING, "WARNING: File is larger than 32bit stat can handle, file size will be reported as 0 bytes");
   }
-  result->st_atime = (time_t)stat->st_atime;
-  result->st_mtime = (time_t)stat->st_mtime;
-  result->st_ctime = (time_t)stat->st_ctime;
+  result->st_atime = (time_t)(stat->st_atime & 0xFFFFFFFF);
+  result->st_mtime = (time_t)(stat->st_mtime & 0xFFFFFFFF);
+  result->st_ctime = (time_t)(stat->st_ctime & 0xFFFFFFFF);
 }
 
 bool CUtil::CreateDirectoryEx(const CStdString& strPath)
