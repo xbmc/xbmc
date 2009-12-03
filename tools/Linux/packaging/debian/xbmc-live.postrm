@@ -5,7 +5,24 @@
 
 set -e
 if [ "$1" = "purge" ]; then
-	sed -i -e "/XBMC/d" /etc/sudoers 
+	SUDOERS_TEMPFILE=$(mktemp -q)
+
+	# Add xbmc to the sudoers file (if not already done)
+	if ! grep -i -q XBMC-specific /etc/sudoers ; then 
+		cp /etc/sudoers $SUDOERS_TEMPFILE
+
+		sed -i -e "/XBMC/d" $SUDOERS_TEMPFILE
+
+		# Check if sudoers file is ok with visudo and write to /etc/sudoers if
+		# it is ok, else display a message to the user.
+		if visudo -c -f $SUDOERS_TEMPFILE >/dev/null 2>&1; then
+			cp $SUDOERS_TEMPFILE /etc/sudoers
+		else
+			# TODO: Use debconf for this message.
+			echo "Couldn't edit /etc/sudoers, must be manually edited."
+			echo "Please edit /etc/sudoers using 'visudo' and remove the lines with 'XBMC'"
+		fi
+	fi
 
 	POLKIT_ACTIONS="org.freedesktop.hal.dockstation.undock
 		org.freedesktop.hal.wol.enabled
