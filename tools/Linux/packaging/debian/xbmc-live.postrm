@@ -9,14 +9,14 @@ if [ "$1" = "purge" ]; then
 
 	# Add xbmc to the sudoers file (if not already done)
 	if ! grep -i -q XBMC-specific /etc/sudoers ; then 
-		cp /etc/sudoers $SUDOERS_TEMPFILE
+		cp -f /etc/sudoers $SUDOERS_TEMPFILE
 
 		sed -i -e "/XBMC/d" $SUDOERS_TEMPFILE
 
 		# Check if sudoers file is ok with visudo and write to /etc/sudoers if
 		# it is ok, else display a message to the user.
 		if visudo -c -f $SUDOERS_TEMPFILE >/dev/null 2>&1; then
-			cp $SUDOERS_TEMPFILE /etc/sudoers
+			cp -f $SUDOERS_TEMPFILE /etc/sudoers
 		else
 			# TODO: Use debconf for this message.
 			echo "Couldn't edit /etc/sudoers, must be manually edited."
