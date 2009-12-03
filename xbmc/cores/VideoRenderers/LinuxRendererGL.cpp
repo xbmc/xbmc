@@ -102,7 +102,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_pYUVShader = NULL;
   m_pVideoFilterShader = NULL;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
-
+  m_scalingMethodGui = (ESCALINGMETHOD)-1;
   m_upscalingWidth = 0;
   m_upscalingHeight = 0;
   memset(&m_imScaled, 0, sizeof(m_imScaled));
@@ -194,7 +194,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 
   m_bConfigured = true;
   m_bImageReady = false;
-  m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
+  m_scalingMethodGui = (ESCALINGMETHOD)-1;
 
   // Ensure that textures are recreated and rendering starts only after the 1st 
   // frame is loaded after every call to Configure().
@@ -865,9 +865,16 @@ unsigned int CLinuxRendererGL::PreInit()
 
 void CLinuxRendererGL::UpdateVideoFilter()
 {
-  if (m_scalingMethod == g_stSettings.m_currentVideoSettings.m_ScalingMethod)
+  if (m_scalingMethodGui == g_stSettings.m_currentVideoSettings.m_ScalingMethod)
     return;
-  m_scalingMethod = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
+  m_scalingMethodGui = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
+  m_scalingMethod    = m_scalingMethodGui;
+
+  if(!Supports(m_scalingMethod))
+  {
+    CLog::Log(LOGWARNING, "CLinuxRendererGL::UpdateVideoFilter - choosen scaling method %d, is not supported by renderer", (int)m_scalingMethod);
+    m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
+  }
 
   if (m_pVideoFilterShader)
   {
@@ -879,7 +886,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
   VerifyGLState();
 
-  switch (g_stSettings.m_currentVideoSettings.m_ScalingMethod)
+  switch (m_scalingMethod)
   {
   case VS_SCALINGMETHOD_NEAREST:
     SetTextureFilter(GL_NEAREST);

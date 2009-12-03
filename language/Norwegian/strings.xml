@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Sainty-->
 <!--Email: salsve@nith.no-->
 <!--Date of translation: 11/24/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 24865-->
+<!--Based on english strings version 25111-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Bilder</string>
@@ -23,18 +23,18 @@
   <string id="15">Fredag</string>
   <string id="16">Lørdag</string>
   <string id="17">Søndag</string>
-  <string id="21">Januar</string>
-  <string id="22">Februar</string>
-  <string id="23">Mars</string>
-  <string id="24">April</string>
-  <string id="25">Mai</string>
-  <string id="26">Juni</string>
-  <string id="27">Juli</string>
-  <string id="28">August</string>
-  <string id="29">September</string>
-  <string id="30">Oktober</string>
-  <string id="31">November</string>
-  <string id="32">Desember</string>
+  <string id="21">januar</string>
+  <string id="22">februar</string>
+  <string id="23">mars</string>
+  <string id="24">april</string>
+  <string id="25">mai</string>
+  <string id="26">juni</string>
+  <string id="27">juli</string>
+  <string id="28">august</string>
+  <string id="29">september</string>
+  <string id="30">oktober</string>
+  <string id="31">november</string>
+  <string id="32">desember</string>
   <string id="41">Man</string>
   <string id="42">Tir</string>
   <string id="43">Ons</string>
@@ -112,7 +112,7 @@
   <string id="163">Leser</string>
   <string id="164">Ingen disk</string>
   <string id="165">Disk tilstede</string>
-  <string id="166">Skin</string>
+  <string id="166">Skinn</string>
   <string id="167">Aktiver FTP server</string>
   <string id="168">Tidssynkronisering over internett</string>
   <string id="169">Oppløsning</string>
@@ -245,7 +245,7 @@
   <string id="283">Søkeresultater</string>
   <string id="284">Ingen resultater funnet</string>
   <string id="286">Etterprosesseringsfilter</string>
-  <string id="287">Tekster</string>
+  <string id="287">Undertekster</string>
   <string id="288">Skrifttype</string>
   <string id="289">Størrelse</string>
   <string id="290">Dynamisk volumutjevning</string>
@@ -433,7 +433,7 @@
   <string id="477">Kan ikke laste spilleliste</string>
   <string id="478">OSD</string>
   <string id="479">Utseende og språk</string>
-  <string id="480">Brukergrensesnitt</string>
+  <string id="480">Grensesnitt</string>
   <string id="481">Lydinnstillinger</string>
   <string id="482">Om XBMC</string>
   <string id="483">
@@ -699,7 +699,7 @@
   <string id="795">Forsinkelse for innledende repetisjon (ms)</string>
   <string id="796">Forsinkelse for kontinuerlig repetisjon (ms)</string>
   <string id="797">Maksimalt antall klienter</string>
-  <string id="798">Internett tillgang</string>
+  <string id="798">Internettilgang</string>
   <string id="998">
   </string>
   <string id="999">
@@ -1224,6 +1224,7 @@
   <string id="13421">VDPAU</string>
   <string id="13422">Start bildevisning her</string>
   <string id="13423">Husk for denne katalogen</string>
+  <string id="13424">Bruk 'Pixel buffer objects'</string>
   <string id="13500">A/V synkmetode</string>
   <string id="13501">Lydklokke</string>
   <string id="13502">Videoklokke (dropp/duplisér lyd)</string>
@@ -1324,10 +1325,10 @@
   <string id="14075">Bruk sommertid</string>
   <string id="14076">Legg til favoritter</string>
   <string id="14077">Fjern fra favoritter</string>
-  <string id="14078">Farger for skin</string>
+  <string id="14078">Farger for skinn</string>
   <string id="14079">Tidssone land</string>
   <string id="14080">Tidssone</string>
-  <string id="14081">Fil lister</string>
+  <string id="14081">Fillister</string>
   <string id="14082">Vis EXIF bilde informasjon</string>
   <string id="14083">Bruk ett fullskjermsvindu istedenfor sann fullskjerm</string>
   <string id="14084">Kø sanger ved valg</string>
@@ -1336,12 +1337,12 @@
   <string id="14087">DVD'er</string>
   <string id="14088">Spill DVD'er automatisk</string>
   <string id="14089">Font å bruke til undertekster</string>
-  <string id="14090">Internasjonal</string>
-  <string id="14091">Karakter sett</string>
+  <string id="14090">Land og språk</string>
+  <string id="14091">Karaktersett</string>
   <string id="14092">Feilretting</string>
   <string id="14093">Sikkerhet</string>
-  <string id="14094">Inn enheter</string>
-  <string id="14095">Strøm sparing</string>
+  <string id="14094">Innenheter</string>
+  <string id="14095">Strømsparing</string>
   <string id="15000">
   </string>
   <string id="15001">
@@ -1693,7 +1694,7 @@
   <string id="20074">MPAA-rating</string>
   <string id="20075">Skriv inn masterlåskode</string>
   <string id="20076">Spør etter masterlåskode ved oppstart</string>
-  <string id="20077">Skin-innstillnger</string>
+  <string id="20077">Skinn-innstillinger</string>
   <string id="20078">- ingen link satt -</string>
   <string id="20079">Aktivér animeringer</string>
   <string id="20080">Skru av RSS ved musikkspilling</string>
@@ -1798,7 +1799,7 @@
   <string id="20180">Symboler</string>
   <string id="20181">Tilbake</string>
   <string id="20182">Mellomrom</string>
-  <string id="20183">Last skin om igjen</string>
+  <string id="20183">Last skinn om igjen</string>
   <string id="20184">Rotér i henhold til EXIF-informasjon</string>
   <string id="20185">Bruk plakatstil for TV-serier</string>
   <string id="20186">Vennligst vent</string>

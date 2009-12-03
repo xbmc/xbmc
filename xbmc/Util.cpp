@@ -997,7 +997,7 @@ bool CUtil::IsPluginRoot(const CStdString& strFile)
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("cdda") && !url.GetFileName().IsEmpty();
+  return url.GetProtocol().Equals("cdda");
 }
 
 bool CUtil::IsISO9660(const CStdString& strFile)

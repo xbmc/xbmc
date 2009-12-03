@@ -149,14 +149,8 @@ void CJobManager::CancelJobs()
   
   // cancel any callbacks on jobs still processing
   for_each(m_processing.begin(), m_processing.end(), mem_fun_ref(&CWorkItem::Cancel));
-}
 
-CJobManager::~CJobManager()
-{
-  CSingleLock lock(m_section);
-
-  // cancel any jobs, and tell our workers to finish
-  CancelJobs();
+  // tell our workers to finish
   while (m_workers.size())
   {
     lock.Leave();
@@ -164,6 +158,10 @@ CJobManager::~CJobManager()
     Sleep(0); // yield after setting the event to give the workers some time to die
     lock.Enter();
   }
+}
+
+CJobManager::~CJobManager()
+{
 }
 
 unsigned int CJobManager::AddJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority)

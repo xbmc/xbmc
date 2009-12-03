@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 23/11/2009-->
-<!--Based on English strings revision 24865-->
+<!--Date of translation: 26/11/2009-->
+<!--Based on English strings revision 25040-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -1222,6 +1222,7 @@
   <string id="13421">VDPAU</string>
   <string id="13422">Slayt gösterine buradan başla</string>
   <string id="13423">Bu yolu hatırla</string>
+  <string id="13424">Piksel tampon nesnelerini kullan</string>
 
   <string id="13500">Ses/Video senkron biçimi</string>
   <string id="13501">Ses saati</string>

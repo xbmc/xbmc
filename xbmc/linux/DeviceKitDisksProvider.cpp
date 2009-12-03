@@ -114,7 +114,7 @@ bool CDeviceKitDiskDevice::UnMount()
   {
     CDBusMessage message("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "FilesystemUnmount");
 
-    const char *array[0];
+    const char *array[1];
     message.AppendArgument(array, 0);
 
     DBusMessage *reply = message.SendSystem();
