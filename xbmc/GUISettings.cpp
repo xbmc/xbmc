@@ -493,7 +493,7 @@ void CGUISettings::Initialize()
 #endif
 #endif
   AddSeparator(11, "videoplayer.sep5");
-  AddBool(12, "videoplayer.teletextenabled", 23050, true);
+  AddBool(12, "videoplayer.teletextenabled", 23090, true);
 
   AddCategory(5, "myvideos", 14081);
   AddBool(0, "myvideos.treatstackasfile", 20051, true);
