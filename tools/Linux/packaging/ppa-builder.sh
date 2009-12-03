@@ -102,6 +102,8 @@ preparesrc()
   fi
   cd $DESTSRC
   ./bootstrap
+  rm -rf autom4te.cache
+  rm -rf xbmc/lib/libass/autom4te.cache
   cd $OLDPWD
   echo "Copying to .orig folder"
   cp -a $DESTSRC $DESTSRC.orig
