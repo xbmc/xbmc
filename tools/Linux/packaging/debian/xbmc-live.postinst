@@ -55,47 +55,40 @@ case "$1" in
 		fi
 	done
 
-	SUDOERS="$(cat /etc/sudoers)"
 
-	XBMC_ENTRIES="### XBMC-specific configuration ###
-	# XBMC
-	Cmnd_Alias SHUTDOWN_CMDS = /sbin/shutdown, /sbin/reboot, /sbin/halt # XBMC
-	Cmnd_Alias MOUNT_CMDS = /bin/mount, /bin/umount # XBMC
-	$xbmcUser ALL=(ALL) ALL # XBMC
-	$xbmcUser ALL=NOPASSWD: SHUTDOWN_CMDS, MOUNT_CMDS # XBMC"
+	SUDOERSBLOCK_TEMPFILE=$(mktemp -q)
+
+	cat > $SUDOERSBLOCK_TEMPFILE <<ENDOFBLOCK
+### XBMC-specific configuration ###
+# XBMC
+Cmnd_Alias SHUTDOWN_CMDS = /sbin/shutdown, /sbin/reboot, /sbin/halt # XBMC
+Cmnd_Alias MOUNT_CMDS = /bin/mount, /bin/umount # XBMC
+$xbmcUser ALL=(ALL) ALL # XBMC
+$xbmcUser ALL=NOPASSWD: SHUTDOWN_CMDS, MOUNT_CMDS # XBMC
+ENDOFBLOCK
 
 	SUDOERS_TEMPFILE=$(mktemp -q)
 
 	# Add xbmc to the sudoers file (if not already done)
-	# Here we make use of perl to check the current sudoers file and create one
-	# for us in case we need to add the xbmc specific entries.
-	if ! perl -e '$sudoers=$ARGV[0]; $entries=$ARGV[1];' \
-	    -e '$entries =~ s/^\s*?(\S)/$1/msg;' \
-	    -e '($sudoers =~ m/$entries/ms) ? exit 0 : exit 1;' \
-	    "$SUDOERS" "$XBMC_ENTRIES"; then
+	if ! grep -i -q XBMC-specific /etc/sudoers ; then 
+		cat /etc/sudoers $SUDOERSBLOCK_TEMPFILE > $SUDOERS_TEMPFILE
 
-	    # First write a sudoers file to a tempfile.
-	    perl -e '$sudoers=$ARGV[0]; $entries=$ARGV[1];' \
-		-e '$entries =~ s/^\s*?(\S)/$1/msg;' \
-		-e '$sudoers =~ s/\Q### XBMC-specific configuration ###\E\n//g;' \
-		-e '$sudoers =~ s/\n.*# XBMC.*//g;' \
-		-e 'chomp $sudoers;' \
-		-e 'print "$sudoers\n\n$entries\n";' \
-		"$SUDOERS" "$XBMC_ENTRIES" >$SUDOERS_TEMPFILE
-
-	    # Check if sudoers file is ok with visudo and write to /etc/sudoers if
-	    # it is ok, else display a message to the user.
-	    if visudo -c -f $SUDOERS_TEMPFILE >/dev/null 2>&1; then
-		cat $SUDOERS_TEMPFILE >/etc/sudoers
-	    else
-		# TODO: Use debconf for this message.
-		echo "Couldn't edit /etc/sudoers, must be manually edited."
-		echo "Please edit /etc/sudoers using 'visudo' and add the following"
-		echo "entries:"
-		echo "$XBMC_ENTRIES"
-	    fi
+		# Check if sudoers file is ok with visudo and write to /etc/sudoers if
+		# it is ok, else display a message to the user.
+		if visudo -c -f $SUDOERS_TEMPFILE >/dev/null 2>&1; then
+			cp $SUDOERS_TEMPFILE /etc/sudoers
+		else
+			# TODO: Use debconf for this message.
+			echo "Couldn't edit /etc/sudoers, must be manually edited."
+			echo "Please edit /etc/sudoers using 'visudo' and add the following"
+			echo "entries:"
+			cat $SUDOERSBLOCK_TEMPFILE
+		fi
 	fi
+
 	rm $SUDOERS_TEMPFILE
+	rm $SUDOERSBLOCK_TEMPFILE
+
 
 	# Our set of PolicyKit actions
 
