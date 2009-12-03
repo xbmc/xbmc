@@ -1139,7 +1139,7 @@
   <string id="13348">Film in IMDb suchen...</string>
   <string id="13349">Neue Inhalte suchen</string>
   <string id="13350">Abspielliste anzeigen</string>
-  <string id="13351">Albuminformationen</string>
+  <string id="13351">Album-informationen</string>
   <string id="13352">In Datenbank aufnehmen</string>
   <string id="13353">Aktualisieren abbrechen</string>
   <string id="13354">Render-Methode</string>
@@ -1147,7 +1147,7 @@
   <string id="13356">Hardware-Overlays</string>
   <string id="13357">Shader (hohe Qualität)</string>
   <string id="13358">Abspielen</string>
-  <string id="13359">Interpreten Thumbnail setzen</string>
+  <string id="13359">Interpreten Bild setzen</string>
   <string id="13360">Thumbnails automatisch erstellen</string>
   <string id="13361">Spracheingabe aktivieren</string>
   <string id="13375">Gerät verwenden</string>
@@ -1647,7 +1647,7 @@
   </string>
   <string id="20057">Thumbnail entfernen</string>
   <string id="20058">Profil hinzufügen...</string>
-  <string id="20059">Info für alle Alben abfragen</string>
+  <string id="20059">Lade alle Alben-Infos</string>
   <string id="20060">Medien-Informationen</string>
   <string id="20061">Eigenständig</string>
   <string id="20062">Wie Hauptbenutzer</string>
@@ -2091,7 +2091,7 @@
   <string id="21881">UPnP Renderer aktivieren</string>
   <string id="21882">Filmeinleitung vor dem DVD-Menü überspringen</string>
   <string id="21883">Kopierte Audio CDs</string>
-  <string id="21884">Lade Infos für alle Interpreten</string>
+  <string id="21884">Lade alle Interpreten-Infos</string>
   <string id="21885">Lade Album Information</string>
   <string id="21886">Lade Interpreten Information</string>
   <string id="21887">Biografie</string>
