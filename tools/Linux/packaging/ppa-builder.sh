@@ -100,6 +100,9 @@ preparesrc()
     svn cleanup $SVNSRC 
     svn export $SVNSRC $DESTSRC 
   fi
+  cd $DESTSRC
+  ./bootstrap
+  cd $OLDPWD
   echo "Copying to .orig folder"
   cp -a $DESTSRC $DESTSRC.orig
 }
