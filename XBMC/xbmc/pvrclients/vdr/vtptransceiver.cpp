@@ -216,6 +216,12 @@ bool CVTPTransceiver::Open(const string &host, int port)
   int    code;
   ReadResponse(code, line);
 
+  if(!SendCommand("CAPS TS", code, line))
+  {
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - server is unable to provide mpeg-ts");
+    return false;
+  }
+
   XBMC_log(LOG_INFO, "CVTPTransceiver::Open - server greeting: %s", line.c_str());
   return true;
 }
@@ -437,12 +443,6 @@ SOCKET CVTPTransceiver::GetStreamLive(unsigned int channel)
   char        buffer[1024];
   string      result;
   int         code;
-
-  if(!SendCommand("CAPS TS", code, result))
-  {
-    XBMC_log(LOG_ERROR, "CVTPTransceiver::GetStreamLive - server is unable to provide mpeg-ts");
-    return INVALID_SOCKET;
-  }
 
   sprintf(buffer, "PROV %d %d", 100, channel);
   if(!SendCommand(buffer, code, result))

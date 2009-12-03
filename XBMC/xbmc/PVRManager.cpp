@@ -1488,7 +1488,7 @@ void CPVRManager::LoadCurrentChannelSettings()
       if (loadedChannelSettings.m_Crop != g_stSettings.m_currentVideoSettings.m_Crop)
       {
         g_stSettings.m_currentVideoSettings.m_Crop = loadedChannelSettings.m_Crop;
-        g_renderManager.AutoCrop(g_stSettings.m_currentVideoSettings.m_Crop);
+        // AutoCrop changes will get picked up automatically by dvdplayer
       }
 
       if (loadedChannelSettings.m_CropLeft != g_stSettings.m_currentVideoSettings.m_CropLeft)

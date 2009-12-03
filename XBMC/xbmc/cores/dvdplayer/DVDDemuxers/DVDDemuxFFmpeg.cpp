@@ -322,8 +322,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       // this actually speeds up channel changes by almost a second
       // however, it alsa makes player not buffer anything, this
       // leads to buffer underruns in audio renderer
-      //if(context->is_streamed)
-      //  streaminfo = false;
+      if(context->is_streamed)
+        streaminfo = false;
     }
     else
     {

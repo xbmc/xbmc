@@ -487,7 +487,12 @@ bool CDVDPlayer::OpenDemuxStream()
     while(!m_bStop && attempts-- > 0)
     {
       m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
-      if(!m_pDemuxer && m_pInputStream->NextStream())
+      if(!m_pDemuxer && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+      {
+        Sleep(200);
+        continue;
+      }
+      else if(!m_pDemuxer && m_pInputStream->NextStream())
       {
         CLog::Log(LOGDEBUG, "%s - New stream available from input, retry open", __FUNCTION__);
         continue;
@@ -982,6 +987,16 @@ void CDVDPlayer::Process()
         Sleep(100);
         continue;
       }
+      else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+      {
+        CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
+
+        if (pStream->IsEOF())
+          break;
+
+        Sleep(100);
+        continue;
+      }
 
       // make sure we tell all players to finish it's data
       if(m_CurrentAudio.inited)
@@ -1110,7 +1125,7 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   }
 
   // check if we are too slow and need to recache
-  if(CheckStartCaching(m_CurrentAudio) && m_dvdPlayerAudio.IsStalled())
+  if(CheckStartCaching(m_CurrentAudio) && m_dvdPlayerAudio.IsStalled() && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
     SetCaching(true);
 
   CheckContinuity(m_CurrentAudio, pPacket);
@@ -1146,7 +1161,7 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
   }
 
   // check if we are too slow and need to recache
-  if(CheckStartCaching(m_CurrentVideo) && m_dvdPlayerVideo.IsStalled())
+  if(CheckStartCaching(m_CurrentVideo) && m_dvdPlayerVideo.IsStalled() && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
     SetCaching(true);
 
   if( pPacket->iSize != 4) //don't check the EOF_SEQUENCE of stillframes
@@ -1939,8 +1954,8 @@ void CDVDPlayer::HandleMessages()
           if(result)
           {
             FlushBuffers(false);
-            CloseAudioStream(false);
-            CloseSubtitleStream(false);
+//            CloseAudioStream(false);
+//            CloseSubtitleStream(false);
             SAFE_DELETE(m_pDemuxer);
           }
         }

@@ -989,18 +989,10 @@ PVR_ERROR cPVRClientVDR::UpdateTimer(const PVR_TIMERINFO &timerinfo)
 
 bool cPVRClientVDR::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
-  unsigned int channel = channelinfo.number;
-
   if (!m_transceiver->IsOpen())
     return false;
 
   pthread_mutex_lock(&m_critSection);
-
-  if (!m_transceiver->CanStreamLive(channel))
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return false;
-  }
 
   /* Check if a another stream is opened, if yes first close them */
   if (m_socket_video != INVALID_SOCKET)
@@ -1016,21 +1008,22 @@ bool cPVRClientVDR::OpenLiveStream(const PVR_CHANNEL &channelinfo)
   }
 
   /* Get Stream socked from VDR Backend */
-  m_socket_video = m_transceiver->GetStreamLive(channel);
-
-  /* If received socket is invalid, return */
+  m_socket_video = m_transceiver->GetStreamLive(channelinfo.number);
   if (m_socket_video == INVALID_SOCKET)
   {
-    XBMC_log(LOG_ERROR, "PCRClient-vdr: Couldn't get socket for live tv");
-    pthread_mutex_unlock(&m_critSection);
-    return false;
+    /* retry one time otherwise If received socket is invalid, return */
+    m_socket_video = m_transceiver->GetStreamLive(channelinfo.number);
+    if (m_socket_video == INVALID_SOCKET)
+    {
+      XBMC_log(LOG_ERROR, "PCRClient-vdr: Couldn't get socket for live tv");
+      pthread_mutex_unlock(&m_critSection);
+      return false;
+    }
   }
 
-  m_iCurrentChannel       = channel;
+  m_iCurrentChannel       = channelinfo.number;
   m_noSignalStreamReadPos = 0;
   m_playingNoSignal       = false;
-  m_FirstRead             = true;
-  m_TimeOut               = time(NULL);
 
   pthread_mutex_unlock(&m_critSection);
   return true;
@@ -1050,77 +1043,8 @@ void cPVRClientVDR::CloseLiveStream()
   }
 
   pthread_mutex_unlock(&m_critSection);
-
   return;
 }
-
-//int cPVRClientVDR::ReadLiveStream(BYTE* buf, int buf_size)
-//{
-//  if (!m_transceiver->IsOpen())
-//    return -1;
-//
-//  if (m_socket_video == INVALID_SOCKET)
-//    return -1;
-//
-//  fd_set         set_r, set_e;
-//  struct timeval tv;
-//  int            ret;
-//
-//  tv.tv_sec = m_FirstRead ? 0 : 3;
-//  tv.tv_usec = m_FirstRead ? 25000 : 0;
-//  FD_ZERO(&set_r);
-//  FD_ZERO(&set_e);
-//  FD_SET(m_socket_video, &set_r);
-//  FD_SET(m_socket_video, &set_e);
-//
-//  ret = select(FD_SETSIZE, &set_r, NULL, &set_e, &tv);
-//  if (ret < 0)
-//  {
-//    if (time(NULL) - m_TimeOut > 2)
-//    {
-//      return writeNoSignalStream(buf, buf_size);
-//    }
-//    else
-//    {
-//      XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - select failed");
-//      return 0;
-//    }
-//  }
-//  else if (ret == 0)
-//  {
-//    if (time(NULL) - m_TimeOut > 2)
-//    {
-//      return writeNoSignalStream(buf, buf_size);
-//    }
-//    else
-//    {
-//      XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - timeout waiting for data");
-//      return 0;
-//    }
-//  }
-//
-//  m_FirstRead = false;
-//  if (m_playingNoSignal)
-//  {
-//    m_playingNoSignal = false;
-//    return 0;
-//  }
-//
-//  ret = recv(m_socket_video, (char*)buf, (size_t)buf_size, 0);
-//  if (ret < 0)
-//  {
-//    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - failed");
-//    return -1;
-//  }
-//  else if (ret == 0)
-//  {
-//    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - eof");
-//    return -1;
-//  }
-//
-//  m_TimeOut = time(NULL);
-//  return ret;
-//}
 
 int cPVRClientVDR::ReadLiveStream(BYTE* buf, int buf_size)
 {
@@ -1134,40 +1058,39 @@ int cPVRClientVDR::ReadLiveStream(BYTE* buf, int buf_size)
   struct timeval tv;
   int            res;
 
-  tv.tv_sec = 10;
-  tv.tv_usec = 0;
+  tv.tv_sec = m_playingNoSignal ? 0 : 2;
+  tv.tv_usec = m_playingNoSignal ? 25000 : 0;
   FD_ZERO(&set_r);
   FD_ZERO(&set_e);
   FD_SET(m_socket_video, &set_r);
   FD_SET(m_socket_video, &set_e);
-  res = select(FD_SETSIZE, &set_r, NULL, &set_e, &tv);
 
+  res = select(FD_SETSIZE, &set_r, NULL, &set_e, &tv);
   if (res < 0)
   {
     XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - select failed");
     return 0;
   }
-
   if (res == 0)
   {
-    XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - timeout waiting for data");
-    return 0;
+    if (!m_playingNoSignal)
+      XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - timeout waiting for data");
+    return writeNoSignalStream(buf, buf_size);
   }
 
   res = recv(m_socket_video, (char*)buf, (size_t)buf_size, 0);
-
   if (res < 0)
   {
     XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - failed");
     return 0;
   }
-
   if (res == 0)
   {
     XBMC_log(LOG_ERROR, "cPVRClientVDR::Read - eof");
     return 0;
   }
 
+  m_playingNoSignal = false;
   return res;
 }
 
@@ -1183,12 +1106,6 @@ bool cPVRClientVDR::SwitchChannel(const PVR_CHANNEL &channelinfo)
 
   pthread_mutex_lock(&m_critSection);
 
-  if (!m_transceiver->CanStreamLive(channelinfo.number))
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return false;
-  }
-
   if (m_socket_video != INVALID_SOCKET)
   {
     shutdown(m_socket_video, SD_BOTH);
@@ -1197,19 +1114,21 @@ bool cPVRClientVDR::SwitchChannel(const PVR_CHANNEL &channelinfo)
   }
 
   m_socket_video = m_transceiver->GetStreamLive(channelinfo.number);
-
   if (m_socket_video == INVALID_SOCKET)
   {
-    XBMC_log(LOG_ERROR, "PCRClient-vdr: Couldn't get socket for live tv");
-    pthread_mutex_unlock(&m_critSection);
-    return false;
+    /* retry one time */
+    m_socket_video = m_transceiver->GetStreamLive(channelinfo.number);
+    if (m_socket_video == INVALID_SOCKET)
+    {
+      XBMC_log(LOG_ERROR, "PCRClient-vdr: Couldn't get socket for live tv");
+      pthread_mutex_unlock(&m_critSection);
+      return false;
+    }
   }
 
   m_iCurrentChannel       = channelinfo.number;
   m_noSignalStreamReadPos = 0;
   m_playingNoSignal       = false;
-  m_FirstRead             = true;
-  m_TimeOut               = time(NULL);
 
   pthread_mutex_unlock(&m_critSection);
   return true;
@@ -1685,12 +1604,8 @@ bool cPVRClientVDR::readNoSignalStream()
 
 int cPVRClientVDR::writeNoSignalStream(BYTE* buf, int buf_size)
 {
-  if (!m_FirstRead && !m_playingNoSignal)
-  {
-    return 0;
-  }
-
   int sizeToWrite = m_noSignalStreamSize-m_noSignalStreamReadPos;
+  m_playingNoSignal = true;
   if (buf_size > sizeToWrite)
   {
     memcpy(buf, m_noSignalStreamData+m_noSignalStreamReadPos, sizeToWrite);
@@ -1703,6 +1618,4 @@ int cPVRClientVDR::writeNoSignalStream(BYTE* buf, int buf_size)
     m_noSignalStreamReadPos += buf_size;
     return buf_size;
   }
-
-  m_playingNoSignal = true;
 }
