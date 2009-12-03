@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 26/11/2009-->
-<!--Based on English strings revision 25040-->
+<!--Date of translation: 01/12/2009-->
+<!--Based on English strings revision 25165-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -679,6 +679,10 @@
   <string id="797">Azami istemci sayısı</string>
   <string id="798">İnternet erişimi</string>
 
+  <string id="850">Geçersiz port numarası girildi</string>
+  <string id="851">Geçerli port aralığı 1-65535</string>
+  <string id="852">Geçerli port aralığı 1024-65535</string>
+
   <string id="998"></string>
   <string id="999"></string>
   <string id="1000">Ekran Koruyucu önizlemesi</string>
@@ -854,7 +858,7 @@
   <string id="10210">Altyazılara bakılıyor...</string>
   <string id="10211">Altyazılara bakılıyor veya önbellekleniyor...</string>
   <string id="10212">sonlandırılıyor</string>
-  <string id="10213">tampon belleğe alınıyor</string>
+  <string id="10213">arabelleğe alınıyor</string>
   <string id="10214">Akış açılıyor</string>
 
   <string id="10500">Müzik/Çalma Listesi</string>
@@ -1412,7 +1416,7 @@
   <string id="15104">* Bütün şarkılar</string>
   <string id="15105">* Bütün tarzlar</string>
   <string id="15106"></string>
-  <string id="15107">Tampon belleğe alınıyor...</string>
+  <string id="15107">Arabelleğe alınıyor...</string>
   <string id="15108">Menü sesleri</string>
   <string id="15109">Arayüz varsayılanı</string>
   <string id="15111">- Tema</string>
@@ -2156,6 +2160,7 @@
 
   <string id="23050">Teletext'i Etkinleştir</string>
   <string id="23051">Bölüm %i</string>
+  <string id="23052">%i bayt arabelleğe alındı</string>
 
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">Harici Oynatıcı Etkin</string>

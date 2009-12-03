@@ -379,41 +379,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     lastScreen = [[lastView window] screen];
     screen_index = res.iScreen;
     
-    if (!g_guiSettings.GetBool("videoscreen.fakefullscreen"))
-    {
-      // hide the window
-      view_size = [lastView frame].size;
-      view_origin = [lastView frame].origin;
-      last_origin = [[lastView window] frame].origin;
-      [[lastView window] setFrameOrigin:[lastScreen frame].origin];
-      // expand the mouse bounds in SDL view to fullscreen
-      [ lastView setFrameOrigin:NSMakePoint(0.0, 0.0)];
-      [ lastView setFrameSize:NSMakeSize(m_nWidth, m_nHeight) ];
-
-      // This is OpenGL FullScreen Mode
-      // create our new context (sharing with the current one)
-      newContext = (NSOpenGLContext*)CreateFullScreenContext(screen_index, (void*)context);
-      if (!newContext)
-        return false;
-      
-      // clear the current context
-      [NSOpenGLContext clearCurrentContext];
-              
-      // set fullscreen
-      [newContext setFullScreen];
-      
-      // Capture the display before going fullscreen.
-      fullScreenDisplayID = GetDisplayID(screen_index);
-      if (blankOtherDisplays == true)
-        CGCaptureAllDisplays();
-      else
-        CGDisplayCapture(fullScreenDisplayID);
-
-      // If we don't hide menu bar, it will get events and interrupt the program.
-      if (fullScreenDisplayID == kCGDirectMainDisplay)
-        HideMenuBar();
-    }
-    else
+    if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
     {
       // This is Cocca Windowed FullScreen Mode
       // Get the screen rect of our current display
@@ -467,6 +433,40 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       if (blankOtherDisplays)
         BlankOtherDisplays(screen_index);
     }
+    else
+    {
+      // hide the window
+      view_size = [lastView frame].size;
+      view_origin = [lastView frame].origin;
+      last_origin = [[lastView window] frame].origin;
+      [[lastView window] setFrameOrigin:[lastScreen frame].origin];
+      // expand the mouse bounds in SDL view to fullscreen
+      [ lastView setFrameOrigin:NSMakePoint(0.0, 0.0)];
+      [ lastView setFrameSize:NSMakeSize(m_nWidth, m_nHeight) ];
+
+      // This is OpenGL FullScreen Mode
+      // create our new context (sharing with the current one)
+      newContext = (NSOpenGLContext*)CreateFullScreenContext(screen_index, (void*)context);
+      if (!newContext)
+        return false;
+      
+      // clear the current context
+      [NSOpenGLContext clearCurrentContext];
+              
+      // set fullscreen
+      [newContext setFullScreen];
+      
+      // Capture the display before going fullscreen.
+      fullScreenDisplayID = GetDisplayID(screen_index);
+      if (blankOtherDisplays == true)
+        CGCaptureAllDisplays();
+      else
+        CGDisplayCapture(fullScreenDisplayID);
+
+      // If we don't hide menu bar, it will get events and interrupt the program.
+      if (fullScreenDisplayID == kCGDirectMainDisplay)
+        HideMenuBar();
+    }
 
     // Hide the mouse.
     [NSCursor hide];
@@ -500,12 +500,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     if (fullScreenDisplayID == kCGDirectMainDisplay)
       ShowMenuBar();
 
-    if (!g_guiSettings.GetBool("videoscreen.fakefullscreen"))
-    {
-      // release displays
-      CGReleaseAllDisplays();
-    }
-    else
+    if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
     {
       [[lastView window] setLevel:NSNormalWindowLevel];
       
@@ -521,6 +516,11 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
         UnblankDisplays();
       }
+    }
+    else
+    {
+      // release displays
+      CGReleaseAllDisplays();
     }
     
     // create our new context (sharing with the current one)

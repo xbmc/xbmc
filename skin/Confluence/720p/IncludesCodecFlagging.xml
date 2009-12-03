@@ -55,6 +55,14 @@
 			<texture>flagging/video/mpeg1video.png</texture>
 			<visible>substring(ListItem.VideoCodec,mpeg1video)</visible>
 		</control>
+		<control type="image">
+			<description>mpeg2video Codec Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/video/mpeg2video.png</texture>
+			<visible>substring(ListItem.VideoCodec,mpeg2video)</visible>
+		</control>
 	</include>
 	<include name="VideoTypeHackFlaggingConditions">
 		<control type="image">
@@ -72,6 +80,48 @@
 			<aspectratio>keep</aspectratio>
 			<texture>flagging/video/hddvd.png</texture>
 			<visible>substring(ListItem.filename,hddvd)</visible>
+		</control>
+	</include>
+	<include name="VideoMPAAFlaggingConditions">
+		<control type="image">
+			<description>Rated G</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/ratings/mpaa_general.png</texture>
+			<visible>substring(listitem.mpaa,Rated G)</visible>
+		</control>
+		<control type="image">
+			<description>Rated PG</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/ratings/mpaa_pg.png</texture>
+			<visible>substring(listitem.mpaa,Rated PG) + !substring(listitem.mpaa,Rated PG-13)</visible>
+		</control>
+		<control type="image">
+			<description>Rated PG-13</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/ratings/mpaa_pg13.png</texture>
+			<visible>substring(listitem.mpaa,Rated PG-13)</visible>
+		</control>
+		<control type="image">
+			<description>Rated R</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/ratings/mpaa_restricted.png</texture>
+			<visible>substring(Listitem.mpaa,Rated R)</visible>
+		</control>
+		<control type="image">
+			<description>Rated NC-17</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/ratings/mpaa_nc17.png</texture>
+			<visible>substring(Listitem.mpaa,Rated NC)</visible>
 		</control>
 	</include>
 	<include name="AudioCodecFlaggingConditions">
