@@ -55,6 +55,14 @@
 			<texture>flagging/video/mpeg1video.png</texture>
 			<visible>substring(ListItem.VideoCodec,mpeg1video)</visible>
 		</control>
+		<control type="image">
+			<description>mpeg2video Codec Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/video/mpeg2video.png</texture>
+			<visible>substring(ListItem.VideoCodec,mpeg2video)</visible>
+		</control>
 	</include>
 	<include name="VideoTypeHackFlaggingConditions">
 		<control type="image">
