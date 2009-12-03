@@ -294,6 +294,13 @@ m_rtTimePerFrame(0)
 
 CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
 {
+  
+  StopWorkerThreads();
+  m_pDeviceManager = NULL;
+  m_pMediaType	= NULL;
+  m_pClock		= NULL;
+
+
   g_renderManager.UnInit();
 }
 
@@ -698,21 +705,29 @@ void CEVRAllocatorPresenter::StopWorkerThreads()
   if (m_nRenderState != Shutdown)
   {
     SetEvent (m_hEvtFlush);
+    m_bEvtFlush = true;
     SetEvent (m_hEvtQuit);
+    m_bEvtQuit = true;
     if ((m_hThread != INVALID_HANDLE_VALUE) && (WaitForSingleObject (m_hThread, 10000) == WAIT_TIMEOUT))
     {
       ASSERT (FALSE);
       TerminateThread (m_hThread, 0xDEAD);
     }
+    if ((m_hGetMixerThread != INVALID_HANDLE_VALUE) && (WaitForSingleObject (m_hGetMixerThread, 10000) == WAIT_TIMEOUT))
+    {
+      ASSERT (FALSE);
+      TerminateThread (m_hGetMixerThread, 0xDEAD);
+    }
 
     if (m_hThread     != INVALID_HANDLE_VALUE) CloseHandle (m_hThread);
-    if (m_hSemPicture   != INVALID_HANDLE_VALUE) CloseHandle (m_hSemPicture);
-    if (m_hEvtPresent   != INVALID_HANDLE_VALUE) CloseHandle (m_hEvtPresent);
-    if (m_hEvtFrameTimer != INVALID_HANDLE_VALUE) CloseHandle (m_hEvtFrameTimer);
+    if (m_hGetMixerThread     != INVALID_HANDLE_VALUE) CloseHandle (m_hGetMixerThread);
     if (m_hEvtFlush     != INVALID_HANDLE_VALUE) CloseHandle (m_hEvtFlush);
     if (m_hEvtQuit     != INVALID_HANDLE_VALUE) CloseHandle (m_hEvtQuit);
 
-	CLog::Log(LOGDEBUG,"%s Worker threads stopped", __FUNCTION__);
+    m_bEvtFlush = false;
+    m_bEvtQuit = false;
+
+  CLog::Log(LOGDEBUG,"%s Worker threads stopped", __FUNCTION__);
   }
   m_nRenderState = Shutdown;
 }
