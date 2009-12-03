@@ -686,6 +686,10 @@
   <string id="797">Maximum number of clients</string>
   <string id="798">Internet access</string>
 
+  <string id="850">Invalid port number entered</string>
+  <string id="851">Valid port range is 1-65535</string>
+  <string id="852">Valid port range is 1024-65535</string>
+
   <string id="998"></string>
   <string id="999"></string>
   <string id="1000">Screensaver preview</string>
@@ -1229,6 +1233,7 @@
   <string id="13421">VDPAU</string>
   <string id="13422">Start slideshow here</string>
   <string id="13423">Remember for this path</string>
+  <string id="13424">Use pixel buffer objects</string>
 
   <string id="13500">A/V sync method</string>
   <string id="13501">Audio clock</string>
@@ -2671,6 +2676,7 @@
   <string id="23030">Weather plugin</string>
   <string id="23031">- Plugin settings</string>
   <string id="23051">Part %i</string>
+  <string id="23052">Buffering %i bytes</string>
 
   <string id="23040">Add-on can not connect</string>
   <string id="23041">Please check your Settings or the Backend</string>

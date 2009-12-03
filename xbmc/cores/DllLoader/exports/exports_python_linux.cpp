@@ -138,7 +138,14 @@ int xbp_chdir(const char *dirname)
 
   if (strlen(dirname) > MAX_PATH) return -1;
   strcpy(xbp_cw_dir, dirname);
+
+#if (defined USE_EXTERNAL_PYTHON)
+  // The real chdir() has to be used if using external python
+  CStdString strName = _P(dirname);
+  return chdir(strName.c_str());
+#else
   return 0;
+#endif
 }
 
 int xbp_unlink(const char *filename)

@@ -2626,7 +2626,7 @@
   <string id="22021">Erlaube Fehler im Seitenverhältnis (%)</string>
   <string id="22022">Video Dateien in Listen aufnehmen</string>
   <string id="22023">DirectX Anbieter</string>
-  <string id="22024">DirectX Version</string>
+  <string id="22024">Direct3D Version</string>
   <string id="22030">Schriftart</string>
   <string id="22031">- Größe</string>
   <string id="22032">- Farben</string>
@@ -2641,6 +2641,7 @@
   <string id="22041">weiß/rot</string>
   <string id="22042">weiß/blau</string>
   <string id="22043">schwarz/weiß</string>
+
   <string id="23000">Erweiterungen</string>
   <string id="23001">Lade Erweiterungen</string>
   <string id="23002">Verfügbare Erweiterungen</string>
@@ -2715,8 +2716,6 @@
   <string id="23083">Erweiterung nochmal verwenden</string>
   <string id="23090">Videotext aktivtieren</string>
   <string id="23091">Teletext nicht verfügbar</string>
-
-  <string id="23051">Teil</string>
 
   <string id="23100">External Player ist aktiv</string>
   <string id="23101">Drücke OK um den Player zu beenden</string>

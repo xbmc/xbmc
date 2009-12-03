@@ -1,0 +1,5 @@
+squashfs-udeb (0.1) karmic; urgency=low
+
+  * Initial release
+
+ -- Luigi Capriotti <l.capriotti@xbmc.org>  Fri, 06 Nov 2009 15:00:00 +0100

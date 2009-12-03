@@ -1,9 +1,17 @@
 #!/bin/bash
 
+function single_stacktrace()
+{
+  find $1 -maxdepth $2 -name core* -exec \
+      echo "=====>  Core file: {}" 2> /dev/null >> $FILE \; -exec \
+      echo "        ========================================= " 2> /dev/null >> $FILE \; -exec \
+      gdb /usr/share/xbmc/xbmc.bin --core={} --batch -ex "thread apply all bt" 2> /dev/null >> $FILE \; -exec \
+      rm -f {} \;
+}
+
 function print_crash_report()
 {
   FILE="xbmc_crashlog-`date +%Y%m%d_%H%M%S`.log"
-  CORE=`ls -d core* | head -n1`
   echo "############## XBMC CRASH LOG ###############" >> $FILE
   echo >> $FILE
   echo "################ SYSTEM INFO ################" >> $FILE
@@ -24,8 +32,16 @@ function print_crash_report()
   echo "############## END SYSTEM INFO ##############" >> $FILE
   echo >> $FILE
   echo "############### STACK TRACE #################" >> $FILE
-  gdb @prefix@/share/xbmc/xbmc.bin --core=$CORE --batch -ex "thread apply all bt" 2> /dev/null >> $FILE
-  rm -f $CORE
+  single_stacktrace $PWD 1
+  # Find in plugins directories
+  if [ $XBMC_HOME ]; then
+    BASEDIR=$XBMC_HOME
+  else
+    BASEDIR=@prefix@/share/xbmc/
+  fi
+  single_stacktrace $BASEDIR 5
+  # find in user xbmc dir
+  single_stacktrace $HOME/.xbmc/ 5
   echo "############# END STACK TRACE ###############" >> $FILE
   echo >> $FILE
   echo "################# LOG FILE ##################" >> $FILE

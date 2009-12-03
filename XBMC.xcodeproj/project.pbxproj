@@ -260,7 +260,6 @@
 		8863281E0E07B37200BB3DAB /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328170E07B37200BB3DAB /* GUIViewStatePictures.cpp */; };
 		8863281F0E07B37200BB3DAB /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328190E07B37200BB3DAB /* GUIViewStatePrograms.cpp */; };
 		886328200E07B37200BB3DAB /* GUIViewStateScripts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8863281B0E07B37200BB3DAB /* GUIViewStateScripts.cpp */; };
-		88632A330E0C44DE00BB3DAB /* RssFeed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88632A310E0C44DE00BB3DAB /* RssFeed.cpp */; };
 		8883CEA10DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CE9E0DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp */; };
 		8883CEA70DD81807004E8B72 /* DVDSubtitleParserSSA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA30DD81807004E8B72 /* DVDSubtitleParserSSA.cpp */; };
 		8883CEA80DD81807004E8B72 /* DVDSubtitlesLibass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8883CEA50DD81807004E8B72 /* DVDSubtitlesLibass.cpp */; };
@@ -1688,7 +1687,6 @@
 		F5A1CB5C0F6B06CF00A96ABD /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328170E07B37200BB3DAB /* GUIViewStatePictures.cpp */; };
 		F5A1CB5D0F6B06CF00A96ABD /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328190E07B37200BB3DAB /* GUIViewStatePrograms.cpp */; };
 		F5A1CB5E0F6B06CF00A96ABD /* GUIViewStateScripts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8863281B0E07B37200BB3DAB /* GUIViewStateScripts.cpp */; };
-		F5A1CB5F0F6B06CF00A96ABD /* RssFeed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88632A310E0C44DE00BB3DAB /* RssFeed.cpp */; };
 		F5A1CB600F6B06CF00A96ABD /* RSSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */; };
 		F5A1CB610F6B06CF00A96ABD /* AMFObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE62A0E176F75009FBE3C /* AMFObject.cpp */; };
 		F5A1CB620F6B06CF00A96ABD /* rtmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE62B0E176F75009FBE3C /* rtmp.cpp */; };
@@ -2153,8 +2151,6 @@
 		8863281A0E07B37200BB3DAB /* GUIViewStatePrograms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStatePrograms.h; sourceTree = "<group>"; };
 		8863281B0E07B37200BB3DAB /* GUIViewStateScripts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateScripts.cpp; sourceTree = "<group>"; };
 		8863281C0E07B37200BB3DAB /* GUIViewStateScripts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateScripts.h; sourceTree = "<group>"; };
-		88632A310E0C44DE00BB3DAB /* RssFeed.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RssFeed.cpp; sourceTree = "<group>"; };
-		88632A320E0C44DE00BB3DAB /* RssFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RssFeed.h; sourceTree = "<group>"; };
 		8883CE9E0DD817D1004E8B72 /* DVDOverlayCodecSSA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecSSA.cpp; sourceTree = "<group>"; };
 		8883CE9F0DD817D1004E8B72 /* DVDOverlayCodecSSA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecSSA.h; sourceTree = "<group>"; };
 		8883CEA00DD817D1004E8B72 /* DVDOverlaySSA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlaySSA.h; sourceTree = "<group>"; };
@@ -6869,8 +6865,6 @@
 				E38E1E720D25F9FD00618676 /* PerformanceStats.h */,
 				E38E1E730D25F9FD00618676 /* RegExp.cpp */,
 				E38E1E740D25F9FD00618676 /* RegExp.h */,
-				88632A310E0C44DE00BB3DAB /* RssFeed.cpp */,
-				88632A320E0C44DE00BB3DAB /* RssFeed.h */,
 				E38E1E750D25F9FD00618676 /* RssReader.cpp */,
 				E38E1E760D25F9FD00618676 /* RssReader.h */,
 				E38E1E770D25F9FD00618676 /* ScraperParser.cpp */,
@@ -8019,7 +8013,6 @@
 				8863281E0E07B37200BB3DAB /* GUIViewStatePictures.cpp in Sources */,
 				8863281F0E07B37200BB3DAB /* GUIViewStatePrograms.cpp in Sources */,
 				886328200E07B37200BB3DAB /* GUIViewStateScripts.cpp in Sources */,
-				88632A330E0C44DE00BB3DAB /* RssFeed.cpp in Sources */,
 				889B4D8E0E0EF86C00FAD25E /* RSSDirectory.cpp in Sources */,
 				815EE62D0E176F75009FBE3C /* AMFObject.cpp in Sources */,
 				815EE62E0E176F75009FBE3C /* rtmp.cpp in Sources */,
@@ -8890,7 +8883,6 @@
 				F5A1CB5C0F6B06CF00A96ABD /* GUIViewStatePictures.cpp in Sources */,
 				F5A1CB5D0F6B06CF00A96ABD /* GUIViewStatePrograms.cpp in Sources */,
 				F5A1CB5E0F6B06CF00A96ABD /* GUIViewStateScripts.cpp in Sources */,
-				F5A1CB5F0F6B06CF00A96ABD /* RssFeed.cpp in Sources */,
 				F5A1CB600F6B06CF00A96ABD /* RSSDirectory.cpp in Sources */,
 				F5A1CB610F6B06CF00A96ABD /* AMFObject.cpp in Sources */,
 				F5A1CB620F6B06CF00A96ABD /* rtmp.cpp in Sources */,

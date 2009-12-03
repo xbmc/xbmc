@@ -155,7 +155,9 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
   // check and update anything that needs it
 #ifdef HAS_VIDEO_PLAYBACK
   if (setting.id == VIDEO_SETTINGS_CROP)
-    g_renderManager.AutoCrop(g_stSettings.m_currentVideoSettings.m_Crop);
+  {
+    // AutoCrop changes will get picked up automatically by dvdplayer
+  }
   else if (setting.id == VIDEO_SETTINGS_VIEW_MODE)
   {
     g_renderManager.SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);

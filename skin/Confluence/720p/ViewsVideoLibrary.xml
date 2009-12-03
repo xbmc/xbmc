@@ -744,6 +744,16 @@
 				<include>AspectCodecFlaggingConditions</include>
 				<include>VideoTypeHackFlaggingConditions</include>
 			</control>
+			<control type="grouplist">
+				<description>MPAA Rating Flagging Images</description>
+				<posx>80</posx>
+				<posy>350</posy>
+				<width>800</width>
+				<align>right</align>
+				<itemgap>0</itemgap>
+				<orientation>horizontal</orientation>
+				<include>VideoMPAAFlaggingConditions</include>
+			</control>
 		</control>
 	</include>
 	<include name="MediaListView3">

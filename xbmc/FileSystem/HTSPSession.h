@@ -112,6 +112,7 @@ struct SChannel
   std::string      name;
   std::string      icon;
   int              event;
+  int              num;
   std::vector<int> tags;
 
   SChannel() { Clear(); }
@@ -119,6 +120,7 @@ struct SChannel
   {
     id    = 0;
     event = 0;
+    num   = 0;
     name.clear();
     icon.clear();
     tags.clear();
@@ -126,6 +128,10 @@ struct SChannel
   bool MemberOf(int tag) const
   {
     return std::find(tags.begin(), tags.end(), tag) != tags.end();
+  }
+  bool operator<(const SChannel &right) const
+  {
+    return num < right.num;
   }
 };
 

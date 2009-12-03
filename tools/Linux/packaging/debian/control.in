@@ -1,0 +1,483 @@
+Source: xbmc
+Section: non-free/video
+Priority: optional
+Maintainer: Debian Multimedia Maintainers <pkg-multimedia-maintainers@lists.alioth.debian.org>
+Uploaders: Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>,
+           Andres Mejia <mcitadel@gmail.com>
+DM-Upload-Allowed: yes
+Build-Depends: #BUILD_DEPENDS#
+Standards-Version: 3.8.3
+Homepage: http://xbmc.org/
+Vcs-Git: git://git.debian.org/git/pkg-multimedia/xbmc.git
+Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/xbmc.git;a=summary
+
+Package: xbmc
+Architecture: all
+Depends: xbmc-data (= ${binary:Version}),
+         xbmc-skin-confluence (= ${binary:Version}) |
+         xbmc-skin-pm3-hd (= ${binary:Version}),
+         xbmc-web-pm3 (= ${binary:Version}),
+         ${misc:Depends}
+Suggests: xbmc-third-parties
+Description: XBMC Media Center (full metapackage)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package is a metapackage aimed at users wanting to quickly get started
+ with using XBMC Media Center.
+
+Package: xbmc-live
+Architecture: all
+Depends: xbmc-standalone (= ${binary:Version}),
+         policykit,
+         openssh-server,
+         ${python:Depends},
+         python-apt,
+         adduser,
+         ${misc:Depends}
+Conflicts: kdm, gdm, xdm, wdm
+Description: XBMC Media Center (XBMC Live package)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package is used to setup the XBMC Live environment.
+
+Package: xbmc-standalone
+Architecture: all
+Depends: xbmc-data (= ${binary:Version}),
+         xbmc-skin-confluence (= ${binary:Version}) |
+         xbmc-skin-pm3-hd (= ${binary:Version}),
+         xbmc-web-pm3 (= ${binary:Version}),
+         ${misc:Depends}
+Suggests: xbmc-third-parties
+Description: XBMC Media Center (standalone program)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package will install files that would permit to launch XBMC without
+ having a desktop manager.
+
+Package: xbmc-data
+Architecture: all
+Depends: xbmc-bin (>= ${source:Version}),
+         xbmc-bin (<< ${source:Version}.1~),
+         ${python:Depends},
+         ${misc:Depends}
+Provides: xbmc-common
+Replaces: xbmc-common
+Conflicts: xbmc-common
+Suggests: mesa-utils, x11-utils, xbmc-test-helper
+Recommends: python-qt3
+Description: XBMC Media Center (arch-independent data package)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package contains all the archiecture independent data needed to have a
+ working XBMC.
+
+Package: xbmc-bin
+Architecture: i386 amd64 powerpc ppc64
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Description: XBMC Media Center (binary data package)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package contains all the binary data needed to have a working XBMC.
+
+Package: xbmc-dbg
+Architecture: i386 amd64 powerpc ppc64
+Section: non-free/debug
+Priority: extra
+Depends: xbmc-bin (= ${binary:Version}),
+         ${misc:Depends}
+Description: XBMC Media Center (debug package)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package contains debugging symbols for XBMC.
+
+Package: xbmc-scripts-example
+Architecture: all
+Depends: xbmc-data (= ${binary:Version}),
+         ${misc:Depends}
+Description: XBMC Media Center (example scripts)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package contains scripts shipped with XBMC for user conveniance.
+
+Package: xbmc-skin-confluence
+Architecture: all
+Depends: xbmc-data (= ${binary:Version}),
+         ttf-liberation,
+         ${misc:Depends}
+Description: XBMC Media Center (Confluence skin)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package contains the XBMC Confluence Skin package.
+
+Package: xbmc-skin-pm3-hd
+Architecture: all
+Depends: xbmc-data (= ${binary:Version}),
+         ttf-liberation,
+         ${misc:Depends}
+Description: XBMC Media Center (PM3 HD skin)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package contains the XBMC PM3 HD Skin package (aka Project Mahem III
+ High Definition).
+
+Package: xbmc-web-pm3
+Architecture: all
+Depends: xbmc-data (= ${binary:Version}),
+         ${misc:Depends}
+Description: XBMC Media Center (Project Mahem III web skin)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package contains the PM3 (aka Project Mahem III) Skin for the XBMC web
+ server.
+
+Package: xbmc-web-pm
+Architecture: all
+Depends: xbmc-data (= ${binary:Version}),
+         ${misc:Depends}
+Conflicts: xbmc-web-pm3
+Description: XBMC Media Center (Project Mahem web skin)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package contains the PM (aka Project Mahem) Skin for the XBMC web
+ server.
+
+Package: xbmc-web-iphone-tlrobinson
+Architecture: all
+Depends: xbmc-data (= ${binary:Version}),
+         ${misc:Depends}
+Description: XBMC Media Center (Iphone web skin)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package contains the Iphone skin for the XBMC Webserver.
+
+Package: xbmc-eventclients-common
+Architecture: all
+Depends: ${python:Depends}, ${misc:Depends}
+Description: XBMC Media Center (Event Client Common package)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package is the common package for XBMC Event Client.
+
+Package: xbmc-eventclients-dev
+Architecture: all
+Section: non-free/libdevel
+Depends: xbmc-eventclients-common (= ${binary:Version}),
+         ${misc:Depends}
+Description: XBMC Media Center (Event Client Dev package)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This is the Development package for XBMC Event Client.
+
+Package: xbmc-eventclients-wiiremote
+Architecture: i386 amd64 powerpc ppc64
+Depends: xbmc-eventclients-common (= ${source:Version}),
+         ${shlibs:Depends},
+         ${misc:Depends}
+Description: XBMC Media Center (Event Client WII Remote support package)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package is the Wii Remote client package for XBMC.
+
+Package: xbmc-eventclients-j2me
+Architecture: all
+Depends: xbmc-eventclients-common (= ${binary:Version}),
+         ${python:Depends},
+         python-bluez,
+         ${misc:Depends}
+Description: XBMC Media Center (Event Client J2ME package)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package is the J2ME package for XBMC Event Client. This is meant to
+ provide a server that communicate with a mobile tool supporting Java ME.
+
+Package: xbmc-eventclients-ps3
+Architecture: all
+Depends: xbmc-eventclients-common (= ${binary:Version}),
+         python-bluez | python-lightblue,
+         ${python:Depends},
+         ${misc:Depends}
+Description: XBMC Media Center (Event Client PS3 package)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package is the PS3 package for XBMC Event Client.
+
+Package: xbmc-eventclients-xbmc-send
+Architecture: all
+Depends: xbmc-eventclients-common (= ${binary:Version}),
+         ${python:Depends},
+         ${misc:Depends}
+Description: XBMC Media Center (Event Client XBMC-SEND package)
+ XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
+ open source software media-player and entertainment hub for all your digital
+ media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
+ and Microsoft Windows, as well as the original Xbox game console. Created in
+ 2003 by a group of like minded programmers, XBMC is a non-profit project run
+ and developed by volunteers located around the world. More than 50 software
+ developers have contributed to XBMC, and 100-plus translators have worked to
+ expand its reach, making it available in more than 30 languages.
+ .
+ While XBMC functions very well as a standard media player application for
+ your computer, it has been designed to be the perfect companion for your
+ HTPC. Supporting an almost endless range of remote controls, and combined
+ with its beautiful interface and powerful skinning engine, XBMC feels very
+ natural to use from the couch and is the ideal solution for your home
+ theater. Once installed, your computer will become a fully functional
+ multimedia jukebox.
+ .
+ This package is the XBMC-SEND package for XBMC Event Client.

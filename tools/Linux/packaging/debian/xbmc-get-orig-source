@@ -7,7 +7,7 @@
 XBMC_TARBALL=""
 XBMC_TARBALL_CHECKSUM=""
 SVN_REVISION="24886"
-XBMC_VERSION="9.11~svn$SVN_REVISION~deb1"
+XBMC_VERSION="9.11~svn$SVN_REVISION.beta1~deb1"
 
 USAGE="\n\
 This script is used to generate the orig tarball used in building\n\

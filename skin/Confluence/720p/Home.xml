@@ -505,7 +505,7 @@
 						<onclick>ActivateWindow(MusicLibrary,Plugins)</onclick>
 						<visible>Library.HasContent(Music)</visible>
 					</control>
-					<control type="button" id="90116">
+					<control type="button" id="90117">
 						<include>ButtonHomeSubCommonValues</include>
 						<label>31007</label>
 						<onclick>ActivateWindow(MusicFiles,$LOCALIZE[1038])</onclick>

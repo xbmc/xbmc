@@ -32,11 +32,11 @@ public:
   CSharedSection& operator=(const CSharedSection& src);
   virtual ~CSharedSection();
 
-  inline void EnterExclusive();
-  inline void LeaveExclusive();
+  void EnterExclusive();
+  void LeaveExclusive();
 
-  inline void EnterShared();
-  inline void LeaveShared();
+  void EnterShared();
+  void LeaveShared();
 
 private:
 
@@ -55,8 +55,8 @@ public:
   virtual ~CSharedLock();
 
   bool IsOwner() const;
-  inline bool Enter();
-  inline void Leave();
+  bool Enter();
+  void Leave();
 
 protected:
   CSharedLock(const CSharedLock& src);

@@ -85,6 +85,7 @@ protected:
 
   void JumpToSection(int windowID, const CStdString &section);
   void JumpToPreviousSection();
+  void ValidatePortNumber(CBaseSettingControl* pSettingControl, const CStdString& userPort, const CStdString& privPort, bool listening=true);
 
   std::vector<CBaseSettingControl *> m_vecSettings;
   int m_iSection;

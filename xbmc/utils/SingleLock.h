@@ -54,4 +54,18 @@ private:
   bool m_bIsOwner;
 };
 
+class CSingleExit
+{
+public:
+  CSingleExit(CCriticalSection& cs);
+  CSingleExit(const CCriticalSection& cs);
+  virtual ~CSingleExit();
+
+  void Exit();
+  void Restore();
+
+  CCriticalSection& m_cs;
+  unsigned int      m_count;
+};
+
 #endif // !defined(AFX_SINGLELOCK_H__50A43114_6A71_4FBD_BF51_D1F2DD3A60FA__INCLUDED_)

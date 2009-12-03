@@ -448,6 +448,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           else
             newEvent.appcommand.action = ACTION_PAUSE;
           break;
+        case APPCOMMAND_BROWSER_BACKWARD:
+          newEvent.appcommand.action = ACTION_PARENT_DIR;
+          break;
         case APPCOMMAND_MEDIA_STOP:
           newEvent.appcommand.action = ACTION_STOP;
           break;
@@ -457,6 +460,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         case APPCOMMAND_MEDIA_NEXTTRACK:
           newEvent.appcommand.action = ACTION_NEXT_ITEM;
           break;
+        case APPCOMMAND_LAUNCH_MEDIA_SELECT:
+          // disable launch of external media players
+          return 1;
       }
       if (newEvent.appcommand.action != 0)
       {

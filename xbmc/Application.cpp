@@ -2264,7 +2264,7 @@ void CApplication::Render()
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
-  if(m_frameCount > 0)
+  if(m_frameCount > 0 && m_bPresentFrame)
     m_frameCount--;
   SDL_mutexV(m_frameMutex);
   SDL_CondBroadcast(m_frameCond);
@@ -2339,22 +2339,17 @@ bool CApplication::OnKey(CKey& key)
   CButtonTranslator::GetInstance().GetAction(iWin, key, action);
 
   // a key has been pressed.
-  // Reset the screensaver timer
-  // but not for the analog thumbsticks/triggers
-  if (!key.IsAnalogButton())
+  // reset Idle Timer
+  m_idleTimer.StartZero();
+  bool processKey = AlwaysProcess(action);
+
+  ResetScreenSaver();
+
+  // allow some keys to be processed while the screensaver is active
+  if (WakeUpScreenSaverAndDPMS() && !processKey)
   {
-    // reset Idle Timer
-    m_idleTimer.StartZero();
-    bool processKey = AlwaysProcess(action);
-
-    ResetScreenSaver();
-
-    // allow some keys to be processed while the screensaver is active
-    if (WakeUpScreenSaverAndDPMS() && !processKey)
-    {
-      g_Keyboard.Reset();
-      return true;
-    }
+    g_Keyboard.Reset();
+    return true;
   }
 
   // change this if we have a dialog up
@@ -3860,7 +3855,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   bool bResult;
   if (m_pPlayer)
+  {
+    // don't hold graphicscontext here since player
+    // may wait on another thread, that requires gfx
+    CSingleExit ex(g_graphicsContext);
     bResult = m_pPlayer->OpenFile(item, options);
+  }
   else
   {
     CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.m_strPath.c_str());
