@@ -22,6 +22,7 @@
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "utils/log.h"
+#include "PVRManager.h"
 
 using namespace std;
 
@@ -224,7 +225,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
         m_iDataSize -= pMsgDemuxerPacket->GetPacketSize();
         if(m_iDataSize == 0)
         {
-          if(!m_bEmptied && m_owner != "teletext") // Prevent log flooding
+          if(!m_bEmptied && (m_owner != "teletext" && (m_owner != "audio" && !g_PVRManager.IsPlayingTV()))) // Prevent log flooding
             CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Get - retrieved last data packet of queue", m_owner.c_str());
           m_bEmptied = true;
         }

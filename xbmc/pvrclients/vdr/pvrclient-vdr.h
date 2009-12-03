@@ -134,9 +134,7 @@ private:
   char                    m_noSignalStreamData[ 6 + 0xffff ];
   long                    m_noSignalStreamSize;
   long                    m_noSignalStreamReadPos;
-  time_t                  m_TimeOut;
   bool                    m_playingNoSignal;
-  int                     m_FirstRead;
 
   CStdString              m_connectionString;
 
