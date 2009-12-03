@@ -4,7 +4,7 @@
 <!-- to the XBMC team for the Greatest Mediacenter app in the world and for their hard work. -->
 
 <?xml version="1.0" encoding="utf-8"?>
-<scraper name="movieplayer.it-Film" date="2009-11-20" content="movies" framework="1.0" thumb="movieplayer-it-film.jpg" language="it">
+<scraper name="movieplayer.it-Film" date="2009-03-12" content="movies" framework="1.0" thumb="movieplayer-it-film.jpg" language="it">
 	<include>common/tmdb.xml</include>
 
 	<GetSettings dest="3">
@@ -197,7 +197,7 @@
 			  <expression>Top 250: #([0-9]*)&lt;/a&gt;</expression>
 		  </RegExp>
 		  <RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="6+">
-			  <expression>MPAA&lt;/a&gt;:&lt;/h5&gt;[\s]*&lt;p&gt;(.[^&lt;]*)</expression>
+			  <expression>MPAA&lt;/a&gt;:&lt;/h5&gt;\n&lt;div class=&quot;info-content&quot;&gt;\n(.[^&lt;]*)</expression>
 		  </RegExp>
 		  <RegExp input="$$1" output="&lt;certification&gt;\1 \3&lt;/certification&gt;" dest="6+">
 			  <expression repeat="yes">&lt;a href=&quot;/List\?certificates=[^&quot;]*&quot;&gt;([^&lt;]*)&lt;/a&gt;[^&lt;]*(&lt;i&gt;([^&lt;]*)&lt;/i&gt;)?</expression>
