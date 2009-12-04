@@ -897,7 +897,7 @@ if ! test -n "$SVN_REV" -a "$SVN_REV" != "" ; then
   fi
   if test "$SVN_REV" = ""; then
     if test "$HAVE_GIT" = "yes"; then
-      SVN_REV=$(echo -n `git svn info | grep ^Revision | cut -d' ' -f2`)
+      SVN_REV=$(echo -n `git svn info 2>&1 | grep ^Revision | cut -d' ' -f2`)
     fi
   fi
   if test "$SVN_REV" = ""; then
