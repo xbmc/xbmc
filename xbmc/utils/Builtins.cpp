@@ -256,13 +256,22 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       g_passwordManager.bMasterUser = false;
       g_passwordManager.LockSources(true);
-      g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20053));
+      
+      CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+      if (pDlgToast)
+      {    
+        pDlgToast->QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20053));
+      }
     }
     else if (g_passwordManager.IsMasterLockUnlocked(true))
     {
       g_passwordManager.LockSources(false);
       g_passwordManager.bMasterUser = true;
-      g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
+      CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+      if (pDlgToast)
+      {    
+        pDlgToast->QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
+      }
     }
 
     CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -750,12 +759,17 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     if (params.size() < 2)
       return -1;
-    if (params.size() == 4)
-      g_application.m_guiDialogKaiToast.QueueNotification(params[3],params[0],params[1],atoi(params[2].c_str()));
-    else if (params.size() == 3)
-      g_application.m_guiDialogKaiToast.QueueNotification("",params[0],params[1],atoi(params[2].c_str()));
-    else
-      g_application.m_guiDialogKaiToast.QueueNotification(params[0],params[1]);
+
+    CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+    if (pDlgToast)
+    {    
+      if (params.size() == 4)
+        pDlgToast->QueueNotification(params[3],params[0],params[1],atoi(params[2].c_str()));
+      else if (params.size() == 3)
+        pDlgToast->QueueNotification("",params[0],params[1],atoi(params[2].c_str()));
+      else
+        pDlgToast->QueueNotification(params[0],params[1]);
+    }
   }
   else if (execute.Equals("cancelalarm"))
   {
