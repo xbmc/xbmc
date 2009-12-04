@@ -108,7 +108,7 @@ bool cPVRClientVDR::Connect()
 
   /* Start VTP Listening Thread */
   m_bStop = false;
-  if (pthread_create(&m_thread, NULL, &CallbackRcvThread, reinterpret_cast<void *>(this)) != 0)
+  if (pthread_create(&m_thread, NULL, (PTHREAD_START_ROUTINE)&CallbackRcvThread, reinterpret_cast<void *>(this)) != 0)
   {
     XBMC_log(LOG_ERROR, "PCRClient-vdr: Couldn't start VDR Listening Thread");
     return false;
@@ -550,10 +550,7 @@ PVR_ERROR cPVRClientVDR::RequestRecordingsList(PVRHANDLE handle)
       tag.description     = recording.Description();
       tag.stream_url      = "";
 
-      CStdString fileName = recording.FileName();
-      fileName.Replace('/', '_');   // Make legal filename
-      fileName.Replace('\\', '_');  //   "    "      "
-      fileName.Replace('?', '_');   //   "    "      "
+      CStdString fileName = XBMC_make_legal_filename(recording.FileName());
       size_t found = fileName.find_last_of("~");
       if (found != CStdString::npos)
       {

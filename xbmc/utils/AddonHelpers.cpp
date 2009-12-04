@@ -611,7 +611,7 @@ char* CAddonUtils::MakeLegalFilename(const char *filename)
   CStdString string;
 
   if (filename != NULL)
-    string = CUtil::MakeLegalPath(filename);
+    string = CUtil::MakeLegalFileName(filename);
   else
     string = "";
 

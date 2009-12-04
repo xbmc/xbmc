@@ -63,6 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				IgnoreImportLibrary="true"
 				AdditionalDependencies="ws2_32.lib ..\..\..\..\addons\include\xbmc_addon_lib++.lib ..\..\..\..\addons\include\xbmc_pvr_lib++.lib"
 				OutputFile="../../../../../addons/pvr/VDR/XBMC_VDR_win32.pvr"
 				LinkIncremental="2"
@@ -143,6 +144,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				IgnoreImportLibrary="true"
 				AdditionalDependencies="ws2_32.lib ..\..\..\..\addons\include\xbmc_addon_lib++.lib ..\..\..\..\addons\include\xbmc_pvr_lib++.lib"
 				OutputFile="../../../../../addons/pvr/VDR/XBMC_VDR_win32.pvr"
 				LinkIncremental="2"

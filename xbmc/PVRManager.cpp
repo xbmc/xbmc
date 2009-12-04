@@ -1745,6 +1745,7 @@ bool CPVRManager::OpenRecordedStream(const cPVRRecordingInfoTag* tag)
   m_currentPlayingRecording = new CFileItem(*tag);
   m_currentPlayingChannel   = NULL;
   m_scanStart               = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
+  m_playingClientName       = m_clients[tag->ClientID()]->GetBackendName() + ":" + m_clients[tag->ClientID()]->GetConnectionString();
 
   /* Open the recording stream on the Client */
   if (tag->StreamURL().IsEmpty())

@@ -1292,7 +1292,7 @@ void CDVDPlayer::HandlePlaySpeed()
 
 bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
 {
-  return !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
+  return !(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
       && !m_caching && m_playSpeed == DVD_PLAYSPEED_NORMAL
       && current.inited;
 }
@@ -1977,7 +1977,7 @@ void CDVDPlayer::HandleMessages()
 
 void CDVDPlayer::SetCaching(bool enabled)
 {
-  if(m_caching == enabled || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+  if(m_caching == enabled)
     return;
 
   if(enabled)
