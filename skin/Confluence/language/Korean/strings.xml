@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 11/23/2009-->
+<!--Date of translation: 12/04/2009-->
 <!--$Revision$-->
 <strings>
   <string id="31000">변경</string>
@@ -87,7 +87,7 @@
   <string id="31306">꺼내기</string>
   <string id="31307">팬아트 숨기기</string>
   <string id="31308">영화 상세정보</string>
-  <string id="31309">메모리 사용됨:</string>
+  <string id="31309">사용 메모리:</string>
   <string id="31310">트랙 번호</string>
   <string id="31311">팬아트 이미지[CR][CR]사용할수 없음[CR][CR] 설정하려면 버튼을 누르세요</string>
   <string id="31312">현재 자료수집기</string>
