@@ -108,7 +108,11 @@ bool cPVRClientVDR::Connect()
 
   /* Start VTP Listening Thread */
   m_bStop = false;
+#if defined(_WIN32) || defined(_WIN64)
   if (pthread_create(&m_thread, NULL, (PTHREAD_START_ROUTINE)&CallbackRcvThread, reinterpret_cast<void *>(this)) != 0)
+#else
+  if (pthread_create(&m_thread, NULL, &CallbackRcvThread, reinterpret_cast<void *>(this)) != 0)
+#endif
   {
     XBMC_log(LOG_ERROR, "PCRClient-vdr: Couldn't start VDR Listening Thread");
     return false;
