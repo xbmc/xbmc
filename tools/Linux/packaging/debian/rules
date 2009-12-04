@@ -98,7 +98,7 @@ override_dh_link:
 		LINK_DESTINATION="$$(echo "$$FILE" | sed -e 's|debian/xbmc-bin/usr/lib|usr/share|')"; \
 		dh_link -pxbmc-bin "$$LINK_TARGET" "$$LINK_DESTINATION"; \
 		done
-	[ -d debian/xbmc-data/usr/share/xbmc ] && find debian/xbmc-data/usr/share/xbmc/ -type d -empty -delete
+	-[ -d debian/xbmc-data/usr/share/xbmc ] && find debian/xbmc-data/usr/share/xbmc/ -type d -empty -delete
 
 override_dh_strip:
 	dh_strip --dbg-package=xbmc-dbg
