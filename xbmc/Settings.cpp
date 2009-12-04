@@ -33,7 +33,7 @@
 #include "LangCodeExpander.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
-#include "utils/PasswordManager.h"
+#include "GUIPassword.h"
 #include "GUIAudioManager.h"
 #include "AudioContext.h"
 #include "utils/GUIInfoManager.h"
@@ -1240,8 +1240,6 @@ bool CSettings::LoadProfile(int index)
         g_guiSettings.LoadMasterLock(doc.RootElement());
     }
     
-    CPasswordManager::GetInstance().Clear();
-
 #ifdef HAS_XBOX_HARDWARE
     if (g_guiSettings.GetBool("system.autotemperature"))
     {

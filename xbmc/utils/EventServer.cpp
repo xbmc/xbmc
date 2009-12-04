@@ -29,7 +29,7 @@
 #include "Socket.h"
 #include "CriticalSection.h"
 #include "Application.h"
-#include "Builtins.h"
+#include "Util.h"
 #include "ButtonTranslator.h"
 #include "SingleLock.h"
 #include "GUIAudioManager.h"
@@ -332,7 +332,7 @@ bool CEventServer::ExecuteNextAction()
       switch(actionEvent.actionType)
       {
       case AT_EXEC_BUILTIN:
-        CBuiltins::Execute(actionEvent.actionName);
+        CUtil::ExecBuiltIn(actionEvent.actionName);
         break;
 
       case AT_BUTTON:

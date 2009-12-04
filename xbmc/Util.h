@@ -104,6 +104,9 @@ public:
   static bool IsDOSPath(const CStdString &path);
   static bool IsHD(const CStdString& strFileName);
   static CStdString GetParentPath(const CStdString& strPath);
+  static bool IsBuiltIn(const CStdString& execString);
+  static void GetBuiltInHelp(CStdString &help);
+  static int ExecBuiltIn(const CStdString& execString);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static bool InstallTrainer(CTrainer& trainer);

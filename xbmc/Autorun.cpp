@@ -37,7 +37,6 @@
 #include "Settings.h"
 #include "AdvancedSettings.h"
 #include "PlayList.h"
-#include "Builtins.h"
 
 using namespace std;
 using namespace XFILE;
@@ -264,7 +263,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           bPlaying = true;
           CStdString strExec;
           strExec.Format("XBMC.RecursiveSlideShow(%s)", pItem->m_strPath.c_str());
-          CBuiltins::Execute(strExec);
+          CUtil::ExecBuiltIn(strExec);
           return true;
         }
       }
@@ -340,7 +339,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         bPlaying = true;
         CStdString strExec;
         strExec.Format("XBMC.RecursiveSlideShow(%s)", strDrive.c_str());
-        CBuiltins::Execute(strExec);
+        CUtil::ExecBuiltIn(strExec);
         break;
       }
     }

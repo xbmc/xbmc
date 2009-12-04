@@ -25,7 +25,6 @@
 #include "ServerThread.h"
 #include "Options.h"
 #include "Permissions.h"
-#include "utils/Builtins.h"
 #ifndef NOLAYERS
 #include "AsyncGssSocketLayer.h"
 #endif
@@ -2176,9 +2175,9 @@ void CControlSocket::ParseCommand()
 	    {
         // check for a built-in function
         CStdString strBuiltIn = fullcommand;
-        if (!CBuiltins::HasCommand(fullcommand))
+        if (!CUtil::IsBuiltIn(fullcommand))
           strBuiltIn = "XBMC." + fullcommand;
-        if (!CBuiltins::HasCommand(strBuiltIn))
+        if (!CUtil::IsBuiltIn(strBuiltIn))
         { // invalid - send error
           Send(_T("500 Invalid built-in function.  Use SITE HELP for a list of valid SITE commands"));
           return;
@@ -2186,7 +2185,7 @@ void CControlSocket::ParseCommand()
         if (strBuiltIn.Equals("xbmc.help", false) || strBuiltIn.Equals("help", false))
         {
           CStdString strHelp;
-          CBuiltins::GetHelp(strHelp);
+          CUtil::GetBuiltInHelp(strHelp);
           Send(_T("200-FTP SITE HELP"));
           int iReturn = strHelp.Find("\n");
           while (iReturn >= 0)
@@ -2236,7 +2235,7 @@ void CControlSocket::ParseCommand()
             CLog::Log(LOGNOTICE, str);
           }
 
-          int rtn = CBuiltins::Execute(siteargs);
+          int rtn = CUtil::ExecBuiltIn(siteargs);
 
           {
 	          CStdString str;

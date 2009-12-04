@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "GUIWindowSettingsCategory.h"
 #include "Application.h"
-#include "Builtins.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "FileSystem/Directory.h"
 #include "Util.h"
@@ -1209,7 +1208,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_weatherManager.ResetTimer();
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
-    CBuiltins::Execute("RunScript(special://home/scripts/RssTicker/default.py)");
+    CUtil::ExecBuiltIn("RunScript(special://home/scripts/RssTicker/default.py)");
   else if (strSetting.Equals("musiclibrary.scrapersettings"))
   {
     CMusicDatabase database;

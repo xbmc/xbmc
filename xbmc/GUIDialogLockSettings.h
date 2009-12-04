@@ -32,7 +32,7 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
   static bool ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, int iHeader=20091);
   static bool ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, bool& bLockMusic, bool& bLockVideo, bool& bLockPictures, bool& bLockPrograms, bool& bLockFiles, bool& bLockSettings, int iButtonLabel=20091,bool bConditional=false, bool bDetails=true);
-  static bool ShowAndGetUserAndPassword(CStdString& strUser, CStdString& strPassword, const CStdString& strURL, bool *saveUserDetails);
+  static bool ShowAndGetUserAndPassword(CStdString& strUser, CStdString& strPassword, const CStdString& strURL);
 protected:
   virtual void OnCancel();
   virtual void OnInitWindow();
@@ -56,7 +56,5 @@ protected:
   bool m_bLockPrograms;
   bool m_bLockFiles;
   bool m_bLockSettings;
-  bool *m_saveUserDetails;
 };
-
 

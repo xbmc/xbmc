@@ -866,12 +866,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\BitstreamStats.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\utils\Builtins.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\utils\Builtins.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\ButtonTranslator.cpp">
 				</File>
 				<File
@@ -1035,12 +1029,6 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\PartyModeManager.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\utils\PasswordManager.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\utils\PasswordManager.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\Picture.cpp">

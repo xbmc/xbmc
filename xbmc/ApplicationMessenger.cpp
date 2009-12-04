@@ -33,7 +33,6 @@
 #include "lib/libPython/XBPython.h"
 #include "GUIWindowSlideShow.h"
 #include "lib/libGoAhead/XBMChttp.h"
-#include "Builtins.h"
 #include "xbox/network.h"
 #include "GUIWindowManager.h"
 #include "Settings.h"
@@ -185,7 +184,7 @@ case TMSG_POWERDOWN:
 #ifdef _XBOX
     case TMSG_QUIT:
       {
-        CBuiltins::Execute("XBMC.Dashboard()");
+        CUtil::ExecBuiltIn("XBMC.Dashboard()");
       }
       break;
 #else
@@ -450,7 +449,7 @@ case TMSG_POWERDOWN:
       break;
 
     case TMSG_EXECUTE_BUILT_IN:
-      CBuiltins::Execute(pMsg->strParam.c_str());
+      CUtil::ExecBuiltIn(pMsg->strParam.c_str());
       break;
 
     case TMSG_PLAYLISTPLAYER_PLAY:
