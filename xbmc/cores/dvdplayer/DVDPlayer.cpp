@@ -1125,7 +1125,7 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   }
 
   // check if we are too slow and need to recache
-  if(CheckStartCaching(m_CurrentAudio) && m_dvdPlayerAudio.IsStalled() && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+  if(CheckStartCaching(m_CurrentAudio) && m_dvdPlayerAudio.IsStalled())
     SetCaching(true);
 
   CheckContinuity(m_CurrentAudio, pPacket);
@@ -1161,7 +1161,7 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
   }
 
   // check if we are too slow and need to recache
-  if(CheckStartCaching(m_CurrentVideo) && m_dvdPlayerVideo.IsStalled() && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+  if(CheckStartCaching(m_CurrentVideo) && m_dvdPlayerVideo.IsStalled())
     SetCaching(true);
 
   if( pPacket->iSize != 4) //don't check the EOF_SEQUENCE of stillframes
@@ -1977,7 +1977,7 @@ void CDVDPlayer::HandleMessages()
 
 void CDVDPlayer::SetCaching(bool enabled)
 {
-  if(m_caching == enabled)
+  if(m_caching == enabled || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
     return;
 
   if(enabled)

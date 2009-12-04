@@ -2127,9 +2127,9 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   {
     if (tagPrev->Number() != m_PreviousChannel[m_PreviousChannelIndex])
       m_PreviousChannel[m_PreviousChannelIndex ^= 1] = tagPrev->Number();
-  }
 
-  m_playingClientName = m_clients[tagNow->ClientID()]->GetBackendName() + ":" + m_clients[tagNow->ClientID()]->GetConnectionString();
+    m_playingClientName = m_clients[tagNow->ClientID()]->GetBackendName() + ":" + m_clients[tagNow->ClientID()]->GetConnectionString();
+  }
 
   return false;
 }

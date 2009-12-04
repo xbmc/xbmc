@@ -551,6 +551,9 @@ PVR_ERROR cPVRClientVDR::RequestRecordingsList(PVRHANDLE handle)
       tag.stream_url      = "";
 
       CStdString fileName = recording.FileName();
+      fileName.Replace('/', '_');   // Make legal filename
+      fileName.Replace('\\', '_');  //   "    "      "
+      fileName.Replace('?', '_');   //   "    "      "
       size_t found = fileName.find_last_of("~");
       if (found != CStdString::npos)
       {
@@ -558,7 +561,7 @@ PVR_ERROR cPVRClientVDR::RequestRecordingsList(PVRHANDLE handle)
         tag.title = title.c_str();
 
         CStdString dir = fileName.substr(0,found);
-        dir.Replace('~','/');;
+        dir.Replace('~','/');
         tag.directory = dir.c_str();
       }
       else

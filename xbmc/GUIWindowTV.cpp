@@ -745,6 +745,19 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
     buttons.Add(CONTEXT_BUTTON_FIND, 19003);              /* Find similar program */
     buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021);         /* Play this recording */
 //            buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 12022);
+    // Update sort by button
+//    if (m_guiState->GetSortMethod()!=SORT_METHOD_NONE)
+//    {
+//      CStdString sortLabel;
+//      sortLabel.Format(g_localizeStrings.Get(550).c_str(), g_localizeStrings.Get(m_guiState->GetSortMethodLabel()).c_str());
+//      buttons.Add(CONTEXT_BUTTON_SORTBY, sortLabel);   /* Sort method */
+//
+//      if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_ASC)
+//        buttons.Add(CONTEXT_BUTTON_SORTASC, 584);        /* Sort up or down */
+//      else
+//        buttons.Add(CONTEXT_BUTTON_SORTASC, 585);        /* Sort up or down */
+//    }
+
     buttons.Add(CONTEXT_BUTTON_RENAME, 118);              /* Rename this recording */
     buttons.Add(CONTEXT_BUTTON_DELETE, 117);              /* Delete this recording */
   }
@@ -1243,6 +1256,20 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       m_searchfilter.SetDefaults();
       UpdateSearch();
     }
+  }
+  else if (button == CONTEXT_BUTTON_SORTASC) // sort asc
+  {
+    if (m_guiState.get())
+      m_guiState->SetNextSortOrder();
+    UpdateFileList();
+    return true;
+  }
+  else if (button == CONTEXT_BUTTON_SORTBY) // sort by
+  {
+    if (m_guiState.get())
+      m_guiState->SetNextSortMethod();
+    UpdateFileList();
+    return true;
   }
   else if (button == CONTEXT_BUTTON_USER1)
   {
