@@ -60,6 +60,9 @@ GOOBJS = 	src/asp.o src/balloc.o src/base64.o src/default.o  \
 
 SRCS=$(GOOBJS:.o=.c)
 CFLAGS	+= -DWEBS -DUEMF -DOS="LINUX" -DLINUX $(UMSW) $(DASW) $(SSLSW) $(IFMODSW)-DDEV -D__NO_CGI_BIN
+ifeq ($(findstring osx, @ARCH@),osx)
+CXXFLAGS += -fvisibility-inlines-hidden
+endif
 OTHERS	= -DB_STATS -DB_FILL -DDEBUG
 DEBUG	= -g -Wall
 INCLUDES += -I. -I../../ -I../../linux -I../../../guilib -I../../utils -I../../cores
