@@ -56,8 +56,6 @@ CDVDDemuxSPU::~CDVDDemuxSPU()
 void CDVDDemuxSPU::Reset()
 {
   FlushCurrentPacket();
-  m_bHasClut = false;
-  memset(m_clut, 0, sizeof(m_clut));
 }
 
 void CDVDDemuxSPU::FlushCurrentPacket()
