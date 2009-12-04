@@ -7260,7 +7260,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Update version in Info.plist with SVN revision\nSVN_REVISION=\"Unknown\"\nBUNDLE_NAME=\"XBMC\"\n\nif test `which svnversion` ; then\n\tSVN_REVISION=\"SVN-\"$(echo -n `svnversion -c \"$TARGET_BUILD_DIR/../../\" | sed -e s/43\\://`)\nfi\nperl -p -i -e \"s/r####/$SVN_REVISION/\" \"$TARGET_BUILD_DIR/$BUNDLE_NAME.app/Contents/Info.plist\"\n";
+			shellScript = "# Update version in Info.plist with SVN revision\nSVN_REVISION=\"Unknown\"\nBUNDLE_NAME=\"XBMC\"\n\nif test `which svnversion` ; then\n\tSVN_REVISION=\"SVN-\"$(echo -n `svnversion -c 2>&1 | grep -iv ^exported | sed -e 's/.*\\://'`)\nfi\nperl -p -i -e \"s/r####/$SVN_REVISION/\" \"$TARGET_BUILD_DIR/$BUNDLE_NAME.app/Contents/Info.plist\"\n";
 		};
 		F5A1CBDE0F6B0B4700A96ABD /* copy root files */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -7303,7 +7303,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Update version in Info.plist with SVN revision\nSVN_REVISION=\"Unknown\"\nBUNDLE_NAME=\"XBMC\"\n\nif test `which svnversion` ; then\n\tSVN_REVISION=\"SVN-\"$(echo -n `svnversion -c \"$TARGET_BUILD_DIR/../../\" | sed -e s/43\\://`)\nfi\nperl -p -i -e \"s/r####/$SVN_REVISION/\" \"$TARGET_BUILD_DIR/$BUNDLE_NAME.app/Contents/Info.plist\"\n";
+			shellScript = "# Update version in Info.plist with SVN revision\nSVN_REVISION=\"Unknown\"\nBUNDLE_NAME=\"XBMC\"\n\nif test `which svnversion` ; then\n\tSVN_REVISION=\"SVN-\"$(echo -n `svnversion -c 2>&1 | grep -iv ^exported | sed -e 's/.*\\://'`)\nfi\nperl -p -i -e \"s/r####/$SVN_REVISION/\" \"$TARGET_BUILD_DIR/$BUNDLE_NAME.app/Contents/Info.plist\"\n";
 		};
 		F5DEC3580E6DEBB2005A4E24 /* copy root files */ = {
 			isa = PBXShellScriptBuildPhase;
