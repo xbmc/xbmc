@@ -189,7 +189,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   if (!pItem->HasThumbnail())
   {
     item.SetUserVideoThumb();
-    if (!CFile::Exists(cachedThumb))
+    if (CFile::Exists(cachedThumb))
+      pItem->SetThumbnailImage(cachedThumb);
+    else
     {
       CStdString strPath, strFileName;
       CUtil::Split(cachedThumb, strPath, strFileName);
@@ -200,6 +202,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       {
         pItem->SetProperty("HasAutoThumb", "1");
         pItem->SetProperty("AutoThumbImage", cachedThumb);
+        pItem->SetThumbnailImage(cachedThumb);
       }
       else if (!item.m_bIsFolder && item.IsVideo() && !item.IsInternetStream() && !item.IsPlayList())
       {
@@ -214,8 +217,6 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         AddJob(extract);
       }
     }
-    if (CFile::Exists(cachedThumb))
-      pItem->SetThumbnailImage(cachedThumb);
   }
   else if (!pItem->GetThumbnailImage().Left(10).Equals("special://"))
     LoadRemoteThumb(pItem);
