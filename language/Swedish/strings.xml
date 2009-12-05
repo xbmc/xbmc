@@ -9,7 +9,7 @@
   <string id="1">Bilder</string>
   <string id="2">Musik</string>
   <string id="3">Filmer</string>
-  <string id="4">TV Guide</string>
+  <string id="4">TV-guide</string>
   <string id="5">Inställningar</string>
   <string id="7">Filhanterare</string>
   <string id="8">Väder</string>
@@ -551,7 +551,7 @@
   <string id="719">- IP-adress</string>
   <string id="720">- Nätmask</string>
   <string id="721">- Standardgateway</string>
-  <string id="722">- DNS server</string>
+  <string id="722">- DNS-server</string>
   <string id="723">Spara &amp; starta om</string>
   <string id="724">Felaktig adress angiven. Formatet skall vara</string>
   <string id="725">AAA.BBB.CCC.DDD med siffror mellan 0 och 255.</string>
