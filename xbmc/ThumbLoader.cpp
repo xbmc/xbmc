@@ -98,7 +98,10 @@ bool CThumbExtractor::DoWork()
 {
   if (CUtil::IsLiveTV(m_path)
   ||  CUtil::IsUPnP(m_path)
-  ||  CUtil::IsDAAP(m_path))
+  ||  CUtil::IsDAAP(m_path)
+  ||  m_item.IsDVD()
+  ||  m_item.IsDVDImage()
+  ||  m_item.IsDVDFile(false, true))
     return false;
 
   if (CUtil::IsRemote(m_path) && !CUtil::IsOnLAN(m_path))
