@@ -43,12 +43,12 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 float   PowCosineInterp(float x, float pow);
 float   AdjustRateToFPS(float per_frame_decay_rate_at_fps1, float fps1, float actual_fps);
 
-//int   GetPrivateProfileInt - part of Win32 API
-#define GetPrivateProfileBool(w,x,y,z) ((bool)(GetPrivateProfileInt(w,x,y,z) != 0))
-#define GetPrivateProfileBOOL(w,x,y,z) ((BOOL)(GetPrivateProfileInt(w,x,y,z) != 0))
-int		GetPrivateProfileString(char *szSectionName, char *szKeyName, char *szDefault, char *buffer, int size, char *szIniFile);
-int		GetPrivateProfileInt(char *szSectionName, char *szKeyName, int iDefault, char *szIniFile);
-float   GetPrivateProfileFloat(char *szSectionName, char *szKeyName, float fDefault, char *szIniFile);
+//int   InternalGetPrivateProfileInt - part of Win32 API
+#define GetPrivateProfileBool(w,x,y,z) ((bool)(InternalGetPrivateProfileInt(w,x,y,z) != 0))
+#define GetPrivateProfileBOOL(w,x,y,z) ((BOOL)(InternalGetPrivateProfileInt(w,x,y,z) != 0))
+int		InternalGetPrivateProfileString(char *szSectionName, char *szKeyName, char *szDefault, char *buffer, int size, char *szIniFile);
+int		InternalGetPrivateProfileInt(char *szSectionName, char *szKeyName, int iDefault, char *szIniFile);
+float   InternalGetPrivateProfileFloat(char *szSectionName, char *szKeyName, float fDefault, char *szIniFile);
 bool    WritePrivateProfileInt(int d, char *szKeyName, char *szIniFile, char *szSectionName);
 bool    WritePrivateProfileFloat(float f, char *szKeyName, char *szIniFile, char *szSectionName);
 

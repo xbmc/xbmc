@@ -696,10 +696,10 @@ BOOL DXContext::Internal_Init(DXCONTEXT_PARAMS *pParams, BOOL bFirstInit)
         // note that we'd prefer to set the CLIENT size we want, but we can't, so we'll just do
         // this here, and later, adjust the client rect size to what's left...
         int size = GetWindowedModeAutoSize(0);  // note: requires 'm_monitor_rect' has been set!
-        myWindowState.r.left   = GetPrivateProfileInt("settings","avs_wx",64,m_szIniFile);
-        myWindowState.r.top    = GetPrivateProfileInt("settings","avs_wy",64,m_szIniFile);
-        myWindowState.r.right  = myWindowState.r.left + GetPrivateProfileInt("settings","avs_ww",size+24,m_szIniFile);
-        myWindowState.r.bottom = myWindowState.r.top  + GetPrivateProfileInt("settings","avs_wh",size+40,m_szIniFile);
+        myWindowState.r.left   = InternalGetPrivateProfileInt("settings","avs_wx",64,m_szIniFile);
+        myWindowState.r.top    = InternalGetPrivateProfileInt("settings","avs_wy",64,m_szIniFile);
+        myWindowState.r.right  = myWindowState.r.left + InternalGetPrivateProfileInt("settings","avs_ww",size+24,m_szIniFile);
+        myWindowState.r.bottom = myWindowState.r.top  + InternalGetPrivateProfileInt("settings","avs_wh",size+40,m_szIniFile);
 
         // only works on winamp 2.90+!
         int success = 0;
@@ -725,10 +725,10 @@ BOOL DXContext::Internal_Init(DXCONTEXT_PARAMS *pParams, BOOL bFirstInit)
 #endif
     // remember the client rect that was originally desired...
 //    RECT windowed_mode_desired_client_rect;
-//	windowed_mode_desired_client_rect.top    = GetPrivateProfileInt("settings","nMainWndTop",-1,m_szIniFile);
-//	windowed_mode_desired_client_rect.left   = GetPrivateProfileInt("settings","nMainWndLeft",-1,m_szIniFile);
-//	windowed_mode_desired_client_rect.right  = GetPrivateProfileInt("settings","nMainWndRight",-1,m_szIniFile);
-//	windowed_mode_desired_client_rect.bottom = GetPrivateProfileInt("settings","nMainWndBottom",-1,m_szIniFile);
+//	windowed_mode_desired_client_rect.top    = InternalGetPrivateProfileInt("settings","nMainWndTop",-1,m_szIniFile);
+//	windowed_mode_desired_client_rect.left   = InternalGetPrivateProfileInt("settings","nMainWndLeft",-1,m_szIniFile);
+//	windowed_mode_desired_client_rect.right  = InternalGetPrivateProfileInt("settings","nMainWndRight",-1,m_szIniFile);
+//	windowed_mode_desired_client_rect.bottom = InternalGetPrivateProfileInt("settings","nMainWndBottom",-1,m_szIniFile);
 
     // ...and in case windowed mode init fails severely, 
     // set it up to try next time for a simple 256x256 window.

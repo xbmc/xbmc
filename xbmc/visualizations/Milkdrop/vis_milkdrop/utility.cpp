@@ -110,7 +110,7 @@ static void GetFromINIArray(char *mem, char *key, char *def, char *buffer, int b
 	}
 }
 
-static  void GetPrivateProfileSectionData(FILE* Fh, int fsize, char *ReturnBuffer,int size)  
+static  void InternalGetPrivateProfileSectionData(FILE* Fh, int fsize, char *ReturnBuffer,int size)  
 {
 	char		chr;
 	int		strcount;
@@ -175,7 +175,7 @@ static  void GetPrivateProfileSectionData(FILE* Fh, int fsize, char *ReturnBuffe
 	ReturnBuffer[1] = 0;
 }
 
-int GetPrivateProfileSection(char *Group,char *ReturnBuffer,int size,char *filename)
+int InternalGetPrivateProfileSection(char *Group,char *ReturnBuffer,int size,char *filename)
 {
 	FILE* Fh;
 	int     fsize;
@@ -219,7 +219,7 @@ int GetPrivateProfileSection(char *Group,char *ReturnBuffer,int size,char *filen
 						{
 							// got it!
 
-							GetPrivateProfileSectionData(Fh,fsize,ReturnBuffer,size);
+							InternalGetPrivateProfileSectionData(Fh,fsize,ReturnBuffer,size);
 							fclose(Fh);
 							return(0);
 						}
@@ -249,7 +249,7 @@ char currIniSection[256];
 int iniFileSize = 0;
 
 
-int	GetPrivateProfileString(char *szSectionName, char *szKeyName, char *szDefault, char *buffer, int size, char *szIniFile)
+int	InternalGetPrivateProfileString(char *szSectionName, char *szKeyName, char *szDefault, char *buffer, int size, char *szIniFile)
 {
 	bool newFile = false;
 
@@ -288,7 +288,7 @@ int	GetPrivateProfileString(char *szSectionName, char *szKeyName, char *szDefaul
 
 	if (stricmp(INIfsp, szIniFile)!=0 || stricmp(INIsection, szSectionName)!=0)
 	{
-		GetPrivateProfileSection(szSectionName, INITempBuffer, INITEMPBUFFERSIZE, szIniFile);
+		InternalGetPrivateProfileSection(szSectionName, INITempBuffer, INITEMPBUFFERSIZE, szIniFile);
 		strcpy(INIfsp, szIniFile);
 		strcpy(INIsection, szSectionName);
 	}
@@ -341,7 +341,7 @@ void GetFromCache(char *cache, char *key, char *szDefault, char *buffer, int buf
 
 }
 
-void GetPrivateProfileSection(char *szSectionName, char *buffer, int size, char *szIniFile)
+void InternalGetPrivateProfileSection(char *szSectionName, char *buffer, int size, char *szIniFile)
 {
 	FILE* handle;
 	int fileSize;
@@ -487,11 +487,11 @@ void GetPrivateProfileSection(char *szSectionName, char *buffer, int size, char 
 
 }
 
-int	GetPrivateProfileString(char *szSectionName, char *szKeyName, char *szDefault, char *buffer, int size, char *szIniFile)
+int	InternalGetPrivateProfileString(char *szSectionName, char *szKeyName, char *szDefault, char *buffer, int size, char *szIniFile)
 {
 	if (stricmp(currIniFilename, szIniFile) || stricmp(currIniSection, szSectionName))
 	{
-		GetPrivateProfileSection(szSectionName, sectionCache, SECTION_CACHE_SIZE, szIniFile);
+		InternalGetPrivateProfileSection(szSectionName, sectionCache, SECTION_CACHE_SIZE, szIniFile);
 
 		strcpy(currIniFilename, szIniFile);
 		strcpy(currIniSection, szSectionName);
@@ -502,14 +502,14 @@ int	GetPrivateProfileString(char *szSectionName, char *szKeyName, char *szDefaul
 	return (strlen(buffer));
 }
 
-int GetPrivateProfileInt(char *szSectionName, char *szKeyName, int iDefault, char *szIniFile)
+int InternalGetPrivateProfileInt(char *szSectionName, char *szKeyName, int iDefault, char *szIniFile)
 {
 	char string[64];
 	char szDefault[64];
 	int ret = iDefault;
 
 	sprintf(szDefault, "%d", iDefault);
-	if (GetPrivateProfileString(szSectionName, szKeyName, szDefault, string, 64, szIniFile) > 0)
+	if (InternalGetPrivateProfileString(szSectionName, szKeyName, szDefault, string, 64, szIniFile) > 0)
 	{
 		sscanf(string, "%d", &ret);
 	}
@@ -517,7 +517,7 @@ int GetPrivateProfileInt(char *szSectionName, char *szKeyName, int iDefault, cha
 	return ret;
 }
 
-float GetPrivateProfileFloat(char *szSectionName, char *szKeyName, float fDefault, char *szIniFile)
+float InternalGetPrivateProfileFloat(char *szSectionName, char *szKeyName, float fDefault, char *szIniFile)
 {
     char string[64];
     char szDefault[64];
@@ -525,7 +525,7 @@ float GetPrivateProfileFloat(char *szSectionName, char *szKeyName, float fDefaul
 
     sprintf(szDefault, "%f", fDefault);
 
-    if (GetPrivateProfileString(szSectionName, szKeyName, szDefault, string, 64, szIniFile) > 0)
+    if (InternalGetPrivateProfileString(szSectionName, szKeyName, szDefault, string, 64, szIniFile) > 0)
     {
         sscanf(string, "%f", &ret);
     }

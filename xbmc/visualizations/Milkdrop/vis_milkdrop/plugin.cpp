@@ -819,13 +819,13 @@ void CPlugin::MyReadConfig()
 
     // use this function         declared in   to read a value of this type:
     // -----------------         -----------   ----------------------------
-    // GetPrivateProfileInt      Win32 API     int
+    // InternalGetPrivateProfileInt      Win32 API     int
     // GetPrivateProfileBool     utility.h     bool
     // GetPrivateProfileBOOL     utility.h     BOOL
-    // GetPrivateProfileFloat    utility.h     float
-    // GetPrivateProfileString   Win32 API     string
+    // InternalGetPrivateProfileFloat    utility.h     float
+    // InternalGetPrivateProfileString   Win32 API     string
 
-    //ex: m_fog_enabled = GetPrivateProfileInt("settings","fog_enabled"       ,m_fog_enabled       ,GetConfigIniFile());
+    //ex: m_fog_enabled = InternalGetPrivateProfileInt("settings","fog_enabled"       ,m_fog_enabled       ,GetConfigIniFile());
 
 	int n=0;
     char *pIni = GetConfigIniFile();
@@ -855,10 +855,10 @@ void CPlugin::MyReadConfig()
 		  m_n16BitGamma = 0;
 	  else if (nTemp == 1)
 		  m_n16BitGamma = 2;
-	m_n16BitGamma		= GetPrivateProfileInt("settings","n16BitGamma",m_n16BitGamma,pIni);
+	m_n16BitGamma		= InternalGetPrivateProfileInt("settings","n16BitGamma",m_n16BitGamma,pIni);
 	m_bAutoGamma        = GetPrivateProfileBool("settings","bAutoGamma",m_bAutoGamma,pIni);
 	m_bAlways3D				= GetPrivateProfileBool("settings","bAlways3D",m_bAlways3D,pIni);
-    m_fStereoSep            = GetPrivateProfileFloat("settings","fStereoSep",m_fStereoSep,pIni);
+    m_fStereoSep            = InternalGetPrivateProfileFloat("settings","fStereoSep",m_fStereoSep,pIni);
 	//m_bFixSlowText          = GetPrivateProfileBool("settings","bFixSlowText",m_bFixSlowText,pIni);
 	//m_bAlwaysOnTop		= GetPrivateProfileBool("settings","bAlwaysOnTop",m_bAlwaysOnTop,pIni);
 	m_bWarningsDisabled		= GetPrivateProfileBool("settings","bWarningsDisabled",m_bWarningsDisabled,pIni);
@@ -866,31 +866,31 @@ void CPlugin::MyReadConfig()
     m_bAnisotropicFiltering = GetPrivateProfileBool("settings","bAnisotropicFiltering",m_bAnisotropicFiltering,pIni);
     m_bPresetLockOnAtStartup = GetPrivateProfileBool("settings","bPresetLockOnAtStartup",m_bPresetLockOnAtStartup,pIni);
 
-	m_cLeftEye3DColor[0] = GetPrivateProfileInt("settings","nLeftEye3DColorR",m_cLeftEye3DColor[0],pIni);
-	m_cLeftEye3DColor[1] = GetPrivateProfileInt("settings","nLeftEye3DColorG",m_cLeftEye3DColor[1],pIni);
-	m_cLeftEye3DColor[2] = GetPrivateProfileInt("settings","nLeftEye3DColorB",m_cLeftEye3DColor[2],pIni);
-	m_cRightEye3DColor[0] = GetPrivateProfileInt("settings","nRightEye3DColorR",m_cRightEye3DColor[0],pIni);
-	m_cRightEye3DColor[1] = GetPrivateProfileInt("settings","nRightEye3DColorG",m_cRightEye3DColor[1],pIni);
-	m_cRightEye3DColor[2] = GetPrivateProfileInt("settings","nRightEye3DColorB",m_cRightEye3DColor[2],pIni);
+	m_cLeftEye3DColor[0] = InternalGetPrivateProfileInt("settings","nLeftEye3DColorR",m_cLeftEye3DColor[0],pIni);
+	m_cLeftEye3DColor[1] = InternalGetPrivateProfileInt("settings","nLeftEye3DColorG",m_cLeftEye3DColor[1],pIni);
+	m_cLeftEye3DColor[2] = InternalGetPrivateProfileInt("settings","nLeftEye3DColorB",m_cLeftEye3DColor[2],pIni);
+	m_cRightEye3DColor[0] = InternalGetPrivateProfileInt("settings","nRightEye3DColorR",m_cRightEye3DColor[0],pIni);
+	m_cRightEye3DColor[1] = InternalGetPrivateProfileInt("settings","nRightEye3DColorG",m_cRightEye3DColor[1],pIni);
+	m_cRightEye3DColor[2] = InternalGetPrivateProfileInt("settings","nRightEye3DColorB",m_cRightEye3DColor[2],pIni);
 
-	m_nTexSize		= GetPrivateProfileInt("settings","nTexSize"    ,m_nTexSize    ,pIni);
+	m_nTexSize		= InternalGetPrivateProfileInt("settings","nTexSize"    ,m_nTexSize    ,pIni);
 		m_bTexSizeWasAuto = (m_nTexSize == -1);
-	m_nGridX		= GetPrivateProfileInt("settings","nMeshSize"   ,m_nGridX      ,pIni);
+	m_nGridX		= InternalGetPrivateProfileInt("settings","nMeshSize"   ,m_nGridX      ,pIni);
 	m_nGridY        = m_nGridX*3/4;
 	
-	m_fBlendTimeUser			= GetPrivateProfileFloat("settings","fBlendTimeUser"         ,m_fBlendTimeUser         ,pIni);
-	m_fBlendTimeAuto			= GetPrivateProfileFloat("settings","fBlendTimeAuto"         ,m_fBlendTimeAuto         ,pIni);
-	m_fTimeBetweenPresets		= GetPrivateProfileFloat("settings","fTimeBetweenPresets"    ,m_fTimeBetweenPresets    ,pIni);
-	m_fTimeBetweenPresetsRand	= GetPrivateProfileFloat("settings","fTimeBetweenPresetsRand",m_fTimeBetweenPresetsRand,pIni);
-	m_fHardCutLoudnessThresh	= GetPrivateProfileFloat("settings","fHardCutLoudnessThresh" ,m_fHardCutLoudnessThresh ,pIni);
-	m_fHardCutHalflife			= GetPrivateProfileFloat("settings","fHardCutHalflife"       ,m_fHardCutHalflife       ,pIni);
-	m_fSongTitleAnimDuration	= GetPrivateProfileFloat("settings","fSongTitleAnimDuration" ,m_fSongTitleAnimDuration ,pIni);
-	m_fTimeBetweenRandomSongTitles = GetPrivateProfileFloat("settings","fTimeBetweenRandomSongTitles" ,m_fTimeBetweenRandomSongTitles,pIni);
-	m_fTimeBetweenRandomCustomMsgs = GetPrivateProfileFloat("settings","fTimeBetweenRandomCustomMsgs" ,m_fTimeBetweenRandomCustomMsgs,pIni);
+	m_fBlendTimeUser			= InternalGetPrivateProfileFloat("settings","fBlendTimeUser"         ,m_fBlendTimeUser         ,pIni);
+	m_fBlendTimeAuto			= InternalGetPrivateProfileFloat("settings","fBlendTimeAuto"         ,m_fBlendTimeAuto         ,pIni);
+	m_fTimeBetweenPresets		= InternalGetPrivateProfileFloat("settings","fTimeBetweenPresets"    ,m_fTimeBetweenPresets    ,pIni);
+	m_fTimeBetweenPresetsRand	= InternalGetPrivateProfileFloat("settings","fTimeBetweenPresetsRand",m_fTimeBetweenPresetsRand,pIni);
+	m_fHardCutLoudnessThresh	= InternalGetPrivateProfileFloat("settings","fHardCutLoudnessThresh" ,m_fHardCutLoudnessThresh ,pIni);
+	m_fHardCutHalflife			= InternalGetPrivateProfileFloat("settings","fHardCutHalflife"       ,m_fHardCutHalflife       ,pIni);
+	m_fSongTitleAnimDuration	= InternalGetPrivateProfileFloat("settings","fSongTitleAnimDuration" ,m_fSongTitleAnimDuration ,pIni);
+	m_fTimeBetweenRandomSongTitles = InternalGetPrivateProfileFloat("settings","fTimeBetweenRandomSongTitles" ,m_fTimeBetweenRandomSongTitles,pIni);
+	m_fTimeBetweenRandomCustomMsgs = InternalGetPrivateProfileFloat("settings","fTimeBetweenRandomCustomMsgs" ,m_fTimeBetweenRandomCustomMsgs,pIni);
 
     // --------
 
-	GetPrivateProfileString("settings","szPresetDir",m_szPresetDir,m_szPresetDir,sizeof(m_szPresetDir),pIni);
+	InternalGetPrivateProfileString("settings","szPresetDir",m_szPresetDir,m_szPresetDir,sizeof(m_szPresetDir),pIni);
 
 	ReadCustomMessages();
 
@@ -5282,7 +5282,7 @@ void CPlugin::UpdatePresetRatings()
 	{
 		char szFullPath[512];
 		sprintf(szFullPath, "%s%s", m_szPresetDir, m_pPresetAddr[k]);
-		float f = GetPrivateProfileFloat("preset00", "fRating", 3.0f, szFullPath);
+		float f = InternalGetPrivateProfileFloat("preset00", "fRating", 3.0f, szFullPath);
 		if (f < 0) f = 0;
 		if (f > 5) f = 5;
 
@@ -5394,12 +5394,12 @@ void CPlugin::ReadCustomMessages()
 		sprintf(szSectionName, "font%02d", n);
 
 		// get face, bold, italic, x, y for this custom message FONT
-		GetPrivateProfileString(szSectionName,"face","arial",m_CustomMessageFont[n].szFace,sizeof(m_CustomMessageFont[n].szFace), m_szMsgIniFile);
+		InternalGetPrivateProfileString(szSectionName,"face","arial",m_CustomMessageFont[n].szFace,sizeof(m_CustomMessageFont[n].szFace), m_szMsgIniFile);
 		m_CustomMessageFont[n].bBold	= GetPrivateProfileBool(szSectionName,"bold",m_CustomMessageFont[n].bBold,  m_szMsgIniFile);
 		m_CustomMessageFont[n].bItal	= GetPrivateProfileBool(szSectionName,"ital",m_CustomMessageFont[n].bItal,  m_szMsgIniFile);
-		m_CustomMessageFont[n].nColorR  = GetPrivateProfileInt (szSectionName,"r"     ,m_CustomMessageFont[n].nColorR, m_szMsgIniFile);
-		m_CustomMessageFont[n].nColorG  = GetPrivateProfileInt (szSectionName,"g"     ,m_CustomMessageFont[n].nColorG, m_szMsgIniFile);
-		m_CustomMessageFont[n].nColorB  = GetPrivateProfileInt (szSectionName,"b"     ,m_CustomMessageFont[n].nColorB, m_szMsgIniFile);
+		m_CustomMessageFont[n].nColorR  = InternalGetPrivateProfileInt (szSectionName,"r"     ,m_CustomMessageFont[n].nColorR, m_szMsgIniFile);
+		m_CustomMessageFont[n].nColorG  = InternalGetPrivateProfileInt (szSectionName,"g"     ,m_CustomMessageFont[n].nColorG, m_szMsgIniFile);
+		m_CustomMessageFont[n].nColorB  = InternalGetPrivateProfileInt (szSectionName,"b"     ,m_CustomMessageFont[n].nColorB, m_szMsgIniFile);
 	}
 
 	for (n=0; n<MAX_CUSTOM_MESSAGES; n++)
@@ -5408,33 +5408,33 @@ void CPlugin::ReadCustomMessages()
 		sprintf(szSectionName, "message%02d", n);
 
 		// get fontID, size, text, etc. for this custom message:
-		GetPrivateProfileString(szSectionName,"text","",m_CustomMessage[n].szText,sizeof(m_CustomMessage[n].szText), m_szMsgIniFile);
+		InternalGetPrivateProfileString(szSectionName,"text","",m_CustomMessage[n].szText,sizeof(m_CustomMessage[n].szText), m_szMsgIniFile);
         if (m_CustomMessage[n].szText[0])
         {
-		    m_CustomMessage[n].nFont	= GetPrivateProfileInt  (szSectionName,"font"  ,m_CustomMessage[n].nFont,   m_szMsgIniFile);
-		    m_CustomMessage[n].fSize	= GetPrivateProfileFloat(szSectionName,"size"  ,m_CustomMessage[n].fSize,   m_szMsgIniFile);
-		    m_CustomMessage[n].x		= GetPrivateProfileFloat(szSectionName,"x"     ,m_CustomMessage[n].x,       m_szMsgIniFile);
-		    m_CustomMessage[n].y		= GetPrivateProfileFloat(szSectionName,"y"     ,m_CustomMessage[n].y,       m_szMsgIniFile);
-		    m_CustomMessage[n].randx    = GetPrivateProfileFloat(szSectionName,"randx" ,m_CustomMessage[n].randx,   m_szMsgIniFile);
-		    m_CustomMessage[n].randy    = GetPrivateProfileFloat(szSectionName,"randy" ,m_CustomMessage[n].randy,   m_szMsgIniFile);
+		    m_CustomMessage[n].nFont	= InternalGetPrivateProfileInt  (szSectionName,"font"  ,m_CustomMessage[n].nFont,   m_szMsgIniFile);
+		    m_CustomMessage[n].fSize	= InternalGetPrivateProfileFloat(szSectionName,"size"  ,m_CustomMessage[n].fSize,   m_szMsgIniFile);
+		    m_CustomMessage[n].x		= InternalGetPrivateProfileFloat(szSectionName,"x"     ,m_CustomMessage[n].x,       m_szMsgIniFile);
+		    m_CustomMessage[n].y		= InternalGetPrivateProfileFloat(szSectionName,"y"     ,m_CustomMessage[n].y,       m_szMsgIniFile);
+		    m_CustomMessage[n].randx    = InternalGetPrivateProfileFloat(szSectionName,"randx" ,m_CustomMessage[n].randx,   m_szMsgIniFile);
+		    m_CustomMessage[n].randy    = InternalGetPrivateProfileFloat(szSectionName,"randy" ,m_CustomMessage[n].randy,   m_szMsgIniFile);
 
-		    m_CustomMessage[n].growth   = GetPrivateProfileFloat(szSectionName,"growth",m_CustomMessage[n].growth,  m_szMsgIniFile);
-		    m_CustomMessage[n].fTime    = GetPrivateProfileFloat(szSectionName,"time"  ,m_CustomMessage[n].fTime,   m_szMsgIniFile);
-		    m_CustomMessage[n].fFade    = GetPrivateProfileFloat(szSectionName,"fade"  ,m_CustomMessage[n].fFade,   m_szMsgIniFile);
-		    m_CustomMessage[n].nColorR  = GetPrivateProfileInt  (szSectionName,"r"     ,m_CustomMessage[n].nColorR, m_szMsgIniFile);
-		    m_CustomMessage[n].nColorG  = GetPrivateProfileInt  (szSectionName,"g"     ,m_CustomMessage[n].nColorG, m_szMsgIniFile);
-		    m_CustomMessage[n].nColorB  = GetPrivateProfileInt  (szSectionName,"b"     ,m_CustomMessage[n].nColorB, m_szMsgIniFile);
-		    m_CustomMessage[n].nRandR   = GetPrivateProfileInt  (szSectionName,"randr" ,m_CustomMessage[n].nRandR,  m_szMsgIniFile);
-		    m_CustomMessage[n].nRandG   = GetPrivateProfileInt  (szSectionName,"randg" ,m_CustomMessage[n].nRandG,  m_szMsgIniFile);
-		    m_CustomMessage[n].nRandB   = GetPrivateProfileInt  (szSectionName,"randb" ,m_CustomMessage[n].nRandB,  m_szMsgIniFile);
+		    m_CustomMessage[n].growth   = InternalGetPrivateProfileFloat(szSectionName,"growth",m_CustomMessage[n].growth,  m_szMsgIniFile);
+		    m_CustomMessage[n].fTime    = InternalGetPrivateProfileFloat(szSectionName,"time"  ,m_CustomMessage[n].fTime,   m_szMsgIniFile);
+		    m_CustomMessage[n].fFade    = InternalGetPrivateProfileFloat(szSectionName,"fade"  ,m_CustomMessage[n].fFade,   m_szMsgIniFile);
+		    m_CustomMessage[n].nColorR  = InternalGetPrivateProfileInt  (szSectionName,"r"     ,m_CustomMessage[n].nColorR, m_szMsgIniFile);
+		    m_CustomMessage[n].nColorG  = InternalGetPrivateProfileInt  (szSectionName,"g"     ,m_CustomMessage[n].nColorG, m_szMsgIniFile);
+		    m_CustomMessage[n].nColorB  = InternalGetPrivateProfileInt  (szSectionName,"b"     ,m_CustomMessage[n].nColorB, m_szMsgIniFile);
+		    m_CustomMessage[n].nRandR   = InternalGetPrivateProfileInt  (szSectionName,"randr" ,m_CustomMessage[n].nRandR,  m_szMsgIniFile);
+		    m_CustomMessage[n].nRandG   = InternalGetPrivateProfileInt  (szSectionName,"randg" ,m_CustomMessage[n].nRandG,  m_szMsgIniFile);
+		    m_CustomMessage[n].nRandB   = InternalGetPrivateProfileInt  (szSectionName,"randb" ,m_CustomMessage[n].nRandB,  m_szMsgIniFile);
 
 		    // overrides: r,g,b,face,bold,ital
-		    GetPrivateProfileString(szSectionName,"face","",m_CustomMessage[n].szFace,sizeof(m_CustomMessage[n].szFace), m_szMsgIniFile);
-		    m_CustomMessage[n].bBold	= GetPrivateProfileInt (szSectionName, "bold", -1, m_szMsgIniFile);
-		    m_CustomMessage[n].bItal  	= GetPrivateProfileInt (szSectionName, "ital", -1, m_szMsgIniFile);
-		    m_CustomMessage[n].nColorR  = GetPrivateProfileInt (szSectionName, "r"   , -1, m_szMsgIniFile);
-		    m_CustomMessage[n].nColorG  = GetPrivateProfileInt (szSectionName, "g"   , -1, m_szMsgIniFile);
-		    m_CustomMessage[n].nColorB  = GetPrivateProfileInt (szSectionName, "b"   , -1, m_szMsgIniFile);
+		    InternalGetPrivateProfileString(szSectionName,"face","",m_CustomMessage[n].szFace,sizeof(m_CustomMessage[n].szFace), m_szMsgIniFile);
+		    m_CustomMessage[n].bBold	= InternalGetPrivateProfileInt (szSectionName, "bold", -1, m_szMsgIniFile);
+		    m_CustomMessage[n].bItal  	= InternalGetPrivateProfileInt (szSectionName, "ital", -1, m_szMsgIniFile);
+		    m_CustomMessage[n].nColorR  = InternalGetPrivateProfileInt (szSectionName, "r"   , -1, m_szMsgIniFile);
+		    m_CustomMessage[n].nColorG  = InternalGetPrivateProfileInt (szSectionName, "g"   , -1, m_szMsgIniFile);
+		    m_CustomMessage[n].nColorB  = InternalGetPrivateProfileInt (szSectionName, "b"   , -1, m_szMsgIniFile);
 
 		    m_CustomMessage[n].bOverrideFace   = (m_CustomMessage[n].szFace[0] != 0);
 		    m_CustomMessage[n].bOverrideBold   = (m_CustomMessage[n].bBold != -1);
@@ -5569,7 +5569,7 @@ bool CPlugin::LaunchSprite(int nSpriteNum, int nSlot)
 	sprintf(section, "img%02d", nSpriteNum);
 
 	// 1. read in image filename
-	GetPrivateProfileString(section, "img", "", img, sizeof(img)-1, m_szImgIniFile);
+	InternalGetPrivateProfileString(section, "img", "", img, sizeof(img)-1, m_szImgIniFile);
 	if (img[0] == 0)
 	{
 		sprintf(m_szUserMessage, "sprite #%d error: couldn't find 'img=' setting, or sprite is not defined", nSpriteNum); 
@@ -5586,11 +5586,11 @@ bool CPlugin::LaunchSprite(int nSpriteNum, int nSlot)
 	}
 
 	// 2. get color key
-	//unsigned int ck_lo = (unsigned int)GetPrivateProfileInt(section, "colorkey_lo", 0x00000000, m_szImgIniFile);
-	//unsigned int ck_hi = (unsigned int)GetPrivateProfileInt(section, "colorkey_hi", 0x00202020, m_szImgIniFile);
+	//unsigned int ck_lo = (unsigned int)InternalGetPrivateProfileInt(section, "colorkey_lo", 0x00000000, m_szImgIniFile);
+	//unsigned int ck_hi = (unsigned int)InternalGetPrivateProfileInt(section, "colorkey_hi", 0x00202020, m_szImgIniFile);
     // FIRST try 'colorkey_lo' (for backwards compatibility) and then try 'colorkey'
-    unsigned int ck = (unsigned int)GetPrivateProfileInt(section, "colorkey_lo", 0x00000000, m_szImgIniFile);
-    ck = (unsigned int)GetPrivateProfileInt(section, "colorkey", ck, m_szImgIniFile);
+    unsigned int ck = (unsigned int)InternalGetPrivateProfileInt(section, "colorkey_lo", 0x00000000, m_szImgIniFile);
+    ck = (unsigned int)InternalGetPrivateProfileInt(section, "colorkey", ck, m_szImgIniFile);
 
 	// 3. read in init code & per-frame code
 	for (int n=0; n<2; n++)
@@ -5611,7 +5611,7 @@ bool CPlugin::LaunchSprite(int nSpriteNum, int nSlot)
 				sprintf(szLineName, "code_%d", line);
 
 
-			GetPrivateProfileString(section, szLineName, "~!@#$", szTemp, 8192, m_szImgIniFile);	// fixme
+			InternalGetPrivateProfileString(section, szLineName, "~!@#$", szTemp, 8192, m_szImgIniFile);	// fixme
 			len = strlen(szTemp);
 
 			if ((strcmp(szTemp, "~!@#$")==0) ||		// if the key was missing,
