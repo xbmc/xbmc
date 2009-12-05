@@ -741,15 +741,7 @@ HRESULT CApplication::Create(HWND hWnd)
   InitDirectoriesXbox();
   
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-#if defined(_LINUX) && !defined(__APPLE__)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: GNU/Linux.  Built on %s (SVN:%s)", __DATE__, SVN_REV);
-#elif defined(__APPLE__)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s", __DATE__);
-#elif defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s.  Built on %s (SVN:%s, compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, SVN_REV, _MSC_VER);
-#else
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Xbox.  Built on %s (SVN:%s, compiler %i)", __DATE__, SVN_REV, _MSC_VER);
-#endif
+  CLog::Log(LOGNOTICE, "Starting XBMC4Xbox.  Built on %s (SVN:%s, compiler %i)", __DATE__, SVN_REV, _MSC_VER);
   CSpecialProtocol::LogPaths();
 
   char szXBEFileName[1024];
