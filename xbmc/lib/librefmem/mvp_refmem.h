@@ -48,7 +48,7 @@ extern void *ref_hold(void *p);
  * \param str string to duplicate
  * \return reference to the duplicated string
  */
-extern char *ref_strdup(char *str);
+extern char *ref_strdup(const char *str);
 
 /**
  * Allocate reference counted memory. (PRIVATE)
