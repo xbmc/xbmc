@@ -6,32 +6,60 @@ DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 # Get the SVN revision from the changelog
-SVNVERSION ?= $(shell dpkg-parsechangelog | grep '^Version:' | sed 's/.*svn\([[:digit:]]*\).*/\1/')
+SVNVERSION ?= $(shell dpkg-parsechangelog | grep '^Version:' | grep svn | sed 's/.*svn\([[:digit:]]*\).*/\1/')
+
+# If not set already, try to set from debian/svnrevision
+ifeq (,$(SVNVERSION))
+	SVNVERSION = $(shell cat debian/svnrevision 2>/dev/null)
+endif
 
 # List of options to pass to configure. Can be overridden.
 XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
-	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --disable-ccache \
-	--disable-dvdcss --enable-external-libraries --enable-avahi \
-	--enable-goom CFLAGS="$(DEB_CFLAGS)" CXXFLAGS="$(DEB_CXXFLAGS)"
+	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr \
+	--enable-optimizations --enable-gl --enable-vdpau \
+	--disable-profiling --enable-joystick --enable-xrandr \
+	--enable-goom --disable-ccache --enable-pulse --enable-avahi 
 
-# Add the SVN revision if it exists in the changelog
-ifeq (,$(findstring Version,$(SVNVERSION)))
+# Ubuntu or Debian specific options
+ifeq (Ubuntu,$(shell lsb_release -is))
+  XBMC_CONFIG_OPTIONS += --enable-faac
+else
+  XBMC_CONFIG_OPTIONS += --enable-external-libraries --disable-dvdcss \
+	--disable-non-free --enable-debug
+endif
+
+# Add the SVN revision if we could determine the svn revision
+ifneq (,$(SVNVERSION))
   XBMC_CONFIG_OPTIONS += SVN_REV="$(SVNVERSION)"
 endif
+
+# Various environment variables to set
+XBMC_CONFIG_OPTIONS += CFLAGS="$(DEB_CFLAGS)" CXXFLAGS="$(DEB_CXXFLAGS)"
+
+# Input files used for generating other files
+INPUT_FILES = debian/control.in \
 
 %:
 	dh $@
 
+# Target for generating control files
+.PHONY: debian/var_info
+%.in: debian/var_info
+	perl -p \
+	-e 's{#BUILD_DEPENDS#}{qx(sh debian/var_info BUILD_DEPENDS)}ge;' \
+	< $@ > $$(echo $@ | sed 's/\.in$$//')
+
 override_dh_clean:
 	dh_clean
-	rm -f debian/xbmc-live.init
+	debian/rules $(INPUT_FILES)
 
-override_dh_auto_configure:
-	cp -f tools/XBMCLive/xbmc-live debian/xbmc-live.init
+override_dh_auto_configure: configure
 	./configure $(XBMC_CONFIG_OPTIONS)
 
 override_dh_auto_install:
 	$(MAKE) install install-livedatas prefix=$(CURDIR)/debian/tmp/usr
+	install -D -m 0644 $(CURDIR)/tools/XBMCLive/xbmc-live.conf \
+	    $(CURDIR)/debian/tmp/etc/init/xbmc-live.conf
 	find "debian/tmp/usr/share/xbmc" -regextype posix-extended \
 		-type f -iregex \
 		".*\.so|.*\.vis|.*\.xbs|.*xbmc\.bin|.*xbmc-xrandr" | \
@@ -68,8 +96,9 @@ override_dh_link:
 		while read FILE; do \
 		LINK_TARGET="$$(echo "$$FILE" | sed -e 's|debian/xbmc-bin/||')"; \
 		LINK_DESTINATION="$$(echo "$$FILE" | sed -e 's|debian/xbmc-bin/usr/lib|usr/share|')"; \
-		dh_link -pxbmc-data "$$LINK_TARGET" "$$LINK_DESTINATION"; \
+		dh_link -pxbmc-bin "$$LINK_TARGET" "$$LINK_DESTINATION"; \
 		done
+	-[ -d debian/xbmc-data/usr/share/xbmc ] && find debian/xbmc-data/usr/share/xbmc/ -type d -empty -delete
 
 override_dh_strip:
 	dh_strip --dbg-package=xbmc-dbg
