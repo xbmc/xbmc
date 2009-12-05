@@ -204,6 +204,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         if (item.IsStack())
           path = CStackDirectory::GetFirstStackedFile(item.m_strPath);
 
+        if (item.IsVideoDb() && item.HasVideoInfoTag())
+          path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+
         CThumbExtractor* extract = new CThumbExtractor(item, pItem->m_strPath, true, path, cachedThumb);
         AddJob(extract);
       }
