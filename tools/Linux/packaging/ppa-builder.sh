@@ -205,7 +205,7 @@ preparevars()
   # If the version is not yet set it
   if [[ -z $REVISION ]]; then
     svn update $SVNSRC
-    HEAD_REVISION=$(expr $(svn info $SVNSRC --xml 2>&1 | grep -m 1 -e "revision=\"[0-9]*\">") : 'revision="\([0-9]\+\)">')
+    HEAD_REVISION=$(eval LANG=POSIX svn info $SVNSRC | grep -E "Last Changed Rev: [0-9]+" | grep -o -E "[0-9]+")
     REVISION=$HEAD_REVISION
   fi
   if [[ -z $VERSION ]]; then
