@@ -365,6 +365,9 @@ void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
   if(plane.flipindex == flipindex)
     return;
 
+  if(plane.pbo)
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, plane.pbo);
+
   glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
   glBindTexture(m_textureTarget, plane.id);
   glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, GL_UNSIGNED_BYTE, data);
@@ -384,6 +387,8 @@ void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
 
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
   glBindTexture(m_textureTarget, 0);
+  if(plane.pbo)
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 
   plane.flipindex = flipindex;
 }
@@ -565,11 +570,9 @@ void CLinuxRendererGL::LoadTextures(int source)
     else
     {
       // Load Y plane
-      BindPbo(buf, 0);
       LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE, buf.flipindex
                , im->width, im->height
                , im->stride[0], im->plane[0] );
-      UnBindPbo(buf, 0);
     }
   }
 
@@ -602,17 +605,13 @@ void CLinuxRendererGL::LoadTextures(int source)
     }
     else
     {
-      BindPbo(buf, 1); 
       LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> im->cshift_y
                , im->stride[1], im->plane[1] );
-      UnBindPbo(buf, 1);
 
-      BindPbo(buf, 2); 
       LoadPlane( fields[FIELD_FULL][2], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> im->cshift_y
                , im->stride[2], im->plane[2] );
-      UnBindPbo(buf, 2);
     }
   }
   SetEvent(m_eventTexturesDone[source]);
@@ -781,10 +780,14 @@ void CLinuxRendererGL::FlipPage(int source)
     g_VDPAU->Present();
 #endif
 
+  UnBindPbo(m_buffers[m_iYV12RenderBuffer]);
+
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
   else
     m_iYV12RenderBuffer = NextYV12Texture();
+
+  BindPbo(m_buffers[m_iYV12RenderBuffer]);
 
   m_buffers[m_iYV12RenderBuffer].flipindex = ++m_flipindex;
 
@@ -1730,6 +1733,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
         glGenTextures(1, &fields[f][p].id);
         VerifyGLState();
       }
+      fields[f][p].pbo = pbo[p];
     }
   }
 
@@ -1895,8 +1899,7 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   ||  method == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED
   ||  method == VS_INTERLACEMETHOD_RENDER_WEAVE
   ||  method == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
-  ||  method == VS_INTERLACEMETHOD_RENDER_BOB)
-  && !m_pboused)
+  ||  method == VS_INTERLACEMETHOD_RENDER_BOB))
     return true;
 
   return false;
@@ -1929,24 +1932,38 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
 }
 
 
-void CLinuxRendererGL::BindPbo(YUVBUFFER& buff, int plane)
+void CLinuxRendererGL::BindPbo(YUVBUFFER& buff)
 {
-  if (buff.pbo[plane])
+  bool pbo = false;
+  for(int plane = 0; plane < MAX_PLANES; plane++)
   {
+    if(!buff.pbo[plane] || !buff.image.plane[plane])
+      continue;
+    pbo = true;
+
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.pbo[plane]);
     glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
     buff.image.plane[plane] = NULL;
   }
+  if(pbo)
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 }
 
-void CLinuxRendererGL::UnBindPbo(YUVBUFFER& buff, int plane)
+void CLinuxRendererGL::UnBindPbo(YUVBUFFER& buff)
 {
-  if (buff.pbo[plane])
+  bool pbo = false;
+  for(int plane = 0; plane < MAX_PLANES; plane++)
   {
+    if(!buff.pbo[plane] || buff.image.plane[plane])
+      continue;
+    pbo = true;
+
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.pbo[plane]);
     glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.image.planesize[plane], NULL, GL_STREAM_DRAW_ARB);
     buff.image.plane[plane] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
   }
+  if(pbo)
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 }
 
 #endif

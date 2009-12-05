@@ -179,6 +179,8 @@ protected:
   struct YUVPLANE
   {
     GLuint id;
+    GLuint pbo;
+
     CRect  rect;
 
     float  width;
@@ -228,8 +230,8 @@ protected:
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
 
-  void BindPbo(YUVBUFFER& buff, int plane);
-  void UnBindPbo(YUVBUFFER& buff, int plane);
+  void BindPbo(YUVBUFFER& buff);
+  void UnBindPbo(YUVBUFFER& buff);
   bool m_pboused;
 };
 
