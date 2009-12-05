@@ -112,11 +112,11 @@ CAdvancedSettings::CAdvancedSettings()
   m_moviesExcludeFromScanRegExps.push_back("[-._ ]sample");
   m_tvshowExcludeFromScanRegExps.push_back("[-._ ]sample[-._ ]");
 
-  m_videoStackRegExps.push_back("(.*?)([ _.-]?(?:cd|dvd|p(?:ar)t|dis[ck])[ _.-]*[1-4a-d]+)(.*?)(\\.[^.]+)$");
-  m_videoStackRegExps.push_back("(.*?)([ ._-]?[a-d])([ ._-]?.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)t)|dis[ck])[ _.-]*[1-4a-d]+)(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ ._-]*[a-d])(.*?)(\\.[^.]+)$");
   // This one is a bit too greedy to enable by default.  It will stack sequels
   // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
-  //m_videoStackRegExps.push_back("(.*?)([ ._-]?[0-9])([ ._-]?.*?)(\\.[^.]+)$");
+  //m_videoStackRegExps.push_back("(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$");
 
   // foo_[s01]_[e01]
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
@@ -131,7 +131,7 @@ CAdvancedSettings::CAdvancedSettings()
   // foo.103*, 103 foo
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
 
-  m_tvshowMultiPartStackRegExp = "^[-EeXx]+([0-9]+)";
+  m_tvshowMultiPartStackRegExp = "^[-EeXx]+([0-9]+[^ip])";
 
   m_remoteRepeat = 480;
   m_controllerDeadzone = 0.2f;

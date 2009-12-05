@@ -33,8 +33,13 @@ public:
   virtual ~IPlayerCallback() {}
   virtual void OnPlayBackEnded() = 0;
   virtual void OnPlayBackStarted() = 0;
+  virtual void OnPlayBackPaused() {};
+  virtual void OnPlayBackResumed() {};
   virtual void OnPlayBackStopped() = 0;
   virtual void OnQueueNextItem() = 0;
+  virtual void OnPlayBackSeek(int iTime) {};
+  virtual void OnPlayBackSeekChapter(int iChapter) {};
+  virtual void OnPlayBackSpeedChanged(int iSpeed) {};
 };
 
 class CPlayerOptions

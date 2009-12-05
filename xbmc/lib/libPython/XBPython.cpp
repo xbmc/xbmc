@@ -348,6 +348,7 @@ int XBPython::evalFile(const char *src) { return evalFile(src, 0, NULL); }
 // execute script, returns -1 if script doesn't exist
 int XBPython::evalFile(const char *src, const unsigned int argc, const char ** argv)
 {
+  CSingleExit ex(g_graphicsContext);
   CSingleLock lock(m_critSection);
   // return if file doesn't exist
   if (!XFILE::CFile::Exists(src))
@@ -401,6 +402,7 @@ void XBPython::setDone(int id)
 
 void XBPython::stopScript(int id)
 {
+  CSingleExit ex(g_graphicsContext);
   CSingleLock lock(m_critSection);
   PyList::iterator it = vecPyList.begin();
   while (it != vecPyList.end())

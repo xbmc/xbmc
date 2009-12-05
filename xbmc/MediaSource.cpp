@@ -93,3 +93,18 @@ bool CMediaSource::operator==(const CMediaSource &share) const
     return false;
   return true;
 }
+
+void AddOrReplace(VECSOURCES& sources, const CMediaSource& source)
+{
+  unsigned int i;
+  for( i=0;i<sources.size();++i )
+  {
+    if (sources[i].strPath.Equals(source.strPath)) 
+    {
+      sources[i] = source;
+      break;
+    }
+  }
+  if (i == sources.size())
+    sources.push_back(source);
+}

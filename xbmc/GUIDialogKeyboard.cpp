@@ -183,6 +183,14 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
       else
         OnOK();
     }
+    else if (b == 0x2E) // delete
+    {
+      if (GetCursorPos() < m_strEdit.GetLength())
+      {
+        MoveCursor(1);
+        Backspace();
+      }
+    }
     else if (b == 0x08) Backspace();    // backspace
     else if (b == 0x1B) Close();        // escape
     else if (b == 0x20) Character(b);   // space

@@ -437,6 +437,8 @@ void PAPlayer::Pause()
     if (m_pStream[m_currentStream]) m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_PAUSE);
     if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
       m_pStream[1 - m_currentStream]->Pause(DSSTREAMPAUSE_PAUSE);
+
+    m_callback.OnPlayBackPaused();
     CLog::Log(LOGDEBUG, "PAPlayer: Playback paused");
   }
   else
@@ -444,6 +446,8 @@ void PAPlayer::Pause()
     if (m_pStream[m_currentStream]) m_pStream[m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
     if (m_currentlyCrossFading && m_pStream[1 - m_currentStream])
       m_pStream[1 - m_currentStream]->Pause(DSSTREAMPAUSE_RESUME);
+
+    m_callback.OnPlayBackResumed();
     CLog::Log(LOGDEBUG, "PAPlayer: Playback resumed");
   }
 }
@@ -494,6 +498,7 @@ void PAPlayer::Process()
 void PAPlayer::ToFFRW(int iSpeed)
 {
   m_iSpeed = iSpeed;
+  m_callback.OnPlayBackSpeedChanged(iSpeed);
 }
 
 void PAPlayer::UpdateCacheLevel()
@@ -864,6 +869,7 @@ void PAPlayer::SeekTime(__int64 iTime /*=0*/)
   if (m_currentFile->m_lStartOffset)
     iTime += m_currentFile->m_lStartOffset * 1000 / 75;
   m_SeekTime = iTime;
+  m_callback.OnPlayBackSeek((int)m_SeekTime);
   CLog::Log(LOGDEBUG, "PAPlayer::Seeking to time %f", 0.001f * m_SeekTime);
 }
 

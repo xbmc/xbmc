@@ -1359,8 +1359,7 @@ void CMPlayer::Process()
     {
       if (!m_bPaused)
       {
-
-        //Set audio delay we wish to use, since mplayer 
+        //Set audio delay we wish to use, since mplayer
         //does the sleeping for us, we present as soon as possible
         //so mplayer has to take presentation delay into account
         mplayer_setAVDelay(m_fAVDelay + g_renderManager.GetPresentDelay() * 0.001f );
@@ -1504,14 +1503,20 @@ void CMPlayer::Pause()
   {
     m_bPaused = true;
     if (!HasVideo())
+    {
       audio_pause();
+      m_callback.OnPlayBackPaused();
+    }
   }
   else
   {
     m_bPaused = false;
     m_bCaching = false;
     if (!HasVideo())
+    {
       audio_resume();
+      m_callback.OnPlayBackResumed();
+    }
     mplayer_ToFFRW(1); //Tell mplayer we have resumed playback
   }
 }
@@ -1550,11 +1555,11 @@ void CMPlayer::Seek(bool bPlus, bool bLargeStep)
   {
     if (bLargeStep)
     {
-      iSeek= bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
+      iSeek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
     }
     else
     {
-      iSeek= bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
+      iSeek = bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
     }
 
     if (m_Edl.HasCut())
@@ -1934,6 +1939,7 @@ void CMPlayer::SeekTime(__int64 iTime)
   }
   g_infoManager.m_performingSeek = false;
   WaitOnCommand();
+  m_callback.OnPlayBackSeek(iTime);
 }
 
 //Time in milliseconds

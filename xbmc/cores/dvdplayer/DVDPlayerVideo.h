@@ -168,6 +168,7 @@ protected:
   BitstreamStats m_videoStats;
   
   // classes
+  CDVDStreamInfo m_hints;
   CDVDVideoCodec* m_pVideoCodec;
   CDVDOverlayCodecCC* m_pOverlayCodecCC;
   

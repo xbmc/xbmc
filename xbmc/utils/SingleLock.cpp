@@ -76,3 +76,38 @@ void CSingleLock::Leave()
   m_bIsOwner = false;
 }
 
+CSingleExit::CSingleExit(CCriticalSection& cs)
+    : m_cs( cs )
+    , m_count(0)
+{
+  Exit();
+}
+
+ CSingleExit::CSingleExit(const CCriticalSection& cs)
+    : m_cs(const_cast<CCriticalSection&>(cs))
+    , m_count(0)
+{
+  Exit();
+}
+
+CSingleExit::~CSingleExit()
+{
+  Restore();
+}
+
+void CSingleExit::Exit()
+{
+  if(m_count == 0)
+    m_count = ::ExitCriticalSection(m_cs);
+}
+
+void CSingleExit::Restore()
+{
+  if(m_count)
+  {
+    RestoreCriticalSection(m_cs, m_count);
+    m_count = 0;
+  }
+}
+
+ 

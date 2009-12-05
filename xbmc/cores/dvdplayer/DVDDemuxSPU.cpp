@@ -487,7 +487,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, BYTE* pUnparsedData
     // we only set it if there is a valid i_border color
     if (!pSPU->bHasColor)
     {
-      CLog::Log(LOGINFO, "%s - no color palett found, using default", __FUNCTION__);
+      CLog::Log(LOGINFO, "%s - no color palette found, using default", __FUNCTION__);
       FindSubtitleColor(i_border, stats, pSPU);
     }
 

@@ -1330,19 +1330,9 @@ HRESULT CApplication::Initialize()
     RESOLUTION res = INVALID;
     CStdString startupPath = g_SkinInfo.GetSkinPath("startup.xml", &res);
     int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
-    // test for a startup window, and activate that instead of home
     if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
-    {
-      g_windowManager.ActivateWindow(WINDOW_STARTUP);
-    }
-    else
-    {
-      // We need to Popup the WindowHome to initiate the GUIWindowManger for MasterCode popup dialog!
-      // Then we can start the StartUpWindow! To prevent BlackScreen if the target Window is Protected with MasterCode!
-      g_windowManager.ActivateWindow(WINDOW_HOME);
-      if (startWindow != WINDOW_HOME)
-        g_windowManager.ActivateWindow(startWindow);
-    }
+      startWindow = WINDOW_STARTUP;
+    g_windowManager.ActivateWindow(startWindow);
   }
 
   g_pythonParser.bStartup = true;
@@ -3946,7 +3936,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   bool bResult;
   if (m_pPlayer)
+  {
+    // don't hold graphicscontext here since player
+    // may wait on another thread, that requires gfx
+    CSingleExit ex(g_graphicsContext);
     bResult = m_pPlayer->OpenFile(item, options);
+  }
   else
   {
     CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.m_strPath.c_str());
@@ -3971,7 +3966,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
        SwitchToFullScreen();
 
       // Save information about the stream if we currently have no data
-      if (item.HasVideoInfoTag())
+      if (item.HasVideoInfoTag() && !item.IsDVDImage() && !item.IsDVDFile())
       {
         CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
         if (!details->HasStreamDetails())
@@ -3997,6 +3992,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // we must have started, otherwise player might send this later
     if(IsPlaying())
       OnPlayBackStarted();
+    else
+      OnPlayBackEnded();
   }
   else
   {
@@ -4101,6 +4098,73 @@ void CApplication::OnPlayBackStopped()
   g_windowManager.SendThreadMessage(msg);
 }
 
+void CApplication::OnPlayBackPaused()
+{
+  g_pythonParser.OnPlayBackPaused();
+
+  // Let's tell the outside world as well
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+    g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackPaused;1");
+
+  CLog::Log(LOGDEBUG, "%s - Playback was paused", __FUNCTION__);
+}
+
+void CApplication::OnPlayBackResumed()
+{
+  g_pythonParser.OnPlayBackResumed();
+
+  // Let's tell the outside world as well
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+    g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackResumed;1");
+
+  CLog::Log(LOGDEBUG, "%s - Playback was resumed", __FUNCTION__);
+}
+
+void CApplication::OnPlayBackSpeedChanged(int iSpeed)
+{
+  g_pythonParser.OnPlayBackSpeedChanged(iSpeed);
+
+  // Let's tell the outside world as well
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+  {
+    CStdString tmp;
+    tmp.Format("broadcastlevel; OnPlayBackSpeedChanged:%i;1",iSpeed);
+    g_applicationMessenger.HttpApi(tmp);
+  }
+
+  CLog::Log(LOGDEBUG, "%s - Playback speed changed", __FUNCTION__);
+}
+
+void CApplication::OnPlayBackSeek(int iTime)
+{
+  g_pythonParser.OnPlayBackSeek(iTime);
+
+  // Let's tell the outside world as well
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+  {
+    CStdString tmp;
+    tmp.Format("broadcastlevel; OnPlayBackSeek:%i;1",iTime);
+    g_applicationMessenger.HttpApi(tmp);
+  }
+
+  CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
+}
+
+void CApplication::OnPlayBackSeekChapter(int iChapter)
+{
+  g_pythonParser.OnPlayBackSeekChapter(iChapter);
+
+  // Let's tell the outside world as well
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+  {
+    CStdString tmp;
+    tmp.Format("broadcastlevel; OnPlayBackSkeekChapter:%i;1",iChapter);
+    g_applicationMessenger.HttpApi(tmp);
+  }
+
+  CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
+}
+
 bool CApplication::IsPlaying() const
 {
   if (!m_pPlayer)
@@ -4187,7 +4251,16 @@ void CApplication::SaveFileState()
         {
           videodatabase.AddBookMarkToFile(progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
         }
-
+        if ((m_progressTrackingItem->IsDVDImage() ||
+             m_progressTrackingItem->IsDVDFile()    ) &&
+             m_progressTrackingItem->HasVideoInfoTag() &&
+             m_progressTrackingItem->GetVideoInfoTag()->HasStreamDetails())
+        {
+          videodatabase.SetStreamDetailsForFile(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails,progressTrackingFile);
+          CUtil::DeleteVideoDatabaseDirectoryCache();
+          CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
+          g_windowManager.SendMessage(message);
+        }
         videodatabase.Close();
       }
     }
@@ -4246,6 +4319,14 @@ void CApplication::UpdateFileState()
 
     if (m_progressTrackingItem->IsVideo())
     {
+      if ((m_progressTrackingItem->IsDVDImage() ||
+           m_progressTrackingItem->IsDVDFile()    ) &&
+          m_pPlayer->GetTotalTime() > 15*60)
+
+      {
+        m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.Reset();
+        m_pPlayer->GetStreamDetails(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails);
+      }
       // Update bookmark for save
       m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
       m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();

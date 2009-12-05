@@ -63,6 +63,7 @@ void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeNa
     m_idDirector = idDb;
     break;
   case NODE_TYPE_TITLE_MOVIES:
+  case NODE_TYPE_RECENTLY_ADDED_MOVIES:
     m_idMovie = idDb;
     break;
   case NODE_TYPE_TITLE_TVSHOWS:
@@ -72,12 +73,14 @@ void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeNa
     m_idSeason = idDb;
     break;
   case NODE_TYPE_EPISODES:
+  case NODE_TYPE_RECENTLY_ADDED_EPISODES:
     m_idEpisode = idDb;
     break;
   case NODE_TYPE_STUDIO:
     m_idStudio = idDb;
     break;
   case NODE_TYPE_TITLE_MUSICVIDEOS:
+  case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS:
     m_idMVideo = idDb;
     break;
   case NODE_TYPE_MUSICVIDEOS_ALBUM:

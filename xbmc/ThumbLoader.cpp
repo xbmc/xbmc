@@ -143,7 +143,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   {
     pItem->SetUserVideoThumb();
   }
-  else
+  else if (!pItem->GetThumbnailImage().Left(10).Equals("special://"))
     LoadRemoteThumb(pItem);
 
   if (!pItem->HasProperty("fanart_image"))
