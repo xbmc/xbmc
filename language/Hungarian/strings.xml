@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Olympia and Alanwww1-->
 <!--Email: alanwww1@gmail.com-->
-<!--Date of translation: 04/12/2009-->
+<!--Date of translation: 05/12/2009-->
 <!--$Revision$-->
 
 <strings>
-  <string id="0">Programok</string>
+  <string id="0">Program</string>
   <string id="1">Képek</string>
   <string id="2">Zene</string>
-  <string id="3">Videó</string>
+  <string id="3">Videók</string>
   <string id="4">TV Műsor</string>
   <string id="5">Beállítások</string>
   <string id="6">XBMC SVN</string>
@@ -467,7 +467,7 @@
   <string id="536">Ikon</string>
   <string id="537">Nagy lista</string>
   <string id="538">Nagy ikonok</string>
-  <string id="539">Széles  </string>
+  <string id="539">Széles</string>
   <string id="540">Széles (nagy)</string>
   <string id="541">Album ikonok</string>
   <string id="542">DVD ikonok</string>
@@ -498,8 +498,8 @@
   <string id="567">Lejátszás-számláló</string>
   <string id="568">Utoljára hallgatott</string>
   <string id="569">Megj.</string>
-  <string id="570">A hozzáadás dátuma</string>
-  <string id="571">Alapértelmezett</string>
+  <string id="570">Hozzáadás-dátum</string>
+  <string id="571">Alapért.</string>
   <string id="572">Stúdió</string>
   <string id="573">Elérési út</string>
 
@@ -700,8 +700,8 @@
   <string id="1018">Port</string>
   <string id="1019">Felhasználónév</string>
   <string id="1020">%s forrás hozzáadása</string>
-  <string id="1021">Elérési út megadása, vagy média mappák tallózása</string>
-  <string id="1022">Média forrás nevének megadása.</string>
+  <string id="1021">Elérési-út megadása, vagy médiamappák tallózása</string>
+  <string id="1022">Médiaforrás nevének megadása.</string>
   <string id="1023">Új megosztás keresése</string>
   <string id="1024">Tallózás</string>
   <string id="1025">Mappainformáció nem elérhető</string>
@@ -812,7 +812,7 @@
   <string id="1450">Kijelző altatásba üresjárat esetén</string>
   <!-- 1470-ig energiatakarékosság fordítására fenntartva -->
 
-  <string id="2050">Üzemidő</string>
+  <string id="2050">Hossz</string>
 
   <string id="2100">Szkript hiba: %s</string>
 
@@ -1159,7 +1159,7 @@
   <string id="13347">Lejátszási sorba tesz</string>
   <string id="13348">Keresés IMDB-ben...</string>
   <string id="13349">Új tartalom keresése</string>
-  <string id="13350">Jelenleg játszott lista...</string>
+  <string id="13350">Aktuális játszáslista...</string>
   <string id="13351">Album információ</string>
   <string id="13352">Hozzáadás médiatárhoz</string>
   <string id="13353">Átvizsgálás leállítása</string>
@@ -1415,7 +1415,7 @@
   <string id="15111">- Téma</string>
   <string id="15112">Alapértelmezett téma</string>
 
-  <string id="15200">Las.fm</string>
+  <string id="15200">Last.fm</string>
   <string id="15201">Zene információk elküldése az LastFM-nek</string>
   <string id="15202">LastFM felhasználónév</string>
   <string id="15203">LastFM Jelszó</string>
@@ -1442,17 +1442,17 @@
   <string id="15251">Csatlakozás a Last.fm-hez</string>
   <string id="15252">Állomás kiválasztása</string>
   <string id="15253">Hasonló előadók keresése</string>
-  <string id="15254">Hasonló tag-ek keresése</string>
+  <string id="15254">Hasonló címkék keresése</string>
   <string id="15255">Profilod (%name%)</string>
-  <string id="15256">Legnépszerűbb tag-ek</string>
+  <string id="15256">Legnépszerűbb címkék</string>
   <string id="15257">Legjobb előadók: %name%</string>
   <string id="15258">Legjobb albumok: %name%</string>
   <string id="15259">Legjobb számok: %name%</string>
   <string id="15260">%name% hallgatása last.fm-ről</string>
-  <string id="15261">A %name% -hoz hasonló előadók</string>
+  <string id="15261">Hasonló előadók ehhez: %name%</string>
   <string id="15262">%name% legnépszerűbb albumai</string>
   <string id="15263">A legnépszerűbb %name% számok</string>
-  <string id="15264">Legnépszerűbb tag -ek: %name%</string>
+  <string id="15264">Legnépszerűbb címkék ehhez: %name%</string>
   <string id="15265">%name% legnagyobb rajongói</string>
   <string id="15266">%name% rajongók rádióinak hallgatása</string>
   <string id="15267">Hasonló előadók hallgatása: %name%</string>
@@ -1469,15 +1469,15 @@
   <string id="15278">%name% kedvenc számainak hallgatása</string>
   <string id="15279">Lista lekérése a last.fm-ről</string>
   <string id="15280">Lista nem lekérhető a last.fm-ről...</string>
-  <string id="15281">Előadóhoz hasonló előadó keresése</string>
-  <string id="15282">Tag megadása a hasonlóak kereséséhez</string>
+  <string id="15281">Előadóhoz hasonló keresése</string>
+  <string id="15282">Címke megadása a hasonlók kereséséhez</string>
   <string id="15283">%name% mostanában hallgatott zenéi</string>
-  <string id="15284">%name%-k ajánlások hallgatása Last.FM rádióról</string>
-  <string id="15285">Top tag-ek a(z) %name% -hez</string>
+  <string id="15284">%name% ajánlásainak hallgatása Last.FM rádióról</string>
+  <string id="15285">%name% top címkéi</string>
   <string id="15286">%name% lejátszáslistájának hallgatása (Last.fm)</string>
   <string id="15287">Jelenlegi szám hozzáadása a kedvenc zenékhez?</string>
   <string id="15288">Jelenlegi szám letiltása?</string>
-  <string id="15289">Hozzáadva a kedvenc zenékhez: '%s'</string>
+  <string id="15289">Hozzáadva a kedvencekhez: '%s'</string>
   <string id="15290">'%s' nem adható hozzá a kedvenc zenékhez.</string>
   <string id="15291">Letiltva:  '%s'.</string>
   <string id="15292">'%s' letiltása sikertelen.</string>
@@ -1816,7 +1816,7 @@
   <string id="20340">A megadott elérési út minden elemének</string>
   <string id="20341">eltávolítása a médiatárból?</string>
   <string id="20342">Filmek</string>
-  <string id="20343">Tv műsorok</string>
+  <string id="20343">Tv műsor</string>
   <string id="20344">A könyvtár tartalma</string>
   <string id="20345">Automatikus átvizsgálás</string>
   <string id="20346">Rekurzív átvizsgálás</string>
@@ -1833,7 +1833,7 @@
   <string id="20357">TV műsor</string>
   <string id="20358">Évad %i</string>
   <string id="20359">Epizód</string>
-  <string id="20360">Epizódok</string>
+  <string id="20360">Epizód</string>
   <string id="20361">Epizód információ betöltése</string>
   <string id="20362">Epizód eltávolítása a médiatárból</string>
   <string id="20363">TV műsor eltávolítása a médiatárból</string>
@@ -1885,7 +1885,7 @@
   <string id="20409">TV műsor információ letöltése</string>
   <string id="20410">Filmajánló</string>
   <string id="20411">Szűkítés</string>
-  <string id="20412">Szűkítés(TV műsor)</string>
+  <string id="20412">Szűkítés (TV műsor)</string>
   <string id="20413">Fanart letöltés</string>
   <string id="20414">Fanart megjelenítése a médiatárban</string>
   <string id="20415">Új tartalom keresése</string>
@@ -2012,10 +2012,10 @@
   <string id="21433">Lejátszáslista neve</string>
   <string id="21434">Elemek keresése, ahol</string>
   <string id="21435">Szerkeszt</string>
-  <string id="21436">%i elemek</string>
+  <string id="21436">%i elem</string>
   <string id="21437">Új intelligens lejátszáslista</string>
   <string id="21438">%c Meghajtó</string>
-  <string id="21439">Partymód szabályainak szerkesztése</string>
+  <string id="21439">Partymód-szabályok szerk.</string>
   <string id="21440">Saját mappa</string>
   <string id="21441">Lejátszási számláló</string>
   <string id="21442">Epizódcím</string>
@@ -2153,6 +2153,7 @@
 
   <string id="23050">Teletext aktiválása</string>
   <string id="23051">Rész %i</string>
+  <string id="23052">Előtöltve %i byte</string>
 
   <!-- 23100-tól 23150-ig külső lejátszó -->
   <string id="23100">Külső lejátszó aktív</string>
