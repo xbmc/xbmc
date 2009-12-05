@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 10/04/2009-->
+<!--Date of translation: 11/15/2009-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Volym avstängd</string>
@@ -95,6 +95,7 @@
   <string id="31113">Enstaka bild</string>
   <string id="31114">Multibild</string>
   <string id="31115">Byt ut ljudinställningsknapp mot teletext</string>
+  <string id="31116">Dölj videoflaggbilder i mediavisningar</string>
   <string id="31200">Egna skriptval</string>
   <string id="31201">
   </string>
@@ -106,8 +107,7 @@
   </string>
   <string id="31206">
   </string>
-  <string id="31207">
-  </string>
+  <string id="31207">Visa undertextsnedladdningsknapp i OSD</string>
   <string id="31208">Visa sångtexts-skriptsknappen i OSD</string>
   <string id="31209">Aktivera snabbstarta skriptknapp för -</string>
   <string id="31300">Visa rollsättning</string>

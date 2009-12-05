@@ -447,10 +447,8 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         items.SetProperty("fanart_color1", details.m_fanart.GetColor(0));
         items.SetProperty("fanart_color2", details.m_fanart.GetColor(1));
         items.SetProperty("fanart_color3", details.m_fanart.GetColor(2));
-        showItem.CacheFanart();
-        CStdString fanart(showItem.GetCachedFanart());
-        if (CFile::Exists(fanart))
-          items.SetProperty("fanart_image", fanart);
+        if (showItem.CacheLocalFanart())
+          items.SetProperty("fanart_image", showItem.GetCachedFanart());
 
         // save the show description (showplot)
         items.SetProperty("showplot", details.m_strPlot);

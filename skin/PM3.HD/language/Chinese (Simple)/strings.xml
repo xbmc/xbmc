@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Based on english strings version 23729 -->
+<!--Based on english strings version 24569 -->
 <strings>
   <string id="31000">静音</string>
   <string id="31001">工作中...</string>
@@ -82,6 +82,7 @@
   <string id="31113">单个图片</string>
   <string id="31114">多个图片</string>
   <string id="31115">将音频设置按钮改为图文电视</string>
+  <string id="31116">在媒体视图隐藏视频标识</string>
 
   <!-- Script Settings labels -->
   <string id="31200">定制脚本程序选项</string>

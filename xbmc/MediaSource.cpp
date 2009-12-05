@@ -29,23 +29,9 @@
 using namespace std;
 using namespace DIRECTORY;
 
-bool CMediaSource::isWritable() const
+bool CMediaSource::IsWritable() const
 {
-  if (strPath[1] == ':' && (strPath[0] != 'D' && strPath[0] != 'd'))
-    return true; // local disk
-  if (strPath.size() > 4)
-  {
-    if (strPath.substr(0,4) == "smb:")
-      return true; // smb path
-    #ifdef HAS_XBOX_HARDWARE
-    else if (strPath.substr(0,4) == "mem:")
-    {
-      return g_memoryUnitManager.IsDriveWriteable(strPath);
-    }
-    #endif
-  }
-
-  return false;
+  return CUtil::IsWritable(strPath);
 }
 
 void CMediaSource::FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths)

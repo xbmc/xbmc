@@ -193,11 +193,10 @@ bool CGUIInfoLabel::IsConstant() const
   return m_info.size() == 0 || (m_info.size() == 1 && m_info[0].m_info == 0);
 }
 
-void CGUIInfoLabel::Parse(const CStdString &label)
+CStdString CGUIInfoLabel::ReplaceLocalize(const CStdString &label)
 {
-  m_info.clear();
   CStdString work(label);
-  // Step 1: Replace all $LOCALIZE[number] with the real string
+  // Replace all $LOCALIZE[number] with the real string
   int pos1 = work.Find("$LOCALIZE[");
   while (pos1 >= 0)
   {
@@ -214,12 +213,20 @@ void CGUIInfoLabel::Parse(const CStdString &label)
     else
     {
       CLog::Log(LOGERROR, "Error parsing label - missing ']'");
-      return;
+      return "";
     }
     pos1 = work.Find("$LOCALIZE[", pos1);
   }
+  return work;
+}
+
+void CGUIInfoLabel::Parse(const CStdString &label)
+{
+  m_info.clear();
+  // Step 1: Replace all $LOCALIZE[number] with the real string
+  CStdString work = ReplaceLocalize(label);
   // Step 2: Find all $INFO[info,prefix,postfix] blocks
-  pos1 = work.Find("$INFO[");
+  int pos1 = work.Find("$INFO[");
   while (pos1 >= 0)
   {
     // output the first block (contents before first $INFO)

@@ -1421,14 +1421,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     JumpToSection(WINDOW_SETTINGS_SYSTEM, "audiooutput");
   }
-  else if (strSetting.Equals("videoplayer.jumptocache"))
-  {
-    JumpToSection(WINDOW_SETTINGS_SYSTEM, "cache");
-  }
-  else if (strSetting.Equals("weather.jumptolocale"))
-  {
-    JumpToSection(WINDOW_SETTINGS_APPEARANCE, "locale");
-  }
   else if (strSetting.Equals("scrobbler.lastfmsubmit") || strSetting.Equals("scrobbler.lastfmsubmitradio") || strSetting.Equals("scrobbler.lastfmusername") || strSetting.Equals("scrobbler.lastfmpassword"))
   {
     CStdString strPassword=g_guiSettings.GetString("scrobbler.lastfmpassword");
@@ -1886,7 +1878,9 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_pictureSources, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
+    VECSOURCES shares = g_settings.m_pictureSources;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
   else if (strSetting.Equals("myprograms.dashboard"))

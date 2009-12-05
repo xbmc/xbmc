@@ -608,7 +608,7 @@ bool CGUIDialogFileBrowser::ShowAndGetDirectory(const VECSOURCES &shares, const 
     VECSOURCES shareWritable;
     for (unsigned int i=0;i<shares.size();++i)
     {
-      if (shares[i].isWritable())
+      if (shares[i].IsWritable())
         shareWritable.push_back(shares[i]);
     }
 

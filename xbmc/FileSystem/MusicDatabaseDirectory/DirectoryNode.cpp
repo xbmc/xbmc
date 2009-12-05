@@ -333,6 +333,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
     pItem->GetMusicInfoTag()->SetArtist(strFake);
     pItem->GetMusicInfoTag()->SetTitle(strFake);
     pItem->GetMusicInfoTag()->SetGenre(strFake);
+    pItem->GetMusicInfoTag()->SetYear(g_advancedSettings.m_bMusicLibraryAllItemsOnBottom ? INT_MAX : INT_MIN);
     pItem->SetCanQueue(false);
     pItem->SetLabelPreformated(true);
     if (g_advancedSettings.m_bMusicLibraryAllItemsOnBottom)

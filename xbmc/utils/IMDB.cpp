@@ -217,7 +217,17 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
       if (language && language->FirstChild())
         title.AppendFormat(" (%s)", language->FirstChild()->Value());
       url.strTitle = title;
-      movielist.push_back(url);
+      // filter for dupes from naughty scrapers
+      IMDB_MOVIELIST::iterator iter=movielist.begin();
+      while (iter != movielist.end())
+      {
+        if (iter->m_url[0].m_url.Equals(url.m_url[0].m_url) &&
+            iter->strTitle.Equals(url.strTitle))
+          break;
+        ++iter;
+      }
+      if (iter == movielist.end())
+        movielist.push_back(url);
     }
     movie = movie->NextSiblingElement();
   }

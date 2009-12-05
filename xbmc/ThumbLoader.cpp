@@ -114,7 +114,9 @@ void CVideoThumbLoader::SetWatchedOverlay(CFileItem *item)
  */
 bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 {
-  if (pItem->m_bIsShareOrDrive) return false;
+  if (pItem->m_bIsShareOrDrive
+  ||  pItem->IsParentFolder())
+    return false;
   
   SetWatchedOverlay(pItem);
 
@@ -146,8 +148,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
   if (!pItem->HasProperty("fanart_image"))
   {
-    pItem->CacheFanart();
-    if (CFile::Exists(pItem->GetCachedFanart()))
+    if (pItem->CacheLocalFanart())
     {
       pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
       retVal = true;

@@ -1802,6 +1802,17 @@ bool CUtil::IsMultiPath(const CStdString& strPath)
   return false;
 }
 
+bool CUtil::IsHD(const CStdString& strFileName)
+{
+  CStdString strFileName2(strFileName);
+
+  if (IsStack(strFileName))
+    strFileName2 = CStackDirectory::GetFirstStackedFile(strFileName);
+  
+  CURL url(_P(strFileName2));
+  return url.IsLocal();
+}
+
 bool CUtil::IsDVD(const CStdString& strFile)
 {
   CStdString strFileLow = strFile; 
@@ -1831,8 +1842,10 @@ bool CUtil::IsRAR(const CStdString& strFile)
 
   if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001"))
     return true;
+  
   if (strExtension.CompareNoCase(".cbr") == 0)
     return true;
+  
   if (strExtension.CompareNoCase(".rar") == 0)
     return true;
 
@@ -1847,12 +1860,14 @@ bool CUtil::IsInArchive(const CStdString &strFile)
 bool CUtil::IsInZIP(const CStdString& strFile)
 {
   CURL url(strFile);
+
   return url.GetProtocol() == "zip" && url.GetFileName() != "";
 }
 
 bool CUtil::IsInRAR(const CStdString& strFile)
 {
   CURL url(strFile);
+
   return url.GetProtocol() == "rar" && url.GetFileName() != "";
 }
 
@@ -1860,8 +1875,13 @@ bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
 {
   CStdString strExtension;
   CUtil::GetExtension(strFile,strExtension);
-  if (strExtension.CompareNoCase(".zip") == 0) return true;
-  if (strExtension.CompareNoCase(".cbz") == 0) return true;
+
+  if (strExtension.CompareNoCase(".zip") == 0)
+    return true;
+
+  if (strExtension.CompareNoCase(".cbz") == 0)
+    return true;
+
   return false;
 }
 
@@ -1974,6 +1994,17 @@ bool CUtil::IsLastFM(const CStdString& strFile)
 {
   CURL url(strFile);
   return url.GetProtocol().Equals("lastfm");
+}
+
+bool CUtil::IsWritable(const CStdString& strFile)
+{
+#ifdef HAS_XBOX_HARDWARE
+ if (strFile.substr(0,4) == "mem:")
+ {
+   return g_memoryUnitManager.IsDriveWriteable(strFile);
+ }
+#endif
+  return ( IsHD(strFile) || IsSmb(strFile) ) && !IsDVD(strFile);
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
@@ -2468,12 +2499,6 @@ void CUtil::DeleteGUISettings()
   // delete the settings file only
   CLog::Log(LOGINFO, "  DeleteFile(%s)", g_settings.GetSettingsFile().c_str());
   CFile::Delete(g_settings.GetSettingsFile());
-}
-
-bool CUtil::IsHD(const CStdString& strFileName)
-{
-  CURL url(_P(strFileName));
-  return url.IsLocal();
 }
 
 void CUtil::RemoveIllegalChars( CStdString& strText)
@@ -5363,10 +5388,19 @@ void CUtil::AutoDetectionGetSource(VECSOURCES &shares)
 }
 bool CUtil::IsFTP(const CStdString& strFile)
 {
-  if( strFile.Left(6).Equals("ftp://") ) return true;
-  else if( strFile.Left(7).Equals("ftpx://") ) return true;
-  else if( strFile.Left(7).Equals("ftps://") ) return true;
-  else return false;
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  CURL url(strFile2);
+
+  if (url.GetProtocol() == "ftp"  ||
+      url.GetProtocol() == "ftpx" ||
+      url.GetProtocol() == "ftps")
+  return true;
+
+  return false;
 }
 
 bool CUtil::GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax )

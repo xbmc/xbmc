@@ -134,8 +134,10 @@ bool CGUIInfoManager::OnMessage(CGUIMessage &message)
 /// efficient retrieval of data. Can handle combined strings on the form
 /// Player.Caching + VideoPlayer.IsFullscreen (Logical and)
 /// Player.HasVideo | Player.HasAudio (Logical or)
-int CGUIInfoManager::TranslateString(const CStdString &strCondition)
+int CGUIInfoManager::TranslateString(const CStdString &condition)
 {
+  // translate $LOCALIZE as required
+  CStdString strCondition(CGUIInfoLabel::ReplaceLocalize(condition));
   if (strCondition.find_first_of("|") != strCondition.npos ||
       strCondition.find_first_of("+") != strCondition.npos ||
       strCondition.find_first_of("[") != strCondition.npos ||

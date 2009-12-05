@@ -231,8 +231,6 @@ void CGUISettings::Initialize()
   AddSeparator(4, "weather.sep1");
   AddString(5, "weather.plugin", 23000, "", SPIN_CONTROL_TEXT, true);
   AddString(6, "weather.pluginsettings", 23001, "", BUTTON_CONTROL_STANDARD, true);
-  AddSeparator(7, "weather.sep2");
-  AddString(8, "weather.jumptolocale", 20026, "", BUTTON_CONTROL_STANDARD);
 
   // My Music Settings
   AddGroup(3, 2);
@@ -307,8 +305,7 @@ void CGUISettings::Initialize()
 
   // System settings
   AddGroup(4, 13000);
-  AddCategory(4, "system", 13281);
-  // advanced only configuration
+  AddCategory(4, "system", 128);
   AddBool(1, "system.debuglogging", 20191, false);
   AddInt(4, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
   AddInt(5, "system.ledcolour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);

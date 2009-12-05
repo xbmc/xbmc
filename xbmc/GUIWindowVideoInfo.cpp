@@ -302,8 +302,7 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
     // set fanart property for tvshows and movies
     if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
     {
-      m_movieItem->CacheFanart();
-      if (CFile::Exists(m_movieItem->GetCachedFanart()))
+      if (m_movieItem->CacheLocalFanart())
         m_movieItem->SetProperty("fanart_image",m_movieItem->GetCachedFanart());
     }
     // determine type:
@@ -860,12 +859,15 @@ void CGUIWindowVideoInfo::OnGetFanart()
   CFileItem item(*m_movieItem->GetVideoInfoTag());
   CStdString cachedThumb(item.GetCachedFanart());
 
-  CStdString strLocal = item.CacheFanart(true);
+  CStdString strLocal = item.GetLocalFanart();
   if (!strLocal.IsEmpty())
   {
     CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
     itemLocal->SetThumbnailImage(strLocal);
     itemLocal->SetLabel(g_localizeStrings.Get(20438));
+    // make sure any previously cached thumb is removed
+    if (CFile::Exists(itemLocal->GetCachedPictureThumb()))
+      CFile::Delete(itemLocal->GetCachedPictureThumb());
     items.Add(itemLocal);
   }
   
