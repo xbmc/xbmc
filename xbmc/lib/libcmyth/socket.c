@@ -899,7 +899,7 @@ cmyth_rcv_long_long(cmyth_conn_t conn, int *err, long long *buf, int count)
 		return consumed;
 	}
 
-	val = ((long long)hi << 32) | ((long long)lo);
+	val = (((long long)hi) << 32) | ((long long)(lo & 0xFFFFFFFF));
 
 	*err = 0;
 	*buf = val;
@@ -1105,7 +1105,7 @@ cmyth_rcv_ulong_long(cmyth_conn_t conn, int *err,
 		return consumed;
 	}
 
-	val = ((unsigned long long)hi << 32) | ((unsigned long long)lo);
+	val = (((unsigned long long)hi) << 32) | ((unsigned long long)(lo & 0xFFFFFFFF));
 
 	*err = 0;
 	*buf = val;
