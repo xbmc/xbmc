@@ -1350,7 +1350,6 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   ClearSubtitles();
 
   CFileItem item(strMovie, false);
-  if (item.IsInternetStream()) return ;
   if (item.IsHDHomeRun()) return ;
   if (item.IsPlayList()) return ;
   if (!item.IsVideo()) return ;
