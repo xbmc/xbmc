@@ -59,6 +59,12 @@ public:
   virtual void GetAudioInfo(CStdString& strAudioInfo);
   virtual void GetVideoInfo(CStdString& strVideoInfo);
   virtual void GetGeneralInfo(CStdString& strGeneralInfo);
+
+//Audio stream selection
+  virtual int  GetAudioStreamCount()  { return m_pDsGraph.GetAudioStreamCount(); }
+  virtual int  GetAudioStream()       { return m_pDsGraph.GetAudioStream(); }
+  virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { m_pDsGraph.GetAudioStreamName(iStream,strStreamName); };
+  virtual void SetAudioStream(int iStream) { m_pDsGraph.SetAudioStream(iStream); };
   void Update(bool bPauseDrawing)                               { m_pDsGraph.Update(bPauseDrawing); }
   void GetVideoRect(CRect& SrcRect, CRect& DestRect)  { m_pDsGraph.GetVideoRect(SrcRect, DestRect); }
   virtual void GetVideoAspectRatio(float& fAR)                  { fAR = m_pDsGraph.GetAspectRatio(); }

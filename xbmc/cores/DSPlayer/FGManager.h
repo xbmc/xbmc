@@ -72,10 +72,10 @@ protected:
 
   STDMETHODIMP GetXbmcVideoDecFilter(IMPCVideoDecFilter** pBF);
   STDMETHODIMP GetFfdshowVideoDecFilter(IffdshowDecVideoA** pBF);
-	STDMETHODIMP RenderFileXbmc(const CFileItem& pFileItem);
-	CFile                m_File;
-	CComPtr<IBaseFilter> m_FileSource;
-	CComPtr<IBaseFilter> m_XbmcVideoDec;
+  STDMETHODIMP RenderFileXbmc(const CFileItem& pFileItem);
+  CFile                m_File;
+  CComPtr<IBaseFilter> m_FileSource;
+  CComPtr<IBaseFilter> m_XbmcVideoDec;
     CFGLoader*           m_CfgLoader;
 	CStdString           m_xbmcConfigFilePath;
 	// IFilterGraph

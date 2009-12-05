@@ -2151,6 +2151,14 @@
 				Name="DSPlayer"
 				>
 				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\DSConfig.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\DSConfig.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\system\players\dsplayer\dsfilterconfig.xml"
 					>
 				</File>
@@ -2299,6 +2307,10 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\IGraphBuilder2.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IMpaDecFilter.h"
 						>
 					</File>
 					<File

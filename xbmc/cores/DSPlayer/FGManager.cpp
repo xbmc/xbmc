@@ -25,6 +25,7 @@
 
 #include "WinSystemWin32.h" //g_hwnd
 #include "WindowingFactory.h"
+#include "CharsetConverter.h"
 #include "DShowUtil/dshowutil.h"
 #include "DShowUtil/DshowCommon.h"
 
@@ -529,7 +530,8 @@ STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   if (FAILED(m_CfgLoader->LoadFilterRules(pFileItem) ))
     return E_FAIL;
   DShowUtil::RemoveUnconnectedFilters(this);
-return hr;
+  
+  return hr;
   
 }
 

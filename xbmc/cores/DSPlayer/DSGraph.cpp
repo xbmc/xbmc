@@ -52,6 +52,7 @@ using namespace MediaInfoDLL;
 CDSGraph::CDSGraph() :
                  m_pGraphBuilder(NULL)
 {
+  
   m_PlaybackRate = 1;
   g_userId = 0xACDCACDC;
   m_State.Clear();
@@ -81,16 +82,14 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   if (FAILED(hr))
     return hr;
   //This
-  hr = m_pGraphBuilder->GetXbmcVideoDecFilter(&m_pIMpcDecFilter);
-  hr = m_pGraphBuilder->GetFfdshowVideoDecFilter(&m_pIffdDecFilter);
   hr = m_pGraphBuilder.QueryInterface(&m_pMediaSeeking);
-  
-  //hr = m_pMediaSeeking->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
-  //-->> TIME_FORMAT_FRAME for frame by frame
   hr = m_pGraphBuilder.QueryInterface(&m_pMediaControl);
   hr = m_pGraphBuilder.QueryInterface(&m_pMediaEvent);
   hr = m_pGraphBuilder.QueryInterface(&m_pBasicAudio);
   hr = m_pGraphBuilder.QueryInterface(&m_pBasicVideo);
+  //Get all custom interface
+  m_pDsConfig.LoadGraph(m_pGraphBuilder);
+
   UpdateCurrentVideoInfo(file.GetAsUrl().GetFileName());
   
   
@@ -99,6 +98,8 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   UpdateState();
   if (m_pMediaControl)
     m_pMediaControl->Run();
+
+
   return hr;
 }
 
@@ -196,15 +197,8 @@ void CDSGraph::UpdateState()
 }
 void CDSGraph::UpdateCurrentVideoInfo(CStdString currentFile)
 {
-  if (m_pIffdDecFilter)
-  {
-    //Im not sure if its the best interface to work with from ffdshow but at least the interface is correctly queried
-  }
-  if (m_pIMpcDecFilter)
-  {
-    m_VideoInfo.dxva_info=DShowUtil::GetDXVAMode(m_pIMpcDecFilter->GetDXVADecoderGuid());
-  }
 
+  m_VideoInfo.dxva_info= m_pDsConfig.GetDxvaMode();
   MediaInfo MI;
   MI.Open(currentFile.c_str());
   MI.Option(_T("Complete"));

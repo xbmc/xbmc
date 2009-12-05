@@ -36,10 +36,8 @@
 #include <wxdebug.h>
 #include <combase.h>
 #include "util.h"
+#include "dsconfig.h"
 
-#include "igraphbuilder2.h"
-#include "Filters/IMPCVideoDecFilter.h"
-#include "Filters/IffdshowDecVideo.h"
 
 
 #include <atlcoll.h>
@@ -96,6 +94,11 @@ public:
   __int64 GetTotalTimeInMsec();
   virtual float GetPercentage();
 
+//Audio stream selection
+  virtual int  GetAudioStreamCount()  { return m_pDsConfig.GetAudioStreamCount(); }
+  virtual int  GetAudioStream()       { return m_pDsConfig.GetAudioStream(); }
+  virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { m_pDsConfig.GetAudioStreamName(iStream,strStreamName); };
+  virtual void SetAudioStream(int iStream) { m_pDsConfig.SetAudioStream(iStream); };
   
   HRESULT SetFile(const CFileItem& file, const CPlayerOptions &options);
   void OnPlayStop();
@@ -162,12 +165,11 @@ protected:
   
 private:
   //Direct Show Filters
-  CComPtr<IGraphBuilder2>               m_pGraphBuilder;
-  CComQIPtr<IMediaControl>              m_pMediaControl;  
-  CComQIPtr<IMediaEventEx>              m_pMediaEvent;
-  CComQIPtr<IMediaSeeking>              m_pMediaSeeking;
-  CComQIPtr<IBasicAudio>                m_pBasicAudio;
-  CComQIPtr<IBasicVideo2>               m_pBasicVideo;
-  CComPtr<IMPCVideoDecFilter>	        m_pIMpcDecFilter;
-  CComPtr<IffdshowDecVideoA>	        m_pIffdDecFilter;
+  CComPtr<IGraphBuilder2>         m_pGraphBuilder;
+  CComQIPtr<IMediaControl>        m_pMediaControl;  
+  CComQIPtr<IMediaEventEx>        m_pMediaEvent;
+  CComQIPtr<IMediaSeeking>        m_pMediaSeeking;
+  CComQIPtr<IBasicAudio>          m_pBasicAudio;
+  CComQIPtr<IBasicVideo2>         m_pBasicVideo;
+  CDSConfig                       m_pDsConfig;
 };
