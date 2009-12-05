@@ -96,10 +96,10 @@ CXBMCRenderManager::CXBMCRenderManager()
 
   m_presentfield = FS_NONE;
   m_presenttime = 0;
-  m_presentstep = 0;
+  m_presentstep = PRESENT_IDLE;
   m_rendermethod = 0;
+  m_presentsource = 0;
   m_presentmethod = VS_INTERLACEMETHOD_NONE;
-  
   m_bReconfigured = false;
 }
 
@@ -174,11 +174,18 @@ CStdString CXBMCRenderManager::GetVSyncState()
 
 bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
-  /* all frames before this should be rendered */
-  WaitPresentTime(m_presenttime);
+  /* make sure any queued frame was fully presented */
+  double timeout = m_presenttime + 0.1;
+  while(m_presentstep != PRESENT_IDLE)
+  {
+    if(!m_presentevent.WaitMSec(100) && GetPresentTime() > timeout)
+    {
+      CLog::Log(LOGWARNING, "CRenderManager::Configure - timeout waiting for previous frame");
+      break;
+    }
+  };
 
   CRetakeLock<CExclusiveLock> lock(m_sharedSection, false);
-
   if(!m_pRenderer) 
   {
     CLog::Log(LOGERROR, "%s called without a valid Renderer object", __FUNCTION__);
@@ -197,6 +204,8 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     m_pRenderer->Update(false);
     m_bIsStarted = true;
     m_bReconfigured = true;
+    m_presentstep = PRESENT_IDLE;
+    m_presentevent.Set();
   }
   
   return result;
@@ -218,14 +227,26 @@ void CXBMCRenderManager::Update(bool bPauseDrawing)
   {
     m_pRenderer->Update(bPauseDrawing);
   }
+
+  m_presentevent.Set();
 }
 
 void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-  CSharedLock lock(m_sharedSection);
-  if (!m_pRenderer)
-    return;
+  { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+    if (!m_pRenderer)
+      return;
 
+    if(m_presentstep == PRESENT_FLIP)
+    {
+      m_overlays.Flip();
+      m_pRenderer->FlipPage(m_presentsource);
+      m_presentstep = PRESENT_FRAME;
+      m_presentevent.Set();
+    }
+  }
+
+  CSharedLock lock(m_sharedSection);
 
   if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE
    || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
@@ -233,8 +254,10 @@ void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   else
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_LAST, alpha);
 
-
   m_overlays.Render();
+
+  m_presentstep = PRESENT_IDLE;
+  m_presentevent.Set();
 }
 
 unsigned int CXBMCRenderManager::PreInit()
@@ -293,11 +316,20 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
   if(timestamp - GetPresentTime() > MAXPRESENTDELAY)
     timestamp =  GetPresentTime() + MAXPRESENTDELAY;
 
-  /* make sure any queued frame was presented */
-  if(g_graphicsContext.IsFullScreenVideo())
-    while(!g_application.WaitFrame(100) && !bStop) {}
-  else
+  /* can't flip, untill timestamp */
+  if(!g_graphicsContext.IsFullScreenVideo())
     WaitPresentTime(timestamp);
+
+  /* make sure any queued frame was fully presented */
+  double timeout = m_presenttime + 1.0;
+  while(m_presentstep != PRESENT_IDLE && !bStop)
+  {
+    if(!m_presentevent.WaitMSec(100) && GetPresentTime() > timeout && !bStop)
+    {
+      CLog::Log(LOGWARNING, "CRenderManager::FlipPage - timeout waiting for previous frame");
+      return;
+    }
+  };
 
   if(bStop)
     return;
@@ -307,7 +339,8 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
 
     m_presenttime  = timestamp;
     m_presentfield = sync;
-    m_presentstep  = 0;
+    m_presentstep  = PRESENT_FLIP;
+    m_presentsource = source;
     m_presentmethod = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
 
     /* select render method for auto */
@@ -334,14 +367,19 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
       else
         m_presentfield = FS_EVEN;
     }
-
-    m_overlays.Flip();
-    m_pRenderer->FlipPage(source);
   }
 
-  m_presentevent.Reset();
   g_application.NewFrame();
-  m_presentevent.WaitMSec(1); // we give the application thread 1ms to present
+  /* wait untill render thread have flipped buffers */
+  timeout = m_presenttime + 1.0;
+  while(m_presentstep == PRESENT_FLIP && !bStop)
+  {
+    if(!m_presentevent.WaitMSec(100) && GetPresentTime() > timeout && !bStop)
+    {
+      CLog::Log(LOGWARNING, "CRenderManager::FlipPage - timeout waiting for flip to complete");
+      return;
+    }
+  }
 }
 
 float CXBMCRenderManager::GetMaximumFPS()
@@ -385,19 +423,25 @@ bool CXBMCRenderManager::SupportsGamma()
 
 void CXBMCRenderManager::Present()
 {
-  CSharedLock lock(m_sharedSection);
+  { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+    if (!m_pRenderer)
+      return;
 
+    if(m_presentstep == PRESENT_FLIP)
+    {
+      m_overlays.Flip();
+      m_pRenderer->FlipPage(m_presentsource);
+      m_presentstep = PRESENT_FRAME;
+      m_presentevent.Set();
+    }
+  }
+
+  CSharedLock lock(m_sharedSection);
 #ifdef HAVE_LIBVDPAU
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo() && g_VDPAU)
     WaitPresentTime(m_presenttime);
 #endif
-
-  if (!m_pRenderer)
-  {
-    CLog::Log(LOGERROR, "%s called without valid Renderer object", __FUNCTION__);
-    return;
-  }
 
   if     ( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB
         || m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
@@ -415,9 +459,6 @@ void CXBMCRenderManager::Present()
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo())
   {
-    /* we are not done until present step has reverted to 0 */
-    if(m_presentstep == 0)
-      m_presentevent.Set();
 #ifdef HAVE_LIBVDPAU
     if (!g_VDPAU)
 #endif
@@ -425,6 +466,8 @@ void CXBMCRenderManager::Present()
       WaitPresentTime(m_presenttime);
     }
   }
+
+  m_presentevent.Set();
 }
 
 /* simple present method */
@@ -433,6 +476,7 @@ void CXBMCRenderManager::PresentSingle()
   CSingleLock lock(g_graphicsContext);
 
   m_pRenderer->RenderUpdate(true, 0, 255);
+  m_presentstep = PRESENT_IDLE;
 }
 
 /* new simpler method of handling interlaced material, *
@@ -441,13 +485,13 @@ void CXBMCRenderManager::PresentBob()
 {
   CSingleLock lock(g_graphicsContext);
 
-  if(m_presentstep == 0)
+  if(m_presentstep == PRESENT_FRAME)
   {
     if( m_presentfield == FS_EVEN)
       m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
     else
       m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
-    m_presentstep = 1;
+    m_presentstep = PRESENT_FRAME2;
     g_application.NewFrame();
   }
   else
@@ -456,7 +500,7 @@ void CXBMCRenderManager::PresentBob()
       m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
     else
       m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
-    m_presentstep = 0;
+    m_presentstep = PRESENT_IDLE;
   }
 }
 
@@ -474,6 +518,7 @@ void CXBMCRenderManager::PresentBlend()
     m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOOSD, 255);
     m_pRenderer->RenderUpdate(false, RENDER_FLAG_EVEN, 128);
   }
+  m_presentstep = PRESENT_IDLE;
 }
 
 /* renders the two fields as one, but doing fieldbased *
@@ -483,6 +528,7 @@ void CXBMCRenderManager::PresentWeave()
   CSingleLock lock(g_graphicsContext);
 
   m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOTH, 255);
+  m_presentstep = PRESENT_IDLE;
 }
 
 void CXBMCRenderManager::Recover()
