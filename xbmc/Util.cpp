@@ -1804,12 +1804,17 @@ bool CUtil::IsMultiPath(const CStdString& strPath)
 
 bool CUtil::IsHD(const CStdString& strFileName)
 {
-  CStdString strFileName2(strFileName);
+  CURL url(strFileName);
 
-  if (IsStack(strFileName))
-    strFileName2 = CStackDirectory::GetFirstStackedFile(strFileName);
-  
-  CURL url(_P(strFileName2));
+  if (IsSpecial(strFileName))
+    return IsHD(CSpecialProtocol::TranslatePath(strFileName));
+
+  if(IsStack(strFileName))
+    return IsHD(CStackDirectory::GetFirstStackedFile(strFileName));
+
+  if (IsInArchive(strFileName))
+    return IsHD(url.GetHostName());
+
   return url.IsLocal();
 }
 

@@ -254,12 +254,11 @@ ff_rm_read_mdpr_codecdata (AVFormatContext *s, ByteIOContext *pb,
             goto fail1;
         st->codec->width = get_be16(pb);
         st->codec->height = get_be16(pb);
-        st->codec->time_base.num= 1;
+        st->codec->time_base.num= 1 << 16;
         fps= get_be16(pb);
         st->codec->codec_type = CODEC_TYPE_VIDEO;
         get_be32(pb);
-        fps2= get_be16(pb);
-        get_be16(pb);
+        fps2= get_be32(pb);
 
         st->codec->extradata_size= codec_data_size - (url_ftell(pb) - codec_pos);
 
@@ -274,7 +273,7 @@ ff_rm_read_mdpr_codecdata (AVFormatContext *s, ByteIOContext *pb,
         get_buffer(pb, st->codec->extradata, st->codec->extradata_size);
 
 //        av_log(s, AV_LOG_DEBUG, "fps= %d fps2= %d\n", fps, fps2);
-        st->codec->time_base.den = fps * st->codec->time_base.num;
+        st->codec->time_base.den = fps2;
         switch(((uint8_t*)st->codec->extradata)[4]>>4){
         case 1: st->codec->codec_id = CODEC_ID_RV10; break;
         case 2: st->codec->codec_id = CODEC_ID_RV20; break;

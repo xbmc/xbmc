@@ -75,7 +75,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, SScraperInfo& in
     bNfo = GetDetails(album);
     CDirectory::GetDirectory("special://xbmc/system/scrapers/music/",items,".xml",false);
     strScraperBasePath = "special://xbmc/system/scrapers/music/";
-    CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("musiclibrary.defaultscraper"), strDefault);
+    CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("musiclibrary.scraper"), strDefault);
   }
   else if (m_strContent.Equals("artists"))
   {
@@ -83,7 +83,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, SScraperInfo& in
     bNfo = GetDetails(artist);
     CDirectory::GetDirectory("special://xbmc/system/scrapers/music/",items,".xml",false);
     strScraperBasePath = "special://xbmc/system/scrapers/music/";
-    CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("musiclibrary.defaultscraper"), strDefault);
+    CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("musiclibrary.scraper"), strDefault);
   }
   else if (m_strContent.Equals("tvshows") || m_strContent.Equals("movies") || m_strContent.Equals("musicvideos"))
   {

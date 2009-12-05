@@ -118,7 +118,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
               SetupPage();
               break;
       case 4: strLabel = g_localizeStrings.Get(132);
-              m_info = FindDefault("albums", g_guiSettings.GetString("musiclibrary.defaultscraper"));
+              m_info = FindDefault("albums", g_guiSettings.GetString("musiclibrary.scraper"));
               CreateSettings();
               SetupPage();
               break;
@@ -183,7 +183,7 @@ void CGUIDialogContentSettings::OnWindowLoaded()
       info.strLanguage = parser.GetLanguage();
       info.settings = m_scraperSettings;
 
-      if ( info.strPath == g_guiSettings.GetString("musiclibrary.defaultscraper")
+      if ( info.strPath == g_guiSettings.GetString("musiclibrary.scraper")
         || info.strPath == g_guiSettings.GetString("scrapers.moviedefault")
         || info.strPath == g_guiSettings.GetString("scrapers.tvshowdefault")
         || info.strPath == g_guiSettings.GetString("scrapers.musicvideodefault"))

@@ -1881,7 +1881,7 @@
   <string id="20442">Change content</string>
   <string id="20443">Do you want to refresh info for all</string>
   <string id="20444">items within this path?</string>
-  <string id="20445">Fanart</string>>
+  <string id="20445">Fanart</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -2188,4 +2188,9 @@
   <string id="33076">Please update XBMC.</string>
   <string id="33077">No data found!</string>
   <string id="33078">Next page</string>
+  <string id="33079">Love</string>
+  <string id="33080">Hate</string>
+  <string id="33081">This file is stacked, select the part you want to play from.</string>
+  <string id="33082">Path to script</string>
+  <string id="33083">Enable custom script button</string>
 </strings>

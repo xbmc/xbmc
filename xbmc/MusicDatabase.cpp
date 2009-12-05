@@ -4096,21 +4096,24 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       info.strLanguage = parser.GetLanguage();
 
     }
-    if (info.strPath.IsEmpty() && !strPath.Equals("musicdb://")) // default fallback
-      GetScraperForPath("musicdb://",info);
-    else
-    { // none available yet (user wisely left defaults as is and didn't touch 'em)
-      CScraperParser parser;
-      if (parser.Load("special://xbmc/system/scrapers/music/" + g_guiSettings.GetString("musiclibrary.defaultscraper")))
-      {
-        info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
-        info.strContent = "albums";
-        info.strTitle = parser.GetName();
-        info.strDate = parser.GetDate();
-        info.strFramework = parser.GetFramework();
-        info.strLanguage = parser.GetLanguage();
-        info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + info.strPath);
-        SetScraperForPath("musicdb://",info);
+    if (info.strPath.IsEmpty())
+    { // no info available yet - check for a fallback
+      if (!strPath.Equals("musicdb://")) // default fallback
+        GetScraperForPath("musicdb://",info);
+      else
+      { // none available yet (user wisely left defaults as is and didn't touch 'em)
+        CScraperParser parser;
+        if (parser.Load("special://xbmc/system/scrapers/music/" + g_guiSettings.GetString("musiclibrary.scraper")))
+        {
+          info.strPath = g_guiSettings.GetString("musiclibrary.scraper");
+          info.strContent = "albums";
+          info.strTitle = parser.GetName();
+          info.strDate = parser.GetDate();
+          info.strFramework = parser.GetFramework();
+          info.strLanguage = parser.GetLanguage();
+          info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + info.strPath);
+          SetScraperForPath("musicdb://",info);
+        }
       }
     }
 

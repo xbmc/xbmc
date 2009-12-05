@@ -1143,7 +1143,8 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
     }
 
     // We've finished out first loop
-    m_bFirstLoop=false;
+    if(m_bFirstLoop && m_buffer.GetMaxReadSize() > 0)
+      m_bFirstLoop = false;
 
     switch (result)
     {

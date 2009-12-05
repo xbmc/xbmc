@@ -2,7 +2,10 @@
 	<GetTMDBFanartById dest="4">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
 			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBFanart&quot; cache=&quot;tmdb-images-\1.xml&quot;&gt;http://api.themoviedb.org/2.1/Movie.getImages/en/xml/57983e31fb435df4df77afb854740ea9/\1&lt;/url&gt;" dest="5">
-				<expression>(&lt;id&gt;([0-9]*)&lt;/id&gt;|/tt([0-9]*))</expression>
+				<expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBFanart&quot; cache=&quot;tmdb-images-tt\1.xml&quot;&gt;http://api.themoviedb.org/2.1/Movie.getImages/en/xml/57983e31fb435df4df77afb854740ea9/tt\1&lt;/url&gt;" dest="5">
+				<expression>/tt([0-9]*)</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
@@ -10,7 +13,7 @@
 	<GetTMDBFanart dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;thumb preview=&quot;\2&quot;&gt;\1&lt;/thumb&gt;" dest="2">
-				<expression repeat="yes">&lt;backdrop.*?url=&quot;([^&quot;]*)&quot; size=&quot;original&quot;.*?url=&quot;([^&quot;]*)&quot; size=&quot;thumb&quot;.*?&lt;/backdrop&gt;</expression>
+				<expression repeat="yes">&lt;backdrop.*?url=&quot;([^&quot;]*)&quot; size=&quot;original&quot;.*?url=&quot;([^&quot;]*)&quot; size=&quot;poster&quot;.*?&lt;/backdrop&gt;</expression>
 			</RegExp>
 			<expression noclean="1">(.+)</expression>
 		</RegExp>
@@ -18,7 +21,10 @@
 	<GetTMDBThumbsById dest="4">>
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
 			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBThumbs&quot; cache=&quot;tmdb-images-\1.xml&quot;&gt;http://api.themoviedb.org/2.1/Movie.getImages/en/xml/57983e31fb435df4df77afb854740ea9/\1&lt;/url&gt;" dest="5">
-				<expression>(&lt;id&gt;([0-9]*)&lt;/id&gt;|/tt([0-9]*))</expression>
+				<expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBThumbs&quot; cache=&quot;tmdb-images-tt\1.xml&quot;&gt;http://api.themoviedb.org/2.1/Movie.getImages/en/xml/57983e31fb435df4df77afb854740ea9/tt\1&lt;/url&gt;" dest="5">
+				<expression>/tt([0-9]*)</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
@@ -26,7 +32,7 @@
 	<GetTMDBThumbs dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;thumb preview=&quot;\2&quot;&gt;\1&lt;/thumb&gt;" dest="2">
-				<expression repeat="yes">&lt;poster.*?url=&quot;([^&quot;]*)&quot; size=&quot;original&quot;.*?url=&quot;([^&quot;]*)&quot; size=&quot;thumb&quot;.*?&lt;/poster&gt;</expression>
+				<expression repeat="yes">&lt;poster.*?url=&quot;([^&quot;]*)&quot; size=&quot;original&quot;.*?url=&quot;([^&quot;]*)&quot; size=&quot;mid&quot;.*?&lt;/poster&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>

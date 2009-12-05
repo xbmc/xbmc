@@ -86,6 +86,8 @@ void CStreamDetailAudio::Serialize(CArchive& ar)
 
 int CStreamDetailAudio::GetCodecPriority() const
 {
+  if (m_strCodec == "flac")
+    return 4;
   if (m_strCodec == "eac3")
     return 3;
   if (m_strCodec == "dca")
@@ -107,7 +109,7 @@ bool CStreamDetailAudio::IsWorseThan(CStreamDetail *that)
   if (m_iChannels > sda->m_iChannels)
     return false;
 
-  // In case of a tie, eac3 > dts > ac3 > all else.
+  // In case of a tie, flac > eac3 > dts > ac3 > all else.
   return sda->GetCodecPriority() > GetCodecPriority();
 }
 

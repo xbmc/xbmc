@@ -179,11 +179,11 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &
 
       CVideoInfoTag* tag = item->GetVideoInfoTag();
 
-      tag->m_strAlbum       = GetValue(program[i].callsign);
-      tag->m_strShowTitle   = GetValue(program[i].title);
-      tag->m_strPlotOutline = GetValue(program[i].subtitle);
-      tag->m_strPlot        = GetValue(program[i].description);
-      tag->m_strGenre       = GetValue(program[i].category);
+      tag->m_strAlbum       = program[i].callsign;
+      tag->m_strShowTitle   = program[i].title;
+      tag->m_strPlotOutline = program[i].subtitle;
+      tag->m_strPlot        = program[i].description;
+      tag->m_strGenre       = program[i].category;
 
       if (tag->m_strPlot.Left(tag->m_strPlotOutline.length()) != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
         tag->m_strPlot = tag->m_strPlotOutline + '\n' + tag->m_strPlot;
@@ -617,7 +617,5 @@ bool CCMythDirectory::SupportsFileOperations(const CStdString& strPath)
 bool CCMythDirectory::IsLiveTV(const CStdString& strPath)
 {
   CURL url(strPath);
-  CStdString filename = url.GetFileName();
-  CUtil::RemoveSlashAtEnd(filename);
-  return filename.Left(9) == "channels/";
+  return url.GetFileName().Left(9) == "channels/";
 }
