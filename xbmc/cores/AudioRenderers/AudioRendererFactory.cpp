@@ -79,9 +79,12 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
     {
       device = deviceString.Right(deviceString.length() - iPos - 1);
       ReturnOnValidInitialize();
+
+      audioSink = new CNullDirectSound();
+      audioSink->Initialize(pCallback, device, iChannels, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough);
+      return audioSink;
     }
   }
-
   CLog::Log(LOGINFO, "AudioRendererFactory: %s not a explicit device, trying to autodetect.", device.c_str());
 
   device = deviceString;
