@@ -2136,6 +2136,8 @@ void CApplication::Render()
 
   MEASURE_FUNCTION;
 
+  bool decrement = false;
+
   { // frame rate limiter (really bad, but it does the trick :p)
     static unsigned int lastFrameTime = 0;
     unsigned int currentTime = CTimeUtils::GetTimeMS();
@@ -2169,6 +2171,7 @@ void CApplication::Render()
 #else
       m_bPresentFrame = true;
 #endif
+      decrement = m_bPresentFrame;
     }
     else
     {
@@ -2196,6 +2199,7 @@ void CApplication::Render()
           nDelayTime = lastFrameTime + singleFrameTime - currentTime;
         Sleep(nDelayTime);
       }
+      decrement = true;
     }
 
     lastFrameTime = CTimeUtils::GetTimeMS();
@@ -2215,7 +2219,7 @@ void CApplication::Render()
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
-  if(m_frameCount > 0)
+  if(m_frameCount > 0 && decrement)
     m_frameCount--;
   SDL_mutexV(m_frameMutex);
   SDL_CondBroadcast(m_frameCond);
