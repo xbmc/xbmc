@@ -14,7 +14,7 @@
   <string id="31026">Övr. alternativ</string>
   <string id="31027">Plats</string>
   <string id="31028">Omslagssvep</string>
-  <string id="31029">Fankonst</string>
+  <string id="31029">Fanart</string>
   <string id="31030">Full lista</string>
   <string id="31031">Bildminiatyrer</string>
   <string id="31032">Bildsvep</string>
@@ -48,7 +48,7 @@
   <string id="31115">Anpassare</string>
   <string id="31116">Tilläggsskript</string>
   <string id="31117">Visa nyligen tillagda filmer</string>
-  <string id="31118">Hemsidsundermeny</string>
+  <string id="31118">Hemsidesundermeny</string>
   <string id="31119">Aktivera egen skriptknapp</string>
   <string id="31120">KNAPPETIKETT</string>
   <string id="31121">SÖKVÄG TILL SKRIPT</string>
@@ -56,7 +56,7 @@
   <string id="31123">Använd omslag istället för banner för TV-serier</string>
   <string id="31124">Visa bakgrund "Nu spelas" filmer</string>
   <string id="31125">Visa bakgrund "Nu spelas" visualisering</string>
-  <string id="31126">Aktivera sångtexter i musik OSD</string>
+  <string id="31126">Aktivera sångtexter i musik-OSD</string>
   <string id="31127">SÖKVÄG TILL SÅNGTEXTSKRIPT</string>
   <string id="31128">XBMC Sångtexter</string>
   <string id="31200">Genvägar</string>
@@ -64,27 +64,27 @@
   <string id="31202">Visa rollista</string>
   <string id="31203">Välj din låt</string>
   <string id="31204">Sektionslänkar</string>
-  <string id="31205">Sångtextskälla</string>
+  <string id="31205">Sångtextkälla</string>
   <string id="31250">Radar &amp; prognos</string>
   <string id="31251">Prognos</string>
-  <string id="31252">TWC skript</string>
+  <string id="31252">TWC-skript</string>
   <string id="31300">Nuvarande temp</string>
   <string id="31301">Sist uppdaterad</string>
   <string id="31302">Meny</string>
   <string id="31304">Bild</string>
   <string id="31305">Ingen diskmedia upptäckt</string>
   <string id="31306">Mata ut</string>
-  <string id="31307">Dölj fankonst</string>
+  <string id="31307">Dölj fanart</string>
   <string id="31308">Filmdetaljer</string>
   <string id="31309">Använt minne:</string>
   <string id="31310">Spårnummer</string>
-  <string id="31311">FANKONST BILD[CR][CR]INTE TILLGÄNGLIG[CR][CR]KLICKA PÅ KNAPPEN FÖR ATT ANGE</string>
+  <string id="31311">FANART-BILD[CR][CR]INTE TILLGÄNGLIG[CR][CR]KLICKA PÅ KNAPPEN FÖR ATT ANGE</string>
   <string id="31312">Nuvarande skrapa</string>
   <string id="31313">Välj en skrapa</string>
   <string id="31314">Innehållsskrapealternativ</string>
   <string id="31315">Grundläggande</string>
-  <string id="31317">Sätt fankonstsökväg</string>
-  <string id="31318">Liten fankonst</string>
+  <string id="31317">Sätt fanartsökväg</string>
+  <string id="31318">Liten fanart</string>
   <string id="31319">Vald profil</string>
   <string id="31320">Sist inloggad</string>
   <string id="31321">Karaoke låtväljare</string>
@@ -97,13 +97,13 @@
   <string id="31328">Nyligen tillagda</string>
   <string id="31329">[B]TIMER SATT![/B] [COLOR=grey2] - SYSTEM AUTO AVSTÄNGNING OM[/COLOR]</string>
   <string id="31400">[B]KONFIGURERA UTSEENDEINSTÄLLNINGAR[/B][CR][CR]Ändra skalet · Ange språk och region · Ange fillistningsalternativ[CR]Ange en skärmsläckare</string>
-  <string id="31401">[B]KONFIGURERA GRAFIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt filmbibliotek · Ange filmuppspelningsalternativ · Ändra filmlistningsalternativ[CR]Konfigurera undertextsfonter</string>
+  <string id="31401">[B]KONFIGURERA GRAFIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt filmbibliotek · Ange filmuppspelningsalternativ · Ändra filmlistningsalternativ[CR]Konfigurera undertextfonter</string>
   <string id="31402">[B]KONFIGURERA MUSIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt musikbibliotek · Ange musikuppspelningsalternativ · Ändra musiklistningsalternativ[CR]Ange låtinskickning · Ange karaokealternativ</string>
   <string id="31403">[B]KONFIGURERA BILDINSTÄLLNINGAR[/B][CR][CR]Ange bildlistningsalternativ · Justera bildspel</string>
-  <string id="31404">[B]KONFIGURERA VÄDERINSTÄLLNINGAR[/B][CR][CR]Ange dom tre städer som används för att samla in väderinformation</string>
+  <string id="31404">[B]KONFIGURERA VÄDERINSTÄLLNINGAR[/B][CR][CR]Ange de tre städer som används för att samla in väderinformation</string>
   <string id="31405">[B]KONFIGURERA NÄTVERKSINSTÄLLNINGAR[/B][CR][CR]Ange kontroll av XBMC via UPnP och HTTP · Konfigurera fildelning[CR]Konfigurera internetaccessalternativ</string>
-  <string id="31406">[B]KONFIGURERA SYSTEMINSTÄLLNINGAR[/B][CR][CR]Ange och kalibrera skärmar · Konfigurera ljudutgång · Ställa in fjärrkontroller[CR]Ange strömsparsalternativ · Aktivera avbuggning · Konfigurera huvudanvändarlåsningar</string>
-  <string id="31407">[B]KONFIGURERA SKALINSTÄLLNINGAR[/B][CR][CR]Ställa in Confluence skalet · Lägga till och ta bort hemmenyknappar[CR]Ändra skalbakgrunder</string>
+  <string id="31406">[B]KONFIGURERA SYSTEMINSTÄLLNINGAR[/B][CR][CR]Ange och kalibrera skärmar · Konfigurera ljudutgång · Ställa in fjärrkontroller[CR]Ange strömsparalternativ · Aktivera avbuggning · Konfigurera huvudanvändarlåsningar</string>
+  <string id="31407">[B]KONFIGURERA SKALINSTÄLLNINGAR[/B][CR][CR]Ställa in Confluence-skalet · Lägga till och ta bort hemmenyknappar[CR]Ändra skalbakgrunder</string>
   <string id="31420">[B][COLOR=white]XBMC har inte upptäckt en disk.[/COLOR][/B][CR][CR]Vänligen sätt i en disk i din läsare och försök igen eller avbryt</string>
   <string id="31421">Välj din XBMC användarprofil[CR]för att logga in  och fortsätta</string>
 </strings>
