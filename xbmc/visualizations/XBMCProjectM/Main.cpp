@@ -117,9 +117,7 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
 
   VIS_PROPS* visprops = (VIS_PROPS*)props;
 
-  printf("%s\n", visprops->datastore);
-  printf("%s\n", visprops->presets);
-  g_configFile = string(visprops->datastore) + string("/test.conf");
+  g_configFile = string(visprops->datastore) + string("/projectm.conf");
   std::string presetsDir = string(visprops->presets);
 
   g_configPM.meshX = gx;
@@ -139,7 +137,6 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   g_configPM.windowBottom = visprops->y;
 
   // if no config file exists, create a blank one as Config ctor throws an exception!
-  printf("%s", g_configFile.c_str());
   FILE *f;
   f = fopen(g_configFile.c_str(), "r");
   if (!f) f = fopen(g_configFile.c_str(), "w");
@@ -349,13 +346,16 @@ extern "C" addon_settings_t GetSettings()
 
   addon_settings_t settings = addon_settings_create();
   addon_setting_t quality = addon_setting_create(SETTING_ENUM, "Quality");
+  addon_setting_set_type(quality, SETTING_ENUM);
   addon_setting_set_label(quality, "30000");
   addon_setting_set_lvalues(quality, "30001|30002|30003|30004");
 
   addon_setting_t shuffleMode = addon_setting_create(SETTING_BOOL, "Shuffle");
+  addon_setting_set_type(quality, SETTING_BOOL);
   addon_setting_set_label(shuffleMode, "30010");
 
   addon_setting_t smoothPresetDuration = addon_setting_create(SETTING_ENUM, "Smooth Preset Duration");
+  addon_setting_set_type(quality, SETTING_ENUM);
   addon_setting_set_label(smoothPresetDuration, "30020");
 
   addon_settings_add_item(settings, quality);
