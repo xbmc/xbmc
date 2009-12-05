@@ -3966,6 +3966,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\DllWAVPack.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\cores\paplayer\DllWMA.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\cores\paplayer\DTSCDDACodec.cpp">
 				</File>
 				<File
