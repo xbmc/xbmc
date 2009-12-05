@@ -4,6 +4,7 @@
   <string id="31001">Älska</string>
   <string id="31002">Hata</string>
   <string id="31003">Strömalternativ</string>
+  <string id="31003">Arbetar...</string>
   <string id="31007">Tillägg</string>
   <string id="31020">Nyligen tillagda</string>
   <string id="31021">Filmer - Filer</string>
@@ -48,7 +49,7 @@
   <string id="31115">Anpassare</string>
   <string id="31116">Tilläggsskript</string>
   <string id="31117">Visa nyligen tillagda filmer</string>
-  <string id="31118">Hemsidesundermeny</string>
+  <string id="31118">Hemsidans undermeny</string>
   <string id="31119">Aktivera egen skriptknapp</string>
   <string id="31120">KNAPPETIKETT</string>
   <string id="31121">SÖKVÄG TILL SKRIPT</string>
@@ -97,13 +98,13 @@
   <string id="31328">Nyligen tillagda</string>
   <string id="31329">[B]TIMER SATT![/B] [COLOR=grey2] - SYSTEM AUTO AVSTÄNGNING OM[/COLOR]</string>
   <string id="31400">[B]KONFIGURERA UTSEENDEINSTÄLLNINGAR[/B][CR][CR]Ändra skalet · Ange språk och region · Ange fillistningsalternativ[CR]Ange en skärmsläckare</string>
-  <string id="31401">[B]KONFIGURERA GRAFIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt filmbibliotek · Ange filmuppspelningsalternativ · Ändra filmlistningsalternativ[CR]Konfigurera undertextfonter</string>
+  <string id="31401">[B]KONFIGURERA GRAFIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt filmbibliotek · Ange filmuppspelningsalternativ · Ändra videoförteckningsalternativ[CR]Konfigurera undertextfonter</string>
   <string id="31402">[B]KONFIGURERA MUSIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt musikbibliotek · Ange musikuppspelningsalternativ · Ändra musiklistningsalternativ[CR]Ange låtinskickning · Ange karaokealternativ</string>
   <string id="31403">[B]KONFIGURERA BILDINSTÄLLNINGAR[/B][CR][CR]Ange bildlistningsalternativ · Justera bildspel</string>
-  <string id="31404">[B]KONFIGURERA VÄDERINSTÄLLNINGAR[/B][CR][CR]Ange de tre städer som används för att samla in väderinformation</string>
+  <string id="31404">[B]KONFIGURERA VÄDERINSTÄLLNINGAR[/B][CR][CR]Ange tre städer för att insamling av väderinformation</string>
   <string id="31405">[B]KONFIGURERA NÄTVERKSINSTÄLLNINGAR[/B][CR][CR]Ange kontroll av XBMC via UPnP och HTTP · Konfigurera fildelning[CR]Konfigurera internetaccessalternativ</string>
-  <string id="31406">[B]KONFIGURERA SYSTEMINSTÄLLNINGAR[/B][CR][CR]Ange och kalibrera skärmar · Konfigurera ljudutgång · Ställa in fjärrkontroller[CR]Ange strömsparalternativ · Aktivera avbuggning · Konfigurera huvudanvändarlåsningar</string>
-  <string id="31407">[B]KONFIGURERA SKALINSTÄLLNINGAR[/B][CR][CR]Ställa in Confluence-skalet · Lägga till och ta bort hemmenyknappar[CR]Ändra skalbakgrunder</string>
+  <string id="31406">[B]KONFIGURERA SYSTEMINSTÄLLNINGAR[/B][CR][CR]Ange och kalibrera bildskärmar · Konfigurera ljudutgång · Ställa in fjärrkontroller[CR]Ange energisparalternativ · Aktivera debuggningen · Konfigurera huvudkod och lås</string>
+  <string id="31407">[B]KONFIGURERA SKALINSTÄLLNINGAR[/B][CR][CR]Ställa in Confluence-skalet · Lägga till och ta bort hemsidans menyknappar[CR]Ändra skalets bakgrunder</string>
   <string id="31420">[B][COLOR=white]XBMC har inte upptäckt en disk.[/COLOR][/B][CR][CR]Vänligen sätt i en disk i din läsare och försök igen eller avbryt</string>
   <string id="31421">Välj din XBMC användarprofil[CR]för att logga in  och fortsätta</string>
 </strings>
