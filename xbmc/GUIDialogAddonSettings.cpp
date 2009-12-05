@@ -156,7 +156,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         const char *type = setting->Attribute("type");
         const char *option = setting->Attribute("option");
         const char *source = setting->Attribute("source");
-        CStdString value/* = m_buttonValues[id]*/;
+        CStdString value = m_buttonValues[id];
 
         if (strcmp(type, "text") == 0)
         {
@@ -167,7 +167,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
 
           if (CGUIDialogKeyboard::ShowAndGetInput(value, ((CGUIButtonControl*) control)->GetLabel(), true, bHidden))
           {
-            //m_buttonValues[id] /*= value*/;
+            m_buttonValues[id] = value;
             // if hidden hide input
             if (bHidden)
             {
@@ -181,12 +181,12 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         }
         else if (strcmp(type, "integer") == 0 && CGUIDialogNumeric::ShowAndGetNumber(value, ((CGUIButtonControl*) control)->GetLabel()))
         {
-          /*m_buttonValues[id] = value;*/
+          m_buttonValues[id] = value;
           ((CGUIButtonControl*) control)->SetLabel2(value);
         }
         else if (strcmp(type, "ipaddress") == 0 && CGUIDialogNumeric::ShowAndGetIPAddress(value, ((CGUIButtonControl*) control)->GetLabel()))
         {
-          //m_buttonValues[id] = value;
+          m_buttonValues[id] = value;
           ((CGUIButtonControl*) control)->SetLabel2(value);
         }
         else if (strcmpi(type, "video") == 0 || strcmpi(type, "music") == 0 ||
@@ -220,7 +220,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             if (CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, ((CGUIButtonControl*) control)->GetLabel(), value, bWriteOnly))
             {
               ((CGUIButtonControl*) control)->SetLabel2(value);
-              //m_buttonValues[id] = value;
+              m_buttonValues[id] = value;
             }
           }
           else if (strcmpi(type, "pictures") == 0)
@@ -228,7 +228,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, ((CGUIButtonControl*) control)->GetLabel(), value))
             {
               ((CGUIButtonControl*) control)->SetLabel2(value);
-              //m_buttonValues[id] = value;
+              m_buttonValues[id] = value;
             }
           }
           else
@@ -263,7 +263,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             if (CGUIDialogFileBrowser::ShowAndGetFile(*shares, strMask, ((CGUIButtonControl*) control)->GetLabel(), value))
             {
               ((CGUIButtonControl*) control)->SetLabel2(value);
-              //m_buttonValues[id] = value;
+              m_buttonValues[id] = value;
             }
           }
         }
@@ -316,7 +316,7 @@ bool CGUIDialogAddonSettings::SaveSettings(void)
     const char *type = setting->Attribute("type");
 
     // skip type "lsep", it is not a required control
-    if (strcmpi(type, "lsep") != 0)
+    if (type && strcmpi(type, "lsep") != 0)
     {
       const CGUIControl* control = GetControl(controlId);
 
