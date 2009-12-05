@@ -327,17 +327,14 @@ void CNetwork::NetworkUp()
   g_applicationMessenger.NetworkMessage(SERVICES_UP, 0);
 }
 
-DWORD CNetwork::GetState()
-{
-  XNADDR xna;
-  return XNetGetTitleXnAddr(&xna);
-}
-
 /* update network state, call repeatedly while return value is XNET_GET_XNADDR_PENDING */
 DWORD CNetwork::UpdateState()
 {
 #ifdef HAS_XBOX_NETWORK
-  DWORD dwState = GetState();
+  CSingleLock lock (m_critSection);
+
+  XNADDR xna;
+  DWORD dwState = XNetGetTitleXnAddr(&xna);
   DWORD dwLink = XNetGetEthernetLinkStatus();
 
   if( m_lastlink != dwLink || m_laststate != dwState )
@@ -439,7 +436,7 @@ bool CNetwork::WaitForSetup(DWORD timeout)
 
   do
   {
-    DWORD dwState = GetState();
+    DWORD dwState = UpdateState();
     
     if (IsEthernetConnected() && (dwState & XNET_GET_XNADDR_DHCP || dwState & XNET_GET_XNADDR_STATIC) && !(dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT || dwState & XNET_GET_XNADDR_PENDING))
       return true;

@@ -64,7 +64,6 @@ public:
   /* should really be called once in a while should network */
   /* be unplugged */
   DWORD UpdateState();
-  DWORD GetState();
   void LogState();
   
   /* callback from application controlled thread to handle any setup */
