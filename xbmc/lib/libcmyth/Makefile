@@ -4,11 +4,10 @@ SRCS=bookmark.c commbreak.c connection.c event.c file.c freespace.c keyframe.c l
 SYSDIR=../../../system
 SLIBS=$(SYSDIR)/librefmem.so
 LIB=libcmyth.a
-
+LD_FLAGS=-Wl,-L$(SYSDIR) -lrefmem
 .PHONY: compile
 
 $(LIB): $(SRCS)
-	$(CC) $(SLIBS) -Wl,-L$(SYSDIR) -lrefmem
 
 $(SLIBS): compile
 
