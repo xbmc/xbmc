@@ -371,7 +371,7 @@
 				<posx>30</posx>
 				<posy>50</posy>
 				<width>360</width>
-				<height>25</height>
+				<height>100</height>
 				<label>$INFO[musicplayer.Codec,· Codec: ,]$INFO[musicplayer.Bitrate,[CR]· Bitrate: ,kbps]$INFO[musicplayer.bitspersample,[CR]· Bits:,bit]$INFO[musicplayer.Samplerate,[CR]· Freq.: ,kHz]$INFO[musicplayer.Channels,[CR]· Channels: ]</label>
 				<align>left</align>
 				<aligny>top</aligny>
