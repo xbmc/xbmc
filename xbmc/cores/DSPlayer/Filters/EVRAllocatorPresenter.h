@@ -49,7 +49,9 @@ public:
   CEVRAllocatorPresenter(HRESULT& hr, HWND wnd, CStdString &_Error,IDirect3D9* d3d = NULL, IDirect3DDevice9* d3dd = NULL);
   virtual ~CEVRAllocatorPresenter();
 
+//IDsRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
+  
   STDMETHODIMP  InitializeDevice(AM_MEDIA_TYPE*  pMediaType);
   //IBaseFilter delegate
   bool GetState( DWORD dwMilliSecsTimeout, FILTER_STATE *State, HRESULT &_ReturnValue);

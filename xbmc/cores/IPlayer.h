@@ -163,6 +163,7 @@ public:
   
   virtual CStdString GetPlayingTitle() { return ""; };
   virtual void ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)    {};
+  virtual void ResetRenderer()    {};
 protected:
   IPlayerCallback& m_callback;
 };

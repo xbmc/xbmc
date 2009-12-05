@@ -2290,6 +2290,10 @@
 					Name="Interfaces"
 					>
 					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\IDsRenderer.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecVideo.h"
 						>
 					</File>

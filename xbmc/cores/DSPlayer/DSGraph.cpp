@@ -35,6 +35,7 @@
 #include "DShowUtil/DShowUtil.h"
 #include "FgManager.h"
 
+
 #include "DshowUtil/MediaTypeEx.h"
 #include "MediaInfoDll/MediaInfoDLL.h"
 enum 
@@ -98,10 +99,6 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   UpdateState();
   if (m_pMediaControl)
     m_pMediaControl->Run();
-  CComQIPtr<IAMStreamSelect> m_pStreamSelect;
-  m_pGraphBuilder->FindInterface(DShowUtil::GUIDFromCString("{18C16B08-6497-420e-AD14-22D21C2CEAB7}"),(void**)&m_pStreamSelect, true);
-  if ( m_pStreamSelect )
-    CLog::Log(LOGNOTICE,"DSPLAYER WORKING STREAM SELECTOR");
   return hr;
 }
 
@@ -264,6 +261,13 @@ HRESULT CDSGraph::HandleGraphEvent(void)
             break;
 		case EC_STATE_CHANGE:
           CLog::Log(LOGDEBUG,"%s EC_STATE_CHANGE",__FUNCTION__);
+          break;
+		case EC_DEVICE_LOST:
+          CLog::Log(LOGDEBUG,"%s EC_DEVICE_LOST",__FUNCTION__);
+          break;
+		case EC_VMR_RECONNECTION_FAILED:
+          CLog::Log(LOGDEBUG,"%s EC_VMR_RECONNECTION_FAILED",__FUNCTION__);
+          break;
         default:
             break;
     }

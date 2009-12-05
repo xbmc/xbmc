@@ -80,6 +80,7 @@ public:
 
   virtual void ProcessDsWmCommand(WPARAM wParam, LPARAM lParam);
   virtual HRESULT HandleGraphEvent();
+  
   virtual double GetPlaySpeed();
   virtual void SetPlaySpeed(int iSpeed);
   virtual void DoFFRW(int currentSpeed);
@@ -169,7 +170,4 @@ private:
   CComQIPtr<IBasicVideo2>               m_pBasicVideo;
   CComPtr<IMPCVideoDecFilter>	        m_pIMpcDecFilter;
   CComPtr<IffdshowDecVideoA>	        m_pIffdDecFilter;
-
-  
-  
 };

@@ -54,7 +54,6 @@ CDSPlayer::~CDSPlayer()
   StopThread();
 }
 
-
 bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
 {
   HRESULT hr;
@@ -182,7 +181,7 @@ void CDSPlayer::Process()
       pStartPosDone = true;
 	}
 	m_pDsGraph.HandleGraphEvent();
-    
+	//m_pDsGraph.ResetDevice();
 	if (m_currentSpeed != 10000)
 	{
       //m_pDsGraph.GetPlaySpeed

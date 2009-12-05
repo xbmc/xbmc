@@ -23,6 +23,7 @@
 #include "DShowUtil/dshowutil.h"
 #include "DShowUtil/DSGeometry.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "WindowingFactory.h" //d3d device and d3d interface
 #include "DX9AllocatorPresenter.h"
 #include "application.h"
 #include "ApplicationRenderer.h"
@@ -325,6 +326,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HRESULT& hr, HWND wnd, CStdString
   CAutoLock Lock(&m_ObjectLock);
   g_renderManager.PreInit();
   m_renderTarget = NULL; 
+  m_pRequireResetDevice = false;
   hr = m_D3DDev->GetRenderTarget( 0, &m_renderTarget );
 
 }
@@ -340,7 +342,7 @@ void CDX9AllocatorPresenter::DeleteSurfaces()
     CAutoLock Lock(&m_ObjectLock);
 
     // clear out the private texture
-    m_privateTexture = NULL;
+    m_pVideoTexture = NULL;
 
     for( size_t i = 0; i < m_surfaces.size(); ++i ) 
     {
@@ -348,27 +350,24 @@ void CDX9AllocatorPresenter::DeleteSurfaces()
     }
 }
 
-
 //IVMRSurfaceAllocator9
 HRESULT CDX9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9AllocationInfo *lpAllocInfo, DWORD *lpNumBuffers)
 {
-    previousEndFrame=0;
+  m_pPrevEndFrame=0;
   CLog::Log(LOGNOTICE,"vmr9:InitializeDevice() %dx%d AR %d:%d flags:%d buffers:%d  fmt:(%x) %c%c%c%c", 
-    lpAllocInfo->dwWidth,lpAllocInfo->dwHeight,
-    lpAllocInfo->szAspectRatio.cx,lpAllocInfo->szAspectRatio.cy,
-    lpAllocInfo->dwFlags,
-    *lpNumBuffers,
-    lpAllocInfo->Format,
-    ((char)lpAllocInfo->Format&0xff),((char)(lpAllocInfo->Format>>8)&0xff),
-    ((char)(lpAllocInfo->Format>>16)&0xff),((char)(lpAllocInfo->Format>>24)&0xff));
+    lpAllocInfo->dwWidth ,lpAllocInfo->dwHeight ,lpAllocInfo->szAspectRatio.cx,lpAllocInfo->szAspectRatio.cy,
+    lpAllocInfo->dwFlags ,*lpNumBuffers, lpAllocInfo->Format, ((char)lpAllocInfo->Format&0xff),
+	((char)(lpAllocInfo->Format>>8)&0xff) ,((char)(lpAllocInfo->Format>>16)&0xff) ,((char)(lpAllocInfo->Format>>24)&0xff));
 
   if(!lpAllocInfo || !lpNumBuffers)
     return E_POINTER;
   if( m_lpIVMRSurfAllocNotify == NULL )
     return E_FAIL;
-    HRESULT hr = S_OK;
+  HRESULT hr = S_OK;
+
   if(lpAllocInfo->Format == '21VY' || lpAllocInfo->Format == '024I')
     return E_FAIL;
+  
   //To do implement the texture surface on the present image
   //if(lpAllocInfo->dwFlags & VMR9AllocFlag_3DRenderTarget)
   //lpAllocInfo->dwFlags |= VMR9AllocFlag_TextureSurface;
@@ -423,7 +422,7 @@ HRESULT CDX9AllocatorPresenter::AllocVideoSurface(D3DFORMAT Format)
 {
   CAutoLock Lock(&m_ObjectLock);
   HRESULT hr;
-  m_privateTexture = NULL;
+  m_pVideoTexture = NULL;
   m_pVideoSurface = NULL;
   m_SurfaceType = Format;
   D3DDISPLAYMODE dm;
@@ -435,40 +434,32 @@ HRESULT CDX9AllocatorPresenter::AllocVideoSurface(D3DFORMAT Format)
                                           D3DUSAGE_RENDERTARGET,
                                           dm.Format,//m_SurfaceType, // default is D3DFMT_A8R8G8B8
                                           D3DPOOL_DEFAULT,
-                                          &m_privateTexture,
+                                          &m_pVideoTexture,
                                           NULL ) ) )
     return hr;
-  if(FAILED(hr = m_privateTexture->GetSurfaceLevel(0, &m_pVideoSurface)))
+  if(FAILED(hr = m_pVideoTexture->GetSurfaceLevel(0, &m_pVideoSurface)))
     return hr;
   return hr;
 }
 
-HRESULT CDX9AllocatorPresenter::TerminateDevice( 
-        /* [in] */ DWORD_PTR dwID)
+HRESULT CDX9AllocatorPresenter::TerminateDevice(DWORD_PTR dwID)
 {
-  
     DeleteSurfaces();
     return S_OK;
 }
     
 HRESULT CDX9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID ,DWORD SurfaceIndex ,DWORD SurfaceFlags ,IDirect3DSurface9 **lplpSurface)
 {
-    if( lplpSurface == NULL )
-    {
-        return E_POINTER;
-    }
+  if( lplpSurface == NULL )
+    return E_POINTER;
 
-    if (SurfaceIndex >= m_surfaces.size() ) 
-    {
-        return E_FAIL;
-    }
+  if (SurfaceIndex >= m_surfaces.size() ) 
+    return E_FAIL;
+  CAutoLock Lock(&m_ObjectLock);
+  *lplpSurface = m_surfaces[SurfaceIndex];
+  (*lplpSurface)->AddRef();
 
-    CAutoLock Lock(&m_ObjectLock);
-
-    *lplpSurface = m_surfaces[SurfaceIndex];
-    (*lplpSurface)->AddRef();
-
-    return S_OK;
+  return S_OK;
 }
     
 HRESULT CDX9AllocatorPresenter::AdviseNotify(IVMRSurfaceAllocatorNotify9 *lpIVMRSurfAllocNotify)
@@ -517,7 +508,8 @@ HRESULT CDX9AllocatorPresenter::PresentImage(
     CLog::Log(LOGERROR,"vmr9:PresentImage() no surface");
     return E_POINTER;
   }
-  previousEndFrame=lpPresInfo->rtEnd;
+
+  m_pPrevEndFrame=lpPresInfo->rtEnd;
   m_fps = 10000000.0 / (lpPresInfo->rtEnd - lpPresInfo->rtStart);
   
   if (!g_renderManager.IsConfigured())
@@ -528,13 +520,12 @@ HRESULT CDX9AllocatorPresenter::PresentImage(
     if (SUCCEEDED (m_lpIVMRSurfAllocNotify->QueryInterface (__uuidof(IBaseFilter), (void**)&pVMR9)) &&
         SUCCEEDED (pVMR9->FindPin(L"VMR Input0", &pPin)) &&
         SUCCEEDED (pPin->ConnectionMediaType(&mt)) )
-  {
-    if (mt.formattype==FORMAT_VideoInfo || mt.formattype==FORMAT_MPEGVideo)
+    {
+      if (mt.formattype==FORMAT_VideoInfo || mt.formattype==FORMAT_MPEGVideo)
       {
         VIDEOINFOHEADER *vh = (VIDEOINFOHEADER*)mt.pbFormat;
-
         m_iVideoWidth = vh->bmiHeader.biWidth;
-                m_iVideoHeight = abs(vh->bmiHeader.biHeight);
+        m_iVideoHeight = abs(vh->bmiHeader.biHeight);
         if (vh->rcTarget.right - vh->rcTarget.left > 0)
           m_iVideoWidth = vh->rcTarget.right - vh->rcTarget.left;
         else if (vh->rcSource.right - vh->rcSource.left > 0)
@@ -545,7 +536,7 @@ HRESULT CDX9AllocatorPresenter::PresentImage(
         else if (vh->rcSource.bottom - vh->rcSource.top > 0)
           m_iVideoHeight = vh->rcSource.bottom - vh->rcSource.top;
       }
-    else if (mt.formattype==FORMAT_VideoInfo2 || mt.formattype==FORMAT_MPEG2Video)
+      else if (mt.formattype==FORMAT_VideoInfo2 || mt.formattype==FORMAT_MPEG2Video)
       {
         VIDEOINFOHEADER2 *vh = (VIDEOINFOHEADER2*)mt.pbFormat;
         m_iVideoWidth = vh->bmiHeader.biWidth;
@@ -560,10 +551,10 @@ HRESULT CDX9AllocatorPresenter::PresentImage(
         else if (vh->rcSource.bottom - vh->rcSource.top > 0)
           m_iVideoHeight = vh->rcSource.bottom - vh->rcSource.top;
       }
+    }
+    g_renderManager.Configure(m_iVideoWidth, m_iVideoHeight, m_iVideoWidth, m_iVideoHeight, m_fps, CONF_FLAGS_USE_DIRECTSHOW |CONF_FLAGS_FULLSCREEN);
   }
-
-  g_renderManager.Configure(m_iVideoWidth, m_iVideoHeight, m_iVideoWidth, m_iVideoHeight, m_fps, CONF_FLAGS_USE_DIRECTSHOW |CONF_FLAGS_FULLSCREEN);
-  }
+  
   CComPtr<IDirect3DTexture9> pTexture;
   hr = lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
   if(pTexture)
@@ -577,13 +568,33 @@ HRESULT CDX9AllocatorPresenter::PresentImage(
   {
     
     hr = m_D3DDev->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);
-    g_renderManager.PaintVideoTexture(m_privateTexture, m_pVideoSurface);
+    g_renderManager.PaintVideoTexture(m_pVideoTexture, m_pVideoSurface);
   }
   g_application.NewFrame();
   //Give .1 sec to the gui to render
   g_application.WaitFrame(100);
+  if (CheckDevice())
+  {
+    HMONITOR hMonitor = g_Windowing.Get3DObject()->GetAdapterMonitor(GetAdapter(g_Windowing.Get3DObject()));
+	m_lpIVMRSurfAllocNotify->ChangeD3DDevice(g_Windowing.Get3DDevice(),hMonitor);
+    m_D3D = g_Windowing.Get3DObject();
+	m_D3DDev = g_Windowing.Get3DDevice();
+	//DeleteSurfaces();
+
+    //AllocVideoSurface();
+  }
   
   return hr;
+}
+
+bool CDX9AllocatorPresenter::CheckDevice()
+{
+  m_D3DDev->GetCreationParameters(&m_currentD3DParam);
+
+  if ( m_D3D->GetAdapterMonitor(m_currentD3DParam.AdapterOrdinal) != m_D3D->GetAdapterMonitor(GetAdapter(m_D3D) ) )
+    return true;
+
+  return false;
 }
 
 // IUnknown

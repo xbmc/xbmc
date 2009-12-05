@@ -4523,6 +4523,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
         if (m_itemCurrentFile->IsOnDVD())
           StopPlaying();
       }
+      if (message.GetParam1()==GUI_MSG_RENDERER_RESET)
+	  {
+		  if ( (m_pPlayer) && ( m_eCurrentPlayer == (EPC_DSPLAYER)))
+	        m_pPlayer->ResetRenderer();
+	  }
     }
     break;
 

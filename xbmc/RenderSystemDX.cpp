@@ -406,7 +406,8 @@ bool CRenderSystemDX::BeginRender()
       OnDeviceReset();
       if( FAILED(m_nDeviceStatus ) )
       {
-        CLog::Log(LOGINFO, "m_pD3DDevice->Reset failed");
+        //Also spamming
+        //CLog::Log(LOGINFO, "m_pD3DDevice->Reset failed");
         return false;
       }
     }

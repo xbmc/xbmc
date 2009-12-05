@@ -23,7 +23,8 @@
 
 #include <mpconfig.h> //IMixerConfig
 
-
+#include "WinSystemWin32.h" //g_hwnd
+#include "WindowingFactory.h"
 #include "DShowUtil/dshowutil.h"
 #include "DShowUtil/DshowCommon.h"
 
@@ -151,6 +152,58 @@ STDMETHODIMP CFGManager::RemoveFilter(IBaseFilter* pFilter)
   return CComQIPtr<IFilterGraph2>(m_pUnkInner)->RemoveFilter(pFilter);
 }
 
+STDMETHODIMP CFGManager::RemoveRenderer()
+{
+  HRESULT hr=S_OK;
+  CComPtr<IBaseFilter> pBF;
+  
+  BeginEnumFilters(this, pEF, pBF)
+  {
+	if (DShowUtil::IsVideoRenderer(pBF))
+	{
+      //this->IsPinDirection
+      RemoveFilter(pBF);
+	}
+  }
+  EndEnumFilters
+  
+
+
+
+  CComPtr<IDsRenderer> pCAP;
+  CComPtr<IUnknown> pUnk;
+  CComPtr<IBaseFilter> ppBF;
+  CStdString __err;
+  if (DShowUtil::IsVistaOrAbove())
+    pCAP = new CEVRAllocatorPresenter(hr,g_hWnd,__err,g_Windowing.Get3DObject(),g_Windowing.Get3DDevice());
+  else 
+    pCAP = new CDX9AllocatorPresenter(hr,g_hWnd,__err,g_Windowing.Get3DObject(),g_Windowing.Get3DDevice());
+
+  CComPtr<IUnknown> pRenderer;
+  if(SUCCEEDED(hr = pCAP->CreateRenderer(&pRenderer)))
+  {
+    ppBF = CComQIPtr<IBaseFilter>(pRenderer).Detach();
+  }
+  if (DShowUtil::IsVistaOrAbove())
+    hr = ppBF->JoinFilterGraph(this,L"Xbmc EVR");
+  else
+    hr = ppBF->JoinFilterGraph(this,L"Xbmc VMR9 (Renderless)");
+  CComPtr<IBaseFilter> pBFFF;
+  BeginEnumFilters(this, pEF, pBFFF)
+  {
+    BeginEnumPins(pBFFF, pEP, pPin)
+    {
+      if(DShowUtil::GetPinName(pPin)[0] != '~' && S_OK == IsPinDirection(pPin, PINDIR_OUTPUT) && S_OK != IsPinConnected(pPin))
+      {
+        hr = ConnectFilter(pBFFF,NULL);
+      }
+    }
+    EndEnumPins
+  }
+  EndEnumFilters
+  //hr = ConnectFilter(ppBF,NULL);
+  return hr;
+}
 STDMETHODIMP CFGManager::EnumFilters(IEnumFilters** ppEnum)
 {
   CAutoLock cAutoLock(this);

@@ -47,8 +47,10 @@ public:
   virtual ULONG STDMETHODCALLTYPE AddRef();
   virtual ULONG STDMETHODCALLTYPE Release();
 
-  // ISubPicAllocatorPresenter
+  // IDSRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
+  bool CheckDevice();
+  
   UINT GetAdapter(IDirect3D9 *pD3D);
   STDMETHODIMP_(void) SetPosition(RECT w, RECT v) {} ;
   STDMETHODIMP_(bool) Paint(bool fAll) { return true; } ;
@@ -65,20 +67,23 @@ protected:
   tagRECT          m_VMR9AlphaBitmapRect;
   int            m_VMR9AlphaBitmapWidthBytes;
   bool m_fUseInternalTimer;
+  bool m_pRequireResetDevice;
+  
 private:
   CCritSec    m_ObjectLock;
   HWND        m_window;
   long        m_refCount;
   int   m_iVideoWidth, m_iVideoHeight;
-  REFERENCE_TIME previousEndFrame;
+  REFERENCE_TIME m_pPrevEndFrame;
   float m_fps;
   CComPtr<IDirect3D9>                     m_D3D;
   CComPtr<IDirect3DDevice9>               m_D3DDev;
   CComPtr<IVMRSurfaceAllocatorNotify9>    m_lpIVMRSurfAllocNotify;
   vector<CComPtr<IDirect3DSurface9> >     m_surfaces;
+  D3DDEVICE_CREATION_PARAMETERS           m_currentD3DParam;
   CComPtr<IDirect3DSurface9>              m_renderTarget;
-  CComPtr<IDirect3DTexture9>              m_privateTexture;
-  CComPtr<IDirect3DSurface9> m_pVideoSurface;
+  CComPtr<IDirect3DTexture9>              m_pVideoTexture;
+  CComPtr<IDirect3DSurface9>              m_pVideoSurface;
 };
 
-#endif // !defined(AFX_ALLOCATOR_H__F675D766_1E57_4269_A4B9_C33FB672B856__INCLUDED_)
+#endif // _DXALLOCATORPRESENTER_H
