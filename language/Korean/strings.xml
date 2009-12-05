@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 12/01/2009-->
+<!--Date of translation: 12/04/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -1917,6 +1917,7 @@
   <string id="23001">- 플러그인 설정</string>
   <string id="23050">문자다중방송 활성화</string>
   <string id="23051">파트 %i</string>
+  <string id="23052">%i 바이트 버퍼링</string>
   <string id="23100">외장 플레이어 활성</string>
   <string id="23101">플레이어를 종료하려면 예를 누르세요</string>
   <string id="23104">재생이 끝났으면 예를 누르세요</string>

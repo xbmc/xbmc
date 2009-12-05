@@ -2215,7 +2215,7 @@ void CApplication::Render()
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
-  if(m_frameCount > 0 && m_bPresentFrame)
+  if(m_frameCount > 0)
     m_frameCount--;
   SDL_mutexV(m_frameMutex);
   SDL_CondBroadcast(m_frameCond);

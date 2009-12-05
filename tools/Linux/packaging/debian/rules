@@ -6,7 +6,7 @@ DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 # Get the SVN revision from the changelog
-SVNVERSION ?= $(shell dpkg-parsechangelog | grep '^Version:' | sed 's/.*svn\([[:digit:]]*\).*/\1/')
+SVNVERSION ?= $(shell dpkg-parsechangelog | grep '^Version:' | grep svn | sed 's/.*svn\([[:digit:]]*\).*/\1/')
 
 # If not set already, try to set from debian/svnrevision
 ifeq (,$(SVNVERSION))
@@ -15,13 +15,17 @@ endif
 
 # List of options to pass to configure. Can be overridden.
 XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
-	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --disable-ccache \
-	--enable-goom --enable-avahi --enable-vdpau \
-	--enable-external-libraries --disable-dvdcss
+	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr \
+	--enable-optimizations --enable-gl --enable-vdpau \
+	--disable-profiling --enable-joystick --enable-xrandr \
+	--enable-goom --disable-ccache --enable-pulse --enable-avahi 
 
 # Ubuntu or Debian specific options
 ifeq (Ubuntu,$(shell lsb_release -is))
   XBMC_CONFIG_OPTIONS += --enable-faac
+else
+  XBMC_CONFIG_OPTIONS += --enable-external-libraries --disable-dvdcss \
+	--disable-non-free --enable-debug
 endif
 
 # Add the SVN revision if we could determine the svn revision
@@ -94,7 +98,7 @@ override_dh_link:
 		LINK_DESTINATION="$$(echo "$$FILE" | sed -e 's|debian/xbmc-bin/usr/lib|usr/share|')"; \
 		dh_link -pxbmc-bin "$$LINK_TARGET" "$$LINK_DESTINATION"; \
 		done
-	find debian/xbmc-data/usr/share/xbmc -type d -empty -delete
+	-[ -d debian/xbmc-data/usr/share/xbmc ] && find debian/xbmc-data/usr/share/xbmc/ -type d -empty -delete
 
 override_dh_strip:
 	dh_strip --dbg-package=xbmc-dbg

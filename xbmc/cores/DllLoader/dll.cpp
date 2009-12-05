@@ -264,10 +264,12 @@ extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename,
 {
   if (NULL == hModule)
   {
-    strncpy(lpFilename, "xbmc.xbe", nSize);
-    CLog::Log(LOGDEBUG, "GetModuleFileNameA(%p, %p, %u) => '%s'\n",
-              hModule, lpFilename, nSize, lpFilename);
-    return 8;
+#ifdef _WIN32
+    return GetModuleFileNameA(hModule, lpFilename, nSize);
+#else
+    CLog::Log(LOGDEBUG, "%s - No hModule specified", __FUNCTION__);
+    return 0;
+#endif
   }
   
   LibraryLoader* dll = DllLoaderContainer::GetModule(hModule);

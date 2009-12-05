@@ -83,9 +83,9 @@ static float** PickYUVConversionMatrix(unsigned flags)
        return (float**)yuv_coef_bt601; break;
      case CONF_FLAGS_YUVCOEF_EBU:
        return (float**)yuv_coef_ebu; break;
-     default:
-       return (float**)yuv_coef_bt601; break;
    }
+   
+   return (float**)yuv_coef_bt601;
 }
 
 static void CalculateYUVMatrix(GLfloat      res[4][4]

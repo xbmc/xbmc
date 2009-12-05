@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Translator: Kristján Bjarni Guðmundsson-->
+<!--Email: kristjanbjarni@gmail.com-->
+<!--Date of translation: 2009-12-02-->
+<!--$Revision$-->
+<!--Based on english strings version 24928-->
+<strings>
+  <string id="31000">Þögn</string>
+  <string id="31001">Vinnsla í gangi...</string>
+  <string id="31002"/>
+  <string id="31003"/>
+  <string id="31004"/>
+  <string id="31005"/>
+  <string id="31006"/>
+  <string id="31007"/>
+  <string id="31008"/>
+  <string id="31009"/>
+  <string id="31010">AÐDÁENDA[CR]MYND[CR]EKKI[CR]FÁANLEG</string>
+  <string id="31011">ÞÁTTUR[CR]MYND[CR]EKKI[CR]FÁANLEG</string>
+  <string id="31012">ÞÁTTUR[CR]MYND[CR]EKKI[CR]FÁANLEG</string>
+  <string id="31013"/>
+  <string id="31014"/>
+  <string id="31015"/>
+  <string id="31016"/>
+  <string id="31017"/>
+  <string id="31018"/>
+  <string id="31019"/>
+
+  <string id="31020">Titill kafla</string>
+  <string id="31021">Myndefni - Skrár</string>
+  <string id="31022">Tónlist - Skrár</string>
+  <string id="31023"/>
+  <string id="31024">Síða</string>
+  <string id="31025">Hlutir</string>
+
+  <string id="31026"/>
+  <string id="31027"/>
+  <string id="31028">DVD smámyndir</string>
+  <string id="31029">DVD listi</string>
+  <string id="31030">Aðdáendamyndir</string>
+  <string id="31031">Heildarlisti</string>
+  <string id="31032">Plötuumslagsýn</string>
+  <string id="31033">Ljósmynda smámyndir</string>
+  <string id="31034">Breiðar táknmyndir</string>
+
+  <string id="31040">Núverandi kvikmynd[CR]Áðdáenda mynd[CR][CR]Smelltu til að breyta</string>
+  <string id="31041">Núverandi sjónvarpsþáttur[CR]Áðdáenda mynd[CR][CR]Smelltu til að breyta</string>
+  <string id="31042">SPILA</string>
+  <string id="31043">Í BIÐ</string>
+  <string id="31044">HRATT ÁFRAM</string>
+  <string id="31045">TIL BAKA</string>
+  <string id="31046">Velkominn í XBMC - Skráðu þig inn</string>
+  <string id="31047">Seinast skráður inn</string>
+  <string id="31048">Núverandi listamaður[CR]Áðdáenda mynd[CR][CR]Smelltu til að breyta</string>
+
+  <string id="31050"/>
+  <string id="31051"/>
+  <string id="31052"/>
+
+  <!-- Lyrics Script Extra labels -->
+  <string id="31053">XBMC LAGATEXTAR</string>
+  <string id="31054">Veldu þitt lag úr listanum</string>
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Opna lagalista</string>
+  <string id="31056">Vista lagalista</string>
+  <string id="31057">Loka lagalista</string>
+  <string id="31058">Tónlistarskrár kerfis</string>
+  <string id="31059">Núgildandi lagalisti</string>
+  <string id="31060">Þessi skrá er stöfluð, veldu þann part sem þú vilt byrja að spila frá.</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100">Stillingar bakgrunns</string>
+  <string id="31101">Stillingar heimaskjás</string>
+  <string id="31102">Bakgrunnar</string>
+  <string id="31103">Sýna "Í bið" í myndasýningu</string>
+  <string id="31104">Slökkva valmynd - Nota dvala í staðinn fyrir bið</string>
+  <string id="31105">Sýna myndatitla í bakgrunnsleit</string>
+  <string id="31106">Ýmsir valkostir</string>
+  <string id="31107">Fjarlægja skannlínur úr bakgrunni</string>
+  <string id="31108">Fjarlægja skannlínur úr bakgrunni meðan spilað er</string>
+  <string id="31109">Bakgrunnar heimasvæðis</string>
+  <string id="31110">hnappur - Sérsniðnir bakgrunnar</string>
+  <string id="31111">Alltaf sýna tónlistarupplýsingar með lagatextum</string>
+  <string id="31112">Sýna myndatitle í sýninni "Breiðar táknmyndir"</string>
+  <string id="31113">Einföld mynd</string>
+  <string id="31114">Margföld mynd</string>
+  <string id="31115">Skipta út hljóðstillingahnappi fyrir textavarp</string>
+  <string id="31116">Fela myndbandatáknmynd í myndefnissýn</string>
+
+  <!-- Script Settings labels -->
+  <string id="31200">Stillingar fyrir sérsniðna skriftu</string>
+  <string id="31201"/>
+  <string id="31202"/>
+  <string id="31203">Breyta hnappaheiti</string>
+  <string id="31204">Slóð skriftu</string>
+  <string id="31205"/>
+  <string id="31206"/>
+  <string id="31207">Sýna niðurhalshnapp fyrir skjátexta á skjá</string>
+  <string id="31208">Sýna hnapp fyrir lagatexta á myndbandaskjá</string>
+  <string id="31209">Virkja skriftu flýtiræsihnapp fyrir -</string>
+
+  <!-- AMT Script Extra labels -->
+  <string id="31300">Sýna leikara</string>
+</strings>

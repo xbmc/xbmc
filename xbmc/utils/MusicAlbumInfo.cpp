@@ -133,7 +133,6 @@ bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, con
   {
     bChained=false;
     url = &GetAlbumURL();
-    CScraperParser::ClearCache();
   }
 
   vector<CStdString> strHTML;

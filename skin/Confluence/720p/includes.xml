@@ -205,6 +205,7 @@
 		<height>40</height>
 		<width>250</width>
 		<textoffsetx>10</textoffsetx>
+		<textwidth>235</textwidth>
 		<aligny>center</aligny>
 		<font>font13caps</font>
 		<texturefocus border="5">button-focus.png</texturefocus>
@@ -215,6 +216,7 @@
 		<height>40</height>
 		<width>221</width>
 		<textoffsetx>20</textoffsetx>
+		<textwidth>195</textwidth>
 		<aligny>center</aligny>
 		<font>font12caps_title</font>
 		<texturefocus border="5">button-focus.png</texturefocus>
@@ -225,6 +227,7 @@
 		<height>40</height>
 		<width>221</width>
 		<textoffsetx>20</textoffsetx>
+		<textwidth>195</textwidth>
 		<aligny>center</aligny>
 		<font>font12caps_title</font>
 		<texturefocus border="5">button-focus.png</texturefocus>
