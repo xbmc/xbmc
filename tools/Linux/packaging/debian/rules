@@ -18,14 +18,15 @@ XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
 	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr \
 	--enable-optimizations --enable-gl --enable-vdpau \
 	--disable-profiling --enable-joystick --enable-xrandr \
-	--enable-goom --disable-ccache --enable-pulse --enable-avahi 
+	--enable-goom --disable-ccache --enable-pulse --enable-avahi \
+	--enable-debug
 
 # Ubuntu or Debian specific options
 ifeq (Ubuntu,$(shell lsb_release -is))
   XBMC_CONFIG_OPTIONS += --enable-faac
 else
   XBMC_CONFIG_OPTIONS += --enable-external-libraries --disable-dvdcss \
-	--disable-non-free --enable-debug
+	--disable-non-free
 endif
 
 # Add the SVN revision if we could determine the svn revision
@@ -62,7 +63,7 @@ override_dh_auto_install:
 	    $(CURDIR)/debian/tmp/etc/init/xbmc-live.conf
 	find "debian/tmp/usr/share/xbmc" -regextype posix-extended \
 		-type f -iregex \
-		".*\.so|.*\.vis|.*\.xbs|.*xbmc\.bin|.*xbmc-xrandr" | \
+		".*python24\.zip|.*\.so|.*\.vis|.*\.xbs|.*xbmc\.bin|.*xbmc-xrandr" | \
 		while read FILE; do \
 		NEW_LOCATION="$$(echo $$FILE | sed -e 's|usr/share|usr/lib|')"; \
 		install -D "$$FILE" "$$NEW_LOCATION"; \

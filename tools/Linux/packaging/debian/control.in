@@ -133,7 +133,7 @@ Description: XBMC Media Center (arch-independent data package)
 
 Package: xbmc-bin
 Architecture: i386 amd64 powerpc ppc64
-Depends: ${shlibs:Depends},
+Depends: libcurl3, ${shlibs:Depends},
          ${misc:Depends}
 Description: XBMC Media Center (binary data package)
  XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
