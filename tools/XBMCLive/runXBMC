@@ -1,39 +1,56 @@
 #!/bin/bash
 
 if [ "$(pidof X)" ] ; then
-	/usr/share/xbmc/xbmc.bin  --standalone
+	/usr/bin/xbmc --standalone
 	exit
 fi
 
 while true
 do
-	echo "#!/bin/bash" >  /home/xbmc/.xsession
-	echo "/usr/share/xbmc/xbmc.bin  --standalone" >>  /home/xbmc/.xsession
+	if [ "$(whoami)" == "root" ] ; then
+		xbmcUser=xbmc
 
-	echo "case \"\$?\" in" >>  /home/xbmc/.xsession
-	echo "    0 ) # Quit" >>  /home/xbmc/.xsession
-	echo "        touch /tmp/noRestartXBMC" >> /home/xbmc/.xsession
-	echo "        break ;;"  >>  /home/xbmc/.xsession
-	echo "    64 ) # Shutdown System"  >>  /home/xbmc/.xsession
-	echo "        sleep 10 ;;"  >>  /home/xbmc/.xsession
-	echo "    65 ) # Warm Reboot"  >>  /home/xbmc/.xsession
-	echo "        echo "Restarting XBMC ..." ;;"  >>  /home/xbmc/.xsession
-	echo "    66 ) # Reboot System"  >>  /home/xbmc/.xsession
-	echo "        sleep 10 ;;"  >>  /home/xbmc/.xsession
-	echo "     * ) ;;"  >>  /home/xbmc/.xsession
-	echo "esac"  >>  /home/xbmc/.xsession
+		# Read configuration variable file if it is present
+		[ -r /etc/default/xbmc-live ] && . /etc/default/xbmc-live
 
-	chown xbmc:xbmc /home/xbmc/.xsession
+		if ! getent passwd $xbmcUser >/dev/null; then
+			xbmcUser=$(getent passwd 1000 | sed -e 's/\:.*//')
+			if [ -z "$xbmcUser" ]; then
+				echo "User for XBMC not found, exiting..."
+				break
+			fi
+		fi
+	else
+		xbmcUser=$(whoami)
+	fi
+
+	echo "#!/bin/bash" >  /home/$xbmcUser/.xsession
+	echo "/usr/bin/xbmc --standalone" >>  /home/$xbmcUser/.xsession
+
+	echo "case \"\$?\" in" >>  /home/$xbmcUser/.xsession
+	echo "    0 ) # Quit" >>  /home/$xbmcUser/.xsession
+	echo "        touch /tmp/noRestartXBMC" >> /home/$xbmcUser/.xsession
+	echo "        break ;;"  >>  /home/$xbmcUser/.xsession
+	echo "    64 ) # Shutdown System"  >>  /home/$xbmcUser/.xsession
+	echo "        sleep 10 ;;"  >>  /home/$xbmcUser/.xsession
+	echo "    65 ) # Warm Reboot"  >>  /home/$xbmcUser/.xsession
+	echo "        echo "Restarting XBMC ..." ;;"  >>  /home/$xbmcUser/.xsession
+	echo "    66 ) # Reboot System"  >>  /home/$xbmcUser/.xsession
+	echo "        sleep 10 ;;"  >>  /home/$xbmcUser/.xsession
+	echo "     * ) ;;"  >>  /home/$xbmcUser/.xsession
+	echo "esac"  >>  /home/$xbmcUser/.xsession
+
+	chown $xbmcUser:$xbmcUser /home/$xbmcUser/.xsession
 
 	if [ "$(whoami)" == "root" ] ; then
-		su xbmc -c "startx -- -br > /dev/null 2>&1" -l
+		su $xbmcUser -c "startx -- -br > /dev/null 2>&1" -l
 	else
 		startx -- -br > /dev/null 2>&1
 	fi
 
 	if [ -e /tmp/noRestartXBMC ] ; then
 		rm /tmp/noRestartXBMC
-		rm /home/xbmc/.xsession
+		rm /home/$xbmcUser/.xsession
 		break
 	fi
 

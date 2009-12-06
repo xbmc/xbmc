@@ -457,7 +457,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   m_vecItems[iList]->Append(items);
   m_vecItems[iList]->m_strPath = items.m_strPath;
 
-  if (strDirectory.IsEmpty() && (m_vecItems[iList]->Size() == 0 || !g_guiSettings.GetBool("filelists.disableaddsourcebuttons")))
+  if (strDirectory.IsEmpty() && (m_vecItems[iList]->Size() == 0 || g_guiSettings.GetBool("filelists.showaddsourcebuttons")))
   { // add 'add source button'
     CStdString strLabel = g_localizeStrings.Get(1026);
     CFileItemPtr pItem(new CFileItem(strLabel));
@@ -1129,7 +1129,7 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
     if ( bParentExists )
     {
       // yes
-      if (!g_guiSettings.GetBool("filelists.hideparentdiritems"))
+      if (g_guiSettings.GetBool("filelists.showparentdiritems"))
       {
         CFileItemPtr pItem(new CFileItem(".."));
         pItem->m_strPath = strParentPath;
@@ -1144,7 +1144,7 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
   {
     // yes, this is the root of a share
     // add parent path to the virtual directory
-    if (!g_guiSettings.GetBool("filelists.hideparentdiritems"))
+    if (g_guiSettings.GetBool("filelists.showparentdiritems"))
     {
       CFileItemPtr pItem(new CFileItem(".."));
       pItem->m_strPath = "";

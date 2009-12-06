@@ -50,6 +50,7 @@
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
 #include "utils/TimeUtils.h"
+#include "FactoryFileDirectory.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -733,7 +734,19 @@ bool CGUIMediaWindow::OnClick(int iItem)
     GoParentFolder();
     return true;
   }
-  else if (pItem->m_bIsFolder)
+
+  if (!pItem->m_bIsFolder && pItem->IsFileFolder())
+  {
+    DIRECTORY::IFileDirectory *pFileDirectory = NULL;
+    pFileDirectory = DIRECTORY::CFactoryFileDirectory::Create(pItem->m_strPath, pItem.get(), "");
+    if(pFileDirectory)
+      pItem->m_bIsFolder = true;
+    else if(pItem->m_bIsFolder)
+      pItem->m_bIsFolder = false;
+    delete pFileDirectory;
+  }
+
+  if (pItem->m_bIsFolder)
   {
     if ( pItem->m_bIsShareOrDrive )
     {
@@ -1288,6 +1301,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CStdString path;
       CUtil::GetDirectory(m_vecItems->Get(itemNumber)->m_strPath,path);
+      path.Replace("plugin://","special://home/plugins/");
       CFileItem item2(path,true);
       if (CGUIWindowFileManager::DeleteItem(&item2))
         Update(m_vecItems->m_strPath);

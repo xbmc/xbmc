@@ -75,30 +75,12 @@ void CHALManager::DevicePropertyModified(LibHalContext *ctx, const char *udi, co
 
 void CHALManager::DeviceCondition(LibHalContext *ctx, const char *udi, const char *condition_name, const char *condition_details)
 {
+  NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Device (%s) Condition %s | %s", udi, condition_name, condition_details);
   if (!strcmp(condition_name, "ButtonPressed") && !strcmp(condition_details, "power"))
-  {
-    switch (g_guiSettings.GetInt("system.powerbuttonaction"))
-    {
-      case POWERSTATE_ASK:
-        CBuiltins::Execute("XBMC.ActivateWindow(ShutdownMenu)");
-        break;
-      case POWERSTATE_SHUTDOWN:
-        g_powerManager.Powerdown();
-        break;
-      case POWERSTATE_SUSPEND:
-        g_powerManager.Suspend();
-        break;
-      case POWERSTATE_HIBERNATE:
-        g_powerManager.Hibernate();
-        break;
-      default:
-        ;
-    }
-    return;
-  }
-  NewMessage = true;
-  g_HalManager.UpdateDevice(udi);
+    CBuiltins::Execute("XBMC.ShutDown()");
+  else
+    g_HalManager.UpdateDevice(udi);
 }
 
 /* HAL Device added. This is before mount. And here is the place to mount the volume in the future */

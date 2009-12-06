@@ -30,7 +30,7 @@
 
 extern "C"
 {
-#include "lib/libcmyth/cmyth.h"
+#include "cmyth/include/cmyth/cmyth.h"
 }
 
 using namespace std;

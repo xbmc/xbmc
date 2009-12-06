@@ -625,14 +625,14 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (database.GetMatchingMusicVideo(item->GetMusicInfoTag()->GetArtist(),item->GetMusicInfoTag()->GetAlbum(),item->GetMusicInfoTag()->GetTitle()) > -1)
         buttons.Add(CONTEXT_BUTTON_PLAY_OTHER, 20401);
     }
-    if (item->HasVideoInfoTag() && !item->m_bIsFolder)
+    if (item->HasVideoInfoTag() && !item->m_bIsFolder && !item->IsShoutCast())
     {
       if (item->GetVideoInfoTag()->m_playCount > 0)
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
       else
         buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
       if ((g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) &&
-          !item->IsPluginRoot() && !item->IsPlugin() && !item->IsShoutCast())
+          !item->IsPluginRoot() && !item->IsPlugin())
       {
         buttons.Add(CONTEXT_BUTTON_RENAME, 16105);
         buttons.Add(CONTEXT_BUTTON_DELETE, 646);
@@ -770,6 +770,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       ADDON::CScraperPtr scraper;
       if (!m_musicdatabase.GetScraperForPath(item->m_strPath, scraper))
 /*
+TODO merge problem
       SScraperInfo info;
       CStdString path(item->m_strPath);
       CQueryParams params;
@@ -784,7 +785,11 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       int iLabel=132;
       // per genre or for all artists
+<<<<<<< .working
       if (m_vecItems->m_strPath.Equals("musicdb://1/") || item->m_strPath.Equals("musicdb://2/"))*/
+=======
+      if (m_vecItems->m_strPath.Left(12).Equals("musicdb://1/") || item->m_strPath.Left(12).Equals("musicdb://2/"))
+>>>>>>> .merge-right.r25372
       {
         ADDON::AddonPtr defaultScraper;
         if (ADDON::CAddonMgr::Get()->GetDefaultScraper(defaultScraper, CONTENT_ALBUMS))
@@ -797,13 +802,11 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (m_vecItems->m_strPath.Equals("musicdb://1/") || m_vecItems->m_strPath.Equals("musicdb://2/") || item->m_strPath.Left(12).Equals("musicdb://2/"))
       { // per genre or for all artists
         context = CONTENT_ARTISTS;
-      }
+      }*/
 
       if (CGUIDialogContentSettings::Show(scraper, bScan, context))
       {
         m_musicdatabase.SetScraperForPath(item->m_strPath, scraper);
-/*
-        m_musicdatabase.SetScraperForPath(path,info); */
         if (bScan)
           OnInfoAll(itemNumber,true);
       }

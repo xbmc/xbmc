@@ -18,9 +18,11 @@
 //hack around problem with xbmc's typedef int BOOL
 // and obj-c's typedef unsigned char BOOL
 #define BOOL XBMC_BOOL 
+#import "StdString.h"
 #import "PlatformDefs.h"
 #import "ApplicationMessenger.h"
 #import "DarwinStorageProvider.h"
+#import "WindowingFactory.h"
 #undef BOOL
 
 /* For some reaon, Apple removed setAppleMenu from the headers in 10.4,
@@ -297,6 +299,11 @@ static void setupWindowMenu(void)
       name:NSWindowDidMoveNotification
       object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+      selector:@selector(windowDidReSize:)
+      name:NSWindowDidResizeNotification
+      object:nil];
+      
     // We're going to manually manage the screensaver.
     setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
 
@@ -322,6 +329,38 @@ static void setupWindowMenu(void)
 
 - (void) workspaceDidWake:(NSNotification *) note
 {
+  if (g_Windowing.IsFullScreen())
+  {
+    // Find which display we are on
+    NSOpenGLContext* context = [NSOpenGLContext currentContext];
+    if (context)
+    {
+      NSView* view;
+
+      view = [context view];
+      if (view)
+      {
+        NSWindow* window;
+        window = [view window];
+        if (window)
+        {
+          NSDictionary* screenInfo = [[window screen] deviceDescription];
+          NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
+          if (kCGDirectMainDisplay == (CGDirectDisplayID)[screenID longValue])
+          {
+            CStdString tmp_str;
+
+            // keep the dock hidden using applescriptif on main screen with the dock.
+            tmp_str = "tell application \"System Events\" \n";
+            tmp_str += "keystroke \"d\" using {command down, option down} \n";
+            tmp_str += "end tell \n";
+            
+            Cocoa_DoAppleScript( tmp_str.c_str() );
+          }
+        }
+      }
+    }
+  }
 }
 
 - (void) workspaceWillSleep:(NSNotification *) note
@@ -334,23 +373,6 @@ static void setupWindowMenu(void)
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
   CDarwinStorageProvider::SetEvent();
-  
-/*
-  NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
-  //NSLog(@"Device did mount: %@", devicePath);
-  
-  // check for physical DVD with VIDEO_TS structure
-  NSFileManager *fileManager = [NSFileManager defaultManager];
-  NSString *video_tsFolder = [devicePath stringByAppendingString:@"/VIDEO_TS"];
-  // Check if the mounted volume is a DVD
-  NSArray *contents = [fileManager directoryContentsAtPath:video_tsFolder];
-  if (contents != nil)
-  {
-    //const CStdString strDrive = [devicePath cString];
-    // TODO: might need to translate devicePath into what CDetectDVDMedia::AddMedia wants
-    //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->AddMedia(strDrive);
-  }
-*/
   [pool release];
 }
 
@@ -360,18 +382,34 @@ static void setupWindowMenu(void)
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
   CDarwinStorageProvider::SetEvent();
-  
-  //NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
-  //NSLog(@"Device did unmount: %@", devicePath);
-  //const CStdString strDrive = [devicePath cString];
-  //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->RemoveMedia(strDrive);
-
   [pool release];
 }
 
 - (void) windowDidMove:(NSNotification*) note
 {
   Cocoa_CVDisplayLinkUpdate();
+}
+
+- (void) windowDidReSize:(NSNotification*) note
+{
+  /* 
+  // SDL_PushEvent is not working but
+  // this is how one would pass update events in response to grow events.
+  NSOpenGLContext* context = [NSOpenGLContext currentContext];
+  if (context)
+  {
+    NSView *view = [context view];
+    if (view)
+    {
+      XBMC_Event event;
+      memset(&event, 0, sizeof(event));
+      event.resize.type = XBMC_VIDEORESIZE;
+      event.resize.w = [view frame].size.width;
+      event.resize.h = [view frame].size.height;
+      SDL_PushEvent(&event);
+    }
+  }
+  */
 }
 
 @end

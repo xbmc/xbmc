@@ -721,7 +721,7 @@ HRESULT CApplication::Create(HWND hWnd)
             g_settings.m_ResInfo[iResolution].strMode.c_str());
   g_windowManager.Initialize();
 
-  g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
+  g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
 
   CUtil::InitRandomSeed();
 
@@ -1077,7 +1077,7 @@ HRESULT CApplication::Initialize()
 
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
   CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
-  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("system.screenshotpath",false).c_str());
+  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("debug.screenshotpath",false).c_str());
 
   // UserData folder layout:
   // UserData/
@@ -1132,9 +1132,7 @@ HRESULT CApplication::Initialize()
 
   // Init DPMS, before creating the corresponding setting control.
   m_dpms = new DPMSSupport();
-  g_guiSettings.GetSetting("screensaver.sep_powersaving")->SetVisible(
-      m_dpms->IsSupported());
-  g_guiSettings.GetSetting("screensaver.powersavingtime")->SetVisible(
+  g_guiSettings.GetSetting("powermanagement.displaysoff")->SetVisible(
       m_dpms->IsSupported());
 
   g_windowManager.Add(new CGUIWindowHome);                     // window id = 0
@@ -1248,22 +1246,13 @@ HRESULT CApplication::Initialize()
   }
   else
   {
+    // test for a startup window, and activate that instead of home
     RESOLUTION res = RES_INVALID;
     CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml", &res);
     int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
-    // test for a startup window, and activate that instead of home
     if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
-    {
-      g_windowManager.ActivateWindow(WINDOW_STARTUP);
-    }
-    else
-    {
-      // We need to Popup the WindowHome to initiate the GUIWindowManger for MasterCode popup dialog!
-      // Then we can start the StartUpWindow! To prevent BlackScreen if the target Window is Protected with MasterCode!
-      g_windowManager.ActivateWindow(WINDOW_HOME);
-      if (startWindow != WINDOW_HOME)
-        g_windowManager.ActivateWindow(startWindow);
-    }
+      startWindow = WINDOW_STARTUP;
+    g_windowManager.ActivateWindow(startWindow);
   }
 
 #ifdef HAS_PYTHON
@@ -1836,6 +1825,7 @@ void CApplication::UnloadSkin()
   g_windowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
   g_TextureManager.Cleanup();
+  g_largeTextureManager.CleanupUnusedImages(true);
 
   g_fontManager.Clear();
 
@@ -1963,11 +1953,16 @@ void CApplication::RenderNoPresent()
 //  int vsync_mode = g_videoConfig.GetVSyncMode();
   int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
 
+  if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && vsync_mode == VSYNC_VIDEO)
+    g_Windowing.SetVSync(true);
+  else if (vsync_mode == VSYNC_ALWAYS)
+    g_Windowing.SetVSync(true);
+  else if (vsync_mode != VSYNC_DRIVER)
+    g_Windowing.SetVSync(false);
+
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
-    if (vsync_mode == VSYNC_VIDEO)
-      g_Windowing.SetVSync(true);
     if (m_bPresentFrame)
       g_renderManager.Present();
     else
@@ -1984,11 +1979,6 @@ void CApplication::RenderNoPresent()
 
 // DXMERGE: This may have been important?
 //  g_graphicsContext.AcquireCurrentContext();
-
-  if (vsync_mode==VSYNC_ALWAYS)
-    g_Windowing.SetVSync(true);
-  else if (vsync_mode!=VSYNC_DRIVER)
-    g_Windowing.SetVSync(false);
 
   g_ApplicationRenderer.Render();
 
@@ -2141,6 +2131,8 @@ void CApplication::Render()
 
   MEASURE_FUNCTION;
 
+  bool decrement = false;
+
   { // frame rate limiter (really bad, but it does the trick :p)
     static unsigned int lastFrameTime = 0;
     unsigned int currentTime = CTimeUtils::GetTimeMS();
@@ -2174,6 +2166,7 @@ void CApplication::Render()
 #else
       m_bPresentFrame = true;
 #endif
+      decrement = m_bPresentFrame;
     }
     else
     {
@@ -2201,6 +2194,7 @@ void CApplication::Render()
           nDelayTime = lastFrameTime + singleFrameTime - currentTime;
         Sleep(nDelayTime);
       }
+      decrement = true;
     }
 
     lastFrameTime = CTimeUtils::GetTimeMS();
@@ -2220,7 +2214,7 @@ void CApplication::Render()
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
-  if(m_frameCount > 0)
+  if(m_frameCount > 0 && decrement)
     m_frameCount--;
   SDL_mutexV(m_frameMutex);
   SDL_CondBroadcast(m_frameCond);
@@ -2295,22 +2289,17 @@ bool CApplication::OnKey(CKey& key)
   CButtonTranslator::GetInstance().GetAction(iWin, key, action);
 
   // a key has been pressed.
-  // Reset the screensaver timer
-  // but not for the analog thumbsticks/triggers
-  if (!key.IsAnalogButton())
+  // reset Idle Timer
+  m_idleTimer.StartZero();
+  bool processKey = AlwaysProcess(action);
+
+  ResetScreenSaver();
+
+  // allow some keys to be processed while the screensaver is active
+  if (WakeUpScreenSaverAndDPMS() && !processKey)
   {
-    // reset Idle Timer
-    m_idleTimer.StartZero();
-    bool processKey = AlwaysProcess(action);
-
-    ResetScreenSaver();
-
-    // allow some keys to be processed while the screensaver is active
-    if (WakeUpScreenSaverAndDPMS() && !processKey)
-    {
-      g_Keyboard.Reset();
-      return true;
-    }
+    g_Keyboard.Reset();
+    return true;
   }
 
   // change this if we have a dialog up
@@ -2366,7 +2355,7 @@ bool CApplication::OnKey(CKey& key)
     if (useKeyboard)
     {
       action.id = 0;
-      if (g_guiSettings.GetBool("lookandfeel.remoteaskeyboard"))
+      if (g_guiSettings.GetBool("input.remoteaskeyboard"))
       {
         // users remote is executing keyboard commands, so use the virtualkeyboard section of keymap.xml
         // and send those rather than actual keyboard presses.  Only for navigation-type commands though
@@ -2767,7 +2756,7 @@ void CApplication::UpdateLCD()
 #ifdef HAS_LCD
   static long lTickCount = 0;
 
-  if (!g_lcd || !g_guiSettings.GetBool("system.haslcd"))
+  if (!g_lcd || !g_guiSettings.GetBool("videoscreen.haslcd"))
     return ;
   long lTimeOut = 1000;
   if ( m_iPlaySpeed != 1)
@@ -3800,7 +3789,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   bool bResult;
   if (m_pPlayer)
+  {
+    // don't hold graphicscontext here since player
+    // may wait on another thread, that requires gfx
+    CSingleExit ex(g_graphicsContext);
     bResult = m_pPlayer->OpenFile(item, options);
+  }
   else
   {
     CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.m_strPath.c_str());
@@ -3825,7 +3819,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
        SwitchToFullScreen();
 
       // Save information about the stream if we currently have no data
-      if (item.HasVideoInfoTag())
+      if (item.HasVideoInfoTag() && !item.IsDVDImage() && !item.IsDVDFile())
       {
         CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
         if (!details->HasStreamDetails())
@@ -3853,6 +3847,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // we must have started, otherwise player might send this later
     if(IsPlaying())
       OnPlayBackStarted();
+    else
+      OnPlayBackEnded();
   }
   else
   {
@@ -3968,6 +3964,93 @@ void CApplication::OnPlayBackStopped()
   g_windowManager.SendThreadMessage(msg);
 }
 
+void CApplication::OnPlayBackPaused()
+{
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackPaused();
+#endif
+
+#ifdef HAS_WEB_SERVER
+  // Let's tell the outside world as well
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+    getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackPaused;1");
+#endif
+
+  CLog::Log(LOGDEBUG, "%s - Playback was paused", __FUNCTION__);
+}
+
+void CApplication::OnPlayBackResumed()
+{
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackResumed();
+#endif
+
+#ifdef HAS_WEB_SERVER
+  // Let's tell the outside world as well
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+    getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackResumed;1");
+#endif
+
+  CLog::Log(LOGDEBUG, "%s - Playback was resumed", __FUNCTION__);
+}
+
+void CApplication::OnPlayBackSpeedChanged(int iSpeed)
+{
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackSpeedChanged(iSpeed);
+#endif
+
+#ifdef HAS_WEB_SERVER
+  // Let's tell the outside world as well
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+  {
+    CStdString tmp;
+    tmp.Format("broadcastlevel; OnPlayBackSpeedChanged:%i;1",iSpeed);
+    getApplicationMessenger().HttpApi(tmp);
+  }
+#endif
+
+  CLog::Log(LOGDEBUG, "%s - Playback speed changed", __FUNCTION__);
+}
+
+void CApplication::OnPlayBackSeek(int iTime)
+{
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackSeek(iTime);
+#endif
+
+#ifdef HAS_WEB_SERVER
+  // Let's tell the outside world as well
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+  {
+    CStdString tmp;
+    tmp.Format("broadcastlevel; OnPlayBackSeek:%i;1",iTime);
+    getApplicationMessenger().HttpApi(tmp);
+  }
+#endif
+
+  CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
+}
+
+void CApplication::OnPlayBackSeekChapter(int iChapter)
+{
+#ifdef HAS_PYTHON
+  g_pythonParser.OnPlayBackSeekChapter(iChapter);
+#endif
+
+#ifdef HAS_WEB_SERVER
+  // Let's tell the outside world as well
+  if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+  {
+    CStdString tmp;
+    tmp.Format("broadcastlevel; OnPlayBackSkeekChapter:%i;1",iChapter);
+    getApplicationMessenger().HttpApi(tmp);
+  }
+#endif
+
+  CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
+}
+
 bool CApplication::IsPlaying() const
 {
   if (!m_pPlayer)
@@ -4054,7 +4137,16 @@ void CApplication::SaveFileState()
         {
           videodatabase.AddBookMarkToFile(progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
         }
-
+        if ((m_progressTrackingItem->IsDVDImage() ||
+             m_progressTrackingItem->IsDVDFile()    ) &&
+             m_progressTrackingItem->HasVideoInfoTag() &&
+             m_progressTrackingItem->GetVideoInfoTag()->HasStreamDetails())
+        {
+          videodatabase.SetStreamDetailsForFile(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails,progressTrackingFile);
+          CUtil::DeleteVideoDatabaseDirectoryCache();
+          CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
+          g_windowManager.SendMessage(message);
+        }
         videodatabase.Close();
       }
     }
@@ -4085,10 +4177,6 @@ void CApplication::SaveFileState()
 
 void CApplication::UpdateFileState()
 {
-  // No resume for livetv
-  if (m_progressTrackingItem->IsLiveTV())
-    return;
-
   // Did the file change?
   if (m_progressTrackingItem->m_strPath != "" && m_progressTrackingItem->m_strPath != CurrentFile())
   {
@@ -4117,6 +4205,14 @@ void CApplication::UpdateFileState()
 
     if (m_progressTrackingItem->IsVideo())
     {
+      if ((m_progressTrackingItem->IsDVDImage() ||
+           m_progressTrackingItem->IsDVDFile()    ) &&
+          m_pPlayer->GetTotalTime() > 15*60)
+
+      {
+        m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.Reset();
+        m_pPlayer->GetStreamDetails(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails);
+      }
       // Update bookmark for save
       m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
       m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
@@ -4306,7 +4402,7 @@ void CApplication::CheckScreenSaverAndDPMS()
       && g_guiSettings.GetString("screensaver.mode") != "None";
   bool maybeDPMS =
       !m_dpmsIsActive && m_dpms->IsSupported()
-      && g_guiSettings.GetInt("screensaver.powersavingtime") > 0;
+      && g_guiSettings.GetInt("powermanagement.displaysoff") > 0;
 
   // Has the screen saver window become active?
   if (maybeScreensaver && g_windowManager.IsWindowActive(WINDOW_SCREENSAVER))
@@ -4331,7 +4427,7 @@ void CApplication::CheckScreenSaverAndDPMS()
 
   // DPMS has priority (it makes the screensaver not needed)
   if (maybeDPMS
-      && elapsed > g_guiSettings.GetInt("screensaver.powersavingtime") * 60)
+      && elapsed > g_guiSettings.GetInt("powermanagement.displaysoff") * 60)
   {
     m_dpms->EnablePowerSaving(m_dpms->GetSupportedModes()[0]);
     m_dpmsIsActive = true;
@@ -4407,7 +4503,7 @@ void CApplication::CheckShutdown()
     return;
   }
 
-  if ( m_shutdownTimer.GetElapsedSeconds() > g_guiSettings.GetInt("system.shutdowntime") * 60 )
+  if ( m_shutdownTimer.GetElapsedSeconds() > g_guiSettings.GetInt("powermanagement.shutdowntime") * 60 )
   {
     // Since it is a sleep instead of a shutdown, let's set everything to reset when we wake up.
     m_shutdownTimer.Stop();
@@ -4742,9 +4838,9 @@ void CApplication::ProcessSlow()
 
   // Check if we need to shutdown (if enabled).
 #ifdef __APPLE__
-  if (g_guiSettings.GetInt("system.shutdowntime") && g_advancedSettings.m_fullScreen)
+  if (g_guiSettings.GetInt("powermanagement.shutdowntime") && g_advancedSettings.m_fullScreen)
 #else
-  if (g_guiSettings.GetInt("system.shutdowntime"))
+  if (g_guiSettings.GetInt("powermanagement.shutdowntime"))
 #endif
   {
     CheckShutdown();

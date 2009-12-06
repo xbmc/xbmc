@@ -17,6 +17,51 @@
   </dvd>
 
   <regions>
+    <region name="France">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>GMT+1</timezone>
+    </region>
+
+    <region name="Belgique">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>GMT+1</timezone>
+    </region>
+
+    <region name="Luxembourg">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>GMT+1</timezone>
+    </region>
+
+    <region name="Suisse">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>GMT+1</timezone>
+    </region>
+
+    <region name="Canada">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>EST</timezone>
+    </region>
+      
     <!-- For USA timezone is set EST, french lang only: For peoples french  stay in Florida -->
     <region name="USA">
       <dateshort>MM/DD/YYYYY</dateshort>
@@ -35,15 +80,7 @@
       <speedunit>kmh</speedunit>
       <timezone>GMT</timezone>
     </region>
-
-    <region name="Canada">
-      <dateshort>DD/MM/YYYY</dateshort>
-      <datelong>DDDD, D MMMM YYYY</datelong>
-      <time symbolAM="" symbolPM="">H:mm:ss</time>
-      <tempunit>C</tempunit>
-      <speedunit>kmh</speedunit>
-      <timezone>EST</timezone>
-    </region>
+    
   </regions>
 
   <sorttokens>

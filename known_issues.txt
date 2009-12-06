@@ -1,4 +1,4 @@
-Known Issues for the 9.04 'Babylon' Release of XBMC
+Known Issues for the 9.11 'Camelot' Release of XBMC
 -------------------------------------------------------------------------------
 ToC
   1) General Issues
@@ -34,9 +34,6 @@ eachother.
 
 *) DVD images created in a non-standard way (ie. no menus, vob files >1GB) may
 hang at the end of playback or not start at all.
-
-*) Some files that are larger the 2GB will exhibit problems with seeking, fast
-fast-forward and rewind past the 2GB point.
 
 --- Linux Specific Issues -----------------------------------------------------
 *) PulseAudio can cause various audio related problems for XBMC.  It is advised

@@ -47,6 +47,8 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
 {
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load()) return false;
 
+  m_dllAvCodec.avcodec_register_all();
+
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;

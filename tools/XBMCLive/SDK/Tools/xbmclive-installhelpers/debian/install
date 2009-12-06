@@ -1,0 +1,3 @@
+finish-install.d usr/lib
+live-installer.d usr/lib
+post-base-installer.d usr/lib

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -98,6 +98,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				AdditionalManifestFiles="DeclareDPIAware.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -190,6 +191,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				AdditionalManifestFiles="DeclareDPIAware.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -289,6 +291,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				AdditionalManifestFiles="DeclareDPIAware.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -382,6 +385,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				AdditionalManifestFiles="DeclareDPIAware.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -1250,10 +1254,6 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleLineCollection.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParser.cpp"
 						>
 					</File>
 					<File
@@ -3067,14 +3067,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\RegExp.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\RssFeed.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\RssFeed.h"
 					>
 				</File>
 				<File

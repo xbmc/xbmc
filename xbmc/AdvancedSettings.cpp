@@ -130,7 +130,7 @@ void CAdvancedSettings::Initialize()
   m_cachePath = "special://temp/";
   m_displayRemoteCodes = false;
 
-  m_videoCleanDateTimeRegExp = "(.+[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
+  m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
 
   m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvd5|dvd9|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
   m_videoCleanStringRegExps.push_back("(\\[.*\\])");
@@ -139,11 +139,11 @@ void CAdvancedSettings::Initialize()
   m_moviesExcludeFromScanRegExps.push_back("[-._ ]sample");
   m_tvshowExcludeFromScanRegExps.push_back("[-._ ]sample[-._ ]");
 
-  m_videoStackRegExps.push_back("(.*?)([ _.-]?(?:cd|dvd|p(?:ar)t|dis[ck])[ _.-]*[1-4a-d]+)(.*?)(\\.[^.]+)$");
-  m_videoStackRegExps.push_back("(.*?)([ ._-]?[a-d])([ ._-]?.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)t)|dis[ck]|d)[ _.-]*[0-9a-d]+)(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ ._-]*[a-d])(.*?)(\\.[^.]+)$");
   // This one is a bit too greedy to enable by default.  It will stack sequels
   // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
-  //m_videoStackRegExps.push_back("(.*?)([ ._-]?[0-9])([ ._-]?.*?)(\\.[^.]+)$");
+  //m_videoStackRegExps.push_back("(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$");
 
   // foo_[s01]_[e01]
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
@@ -158,7 +158,7 @@ void CAdvancedSettings::Initialize()
   // foo.103*, 103 foo
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
 
-  m_tvshowMultiPartStackRegExp = "^[-EeXx]+([0-9]+)";
+  m_tvshowMultiPartStackRegExp = "^[-EeXx]+([0-9]+[^ip])";
 
   m_remoteRepeat = 480;
   m_controllerDeadzone = 0.2f;
@@ -221,7 +221,7 @@ void CAdvancedSettings::Initialize()
 
   m_curlconnecttimeout = 10;
   m_curllowspeedtime = 5;
-  m_curlretries = 3;
+  m_curlretries = 2;
 
   m_fullScreen = m_startFullScreen = false;
 
@@ -229,7 +229,7 @@ void CAdvancedSettings::Initialize()
   m_playlistTimeout = 20; // 20 seconds timeout
   m_GLRectangleHack = false;
   m_iSkipLoopFilter = 0;
-  m_sleepBeforeFlip = true;    // test for Alpha2 - always have this enabled.
+  m_sleepBeforeFlip = 0;
   m_bVirtualShares = true;
 
 //caused lots of jerks
@@ -250,6 +250,8 @@ void CAdvancedSettings::Initialize()
 #endif
 
   m_bgInfoLoaderMaxThreads = 5;
+
+  m_measureRefreshrate = false;
 }
 
 bool CAdvancedSettings::Load()
@@ -481,7 +483,7 @@ bool CAdvancedSettings::Load()
   { // read the loglevel setting, so set the setting advanced to hide it in GUI
     // as altering it will do nothing - we don't write to advancedsettings.xml
     XMLUtils::GetInt(pRootElement, "loglevel", m_logLevelHint, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
-    CSettingBool *setting = (CSettingBool *)g_guiSettings.GetSetting("system.debuglogging");
+    CSettingBool *setting = (CSettingBool *)g_guiSettings.GetSetting("debug.showloginfo");
     if (setting)
     {
       const char* hide;
@@ -510,7 +512,7 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
 
-  XMLUtils::GetBoolean(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip);
+  XMLUtils::GetFloat(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip, 0.0f, 1.0f);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
 
   //Tuxbox
@@ -690,6 +692,8 @@ bool CAdvancedSettings::Load()
 
   XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", m_bgInfoLoaderMaxThreads);
   m_bgInfoLoaderMaxThreads = std::max(1, m_bgInfoLoaderMaxThreads);
+
+  XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in

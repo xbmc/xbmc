@@ -41,6 +41,7 @@
 #include "FileSystem/MultiPathDirectory.h"
 #include "FileSystem/DirectoryCache.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "FileSystem/RSSDirectory.h"
 #include "ThumbnailCache.h"
 #include "FileSystem/RarManager.h"
 #include "FileSystem/CMythDirectory.h"
@@ -183,12 +184,10 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
 
   if (url.GetProtocol() == "rss")
   {
-    url.SetProtocol("http");
-    path = url.Get();
-    CRssFeed feed;
-    feed.Init(path);
-    feed.ReadFeed();
-    strFilename = feed.GetFeedTitle();
+    CRSSDirectory dir;
+    CFileItemList items;
+    if(dir.GetDirectory(strFileNameAndPath, items) && !items.m_strTitle.IsEmpty())
+      return items.m_strTitle;
   }
 
   // LastFM
@@ -243,7 +242,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
     strFilename = g_localizeStrings.Get(20012);
 
   // now remove the extension if needed
-  if (g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
+  if (!g_guiSettings.GetBool("filelists.showextensions") && !bIsFolder)
   {
     RemoveExtension(strFilename);
     return strFilename;
@@ -405,7 +404,8 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     }
   }
 
-  RemoveExtension(strTitleAndYear);
+  if (!bIsFolder)
+    RemoveExtension(strTitleAndYear);
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
@@ -449,7 +449,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     strTitleAndYear = strTitle + " (" + strYear + ")";
 
   // restore extension if needed
-  if (!g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
+  if (g_guiSettings.GetBool("filelists.showextensions") && !bIsFolder)
     strTitleAndYear += strExtension;
 
 }
@@ -814,14 +814,19 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
 {
   if(IsMultiPath(strPath))
     return CUtil::IsOnLAN(CMultiPathDirectory::GetFirstPath(strPath));
+
   if(IsStack(strPath))
     return CUtil::IsOnLAN(CStackDirectory::GetFirstStackedFile(strPath));
+
   if(IsSpecial(strPath))
     return CUtil::IsOnLAN(CSpecialProtocol::TranslatePath(strPath));
+
   if(IsDAAP(strPath))
     return true;
+
   if(IsTuxBox(strPath))
     return true;
+
   if(IsUPnP(strPath))
     return true;
 
@@ -857,9 +862,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
     // check if we are on the local subnet
     if (!g_application.getNetwork().GetFirstConnectedInterface())
       return false;
-    unsigned long subnet = ntohl(inet_addr(g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentNetmask()));
-    unsigned long local  = ntohl(inet_addr(g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress()));
-    if( (address & subnet) == (local & subnet) )
+    if (g_application.getNetwork().HasInterfaceForIP(address))
       return true;
   }
   return false;
@@ -867,8 +870,25 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
 
 bool CUtil::IsMultiPath(const CStdString& strPath)
 {
-  if (strPath.Left(12).Equals("multipath://")) return true;
-  return false;
+  CURL url(strPath);
+
+  return url.GetProtocol() == "multipath";
+}
+
+bool CUtil::IsHD(const CStdString& strFileName)
+{
+  CURL url(strFileName);
+
+  if (IsSpecial(strFileName))
+    return IsHD(CSpecialProtocol::TranslatePath(strFileName));
+
+  if(IsStack(strFileName))
+    return IsHD(CStackDirectory::GetFirstStackedFile(strFileName));
+
+  if (IsInArchive(strFileName))
+    return IsHD(url.GetHostName());
+
+  return url.IsLocal();
 }
 
 bool CUtil::IsDVD(const CStdString& strFile)
@@ -888,14 +908,16 @@ bool CUtil::IsDVD(const CStdString& strFile)
 
 bool CUtil::IsVirtualPath(const CStdString& strFile)
 {
-  if (strFile.Left(14).Equals("virtualpath://")) return true;
-  return false;
+  CURL url(strFile);
+
+  return url.GetProtocol() == "virtualpath";
 }
 
 bool CUtil::IsStack(const CStdString& strFile)
 {
-  if (strFile.Left(8).Equals("stack://")) return true;
-  return false;
+  CURL url(strFile);
+
+  return url.GetProtocol() == "stack";
 }
 
 bool CUtil::IsRAR(const CStdString& strFile)
@@ -905,8 +927,10 @@ bool CUtil::IsRAR(const CStdString& strFile)
 
   if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001"))
     return true;
+  
   if (strExtension.CompareNoCase(".cbr") == 0)
     return true;
+  
   if (strExtension.CompareNoCase(".rar") == 0)
     return true;
 
@@ -921,12 +945,14 @@ bool CUtil::IsInArchive(const CStdString &strFile)
 bool CUtil::IsInZIP(const CStdString& strFile)
 {
   CURL url(strFile);
+
   return url.GetProtocol() == "zip" && url.GetFileName() != "";
 }
 
 bool CUtil::IsInRAR(const CStdString& strFile)
 {
   CURL url(strFile);
+
   return url.GetProtocol() == "rar" && url.GetFileName() != "";
 }
 
@@ -934,14 +960,25 @@ bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
 {
   CStdString strExtension;
   CUtil::GetExtension(strFile,strExtension);
-  if (strExtension.CompareNoCase(".zip") == 0) return true;
-  if (strExtension.CompareNoCase(".cbz") == 0) return true;
+
+  if (strExtension.CompareNoCase(".zip") == 0)
+    return true;
+
+  if (strExtension.CompareNoCase(".cbz") == 0)
+    return true;
+
   return false;
 }
 
 bool CUtil::IsSpecial(const CStdString& strFile)
 {
-  CURL url(strFile);
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  CURL url(strFile2);
+
   return url.GetProtocol().Equals("special");
 }
 
@@ -960,7 +997,7 @@ bool CUtil::IsPluginRoot(const CStdString& strFile)
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("cdda") && !url.GetFileName().IsEmpty();
+  return url.GetProtocol().Equals("cdda");
 }
 
 bool CUtil::IsISO9660(const CStdString& strFile)
@@ -971,9 +1008,28 @@ bool CUtil::IsISO9660(const CStdString& strFile)
 
 bool CUtil::IsSmb(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("iso9660");
-  return strFile.Left(4).Equals("smb:");
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  CURL url(strFile2);
+
+  return url.GetProtocol().Equals("smb");
+}
+
+bool CUtil::IsFTP(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  CURL url(strFile2);
+
+  return url.GetProtocol() == "ftp"  ||
+         url.GetProtocol() == "ftpx" ||
+         url.GetProtocol() == "ftps";
 }
 
 bool CUtil::IsDAAP(const CStdString& strFile)
@@ -1044,6 +1100,11 @@ bool CUtil::IsLastFM(const CStdString& strFile)
 {
   CURL url(strFile);
   return url.GetProtocol().Equals("lastfm");
+}
+
+bool CUtil::IsWritable(const CStdString& strFile)
+{
+  return ( IsHD(strFile) || IsSmb(strFile) ) && !IsDVD(strFile);
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
@@ -1230,12 +1291,6 @@ void CUtil::RemoveTempFiles()
       CFile::Delete(CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), wfd.cFileName));
   }
   while (FindNextFile(hFind, &wfd));
-}
-
-bool CUtil::IsHD(const CStdString& strFileName)
-{
-  CURL url(_P(strFileName));
-  return url.IsLocal();
 }
 
 void CUtil::ClearSubtitles()
@@ -1866,7 +1921,7 @@ void CUtil::TakeScreenshot()
 
   bool promptUser = false;
   // check to see if we have a screenshot folder yet
-  CStdString strDir = g_guiSettings.GetString("system.screenshotpath", false);
+  CStdString strDir = g_guiSettings.GetString("debug.screenshotpath", false);
   if (strDir.IsEmpty())
   {
     strDir = "special://temp/";
@@ -1890,7 +1945,7 @@ void CUtil::TakeScreenshot()
         screenShots.push_back(file);
       if (promptUser)
       { // grab the real directory
-        CStdString newDir = g_guiSettings.GetString("system.screenshotpath");
+        CStdString newDir = g_guiSettings.GetString("debug.screenshotpath");
         if (!newDir.IsEmpty())
         {
           for (unsigned int i = 0; i < screenShots.size(); i++)
@@ -2006,9 +2061,9 @@ void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
     result->st_size = 0;
     CLog::Log(LOGWARNING, "WARNING: File is larger than 32bit stat can handle, file size will be reported as 0 bytes");
   }
-  result->st_atime = (time_t)stat->st_atime;
-  result->st_mtime = (time_t)stat->st_mtime;
-  result->st_ctime = (time_t)stat->st_ctime;
+  result->st_atime = (time_t)(stat->st_atime & 0xFFFFFFFF);
+  result->st_mtime = (time_t)(stat->st_mtime & 0xFFFFFFFF);
+  result->st_ctime = (time_t)(stat->st_ctime & 0xFFFFFFFF);
 }
 
 bool CUtil::CreateDirectoryEx(const CStdString& strPath)
@@ -2527,14 +2582,6 @@ int CUtil::GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew)
     }
   }
   return iHourUTC;
-}
-
-bool CUtil::IsFTP(const CStdString& strFile)
-{
-  if( strFile.Left(6).Equals("ftp://") ) return true;
-  else if( strFile.Left(7).Equals("ftpx://") ) return true;
-  else if( strFile.Left(7).Equals("ftps://") ) return true;
-  else return false;
 }
 
 void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories)

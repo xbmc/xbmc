@@ -374,9 +374,11 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
   // debug
   CLog::Log(LOGDEBUG, "Activating window ID: %i", iWindowID);
 
-  if(!g_passwordManager.CheckMenuLock(iWindowID))
+  if (!g_passwordManager.CheckMenuLock(iWindowID))
   {
     CLog::Log(LOGERROR, "MasterCode is Wrong: Window with id %d will not be loaded! Enter a correct MasterCode!", iWindowID);
+    if (GetActiveWindow() == WINDOW_INVALID && iWindowID != WINDOW_HOME)
+      ActivateWindow(WINDOW_HOME);
     return;
   }
 

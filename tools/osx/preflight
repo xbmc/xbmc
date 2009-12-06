@@ -107,11 +107,6 @@ sub get_default_sources {
     if ( get_os() eq "osx" ) {
 
         # Default sources for OS X
-        for my $key ( keys %$sources ) {
-            $sources->{$key}->{'Volumes'} = "/Volumes";
-            $sources->{$key}->{'Desktop'} = "$home/Desktop";
-        }
-        
         $sources->{'music'}->{'Music'} = $home."/Music";
         $sources->{'music'}->{'Music Playlists'} = "special://musicplaylists";
         $sources->{'video'}->{'Movies'} = $home."/Movies";

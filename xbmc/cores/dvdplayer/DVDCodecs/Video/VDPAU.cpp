@@ -32,7 +32,7 @@
 #include "GUISettings.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
-CVDPAU*          g_VDPAU;
+CVDPAU*          g_VDPAU=NULL;
 
 CVDPAU::Desc decoder_profiles[] = {
 {"MPEG1",        VDP_DECODER_PROFILE_MPEG1},
@@ -60,8 +60,6 @@ CVDPAU::CVDPAU(int width, int height)
   glXReleaseTexImageEXT = NULL;
   vdp_device = NULL;
   dl_handle  = NULL;
-  dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
-  if (!dl_handle) return;
   surfaceNum      = presentSurfaceNum = 0;
   picAge.b_age    = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   vdpauConfigured = vdpauInited = false;
@@ -81,6 +79,13 @@ CVDPAU::CVDPAU(int width, int height)
   vid_width = vid_height = OutWidth = OutHeight = 0;
   memset(&outRect, 0, sizeof(VdpRect));
   memset(&outRectVid, 0, sizeof(VdpRect));
+
+  dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
+  if (!dl_handle) 
+  {
+    CLog::Log(LOGNOTICE,"(VDPAU) unable to get handle to libvdpau");
+    return;
+  }
   
   InitVDPAUProcs();
 
@@ -102,7 +107,7 @@ CVDPAU::CVDPAU(int width, int height)
 CVDPAU::~CVDPAU()
 {
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
-  if (m_glPixmap)
+  if (m_glPixmap && m_bPixmapCreated)
   {
     CLog::Log(LOGINFO, "GLX: Destroying glPixmap");
     glXDestroyPixmap(m_Display, m_glPixmap);
@@ -211,6 +216,8 @@ bool CVDPAU::MakePixmap(int width, int height)
       CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
       status = false;
     }
+    else
+      m_bPixmapCreated = true;
   }
   else
   {
@@ -218,7 +225,6 @@ bool CVDPAU::MakePixmap(int width, int height)
     status = false;
   }
   XFree(fbConfigs);
-  m_bPixmapCreated = true;
   return status;
 }
 
@@ -431,6 +437,7 @@ void CVDPAU::SetSharpness()
 void CVDPAU::SetHWUpscaling()
 {
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+/* Disabled for 9.11
   CLog::Log(LOGNOTICE,"Enabling VDPAU HQ Upscaling");
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
   VdpStatus vdp_st;
@@ -447,6 +454,7 @@ void CVDPAU::SetHWUpscaling()
   VdpBool enabled[]={1};
   vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
+*/
 #endif
 }
 
@@ -938,7 +946,6 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
                        totalAvailableOutputSurfaces,
                        tmpMaxOutputSurfaces,
                        NUM_OUTPUT_SURFACES);
-  assert(totalAvailableOutputSurfaces > 0);
 
   surfaceNum = presentSurfaceNum = 0;
   outputSurface = outputSurfaces[surfaceNum];
@@ -986,7 +993,7 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
   CVDPAU*               vdp        = ctx->GetContextVDPAU();
   struct pictureAge*    pA         = &vdp->picAge;
-
+  
   vdpau_render_state * render = NULL;
 
   vdp->Create(avctx->width,avctx->height);

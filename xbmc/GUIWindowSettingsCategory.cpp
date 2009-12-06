@@ -448,10 +448,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
     }
-    else if (strSetting.Equals("musiclibrary.defaultscraper"))
+    else if (strSetting.Equals("musiclibrary.scraper"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("musiclibrary.defaultscraper"), CONTENT_ALBUMS);
+      FillInScrapers(pControl, g_guiSettings.GetString("musiclibrary.scraper"), CONTENT_ALBUMS);
     }
     else if (strSetting.Equals("scrapers.moviedefault"))
     {
@@ -595,6 +595,20 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
 #endif
     }
+    else if (strSetting.Equals("services.webserverport"))
+    {
+#ifdef HAS_WEB_SERVER
+      CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+      control->SetDelayed();
+#endif
+    }
+    else if (strSetting.Equals("services.esport"))
+    {
+#ifdef HAS_EVENT_SERVER
+      CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+      control->SetDelayed();
+#endif
+    }
     else if (strSetting.Equals("network.assignment"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -603,6 +617,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(717), NETWORK_STATIC);
       pControl->AddLabel(g_localizeStrings.Get(787), NETWORK_DISABLED);
       pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("network.httpproxyport"))
+    {
+      CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+      control->SetDelayed();
     }
     else if (strSetting.Equals("subtitles.style"))
     {
@@ -744,18 +763,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
       pControl->SetValue(pSettingInt->GetData());
     }
-#if defined (__APPLE__) || defined (_WIN32)
-    else if (strSetting.Equals("videoscreen.displayblanking"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(13131), BLANKING_DISABLED);
-      pControl->AddLabel(g_localizeStrings.Get(13132), BLANKING_ALL_DISPLAYS);
-      pControl->SetValue(pSettingInt->GetData());
-    }
-#endif
 #ifdef __APPLE__
-    else if (strSetting.Equals("appleremote.mode"))
+    else if (strSetting.Equals("input.appleremotemode"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -766,7 +775,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
     }
 #endif
-    else if (strSetting.Equals("system.shutdownstate"))
+    else if (strSetting.Equals("powermanagement.shutdownstate"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -787,27 +796,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
 
       pControl->SetValue(pSettingInt->GetData());
     }
-#if defined(_LINUX) && !defined(__APPLE__)
-    else if (strSetting.Equals("system.powerbuttonaction"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      
-      pControl->AddLabel(g_localizeStrings.Get(231), POWERSTATE_NONE);
-      pControl->AddLabel(g_localizeStrings.Get(12020), POWERSTATE_ASK);
-
-      if (g_powerManager.CanPowerdown())
-        pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
-
-      if (g_powerManager.CanHibernate())
-        pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
-
-      if (g_powerManager.CanSuspend())
-        pControl->AddLabel(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
-
-      pControl->SetValue(pSettingInt->GetData());
-    }
-#endif
     else if (strSetting.Equals("videoplayer.rendermethod"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -949,7 +937,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
 #endif
 #if defined(__APPLE__) || defined(_WIN32)
-    else if (strSetting.Equals("videoscreen.displayblanking"))
+    else if (strSetting.Equals("videoscreen.blankdisplays"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
@@ -963,10 +951,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
 #endif
 #ifdef __APPLE__
-    else if (strSetting.Equals("appleremote.mode"))
+    else if (strSetting.Equals("input.appleremotemode"))
     {
       bool cancelled;
-      int remoteMode = g_guiSettings.GetInt("appleremote.mode");
+      int remoteMode = g_guiSettings.GetInt("input.appleremotemode");
 
       // if it's not disabled, start the event server or else apple remote won't work
       if ( remoteMode != APPLE_REMOTE_DISABLED )
@@ -982,7 +970,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         {
           // user declined, restore previous spinner state and appleremote mode
           CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-          g_guiSettings.SetInt("appleremote.mode", g_xbmcHelper.GetMode());
+          g_guiSettings.SetInt("input.appleremotemode", g_xbmcHelper.GetMode());
           pControl->SetValue(g_xbmcHelper.GetMode());
         }
         else
@@ -1007,24 +995,24 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetValue(APPLE_REMOTE_DISABLED);
       }
     }
-    else if (strSetting.Equals("appleremote.alwayson"))
+    else if (strSetting.Equals("input.appleremotealwayson"))
      {
        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
        if (pControl)
        {
-         int value = g_guiSettings.GetInt("appleremote.mode");
+         int value = g_guiSettings.GetInt("input.appleremotemode");
          if (value != APPLE_REMOTE_DISABLED)
            pControl->SetEnabled(true);
          else
            pControl->SetEnabled(false);
        }
      }
-     else if (strSetting.Equals("appleremote.sequencetime"))
+     else if (strSetting.Equals("input.appleremotesequencetime"))
      {
        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
        if (pControl)
        {
-         int value = g_guiSettings.GetInt("appleremote.mode");
+         int value = g_guiSettings.GetInt("input.appleremotemode");
          if (value == APPLE_REMOTE_UNIVERSAL)
            pControl->SetEnabled(true);
          else
@@ -1037,7 +1025,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked() || g_passwordManager.bMasterUser);
     }
-    else if (strSetting.Equals("filelists.disableaddsourcebuttons"))
+    else if (strSetting.Equals("filelists.showaddsourcebuttons"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser);
@@ -1302,14 +1290,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.useexternaldvdplayer"));
     }
-    else if (strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("system.screenshotpath"))
+    else if (strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("debug.screenshotpath"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
         pControl->SetLabel2("");
-    }
-    else if (strSetting.Equals("lookandfeel.enablemouse"))
-    {
     }
     else if (strSetting.Equals("lookandfeel.rssedit"))
     {
@@ -1436,7 +1421,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   if (!pSettingControl->OnClick())
   {
     UpdateSettings();
-    return;
+    if (!pSettingControl->IsDelayed())
+      return;
   }
 
   if (pSettingControl->IsDelayed())
@@ -1475,9 +1461,9 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     else
       pSettingString->SetData(pControl->GetCurrentLabel());
   }
-  else if (strSetting.Equals("system.debuglogging"))
+  else if (strSetting.Equals("debug.showloginfo"))
   {
-    if (g_guiSettings.GetBool("system.debuglogging"))
+    if (g_guiSettings.GetBool("debug.showloginfo"))
     {
       int level = std::max(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
       g_advancedSettings.m_logLevel = level;
@@ -1538,7 +1524,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CUtil::DeleteMusicDatabaseDirectoryCache();
   }
   //TODO remove duplication
-  else if (strSetting.Equals("musiclibrary.defaultscraper"))
+  else if (strSetting.Equals("musiclibrary.scraper"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_ALBUMS);
@@ -1685,7 +1671,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (cancelled)
       return;
 
-    if (thumbs)
+    if (thumbs && strSetting.Equals("videolibrary.export"))
       actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20436,-1,-1,cancelled);
     if (cancelled)
       return;
@@ -1857,7 +1843,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
 #endif
 #ifdef HAS_LCD
-  else if (strSetting.Equals("system.haslcd"))
+  else if (strSetting.Equals("videoscreen.haslcd"))
   {
     g_lcd->Stop();
     CLCDFactory factory;
@@ -1870,17 +1856,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
             strSetting.Equals("services.webserverusername") || strSetting.Equals("services.webserverpassword"))
   {
     if (strSetting.Equals("services.webserverport"))
-    {
-      CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
-      // check that it's a valid port
-      int port = atoi(pSetting->GetData().c_str());
-      if (port <= 0 || port > 65535)
-#ifndef _LINUX
-        pSetting->SetData("80");
-#else
-        pSetting->SetData((geteuid() == 0)? "80" : "8080");
-#endif
-    }
+      ValidatePortNumber(pSettingControl, "8080", "80");
 #ifdef HAS_WEB_SERVER
     g_application.StopWebServer(true);
     if (g_guiSettings.GetBool("services.webserver"))
@@ -1919,11 +1895,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
   else if (strSetting.Equals("network.httpproxyport"))
   {
-    CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
-    // check that it's a valid port
-    int port = atoi(pSetting->GetData().c_str());
-    if (port <= 0 || port > 65535)
-      pSetting->SetData("8080");
+    ValidatePortNumber(pSettingControl, "8080", "8080", false);
   }
   else if (strSetting.Equals("videoplayer.calibrate") || strSetting.Equals("videoscreen.guicalibration"))
   { // activate the video calibration screen
@@ -2064,9 +2036,9 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
     g_audioManager.Load();
   }
-  else if (strSetting.Equals("lookandfeel.enablemouse"))
+  else if (strSetting.Equals("input.enablemouse"))
   {
-    g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
+    g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
   }
   else if (strSetting.Equals("videoscreen.screenmode"))
   { // new resolution choosen... - update if necessary
@@ -2199,7 +2171,9 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_pictureSources, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
+    VECSOURCES shares = g_settings.m_pictureSources;
+    g_mediaManager.GetLocalDrives(shares);
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
   else if (strSetting.Equals("screensaver.manage"))
@@ -2214,7 +2188,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       CAddonMgr::Get()->LoadAddonsXML(ADDON_SCREENSAVER);
     }
   }
-  else if (strSetting.Equals("system.screenshotpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("subtitles.custompath"))
+  else if (strSetting.Equals("debug.screenshotpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("subtitles.custompath"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = g_guiSettings.GetString(strSetting,false);
@@ -2325,21 +2299,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("services.esport"))
   {
 #ifdef HAS_EVENT_SERVER
-    CStdString port_string = g_guiSettings.GetString("services.esport");
-    int port = 0;
-    if(port_string.length() == 0)
-    {
-      CLog::Log(LOGERROR, "ES: No port specified, defaulting to 9777");
-      g_guiSettings.SetString("services.esport", "9777");
-    }
-    else
-      port = atoi(port_string);
-    //verify valid port
-    if (port > 65535 || port < 1)
-    {
-      CLog::Log(LOGERROR, "ES: Invalid port specified %d, defaulting to 9777", port);
-      g_guiSettings.SetString("services.esport", "9777");
-    }
+    ValidatePortNumber(pSettingControl, "9777", "9777");
     //restart eventserver without asking user
     if (g_application.StopEventServer(true, false))
       g_application.StartEventServer();
@@ -3600,10 +3560,6 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
   int k = 0;
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
   {
-    //TODO confirm music vs albums content 
-    //if (parser.GetContent() != content && content == CONTENT_ALBUMS)
-    //  continue;
-
     if ((*it)->Name().Equals(strSelected))
     {
       if (content == CONTENT_ALBUMS) // native strContent would be albums or artists but we're using the same scraper for both
@@ -3856,4 +3812,24 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
       GetSetting("network.essid")->GetSetting()->FromString("");
       GetSetting("network.key")->GetSetting()->FromString("");
    }
+}
+
+void CGUIWindowSettingsCategory::ValidatePortNumber(CBaseSettingControl* pSettingControl, const CStdString& userPort, const CStdString& privPort, bool listening/*=true*/)
+{
+  CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
+  // check that it's a valid port
+  int port = atoi(pSetting->GetData().c_str());
+#ifdef _LINUX
+  if (listening && geteuid() != 0 && (port < 1024 || port > 65535))
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 850, 852, -1);
+    pSetting->SetData(userPort.c_str());
+  }
+  else
+#endif
+  if (port <= 0 || port > 65535)
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 850, 851, -1);
+    pSetting->SetData(privPort.c_str());
+  }
 }

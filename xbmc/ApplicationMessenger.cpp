@@ -152,7 +152,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   {
     case TMSG_SHUTDOWN:
       {
-        switch (g_guiSettings.GetInt("system.shutdownstate"))
+        switch (g_guiSettings.GetInt("powermanagement.shutdownstate"))
         {
           case POWERSTATE_SHUTDOWN:
             Powerdown();
@@ -208,15 +208,6 @@ case TMSG_POWERDOWN:
       break;
 
     case TMSG_RESTART:
-      {
-        g_application.Stop();
-        Sleep(200);
-        g_Windowing.DestroyWindow();
-        g_powerManager.Reboot();
-        exit(66);
-      }
-      break;
-
     case TMSG_RESET:
       {
         g_application.Stop();
@@ -365,7 +356,15 @@ case TMSG_POWERDOWN:
           pSlideShow->Shuffle();
 
         if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
-          g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+        {
+          if(items.Size() == 0)
+          {
+            g_guiSettings.SetString("screensaver.mode", "Dim");
+            g_application.ActivateScreenSaver();
+          }
+          else
+            g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+        }
 
         g_graphicsContext.Unlock();
       }

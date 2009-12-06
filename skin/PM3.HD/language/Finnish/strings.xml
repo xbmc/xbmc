@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
   <!-- Translator: Mika Pirinen -->
-  <!-- Date of translation: 29/6/2009 -->
-  <!-- Finnish strings based on English strings version 20978 -->
+  <!-- Date of translation: 23/11/2009 -->
+  <!-- Finnish strings based on English strings revision 24895 -->
 <strings>
   <string id="31000">Ääni vaimennettu</string>
-  <string id="31001"></string>
+  <string id="31001">Suoritetaan...</string>
   <string id="31002"></string>
   <string id="31003"></string>
   <string id="31004"></string>
@@ -33,7 +33,7 @@
 
   <string id="31026"></string>
   <string id="31027"></string>
-  <string id="31028">DVD:n pienoiskuvat</string>
+  <string id="31028">DVD-pienoiskuvat</string>
   <string id="31029">DVD-luettelo</string>
   <string id="31030">Fanitaide</string>
   <string id="31031">Luettelo</string>
@@ -51,13 +51,12 @@
   <string id="31047">Viimeksi kirjautunut</string>
   <string id="31048">Nykyinen esittäjän[CR]fanitaide kuva[CR][CR]klikkaa vaihtaaksesi</string>
 
-
   <string id="31050"></string>
   <string id="31051"></string>
   <string id="31052"></string>
 
   <!-- Lyrics Script Extra labels -->
-  <string id="31053">xbmc Lyrics</string>
+  <string id="31053">XBMC Lyrics</string>
   <string id="31054">Valitse kappale luettelosta</string>
 
   <!-- Playlist Editor labels -->
@@ -69,7 +68,7 @@
   <string id="31060">Tämä tiedosto on pinottu, valitse osa jonka haluat toistaa.</string>
   
   <!-- Skin Settings labels -->
-  <string id="31100">Tausta-asetukset</string>
+  <string id="31100">Taustan asetukset</string>
   <string id="31101">Päävalikon asetukset</string>
   <string id="31102">Taustat</string>
   <string id="31103">Näytä "Tauko" kuvaesityksessä</string>
@@ -84,6 +83,8 @@
   <string id="31112">Näytä median nimet "Leveät kuvakkeet"-näkymässä</string>
   <string id="31113">Yksittäinen kuva</string>
   <string id="31114">Vaihtuva kuva</string>
+  <string id="31115">Korvaa ääniasetus-painike teksti-TV:llä</string>
+  <string id="31116">Piilota video-tietojen kuvat media näkymissä</string>
 
   <!-- Script Settings labels -->
   <string id="31200">Skripti asetukset</string>
@@ -93,8 +94,8 @@
   <string id="31204">Polku</string>
   <string id="31205"></string>
   <string id="31206"></string>
-  <string id="31207"></string>
-  <string id="31208">Näytä Lyrics-skriptin painike OSD:ssä</string>
+  <string id="31207">Näytä tekstityksen latauspainike videoiden kuvaruutuvalikossa</string>
+  <string id="31208">Näytä Lyrics-skriptin painike musiikin kuvaruutuvalikossa</string>
   <string id="31209">Skriptin pikakäynnistyspainike valikkoon -</string>
 
   <!-- AMT Script Extra labels -->

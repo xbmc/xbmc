@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Translator: Alanwww1-->
+<!--Email: alanwww1@gmail.com-->
+<!--Date of translation: 04/12/2009-->
+<!--$Revision$-->
+
+<strings>
+  <string id="31000">Hangerő némítva</string>
+  <string id="31001">Dolgozom...</string>
+  <string id="31002"></string>
+  <string id="31003"></string>
+  <string id="31004"></string>
+  <string id="31005"></string>
+  <string id="31006"></string>
+  <string id="31007"></string>
+  <string id="31008"></string>
+  <string id="31009"></string>
+  <string id="31010">FANART[CR]KÉP[CR]NEM[CR]ELÉRHETŐ</string>
+  <string id="31011">EPIZÓD[CR]KÉP[CR]NEM[CR]ELÉRHETŐ</string>
+  <string id="31012">EPIZÓD[CR]KÉP[CR]NEM[CR]ELÉRHETŐ</string>
+  <string id="31013"></string>
+  <string id="31014"></string>
+  <string id="31015"></string>
+  <string id="31016"></string>
+  <string id="31017"></string>
+  <string id="31018"></string>
+  <string id="31019"></string>
+
+  <string id="31020">Fejezet cím</string>
+  <string id="31021">Video - Fájlok</string>
+  <string id="31022">Zene - Fájlok</string>
+  <string id="31023"></string>
+  <string id="31024">Oldal</string>
+  <string id="31025">Elemek</string>
+
+  <string id="31026"></string>
+  <string id="31027"></string>
+  <string id="31028">DVD bélyeg</string>
+  <string id="31029">DVD lista</string>
+  <string id="31030">Fanart</string>
+  <string id="31031">Teljes lista</string>
+  <string id="31032">Borító lapozás</string>
+  <string id="31033">Kép bélyeg</string>
+  <string id="31034">Széles ikonok</string>
+
+  <string id="31040">Jelenlegi film[CR]Fanart kép[CR][CR]Click a váltáshoz</string>
+  <string id="31041">Jelenlegi TV show[CR]Fanart kép[CR][CR]Click a váltáshoz</string>
+  <string id="31042">LEJÁTSZVA</string>
+  <string id="31043">MEGÁLLÍTVA</string>
+  <string id="31044">ELŐRETEKERÉS</string>
+  <string id="31045">VISSZATEKERÉS</string>
+  <string id="31046">Üdvözöllek az XBMC-ben  - Jelentkezz be</string>
+  <string id="31047">Legutoljára bejelentkezve</string>
+  <string id="31048">Jelenlegi előadó[CR]Fanart kép[CR][CR]Click a váltáshoz</string>
+
+  <string id="31050"></string>
+  <string id="31051"></string>
+  <string id="31052"></string>
+
+  <!-- Lyrics Script extra feliratok -->
+  <string id="31053">XBMC DALSZÖVEG</string>
+  <string id="31054">Válassz dalt a listáról</string>
+
+  <!-- Játszáslista szerkesztő feliratok -->
+  <string id="31055">Játszási lista megnyitása</string>
+  <string id="31056">Játszási lista mentése</string>
+  <string id="31057">Játszási lista törlése</string>
+  <string id="31058">Rendszer zene fájlok</string>
+  <string id="31059">Aktuális játszási lista</string>
+  <string id="31060">Ez a fájl egyesítve volt, válaszd a részt amelyikből játszani akarsz</string>
+
+  <!-- Skin beállító feliratok -->
+  <string id="31100">Háttér lehetőségek</string>
+  <string id="31101">Sajátképernyő lehetőségek</string>
+  <string id="31102">Hátterek</string>
+  <string id="31103">"Megállítva" mutatása diavetítés közben</string>
+  <string id="31104">Leállítás menü - Hibernálás használata alvás helyett</string>
+  <string id="31105">Médiacímek mutatása a háttérszkennerben</string>
+  <string id="31106">Különféle beállítási lehetőségek</string>
+  <string id="31107">Szkenvonalak eltávolítása a háttérből</string>
+  <string id="31108">Szkenvonalak eltávolítása a háttérből, lejátszás közben</string>
+  <string id="31109">Sajátképernyő hátterek</string>
+  <string id="31110">gomb - Egyedi hátterek</string>
+  <string id="31111">Zeneinfó mutatása dalszövegekkel</string>
+  <string id="31112">Médiacímek mutatása "Széles ikonok" nézetben</string>
+  <string id="31113">Egy darab kép</string>
+  <string id="31114">Több kép</string>
+  <string id="31115">Audiobeállítások gomb cseréje Teletextre</string>
+  <string id="31116">Video-zászló képek elrejtése médianézetekben</string>
+
+  <!-- Script beállító feliratok -->
+  <string id="31200">Egyedi szkript lehetőségek</string>
+  <string id="31201"></string>
+  <string id="31202"></string>
+  <string id="31203">Gombcím megadása</string>
+  <string id="31204">Szkript elérési útvonal</string>
+  <string id="31205"></string>
+  <string id="31206"></string>
+  <string id="31207">Felirat letöltés gomb mutatása az OSD-n</string>
+  <string id="31208">Dalszöveg letöltés gomb mutatása a Video OSD-n</string>
+  <string id="31209">Gyorsindító szkript gomb ehhez -</string>
+
+  <!-- AMT Script Extra feliratok -->
+  <string id="31300">Szereposztás mutatása</string>
+</strings>

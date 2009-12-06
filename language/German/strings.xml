@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: azido-->
-<!--Email: sacknase@freudenkinder.de-->
-<!--Date of translation: 11/10/2009-->
+<!--Translator: Zippolighter-->
+<!--Email: hardrock_zippolighter@hotmail.com-->
+<!--Date of translation: 11/23/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 24476-->
+<!--Based on english strings version 24865-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -52,8 +52,8 @@
   <string id="106">Nein</string>
   <string id="107">Ja</string>
   <string id="108">Diaschau</string>
-  <string id="109">Abbild erstellen</string>
-  <string id="110">Abbild wird erstellt</string>
+  <string id="109">Thumbnail erstellen</string>
+  <string id="110">Thumbnail wird erstellt</string>
   <string id="111">Verknüpfungen</string>
   <string id="112">Pause</string>
   <string id="113">
@@ -99,10 +99,10 @@
   <string id="151">Verbindung:</string>
   <string id="152">Halbduplex</string>
   <string id="153">Vollduplex</string>
-  <string id="154">Laufwerke:</string>
+  <string id="154">Laufwerke</string>
   <string id="155">Laufwerk</string>
   <string id="156">Frei</string>
-  <string id="157">Bildschirm:</string>
+  <string id="157">Bildschirm</string>
   <string id="158">Freier Hauptspeicher</string>
   <string id="159">Keine Verbindung</string>
   <string id="160">Frei</string>
@@ -118,7 +118,7 @@
   <string id="170">Bildwiederholrate anpassen</string>
   <string id="171">
   </string>
-  <string id="172">Veröffentlichung:</string>
+  <string id="172">Veröffentlichung</string>
   <string id="173">
   </string>
   <string id="174">
@@ -155,8 +155,8 @@
   </string>
   <string id="201">
   </string>
-  <string id="202">Beschreibung:</string>
-  <string id="203">Handlung:</string>
+  <string id="202">Beschreibung</string>
+  <string id="203">Handlung</string>
   <string id="204">
   </string>
   <string id="205">Stimmen:</string>
@@ -348,7 +348,7 @@
   <string id="412">Wetter-Informationen können nicht geladen werden</string>
   <string id="413">Manuell</string>
   <string id="414">Keine Info zu diesem Album</string>
-  <string id="415">Lade Abbild...</string>
+  <string id="415">Lade Thumbnail...</string>
   <string id="416">Nicht verfügbar</string>
   <string id="417">Große Symbole</string>
   <string id="418">
@@ -435,7 +435,7 @@
   <string id="494">Übersteuerungsreserve</string>
   <string id="495">Videos in GUI-Auflösung abspielen</string>
   <string id="496">Kalibrierung</string>
-  <string id="497">Dateityp-Erweiterungen ausblenden</string>
+  <string id="497">Dateityp-Erweiterungen anzeigen</string>
   <string id="498">Nach Typ</string>
   <string id="499">Verbindung mit Online-Service nicht möglich</string>
   <string id="500">Fehler beim Herunterladen der Album-Informationen!</string>
@@ -478,7 +478,7 @@
   <string id="541">Album 2</string>
   <string id="542">DVD 2</string>
   <string id="543">DVD</string>
-  <string id="544">Medieninfos</string>
+  <string id="544">Infos</string>
   <string id="545">Audio Ausgabegerät</string>
   <string id="546">Digitales Ausgabegerät für Passthrough</string>
   <string id="547">Keine Biografie für diesen Interpreten</string>
@@ -561,9 +561,9 @@
   <string id="643">Übersteuerung bei Wiedergabeverstärkung vermeiden</string>
   <string id="644">Schwarze Balken entfernen</string>
   <string id="645">Eine große Datei muss entpackt werden. Fortfahren?</string>
-  <string id="646">Titel aus Datenbank entfernen</string>
-  <string id="647">Video-Datenbank exportieren...</string>
-  <string id="648">Video-Datenbank importieren...</string>
+  <string id="646">Aus Datenbank entfernen</string>
+  <string id="647">Videodatenbank exportieren...</string>
+  <string id="648">Videodatenbank importieren...</string>
   <string id="649">Datenbank wird importiert...</string>
   <string id="650">Datenbank wird exportiert...</string>
   <string id="651">Nach Datenbank durchsuchen...</string>
@@ -727,7 +727,7 @@
   <string id="1041">%i Einträge geladen</string>
   <string id="1042">%i von %i Einträgen geladen</string>
   <string id="1043">Programm-Plugins</string>
-  <string id="1044">Setze Plugin-Abbild</string>
+  <string id="1044">Setze Plugin Thumbnail</string>
   <string id="1045">Plugin-Einstellungen</string>
   <string id="1046">Zugangspunkte</string>
   <string id="1047">Andere...</string>
@@ -806,7 +806,7 @@
   <string id="1450">Aktiviere Energiesparmodus bei Leerlauf</string>
   <string id="2050">Länge</string>
   <string id="2100">Script-Fehler! : %s</string>
-  <string id="4501">LCD benutzen</string>
+  <string id="4501">LCD/VFD benutzen</string>
   <string id="10000">Hauptmenü</string>
   <string id="10001">Programme</string>
   <string id="10002">Bilder</string>
@@ -1095,7 +1095,7 @@
   <string id="13303">Schriftart</string>
   <string id="13304">Links-/Rechtsläufige Zeichenfolgen ermöglichen</string>
   <string id="13305">RSS-Newsfeeds aktivieren</string>
-  <string id="13306">Symbol zum übergeordneten Ordner ausblenden</string>
+  <string id="13306">Symbol zum übergeordneten Ordner anzeigen</string>
   <string id="13307">Formatvorlage für Musiktitel-Dateinamen</string>
   <string id="13308">Soll das System neu gestartet werden?</string>
   <string id="13309">'Nein' wählen, um nur XBMC neu zu starten.</string>
@@ -1104,8 +1104,8 @@
   <string id="13312">Schwarzen Rand reduzieren</string>
   <string id="13313">Neustart</string>
   <string id="13314">Überblendung</string>
-  <string id="13315">Abbilder neu erstellen</string>
-  <string id="13316">Rekursive Abbilder</string>
+  <string id="13315">Thumbnails neu erstellen</string>
+  <string id="13316">Rekursive Thumbnails</string>
   <string id="13317">Diaschau starten</string>
   <string id="13318">Rekursive Diaschau</string>
   <string id="13319">Zufallsauswahl</string>
@@ -1139,7 +1139,7 @@
   <string id="13348">Film in IMDb suchen...</string>
   <string id="13349">Neue Inhalte suchen</string>
   <string id="13350">Abspielliste anzeigen</string>
-  <string id="13351">Albuminformationen</string>
+  <string id="13351">Album-informationen</string>
   <string id="13352">In Datenbank aufnehmen</string>
   <string id="13353">Aktualisieren abbrechen</string>
   <string id="13354">Render-Methode</string>
@@ -1147,8 +1147,8 @@
   <string id="13356">Hardware-Overlays</string>
   <string id="13357">Shader (hohe Qualität)</string>
   <string id="13358">Abspielen</string>
-  <string id="13359">Interpreten-Abbild setzen</string>
-  <string id="13360">Abbilder automatisch erstellen</string>
+  <string id="13359">Interpreten Bild setzen</string>
+  <string id="13360">Thumbnails automatisch erstellen</string>
   <string id="13361">Spracheingabe aktivieren</string>
   <string id="13375">Gerät verwenden</string>
   <string id="13376">Lautstärke</string>
@@ -1182,7 +1182,7 @@
   <string id="13402">Titelposition anzeigen</string>
   <string id="13403">Standard entfernen</string>
   <string id="13404">Fortsetzen</string>
-  <string id="13405">Cover-Download</string>
+  <string id="13405">Lade Cover</string>
   <string id="13406">Bildinformation</string>
   <string id="13407">%s Voreinstellungen</string>
   <string id="13408">(IMDb Benutzer-Bewertung)</string>
@@ -1231,14 +1231,14 @@
   <string id="14008">
   </string>
   <string id="14009">Spiele-Ordner</string>
-  <string id="14010">Zu Abbildern wechseln basierend auf</string>
-  <string id="14011">Auto-Wechsel zur Abbild-Ansicht aktivieren</string>
+  <string id="14010">Zu Thumbnails wechseln basierend auf</string>
+  <string id="14011">Auto-Wechsel zur Thumbnail-Ansicht aktivieren</string>
   <string id="14012">- Große Symbole verwenden</string>
   <string id="14013">- Wechsel basierend auf</string>
   <string id="14014">- Prozent</string>
-  <string id="14015">keine Dateien &amp; mindestens ein Abbild</string>
-  <string id="14016">mindestens eine Datei und ein Abbild</string>
-  <string id="14017">Abbilder in Prozent</string>
+  <string id="14015">keine Dateien &amp; mindestens ein Thumbnail</string>
+  <string id="14016">mindestens eine Datei und ein Thumbnail</string>
+  <string id="14017">Thumbnails in Prozent</string>
   <string id="14018">Ansichts-Optionen</string>
   <string id="14019">Stadt 1</string>
   <string id="14020">Stadt 2</string>
@@ -1256,7 +1256,8 @@
   <string id="14034">DVD-Cache - DVD-Rom</string>
   <string id="14035">- Lokales Netzwerk</string>
   <string id="14036">Server</string>
-  <string id="14037">Darstellung</string>
+  <string id="14037">
+  </string>
   <string id="14038">Netzwerkeinstellungen wurden geändert</string>
   <string id="14039">XBMC muss neu gestartet werden, damit die Änderung</string>
   <string id="14040">wirksam wird. Soll jetzt neu gestartet werden?</string>
@@ -1278,7 +1279,7 @@
   <string id="14056">Scan unterbrechen</string>
   <string id="14057">Nicht möglich während des Durchsuchens</string>
   <string id="14058">Filmkörnungseffekt</string>
-  <string id="14059">Netzwerkquellen nach Abbildern durchsuchen</string>
+  <string id="14059">Netzwerkquellen nach Thumbnails durchsuchen</string>
   <string id="14060">Unbekannter Typ - Internet</string>
   <string id="14061">Automatisch</string>
   <string id="14062">Bitte Benutzernamen eingeben für</string>
@@ -1304,6 +1305,19 @@
   <string id="14080">Zeitzone</string>
   <string id="14081">Dateilisten</string>
   <string id="14082">EXIF Bildinformationen zeigen</string>
+  <string id="14083">Benutze Vollbild Fenster anstatt echtes Vollbild</string>
+  <string id="14084">Reihenfolge der Lieder nach Auswahl</string>
+  <string id="14085">Musik CDs automatisch wiedergeben</string>
+  <string id="14086">Wiedergabe</string>
+  <string id="14087">DVDs</string>
+  <string id="14088">DVDs automatisch wiedergeben</string>
+  <string id="14089">Schriftart</string>
+  <string id="14090">Sprache &amp; Region</string>
+  <string id="14091">Zeichensatz</string>
+  <string id="14092">Fehlersuche</string>
+  <string id="14093">Sicherheit</string>
+  <string id="14094">Eingabe Geräte</string>
+  <string id="14095">Energiesparmodus</string>
   <string id="15000">
   </string>
   <string id="15001">
@@ -1599,7 +1613,7 @@
   <string id="20016">Aktuelles Cover</string>
   <string id="20017">Lokales Cover</string>
   <string id="20018">Kein Cover</string>
-  <string id="20019">Abbild wählen</string>
+  <string id="20019">Thumbnail wählen</string>
   <string id="20020">
   </string>
   <string id="20021">
@@ -1628,12 +1642,12 @@
   <string id="20052">Achtung!</string>
   <string id="20053">Master-Modus ist deaktiviert.</string>
   <string id="20054">Master-Modus ist aktiviert.</string>
-  <string id="20055">Allmusic.com Abbild</string>
+  <string id="20055">Allmusic.com Thumbnail</string>
   <string id="20056">
   </string>
-  <string id="20057">Abbild entfernen</string>
+  <string id="20057">Thumbnail entfernen</string>
   <string id="20058">Profil hinzufügen...</string>
-  <string id="20059">Info für alle Alben abfragen</string>
+  <string id="20059">Lade alle Alben-Infos</string>
   <string id="20060">Medien-Informationen</string>
   <string id="20061">Eigenständig</string>
   <string id="20062">Wie Hauptbenutzer</string>
@@ -1765,7 +1779,7 @@
   <string id="20189">Aktiviere Auto Scrolling für Handlung &amp; Kritiken</string>
   <string id="20190">Benutzerdefiniert</string>
   <string id="20191">Aktiviere Debug-Logging</string>
-  <string id="20192">Bei Datenbank-Updates zusätzliche Info herunterladen</string>
+  <string id="20192">Zusätzliche Informationen herunterladen</string>
   <string id="20193">
   </string>
   <string id="20194">Standard-Scraper</string>
@@ -1792,7 +1806,7 @@
   <string id="20311">Unbekannt oder OnBoard (geschützt)</string>
   <string id="20312">Während 'Pause' das LCD wieder einschalten</string>
   <string id="20313">Während 'Pause' die LED wieder einschalten</string>
-  <string id="20314">Video-Datenbank</string>
+  <string id="20314">Videodatenbank</string>
   <string id="20315">Spielstände</string>
   <string id="20316">Sortiert nach ID</string>
   <string id="20317">Spielstände herunterladen</string>
@@ -1848,7 +1862,7 @@
   <string id="20366">* Alle Staffeln</string>
   <string id="20367">Gesehene ausbl.</string>
   <string id="20368">Produktions-Code</string>
-  <string id="20369">Handlung bei ungesehenen Filmen verstecken</string>
+  <string id="20369">Handlung bei ungesehenen Filmen anzeigen</string>
   <string id="20370">* Die Handlung wird nicht angezeigt. *</string>
   <string id="20371">Staffel-Cover setzen</string>
   <string id="20372">Staffel-Cover</string>
@@ -1882,8 +1896,8 @@
   <string id="20399">Zu Musikvideos des Albums</string>
   <string id="20400">Zu Musikvideos des Interpreten</string>
   <string id="20401">Musikvideo abspielen</string>
-  <string id="20402">Schauspieler-Abbild automatisch herunterladen</string>
-  <string id="20403">Schauspieler-Abbild setzen</string>
+  <string id="20402">Schauspieler Bilder automatisch herunterladen</string>
+  <string id="20403">Schauspieler Bild setzen</string>
   <string id="20404">
   </string>
   <string id="20405">Episoden-Lesez. entfernen</string>
@@ -1895,7 +1909,7 @@
   <string id="20411">Reduzieren</string>
   <string id="20412">TV-Serien reduzieren</string>
   <string id="20413">Lade Fanart</string>
-  <string id="20414">Zeige Fanart in Video &amp; Musik Datenbanken</string>
+  <string id="20414">Zeige Fanart in Video &amp; Musik-Datenbanken</string>
   <string id="20415">Neue Inhalte suchen</string>
   <string id="20416">Erstausstrahlung</string>
   <string id="20417">Autor</string>
@@ -1915,13 +1929,17 @@
   <string id="20432">Pfad von Aktualisierungen der Bibliothek ausschließen</string>
   <string id="20433">Meta-Informationen aus Medien Dateien extrahieren</string>
   <string id="20434">Zusammenstellungen</string>
-  <string id="20435">Filmzusammenstellungs-Abbild setzen</string>
-  <string id="20436">Schauspieler-Abbilder exportieren</string>
+  <string id="20435">Filmset Bild setzen</string>
+  <string id="20436">Schauspieler Bilder exportieren</string>
   <string id="20437">Fanart wählen</string>
   <string id="20438">Lokale Fanart</string>
   <string id="20439">Keine Fanart</string>
   <string id="20440">Aktuelle Fanart</string>
   <string id="20441">Online-Fanart</string>
+  <string id="20442">Inhalt wechseln</string>
+  <string id="20443">Für alle Inhalt aktualisieren</string>
+  <string id="20444">Einträge im Pfad?</string>
+  <string id="20445">Fanart</string>
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
@@ -1938,8 +1956,8 @@
   <string id="21367">Video- &amp; alternatives Untertitel-Verzeichnis</string>
   <string id="21369">Aktiviere Maus</string>
   <string id="21370">Navigations-Sounds während Medienwiedergabe aktivieren</string>
-  <string id="21371">Abbild</string>
-  <string id="21372">Festgelegte DVD-Player Region</string>
+  <string id="21371">Thumbnail</string>
+  <string id="21372">DVD-Player Region</string>
   <string id="21373">Video-Hardware</string>
   <string id="21374">Bildseitenverhältnis</string>
   <string id="21375">Normal</string>
@@ -1949,7 +1967,7 @@
   <string id="21379">720p-Auflösung aktivieren</string>
   <string id="21380">1080i-Auflösung aktivieren</string>
   <string id="21381">Bitte einen Namen für die Playliste eingeben</string>
-  <string id="21382">'Quelle hinzufügen'-Symbol im Haupt-Ordner ausblenden</string>
+  <string id="21382">'Quelle hinzufügen'-Symbol im Haupt-Ordner anzeigen</string>
   <string id="21383">Scrollbalken aktivieren</string>
   <string id="21384">Filter für 'Gesehen' als Einstellung in Datenbank aktivieren</string>
   <string id="21385">Öffnen</string>
@@ -2073,7 +2091,7 @@
   <string id="21881">UPnP Renderer aktivieren</string>
   <string id="21882">Filmeinleitung vor dem DVD-Menü überspringen</string>
   <string id="21883">Kopierte Audio CDs</string>
-  <string id="21884">Lade Infos für alle Interpreten</string>
+  <string id="21884">Lade alle Interpreten-Infos</string>
   <string id="21885">Lade Album Information</string>
   <string id="21886">Lade Interpreten Information</string>
   <string id="21887">Biografie</string>
@@ -2113,14 +2131,14 @@
   <string id="22021">Erlaube Fehler im Seitenverhältnis (%)</string>
   <string id="22022">Video Dateien in Listen aufnehmen</string>
   <string id="22023">DirectX Anbieter</string>
-  <string id="22024">DirectX Version</string>
+  <string id="22024">Direct3D Version</string>
   <string id="22030">Schriftart</string>
   <string id="22031">- Größe</string>
   <string id="22032">- Farben</string>
   <string id="22033">- Schriftsatz</string>
   <string id="22034">Karaoke-Titel als HTML exportieren</string>
   <string id="22035">Karaoke-Titel als CSV exportieren</string>
-  <string id="22036">Karaoke-Titel importieren</string>
+  <string id="22036">Karaoke-Titel importieren...</string>
   <string id="22037">Titel-Auswahl automatisch öffnen</string>
   <string id="22038">Karaoke-Titel exportieren...</string>
   <string id="22039">Titelnummer eingeben</string>
@@ -2130,7 +2148,8 @@
   <string id="22043">schwarz/weiß</string>
   <string id="23000">Wetter-Plugin</string>
   <string id="23001">- Plugin Einstellungen</string>
-  <string id="23050">Videotext aktivtieren</string>
+  <string id="23050">Videotext aktivieren</string>
+  <string id="23051">Teil</string>
   <string id="23100">External Player ist aktiv</string>
   <string id="23101">Drücke OK um den Player zu beenden</string>
   <string id="23102">
@@ -2213,4 +2232,9 @@
   <string id="33076">Bitte aktualisiere XBMC.</string>
   <string id="33077">Keine Daten gefunden!</string>
   <string id="33078">Nächste Seite</string>
+  <string id="33079">Liebe</string>
+  <string id="33080">Hass</string>
+  <string id="33081">Diese Datei ist gestapelt, wähle den Teil der abgespielt werden soll.</string>
+  <string id="33082">Skriptpfad</string>
+  <string id="33083">Benutzerdefinierten Skript Button aktivieren</string>
 </strings>

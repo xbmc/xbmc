@@ -1160,8 +1160,8 @@ void CPluginShell::PluginQuit()
 void CPluginShell::ReadConfig()
 {
 #if 0
-    int old_ver    = GetPrivateProfileInt("settings","version"   ,-1,m_szConfigIniFile);
-    int old_subver = GetPrivateProfileInt("settings","subversion",-1,m_szConfigIniFile);
+    int old_ver    = InternalGetPrivateProfileInt("settings","version"   ,-1,m_szConfigIniFile);
+    int old_subver = InternalGetPrivateProfileInt("settings","subversion",-1,m_szConfigIniFile);
 
     // nuke old settings from prev. version:
     if (old_ver < INT_VERSION)
@@ -1172,29 +1172,29 @@ void CPluginShell::ReadConfig()
     //D3DMULTISAMPLE_TYPE m_multisample_fullscreen;
     //D3DMULTISAMPLE_TYPE m_multisample_desktop;
     //D3DMULTISAMPLE_TYPE m_multisample_windowed;
-    m_multisample_fullscreen      = (D3DMULTISAMPLE_TYPE)GetPrivateProfileInt("settings","multisample_fullscreen",m_multisample_fullscreen,m_szConfigIniFile);
-    m_multisample_desktop         = (D3DMULTISAMPLE_TYPE)GetPrivateProfileInt("settings","multisample_desktop",m_multisample_desktop,m_szConfigIniFile);
-    m_multisample_windowed        = (D3DMULTISAMPLE_TYPE)GetPrivateProfileInt("settings","multisample_windowed"  ,m_multisample_windowed  ,m_szConfigIniFile);
+    m_multisample_fullscreen      = (D3DMULTISAMPLE_TYPE)InternalGetPrivateProfileInt("settings","multisample_fullscreen",m_multisample_fullscreen,m_szConfigIniFile);
+    m_multisample_desktop         = (D3DMULTISAMPLE_TYPE)InternalGetPrivateProfileInt("settings","multisample_desktop",m_multisample_desktop,m_szConfigIniFile);
+    m_multisample_windowed        = (D3DMULTISAMPLE_TYPE)InternalGetPrivateProfileInt("settings","multisample_windowed"  ,m_multisample_windowed  ,m_szConfigIniFile);
 
     //GUID m_adapter_guid_fullscreen
     //GUID m_adapter_guid_desktop
     //GUID m_adapter_guid_windowed
     char str[256];
-    GetPrivateProfileString("settings","adapter_guid_fullscreen","",str,sizeof(str)-1,m_szConfigIniFile);
+    InternalGetPrivateProfileString("settings","adapter_guid_fullscreen","",str,sizeof(str)-1,m_szConfigIniFile);
     TextToGuid(str, &m_adapter_guid_fullscreen);
-    GetPrivateProfileString("settings","adapter_guid_desktop","",str,sizeof(str)-1,m_szConfigIniFile);
+    InternalGetPrivateProfileString("settings","adapter_guid_desktop","",str,sizeof(str)-1,m_szConfigIniFile);
     TextToGuid(str, &m_adapter_guid_desktop);
-    GetPrivateProfileString("settings","adapter_guid_windowed","",str,sizeof(str)-1,m_szConfigIniFile);
+    InternalGetPrivateProfileString("settings","adapter_guid_windowed","",str,sizeof(str)-1,m_szConfigIniFile);
     TextToGuid(str, &m_adapter_guid_windowed);
 
 	/*
     // FONTS
     #define READ_FONT(n) { \
-        GetPrivateProfileString("settings","szFontFace"#n,m_fontinfo[n].szFace,m_fontinfo[n].szFace,sizeof(m_fontinfo[n].szFace), m_szConfigIniFile); \
-	    m_fontinfo[n].nSize   = GetPrivateProfileInt("settings","nFontSize"#n  ,m_fontinfo[n].nSize  ,m_szConfigIniFile); \
-	    m_fontinfo[n].bBold   = GetPrivateProfileInt("settings","bFontBold"#n  ,m_fontinfo[n].bBold  ,m_szConfigIniFile); \
-	    m_fontinfo[n].bItalic = GetPrivateProfileInt("settings","bFontItalic"#n,m_fontinfo[n].bItalic,m_szConfigIniFile); \
-	    m_fontinfo[n].bAntiAliased = GetPrivateProfileInt("settings","bFontAA"#n,m_fontinfo[n].bItalic,m_szConfigIniFile); \
+        InternalGetPrivateProfileString("settings","szFontFace"#n,m_fontinfo[n].szFace,m_fontinfo[n].szFace,sizeof(m_fontinfo[n].szFace), m_szConfigIniFile); \
+	    m_fontinfo[n].nSize   = InternalGetPrivateProfileInt("settings","nFontSize"#n  ,m_fontinfo[n].nSize  ,m_szConfigIniFile); \
+	    m_fontinfo[n].bBold   = InternalGetPrivateProfileInt("settings","bFontBold"#n  ,m_fontinfo[n].bBold  ,m_szConfigIniFile); \
+	    m_fontinfo[n].bItalic = InternalGetPrivateProfileInt("settings","bFontItalic"#n,m_fontinfo[n].bItalic,m_szConfigIniFile); \
+	    m_fontinfo[n].bAntiAliased = InternalGetPrivateProfileInt("settings","bFontAA"#n,m_fontinfo[n].bItalic,m_szConfigIniFile); \
     } 
     READ_FONT(0);
     READ_FONT(1);
@@ -1216,33 +1216,33 @@ void CPluginShell::ReadConfig()
         READ_FONT(8);
     #endif
 */
-    m_start_fullscreen     = GetPrivateProfileInt("settings","start_fullscreen",m_start_fullscreen,m_szConfigIniFile);
-    m_start_desktop        = GetPrivateProfileInt("settings","start_desktop"   ,m_start_desktop   ,m_szConfigIniFile);
-    m_fake_fullscreen_mode = GetPrivateProfileInt("settings","fake_fullscreen_mode",m_fake_fullscreen_mode,m_szConfigIniFile);
-    m_max_fps_fs           = GetPrivateProfileInt("settings","max_fps_fs",m_max_fps_fs,m_szConfigIniFile);
-    m_max_fps_dm           = GetPrivateProfileInt("settings","max_fps_dm",m_max_fps_dm,m_szConfigIniFile);
-    m_max_fps_w            = GetPrivateProfileInt("settings","max_fps_w" ,m_max_fps_w ,m_szConfigIniFile);
-    m_show_press_f1_msg    = GetPrivateProfileInt("settings","show_press_f1_msg",m_show_press_f1_msg,m_szConfigIniFile);
-    m_allow_page_tearing_w = GetPrivateProfileInt("settings","allow_page_tearing_w",m_allow_page_tearing_w,m_szConfigIniFile);
-    m_allow_page_tearing_fs= GetPrivateProfileInt("settings","allow_page_tearing_fs",m_allow_page_tearing_fs,m_szConfigIniFile);
-    m_allow_page_tearing_dm= GetPrivateProfileInt("settings","allow_page_tearing_dm",m_allow_page_tearing_dm,m_szConfigIniFile);
-    m_minimize_winamp      = GetPrivateProfileInt("settings","minimize_winamp",m_minimize_winamp,m_szConfigIniFile);
-    m_desktop_show_icons   = GetPrivateProfileInt("settings","desktop_show_icons",m_desktop_show_icons,m_szConfigIniFile);
-    m_desktop_textlabel_boxes = GetPrivateProfileInt("settings","desktop_textlabel_boxes",m_desktop_textlabel_boxes,m_szConfigIniFile);
-    m_desktop_manual_icon_scoot = GetPrivateProfileInt("settings","desktop_manual_icon_scoot",m_desktop_manual_icon_scoot,m_szConfigIniFile);
-    m_desktop_555_fix      = GetPrivateProfileInt("settings","desktop_555_fix",m_desktop_555_fix,m_szConfigIniFile);
-    m_dualhead_horz        = GetPrivateProfileInt("settings","dualhead_horz",m_dualhead_horz,m_szConfigIniFile);
-    m_dualhead_vert        = GetPrivateProfileInt("settings","dualhead_vert",m_dualhead_vert,m_szConfigIniFile);
-    m_save_cpu             = GetPrivateProfileInt("settings","save_cpu",m_save_cpu,m_szConfigIniFile);
-    m_skin                 = GetPrivateProfileInt("settings","skin",m_skin,m_szConfigIniFile);
-    m_fix_slow_text        = GetPrivateProfileInt("settings","fix_slow_text",m_fix_slow_text,m_szConfigIniFile);
+    m_start_fullscreen     = InternalGetPrivateProfileInt("settings","start_fullscreen",m_start_fullscreen,m_szConfigIniFile);
+    m_start_desktop        = InternalGetPrivateProfileInt("settings","start_desktop"   ,m_start_desktop   ,m_szConfigIniFile);
+    m_fake_fullscreen_mode = InternalGetPrivateProfileInt("settings","fake_fullscreen_mode",m_fake_fullscreen_mode,m_szConfigIniFile);
+    m_max_fps_fs           = InternalGetPrivateProfileInt("settings","max_fps_fs",m_max_fps_fs,m_szConfigIniFile);
+    m_max_fps_dm           = InternalGetPrivateProfileInt("settings","max_fps_dm",m_max_fps_dm,m_szConfigIniFile);
+    m_max_fps_w            = InternalGetPrivateProfileInt("settings","max_fps_w" ,m_max_fps_w ,m_szConfigIniFile);
+    m_show_press_f1_msg    = InternalGetPrivateProfileInt("settings","show_press_f1_msg",m_show_press_f1_msg,m_szConfigIniFile);
+    m_allow_page_tearing_w = InternalGetPrivateProfileInt("settings","allow_page_tearing_w",m_allow_page_tearing_w,m_szConfigIniFile);
+    m_allow_page_tearing_fs= InternalGetPrivateProfileInt("settings","allow_page_tearing_fs",m_allow_page_tearing_fs,m_szConfigIniFile);
+    m_allow_page_tearing_dm= InternalGetPrivateProfileInt("settings","allow_page_tearing_dm",m_allow_page_tearing_dm,m_szConfigIniFile);
+    m_minimize_winamp      = InternalGetPrivateProfileInt("settings","minimize_winamp",m_minimize_winamp,m_szConfigIniFile);
+    m_desktop_show_icons   = InternalGetPrivateProfileInt("settings","desktop_show_icons",m_desktop_show_icons,m_szConfigIniFile);
+    m_desktop_textlabel_boxes = InternalGetPrivateProfileInt("settings","desktop_textlabel_boxes",m_desktop_textlabel_boxes,m_szConfigIniFile);
+    m_desktop_manual_icon_scoot = InternalGetPrivateProfileInt("settings","desktop_manual_icon_scoot",m_desktop_manual_icon_scoot,m_szConfigIniFile);
+    m_desktop_555_fix      = InternalGetPrivateProfileInt("settings","desktop_555_fix",m_desktop_555_fix,m_szConfigIniFile);
+    m_dualhead_horz        = InternalGetPrivateProfileInt("settings","dualhead_horz",m_dualhead_horz,m_szConfigIniFile);
+    m_dualhead_vert        = InternalGetPrivateProfileInt("settings","dualhead_vert",m_dualhead_vert,m_szConfigIniFile);
+    m_save_cpu             = InternalGetPrivateProfileInt("settings","save_cpu",m_save_cpu,m_szConfigIniFile);
+    m_skin                 = InternalGetPrivateProfileInt("settings","skin",m_skin,m_szConfigIniFile);
+    m_fix_slow_text        = InternalGetPrivateProfileInt("settings","fix_slow_text",m_fix_slow_text,m_szConfigIniFile);
 	m_vj_mode              = GetPrivateProfileBool("settings","vj_mode",m_vj_mode,m_szConfigIniFile);
 
     //D3DDISPLAYMODE m_fs_disp_mode
-    m_disp_mode_fs.Width           = GetPrivateProfileInt("settings","disp_mode_fs_w",m_disp_mode_fs.Width          ,m_szConfigIniFile);
-    m_disp_mode_fs.Height           = GetPrivateProfileInt("settings","disp_mode_fs_h",m_disp_mode_fs.Height          ,m_szConfigIniFile);
-    m_disp_mode_fs.RefreshRate = GetPrivateProfileInt("settings","disp_mode_fs_r",m_disp_mode_fs.RefreshRate,m_szConfigIniFile);
-    m_disp_mode_fs.Format      = (D3DFORMAT)GetPrivateProfileInt("settings","disp_mode_fs_f",m_disp_mode_fs.Format     ,m_szConfigIniFile);
+    m_disp_mode_fs.Width           = InternalGetPrivateProfileInt("settings","disp_mode_fs_w",m_disp_mode_fs.Width          ,m_szConfigIniFile);
+    m_disp_mode_fs.Height           = InternalGetPrivateProfileInt("settings","disp_mode_fs_h",m_disp_mode_fs.Height          ,m_szConfigIniFile);
+    m_disp_mode_fs.RefreshRate = InternalGetPrivateProfileInt("settings","disp_mode_fs_r",m_disp_mode_fs.RefreshRate,m_szConfigIniFile);
+    m_disp_mode_fs.Format      = (D3DFORMAT)InternalGetPrivateProfileInt("settings","disp_mode_fs_f",m_disp_mode_fs.Format     ,m_szConfigIniFile);
 
     // note: we don't call MyReadConfig() yet, because we
     // want to completely finish CPluginShell's preinit (and ReadConfig)

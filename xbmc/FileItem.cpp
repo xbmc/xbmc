@@ -610,6 +610,7 @@ bool CFileItem::IsInternetStream() const
       strProtocol == "http" || /*strProtocol == "ftp" ||*/
       strProtocol == "rtsp" || strProtocol == "rtp" ||
       strProtocol == "udp"  || strProtocol == "lastfm" ||
+      strProtocol == "rss"  ||
       strProtocol == "https" || strProtocol == "rtmp")
     return true;
 
@@ -619,18 +620,17 @@ bool CFileItem::IsInternetStream() const
 bool CFileItem::IsFileFolder() const
 {
   return (
-    m_bIsFolder && (
-    IsPlugin() ||
+   (IsPlugin() && m_bIsFolder) ||
     IsSmartPlayList() ||
-    IsPlayList() ||
+   (IsPlayList() && g_advancedSettings.m_playlistAsFolders) ||
     IsZIP() ||
     IsRAR() ||
+    IsRSS() ||
     IsType(".ogg") ||
     IsType(".nsf") ||
     IsType(".sid") ||
     IsType(".sap") ||
     IsShoutCast()
-    )
     );
 }
 
@@ -723,6 +723,13 @@ bool CFileItem::IsCBZ() const
 bool CFileItem::IsCBR() const
 {
   return CUtil::GetExtension(m_strPath).Equals(".cbr", false);
+}
+
+bool CFileItem::IsRSS() const
+{
+  return m_strPath.Left(6).Equals("rss://", false)
+      || CUtil::GetExtension(m_strPath).Equals(".rss", false)
+      || GetContentType() == "application/rss+xml";
 }
 
 bool CFileItem::IsStack() const
@@ -1367,7 +1374,7 @@ CFileItemPtr CFileItemList::Get(int iItem)
 {
   CSingleLock lock(m_lock);
 
-  if (iItem > -1)
+  if (iItem > -1 && iItem < (int)m_items.size())
     return m_items[iItem];
 
   return CFileItemPtr();
@@ -1377,7 +1384,7 @@ const CFileItemPtr CFileItemList::Get(int iItem) const
 {
   CSingleLock lock(m_lock);
 
-  if (iItem > -1)
+  if (iItem > -1 && iItem < (int)m_items.size())
     return m_items[iItem];
 
   return CFileItemPtr();
@@ -2201,7 +2208,7 @@ void CFileItemList::Stack()
         // item->m_bIsFolder = true;  // don't treat stacked files as folders
         // the label may be in a different char set from the filename (eg over smb
         // the label is converted from utf8, but the filename is not)
-        if (g_guiSettings.GetBool("filelists.hideextensions"))
+        if (!g_guiSettings.GetBool("filelists.showextensions"))
           CUtil::RemoveExtension(stackName);
         item1->SetLabel(stackName);
         item1->m_dwSize = size;
@@ -2465,6 +2472,8 @@ CStdString CFileItem::GetCachedVideoThumb() const
 {
   if (IsStack())
     return GetCachedThumb(CStackDirectory::GetFirstStackedFile(m_strPath),g_settings.GetVideoThumbFolder(),true);
+  else if (IsVideoDb() && HasVideoInfoTag() && !m_bIsFolder)
+    return GetCachedThumb(GetVideoInfoTag()->m_strFileNameAndPath,g_settings.GetVideoThumbFolder(),true);
   else
     return GetCachedThumb(m_strPath,g_settings.GetVideoThumbFolder(),true);
 }
@@ -2481,7 +2490,13 @@ void CFileItem::SetCachedVideoThumb()
 {
   if (IsParentFolder()) return;
   CStdString cachedThumb(GetCachedVideoThumb());
-  if (CFile::Exists(cachedThumb))
+  if (HasVideoInfoTag() && !m_bIsFolder  &&
+      GetVideoInfoTag()->m_iEpisode > -1 &&
+      CFile::Exists(GetCachedEpisodeThumb()))
+  {
+    SetThumbnailImage(GetCachedEpisodeThumb());
+  }
+  else if (CFile::Exists(cachedThumb))
     SetThumbnailImage(cachedThumb);
 }
 

@@ -48,7 +48,7 @@ public:
   bool operator==(const CMediaSource &right) const;
 
   void FromNameAndPaths(const CStdString &category, const CStdString &name, const std::vector<CStdString> &paths);
-  bool isWritable() const;
+  bool IsWritable() const;
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strStatus; ///< Status of the share (eg has disk etc.)
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
@@ -113,3 +113,5 @@ typedef std::vector<CMediaSource> VECSOURCES;
 \sa CMediaSource, VECSOURCES
 */
 typedef std::vector<CMediaSource>::iterator IVECSOURCES;
+
+void AddOrReplace(VECSOURCES& sources, const CMediaSource& source);

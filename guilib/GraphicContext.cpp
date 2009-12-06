@@ -339,10 +339,10 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   if (g_advancedSettings.m_fullScreen)
   {
 #if defined (__APPLE__) || defined (_WIN32)
-    bool blankOtherDisplays = g_guiSettings.GetInt("videoscreen.displayblanking")  == BLANKING_ALL_DISPLAYS;
+    bool blankOtherDisplays = g_guiSettings.GetBool("videoscreen.blankdisplays");
     g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], blankOtherDisplays);
 #else
-    g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], BLANKING_DISABLED);
+    g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], false);
 #endif
   }
   else if (lastRes >= RES_DESKTOP )
@@ -707,17 +707,19 @@ bool CGraphicContext::IsFullScreenRoot () const
 bool CGraphicContext::ToggleFullScreenRoot ()
 {
   RESOLUTION newRes;
-  
+  RESOLUTION uiRes;  ///< resolution to save - not necessarily the same as the one we switch to (e.g. during video playback)
+
   if (m_bFullScreenRoot)
   {
-    newRes = RES_WINDOW;
+    newRes = uiRes = RES_WINDOW;
   }
   else
   {
     if (g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
       newRes = g_guiSettings.m_LookAndFeelResolution;
     else
-      newRes = RES_DESKTOP;      
+      newRes = RES_DESKTOP;
+    uiRes = newRes;
 
 #if defined(HAS_VIDEO_PLAYBACK)
     if (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating())
@@ -728,13 +730,12 @@ bool CGraphicContext::ToggleFullScreenRoot ()
       m_bFullScreenRoot = false;
     }
 #endif
-
   }
 
   SetVideoResolution(newRes);
-  g_guiSettings.SetResolution(newRes);
-  
-  return  m_bFullScreenRoot;
+  g_guiSettings.SetResolution(uiRes);
+
+  return m_bFullScreenRoot;
 }
 
 void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)

@@ -50,10 +50,10 @@ if you are running a previous Xcode 3.x version. Xcode 3.x only runs on 10.5.
 3.1 Install MacPorts 1.7
 -----------------------------------------------------------------------------
 
-These build instructions depend on MacPorts 1.7. If you have another version
-of MacPorts installed, it's best to remove it and install the 1.7 version.
-To remove a previous install of MacPorts, enter the following from a terminal
-windows:
+These build instructions depend on MacPorts 1.7.1 from xbmc-port-depends. 
+If you have another version of MacPorts installed, it's best to remove it and
+install this 1.7.1 version. To remove a previous install of MacPorts, enter the
+following from a terminal windows:
 
  $ sudo rm -rf \
     /opt/local \
@@ -68,17 +68,10 @@ windows:
     /Library/Tcl/darwinports1.0 \
     /Library/Tcl/macports1.0
 
-Install MacPorts 1.7 (see http://code.google.com/p/xbmc-port-depends/). No NOT
+Install MacPorts 1.7.1 (see http://code.google.com/p/xbmc-port-depends/). No NOT
 install the versions from http://www.macports.org, they were hopelessly broke
-for XBMC usage when their devs released MacPorts 1.8. If you are going to run
-under the same OSX version as you build under, just install the required port
-packages without the extra flags. No modifications of MacPorts is required.
-That means skip 1), 2), 3) and 4) below and don't add "+universal" or 
-"macosx_deployment_target=10.4" when installing the ports. 
-
-If you want to build a cross-compiled version that can run under
-10.5/10.4/AppleTV, then change MacPorts's behavior to always build universal
-against 10.4sdk using the following instructions.
+for XBMC usage when their devs released MacPorts 1.8. Change MacPorts's behavior
+to always build universal against 10.4sdk using the following instructions.
 
  1)
    $ sudo nano /opt/local/etc/macports/macports.conf
@@ -93,29 +86,6 @@ against 10.4sdk using the following instructions.
  2) These are needed to build openssl (used by samba3 and mysql5) against 10.4sdk
    $ sudo ln -s /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/dylib1.o /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/dylib1.10.5.o
    $ sudo ln -s /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/crt1.o /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/crt1.10.5.o
-
- 3) samba3 does not have a +universal variant so we force it to build
-libsmbclient in a compatible manner
-
-   $ sudo nano /opt/local/var/macports/sources/rsync.macports.org/release/ports/net/samba3/Portfile
-
-   add the following before "configure.cflags-append "-fno-common";
-
-   configure.ldflags-append "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk"
-
-   change "--enable-cups" to "--disable-cups".
-
- 4) mysql5 thinks we are cross-compiling and appends the cross-compile name to bin/my** apps.
-
-   $ sudo nano /opt/local/var/macports/sources/rsync.macports.org/release/ports/databases/mysql5/Portfile
-
-   scroll down to the post-destroot section and comment out the following
-   three lines like below;
-
-    # Symlink mysql binaries into bin directory, with ${major_version} appended to the name
-    #foreach f [glob -tails -directory ${destroot}${bindir} my*] {
-    #    ln -sf ${bindir}/${f} ${destroot}${prefix}/bin/${f}${major_version}
-    #}
 
 
 Then install the following port packages (order is very important):
@@ -260,7 +230,7 @@ distribution.
   the source tree.
 
     1.1. "extras/user" - anything found in this directory will be
-    copied to the user's XBMC directory (~/Library/Application
+    copied to the users XBMC directory (~/Library/Application
     Support/XBMC) on first run. Examples:
 
         extras/user/scripts/XBMC Lyrics
@@ -277,16 +247,10 @@ distribution.
   2. After performing step 1, build XBMC.app from XCode so that the
   application bundle is correctly updated.
 
-  3. Go to tools/PackageMaker and run dmgmaker.pl as follows:
+  3. make -C tools/PackageMaker/
 
-      $ cd tools/PackageMaker
-      $ ./dmgmaker.pl ../../build/Release/XBMC.app
-
-  4. If dmgmaker.pl completed successfully, a disk image will be
-  present in the "dist" subdirectory:
-
-      $ ls dist
-      XBMC.dmg
+  4. If completed successfully, a disk image named XBMC_for_Mac.dmg will be
+  present in the users XBMC build directory:
 
 Remember to unmount/eject XBMC.dmg before attempting to recreate it,
 otherwise dmgmaker.pl will fail.

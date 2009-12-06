@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<strings>
+  <string id="31000">Volume spento</string>
+  <string id="31001">In corso...</string>
+  <string id="31002"></string>
+  <string id="31003"></string>
+  <string id="31004"></string>
+  <string id="31005"></string>
+  <string id="31006"></string>
+  <string id="31007"></string>
+  <string id="31008"></string>
+  <string id="31009"></string>
+  <string id="31010">IMMAGINE[CR]FANART[CR]NON[CR]DISPONIBILE</string>
+  <string id="31011">IMMAGINE[CR]EPISODIO[CR]NON[CR]DISPONIBILE</string>
+  <string id="31012">IMMAGINE[CR]EPISODIO[CR]NON[CR]DISPONIBILE</string>
+  <string id="31013"></string>
+  <string id="31014"></string>
+  <string id="31015"></string>
+  <string id="31016"></string>
+  <string id="31017"></string>
+  <string id="31018"></string>
+  <string id="31019"></string>
+
+  <string id="31020">Titolo capitolo</string>
+  <string id="31021">Video - Files</string>
+  <string id="31022">Musica - Files</string>
+  <string id="31023"></string>
+  <string id="31024">Pagina</string>
+  <string id="31025">Elementi</string>
+
+  <string id="31026"></string>
+  <string id="31027"></string>
+  <string id="31028">Poster DVD</string>
+  <string id="31029">Lista DVD</string>
+  <string id="31030">Fanart</string>
+  <string id="31031">Solo lista</string>
+  <string id="31032">Sequenza Cover</string>
+  <string id="31033">Sequenza Immagini</string>
+  <string id="31034">Icone larghe</string>
+
+  <string id="31040">Immagine Fanart[CR]di questo Film[CR][CR]Premi per cambiare</string>
+  <string id="31041">Immagine Fanart[CR]di questa Serie Tv[CR][CR]Premi per cambiare</string>
+  <string id="31042">IN RIPRODUZIONE</string>
+  <string id="31043">IN PAUSA</string>
+  <string id="31044">AVANZ. VELOCE</string>
+  <string id="31045">RIAVV. VELOCE</string>
+  <string id="31046">Benvenuti in XBMC - Effettuare l'accesso</string>
+  <string id="31047">Ultimo accesso effettutato</string>
+  <string id="31048">Immagine Fanart[CR]di questo Artista[CR][CR]Premi per cambiare</string>
+
+  <string id="31050"></string>
+  <string id="31051"></string>
+  <string id="31052"></string>
+
+  <!-- Lyrics Script Extra labels -->
+  <string id="31053">XBMC LYRICS</string>
+  <string id="31054">Scegli la canzone dall'elenco</string>
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Apri playlist</string>
+  <string id="31056">Salva playlist</string>
+  <string id="31057">Chiudi playlist</string>
+  <string id="31058">Files musicali di sistema</string>
+  <string id="31059">Playlist corrente</string>
+  <string id="31060">Questo file è in più parti, seleziona la parte da cui partire.</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100">Opzioni sfondo</string>
+  <string id="31101">Opzioni schermata Home</string>
+  <string id="31102">Sfondi</string>
+  <string id="31103">Mostra "In pausa" nello slideshow di immagini</string>
+  <string id="31104">Menu spegnimento - Usa Iberna invece di Sospendi</string>
+  <string id="31105">Mostra i titoli dei media nello scanner in background</string>
+  <string id="31106">Opzioni varie</string>
+  <string id="31107">Rimuovi le linee nere dallo sfondo</string>
+  <string id="31108">Rimuovi le linee nere dallo sfondo durante la riproduzione video</string>
+  <string id="31109">Sfondi per la schermata Home</string>
+  <string id="31110">- Sfondi personalizzati</string>
+  <string id="31111">Mostra sempre le info musica durante i lyrics</string>
+  <string id="31112">Mostra il titolo dei media nella vista a "Icone larghe"</string>
+  <string id="31113">Immagine Singola</string>
+  <string id="31114">Immagine Multipla</string>
+  <string id="31115">Sostituisci il pulsante Impostazioni Audio con Teletext</string>
+
+  <!-- Script Settings labels -->
+  <string id="31200">Opzioni script personalizzati</string>
+  <string id="31201"></string>
+  <string id="31202"></string>
+  <string id="31203">Imposta l'etichetta del pulsante</string>
+  <string id="31204">Percorso script</string>
+  <string id="31205"></string>
+  <string id="31206"></string>
+  <string id="31207">Mostra il pusante di download sottotitoli nell'OSD</string>
+  <string id="31208">Mostra il pulsante dello script lyrics nell'OSD Video</string>
+  <string id="31209">Abilita il pulsante di avvio rapido script per -</string>
+
+  <!-- AMT Script Extra labels -->
+  <string id="31300">Mostra il cast</string>
+</strings>

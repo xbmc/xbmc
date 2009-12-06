@@ -132,8 +132,10 @@ bool CGUIInfoManager::OnMessage(CGUIMessage &message)
 /// efficient retrieval of data. Can handle combined strings on the form
 /// Player.Caching + VideoPlayer.IsFullscreen (Logical and)
 /// Player.HasVideo | Player.HasAudio (Logical or)
-int CGUIInfoManager::TranslateString(const CStdString &strCondition)
+int CGUIInfoManager::TranslateString(const CStdString &condition)
 {
+  // translate $LOCALIZE as required
+  CStdString strCondition(CGUIInfoLabel::ReplaceLocalize(condition));
   if (strCondition.find_first_of("|") != strCondition.npos ||
       strCondition.find_first_of("+") != strCondition.npos ||
       strCondition.find_first_of("[") != strCondition.npos ||
@@ -423,8 +425,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     int pos = strTest.Find(",");
     int info = TranslateString(strTest.Mid(14, pos-14));
-    CStdString compare = CGUIInfoLabel::ReplaceLocalize(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
-    int compareString = ConditionalStringParameter(compare);
+    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, compareString));
   }
   else if (strTest.Left(19).Equals("integergreaterthan("))

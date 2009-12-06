@@ -61,13 +61,11 @@ enum APE_DECOMPRESS_FIELDS
     APE_INFO_PEAK_LEVEL = 1021,                 // peak audio level (obsolete) (-1 is unknown) [ignored, ignored]
     APE_INFO_SEEK_BIT = 1022,                   // bit offset [frame index, ignored]
     APE_INFO_SEEK_BYTE = 1023,                  // byte offset [frame index, ignored]
-    APE_INFO_WAV_HEADER_DATA = 1024,            // error code [buffer *, max bytes]
-    APE_INFO_WAV_TERMINATING_DATA = 1025,       // error code [buffer *, max bytes]
-    APE_INFO_WAVEFORMATEX = 1026,               // error code [waveformatex *, ignored]
-    APE_INFO_IO_SOURCE = 1027,                  // I/O source (CIO *) [ignored, ignored]
+    APE_INFO_WAV_HEADER_DATA = 1024,            // error code [max bytes, buffer *]
+    APE_INFO_WAV_TERMINATING_DATA = 1025,       // error code [max bytes, buffer *]
+    APE_INFO_WAVEFORMATEX = 1026,               // error code [ignored, waveformatex *]
     APE_INFO_FRAME_BYTES = 1028,                // bytes (compressed) of the frame [frame index, ignored]
     APE_INFO_FRAME_BLOCKS = 1029,               // blocks in a given frame [frame index, ignored]
-    APE_INFO_TAG = 1030,                        // point to tag (CAPETag *) [ignored, ignored]
 
     APE_DECOMPRESS_CURRENT_BLOCK = 2000,        // current block location [ignored, ignored]
     APE_DECOMPRESS_CURRENT_MS = 2001,           // current millisecond location [ignored, ignored]
@@ -76,6 +74,9 @@ enum APE_DECOMPRESS_FIELDS
     APE_DECOMPRESS_CURRENT_BITRATE = 2004,      // current bitrate [ignored, ignored]
     APE_DECOMPRESS_AVERAGE_BITRATE = 2005,      // average bitrate (works with ranges) [ignored, ignored]
 
+    // the following must be called via GetPointer() rather than GetInfo() - for internal use only
+    APE_INFO_IO_SOURCE = 1027,                  // for internal use -- don't use I/O source (CIO *) [ignored, ignored]
+    APE_INFO_TAG = 1030,                        // for internal use -- don't use point to tag (CAPETag *) [ignored, ignored]
     APE_INTERNAL_INFO = 3000                    // for internal use -- don't use (returns APE_FILE_INFO *) [ignored, ignored]
 };
 
@@ -87,7 +88,8 @@ public:
   virtual int Seek(APE_DECOMPRESS_HANDLE, int)=0;
   virtual void Destroy(APE_DECOMPRESS_HANDLE)=0;
   virtual int GetData(APE_DECOMPRESS_HANDLE, char *, int, int *)=0;
-  virtual int GetInfo(APE_DECOMPRESS_HANDLE, APE_DECOMPRESS_FIELDS, int, int)=0;
+  virtual int GetInfo(APE_DECOMPRESS_HANDLE, APE_DECOMPRESS_FIELDS, int, void *)=0;
+  virtual IAPETag *GetTag(APE_DECOMPRESS_HANDLE)=0;
   virtual APE_DECOMPRESS_HANDLE Create(const str_ansi *, int *)=0;
   virtual __int64 GetDuration(const char *filename)=0;
   virtual IAPETag* GetAPETag(const char *filename, bool bCheckID3Tag)=0;
@@ -100,7 +102,8 @@ class DllMACDll : public DllDynamic, DllMACDllInterface
   DEFINE_METHOD_LINKAGE2(int, __stdcall, Seek, (APE_DECOMPRESS_HANDLE p1, int p2))
   DEFINE_METHOD_LINKAGE1(void, __stdcall, Destroy, (APE_DECOMPRESS_HANDLE p1))
   DEFINE_METHOD_LINKAGE4(int, __stdcall, GetData, (APE_DECOMPRESS_HANDLE p1, char *p2, int p3, int *p4))
-  DEFINE_METHOD_LINKAGE4(int, __stdcall, GetInfo, (APE_DECOMPRESS_HANDLE p1, APE_DECOMPRESS_FIELDS p2, int p3, int p4))
+  DEFINE_METHOD_LINKAGE4(int, __stdcall, GetInfo, (APE_DECOMPRESS_HANDLE p1, APE_DECOMPRESS_FIELDS p2, int p3, void *p4))
+  DEFINE_METHOD_LINKAGE1(IAPETag*, __stdcall, GetTag, (APE_DECOMPRESS_HANDLE p1))
   DEFINE_METHOD_LINKAGE2(APE_DECOMPRESS_HANDLE, __stdcall, Create, (const str_ansi * p1, int * p2))
   DEFINE_METHOD_LINKAGE1(__int64, __stdcall, GetDuration, (const char *p1))
   DEFINE_METHOD_LINKAGE2(IAPETag*, __stdcall, GetAPETag, (const char *p1, bool p2))
@@ -111,6 +114,7 @@ class DllMACDll : public DllDynamic, DllMACDllInterface
     RESOLVE_METHOD_RENAME(c_APEDecompress_GetData, GetData)
     RESOLVE_METHOD_RENAME(c_APEDecompress_Seek, Seek)
     RESOLVE_METHOD_RENAME(c_APEDecompress_GetInfo, GetInfo)
+    RESOLVE_METHOD_RENAME(c_APEDecompress_GetTag, GetTag)
     RESOLVE_METHOD_RENAME(c_GetAPEDuration, GetDuration)
     RESOLVE_METHOD_RENAME(c_GetAPETag, GetAPETag)
   END_METHOD_RESOLVE()

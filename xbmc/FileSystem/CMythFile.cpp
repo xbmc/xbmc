@@ -28,8 +28,8 @@
 #include "utils/TimeUtils.h"
 
 extern "C" {
-#include "lib/libcmyth/cmyth.h"
 #include "lib/librefmem/mvp_refmem.h"
+#include "cmyth/include/cmyth/cmyth.h"
 }
 
 using namespace XFILE;

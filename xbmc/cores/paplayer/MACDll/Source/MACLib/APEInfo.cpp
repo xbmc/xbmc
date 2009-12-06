@@ -131,7 +131,7 @@ int CAPEInfo::GetFileInformation(BOOL bGetTagInformation)
 /*****************************************************************************************
 Primary query function
 *****************************************************************************************/
-long CAPEInfo::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, int nParam2)
+long CAPEInfo::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, void *pParam2)
 {
     long nRetVal = -1;
 
@@ -245,18 +245,18 @@ long CAPEInfo::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, int nParam2)
     }
     case APE_INFO_WAV_HEADER_DATA:
     {
-        char * pBuffer = (char *) nParam1;
-        int nMaxBytes = nParam2;
-        
+        char * pBuffer = (char *) pParam2;
+        int nMaxBytes = nParam1;
+
         if (m_APEFileInfo.nFormatFlags & MAC_FORMAT_FLAG_CREATE_WAV_HEADER)
         {
-            if (sizeof(WAVE_HEADER) > nMaxBytes)
+            if (sizeof(WAVE_HEADER) > (size_t)nMaxBytes)
             {
                 nRetVal = -1;
             }
             else
             {
-                WAVEFORMATEX wfeFormat; GetInfo(APE_INFO_WAVEFORMATEX, (long) &wfeFormat, 0);
+                WAVEFORMATEX wfeFormat; GetInfo(APE_INFO_WAVEFORMATEX, 0, &wfeFormat);
                 WAVE_HEADER WAVHeader; FillWaveHeader(&WAVHeader, m_APEFileInfo.nWAVDataBytes, &wfeFormat,
                     m_APEFileInfo.nWAVTerminatingBytes);
                 memcpy(pBuffer, &WAVHeader, sizeof(WAVE_HEADER));
@@ -279,8 +279,8 @@ long CAPEInfo::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, int nParam2)
     }
     case APE_INFO_WAV_TERMINATING_DATA:
     {
-        char * pBuffer = (char *) nParam1;
-        int nMaxBytes = nParam2;
+        char * pBuffer = (char *) pParam2;
+        int nMaxBytes = nParam1;
 
         if (m_APEFileInfo.nWAVTerminatingBytes > nMaxBytes)
         {
@@ -307,14 +307,11 @@ long CAPEInfo::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, int nParam2)
     }
     case APE_INFO_WAVEFORMATEX:
     {
-        WAVEFORMATEX * pWaveFormatEx = (WAVEFORMATEX *) nParam1;
+        WAVEFORMATEX * pWaveFormatEx = (WAVEFORMATEX *) pParam2;
         FillWaveFormatEx(pWaveFormatEx, m_APEFileInfo.nSampleRate, m_APEFileInfo.nBitsPerSample, m_APEFileInfo.nChannels);
         nRetVal = 0;
         break;
     }
-    case APE_INFO_IO_SOURCE:
-        nRetVal = (long) m_spIO.GetPtr();
-        break;
     case APE_INFO_FRAME_BYTES:
     {
         int nFrame = nParam1;
@@ -351,11 +348,29 @@ long CAPEInfo::GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1, int nParam2)
         }
         break;
     }
+    default:
+        break;
+    }
+
+    return nRetVal;
+}
+
+void *CAPEInfo::GetPointer(APE_DECOMPRESS_FIELDS Field)
+{
+    void *nRetVal = NULL;
+
+    switch (Field)
+    {
+    case APE_INFO_IO_SOURCE:
+        nRetVal = m_spIO.GetPtr();
+        break;
     case APE_INFO_TAG:
-        nRetVal = (long) m_spAPETag.GetPtr();
+        nRetVal = m_spAPETag.GetPtr();
         break;
     case APE_INTERNAL_INFO:
-        nRetVal = (long) &m_APEFileInfo;
+        nRetVal = &m_APEFileInfo;
+        break;
+    default:
         break;
     }
 

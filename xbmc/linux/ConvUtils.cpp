@@ -67,14 +67,20 @@ void OutputDebugString(LPCTSTR lpOuputString)
 
 void strlwr( char* string )
 {
-  while ( 0 != ( *string++ = (char)tolower( *string ) ) )
-    ;
+  while ( *string )
+  {
+    *string = (char)tolower( *string );
+    string++;
+  }
 }
 
 void strupr( char* string )
 {
-  while ( 0 != ( *string++ = (char)toupper( *string ) ) )
-    ;
+  while ( *string )
+  {
+    *string = (char)toupper( *string );
+    string++;
+  }
 }
 
 LONGLONG Int32x32To64(LONG Multiplier, LONG Multiplicand)

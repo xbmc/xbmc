@@ -60,6 +60,14 @@ public:
   {
     m_scraper = scraper;
   }
+  /*!
+   \brief Checks whether we have a valid scraper.  If not, we try the fallbackScraper
+   First tests the current scraper for validity by loading it.  If it is not valid we
+   attempt to load the fallback scraper.  If this is also invalid we return false.
+   \param fallbackScraper name of scraper to use as a fallback
+   \return true if we have a valid scraper (or the default is valid).
+   */
+  bool CheckValidOrFallback(const CStdString &fallbackScraper);
 protected:
   void FindAlbuminfo();
   void LoadAlbuminfo();

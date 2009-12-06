@@ -1,0 +1,115 @@
+#!/usr/bin/make -f
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+# Get the SVN revision from the changelog
+SVNVERSION ?= $(shell dpkg-parsechangelog | grep '^Version:' | grep svn | sed 's/.*svn\([[:digit:]]*\).*/\1/')
+
+# If not set already, try to set from debian/svnrevision
+ifeq (,$(SVNVERSION))
+	SVNVERSION = $(shell cat debian/svnrevision 2>/dev/null)
+endif
+
+# List of options to pass to configure. Can be overridden.
+XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
+	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr \
+	--enable-optimizations --enable-gl --enable-vdpau \
+	--disable-profiling --enable-joystick --enable-xrandr \
+	--enable-goom --disable-ccache --enable-pulse --enable-avahi \
+	--enable-debug
+
+# Ubuntu or Debian specific options
+ifeq (Ubuntu,$(shell lsb_release -is))
+  XBMC_CONFIG_OPTIONS += --enable-faac
+else
+  XBMC_CONFIG_OPTIONS += --enable-external-libraries --disable-dvdcss \
+	--disable-non-free
+endif
+
+# Add the SVN revision if we could determine the svn revision
+ifneq (,$(SVNVERSION))
+  XBMC_CONFIG_OPTIONS += SVN_REV="$(SVNVERSION)"
+endif
+
+# Various environment variables to set
+XBMC_CONFIG_OPTIONS += CFLAGS="$(DEB_CFLAGS)" CXXFLAGS="$(DEB_CXXFLAGS)"
+
+# Input files used for generating other files
+INPUT_FILES = debian/control.in \
+
+%:
+	dh $@
+
+# Target for generating control files
+.PHONY: debian/var_info
+%.in: debian/var_info
+	perl -p \
+	-e 's{#BUILD_DEPENDS#}{qx(sh debian/var_info BUILD_DEPENDS)}ge;' \
+	< $@ > $$(echo $@ | sed 's/\.in$$//')
+
+override_dh_clean:
+	dh_clean
+	debian/rules $(INPUT_FILES)
+
+override_dh_auto_configure: configure
+	./configure $(XBMC_CONFIG_OPTIONS)
+
+override_dh_auto_install:
+	$(MAKE) install install-livedatas prefix=$(CURDIR)/debian/tmp/usr
+	install -D -m 0644 $(CURDIR)/tools/XBMCLive/xbmc-live.conf \
+	    $(CURDIR)/debian/tmp/etc/init/xbmc-live.conf
+	find "debian/tmp/usr/share/xbmc" -regextype posix-extended \
+		-type f -iregex \
+		".*python24\.zip|.*\.so|.*\.vis|.*\.xbs|.*xbmc\.bin|.*xbmc-xrandr" | \
+		while read FILE; do \
+		NEW_LOCATION="$$(echo $$FILE | sed -e 's|usr/share|usr/lib|')"; \
+		install -D "$$FILE" "$$NEW_LOCATION"; \
+		rm "$$FILE"; \
+		done
+	$(MAKE) eventclients prefix=$(CURDIR)/debian/tmp/usr \
+		installdir=/usr WII_EXTRA_OPTS=-DCWIID_OLD
+	mkdir -p $(CURDIR)/debian/tmp/usr/share/applications \
+		$(CURDIR)/debian/tmp/usr/share/pixmaps
+	cp $(CURDIR)/tools/Linux/xbmc.png \
+		$(CURDIR)/debian/tmp/usr/share/pixmaps/
+	cp $(CURDIR)/tools/Linux/xbmc.desktop \
+		$(CURDIR)/debian/tmp/usr/share/applications/
+
+override_dh_install:
+	dh_install --sourcedir=$(CURDIR)/debian/tmp -XLICENCE \
+		-XLiberationSans-Regular.ttf -XLicence.txt -XLicense.txt
+	# XBMC WEB PM
+	dh_install -pxbmc-web-pm ../../web/Project_Mayhem \
+		usr/share/xbmc/web
+	# XBMC WEB PM3
+	dh_install -pxbmc-web-pm3 ../../web/Project_Mayhem_III \
+		usr/share/xbmc/web
+	# XBMC WEB Iphone
+	dh_install -pxbmc-web-iphone-tlrobinson ../../web/xbmciphone/iphone \
+		usr/share/xbmc/web
+
+override_dh_link:
+	dh_link
+	find "debian/xbmc-bin/usr/lib" -regextype posix-extended -type f | \
+		while read FILE; do \
+		LINK_TARGET="$$(echo "$$FILE" | sed -e 's|debian/xbmc-bin/||')"; \
+		LINK_DESTINATION="$$(echo "$$FILE" | sed -e 's|debian/xbmc-bin/usr/lib|usr/share|')"; \
+		dh_link -pxbmc-bin "$$LINK_TARGET" "$$LINK_DESTINATION"; \
+		done
+	-[ -d debian/xbmc-data/usr/share/xbmc ] && find debian/xbmc-data/usr/share/xbmc/ -type d -empty -delete
+
+override_dh_strip:
+	dh_strip --dbg-package=xbmc-dbg
+
+override_dh_makeshlibs:
+	# We don't install shared libraries in standard locations so don't edit
+	# postinst/postrm scripts to call ldconfig
+	dh_makeshlibs -n
+
+override_dh_installdocs:
+	dh_installdocs
+	dh_installdocs -pxbmc-web-iphone-tlrobinson \
+		$(CURDIR)/web/xbmciphone/README

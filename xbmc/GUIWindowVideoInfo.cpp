@@ -829,6 +829,17 @@ void CGUIWindowVideoInfo::OnGetThumb()
 void CGUIWindowVideoInfo::OnGetFanart()
 {
   CFileItemList items;
+  
+  CFileItem item(*m_movieItem->GetVideoInfoTag());
+  CStdString cachedThumb(item.GetCachedFanart());
+  
+  if (CFile::Exists(cachedThumb))
+  {
+    CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
+    itemCurrent->SetThumbnailImage(cachedThumb);
+    itemCurrent->SetLabel(g_localizeStrings.Get(20440));
+    items.Add(itemCurrent);
+  }
 
   // ensure the fanart is unpacked
   m_movieItem->GetVideoInfoTag()->m_fanart.Unpack();
@@ -856,9 +867,6 @@ void CGUIWindowVideoInfo::OnGetFanart()
     items.Add(item);
   }
 
-  CFileItem item(*m_movieItem->GetVideoInfoTag());
-  CStdString cachedThumb(item.GetCachedFanart());
-
   CStdString strLocal = item.GetLocalFanart();
   if (!strLocal.IsEmpty())
   {
@@ -870,19 +878,13 @@ void CGUIWindowVideoInfo::OnGetFanart()
       CFile::Delete(itemLocal->GetCachedPictureThumb());
     items.Add(itemLocal);
   }
-
-  if (CFile::Exists(cachedThumb))
+  else
   {
-    CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
-    itemCurrent->SetThumbnailImage(cachedThumb);
-    itemCurrent->SetLabel(g_localizeStrings.Get(20440));
-    items.Add(itemCurrent);
+    CFileItemPtr itemNone(new CFileItem("fanart://None", false));
+    itemNone->SetIconImage("DefaultVideo.png");
+    itemNone->SetLabel(g_localizeStrings.Get(20439));
+    items.Add(itemNone);
   }
-
-  CFileItemPtr itemNone(new CFileItem("fanart://None", false));
-  itemNone->SetIconImage("DefaultVideo.png");
-  itemNone->SetLabel(g_localizeStrings.Get(20439));
-  items.Add(itemNone);
 
   CStdString result;
   VECSOURCES sources(g_settings.m_videoSources);

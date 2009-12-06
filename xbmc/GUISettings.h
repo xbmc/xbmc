@@ -41,19 +41,11 @@ class TiXmlElement;
 #define SOFTWARE_UPSCALING_SD_CONTENT 1
 #define SOFTWARE_UPSCALING_ALWAYS     2
 
-// Display blanking options.
-#define BLANKING_DISABLED     0
-#define BLANKING_ALL_DISPLAYS 1
-
-#ifdef __APPLE__
-
 // Apple Remote options.
 #define APPLE_REMOTE_DISABLED     0
 #define APPLE_REMOTE_STANDARD     1
 #define APPLE_REMOTE_UNIVERSAL    2
 #define APPLE_REMOTE_MULTIREMOTE  3
-
-#endif
 
 // Subtitle colours
 

@@ -115,7 +115,6 @@ public:
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
 
-  virtual void AutoCrop(bool bCrop);
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
   // Feature support
@@ -180,6 +179,8 @@ protected:
   struct YUVPLANE
   {
     GLuint id;
+    GLuint pbo;
+
     CRect  rect;
 
     float  width;
@@ -199,6 +200,7 @@ protected:
     YUVFIELDS fields;
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
+    GLuint    pbo[MAX_PLANES];
   };
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
@@ -214,6 +216,7 @@ protected:
   Shaders::BaseYUV2RGBShader     *m_pYUVShader;
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
+  ESCALINGMETHOD m_scalingMethodGui;
 
   // clear colour for "black" bars
   float m_clearColour;
@@ -227,7 +230,9 @@ protected:
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
 
-  CRect m_crop;
+  void BindPbo(YUVBUFFER& buff);
+  void UnBindPbo(YUVBUFFER& buff);
+  bool m_pboused;
 };
 
 

@@ -494,6 +494,7 @@ int XBPython::evalFile(const char *src) { return evalFile(src, 0, NULL); }
 // execute script, returns -1 if script doesn't exist
 int XBPython::evalFile(const char *src, const unsigned int argc, const char ** argv)
 {
+  CSingleExit ex(g_graphicsContext);
   CSingleLock lock(m_critSection);
   // return if file doesn't exist
   if (!XFILE::CFile::Exists(src))
@@ -504,10 +505,12 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
 
   // check if locked
   int profile = g_settings.m_iLastLoadedProfileIndex;
-  if (g_settings.m_vecProfiles[profile].programsLocked() &&
-      g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
-    if (!g_passwordManager.IsMasterLockUnlocked(true))
+  if (profile < (int)g_settings.m_vecProfiles.size() &&
+      g_settings.m_vecProfiles[profile].programsLocked() &&
+      !g_passwordManager.IsMasterLockUnlocked(true))
+  {
       return -1;
+  }
 
   Initialize();
 
@@ -549,6 +552,7 @@ void XBPython::setDone(int id)
 
 void XBPython::stopScript(int id)
 {
+  CSingleExit ex(g_graphicsContext);
   CSingleLock lock(m_critSection);
   PyList::iterator it = m_vecPyList.begin();
   while (it != m_vecPyList.end())

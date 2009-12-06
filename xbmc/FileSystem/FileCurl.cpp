@@ -300,6 +300,8 @@ CFileCurl::CFileCurl()
   m_bufferSize = 32768;
   m_binary = true;
   m_postdata = "";
+  m_username = "";
+  m_password = "";
   m_state = new CReadState();
 }
 
@@ -344,6 +346,11 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEDATA, state);
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEFUNCTION, write_callback);
 
+  // set username and password for current handle
+  if (m_username.length() > 0)
+    g_curlInterface.easy_setopt(h, CURLOPT_USERNAME, m_username.c_str());
+  if (m_password.length() > 0)
+    g_curlInterface.easy_setopt(h, CURLOPT_PASSWORD, m_password.c_str());
 
   // make sure headers are seperated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
@@ -509,7 +516,8 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
        ||  url2.GetProtocol().Equals("daap")
        ||  url2.GetProtocol().Equals("tuxbox")
        ||  url2.GetProtocol().Equals("lastfm")
-       ||  url2.GetProtocol().Equals("mms"))
+       ||  url2.GetProtocol().Equals("mms")
+       ||  url2.GetProtocol().Equals("rss"))
     url2.SetProtocol("http");
 
   if( url2.GetProtocol().Equals("ftp")
@@ -607,6 +615,11 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
       }
       CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
     }
+
+    // get username and password
+    m_username = url2.GetUserName();
+    m_password = url2.GetPassWord();
+
     // handle any protocol options
     CStdString options = url2.GetProtocolOptions();
     options.TrimRight('/'); // hack for trailing slashes being added from source
@@ -750,7 +763,10 @@ bool CFileCurl::Open(const CURL& url)
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
-  m_url = url2.Get();
+  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
+    m_url = url2.GetWithoutUserDetails();
+  else
+    m_url = url2.Get();
 
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", (void*)this, m_url.c_str());
 
@@ -944,7 +960,10 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
-  m_url = url2.Get();
+  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
+    m_url = url2.GetWithoutUserDetails();
+  else
+    m_url = url2.Get();
 
   ASSERT(m_state->m_easyHandle == NULL);
   g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, NULL);
@@ -1108,7 +1127,9 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
             CLog::Log(LOGDEBUG, "%s: curl failed with code %i", __FUNCTION__, msg->data.result);
 
             // We need to check the data.result here as we don't want to retry on every error
-            if (msg->data.result == CURLE_OPERATION_TIMEDOUT || msg->data.result == CURLE_PARTIAL_FILE)
+            if ( (msg->data.result == CURLE_OPERATION_TIMEDOUT ||
+                  msg->data.result == CURLE_PARTIAL_FILE) &&
+                  !m_bFirstLoop)
               CURLresult=msg->data.result;
             else
               return false;
@@ -1143,23 +1164,6 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
 
         CLog::Log(LOGDEBUG, "%s: Reconnect, (re)try %i", __FUNCTION__, retry);
         
-        // On timeout, when we have to retry more than 2 times in a row
-        // we increase the Curl low speed timeout, but only at start
-        if (m_bFirstLoop && retry > 1 && CURLresult == CURLE_OPERATION_TIMEDOUT && m_fileSize != 0)
-        {
-          int newlowspeedtime;
-
-          if (g_advancedSettings.m_curllowspeedtime<5)
-            newlowspeedtime = 5;
-          else
-            newlowspeedtime = g_advancedSettings.m_curllowspeedtime;
-
-          newlowspeedtime += (5*(retry-1));
-          
-          CLog::Log(LOGDEBUG, "%s: Setting low-speed-time to %i seconds", __FUNCTION__, newlowspeedtime);
-          g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_LOW_SPEED_TIME, newlowspeedtime);
-        }
-
         // Connect + seek to current position (again)
         g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, m_filePos);
         g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
@@ -1171,7 +1175,8 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
     }
 
     // We've finished out first loop
-    m_bFirstLoop=false;
+    if(m_bFirstLoop && m_buffer.GetMaxReadSize() > 0)
+      m_bFirstLoop = false;
 
     switch (result)
     {

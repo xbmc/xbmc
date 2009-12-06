@@ -27,7 +27,8 @@ BIN_DIRS=	\
 	xbmc/FileSystem/MusicDatabaseDirectory \
 	xbmc/FileSystem/VideoDatabaseDirectory \
 	xbmc/karaoke \
-	xbmc/lib/libcmyth \
+	xbmc/lib/cmyth/libcmyth \
+	xbmc/lib/cmyth/librefmem \
 	xbmc/lib/libhts \
 	xbmc/lib/libGoAhead \
 	xbmc/lib/libPython \
@@ -99,11 +100,11 @@ ifneq (@BUILD_GOOM@,1)
 VIS_DIRS+=xbmc/visualizations/Goom
 endif
 
-PM3_MEDIA=skin/Project\ Mayhem\ III/media
+CONFLUENCE_MEDIA=skin/Confluence/media
 PM3HD_MEDIA=skin/PM3.HD/media
 
 SKIN_DIRS=\
-	$(PM3_MEDIA) \
+	$(CONFLUENCE_MEDIA) \
 	$(PM3HD_MEDIA)
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
@@ -142,7 +143,7 @@ configure: configure.in
 
 # skin textures
 skins: tools/TexturePacker/TexturePacker force
-	 $(MAKE) -C $(PM3_MEDIA)
+	 $(MAKE) -C $(CONFLUENCE_MEDIA)
 	 $(MAKE) -C $(PM3HD_MEDIA)
 
 guilib/guilib.a: force
@@ -199,8 +200,10 @@ xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a: force
 	$(MAKE) -C xbmc/FileSystem/VideoDatabaseDirectory
 xbmc/karaoke/karaoke.a: force
 	$(MAKE) -C xbmc/karaoke
-xbmc/lib/libcmyth/libcmyth.a: force
-	$(MAKE) -C xbmc/lib/libcmyth
+xbmc/lib/cmyth/libcmyth/libcmyth.a: force
+	$(MAKE) -C xbmc/lib/cmyth/libcmyth
+xbmc/lib/cmyth/librefmem/librefmem.a: force
+	$(MAKE) -C xbmc/lib/cmyth/librefmem
 xbmc/lib/libhts/libhts.a: force
 	$(MAKE) -C xbmc/lib/libhts
 xbmc/lib/libPython/python.a: force
@@ -315,6 +318,8 @@ xcode_depends: \
 	codecs libs python visualizations screensavers eventclients \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	skins \
+	xbmc/lib/cmyth/libcmyth/libcmyth.a \
+	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/lib/libRTMP/librtmp.a \
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
@@ -372,7 +377,8 @@ OBJSXBMC+= \
 endif
 
 DYNOBJSXBMC= \
-	xbmc/lib/libcmyth/libcmyth.a \
+	xbmc/lib/cmyth/libcmyth/libcmyth.a \
+	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/linux/linux.a \
 	xbmc/utils/utils.a \
 	xbmc/cores/DllLoader/exports/util/exports_utils.a \
@@ -422,34 +428,43 @@ install-bin: xbmc.bin # developement convenience target
 ifeq ($(findstring osx,$(ARCH)), osx)
 	# TODO: add osx install
 else
-install:
+install: install-binaries install-arch install-datas install-web
+
+install-binaries: install-scripts
 	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
 	@install -D xbmc.bin $(prefix)/share/xbmc/xbmc.bin
 	@install -D xbmc-xrandr $(prefix)/share/xbmc/xbmc-xrandr
+	@echo "You can run XBMC with the command 'xbmc'"
+endif
+
+install-arch:
+	@# Arch dependent files
+	@find system screensavers visualisations -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"	
+
+install-scripts:
 	@install -D tools/Linux/xbmc.sh $(prefix)/bin/xbmc
 	@install -D tools/Linux/xbmc-standalone.sh $(prefix)/bin/xbmc-standalone
 	@install -D -m 0644 tools/Linux/FEH.py $(prefix)/share/xbmc/FEH.py
 	@install -D -m 0644 tools/Linux/xbmc-xsession.desktop $(prefix)/share/xsessions/XBMC.desktop
+
+install-datas: install-scripts
 	@echo "Copying support and legal files..."
 	@for FILE in `ls README.linux LICENSE.GPL *.txt`; do \
 		install -D -m 0644 "$$FILE" $(prefix)/share/xbmc/; done
 	@echo "Done!"
-	@echo "You can run XBMC with the command 'xbmc'"
-	@$(MAKE) install-datas
-	@$(MAKE) install-web
-endif
-
-install-datas:
 	@echo "Copying system files to $(prefix)/share/xbmc"
 	@# Arch independent files
 	@find addons language media scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
-	@# Arch dependent files
-	@find addons system screensavers visualisations -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Skins
 	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %-75.75f\r"
+	@# Icons and links
+	@mkdir -p $(prefix)/share/applications $(prefix)/share/pixmaps
+	@cp -a tools/Linux/xbmc.png $(prefix)/share/pixmaps/
+	@cp -a tools/Linux/xbmc.desktop $(prefix)/share/applications/
 
 install-livedatas:
 	@echo "Install Live CD datas in $(prefix) ..."
+	@mkdir -p $(prefix)/bin
 	@install -D tools/XBMCLive/diskmounter $(prefix)/bin
 	@install -D tools/XBMCLive/installXBMC $(prefix)/bin
 	@install -D tools/XBMCLive/runXBMC $(prefix)/bin

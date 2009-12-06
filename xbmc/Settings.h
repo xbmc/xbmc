@@ -22,12 +22,11 @@
 
 #define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
 
+#define DEFAULT_SKIN        "Confluence"
 #ifdef MID
-#define DEFAULT_SKIN        "Project Mayhem III"
 #define DEFAULT_VSYNC       VSYNC_DISABLED
 #define DEFAULT_THUMB_SIZE  256
 #else  // MID
-#define DEFAULT_SKIN        "PM3.HD"
 #if defined(__APPLE__) || defined(_WIN32)
 #define DEFAULT_VSYNC       VSYNC_ALWAYS
 #else
@@ -210,6 +209,8 @@ public:
     VOICE_MASK m_karaokeVoiceMask[4];
   };
 
+  stSettings m_stSettings;
+
   struct RssSet
   {
     bool rtl;
@@ -321,4 +322,4 @@ protected:
 };
 
 extern class CSettings g_settings;
-extern struct CSettings::stSettings g_stSettings;
+extern struct CSettings::stSettings& g_stSettings;

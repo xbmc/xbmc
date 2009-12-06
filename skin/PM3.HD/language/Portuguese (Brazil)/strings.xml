@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!--Language file for skin\PM3.HD -->
+<!--Translated: manually -->
+<!--Translator: bugre (werner)-->
+<!--Email: wxxx333@gmail.com-->
+<!--Date of translation: 11/23/2009-->
+<!--$Revision$-->
+<!--Based on english strings version 24928 -->
+
+<strings>
+  <string id="31000">Volume silenciado</string>
+  <string id="31001">Trabalhando...</string>
+  <string id="31002"></string>
+  <string id="31003"></string>
+  <string id="31004"></string>
+  <string id="31005"></string>
+  <string id="31006"></string>
+  <string id="31007"></string>
+  <string id="31008"></string>
+  <string id="31009"></string>
+  <string id="31010">IMAGEM DE[CR]FANART[CR]NÃO[CR]DISPONÍVEL</string>
+  <string id="31011">IMAGEM D0[CR]EPISÓDIO[CR]NÃO[CR]DISPONÍVEL</string>
+  <string id="31012">IMAGEM D0[CR]EPISÓDIO[CR]NÃO[CR]DISPONÍVEL</string>
+  <string id="31013"></string>
+  <string id="31014"></string>
+  <string id="31015"></string>
+  <string id="31016"></string>
+  <string id="31017"></string>
+  <string id="31018"></string>
+  <string id="31019"></string>
+
+  <string id="31020">Título de Capítulo</string>
+  <string id="31021">Video - Arquivos</string>
+  <string id="31022">Music - Arquivos</string>
+  <string id="31023"></string>
+  <string id="31024">Página</string>
+  <string id="31025">Itens</string>
+
+  <string id="31026"></string>
+  <string id="31027"></string>
+  <string id="31028">DVD ícones</string>
+  <string id="31029">DVD lista</string>
+  <string id="31030">Fanart</string>
+  <string id="31031">Lista Completa</string>
+  <string id="31032">Fluxo de Capa(cover flow)</string>
+  <string id="31033">Ícone de imagem</string>
+  <string id="31034">Ícones Largos(wide)</string>
+
+  <string id="31040">Filme atual[CR]Imagem de Fanart[CR][CR]Clique para alterar</string>
+  <string id="31041">Seriado atual[CR]Imagem de Fanart[CR][CR]Clique para alterar</string>
+  <string id="31042">TOCANDO</string>
+  <string id="31043">PAUSADO</string>
+  <string id="31044">AVANÇO RÁPIDO</string>
+  <string id="31045">RETROCEDER</string>
+  <string id="31046">Bem vindo ao XBMC - Por favor se conecte</string>
+  <string id="31047">Última conexão</string>
+  <string id="31048">Artista atual[CR]Imagem de Fanart[CR][CR]Clique para alterar</string>
+
+  <string id="31050"></string>
+  <string id="31051"></string>
+  <string id="31052"></string>
+
+  <!-- Lyrics Script Extra labels -->
+  <string id="31053">Letras XBMC</string>
+  <string id="31054">Escolha a música da lista</string>
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Abrir playlist</string>
+  <string id="31056">Salvar playlist</string>
+  <string id="31057">Fechar playlist</string>
+  <string id="31058">Arquivos de música do sistema</string>
+  <string id="31059">Playlist atual</string>
+  <string id="31060">Este arquivo está empilhado, selecione a parte de onde executar.</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100">Opções de fundo</string>
+  <string id="31101">Opções da tela principal (home)</string>
+  <string id="31102">Fundo</string>
+  <string id="31103">Exibir "Pausado" em exibição de imagens (slideshow)</string>
+  <string id="31104">Menu de Desligar - Usar Hibernar ao invés de suspender</string>
+  <string id="31105">Exibir títulos de mídia em busca secudária</string>
+  <string id="31106">Opções diversas</string>
+  <string id="31107">Remover linhas de busca de tela de fundo</string>
+  <string id="31108">Remover linhas de busca de tela de fundo durante exibição de vídeos</string>
+  <string id="31109">Fundos da tela principal (home)</string>
+  <string id="31110">Botão - Fundos personalizados</string>
+  <string id="31111">Sempre exibir informações da música durante letras</string>
+  <string id="31112">Exibir títulos na visualização de "ícones largos"</string>
+  <string id="31113">Imagem única</string>
+  <string id="31114">Imagem múltipla</string>
+  <string id="31115">Substituir Botão de Configurações de Áudio por Teletext</string>
+  <string id="31116">Ocultar etiquetas de vídeo na visualização de mídia</string>
+
+  <!-- Script Settings labels -->
+  <string id="31200">Opções de script personalizadas</string>
+  <string id="31201"></string>
+  <string id="31202"></string>
+  <string id="31203">Definir etiqueta de botão</string>
+  <string id="31204">Caminho do Script</string>
+  <string id="31205"></string>
+  <string id="31206"></string>
+  <string id="31207">Exibir botão para download de legendas no OSD de Vídeo</string>
+  <string id="31208">Exibir botão de script para letras no OSD de Música</string>
+  <string id="31209">Habilitar botão de script de início rápido para -</string>
+
+  <!-- AMT Script Extra labels -->
+  <string id="31300">Elenco do Seriado</string>
+</strings>

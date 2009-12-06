@@ -190,9 +190,9 @@ enum APE_DECOMPRESS_FIELDS
     APE_INFO_PEAK_LEVEL = 1021,                 // peak audio level (obsolete) (-1 is unknown) [ignored, ignored]
     APE_INFO_SEEK_BIT = 1022,                   // bit offset [frame index, ignored]
     APE_INFO_SEEK_BYTE = 1023,                  // byte offset [frame index, ignored]
-    APE_INFO_WAV_HEADER_DATA = 1024,            // error code [buffer *, max bytes]
-    APE_INFO_WAV_TERMINATING_DATA = 1025,       // error code [buffer *, max bytes]
-    APE_INFO_WAVEFORMATEX = 1026,               // error code [waveformatex *, ignored]
+    APE_INFO_WAV_HEADER_DATA = 1024,            // error code [max bytes, buffer *]
+    APE_INFO_WAV_TERMINATING_DATA = 1025,       // error code [max bytes, buffer *]
+    APE_INFO_WAVEFORMATEX = 1026,               // error code [ignored, waveformatex *]
     APE_INFO_IO_SOURCE = 1027,                  // I/O source (CIO *) [ignored, ignored]
     APE_INFO_FRAME_BYTES = 1028,                // bytes (compressed) of the frame [frame index, ignored]
     APE_INFO_FRAME_BLOCKS = 1029,               // blocks in a given frame [frame index, ignored]
@@ -259,7 +259,10 @@ public:
     //    int nParam2
     //        generic parameter... usage is listed in APE_DECOMPRESS_FIELDS
     //////////////////////////////////////////////////////////////////////////////////////////////
-    virtual int GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1 = 0, int nParam2 = 0) = 0;
+    virtual int GetInfo(APE_DECOMPRESS_FIELDS Field, int nParam1 = 0, void *pParam2 = NULL) = 0;
+
+    // Same as the above, but returns a 64bit safe pointer
+    virtual void *GetPointer(APE_DECOMPRESS_FIELDS Field) = 0;
 };
 
 /*************************************************************************************************

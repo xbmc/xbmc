@@ -64,6 +64,7 @@
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/StreamDetails.h"
 
 using namespace std;
 
@@ -786,6 +787,9 @@ void CDVDPlayer::Process()
   if (m_pDlgCache && m_pDlgCache->IsCanceled())
     return;
 
+  // allow renderer to switch to fullscreen if requested
+  m_dvdPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
+
   OpenDefaultStreams();
 
   // look for any EDL files
@@ -822,9 +826,6 @@ void CDVDPlayer::Process()
         CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %d", __FUNCTION__, starttime);
     }
   }
-
-  // allow renderer to switch to fullscreen if requested
-  m_dvdPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
 
   // make sure application know our info
   UpdateApplication(0);
@@ -1776,6 +1777,7 @@ void CDVDPlayer::HandleMessages()
         {
           FlushBuffers(false);
           SyncronizePlayers(SYNCSOURCE_ALL, start);
+          m_callback.OnPlayBackSeekChapter(msg.GetChapter());
         }
       }
       else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
@@ -1885,6 +1887,16 @@ void CDVDPlayer::HandleMessages()
           m_State.timestamp =  CDVDClock::GetAbsoluteClock();
         }
 
+        if (speed != DVD_PLAYSPEED_PAUSE)
+        {
+          if (m_playSpeed != DVD_PLAYSPEED_PAUSE)
+          {
+            if ((m_playSpeed != DVD_PLAYSPEED_NORMAL * 32 && speed == DVD_PLAYSPEED_NORMAL) ||
+                (m_playSpeed != DVD_PLAYSPEED_NORMAL * -32 && speed == DVD_PLAYSPEED_NORMAL))
+              m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL );
+          }
+        }
+
         // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
         // audioplayer, stops outputing audio to audiorendere, but still tries to
         // sleep an correct amount for each packet
@@ -1982,9 +1994,15 @@ void CDVDPlayer::Pause()
 
   // return to normal speed if it was paused before, pause otherwise
   if (m_playSpeed == DVD_PLAYSPEED_PAUSE)
+  {
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
+    m_callback.OnPlayBackResumed();
+  }
   else
+  {
     SetPlaySpeed(DVD_PLAYSPEED_PAUSE);
+    m_callback.OnPlayBackPaused();
+  }
 }
 
 bool CDVDPlayer::IsPaused() const
@@ -2102,6 +2120,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 
   m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false, restore));
   SyncronizeDemuxer(100);
+  m_callback.OnPlayBackSeek((int)seek);
 }
 
 bool CDVDPlayer::SeekScene(bool bPlus)
@@ -2314,6 +2333,7 @@ void CDVDPlayer::SeekTime(__int64 iTime)
 {
   m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, true, true, true));
   SyncronizeDemuxer(100);
+  m_callback.OnPlayBackSeek((int)iTime);
 }
 
 // return the time in milliseconds
@@ -3397,7 +3417,12 @@ int CDVDPlayer::GetPictureWidth()
 bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
 {
   if (m_pDemuxer)
-    return CDVDFileInfo::DemuxerToStreamDetails(m_pDemuxer, details);
+  {
+    bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pDemuxer, details);
+    if (result) // this is more correct (dvds in particular)
+      GetVideoAspectRatio(((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect);
+    return result;
+  }
   else
     return false;
 }

@@ -190,8 +190,11 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return false;
 
           CFileItemPtr item = m_vecItems->Get(iItem);
-
-          if(!m_vecItems->IsPlugin() && !m_vecItems->IsLiveTV())
+          if (m_vecItems->IsPlugin() || m_vecItems->IsRSS())
+            info->m_pathContent = "plugin";
+          else if(m_vecItems->IsLiveTV())
+            info->m_pathContent = "livetv";
+          else
           {
             if (item->IsVideoDb()       &&
                 item->HasVideoInfoTag() &&
@@ -638,6 +641,17 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
             m_database.GetTvShowInfo(item->m_strPath,movieDetails);
           else
             m_database.GetEpisodeInfo(item->m_strPath,movieDetails);
+        }
+
+        // set path hash
+	if (info.strContent.Equals("movies") || info.strContent.Equals("musicvideos"))
+        {
+          CStdString hash, strParent;
+          CFileItemList items;
+	  CUtil::GetParentPath(list.m_strPath,strParent);
+          CDirectory::GetDirectory(strParent,items,g_stSettings.m_videoExtensions);
+          scanner.GetPathHash(items, hash);
+          m_database.SetPathHash(strParent, hash);
         }
 
         // got all movie details :-)
@@ -1441,7 +1455,7 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool mark)
     {
       if (pItem->HasVideoInfoTag() &&
           (( mark && pItem->GetVideoInfoTag()->m_playCount) ||
-           (!mark && pItem->GetVideoInfoTag()->m_playCount > 0)))
+           (!mark && !(pItem->GetVideoInfoTag()->m_playCount))))
         continue;
     }
 
@@ -1841,7 +1855,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::CScraperPtr &
   if (!item)
     return 0;
 
-  if (m_vecItems->IsPlugin())
+  if (m_vecItems->IsPlugin() || m_vecItems->IsRSS())
   {
     info.reset();
     return 0;

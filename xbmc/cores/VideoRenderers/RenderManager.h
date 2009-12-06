@@ -43,7 +43,6 @@ public:
   // Functions called from the GUI
   void GetVideoRect(CRect &source, CRect &dest) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->GetVideoRect(source, dest); };
   float GetAspectRatio() { CSharedLock lock(m_sharedSection); if (m_pRenderer) return m_pRenderer->GetAspectRatio(); else return 1.0f; };
-  void AutoCrop(bool bCrop = true) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->AutoCrop(bCrop); };
   void Update(bool bPauseDrawing);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
@@ -174,12 +173,21 @@ protected:
   
   int m_rendermethod;
 
+  enum EPRESENTSTEP
+  {
+    PRESENT_IDLE     = 0
+  , PRESENT_FLIP
+  , PRESENT_FRAME
+  , PRESENT_FRAME2
+  };
+
   double     m_presenttime;
   double     m_presentcorr;
   double     m_presenterr;
   EFIELDSYNC m_presentfield;
   EINTERLACEMETHOD m_presentmethod;
-  int        m_presentstep;
+  EPRESENTSTEP     m_presentstep;
+  int        m_presentsource;
   CEvent     m_presentevent;
 
 

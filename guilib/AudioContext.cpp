@@ -75,14 +75,18 @@ void CAudioContext::SetActiveDevice(int iDevice)
 {
   /* if device is the same, no need to bother */
 #ifdef _WIN32
+  if (iDevice == DEFAULT_DEVICE)
+    iDevice = DIRECTSOUND_DEVICE; // default device on win32 is directsound device
   if(m_iDevice == iDevice && g_guiSettings.GetString("audiooutput.audiodevice").Equals(m_strDevice))
   {
     if (iDevice != NONE && m_pDirectSoundDevice)
     {
       DSCAPS devCaps = {0};
       devCaps.dwSize = sizeof(devCaps);
-      if (SUCCEEDED(m_pDirectSoundDevice->GetCaps(&devCaps))) // Make sure the DirectSound interface is still valid.
+      HRESULT hr = m_pDirectSoundDevice->GetCaps(&devCaps);
+      if (SUCCEEDED(hr)) // Make sure the DirectSound interface is still valid.
         return;
+      CLog::Log(LOGDEBUG, "%s - DirectSoundDevice no longer valid and is going to be recreated (0x%08x)", __FUNCTION__, hr);
     }
   }
 
@@ -91,13 +95,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
     return;
 #endif
 
-  if (iDevice==DEFAULT_DEVICE)
-  {
-    /* we just tell callbacks to init, it will setup audio */
-    g_audioManager.Initialize(iDevice);
-    return;
-  }
-
+  CLog::Log(LOGDEBUG, "%s - SetActiveDevice from %i to %i", __FUNCTION__, m_iDevice, iDevice);
   /* deinit current device */
   RemoveActiveDevice();
 
@@ -185,6 +183,7 @@ int CAudioContext::GetActiveDevice()
 // \brief Remove the current sound device, eg. to setup new speaker config
 void CAudioContext::RemoveActiveDevice()
 {
+  CLog::Log(LOGDEBUG, "%s - Removing device %i", __FUNCTION__, m_iDevice);
   g_audioManager.DeInitialize(m_iDevice);
   m_iDevice=NONE;
 
@@ -203,6 +202,7 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
   bAudioOnAllSpeakers = false;
 
 #ifdef HAS_AUDIO
+  return; //not implemented
   DWORD spconfig = DSSPEAKER_USE_DEFAULT;
   if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
   {
@@ -259,6 +259,7 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
 
   /* speaker config identical, no need to do anything */
   if(spconfig == spconfig_old) return;
+  CLog::Log(LOGDEBUG, "%s - Speakerconfig changed from %i to %i", __FUNCTION__, spconfig_old, spconfig);
 #endif
 
   /* speaker config has changed, caller need to recreate it */

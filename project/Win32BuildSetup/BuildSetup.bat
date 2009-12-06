@@ -5,6 +5,7 @@ rem gl for opengl build (default)
 rem dx for directx build
 rem clean to force a full rebuild
 rem noclean to force a build without clean
+rem noprompt to avoid all prompts
 CLS
 COLOR 1B
 TITLE XBMC for Windows Build Script
@@ -15,13 +16,15 @@ rem Config
 rem If you get an error that Visual studio was not found, SET your path for VSNET main executable.
 rem -------------------------------------------------------------
 rem	CONFIG START
-SET target=gl
+SET target=dx
 SET buildmode=ask
+SET promptlevel=prompt
 FOR %%b in (%1, %2, %3, %4) DO (
 	IF %%b==dx SET target=dx
 	IF %%b==gl SET target=gl
 	IF %%b==clean SET buildmode=clean
 	IF %%b==noclean SET buildmode=noclean
+	IF %%b==noprompt SET promptlevel=noprompt
 )
 SET buildconfig=Release (OpenGL)
 IF %target%==dx SET buildconfig=Release (DirectX)
@@ -242,6 +245,9 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   ECHO ------------------------------------------------------------
 
 :VIEWLOG_EXE
+  IF %promptlevel%==noprompt (
+  goto END
+  )
   IF NOT EXIST "%CD%\..\vs2008express\XBMC\%buildconfig%\" BuildLog.htm" goto END
   set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
   if /I %XBMC_BUILD_ANSWER% NEQ y goto END
@@ -249,5 +255,7 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   goto END
 
 :END
+  IF %promptlevel% NEQ noprompt (
   ECHO Press any key to exit...
   pause > NUL
+  )

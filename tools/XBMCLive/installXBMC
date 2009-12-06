@@ -46,7 +46,7 @@ def runSilent(aCmdline):
 	return stdout_value, retCode
 
 def diskSizeKB(aVolume):
-	diskusage, retCode = runSilent('fdisk -l ' + aVolume + ' | grep "Disk ' + aVolume + '" | cut -f 5 -d " "')
+	diskusage, retCode = runSilent('fdisk -l ' + aVolume + ' | grep "' + aVolume + ':" | cut -f 5 -d " "')
 	nBytes = int(diskusage)
 	return int(nBytes / 1024)
 
@@ -564,7 +564,7 @@ def modifyGrubMenuV2(useGrubLegacy, basePath, isaRemovableDrive, bootPartition):
 			content += ("splashimage=/boot/grub/splash.xpm.gz" + "\n")
 			content += ("\n")
 			content += ("title  XBMCLive" + "\n")
-			content += ("kernel /vmlinuz root=UUID=" + findUUID(bootPartition) + " quiet splash xbmc=nodiskmount,tempfs,setvolume,noredir loglevel=0" + "\n")
+			content += ("kernel /vmlinuz root=UUID=" + findUUID(bootPartition) + " quiet splash xbmc=autostart,nodiskmount,setvolume,noredir loglevel=0" + "\n")
 			content += ("initrd /initrd.img" + "\n")
 			content += ("boot" + "\n")
 			content += ("\n")
@@ -610,7 +610,7 @@ def modifyGrubMenuV2(useGrubLegacy, basePath, isaRemovableDrive, bootPartition):
 			content += ("\n")
 			content += ('menuentry "XBMCLive" {' + "\n")
 			content += ('set quiet=1' + "\n")
-			content += (" linux /vmlinuz root=UUID=" + findUUID(bootPartition) + " quiet splash xbmc=autostart,nodiskmount,setvolume,noredir,wakeOnUSBRemote loglevel=0" + "\n")
+			content += (" linux /vmlinuz root=UUID=" + findUUID(bootPartition) + " quiet splash xbmc=autostart,nodiskmount,setvolume,noredir loglevel=0" + "\n")
 			content += (" initrd /initrd.img" + "\n")
 			content += ("}" + "\n")
 			content += ("\n")
@@ -751,7 +751,7 @@ def main():
 
 		cmdLine = 'file -b ' + cmdLineOptions.isoFileName
 		aType, retCode = runSilent(cmdLine)
-		if not aType.find("9660") >0:
+		if not aType.find("9660") >=0:
 			print "File: " + cmdLineOptions.isoFileName + " is not a valid ISO image, exiting..."
 			sys.exit(-1)
 
