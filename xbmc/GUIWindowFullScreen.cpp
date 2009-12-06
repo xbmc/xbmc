@@ -964,7 +964,7 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
     }
     else if(!bLargeStep)
     {
-      ChangetheTVGroup(plus);
+      ChangetheTVGroup(bPlus);
       return;
     }
   }
