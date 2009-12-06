@@ -20,8 +20,8 @@
  */
 
 #include <sys/types.h>
-#include <mvp_refmem.h>
 #include <string.h>
+#include "refmem/refmem.h"
 
 char* cmyth_utf8tolatin1(char* s)
 {

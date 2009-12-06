@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../../ -I../ffmpeg -I../../linux -I../../utils -I../../../guilib
+INCLUDES=-I. -I.. -I../../ -I../ffmpeg -I../../linux -I../../utils -I../../../guilib -I../../lib
 
 CXXFLAGS+=-D__STDC_FORMAT_MACROS
 
