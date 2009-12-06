@@ -44,7 +44,6 @@ extern "C" {
 #endif
 }
 #endif
-
 enum AVDiscard;
 
 enum StreamType
@@ -198,6 +197,7 @@ typedef struct DemuxPacket
   double dts; // dts in DVD_TIME_BASE
   double duration; // duration in DVD_TIME_BASE if available
 } DemuxPacket;
+
 
 class CDVDDemux
 {

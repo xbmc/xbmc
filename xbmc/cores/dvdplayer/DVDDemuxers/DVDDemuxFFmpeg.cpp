@@ -322,8 +322,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       // this actually speeds up channel changes by almost a second
       // however, it alsa makes player not buffer anything, this
       // leads to buffer underruns in audio renderer
-      if(context->is_streamed)
-        streaminfo = false;
+      //if(context->is_streamed)
+      //  streaminfo = false;
     }
     else
     {
@@ -376,14 +376,14 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       if (!iformat)
       {
         // av_probe_input_format failed, re-probe the ffmpeg/ffplay method.
-        // av_open_input_file uses av_probe_input_format2 for probing format,
-        // starting at 2048, up to max buffer size of 1048576. We just probe to
-        // the buffer size allocated above so as to avoid seeks on content that
+        // av_open_input_file uses av_probe_input_format2 for probing format, 
+        // starting at 2048, up to max buffer size of 1048576. We just probe to 
+        // the buffer size allocated above so as to avoid seeks on content that 
         // might not be seekable.
         int max_buf_size = pd.buf_size;
-        for (int probe_size=std::min(2048, pd.buf_size); probe_size <= max_buf_size && !iformat; probe_size<<=1)
+        for (int probe_size=std::min(2048, pd.buf_size); probe_size <= max_buf_size && !iformat; probe_size<<=1) 
         {
-          CLog::Log(LOGDEBUG, "%s - probing failed, re-probing with probe size [%d]", __FUNCTION__, probe_size);
+          CLog::Log(LOGDEBUG, "%s - probing failed, re-probing with probe size [%d]", __FUNCTION__, probe_size); 
           int score= probe_size < max_buf_size ? AVPROBE_SCORE_MAX/4 : 0;
           pd.buf_size = probe_size;
           iformat = m_dllAvFormat.av_probe_input_format2(&pd, 1, &score);
@@ -423,6 +423,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     /* too speed up live sources, only analyse very short */
     if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
       m_pFormatContext->max_analyze_duration = 500000;
+
 
     CLog::Log(LOGDEBUG, "%s - av_find_stream_info starting", __FUNCTION__);
     int iErr = m_dllAvFormat.av_find_stream_info(m_pFormatContext);
@@ -826,7 +827,7 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     return true;
   }
 
-#ifdef HAS_FILESYSTEM_MMS
+#ifdef HAS_FILESYSTEM_MMS 
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_MMS))
   {
     if (!((CDVDInputStreamMMS*)m_pInput)->SeekTime(time))
@@ -1194,7 +1195,7 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
   if (stream)
   {
     unsigned int in = stream->codec_fourcc;
-    // FourCC codes are only valid on video streams, audio codecs in AVI/WAV
+    // FourCC codes are only valid on video streams, audio codecs in AVI/WAV 
     // are 2 bytes and audio codecs in transport streams have subtle variation
     // e.g AC-3 instead of ac3
     if (stream->type == STREAM_VIDEO && in != 0)
