@@ -304,6 +304,7 @@ void CDeviceKitDisksProvider::DeviceAdded(const char *object, IStorageEventsCall
   if (g_advancedSettings.m_handleMounting)
     device->Mount();
 
+  CLog::Log(LOGDEBUG, "DeviceKit.Disks: DeviceAdded - %s", device->toString().c_str());
   if (device->m_isMounted && device->IsApproved())
   {
     CLog::Log(LOGNOTICE, "DeviceKit.Disks: Added %s", device->m_MountPath.c_str());
@@ -345,6 +346,8 @@ void CDeviceKitDisksProvider::DeviceChanged(const char *object, IStorageEventsCa
       callback->OnStorageAdded(device->m_MountPath, device->m_Label);
     else if (mounted && !device->m_isMounted && callback)
       callback->OnStorageSafelyRemoved(device->m_Label);
+
+    CLog::Log(LOGDEBUG, "DeviceKit.Disks: DeviceChanged - %s", device->toString().c_str());
   }
 }
 
