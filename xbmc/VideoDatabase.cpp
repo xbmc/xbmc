@@ -2859,7 +2859,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
     castTime += timeGetTime() - time; time = timeGetTime();
     details.m_strPictureURL.Parse();
   }
-  details.m_fanart.Unpack();
   return details;
 }
 
@@ -5020,18 +5019,17 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
         pItem->SetProperty("unwatchedepisodes", movie.m_iEpisode - movie.m_playCount);
         pItem->GetVideoInfoTag()->m_playCount = (movie.m_iEpisode == movie.m_playCount) ? 1 : 0;
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
-        if (pItem->CacheLocalFanart())
-          pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
         items.Add(pItem);
       }
       m_pDS->next();
     }
 
-    CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d",
+    CLog::Log(LOGDEBUG,"Time to retrieve tvshows from dataset = %d",
               timeGetTime() - time);
-      CStdString order(where);
-      bool maintainOrder = (size_t)order.ToLower().Find("order by") != CStdString::npos;
-      Stack(items, VIDEODB_CONTENT_TVSHOWS, maintainOrder);
+
+    CStdString order(where);
+    bool maintainOrder = (size_t)order.ToLower().Find("order by") != CStdString::npos;
+    Stack(items, VIDEODB_CONTENT_TVSHOWS, maintainOrder);
 
     // cleanup
     m_pDS->close();
@@ -5297,7 +5295,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
       m_pDS->next();
     }
 
-    CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d",
+    CLog::Log(LOGDEBUG,"Time to retrieve episodes from dataset = %d",
               timeGetTime() - time);
 
     // cleanup

@@ -102,7 +102,7 @@ bool CDVDDemuxHTSP::Open(CDVDInputStream* input)
   m_Input       = (CDVDInputStreamHTSP*)input;
   m_StatusCount = 0;
 
-  while(m_Streams.size() == 0 && m_StatusCount < 2)
+  while(m_Streams.size() == 0 && m_StatusCount == 0)
   {
     DemuxPacket* pkg = Read();
     if(!pkg)
@@ -233,6 +233,7 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
       CDemuxStream*      g;
       CDemuxStreamAudio* a;
       CDemuxStreamVideo* v;
+      CDemuxStreamSubtitle* s;
     } st;
 
     CLog::Log(LOGDEBUG, "CDVDDemuxHTSP::SubscriptionStart - id: %d, type: %s", index, type);
@@ -252,6 +253,13 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
     } else if(!strcmp(type, "H264")) {
       st.v = new CDemuxStreamVideoHTSP(this, type);
       st.v->codec = CODEC_ID_H264;
+    } else if(!strcmp(type, "DVBSUB")) {
+      st.s = new CDemuxStreamSubtitle();
+      st.s->codec = CODEC_ID_DVB_SUBTITLE;
+      uint32_t composition_id = 0, ancillary_id = 0;
+      htsmsg_get_u32(sub, "composition_id", &composition_id);
+      htsmsg_get_u32(sub, "ancillary_id"  , &ancillary_id);
+      st.s->identifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
     } else {
       continue;
     }
@@ -278,10 +286,7 @@ void CDVDDemuxHTSP::SubscriptionStatus(htsmsg_t *m)
     m_StatusCount++;
     m_Status = status;
     CLog::Log(LOGDEBUG, "CDVDDemuxHTSP::SubscriptionStatus - %s", status);
-
-    /* always ignore first status, as that can happen on channel change */
-    if(m_StatusCount > 1)
-      g_application.m_guiDialogKaiToast.QueueNotification("TVHeadend Status", status);
+    g_application.m_guiDialogKaiToast.QueueNotification("TVHeadend Status", status);
   }
 }
 

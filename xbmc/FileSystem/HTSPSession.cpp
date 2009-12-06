@@ -365,7 +365,7 @@ bool CHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
 
 void CHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
 {
-  uint32_t id, event = 0;
+  uint32_t id, event = 0, num = 0;
   const char *name, *icon;
   if(htsmsg_get_u32(msg, "channelId", &id))
   {
@@ -386,6 +386,15 @@ void CHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
   if((icon = htsmsg_get_str(msg, "channelIcon")))
     channel.icon = icon;
 
+  if(htsmsg_get_u32(msg, "channelNumber", &num) == 0)
+  {
+    if(num == 0)
+      channel.num = id + 1000;
+    else
+      channel.num = num;
+  }
+  else
+    channel.num = id; // fallback older servers
 
   htsmsg_t *tags;
 
@@ -486,7 +495,7 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
 
   tag->m_iSeason  = 0;
   tag->m_iEpisode = 0;
-  tag->m_iTrack       = channel.id;
+  tag->m_iTrack       = channel.num;
   tag->m_strAlbum     = channel.name;
   tag->m_strShowTitle = event.title;
   tag->m_strPlot      = event.descs;

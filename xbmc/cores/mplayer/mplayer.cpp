@@ -1939,7 +1939,7 @@ void CMPlayer::SeekTime(__int64 iTime)
   }
   g_infoManager.m_performingSeek = false;
   WaitOnCommand();
-  m_callback.OnPlayBackSeek(iTime);
+  m_callback.OnPlayBackSeek((int)iTime);
 }
 
 //Time in milliseconds

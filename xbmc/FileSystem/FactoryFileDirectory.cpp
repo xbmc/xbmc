@@ -59,7 +59,6 @@ CFactoryFileDirectory::~CFactoryFileDirectory(void)
 IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileItem* pItem, const CStdString& strMask)
 {
   CStdString strExtension=CUtil::GetExtension(strPath);
-  if (strExtension.size() == 0) return NULL;
   strExtension.MakeLower();
 
 #ifdef HAS_FILESYSTEM

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="windows-1251" standalone="yes"?>
-<scraper framework="1.1" date="2009-09-13" content="movies" name="World Art Movies" thumb="worldart.gif" language="ru">
+<scraper framework="1.1" date="2009-03-12" content="movies" name="World Art Movies" thumb="worldart.gif" language="ru">
 	<include>common/tmdb.xml</include>
 	<include>common/imdb.xml</include>
 	<GetSettings dest="3">
@@ -153,7 +153,7 @@
 	<!-- MPAA -->
 	<MPAA dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;mpaa&gt;\1&lt;/mpaa&gt;&lt;/details&gt;" dest="5+">
-			<expression trim="1">MPAA&lt;/a&gt;:&lt;/h5&gt;(.[^&lt;]*)</expression>
+			<expression trim="1">MPAA&lt;/a&gt;:&lt;/h5&gt;\n&lt;div class=&quot;info-content&quot;&gt;\n(.[^&lt;]*)</expression>
 		</RegExp>
 	</MPAA>
 	<!-- TOP250 -->

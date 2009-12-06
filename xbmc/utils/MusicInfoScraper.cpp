@@ -88,6 +88,8 @@ void CMusicInfoScraper::FindAlbuminfo()
   m_vecAlbums.erase(m_vecAlbums.begin(), m_vecAlbums.end());
 
   CScraperParser parser;
+  parser.ClearCache();
+
   if (!parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath) || !parser.HasFunction("CreateAlbumSearchUrl"))
     return;
 
@@ -199,6 +201,8 @@ void CMusicInfoScraper::FindArtistinfo()
   m_vecArtists.erase(m_vecArtists.begin(), m_vecArtists.end());
 
   CScraperParser parser;
+  parser.ClearCache();
+
   if (!parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath) || !parser.HasFunction("CreateArtistSearchUrl"))
     return;
 

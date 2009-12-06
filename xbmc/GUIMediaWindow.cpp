@@ -38,7 +38,7 @@
 #include "GUIDialogProgress.h"
 #include "AdvancedSettings.h"
 
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "GUIMultiImage.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogPluginSettings.h"
@@ -46,6 +46,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "PlayList.h"
+#include "FileSystem/FactoryFileDirectory.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -718,7 +719,19 @@ bool CGUIMediaWindow::OnClick(int iItem)
     GoParentFolder();
     return true;
   }
-  else if (pItem->m_bIsFolder)
+
+  if (!pItem->m_bIsFolder && pItem->IsFileFolder())
+  {
+    DIRECTORY::IFileDirectory *pFileDirectory = NULL;
+    pFileDirectory = DIRECTORY::CFactoryFileDirectory::Create(pItem->m_strPath, pItem.get(), "");
+    if(pFileDirectory)
+      pItem->m_bIsFolder = true;
+    else if(pItem->m_bIsFolder)
+      pItem->m_bIsFolder = false;
+    delete pFileDirectory;
+  }
+
+  if (pItem->m_bIsFolder)
   {
     if ( pItem->m_bIsShareOrDrive )
     {

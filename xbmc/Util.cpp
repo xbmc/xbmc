@@ -651,7 +651,8 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     }
   }
 
-  RemoveExtension(strTitleAndYear);
+  if (!bIsFolder)
+    RemoveExtension(strTitleAndYear);
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
