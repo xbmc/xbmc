@@ -692,12 +692,13 @@ void CMPCOutputThread::Process()
 #if defined(__APPLE__)
 #pragma mark -
 #endif
-CCrystalHD::CCrystalHD()
+CCrystalHD::CCrystalHD() :
+  m_IsConfigured(false),
+  m_Inited(false),
+  m_drop_state(false),
+  m_pInputThread(NULL),
+  m_pOutputThread(NULL)
 {
-  m_Inited = false;
-  m_IsConfigured = false;
-  m_drop_state = false;
-  
   InitHardware();
   g_CrystalHD = this;
 }

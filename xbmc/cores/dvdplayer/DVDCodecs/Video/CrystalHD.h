@@ -135,8 +135,8 @@ protected:
   bool      m_interlace;
   double    m_framerate;
 
-  CMPCOutputThread* m_pOutputThread;
   CMPCInputThread* m_pInputThread;
+  CMPCOutputThread* m_pOutputThread;
   CSyncPtrQueue<CMPCDecodeBuffer> m_BusyList;
 };
 
