@@ -2202,6 +2202,7 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
         glGenTextures(1, &fields[f][p].id);
         VerifyGLState();
       }
+      fields[f][p].pbo = pbo[p];
     }
   }
 
