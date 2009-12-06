@@ -1325,14 +1325,9 @@ void CUtil::ClearSubtitles()
           CStdString strFile;
           strFile.Format("special://temp/%s", wfd.cFileName);
           if (strFile.Find("subtitle") >= 0 )
-          {
-            if (strFile.Find(".keep") != (signed int) strFile.size()-5) // do not remove files ending with .keep
-              CFile::Delete(strFile);
-          }
-          else if (strFile.Find("vobsub_queue") >= 0 )
-          {
             CFile::Delete(strFile);
-          }
+          else if (strFile.Find("vobsub_queue") >= 0 )
+            CFile::Delete(strFile);
         }
       }
     }
@@ -1410,14 +1405,6 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   // checking if any of the common subdirs exist ..
   CLog::Log(LOGDEBUG,"%s: Checking for common subirs...", __FUNCTION__);
 
-  vector<CStdString> token;
-  Tokenize(strPath,token,"/\\");
-  if (token[token.size()-1].size() == 3 && token[token.size()-1].Mid(0,2).Equals("cd"))
-  {
-    CStdString strPath2;
-    GetParentPath(strPath,strPath2);
-    strLookInPaths.push_back(strPath2);
-  } 
   int iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)
   {
@@ -1532,18 +1519,6 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
     }
   }
   CLog::Log(LOGDEBUG,"%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - nextTimer));
-
-  // rename any keep subtitles
-  CFileItemList items;
-  CDirectory::GetDirectory("special://temp/",items,".keep");
-  for (int i=0;i<items.Size();++i)
-  {
-    if (!items[i]->m_bIsFolder)
-    {
-      CFile::Delete(items[i]->m_strPath.Left(items[i]->m_strPath.size()-5));
-      CFile::Rename(items[i]->m_strPath,items[i]->m_strPath.Left(items[i]->m_strPath.size()-5));
-    }
-  }
 
   // construct string of added exts?
   for (vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
