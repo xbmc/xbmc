@@ -1,0 +1,58 @@
+<html><head>
+<title>curl_multi_strerror man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_multi_strerror - return string describing error code <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0"><pre>
+<p class="level0"><span Class="bold">#include &lt;curl/curl.h&gt;</span> 
+<span Class="bold">const char *curl_multi_strerror(CURLMcode  errornum );</span> 
+</pre>
+<a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">The curl_multi_strerror() function returns a string describing the CURLMcode error code passed in the argument <span Class="emphasis">errornum</span>. <a name="AVAILABILITY"></a><h2 class="nroffsh">AVAILABILITY</h2>
+<p class="level0">This function was added in libcurl 7.12.0 <a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">A pointer to a zero terminated string. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><span Class="manpage">libcurl-errors (3)</span> <a class="manpage" href="./curl_easy_strerror.html">  curl_easy_strerror (3)</a> <a class="manpage" href="./curl_share_strerror.html">  curl_share_strerror (3)</a> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

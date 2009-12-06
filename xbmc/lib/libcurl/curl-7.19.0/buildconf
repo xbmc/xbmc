@@ -1,0 +1,324 @@
+#!/bin/sh
+#***************************************************************************
+#                                  _   _ ____  _
+#  Project                     ___| | | |  _ \| |
+#                             / __| | | | |_) | |
+#                            | (__| |_| |  _ <| |___
+#                             \___|\___/|_| \_\_____|
+#
+# Copyright (C) 1998 - 2008, Daniel Stenberg, <daniel@haxx.se>, et al.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at http://curl.haxx.se/docs/copyright.html.
+#
+# You may opt to use, copy, modify, merge, publish, distribute and/or sell
+# copies of the Software, and permit persons to whom the Software is
+# furnished to do so, under the terms of the COPYING file.
+#
+# This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
+# KIND, either express or implied.
+#
+# $Id: buildconf,v 1.63 2008-08-14 23:55:24 yangtse Exp $
+###########################################################################
+
+die(){
+	echo "$@"
+	exit
+}
+
+#--------------------------------------------------------------------------
+# findtool works as 'which' but we use a different name to make it more
+# obvious we aren't using 'which'! ;-)
+#
+findtool(){
+  file="$1"
+
+  old_IFS=$IFS; IFS=':'
+  for path in $PATH
+  do
+    IFS=$old_IFS
+    # echo "checks for $file in $path" >&2
+    if test -f "$path/$file"; then
+      echo "$path/$file"
+      return
+    fi
+  done
+  IFS=$old_IFS
+}
+
+#--------------------------------------------------------------------------
+# removethis() removes all files and subdirectories with the given name,
+# inside and below the current subdirectory at invocation time.
+#
+removethis(){
+  if test "$#" = "1"; then
+    find . -depth -name $1 -print > buildconf.tmp.$$
+    while read fdname
+    do
+      if test -f "$fdname"; then
+        rm -f "$fdname"
+      elif test -d "$fdname"; then
+        rm -f -r "$fdname"
+      fi
+    done < buildconf.tmp.$$
+    rm -f buildconf.tmp.$$
+  fi
+}
+
+#--------------------------------------------------------------------------
+# Ensure that buildconf runs from the subdirectory where configure.ac lives
+#
+if test ! -f configure.ac ||
+  test ! -f src/main.c ||
+  test ! -f lib/urldata.h ||
+  test ! -f include/curl/curl.h; then
+  echo "Can not run buildconf from outside of curl's source subdirectory!"
+  echo "Change to the subdirectory where buildconf is found, and try again."
+  exit 1
+fi
+
+#--------------------------------------------------------------------------
+# autoconf 2.57 or newer
+#
+need_autoconf="2.57"
+ac_version=`${AUTOCONF:-autoconf} --version 2>/dev/null|head -n 1| sed -e 's/^[^0-9]*//' -e 's/[a-z]* *$//'`
+if test -z "$ac_version"; then
+  echo "buildconf: autoconf not found."
+  echo "            You need autoconf version $need_autoconf or newer installed."
+  exit 1
+fi
+IFS=.; set $ac_version; IFS=' '
+if test "$1" = "2" -a "$2" -lt "57" || test "$1" -lt "2"; then
+  echo "buildconf: autoconf version $ac_version found."
+  echo "            You need autoconf version $need_autoconf or newer installed."
+  echo "            If you have a sufficient autoconf installed, but it"
+  echo "            is not named 'autoconf', then try setting the"
+  echo "            AUTOCONF environment variable."
+  exit 1
+fi
+
+echo "buildconf: autoconf version $ac_version (ok)"
+
+am4te_version=`${AUTOM4TE:-autom4te} --version 2>/dev/null|head -n 1| sed -e 's/autom4te\(.*\)/\1/' -e 's/^[^0-9]*//' -e 's/[a-z]* *$//'`
+if test -z "$am4te_version"; then
+  echo "buildconf: autom4te not found. Weird autoconf installation!"
+  exit 1
+fi
+if test "$am4te_version" = "$ac_version"; then
+  echo "buildconf: autom4te version $am4te_version (ok)"
+else
+  echo "buildconf: autom4te version $am4te_version (ERROR: does not match autoconf version)"
+  exit 1
+fi
+
+#--------------------------------------------------------------------------
+# autoheader 2.50 or newer
+#
+ah_version=`${AUTOHEADER:-autoheader} --version 2>/dev/null|head -n 1| sed -e 's/^[^0-9]*//' -e 's/[a-z]* *$//'`
+if test -z "$ah_version"; then
+  echo "buildconf: autoheader not found."
+  echo "            You need autoheader version 2.50 or newer installed."
+  exit 1
+fi
+IFS=.; set $ah_version; IFS=' '
+if test "$1" = "2" -a "$2" -lt "50" || test "$1" -lt "2"; then
+  echo "buildconf: autoheader version $ah_version found."
+  echo "            You need autoheader version 2.50 or newer installed."
+  echo "            If you have a sufficient autoheader installed, but it"
+  echo "            is not named 'autoheader', then try setting the"
+  echo "            AUTOHEADER environment variable."
+  exit 1
+fi
+
+echo "buildconf: autoheader version $ah_version (ok)"
+
+#--------------------------------------------------------------------------
+# automake 1.7 or newer
+#
+need_automake="1.7"
+am_version=`${AUTOMAKE:-automake} --version 2>/dev/null|head -n 1| sed -e 's/^.* \([0-9]\)/\1/' -e 's/[a-z]* *$//' -e 's/\(.*\)\(-p.*\)/\1/'`
+if test -z "$am_version"; then
+  echo "buildconf: automake not found."
+  echo "            You need automake version $need_automake or newer installed."
+  exit 1
+fi
+IFS=.; set $am_version; IFS=' '
+if test "$1" = "1" -a "$2" -lt "7" || test "$1" -lt "1"; then
+  echo "buildconf: automake version $am_version found."
+  echo "            You need automake version $need_automake or newer installed."
+  echo "            If you have a sufficient automake installed, but it"
+  echo "            is not named 'automake', then try setting the"
+  echo "            AUTOMAKE environment variable."
+  exit 1
+fi
+
+echo "buildconf: automake version $am_version (ok)"
+
+acloc_version=`${ACLOCAL:-aclocal} --version 2>/dev/null|head -n 1| sed -e 's/^.* \([0-9]\)/\1/' -e 's/[a-z]* *$//' -e 's/\(.*\)\(-p.*\)/\1/'`
+if test -z "$acloc_version"; then
+  echo "buildconf: aclocal not found. Weird automake installation!"
+  exit 1
+fi
+if test "$acloc_version" = "$am_version"; then
+  echo "buildconf: aclocal version $acloc_version (ok)"
+else
+  echo "buildconf: aclocal version $acloc_version (ERROR: does not match automake version)"
+  exit 1
+fi
+
+#--------------------------------------------------------------------------
+# libtool check
+#
+LIBTOOL_WANTED_MAJOR=1
+LIBTOOL_WANTED_MINOR=4
+LIBTOOL_WANTED_PATCH=2
+LIBTOOL_WANTED_VERSION=1.4.2
+
+# this approach that tries 'glibtool' first is some kind of work-around for
+# some BSD-systems I believe that use to provide the GNU libtool named
+# glibtool, with 'libtool' being something completely different.
+libtool=`findtool glibtool 2>/dev/null`
+if test ! -x "$libtool"; then
+  libtool=`findtool ${LIBTOOL:-libtool}`
+fi
+
+if test -z "$LIBTOOLIZE"; then
+  # set the LIBTOOLIZE here so that glibtoolize is used if glibtool was found
+  # $libtool is already the full path
+  libtoolize="${libtool}ize"
+else
+  libtoolize=`findtool $LIBTOOLIZE`
+fi
+
+lt_pversion=`$libtool --version 2>/dev/null|head -n 2|sed -e 's/^[^0-9]*//g' -e 's/[- ].*//'`
+if test -z "$lt_pversion"; then
+  echo "buildconf: libtool not found."
+  echo "            You need libtool version $LIBTOOL_WANTED_VERSION or newer installed"
+  exit 1
+fi
+lt_version=`echo $lt_pversion|sed -e 's/\([a-z]*\)$//'`
+IFS=.; set $lt_version; IFS=' '
+lt_status="good"
+
+major=$1
+minor=$2
+patch=$3
+
+if test "$major" = "$LIBTOOL_WANTED_MAJOR"; then
+   if test "$minor" -lt "$LIBTOOL_WANTED_MINOR"; then
+      lt_status="bad"
+   elif test -n "$LIBTOOL_WANTED_PATCH"; then
+       if test "$minor" -gt "$LIBTOOL_WANTED_MINOR"; then
+         lt_status="good"
+       elif test -n "$patch"; then
+          if test "$patch" -lt "$LIBTOOL_WANTED_PATCH"; then
+             lt_status="bad"
+          fi
+       else
+          lt_status="bad"
+       fi
+   fi
+fi
+if test $lt_status != "good"; then
+  echo "buildconf: libtool version $lt_pversion found."
+  echo "            You need libtool version $LIBTOOL_WANTED_VERSION or newer installed"
+  exit 1
+fi
+
+echo "buildconf: libtool version $lt_version (ok)"
+
+if test -f "$libtoolize"; then
+  echo "buildconf: libtoolize found"
+else
+  echo "buildconf: libtoolize not found. Weird libtool installation!"
+  exit 1
+fi
+
+#--------------------------------------------------------------------------
+# m4 check
+#
+m4=`${M4:-m4} --version 2>/dev/null|head -n 1`;
+m4_version=`echo $m4 | sed -e 's/^.* \([0-9]\)/\1/' -e 's/[a-z]* *$//'`
+
+if { echo $m4 | grep "GNU" >/dev/null 2>&1; } then
+  echo "buildconf: GNU m4 version $m4_version (ok)"
+else
+  echo "buildconf: m4 version $m4 found. You need a GNU m4 installed!"
+  exit 1
+fi
+
+#--------------------------------------------------------------------------
+# perl check
+#
+PERL=`findtool ${PERL:-perl}`
+
+#--------------------------------------------------------------------------
+# Remove files generated on previous buildconf/configure run.
+#
+for fname in .deps \
+    Makefile.in \
+    aclocal.m4 \
+    aclocal.m4.bak \
+    autom4te.cache \
+    compile \
+    config.guess \
+    config.h \
+    config.h.in \
+    config.log \
+    config.status \
+    config.sub \
+    configure \
+    curl-config \
+    curlbuild.h \
+    depcomp \
+    libcares.pc \
+    libcurl.pc \
+    libtool \
+    libtool.m4 \
+    ltmain.sh \
+    stamp-h1 \
+    stamp-h2 \
+    stamp-h3 ; do
+  removethis "$fname"
+done
+
+#--------------------------------------------------------------------------
+# run the correct scripts now
+#
+
+echo "buildconf: running libtoolize"
+$libtoolize --copy --automake --force || die "The libtoolize command failed"
+
+echo "buildconf: running aclocal"
+${ACLOCAL:-aclocal} -I m4 $ACLOCAL_FLAGS || die "The aclocal command line failed"
+
+if test -n "$PERL"; then
+  echo "buildconf: running aclocal hack to convert all mv to mv -f"
+  $PERL -i.bak -pe 's/\bmv +([^-\s])/mv -f $1/g' aclocal.m4
+else
+  echo "buildconf: perl not found"
+  exit 1
+fi
+
+echo "buildconf: running autoheader"
+${AUTOHEADER:-autoheader} || die "The autoheader command failed"
+
+echo "buildconf: cp lib/config.h.in src/config.h.in"
+cp lib/config.h.in src/config.h.in
+
+echo "buildconf: running autoconf"
+${AUTOCONF:-autoconf}     || die "The autoconf command failed"
+
+if test -d ares; then
+  cd ares
+  echo "buildconf: running in ares"
+  ./buildconf
+  cd ..
+fi
+
+echo "buildconf: running automake"
+${AUTOMAKE:-automake} -a -c  || die "The automake command failed"
+
+echo "buildconf: OK"
+exit 0

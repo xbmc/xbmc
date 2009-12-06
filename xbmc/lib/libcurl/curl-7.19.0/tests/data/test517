@@ -1,0 +1,67 @@
+<testcase>
+#
+# Server-side
+<reply>
+</reply>
+
+# Client-side
+<client>
+<server>
+none
+</server>
+# tool is what to use instead of 'curl'
+<tool>
+lib517
+</tool>
+
+ <name>
+curl_getdate() testing
+ </name>
+# Explicitly set the time zone to a known good one, in case the user is
+# using one of the 'right' zones that take into account leap seconds
+# which causes the cookie expiry times to be different.
+<setenv>
+TZ=GMT
+</setenv>
+ <command>
+nothing
+</command>
+</client>
+
+#
+# Verify data after the test has been "shot"
+<verify>
+<stdout mode="text">
+0: Sun, 06 Nov 1994 08:49:37 GMT => 784111777
+1: Sunday, 06-Nov-94 08:49:37 GMT => 784111777
+2: Sun Nov  6 08:49:37 1994 => 784111777
+3: 06 Nov 1994 08:49:37 GMT => 784111777
+4: 06-Nov-94 08:49:37 GMT => 784111777
+5: Nov  6 08:49:37 1994 => 784111777
+6: 06 Nov 1994 08:49:37 => 784111777
+7: 06-Nov-94 08:49:37 => 784111777
+8: 1994 Nov 6 08:49:37 => 784111777
+9: GMT 08:49:37 06-Nov-94 Sunday => 784111777
+10: 94 6 Nov 08:49:37 => 784111777
+11: 1994 Nov 6 => 784080000
+12: 06-Nov-94 => 784080000
+13: Sun Nov 6 94 => 784080000
+14: 1994.Nov.6 => 784080000
+15: Sun/Nov/6/94/GMT => 784080000
+16: Sun, 06 Nov 1994 08:49:37 CET => 784108177
+17: 06 Nov 1994 08:49:37 EST => 784129777
+18: Sun, 12 Sep 2004 15:05:58 -0700 => 1095026758
+19: Sat, 11 Sep 2004 21:32:11 +0200 => 1094931131
+20: 20040912 15:05:58 -0700 => 1095026758
+21: 20040911 +0200 => 1094853600
+</stdout>
+
+# This test case previously testes an overflow case ("2094 Nov 6 =>
+# 2147483647") for 32bit time_t, but since some systems have 64bit time_t and
+# handles this (returning 3939840000), and some 64bit-time_t systems don't
+# handle this and returns -1 for this, it turned very tricky to write a fine
+# test case and thus it is now removed until we have a way to write test cases
+# for this kind of things.
+
+</verify>
+</testcase>

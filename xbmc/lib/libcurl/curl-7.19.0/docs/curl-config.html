@@ -1,0 +1,88 @@
+<html><head>
+<title>curl-config man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl-config - Get information about a libcurl installation <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0"><span Class="bold">curl-config [options]</span> <a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0"><span Class="bold">curl-config</span> displays information about a previous curl and libcurl installation. <a name="OPTIONS"></a><h2 class="nroffsh">OPTIONS</h2>
+<p class="level0">
+<p class="level0"><a name="--ca"></a><span class="nroffip">--ca</span> 
+<p class="level1">Displays the built-in path to the CA cert bundle this libcurl uses. 
+<p class="level0"><a name="--cc"></a><span class="nroffip">--cc</span> 
+<p class="level1">Displays the compiler used to build libcurl. 
+<p class="level0"><a name="--cflags"></a><span class="nroffip">--cflags</span> 
+<p class="level1">Set of compiler options (CFLAGS) to use when compiling files that use libcurl. Currently that is only thw include path to the curl include files. 
+<p class="level0"><a name="--checkfor"></a><span class="nroffip">--checkfor [version]</span> 
+<p class="level1">Specify the oldest possible libcurl version string you want, and this  script will return 0 if the current installation is new enough or it  returns 1 and outputs a text saying that the current version is not new  enough. (Added in 7.15.4) 
+<p class="level0"><a name="--feature"></a><span class="nroffip">--feature</span> 
+<p class="level1">Lists what particular main features the installed libcurl was built with. At the time of writing, this list may include SSL, KRB4 or IPv6. Do not assume any particular order. The keywords will be separated by newlines. There may be none, one or several keywords in the list. 
+<p class="level0"><a name="--help"></a><span class="nroffip">--help</span> 
+<p class="level1">Displays the available options. 
+<p class="level0"><a name="--libs"></a><span class="nroffip">--libs</span> 
+<p class="level1">Shows the complete set of libs and other linker options you will need in order to link your application with libcurl. 
+<p class="level0"><a name="--prefix"></a><span class="nroffip">--prefix</span> 
+<p class="level1">This is the prefix used when libcurl was installed. Libcurl is then installed in $prefix/lib and its header files are installed in $prefix/include and so on. The prefix is set with "configure --prefix". 
+<p class="level0"><a name="--protocols"></a><span class="nroffip">--protocols</span> 
+<p class="level1">Lists what particular protocols the installed libcurl was built to support. At the time of writing, this list may include HTTP, HTTPS, FTP, FTPS, FILE, TELNET, LDAP, DICT. Do not assume any particular order. The protocols will be listed using uppercase and are separated by newlines. There may be none, one or several protocols in the list. (Added in 7.13.0) 
+<p class="level0"><a name="--static-libs"></a><span class="nroffip">--static-libs</span> 
+<p class="level1">Shows the complete set of libs and other linker options you will need in order to link your application with libcurl statically. (Added in 7.17.1) 
+<p class="level0"><a name="--version"></a><span class="nroffip">--version</span> 
+<p class="level1">Outputs version information about the installed libcurl. 
+<p class="level0"><a name="--vernum"></a><span class="nroffip">--vernum</span> 
+<p class="level1">Outputs version information about the installed libcurl, in numerical mode. This outputs the version number, in hexadecimal, with 8 bits for each part; major, minor, patch. So that libcurl 7.7.4 would appear as 070704 and libcurl 12.13.14 would appear as 0c0d0e... Note that the initial zero might be omitted. (This option was broken in the 7.15.0 release.) <a name="EXAMPLES"></a><h2 class="nroffsh">EXAMPLES</h2>
+<p class="level0">What linker options do I need when I link with libcurl? 
+<p class="level0">&nbsp; $ curl-config --libs 
+<p class="level0">What compiler options do I need when I compile using libcurl functions? 
+<p class="level0">&nbsp; $ curl-config --cflags 
+<p class="level0">How do I know if libcurl was built with SSL support? 
+<p class="level0">&nbsp; $ curl-config --feature | grep SSL 
+<p class="level0">What's the installed libcurl version? 
+<p class="level0">&nbsp; $ curl-config --version 
+<p class="level0">How do I build a single file with a one-line command? 
+<p class="level0">&nbsp; $ `curl-config --cc --cflags --libs` -o example example.c 
+<p class="level0"><a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><span Class="manpage">curl (1)</span> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

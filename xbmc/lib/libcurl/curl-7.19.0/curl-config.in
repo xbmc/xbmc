@@ -1,0 +1,216 @@
+#! /bin/sh
+#***************************************************************************
+#                                  _   _ ____  _
+#  Project                     ___| | | |  _ \| |
+#                             / __| | | | |_) | |
+#                            | (__| |_| |  _ <| |___
+#                             \___|\___/|_| \_\_____|
+#
+# Copyright (C) 2001 - 2008, Daniel Stenberg, <daniel@haxx.se>, et al.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at http://curl.haxx.se/docs/copyright.html.
+#
+# You may opt to use, copy, modify, merge, publish, distribute and/or sell
+# copies of the Software, and permit persons to whom the Software is
+# furnished to do so, under the terms of the COPYING file.
+#
+# This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
+# KIND, either express or implied.
+#
+# $Id: curl-config.in,v 1.32 2008-01-10 22:14:02 bagder Exp $
+###########################################################################
+#
+# The idea to this kind of setup info script was stolen from numerous
+# other packages, such as neon, libxml and gnome.
+#
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+includedir=@includedir@
+
+usage()
+{
+    cat <<EOF
+Usage: curl-config [OPTION]
+
+Available values for OPTION include:
+
+  --ca        ca bundle install path
+  --cc        compiler
+  --cflags    pre-processor and compiler flags
+  --checkfor [version] check for (lib)curl of the specified version
+  --features  newline separated list of enabled features
+  --help      display this help and exit
+  --libs      library linking information
+  --prefix    curl install prefix
+  --protocols newline separated list of enabled protocols
+  --static-libs static libcurl library linking information
+  --version   output version information
+  --vernum    output the version information as a number (hexadecimal)
+EOF
+
+    exit $1
+}
+
+if test $# -eq 0; then
+    usage 1
+fi
+
+while test $# -gt 0; do
+    case "$1" in
+    # this deals with options in the style
+    # --option=value and extracts the value part
+    # [not currently used]
+    -*=*) value=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+    *) value= ;;
+    esac
+
+    case "$1" in
+    --ca)
+	echo "@CURL_CA_BUNDLE@"
+	;;
+
+    --cc)
+	echo "@CC@"
+	;;
+
+    --prefix)
+	echo "$prefix"
+	;;
+
+    --feature|--features)
+	if test "@USE_SSLEAY@" = "1"; then
+          echo "SSL"
+          NTLM=1 # OpenSSL implies NTLM
+        elif test -n "@SSL_ENABLED@"; then
+          echo "SSL"
+        fi
+	if test "@KRB4_ENABLED@" = "1"; then
+          echo "KRB4"
+        fi
+	if test "@IPV6_ENABLED@" = "1"; then
+          echo "IPv6"
+        fi
+	if test "@HAVE_LIBZ@" = "1"; then
+          echo "libz"
+        fi
+	if test "@HAVE_ARES@" = "1"; then
+          echo "AsynchDNS"
+        fi
+	if test "@IDN_ENABLED@" = "1"; then
+          echo "IDN"
+        fi
+	if test "@USE_WINDOWS_SSPI@" = "1"; then
+          echo "SSPI"
+          NTLM=1
+        fi
+	if test "$NTLM" = "1"; then
+          echo "NTLM"
+        fi
+	;;
+
+    --protocols)
+	if test "@CURL_DISABLE_HTTP@" != "1"; then
+          echo "HTTP"
+	  if test "@SSL_ENABLED@" = "1"; then
+            echo "HTTPS"
+          fi
+        fi
+	if test "@CURL_DISABLE_FTP@" != "1"; then
+          echo "FTP"
+	  if test "@SSL_ENABLED@" = "1"; then
+            echo "FTPS"
+          fi
+        fi
+	if test "@CURL_DISABLE_FILE@" != "1"; then
+          echo "FILE"
+        fi
+	if test "@CURL_DISABLE_TELNET@" != "1"; then
+          echo "TELNET"
+        fi
+	if test "@CURL_DISABLE_LDAP@" != "1"; then
+          echo "LDAP"
+        fi
+	if test "@CURL_DISABLE_LDAPS@" != "1"; then
+          echo "LDAPS"
+        fi
+	if test "@CURL_DISABLE_DICT@" != "1"; then
+          echo "DICT"
+        fi
+	if test "@CURL_DISABLE_TFTP@" != "1"; then
+          echo "TFTP"
+        fi
+	if test "@USE_LIBSSH2@" = "1"; then
+          echo "SCP"
+          echo "SFTP"
+        fi
+	;;
+    --version)
+	echo libcurl @VERSION@
+	exit 0
+	;;
+
+    --checkfor)
+        checkfor=$2
+        cmajor=`echo $checkfor | cut -d. -f1`
+        cminor=`echo $checkfor | cut -d. -f2`
+        # when extracting the patch part we strip off everything after a
+	# dash as that's used for things like version 1.2.3-CVS
+	cpatch=`echo $checkfor | cut -d. -f3 | cut -d- -f1`
+        checknum=`echo "$cmajor*256*256 + $cminor*256 + ${cpatch:-0}" | bc`
+        numuppercase=`echo @VERSIONNUM@ | tr 'a-f' 'A-F'`
+        nownum=`echo "obase=10; ibase=16; $numuppercase" | bc`
+
+	if test "$nownum" -ge "$checknum"; then
+	  # silent success
+	  exit 0
+	else
+	  echo "requested version $checkfor is newer than existing @VERSION@"
+	  exit 1
+	fi
+	;;
+
+    --vernum)
+	echo @VERSIONNUM@
+	exit 0
+	;;
+
+    --help)
+	usage 0
+	;;
+
+    --cflags)
+       	if test "X@includedir@" = "X/usr/include"; then
+          echo ""
+        else
+          echo "-I@includedir@"
+        fi
+       	;;
+
+    --libs)
+	if test "X@libdir@" != "X/usr/lib" -a "X@libdir@" != "X/usr/lib64"; then
+	   CURLLIBDIR="-L@libdir@ "
+	else
+	   CURLLIBDIR=""
+	fi
+	if test "X@REQUIRE_LIB_DEPS@" = "Xyes"; then
+	  echo ${CURLLIBDIR}-lcurl @LDFLAGS@ @LIBCURL_LIBS@ @LIBS@
+	else
+	  echo ${CURLLIBDIR}-lcurl @LDFLAGS@ @LIBS@
+	fi
+	;;
+
+    --static-libs)
+	echo @libdir@/libcurl.@libext@ @LDFLAGS@ @LIBCURL_LIBS@ @LIBS@
+	;;
+
+    *)
+        echo "unknown option: $1"
+	usage 1
+	;;
+    esac
+    shift
+done
+
+exit 0

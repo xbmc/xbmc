@@ -1,0 +1,281 @@
+<html>
+<link rel="stylesheet" href="yassl.css" type="text/css" />
+
+<body bgcolor="black">
+&nbsp;
+<table align="center" width="859" height="700" border="0" cellspacing="0" cellpadding="0" bgcolor="#E6F3FF">
+<td width="2%" valign="top">
+<td width="96%" valign="top">
+<br />
+
+<a name="buffers">
+<span class="pageName">
+<h2>Input/Output</h2>
+</span>
+<span class="bodyText">
+<p> yaSSL uses a simulated streaming input/output system defined in buffer.hpp.  The buffers behave like a smart c style array for use with overloaded << and >> and provide a checking option, input is designed to be read from and output is for writing.  std::vector is not used because of a desire to have checked []access, offset, and the ability to read/write to the buffer bulk wise while maintaining the correct size and offset.  The buffers themselves use a checking policy.
+
+
+<p>The checking policy is Check by default but may be turned off at compile time to use NoCheck.  Check merely ensures that range errors are caught and is especially useful for debugging and testing, though it is a simple inlined test, some users may prefer to avoid runtime buffer flow checks.
+
+<p>One other feature worth noting about the buffers is that since they know their current offset, an index is not required for operator[].  By passing the constant <b>AUTO</b>, the user is freed from making silly index tracking errors, easing the burden of simple, but still error-prone, input/output programming.  For example, compare the following two implementations:
+</span>
+<span class="smallText">
+<p> &nbsp;&nbsp;&nbsp;&nbsp; A)  // input operator for ServerHello
+<br>&nbsp;&nbsp;&nbsp;&nbsp; input_buffer& operator>>(input_buffer& input, ServerHello& hello)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; { 
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     // Protocol
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     hello.server_version_.major_ = input[AUTO];
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     hello.server_version_.minor_ = input[AUTO];
+   
+<p> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     // Random
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     input.read(hello.random_, RAN_LEN);
+    
+<p> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     // Session
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     hello.id_len_ = input[AUTO];
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     input.read(hello.session_id_, ID_LEN);
+ 
+<p> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     // Suites
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     hello.cipher_suite_[0] = input[AUTO];
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     hello.cipher_suite_[1] = input[AUTO];
+   
+<p> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     // Compression
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     hello.compression_method_ = CompressionMethod(input[AUTO]);
+
+<p> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     return input;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; }
+
+
+<p> &nbsp;&nbsp;&nbsp;&nbsp; B)  // input operator for ServerHello
+<br>&nbsp;&nbsp;&nbsp;&nbsp; input_buffer& operator>>(input_buffer& input, ServerHello& hello)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     size_t i = input.get_current(); 
+
+<p> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     // Protocol
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     hello.server_version_.major_ = input[i++];
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     hello.server_version_.minor_ = input[i++];
+   
+<p> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     // Random
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     input.read(hello.random_, RAN_LEN);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     i += RAN_LEN;
+    
+<p> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     // Session
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     hello.id_len_ = input[i++];
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     input.read(hello.session_id_, ID_LEN);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     i += ID_LEN;
+ 
+<p> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     // Suites
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     hello.cipher_suite_[0] = input[i++];
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     hello.cipher_suite_[1] = input[i++];
+   
+<p> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     // Compression
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     hello.compression_method_ = <br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;    CompressionMethod(input[i++]);
+
+<p> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     input.set_current(i);
+
+<p> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     return input;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; }
+</span>
+<span class="bodyText">
+<p>While B is not much more difficult to implement, the chances for simple errors to occur are increased.  Not to mention having to remember to get/set the current offset before passing the buffer to handlers and in the event of exceptions, there is no guarantee that the index is correctly positioned, making recovery nearly impossible.
+</a>
+</span>
+
+<a name="factories">
+<span class="pageName">
+<h2>Factories</h2>
+</span>
+<span class="bodyText">
+<p>Factories are used in several areas by yaSSL.  Many of the structures defined in the SSL standard obey the Liskov Substitution Principle (Functions that use pointers/references to base classes must be able to use objects of derived classes transparently).  That is, a ServerHello message IS A handshake message and a Finished message IS also A handshake message.  Moreover, objects of the derived classes need to be created at runtime based on the negotiated parameters of the connection and message types.  For example, when a message header is read, a type field identifies the message that follows.  Instead of using a switch statement that becomes increasingly harder to maintain, yaSSL uses a message factory to create the desired object.
+</span>
+<span class="smallText">
+    <p>
+	<br>&nbsp;&nbsp;&nbsp;&nbsp; Message* msg = MessageFactory.CreateObject(hdr.type_);
+</span>
+<span class="bodyText">
+<p>factory.hpp defines the generic implementation like this:
+</span>
+
+<span class="smallText">
+    <p>
+	<br>&nbsp;&nbsp;&nbsp;&nbsp; template
+	<br>&nbsp;&nbsp;&nbsp;&nbsp; &lt;
+	<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; class    AbstractProduct, 
+	<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; typename IdentifierType = int, 
+	<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; typename ProductCreator = AbstractProduct* (*)()
+	<br>&nbsp;&nbsp;&nbsp;&nbsp; >
+	<br>&nbsp;&nbsp;&nbsp;&nbsp; class Factory {                                             
+	<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; typedef std::map<IdentifierType, ProductCreator> CallBackMap;
+	<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; CallBackMap callbacks_;
+	<br>&nbsp;&nbsp;&nbsp;&nbsp; ...}
+</span>
+
+<span class="bodyText">
+<p>The Message Factory instance is created like this:
+</span>
+
+<span class="smallText">
+    <p>
+	<br>&nbsp;&nbsp;&nbsp;&nbsp; typedef Factory<Message> MessageFactory;
+</span>
+
+<span class="bodyText">
+<p>For more information on factories please see the design pattern discussion in (GoF) and Alexandrescu's chapter in <i>Modern C++ Design</i>.
+</span>
+</a>
+
+
+<a name="policies">
+<span class="pageName">
+<h2>Policies</h2>
+</span>
+<span class="bodyText">
+<b>Cryptographic Policies</b> are employed to simply yaSSL's use of digests, ciphers, and signature systems.  Each is briefly described and defined in crypto_wrapper.hpp.
+
+<p><b>Digests</b>, or MACs (Message Authentication Codes) use a basic policy that hides the underlying implementation:
+</span>
+<span class="smallText">
+<p>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; struct MAC {
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     virtual void   get_digest(byte*) = 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     virtual void   get_digest(byte*, const byte*, unsigned int) = 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     virtual void   update(const byte*, unsigned int) = 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ...}
+</span>
+
+<span class="bodyText">
+<p>Really only the first <i>get_digest()</i> and <i>update()</i> are needed but the extended version of <i>get_digest()</i> allows a user to both update and retrieve the digest in the same call, simplifying some operations.  MD5 and SHA use the policy in their definitions, here is SHA as an example:
+</span>
+<span class="smallText">
+<p>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; class SHA : public MAC {
+<br>&nbsp;&nbsp;&nbsp;&nbsp; public:
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     void   get_digest(byte*);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     void   get_digest(byte*, const byte*, unsigned int);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     void   update(const byte*, unsigned int);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ...}
+</span>
+
+<span class="bodyText">
+<p>So when yaSSL has a MAC pointer, it uses it without knowledge of the derived object actually being used, conforming to the Liskov Substitution Principle.
+
+<p><b>Ciphers</b> also employ a basic policy:
+
+</span>
+<span class="smallText">
+<p>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; struct BulkCipher {
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     virtual void   encrypt(byte*, const byte*, unsigned int) = 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     virtual void   decrypt(byte*, const byte*, unsigned int) = 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     virtual void   set_encryptKey(const byte*, const byte* = 0) = 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     virtual void   set_decryptKey(const byte*, const byte* = 0) = 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ...}
+</span>
+
+<span class="bodyText">
+<p>These functions are all necessary and yaSSL uses BulkCipher pointers transapernetly and without knowledge of whether the actual object is DES, 3DES, or RC4.
+
+<p><b>Auth</b>entication policies define the signature verification interface used by yaSSL.
+
+</span>
+<span class="smallText">
+<p>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; struct Auth {
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     virtual void  sign(byte*, const byte*, unsigned int, const RandomPool&) =0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     virtual bool  verify(const byte*, unsigned int, const byte*, unsigned int) = 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; ...}
+</span>
+
+<span class="bodyText">
+<p>The authentication policy is straight forward and support for DSS and RSA is built into yaSSL.
+</a>
+</span>
+
+<a name="combine">
+<span class="pageName">
+<h2>Overall</h2>
+</span>
+<span class="bodyText">
+<b>Overall Design</b>.  (Reading/Writing SSL Messages) The combination of yaSSL's buffer strategy and factory use provides a simple paradigm used throughout the handshake and message layer implementations.  Reading and processing an input message could not be simpler:
+
+</span>
+<span class="smallText">
+<p>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; while(!buffer.eof()) {
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     // each record
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     RecordLayerHeader hdr;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     buffer >> hdr;
+
+<p> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     while (buffer.get_current() < hdr.length_ + offset) {
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;         // each message in record
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;         std::auto_ptr<Message> msg(mf.CreateObject(hdr.type_));
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;         buffer >> *msg;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;        msg->Process(buffer, ssl);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     }
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     offset += hdr.length_
+<br>&nbsp;&nbsp;&nbsp;&nbsp; }
+</span>
+
+<span class="bodyText">
+<p>This same loop is used by both clients and servers and efficiently handles all message types.  Handshake processing uses the exact same paradigm.  Sending an SSL output messages in yaSSL is primarily the responsibility output buffer and some simple helper functions like <i>buildHeader()</i> and <i>buildOutput()</i>.  Their implementations are also simple.
+
+</span>
+<span class="smallText">
+<p>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; void buildHeader(SSL& ssl, RecordLayerHeader& rlHeader, const Message& msg)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     ProtocolVersion pv = ssl.get_connection().version_;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     rlHeader.type_ = msg.get_type();
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     rlHeader.version_.major_ = pv.major_;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     rlHeader.version_.minor_ = pv.minor_;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     rlHeader.length_ = msg.get_length();
+<br>&nbsp;&nbsp;&nbsp;&nbsp; }
+
+<p> &nbsp;&nbsp;&nbsp;&nbsp; void buildOutput(output_buffer& buffer, const RecordLayerHeader& rlHdr,
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;   const HandShakeHeader& hsHdr, const HandShakeBase& shake)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     buffer.allocate(RECORD_HEADER + rlHdr.length_);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     buffer << rlHdr << hsHdr << shake;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; }
+</span>
+
+<span class="bodyText">
+<p>In fact, using the above functions and a couple of other helpers reveal the ease with which yaSSL sends a client hello message:
+
+</span>
+<span class="smallText">
+<p> &nbsp;&nbsp;&nbsp;&nbsp; void sendClientHello(SSL& ssl)
+<br>&nbsp;&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     ClientHello       ch;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     RecordLayerHeader rlHeader;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     HandShakeHeader   hsHeader;
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     output_buffer     out;
+
+<p> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     buildClientHello(ssl, ch);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     ssl.set_random(ch.get_random(), client_end);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     buildHeaders(ssl, hsHeader, rlHeader, ch);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     buildOutput(out, rlHeader, hsHeader, ch);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     hashHandShake(ssl, out);
+
+<p> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;     ssl.get_socket().send(out.get_buffer(), out.get_size());
+<br>&nbsp;&nbsp;&nbsp;&nbsp; }
+</span>
+
+<span class="bodyText">
+<p>Please see handshake.cpp and yassl_imp.cpp for a better understanding of how yaSSL sends and retrieves the other messages and handshake types.
+</a>
+</span>
+
+<p><a href="http://yassl.com/">Home</a>
+<br />
+&nbsp;
+
+<td width="2%" valign="top">
+
+</td>
+</table>
+</body>
+
+
+</html>
+

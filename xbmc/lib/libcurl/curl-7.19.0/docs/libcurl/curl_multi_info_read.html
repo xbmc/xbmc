@@ -1,0 +1,74 @@
+<html><head>
+<title>curl_multi_info_read man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_multi_info_read - read multi stack informationals <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0">#include &lt;curl/curl.h&gt; 
+<p class="level0">CURLMsg *curl_multi_info_read( CURLM *multi_handle, &nbsp;                              int *msgs_in_queue); 
+<p class="level0"><a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">Ask the multi handle if there are any messages/informationals from the individual transfers. Messages may include informationals such as an error code from the transfer or just the fact that a transfer is completed. More details on these should be written down as well. 
+<p class="level0">Repeated calls to this function will return a new struct each time, until a NULL is returned as a signal that there is no more to get at this point. The integer pointed to with <span Class="emphasis">msgs_in_queue</span> will contain the number of remaining messages after this function was called. 
+<p class="level0">When you fetch a message using this function, it is removed from the internal queue so calling this function again will not return the same message again. It will instead return new messages at each new invoke until the queue is emptied. 
+<p class="level0"><span Class="bold">WARNING:</span> The data the returned pointer points to will not survive calling <a class="emphasis" href="./curl_multi_cleanup.html">curl_multi_cleanup(3)</a>, <a class="emphasis" href="./curl_multi_remove_handle.html">curl_multi_remove_handle(3)</a> or <a class="emphasis" href="./curl_easy_cleanup.html">curl_easy_cleanup(3)</a>. 
+<p class="level0">The 'CURLMsg' struct is very simple and only contain very basic information. If more involved information is wanted, the particular "easy handle" in present in that struct and can thus be used in subsequent regular <a class="emphasis" href="./curl_easy_getinfo.html">curl_easy_getinfo(3)</a> calls (or similar): 
+<p class="level0"><pre>
+<p class="level0">&nbsp;struct CURLMsg {
+ &nbsp;  CURLMSG msg;       /* what this message means */
+ &nbsp;  CURL *easy_handle; /* the handle it concerns */
+ &nbsp;  union {
+ &nbsp;    void *whatever;    /* message-specific data */
+ &nbsp;    CURLcode result;   /* return code for transfer */
+ &nbsp;  } data;
+ &nbsp;};
+ <p class="level0">When <span Class="bold">msg</span> is <span Class="emphasis">CURLMSG_DONE</span>, the message identifies a transfer that
+ is done, and then <span Class="bold">result</span> contains the return code for the easy handle
+ that just completed.
+ <p class="level0">At this point, there is no other <span Class="bold">msg</span> types defined.
+ </pre>
+<a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">A pointer to a filled-in struct, or NULL if it failed or ran out of structs. It also writes the number of messages left in the queue (after this read) in the integer the second argument points to. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><a class="manpage" href="./curl_multi_cleanup.html">curl_multi_cleanup (3)</a> <a class="manpage" href="./curl_multi_init.html">  curl_multi_init (3)</a> <a class="manpage" href="./curl_multi_perform.html">  curl_multi_perform (3)</a> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>
