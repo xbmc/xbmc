@@ -21,8 +21,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <mvp_refmem.h>
-#include <cmyth.h>
 #include <cmyth_local.h>
 
 static void

@@ -32,8 +32,6 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-#include <mvp_refmem.h>
-#include <cmyth.h>
 #include <cmyth_local.h>
 #include <time.h>
 

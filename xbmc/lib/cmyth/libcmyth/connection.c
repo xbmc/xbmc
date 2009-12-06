@@ -40,8 +40,6 @@
 #include <errno.h>
 #include <string.h>
 #include <signal.h>
-#include <mvp_refmem.h>
-#include <cmyth.h>
 #include <cmyth_local.h>
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;

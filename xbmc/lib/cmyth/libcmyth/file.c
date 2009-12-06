@@ -20,11 +20,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <mvp_refmem.h>
 #ifndef _MSC_VER
 #include <sys/socket.h>
 #endif
-#include <cmyth.h>
 #include <cmyth_local.h>
 
 /*

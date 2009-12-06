@@ -44,8 +44,8 @@
 #include <unistd.h>
 #endif
 #include <errno.h>
-#include <mvp_refmem.h>
-#include <mvp_atomic.h>
+#include <refmem/refmem.h>
+#include <refmem/atomic.h>
 #include <refmem_local.h>
 
 #include <string.h>

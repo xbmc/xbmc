@@ -31,8 +31,6 @@
 #include <unistd.h>
 #endif
 #include <stdio.h>
-#include <mvp_refmem.h>
-#include <cmyth.h>
 #include <cmyth_local.h>
 
 /*

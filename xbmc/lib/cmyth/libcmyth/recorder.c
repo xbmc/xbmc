@@ -39,8 +39,6 @@
 #else
 #include <sys/time.h>
 #endif
-#include <mvp_refmem.h>
-#include <cmyth.h>
 #include <cmyth_local.h>
 
 #ifdef _MSC_VER

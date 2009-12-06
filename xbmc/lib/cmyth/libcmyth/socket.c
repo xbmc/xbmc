@@ -31,8 +31,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
-#include <mvp_refmem.h>
-#include <cmyth.h>
 #include <cmyth_local.h>
 
 #define __UNSIGNED	"0123456789"

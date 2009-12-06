@@ -22,17 +22,17 @@
  *           libcmyth routines.
  */
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
-#include <mvp_debug.h>
-#include <refmem_local.h>
+#include <cmyth_local.h>
 
-static mvp_debug_ctx_t refmem_debug_ctx = MVP_DEBUG_CTX_INIT("refmem",
-							     REF_DBG_NONE,
-							     NULL);
+#include "debug.h"
+
+static mvp_debug_ctx_t cmyth_debug_ctx = MVP_DEBUG_CTX_INIT("cmyth",
+							    CMYTH_DBG_NONE,
+							    NULL);
+
 /*
- * refmem_dbg_level(int l)
+ * cmyth_dbg_level(int l)
  * 
  * Scope: PUBLIC
  *
@@ -47,13 +47,13 @@ static mvp_debug_ctx_t refmem_debug_ctx = MVP_DEBUG_CTX_INIT("refmem",
  * None.
  */
 void
-refmem_dbg_level(int l)
+cmyth_dbg_level(int l)
 {
-	mvp_dbg_setlevel(&refmem_debug_ctx, l);
+	mvp_dbg_setlevel(&cmyth_debug_ctx, l);
 }
 
 /*
- * refmem_dbg_all()
+ * cmyth_dbg_all()
  * 
  * Scope: PUBLIC
  * 
@@ -66,13 +66,13 @@ refmem_dbg_level(int l)
  * None.
  */
 void
-refmem_dbg_all()
+cmyth_dbg_all()
 {
-	mvp_dbg_setlevel(&refmem_debug_ctx, REF_DBG_ALL);
+	mvp_dbg_setlevel(&cmyth_debug_ctx, CMYTH_DBG_ALL);
 }
 
 /*
- * refmem_dbg_none()
+ * cmyth_dbg_none()
  * 
  * Scope: PUBLIC
  * 
@@ -85,15 +85,15 @@ refmem_dbg_all()
  * None.
  */
 void
-refmem_dbg_none()
+cmyth_dbg_none()
 {
-	mvp_dbg_setlevel(&refmem_debug_ctx, REF_DBG_NONE);
+	mvp_dbg_setlevel(&cmyth_debug_ctx, CMYTH_DBG_NONE);
 }
 
 /*
- * refmem_dbg()
+ * cmyth_dbg()
  * 
- * Scope: PRIVATE (mapped to __refmem_dbg)
+ * Scope: PRIVATE (mapped to __cmyth_dbg)
  * 
  * Description
  *
@@ -106,11 +106,11 @@ refmem_dbg_none()
  * None.
  */
 void
-refmem_dbg(int level, char *fmt, ...)
+cmyth_dbg(int level, char *fmt, ...)
 {
 	va_list ap;
 
 	va_start(ap, fmt);
-	mvp_dbg(&refmem_debug_ctx, level, fmt, ap);
+	mvp_dbg(&cmyth_debug_ctx, level, fmt, ap);
 	va_end(ap);
 }

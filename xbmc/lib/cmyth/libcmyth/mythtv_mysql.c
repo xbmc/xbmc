@@ -31,10 +31,8 @@
 #include <sys/time.h>
 #endif
 #include <mysql/mysql.h>
-#include <mvp_refmem.h>
-#include <cmyth.h>
 #include <cmyth_local.h>
-#include <mvp_string.h>
+#include <safe_string.h>
 
 #ifdef _MSC_VER
 static void nullprint(a, ...) { return; }

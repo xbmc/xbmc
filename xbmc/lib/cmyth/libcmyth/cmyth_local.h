@@ -31,7 +31,8 @@
 #else
 #include <unistd.h>
 #endif
-#include <cmyth.h>
+#include <refmem/refmem.h>
+#include <cmyth/cmyth.h>
 #include <time.h>
 #include <mysql/mysql.h>
 

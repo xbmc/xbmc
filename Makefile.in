@@ -27,7 +27,8 @@ BIN_DIRS=	\
 	xbmc/FileSystem/MusicDatabaseDirectory \
 	xbmc/FileSystem/VideoDatabaseDirectory \
 	xbmc/karaoke \
-	xbmc/lib/libcmyth \
+	xbmc/lib/cmyth/libcmyth \
+	xbmc/lib/cmyth/librefmem \
 	xbmc/lib/libhts \
 	xbmc/lib/libGoAhead \
 	xbmc/lib/libPython \
@@ -200,8 +201,10 @@ xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a: force
 	$(MAKE) -C xbmc/FileSystem/VideoDatabaseDirectory
 xbmc/karaoke/karaoke.a: force
 	$(MAKE) -C xbmc/karaoke
-xbmc/lib/libcmyth/libcmyth.a: force
-	$(MAKE) -C xbmc/lib/libcmyth
+xbmc/lib/cmyth/libcmyth/libcmyth.a: force
+	$(MAKE) -C xbmc/lib/cmyth/libcmyth
+xbmc/lib/cmyth/librefmem/librefmem.a: force
+	$(MAKE) -C xbmc/lib/cmyth/librefmem
 xbmc/lib/libhts/libhts.a: force
 	$(MAKE) -C xbmc/lib/libhts
 xbmc/lib/libPython/python.a: force
@@ -317,6 +320,8 @@ xcode_depends: \
 	codecs libs python visualizations screensavers eventclients \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	skins \
+	xbmc/lib/cmyth/libcmyth/libcmyth.a \
+	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/lib/libRTMP/librtmp.a \
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
@@ -374,7 +379,8 @@ OBJSXBMC+= \
 endif
 
 DYNOBJSXBMC= \
-	xbmc/lib/libcmyth/libcmyth.a \
+	xbmc/lib/cmyth/libcmyth/libcmyth.a \
+	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/linux/linux.a \
 	xbmc/utils/utils.a \
 	xbmc/cores/DllLoader/exports/util/exports_utils.a \
