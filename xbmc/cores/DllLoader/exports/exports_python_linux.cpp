@@ -140,7 +140,9 @@ int xbp_chdir(const char *dirname)
   strcpy(xbp_cw_dir, dirname);
 
 #if (defined USE_EXTERNAL_PYTHON)
-  // The real chdir() has to be used if using external python
+  /* TODO: Need to figure out how to make system level Python make call to
+   * XBMC's chdir instead of non-threadsafe system chdir
+   */
   CStdString strName = _P(dirname);
   return chdir(strName.c_str());
 #else

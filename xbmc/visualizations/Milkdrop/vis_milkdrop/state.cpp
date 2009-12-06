@@ -936,7 +936,7 @@ void ReadCode(char* szSectionName, char* szIniFile, char* pStr, char* prefix)
 	{
 		sprintf(szLineName, "%s%d", prefix, line); 
 
-		GetPrivateProfileString(szSectionName, szLineName, (LPCSTR)"~!@#$", szLine, 8192, szIniFile);	// fixme
+		InternalGetPrivateProfileString(szSectionName, szLineName, "~!@#$", szLine, 8192, szIniFile);	// fixme
 		len = strlen(szLine);
 
 		if ((strcmp(szLine, "~!@#$")==0) ||		// if the key was missing,
@@ -1002,7 +1002,7 @@ void ReadCode(char* szSectionName, char* szIniFile, char* pStr, char* prefix)
 		{
 			sprintf(szLineName, "%s%d", prefix, line); 
 
-			GetPrivateProfileString(szSectionName, szLineName, "~!@#$", szLine, 8192, szIniFile);	// fixme
+			InternalGetPrivateProfileString(szSectionName, szLineName, "~!@#$", szLine, 8192, szIniFile);	// fixme
 			len = strlen(szLine);
 
 			if ((strcmp(szLine, "~!@#$")==0) ||		// if the key was missing,
@@ -1029,19 +1029,19 @@ int CWave::Import(char* szSectionName, char *szIniFile, int i)
 //        return 0;
 
     char buf[64];
-    sprintf(buf, "wavecode_%d_%s", i, "enabled"   ); enabled    = GetPrivateProfileInt  (szSectionName, buf, enabled   , szIniFile);
-    sprintf(buf, "wavecode_%d_%s", i, "samples"   ); samples    = GetPrivateProfileInt  (szSectionName, buf, samples   , szIniFile);
-    sprintf(buf, "wavecode_%d_%s", i, "sep"       ); sep        = GetPrivateProfileInt  (szSectionName, buf, sep       , szIniFile);
-    sprintf(buf, "wavecode_%d_%s", i, "bSpectrum" ); bSpectrum  = GetPrivateProfileInt  (szSectionName, buf, bSpectrum , szIniFile);
-    sprintf(buf, "wavecode_%d_%s", i, "bUseDots"  ); bUseDots   = GetPrivateProfileInt  (szSectionName, buf, bUseDots  , szIniFile);
-    sprintf(buf, "wavecode_%d_%s", i, "bDrawThick"); bDrawThick = GetPrivateProfileInt  (szSectionName, buf, bDrawThick, szIniFile);
-    sprintf(buf, "wavecode_%d_%s", i, "bAdditive" ); bAdditive  = GetPrivateProfileInt  (szSectionName, buf, bAdditive , szIniFile);
-    sprintf(buf, "wavecode_%d_%s", i, "scaling"   ); scaling    = GetPrivateProfileFloat(szSectionName, buf, scaling   , szIniFile);
-    sprintf(buf, "wavecode_%d_%s", i, "smoothing" ); smoothing  = GetPrivateProfileFloat(szSectionName, buf, smoothing , szIniFile);
-    sprintf(buf, "wavecode_%d_%s", i, "r"         ); r          = GetPrivateProfileFloat(szSectionName, buf, r         , szIniFile);
-    sprintf(buf, "wavecode_%d_%s", i, "g"         ); g          = GetPrivateProfileFloat(szSectionName, buf, g         , szIniFile);
-    sprintf(buf, "wavecode_%d_%s", i, "b"         ); b          = GetPrivateProfileFloat(szSectionName, buf, b         , szIniFile);
-    sprintf(buf, "wavecode_%d_%s", i, "a"         ); a          = GetPrivateProfileFloat(szSectionName, buf, a         , szIniFile);
+    sprintf(buf, "wavecode_%d_%s", i, "enabled"   ); enabled    = InternalGetPrivateProfileInt  (szSectionName, buf, enabled   , szIniFile);
+    sprintf(buf, "wavecode_%d_%s", i, "samples"   ); samples    = InternalGetPrivateProfileInt  (szSectionName, buf, samples   , szIniFile);
+    sprintf(buf, "wavecode_%d_%s", i, "sep"       ); sep        = InternalGetPrivateProfileInt  (szSectionName, buf, sep       , szIniFile);
+    sprintf(buf, "wavecode_%d_%s", i, "bSpectrum" ); bSpectrum  = InternalGetPrivateProfileInt  (szSectionName, buf, bSpectrum , szIniFile);
+    sprintf(buf, "wavecode_%d_%s", i, "bUseDots"  ); bUseDots   = InternalGetPrivateProfileInt  (szSectionName, buf, bUseDots  , szIniFile);
+    sprintf(buf, "wavecode_%d_%s", i, "bDrawThick"); bDrawThick = InternalGetPrivateProfileInt  (szSectionName, buf, bDrawThick, szIniFile);
+    sprintf(buf, "wavecode_%d_%s", i, "bAdditive" ); bAdditive  = InternalGetPrivateProfileInt  (szSectionName, buf, bAdditive , szIniFile);
+    sprintf(buf, "wavecode_%d_%s", i, "scaling"   ); scaling    = InternalGetPrivateProfileFloat(szSectionName, buf, scaling   , szIniFile);
+    sprintf(buf, "wavecode_%d_%s", i, "smoothing" ); smoothing  = InternalGetPrivateProfileFloat(szSectionName, buf, smoothing , szIniFile);
+    sprintf(buf, "wavecode_%d_%s", i, "r"         ); r          = InternalGetPrivateProfileFloat(szSectionName, buf, r         , szIniFile);
+    sprintf(buf, "wavecode_%d_%s", i, "g"         ); g          = InternalGetPrivateProfileFloat(szSectionName, buf, g         , szIniFile);
+    sprintf(buf, "wavecode_%d_%s", i, "b"         ); b          = InternalGetPrivateProfileFloat(szSectionName, buf, b         , szIniFile);
+    sprintf(buf, "wavecode_%d_%s", i, "a"         ); a          = InternalGetPrivateProfileFloat(szSectionName, buf, a         , szIniFile);
 
     // READ THE CODE IN
     char prefix[64];
@@ -1058,29 +1058,29 @@ int  CShape::Import(char* szSectionName, char *szIniFile, int i)
 //        return 0;
 
     char buf[64];
-	sprintf(buf, "shapecode_%d_%s", i, "enabled"     ); enabled      = GetPrivateProfileInt  (szSectionName, buf, enabled     , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "sides"       ); sides        = GetPrivateProfileInt  (szSectionName, buf, sides       , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "additive"    ); additive     = GetPrivateProfileInt  (szSectionName, buf, additive    , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "thickOutline"); thickOutline = GetPrivateProfileInt  (szSectionName, buf, thickOutline, szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "textured"    ); textured     = GetPrivateProfileInt  (szSectionName, buf, textured    , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "x"           ); x            = GetPrivateProfileFloat(szSectionName, buf, x           , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "y"           ); y            = GetPrivateProfileFloat(szSectionName, buf, y           , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "rad"         ); rad          = GetPrivateProfileFloat(szSectionName, buf, rad         , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "ang"         ); ang          = GetPrivateProfileFloat(szSectionName, buf, ang         , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "tex_ang"     ); tex_ang      = GetPrivateProfileFloat(szSectionName, buf, tex_ang     , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "tex_zoom"    ); tex_zoom     = GetPrivateProfileFloat(szSectionName, buf, tex_zoom    , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "r"           ); r            = GetPrivateProfileFloat(szSectionName, buf, r           , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "g"           ); g            = GetPrivateProfileFloat(szSectionName, buf, g           , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "b"           ); b            = GetPrivateProfileFloat(szSectionName, buf, b           , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "a"           ); a            = GetPrivateProfileFloat(szSectionName, buf, a           , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "r2"          ); r2           = GetPrivateProfileFloat(szSectionName, buf, r2          , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "g2"          ); g2           = GetPrivateProfileFloat(szSectionName, buf, g2          , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "b2"          ); b2           = GetPrivateProfileFloat(szSectionName, buf, b2          , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "a2"          ); a2           = GetPrivateProfileFloat(szSectionName, buf, a2          , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "border_r"    ); border_r     = GetPrivateProfileFloat(szSectionName, buf, border_r    , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "border_g"    ); border_g     = GetPrivateProfileFloat(szSectionName, buf, border_g    , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "border_b"    ); border_b     = GetPrivateProfileFloat(szSectionName, buf, border_b    , szIniFile);
-	sprintf(buf, "shapecode_%d_%s", i, "border_a"    ); border_a     = GetPrivateProfileFloat(szSectionName, buf, border_a    , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "enabled"     ); enabled      = InternalGetPrivateProfileInt  (szSectionName, buf, enabled     , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "sides"       ); sides        = InternalGetPrivateProfileInt  (szSectionName, buf, sides       , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "additive"    ); additive     = InternalGetPrivateProfileInt  (szSectionName, buf, additive    , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "thickOutline"); thickOutline = InternalGetPrivateProfileInt  (szSectionName, buf, thickOutline, szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "textured"    ); textured     = InternalGetPrivateProfileInt  (szSectionName, buf, textured    , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "x"           ); x            = InternalGetPrivateProfileFloat(szSectionName, buf, x           , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "y"           ); y            = InternalGetPrivateProfileFloat(szSectionName, buf, y           , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "rad"         ); rad          = InternalGetPrivateProfileFloat(szSectionName, buf, rad         , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "ang"         ); ang          = InternalGetPrivateProfileFloat(szSectionName, buf, ang         , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "tex_ang"     ); tex_ang      = InternalGetPrivateProfileFloat(szSectionName, buf, tex_ang     , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "tex_zoom"    ); tex_zoom     = InternalGetPrivateProfileFloat(szSectionName, buf, tex_zoom    , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "r"           ); r            = InternalGetPrivateProfileFloat(szSectionName, buf, r           , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "g"           ); g            = InternalGetPrivateProfileFloat(szSectionName, buf, g           , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "b"           ); b            = InternalGetPrivateProfileFloat(szSectionName, buf, b           , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "a"           ); a            = InternalGetPrivateProfileFloat(szSectionName, buf, a           , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "r2"          ); r2           = InternalGetPrivateProfileFloat(szSectionName, buf, r2          , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "g2"          ); g2           = InternalGetPrivateProfileFloat(szSectionName, buf, g2          , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "b2"          ); b2           = InternalGetPrivateProfileFloat(szSectionName, buf, b2          , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "a2"          ); a2           = InternalGetPrivateProfileFloat(szSectionName, buf, a2          , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "border_r"    ); border_r     = InternalGetPrivateProfileFloat(szSectionName, buf, border_r    , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "border_g"    ); border_g     = InternalGetPrivateProfileFloat(szSectionName, buf, border_g    , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "border_b"    ); border_b     = InternalGetPrivateProfileFloat(szSectionName, buf, border_b    , szIniFile);
+	sprintf(buf, "shapecode_%d_%s", i, "border_a"    ); border_a     = InternalGetPrivateProfileFloat(szSectionName, buf, border_a    , szIniFile);
 
     // READ THE CODE IN
     char prefix[64];
@@ -1096,7 +1096,7 @@ void CState::Import(char *szSectionName, char *szIniFile)
 	Default();
 
 	//strcpy(m_szSection, szSectionName);
-	//GetPrivateProfileString(szSectionName, "szDesc", "<no description>", m_szDesc, sizeof(m_szDesc), szIniFile);
+	//InternalGetPrivateProfileString(szSectionName, "szDesc", "<no description>", m_szDesc, sizeof(m_szDesc), szIniFile);
 	
 	// extract a description of the preset from the filename
 	{
@@ -1109,73 +1109,73 @@ void CState::Import(char *szSectionName, char *szIniFile)
 		RemoveExtension(m_szDesc);
 	}
 	
-	m_fRating				= GetPrivateProfileFloat(szSectionName,"fRating",m_fRating,szIniFile);
-	m_fDecay                = GetPrivateProfileFloat(szSectionName,"fDecay",m_fDecay.eval(-1),szIniFile);
-	m_fGammaAdj             = GetPrivateProfileFloat(szSectionName,"fGammaAdj" ,m_fGammaAdj.eval(-1),szIniFile);
-	m_fVideoEchoZoom        = GetPrivateProfileFloat(szSectionName,"fVideoEchoZoom",m_fVideoEchoZoom.eval(-1),szIniFile);
-	m_fVideoEchoAlpha       = GetPrivateProfileFloat(szSectionName,"fVideoEchoAlpha",m_fVideoEchoAlpha.eval(-1),szIniFile);
-	m_nVideoEchoOrientation = GetPrivateProfileInt  (szSectionName,(LPCSTR)"nVideoEchoOrientation",m_nVideoEchoOrientation,szIniFile);
+	m_fRating				= InternalGetPrivateProfileFloat(szSectionName,"fRating",m_fRating,szIniFile);
+	m_fDecay                = InternalGetPrivateProfileFloat(szSectionName,"fDecay",m_fDecay.eval(-1),szIniFile);
+	m_fGammaAdj             = InternalGetPrivateProfileFloat(szSectionName,"fGammaAdj" ,m_fGammaAdj.eval(-1),szIniFile);
+	m_fVideoEchoZoom        = InternalGetPrivateProfileFloat(szSectionName,"fVideoEchoZoom",m_fVideoEchoZoom.eval(-1),szIniFile);
+	m_fVideoEchoAlpha       = InternalGetPrivateProfileFloat(szSectionName,"fVideoEchoAlpha",m_fVideoEchoAlpha.eval(-1),szIniFile);
+	m_nVideoEchoOrientation = InternalGetPrivateProfileInt  (szSectionName,"nVideoEchoOrientation",m_nVideoEchoOrientation,szIniFile);
 
-	m_nWaveMode             = GetPrivateProfileInt  (szSectionName,(LPCSTR)"nWaveMode",m_nWaveMode,szIniFile);
-	m_bAdditiveWaves		= (GetPrivateProfileInt (szSectionName,(LPCSTR)"bAdditiveWaves",m_bAdditiveWaves,szIniFile) != 0);
-	m_bWaveDots		        = (GetPrivateProfileInt (szSectionName,(LPCSTR)"bWaveDots",m_bWaveDots,szIniFile) != 0);
-	m_bWaveThick            = (GetPrivateProfileInt (szSectionName,(LPCSTR)"bWaveThick",m_bWaveThick,szIniFile) != 0);
-	m_bModWaveAlphaByVolume	= (GetPrivateProfileInt (szSectionName,(LPCSTR)"bModWaveAlphaByVolume",m_bModWaveAlphaByVolume,szIniFile) != 0);
-	m_bMaximizeWaveColor    = (GetPrivateProfileInt (szSectionName,(LPCSTR)"bMaximizeWaveColor" ,m_bMaximizeWaveColor,szIniFile) != 0);
-	m_bTexWrap			    = (GetPrivateProfileInt (szSectionName,(LPCSTR)"bTexWrap", m_bTexWrap,szIniFile) != 0);
-	m_bDarkenCenter			= (GetPrivateProfileInt (szSectionName,(LPCSTR)"bDarkenCenter", m_bDarkenCenter,szIniFile) != 0);
-	m_bRedBlueStereo        = (GetPrivateProfileInt (szSectionName,(LPCSTR)"bRedBlueStereo", m_bRedBlueStereo,szIniFile) != 0);
-	m_bBrighten				= (GetPrivateProfileInt (szSectionName,(LPCSTR)"bBrighten",m_bBrighten	,szIniFile) != 0);
-	m_bDarken				= (GetPrivateProfileInt (szSectionName,(LPCSTR)"bDarken"  ,m_bDarken	,szIniFile) != 0);
-	m_bSolarize				= (GetPrivateProfileInt (szSectionName,(LPCSTR)"bSolarize",m_bSolarize	,szIniFile) != 0);
-	m_bInvert				= (GetPrivateProfileInt (szSectionName,(LPCSTR)"bInvert"  ,m_bInvert	,szIniFile) != 0);
+	m_nWaveMode             = InternalGetPrivateProfileInt  (szSectionName,"nWaveMode",m_nWaveMode,szIniFile);
+	m_bAdditiveWaves		= (InternalGetPrivateProfileInt (szSectionName,"bAdditiveWaves",m_bAdditiveWaves,szIniFile) != 0);
+	m_bWaveDots		        = (InternalGetPrivateProfileInt (szSectionName,"bWaveDots",m_bWaveDots,szIniFile) != 0);
+	m_bWaveThick            = (InternalGetPrivateProfileInt (szSectionName,"bWaveThick",m_bWaveThick,szIniFile) != 0);
+	m_bModWaveAlphaByVolume	= (InternalGetPrivateProfileInt (szSectionName,"bModWaveAlphaByVolume",m_bModWaveAlphaByVolume,szIniFile) != 0);
+	m_bMaximizeWaveColor    = (InternalGetPrivateProfileInt (szSectionName,"bMaximizeWaveColor" ,m_bMaximizeWaveColor,szIniFile) != 0);
+	m_bTexWrap			    = (InternalGetPrivateProfileInt (szSectionName,"bTexWrap", m_bTexWrap,szIniFile) != 0);
+	m_bDarkenCenter			= (InternalGetPrivateProfileInt (szSectionName,"bDarkenCenter", m_bDarkenCenter,szIniFile) != 0);
+	m_bRedBlueStereo        = (InternalGetPrivateProfileInt (szSectionName,"bRedBlueStereo", m_bRedBlueStereo,szIniFile) != 0);
+	m_bBrighten				= (InternalGetPrivateProfileInt (szSectionName,"bBrighten",m_bBrighten	,szIniFile) != 0);
+	m_bDarken				= (InternalGetPrivateProfileInt (szSectionName,"bDarken"  ,m_bDarken	,szIniFile) != 0);
+	m_bSolarize				= (InternalGetPrivateProfileInt (szSectionName,"bSolarize",m_bSolarize	,szIniFile) != 0);
+	m_bInvert				= (InternalGetPrivateProfileInt (szSectionName,"bInvert"  ,m_bInvert	,szIniFile) != 0);
 
-	m_fWaveAlpha            = GetPrivateProfileFloat(szSectionName,"fWaveAlpha",m_fWaveAlpha.eval(-1),szIniFile);
-	m_fWaveScale            = GetPrivateProfileFloat(szSectionName,"fWaveScale",m_fWaveScale.eval(-1),szIniFile);
-	m_fWaveSmoothing        = GetPrivateProfileFloat(szSectionName,"fWaveSmoothing",m_fWaveSmoothing.eval(-1),szIniFile);
-	m_fWaveParam            = GetPrivateProfileFloat(szSectionName,"fWaveParam",m_fWaveParam.eval(-1),szIniFile);
-	m_fModWaveAlphaStart    = GetPrivateProfileFloat(szSectionName,"fModWaveAlphaStart",m_fModWaveAlphaStart.eval(-1),szIniFile);
-	m_fModWaveAlphaEnd      = GetPrivateProfileFloat(szSectionName,"fModWaveAlphaEnd",m_fModWaveAlphaEnd.eval(-1),szIniFile);
-	m_fWarpAnimSpeed        = GetPrivateProfileFloat(szSectionName,"fWarpAnimSpeed",m_fWarpAnimSpeed,szIniFile);
-	m_fWarpScale            = GetPrivateProfileFloat(szSectionName,"fWarpScale",m_fWarpScale.eval(-1),szIniFile);
-	m_fZoomExponent         = GetPrivateProfileFloat(szSectionName,"fZoomExponent",m_fZoomExponent.eval(-1),szIniFile);
-	m_fShader               = GetPrivateProfileFloat(szSectionName,"fShader",m_fShader.eval(-1),szIniFile);
+	m_fWaveAlpha            = InternalGetPrivateProfileFloat(szSectionName,"fWaveAlpha",m_fWaveAlpha.eval(-1),szIniFile);
+	m_fWaveScale            = InternalGetPrivateProfileFloat(szSectionName,"fWaveScale",m_fWaveScale.eval(-1),szIniFile);
+	m_fWaveSmoothing        = InternalGetPrivateProfileFloat(szSectionName,"fWaveSmoothing",m_fWaveSmoothing.eval(-1),szIniFile);
+	m_fWaveParam            = InternalGetPrivateProfileFloat(szSectionName,"fWaveParam",m_fWaveParam.eval(-1),szIniFile);
+	m_fModWaveAlphaStart    = InternalGetPrivateProfileFloat(szSectionName,"fModWaveAlphaStart",m_fModWaveAlphaStart.eval(-1),szIniFile);
+	m_fModWaveAlphaEnd      = InternalGetPrivateProfileFloat(szSectionName,"fModWaveAlphaEnd",m_fModWaveAlphaEnd.eval(-1),szIniFile);
+	m_fWarpAnimSpeed        = InternalGetPrivateProfileFloat(szSectionName,"fWarpAnimSpeed",m_fWarpAnimSpeed,szIniFile);
+	m_fWarpScale            = InternalGetPrivateProfileFloat(szSectionName,"fWarpScale",m_fWarpScale.eval(-1),szIniFile);
+	m_fZoomExponent         = InternalGetPrivateProfileFloat(szSectionName,"fZoomExponent",m_fZoomExponent.eval(-1),szIniFile);
+	m_fShader               = InternalGetPrivateProfileFloat(szSectionName,"fShader",m_fShader.eval(-1),szIniFile);
 
-	m_fZoom					= GetPrivateProfileFloat(szSectionName,"zoom",m_fZoom.eval(-1),szIniFile);	
-	m_fRot					= GetPrivateProfileFloat(szSectionName,"rot",m_fRot.eval(-1),szIniFile);	
-	m_fRotCX				= GetPrivateProfileFloat(szSectionName,"cx",m_fRotCX.eval(-1),szIniFile);	
-	m_fRotCY				= GetPrivateProfileFloat(szSectionName,"cy",m_fRotCY.eval(-1),szIniFile);	
-	m_fXPush				= GetPrivateProfileFloat(szSectionName,"dx",m_fXPush.eval(-1),szIniFile);	
-	m_fYPush				= GetPrivateProfileFloat(szSectionName,"dy",m_fYPush.eval(-1),szIniFile);	
-	m_fWarpAmount			= GetPrivateProfileFloat(szSectionName,"warp",m_fWarpAmount.eval(-1),szIniFile);	
-	m_fStretchX				= GetPrivateProfileFloat(szSectionName,"sx",m_fStretchX.eval(-1),szIniFile);	
-	m_fStretchY				= GetPrivateProfileFloat(szSectionName,"sy",m_fStretchY.eval(-1),szIniFile);	
-	m_fWaveR				= GetPrivateProfileFloat(szSectionName,"wave_r",m_fRot.eval(-1),szIniFile);	
-	m_fWaveG				= GetPrivateProfileFloat(szSectionName,"wave_g",m_fRot.eval(-1),szIniFile);	
-	m_fWaveB				= GetPrivateProfileFloat(szSectionName,"wave_b",m_fRot.eval(-1),szIniFile);	
-	m_fWaveX				= GetPrivateProfileFloat(szSectionName,"wave_x",m_fRot.eval(-1),szIniFile);	
-	m_fWaveY				= GetPrivateProfileFloat(szSectionName,"wave_y",m_fRot.eval(-1),szIniFile);	
+	m_fZoom					= InternalGetPrivateProfileFloat(szSectionName,"zoom",m_fZoom.eval(-1),szIniFile);	
+	m_fRot					= InternalGetPrivateProfileFloat(szSectionName,"rot",m_fRot.eval(-1),szIniFile);	
+	m_fRotCX				= InternalGetPrivateProfileFloat(szSectionName,"cx",m_fRotCX.eval(-1),szIniFile);	
+	m_fRotCY				= InternalGetPrivateProfileFloat(szSectionName,"cy",m_fRotCY.eval(-1),szIniFile);	
+	m_fXPush				= InternalGetPrivateProfileFloat(szSectionName,"dx",m_fXPush.eval(-1),szIniFile);	
+	m_fYPush				= InternalGetPrivateProfileFloat(szSectionName,"dy",m_fYPush.eval(-1),szIniFile);	
+	m_fWarpAmount			= InternalGetPrivateProfileFloat(szSectionName,"warp",m_fWarpAmount.eval(-1),szIniFile);	
+	m_fStretchX				= InternalGetPrivateProfileFloat(szSectionName,"sx",m_fStretchX.eval(-1),szIniFile);	
+	m_fStretchY				= InternalGetPrivateProfileFloat(szSectionName,"sy",m_fStretchY.eval(-1),szIniFile);	
+	m_fWaveR				= InternalGetPrivateProfileFloat(szSectionName,"wave_r",m_fRot.eval(-1),szIniFile);	
+	m_fWaveG				= InternalGetPrivateProfileFloat(szSectionName,"wave_g",m_fRot.eval(-1),szIniFile);	
+	m_fWaveB				= InternalGetPrivateProfileFloat(szSectionName,"wave_b",m_fRot.eval(-1),szIniFile);	
+	m_fWaveX				= InternalGetPrivateProfileFloat(szSectionName,"wave_x",m_fRot.eval(-1),szIniFile);	
+	m_fWaveY				= InternalGetPrivateProfileFloat(szSectionName,"wave_y",m_fRot.eval(-1),szIniFile);	
 
-	m_fOuterBorderSize	= GetPrivateProfileFloat(szSectionName,"ob_size",m_fOuterBorderSize.eval(-1),szIniFile);	
-	m_fOuterBorderR		= GetPrivateProfileFloat(szSectionName,"ob_r",   m_fOuterBorderR.eval(-1),szIniFile);	
-	m_fOuterBorderG		= GetPrivateProfileFloat(szSectionName,"ob_g",   m_fOuterBorderG.eval(-1),szIniFile);	
-	m_fOuterBorderB		= GetPrivateProfileFloat(szSectionName,"ob_b",   m_fOuterBorderB.eval(-1),szIniFile);	
-	m_fOuterBorderA		= GetPrivateProfileFloat(szSectionName,"ob_a",   m_fOuterBorderA.eval(-1),szIniFile);	
-	m_fInnerBorderSize	= GetPrivateProfileFloat(szSectionName,"ib_size",m_fInnerBorderSize.eval(-1),szIniFile);	
-	m_fInnerBorderR		= GetPrivateProfileFloat(szSectionName,"ib_r",   m_fInnerBorderR.eval(-1),szIniFile);	
-	m_fInnerBorderG		= GetPrivateProfileFloat(szSectionName,"ib_g",   m_fInnerBorderG.eval(-1),szIniFile);	
-	m_fInnerBorderB		= GetPrivateProfileFloat(szSectionName,"ib_b",   m_fInnerBorderB.eval(-1),szIniFile);	
-	m_fInnerBorderA		= GetPrivateProfileFloat(szSectionName,"ib_a",   m_fInnerBorderA.eval(-1),szIniFile);	
-	m_fMvX				= GetPrivateProfileFloat(szSectionName,"nMotionVectorsX",  m_fMvX.eval(-1),szIniFile);
-	m_fMvY           	= GetPrivateProfileFloat(szSectionName,"nMotionVectorsY",  m_fMvY.eval(-1),szIniFile);
-	m_fMvDX				= GetPrivateProfileFloat(szSectionName,"mv_dx",  m_fMvDX.eval(-1),szIniFile);
-	m_fMvDY				= GetPrivateProfileFloat(szSectionName,"mv_dy",  m_fMvDY.eval(-1),szIniFile);
-	m_fMvL				= GetPrivateProfileFloat(szSectionName,"mv_l",   m_fMvL.eval(-1),szIniFile);
-	m_fMvR				= GetPrivateProfileFloat(szSectionName,"mv_r",   m_fMvR.eval(-1),szIniFile);	
-	m_fMvG				= GetPrivateProfileFloat(szSectionName,"mv_g",   m_fMvG.eval(-1),szIniFile);	
-	m_fMvB				= GetPrivateProfileFloat(szSectionName,"mv_b",   m_fMvB.eval(-1),szIniFile);	
-	m_fMvA				= (GetPrivateProfileInt (szSectionName,(LPCSTR)"bMotionVectorsOn",false,szIniFile) == 0) ? 0.0f : 1.0f; // for backwards compatibility
-	m_fMvA				= GetPrivateProfileFloat(szSectionName,"mv_a",   m_fMvA.eval(-1),szIniFile);	
+	m_fOuterBorderSize	= InternalGetPrivateProfileFloat(szSectionName,"ob_size",m_fOuterBorderSize.eval(-1),szIniFile);	
+	m_fOuterBorderR		= InternalGetPrivateProfileFloat(szSectionName,"ob_r",   m_fOuterBorderR.eval(-1),szIniFile);	
+	m_fOuterBorderG		= InternalGetPrivateProfileFloat(szSectionName,"ob_g",   m_fOuterBorderG.eval(-1),szIniFile);	
+	m_fOuterBorderB		= InternalGetPrivateProfileFloat(szSectionName,"ob_b",   m_fOuterBorderB.eval(-1),szIniFile);	
+	m_fOuterBorderA		= InternalGetPrivateProfileFloat(szSectionName,"ob_a",   m_fOuterBorderA.eval(-1),szIniFile);	
+	m_fInnerBorderSize	= InternalGetPrivateProfileFloat(szSectionName,"ib_size",m_fInnerBorderSize.eval(-1),szIniFile);	
+	m_fInnerBorderR		= InternalGetPrivateProfileFloat(szSectionName,"ib_r",   m_fInnerBorderR.eval(-1),szIniFile);	
+	m_fInnerBorderG		= InternalGetPrivateProfileFloat(szSectionName,"ib_g",   m_fInnerBorderG.eval(-1),szIniFile);	
+	m_fInnerBorderB		= InternalGetPrivateProfileFloat(szSectionName,"ib_b",   m_fInnerBorderB.eval(-1),szIniFile);	
+	m_fInnerBorderA		= InternalGetPrivateProfileFloat(szSectionName,"ib_a",   m_fInnerBorderA.eval(-1),szIniFile);	
+	m_fMvX				= InternalGetPrivateProfileFloat(szSectionName,"nMotionVectorsX",  m_fMvX.eval(-1),szIniFile);
+	m_fMvY           	= InternalGetPrivateProfileFloat(szSectionName,"nMotionVectorsY",  m_fMvY.eval(-1),szIniFile);
+	m_fMvDX				= InternalGetPrivateProfileFloat(szSectionName,"mv_dx",  m_fMvDX.eval(-1),szIniFile);
+	m_fMvDY				= InternalGetPrivateProfileFloat(szSectionName,"mv_dy",  m_fMvDY.eval(-1),szIniFile);
+	m_fMvL				= InternalGetPrivateProfileFloat(szSectionName,"mv_l",   m_fMvL.eval(-1),szIniFile);
+	m_fMvR				= InternalGetPrivateProfileFloat(szSectionName,"mv_r",   m_fMvR.eval(-1),szIniFile);	
+	m_fMvG				= InternalGetPrivateProfileFloat(szSectionName,"mv_g",   m_fMvG.eval(-1),szIniFile);	
+	m_fMvB				= InternalGetPrivateProfileFloat(szSectionName,"mv_b",   m_fMvB.eval(-1),szIniFile);	
+	m_fMvA				= (InternalGetPrivateProfileInt (szSectionName,"bMotionVectorsOn",false,szIniFile) == 0) ? 0.0f : 1.0f; // for backwards compatibility
+	m_fMvA				= InternalGetPrivateProfileFloat(szSectionName,"mv_a",   m_fMvA.eval(-1),szIniFile);	
 
     for (int i=0; i<MAX_CUSTOM_WAVES; i++)
     {
@@ -1239,7 +1239,7 @@ void CState::Import(char *szSectionName, char *szIniFile)
 		{
 			sprintf(szLineName, "%s%d", prefix, line); 
 
-			GetPrivateProfileString(szSectionName, szLineName, "~!@#$", szLine, 8192, szIniFile);	// fixme
+			InternalGetPrivateProfileString(szSectionName, szLineName, "~!@#$", szLine, 8192, szIniFile);	// fixme
 			len = strlen(szLine);
 
 			if ((strcmp(szLine, "~!@#$")==0) ||		// if the key was missing,

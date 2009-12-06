@@ -173,12 +173,21 @@ protected:
   
   int m_rendermethod;
 
+  enum EPRESENTSTEP
+  {
+    PRESENT_IDLE     = 0
+  , PRESENT_FLIP
+  , PRESENT_FRAME
+  , PRESENT_FRAME2
+  };
+
   double     m_presenttime;
   double     m_presentcorr;
   double     m_presenterr;
   EFIELDSYNC m_presentfield;
   EINTERLACEMETHOD m_presentmethod;
-  int        m_presentstep;
+  EPRESENTSTEP     m_presentstep;
+  int        m_presentsource;
   CEvent     m_presentevent;
 
 

@@ -98,7 +98,10 @@ bool CThumbExtractor::DoWork()
 {
   if (CUtil::IsLiveTV(m_path)
   ||  CUtil::IsUPnP(m_path)
-  ||  CUtil::IsDAAP(m_path))
+  ||  CUtil::IsDAAP(m_path)
+  ||  m_item.IsDVD()
+  ||  m_item.IsDVDImage()
+  ||  m_item.IsDVDFile(false, true))
     return false;
 
   if (CUtil::IsRemote(m_path) && !CUtil::IsOnLAN(m_path))
@@ -186,7 +189,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   if (!pItem->HasThumbnail())
   {
     item.SetUserVideoThumb();
-    if (!CFile::Exists(cachedThumb))
+    if (CFile::Exists(cachedThumb))
+      pItem->SetThumbnailImage(cachedThumb);
+    else
     {
       CStdString strPath, strFileName;
       CUtil::Split(cachedThumb, strPath, strFileName);
@@ -197,6 +202,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       {
         pItem->SetProperty("HasAutoThumb", "1");
         pItem->SetProperty("AutoThumbImage", cachedThumb);
+        pItem->SetThumbnailImage(cachedThumb);
       }
       else if (!item.m_bIsFolder && item.IsVideo() && !item.IsInternetStream() && !item.IsPlayList())
       {
@@ -204,12 +210,13 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         if (item.IsStack())
           path = CStackDirectory::GetFirstStackedFile(item.m_strPath);
 
+        if (item.IsVideoDb() && item.HasVideoInfoTag())
+          path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+
         CThumbExtractor* extract = new CThumbExtractor(item, pItem->m_strPath, true, path, cachedThumb);
         AddJob(extract);
       }
     }
-    if (CFile::Exists(cachedThumb))
-      pItem->SetThumbnailImage(cachedThumb);
   }
   else if (!pItem->GetThumbnailImage().Left(10).Equals("special://"))
     LoadRemoteThumb(pItem);

@@ -919,11 +919,11 @@ fi
 
 if ! test -n "$SVN_REV" -a "$SVN_REV" != "" ; then
   if test "$HAVE_SVNVERSION" = "yes" ; then
-    SVN_REV=$(echo -n `svnversion -c 2>&1 | grep -iv ^exported | sed -e 's/.*\://'`)
+    SVN_REV=$(echo -n `svnversion -c 2>/dev/null | grep -iv ^exported | sed -e 's/.*\://'`)
   fi
   if test "$SVN_REV" = ""; then
     if test "$HAVE_GIT" = "yes"; then
-      SVN_REV=$(echo -n `git svn info 2>&1 | grep ^Revision | cut -d' ' -f2`)
+      SVN_REV=$(echo -n `git svn info 2>/dev/null | grep ^Revision | cut -d' ' -f2`)
     fi
   fi
   if test "$SVN_REV" = ""; then
@@ -1202,6 +1202,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \
+      --disable-vaapi \
       --enable-shared \
       --enable-postproc \
       --enable-gpl \

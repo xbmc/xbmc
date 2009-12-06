@@ -792,8 +792,8 @@ void CGUIBaseContainer::CalculateLayout()
   GetCurrentLayouts();
 
   // calculate the number of items to display
-  assert(m_focusedLayout && m_layout);
-  if (!m_focusedLayout || !m_layout) return;
+  if (!m_focusedLayout || !m_layout)
+    return;
 
   if (oldLayout == m_layout && oldFocusedLayout == m_focusedLayout)
     return; // nothing has changed, so don't update stuff
@@ -839,7 +839,7 @@ inline float CGUIBaseContainer::Size() const
 
 void CGUIBaseContainer::ScrollToOffset(int offset)
 {
-  float size = m_layout->Size(m_orientation);
+  float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
   int range = m_itemsPerPage / 4;
   if (range <= 0) range = 1;
   if (offset * size < m_scrollOffset &&  m_scrollOffset - offset * size > size * range)
