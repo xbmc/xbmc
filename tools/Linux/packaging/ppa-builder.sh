@@ -12,6 +12,7 @@ echo "
 	-u		: srcdir=<dir> version=<version> revision=<rev> minor=<minor>
 	-nsg		: svnsrc=<dir> revision=<rev>
 	-prev		: revision=<rev> 
+	urgency=(low|medium|high)
 "
 exit 0
 }
@@ -120,7 +121,10 @@ builddeb()
   fi
   echo "Changelog : $CHNLG"
   cd $DESTSRC
-  dch -b -v 1:${VERSION}-$1${MINOR} -D $1 "$CHNLG" 2>&1 
+  if [[ -z $urgency ]]; then
+    urgency=low
+  fi
+  dch -b -v 1:${VERSION}-$1${MINOR} -D $1 -u $urgency "$CHNLG" 2>&1 
   echo "$REVISION" > debian/svnrevision
   echo "Building the $1 debian package" 
   
