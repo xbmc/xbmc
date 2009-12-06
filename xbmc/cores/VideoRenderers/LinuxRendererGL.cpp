@@ -844,13 +844,16 @@ unsigned int CLinuxRendererGL::DrawSlice(unsigned char *src[], int stride[], int
 
   // copy V
   p = 2;
-  d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-  s = src[p];
-  for (i = 0;i < h;i++)
+  if(im.plane[p] && src[p])
   {
-    memcpy(d, s, w);
-    s += stride[p];
-    d += im.stride[p];
+    d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
+    s = src[p];
+    for (i = 0;i < h;i++)
+    {
+      memcpy(d, s, w);
+      s += stride[p];
+      d += im.stride[p];
+    }
   }
 
   SetEvent(m_eventTexturesDone[index]);
