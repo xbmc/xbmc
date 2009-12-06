@@ -40,6 +40,8 @@
   FUNCTION(PyEval_AcquireLock)
   FUNCTION(PyThreadState_Get)
   FUNCTION(PyRun_SimpleString)
+  FUNCTION(PyRun_SimpleStringFlags)
+  FUNCTION(PyRun_SimpleFileExFlags)
   FUNCTION(PyEval_InitThreads)
   FUNCTION(Py_Initialize)
   FUNCTION(Py_IsInitialized)

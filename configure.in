@@ -622,15 +622,18 @@ fi
 
 # External Python
 if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes"; then
-  AC_CHECK_LIB([python2.6], [main],,
-  [AC_CHECK_LIB([python2.5], [main],,
-  [AC_CHECK_LIB([python2.4], [main],,
-  [AC_MSG_ERROR($missing_library)] )] )] )
-
-  # Test again, but this time just set some variables we need in Makefiles
-  AC_CHECK_LIB([python2.6], [main],[USE_PYTHON2_6=1],
-  [AC_CHECK_LIB([python2.5], [main],[USE_PYTHON2_5=1],
-  [AC_CHECK_LIB([python2.4], [main],[USE_PYTHON2_4=1],
+  AC_CHECK_LIB([python2.6], [main],
+    [AC_DEFINE([HAVE_LIBPYTHON2_6], [1],
+    [Define to 1 if you have the `python2.6' library.])
+    USE_PYTHON2_6=1],
+  [AC_CHECK_LIB([python2.5], [main],
+    [AC_DEFINE([HAVE_LIBPYTHON2_5], [1],
+    [Define to 1 if you have the `python2.5' library.])
+    USE_PYTHON2_5=1],
+  [AC_CHECK_LIB([python2.4], [main],
+    [AC_DEFINE([HAVE_LIBPYTHON2_4], [1],
+    [Define to 1 if you have the `python2.4' library.])
+    USE_PYTHON2_4=1],
   [AC_MSG_ERROR($missing_library)] )] )] )
 
   AC_MSG_NOTICE($external_python_enabled)
