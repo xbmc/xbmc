@@ -55,6 +55,7 @@ SRCS=Addon.cpp \
      AsyncFileCopy.cpp \
      DbusServer.cpp \
      Atomics.cpp \
+     LockFree.cpp \
      PVREpg.cpp \
      PVRTimers.cpp \
      PVRChannels.cpp \

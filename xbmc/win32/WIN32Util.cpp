@@ -502,6 +502,8 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
   if( !cDL )
   {
     char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    if(dvdDevice == "")
+      return S_FALSE;
     cDL = dvdDevice[4];
   }
   
@@ -535,6 +537,8 @@ HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
   if( !cDL )
   {
     char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    if(dvdDevice == "")
+      return S_FALSE;
     cDL = dvdDevice[4];
   }
   
@@ -553,6 +557,8 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
   if( !cDL )
   {
     char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    if(dvdDevice == "")
+      return S_FALSE;
     cDL = dvdDevice[4];
   }
   
