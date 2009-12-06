@@ -209,56 +209,20 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     break;
 
   case ACTION_STEP_BACK:
-    {
-      if (g_application.CurrentFileItem().HasPVRChannelInfoTag())
-        ChangetheTVGroup(false);
-      else
-        Seek(false, false);
-
-      return true;
-    }
-    break;
+    Seek(false, false);
+    return true;
 
   case ACTION_STEP_FORWARD:
-    {
-      if (g_application.CurrentFileItem().HasPVRChannelInfoTag())
-        ChangetheTVGroup(true);
-      else
-        Seek(true, false);
-
-      return true;
-    }
-    break;
+    Seek(true, false);
+    return true;
 
   case ACTION_BIG_STEP_BACK:
-    {
-      if (!g_guiSettings.GetBool("pvrplayback.timeshift") && g_application.CurrentFileItem().HasPVRChannelInfoTag())
-      {
-        CAction action;
-        action.id = ACTION_PREV_ITEM;
-        OnAction(action);
-      }
-      else
-        Seek(false, true);
-
-      return true;
-    }
-    break;
+    Seek(false, true);
+    return true;
 
   case ACTION_BIG_STEP_FORWARD:
-    {
-      if (!g_guiSettings.GetBool("pvrplayback.timeshift") && g_application.CurrentFileItem().HasPVRChannelInfoTag())
-      {
-        CAction action;
-        action.id = ACTION_NEXT_ITEM;
-        OnAction(action);
-      }
-      else
-        Seek(true, true);
-
-      return true;
-    }
-    break;
+    Seek(true, true);
+    return true;
 
   case ACTION_NEXT_SCENE:
     if (g_application.m_pPlayer->SeekScene(true))
@@ -986,6 +950,25 @@ void CGUIWindowFullScreen::ChangetheTimeCode(int remote)
 
 void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
 {
+  if (g_application.CurrentFileItem().HasPVRChannelInfoTag())
+  {
+    if(bLargeStep && !g_guiSettings.GetBool("pvrplayback.timeshift"))
+    {
+      CAction action;
+      if(bPlus)
+        action.id = ACTION_NEXT_ITEM;
+      else
+        action.id = ACTION_PREV_ITEM;
+      OnAction(action);
+      return;
+    }
+    else if(!bLargeStep)
+    {
+      ChangetheTVGroup(plus);
+      return;
+    }
+  }
+
   g_application.m_pPlayer->Seek(bPlus, bLargeStep);
 
   // Make sure gui items are visible.
