@@ -52,13 +52,13 @@ using namespace ADDON;
 CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
                        const ADDON::CAddon& addon, IPVRClientCallback* pvrCB)
                               : IPVRClient(clientID, addon, pvrCB)
-                              , m_clientID(clientID)
                               , m_pClient(pClient)
                               , m_pDll(pDll)
-                              , m_manager(pvrCB)
+                              , m_clientID(clientID)
                               , m_ReadyToUse(false)
-                              , m_hostName("unknown")
+                              , m_manager(pvrCB)
                               , m_callbacks(NULL)
+                              , m_hostName("unknown")
 {
 
 }
