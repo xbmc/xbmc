@@ -117,31 +117,30 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   if (pItem->m_bIsShareOrDrive
   ||  pItem->IsParentFolder())
     return false;
-  
+
   SetWatchedOverlay(pItem);
 
-  bool retVal = false;
-  if (pItem->IsVideoDb() && pItem->HasVideoInfoTag() && !pItem->HasThumbnail())
-  {
-    if (pItem->m_bIsFolder && pItem->GetVideoInfoTag()->m_iSeason > -1)
-      return false;
-    CFileItem item(*pItem->GetVideoInfoTag());
-    bool bResult = LoadItem(&item);
-    if (bResult)
-    {
-      pItem->SetProperty("HasAutoThumb",item.GetProperty("HasAutoThumb"));
-      pItem->SetProperty("AutoThumbImage",item.GetProperty("AutoThumbImage"));
-      pItem->SetProperty("fanart_image",item.GetProperty("fanart_image"));
-      pItem->SetThumbnailImage(item.GetThumbnailImage());
-      pItem->GetVideoInfoTag()->m_streamDetails = item.GetVideoInfoTag()->m_streamDetails;
-    }
-    return bResult;
-  }
-  CStdString cachedThumb(pItem->GetCachedVideoThumb());
-  
+  CFileItem item(*pItem);
+  CStdString cachedThumb(item.GetCachedVideoThumb());
+
   if (!pItem->HasThumbnail())
   {
-    pItem->SetUserVideoThumb();
+    item.SetUserVideoThumb();
+    if (!CFile::Exists(cachedThumb))
+    {
+      CStdString strPath, strFileName;
+      CUtil::Split(cachedThumb, strPath, strFileName);
+
+      // create unique thumb for auto generated thumbs
+      cachedThumb = strPath + "auto-" + strFileName;
+      if (CFile::Exists(cachedThumb))
+      {
+        pItem->SetProperty("HasAutoThumb", "1");
+        pItem->SetProperty("AutoThumbImage", cachedThumb);
+      }
+    }
+    if (CFile::Exists(cachedThumb))
+      pItem->SetThumbnailImage(cachedThumb);
   }
   else if (!pItem->GetThumbnailImage().Left(10).Equals("special://"))
     LoadRemoteThumb(pItem);
@@ -149,13 +148,10 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   if (!pItem->HasProperty("fanart_image"))
   {
     if (pItem->CacheLocalFanart())
-    {
       pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
-      retVal = true;
-    }
   }
 
-  return retVal;
+  return true;
 }
 
 CProgramThumbLoader::CProgramThumbLoader()

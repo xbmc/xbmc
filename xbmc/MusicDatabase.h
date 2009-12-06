@@ -131,10 +131,6 @@ public:
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
   int GetAlbumIdByPath(const CStdString& path);
   bool GetSongById(int idSong, CSong& song);
-#ifdef HAS_NEW_KARAOKE
-  bool GetSongByKaraokeNumber( int number, CSong& song );
-  bool SetKaraokeSongDelay( int idSong, int delay );
-#endif
   bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
   bool Search(const CStdString& search, CFileItemList &items);
 
@@ -196,10 +192,6 @@ public:
 
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool overwrite=false);
   void ImportFromXML(const CStdString &xmlFile);
-#ifdef HAS_NEW_KARAOKE
-  void ExportKaraokeInfo(const CStdString &outFile, bool asHTML );
-  void ImportKaraokeInfo(const CStdString &inputFile );
-#endif
   static void SetPropertiesFromArtist(CFileItem& item, const CArtist& artist);
   static void SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album);
 protected:
@@ -216,9 +208,6 @@ protected:
   int AddThumb(const CStdString& strThumb1);
   void AddExtraAlbumArtists(const CStdStringArray& vecArtists, int idAlbum);
   void AddExtraSongArtists(const CStdStringArray& vecArtists, int idSong, bool bCheck = true);
-#ifdef HAS_NEW_KARAOKE
-  void AddKaraokeData(const CSong& song);
-#endif
   void AddExtraGenres(const CStdStringArray& vecGenres, int idSong, int idAlbum, bool bCheck = true);
   bool SetAlbumInfoSongs(int idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(int idAlbumInfo, VECSONGS& songs);
