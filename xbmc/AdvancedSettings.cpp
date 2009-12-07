@@ -139,7 +139,8 @@ void CAdvancedSettings::Initialize()
   m_moviesExcludeFromScanRegExps.push_back("[-._ ]sample");
   m_tvshowExcludeFromScanRegExps.push_back("[-._ ]sample[-._ ]");
 
-  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)t)|dis[ck]|d)[ _.-]*[0-9a-d]+)(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
   m_videoStackRegExps.push_back("(.*?)([ ._-]*[a-d])(.*?)(\\.[^.]+)$");
   // This one is a bit too greedy to enable by default.  It will stack sequels
   // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
