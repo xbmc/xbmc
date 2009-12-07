@@ -1,9 +1,0 @@
-#!/bin/sh
-
-place="/cdrom/live/filesystem.squashfs"
-
-mkdir -p /mnt
-umount /mnt > /dev/null 2>&1 || true
-mount -t squashfs -o loop $place /mnt
-cp /mnt/etc/apt/sources.list /target/etc/apt
-umount -d /mnt > /dev/null 2>&1 || true

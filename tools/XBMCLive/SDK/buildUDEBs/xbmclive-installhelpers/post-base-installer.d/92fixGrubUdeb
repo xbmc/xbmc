@@ -1,5 +1,0 @@
-#!/bin/sh
-
-# Needed until newer package than grub-installer_1.43ubuntu8_i386.udeb is released
-# https://bugs.launchpad.net/ubuntu/+source/grub-installer/+bug/484832
-sed -i -e "s/-h \/etc\/mtab/-h \$ROOT\/etc\/mtab/" /usr/share/grub-installer/functions.sh
