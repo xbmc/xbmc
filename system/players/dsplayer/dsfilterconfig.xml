@@ -75,7 +75,10 @@
     <filter name="wmaudiodecoder" type="audiodec">
       <guid>{94297043-BD82-4DFD-B0DE-8177739C6D20}</guid>
     </filter>
-    
+    <filter name="broadcomvideodecoder" type="videodec">
+	  <guid>{2DE1D17E-46B1-42A8-9AEC-E20E80D9B1A9}</guid>
+    </filter>
+	
     <!-- Video renderers-->
     <!--<filter><filter/>-->
     <!-- Audio renderers-->
