@@ -606,11 +606,12 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
       int ready_count;
       
       ready_count = decoder_status.ReadyListCount;
-      
+      /*
       CLog::Log(LOGDEBUG, "%s: ReadyListCount %d FreeListCount %d PIBMissCount %d\n", __MODULE_NAME__,
         decoder_status.ReadyListCount, decoder_status.FreeListCount, decoder_status.PIBMissCount);
       CLog::Log(LOGDEBUG, "%s: FramesDropped %d FramesCaptured %d FramesRepeated %d\n", __MODULE_NAME__,
         decoder_status.FramesDropped, decoder_status.FramesCaptured, decoder_status.FramesRepeated);
+      */
     }
 
     // Setup output struct
