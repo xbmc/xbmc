@@ -207,29 +207,27 @@ bool CButtonTranslator::Load()
 {
   translatorMap.clear();
 
+  //directories to search for keymaps
+  //they're applied in this order,
+  //so keymaps in profile/keymaps/
+  //override e.g. system/keymaps
+  static const char* DIRS_TO_CHECK[] = {
+    "special://xbmc/system/keymaps/",
+    "special://masterprofile/keymaps/",
+    "special://profile/keymaps/"
+  };
   bool success = false;
-  // Load the config file(s)
-  //first from system/keymaps/ directory
-  const CStdString systemKeymapDirPath = "special://xbmc/system/keymaps/";
-  if( DIRECTORY::CDirectory::Exists(systemKeymapDirPath) )
-  {
-    CFileItemList files;
-    DIRECTORY::CDirectory::GetDirectory(systemKeymapDirPath, files, "*.xml");
-    //sort the list for filesystem based prioties, e.g. 01-keymap.xml, 02-keymap-overrides.xml
-    files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
-    for(int i = 0; i<files.Size(); ++i)
-      success |= LoadKeymap(files[i]->m_strPath);
-  }
-  //load from user's keymaps/ directory
-  const CStdString userKeymapDirPath = g_settings.GetUserDataItem("keymaps/");
-  if( DIRECTORY::CDirectory::Exists(userKeymapDirPath) )
-  {
-    CFileItemList files;
-    DIRECTORY::CDirectory::GetDirectory(userKeymapDirPath, files, "*.xml");
-    //sort the list for filesystem based prioties, e.g. 01-keymap.xml, 02-keymap-overrides.xml
-    files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
-    for(int i = 0; i<files.Size(); ++i)
-      success |= LoadKeymap(files[i]->m_strPath);
+
+  for(unsigned int dirIndex = 0; dirIndex < sizeof(DIRS_TO_CHECK)/sizeof(DIRS_TO_CHECK[0]); ++dirIndex) {
+    if( DIRECTORY::CDirectory::Exists(DIRS_TO_CHECK[dirIndex]) )
+    {
+      CFileItemList files;
+      DIRECTORY::CDirectory::GetDirectory(DIRS_TO_CHECK[dirIndex], files, "*.xml");
+      //sort the list for filesystem based prioties, e.g. 01-keymap.xml, 02-keymap-overrides.xml
+      files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+      for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
+        success |= LoadKeymap(files[fileIndex]->m_strPath);
+    }
   }
 
   //try to load userdata/Keymap.xml for backward compatibility
@@ -242,7 +240,7 @@ bool CButtonTranslator::Load()
 
   if (!success)
   {
-    g_LoadErrorStr.Format("Error loading keymaps from: %s or %s", systemKeymapDirPath.c_str(), userKeymapDirPath.c_str());
+    g_LoadErrorStr.Format("Error loading keymaps from: %s or %s or %s", DIRS_TO_CHECK[0], DIRS_TO_CHECK[1], DIRS_TO_CHECK[2]);
     return false;
   }
 
