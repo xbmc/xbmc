@@ -349,17 +349,21 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   static NSView* last_view = NULL;
   static NSSize last_view_size;
   static NSPoint last_view_origin;
+  bool was_fullscreen = m_bFullScreen;
   NSOpenGLContext* cur_context;
+  
+  // If we're already fullscreen then we must be moving to a different display.
+  // Recurse to reset fullscreen mode and then continue.
+  if (was_fullscreen && fullScreen)
+  {
+    RESOLUTION_INFO& window = g_settings.m_ResInfo[RES_WINDOW];
+    CWinSystemOSX::SetFullScreen(false, window, blankOtherDisplays);
+  }
   
   m_nWidth      = res.iWidth;
   m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
 
-  // If we're already fullscreen then we must be moving to a different display.
-  // Recurse to reset fullscreen mode and then continue.
-  if (m_bFullScreen == true && last_window_screen != NULL)
-    SetFullScreen(false, res, blankOtherDisplays);
-  
   cur_context = [NSOpenGLContext currentContext];
   if (!cur_context)
     return false;
@@ -524,7 +528,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     [ last_view setFrameSize:last_view_size ];
     [ last_view setFrameOrigin:last_view_origin ];
     // done with restoring windowed window, don't set last_view to NULL as we can lose it under dual displays.
-    last_window_screen = NULL;
+    //last_window_screen = NULL;
     
     // Release the fullscreen context.
     if (m_lastOwnedContext == cur_context)
@@ -539,7 +543,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     m_lastOwnedContext = newContext;
     
     DisplayFadeFromBlack(fade_token);
-    
   }
 
   // need to make sure SDL tracks any window size changes
