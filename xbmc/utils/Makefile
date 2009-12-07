@@ -67,7 +67,6 @@ SRCS=Addon.cpp \
      fastmemcpy.cpp \
      PasswordManager.cpp \
      AliasShortcutUtils.cpp \
-     RWLock.cpp \
      TextSearch.cpp
 
 LIB=utils.a
