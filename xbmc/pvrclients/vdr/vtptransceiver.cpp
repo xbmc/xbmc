@@ -89,6 +89,11 @@ bool CVTPTransceiver::AcceptStreamSocket(SOCKET& sock2)
   }
 
   closesocket(sock2);
+
+  int sol=1;
+  // Ignore possible errors here, proceed as usual
+  setsockopt(sock, SOL_SOCKET, SO_KEEPALIVE, &sol, sizeof(sol));
+
   sock2 = sock;
   return true;
 }

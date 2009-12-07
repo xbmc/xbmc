@@ -267,8 +267,8 @@ void CGUIDialogPVRGuideSearch::Update()
       CStdString string;
       string.Format(g_localizeStrings.Get(14044),i*5);
       pSpin->AddLabel(string, i*5);
-      pSpin->SetValue(m_searchfilter->m_minDuration);
     }
+    pSpin->SetValue(m_searchfilter->m_minDuration);
   }
 
   pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_MAX_DURATION);
@@ -281,8 +281,8 @@ void CGUIDialogPVRGuideSearch::Update()
       CStdString string;
       string.Format(g_localizeStrings.Get(14044),i*5);
       pSpin->AddLabel(string, i*5);
-      pSpin->SetValue(m_searchfilter->m_maxDuration);
     }
+    pSpin->SetValue(m_searchfilter->m_maxDuration);
   }
 
   /* Set time fields */

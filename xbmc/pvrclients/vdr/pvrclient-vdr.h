@@ -30,6 +30,7 @@
 
 #include "vtptransceiver.h"
 #include "StdString.h"
+#include "tools.h"
 #include <vector>
 
 /* Master defines for client control */
@@ -124,11 +125,13 @@ private:
   static bool             m_bConnected;
   pthread_t               m_thread;
   static bool             m_bStop;
+  cPoller                *m_Poller;
+  bool                    m_firstRead;
 
   /* Following is for recordings streams */
   uint64_t                m_currentPlayingRecordBytes;
   uint32_t                m_currentPlayingRecordFrames;
-  uint64_t                m_currentPlayingRecordPosition;
+  uint64_t                m_currentPlayingRecordPos;
 
   /* No Signal Stream information */
   char                    m_noSignalStreamData[ 6 + 0xffff ];
