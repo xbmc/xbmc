@@ -35,7 +35,6 @@ bool CJob::ShouldCancel(unsigned int progress, unsigned int total) const
 CJobWorker::CJobWorker(CJobManager *manager)
 {
   m_jobManager = manager;
-  SetName("Jobworker");
   Create(true); // start work immediately, and kill ourselves when we're done
 }
 
@@ -52,6 +51,7 @@ CJobWorker::~CJobWorker()
 void CJobWorker::Process()
 {
   SetPriority( GetMinPriority() );
+  SetName("Jobworker");
   while (true)
   {
     // request an item from our manager (this call is blocking)

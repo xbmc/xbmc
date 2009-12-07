@@ -622,15 +622,18 @@ fi
 
 # External Python
 if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes"; then
-  AC_CHECK_LIB([python2.6], [main],,
-  [AC_CHECK_LIB([python2.5], [main],,
-  [AC_CHECK_LIB([python2.4], [main],,
-  [AC_MSG_ERROR($missing_library)] )] )] )
-
-  # Test again, but this time just set some variables we need in Makefiles
-  AC_CHECK_LIB([python2.6], [main],[USE_PYTHON2_6=1],
-  [AC_CHECK_LIB([python2.5], [main],[USE_PYTHON2_5=1],
-  [AC_CHECK_LIB([python2.4], [main],[USE_PYTHON2_4=1],
+  AC_CHECK_LIB([python2.6], [main],
+    [AC_DEFINE([HAVE_LIBPYTHON2_6], [1],
+    [Define to 1 if you have the `python2.6' library.])
+    USE_PYTHON2_6=1],
+  [AC_CHECK_LIB([python2.5], [main],
+    [AC_DEFINE([HAVE_LIBPYTHON2_5], [1],
+    [Define to 1 if you have the `python2.5' library.])
+    USE_PYTHON2_5=1],
+  [AC_CHECK_LIB([python2.4], [main],
+    [AC_DEFINE([HAVE_LIBPYTHON2_4], [1],
+    [Define to 1 if you have the `python2.4' library.])
+    USE_PYTHON2_4=1],
   [AC_MSG_ERROR($missing_library)] )] )] )
 
   AC_MSG_NOTICE($external_python_enabled)
@@ -891,30 +894,25 @@ else
   final_message="$final_message\n  Avahi:\tNo"
 fi
 
-if test -n "$SVN_REV" -a "$SVN_REV" != "" ; then
-  SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
-elif test "$host_vendor" = "apple"; then
-  if test "$HAVE_SVNVERSION" = "no" ; then
-    AC_MSG_WARN([svnversion not found. No SVN_REV in builds!])
-    echo "#define SVN_REV" > svn_revision.h
-  else
-    SVN_REVISION=$(svnversion -n .)
-    echo "#define SVN_REV \"$SVN_REVISION\"" > svn_revision.h
-  fi
-else
+if ! test -n "$SVN_REV" -a "$SVN_REV" != "" ; then
   if test "$HAVE_SVNVERSION" = "yes" ; then
-    SVN_REV=$(echo -n `svnversion . | grep -P ^\\\\d`)
+    SVN_REV=$(echo -n `svnversion -c 2>/dev/null | grep -iv ^exported | sed -e 's/.*\://'`)
   fi
   if test "$SVN_REV" = ""; then
     if test "$HAVE_GIT" = "yes"; then
-      SVN_REV=$(echo -n `git svn info | grep ^Revision | cut -d' ' -f2`)
+      SVN_REV=$(echo -n `git svn info 2>/dev/null | grep ^Revision | cut -d' ' -f2`)
     fi
   fi
   if test "$SVN_REV" = ""; then
     SVN_REV="Unknown"
   fi
+fi
+if test "$host_vendor" = "apple"; then
+  echo "#define SVN_REV \"$SVN_REV\"" > svn_revision.h
+else
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
 fi
+
 if test "$use_nonfree" = "yes"; then
   final_message="$final_message\n  Non-free:\tYes"
   HAVE_XBMC_NONFREE=1
@@ -1181,6 +1179,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \
+      --disable-vaapi \
       --enable-shared \
       --enable-postproc \
       --enable-gpl \

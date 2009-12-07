@@ -954,7 +954,7 @@ void CPlugin::RenderFrame(int bRedraw)
             return;
         lpDevice->SetRenderTarget(0, pNewTarget);
         pNewTarget->Release();
-  
+		lpDevice->SetDepthStencilSurface( NULL );
 
 	    lpDevice->SetTexture(0, NULL);
     }
@@ -970,6 +970,7 @@ void CPlugin::RenderFrame(int bRedraw)
         if (m_lpVS[1]->GetSurfaceLevel(0, &pNewTarget) != D3D_OK) 
             return;
         lpDevice->SetRenderTarget(0, pNewTarget);
+		lpDevice->SetDepthStencilSurface( NULL );
         pNewTarget->Release();
     }
 
@@ -1003,6 +1004,8 @@ void CPlugin::RenderFrame(int bRedraw)
   lpDevice->SetTexture(0, NULL);
   // WISO: lpDevice->SetRenderTarget( pBackBuffer, pZBuffer );
   lpDevice->SetRenderTarget(0, pBackBuffer);
+  lpDevice->SetDepthStencilSurface( pZBuffer );
+
   SafeRelease(pBackBuffer);
   SafeRelease(pZBuffer);
 

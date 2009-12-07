@@ -160,6 +160,7 @@
       <button id="4">NextPicture</button>
       <button id="6">Stop</button>
       <button id="7">Info</button>
+      <button id="8">Rotate</button>
     </joystick>
   </SlideShow>
   <ScreenCalibration>

@@ -108,6 +108,7 @@ class CAdvancedSettings
     int m_lcdAddress4;
     bool m_lcdHeartbeat;
     int m_lcdScrolldelay;
+    CStdString m_lcdHostName;
 
     int m_autoDetectPingTime;
 

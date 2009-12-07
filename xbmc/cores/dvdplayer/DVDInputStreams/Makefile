@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../.. -I../../../ -I../../../linux -I../../../../guilib -I../../../lib/libRTMP
+INCLUDES=-I. -I.. -I../.. -I../../../ -I../../../linux -I../../../../guilib -I../../../lib/libRTMP -I../../../lib
 CXXFLAGS += -D__STDC_FORMAT_MACROS \
           -DENABLE_DVDINPUTSTREAM_STACK \
 

@@ -92,10 +92,10 @@
 			<RegExp input="$$1" output="&lt;thumb&gt;\2&lt;/thumb&gt;" dest="5+">
 				<expression noclean="1">&lt;image size=&quot;(extra)?large&quot;&gt;([^&lt;]*)&lt;/image&gt;</expression>
 			</RegExp>
-			<RegExp input="$$2" conditional="htbthumbs" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" conditional="htbthumbs" output="&lt;url cache=&quot;htb-$$2.html&quot; function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$2" conditional="htbfanart" output="&lt;url function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" conditional="htbfanart" output="&lt;url cache=&quot;htb-$$2.html&quot; function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;url function=&quot;GetGenres&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.gettoptags&amp;amp;artist=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;" dest="5+">

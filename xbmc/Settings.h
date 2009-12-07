@@ -247,6 +247,8 @@ public:
   std::vector<RESOLUTION_INFO> m_ResInfo;
 
   // utility functions for user data folders
+
+  //uses HasSlashAtEnd to determine if a directory or file was meant
   CStdString GetUserDataItem(const CStdString& strFile) const;
   CStdString GetProfileUserDataFolder() const;
   CStdString GetUserDataFolder() const;

@@ -57,9 +57,9 @@ public:
     virtual int WavpackGetChannelMask (WavpackContext *wpc)=0;
     virtual int WavpackGetReducedChannels (WavpackContext *wpc)=0;
     virtual int WavpackGetFloatNormExp (WavpackContext *wpc)=0;
-    virtual int WavpackGetMD5Sum (WavpackContext *wpc, uchar data [16])=0;
+    virtual int WavpackGetMD5Sum (WavpackContext *wpc, unsigned char data [16])=0;
     virtual uint32_t WavpackGetWrapperBytes (WavpackContext *wpc)=0;
-    virtual uchar *WavpackGetWrapperData (WavpackContext *wpc)=0;
+    virtual unsigned char *WavpackGetWrapperData (WavpackContext *wpc)=0;
     virtual void WavpackFreeWrapper (WavpackContext *wpc)=0;
     virtual void WavpackSeekTrailingWrapper (WavpackContext *wpc)=0;
     virtual double WavpackGetProgress (WavpackContext *wpc)=0;
@@ -76,7 +76,7 @@ public:
     virtual WavpackContext *WavpackOpenFileOutput (WavpackBlockOutput blockout, void *wv_id, void *wvc_id)=0;
     virtual int WavpackSetConfiguration (WavpackContext *wpc, WavpackConfig *config, uint32_t total_samples)=0;
     virtual int WavpackAddWrapper (WavpackContext *wpc, void *data, uint32_t bcount)=0;
-    virtual int WavpackStoreMD5Sum (WavpackContext *wpc, uchar data [16])=0;
+    virtual int WavpackStoreMD5Sum (WavpackContext *wpc, unsigned char data [16])=0;
     virtual int WavpackPackInit (WavpackContext *wpc)=0;
     virtual int WavpackPackSamples (WavpackContext *wpc, int32_t *sample_buffer, uint32_t sample_count)=0;
     virtual int WavpackFlushSamples (WavpackContext *wpc)=0;
@@ -132,11 +132,11 @@ public:
         { return ::WavpackGetReducedChannels (wpc); }
     virtual int WavpackGetFloatNormExp (WavpackContext *wpc)
         { return ::WavpackGetFloatNormExp (wpc); }
-    virtual int WavpackGetMD5Sum (WavpackContext *wpc, uchar data [16])
+    virtual int WavpackGetMD5Sum (WavpackContext *wpc, unsigned char data [16])
         { return ::WavpackGetMD5Sum (wpc, data); }
     virtual uint32_t WavpackGetWrapperBytes (WavpackContext *wpc)
         { return ::WavpackGetWrapperBytes (wpc); }
-    virtual uchar *WavpackGetWrapperData (WavpackContext *wpc)
+    virtual unsigned char *WavpackGetWrapperData (WavpackContext *wpc)
         { return ::WavpackGetWrapperData (wpc); }
     virtual void WavpackFreeWrapper (WavpackContext *wpc)
         { return ::WavpackFreeWrapper (wpc); }
@@ -170,7 +170,7 @@ public:
         { return ::WavpackSetConfiguration (wpc, config, total_samples); }
     virtual int WavpackAddWrapper (WavpackContext *wpc, void *data, uint32_t bcount)
         { return ::WavpackAddWrapper (wpc, data, bcount); }
-    virtual int WavpackStoreMD5Sum (WavpackContext *wpc, uchar data [16])
+    virtual int WavpackStoreMD5Sum (WavpackContext *wpc, unsigned char data [16])
         { return ::WavpackStoreMD5Sum (wpc, data); }
     virtual int WavpackPackInit (WavpackContext *wpc)
         { return ::WavpackPackInit (wpc); }
