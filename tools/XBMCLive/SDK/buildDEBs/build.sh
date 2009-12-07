@@ -11,10 +11,6 @@
 
 THISDIR=$(pwd)
 WORKDIR="workarea"
-if [ -z "$UBUNTUMIRROR_BASEURL" ]; then
-	UBUNTUMIRROR_BASEURL="http://mirror.bytemark.co.uk/ubuntu/"
-	export http_proxy="http://127.0.0.1:3142"
-fi
 
 getPackage()
 {
@@ -24,14 +20,14 @@ getPackage()
 	curl -x "" -f -s -o $tmpFile $udebListURL
 	if [ "$?" -ne "0" ]; then
 		echo "Installer udeb list not found, exiting..."
-		exit
+		exit 1
 	fi
 
 	# fs-core-modules-2.6.31-14-generic-di 2.6.31-14.48 i386
 	kernelVersion="$(cat $tmpFile | grep fs-core | awk '{ print $2 }')"
 	if [ -z "$kernelVersion" ]; then
 		echo "Installer kernel version not found, exiting..."
-		exit
+		exit 1
 	fi
 
 	# linux-image-2.6.31-14-generic_2.6.31-14.48_i386.deb
@@ -42,7 +38,7 @@ getPackage()
 	wget -q $packageURL
 	if [ "$?" -ne "0" ]; then
 		echo "Needed kernel not found, exiting..."
-		exit
+		exit 1
 	fi
 	rm $tmpFile
 
@@ -93,6 +89,9 @@ mkdir $WORKDIR
 # Get matching package
 echo "Selecting and downloading the kernel package..."
 packageName=$(getPackage)
+if [ "$?" -ne "0" ]; then
+	exit 1
+fi
 
 echo "Extracting files..."
 extractModule $packageName
