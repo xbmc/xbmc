@@ -79,8 +79,9 @@ public:
   virtual void ProcessDsWmCommand(WPARAM wParam, LPARAM lParam);
   virtual HRESULT HandleGraphEvent();
   
-  virtual double GetPlaySpeed();
-  virtual void SetPlaySpeed(int iSpeed);
+  virtual bool IsPaused() const;
+  virtual double GetPlaySpeed() { return m_currentSpeed; };
+
   virtual void DoFFRW(int currentSpeed);
   virtual void Seek(bool bPlus, bool bLargeStep);
   virtual void SeekInMilliSec(double sec);
@@ -118,17 +119,20 @@ public:
   
  
 protected:
-  bool m_bAbortRequest;
+
   bool m_bAllowFullscreen;
   CStdString m_Filename;
-  
   int m_PlaybackRate;
+  int m_currentSpeed;
+  float m_fFrameRate;
+
   CFile m_File;
   
   
   DWORD_PTR g_userId;
 
-  float m_fFrameRate;
+  
+
   struct SPlayerState
   {
     void Clear()

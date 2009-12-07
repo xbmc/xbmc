@@ -54,6 +54,7 @@ CDSGraph::CDSGraph() :
 {
   
   m_PlaybackRate = 1;
+  m_currentSpeed = 0;
   g_userId = 0xACDCACDC;
   m_State.Clear();
   m_VideoInfo.Clear();
@@ -98,7 +99,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   UpdateState();
   if (m_pMediaControl)
     m_pMediaControl->Run();
-
+  m_currentSpeed = 10000;
 
   return hr;
 }
@@ -300,19 +301,19 @@ void CDSGraph::Play()
 void CDSGraph::Pause()
 {
   UpdateState();
-  if (m_PlaybackRate == 0)
+  if (m_currentSpeed == 0)
   {
     if (m_State.current_filter_state != State_Running)
       m_pMediaControl->Run();
-    m_PlaybackRate=1;
+    m_currentSpeed = 10000;
 	//SetPlaySpeed(1);
   }
   else
   {
     if (m_pMediaControl)
-	{
+	  {
 	  if ( SUCCEEDED( m_pMediaControl->Pause() ) )
-	    m_PlaybackRate = 0;
+	    m_currentSpeed = 0;
 	}
   
   }
@@ -323,6 +324,7 @@ void CDSGraph::DoFFRW(int currentSpeed)
 {
   if (!m_pMediaSeeking)
     return;
+  m_currentSpeed = currentSpeed;
   HRESULT hr;
   LONGLONG earliest, latest, current, stop, rewind, pStop;
   m_pMediaSeeking->GetAvailable(&earliest,&latest);
@@ -336,69 +338,42 @@ void CDSGraph::DoFFRW(int currentSpeed)
     currentSpeed = 10000;
     rewind = earliest;
     hr = m_pMediaSeeking->SetPositions(&earliest, AM_SEEKING_AbsolutePositioning, (LONGLONG) 0, AM_SEEKING_NoPositioning);
-	m_State.time = double(earliest) / TIME_FORMAT_TO_MS;;
+	  m_State.time = double(earliest) / TIME_FORMAT_TO_MS;;
     m_pMediaControl->Run();
     return;
   }
 
   if ((rewind > (latest - 100000)) && (currentSpeed > 0))
-      {
-        currentSpeed = 10000;
-        rewind = latest - 100000;
-        //Log.Info(" seek ff:{0}",rewind/10000000);
-        hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning, &pStop, AM_SEEKING_NoPositioning);
-		//m_State.time = rewind;
+  {
+    currentSpeed = 10000;
+    rewind = latest - 100000;
+
+    hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning, &pStop, AM_SEEKING_NoPositioning);
+
 		m_State.time = double(rewind) / TIME_FORMAT_TO_MS;
-        m_pMediaControl->Run();
-        return;
-      }
-      //seek to new moment in time
-      //Log.Info(" seek :{0}",rewind/10000);
-      hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning | AM_SEEKING_SeekToKeyFrame,&pStop, AM_SEEKING_NoPositioning);
-	  //m_State.time = rewind;
-      m_State.time = double(rewind) / TIME_FORMAT_TO_MS;
-      m_pMediaControl->StopWhenReady();
+    m_pMediaControl->Run();
+    return;
+  }
+  //seek to new moment in time
+  hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning | AM_SEEKING_SeekToKeyFrame,&pStop, AM_SEEKING_NoPositioning);
+	m_State.time = double(rewind) / TIME_FORMAT_TO_MS;
+  m_pMediaControl->StopWhenReady();
 
 }
 
-double CDSGraph::GetPlaySpeed()
+bool CDSGraph::IsPaused() const
 {
-  if (!m_pMediaSeeking)
-    return 0;
-  double pRate;
-  m_pMediaSeeking->GetRate(&pRate);
-  return pRate;
-}
+  if (!m_pMediaControl)
+    return true;
 
-void CDSGraph::SetPlaySpeed(int iSpeed)
-{
-//TODO
-//Not working at all
-//its just getting stock when i set the rate
-  
-  if (!m_pMediaSeeking)
-  {
-	CLog::Log(LOGERROR,"%s There no IMediaSeeking ", __FUNCTION__);
-    return;
-  }
-  HRESULT hr;
-  hr = m_pMediaSeeking->SetRate((double) iSpeed);
-  if (SUCCEEDED(hr))
-  {
-    double playbackRate;
-    m_pMediaSeeking->GetRate(&playbackRate);
-	m_PlaybackRate= (int) playbackRate;
-    return;
-  }
-  if (hr == E_INVALIDARG)
-    CLog::Log(LOGERROR,"%s The specified rate was zero or the filters your currently using cant seek backward.", __FUNCTION__);
-  
-  if (hr == VFW_E_UNSUPPORTED_AUDIO)
-    CLog::Log(LOGERROR,"%s Audio device or filter does not support this rate.", __FUNCTION__);
-
-//http://msdn.microsoft.com/en-us/library/dd407039(VS.85).aspx
-//E_INVALIDARG The specified rate was zero or a negative value. (See Remarks.)
-//VFW_E_UNSUPPORTED_AUDIO Audio device or filter does not support this rate.
+  return (m_currentSpeed == 0);
+  /*m_pMediaControl->GetState(INFINITE, (OAFilterState *)&m_State.current_filter_state);
+  if (m_State.current_filter_state == State_Running )
+    return false;
+  else if (m_State.current_filter_state == State_Paused)
+    return true;
+  else
+    return true;*/
 }
 
 void CDSGraph::SeekInMilliSec(double sec)
@@ -446,17 +421,6 @@ void CDSGraph::Seek(bool bPlus, bool bLargeStep)
   
   UpdateTime();
   SeekInMilliSec(seek);
-  /*LONGLONG seekrequest;
-  seekrequest = ( LONGLONG )( seek * 10000 );
-  if ( seekrequest < 0 )
-    seekrequest = 0;
-  hr = m_pMediaSeeking->SetPositions(&seekrequest, AM_SEEKING_AbsolutePositioning, NULL,AM_SEEKING_NoPositioning);
-  if(m_State.current_filter_state == State_Stopped)
-  {
-    hr = m_pMediaControl->Pause();
-    hr = m_pMediaControl->GetState(INFINITE, (OAFilterState *)&m_State.current_filter_state);
-    hr = m_pMediaControl->Stop();
-  }*/
 }
 
 // return time in ms
@@ -542,10 +506,6 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
 	  Seek(false,true);
 	  CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDLARGE",__FUNCTION__);
 	  break;
-	case ID_SET_SPEEDRATE:
-      SetPlaySpeed((int)lParam);
-	  CLog::Log(LOGDEBUG,"%s ID_SET_SPEEDRATE",__FUNCTION__);
-	  break;
 	case ID_PLAY_PAUSE:
       Pause();
 	  CLog::Log(LOGDEBUG,"%s ID_PLAY_PAUSE",__FUNCTION__);
@@ -556,10 +516,7 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
       break;
     case ID_STOP_DSPLAYER:
       OnPlayStop();
-      //m_pMediaControl->StopWhenReady();
 	  CLog::Log(LOGDEBUG,"%s ID_STOP_DSPLAYER",__FUNCTION__);
       break;
   }
-
-  //return m_ImageReady;
 }

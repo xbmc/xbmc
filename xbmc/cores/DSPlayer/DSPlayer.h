@@ -46,10 +46,11 @@ public:
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
   virtual bool CloseFile();
   virtual bool IsPlaying() const;
-  virtual void Pause();
-  virtual bool IsPaused() const;
+  virtual bool IsCaching() const { return false; };
+  virtual bool IsPaused() const { return m_pDsGraph.IsPaused(); };
   virtual bool HasVideo() const;
   virtual bool HasAudio() const;
+  virtual void Pause();
   virtual bool CanSeek()                                        { return m_pDsGraph.CanSeek(); }
   virtual void Seek(bool bPlus, bool bLargeStep);//                { m_dshowCmd.Seek(bPlus,bLargeStep);}
   virtual void SeekPercentage(float iPercent);
@@ -91,7 +92,7 @@ protected:
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
-  int m_currentSpeed;
+  int  m_currentSpeed;
   double m_currentRate;
   CDSGraph m_pDsGraph;
   CPlayerOptions m_PlayerOptions;

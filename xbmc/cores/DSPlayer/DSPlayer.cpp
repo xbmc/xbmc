@@ -21,7 +21,7 @@
 
 #include "DSPlayer.h"
 #include "winsystemwin32.h" //Important needed to get the right hwnd
-//#include "Util.h"
+#include "utils/GUIInfoManager.h"
 #include "Application.h"
 #include "Settings.h"
 #include "FileItem.h"
@@ -36,10 +36,11 @@ using namespace std;
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
       CThread(),
-	  m_pDsGraph()
+	    m_pDsGraph()
 {
   m_hReadyEvent = CreateEvent(NULL, true, false, NULL);
   m_bAbortRequest = false;
+  
 }
 
 CDSPlayer::~CDSPlayer()
@@ -91,11 +92,6 @@ bool CDSPlayer::CloseFile()
 bool CDSPlayer::IsPlaying() const
 {
   return !m_bStop;
-}
-
-bool CDSPlayer::IsPaused() const
-{
-  return false;
 }
 
 bool CDSPlayer::HasVideo() const
@@ -176,23 +172,24 @@ void CDSPlayer::Process()
     if (m_bAbortRequest)
       break;
     if (!pStartPosDone)
-	{
+	  {
       SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_TO ,((LPARAM)m_PlayerOptions.starttime * 1000 ));
       pStartPosDone = true;
-	}
-	m_pDsGraph.HandleGraphEvent();
-	//m_pDsGraph.ResetDevice();
-	if (m_currentSpeed != 10000)
-	{
-      //m_pDsGraph.GetPlaySpeed
-	  m_pDsGraph.DoFFRW(m_currentSpeed);
+	  }
+	  m_pDsGraph.HandleGraphEvent();
+    //Handle fastforward stuff
+	  if (m_currentSpeed != 10000)
+	  {
+	    m_pDsGraph.DoFFRW(m_currentSpeed);
       Sleep(100);
-	}
-	else
+	  }
+	  else if (m_currentSpeed == 0)
+      Sleep(250);
+    else
     {
-	  Sleep(250);
-	  m_pDsGraph.UpdateTime();
-	}
+	    Sleep(250);
+	    m_pDsGraph.UpdateTime();
+	  }
   }
 
   m_callback.OnPlayBackEnded();
@@ -207,10 +204,24 @@ void CDSPlayer::Stop()
 
 void CDSPlayer::Pause()
 {
+  
+  if ( m_pDsGraph.IsPaused() )
+  {
+    m_currentSpeed = 10000;
+    m_callback.OnPlayBackResumed();
+    
+  } 
+  else
+  {
+    m_currentSpeed = 0;
+    m_callback.OnPlayBackPaused();
+  }
   SendMessage(g_hWnd,WM_COMMAND, ID_PLAY_PAUSE,0);
 }
 void CDSPlayer::ToFFRW(int iSpeed)
 {
+  if (iSpeed != 1)
+    g_infoManager.SetDisplayAfterSeek();
   switch(iSpeed)
   {
     case -1:
