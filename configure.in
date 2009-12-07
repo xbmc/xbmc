@@ -1176,6 +1176,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \
+      --disable-vaapi \
       --enable-shared \
       --enable-postproc \
       --enable-gpl \
