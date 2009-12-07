@@ -92,14 +92,13 @@ getInstallers()
 	driverDownloadURL=$(retrieveLatestNVIDIAURL)
 
 	echo "Downloading NVIDIA Installer from $driverDownloadURL ..."
-	wget -q $driverDownloadURL
+	wget -nc --no-proxy -q $driverDownloadURL
 	if [ "$?" -ne "0" ]; then
 		echo "Error retrieving NVIDIA drivers, exiting..."
 		exit 1
 	fi
 
 	mv NVIDIA*.run Files/chroot_local-includes/root
-
 
 	# Remove previous AMD installer
 	[ ! -f Files/chroot_local-includes/root/ati*.run ] || rm Files/chroot_local-includes/root/ati*.run
@@ -108,7 +107,7 @@ getInstallers()
 	driverDownloadURL=$(retrieveLatestAMDURL)
 
 	echo "Downloading AMD Installer from $driverDownloadURL ..."
-	wget -q $driverDownloadURL
+	wget -nc --no-proxy -q $driverDownloadURL
 	if [ "$?" -ne "0" ]; then
 		echo "Error retrieving ATI drivers, exiting..."
 		exit 1

@@ -9,14 +9,16 @@ fi
 
 set -e
 
-#
-# Use a local proxy (squid, apt-cacher) to speed up building process
-#
+# Using apt-cacher(-ng) to speed up apt-get downloads
+export APT_HTTP_PROXY="http://127.0.0.1:3142"
+export APT_FTP_PROXY="http://127.0.0.1:3142"
+
+# We use apt-cacher when retrieving d-i udebs, too
 export http_proxy="http://127.0.0.1:3142"
 export ftp_proxy="http://127.0.0.1:3142"
 
 # Closest Ubuntu mirror
-UBUNTUMIRROR_BASEURL="http://mirror.bytemark.co.uk/ubuntu/"
+export UBUNTUMIRROR_BASEURL="http://mirror.bytemark.co.uk/ubuntu/"
 
 THISDIR=$(pwd)
 WORKDIR=workarea
@@ -31,6 +33,9 @@ fi
 if ! which lh > /dev/null ; then
 	cd $THISDIR/Tools
 	git clone git://live.debian.net/git/live-helper.git
+	if [ "$?" -ne "0" ]; then
+		exit 1
+	fi
 	cd $THISDIR
 fi
 
@@ -39,6 +44,9 @@ fi
 #
 cd buildDEBs
 ./build.sh
+if [ "$?" -ne "0" ]; then
+	exit 1
+fi
 cd $THISDIR
 
 #
@@ -46,6 +54,9 @@ cd $THISDIR
 #
 cd buildRestricted
 ./build.sh
+if [ "$?" -ne "0" ]; then
+	exit 1
+fi
 cd $THISDIR
 
 #

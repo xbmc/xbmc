@@ -12,10 +12,13 @@ makeConfig()
 	configString="$configString --mirror-binary-security http://security.ubuntu.com/ubuntu/"
 	configString="$configString --packages-lists packages.txt"
 
-	configString="$configString --apt-http-proxy http://127.0.0.1:3142"
-	configString="$configString --apt-ftp-proxy http://127.0.0.1:3142"
 
-	# configString="$configString --interactive shell"
+	if [ -n "$APT_HTTP_PROXY" ]; then
+		configString="$configString --apt-http-proxy $APT_HTTP_PROXY"
+	fi
+	if [ -n "$APT_FTP_PROXY" ]; then
+		configString="$configString --apt-ftp-proxy $APT_FTP_PROXY"
+	fi
 
 	lh config --mode ubuntu --archive-areas "$CATEGORIES" $configString
 

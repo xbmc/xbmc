@@ -1,10 +1,4 @@
 #!/bin/bash
-#
-# Make sure only root can run our script
-if [[ $EUID -ne 0 ]]; then
-	echo "This script must be run as root" 1>&2
-	exit 1
-fi
 
 THISDIR=$(pwd)
 WORKDIR=workarea
@@ -33,20 +27,24 @@ build()
 	cd $THISDIR
 }
 
-if ! lh -v > /dev/null ; then
+if ! which lh > /dev/null ; then
 	echo "A required package (live-helper) is not available, exiting..."
-	exit
+	exit 1
 fi
 
 #
 #
 #
 
-# Clean any previous run
-rm -rf $WORKDIR
-
 # Get latest installers if instructed
 getInstallers
+
+# Clean any previous run
+rm -rf *.ext3 &> /dev/null
+
+rm -rf $WORKDIR &> /dev/null
+mkdir -p "$THISDIR/$WORKDIR"
+cd "$THISDIR/$WORKDIR"
 
 # Create config tree
 makeConfig
