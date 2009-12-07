@@ -1721,7 +1721,10 @@ CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
 {
   CStdString folder;
   folder = "special://profile/"+strFile;
-  if (!CFile::Exists(folder))
+  //check if item exists in the profile
+  //(either for folder or for a file (depending on slashAtEnd of strFile)
+  //otherwise return path to masterprofile
+  if ( (CUtil::HasSlashAtEnd(folder) && !CDirectory::Exists(folder)) || !CFile::Exists(folder))
     folder = "special://masterprofile/"+strFile;
   return folder;
 }
