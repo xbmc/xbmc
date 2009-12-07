@@ -57,18 +57,18 @@ public:
 	};
 
 private:
-	CComPtr<IUnknown> m_pUnkInner;
+  CComPtr<IUnknown> m_pUnkInner;
 	
-	DWORD m_dwRegister;
-	CStreamPath m_streampath;
-	CAutoPtrArray<CStreamDeadEnd> m_deadends;
+  DWORD m_dwRegister;
+  CStreamPath m_streampath;
+  CAutoPtrArray<CStreamDeadEnd> m_deadends;
 
 protected:
-	CComPtr<IFilterMapper2> m_pFM;
-	CInterfaceList<IUnknown, &IID_IUnknown> m_pUnks;
-	CAtlList<CFGFilter*> m_source, m_transform, m_override;
+  CComPtr<IFilterMapper2> m_pFM;
+  CInterfaceList<IUnknown, &IID_IUnknown> m_pUnks;
+  CAtlList<CFGFilter*> m_source, m_transform, m_override;
 
-	virtual HRESULT CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF, IUnknown** ppUnk);
+  virtual HRESULT CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF, IUnknown** ppUnk);
 
   STDMETHODIMP GetXbmcVideoDecFilter(IMPCVideoDecFilter** pBF);
   STDMETHODIMP GetFfdshowVideoDecFilter(IffdshowDecVideoA** pBF);
@@ -140,7 +140,7 @@ public:
 	// IFilterGraph
 	
 	STDMETHODIMP AddFilter(IBaseFilter* pFilter, LPCWSTR pName);
-	CFGManagerCustom(LPCTSTR pName, LPUNKNOWN pUnk, CStdString pXbmcPath);
+	CFGManagerCustom(LPCTSTR pName, LPUNKNOWN pUnk);
 };
 
 class CFGManagerPlayer : public CFGManagerCustom
@@ -155,6 +155,6 @@ protected:
 	STDMETHODIMP ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MEDIA_TYPE* pmt);
 
 public:
-	CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd, CStdString pXbmcPath);
+	CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd);
 
 };

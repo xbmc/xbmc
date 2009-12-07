@@ -72,10 +72,10 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   HRESULT hr;
   if (m_pGraphBuilder)
 	  CloseFile();
-  CStdString homepath;
-  CUtil::GetHomePath(homepath);
+  //CStdString homepath;
+  //CUtil::GetHomePath(homepath);
   
-  m_pGraphBuilder = new CFGManagerPlayer(_T("CFGManagerPlayer"), NULL, g_hWnd,homepath);
+  m_pGraphBuilder = new CFGManagerPlayer(_T("CFGManagerPlayer"), NULL, g_hWnd);
   hr = m_pGraphBuilder->AddToROT();
   //Adding every filters required for this file into the igraphbuilder
   hr = m_pGraphBuilder->RenderFileXbmc(file);

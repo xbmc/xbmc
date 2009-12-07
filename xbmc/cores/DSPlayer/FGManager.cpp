@@ -839,9 +839,8 @@ STDMETHODIMP CFGManager::GetDeadEnd(int iIndex, CAtlList<CStdStringW>& path, CAt
 //   CFGManagerCustom
 //
 
-CFGManagerCustom::CFGManagerCustom(LPCTSTR pName, LPUNKNOWN pUnk,CStdString pXbmcPath)
+CFGManagerCustom::CFGManagerCustom(LPCTSTR pName, LPUNKNOWN pUnk)
   : CFGManager(pName, pUnk)
-    ,m_pXbmcPath(pXbmcPath)
   , m_vrmerit(MERIT64(MERIT_PREFERRED))
   , m_armerit(MERIT64(MERIT_PREFERRED))
 
@@ -920,8 +919,8 @@ STDMETHODIMP CFGManagerCustom::AddFilter(IBaseFilter* pBF, LPCWSTR pName)
 //   CFGManagerPlayer
 //
 
-CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd,CStdString pXbmcPath)
-  : CFGManagerCustom(pName, pUnk,pXbmcPath)
+CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd)
+  : CFGManagerCustom(pName, pUnk)
   , m_hWnd(hWnd)
   , m_vrmerit(MERIT64(MERIT_PREFERRED))
   , m_armerit(MERIT64(MERIT_PREFERRED))
@@ -975,7 +974,7 @@ CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd,CStd
   fileconfigtmp = _P("special://xbmc/system/players/dsplayer/dsfilterconfig.xml");
   //Load the config for the xml
   m_CfgLoader = new CFGLoader(this);
-  //if (LoadFiltersFromXml(fileconfigtmp,pXbmcPath))
+
   if (SUCCEEDED(m_CfgLoader->LoadConfig(fileconfigtmp)))
     CLog::Log(LOGNOTICE,"Successfully loaded %s",fileconfigtmp.c_str());
   else
@@ -1012,4 +1011,3 @@ STDMETHODIMP CFGManagerPlayer::ConnectDirect(IPin* pPinOut, IPin* pPinIn, const 
 
   return __super::ConnectDirect(pPinOut, pPinIn, pmt);
 }
-
