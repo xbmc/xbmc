@@ -1,9 +1,7 @@
 
 makeConfig()
 {
-	mkdir -p "$THISDIR/$WORKDIR"
-	cd "$THISDIR/$WORKDIR"
-
+	CATEGORIES="main restricted universe multiverse"
 
 	configString=""
 	configString="$configString --distribution karmic"
@@ -17,9 +15,9 @@ makeConfig()
 	configString="$configString --apt-http-proxy http://127.0.0.1:3142"
 	configString="$configString --apt-ftp-proxy http://127.0.0.1:3142"
 
-	configString="$configString --interactive shell"
+	# configString="$configString --interactive shell"
 
-	lh config --mode ubuntu --categories "main restricted universe multiverse" $configString
+	lh config --mode ubuntu --archive-areas "$CATEGORIES" $configString
 
 	# Copy files for chroot
 	cp -R "$THISDIR"/Files/chroot_* config
