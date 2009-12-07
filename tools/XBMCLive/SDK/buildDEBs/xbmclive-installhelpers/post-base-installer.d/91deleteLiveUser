@@ -1,6 +1,7 @@
 #!/bin/sh
 
-in-target deluser --remove-home --quiet xbmc
+# --remove-home
+in-target deluser --quiet xbmc
 in-target sed -i -e "/XBMC/d" /etc/sudoers
 
 # TODO clean /etc/PolicyKit/PolicyKit.conf
