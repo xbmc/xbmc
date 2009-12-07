@@ -524,10 +524,9 @@ bool cPVRTimers::Update()
   CLIENTMAPITR itr = clients->begin();
   while (itr != clients->end())
   {
-    IPVRClient* client = (*itr).second;
-    if (client->GetNumTimers() > 0)
+    if ((*itr).second->GetNumTimers() > 0)
     {
-      client->GetAllTimers(this);
+      (*itr).second->GetAllTimers(this);
     }
     itr++;
   }

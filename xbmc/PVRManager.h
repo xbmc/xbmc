@@ -24,7 +24,7 @@
 #include "utils/Addon.h"
 #include "FileItem.h"
 #include "TVDatabase.h"
-#include "pvrclients/IPVRClient.h"
+#include "pvrclients/PVRClient.h"
 #include "utils/AddonManager.h"
 #include "utils/PVRChannels.h"
 #include "utils/PVRRecordings.h"
@@ -33,8 +33,8 @@
 #include <vector>
 #include <deque>
 
-typedef std::map< long, IPVRClient* >           CLIENTMAP;
-typedef std::map< long, IPVRClient* >::iterator CLIENTMAPITR;
+typedef std::map< long, CPVRClient* >           CLIENTMAP;
+typedef std::map< long, CPVRClient* >::iterator CLIENTMAPITR;
 typedef std::map< long, PVR_SERVERPROPS >       CLIENTPROPS;
 
 class CPVRTimeshiftRcvr : private CThread
@@ -45,7 +45,7 @@ public:
 
   /* Thread handling */
   void Process();
-  bool StartReceiver(IPVRClient *client);
+  bool StartReceiver(CPVRClient *client);
   void StopReceiver();
   int WriteBuffer(BYTE* buf, int buf_size);
   __int64 GetMaxSize();
@@ -64,7 +64,7 @@ private:
 
   std::deque<STimestamp>  m_Timestamps;
   CRITICAL_SECTION        m_critSection;
-  IPVRClient             *m_client;         // pointer to a enabled client interface
+  CPVRClient             *m_client;         // pointer to a enabled client interface
   XFILE::CFile           *m_pFile;          // Stream cache file
   __int64                 m_position;       // Current cache file write position
   __int64                 m_written;        // Total Bytes written to cache file

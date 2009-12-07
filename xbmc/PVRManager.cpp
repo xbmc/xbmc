@@ -116,10 +116,9 @@ CPVRTimeshiftRcvr::~CPVRTimeshiftRcvr()
 /* CPVRTimeshiftRcvr StartReceiver
 /*
 /* It start the the receiving thread and return true if everything is
-/* ok. IPVRClient of the current PVRClient must be passed to this
-/* function.
+/* ok. PVRClient must be passed to this function.
 /********************************************************************/
-bool CPVRTimeshiftRcvr::StartReceiver(IPVRClient *client)
+bool CPVRTimeshiftRcvr::StartReceiver(CPVRClient *client)
 {
   if (!m_pFile)
   {
@@ -480,7 +479,7 @@ bool CPVRManager::LoadClients()
     /* Load the Client library's and inside them into Client list if
      * success. Client initialization is also performed during loading.
      */
-    IPVRClient *client = factory.LoadPVRClient(clientAddon, clientID, this);
+    CPVRClient *client = factory.LoadPVRClient(clientAddon, clientID, this);
     if (client)
     {
       m_clients.insert(std::make_pair(client->GetID(), client));

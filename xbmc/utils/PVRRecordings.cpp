@@ -205,10 +205,9 @@ void cPVRRecordings::Process()
   while (itr != clients->end())
   {
     /* Load only if the client have Recordings */
-    IPVRClient* client = (*itr).second;
-    if (client->GetNumRecordings() > 0)
+    if ((*itr).second->GetNumRecordings() > 0)
     {
-      client->GetAllRecordings(this);
+      (*itr).second->GetAllRecordings(this);
     }
     itr++;
   }

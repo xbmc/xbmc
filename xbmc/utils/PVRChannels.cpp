@@ -395,10 +395,9 @@ bool cPVRChannels::Load(bool radio)
     CLIENTMAPITR itr = clients->begin();
     while (itr != clients->end())
     {
-      IPVRClient* client = (*itr).second;
-      if (client->GetNumChannels() > 0)
+      if ((*itr).second->GetNumChannels() > 0)
       {
-        client->GetChannelList(*this, m_bRadio);
+        (*itr).second->GetChannelList(*this, m_bRadio);
       }
       itr++;
     }
@@ -427,10 +426,9 @@ bool cPVRChannels::Update()
   CLIENTMAPITR itr = clients->begin();
   while (itr != clients->end())
   {
-    IPVRClient* client = (*itr).second;
-    if (client->GetNumChannels() > 0)
+    if ((*itr).second->GetNumChannels() > 0)
     {
-      client->GetChannelList(PVRChannels_tmp, m_bRadio);
+      (*itr).second->GetChannelList(PVRChannels_tmp, m_bRadio);
     }
     itr++;
   }
