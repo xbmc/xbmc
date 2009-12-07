@@ -165,7 +165,7 @@ bool cChannel::ReadFromVTP(int channel)
     if (code != 451)
       return false;
 
-    Sleep(750);
+    usleep(750);
   }
 
   vector<string>::iterator it = lines.begin();

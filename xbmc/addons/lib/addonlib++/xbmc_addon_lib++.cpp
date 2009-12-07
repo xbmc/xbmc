@@ -542,8 +542,7 @@ char *strn0cpy(char *dest, const char *src, size_t n)
   *dest = 0;
   return s;
 }
-
-bool isnumber(const char *s)
+bool xbmc_isnumber(const char *s)
 {
   if (!*s)
     return false;
@@ -554,7 +553,6 @@ bool isnumber(const char *s)
   } while (*++s);
   return true;
 }
-
 char *stripspace(char *s)
 {
   if (s && *s) 

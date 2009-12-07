@@ -115,7 +115,7 @@ bool cTimer::Parse(const char *s)
     strn0cpy(file, filebuffer, 256);
     strreplace(file, '|', ':');
 
-    if (isnumber(channelbuffer))
+    if (xbmc_isnumber(channelbuffer))
       channel = atoi(channelbuffer);
     else
     {

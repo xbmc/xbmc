@@ -350,7 +350,7 @@ PVR_ERROR cPVRClientVDR::RequestEPGForChannel(const PVR_CHANNEL &channel, PVRHAN
       pthread_mutex_unlock(&m_critSection);
       return PVR_ERROR_SERVER_ERROR;
     }
-    Sleep(750);
+    usleep(750);
   }
 
   for (vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
@@ -428,7 +428,7 @@ PVR_ERROR cPVRClientVDR::RequestChannelList(PVRHANDLE handle, bool radio)
       pthread_mutex_unlock(&m_critSection);
       return PVR_ERROR_SERVER_ERROR;
     }
-    Sleep(750);
+    usleep(750);
   }
 
   for (vector<string>::iterator it = lines.begin(); it < lines.end(); it++)

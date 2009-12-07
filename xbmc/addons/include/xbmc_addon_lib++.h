@@ -106,7 +106,7 @@ char *strcpyrealloc(char *dest, const char *src);
 char *strreplace(char *s, char c1, char c2);
 char *strreplace(char *s, const char *s1, const char *s2); ///< re-allocates 's' and deletes the original string if necessary!
 char *strn0cpy(char *dest, const char *src, size_t n);
-bool isnumber(const char *s);
+bool xbmc_isnumber(const char *s);
 inline char *skipspace(const char *s)
 {
   if ((unsigned char)*s > ' ') // most strings don't have any leading space, so handle this case as fast as possible
