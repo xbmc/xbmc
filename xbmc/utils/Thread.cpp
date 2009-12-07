@@ -306,7 +306,6 @@ ThreadIdentifier CThread::ThreadId() const
 #else
   return m_ThreadId;
 #endif
-  return 0;
 }
 
 
