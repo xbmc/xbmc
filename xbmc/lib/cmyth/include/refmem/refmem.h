@@ -69,7 +69,7 @@ extern void *__ref_alloc(size_t len,
  * \return pointer to reference counted memory block
  */
 #if defined(DEBUG)
-#define ref_alloc(l) (__ref_alloc((l), __FILE__, __FUNC__, __LINE__))
+#define ref_alloc(l) (__ref_alloc((l), __FILE__, __FUNCTION__, __LINE__))
 #else
 #define ref_alloc(l) (__ref_alloc((l), (char *)0, (char *)0, 0))
 #endif
