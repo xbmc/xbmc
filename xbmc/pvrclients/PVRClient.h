@@ -20,12 +20,21 @@
  *
  */
 
-#include "IPVRClient.h"
 #include "../utils/Addon.h"
+#include "../utils/PVREpg.h"
+#include "../utils/PVRChannels.h"
+#include "../utils/PVRTimers.h"
+#include "../utils/PVRRecordings.h"
 #include "DllPVRClient.h"
 #include "../addons/lib/addon_local.h"
 
-class CPVRClient : public IPVRClient
+class IPVRClientCallback
+{
+public:
+  virtual void OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg)=0;
+};
+
+class CPVRClient : public ADDON::CAddon
 {
 public:
   CPVRClient(const long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
