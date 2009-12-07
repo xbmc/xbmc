@@ -160,6 +160,10 @@ protected:
   int                 m_uv_buffer_size;
   BYTE                *m_y_buffer_ptr;
   BYTE                *m_uv_buffer_ptr;
+  
+  BYTE                *m_y_buffer;
+  BYTE                *m_u_buffer;
+  BYTE                *m_v_buffer;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -298,10 +302,17 @@ CMPCOutputThread::CMPCOutputThread(BCM::HANDLE device) :
   m_height = 1080;
   m_y_buffer_size = m_width * m_height;
   m_uv_buffer_size = m_y_buffer_size / 2;
+  m_y_buffer = (BYTE*)calloc(m_y_buffer_size, sizeof(BYTE));
+  m_u_buffer = (BYTE*)calloc(m_uv_buffer_size/2, sizeof(BYTE));
+  m_v_buffer = (BYTE*)calloc(m_uv_buffer_size/2, sizeof(BYTE));
 }
 
 CMPCOutputThread::~CMPCOutputThread()
 {
+  if (m_y_buffer) free(m_y_buffer);
+  if (m_u_buffer) free(m_u_buffer);
+  if (m_v_buffer) free(m_v_buffer);
+  
   while(m_ReadyList.Count())
     delete m_ReadyList.Pop();
   while(m_FreeList.Count())
@@ -583,11 +594,25 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
 {
   BCM::BC_STATUS ret;
   BCM::BC_DTS_PROC_OUT procOut;
+  BCM::BC_DTS_STATUS decoder_status;
   CMPCDecodeBuffer *pBuffer = NULL;
   bool got_picture = false;
   
   do
   {
+    ret = BCM::DtsGetDriverStatus(m_Device, &decoder_status);
+    if (ret == BCM::BC_STS_SUCCESS)
+    {
+      int ready_count;
+      
+      ready_count = decoder_status.ReadyListCount;
+      
+      CLog::Log(LOGDEBUG, "%s: ReadyListCount %d FreeListCount %d PIBMissCount %d\n", __MODULE_NAME__,
+        decoder_status.ReadyListCount, decoder_status.FreeListCount, decoder_status.PIBMissCount);
+      CLog::Log(LOGDEBUG, "%s: FramesDropped %d FramesCaptured %d FramesRepeated %d\n", __MODULE_NAME__,
+        decoder_status.FramesDropped, decoder_status.FramesCaptured, decoder_status.FramesRepeated);
+    }
+
     // Setup output struct
     memset(&procOut, 0, sizeof(BCM::BC_DTS_PROC_OUT));
 
@@ -613,15 +638,23 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
             memcpy(pBuffer->GetPtr(), &procOut, sizeof(BCM::BC_DTS_PROC_OUT));
             m_old_timestamp = procOut.PicInfo.timeStamp;
             m_PictureCount++;
+
             m_y_buffer_ptr  = (BYTE*)procOut.Ybuff;  // Y plane
             m_uv_buffer_ptr = (BYTE*)procOut.UVbuff; // UV packed plane
-            /*
-            uint8_t *tmp_buffer;
-            tmp_buffer = (uint8_t*)_aligned_malloc(m_y_buffer_size + m_uv_buffer_size, 16);
-            fast_memcpy(tmp_buffer, m_y_buffer_ptr, m_y_buffer_size);
-            fast_memcpy(tmp_buffer + m_y_buffer_size, m_uv_buffer_ptr, m_uv_buffer_size);
-            _aligned_free(tmp_buffer);
-            */
+
+            // copy y
+            fast_memcpy(m_y_buffer, procOut.Ybuff, m_y_buffer_size);
+            // copy uv packed into u and v planes
+            int index;
+            unsigned char *src = procOut.UVbuff;
+            unsigned char *dst_u = m_u_buffer;
+            unsigned char *dst_v = m_v_buffer;
+            for(index = 0; index < m_uv_buffer_size/2; index++ )
+            {
+              *dst_u++ = *src++;
+              *dst_v++ = *src++;
+            }
+
             got_picture = true;
           }
           else
@@ -649,6 +682,9 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
           m_height = procOut.PicInfo.height;
           m_y_buffer_size = m_width * m_height;
           m_uv_buffer_size = m_y_buffer_size / 2;
+          m_y_buffer = (BYTE*)realloc(m_y_buffer, m_y_buffer_size);
+          m_u_buffer = (BYTE*)realloc(m_u_buffer, m_uv_buffer_size/2);
+          m_v_buffer = (BYTE*)realloc(m_v_buffer, m_uv_buffer_size/2);
 
           m_OutputTimeout = 10000;
           m_PictureCount = 0;

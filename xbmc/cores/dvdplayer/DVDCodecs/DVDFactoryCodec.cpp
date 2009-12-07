@@ -119,6 +119,8 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   CDVDCodecOptions options;
 
 #if defined(HAVE_LIBCRYSTALHD)
+if (!hint.software)
+{
   if (hint.codec == CODEC_ID_MPEG2VIDEO && hint.height < 720)
   {
     if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
@@ -128,6 +130,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
     CLog::Log(LOGINFO, "Trying Broadcom Crystal HD Decoder...");
     if ( (pCodec = OpenCodec(new CDVDVideoCodecCrystalHD(), hint, options)) ) return pCodec;
   }
+}
 #endif
 
   // try to decide if we want to try halfres decoding
