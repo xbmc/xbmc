@@ -1822,7 +1822,6 @@ bool CLinuxRendererGL::DeleteYV12Texture(int index)
 
 bool CLinuxRendererGL::CreateYV12Texture(int index)
 {
-/*
   // Remember if we're software upscaling.
   m_isSoftwareUpscaling = IsSoftwareUpscaling();
 
