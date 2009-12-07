@@ -379,9 +379,13 @@ void CMusicInfoScraper::Process()
 bool CMusicInfoScraper::CheckValidOrFallback(const CStdString &fallbackScraper)
 {
   CScraperParser parser;
-  if (parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath))
+  if (parser.Load(m_scraper))
     return true;
-  if (m_info.strPath != fallbackScraper &&
+  else
+    return false;
+/*
+ * TODO handle fallback mechanism
+  if (m_scraper->Path() != fallbackScraper &&
       parser.Load("special://xbmc/system/scrapers/music/" + fallbackScraper))
   {
     CLog::Log(LOGWARNING, "%s - scraper %s fails to load, falling back to %s", __FUNCTION__, m_info.strPath.c_str(), fallbackScraper.c_str());
@@ -394,5 +398,5 @@ bool CMusicInfoScraper::CheckValidOrFallback(const CStdString &fallbackScraper)
     m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + m_info.strPath);
     return true;
   }
-  return false;
+  return false; */
 }
