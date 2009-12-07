@@ -109,6 +109,7 @@ void CAdvancedSettings::Initialize()
   m_lcdAddress4 = 0x54;
   m_lcdHeartbeat = false;
   m_lcdScrolldelay = 1;
+  m_lcdHostName = "localhost";
 
   m_autoDetectPingTime = 30;
 
@@ -139,7 +140,8 @@ void CAdvancedSettings::Initialize()
   m_moviesExcludeFromScanRegExps.push_back("[-._ ]sample");
   m_tvshowExcludeFromScanRegExps.push_back("[-._ ]sample[-._ ]");
 
-  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)t)|dis[ck]|d)[ _.-]*[0-9a-d]+)(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)t)|dis[ck]|d)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)t)|dis[ck]|d)[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
   m_videoStackRegExps.push_back("(.*?)([ ._-]*[a-d])(.*?)(\\.[^.]+)$");
   // This one is a bit too greedy to enable by default.  It will stack sequels
   // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
@@ -450,6 +452,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "address4", m_lcdAddress4, 0, 0x100);
     XMLUtils::GetBoolean(pElement, "heartbeat", m_lcdHeartbeat);
     XMLUtils::GetInt(pElement, "scrolldelay", m_lcdScrolldelay, -8, 8);
+    XMLUtils::GetString(pElement, "hostname", m_lcdHostName);
   }
   pElement = pRootElement->FirstChildElement("network");
   if (pElement)
