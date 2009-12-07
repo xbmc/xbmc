@@ -768,10 +768,6 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       bool bScan=false;
       ADDON::CScraperPtr scraper;
-      if (!m_musicdatabase.GetScraperForPath(item->m_strPath, scraper))
-/*
-TODO merge problem
-      SScraperInfo info;
       CStdString path(item->m_strPath);
       CQueryParams params;
       CDirectoryNode::GetDatabaseInfo(item->m_strPath, params);
@@ -780,16 +776,7 @@ TODO merge problem
       else if (params.GetArtistId() != -1)
         path.Format("musicdb://2/%i/",params.GetArtistId());
 
-      if (!m_musicdatabase.GetScraperForPath(path,info))
-        info.strContent = "albums";
-
-      int iLabel=132;
-      // per genre or for all artists
-<<<<<<< .working
-      if (m_vecItems->m_strPath.Equals("musicdb://1/") || item->m_strPath.Equals("musicdb://2/"))*/
-=======
-      if (m_vecItems->m_strPath.Left(12).Equals("musicdb://1/") || item->m_strPath.Left(12).Equals("musicdb://2/"))
->>>>>>> .merge-right.r25372
+      if (!m_musicdatabase.GetScraperForPath(path,scraper))
       {
         ADDON::AddonPtr defaultScraper;
         if (ADDON::CAddonMgr::Get()->GetDefaultScraper(defaultScraper, CONTENT_ALBUMS))
@@ -799,14 +786,14 @@ TODO merge problem
       }
 
       CONTENT_TYPE context = CONTENT_ALBUMS;
-      if (m_vecItems->m_strPath.Equals("musicdb://1/") || m_vecItems->m_strPath.Equals("musicdb://2/") || item->m_strPath.Left(12).Equals("musicdb://2/"))
-      { // per genre or for all artists
+      if (m_vecItems->m_strPath.Left(12).Equals("musicdb://1/") || item->m_strPath.Left(12).Equals("musicdb://2/"))
+      {
         context = CONTENT_ARTISTS;
-      }*/
+      }
 
       if (CGUIDialogContentSettings::Show(scraper, bScan, context))
       {
-        m_musicdatabase.SetScraperForPath(item->m_strPath, scraper);
+        m_musicdatabase.SetScraperForPath(path,scraper);
         if (bScan)
           OnInfoAll(itemNumber,true);
       }

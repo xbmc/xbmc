@@ -54,7 +54,6 @@
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
-#include "utils/RssFeed.h"
 #include "utils/RegExp.h"
 #include "GUISettings.h"
 #include "TextureManager.h"

@@ -190,10 +190,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return false;
 
           CFileItemPtr item = m_vecItems->Get(iItem);
-          if (m_vecItems->IsPlugin() || m_vecItems->IsRSS())
-            info->m_pathContent = "plugin";
-          else if(m_vecItems->IsLiveTV())
-            info->m_pathContent = "livetv";
+          if (m_vecItems->IsPlugin() || m_vecItems->IsRSS() || m_vecItems->IsLiveTV())
+            scraper->m_pathContent = CONTENT_NONE;
           else
           {
             if (item->IsVideoDb()       &&
@@ -644,11 +642,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
         }
 
         // set path hash
-	if (info.strContent.Equals("movies") || info.strContent.Equals("musicvideos"))
+        if (info->Content() == CONTENT_MOVIES || info->Content() == CONTENT_MUSICVIDEOS)
         {
           CStdString hash, strParent;
           CFileItemList items;
-	  CUtil::GetParentPath(list.m_strPath,strParent);
+          CUtil::GetParentPath(list.m_strPath,strParent);
           CDirectory::GetDirectory(strParent,items,g_stSettings.m_videoExtensions);
           scanner.GetPathHash(items, hash);
           m_database.SetPathHash(strParent, hash);
