@@ -278,6 +278,11 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
 
       CFileItemPtr item(new CFileItem(url.Get(), false));
       m_session->UpdateItem(*item, program);
+      /*
+       * TODO: Refactor UpdateItem so it doesn't change the path of a program that is currently
+       * recording if it wasn't opened through Live TV.
+       */
+      item->m_strPath = url.Get(); // Overwrite potentially incorrect change to path if recording
 
       url.SetFileName("files/" + path + ".png");
       item->SetThumbnailImage(url.Get());
