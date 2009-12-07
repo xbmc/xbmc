@@ -375,14 +375,14 @@ bool cPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
 
       bool bAdd = true;
       strEntryName = "";
-      for (unsigned int i = 0; i < baseTokens.size(); ++i)
+      for (unsigned int j = 0; j < baseTokens.size(); ++j)
       {
-        if (pathTokens[i] != baseTokens[i])
+        if (pathTokens[j] != baseTokens[j])
         {
           bAdd = false;
           break;
         }
-        strEntryName += pathTokens[i] + "/";
+        strEntryName += pathTokens[j] + "/";
       }
       if (!bAdd)
         continue;
@@ -398,7 +398,9 @@ bool cPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
       {
         pFileItem.reset(new CFileItem(at(i)));
         pFileItem->SetLabel(pathTokens[baseTokens.size()]);
-        pFileItem->m_strPath = "pvr://" + strEntryName + ".pvr";
+        pFileItem->SetLabel2(at(i).RecordingTime().GetAsLocalizedDateTime(true, false));
+        pFileItem->m_dateTime = at(i).RecordingTime();
+        pFileItem->m_strPath.Format("pvr://%s-%05i.pvr", strEntryName, at(i).ClientIndex());
       }
       else
       { // this is new folder. add if not already added
@@ -447,11 +449,21 @@ cPVRRecordingInfoTag *cPVRRecordings::GetByPath(CStdString &path)
       dir = "";
     }
     CUtil::RemoveExtension(title);
+    unsigned int index = atoi(title.substr(title.size()-5).c_str());
+    title.erase(title.size()-6);
 
     for (unsigned int i = 0; i < size(); ++i)
     {
-      if ((title == at(i).Title()) && (dir == at(i).Directory()) && (clientID == at(i).ClientID()))
-        return &at(i);
+      if (index > 0)
+      {
+        if (index == at(i).ClientIndex())
+          return &at(i);
+      }
+      else
+      {
+        if ((title == at(i).Title()) && (dir == at(i).Directory()) && (clientID == at(i).ClientID()))
+          return &at(i);
+      }
     }
   }
 
