@@ -84,7 +84,7 @@ bool CDeviceKitDiskDevice::Mount()
     CLog::Log(LOGDEBUG, "DeviceKit.Disks: Mounting %s", m_DeviceKitUDI.c_str());
     CDBusMessage message("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "FilesystemMount");
     message.AppendArgument("");
-    const char *array[0];
+    const char *array[] = {};
     message.AppendArgument(array, 0);
 
     DBusMessage *reply = message.SendSystem();
