@@ -71,7 +71,7 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
 
   if ( pInfo->IsAudio( 1 ) )
   {
-    if( !bypassSettings && !g_guiSettings.GetBool("autorun.cdda") && !g_guiSettings.GetBool("audiocds.autorun") )
+    if( !bypassSettings && !g_guiSettings.GetBool("audiocds.autorun") )
       return;
 
     if (!g_passwordManager.IsMasterLockUnlocked(false))
@@ -105,7 +105,7 @@ void CAutorun::RunCdda()
 
 void CAutorun::RunMedia(bool bypassSettings)
 {
-  if ( !bypassSettings && !g_guiSettings.GetBool("autorun.dvd") && !g_guiSettings.GetBool("autorun.vcd") && !g_guiSettings.GetBool("autorun.video") && !g_guiSettings.GetBool("autorun.music") && !g_guiSettings.GetBool("autorun.pictures") && !g_guiSettings.GetBool("audiocds.autorun") && !g_guiSettings.GetBool("dvds.autorun"))
+  if ( !bypassSettings && !g_guiSettings.GetBool("audiocds.autorun") && !g_guiSettings.GetBool("dvds.autorun"))
     return ;
 
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
@@ -173,7 +173,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       if (pItem->m_bIsFolder && pItem->m_strPath != "." && pItem->m_strPath != "..")
       {
         if (pItem->m_strPath.Find( "VIDEO_TS" ) != -1 && bAllowVideo
-        && (bypassSettings || g_guiSettings.GetBool("autorun.dvd") || g_guiSettings.GetBool("dvds.autorun")))
+        && (bypassSettings || g_guiSettings.GetBool("dvds.autorun")))
         {
           CUtil::PlayDVD();
           bPlaying = true;
@@ -185,7 +185,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         if (pItem->m_strPath.Find("MPEG2") != -1)
           strExt = ".mpg";
         if (!strExt.IsEmpty() && bAllowVideo
-             && (bypassSettings || g_guiSettings.GetBool("autorun.vcd") || g_guiSettings.GetBool("dvds.autorun")))
+             && (bypassSettings || g_guiSettings.GetBool("dvds.autorun")))
         {
           CFileItemList items;
           CDirectory::GetDirectory(pItem->m_strPath, items, strExt);
@@ -200,8 +200,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             return true;
           }
         }
+        /* Probably want this if/when we add some automedia action dialog...
         else if (pItem->m_strPath.Find("PICTURES") != -1 && bAllowPictures
-              && (bypassSettings || g_guiSettings.GetBool("autorun.pictures")))
+              && (bypassSettings))
         {
           bPlaying = true;
           CStdString strExec;
@@ -209,12 +210,13 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           CBuiltins::Execute(strExec);
           return true;
         }
+        */
       }
     }
   }
 
   // check video first
-  if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.video") || g_guiSettings.GetBool("dvds.autorun")))
+  if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("dvds.autorun")))
   {
     // stack video files
     CFileItemList tempItems;
@@ -259,7 +261,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     }
   }
   // then music
-  if (!bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.music") || g_guiSettings.GetBool("audiocds.autorun")) && bAllowMusic)
+  if (!bPlaying && (bypassSettings || g_guiSettings.GetBool("audiocds.autorun")) && bAllowMusic)
   {
     for (int i = 0; i < vecItems.Size(); i++)
     {
@@ -271,8 +273,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       }
     }
   }
+  /* Probably want this if/when we add some automedia action dialog...
   // and finally pictures
-  if (!nAddedToPlaylist && !bPlaying && (bypassSettings || g_guiSettings.GetBool("autorun.pictures")) && bAllowPictures)
+  if (!nAddedToPlaylist && !bPlaying && bypassSettings && bAllowPictures)
   {
     for (int i = 0; i < vecItems.Size(); i++)
     {
@@ -287,6 +290,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       }
     }
   }
+  */
 
   // check subdirs if we are not playing yet
   if (!bPlaying)
