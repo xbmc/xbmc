@@ -153,58 +153,6 @@ STDMETHODIMP CFGManager::RemoveFilter(IBaseFilter* pFilter)
   return CComQIPtr<IFilterGraph2>(m_pUnkInner)->RemoveFilter(pFilter);
 }
 
-STDMETHODIMP CFGManager::RemoveRenderer()
-{
-  HRESULT hr=S_OK;
-  CComPtr<IBaseFilter> pBF;
-  
-  BeginEnumFilters(this, pEF, pBF)
-  {
-	if (DShowUtil::IsVideoRenderer(pBF))
-	{
-      //this->IsPinDirection
-      RemoveFilter(pBF);
-	}
-  }
-  EndEnumFilters
-  
-
-
-
-  CComPtr<IDsRenderer> pCAP;
-  CComPtr<IUnknown> pUnk;
-  CComPtr<IBaseFilter> ppBF;
-  CStdString __err;
-  if (DShowUtil::IsVistaOrAbove())
-    pCAP = new CEVRAllocatorPresenter(hr,g_hWnd,__err,g_Windowing.Get3DObject(),g_Windowing.Get3DDevice());
-  else 
-    pCAP = new CDX9AllocatorPresenter(hr,g_hWnd,__err,g_Windowing.Get3DObject(),g_Windowing.Get3DDevice());
-
-  CComPtr<IUnknown> pRenderer;
-  if(SUCCEEDED(hr = pCAP->CreateRenderer(&pRenderer)))
-  {
-    ppBF = CComQIPtr<IBaseFilter>(pRenderer).Detach();
-  }
-  if (DShowUtil::IsVistaOrAbove())
-    hr = ppBF->JoinFilterGraph(this,L"Xbmc EVR");
-  else
-    hr = ppBF->JoinFilterGraph(this,L"Xbmc VMR9 (Renderless)");
-  CComPtr<IBaseFilter> pBFFF;
-  BeginEnumFilters(this, pEF, pBFFF)
-  {
-    BeginEnumPins(pBFFF, pEP, pPin)
-    {
-      if(DShowUtil::GetPinName(pPin)[0] != '~' && S_OK == IsPinDirection(pPin, PINDIR_OUTPUT) && S_OK != IsPinConnected(pPin))
-      {
-        hr = ConnectFilter(pBFFF,NULL);
-      }
-    }
-    EndEnumPins
-  }
-  EndEnumFilters
-  //hr = ConnectFilter(ppBF,NULL);
-  return hr;
-}
 STDMETHODIMP CFGManager::EnumFilters(IEnumFilters** ppEnum)
 {
   CAutoLock cAutoLock(this);
@@ -475,52 +423,6 @@ STDMETHODIMP CFGManager::Render(IPin* pPinOut)
   /*CAutoLock cAutoLock(this);
 
   return RenderEx(pPinOut, 0, NULL);*/
-}
-
-STDMETHODIMP CFGManager::GetXbmcVideoDecFilter(IMPCVideoDecFilter** ppBF)
-{
-  CheckPointer(ppBF,E_POINTER);
-  IMPCVideoDecFilter* mpcvfilter;
-  *ppBF = NULL;
-  //Getting the mpc video dec filter.
-  //This filter interface is required to get the info for the current dxva rendering status
-  CLSID mpcvid;
-  BeginEnumFilters(this, pEF, pBF)
-  {
-    if (SUCCEEDED(pBF->GetClassID(&mpcvid)))
-    {
-    if (mpcvid == DShowUtil::GUIDFromCString("{008BAC12-FBAF-497B-9670-BC6F6FBAE2C4}"))
-      {
-        if ( SUCCEEDED(pBF->QueryInterface(__uuidof(IMPCVideoDecFilter),(void**) &mpcvfilter)))
-          *ppBF = mpcvfilter;
-      break;
-      }
-    }
-  }
-  EndEnumFilters
-}
-
-STDMETHODIMP CFGManager::GetFfdshowVideoDecFilter(IffdshowDecVideoA** ppBF)
-{
-  CheckPointer(ppBF,E_POINTER);
-  IffdshowDecVideoA* mpcvfilter;
-  *ppBF = NULL;
-  //Getting the mpc video dec filter.
-  //This filter interface is required to get the info for the current dxva rendering status
-  CLSID mpcvid;
-  BeginEnumFilters(this, pEF, pBF)
-  {
-    if (SUCCEEDED(pBF->GetClassID(&mpcvid)))
-    {
-    if (mpcvid == DShowUtil::GUIDFromCString("{04FE9017-F873-410E-871E-AB91661A4EF7}"))
-      {
-        if ( SUCCEEDED(pBF->QueryInterface(IID_IffdshowDecVideoA,(void**) &mpcvfilter)))
-          *ppBF = mpcvfilter;
-      break;
-      }
-    }
-  }
-  EndEnumFilters
 }
 
 STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
@@ -982,9 +884,9 @@ CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd)
 
   // Renderers
   if (DShowUtil::IsVistaOrAbove())
-    m_transform.AddTail(new CFGFilterVideoRenderer(m_hWnd, __uuidof(CEVRAllocatorPresenter), L"Xbmc EVR", m_vrmerit));
+    m_transform.AddTail(new CFGFilterVideoRenderer(__uuidof(CEVRAllocatorPresenter), L"Xbmc EVR", m_vrmerit));
   else
-    m_transform.AddTail(new CFGFilterVideoRenderer(m_hWnd, __uuidof(CDX9AllocatorPresenter), L"Xbmc VMR9 (Renderless)", m_vrmerit));
+    m_transform.AddTail(new CFGFilterVideoRenderer(__uuidof(CDX9AllocatorPresenter), L"Xbmc VMR9 (Renderless)", m_vrmerit));
   
 }
 

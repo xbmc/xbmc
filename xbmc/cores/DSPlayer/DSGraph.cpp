@@ -63,6 +63,8 @@ CDSGraph::CDSGraph() :
 
 CDSGraph::~CDSGraph()
 {
+  if (m_pGraphBuilder)
+    m_pGraphBuilder->RemoveFromROT();
   CloseFile();
   CoUninitialize();
 }
@@ -107,15 +109,20 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 void CDSGraph::CloseFile()
 {
   OnPlayStop();
-  m_pMediaControl.Release();
-  m_pMediaEvent.Release();
-  m_pMediaSeeking.Release();
-  m_pBasicAudio.Release();
-  if (m_pGraphBuilder)
+  //m_pMediaControl.Release();
+  //m_pMediaEvent.Release();
+  //m_pMediaSeeking.Release();
+  //m_pBasicAudio.Release();
+  
+  BeginEnumFilters(m_pGraphBuilder,pEF,pBF)
   {
-    m_pGraphBuilder->RemoveFromROT();
-    m_pGraphBuilder.Release();
+    m_pGraphBuilder->RemoveFilter(pBF);
   }
+  EndEnumFilters
+  
+  if (m_pGraphBuilder)
+    m_pGraphBuilder.Release();
+  
 }
 
 bool CDSGraph::InitializedOutputDevice()
@@ -380,6 +387,10 @@ void CDSGraph::SeekInMilliSec(double sec)
 {
   HRESULT hr;
   LONGLONG seekrequest,earliest,latest;
+  //Really need to verify those com interface before using them 
+  //even if the player finished playback those function can still be called
+  if ((!m_pMediaControl) || (!m_pMediaSeeking))
+    return;
   m_pMediaSeeking->GetAvailable(&earliest,&latest);
   hr = m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
 

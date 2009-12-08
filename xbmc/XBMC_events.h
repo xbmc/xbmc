@@ -241,7 +241,6 @@ typedef union XBMC_Event {
 #define ID_SEEK_FORWARDLARGE            901
 #define ID_SEEK_BACKWARDSMALL           902
 #define ID_SEEK_BACKWARDLARGE           903
-#define ID_SET_SPEEDRATE                904
 #define ID_PLAY_INCAUDDELAY             905
 #define ID_PLAY_DECAUDDELAY             906
 #define ID_VOLUME_UP                    907

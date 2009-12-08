@@ -315,13 +315,11 @@ public:
   }
 };
 
-CDX9AllocatorPresenter::CDX9AllocatorPresenter(HRESULT& hr, HWND wnd, CStdString &_Error,IDirect3D9* d3d, IDirect3DDevice9* d3dd)
+CDX9AllocatorPresenter::CDX9AllocatorPresenter(HRESULT& hr, CStdString &_Error)
 : m_refCount(1)
-, m_D3D(d3d)
-, m_D3DDev(d3dd)
-, m_window( wnd )
 {
-  
+  m_D3D = g_Windowing.Get3DObject();
+  m_D3DDev = g_Windowing.Get3DDevice();
   hr = S_OK;
   CAutoLock Lock(&m_ObjectLock);
   g_renderManager.PreInit();
@@ -646,10 +644,7 @@ ULONG CDX9AllocatorPresenter::Release()
 
 UINT CDX9AllocatorPresenter::GetAdapter(IDirect3D9* pD3D)
 {
-  if(m_window == NULL || pD3D == NULL)
-    return D3DADAPTER_DEFAULT;
-
-  HMONITOR hMonitor = MonitorFromWindow(m_window, MONITOR_DEFAULTTONEAREST);
+  HMONITOR hMonitor = MonitorFromWindow(g_hWnd, MONITOR_DEFAULTTONEAREST);
   if(hMonitor == NULL) return D3DADAPTER_DEFAULT;
 
   for(UINT adp = 0, num_adp = pD3D->GetAdapterCount(); adp < num_adp; ++adp)

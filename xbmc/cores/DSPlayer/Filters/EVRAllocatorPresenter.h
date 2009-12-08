@@ -46,7 +46,7 @@ class CEVRAllocatorPresenter : public IDsRenderer,
                                public CCritSec
 {
 public:
-  CEVRAllocatorPresenter(HRESULT& hr, HWND wnd, CStdString &_Error,IDirect3D9* d3d = NULL, IDirect3DDevice9* d3dd = NULL);
+  CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error);
   virtual ~CEVRAllocatorPresenter();
 
 //IDsRenderer
@@ -226,7 +226,6 @@ protected:
   CComPtr<IMFTransform> m_pMixer;
   CComPtr<IMediaEventSink> m_pSink;
   CComPtr<IMFClock> m_pClock;
-  HWND m_hWnd;
   UINT m_iResetToken;
 //Rendering function
   HRESULT RenderPresent(int surfaceIndex);

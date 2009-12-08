@@ -28,7 +28,7 @@ class CDX9AllocatorPresenter  : public  IDsRenderer,
 public:
   CCritSec        m_VMR9AlphaBitmapLock;
   void          UpdateAlphaBitmap();
-  CDX9AllocatorPresenter(HRESULT& hr, HWND wnd, CStdString &_Error, IDirect3D9* d3d = NULL, IDirect3DDevice9* d3dd = NULL);
+  CDX9AllocatorPresenter(HRESULT& hr, CStdString &_Error);
   virtual ~CDX9AllocatorPresenter();
 
   // IVMRSurfaceAllocator9

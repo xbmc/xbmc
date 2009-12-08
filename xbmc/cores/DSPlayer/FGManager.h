@@ -117,7 +117,6 @@ protected:
 	STDMETHODIMP FindInterface(REFIID iid, void** ppv, BOOL bRemove);
 	STDMETHODIMP AddToROT();
 	STDMETHODIMP RemoveFromROT();
-	STDMETHODIMP RemoveRenderer();
 
 	// IGraphBuilderDeadEnd
 

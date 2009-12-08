@@ -416,9 +416,8 @@ void CFGFilterFile::SetAutoLoad(bool autoload)
 // CFGFilterVideoRenderer
 //
 
-CFGFilterVideoRenderer::CFGFilterVideoRenderer(HWND hWnd, const CLSID& clsid, CStdStringW name, UINT64 merit) 
+CFGFilterVideoRenderer::CFGFilterVideoRenderer(const CLSID& clsid, CStdStringW name, UINT64 merit) 
   : CFGFilter(clsid, name, merit)
-  , m_hWnd(hWnd)
 {
   AddType(MEDIATYPE_Video, MEDIASUBTYPE_NULL);
 }
@@ -432,9 +431,9 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF, CInterfaceList<IUnkno
   CComPtr<IDsRenderer> pCAP;
   CStdString __err;
   if (m_clsid == __uuidof(CDX9AllocatorPresenter))
-    pCAP = new CDX9AllocatorPresenter(hr,m_hWnd,__err,g_Windowing.Get3DObject(),g_Windowing.Get3DDevice());
+    pCAP = new CDX9AllocatorPresenter(hr,__err);
   if (m_clsid == __uuidof(CEVRAllocatorPresenter))
-    pCAP = new CEVRAllocatorPresenter(hr,m_hWnd,__err,g_Windowing.Get3DObject(),g_Windowing.Get3DDevice());
+    pCAP = new CEVRAllocatorPresenter(hr,__err);
 
   if(pCAP == NULL)
     return E_FAIL;

@@ -117,11 +117,8 @@ public:
 
 class CFGFilterVideoRenderer : public CFGFilter
 {
-protected:
-	HWND m_hWnd;
-
 public:
-	CFGFilterVideoRenderer(HWND hWnd, const CLSID& clsid, CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE);
+	CFGFilterVideoRenderer(const CLSID& clsid, CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE);
 
 	HRESULT Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_IUnknown>& pUnks);
 };

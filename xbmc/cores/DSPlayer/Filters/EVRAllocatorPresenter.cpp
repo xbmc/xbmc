@@ -4,6 +4,7 @@
 #include "EVRAllocatorPresenter.h"
 #include "application.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "WindowingFactory.h" //d3d device and d3d interface
 #include "dshowutil/dshowutil.h"
 #include <mfapi.h>
 #include <mferror.h>
@@ -204,18 +205,16 @@ MFVideoArea MakeArea(float x, float y, DWORD width, DWORD height)
     return area;
 }
 
-CEVRAllocatorPresenter::CEVRAllocatorPresenter(HRESULT& hr, HWND wnd, CStdString &_Error,IDirect3D9* d3d, IDirect3DDevice9* d3dd):
-m_hWnd(wnd),
+CEVRAllocatorPresenter::CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error):
 m_refCount(1),
-m_D3D(d3d),
-m_D3DDev(d3dd),
 m_nUsedBuffer(0),
 m_bPendingResetDevice(0),
 m_nNbDXSurface(1),
 m_nCurSurface(0),
 m_rtTimePerFrame(0)
 {
-  
+  m_D3D = g_Windowing.Get3DObject();
+  m_D3DDev = g_Windowing.Get3DDevice();
   HMODULE    hLib;
   // Load EVR specifics DLLs
   hLib = LoadLibrary ("dxva2.dll");
@@ -250,7 +249,7 @@ m_rtTimePerFrame(0)
   if (SUCCEEDED(pfDXVA2CreateDirect3DDeviceManager9(&m_iResetToken,&m_pDeviceManager)))
   {
   CLog::Log(LOGNOTICE,"Sucess to create DXVA2CreateDirect3DDeviceManager9");
-    hr = m_pDeviceManager->ResetDevice(d3dd, m_iResetToken);
+    hr = m_pDeviceManager->ResetDevice(m_D3DDev, m_iResetToken);
   }
   CComPtr<IDirectXVideoDecoderService>  pDecoderService;
   HANDLE              hDevice;
@@ -315,10 +314,7 @@ void CEVRAllocatorPresenter::ResetStats()
 
 UINT CEVRAllocatorPresenter::GetAdapter(IDirect3D9* pD3D)
 {
-	if(m_hWnd == NULL || pD3D == NULL)
-		return D3DADAPTER_DEFAULT;
-
-	HMONITOR hMonitor = MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTONEAREST);
+  HMONITOR hMonitor = MonitorFromWindow(g_hWnd, MONITOR_DEFAULTTONEAREST);
 	if(hMonitor == NULL) return D3DADAPTER_DEFAULT;
 
 	for(UINT adp = 0, num_adp = pD3D->GetAdapterCount(); adp < num_adp; ++adp)
