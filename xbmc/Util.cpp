@@ -2511,31 +2511,31 @@ void CUtil::RemoveIllegalChars( CStdString& strText)
 {
   char szRemoveIllegal [1024];
   strcpy(szRemoveIllegal , strText.c_str());
-  static char legalChars[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~._s-S+önøTFtaúO-ñánd8fGpæe==(=)~ú";
+  static char legalChars[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.ßåÄäÖöüøéèçàùêÂñáïëìíâãæîğòôóõ÷ú";
   
   char *cursor;
   for (cursor = szRemoveIllegal; *(cursor += strspn(cursor, legalChars)); /**/ )
   {
     // Convert FatX illegal characters, if possible, to the closest "looking" character:
-    if (strchr("--+-++", (int) *cursor)) *cursor = 'A';
+    if (strchr("ÂÁÀÄÃÅ", (int) *cursor)) *cursor = 'A';
     else
-    if (strchr("GáaSps", (int) *cursor)) *cursor = 'a';
+    if (strchr("âáàäãå", (int) *cursor)) *cursor = 'a';
     else
-    if (strchr("++-++", (int) *cursor)) *cursor = 'O';
+    if (strchr("ÔÓÒÖÕ", (int) *cursor)) *cursor = 'O';
     else
-    if (strchr("(==ö)", (int) *cursor)) *cursor = 'o';
+    if (strchr("ôóòöõ", (int) *cursor)) *cursor = 'o';
     else
-    if (strchr("İ++_", (int) *cursor)) *cursor = 'U';
+    if (strchr("ÛÚÙÜ", (int) *cursor)) *cursor = 'U';
     else
-    if (strchr("vúúnİ", (int) *cursor)) *cursor = 'u';
+    if (strchr("ûúùüµ", (int) *cursor)) *cursor = 'u';
     else
-    if (strchr("-++-", (int) *cursor)) *cursor = 'E';
+    if (strchr("ÊÉÈË", (int) *cursor)) *cursor = 'E';
     else
-    if (strchr("OTFd", (int) *cursor)) *cursor = 'e';
+    if (strchr("êéèë", (int) *cursor)) *cursor = 'e';
     else
-    if (strchr("+-İ-", (int) *cursor)) *cursor = 'I';
+    if (strchr("ÎÍÌÏ", (int) *cursor)) *cursor = 'I';
     else
-    if (strchr("e8fn", (int) *cursor)) *cursor = 'i';
+    if (strchr("îìíï", (int) *cursor)) *cursor = 'i';
     else
     *cursor = '_';
   }

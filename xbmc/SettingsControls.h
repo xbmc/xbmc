@@ -39,9 +39,27 @@ public:
   CSetting* GetSetting() { return m_pSetting; };
   virtual bool NeedsUpdate() { return false; };   ///< Returns true if the control needs an update
   virtual void Reset() {}; ///< Resets the NeedsUpdate() state
+  
+  /*!
+   \brief Specifies that this setting should update after a delay
+   Useful for settings that have options to navigate through
+   and may take a while, or require additional input to update
+   once the final setting is chosen.  Settings default to updating
+   instantly.
+   \sa IsDelayed()
+   */
+  void SetDelayed() { m_delayed = true; };
+  
+  /*!
+   \brief Returns whether this setting should have delayed update
+   \return true if the setting's update should be delayed
+   \sa SetDelayed()
+   */
+  bool IsDelayed() const { return m_delayed; };
 protected:
   int m_id;
   CSetting* m_pSetting;
+  bool m_delayed;
 };
 
 class CRadioButtonSettingControl : public CBaseSettingControl

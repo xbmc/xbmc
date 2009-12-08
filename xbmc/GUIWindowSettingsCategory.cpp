@@ -123,6 +123,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_iControlBeforeJump=-1;
   m_iWindowBeforeJump=WINDOW_INVALID;
   m_returningFromSkinLoad = false;
+  m_delayedSetting = NULL;
 }
 
 CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
@@ -177,7 +178,8 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < (int)(CONTROL_START_BUTTONS + m_vecSections.size()) &&
           focusedControl - CONTROL_START_BUTTONS != m_iSection)
       {
-        // changing section, check for updates
+        // changing section, check for updates and cancel any delayed changes
+        m_delayedSetting = NULL;
         CheckForUpdates();
 
         if (m_vecSections[focusedControl-CONTROL_START_BUTTONS]->m_strCategory == "masterlock")
@@ -284,6 +286,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
+      m_delayedSetting = NULL;
       if (message.GetParam1() != WINDOW_INVALID && !m_returningFromSkinLoad)
       { // coming to this window first time (ie not returning back from some other window)
         // so we reset our section and control states
@@ -295,8 +298,17 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       return CGUIWindow::OnMessage(message);
     }
     break;
+  case GUI_MSG_UPDATE_ITEM:
+    if (m_delayedSetting)
+    {
+      OnSettingChanged(m_delayedSetting);
+      m_delayedSetting = NULL;
+      return true;
+    }
+    break;
   case GUI_MSG_WINDOW_DEINIT:
     {
+      m_delayedSetting = NULL;
       // Hardware based stuff
       // TODO: This should be done in a completely separate screen
       // to give warning to the user that it writes to the EEPROM.
@@ -579,14 +591,12 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("services.webserverusername"))
     {
-#ifdef HAS_WEB_SERVER
       // get password from the webserver if it's running (and update our settings)
       if (g_application.m_pWebServer)
       {
         ((CSettingString *)GetSetting(strSetting)->GetSetting())->SetData(g_application.m_pWebServer->GetUserName());
         g_settings.Save();
       }
-#endif
     }
     else if (strSetting.Equals("services.webserverpassword"))
     {
@@ -597,6 +607,16 @@ void CGUIWindowSettingsCategory::CreateSettings()
         g_settings.Save();
       }
     }
+    else if (strSetting.Equals("services.webserverport"))
+    {
+      CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+      control->SetDelayed();
+    }
+    else if (strSetting.Equals("services.esport"))
+    {
+      CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+      control->SetDelayed();
+    }
     else if (strSetting.Equals("network.assignment"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -605,6 +625,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(716), NETWORK_DHCP);
       pControl->AddLabel(g_localizeStrings.Get(717), NETWORK_STATIC);
       pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("network.httpproxyport"))
+    {
+      CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+      control->SetDelayed();
     }
     else if (strSetting.Equals("subtitles.style"))
     {
@@ -1149,11 +1174,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videolibrary.enabled"));
     }
-    else if (strSetting.Equals("lookandfeel.rssfeedsrtl"))
-    { // only visible if rss is enabled
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
-    }
   }
 }
 
@@ -1231,10 +1251,17 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   if (!pSettingControl->OnClick())
   {
     UpdateSettings();
-    return;
+    if (!pSettingControl->IsDelayed())
+      return;
   }
 
-  OnSettingChanged(pSettingControl);
+  if (pSettingControl->IsDelayed())
+  { // delayed setting
+    m_delayedSetting = pSettingControl;
+    m_delayedTimer.StartZero();
+  }
+  else
+    OnSettingChanged(pSettingControl);
 }
 
 void CGUIWindowSettingsCategory::CheckForUpdates()
@@ -2171,6 +2198,15 @@ void CGUIWindowSettingsCategory::Render()
 {
   // update realtime changeable stuff
   UpdateRealTimeSettings();
+
+  if (m_delayedSetting && m_delayedTimer.GetElapsedMilliseconds() > 3000)
+  { // we send a thread message so that it's processed the following frame (some settings won't
+    // like being changed during Render())
+    CGUIMessage message(GUI_MSG_UPDATE_ITEM, GetID(), GetID());
+    g_windowManager.SendThreadMessage(message, GetID());
+    m_delayedTimer.Stop();
+  }
+
   // update alpha status of current button
   bool bAlphaFaded = false;
   CGUIControl *control = GetFirstFocusableControl(CONTROL_START_BUTTONS + m_iSection);

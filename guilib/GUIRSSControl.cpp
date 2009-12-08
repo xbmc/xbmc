@@ -41,12 +41,8 @@ CGUIRSSControl::CGUIRSSControl(int parentID, int controlID, float posX, float po
   m_strRSSTags = strRSSTags;
 
   m_pReader = NULL;
+  m_rtl = false;
   ControlType = GUICONTROL_RSS;
-
-  if (g_guiSettings.GetBool("lookandfeel.rssfeedsrtl"))
-  {
-    m_scrollInfo.SetSpeed(-60);
-  }
 }
 
 CGUIRSSControl::CGUIRSSControl(const CGUIRSSControl &from)
@@ -68,9 +64,14 @@ CGUIRSSControl::~CGUIRSSControl(void)
   m_pReader = NULL;
 }
 
-void CGUIRSSControl::SetUrls(const vector<string> &vecUrl)
+void CGUIRSSControl::SetUrls(const vector<string> &vecUrl, bool rtl)
 {
   m_vecUrls = vecUrl;
+  m_rtl = rtl;
+  if (m_scrollInfo.pixelSpeed > 0 && rtl)
+    m_scrollInfo.pixelSpeed *= -1;
+  else if (m_scrollInfo.pixelSpeed < 0 && !rtl)
+    m_scrollInfo.pixelSpeed *= -1;
 }
 
 void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
@@ -110,7 +111,7 @@ void CGUIRSSControl::Render()
         }
         // use half the width of the control as spacing between feeds, and double this between feed sets
         float spaceWidth = (m_label.font) ? m_label.font->GetCharWidth(L' ') : 15;
-        m_pReader->Create(this, m_vecUrls, m_vecIntervals, (int)(0.5f*GetWidth() / spaceWidth) + 1);
+        m_pReader->Create(this, m_vecUrls, m_vecIntervals, (int)(0.5f*GetWidth() / spaceWidth) + 1, m_rtl);
       }
     }
 

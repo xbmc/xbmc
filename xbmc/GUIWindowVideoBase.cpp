@@ -933,7 +933,7 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 
 bool CGUIWindowVideoBase::OnClick(int iItem)
 {
-  if (g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_NO)
+  if (g_guiSettings.GetInt("videoplayer.resumeautomatically") != RESUME_NO)
     OnResumeItem(iItem);
   else
     return CGUIMediaWindow::OnClick(iItem);
@@ -950,7 +950,7 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem)
 bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
 {
   // we always resume the movie if the user doesn't want us to ask
-  bool resumeItem = g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_ASK;
+  bool resumeItem = g_guiSettings.GetInt("videoplayer.resumeautomatically") != RESUME_ASK;
 
   if (!item.m_bIsFolder && !item.IsLiveTV() && !resumeItem)
   {
@@ -1064,9 +1064,9 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       // check to see if the Resume Video button is applicable
       if (GetResumeItemOffset(item.get()) > 0)
       {
-        if (g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_YES)
+        if (g_guiSettings.GetInt("videoplayer.resumeautomatically") == RESUME_YES)
           buttons.Add(CONTEXT_BUTTON_RESTART_ITEM, 20132);    // Restart Video
-        if (g_guiSettings.GetInt("myvideos.resumeautomatically") == RESUME_NO)
+        if (g_guiSettings.GetInt("videoplayer.resumeautomatically") == RESUME_NO)
           buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 13381);     // Resume Video
       }
       if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())

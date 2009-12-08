@@ -2176,8 +2176,8 @@ void CSettings::LoadRSSFeeds()
     int iId;
     if (pSet->QueryIntAttribute("id", &iId) == TIXML_SUCCESS)
     {
-      vector<string> vecSet;
-      vector<int> vecIntervals;
+      RssSet set;
+      set.rtl = pSet->Attribute("rtl") && stricmp(pSet->Attribute("rtl"),"true")==0;
       TiXmlElement* pFeed = pSet->FirstChildElement("feed");
       while (pFeed)
       {
@@ -2192,12 +2192,12 @@ void CSettings::LoadRSSFeeds()
           // TODO: UTF-8: Do these URLs need to be converted to UTF-8?
           //              What about the xml encoding?
           CStdString strUrl = pFeed->FirstChild()->Value();
-          vecSet.push_back(strUrl);
-          vecIntervals.push_back(iInterval);
+          set.url.push_back(strUrl);
+          set.interval.push_back(iInterval);
         }
         pFeed = pFeed->NextSiblingElement("feed");
       }
-      g_settings.m_mapRssUrls.insert(make_pair(iId,make_pair(vecIntervals,vecSet)));
+      g_settings.m_mapRssUrls.insert(make_pair(iId,set));
     }
     else
       CLog::Log(LOGERROR,"found rss url set with no id in RssFeeds.xml, ignored");

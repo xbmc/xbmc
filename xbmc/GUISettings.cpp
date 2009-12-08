@@ -533,7 +533,6 @@ void CGUISettings::Initialize()
   AddSeparator(8, "lookandfeel.sep2");
   AddBool(9, "lookandfeel.enablerssfeeds",13305,  true);
   AddString(10, "lookandfeel.rssedit", 21435, "", BUTTON_CONTROL_STANDARD);
-  AddBool(11, "lookandfeel.rssfeedsrtl",13412,  false);
   AddSeparator(14, "lookandfeel.sep3");
   AddBool(15, "lookandfeel.enablemouse", 21369, false);
 

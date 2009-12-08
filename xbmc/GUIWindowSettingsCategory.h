@@ -24,6 +24,7 @@
 #include "GUIWindow.h"
 #include "SettingsControls.h"
 #include "Settings.h"
+#include "utils/Stopwatch.h"
 
 class CGUIWindowSettingsCategory :
       public CGUIWindow
@@ -118,4 +119,7 @@ protected:
   int m_iWindowBeforeJump;
 
   bool m_returningFromSkinLoad; // true if we are returning from loading the skin
+
+  CBaseSettingControl *m_delayedSetting; ///< Current delayed setting \sa CBaseSettingControl::SetDelayed()
+  CStopWatch           m_delayedTimer;   ///< Delayed setting timer
 };
