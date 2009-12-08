@@ -498,7 +498,7 @@ void CTransferSocket::OnReceive(int nErrorCode)
 			ASSERT(m_Filename!="");
 #if defined(_XBOX)
       // this to handle fat-x limitations
-      if (g_guiSettings.GetBool("servers.ftpautofatx"))
+      if (g_guiSettings.GetBool("services.ftpautofatx"))
       {
         /*CUtil::ShortenFileName(m_Filename); // change! addme to new ports
         CStdString strFilename = CUtil::GetFileName(m_Filename);

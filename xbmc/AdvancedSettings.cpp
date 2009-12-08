@@ -402,7 +402,7 @@ bool CAdvancedSettings::Load()
   if (XMLUtils::GetInt(pRootElement, "loglevel", m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
   { // read the loglevel setting, so set the setting advanced to hide it in GUI
     // as altering it will do nothing - we don't write to advancedsettings.xml
-    CSetting *setting = g_guiSettings.GetSetting("system.debuglogging");
+    CSetting *setting = g_guiSettings.GetSetting("debug.showloginfo");
     if (setting)
       setting->SetAdvanced();
   }

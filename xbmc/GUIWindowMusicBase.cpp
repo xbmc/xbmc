@@ -148,7 +148,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         return false;
 
       // save current window, unless the current window is the music playlist window
-      if (GetID() != WINDOW_MUSIC_PLAYLIST && 
+      if (GetID() != WINDOW_MUSIC_PLAYLIST &&
           g_stSettings.m_iMyMusicStartWindow != GetID())
       {
         g_stSettings.m_iMyMusicStartWindow = GetID();
@@ -808,11 +808,11 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
       if (m_dlgProgress && allowSelection != SELECTION_AUTO)
       {
         if (!CGUIDialogKeyboard::ShowAndGetInput(strTempAlbum, g_localizeStrings.Get(16011), false))
-    return false;
+          return false;
 
         if (!CGUIDialogKeyboard::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
           return false;
-  }
+      }
       else
         needsRefresh = false;
     }
@@ -856,8 +856,8 @@ bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArti
       if (m_dlgProgress && allowSelection != SELECTION_AUTO)
       {
         if (!CGUIDialogKeyboard::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
-    return false;
-  }
+          return false;
+      }
       else
         needsRefresh = false;
     }
@@ -991,7 +991,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_STOP_SCANNING:
-    { 
+    {
       CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
       if (scanner)
         scanner->StopScanning();
@@ -1386,5 +1386,6 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
   if (!items.m_strPath.Equals("plugin://music/"))
     items.SetCachedMusicThumbs();
 }
+
 
 

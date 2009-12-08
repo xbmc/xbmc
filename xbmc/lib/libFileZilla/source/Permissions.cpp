@@ -509,7 +509,7 @@ int CPermissions::GetDirName(LPCTSTR user, CStdString dirname, CStdString curren
       if(pos<0) pos = dirname.size();
       CStdString tmp = dirname.Left(pos);
 
-      if (g_guiSettings.GetBool("servers.ftpautofatx"))
+      if (g_guiSettings.GetBool("services.ftpautofatx"))
 			{
         if(tmp.length() > 42)
           tmp = tmp.Left(42);

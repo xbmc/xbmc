@@ -100,6 +100,8 @@ using namespace DIRECTORY;
 
 #define PREDEFINED_SCREENSAVERS          5
 
+#define RSSEDITOR_PATH "special://home/scripts/RSS Editor/default.py"
+
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
     : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml")
 {
@@ -381,14 +383,14 @@ void CGUIWindowSettingsCategory::SetupControls()
   int j=0;
   for (unsigned int i = 0; i < m_vecSections.size(); i++)
   {
-    if (m_vecSections[i]->m_dwLabelID == 12360 && g_settings.m_iLastLoadedProfileIndex != 0)
+    if (m_vecSections[i]->m_labelID == 12360 && g_settings.m_iLastLoadedProfileIndex != 0)
       continue;
     CGUIButtonControl *pButton = NULL;
     if (m_pOriginalCategoryButton->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON)
       pButton = new CGUIToggleButtonControl(*(CGUIToggleButtonControl *)m_pOriginalCategoryButton);
     else
       pButton = new CGUIButtonControl(*m_pOriginalCategoryButton);
-    pButton->SetLabel(g_localizeStrings.Get(m_vecSections[i]->m_dwLabelID));
+    pButton->SetLabel(g_localizeStrings.Get(m_vecSections[i]->m_labelID));
     pButton->SetID(CONTROL_START_BUTTONS + j);
     pButton->SetVisible(true);
     pButton->AllocResources();
@@ -552,7 +554,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("system.fanspeed") || strSetting.Equals("system.minfanspeed")) 
+    else if (strSetting.Equals("system.fanspeed") || strSetting.Equals("system.minfanspeed"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -575,7 +577,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(476), SPIN_DOWN_BOTH);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("servers.webserverusername"))
+    else if (strSetting.Equals("services.webserverusername"))
     {
 #ifdef HAS_WEB_SERVER
       // get password from the webserver if it's running (and update our settings)
@@ -586,8 +588,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
 #endif
     }
-    else if (strSetting.Equals("servers.webserverpassword"))
-    { // get password from the webserver if it's running (and update our settings)
+    else if (strSetting.Equals("services.webserverpassword"))
+    {
+      // get password from the webserver if it's running (and update our settings)
       if (g_application.m_pWebServer)
       {
         ((CSettingString *)GetSetting(strSetting)->GetSetting())->SetData(g_application.m_pWebServer->GetPassword());
@@ -741,7 +744,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInStartupWindow(pSetting);
     }
-    else if (strSetting.Equals("servers.ftpserveruser"))
+    else if (strSetting.Equals("services.ftpserveruser"))
     {
       FillInFTPServerUser(pSetting);
     }
@@ -753,7 +756,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
         g_guiSettings.SetString("autodetect.nickname", strXboxNickNameOut.c_str());
 #endif
     }
-    else if (strSetting.Equals("videoplayer.externaldvdplayer"))
+    else if (strSetting.Equals("dvds.externaldvdplayer"))
     {
       CSettingString *pSettingString = (CSettingString *)pSetting;
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
@@ -764,7 +767,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInRegions(pSetting);
     }
-    else if (strSetting.Equals("myvideos.resumeautomatically"))
+    else if (strSetting.Equals("videoplayer.resumeautomatically"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -795,7 +798,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked() || g_passwordManager.bMasterUser);
     }
-    else if (strSetting.Equals("filelists.disableaddsourcebuttons"))
+    else if (strSetting.Equals("filelists.showaddsourcebuttons"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser);
@@ -810,11 +813,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE);
     }
-    else if (!strSetting.Equals("remoteevents.enabled")
-             && strSetting.Left(13).Equals("remoteevents."))
+    else if (!strSetting.Equals("services.esenabled")
+             && strSetting.Left(11).Equals("services.es"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("remoteevents.enabled"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("services.esenabled"));
     }
     else if (strSetting.Equals("audiocds.quality"))
     { // only visible if we are doing non-WAV ripping
@@ -870,30 +873,30 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("harddisk.remoteplayspindown") != SPIN_DOWN_NONE);
     }
-    else if (strSetting.Equals("servers.ftpserveruser") || strSetting.Equals("servers.ftpserverpassword") || strSetting.Equals("servers.ftpautofatx"))
+    else if (strSetting.Equals("services.ftpserveruser") || strSetting.Equals("services.ftpserverpassword") || strSetting.Equals("services.ftpautofatx"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(g_guiSettings.GetBool("servers.ftpserver"));
+      pControl->SetEnabled(g_guiSettings.GetBool("services.ftpserver"));
     }
-    else if (strSetting.Equals("servers.webserverusername"))
+    else if (strSetting.Equals("services.webserverusername"))
     {
       CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
       if (pControl)
-        pControl->SetEnabled(g_guiSettings.GetBool("servers.webserver"));
+        pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
     }
-    else if (strSetting.Equals("servers.webserverpassword"))
+    else if (strSetting.Equals("services.webserverpassword"))
     { // Fill in a blank pass if we don't have it
       CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
       if (((CSettingString *)pSettingControl->GetSetting())->GetData().size() == 0 && pControl)
       {
         pControl->SetLabel2(g_localizeStrings.Get(734));
-        pControl->SetEnabled(g_guiSettings.GetBool("servers.webserver"));
+        pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
       }
     }
-    else if (strSetting.Equals("servers.webserverport"))
+    else if (strSetting.Equals("services.webserverport"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("servers.webserver"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
     }
     else if (strSetting.Equals("network.ipaddress") || strSetting.Equals("network.subnet") || strSetting.Equals("network.gateway") || strSetting.Equals("network.dns"))
     {
@@ -988,7 +991,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "SlideShow" ||
                            g_guiSettings.GetString("screensaver.mode") == "Fanart Slideshow");
     }
-    else if (strSetting.Equals("screensaver.preview")           || 
+    else if (strSetting.Equals("screensaver.preview")           ||
              strSetting.Equals("screensaver.usedimonpause")     ||
              strSetting.Equals("screensaver.usemusicvisinstead"))
     {
@@ -1066,16 +1069,21 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("autodetect.onoff"));
     }
-    else if (strSetting.Equals("videoplayer.externaldvdplayer"))
+    else if (strSetting.Equals("dvds.externaldvdplayer"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.useexternaldvdplayer"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("dvds.useexternaldvdplayer"));
     }
-    else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("pictures.screenshotpath"))
+    else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("debug.screenshotpath"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl && g_guiSettings.GetString(strSetting, false).IsEmpty())
         pControl->SetLabel2("");
+    }
+    else if (strSetting.Equals("lookandfeel.rssedit"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      pControl->SetEnabled(XFILE::CFile::Exists(RSSEDITOR_PATH) && g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
     else if (strSetting.Equals("myprograms.dashboard"))
     {
@@ -1084,13 +1092,18 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("lcd.enableonpaused"))
     {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.disableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
+    }
+    else if (strSetting.Equals("musiclibrary.scrapersettings"))
+    {
       CScraperParser parser;
       bool enabled=false;
       if (parser.Load("special://xbmc/system/scrapers/music/"+g_guiSettings.GetString("musiclibrary.scraper")))
         enabled = parser.HasFunction("GetSettings");
 
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.disableonplayback") != LED_PLAYBACK_OFF && g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
+      if (pControl) pControl->SetEnabled(enabled);
     }
     else if (strSetting.Equals("system.ledenableonpaused"))
     {
@@ -1107,7 +1120,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("lcd.contrast"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      // X3 can't controll the Contrast via software graying out!
+      // X3 can't control the contrast via software graying out!
       if(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE)
       {
         if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.modchip") != MODCHIP_XECUTER3);
@@ -1117,44 +1130,29 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         if (pControl) pControl->SetEnabled(false); 
       }
     }
-    else if (strSetting.Equals("lookandfeel.rssedit"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(XFILE::CFile::Exists("special://home/scripts/RssTicker/default.py"));
-    }
-    else if (strSetting.Equals("musiclibrary.scrapersettings"))
-    {
-      CScraperParser parser;
-      bool enabled=false;
-      if (parser.Load("special://xbmc/system/scrapers/music/"+g_guiSettings.GetString("musiclibrary.defaultscraper")))
-        enabled = parser.HasFunction("GetSettings");
-
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(enabled);
-    }
-    else if (!strSetting.Equals("musiclibrary.enabled") 
-      && strSetting.Left(13).Equals("musiclibrary.")) 
-    { 
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID()); 
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("musiclibrary.enabled")); 
-    } 
-    else if (!strSetting.Equals("videolibrary.enabled") 
-      && strSetting.Left(13).Equals("videolibrary.")) 
-    { 
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID()); 
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videolibrary.enabled"));
-    }     
-    else if (strSetting.Equals("lookandfeel.rssfeedsrtl"))
-    { // only visible if rss is enabled
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
-    }
     else if (strSetting.Equals("weather.pluginsettings"))
     {
       // Create our base path
       CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin");
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(!g_guiSettings.GetString("weather.plugin").IsEmpty() && CScriptSettings::SettingsExist(basepath));
+    }
+    else if (!strSetting.Equals("musiclibrary.enabled")
+      && strSetting.Left(13).Equals("musiclibrary."))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("musiclibrary.enabled"));
+    }
+    else if (!strSetting.Equals("videolibrary.enabled")
+      && strSetting.Left(13).Equals("videolibrary."))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videolibrary.enabled"));
+    }
+    else if (strSetting.Equals("lookandfeel.rssfeedsrtl"))
+    { // only visible if rss is enabled
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
   }
 }
@@ -1213,7 +1211,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_weatherManager.ResetTimer();
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
-    CUtil::ExecBuiltIn("RunScript(special://home/scripts/RssTicker/default.py)");
+    CUtil::ExecBuiltIn("RunScript("RSSEDITOR_PATH")");
   else if (strSetting.Equals("musiclibrary.scrapersettings"))
   {
     CMusicDatabase database;
@@ -1266,14 +1264,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     else
       pSettingString->SetData(pControl->GetCurrentLabel() + ".vis");
   }
-  else if (strSetting.Equals("system.debuglogging"))
+  else if (strSetting.Equals("debug.showloginfo"))
   {
-    if (g_guiSettings.GetBool("system.debuglogging") && g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_FREEMEM)
+    if (g_guiSettings.GetBool("debug.showloginfo") && g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_FREEMEM)
     {
       g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
       CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting");
     }
-    else if (!g_guiSettings.GetBool("system.debuglogging") && g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_FREEMEM)
+    else if (!g_guiSettings.GetBool("debug.showloginfo") && g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_FREEMEM)
     {
       CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting");
       g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
@@ -1456,13 +1454,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       CLibrefmScrobbler::GetInstance()->Term();
     }
   }
-  else if (strSetting.Equals("musicplayer.outputtoallspeakers")) 
-  { 
-    if (!g_application.IsPlaying()) 
-    { 
+  else if (strSetting.Equals("musicplayer.outputtoallspeakers"))
+  {
+    if (!g_application.IsPlaying())
+    {
       g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
     }
-  } 
+  }
   else if (strSetting.Left(22).Equals("MusicPlayer.ReplayGain"))
   { // Update our replaygain settings
     g_guiSettings.m_replayGain.iType = g_guiSettings.GetInt("musicplayer.replaygaintype");
@@ -1573,26 +1571,26 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CUtil::SetXBOXNickName(strXboxNickNameIn, strXboxNickNameIn);
   }
 #endif
-  else if (strSetting.Equals("servers.ftpserver"))
+  else if (strSetting.Equals("services.ftpserver"))
   {
     g_application.StopFtpServer();
-    if (g_guiSettings.GetBool("servers.ftpserver"))
+    if (g_guiSettings.GetBool("services.ftpserver"))
       g_application.StartFtpServer();
   }
-  else if (strSetting.Equals("servers.ftpserverpassword"))
+  else if (strSetting.Equals("services.ftpserverpassword"))
   {
    SetFTPServerUserPass();
   }
-  else if (strSetting.Equals("servers.ftpserveruser"))
+  else if (strSetting.Equals("services.ftpserveruser"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    g_guiSettings.SetString("servers.ftpserveruser", pControl->GetCurrentLabel());
+    g_guiSettings.SetString("services.ftpserveruser", pControl->GetCurrentLabel());
   }
 
-  else if ( strSetting.Equals("servers.webserver") || strSetting.Equals("servers.webserverport") || 
-            strSetting.Equals("servers.webserverusername") || strSetting.Equals("servers.webserverpassword"))
+  else if ( strSetting.Equals("services.webserver") || strSetting.Equals("services.webserverport") || 
+            strSetting.Equals("services.webserverusername") || strSetting.Equals("services.webserverpassword"))
   {
-    if (strSetting.Equals("servers.webserverport"))
+    if (strSetting.Equals("services.webserverport"))
     {
       CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
       // check that it's a valid port
@@ -1601,14 +1599,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
         pSetting->SetData("80");
     }
     g_application.StopWebServer();
-    if (g_guiSettings.GetBool("servers.webserver"))
+    if (g_guiSettings.GetBool("services.webserver"))
     {
       g_application.StartWebServer();
       if (g_application.m_pWebServer) {
-        if (strSetting.Equals("servers.webserverusername"))
-          g_application.m_pWebServer->SetUserName(g_guiSettings.GetString("servers.webserverusername").c_str());
+        if (strSetting.Equals("services.webserverusername"))
+          g_application.m_pWebServer->SetUserName(g_guiSettings.GetString("services.webserverusername").c_str());
         else
-          g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
+          g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("services.webserverpassword").c_str());
       }
     }
   }
@@ -1638,7 +1636,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   { // activate the video calibration screen
     g_windowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
   }
-  else if (strSetting.Equals("videoplayer.externaldvdplayer"))
+  else if (strSetting.Equals("dvds.externaldvdplayer"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = pSettingString->GetData();
@@ -1870,7 +1868,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     else if (iValue == 3)
       strScreenSaver = "SlideShow"; // PictureSlideShow
     else if (iValue == 4)
-      strScreenSaver = "Fanart Slideshow"; //Fanart Slideshow 
+      strScreenSaver = "Fanart Slideshow"; //Fanart Slideshow
     else
       strScreenSaver = pControl->GetCurrentLabel() + ".xbs";
     pSettingString->SetData(strScreenSaver);
@@ -1897,7 +1895,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
-  else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("pictures.screenshotpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath"))
+  else if (strSetting.Equals("myprograms.trainerpath") || strSetting.Equals("debug.screenshotpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = g_guiSettings.GetString(strSetting,false);
@@ -1997,70 +1995,61 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_applicationMessenger.RestartApp();
     }
   }
-  else if (strSetting.Equals("upnp.client"))
+  else if (strSetting.Equals("services.upnpserver"))
   {
 #ifdef HAS_UPNP
-    if (g_guiSettings.GetBool("upnp.client"))
-      g_application.StartUPnPClient();
-    else
-      g_application.StopUPnPClient();
-#endif
-  }
-  else if (strSetting.Equals("upnp.server"))
-  {
-#ifdef HAS_UPNP
-    if (g_guiSettings.GetBool("upnp.server"))
+    if (g_guiSettings.GetBool("services.upnpserver"))
       g_application.StartUPnPServer();
     else
       g_application.StopUPnPServer();
 #endif
   }
-  else if (strSetting.Equals("upnp.renderer"))
+  else if (strSetting.Equals("services.upnprenderer"))
   {
 #ifdef HAS_UPNP
-    if (g_guiSettings.GetBool("upnp.renderer"))
+    if (g_guiSettings.GetBool("services.upnprenderer"))
       g_application.StartUPnPRenderer();
     else
       g_application.StopUPnPRenderer();
 #endif
   }
-  else if (strSetting.Equals("remoteevents.enabled"))
+  else if (strSetting.Equals("services.esenabled"))
   {
 #ifdef HAS_EVENT_SERVER
-    if (g_guiSettings.GetBool("remoteevents.enabled"))
+    if (g_guiSettings.GetBool("services.esenabled"))
       g_application.StartEventServer();
     else
     {
       if (!g_application.StopEventServer(true))
       {
-        g_guiSettings.SetBool("remoteevents.enabled", true);
+        g_guiSettings.SetBool("services.esenabled", true);
         CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
         if (pControl) pControl->SetEnabled(true);
       }
     }
 #endif
   }
-  else if (strSetting.Equals("remoteevents.allinterfaces"))
+  else if (strSetting.Equals("services.esallinterfaces"))
   {
 #ifdef HAS_EVENT_SERVER
-    if (g_guiSettings.GetBool("remoteevents.enabled"))
+    if (g_guiSettings.GetBool("services.esenabled"))
     {
       if (g_application.StopEventServer(true))
         g_application.StartEventServer();
       else
       {
-        g_guiSettings.SetBool("remoteevents.enabled", true);
+        g_guiSettings.SetBool("services.esenabled", true);
         CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
         if (pControl) pControl->SetEnabled(true);
       }
     }
 #endif
   }
-  else if (strSetting.Equals("remoteevents.initialdelay") || 
-           strSetting.Equals("remoteevents.continuousdelay"))    
+  else if (strSetting.Equals("services.esinitialdelay") || 
+           strSetting.Equals("services.escontinuousdelay"))    
   {
 #ifdef HAS_EVENT_SERVER
-    if (g_guiSettings.GetBool("remoteevents.enabled"))
+    if (g_guiSettings.GetBool("services.esenabled"))
     {
       g_application.RefreshEventServer();
     }
@@ -2505,8 +2494,7 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
   int iCurrentSoundSkin = 0;
   int iSoundSkin = 0;
   vector<CStdString> vecSoundSkins;
-  int i;
-  for (i = 0; i < items.Size(); ++i)
+  for (int i = 0; i < items.Size(); ++i)
   {
     CFileItemPtr pItem = items[i];
     if (pItem->m_bIsFolder)
@@ -2525,7 +2513,7 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
     iCurrentSoundSkin=1;
 
   sort(vecSoundSkins.begin(), vecSoundSkins.end(), sortstringbyname());
-  for (i = 0; i < (int) vecSoundSkins.size(); ++i)
+  for (int i = 0; i < (int) vecSoundSkins.size(); ++i)
   {
     CStdString strSkin = vecSoundSkins[i];
     if (strcmpi(strSkin.c_str(), g_guiSettings.GetString("lookandfeel.soundskin").c_str()) == 0)
@@ -2934,7 +2922,7 @@ void CGUIWindowSettingsCategory::FillInFTPServerUser(CSetting *pSetting)
     }
     pControl->SetValue(iDefaultFtpUser);
     CUtil::GetFTPServerUserName(iDefaultFtpUser, strFtpUser1, iUserMax);
-    g_guiSettings.SetString("servers.ftpserveruser", strFtpUser1.c_str());
+    g_guiSettings.SetString("services.ftpserveruser", strFtpUser1.c_str());
     pControl->SetInvalid();
   }
   else { //Set "None" if there is no FTP User found!
@@ -2950,8 +2938,8 @@ bool CGUIWindowSettingsCategory::SetFTPServerUserPass()
   // TODO: Read the FileZilla Server XML and Set it here!
   // Get GUI USER and pass and set pass to FTP Server
   CStdString strFtpUserName, strFtpUserPassword;
-  strFtpUserName      = g_guiSettings.GetString("servers.ftpserveruser");
-  strFtpUserPassword  = g_guiSettings.GetString("servers.ftpserverpassword");
+  strFtpUserName      = g_guiSettings.GetString("services.ftpserveruser");
+  strFtpUserPassword  = g_guiSettings.GetString("services.ftpserverpassword");
   if(strFtpUserPassword.size()!=0)
   {
     if (CUtil::SetFTPServerUserPassword(strFtpUserName, strFtpUserPassword))

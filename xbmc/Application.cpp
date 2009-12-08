@@ -1179,7 +1179,7 @@ HRESULT CApplication::Initialize()
 
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
   CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
-  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("pictures.screenshotpath",false).c_str());
+  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("debug.screenshotpath",false).c_str());
 
   // UserData folder layout:
   // UserData/
@@ -1216,8 +1216,8 @@ HRESULT CApplication::Initialize()
     g_guiSettings.SetString("network.subnet", "255.255.255.0");
     g_guiSettings.SetString("network.gateway", "192.168.0.1");
     g_guiSettings.SetString("network.dns", "192.168.0.1");
-    g_guiSettings.SetBool("servers.ftpserver", true);
-    g_guiSettings.SetBool("servers.webserver", false);
+    g_guiSettings.SetBool("services.ftpserver", true);
+    g_guiSettings.SetBool("services.webserver", false);
     g_guiSettings.SetBool("locale.timeserver", false);
   }
 
@@ -1424,16 +1424,16 @@ void CApplication::StopIdleThread()
 
 void CApplication::StartWebServer()
 {
-  if (g_guiSettings.GetBool("servers.webserver") && g_network.IsAvailable() )
+  if (g_guiSettings.GetBool("services.webserver") && g_network.IsAvailable() )
   {
     CLog::Log(LOGNOTICE, "Webserver: Starting...");
     CSectionLoader::Load("LIBHTTP");
     m_pWebServer = new CWebServer();
-    m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "Q:\\web", false);
+    m_pWebServer->Start(g_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("services.webserverport")), "Q:\\web", false);
     if (m_pWebServer)
     {
-      m_pWebServer->SetUserName(g_guiSettings.GetString("servers.webserverusername").c_str());
-       m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
+      m_pWebServer->SetUserName(g_guiSettings.GetString("services.webserverusername").c_str());
+       m_pWebServer->SetPassword(g_guiSettings.GetString("services.webserverpassword").c_str());
     }
     if (m_pWebServer && m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
       g_applicationMessenger.HttpApi("broadcastlevel; StartUp;1");
@@ -1456,7 +1456,7 @@ void CApplication::StopWebServer()
 void CApplication::StartFtpServer()
 {
 #ifdef HAS_FTP_SERVER
-  if ( g_guiSettings.GetBool("servers.ftpserver") && g_network.IsAvailable() )
+  if ( g_guiSettings.GetBool("services.ftpserver") && g_network.IsAvailable() )
   {
     CLog::Log(LOGNOTICE, "XBFileZilla: Starting...");
     if (!m_pFileZilla)
@@ -1547,9 +1547,8 @@ void CApplication::StopTimeServer()
 void CApplication::StartUPnP()
 {
 #ifdef HAS_UPNP
-    StartUPnPClient();
-    StartUPnPServer();
-    StartUPnPRenderer();
+  StartUPnPServer();
+  StartUPnPRenderer();
 #endif
 }
 
@@ -1573,7 +1572,7 @@ void CApplication::StartEventServer()
     CLog::Log(LOGERROR, "ES: Out of memory");
     return;
   }
-  if (g_guiSettings.GetBool("remoteevents.enabled"))
+  if (g_guiSettings.GetBool("services.esenabled"))
   {
     CLog::Log(LOGNOTICE, "ES: Starting event server");
     server->StartServer();
@@ -1617,7 +1616,7 @@ bool CApplication::StopEventServer(bool promptuser)
 void CApplication::RefreshEventServer()
 {
 #ifdef HAS_EVENT_SERVER
-  if (g_guiSettings.GetBool("remoteevents.enabled"))
+  if (g_guiSettings.GetBool("services.esenabled"))
   {
     CEventServer::GetInstance()->RefreshSettings();
   }
@@ -1627,7 +1626,7 @@ void CApplication::RefreshEventServer()
 void CApplication::StartUPnPRenderer()
 {
 #ifdef HAS_UPNP
-  if (g_guiSettings.GetBool("upnp.renderer"))
+  if (g_guiSettings.GetBool("services.upnprenderer"))
   {
     CLog::Log(LOGNOTICE, "starting upnp renderer");
     CUPnP::GetInstance()->StartRenderer();
@@ -1646,32 +1645,10 @@ void CApplication::StopUPnPRenderer()
 #endif
 }
 
-void CApplication::StartUPnPClient()
-{
-#ifdef HAS_UPNP
-  if (g_guiSettings.GetBool("upnp.client"))
-  {
-    CLog::Log(LOGNOTICE, "starting upnp client");
-    CUPnP::GetInstance()->StartClient();
-  }
-#endif
-}
-
-void CApplication::StopUPnPClient()
-{
-#ifdef HAS_UPNP
-  if (CUPnP::IsInstantiated())
-  {
-    CLog::Log(LOGNOTICE, "stopping upnp client");
-    CUPnP::GetInstance()->StopClient();
-  }
-#endif
-}
-
 void CApplication::StartUPnPServer()
 {
 #ifdef HAS_UPNP
-  if (g_guiSettings.GetBool("upnp.server"))
+  if (g_guiSettings.GetBool("services.upnpserver"))
   {
     CLog::Log(LOGNOTICE, "starting upnp server");
     CUPnP::GetInstance()->StartServer();

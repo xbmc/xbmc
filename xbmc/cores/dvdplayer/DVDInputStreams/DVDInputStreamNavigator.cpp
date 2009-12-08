@@ -91,7 +91,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   }
   free(strDVDFile);
 
-  int region = g_guiSettings.GetInt("videoplayer.dvdplayerregion");
+  int region = g_guiSettings.GetInt("dvds.playerregion");
   int mask = 0;
   if(region > 0)
     mask = 1 << (region-1);
@@ -166,7 +166,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   }
 
   // jump directly to title menu
-  if(g_guiSettings.GetBool("videoplayer.dvdautomenu"))
+  if(g_guiSettings.GetBool("dvds.automenu"))
   {
     int len, event;
     uint8_t buf[2048];

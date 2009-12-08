@@ -271,18 +271,18 @@ SORT_METHOD CGUIViewState::SetNextSortMethod(int direction /* = 1 */)
 
 bool CGUIViewState::HideExtensions()
 {
-  return g_guiSettings.GetBool("filelists.hideextensions");
+  return !g_guiSettings.GetBool("filelists.showextensions");
 }
 
 bool CGUIViewState::HideParentDirItems()
 {
-  return g_guiSettings.GetBool("filelists.hideparentdiritems");
+  return !g_guiSettings.GetBool("filelists.showparentdiritems");
 }
 
 bool CGUIViewState::DisableAddSourceButtons()
 {
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser)
-    return g_guiSettings.GetBool("filelists.disableaddsourcebuttons");
+    return !g_guiSettings.GetBool("filelists.showaddsourcebuttons");
 
   return true;
 }

@@ -493,7 +493,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
     strFilename = g_localizeStrings.Get(20012);
 
   // now remove the extension if needed
-  if (g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
+  if (!g_guiSettings.GetBool("filelists.showextensions") && !bIsFolder)
   {
     RemoveExtension(strFilename);
     return strFilename;
@@ -696,7 +696,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     strTitleAndYear = strTitle + " (" + strYear + ")";
 
   // restore extension if needed
-  if (!g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
+  if (g_guiSettings.GetBool("filelists.showextensions") && !bIsFolder)
     strTitleAndYear += strExtension;
 
 }
@@ -872,7 +872,7 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
     // This routine is only called from the playlist loaders,
     // where the filepath is in UTF-8 anyway, so we don't need
     // to do checking for FatX characters.
-    //if (g_guiSettings.GetBool("servers.ftpautofatx") && (CUtil::IsHD(strFilename)))
+    //if (g_guiSettings.GetBool("services.ftpautofatx") && (CUtil::IsHD(strFilename)))
     //  CUtil::GetFatXQualifiedPath(strFilename);
   }
   else //Base is remote
@@ -2511,31 +2511,31 @@ void CUtil::RemoveIllegalChars( CStdString& strText)
 {
   char szRemoveIllegal [1024];
   strcpy(szRemoveIllegal , strText.c_str());
-  static char legalChars[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~.ßåÄäÖöüøéèçàùêÂñáïëìíâãæîðòôóõ÷ú";
+  static char legalChars[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%&'()-@[]^_`{}~._s-S+önøTFtaúO-ñánd8fGpæe==(=)~ú";
   
   char *cursor;
   for (cursor = szRemoveIllegal; *(cursor += strspn(cursor, legalChars)); /**/ )
   {
     // Convert FatX illegal characters, if possible, to the closest "looking" character:
-    if (strchr("ÂÁÀÄÃÅ", (int) *cursor)) *cursor = 'A';
+    if (strchr("--+-++", (int) *cursor)) *cursor = 'A';
     else
-    if (strchr("âáàäãå", (int) *cursor)) *cursor = 'a';
+    if (strchr("GáaSps", (int) *cursor)) *cursor = 'a';
     else
-    if (strchr("ÔÓÒÖÕ", (int) *cursor)) *cursor = 'O';
+    if (strchr("++-++", (int) *cursor)) *cursor = 'O';
     else
-    if (strchr("ôóòöõ", (int) *cursor)) *cursor = 'o';
+    if (strchr("(==ö)", (int) *cursor)) *cursor = 'o';
     else
-    if (strchr("ÛÚÙÜ", (int) *cursor)) *cursor = 'U';
+    if (strchr("Ý++_", (int) *cursor)) *cursor = 'U';
     else
-    if (strchr("ûúùüµ", (int) *cursor)) *cursor = 'u';
+    if (strchr("vúúnÝ", (int) *cursor)) *cursor = 'u';
     else
-    if (strchr("ÊÉÈË", (int) *cursor)) *cursor = 'E';
+    if (strchr("-++-", (int) *cursor)) *cursor = 'E';
     else
-    if (strchr("êéèë", (int) *cursor)) *cursor = 'e';
+    if (strchr("OTFd", (int) *cursor)) *cursor = 'e';
     else
-    if (strchr("ÎÍÌÏ", (int) *cursor)) *cursor = 'I';
+    if (strchr("+-Ý-", (int) *cursor)) *cursor = 'I';
     else
-    if (strchr("îìíï", (int) *cursor)) *cursor = 'i';
+    if (strchr("e8fn", (int) *cursor)) *cursor = 'i';
     else
     *cursor = '_';
   }
@@ -3097,9 +3097,9 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
 
 void CUtil::PlayDVD()
 {
-  if (g_guiSettings.GetBool("videoplayer.useexternaldvdplayer") && !g_guiSettings.GetString("videoplayer.externaldvdplayer").IsEmpty())
+  if (g_guiSettings.GetBool("dvds.useexternaldvdplayer") && !g_guiSettings.GetString("dvds.externaldvdplayer").IsEmpty())
   {
-    RunXBE(g_guiSettings.GetString("videoplayer.externaldvdplayer").c_str());
+    RunXBE(g_guiSettings.GetString("dvds.externaldvdplayer").c_str());
   }
   else
   {
@@ -3280,7 +3280,7 @@ void CUtil::TakeScreenshot()
 
   bool promptUser = false;
   // check to see if we have a screenshot folder yet
-  CStdString strDir = g_guiSettings.GetString("pictures.screenshotpath", false);
+  CStdString strDir = g_guiSettings.GetString("debug.screenshotpath", false);
   if (strDir.IsEmpty())
   {
     strDir = "special://temp/";
@@ -3304,7 +3304,7 @@ void CUtil::TakeScreenshot()
         screenShots.push_back(file);
       if (promptUser)
       { // grab the real directory
-        CStdString newDir = g_guiSettings.GetString("pictures.screenshotpath");
+        CStdString newDir = g_guiSettings.GetString("debug.screenshotpath");
         if (!newDir.IsEmpty())
         {
           for (unsigned int i = 0; i < screenShots.size(); i++)
@@ -5034,8 +5034,8 @@ bool CUtil::AutoDetection()
 
   // send ping and request new client info
   if ( CUtil::AutoDetectionPing(
-    g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("servers.ftpserveruser"):"anonymous",
-    g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("servers.ftpserverpassword"):"anonymous",
+    g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("services.ftpserveruser"):"anonymous",
+    g_guiSettings.GetBool("Autodetect.senduserpw") ? g_guiSettings.GetString("services.ftpserverpassword"):"anonymous",
     g_guiSettings.GetString("autodetect.nickname"),21 /*Our FTP Port! TODO: Extract FTP from FTP Server settings!*/) )
   {
     CStdString strFTPPath, strNickName, strFtpUserName, strFtpPassword, strFtpPort, strBoosMode;
@@ -5455,7 +5455,7 @@ bool CUtil::SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFt
         if (p_ftpUser->SetPassword(strFtpUserPassword.c_str()) != XFS_INVALID_PARAMETERS)
         {
           p_ftpUser->CommitChanges();
-          g_guiSettings.SetString("servers.ftpserverpassword",strFtpUserPassword.c_str());
+          g_guiSettings.SetString("services.ftpserverpassword",strFtpUserPassword.c_str());
           return true;
         }
         break;

@@ -142,7 +142,14 @@ struct ReplayGainSettings
 class CSetting
 {
 public:
-  CSetting(int iOrder, const char *strSetting, int iLabel, int iControlType) { m_iOrder = iOrder; m_strSetting = strSetting; m_iLabel = iLabel; m_iControlType = iControlType; m_advanced = false; };
+  CSetting(int iOrder, const char *strSetting, int iLabel, int iControlType) {
+    m_iOrder = iOrder;
+    m_strSetting = strSetting;
+    m_iLabel = iLabel;
+    m_iControlType = iControlType;
+    m_advanced = false;
+    m_visible = true;
+  };
   virtual ~CSetting() {};
   virtual int GetType() { return 0; };
   int GetControlType() { return m_iControlType; };
@@ -153,11 +160,16 @@ public:
   int GetOrder() const { return m_iOrder; };
   void SetAdvanced() { m_advanced = true; };
   bool IsAdvanced() { return m_advanced; };
+  // A setting might be invisible in the current session, yet carried over
+  // in the config file.
+  void SetVisible(bool visible) { m_visible = visible; }
+  bool IsVisible() { return m_visible; }
 private:
   int m_iControlType;
   int m_iLabel;
   int m_iOrder;
   bool m_advanced;
+  bool m_visible;
   CStdString m_strSetting;
 };
 
@@ -275,15 +287,15 @@ public:
 class CSettingsCategory
 {
 public:
-  CSettingsCategory(const char *strCategory, DWORD dwLabelID)
+  CSettingsCategory(const char *strCategory, int labelID)
   {
     m_strCategory = strCategory;
-    m_dwLabelID = dwLabelID;
+    m_labelID = labelID;
   }
   ~CSettingsCategory() {};
 
   CStdString m_strCategory;
-  DWORD m_dwLabelID;
+  int m_labelID;
 };
 
 typedef std::vector<CSettingsCategory *> vecSettingsCategory;
@@ -291,10 +303,10 @@ typedef std::vector<CSettingsCategory *> vecSettingsCategory;
 class CSettingsGroup
 {
 public:
-  CSettingsGroup(DWORD dwGroupID, DWORD dwLabelID)
+  CSettingsGroup(int groupID, int labelID)
   {
-    m_dwGroupID = dwGroupID;
-    m_dwLabelID = dwLabelID;
+    m_groupID = groupID;
+    m_labelID = labelID;
   }
   ~CSettingsGroup()
   {
@@ -303,19 +315,19 @@ public:
     m_vecCategories.clear();
   };
 
-  void AddCategory(const char *strCategory, DWORD dwLabelID)
+  void AddCategory(const char *strCategory, int labelID)
   {
-    CSettingsCategory *pCategory = new CSettingsCategory(strCategory, dwLabelID);
+    CSettingsCategory *pCategory = new CSettingsCategory(strCategory, labelID);
     if (pCategory)
       m_vecCategories.push_back(pCategory);
   }
   void GetCategories(vecSettingsCategory &vecCategories);
-  DWORD GetLabelID() { return m_dwLabelID; };
-  DWORD GetGroupID() { return m_dwGroupID; };
+  int GetLabelID() { return m_labelID; };
+  int GetGroupID() { return m_groupID; };
 private:
   vecSettingsCategory m_vecCategories;
-  DWORD m_dwGroupID;
-  DWORD m_dwLabelID;
+  int m_groupID;
+  int m_labelID;
 };
 
 typedef std::vector<CSetting *> vecSettings;
@@ -328,9 +340,9 @@ public:
 
   void Initialize();
 
-  void AddGroup(DWORD dwGroupID, DWORD dwLabelID);
-  void AddCategory(DWORD dwGroupID, const char *strCategory, DWORD dwLabelID);
-  CSettingsGroup *GetGroup(DWORD dwWindowID);
+  void AddGroup(int groupID, int labelID);
+  void AddCategory(int groupID, const char *strCategory, int labelID);
+  CSettingsGroup *GetGroup(int windowID);
 
   void AddBool(int iOrder, const char *strSetting, int iLabel, bool bSetting, int iControlType = CHECKMARK_CONTROL);
   bool GetBool(const char *strSetting) const;

@@ -99,7 +99,7 @@ CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2
   AssembleMask(0, mask);
   AssembleMask(1, mask2);
   // save a bool for faster lookups
-  m_hideFileExtensions = g_guiSettings.GetBool("filelists.hideextensions");
+  m_hideFileExtensions = !g_guiSettings.GetBool("filelists.showextensions");
 }
 
 CStdString CLabelFormatter::GetContent(unsigned int label, const CFileItem *item) const

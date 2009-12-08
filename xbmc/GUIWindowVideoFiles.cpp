@@ -440,7 +440,7 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   item.SetLabel(pItem->GetLabel());
 
   // hack since our label sometimes contains extensions
-  if(!pItem->m_bIsFolder && !g_guiSettings.GetBool("filelists.hideextensions") &&
+  if(!pItem->m_bIsFolder && g_guiSettings.GetBool("filelists.showextensions") &&
      !pItem->IsLabelPreformated())
   {
     item.RemoveExtension();

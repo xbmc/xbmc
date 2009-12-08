@@ -312,7 +312,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
 
     // check if current directory is a root share
-/*    if (!g_guiSettings.GetBool("filelists.hideparentdiritems"))
+/*    if (g_guiSettings.GetBool("filelists.showarentdiritems"))
     {*/
       if ( !m_rootDir.IsSource(strDirectory))
       {

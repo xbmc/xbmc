@@ -977,7 +977,7 @@ unsigned int CXBoxRenderer::PreInit()
 
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
-  m_aspecterror = g_guiSettings.GetFloat("videoplayer.aspecterror") * 0.01f;
+  m_aspecterror = g_guiSettings.GetFloat("videoplayer.errorinaspect") * 0.01f;
 
   // low memory pixel shader
   if (!m_hLowMemShader)

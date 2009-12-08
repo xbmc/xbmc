@@ -81,8 +81,6 @@ public:
   void StopUPnP(bool bWait = false);
   void StartUPnPRenderer();
   void StopUPnPRenderer();
-  void StartUPnPClient();
-  void StopUPnPClient();
   void StartUPnPServer();
   void StopUPnPServer();
   void StartEventServer();
