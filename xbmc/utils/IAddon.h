@@ -62,10 +62,12 @@ namespace ADDON
   typedef boost::shared_ptr<IAddon> AddonPtr;
 
   class CAddonMgr;
+  struct AddonProps;
 
   class IAddon
   {
   public:
+    virtual void Set(const AddonProps &props) =0;
     virtual AddonPtr Clone() const =0;
     virtual TYPE Type() const =0;
     virtual CStdString UUID() const =0;

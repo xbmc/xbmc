@@ -189,7 +189,7 @@ void CAddonUtils::OpenAddonSettings(void *addonData)
   }
 }
 
-void CAddonUtils::TransferAddonSettings(CAddon &addon)
+void CAddonUtils::TransferAddonSettings(IAddon &addon)
 {
   bool restart = false;
   ADDON_STATUS reportStatus = STATUS_OK;

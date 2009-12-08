@@ -31,9 +31,9 @@
 
 namespace ADDON
 {
-//  typedef std::vector<AddonPtr> VECADDONS;
-//  typedef std::vector<AddonPtr>::iterator IVECADDONS;
-//  typedef std::map<TYPE, VECADDONS> MAPADDONS;
+  typedef std::vector<AddonPtr> VECADDONS;
+  typedef std::vector<AddonPtr>::iterator IVECADDONS;
+  typedef std::map<TYPE, VECADDONS> MAPADDONS;
 
   const int        ADDON_DIRSCAN_FREQ         = 60;
   const CStdString ADDON_METAFILE             = "description.xml";
@@ -96,8 +96,8 @@ namespace ADDON
 
   class CAddon;
 
-  typedef std::vector<CAddon> VECADDONS;
-  typedef std::vector<CAddon>::iterator IVECADDONS;
+//  typedef std::vector<CAddon> VECADDONS;
+//  typedef std::vector<CAddon>::iterator IVECADDONS;
 
   /**
    * Class - CAddonMgr
@@ -121,16 +121,15 @@ namespace ADDON
     void UpdateAddons();
     VECADDONS *GetAllAddons();
     VECADDONS *GetAddonsFromType(const TYPE &type);
-    bool GetAddonFromGUID(const CStdString &guid, CAddon &addon);
-    bool GetAddonFromNameAndType(const CStdString &name, const TYPE &type, CAddon &addon);
+    bool GetAddonFromGUID(const CStdString &guid, AddonPtr &addon);
+    bool GetAddonFromNameAndType(const CStdString &name, const TYPE &type, AddonPtr &addon);
     bool DisableAddon(const CStdString &addon, const ADDON::TYPE &type);
-    void SaveVirtualAddon(CAddon &addon);
 
   protected:
-    bool AddonFromInfoXML(const CStdString &path, ADDON::CAddon &addon);
+    bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
     bool SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONS &addons);
     void GetAddons(const TiXmlElement* pRootElement, const ADDON::TYPE &type);
-    bool GetAddon(const ADDON::TYPE &type, const TiXmlNode *node, ADDON::CAddon &addon);
+    bool GetAddon(const ADDON::TYPE &type, const TiXmlNode *node, AddonPtr &addon);
 
     CStdString GetAddonsFile() const;
     CStdString GetAddonsFolder() const;

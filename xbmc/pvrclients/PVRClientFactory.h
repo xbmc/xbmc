@@ -32,5 +32,5 @@ class CPVRClientFactory
 public:
   CPVRClientFactory();
   virtual ~CPVRClientFactory();
-  CPVRClient* LoadPVRClient(const ADDON::CAddon& addon, DWORD clientID, IPVRClientCallback *pvrCB) const;
+  CPVRClient* LoadPVRClient(const ADDON::IAddon& addon, DWORD clientID, IPVRClientCallback *pvrCB) const;
 };

@@ -41,7 +41,7 @@ CPVRClientFactory::~CPVRClientFactory()
 
 }
 
-CPVRClient* CPVRClientFactory::LoadPVRClient(const CAddon& addon, DWORD clientID, IPVRClientCallback *pvrCB) const
+CPVRClient* CPVRClientFactory::LoadPVRClient(const IAddon& addon, DWORD clientID, IPVRClientCallback *pvrCB) const
 {
 #ifdef HAS_PVRCLIENTS
   // add the library name readed from info.xml to the addon's path

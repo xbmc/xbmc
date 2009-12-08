@@ -410,12 +410,12 @@ VECADDONS *CAddonMgr::GetAddonsFromType(const TYPE &type)
   }
 }
 
-bool CAddonMgr::GetAddonFromGUID(const CStdString &guid, CAddon &addon)
+bool CAddonMgr::GetAddonFromGUID(const CStdString &guid, AddonPtr &addon)
 {
   /* iterate through alladdons vec and return matched Addon */
   for (unsigned int i = 0; i < m_allAddons.size(); i++)
   {
-    if (m_allAddons[i].UUID() == guid)
+    if (m_allAddons[i]->UUID() == guid)
     {
       addon = m_allAddons[i];
       return true;
@@ -424,14 +424,14 @@ bool CAddonMgr::GetAddonFromGUID(const CStdString &guid, CAddon &addon)
   return false;
 }
 
-bool CAddonMgr::GetAddonFromNameAndType(const CStdString &name, const TYPE &type, CAddon &addon)
+bool CAddonMgr::GetAddonFromNameAndType(const CStdString &name, const TYPE &type, AddonPtr &addon)
 {
   VECADDONS *addons = GetAddonsFromType(type);
   if (!addons) return false;
 
   for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
   {
-    if ((*it).Name() == name)
+    if ((*it)->Name() == name)
     {
       addon = (*it);
       return true;
@@ -447,7 +447,7 @@ bool CAddonMgr::DisableAddon(const CStdString &guid, const TYPE &type)
 
   for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
   {
-    if ((*it).UUID() == guid)
+    if ((*it)->UUID() == guid)
     {
       CLog::Log(LOGDEBUG,"found addon, disabling!");
       addons->erase(it);
@@ -500,7 +500,7 @@ void CAddonMgr::UpdateAddons()
     CFileItemPtr item = items[i];
 
     // read info.xml and generate the addon
-    CAddon addon;
+    AddonPtr addon;
     if (!AddonFromInfoXML(item->m_strPath, addon))
     {
       CLog::Log(LOGERROR, "Addon: Error reading %s/info.xml, bypassing package", item->m_strPath.c_str());
@@ -510,9 +510,9 @@ void CAddonMgr::UpdateAddons()
     // iterate through current alladdons vec and skip if guid is already present
     for (unsigned int i = 0; i < m_allAddons.size(); i++)
     {
-      if (m_allAddons[i].UUID() == addon.UUID())
+      if (m_allAddons[i]->UUID() == addon->UUID())
       {
-        CLog::Log(LOGNOTICE, "Addon: UUID=%s, Name=%s already present in %s, ignoring package", addon.UUID().c_str(), addon.Name().c_str(), m_allAddons[i].Path().c_str());
+        CLog::Log(LOGNOTICE, "Addon: UUID=%s, Name=%s already present in %s, ignoring package", addon->UUID().c_str(), addon->Name().c_str(), m_allAddons[i]->Path().c_str());
         continue;
       }
     }
@@ -524,21 +524,21 @@ void CAddonMgr::UpdateAddons()
       item->SetUserProgramThumb();
     if (!item->HasThumbnail())
     {
-      CFileItem item2(addon.Path());
-      CUtil::AddFileToFolder(addon.Path(), addon.LibName(), item2.m_strPath);
+      CFileItem item2(addon->Path());
+      CUtil::AddFileToFolder(addon->Path(), addon->LibName(), item2.m_strPath);
       item2.m_bIsFolder = false;
       item2.SetCachedProgramThumb();
       if (!item2.HasThumbnail())
         item2.SetUserProgramThumb();
       if (!item2.HasThumbnail())
-        item2.SetThumbnailImage(addon.Icon());
+        item2.SetThumbnailImage(addon->Icon());
       if (item2.HasThumbnail())
       {
         XFILE::CFile::Cache(item2.GetThumbnailImage(),item->GetCachedProgramThumb());
         item->SetThumbnailImage(item->GetCachedProgramThumb());
       }
     }
-    addon.m_strPath = item->m_strPath;
+//    addon->m_strPath = item->m_strPath;
 
     // everything ok, add to available addons
     m_allAddons.push_back(addon);
@@ -549,7 +549,7 @@ void CAddonMgr::UpdateAddons()
     m_allAddons.push_back(m_virtualAddons[i]);
 }
 
-bool CAddonMgr::AddonFromInfoXML(const CStdString &path, CAddon &addon)
+bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
 {
   // First check that we can load info.xml
   CStdString strPath(path);
@@ -788,11 +788,13 @@ bool CAddonMgr::AddonFromInfoXML(const CStdString &path, CAddon &addon)
 
   /*** end of optional fields ***/
 
-  addon.Set(addonProps);
+  AddonPtr temp(new CAddon());
+  temp->Set(addonProps);
+  addon = temp;
   /* Everything's valid */
 
   CLog::Log(LOGINFO, "Addon: %s retrieved. Name: %s, UUID: %s, Version: %s",
-            strPath.c_str(), addon.Name().c_str(), addon.UUID().c_str(), addon.Version().c_str());
+            strPath.c_str(), addon->Name().c_str(), addon->UUID().c_str(), addon->Version().c_str());
 
   return true;
 }
@@ -839,16 +841,16 @@ bool CAddonMgr::SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONS &ad
   {
     for (unsigned int i = 0; i < addons.size(); i++)
     {
-      const CAddon &addon = addons[i];
+      const AddonPtr addon = addons[i];
       TiXmlElement element("addon");
 
-      XMLUtils::SetString(&element, "name", addon.Name());
-      XMLUtils::SetPath(&element, "path", addon.Path());
-      if (!addon.Parent().IsEmpty())
-        XMLUtils::SetString(&element, "childuuid", addon.UUID());
+      XMLUtils::SetString(&element, "name", addon->Name());
+      XMLUtils::SetPath(&element, "path", addon->Path());
+      if (!addon->Parent().IsEmpty())
+        XMLUtils::SetString(&element, "childuuid", addon->UUID());
 
-      if (!addon.Icon().IsEmpty())
-        XMLUtils::SetPath(&element, "thumbnail", addon.Icon());
+      if (!addon->Icon().IsEmpty())
+        XMLUtils::SetPath(&element, "thumbnail", addon->Icon());
 
       sectionNode->InsertEndChild(element);
     }
@@ -901,12 +903,12 @@ void CAddonMgr::GetAddons(const TiXmlElement* pRootElement, const TYPE &type)
       CStdString strValue = pChild->Value();
       if (strValue == "addon")
       {
-        CAddon addon;
+        AddonPtr addon;
         if (GetAddon(type, pChild, addon))
         {
           addons->push_back(addon);
           /* If it is a virtual child add-on push it also to the m_virtualAddons list */
-          if (!addon.Parent().IsEmpty())
+          if (!addon->Parent().IsEmpty())
           {
             m_virtualAddons.push_back(addon);
           }
@@ -921,7 +923,7 @@ void CAddonMgr::GetAddons(const TiXmlElement* pRootElement, const TYPE &type)
   }
 }
 
-bool CAddonMgr::GetAddon(const TYPE &type, const TiXmlNode *node, CAddon &addon)
+bool CAddonMgr::GetAddon(const TYPE &type, const TiXmlNode *node, AddonPtr &addon)
 {
   // name
   const TiXmlNode *pNodeName = node->FirstChild("name");
@@ -947,19 +949,13 @@ bool CAddonMgr::GetAddon(const TYPE &type, const TiXmlNode *node, CAddon &addon)
   if (!AddonFromInfoXML(strPath, addon))
     return false;
 
-  if (addon.Type() != type)
+  if (addon->Type() != type)
   {
     // something really weird happened
     return false;
   }
 
   return true;
-}
-
-void CAddonMgr::SaveVirtualAddon(CAddon &addon)
-{
-  m_virtualAddons.push_back(addon);
-  return;
 }
 
 CStdString CAddonMgr::GetAddonsFile() const

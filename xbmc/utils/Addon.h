@@ -40,7 +40,8 @@ class CAddon : public IAddon
 {
 public:
   CAddon();
-  void Set(const AddonProps &props);
+  CAddon(const IAddon&);
+  virtual void Set(const AddonProps &props);
   void Reset();
 
   virtual void Remove() {};
@@ -49,10 +50,6 @@ public:
   /* Add-on language functions */
   static void LoadAddonStrings(const CURL &url);
   static void ClearAddonStrings();
-
-  /* Copy existing add-on and reuse it again with another GUID */
-  static bool CreateChildAddon(const CAddon &parent, CAddon &child);
-
 
 
 

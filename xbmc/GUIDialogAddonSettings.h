@@ -36,7 +36,7 @@ public:
   static void ShowAndGetInput(CURL& url);
   static void ShowAndGetInput(SScraperInfo& info);
   static void ShowAndGetInput(CStdString& path);
-  static void ShowAndGetInput(ADDON::CAddon& addon);
+  static void ShowAndGetInput(ADDON::IAddon& addon);
   void SetHeading(const CStdString &strHeading);
   void SetAddon(const ADDON::AddonPtr& addon);
   void SetSettings(CAddonSettings settings) { m_settings = settings; };

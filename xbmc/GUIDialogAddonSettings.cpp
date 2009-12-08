@@ -159,7 +159,7 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CURL& url)
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
-void CGUIDialogAddonSettings::ShowAndGetInput(CAddon& addon)
+void CGUIDialogAddonSettings::ShowAndGetInput(IAddon& addon)
 {
   m_url = addon.Path();
 

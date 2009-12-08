@@ -461,25 +461,25 @@ bool CPVRManager::LoadClients()
   CPVRClientFactory factory;
   for (unsigned i=0; i < addons->size(); i++)
   {
-    const CAddon& clientAddon = addons->at(i);
+    const AddonPtr clientAddon = addons->at(i);
 
-    if (clientAddon.Disabled()) // ignore disabled addons
+    if (clientAddon->Disabled()) // ignore disabled addons
       continue;
 
     /* Add client to TV-Database to identify different backend types,
      * if client is already added his id is given.
      */
-    long clientID = m_database.AddClient(clientAddon.Name(), clientAddon.UUID());
+    long clientID = m_database.AddClient(clientAddon->Name(), clientAddon->UUID());
     if (clientID == -1)
     {
-      CLog::Log(LOGERROR, "PVR: Can't Add/Get PVR Client '%s' to to TV Database", clientAddon.Name().c_str());
+      CLog::Log(LOGERROR, "PVR: Can't Add/Get PVR Client '%s' to to TV Database", clientAddon->Name().c_str());
       continue;
     }
 
     /* Load the Client library's and inside them into Client list if
      * success. Client initialization is also performed during loading.
      */
-    CPVRClient *client = factory.LoadPVRClient(clientAddon, clientID, this);
+    CPVRClient *client = factory.LoadPVRClient(*clientAddon, clientID, this);
     if (client)
     {
       m_clients.insert(std::make_pair(client->GetID(), client));
@@ -693,22 +693,22 @@ bool CPVRManager::RequestRemoval(const IAddon* addon)
   if (!addon)
     return false;
 
-  CLog::Log(LOGINFO, "PVR: requested removal of clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
-  CLIENTMAPITR itr = m_clients.begin();
-  while (itr != m_clients.end())
-  {
-    if (m_clients[(*itr).first]->UUID() == addon->UUID())
-    {
-      if (m_clients[(*itr).first]->Name() == addon->Name())
-      {
-        CLog::Log(LOGINFO, "PVR: removing clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
-        m_clients[(*itr).first]->Remove();
-        m_clients.erase((*itr).first);
-        return true;
-      }
-    }
-    itr++;
-  }
+//  CLog::Log(LOGINFO, "PVR: requested removal of clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
+//  CLIENTMAPITR itr = m_clients.begin();
+//  while (itr != m_clients.end())
+//  {
+//    if (m_clients[(*itr).first]->UUID() == addon->UUID())
+//    {
+//      if (m_clients[(*itr).first]->Name() == addon->Name())
+//      {
+//        CLog::Log(LOGINFO, "PVR: removing clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
+//        m_clients[(*itr).first]->Remove();
+//        m_clients.erase((*itr).first);
+//        return true;
+//      }
+//    }
+//    itr++;
+//  }
 
   return false;
 }

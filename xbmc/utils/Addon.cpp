@@ -157,6 +157,25 @@ CAddon::CAddon()
   Reset();
 }
 
+CAddon::CAddon(const IAddon &rhs)
+  : m_type(rhs.Type())
+  , m_guid(StringUtils::CreateUUID())
+  , m_guid_parent(rhs.UUID())
+{
+  m_strPath     = rhs.Path();
+  m_strProfile  = GetProfilePath();
+  m_disabled    = false;
+  m_icon        = rhs.Icon();
+  m_stars       = rhs.Stars();
+  m_strVersion  = rhs.Version();
+  m_strName     = rhs.Name();
+  m_summary     = rhs.Summary();
+  m_strDesc     = rhs.Description();
+  m_disclaimer  = rhs.Disclaimer();
+  m_strLibName  = rhs.LibName();
+  m_userSettingsPath = GetUserSettingsPath();
+}
+
 //CAddon::CAddon(const CAddon &rhs)
 //  : m_type(rhs.Type())
 //  , m_content(rhs.m_content)
@@ -502,34 +521,6 @@ void CAddon::ClearAddonStrings()
 {
   // Unload temporary language strings
   g_localizeStringsTemp.Clear();
-}
-
-bool CAddon::CreateChildAddon(const CAddon &parent, CAddon &child)
-{
-  if (parent.m_type != ADDON_PVRDLL)
-  {
-    CLog::Log(LOGERROR, "Can't create a child add-on for '%s' and type '%i', is not allowed for this type!", parent.m_strName.c_str(), parent.m_type);
-    return false;
-  }
-
-  child = parent;
-  child.m_guid_parent = parent.m_guid;
-  child.m_guid = StringUtils::CreateUUID();
-
-  VECADDONS *addons = CAddonMgr::Get()->GetAddonsFromType(parent.m_type);
-  if (!addons) return false;
-
-  for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
-  {
-    if ((*it).m_guid == parent.m_guid)
-    {
-      (*it).m_childs++;
-      child.m_strName.Format("%s #%i", child.m_strName.c_str(), (*it).m_childs);
-      break;
-    }
-  }
-
-  return true;
 }
 
 } /* namespace ADDON */

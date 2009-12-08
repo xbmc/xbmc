@@ -166,7 +166,7 @@ bool CAddonSettings::Load(const CURL& url)
   return true;
 }
 
-bool CAddonSettings::Load(const CAddon& addon)
+bool CAddonSettings::Load(const IAddon& addon)
 {
   // create the users filepath
   m_userFileName = GetUserDirectory(addon.Path());

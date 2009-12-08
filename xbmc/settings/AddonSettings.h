@@ -38,7 +38,7 @@ public:
 
   bool SaveFromDefault(void);
   virtual bool Load(const CURL& url);
-  virtual bool Load(const ADDON::CAddon& addon);
+  virtual bool Load(const ADDON::IAddon& addon);
   virtual bool Save(void);
   void Clear();
 
