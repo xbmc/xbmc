@@ -7,12 +7,6 @@
 
 .DELETE_ON_ERROR:
 
-CC       ?= gcc
-CFLAGS   ?= -g -O2 -Wall
-
-CXX      ?= g++
-CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses -dynamiclib -single_module -undefined dynamic_lookup
-
 ARCH     = x86_64-linux
 DESTDIR ?=
 PREFIX  ?= /usr/local
@@ -22,6 +16,16 @@ INCLUDES = -I. -I../../linux -I../../ -I ../../../guilib
 DEFINES += -D_LINUX -fPIC
 LIBDIR   = ../../../addons/pvr/VDR
 LIB      = ../../../addons/pvr/VDR/XBMC_VDR.pvr
+
+CC       ?= gcc
+CFLAGS   ?= -g -O2 -Wall
+
+CXX      ?= g++
+ifeq ($(findstring osx,$(ARCH)), osx)
+CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses -dynamiclib -single_module -undefined dynamic_lookup
+else
+CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
+endif
 
 -include Make.config
 
