@@ -77,7 +77,6 @@ SRCS=ASAPFileDirectory.cpp \
      SpecialProtocolDirectory.cpp \
      StackDirectory.cpp \
      UPnPDirectory.cpp \
-     UPnPVirtualPathDirectory.cpp \
      VideoDatabaseDirectory.cpp \
      VirtualDirectory.cpp \
      VirtualPathDirectory.cpp \

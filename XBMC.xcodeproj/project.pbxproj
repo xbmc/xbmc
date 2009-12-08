@@ -534,7 +534,6 @@
 		E38E20580D25F9FD00618676 /* SmartPlaylistDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17530D25F9FA00618676 /* SmartPlaylistDirectory.cpp */; };
 		E38E205B0D25F9FD00618676 /* StackDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17590D25F9FA00618676 /* StackDirectory.cpp */; };
 		E38E205C0D25F9FD00618676 /* UPnPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E175B0D25F9FA00618676 /* UPnPDirectory.cpp */; };
-		E38E205D0D25F9FD00618676 /* UPnPVirtualPathDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E175D0D25F9FA00618676 /* UPnPVirtualPathDirectory.cpp */; };
 		E38E205E0D25F9FD00618676 /* DirectoryNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17600D25F9FA00618676 /* DirectoryNode.cpp */; };
 		E38E205F0D25F9FD00618676 /* DirectoryNodeActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17620D25F9FA00618676 /* DirectoryNodeActor.cpp */; };
 		E38E20600D25F9FD00618676 /* DirectoryNodeDirector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17640D25F9FA00618676 /* DirectoryNodeDirector.cpp */; };
@@ -1256,7 +1255,6 @@
 		F5A1C98A0F6B06CF00A96ABD /* SmartPlaylistDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17530D25F9FA00618676 /* SmartPlaylistDirectory.cpp */; };
 		F5A1C98B0F6B06CF00A96ABD /* StackDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17590D25F9FA00618676 /* StackDirectory.cpp */; };
 		F5A1C98C0F6B06CF00A96ABD /* UPnPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E175B0D25F9FA00618676 /* UPnPDirectory.cpp */; };
-		F5A1C98D0F6B06CF00A96ABD /* UPnPVirtualPathDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E175D0D25F9FA00618676 /* UPnPVirtualPathDirectory.cpp */; };
 		F5A1C98E0F6B06CF00A96ABD /* DirectoryNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17600D25F9FA00618676 /* DirectoryNode.cpp */; };
 		F5A1C98F0F6B06CF00A96ABD /* DirectoryNodeActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17620D25F9FA00618676 /* DirectoryNodeActor.cpp */; };
 		F5A1C9900F6B06CF00A96ABD /* DirectoryNodeDirector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17640D25F9FA00618676 /* DirectoryNodeDirector.cpp */; };
@@ -2755,8 +2753,6 @@
 		E38E175A0D25F9FA00618676 /* StackDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StackDirectory.h; sourceTree = "<group>"; };
 		E38E175B0D25F9FA00618676 /* UPnPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UPnPDirectory.cpp; sourceTree = "<group>"; };
 		E38E175C0D25F9FA00618676 /* UPnPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPDirectory.h; sourceTree = "<group>"; };
-		E38E175D0D25F9FA00618676 /* UPnPVirtualPathDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UPnPVirtualPathDirectory.cpp; sourceTree = "<group>"; };
-		E38E175E0D25F9FA00618676 /* UPnPVirtualPathDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPVirtualPathDirectory.h; sourceTree = "<group>"; };
 		E38E17600D25F9FA00618676 /* DirectoryNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNode.cpp; sourceTree = "<group>"; };
 		E38E17610D25F9FA00618676 /* DirectoryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNode.h; sourceTree = "<group>"; };
 		E38E17620D25F9FA00618676 /* DirectoryNodeActor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeActor.cpp; sourceTree = "<group>"; };
@@ -5554,8 +5550,6 @@
 				F5FAB06F0EFABAC800BAD4AE /* VTPFile.h */,
 				F5FAB0790EFABE4A00BAD4AE /* VTPSession.cpp */,
 				F5FAB0780EFABE4A00BAD4AE /* VTPSession.h */,
-				E38E175D0D25F9FA00618676 /* UPnPVirtualPathDirectory.cpp */,
-				E38E175E0D25F9FA00618676 /* UPnPVirtualPathDirectory.h */,
 				E38E175F0D25F9FA00618676 /* VideoDatabaseDirectory */,
 				E38E178A0D25F9FA00618676 /* VideoDatabaseDirectory.cpp */,
 				E38E178B0D25F9FA00618676 /* VideoDatabaseDirectory.h */,
@@ -7488,7 +7482,6 @@
 				E38E20580D25F9FD00618676 /* SmartPlaylistDirectory.cpp in Sources */,
 				E38E205B0D25F9FD00618676 /* StackDirectory.cpp in Sources */,
 				E38E205C0D25F9FD00618676 /* UPnPDirectory.cpp in Sources */,
-				E38E205D0D25F9FD00618676 /* UPnPVirtualPathDirectory.cpp in Sources */,
 				E38E205E0D25F9FD00618676 /* DirectoryNode.cpp in Sources */,
 				E38E205F0D25F9FD00618676 /* DirectoryNodeActor.cpp in Sources */,
 				E38E20600D25F9FD00618676 /* DirectoryNodeDirector.cpp in Sources */,
@@ -8336,7 +8329,6 @@
 				F5A1C98A0F6B06CF00A96ABD /* SmartPlaylistDirectory.cpp in Sources */,
 				F5A1C98B0F6B06CF00A96ABD /* StackDirectory.cpp in Sources */,
 				F5A1C98C0F6B06CF00A96ABD /* UPnPDirectory.cpp in Sources */,
-				F5A1C98D0F6B06CF00A96ABD /* UPnPVirtualPathDirectory.cpp in Sources */,
 				F5A1C98E0F6B06CF00A96ABD /* DirectoryNode.cpp in Sources */,
 				F5A1C98F0F6B06CF00A96ABD /* DirectoryNodeActor.cpp in Sources */,
 				F5A1C9900F6B06CF00A96ABD /* DirectoryNodeDirector.cpp in Sources */,

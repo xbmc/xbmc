@@ -4274,14 +4274,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\UPnPVirtualPathDirectory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\UPnPVirtualPathDirectory.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory.cpp"
 					>
 				</File>
