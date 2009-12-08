@@ -29,7 +29,7 @@
 #include "DShowUtil/dshowutil.h"
 #include "DShowUtil/DshowCommon.h"
 
-#include "filters/DX9AllocatorPresenter.h"
+#include "filters/VMR9AllocatorPresenter.h"
 #include "filters/evrAllocatorPresenter.h"
 #include <initguid.h>
 #include "moreuuids.h"
@@ -886,7 +886,7 @@ CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd)
   if (DShowUtil::IsVistaOrAbove())
     m_transform.AddTail(new CFGFilterVideoRenderer(__uuidof(CEVRAllocatorPresenter), L"Xbmc EVR", m_vrmerit));
   else
-    m_transform.AddTail(new CFGFilterVideoRenderer(__uuidof(CDX9AllocatorPresenter), L"Xbmc VMR9 (Renderless)", m_vrmerit));
+    m_transform.AddTail(new CFGFilterVideoRenderer(__uuidof(CVMR9AllocatorPresenter), L"Xbmc VMR9 (Renderless)", m_vrmerit));
   
 }
 

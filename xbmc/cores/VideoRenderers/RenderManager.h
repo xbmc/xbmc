@@ -25,6 +25,7 @@
   #include "LinuxRendererGL.h"
 #elif defined(HAS_DX)
   #include "WinRenderer.h"
+  #include "WinDsRenderer.h"
 #elif defined(HAS_SDL)
   #include "LinuxRenderer.h"
 #endif
@@ -75,9 +76,7 @@ public:
   {
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
-	{
       m_pRenderer->PaintVideoTexture(videoTexture,videoSurface);
-    }
   }
   inline unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
   {
@@ -88,7 +87,7 @@ public:
   }
 
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
-  unsigned int PreInit();
+  unsigned int PreInit(bool dshow = false);
   void UnInit();
 
   void AddOverlay(CDVDOverlay* o, double pts)
@@ -153,7 +152,7 @@ public:
 #ifdef HAS_GL
   CLinuxRendererGL *m_pRenderer;
 #elif defined(HAS_DX)
-  CWinRenderer *m_pRenderer;
+  CWinBaseRenderer *m_pRenderer;
 #elif defined(HAS_SDL)
   CLinuxRenderer *m_pRenderer;
 #elif defined(HAS_XBOX_D3D)

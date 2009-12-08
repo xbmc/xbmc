@@ -2015,6 +2015,18 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\WinBaseRenderer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderer.cpp"
 					>
 				</File>
@@ -2249,19 +2261,19 @@
 						Name="Renderers"
 						>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.h"
-							>
-						</File>
-						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.cpp"
 							>
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.h"
 							>
 						</File>
 					</Filter>

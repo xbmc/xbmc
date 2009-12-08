@@ -237,7 +237,7 @@ void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   m_overlays.Render();
 }
 
-unsigned int CXBMCRenderManager::PreInit()
+unsigned int CXBMCRenderManager::PreInit(bool dshow)
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
@@ -246,12 +246,16 @@ unsigned int CXBMCRenderManager::PreInit()
 
   m_bIsStarted = false;
   m_bPauseDrawing = false;
+  m_pRenderer = NULL;
   if (!m_pRenderer)
   { 
 #if defined(HAS_GL)
     m_pRenderer = new CLinuxRendererGL();
 #elif defined(HAS_DX)
-    m_pRenderer = new CPixelShaderRenderer();
+    if (!dshow)
+      m_pRenderer = new CPixelShaderRenderer();
+    else
+      m_pRenderer = new CDsPixelShaderRenderer();
 #elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();
 #endif

@@ -288,7 +288,7 @@ m_rtTimePerFrame(0)
   ZeroMemory(&d3ddm, sizeof(d3ddm));
   m_D3D->GetAdapterDisplayMode(GetAdapter(m_D3D),&d3ddm);
   m_RefreshRate = d3ddm.RefreshRate;
-  g_renderManager.PreInit();
+  g_renderManager.PreInit(true);
 }
 
 CEVRAllocatorPresenter::~CEVRAllocatorPresenter()

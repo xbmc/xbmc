@@ -23,7 +23,7 @@
 #include "dshowutil/dshowutil.h"
 
 
-#include "Filters/DX9AllocatorPresenter.h"
+#include "Filters/VMR9AllocatorPresenter.h"
 #include "Filters/EVRAllocatorPresenter.h"
 #include "WindowingFactory.h"
 #include "utils/log.h"
@@ -430,8 +430,8 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF, CInterfaceList<IUnkno
 
   CComPtr<IDsRenderer> pCAP;
   CStdString __err;
-  if (m_clsid == __uuidof(CDX9AllocatorPresenter))
-    pCAP = new CDX9AllocatorPresenter(hr,__err);
+  if (m_clsid == __uuidof(CVMR9AllocatorPresenter))
+    pCAP = new CVMR9AllocatorPresenter(hr,__err);
   if (m_clsid == __uuidof(CEVRAllocatorPresenter))
     pCAP = new CEVRAllocatorPresenter(hr,__err);
 
