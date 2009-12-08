@@ -39,7 +39,7 @@ const TYPE          TranslateType(const CStdString &string);
 class CAddon
 {
 public:
-  CAddon(void);
+  CAddon();
   ~CAddon() {};
   void Set(const AddonProps &props);
   void Reset();
@@ -55,6 +55,17 @@ public:
   static bool CreateChildAddon(const CAddon &parent, CAddon &child);
 
 
+
+
+  // settings & language
+  virtual bool HasSettings();
+  virtual bool LoadSettings();
+  virtual void SaveSettings();
+  virtual void SaveFromDefault();
+  virtual void UpdateSetting(const CStdString& key, const CStdString& type, const CStdString& value);
+  virtual CStdString GetSetting(const CStdString& key) const;
+  TiXmlElement* GetSettingsXML();
+  virtual CStdString GetString(uint32_t id) const;
 
   /* Beginning of Add-on data fields (readed from info.xml) */
   TYPE Type() const { return m_type; }
@@ -75,7 +86,21 @@ public:
   bool Supports(const CONTENT_TYPE &content) const { return (m_content.count(content) == 1); }
   CStdString        m_strPath;     ///< Path to the addon
 
+protected:
+//  CAddon(const CAddon&); // protected as all copying is handled by Clone()
+  bool LoadUserSettings();
+  TiXmlDocument     m_addonXmlDoc;
+  TiXmlDocument     m_userXmlDoc;
+  CStdString        m_userSettingsPath;
+
 private:
+  CStdString GetProfilePath();
+  CStdString GetUserSettingsPath();
+  void Enable() { LoadStrings(); m_disabled = false; }
+  void Disable() { m_disabled = true; ClearStrings();}
+  virtual bool LoadStrings();
+  virtual void ClearStrings();
+
   TYPE              m_type;
   std::set<CONTENT_TYPE> m_content;///< CONTENT_TYPE type identifier(s) this Add-on supports
   CStdString        m_guid;        ///< Unique identifier for this addon, chosen by developer
@@ -94,17 +119,6 @@ private:
   bool              m_disabled;    ///< Is this addon disabled?
   int               m_childs;      ///< How many child add-on's are present
   CLocalizeStrings  m_strings;
-
-private:
-  static IAddonCallback *m_cbMultitye;
-  static IAddonCallback *m_cbViz;
-  static IAddonCallback *m_cbSkin;
-  static IAddonCallback *m_cbPVR;
-  static IAddonCallback *m_cbScript;
-  static IAddonCallback *m_cbScraper;
-  static IAddonCallback *m_cbScreensaver;
-  static IAddonCallback *m_cbPlugin;
-  static IAddonCallback *m_cbDSPAudio;
 };
 
 }; /* namespace ADDON */

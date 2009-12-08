@@ -23,6 +23,7 @@
 #include "Addon.h"
 #include "Settings.h"
 #include "settings/AddonSettings.h"
+#include "FileSystem/Directory.h"
 #include "utils/log.h"
 #include "LocalizeStrings.h"
 #include "GUISettings.h"
@@ -155,6 +156,278 @@ CAddon::CAddon()
 {
   Reset();
 }
+
+//CAddon::CAddon(const CAddon &rhs)
+//  : m_type(rhs.Type())
+//  , m_content(rhs.m_content)
+//  , m_guid(StringUtils::CreateUUID())
+//  , m_guid_parent(rhs.UUID())
+//{
+//  m_userXmlDoc  = rhs.m_userXmlDoc;
+//  m_strPath     = rhs.Path();
+//  m_strProfile  = GetProfilePath();
+//  m_disabled    = false;
+//  m_icon        = rhs.Icon();
+//  m_stars       = rhs.Stars();
+//  m_strVersion  = rhs.Version();
+//  m_strName     = rhs.Name();
+//  m_summary     = rhs.Summary();
+//  m_strDesc     = rhs.Description();
+//  m_disclaimer  = rhs.Disclaimer();
+//  m_strLibName  = rhs.LibName();
+//  m_userSettingsPath = GetUserSettingsPath();
+//}
+
+
+
+
+
+
+
+
+
+
+/*
+* Language File Handling
+*/
+bool CAddon::LoadStrings()
+{
+  if (!HasSettings())
+    return false;
+
+  // Path where the language strings reside
+  CStdString pathToLanguageFile = m_strPath;
+  CStdString pathToFallbackLanguageFile = m_strPath;
+  CUtil::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
+  CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "language", pathToFallbackLanguageFile);
+  CUtil::AddFileToFolder(pathToLanguageFile, g_guiSettings.GetString("locale.language"), pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "english", pathToFallbackLanguageFile);
+  CUtil::AddFileToFolder(pathToLanguageFile, "strings.xml", pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "strings.xml", pathToFallbackLanguageFile);
+
+  // Load language strings temporarily
+  return m_strings.Load(pathToLanguageFile, pathToFallbackLanguageFile);
+}
+
+void CAddon::ClearStrings()
+{
+  // Unload temporary language strings
+  m_strings.Clear();
+}
+
+CStdString CAddon::GetString(uint32_t id) const
+{
+  return m_strings.Get(id);
+}
+
+/*
+* Settings Handling
+*/
+bool CAddon::HasSettings()
+{
+  CStdString addonFileName = m_strPath;
+  CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
+  CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
+
+  // Load the settings file to verify it's valid
+  TiXmlDocument xmlDoc;
+  if (!xmlDoc.LoadFile(addonFileName))
+    return false;
+
+  // Make sure that the addon XML has the settings element
+  TiXmlElement *setting = xmlDoc.RootElement();
+  if (!setting || strcmpi(setting->Value(), "settings") != 0)
+    return false;
+
+  return true;
+}
+
+bool CAddon::LoadSettings()
+{
+  CStdString addonFileName = m_strPath;
+  CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
+  CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
+
+  if (!m_addonXmlDoc.LoadFile(addonFileName))
+  {
+    CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", addonFileName.c_str(), m_addonXmlDoc.ErrorRow(), m_addonXmlDoc.ErrorDesc());
+    return false;
+  }
+
+  // Make sure that the addon XML has the settings element
+  TiXmlElement *setting = m_addonXmlDoc.RootElement();
+  if (!setting || strcmpi(setting->Value(), "settings") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading Settings %s: cannot find root element 'settings'", addonFileName.c_str());
+    return false;
+  }
+  return LoadUserSettings();
+}
+
+bool CAddon::LoadUserSettings()
+{
+  // Load the user saved settings. If it does not exist, create it
+  if (!m_userXmlDoc.LoadFile(m_userSettingsPath))
+  {
+    TiXmlDocument doc;
+    TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+    doc.InsertEndChild(decl);
+
+    TiXmlElement xmlRootElement("settings");
+    doc.InsertEndChild(xmlRootElement);
+
+    m_userXmlDoc = doc;
+  }
+  return true;
+}
+
+void CAddon::SaveSettings(void)
+{
+  // break down the path into directories
+  CStdString strRoot, strAddon;
+  CUtil::GetDirectory(m_userSettingsPath, strAddon);
+  CUtil::RemoveSlashAtEnd(strAddon);
+  CUtil::GetDirectory(strAddon, strRoot);
+  CUtil::RemoveSlashAtEnd(strRoot);
+
+  // create the individual folders
+  if (!DIRECTORY::CDirectory::Exists(strRoot))
+    DIRECTORY::CDirectory::Create(strRoot);
+  if (!DIRECTORY::CDirectory::Exists(strAddon))
+    DIRECTORY::CDirectory::Create(strAddon);
+
+  m_userXmlDoc.SaveFile(m_userSettingsPath);
+}
+
+void CAddon::SaveFromDefault()
+{
+  if (!GetSettingsXML())
+  { // no settings found
+    return;
+  }
+
+  TiXmlElement *setting = GetSettingsXML()->FirstChildElement("setting");
+  while (setting)
+  {
+    CStdString id;
+    if (setting->Attribute("id"))
+      id = setting->Attribute("id");
+    CStdString type;
+    if (setting->Attribute("type"))
+      type = setting->Attribute("type");
+    CStdString value;
+    if (setting->Attribute("default"))
+      value = setting->Attribute("default");
+    UpdateSetting(id, type, value);
+    setting = setting->NextSiblingElement("setting");
+  }
+
+  // now save to file
+  SaveSettings();
+}
+
+CStdString CAddon::GetSetting(const CStdString& key) const
+{
+  if (m_userXmlDoc.RootElement())
+  {
+    // Try to find the setting and return its value
+    const TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
+    while (setting)
+    {
+      const char *id = setting->Attribute("id");
+      if (id && strcmpi(id, key) == 0)
+        return setting->Attribute("value");
+
+      setting = setting->NextSiblingElement("setting");
+    }
+  }
+
+  if (m_addonXmlDoc.RootElement())
+  {
+    // Try to find the setting in the addon and return its default value
+    const TiXmlElement* setting = m_addonXmlDoc.RootElement()->FirstChildElement("setting");
+    while (setting)
+    {
+      const char *id = setting->Attribute("id");
+      if (id && strcmpi(id, key) == 0 && setting->Attribute("default"))
+        return setting->Attribute("default");
+
+      setting = setting->NextSiblingElement("setting");
+    }
+  }
+
+  // Otherwise return empty string
+  return "";
+}
+
+void CAddon::UpdateSetting(const CStdString& key, const CStdString& type, const CStdString& value)
+{
+  if (key == "" || type == "") return;
+
+  // Try to find the setting and change its value
+  if (!m_userXmlDoc.RootElement())
+  {
+    TiXmlElement node("settings");
+    m_userXmlDoc.InsertEndChild(node);
+  }
+  TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
+  while (setting)
+  {
+    const char *id = setting->Attribute("id");
+    const char *storedtype = setting->Attribute("type");
+    if (id && strcmpi(id, key) == 0)
+    {
+      if (storedtype && strcmpi(storedtype, type) != 0)
+        setting->SetAttribute("type", type.c_str());
+
+      setting->SetAttribute("value", value.c_str());
+      return;
+    }
+
+    setting = setting->NextSiblingElement("setting");
+  }
+
+  // Setting not found, add it
+  TiXmlElement nodeSetting("setting");
+  nodeSetting.SetAttribute("id", std::string(key.c_str())); //FIXME otherwise attribute value isn't updated
+  nodeSetting.SetAttribute("type", std::string(type.c_str()));
+  nodeSetting.SetAttribute("value", std::string(value.c_str()));
+  m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
+}
+
+TiXmlElement* CAddon::GetSettingsXML()
+{
+  return m_addonXmlDoc.RootElement();
+}
+
+CStdString CAddon::GetProfilePath()
+{
+  CStdString profile;
+  profile.Format("special://profile/addon_data/%s", UUID().c_str());
+  return profile;
+}
+
+CStdString CAddon::GetUserSettingsPath()
+{
+  CStdString path;
+  CUtil::AddFileToFolder(Profile(), "settings.xml", path);
+  return path;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void CAddon::Reset()
 {

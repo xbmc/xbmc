@@ -27,6 +27,7 @@
 #include "utils/CriticalSection.h"
 #include "../addons/include/xbmc_addon_types.h"
 #include <vector>
+#include <map>
 
 namespace ADDON
 {
@@ -93,21 +94,6 @@ namespace ADDON
   };
 
   /**
-  * Class - CAddonDummyCallback
-  * Used as fallback by unkown Add-on type
-  */
-  class CAddonDummyCallback : public IAddonCallback
-  {
-    public:
-      CAddonDummyCallback() {}
-      ~CAddonDummyCallback() {}
-      bool RequestRestart(const CAddon* addon, bool datachanged) { return false; }
-      bool RequestRemoval(const CAddon* addon) { return false; }
-      ADDON_STATUS SetSetting(const CAddon* addon, const char *settingName, const void *settingValue) { return STATUS_UNKNOWN; }
-      addon_settings_t GetSettings(const CAddon* addon) { return NULL; }
-  };
-
-  /**
    * Class - CAddonManager
    */
   class CAddonManager
@@ -140,15 +126,6 @@ namespace ADDON
     CStdString GetAddonsFolder() const;
 
   private:
-    static IAddonCallback *m_cbMultitye;
-    static IAddonCallback *m_cbViz;
-    static IAddonCallback *m_cbSkin;
-    static IAddonCallback *m_cbPVR;
-    static IAddonCallback *m_cbScript;
-    static IAddonCallback *m_cbScraper;
-    static IAddonCallback *m_cbScreensaver;
-    static IAddonCallback *m_cbPlugin;
-    static IAddonCallback *m_cbDSPAudio;
 
     VECADDONS  m_allAddons;
     VECADDONS  m_virtualAddons;
@@ -162,6 +139,8 @@ namespace ADDON
     VECADDONS  m_screensaverAddons;
     VECADDONS  m_pluginAddons;
     VECADDONS  m_DSPAudioAddons;
+
+    static std::map<TYPE, IAddonCallback*> m_managers;
   };
 
   extern class CAddonManager g_addonmanager;

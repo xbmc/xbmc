@@ -262,10 +262,6 @@ void CAddonStatusHandler::Process()
   return;
 }
 
-/**********************************************************
- * Callback for unknown Add-on types as fallback
- */
-CAddonDummyCallback *AddonDummyCallback = new CAddonDummyCallback();
 
 
 /**********************************************************
@@ -274,16 +270,7 @@ CAddonDummyCallback *AddonDummyCallback = new CAddonDummyCallback();
  */
 
 class CAddonManager g_addonmanager;
-
-IAddonCallback *CAddonManager::m_cbMultitye        = NULL;
-IAddonCallback *CAddonManager::m_cbViz             = NULL;
-IAddonCallback *CAddonManager::m_cbSkin            = NULL;
-IAddonCallback *CAddonManager::m_cbPVR             = NULL;
-IAddonCallback *CAddonManager::m_cbScript          = NULL;
-IAddonCallback *CAddonManager::m_cbScraper         = NULL;
-IAddonCallback *CAddonManager::m_cbScreensaver     = NULL;
-IAddonCallback *CAddonManager::m_cbPlugin          = NULL;
-IAddonCallback *CAddonManager::m_cbDSPAudio        = NULL;
+std::map<ADDON::TYPE, ADDON::IAddonCallback*> CAddonManager::m_managers;
 
 CAddonManager::CAddonManager()
 {
@@ -294,114 +281,36 @@ CAddonManager::~CAddonManager()
 {
 }
 
-IAddonCallback* CAddonManager::GetCallbackForType(TYPE type)
+IAddonCallback* CAddonManager::GetCallbackForType(ADDON::TYPE type)
 {
-  IAddonCallback *cb_tmp;
-
-  switch (type)
-  {
-    case ADDON_MULTITYPE:
-      cb_tmp = m_cbMultitye;
-      break;
-    case ADDON_VIZ:
-      cb_tmp = m_cbViz;
-      break;
-    case ADDON_SKIN:
-      cb_tmp = m_cbSkin;
-      break;
-    case ADDON_PVRDLL:
-      cb_tmp = m_cbPVR;
-      break;
-    case ADDON_SCRIPT:
-      cb_tmp = m_cbScript;
-      break;
-    case ADDON_SCRAPER:
-      cb_tmp = m_cbScraper;
-      break;
-    case ADDON_SCREENSAVER:
-      cb_tmp = m_cbScreensaver;
-      break;
-    case ADDON_PLUGIN:
-      cb_tmp = m_cbPlugin;
-      break;
-    case ADDON_DSP_AUDIO:
-      cb_tmp = m_cbDSPAudio;
-      break;
-    default:
-      cb_tmp = NULL;
-      break;
-  }
-
-  if (cb_tmp == NULL)
-    cb_tmp = AddonDummyCallback;
-
-  return cb_tmp;
+  if (m_managers.find(type) == m_managers.end())
+    return NULL;
+  else
+    return m_managers[type];
 }
 
-bool CAddonManager::RegisterAddonCallback(TYPE type, IAddonCallback* cb)
+bool CAddonManager::RegisterAddonCallback(const ADDON::TYPE type, IAddonCallback* cb)
 {
   if (cb == NULL)
     return false;
 
-  if (type == ADDON_MULTITYPE && m_cbMultitye == NULL)
-    m_cbMultitye = cb;
-  else if (type == ADDON_VIZ && m_cbViz == NULL)
-    m_cbViz = cb;
-  else if (type == ADDON_SKIN && m_cbSkin == NULL)
-    m_cbSkin = cb;
-  else if (type == ADDON_PVRDLL && m_cbPVR == NULL)
-    m_cbPVR = cb;
-  else if (type == ADDON_SCRIPT && m_cbScript == NULL)
-    m_cbScript = cb;
-  else if (type == ADDON_SCRAPER && m_cbScraper == NULL)
-    m_cbScraper = cb;
-  else if (type == ADDON_SCREENSAVER && m_cbScreensaver == NULL)
-    m_cbScreensaver = cb;
-  else if (type == ADDON_PLUGIN && m_cbPlugin == NULL)
-    m_cbPlugin = cb;
-  else if (type == ADDON_DSP_AUDIO && m_cbDSPAudio == NULL)
-    m_cbDSPAudio = cb;
-  else
-    return false;
+  m_managers.erase(type);
+  m_managers[type] = cb;
 
   return true;
 }
 
-void CAddonManager::UnregisterAddonCallback(TYPE type)
+void CAddonManager::UnregisterAddonCallback(ADDON::TYPE type)
 {
-  switch (type)
-  {
-    case ADDON_MULTITYPE:
-      m_cbMultitye = NULL;
-      return;
-    case ADDON_VIZ:
-      m_cbViz = NULL;
-      return;
-    case ADDON_SKIN:
-      m_cbSkin = NULL;
-      return;
-    case ADDON_PVRDLL:
-      m_cbPVR = NULL;
-      return;
-    case ADDON_SCRIPT:
-      m_cbScript = NULL;
-      return;
-    case ADDON_SCRAPER:
-      m_cbScraper = NULL;
-      return;
-    case ADDON_SCREENSAVER:
-      m_cbScreensaver = NULL;
-      return;
-    case ADDON_PLUGIN:
-      m_cbPlugin = NULL;
-      return;
-    case ADDON_DSP_AUDIO:
-      m_cbDSPAudio = NULL;
-      return;
-    default:
-      return;
-  }
+  m_managers.erase(type);
 }
+
+
+
+
+
+
+
 
 void CAddonManager::LoadAddons()
 {
