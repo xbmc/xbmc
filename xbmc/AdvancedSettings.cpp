@@ -109,6 +109,7 @@ void CAdvancedSettings::Initialize()
   m_lcdAddress4 = 0x54;
   m_lcdHeartbeat = false;
   m_lcdScrolldelay = 1;
+  m_lcdHostName = "localhost";
 
   m_autoDetectPingTime = 30;
 
@@ -451,6 +452,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "address4", m_lcdAddress4, 0, 0x100);
     XMLUtils::GetBoolean(pElement, "heartbeat", m_lcdHeartbeat);
     XMLUtils::GetInt(pElement, "scrolldelay", m_lcdScrolldelay, -8, 8);
+    XMLUtils::GetString(pElement, "hostname", m_lcdHostName);
   }
   pElement = pRootElement->FirstChildElement("network");
   if (pElement)
