@@ -239,7 +239,7 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
   }
 
   // Load addons.xml and populate m_(...)Addons;
-  ADDON::g_addonmanager.LoadAddons();
+  ADDON::CAddonMgr::Get()->LoadAddons();
 
   bXboxMediacenter = true;
 

@@ -94,13 +94,15 @@ namespace ADDON
   };
 
   /**
-   * Class - CAddonManager
+   * Class - CAddonMgr
    */
-  class CAddonManager
+  class CAddonMgr
   {
   public:
-    CAddonManager();
-    virtual ~CAddonManager();
+    static CAddonMgr* Get();
+    virtual ~CAddonMgr();
+
+
 
     IAddonCallback* GetCallbackForType(TYPE type);
     bool RegisterAddonCallback(TYPE type, IAddonCallback* cb);
@@ -126,6 +128,10 @@ namespace ADDON
     CStdString GetAddonsFolder() const;
 
   private:
+    CAddonMgr();
+    static CAddonMgr* m_pInstance;
+
+    static std::map<TYPE, IAddonCallback*> m_managers;
 
     VECADDONS  m_allAddons;
     VECADDONS  m_virtualAddons;
@@ -139,10 +145,6 @@ namespace ADDON
     VECADDONS  m_screensaverAddons;
     VECADDONS  m_pluginAddons;
     VECADDONS  m_DSPAudioAddons;
-
-    static std::map<TYPE, IAddonCallback*> m_managers;
   };
-
-  extern class CAddonManager g_addonmanager;
 
 }; /* namespace ADDON */

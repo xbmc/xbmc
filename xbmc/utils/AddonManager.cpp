@@ -121,7 +121,7 @@ void CAddonStatusHandler::Process()
 
     if (pDialog->IsConfirmed())
     {
-      g_addonmanager.GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, false);
+      CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, false);
     }
   }
   /* Request to restart the AddOn and data structures need updated */
@@ -140,7 +140,7 @@ void CAddonStatusHandler::Process()
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
-    g_addonmanager.GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
+    CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
   }
   /* Request to restart XBMC (hope no AddOn need or do this) */
   else if (m_status == STATUS_NEED_EMER_RESTART)
@@ -219,7 +219,7 @@ void CAddonStatusHandler::Process()
 
     if (pDialog->IsConfirmed())
     {
-      g_addonmanager.GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
+      CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
     }
   }
   /* One or more AddOn file(s) missing (check log's for missing data) */
@@ -265,23 +265,31 @@ void CAddonStatusHandler::Process()
 
 
 /**********************************************************
- * CAddonManager
+ * CAddonMgr
  *
  */
 
-class CAddonManager g_addonmanager;
-std::map<ADDON::TYPE, ADDON::IAddonCallback*> CAddonManager::m_managers;
+CAddonMgr* CAddonMgr::m_pInstance = NULL;
+std::map<ADDON::TYPE, ADDON::IAddonCallback*> CAddonMgr::m_managers;
 
-CAddonManager::CAddonManager()
-{
-
-}
-
-CAddonManager::~CAddonManager()
+CAddonMgr::CAddonMgr()
 {
 }
 
-IAddonCallback* CAddonManager::GetCallbackForType(ADDON::TYPE type)
+CAddonMgr::~CAddonMgr()
+{
+}
+
+CAddonMgr* CAddonMgr::Get()
+{
+  if (!m_pInstance)
+  {
+    m_pInstance = new CAddonMgr();
+  }
+  return m_pInstance;
+}
+
+IAddonCallback* CAddonMgr::GetCallbackForType(ADDON::TYPE type)
 {
   if (m_managers.find(type) == m_managers.end())
     return NULL;
@@ -289,7 +297,7 @@ IAddonCallback* CAddonManager::GetCallbackForType(ADDON::TYPE type)
     return m_managers[type];
 }
 
-bool CAddonManager::RegisterAddonCallback(const ADDON::TYPE type, IAddonCallback* cb)
+bool CAddonMgr::RegisterAddonCallback(const ADDON::TYPE type, IAddonCallback* cb)
 {
   if (cb == NULL)
     return false;
@@ -300,7 +308,7 @@ bool CAddonManager::RegisterAddonCallback(const ADDON::TYPE type, IAddonCallback
   return true;
 }
 
-void CAddonManager::UnregisterAddonCallback(ADDON::TYPE type)
+void CAddonMgr::UnregisterAddonCallback(ADDON::TYPE type)
 {
   m_managers.erase(type);
 }
@@ -312,7 +320,7 @@ void CAddonManager::UnregisterAddonCallback(ADDON::TYPE type)
 
 
 
-void CAddonManager::LoadAddons()
+void CAddonMgr::LoadAddons()
 {
   CStdString strXMLFile;
   TiXmlDocument xmlDoc;
@@ -347,7 +355,7 @@ void CAddonManager::LoadAddons()
   }
 }
 
-bool CAddonManager::SaveAddons()
+bool CAddonMgr::SaveAddons()
 {
   // TODO: Should we be specifying utf8 here??
   TiXmlDocument doc;
@@ -369,12 +377,12 @@ bool CAddonManager::SaveAddons()
   return doc.SaveFile(GetAddonsFile());
 }
 
-VECADDONS *CAddonManager::GetAllAddons()
+VECADDONS *CAddonMgr::GetAllAddons()
 {
   return &m_allAddons;//&m_allAddons;
 }
 
-VECADDONS *CAddonManager::GetAddonsFromType(const TYPE &type)
+VECADDONS *CAddonMgr::GetAddonsFromType(const TYPE &type)
 {
   switch (type)
   {
@@ -401,7 +409,7 @@ VECADDONS *CAddonManager::GetAddonsFromType(const TYPE &type)
   }
 }
 
-bool CAddonManager::GetAddonFromGUID(const CStdString &guid, CAddon &addon)
+bool CAddonMgr::GetAddonFromGUID(const CStdString &guid, CAddon &addon)
 {
   /* iterate through alladdons vec and return matched Addon */
   for (unsigned int i = 0; i < m_allAddons.size(); i++)
@@ -415,7 +423,7 @@ bool CAddonManager::GetAddonFromGUID(const CStdString &guid, CAddon &addon)
   return false;
 }
 
-bool CAddonManager::GetAddonFromNameAndType(const CStdString &name, const TYPE &type, CAddon &addon)
+bool CAddonMgr::GetAddonFromNameAndType(const CStdString &name, const TYPE &type, CAddon &addon)
 {
   VECADDONS *addons = GetAddonsFromType(type);
   if (!addons) return false;
@@ -431,7 +439,7 @@ bool CAddonManager::GetAddonFromNameAndType(const CStdString &name, const TYPE &
   return false;
 }
 
-bool CAddonManager::DisableAddon(const CStdString &guid, const TYPE &type)
+bool CAddonMgr::DisableAddon(const CStdString &guid, const TYPE &type)
 {
   VECADDONS *addons = GetAddonsFromType(type);
   if (!addons) return false;
@@ -449,7 +457,7 @@ bool CAddonManager::DisableAddon(const CStdString &guid, const TYPE &type)
   return SaveAddons();
 }
 
-void CAddonManager::UpdateAddons()
+void CAddonMgr::UpdateAddons()
 {
   //TODO: only caches packaged icon thumbnail
   m_allAddons.clear();
@@ -540,7 +548,7 @@ void CAddonManager::UpdateAddons()
     m_allAddons.push_back(m_virtualAddons[i]);
 }
 
-bool CAddonManager::AddonFromInfoXML(const CStdString &path, CAddon &addon)
+bool CAddonMgr::AddonFromInfoXML(const CStdString &path, CAddon &addon)
 {
   // First check that we can load info.xml
   CStdString strPath(path);
@@ -788,7 +796,7 @@ bool CAddonManager::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   return true;
 }
 
-bool CAddonManager::SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONS &addons)
+bool CAddonMgr::SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONS &addons)
 {
   CStdString strType;
   switch (type)
@@ -847,7 +855,7 @@ bool CAddonManager::SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONS
   return true;
 }
 
-void CAddonManager::GetAddons(const TiXmlElement* pRootElement, const TYPE &type)
+void CAddonMgr::GetAddons(const TiXmlElement* pRootElement, const TYPE &type)
 {
   CStdString strTagName;
   switch (type)
@@ -912,7 +920,7 @@ void CAddonManager::GetAddons(const TiXmlElement* pRootElement, const TYPE &type
   }
 }
 
-bool CAddonManager::GetAddon(const TYPE &type, const TiXmlNode *node, CAddon &addon)
+bool CAddonMgr::GetAddon(const TYPE &type, const TiXmlNode *node, CAddon &addon)
 {
   // name
   const TiXmlNode *pNodeName = node->FirstChild("name");
@@ -947,13 +955,13 @@ bool CAddonManager::GetAddon(const TYPE &type, const TiXmlNode *node, CAddon &ad
   return true;
 }
 
-void CAddonManager::SaveVirtualAddon(CAddon &addon)
+void CAddonMgr::SaveVirtualAddon(CAddon &addon)
 {
   m_virtualAddons.push_back(addon);
   return;
 }
 
-CStdString CAddonManager::GetAddonsFile() const
+CStdString CAddonMgr::GetAddonsFile() const
 {
   CStdString folder;
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].hasAddons())
@@ -964,7 +972,7 @@ CStdString CAddonManager::GetAddonsFile() const
   return folder;
 }
 
-CStdString CAddonManager::GetAddonsFolder() const
+CStdString CAddonMgr::GetAddonsFolder() const
 {
   CStdString folder = "special://home/addons";
 

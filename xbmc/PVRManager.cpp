@@ -382,7 +382,7 @@ void CPVRManager::Start()
   m_timeshiftInt            = false;
 
   /* Discover, load and create chosen Client add-on's. */
-  g_addonmanager.RegisterAddonCallback(ADDON_PVRDLL, this);
+  CAddonMgr::Get()->RegisterAddonCallback(ADDON_PVRDLL, this);
   if (!LoadClients())
   {
     CLog::Log(LOGERROR, "PVR: couldn't load clients");
@@ -449,7 +449,7 @@ void CPVRManager::Stop()
 bool CPVRManager::LoadClients()
 {
   /* Get all PVR Add on's */
-  VECADDONS *addons = g_addonmanager.GetAddonsFromType(ADDON_PVRDLL);
+  VECADDONS *addons = CAddonMgr::Get()->GetAddonsFromType(ADDON_PVRDLL);
 
   /* Make sure addon's are loaded */
   if (addons == NULL || addons->empty())

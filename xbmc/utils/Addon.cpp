@@ -513,7 +513,7 @@ bool CAddon::CreateChildAddon(const CAddon &parent, CAddon &child)
   child.m_guid_parent = parent.m_guid;
   child.m_guid = StringUtils::CreateUUID();
 
-  VECADDONS *addons = g_addonmanager.GetAddonsFromType(parent.m_type);
+  VECADDONS *addons = CAddonMgr::Get()->GetAddonsFromType(parent.m_type);
   if (!addons) return false;
 
   for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
