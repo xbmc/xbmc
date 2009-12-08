@@ -36,11 +36,10 @@ const CONTENT_TYPE  TranslateContent(const CStdString &string);
 const CStdString    TranslateType(const TYPE &type);
 const TYPE          TranslateType(const CStdString &string);
 
-class CAddon
+class CAddon : public IAddon
 {
 public:
   CAddon();
-  ~CAddon() {};
   void Set(const AddonProps &props);
   void Reset();
 
@@ -56,6 +55,9 @@ public:
 
 
 
+
+  virtual ~CAddon() {}
+  virtual AddonPtr Clone() const;
 
   // settings & language
   virtual bool HasSettings();

@@ -185,11 +185,14 @@ CAddon::CAddon()
 
 
 
-
+AddonPtr CAddon::Clone() const
+{
+  return AddonPtr(new CAddon(*this));
+}
 
 /*
-* Language File Handling
-*/
+ * Language File Handling
+ */
 bool CAddon::LoadStrings()
 {
   if (!HasSettings())

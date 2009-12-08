@@ -93,9 +93,10 @@ public:
   CTVDatabase *GetTVDatabase() { return &m_database; }
 
   /*--- Addon related functions ---*/
-  bool RequestRestart(const ADDON::CAddon* addon, bool datachanged);
-  bool RequestRemoval(const ADDON::CAddon* addon);
-  ADDON_STATUS SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
+  bool RequestRestart(const ADDON::IAddon* addon, bool datachanged);
+  bool RequestRemoval(const ADDON::IAddon* addon);
+  ADDON_STATUS SetSetting(const ADDON::IAddon* addon, const char *settingName, const void *settingValue);
+  virtual addon_settings* GetSettings(const ADDON::IAddon*) { return NULL; };
   void OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
 
   /*--- GUIInfoManager functions ---*/

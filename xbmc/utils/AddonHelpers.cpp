@@ -156,7 +156,7 @@ void CAddonUtils::AddOnLog(void *addonData, const addon_log_t loglevel, const ch
 
 void CAddonUtils::AddonStatusHandler(void *addonData, const ADDON_STATUS status, const char* msg)
 {
-  const CAddon* addon = (CAddon*) addonData;
+  CAddon* addon = (CAddon*) addonData;
   if (!addon)
     return;
 
@@ -189,7 +189,7 @@ void CAddonUtils::OpenAddonSettings(void *addonData)
   }
 }
 
-void CAddonUtils::TransferAddonSettings(const CAddon &addon)
+void CAddonUtils::TransferAddonSettings(CAddon &addon)
 {
   bool restart = false;
   ADDON_STATUS reportStatus = STATUS_OK;

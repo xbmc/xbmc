@@ -38,7 +38,7 @@ public:
   static void AddOnLog(void *addonData, const addon_log_t loglevel, const char *msg);
   static void AddonStatusHandler(void *addonData, const ADDON_STATUS status, const char* msg);
   static void OpenAddonSettings(void *addonData);
-  static void TransferAddonSettings(const CAddon &addon);
+  static void TransferAddonSettings(CAddon &addon);
   static bool GetAddonSetting(void *addonData, const char* settingName, void *settingValue);
   static char* GetAddonDirectory(void *addonData);
   static char* GetUserDirectory(void *addonData);

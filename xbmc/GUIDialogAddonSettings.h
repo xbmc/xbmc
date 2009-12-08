@@ -38,6 +38,7 @@ public:
   static void ShowAndGetInput(CStdString& path);
   static void ShowAndGetInput(ADDON::CAddon& addon);
   void SetHeading(const CStdString &strHeading);
+  void SetAddon(const ADDON::AddonPtr& addon);
   void SetSettings(CAddonSettings settings) { m_settings = settings; };
   CAddonSettings GetSettings() { return m_settings; };
 
@@ -55,6 +56,7 @@ private:
   bool ShowVirtualKeyboard(int iControl);
   static CURL m_url;
   bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
+  ADDON::AddonPtr m_addon;
   CAddonSettings m_settings;
   CStdString m_strHeading;
   std::map<CStdString,CStdString> m_buttonValues;

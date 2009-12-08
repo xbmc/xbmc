@@ -54,16 +54,17 @@ namespace ADDON
  *
  */
 
+
 CCriticalSection CAddonStatusHandler::m_critSection;
 
-CAddonStatusHandler::CAddonStatusHandler(const CAddon* addon, ADDON_STATUS status, CStdString message, bool sameThread)
+CAddonStatusHandler::CAddonStatusHandler(IAddon* addon, ADDON_STATUS status, CStdString message, bool sameThread)
+  : m_addon(addon)
 {
-  if (addon == NULL)
+  if (m_addon == NULL)
     return;
 
-  CLog::Log(LOGINFO, "Called Add-on status handler for '%u' of clientName:%s, clientUUID:%s (same Thread=%s)", status, addon->Name().c_str(), addon->UUID().c_str(), sameThread ? "yes" : "no");
+  CLog::Log(LOGINFO, "Called Add-on status handler for '%u' of clientName:%s, clientGUID:%s (same Thread=%s)", status, m_addon->Name().c_str(), m_addon->UUID().c_str(), sameThread ? "yes" : "no");
 
-  m_addon   = addon;
   m_status  = status;
   m_message = message;
 
@@ -109,7 +110,7 @@ void CAddonStatusHandler::Process()
     if (!pDialog) return;
 
     CStdString heading;
-    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
+    /*heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());*/
 
     pDialog->SetHeading(heading);
     pDialog->SetLine(1, 23047);
@@ -168,7 +169,7 @@ void CAddonStatusHandler::Process()
       g_application.getApplicationMessenger().RestartApp();
     }
   }
-  /* A setting value is invalid */
+  /* Some required settings are missing/invalid */
   else if (m_status == STATUS_NEED_SETTINGS)
   {
     CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -178,7 +179,7 @@ void CAddonStatusHandler::Process()
     heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
 
     pDialogYesNo->SetHeading(heading);
-    pDialogYesNo->SetLine(1, 23054);
+    pDialogYesNo->SetLine(1, 23053);
     pDialogYesNo->SetLine(2, 23043);
     pDialogYesNo->SetLine(3, m_message);
 
@@ -188,41 +189,40 @@ void CAddonStatusHandler::Process()
 
     if (!pDialogYesNo->IsConfirmed()) return;
 
-    if (!CAddonSettings::SettingsExist(m_addon->Path()))
+    if (m_addon->Type() == ADDON_SKIN)
+    {
+      CLog::Log(LOGERROR, "ADDONS: Incompatible type (%s) encountered", ADDON::TranslateType(m_addon->Type()).c_str());
+      return;
+    }
+
+    if (!m_addon->HasSettings())
     {
       CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", m_addon->Name().c_str());
       return;
     }
 
-    CURL cUrl(m_addon->Path());
-
-    // Load language strings temporarily
-    CAddon::LoadAddonStrings(cUrl);
-
     // Create the dialog
     CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
 
-    heading.Format("$LOCALIZE[23054]: %s %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
+    heading.Format("$LOCALIZE[23053]: %s %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
     pDialog->SetHeading(heading);
-
-    CAddonSettings settings;
-    settings.Load(cUrl);
-    pDialog->SetSettings(settings);
+    const AddonPtr addon(m_addon);
+    pDialog->SetAddon(addon);
 
     pDialog->DoModal();
 
-    settings = pDialog->GetSettings();
-    settings.Save();
-
-    // Unload temporary language strings
-    CAddon::ClearAddonStrings();
-
     if (pDialog->IsConfirmed())
     {
+      m_addon->SaveSettings();
       CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
     }
+    else
+    {
+      m_addon->LoadSettings();
+    }
   }
-  /* One or more AddOn file(s) missing (check log's for missing data) */
+  // One or more AddOn file(s) missing (check log's for missing data)
+  //TODO if installer has file manifest per addon (for incremental updates), we can check this ourselves
   else if (m_status == STATUS_MISSING_FILE)
   {
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
@@ -246,8 +246,10 @@ void CAddonStatusHandler::Process()
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
-    CStdString heading;
-    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
+    CStdString heading, name;
+    name = m_addon->Name();
+    int type = m_addon->Type();
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + type).c_str(), name.c_str());
 
     pDialog->SetHeading(heading);
     pDialog->SetLine(1, 23057);
@@ -261,7 +263,6 @@ void CAddonStatusHandler::Process()
 
   return;
 }
-
 
 
 /**********************************************************

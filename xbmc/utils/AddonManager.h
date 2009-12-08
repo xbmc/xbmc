@@ -31,6 +31,12 @@
 
 namespace ADDON
 {
+//  typedef std::vector<AddonPtr> VECADDONS;
+//  typedef std::vector<AddonPtr>::iterator IVECADDONS;
+//  typedef std::map<TYPE, VECADDONS> MAPADDONS;
+
+  const int        ADDON_DIRSCAN_FREQ         = 60;
+  const CStdString ADDON_METAFILE             = "description.xml";
   const CStdString ADDON_MULTITYPE_EXT        = "*.add";
   const CStdString ADDON_VIZ_EXT              = "*.vis";
   const CStdString ADDON_SKIN_EXT             = "*.skin";
@@ -45,38 +51,7 @@ namespace ADDON
   const CStdString ADDON_PLUGIN_PICTURES_EXT  = "*.py|*.plpic";
   const CStdString ADDON_PLUGIN_WEATHER_EXT   = "*.py|*.plwea";
   const CStdString ADDON_DSP_AUDIO_EXT        = "*.adsp";
-  const CStdString ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
   const CStdString ADDON_VERSION_RE = "(?<Major>\\d*)\\.?(?<Minor>\\d*)?\\.?(?<Build>\\d*)?\\.?(?<Revision>\\d*)?";
-
-  class CAddon;
-
-  typedef std::vector<CAddon> VECADDONS;
-  typedef std::vector<CAddon>::iterator IVECADDONS;
-
-  /**
-   * Class - CAddonStatusHandler
-   * Used to informate the user about occurred errors and
-   * changes inside Add-on's, and ask him what to do.
-   * It can executed in the same thread as the calling
-   * function or in a seperate thread.
-   */
-  class CAddonStatusHandler : private CThread
-  {
-  public:
-    CAddonStatusHandler(const CAddon* addon, ADDON_STATUS status, CStdString message, bool sameThread = true);
-    ~CAddonStatusHandler();
-
-    /* Thread handling */
-    virtual void Process();
-    virtual void OnStartup();
-    virtual void OnExit();
-
-  private:
-    static CCriticalSection   m_critSection;
-    const CAddon*             m_addon;
-    ADDON_STATUS              m_status;
-    CStdString                m_message;
-  };
 
   /**
   * Class - IAddonCallback
@@ -88,10 +63,41 @@ namespace ADDON
   class IAddonCallback
   {
     public:
-      virtual bool RequestRestart(const CAddon* addon, bool datachanged)=0;
-      virtual bool RequestRemoval(const CAddon* addon)=0;
-      virtual ADDON_STATUS SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)=0;
+      virtual bool RequestRestart(const IAddon* addon, bool datachanged)=0;
+      virtual bool RequestRemoval(const IAddon* addon)=0;
+      virtual ADDON_STATUS SetSetting(const IAddon* addon, const char *settingName, const void *settingValue)=0;
+      virtual addon_settings_t GetSettings(const IAddon* addon)=0;
   };
+
+  /**
+  * Class - CAddonStatusHandler
+  * Used to informate the user about occurred errors and
+  * changes inside Add-on's, and ask him what to do.
+  * It can executed in the same thread as the calling
+  * function or in a seperate thread.
+  */
+  class CAddonStatusHandler : private CThread
+  {
+    public:
+      CAddonStatusHandler(IAddon* addon, ADDON_STATUS status, CStdString message, bool sameThread = true);
+      ~CAddonStatusHandler();
+
+      /* Thread handling */
+      virtual void Process();
+      virtual void OnStartup();
+      virtual void OnExit();
+
+    private:
+      static CCriticalSection   m_critSection;
+      IAddon*                   m_addon;
+      ADDON_STATUS              m_status;
+      CStdString                m_message;
+  };
+
+  class CAddon;
+
+  typedef std::vector<CAddon> VECADDONS;
+  typedef std::vector<CAddon>::iterator IVECADDONS;
 
   /**
    * Class - CAddonMgr
@@ -102,11 +108,13 @@ namespace ADDON
     static CAddonMgr* Get();
     virtual ~CAddonMgr();
 
-
-
     IAddonCallback* GetCallbackForType(TYPE type);
     bool RegisterAddonCallback(TYPE type, IAddonCallback* cb);
     void UnregisterAddonCallback(TYPE type);
+
+
+
+
 
     void LoadAddons();
     bool SaveAddons();

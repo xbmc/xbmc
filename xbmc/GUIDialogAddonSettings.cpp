@@ -408,6 +408,11 @@ void CGUIDialogAddonSettings::SetHeading(const CStdString& strHeading)
   m_strHeading = strHeading;
 }
 
+void CGUIDialogAddonSettings::SetAddon(const ADDON::AddonPtr &addon)
+{
+  m_addon = addon;
+}
+
 // Go over all the settings and set their values according to the values of the GUI components
 bool CGUIDialogAddonSettings::SaveSettings(void)
 {

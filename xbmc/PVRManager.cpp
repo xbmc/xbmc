@@ -620,7 +620,7 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
 /*
 /* Send a setting value to the client driver
 /********************************************************************/
-ADDON_STATUS CPVRManager::SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)
+ADDON_STATUS CPVRManager::SetSetting(const IAddon* addon, const char *settingName, const void *settingValue)
 {
   if (!addon)
     return STATUS_UNKNOWN;
@@ -646,7 +646,7 @@ ADDON_STATUS CPVRManager::SetSetting(const CAddon* addon, const char *settingNam
 /*
 /* Restart a client driver
 /********************************************************************/
-bool CPVRManager::RequestRestart(const CAddon* addon, bool datachanged)
+bool CPVRManager::RequestRestart(const IAddon* addon, bool datachanged)
 {
   if (!addon)
     return false;
@@ -688,7 +688,7 @@ bool CPVRManager::RequestRestart(const CAddon* addon, bool datachanged)
 /*
 /* Unload a client driver
 /********************************************************************/
-bool CPVRManager::RequestRemoval(const CAddon* addon)
+bool CPVRManager::RequestRemoval(const IAddon* addon)
 {
   if (!addon)
     return false;
