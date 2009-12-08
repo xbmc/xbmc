@@ -828,13 +828,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInStartupWindow(pSetting);
     }
-    else if (strSetting.Equals("videoplayer.externaldvdplayer"))
-    {
-      CSettingString *pSettingString = (CSettingString *)pSetting;
-      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
-      if (pSettingString->GetData().IsEmpty())
-        pControl->SetLabel2(g_localizeStrings.Get(20009));
-    }
     else if (strSetting.Equals("locale.country"))
     {
       FillInRegions(pSetting);
@@ -3069,8 +3062,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
 
   int iCurrentScr = -1;
   vector<CStdString> vecScr;
-  int i = 0;
-  for (i = 0; i < items.Size(); ++i)
+  for (int i = 0; i < items.Size(); ++i)
   {
     CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder)
@@ -3101,7 +3093,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
     strDefaultScr.Delete(strDefaultScr.size() - 4, 4);
 
   sort(vecScr.begin(), vecScr.end(), sortstringbyname());
-  for (i = 0; i < (int) vecScr.size(); ++i)
+  for (int i = 0; i < (int) vecScr.size(); ++i)
   {
     CStdString strScr = vecScr[i];
 
