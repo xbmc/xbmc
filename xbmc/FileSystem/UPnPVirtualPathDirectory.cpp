@@ -116,23 +116,6 @@ CUPnPVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList
     path.TrimRight("/");
 
     if (path == "virtualpath://upnproot") {
-        // music
-        item.reset(new CFileItem("virtualpath://upnpmusic/", true));
-        item->SetLabel("Music Files");
-        item->SetLabelPreformated(true);
-        items.Add(item);
-
-        // video
-        item.reset(new CFileItem("virtualpath://upnpvideo/", true));
-        item->SetLabel("Video Files");
-        item->SetLabelPreformated(true);
-        items.Add(item);
-
-        // pictures
-        item.reset(new CFileItem("virtualpath://upnppictures/", true));
-        item->SetLabel("Picture Files");
-        item->SetLabelPreformated(true);
-        items.Add(item);
 
         // music library
         item.reset(new CFileItem("musicdb://", true));
