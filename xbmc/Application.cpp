@@ -652,12 +652,22 @@ HRESULT CApplication::Create(HWND hWnd)
     g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
   }
 
-  bool bFullScreen = g_guiSettings.m_LookAndFeelResolution != RES_WINDOW;
-  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
+#ifdef __APPLE__
+  // force initial window creation to be windowed, if fullscreen, it will switch to it below
+  // fixes the white screen of death if starting fullscreen and switching to windowed.
+  bool bFullScreen = false;
+  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return E_FAIL;
   }
+#else
+  bool bFullScreen = g_guiSettings.m_LookAndFeelResolution != RES_WINDOW;
+  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
+    CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
+    return E_FAIL;
+  }
+#endif
 
   if (!g_Windowing.InitRenderSystem())
   {
