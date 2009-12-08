@@ -372,9 +372,15 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     strFileMask += ".py|.xml|.milk|.xpr|.cdg";
 #endif
 
+    vector<CStdString> vecExtensions;
+    Tokenize(strFileMask, vecExtensions, "|");
+
     // Only remove if its a valid media extension
-    if (strFileMask.Find(strExtension.c_str()) >= 0)
-      strFileName = strFileName.Left(iPos);
+    for(unsigned int i = 0; i < vecExtensions.size(); i++)
+    {
+      if(vecExtensions[i] == strExtension)
+        strFileName = strFileName.Left(iPos);
+    }
   }
 }
 
@@ -405,8 +411,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     }
   }
 
-  if (!bIsFolder)
-    RemoveExtension(strTitleAndYear);
+  RemoveExtension(strTitleAndYear);
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
