@@ -1,13 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
   <!-- Translator: Mika Pirinen -->
-  <!-- Date of translation: 23/11/2009 -->
-  <!-- Finnish strings based on English strings revision 24877 -->
+  <!-- Date of translation: 07/12/2009 -->
+  <!-- Finnish strings based on English strings revision 25342 -->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Vaihda sinun</string>
   <string id="31001">Pitää</string>
   <string id="31002">Inhoaa</string>
   <string id="31003">Virta-asetukset</string>
+  <string id="31004">Suoritetaan...</string>
 
   <string id="31007">Lisäosat</string>
 
