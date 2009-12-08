@@ -46,19 +46,19 @@ CPVRClient* CPVRClientFactory::LoadPVRClient(const CAddon& addon, DWORD clientID
 #ifdef HAS_PVRCLIENTS
   // add the library name readed from info.xml to the addon's path
   CStdString strFileName;
-  if (addon.m_guid_parent.IsEmpty())
+  if (addon.Parent().IsEmpty())
   {
-    strFileName = addon.m_strPath + addon.m_strLibName;
+    strFileName = addon.Path() + addon.LibName();
   }
   else
   {
-    CStdString extension = CUtil::GetExtension(addon.m_strLibName);
-    strFileName = "special://temp/" + addon.m_strLibName;
+    CStdString extension = CUtil::GetExtension(addon.LibName());
+    strFileName = "special://temp/" + addon.LibName();
     CUtil::RemoveExtension(strFileName);
-    strFileName += "-" + addon.m_guid + extension;
+    strFileName += "-" + addon.UUID() + extension;
 
     if (!CFile::Exists(strFileName))
-      CFile::Cache(addon.m_strPath + addon.m_strLibName, strFileName);
+      CFile::Cache(addon.Path() + addon.LibName(), strFileName);
 
     CLog::Log(LOGNOTICE, "Loaded virtual child addon %s", strFileName.c_str());
   }

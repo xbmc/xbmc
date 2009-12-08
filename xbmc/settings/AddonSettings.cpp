@@ -169,15 +169,15 @@ bool CAddonSettings::Load(const CURL& url)
 bool CAddonSettings::Load(const CAddon& addon)
 {
   // create the users filepath
-  m_userFileName = GetUserDirectory(addon.m_strPath);
+  m_userFileName = GetUserDirectory(addon.Path());
 
   // If it is a virtual child add-on add the guid to the path
-  if (!addon.m_guid_parent.IsEmpty())
-    m_userFileName += "-" + addon.m_guid;
+  if (!addon.Parent().IsEmpty())
+    m_userFileName += "-" + addon.UUID();
 
   CUtil::AddFileToFolder(m_userFileName, "settings.xml", m_userFileName);
 
-  CStdString addonFileName = addon.m_strPath;
+  CStdString addonFileName = addon.Path();
   CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
   CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
 

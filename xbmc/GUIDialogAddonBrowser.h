@@ -41,9 +41,9 @@ public:
   bool IsConfirmed() { return m_confirmed; };
   void SetHeading(const CStdString &heading);
 
-  static bool ShowAndGetAddons(const ADDON::AddonType &type, const bool activeOnly);
+  static bool ShowAndGetAddons(const ADDON::TYPE &type, const bool activeOnly);
 
-  void SetAddonType(const ADDON::AddonType &type);
+  void SetAddonType(const ADDON::TYPE &type);
 
   virtual bool HasListItems() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
@@ -54,9 +54,9 @@ protected:
   void ClearFileItems();
   void Update();
   bool OnContextMenu(int iItem);
-  void OnGetAddons(const ADDON::AddonType &type);
-  
-  ADDON::AddonType m_type;
+  void OnGetAddons(const ADDON::TYPE &type);
+
+  ADDON::TYPE m_type;
   CFileItemList* m_vecItems;
 
   bool m_confirmed;

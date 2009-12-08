@@ -161,7 +161,7 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CURL& url)
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
 void CGUIDialogAddonSettings::ShowAndGetInput(CAddon& addon)
 {
-  m_url = addon.m_strPath;
+  m_url = addon.Path();
 
   // Load language strings temporarily
   CAddon::LoadAddonStrings(m_url);
@@ -171,7 +171,7 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CAddon& addon)
 
   // Set the heading
   CStdString heading;
-  heading.Format("$LOCALIZE[23000] - %s", addon.m_strName.c_str());
+  heading.Format("$LOCALIZE[23000] - %s", addon.Name().c_str());
   pDialog->SetHeading(heading);
 
   CAddonSettings settings;

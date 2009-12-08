@@ -173,7 +173,7 @@ void CGUIDialogAddonBrowser::Update()
   {
     CAddon &addon = (*addons)[i];
 
-    if (addon.m_addonType != m_type)
+    if (addon.Type() != m_type)
         continue;
 
     if (m_getAddons)
@@ -183,24 +183,24 @@ void CGUIDialogAddonBrowser::Update()
       VECADDONS *addons = g_addonmanager.GetAddonsFromType(m_type);
       for (unsigned i = 0; i < addons->size(); i++)
       {
-        if ((*addons)[i].m_guid == addon.m_guid)
+        if ((*addons)[i].UUID() == addon.UUID())
           skip = true;
       }
       if (skip)
         continue;
     }
 
-    CFileItemPtr pItem(new CFileItem(addon.m_strPath, false));
-    pItem->SetProperty("Addon.GUID", addon.m_guid);
-    pItem->SetProperty("Addon.parentGUID", addon.m_guid_parent);
-    pItem->SetProperty("Addon.Name", addon.m_strName);
-    pItem->SetProperty("Addon.Summary", addon.m_summary);
-    pItem->SetProperty("Addon.Description", addon.m_strDesc);
-    pItem->SetProperty("Addon.Creator", addon.m_strCreator);
-    pItem->SetProperty("Addon.Disclaimer", addon.m_disclaimer);
-    pItem->SetProperty("Addon.m_strLibName", addon.m_disclaimer);
-    pItem->SetProperty("Addon.Rating", addon.m_stars);
-    pItem->SetThumbnailImage(addon.m_icon);
+    CFileItemPtr pItem(new CFileItem(addon.Path(), false));
+    pItem->SetProperty("Addon.GUID", addon.UUID());
+    pItem->SetProperty("Addon.parentGUID", addon.Parent());
+    pItem->SetProperty("Addon.Name", addon.Name());
+    pItem->SetProperty("Addon.Summary", addon.Summary());
+    pItem->SetProperty("Addon.Description", addon.Description());
+    pItem->SetProperty("Addon.Creator", addon.Author());
+    pItem->SetProperty("Addon.Disclaimer", addon.Disclaimer());
+    pItem->SetProperty("Addon.m_strLibName", addon.LibName());
+    pItem->SetProperty("Addon.Rating", addon.Stars());
+    pItem->SetThumbnailImage(addon.Icon());
     m_vecItems->Add(pItem);
   }
   m_vecItems->FillInDefaultIcons();
@@ -258,8 +258,7 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
 
-    if (m_type != ADDON_SCRAPER_PVR && m_type != ADDON_SCRAPER_VIDEO &&
-        m_type != ADDON_SCRAPER_MUSIC && m_type != ADDON_SCRAPER_PROGRAM)
+    if (m_type != ADDON_SCRAPER)
     {
       /* open up settings dialog */
       CAddon addon;
@@ -297,7 +296,7 @@ void CGUIDialogAddonBrowser::SetHeading(const CStdString &heading)
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, heading);
 }
 
-bool CGUIDialogAddonBrowser::ShowAndGetAddons(const AddonType &type, const bool viewActive)
+bool CGUIDialogAddonBrowser::ShowAndGetAddons(const TYPE &type, const bool viewActive)
 {
   // Create a new addonbrowser window
   CGUIDialogAddonBrowser *browser = new CGUIDialogAddonBrowser();
@@ -329,12 +328,12 @@ bool CGUIDialogAddonBrowser::ShowAndGetAddons(const AddonType &type, const bool 
   return confirmed;
 }
 
-void CGUIDialogAddonBrowser::SetAddonType(const AddonType &type)
+void CGUIDialogAddonBrowser::SetAddonType(const TYPE &type)
 {
   m_type = type;
 }
 
-void CGUIDialogAddonBrowser::OnGetAddons(const AddonType &type)
+void CGUIDialogAddonBrowser::OnGetAddons(const TYPE &type)
 {
   // switch context to available addons
   // creates a new addonbrowser window
@@ -378,8 +377,7 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
 
   int btn_Settings = -1;
   int btn_ReUse = -1;
-  if (m_type != ADDON_SCRAPER_PVR && m_type != ADDON_SCRAPER_VIDEO &&
-      m_type != ADDON_SCRAPER_MUSIC && m_type != ADDON_SCRAPER_PROGRAM)
+  if (m_type != ADDON_SCRAPER)
     btn_Settings = pMenu->AddButton(iSettingsLabel);
   if (m_type == ADDON_PVRDLL && pItem->GetProperty("Addon.parentGUID").IsEmpty())
     btn_ReUse = pMenu->AddButton(iReUseLabel);
@@ -424,7 +422,7 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
       if (g_addonmanager.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
       {
         g_addonmanager.GetCallbackForType(m_type)->RequestRemoval(&addon);
-        g_addonmanager.DisableAddon(addon.m_guid, m_type);
+        g_addonmanager.DisableAddon(addon.UUID(), m_type);
         m_changed = true;
         Update();
         return true;

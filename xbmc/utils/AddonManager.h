@@ -20,6 +20,7 @@
  *
  */
 
+#include "IAddon.h"
 #include "StringUtils.h"
 #include "tinyXML/tinyxml.h"
 #include "utils/Thread.h"
@@ -29,28 +30,6 @@
 
 namespace ADDON
 {
-  typedef enum
-  {
-    ADDON_UNKNOWN           = -1,
-    ADDON_MULTITYPE         = 0,
-    ADDON_VIZ               = 1,
-    ADDON_SKIN              = 2,
-    ADDON_PVRDLL            = 3,
-    ADDON_SCRIPT            = 4,
-    ADDON_SCRAPER_PVR       = 5,
-    ADDON_SCRAPER_VIDEO     = 6,
-    ADDON_SCRAPER_MUSIC     = 7,
-    ADDON_SCRAPER_PROGRAM   = 8,
-    ADDON_SCREENSAVER       = 9,
-    ADDON_PLUGIN_PVR        = 10,
-    ADDON_PLUGIN_VIDEO      = 11,
-    ADDON_PLUGIN_MUSIC      = 12,
-    ADDON_PLUGIN_PROGRAM    = 13,
-    ADDON_PLUGIN_PICTURES   = 14,
-    ADDON_PLUGIN_WEATHER    = 16,
-    ADDON_DSP_AUDIO         = 17
-  } AddonType;
-
   const CStdString ADDON_MULTITYPE_EXT        = "*.add";
   const CStdString ADDON_VIZ_EXT              = "*.vis";
   const CStdString ADDON_SKIN_EXT             = "*.skin";
@@ -137,25 +116,25 @@ namespace ADDON
     CAddonManager();
     virtual ~CAddonManager();
 
-    IAddonCallback* GetCallbackForType(AddonType type);
-    bool RegisterAddonCallback(AddonType type, IAddonCallback* cb);
-    void UnregisterAddonCallback(AddonType type);
+    IAddonCallback* GetCallbackForType(TYPE type);
+    bool RegisterAddonCallback(TYPE type, IAddonCallback* cb);
+    void UnregisterAddonCallback(TYPE type);
 
     void LoadAddons();
     bool SaveAddons();
     void UpdateAddons();
     VECADDONS *GetAllAddons();
-    VECADDONS *GetAddonsFromType(const AddonType &type);
+    VECADDONS *GetAddonsFromType(const TYPE &type);
     bool GetAddonFromGUID(const CStdString &guid, CAddon &addon);
-    bool GetAddonFromNameAndType(const CStdString &name, const AddonType &type, CAddon &addon);
-    bool DisableAddon(const CStdString &addon, const ADDON::AddonType &type);
+    bool GetAddonFromNameAndType(const CStdString &name, const TYPE &type, CAddon &addon);
+    bool DisableAddon(const CStdString &addon, const ADDON::TYPE &type);
     void SaveVirtualAddon(CAddon &addon);
 
   protected:
     bool AddonFromInfoXML(const CStdString &path, ADDON::CAddon &addon);
-    bool SetAddons(TiXmlNode *root, const AddonType &type, const VECADDONS &addons);
-    void GetAddons(const TiXmlElement* pRootElement, const ADDON::AddonType &type);
-    bool GetAddon(const ADDON::AddonType &type, const TiXmlNode *node, ADDON::CAddon &addon);
+    bool SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONS &addons);
+    void GetAddons(const TiXmlElement* pRootElement, const ADDON::TYPE &type);
+    bool GetAddon(const ADDON::TYPE &type, const TiXmlNode *node, ADDON::CAddon &addon);
 
     CStdString GetAddonsFile() const;
     CStdString GetAddonsFolder() const;
@@ -166,17 +145,9 @@ namespace ADDON
     static IAddonCallback *m_cbSkin;
     static IAddonCallback *m_cbPVR;
     static IAddonCallback *m_cbScript;
-    static IAddonCallback *m_cbScraperPVR;
-    static IAddonCallback *m_cbScraperVideo;
-    static IAddonCallback *m_cbScraperMusic;
-    static IAddonCallback *m_cbScraperProgram;
+    static IAddonCallback *m_cbScraper;
     static IAddonCallback *m_cbScreensaver;
-    static IAddonCallback *m_cbPluginPVR;
-    static IAddonCallback *m_cbPluginVideo;
-    static IAddonCallback *m_cbPluginMusic;
-    static IAddonCallback *m_cbPluginProgram;
-    static IAddonCallback *m_cbPluginPictures;
-    static IAddonCallback *m_cbPluginWeather;
+    static IAddonCallback *m_cbPlugin;
     static IAddonCallback *m_cbDSPAudio;
 
     VECADDONS  m_allAddons;
@@ -187,17 +158,9 @@ namespace ADDON
     VECADDONS  m_skinAddons;
     VECADDONS  m_pvrAddons;
     VECADDONS  m_scriptAddons;
-    VECADDONS  m_scraperPVRAddons;
-    VECADDONS  m_scraperVideoAddons;
-    VECADDONS  m_scraperMusicAddons;
-    VECADDONS  m_scraperProgramAddons;
+    VECADDONS  m_scraperAddons;
     VECADDONS  m_screensaverAddons;
-    VECADDONS  m_pluginPvrAddons;
-    VECADDONS  m_pluginMusicAddons;
-    VECADDONS  m_pluginVideoAddons;
-    VECADDONS  m_pluginProgramAddons;
-    VECADDONS  m_pluginPictureAddons;
-    VECADDONS  m_pluginWeatherAddons;
+    VECADDONS  m_pluginAddons;
     VECADDONS  m_DSPAudioAddons;
   };
 

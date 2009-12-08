@@ -2894,46 +2894,6 @@ void CUtil::ClearFileItemCache()
   }
 }
 
-CStdString CUtil::CreateUUID()
-{
-  /* This function generate a DCE 1.1, ISO/IEC 11578:1996 and IETF RFC-4122
-   * Version 4 conform local unique UUID based upon random number generation.
-   */
-  char UuidStrTmp[40];
-  char *pUuidStr = UuidStrTmp;
-  int i;
-
-  srand(static_cast<unsigned int> (time(NULL))); /*Randomize based on time.*/
-
-  /*Data1 - 8 characters.*/
-  for(i = 0; i < 8; i++, pUuidStr++)
-    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
-
-  /*Data2 - 4 characters.*/
-  *pUuidStr++ = '-';
-  for(i = 0; i < 4; i++, pUuidStr++)
-    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
-
-  /*Data3 - 4 characters.*/
-  *pUuidStr++ = '-';
-  for(i = 0; i < 4; i++, pUuidStr++)
-    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
-
-  /*Data4 - 4 characters.*/
-  *pUuidStr++ = '-';
-  for(i = 0; i < 4; i++, pUuidStr++)
-    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
-
-  /*Data5 - 12 characters.*/
-  *pUuidStr++ = '-';
-  for(i = 0; i < 12; i++, pUuidStr++)
-    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
-
-  *pUuidStr = '\0';
-
-  return UuidStrTmp;
-}
-
 void CUtil::InitRandomSeed()
 {
   // Init random seed 

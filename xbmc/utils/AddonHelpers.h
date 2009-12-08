@@ -90,7 +90,7 @@ public:
   static int GUIGetCurrentWindowDialogId();
 
 private:
-  static CStdString GetAddonTypeName(AddonType type);
+  static CStdString GetAddonTypeName(TYPE type);
   static int m_iGUILockRef;
 };
 

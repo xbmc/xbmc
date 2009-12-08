@@ -124,7 +124,7 @@ void CAddonUtils::AddOnLog(void *addonData, const addon_log_t loglevel, const ch
   try
   {
     CStdString xbmcMsg;
-    xbmcMsg.Format("AddOnLog: %s/%s: %s", GetAddonTypeName(addon->m_addonType).c_str(), addon->m_strName.c_str(), msg);
+    xbmcMsg.Format("AddOnLog: %s/%s: %s", GetAddonTypeName(addon->Type()).c_str(), addon->Name().c_str(), msg);
 
     int xbmclog;
     switch (loglevel)
@@ -149,7 +149,7 @@ void CAddonUtils::AddOnLog(void *addonData, const addon_log_t loglevel, const ch
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "AddOnLog: %s/%s - exception '%s' during AddOnLogCallback occurred, contact Developer '%s' of this AddOn", GetAddonTypeName(addon->m_addonType).c_str(), addon->m_strName.c_str());
+    CLog::Log(LOGERROR, "AddOnLog: %s/%s - exception '%s' during AddOnLogCallback occurred, contact Developer '%s' of this AddOn", GetAddonTypeName(addon->Type()).c_str(), addon->Name().c_str(), e.what(), addon->Author().c_str());
     return;
   }
 }
@@ -172,20 +172,20 @@ void CAddonUtils::OpenAddonSettings(void *addonData)
 
   try
   {
-    CLog::Log(LOGDEBUG, "Calling OpenAddonSettings for: %s", addon->m_strName.c_str());
+    CLog::Log(LOGDEBUG, "Calling OpenAddonSettings for: %s", addon->Name().c_str());
 
-    if (!CAddonSettings::SettingsExist(addon->m_strPath))
+    if (!CAddonSettings::SettingsExist(addon->Path()))
     {
-      CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", addon->m_strName.c_str());
+      CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", addon->Name().c_str());
       return;
     }
 
-    CURL cUrl(addon->m_strPath);
+    CURL cUrl(addon->Path());
     CGUIDialogAddonSettings::ShowAndGetInput(cUrl);
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "CAddonUtils: %s - exception '%s' during OpenAddonSettings occurred, contact Developer '%s' of this AddOn", addon->m_strName.c_str(), e.what(), addon->m_strCreator.c_str());
+    CLog::Log(LOGERROR, "CAddonUtils: %s - exception '%s' during OpenAddonSettings occurred, contact Developer '%s' of this AddOn", addon->Name().c_str(), e.what(), addon->Author().c_str());
   }
 }
 
@@ -194,15 +194,15 @@ void CAddonUtils::TransferAddonSettings(const CAddon &addon)
   bool restart = false;
   ADDON_STATUS reportStatus = STATUS_OK;
 
-  CLog::Log(LOGDEBUG, "Calling TransferAddonSettings for: %s", addon.m_strName.c_str());
+  CLog::Log(LOGDEBUG, "Calling TransferAddonSettings for: %s", addon.Name().c_str());
 
   /* Transmit current unified user settings to the PVR Addon */
-  ADDON::IAddonCallback* addonCB = g_addonmanager.GetCallbackForType(addon.m_addonType);
+  ADDON::IAddonCallback* addonCB = g_addonmanager.GetCallbackForType(addon.Type());
 
   CAddonSettings settings;
   if (!settings.Load(addon))
   {
-    CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s during transfer", addon.m_strName.c_str());
+    CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s during transfer", addon.Name().c_str());
     return;
   }
 
@@ -236,7 +236,7 @@ void CAddonUtils::TransferAddonSettings(const CAddon &addon)
       }
       else
       {
-        CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, addon.m_strName.c_str());
+        CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, addon.Name().c_str());
       }
 
       if (status == STATUS_NEED_RESTART)
@@ -259,13 +259,13 @@ bool CAddonUtils::GetAddonSetting(void *addonData, const char* settingName, void
 
   try
   {
-    CLog::Log(LOGDEBUG, "CAddonUtils: AddOn %s request Setting %s", addon->m_strName.c_str(), settingName);
+    CLog::Log(LOGDEBUG, "CAddonUtils: AddOn %s request Setting %s", addon->Name().c_str(), settingName);
 
     /* TODO: Add a caching mechanism to prevent a reloading of settings file on every call */
     CAddonSettings settings;
     if (!settings.Load(*addon))
     {
-      CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s", addon->m_strName.c_str());
+      CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s", addon->Name().c_str());
       return false;
     }
 
@@ -299,7 +299,7 @@ bool CAddonUtils::GetAddonSetting(void *addonData, const char* settingName, void
         }
         else
         {
-          CLog::Log(LOGERROR, "Unknown setting type '%s' for id %s in %s", type, id, addon->m_strName.c_str());
+          CLog::Log(LOGERROR, "Unknown setting type '%s' for id %s in %s", type, id, addon->Name().c_str());
         }
       }
       setting = setting->NextSiblingElement("setting");
@@ -307,7 +307,7 @@ bool CAddonUtils::GetAddonSetting(void *addonData, const char* settingName, void
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "PVR: %s - exception '%s' during GetAddonSetting occurred, contact Developer '%s' of this AddOn", addon->m_strName.c_str(), e.what(), addon->m_strCreator.c_str());
+    CLog::Log(LOGERROR, "PVR: %s - exception '%s' during GetAddonSetting occurred, contact Developer '%s' of this AddOn", addon->Name().c_str(), e.what(), addon->Author().c_str());
   }
   return false;
 }
@@ -319,7 +319,7 @@ char* CAddonUtils::GetAddonDirectory(void *addonData)
   const CAddon* addon = (CAddon*) addonData;
   if (addon != NULL)
   {
-    addonDir = addon->m_strPath;
+    addonDir = addon->Path();
     CUtil::RemoveSlashAtEnd(addonDir);
   }
   else
@@ -338,7 +338,7 @@ char* CAddonUtils::GetUserDirectory(void *addonData)
   const CAddon* addon = (CAddon*) addonData;
   if (addon != NULL)
   {
-    addonUserDir = addon->m_strPath;
+    addonUserDir = addon->Path();
     // Remove the special path
     addonUserDir.Replace("special://home/addons/", "");
     addonUserDir.Replace("special://xbmc/addons/", "");
@@ -436,7 +436,7 @@ char* CAddonUtils::GetLocalizedString(const void* addonData, long dwCode)
     const CAddon* addon = (CAddon*) addonData;
 
     // Load language strings temporarily
-    CURL cUrl(addon->m_strPath);
+    CURL cUrl(addon->Path());
     CAddon::LoadAddonStrings(cUrl);
 
     if (dwCode >= 30000 && dwCode <= 30999)
@@ -594,7 +594,6 @@ char* CAddonUtils::GetCacheThumbName(const char *path)
     string strText = path;
 
     Crc32 crc;
-    strPath;
     crc.ComputeFromLowerCase(strText);
     strPath.Format("%08x.tbn", (unsigned __int32)crc);
   }
@@ -967,7 +966,7 @@ int CAddonUtils::GUIGetCurrentWindowDialogId()
 
 }
 
-CStdString CAddonUtils::GetAddonTypeName(AddonType type)
+CStdString CAddonUtils::GetAddonTypeName(TYPE type)
 {
   switch (type)
   {
@@ -981,31 +980,14 @@ CStdString CAddonUtils::GetAddonTypeName(AddonType type)
       return "PVRDLL";
     case ADDON_SCRIPT:
       return "SCRIPT";
-    case ADDON_SCRAPER_PVR:
-      return "SCRAPER_PVR";
-    case ADDON_SCRAPER_VIDEO:
-      return "SCRAPER_VIDEO";
-    case ADDON_SCRAPER_MUSIC:
-      return "SCRAPER_MUSIC";
-    case ADDON_SCRAPER_PROGRAM:
-      return "SCRAPER_PROGRAM";
+    case ADDON_SCRAPER:
+      return "SCRAPER";
     case ADDON_SCREENSAVER:
       return "SCREENSAVER";
-    case ADDON_PLUGIN_PVR:
-      return "PLUGIN_PVR";
-    case ADDON_PLUGIN_MUSIC:
-      return "PLUGIN_MUSIC";
-    case ADDON_PLUGIN_VIDEO:
-      return "PLUGIN_VIDEO";
-    case ADDON_PLUGIN_PROGRAM:
-      return "PLUGIN_PROGRAM";
-    case ADDON_PLUGIN_PICTURES:
-      return "PLUGIN_PICTURES";
-    case ADDON_PLUGIN_WEATHER:
-      return "PLUGIN_WEATHER";
+    case ADDON_PLUGIN:
+      return "PLUGIN";
     case ADDON_DSP_AUDIO:
       return "DSP_AUDIO";
-    case ADDON_UNKNOWN:
     default:
       return "unknown";
   }
