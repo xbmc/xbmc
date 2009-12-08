@@ -630,7 +630,7 @@ void CGUISettings::Initialize()
   AddBool(4, "screensaver.usedimonpause", 22014, true);
   AddSeparator(5, "screensaver.sep1");
   AddInt(6, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddPath(7, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddPath(7, "screensaver.slideshowpath", 774, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddSeparator(8, "screensaver.sep2");
   AddString(9, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
 
