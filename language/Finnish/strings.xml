@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 01/12/2009 -->
-<!--Finnish strings based on English strings revision 25165 -->
+<!--Date of translation: 07/12/2009 -->
+<!--Finnish strings based on English strings revision 25406 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -1213,7 +1213,7 @@
   <string id="13411">Tuulettimen vähimmäisnopeus</string>
   <string id="13412">RSS-syötteet sisältävät oikealta vasemmalle -tekstiä</string>
   <string id="13413">Ladataan</string>
-  <string id="13414">Näytä kokoelmilla olevat esittäjät</string>
+  <string id="13414">Sisällytä vain kokoelmilla olevat esittäjät</string>
   <string id="13415">Renderöintimenetelmä</string>
   <string id="13416">Automaattinen tunnistus</string>
   <string id="13417">Basic Shaders (ARB)</string>

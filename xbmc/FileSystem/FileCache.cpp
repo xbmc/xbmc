@@ -206,7 +206,7 @@ void CFileCache::Process()
         break;
       }
       else if (iWrite == 0)
-        Sleep(5);
+        m_pCache->m_space.WaitMSec(5);
 
       iTotalWrite += iWrite;
 
@@ -317,6 +317,8 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
       CLog::Log(LOGWARNING,"%s - seek to %"PRId64" failed.", __FUNCTION__, m_seekPos);
       return -1;
     }
+    m_seekEvent.Reset();
+    m_seekPos = -1;
   }
 
   if (m_nSeekResult >= 0)
