@@ -94,14 +94,12 @@ namespace ADDON
       CStdString                m_message;
   };
 
-  class CAddon;
-
-//  typedef std::vector<CAddon> VECADDONS;
-//  typedef std::vector<CAddon>::iterator IVECADDONS;
-
   /**
-   * Class - CAddonMgr
-   */
+  * Class - CAddonMgr
+  * Holds references to all addons, enabled or
+  * otherwise. Services the generic callbacks available
+  * to all addon variants.
+  */
   class CAddonMgr
   {
   public:
@@ -115,7 +113,6 @@ namespace ADDON
     /* Addon access */
     bool GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addon);
     bool GetAddonFromPath(const CStdString &path, AddonPtr &addon);
-    bool HasAddons(const TYPE &type);
     bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true, bool refresh = false);
     bool GetAddons(const TYPE &type, VECADDONPROPS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true, bool refresh = false);
     CStdString GetString(const CStdString &uuid, const int number);
@@ -123,7 +120,6 @@ namespace ADDON
     /* Addon operations */
     bool EnableAddon(AddonPtr &addon);
     bool DisableAddon(AddonPtr &addon);
-    bool Clone(const AddonPtr& parent, AddonPtr& child);
 
     bool SaveAddonsXML(const TYPE &type);
     bool LoadAddonsXML(const TYPE &type);
@@ -131,8 +127,6 @@ namespace ADDON
   protected:
     void FindAddons(const TYPE &type, const bool refresh = false);
     bool AddonFromInfoXML(const TYPE &reqType, const CStdString &path, AddonPtr &addon);
-    CStdString GetAddonsFile() const;
-    CStdString GetAddonsFolder() const;
 
   private:
     CAddonMgr();

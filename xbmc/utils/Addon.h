@@ -39,11 +39,12 @@ const TYPE          TranslateType(const CStdString &string);
 class CAddon : public IAddon
 {
 public:
-  CAddon();
-  CAddon(const IAddon&);
-  virtual void Set(const AddonProps &props);
-  void Reset();
+  CAddon(const AddonProps &props);
+  virtual ~CAddon() {}
+  virtual AddonPtr Clone() const;
 
+
+  CAddon(const IAddon&);
   virtual void Remove() {};
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue) { return STATUS_UNKNOWN; };
 
@@ -53,8 +54,6 @@ public:
 
 
 
-  virtual ~CAddon() {}
-  virtual AddonPtr Clone() const;
 
   // settings & language
   virtual bool HasSettings();
@@ -83,10 +82,9 @@ public:
   int  Stars() const { return m_stars; }
   CStdString Disclaimer() const { return m_disclaimer; }
   bool Supports(const CONTENT_TYPE &content) const { return (m_content.count(content) == 1); }
-  CStdString        m_strPath;     ///< Path to the addon
 
 protected:
-//  CAddon(const CAddon&); // protected as all copying is handled by Clone()
+  CAddon(const CAddon&); // protected as all copying is handled by Clone()
   bool LoadUserSettings();
   TiXmlDocument     m_addonXmlDoc;
   TiXmlDocument     m_userXmlDoc;
@@ -108,7 +106,7 @@ private:
   CStdString        m_strVersion;  ///< Version of the addon, must be in form
   CStdString        m_summary;     ///< Short summary of addon
   CStdString        m_strDesc;     ///< Description of addon
-//  CStdString        m_strPath;     ///< Path to the addon
+  CStdString        m_strPath;     ///< Path to the addon
   CStdString        m_strProfile;  ///< Path to the addon's datastore for this profile
   CStdString        m_strLibName;  ///< Name of the library
   CStdString        m_strAuthor;   ///< Author(s) of the addon

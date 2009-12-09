@@ -885,8 +885,7 @@ bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &p
 
   /*** end of optional fields ***/
 
-  AddonPtr temp(new CAddon());
-  temp->Set(addonProps);
+  AddonPtr temp(new CAddon(addonProps));
   addon = temp;
   /* Everything's valid */
 
@@ -894,28 +893,6 @@ bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &p
             strPath.c_str(), addon->Name().c_str(), addon->UUID().c_str(), addon->Version().c_str());
 
   return true;
-}
-
-CStdString CAddonMgr::GetAddonsFile() const
-{
-  CStdString folder;
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].hasAddons())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(),"addons.xml",folder);
-  else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"addons.xml",folder);
-
-  return folder;
-}
-
-CStdString CAddonMgr::GetAddonsFolder() const
-{
-  CStdString folder = "special://home/addons";
-
-  if ( CDirectory::Exists(folder) )
-    return folder;
-
-  folder = "special://xbmc/addons";
-  return folder;
 }
 
 }; /* namespace ADDON */

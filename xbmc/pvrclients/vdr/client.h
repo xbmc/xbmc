@@ -29,7 +29,7 @@
 #include "../../addons/include/xbmc_addon_lib++.h"
 #include "../../addons/include/xbmc_pvr_lib++.h"
 
-#define DEFAULT_HOST        "128.176.89.187"//"127.0.0.1"
+#define DEFAULT_HOST        "127.0.0.1"
 #define DEFAULT_PORT        2004
 #define DEFAULT_FTA_ONLY    false
 #define DEFAULT_RADIO       true

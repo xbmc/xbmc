@@ -147,15 +147,58 @@ const ADDON::TYPE TranslateType(const CStdString &string)
     return ADDON_MULTITYPE;
 }
 
-/**********************************************************
- * CAddon - AddOn Info and Helper Class
- *
- */
-
-CAddon::CAddon()
+CAddon::CAddon(const AddonProps &props)
+  : m_type(props.type)
+  , m_content(props.contents)
+  , m_guid(props.uuid)
+  , m_guid_parent(props.parent)
 {
-  Reset();
+  m_strPath     = props.path;
+  m_strProfile  = GetProfilePath();
+  m_disabled    = true;
+  m_icon        = props.icon;
+  m_stars       = props.stars;
+  m_strVersion  = props.version;
+  m_strName     = props.name;
+  m_summary     = props.summary;
+  m_strDesc     = props.description;
+  m_disclaimer  = props.disclaimer;
+  m_strLibName  = props.libname;
+  m_userSettingsPath = GetUserSettingsPath();
 }
+
+CAddon::CAddon(const CAddon &rhs)
+  : m_type(rhs.Type())
+  , m_content(rhs.m_content)
+  , m_guid(StringUtils::CreateUUID())
+  , m_guid_parent(rhs.UUID())
+{
+  m_userXmlDoc  = rhs.m_userXmlDoc;
+  m_strPath     = rhs.Path();
+  m_strProfile  = GetProfilePath();
+  m_disabled    = false;
+  m_icon        = rhs.Icon();
+  m_stars       = rhs.Stars();
+  m_strVersion  = rhs.Version();
+  m_strName     = rhs.Name();
+  m_summary     = rhs.Summary();
+  m_strDesc     = rhs.Description();
+  m_disclaimer  = rhs.Disclaimer();
+  m_strLibName  = rhs.LibName();
+  m_userSettingsPath = GetUserSettingsPath();
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 CAddon::CAddon(const IAddon &rhs)
   : m_type(rhs.Type())
@@ -175,27 +218,6 @@ CAddon::CAddon(const IAddon &rhs)
   m_strLibName  = rhs.LibName();
   m_userSettingsPath = GetUserSettingsPath();
 }
-
-//CAddon::CAddon(const CAddon &rhs)
-//  : m_type(rhs.Type())
-//  , m_content(rhs.m_content)
-//  , m_guid(StringUtils::CreateUUID())
-//  , m_guid_parent(rhs.UUID())
-//{
-//  m_userXmlDoc  = rhs.m_userXmlDoc;
-//  m_strPath     = rhs.Path();
-//  m_strProfile  = GetProfilePath();
-//  m_disabled    = false;
-//  m_icon        = rhs.Icon();
-//  m_stars       = rhs.Stars();
-//  m_strVersion  = rhs.Version();
-//  m_strName     = rhs.Name();
-//  m_summary     = rhs.Summary();
-//  m_strDesc     = rhs.Description();
-//  m_disclaimer  = rhs.Disclaimer();
-//  m_strLibName  = rhs.LibName();
-//  m_userSettingsPath = GetUserSettingsPath();
-//}
 
 
 
@@ -451,42 +473,6 @@ CStdString CAddon::GetUserSettingsPath()
 
 
 
-void CAddon::Reset()
-{
-  m_guid        = "";
-  m_guid_parent = "";
-  m_type        = ADDON_MULTITYPE;
-  m_strPath     = "";
-  m_disabled    = false;
-  m_stars       = -1;
-  m_strVersion  = "";
-  m_strName     = "";
-  m_summary     = "";
-  m_strDesc     = "";
-  m_disclaimer  = "";
-  m_strLibName  = "";
-  m_childs      = 0;
-}
-
-void CAddon::Set(const AddonProps &props)
-{
-  m_type        = props.type;
-  m_content     = props.contents;
-  m_guid        = props.uuid;
-  m_guid_parent = props.parent;
-  m_strPath     = props.path;
-//  m_strProfile  = GetProfilePath();
-  m_disabled    = true;
-  m_icon        = props.icon;
-  m_stars       = props.stars;
-  m_strVersion  = props.version;
-  m_strName     = props.name;
-  m_summary     = props.summary;
-  m_strDesc     = props.description;
-  m_disclaimer  = props.disclaimer;
-  m_strLibName  = props.libname;
-//  m_userSettingsPath = GetUserSettingsPath();
-}
 
 void CAddon::LoadAddonStrings(const CURL &url)
 {
