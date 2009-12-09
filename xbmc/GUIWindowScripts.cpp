@@ -31,7 +31,7 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "ScriptSettings.h"
-#include "GUIDialogAddonSettings.h"
+#include "GUIDialogPluginSettings.h"
 #include "Settings.h"
 #if defined(__APPLE__)
 #include "SpecialProtocol.h"
@@ -264,7 +264,7 @@ bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     CStdString path, filename;
     CUtil::Split(m_vecItems->Get(itemNumber)->m_strPath, path, filename);
-    CGUIDialogAddonSettings::ShowAndGetInput(path);
+    CGUIDialogPluginSettings::ShowAndGetInput(path);
     return true;
   }
   else if (button == CONTEXT_BUTTON_DELETE)

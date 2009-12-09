@@ -129,7 +129,6 @@ bool CAddonSettings::Load(const CURL& url)
   CUtil::AddFileToFolder(m_userFileName, "settings.xml", m_userFileName);
 
   CStdString addonFileName = url.Get();
-  addonFileName = CPluginDirectory::TranslatePluginDirectory(addonFileName);
   CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
   CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
 
@@ -238,7 +237,7 @@ TiXmlElement* CAddonSettings::GetAddonRoot()
 
 bool CAddonSettings::SettingsExist(const CStdString& strPath)
 {
-  CStdString addonFileName = CPluginDirectory::TranslatePluginDirectory(strPath);
+  CStdString addonFileName = strPath;
   CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
   CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
 

@@ -40,8 +40,8 @@
 #include "GUISettings.h"
 
 #include "GUIDialogSmartPlaylistEditor.h"
-#include "GUIDialogAddonSettings.h"
-#include "settings/AddonSettings.h"
+#include "GUIDialogPluginSettings.h"
+#include "PluginSettings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "PlayList.h"
@@ -1258,7 +1258,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 
   if (item->IsPlugin() && item->IsFileFolder())
   {
-    if (CAddonSettings::SettingsExist(item->m_strPath))
+    if (CPluginSettings::SettingsExist(item->m_strPath))
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
     if (m_vecItems->m_strPath.Equals("plugin://music/")    ||
         m_vecItems->m_strPath.Equals("plugin://video/")    ||
@@ -1295,7 +1295,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_PLUGIN_SETTINGS:
     {
       CURL url(m_vecItems->Get(itemNumber)->m_strPath);
-      CGUIDialogAddonSettings::ShowAndGetInput(url);
+      CGUIDialogPluginSettings::ShowAndGetInput(url);
       return true;
     }
   case CONTEXT_BUTTON_DELETE_PLUGIN:

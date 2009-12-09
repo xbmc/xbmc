@@ -199,8 +199,10 @@ SRCS=Application.cpp \
      GUIDialogKaiToast.cpp \
      KeyboardLayoutConfiguration.cpp \
      GUIDialogAddonSettings.cpp \
+     GUIDialogPluginSettings.cpp \
      GUIDialogAccessPoints.cpp \
      ScraperSettings.cpp \
+     PluginSettings.cpp \
      Artist.cpp \
      Album.cpp \
      MediaSource.cpp \

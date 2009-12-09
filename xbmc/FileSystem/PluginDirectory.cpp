@@ -23,12 +23,11 @@
 #include "system.h"
 #include "PluginDirectory.h"
 #include "Util.h"
-#include "utils/Addon.h"
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
 #endif
 #include "../utils/SingleLock.h"
-#include "settings/AddonSettings.h"
+#include "PluginSettings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 #include "FileSystem/File.h"
@@ -40,7 +39,6 @@
 
 using namespace DIRECTORY;
 using namespace std;
-using namespace ADDON;
 
 vector<CPluginDirectory *> CPluginDirectory::globalHandles;
 CCriticalSection CPluginDirectory::m_handleLock;
@@ -98,10 +96,10 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
 
   // Load the plugin settings
   CLog::Log(LOGDEBUG, "%s - URL for plugin settings: %s", __FUNCTION__, url.GetFileName().c_str() );
-  g_currentAddonSettings.Load(url);
+  g_currentPluginSettings.Load(url);
 
   // Load language strings
-  ADDON::CAddon::LoadAddonStrings(url);
+  LoadPluginStrings(url);
 
   // reset our wait event, and grab a new handle
   ResetEvent(m_fetchComplete);
@@ -207,7 +205,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
     dir->m_listItems->AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%L", "%D"));
 
   // Unload temporary language strings
-  ADDON::CAddon::ClearAddonStrings();
+  ClearPluginStrings();
 
   // set the event to mark that we're done
   SetEvent(dir->m_fetchComplete);
@@ -399,10 +397,10 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
     return false;
 
   // Load the settings incase they changed while in the plugins directory
-  g_currentAddonSettings.Load(url);
+  g_currentPluginSettings.Load(url);
 
   // Load language strings
-  ADDON::CAddon::LoadAddonStrings(url);
+  LoadPluginStrings(url);
 
   // path is special://home/plugins/<path from here>
   CStdString pathToScript = "special://home/plugins/";
@@ -629,20 +627,32 @@ void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, co
   dir->m_listItems->SetProperty(strProperty, strValue);
 }
 
-CStdString CPluginDirectory::TranslatePluginDirectory(const CStdString &strPath)
+void CPluginDirectory::LoadPluginStrings(const CURL &url)
 {
-  CStdString addonFileName;
-  CURL url(strPath);
-  if (url.GetProtocol() == "plugin")
-  {
-    addonFileName = CUtil::AddFileToFolder("special://home/plugins/", url.GetHostName());
-    addonFileName = CUtil::AddFileToFolder(addonFileName, url.GetFileName());
-  }
-  else
-  {
-    addonFileName = strPath;
-  }
-  return addonFileName;
+  // Path where the plugin resides
+  CStdString pathToPlugin = "special://home/plugins/";
+  CUtil::AddFileToFolder(pathToPlugin, url.GetHostName(), pathToPlugin);
+  CUtil::AddFileToFolder(pathToPlugin, url.GetFileName(), pathToPlugin);
+
+  // Path where the language strings reside
+  CStdString pathToLanguageFile = pathToPlugin;
+  CStdString pathToFallbackLanguageFile = pathToPlugin;
+  CUtil::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
+  CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "language", pathToFallbackLanguageFile);
+  CUtil::AddFileToFolder(pathToLanguageFile, g_guiSettings.GetString("locale.language"), pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "english", pathToFallbackLanguageFile);
+  CUtil::AddFileToFolder(pathToLanguageFile, "strings.xml", pathToLanguageFile);
+  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "strings.xml", pathToFallbackLanguageFile);
+
+  // Load language strings temporarily
+  g_localizeStringsTemp.Load(pathToLanguageFile, pathToFallbackLanguageFile);
 }
 
+void CPluginDirectory::ClearPluginStrings()
+{
+  // Unload temporary language strings
+  g_localizeStringsTemp.Clear();
+}
 

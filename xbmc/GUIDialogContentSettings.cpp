@@ -20,7 +20,7 @@
  */
 
 #include "GUIDialogContentSettings.h"
-#include "GUIDialogAddonSettings.h"
+#include "GUIDialogPluginSettings.h"
 #include "Util.h"
 #include "VideoDatabase.h"
 #include "VideoInfoScanner.h"
@@ -139,7 +139,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     {
       if (!scraperPath.IsEmpty() && m_info.settings.LoadSettingsXML(scraperPath + m_info.strPath))
       {
-        CGUIDialogAddonSettings::ShowAndGetInput(m_info);
+        CGUIDialogPluginSettings::ShowAndGetInput(m_info);
         m_bNeedSave = true;
         return true;
       }
@@ -536,7 +536,7 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
     }
 
     CStdString baseDir = GetScraperDirectory(scraper);
-    if (!baseDir.IsEmpty() && (!scraper.settings.GetAddonRoot() || scraper.settings.GetSettings().IsEmpty()))
+    if (!baseDir.IsEmpty() && (!scraper.settings.GetPluginRoot() || scraper.settings.GetSettings().IsEmpty()))
     { // load default scraper settings
       scraper.settings.LoadSettingsXML(baseDir + scraper.strPath);
       scraper.settings.SaveFromDefault();

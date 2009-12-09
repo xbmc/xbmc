@@ -1,5 +1,5 @@
-#ifndef GUIDIALOG_PLUGIN_SETTINGS_
-#define GUIDIALOG_PLUGIN_SETTINGS_
+#ifndef GUIDIALOG_ADDON_SETTINGS_
+#define GUIDIALOG_ADDON_SETTINGS_
 
 /*
  *      Copyright (C) 2005-2008 Team XBMC
@@ -33,9 +33,6 @@ public:
   CGUIDialogAddonSettings(void);
   virtual ~CGUIDialogAddonSettings(void);
   virtual bool OnMessage(CGUIMessage& message);
-  static void ShowAndGetInput(CURL& url);
-  static void ShowAndGetInput(SScraperInfo& info);
-  static void ShowAndGetInput(CStdString& path);
   static void ShowAndGetInput(ADDON::IAddon& addon);
   void SetHeading(const CStdString &strHeading);
   void SetAddon(const ADDON::AddonPtr& addon);

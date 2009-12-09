@@ -46,6 +46,8 @@ public:
   static bool RunScriptWithParams(const CStdString& strPath);
   static bool HasPlugins(const CStdString &type);
   bool GetPluginsDirectory(const CStdString &type, CFileItemList &items);
+  static void LoadPluginStrings(const CURL &url);
+  static void ClearPluginStrings();
   bool StartScript(const CStdString& strPath);
   static bool GetPluginResult(const CStdString& strPath, CFileItem &resultItem);
 
@@ -57,7 +59,6 @@ public:
   static void SetContent(int handle, const CStdString &strContent);
   static void SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue);
   static void SetResolvedUrl(int handle, bool success, const CFileItem* resultItem);
-  static CStdString TranslatePluginDirectory(const CStdString &strPath);
 
 private:
   bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName);

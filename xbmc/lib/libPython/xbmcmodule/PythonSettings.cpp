@@ -21,7 +21,7 @@
 
 #include "PythonSettings.h"
 #include "pyutil.h"
-#include "GUIDialogAddonSettings.h"
+#include "GUIDialogPluginSettings.h"
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
@@ -163,7 +163,7 @@ namespace PYXBMC
   {
     // show settings dialog
     CStdString path = self->pSettings->getPath();
-    CGUIDialogAddonSettings::ShowAndGetInput(path);
+    CGUIDialogPluginSettings::ShowAndGetInput(path);
 
     // reload settings
     self->pSettings->Load(path);

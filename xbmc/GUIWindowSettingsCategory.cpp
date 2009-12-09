@@ -102,6 +102,7 @@
 #include "ScraperSettings.h"
 #include "ScriptSettings.h"
 #include "GUIDialogAddonSettings.h"
+#include "GUIDialogPluginSettings.h"
 #include "Settings.h"
 #include "AdvancedSettings.h"
 #include "MouseStat.h"
@@ -1399,7 +1400,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     // Create our base path
     CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin");
-    CGUIDialogAddonSettings::ShowAndGetInput(basepath);
+    CGUIDialogPluginSettings::ShowAndGetInput(basepath);
     // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
     g_weatherManager.Refresh();
   }
@@ -1413,7 +1414,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     database.GetScraperForPath("musicdb://",info);
 
     if (info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + info.strPath))
-        CGUIDialogAddonSettings::ShowAndGetInput(info);
+        CGUIDialogPluginSettings::ShowAndGetInput(info);
 
     database.SetScraperForPath("musicdb://",info);
     database.Close();

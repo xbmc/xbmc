@@ -166,27 +166,27 @@ void CAddonUtils::AddonStatusHandler(void *addonData, const ADDON_STATUS status,
 
 void CAddonUtils::OpenAddonSettings(void *addonData)
 {
-  const CAddon* addon = (CAddon*) addonData;
-  if (!addon)
-    return;
-
-  try
-  {
-    CLog::Log(LOGDEBUG, "Calling OpenAddonSettings for: %s", addon->Name().c_str());
-
-    if (!CAddonSettings::SettingsExist(addon->Path()))
-    {
-      CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", addon->Name().c_str());
-      return;
-    }
-
-    CURL cUrl(addon->Path());
-    CGUIDialogAddonSettings::ShowAndGetInput(cUrl);
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CAddonUtils: %s - exception '%s' during OpenAddonSettings occurred, contact Developer '%s' of this AddOn", addon->Name().c_str(), e.what(), addon->Author().c_str());
-  }
+//  const CAddon* addon = (CAddon*) addonData;
+//  if (!addon)
+//    return;
+//
+//  try
+//  {
+//    CLog::Log(LOGDEBUG, "Calling OpenAddonSettings for: %s", addon->Name().c_str());
+//
+//    if (!CAddonSettings::SettingsExist(addon->Path()))
+//    {
+//      CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", addon->Name().c_str());
+//      return;
+//    }
+//
+//    CURL cUrl(addon->Path());
+//    CGUIDialogAddonSettings::ShowAndGetInput(cUrl);
+//  }
+//  catch (std::exception &e)
+//  {
+//    CLog::Log(LOGERROR, "CAddonUtils: %s - exception '%s' during OpenAddonSettings occurred, contact Developer '%s' of this AddOn", addon->Name().c_str(), e.what(), addon->Author().c_str());
+//  }
 }
 
 void CAddonUtils::TransferAddonSettings(IAddon &addon)

@@ -93,7 +93,7 @@ void CMusicInfoScraper::FindAlbuminfo()
   if (!parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath) || !parser.HasFunction("CreateAlbumSearchUrl"))
     return;
 
-  if (!m_info.settings.GetAddonRoot() && m_info.settings.GetSettings().IsEmpty() && parser.HasFunction("GetSettings"))
+  if (!m_info.settings.GetPluginRoot() && m_info.settings.GetSettings().IsEmpty() && parser.HasFunction("GetSettings"))
   {
     m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + m_info.strPath);
     m_info.settings.SaveFromDefault();
@@ -206,7 +206,7 @@ void CMusicInfoScraper::FindArtistinfo()
   if (!parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath) || !parser.HasFunction("CreateArtistSearchUrl"))
     return;
 
-  if (!m_info.settings.GetAddonRoot() && m_info.settings.GetSettings().IsEmpty() && parser.HasFunction("GetSettings"))
+  if (!m_info.settings.GetPluginRoot() && m_info.settings.GetSettings().IsEmpty() && parser.HasFunction("GetSettings"))
   {
     m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + m_info.strPath);
     m_info.settings.SaveFromDefault();

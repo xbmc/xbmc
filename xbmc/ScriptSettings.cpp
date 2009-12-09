@@ -49,14 +49,14 @@ bool CScriptSettings::Load(const CStdString& strPath)
   CUtil::AddFileToFolder(m_scriptPath, "resources", scriptFileName);
   CUtil::AddFileToFolder(scriptFileName, "settings.xml", scriptFileName);
 
-  if (!m_addonXmlDoc.LoadFile(scriptFileName))
+  if (!m_pluginXmlDoc.LoadFile(scriptFileName))
   {
-    CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", scriptFileName.c_str(), m_addonXmlDoc.ErrorRow(), m_addonXmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", scriptFileName.c_str(), m_pluginXmlDoc.ErrorRow(), m_pluginXmlDoc.ErrorDesc());
     return false;
   }
 
   // Make sure that the script XML has the settings element
-  TiXmlElement *setting = m_addonXmlDoc.RootElement();
+  TiXmlElement *setting = m_pluginXmlDoc.RootElement();
   if (!setting || strcasecmp(setting->Value(), "settings") != 0)
   {
     CLog::Log(LOGERROR, "Error loading Settings %s: cannot find root element 'settings'", scriptFileName.c_str());
@@ -125,9 +125,9 @@ bool CScriptSettings::SettingsExist(const CStdString& strPath)
   return true;
 }
 
-CScriptSettings& CScriptSettings::operator=(const CAddonSettings& settings)
+CScriptSettings& CScriptSettings::operator=(const CBasicSettings& settings)
 {
-  *((CAddonSettings*)this) = settings;
+  *((CBasicSettings*)this) = settings;
 
   return *this;
 }

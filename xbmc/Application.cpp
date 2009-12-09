@@ -200,6 +200,7 @@
 #include "GUIDialogSmartPlaylistRule.h"
 #include "GUIDialogPictureInfo.h"
 #include "GUIDialogAddonSettings.h"
+#include "GUIDialogPluginSettings.h"
 #ifdef HAS_LINUX_NETWORK
 #include "GUIDialogAccessPoints.h"
 #endif
@@ -1217,6 +1218,7 @@ HRESULT CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogSmartPlaylistRule);       // window id = 137
   g_windowManager.Add(new CGUIDialogBusy);      // window id = 138
   g_windowManager.Add(new CGUIDialogPictureInfo);      // window id = 139
+  g_windowManager.Add(new CGUIDialogPluginSettings);      // window id = 140
   g_windowManager.Add(new CGUIDialogAddonSettings);      // window id = 140
 #ifdef HAS_LINUX_NETWORK
   g_windowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
@@ -3302,6 +3304,7 @@ HRESULT CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_BUSY);
     g_windowManager.Delete(WINDOW_DIALOG_PICTURE_INFO);
     g_windowManager.Delete(WINDOW_DIALOG_ADDON_SETTINGS);
+    g_windowManager.Delete(WINDOW_DIALOG_PLUGIN_SETTINGS);
     g_windowManager.Delete(WINDOW_DIALOG_ACCESS_POINTS);
     g_windowManager.Delete(WINDOW_DIALOG_SLIDER);
 
