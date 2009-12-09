@@ -991,7 +991,7 @@ HRESULT CEVRAllocatorPresenter::RenderPresent(int surfaceIndex)
   HRESULT hr=S_OK;
   //CLog::Log(LOGNOTICE,"%s Rendering frame", __FUNCTION__);
   if (!g_renderManager.IsConfigured())
-    g_renderManager.Configure(m_iVideoWidth, m_iVideoHeight, m_iVideoWidth, m_iVideoHeight, m_fps, CONF_FLAGS_USE_DIRECTSHOW |CONF_FLAGS_FULLSCREEN);
+    g_renderManager.Configure(m_iVideoWidth, m_iVideoHeight, m_iVideoWidth, m_iVideoHeight, m_fps, CONF_FLAGS_FULLSCREEN);
   hr = m_D3DDev->StretchRect(m_pInternalVideoSurface[surfaceIndex], NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);
   if (SUCCEEDED(hr))
   {

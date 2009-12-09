@@ -89,7 +89,6 @@ protected:
   // clear colour for "black" bars
   DWORD m_clearColour;
   unsigned int m_flags;
-  CRect m_crop;
 };
 
 

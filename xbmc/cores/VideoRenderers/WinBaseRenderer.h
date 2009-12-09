@@ -39,10 +39,7 @@
 
 #define CONF_FLAGS_YUV_FULLRANGE 0x08
 #define CONF_FLAGS_FULLSCREEN    0x10
-#define CONF_FLAGS_USE_DIRECTSHOW    0x20
 
-//for dsplayer
-#define countof(array) (sizeof(array)/sizeof(array[0]))
 #ifdef MP_DIRECTRENDERING
 #define NUM_BUFFERS 3
 #else
@@ -108,22 +105,22 @@ public:
   CWinBaseRenderer(){};
   virtual ~CWinBaseRenderer(){};
 
-  virtual void Update(bool bPauseDrawing){};
+  virtual void Update(bool bPauseDrawing) {};
   virtual void SetupScreenshot() {};
-  virtual void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height){};
+  virtual void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height) {};
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags){return false;};
-  virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false){return 0;};
-  virtual void         ReleaseImage(int source, bool preserve = false) = 0;
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags){ return false; };
+  virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) { return 0; };
+  virtual void         ReleaseImage(int source, bool preserve = false) {};
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y) { return 0; };
-  virtual void         FlipPage(int source) = 0;
-  virtual unsigned int PreInit(){return 0;};
-  virtual void         UnInit() = 0;
-  virtual void         Reset() = 0; /* resets renderer after seek for example */
+  virtual void         FlipPage(int source) {};
+  virtual unsigned int PreInit() { return 0; };
+  virtual void         UnInit() {};
+  virtual void         Reset() {}; /* resets renderer after seek for example */
   virtual bool         IsConfigured() {return false;}
 
-  virtual void         PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface) = 0;
+  virtual void         PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface) {};
   // TODO:DIRECTX - implement these
   virtual bool         SupportsBrightness() { return true; };
   virtual bool         SupportsContrast() { return true; };
@@ -131,7 +128,6 @@ public:
   virtual bool         Supports(EINTERLACEMETHOD method){ return false; };
   virtual bool         Supports(ESCALINGMETHOD method){ return false; };
 
-  virtual void AutoCrop(bool bCrop) = 0;
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255) = 0;
 };
 

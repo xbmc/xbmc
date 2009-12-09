@@ -16,6 +16,7 @@ using namespace std;
 #include <d3d9.h>
 
 #include "IDsRenderer.h"
+#include "geometry.h"
 #define VMRBITMAP_UPDATE            0x80000000
 class CDSGraph;
 
@@ -32,33 +33,34 @@ public:
   virtual ~CVMR9AllocatorPresenter();
 
   // IVMRSurfaceAllocator9
-  virtual HRESULT STDMETHODCALLTYPE InitializeDevice(/*[in]*/ DWORD_PTR dwUserID,/*[in]*/ VMR9AllocationInfo *lpAllocInfo,/* [out][in] */ DWORD *lpNumBuffers);
-  virtual HRESULT STDMETHODCALLTYPE TerminateDevice(/*[in]*/ DWORD_PTR dwID);  
-  virtual HRESULT STDMETHODCALLTYPE GetSurface(/*[in]*/ DWORD_PTR dwUserID,/*[in]*/ DWORD SurfaceIndex,/*[in]*/ DWORD SurfaceFlags,/* [out] */ IDirect3DSurface9 **lplpSurface);
-  virtual HRESULT STDMETHODCALLTYPE AdviseNotify(/*[in]*/ IVMRSurfaceAllocatorNotify9 *lpIVMRSurfAllocNotify);
+  virtual STDMETHODIMP InitializeDevice(DWORD_PTR dwUserID, VMR9AllocationInfo *lpAllocInfo, DWORD *lpNumBuffers);
+  virtual STDMETHODIMP TerminateDevice(DWORD_PTR dwID);  
+  virtual STDMETHODIMP GetSurface(DWORD_PTR dwUserID, DWORD SurfaceIndex, DWORD SurfaceFlags, IDirect3DSurface9 **lplpSurface);
+  virtual STDMETHODIMP AdviseNotify(IVMRSurfaceAllocatorNotify9 *lpIVMRSurfAllocNotify);
 
   // IVMRImagePresenter9
-  virtual HRESULT STDMETHODCALLTYPE StartPresenting(/*[in]*/ DWORD_PTR dwUserID);
-  virtual HRESULT STDMETHODCALLTYPE StopPresenting(/*[in]*/ DWORD_PTR dwUserID);
-  virtual HRESULT STDMETHODCALLTYPE PresentImage(/*[in]*/ DWORD_PTR dwUserID,/*[in]*/ VMR9PresentationInfo *lpPresInfo);
+  virtual STDMETHODIMP StartPresenting( DWORD_PTR dwUserID);
+  virtual STDMETHODIMP StopPresenting( DWORD_PTR dwUserID);
+  virtual STDMETHODIMP PresentImage( DWORD_PTR dwUserID, VMR9PresentationInfo *lpPresInfo);
 
   // IUnknown
-  virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid,void** ppvObject);
+  virtual STDMETHODIMP QueryInterface(REFIID riid,void** ppvObject);
   virtual ULONG STDMETHODCALLTYPE AddRef();
   virtual ULONG STDMETHODCALLTYPE Release();
 
   // IDSRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
-  bool CheckDevice();
   
   UINT GetAdapter(IDirect3D9 *pD3D);
   STDMETHODIMP_(void) SetPosition(RECT w, RECT v) {} ;
   STDMETHODIMP_(bool) Paint(bool fAll) { return true; } ;
   STDMETHODIMP_(void) SetTime(REFERENCE_TIME rtNow) {};
   
+  
 protected:
   void DeleteSurfaces();
   HRESULT AllocVideoSurface(D3DFORMAT Format = D3DFMT_A8R8G8B8);
+  void GetCurrentVideoSize();
   D3DFORMAT            m_SurfaceType;
   D3DFORMAT            m_BackbufferType;
   D3DFORMAT            m_DisplayType;
@@ -68,19 +70,25 @@ protected:
   int            m_VMR9AlphaBitmapWidthBytes;
   bool m_fUseInternalTimer;
   bool m_pRequireResetDevice;
-  
-private:
-  CCritSec    m_ObjectLock;
-  HWND        m_window;
-  long        m_refCount;
-  int   m_iVideoWidth, m_iVideoHeight;
+  //Clock stuff
+  REFERENCE_TIME m_rtTimePerFrame;
   REFERENCE_TIME m_pPrevEndFrame;
-  float m_fps;
+
+  int            m_iVideoWidth;
+  int            m_iVideoHeight;
+
+  float          m_fps;
+private:
+  long        m_refCount;
+  CCritSec    m_ObjectLock;
+  
+  
+  
+  
   CComPtr<IDirect3D9>                     m_D3D;
   CComPtr<IDirect3DDevice9>               m_D3DDev;
-  CComPtr<IVMRSurfaceAllocatorNotify9>    m_lpIVMRSurfAllocNotify;
+  CComPtr<IVMRSurfaceAllocatorNotify9>    m_pIVMRSurfAllocNotify;
   vector<CComPtr<IDirect3DSurface9> >     m_surfaces;
-  D3DDEVICE_CREATION_PARAMETERS           m_currentD3DParam;
   CComPtr<IDirect3DSurface9>              m_renderTarget;
   CComPtr<IDirect3DTexture9>              m_pVideoTexture;
   CComPtr<IDirect3DSurface9>              m_pVideoSurface;

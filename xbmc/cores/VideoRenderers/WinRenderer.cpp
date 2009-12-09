@@ -290,11 +290,8 @@ unsigned int CWinRenderer::PreInit()
 {
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
-  m_bDshow = false;
   UnInit();
   m_resolution = RES_PAL_4x3;
-  m_crop.x1 = m_crop.x2 = 0.0f;
-  m_crop.y1 = m_crop.y2 = 0.0f;
 
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
@@ -308,8 +305,6 @@ void CWinRenderer::UnInit()
   CSingleLock lock(g_graphicsContext);
 
   m_YUV2RGBEffect.Release();
-  m_D3DVideoTexture.Release();
-  m_D3DMemorySurface.Release();
   m_bConfigured = false;
   for(int i = 0; i < NUM_BUFFERS; i++)
     DeleteYV12Texture(i);
@@ -342,139 +337,6 @@ bool CWinRenderer::LoadEffect()
 void CWinRenderer::Render(DWORD flags)
 {
   if( flags & RENDER_FLAG_NOOSD ) return;
-}
-
-void CWinRenderer::AutoCrop(bool bCrop)
-{
-  if (!m_YUVMemoryTexture[0][PLANE_Y]) return ;
-
-  RECT crop;
-
-  if (bCrop)
-  {
-    YV12Image im;
-    if(GetImage(&im, m_iYV12RenderBuffer, true) < 0)
-      return;
-
-    CBaseRenderer::AutoCrop(im, crop);
-
-    ReleaseImage(m_iYV12RenderBuffer, false);
-  }
-  else
-  { // reset to defaults
-    crop.left   = 0;
-    crop.right  = 0;
-    crop.top    = 0;
-    crop.bottom = 0;
-  }
-
-  m_crop.x1 += ((float)crop.left   - m_crop.x1) * 0.1f;
-  m_crop.x2 += ((float)crop.right  - m_crop.x2) * 0.1f;
-  m_crop.y1 += ((float)crop.top    - m_crop.y1) * 0.1f;
-  m_crop.y2 += ((float)crop.bottom - m_crop.y2) * 0.1f;
-
-  crop.left   = MathUtils::round_int(m_crop.x1);
-  crop.right  = MathUtils::round_int(m_crop.x2);
-  crop.top    = MathUtils::round_int(m_crop.y1);
-  crop.bottom = MathUtils::round_int(m_crop.y2);
-
-  //compare with hysteresis
-# define HYST(n, o) ((n) > (o) || (n) + 1 < (o))
-  if(HYST(g_stSettings.m_currentVideoSettings.m_CropLeft  , crop.left)
-  || HYST(g_stSettings.m_currentVideoSettings.m_CropRight , crop.right)
-  || HYST(g_stSettings.m_currentVideoSettings.m_CropTop   , crop.top)
-  || HYST(g_stSettings.m_currentVideoSettings.m_CropBottom, crop.bottom))
-  {
-    g_stSettings.m_currentVideoSettings.m_CropLeft   = crop.left;
-    g_stSettings.m_currentVideoSettings.m_CropRight  = crop.right;
-    g_stSettings.m_currentVideoSettings.m_CropTop    = crop.top;
-    g_stSettings.m_currentVideoSettings.m_CropBottom = crop.bottom;
-    SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
-  }
-# undef HYST
-
-}
-
-void CWinRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface)
-{
-  if (videoTexture)
-    m_D3DVideoTexture = videoTexture;
-  if (videoSurface)
-    m_D3DMemorySurface = videoSurface;
-}
-
-void CWinRenderer::RenderDshowBuffer(DWORD flags)
-{
-  LPDIRECT3DDEVICE9 m_pD3DDevice = g_Windowing.Get3DDevice();
-  m_pD3DDevice->SetPixelShader( NULL );
-  CSingleLock lock(g_graphicsContext);
-  
-  // set scissors if we are not in fullscreen video
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
-
-  HRESULT hr;
-  D3DSURFACE_DESC desc;
-  if(!m_D3DVideoTexture || FAILED(m_D3DVideoTexture->GetLevelDesc(0, &desc)))
-    return;
-
-  float w = (float)desc.Width;
-  float h = (float)desc.Height;
-  struct CUSTOMVERTEX {
-      float x, y, z;
-	  float rhw; 
-	  float tu, tv;
-  };
-  CUSTOMVERTEX verts[4] =
-  {
-    {//m_destRect    m_sourceRect
-      m_destRect.x1      , m_destRect.y1 ,
-      0.0f   , 1.0f, 
-      0      , 0
-    },
-    {
-      m_destRect.x2      , m_destRect.y1 ,
-      0.0f   , 1.0f,
-      1      , 0
-    },
-    {
-      m_destRect.x2      , m_destRect.y2 ,
-      0.0f   , 1.0f, 
-      1      , 1
-    },
-    {
-      m_destRect.x1      , m_destRect.y2 ,
-      0.0f   , 1.0f,
-      0      , 1
-    },
-  };
-  for(int i = 0; i < countof(verts); i++)
-  {
-    verts[i].x -= 0.5;
-    verts[i].y -= 0.5;
-  }
-  //D3DFVF_TEX1
-  hr = m_pD3DDevice->SetTexture(0, m_D3DVideoTexture);
-  hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-  hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-  hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-  hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-  hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-  hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-  
-  hr = m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
-  hr = m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE); 
-  hr = m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
-  hr = m_pD3DDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
-  hr = m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(verts[0]));
-  m_pD3DDevice->SetTexture(0, NULL);
-  if (FAILED(hr))
-    CLog::Log(LOGDEBUG,"RenderDshowBuffer TextureCopy CWinRenderer::RenderDshowBuffer"); 
 }
 
 void CWinRenderer::RenderLowMem(DWORD flags)
@@ -763,10 +625,7 @@ bool CPixelShaderRenderer::Configure(unsigned int width, unsigned int height, un
 {
   if(!CWinRenderer::Configure(width, height, d_width, d_height, fps, flags))
     return false;
-  if (flags & CONF_FLAGS_USE_DIRECTSHOW)
-    m_bDshow = true;
-  else
-    m_bDshow = false;
+
   m_bConfigured = true;
   return true;
 }
@@ -774,16 +633,9 @@ bool CPixelShaderRenderer::Configure(unsigned int width, unsigned int height, un
 
 void CPixelShaderRenderer::Render(DWORD flags)
 {
-  // this is the low memory renderer	
-  if (!m_bDshow)
-  {
-    CWinRenderer::RenderLowMem(flags);
-	CWinRenderer::Render(flags);
-  }
-  else
-  {
-    CWinRenderer::RenderDshowBuffer(flags);
-  }
+  // this is the low memory renderer
+  CWinRenderer::RenderLowMem(flags);
+  CWinRenderer::Render(flags);
 }
 
 #endif

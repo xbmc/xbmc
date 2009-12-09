@@ -19,7 +19,7 @@
 #endif
 
 #ifndef SAFE_RELEASE
-#define SAFE_RELEASE(x) if (x) { x->Release(); x = NULL; }
+#define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
 #endif
 
 #ifndef CHECK_HR

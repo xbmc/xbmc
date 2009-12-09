@@ -27,16 +27,8 @@
 
 
 #include "WinBaseRenderer.h"
-
-
-
-
 #include <atlbase.h>
 //#define MP_DIRECTRENDERING
-
-
-
-
 
 class CBaseTexture;
 
@@ -62,7 +54,6 @@ public:
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual bool         IsConfigured() { return m_bConfigured; }
 
-  virtual void         PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface);
   // TODO:DIRECTX - implement these
   virtual bool         SupportsBrightness() { return true; }
   virtual bool         SupportsContrast() { return true; }
@@ -70,7 +61,6 @@ public:
   virtual bool         Supports(EINTERLACEMETHOD method);
   virtual bool         Supports(ESCALINGMETHOD method);
 
-  virtual void AutoCrop(bool bCrop);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
 protected:
@@ -91,19 +81,11 @@ protected:
   int m_NumYV12Buffers;
 
   bool m_bConfigured;
-  bool m_bDshow;
 
   typedef CD3DTexture             YUVVIDEOPLANES[MAX_PLANES];
   typedef BYTE*                   YUVMEMORYPLANES[MAX_PLANES];
   typedef YUVVIDEOPLANES          YUVVIDEOBUFFERS[NUM_BUFFERS];
   typedef YUVMEMORYPLANES         YUVMEMORYBUFFERS[NUM_BUFFERS];
-
-  //dsplayer
-  void RenderDshowBuffer(DWORD flags);
-
-  CComPtr<IDirect3DTexture9> m_D3DVideoTexture;
-  CComPtr<IDirect3DSurface9> m_D3DMemorySurface;
-
 
   #define PLANE_Y 0
   #define PLANE_U 1
@@ -125,7 +107,6 @@ protected:
   // clear colour for "black" bars
   DWORD m_clearColour;
   unsigned int m_flags;
-  CRect m_crop;
 };
 
 
