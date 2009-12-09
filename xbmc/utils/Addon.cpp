@@ -476,7 +476,7 @@ void CAddon::Set(const AddonProps &props)
   m_guid_parent = props.parent;
   m_strPath     = props.path;
 //  m_strProfile  = GetProfilePath();
-  m_disabled    = false;
+  m_disabled    = true;
   m_icon        = props.icon;
   m_stars       = props.stars;
   m_strVersion  = props.version;

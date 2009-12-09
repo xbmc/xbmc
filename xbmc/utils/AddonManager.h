@@ -112,25 +112,25 @@ namespace ADDON
     bool RegisterAddonCallback(TYPE type, IAddonCallback* cb);
     void UnregisterAddonCallback(TYPE type);
 
+    /* Addon access */
+    bool GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addon);
+    bool GetAddonFromPath(const CStdString &path, AddonPtr &addon);
+    bool HasAddons(const TYPE &type);
+    bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true, bool refresh = false);
+    bool GetAddons(const TYPE &type, VECADDONPROPS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true, bool refresh = false);
+    CStdString GetString(const CStdString &uuid, const int number);
 
+    /* Addon operations */
+    bool EnableAddon(AddonPtr &addon);
+    bool DisableAddon(AddonPtr &addon);
+    bool Clone(const AddonPtr& parent, AddonPtr& child);
 
-
-
-    void LoadAddons();
-    bool SaveAddons();
-    void UpdateAddons();
-    VECADDONS *GetAllAddons();
-    VECADDONS *GetAddonsFromType(const TYPE &type);
-    bool GetAddonFromGUID(const CStdString &guid, AddonPtr &addon);
-    bool GetAddonFromNameAndType(const CStdString &name, const TYPE &type, AddonPtr &addon);
-    bool DisableAddon(const CStdString &addon, const ADDON::TYPE &type);
+    bool SaveAddonsXML(const TYPE &type);
+    bool LoadAddonsXML(const TYPE &type);
 
   protected:
-    bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
-    bool SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONS &addons);
-    void GetAddons(const TiXmlElement* pRootElement, const ADDON::TYPE &type);
-    bool GetAddon(const ADDON::TYPE &type, const TiXmlNode *node, AddonPtr &addon);
-
+    void FindAddons(const TYPE &type, const bool refresh = false);
+    bool AddonFromInfoXML(const TYPE &reqType, const CStdString &path, AddonPtr &addon);
     CStdString GetAddonsFile() const;
     CStdString GetAddonsFolder() const;
 
@@ -139,19 +139,9 @@ namespace ADDON
     static CAddonMgr* m_pInstance;
 
     static std::map<TYPE, IAddonCallback*> m_managers;
-
-    VECADDONS  m_allAddons;
-    VECADDONS  m_virtualAddons;
-
-    VECADDONS  m_multitypeAddons;
-    VECADDONS  m_visualisationAddons;
-    VECADDONS  m_skinAddons;
-    VECADDONS  m_pvrAddons;
-    VECADDONS  m_scriptAddons;
-    VECADDONS  m_scraperAddons;
-    VECADDONS  m_screensaverAddons;
-    VECADDONS  m_pluginAddons;
-    VECADDONS  m_DSPAudioAddons;
+    MAPADDONS m_addons;
+    std::map<TYPE, CDateTime> m_lastScan;
+    std::map<CStdString, AddonPtr> m_uuidMap;
   };
 
 }; /* namespace ADDON */

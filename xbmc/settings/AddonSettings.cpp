@@ -171,10 +171,6 @@ bool CAddonSettings::Load(const IAddon& addon)
   // create the users filepath
   m_userFileName = GetUserDirectory(addon.Path());
 
-  // If it is a virtual child add-on add the guid to the path
-  if (!addon.Parent().IsEmpty())
-    m_userFileName += "-" + addon.UUID();
-
   CUtil::AddFileToFolder(m_userFileName, "settings.xml", m_userFileName);
 
   CStdString addonFileName = addon.Path();

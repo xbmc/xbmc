@@ -449,19 +449,20 @@ void CPVRManager::Stop()
 bool CPVRManager::LoadClients()
 {
   /* Get all PVR Add on's */
-  VECADDONS *addons = CAddonMgr::Get()->GetAddonsFromType(ADDON_PVRDLL);
+  if (!CAddonMgr::Get()->LoadAddonsXML(ADDON_PVRDLL))
+    return false;
 
-  /* Make sure addon's are loaded */
-  if (addons == NULL || addons->empty())
+  VECADDONS addons;
+  if (!CAddonMgr::Get()->GetAddons(ADDON_PVRDLL, addons, CONTENT_NONE, true, false))
     return false;
 
   m_database.Open();
 
   /* load the clients */
   CPVRClientFactory factory;
-  for (unsigned i=0; i < addons->size(); i++)
+  for (unsigned i=0; i < addons.size(); i++)
   {
-    const AddonPtr clientAddon = addons->at(i);
+    const AddonPtr clientAddon = addons.at(i);
 
     if (clientAddon->Disabled()) // ignore disabled addons
       continue;

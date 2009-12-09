@@ -44,6 +44,7 @@ public:
   static bool ShowAndGetAddons(const ADDON::TYPE &type, const bool activeOnly);
 
   void SetAddonType(const ADDON::TYPE &type);
+  void SetContent(const CONTENT_TYPE &content);
 
   virtual bool HasListItems() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
@@ -57,6 +58,7 @@ protected:
   void OnGetAddons(const ADDON::TYPE &type);
 
   ADDON::TYPE m_type;
+  CONTENT_TYPE m_content;
   CFileItemList* m_vecItems;
 
   bool m_confirmed;

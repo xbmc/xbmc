@@ -59,7 +59,6 @@
 #include "FileSystem/SMBDirectory.h"
 #endif
 #include "playercorefactory/PlayerCoreFactory.h"
-#include "utils/Addon.h"
 
 using namespace std;
 using namespace XFILE;
@@ -241,9 +240,6 @@ bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
     GetSources(pRootElement, "music", m_musicSources, m_defaultMusicSource);
     GetSources(pRootElement, "video", m_videoSources, m_defaultVideoSource);
   }
-
-  // Load addons.xml and populate m_(...)Addons;
-  ADDON::CAddonMgr::Get()->LoadAddons();
 
   bXboxMediacenter = true;
 
