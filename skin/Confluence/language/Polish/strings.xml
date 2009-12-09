@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Date of translation: 12/06/2009-->
+<!--$Revision$-->
+<strings>
+  <string id="31000">Zmień</string>
+  <string id="31003">Opcje zasilania</string>
+  <string id="31007">Wtyczki</string>
+  <string id="31020">Ostatnio dodane</string>
+  <string id="31021">Wideo - Pliki</string>
+  <string id="31022">Muzyka - Pliki</string>
+  <string id="31023">Otwarzam</string>
+  <string id="31024">strona</string>
+  <string id="31025">pozycji</string>
+  <string id="31026">Dostosuj</string>
+  <string id="31027">Lokalizacja</string>
+  <string id="31028">Plakaty</string>
+  <string id="31030">Pełna lista</string>
+  <string id="31031">Podgląd</string>
+  <string id="31032">Przezrocze</string>
+  <string id="31040">Teraz odtwarzane</string>
+  <string id="31042">ODTWARZAM</string>
+  <string id="31043">PAUZA</string>
+  <string id="31044">PRZEWIŃ</string>
+  <string id="31045">COFNIJ</string>
+  <string id="31046">Właściwości audio</string>
+  <string id="31047">Obecny efekt</string>
+  <string id="31048">Efekty wizualizacji</string>
+  <string id="31049">Koniec o godzinie</string>
+  <string id="31055">Otwórz playlistę</string>
+  <string id="31056">Zapisz playlistę</string>
+  <string id="31057">Zamknij playlistę</string>
+  <string id="31058">Dostępne w systemie pliki muzyczne</string>
+  <string id="31059">Obecna playlista</string>
+  <string id="31060">Pozycja w wyniku połączenia części[CR]wybierz, którą chcesz odtwarzać.</string>
+  <string id="31101">Opcje ekranu głównego</string>
+  <string id="31102">Tło</string>
+  <string id="31103">Wyświetlaj "Pauza" podczas pokazu slajdów</string>
+  <string id="31105">Wyświetlaj tytuły podczas skanowania w tle</string>
+  <string id="31106">Różnego rodzaju opcje</string>
+  <string id="31109">Tła ekranu głównego</string>
+  <string id="31112">Opcje</string>
+  <string id="31117">Pokazuj "Ostatnio dodane"</string>
+  <string id="31300">Obecne warunki</string>
+  <string id="31301">ostatnia aktualizacja</string>
+  <string id="31304">Zdjęcia</string>
+  <string id="31310">Numer ścieżki</string>
+  <string id="31311">OBRAZ FANART[CR][CR]NIEDOSTĘPNY[CR][CR] KLIKNIJ PRZYCISK, ABY DODAĆ</string>
+  <string id="31315">Podstawowe</string>
+  <string id="31320">Udane logowanie</string>
+  <string id="31322">Emisja</string>
+  <string id="31323">Najnowsze filmy</string>
+  <string id="31324">Najnowsze odcinki</string>
+  <string id="31325">Opcje playlisty</string>
+  <string id="31326">Zrobione</string>
+  <string id="31327">Wymiary</string>
+  <string id="31328">Ostatnio dodane</string>
+  <string id="31329">[B]TIMER SET![/B] [COLOR=grey2] - SYSTEM AUTO SHUTDOWN IN[/COLOR]</string>
+  <string id="31400">[B]KONFIGURUJ USTAWIENIA WYŚWIETLANIA[/B][CR][CR]Wybór skóry · Set language and region · Change file listing options[CR]Set up a screensaver</string>
+  <string id="31401">[B]KONFIGURUJ USTAWIENIA WIDEO[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts</string>
+  <string id="31402">[B]KONFIGURUJ USTAWIENIA MUZYKI[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options</string>
+  <string id="31403">[B]KONFIGURUJ USTAWIENIA ZDJĘĆ[/B][CR][CR]Set picture listing options · Configure slideshows</string>
+  <string id="31404">[B]KONFIGURUJ USTAWIENIA POGODY[/B][CR][CR]Set three cities to collect weather information</string>
+  <string id="31405">[B]KONFIGURUJ USTAWIENIA SIECI[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Set internet access options</string>
+  <string id="31406">[B]KONFIGURUJ USTAWIENIA SYSTEMU[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock</string>
+  <string id="31407">[B]KONFIGURUJ USTAWIENIA SKÓRY[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds</string>
+</strings>
