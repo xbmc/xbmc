@@ -168,8 +168,19 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &
       CDateTime starttime(program[i].starttime);
       CDateTime endtime(program[i].endtime);
 
-      tm *local = localtime(&program[i].starttime);
-      CDateTime localstart = *local;
+      CDateTime localstart;
+      if (program[i].starttime)
+      {
+        tm *local = localtime(&program[i].starttime); // Conversion to local time
+        /*
+         * Microsoft implementation of localtime returns NULL if on or before epoch.
+         * (http://msdn.microsoft.com/en-us/library/bf12f0hc(VS.80).aspx)
+         */
+        if (local)
+          localstart = *local;
+        else
+          localstart = program[i].starttime; // Use the actual start time as close enough.
+      }
       CStdString title;
       title.Format("%s - %s", localstart.GetAsLocalizedTime("HH:mm", false), program[i].title);
 
