@@ -441,7 +441,6 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   // setup our item with the label and thumb information
   CFileItem item(strFile, false);
   item.SetLabel(pItem->GetLabel());
-  item.SetLabelPreformated(pItem->IsLabelPreformated());
 
   // hack since our label sometimes contains extensions
   if(!pItem->m_bIsFolder && g_guiSettings.GetBool("filelists.showextensions") &&
