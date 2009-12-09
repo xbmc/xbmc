@@ -61,15 +61,16 @@ protected:
   void DeleteSurfaces();
   HRESULT AllocVideoSurface(D3DFORMAT Format = D3DFMT_A8R8G8B8);
   void GetCurrentVideoSize();
+
   D3DFORMAT            m_SurfaceType;
   D3DFORMAT            m_BackbufferType;
   D3DFORMAT            m_DisplayType;
+
   VMR9AlphaBitmap      m_VMR9AlphaBitmap;
   CAutoVectorPtr<BYTE>  m_VMR9AlphaBitmapData;
   tagRECT          m_VMR9AlphaBitmapRect;
   int            m_VMR9AlphaBitmapWidthBytes;
   bool m_fUseInternalTimer;
-  bool m_pRequireResetDevice;
   //Clock stuff
   REFERENCE_TIME m_rtTimePerFrame;
   REFERENCE_TIME m_pPrevEndFrame;
@@ -78,6 +79,7 @@ protected:
   int            m_iVideoHeight;
 
   float          m_fps;
+
 private:
   long        m_refCount;
   CCritSec    m_ObjectLock;
@@ -88,8 +90,11 @@ private:
   CComPtr<IDirect3D9>                     m_D3D;
   CComPtr<IDirect3DDevice9>               m_D3DDev;
   CComPtr<IVMRSurfaceAllocatorNotify9>    m_pIVMRSurfAllocNotify;
-  vector<CComPtr<IDirect3DSurface9> >     m_surfaces;
-  CComPtr<IDirect3DSurface9>              m_renderTarget;
+
+  vector<CComPtr<IDirect3DSurface9> >     m_pSurfaces;
+  int                                     m_pNbrSurface;
+  int                                     m_pCurSurface;
+
   CComPtr<IDirect3DTexture9>              m_pVideoTexture;
   CComPtr<IDirect3DSurface9>              m_pVideoSurface;
 };

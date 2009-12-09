@@ -316,22 +316,20 @@ public:
 };
 
 CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error)
-: m_refCount(1)
+: m_refCount(1),
+  m_pNbrSurface(0),
+  m_pCurSurface(0)
 {
   m_D3D = g_Windowing.Get3DObject();
   m_D3DDev = g_Windowing.Get3DDevice();
   hr = S_OK;
   CAutoLock Lock(&m_ObjectLock);
   g_renderManager.PreInit(true);
-  m_renderTarget = NULL; 
-  m_pRequireResetDevice = false;
-  hr = m_D3DDev->GetRenderTarget( 0, &m_renderTarget );
-
 }
 
 CVMR9AllocatorPresenter::~CVMR9AllocatorPresenter()
 {
-    DeleteSurfaces();
+  DeleteSurfaces();
   g_renderManager.UnInit();
 }
 
@@ -342,9 +340,9 @@ void CVMR9AllocatorPresenter::DeleteSurfaces()
     // clear out the private texture
     m_pVideoTexture = NULL;
 
-    for( size_t i = 0; i < m_surfaces.size(); ++i ) 
+    for( size_t i = 0; i < m_pSurfaces.size(); ++i ) 
     {
-        m_surfaces[i] = NULL;
+        m_pSurfaces[i] = NULL;
     }
 }
 
@@ -357,61 +355,67 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
     lpAllocInfo->dwFlags ,*lpNumBuffers, lpAllocInfo->Format, ((char)lpAllocInfo->Format&0xff),
 	((char)(lpAllocInfo->Format>>8)&0xff) ,((char)(lpAllocInfo->Format>>16)&0xff) ,((char)(lpAllocInfo->Format>>24)&0xff));
 
-  if(!lpAllocInfo || !lpNumBuffers)
+  if( !lpAllocInfo || !lpNumBuffers )
     return E_POINTER;
-  if( m_pIVMRSurfAllocNotify == NULL )
+  if( !m_pIVMRSurfAllocNotify)
     return E_FAIL;
   HRESULT hr = S_OK;
 
   if(lpAllocInfo->Format == '21VY' || lpAllocInfo->Format == '024I')
     return E_FAIL;
   
+  int nOriginal = *lpNumBuffers;
+
   //To do implement the texture surface on the present image
   //if(lpAllocInfo->dwFlags & VMR9AllocFlag_3DRenderTarget)
   //lpAllocInfo->dwFlags |= VMR9AllocFlag_TextureSurface;
-  CLog::Log(LOGNOTICE,"vmr9:flags:");
-  if (lpAllocInfo->dwFlags & VMR9AllocFlag_3DRenderTarget)   CLog::Log(LOGNOTICE,"vmr9:  3drendertarget");
-  if (lpAllocInfo->dwFlags & VMR9AllocFlag_DXVATarget)      CLog::Log(LOGNOTICE,"vmr9:  DXVATarget");
-  if (lpAllocInfo->dwFlags & VMR9AllocFlag_OffscreenSurface) CLog::Log(LOGNOTICE,"vmr9:  OffscreenSurface");
-  if (lpAllocInfo->dwFlags & VMR9AllocFlag_RGBDynamicSwitch) CLog::Log(LOGNOTICE,"vmr9:  RGBDynamicSwitch");
-  if (lpAllocInfo->dwFlags & VMR9AllocFlag_TextureSurface)   CLog::Log(LOGNOTICE,"vmr9:  TextureSurface");
-    //DeleteSurfaces();
+  CStdString strVmr9Flags;
+  strVmr9Flags.append("VMR9 Flags:");
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_3DRenderTarget)
+    strVmr9Flags.append(" 3drendertarget,");
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_DXVATarget)
+    strVmr9Flags.append(" DXVATarget,");
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_OffscreenSurface) 
+    strVmr9Flags.append(" OffscreenSurface,");
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_RGBDynamicSwitch) 
+    strVmr9Flags.append(" RGBDynamicSwitch,");
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_TextureSurface)
+    strVmr9Flags.append(" TextureSurface.");
+  CLog::Log(LOGNOTICE,"%s",strVmr9Flags.c_str());
+  if (*lpNumBuffers == 1)
+	{
+		*lpNumBuffers = 4;
+		m_pNbrSurface = 4;
+	}
+	else
+		m_pNbrSurface = 0;
 
-    m_surfaces.resize(*lpNumBuffers);
-    hr = m_pIVMRSurfAllocNotify->AllocateSurfaceHelper(lpAllocInfo, lpNumBuffers, & m_surfaces.at(0) );
-    if(FAILED(hr))
-  {
-    CLog::Log(LOGERROR,"vmr9:InitializeDevice()   AllocateSurfaceHelper returned:0x%x",hr);
-    return hr;
-  }
-  m_iVideoWidth=lpAllocInfo->dwWidth;
-  m_iVideoHeight=lpAllocInfo->dwHeight;
-
-  //INITIALIZE VIDEO SURFACE THERE
-  if(FAILED(hr = AllocVideoSurface()))
-  { 
-    CLog::Log(LOGERROR,"vmr9:InitializeDevice()   AllocVideoSurface returned:0x%x",hr);
-    return hr;
-  }
-  hr = m_D3DDev->ColorFill(m_pVideoSurface, NULL, 0);
-  // test if the colorspace is acceptable
-
-  //m_D3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-  //hr = m_D3DDev->StretchRect(m_surfaces[0], NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);
-  //m_D3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+  m_pSurfaces.resize(*lpNumBuffers);
+  hr = m_pIVMRSurfAllocNotify->AllocateSurfaceHelper(lpAllocInfo, lpNumBuffers, & m_pSurfaces.at(0) );
   if(FAILED(hr))
   {
-    CLog::Log(LOGERROR,"vmr9:InitializeDevice()   StretchRect returned:0x%x",hr);
-    DeleteSurfaces();
-    return E_FAIL;
+    CLog::Log(LOGERROR,"%s AllocateSurfaceHelper returned:0x%x",__FUNCTION__,hr);
+    return hr;
   }
+  m_iVideoWidth = lpAllocInfo->dwWidth;
+  m_iVideoHeight = lpAllocInfo->dwHeight;
 
-  if(FAILED(hr = m_D3DDev->ColorFill(m_pVideoSurface, NULL, 0)))
+  //INITIALIZE VIDEO SURFACE THERE
+  hr = AllocVideoSurface();
+  if ( FAILED( hr ) )
+    return hr;
+  hr = m_D3DDev->ColorFill(m_pVideoSurface, NULL, 0);
+  if ( FAILED( hr ) )
   {
-    CLog::Log(LOGERROR,"vmr9:InitializeDevice()   ColorFill returned:0x%x",hr);
+    CLog::Log(LOGERROR,"%s ColorFill returned:0x%x",__FUNCTION__,hr);
     DeleteSurfaces();
-    return E_FAIL;
+    return hr;
   }
+  if (m_pNbrSurface && m_pNbrSurface != *lpNumBuffers)
+		m_pNbrSurface = *lpNumBuffers;
+  
+	*lpNumBuffers = (nOriginal < *lpNumBuffers) ? nOriginal : *lpNumBuffers;
+	m_pCurSurface = 0;
   return hr;
 }
 
@@ -448,14 +452,25 @@ STDMETHODIMP CVMR9AllocatorPresenter::TerminateDevice(DWORD_PTR dwID)
     
 STDMETHODIMP CVMR9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID ,DWORD SurfaceIndex ,DWORD SurfaceFlags ,IDirect3DSurface9 **lplpSurface)
 {
-  if( lplpSurface == NULL )
+  if( !lplpSurface )
     return E_POINTER;
 
-  if (SurfaceIndex >= m_surfaces.size() ) 
+  //return if the surface index is higher than the size of the surfaces we have
+  if (SurfaceIndex >= m_pSurfaces.size() ) 
     return E_FAIL;
+
   CAutoLock Lock(&m_ObjectLock);
-  *lplpSurface = m_surfaces[SurfaceIndex];
-  (*lplpSurface)->AddRef();
+  if (m_pNbrSurface)
+  {
+    ++m_pCurSurface;
+    m_pCurSurface = m_pCurSurface % m_pNbrSurface;
+    (*lplpSurface = m_pSurfaces[m_pCurSurface + SurfaceIndex])->AddRef();
+  }
+  else
+  {
+    m_pNbrSurface = SurfaceIndex;
+    (*lplpSurface = m_pSurfaces[SurfaceIndex])->AddRef();
+  }
 
   return S_OK;
 }
@@ -546,26 +561,19 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   CheckPointer(m_pIVMRSurfAllocNotify, E_UNEXPECTED);
   
   if(!m_pIVMRSurfAllocNotify)
-  {
-    CLog::Log(LOGERROR, "vmr9:PresentImage() allocNotify not set");
     return E_FAIL;
-  }
 
 
   m_pPrevEndFrame=lpPresInfo->rtEnd;
-  m_fps = 10000000.0 / (lpPresInfo->rtEnd - lpPresInfo->rtStart);
   
   if (!g_renderManager.IsConfigured())
     GetCurrentVideoSize();
 
   if (!g_renderManager.IsStarted())
-    return S_OK;
+    return E_FAIL;
   
   if(!lpPresInfo || !lpPresInfo->lpSurf)
-  {
-    CLog::Log(LOGERROR,"vmr9:PresentImage() no surface");
     return E_POINTER;
-  }
 
   CAutoLock Lock(&m_ObjectLock);
 
