@@ -312,10 +312,10 @@ void CGUISettings::Initialize()
   AddInt(5, "system.ledcolour", 13339, LED_COLOUR_NO_CHANGE, LED_COLOUR_NO_CHANGE, 1, LED_COLOUR_OFF, SPIN_CONTROL_TEXT);
   AddInt(6, "system.leddisableonplayback", 13345, LED_PLAYBACK_OFF, LED_PLAYBACK_OFF, 1, LED_PLAYBACK_VIDEO_MUSIC, SPIN_CONTROL_TEXT);
   AddBool(7, "system.ledenableonpaused", 20313, true);
-  AddSeparator(8, "system.sep3");
+  AddSeparator(8, "system.sep1");
   AddBool(9, "system.fanspeedcontrol", 13302, false);
   AddInt(10, "system.fanspeed", 13300, CFanController::Instance()->GetFanSpeed(), 5, 5, 50, SPIN_CONTROL_TEXT);
-  AddSeparator(11, "system.sep3");
+  AddSeparator(11, "system.sep2");
   AddBool(12, "system.autotemperature", 13301, false);
   AddInt(13, "system.targettemperature", 13299, 55, 40, 1, 68, SPIN_CONTROL_TEXT);
   AddInt(14, "system.minfanspeed", 13411, 1, 1, 1, 50, SPIN_CONTROL_TEXT);
@@ -500,10 +500,6 @@ void CGUISettings::Initialize()
   AddString(2, "smb.password",    1204,   "", EDIT_CONTROL_HIDDEN_INPUT, true, 1204);
   AddString(3, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
-
-
-
-
 
   AddCategory(6, "network", 705);
   AddInt(1, "network.assignment", 715, NETWORK_DASH, NETWORK_DASH, 1, NETWORK_STATIC, SPIN_CONTROL_TEXT);
