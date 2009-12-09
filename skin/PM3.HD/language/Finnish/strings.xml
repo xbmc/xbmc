@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
   <!-- Translator: Mika Pirinen -->
-  <!-- Date of translation: 15/11/2009 -->
-  <!-- Finnish strings based on English strings version 24569 -->
+  <!-- Date of translation: 23/11/2009 -->
+  <!-- Finnish strings based on English strings revision 24895 -->
 <strings>
   <string id="31000">Ääni vaimennettu</string>
   <string id="31001">Suoritetaan...</string>
@@ -33,7 +33,7 @@
 
   <string id="31026"></string>
   <string id="31027"></string>
-  <string id="31028">DVD:n pienoiskuvat</string>
+  <string id="31028">DVD-pienoiskuvat</string>
   <string id="31029">DVD-luettelo</string>
   <string id="31030">Fanitaide</string>
   <string id="31031">Luettelo</string>
@@ -84,7 +84,7 @@
   <string id="31113">Yksittäinen kuva</string>
   <string id="31114">Vaihtuva kuva</string>
   <string id="31115">Korvaa ääniasetus-painike teksti-TV:llä</string>
-  <string id="31116">Piilota video-lippujen kuvat media näkymissä</string>
+  <string id="31116">Piilota video-tietojen kuvat media näkymissä</string>
 
   <!-- Script Settings labels -->
   <string id="31200">Skripti asetukset</string>
@@ -94,8 +94,8 @@
   <string id="31204">Polku</string>
   <string id="31205"></string>
   <string id="31206"></string>
-  <string id="31207">Näytä tekstityksen latauspainike kuvaruutuvalikossa</string>
-  <string id="31208">Näytä lyrics-skriptin painike kuvaruutuvalikossa</string>
+  <string id="31207">Näytä tekstityksen latauspainike videoiden kuvaruutuvalikossa</string>
+  <string id="31208">Näytä Lyrics-skriptin painike musiikin kuvaruutuvalikossa</string>
   <string id="31209">Skriptin pikakäynnistyspainike valikkoon -</string>
 
   <!-- AMT Script Extra labels -->

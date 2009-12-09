@@ -30,6 +30,7 @@
 #include "GUIDialogProgress.h"
 #include "GUIWindowManager.h"
 #include "URL.h"
+#include "LocalizeStrings.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -272,7 +273,7 @@ bool CFileShoutcast::Open(const CURL& url)
       Sleep(100);
       char szTmp[1024];
       //g_dialog.SetCaption(0, "Shoutcast" );
-      sprintf(szTmp, "Buffering %i bytes", m_ringbuf.GetMaxReadSize());
+      sprintf(szTmp, g_localizeStrings.Get(23052).c_str(), m_ringbuf.GetMaxReadSize());
       if (dlgProgress)
       {
         dlgProgress->SetLine(2, szTmp );

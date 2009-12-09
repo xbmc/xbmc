@@ -1,48 +1,64 @@
-<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
-<!--Translator: Zippolighter in consultation with the members of the german xbmc forum (www.xbmc.de)-->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: Zippolighter-->
 <!--Email: hardrock_zippolighter@hotmail.com-->
-<!--Date of translation: 11/10/2008-->
+<!--Date of translation: 11/23/2009-->
 <!--$Revision$-->
-<!--Based on english strings version PM3.HD BETA2-->
 <strings>
   <string id="31000">Ton aus</string>
-  <string id="31001"></string>
-  <string id="31002"></string>
-  <string id="31003"></string>
-  <string id="31004"></string>
-  <string id="31005"></string>
-  <string id="31006"></string>
-  <string id="31007"></string>
-  <string id="31008"></string>
-  <string id="31009"></string>
+  <string id="31001">In Arbeit...</string>
+  <string id="31002">
+  </string>
+  <string id="31003">
+  </string>
+  <string id="31004">
+  </string>
+  <string id="31005">
+  </string>
+  <string id="31006">
+  </string>
+  <string id="31007">
+  </string>
+  <string id="31008">
+  </string>
+  <string id="31009">
+  </string>
   <string id="31010">FANArt[CR]BILD[CR]NICHT[CR]Vorhanden</string>
   <string id="31011">EPISODEN[CR]BILD[CR]NICHT[CR]VORHANDEN</string>
-  <string id="31012"></string>
-  <string id="31013"></string>
-  <string id="31014"></string>
-  <string id="31015"></string>
-  <string id="31016"></string>
-  <string id="31017"></string>
-  <string id="31018"></string>
-  <string id="31019"></string>
-
+  <string id="31012">
+  </string>
+  <string id="31013">
+  </string>
+  <string id="31014">
+  </string>
+  <string id="31015">
+  </string>
+  <string id="31016">
+  </string>
+  <string id="31017">
+  </string>
+  <string id="31018">
+  </string>
+  <string id="31019">
+  </string>
   <string id="31020">Kapitel Titel</string>
   <string id="31021">Video - Dateien</string>
   <string id="31022">Musik - Dateien</string>
-  <string id="31023"></string>
+  <string id="31023">
+  </string>
   <string id="31024">Seite</string>
   <string id="31025">Einträge</string>
-
-  <string id="31026"></string>
-  <string id="31027"></string>
+  <string id="31026">
+  </string>
+  <string id="31027">
+  </string>
   <string id="31028">DVD Bilder</string>
   <string id="31029">DVD Liste</string>
   <string id="31030">Fanart</string>
   <string id="31031">Komplette Liste</string>
-  <string id="31032">-</string>
+  <string id="31032">Cover Flow</string>
   <string id="31033">Bilder</string>
   <string id="31034">Breite Icons</string>
-
   <string id="31040">Aktueller Film[CR]Fanart Bild[CR][CR]Click zum wechseln</string>
   <string id="31041">Aktuelle TV Serie[CR]Fanart Bild[CR][CR]Click zum wechseln</string>
   <string id="31042">PLAYING</string>
@@ -51,30 +67,26 @@
   <string id="31045">Rückspulen</string>
   <string id="31046">Willkommen im XBMC - Bitte Anmelden</string>
   <string id="31047">Letztes Anmelden</string>
-  <string id="31048"></string>
-
-  <string id="31050"></string>
-  <string id="31051"></string>
-  <string id="31052"></string>
-
-  <!-- Lyrics Script Extra labels -->
+  <string id="31048">Aktueller Darsteller[CR]Fanart Bild[CR][CR]Klick zum wechseln</string>
+  <string id="31050">
+  </string>
+  <string id="31051">
+  </string>
+  <string id="31052">
+  </string>
   <string id="31053">XBMC Liedtexte</string>
   <string id="31054">Wähle dein Lied von der Liste</string>
-
-  <!-- Playlist Editor labels -->
   <string id="31055">Öffne Playlist</string>
   <string id="31056">Sichere Playlist</string>
   <string id="31057">Schliesse Playlist</string>
   <string id="31058">System Musik Dateien</string>
   <string id="31059">Aktuelle Playlist</string>
   <string id="31060">Diese Datei ist gestapelt, wähle den Teil der abgespielt werden soll.</string>
-
-  <!-- Skin Settings labels -->
   <string id="31100">Hintergrund Optionen</string>
   <string id="31101">Home Screen Optionen</string>
   <string id="31102">Hintergründe</string>
   <string id="31103">Zeige "Pause" bei der Diashow</string>
-  <string id="31104"></string>
+  <string id="31104">Herunterfahren Menü - Verwende Energie Sparen anstatt Ruhezustand</string>
   <string id="31105">Zeige Media Titel beim Hintergrund Scan</string>
   <string id="31106">Sonstige Optionen</string>
   <string id="31107">Entferne Scan Bild vom Hintergrund</string>
@@ -82,19 +94,24 @@
   <string id="31109">Home Screen Hintergründe</string>
   <string id="31110">button - Aktiviere eigene Hintergründe</string>
   <string id="31111">Immer Musik Infos anzeigen während der Liedtexte</string>
-
-  <!-- Script Settings labels -->
+  <string id="31112">Zeige Media Titel in "Breite Icons" Ansicht</string>
+  <string id="31113">Einzel Bild</string>
+  <string id="31114">Mehfach Bilder</string>
+  <string id="31115">Ersetzte Taste für Audio Einstellungen mit Videotext</string>
+  <string id="31116">Video Flag Bilder in Media Ansicht verstecken</string>
   <string id="31200">Eigene Script Optionen</string>
-  <string id="31201"></string>
-  <string id="31202"></string>
+  <string id="31201">
+  </string>
+  <string id="31202">
+  </string>
   <string id="31203">Setze Button Beschriftung</string>
   <string id="31204">Script Pfad</string>
-  <string id="31205"></string>
-  <string id="31206"></string>
-  <string id="31207"></string>
+  <string id="31205">
+  </string>
+  <string id="31206">
+  </string>
+  <string id="31207">Zeige Untertitel Download Button in OSD</string>
   <string id="31208">Zeige Liedtexte Script Button im OSD</string>
   <string id="31209">Aktiviere Schnellstart Script Button für -</string>
-
-  <!-- AMT Script Extra labels -->
   <string id="31300">Zeige Besetzung</string>
 </strings>
