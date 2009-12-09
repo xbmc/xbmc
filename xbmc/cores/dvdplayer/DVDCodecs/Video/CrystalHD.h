@@ -119,6 +119,7 @@ public:
   bool AddInput(unsigned char *pData, size_t size, double pts);
   unsigned int GetReadyCount();
   bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
+  bool FreePicture(DVDVideoPicture* pDvdVideoPicture);
   void SetDropState(bool bDrop);
 
 protected:

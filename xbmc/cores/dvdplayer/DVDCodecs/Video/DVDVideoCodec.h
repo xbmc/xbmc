@@ -39,6 +39,7 @@ struct DVDVideoPicture
   double pts; // timestamp in seconds, used in the CDVDPlayer class to keep track of pts
   BYTE* data[4];      // [4] = alpha channel, currently not used
   int iLineSize[4];   // [4] = alpha channel, currently not used
+  void* private_data;
 
   unsigned int iFlags;
 

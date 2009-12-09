@@ -631,7 +631,10 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
             pBuffer = AllocBuffer();
             if (!pBuffer) // No free pre-allocated buffers so make one
             {
-              pBuffer = new CMPCDecodeBuffer( sizeof(BCM::BC_DTS_PROC_OUT) ); // Allocate a new buffer
+              // Allocate a new buffer
+              pBuffer = new CMPCDecodeBuffer( m_y_buffer_size + m_uv_buffer_size ); 
+              // Allocate a new buffer
+              //pBuffer = new CMPCDecodeBuffer( sizeof(BCM::BC_DTS_PROC_OUT) ); 
               CLog::Log(LOGDEBUG, "%s: Added a new Buffer (count=%d). Size: %d", __MODULE_NAME__, (int)m_BufferCount, pBuffer->GetSize());    
             }
 
@@ -640,6 +643,13 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
             m_old_timestamp = procOut.PicInfo.timeStamp;
             m_PictureCount++;
 
+            unsigned char *y_buffer_ptr = (BYTE*)pBuffer->GetPtr();
+            unsigned char *uv_buffer_ptr = (BYTE*)(y_buffer_ptr + m_y_buffer_size);
+            // copy y
+            fast_memcpy(y_buffer_ptr, procOut.Ybuff, m_y_buffer_size);
+            // copy uv
+            fast_memcpy(uv_buffer_ptr, procOut.UVbuff, m_uv_buffer_size);
+            /*
             m_y_buffer_ptr  = (BYTE*)procOut.Ybuff;  // Y plane
             m_uv_buffer_ptr = (BYTE*)procOut.UVbuff; // UV packed plane
 
@@ -655,6 +665,7 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
               *dst_u++ = *src++;
               *dst_v++ = *src++;
             }
+            */
 
             got_picture = true;
           }
@@ -928,7 +939,7 @@ unsigned int CCrystalHD::GetReadyCount()
 
 bool CCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
-  BCM::BC_DTS_PROC_OUT *procOut;
+  //BCM::BC_DTS_PROC_OUT *procOut;
   
   //CLog::Log(LOGDEBUG, "%s: Fetching next decoded picture", __MODULE_NAME__);   
 
@@ -941,7 +952,8 @@ bool CCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     return false;
   }
 
-  procOut = (BCM::BC_DTS_PROC_OUT*)pBuffer->GetPtr();
+  pDvdVideoPicture->private_data = pBuffer->GetPtr();
+  //procOut = (BCM::BC_DTS_PROC_OUT*)pBuffer->GetPtr();
  
   m_interlace = m_pOutputThread->GetInterlace();
   m_framerate = m_pOutputThread->GetFrameRate();
@@ -951,8 +963,13 @@ bool CCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iHeight = m_pOutputThread->GetHeight();
   pDvdVideoPicture->iDisplayWidth = pDvdVideoPicture->iWidth;
   pDvdVideoPicture->iDisplayHeight = pDvdVideoPicture->iHeight;
-  pDvdVideoPicture->data[0] = procOut->Ybuff;  // Y plane
-  pDvdVideoPicture->data[1] = procOut->UVbuff; // UV packed plane
+  // Y plane
+  pDvdVideoPicture->data[0] = (BYTE*)pDvdVideoPicture->private_data;
+  // UV packed plane
+  pDvdVideoPicture->data[1] = (BYTE*)(pDvdVideoPicture->data[0] +
+    (pDvdVideoPicture->iWidth * pDvdVideoPicture->iHeight));
+  //pDvdVideoPicture->data[0] = procOut->Ybuff;   // Y plane
+  //pDvdVideoPicture->data[1] = procOut->UVbuff;  // UV packed plane
   pDvdVideoPicture->data[2] = NULL;
   pDvdVideoPicture->iLineSize[0] = pDvdVideoPicture->iWidth;
   pDvdVideoPicture->iLineSize[1] = pDvdVideoPicture->iWidth;
@@ -970,20 +987,25 @@ bool CCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->format = DVDVideoPicture::FMT_NV12;
   
   //CLog::Log(LOGDEBUG, "%s: Moving Buffer %d (Ready -> Busy)", __MODULE_NAME__, pBuffer->GetId());   
-  //m_BusyList.Push(pBuffer);
-  m_pOutputThread->FreeBuffer(pBuffer);
+  //m_pOutputThread->FreeBuffer(pBuffer);
   
-  m_pOutputThread->UpdateNV12Pointers(pDvdVideoPicture);
+  //m_pOutputThread->UpdateNV12Pointers(pDvdVideoPicture);
 
   return true;
 }
 
-/*
+
 bool CCrystalHD::FreePicture(DVDVideoPicture* pDvdVideoPicture)
 {
-  m_pOutputThread->FreeBuffer(pDvdVideoPicture);
+  if (pDvdVideoPicture->private_data)
+  {
+    m_pOutputThread->FreeBuffer((CMPCDecodeBuffer*)pDvdVideoPicture->private_data);
+    pDvdVideoPicture->private_data = NULL;
+  }
+  
+  return true;
 }
-*/
+
 
 void CCrystalHD::SetDropState(bool bDrop)
 {
