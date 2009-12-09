@@ -74,7 +74,7 @@
   <string id="128">General</string>
   <string id="129">Slideshow</string>
   <string id="130">System info</string>
-  <string id="131">Screen</string>
+  <string id="131">Display</string>
   <string id="132">Albums</string>
   <string id="133">Artists</string>
   <string id="134">Songs</string>
@@ -285,14 +285,14 @@
   <string id="352">Dim</string>
   <string id="353">Black</string>
   <string id="354">Matrix trails</string>
-  <string id="355">Screensaver idle timeout</string>
+  <string id="355">Screensaver time</string>
   <string id="356">Screensaver mode</string>
   <string id="357">Shutdown idle timeout</string>
   <string id="358">All albums</string>
   <string id="359">Recently added albums</string>
   <string id="360">Screensaver</string>
   <string id="361">R. Slideshow</string>
-  <string id="362">Screensaver fade level</string>
+  <string id="362">Screensaver dim level</string>
   <string id="363">Sort by: File</string>
   <string id="364">- Dolby Digital (AC3) capable receiver</string>
   <string id="365">Sort by: Name</string>
@@ -408,7 +408,7 @@
   <string id="477">Unable to load playlist</string>
   <string id="478">OSD</string>
   <string id="479">Skin &amp; language</string>
-  <string id="480">Appearance</string>
+  <string id="480">Look and feel</string>
   <string id="481">Audio options</string>
   <string id="482">About XBMC</string>
   <string id="483"></string>
@@ -424,7 +424,7 @@
   <string id="494">Overall audio headroom</string>
   <string id="495">Upsample videos to GUI resolution</string>
   <string id="496">Calibration</string>
-  <string id="497">Hide media extensions</string>
+  <string id="497">Show file extensions</string>
   <string id="498">Sort by: Type</string>
   <string id="499">Unable to connect to online lookup service</string>
   <string id="500">Downloading album information failed</string>
@@ -546,7 +546,7 @@
   <string id="635">Original Size</string>
   <string id="636">Custom</string>
   <string id="637">Replay gain</string>
-  <string id="638">Apply Replaygain volume adjustments</string>
+  <string id="638">Replaygain volume adjustments</string>
   <string id="639">Use track levels</string>
   <string id="640">Use album levels</string>
   <string id="641">PreAmp Level - Replay gained files</string>
@@ -607,7 +607,7 @@
   <string id="732">Save &amp; apply</string>
   <string id="733">Web server password</string>
   <string id="734">No pass</string>
-  <string id="735">- Charset</string>
+  <string id="735">- Character set</string>
   <string id="736">- Style</string>
   <string id="737">- Colour</string>
   <string id="738">Normal</string>
@@ -644,7 +644,7 @@
   <string id="769">Reserved</string>
   <string id="770">Error %i: share not available</string>
   <string id="771">- Auto FATX limiter</string>
-  <string id="772">Audio hardware</string>
+  <string id="772">Audio output</string>
   <string id="773">Seeking</string>
   <string id="774">Slideshow folder</string>
   <string id="775">Network interface</string>
@@ -801,6 +801,9 @@
 
   <!-- strings through to 1450 reserved for weather translation -->
 
+  <string id="1450">Put display to sleep when idle</string>
+  <!-- strings through to 1470 reserved for power-saving -->
+
   <string id="2050">Runtime</string>
 
   <string id="2100">Script failed! : %s</string>
@@ -938,8 +941,8 @@
   <string id="12358">Password entry was blank. Try again.</string>
   <string id="12360">Master lock</string>
   <string id="12362">Shutdown system if Master Lock retries exceeded</string>
-  <string id="12367">Master code is not valid!</string>
-  <string id="12368">Please enter a valid master code!</string>
+  <string id="12367">Master code is not valid</string>
+  <string id="12368">Please enter a valid master code</string>
   <string id="12373">Settings &amp; file manager</string>
   <string id="12376">Set as default for all movies</string>
   <string id="12377">This will reset any previously saved values</string>
@@ -1102,8 +1105,8 @@
   <string id="13302">Fan speed override</string>
   <string id="13303">- Fonts</string>
   <string id="13304">Enable flipping bi-directional strings</string>
-  <string id="13305">Enable RSS feeds</string>
-  <string id="13306">Hide parent folder items</string>
+  <string id="13305">Show RSS news feeds</string>
+  <string id="13306">Show parent folder items</string>
   <string id="13307">Track naming template</string>
   <string id="13308">Do you wish to reboot your system</string>
   <string id="13309">instead of just XBMC?</string>
@@ -1182,7 +1185,7 @@
   <string id="13396">Audio and subtitle settings</string>
   <string id="13397">Enable subtitles</string>
   <string id="13398">Shortcuts</string>
-  <string id="13399">Ignore tokens when sorting</string>
+  <string id="13399">Ignore articles when sorting (e.g. "the")</string>
   <string id="13400">Crossfade between songs on the same album</string>
   <string id="13401">Browse for %s</string>
   <string id="13402">Show track position</string>
@@ -1207,9 +1210,9 @@
   <string id="13422">Start slideshow here</string>
   <string id="13423">Remember for this path</string>
 
-  <string id="13600">Apple Remote</string>
-  <string id="13601">Mode</string>
-  <string id="13602">Always running</string>
+  <string id="13600">Apple remote</string>
+  <string id="13601"></string>
+  <string id="13602">Allow start of XBMC using the remote</string>
   <string id="13603">Sequence delay time</string>
 
   <string id="13610">Disabled</string>
@@ -1253,7 +1256,7 @@
   <string id="14034">DVD cache - DVD-ROM</string>
   <string id="14035">- Local Network</string>
   <string id="14036">Servers</string>
-  <string id="14037">Look &amp; feel</string>
+  <string id="14037"></string>
   <string id="14038">Network settings changed</string>
   <string id="14039">XBMC requires to restart to change your</string>
   <string id="14040">network setup.  Would you like to restart now?</string>
@@ -1299,9 +1302,16 @@
   <string id="14080">Timezone</string>
   <string id="14081">File lists</string>
   <string id="14082">Show EXIF picture information</string>
+  <string id="14083">Use a fullscreen window rather than true fullscreen</string>
   <string id="14084">Queue songs on selection</string>
   <string id="14085">Play audio CDs automatically</string>
   <string id="14086">Playback</string>
+  <string id="14090">International</string>
+  <string id="14091">Character set</string>
+  <string id="14092">Debugging</string>
+  <string id="14093">Security</string>
+  <string id="14094">Input devices</string>
+  <string id="14095">Power saving</string>
 
   <string id="15000"></string>
   <string id="15001"></string>
@@ -1912,7 +1922,7 @@
   <string id="21370">Play navigation sounds during media playback</string>
   <string id="21371">Thumbnail</string>
   <string id="21372">Forced DVD player region</string>
-  <string id="21373">Video hardware</string>
+  <string id="21373">Video output</string>
   <string id="21374">Video aspect</string>
   <string id="21375">Normal</string>
   <string id="21376">Letterbox</string>
@@ -1921,7 +1931,7 @@
   <string id="21379">Enable 720p</string>
   <string id="21380">Enable 1080i</string>
   <string id="21381">Enter name of new playlist</string>
-  <string id="21382">Disable add source buttons in file lists</string>
+  <string id="21382">Show "Add source" buttons in file lists</string>
   <string id="21383">Enable scrollbars</string>
   <string id="21384">Make watched filtering a toggle in video library</string>
   <string id="21385">Open</string>
@@ -2045,7 +2055,7 @@
   <string id="21878">Copyright flag</string>
   <string id="21879">Country code</string>
   <string id="21880">Reference service</string>
-  <string id="21881">Enable UPnP renderer</string>
+  <string id="21881">Allow control of XBMC via UPnP</string>
   <string id="21882">Attempt to skip introduction before DVD menu</string>
   <string id="21883">Saved music</string>
   <string id="21884">Query info for all artists</string>

@@ -636,9 +636,9 @@ bool CGUISettings::GetBool(const char *strSetting) const
   { // old category
     return ((CSettingBool*)(*it).second)->GetData();
   }
-  // Backward compatibility (skins use this setting)
-  if (lower == "lookandfeel.enablemouse")
-    return GetBool("input.enablemouse");
+  // Forward compatibility for new skins (skins use this setting)
+  if (lower == "input.enablemouse")
+    return GetBool("lookandfeel.enablemouse");
   // Assert here and write debug output
   CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return false;
