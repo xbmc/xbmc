@@ -148,7 +148,7 @@ Description: XBMC Media Center (arch-independent data package)
  working XBMC.
 
 Package: xbmc-bin
-Architecture: i386 amd64 powerpc ppc64
+Architecture: i386 amd64 powerpc ppc64 lpia
 Depends: ${shlibs:Depends},
          ${misc:Depends}
 Description: XBMC Media Center (binary data package)
@@ -172,7 +172,7 @@ Description: XBMC Media Center (binary data package)
  This package contains all the binary data needed to have a working XBMC.
 
 Package: xbmc-dbg
-Architecture: i386 amd64 powerpc ppc64
+Architecture: i386 amd64 powerpc ppc64 lpia
 Section: non-free/debug
 Priority: extra
 Depends: xbmc-bin (= ${binary:Version}),
@@ -396,7 +396,7 @@ Description: XBMC Media Center (Event Client Dev package)
  This is the Development package for XBMC Event Client.
 
 Package: xbmc-eventclients-wiiremote
-Architecture: i386 amd64 powerpc ppc64
+Architecture: i386 amd64 powerpc ppc64 lpia
 Depends: xbmc-eventclients-common (= ${source:Version}),
          ${shlibs:Depends},
          ${misc:Depends}
