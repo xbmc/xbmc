@@ -916,8 +916,6 @@ bool CCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     return false;
   }
 
-  pDvdVideoPicture->private_data = pBuffer;
- 
   m_interlace = m_pOutputThread->GetInterlace();
   m_framerate = m_pOutputThread->GetFrameRate();
 
@@ -927,6 +925,7 @@ bool CCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iDisplayWidth = pDvdVideoPicture->iWidth;
   pDvdVideoPicture->iDisplayHeight = pDvdVideoPicture->iHeight;
   
+  pDvdVideoPicture->private_data = pBuffer;
   // Y plane
   pDvdVideoPicture->data[0] = (BYTE*)pBuffer->GetPtr();
   // UV packed plane
