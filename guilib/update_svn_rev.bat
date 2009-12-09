@@ -6,7 +6,7 @@ IF EXIST %REV_FILE% (
   del %REV_FILE%
 )
 
-subwcrev . ../xbmc/xbox/svn_rev.tmpl %REV_FILE%
+"%ProgramFiles%\TortoiseSVN\bin\subwcrev" .. ../xbmc/xbox/svn_rev.tmpl %REV_FILE%
 
 IF NOT EXIST %REV_FILE% (
   copy ..\xbmc\xbox\svn_rev.unknown %REV_FILE%
