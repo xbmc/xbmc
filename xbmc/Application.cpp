@@ -4130,7 +4130,7 @@ void CApplication::SaveFileState()
       if (videodatabase.Open())
       {
         // No resume & watched status for livetv
-        if (m_progressTrackingItem->IsLiveTV())
+        if (!m_progressTrackingItem->IsLiveTV())
         {
           if (m_progressTrackingPlayCountUpdate)
           {
