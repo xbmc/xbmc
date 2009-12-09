@@ -119,7 +119,7 @@ public:
   bool AddInput(unsigned char *pData, size_t size, double pts);
   unsigned int GetReadyCount();
   bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
-  bool FreePicture(DVDVideoPicture* pDvdVideoPicture);
+  bool ResetPicture(DVDVideoPicture* pDvdVideoPicture);
   void SetDropState(bool bDrop);
 
 protected:
@@ -138,7 +138,6 @@ protected:
 
   CMPCInputThread* m_pInputThread;
   CMPCOutputThread* m_pOutputThread;
-  CSyncPtrQueue<CMPCDecodeBuffer> m_BusyList;
 };
 
 extern CCrystalHD*          g_CrystalHD;
