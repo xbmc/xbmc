@@ -6992,19 +6992,14 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       {
         if (singleFiles)
         {
-          CStdString tempFile, nfoFile;
+          CStdString nfoFile;
           CFileItem item(movie.m_strFileNameAndPath,false);
           CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
-          CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, CUtil::GetFileName(nfoFile), tempFile);
 
           if (overwrite || !CFile::Exists(nfoFile))
           {
-            if(xmlDoc.SaveFile(tempFile))
+            if(xmlDoc.SaveFile(nfoFile))
             {
-              if (CFile::Cache(tempFile,nfoFile))
-                CFile::Delete(tempFile);
-              else
-              {
                 bSkip = ExportSkipEntry(nfoFile);
                 if (!bSkip)
                 {
@@ -7015,7 +7010,6 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
                     return;
                   }
                 }
-              }
             }
             else
             {
@@ -7085,19 +7079,14 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       {
         if (singleFiles)
         {
-          CStdString tempFile, nfoFile;
+          CStdString nfoFile;
           CFileItem item(movie.m_strFileNameAndPath,false);
           CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
-          CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, CUtil::GetFileName(nfoFile), tempFile);
 
           if (overwrite || !CFile::Exists(nfoFile))
           {
-            if(xmlDoc.SaveFile(tempFile))
+            if(xmlDoc.SaveFile(nfoFile))
             {
-              if (CFile::Cache(tempFile,nfoFile))
-                CFile::Delete(tempFile);
-              else
-              {
                 bSkip = ExportSkipEntry(nfoFile);
                 if (!bSkip)
                 {
@@ -7108,7 +7097,6 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
                     return;
                   }
                 }
-              }
             }
             else
             {
@@ -7169,19 +7157,14 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       {
         if (singleFiles)
         {
-          CStdString tempFile, nfoFile;
+          CStdString nfoFile;
           CFileItem item(tvshow.m_strPath,false);
-          CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "tvshow.nfo", tempFile);
           CUtil::AddFileToFolder(tvshow.m_strPath, "tvshow.nfo", nfoFile);
 
           if (overwrite || !CFile::Exists(nfoFile))
           {
-            if(xmlDoc.SaveFile(tempFile))
+            if(xmlDoc.SaveFile(nfoFile))
             {
-              if (CFile::Cache(tempFile,nfoFile))
-                CFile::Delete(tempFile);
-              else
-              {
                 bSkip = ExportSkipEntry(nfoFile);
                 if (!bSkip)
                 {
@@ -7192,7 +7175,6 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
                     return;
                   }
                 }
-              }
             }
             else
             {
@@ -7290,19 +7272,14 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
           if (singleFiles)
           {
-            CStdString tempFile, nfoFile;
+            CStdString nfoFile;
             CFileItem item(episode.m_strFileNameAndPath,false);
             CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
-            CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, CUtil::GetFileName(nfoFile), tempFile);
 
             if (overwrite || !CFile::Exists(nfoFile))
             {
-              if(xmlDoc.SaveFile(tempFile))
+              if(xmlDoc.SaveFile(nfoFile))
               {
-                if (CFile::Cache(tempFile,nfoFile))
-                  CFile::Delete(tempFile);
-                else
-                {
                   bSkip = ExportSkipEntry(nfoFile);
                   if (!bSkip)
                   {
@@ -7313,7 +7290,6 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
                       return;
                     }
                   }
-                }
               }
               else
               {

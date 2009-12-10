@@ -4185,7 +4185,11 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
         CStdString nfoFile;
         CUtil::AddFileToFolder(strPath, "album.nfo", nfoFile);
         if (overwrite || !CFile::Exists(nfoFile))
-          xmlDoc.SaveFile(nfoFile);
+        {
+          if (!xmlDoc.SaveFile(nfoFile))
+            CLog::Log(LOGERROR, "%s: Album nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+        }
+        
         if (images)
         {
           CStdString strThumb;
@@ -4244,7 +4248,11 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
         CStdString nfoFile;
         CUtil::AddFileToFolder(strPath, "artist.nfo", nfoFile);
         if (overwrite || !CFile::Exists(nfoFile))
-          xmlDoc.SaveFile(nfoFile);
+        {
+          if (!xmlDoc.SaveFile(nfoFile))
+            CLog::Log(LOGERROR, "%s: Artist nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+        }
+        
         if (images)
         {
           CFileItem item(artist);
