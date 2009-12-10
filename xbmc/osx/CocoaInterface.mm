@@ -347,7 +347,7 @@ bool Cocoa_GetVolumeNameFromMountPoint(const char *mountPoint, CStdString &volum
       return false;
   }
 
-  NSString *volumename = [[dd objectForKey:(NSString*)kDADiskDescriptionVolumeNameKey] copy];
+  NSString *volumename = [dd objectForKey:(NSString*)kDADiskDescriptionVolumeNameKey];
   volumeName = [volumename cString];
 
   CFRelease(session);		        
