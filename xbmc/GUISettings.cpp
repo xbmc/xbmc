@@ -475,7 +475,7 @@ void CGUISettings::Initialize()
   AddInt(0, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.vdpauUpscalingLevel", 13121, false);
-  AddBool(11, "videoplayer.vdpaustudiolevel", 13122, true);
+  AddBool(11, "videoplayer.vdpaustudiolevel", 13122, false);
 #endif
 #endif
   AddSeparator(12, "videoplayer.sep5");
