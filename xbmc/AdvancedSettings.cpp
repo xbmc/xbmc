@@ -63,9 +63,9 @@ CAdvancedSettings::CAdvancedSettings()
   m_videoPercentSeekBackwardBig = -10;
   m_videoBlackBarColour = 1;
   m_videoPPFFmpegType = "linblenddeint";
-  m_videoDefaultPlayer = "mplayer";
+  m_videoDefaultPlayer = "dvdplayer";
   m_videoIgnoreAtStart = 15;
-  m_videoIgnoreAtEnd = 5; 
+  m_videoIgnoreAtEnd = 5;
   m_videoPlayCountMinimumPercent = 90.0f;
 
   m_musicUseTimeSeeking = true;
@@ -80,7 +80,7 @@ CAdvancedSettings::CAdvancedSettings()
   m_musicResample = 48000;
 
   m_cacheMemBufferSize = 256;
-      
+
   m_slideshowPanAmount = 2.5f;
   m_slideshowZoomAmount = 5.0f;
   m_slideshowBlackBarCompensation = 20.0f;
@@ -102,7 +102,7 @@ CAdvancedSettings::CAdvancedSettings()
   m_noDVDROM = false;
   m_cachePath = "Z:\\";
   m_displayRemoteCodes = false;
-  
+
   m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
 
   m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvd5|dvd9|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
@@ -252,7 +252,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetFloat(pElement, "karaokesyncdelay", m_karaokeSyncDelay, -3.0f, 3.0f);
     XMLUtils::GetString(pElement, "defaultplayer", m_audioDefaultPlayer);
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_audioPlayCountMinimumPercent, 0.0f, 100.0f);
-    
+
     XMLUtils::GetBoolean(pElement, "usetimeseeking", m_musicUseTimeSeeking);
     XMLUtils::GetInt(pElement, "timeseekforward", m_musicTimeSeekForward, 0, 6000);
     XMLUtils::GetInt(pElement, "timeseekbackward", m_musicTimeSeekBackward, -6000, 0);
@@ -269,7 +269,7 @@ bool CAdvancedSettings::Load()
     TiXmlElement* pAudioExcludes = pElement->FirstChildElement("excludefromlisting");
     if (pAudioExcludes)
       GetCustomRegexps(pAudioExcludes, m_audioExcludeFromListingRegExps);
-              
+
     pAudioExcludes = pElement->FirstChildElement("excludefromscan");
     if (pAudioExcludes)
       GetCustomRegexps(pAudioExcludes, m_audioExcludeFromScanRegExps);
@@ -306,7 +306,7 @@ bool CAdvancedSettings::Load()
     TiXmlElement* pVideoExcludes = pElement->FirstChildElement("excludefromlisting");
     if (pVideoExcludes)
       GetCustomRegexps(pVideoExcludes, m_videoExcludeFromListingRegExps);
-            
+
     pVideoExcludes = pElement->FirstChildElement("excludefromscan");
     if (pVideoExcludes)
       GetCustomRegexps(pVideoExcludes, m_moviesExcludeFromScanRegExps);
@@ -347,7 +347,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetBoolean(pElement, "cleanonupdate", m_bVideoLibraryCleanOnUpdate);
     XMLUtils::GetString(pElement, "itemseparator", m_videoItemSeparator);
     XMLUtils::GetBoolean(pElement, "exportautothumbs", m_bVideoLibraryExportAutoThumbs);
-    
+
     TiXmlElement* pMyMovies = pElement->FirstChildElement("mymovies");
     if (pMyMovies)
       XMLUtils::GetBoolean(pMyMovies, "categoriestogenres", m_bVideoLibraryMyMoviesCategoriesToGenres);
@@ -427,8 +427,8 @@ bool CAdvancedSettings::Load()
 
   XMLUtils::GetBoolean(pRootElement,"rootovershoot",m_bUseEvilB);
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
-  XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares); 
-  XMLUtils::GetBoolean(pRootElement,"navigatevirtualkeyboard", m_bNavVKeyboard); 
+  XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
+  XMLUtils::GetBoolean(pRootElement,"navigatevirtualkeyboard", m_bNavVKeyboard);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
@@ -444,7 +444,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "zapwaittime", m_iTuxBoxZapWaitTime, 0, 120);
 
   }
-  
+
   // Myth TV
   pElement = pRootElement->FirstChildElement("myth");
   if (pElement)
@@ -457,7 +457,7 @@ bool CAdvancedSettings::Load()
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "mergeshortcommbreaks", m_bEdlMergeShortCommBreaks);
-    XMLUtils::GetInt(pElement, "maxcommbreaklength", m_iEdlMaxCommBreakLength, 0, 10 * 60); // Between 0 and 10 minutes 
+    XMLUtils::GetInt(pElement, "maxcommbreaklength", m_iEdlMaxCommBreakLength, 0, 10 * 60); // Between 0 and 10 minutes
     XMLUtils::GetInt(pElement, "mincommbreaklength", m_iEdlMinCommBreakLength, 0, 5 * 60);  // Between 0 and 5 minutes
     XMLUtils::GetInt(pElement, "maxcommbreakgap", m_iEdlMaxCommBreakGap, 0, 5 * 60);        // Between 0 and 5 minutes.
     XMLUtils::GetInt(pElement, "maxstartgap", m_iEdlMaxStartGap, 0, 10 * 60);               // Between 0 and 10 minutes
@@ -497,7 +497,7 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetBoolean(pRootElement, "ftpshowcache", m_FTPShowCache);
 
   XMLUtils::GetInt(pRootElement, "cachemembufsize", m_cacheMemBufferSize, 0, 8192);
-  
+
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
 
   // stacking regexps

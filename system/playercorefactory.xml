@@ -10,7 +10,7 @@
   </players>
 
   <rules>
-    <rule name="rtv/mms" protocols="rtv|mms" player="MPlayer" />
+    <rule name="rtv/mms/myth/cmyth" protocols="rtv|mms|myth|cmyth" player="MPlayer" />
     <rule name="hdhomerun/rtmp/htsp/udp" protocols="hdhomerun|rtmp|htsp|udp" player="DVDPlayer" />
     <rule name="lastfm/shout" protocols="lastfm|shout" player="PAPlayer" />
 
