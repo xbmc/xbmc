@@ -22,8 +22,8 @@
 
 typedef enum{
   ATV_BUTTON_DONT_USE_THIS = 0, //don't use zero, as those enums get converted to strings later
-	ATV_BUTTON_PLAY=1,
-	ATV_BUTTON_PLAY_H, //present on ATV>=2.2
+	ATV_BUTTON_CENTER=1,
+	ATV_BUTTON_CENTER_H, //present on ATV>=2.2
 	ATV_BUTTON_RIGHT,
 	ATV_BUTTON_RIGHT_RELEASE,
 	ATV_BUTTON_RIGHT_H, //present on ATV<=2.1 and OSX v?

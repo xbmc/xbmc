@@ -261,7 +261,7 @@ void XBMCClientWrapperImpl::handleEvent(eATVClientEvent f_event){
 void XBMCClientWrapperImpl::populateEventMap(){
 	tEventMap& lr_map = m_event_map;
   
-	lr_map.insert(std::make_pair(ATV_BUTTON_PLAY,          new CPacketBUTTON(5, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_CENTER,          new CPacketBUTTON(5, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
 	lr_map.insert(std::make_pair(ATV_BUTTON_RIGHT,         new CPacketBUTTON(4, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
 	lr_map.insert(std::make_pair(ATV_BUTTON_RIGHT_RELEASE, new CPacketBUTTON(4, "JS0:AppleRemote", BTN_UP | BTN_NO_REPEAT | BTN_QUEUE)));
 	lr_map.insert(std::make_pair(ATV_BUTTON_LEFT,          new CPacketBUTTON(3, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT| BTN_QUEUE)));
@@ -280,7 +280,7 @@ void XBMCClientWrapperImpl::populateEventMap(){
 	lr_map.insert(std::make_pair(ATV_BUTTON_LEFT_H_RELEASE, new CPacketBUTTON(11, "JS0:AppleRemote", BTN_UP | BTN_QUEUE)));	
   	
 	// only present on atv >= 2.2
-	lr_map.insert(std::make_pair(ATV_BUTTON_PLAY_H,  new CPacketBUTTON(7, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_CENTER_H,  new CPacketBUTTON(7, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   
   //learned remote buttons (ATV >=2.3)
   lr_map.insert(std::make_pair(ATV_LEARNED_PLAY,  new CPacketBUTTON(70, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
@@ -300,7 +300,7 @@ void XBMCClientWrapperImpl::populateSequenceMap(){
   XBMCClientEventSequence sequence_prefix;
   sequence_prefix << ATV_BUTTON_MENU_H;
   m_sequence_map.insert(std::make_pair(sequence_prefix, new CPacketBUTTON(8, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-  m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_PLAY, new CPacketBUTTON(20, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+  m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_CENTER, new CPacketBUTTON(20, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_RIGHT, new CPacketBUTTON(21, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_LEFT, new CPacketBUTTON(22, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_UP, new CPacketBUTTON(23, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
@@ -308,8 +308,8 @@ void XBMCClientWrapperImpl::populateSequenceMap(){
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_MENU, new CPacketBUTTON(25, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   
   sequence_prefix.clear();
-  sequence_prefix << ATV_BUTTON_MENU_H << ATV_BUTTON_PLAY;
-  m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_PLAY, new CPacketBUTTON(26, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+  sequence_prefix << ATV_BUTTON_MENU_H << ATV_BUTTON_CENTER;
+  m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_CENTER, new CPacketBUTTON(26, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_RIGHT, new CPacketBUTTON(27, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_LEFT, new CPacketBUTTON(28, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_UP, new CPacketBUTTON(29, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
@@ -318,7 +318,7 @@ void XBMCClientWrapperImpl::populateSequenceMap(){
   
   sequence_prefix.clear();
   sequence_prefix << ATV_BUTTON_MENU_H << ATV_BUTTON_UP;
-  m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_PLAY, new CPacketBUTTON(32, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+  m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_CENTER, new CPacketBUTTON(32, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_RIGHT, new CPacketBUTTON(33, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_LEFT, new CPacketBUTTON(34, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_UP, new CPacketBUTTON(35, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
@@ -327,7 +327,7 @@ void XBMCClientWrapperImpl::populateSequenceMap(){
   
   sequence_prefix.clear();
   sequence_prefix << ATV_BUTTON_MENU_H << ATV_BUTTON_DOWN;
-  m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_PLAY, new CPacketBUTTON(38, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+  m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_CENTER, new CPacketBUTTON(38, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_RIGHT, new CPacketBUTTON(39, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_LEFT, new CPacketBUTTON(40, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_UP, new CPacketBUTTON(41, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
@@ -336,7 +336,7 @@ void XBMCClientWrapperImpl::populateSequenceMap(){
   
   sequence_prefix.clear();
   sequence_prefix << ATV_BUTTON_MENU_H << ATV_BUTTON_RIGHT;
-  m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_PLAY, new CPacketBUTTON(44, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+  m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_CENTER, new CPacketBUTTON(44, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_RIGHT, new CPacketBUTTON(45, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_LEFT, new CPacketBUTTON(46, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_UP, new CPacketBUTTON(47, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
@@ -345,7 +345,7 @@ void XBMCClientWrapperImpl::populateSequenceMap(){
   
   sequence_prefix.clear();
   sequence_prefix << ATV_BUTTON_MENU_H << ATV_BUTTON_LEFT;
-  m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_PLAY, new CPacketBUTTON(50, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+  m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_CENTER, new CPacketBUTTON(50, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_RIGHT, new CPacketBUTTON(51, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_LEFT, new CPacketBUTTON(52, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   m_sequence_map.insert(std::make_pair( sequence_prefix + ATV_BUTTON_UP, new CPacketBUTTON(53, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
@@ -379,9 +379,9 @@ void XBMCClientWrapperImpl::populateMultiRemoteModeMap(){
     m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_RIGHT),         new CPacketBUTTON(4 + offset, "JS0:Harmony", BTN_DOWN | BTN_QUEUE)));
     m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_RIGHT_RELEASE), new CPacketBUTTON(4 + offset, "JS0:Harmony", BTN_UP | BTN_QUEUE)));
     
-    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_PLAY),          new CPacketBUTTON(5 + offset, "JS0:Harmony", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_CENTER),          new CPacketBUTTON(5 + offset, "JS0:Harmony", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
     m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_MENU),          new CPacketBUTTON(6 + offset, "JS0:Harmony", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_PLAY_H),        new CPacketBUTTON(7 + offset, "JS0:Harmony", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
+    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_CENTER_H),        new CPacketBUTTON(7 + offset, "JS0:Harmony", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
     m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_MENU_H),        new CPacketBUTTON(8 + offset, "JS0:Harmony", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
     
     m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_RIGHT_H),       new CPacketBUTTON(9 + offset, "JS0:Harmony", BTN_DOWN | BTN_QUEUE)));
