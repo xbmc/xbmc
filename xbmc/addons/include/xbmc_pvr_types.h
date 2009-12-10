@@ -71,6 +71,11 @@ extern "C" {
 
   typedef void*         PVRHANDLE;
 
+  struct PVR_PROPS
+  {
+    int clientID;
+  };
+
   /**
   * PVR Client Error Codes
   */

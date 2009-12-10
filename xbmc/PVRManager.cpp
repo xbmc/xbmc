@@ -27,7 +27,6 @@
 #include "utils/GUIInfoManager.h"
 #include "settings/AddonSettings.h"
 #include "PVRManager.h"
-#include "pvrclients/PVRClientFactory.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -426,10 +425,10 @@ void CPVRManager::Stop()
   CLog::Log(LOGNOTICE, "PVR: PVRManager stoping");
   StopThread();
 
-  for (unsigned int i = 0; i < m_clients.size(); i++)
-  {
-    delete m_clients[i];
-  }
+//  for (unsigned int i = 0; i < m_clients.size(); i++)
+//  {
+//    delete m_clients[i];
+//  }
   m_clients.clear();
   m_clientsProps.clear();
 
@@ -459,7 +458,6 @@ bool CPVRManager::LoadClients()
   m_database.Open();
 
   /* load the clients */
-  CPVRClientFactory factory;
   for (unsigned i=0; i < addons.size(); i++)
   {
     const AddonPtr clientAddon = addons.at(i);
@@ -480,10 +478,10 @@ bool CPVRManager::LoadClients()
     /* Load the Client library's and inside them into Client list if
      * success. Client initialization is also performed during loading.
      */
-    CPVRClient *client = factory.LoadPVRClient(*clientAddon, clientID, this);
-    if (client)
+    boost::shared_ptr<CPVRClient> addon = boost::dynamic_pointer_cast<CPVRClient>(clientAddon);
+    if (addon && addon->Create(clientID, this))
     {
-      m_clients.insert(std::make_pair(client->GetID(), client));
+      m_clients.insert(std::make_pair(clientID, addon));
     }
   }
 
@@ -654,33 +652,33 @@ bool CPVRManager::RequestRestart(const IAddon* addon, bool datachanged)
 
   CLog::Log(LOGINFO, "PVR: requested restart of clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
   CLIENTMAPITR itr = m_clients.begin();
-  while (itr != m_clients.end())
-  {
-    if (m_clients[(*itr).first]->UUID() == addon->UUID())
-    {
-      if (m_clients[(*itr).first]->Name() == addon->Name())
-      {
-        CLog::Log(LOGINFO, "PVR: restarting clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
-        StopThread();
-        if (m_clients[(*itr).first]->ReInit())
-        {
-          /* Get TV Channels from Backends */
-          PVRChannelsTV.Update();
-
-          /* Get Radio Channels from Backends */
-          PVRChannelsRadio.Update();
-
-          /* Get Timers from Backends */
-          PVRTimers.Update();
-
-          /* Get Recordings from Backend */
-          PVRRecordings.Update();
-        }
-        Create();
-      }
-    }
-    itr++;
-  }
+//  while (itr != m_clients.end())
+//  {
+//    if (m_clients[(*itr).first]->UUID() == addon->UUID())
+//    {
+//      if (m_clients[(*itr).first]->Name() == addon->Name())
+//      {
+//        CLog::Log(LOGINFO, "PVR: restarting clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
+//        StopThread();
+//        if (m_clients[(*itr).first]->ReInit())
+//        {
+//          /* Get TV Channels from Backends */
+//          PVRChannelsTV.Update();
+//
+//          /* Get Radio Channels from Backends */
+//          PVRChannelsRadio.Update();
+//
+//          /* Get Timers from Backends */
+//          PVRTimers.Update();
+//
+//          /* Get Recordings from Backend */
+//          PVRRecordings.Update();
+//        }
+//        Create();
+//      }
+//    }
+//    itr++;
+//  }
   return true;
 }
 
@@ -1711,7 +1709,7 @@ bool CPVRManager::OpenLiveStream(const cPVRChannelInfoTag* tag)
   {
     /* Create the receiving class to perform independent stream reading and
        Open the stream buffer file*/
-    if (CreateInternalTimeshift() && m_TimeshiftReceiver->StartReceiver(m_clients[tag->ClientID()]))
+    if (CreateInternalTimeshift() && m_TimeshiftReceiver->StartReceiver(&*m_clients[tag->ClientID()]))
       m_timeshiftInt = true;
   }
 
@@ -2199,7 +2197,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
       CreateInternalTimeshift();
 
     /* Start the Timeshift receiver */
-    if (m_TimeshiftReceiver && m_TimeshiftReceiver->StartReceiver(m_clients[tag->ClientID()]))
+    if (m_TimeshiftReceiver && m_TimeshiftReceiver->StartReceiver(&*m_clients[tag->ClientID()]))
       m_timeshiftInt = true;
   }
 
@@ -2297,7 +2295,7 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
             CreateInternalTimeshift();
 
           /* Start the Timeshift receiver */
-          if (m_TimeshiftReceiver && m_TimeshiftReceiver->StartReceiver(m_clients[tag->ClientID()]))
+          if (m_TimeshiftReceiver && m_TimeshiftReceiver->StartReceiver(&*m_clients[tag->ClientID()]))
             m_timeshiftInt = true;
         }
 
@@ -2390,7 +2388,7 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel)
             CreateInternalTimeshift();
 
           /* Start the Timeshift receiver */
-          if (m_TimeshiftReceiver && m_TimeshiftReceiver->StartReceiver(m_clients[tag->ClientID()]))
+          if (m_TimeshiftReceiver && m_TimeshiftReceiver->StartReceiver(&*m_clients[tag->ClientID()]))
             m_timeshiftInt = true;
         }
 

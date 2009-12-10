@@ -23,19 +23,19 @@
 #include "DynamicDll.h"
 #include "addons/include/xbmc_addon_types.h"
 
-template <typename T>
+template <typename TheStruct, typename Props>
 class DllAddonInterface
 {
 public:
-  virtual void GetAddon(T* pAddon) =0;
-  virtual ADDON_STATUS GetStatus() =0;  /* For "ADDON_STATUS" see header "xbmc_addon_types.h" */
+  virtual void GetAddon(TheStruct* pAddon) =0;
+  virtual ADDON_STATUS GetStatus() =0;
   virtual bool HasSettings() =0;
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue) =0;
   virtual void Destroy() =0;
 };
 
-template <typename T>
-class DllAddon : public DllDynamic, public DllAddonInterface<T>
+template <typename TheStruct, typename Props>
+class DllAddon : public DllDynamic, public DllAddonInterface<TheStruct, Props>
 {
 public:
   DECLARE_DLL_WRAPPER_TEMPLATE(DllAddon)
@@ -43,7 +43,7 @@ public:
   DEFINE_METHOD0(bool, HasSettings)
   DEFINE_METHOD2(ADDON_STATUS, SetSetting, (const char *p1, const void *p2))
   DEFINE_METHOD0(void, Destroy)
-  DEFINE_METHOD1(void, GetAddon, (T* p1))
+  DEFINE_METHOD1(void, GetAddon, (TheStruct* p1))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(get_addon,GetAddon)
     RESOLVE_METHOD(GetStatus)

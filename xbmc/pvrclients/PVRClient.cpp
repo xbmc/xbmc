@@ -49,31 +49,25 @@
 using namespace std;
 using namespace ADDON;
 
-CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
-                       const ADDON::IAddon& addon, IPVRClientCallback* pvrCB)
-                              : CAddon(addon)
-                              , m_pClient(pClient)
-                              , m_pDll(pDll)
-                              , m_clientID(clientID)
+CPVRClient::CPVRClient(const ADDON::AddonProps& props) : ADDON::CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>(props)
                               , m_ReadyToUse(false)
-                              , m_manager(pvrCB)
-                              , m_callbacks(NULL)
                               , m_hostName("unknown")
 {
-
 }
 
 CPVRClient::~CPVRClient()
 {
-  /* tell the AddOn to deinitialize */
-  DeInit();
-  /* Unload library file */
-  m_pDll->Unload();
+//  /* tell the AddOn to deinitialize */
+//  DeInit();
+//  /* Unload library file */
+//  m_pDll->Unload();
 }
 
-bool CPVRClient::Init()
+bool CPVRClient::Create(long clientID, IPVRClientCallback *pvrCB)
 {
-  CLog::Log(LOGDEBUG, "PVR: %s - Initializing PVR-Client AddOn", Name().c_str());
+  CLog::Log(LOGDEBUG, "PVR: %s - Creating PVR-Client AddOn", Name().c_str());
+
+  m_manager = pvrCB;
 
   /* Allocate the callback table to save all the pointers
      to the helper callback functions */
@@ -93,28 +87,34 @@ bool CPVRClient::Init()
   m_callbacks->PVR.TransferTimerEntry     = PVRTransferTimerEntry;
   m_callbacks->PVR.TransferRecordingEntry = PVRTransferRecordingEntry;
 
+  m_pInfo           = new PVR_PROPS;
+  m_pInfo->clientID = clientID;
+
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
-  try
+  if (CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>::Create())
   {
-    ADDON_STATUS status = m_pClient->Create(m_callbacks, m_clientID);
-    if (status != STATUS_OK)
-      throw status;
-    m_ReadyToUse = true;
-    m_hostName   = m_pClient->GetConnectionString();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during Create occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
-    m_ReadyToUse = false;
-  }
-  catch (ADDON_STATUS status)
-  {
-    CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad status (%i) after Create and is not usable", Name().c_str(), m_hostName.c_str(), status);
-    m_ReadyToUse = false;
+    try
+    {
+      ADDON_STATUS status = m_pStruct->Create(m_callbacks, m_pInfo->clientID);
+      if (status != STATUS_OK)
+        throw status;
+      m_ReadyToUse = true;
+      m_hostName   = m_pStruct->GetConnectionString();
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during Create occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
+      m_ReadyToUse = false;
+    }
+    catch (ADDON_STATUS status)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad status (%i) after Create and is not usable", Name().c_str(), m_hostName.c_str(), status);
+      m_ReadyToUse = false;
 
-    /* Delete is performed by the calling class */
-    new CAddonStatusHandler(this, status, "", false);
+      /* Delete is performed by the calling class */
+      new CAddonStatusHandler(this, status, "", false);
+    }
   }
 
   return m_ReadyToUse;
@@ -122,49 +122,43 @@ bool CPVRClient::Init()
 
 void CPVRClient::DeInit()
 {
-  /* tell the AddOn to disconnect and prepare for destruction */
-  try
-  {
-    CLog::Log(LOGDEBUG, "PVR: %s/%s - Destroying PVR-Client AddOn", Name().c_str(), m_hostName.c_str());
-    m_ReadyToUse = false;
-
-    /* Tell the client to destroy */
-    m_pDll->Destroy();
-
-    /* Release Callback table in memory */
-    delete m_callbacks;
-    m_callbacks = NULL;
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during destruction of AddOn occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
-  }
-}
-
-bool CPVRClient::ReInit()
-{
-  DeInit();
-  return Init();
+//  /* tell the AddOn to disconnect and prepare for destruction */
+//  try
+//  {
+//    CLog::Log(LOGDEBUG, "PVR: %s/%s - Destroying PVR-Client AddOn", Name().c_str(), m_hostName.c_str());
+//    m_ReadyToUse = false;
+//
+//    /* Tell the client to destroy */
+//    m_pDll->Destroy();
+//
+//    /* Release Callback table in memory */
+//    delete m_callbacks;
+//    m_callbacks = NULL;
+//  }
+//  catch (std::exception &e)
+//  {
+//    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during destruction of AddOn occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
+//  }
 }
 
 ADDON_STATUS CPVRClient::GetStatus()
 {
-  CSingleLock lock(m_critSection);
-
-  try
-  {
-    return m_pDll->GetStatus();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetStatus occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
-  }
+//  CSingleLock lock(m_critSection);
+//
+//  try
+//  {
+//    return m_pDll->GetStatus();
+//  }
+//  catch (std::exception &e)
+//  {
+//    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetStatus occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
+//  }
   return STATUS_UNKNOWN;
 }
 
 long CPVRClient::GetID()
 {
-  return m_clientID;
+  return m_pInfo->clientID;
 }
 
 PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
@@ -173,7 +167,7 @@ PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
 
   try
   {
-    return m_pClient->GetProperties(props);
+    return m_pStruct->GetProperties(props);
   }
   catch (std::exception &e)
   {
@@ -205,7 +199,7 @@ const std::string CPVRClient::GetBackendName()
   {
     try
     {
-      return m_pClient->GetBackendName();
+      return m_pStruct->GetBackendName();
     }
     catch (std::exception &e)
     {
@@ -224,7 +218,7 @@ const std::string CPVRClient::GetBackendVersion()
   {
     try
     {
-      return m_pClient->GetBackendVersion();
+      return m_pStruct->GetBackendVersion();
     }
     catch (std::exception &e)
     {
@@ -243,7 +237,7 @@ const std::string CPVRClient::GetConnectionString()
   {
     try
     {
-      return m_pClient->GetConnectionString();
+      return m_pStruct->GetConnectionString();
     }
     catch (std::exception &e)
     {
@@ -262,7 +256,7 @@ PVR_ERROR CPVRClient::GetDriveSpace(long long *total, long long *used)
   {
     try
     {
-      return m_pClient->GetDriveSpace(total, used);
+      return m_pStruct->GetDriveSpace(total, used);
     }
     catch (std::exception &e)
     {
@@ -292,7 +286,7 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cP
       PVR_CHANNEL tag;
       const PVRHANDLE handle = (cPVREpg*) epg;
       WriteClientChannelInfo(channelinfo, tag);
-      ret = m_pClient->RequestEPGForChannel(handle, tag, start, end);
+      ret = m_pStruct->RequestEPGForChannel(handle, tag, start, end);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -336,7 +330,7 @@ int CPVRClient::GetNumChannels()
   {
     try
     {
-      return m_pClient->GetNumChannels();
+      return m_pStruct->GetNumChannels();
     }
     catch (std::exception &e)
     {
@@ -357,7 +351,7 @@ PVR_ERROR CPVRClient::GetChannelList(cPVRChannels &channels, bool radio)
     try
     {
       const PVRHANDLE handle = (cPVRChannels*) &channels;
-      ret = m_pClient->RequestChannelList(handle, radio);
+      ret = m_pStruct->RequestChannelList(handle, radio);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -391,7 +385,7 @@ void CPVRClient::PVRTransferChannelEntry(void *userData, const PVRHANDLE handle,
   tag.SetNumber(-1);
   tag.SetClientNumber(channel->number);
   tag.SetGroupID(0);
-  tag.SetClientID(client->m_clientID);
+  tag.SetClientID(client->m_pInfo->clientID);
   tag.SetUniqueID(channel->uid);
   tag.SetName(channel->name);
   tag.SetClientName(channel->callsign);
@@ -416,7 +410,7 @@ PVR_ERROR CPVRClient::GetChannelSettings(cPVRChannelInfoTag *result)
   {
     try
     {
-//      ret = m_pClient->GetChannelSettings(result);
+//      ret = m_pStruct->GetChannelSettings(result);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -444,7 +438,7 @@ PVR_ERROR CPVRClient::UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo)
   {
     try
     {
-//      ret = m_pClient->UpdateChannelSettings(chaninfo);
+//      ret = m_pStruct->UpdateChannelSettings(chaninfo);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -472,7 +466,7 @@ PVR_ERROR CPVRClient::AddChannel(const cPVRChannelInfoTag &info)
   {
     try
     {
-//      ret = m_pClient->AddChannel(info);
+//      ret = m_pStruct->AddChannel(info);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -500,7 +494,7 @@ PVR_ERROR CPVRClient::DeleteChannel(unsigned int number)
   {
     try
     {
-//      ret = m_pClient->DeleteChannel(number);
+//      ret = m_pStruct->DeleteChannel(number);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -528,7 +522,7 @@ PVR_ERROR CPVRClient::RenameChannel(unsigned int number, CStdString &newname)
   {
     try
     {
-//      ret = m_pClient->RenameChannel(number, newname);
+//      ret = m_pStruct->RenameChannel(number, newname);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -556,7 +550,7 @@ PVR_ERROR CPVRClient::MoveChannel(unsigned int number, unsigned int newnumber)
   {
     try
     {
-//      ret = m_pClient->MoveChannel(number, newnumber);
+//      ret = m_pStruct->MoveChannel(number, newnumber);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -587,7 +581,7 @@ int CPVRClient::GetNumRecordings(void)
   {
     try
     {
-      return m_pClient->GetNumRecordings();
+      return m_pStruct->GetNumRecordings();
     }
     catch (std::exception &e)
     {
@@ -608,7 +602,7 @@ PVR_ERROR CPVRClient::GetAllRecordings(cPVRRecordings *results)
     try
     {
       const PVRHANDLE handle = (cPVRRecordings*) results;
-      ret = m_pClient->RequestRecordingsList(handle);
+      ret = m_pStruct->RequestRecordingsList(handle);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -640,7 +634,7 @@ void CPVRClient::PVRTransferRecordingEntry(void *userData, const PVRHANDLE handl
   cPVRRecordingInfoTag tag;
 
   tag.SetClientIndex(recording->index);
-  tag.SetClientID(client->m_clientID);
+  tag.SetClientID(client->m_pInfo->clientID);
   tag.SetTitle(recording->title);
   tag.SetRecordingTime(recording->recording_time);
   tag.SetDuration(CDateTimeSpan(0, 0, recording->duration / 60, recording->duration % 60));
@@ -669,7 +663,7 @@ PVR_ERROR CPVRClient::DeleteRecording(const cPVRRecordingInfoTag &recinfo)
       PVR_RECORDINGINFO tag;
       WriteClientRecordingInfo(recinfo, tag);
 
-      ret = m_pClient->DeleteRecording(tag);
+      ret = m_pStruct->DeleteRecording(tag);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -700,7 +694,7 @@ PVR_ERROR CPVRClient::RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdS
       PVR_RECORDINGINFO tag;
       WriteClientRecordingInfo(recinfo, tag);
 
-      ret = m_pClient->RenameRecording(tag, newname);
+      ret = m_pStruct->RenameRecording(tag, newname);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -749,7 +743,7 @@ int CPVRClient::GetNumTimers(void)
   {
     try
     {
-      return m_pClient->GetNumTimers();
+      return m_pStruct->GetNumTimers();
     }
     catch (std::exception &e)
     {
@@ -770,7 +764,7 @@ PVR_ERROR CPVRClient::GetAllTimers(cPVRTimers *results)
     try
     {
       const PVRHANDLE handle = (cPVRTimers*) results;
-      ret = m_pClient->RequestTimerList(handle);
+      ret = m_pStruct->RequestTimerList(handle);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -798,7 +792,7 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
   }
 
   cPVRTimers *xbmcTimers     = (cPVRTimers*) handle;
-  cPVRChannelInfoTag *channel  = cPVRChannels::GetByClientFromAll(timer->channelNum, client->m_clientID);
+  cPVRChannelInfoTag *channel  = cPVRChannels::GetByClientFromAll(timer->channelNum, client->m_pInfo->clientID);
 
   if (channel == NULL)
   {
@@ -807,7 +801,7 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
   }
 
   cPVRTimerInfoTag tag;
-  tag.SetClientID(client->m_clientID);
+  tag.SetClientID(client->m_pInfo->clientID);
   tag.SetClientIndex(timer->index);
   tag.SetActive(timer->active);
   tag.SetTitle(timer->title);
@@ -886,7 +880,7 @@ PVR_ERROR CPVRClient::AddTimer(const cPVRTimerInfoTag &timerinfo)
       PVR_TIMERINFO tag;
       WriteClientTimerInfo(timerinfo, tag);
 
-      ret = m_pClient->AddTimer(tag);
+      ret = m_pStruct->AddTimer(tag);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -917,7 +911,7 @@ PVR_ERROR CPVRClient::DeleteTimer(const cPVRTimerInfoTag &timerinfo, bool force)
       PVR_TIMERINFO tag;
       WriteClientTimerInfo(timerinfo, tag);
 
-      ret = m_pClient->DeleteTimer(tag, force);
+      ret = m_pStruct->DeleteTimer(tag, force);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -948,7 +942,7 @@ PVR_ERROR CPVRClient::RenameTimer(const cPVRTimerInfoTag &timerinfo, CStdString 
       PVR_TIMERINFO tag;
       WriteClientTimerInfo(timerinfo, tag);
 
-      ret = m_pClient->RenameTimer(tag, newname.c_str());
+      ret = m_pStruct->RenameTimer(tag, newname.c_str());
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -971,7 +965,7 @@ PVR_ERROR CPVRClient::UpdateTimer(const cPVRTimerInfoTag &timerinfo)
   CSingleLock lock(m_critSection);
 
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
-
+//
   if (m_ReadyToUse)
   {
     try
@@ -979,7 +973,7 @@ PVR_ERROR CPVRClient::UpdateTimer(const cPVRTimerInfoTag &timerinfo)
       PVR_TIMERINFO tag;
       WriteClientTimerInfo(timerinfo, tag);
 
-      ret = m_pClient->UpdateTimer(tag);
+      ret = m_pStruct->UpdateTimer(tag);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -1028,7 +1022,7 @@ bool CPVRClient::OpenLiveStream(const cPVRChannelInfoTag &channelinfo)
     {
       PVR_CHANNEL tag;
       WriteClientChannelInfo(channelinfo, tag);
-      return m_pClient->OpenLiveStream(tag);
+      return m_pStruct->OpenLiveStream(tag);
     }
     catch (std::exception &e)
     {
@@ -1046,7 +1040,7 @@ void CPVRClient::CloseLiveStream()
   {
     try
     {
-      m_pClient->CloseLiveStream();
+      m_pStruct->CloseLiveStream();
       return;
     }
     catch (std::exception &e)
@@ -1059,24 +1053,24 @@ void CPVRClient::CloseLiveStream()
 
 int CPVRClient::ReadLiveStream(BYTE* buf, int buf_size)
 {
-  return m_pClient->ReadLiveStream(buf, buf_size);
+  return m_pStruct->ReadLiveStream(buf, buf_size);
 }
 
 __int64 CPVRClient::SeekLiveStream(__int64 pos, int whence)
 {
-  return m_pClient->SeekLiveStream(pos, whence);
+  return m_pStruct->SeekLiveStream(pos, whence);
 }
 
 __int64 CPVRClient::LengthLiveStream(void)
 {
-  return m_pClient->LengthLiveStream();
+  return m_pStruct->LengthLiveStream();
 }
 
 int CPVRClient::GetCurrentClientChannel()
 {
   CSingleLock lock(m_critSection);
 
-  return m_pClient->GetCurrentClientChannel();
+  return m_pStruct->GetCurrentClientChannel();
 }
 
 bool CPVRClient::SwitchChannel(const cPVRChannelInfoTag &channelinfo)
@@ -1085,7 +1079,7 @@ bool CPVRClient::SwitchChannel(const cPVRChannelInfoTag &channelinfo)
 
   PVR_CHANNEL tag;
   WriteClientChannelInfo(channelinfo, tag);
-  return m_pClient->SwitchChannel(tag);
+  return m_pStruct->SwitchChannel(tag);
 }
 
 bool CPVRClient::SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
@@ -1097,7 +1091,7 @@ bool CPVRClient::SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
     PVR_ERROR ret = PVR_ERROR_UNKOWN;
     try
     {
-      ret = m_pClient->SignalQuality(qualityinfo);
+      ret = m_pStruct->SignalQuality(qualityinfo);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -1140,29 +1134,29 @@ bool CPVRClient::OpenRecordedStream(const cPVRRecordingInfoTag &recinfo)
 
   PVR_RECORDINGINFO tag;
   WriteClientRecordingInfo(recinfo, tag);
-  return m_pClient->OpenRecordedStream(tag);
+  return m_pStruct->OpenRecordedStream(tag);
 }
 
 void CPVRClient::CloseRecordedStream(void)
 {
   CSingleLock lock(m_critSection);
 
-  return m_pClient->CloseRecordedStream();
+  return m_pStruct->CloseRecordedStream();
 }
 
 int CPVRClient::ReadRecordedStream(BYTE* buf, int buf_size)
 {
-  return m_pClient->ReadRecordedStream(buf, buf_size);
+  return m_pStruct->ReadRecordedStream(buf, buf_size);
 }
 
 __int64 CPVRClient::SeekRecordedStream(__int64 pos, int whence)
 {
-  return m_pClient->SeekRecordedStream(pos, whence);
+  return m_pStruct->SeekRecordedStream(pos, whence);
 }
 
 __int64 CPVRClient::LengthRecordedStream(void)
 {
-  return m_pClient->LengthRecordedStream();
+  return m_pStruct->LengthRecordedStream();
 }
 
 
@@ -1173,17 +1167,17 @@ __int64 CPVRClient::LengthRecordedStream(void)
 
 ADDON_STATUS CPVRClient::SetSetting(const char *settingName, const void *settingValue)
 {
-  CSingleLock lock(m_critSection);
-
-  try
-  {
-    return m_pDll->SetSetting(settingName, settingValue);
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during SetSetting occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
+//  CSingleLock lock(m_critSection);
+//
+//  try
+//  {
+//    return m_pDll->SetSetting(settingName, settingValue);
+//  }
+//  catch (std::exception &e)
+//  {
+//    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during SetSetting occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
     return STATUS_UNKNOWN;
-  }
+//  }
 }
 
 
@@ -1199,5 +1193,5 @@ void CPVRClient::PVREventCallback(void *userData, const PVR_EVENT pvrevent, cons
   if (!client)
     return;
 
-  client->m_manager->OnClientMessage(client->m_clientID, pvrevent, msg);
+  client->m_manager->OnClientMessage(client->m_pInfo->clientID, pvrevent, msg);
 }

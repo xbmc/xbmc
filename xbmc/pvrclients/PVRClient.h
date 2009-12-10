@@ -25,6 +25,7 @@
 #include "../utils/PVRChannels.h"
 #include "../utils/PVRTimers.h"
 #include "../utils/PVRRecordings.h"
+#include "../utils/AddonDll.h"
 #include "DllPVRClient.h"
 #include "../addons/lib/addon_local.h"
 
@@ -34,17 +35,16 @@ public:
   virtual void OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg)=0;
 };
 
-class CPVRClient : public ADDON::CAddon
+class CPVRClient : public ADDON::CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>
 {
 public:
-  CPVRClient(const long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
-               const ADDON::IAddon& addon, IPVRClientCallback *pvrCB);
+  CPVRClient(const ADDON::AddonProps& props);
   ~CPVRClient();
 
+  bool Create(long clientID, IPVRClientCallback *pvrCB);
+
   /* DLL related */
-  bool Init();
   void DeInit();
-  bool ReInit();
   bool ReadyToUse() { return m_ReadyToUse; }
   virtual ADDON_STATUS GetStatus();
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
@@ -102,9 +102,6 @@ public:
   virtual __int64 LengthRecordedStream(void);
 
 protected:
-  std::auto_ptr<struct PVRClient> m_pClient;
-  std::auto_ptr<DllPVRClient> m_pDll;
-  const                 long m_clientID;
   bool                  m_ReadyToUse;
   IPVRClientCallback   *m_manager;
   AddonCB              *m_callbacks;

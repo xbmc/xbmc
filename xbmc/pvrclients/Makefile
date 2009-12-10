@@ -1,7 +1,6 @@
 INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils -I../cores/ffmpeg
 
 SRCS=PVRClient.cpp \
-     PVRClientFactory.cpp \
 
 LIB=pvrclient.a
 

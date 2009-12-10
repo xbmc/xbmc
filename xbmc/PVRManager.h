@@ -33,8 +33,8 @@
 #include <vector>
 #include <deque>
 
-typedef std::map< long, CPVRClient* >           CLIENTMAP;
-typedef std::map< long, CPVRClient* >::iterator CLIENTMAPITR;
+typedef std::map< long, boost::shared_ptr<CPVRClient> >           CLIENTMAP;
+typedef std::map< long, boost::shared_ptr<CPVRClient> >::iterator CLIENTMAPITR;
 typedef std::map< long, PVR_SERVERPROPS >       CLIENTPROPS;
 
 class CPVRTimeshiftRcvr : private CThread

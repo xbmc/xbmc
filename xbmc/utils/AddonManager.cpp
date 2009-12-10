@@ -39,6 +39,7 @@
 #include "AddonManager.h"
 #include "utils/SingleLock.h"
 #include "XMLUtils.h"
+#include "pvrclients/PVRClient.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -885,10 +886,21 @@ bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &p
 
   /*** end of optional fields ***/
 
-  AddonPtr temp(new CAddon(addonProps));
-  addon = temp;
-  /* Everything's valid */
+  /* Create an addon object and store in a shared_ptr */
+  addon.reset();
+  switch (type)
+  {
+    case ADDON_PVRDLL:
+    {
+      AddonPtr temp(new CPVRClient(addonProps));
+      addon = temp;
+      break;
+    }
+    default:
+      return false;
+  }
 
+  /* Everything's valid */
   CLog::Log(LOGINFO, "Addon: %s retrieved. Name: %s, UUID: %s, Version: %s",
             strPath.c_str(), addon->Name().c_str(), addon->UUID().c_str(), addon->Version().c_str());
 
