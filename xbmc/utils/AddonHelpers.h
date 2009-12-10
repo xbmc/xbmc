@@ -77,7 +77,7 @@ public:
   static char* OpenDialogBrowse(int type, const char* heading, const char* shares, const char* mask, bool useThumbs, bool treatAsFolder, const char* default_folder);
   static char* OpenDialogNumeric(int type, const char* heading, const char* default_value);
   static char* OpenDialogKeyboard(const char* heading, const char* default_value, bool hidden);
-  static int OpenDialogSelect(const char* heading, addon_string_list_s* list);
+  static int OpenDialogSelect(const char* heading, addon_string_list* list);
   static bool ProgressDialogCreate(const char* heading, const char* line1, const char* line2, const char* line3);
   static void ProgressDialogUpdate(int percent, const char* line1, const char* line2, const char* line3);
   static bool ProgressDialogIsCanceled();

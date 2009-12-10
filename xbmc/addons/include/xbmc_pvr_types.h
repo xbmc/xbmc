@@ -28,26 +28,22 @@
 
 #define MIN_XBMC_PVRDLL_API 1
 
-#include <string.h>
-#include <time.h>
-#include <stdint.h>
-#include "xbmc_addon_types.h"
-
+#ifdef HAS_XBOX_HARDWARE
+#include <xtl.h>
+#else
 #ifndef _LINUX
-enum CodecID;
+#include <windows.h>
 #else
-extern "C" {
-#if (defined USE_EXTERNAL_FFMPEG)
-  #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
-    #include <libavcodec/avcodec.h>
-  #elif (defined HAVE_FFMPEG_AVCODEC_H)
-    #include <ffmpeg/avcodec.h>
-  #endif
-#else
-  #include "../../cores/ffmpeg/avcodec.h"
+#undef __cdecl
+#define __cdecl
+#undef __declspec
+#define __declspec(x)
+#include <time.h>
 #endif
-}
 #endif
+
+#include <string.h>
+#include "xbmc_addon_types.h"
 
 #undef ATTRIBUTE_PACKED
 #undef PRAGMA_PACK_BEGIN
@@ -74,6 +70,7 @@ extern "C" {
   struct PVR_PROPS
   {
     int clientID;
+    ADDON_HANDLE hdl;
   };
 
   /**
@@ -255,8 +252,6 @@ extern "C" {
    */
   typedef struct PVRClient
   {
-    ADDON_STATUS (__cdecl* Create)(ADDON_HANDLE hdl, int ClientID);
-
     /** PVR General Functions **/
     PVR_ERROR (__cdecl* GetProperties)(PVR_SERVERPROPS *props);
     const char* (__cdecl* GetBackendName)();
@@ -297,9 +292,9 @@ extern "C" {
     /** PVR Live Stream Functions **/
     bool (__cdecl* OpenLiveStream)(const PVR_CHANNEL &channelinfo);
     void (__cdecl* CloseLiveStream)();
-    int (__cdecl* ReadLiveStream)(BYTE* buf, int buf_size);
-    __int64 (__cdecl* SeekLiveStream)(__int64 pos, int whence);
-    __int64 (__cdecl* LengthLiveStream)(void);
+    int (__cdecl* ReadLiveStream)(unsigned char* buf, int buf_size);
+    long long (__cdecl* SeekLiveStream)(long long pos, int whence);
+    long long (__cdecl* LengthLiveStream)(void);
     int (__cdecl* GetCurrentClientChannel)();
     bool (__cdecl* SwitchChannel)(const PVR_CHANNEL &channelinfo);
     PVR_ERROR (__cdecl* SignalQuality)(PVR_SIGNALQUALITY &qualityinfo);
@@ -307,9 +302,9 @@ extern "C" {
     /** PVR Recording Stream Functions **/
     bool (__cdecl* OpenRecordedStream)(const PVR_RECORDINGINFO &recinfo);
     void (__cdecl* CloseRecordedStream)(void);
-    int (__cdecl* ReadRecordedStream)(BYTE* buf, int buf_size);
-    __int64 (__cdecl* SeekRecordedStream)(__int64 pos, int whence);
-    __int64 (__cdecl* LengthRecordedStream)(void);
+    int (__cdecl* ReadRecordedStream)(unsigned char* buf, int buf_size);
+    long long (__cdecl* SeekRecordedStream)(long long pos, int whence);
+    long long (__cdecl* LengthRecordedStream)(void);
   } PVRClient;
 
 #ifdef __cplusplus

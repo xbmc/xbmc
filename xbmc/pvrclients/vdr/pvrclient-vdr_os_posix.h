@@ -47,9 +47,9 @@
 typedef int bool_t;
 typedef int SOCKET;
 
-//#define closesocket(a) close(a)
+#define closesocket(a) close(a)
 #define SOCKET_ERROR   (-1)
-//#define INVALID_SOCKET (-1)
+#define INVALID_SOCKET (-1)
 #define SD_BOTH SHUT_RDWR
 
 #define LIBTYPE

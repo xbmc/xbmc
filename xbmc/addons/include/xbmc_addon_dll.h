@@ -18,12 +18,13 @@
 #include "xbmc_addon_types.h"
 
 extern "C"
-{
+{ 
+  ADDON_STATUS __declspec(dllexport) Create(void *callbacks, void* props);
   ADDON_STATUS __declspec(dllexport) GetStatus();
   bool __declspec(dllexport) HasSettings();
   addon_settings_t __declspec(dllexport) GetSettings();
   ADDON_STATUS __declspec(dllexport) SetSetting(const char *settingName, const void *settingValue);
-  void __declspec(dllexport) Destroy();
+  void __declspec(dllexport) Remove();
 };
 
 #endif

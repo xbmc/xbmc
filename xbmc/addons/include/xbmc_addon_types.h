@@ -20,171 +20,248 @@
  *
  */
 
-/*
- * Common data structures shared between XBMC and Add-On's
- *
- * The following data structures and definitions are used
- * by all the types of AddOn's and must be handled by the
- * XBMC part of the AddOn type.
- *
- * Following AddOn Types are currently defined but not all of
- * them are supported at this time.
- *
- * Identifier               ID  Description
- * --------------------------------------------------------
- * ADDON_MULTITYPE          0   General usage, like a DVD Burning Tool
- * ADDON_VIZ                1   Visualisation AddOn
- * ADDON_SKIN               2   Skin Theme AddOn
- * ADDON_PVRDLL             3   PVR Client<->Backend Interface
- * ADDON_SCRIPT             4   Phyton script
- * ADDON_SCRAPER_PVR        5   PVR Scraper
- * ADDON_SCRAPER_VIDEO      6   Video Scraper
- * ADDON_SCRAPER_MUSIC      7   Music Scraper
- * ADDON_SCRAPER_PROGRAM    8   Program Scraper
- * ADDON_SCREENSAVER        9   Screensaver
- * ADDON_PLUGIN_PVR         10  PVR/TV plugin extension
- * ADDON_PLUGIN_MUSIC       11  Music plugin extension
- * ADDON_PLUGIN_VIDEO       12  Video plugin extension
- * ADDON_PLUGIN_PROGRAM     13  Program plugin extension
- * ADDON_PLUGIN_PICTURES    14  Pictures plugin extension
- * ADDON_PLUGIN_WEATHER     15  Weather plugin extension
- * ADDON_DSP_AUDIO          16  Audio DSP like Surround decoders
- *
- */
-
 #ifndef XBMC_ADDON_TYPES_H
 #define XBMC_ADDON_TYPES_H
+
+#ifdef WIN32
+#define XBMC_API   __declspec( dllexport )
+#else
+#define XBMC_API
+#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <vector>
-#ifdef HAS_XBOX_HARDWARE
-#include <xtl.h>
-#else
-#ifdef _LINUX
-#include "stdbool.h"
-#include "linux/PlatformInclude.h"
-#ifndef __APPLE__
-#include <sys/sysinfo.h>
-#endif
-#else
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#include <windows.h>
-#endif
-#include <sys/stat.h>
-#include <errno.h>
-#endif
+  typedef void* ADDON_HANDLE;
 
-typedef void* ADDON_HANDLE;
+  typedef enum addon_log {
+    LOG_DEBUG,
+    LOG_INFO,
+    LOG_NOTICE,
+    LOG_ERROR
+  } addon_log_t;
 
-typedef enum addon_log {
-  LOG_DEBUG,
-  LOG_INFO,
-  LOG_NOTICE,
-  LOG_ERROR
-} addon_log_t;
+  typedef struct addon_string_list {
+    const char**    Strings;
+    int             Items;
+  } addon_string_list_t;
 
-typedef struct addon_string_list {
-  const char**    Strings;
-  int             Items;
-} addon_string_list_s;
+  typedef enum addon_setting_type {
+    SETTING_TEXT,
+    SETTING_INT,
+    SETTING_BOOL,
+    SETTING_ENUM,
+    SETTING_LBLENUM,
+    SETTING_IPADDR,
+    SETTING_FILEENUM,
+    SETTING_SEP,
+    SETTING_LSEP
+  } addon_setting_type_t;
 
-typedef enum addon_setting_type {
-  SETTING_TEXT,
-  SETTING_INT,
-  SETTING_BOOL,
-  SETTING_ENUM,
-  SETTING_LBLENUM,
-  SETTING_IPADDR,
-  SETTING_FILEENUM,
-  SETTING_SEP,
-  SETTING_LSEP
-} addon_setting_type_t;
+  typedef enum addon_status {
+    STATUS_OK,                 /* Normally not returned (everything is ok) */
+    STATUS_LOST_CONNECTION,    /* AddOn lost connection to his backend (for ones that use Network) */
+    STATUS_NEED_RESTART,       /* Request to restart the AddOn and data structures need updated */
+    STATUS_NEED_EMER_RESTART,  /* Request to restart XBMC (hope no AddOn need or do this) */
+    STATUS_NEED_SETTINGS,       /* A setting value is needed/invalid */
+    STATUS_MISSING_FILE,       /* A AddOn file is missing (check log's for missing data) */
+    STATUS_UNKNOWN             /* A unknown event is occurred */
+  } addon_status_t;
+  typedef addon_status_t ADDON_STATUS; /* XBMC uses "ADDON_STATUS" for "addon_status_t" */
 
-typedef enum addon_status {
-  STATUS_OK,                 /* Normally not returned (everything is ok) */
-  STATUS_LOST_CONNECTION,    /* AddOn lost connection to his backend (for ones that use Network) */
-  STATUS_NEED_RESTART,       /* Request to restart the AddOn and data structures need updated */
-  STATUS_NEED_EMER_RESTART,  /* Request to restart XBMC (hope no AddOn need or do this) */
-  STATUS_NEED_SETTINGS,       /* A setting value is needed/invalid */
-  STATUS_MISSING_FILE,       /* A AddOn file is missing (check log's for missing data) */
-  STATUS_UNKNOWN             /* A unknown event is occurred */
-} addon_status_t;
-typedef addon_status_t ADDON_STATUS; /* XBMC uses "ADDON_STATUS" for "addon_status_t" */
+  /* An individual setting */
+  struct addon_setting;
+  typedef struct addon_setting *addon_setting_t;
 
-/**
- * AddOn Settings
- */
+  /* A list of settings */
+  struct addon_settings;
+  typedef struct addon_settings *addon_settings_t;
 
-/* An individual setting */
-struct addon_setting;
-typedef struct addon_setting *addon_setting_t;
+  ////////////// libRefMem Operations //////////////
 
-/* A list of settings */
-struct addon_settings;
-typedef struct addon_settings *addon_settings_t;
+  /**
+   * Decrement a reference count on the structure pointed
+   * to by 'p'
+   * \param p setting(s) handle
+   * \return NULL
+   */
+  XBMC_API void addon_release(void* p);
 
-/*
- * AddOn Setting Operations
- */
+  ////////// AddOn SettingList Operations //////////
 
-/**
- * Create a new settings list structure
- * \return settings handle
- */
-extern addon_settings_t addon_settings_create(void);
+  /**
+   * Create a new settings list structure
+   * \return settings handle
+   */
+  XBMC_API addon_settings_t addon_settings_create(void);
 
-/**
- * Create a new setting structure
- * \return setting handle
- */
-extern addon_setting_t addon_setting_create(void);
+  /**
+   * Retrieve the number of elements in the settings list structure
+   * in 'list'.
+   * \param list settings list handle
+   * \return int number of elements or <0 indicating error
+   */
+  XBMC_API int addon_settings_get_count(addon_settings_t list);
 
-/**
- * Retrieve the 'ID' field of a setting
- * \param set setting handle
- * \return null-terminated string
- */
-extern char *addon_setting_id(addon_setting_t set);
+  /**
+   * Return a pointer to the settings structure located at position
+   * 'index' of a settings list structure 'list'
+   * \param list settings list handle
+   * \param index position in list
+   * \return setting handle
+   */
+  XBMC_API addon_setting_t addon_settings_get_item(addon_settings_t list, int index);
 
-/**
- * Retrieve the 'label' field of a setting
- * \param set setting handle
- * \return null-terminated string
- */
-extern char *addon_setting_label(addon_setting_t set);
+  /**
+   * Add a setting structure to a settings list
+   * \param list settings list handle
+   * \param setting addon_setting handle to add to list
+   * \return int error status
+   */
+  XBMC_API int addon_settings_add_item(addon_settings_t list, addon_setting_t setting);
 
-/**
- * Retrieve the 'enable' field of a setting
- * \param set setting handle
- * \return null-terminated string
- */
-extern char *addon_setting_enable(addon_setting_t set);
+  //////////// AddOn Setting Operations ////////////
+  /**
+   * Create a new setting structure
+   * \param type setting type
+   * \param id char* id
+   * \return setting handle
+   */
+  XBMC_API addon_setting_t addon_setting_create(addon_setting_type_t type, const char* id);
 
-/**
- * Retrieve the 'lvalues' field of a setting
- * \param set setting handle
- * \return null-terminated string
- */
-extern char *addon_setting_lvalues(addon_setting_t set);
+  /**
+   * Retrieve the 'ID' field of a setting
+   * \param setting addon_setting handle
+   * \return null-terminated string
+   */
+  XBMC_API char *addon_setting_id(addon_setting_t setting);
 
-/**
- * Retrieve the type of a setting
- * \param set setting handle
- * \return settingtype handle
- */
-extern addon_setting_type_t addon_setting_type(addon_setting_t set);
+  /**
+   * Set the 'id' field of a setting
+   * \param setting addon_setting handle
+   * \param id char* id
+   * \return int error status
+   */
+  XBMC_API int addon_setting_set_id(addon_setting_t setting, const char* id);
 
-/**
- * Retrieve the 'valid' field of a setting
- * \param set setting handle
- * \return signed integer
- */
-extern int addon_setting_valid(addon_setting_t set);
+  /**
+   * Retrieve the 'label' field of a setting
+   * \param setting addon_setting handle
+   * \return null-terminated string
+   */
+  XBMC_API char *addon_setting_label(addon_setting_t setting);
+
+  /**
+   * Set the 'label' field of a setting
+   * \param setting addon_setting handle
+   * \param label char* label
+   * \return int error status
+   */
+  XBMC_API int addon_setting_set_label(addon_setting_t setting, const char *label);
+
+  /**
+   * Retrieve the 'enable' field of a setting
+   * \param setting addon_setting handle
+   * \return null-terminated string
+   */
+  XBMC_API char *addon_setting_enable(addon_setting_t setting);
+
+  /**
+   * Set the 'enable' field of a setting
+   * \param setting addon_setting handle
+   * \param enabled int
+   * \return int error status
+   */
+  XBMC_API int addon_setting_set_enable(addon_setting_t setting, int enabled);
+
+  /**
+   * Retrieve the 'lvalues' field of a setting
+   * \param setting addon_setting handle
+   * \return null-terminated string
+   */
+  XBMC_API char *addon_setting_lvalues(addon_setting_t setting);
+
+  /**
+   * Set the 'lvalues' field of a setting
+   * \param setting addon_setting handle
+   * \param lvalues char* lvalues to set
+   * \return int error status
+   */
+  XBMC_API int addon_setting_set_lvalues(addon_setting_t setting, const char *lvalues);
+
+  /**
+   * Retrieve the type of a setting
+   * \param setting addon_setting handle
+   * \return addon_setting_type_t
+   */
+  XBMC_API addon_setting_type_t addon_setting_type(addon_setting_t setting);
+
+  /**
+   * Set the type of a setting
+   * \param setting addon_setting handle
+   * \param type addon_setting_type_t to apply
+   * \return int error status
+   */
+  XBMC_API int addon_setting_set_type(addon_setting_t setting, addon_setting_type_t type);
+
+  /**
+   * Retrieve the 'valid' field of a setting
+   * \param setting addon_setting handle
+   * \return signed integer
+   */
+  XBMC_API int addon_setting_valid(addon_setting_t setting);
+
+  /**
+   * Set the type of a setting
+   * \param setting addon_setting handle
+   * \param isvalid int
+   * \return int error status
+   */
+  XBMC_API int addon_setting_set_valid(addon_setting_t setting, int isvalid);
+
+  /*
+   * -----------------------------------------------------------------
+   * Debug Output Control
+   * -----------------------------------------------------------------
+   */
+
+  /*
+   * Debug level constants used to determine the level of debug tracing
+   * to be done and the debug level of any given message.
+   */
+
+  #define ADDON_DBG_NONE  -1
+  #define ADDON_DBG_ERROR  0
+  #define ADDON_DBG_WARN   1
+  #define ADDON_DBG_INFO   2
+  #define ADDON_DBG_DETAIL 3
+  #define ADDON_DBG_DEBUG  4
+  #define ADDON_DBG_PROTO  5
+  #define ADDON_DBG_ALL    6
+
+  /**
+   * Set the libaddon debug level.
+   * \param l level
+   */
+  extern void addon_dbg_level(int l);
+
+  /**
+   * Turn on all libaddon debugging.
+   */
+  extern void addon_dbg_all(void);
+
+  /**
+   * Turn off all libaddon debugging.
+   */
+  extern void addon_dbg_none(void);
+
+  /**
+   * Print a libaddon debug message.
+   * \param level debug level
+   * \param fmt printf style format
+   */
+  extern void addon_dbg(int level, char *fmt, ...);
 
 #ifdef __cplusplus
 }

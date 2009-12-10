@@ -89,32 +89,14 @@ bool CPVRClient::Create(long clientID, IPVRClientCallback *pvrCB)
 
   m_pInfo           = new PVR_PROPS;
   m_pInfo->clientID = clientID;
+  m_pInfo->hdl      = m_callbacks;
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
   if (CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>::Create())
   {
-    try
-    {
-      ADDON_STATUS status = m_pStruct->Create(m_callbacks, m_pInfo->clientID);
-      if (status != STATUS_OK)
-        throw status;
-      m_ReadyToUse = true;
-      m_hostName   = m_pStruct->GetConnectionString();
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during Create occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
-      m_ReadyToUse = false;
-    }
-    catch (ADDON_STATUS status)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad status (%i) after Create and is not usable", Name().c_str(), m_hostName.c_str(), status);
-      m_ReadyToUse = false;
-
-      /* Delete is performed by the calling class */
-      new CAddonStatusHandler(this, status, "", false);
-    }
+    m_ReadyToUse = true;
+    m_hostName   = m_pStruct->GetConnectionString();
   }
 
   return m_ReadyToUse;

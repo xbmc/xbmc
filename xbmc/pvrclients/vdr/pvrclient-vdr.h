@@ -86,7 +86,7 @@ public:
   /* Live stream handling */
   bool OpenLiveStream(const PVR_CHANNEL &channelinfo);
   void CloseLiveStream();
-  int ReadLiveStream(BYTE* buf, int buf_size);
+  int ReadLiveStream(unsigned char* buf, int buf_size);
   int GetCurrentClientChannel();
   bool SwitchChannel(const PVR_CHANNEL &channelinfo);
   PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo);
@@ -94,9 +94,9 @@ public:
   /* Record stream handling */
   bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo);
   void CloseRecordedStream(void);
-  int ReadRecordedStream(BYTE* buf, int buf_size);
-  __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
-  __int64 LengthRecordedStream(void);
+  int ReadRecordedStream(unsigned char* buf, int buf_size);
+  long long SeekRecordedStream(long long pos, int whence=SEEK_SET);
+  long long LengthRecordedStream(void);
 
   static CVTPTransceiver *GetTransceiver() { return m_transceiver; }
 
@@ -107,7 +107,7 @@ protected:
 
 private:
   bool readNoSignalStream();
-  int writeNoSignalStream(BYTE* buf, int buf_size);
+  int writeNoSignalStream(unsigned char* buf, int buf_size);
 
   /* VDR to XBMC Callback functions */
   static void* CallbackRcvThread(void* arg);

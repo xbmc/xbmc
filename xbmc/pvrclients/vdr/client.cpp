@@ -43,21 +43,23 @@ int m_iConnectTimeout   = DEFAULT_TIMEOUT;
 bool m_bNoBadChannels   = DEFAULT_BADCHANNELS;
 bool m_bHandleMessages  = DEFAULT_HANDLE_MSG;
 
+extern "C" {
 
-//-- Create -------------------------------------------------------------------
-// Called after loading of the dll, all steps to become Client functional
-// must be performed here.
-//-----------------------------------------------------------------------------
-extern "C" ADDON_STATUS Create(ADDON_HANDLE hdl, int ClientID)
+ADDON_STATUS Create(void* hdl, void* props)
 {
-  XBMC_register_me(hdl);
-  PVR_register_me(hdl);
+  if (!props)
+    return STATUS_UNKNOWN;
+
+  PVR_PROPS* pvrprops = (PVR_PROPS*)props;
+
+  XBMC_register_me(pvrprops->hdl);
+  PVR_register_me(pvrprops->hdl);
 
   //XBMC_log(LOG_DEBUG, "Creating VDR PVR-Client");
 
   curStatus     = STATUS_UNKNOWN;
   g_client      = new cPVRClientVDR();
-  g_clientID    = ClientID;
+  g_clientID    = pvrprops->clientID;
 
   /* Read setting "host" from settings.xml */
   char * buffer;
@@ -140,45 +142,22 @@ extern "C" ADDON_STATUS Create(ADDON_HANDLE hdl, int ClientID)
   return curStatus;
 }
 
-//-- Destroy ------------------------------------------------------------------
-// Used during destruction of the client, all steps to do clean and safe Create
-// again must be done.
-//-----------------------------------------------------------------------------
-extern "C" void Destroy()
-{
-  if (m_bCreated)
-  {
-    g_client->Disconnect();
-
-    delete g_client;
-    g_client = NULL;
-
-    m_bCreated = false;
-  }
-  curStatus = STATUS_UNKNOWN;
-}
-
-//-- GetStatus ----------------------------------------------------------------
-// Report the current Add-On Status to XBMC
-//-----------------------------------------------------------------------------
-extern "C" ADDON_STATUS GetStatus()
+ADDON_STATUS GetStatus()
 {
   return curStatus;
 }
 
-//-- HasSettings --------------------------------------------------------------
-// Report "true", yes this AddOn have settings
-//-----------------------------------------------------------------------------
-extern "C" bool HasSettings()
+bool HasSettings()
 {
   return true;
 }
 
-//-- SetSetting ---------------------------------------------------------------
-// Called everytime a setting is changed by the user and to inform AddOn about
-// new setting and to do required stuff to apply it.
-//-----------------------------------------------------------------------------
-extern "C" ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
+addon_settings_t GetSettings()
+{
+  return NULL;
+}
+
+ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
 {
   string str = settingName;
   if (str == "host")
@@ -232,6 +211,27 @@ extern "C" ADDON_STATUS SetSetting(const char *settingName, const void *settingV
 
   return STATUS_OK;
 }
+
+void Remove()
+{
+  if (m_bCreated)
+  {
+    g_client->Disconnect();
+
+    delete g_client;
+    g_client = NULL;
+
+    m_bCreated = false;
+  }
+  curStatus = STATUS_UNKNOWN;
+}
+
+
+
+
+
+
+
 
 //-- GetProperties ------------------------------------------------------------
 // Tell XBMC our requirements
@@ -353,17 +353,17 @@ extern "C" void CloseLiveStream()
   return g_client->CloseLiveStream();
 }
 
-extern "C" int ReadLiveStream(BYTE* buf, int buf_size)
+extern "C" int ReadLiveStream(unsigned char* buf, int buf_size)
 {
   return g_client->ReadLiveStream(buf, buf_size);
 }
 
-extern "C" __int64 SeekLiveStream(__int64 pos, int whence)
+extern "C" long long SeekLiveStream(long long pos, int whence)
 {
   return -1;
 }
 
-extern "C" __int64 LengthLiveStream(void)
+extern "C" long long LengthLiveStream(void)
 {
   return -1;
 }
@@ -393,17 +393,19 @@ extern "C" void CloseRecordedStream(void)
   return g_client->CloseRecordedStream();
 }
 
-extern "C" int ReadRecordedStream(BYTE* buf, int buf_size)
+extern "C" int ReadRecordedStream(unsigned char* buf, int buf_size)
 {
   return g_client->ReadRecordedStream(buf, buf_size);
 }
 
-extern "C" __int64 SeekRecordedStream(__int64 pos, int whence)
+extern "C" long long SeekRecordedStream(long long pos, int whence)
 {
   return g_client->SeekRecordedStream(pos, whence);
 }
 
-extern "C" __int64 LengthRecordedStream(void)
+extern "C" long long LengthRecordedStream(void)
 {
   return g_client->LengthRecordedStream();
+}
+
 }

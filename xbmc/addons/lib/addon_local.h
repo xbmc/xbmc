@@ -139,7 +139,7 @@ typedef bool (*DialogOpenYesNo)(const char*, const char*, const char*, const cha
 typedef char* (*DialogOpenBrowse)(int, const char*, const char*, const char*, bool, bool, const char*);
 typedef char* (*DialogOpenNumeric)(int, const char*, const char*);
 typedef char* (*DialogOpenKeyboard)(const char*, const char*, bool);
-typedef int (*DialogOpenSelect)(const char*, addon_string_list_s*);
+typedef int (*DialogOpenSelect)(const char*, addon_string_list*);
 typedef bool (*DialogProgressCreate)(const char*, const char*, const char*, const char*);
 typedef void (*DialogProgressUpdate)(int, const char*, const char*, const char*);
 typedef bool (*DialogProgressIsCanceled)();

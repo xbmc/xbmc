@@ -843,7 +843,7 @@ char* CAddonUtils::OpenDialogKeyboard(const char* heading, const char* default_v
   return NULL;
 }
 
-int CAddonUtils::OpenDialogSelect(const char* heading, addon_string_list_s* list)
+int CAddonUtils::OpenDialogSelect(const char* heading, addon_string_list* list)
 {
   const DWORD dWindow = WINDOW_DIALOG_SELECT;
   CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(dWindow);

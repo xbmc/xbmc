@@ -1050,7 +1050,7 @@ void cPVRClientVDR::CloseLiveStream()
   return;
 }
 
-int cPVRClientVDR::ReadLiveStream(BYTE* buf, int buf_size)
+int cPVRClientVDR::ReadLiveStream(unsigned char* buf, int buf_size)
 {
   if (!m_transceiver->IsOpen())
     return 0;
@@ -1252,7 +1252,7 @@ void cPVRClientVDR::CloseRecordedStream(void)
   return;
 }
 
-int cPVRClientVDR::ReadRecordedStream(BYTE* buf, int buf_size)
+int cPVRClientVDR::ReadRecordedStream(unsigned char* buf, int buf_size)
 {
   vector<string> lines;
   int            code;
@@ -1321,7 +1321,7 @@ int cPVRClientVDR::ReadRecordedStream(BYTE* buf, int buf_size)
   return res;
 }
 
-__int64 cPVRClientVDR::SeekRecordedStream(__int64 pos, int whence)
+long long cPVRClientVDR::SeekRecordedStream(long long pos, int whence)
 {
 
   if (!m_transceiver->IsOpen())
@@ -1329,7 +1329,7 @@ __int64 cPVRClientVDR::SeekRecordedStream(__int64 pos, int whence)
     return 0;
   }
 
-  __int64 nextPos = m_currentPlayingRecordPosition;
+  long long nextPos = m_currentPlayingRecordPosition;
 
   switch (whence)
   {
@@ -1358,7 +1358,7 @@ __int64 cPVRClientVDR::SeekRecordedStream(__int64 pos, int whence)
       return -1;
   }
 
-  if (nextPos > (__int64) m_currentPlayingRecordBytes)
+  if (nextPos > (long long) m_currentPlayingRecordBytes)
   {
     return 0;
   }
@@ -1368,7 +1368,7 @@ __int64 cPVRClientVDR::SeekRecordedStream(__int64 pos, int whence)
   return m_currentPlayingRecordPosition;
 }
 
-__int64 cPVRClientVDR::LengthRecordedStream(void)
+long long cPVRClientVDR::LengthRecordedStream(void)
 {
   return m_currentPlayingRecordBytes;
 }
@@ -1606,7 +1606,7 @@ bool cPVRClientVDR::readNoSignalStream()
   return false;
 }
 
-int cPVRClientVDR::writeNoSignalStream(BYTE* buf, int buf_size)
+int cPVRClientVDR::writeNoSignalStream(unsigned char* buf, int buf_size)
 {
   int sizeToWrite = m_noSignalStreamSize-m_noSignalStreamReadPos;
   m_playingNoSignal = true;

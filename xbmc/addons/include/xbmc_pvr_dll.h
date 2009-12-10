@@ -8,7 +8,6 @@ extern "C"
 {
   // Functions that your PVR client must implement, also you must implement the functions from
   // xbmc_addon_dll.h
-  ADDON_STATUS Create(ADDON_HANDLE hdl, int ClientID);
   PVR_ERROR GetProperties(PVR_SERVERPROPS* pProps);
   const char* GetBackendName();
   const char* GetBackendVersion();
@@ -39,23 +38,22 @@ extern "C"
 
   bool OpenLiveStream(const PVR_CHANNEL &channelinfo);
   void CloseLiveStream();
-  int ReadLiveStream(BYTE* buf, int buf_size);
-  __int64 SeekLiveStream(__int64 pos, int whence=SEEK_SET);
-  __int64 LengthLiveStream(void);
+  int ReadLiveStream(unsigned char* buf, int buf_size);
+  long long SeekLiveStream(long long pos, int whence=SEEK_SET);
+  long long LengthLiveStream(void);
   int GetCurrentClientChannel();
   bool SwitchChannel(const PVR_CHANNEL &channelinfo);
   PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo);
 
   bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo);
   void CloseRecordedStream(void);
-  int ReadRecordedStream(BYTE* buf, int buf_size);
-  __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
-  __int64 LengthRecordedStream(void);
+  int ReadRecordedStream(unsigned char* buf, int buf_size);
+  long long SeekRecordedStream(long long pos, int whence=SEEK_SET);
+  long long LengthRecordedStream(void);
 
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(struct PVRClient* pClient)
   {
-    pClient->Create                 = Create;
     pClient->GetProperties          = GetProperties;
     pClient->GetConnectionString    = GetConnectionString;
     pClient->GetBackendName         = GetBackendName;

@@ -399,7 +399,7 @@ int XBMC_dialog_open_select(const char* heading, vector<string> &list)
   int ret = 0;
   if (listsize > 0)
   {
-    addon_string_list_s c_list;
+    addon_string_list c_list;
     c_list.Items = listsize;
     c_list.Strings = (const char**) calloc (c_list.Items+1,sizeof(const char*));
     for (unsigned int i = 0; i < listsize; i++)
@@ -495,7 +495,7 @@ char *strcpyrealloc(char *dest, const char *src)
     else
       XBMC_log(LOG_ERROR, "strcpyrealloc: out of memory");
   }
-  else 
+  else
   {
     free(dest);
     dest = NULL;
@@ -519,7 +519,7 @@ char *strreplace(char *s, char c1, char c2)
 char *strreplace(char *s, const char *s1, const char *s2)
 {
   char *p = strstr(s, s1);
-  if (p) 
+  if (p)
   {
     int of = p - s;
     int l  = strlen(s);
@@ -546,7 +546,7 @@ bool xbmc_isnumber(const char *s)
 {
   if (!*s)
     return false;
-  do 
+  do
   {
     if (!isdigit(*s))
       return false;
@@ -555,9 +555,9 @@ bool xbmc_isnumber(const char *s)
 }
 char *stripspace(char *s)
 {
-  if (s && *s) 
+  if (s && *s)
   {
-    for (char *p = s + strlen(s) - 1; p >= s; p--) 
+    for (char *p = s + strlen(s) - 1; p >= s; p--)
     {
       if (!isspace(*p))
         break;
@@ -569,11 +569,11 @@ char *stripspace(char *s)
 
 char *compactspace(char *s)
 {
-  if (s && *s) 
+  if (s && *s)
   {
     char *t = stripspace(skipspace(s));
     char *p = t;
-    while (p && *p) 
+    while (p && *p)
     {
       char *q = skipspace(p);
       if (q - p > 1)
