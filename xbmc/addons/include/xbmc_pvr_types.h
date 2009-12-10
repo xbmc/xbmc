@@ -234,10 +234,10 @@ extern "C" {
   typedef struct PVR_SIGNALQUALITY {
     char          frontend_name[1024];
     char          frontend_status[1024];
-    uint16_t      snr;
-    uint16_t      signal;
-    uint32_t      ber;
-    uint32_t      unc;
+    int           snr;
+    int           signal;
+    long          ber;
+    long          unc;
     double        video_bitrate;
     double        audio_bitrate;
     double        dolby_bitrate;
