@@ -279,11 +279,19 @@ extern "C" viz_preset_list_t GetPresets()
   return NULL;
 }
 
+//-- GetCurrentPreset ---------------------------------------------------------
+// Return the index of the current playing preset
+//-----------------------------------------------------------------------------
+extern "C" unsigned GetCurrentPreset()
+{
+  return 0;
+}
+
 //-- Remove -------------------------------------------------------------------
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-void Remove()
+extern "C" void Remove()
 {
 }
 
@@ -291,7 +299,7 @@ void Remove()
 // Returns true if this add-on use settings
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-bool HasSettings()
+extern "C" bool HasSettings()
 {
   return true;
 }
@@ -300,7 +308,7 @@ bool HasSettings()
 // Returns the current Status of this visualisation
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-ADDON_STATUS GetStatus()
+extern "C" ADDON_STATUS GetStatus()
 {
   return STATUS_OK;
 }
@@ -349,7 +357,7 @@ extern "C" addon_settings_t GetSettings()
 // Set a specific Setting value (called from XBMC)
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-ADDON_STATUS SetSetting(const char *strSetting, const void* value)
+extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
 {
   if (!strSetting || !value)
     return STATUS_UNKNOWN;

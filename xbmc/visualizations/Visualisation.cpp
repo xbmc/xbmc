@@ -103,7 +103,7 @@ bool CVisualisation::Create(int x, int y, int w, int h)
 
   if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())
   {
-    // Start the visualisation (this loads settings etc.)
+    // Start the visualisation
     CStdString strFile = CUtil::GetFileName(g_application.CurrentFile());
     CLog::Log(LOGDEBUG, "Visualisation::Start()\n");
     try 
@@ -202,6 +202,11 @@ void CVisualisation::GetInfo(VIS_INFO *info)
 
 bool CVisualisation::OnAction(VIS_ACTION action, void *param)
 {
+  if (!m_initialized)
+  {
+    return false;
+  }
+
   // see if vis wants to handle the input
   // returns false if vis doesnt want the input
   // returns true if vis handled the input
@@ -404,46 +409,37 @@ bool CVisualisation::GetPresets()
       {
         m_presets.push_back(viz_preset_name(preset));
       }
-      viz_release(preset);
     }
     viz_release(presets);
   }
   return (!m_presets.empty());
-  return false;
-}
-
-void CVisualisation::GetCurrentPreset(char **pPreset, bool *locked)
-{
-  if (!m_initialized)
-    return;
-
-  if (pPreset && locked && m_pStruct->GetCurrentPreset)
-  {
-    char **presets = NULL;
-    int currentPreset = 0;
-    int numPresets = 0;
-    *locked = false;
-    viz_preset_list_t list = NULL;
-    list = m_pStruct->GetPresets();
-    if (presets && currentPreset < numPresets)
-      *pPreset = presets[currentPreset];
-  }
 }
 
 bool CVisualisation::IsLocked()
 {
-  char *preset;
-  bool locked = false;
-  GetCurrentPreset(&preset, &locked);
-  return locked;
+  return m_pStruct->IsLocked();
 }
 
-char *CVisualisation::GetPreset()
+unsigned CVisualisation::GetPreset()
 {
-  char *preset = NULL;
-  bool locked = false;
-  GetCurrentPreset(&preset, &locked);
-  return preset;
+  unsigned index = 0;
+  try
+  {
+    index = m_pStruct->GetPreset();
+  }
+  catch(...)
+  {
+    return 0;
+  }
+  return index;
+}
+
+CStdString CVisualisation::GetPresetName()
+{
+  if (!m_presets.empty())
+    return m_presets[GetPreset()];
+  else
+    return "";
 }
 
 /*CStdString CVisualisation::GetFriendlyName(const char* strVisz,

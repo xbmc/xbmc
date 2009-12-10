@@ -1475,12 +1475,11 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
       g_windowManager.SendMessage(msg);
       if (msg.GetPointer())
       {
-        CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
-        char *preset = pVis->GetPreset();
-        if (preset)
+        CVisualisation* viz = NULL;
+        viz = (CVisualisation*)msg.GetPointer();
+        if (viz)
         {
-          strLabel = preset;
-          CUtil::RemoveExtension(strLabel);
+          strLabel = viz->GetPresetName(); 
         }
       }
     }
@@ -1940,13 +1939,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       break;
     case VISUALISATION_LOCKED:
       {
-        CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+        /*CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
         g_windowManager.SendMessage(msg);
         if (msg.GetPointer())
         {
           CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
           bReturn = pVis->IsLocked();
-        }
+        }*/
       }
     break;
     case VISUALISATION_ENABLED:

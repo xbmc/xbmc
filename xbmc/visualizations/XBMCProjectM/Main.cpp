@@ -62,16 +62,9 @@ int gx=40,gy=30;
 int fps=100;
 char *disp;
 char g_visName[512];
-char **g_presets=NULL;
-int g_numPresets = 0;
+viz_preset_list_t g_presets=NULL;
 projectM::Settings g_configPM;
 std::string g_configFile;
-
-#define QUALITY_LOW "Low"
-#define QUALITY_MEDIUM "Medium"
-#define QUALITY_HIGH "High"
-#define QUALITY_MAX "Maximum"
-#define PROJECTM_QUALITY (VIS_ACTION_USER+1)
 
 // Some helper Functions
 
@@ -120,6 +113,7 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   g_configFile = string(visprops->datastore) + string("/projectm.conf");
   std::string presetsDir = string(visprops->presets);
 
+  printf("%s", presetsDir.c_str());
   g_configPM.meshX = gx;
   g_configPM.meshY = gy;
   g_configPM.fps = fps;
@@ -181,14 +175,7 @@ extern "C" void Stop()
     globalPM = NULL;
   }
   if (g_presets)
-  {
-    for (int i = 0 ; i<g_numPresets ; i++)
-    {
-      free(g_presets[i]);
-    }
-    free(g_presets);
-    g_presets = NULL;
-  }
+    viz_release(g_presets);
 }
 
 //-- Audiodata ----------------------------------------------------------------
@@ -250,7 +237,7 @@ extern "C" bool OnAction(long flags, const void *param)
   }
   else if (flags == VIS_ACTION_RANDOM_PRESET)
   {
-    globalPM->setShuffleEnabled(!globalPM->isShuffleEnabled());
+    globalPM->setShuffleEnabled(g_configPM.shuffleEnabled);
     ret = true;
   }
   else if (flags == VIS_ACTION_LOCK_PRESET)
@@ -268,54 +255,56 @@ extern "C" viz_preset_list_t GetPresets()
 {
   if (!g_presets)
   {
-    if (globalPM->getPlaylistSize() > 0)
+    g_presets = viz_preset_list_create();
+    if (g_presets)
     {
-      g_numPresets = globalPM->getPlaylistSize();
-      g_presets = (char **)malloc(sizeof(char*)*globalPM->getPlaylistSize());
-      if (g_presets)
+      viz_preset_t preset;
+      for (unsigned int i = 0; i < globalPM->getPlaylistSize() ; i++)
       {
-        for (unsigned int i = 0; i < globalPM->getPlaylistSize() ; i++)
+        preset = viz_preset_create();
+        if (viz_preset_set_name(preset, globalPM->getPresetName(i).c_str()))
         {
-          g_presets[i] = (char*)malloc(strlen(globalPM->getPresetName(i).c_str())+2);
-          if (g_presets[i])
-          {
-            strcpy(g_presets[i], globalPM->getPresetName(i).c_str());
-          }
+          viz_preset_list_add_item(g_presets, preset);
         }
       }
     }
   }
 
+  // XBMC never alters this presetlist
+  return g_presets;
+}
+
+//-- GetPreset ----------------------------------------------------------------
+// Return the index of the current playing preset
+//-----------------------------------------------------------------------------
+extern "C" unsigned GetPreset()
+{
   if (g_presets)
   {
-    viz_preset_list_t presets = viz_preset_list_create();
-    for (int i = 0; i < g_numPresets; i++)
-    {
-      if (g_presets[i])
-      {
-        viz_preset_t preset = viz_preset_create();
-        viz_preset_set_name(preset, g_presets[i]);
-        if (preset)
-          viz_preset_list_add_item(presets, preset);
-        viz_release(preset);
-      }
-    }
-    /*
-    unsigned int presetIndex;
-    if (globalPM->selectedPresetIndex(presetIndex) && presetIndex >= 0 &&
-        (int)presetIndex < g_numPresets)
-      *currentPreset = presetIndex;*/
-    return presets;
+    unsigned preset;
+    if(globalPM->selectedPresetIndex(preset))
+      return preset;
   }
+  return 0;
+}
 
-  return NULL;
+//-- IsLocked -----------------------------------------------------------------
+// Returns true if this add-on use settings
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" bool IsLocked()
+{
+  if(globalPM)
+    return globalPM->isPresetLocked();
+  else
+    return false;
 }
 
 //-- Remove -------------------------------------------------------------------
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-void Remove()
+extern "C" void Remove()
 {
 }
 
@@ -323,7 +312,7 @@ void Remove()
 // Returns true if this add-on use settings
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-bool HasSettings()
+extern "C" bool HasSettings()
 {
   return true;
 }
@@ -332,7 +321,7 @@ bool HasSettings()
 // Returns the current Status of this visualisation
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-ADDON_STATUS GetStatus()
+extern "C" ADDON_STATUS GetStatus()
 {
   return STATUS_OK;
 }
@@ -421,10 +410,9 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
   }
   else if (strcmp(id, "Shuffle")==0)
   {
-    if (OnAction(VIS_ACTION_RANDOM_PRESET, value))
-      return STATUS_OK;
-    else
-      return STATUS_UNKNOWN;
+    g_configPM.shuffleEnabled = !g_configPM.shuffleEnabled;
+    if (globalPM)
+      OnAction(VIS_ACTION_RANDOM_PRESET, value);
   }
 
   return STATUS_OK;

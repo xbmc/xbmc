@@ -86,8 +86,9 @@ void CGUIVisualisationControl::LoadVisualisation()
   }
 
   // tell our app that we're back
-  //TODO need to pass shrd_ptr<Vis> instead CGUIMessage msg(GUI_MSG_VISUALISATION_LOADED, 0, 0, 0, 0, m_pVisualisation);
-  //g_windowManager.SendMessage(msg);
+  CGUIMessage msg(GUI_MSG_VISUALISATION_LOADED, 0, 0, 0, 0);
+  msg.SetPointer((void*)m_addon.get());
+  g_windowManager.SendMessage(msg);
 }
 
 void CGUIVisualisationControl::UpdateVisibility(const CGUIListItem *item)
@@ -151,8 +152,6 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
 
 bool CGUIVisualisationControl::UpdateTrack()
 {
-  bool handled = false;
-
   if (m_addon)
   {
     return m_addon->UpdateTrack();
@@ -163,7 +162,7 @@ bool CGUIVisualisationControl::UpdateTrack()
 bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_GET_VISUALISATION)
-  { //TODO viz pointers issue
+  {
     message.SetPointer(m_addon.get());
     return true;
   }

@@ -74,19 +74,6 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
 
   case ACTION_VIS_PRESET_LOCK:
     { // show the locked icon + fall through so that the vis handles the locking
-      CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      g_windowManager.SendMessage(msg);
-      if (msg.GetPointer())
-      {
-        CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
-        char** pPresets=NULL;
-        int currpreset=0, numpresets=0;
-        bool locked;
-
-        /*pVis->GetPresets(&pPresets,&currpreset,&numpresets,&locked);*/
-        if (numpresets == 1 || !pPresets)
-          return true;
-      }
       if (!m_bShowPreset)
       {
         m_lockedTimer = START_FADE_LENGTH;
@@ -145,19 +132,9 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       if (pVisControl)
         return pVisControl->OnMessage(message);
     }
-    break;
   case GUI_MSG_GET_VISUALISATION:
-    {
-//      message.SetControlID(CONTROL_VIS);
-//      CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
-//     if (pVisControl)
-//        message.SetPointer(pVisControl->GetVisualisation());
-//     return true;
-    }
-    break;
   case GUI_MSG_VISUALISATION_ACTION:
     {
-      // message.SetControlID(CONTROL_VIS);
       CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
       if (pVisControl)
         return pVisControl->OnMessage(message);

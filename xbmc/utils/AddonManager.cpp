@@ -924,9 +924,6 @@ bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &p
 #endif
 
   //TODO mvis extension handling
-  /*
-    
-  addonProps.icon = path + "default.tbn";
 
   /*** end of optional fields ***/
 

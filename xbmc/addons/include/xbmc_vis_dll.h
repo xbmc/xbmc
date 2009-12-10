@@ -61,7 +61,8 @@ extern "C"
   bool OnAction(long action, const void *param);
   void GetInfo(VIS_INFO* pInfo);
   viz_preset_list_t GetPresets();
-  viz_preset_t GetCurrentPreset();
+  unsigned GetPreset();
+  bool IsLocked();
 
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(struct Visualisation* pVisz)
@@ -73,6 +74,8 @@ extern "C"
     pVisz->OnAction = OnAction;
     pVisz->GetInfo = GetInfo;
     pVisz->GetPresets = GetPresets;
+    pVisz->GetPreset = GetPreset;
+    pVisz->IsLocked = IsLocked;
   };
 };
 

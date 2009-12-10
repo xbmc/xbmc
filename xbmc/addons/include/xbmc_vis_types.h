@@ -73,7 +73,8 @@ extern "C"
     bool (__cdecl* OnAction)(long flags, const void *param);
     int (__cdecl* HasPresets)();
     viz_preset_list_t (__cdecl *GetPresets)();
-    viz_preset_t (__cdecl *GetCurrentPreset)();
+    unsigned (__cdecl *GetPreset)();
+    bool (__cdecl* IsLocked)();
   };
 }
 

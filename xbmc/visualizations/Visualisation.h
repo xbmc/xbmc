@@ -63,10 +63,10 @@ public:
   void GetInfo(VIS_INFO *info);
   bool OnAction(VIS_ACTION action, void *param = NULL);
   bool UpdateTrack();
-  void GetCurrentPreset(char **pPreset, bool *locked);
   int  GetSubModules(std::map<std::string, std::string>& subModules);
   bool IsLocked();
-  char *GetPreset();
+  unsigned GetPreset();
+  CStdString GetPresetName();
   bool GetPresetList(std::vector<CStdString>& vecpresets);
 
 private:
