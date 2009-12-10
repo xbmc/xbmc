@@ -261,6 +261,7 @@ bool CAdvancedSettings::Load()
   // NOTE: This routine should NOT set the default of any of these parameters
   //       it should instead use the versions of GetString/Integer/Float that
   //       don't take defaults in.  Defaults are set in the constructor above
+  Initialize(); // In case of profile switch.
   CStdString advancedSettingsXML;
   advancedSettingsXML  = g_settings.GetUserDataItem("advancedsettings.xml");
   TiXmlDocument advancedXML;
