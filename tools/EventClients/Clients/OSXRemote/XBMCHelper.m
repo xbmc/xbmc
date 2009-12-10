@@ -158,11 +158,16 @@
         [mp_wrapper handleEvent:ATV_BUTTON_MENU];
       }
       break;
-    case kHIDRemoteButtonCodeUpHold:
-      //TODO
+    case kHIDRemoteButtonCodePlay: //aluminium remote
+      if(isPressed) {
+        [mp_wrapper handleEvent:ATV_BUTTON_PLAY];
+      }
       break;
-    case kHIDRemoteButtonCodeDownHold:
-      //TODO
+//    case kHIDRemoteButtonCodeUpHold:
+//      //TODO
+//      break;
+//    case kHIDRemoteButtonCodeDownHold:
+//      //TODO
       break;
     case kHIDRemoteButtonCodeLeftHold:
       if(isPressed)
@@ -185,8 +190,10 @@
         [mp_wrapper handleEvent:ATV_BUTTON_MENU_H];
       }
       break;
-    case kHIDRemoteButtonCodePlayHold:
-      //TODO
+    case kHIDRemoteButtonCodePlayHold: //aluminium remote
+      if(isPressed) {
+        [mp_wrapper handleEvent:ATV_BUTTON_PLAY_H];
+      }
       break;
     default:
       NSLog(@"Oha, remote button not recognized %i pressed/released %i", buttonCode, isPressed);
