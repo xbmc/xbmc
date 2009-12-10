@@ -542,7 +542,9 @@ viz_track_set_lyrics(viz_track_t track, const char* lyrics)
 *
 * Return Value:
 *
-* Integer value of field
+* Success: Integer value of field
+*
+* Failure: 0
 *
 */
 int
@@ -551,7 +553,7 @@ viz_track_tracknum(viz_track_t track)
   if (!track) {
     viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
-    return NULL;
+    return 0;
   }
   return track->tracknum;
 }
@@ -596,7 +598,9 @@ viz_track_set_tracknum(viz_track_t track, int tracknum)
 *
 * Return Value:
 *
-* Integer value of field
+* Success: Integer value of field
+*
+* Failure: 0
 *
 */
 int
@@ -605,7 +609,7 @@ viz_track_discnum(viz_track_t track)
   if (!track) {
     viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
-    return NULL;
+    return -1;
   }
   return track->discnum;
 }
@@ -649,7 +653,9 @@ viz_track_set_discnum(viz_track_t track, int discnum)
 *
 * Return Value:
 *
-* Integer value of field
+* Success: Integer value of field
+*
+* Failure: 0
 *
 */
 int
@@ -658,7 +664,7 @@ viz_track_duration(viz_track_t track)
   if (!track) {
     viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
-    return NULL;
+    return 0;
   }
   return track->duration;
 }
@@ -703,7 +709,9 @@ viz_track_set_duration(viz_track_t track, int duration)
 *
 * Return Value:
 *
-* Integer value of field
+* Success: Integer value of field
+*
+* Failure: 0
 *
 */
 int
@@ -712,7 +720,7 @@ viz_track_year(viz_track_t track)
   if (!track) {
     viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
-    return NULL;
+    return 0;
   }
   return track->year;
 }
@@ -757,7 +765,9 @@ viz_track_set_year(viz_track_t track, int year)
 *
 * Return Value:
 *
-* char value of field
+* Success: char 'rating'
+*
+* Failure: null character
 *
 */
 char
@@ -766,7 +776,7 @@ viz_track_rating(viz_track_t track)
   if (!track) {
     viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
-    return NULL;
+    return '\000';
   }
   return track->rating;
 }

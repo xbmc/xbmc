@@ -32,8 +32,6 @@
 #include <libvisualisation.h>
 #include <viz_local.h>
 
-
-
 /*
  * viz_release(void *p)
  * calls ref_release on struct pointed to by p
@@ -111,7 +109,7 @@ viz_preset_list_create(void)
 }
 
 /*
-* viz_preset_list_get_item(viz_preset_list_t list, int index)
+* viz_preset_list_get_item(viz_preset_list_t list, unsigned index)
 *
 * Scope: PUBLIC
 *
@@ -128,7 +126,7 @@ viz_preset_list_create(void)
 * Failure: A NULL viz_preset_t
 */
 viz_preset_t
-viz_preset_list_get_item(viz_preset_list_t list, int index)
+viz_preset_list_get_item(viz_preset_list_t list, unsigned index)
 {
   if (!list) {
     viz_dbg(VIZ_DBG_ERROR, "%s: NULL preset list\n",
