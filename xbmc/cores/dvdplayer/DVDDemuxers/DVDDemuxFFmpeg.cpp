@@ -695,7 +695,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
       // crystalhd wants byte-stream with startcodes and nals (Annex B byte-stream format)
 #if defined(HAVE_LIBCRYSTALHD)
-      if (m_pFilterContext && (stream->codec->codec_id == CODEC_ID_H264) )
+      if (m_pFilterContext && (stream->codec->codec_id == CODEC_ID_H264) && (stream->codec->width >= 1280) )
       {
         AVBitStreamFilterContext *bsfc = m_pFilterContext;
 
