@@ -1233,11 +1233,15 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     OnRenameItem(itemNumber);
     return true;
   case CONTEXT_BUTTON_MARK_WATCHED:
-    MarkWatched(item,true);
-    CUtil::DeleteVideoDatabaseDirectoryCache();
-    Update(m_vecItems->m_strPath);
-    return true;
+    {
+      int itemNumber = m_viewControl.GetSelectedItem();
+      MarkWatched(item,true);
+      m_viewControl.SetSelectedItem(itemNumber - 1);
 
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+      Update(m_vecItems->m_strPath);
+      return true;
+    }
   case CONTEXT_BUTTON_MARK_UNWATCHED:
     MarkWatched(item,false);
     CUtil::DeleteVideoDatabaseDirectoryCache();
