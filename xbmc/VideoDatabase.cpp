@@ -6998,23 +6998,19 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
           if (overwrite || !CFile::Exists(nfoFile))
           {
-            if(xmlDoc.SaveFile(nfoFile))
-            {
-                bSkip = ExportSkipEntry(nfoFile);
-                if (!bSkip)
-                {
-                  if (progress)
-                  {
-                    progress->Close();
-                    m_pDS->close();
-                    return;
-                  }
-                }
-            }
-            else
+            if(!xmlDoc.SaveFile(nfoFile))
             {
               CLog::Log(LOGERROR, "%s: Movie nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-              bSkip = true;
+              bSkip = ExportSkipEntry(nfoFile);
+              if (!bSkip)
+              {
+                if (progress)
+                {
+                  progress->Close();
+                  m_pDS->close();
+                  return;
+                }
+              }
             }
           }
 
@@ -7085,23 +7081,19 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
           if (overwrite || !CFile::Exists(nfoFile))
           {
-            if(xmlDoc.SaveFile(nfoFile))
-            {
-                bSkip = ExportSkipEntry(nfoFile);
-                if (!bSkip)
-                {
-                  if (progress)
-                  {
-                    progress->Close();
-                    m_pDS->close();
-                    return;
-                  }
-                }
-            }
-            else
+            if(!xmlDoc.SaveFile(nfoFile))
             {
               CLog::Log(LOGERROR, "%s: Musicvideo nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-              bSkip = true;
+              bSkip = ExportSkipEntry(nfoFile);
+              if (!bSkip)
+              {
+                if (progress)
+                {
+                  progress->Close();
+                  m_pDS->close();
+                  return;
+                }
+              }
             }
           }
 
@@ -7163,23 +7155,19 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
           if (overwrite || !CFile::Exists(nfoFile))
           {
-            if(xmlDoc.SaveFile(nfoFile))
-            {
-                bSkip = ExportSkipEntry(nfoFile);
-                if (!bSkip)
-                {
-                  if (progress)
-                  {
-                    progress->Close();
-                    m_pDS->close();
-                    return;
-                  }
-                }
-            }
-            else
+            if(!xmlDoc.SaveFile(nfoFile))
             {
               CLog::Log(LOGERROR, "%s: TVShow nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-              bSkip = true;
+              bSkip = ExportSkipEntry(nfoFile);
+              if (!bSkip)
+              {
+                if (progress)
+                {
+                  progress->Close();
+                  m_pDS->close();
+                  return;
+                }
+              }
             }
           }
 
@@ -7278,23 +7266,19 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
             if (overwrite || !CFile::Exists(nfoFile))
             {
-              if(xmlDoc.SaveFile(nfoFile))
-              {
-                  bSkip = ExportSkipEntry(nfoFile);
-                  if (!bSkip)
-                  {
-                    if (progress)
-                    {
-                      progress->Close();
-                      m_pDS->close();
-                      return;
-                    }
-                  }
-              }
-              else
+              if(!xmlDoc.SaveFile(nfoFile))
               {
                 CLog::Log(LOGERROR, "%s: Episode nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-                bSkip = true;
+                bSkip = ExportSkipEntry(nfoFile);
+                if (!bSkip)
+                {
+                  if (progress)
+                  {
+                    progress->Close();
+                    m_pDS->close();
+                    return;
+                  }
+                }
               }
             }
 
