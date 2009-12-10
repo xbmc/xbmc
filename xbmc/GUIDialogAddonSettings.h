@@ -23,9 +23,8 @@
  */
 
 #include "GUIDialogBoxBase.h"
-#include "settings/AddonSettings.h"
-
-struct SScraperInfo;
+#include "Addon.h"
+#include "URL.h"
 
 class CGUIDialogAddonSettings : public CGUIDialogBoxBase
 {
@@ -33,14 +32,10 @@ public:
   CGUIDialogAddonSettings(void);
   virtual ~CGUIDialogAddonSettings(void);
   virtual bool OnMessage(CGUIMessage& message);
-  static void ShowAndGetInput(ADDON::IAddon& addon);
+  static bool ShowAndGetInput(const ADDON::AddonPtr &addon);
+  bool IsConfirmed() { return !m_cancelled; }
   void SetHeading(const CStdString &strHeading);
   void SetAddon(const ADDON::AddonPtr& addon);
-  void SetSettings(CAddonSettings settings) { m_settings = settings; };
-  CAddonSettings GetSettings() { return m_settings; };
-
-protected:
- 	virtual void OnInitWindow();
 
 private:
   void CreateControls();
@@ -51,12 +46,13 @@ private:
 
   bool SaveSettings(void);
   bool ShowVirtualKeyboard(int iControl);
-  static CURL m_url;
   bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
   ADDON::AddonPtr m_addon;
-  CAddonSettings m_settings;
   CStdString m_strHeading;
+  std::map<int, CStdString> m_controls;
   std::map<CStdString,CStdString> m_buttonValues;
+  bool m_cancelled;
 };
 
 #endif
+

@@ -36,6 +36,7 @@
 #include "utils/log.h"
 #include "LocalizeStrings.h"
 #include "GUISettings.h"
+#include "Settings.h"
 #include "AddonManager.h"
 #include "utils/SingleLock.h"
 #include "XMLUtils.h"

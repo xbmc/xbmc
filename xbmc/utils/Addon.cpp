@@ -22,7 +22,6 @@
 #include "Application.h"
 #include "Addon.h"
 #include "Settings.h"
-#include "settings/AddonSettings.h"
 #include "FileSystem/Directory.h"
 #include "utils/log.h"
 #include "LocalizeStrings.h"
@@ -187,44 +186,6 @@ CAddon::CAddon(const CAddon &rhs)
   m_strLibName  = rhs.LibName();
   m_userSettingsPath = GetUserSettingsPath();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-CAddon::CAddon(const IAddon &rhs)
-  : m_type(rhs.Type())
-  , m_guid(StringUtils::CreateUUID())
-  , m_guid_parent(rhs.UUID())
-{
-  m_strPath     = rhs.Path();
-  m_strProfile  = GetProfilePath();
-  m_disabled    = false;
-  m_icon        = rhs.Icon();
-  m_stars       = rhs.Stars();
-  m_strVersion  = rhs.Version();
-  m_strName     = rhs.Name();
-  m_summary     = rhs.Summary();
-  m_strDesc     = rhs.Description();
-  m_disclaimer  = rhs.Disclaimer();
-  m_strLibName  = rhs.LibName();
-  m_userSettingsPath = GetUserSettingsPath();
-}
-
-
-
-
-
-
-
 
 AddonPtr CAddon::Clone() const
 {
@@ -458,55 +419,6 @@ CStdString CAddon::GetUserSettingsPath()
   CStdString path;
   CUtil::AddFileToFolder(Profile(), "settings.xml", path);
   return path;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void CAddon::LoadAddonStrings(const CURL &url)
-{
-  // Path where the addon resides
-  CStdString pathToAddon;
-  if (url.GetProtocol() == "plugin")
-  {
-    pathToAddon = "special://home/plugins/";
-    CUtil::AddFileToFolder(pathToAddon, url.GetHostName(), pathToAddon);
-    CUtil::AddFileToFolder(pathToAddon, url.GetFileName(), pathToAddon);
-  }
-  else
-    pathToAddon = url.Get();
-
-  // Path where the language strings reside
-  CStdString pathToLanguageFile = pathToAddon;
-  CStdString pathToFallbackLanguageFile = pathToAddon;
-  CUtil::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
-  CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "language", pathToFallbackLanguageFile);
-  CUtil::AddFileToFolder(pathToLanguageFile, g_guiSettings.GetString("locale.language"), pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "english", pathToFallbackLanguageFile);
-  CUtil::AddFileToFolder(pathToLanguageFile, "strings.xml", pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "strings.xml", pathToFallbackLanguageFile);
-
-  // Load language strings temporarily
-  g_localizeStringsTemp.Load(pathToLanguageFile, pathToFallbackLanguageFile);
-}
-
-void CAddon::ClearAddonStrings()
-{
-  // Unload temporary language strings
-  g_localizeStringsTemp.Clear();
 }
 
 } /* namespace ADDON */

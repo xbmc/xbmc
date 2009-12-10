@@ -51,7 +51,7 @@ namespace ADDON
     virtual void SaveSettings();
     virtual void SaveFromDefault();
     virtual CStdString GetSetting(const CStdString& key);
-//
+
     bool Create();
     void Destroy();
 
@@ -198,6 +198,7 @@ void CAddonDll<TheDll, TheStruct, Props>::Remove()
   /* Unload library file */
   try
   {
+    m_pDll->Remove();
     m_pDll->Unload();
   }
   catch (std::exception &e)
@@ -241,7 +242,7 @@ bool CAddonDll<TheDll, TheStruct, Props>::HasSettings()
 template<class TheDll, typename TheStruct, typename Props>
 bool CAddonDll<TheDll, TheStruct, Props>::LoadSettings()
 {
-//  if (!LoadDll())
+  if (!LoadDll())
     return false;
 //
 //  addon_settings_t settings = NULL;
@@ -277,7 +278,25 @@ bool CAddonDll<TheDll, TheStruct, Props>::LoadSettings()
 //  else
 //    return false;
 //
-//  return CAddon::LoadUserSettings();
+  CStdString addonFileName = Path();
+  CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
+  CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
+
+  if (!m_addonXmlDoc.LoadFile(addonFileName))
+  {
+    CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", addonFileName.c_str(), m_addonXmlDoc.ErrorRow(), m_addonXmlDoc.ErrorDesc());
+    return false;
+  }
+
+  // Make sure that the addon XML has the settings element
+  TiXmlElement *setting = m_addonXmlDoc.RootElement();
+  if (!setting || strcmpi(setting->Value(), "settings") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading Settings %s: cannot find root element 'settings'", addonFileName.c_str());
+    return false;
+  }
+
+  return CAddon::LoadUserSettings();
 }
 
 template<class TheDll, typename TheStruct, typename Props>

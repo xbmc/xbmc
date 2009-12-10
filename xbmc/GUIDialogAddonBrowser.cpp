@@ -34,6 +34,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "FileItem.h"
+#include "Settings.h"
 #include "ScraperSettings.h"
 #include "LocalizeStrings.h"
 
@@ -232,7 +233,7 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
     /* open up settings dialog */
     AddonPtr addon;
     if (CAddonMgr::Get()->GetAddon(m_type, pItem->GetProperty("Addon.UUID"), addon))
-      CGUIDialogAddonSettings::ShowAndGetInput(*addon);
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
 }
 
@@ -357,7 +358,7 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
   { // present addon settings dialog
     AddonPtr addon;
     if (CAddonMgr::Get()->GetAddon(m_type, pItem->GetProperty("Addon.UUID"), addon))
-      CGUIDialogAddonSettings::ShowAndGetInput(*addon);
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
     else
       return false;
     return true;

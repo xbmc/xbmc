@@ -22,7 +22,6 @@
 #include "Application.h"
 #include "AddonHelpers.h"
 #include "Settings.h"
-#include "settings/AddonSettings.h"
 #include "GUIWindowManager.h"
 #include "GUIInfoManager.h"
 #include "GUIDialogAddonSettings.h"
@@ -189,71 +188,9 @@ void CAddonUtils::OpenAddonSettings(void *addonData)
 //  }
 }
 
-void CAddonUtils::TransferAddonSettings(IAddon &addon)
-{
-  bool restart = false;
-  ADDON_STATUS reportStatus = STATUS_OK;
-
-  CLog::Log(LOGDEBUG, "Calling TransferAddonSettings for: %s", addon.Name().c_str());
-
-  /* Transmit current unified user settings to the PVR Addon */
-  ADDON::IAddonCallback* addonCB = CAddonMgr::Get()->GetCallbackForType(addon.Type());
-
-  CAddonSettings settings;
-  if (!settings.Load(addon))
-  {
-    CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s during transfer", addon.Name().c_str());
-    return;
-  }
-
-  TiXmlElement *setting = settings.GetAddonRoot()->FirstChildElement("setting");
-  while (setting)
-  {
-    ADDON_STATUS status;
-    const char *id = setting->Attribute("id");
-    const char *type = setting->Attribute("type");
-
-    if (type)
-    {
-      if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
-          strcmpi(type, "folder") == 0 || strcmpi(type, "action") == 0 ||
-          strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
-          strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
-          strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
-      {
-        status = addonCB->SetSetting(&addon, id, (const char*) settings.Get(id).c_str());
-      }
-      else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
-               strcmpi(type, "labelenum") == 0)
-      {
-        int tmp = atoi(settings.Get(id));
-        status = addonCB->SetSetting(&addon, id, (int*) &tmp);
-      }
-      else if (strcmpi(type, "bool") == 0)
-      {
-        bool tmp = settings.Get(id) == "true" ? true : false;
-        status = addonCB->SetSetting(&addon, id, (bool*) &tmp);
-      }
-      else
-      {
-        CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, addon.Name().c_str());
-      }
-
-      if (status == STATUS_NEED_RESTART)
-        restart = true;
-      else if (status != STATUS_OK)
-        reportStatus = status;
-    }
-    setting = setting->NextSiblingElement("setting");
-  }
-
-  if (restart || reportStatus != STATUS_OK)
-    new CAddonStatusHandler(&addon, restart ? STATUS_NEED_RESTART : reportStatus, "", true);
-}
-
 bool CAddonUtils::GetAddonSetting(void *addonData, const char* settingName, void *settingValue)
 {
-  const CAddon* addon = (CAddon*) addonData;
+  CAddon* addon = (CAddon*) addonData;
   if (addon == NULL || settingName == NULL || settingValue == NULL)
     return false;
 
@@ -261,15 +198,13 @@ bool CAddonUtils::GetAddonSetting(void *addonData, const char* settingName, void
   {
     CLog::Log(LOGDEBUG, "CAddonUtils: AddOn %s request Setting %s", addon->Name().c_str(), settingName);
 
-    /* TODO: Add a caching mechanism to prevent a reloading of settings file on every call */
-    CAddonSettings settings;
-    if (!settings.Load(*addon))
+    if (!addon->LoadSettings())
     {
       CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s", addon->Name().c_str());
       return false;
     }
 
-    TiXmlElement *setting = settings.GetAddonRoot()->FirstChildElement("setting");
+    TiXmlElement *setting = addon->GetSettingsXML()->FirstChildElement("setting");
     while (setting)
     {
       const char *id = setting->Attribute("id");
@@ -283,18 +218,18 @@ bool CAddonUtils::GetAddonSetting(void *addonData, const char* settingName, void
             strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
             strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
         {
-          strcpy((char*) settingValue, settings.Get(id).c_str());
+          strcpy((char*) settingValue, addon->GetSetting(id).c_str());
           return true;
         }
         else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
                  strcmpi(type, "labelenum") == 0)
         {
-          *(int*) settingValue = (int) atoi(settings.Get(id));
+          *(int*) settingValue = (int) atoi(addon->GetSetting(id));
           return true;
         }
         else if (strcmpi(type, "bool") == 0)
         {
-          *(bool*) settingValue = (bool) (settings.Get(id) == "true" ? true : false);
+          *(bool*) settingValue = (bool) (addon->GetSetting(id) == "true" ? true : false);
           return true;
         }
         else
@@ -435,19 +370,10 @@ char* CAddonUtils::GetLocalizedString(const void* addonData, long dwCode)
   {
     const CAddon* addon = (CAddon*) addonData;
 
-    // Load language strings temporarily
-    CURL cUrl(addon->Path());
-    CAddon::LoadAddonStrings(cUrl);
-
     if (dwCode >= 30000 && dwCode <= 30999)
-      string = g_localizeStringsTemp.Get(dwCode).c_str();
-    else if (dwCode >= 32000 && dwCode <= 32999)
-      string = g_localizeStringsTemp.Get(dwCode).c_str();
+      string = addon->GetString(dwCode).c_str();
     else
       string = g_localizeStrings.Get(dwCode).c_str();
-
-    // Unload temporary language strings
-    CAddon::ClearAddonStrings();
   }
   else
     string = "";

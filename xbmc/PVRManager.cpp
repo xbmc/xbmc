@@ -25,7 +25,6 @@
 #include "GUIWindowTV.h"
 #include "GUIWindowManager.h"
 #include "utils/GUIInfoManager.h"
-#include "settings/AddonSettings.h"
 #include "PVRManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
@@ -36,6 +35,7 @@
 #include "StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "MusicInfoTag.h"
+#include "Settings.h"
 
 /* GUI Messages includes */
 #include "GUIDialogOK.h"
@@ -652,33 +652,33 @@ bool CPVRManager::RequestRestart(const IAddon* addon, bool datachanged)
 
   CLog::Log(LOGINFO, "PVR: requested restart of clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
   CLIENTMAPITR itr = m_clients.begin();
-//  while (itr != m_clients.end())
-//  {
-//    if (m_clients[(*itr).first]->UUID() == addon->UUID())
-//    {
-//      if (m_clients[(*itr).first]->Name() == addon->Name())
-//      {
-//        CLog::Log(LOGINFO, "PVR: restarting clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
-//        StopThread();
-//        if (m_clients[(*itr).first]->ReInit())
-//        {
-//          /* Get TV Channels from Backends */
-//          PVRChannelsTV.Update();
-//
-//          /* Get Radio Channels from Backends */
-//          PVRChannelsRadio.Update();
-//
-//          /* Get Timers from Backends */
-//          PVRTimers.Update();
-//
-//          /* Get Recordings from Backend */
-//          PVRRecordings.Update();
-//        }
-//        Create();
-//      }
-//    }
-//    itr++;
-//  }
+  while (itr != m_clients.end())
+  {
+    if (m_clients[(*itr).first]->UUID() == addon->UUID())
+    {
+      if (m_clients[(*itr).first]->Name() == addon->Name())
+      {
+        CLog::Log(LOGINFO, "PVR: restarting clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
+        StopThread();
+        if (m_clients[(*itr).first]->ReCreate())
+        {
+          /* Get TV Channels from Backends */
+          PVRChannelsTV.Update();
+
+          /* Get Radio Channels from Backends */
+          PVRChannelsRadio.Update();
+
+          /* Get Timers from Backends */
+          PVRTimers.Update();
+
+          /* Get Recordings from Backend */
+          PVRRecordings.Update();
+        }
+        Create();
+      }
+    }
+    itr++;
+  }
   return true;
 }
 
@@ -692,22 +692,40 @@ bool CPVRManager::RequestRemoval(const IAddon* addon)
   if (!addon)
     return false;
 
-//  CLog::Log(LOGINFO, "PVR: requested removal of clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
-//  CLIENTMAPITR itr = m_clients.begin();
-//  while (itr != m_clients.end())
-//  {
-//    if (m_clients[(*itr).first]->UUID() == addon->UUID())
-//    {
-//      if (m_clients[(*itr).first]->Name() == addon->Name())
-//      {
-//        CLog::Log(LOGINFO, "PVR: removing clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
-//        m_clients[(*itr).first]->Remove();
-//        m_clients.erase((*itr).first);
-//        return true;
-//      }
-//    }
-//    itr++;
-//  }
+  CLog::Log(LOGINFO, "PVR: requested removal of clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
+  CLIENTMAPITR itr = m_clients.begin();
+  while (itr != m_clients.end())
+  {
+    if (m_clients[(*itr).first]->UUID() == addon->UUID())
+    {
+      if (m_clients[(*itr).first]->Name() == addon->Name())
+      {
+        CLog::Log(LOGINFO, "PVR: removing clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
+        StopThread();
+
+        m_clients[(*itr).first]->Destroy();
+        m_clients.erase((*itr).first);
+        if (!m_clients.empty())
+        {
+          /* Get TV Channels from Backends */
+          PVRChannelsTV.Update();
+
+          /* Get Radio Channels from Backends */
+          PVRChannelsRadio.Update();
+
+          /* Get Timers from Backends */
+          PVRTimers.Update();
+
+          /* Get Recordings from Backend */
+          PVRRecordings.Update();
+
+          Create();
+        }
+        return true;
+      }
+    }
+    itr++;
+  }
 
   return false;
 }

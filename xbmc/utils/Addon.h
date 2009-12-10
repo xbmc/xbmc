@@ -43,18 +43,6 @@ public:
   virtual ~CAddon() {}
   virtual AddonPtr Clone() const;
 
-
-  CAddon(const IAddon&);
-  virtual void Remove() {};
-  virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue) { return STATUS_UNKNOWN; };
-
-  /* Add-on language functions */
-  static void LoadAddonStrings(const CURL &url);
-  static void ClearAddonStrings();
-
-
-
-
   // settings & language
   virtual bool HasSettings();
   virtual bool LoadSettings();

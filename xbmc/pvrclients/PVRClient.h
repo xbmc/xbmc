@@ -42,11 +42,11 @@ public:
   ~CPVRClient();
 
   bool Create(long clientID, IPVRClientCallback *pvrCB);
+  void Destroy();
+  bool ReCreate();
 
   /* DLL related */
-  void DeInit();
   bool ReadyToUse() { return m_ReadyToUse; }
-  virtual ADDON_STATUS GetStatus();
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
 
   /* Server */

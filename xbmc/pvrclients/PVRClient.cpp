@@ -102,40 +102,33 @@ bool CPVRClient::Create(long clientID, IPVRClientCallback *pvrCB)
   return m_ReadyToUse;
 }
 
-void CPVRClient::DeInit()
+void CPVRClient::Destroy()
 {
-//  /* tell the AddOn to disconnect and prepare for destruction */
-//  try
-//  {
-//    CLog::Log(LOGDEBUG, "PVR: %s/%s - Destroying PVR-Client AddOn", Name().c_str(), m_hostName.c_str());
-//    m_ReadyToUse = false;
-//
-//    /* Tell the client to destroy */
-//    m_pDll->Destroy();
-//
-//    /* Release Callback table in memory */
-//    delete m_callbacks;
-//    m_callbacks = NULL;
-//  }
-//  catch (std::exception &e)
-//  {
-//    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during destruction of AddOn occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
-//  }
+  /* tell the AddOn to disconnect and prepare for destruction */
+  try
+  {
+    CLog::Log(LOGDEBUG, "PVR: %s/%s - Destroying PVR-Client AddOn", Name().c_str(), m_hostName.c_str());
+    m_ReadyToUse = false;
+
+    /* Tell the client to destroy */
+    CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>::Remove();
+
+    /* Release Callback table in memory */
+    delete m_callbacks;
+    m_callbacks = NULL;
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during destruction of AddOn occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
+  }
 }
 
-ADDON_STATUS CPVRClient::GetStatus()
+bool CPVRClient::ReCreate()
 {
-//  CSingleLock lock(m_critSection);
-//
-//  try
-//  {
-//    return m_pDll->GetStatus();
-//  }
-//  catch (std::exception &e)
-//  {
-//    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetStatus occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
-//  }
-  return STATUS_UNKNOWN;
+  long clientID = m_pInfo->clientID;
+  IPVRClientCallback *pvrCB = m_manager;
+  Destroy();
+  return Create(clientID, pvrCB);
 }
 
 long CPVRClient::GetID()
