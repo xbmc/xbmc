@@ -310,9 +310,9 @@ void t_init(struct usplash_theme *theme) {
 	theme->progressbar_background = 0;
 	theme->progressbar_foreground = 243;
 	theme->text_background        = 0;
-	theme->text_foreground        = 243;
-	theme->text_success           = 243;
-	theme->text_failure           = 243;
+	theme->text_foreground        = 75;
+	theme->text_success           = 65;
+	theme->text_failure           = 80;
 }
 
 /******
