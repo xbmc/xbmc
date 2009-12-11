@@ -7,8 +7,8 @@ set -e
 if [ "$1" = "purge" ]; then
 	SUDOERS_TEMPFILE=$(mktemp -q)
 
-	# Add xbmc to the sudoers file (if not already done)
-	if ! grep -i -q XBMC-specific /etc/sudoers ; then 
+	# Remove xbmc specific entries from /etc/sudoers
+	if grep -i -q XBMC-specific /etc/sudoers ; then
 		cat /etc/sudoers > $SUDOERS_TEMPFILE
 
 		sed -i -e "/XBMC/d" $SUDOERS_TEMPFILE
@@ -23,6 +23,9 @@ if [ "$1" = "purge" ]; then
 			echo "Please edit /etc/sudoers using 'visudo' and remove the lines with 'XBMC'"
 		fi
 	fi
+
+	# Remove XBMC sudoers files
+	rm $SUDOERS_TEMPFILE
 
 	POLKIT_ACTIONS="org.freedesktop.hal.dockstation.undock
 		org.freedesktop.hal.wol.enabled
