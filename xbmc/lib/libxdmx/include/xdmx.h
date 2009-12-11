@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <stdint.h>
 #include <string>
 
 #if defined(WIN32)
