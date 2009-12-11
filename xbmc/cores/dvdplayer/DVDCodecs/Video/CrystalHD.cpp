@@ -623,24 +623,6 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
             // copy uv
             fast_memcpy(uv_buffer_ptr, procOut.UVbuff, m_uv_buffer_size);
             
-            /*
-            unsigned char *u_buffer_ptr = (BYTE*)(y_buffer_ptr + m_y_buffer_size);
-            unsigned char *v_buffer_ptr = (BYTE*)(u_buffer_ptr + m_uv_buffer_size/2);
-
-            // copy y
-            fast_memcpy(y_buffer_ptr, procOut.Ybuff, m_y_buffer_size);
-            // copy uv packed into u and v planes
-            int index;
-            unsigned char *src = procOut.UVbuff;
-            unsigned char *dst_u = u_buffer_ptr;
-            unsigned char *dst_v = v_buffer_ptr;
-            for(index = 0; index < m_uv_buffer_size/2; index++ )
-            {
-              *dst_u++ = *src++;
-              *dst_v++ = *src++;
-            }
-            */
-
             got_picture = true;
           }
           else

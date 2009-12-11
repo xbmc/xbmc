@@ -59,7 +59,7 @@ void XLCDproc::Initialize()
   ILCD::Initialize();
 
   struct hostent *server;
-  server = gethostbyname("localhost");
+  server = gethostbyname(g_advancedSettings.m_lcdHostName);
   if (server == NULL)
   {
      CLog::Log(LOGERROR, "XLCDproc::%s - Unable to resolve LCDd host.", __FUNCTION__);

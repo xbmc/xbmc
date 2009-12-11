@@ -132,9 +132,12 @@ $(PYWRAP): $(PYWRAP:.o=.c)
 	 $(CC) -fPIC -o $@ -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -c $<
 
 $(PYWRAPDEF): $(PYWRAPDEF:.def=.c)
-	(echo -n "-Wl"; grep PYTHON_WRAP wrapper_python.c | grep -v define | \
-		awk -F ')' '{print $$1}' | awk -F'(' '{print $$2}' | grep -v '^l*stat$$' | \
-		awk '{printf(",-wrap,%s",$$0);}') > wrapper_python.def
+	LD_OPTS=$$(for func in $$(grep PYTHON_WRAP wrapper_python.c | \
+	    grep -v define | awk -F ')' '{print $$1}' | \
+	    awk -F'(' '{print $$2}' | grep -v '^l*stat$$' | \
+	    awk '{printf("%s ",$$0);}'); \
+	    do echo -n "-Wl,-wrap,$$func "; done); \
+	    echo -n $$LD_OPTS > $@
 
 endif
 

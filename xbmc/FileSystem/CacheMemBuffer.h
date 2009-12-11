@@ -24,6 +24,7 @@
 
 #include "CacheStrategy.h"
 #include "utils/CriticalSection.h"
+#include "utils/Event.h"
 #include "RingBuffer.h"
 
 /**
@@ -53,6 +54,7 @@ protected:
     CRingBuffer m_HistoryBuffer;
     CRingBuffer m_forwardBuffer; // for seek cases, to store data already read
     CCriticalSection m_sync;
+    CEvent m_written;
 };
 
 } // namespace XFILE

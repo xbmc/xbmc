@@ -408,14 +408,6 @@ void CGUISettings::Initialize()
   // hidden masterlock settings
   AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT);
 
-  //AddCategory(4, "autorun", 447);
-  AddBool(1, "autorun.dvd", 240, true);
-  AddBool(2, "autorun.vcd", 241, true);
-  AddBool(3, "autorun.cdda", 242, true);
-  AddBool(5, "autorun.video", 244, true);
-  AddBool(6, "autorun.music", 245, true);
-  AddBool(7, "autorun.pictures", 246, true);
-
   AddCategory(4, "cache", 439);
   AddInt(0, "cache.harddisk", 14025, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
   AddSeparator(0, "cache.sep1");
@@ -638,7 +630,7 @@ void CGUISettings::Initialize()
   AddBool(4, "screensaver.usedimonpause", 22014, true);
   AddSeparator(5, "screensaver.sep1");
   AddInt(6, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddPath(7, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddPath(7, "screensaver.slideshowpath", 774, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddSeparator(8, "screensaver.sep2");
   AddString(9, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
 

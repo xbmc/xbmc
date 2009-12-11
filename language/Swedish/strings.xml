@@ -8,7 +8,7 @@
   <string id="0">Program</string>
   <string id="1">Bilder</string>
   <string id="2">Musik</string>
-  <string id="3">Filmer</string>
+  <string id="3">Videor</string>
   <string id="4">TV-guide</string>
   <string id="5">Inställningar</string>
   <string id="7">Filhanterare</string>
@@ -64,7 +64,7 @@
   <string id="122">Bekräfta radering?</string>
   <string id="123">Kopiera filerna?</string>
   <string id="124">Flytta filerna?</string>
-  <string id="125">Radera filerna? - Radera filerna kan inte ångras!</string>
+  <string id="125">Radera filerna? - Radering av filer kan inte ångras!</string>
   <string id="126">Status</string>
   <string id="127">Objekt</string>
   <string id="128">Allmänt</string>
@@ -123,7 +123,7 @@
   <string id="186">OK</string>
   <string id="187">Inga album hittades!</string>
   <string id="188">Välj alla</string>
-  <string id="189">Skannar mediainfo</string>
+  <string id="189">Skannar mediainformation</string>
   <string id="190">Spara</string>
   <string id="191">Blanda</string>
   <string id="192">Rensa</string>
@@ -389,7 +389,7 @@
   <string id="489">Spela kommande låt automatiskt</string>
   <string id="491">- Använd stora ikoner</string>
   <string id="492">Förstora VOB-undertexter</string>
-  <string id="493">Avancerade val (Bara Experter!)</string>
+  <string id="493">Avancerade val (bara för experter!)</string>
   <string id="494">Totalt ljudutrymme (dB)</string>
   <string id="495">Sampla upp video till GUI-upplösning</string>
   <string id="496">Kalibrering</string>
@@ -560,7 +560,7 @@
   <string id="728">FTP-server</string>
   <string id="729">Tidsserver</string>
   <string id="730">- Port</string>
-  <string id="731">Tidsserver-adress</string>
+  <string id="731">Tidsserverns adress</string>
   <string id="732">Spara &amp; ange</string>
   <string id="733">- Lösenord</string>
   <string id="734">Inget lösenord</string>
@@ -618,15 +618,15 @@
   <string id="789">Trådlöst nätverksnamn (ESSID)</string>
   <string id="791">Tillåt program på detta system att kontrollera XBMC</string>
   <string id="792">Port</string>
-  <string id="793">Portområde</string>
+  <string id="793">Portintervall</string>
   <string id="794">Tillåt program på andra system att kontrollera XBMC</string>
   <string id="795">Begynnande repetitionsfördröjning (ms)</string>
   <string id="796">Kontinuerligt repititionsfördröjning (ms)</string>
   <string id="797">Maximalt antal klienter</string>
   <string id="798">Internetaccess</string>
   <string id="850">Ogiltigt portnummer angivet</string>
-  <string id="851">Giltigt portområde är 1-65535</string>
-  <string id="852">Giltigt portområde är 1024-65535</string>
+  <string id="851">Giltigt portintervall är 1-65535</string>
+  <string id="852">Giltigt portintervall är 1024-65535</string>
   <string id="1000">Förhandsgranska skärmsläckare</string>
   <string id="1001">Kunde inte ansluta</string>
   <string id="1002">XBMC kunde inte ansluta till nätverksplatsen.</string>
@@ -801,7 +801,7 @@
   <string id="12004">Skript/Info</string>
   <string id="12005">Fullskärmsvideo</string>
   <string id="12006">Ljud visualisering</string>
-  <string id="12008">Filstaplingsdialog</string>
+  <string id="12008">Filsammanslagningsdialog</string>
   <string id="12009">Återuppbygg index...</string>
   <string id="12010">Återgå till Musik</string>
   <string id="12011">Återgå till Filmer</string>
@@ -865,7 +865,7 @@
   <string id="12376">Använd som standard för alla filmer</string>
   <string id="12377">Detta kommer att ta bort alla tidigare sparade värden</string>
   <string id="12378">Tid att visa varje bild</string>
-  <string id="12379">Använd Pan- och Zoomeffekter</string>
+  <string id="12379">Använd pan- och zoomeffekter</string>
   <string id="12380">Spela NTSC-filmer i PAL</string>
   <string id="12381">Spela PAL-filmer i NTSC</string>
   <string id="12382">Spela NTSC-filmer i PAL60</string>
@@ -905,7 +905,7 @@
   <string id="13025">Joystick borttagen</string>
   <string id="13100">Fladderfilter</string>
   <string id="13101">Låt drivrutinen välja (kräver omstart)</string>
-  <string id="13105">Vertikal blanknings-synk</string>
+  <string id="13105">Vertikal blankningssynk</string>
   <string id="13106">Inaktiverad</string>
   <string id="13107">Aktiverad under videouppspelning</string>
   <string id="13108">Alltid aktiverad</string>
@@ -932,7 +932,7 @@
   <string id="13144">Ändra Apple-fjärrläge?</string>
   <string id="13145">Om du för närvarande använder Apple-fjärr för att kontrollera</string>
   <string id="13146">XBMC, ändra denna inställning kan påverka din möjlighet</string>
-  <string id="13147">till fortsatt kontroll av det. Vill du fortsätta?</string>
+  <string id="13147">för fortsatt kontroll av XBMC. Vill du fortsätta?</string>
   <string id="13150">HDD nyckel:</string>
   <string id="13151">HDD temp:</string>
   <string id="13152">DVD modell:</string>
@@ -1064,7 +1064,7 @@
   <string id="13361">Aktivera röst</string>
   <string id="13375">Aktivera enhet</string>
   <string id="13376">Volym</string>
-  <string id="13377">Förvalt vy-läge</string>
+  <string id="13377">Förvalt vyläge</string>
   <string id="13378">Förvald ljusstyrka</string>
   <string id="13379">Förvald kontrast</string>
   <string id="13380">Förvald gamma</string>
@@ -1082,8 +1082,8 @@
   <string id="13392">Använd visualisering vid musikuppspelning</string>
   <string id="13393">Beräkna storlek</string>
   <string id="13394">Beräknar mappstorlek</string>
-  <string id="13395">Grafik-inställningar</string>
-  <string id="13396">Ljud- och text-inställningar</string>
+  <string id="13395">Grafikinställningar</string>
+  <string id="13396">Ljud- och textinställningar</string>
   <string id="13397">Aktivera undertexter</string>
   <string id="13398">Genvägar</string>
   <string id="13399">Ignorera "tokens" vid sortering (ex: "the")</string>
@@ -1100,7 +1100,7 @@
   <string id="13410">Ställ in på Last.fm</string>
   <string id="13411">Minsta fläkthastighet</string>
   <string id="13413">Laddar ner</string>
-  <string id="13414">Dölj artister som endast är med på samlingar</string>
+  <string id="13414">Inkludera artister som endast är med på samlingsalbum</string>
   <string id="13415">Renderingsmetod</string>
   <string id="13416">Autodetektera</string>
   <string id="13417">Grundläggande shaders (ARB)</string>
@@ -1122,7 +1122,7 @@
   <string id="13508">Hög</string>
   <string id="13509">Riktigt hög (långsam!)</string>
   <string id="13510">Synkronisera uppspelning till display</string>
-  <string id="13600">Apple-fjärrkontroll</string>
+  <string id="13600">Apple fjärrkontroll</string>
   <string id="13602">Tillåt start av XBMC med fjärrkontroll</string>
   <string id="13603">Sekvensfördröjningstid</string>
   <string id="13610">Inaktiverad</string>
@@ -1131,8 +1131,8 @@
   <string id="13613">Multifjärr (Harmony)</string>
   <string id="13620">Apple fjärrkontrollsfel</string>
   <string id="13621">Apple fjärrkontroll kunde inte aktiveras.</string>
-  <string id="14000">Stapling</string>
-  <string id="14001">Stapling: Av</string>
+  <string id="14000">Slå samman</string>
+  <string id="14001">Slå samman: Av</string>
   <string id="14003">Laddar ner spellista...</string>
   <string id="14004">Laddar ner strömlista...</string>
   <string id="14005">Bearbetar strömlista...</string>
@@ -1413,7 +1413,7 @@
   <string id="20048">Starta med nya inställningar</string>
   <string id="20049">Bästa möjliga</string>
   <string id="20050">Autoväxling mellan 16x9 och 4x3</string>
-  <string id="20051">Behandla staplade filer som en enda</string>
+  <string id="20051">Behandla sammmanslagna filer som en enda</string>
   <string id="20052">Varning</string>
   <string id="20053">Lämnade huvudläge</string>
   <string id="20054">Gick in i huvudläge</string>
@@ -1551,7 +1551,7 @@
   <string id="20188">Tar backup av BIOS</string>
   <string id="20189">Aktivera automatisk rullning för handling &amp; recension</string>
   <string id="20190">Egen</string>
-  <string id="20191">Aktivera debug-loggning</string>
+  <string id="20191">Aktivera debugloggning</string>
   <string id="20192">Hämta tilläggsinformation under uppdateringar</string>
   <string id="20194">Standardskrapa för musikinformation</string>
   <string id="20195">Byt skrapa</string>
@@ -1562,8 +1562,8 @@
   <string id="20250">Festa på! (filmer)</string>
   <string id="20251">Blandar drinkar (filmer)</string>
   <string id="20252">Fyller glasen (filmer)</string>
-  <string id="20300">Webbserver-mapp (HTTP)</string>
-  <string id="20301">Webbserver-mapp (HTTPS)</string>
+  <string id="20300">Webbservermapp (HTTP)</string>
+  <string id="20301">Webbservermapp (HTTPS)</string>
   <string id="20302">Kunde inte skriva till mapp:</string>
   <string id="20303">Vill du hoppa över och fortsätta?</string>
   <string id="20304">RSS-flöde</string>
@@ -1634,7 +1634,7 @@
   <string id="20371">Sätt säsongsminiatyr</string>
   <string id="20372">Säsongsbild</string>
   <string id="20373">Säsong</string>
-  <string id="20374">Hämtar Film-information</string>
+  <string id="20374">Hämtar filminformation</string>
   <string id="20375">Oassocierat innehåll</string>
   <string id="20377">Uppdatera TV-serieinformation</string>
   <string id="20378">Uppdatera alla avsnitt?</string>
@@ -1666,7 +1666,7 @@
   <string id="20405">Ta bort avsnittsbokmärke</string>
   <string id="20406">Lägg till avsnittsbokmärke</string>
   <string id="20407">Skrape-inställningar</string>
-  <string id="20408">Hämtar musikvideo-information</string>
+  <string id="20408">Hämtar musikvideoinformation</string>
   <string id="20409">Hämtar TV-serieinformation</string>
   <string id="20410">Trailer</string>
   <string id="20411">Lägg ihop</string>
@@ -1705,14 +1705,14 @@
   <string id="20445">Fanart</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
-  <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
+  <string id="21332">VARNING: Vald TuxBox-enhet är i inspelningsläge!</string>
   <string id="21333">Strömmen kommer att stoppas!</string>
   <string id="21334">Byte till kanal: %s misslyckades!</string>
   <string id="21335">Är du säker att du vill starta strömmen?</string>
   <string id="21336">Ansluter till: %s</string>
-  <string id="21337">TuxBox enhet</string>
+  <string id="21337">TuxBox-enhet</string>
   <string id="21359">Lägg till mediautdelning...</string>
-  <string id="21360">Dela film- och musik-bibliotek genom UPnP</string>
+  <string id="21360">Dela film- och musikbibliotek genom UPnP</string>
   <string id="21364">Redigera mediautdelning</string>
   <string id="21365">Ta bort mediautdelning</string>
   <string id="21366">Undertextsmapp</string>
@@ -1738,14 +1738,14 @@
   <string id="21387">Snabb</string>
   <string id="21388">Tyst</string>
   <string id="21389">Aktivera egen bakgrund</string>
-  <string id="21390">Strömbesparingshantering</string>
+  <string id="21390">Energibesparingshantering</string>
   <string id="21391">Hög strömförbrukning</string>
   <string id="21392">Låg strömförbrukning</string>
   <string id="21393">Hög standby</string>
   <string id="21394">Låg standby</string>
   <string id="21395">Kan inte buffra filer större än 4GB</string>
   <string id="21396">Kapitel</string>
-  <string id="21397">Högkvalitets pixel shader v2</string>
+  <string id="21397">Högkvalitets pixelshader v2</string>
   <string id="21398">Aktivera spellista vid start</string>
   <string id="21399">Använd elastiska animeringar</string>
   <string id="21400">innehåller</string>
@@ -1764,11 +1764,11 @@
   <string id="21413">Standard filmskrapa</string>
   <string id="21414">Standard TV-serieskrapa</string>
   <string id="21415">Standard musikvideoskrapa</string>
-  <string id="21416">Aktivera återfall baserat på skrap-språk</string>
+  <string id="21416">Aktivera återfall baserat på skrapspråk</string>
   <string id="21417">- Inställningar</string>
   <string id="21418">Flerspråkig</string>
   <string id="21420">Värde att matcha</string>
-  <string id="21421">Smart spellisteregel</string>
+  <string id="21421">Smart spellistregel</string>
   <string id="21422">Matcha objekt som</string>
   <string id="21423">Ny regel...</string>
   <string id="21424">Objekt måste matcha</string>
@@ -1788,7 +1788,7 @@
   <string id="21438">%c disk</string>
   <string id="21439">Redigera partyläges-regler</string>
   <string id="21440">Hemmapp</string>
-  <string id="21441">Visade-räkning</string>
+  <string id="21441">Visad-räkning</string>
   <string id="21442">Avsnittstitel</string>
   <string id="21443">Videoupplösning</string>
   <string id="21444">Ljudkanaler</string>
@@ -1811,7 +1811,7 @@
   <string id="21822">Kameramärke</string>
   <string id="21823">Kameramodell</string>
   <string id="21824">Exif kommentar</string>
-  <string id="21825">Fast program</string>
+  <string id="21825">Hårdvaruprogram</string>
   <string id="21826">Bländare</string>
   <string id="21827">Brännvidd</string>
   <string id="21828">Fokuseringsavstånd</string>
@@ -1838,7 +1838,7 @@
   <string id="21865">Speciella instruktioner</string>
   <string id="21866">Kategori</string>
   <string id="21867">Upphovsman</string>
-  <string id="21868">Upphovmanstitel</string>
+  <string id="21868">Titel på upphovman</string>
   <string id="21869">Förtjänst</string>
   <string id="21870">Källa</string>
   <string id="21871">Upphovsrättsnotering</string>
@@ -1920,7 +1920,7 @@
   <string id="29800">Biblioteksläge</string>
   <string id="29801">QWERTY-tangentbord</string>
   <string id="29802">Ljudgenomströmning används</string>
-  <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
+  <string id="29999">Aktivera fladderfilterinställning till spel</string>
   <string id="30011">Söklängd</string>
   <string id="33001">Trailerkvalitet</string>
   <string id="33002">Strömma</string>
@@ -1934,7 +1934,7 @@
   <string id="33010">Ange nedladdningsmapp</string>
   <string id="33012">Kort</string>
   <string id="33013">Lång</string>
-  <string id="33014">Använd DVD-spelare istället för den vaniga spelaren</string>
+  <string id="33014">Använd DVD-spelare istället för den vanliga spelaren</string>
   <string id="33015">Fråga om nedladdning innan uppspelning</string>
   <string id="33016">Klipp</string>
   <string id="33017">Starta om tillägg för att aktivera</string>
@@ -1990,7 +1990,7 @@
   <string id="33078">Nästa sida</string>
   <string id="33079">Älska</string>
   <string id="33080">Hata</string>
-  <string id="33081">Denna fil är ihoplagd, välj den del du vill spela.</string>
+  <string id="33081">Denna fil är sammanslagen, välj den del du vill spela.</string>
   <string id="33082">Sökväg till skript</string>
   <string id="33083">Aktivera egen skriptknapp</string>
 </strings>

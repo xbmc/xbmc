@@ -488,10 +488,10 @@ PLT_FileMediaServer::ExtractResourcePath(const NPT_HttpUrl& url, NPT_String& fil
     // Extract uri path from url
     NPT_String uri_path = url.GetPath();
     if (uri_path.StartsWith(m_FileBaseUri.GetPath(), true)) {
-        file_path = NPT_Uri::PercentDecode(uri_path.SubString(m_FileBaseUri.GetPath().GetLength()+1));
+        file_path = NPT_Uri::PercentDecode(uri_path.SubString(m_FileBaseUri.GetPath().GetLength()));
         return NPT_SUCCESS;
     } else if (uri_path.StartsWith(m_AlbumArtBaseUri.GetPath(), true)) {
-        file_path = NPT_Uri::PercentDecode(uri_path.SubString(m_AlbumArtBaseUri.GetPath().GetLength()+1));
+        file_path = NPT_Uri::PercentDecode(uri_path.SubString(m_AlbumArtBaseUri.GetPath().GetLength()));
         return NPT_SUCCESS;
     }
 

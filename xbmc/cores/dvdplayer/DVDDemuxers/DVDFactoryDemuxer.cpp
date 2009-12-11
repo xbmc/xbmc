@@ -63,6 +63,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
   }
 #endif
 
+/*
   // Try our internal TS demuxer
   std::string::size_type index = pInputStream->GetFileName().find_last_of ('.');
   std::string extension;
@@ -81,6 +82,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
     if(demuxer->Open(pInputStream, tsType))
       return demuxer.release();
   }
+*/
 
   auto_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
   if(demuxer->Open(pInputStream))

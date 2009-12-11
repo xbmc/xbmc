@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: sjonnie33-->
-<!--Date of translation: 11/06/2009-->
+<!--Date of translation: 12/06/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 24172-->
 <strings>
   <string id="0">Programma's</string>
   <string id="1">Afbeeldingen</string>
@@ -639,6 +637,10 @@
   <string id="795">Initiële Herhalingsvertraging (ms)</string>
   <string id="796">Doorgaande herhalingsvertraging (ms)</string>
   <string id="797">Maximaal aantal clients</string>
+  <string id="798">Internet toegang</string>
+  <string id="850">Ongeldige poort nummer ingevoerd</string>
+  <string id="851">Geldig poort bereik is 1-65535</string>
+  <string id="852">Geldig poort bereik is 1024-65535</string>
   <string id="1000">Test schermbeveiliging</string>
   <string id="1001">Verbinden niet mogelijk</string>
   <string id="1002">XBMC kon niet verbinden met de netwerk locatie.</string>
@@ -1122,6 +1124,7 @@
   <string id="13421">VDPAU</string>
   <string id="13422">Start diavoorstelling</string>
   <string id="13423">Herinner voor dit pad</string>
+  <string id="13424">Gebruik pixel buffer objecten</string>
   <string id="13500">A/V sync methode</string>
   <string id="13501">Audio klok</string>
   <string id="13502">Video klok (Drop/Dupe audio)</string>
@@ -1217,6 +1220,20 @@
   <string id="14078">Skinkleuren</string>
   <string id="14079">Tijdzone Land</string>
   <string id="14080">Tijdzone</string>
+  <string id="14081">Bestand lijsten</string>
+  <string id="14082">Gebruik EXIF afbeelding informatie</string>
+  <string id="14083">Gebruik een volledigscherm venster in plaats van een volledigscherm</string>
+  <string id="14084">Zet nummers in wachtrij na selectie</string>
+  <string id="14085">Speel geluids CD's automatisch af</string>
+  <string id="14086">Afspelen</string>
+  <string id="14087">DVD's</string>
+  <string id="14088">Speel DVD's automatisch af</string>
+  <string id="14089">Lettertype voor text ondertiteling</string>
+  <string id="14090">Internationaal</string>
+  <string id="14091">Tekenset</string>
+  <string id="14093">Beveiliging</string>
+  <string id="14094">Invoer apparaten</string>
+  <string id="14095">Energie beheer</string>
   <string id="15015">Verwijder</string>
   <string id="15016">Spellen</string>
   <string id="15019">Voeg toe</string>
@@ -1254,6 +1271,7 @@
   <string id="15218">Libre.fm gebruikersnaam</string>
   <string id="15219">Libre.fm wachtwoord</string>
   <string id="15220">Libre.fm</string>
+  <string id="15221">Nummer indienen</string>
   <string id="15250">Last.FM radio aan Last.FM toevoegen</string>
   <string id="15251">Verbinding maken met Last.FM...</string>
   <string id="15252">Station selecteren...</string>
@@ -1697,6 +1715,15 @@
   <string id="20434">Sets</string>
   <string id="20435">Zet filmset thumb</string>
   <string id="20436">Exporteer acteur thumbs</string>
+  <string id="20437">Kies fanart</string>
+  <string id="20438">Lokale fanart</string>
+  <string id="20439">Geen fanart</string>
+  <string id="20440">Huidige fanart</string>
+  <string id="20441">fanart op afstand</string>
+  <string id="20442">Verander inhoud</string>
+  <string id="20443">Wilt u info voor alles verversen</string>
+  <string id="20444">items binnen dit pad?</string>
+  <string id="20445">Fanart</string>
   <string id="21330">Verborgen bestanden en mappen weergeven</string>
   <string id="21331">TuxBox-client</string>
   <string id="21332">WAARSCHUWING: TuxBox is aan het opnemen.</string>
@@ -1894,6 +1921,7 @@
   <string id="22020">Gids</string>
   <string id="22021">Toegestane afwijking in beeldverhouding (%)</string>
   <string id="22022">Voeg video bestanden in lijsten</string>
+  <string id="22024">Direct3D versie</string>
   <string id="22030">Font</string>
   <string id="22031">- Grootte</string>
   <string id="22032">- Kleuren</string>
@@ -1911,6 +1939,8 @@
   <string id="23000">Weer plugin</string>
   <string id="23001">- Plugin instellingen</string>
   <string id="23050">Activeer Teletext</string>
+  <string id="23051">Stuk %i</string>
+  <string id="23052">Bufferen %i bytes</string>
   <string id="23100">Externe Player actief</string>
   <string id="23101">Klik op OK om de speler te beëindigen</string>
   <string id="23104">Klik op OK als afspelen beëindigd is</string>
@@ -1985,4 +2015,9 @@
   <string id="33076">Gelieve XBMC updaten.</string>
   <string id="33077">Geen data gevonden!</string>
   <string id="33078">Volgende pagina</string>
+  <string id="33079">Liefde</string>
+  <string id="33080">Haat</string>
+  <string id="33081">Dit bestand bestaat uit meer delen, selecteer het juiste gedeelte. </string>
+  <string id="33082">Pad naar script</string>
+  <string id="33083">Stel custom script knop in</string>
 </strings>

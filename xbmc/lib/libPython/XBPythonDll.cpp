@@ -41,6 +41,8 @@ extern "C"
   FUNCTION(PyEval_AcquireLock)
   FUNCTION(PyThreadState_Get)
   FUNCTION(PyRun_SimpleString)
+  FUNCTION(PyRun_SimpleStringFlags)
+  FUNCTION(PyRun_SimpleFileExFlags)
   FUNCTION(PyEval_InitThreads)
   FUNCTION(Py_Initialize)
   FUNCTION(Py_IsInitialized)
@@ -143,6 +145,8 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyEval_AcquireLock)) &&
       dll.ResolveExport(DLL_FUNCTION(PyThreadState_Get)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleString)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleStringFlags)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleFileExFlags)) &&
       dll.ResolveExport(DLL_FUNCTION(PyEval_InitThreads)) &&
       dll.ResolveExport(DLL_FUNCTION(Py_Initialize)) &&
       dll.ResolveExport(DLL_FUNCTION(Py_IsInitialized)) &&

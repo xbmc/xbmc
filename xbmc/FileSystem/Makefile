@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../ -I../cores -I../linux -I../../guilib -I../lib/UnrarXLib -I../utils -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include
+INCLUDES=-I. -I../ -I../cores -I../linux -I../../guilib -I../lib/UnrarXLib -I../utils -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I../lib
 INCLUDES+=-I../lib/libcdio/libcdio/include
 
 CXXFLAGS+=-D__STDC_FORMAT_MACROS \
@@ -77,7 +77,6 @@ SRCS=ASAPFileDirectory.cpp \
      SpecialProtocolDirectory.cpp \
      StackDirectory.cpp \
      UPnPDirectory.cpp \
-     UPnPVirtualPathDirectory.cpp \
      VideoDatabaseDirectory.cpp \
      VirtualDirectory.cpp \
      VirtualPathDirectory.cpp \

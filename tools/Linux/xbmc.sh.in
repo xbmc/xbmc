@@ -2,7 +2,7 @@
 
 function single_stacktrace()
 {
-  find $1 -maxdepth $2 -name core* -exec \
+  find $1 -maxdepth $2 -name 'core*' -exec \
       echo "=====>  Core file: {}" 2> /dev/null >> $FILE \; -exec \
       echo "        ========================================= " 2> /dev/null >> $FILE \; -exec \
       gdb /usr/share/xbmc/xbmc.bin --core={} --batch -ex "thread apply all bt" 2> /dev/null >> $FILE \; -exec \

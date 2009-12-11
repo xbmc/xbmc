@@ -27,7 +27,6 @@
 #include "utils/Network.h"
 #include "utils/log.h"
 #include "UPnP.h"
-#include "FileSystem/UPnPVirtualPathDirectory.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
 #include "MusicDatabase.h"
@@ -687,7 +686,26 @@ CUPnPServer::Build(CFileItemPtr                  item,
 
     CLog::Log(LOGDEBUG, "Preparing upnp object for item '%s'", (const char*)path);
 
-    if (!CUPnPVirtualPathDirectory::SplitPath(path, share_name, file_path)) {
+    if (path == "virtualpath://upnproot") {
+        path.TrimRight("/");
+        if (path.StartsWith("virtualpath://")) {
+            object = new PLT_MediaContainer;
+            object->m_Title = item->GetLabel();
+            object->m_ObjectClass.type = "object.container";
+            object->m_ObjectID = path;
+
+            // root
+            object->m_ObjectID = "0";
+            object->m_ParentID = "-1";
+            // root has 5 children
+            if (with_count) {
+                ((PLT_MediaContainer*)object)->m_ChildrenCount = 5;
+            }
+        } else {
+            goto failure;
+        }
+
+    } else {
         // db path handling
 
         file_path = item->m_strPath;
@@ -760,126 +778,6 @@ CUPnPServer::Build(CFileItemPtr                  item,
         if (object && parent_id) {
             object->m_ParentID = parent_id;
         }
-    } else {
-        // virtualpath:// handling
-
-        path.TrimRight("/");
-        if (file_path.GetLength()) {
-            // make sure the path starts with something that is shared given the share
-            if (!CUPnPVirtualPathDirectory::FindSourcePath(share_name, file_path, true)) goto failure;
-
-            // this is not a virtual directory
-            object = BuildObject(*item.get(), file_path, with_count, &context, this);
-            if (!object) goto failure;
-
-            // override object id & change the class if it's an item
-            // and it's not been set previously
-            if (object->m_ObjectClass.type == "object.item") {
-                if (share_name == "virtualpath://upnpmusic")
-                    object->m_ObjectClass.type = "object.item.audioitem";
-                else if (share_name == "virtualpath://upnpvideo")
-                    object->m_ObjectClass.type = "object.item.videoitem";
-                else if (share_name == "virtualpath://upnppictures")
-                    object->m_ObjectClass.type = "object.item.imageitem";
-            }
-
-            if (parent_id) {
-                object->m_ParentID = parent_id;
-            } else {
-                // populate parentid manually
-                if (CUPnPVirtualPathDirectory::FindSourcePath(share_name, file_path)) {
-                    // found the file_path as one of the path of the share
-                    // this means the parent id is the share
-                    object->m_ParentID = share_name;
-                } else {
-                    // we didn't find the path, find the parent path
-                    NPT_String parent_path = GetParentFolder(file_path);
-                    if (parent_path.IsEmpty()) goto failure;
-
-                    // try again with parent
-                    if (CUPnPVirtualPathDirectory::FindSourcePath(share_name, parent_path)) {
-                        // found the file_path parent folder as one of the path of the share
-                        // this means the parent id is the share
-                        object->m_ParentID = share_name;
-                    } else {
-                        object->m_ParentID = share_name + "/" + parent_path;
-                    }
-                }
-            }
-
-            // old style, needs virtual path prefix
-            if (!object->m_ObjectID.StartsWith("virtualpath://"))
-                object->m_ObjectID = share_name + "/" + object->m_ObjectID;
-
-        } else {
-            object = new PLT_MediaContainer;
-            object->m_Title = item->GetLabel();
-            object->m_ObjectClass.type = "object.container";
-            object->m_ObjectID = path;
-
-            if (path == "virtualpath://upnproot") {
-                // root
-                object->m_ObjectID = "0";
-                object->m_ParentID = "-1";
-                // root has 5 children
-                if (with_count) {
-                    ((PLT_MediaContainer*)object)->m_ChildrenCount = 5;
-                }
-            } else if (share_name.GetLength() == 0) {
-                // no share_name means it's virtualpath://X where X=music, video or pictures
-                object->m_ParentID = "0";
-                if (with_count || true) { // we can always count these, it's quick
-                    ((PLT_MediaContainer*)object)->m_ChildrenCount = 0;
-
-                    // look up number of shares
-                    VECSOURCES *shares = NULL;
-
-                    // use only shares that would some path with local files
-                    if (shares) {
-                        CUPnPVirtualPathDirectory dir;
-                        for (unsigned int i = 0; i < shares->size(); i++) {
-                            // Does this share contains any local paths?
-                            CMediaSource &share = shares->at(i);
-                            vector<CStdString> paths;
-
-                            // reconstruct share name as it could have been replaced by
-                            // a path if there was just one entry
-                            NPT_String share_name = path + "/";
-                            share_name += share.strName;
-                            if (dir.GetMatchingSource((const char*)share_name, share, paths) && paths.size()) {
-                                ((PLT_MediaContainer*)object)->m_ChildrenCount++;
-                            }
-                        }
-                    }
-                }
-            } else {
-                {
-                    // weird!
-                    goto failure;
-                }
-
-                if (with_count) {
-                    ((PLT_MediaContainer*)object)->m_ChildrenCount = 0;
-
-                    // get all the paths for a given share
-                    CMediaSource share;
-                    CUPnPVirtualPathDirectory dir;
-                    vector<CStdString> paths;
-                    if (1 || !dir.GetMatchingSource((const char*)share_name, share, paths)) goto failure;
-                    for (unsigned int i=0; i<paths.size(); i++) {
-                        // FIXME: this is not efficient, we only need the number of items given a mask
-                        // and not the list of items
-
-                        // retrieve all the files for a given path
-                        CFileItemList items;
-                        if (CDirectory::GetDirectory(paths[i], items, "")) {
-                            // update childcount
-                            ((PLT_MediaContainer*)object)->m_ChildrenCount += items.Size();
-                        }
-                    }
-                }
-            }
-        }
     }
 
     // remap Root virtualpath://upnproot/ to id "0"
@@ -944,7 +842,6 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
     NPT_Reference<PLT_MediaObject> object;
     NPT_String                     id = TranslateWMPObjectId(object_id);
     CMediaSource                   share;
-    CUPnPVirtualPathDirectory      dir;
     vector<CStdString>             paths;
     CFileItemPtr                   item;
 
@@ -958,33 +855,8 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
             item->SetLabel("Root");
             item->SetLabelPreformated(true);
             object = Build(item, true, context);
-        } else if (dir.GetMatchingSource((const char*)id, share, paths)) {
-            id += "/";
-            item.reset(new CFileItem((const char*)id, true));
-            item->SetLabel(share.strName);
-            item->SetLabelPreformated(true);
-            object = Build(item, true, context);
         } else {
-            NPT_String share_name, file_path;
-            if (!CUPnPVirtualPathDirectory::SplitPath(id, share_name, file_path))
-                return NPT_FAILURE;
-
-            NPT_String parent_path = GetParentFolder(file_path);
-            if (parent_path.IsEmpty()) return NPT_FAILURE;
-
-            NPT_FileInfo info;
-            NPT_CHECK(NPT_File::GetInfo(file_path, &info));
-
-            item.reset(new CFileItem((const char*)id, (info.m_Type==NPT_FileInfo::FILE_TYPE_DIRECTORY)?true:false));
-            item->SetLabel((const char*)file_path.SubString(parent_path.GetLength()+1));
-            item->SetLabelPreformated(true);
-
-            // get file size
-            if (info.m_Type == NPT_FileInfo::FILE_TYPE_REGULAR) {
-                item->m_dwSize = info.m_Size;
-            }
-
-            object = Build(item, true, context);
+            return NPT_FAILURE;
         }
     } else {
         // determine if it's a container by calling CDirectory::Exists
@@ -1051,9 +923,21 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
         // cache anything that takes more than a second to retrieve
         unsigned int time = CTimeUtils::GetTimeMS() + 1000;
 
-        if (parent_id.StartsWith("virtualpath://")) {
-            CUPnPVirtualPathDirectory dir;
-            dir.GetDirectory((const char*)parent_id, items);
+        if (parent_id.StartsWith("virtualpath://upnproot")) {
+            CFileItemPtr item;
+
+            // music library
+            item.reset(new CFileItem("musicdb://", true));
+            item->SetLabel("Music Library");
+            item->SetLabelPreformated(true);
+            items.Add(item);
+
+            // video library
+            item.reset(new CFileItem("videodb://", true));
+            item->SetLabel("Video Library");
+            item->SetLabelPreformated(true);
+            items.Add(item);
+          
         } else {
             CDirectory::GetDirectory((const char*)parent_id, items);
         }
