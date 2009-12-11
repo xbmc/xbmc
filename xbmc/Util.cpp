@@ -447,7 +447,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     strTitleAndYear = strTitle + " (" + strYear + ")";
 
   // restore extension if needed
-  if (g_guiSettings.GetBool("filelists.showextensions") && !bRemoveExtension)
+  if (!bRemoveExtension)
     strTitleAndYear += strExtension;
 }
 
