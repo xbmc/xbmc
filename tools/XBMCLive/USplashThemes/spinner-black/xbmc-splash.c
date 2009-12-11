@@ -302,11 +302,11 @@ void t_init(struct usplash_theme *theme) {
 	// set theme color indexes
 	theme->background             = 0;
 	theme->progressbar_background = 0;
-	theme->progressbar_foreground = 243;
+	theme->progressbar_foreground = 210;
 	theme->text_background        = 0;
-	theme->text_foreground        = 243;
-	theme->text_success           = 243;
-	theme->text_failure           = 243;
+	theme->text_foreground        = 200;
+	theme->text_success           = 205;
+	theme->text_failure           = 210;
 }
 
 /******
