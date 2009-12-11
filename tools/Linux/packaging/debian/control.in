@@ -48,6 +48,7 @@ Depends: xbmc-standalone (= ${binary:Version}),
          ${python:Depends},
          python-apt,
          adduser,
+         sudo,
          ${misc:Depends}
 Conflicts: kdm, gdm, xdm, wdm
 Description: XBMC Media Center (XBMC Live package)
@@ -135,6 +136,9 @@ Package: xbmc-bin
 Architecture: i386 amd64 powerpc ppc64 lpia
 Depends: #LIBCURL_DEPENDS#, ${shlibs:Depends},
          ${misc:Depends}
+Provides: xbmc-common
+Replaces: xbmc-common
+Conflicts: xbmc-common
 Description: XBMC Media Center (binary data package)
  XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
  open source software media-player and entertainment hub for all your digital
