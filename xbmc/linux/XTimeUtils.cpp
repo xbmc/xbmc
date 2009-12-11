@@ -98,7 +98,27 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
   if (IsLeapYear(lpSystemTime->wYear) && (sysTime.tm_yday > 58))
     sysTime.tm_yday++;
 
+#ifdef __APPLE__
+  // this solves a crash on startup; timegm seems not threadsafe
+  // http://www.opensubscriber.com/message/aolserver-sf@listserv.aol.com/4287726.html
+  // example is from man timegm
+  time_t t;
+  {
+    char *tz;
+
+    tz = getenv("TZ");
+    setenv("TZ", "", 1);
+    tzset();
+    t = mktime(&sysTime);
+    if (tz)
+      setenv("TZ", (const char*)&sysTime, 1);
+    else
+      unsetenv("TZ");
+    tzset();
+  }
+#else
   time_t t = timegm(&sysTime);
+#endif
 
   LARGE_INTEGER result;
   result.QuadPart = (long long) t * 10000000 + (long long) lpSystemTime->wMilliseconds * 10000;
