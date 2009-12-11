@@ -8,7 +8,7 @@ if [ "$1" = "purge" ]; then
 	SUDOERS_TEMPFILE=$(mktemp -q)
 
 	# Remove xbmc specific entries from /etc/sudoers
-	if grep -i -q XBMC-specific /etc/sudoers ; then
+	if test -r /etc/sudoers && grep -i -q XBMC-specific /etc/sudoers ; then
 		cat /etc/sudoers > $SUDOERS_TEMPFILE
 
 		sed -i -e "/XBMC/d" $SUDOERS_TEMPFILE
