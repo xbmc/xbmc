@@ -102,7 +102,7 @@
       <!-- Large Up	-->      <button id="81">PageUp</button>
       <!-- pwrToggle   -->   <button id="66">XBMC.ShutDown()</button>
       <!-- Queue	-->      <button id="62">Queue</button>
-      <!-- Sleep	-->      <button id="46">XBMC.SleepSystem()</button>
+      <!-- Sleep	-->      <button id="46">XBMC.Suspend()</button>
       <!-- Red		-->      <button id="83">CodecInfo</button>
       <!-- Green	-->      <button id="84">XBMC.ActivateWindow(Settings)</button>
       <!-- Yellow	-->      <button id="85">xbmc.ActivateWindow(SystemSettings)</button>
