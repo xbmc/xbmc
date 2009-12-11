@@ -6990,7 +6990,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
       if (CUtil::IsWritable(movie.m_strFileNameAndPath))
       {
-        if (singleFiles)
+        if (singleFiles && CFile::Exists(movie.m_strFileNameAndPath))
         {
           CStdString nfoFile;
           CFileItem item(movie.m_strFileNameAndPath,false);
@@ -7073,7 +7073,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
       if (CUtil::IsWritable(movie.m_strFileNameAndPath))
       {
-        if (singleFiles)
+        if (singleFiles && CFile::Exists(movie.m_strFileNameAndPath))
         {
           CStdString nfoFile;
           CFileItem item(movie.m_strFileNameAndPath,false);
@@ -7147,7 +7147,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
       if (CUtil::IsWritable(tvshow.m_strPath))
       {
-        if (singleFiles)
+        if (singleFiles && CDirectory::Exists(tvshow.m_strPath))
         {
           CStdString nfoFile;
           CFileItem item(tvshow.m_strPath,false);
@@ -7258,7 +7258,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
           // reset old skip state
           bool bSkip = false;
 
-          if (singleFiles)
+          if (singleFiles && CFile::Exists(episode.m_strFileNameAndPath))
           {
             CStdString nfoFile;
             CFileItem item(episode.m_strFileNameAndPath,false);

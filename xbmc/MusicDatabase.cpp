@@ -4180,7 +4180,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
       CStdString strPath;
       GetAlbumPath(album.idAlbum,strPath);
       album.Save(pMain, "album", strPath);
-      if (singleFiles)
+      if (singleFiles && CDirectory::Exists(strPath))
       {
         CStdString nfoFile;
         CUtil::AddFileToFolder(strPath, "album.nfo", nfoFile);
@@ -4243,7 +4243,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
       CStdString strPath;
       GetArtistPath(artist.idArtist,strPath);
       artist.Save(pMain, "artist", strPath);
-      if (singleFiles)
+      if (singleFiles && CDirectory::Exists(strPath))
       {
         CStdString nfoFile;
         CUtil::AddFileToFolder(strPath, "artist.nfo", nfoFile);
