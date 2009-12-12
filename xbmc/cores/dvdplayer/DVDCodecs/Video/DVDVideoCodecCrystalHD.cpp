@@ -144,7 +144,7 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
     codec_type = hints.codec;
     stream_type = BC_STREAM_TYPE_ES;
     
-    //m_insert_sps_pps = init_h264_mp4toannexb_filter(hints);
+    m_insert_sps_pps = init_h264_mp4toannexb_filter(hints);
 
     m_Device = new CCrystalHD();
     if (!m_Device)
@@ -188,10 +188,36 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
     // Handle Input
     if (pData)
     {
-      if (m_Device->AddInput(pData, iSize, pts))
-        pData = NULL;
+      if (m_insert_sps_pps)
+      {
+        uint8_t   *outbuf = NULL;
+        int       outbuf_size = 0;
+        
+        h264_mp4toannexb_filter(pData, iSize, &outbuf, &outbuf_size);
+        if (outbuf)
+        {
+          if (m_Device->AddInput(outbuf, outbuf_size, pts))
+          {
+            free(outbuf);
+            pData = NULL;
+          }
+          else
+          {
+            CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full", __MODULE_NAME__);
+          }
+        }
+        else
+        {
+            CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full", __MODULE_NAME__);
+        }
+      }
       else
-        CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full", __MODULE_NAME__);
+      {
+        if (m_Device->AddInput(pData, iSize, pts))
+          pData = NULL;
+        else
+          CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full", __MODULE_NAME__);
+      }
     }
     
     // Handle Output
@@ -335,7 +361,7 @@ void CDVDVideoCodecCrystalHD::alloc_and_copy(uint8_t **poutbuf,     int *poutbuf
   }
 }
 
-bool CDVDVideoCodecCrystalHD::prepend_sps_pps_data(BYTE* pData, int iSize)
+bool CDVDVideoCodecCrystalHD::h264_mp4toannexb_filter(BYTE* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size)
 {
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
@@ -343,8 +369,6 @@ bool CDVDVideoCodecCrystalHD::prepend_sps_pps_data(BYTE* pData, int iSize)
   
   uint8_t   *buf = pData;
   int       buf_size = iSize;
-  uint8_t   *poutbuf = NULL;
-  int       poutbuf_size = 0;
   uint8_t   unit_type;
   uint32_t  nal_size, cumul_size = 0;
 
@@ -363,13 +387,13 @@ bool CDVDVideoCodecCrystalHD::prepend_sps_pps_data(BYTE* pData, int iSize)
     // prepend only to the first type 5 NAL unit of an IDR picture
     if (m_sps_pps_context.first_idr && unit_type == 5)
     {
-      alloc_and_copy(&poutbuf, &poutbuf_size, 
+      alloc_and_copy(poutbuf, poutbuf_size, 
         m_sps_pps_context.sps_pps_data, m_sps_pps_context.size, buf, nal_size);
       m_sps_pps_context.first_idr = 0;
     }
     else
     {
-      alloc_and_copy(&poutbuf, &poutbuf_size, NULL, 0, buf, nal_size);
+      alloc_and_copy(poutbuf, poutbuf_size, NULL, 0, buf, nal_size);
       if (!m_sps_pps_context.first_idr && unit_type == 1)
           m_sps_pps_context.first_idr = 1;
     }

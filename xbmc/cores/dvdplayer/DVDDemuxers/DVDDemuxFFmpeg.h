@@ -101,9 +101,6 @@ public:
   bool Aborted();
 
   AVFormatContext* m_pFormatContext;
-#if defined(HAVE_LIBCRYSTALHD)
-  AVBitStreamFilterContext* m_pFilterContext;
-#endif
 
 protected:
   friend class CDemuxStreamAudioFFmpeg;
