@@ -618,11 +618,70 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
 
             unsigned char *y_buffer_ptr = (BYTE*)pBuffer->GetPtr();
             unsigned char *uv_buffer_ptr = (BYTE*)(y_buffer_ptr + m_y_buffer_size);
-            // copy y
-            fast_memcpy(y_buffer_ptr, procOut.Ybuff, m_y_buffer_size);
-            // copy uv
-            fast_memcpy(uv_buffer_ptr, procOut.UVbuff, m_uv_buffer_size);
             
+            switch(procOut.PicInfo.width)
+            {
+              case 720:
+              case 1280:
+              case 1920:
+              {
+                // copy y
+                fast_memcpy(y_buffer_ptr, procOut.Ybuff, m_y_buffer_size);
+                // copy uv
+                fast_memcpy(uv_buffer_ptr, procOut.UVbuff, m_uv_buffer_size);
+              }
+              break;
+              
+              // frame that are not equal in width to 720, 1280 or 1920
+              // need to be copied by a quantized stride.
+              default:
+              {
+                int w = procOut.PicInfo.width;
+                int h = procOut.PicInfo.height;
+                
+                if (w < 720)
+                {
+                  // copy y
+                  unsigned char *s = procOut.Ybuff;
+                  unsigned char *d = y_buffer_ptr;
+                  for (int y = 0; y < h; y++, s += 720, d += w)
+                    fast_memcpy(d, s, w);
+                  // copy uv
+                  s = procOut.UVbuff;
+                  d = uv_buffer_ptr;
+                  for (int y = 0; y < h/2; y++, s += 720, d += w)
+                    fast_memcpy(d, s, w);
+                }
+                else if (w < 1280)
+                {
+                  // copy y
+                  unsigned char *s = procOut.Ybuff;
+                  unsigned char *d = y_buffer_ptr;
+                  for (int y = 0; y < h; y++, s += 1280, d += w)
+                    fast_memcpy(d, s, w);
+                  // copy uv
+                  s = procOut.UVbuff;
+                  d = uv_buffer_ptr;
+                  for (int y = 0; y < h/2; y++, s += 1280, d += w)
+                    fast_memcpy(d, s, w);
+                }
+                else
+                {
+                  // copy y
+                  unsigned char *s = procOut.Ybuff;
+                  unsigned char *d = y_buffer_ptr;
+                  for (int y = 0; y < h; y++, s += 1920, d += w)
+                    fast_memcpy(d, s, w);
+                  // copy uv
+                  s = procOut.UVbuff;
+                  d = uv_buffer_ptr;
+                  for (int y = 0; y < h/2; y++, s += 1920, d += w)
+                    fast_memcpy(d, s, w);
+                }
+              }
+              break;
+            }
+
             got_picture = true;
           }
           else
