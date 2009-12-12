@@ -919,6 +919,18 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     else
       strDeletePath=pItem->GetVideoInfoTag()->m_strFileNameAndPath;
 
+    if (CUtil::GetFileName(strDeletePath).Equals("VIDEO_TS.IFO"))
+    {
+      CUtil::GetDirectory(strDeletePath.Mid(0),strDeletePath);
+      if (strDeletePath.Right(9).Equals("VIDEO_TS/"))
+      {
+        CUtil::RemoveSlashAtEnd(strDeletePath);
+        CUtil::GetDirectory(strDeletePath.Mid(0),strDeletePath);
+      }
+    }
+    if (CUtil::HasSlashAtEnd(strDeletePath))
+      pItem->m_bIsFolder=true;
+
     if (g_guiSettings.GetBool("filelists.allowfiledeletion") &&
         CUtil::SupportsFileOperations(strDeletePath))
     {
