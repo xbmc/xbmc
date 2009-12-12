@@ -1015,7 +1015,7 @@ void CFileItem::CleanString()
 
   CStdString strLabel = GetLabel();
   CStdString strTitle, strTitleAndYear, strYear;
-  CUtil::CleanString(strLabel, strTitle, strTitleAndYear, strYear, bIsFolder);
+  CUtil::CleanString(strLabel, strTitle, strTitleAndYear, strYear, (bIsFolder || !g_guiSettings.GetBool("filelists.showextensions") ) );
   SetLabel(strTitleAndYear);
 }
 

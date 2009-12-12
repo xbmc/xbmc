@@ -151,18 +151,22 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   else if (m_rule.m_field == CSmartPlaylistRule::FIELD_DIRECTOR)
   {
     videodatabase.GetDirectorsNav("",items,type);
+    iLabel = 20339;
   }
   else if (m_rule.m_field == CSmartPlaylistRule::FIELD_STUDIO)
   {
     videodatabase.GetStudiosNav("",items,type);
+    iLabel = 572;
   }
   else if (m_rule.m_field == CSmartPlaylistRule::FIELD_WRITER)
   {
     videodatabase.GetWritersNav("",items,type);
+    iLabel = 20417;
   }
   else if (m_rule.m_field == CSmartPlaylistRule::FIELD_TVSHOWTITLE)
   {
     videodatabase.GetTvShowsNav("",items);
+    iLabel = 20343;
   }
   else if (m_rule.m_field == CSmartPlaylistRule::FIELD_PLAYLIST)
   {
@@ -175,6 +179,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     if (m_type.Equals("songs") || m_type.Equals("albums"))
       path = "special://musicplaylists/";
     DIRECTORY::CDirectory::GetDirectory(path, items, ".xsp");
+    iLabel = 559;
   }
   else
   { // TODO: Add browseability in here.

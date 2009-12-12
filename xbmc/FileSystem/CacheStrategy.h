@@ -29,6 +29,7 @@
 #include "XFileUtils.h"
 #endif
 #include "utils/CriticalSection.h"
+#include "utils/Event.h"
 
 namespace XFILE {
 
@@ -69,6 +70,8 @@ public:
   virtual void ClearEndOfInput();
 
   virtual ICacheInterface* GetInterface() { return NULL; }
+
+  CEvent m_space;
 protected:
   bool  m_bEndOfInput;
 };

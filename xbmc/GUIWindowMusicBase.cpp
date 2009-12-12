@@ -277,7 +277,8 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
 
 void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
 {
-  if (!pItem->HasMusicInfoTag() || pItem->IsParentFolder())
+  if ((pItem->IsMusicDb() && !pItem->HasMusicInfoTag()) || pItem->IsParentFolder() ||
+       CUtil::IsSpecial(pItem->m_strPath) || pItem->m_strPath.Left(14).Equals("musicsearch://"))
     return; // nothing to do
 
   if (!pItem->m_bIsFolder)
@@ -366,18 +367,11 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
       m_dlgProgress->Close();
   }
 
-  if (artist.idArtist > -1 && !artist.strArtist.IsEmpty())
-  {
+  if (album.idAlbum == -1 && foundAlbum == false) 
     ShowArtistInfo(artist, pItem->m_strPath, false, bShowInfo);
-    return;
-  }
-
-  if (album.idAlbum > -1 && !album.strAlbum.IsEmpty())
-  {
+  else
     ShowAlbumInfo(album, strPath, false, bShowInfo);
-    return;
   }
-}
 
 void CGUIWindowMusicBase::OnManualAlbumInfo()
 {

@@ -611,22 +611,22 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     CStdString strExtension;
     CUtil::GetExtension(strFileName, strExtension);
     strExtension.ToLower();
+    strExtension += "|";
 
     CStdString strFileMask;
     strFileMask = g_stSettings.m_pictureExtensions;
-    strFileMask += g_stSettings.m_musicExtensions;
-    strFileMask += g_stSettings.m_videoExtensions;
-    strFileMask += ".py|.xml|.milk|.xpr|.cdg";
+    strFileMask += "|" + g_stSettings.m_musicExtensions;
+    strFileMask += "|" + g_stSettings.m_videoExtensions;
+    strFileMask += "|.py|.xml|.milk|.xpr|.cdg";
+    strFileMask += "|";
 
-    // Only remove if its a valid media extension
-    if (strFileMask.Find(strExtension.c_str()) >= 0)
+    if (strFileMask.Find(strExtension) >= 0)
       strFileName = strFileName.Left(iPos);
   }
 }
 
-void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bIsFolder /* = false */)
+void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension /* = false */)
 {
-
   strTitleAndYear = strFileName;
 
   if (strFileName.Equals(".."))
@@ -651,8 +651,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     }
   }
 
-  if (!bIsFolder)
-    RemoveExtension(strTitleAndYear);
+  RemoveExtension(strTitleAndYear);
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
@@ -696,9 +695,8 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     strTitleAndYear = strTitle + " (" + strYear + ")";
 
   // restore extension if needed
-  if (g_guiSettings.GetBool("filelists.showextensions") && !bIsFolder)
+  if (!bRemoveExtension)
     strTitleAndYear += strExtension;
-
 }
 
 void CUtil::GetCommonPath(CStdString& strParent, const CStdString& strPath)

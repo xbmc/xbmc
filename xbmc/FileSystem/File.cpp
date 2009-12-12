@@ -122,6 +122,7 @@ public:
 char* get() { return p; }
 };
 
+// This *looks* like a copy function, therefor the name "Cache" is misleading
 bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback, void* pContext)
 {
   CFile file;

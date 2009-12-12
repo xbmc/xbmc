@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Olympia and Alanwww1-->
 <!--Email: alanwww1@gmail.com-->
-<!--Date of translation: 05/12/2009-->
+<!--Date of translation: 08/12/2009-->
 <!--$Revision$-->
 
 <strings>
@@ -152,7 +152,7 @@
   <string id="202">Címszavakban</string>
   <string id="203">Tartalom</string>
   <string id="204"></string>
-  <string id="205">Szavazatok:</string>
+  <string id="205">Szavazatok</string>
   <string id="206">Szereplők</string>
   <string id="207">Tartalom</string>
   <string id="208">Lejátszás</string>
@@ -203,7 +203,7 @@
   <string id="256">CD információ letöltése</string>
   <string id="257">Hiba</string>
   <string id="258">Metaadatok figyelembevétele a fájlokban</string>
-  <string id="259">adatfolyam megnyitása</string>
+  <string id="259">Adatfolyam megnyitása</string>
   <string id="260">Shoutcast rádiók</string>
   <string id="261">Indulásra vár...</string>
   <string id="262">Szkriptek kimenete</string>
@@ -239,7 +239,7 @@
   <string id="293">Feliratok keresése</string>
   <string id="294">Könyvjelző létrehozása</string>
   <string id="296">Könyvjelzők törlése</string>
-  <string id="297">Hang csúsztatása</string>
+  <string id="297">Hang csúsztatás</string>
   <string id="298">KÖNYVJELZŐK</string>
   <string id="303">Késleltetés</string>
   <string id="304">Nyelv</string>
@@ -496,10 +496,10 @@
   <string id="565">Haszn.</string>
   <string id="566">Előadó albuma</string>
   <string id="567">Lejátszás-számláló</string>
-  <string id="568">Utoljára hallgatott</string>
+  <string id="568">Utoljára játszott</string>
   <string id="569">Megj.</string>
   <string id="570">Hozzáadás-dátum</string>
-  <string id="571">Alapért.</string>
+  <string id="571">Alapbeállítás</string>
   <string id="572">Stúdió</string>
   <string id="573">Elérési út</string>
 
@@ -530,7 +530,7 @@
   <string id="605">Rippelés...</string>
   <string id="606"></string>
   <string id="607">Ide:</string>
-  <string id="608">CD vagy zeneszám nem rippelhető</string>
+  <string id="608">CD vagy zeneszám nem rippelhető.</string>
   <string id="609">CDDA rip mappa nincs beállítva.</string>
   <string id="610">Zeneszám rippelése</string>
   <string id="611">Szám megadása</string>
@@ -723,7 +723,7 @@
   <string id="1041">%i elem letöltve</string>
   <string id="1042">%i elemből %i letöltve </string>
   <string id="1043">Program beépülők</string>
-  <string id="1044">Beépülő bélyegkép beállítás</string>
+  <string id="1044">Beépülő bélyeg beállítás</string>
   <string id="1045">Beépülő beállítások</string>
   <string id="1046">Hozzáférési pont</string>
   <string id="1047">Más...</string>
@@ -954,10 +954,10 @@
   <string id="12367">Érvénytelen mesterkód</string>
   <string id="12368">Adj meg érvényes mesterkódot!</string>
   <string id="12373">Beállítások &amp; Fájlkezelő</string>
-  <string id="12376">Beállítás alapértelmezettként minden filmre</string>
+  <string id="12376">Alapértelmezettként minden filmre</string>
   <string id="12377">Minden eddigi beállítás törlése?</string>
   <string id="12378">Képek megjelenítése:</string>
-  <string id="12379">mozgó és nagyítás effektek használata</string>
+  <string id="12379">Pásztázás és nagyítás (pan&amp;zoom) effektek használata</string>
   <string id="12380">NTSC videók lejátszása PAL sebességgel</string>
   <string id="12381">PAL videók lejátszása NTSC sebességgel</string>
   <string id="12382">NTSC videók lejátszása PAL60 sebességgel</string>
@@ -970,8 +970,7 @@
   <string id="12391">Perc</string>
   <string id="12392">Óra</string>
   <string id="12393">Nap</string>
-  <string id="12394">Teljes uptime</string>
-  
+  <string id="12394">Folyamatos üzemidő</string>
 
 
   <string id="12600">Időjárás</string>
@@ -997,8 +996,8 @@
   <string id="13015">Be(ki)kapcsoló gomb művelet</string>
 
   <string id="13020">Lehet hogy egy másik bejelentkezés aktív (ssh)?</string>
-  <string id="13021">Cserélhető háttértár csatlakoztatva</string>
-  <string id="13022">Nem biztonságos eszköz eltávolítás</string>
+  <string id="13021">Külső tároló csatlakozott</string>
+  <string id="13022">Nem biztonságos eltávolítás</string>
   <string id="13023">Eszköz sikeresen eltávolítva</string>
   <string id="13024">Joystick csatlakoztatva</string>
   <string id="13025">Joystick eltávolítva</string>
@@ -1102,7 +1101,7 @@
   <string id="13281">Hardver</string>
   <string id="13282">_</string>
   <string id="13283">Operációs rendszer:</string>
-  <string id="13284">CPU Sebesség:</string>
+  <string id="13284">CPU sebesség:</string>
   <string id="13285">BIOS:</string>
   <string id="13286">Videochip:</string>
   <string id="13287">Képernyő felbontása:</string>
@@ -1207,9 +1206,9 @@
   <string id="13400">Egymásbakeverés ugyanazon albumon belül</string>
   <string id="13401">%s keresése</string>
   <string id="13402">Szám pozíció kijelzése</string>
-  <string id="13403">Alapértelmezett törlése</string>
+  <string id="13403">Alapértelmezés törlése</string>
   <string id="13404">Folytatás</string>
-  <string id="13405">Bélyeg letöltése</string>
+  <string id="13405">Bélyeg letölt.</string>
   <string id="13406">Kép információ</string>
   <string id="13407">%s előbeállítás</string>
   <string id="13408">(IMDb nézői értékelés)</string>
@@ -1328,7 +1327,7 @@
   <string id="14074">Időzóna beállítása</string>
   <string id="14075">Automatikus téli/nyári időszámítás</string>
   <string id="14076">Hozzáadás a kedvencekhez</string>
-  <string id="14077">Eltávolítás a kedvencekből</string>
+  <string id="14077">Eltávolítás kedvencekből</string>
   <string id="14078">- Szín</string>
   <string id="14079">Időzóna (ország)</string>
   <string id="14080">Időzóna</string>
@@ -1491,7 +1490,7 @@
   <string id="15292">'%s' letiltása sikertelen.</string>
   <string id="15293">%name% jelenlegi kedvenc zenéi</string>
   <string id="15294">%name% által mostanában letiltott zenék</string>
-  <string id="15295">Eltávolítás a kedvenc zenékből</string>
+  <string id="15295">Ki a LastFm kedvencekből</string>
   <string id="15296">Újraengedélyezés?</string>
   <string id="15297">Eltávolítás a kedvenc zenék közül?</string>
   <string id="15298">Zeneszám újraengedélyezése?</string>
@@ -1582,7 +1581,7 @@
 
   <string id="19000">Csatornára váltás</string>
 
-  <string id="20000">CDDA rip-mappa</string>
+  <string id="20000">Zene rip-mappa</string>
   <string id="20001">Külső DVD-lejátszó használata</string>
   <string id="20002">Külső DVD-lejátszó</string>
   <string id="20003">Trainerek mappája</string>
@@ -1819,7 +1818,7 @@
   <string id="20330">Használja a mappa nevét keresésekre</string>
   <string id="20331">Fájl </string>
   <string id="20332">Mappa nevek használata kereséskor?</string>
-  <string id="20333">Tartalom beállítása</string>
+  <string id="20333">Tartalommegadás</string>
   <string id="20334">Mappa</string>
   <string id="20335">Tartalom rekurzív keresése?</string>
   <string id="20336">Forrás zárolás feloldása</string>
@@ -1870,12 +1869,12 @@
   <string id="20381">Specials</string>
   <string id="20382">Évad bélyegképek automatikus letöltése</string>
   <string id="20383">A kiválasztott mappa egyetlen videót tartalmaz</string>
-  <string id="20384">Hivatkozás TV műsorra</string>
-  <string id="20385">TV műsor hivatkozás eltávolítása</string>
+  <string id="20384">Hivatkozás TV műsorokba</string>
+  <string id="20385">TV műsor hivatkozás törl.</string>
   <string id="20386">Új filmek</string>
   <string id="20387">Új epizódok</string>
   <string id="20388">Stúdiók</string>
-  <string id="20389">Klippek</string>
+  <string id="20389">Klipek</string>
   <string id="20390">Mostanában hozzáadott klippek</string>
   <string id="20391">Klip</string>
   <string id="20392">Klip eltávolítása a médiatárból</string>
@@ -1885,11 +1884,11 @@
   <string id="20396">Albumhoz, előadó szerint</string>
   <string id="20397">Albumhoz</string>
   <string id="20398">Zeneszám lejátszása</string>
-  <string id="20399">Klipekhez az albumból</string>
-  <string id="20400">Kilpekhez, előadó szerint</string>
+  <string id="20399">Klipekhez, az albumból</string>
+  <string id="20400">Klipekhez, előadó szerint</string>
   <string id="20401">Klip lejátszása</string>
   <string id="20402">Színész bélyegkép automatikus letöltése</string>
-  <string id="20403">Színész bélyegkép beállítása</string>
+  <string id="20403">Színész bélyegkép beállítás</string>
   <string id="20404"></string>
   <string id="20405">Epizód könyvjelző eltávolítása</string>
   <string id="20406">Epizód könyvjelző beállítása</string>
@@ -1899,7 +1898,7 @@
   <string id="20410">Filmajánló</string>
   <string id="20411">Szűkítés</string>
   <string id="20412">Szűkítés(TV műsor)</string>
-  <string id="20413">Fanart letöltés</string>
+  <string id="20413">Fanart letölt.</string>
   <string id="20414">Fanart megjelenítése a médiatárban</string>
   <string id="20415">Új tartalom keresése</string>
   <string id="20416">Első adás</string>
@@ -1910,7 +1909,7 @@
   <string id="20421">Csak, ha egy évad van</string>
   <string id="20422">Mindig</string>
   <string id="20423">Van filmajánló</string>
-  <string id="20424">Hibás</string>
+  <string id="20424">Hamis</string>
   <string id="20425">Fanart vetítés</string>
   <string id="20426">Exportálás egyetlen fájlba, vagy</string>
   <string id="20427">külön-külön adatbázis bejegyzésenként?</string>
@@ -1929,8 +1928,8 @@
   <string id="20440">Jelenlegi fanart</string>
   <string id="20441">Távoli fanart</string>
   <string id="20442">Tartalom változtatása</string>
-  <string id="20443">Akarod frissíteni az infó-t mindhez ?</string>
-  <string id="20444">elemek ezen az útvonalon ?</string>
+  <string id="20443">Akarod frissíteni az infó-t minden</string>
+  <string id="20444">elemhez ezen az útvonalon ?</string>
   <string id="20445">Fanart</string>
   <!-- 21329-ig video-adatbázisra fenntartva  !! !-->
 
@@ -1999,8 +1998,8 @@
   <string id="21407">kevesebb, mint</string>
   <string id="21408">után</string>
   <string id="21409">előtt</string>
-  <string id="21410">Benne van az utolsó (-ben)</string>
-  <string id="21411">Korábbi, mint az utolsó</string>
+  <string id="21410">Az utolsó X-ben van</string>
+  <string id="21411">Korábbi mint az utolsó</string>
   <string id="21412">Scrapers</string>
   <string id="21413">Alapértelmezett film scraper</string>
   <string id="21414">Alapértelmezett TV műsor scraper</string>
@@ -2015,7 +2014,7 @@
   <string id="21423">Új szabály...</string>
   <string id="21424">Az elemeknek összhangban kell lenniük</string>
   <string id="21425">minden szabállyal</string>
-  <string id="21426">Egy vagy több szabállyal</string>
+  <string id="21426">egy vagy több szabállyal</string>
   <string id="21427">Korlátozás</string>
   <string id="21428">Nincs korlátozás</string>
   <string id="21429">Rendezés</string>
@@ -2025,7 +2024,7 @@
   <string id="21433">Lejátszáslista neve</string>
   <string id="21434">Elemek keresése, ahol</string>
   <string id="21435">Szerkeszt</string>
-  <string id="21436">%i elem</string>
+  <string id="21436">%i elemre</string>
   <string id="21437">Új intelligens lejátszáslista</string>
   <string id="21438">%c Meghajtó</string>
   <string id="21439">Partymód-szabályok szerk.</string>
@@ -2041,9 +2040,9 @@
   <string id="21449">Távirányító billentyűleütéseket küld</string>
 
   <string id="21800">Fájlnév</string>
-  <string id="21801">Fájl elérési útja</string>
+  <string id="21801">Fájl helye</string>
   <string id="21802">Fájlméret</string>
-  <string id="21803">Fájl dátum/idő</string>
+  <string id="21803">Fájl dátum</string>
   <string id="21804">Dia index</string>
   <string id="21805">Felbontás</string>
   <string id="21806">Megjegyzés</string>
@@ -2052,21 +2051,21 @@
 
   <string id="21820">Dátum/idő</string>
   <string id="21821">Leírás</string>
-  <string id="21822">Fényképező gyártó</string>
-  <string id="21823">Fényképezőgép típusa</string>
+  <string id="21822">Fényk.gyártó</string>
+  <string id="21823">Fényk.típus</string>
   <string id="21824">EXIF megjegyzés</string>
   <string id="21825">Firmware</string>
   <string id="21826">Rekesz</string>
-  <string id="21827">Gyújtótávolság</string>
-  <string id="21828">Gyújtótávolság</string>
+  <string id="21827">Gyújtótáv</string>
+  <string id="21828">Gyújtótáv</string>
   <string id="21829">Exponálás</string>
-  <string id="21830">Exponálási idő</string>
-  <string id="21831">Exponálási eltérés</string>
-  <string id="21832">Exponálás módja</string>
+  <string id="21830">Expon.idő</string>
+  <string id="21831">Expon.eltérés</string>
+  <string id="21832">Expon.mód</string>
   <string id="21833">Vaku</string>
-  <string id="21834">Fehér-egyensúly</string>
+  <string id="21834">F.egyensúly</string>
   <string id="21835">Fényforrás</string>
-  <string id="21836">Fénymérés módja</string>
+  <string id="21836">Fénymérés</string>
   <string id="21837">ISO</string>
   <string id="21838">Digitális nagyítás</string>
   <string id="21839">CCD szélesség</string>
@@ -2123,8 +2122,8 @@
   <string id="22001">Médiatár folyamatos frissítése</string>
   <string id="22002">- DNS utótag</string>
   <string id="22003"></string>
-  <string id="22004">Késleltetés: %2.3fs</string>
-  <string id="22005">Előrehozás: %2.3fs</string>
+  <string id="22004">Késleltet: %2.2fs</string>
+  <string id="22005">Előrehoz: %2.2fs</string>
   <string id="22006">Felirat csúsztatás</string>
   <string id="22007">OpenGL gyártója:</string>
   <string id="22008">OpenGL renderelő:</string>
@@ -2142,8 +2141,8 @@
   <string id="22020">Műsor</string>
   <string id="22021">Max. képarányhiba, feketesávok minimalizálásához (%)</string>
   <string id="22022">Videófájlokat is megjelenít</string>
-  <string id="22023">DirectX gyártó</string>
-  <string id="22024">Direct3D verzió</string>
+  <string id="22023">DirectX gyártó:</string>
+  <string id="22024">Direct3D verzió:</string>
 
   <!-- 22030-tól 22060-ig karaoke stringek -->
   <string id="22030">Betűtípus</string>
@@ -2185,7 +2184,7 @@
   <!-- 29800-tól 29998 a default PM3 skin-hez foglalva -->
   <string id="29800">Médiatár mód</string>
   <string id="29801">QWERTY billentyűzet</string>
-  <string id="29802">Passthrough audio használatban</string>
+  <string id="29802">Passthrough esetén tiltva</string>
 
   
   <string id="29999">Villogás szűrő alkalmazása játékokra</string>

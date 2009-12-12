@@ -299,7 +299,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowVideoBase::OnPrepareFileItems(items);
-  if (g_guiSettings.GetBool("myvideos.cleanstrings"))
+  if (g_guiSettings.GetBool("myvideos.cleanstrings") && !items.IsVirtualDirectoryRoot())
   {
     for (int i = 0; i < (int)items.Size(); ++i)
     {

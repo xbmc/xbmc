@@ -171,6 +171,10 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
     return CACHE_RC_ERROR;
   }
   m_nReadPosition += iRead;
+
+  if (iRead > 0)
+    m_space.PulseEvent();
+
   return iRead;
 }
 
@@ -232,6 +236,7 @@ __int64 CSimpleFileCache::Seek(__int64 iFilePosition, int iWhence)
     return CACHE_RC_ERROR;
 
   m_nReadPosition = iTarget;
+  m_space.PulseEvent();
 
   return pos.QuadPart;
 }
