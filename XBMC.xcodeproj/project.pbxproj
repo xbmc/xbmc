@@ -9264,7 +9264,10 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\"$(SRCROOT)/xbmc/lib/libXDAAP\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
-				OTHER_LDFLAGS = "-headerpad_max_install_names";
+				OTHER_LDFLAGS = (
+					"-headerpad_max_install_names",
+					"-all_load",
+				);
 				PRODUCT_NAME = XBMC;
 				VALID_ARCHS = ppc;
 				ZERO_LINK = NO;
@@ -9368,7 +9371,10 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/xbmc/lib/libXDAAP\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\"$(SRCROOT)/xbmc/lib/libshout\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
-				OTHER_LDFLAGS = "-headerpad_max_install_names";
+				OTHER_LDFLAGS = (
+					"-headerpad_max_install_names",
+					"-all_load",
+				);
 				PRODUCT_NAME = XBMC;
 				VALID_ARCHS = ppc;
 				ZERO_LINK = NO;
