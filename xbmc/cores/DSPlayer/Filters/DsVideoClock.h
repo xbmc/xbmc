@@ -11,6 +11,7 @@ using namespace std;
 #include "system.h" // for HAS_XRANDR, and Win32 types
 #include "Thread.h"
 //#include "event.h"
+#include "utils/SharedSection.h"
 #include "utils/CriticalSection.h"
 
 
@@ -40,7 +41,8 @@ class CDSVideoClock : public CThread
 {
 public:
     CDSVideoClock();
-
+  double GetClock();
+    double GetAbsoluteClock();
     int64_t GetTime();
     int64_t GetFrequency();
     void    SetSpeed(double Speed);
@@ -74,6 +76,7 @@ public:
     CEvent  m_VblankEvent;        //set when a vblank happens
 
     CCriticalSection m_CritSection;
+
     bool   SetupD3D();
     double MeasureRefreshrate(int MSecs);
     void   RunD3D();
@@ -85,7 +88,17 @@ public:
     unsigned int  m_Width;
     unsigned int  m_Height;
     CDSVideoCallback  m_DsVideoCallback;
+protected:
+  CSharedSection m_critSection;
+  int64_t m_systemUsed;
+  int64_t m_startClock;
+  int64_t m_pauseClock;
+  double m_iDisc;
+  bool m_bReset;
 
+  static int64_t m_systemFrequency;
+  static int64_t m_systemOffset;
+  static CCriticalSection m_systemsection;
 };
 
 #endif //_DSVIDEOCLOCK_H

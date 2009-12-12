@@ -47,19 +47,44 @@ protected:
   CDSVideoClock                           m_VideoClock;
   void InitClock();
 
-  D3DFORMAT            m_SurfaceType;
-  D3DFORMAT            m_BackbufferType;
-  D3DFORMAT            m_DisplayType;
+  int            m_iVideoWidth;
+  int            m_iVideoHeight;
+  double         m_fps;
+
+  volatile bool m_bStop;
+  //Clock stuff
+  LONGLONG       m_FlipTimeStamp;
+  LONGLONG       m_llSampleTime;     // Time of current sample
+  LONGLONG       m_llLastSampleTime; // Time of last sample
+  LONGLONG       m_ptstarget; //position of sample
+  REFERENCE_TIME m_rtTimePerFrame; // Time per frame of video in 100ns units. As extracted from video header or stream
+  double         m_dFrameCycle; // Same as above but in ms units
+  double         m_dCycleDifference; // Difference in video and display cycle time relative to the video cycle time
+                             // calcul is easy as 1000.0 / display frequency
+  double         m_dOptimumDisplayCycle; // The display cycle that is closest to the frame rate. A multiple of the actual display cycle
+  double         m_dD3DRefreshCycle; // Display refresh cycle ms
+  double         m_dEstRefreshCycle; // As estimated from scan lines
+
+  bool           m_bSnapToVSync;
+  bool           m_bNeedCheckSample;
+  bool           m_bInterlaced;
+  REFERENCE_TIME m_lastFrameArrivedTime;
+  bool           m_lastFramePainted;  
+
+
+  D3DFORMAT      m_SurfaceType;
+  D3DFORMAT      m_BackbufferType;
+  D3DFORMAT      m_DisplayType;
 
 
   CRITICAL_SECTION m_critPrensent;
 
-  int            m_iVideoWidth;
-  int            m_iVideoHeight;
-  float          m_fps;
+  
 
   HRESULT AllocSurface(D3DFORMAT Format = D3DFMT_A8R8G8B8);
 };
+
+
 
 
 #endif // _DSRENDERER_H

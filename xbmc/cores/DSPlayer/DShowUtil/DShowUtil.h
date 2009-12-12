@@ -100,6 +100,7 @@ typedef enum {CDROM_NotFound, CDROM_Audio, CDROM_VideoCD, CDROM_DVDVideo, CDROM_
   static bool ExtractBIH(const AM_MEDIA_TYPE* pmt, BITMAPINFOHEADER* bih);
   static bool ExtractBIH(IMediaSample* pMS, BITMAPINFOHEADER* bih);
   static bool ExtractAvgTimePerFrame(const AM_MEDIA_TYPE* pmt, REFERENCE_TIME& rtAvgTimePerFrame);
+  static bool ExtractInterlaced(const AM_MEDIA_TYPE* pmt);
   static bool ExtractDim(const AM_MEDIA_TYPE* pmt, int& w, int& h, int& arx, int& ary);
   static bool MakeMPEG2MediaType(CMediaType& mt, BYTE* seqhdr, DWORD len, int w, int h);
   static unsigned __int64 GetFileVersion(LPCTSTR fn);

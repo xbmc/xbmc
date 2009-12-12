@@ -31,7 +31,10 @@
 #include "utils/SingleLock.h"
 
 CDsRenderer::CDsRenderer()
-: CUnknown(NAME("CDsRenderer"), NULL)
+: CUnknown(NAME("CDsRenderer"), NULL),
+  m_bNeedCheckSample(true),
+  m_lastFrameArrivedTime(0),
+  m_bStop(false)
 {
   m_D3D = g_Windowing.Get3DObject();
   m_D3DDev = g_Windowing.Get3DDevice();
@@ -44,7 +47,7 @@ CDsRenderer::~CDsRenderer()
 {
   //release id3dresource
   CSingleLock lock(m_critsection);
-  
+  m_bStop = true;
   
 
   g_renderManager.UnInit();
@@ -58,6 +61,7 @@ void CDsRenderer::InitClock()
     //we have to wait for the clock to start otherwise alsa can cause trouble
     if (!m_VideoClock.WaitStarted(2000))
       CLog::Log(LOGDEBUG, "m_VideoClock didn't start in time");
+    m_FlipTimeStamp = m_VideoClock.GetAbsoluteClock();
   }
 
 }
@@ -91,13 +95,27 @@ STDMETHODIMP CDsRenderer::RenderPresent(IDirect3DTexture9* videoTexture,IDirect3
 {
 
   HRESULT hr;
-  if (!g_renderManager.IsConfigured())
-    return E_FAIL;
-  
-  CSingleLock lock(m_critsection);
+  //CSingleLock lock(m_critsection);
+
   g_renderManager.PaintVideoTexture(videoTexture,videoSurface);
-  g_application.NewFrame();
-  g_application.WaitFrame(100);
+  REFERENCE_TIME rtRefClockTimeNow; 
+  int refreshrate = m_rtTimePerFrame;
+  // calculate the time we need to delay this picture before displaying
+  double iSleepTime, iClockSleep, iFrameSleep, iCurrentClock, iFrameDuration;
+  iCurrentClock = m_VideoClock.GetAbsoluteClock(); // snapshot current clock
+  iClockSleep = m_ptstarget - m_VideoClock.GetClock();  //sleep calculated by pts to clock comparison
+  iFrameSleep = m_FlipTimeStamp - iCurrentClock; // sleep calculated by duration of frame
+
+  iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep);
+
+  // timestamp when we think next picture should be displayed based on current duration
+  m_FlipTimeStamp  = iCurrentClock;
+  m_FlipTimeStamp += max(0.0, iSleepTime);
+  m_FlipTimeStamp += iFrameDuration;
+//DVD_TIME_BASE 1000000
+  g_renderManager.FlipPage(m_bStop, (iCurrentClock + iSleepTime) / 1000000, -1);//mDisplayField);
+  //g_application.NewFrame();
+  //g_application.WaitFrame(100);
   return S_OK;
 
 }

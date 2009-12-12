@@ -99,6 +99,9 @@ bool CDSVideoCallback::IsValid()
 
 
 
+int64_t CDSVideoClock::m_systemOffset;
+int64_t CDSVideoClock::m_systemFrequency;
+CCriticalSection CDSVideoClock::m_systemsection;
 
 CDSVideoClock::CDSVideoClock()
 {
@@ -426,6 +429,56 @@ void CDSVideoClock::UpdateClock(int NrVBlanks, bool CheckMissed)
 
   if (NrVBlanks > 0) //update the clock with the adjusted frequency if we have any vblanks
     m_CurrTime += (int64_t)NrVBlanks * m_AdjustedFrequency / m_RefreshRate;
+}
+
+double CDSVideoClock::GetClock()
+{
+  CSharedLock lock(m_critSection);
+  int64_t current;
+
+  if (m_bReset)
+  {
+    m_startClock = GetTime();
+    m_systemUsed = m_systemFrequency;
+    m_pauseClock = 0;
+    m_iDisc = 0;
+    m_bReset = false;
+  }
+
+  if (m_pauseClock)
+    current = m_pauseClock;
+  else
+    current = GetTime();
+
+  current -= m_startClock;
+  //#define DVD_TIME_BASE 1000000
+  return 1000000 * (double)current / m_systemUsed + m_iDisc;
+}
+
+
+// Returns the current absolute clock in units of DVD_TIME_BASE (usually microseconds).
+double CDSVideoClock::GetAbsoluteClock()
+{
+  CSingleLock lock(m_CritSection);//m_systemsection);
+
+  if(!m_systemFrequency)
+    m_systemFrequency = GetFrequency();
+
+  if(!m_systemOffset)
+    m_systemOffset = GetTime();
+
+  int64_t current;
+  current = GetTime();
+  current -= m_systemOffset;
+
+#if _DEBUG
+  static int64_t old;
+  if(old > current)
+    CLog::Log(LOGWARNING, "CurrentHostCounter() moving backwords by %"PRId64" ticks with freq of %"PRId64, old - current, m_systemFrequency);
+  old = current;
+#endif
+//#define DVD_TIME_BASE 1000000
+  return 1000000 * (double)current / m_systemFrequency;
 }
 
 //called from dvdclock to get the time

@@ -62,7 +62,7 @@ public:
 protected:
   void DeleteSurfaces();
   
-  void GetCurrentVideoSize();
+  void GetVideoInfo();
 
   
 
@@ -71,9 +71,7 @@ protected:
   tagRECT          m_VMR9AlphaBitmapRect;
   int            m_VMR9AlphaBitmapWidthBytes;
   bool m_fUseInternalTimer;
-  //Clock stuff
-  REFERENCE_TIME m_rtTimePerFrame;
-  REFERENCE_TIME m_pPrevEndFrame;
+  
   
   int            m_fFrameRate;
   bool           m_renderingOk;
