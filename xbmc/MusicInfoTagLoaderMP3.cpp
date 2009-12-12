@@ -229,30 +229,24 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
 {
 #define SCANSIZE  8192
 #define CHECKNUMFRAMES 5
+#define ID3V2HEADERSIZE 10
 
   unsigned char* xing;
   unsigned char* vbri;
   unsigned char buffer[SCANSIZE + 1];
 
+  const int freqtab[][4] =
+    {
+      {11025, 12000, 8000, 0}
+      ,   /* MPEG version 2.5 */
+      {44100, 48000, 32000, 0},  /* MPEG Version 1 */
+      {22050, 24000, 16000, 0},  /* MPEG version 2 */
+    };
+
+
   CFile file;
   if (!file.Open(strFileName))
     return 0;
-
-  /* Check if the file has an ID3v2 tag (or multiple tags) */
-  unsigned int id3v2Size = 0;
-  file.Read(buffer, 10);
-  unsigned int size = IsID3v2Header(buffer, 10);
-  while (size)
-  {
-    id3v2Size += size;
-    if (id3v2Size != file.Seek(id3v2Size, SEEK_SET))
-      return 0;
-    if (10 != file.Read(buffer, 10))
-      return 0;
-    size = IsID3v2Header(buffer, 10);
-  }
-
-  int firstFrameOffset = id3v2Size;
 
   /* Check if the file has an ID3v1 tag */
   file.Seek(file.GetLength()-128, SEEK_SET);
@@ -266,27 +260,70 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
     hasid3v1=true;
   }
 
+  /* Check if the file has an ID3v2 tag (or multiple tags) */
+  unsigned int id3v2Size = 0;
+  file.Seek(0, SEEK_SET);
+  file.Read(buffer, ID3V2HEADERSIZE);
+  unsigned int size = IsID3v2Header(buffer, ID3V2HEADERSIZE);
+  while (size)
+  {
+    id3v2Size += size;
+    if (id3v2Size != file.Seek(id3v2Size, SEEK_SET))
+      return 0;
+    if (ID3V2HEADERSIZE != file.Read(buffer, ID3V2HEADERSIZE))
+      return 0;
+    size = IsID3v2Header(buffer, ID3V2HEADERSIZE);
+  }
+
+  //skip any padding
+  //already read ID3V2HEADERSIZE bytes so take it into account
+  int iScanSize = file.Read(buffer + ID3V2HEADERSIZE, SCANSIZE - ID3V2HEADERSIZE) + ID3V2HEADERSIZE;
+  int iBufferDataStart;
+  do
+  {
+    iBufferDataStart = -1;
+    for(int i = 0; i < iScanSize; i++)
+    {
+      //all 0x00's after id3v2 tag until first mpeg-frame are padding
+      if (buffer[i] != 0)
+      {
+        iBufferDataStart = i;
+        break;
+      }
+    }
+    if (iBufferDataStart == -1)
+    {
+      id3v2Size += iScanSize;
+      iScanSize = file.Read(buffer, SCANSIZE);
+    }
+    else
+    {
+      id3v2Size += iBufferDataStart;
+    }
+  } while (iBufferDataStart == -1 && iScanSize > 0);
+  if (iScanSize <= 0)
+    return 0;
+  if (iBufferDataStart > 0)
+  {
+    //move data to front of buffer
+    iScanSize -= iBufferDataStart;
+    memcpy(buffer, buffer + iBufferDataStart, iScanSize);
+    //fill remainder of buffer with new data
+    iScanSize += file.Read(buffer + iScanSize, SCANSIZE - iScanSize);
+  }
+
+  int firstFrameOffset = id3v2Size;
+
+
   //raw mp3Data = FileSize - ID3v1 tag - ID3v2 tag
   int nMp3DataSize = (int)file.GetLength() - id3v2Size;
   if (hasid3v1)
     nMp3DataSize -= 128;
 
-  const int freqtab[][4] =
-    {
-      {11025, 12000, 8000, 0}
-      ,   /* MPEG version 2.5 */
-      {44100, 48000, 32000, 0},  /* MPEG Version 1 */
-      {22050, 24000, 16000, 0},  /* MPEG version 2 */
-    };
-
-  // Skip ID3V2 tag when reading mp3 data
-  file.Seek(id3v2Size, SEEK_SET);
-  file.Read(buffer, SCANSIZE);
-
   //*** find the first frame in the buffer, we do this by checking if the calculated framesize leads to the next frame a couple of times.
   //the first frame that leads to a valid next frame a couple of times is where we should start decoding.
   int firstValidFrameLocation = 0;
-  for(int i = 0; i < SCANSIZE; i++)
+  for(int i = 0; i < iScanSize; i++)
   {
     int j = i;
     int framesize = 1;
@@ -304,7 +341,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
 
       j += framesize;
 
-      if ((j + 4) >= SCANSIZE)
+      if ((j + 4) >= iScanSize)
       {
         //no valid frame found in buffer
 	      firstValidFrameLocation = -1;
@@ -330,7 +367,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
   int frequency = 0, bitrate = 0, bittable = 0;
   int frame_count = 0;
   double tpf = 0.0, bpf = 0.0;
-  for (int i = 0; i < SCANSIZE; i++)
+  for (int i = 0; i < iScanSize; i++)
   {
     unsigned long mpegheader = (unsigned long)(
                                  ( (buffer[i] & 255) << 24) |
