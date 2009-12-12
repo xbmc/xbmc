@@ -7258,10 +7258,10 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
           // reset old skip state
           bool bSkip = false;
 
-          if (singleFiles && CFile::Exists(episode.m_strFileNameAndPath))
+          CFileItem item(episode.m_strFileNameAndPath,false);
+          if (singleFiles && item.Exists())
           {
             CStdString nfoFile;
-            CFileItem item(episode.m_strFileNameAndPath,false);
             CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
 
             if (overwrite || !CFile::Exists(nfoFile))
