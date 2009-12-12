@@ -56,7 +56,7 @@ protected:
                 const uint8_t *in,      uint32_t in_size);
   bool h264_mp4toannexb_filter(BYTE* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
  
-  bool            m_insert_sps_pps;
+  bool            m_annexbfiltering;
   uint8_t         *m_sps_pps_data;
   uint32_t        m_sps_pps_size;
   H264BSFContext  m_sps_pps_context;

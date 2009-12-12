@@ -144,7 +144,7 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
     codec_type = hints.codec;
     stream_type = BC_STREAM_TYPE_ES;
     
-    m_insert_sps_pps = init_h264_mp4toannexb_filter(hints);
+    m_annexbfiltering = init_h264_mp4toannexb_filter(hints);
 
     m_Device = new CCrystalHD();
     if (!m_Device)
@@ -188,35 +188,31 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
     // Handle Input
     if (pData)
     {
-      if (m_insert_sps_pps)
+      bool annexbfiltered = false;
+      
+      if (m_annexbfiltering)
       {
-        uint8_t   *outbuf = NULL;
-        int       outbuf_size = 0;
+        int outbuf_size = 0;
+        uint8_t *outbuf = NULL;
         
         h264_mp4toannexb_filter(pData, iSize, &outbuf, &outbuf_size);
         if (outbuf)
         {
-          if (m_Device->AddInput(outbuf, outbuf_size, pts))
-          {
-            free(outbuf);
-            pData = NULL;
-          }
-          else
-          {
-            CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full", __MODULE_NAME__);
-          }
+          annexbfiltered = true;
+          pData = outbuf;
+          iSize = outbuf_size;
         }
-        else
-        {
-            CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full", __MODULE_NAME__);
-        }
+      }
+      
+      if ( m_Device->AddInput(pData, iSize, pts) )
+      {
+        if (annexbfiltered)
+          free(pData);
+        pData = NULL;
       }
       else
       {
-        if (m_Device->AddInput(pData, iSize, pts))
-          pData = NULL;
-        else
-          CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full", __MODULE_NAME__);
+        CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full", __MODULE_NAME__);
       }
     }
     
