@@ -349,6 +349,15 @@ void NV12ToRGBProgressiveShaderARB::OnCompiledAndLinked()
 
 bool NV12ToRGBProgressiveShaderARB::OnEnabled()
 {
+  GLfloat matrix[4][4];
+  CalculateYUVMatrix(matrix, m_flags, m_black, m_contrast);
+
+  for(int i=0;i<4;i++)
+    glProgramLocalParameter4fARB(GL_FRAGMENT_PROGRAM_ARB, i
+                               , matrix[0][i]
+                               , matrix[1][i]
+                               , matrix[2][i]
+                               , matrix[3][i]);
   return true;
 }
 
