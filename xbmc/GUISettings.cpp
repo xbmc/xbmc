@@ -350,10 +350,7 @@ void CGUISettings::Initialize()
   AddInt(5, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
 #endif
   AddString(6, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
-#ifndef HAS_DX
-  // Todo: Implement test pattern for DX
   AddString(7, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
-#endif
 #if defined(_LINUX) && !defined(__APPLE__)
   AddSeparator(8, "videoscreen.sep2");
   AddBool(9, "videoscreen.haslcd", 4501, false);
@@ -453,39 +450,36 @@ void CGUISettings::Initialize()
 #else
   AddInt(3, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_SOFTWARE, SPIN_CONTROL_TEXT);
 #endif
-#ifdef HAS_GL
-  AddBool(4, "videoplayer.usepbo", 13424, false);
-#endif
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
-  AddBool(5, "videoplayer.adjustrefreshrate", 170, false);
+  AddBool(4, "videoplayer.adjustrefreshrate", 170, false);
   //sync settings not available on windows gl build
 #if defined(_WIN32) && defined(HAS_GL)
   #define SYNCSETTINGS 0
 #else
   #define SYNCSETTINGS 1
 #endif
-  AddBool(SYNCSETTINGS ? 6 : 0, "videoplayer.usedisplayasclock", 13510, false);
-  AddInt(SYNCSETTINGS ? 7 : 0, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
+  AddBool(SYNCSETTINGS ? 5 : 0, "videoplayer.usedisplayasclock", 13510, false);
+  AddInt(SYNCSETTINGS ? 6 : 0, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
   AddFloat(0, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
   AddInt(0, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
-  AddInt(8, "videoplayer.errorinaspect", 22021, 0, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_PERCENT, TEXT_NONE);
+  AddInt(7, "videoplayer.errorinaspect", 22021, 0, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_PERCENT, TEXT_NONE);
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.strictbinding", 13120, false);
   AddBool(0, "videoplayer.vdpau_allow_xrandr", 13122, false);
 #endif
 #ifdef HAS_GL
-  AddSeparator(9, "videoplayer.sep1.5");
+  AddSeparator(8, "videoplayer.sep1.5");
   AddInt(0, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.vdpauUpscalingLevel", 13121, false);
-  AddBool(10, "videoplayer.vdpaustudiolevel", 13122, false);
+  AddBool(11, "videoplayer.vdpaustudiolevel", 13122, false);
 #endif
 #endif
-  AddSeparator(11, "videoplayer.sep5");
-  AddBool(12, "videoplayer.teletextenabled", 23050, true);
+  AddSeparator(12, "videoplayer.sep5");
+  AddBool(13, "videoplayer.teletextenabled", 23050, true);
 
   AddCategory(5, "myvideos", 14081);
   AddBool(0, "myvideos.treatstackasfile", 20051, true);
