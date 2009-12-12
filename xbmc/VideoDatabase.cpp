@@ -6990,10 +6990,10 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
       if (CUtil::IsWritable(movie.m_strFileNameAndPath))
       {
-        if (singleFiles && CFile::Exists(movie.m_strFileNameAndPath))
+        CFileItem item(movie.m_strFileNameAndPath,false);
+        if (singleFiles && item.Exists())
         {
           CStdString nfoFile;
-          CFileItem item(movie.m_strFileNameAndPath,false);
           CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
 
           if (overwrite || !CFile::Exists(nfoFile))
@@ -7073,10 +7073,10 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
       if (CUtil::IsWritable(movie.m_strFileNameAndPath))
       {
-        if (singleFiles && CFile::Exists(movie.m_strFileNameAndPath))
+        CFileItem item(movie.m_strFileNameAndPath,false);
+        if (singleFiles && item.Exists())
         {
           CStdString nfoFile;
-          CFileItem item(movie.m_strFileNameAndPath,false);
           CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
 
           if (overwrite || !CFile::Exists(nfoFile))
@@ -7147,10 +7147,10 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
       if (CUtil::IsWritable(tvshow.m_strPath))
       {
-        if (singleFiles && CDirectory::Exists(tvshow.m_strPath))
+        CFileItem item(tvshow.m_strPath,false);
+        if (singleFiles && item.Exists())
         {
           CStdString nfoFile;
-          CFileItem item(tvshow.m_strPath,false);
           CUtil::AddFileToFolder(tvshow.m_strPath, "tvshow.nfo", nfoFile);
 
           if (overwrite || !CFile::Exists(nfoFile))
