@@ -849,12 +849,6 @@ bool CCrystalHD::Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type)
       CLog::Log(LOGERROR, "%s: Failed to set video params", __MODULE_NAME__);
       break;
     }
-    res = BCM::DtsSet422Mode(m_Device, BCM::MODE420);
-    if (res != BCM::BC_STS_SUCCESS)
-    {
-      CLog::Log(LOGERROR, "%s: Failed to set 422 mode", __MODULE_NAME__);
-      break;
-    }
     res = BCM::DtsStartDecoder(m_Device);
     if (res != BCM::BC_STS_SUCCESS)
     {
