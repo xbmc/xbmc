@@ -4125,20 +4125,33 @@ void CApplication::SaveFileState()
   {
     if (m_progressTrackingItem->IsVideo())
     {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for video file %s", __FUNCTION__, progressTrackingFile.c_str());
+      CLog::Log(LOGDEBUG, "%s - Saving file state for video item %s", __FUNCTION__, progressTrackingFile.c_str());
 
       CVideoDatabase videodatabase;
       if (videodatabase.Open())
       {
-        if (m_progressTrackingPlayCountUpdate)
+        // No resume & watched status for livetv
+        if (!m_progressTrackingItem->IsLiveTV())
         {
-          CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, progressTrackingFile.c_str());
+          if (m_progressTrackingPlayCountUpdate)
+          {
+            CLog::Log(LOGDEBUG, "%s - Marking video item %s as watched", __FUNCTION__, progressTrackingFile.c_str());
 
-          // consider this item as played
-          videodatabase.MarkAsWatched(*m_progressTrackingItem);
-          CUtil::DeleteVideoDatabaseDirectoryCache();
-          CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
-          g_windowManager.SendMessage(message);
+            // consider this item as played
+            videodatabase.MarkAsWatched(*m_progressTrackingItem);
+            CUtil::DeleteVideoDatabaseDirectoryCache();
+            CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
+            g_windowManager.SendMessage(message);
+          }
+
+          if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
+          {
+            videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
+          }
+          else if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
+          {
+            videodatabase.AddBookMarkToFile(progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
+          }
         }
 
         if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
@@ -4146,15 +4159,6 @@ void CApplication::SaveFileState()
           videodatabase.SetVideoSettings(progressTrackingFile, g_stSettings.m_currentVideoSettings);
         }
 
-        if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
-        {
-          videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
-        }
-        else
-        if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
-        {
-          videodatabase.AddBookMarkToFile(progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
-        }
         if ((m_progressTrackingItem->IsDVDImage() ||
              m_progressTrackingItem->IsDVDFile()    ) &&
              m_progressTrackingItem->HasVideoInfoTag() &&
@@ -4165,12 +4169,14 @@ void CApplication::SaveFileState()
           CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
           g_windowManager.SendMessage(message);
         }
+
         videodatabase.Close();
       }
     }
-    else
+
+    if (m_progressTrackingItem->IsAudio())
     {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for audio file %s", __FUNCTION__, progressTrackingFile.c_str());
+      CLog::Log(LOGDEBUG, "%s - Saving file state for audio item %s", __FUNCTION__, progressTrackingFile.c_str());
 
       if (m_progressTrackingPlayCountUpdate)
       {
@@ -4179,7 +4185,7 @@ void CApplication::SaveFileState()
         if (dialog && !dialog->IsDialogRunning())
         {
           // consider this item as played
-          CLog::Log(LOGDEBUG, "%s - Marking audio file %s as listened", __FUNCTION__, progressTrackingFile.c_str());
+          CLog::Log(LOGDEBUG, "%s - Marking audio item %s as listened", __FUNCTION__, progressTrackingFile.c_str());
 
           CMusicDatabase musicdatabase;
           if (musicdatabase.Open())

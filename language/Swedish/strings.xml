@@ -8,7 +8,7 @@
   <string id="0">Program</string>
   <string id="1">Bilder</string>
   <string id="2">Musik</string>
-  <string id="3">Filmer</string>
+  <string id="3">Videor</string>
   <string id="4">TV-guide</string>
   <string id="5">Inställningar</string>
   <string id="7">Filhanterare</string>
@@ -1724,7 +1724,7 @@
   <string id="21373">Grafikutgång</string>
   <string id="21374">Bildläge</string>
   <string id="21375">Normal</string>
-  <string id="21376">Brevlådeformat</string>
+  <string id="21376">Letterbox</string>
   <string id="21377">Bredbild</string>
   <string id="21378">Aktivera 480p</string>
   <string id="21379">Aktivera 720p</string>
