@@ -93,7 +93,6 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_pRenderer = NULL;
   m_bPauseDrawing = false;
   m_bIsStarted = false;
-  m_bDirectShowReady = false;
   m_presentfield = FS_NONE;
   m_presenttime = 0;
   m_presentstep = 0;
@@ -184,6 +183,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     CLog::Log(LOGERROR, "%s called without a valid Renderer object", __FUNCTION__);
     return false;
   }
+  
 
   bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags);
   if(result)
@@ -247,6 +247,7 @@ unsigned int CXBMCRenderManager::PreInit(bool dshow)
   m_bIsStarted = false;
   m_bPauseDrawing = false;
   m_pRenderer = NULL;
+  m_pRendererType = RENDERER_NORMAL;
   if (!m_pRenderer)
   { 
 #if defined(HAS_GL)
@@ -255,7 +256,10 @@ unsigned int CXBMCRenderManager::PreInit(bool dshow)
     if (!dshow)
       m_pRenderer = new CPixelShaderRenderer();
     else
+    {
       m_pRenderer = new CDsPixelShaderRenderer();
+      m_pRendererType = RENDERER_DSHOW;
+    }
 #elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();
 #endif
@@ -426,6 +430,7 @@ void CXBMCRenderManager::Present()
     if (!g_VDPAU)
 #endif
     {
+      if (m_pRendererType == RENDERER_NORMAL)
       WaitPresentTime(m_presenttime);
     }
   }

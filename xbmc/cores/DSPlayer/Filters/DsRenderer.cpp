@@ -35,21 +35,57 @@ CDsRenderer::CDsRenderer()
 {
   m_D3D = g_Windowing.Get3DObject();
   m_D3DDev = g_Windowing.Get3DDevice();
-  g_Windowing.Register(this);
+  
   g_renderManager.PreInit(true);
   
 }
 
 CDsRenderer::~CDsRenderer()
 {
-  g_Windowing.Unregister(this);
   //release id3dresource
   CSingleLock lock(m_critsection);
-  m_deviceused = false;
-  m_releaseevent.Set();
+  
+  
 
   g_renderManager.UnInit();
 }
+
+void CDsRenderer::InitClock()
+{
+  if (m_VideoClock.ThreadHandle() == NULL)
+  {
+    m_VideoClock.Create();
+    //we have to wait for the clock to start otherwise alsa can cause trouble
+    if (!m_VideoClock.WaitStarted(2000))
+      CLog::Log(LOGDEBUG, "m_VideoClock didn't start in time");
+  }
+
+}
+HRESULT CDsRenderer::AllocSurface(D3DFORMAT Format)
+{
+  EnterCriticalSection(&m_critPrensent);
+  HRESULT hr;
+  m_pVideoTexture = NULL;
+  m_pVideoSurface = NULL;
+  m_SurfaceType = Format;
+  D3DDISPLAYMODE dm;
+  hr = m_D3DDev->GetDisplayMode(NULL, &dm);
+  
+  if (SUCCEEDED(hr))
+    m_D3DDev->CreateTexture(m_iVideoWidth,  m_iVideoHeight,
+                            1,
+                            D3DUSAGE_RENDERTARGET,
+                            dm.Format,//m_SurfaceType, // default is D3DFMT_A8R8G8B8
+                            D3DPOOL_DEFAULT,
+                            &m_pVideoTexture,
+                            NULL);
+  if (SUCCEEDED(hr))
+    m_pVideoTexture->GetSurfaceLevel(0, &m_pVideoSurface);
+
+  LeaveCriticalSection(&m_critPrensent);
+  return hr;
+}
+
 
 STDMETHODIMP CDsRenderer::RenderPresent(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface)
 {
@@ -59,40 +95,9 @@ STDMETHODIMP CDsRenderer::RenderPresent(IDirect3DTexture9* videoTexture,IDirect3
     return E_FAIL;
   
   CSingleLock lock(m_critsection);
-  while(!m_devicevalid)
-  {
-    lock.Leave();
-    m_createevent.Wait();
-    lock.Enter();
-  }
   g_renderManager.PaintVideoTexture(videoTexture,videoSurface);
   g_application.NewFrame();
   g_application.WaitFrame(100);
   return S_OK;
 
-}
-
-/*void CDsRenderer::Reset()
-  {
-    m_devicevalid = true;
-    m_deviceused = false;
-}*/
-
-void CDsRenderer::OnDestroyDevice()
-{
-
-}
-
-void CDsRenderer::OnCreateDevice()
-{
-}
-
-void CDsRenderer::OnResetDevice()
-{
-}
-
-void CDsRenderer::OnLostDevice()
-{
-  
-  //return m_devicevalid;
 }

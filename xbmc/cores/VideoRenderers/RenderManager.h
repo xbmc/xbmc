@@ -34,6 +34,11 @@
 #include "utils/Thread.h"
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
+typedef enum _RENDERERTYPE
+{
+  RENDERER_NORMAL = 1,
+  RENDERER_DSHOW  = 2
+} RENDERERTYPE;
 
 class CXBMCRenderManager
 {
@@ -173,13 +178,13 @@ protected:
 
   bool m_bPauseDrawing;   // true if we should pause rendering
   bool m_bIsStarted;
-  bool m_bDirectShowReady;
   CSharedSection m_sharedSection;
 
   bool m_bReconfigured;
   
   int m_rendermethod;
 
+  RENDERERTYPE m_pRendererType;
   double     m_presenttime;
   double     m_presentcorr;
   double     m_presenterr;

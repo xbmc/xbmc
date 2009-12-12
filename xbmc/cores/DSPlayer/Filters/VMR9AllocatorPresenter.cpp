@@ -403,7 +403,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
   m_iVideoHeight = lpAllocInfo->dwHeight;
 
   //INITIALIZE VIDEO SURFACE THERE
-  hr = AllocVideoSurface();
+  hr = AllocSurface();
   if ( FAILED( hr ) )
     return hr;
   hr = m_D3DDev->ColorFill(m_pVideoSurface, NULL, 0);
@@ -421,54 +421,6 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
   return hr;
 }
 
-//from mediaportal
-HRESULT CVMR9AllocatorPresenter::AllocVideoSurface(D3DFORMAT Format)
-{
-  EnterCriticalSection(&m_critPrensent);
-  HRESULT hr;
-  m_pVideoTexture = NULL;
-  m_pVideoSurface = NULL;
-  m_SurfaceType = Format;
-  D3DDISPLAYMODE dm;
-  hr = m_D3DDev->GetDisplayMode(NULL, &dm);
-  
-  if (SUCCEEDED(hr))
-    m_D3DDev->CreateTexture(m_iVideoWidth,  m_iVideoHeight,
-                            1,
-                            D3DUSAGE_RENDERTARGET,
-                            dm.Format,//m_SurfaceType, // default is D3DFMT_A8R8G8B8
-                            D3DPOOL_DEFAULT,
-                            &m_pVideoTexture,
-                            NULL);
-  if (SUCCEEDED(hr))
-    m_pVideoTexture->GetSurfaceLevel(0, &m_pVideoSurface);
-
-  LeaveCriticalSection(&m_critPrensent);
-  return hr;
-}
-
-void CVMR9AllocatorPresenter::OnLostDevice()
-{
-  m_renderingOk = false;
-}
-void CVMR9AllocatorPresenter::OnCreateDevice()
-{
-  if(m_pIVMRSurfAllocNotify)
-	{
-    EnterCriticalSection(&m_critPrensent);
-    HRESULT hr;
-    HMONITOR hmon;
-    unsigned int adapter = GetAdapter(g_Windowing.Get3DObject());
-    HMONITOR hMonitor = m_D3D->GetAdapterMonitor(adapter);
-    hr = m_pIVMRSurfAllocNotify->ChangeD3DDevice(g_Windowing.Get3DDevice(),hMonitor);
-    if (SUCCEEDED(hr))
-    {
-      m_renderingOk = true;
-    }
-    LeaveCriticalSection(&m_critPrensent);
-	}
-
-}
 STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9PresentationInfo *lpPresInfo)
 {
   HRESULT hr;
@@ -609,6 +561,8 @@ STDMETHODIMP CVMR9AllocatorPresenter::StartPresenting(DWORD_PTR dwUserID)
   ASSERT( m_D3DDev );
   if( !m_D3DDev )
     hr =  E_FAIL;
+  //Start the video clock
+  InitClock();
 
   LeaveCriticalSection(&m_critPrensent);
   return hr;
