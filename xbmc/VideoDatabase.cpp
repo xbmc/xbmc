@@ -7232,7 +7232,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
               else if (iSeason == 0)
                 strSeasonThumb = "season-specials.tbn";
               else
-                strSeasonThumb.Format("season%2i.tbn",iSeason);
+                strSeasonThumb.Format("season%02i.tbn",iSeason);
               CUtil::GetParentPath(item.GetTBNFile(), strParent);
               CUtil::AddFileToFolder(strParent, strSeasonThumb, strDest);
 
