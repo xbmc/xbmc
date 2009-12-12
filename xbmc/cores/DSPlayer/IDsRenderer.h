@@ -25,4 +25,5 @@
 interface IDsRenderer : public IUnknown
 {
   STDMETHOD(CreateRenderer) (IUnknown** ppRenderer) = 0;
+  STDMETHOD(RenderPresent)  (IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface) = 0;
 };

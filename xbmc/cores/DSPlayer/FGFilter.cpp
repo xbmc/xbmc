@@ -432,8 +432,8 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF, CInterfaceList<IUnkno
   CStdString __err;
   if (m_clsid == __uuidof(CVMR9AllocatorPresenter))
     pCAP = new CVMR9AllocatorPresenter(hr,__err);
-  if (m_clsid == __uuidof(CEVRAllocatorPresenter))
-    pCAP = new CEVRAllocatorPresenter(hr,__err);
+  //if (m_clsid == __uuidof(CEVRAllocatorPresenter))
+  //  pCAP = new CEVRAllocatorPresenter(hr,__err);
 
   if(pCAP == NULL)
     return E_FAIL;

@@ -2171,10 +2171,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\system\players\dsplayer\dsfilterconfig.xml"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\DSPlayer\DSGraph.cpp"
 					>
 				</File>
@@ -2214,31 +2210,35 @@
 					RelativePath="..\..\xbmc\cores\DSPlayer\FGManager.h"
 					>
 				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.h"
-					>
-				</File>
 				<Filter
 					Name="Helpers"
 					>
+					<File
+						RelativePath="..\..\system\players\dsplayer\dsfilterconfig.xml"
+						>
+					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DSGeometry.h"
 						>
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DshowCommon.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.h"
 						>
 					</File>
 					<File
@@ -2260,6 +2260,14 @@
 					<Filter
 						Name="Renderers"
 						>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsRenderer.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsRenderer.h"
+							>
+						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.cpp"
 							>

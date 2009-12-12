@@ -23,6 +23,7 @@
 #include "DShowUtil/dshowutil.h"
 #include "DShowUtil/DSGeometry.h"
 #include "cores/VideoRenderers/RenderManager.h"
+
 #include "WindowingFactory.h" //d3d device and d3d interface
 #include "VMR9AllocatorPresenter.h"
 #include "application.h"
@@ -30,6 +31,7 @@
 #include "utils/log.h"
 #include "MacrovisionKicker.h"
 #include "IPinHook.h"
+#include "GuiSettings.h"
 
 
 class COuterVMR9
@@ -316,34 +318,34 @@ public:
 };
 
 CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error)
-: m_refCount(1),
+: CDsRenderer(),
+  m_refCount(1),
   m_pNbrSurface(0),
   m_pCurSurface(0)
 {
   m_D3D = g_Windowing.Get3DObject();
   m_D3DDev = g_Windowing.Get3DDevice();
   hr = S_OK;
-  CAutoLock Lock(&m_ObjectLock);
-  g_renderManager.PreInit(true);
+  InitializeCriticalSection(&m_critPrensent);
+  m_renderingOk = true;
 }
 
 CVMR9AllocatorPresenter::~CVMR9AllocatorPresenter()
 {
   DeleteSurfaces();
-  g_renderManager.UnInit();
+  DeleteCriticalSection(&m_critPrensent);
+  
 }
 
 void CVMR9AllocatorPresenter::DeleteSurfaces()
 {
-    CAutoLock Lock(&m_ObjectLock);
-
-    // clear out the private texture
-    m_pVideoTexture = NULL;
-
-    for( size_t i = 0; i < m_pSurfaces.size(); ++i ) 
-    {
-        m_pSurfaces[i] = NULL;
-    }
+  EnterCriticalSection(&m_critPrensent);
+  
+  // clear out the private texture
+  m_pVideoTexture = NULL;
+  for( size_t i = 0; i < m_pSurfaces.size(); ++i ) 
+     m_pSurfaces[i] = NULL;
+  LeaveCriticalSection(&m_critPrensent);
 }
 
 //IVMRSurfaceAllocator9
@@ -422,7 +424,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
 //from mediaportal
 HRESULT CVMR9AllocatorPresenter::AllocVideoSurface(D3DFORMAT Format)
 {
-  CAutoLock Lock(&m_ObjectLock);
+  EnterCriticalSection(&m_critPrensent);
   HRESULT hr;
   m_pVideoTexture = NULL;
   m_pVideoSurface = NULL;
@@ -430,77 +432,80 @@ HRESULT CVMR9AllocatorPresenter::AllocVideoSurface(D3DFORMAT Format)
   D3DDISPLAYMODE dm;
   hr = m_D3DDev->GetDisplayMode(NULL, &dm);
   
-  if (FAILED(hr = m_D3DDev->CreateTexture(m_iVideoWidth,
-                                          m_iVideoHeight,
-                                          1,
-                                          D3DUSAGE_RENDERTARGET,
-                                          dm.Format,//m_SurfaceType, // default is D3DFMT_A8R8G8B8
-                                          D3DPOOL_DEFAULT,
-                                          &m_pVideoTexture,
-                                          NULL ) ) )
-    return hr;
-  if(FAILED(hr = m_pVideoTexture->GetSurfaceLevel(0, &m_pVideoSurface)))
-    return hr;
+  if (SUCCEEDED(hr))
+    m_D3DDev->CreateTexture(m_iVideoWidth,  m_iVideoHeight,
+                            1,
+                            D3DUSAGE_RENDERTARGET,
+                            dm.Format,//m_SurfaceType, // default is D3DFMT_A8R8G8B8
+                            D3DPOOL_DEFAULT,
+                            &m_pVideoTexture,
+                            NULL);
+  if (SUCCEEDED(hr))
+    m_pVideoTexture->GetSurfaceLevel(0, &m_pVideoSurface);
+
+  LeaveCriticalSection(&m_critPrensent);
   return hr;
 }
 
-STDMETHODIMP CVMR9AllocatorPresenter::TerminateDevice(DWORD_PTR dwID)
+void CVMR9AllocatorPresenter::OnLostDevice()
 {
-    DeleteSurfaces();
-    return S_OK;
+  m_renderingOk = false;
 }
-    
-STDMETHODIMP CVMR9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID ,DWORD SurfaceIndex ,DWORD SurfaceFlags ,IDirect3DSurface9 **lplpSurface)
+void CVMR9AllocatorPresenter::OnCreateDevice()
 {
-  if( !lplpSurface )
-    return E_POINTER;
+  if(m_pIVMRSurfAllocNotify)
+	{
+    EnterCriticalSection(&m_critPrensent);
+    HRESULT hr;
+    HMONITOR hmon;
+    unsigned int adapter = GetAdapter(g_Windowing.Get3DObject());
+    HMONITOR hMonitor = m_D3D->GetAdapterMonitor(adapter);
+    hr = m_pIVMRSurfAllocNotify->ChangeD3DDevice(g_Windowing.Get3DDevice(),hMonitor);
+    if (SUCCEEDED(hr))
+    {
+      m_renderingOk = true;
+    }
+    LeaveCriticalSection(&m_critPrensent);
+	}
 
-  //return if the surface index is higher than the size of the surfaces we have
-  if (SurfaceIndex >= m_pSurfaces.size() ) 
+}
+STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9PresentationInfo *lpPresInfo)
+{
+  HRESULT hr;
+  CheckPointer(m_pIVMRSurfAllocNotify, E_UNEXPECTED);
+  if( !m_pIVMRSurfAllocNotify )
     return E_FAIL;
+  
 
-  CAutoLock Lock(&m_ObjectLock);
-  if (m_pNbrSurface)
+  if (!g_renderManager.IsConfigured())
   {
-    ++m_pCurSurface;
-    m_pCurSurface = m_pCurSurface % m_pNbrSurface;
-    (*lplpSurface = m_pSurfaces[m_pCurSurface + SurfaceIndex])->AddRef();
+    GetCurrentVideoSize();
+  }
+
+  if (!g_renderManager.IsStarted())
+    return E_FAIL;
+  
+  if(!lpPresInfo || !lpPresInfo->lpSurf)
+    return E_POINTER;
+ 
+  EnterCriticalSection(&m_critPrensent);
+  
+  CComPtr<IDirect3DTexture9> pTexture;
+  hr = lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
+  if(pTexture)
+  {
+    // When using VMR9AllocFlag_TextureSurface
+    // Didnt got it working yet
   }
   else
   {
-    m_pNbrSurface = SurfaceIndex;
-    (*lplpSurface = m_pSurfaces[SurfaceIndex])->AddRef();
-  }
-
-  return S_OK;
-}
     
-STDMETHODIMP CVMR9AllocatorPresenter::AdviseNotify(IVMRSurfaceAllocatorNotify9 *lpIVMRSurfAllocNotify)
-{
-    CAutoLock Lock(&m_ObjectLock);
-    HRESULT hr;
-    m_pIVMRSurfAllocNotify = lpIVMRSurfAllocNotify;
-    HMONITOR hMonitor = m_D3D->GetAdapterMonitor(GetAdapter(m_D3D));
-    hr = m_pIVMRSurfAllocNotify->SetD3DDevice( m_D3DDev, hMonitor);
-    return hr;
-}
-
-STDMETHODIMP CVMR9AllocatorPresenter::StartPresenting(DWORD_PTR dwUserID)
-{
-    CAutoLock Lock(&m_ObjectLock);
-
-    ASSERT( m_D3DDev );
-    if( m_D3DDev == NULL )
-    {
-        return E_FAIL;
-    }
-
-    return S_OK;
-}
-
-STDMETHODIMP CVMR9AllocatorPresenter::StopPresenting(DWORD_PTR dwUserID)
-{
-    return S_OK;
+    hr = m_D3DDev->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);
+    RenderPresent(m_pVideoTexture, m_pVideoSurface);
+    //g_renderManager.PaintVideoTexture(m_pVideoTexture, m_pVideoSurface);
+  }
+  LeaveCriticalSection(&m_critPrensent);
+  return hr;
 }
 
 void CVMR9AllocatorPresenter::GetCurrentVideoSize()
@@ -553,61 +558,61 @@ void CVMR9AllocatorPresenter::GetCurrentVideoSize()
   }
 
 }
-STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9PresentationInfo *lpPresInfo)
+
+STDMETHODIMP CVMR9AllocatorPresenter::TerminateDevice(DWORD_PTR dwID)
 {
-
-  HRESULT hr;
-
-  CheckPointer(m_pIVMRSurfAllocNotify, E_UNEXPECTED);
-  
-  if(!m_pIVMRSurfAllocNotify)
-    return E_FAIL;
-
-
-  m_pPrevEndFrame=lpPresInfo->rtEnd;
-  
-  if (!g_renderManager.IsConfigured())
-    GetCurrentVideoSize();
-
-  if (!g_renderManager.IsStarted())
-    return E_FAIL;
-  
-  if(!lpPresInfo || !lpPresInfo->lpSurf)
+    DeleteSurfaces();
+    return S_OK;
+}
+    
+STDMETHODIMP CVMR9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID ,DWORD SurfaceIndex ,DWORD SurfaceFlags ,IDirect3DSurface9 **lplpSurface)
+{
+  if( !lplpSurface )
     return E_POINTER;
 
-  CAutoLock Lock(&m_ObjectLock);
+  //return if the surface index is higher than the size of the surfaces we have
+  if (SurfaceIndex >= m_pSurfaces.size() ) 
+    return E_FAIL;
 
-  CComPtr<IDirect3DTexture9> pTexture;
-  hr = lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
-  if(pTexture)
+  EnterCriticalSection(&m_critPrensent);
+  if (m_pNbrSurface)
   {
-    // When using VMR9AllocFlag_TextureSurface
-    // Didnt got it working yet
+    ++m_pCurSurface;
+    m_pCurSurface = m_pCurSurface % m_pNbrSurface;
+    (*lplpSurface = m_pSurfaces[m_pCurSurface + SurfaceIndex])->AddRef();
   }
   else
   {
-    
-    hr = m_D3DDev->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);
-    g_renderManager.PaintVideoTexture(m_pVideoTexture, m_pVideoSurface);
+    m_pNbrSurface = SurfaceIndex;
+    (*lplpSurface = m_pSurfaces[SurfaceIndex])->AddRef();
   }
+  LeaveCriticalSection(&m_critPrensent);
 
-  g_application.NewFrame();
-  //Give .1 sec to the gui to render
-  g_application.WaitFrame(100);
-  return hr;
-  //This is not working yet might not be the best way too switch monitor for the dshow renderer
-  //Should do something with the g_windowing
-  /*if (CheckDevice())
-  {
-    HMONITOR hMonitor = g_Windowing.Get3DObject()->GetAdapterMonitor(GetAdapter(g_Windowing.Get3DObject()));
-	m_pIVMRSurfAllocNotify->ChangeD3DDevice(g_Windowing.Get3DDevice(),hMonitor);
-    m_D3D = g_Windowing.Get3DObject();
-	m_D3DDev = g_Windowing.Get3DDevice();
-  }*/
-  return hr;
-  
+  return S_OK;
+}
+    
+STDMETHODIMP CVMR9AllocatorPresenter::AdviseNotify(IVMRSurfaceAllocatorNotify9 *lpIVMRSurfAllocNotify)
+{
+    EnterCriticalSection(&m_critPrensent);
+    HRESULT hr;
+    m_pIVMRSurfAllocNotify = lpIVMRSurfAllocNotify;
+    HMONITOR hMonitor = m_D3D->GetAdapterMonitor(GetAdapter(m_D3D));
+    hr = m_pIVMRSurfAllocNotify->SetD3DDevice( m_D3DDev, hMonitor);
+    LeaveCriticalSection(&m_critPrensent);
+    return hr;
 }
 
+STDMETHODIMP CVMR9AllocatorPresenter::StartPresenting(DWORD_PTR dwUserID)
+{
+  EnterCriticalSection(&m_critPrensent);
+  HRESULT hr = S_OK;
+  ASSERT( m_D3DDev );
+  if( !m_D3DDev )
+    hr =  E_FAIL;
+
+  LeaveCriticalSection(&m_critPrensent);
+  return hr;
+}
 // IUnknown
 STDMETHODIMP CVMR9AllocatorPresenter::QueryInterface( 
         REFIID riid,
@@ -639,6 +644,11 @@ STDMETHODIMP CVMR9AllocatorPresenter::QueryInterface(
     return hr;
 }
 
+STDMETHODIMP CVMR9AllocatorPresenter::StopPresenting(DWORD_PTR dwUserID)
+{
+    return S_OK;
+}
+
 ULONG CVMR9AllocatorPresenter::AddRef()
 {
     return InterlockedIncrement(& m_refCount);
@@ -663,7 +673,8 @@ UINT CVMR9AllocatorPresenter::GetAdapter(IDirect3D9* pD3D)
   for(UINT adp = 0, num_adp = pD3D->GetAdapterCount(); adp < num_adp; ++adp)
   {
     HMONITOR hAdpMon = pD3D->GetAdapterMonitor(adp);
-    if(hAdpMon == hMonitor) return adp;
+    if(hAdpMon == hMonitor) 
+      return adp;
   }
 
   return D3DADAPTER_DEFAULT;
@@ -738,7 +749,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   }
   while(0);
 
-    return E_FAIL;
+  return E_FAIL;
 }
 
 void CVMR9AllocatorPresenter::UpdateAlphaBitmap()

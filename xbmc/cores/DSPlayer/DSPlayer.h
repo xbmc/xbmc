@@ -24,15 +24,9 @@
 #include "Intsafe.h"
 #include "cores/IPlayer.h"
 #include "utils/Thread.h"
-//#include <stdio.h>
 #include "StdString.h"
 #include "StringUtils.h"
-
 #include "DSGraph.h"
-
-
-
-
 
 
 class CDSPlayer : public IPlayer, public CThread

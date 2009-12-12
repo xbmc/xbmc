@@ -54,8 +54,6 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
   if ((pWinFilePath.Left(6)).Equals("smb://",false))
 	pWinFilePath.Replace("smb://","\\\\");
 
-  
-  
   if ((pWinFilePath.Left(6)).Equals("rar://",false))
     pForceXbmcSourceFilter = true;
 
@@ -78,9 +76,9 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
           return E_FAIL;
         }
 	  }
-    }
+  }
 
-    m_pGraphBuilder->AddFilter(m_SourceF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
+  m_pGraphBuilder->AddFilter(m_SourceF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
 	IFileSourceFilter *pFS = NULL;
 	m_SourceF->QueryInterface(IID_IFileSourceFilter, (void**)&pFS);
     CStdStringW strFileW;
@@ -211,17 +209,19 @@ HRESULT CFGLoader::InsertAutoLoad()
   {
     pFGF = m_configFilter.GetNext(pos);
     
-    if (( pFGF->GetAutoLoad() ) && (SUCCEEDED(pFGF->Create(&ppBF, pUnk))))
-	{
-      m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
-      ppBF = NULL;
-	}
-	else
-	{
+    if ( pFGF->GetAutoLoad() )
+    {
+      if (SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
+	    {
+        m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
+        ppBF = NULL;
+	    }
+	    else
+	    {
         CLog::Log(LOGDEBUG,"DSPlayer %s Failed to create the auto loading filter called %s",__FUNCTION__,pFGF->GetXFilterName().c_str());
+      }
     }
-  }
-    
+  }  
   ppBF.Release();
   CLog::Log(LOGDEBUG,"DSPlayer %s Is done adding the autoloading filters",__FUNCTION__);
   return hr;
@@ -307,28 +307,27 @@ HRESULT CFGLoader::LoadConfig(CStdString configFile)
     strTmpFilterName = pFilters->Attribute("name");
     strTmpFilterType = pFilters->Attribute("type");
     if (XMLUtils::GetString(pFilters,"path",strFPath))
-	{
-		CStdString strPath2;
-		strPath2.Format("special://xbmc/system/players/dsplayer/%s", strFPath.c_str());
-		if (!CFile::Exists(strFPath) && CFile::Exists(strPath2))
-		  strFPath = _P(strPath2);
+	  {
+		  CStdString strPath2;
+		  strPath2.Format("special://xbmc/system/players/dsplayer/%s", strFPath.c_str());
+		  if (!CFile::Exists(strFPath) && CFile::Exists(strPath2))
+		    strFPath = _P(strPath2);
 
-		XMLUtils::GetString(pFilters,"guid",strFGuid);
-		XMLUtils::GetString(pFilters,"filetype",strFileType);
-		pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,L"",MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
-		if (strTmpFilterName.Equals("mpcvideodec",false))
-		  m_mpcVideoDecGuid = DShowUtil::GUIDFromCString(strFGuid);
-	}
-	else
-	{
+		  XMLUtils::GetString(pFilters,"guid",strFGuid);
+		  XMLUtils::GetString(pFilters,"filetype",strFileType);
+		  pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,L"",MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
+		  if (strTmpFilterName.Equals("mpcvideodec",false))
+		    m_mpcVideoDecGuid = DShowUtil::GUIDFromCString(strFGuid);
+	  }
+	  else
+	  {
       XMLUtils::GetString(pFilters,"guid",strFGuid);
       XMLUtils::GetString(pFilters,"filetype",strFileType);
-      
-	  strFPath = DShowUtil::GetFilterPath(strFGuid);
-	  pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,L"",MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
-	}
+	    strFPath = DShowUtil::GetFilterPath(strFGuid);
+	    pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,L"",MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
+	  }
     if (XMLUtils::GetString(pFilters,"alwaysload",strFAutoLoad))
-	{
+	  {
       if ( ( strFAutoLoad.Equals("1",false) ) || ( strFAutoLoad.Equals("true",false) ) )
         pFGF->SetAutoLoad(true);
     }
@@ -337,6 +336,5 @@ HRESULT CFGLoader::LoadConfig(CStdString configFile)
       m_configFilter.AddTail(pFGF);
 
     pFilters = pFilters->NextSiblingElement();
-  
-  }
+  }//end while
 }

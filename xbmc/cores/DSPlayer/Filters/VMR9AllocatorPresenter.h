@@ -5,6 +5,7 @@
 #include <vmr9.h>
 #include <wxdebug.h>
 #include <Wxutil.h>
+
 #pragma warning(push, 2)
 
 #pragma warning(disable : 4995)
@@ -15,13 +16,15 @@ using namespace std;
 
 #include <d3d9.h>
 
-#include "IDsRenderer.h"
+#include "DsRenderer.h"
 #include "geometry.h"
+
+#include "VideoReferenceClock.h"
 #define VMRBITMAP_UPDATE            0x80000000
 class CDSGraph;
 
 [uuid("A2636B41-5E3C-4426-B6BC-CD8616600912")]
-class CVMR9AllocatorPresenter  : public  IDsRenderer,
+class CVMR9AllocatorPresenter  : public CDsRenderer,
                                         IVMRSurfaceAllocator9,
                                         IVMRImagePresenter9
                     
@@ -50,7 +53,13 @@ public:
 
   // IDSRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
-  
+
+  // ID3DResource
+  void OnLostDevice();
+  //void OnResetDevice();
+  //void OnDestroyDevice();
+  void OnCreateDevice();
+
   UINT GetAdapter(IDirect3D9 *pD3D);
   STDMETHODIMP_(void) SetPosition(RECT w, RECT v) {} ;
   STDMETHODIMP_(bool) Paint(bool fAll) { return true; } ;
@@ -74,18 +83,15 @@ protected:
   //Clock stuff
   REFERENCE_TIME m_rtTimePerFrame;
   REFERENCE_TIME m_pPrevEndFrame;
-
   int            m_iVideoWidth;
   int            m_iVideoHeight;
 
   float          m_fps;
-
+  int            m_fFrameRate;
+  bool           m_renderingOk;
 private:
   long        m_refCount;
-  CCritSec    m_ObjectLock;
-  
-  
-  
+  CRITICAL_SECTION m_critPrensent;
   
   CComPtr<IDirect3D9>                     m_D3D;
   CComPtr<IDirect3DDevice9>               m_D3DDev;
@@ -94,7 +100,6 @@ private:
   vector<CComPtr<IDirect3DSurface9> >     m_pSurfaces;
   int                                     m_pNbrSurface;
   int                                     m_pCurSurface;
-
   CComPtr<IDirect3DTexture9>              m_pVideoTexture;
   CComPtr<IDirect3DSurface9>              m_pVideoSurface;
 };
