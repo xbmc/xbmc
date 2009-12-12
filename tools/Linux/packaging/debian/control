@@ -119,6 +119,7 @@ Package: xbmc-data
 Architecture: all
 Depends: xbmc-bin (>= ${source:Version}),
          xbmc-bin (<< ${source:Version}.1~),
+         mesa-utils,
          ${python:Depends},
          ${misc:Depends}
 Provides: xbmc-common
