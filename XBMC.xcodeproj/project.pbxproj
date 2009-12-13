@@ -424,7 +424,6 @@
 		E38E1FBF0D25F9FD00618676 /* AC3CDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */; };
 		E38E1FC00D25F9FD00618676 /* AC3Codec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D90D25F9FA00618676 /* AC3Codec.cpp */; };
 		E38E1FC10D25F9FD00618676 /* ADPCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */; };
-		E38E1FC20D25F9FD00618676 /* AdplugCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DD0D25F9FA00618676 /* AdplugCodec.cpp */; };
 		E38E1FC30D25F9FD00618676 /* AIFFcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */; };
 		E38E1FC40D25F9FD00618676 /* APEcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E10D25F9FA00618676 /* APEcodec.cpp */; };
 		E38E1FC50D25F9FD00618676 /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E30D25F9FA00618676 /* AudioDecoder.cpp */; };
@@ -742,7 +741,6 @@
 		E38E227F0D25F9FE00618676 /* MusicInfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D910D25F9FD00618676 /* MusicInfoLoader.cpp */; };
 		E38E22800D25F9FE00618676 /* MusicInfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D930D25F9FD00618676 /* MusicInfoScanner.cpp */; };
 		E38E22820D25F9FE00618676 /* MusicInfoTagLoaderAAC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D970D25F9FD00618676 /* MusicInfoTagLoaderAAC.cpp */; };
-		E38E22830D25F9FE00618676 /* MusicInfoTagLoaderAdplug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D990D25F9FD00618676 /* MusicInfoTagLoaderAdplug.cpp */; };
 		E38E22840D25F9FE00618676 /* MusicInfoTagLoaderApe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D9B0D25F9FD00618676 /* MusicInfoTagLoaderApe.cpp */; };
 		E38E22850D25F9FE00618676 /* MusicInfoTagLoaderCDDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D9D0D25F9FD00618676 /* MusicInfoTagLoaderCDDA.cpp */; };
 		E38E22860D25F9FE00618676 /* MusicInfoTagLoaderDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D9F0D25F9FD00618676 /* MusicInfoTagLoaderDatabase.cpp */; };
@@ -1145,7 +1143,6 @@
 		F5A1C9170F6B06CF00A96ABD /* AC3CDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */; };
 		F5A1C9180F6B06CF00A96ABD /* AC3Codec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D90D25F9FA00618676 /* AC3Codec.cpp */; };
 		F5A1C9190F6B06CF00A96ABD /* ADPCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */; };
-		F5A1C91A0F6B06CF00A96ABD /* AdplugCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DD0D25F9FA00618676 /* AdplugCodec.cpp */; };
 		F5A1C91B0F6B06CF00A96ABD /* AIFFcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */; };
 		F5A1C91C0F6B06CF00A96ABD /* APEcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E10D25F9FA00618676 /* APEcodec.cpp */; };
 		F5A1C91D0F6B06CF00A96ABD /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E30D25F9FA00618676 /* AudioDecoder.cpp */; };
@@ -1463,7 +1460,6 @@
 		F5A1CA850F6B06CF00A96ABD /* MusicInfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D910D25F9FD00618676 /* MusicInfoLoader.cpp */; };
 		F5A1CA860F6B06CF00A96ABD /* MusicInfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D930D25F9FD00618676 /* MusicInfoScanner.cpp */; };
 		F5A1CA880F6B06CF00A96ABD /* MusicInfoTagLoaderAAC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D970D25F9FD00618676 /* MusicInfoTagLoaderAAC.cpp */; };
-		F5A1CA890F6B06CF00A96ABD /* MusicInfoTagLoaderAdplug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D990D25F9FD00618676 /* MusicInfoTagLoaderAdplug.cpp */; };
 		F5A1CA8A0F6B06CF00A96ABD /* MusicInfoTagLoaderApe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D9B0D25F9FD00618676 /* MusicInfoTagLoaderApe.cpp */; };
 		F5A1CA8B0F6B06CF00A96ABD /* MusicInfoTagLoaderCDDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D9D0D25F9FD00618676 /* MusicInfoTagLoaderCDDA.cpp */; };
 		F5A1CA8C0F6B06CF00A96ABD /* MusicInfoTagLoaderDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D9F0D25F9FD00618676 /* MusicInfoTagLoaderDatabase.cpp */; };
@@ -2481,8 +2477,6 @@
 		E38E15DA0D25F9FA00618676 /* AC3Codec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AC3Codec.h; sourceTree = "<group>"; };
 		E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ADPCMCodec.cpp; sourceTree = "<group>"; };
 		E38E15DC0D25F9FA00618676 /* ADPCMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADPCMCodec.h; sourceTree = "<group>"; };
-		E38E15DD0D25F9FA00618676 /* AdplugCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AdplugCodec.cpp; sourceTree = "<group>"; };
-		E38E15DE0D25F9FA00618676 /* AdplugCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdplugCodec.h; sourceTree = "<group>"; };
 		E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AIFFcodec.cpp; sourceTree = "<group>"; };
 		E38E15E00D25F9FA00618676 /* AIFFcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIFFcodec.h; sourceTree = "<group>"; };
 		E38E15E10D25F9FA00618676 /* APEcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = APEcodec.cpp; sourceTree = "<group>"; };
@@ -2496,7 +2490,6 @@
 		E38E15E90D25F9FA00618676 /* CodecFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CodecFactory.h; sourceTree = "<group>"; };
 		E38E15EE0D25F9FA00618676 /* DllAc3codec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAc3codec.h; sourceTree = "<group>"; };
 		E38E15EF0D25F9FA00618676 /* DllAdpcm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAdpcm.h; sourceTree = "<group>"; };
-		E38E15F00D25F9FA00618676 /* DllAdplug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAdplug.h; sourceTree = "<group>"; };
 		E38E15F20D25F9FA00618676 /* DllDCACodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllDCACodec.h; sourceTree = "<group>"; };
 		E38E15F30D25F9FA00618676 /* DllDumb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllDumb.h; sourceTree = "<group>"; };
 		E38E15F40D25F9FA00618676 /* DllGensApu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllGensApu.h; sourceTree = "<group>"; };
@@ -3300,8 +3293,6 @@
 		E38E1D940D25F9FD00618676 /* MusicInfoScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoScanner.h; sourceTree = "<group>"; };
 		E38E1D970D25F9FD00618676 /* MusicInfoTagLoaderAAC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderAAC.cpp; sourceTree = "<group>"; };
 		E38E1D980D25F9FD00618676 /* MusicInfoTagLoaderAAC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderAAC.h; sourceTree = "<group>"; };
-		E38E1D990D25F9FD00618676 /* MusicInfoTagLoaderAdplug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderAdplug.cpp; sourceTree = "<group>"; };
-		E38E1D9A0D25F9FD00618676 /* MusicInfoTagLoaderAdplug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderAdplug.h; sourceTree = "<group>"; };
 		E38E1D9B0D25F9FD00618676 /* MusicInfoTagLoaderApe.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderApe.cpp; sourceTree = "<group>"; };
 		E38E1D9C0D25F9FD00618676 /* MusicInfoTagLoaderApe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderApe.h; sourceTree = "<group>"; };
 		E38E1D9D0D25F9FD00618676 /* MusicInfoTagLoaderCDDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderCDDA.cpp; sourceTree = "<group>"; };
@@ -4646,8 +4637,6 @@
 				880DBE4D0DC223FF00E26B71 /* MusicInfoTag.h */,
 				E38E1D970D25F9FD00618676 /* MusicInfoTagLoaderAAC.cpp */,
 				E38E1D980D25F9FD00618676 /* MusicInfoTagLoaderAAC.h */,
-				E38E1D990D25F9FD00618676 /* MusicInfoTagLoaderAdplug.cpp */,
-				E38E1D9A0D25F9FD00618676 /* MusicInfoTagLoaderAdplug.h */,
 				E38E1D9B0D25F9FD00618676 /* MusicInfoTagLoaderApe.cpp */,
 				E38E1D9C0D25F9FD00618676 /* MusicInfoTagLoaderApe.h */,
 				88ACB0200DCF40D00083CFDF /* MusicInfoTagLoaderASAP.cpp */,
@@ -5244,8 +5233,6 @@
 				E38E15DA0D25F9FA00618676 /* AC3Codec.h */,
 				E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */,
 				E38E15DC0D25F9FA00618676 /* ADPCMCodec.h */,
-				E38E15DD0D25F9FA00618676 /* AdplugCodec.cpp */,
-				E38E15DE0D25F9FA00618676 /* AdplugCodec.h */,
 				E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */,
 				E38E15E00D25F9FA00618676 /* AIFFcodec.h */,
 				E38E15E10D25F9FA00618676 /* APEcodec.cpp */,
@@ -5259,7 +5246,6 @@
 				E38E15E90D25F9FA00618676 /* CodecFactory.h */,
 				E38E15EE0D25F9FA00618676 /* DllAc3codec.h */,
 				E38E15EF0D25F9FA00618676 /* DllAdpcm.h */,
-				E38E15F00D25F9FA00618676 /* DllAdplug.h */,
 				E38E15F20D25F9FA00618676 /* DllDCACodec.h */,
 				E38E15F30D25F9FA00618676 /* DllDumb.h */,
 				E38E15F40D25F9FA00618676 /* DllGensApu.h */,
@@ -7370,7 +7356,6 @@
 				E38E1FBF0D25F9FD00618676 /* AC3CDDACodec.cpp in Sources */,
 				E38E1FC00D25F9FD00618676 /* AC3Codec.cpp in Sources */,
 				E38E1FC10D25F9FD00618676 /* ADPCMCodec.cpp in Sources */,
-				E38E1FC20D25F9FD00618676 /* AdplugCodec.cpp in Sources */,
 				E38E1FC30D25F9FD00618676 /* AIFFcodec.cpp in Sources */,
 				E38E1FC40D25F9FD00618676 /* APEcodec.cpp in Sources */,
 				E38E1FC50D25F9FD00618676 /* AudioDecoder.cpp in Sources */,
@@ -7688,7 +7673,6 @@
 				E38E227F0D25F9FE00618676 /* MusicInfoLoader.cpp in Sources */,
 				E38E22800D25F9FE00618676 /* MusicInfoScanner.cpp in Sources */,
 				E38E22820D25F9FE00618676 /* MusicInfoTagLoaderAAC.cpp in Sources */,
-				E38E22830D25F9FE00618676 /* MusicInfoTagLoaderAdplug.cpp in Sources */,
 				E38E22840D25F9FE00618676 /* MusicInfoTagLoaderApe.cpp in Sources */,
 				E38E22850D25F9FE00618676 /* MusicInfoTagLoaderCDDA.cpp in Sources */,
 				E38E22860D25F9FE00618676 /* MusicInfoTagLoaderDatabase.cpp in Sources */,
@@ -8216,7 +8200,6 @@
 				F5A1C9170F6B06CF00A96ABD /* AC3CDDACodec.cpp in Sources */,
 				F5A1C9180F6B06CF00A96ABD /* AC3Codec.cpp in Sources */,
 				F5A1C9190F6B06CF00A96ABD /* ADPCMCodec.cpp in Sources */,
-				F5A1C91A0F6B06CF00A96ABD /* AdplugCodec.cpp in Sources */,
 				F5A1C91B0F6B06CF00A96ABD /* AIFFcodec.cpp in Sources */,
 				F5A1C91C0F6B06CF00A96ABD /* APEcodec.cpp in Sources */,
 				F5A1C91D0F6B06CF00A96ABD /* AudioDecoder.cpp in Sources */,
@@ -8534,7 +8517,6 @@
 				F5A1CA850F6B06CF00A96ABD /* MusicInfoLoader.cpp in Sources */,
 				F5A1CA860F6B06CF00A96ABD /* MusicInfoScanner.cpp in Sources */,
 				F5A1CA880F6B06CF00A96ABD /* MusicInfoTagLoaderAAC.cpp in Sources */,
-				F5A1CA890F6B06CF00A96ABD /* MusicInfoTagLoaderAdplug.cpp in Sources */,
 				F5A1CA8A0F6B06CF00A96ABD /* MusicInfoTagLoaderApe.cpp in Sources */,
 				F5A1CA8B0F6B06CF00A96ABD /* MusicInfoTagLoaderCDDA.cpp in Sources */,
 				F5A1CA8C0F6B06CF00A96ABD /* MusicInfoTagLoaderDatabase.cpp in Sources */,
