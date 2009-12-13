@@ -507,12 +507,9 @@ void CDVDPlayerVideo::Process()
         // assume decoder dropped a picture if it didn't give us any
         // picture from a demux packet, this should be reasonable
         // for libavformat as a demuxer as it normally packetizes
-        // pictures when they come from demuxer
-#if defined(HAVE_LIBCRYSTALHD)
-        if(bRequestDrop && !bPacketDrop && (iDecoderState & VC_BUFFER))
-#else
+        // pictures when they come from demuxer.
+        // Note that crystalhd decoder will drop first 4 as it starts decoding
         if(bRequestDrop && !bPacketDrop && (iDecoderState & VC_BUFFER) && !(iDecoderState & VC_PICTURE))
-#endif
         {
           m_iDroppedFrames++;
           iDropped++;
@@ -630,10 +627,13 @@ void CDVDPlayerVideo::Process()
             }
             else
             {
-#if !defined(HAVE_LIBCRYSTALHD)
-              CLog::Log(LOGWARNING, "Decoder Error getting videoPicture.");
-              m_pVideoCodec->Reset();
-#endif
+              // Don't reset decoder if no picture for NV12 (crystalhd)
+              // It will do this when starting up and a reset is bad.
+              if (picture.format != DVDVideoPicture::FMT_NV12)
+              {
+                CLog::Log(LOGWARNING, "Decoder Error getting videoPicture.");
+                m_pVideoCodec->Reset();
+              }
             }
           }
           
