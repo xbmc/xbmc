@@ -871,6 +871,11 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
       CDVDCodecUtils::CopyPicture(pDest, m_pTempOverlayPicture);
     }
   }
+  else if(pSource->format == DVDVideoPicture::FMT_NV12)
+  {
+    CDVDCodecUtils::CopyNV12Picture(pDest, pSource);
+  }
+
 }
 #endif
 
@@ -1087,14 +1092,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   if (index < 0)
     return EOS_DROPPED;
 
-  if(pPicture->format == DVDVideoPicture::FMT_NV12)
-  {
-    CDVDCodecUtils::CopyNV12Picture(&image, pPicture);
-  }
-  else
-  {
-    ProcessOverlays(pPicture, &image, pts);
-  }
+  ProcessOverlays(pPicture, &image, pts);
 
   // tell the renderer that we've finished with the image (so it can do any
   // post processing before FlipPage() is called.)
