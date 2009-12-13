@@ -306,6 +306,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bCanQueue=item.m_bCanQueue;
   m_contenttype = item.m_contenttype;
   m_extrainfo = item.m_extrainfo;
+  m_specialSort = item.m_specialSort;
   return *this;
 }
 
@@ -343,6 +344,7 @@ void CFileItem::Reset()
   delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
   m_extrainfo.Empty();
+  m_specialSort = SORT_NORMALLY;
   SetInvalid();
 }
 
@@ -372,6 +374,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar << m_bCanQueue;
     ar << m_contenttype;
     ar << m_extrainfo;
+    ar << m_specialSort;
 
     if (m_musicInfoTag)
     {
@@ -410,15 +413,17 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_idepth;
     ar >> m_lStartOffset;
     ar >> m_lEndOffset;
-    int lockmode;
-    ar >> lockmode;
-    m_iLockMode = (LockType)lockmode;
+    int temp;
+    ar >> temp;
+    m_iLockMode = (LockType)temp;
     ar >> m_strLockCode;
     ar >> m_iBadPwdCount;
 
     ar >> m_bCanQueue;
     ar >> m_contenttype;
     ar >> m_extrainfo;
+    ar >> temp;
+    m_specialSort = (SPECIAL_SORT)temp;
 
     int iType;
     ar >> iType;
@@ -1031,6 +1036,7 @@ void CFileItem::SetLabel(const CStdString &strLabel)
   {
     m_bIsParentFolder=true;
     m_bIsFolder=true;
+    m_specialSort = SORT_ON_TOP;
     SetLabelPreformated(true);
   }
   CGUIListItem::SetLabel(strLabel);

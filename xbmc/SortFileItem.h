@@ -111,6 +111,12 @@ typedef enum {
   SORT_ORDER_DESC
 } SORT_ORDER;
 
+typedef enum {
+  SORT_NORMALLY=0,
+  SORT_ON_TOP,
+  SORT_ON_BOTTOM
+} SPECIAL_SORT;
+
 typedef struct
 {
   SORT_METHOD m_sortMethod;
