@@ -2657,9 +2657,15 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
   if (CUtil::IsStack(strMovieName))
     strMovieName = CStackDirectory::GetStackedTitlePath(strMovieName);
 
+  int pos;
+  if ((pos=strMovieName.Find("BDMV/")) != -1 ||
+      (pos=strMovieName.Find("BDMV\\")) != -1)
+    strMovieName = strMovieName.Mid(0,pos+5);
+
   if ((!m_bIsFolder || IsDVDFile(false, true) || CUtil::IsInArchive(m_strPath)) && bUseFolderNames)
   {
-    CUtil::GetParentPath(m_strPath, strMovieName);
+    CStdString name2(strMovieName);
+    CUtil::GetParentPath(name2,strMovieName);
     if (CUtil::IsInArchive(m_strPath) || strMovieName.Find( "VIDEO_TS" ) != -1)
     {
       CStdString strArchivePath;
