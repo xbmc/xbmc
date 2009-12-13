@@ -1,5 +1,5 @@
 
-SUBDIRS=src
+SUBDIRS=src/libbdnav
 
 EXTRA_DIST=README.txt
 

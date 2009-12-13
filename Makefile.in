@@ -246,6 +246,8 @@ xbmc/visualizations/visualization.a: force
 	$(MAKE) -C xbmc/visualizations
 xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
+xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a: force
+	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libbdnav
 
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
@@ -355,6 +357,7 @@ OBJSXBMC=	\
 	xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a \
 	xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a \
 	xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a \
+	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
 	xbmc/cores/AudioRenderers/audiorenderers.a \
 	xbmc/cores/ExternalPlayer/ExternalPlayer.a \
 	xbmc/FileSystem/filesystem.a \

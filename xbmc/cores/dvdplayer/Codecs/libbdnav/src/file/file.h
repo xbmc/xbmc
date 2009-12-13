@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 //#ifdef __LINUX__
-#define file_open file_open_linux
+#define file_open file_open_xbmc
 #define _FILE_OFFSET_BITS 64
 #define __USE_LARGEFILE64
 #define DIR_SEP "/"
@@ -31,6 +31,6 @@ struct file
     int (*write)(FILE_H *file, uint8_t *buf, int64_t size);
 };
 
-extern FILE_H *file_open_linux(const char* filename, const char *mode);
+extern FILE_H *file_open_xbmc(const char* filename, const char *mode);
 
 #endif /* FILE_H_ */

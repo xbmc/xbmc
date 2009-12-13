@@ -74,7 +74,7 @@ char* nav_find_main_title(char *root)
     int res;
     char longest[11];
 
-    DEBUG(DBG_NAV, "Root: %s:\n", root);
+    //DEBUG(DBG_NAV, "Root: %s:\n", root);
     path = str_printf("%s" DIR_SEP "BDMV" DIR_SEP "PLAYLIST", root);
     if (path == NULL) {
         fprintf(stderr, "Failed to find playlist path: %s\n", path);

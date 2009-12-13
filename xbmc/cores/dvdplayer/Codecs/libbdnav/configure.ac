@@ -209,6 +209,6 @@ AC_CHECK_HEADERS([openssl/ecdsa.h], [], [
 AM_CONFIG_HEADER(config.h)
 
 # List all Makefiles here.
-AC_CONFIG_FILES([Makefile src/Makefile src/libaacs/Makefile src/libbdnav/Makefile src/libbdplus/Makefile src/examples/Makefile])
+AC_CONFIG_FILES([Makefile src/libbdnav/Makefile])
 AC_OUTPUT
 
