@@ -1072,7 +1072,8 @@ void CLinuxRendererGL::LoadShaders(int field)
    */
   else if (glewIsSupported("GL_ARB_fragment_program")  
            && ((requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_ARB)
-               || err))
+           || (requestedMethod==RENDER_METHOD_CRYSTALHD)
+           || err))
   {
     err = false;
     CLog::Log(LOGNOTICE, "GL: ARB shaders support detected");
