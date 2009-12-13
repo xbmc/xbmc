@@ -787,7 +787,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 void CLinuxRendererGL::FlipPage(int source)
 {
 #ifdef HAVE_LIBVDPAU
-  if (m_renderMethod == RENDER_VDPAU && g_VDPAU);
+  if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU)
     g_VDPAU->Present();
 #endif
 
@@ -2345,7 +2345,7 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 bool CLinuxRendererGL::SupportsBrightness()
 {
 #ifdef HAVE_LIBVDPAU
-  if ((m_renderMethod == RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
+  if ((m_renderMethod & RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
     return true;
 #endif
   return m_renderMethod == RENDER_GLSL
@@ -2356,7 +2356,7 @@ bool CLinuxRendererGL::SupportsBrightness()
 bool CLinuxRendererGL::SupportsContrast()
 {
 #ifdef HAVE_LIBVDPAU
-  if ((m_renderMethod == RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
+  if ((m_renderMethod & RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
     return true;
 #endif
   return m_renderMethod == RENDER_GLSL
@@ -2380,7 +2380,7 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   || method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
-  if(m_renderMethod == RENDER_METHOD_VDPAU)
+  if(m_renderMethod & RENDER_METHOD_VDPAU)
   {
     if(method == VS_INTERLACEMETHOD_VDPAU
     || method == VS_INTERLACEMETHOD_RENDER_BLEND
@@ -2422,7 +2422,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
     return true;
 #endif
 
-  if(method == VS_SCALINGMETHOD_VDPAU_HARDWARE && m_renderMethod == RENDER_METHOD_VDPAU)
+  if(method == VS_SCALINGMETHOD_VDPAU_HARDWARE && m_renderMethod & RENDER_METHOD_VDPAU)
     return true;
 
   return false;
