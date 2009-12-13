@@ -122,6 +122,8 @@ public:
   virtual int drop(void) { return DB_COMMAND_OK; }
   virtual long nextid(const char* seq_name)=0;
 
+  virtual bool exists(void) { return false; }
+
 /* virtual methods for transaction */
 
   virtual void start_transaction() {};
@@ -251,6 +253,9 @@ public:
 
 /* error handling */
 //  virtual void halt(const char *msg);
+
+/* last inserted id */
+  virtual int64_t lastinsertid() = 0;
 /* sequence numbers */
   virtual long nextid(const char *seq_name)=0;
 /* sequence numbers */

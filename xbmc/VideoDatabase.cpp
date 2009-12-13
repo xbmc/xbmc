@@ -503,7 +503,7 @@ int CVideoDatabase::AddPath(const CStdString& strPath)
 
     strSQL=FormatSQL("insert into path (idPath, strPath, strContent, strScraper) values (NULL,'%s','','')", strPath1.c_str());
     m_pDS->exec(strSQL.c_str());
-    idPath = (int)sqlite3_last_insert_rowid( m_pDB->getHandle() );
+    idPath = (int)m_pDS->lastinsertid();
     return idPath;
   }
   catch (...)
@@ -568,7 +568,7 @@ int CVideoDatabase::AddFile(const CStdString& strFileNameAndPath)
     m_pDS->close();
     strSQL=FormatSQL("insert into files (idFile,idPath,strFileName) values(NULL, %i, '%s')", idPath,strFileName.c_str());
     m_pDS->exec(strSQL.c_str());
-    idFile = (int)sqlite3_last_insert_rowid( m_pDB->getHandle() );
+    idFile = (int)m_pDS->lastinsertid();
     return idFile;
   }
   catch (...)
@@ -919,7 +919,7 @@ int CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath)
     {
       CStdString strSQL=FormatSQL("insert into movie (idMovie, idFile) values (NULL, %i)", idFile);
       m_pDS->exec(strSQL.c_str());
-      idMovie = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      idMovie = (int)m_pDS->lastinsertid();
 //      CommitTransaction();
     }
 
@@ -946,7 +946,7 @@ int CVideoDatabase::AddTvShow(const CStdString& strPath)
 
     strSQL=FormatSQL("insert into tvshow (idShow) values (NULL)");
     m_pDS->exec(strSQL.c_str());
-    int idTvShow = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+    int idTvShow = (int)m_pDS->lastinsertid();
 
     int idPath = GetPathId(strPath);
     if (idPath < 0)
@@ -980,7 +980,7 @@ int CVideoDatabase::AddEpisode(int idShow, const CStdString& strFilenameAndPath)
 
     CStdString strSQL=FormatSQL("insert into episode (idEpisode, idFile) values (NULL, %i)", idFile);
     m_pDS->exec(strSQL.c_str());
-    idEpisode = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+    idEpisode = (int)m_pDS->lastinsertid();
 
     strSQL=FormatSQL("insert into tvshowlinkepisode (idShow,idEpisode) values (%i,%i)",idShow,idEpisode);
     m_pDS->exec(strSQL.c_str());
@@ -1012,7 +1012,7 @@ int CVideoDatabase::AddMusicVideo(const CStdString& strFilenameAndPath)
     {
       CStdString strSQL=FormatSQL("insert into musicvideo (idMVideo, idFile) values (NULL, %i)", idFile);
       m_pDS->exec(strSQL.c_str());
-      idMVideo = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      idMVideo = (int)m_pDS->lastinsertid();
     }
 
     return idMVideo;
@@ -1040,7 +1040,7 @@ int CVideoDatabase::AddGenre(const CStdString& strGenre)
       // doesnt exists, add it
       strSQL=FormatSQL("insert into genre (idGenre, strGenre) values( NULL, '%s')", strGenre.c_str());
       m_pDS->exec(strSQL.c_str());
-      int idGenre = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      int idGenre = (int)m_pDS->lastinsertid();
       return idGenre;
     }
     else
@@ -1074,7 +1074,7 @@ int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& strTh
       // doesnt exists, add it
       strSQL=FormatSQL("insert into Actors (idActor, strActor, strThumb) values( NULL, '%s','%s')", strActor.c_str(),strThumb.c_str());
       m_pDS->exec(strSQL.c_str());
-      int idActor = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      int idActor = (int)m_pDS->lastinsertid();
       return idActor;
     }
     else
@@ -1110,7 +1110,7 @@ int CVideoDatabase::AddSet(const CStdString& strSet)
       // doesn't exist, add it
       strSQL=FormatSQL("insert into sets (idSet, strSet) values(NULL, '%s')", strSet.c_str());
       m_pDS->exec(strSQL.c_str());
-      int idSet = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      int idSet = (int)m_pDS->lastinsertid();
       return idSet;
     }
     else
@@ -1144,7 +1144,7 @@ int CVideoDatabase::AddStudio(const CStdString& strStudio)
       // doesnt exists, add it
       strSQL=FormatSQL("insert into studio (idStudio, strStudio) values( NULL, '%s')", strStudio.c_str());
       m_pDS->exec(strSQL.c_str());
-      int idStudio = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      int idStudio = (int)m_pDS->lastinsertid();
       return idStudio;
     }
     else
@@ -2362,7 +2362,7 @@ void CVideoDatabase::AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBook
     m_pDS->exec(strSQL.c_str());
 
     AddBookMarkToFile(tag.m_strFileNameAndPath, bookmark, CBookmark::EPISODE);
-    int idBookmark = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+    int idBookmark = (int)m_pDS->lastinsertid();
     strSQL = FormatSQL("update episode set c%02d=%i where c%02d=%i and c%02d=%i and idFile=%i", VIDEODB_ID_EPISODE_BOOKMARK, idBookmark, VIDEODB_ID_EPISODE_SEASON, tag.m_iSeason, VIDEODB_ID_EPISODE_EPISODE, tag.m_iEpisode, idFile);
     m_pDS->exec(strSQL.c_str());
   }
