@@ -689,6 +689,8 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
             //CLog::Log(LOGDEBUG, "%s: Duplicate or no timestamp detected: %llu", __MODULE_NAME__, procOut.PicInfo.timeStamp); 
           }
         }
+
+        BCM::DtsReleaseOutputBuffs(m_Device, NULL, FALSE);
       break;
         
       case BCM::BC_STS_NO_DATA:
@@ -722,9 +724,6 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
           CLog::Log(LOGDEBUG, "%s: DtsProcOutput returned %s.", __MODULE_NAME__, g_DtsStatusText[ret]);
       break;
     }
-    
-    BCM::DtsReleaseOutputBuffs(m_Device, NULL, FALSE);
-    
   } while (!m_bStop && !got_picture);
   
   return pBuffer;
