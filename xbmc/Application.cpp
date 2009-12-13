@@ -418,8 +418,10 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       {
         // Special media keys are mapped to WM_APPCOMMAND on Windows (and to DBUS events on Linux?)
         // XBMC translates WM_APPCOMMAND to XBMC_APPCOMMAND events.
+        // Set .amount1 = 1 for APPCOMMANDS like VOL_UP and DOWN that need to know how much to change the volume
         CAction action;
         action.id = newEvent.appcommand.action;
+        action.amount1 = 1;
         g_application.OnAction(action);
       }
       break;

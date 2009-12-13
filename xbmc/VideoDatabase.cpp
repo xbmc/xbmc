@@ -6990,37 +6990,27 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
       if (CUtil::IsWritable(movie.m_strFileNameAndPath))
       {
-        if (singleFiles)
+        CFileItem item(movie.m_strFileNameAndPath,false);
+        if (singleFiles && item.Exists())
         {
-          CStdString tempFile, nfoFile;
-          CFileItem item(movie.m_strFileNameAndPath,false);
+          CStdString nfoFile;
           CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
-          CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, CUtil::GetFileName(nfoFile), tempFile);
 
           if (overwrite || !CFile::Exists(nfoFile))
           {
-            if(xmlDoc.SaveFile(tempFile))
-            {
-              if (CFile::Cache(tempFile,nfoFile))
-                CFile::Delete(tempFile);
-              else
-              {
-                bSkip = ExportSkipEntry(nfoFile);
-                if (!bSkip)
-                {
-                  if (progress)
-                  {
-                    progress->Close();
-                    m_pDS->close();
-                    return;
-                  }
-                }
-              }
-            }
-            else
+            if(!xmlDoc.SaveFile(nfoFile))
             {
               CLog::Log(LOGERROR, "%s: Movie nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-              bSkip = true;
+              bSkip = ExportSkipEntry(nfoFile);
+              if (!bSkip)
+              {
+                if (progress)
+                {
+                  progress->Close();
+                  m_pDS->close();
+                  return;
+                }
+              }
             }
           }
 
@@ -7083,37 +7073,27 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
       if (CUtil::IsWritable(movie.m_strFileNameAndPath))
       {
-        if (singleFiles)
+        CFileItem item(movie.m_strFileNameAndPath,false);
+        if (singleFiles && item.Exists())
         {
-          CStdString tempFile, nfoFile;
-          CFileItem item(movie.m_strFileNameAndPath,false);
+          CStdString nfoFile;
           CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
-          CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, CUtil::GetFileName(nfoFile), tempFile);
 
           if (overwrite || !CFile::Exists(nfoFile))
           {
-            if(xmlDoc.SaveFile(tempFile))
-            {
-              if (CFile::Cache(tempFile,nfoFile))
-                CFile::Delete(tempFile);
-              else
-              {
-                bSkip = ExportSkipEntry(nfoFile);
-                if (!bSkip)
-                {
-                  if (progress)
-                  {
-                    progress->Close();
-                    m_pDS->close();
-                    return;
-                  }
-                }
-              }
-            }
-            else
+            if(!xmlDoc.SaveFile(nfoFile))
             {
               CLog::Log(LOGERROR, "%s: Musicvideo nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-              bSkip = true;
+              bSkip = ExportSkipEntry(nfoFile);
+              if (!bSkip)
+              {
+                if (progress)
+                {
+                  progress->Close();
+                  m_pDS->close();
+                  return;
+                }
+              }
             }
           }
 
@@ -7167,37 +7147,27 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
       if (CUtil::IsWritable(tvshow.m_strPath))
       {
-        if (singleFiles)
+        CFileItem item(tvshow.m_strPath,false);
+        if (singleFiles && item.Exists())
         {
-          CStdString tempFile, nfoFile;
-          CFileItem item(tvshow.m_strPath,false);
-          CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "tvshow.nfo", tempFile);
+          CStdString nfoFile;
           CUtil::AddFileToFolder(tvshow.m_strPath, "tvshow.nfo", nfoFile);
 
           if (overwrite || !CFile::Exists(nfoFile))
           {
-            if(xmlDoc.SaveFile(tempFile))
-            {
-              if (CFile::Cache(tempFile,nfoFile))
-                CFile::Delete(tempFile);
-              else
-              {
-                bSkip = ExportSkipEntry(nfoFile);
-                if (!bSkip)
-                {
-                  if (progress)
-                  {
-                    progress->Close();
-                    m_pDS->close();
-                    return;
-                  }
-                }
-              }
-            }
-            else
+            if(!xmlDoc.SaveFile(nfoFile))
             {
               CLog::Log(LOGERROR, "%s: TVShow nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-              bSkip = true;
+              bSkip = ExportSkipEntry(nfoFile);
+              if (!bSkip)
+              {
+                if (progress)
+                {
+                  progress->Close();
+                  m_pDS->close();
+                  return;
+                }
+              }
             }
           }
 
@@ -7262,7 +7232,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
               else if (iSeason == 0)
                 strSeasonThumb = "season-specials.tbn";
               else
-                strSeasonThumb.Format("season%2i.tbn",iSeason);
+                strSeasonThumb.Format("season%02i.tbn",iSeason);
               CUtil::GetParentPath(item.GetTBNFile(), strParent);
               CUtil::AddFileToFolder(strParent, strSeasonThumb, strDest);
 
@@ -7288,37 +7258,27 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
           // reset old skip state
           bool bSkip = false;
 
-          if (singleFiles)
+          CFileItem item(episode.m_strFileNameAndPath,false);
+          if (singleFiles && item.Exists())
           {
-            CStdString tempFile, nfoFile;
-            CFileItem item(episode.m_strFileNameAndPath,false);
+            CStdString nfoFile;
             CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
-            CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, CUtil::GetFileName(nfoFile), tempFile);
 
             if (overwrite || !CFile::Exists(nfoFile))
             {
-              if(xmlDoc.SaveFile(tempFile))
-              {
-                if (CFile::Cache(tempFile,nfoFile))
-                  CFile::Delete(tempFile);
-                else
-                {
-                  bSkip = ExportSkipEntry(nfoFile);
-                  if (!bSkip)
-                  {
-                    if (progress)
-                    {
-                      progress->Close();
-                      m_pDS->close();
-                      return;
-                    }
-                  }
-                }
-              }
-              else
+              if(!xmlDoc.SaveFile(nfoFile))
               {
                 CLog::Log(LOGERROR, "%s: Episode nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-                bSkip = true;
+                bSkip = ExportSkipEntry(nfoFile);
+                if (!bSkip)
+                {
+                  if (progress)
+                  {
+                    progress->Close();
+                    m_pDS->close();
+                    return;
+                  }
+                }
               }
             }
 

@@ -1748,8 +1748,6 @@
 		F5AACA980FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
 		F5AC52890F58504F003EEAA4 /* DTSCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */; };
 		F5AC52910F58525B003EEAA4 /* DTSCDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52900F58525B003EEAA4 /* DTSCDDACodec.cpp */; };
-		F5ACB5380FC3DF3D00AAA056 /* eprintf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ACB5370FC3DF3D00AAA056 /* eprintf.cpp */; };
-		F5ACB5390FC3DF3D00AAA056 /* eprintf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ACB5370FC3DF3D00AAA056 /* eprintf.cpp */; };
 		F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
 		F5D8D2AA1029256D004A11AB /* GUIControlProfiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D2A91029256D004A11AB /* GUIControlProfiler.cpp */; };
 		F5D8D2AB1029256D004A11AB /* GUIControlProfiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D2A91029256D004A11AB /* GUIControlProfiler.cpp */; };
@@ -8022,7 +8020,6 @@
 				83A72B970FBC8E3B00171871 /* LockFree.cpp in Sources */,
 				F5987F050FBDF274008EF4FB /* DPMSSupport.cpp in Sources */,
 				F5987FDB0FBE2DFD008EF4FB /* PAPlayer.cpp in Sources */,
-				F5ACB5380FC3DF3D00AAA056 /* eprintf.cpp in Sources */,
 				F548786D0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */,
 				F54878770FE0614F00E506FD /* ScriptSettings.cpp in Sources */,
 				F548787A0FE0619800E506FD /* PythonSettings.cpp in Sources */,
@@ -8877,7 +8874,6 @@
 				43248C510FBE224C00B88866 /* CoreAudio.cpp in Sources */,
 				43248C520FBE224E00B88866 /* CoreAudioRenderer.cpp in Sources */,
 				F5987FDC0FBE2DFD008EF4FB /* PAPlayer.cpp in Sources */,
-				F5ACB5390FC3DF3D00AAA056 /* eprintf.cpp in Sources */,
 				F548786E0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */,
 				F54878780FE0614F00E506FD /* ScriptSettings.cpp in Sources */,
 				F548787B0FE0619800E506FD /* PythonSettings.cpp in Sources */,
@@ -9097,7 +9093,10 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/xbmc/lib/libsquish\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
-				OTHER_LDFLAGS = "-headerpad_max_install_names";
+				OTHER_LDFLAGS = (
+					"-headerpad_max_install_names",
+					"-all_load",
+				);
 				PRODUCT_NAME = XBMC;
 				ZERO_LINK = NO;
 			};
@@ -9191,7 +9190,10 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
-				OTHER_LDFLAGS = "-headerpad_max_install_names";
+				OTHER_LDFLAGS = (
+					"-headerpad_max_install_names",
+					"-all_load",
+				);
 				PRODUCT_NAME = XBMC;
 				ZERO_LINK = NO;
 			};
@@ -9347,7 +9349,10 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\"$(SRCROOT)/xbmc/lib/libXDAAP\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
-				OTHER_LDFLAGS = "-headerpad_max_install_names";
+				OTHER_LDFLAGS = (
+					"-headerpad_max_install_names",
+					"-all_load",
+				);
 				PRODUCT_NAME = XBMC;
 				VALID_ARCHS = ppc;
 				ZERO_LINK = NO;
@@ -9451,7 +9456,10 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/xbmc/lib/libXDAAP\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\"$(SRCROOT)/xbmc/lib/libshout\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
-				OTHER_LDFLAGS = "-headerpad_max_install_names";
+				OTHER_LDFLAGS = (
+					"-headerpad_max_install_names",
+					"-all_load",
+				);
 				PRODUCT_NAME = XBMC;
 				VALID_ARCHS = ppc;
 				ZERO_LINK = NO;

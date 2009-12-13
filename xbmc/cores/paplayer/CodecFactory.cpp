@@ -72,7 +72,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   else if (strFileType.Equals("flac"))
     return new FLACCodec();
   else if (strFileType.Equals("wav"))
-    return new WAVCodec();
+    return new DVDPlayerCodec();
 #ifdef HAS_DTS_CODEC
   else if (strFileType.Equals("dts"))
     return new DTSCodec();
@@ -164,6 +164,11 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     delete codec;
 #endif
     codec = new ADPCMCodec();
+    if (codec->Init(strFile, filecache))
+    {
+      return codec;
+    }
+    codec = new WAVCodec();
     if (codec->Init(strFile, filecache))
     {
       return codec;
