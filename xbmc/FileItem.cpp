@@ -2008,6 +2008,17 @@ void CFileItemList::Stack()
             if (CFile::Exists(path))
               dvdPath = path;
           }
+          if (dvdPath.IsEmpty())
+          {
+            CUtil::AddFileToFolder(item->m_strPath, "BDMV", dvdPath);
+            CUtil::AddFileToFolder(dvdPath, "PLAYLIST/00000.mpls", path);
+            dvdPath.Empty();
+            if (CFile::Exists(path))
+            {
+              dvdPath = path;
+              dvdPath.Replace("00000.mpls","main.mpls");
+            }
+          }
           if (!dvdPath.IsEmpty())
           {
             // NOTE: should this be done for the CD# folders too?
