@@ -102,7 +102,7 @@
 						<icon>special://skin/backgrounds/music.jpg</icon>
 					</item>
 					<item id="4">
-						<label>31304</label>
+						<label>1</label>
 						<label2>31403</label2>
 						<onclick>ActivateWindow(PicturesSettings)</onclick>
 						<icon>special://skin/backgrounds/pictures.jpg</icon>
