@@ -1483,6 +1483,7 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   switch (sortMethod)
   {
   case SORT_METHOD_LABEL:
+  case SORT_METHOD_LABEL_IGNORE_FOLDERS:
     FillSortFields(SSortFileItem::ByLabel);
     break;
   case SORT_METHOD_LABEL_IGNORE_THE:
@@ -1576,7 +1577,8 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   }
   if (sortMethod == SORT_METHOD_FILE        ||
       sortMethod == SORT_METHOD_VIDEO_SORT_TITLE ||
-      sortMethod == SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE)
+      sortMethod == SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE ||
+      sortMethod == SORT_METHOD_LABEL_IGNORE_FOLDERS)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::IgnoreFoldersAscending : SSortFileItem::IgnoreFoldersDescending);
   else if (sortMethod != SORT_METHOD_NONE)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::Ascending : SSortFileItem::Descending);
