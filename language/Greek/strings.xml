@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 12/04/2009-->
+<!--Date of translation: 12/13/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 25274-->
+<!--Based on english strings version 25637-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -1161,7 +1161,7 @@
   <string id="13411">Ελάχιστη ταχύτητα ανεμιστήρα</string>
   <string id="13412">- Ροές τίτλων ειδήσεων με κατοπτρική γραφή</string>
   <string id="13413">Λήψη</string>
-  <string id="13414">Εμφάνιση καλλιτεχνών που εμφανίζονται μόνο στις συνθέσεις</string>
+  <string id="13414">Ενσωμάτωση καλλιτεχνών που εμφανίζονται μόνο στις συνθέσεις</string>
   <string id="13415">Μέθοδος απόδοσης</string>
   <string id="13416">Αυτόματη ανίχνευση</string>
   <string id="13417">Στοιχειώδης (ARB)</string>
