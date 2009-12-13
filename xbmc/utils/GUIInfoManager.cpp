@@ -425,6 +425,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     int pos = strTest.Find(",");
     int info = TranslateString(strTest.Mid(14, pos-14));
+    int info2 = TranslateString(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    if (info2 > 0)
+      return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, -info2));
     int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, compareString));
   }
@@ -2030,10 +2033,25 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           bReturn = GetImage(info.GetData1(), contextWindow).IsEmpty();
         break;
       case STRING_COMPARE:
-        if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-          bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
-        else
-          bReturn = GetImage(info.GetData1(), contextWindow).Equals(m_stringParameters[info.GetData2()]);
+        {
+          CStdString compare;
+          if (info.GetData2() < 0) // info labels are stored with negative numbers
+          {
+            int info2 = -info.GetData2();
+            if (item && item->IsFileItem() && info2 >= LISTITEM_START && info2 < LISTITEM_END)
+              compare = GetItemImage((const CFileItem *)item, info2);
+            else
+              compare = GetImage(info2, contextWindow);
+          }
+          else if (info.GetData2() < (int)m_stringParameters.size())
+          { // conditional string
+            compare = m_stringParameters[info.GetData2()];
+          }
+          if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+            bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).Equals(compare);
+          else
+            bReturn = GetImage(info.GetData1(), contextWindow).Equals(compare);
+        }
         break;
       case INTEGER_GREATER_THAN:
         if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
