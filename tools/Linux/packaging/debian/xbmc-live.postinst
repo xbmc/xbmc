@@ -95,7 +95,7 @@ root    ALL=(ALL) ALL
 # it further down)
 %sudo ALL=NOPASSWD: ALL
 ENDOFBLOCK
-	    # chmod 0440 /etc/sudoers
+	    chmod 0440 /etc/sudoers
 	fi
 
 	# Add xbmc to the sudoers file (if not already done)
