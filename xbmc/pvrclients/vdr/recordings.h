@@ -39,6 +39,7 @@ private:
   int m_Index;
   char *m_channelName;
   char *m_fileName;
+  char *m_directory;
   double m_framesPerSecond;
   int m_priority;
   int m_lifetime;
@@ -57,7 +58,7 @@ public:
   cRecording(const PVR_RECORDINGINFO *Recording);
   cRecording();
   virtual ~cRecording();
-  
+
   bool ParseLine(const char *s);
   bool ParseEntryLine(const char *s);
   const char *ChannelName(void) const { return m_channelName; }
@@ -74,11 +75,10 @@ public:
   const char *ShortText(void) const { return m_shortText; }
   const char *Description(void) const { return m_description; }
   const char *FileName(void) const { return m_fileName; }
+  const char *Directory(void) const { return m_directory; }
   void SetTitle(const char *Title);
   void SetShortText(const char *ShortText);
   void SetDescription(const char *Description);
-
-
 };
 
 #endif //__RECORDINGS_H

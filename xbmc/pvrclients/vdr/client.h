@@ -52,6 +52,8 @@ extern int          m_iConnectTimeout;
 extern bool         m_bNoBadChannels;
 extern bool         m_bHandleMessages;
 extern int          g_clientID;
+extern std::string  g_szUserPath;
+extern std::string  g_szClientPath;
 
 #ifdef __cplusplus
 }

@@ -553,23 +553,8 @@ PVR_ERROR cPVRClientVDR::RequestRecordingsList(PVRHANDLE handle)
       tag.subtitle        = recording.ShortText();
       tag.description     = recording.Description();
       tag.stream_url      = "";
-
-      CStdString fileName = XBMC_make_legal_filename(recording.FileName());
-      size_t found = fileName.find_last_of("~");
-      if (found != CStdString::npos)
-      {
-        CStdString title = fileName.substr(found+1);
-        tag.title = title.c_str();
-
-        CStdString dir = fileName.substr(0,found);
-        dir.Replace('~','/');
-        tag.directory = dir.c_str();
-      }
-      else
-      {
-        tag.title = fileName;
-        tag.directory = "";
-      }
+      tag.title           = recording.FileName();
+      tag.directory       = recording.Directory();
 
       PVR_transfer_recording_entry(handle, &tag);
     }
@@ -1302,7 +1287,7 @@ int cPVRClientVDR::ReadRecordedStream(unsigned char* buf, int buf_size)
     return 0;
   }
 
-  res = recv(m_socket_video, (char*)buf, (size_t)buf_size, MSG_WAITALL);
+  res = recv(m_socket_video, (char*)buf, (size_t)buf_size, 0);
 
   if (res < 0)
   {
@@ -1557,9 +1542,7 @@ bool cPVRClientVDR::CallBackEMSG(const char *Option)
 
 bool cPVRClientVDR::readNoSignalStream()
 {
-  CStdString noSignalFileName;
-  noSignalFileName  = XBMC_translate_path(XBMC_get_addon_directory());
-  noSignalFileName += "/resources/data/noSignal.mpg";
+  CStdString noSignalFileName = g_szClientPath + "/resources/data/noSignal.mpg";
 
   FILE *const f = ::fopen(noSignalFileName.c_str(), "rb");
   if (f)

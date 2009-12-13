@@ -42,6 +42,8 @@ bool m_bCharsetConv     = DEFAULT_CHARCONV;
 int m_iConnectTimeout   = DEFAULT_TIMEOUT;
 bool m_bNoBadChannels   = DEFAULT_BADCHANNELS;
 bool m_bHandleMessages  = DEFAULT_HANDLE_MSG;
+std::string g_szUserPath    = "";
+std::string g_szClientPath  = "";
 
 extern "C" {
 
@@ -57,9 +59,11 @@ ADDON_STATUS Create(void* hdl, void* props)
 
   //XBMC_log(LOG_DEBUG, "Creating VDR PVR-Client");
 
-  curStatus     = STATUS_UNKNOWN;
-  g_client      = new cPVRClientVDR();
-  g_clientID    = pvrprops->clientID;
+  curStatus      = STATUS_UNKNOWN;
+  g_client       = new cPVRClientVDR();
+  g_clientID     = pvrprops->clientID;
+  g_szUserPath   = pvrprops->userpath;
+  g_szClientPath = pvrprops->clientpath;
 
   /* Read setting "host" from settings.xml */
   char * buffer;

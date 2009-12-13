@@ -23,6 +23,7 @@
  * This code is taken from recordings.c in the Video Disk Recorder ('VDR')
  */
 
+#include "StdString.h"
 #include "recordings.h"
 
 cRecording::cRecording()
@@ -33,6 +34,7 @@ cRecording::cRecording()
   m_shortText       = NULL;
   m_description     = NULL;
   m_fileName        = NULL;
+  m_directory       = NULL;
   m_framesPerSecond = DEFAULTFRAMESPERSECOND;
   m_priority        = MAXPRIORITY;
   m_lifetime        = MAXLIFETIME;
@@ -58,18 +60,18 @@ cRecording::~cRecording()
   free(m_shortText);
   free(m_description);
   free(m_fileName);
-
+  free(m_directory);
 }
 
 bool cRecording::ParseLine(const char *s)
 {
   char *t = skipspace(s + 1);
-  switch (*s) 
+  switch (*s)
   {
-    case 'C': 
+    case 'C':
       {
         char *p = strchr(t, ' ');
-        if (p) 
+        if (p)
         {
           free(m_channelName);
           m_channelName = strdup(compactspace(p));
@@ -79,11 +81,11 @@ bool cRecording::ParseLine(const char *s)
   //        channelID = tChannelID::FromString(t);
       }
       return true;
-    case 'D': 
+    case 'D':
       strreplace(t, '|', '\n');
       SetDescription(t);
       return true;
-    case 'E': 
+    case 'E':
       {
         unsigned int EventID;
         time_t StartTime;
@@ -100,29 +102,29 @@ bool cRecording::ParseLine(const char *s)
         }
       }
       return true;
-    case 'F': 
+    case 'F':
       m_framesPerSecond = atof(t);
       return true;
-    case 'L': 
+    case 'L':
       m_lifetime = atoi(t);
       return true;
-    case 'P': 
+    case 'P':
       m_priority = atoi(t);
       return true;
-    case 'S': 
+    case 'S':
       SetShortText(t);
       return true;
-    case 'T': 
+    case 'T':
       SetTitle(t);
       return true;
-    case 'V': 
+    case 'V':
       m_vps = atoi(t);
       return true;
-    case '@': 
+    case '@':
       free(m_aux);
       m_aux = strdup(t);
       return true;
-    case '#': 
+    case '#':
       return true; // comments are ignored
 
 
@@ -142,11 +144,39 @@ bool cRecording::ParseEntryLine(const char *s)
 
     if (sscanf(s, " %u %[^ ] %[^ ] %[^\n]", &m_Index, recdate, rectime, rectext) >= 3)
     {
-      m_fileName = strcpyrealloc(m_fileName, rectext);
+      CStdString fileName = rectext;
+      fileName.Replace('/', '_');
+      fileName.Replace('\\', '_');
+      fileName.Replace('?', '_');
+#if defined(_WIN32) || defined(_WIN64)
+      // just filter out some illegal characters on windows
+      fileName.Replace(':', '_');
+      fileName.Replace('*', '_');
+      fileName.Replace('?', '_');
+      fileName.Replace('\"', '_');
+      fileName.Replace('<', '_');
+      fileName.Replace('>', '_');
+      fileName.Replace('|', '_');
+      fileName.TrimRight(".");
+      fileName.TrimRight(" ");
+#endif
+      size_t found = fileName.find_last_of("~");
+      if (found != CStdString::npos)
+      {
+        CStdString dir = fileName.substr(0,found);
+        dir.Replace('~','/');
+        m_directory = strcpyrealloc(m_directory, dir.c_str());
+        m_fileName = strcpyrealloc(m_fileName, fileName.substr(found+1).c_str());
+      }
+      else
+      {
+        m_fileName = strcpyrealloc(m_fileName, fileName.c_str());
+        m_directory = strcpyrealloc(m_directory, "");
+      }
     }
     return true;
   }
-  
+
   return false;
 }
 

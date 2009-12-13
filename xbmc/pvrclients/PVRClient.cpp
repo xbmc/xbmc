@@ -90,6 +90,10 @@ bool CPVRClient::Create(long clientID, IPVRClientCallback *pvrCB)
   m_pInfo           = new PVR_PROPS;
   m_pInfo->clientID = clientID;
   m_pInfo->hdl      = m_callbacks;
+  CStdString userpath = _P(Profile());
+  m_pInfo->userpath = userpath.c_str();
+  CStdString clientpath = _P(Path());
+  m_pInfo->clientpath = clientpath.c_str();
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */

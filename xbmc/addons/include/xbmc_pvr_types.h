@@ -33,6 +33,7 @@
 #else
 #ifndef _LINUX
 #include <windows.h>
+#include <stdint.h>
 #else
 #undef __cdecl
 #define __cdecl
@@ -71,6 +72,8 @@ extern "C" {
   {
     int clientID;
     ADDON_HANDLE hdl;
+    const char *userpath;
+    const char *clientpath;
   };
 
   /**
