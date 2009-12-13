@@ -4180,26 +4180,32 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
       CStdString strPath;
       GetAlbumPath(album.idAlbum,strPath);
       album.Save(pMain, "album", strPath);
-      if (singleFiles && CDirectory::Exists(strPath))
+      if (singleFiles)
       {
-        CStdString nfoFile;
-        CUtil::AddFileToFolder(strPath, "album.nfo", nfoFile);
-        if (overwrite || !CFile::Exists(nfoFile))
+        if (!CDirectory::Exists(strPath))
+          CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, strPath.c_str());
+        else
         {
-          if (!xmlDoc.SaveFile(nfoFile))
-            CLog::Log(LOGERROR, "%s: Album nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+          CStdString nfoFile;
+          CUtil::AddFileToFolder(strPath, "album.nfo", nfoFile);
+          if (overwrite || !CFile::Exists(nfoFile))
+          {
+            if (!xmlDoc.SaveFile(nfoFile))
+              CLog::Log(LOGERROR, "%s: Album nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+          }
+
+          if (images)
+          {
+            CStdString strThumb;
+            if (GetAlbumThumb(album.idAlbum,strThumb) && (overwrite || !CFile::Exists(CUtil::AddFileToFolder(strPath,"folder.jpg"))))
+              CFile::Cache(strThumb,CUtil::AddFileToFolder(strPath,"folder.jpg"));
+          }
+          xmlDoc.Clear();
+          TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+          xmlDoc.InsertEndChild(decl);
         }
-        
-        if (images)
-        {
-          CStdString strThumb;
-          if (GetAlbumThumb(album.idAlbum,strThumb) && (overwrite || !CFile::Exists(CUtil::AddFileToFolder(strPath,"folder.jpg"))))
-            CFile::Cache(strThumb,CUtil::AddFileToFolder(strPath,"folder.jpg"));
-        }
-        xmlDoc.Clear();
-        TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-        xmlDoc.InsertEndChild(decl);
       }
+
       if ((current % 50) == 0 && progress)
       {
         progress->SetLine(1, album.strAlbum);
@@ -4243,28 +4249,34 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
       CStdString strPath;
       GetArtistPath(artist.idArtist,strPath);
       artist.Save(pMain, "artist", strPath);
-      if (singleFiles && CDirectory::Exists(strPath))
+      if (singleFiles)
       {
-        CStdString nfoFile;
-        CUtil::AddFileToFolder(strPath, "artist.nfo", nfoFile);
-        if (overwrite || !CFile::Exists(nfoFile))
+        if (!CDirectory::Exists(strPath))
+          CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, strPath.c_str());
+        else
         {
-          if (!xmlDoc.SaveFile(nfoFile))
-            CLog::Log(LOGERROR, "%s: Artist nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+          CStdString nfoFile;
+          CUtil::AddFileToFolder(strPath, "artist.nfo", nfoFile);
+          if (overwrite || !CFile::Exists(nfoFile))
+          {
+            if (!xmlDoc.SaveFile(nfoFile))
+              CLog::Log(LOGERROR, "%s: Artist nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+          }
+
+          if (images)
+          {
+            CFileItem item(artist);
+            if (CFile::Exists(item.GetCachedArtistThumb()) && (overwrite || !CFile::Exists(CUtil::AddFileToFolder(strPath,"folder.jpg"))))
+              CFile::Cache(item.GetCachedArtistThumb(),CUtil::AddFileToFolder(strPath,"folder.jpg"));
+            if (CFile::Exists(item.GetCachedFanart()) && (overwrite || !CFile::Exists(CUtil::AddFileToFolder(strPath,"fanart.jpg"))))
+              CFile::Cache(item.GetCachedFanart(),CUtil::AddFileToFolder(strPath,"fanart.jpg"));
+          }
+          xmlDoc.Clear();
+          TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+          xmlDoc.InsertEndChild(decl);
         }
-        
-        if (images)
-        {
-          CFileItem item(artist);
-          if (CFile::Exists(item.GetCachedArtistThumb()) && (overwrite || !CFile::Exists(CUtil::AddFileToFolder(strPath,"folder.jpg"))))
-            CFile::Cache(item.GetCachedArtistThumb(),CUtil::AddFileToFolder(strPath,"folder.jpg"));
-          if (CFile::Exists(item.GetCachedFanart()) && (overwrite || !CFile::Exists(CUtil::AddFileToFolder(strPath,"fanart.jpg"))))
-            CFile::Cache(item.GetCachedFanart(),CUtil::AddFileToFolder(strPath,"fanart.jpg"));
-        }
-        xmlDoc.Clear();
-        TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-        xmlDoc.InsertEndChild(decl);
       }
+      
       if ((current % 50) == 0 && progress)
       {
         progress->SetLine(1, artist.strArtist);
