@@ -66,7 +66,7 @@ apokeysnd.o: apokeysnd.c
 ../../../../system/players/paplayer/xbmc_asap-i486-linux.so: xbmc/xbmc_asap.o $(COMMON_O) $(COMMON_H)
 	$(CC) -shared -fPIC -o $@ -I. xbmc/xbmc_asap.o `cat $(XBMC_DLL_LOADER_EXPORTS)/wrapper.def` $(XBMC_DLL_LOADER_EXPORTS)/wrapper.o $(COMMON_O)
 
-players.h: mads/mads xasm/xasm files2anylang.pl $(PLAYERS_OBX)
+players.h: files2anylang.pl $(PLAYERS_OBX)
 	$(PERL) files2anylang.pl $(PLAYERS_OBX) >$@
 
 mads/mads: force
@@ -75,31 +75,31 @@ mads/mads: force
 xasm/xasm: force
 	make -C xasm
 
-players/cmc.obx: players/cmc.asx 
+players/cmc.obx: players/cmc.asx xasm/xasm
 	$(XASM) -d CM3=0 -o $@ players/cmc.asx
 
-players/cm3.obx: players/cmc.asx
+players/cm3.obx: players/cmc.asx xasm/xasm
 	$(XASM) -d CM3=1 -o $@ players/cmc.asx
 
-players/cms.obx: players/cms.asx
+players/cms.obx: players/cms.asx xasm/xasm
 	$(XASM) -o $@ players/cms.asx
 
-players/dlt.obx: players/dlt.as8
+players/dlt.obx: players/dlt.as8 mads/mads
 	$(MADS) -o:$@ -c players/dlt.as8
 
-players/mpt.obx: players/mpt.asx
+players/mpt.obx: players/mpt.asx xasm/xasm
 	$(XASM) -o $@ players/mpt.asx
 
-players/rmt4.obx: players/rmt.asx
+players/rmt4.obx: players/rmt.asx xasm/xasm
 	$(XASM) -d STEREOMODE=0 -o $@ players/rmt.asx
 
-players/rmt8.obx: players/rmt.asx
+players/rmt8.obx: players/rmt.asx xasm/xasm
 	$(XASM) -d STEREOMODE=1 -o $@ players/rmt.asx
 
-players/tmc.obx: players/tmc.asx
+players/tmc.obx: players/tmc.asx xasm/xasm
 	$(XASM) -o $@ players/tmc.asx
 
-players/tm2.obx: players/tm2.asx
+players/tm2.obx: players/tm2.asx xasm/xasm
 	$(XASM) -o $@ players/tm2.asx
 
 install: install-asap2wav install-lib
