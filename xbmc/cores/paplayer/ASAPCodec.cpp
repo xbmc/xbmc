@@ -92,5 +92,6 @@ bool ASAPCodec::IsSupportedFormat(const CStdString &strExt)
   return ext == "sap"
     || ext == "cmc" || ext == "cmr" || ext == "dmc"
     || ext == "mpt" || ext == "mpd" || ext == "rmt"
-    || ext == "tmc" || ext == "tm8" || ext == "tm2";
+    || ext == "tmc" || ext == "tm8" || ext == "tm2"
+    || ext == "cms" || ext == "cm3" || ext == "dlt";
 }

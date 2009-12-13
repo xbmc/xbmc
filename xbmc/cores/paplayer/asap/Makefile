@@ -3,8 +3,8 @@ PREFIX = /usr/local
 CC = gcc -s -O2 -Wall
 AR = ar rc
 PERL = perl
-XASM = xasm -q
-MADS = mads -s
+XASM = xasm/xasm -q
+MADS = mads/mads -s
 RM = rm -f
 MKDIRS = mkdir -p
 INSTALL = install
@@ -19,11 +19,14 @@ XMMS_INPUT_PLUGIN_DIR = `xmms-config --input-plugin-dir`
 XMMS_USER_PLUGIN_DIR = $(HOME)/.xmms/Plugins
 MOC_INCLUDE = ../moc-2.4.4
 MOC_PLUGIN_DIR = /usr/local/lib/moc/decoder_plugins
-XBMC_DLL_LOADER_EXPORTS = ../XBMC/xbmc/cores/DllLoader/exports
+XBMC_DLL_LOADER_EXPORTS = ../../DllLoader/exports
 
 COMMON_C = asap.c acpu.c apokeysnd.c
 COMMON_H = asap.h asap_internal.h anylang.h players.h
+COMMON_O = asap.o acpu.o apokeysnd.o
 PLAYERS_OBX = players/cmc.obx players/cm3.obx players/cms.obx players/dlt.obx players/mpt.obx players/rmt4.obx players/rmt8.obx players/tmc.obx players/tm2.obx
+
+.PHONY: force
 
 all: asap2wav libasap.a
 
@@ -46,15 +49,33 @@ asap-moc: libasap_decoder.so
 libasap_decoder.so: moc/libasap_decoder.c $(COMMON_C) $(COMMON_H)
 	$(CC) -shared -fPIC -o $@ -I. -I$(MOC_INCLUDE) moc/libasap_decoder.c $(COMMON_C)
 
-asap-xbmc: xbmc_asap-i486-linux.so
+asap-xbmc: mads/mads xasm/xasm ../../../../system/players/paplayer/xbmc_asap-i486-linux.so
 
-xbmc_asap-i486-linux.so: xbmc/xbmc_asap.c $(COMMON_C) $(COMMON_H)
-	$(CC) -shared -fPIC -o $@ -I. xbmc/xbmc_asap.c `cat $(XBMC_DLL_LOADER_EXPORTS)/wrapper.def` $(XBMC_DLL_LOADER_EXPORTS)/wrapper.o $(COMMON_C)
+xbmc/xbmc_asap.o: xbmc/xbmc_asap.c
+	$(CC) -I. -O2 -o $@ -c xbmc/xbmc_asap.c
 
-players.h: files2anylang.pl $(PLAYERS_OBX)
+asap.o: asap.c $(COMMON_H)
+	$(CC) -I. -O2 -o $@ -c asap.c
+
+acpu.o: acpu.c $(COMMON_H)
+	$(CC) -I. -O2 -o $@ -c acpu.c
+
+apokeysnd.o: apokeysnd.c
+	$(CC) -I. -O2 -o $@ -c apokeysnd.c
+
+../../../../system/players/paplayer/xbmc_asap-i486-linux.so: xbmc/xbmc_asap.o $(COMMON_O) $(COMMON_H)
+	$(CC) -shared -fPIC -o $@ -I. xbmc/xbmc_asap.o `cat $(XBMC_DLL_LOADER_EXPORTS)/wrapper.def` $(XBMC_DLL_LOADER_EXPORTS)/wrapper.o $(COMMON_O)
+
+players.h: mads/mads xasm/xasm files2anylang.pl $(PLAYERS_OBX)
 	$(PERL) files2anylang.pl $(PLAYERS_OBX) >$@
 
-players/cmc.obx: players/cmc.asx
+mads/mads: force
+	make -C mads
+
+xasm/xasm: force
+	make -C xasm
+
+players/cmc.obx: players/cmc.asx 
 	$(XASM) -d CM3=0 -o $@ players/cmc.asx
 
 players/cm3.obx: players/cmc.asx
@@ -120,8 +141,15 @@ install-moc: libasap_decoder.so
 uninstall-moc:
 	$(RM) $(MOC_PLUGIN_DIR)/libasap_decoder.so
 
-clean:
-	$(RM) asap2wav libasap.a asap.o acpu.o apokeysnd.o libasap-xmms.so libasap_decoder.so xbmc_asap-i486-linux.so players.h
+players-clean:
+	make -C players clean
+	make -C mads clean
+	make -C xasm clean
+
+distclean: clean
+
+clean: players-clean
+	$(RM) asap2wav libasap.a asap.o acpu.o apokeysnd.o libasap-xmms.so libasap_decoder.so ../../../../system/players/paplayer/xbmc_asap-i486-linux.so players.h xbmc/xbmc_asap.o
 
 README.html: README INSTALL NEWS CREDITS
 	$(ASCIIDOC) -o $@ -a asapsrc -a asapports README

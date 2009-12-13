@@ -26,3 +26,6 @@ $(PLAYERS_OBX_DIR)/rmt8.obx: ../players/rmt.asx
 
 $(PLAYERS_OBX_DIR)/%.obx: ../players/%.asx
 	$(XASM) $<
+
+clean:
+	$(RM) $(PLAYERS_OBX)
