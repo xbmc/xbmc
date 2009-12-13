@@ -1,0 +1,8 @@
+*.txt
+*.html
+*.dll
+*.exp
+*.lib
+*.res
+install_dsf.bat
+uninstall_dsf.bat
