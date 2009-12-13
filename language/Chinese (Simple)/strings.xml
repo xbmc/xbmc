@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 25165 -->
+<!--Based on english strings version 25426 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1210,7 +1210,7 @@
   <string id="13411">风扇最低转速</string>
   <string id="13412"></string>
   <string id="13413">正在下载</string>
-  <string id="13414">显示只在合辑中出现的艺术家</string>
+  <string id="13414">包含只在合辑中出现的艺术家</string>
   <string id="13415">渲染模式</string>
   <string id="13416">自动检测</string>
   <string id="13417">基本着色(ARB)</string>
