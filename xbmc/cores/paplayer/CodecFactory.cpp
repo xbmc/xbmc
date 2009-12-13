@@ -39,7 +39,6 @@
 #endif
 #include "GYMCodec.h"
 #include "SIDCodec.h"
-#include "AdplugCodec.h"
 #include "VGMCodec.h"
 #include "YMCodec.h"
 #include "AIFFcodec.h"
@@ -97,8 +96,6 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new GYMCodec();
   else if (strFileType.Equals("sid") || strFileType.Equals("sidstream"))
     return new SIDCodec();
-  else if (AdplugCodec::IsSupportedFormat(strFileType))
-    return new AdplugCodec();
   else if (VGMCodec::IsSupportedFormat(strFileType))
     return new VGMCodec();
   else if (strFileType.Equals("ym"))
