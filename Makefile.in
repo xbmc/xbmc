@@ -300,7 +300,9 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/NSFCodec
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
 	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
+ifneq ($(findstring osx,$(ARCH)), osx)
 	$(MAKE) -C xbmc/cores/paplayer/asap asap-xbmc
+endif
 ifneq (@USE_EXTERNAL_LIBWAVPACK@,1)
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
 endif
