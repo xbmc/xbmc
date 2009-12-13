@@ -787,7 +787,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 void CLinuxRendererGL::FlipPage(int source)
 {
 #ifdef HAVE_LIBVDPAU
-  if (g_VDPAU)
+  if (m_renderMethod == RENDER_VDPAU && g_VDPAU);
     g_VDPAU->Present();
 #endif
 
@@ -992,7 +992,7 @@ void CLinuxRendererGL::LoadShaders(int field)
   bool err = false;
 
 #ifdef HAVE_LIBVDPAU
-  if (g_VDPAU)
+  if ((requestedMethod == RENDER_METHOD_VDPAU) && g_VDPAU)
   {
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
     m_renderMethod = RENDER_VDPAU;
@@ -1000,10 +1000,7 @@ void CLinuxRendererGL::LoadShaders(int field)
   else 
 #endif //HAVE_LIBVDPAU
 #ifdef HAVE_LIBCRYSTALHD
-  /*
-    Default to VDPAU if supported.
-   */
-  if (g_CrystalHD)
+  if ((requestedMethod == RENDER_METHOD_CRYSTALHD) && g_CrystalHD)
   {
     err = false;
     CLog::Log(LOGNOTICE, "GL: Using Crystal HD render method");
@@ -1179,9 +1176,10 @@ void CLinuxRendererGL::UnInit()
   m_rgbBufferSize = 0;
 
 #ifdef HAVE_LIBVDPAU
-  if (g_VDPAU)
+  if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU)
     g_VDPAU->ReleasePixmap();
 #endif
+
   // YV12 textures
   if (DeleteTextureFuncPtr)
   {
@@ -1832,7 +1830,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
-  // Delte any old texture
+  // Delete any old textures
   if (DeleteTextureFuncPtr)
     (this->*DeleteTextureFuncPtr)(index);
 
@@ -2347,7 +2345,7 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 bool CLinuxRendererGL::SupportsBrightness()
 {
 #ifdef HAVE_LIBVDPAU
-  if(g_VDPAU && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
+  if ((m_renderMethod == RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
     return true;
 #endif
   return m_renderMethod == RENDER_GLSL
@@ -2358,7 +2356,7 @@ bool CLinuxRendererGL::SupportsBrightness()
 bool CLinuxRendererGL::SupportsContrast()
 {
 #ifdef HAVE_LIBVDPAU
-  if(g_VDPAU && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
+  if ((m_renderMethod == RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
     return true;
 #endif
   return m_renderMethod == RENDER_GLSL

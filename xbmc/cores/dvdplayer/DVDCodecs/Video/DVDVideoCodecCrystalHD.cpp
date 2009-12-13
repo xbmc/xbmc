@@ -133,10 +133,9 @@ CDVDVideoCodecCrystalHD::~CDVDVideoCodecCrystalHD()
 
 bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  //int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
-  //if((requestedMethod == RENDER_METHOD_CRYSTALHD || requestedMethod == RENDER_METHOD_AUTO)
-  if ((true)
-    && !hints.software)
+  int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
+  
+  if ((requestedMethod == RENDER_METHOD_CRYSTALHD) && !hints.software)
   {
     BCM_CODEC_TYPE codec_type;
     BCM_STREAM_TYPE stream_type;
