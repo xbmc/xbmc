@@ -271,7 +271,7 @@
 				IgnoreImportLibrary="false"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
 				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib"
-				OutputFile="$(OutDir)\XBMC.exe"
+				OutputFile="c:\pvr-testing2\XBMC.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\libSDL-WIN32\lib"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
@@ -2186,14 +2186,6 @@
 				Name="Settings"
 				>
 				<File
-					RelativePath="..\..\xbmc\settings\AddonSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\settings\AddonSettings.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\AdvancedSettings.cpp"
 					>
 				</File>
@@ -2202,15 +2194,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\settings\DllAddonSettings.h"
+					RelativePath="..\..\xbmc\GUIDialogPluginSettings.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogAddonSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogAddonSettings.h"
+					RelativePath="..\..\xbmc\GUIDialogPluginSettings.h"
 					>
 				</File>
 				<File
@@ -2255,6 +2243,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowTestPatternGL.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PluginSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PluginSettings.h"
 					>
 				</File>
 				<File
@@ -2729,18 +2725,6 @@
 			<Filter
 				Name="Utils"
 				>
-				<File
-					RelativePath="..\..\xbmc\utils\Addon.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\AddonHelpers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\AddonManager.cpp"
-					>
-				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\AlarmClock.cpp"
 					>
@@ -5286,10 +5270,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\pvrclients\IPVRClient.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\PVRChannels.cpp"
 					>
 				</File>
@@ -5303,14 +5283,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\pvrclients\PVRClient.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\pvrclients\PVRClientFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\pvrclients\PVRClientFactory.h"
 					>
 				</File>
 				<File
@@ -5510,22 +5482,82 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="AddonFramework"
+				>
+				<File
+					RelativePath="..\..\xbmc\utils\Addon.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Addon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AddonDll.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AddonHelpers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AddonHelpers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AddonManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AddonManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\DllAddon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogAddonSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogAddonSettings.h"
+					>
+				</File>
+				<Filter
+					Name="Addons"
+					>
+					<File
+						RelativePath="..\..\xbmc\addons\include\xbmc_addon_dll.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\addons\include\xbmc_addon_lib++.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\addons\include\xbmc_addon_types.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\addons\include\xbmc_pvr_dll.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\addons\include\xbmc_pvr_lib++.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\addons\include\xbmc_pvr_types.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			>
-			<File
-				RelativePath="..\..\xbmc\utils\Addon.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\AddonHelpers.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\AddonManager.h"
-				>
-			</File>
 			<File
 				RelativePath="..\..\xbmc\utils\AlarmClock.h"
 				>
@@ -6094,58 +6126,6 @@
 				RelativePath="..\..\xbmc\XBAudioConfig.h"
 				>
 			</File>
-			<Filter
-				Name="Addons"
-				>
-				<File
-					RelativePath="..\..\xbmc\addons\include\xbmc_addon_dll.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\addons\include\xbmc_addon_lib++.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\addons\include\xbmc_addon_lib.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\addons\include\xbmc_addon_types.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\addons\include\xbmc_pvr_dll.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\addons\include\xbmc_pvr_lib++.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\addons\include\xbmc_pvr_lib.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\addons\include\xbmc_pvr_types.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\addons\include\xbmc_scr_dll.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\addons\include\xbmc_scr_types.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\addons\include\xbmc_vis_dll.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\addons\include\xbmc_vis_types.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="libraries"

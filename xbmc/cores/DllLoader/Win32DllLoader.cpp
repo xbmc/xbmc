@@ -353,6 +353,9 @@ bool Win32DllLoader::NeedsHooking(const char *dllName)
     }
   }
   HMODULE hModule = GetModuleHandle(_P(dllName).c_str());
+  if (hModule == NULL)
+    return false;
+
   char filepath[MAX_PATH];
   GetModuleFileName(hModule, filepath, MAX_PATH);
   CStdString dllPath = filepath;

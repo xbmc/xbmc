@@ -137,6 +137,8 @@ private:
   bool                    m_playingNoSignal;
 
   CStdString              m_connectionString;
+  CStdString              m_szBackendName;
+  CStdString              m_szBackendVersion;
 
   void Close();
 };

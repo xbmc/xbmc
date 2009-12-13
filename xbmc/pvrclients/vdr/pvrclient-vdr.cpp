@@ -258,8 +258,9 @@ const char* cPVRClientVDR::GetBackendName()
   vector<string>::iterator it = lines.begin();
   string& data(*it);
 
+  m_szBackendName = data;
   pthread_mutex_unlock(&m_critSection);
-  return data.c_str();
+  return m_szBackendName.c_str();
 }
 
 const char* cPVRClientVDR::GetBackendVersion()
@@ -282,8 +283,9 @@ const char* cPVRClientVDR::GetBackendVersion()
 
   string& data(*it);
 
+  m_szBackendVersion = data;
   pthread_mutex_unlock(&m_critSection);
-  return data.c_str();
+  return m_szBackendVersion.c_str();
 }
 
 const char* cPVRClientVDR::GetConnectionString()
