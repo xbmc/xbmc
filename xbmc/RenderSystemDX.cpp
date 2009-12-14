@@ -32,6 +32,7 @@
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
 
+#include <Dxerr.h>
 using namespace std;
 
 CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
@@ -169,7 +170,7 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.hDeviceWindow			= m_hDeviceWnd;
   m_D3DPP.BackBufferWidth			= m_nBackBufferWidth;
   m_D3DPP.BackBufferHeight			= m_nBackBufferHeight;
-  m_D3DPP.Flags   =   D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+  m_D3DPP.Flags   =   D3DPRESENTFLAG_LOCKABLE_BACKBUFFER | D3DPRESENTFLAG_VIDEO;
   m_D3DPP.PresentationInterval = (m_bVSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
   m_D3DPP.FullScreen_RefreshRateInHz = (useWindow) ? 0 : (int)m_refreshRate;
   m_D3DPP.BackBufferFormat = D3DFMT_X8R8G8B8;
@@ -252,6 +253,10 @@ void CRenderSystemDX::OnDeviceReset()
   {
     // just need a reset
     m_nDeviceStatus = m_pD3DDevice->Reset(&m_D3DPP);
+    if (FAILED(m_nDeviceStatus))
+    {
+      CLog::Log(LOGDEBUG,"%s ErrorString:%s ErrorDescription:%s",__FUNCTION__,DXGetErrorStringA(m_nDeviceStatus),DXGetErrorDescriptionA(m_nDeviceStatus));
+    }
     for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
       (*i)->OnResetDevice();
   }

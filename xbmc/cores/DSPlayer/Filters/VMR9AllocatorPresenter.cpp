@@ -447,28 +447,6 @@ HRESULT CVMR9AllocatorPresenter::AllocVideoSurface(D3DFORMAT Format)
   return hr;
 }
 
-void CVMR9AllocatorPresenter::OnLostDevice()
-{
-  m_renderingOk = false;
-}
-void CVMR9AllocatorPresenter::OnCreateDevice()
-{
-  if(m_pIVMRSurfAllocNotify)
-	{
-    EnterCriticalSection(&m_critPrensent);
-    HRESULT hr;
-    HMONITOR hmon;
-    unsigned int adapter = GetAdapter(g_Windowing.Get3DObject());
-    HMONITOR hMonitor = m_D3D->GetAdapterMonitor(adapter);
-    hr = m_pIVMRSurfAllocNotify->ChangeD3DDevice(g_Windowing.Get3DDevice(),hMonitor);
-    if (SUCCEEDED(hr))
-    {
-      m_renderingOk = true;
-    }
-    LeaveCriticalSection(&m_critPrensent);
-	}
-
-}
 STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9PresentationInfo *lpPresInfo)
 {
   HRESULT hr;

@@ -56,8 +56,6 @@ public:
 
   // ID3DResource
   void OnLostDevice();
-  //void OnResetDevice();
-  //void OnDestroyDevice();
   void OnCreateDevice();
 
   UINT GetAdapter(IDirect3D9 *pD3D);
@@ -93,8 +91,7 @@ private:
   long        m_refCount;
   CRITICAL_SECTION m_critPrensent;
   
-  CComPtr<IDirect3D9>                     m_D3D;
-  CComPtr<IDirect3DDevice9>               m_D3DDev;
+
   CComPtr<IVMRSurfaceAllocatorNotify9>    m_pIVMRSurfAllocNotify;
 
   vector<CComPtr<IDirect3DSurface9> >     m_pSurfaces;

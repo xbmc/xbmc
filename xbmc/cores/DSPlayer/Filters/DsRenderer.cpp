@@ -35,18 +35,14 @@ CDsRenderer::CDsRenderer()
 {
   m_D3D = g_Windowing.Get3DObject();
   m_D3DDev = g_Windowing.Get3DDevice();
-  g_Windowing.Register(this);
   g_renderManager.PreInit(true);
   
 }
 
 CDsRenderer::~CDsRenderer()
 {
-  g_Windowing.Unregister(this);
   //release id3dresource
   CSingleLock lock(m_critsection);
-  m_deviceused = false;
-  m_releaseevent.Set();
 
   g_renderManager.UnInit();
 }
@@ -54,45 +50,14 @@ CDsRenderer::~CDsRenderer()
 STDMETHODIMP CDsRenderer::RenderPresent(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface)
 {
 
-  HRESULT hr;
+  
   if (!g_renderManager.IsConfigured())
     return E_FAIL;
   
   CSingleLock lock(m_critsection);
-  while(!m_devicevalid)
-  {
-    lock.Leave();
-    m_createevent.Wait();
-    lock.Enter();
-  }
   g_renderManager.PaintVideoTexture(videoTexture,videoSurface);
   g_application.NewFrame();
   g_application.WaitFrame(100);
   return S_OK;
 
-}
-
-/*void CDsRenderer::Reset()
-  {
-    m_devicevalid = true;
-    m_deviceused = false;
-}*/
-
-void CDsRenderer::OnDestroyDevice()
-{
-
-}
-
-void CDsRenderer::OnCreateDevice()
-{
-}
-
-void CDsRenderer::OnResetDevice()
-{
-}
-
-void CDsRenderer::OnLostDevice()
-{
-  
-  //return m_devicevalid;
 }
