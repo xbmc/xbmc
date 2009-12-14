@@ -2130,8 +2130,8 @@
   <string id="22020">Guide</string>
   <string id="22021">Marge d'erreur du ratio pour minimiser les barres noires</string>
   <string id="22022">Afficher les fichiers vidéo dans les listes</string>
-  <string id="22023">Vendor DirectX</string>
-  <string id="22024">Version Direct3D</string>
+  <string id="22023">Vendor DirectX:</string>
+  <string id="22024">Version Direct3D:</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Police</string>
