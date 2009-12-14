@@ -509,19 +509,31 @@
       <backspace>Close</backspace>
     </keyboard>
   </Favourites>
-  <TVOSDChannels>
+  <PVROSDChannels>
     <keyboard>
       <backspace>Close</backspace>
       <escape>Close</escape>
       <c>Close</c>
     </keyboard>
-  </TVOSDChannels>
-  <TVOSDGuide>
+  </PVROSDChannels>
+  <PVROSDGuide>
     <keyboard>
       <backspace>Close</backspace>
       <escape>Close</escape>
     </keyboard>
-  </TVOSDGuide>
+  </PVROSDGuide>
+  <PVROSDDirector>
+    <remote>
+      <back>Close</back>
+      <menu>Close</menu>
+    </remote>
+  </PVROSDDirector>
+  <PVROSDCutter>
+    <remote>
+      <back>Close</back>
+      <menu>Close</menu>
+    </remote>
+  </PVROSDCutter>
   <MyTVSettings>
     <keyboard>
       <backspace>PreviousMenu</backspace>

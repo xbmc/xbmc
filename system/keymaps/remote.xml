@@ -490,22 +490,34 @@
       <back>Close</back>
     </remote>
   </Favourites>
-  <TVOSDChannels>
+  <PVROSDChannels>
     <remote>
       <back>Close</back>
       <menu>Close</menu>
       <start>Close</start>
       <playlist>Close</playlist>
     </remote>
-  </TVOSDChannels>
-  <TVOSDGuide>
+  </PVROSDChannels>
+  <PVROSDGuide>
     <remote>
       <back>Close</back>
       <menu>Close</menu>
       <start>Close</start>
       <guide>Close</guide>
     </remote>
-  </TVOSDGuide>
+  </PVROSDGuide>
+  <PVROSDDirector>
+    <remote>
+      <back>Close</back>
+      <menu>Close</menu>
+    </remote>
+  </PVROSDDirector>
+  <PVROSDCutter>
+    <remote>
+      <back>Close</back>
+      <menu>Close</menu>
+    </remote>
+  </PVROSDCutter>
   <MyTVSettings>
     <remote>
       <back>PreviousMenu</back>

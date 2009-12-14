@@ -50,15 +50,15 @@ using namespace MUSIC_INFO;
 using namespace ADDON;
 
 /**********************************************************************
-/* BEGIN OF CLASS **___ CPVRTimeshiftRcvr ____________________________*
-/**                                                                  **/
+ * BEGIN OF CLASS **___ CPVRTimeshiftRcvr ____________________________*
+ **                                                                  **/
 
 /********************************************************************
-/* CPVRTimeshiftRcvr constructor
-/*
-/* It creates a thread based PVR stream receiver which fill a buffer
-/* file from where we can read the stream later.
-/********************************************************************/
+ * CPVRTimeshiftRcvr constructor
+ *
+ * It creates a thread based PVR stream receiver which fill a buffer
+ * file from where we can read the stream later.
+ ********************************************************************/
 CPVRTimeshiftRcvr::CPVRTimeshiftRcvr()
 {
   /* Set initial data */
@@ -87,11 +87,11 @@ CPVRTimeshiftRcvr::CPVRTimeshiftRcvr()
 }
 
 /********************************************************************
-/* CPVRTimeshiftRcvr destructor
-/*
-/* It stopping the thread, delete the buffer file and destroy this.
-/* class
-/********************************************************************/
+ * CPVRTimeshiftRcvr destructor
+ *
+ * It stopping the thread, delete the buffer file and destroy this.
+ * class
+ ********************************************************************/
 CPVRTimeshiftRcvr::~CPVRTimeshiftRcvr()
 {
   /* Stop the receiving thread */
@@ -112,11 +112,11 @@ CPVRTimeshiftRcvr::~CPVRTimeshiftRcvr()
 }
 
 /********************************************************************
-/* CPVRTimeshiftRcvr StartReceiver
-/*
-/* It start the the receiving thread and return true if everything is
-/* ok. PVRClient must be passed to this function.
-/********************************************************************/
+ * CPVRTimeshiftRcvr StartReceiver
+ *
+ * It start the the receiving thread and return true if everything is
+ * ok. PVRClient must be passed to this function.
+ ********************************************************************/
 bool CPVRTimeshiftRcvr::StartReceiver(CPVRClient *client)
 {
   if (!m_pFile)
@@ -146,10 +146,10 @@ bool CPVRTimeshiftRcvr::StartReceiver(CPVRClient *client)
 }
 
 /********************************************************************
-/* CPVRTimeshiftRcvr StopReceiver
-/*
-/* It stop the the receiving thread
-/********************************************************************/
+ * CPVRTimeshiftRcvr StopReceiver
+ *
+ * It stop the the receiving thread
+ ********************************************************************/
 void CPVRTimeshiftRcvr::StopReceiver()
 {
   StopThread();
@@ -158,33 +158,33 @@ void CPVRTimeshiftRcvr::StopReceiver()
 }
 
 /********************************************************************
-/* CPVRTimeshiftRcvr GetMaxSize
-/*
-/* Return the maximum size for the buffer file, is required for wrap
-/* around during buffer read.
-/********************************************************************/
+ * CPVRTimeshiftRcvr GetMaxSize
+ *
+ * Return the maximum size for the buffer file, is required for wrap
+ * around during buffer read.
+ ********************************************************************/
 __int64 CPVRTimeshiftRcvr::GetMaxSize()
 {
   return m_MaxSize;
 }
 
 /********************************************************************
-/* CPVRTimeshiftRcvr GetWritten
-/*
-/* Return how many bytes are totally readed from the client and writed
-/* to the buffer file.
-/********************************************************************/
+ * CPVRTimeshiftRcvr GetWritten
+ *
+ * Return how many bytes are totally readed from the client and writed
+ * to the buffer file.
+ ********************************************************************/
 __int64 CPVRTimeshiftRcvr::GetWritten()
 {
   return m_written;
 }
 
 /********************************************************************
-/* CPVRTimeshiftRcvr GetDuration
-/*
-/* Return how many time in milliseconds (ms) is stored in the buffer
-/* file, required for seeking and progress bar.
-/********************************************************************/
+ * CPVRTimeshiftRcvr GetDuration
+ *
+ * Return how many time in milliseconds (ms) is stored in the buffer
+ * file, required for seeking and progress bar.
+ ********************************************************************/
 DWORD CPVRTimeshiftRcvr::GetDuration()
 {
   if (m_Timestamps.size() > 1)
@@ -194,11 +194,11 @@ DWORD CPVRTimeshiftRcvr::GetDuration()
 }
 
 /********************************************************************
-/* CPVRTimeshiftRcvr GetDurationString
-/*
-/* Same as GetDuration but return a string which is used by the
-/* GUIInfoManager label "pvrmanager.timeshiftduration".
-/********************************************************************/
+ * CPVRTimeshiftRcvr GetDurationString
+ *
+ * Same as GetDuration but return a string which is used by the
+ * GUIInfoManager label "pvrmanager.timeshiftduration".
+ ********************************************************************/
 const char* CPVRTimeshiftRcvr::GetDurationString()
 {
   StringUtils::SecondsToTimeString(GetDuration()/1000, m_DurationStr, TIME_FORMAT_GUESS);
@@ -206,11 +206,11 @@ const char* CPVRTimeshiftRcvr::GetDurationString()
 }
 
 /********************************************************************
-/* CPVRTimeshiftRcvr GetTimeTotal
-/*
-/* Return how long in milliseconds (ms) the thread is running.
-/* Also required for seeking.
-/********************************************************************/
+ * CPVRTimeshiftRcvr GetTimeTotal
+ *
+ * Return how long in milliseconds (ms) the thread is running.
+ * Also required for seeking.
+ ********************************************************************/
 DWORD CPVRTimeshiftRcvr::GetTimeTotal()
 {
   if (m_Timestamps.size() > 0)
@@ -220,15 +220,15 @@ DWORD CPVRTimeshiftRcvr::GetTimeTotal()
 }
 
 /********************************************************************
-/* CPVRTimeshiftRcvr TimeToPos
-/*
-/* Convert a timestamp in milliseconds (ms) to a byte position.
-/* It is based upon a std::deque list which stores reference data
-/* to a time for each performed read.
-/* It also write the new time to "timeRet" which is passed as pointer
-/* and set the wrapback label which indicates that the data is in the
-/* upper part behind the current write position.
-/********************************************************************/
+ * CPVRTimeshiftRcvr TimeToPos
+ *
+ * Convert a timestamp in milliseconds (ms) to a byte position.
+ * It is based upon a std::deque list which stores reference data
+ * to a time for each performed read.
+ * It also write the new time to "timeRet" which is passed as pointer
+ * and set the wrapback label which indicates that the data is in the
+ * upper part behind the current write position.
+ ********************************************************************/
 __int64 CPVRTimeshiftRcvr::TimeToPos(DWORD time, DWORD *timeRet, bool *wrapback)
 {
   __int64 pos = 0;
@@ -260,14 +260,14 @@ __int64 CPVRTimeshiftRcvr::TimeToPos(DWORD time, DWORD *timeRet, bool *wrapback)
 }
 
 /********************************************************************
-/* CPVRTimeshiftRcvr Process
-/*
-/* The Main thread. It read the data from the client and write it to
-/* the buffer file. If the Maximum size of the file is arrived, it
-/* swaps around and write for beginning of the file.
-/* For this reason, we can only seek back to the maximum size of the
-/* file.
-/********************************************************************/
+ * CPVRTimeshiftRcvr Process
+ *
+ * The Main thread. It read the data from the client and write it to
+ * the buffer file. If the Maximum size of the file is arrived, it
+ * swaps around and write for beginning of the file.
+ * For this reason, we can only seek back to the maximum size of the
+ * file.
+ ********************************************************************/
 void CPVRTimeshiftRcvr::Process()
 {
   CLog::Log(LOGDEBUG,"PVR: Timeshift receiver thread started");
@@ -320,15 +320,15 @@ void CPVRTimeshiftRcvr::Process()
 
 
 /**********************************************************************
-/* BEGIN OF CLASS **___ CPVRManager __________________________________*
-/**                                                                  **/
+ * BEGIN OF CLASS **___ CPVRManager __________________________________*
+ **                                                                  **/
 
 /********************************************************************
-/* CPVRManager constructor
-/*
-/* It creates the PVRManager, which mostly handle all PVR related
-/* operations for XBMC
-/********************************************************************/
+ * CPVRManager constructor
+ *
+ * It creates the PVRManager, which mostly handle all PVR related
+ * operations for XBMC
+ ********************************************************************/
 CPVRManager::CPVRManager()
 {
   m_hasRecordings = false;
@@ -340,10 +340,10 @@ CPVRManager::CPVRManager()
 }
 
 /********************************************************************
-/* CPVRManager destructor
-/*
-/* Destroy this class
-/********************************************************************/
+ * CPVRManager destructor
+ *
+ * Destroy this class
+ ********************************************************************/
 CPVRManager::~CPVRManager()
 {
   DeleteCriticalSection(&m_critSection);
@@ -351,10 +351,10 @@ CPVRManager::~CPVRManager()
 }
 
 /********************************************************************
-/* CPVRManager Start
-/*
-/* PVRManager Startup
-/********************************************************************/
+ * CPVRManager Start
+ *
+ * PVRManager Startup
+ ********************************************************************/
 void CPVRManager::Start()
 {
   /* First stop and remove any clients */
@@ -411,15 +411,15 @@ void CPVRManager::Start()
   SetName("XBMC PVR Supervisor");
   SetPriority(-15);
 
-  CLog::Log(LOGNOTICE, "PVR: PVRManager started. Clients loaded = %u", m_clients.size());
+  CLog::Log(LOGNOTICE, "PVR: PVRManager started. Clients loaded = %u", (unsigned int) m_clients.size());
   return;
 }
 
 /********************************************************************
-/* CPVRManager Stop
-/*
-/* PVRManager shutdown
-/********************************************************************/
+ * CPVRManager Stop
+ *
+ * PVRManager shutdown
+ ********************************************************************/
 void CPVRManager::Stop()
 {
   CLog::Log(LOGNOTICE, "PVR: PVRManager stoping");
@@ -441,10 +441,10 @@ void CPVRManager::Stop()
 }
 
 /********************************************************************
-/* CPVRManager LoadClients
-/*
-/* Load the client drivers and doing the startup.
-/********************************************************************/
+ * CPVRManager LoadClients
+ *
+ * Load the client drivers and doing the startup.
+ ********************************************************************/
 bool CPVRManager::LoadClients()
 {
   /* Get all PVR Add on's */
@@ -494,10 +494,10 @@ bool CPVRManager::LoadClients()
 }
 
 /********************************************************************
-/* CPVRManager GetClientProperties
-/*
-/* Load the client Properties for every client
-/********************************************************************/
+ * CPVRManager GetClientProperties
+ *
+ * Load the client Properties for every client
+ ********************************************************************/
 void CPVRManager::GetClientProperties()
 {
   m_clientsProps.clear();
@@ -510,11 +510,11 @@ void CPVRManager::GetClientProperties()
 }
 
 /********************************************************************
-/* CPVRManager GetClientProperties
-/*
-/* Load the client Properties for the given client ID in the
-/* Properties list
-/********************************************************************/
+ * CPVRManager GetClientProperties
+ *
+ * Load the client Properties for the given client ID in the
+ * Properties list
+ ********************************************************************/
 void CPVRManager::GetClientProperties(long clientID)
 {
   PVR_SERVERPROPS props;
@@ -526,10 +526,10 @@ void CPVRManager::GetClientProperties(long clientID)
 }
 
 /********************************************************************
-/* CPVRManager GetFirstClientID
-/*
-/* Returns the first loaded client ID
-/********************************************************************/
+ * CPVRManager GetFirstClientID
+ *
+ * Returns the first loaded client ID
+ ********************************************************************/
 unsigned long CPVRManager::GetFirstClientID()
 {
   CLIENTMAPITR itr = m_clients.begin();
@@ -537,11 +537,11 @@ unsigned long CPVRManager::GetFirstClientID()
 }
 
 /********************************************************************
-/* CPVRManager OnClientMessage
-/*
-/* Callback function from Client driver to inform about changed
-/* timers, channels, recordings or epg.
-/********************************************************************/
+ * CPVRManager OnClientMessage
+ *
+ * Callback function from Client driver to inform about changed
+ * timers, channels, recordings or epg.
+ ********************************************************************/
 void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg)
 {
   /* here the manager reacts to messages sent from any of the clients via the IPVRClientCallback */
@@ -615,10 +615,10 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
 }
 
 /********************************************************************
-/* CPVRManager SetSetting
-/*
-/* Send a setting value to the client driver
-/********************************************************************/
+ * CPVRManager SetSetting
+ *
+ * Send a setting value to the client driver
+ ********************************************************************/
 ADDON_STATUS CPVRManager::SetSetting(const IAddon* addon, const char *settingName, const void *settingValue)
 {
   if (!addon)
@@ -641,10 +641,10 @@ ADDON_STATUS CPVRManager::SetSetting(const IAddon* addon, const char *settingNam
 }
 
 /********************************************************************
-/* CPVRManager RequestRestart
-/*
-/* Restart a client driver
-/********************************************************************/
+ * CPVRManager RequestRestart
+ *
+ * Restart a client driver
+ ********************************************************************/
 bool CPVRManager::RequestRestart(const IAddon* addon, bool datachanged)
 {
   if (!addon)
@@ -683,10 +683,10 @@ bool CPVRManager::RequestRestart(const IAddon* addon, bool datachanged)
 }
 
 /********************************************************************
-/* CPVRManager RequestRemoval
-/*
-/* Unload a client driver
-/********************************************************************/
+ * CPVRManager RequestRemoval
+ *
+ * Unload a client driver
+ ********************************************************************/
 bool CPVRManager::RequestRemoval(const IAddon* addon)
 {
   if (!addon)
@@ -736,11 +736,11 @@ bool CPVRManager::RequestRemoval(const IAddon* addon)
 /*************************************************************/
 
 /********************************************************************
-/* CPVRManager CreateInternalTimeshift
-/*
-/* Create the internal timeshift receiver and the file class for
-/* reading.
-/********************************************************************/
+ * CPVRManager CreateInternalTimeshift
+ *
+ * Create the internal timeshift receiver and the file class for
+ * reading.
+ ********************************************************************/
 bool CPVRManager::CreateInternalTimeshift()
 {
   /* Delete the timeshift receiving class if present */
@@ -843,10 +843,10 @@ void CPVRManager::Process()
 /*************************************************************/
 
 /********************************************************************
-/* CPVRManager SyncInfo
-/*
-/* Synchronize InfoManager related stuff
-/********************************************************************/
+ * CPVRManager SyncInfo
+ *
+ * Synchronize InfoManager related stuff
+ ********************************************************************/
 void CPVRManager::SyncInfo()
 {
   PVRRecordings.GetNumRecordings() > 0 ? m_hasRecordings = true : m_hasRecordings = false;
@@ -898,10 +898,10 @@ void CPVRManager::SyncInfo()
 }
 
 /********************************************************************
-/* CPVRManager TranslateCharInfo
-/*
-/* Returns a GUIInfoManager Character String
-/********************************************************************/
+ * CPVRManager TranslateCharInfo
+ *
+ * Returns a GUIInfoManager Character String
+ ********************************************************************/
 #define INFO_TOGGLE_TIME    1500
 const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
 {
@@ -1133,10 +1133,10 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
 }
 
 /********************************************************************
-/* CPVRManager TranslateIntInfo
-/*
-/* Returns a GUIInfoManager integer value
-/********************************************************************/
+ * CPVRManager TranslateIntInfo
+ *
+ * Returns a GUIInfoManager integer value
+ ********************************************************************/
 int CPVRManager::TranslateIntInfo(DWORD dwInfo)
 {
   if      (dwInfo == PVR_TIMESHIFT_PROGRESS)
@@ -1166,10 +1166,10 @@ int CPVRManager::TranslateIntInfo(DWORD dwInfo)
 }
 
 /********************************************************************
-/* CPVRManager TranslateBoolInfo
-/*
-/* Returns a GUIInfoManager boolean value
-/********************************************************************/
+ * CPVRManager TranslateBoolInfo
+ *
+ * Returns a GUIInfoManager boolean value
+ ********************************************************************/
 bool CPVRManager::TranslateBoolInfo(DWORD dwInfo)
 {
   if (dwInfo == PVR_IS_RECORDING)
@@ -1199,10 +1199,10 @@ bool CPVRManager::TranslateBoolInfo(DWORD dwInfo)
 /*************************************************************/
 
 /********************************************************************
-/* CPVRManager IsPlayingTV
-/*
-/* Returns true if a TV channel is playing
-/********************************************************************/
+ * CPVRManager IsPlayingTV
+ *
+ * Returns true if a TV channel is playing
+ ********************************************************************/
 bool CPVRManager::IsPlayingTV()
 {
   if (!m_currentPlayingChannel)
@@ -1212,10 +1212,10 @@ bool CPVRManager::IsPlayingTV()
 }
 
 /********************************************************************
-/* CPVRManager IsPlayingRadio
-/*
-/* Returns true if a radio channel is playing
-/********************************************************************/
+ * CPVRManager IsPlayingRadio
+ *
+ * Returns true if a radio channel is playing
+ ********************************************************************/
 bool CPVRManager::IsPlayingRadio()
 {
   if (!m_currentPlayingChannel)
@@ -1225,10 +1225,10 @@ bool CPVRManager::IsPlayingRadio()
 }
 
 /********************************************************************
-/* CPVRManager IsPlayingRecording
-/*
-/* Returns true if a recording is playing
-/********************************************************************/
+ * CPVRManager IsPlayingRecording
+ *
+ * Returns true if a recording is playing
+ ********************************************************************/
 bool CPVRManager::IsPlayingRecording()
 {
   if (m_currentPlayingRecording)
@@ -1238,10 +1238,10 @@ bool CPVRManager::IsPlayingRecording()
 }
 
 /********************************************************************
-/* CPVRManager IsTimeshifting
-/*
-/* Returns true if timeshift is active
-/********************************************************************/
+ * CPVRManager IsTimeshifting
+ *
+ * Returns true if timeshift is active
+ ********************************************************************/
 bool CPVRManager::IsTimeshifting()
 {
   if (m_timeshiftInt || m_timeshiftExt)
@@ -1251,11 +1251,11 @@ bool CPVRManager::IsTimeshifting()
 }
 
 /********************************************************************
-/* CPVRManager GetCurrentClientProps
-/*
-/* Returns the properties of the current playing client or NULL if
-/* if no stream is playing
-/********************************************************************/
+ * CPVRManager GetCurrentClientProps
+ *
+ * Returns the properties of the current playing client or NULL if
+ * if no stream is playing
+ ********************************************************************/
 PVR_SERVERPROPS *CPVRManager::GetCurrentClientProps()
 {
   if (m_currentPlayingChannel)
@@ -1267,10 +1267,10 @@ PVR_SERVERPROPS *CPVRManager::GetCurrentClientProps()
 }
 
 /********************************************************************
-/* CPVRManager GetCurrentPlayingItem
-/*
-/* Returns the current playing file item
-/********************************************************************/
+ * CPVRManager GetCurrentPlayingItem
+ *
+ * Returns the current playing file item
+ ********************************************************************/
 CFileItem *CPVRManager::GetCurrentPlayingItem()
 {
   if (m_currentPlayingChannel)
@@ -1282,10 +1282,10 @@ CFileItem *CPVRManager::GetCurrentPlayingItem()
 }
 
 /********************************************************************
-/* CPVRManager GetCurrentChannel
-/*
-/* Returns the current playing channel number
-/********************************************************************/
+ * CPVRManager GetCurrentChannel
+ *
+ * Returns the current playing channel number
+ ********************************************************************/
 bool CPVRManager::GetCurrentChannel(int *number, bool *radio)
 {
   if (m_currentPlayingChannel)
@@ -1303,10 +1303,10 @@ bool CPVRManager::GetCurrentChannel(int *number, bool *radio)
 }
 
 /********************************************************************
-/* CPVRManager HaveActiveClients
-/*
-/* Returns true if a minimum one client is active
-/********************************************************************/
+ * CPVRManager HaveActiveClients
+ *
+ * Returns true if a minimum one client is active
+ ********************************************************************/
 bool CPVRManager::HaveActiveClients()
 {
   if (m_clients.empty())
@@ -1324,10 +1324,10 @@ bool CPVRManager::HaveActiveClients()
 }
 
 /********************************************************************
-/* CPVRManager GetPreviousChannel
-/*
-/* Returns the previous selected channel or -1
-/********************************************************************/
+ * CPVRManager GetPreviousChannel
+ *
+ * Returns the previous selected channel or -1
+ ********************************************************************/
 int CPVRManager::GetPreviousChannel()
 {
   if (m_currentPlayingChannel == NULL)
@@ -1335,17 +1335,17 @@ int CPVRManager::GetPreviousChannel()
 
   int LastChannel = m_currentPlayingChannel->GetPVRChannelInfoTag()->Number();
 
-  if (m_PreviousChannel[m_PreviousChannelIndex ^ 1] == LastChannel || LastChannel != m_PreviousChannel[0] && LastChannel != m_PreviousChannel[1])
+  if ((m_PreviousChannel[m_PreviousChannelIndex ^ 1] == LastChannel || LastChannel != m_PreviousChannel[0]) && LastChannel != m_PreviousChannel[1])
     m_PreviousChannelIndex ^= 1;
 
   return m_PreviousChannel[m_PreviousChannelIndex ^= 1];
 }
 
 /********************************************************************
-/* CPVRManager CanInstantRecording
-/*
-/* Returns true if we can start a instant recording on playing channel
-/********************************************************************/
+ * CPVRManager CanInstantRecording
+ *
+ * Returns true if we can start a instant recording on playing channel
+ ********************************************************************/
 bool CPVRManager::CanInstantRecording()
 {
   if (!m_currentPlayingChannel)
@@ -1359,10 +1359,10 @@ bool CPVRManager::CanInstantRecording()
 }
 
 /********************************************************************
-/* CPVRManager IsRecordingOnPlayingChannel
-/*
-/* Returns true if a instant recording on playing channel is running
-/********************************************************************/
+ * CPVRManager IsRecordingOnPlayingChannel
+ *
+ * Returns true if a instant recording on playing channel is running
+ ********************************************************************/
 bool CPVRManager::IsRecordingOnPlayingChannel()
 {
   if (!m_currentPlayingChannel)
@@ -1373,10 +1373,10 @@ bool CPVRManager::IsRecordingOnPlayingChannel()
 }
 
 /********************************************************************
-/* CPVRManager StartRecordingOnPlayingChannel
-/*
-/* Start a instant recording on playing channel
-/********************************************************************/
+ * CPVRManager StartRecordingOnPlayingChannel
+ *
+ * Start a instant recording on playing channel
+ ********************************************************************/
 bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
 {
   if (!m_currentPlayingChannel)
@@ -1430,11 +1430,11 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
 }
 
 /********************************************************************
-/* CPVRManager SaveCurrentChannelSettings
-/*
-/* Write the current Video and Audio settings of playing channel
-/* to the TV Database
-/********************************************************************/
+ * CPVRManager SaveCurrentChannelSettings
+ *
+ * Write the current Video and Audio settings of playing channel
+ * to the TV Database
+ ********************************************************************/
 void CPVRManager::SaveCurrentChannelSettings()
 {
   if (m_currentPlayingChannel)
@@ -1450,11 +1450,11 @@ void CPVRManager::SaveCurrentChannelSettings()
 }
 
 /********************************************************************
-/* CPVRManager LoadCurrentChannelSettings
-/*
-/* Read and set the Video and Audio settings of playing channel
-/* from the TV Database
-/********************************************************************/
+ * CPVRManager LoadCurrentChannelSettings
+ *
+ * Read and set the Video and Audio settings of playing channel
+ * from the TV Database
+ ********************************************************************/
 void CPVRManager::LoadCurrentChannelSettings()
 {
   if (m_currentPlayingChannel)
@@ -1600,21 +1600,21 @@ void CPVRManager::LoadCurrentChannelSettings()
 }
 
 /********************************************************************
-/* CPVRManager SetPlayingGroup
-/*
-/* Set the current playing group ID, used to load the right channel
-/* lists
-/********************************************************************/
+ * CPVRManager SetPlayingGroup
+ *
+ * Set the current playing group ID, used to load the right channel
+ * lists
+ ********************************************************************/
 void CPVRManager::SetPlayingGroup(int GroupId)
 {
   m_CurrentGroupID = GroupId;
 }
 
 /********************************************************************
-/* CPVRManager ResetQualityData
-/*
-/* Reset the Signal Quality data structure to initial values
-/********************************************************************/
+ * CPVRManager ResetQualityData
+ *
+ * Reset the Signal Quality data structure to initial values
+ ********************************************************************/
 void CPVRManager::ResetQualityData()
 {
   if (g_guiSettings.GetBool("pvrplayback.signalquality"))
@@ -1637,21 +1637,21 @@ void CPVRManager::ResetQualityData()
 }
 
 /********************************************************************
-/* CPVRManager GetPlayingGroup
-/*
-/* Get the current playing group ID, used to load the right channel
-/* lists
-/********************************************************************/
+ * CPVRManager GetPlayingGroup
+ *
+ * Get the current playing group ID, used to load the right channel
+ * lists
+ ********************************************************************/
 int CPVRManager::GetPlayingGroup()
 {
   return m_CurrentGroupID;
 }
 
 /********************************************************************
-/* CPVRManager TriggerRecordingsUpdate
-/*
-/* Trigger a Recordings Update
-/********************************************************************/
+ * CPVRManager TriggerRecordingsUpdate
+ *
+ * Trigger a Recordings Update
+ ********************************************************************/
 void CPVRManager::TriggerRecordingsUpdate(bool force)
 {
   m_LastRecordingsCheck = CTimeUtils::GetTimeMS()/1000-RECORDINGCHECKDELTA + (force ? 0 : 5);
@@ -1666,13 +1666,13 @@ void CPVRManager::TriggerRecordingsUpdate(bool force)
 /*************************************************************/
 
 /********************************************************************
-/* CPVRManager OpenLiveStream
-/*
-/* Open a Channel by the channel number. Number can be a TV or Radio
-/* channel and is defined by the "bool radio" flag.
-/*
-/* Returns true if opening was succesfull
-/********************************************************************/
+ * CPVRManager OpenLiveStream
+ *
+ * Open a Channel by the channel number. Number can be a TV or Radio
+ * channel and is defined by the "bool radio" flag.
+ *
+ * Returns true if opening was succesfull
+ ********************************************************************/
 bool CPVRManager::OpenLiveStream(const cPVRChannelInfoTag* tag)
 {
   if (tag == NULL)
@@ -1693,7 +1693,6 @@ bool CPVRManager::OpenLiveStream(const cPVRChannelInfoTag* tag)
   ResetQualityData();
 
   /* Open the stream on the Client */
-//  const cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetPVRChannelInfoTag();
   if (tag->StreamURL().IsEmpty())
   {
     if (!m_clientsProps[tag->ClientID()].HandleInputStream ||
@@ -1736,12 +1735,12 @@ bool CPVRManager::OpenLiveStream(const cPVRChannelInfoTag* tag)
 }
 
 /********************************************************************
-/* CPVRManager OpenRecordedStream
-/*
-/* Open a recording by a index number passed to this function.
-/*
-/* Returns true if opening was succesfull
-/********************************************************************/
+ * CPVRManager OpenRecordedStream
+ *
+ * Open a recording by a index number passed to this function.
+ *
+ * Returns true if opening was succesfull
+ ********************************************************************/
 bool CPVRManager::OpenRecordedStream(const cPVRRecordingInfoTag* tag)
 {
   if (tag == NULL)
@@ -1777,11 +1776,11 @@ bool CPVRManager::OpenRecordedStream(const cPVRRecordingInfoTag* tag)
 }
 
 /********************************************************************
-/* CPVRManager CloseStream
-/*
-/* Close the stream on the PVR Client and if internal timeshift is
-/* used delete the Timeshift receiver.
-/********************************************************************/
+ * CPVRManager CloseStream
+ *
+ * Close the stream on the PVR Client and if internal timeshift is
+ * used delete the Timeshift receiver.
+ ********************************************************************/
 void CPVRManager::CloseStream()
 {
   EnterCriticalSection(&m_critSection);
@@ -1831,13 +1830,13 @@ void CPVRManager::CloseStream()
 }
 
 /********************************************************************
-/* CPVRManager ReadStream
-/*
-/* Read the stream to the buffer pointer passed defined by "buf" and
-/* a maximum site passed with "buf_size".
-/*
-/* The amount of readed bytes is returned.
-/********************************************************************/
+ * CPVRManager ReadStream
+ *
+ * Read the stream to the buffer pointer passed defined by "buf" and
+ * a maximum site passed with "buf_size".
+ *
+ * The amount of readed bytes is returned.
+ ********************************************************************/
 int CPVRManager::ReadStream(BYTE* buf, int buf_size)
 {
   EnterCriticalSection(&m_critSection);
@@ -1933,11 +1932,11 @@ REPEAT_READ:
 }
 
 /********************************************************************
-/* CPVRManager LengthStream
-/*
-/* Return the length in bytes of the current stream readed from
-/* PVR Client or NULL if internal timeshift is used.
-/********************************************************************/
+ * CPVRManager LengthStream
+ *
+ * Return the length in bytes of the current stream readed from
+ * PVR Client or NULL if internal timeshift is used.
+ ********************************************************************/
 __int64 CPVRManager::LengthStream(void)
 {
   __int64 streamLength = 0;
@@ -1967,10 +1966,10 @@ __int64 CPVRManager::LengthStream(void)
 }
 
 /********************************************************************
-/* CPVRManager SeekTimeRequired
-/*
-/* Return true if internal timeshift is used.
-/********************************************************************/
+ * CPVRManager SeekTimeRequired
+ *
+ * Return true if internal timeshift is used.
+ ********************************************************************/
 bool CPVRManager::SeekTimeRequired()
 {
   if (m_currentPlayingChannel && m_timeshiftInt)
@@ -1980,10 +1979,10 @@ bool CPVRManager::SeekTimeRequired()
 }
 
 /********************************************************************
-/* CPVRManager SeekTimeStep
-/*
-/* Return the seek time step in milliseconds
-/********************************************************************/
+ * CPVRManager SeekTimeStep
+ *
+ * Return the seek time step in milliseconds
+ ********************************************************************/
 int CPVRManager::SeekTimeStep(bool bPlus, bool bLargeStep, __int64 curTime)
 {
   if (!m_currentPlayingChannel || !m_timeshiftInt)
@@ -2022,14 +2021,14 @@ int CPVRManager::SeekTimeStep(bool bPlus, bool bLargeStep, __int64 curTime)
 }
 
 /********************************************************************
-/* CPVRManager SeekTime
-/*
-/* Perform a seek by time passed as time position from the begin of
-/* the playback in milliseconds.
-/* It is only used when internal timeshift is used.
-/*
-/* Returns true if switch was succesfull
-/********************************************************************/
+ * CPVRManager SeekTime
+ *
+ * Perform a seek by time passed as time position from the begin of
+ * the playback in milliseconds.
+ * It is only used when internal timeshift is used.
+ *
+ * Returns true if switch was succesfull
+ ********************************************************************/
 bool CPVRManager::SeekTime(int iTimeInMsec, int *iRetTimeInMsec)
 {
   DWORD newTimePos;
@@ -2063,14 +2062,14 @@ bool CPVRManager::SeekTime(int iTimeInMsec, int *iRetTimeInMsec)
 }
 
 /********************************************************************
-/* CPVRManager SeekStream
-/*
-/* Perform a file seek to the PVR Client if a recording is played or
-/* if a channel is played and the client support timeshift.
-/* Seeking is not performed for if own internal timeshift is used.
-/*
-/* Returns the new position after seek or < 0 if seek was failed
-/********************************************************************/
+ * CPVRManager SeekStream
+ *
+ * Perform a file seek to the PVR Client if a recording is played or
+ * if a channel is played and the client support timeshift.
+ * Seeking is not performed for if own internal timeshift is used.
+ *
+ * Returns the new position after seek or < 0 if seek was failed
+ ********************************************************************/
 __int64 CPVRManager::SeekStream(__int64 pos, int whence)
 {
   __int64 streamNewPos = 0;
@@ -2100,11 +2099,11 @@ __int64 CPVRManager::SeekStream(__int64 pos, int whence)
 }
 
 /********************************************************************
-/* CPVRManager UpdateItem
-/*
-/* Update the current running file: It is called during a channel
-/* change to refresh the global file item.
-/********************************************************************/
+ * CPVRManager UpdateItem
+ *
+ * Update the current running file: It is called during a channel
+ * change to refresh the global file item.
+ ********************************************************************/
 bool CPVRManager::UpdateItem(CFileItem& item)
 {
   /* Don't update if a recording is played */
@@ -2152,12 +2151,12 @@ bool CPVRManager::UpdateItem(CFileItem& item)
 }
 
 /********************************************************************
-/* CPVRManager ChannelSwitch
-/*
-/* It switch to the channel passed to this function
-/*
-/* Returns true if switch was succesfull
-/********************************************************************/
+ * CPVRManager ChannelSwitch
+ *
+ * It switch to the channel passed to this function
+ *
+ * Returns true if switch was succesfull
+ ********************************************************************/
 bool CPVRManager::ChannelSwitch(unsigned int iChannel)
 {
   if (!m_currentPlayingChannel)
@@ -2236,13 +2235,13 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
 }
 
 /********************************************************************
-/* CPVRManager ChannelUp
-/*
-/* It switch to the next channel and return the new channel to
-/* the pointer passed by this function
-/*
-/* Returns true if switch was succesfull
-/********************************************************************/
+ * CPVRManager ChannelUp
+ *
+ * It switch to the next channel and return the new channel to
+ * the pointer passed by this function
+ *
+ * Returns true if switch was succesfull
+ ********************************************************************/
 bool CPVRManager::ChannelUp(unsigned int *newchannel)
 {
    if (m_currentPlayingChannel)
@@ -2329,13 +2328,13 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
 }
 
 /********************************************************************
-/* CPVRManager ChannelDown
-/*
-/* It switch to the previous channel and return the new channel to
-/* the pointer passed by this function
-/*
-/* Returns true if switch was succesfull
-/********************************************************************/
+ * CPVRManager ChannelDown
+ *
+ * It switch to the previous channel and return the new channel to
+ * the pointer passed by this function
+ *
+ * Returns true if switch was succesfull
+ ********************************************************************/
 bool CPVRManager::ChannelDown(unsigned int *newchannel)
 {
   if (m_currentPlayingChannel)
@@ -2421,10 +2420,10 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel)
 }
 
 /********************************************************************
-/* CPVRManager GetTotalTime
-/*
-/* Returns the duration of the current program.
-/********************************************************************/
+ * CPVRManager GetTotalTime
+ *
+ * Returns the duration of the current program.
+ ********************************************************************/
 int CPVRManager::GetTotalTime()
 {
   if (!m_currentPlayingChannel)
@@ -2443,10 +2442,10 @@ int CPVRManager::GetTotalTime()
 }
 
 /********************************************************************
-/* CPVRManager GetStartTime
-/*
-/* Returns the start time of the current playing program.
-/********************************************************************/
+ * CPVRManager GetStartTime
+ *
+ * Returns the start time of the current playing program.
+ ********************************************************************/
 int CPVRManager::GetStartTime()
 {
   if (!m_currentPlayingChannel)

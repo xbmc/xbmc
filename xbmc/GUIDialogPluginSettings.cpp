@@ -58,7 +58,7 @@ using namespace DIRECTORY;
 #define CONTROL_START_CONTROL           100
 
 CGUIDialogPluginSettings::CGUIDialogPluginSettings()
-   : CGUIDialogBoxBase(WINDOW_DIALOG_PLUGIN_SETTINGS, "DialogAddonBrowser.xml")
+   : CGUIDialogBoxBase(WINDOW_DIALOG_PLUGIN_SETTINGS, "DialogPluginSettings.xml")
 {}
 
 CGUIDialogPluginSettings::~CGUIDialogPluginSettings(void)
