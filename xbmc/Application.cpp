@@ -287,7 +287,6 @@ using namespace DBUSSERVER;
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32d.lib") // SECTIONNAME=LIBHTTP
   #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32d.lib" )
   #pragma comment (lib,"../../xbmc/lib/libiconv/libiconvd.lib")
-  #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidid.lib")
   #pragma comment (lib,"../../xbmc/lib/libpcre/libpcred.lib")
  #else
   #ifdef HAS_FILESYSTEM
@@ -298,7 +297,6 @@ using namespace DBUSSERVER;
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
   #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32.lib" )
   #pragma comment (lib,"../../xbmc/lib/libiconv/libiconv.lib")
-  #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidi.lib")
   #pragma comment (lib,"../../xbmc/lib/libpcre/libpcre.lib")
  #endif
 #endif
