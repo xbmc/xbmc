@@ -4,6 +4,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XBMC", "XBMC.vcproj", "{3A6
 	ProjectSection(ProjectDependencies) = postProject
 		{00700E12-A63B-4E54-B962-4011A90584BD} = {00700E12-A63B-4E54-B962-4011A90584BD}
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50} = {B2975495-FBE4-4F94-AAC5-B21A9842BF50}
+		{76850A99-4EC7-4196-B3EA-E4120A00E8A6} = {76850A99-4EC7-4196-B3EA-E4120A00E8A6}
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4} = {510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452} = {FE0A91C0-E30A-47CD-8A92-A508C9292452}
 		{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38} = {3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}
@@ -42,6 +43,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libfaad2_dll", "..\..\xbmc\cores\dvdplayer\Codecs\libfaad2\libfaad\libfaad2_dll.vcproj", "{482DA264-EE88-4575-B208-87C4CB80CD08}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcmyth_dll", "..\..\xbmc\lib\cmyth\Win32\libcmyth.vcproj", "{F9E6874D-60A8-49BA-9393-A2105E63ABCF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libshout", "..\..\xbmc\lib\libshout\libshout\libshout.vcproj", "{76850A99-4EC7-4196-B3EA-E4120A00E8A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -145,6 +148,14 @@ Global
 		{F9E6874D-60A8-49BA-9393-A2105E63ABCF}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{F9E6874D-60A8-49BA-9393-A2105E63ABCF}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{F9E6874D-60A8-49BA-9393-A2105E63ABCF}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{76850A99-4EC7-4196-B3EA-E4120A00E8A6}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{76850A99-4EC7-4196-B3EA-E4120A00E8A6}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{76850A99-4EC7-4196-B3EA-E4120A00E8A6}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{76850A99-4EC7-4196-B3EA-E4120A00E8A6}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{76850A99-4EC7-4196-B3EA-E4120A00E8A6}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{76850A99-4EC7-4196-B3EA-E4120A00E8A6}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{76850A99-4EC7-4196-B3EA-E4120A00E8A6}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{76850A99-4EC7-4196-B3EA-E4120A00E8A6}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

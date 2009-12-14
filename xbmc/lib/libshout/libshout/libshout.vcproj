@@ -1,63 +1,109 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
+	Version="9,00"
 	Name="libshout"
 	ProjectGUID="{76850A99-4EC7-4196-B3EA-E4120A00E8A6}"
-	Keyword="Win32Proj">
+	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="Debug"
 			IntermediateDirectory="Debug"
 			ConfigurationType="4"
-			CharacterSet="2">
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="regex;..\..\..\cores\paplayer;..\..\..\xbmc\cores\dvdplayer\DVDCodecs;..\..\libiconv;..\..\..\cores\dvdplayer\DVDCodecs\Audio\libmad"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;XBMC"
-				MinimalRebuild="TRUE"
+				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="5"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="4"/>
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="4"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/libshout.lib"/>
+				AdditionalDependencies="libmad.lib ogg_static.lib vorbis_static.lib"
+				OutputFile="$(OutDir)/libshout.lib"
+			/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="4"
-			CharacterSet="2">
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="regex;..\..\..\cores\paplayer;..\..\..\xbmc\cores\dvdplayer\DVDCodecs;..\..\libiconv;..\..\..\cores\dvdplayer\DVDCodecs\Audio\libmad"
@@ -65,32 +111,38 @@
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="0"/>
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="0"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="libmad.lib ogg_static.lib vorbis_static.lib"
-				OutputFile="$(OutDir)/libshout.lib"/>
+				OutputFile="$(OutDir)/libshout.lib"
+			/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 	</Configurations>
 	<References>
@@ -99,149 +151,196 @@
 		<Filter
 			Name="Quelldateien"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			>
 			<File
-				RelativePath="..\argv.c">
+				RelativePath="..\argv.c"
+				>
 			</File>
 			<File
-				RelativePath="..\cbuf2.c">
+				RelativePath="..\cbuf2.c"
+				>
 			</File>
 			<File
-				RelativePath="..\charset.c">
+				RelativePath="..\charset.c"
+				>
 			</File>
 			<File
-				RelativePath="..\debug.c">
+				RelativePath="..\debug.c"
+				>
 			</File>
 			<File
-				RelativePath="..\external.c">
+				RelativePath="..\external.c"
+				>
 			</File>
 			<File
-				RelativePath="..\filelib.c">
+				RelativePath="..\filelib.c"
+				>
 			</File>
 			<File
-				RelativePath="..\findsep.c">
+				RelativePath="..\findsep.c"
+				>
 			</File>
 			<File
-				RelativePath="..\http.c">
+				RelativePath="..\http.c"
+				>
 			</File>
 			<File
-				RelativePath="..\iconvert.c">
+				RelativePath="..\iconvert.c"
+				>
 			</File>
 			<File
-				RelativePath="..\ictest.c">
+				RelativePath="..\ictest.c"
+				>
 			</File>
 			<File
-				RelativePath="..\mchar.c">
+				RelativePath="..\mchar.c"
+				>
 			</File>
 			<File
-				RelativePath="..\mpeg.c">
+				RelativePath="..\mpeg.c"
+				>
 			</File>
 			<File
-				RelativePath="..\parse.c">
+				RelativePath="..\parse.c"
+				>
 			</File>
 			<File
-				RelativePath="..\relaylib.c">
+				RelativePath="..\relaylib.c"
+				>
 			</File>
 			<File
-				RelativePath="..\rip_manager.c">
+				RelativePath="..\rip_manager.c"
+				>
 			</File>
 			<File
-				RelativePath="..\ripaac.c">
+				RelativePath="..\ripaac.c"
+				>
 			</File>
 			<File
-				RelativePath="..\ripogg.c">
+				RelativePath="..\ripogg.c"
+				>
 			</File>
 			<File
-				RelativePath="..\ripstream.c">
+				RelativePath="..\ripstream.c"
+				>
 			</File>
 			<File
-				RelativePath="..\socklib.c">
+				RelativePath="..\socklib.c"
+				>
 			</File>
 			<File
-				RelativePath=".\stdafx.cpp">
+				RelativePath=".\stdafx.cpp"
+				>
 				<FileConfiguration
-					Name="Debug|Win32">
+					Name="Debug|Win32"
+					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"/>
+						UsePrecompiledHeader="1"
+					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32">
+					Name="Release|Win32"
+					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"/>
+						UsePrecompiledHeader="1"
+					/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\threadlib.c">
+				RelativePath="..\threadlib.c"
+				>
 			</File>
 			<File
-				RelativePath="..\utf8.c">
+				RelativePath="..\utf8.c"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Headerdateien"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			>
 			<File
-				RelativePath="..\cbuf2.h">
+				RelativePath="..\cbuf2.h"
+				>
 			</File>
 			<File
-				RelativePath="..\charset.h">
+				RelativePath="..\charset.h"
+				>
 			</File>
 			<File
-				RelativePath="..\debug.h">
+				RelativePath="..\debug.h"
+				>
 			</File>
 			<File
-				RelativePath="..\external.h">
+				RelativePath="..\external.h"
+				>
 			</File>
 			<File
-				RelativePath="..\filelib.h">
+				RelativePath="..\filelib.h"
+				>
 			</File>
 			<File
-				RelativePath="..\findsep.h">
+				RelativePath="..\findsep.h"
+				>
 			</File>
 			<File
-				RelativePath="..\http.h">
+				RelativePath="..\http.h"
+				>
 			</File>
 			<File
-				RelativePath="..\mchar.h">
+				RelativePath="..\mchar.h"
+				>
 			</File>
 			<File
-				RelativePath="..\parse.h">
+				RelativePath="..\parse.h"
+				>
 			</File>
 			<File
-				RelativePath="..\relaylib.h">
+				RelativePath="..\relaylib.h"
+				>
 			</File>
 			<File
-				RelativePath="..\rip_manager.h">
+				RelativePath="..\rip_manager.h"
+				>
 			</File>
 			<File
-				RelativePath="..\ripogg.h">
+				RelativePath="..\ripogg.h"
+				>
 			</File>
 			<File
-				RelativePath="..\ripstream.h">
+				RelativePath="..\ripstream.h"
+				>
 			</File>
 			<File
-				RelativePath="..\socklib.h">
+				RelativePath="..\socklib.h"
+				>
 			</File>
 			<File
-				RelativePath=".\stdafx.h">
+				RelativePath=".\stdafx.h"
+				>
 			</File>
 			<File
-				RelativePath="..\threadlib.h">
+				RelativePath="..\threadlib.h"
+				>
 			</File>
 			<File
-				RelativePath="..\utf8.h">
+				RelativePath="..\utf8.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Ressourcendateien"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
 		</Filter>
 		<File
-			RelativePath=".\ReadMe.txt">
+			RelativePath=".\ReadMe.txt"
+			>
 		</File>
 	</Files>
 	<Globals>
