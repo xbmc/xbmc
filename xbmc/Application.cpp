@@ -285,7 +285,6 @@ using namespace DBUSSERVER;
     #pragma comment (lib,"../../xbmc/lib/libRTV/libRTVd_win32.lib")
   #endif
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32d.lib") // SECTIONNAME=LIBHTTP
-  #pragma comment (lib,"../../xbmc/lib/sqLite/libSQLite3_win32d.lib")
   #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32d.lib" )
   #pragma comment (lib,"../../xbmc/lib/libiconv/libiconvd.lib")
   #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidid.lib")
@@ -297,7 +296,6 @@ using namespace DBUSSERVER;
     #pragma comment (lib,"../../xbmc/lib/libRTV/libRTV_win32.lib")
   #endif
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
-  #pragma comment (lib,"../../xbmc/lib/sqLite/libSQLite3_win32.lib")
   #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32.lib" )
   #pragma comment (lib,"../../xbmc/lib/libiconv/libiconv.lib")
   #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidi.lib")
