@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Zippolighter-->
 <!--Email: hardrock_zippolighter@hotmail.com-->
-<!--Date of translation: 11/23/2009-->
+<!--Date of translation: 12/14/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 24865-->
+<!--Based on english strings version 25464-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -876,7 +876,7 @@
   <string id="10521">
   </string>
   <string id="10522">Abspielliste - Videos</string>
-  <string id="10523">Album-Informationen</string>
+  <string id="10523">Album Info</string>
   <string id="10524">Film-Informationen</string>
   <string id="12000">Auswahl-Dialog</string>
   <string id="12001">Musik/Informationen</string>
@@ -1139,7 +1139,7 @@
   <string id="13348">Film in IMDb suchen...</string>
   <string id="13349">Neue Inhalte suchen</string>
   <string id="13350">Abspielliste anzeigen</string>
-  <string id="13351">Album-informationen</string>
+  <string id="13351">Albuminformationen</string>
   <string id="13352">In Datenbank aufnehmen</string>
   <string id="13353">Aktualisieren abbrechen</string>
   <string id="13354">Render-Methode</string>
@@ -1647,7 +1647,7 @@
   </string>
   <string id="20057">Thumbnail entfernen</string>
   <string id="20058">Profil hinzufügen...</string>
-  <string id="20059">Lade alle Alben-Infos</string>
+  <string id="20059">Alle Alben-Info laden</string>
   <string id="20060">Medien-Informationen</string>
   <string id="20061">Eigenständig</string>
   <string id="20062">Wie Hauptbenutzer</string>
@@ -1894,7 +1894,7 @@
   <string id="20397">Zum Album wechseln</string>
   <string id="20398">Titel abspielen</string>
   <string id="20399">Zu Musikvideos des Albums</string>
-  <string id="20400">Zu Musikvideos des Interpreten</string>
+  <string id="20400">Musikvideos-Interpreten</string>
   <string id="20401">Musikvideo abspielen</string>
   <string id="20402">Schauspieler Bilder automatisch herunterladen</string>
   <string id="20403">Schauspieler Bild setzen</string>
@@ -2150,6 +2150,7 @@
   <string id="23001">- Plugin Einstellungen</string>
   <string id="23050">Videotext aktivieren</string>
   <string id="23051">Teil</string>
+  <string id="23052">Zwischenspeichern - %i Bytes</string>
   <string id="23100">External Player ist aktiv</string>
   <string id="23101">Drücke OK um den Player zu beenden</string>
   <string id="23102">
