@@ -33,7 +33,6 @@ public:
   CCritSec        m_VMR9AlphaBitmapLock;
   void          UpdateAlphaBitmap();
   CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error);
-  virtual ~CVMR9AllocatorPresenter();
 
   // IVMRSurfaceAllocator9
   virtual STDMETHODIMP InitializeDevice(DWORD_PTR dwUserID, VMR9AllocationInfo *lpAllocInfo, DWORD *lpNumBuffers);
@@ -66,11 +65,10 @@ public:
   
 protected:
   void DeleteSurfaces();
-  HRESULT AllocVideoSurface(D3DFORMAT Format = D3DFMT_A8R8G8B8);
+  
   void GetCurrentVideoSize();
 
-  D3DFORMAT            m_SurfaceType;
-  D3DFORMAT            m_BackbufferType;
+  
   D3DFORMAT            m_DisplayType;
 
   VMR9AlphaBitmap      m_VMR9AlphaBitmap;
@@ -81,15 +79,13 @@ protected:
   //Clock stuff
   REFERENCE_TIME m_rtTimePerFrame;
   REFERENCE_TIME m_pPrevEndFrame;
-  int            m_iVideoWidth;
-  int            m_iVideoHeight;
+  
 
   float          m_fps;
   int            m_fFrameRate;
   bool           m_renderingOk;
 private:
   long        m_refCount;
-  CRITICAL_SECTION m_critPrensent;
   
 
   CComPtr<IVMRSurfaceAllocatorNotify9>    m_pIVMRSurfAllocNotify;
@@ -97,8 +93,6 @@ private:
   vector<CComPtr<IDirect3DSurface9> >     m_pSurfaces;
   int                                     m_pNbrSurface;
   int                                     m_pCurSurface;
-  CComPtr<IDirect3DTexture9>              m_pVideoTexture;
-  CComPtr<IDirect3DSurface9>              m_pVideoSurface;
 };
 
 #endif // _DXALLOCATORPRESENTER_H

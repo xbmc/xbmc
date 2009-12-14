@@ -326,26 +326,17 @@ CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error
   m_D3D = g_Windowing.Get3DObject();
   m_D3DDev = g_Windowing.Get3DDevice();
   hr = S_OK;
-  InitializeCriticalSection(&m_critPrensent);
   m_renderingOk = true;
-}
-
-CVMR9AllocatorPresenter::~CVMR9AllocatorPresenter()
-{
-  DeleteSurfaces();
-  DeleteCriticalSection(&m_critPrensent);
-  
 }
 
 void CVMR9AllocatorPresenter::DeleteSurfaces()
 {
-  EnterCriticalSection(&m_critPrensent);
-  
-  // clear out the private texture
-  m_pVideoTexture = NULL;
+  CAutoLock cAutoLock(this);
+	CAutoLock cRenderLock(&m_RenderLock);
   for( size_t i = 0; i < m_pSurfaces.size(); ++i ) 
-     m_pSurfaces[i] = NULL;
-  LeaveCriticalSection(&m_critPrensent);
+  {
+    m_pSurfaces[i] = NULL;
+  }
 }
 
 //IVMRSurfaceAllocator9
@@ -403,10 +394,11 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
   m_iVideoHeight = lpAllocInfo->dwHeight;
 
   //INITIALIZE VIDEO SURFACE THERE
-  hr = AllocVideoSurface();
+  hr = CreateSurfaces();
+  
   if ( FAILED( hr ) )
     return hr;
-  hr = m_D3DDev->ColorFill(m_pVideoSurface, NULL, 0);
+  hr = m_D3DDev->ColorFill(m_pVideoSurface[0], NULL, 0);
   if ( FAILED( hr ) )
   {
     CLog::Log(LOGERROR,"%s ColorFill returned:0x%x",__FUNCTION__,hr);
@@ -418,32 +410,6 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
   
 	*lpNumBuffers = (nOriginal < *lpNumBuffers) ? nOriginal : *lpNumBuffers;
 	m_pCurSurface = 0;
-  return hr;
-}
-
-//from mediaportal
-HRESULT CVMR9AllocatorPresenter::AllocVideoSurface(D3DFORMAT Format)
-{
-  EnterCriticalSection(&m_critPrensent);
-  HRESULT hr;
-  m_pVideoTexture = NULL;
-  m_pVideoSurface = NULL;
-  m_SurfaceType = Format;
-  D3DDISPLAYMODE dm;
-  hr = m_D3DDev->GetDisplayMode(NULL, &dm);
-  
-  if (SUCCEEDED(hr))
-    m_D3DDev->CreateTexture(m_iVideoWidth,  m_iVideoHeight,
-                            1,
-                            D3DUSAGE_RENDERTARGET,
-                            dm.Format,//m_SurfaceType, // default is D3DFMT_A8R8G8B8
-                            D3DPOOL_DEFAULT,
-                            &m_pVideoTexture,
-                            NULL);
-  if (SUCCEEDED(hr))
-    m_pVideoTexture->GetSurfaceLevel(0, &m_pVideoSurface);
-
-  LeaveCriticalSection(&m_critPrensent);
   return hr;
 }
 
@@ -465,8 +431,8 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   
   if(!lpPresInfo || !lpPresInfo->lpSurf)
     return E_POINTER;
- 
-  EnterCriticalSection(&m_critPrensent);
+  CAutoLock cAutoLock(this);
+	CAutoLock cRenderLock(&m_RenderLock);
   
   CComPtr<IDirect3DTexture9> pTexture;
   hr = lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
@@ -478,12 +444,10 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   else
   {
     
-    hr = m_D3DDev->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);
-    RenderPresent(m_pVideoTexture, m_pVideoSurface);
-    //g_renderManager.PaintVideoTexture(m_pVideoTexture, m_pVideoSurface);
+    hr = m_D3DDev->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
   }
-  LeaveCriticalSection(&m_critPrensent);
-  return hr;
+  RenderPresent(m_pVideoTexture[m_nCurSurface], m_pVideoSurface[m_nCurSurface],lpPresInfo->rtEnd);
+  return S_OK;
 }
 
 void CVMR9AllocatorPresenter::GetCurrentVideoSize()
@@ -552,7 +516,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID ,DWORD Surfa
   if (SurfaceIndex >= m_pSurfaces.size() ) 
     return E_FAIL;
 
-  EnterCriticalSection(&m_critPrensent);
+  CAutoLock cRenderLock(&m_RenderLock);
   if (m_pNbrSurface)
   {
     ++m_pCurSurface;
@@ -564,33 +528,39 @@ STDMETHODIMP CVMR9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID ,DWORD Surfa
     m_pNbrSurface = SurfaceIndex;
     (*lplpSurface = m_pSurfaces[SurfaceIndex])->AddRef();
   }
-  LeaveCriticalSection(&m_critPrensent);
 
   return S_OK;
 }
     
 STDMETHODIMP CVMR9AllocatorPresenter::AdviseNotify(IVMRSurfaceAllocatorNotify9 *lpIVMRSurfAllocNotify)
 {
-    EnterCriticalSection(&m_critPrensent);
-    HRESULT hr;
-    m_pIVMRSurfAllocNotify = lpIVMRSurfAllocNotify;
-    HMONITOR hMonitor = m_D3D->GetAdapterMonitor(GetAdapter(m_D3D));
-    hr = m_pIVMRSurfAllocNotify->SetD3DDevice( m_D3DDev, hMonitor);
-    LeaveCriticalSection(&m_critPrensent);
-    return hr;
+  CAutoLock cAutoLock(this);
+  CAutoLock cRenderLock(&m_RenderLock);
+  HRESULT hr;
+  m_pIVMRSurfAllocNotify = lpIVMRSurfAllocNotify;
+  HMONITOR hMonitor = m_D3D->GetAdapterMonitor(GetAdapter(m_D3D));
+  hr = m_pIVMRSurfAllocNotify->SetD3DDevice( m_D3DDev, hMonitor);
+  return hr;
 }
 
 STDMETHODIMP CVMR9AllocatorPresenter::StartPresenting(DWORD_PTR dwUserID)
 {
-  EnterCriticalSection(&m_critPrensent);
+  CAutoLock cAutoLock(this);
+  CAutoLock cRenderLock(&m_RenderLock);
   HRESULT hr = S_OK;
   ASSERT( m_D3DDev );
   if( !m_D3DDev )
     hr =  E_FAIL;
 
-  LeaveCriticalSection(&m_critPrensent);
+  
   return hr;
 }
+
+STDMETHODIMP CVMR9AllocatorPresenter::StopPresenting(DWORD_PTR dwUserID)
+{
+    return S_OK;
+}
+
 // IUnknown
 STDMETHODIMP CVMR9AllocatorPresenter::QueryInterface( 
         REFIID riid,
@@ -620,11 +590,6 @@ STDMETHODIMP CVMR9AllocatorPresenter::QueryInterface(
     }
 
     return hr;
-}
-
-STDMETHODIMP CVMR9AllocatorPresenter::StopPresenting(DWORD_PTR dwUserID)
-{
-    return S_OK;
 }
 
 ULONG CVMR9AllocatorPresenter::AddRef()

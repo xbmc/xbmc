@@ -2269,6 +2269,14 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsSyncRenderer.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsSyncRenderer.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.cpp"
 							>
 						</File>

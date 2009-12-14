@@ -35,27 +35,83 @@ CDsRenderer::CDsRenderer()
 {
   m_D3D = g_Windowing.Get3DObject();
   m_D3DDev = g_Windowing.Get3DDevice();
+  m_nCurSurface = 0;
   g_renderManager.PreInit(true);
+  
   
 }
 
 CDsRenderer::~CDsRenderer()
 {
-  //release id3dresource
-  CSingleLock lock(m_critsection);
-
   g_renderManager.UnInit();
+  
 }
 
-STDMETHODIMP CDsRenderer::RenderPresent(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface)
+bool CDsRenderer::SetDevice()
+{
+  StopThreads();
+
+return true;
+}
+
+HRESULT CDsRenderer::CreateSurfaces(D3DFORMAT Format)
+{
+  HRESULT hr = S_OK;
+  CAutoLock cAutoLock(this);
+  CAutoLock cRenderLock(&m_RenderLock);
+  m_SurfaceType = Format;
+
+
+
+  for( int i = 0; i < DS_MAX_3D_SURFACE-1; ++i ) 
+  {
+    m_pVideoTexture[i] = NULL;
+    m_pVideoSurface[i] = NULL;
+  }
+     
+
+  for (int i = 0; i < DS_NBR_3D_SURFACE; i++)
+  {
+    m_D3DDev->CreateTexture(m_iVideoWidth,  m_iVideoHeight,
+                            1,
+                            D3DUSAGE_RENDERTARGET,
+                            m_SurfaceType,// default is D3DFMT_X8R8G8B8
+                            D3DPOOL_DEFAULT,
+                            &m_pVideoTexture[i],
+                            NULL);
+    m_pVideoTexture[i]->GetSurfaceLevel(0, &m_pVideoSurface[i]);
+  }
+  return hr;
+}
+
+void CDsRenderer::DeleteSurfaces()
+{
+  CAutoLock cAutoLock(this);
+  CAutoLock cRenderLock(&m_RenderLock);
+
+}
+
+void CDsRenderer::StartThreads()
+{
+  m_SyncRenderer.Create();
+}
+
+void CDsRenderer::StopThreads()
+{
+
+
+}
+
+STDMETHODIMP CDsRenderer::RenderPresent(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface,REFERENCE_TIME pTimeStamp)
 {
 
   
   if (!g_renderManager.IsConfigured())
     return E_FAIL;
   
-  CSingleLock lock(m_critsection);
+  
   g_renderManager.PaintVideoTexture(videoTexture,videoSurface);
+  
   g_application.NewFrame();
   g_application.WaitFrame(100);
   return S_OK;
