@@ -12,7 +12,7 @@
   <regions>
     <region>
       <dateshort>DD.MM.YYYY</dateshort>
-      <datelong>D MMMM YYYY 'р.'</datelong>
+      <datelong>DDDD, D MMMM YYYY 'р.'</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>mps</speedunit>

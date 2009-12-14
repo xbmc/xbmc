@@ -98,7 +98,7 @@
   <string id="148">DHCP</string>
   <string id="149">MAC cím</string>
   <string id="150">IP cím</string>
-  <string id="151">Link: </string>
+  <string id="151">Kapcsolat: </string>
   <string id="152">Half duplex</string>
   <string id="153">Full duplex</string>
   <string id="154">Tároló</string>
@@ -156,7 +156,7 @@
   <string id="206">Szereplők</string>
   <string id="207">Tartalom</string>
   <string id="208">Lejátszás</string>
-  <string id="209">Következő</string>
+  <string id="209">         Köv.</string>
   <string id="210">Előző</string>
   <string id="213">UI kalibrálása</string>
   <string id="214">Képernyő kalibrálása</string>
@@ -237,7 +237,7 @@
   <string id="291">Videó</string>
   <string id="292">Audio</string>
   <string id="293">Feliratok keresése</string>
-  <string id="294">Könyvjelző létrehozása</string>
+  <string id="294">Új könyvjelző</string>
   <string id="296">Könyvjelzők törlése</string>
   <string id="297">Hang csúsztatás</string>
   <string id="298">KÖNYVJELZŐK</string>
@@ -291,7 +291,7 @@
   <string id="354">Mátrix animáció</string>
   <string id="355">Képernyőkímélő késleltetés beállítás</string>
   <string id="356">Képernyőkímélő módja</string>
-  <string id="357">Alvó üzemmód, ha inaktív a következő ideig:</string>
+  <string id="357">Alvó üzemmód, ha inaktív a következő ideig</string>
   <string id="358">Minden album</string>
   <string id="359">Új albumok</string>
   <string id="360">Képernyőkímélő</string>
@@ -412,7 +412,7 @@
   <string id="477">Lejátszáslista nem tölthető be</string>
   <string id="478">OSD</string>
   <string id="479">Skin és Nyelv</string>
-  <string id="480">Megjelenítés</string>
+  <string id="480">Megjelenés</string>
   <string id="481">Hangbeállítások</string>
   <string id="482">Az XBMC-ről</string>
   <string id="483"></string>
@@ -428,7 +428,7 @@
   <string id="494">Hangerőkilengések megengedett tartománya</string>
   <string id="495">Videók felskálázása a GUI felbontásához</string>
   <string id="496">Kalibrálás</string>
-  <string id="497">Média kiterjesztések elhagyása</string>
+  <string id="497">Fájl kiterjesztések megjelenítése</string>
   <string id="498">Típus szerint</string>
   <string id="499">Sikertelen csatlakozás az online szolgáltatóhoz</string>
   <string id="500">Hiba az albuminformáció letöltése közben</string>
@@ -467,7 +467,7 @@
   <string id="536">Ikon</string>
   <string id="537">Nagy lista</string>
   <string id="538">Nagy ikonok</string>
-  <string id="539">Széles  </string>
+  <string id="539">Széles</string>
   <string id="540">Széles (nagy)</string>
   <string id="541">Album ikonok</string>
   <string id="542">DVD ikonok</string>
@@ -671,7 +671,7 @@
   <string id="791">XBMC irányítható az ezen a rendszeren futó programokkal</string>
   <string id="792">Port</string>
   <string id="793">Port tartomány</string>
-  <string id="794">Más számítógépeken futó alkalmazások általi vezérlés engedélyezése</string>
+  <string id="794">XBMC irányítható a más rendszereken futó programokkal is</string>
   <string id="795">Kezdeti ismétlés késleltetés (ms)</string>
   <string id="796">folyamatos ismétlés késleltetése (ms)</string>
   <string id="797">Kliensek maximális száma</string>
@@ -701,7 +701,7 @@
   <string id="1019">Felhasználónév</string>
   <string id="1020">%s forrás hozzáadása</string>
   <string id="1021">Elérési-út megadása, vagy médiamappák tallózása</string>
-  <string id="1022">Média forrás nevének megadása.</string>
+  <string id="1022">Médiaforrás nevének megadása.</string>
   <string id="1023">Új megosztás keresése</string>
   <string id="1024">Tallózás</string>
   <string id="1025">Mappainformáció nem elérhető</string>
@@ -782,7 +782,6 @@
   <string id="1300">Egyedi hangeszköz megadása</string>
   <string id="1301">Egyedi passthrough megadása</string>
 
-  
   <string id="1396">Hófúvásos</string>
   <string id="1397">és</string>
   <string id="1398">Fagyos</string>
@@ -882,7 +881,6 @@
   <string id="10523">Album infó</string>
   <string id="10524">Film infó</string>
 
-  
   <string id="12000">Párbeszédpanel választása</string>
   <string id="12001">Zenék/Infó</string>
   <string id="12002">Párbeszédpanel OK</string>
@@ -972,7 +970,6 @@
   <string id="12393">Nap</string>
   <string id="12394">Folyamatos üzemidő</string>
 
-
   <string id="12600">Időjárás</string>
 
   <string id="12900">Képernyőkímélő</string>
@@ -1025,8 +1022,7 @@
   <string id="13121">VDPAU HQ felskálázás (csak megfelelő HW esetén)</string>
   <string id="13122">VDPAU stúdiószint szín konverzió</string>
 
-  
-  <string id="13130">Többi megjelenítő sötétítése</string>
+  <string id="13130">A többi megjelenítő sötétítése</string>
   <string id="13131">Letiltva</string>
   <string id="13132">Képernyő törlése</string>
 
@@ -1034,7 +1030,6 @@
   <string id="13141">Továbblépés esetén az XBMC nem lesz irányítható</string>
   <string id="13142">a továbbiakban. Eseményszerver leállítása?</string>
 
-  
   <string id="13144">Apple távirányító módra váltás?</string>
   <string id="13145">Ha jelenleg az Apple távirányító van használatban,</string>
   <string id="13146">ennek a beállításnak a használata a távirányítás </string>
@@ -1087,9 +1082,7 @@
   <string id="13253">Átmozgatás megszakítása</string>
 
   <string id="13270">Hardver:</string>
-  <string id="13271">CPU terheltsége:</string>
-  
-
+  <string id="13271">CPU használat:</string>
 
   <string id="13274">Csatlakoztatva, de nincs elérhető DNS</string>
   <string id="13275">Merevlemez</string>
@@ -1123,7 +1116,7 @@
   <string id="13303">- Betűtípus</string>
   <string id="13304">Kétirányú sztringek megfordításának bekapcs.</string>
   <string id="13305">RSS hírek bekapcsolása</string>
-  <string id="13306">Szülő mappa elemek elrejtése</string>
+  <string id="13306">Szülő mappa elemek megjelenítése</string>
   <string id="13307">Zeneszám formátum sablon</string>
   <string id="13308">Teljes rendszer újraindítása</string>
   <string id="13309">az XBMC helyett?</string>
@@ -1132,7 +1125,7 @@
   <string id="13312">Fekete sáv csökkentés</string>
   <string id="13313">Újraindítás</string>
   <string id="13314">Zeneszámok egymásbakeverése</string>
-  <string id="13315">Bélyegképek újragenerálása</string>
+  <string id="13315">Bélyegek újragenerálása</string>
   <string id="13316">Rekurzív bélyegképek</string>
   <string id="13317">Diavetítés</string>
   <string id="13318">Rekurzív diavetítés</string>
@@ -1168,7 +1161,7 @@
   <string id="13349">Új tartalom keresése</string>
   <string id="13350">Aktuális játszáslista...</string>
   <string id="13351">Album információ</string>
-  <string id="13352">Hozzáadás a médiatárhoz</string>
+  <string id="13352">Hozzáadás médiatárhoz</string>
   <string id="13353">Átvizsgálás leállítása</string>
   <string id="13354">Renderelés módja</string>
   <string id="13355">Low quality pixel shader</string>
@@ -1203,7 +1196,7 @@
   <string id="13397">Feliratok bekapcsolása</string>
   <string id="13398">Parancsikonok</string>
   <string id="13399">Névelő figyelmen kívül hagyása névsorba rendezésnél</string>
-  <string id="13400">Egymásbakeverés ugyanazon albumon belül</string>
+  <string id="13400">Egymásbakeverés ugyanazon albumon belüli számoknál</string>
   <string id="13401">%s keresése</string>
   <string id="13402">Szám pozíció kijelzése</string>
   <string id="13403">Alapértelmezés törlése</string>
@@ -1217,7 +1210,7 @@
   <string id="13411">Minimum ventilátor sebesség</string>
   <string id="13412"></string>
   <string id="13413">Letöltés folyamatban</string>
-  <string id="13414">Csak összeállításban szereplő előadó elrejtése</string>
+  <string id="13414">Válogatáslemezen szereplők mutatása az előadólistán</string>
   <string id="13415">Renderelés módja</string>
   <string id="13416">Automatikus</string>
   <string id="13417">Basic shaders (ARB)</string>
@@ -1286,7 +1279,7 @@
   <string id="14032">- Internet</string>
   <string id="14034">DVD gyorsítótár - DVDRom</string>
   <string id="14035">- Helyi Hálózat</string>
-  <string id="14036">Szerverek</string>
+  <string id="14036">Szolgáltatások</string>
   <string id="14037">Megjelenés</string>
   <string id="14038">A hálózati beállítások megváltoztatva</string>
   <string id="14039">Az XBMC-t újra kell indítani, a hálózati beállítások</string>
@@ -1326,23 +1319,23 @@
   <string id="14073"></string>
   <string id="14074">Időzóna beállítása</string>
   <string id="14075">Automatikus téli/nyári időszámítás</string>
-  <string id="14076">Hozzáadás a kedvencekhez</string>
+  <string id="14076">Hozzáadás kedvencekhez</string>
   <string id="14077">Eltávolítás kedvencekből</string>
   <string id="14078">- Szín</string>
   <string id="14079">Időzóna (ország)</string>
   <string id="14080">Időzóna</string>
   <string id="14081">Fájl listák</string>
   <string id="14082">EXIF kép információk megjelenítése</string>
-  <string id="14083">Maximalizált ablak használata, igazi teljes képernyős mód helyett</string>
+  <string id="14083">Maximált ablak használata, igazi teljesképernyős mód helyett</string>
   <string id="14084">Zeneszám választására hozzáadás a lejátszási listához</string>
   <string id="14085">Zene CD autojátszása</string>
   <string id="14086">Lejátszás</string>
   <string id="14087">DVD</string>
   <string id="14088">DVD lemezek automatikus lejátszása</string>
   <string id="14089">Feliratok betűtípusa</string>
-  <string id="14090">Nemzetközi</string>
+  <string id="14090">Nyelv</string>
   <string id="14091">Karakterkészlet</string>
-  <string id="14092">Debug-olás</string>
+  <string id="14092">Hibakeresés</string>
   <string id="14093">Biztonság</string>
   <string id="14094">Beviteli eszközök</string>
   <string id="14095">Energiakezelés</string>
@@ -1506,7 +1499,6 @@
   <string id="16000">Általános</string>
   <string id="16001"></string>
   <string id="16002">Keresés Interneten</string>
-  <string id="16001"></string>
   <string id="16003">Lejátszó</string>
   <string id="16004">Média lejátszása lemezről</string>
 
@@ -1539,7 +1531,6 @@
   <string id="16034">Nincs elérhető zeneszám az adatbázisban.</string>
   <string id="16035">Partymód lejátszáslista</string>
 
-  
   <string id="16100">Minden videó</string>
   <string id="16101">Nem látott</string>
   <string id="16102">Megnézett</string>
@@ -1649,7 +1640,7 @@
   <string id="20071">Létrehozás új médiaforrásokkal</string>
   <string id="20072">Győződjön meg, hogy a kiválasztott mappa írható</string>
   <string id="20073">és az új mappa neve megfelelő</string>
-  <string id="20074">MPAA besorolás</string>
+  <string id="20074">MPAA</string>
   <string id="20075">Mesterkód</string>
   <string id="20076">Mesterkód bekérése induláskor</string>
   <string id="20077">Skin beállítások</string>
@@ -1777,9 +1768,6 @@
 
   <!-- 20200-től 20211-ig sebességstringekre fenntartva (LocalizeStrings.cpp)-->
 
-  
-  <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
-
   <string id="20250">Party indul! (videók)</string>
   <string id="20251">Italok mixelése (videók)</string>
   <string id="20252">poharak megtöltése (videók)</string>
@@ -1897,7 +1885,7 @@
   <string id="20409">TV műsor információ letöltése</string>
   <string id="20410">Filmajánló</string>
   <string id="20411">Szűkítés</string>
-  <string id="20412">Szűkítés(TV műsor)</string>
+  <string id="20412">Szűkítés (TV műsor)</string>
   <string id="20413">Fanart letölt.</string>
   <string id="20414">Fanart megjelenítése a médiatárban</string>
   <string id="20415">Új tartalom keresése</string>
@@ -1970,7 +1958,7 @@
   <string id="21379">720p engedélyezése</string>
   <string id="21380">1080i engedélyezése</string>
   <string id="21381">Lejátszáslista nevének megadása</string>
-  <string id="21382">Forrás gomb rejtése a fájl listában</string>
+  <string id="21382">"Forrás" gomb megjelenítése a fájl listában</string>
   <string id="21383">Görgetősávok engedélyezése</string>
   <string id="21384">A látott státusz kapcsolóként értelmezése a médiatárban</string>
   <string id="21385">Megnyitás</string>
@@ -2053,7 +2041,7 @@
   <string id="21821">Leírás</string>
   <string id="21822">Fényk.gyártó</string>
   <string id="21823">Fényk.típus</string>
-  <string id="21824">EXIF megjegyzés</string>
+  <string id="21824">EXIF adat</string>
   <string id="21825">Firmware</string>
   <string id="21826">Rekesz</string>
   <string id="21827">Gyújtótáv</string>
@@ -2097,7 +2085,7 @@
   <string id="21880">Referencia szolgáltatás</string>
   <string id="21881">XBMC távoli vezérelhetősége UPnP-n keresztül</string>
   <string id="21882">Kísérlet a DVD menü előtti bemutató átugrására</string>
-  <string id="21883">Rippelt audio CD-k</string>
+  <string id="21883">Rippelt zene</string>
   <string id="21884">Infó minden előadóról</string>
   <string id="21885">Albuminformáció letöltése</string>
   <string id="21886">Előadóinformáció letöltése</string>
@@ -2164,13 +2152,8 @@
   <string id="23001">- Beépülő beállításai</string>
 
   <string id="23050">Teletext aktiválása</string>
-  <string id="23051">Rész</string>
+  <string id="23051">Rész %i</string>
   <string id="23052">Előtöltve %i byte</string>
-  <string id="23052">Előtöltve %i byte</string>
-  
-  <!-- strings 23100 thru 23150 reserved for external player -->
-
-  <!-- 23100-tól 23150-ig külső lejátszó -->
 
   <!-- 23100-tól 23150-ig külső lejátszó -->
   <string id="23100">Külső lejátszó aktív</string>
@@ -2186,7 +2169,6 @@
   <string id="29801">QWERTY billentyűzet</string>
   <string id="29802">Passthrough esetén tiltva</string>
 
-  
   <string id="29999">Villogás szűrő alkalmazása játékokra</string>
 
   <!-- 30000-től 30999-ig beépülők számára fenntartva -->

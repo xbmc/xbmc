@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+ï»¿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Zippolighter-->
 <!--Email: hardrock_zippolighter@hotmail.com-->
@@ -47,7 +47,7 @@
   <string id="31023">
   </string>
   <string id="31024">Seite</string>
-  <string id="31025">Einträge</string>
+  <string id="31025">EintrÃ¤ge</string>
   <string id="31026">
   </string>
   <string id="31027">
@@ -64,7 +64,7 @@
   <string id="31042">PLAYING</string>
   <string id="31043">PAUSE</string>
   <string id="31044">Schnell vorspulen</string>
-  <string id="31045">Rückspulen</string>
+  <string id="31045">RÃ¼ckspulen</string>
   <string id="31046">Willkommen im XBMC - Bitte Anmelden</string>
   <string id="31047">Letztes Anmelden</string>
   <string id="31048">Aktueller Darsteller[CR]Fanart Bild[CR][CR]Klick zum wechseln</string>
@@ -75,29 +75,29 @@
   <string id="31052">
   </string>
   <string id="31053">XBMC Liedtexte</string>
-  <string id="31054">Wähle dein Lied von der Liste</string>
-  <string id="31055">Öffne Playlist</string>
+  <string id="31054">WÃ¤hle dein Lied von der Liste</string>
+  <string id="31055">Ã–ffne Playlist</string>
   <string id="31056">Sichere Playlist</string>
   <string id="31057">Schliesse Playlist</string>
   <string id="31058">System Musik Dateien</string>
   <string id="31059">Aktuelle Playlist</string>
-  <string id="31060">Diese Datei ist gestapelt, wähle den Teil der abgespielt werden soll.</string>
+  <string id="31060">Diese Datei ist gestapelt, wÃ¤hle den Teil der abgespielt werden soll.</string>
   <string id="31100">Hintergrund Optionen</string>
   <string id="31101">Home Screen Optionen</string>
-  <string id="31102">Hintergründe</string>
+  <string id="31102">HintergrÃ¼nde</string>
   <string id="31103">Zeige "Pause" bei der Diashow</string>
-  <string id="31104">Herunterfahren Menü - Verwende Energie Sparen anstatt Ruhezustand</string>
+  <string id="31104">Herunterfahren MenÃ¼ - Verwende Energie Sparen anstatt Ruhezustand</string>
   <string id="31105">Zeige Media Titel beim Hintergrund Scan</string>
   <string id="31106">Sonstige Optionen</string>
   <string id="31107">Entferne Scan Bild vom Hintergrund</string>
-  <string id="31108">Entferne Scan Bild vom Hintergrund während Video Wiedergabe</string>
-  <string id="31109">Home Screen Hintergründe</string>
-  <string id="31110">button - Aktiviere eigene Hintergründe</string>
-  <string id="31111">Immer Musik Infos anzeigen während der Liedtexte</string>
+  <string id="31108">Entferne Scan Bild vom Hintergrund wÃ¤hrend Video Wiedergabe</string>
+  <string id="31109">Home Screen HintergrÃ¼nde</string>
+  <string id="31110">button - Aktiviere eigene HintergrÃ¼nde</string>
+  <string id="31111">Immer Musik Infos anzeigen wÃ¤hrend der Liedtexte</string>
   <string id="31112">Zeige Media Titel in "Breite Icons" Ansicht</string>
   <string id="31113">Einzel Bild</string>
   <string id="31114">Mehfach Bilder</string>
-  <string id="31115">Ersetzte Taste für Audio Einstellungen mit Videotext</string>
+  <string id="31115">Ersetzte Taste fÃ¼r Audio Einstellungen mit Videotext</string>
   <string id="31116">Video Flag Bilder in Media Ansicht verstecken</string>
   <string id="31200">Eigene Script Optionen</string>
   <string id="31201">
@@ -112,6 +112,6 @@
   </string>
   <string id="31207">Zeige Untertitel Download Button in OSD</string>
   <string id="31208">Zeige Liedtexte Script Button im OSD</string>
-  <string id="31209">Aktiviere Schnellstart Script Button für -</string>
+  <string id="31209">Aktiviere Schnellstart Script Button fÃ¼r -</string>
   <string id="31300">Zeige Besetzung</string>
 </strings>

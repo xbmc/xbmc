@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 12/04/2009-->
+<!--Date of translation: 12/13/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 25274-->
+<!--Based on english strings version 25637-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -436,7 +436,7 @@
   <string id="510">Ενεργοποίηση απεικονίσεων</string>
   <string id="511">Ενεργοποίηση εναλλαγής λειτουργίας βίντεο</string>
   <string id="512">Παράθυρο εκκίνησης</string>
-  <string id="513">Αρχικό</string>
+  <string id="513">Αρχική οθόνη</string>
   <string id="514">Χειροκίνητες ρυθμίσεις</string>
   <string id="515">Είδος</string>
   <string id="516">Αρχειοθέτηση σε ένα διαφανή φάκελο</string>
@@ -1161,7 +1161,7 @@
   <string id="13411">Ελάχιστη ταχύτητα ανεμιστήρα</string>
   <string id="13412">- Ροές τίτλων ειδήσεων με κατοπτρική γραφή</string>
   <string id="13413">Λήψη</string>
-  <string id="13414">Εμφάνιση καλλιτεχνών που εμφανίζονται μόνο στις συνθέσεις</string>
+  <string id="13414">Ενσωμάτωση καλλιτεχνών που εμφανίζονται μόνο στις συνθέσεις</string>
   <string id="13415">Μέθοδος απόδοσης</string>
   <string id="13416">Αυτόματη ανίχνευση</string>
   <string id="13417">Στοιχειώδης (ARB)</string>
@@ -1512,7 +1512,7 @@
   <string id="20079">Ενεργοποίηση εφέ κίνησης κελύφους</string>
   <string id="20080">Ανενεργές οι Ροές Τίτλων Ειδήσεων κατά την ακρόαση τραγουδιών</string>
   <string id="20081">Ενεργοποίηση πλήκτρων συντόμευσης</string>
-  <string id="20082">Εμφάνιση των εφαρμογών στην αρχική οθόνη</string>
+  <string id="20082">Εμφάνιση των εφαρμογών στο κεντρικό μενού</string>
   <string id="20083">Εμφάνιση πληροφοριών για τη μουσική</string>
   <string id="20084">Εμφάνιση πληροφοριών για τον καιρό</string>
   <string id="20085">Εμφάνιση πληροφοριών για το σύστημα</string>
