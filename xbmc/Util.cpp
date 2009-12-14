@@ -86,6 +86,7 @@
 #include "LocalizeStrings.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "Picture.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -1892,17 +1893,35 @@ void CUtil::TakeScreenshot(const CStdString &filename)
     }
     g_application.RenderNoPresent();
 
-    GLint viewport[4];
-    void *pixels = NULL;
     glReadBuffer(GL_BACK);
+
+    //get current viewport
+    GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    pixels = malloc(viewport[2] * viewport[3] * 4);
-    if (pixels)
-    {
-      glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, pixels);
-      XGWriteSurfaceToFile(pixels, viewport[2], viewport[3], filename.c_str());
-      free(pixels);
-    }
+
+    int            width  = viewport[2] - viewport[0];
+    int            height = viewport[3] - viewport[1];
+    unsigned char* pixels = (unsigned char*)malloc(width * height * 4);
+
+    //read pixels from the backbuffer
+    glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, (GLvoid*)pixels);
+
+    //make a new buffer and copy the read image to it with the Y axis inverted
+    unsigned char* outpixels = (unsigned char*)malloc(width * height * 4);
+    for (int y = 0; y < height; y++)
+      memcpy(outpixels + y * width * 4, pixels + (height - y - 1) * width * 4, width * 4);
+
+    //set alpha byte to 0xFF
+    unsigned char* alphaptr = outpixels - 1;
+    for (int i = 0; i < width * height; i++)
+      *(alphaptr += 4) = 0xFF;
+
+    //write .png file
+    CPicture::CreateThumbnailFromSurface(outpixels, width, height, width * 4, filename);
+
+    free(outpixels);
+    free(pixels);
+
     g_graphicsContext.EndPaint();
 
 #endif
@@ -1931,7 +1950,7 @@ void CUtil::TakeScreenshot()
 
   if (!strDir.IsEmpty())
   {
-    CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(strDir, "screenshot%03d.bmp"), 999);
+    CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(strDir, "screenshot%03d.png"), 999);
 
     if (!file.IsEmpty())
     {
@@ -1945,7 +1964,7 @@ void CUtil::TakeScreenshot()
         {
           for (unsigned int i = 0; i < screenShots.size(); i++)
           {
-            CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(newDir, "screenshot%03d.bmp"), 999);
+            CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(newDir, "screenshot%03d.png"), 999);
             CFile::Cache(screenShots[i], file);
           }
           screenShots.clear();
