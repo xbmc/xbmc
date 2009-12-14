@@ -351,6 +351,7 @@ void CVMR9AllocatorPresenter::DeleteSurfaces()
 //IVMRSurfaceAllocator9
 STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9AllocationInfo *lpAllocInfo, DWORD *lpNumBuffers)
 {
+  m_pPrevEndFrame=0;
   CLog::Log(LOGNOTICE,"vmr9:InitializeDevice() %dx%d AR %d:%d flags:%d buffers:%d  fmt:(%x) %c%c%c%c", 
     lpAllocInfo->dwWidth ,lpAllocInfo->dwHeight ,lpAllocInfo->szAspectRatio.cx,lpAllocInfo->szAspectRatio.cy,
     lpAllocInfo->dwFlags ,*lpNumBuffers, lpAllocInfo->Format, ((char)lpAllocInfo->Format&0xff),
@@ -402,7 +403,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
   m_iVideoHeight = lpAllocInfo->dwHeight;
 
   //INITIALIZE VIDEO SURFACE THERE
-  hr = AllocSurface();
+  hr = AllocVideoSurface();
   if ( FAILED( hr ) )
     return hr;
   hr = m_D3DDev->ColorFill(m_pVideoSurface, NULL, 0);
@@ -417,52 +418,76 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
   
 	*lpNumBuffers = (nOriginal < *lpNumBuffers) ? nOriginal : *lpNumBuffers;
 	m_pCurSurface = 0;
-  m_bNeedCheckSample = true;
   return hr;
 }
 
+//from mediaportal
+HRESULT CVMR9AllocatorPresenter::AllocVideoSurface(D3DFORMAT Format)
+{
+  EnterCriticalSection(&m_critPrensent);
+  HRESULT hr;
+  m_pVideoTexture = NULL;
+  m_pVideoSurface = NULL;
+  m_SurfaceType = Format;
+  D3DDISPLAYMODE dm;
+  hr = m_D3DDev->GetDisplayMode(NULL, &dm);
+  
+  if (SUCCEEDED(hr))
+    m_D3DDev->CreateTexture(m_iVideoWidth,  m_iVideoHeight,
+                            1,
+                            D3DUSAGE_RENDERTARGET,
+                            dm.Format,//m_SurfaceType, // default is D3DFMT_A8R8G8B8
+                            D3DPOOL_DEFAULT,
+                            &m_pVideoTexture,
+                            NULL);
+  if (SUCCEEDED(hr))
+    m_pVideoTexture->GetSurfaceLevel(0, &m_pVideoSurface);
+
+  LeaveCriticalSection(&m_critPrensent);
+  return hr;
+}
+
+void CVMR9AllocatorPresenter::OnLostDevice()
+{
+  m_renderingOk = false;
+}
+void CVMR9AllocatorPresenter::OnCreateDevice()
+{
+  if(m_pIVMRSurfAllocNotify)
+	{
+    EnterCriticalSection(&m_critPrensent);
+    HRESULT hr;
+    HMONITOR hmon;
+    unsigned int adapter = GetAdapter(g_Windowing.Get3DObject());
+    HMONITOR hMonitor = m_D3D->GetAdapterMonitor(adapter);
+    hr = m_pIVMRSurfAllocNotify->ChangeD3DDevice(g_Windowing.Get3DDevice(),hMonitor);
+    if (SUCCEEDED(hr))
+    {
+      m_renderingOk = true;
+    }
+    LeaveCriticalSection(&m_critPrensent);
+	}
+
+}
 STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9PresentationInfo *lpPresInfo)
 {
   HRESULT hr;
   CheckPointer(m_pIVMRSurfAllocNotify, E_UNEXPECTED);
   if( !m_pIVMRSurfAllocNotify )
     return E_FAIL;
-  m_llLastSampleTime = m_llSampleTime;
-  m_llSampleTime = lpPresInfo->rtStart;
-  m_ptstarget = lpPresInfo->rtEnd;
-//m_rtFrameCycle
-  if (m_rtTimePerFrame == 0 || m_bNeedCheckSample)
+  
+
+  if (!g_renderManager.IsConfigured())
   {
-    GetVideoInfo();
+    GetCurrentVideoSize();
   }
-  //if (!g_renderManager.IsConfigured())
 
   if (!g_renderManager.IsStarted())
     return E_FAIL;
   
   if(!lpPresInfo || !lpPresInfo->lpSurf)
     return E_POINTER;
-   
-  if(m_rtTimePerFrame > 0 && m_rtTimePerFrame < 300000)
-  {
-    REFERENCE_TIME rtCurTime, rtInterleave;
-		if (m_VideoClock)
-    {
-			rtCurTime = m_VideoClock.GetTime();
-			rtInterleave = rtCurTime - m_lastFrameArrivedTime;
-			m_lastFrameArrivedTime = rtCurTime;
-			if(rtInterleave > m_rtTimePerFrame*6/5 && rtInterleave < m_rtTimePerFrame * 3 && m_lastFramePainted){
-				//m_pcFramesDropped++;
-				m_lastFrameArrivedTime = rtCurTime;
-				m_lastFramePainted = false;
-				//SVP_LogMsg5(L"droped %f %f %d", double(m_rtFrameCycle) , double(rtInterleave) , m_pcFramesDropped);
-				return S_OK;
-			}
-			//SVP_LogMsg5(L"Paint");
-		}
-  }
-  m_lastFramePainted = true;
-
+ 
   EnterCriticalSection(&m_critPrensent);
   
   CComPtr<IDirect3DTexture9> pTexture;
@@ -483,31 +508,16 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   return hr;
 }
 
-void CVMR9AllocatorPresenter::GetVideoInfo()
+void CVMR9AllocatorPresenter::GetCurrentVideoSize()
 {
   CComPtr<IBaseFilter> pVMR9;
   CComPtr<IPin> pPin;
   CMediaType mt;
-  m_bNeedCheckSample = false;
   if (SUCCEEDED (m_pIVMRSurfAllocNotify->QueryInterface (__uuidof(IBaseFilter), (void**)&pVMR9)) &&
       SUCCEEDED (pVMR9->FindPin(L"VMR Input0", &pPin)) &&
       SUCCEEDED (pPin->ConnectionMediaType(&mt)) )
   {
     DShowUtil::ExtractAvgTimePerFrame(&mt,m_rtTimePerFrame);
-    m_dFrameCycle = m_rtTimePerFrame / 10000.0;
-    if (m_rtTimePerFrame > 0.0)
-    {
-      m_fps = 10000000.0 / m_rtTimePerFrame;
-      m_dCycleDifference = 1000.0 / m_VideoClock.GetFrequency();
-
-      if (abs(m_dCycleDifference) < 0.05) // If less than 5%
-        m_bSnapToVSync = true;
-      else
-        m_bSnapToVSync = false;
-    }
-    
-    m_bInterlaced = DShowUtil::ExtractInterlaced(&mt);
-
     if (mt.formattype==FORMAT_VideoInfo || mt.formattype==FORMAT_MPEGVideo)
     {
       VIDEOINFOHEADER *vh = (VIDEOINFOHEADER*)mt.pbFormat;
@@ -599,8 +609,6 @@ STDMETHODIMP CVMR9AllocatorPresenter::StartPresenting(DWORD_PTR dwUserID)
   ASSERT( m_D3DDev );
   if( !m_D3DDev )
     hr =  E_FAIL;
-  //Start the video clock
-  InitClock();
 
   LeaveCriticalSection(&m_critPrensent);
   return hr;
