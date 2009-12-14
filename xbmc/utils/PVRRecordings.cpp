@@ -241,6 +241,7 @@ void cPVRRecordings::Process()
     Path += at(i).Title() + ".pvr";
     at(i).SetPath(Path);
   }
+  scanner->Close();
   return;
 }
 
