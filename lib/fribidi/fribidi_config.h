@@ -20,10 +20,11 @@
 #ifdef FRIBIDI_EXPORTS
 #define FRIBIDI_API __declspec(dllexport)
 #else
-#define FRIBIDI_API __declspec(dllimport)
+#define FRIBIDI_API
 #endif
 
 #define snprintf _snprintf
+#define HAS_FRIBIDI_TAB_CHAR_TYPE_2_I 1
 
 #else /* NOT WIN32 */
 
