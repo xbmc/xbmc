@@ -4863,7 +4863,6 @@
 				E38E149E0D25F9F900618676 /* coff.cpp */,
 				E38E149F0D25F9F900618676 /* coff.h */,
 				E38E14A00D25F9F900618676 /* coffldr.h */,
-				E38E14A10D25F9F900618676 /* Debug */,
 				E38E14A30D25F9F900618676 /* dll.cpp */,
 				E38E14A40D25F9F900618676 /* dll.h */,
 				E38E14A50D25F9F900618676 /* dll_tracker.cpp */,
@@ -4885,18 +4884,10 @@
 				E38E14EE0D25F9F900618676 /* LibraryLoader.h */,
 				E38E14F10D25F9F900618676 /* mmap_anon.c */,
 				E38E14F20D25F9F900618676 /* mmap_anon.h */,
-				E38E14F30D25F9F900618676 /* Release */,
 				E38E14F40D25F9F900618676 /* SoLoader.cpp */,
 				E38E14F50D25F9F900618676 /* SoLoader.h */,
 			);
 			path = DllLoader;
-			sourceTree = "<group>";
-		};
-		E38E14A10D25F9F900618676 /* Debug */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Debug;
 			sourceTree = "<group>";
 		};
 		E38E14B80D25F9F900618676 /* exports */ = {
@@ -4922,13 +4913,6 @@
 				E38E14E40D25F9F900618676 /* EmuFileWrapper.h */,
 			);
 			path = util;
-			sourceTree = "<group>";
-		};
-		E38E14F30D25F9F900618676 /* Release */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Release;
 			sourceTree = "<group>";
 		};
 		E38E14F80D25F9F900618676 /* dvdplayer */ = {
