@@ -49,6 +49,9 @@
 #define HAS_AC3_CODEC
 #define HAS_DTS_CODEC
 #define HAS_CDDA_RIPPER
+#ifdef HAVE_ASAP_CODEC
+#define HAS_ASAP_CODEC
+#endif
 
 #define HAS_FILESYSTEM
 #define HAS_FILESYSTEM_SMB
