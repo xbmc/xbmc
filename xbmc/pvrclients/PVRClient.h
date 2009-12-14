@@ -50,56 +50,57 @@ public:
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
 
   /* Server */
-  virtual long GetID();
-  virtual PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
+  long GetID();
+  PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
 
   /* General */
-  virtual const std::string GetBackendName();
-  virtual const std::string GetBackendVersion();
-  virtual const std::string GetConnectionString();
-  virtual PVR_ERROR GetDriveSpace(long long *total, long long *used);
+  const std::string GetBackendName();
+  const std::string GetBackendVersion();
+  const std::string GetConnectionString();
+  PVR_ERROR GetDriveSpace(long long *total, long long *used);
+  PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset);
 
   /* TV Guide */
-  virtual PVR_ERROR GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cPVREpg *epg, time_t start, time_t end);
+  PVR_ERROR GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cPVREpg *epg, time_t start, time_t end);
 
   /* Channels */
-  virtual int GetNumChannels();
-  virtual PVR_ERROR GetChannelList(cPVRChannels &channels, bool radio);
-  virtual PVR_ERROR GetChannelSettings(cPVRChannelInfoTag *result);
-  virtual PVR_ERROR UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo);
-  virtual PVR_ERROR AddChannel(const cPVRChannelInfoTag &info);
-  virtual PVR_ERROR DeleteChannel(unsigned int number);
-  virtual PVR_ERROR RenameChannel(unsigned int number, CStdString &newname);
-  virtual PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber);
+  int GetNumChannels();
+  PVR_ERROR GetChannelList(cPVRChannels &channels, bool radio);
+  PVR_ERROR GetChannelSettings(cPVRChannelInfoTag *result);
+  PVR_ERROR UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo);
+  PVR_ERROR AddChannel(const cPVRChannelInfoTag &info);
+  PVR_ERROR DeleteChannel(unsigned int number);
+  PVR_ERROR RenameChannel(unsigned int number, CStdString &newname);
+  PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber);
 
   /* Recordings */
-  virtual int GetNumRecordings(void);
-  virtual PVR_ERROR GetAllRecordings(cPVRRecordings *results);
-  virtual PVR_ERROR DeleteRecording(const cPVRRecordingInfoTag &recinfo);
-  virtual PVR_ERROR RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname);
+  int GetNumRecordings(void);
+  PVR_ERROR GetAllRecordings(cPVRRecordings *results);
+  PVR_ERROR DeleteRecording(const cPVRRecordingInfoTag &recinfo);
+  PVR_ERROR RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname);
 
   /* Timers */
-  virtual int GetNumTimers(void);
-  virtual PVR_ERROR GetAllTimers(cPVRTimers *results);
-  virtual PVR_ERROR AddTimer(const cPVRTimerInfoTag &timerinfo);
-  virtual PVR_ERROR DeleteTimer(const cPVRTimerInfoTag &timerinfo, bool force = false);
-  virtual PVR_ERROR RenameTimer(const cPVRTimerInfoTag &timerinfo, CStdString &newname);
-  virtual PVR_ERROR UpdateTimer(const cPVRTimerInfoTag &timerinfo);
+  int GetNumTimers(void);
+  PVR_ERROR GetAllTimers(cPVRTimers *results);
+  PVR_ERROR AddTimer(const cPVRTimerInfoTag &timerinfo);
+  PVR_ERROR DeleteTimer(const cPVRTimerInfoTag &timerinfo, bool force = false);
+  PVR_ERROR RenameTimer(const cPVRTimerInfoTag &timerinfo, CStdString &newname);
+  PVR_ERROR UpdateTimer(const cPVRTimerInfoTag &timerinfo);
 
-  virtual bool OpenLiveStream(const cPVRChannelInfoTag &channelinfo);
-  virtual void CloseLiveStream();
-  virtual int ReadLiveStream(BYTE* buf, int buf_size);
-  virtual __int64 SeekLiveStream(__int64 pos, int whence=SEEK_SET);
-  virtual __int64 LengthLiveStream(void);
-  virtual int GetCurrentClientChannel();
-  virtual bool SwitchChannel(const cPVRChannelInfoTag &channelinfo);
-  virtual bool SignalQuality(PVR_SIGNALQUALITY &qualityinfo);
+  bool OpenLiveStream(const cPVRChannelInfoTag &channelinfo);
+  void CloseLiveStream();
+  int ReadLiveStream(BYTE* buf, int buf_size);
+  __int64 SeekLiveStream(__int64 pos, int whence=SEEK_SET);
+  __int64 LengthLiveStream(void);
+  int GetCurrentClientChannel();
+  bool SwitchChannel(const cPVRChannelInfoTag &channelinfo);
+  bool SignalQuality(PVR_SIGNALQUALITY &qualityinfo);
 
-  virtual bool OpenRecordedStream(const cPVRRecordingInfoTag &recinfo);
-  virtual void CloseRecordedStream(void);
-  virtual int ReadRecordedStream(BYTE* buf, int buf_size);
-  virtual __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
-  virtual __int64 LengthRecordedStream(void);
+  bool OpenRecordedStream(const cPVRRecordingInfoTag &recinfo);
+  void CloseRecordedStream(void);
+  int ReadRecordedStream(BYTE* buf, int buf_size);
+  __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
+  __int64 LengthRecordedStream(void);
 
 protected:
   bool                  m_ReadyToUse;

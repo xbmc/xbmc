@@ -39,6 +39,8 @@
 #include "PVRRecordings.h"
 #include "PVRManager.h"
 #include "GUIDialogOK.h"
+#include "GUIDialogPVRUpdateProgressBar.h"
+#include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
 #include "Util.h"
 #include "URL.h"
@@ -196,24 +198,38 @@ void cPVRRecordings::Process()
 {
   CSingleLock lock(m_critSection);
 
+  CGUIDialogPVRUpdateProgressBar *scanner = (CGUIDialogPVRUpdateProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EPG_SCAN);
+  scanner->Show();
+  scanner->SetHeader(g_localizeStrings.Get(19066));
+
   CLIENTMAP *clients  = g_PVRManager.Clients();
 
   Clear();
 
   /* Go thru all clients and receive there Recordings */
   CLIENTMAPITR itr = clients->begin();
+  int cnt = 0;
   while (itr != clients->end())
   {
+    scanner->SetProgress(cnt/2, clients->size());
+    scanner->SetTitle((*itr).second->Name());
+    scanner->UpdateState();
+
     /* Load only if the client have Recordings */
     if ((*itr).second->GetNumRecordings() > 0)
     {
       (*itr).second->GetAllRecordings(this);
     }
     itr++;
+    cnt++;
   }
 
   for (unsigned int i = 0; i < size(); ++i)
   {
+    scanner->SetProgress(i+cnt, size()+cnt);
+    scanner->SetTitle(at(i).Title());
+    scanner->UpdateState();
+
     CFileItemPtr pFileItem(new CFileItem(at(i)));
 
     CStdString Path;

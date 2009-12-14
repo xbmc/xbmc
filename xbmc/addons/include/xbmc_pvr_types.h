@@ -261,6 +261,7 @@ extern "C" {
     const char* (__cdecl* GetBackendVersion)();
     const char* (__cdecl* GetConnectionString)();
     PVR_ERROR (__cdecl* GetDriveSpace)(long long *total, long long *used);
+    PVR_ERROR (__cdecl* GetBackendTime)(time_t *localTime, int *gmtOffset);
 
     /** PVR EPG Functions **/
     PVR_ERROR (__cdecl* RequestEPGForChannel)(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);

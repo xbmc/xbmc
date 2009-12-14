@@ -57,10 +57,8 @@ CPVRClient::CPVRClient(const ADDON::AddonProps& props) : ADDON::CAddonDll<DllPVR
 
 CPVRClient::~CPVRClient()
 {
-//  /* tell the AddOn to deinitialize */
-//  DeInit();
-//  /* Unload library file */
-//  m_pDll->Unload();
+  /* tell the AddOn to deinitialize */
+  Destroy();
 }
 
 bool CPVRClient::Create(long clientID, IPVRClientCallback *pvrCB)
@@ -247,6 +245,25 @@ PVR_ERROR CPVRClient::GetDriveSpace(long long *total, long long *used)
   return PVR_ERROR_NOT_IMPLEMENTED;
 }
 
+PVR_ERROR CPVRClient::GetBackendTime(time_t *localTime, int *gmtOffset)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      return m_pStruct->GetBackendTime(localTime, gmtOffset);
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetBackendTime occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
+    }
+  }
+  *localTime = 0;
+  *gmtOffset = 0;
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
 
 /**********************************************************
  * EPG PVR Functions

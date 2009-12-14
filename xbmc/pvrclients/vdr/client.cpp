@@ -47,6 +47,10 @@ std::string g_szClientPath  = "";
 
 extern "C" {
 
+/***********************************************************
+ * Standart AddOn related public library functions
+ ***********************************************************/
+
 ADDON_STATUS Create(void* hdl, void* props)
 {
   if (!props)
@@ -231,183 +235,171 @@ void Remove()
 }
 
 
+/***********************************************************
+ * PVR Client AddOn specific public library functions
+ ***********************************************************/
 
-
-
-
-
-
-//-- GetProperties ------------------------------------------------------------
-// Tell XBMC our requirements
-//-----------------------------------------------------------------------------
-extern "C" PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
+PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
 {
   return g_client->GetProperties(props);
 }
 
-//-- GetBackendName -----------------------------------------------------------
-// Return the Name of the Backend
-//-----------------------------------------------------------------------------
-extern "C" const char * GetBackendName()
+const char * GetBackendName()
 {
   return g_client->GetBackendName();
 }
 
-//-- GetBackendVersion --------------------------------------------------------
-// Return the Version of the Backend as String
-//-----------------------------------------------------------------------------
-extern "C" const char * GetBackendVersion()
+const char * GetBackendVersion()
 {
   return g_client->GetBackendVersion();
 }
 
-//-- GetConnectionString ------------------------------------------------------
-// Return a String with connection info, if available
-//-----------------------------------------------------------------------------
-extern "C" const char * GetConnectionString()
+const char * GetConnectionString()
 {
   return g_client->GetConnectionString();
 }
 
-//-- GetDriveSpace ------------------------------------------------------------
-// Return the Total and Free Drive space on the PVR Backend
-//-----------------------------------------------------------------------------
-extern "C" PVR_ERROR GetDriveSpace(long long *total, long long *used)
+PVR_ERROR GetDriveSpace(long long *total, long long *used)
 {
   return g_client->GetDriveSpace(total, used);
 }
 
-extern "C" int GetNumBouquets()
+PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
+{
+  return g_client->GetVDRTime(localTime, gmtOffset);
+}
+
+int GetNumBouquets()
 {
   return 0;
 }
 
-extern "C" PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end)
+PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end)
 {
   return g_client->RequestEPGForChannel(channel, handle, start, end);
 }
 
-extern "C" int GetNumChannels()
+int GetNumChannels()
 {
   return g_client->GetNumChannels();
 }
 
-extern "C" PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio)
+PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio)
 {
   return g_client->RequestChannelList(handle, radio);
 }
 
-extern "C" int GetNumRecordings(void)
+int GetNumRecordings(void)
 {
   return g_client->GetNumRecordings();
 }
 
-extern "C" PVR_ERROR RequestRecordingsList(PVRHANDLE handle)
+PVR_ERROR RequestRecordingsList(PVRHANDLE handle)
 {
   return g_client->RequestRecordingsList(handle);
 }
 
-extern "C" PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo)
+PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo)
 {
   return g_client->DeleteRecording(recinfo);
 }
 
-extern "C" PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname)
+PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname)
 {
   return g_client->RenameRecording(recinfo, newname);
 }
 
-extern "C" int GetNumTimers(void)
+int GetNumTimers(void)
 {
   return g_client->GetNumTimers();
 }
 
-extern "C" PVR_ERROR RequestTimerList(PVRHANDLE handle)
+PVR_ERROR RequestTimerList(PVRHANDLE handle)
 {
   return g_client->RequestTimerList(handle);
 }
 
-extern "C" PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo)
+PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo)
 {
   return g_client->AddTimer(timerinfo);
 }
 
-extern "C" PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
+PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
 {
   return g_client->DeleteTimer(timerinfo, force);
 }
 
-extern "C" PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname)
+PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname)
 {
   return g_client->RenameTimer(timerinfo, newname);
 }
 
-extern "C" PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo)
+PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo)
 {
   return g_client->UpdateTimer(timerinfo);
 }
 
-extern "C" bool OpenLiveStream(const PVR_CHANNEL &channelinfo)
+bool OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
   return g_client->OpenLiveStream(channelinfo);
 }
 
-extern "C" void CloseLiveStream()
+void CloseLiveStream()
 {
   return g_client->CloseLiveStream();
 }
 
-extern "C" int ReadLiveStream(unsigned char* buf, int buf_size)
+int ReadLiveStream(unsigned char* buf, int buf_size)
 {
   return g_client->ReadLiveStream(buf, buf_size);
 }
 
-extern "C" long long SeekLiveStream(long long pos, int whence)
+long long SeekLiveStream(long long pos, int whence)
 {
   return -1;
 }
 
-extern "C" long long LengthLiveStream(void)
+long long LengthLiveStream(void)
 {
   return -1;
 }
 
-extern "C" int GetCurrentClientChannel()
+int GetCurrentClientChannel()
 {
   return g_client->GetCurrentClientChannel();
 }
 
-extern "C" bool SwitchChannel(const PVR_CHANNEL &channelinfo)
+bool SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
   return g_client->SwitchChannel(channelinfo);
 }
 
-extern "C" PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
+PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
 {
   return g_client->SignalQuality(qualityinfo);
 }
 
-extern "C" bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
+bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
 {
   return g_client->OpenRecordedStream(recinfo);
 }
 
-extern "C" void CloseRecordedStream(void)
+void CloseRecordedStream(void)
 {
   return g_client->CloseRecordedStream();
 }
 
-extern "C" int ReadRecordedStream(unsigned char* buf, int buf_size)
+int ReadRecordedStream(unsigned char* buf, int buf_size)
 {
   return g_client->ReadRecordedStream(buf, buf_size);
 }
 
-extern "C" long long SeekRecordedStream(long long pos, int whence)
+long long SeekRecordedStream(long long pos, int whence)
 {
   return g_client->SeekRecordedStream(pos, whence);
 }
 
-extern "C" long long LengthRecordedStream(void)
+long long LengthRecordedStream(void)
 {
   return g_client->LengthRecordedStream();
 }

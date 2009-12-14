@@ -397,15 +397,6 @@ void CPVRManager::Start()
   /* Load the Channel group lists */
   PVRChannelGroups.Load();
 
-  /* Get Timers from Backends */
-  PVRTimers.Load();
-
-  /* Get Recordings from Backend */
-  PVRRecordings.Load();
-
-  /* Get Epg's from Backend */
-  cPVREpgs::Load();
-
   /* Create the supervisor thread to do all background activities */
   Create();
   SetName("XBMC PVR Supervisor");
@@ -667,12 +658,6 @@ bool CPVRManager::RequestRestart(const IAddon* addon, bool datachanged)
 
           /* Get Radio Channels from Backends */
           PVRChannelsRadio.Update();
-
-          /* Get Timers from Backends */
-          PVRTimers.Update();
-
-          /* Get Recordings from Backend */
-          PVRRecordings.Update();
         }
         Create();
       }
@@ -712,12 +697,6 @@ bool CPVRManager::RequestRemoval(const IAddon* addon)
 
           /* Get Radio Channels from Backends */
           PVRChannelsRadio.Update();
-
-          /* Get Timers from Backends */
-          PVRTimers.Update();
-
-          /* Get Recordings from Backend */
-          PVRRecordings.Update();
 
           Create();
         }
@@ -776,6 +755,15 @@ void CPVRManager::Process()
   m_LastTVChannelCheck     = 0;
   m_LastRadioChannelCheck  = 250;
   m_LastRecordingsCheck    = 0;
+
+  /* Get Timers from Backends */
+  PVRTimers.Load();
+
+  /* Get Recordings from Backend */
+  PVRRecordings.Load();
+
+  /* Get Epg's from Backend */
+  cPVREpgs::Load();
 
   while (!m_bStop)
   {

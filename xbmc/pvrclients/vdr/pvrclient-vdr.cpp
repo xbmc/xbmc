@@ -325,6 +325,31 @@ PVR_ERROR cPVRClientVDR::GetDriveSpace(long long *total, long long *used)
   return PVR_ERROR_NO_ERROR;
 }
 
+PVR_ERROR cPVRClientVDR::GetVDRTime(time_t *localTime, int *gmtOffset)
+{
+  if (!m_transceiver->IsOpen())
+    return PVR_ERROR_SERVER_ERROR;
+
+  pthread_mutex_lock(&m_critSection);
+
+  vector<string>  lines;
+  int             code;
+
+  if (!m_transceiver->SendCommand("STAT time", code, lines))
+  {
+    pthread_mutex_unlock(&m_critSection);
+    return PVR_ERROR_SERVER_ERROR;
+  }
+
+  vector<string>::iterator it = lines.begin();
+  string& data(*it);
+
+  *localTime = atol(data.c_str());
+  *gmtOffset = atol(data.substr(data.find(" ") + 1).c_str());
+
+  pthread_mutex_unlock(&m_critSection);
+  return PVR_ERROR_NO_ERROR;
+}
 
 /************************************************************/
 /** EPG handling */

@@ -524,14 +524,14 @@
   </PVROSDGuide>
   <PVROSDDirector>
     <remote>
-      <back>Close</back>
-      <menu>Close</menu>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
     </remote>
   </PVROSDDirector>
   <PVROSDCutter>
     <remote>
-      <back>Close</back>
-      <menu>Close</menu>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
     </remote>
   </PVROSDCutter>
   <MyTVSettings>

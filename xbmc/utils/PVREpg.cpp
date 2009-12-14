@@ -451,7 +451,7 @@ void cPVREpgs::Load()
 {
   InitializeCriticalSection(&m_epgs.m_critSection);
   m_epgs.m_locked = 0;
-  Update(false);
+  Update(true);
   return;
 }
 
