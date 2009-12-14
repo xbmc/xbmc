@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <!-- Misc labels -->
   <string id="31000">Changement des</string>
@@ -53,7 +53,7 @@
   <string id="31102">Arrière-plan</string>
   <string id="31103">Afficher "Pause" dans diaporama d'images</string>
   <string id="31104"></string>
-  <string id="31105">Afficher les titres des médias en tâche de fond lors du scan/string>
+  <string id="31105">Afficher les titres des médias en tâche de fond lors du scan</string>
   <string id="31106">Options diverses</string>
   <string id="31107"></string>
   <string id="31108">Boutons du menu principal</string>
@@ -133,7 +133,6 @@
   <string id="31405">[B]CONFIGURATION DES PARAMÈTRES RÉSEAU[/B][CR][CR]Permettre le contrôle de XBMC via UPnP et HTTP · Configurer le partage des fichiers[CR]Définir les options d'accès Internet</string>
   <string id="31406">[B]CONFIGURATION DES PARAMÈTRES SYSTÈME[/B][CR][CR]Organisation et calibrage d'affichages · Configurer sortie audio[CR]Configuration des contrôles à distance · Définissez les options d'économie d'énergie[CR]Activer le débogage · Configurer une sécurité</string>
   <string id="31407">[B]CONFIGURATION DES PARAMÈTRES THÈME[/B][CR][CR]Configuration du skin Confluence · Ajouter et supprimer des éléments du menu d'accueil[CR]Changer les arrière-plans du skin</string>
-
   <string id="31420">[B][COLOR=white]XBMC n'a pas détecté de disque.[/COLOR][/B][CR][CR]S'il vous plaît insérez un disque dans votre lecteur et essayez à nouveau ou annuler</string>
   <string id="31421">Sélectionnez le profil d'utilisateur de votre XBMC[CR]pour vous connecter et continuer</string>
-</strings>
+  </strings>
