@@ -20,6 +20,8 @@
  */
 
 #include "ZeroconfDirectory.h"
+#include <stdexcept>
+
 #include "URL.h"
 #include "Util.h"
 #include "FileItem.h"
@@ -107,28 +109,35 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
     //decode the path first
     CStdString decoded = path;
     CUtil::UrlDecode(decoded);
-    CZeroconfBrowser::ZeroconfService zeroconf_service = CZeroconfBrowser::ZeroconfService::fromPath(decoded);
-    if(!CZeroconfBrowser::GetInstance()->ResolveService(zeroconf_service))
+    try
     {
-      CLog::Log(LOGINFO, "CZeroconfDirectory::GetDirectory service ( %s ) could not be resolved in time", zeroconf_service.GetName().c_str());
-      return false;
-    }
-    else
-    {
-      assert(!zeroconf_service.GetIP().empty());
-      CURL service;
-      service.SetPort(zeroconf_service.GetPort());
-      service.SetHostName(zeroconf_service.GetIP());
-      //do protocol conversion (_smb._tcp -> smb)
-      //ToDo: try automatic conversion -> remove leading '_' and '._tcp'?
-      CStdString protocol;
-      if(!GetXBMCProtocol(zeroconf_service.GetType(), protocol))
+      CZeroconfBrowser::ZeroconfService zeroconf_service = CZeroconfBrowser::ZeroconfService::fromPath(decoded);
+
+      if(!CZeroconfBrowser::GetInstance()->ResolveService(zeroconf_service))
       {
-        CLog::Log(LOGERROR, "CZeroconfDirectory::GetDirectory Unknown service type (%s), skipping; ", zeroconf_service.GetType().c_str());
+        CLog::Log(LOGINFO, "CZeroconfDirectory::GetDirectory service ( %s ) could not be resolved in time", zeroconf_service.GetName().c_str());
         return false;
       }
-      service.SetProtocol(protocol);
-      return CDirectory::GetDirectory(service.Get(), items, "", true, true);
+      else
+      {
+        assert(!zeroconf_service.GetIP().empty());
+        CURL service;
+        service.SetPort(zeroconf_service.GetPort());
+        service.SetHostName(zeroconf_service.GetIP());
+        //do protocol conversion (_smb._tcp -> smb)
+        //ToDo: try automatic conversion -> remove leading '_' and '._tcp'?
+        CStdString protocol;
+        if(!GetXBMCProtocol(zeroconf_service.GetType(), protocol))
+        {
+          CLog::Log(LOGERROR, "CZeroconfDirectory::GetDirectory Unknown service type (%s), skipping; ", zeroconf_service.GetType().c_str());
+          return false;
+        }
+        service.SetProtocol(protocol);
+        return CDirectory::GetDirectory(service.Get(), items, "", true, true);
+      }
+    } catch (std::runtime_error& e) {
+      CLog::Log(LOGERROR, "CZeroconfDirectory::GetDirectory failed getting directory: '%s'. Error: '%s'", decoded.c_str(), e.what());
+      return false;
     }
   }
 }

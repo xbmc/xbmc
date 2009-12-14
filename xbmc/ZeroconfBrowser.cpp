@@ -210,15 +210,20 @@ CStdString CZeroconfBrowser::ZeroconfService::toPath(const ZeroconfService& fcr_
   return CStdString(fcr_service.m_type + "@" + fcr_service.m_domain + "@" + fcr_service.m_name);
 }
 
-CZeroconfBrowser::ZeroconfService CZeroconfBrowser::ZeroconfService::fromPath(const CStdString& fcr_string)
+CZeroconfBrowser::ZeroconfService CZeroconfBrowser::ZeroconfService::fromPath(const CStdString& fcr_path)
 {
-  assert(!fcr_string.empty());
-  int pos1 = fcr_string.Find('@'); //first @
-  int pos2 = fcr_string.Find('@', pos1+1); //second
-  assert(pos1 != -1 && pos2 != -1);
+  if( fcr_path.empty() )
+    throw std::runtime_error("CZeroconfBrowser::ZeroconfService::fromPath input string empty!");
+
+  int pos1 = fcr_path.Find('@'); //first @
+  int pos2 = fcr_path.Find('@', pos1+1); //second
+
+  if( pos1 == -1 || pos2 == -1 )
+    throw std::runtime_error("CZeroconfBrowser::ZeroconfService::fromPath invalid input path");
+
   return ZeroconfService(
-    fcr_string.substr(pos2 + 1, fcr_string.length()), //name
-    fcr_string.substr(0, pos1), //type
-    fcr_string.substr(pos1 + 1, pos2-(pos1+1)) //domain
+    fcr_path.substr(pos2 + 1, fcr_path.length()), //name
+    fcr_path.substr(0, pos1), //type
+    fcr_path.substr(pos1 + 1, pos2-(pos1+1)) //domain
     );
 }
