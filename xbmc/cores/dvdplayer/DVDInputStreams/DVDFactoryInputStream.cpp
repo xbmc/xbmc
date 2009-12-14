@@ -57,7 +57,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   {
     return (new CDVDInputStreamNavigator(pPlayer));
   }
-#ifndef _WIN32
+#ifdef HAS_LIBBDNAV
   else if (item.IsType(".mpls"))
     return new CDVDInputStreamMPLS;
 #endif
