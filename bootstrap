@@ -2,7 +2,7 @@
 
 autoreconf -vif
 autoreconf -vif xbmc/lib/libass
-autoreconf --force --install xbmc/cores/dvdplayer/Codecs/libbdnav
+autoreconf -vif xbmc/cores/dvdplayer/Codecs/libbdnav
 
 echo "Please (re)run configure..."
 
