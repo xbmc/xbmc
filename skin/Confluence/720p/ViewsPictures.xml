@@ -101,7 +101,6 @@
 	<include name="PictureThumbView">
 		<control type="group">
 			<visible>Control.IsVisible(511)</visible>
-			<include>Panel</include>
 			<control type="panel" id="511">
 				<posx>40</posx>
 				<posy>80</posy>

@@ -69,7 +69,7 @@
   <string id="124">Flytt disse filene?</string>
   <string id="125">Slett disse filene? Dette kan ikke angres.</string>
   <string id="126">Status</string>
-  <string id="127">Objekter</string>
+  <string id="127">objekter</string>
   <string id="128">Generelt</string>
   <string id="129">Bildefremvisning</string>
   <string id="130">Systeminformasjon</string>
@@ -99,7 +99,7 @@
   <string id="154">Lagring</string>
   <string id="155">Stasjon</string>
   <string id="156">Ledig</string>
-  <string id="157">Videobrikke</string>
+  <string id="157">Video</string>
   <string id="158">Ledig minne</string>
   <string id="159">Ingen forbindelse</string>
   <string id="160">Ledig</string>
@@ -1880,7 +1880,7 @@
   <string id="20366">* Alle sesonger</string>
   <string id="20367">Skjul sette</string>
   <string id="20368">Prod. kode</string>
-  <string id="20369">Skjul plott for episoder som ikke er sett</string>
+  <string id="20369">Vis omtale for videoer som ikke er sett</string>
   <string id="20370">* Skjult for ikke å røpe handling *</string>
   <string id="20371">Sett miniatyrbilde for sesong</string>
   <string id="20372">Bilde for sesong</string>

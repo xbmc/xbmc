@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Translators: Many -->
-<!-- Based on English rev 25428 -->
+<!-- Based on English rev 25636 -->
 <strings>
   <string id="31000">Endre dine</string>
   <string id="31001">Elsk</string>
   <string id="31002">Hat</string>
   <string id="31003">Strømalternativer</string>
   <string id="31004">Opptatt...</string>
+  <string id="31005">Gjem INFO</string>
   <string id="31007">Tillegg</string>
   <string id="31020">Nylig lagt til</string>
   <string id="31021">Videoer - Filer</string>
   <string id="31022">Musikk - Filer</string>
   <string id="31023">Spiller</string>
   <string id="31024">Side</string>
-  <string id="31025">Objekter</string>
+  <string id="31025">objekter</string>
   <string id="31026">Øvr. alternativer</string>
   <string id="31027">Plassering</string>
   <string id="31028">Plakat</string>
