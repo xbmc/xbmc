@@ -21,7 +21,7 @@ CC       ?= gcc
 CFLAGS   ?= -g -O2 -Wall
 
 CXX      ?= g++
-ifeq ($(findstring osx,$(ARCH)), osx)
+ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
 CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses -dynamiclib -single_module -undefined dynamic_lookup
 else
 CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
