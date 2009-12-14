@@ -326,6 +326,7 @@ xcode_depends: \
 	codecs libs python visualizations screensavers eventclients \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	skins \
+	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
 	xbmc/lib/cmyth/libcmyth/libcmyth.a \
 	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/lib/libRTMP/librtmp.a \
