@@ -57,8 +57,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   {
     return (new CDVDInputStreamNavigator(pPlayer));
   }
+#ifndef _WIN32
   else if (item.IsType(".mpls"))
     return new CDVDInputStreamMPLS;
+#endif
   else if(file.substr(0, 6) == "rtp://"
        || file.substr(0, 7) == "rtsp://"
        || file.substr(0, 6) == "sdp://"
