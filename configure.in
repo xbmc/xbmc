@@ -1457,6 +1457,14 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
   fi
 ], [0])
 
+XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [
+  if test "$host_vendor" = "apple" ; then
+	./configure --with-ssl-dir=/opt/local/include
+  else
+	./configure
+  fi
+], [0])
+
 AC_OUTPUT
 
 final_message="$final_message\n  prefix:\t$prefix\n$dashes"

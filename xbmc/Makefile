@@ -56,7 +56,6 @@ SRCS=Application.cpp \
      MusicInfoScanner.cpp \
      MusicInfoTag.cpp \
      MusicInfoTagLoaderAAC.cpp \
-     MusicInfoTagLoaderAdplug.cpp \
      MusicInfoTagLoaderApe.cpp \
      MusicInfoTagLoaderCDDA.cpp \
      MusicInfoTagLoaderDatabase.cpp \

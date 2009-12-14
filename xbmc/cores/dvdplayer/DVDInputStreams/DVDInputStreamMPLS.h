@@ -1,4 +1,5 @@
 #pragma once
+
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -20,22 +21,21 @@
  *
  */
 
-#include "ImusicInfoTagLoader.h"
-#include "cores/paplayer/DllAdplug.h"
-#include "cores/paplayer/AdplugCodec.h"
+#include "DVDInputStream.h"
 
-namespace MUSIC_INFO
+class CDVDInputStreamMPLS : public CDVDInputStream
 {
-  class CMusicInfoTagLoaderAdplug: public IMusicInfoTagLoader
-  {
-    public:
-      CMusicInfoTagLoaderAdplug(void);
-      virtual ~CMusicInfoTagLoaderAdplug();
-
-      virtual bool Load(const CStdString& strFileName, CMusicInfoTag& tag);
-  private:
-    int m_adl;
-    DllAdplug m_dll;
-  };
-}
-
+public:
+  CDVDInputStreamMPLS();
+  virtual ~CDVDInputStreamMPLS();
+  virtual bool Open(const char* strFile, const std::string &content);
+  virtual void Close();
+  virtual int Read(BYTE* buf, int buf_size);
+  virtual __int64 Seek(__int64 offset, int whence);
+  virtual bool Pause(double dTime) { return false; };
+  virtual bool IsEOF();
+  virtual __int64 GetLength();
+  virtual BitstreamStats GetBitstreamStats() const ;
+protected:
+  CDVDInputStream* m_stream;
+};
