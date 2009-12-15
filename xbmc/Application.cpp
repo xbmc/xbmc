@@ -280,7 +280,6 @@ using namespace DBUSSERVER;
 #if defined(_WIN32)
  #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
   #if defined(HAS_FILESYSTEM)
-    #pragma comment (lib,"../../xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
     #pragma comment (lib,"../../xbmc/lib/libRTV/libRTVd_win32.lib")
   #endif
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32d.lib") // SECTIONNAME=LIBHTTP
@@ -288,7 +287,6 @@ using namespace DBUSSERVER;
   #pragma comment (lib,"../../xbmc/lib/libiconv/libiconvd.lib")
  #else
   #ifdef HAS_FILESYSTEM
-    #pragma comment (lib,"../../xbmc/lib/libxdaap/libxdaap.lib")
     #pragma comment (lib,"../../xbmc/lib/libRTV/libRTV_win32.lib")
   #endif
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
