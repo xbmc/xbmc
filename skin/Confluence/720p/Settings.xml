@@ -35,26 +35,26 @@
 				<posx>10</posx>
 				<posy>90</posy>
 				<width>260</width>
-				<height>481</height>
+				<height>541</height>
 				<onleft>9000</onleft>
 				<onright>9001</onright>
 				<onup>9000</onup>
 				<ondown>9000</ondown>
 				<pagecontrol>-</pagecontrol>
 				<scrolltime>300</scrolltime>
-				<itemlayout height="60" width="260">
+				<itemlayout height="57" width="260">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>260</width>
-						<height>61</height>
+						<height>58</height>
 						<texture border="5">MenuItemNF.png</texture>
 					</control>
 					<control type="label">
 						<posx>250</posx>
 						<posy>0</posy>
 						<width>380</width>
-						<height>61</height>
+						<height>58</height>
 						<font>font24caps_title</font>
 						<textcolor>grey3</textcolor>
 						<align>right</align>
@@ -62,19 +62,19 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 				</itemlayout>
-				<focusedlayout height="60" width="260">
+				<focusedlayout height="57" width="260">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>260</width>
-						<height>61</height>
+						<height>58</height>
 						<texture border="5">MenuItemFO.png</texture>
 					</control>
 					<control type="label">
 						<posx>250</posx>
 						<posy>0</posy>
 						<width>380</width>
-						<height>61</height>
+						<height>58</height>
 						<font>font24caps_title</font>
 						<textcolor>white</textcolor>
 						<align>right</align>
@@ -96,36 +96,42 @@
 						<icon>special://skin/backgrounds/videos.jpg</icon>
 					</item>
 					<item id="3">
+						<label>18000</label>
+						<label2>31408</label2>
+						<onclick>ActivateWindow(MyTVSettings)</onclick>
+						<icon>special://skin/backgrounds/tv.jpg</icon>
+					</item>
+					<item id="4">
 						<label>2</label>
 						<label2>31402</label2>
 						<onclick>ActivateWindow(MusicSettings)</onclick>
 						<icon>special://skin/backgrounds/music.jpg</icon>
 					</item>
-					<item id="4">
-						<label>31304</label>
+					<item id="5">
+						<label>1</label>
 						<label2>31403</label2>
 						<onclick>ActivateWindow(PicturesSettings)</onclick>
 						<icon>special://skin/backgrounds/pictures.jpg</icon>
 					</item>
-					<item id="5">
+					<item id="6">
 						<label>8</label>
 						<label2>31404</label2>
 						<onclick>ActivateWindow(WeatherSettings)</onclick>
 						<icon>special://skin/backgrounds/weather.jpg</icon>
 					</item>
-					<item id="6">
+					<item id="7">
 						<label>705</label>
 						<label2>31405</label2>
 						<onclick>ActivateWindow(NetworkSettings)</onclick>
 						<icon>special://skin/backgrounds/network.jpg</icon>
 					</item>
-					<item id="7">
+					<item id="8">
 						<label>13000</label>
 						<label2>31406</label2>
 						<onclick>ActivateWindow(SystemSettings)</onclick>
 						<icon>special://skin/backgrounds/system.jpg</icon>
 					</item>
-					<item id="8">
+					<item id="9">
 						<label>166</label>
 						<label2>31407</label2>
 						<onclick>ActivateWindow(1111)</onclick>

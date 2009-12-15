@@ -68,6 +68,18 @@
 			<visible>[Container.Content(TVShows) | Container.Content(Seasons) |Container.Content(Episodes)] + [!IsEmpty(Skin.String(Home_Custom_Back_TVShow_Folder) + Skin.HasSetting(HomeMenuNoTVShowsButton)])</visible>
 		</control>
 	</include>
+	<include name="CommonTVBackground">
+		<control type="multiimage">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<imagepath fallback="special://skin/backgrounds/tv.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_TV_Folder)]</imagepath>
+			<timeperimage>10000</timeperimage>
+			<randomize>true</randomize>
+			<fadetime>1000</fadetime>
+		</control>
+	</include>
 	<include name="CommonMusicBackground">
 		<control type="multiimage">
 			<posx>0</posx>
@@ -162,7 +174,7 @@
 			<texture>black-back.png</texture>
 			<animation effect="fade" time="400">Visible</animation>
 			<animation effect="fade" time="200">Hidden</animation>
-			<visible>Window.IsActive(MovieInformation) | Window.IsActive(MusicInformation) | Window.IsActive(SongInformation) | Window.IsActive(FileBrowser) | Window.IsActive(ScriptsDebugInfo) | Window.IsActive(PluginSettings) | Window.IsActive(ContentSettings) | Window.IsActive(SelectDialog) | Window.IsActive(FileStackingDialog) | Window.IsActive(MediaSource) | Window.IsActive(PictureInfo) | Window.IsActive(PlayerControls) | Window.IsActive(VirtualKeyboard) | Window.IsActive(NumericInput) | Window.IsActive(ProfileSettings) | Window.IsActive(LockSettings) | Window.IsActive(SmartPlaylistEditor) | Window.IsActive(SmartPlaylistRule) | Window.IsActive(script-Apple_Movie_Trailers-settings.xml) | Window.IsActive(script-Apple_Movie_Trailers-chooser.xml) | Window.IsActive(script-Apple_Movie_Trailers-search.xml) | Window.IsActive(script-Apple_Movie_Trailers-showtimes.xml) | Window.IsActive(script-XBMC_Lyrics-settings.xml) | Window.IsActive(script-RSS_Editor-rssEditor.xml) | Window.IsActive(script-RSS_Editor-setEditor.xml)</visible>
+			<visible>Window.IsActive(MovieInformation) | Window.IsActive(MusicInformation) | Window.IsActive(SongInformation) | Window.IsActive(FileBrowser) | Window.IsActive(ScriptsDebugInfo) | Window.IsActive(PluginSettings) | Window.IsActive(ContentSettings) | Window.IsActive(SelectDialog) | Window.IsActive(FileStackingDialog) | Window.IsActive(MediaSource) | Window.IsActive(PictureInfo) | Window.IsActive(PlayerControls) | Window.IsActive(VirtualKeyboard) | Window.IsActive(NumericInput) | Window.IsActive(ProfileSettings) | Window.IsActive(LockSettings) | Window.IsActive(SmartPlaylistEditor) | Window.IsActive(SmartPlaylistRule) | Window.IsActive(script-Apple_Movie_Trailers-settings.xml) | Window.IsActive(script-Apple_Movie_Trailers-chooser.xml) | Window.IsActive(script-Apple_Movie_Trailers-search.xml) | Window.IsActive(script-Apple_Movie_Trailers-showtimes.xml) | Window.IsActive(script-XBMC_Lyrics-settings.xml) | Window.IsActive(script-RSS_Editor-rssEditor.xml) | Window.IsActive(script-RSS_Editor-setEditor.xml) | Window.IsVisible(AddonBrowser) | Window.IsVisible(AddonSettings)</visible>
 		</control>
 	</include>
 	<include name="WindowTitleCommons">

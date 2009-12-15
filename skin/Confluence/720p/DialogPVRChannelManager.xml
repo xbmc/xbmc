@@ -1,0 +1,17 @@
+<window id="605">
+	<defaultcontrol always="true">1</defaultcontrol>
+	<controls>
+		<control type="button" id="1">
+			<description>Close the window so we don't get stuck in it since its not used yet</description>
+			<posx>-20</posx>
+			<posy>-20</posy>
+			<width>1</width>
+			<height>1</height>
+			<label>-</label>
+			<font>-</font>
+			<onfocus>PreviousMenu</onfocus>
+			<texturenofocus>-</texturenofocus>
+			<texturefocus>-</texturefocus>
+		</control>
+	</controls>
+</window>

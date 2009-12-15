@@ -6,6 +6,7 @@
   <string id="31002">Hate</string>
   <string id="31003">Power Options</string>
   <string id="31004">Working...</string>
+  <string id="31005">Hide INFO</string>
 
   <string id="31007">Plugins</string>
 
@@ -132,7 +133,21 @@
   <string id="31405">[B]CONFIGURE NETWORK SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Set internet access options</string>
   <string id="31406">[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock</string>
   <string id="31407">[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds</string>
+  <string id="31408">[B]CONFIGURE TV SETTINGS[/B][CR][CR]Manage PVR Addons · Change fullscreen info[CR]Manage EPG data settings</string>
 
   <string id="31420">[B][COLOR=white]XBMC has not detected a Disc.[/COLOR][/B][CR][CR]Please Insert a disc into your drive and try again or Cancel</string>
   <string id="31421">Select your XBMC user Profile[CR]to login and continue</string>
+
+  <!-- Extra Unified PVR labels -->
+  <string id="31500">Recording Timers</string>
+  <string id="31501">Scheduled Time</string>
+  <string id="31502">Live TV</string>
+  <string id="31503">Add Group</string>
+  <string id="31504">Rename Group</string>
+  <string id="31505">Delete Group</string>
+  <string id="31506">Available[CR]Groups</string>
+  <string id="31507">Ungrouped[CR]Channels</string>
+  <string id="31508">Channels in Group</string>
+  <string id="31509">-</string>
+  <string id="31510">Timer Set</string>
 </strings>
