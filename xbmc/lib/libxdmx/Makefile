@@ -6,7 +6,7 @@
 STATIC_LIB := libxdmx.a
 SHARED_LIB := libxdmx.so
 SRCS    := src/accum.cpp src/bitstream.cpp src/pesparse.cpp src/tsdemux.cpp src/xdmx.cpp
-INCLUDE := -Iinclude/ -Isrc/
+INCLUDE := -Iinclude/ -Isrc/ -I../../utils
 OBJS    := ${SRCS:.cpp=.o} 
 DEPS    := ${SRCS:.cpp=.d} 
 XDEPS   := $(wildcard ${DEPS}) 
