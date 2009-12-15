@@ -87,6 +87,8 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "Picture.h"
+#include "JobManager.h"
+#include "guilib/GUITexture.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -1843,7 +1845,7 @@ void CUtil::Tokenize(const CStdString& path, vector<CStdString>& tokens, const s
   }
 }
 
-void CUtil::TakeScreenshot(const CStdString &filename)
+void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
 {
 #ifdef HAS_DX
     LPDIRECT3DSURFACE9 lpSurface = NULL;
@@ -1901,13 +1903,13 @@ void CUtil::TakeScreenshot(const CStdString &filename)
 
     int            width  = viewport[2] - viewport[0];
     int            height = viewport[3] - viewport[1];
-    unsigned char* pixels = (unsigned char*)malloc(width * height * 4);
+    unsigned char* pixels = new unsigned char[width * height * 4];
 
     //read pixels from the backbuffer
     glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, (GLvoid*)pixels);
 
     //make a new buffer and copy the read image to it with the Y axis inverted
-    unsigned char* outpixels = (unsigned char*)malloc(width * height * 4);
+    unsigned char* outpixels = new unsigned char[width * height * 4];
     for (int y = 0; y < height; y++)
       memcpy(outpixels + y * width * 4, pixels + (height - y - 1) * width * 4, width * 4);
 
@@ -1916,14 +1918,32 @@ void CUtil::TakeScreenshot(const CStdString &filename)
     for (int i = 0; i < width * height; i++)
       *(alphaptr += 4) = 0xFF;
 
-    //write .png file
-    CPicture::CreateThumbnailFromSurface(outpixels, width, height, width * 4, filename);
+    delete pixels; 
 
-    free(outpixels);
-    free(pixels);
+    //if sync is true, the png file needs to be completely written when this function returns
+    if (sync)
+    {
+      if (!CPicture::CreateThumbnailFromSurface(outpixels, width, height, width * 4, filename))
+        CLog::Log(LOGERROR, "Unable to write screenshot %s", filename.c_str());
+
+      delete outpixels;
+    }
+    else
+    {
+      //make sure the file exists to avoid concurrency issues
+      int fd = open(filename.c_str(), O_WRONLY);
+      if (fd != -1)
+        close(fd);
+      else
+        CLog::Log(LOGERROR, "Unable to create file %s", filename.c_str());
+
+      //write .png file asynchronous with CThumbnailWriter, prevents stalling of the render thread
+      //outpixels is deleted from CThumbnailWriter
+      CThumbnailWriter* thumbnailwriter = new CThumbnailWriter(outpixels, width, height, width * 4, filename);
+      CJobManager::GetInstance().AddJob(thumbnailwriter, NULL);
+    }
 
     g_graphicsContext.EndPaint();
-
 #endif
 
 }
@@ -1954,7 +1974,7 @@ void CUtil::TakeScreenshot()
 
     if (!file.IsEmpty())
     {
-      TakeScreenshot(file);
+      TakeScreenshot(file, false);
       if (savingScreenshots)
         screenShots.push_back(file);
       if (promptUser)

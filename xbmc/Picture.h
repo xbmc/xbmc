@@ -20,6 +20,7 @@
  *
  */
 #include "StdString.h"
+#include "Job.h"
 
 class CPicture
 {
@@ -32,3 +33,20 @@ public:
   static bool CreateThumbnail(const CStdString& file, const CStdString& thumbFile, bool checkExistence = false);
   static bool CacheImage(const CStdString& sourceFile, const CStdString& destFile);
 };
+
+//this class calls CreateThumbnailFromSurface in a CJob, so a png file can be written without halting the render thread
+class CThumbnailWriter : public CJob
+{
+  public:
+    //WARNING: buffer is deleted from DoWork()
+    CThumbnailWriter(unsigned char* buffer, int width, int height, int stride, const CStdString& thumbFile);
+    bool DoWork();
+
+  private:
+    unsigned char* m_buffer;
+    int            m_width;
+    int            m_height;
+    int            m_stride;
+    CStdString     m_thumbFile;
+};
+

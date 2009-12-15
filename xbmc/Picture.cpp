@@ -129,3 +129,21 @@ int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile,
   }
   return ret;
 }
+
+CThumbnailWriter::CThumbnailWriter(unsigned char* buffer, int width, int height, int stride, const CStdString& thumbFile)
+{
+  m_buffer    = buffer;
+  m_width     = width;
+  m_height    = height;
+  m_stride    = stride;
+  m_thumbFile = thumbFile;
+}
+
+bool CThumbnailWriter::DoWork()
+{
+  if (!CPicture::CreateThumbnailFromSurface(m_buffer, m_width, m_height, m_stride, m_thumbFile))
+    CLog::Log(LOGERROR, "Unable to write screenshot %s", m_thumbFile.c_str());
+
+  delete m_buffer;
+}
+
