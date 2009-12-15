@@ -2112,8 +2112,8 @@ para esta visualización</string>
   <string id="22020">Guía</string>
   <string id="22021">Error permitido en relación de aspecto (%)</string>
   <string id="22022">Mostrar archivos de vídeo en las listas</string>
-  <string id="22023">Distribuidor de DirectX</string>
-  <string id="22024">Versión de Direct3D</string>
+  <string id="22023">Distribuidor de DirectX:</string>
+  <string id="22024">Versión de Direct3D:</string>
   <string id="22030">Fuente</string>
   <string id="22031">- Tamaño</string>
   <string id="22032">- Colores</string>

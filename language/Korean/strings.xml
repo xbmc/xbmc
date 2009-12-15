@@ -1897,8 +1897,8 @@
   <string id="22020">가이드</string>
   <string id="22021">검은 여백 최소화시 가로세로 비 허용 오류</string>
   <string id="22022">목록에 비디오 파일 보이기</string>
-  <string id="22023">DirectX 공급자</string>
-  <string id="22024">Direct3D 버전</string>
+  <string id="22023">DirectX 공급자:</string>
+  <string id="22024">Direct3D 버전:</string>
   <string id="22030">글꼴</string>
   <string id="22031">- 크기</string>
   <string id="22032">- 색깔</string>
