@@ -1930,9 +1930,9 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
     else
     {
       //make sure the file exists to avoid concurrency issues
-      int fd = open(filename.c_str(), O_WRONLY);
-      if (fd != -1)
-        close(fd);
+      FILE* fp = fopen(filename.c_str(), "w");
+      if (fp)
+        fclose(fp);
       else
         CLog::Log(LOGERROR, "Unable to create file %s", filename.c_str());
 
