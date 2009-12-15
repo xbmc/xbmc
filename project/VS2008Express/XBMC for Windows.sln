@@ -11,6 +11,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XBMC", "XBMC.vcproj", "{3A6
 		{5013769A-0784-4CE8-9D9D-09AC7F731B4F} = {5013769A-0784-4CE8-9D9D-09AC7F731B4F}
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4} = {510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452} = {FE0A91C0-E30A-47CD-8A92-A508C9292452}
+		{706163E2-5422-4A94-8464-082ADA8C2769} = {706163E2-5422-4A94-8464-082ADA8C2769}
 		{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38} = {3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}
 	EndProjectSection
 EndProject
@@ -57,6 +58,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libfridibidi", "..\..\lib\fribidi\libfridibidi\libfridibidi.vcproj", "{F7C8AE15-B8C1-4F93-A414-EC908F0592B4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpcre", "..\..\lib\pcre\libpcre\libpcre.vcproj", "{D8097C41-605D-4917-8957-9DF7F44A18CD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMS", "..\..\xbmc\lib\libXBMS\libXBMS\libXBMS.vcproj", "{706163E2-5422-4A94-8464-082ADA8C2769}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -200,6 +203,14 @@ Global
 		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{706163E2-5422-4A94-8464-082ADA8C2769}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{706163E2-5422-4A94-8464-082ADA8C2769}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{706163E2-5422-4A94-8464-082ADA8C2769}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{706163E2-5422-4A94-8464-082ADA8C2769}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{706163E2-5422-4A94-8464-082ADA8C2769}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{706163E2-5422-4A94-8464-082ADA8C2769}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{706163E2-5422-4A94-8464-082ADA8C2769}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{706163E2-5422-4A94-8464-082ADA8C2769}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
