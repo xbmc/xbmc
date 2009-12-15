@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 07/12/2009-->
-<!--Turkish strings based on English strings revision 25342-->
+<!--Date of translation: 14/12/2009-->
+<!--Turkish strings based on English strings revision 25636-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Değiştir</string>
@@ -10,6 +10,7 @@
   <string id="31002">Nefret</string>
   <string id="31003">Güç Seçenekleri</string>
   <string id="31004">Çalışıyor...</string>
+  <string id="31005">Bilgiyi Gizle</string>
 
   <string id="31007">Eklentiler</string>
 
@@ -136,7 +137,6 @@
   <string id="31405">[B]AĞ AYARLARINI YAPILANDIR[/B][CR][CR]UPnP ve HTTP üzerinden XBMC kontrolü ayarları · Dosya paylaşımını yapılandır[CR]İnternet erişim seçeneklerini ayarla</string>
   <string id="31406">[B]SİSTEM AYARLARINI YAPILANDIR[/B][CR][CR]Görünüm ayarları · Ses çıkış ayarlarını yapılandır · Uzaktan kumandaları ayarla[CR]Güç tasarrufu seçeneklerini ayarla · Hata ayıklamayı etkinleştir · Sistem kilit ayarları</string>
   <string id="31407">[B]DIŞ GÖRÜNÜM AYARLARINI YAPILANDIR[/B][CR][CR]Confluence dış görünümü ayarları · Ana menü ögelerini ekle ve kaldır[CR]Arayüz arkaplanlarını değiştir</string>
-
 
   <string id="31420">[B][COLOR=white]XBMC takılı bir Disk algılayamadı.[/COLOR][/B][CR][CR]Lütfen sürücüye Disk takıp tekrar deneyin veya İptal edin</string>
   <string id="31421">Oturum açıp devam etmek için[CR]XBMC kullanıcı profilinizi seçin</string>
