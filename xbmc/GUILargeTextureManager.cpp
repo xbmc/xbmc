@@ -31,6 +31,7 @@
 #include "Settings.h"
 #include "AdvancedSettings.h"
 #include "Util.h"
+#include "utils/log.h"
 
 using namespace std;
 
@@ -70,11 +71,14 @@ bool CImageLoader::DoWork()
       }
     }
     m_texture = new CTexture();
+    DWORD start = CTimeUtils::GetTimeMS();
     if (!m_texture->LoadFromFile(loadPath, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080), g_guiSettings.GetBool("pictures.useexifrotation")))
     {
       delete m_texture;
       m_texture = NULL;
     }
+    else
+      CLog::Log(LOGDEBUG, "%s - took %d ms to load %s", __FUNCTION__, CTimeUtils::GetTimeMS() - start, m_path.c_str());
   }
 
   return true;
