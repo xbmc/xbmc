@@ -1940,6 +1940,8 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
     return;
   }
 
+  CLog::Log(LOGDEBUG, "Saving screenshot %s", filename.c_str());
+
   //if sync is true, the png file needs to be completely written when this function returns
   if (sync)
   {
