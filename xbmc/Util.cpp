@@ -1931,7 +1931,7 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
 
 #else
   //nothing to take a screenshot from
-  return
+  return;
 #endif
 
   if (!outpixels)
