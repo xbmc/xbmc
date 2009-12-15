@@ -108,9 +108,6 @@ Depends: xbmc-bin (>= ${source:Version}),
          x11-utils,
          ${python:Depends},
          ${misc:Depends}
-Provides: xbmc-common
-Replaces: xbmc-common
-Conflicts: xbmc-common
 Suggests: xbmc-test-helper
 Recommends: python-qt3
 Description: XBMC Media Center (arch-independent data package)

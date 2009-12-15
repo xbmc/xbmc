@@ -55,8 +55,8 @@
       <!-- Replay       -->      <button id="91">SkipPrevious</button>
       <!-- Skip      	-->      <button id="92">SkipNext</button>
       <!-- Record	-->      <button id="52">Screenshot</button>
-      <!-- Rew       	-->      <button id="41">BigStepBack</button>
-      <!-- Fwd  	-->      <button id="42">BigStepForward</button>
+      <!-- Rew       	-->      <button id="41">Rewind</button>
+      <!-- Fwd  	-->      <button id="42">FastForward</button>
       <!-- Pause	-->      <button id="26">Pause</button>
       <!-- Prev		-->      <button id="32">ParentDir</button>
       <!-- Guide  	-->      <button id="65">FullScreen</button>

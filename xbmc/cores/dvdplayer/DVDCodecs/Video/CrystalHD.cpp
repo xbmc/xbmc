@@ -796,7 +796,6 @@ bool CCrystalHD::InitHardware(void)
 bool CCrystalHD::Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type)
 {
   BCM::BC_STATUS res;
-  //BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
   
   if (m_IsConfigured)
   {
@@ -824,15 +823,6 @@ bool CCrystalHD::Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type)
 
   do 
   {
-    /*
-    res = BCM::DtsDeviceOpen(&m_Device, mode);
-    if (res != BCM::BC_STS_SUCCESS)
-    {
-      CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD", __MODULE_NAME__);
-      break;
-    }
-    */
-      
     res = BCM::DtsOpenDecoder(m_Device, stream_type);
     if (res != BCM::BC_STS_SUCCESS)
     {

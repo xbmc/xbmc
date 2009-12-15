@@ -42,7 +42,7 @@ public:
       /// easy conversion to string and back (used in czeronfdiretory to store this service)
       ///@{
       static CStdString toPath(const ZeroconfService& fcr_service);
-      static ZeroconfService fromPath(const CStdString& fcr_string);
+      static ZeroconfService fromPath(const CStdString& fcr_path); //throws std::runtime_error on failure
       ///@}
 
       /// general access methods

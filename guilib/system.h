@@ -49,6 +49,9 @@
 #define HAS_AC3_CODEC
 #define HAS_DTS_CODEC
 #define HAS_CDDA_RIPPER
+#ifdef HAVE_ASAP_CODEC
+#define HAS_ASAP_CODEC
+#endif
 
 #define HAS_FILESYSTEM
 #define HAS_FILESYSTEM_SMB
@@ -95,6 +98,7 @@
 #define HAS_SDL_AUDIO
 #define HAS_SDL_OPENGL
 #define HAS_SDL_WIN_EVENTS
+#define HAS_LIBBDNAV
 #endif
 
 /*****************
@@ -125,6 +129,7 @@
 #ifdef HAVE_LIBXRANDR
 #define HAS_XRANDR
 #endif
+#define HAS_LIBBDNAV
 #endif
 
 /*****************

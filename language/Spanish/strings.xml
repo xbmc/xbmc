@@ -1814,7 +1814,7 @@ para esta visualización</string>
   <string id="20340">¿Deseas eliminar todos los elementos de</string>
   <string id="20341">esta ruta de la base de datos?</string>
   <string id="20342">Películas</string>
-  <string id="20343">Programas de TV</string>
+  <string id="20343">Series TV</string>
   <string id="20344">Este directorio contiene</string>
   <string id="20345">Ejecutar exploración automatizada</string>
   <string id="20346">Explorar recursivamente</string>
@@ -2112,8 +2112,8 @@ para esta visualización</string>
   <string id="22020">Guía</string>
   <string id="22021">Error permitido en relación de aspecto (%)</string>
   <string id="22022">Mostrar archivos de vídeo en las listas</string>
-  <string id="22023">Distribuidor de DirectX</string>
-  <string id="22024">Versión de Direct3D</string>
+  <string id="22023">Distribuidor de DirectX:</string>
+  <string id="22024">Versión de Direct3D:</string>
   <string id="22030">Fuente</string>
   <string id="22031">- Tamaño</string>
   <string id="22032">- Colores</string>

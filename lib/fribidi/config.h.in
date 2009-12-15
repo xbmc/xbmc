@@ -1,0 +1,103 @@
+/* config.h.in.  Generated from configure.in by autoheader.  */
+
+/* Define to 1 if you want to include debug code in the library */
+#undef DEBUG
+
+/* Define to 1 */
+#undef FRIBIDI_EXPORTS
+
+/* Define to 1 if you do not want character set conversion routines */
+#undef FRIBIDI_NO_CHARSETS
+
+/* */
+#undef HAS_FRIBIDI_TAB_CHAR_TYPE_2_I
+
+/* */
+#undef HAS_FRIBIDI_TAB_CHAR_TYPE_3_I
+
+/* */
+#undef HAS_FRIBIDI_TAB_CHAR_TYPE_4_I
+
+/* */
+#undef HAS_FRIBIDI_TAB_CHAR_TYPE_5_I
+
+/* */
+#undef HAS_FRIBIDI_TAB_CHAR_TYPE_6_I
+
+/* */
+#undef HAS_FRIBIDI_TAB_CHAR_TYPE_7_I
+
+/* */
+#undef HAS_FRIBIDI_TAB_CHAR_TYPE_8_I
+
+/* */
+#undef HAS_FRIBIDI_TAB_CHAR_TYPE_9_I
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to 1 if you want to optimize for memory instead of speed */
+#undef MEM_OPTIMIZED
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* The size of `int', as computed by sizeof. */
+#undef SIZEOF_INT
+
+/* The size of `long', as computed by sizeof. */
+#undef SIZEOF_LONG
+
+/* The size of `short', as computed by sizeof. */
+#undef SIZEOF_SHORT
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define to 1 if you prefer simple malloc instead of chunk memory */
+#undef USE_SIMPLE_MALLOC
+
+/* Version number of package */
+#undef VERSION

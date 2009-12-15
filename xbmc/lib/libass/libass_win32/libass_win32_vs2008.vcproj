@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="libass_win32"
+	Name="libass_dll"
 	ProjectGUID="{BA5B08FC-2ECB-4571-9F25-F8054522FC65}"
 	RootNamespace="libass_win32"
 	Keyword="Win32Proj"

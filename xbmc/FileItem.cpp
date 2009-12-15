@@ -544,9 +544,9 @@ bool CFileItem::IsAudio() const
 
 bool CFileItem::IsKaraoke() const
 {
-  if ( !IsAudio() )
+  if ( !IsAudio() || IsLastFM() || IsShoutCast())
     return false;
-  
+ 
   return CKaraokeLyricsFactory::HasLyrics( m_strPath );
 }
 

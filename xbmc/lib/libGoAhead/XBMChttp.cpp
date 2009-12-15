@@ -2881,8 +2881,8 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
       filepath = paras[0];
     if (numParas>5)
     {
-      CStdString tmpFile = "special://temp/temp.bmp";
-      CUtil::TakeScreenshot(tmpFile);
+      CStdString tmpFile = "special://temp/temp.png";
+      CUtil::TakeScreenshot(tmpFile, true);
       int height, width;
       if (paras[4]=="")
         if (paras[3]=="")

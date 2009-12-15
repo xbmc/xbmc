@@ -169,11 +169,13 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
     CMusicInfoTagLoaderYM *pTagLoader = new CMusicInfoTagLoaderYM();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
+#ifdef HAS_ASAP_CODEC
   else if (ASAPCodec::IsSupportedFormat(strExtension) || strExtension == "asapstream")
   {
     CMusicInfoTagLoaderASAP *pTagLoader = new CMusicInfoTagLoaderASAP();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
+#endif
   else if ( TimidityCodec::IsSupportedFormat( strExtension ) )
   {
     CMusicInfoTagLoaderMidi * pTagLoader = new CMusicInfoTagLoaderMidi();

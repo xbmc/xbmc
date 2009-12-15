@@ -807,7 +807,8 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
 
     // If karaoke song is being played AND popup autoselector is enabled, the playlist should not be added
-    bool do_not_add_karaoke = pItem->IsKaraoke() && g_guiSettings.GetBool("karaoke.autopopupselector");
+    bool do_not_add_karaoke = g_guiSettings.GetBool("karaoke.enabled") && 
+      g_guiSettings.GetBool("karaoke.autopopupselector") && pItem->IsKaraoke();
 
     if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList() && !do_not_add_karaoke )
     {
