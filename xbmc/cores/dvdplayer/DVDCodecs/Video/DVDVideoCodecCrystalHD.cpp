@@ -143,7 +143,10 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
     codec_type = hints.codec;
     stream_type = BC_STREAM_TYPE_ES;
     
-    m_annexbfiltering = init_h264_mp4toannexb_filter(hints);
+    if (hints.codec == CODEC_ID_H264)
+      m_annexbfiltering = init_h264_mp4toannexb_filter(hints);
+    else
+      m_annexbfiltering = false;
 
     m_Device = new CCrystalHD();
     if (!m_Device)
@@ -180,29 +183,31 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
   int ret = 0;
 
   int maxWait = 40;
-  unsigned int lastTime = CTimeUtils::GetTimeMS();
-  unsigned int maxTime = lastTime + maxWait;
+  unsigned int lastTime;
+  unsigned int maxTime;
+  bool annexbfiltered = false;
+
+  if (m_annexbfiltering)
+  {
+    int outbuf_size = 0;
+    uint8_t *outbuf = NULL;
+    
+    h264_mp4toannexb_filter(pData, iSize, &outbuf, &outbuf_size);
+    if (outbuf)
+    {
+      annexbfiltered = true;
+      pData = outbuf;
+      iSize = outbuf_size;
+    }
+  }
+      
+  lastTime = CTimeUtils::GetTimeMS();
+  maxTime = lastTime + maxWait;
   while ((lastTime = CTimeUtils::GetTimeMS()) < maxTime)
   {
     // Handle Input
     if (pData)
     {
-      bool annexbfiltered = false;
-      
-      if (m_annexbfiltering)
-      {
-        int outbuf_size = 0;
-        uint8_t *outbuf = NULL;
-        
-        h264_mp4toannexb_filter(pData, iSize, &outbuf, &outbuf_size);
-        if (outbuf)
-        {
-          annexbfiltered = true;
-          pData = outbuf;
-          iSize = outbuf_size;
-        }
-      }
-      
       if ( m_Device->AddInput(pData, iSize, pts) )
       {
         if (annexbfiltered)
@@ -224,6 +229,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
 
     if (!pData && (ret & VC_PICTURE))
       break;
+
   }
 
   if (lastTime >= maxTime)
