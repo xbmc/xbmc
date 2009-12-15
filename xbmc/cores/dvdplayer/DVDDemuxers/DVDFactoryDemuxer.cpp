@@ -73,7 +73,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
   TSTransportType tsType = TS_TYPE_UNKNOWN;
   if (!extension.compare("ts"))
     tsType = TS_TYPE_STD;
-  else if(!extension.compare("m2ts") || !extension.compare("m2t"))
+  else if(!extension.compare("m2ts") || !extension.compare("m2t") || pInputStream->IsStreamType(DVDSTREAM_TYPE_MPLS))
     tsType = TS_TYPE_M2TS;
   if (tsType != TS_TYPE_UNKNOWN)
   {
