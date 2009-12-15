@@ -88,7 +88,6 @@
 #include "utils/log.h"
 #include "Picture.h"
 #include "JobManager.h"
-#include "guilib/GUITexture.h"
 
 using namespace std;
 using namespace DIRECTORY;
