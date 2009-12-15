@@ -141,9 +141,16 @@ CThumbnailWriter::CThumbnailWriter(unsigned char* buffer, int width, int height,
 
 bool CThumbnailWriter::DoWork()
 {
+  bool success = true;
+
   if (!CPicture::CreateThumbnailFromSurface(m_buffer, m_width, m_height, m_stride, m_thumbFile))
+  {
     CLog::Log(LOGERROR, "Unable to write screenshot %s", m_thumbFile.c_str());
+    success = false;
+  }
 
   delete m_buffer;
+
+  return success;
 }
 
