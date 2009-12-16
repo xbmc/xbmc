@@ -19,7 +19,7 @@ XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
 	--enable-optimizations --enable-gl --enable-vdpau \
 	--disable-profiling --enable-joystick --enable-xrandr \
 	--enable-goom --disable-ccache --enable-pulse --enable-avahi \
-	--enable-debug
+	--disable-debug
 
 # Ubuntu or Debian specific options
 ifeq (Ubuntu,$(shell lsb_release -is))
