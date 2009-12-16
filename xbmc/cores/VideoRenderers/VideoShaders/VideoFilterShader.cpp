@@ -114,9 +114,9 @@ BicubicFilterShader::BicubicFilterShader(float B, float C)
   m_kernelTex1 = 0;
   m_B = B;
   m_C = C;
-  if (B<=0)
+  if (B<0)
     m_B=1.0f/3.0f;
-  if (C<=0)
+  if (C<0)
     m_C=1.0f/3.0f;
 }
 
