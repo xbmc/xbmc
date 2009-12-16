@@ -1519,59 +1519,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       videodatabase.Close();
     }
   }
-  else if (strSetting.Equals("videolibrary.export") || strSetting.Equals("musiclibrary.export"))
-  {
-    int iHeading = 647;
-    if (strSetting.Equals("musiclibrary.export"))
-      iHeading = 20196;
-    CStdString path(g_settings.GetDatabaseFolder());
-    VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
-    bool singleFile;
-    bool thumbs=false;
-    bool actorThumbs=false;
-    bool overwrite=false;
-    bool cancelled;
-
-    singleFile = CGUIDialogYesNo::ShowAndGetInput(iHeading,20426,20427,-1,20428,20429,cancelled);
-    if (cancelled)
-      return;
-
-    if (singleFile)
-      thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20430,-1,-1,cancelled);
-    if (cancelled)
-      return;
-
-    if (thumbs && strSetting.Equals("videolibrary.export"))
-      actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20436,-1,-1,cancelled);
-    if (cancelled)
-      return;
-
-    if (singleFile)
-      overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
-    if (cancelled)
-      return;
-
-    if (singleFile || CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
-    {
-      if (strSetting.Equals("videolibrary.export"))
-      {
-        CUtil::AddFileToFolder(path, "videodb.xml", path);
-        CVideoDatabase videodatabase;
-        videodatabase.Open();
-        videodatabase.ExportToXML(path, singleFile, thumbs, actorThumbs, overwrite);
-        videodatabase.Close();
-      }
-      else
-      {
-        CUtil::AddFileToFolder(path, "musicdb.xml", path);
-        CMusicDatabase musicdatabase;
-        musicdatabase.Open();
-        musicdatabase.ExportToXML(path, singleFile, thumbs, overwrite);
-        musicdatabase.Close();
-      }
-    }
-  }
+  else if (strSetting.Equals("videolibrary.export"))
+    CBuiltins::Execute("exportlibrary(video)");  
+  else if (strSetting.Equals("musiclibrary.export"))
+    CBuiltins::Execute("exportlibrary(music)");  
   else if (strSetting.Equals("karaoke.export") )
   {
     vector<CStdString> choices;
