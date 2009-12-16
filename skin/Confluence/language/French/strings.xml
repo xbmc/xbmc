@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <!-- Misc labels -->
   <string id="31000">Changement des</string>
@@ -23,7 +23,7 @@
   <string id="31028">Affiche Wrap</string>
   <string id="31029">Fanart</string>
   <string id="31030">Liste complète</string>
-  <string id="31031">Pic Thumbs</string>
+  <string id="31031">Vignettes</string>
   <string id="31032">Image Wrap</string>
 
   <!-- Extra labels -->
@@ -71,7 +71,7 @@
   <string id="31120">ÉTIQUETTE DU BOUTON</string>
   <string id="31121">CHEMIN DU SCRIPT</string>
   <string id="31122">Page météo</string>
-  <string id="31123">Utilisez les "Affiches" au lieu des "Bannières" pour les émissions TV</string>
+  <string id="31123">Préférer les "Affiches" aux "Bannières" pour les émissions TV</string>
   <string id="31124">Afficher la vidéo en cours de lecture en arrière-plan</string>
   <string id="31125">Afficher la visualisation en cours de lecture en arrière-plan</string>
 
@@ -100,7 +100,7 @@
   <string id="31304">Image</string>
   <string id="31305">Aucun disque détecté</string>
   <string id="31306">Éjecter</string>
-  <string id="31307">Masquer Fanart</string>
+  <string id="31307">Sans Fanart</string>
   <string id="31308">Détails du film</string>
   <string id="31309">Mémoire utilisée:</string>
   <string id="31310">Numéro de le piste</string>
@@ -125,13 +125,13 @@
   <string id="31329">[B]RÉGLAGE MINUTERIE![/B] [COLOR=grey2] - FERMER LE SYSTÈME AUTOMATIQUEMENT DANS[/COLOR]</string>
 
   <!-- Description Labels  -->
-  <string id="31400">[B]CONFIGURATION DES PARAMÈTRES APPARENCE[/B][CR][CR]Changer le skin · Changer la langue et la région · Changer les options énumérant les fichiers[CR]Changer l'économiseur d'écran</string>
-  <string id="31401">[B]CONFIGURATION DES PARAMÈTRES VIDÉO[/B][CR][CR]Gérer votre vidéothèque · Définissez les options de la lecture vidéo[CR]Changer les options énumérant les vidéos · Régler la police des sous-titres</string>
-  <string id="31402">[B]CONFIGURATION DES PARAMÈTRES MUSIQUE[/B][CR][CR]Gérez votre bibliothèque musicale · Définissez les options de la lecture musique · Changer les options énumérant la musique[CR]Permettre la soumission des chansons · Changer les options karaoké</string>
-  <string id="31403">[B]CONFIGURATION DES PARAMÈTRES IMAGE[/B][CR][CR]Définissez les options de la lecture des images · Configurer les diaporamas</string>
-  <string id="31404">[B]CONFIGURATION DES PARAMÈTRES MÉTÉO[/B][CR][CR]Régler les trois villes afin de recueillir les informations météorologiques</string>
+  <string id="31400">[B]CONFIGURATION DES PARAMÈTRES APPARENCE[/B][CR][CR]Changer le skin · Choisir la langue et la région · Changer les options de liste[CR]Changer l'économiseur d'écran</string>
+  <string id="31401">[B]CONFIGURATION DES PARAMÈTRES VIDÉO[/B][CR][CR]Gérer votre médiathèque · Définir les options de lecture · Changer les options de liste[CR]Régler la police des sous-titres</string>
+  <string id="31402">[B]CONFIGURATION DES PARAMÈTRES MUSIQUE[/B][CR][CR]Gérer votre médiathèque · Définir les options de lecture · Changer les options de liste[CR]Soumettre des chansons · Changer les options karaoké</string>  
+  <string id="31403">[B]CONFIGURATION DES PARAMÈTRES IMAGE[/B][CR][CR]Définir les options de lecture · Configurer les diaporamas</string>
+  <string id="31404">[B]CONFIGURATION DES PARAMÈTRES MÉTÉO[/B][CR][CR]Choisir les trois villes qui recueilleront les informations météorologiques</string>  
   <string id="31405">[B]CONFIGURATION DES PARAMÈTRES RÉSEAU[/B][CR][CR]Permettre le contrôle de XBMC via UPnP et HTTP · Configurer le partage des fichiers[CR]Définir les options d'accès Internet</string>
-  <string id="31406">[B]CONFIGURATION DES PARAMÈTRES SYSTÈME[/B][CR][CR]Organisation et calibrage d'affichages · Configurer sortie audio[CR]Configuration des contrôles à distance · Définissez les options d'économie d'énergie[CR]Activer le débogage · Configurer une sécurité</string>
+  <string id="31406">[B]CONFIGURATION DES PARAMÈTRES SYSTÈME[/B][CR][CR]Configurer les sorties vidéo et audio · Configurer les périphériques de contrôle[CR]Définir les options de gestion d'énergie · Activer le débogage · Configurer la sécurité</string>
   <string id="31407">[B]CONFIGURATION DES PARAMÈTRES THÈME[/B][CR][CR]Configuration du skin Confluence · Ajouter et supprimer des éléments du menu d'accueil[CR]Changer les arrière-plans du skin</string>
   <string id="31420">[B][COLOR=white]XBMC n'a pas détecté de disque.[/COLOR][/B][CR][CR]S'il vous plaît insérez un disque dans votre lecteur et essayez à nouveau ou annuler</string>
   <string id="31421">Sélectionnez le profil d'utilisateur de votre XBMC[CR]pour vous connecter et continuer</string>
