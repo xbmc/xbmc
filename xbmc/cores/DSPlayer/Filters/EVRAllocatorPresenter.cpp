@@ -995,7 +995,7 @@ HRESULT CEVRAllocatorPresenter::RenderPresent(int surfaceIndex)
   hr = m_D3DDev->StretchRect(m_pInternalVideoSurface[surfaceIndex], NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);
   if (SUCCEEDED(hr))
   {
-    g_renderManager.PaintVideoTexture(m_pVideoTexture,m_pInternalVideoSurface[surfaceIndex]);
+    //g_renderManager.PaintVideoTexture(m_pVideoTexture,m_pInternalVideoSurface[surfaceIndex]);
     g_application.NewFrame();
     //Give .1 sec to the gui to render
     g_application.WaitFrame(100);

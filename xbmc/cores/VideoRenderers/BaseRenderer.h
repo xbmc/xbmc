@@ -39,6 +39,12 @@ typedef struct YV12Image
   unsigned cshift_y;
 } YV12Image;
 
+typedef enum _RENDERERTYPE
+{
+  RENDERER_NORMAL = 1,
+  RENDERER_DSHOW  = 2
+} RENDERERTYPE;
+
 class CBaseRenderer
 {
 public:

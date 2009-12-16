@@ -20,10 +20,10 @@
  */
 
 #pragma once
-
+#include "d3dresource.h"
 [uuid("165BE9D6-0929-4363-9BA3-580D735AA0F6")]
 interface IDsRenderer : public IUnknown
 {
   STDMETHOD(CreateRenderer) (IUnknown** ppRenderer) = 0;
-  STDMETHOD(RenderPresent)  (IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface,REFERENCE_TIME pTimeStamp) = 0;
+  STDMETHOD(RenderPresent)  (CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface,REFERENCE_TIME pTimeStamp) = 0;
 };

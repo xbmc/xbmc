@@ -120,7 +120,7 @@ public:
   virtual void         Reset() {}; /* resets renderer after seek for example */
   virtual bool         IsConfigured() {return false;}
 
-  virtual void         PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface) {};
+  virtual void         PaintVideoTexture(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface) {};
   // TODO:DIRECTX - implement these
   virtual bool         SupportsBrightness() { return true; };
   virtual bool         SupportsContrast() { return true; };

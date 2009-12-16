@@ -34,11 +34,6 @@
 #include "utils/Thread.h"
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
-typedef enum _RENDERERTYPE
-{
-  RENDERER_NORMAL = 1,
-  RENDERER_DSHOW  = 2
-} RENDERERTYPE;
 
 class CXBMCRenderManager
 {
@@ -71,18 +66,22 @@ public:
       return m_pRenderer->GetImage(image, source, readonly);
     return -1;
   }
+
   inline void ReleaseImage(int source = AUTOSOURCE, bool preserve = false)
   {
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
       m_pRenderer->ReleaseImage(source, preserve);
   }
-  inline void PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface)
+#if defined(HAS_DX)
+  inline void PaintVideoTexture(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface)
   {
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
       m_pRenderer->PaintVideoTexture(videoTexture,videoSurface);
   }
+#endif
+
   inline unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
   {
     CSharedLock lock(m_sharedSection);

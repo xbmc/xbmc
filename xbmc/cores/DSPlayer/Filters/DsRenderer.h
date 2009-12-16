@@ -31,7 +31,7 @@ public:
   DECLARE_IUNKNOWN;
   // IDSRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer) { return E_NOTIMPL; };
-  STDMETHODIMP RenderPresent(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface,REFERENCE_TIME pTimeStamp);
+  STDMETHODIMP RenderPresent(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface,REFERENCE_TIME pTimeStamp);
 
 protected:
   
@@ -48,8 +48,9 @@ protected:
   //d3d stuff
   CComPtr<IDirect3D9>                     m_D3D;
   CComPtr<IDirect3DDevice9>               m_D3DDev;
+  CD3DTexture*                            m_pVideoTexture[DS_MAX_3D_SURFACE];
   CComPtr<IDirect3DSurface9>              m_pVideoSurface[DS_MAX_3D_SURFACE];
-  CComPtr<IDirect3DTexture9>              m_pVideoTexture[DS_MAX_3D_SURFACE];
+  //CComPtr<IDirect3DTexture9>              m_pVideoTexture[DS_MAX_3D_SURFACE];
   
   int                                     m_nCurSurface;// Surface currently displayed
 

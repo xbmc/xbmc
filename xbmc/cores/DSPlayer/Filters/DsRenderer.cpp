@@ -29,6 +29,7 @@
 #include "DSRenderer.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#include "dxerr.h"
 
 CDsRenderer::CDsRenderer()
 : CUnknown(NAME("CDsRenderer"), NULL)
@@ -60,26 +61,26 @@ HRESULT CDsRenderer::CreateSurfaces(D3DFORMAT Format)
   CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
   m_SurfaceType = Format;
-
-
+  bool hrb;
 
   for( int i = 0; i < DS_MAX_3D_SURFACE-1; ++i ) 
   {
-    m_pVideoTexture[i] = NULL;
+    m_pVideoTexture[i] = new CD3DTexture();
     m_pVideoSurface[i] = NULL;
   }
      
 
   for (int i = 0; i < DS_NBR_3D_SURFACE; i++)
   {
-    m_D3DDev->CreateTexture(m_iVideoWidth,  m_iVideoHeight,
-                            1,
-                            D3DUSAGE_RENDERTARGET,
-                            m_SurfaceType,// default is D3DFMT_X8R8G8B8
-                            D3DPOOL_DEFAULT,
-                            &m_pVideoTexture[i],
-                            NULL);
-    m_pVideoTexture[i]->GetSurfaceLevel(0, &m_pVideoSurface[i]);
+    hrb = m_pVideoTexture[i]->Create(m_iVideoWidth,  
+                                    m_iVideoHeight,
+                                    1,               /* Levels */
+                                    D3DUSAGE_RENDERTARGET,
+                                    m_SurfaceType,        /* D3D_FORMAT */
+                                    D3DPOOL_DEFAULT);
+    if (!hrb)
+      CLog::Log(LOGERROR,"Failed to create texture");
+    hr = m_pVideoTexture[i]->GetSurfaceLevel(0, &m_pVideoSurface[i]);
   }
   return hr;
 }
@@ -102,7 +103,7 @@ void CDsRenderer::StopThreads()
 
 }
 
-STDMETHODIMP CDsRenderer::RenderPresent(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface,REFERENCE_TIME pTimeStamp)
+STDMETHODIMP CDsRenderer::RenderPresent(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface,REFERENCE_TIME pTimeStamp)
 {
 
   
