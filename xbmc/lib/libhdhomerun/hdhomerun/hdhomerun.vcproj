@@ -65,9 +65,10 @@
 				OutputFile="..\..\..\..\system\hdhomerun.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(TargetName).pdb"
+				ProgramDatabaseFile="Debug\$(TargetName).pdb"
 				SubSystem="2"
-				ImportLibrary="$(TargetName).lib"
+				ProfileGuidedDatabase=""
+				ImportLibrary="Debug\$(TargetName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -145,11 +146,12 @@
 				OutputFile="..\..\..\..\system\hdhomerun.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(TargetName).pdb"
+				ProgramDatabaseFile="Release\$(TargetName).pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="$(TargetName).lib"
+				ProfileGuidedDatabase=""
+				ImportLibrary="Release\$(TargetName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
