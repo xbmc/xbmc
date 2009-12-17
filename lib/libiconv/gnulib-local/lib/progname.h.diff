@@ -1,0 +1,19 @@
+*** gnulib/lib/progname.h	2005-05-14 08:03:58.000000000 +0200
+--- srclib/progname.h	2005-05-20 23:06:02.000000000 +0200
+***************
+*** 30,36 ****
+  
+  
+  /* String containing name the program is called with.  */
+! extern const char *program_name;
+  
+  /* Set program_name, based on argv[0].  */
+  extern void set_program_name (const char *argv0);
+--- 30,36 ----
+  
+  
+  /* String containing name the program is called with.  */
+! extern DLL_VARIABLE const char *program_name;
+  
+  /* Set program_name, based on argv[0].  */
+  extern void set_program_name (const char *argv0);

@@ -1,0 +1,334 @@
+<!-- Creator     : groff version 1.18.1 -->
+<!-- CreationDate: Tue Jun 30 22:52:08 2009 -->
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta name="Content-Style" content="text/css">
+<title>ICONV</title>
+</head>
+<body>
+
+<h1 align=center>ICONV</h1>
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#EXAMPLES">EXAMPLES</a><br>
+<a href="#CONFORMING TO">CONFORMING TO</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+<a name="NAME"></a>
+<h2>NAME</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>iconv &minus; character set conversion</p>
+</td>
+</table>
+<a name="SYNOPSIS"></a>
+<h2>SYNOPSIS</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<pre>iconv [<i>OPTION</i>...] [<b>&minus;f</b> <i>encoding</i>] [<b>&minus;t</b> <i>encoding</i>] [<i>inputfile</i> ...]
+iconv <b>&minus;l
+</b></pre>
+</td>
+</table>
+<a name="DESCRIPTION"></a>
+<h2>DESCRIPTION</h2>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The <b>iconv</b> program converts text from one encoding
+to another encoding. More precisely, it converts <b>from</b>
+the encoding given for the <b>&minus;f</b> option <b>to</b>
+the encoding given for the <b>&minus;t</b> option. Either of
+these encodings defaults to the encoding of the current
+locale. All the <i>inputfile</i>s are read and converted in
+turn; if no <i>inputfile</i> is given, the standard input is
+used. The converted text is printed to standard output.</p>
+<!-- INDENTATION -->
+<p>The encodings permitted are system dependent. For the
+libiconv implementation, they are listed in the
+iconv_open(3) manual page.</p>
+<!-- INDENTATION -->
+<p>Options controlling the input and output format:</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>&minus;f</b> <i>encoding</i>,
+<b>&minus;&minus;from&minus;code=</b><i>encoding</i></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Specifies the encoding of the input.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>&minus;t</b> <i>encoding</i>,
+<b>&minus;&minus;to&minus;code=</b><i>encoding</i></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Specifies the encoding of the output.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Options controlling conversion problems:</p>
+</td>
+</table>
+<!-- TABS -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="4" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="13%"></td>
+<td width="2%">
+
+<p><b>&minus;c</b></p>
+</td>
+<td width="5%"></td>
+<td width="77%">
+
+<p>When this option is given, characters that cannot be
+converted are silently discarded, instead of leading to a
+conversion error.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+
+<p><b>&minus;&minus;unicode&minus;subst=</b><i>formatstring</i></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>When this option is given, Unicode characters that cannot
+be represented in the target encoding are replaced with a
+placeholder string that is constructed from the given
+<i>formatstring</i>, applied to the Unicode code point. The
+<i>formatstring</i> must be a format string in the same
+format as for the <i>printf</i> command or the
+<i>printf()</i> function, taking either no argument or
+exactly one unsigned integer argument.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+
+<p><b>&minus;&minus;byte&minus;subst=</b><i>formatstring</i></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>When this option is given, bytes in the input that are
+not valid in the source encoding are replaced with a
+placeholder string that is constructed from the given
+<i>formatstring</i>, applied to the byte&rsquo;s value. The
+<i>formatstring</i> must be a format string in the same
+format as for the <i>printf</i> command or the
+<i>printf()</i> function, taking either no argument or
+exactly one unsigned integer argument.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+
+<p><b>&minus;&minus;widechar&minus;subst=</b><i>formatstring</i></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>When this option is given, wide characters in the input
+that are not valid in the source encoding are replaced with
+a placeholder string that is constructed from the given
+<i>formatstring</i>, applied to the byte&rsquo;s value. The
+<i>formatstring</i> must be a format string in the same
+format as for the <i>printf</i> command or the
+<i>printf()</i> function, taking either no argument or
+exactly one unsigned integer argument.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Options controlling error output:</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>&minus;s</b>, <b>&minus;&minus;silent</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>When this option is given, error messages about invalid
+or unconvertible characters are omitted, but the actual
+converted text is unaffected.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The <b>iconv &minus;l</b> or <b>iconv
+&minus;&minus;list</b> command lists the names of the
+supported encodings, in a system dependent format. For the
+libiconv implementation, the names are printed in upper
+case, separated by whitespace, and alias names of an
+encoding are listed on the same line as the encoding
+itself.</p>
+</td>
+</table>
+<a name="EXAMPLES"></a>
+<h2>EXAMPLES</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>iconv &minus;f ISO&minus;8859&minus;1 &minus;t
+UTF&minus;8</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>converts input from the old West-European encoding
+ISO&minus;8859&minus;1 to Unicode.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<pre><b>iconv &minus;f KOI8&minus;R &minus;&minus;byte&minus;subst=&quot;&lt;0x%x&gt;&quot;
+                &minus;&minus;unicode&minus;subst=&quot;&lt;U+%04X&gt;&quot;
+</b></pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="20%"></td>
+<td width="79%">
+<p>converts input from the old Russian encoding KOI8&minus;R
+to the locale encoding, substituting an angle bracket
+notation with hexadecimal numbers for invalid bytes and for
+valid but unconvertible characters.</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>iconv &minus;&minus;list</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>lists the supported encodings.</p>
+</td>
+</table>
+<a name="CONFORMING TO"></a>
+<h2>CONFORMING TO</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>POSIX:2001</p>
+</td>
+</table>
+<a name="SEE ALSO"></a>
+<h2>SEE ALSO</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>iconv_open</b>(3), <b>locale</b>(7)</p>
+</td>
+</table>
+<hr>
+</body>
+</html>

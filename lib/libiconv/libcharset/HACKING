@@ -1,0 +1,36 @@
+All you need to know when hacking (modifying) GNU libcharset or when building
+it off the CVS.
+
+
+Requirements
+============
+
+You will need reasonably recent versions of the build tools:
+
+  * A C compiler. Such as GNU GCC.
+    + Homepage:
+      http://gcc.gnu.org/
+
+  * GNU autoconf
+    + Homepage:
+      http://www.gnu.org/software/autoconf/
+
+  * GNU m4
+    + Homepage:
+      http://www.gnu.org/software/m4/
+
+  * Perl
+    + Homepage:
+      http://www.perl.org/
+
+And, of course, the packages listed in the DEPENDENCIES file.
+
+
+Building off the CVS
+====================
+
+Access to the CVS is described at http://sourceforge.net/cvs/?group_id=51585 .
+
+After fetching the sources from the CVS, peek at the comments in autogen.sh,
+then run "./autogen.sh"; then you can proceed with "./configure" as usual.
+
