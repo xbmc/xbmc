@@ -1790,12 +1790,14 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
   return CThumbnailCache::GetThumbnailCache()->IsCached(strFileName);
 }
 
-void CUtil::PlayDVD()
+void CUtil::PlayDVD(const CStdString& strProtocol)
 {
 #ifdef HAS_DVDPLAYER
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
-  CFileItem item("dvd://1", false);
+  CStdString strPath;
+  strPath.Format("%s://1", false);
+  CFileItem item(strPath, false);
   item.SetLabel(g_mediaManager.GetDiskLabel());
   g_application.PlayFile(item);
 #endif
