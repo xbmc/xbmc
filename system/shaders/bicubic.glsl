@@ -18,27 +18,27 @@ void main()
   vec2 f = vec2(gl_TexCoord[0].x / stepx , gl_TexCoord[0].y / stepy);
   f = fract(f);
   vec4 t0 = cubicFilter(f.x,
-  texture2D(img, gl_TexCoord[0].xy + vec2(-stepx, -stepy)),
-  texture2D(img, gl_TexCoord[0].xy + vec2(0.0, -stepy)),
-  texture2D(img, gl_TexCoord[0].xy + vec2(stepx, -stepy)),
+  texture2D(img, gl_TexCoord[0].xy + vec2(-stepx,    -stepy)),
+  texture2D(img, gl_TexCoord[0].xy + vec2(0.0,       -stepy)),
+  texture2D(img, gl_TexCoord[0].xy + vec2(stepx,     -stepy)),
   texture2D(img, gl_TexCoord[0].xy + vec2(2.0*stepx, -stepy)));
 
   vec4 t1 = cubicFilter(f.x,
-  texture2D(img, gl_TexCoord[0].xy + vec2(-stepx, 0.0)),
-  texture2D(img, gl_TexCoord[0].xy + vec2(0.0, 0.0)),
-  texture2D(img, gl_TexCoord[0].xy + vec2(stepx, 0.0)),
+  texture2D(img, gl_TexCoord[0].xy + vec2(-stepx,    0.0)),
+  texture2D(img, gl_TexCoord[0].xy + vec2(0.0,       0.0)),
+  texture2D(img, gl_TexCoord[0].xy + vec2(stepx,     0.0)),
   texture2D(img, gl_TexCoord[0].xy + vec2(2.0*stepx, 0.0)));
 
   vec4 t2 = cubicFilter(f.x,
-  texture2D(img, gl_TexCoord[0].xy + vec2(-stepx, stepy)),
-  texture2D(img, gl_TexCoord[0].xy + vec2(0.0, stepy)),
-  texture2D(img, gl_TexCoord[0].xy + vec2(stepx, stepy)),
+  texture2D(img, gl_TexCoord[0].xy + vec2(-stepx,    stepy)),
+  texture2D(img, gl_TexCoord[0].xy + vec2(0.0,       stepy)),
+  texture2D(img, gl_TexCoord[0].xy + vec2(stepx,     stepy)),
   texture2D(img, gl_TexCoord[0].xy + vec2(2.0*stepx, stepy)));
 
   vec4 t3 = cubicFilter(f.x,
-  texture2D(img, gl_TexCoord[0].xy + vec2(-stepx, 2.0*stepy)),
-  texture2D(img, gl_TexCoord[0].xy + vec2(0, 2.0*stepy)),
-  texture2D(img, gl_TexCoord[0].xy + vec2(stepx, 2.0*stepy)),
+  texture2D(img, gl_TexCoord[0].xy + vec2(-stepx,    2.0*stepy)),
+  texture2D(img, gl_TexCoord[0].xy + vec2(0,         2.0*stepy)),
+  texture2D(img, gl_TexCoord[0].xy + vec2(stepx,     2.0*stepy)),
   texture2D(img, gl_TexCoord[0].xy + vec2(2.0*stepx, 2.0*stepy)));
 
   gl_FragColor = cubicFilter(f.y, t0, t1, t2, t3);   
