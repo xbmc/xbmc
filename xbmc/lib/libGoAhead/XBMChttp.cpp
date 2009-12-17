@@ -2811,10 +2811,10 @@ bool CXbmcHttp::xbmcBroadcast(CStdString message, int level)
   {
     if (!pUdpBroadcast)
       pUdpBroadcast = new CUdpBroadcast();
-	CStdString LocalAddress = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
+    CStdString LocalAddress = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
     CStdString msg;
-	if ((g_stSettings.m_HttpApiBroadcastLevel & 128)==128)
-	   message += ";"+g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
+    if ((g_stSettings.m_HttpApiBroadcastLevel & 128)==128)
+      message += ";"+g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
     msg.Format(openBroadcast+message+";%i"+closeBroadcast, level);
     return pUdpBroadcast->broadcast(msg, g_stSettings.m_HttpApiBroadcastPort);
   }
@@ -2848,7 +2848,7 @@ int CXbmcHttp::xbmcSetBroadcast(int numParas, CStdString paras[])
   {
     g_stSettings.m_HttpApiBroadcastLevel=atoi(paras[0]);
     if (g_stSettings.m_HttpApiBroadcastLevel==128)
-	g_stSettings.m_HttpApiBroadcastLevel=0;
+      g_stSettings.m_HttpApiBroadcastLevel=0;
     if (numParas>1)
       g_stSettings.m_HttpApiBroadcastPort=atoi(paras[1]);
     return SetResponse(openTag+"OK");

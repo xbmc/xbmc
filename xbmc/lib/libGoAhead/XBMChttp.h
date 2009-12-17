@@ -26,7 +26,7 @@ public:
   ~CXbmcHttpShim();
 
   void xbmcForm(webs_t wp, char_t *path, char_t *query);
-  int	xbmcCommand( int eid, webs_t wp, int argc, char_t **argv);
+  int  xbmcCommand( int eid, webs_t wp, int argc, char_t **argv);
   CStdString xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter);
   CStdString xbmcExternalCall(char *command);
   bool checkForFunctionTypeParas(CStdString &cmd, CStdString &paras);
