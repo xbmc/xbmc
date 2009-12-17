@@ -801,12 +801,12 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("cancelalarm"))
   {
     g_alarmClock.stop(parameter);
-  }  
+  }
   else if (execute.Equals("playdvd"))
   {
-#ifdef HAS_DVD_DRIVE    
+#ifdef HAS_DVD_DRIVE
     CAutorun::PlayDisc();
-#endif    
+#endif
   }
   else if (execute.Equals("skin.togglesetting"))
   {
@@ -938,7 +938,7 @@ int CBuiltins::Execute(const CStdString& execString)
         source.strName = g_localizeStrings.Get(247);
         localShares.push_back(source);
       }
-    
+
       if (params.size() > 2)
       {
         value = params[2];
@@ -1093,7 +1093,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     if (cancelled)
       return -1;
-    
+
     if (singleFile)
     {
       if (params.size() > 3)
@@ -1101,7 +1101,7 @@ int CBuiltins::Execute(const CStdString& execString)
       else
         overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
     }
-    
+
     if (cancelled)
       return -1;
 
