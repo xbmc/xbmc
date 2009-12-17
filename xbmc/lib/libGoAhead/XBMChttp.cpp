@@ -1814,6 +1814,20 @@ int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb)
     thumb+=paras[0];
     thumb+="\">";
   }
+  if (tempSkipWebFooterHeader)
+  {
+    CStdString strHttpResponseHeaders;
+    strHttpResponseHeaders.Format(
+    "HTTP/1.0 200 OK\r\n"
+    "Pragma: no-cache\r\n"
+    "Cache-control: no-cache\r\n"
+    "Content-Length: %i\r\n"
+    "Content-Type: text/plain\r\n"
+    "\r\n"
+    ,thumb.length()
+    );
+    return SetResponse( strHttpResponseHeaders + thumb);
+  }
   return SetResponse(thumb) ;
 }
 
@@ -2391,6 +2405,20 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
         {
           if (dest=="special://temp/xbmcDownloadInternetFile.tmp")
             CFile::Delete(dest);
+          if (tempSkipWebFooterHeader)
+          {
+            CStdString strHttpResponseHeaders;
+            strHttpResponseHeaders.Format(
+            "HTTP/1.0 200 OK\r\n"
+            "Pragma: no-cache\r\n"
+            "Cache-control: no-cache\r\n"
+            "Content-Length: %i\r\n"
+            "Content-Type: text/plain\r\n"
+            "\r\n"
+            ,encoded.length()
+            );
+            return SetResponse( strHttpResponseHeaders + encoded);
+          }
           return SetResponse(encoded) ;
         }
       }
