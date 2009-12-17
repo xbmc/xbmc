@@ -64,11 +64,7 @@ distribution.
 #endif
 
 #ifdef HAS_ICONV
-#if defined( _WIN32 ) || defined(WIN32)
-#include "lib/libiconv/iconv.h"
-#else
 #include <iconv.h>
-#endif
 #endif
 
 // Deprecated library function hell. Compilers want to use the

@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\xbmc\lib\libiconv\;..\..\..\..\lib\fontconfig_win32\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\;..\..\..\..\lib\enca\lib;$(NOINHERIT)"
+				AdditionalIncludeDirectories="..\..\..\..\lib\libiconv\include;..\..\..\..\lib\fontconfig_win32\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\;..\..\..\..\lib\enca\lib;$(NOINHERIT)"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBASS_WIN32_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\..\..\lib\fontconfig_win32\lib\fontconfig.lib ..\..\..\..\xbmc\lib\libiconv\libiconv.lib"
+				AdditionalDependencies="..\..\..\..\lib\fontconfig_win32\lib\fontconfig.lib"
 				OutputFile="..\..\..\..\system\players\dvdplayer\libass.dll"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames=""
@@ -123,7 +123,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\..\..\xbmc\lib\libiconv\;..\..\..\..\lib\fontconfig_win32\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\;..\..\..\..\lib\enca\lib"
+				AdditionalIncludeDirectories="..\..\..\..\lib\libiconv\include;..\..\..\..\lib\fontconfig_win32\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\;..\..\..\..\lib\enca\lib"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBASS_WIN32_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -142,7 +142,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\..\..\lib\fontconfig_win32\lib\fontconfig.lib ..\..\..\..\xbmc\lib\libiconv\libiconv.lib"
+				AdditionalDependencies="..\..\..\..\lib\fontconfig_win32\lib\fontconfig.lib"
 				OutputFile="..\..\..\..\system\players\dvdplayer\libass.dll"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libcmt;libcmtd"
