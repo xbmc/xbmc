@@ -71,6 +71,12 @@ void CWinSystemBase::UpdateResolutions()
 {
   // add the window res - defaults are fine.
   RESOLUTION_INFO& window = g_settings.m_ResInfo[RES_WINDOW];
+  if (window.iWidth == 0)
+    window.iWidth = 720;
+  if (window.iHeight == 0)
+    window.iHeight = 480;
+  if (window.iSubtitles == 0)
+    window.iSubtitles = (int)(0.965 * window.iHeight);
   window.fPixelRatio = 1.0f;
   window.strMode = "Windowed";
 }
