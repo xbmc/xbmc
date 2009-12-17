@@ -1206,6 +1206,33 @@ int CXbmcHttp::xbmcClearPlayList(int numParas, CStdString paras[])
   return SetResponse(openTag+"OK");
 }
 
+int CXbmcHttp::xbmcSwapPlayListItems(int numParas, CStdString paras[])
+{
+  int iPlayList ;
+  if (numParas < 3)
+    return SetResponse(openTag+"Error: Not enough parameters");
+  iPlayList=g_playlistPlayer.GetCurrentPlaylist();
+  if (numParas > 2)
+    iPlayList = atoi(paras[2]); 
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlayList);
+
+  int item1;
+  if (StringUtils::IsNaturalNumber(paras[0]))
+    item1 = atoi(paras[0]);
+  else
+    item1=FindPathInPlayList(iPlayList,paras[0]);
+  int item2;
+  if (StringUtils::IsNaturalNumber(paras[1]))
+    item2 = atoi(paras[1]);
+  else
+    item2=FindPathInPlayList(iPlayList,paras[1]);
+
+  if (playlist.Swap(item1,item2))
+    return SetResponse(openTag+"OK");
+
+  return SetResponse(openTag+"Error swapping items");
+}
+
 int CXbmcHttp::xbmcGetDirectory(int numParas, CStdString paras[])
 {
   if (numParas>0)
@@ -3115,6 +3142,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
     if (command == "clearplaylist")                   retVal = xbmcClearPlayList(numParas, paras);  
       else if (command == "addtoplaylist")            retVal = xbmcAddToPlayList(numParas, paras);  
       else if (command == "addtoplaylistfromdb")      retVal = xbmcAddToPlayListFromDB(numParas, paras);  
+      else if (command == "swapplaylistitems")        retVal = xbmcSwapPlayListItems(numParas, paras);  
       else if (command == "playfile")                 retVal = xbmcPlayerPlayFile(numParas, paras); 
       else if (command == "pause")                    retVal = xbmcAction(numParas, paras,1);
       else if (command == "stop")                     retVal = xbmcAction(numParas, paras,2);
