@@ -1,0 +1,8 @@
+.deps
+.libs
+HELP
+Makefile
+enca
+*.o
+COPYING.c
+HELP.c
