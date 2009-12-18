@@ -100,14 +100,22 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
     deviceuse += ":AES0=0x6";
     deviceuse += ",AES1=0x82";
     deviceuse += ",AES2=0x0";
-    if(uiSamplesPerSec == 48000)
+    if(uiSamplesPerSec == 192000)
+      deviceuse += ",AES3=0xe";
+    else if(uiSamplesPerSec == 176400)
+      deviceuse += ",AES3=0xc";
+    else if(uiSamplesPerSec == 96000)
+      deviceuse += ",AES3=0xa";
+    else if(uiSamplesPerSec == 88200)
+      deviceuse += ",AES3=0x8";
+    else if(uiSamplesPerSec == 48000)
       deviceuse += ",AES3=0x2";
     else if(uiSamplesPerSec == 44100)
       deviceuse += ",AES3=0x0";
     else if(uiSamplesPerSec == 32000)
       deviceuse += ",AES3=0x3";
     else
-      deviceuse += ",AES3=0x1"; /* just a guess, maybe works for 96k */
+      deviceuse += ",AES3=0x1";
   }
   else
   {
