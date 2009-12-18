@@ -63,6 +63,7 @@ int main(int argc, char* argv[])
   sa.sa_handler = SIG_IGN;
   sigaction(SIGCHLD, &sa, NULL);
 #endif
+  setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
   if (argc > 1)
   {
