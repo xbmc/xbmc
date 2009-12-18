@@ -1796,7 +1796,7 @@ void CUtil::PlayDVD(const CStdString& strProtocol)
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
   CStdString strPath;
-  strPath.Format("%s://1", false);
+  strPath.Format("%s://1", strProtocol.c_str());
   CFileItem item(strPath, false);
   item.SetLabel(g_mediaManager.GetDiskLabel());
   g_application.PlayFile(item);
