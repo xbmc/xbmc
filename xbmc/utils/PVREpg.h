@@ -75,6 +75,7 @@ class cPVREpg
 private:
   long m_channelID;
   const cPVRChannelInfoTag *m_Channel;
+  int m_iTimeCorrection;
   std::vector<cPVREPGInfoTag> tags;
 
 public:

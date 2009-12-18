@@ -30,6 +30,7 @@
 #include "utils/TimeUtils.h"
 #include "LocalizeStrings.h"
 #include "TextSearch.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 
@@ -198,6 +199,44 @@ cPVREpg::cPVREpg(long ChannelID)
 {
   m_channelID = ChannelID;
   m_Channel = cPVRChannels::GetByChannelIDFromAll(ChannelID);
+
+  if (m_Channel != NULL)
+  {
+    CLIENTMAP *clients = g_PVRManager.Clients();
+
+    if (!g_advancedSettings.m_bDisableEPGTimeCorrection)
+    {
+      time_t localTime;
+      time_t backendTime = 0;
+      int    gmtOffset   = 0;
+      CDateTime::GetCurrentDateTime().GetAsTime(localTime);
+      PVR_ERROR err = clients->find(m_Channel->ClientID())->second->GetBackendTime(&backendTime, &gmtOffset);
+      if (err == PVR_ERROR_NO_ERROR && gmtOffset != 0)
+      {
+        /* Is really a big time difference between PVR Backend and XBMC or only a bad GMT Offset? */
+        if (backendTime-localTime >= 30 || backendTime-localTime <= -30)
+        {
+          m_iTimeCorrection = gmtOffset;
+          CLog::Log(LOGDEBUG, "cPVREpg: Using a timezone difference of '%i' minutes for client %s on channel %s to correct EPG times", m_iTimeCorrection/60, clients->find(m_Channel->ClientID())->second->Name().c_str(), m_Channel->Name().c_str());
+        }
+        else
+        {
+          m_iTimeCorrection = 0;
+          CLog::Log(LOGDEBUG, "cPVREpg: Ignoring the timezone difference of '%i' minutes for client %s on channel %s (No difference betweem XBMC and Backend Clock found)", m_iTimeCorrection/60, clients->find(m_Channel->ClientID())->second->Name().c_str(), m_Channel->Name().c_str());
+        }
+      }
+    }
+    else if (g_advancedSettings.m_iUserDefinedEPGTimeCorrection > 0)
+    {
+      m_iTimeCorrection = g_advancedSettings.m_iUserDefinedEPGTimeCorrection*60;
+      CLog::Log(LOGDEBUG, "cPVREpg: Using a userdefined timezone difference of '%i' minutes for client %s on channel %s to correct EPG times (taken from advancedsettings.xml)", g_advancedSettings.m_iUserDefinedEPGTimeCorrection, clients->find(m_Channel->ClientID())->second->Name().c_str(), m_Channel->Name().c_str());
+    }
+    else
+    {
+      m_iTimeCorrection = 0;
+      CLog::Log(LOGDEBUG, "cPVREpg: (Channel: %s) Timezone difference correction is disabled in advancedsettings.xml", m_Channel->Name().c_str());
+    }
+  }
 }
 
 cPVREPGInfoTag *cPVREpg::AddInfoTag(cPVREPGInfoTag *Tag)
@@ -334,8 +373,8 @@ bool cPVREpg::Add(const PVR_PROGINFO *data, cPVREpg *Epg)
     }
     if (InfoTag)
     {
-      InfoTag->SetStart(CDateTime((time_t)data->starttime));
-      InfoTag->SetEnd(CDateTime((time_t)data->endtime));
+      InfoTag->SetStart(CDateTime((time_t)data->starttime+Epg->m_iTimeCorrection));
+      InfoTag->SetEnd(CDateTime((time_t)data->endtime+Epg->m_iTimeCorrection));
       InfoTag->SetTitle(data->title);
       InfoTag->SetPlotOutline(data->subtitle);
       InfoTag->SetPlot(data->description);
@@ -952,7 +991,7 @@ void cPVREpgs::SetVariableData(CFileItemList* results)
   PVRTimers.Update();
 
   /* Clear first all Timers set inside the EPG tags */
-  for (unsigned int j = 0; j < results->Size(); j++)
+  for (int j = 0; j < results->Size(); j++)
   {
     cPVREPGInfoTag *epg = results->Get(j)->GetEPGInfoTag();
     if (epg)
@@ -962,7 +1001,7 @@ void cPVREpgs::SetVariableData(CFileItemList* results)
   /* Now go with the timers thru the EPG and set the Timer Tag for every matching item */
   for (unsigned int i = 0; i < PVRTimers.size(); i++)
   {
-    for (unsigned int j = 0; j < results->Size(); j++)
+    for (int j = 0; j < results->Size(); j++)
     {
       cPVREPGInfoTag *epg = results->Get(j)->GetEPGInfoTag();
       if (epg)
