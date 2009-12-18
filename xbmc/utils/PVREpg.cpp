@@ -508,8 +508,8 @@ void cPVREpgs::Process()
 
     time_t start;
     time_t end;
-    CDateTime::GetCurrentDateTime().GetAsTime(start);
-    CDateTime::GetCurrentDateTime().GetAsTime(end);
+    CDateTime::GetUTCDateTime().GetAsTime(start);
+    CDateTime::GetUTCDateTime().GetAsTime(end);
     start -= g_guiSettings.GetInt("pvrmenu.lingertime")*60;
     end   += g_guiSettings.GetInt("pvrmenu.daystodisplay")*24*60*60;
 
