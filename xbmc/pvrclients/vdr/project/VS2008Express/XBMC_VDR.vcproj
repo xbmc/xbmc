@@ -218,6 +218,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tools.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\vtptransceiver.cpp"
 				>
 			</File>
@@ -273,6 +277,10 @@
 			</File>
 			<File
 				RelativePath="..\..\timers.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tools.h"
 				>
 			</File>
 			<File

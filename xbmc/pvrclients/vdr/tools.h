@@ -22,15 +22,13 @@
 
 #include "client.h"
 
-#include <dirent.h>
 #include <fcntl.h>
-#include <iconv.h>
-#include <poll.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "pvrclient-vdr_os.h"
 
 #define KILOBYTE(n) ((n) * 1024)
 #define MEGABYTE(n) ((n) * 1024LL * 1024LL)
@@ -54,8 +52,11 @@
 #define TS_ADAPT_TP_PRIVATE   0x02
 #define TS_ADAPT_EXTENSION    0x01
 
+#if !defined(_WIN32) && !defined(_WIN64)
 template<class T> inline T min(T a, T b) { return a <= b ? a : b; }
 template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
+#endif
+
 
 ssize_t safe_read(int filedes, void *buffer, size_t size);
 ssize_t safe_write(int filedes, const void *buffer, size_t size);

@@ -43,6 +43,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <pthread.h>
+#include <poll.h>
 
 typedef int bool_t;
 typedef int SOCKET;

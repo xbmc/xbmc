@@ -1,25 +1,3 @@
-diff -NaurwB vdr-1.7.7/Make.config vdr-1.7.7-patched/Make.config
---- vdr-1.7.7/Make.config	2009-06-13 01:05:04.000000000 +0200
-+++ vdr-1.7.7-patched/Make.config	2009-11-23 04:51:28.000000000 +0100
-@@ -87,6 +87,7 @@
- #SOFTOSD = 1
- #SOURCECAPS = 1
- #SORTRECORDS = 1
-+STATUS_EXTENSION = 1
- #STREAMDEVEXT = 1
- #TIMERCMD = 1
- #TIMERINFO = 1
-@@ -240,6 +241,10 @@
- DEFINES += -DUSE_SETTIME
- endif
- 
-+ifdef STATUS_EXTENSION
-+DEFINES += -DUSE_STATUS_EXTENSION
-+endif
-+
- ifdef SOFTOSD
- DEFINES += -DUSE_SOFTOSD
- endif
 diff -NaurwB vdr-1.7.7/skins.c vdr-1.7.7-patched/skins.c
 --- vdr-1.7.7/skins.c	2008-02-17 12:31:09.000000000 +0100
 +++ vdr-1.7.7-patched/skins.c	2009-11-23 05:13:30.000000000 +0100
@@ -111,3 +89,25 @@ diff -NaurwB vdr-1.7.7/status.h vdr-1.7.7-patched/status.h
    static void MsgOsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue);
    static void MsgOsdItem(const char *Text, int Index);
    static void MsgOsdCurrentItem(const char *Text);
+diff -NaurwB vdr-1.7.7/Make.config.template vdr-1.7.7-patched/Make.config.template
+--- vdr-1.7.7/Make.config.template	2009-06-13 01:05:04.000000000 +0200
++++ vdr-1.7.7-patched/Make.config.template	2009-11-23 04:51:28.000000000 +0100
+@@ -87,6 +87,7 @@
+ #SOFTOSD = 1
+ #SOURCECAPS = 1
+ #SORTRECORDS = 1
++STATUS_EXTENSION = 1
+ #STREAMDEVEXT = 1
+ #TIMERCMD = 1
+ #TIMERINFO = 1
+@@ -240,6 +241,10 @@
+ DEFINES += -DUSE_SETTIME
+ endif
+ 
++ifdef STATUS_EXTENSION
++DEFINES += -DUSE_STATUS_EXTENSION
++endif
++
+ ifdef SOFTOSD
+ DEFINES += -DUSE_SOFTOSD
+ endif

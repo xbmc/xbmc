@@ -45,7 +45,11 @@ ssize_t safe_read(int filedes, void *buffer, size_t size)
   for (;;)
   {
     ssize_t p = read(filedes, buffer, size);
-    if (p < 0 && errno == EINTR)
+#if defined(_WIN32) || defined(_WIN64)
+		if (p < 0 && WSAGetLastError() == WSAEINTR)
+#else
+		if (p < 0 && errno == EINTR)
+#endif
     {
      XBMC_log(LOG_DEBUG, "EINTR while reading from file handle %d - retrying", filedes);
      continue;
@@ -64,7 +68,11 @@ ssize_t safe_write(int filedes, const void *buffer, size_t size)
     p = write(filedes, ptr, size);
     if (p < 0)
     {
-      if (errno == EINTR)
+#if defined(_WIN32) || defined(_WIN64)
+			if (WSAGetLastError() == WSAEINTR)
+#else
+			if (errno == EINTR)
+#endif
       {
         XBMC_log(LOG_DEBUG, "EINTR while writing to file handle %d - retrying", filedes);
         continue;
