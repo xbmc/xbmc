@@ -36,126 +36,104 @@ CAPEv2Tag::~CAPEv2Tag()
 
 }
 
-bool CAPEv2Tag::ReadTag(const char* filename, bool checkID3Tag)
+bool CAPEv2Tag::ReadTag(const char* filename)
 {
   if (!filename || !m_dll.Load())
     return false;
 
   // Read in our tag using our dll
-  IAPETag *tag = m_dll.GetAPETag(filename, checkID3Tag);
+  apetag *tag = m_dll.apetag_init();
+  m_dll.apetag_read(tag, (char*)filename, 0);
   if (!tag)
     return false;
 
-  int chars = 256;
-  char buffer[256];
-  buffer[0] = '\0';
-  if (tag->GetFieldString(L"Title", buffer, &chars, TRUE) != -1)
-    m_strTitle = buffer;
-  chars = 256;
-  if (tag->GetFieldString(L"Album", buffer, &chars, TRUE) != -1)
-    m_strAlbum = buffer;
-  chars = 256;
-  if (tag->GetFieldString(L"AlbumArtist", buffer, &chars, TRUE) != -1)
-    m_strAlbumArtist = buffer;
-  chars = 256;  // could also have a space in it
-  if (tag->GetFieldString(L"Album Artist", buffer, &chars, TRUE) != -1)
-    m_strAlbumArtist = buffer;
-  chars = 256;
-  if (tag->GetFieldString(L"Artist", buffer, &chars, TRUE) != -1)
-    m_strArtist = buffer;
-  chars = 256;
-  if (tag->GetFieldString(L"Genre", buffer, &chars, TRUE) != -1)
-    m_strGenre = buffer;
-  chars = 256;
-  if (tag->GetFieldString(L"Year", buffer, &chars, TRUE) != -1)
-    m_strYear = buffer;
-  chars = 256;
-  if (tag->GetFieldString(L"Track", buffer, &chars, TRUE) != -1)
-    m_nTrackNum = atoi(buffer);
-  chars = 256;
-  if (tag->GetFieldString(L"Media", buffer, &chars, TRUE) != -1)
+  if (apefrm_getstr(tag, (char*)"Title"))
+    m_strTitle = apefrm_getstr(tag, (char*)"Title");
+  if (apefrm_getstr(tag, (char*)"Album"))
+    m_strAlbum = apefrm_getstr(tag, (char*)"Album");
+  if (apefrm_getstr(tag, (char*)"AlbumArtist"))
+    m_strAlbumArtist = apefrm_getstr(tag, (char*)"AlbumArtist");
+  if (apefrm_getstr(tag, (char*)"Album Artist"))
+    m_strAlbumArtist = apefrm_getstr(tag, (char*)"Album Artist");
+  if (apefrm_getstr(tag, (char*)"Artist"))
+    m_strArtist = apefrm_getstr(tag, (char*)"Artist");
+  if (apefrm_getstr(tag, (char*)"Genre"))
+    m_strGenre = apefrm_getstr(tag, (char*)"Genre");
+  if (apefrm_getstr(tag, (char*)"Year"))
+    m_strYear = apefrm_getstr(tag, (char*)"Year");
+  if (apefrm_getstr(tag, (char*)"Track"))
+    m_nTrackNum = atoi(apefrm_getstr(tag, (char*)"Track"));
+  if (apefrm_getstr(tag, (char*)"Media"))
   {
     // cd number is usually "CD 1/3"
-    char *num = buffer;
-    while (!isdigit(*num) && num < buffer + chars) num++;
+    char *num = apefrm_getstr(tag, (char*)"Media");
+    while (!isdigit(*num) && num != '\0') num++;
     if (isdigit(*num))
       m_nDiscNum = atoi(num);
   }
-  chars=256;
-  if (tag->GetFieldString(L"Comment", buffer, &chars, TRUE) != -1)
-    m_strComment = buffer;
-  chars = 256;
-  if (tag->GetFieldString(L"Lyrics", buffer, &chars, TRUE) != -1)
-    m_strLyrics = buffer;
-  chars = 256;
-  if (tag->GetFieldString(L"Rating", buffer, &chars, TRUE) != -1)
+  if (apefrm_getstr(tag, (char*)"Comment"))
+    m_strComment = apefrm_getstr(tag, (char*)"Comment");
+  if (apefrm_getstr(tag, (char*)"Lyrics"))
+    m_strLyrics = apefrm_getstr(tag, (char*)"Lyrics");
+  if (apefrm_getstr(tag, (char*)"Rating"))
   { // rating number is usually a single digit, 1-5.  0 is unknown.
-    if (buffer[0] >= '0' && buffer[0] < '6')
-      m_rating = buffer[0];
+      char temp = apefrm_getstr(tag, (char*)"Rating")[0];
+      if (temp >= '0' && temp < '6')
+        m_rating = temp;
   }
 
   // Replay gain info
   GetReplayGainFromTag(tag);
 
-  delete tag;
+  m_dll.apetag_free(tag);
   return true;
 }
 
-void CAPEv2Tag::GetReplayGainFromTag(IAPETag *tag)
+void CAPEv2Tag::GetReplayGainFromTag(apetag *tag)
 {
   if (!tag) return;
-  char buffer[16];
-  int chars = 16;
-  buffer[0] = '\0';
 
   //  foobar2000 saves gain info as lowercase key items
-  if (tag->GetFieldString(L"replaygain_track_gain", buffer, &chars, TRUE) != -1)
+  if (apefrm_getstr(tag, (char*)"replaygain_track_gain"))
   {
-    m_replayGain.iTrackGain = (int)(atof(buffer)*100 + 0.5);
+    m_replayGain.iTrackGain = (int)(atof(apefrm_getstr(tag, (char*)"replaygain_track_gain"))*100 + 0.5);
     m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
   }
-  chars = 16;
-  if (tag->GetFieldString(L"replaygain_track_peak", buffer, &chars, TRUE) != -1)
+  if (apefrm_getstr(tag, (char*)"replaygain_track_peak"))
   {
-    m_replayGain.fTrackPeak = (float)atof(buffer);
+    m_replayGain.fTrackPeak = (float)atof(apefrm_getstr(tag, (char*)"replaygain_track_peak"));
     m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
   }
-  chars = 16;
-  if (tag->GetFieldString(L"replaygain_album_gain", buffer, &chars, TRUE) != -1)
+  if (apefrm_getstr(tag, (char*)"replaygain_album_gain"))
   {
-    m_replayGain.iAlbumGain = (int)(atof(buffer)*100 + 0.5);
+    m_replayGain.iAlbumGain = (int)(atof(apefrm_getstr(tag, (char*)"replaygain_album_gain"))*100 + 0.5);
     m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
   }
-  chars = 16;
-  if (tag->GetFieldString(L"replaygain_album_peak", buffer, &chars, TRUE) != -1)
+  if (apefrm_getstr(tag, (char*)"replaygain_album_peak"))
   {
-    m_replayGain.fAlbumPeak = (float)atof(buffer);
+    m_replayGain.fAlbumPeak = (float)atof(apefrm_getstr(tag, (char*)"replaygain_album_peak"));
     m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
   }
 
   // MP3GAIN saves gain info as uppercase key items
-  chars = 16;
-  if (tag->GetFieldString(L"REPLAYGAIN_TRACK_GAIN", buffer, &chars, TRUE) != -1)
+  if (apefrm_getstr(tag, (char*)"REPLAYGAIN_TRACK_GAIN"))
   {
-    m_replayGain.iTrackGain = (int)(atof(buffer)*100 + 0.5);
+    m_replayGain.iTrackGain = (int)(atof(apefrm_getstr(tag, (char*)"REPLAYGAIN_TRACK_GAIN"))*100 + 0.5);
     m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
   }
-  chars = 16;
-  if (tag->GetFieldString(L"REPLAYGAIN_TRACK_PEAK", buffer, &chars, TRUE) != -1)
+  if (apefrm_getstr(tag, (char*)"REPLAYGAIN_TRACK_PEAK"))
   {
-    m_replayGain.fTrackPeak = (float)atof(buffer);
+    m_replayGain.fTrackPeak = (float)atof(apefrm_getstr(tag, (char*)"REPLAYGAIN_TRACK_PEAK"));
     m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
   }
-  chars = 16;
-  if (tag->GetFieldString(L"REPLAYGAIN_ALBUM_GAIN", buffer, &chars, TRUE) != -1)
+  if (apefrm_getstr(tag, (char*)"REPLAYGAIN_ALBUM_GAIN"))
   {
-    m_replayGain.iAlbumGain = (int)(atof(buffer)*100 + 0.5);
+    m_replayGain.iAlbumGain = (int)(atof(apefrm_getstr(tag, (char*)"REPLAYGAIN_ALBUM_GAIN"))*100 + 0.5);
     m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
   }
-  chars = 16;
-  if (tag->GetFieldString(L"REPLAYGAIN_ALBUM_PEAK", buffer, &chars, TRUE) != -1)
+  if (apefrm_getstr(tag, (char*)"REPLAYGAIN_ALBUM_PEAK"))
   {
-    m_replayGain.fAlbumPeak = (float)atof(buffer);
+    m_replayGain.fAlbumPeak = (float)atof(apefrm_getstr(tag, (char*)"REPLAYGAIN_ALBUM_PEAK"));
     m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
   }
 }

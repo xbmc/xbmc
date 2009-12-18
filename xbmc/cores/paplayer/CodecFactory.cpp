@@ -23,7 +23,6 @@
 #include "XBAudioConfig.h"
 #include "CodecFactory.h"
 #include "MP3codec.h"
-#include "APEcodec.h"
 #include "CDDAcodec.h"
 #include "OGGcodec.h"
 #include "SHNcodec.h"
@@ -59,7 +58,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   if (strFileType.Equals("mp3") || strFileType.Equals("mp2"))
     return new MP3Codec();
   else if (strFileType.Equals("ape") || strFileType.Equals("mac"))
-    return new APECodec();
+    return new DVDPlayerCodec();
   else if (strFileType.Equals("cdda"))
     return new CDDACodec();
   else if (strFileType.Equals("mpc") || strFileType.Equals("mp+") || strFileType.Equals("mpp"))

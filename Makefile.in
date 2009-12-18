@@ -75,7 +75,6 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/ModuleCodec \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU \
 	xbmc/cores/paplayer/vgmstream \
-	xbmc/cores/paplayer/MACDll
 
 ifeq (@USE_ASAP_CODEC@,1)
 PAPCODEC_DIRS+= \
@@ -93,6 +92,7 @@ LIB_DIRS=\
 	xbmc/lib/libexif \
 	xbmc/lib/libhdhomerun \
 	xbmc/lib/libid3tag \
+	xbmc/lib/libapetag \
 	xbmc/lib/libPython/linux
 
 SS_DIRS=\
@@ -293,6 +293,8 @@ libhdhomerun: dllloader
 	$(MAKE) -C xbmc/lib/libhdhomerun
 libid3tag: dllloader
 	$(MAKE) -C xbmc/lib/libid3tag
+libapetag: dllloader
+	$(MAKE) -C xbmc/lib/libapetag
 papcodecs: dllloader dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
@@ -315,9 +317,6 @@ ifneq (@USE_EXTERNAL_LIBWAVPACK@,1)
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
 endif
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
-ifeq ($(findstring powerpc,$(ARCH)),)
-	$(MAKE) -C xbmc/cores/paplayer/MACDll
-endif
 ifeq ($(or $(findstring powerpc,$(ARCH)),$(findstring x86_64-linux,$(ARCH))),)
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU
 endif
@@ -325,7 +324,7 @@ imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-libs: libhdhomerun libid3tag imagelib libexif python
+libs: libhdhomerun libid3tag libapetag imagelib libexif python
 externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
@@ -383,6 +382,7 @@ OBJSXBMC=	\
 	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
+	xbmc/lib/libapetag/.libs/libapetag.a \
 	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
 	xbmc/visualizations/visualization.a
