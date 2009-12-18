@@ -625,10 +625,33 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
               case 1280:
               case 1920:
               {
-                // copy y
-                fast_memcpy(y_buffer_ptr, procOut.Ybuff, m_y_buffer_size);
-                // copy uv
-                fast_memcpy(uv_buffer_ptr, procOut.UVbuff, m_uv_buffer_size);
+                if (m_interlace)
+                {
+                  int w = procOut.PicInfo.width;
+                  int h = procOut.PicInfo.height;
+                  int stride = w*2;
+                  // copy y
+                  unsigned char *s = procOut.Ybuff;
+                  unsigned char *d = y_buffer_ptr;
+                  //if (procOut.PicInfo.picture_number & 1)
+                  //  d += stride;
+                  for (int y = 0; y < h/2; y++, s += w, d += stride)
+                    fast_memcpy(d, s, w);
+                  // copy uv
+                  s = procOut.UVbuff;
+                  d = uv_buffer_ptr;
+                  //if (procOut.PicInfo.picture_number & 1)
+                  //  d += stride;
+                  for (int y = 0; y < h/4; y++, s += w, d += stride)
+                    fast_memcpy(d, s, w);
+                }
+                else
+                {
+                  // copy y
+                  fast_memcpy(y_buffer_ptr, procOut.Ybuff, m_y_buffer_size);
+                  // copy uv
+                  fast_memcpy(uv_buffer_ptr, procOut.UVbuff, m_uv_buffer_size);
+                }
               }
               break;
               
@@ -963,7 +986,8 @@ bool CCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   //pDvdVideoPicture->color_matrix = ??;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iFlags |= m_interlace ? DVP_FLAG_INTERLACED : 0;
-  //pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
+  //if (m_interlace)
+  //  pDvdVideoPicture->iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
   pDvdVideoPicture->iFlags |= m_drop_state ? DVP_FLAG_DROPPED : 0;
   pDvdVideoPicture->format = DVDVideoPicture::FMT_NV12;
 

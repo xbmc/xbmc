@@ -2041,12 +2041,12 @@ bool CLinuxRendererGL::LoadNV12Textures(int source)
   if (deinterlacing)
   {
     // Load Even UV Fields
-    LoadPlane( fields[FIELD_ODD][1], GL_LUMINANCE, buf.flipindex
+    LoadPlane( fields[FIELD_ODD][1], GL_LUMINANCE_ALPHA, buf.flipindex
              , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
              , im->stride[1]*2, im->plane[1] );
 
     // Load Odd UV Fields
-    LoadPlane( fields[FIELD_EVEN][1], GL_LUMINANCE, buf.flipindex
+    LoadPlane( fields[FIELD_EVEN][1], GL_LUMINANCE_ALPHA, buf.flipindex
              , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
              , im->stride[1]*2, im->plane[1] + im->stride[1] );
   }
