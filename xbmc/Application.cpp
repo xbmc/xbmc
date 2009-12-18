@@ -2350,7 +2350,7 @@ bool CApplication::OnKey(CKey& key)
       if (control)
       {
         if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||
-            (control->IsContainer() && g_Keyboard.GetShift()))
+            (control->IsContainer() && g_Keyboard.GetShift() && !(g_Keyboard.GetCtrl() || g_Keyboard.GetAlt() || g_Keyboard.GetRAlt())))
           useKeyboard = true;
       }
     }
@@ -3192,6 +3192,16 @@ bool CApplication::ProcessKeyboard()
     else
       keyID = KEY_UNICODE;
     //  CLog::Log(LOGDEBUG,"Keyboard: time=%i key=%i", CTimeUtils::GetFrameTime(), vkey);
+
+    // Check what modifiers are held down and update the key code as appropriate
+    if (g_Keyboard.GetCtrl())
+        keyID |= CKey::MODIFIER_CTRL;
+    if (g_Keyboard.GetShift())
+        keyID |= CKey::MODIFIER_SHIFT;
+    if (g_Keyboard.GetAlt())
+        keyID |= CKey::MODIFIER_ALT;
+
+    // Create a key object with the keypress data and pass it to OnKey to be executed
     CKey key(keyID);
     key.SetHeld(g_Keyboard.KeyHeld());
     return OnKey(key);
