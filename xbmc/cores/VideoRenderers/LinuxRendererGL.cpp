@@ -2004,35 +2004,11 @@ bool CLinuxRendererGL::LoadNV12Textures(int source)
     return(true);
   }
   
-  static int imaging = -1;
   bool deinterlacing;
   if (m_currentField == FIELD_FULL)
     deinterlacing = false;
   else
     deinterlacing = true;
-
-  if (imaging==-1)
-  {
-    imaging = 0;
-    if (glewIsSupported("GL_ARB_imaging"))
-    {
-      CLog::Log(LOGINFO, "GL: ARB Imaging extension supported");
-      imaging = 1;
-    }
-    else
-    {
-      unsigned int maj=0, min=0;
-      g_Windowing.GetRenderVersion(maj, min);
-      if (maj>=2)
-      {
-        imaging = 1;
-      }
-      else if (min>=2)
-      {
-        imaging = 1;
-      }
-    }
-  }
 
   glEnable(m_textureTarget);
   VerifyGLState();
