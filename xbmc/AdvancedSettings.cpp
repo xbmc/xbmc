@@ -124,7 +124,7 @@ void CAdvancedSettings::Initialize()
 #endif
   m_cddbAddress = "freedb.freedb.org";
 
-  m_handleMounting = false;
+  m_handleMounting = g_application.IsStandAlone();
 
   m_fullScreenOnMovieStart = true;
   m_noDVDROM = false;
