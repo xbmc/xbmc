@@ -655,7 +655,7 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
   }
   
   CStdString md5pword2;
-  XBMC::MD5 md5state;
+  XBMC::XBMC_MD5 md5state;
   md5state.append(strInput);
   md5state.getDigest(md5pword2);
 

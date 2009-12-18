@@ -775,7 +775,7 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
 {
   // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
   if (0 == items.Size()) return 0;
-  XBMC::MD5 md5state;
+  XBMC::XBMC_MD5 md5state;
   int count = 0;
   for (int i = 0; i < items.Size(); ++i)
   {
