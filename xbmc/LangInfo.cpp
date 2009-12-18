@@ -256,10 +256,10 @@ void CLangInfo::LoadTokens(const TiXmlNode* pTokens, vector<CStdString>& vecToke
 {
   if (pTokens && !pTokens->NoChildren())
   {
-    CStdString strSep=" ._";
     const TiXmlElement *pToken = pTokens->FirstChildElement("token");
     while (pToken)
     {
+      CStdString strSep= " ._";
       if (pToken->Attribute("separators"))
         strSep = pToken->Attribute("separators");
       if (pToken->FirstChild() && pToken->FirstChild()->Value())
