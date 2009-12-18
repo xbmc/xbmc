@@ -72,13 +72,6 @@ bool CGLSLVertexShader::Compile()
   }
 #endif  
 
-  /*
-     Workaround for locale bug in nVidia's shader compiler.
-     Save the current locale, set to a neutral locale while compiling and switch back afterwards.
-  */
-  char * currentLocale = setlocale(LC_NUMERIC, NULL);
-  setlocale(LC_NUMERIC, "C");
-
   m_vertexShader = glCreateShader(GL_VERTEX_SHADER);
   const char *ptr = m_source.c_str();
   glShaderSource(m_vertexShader, 1, &ptr, 0);
@@ -103,7 +96,6 @@ bool CGLSLVertexShader::Compile()
     m_lastLog = log;
     m_compiled = true;
   }
-  setlocale(LC_NUMERIC, currentLocale);
   return m_compiled;
 }
 
@@ -137,12 +129,6 @@ bool CARBVertexShader::Compile()
     return true;
   }
 
-  // Workaround for locale bug in nVidia's shader compiler.
-  // Save the current locale, set to a neutral while compiling and switch back afterwards.
-
-  char * currentLocale = setlocale(LC_NUMERIC, NULL);
-  setlocale(LC_NUMERIC, "C");
-
   glEnable(GL_VERTEX_PROGRAM_ARB);
   glGenProgramsARB(1, &m_vertexShader);
   glBindProgramARB(GL_VERTEX_PROGRAM_ARB, m_vertexShader);
@@ -161,7 +147,6 @@ bool CARBVertexShader::Compile()
     m_compiled = true;
   }
   glDisable(GL_VERTEX_PROGRAM_ARB);
-  setlocale(LC_NUMERIC, currentLocale);
   return m_compiled;
 }
 
@@ -197,13 +182,6 @@ bool CGLSLPixelShader::Compile()
     return true;
   }
 
-  /*
-     Workaround for locale bug in nVidia's shader compiler.
-     Save the current locale, set to a neutral while compiling and switch back afterwards.
-  */
-  char * currentLocale = setlocale(LC_NUMERIC, NULL);
-  setlocale(LC_NUMERIC, "C");
-
   m_pixelShader = glCreateShader(GL_FRAGMENT_SHADER);
   const char *ptr = m_source.c_str();
   glShaderSource(m_pixelShader, 1, &ptr, 0);
@@ -227,7 +205,6 @@ bool CGLSLPixelShader::Compile()
     m_lastLog = log;
     m_compiled = true;
   }
-  setlocale(LC_NUMERIC, currentLocale);
   return m_compiled;
 }
 
@@ -260,12 +237,6 @@ bool CARBPixelShader::Compile()
     return true;
   }
 
-  // Workaround for locale bug in nVidia's shader compiler.
-  // Save the current locale, set to a neutral while compiling and switch back afterwards.
-  char currentLocale[256];
-  strncpy(currentLocale, setlocale(LC_NUMERIC, NULL), sizeof(currentLocale));
-  setlocale(LC_NUMERIC, "C");
-
   glEnable(GL_FRAGMENT_PROGRAM_ARB);
   glGenProgramsARB(1, &m_pixelShader);
   glBindProgramARB(GL_FRAGMENT_PROGRAM_ARB, m_pixelShader);
@@ -284,7 +255,6 @@ bool CARBPixelShader::Compile()
     m_compiled = true;
   }
   glDisable(GL_FRAGMENT_PROGRAM_ARB);
-  setlocale(LC_NUMERIC, currentLocale);
   return m_compiled;
 }
 
