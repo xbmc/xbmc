@@ -58,8 +58,10 @@ CDSPlayer::~CDSPlayer()
 bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
 {
   HRESULT hr;
-  ResetEvent(m_hReadyEvent);
+  if(ThreadHandle())
+    CloseFile();
   //Creating the graph and querying every filter required for the playback
+  ResetEvent(m_hReadyEvent);
   m_Filename = file.GetAsUrl();
   m_PlayerOptions = options;
   m_currentSpeed = 10000;
@@ -70,6 +72,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
     CLog::Log(LOGERROR,"%s failed to start this file with dsplayer %s",__FUNCTION__,file.GetAsUrl().GetFileName().c_str());
     return false;
   }
+  
   Create();
   WaitForSingleObject(m_hReadyEvent, INFINITE);
   return true;

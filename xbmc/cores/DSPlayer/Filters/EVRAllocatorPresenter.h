@@ -58,7 +58,7 @@ enum FRAMESTEP_STATE
 
 class COuterEVR;
 [uuid("7612B889-0929-4363-9BA3-580D735AA0F6")]
-class CEVRAllocatorPresenter : public CDsRenderer,
+class CEVRAllocatorPresenter : public IDsRenderer,
                                public IMFVideoDeviceID,
                                public IMFVideoPresenter,
                                //public IDirect3DDeviceManager9,

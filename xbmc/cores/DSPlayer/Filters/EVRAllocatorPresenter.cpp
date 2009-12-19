@@ -218,8 +218,7 @@ MFVideoArea MakeArea(float x, float y, DWORD width, DWORD height)
     return area;
 }
 
-CEVRAllocatorPresenter::CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error)
-: CDsRenderer(),
+CEVRAllocatorPresenter::CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error):
 m_RenderState(RENDER_STATE_SHUTDOWN),
     m_pD3DPresentEngine(NULL),
     m_pClock(NULL),
@@ -273,6 +272,7 @@ m_SampleFreeCB(this, &CEVRAllocatorPresenter::OnSampleFree)
   pfAvSetMmThreadCharacteristicsW    = hLib ? (PTR_AvSetMmThreadCharacteristicsW)  GetProcAddress (hLib, "AvSetMmThreadCharacteristicsW") : NULL;
   pfAvSetMmThreadPriority        = hLib ? (PTR_AvSetMmThreadPriority)      GetProcAddress (hLib, "AvSetMmThreadPriority") : NULL;
   pfAvRevertMmThreadCharacteristics  = hLib ? (PTR_AvRevertMmThreadCharacteristics)  GetProcAddress (hLib, "AvRevertMmThreadCharacteristics") : NULL;
+  g_renderManager.PreInit(true);
 }
 
 CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
@@ -1180,7 +1180,7 @@ HRESULT CEVRAllocatorPresenter::Flush()
 
   // Flush the frame-step queue.
   m_FrameStep.samples.Clear();
-  if (m_RenderState == RENDER_STATE_STOPPED)
+  //if (m_RenderState == RENDER_STATE_STOPPED)
   // Repaint with black.
   //(void)m_pD3DPresentEngine->PresentSample(NULL, 0);
 

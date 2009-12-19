@@ -9,7 +9,6 @@
 #include "application.h"
 #include "IPinHook.h"
 HRESULT FindAdapter(IDirect3D9 *pD3D9, HMONITOR hMonitor, UINT *puAdapterID);
-
 const MFRatio g_DefaultFps = { 30, 1 };
 //-----------------------------------------------------------------------------
 // Constructor
