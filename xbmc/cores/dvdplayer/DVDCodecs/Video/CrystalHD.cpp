@@ -573,7 +573,6 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
   BCM::BC_DTS_STATUS decoder_status;
   CMPCDecodeBuffer *pBuffer = NULL;
   bool got_picture = false;
-  static bool interlace_odd = false;
   
   do
   {
@@ -628,24 +627,29 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
               {
                 if (m_interlace)
                 {
-                  interlace_odd = !interlace_odd;
+                  // we get a 1/2 height frame from hw, not seeing the old/even flags so
+                  // can't tell which frames are odd, which are even so just replicate
+                  // given lines into odd/even pairs.
                   int w = procOut.PicInfo.width;
                   int h = procOut.PicInfo.height;
-                  int stride = w*2;
                   // copy y
                   unsigned char *s = procOut.Ybuff;
                   unsigned char *d = y_buffer_ptr;
-                  if (interlace_odd)
-                    d += w;
-                  for (int y = 0; y < h/2; y++, s += w, d += stride)
+                  for (int y = 0; y < h/2; y++, s += w, d += w)
+                  {
                     fast_memcpy(d, s, w);
+                    d += w;
+                    fast_memcpy(d, s, w);
+                  }
                   // copy uv
                   s = procOut.UVbuff;
                   d = uv_buffer_ptr;
-                  if (interlace_odd)
-                    d += w;
-                  for (int y = 0; y < h/4; y++, s += w, d += stride)
+                  for (int y = 0; y < h/4; y++, s += w, d += w)
+                  {
                     fast_memcpy(d, s, w);
+                    d += w;
+                    fast_memcpy(d, s, w);
+                  }
                 }
                 else
                 {
@@ -983,15 +987,15 @@ bool CCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
   pDvdVideoPicture->iRepeatPicture = 0;
   pDvdVideoPicture->iDuration = (DVD_TIME_BASE / m_framerate);
-  if (m_interlace)
-    pDvdVideoPicture->iDuration /= 2;
-  pDvdVideoPicture->color_range = 0;
+  //if (m_interlace)
+  //  pDvdVideoPicture->iDuration /= 2;
+  pDvdVideoPicture->color_range = 1;
   // todo 
-  //pDvdVideoPicture->color_matrix = ??;
+  //pDvdVideoPicture->color_matrix = 1;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iFlags |= m_interlace ? DVP_FLAG_INTERLACED : 0;
-  if (m_interlace)
-    pDvdVideoPicture->iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
+  //if (m_interlace)
+  //  pDvdVideoPicture->iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
   pDvdVideoPicture->iFlags |= m_drop_state ? DVP_FLAG_DROPPED : 0;
   pDvdVideoPicture->format = DVDVideoPicture::FMT_NV12;
 

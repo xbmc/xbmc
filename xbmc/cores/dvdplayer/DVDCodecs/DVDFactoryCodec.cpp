@@ -122,7 +122,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   if (!hint.software)
   {
     if (hint.width <= 720 && (hint.codec == CODEC_ID_MPEG2VIDEO))
-    //if (false)
     {
       if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
     }
