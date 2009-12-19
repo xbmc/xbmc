@@ -74,6 +74,9 @@ void CPowerManager::Initialize()
 #ifdef HAS_HAL
   else
     m_instance = new CHALPowerSyscall();
+#else
+  else
+    m_instance = new CNULLPowerSyscall();
 #endif
 #elif defined(_WIN32)
   m_instance = new CWin32PowerSyscall();
