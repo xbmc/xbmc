@@ -238,8 +238,6 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
       if (ret & VC_PICTURE)
         break;
         
-      ret |= VC_FEEDME;
-        break;
     }
 
   } while ((lastTime = CTimeUtils::GetTimeMS()) < maxTime);
