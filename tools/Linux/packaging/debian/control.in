@@ -50,10 +50,6 @@ Depends: xbmc-standalone (= ${binary:Version}),
          adduser,
          whois,
          sudo,
-         x11-common, 
-         xserver-xorg-core,
-         x11-xserver-utils,
-         xinit,
          ${misc:Depends}
 Conflicts: kdm, gdm, xdm, wdm
 Description: XBMC Media Center (XBMC Live package)
