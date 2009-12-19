@@ -1053,6 +1053,8 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton.Equals("green")) buttonCode = XINPUT_IR_REMOTE_GREEN;
   else if (strButton.Equals("yellow")) buttonCode = XINPUT_IR_REMOTE_YELLOW;
   else if (strButton.Equals("blue")) buttonCode = XINPUT_IR_REMOTE_BLUE;
+  else if (strButton.Equals("subtitle")) buttonCode = XINPUT_IR_REMOTE_SUBTITLE;
+  else if (strButton.Equals("language")) buttonCode = XINPUT_IR_REMOTE_LANGUAGE;
   else CLog::Log(LOGERROR, "Remote Translator: Can't find button %s", strButton.c_str());
   return buttonCode;
 }
