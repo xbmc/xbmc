@@ -25,7 +25,6 @@
 #include "MP3codec.h"
 #include "CDDAcodec.h"
 #include "OGGcodec.h"
-#include "SHNcodec.h"
 #include "FLACcodec.h"
 #include "WAVcodec.h"
 #include "WAVPackcodec.h"
@@ -64,11 +63,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   else if (strFileType.Equals("mpc") || strFileType.Equals("mp+") || strFileType.Equals("mpp"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("shn"))
-#ifdef _XBOX
-    return new SHNCodec();
-#else
     return new DVDPlayerCodec();
-#endif
   else if (strFileType.Equals("flac"))
     return new FLACCodec();
   else if (strFileType.Equals("wav"))

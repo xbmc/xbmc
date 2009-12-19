@@ -20,7 +20,6 @@
  */
 
 #include "MusicInfoTagLoaderShn.h"
-#include "cores/paplayer/SHNcodec.h"
 #include "MusicInfoTag.h"
 #include "utils/log.h"
 
@@ -36,18 +35,12 @@ bool CMusicInfoTagLoaderSHN::Load(const CStdString& strFileName, CMusicInfoTag& 
 {
   try
   {
-    // SHN has no tag information other than the duration.
 
-    // Load our codec class
-    SHNCodec codec;
-    if (codec.Init(strFileName, 4096))
-    {
-      tag.SetURL(strFileName);
-      tag.SetDuration((int)((codec.m_TotalTime + 500)/ 1000));
-      tag.SetLoaded(false);
-      codec.DeInit();
-      return true;
-    }
+    tag.SetURL(strFileName);
+    tag.SetDuration((long)0); //TODO: Use libavformat to calculate duration.
+    tag.SetLoaded(false);
+
+    return true;
   }
   catch (...)
   {

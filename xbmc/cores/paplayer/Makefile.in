@@ -9,7 +9,7 @@ endif
 
 CFLAGS+=-DHAS_ALSA
 
-SRCS=AC3CDDACodec.cpp AC3Codec.cpp ADPCMCodec.cpp AIFFcodec.cpp AudioDecoder.cpp CDDAcodec.cpp CodecFactory.cpp VGMCodec.cpp FLACcodec.cpp GYMCodec.cpp ModuleCodec.cpp MP3codec.cpp NSFCodec.cpp OGGcodec.cpp ReplayGain.cpp SHNcodec.cpp SIDCodec.cpp TimidityCodec.cpp WAVcodec.cpp WAVPackcodec.cpp YMCodec.cpp DVDPlayerCodec.cpp DTSCodec.cpp DTSCDDACodec.cpp PAPlayer.cpp OggCallback.cpp
+SRCS=AC3CDDACodec.cpp AC3Codec.cpp ADPCMCodec.cpp AIFFcodec.cpp AudioDecoder.cpp CDDAcodec.cpp CodecFactory.cpp VGMCodec.cpp FLACcodec.cpp GYMCodec.cpp ModuleCodec.cpp MP3codec.cpp NSFCodec.cpp OGGcodec.cpp ReplayGain.cpp SIDCodec.cpp TimidityCodec.cpp WAVcodec.cpp WAVPackcodec.cpp YMCodec.cpp DVDPlayerCodec.cpp DTSCodec.cpp DTSCDDACodec.cpp PAPlayer.cpp OggCallback.cpp
 
 ifeq (@USE_ASAP_CODEC@,1)
   SRCS+=ASAPCodec.cpp
