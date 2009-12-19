@@ -48,11 +48,18 @@ CDsRenderer::~CDsRenderer()
   
 }
 
-bool CDsRenderer::SetDevice()
+UINT CDsRenderer::GetAdapter(IDirect3D9* pD3D)
 {
-  StopThreads();
+  HMONITOR hMonitor = MonitorFromWindow(g_hWnd, MONITOR_DEFAULTTONEAREST);
+	if(hMonitor == NULL) return D3DADAPTER_DEFAULT;
 
-return true;
+	for(UINT adp = 0, num_adp = pD3D->GetAdapterCount(); adp < num_adp; ++adp)
+	{
+		HMONITOR hAdpMon = pD3D->GetAdapterMonitor(adp);
+		if(hAdpMon == hMonitor) return adp;
+	}
+
+	return D3DADAPTER_DEFAULT;
 }
 
 HRESULT CDsRenderer::CreateSurfaces(D3DFORMAT Format)
@@ -83,24 +90,6 @@ HRESULT CDsRenderer::CreateSurfaces(D3DFORMAT Format)
     hr = m_pVideoTexture[i]->GetSurfaceLevel(0, &m_pVideoSurface[i]);
   }
   return hr;
-}
-
-void CDsRenderer::DeleteSurfaces()
-{
-  CAutoLock cAutoLock(this);
-  CAutoLock cRenderLock(&m_RenderLock);
-
-}
-
-void CDsRenderer::StartThreads()
-{
-  m_SyncRenderer.Create();
-}
-
-void CDsRenderer::StopThreads()
-{
-
-
 }
 
 STDMETHODIMP CDsRenderer::RenderPresent(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface,REFERENCE_TIME pTimeStamp)

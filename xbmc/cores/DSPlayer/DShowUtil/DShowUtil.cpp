@@ -9,6 +9,11 @@
 
 #include "log.h"
 
+LONG DShowUtil::MFTimeToMsec(const LONGLONG& time)
+{
+  //Time / one sec / one millisec
+  return (LONG)(time / (10000000 / 1000));
+}
 
 CStdString DShowUtil::GetFilterPath(CStdString pClsid)
 {

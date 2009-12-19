@@ -12,7 +12,7 @@ using namespace std;
 #include <d3d9.h>
 
 #include "IDsRenderer.h"
-#include "DsSyncRenderer.h"
+
 
 #include <vector>
 #include "event.h"
@@ -34,17 +34,9 @@ public:
   STDMETHODIMP RenderPresent(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface,REFERENCE_TIME pTimeStamp);
 
 protected:
-  
-  virtual bool SetDevice();
   virtual HRESULT CreateSurfaces(D3DFORMAT Format = D3DFMT_X8R8G8B8);
-  virtual void DeleteSurfaces();
-  virtual void StartThreads();
-  virtual void StopThreads();
-
-  CDsSyncRenderer                         m_SyncRenderer;
-  
+  UINT    GetAdapter(IDirect3D9 *pD3D);
   CCritSec                                m_RenderLock;
-  
   //d3d stuff
   CComPtr<IDirect3D9>                     m_D3D;
   CComPtr<IDirect3DDevice9>               m_D3DDev;

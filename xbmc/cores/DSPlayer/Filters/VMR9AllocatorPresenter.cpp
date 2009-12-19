@@ -32,7 +32,7 @@
 #include "MacrovisionKicker.h"
 #include "IPinHook.h"
 #include "GuiSettings.h"
-
+#include "dxerr.h"
 
 class COuterVMR9
   : public CUnknown
@@ -443,8 +443,21 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   }
   else
   {
-    
     hr = m_D3DDev->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
+    if (FAILED(hr))
+    {
+      CLog::Log(LOGERROR,"%s %s",__FUNCTION__,DXGetErrorStringA(hr));
+      bool retry = false;
+      while (retry)
+      {
+        hr = m_D3DDev->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
+        if (SUCCEEDED(hr))
+          retry = true;
+        if (retry)
+          break;
+        Sleep(1);
+      }
+    }
   }
   RenderPresent(m_pVideoTexture[m_nCurSurface], m_pVideoSurface[m_nCurSurface],lpPresInfo->rtEnd);
   return S_OK;
@@ -608,21 +621,6 @@ ULONG CVMR9AllocatorPresenter::Release()
     return ret;
 }
 
-UINT CVMR9AllocatorPresenter::GetAdapter(IDirect3D9* pD3D)
-{
-  HMONITOR hMonitor = MonitorFromWindow(g_hWnd, MONITOR_DEFAULTTONEAREST);
-  if(hMonitor == NULL) return D3DADAPTER_DEFAULT;
-
-  for(UINT adp = 0, num_adp = pD3D->GetAdapterCount(); adp < num_adp; ++adp)
-  {
-    HMONITOR hAdpMon = pD3D->GetAdapterMonitor(adp);
-    if(hAdpMon == hMonitor) 
-      return adp;
-  }
-
-  return D3DADAPTER_DEFAULT;
-}
-
 STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 {
   CheckPointer(ppRenderer, E_POINTER);
@@ -666,11 +664,9 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
         // See http://msdn.microsoft.com/en-us/library/dd390928(VS.85).aspx
         dwPrefs |= MixerPref9_NonSquareMixing;
         dwPrefs |= MixerPref9_NoDecimation;
-		if(1)//DShowUtil::IsVistaOrAbove())
-        {
-          dwPrefs &= ~MixerPref9_RenderTargetMask; 
-          dwPrefs |= MixerPref9_RenderTargetYUV;
-        }
+        dwPrefs &= ~MixerPref9_RenderTargetMask; 
+        dwPrefs |= MixerPref9_RenderTargetYUV;
+
         pMC->SetMixingPrefs(dwPrefs);    
       }
     }

@@ -53,11 +53,6 @@ public:
   // IDSRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
 
-  // ID3DResource
-  void OnLostDevice();
-  void OnCreateDevice();
-
-  UINT GetAdapter(IDirect3D9 *pD3D);
   STDMETHODIMP_(void) SetPosition(RECT w, RECT v) {} ;
   STDMETHODIMP_(bool) Paint(bool fAll) { return true; } ;
   STDMETHODIMP_(void) SetTime(REFERENCE_TIME rtNow) {};
@@ -65,7 +60,6 @@ public:
   
 protected:
   void DeleteSurfaces();
-  
   void GetCurrentVideoSize();
 
   
@@ -86,10 +80,7 @@ protected:
   bool           m_renderingOk;
 private:
   long        m_refCount;
-  
-
   CComPtr<IVMRSurfaceAllocatorNotify9>    m_pIVMRSurfAllocNotify;
-
   vector<CComPtr<IDirect3DSurface9> >     m_pSurfaces;
   int                                     m_pNbrSurface;
   int                                     m_pCurSurface;

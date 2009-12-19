@@ -10,7 +10,11 @@
 #include <streams.h>
 #include <d3d9.h>
 
-#include "idsrenderer.h"
+#include "dsrenderer.h"
+#include "IEvrPresenter.h"
+#include "EvrPresentEngine.h"
+#include "EvrScheduler.h"
+#include "EvrHelper.h"
 #include <avrt.h>
 // dxva.dll
 typedef HRESULT (__stdcall *PTR_DXVA2CreateDirect3DDeviceManager9)(UINT* pResetToken, IDirect3DDeviceManager9** ppDeviceManager);
@@ -28,38 +32,59 @@ typedef HANDLE  (__stdcall *PTR_AvSetMmThreadCharacteristicsW)(LPCWSTR TaskName,
 typedef BOOL  (__stdcall *PTR_AvSetMmThreadPriority)(HANDLE AvrtHandle, AVRT_PRIORITY Priority);
 typedef BOOL  (__stdcall *PTR_AvRevertMmThreadCharacteristics)(HANDLE AvrtHandle);
 
+static const GUID MFSamplePresenter_SampleCounter = 
+{ 0xb0bb83cc, 0xf10f, 0x4e2e, { 0xaa, 0x2b, 0x29, 0xea, 0x5e, 0x92, 0xef, 0x85 } };
+
 // Guid to tag IMFSample with DirectX surface index
 static const GUID GUID_SURFACE_INDEX = { 0x30c8e9f6, 0x415, 0x4b81, { 0xa3, 0x15, 0x1, 0xa, 0xc6, 0xa9, 0xda, 0x19 } };
 
+enum RENDER_STATE
+{
+    RENDER_STATE_STARTED = 1,
+    RENDER_STATE_STOPPED,
+    RENDER_STATE_PAUSED,
+    RENDER_STATE_SHUTDOWN,  // Initial state. 
+};
+
+// FRAMESTEP_STATE: Defines the presenter's state with respect to frame-stepping.
+enum FRAMESTEP_STATE
+{
+    FRAMESTEP_NONE,             // Not frame stepping.
+    FRAMESTEP_WAITING_START,    // Frame stepping, but the clock is not started.
+    FRAMESTEP_PENDING,          // Clock is started. Waiting for samples.
+    FRAMESTEP_SCHEDULED,        // Submitted a sample for rendering.
+    FRAMESTEP_COMPLETE          // Sample was rendered. 
+};
+
 class COuterEVR;
 [uuid("7612B889-0929-4363-9BA3-580D735AA0F6")]
-class CEVRAllocatorPresenter : public IDsRenderer,
+class CEVRAllocatorPresenter : public CDsRenderer,
                                public IMFVideoDeviceID,
                                public IMFVideoPresenter,
-                               public IDirect3DDeviceManager9,
+                               //public IDirect3DDeviceManager9,
                                public IMFGetService,
-                               public IMFAsyncCallback,
                                public IMFTopologyServiceLookupClient,
                                public IMFVideoDisplayControl,
+                               public IEVRPresenterRegisterCallback,
+	                             public IEVRPresenterSettings,
                                public IEVRTrustedVideoPlugin,
-                               public IQualProp,
-                               public CCritSec
+                               public IQualProp
 {
 public:
   CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error);
   virtual ~CEVRAllocatorPresenter();
-
+  // IUnknown methods
+  STDMETHOD(QueryInterface)(REFIID riid, void ** ppv);
+  STDMETHOD_(ULONG, AddRef)();
+  STDMETHOD_(ULONG, Release)();
 //IDsRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
   
-  STDMETHODIMP  InitializeDevice(AM_MEDIA_TYPE*  pMediaType);
+  
   //IBaseFilter delegate
   bool GetState( DWORD dwMilliSecsTimeout, FILTER_STATE *State, HRESULT &_ReturnValue);
 
-  // IUnknown
-  virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid,void** ppvObject);
-  virtual ULONG STDMETHODCALLTYPE AddRef();
-  virtual ULONG STDMETHODCALLTYPE Release();
+  
   STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
   //IQualProp
@@ -114,97 +139,23 @@ public:
     STDMETHODIMP SetFullscreen(BOOL fFullscreen){return E_NOTIMPL;};
     STDMETHODIMP GetFullscreen(BOOL *pfFullscreen){return E_NOTIMPL;};
 
+  // IEVRPresenterRegisterCallback methods
+	STDMETHOD(RegisterCallback)(IEVRPresenterCallback *pCallback);
+
+	// IEVRPresenterSettings methods
+	STDMETHOD(SetBufferCount)(int bufferCount);
+
     // IEVRTrustedVideoPlugin
     STDMETHODIMP IsInTrustedVideoMode(BOOL *pYes);
     STDMETHODIMP CanConstrict(BOOL *pYes);
     STDMETHODIMP SetConstriction(DWORD dwKPix);
     STDMETHODIMP DisableImageExport(BOOL bDisable);
 
-  // IDirect3DDeviceManager9
-  STDMETHODIMP  ResetDevice(IDirect3DDevice9 *pDevice,UINT resetToken);
-  STDMETHODIMP  OpenDeviceHandle(HANDLE *phDevice);
-  STDMETHODIMP  CloseDeviceHandle(HANDLE hDevice); 
-    STDMETHODIMP  TestDevice(HANDLE hDevice);
-  STDMETHODIMP  LockDevice(HANDLE hDevice, IDirect3DDevice9 **ppDevice, BOOL fBlock);
-  STDMETHODIMP  UnlockDevice(HANDLE hDevice, BOOL fSaveState);
-  STDMETHODIMP  GetVideoService(HANDLE hDevice, REFIID riid, void **ppService);
 private:
-typedef enum
-{
-  Started = State_Running,
-  Stopped = State_Stopped,
-  Paused = State_Paused,
-  Shutdown = State_Running + 1
-} RENDER_STATE;
-
   long m_refCount;
-  bool m_fUseInternalTimer;
-  int                                       m_nStepCount;
-
-  bool                                      m_bEvtQuit;
-    HANDLE                  m_hEvtQuit;      // Stop rendering thread event
-  HANDLE                  m_hEvtPresent;    // Render next frame (cued order)
-  HANDLE                  m_hEvtFrameTimer;  // Render next frame (timer based)
-  HANDLE                  m_hEvtFlush;    // Discard all buffers
-  HANDLE                  m_hSemPicture;    // Indicate present of buffered frames
-  bool                                      m_bEvtFlush;
-  HANDLE                  m_hThread;
-  HANDLE                  m_hGetMixerThread;
-  RENDER_STATE              m_nRenderState;
-  CCritSec                m_SampleQueueLock;
-  CCritSec                m_ImageProcessingLock;
   
-  // Stats variable for IQualProp
-  UINT                  m_pcFrames;
-  UINT                  m_nDroppedUpdate;
-  UINT                  m_pcFramesDrawn;  // Retrieves the number of frames drawn since streaming started
-  UINT                  m_piAvg;
-  UINT                  m_piDev;
-
-  CInterfaceList<IMFSample, &IID_IMFSample>    m_FreeSamples;
-  CInterfaceList<IMFSample, &IID_IMFSample>    m_ScheduledSamples;
-
-  bool                  m_bWaitingSample;
-  bool                  m_bLastSampleOffsetValid;
-  LONGLONG                m_StarvationClock;
-  bool                  m_bSignaledStarvation;
-
-
-
-  LONGLONG                    m_LastScheduledSampleTime;
-  double                  m_LastScheduledSampleTimeFP;
-  LONGLONG                m_LastScheduledUncorrectedSampleTime;
-  LONGLONG                m_MaxSampleDuration;
-  LONGLONG                m_LastSampleOffset;
-  LONGLONG                m_VSyncOffsetHistory[5];
-  LONGLONG                m_LastPredictedSync;
-  int                    m_VSyncOffsetHistoryPos;
-  void                  RenderThread();
-  void                  ResetStats();
-  static DWORD WINAPI            PresentThread(LPVOID lpParam);
-  void                  CompleteFrameStep(bool bCancel);
-  void                  CheckWaitingSampleFromMixer();
-  HRESULT                  GetImageFromMixer();
-  void                     GetMixerThread();
-  //static DWORD WINAPI            GetMixerThreadStatic(LPVOID lpParam);
-  void                  RemoveAllSamples();
-  HRESULT                  GetFreeSample(IMFSample** ppSample);
-  HRESULT                  GetScheduledSample(IMFSample** ppSample);
-  void                  MoveToFreeList(IMFSample* pSample, bool bTail);
-  void                  MoveToScheduledList(IMFSample* pSample);
-  void                  FlushSamples();
-  bool                                      m_bPendingRenegotiate;
-  bool                                      m_bPendingMediaFinished;
-  bool                                      m_bPendingResetDevice;
-  bool                    m_bNeedPendingResetDevice;
-
-
   COuterEVR *m_pOuterEVR;
-// === Media type negociation functions
-  HRESULT                  RenegotiateMediaType();
-  HRESULT                  IsMediaTypeSupported(IMFMediaType* pMixerType);
-  HRESULT                  CreateProposedOutputType(IMFMediaType* pMixerType, IMFMediaType** pType);
-  HRESULT                  SetMediaType(IMFMediaType* pType);
+  bool									m_fUseInternalTimer;
 
 // === Functions pointers on Vista / .Net3 specifics library
   PTR_DXVA2CreateDirect3DDeviceManager9  pfDXVA2CreateDirect3DDeviceManager9;
@@ -215,52 +166,125 @@ typedef enum
   PTR_AvSetMmThreadCharacteristicsW    pfAvSetMmThreadCharacteristicsW;
   PTR_AvSetMmThreadPriority        pfAvSetMmThreadPriority;
   PTR_AvRevertMmThreadCharacteristics    pfAvRevertMmThreadCharacteristics;
-//Dx9Allocator
-  CCritSec          m_RenderLock;
-  long          m_nUsedBuffer;
+  
+
+
 protected:
-  CComPtr<IDirect3D9> m_D3D;
-  CComPtr<IDirect3DDevice9> m_D3DDev;
-  CComPtr<IDirect3DDeviceManager9> m_pDeviceManager;
-  CComPtr<IMFVideoMediaType> m_pMediaType;
-  CComPtr<IMFTransform> m_pMixer;
-  CComPtr<IMediaEventSink> m_pSink;
-  CComPtr<IMFClock> m_pClock;
-  UINT m_iResetToken;
-//Rendering function
-  HRESULT RenderPresent(int surfaceIndex);
+inline HRESULT CheckShutdown() const 
+    {
+        if (m_RenderState == RENDER_STATE_SHUTDOWN)
+        {
+            return MF_E_SHUTDOWN;
+        }
+        else
+        {
+            return S_OK;
+        }
+    }
 
-  void StartWorkerThreads();
-  void StopWorkerThreads();
+    // IsActive: The "active" state is started or paused.
+    inline BOOL IsActive() const
+    {
+        return ((m_RenderState == RENDER_STATE_STARTED) || (m_RenderState == RENDER_STATE_PAUSED));
+    }
 
-//D3d stuff
-  virtual HRESULT AllocSurfaces(D3DFORMAT Format = D3DFMT_A8R8G8B8);
-  virtual bool ResetD3dDevice();
-  virtual void DeleteSurfaces();
-  void      OnResetDevice();
-  UINT GetAdapter(IDirect3D9 *pD3D);
-  CComPtr<IDirect3DTexture9>    m_pVideoTexture;
-  CComPtr<IDirect3DSurface9>    m_pVideoSurface;
-  CComPtr<IDirect3DTexture9>    m_pInternalVideoTexture[7];
-  CComPtr<IDirect3DSurface9>    m_pInternalVideoSurface[7];
-  int                               m_nNbDXSurface;      //Total number of dx surface
-  int                               m_nCurSurface;       //Surface Currently displayed
-  int                               m_iVideoWidth;
-  int                               m_iVideoHeight;
-  int                               m_iVideoAspectHeight;
-  int                               m_iVideoAspectWidth;
-  int                               m_fps;
-  D3DFORMAT                         m_SurfaceType;
+    // IsScrubbing: Scrubbing occurs when the frame rate is 0.
+    inline BOOL IsScrubbing() const { return m_fRate == 0.0f; }
 
-  UINT  m_RefreshRate;
+    // NotifyEvent: Send an event to the EVR through its IMediaEventSink interface.
+    void NotifyEvent(long EventCode, LONG_PTR Param1, LONG_PTR Param2)
+    {
+        if (m_pMediaEventSink)
+        {
+            m_pMediaEventSink->Notify(EventCode, Param1, Param2);
+        }
+    }
 
-  LONGLONG        m_PaintTime;
-  LONGLONG        m_PaintTimeMin;
-  LONGLONG        m_PaintTimeMax;
+    float GetMaxRate(BOOL bThin);
+
+    // Mixer operations
+    HRESULT ConfigureMixer(IMFTransform *pMixer);
+
+    // Formats
+    HRESULT CreateOptimalVideoType(IMFMediaType* pProposed, IMFMediaType **ppOptimal);
+    HRESULT CalculateOutputRectangle(IMFMediaType *pProposed, RECT *prcOutput);
+    HRESULT SetMediaType(IMFMediaType *pMediaType);
+    HRESULT IsMediaTypeSupported(IMFMediaType *pMediaType);
+
+    // Message handlers
+    HRESULT Flush();
+    HRESULT RenegotiateMediaType();
+    HRESULT ProcessInputNotify();
+    HRESULT BeginStreaming();
+    HRESULT EndStreaming();
+    HRESULT CheckEndOfStream();
+
+    // Managing samples
+    void    ProcessOutputLoop();   
+	HRESULT ProcessOutput();
+    HRESULT DeliverSample(IMFSample *pSample, BOOL bRepaint);
+    HRESULT TrackSample(IMFSample *pSample);
+    void    ReleaseResources();
+
+    // Frame-stepping
+    HRESULT PrepareFrameStep(DWORD cSteps);
+    HRESULT StartFrameStep();
+    HRESULT DeliverFrameStepSample(IMFSample *pSample);
+    HRESULT CompleteFrameStep(IMFSample *pSample);
+    HRESULT CancelFrameStep();
+
+    // Callbacks
+
+    // Callback when a video sample is released.
+    HRESULT OnSampleFree(IMFAsyncResult *pResult);
+    AsyncCallback<CEVRAllocatorPresenter>   m_SampleFreeCB;
+  
+protected:
+
+    // FrameStep: Holds information related to frame-stepping. 
+    // Note: The purpose of this structure is simply to organize the data in one variable.
+    struct FrameStep
+    {
+        FrameStep() : state(FRAMESTEP_NONE), steps(0), pSampleNoRef(NULL)
+        {
+        }
+
+        FRAMESTEP_STATE     state;          // Current frame-step state.
+        VideoSampleList     samples;        // List of pending samples for frame-stepping.
+        DWORD               steps;          // Number of steps left.
+        DWORD_PTR           pSampleNoRef;   // Identifies the frame-step sample.
+    };
 
 
-  REFERENCE_TIME      m_rtTimePerFrame;
+protected:
 
+    RENDER_STATE                m_RenderState;          // Rendering state.
+    FrameStep                   m_FrameStep;            // Frame-stepping information.
+
+    CCritSec                     m_ObjectLock;			// Serializes our public methods.  
+
+	// Samples and scheduling
+    CEvrScheduler                   m_scheduler;			// Manages scheduling of samples.
+    SamplePool                  m_SamplePool;           // Pool of allocated samples.
+    DWORD                       m_TokenCounter;         // Counter. Incremented whenever we create new samples.
+
+	// Rendering state
+	BOOL						m_bSampleNotify;		// Did the mixer signal it has an input sample?
+	BOOL						m_bRepaint;				// Do we need to repaint the last sample?
+	BOOL						m_bPrerolled;	        // Have we presented at least one sample?
+    BOOL                        m_bEndStreaming;		// Did we reach the end of the stream (EOS)?
+
+    MFVideoNormalizedRect       m_nrcSource;            // Source rectangle.
+    float                       m_fRate;                // Playback rate.
+
+    // Deletable objects.
+    D3DPresentEngine            *m_pD3DPresentEngine;    // Rendering engine. (Never null if the constructor succeeds.)
+
+    // COM interfaces.
+    IMFClock                    *m_pClock;               // The EVR's clock.
+    IMFTransform                *m_pMixer;               // The mixer.
+    IMediaEventSink             *m_pMediaEventSink;      // The EVR's event-sink interface.
+    IMFMediaType                *m_pMediaType;           // Output media type
 };
 
 #endif

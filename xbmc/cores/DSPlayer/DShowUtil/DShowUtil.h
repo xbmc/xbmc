@@ -54,6 +54,7 @@ public:
 //This is not needed its for getting the output format of a capture filter
 //and  also require  mfc for cfile
 //static void DumpStreamConfig(TCHAR* fn, IAMStreamConfig* pAMVSCCap);
+  static long MFTimeToMsec(const LONGLONG& time);
   static CStdString GetFilterPath(CStdString pClsid);
   static bool IsVistaOrAbove();
   static CStdStringW AnsiToUTF16(const CStdString strFrom);
