@@ -187,23 +187,26 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
   unsigned int maxTime;
   bool annexbfiltered = false;
 
-  if (m_annexbfiltering)
+  if (pData)
   {
-    int outbuf_size = 0;
-    uint8_t *outbuf = NULL;
-    
-    h264_mp4toannexb_filter(pData, iSize, &outbuf, &outbuf_size);
-    if (outbuf)
+    if (m_annexbfiltering)
     {
-      annexbfiltered = true;
-      pData = outbuf;
-      iSize = outbuf_size;
+      int outbuf_size = 0;
+      uint8_t *outbuf = NULL;
+      
+      h264_mp4toannexb_filter(pData, iSize, &outbuf, &outbuf_size);
+      if (outbuf)
+      {
+        annexbfiltered = true;
+        pData = outbuf;
+        iSize = outbuf_size;
+      }
     }
   }
       
   lastTime = CTimeUtils::GetTimeMS();
   maxTime = lastTime + maxWait;
-  while ((lastTime = CTimeUtils::GetTimeMS()) < maxTime)
+  do
   {
     // Handle Input
     if (pData)
@@ -229,8 +232,18 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
 
     if (!pData && (ret & VC_PICTURE))
       break;
+      
+    if (!pData)
+    {
+      if (ret & VC_PICTURE)
+        break;
+        
+      ret |= VC_FEEDME;
+        break;
+    }
 
-  }
+  } while ((lastTime = CTimeUtils::GetTimeMS()) < maxTime);
+  
 
   if (lastTime >= maxTime)
     CLog::Log(LOGDEBUG, "%s: Timeout in CDVDVideoCodecCrystalHD::Decode. ret: 0x%08x pData: %p", __MODULE_NAME__, ret, pData);
