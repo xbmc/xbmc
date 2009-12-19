@@ -2043,18 +2043,18 @@ bool CLinuxRendererGL::LoadNV12Textures(int source)
     // Load Even UV Fields
     LoadPlane( fields[FIELD_ODD][1], GL_LUMINANCE_ALPHA, buf.flipindex
              , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
-             , im->stride[1]*2, im->plane[1] );
+             , im->stride[1], im->plane[1] );
 
     // Load Odd UV Fields
     LoadPlane( fields[FIELD_EVEN][1], GL_LUMINANCE_ALPHA, buf.flipindex
              , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
-             , im->stride[1]*2, im->plane[1] + im->stride[1] );
+             , im->stride[1], im->plane[1] + im->stride[1] );
   }
   else
   {
     LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE_ALPHA, buf.flipindex
              , im->width >> im->cshift_x, im->height >> im->cshift_y
-             , im->stride[1], im->plane[1] );
+             , im->stride[1]/2, im->plane[1] );
   }
 
   SetEvent(m_eventTexturesDone[source]);
@@ -2133,8 +2133,9 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
   im.cshift_y = 1;
 
   im.stride[0] = im.width;
-  im.stride[1] = im.width >> im.cshift_x;
-
+  im.stride[1] = im.width;
+  im.stride[2] = 0;
+  
   im.plane[0] = NULL;
   im.plane[1] = NULL;
   im.plane[2] = NULL;
@@ -2142,7 +2143,9 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
   // Y plane
   im.planesize[0] = im.stride[0] * im.height;
   // packed UV plane
-  im.planesize[1] = im.stride[1] * im.height;
+  im.planesize[1] = im.stride[1] * im.height / 2;
+  // third plane is not used
+  im.planesize[2] = 0;
 
   if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo"))
   {
