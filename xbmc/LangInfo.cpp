@@ -264,8 +264,11 @@ void CLangInfo::LoadTokens(const TiXmlNode* pTokens, vector<CStdString>& vecToke
         strSep = pToken->Attribute("separators");
       if (pToken->FirstChild() && pToken->FirstChild()->Value())
       {
-        for (unsigned int i=0;i<strSep.size();++i)
-          vecTokens.push_back(CStdString(pToken->FirstChild()->Value())+strSep[i]);
+        if (strSep.IsEmpty())
+          vecTokens.push_back(pToken->FirstChild()->Value());
+        else
+          for (unsigned int i=0;i<strSep.size();++i)
+            vecTokens.push_back(CStdString(pToken->FirstChild()->Value())+strSep[i]);
       }
       pToken = pToken->NextSiblingElement();
     }
