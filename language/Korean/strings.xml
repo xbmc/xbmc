@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 12/15/2009-->
+<!--Date of translation: 12/18/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -987,7 +987,6 @@
   <string id="13279">네트워크</string>
   <string id="13280">비디오</string>
   <string id="13281">하드웨어</string>
-  <string id="13282">_</string>
   <string id="13283">운영체제:</string>
   <string id="13284">CPU 속도:</string>
   <string id="13285">감지된 BIOS:</string>
@@ -1606,7 +1605,7 @@
   <string id="20337">배우</string>
   <string id="20338">영화</string>
   <string id="20339">감독</string>
-  <string id="20340">라이브러리에서 이 경로의</string>
+  <string id="20340">XBMC 라이브러리에서 이 경로의</string>
   <string id="20341">모든 항목을 제거 하시겠습니까?</string>
   <string id="20342">영화</string>
   <string id="20343">TV 쇼</string>
