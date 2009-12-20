@@ -512,6 +512,11 @@ float CALSADirectSound::GetCacheTime()
   return (float)(m_uiBufferSize - GetSpace()) / (float)m_uiBytesPerSecond;
 }
 
+float CALSADirectSound::GetCacheTotal()
+{
+  return (float)m_uiBufferSize / (float)m_uiBytesPerSecond;
+}
+
 //***********************************************************************************************
 unsigned int CALSADirectSound::GetChunkLen()
 {

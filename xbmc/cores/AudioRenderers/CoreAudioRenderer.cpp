@@ -626,6 +626,11 @@ float CCoreAudioRenderer::GetCacheTime()
   return GetDelay();
 }
 
+float CCoreAudioRenderer::GetCacheTotal()
+{
+  return (float)m_MaxCacheLen / m_AvgBytesPerSec;
+}
+
 unsigned int CCoreAudioRenderer::GetChunkLen()
 {
   return m_ChunkLen;
