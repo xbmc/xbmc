@@ -290,8 +290,7 @@ void CDVDMessageQueue::WaitUntilEmpty()
 {
     CLog::Log(LOGNOTICE, "CDVDMessageQueue(%s)::WaitUntilEmpty", m_owner.c_str());
     CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(40000, 0);
-    msg->Acquire();
-    Put(msg);
+    Put(msg->Acquire());
     msg->Wait(&m_bAbortRequest, 0);
     msg->Release();
 }

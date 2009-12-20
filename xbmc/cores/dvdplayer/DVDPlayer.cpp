@@ -1588,8 +1588,7 @@ void CDVDPlayer::SyncronizeDemuxer(DWORD timeout)
     return;
 
   CDVDMsgGeneralSynchronize* message = new CDVDMsgGeneralSynchronize(timeout, 0);
-  message->Acquire();
-  m_messenger.Put(message);
+  m_messenger.Put(message->Acquire());
   message->Wait(&m_bStop, 0);
   message->Release();
 }
@@ -1612,27 +1611,24 @@ void CDVDPlayer::SyncronizePlayers(DWORD sources, double pts)
   CDVDMsgGeneralSynchronize* message = new CDVDMsgGeneralSynchronize(timeout, sources);
   if (m_CurrentAudio.id >= 0)
   {
-    message->Acquire();
     m_CurrentAudio.dts = DVD_NOPTS_VALUE;
     m_CurrentAudio.startpts  = pts;
-    m_CurrentAudio.startsync = message;
+    m_CurrentAudio.startsync = message->Acquire();
   }
   if (m_CurrentVideo.id >= 0)
   {
-    message->Acquire();
     m_CurrentVideo.dts = DVD_NOPTS_VALUE;
     m_CurrentVideo.startpts  = pts;
-    m_CurrentVideo.startsync = message;
+    m_CurrentVideo.startsync = message->Acquire();
   }
 /* TODO - we have to rewrite the sync class, to not require
           all other players waiting for subtitle, should only
           be the oposite way
   if (m_CurrentSubtitle.id >= 0)
   {
-    message->Acquire();
     m_CurrentSubtitle.dts = DVD_NOPTS_VALUE;
     m_CurrentSubtitle.startpts  = pts;
-    m_CurrentSubtitle.startsync = message;
+    m_CurrentSubtitle.startsync = message->Acquire();
   }
 */
   message->Release();
@@ -2724,10 +2720,8 @@ void CDVDPlayer::FlushBuffers(bool queued)
 
     // make sure players are properly flushed, should put them in stalled state
     CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(1000, 0);
-    msg->Acquire();
-    m_dvdPlayerAudio.m_messageQueue.Put(msg, 1);
-    msg->Acquire();
-    m_dvdPlayerVideo.m_messageQueue.Put(msg, 1);
+    m_dvdPlayerAudio.m_messageQueue.Put(msg->Acquire(), 1);
+    m_dvdPlayerVideo.m_messageQueue.Put(msg->Acquire(), 1);
     msg->Wait(&m_bStop, 0);
     msg->Release();
 

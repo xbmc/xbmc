@@ -64,8 +64,8 @@ public:
   bool             inited;
   const StreamType type;
   // stuff to handle starting after seek
-  double                     startpts;
-  CDVDMsgGeneralSynchronize* startsync;
+  double   startpts;
+  CDVDMsg* startsync;
 
   CCurrentStream(StreamType t)
     : type(t)
