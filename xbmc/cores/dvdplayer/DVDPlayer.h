@@ -213,7 +213,8 @@ public:
   enum ECacheState
   { CACHESTATE_DONE = 0
   , CACHESTATE_FULL     // player is filling up the demux queue
-  , CACHESTATE_NEXT     // player is waiting for first packet of each stream
+  , CACHESTATE_INIT     // player is waiting for first packet of each stream
+  , CACHESTATE_PLAY     // player is waiting for players to not be stalled
   };
 
   virtual bool IsCaching() const { return m_caching == CACHESTATE_FULL; }
@@ -285,7 +286,6 @@ protected:
   std::string m_filename; // holds the actual filename
   std::string m_content;  // hold a hint to what content file contains (mime type)
   ECacheState m_caching;
-  bool        m_seeking;  // player is currently trying to fullfill a seek request
   CFileItem   m_item;
 
   CCurrentStream m_CurrentAudio;

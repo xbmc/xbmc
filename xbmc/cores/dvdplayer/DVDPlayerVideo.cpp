@@ -350,9 +350,10 @@ void CDVDPlayerVideo::Process()
         continue;
 
       //Okey, start rendering at stream fps now instead, we are likely in a stillframe
-      if( !m_stalled && m_started )
+      if( !m_stalled )
       {
-        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
+        if(m_started)
+          CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
         m_stalled = true;
         pts+= frametime*4;
       }
@@ -437,6 +438,7 @@ void CDVDPlayerVideo::Process()
       m_iFrameRateLength = 1;
       m_bAllowDrop = !m_bCalcFrameRate;
       m_iFrameRateErr = 0;
+      m_stalled = true;
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
