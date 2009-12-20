@@ -141,7 +141,8 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock)
   m_freq = CurrentHostFrequency();
 
   InitializeCriticalSection(&m_critCodecSection);
-  m_messageQueue.SetMaxDataSize(30 * 16 * 1024);
+  m_messageQueue.SetMaxDataSize(1024 * 1024);
+  m_messageQueue.SetMaxTimeSize(4.0);
   g_dvdPerformanceCounter.EnableAudioQueue(&m_messageQueue);
 }
 
@@ -527,6 +528,7 @@ void CDVDPlayerAudio::Process()
       m_dvdAudio.Destroy();
       if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec))
         CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
+      m_messageQueue.SetMaxTimeSize(4.0 - m_dvdAudio.GetCacheTotal());
     }
 
     if( result & DECODE_FLAG_DROP )

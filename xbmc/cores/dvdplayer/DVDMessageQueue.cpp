@@ -23,6 +23,8 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "utils/log.h"
 #include "SingleLock.h"
+#include "DVDClock.h"
+#include "MathUtils.h"
 
 using namespace std;
 
@@ -35,6 +37,9 @@ CDVDMessageQueue::CDVDMessageQueue(const string &owner)
   m_bCaching      = false;
   m_bEmptied      = true;
 
+  m_TimeBack      = DVD_NOPTS_VALUE;
+  m_TimeFront     = DVD_NOPTS_VALUE;
+  m_TimeSize      = 1.0 / 4.0; /* 4 seconds */
   m_hEvent = CreateEvent(NULL, true, false, NULL);
 }
 
@@ -52,6 +57,8 @@ void CDVDMessageQueue::Init()
   m_bAbortRequest = false;
   m_bEmptied      = true;
   m_bInitialized  = true;
+  m_TimeBack      = DVD_NOPTS_VALUE;
+  m_TimeFront     = DVD_NOPTS_VALUE;
 }
 
 void CDVDMessageQueue::Flush(CDVDMsg::Message type)
@@ -72,6 +79,8 @@ void CDVDMessageQueue::Flush(CDVDMsg::Message type)
   if (type == CDVDMsg::DEMUXER_PACKET ||  type == CDVDMsg::NONE)
   {
     m_iDataSize = 0;
+    m_TimeBack  = DVD_NOPTS_VALUE;
+    m_TimeFront = DVD_NOPTS_VALUE;
     m_bEmptied = true;
   }
 }
@@ -129,8 +138,15 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
 
   if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
   {
-    CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)pMsg;
-    m_iDataSize += pMsgDemuxerPacket->GetPacketSize();
+    DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)item.pMsg)->GetPacket();
+    if(packet)
+    {
+      m_iDataSize += packet->iSize;
+      if     (packet->dts != DVD_NOPTS_VALUE)
+        m_TimeFront = packet->dts;
+      else if(packet->pts != DVD_NOPTS_VALUE)
+        m_TimeFront = packet->pts;
+    }
   }
 
   SetEvent(m_hEvent); // inform waiter for new packet
@@ -160,8 +176,16 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
 
       if (item.pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
       {
-        CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)item.pMsg;
-        m_iDataSize -= pMsgDemuxerPacket->GetPacketSize();
+        DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)item.pMsg)->GetPacket();
+        if(packet)
+        {
+          m_iDataSize -= packet->iSize;
+          if     (packet->dts != DVD_NOPTS_VALUE)
+            m_TimeBack = packet->dts;
+          else if(packet->pts != DVD_NOPTS_VALUE)
+            m_TimeBack = packet->pts;
+        }
+
         if(m_iDataSize == 0)
         {
           if(!m_bEmptied && m_owner != "teletext") // Prevent log flooding
@@ -230,5 +254,15 @@ void CDVDMessageQueue::WaitUntilEmpty()
 
 int CDVDMessageQueue::GetLevel() const
 {
-  return std::min(100, 100 * m_iDataSize / m_iMaxDataSize);
+  if(m_iDataSize > m_iMaxDataSize)
+    return 100;
+  if(m_iDataSize == 0)
+    return 0;
+
+  if(m_TimeBack  == DVD_NOPTS_VALUE
+  || m_TimeFront == DVD_NOPTS_VALUE
+  || m_TimeFront <= m_TimeBack)
+    return min(100, 100 * m_iDataSize / m_iMaxDataSize);
+
+  return min(100, MathUtils::round_int(100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE ));
 }

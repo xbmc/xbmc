@@ -75,8 +75,10 @@ public:
   int  GetLevel() const;
 
   void SetMaxDataSize(int iMaxDataSize) { m_iMaxDataSize = iMaxDataSize; }
+  void SetMaxTimeSize(double sec)       { m_TimeSize  = 0.5 / std::max(1.0, sec); }
   int GetMaxDataSize() const            { return m_iMaxDataSize; }
   bool IsInited() const                 { return m_bInitialized; }
+
 private:
 
   HANDLE m_hEvent;
@@ -87,6 +89,10 @@ private:
   bool m_bCaching;
 
   int m_iDataSize;
+  double m_TimeFront;
+  double m_TimeBack;
+  double m_TimeSize;
+
   int m_iMaxDataSize;
   bool m_bEmptied;
   std::string m_owner;
