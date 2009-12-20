@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><scraper framework="1.0" date="2009-10-17" name="Rotten Tomatoes" content="movies" thumb="rottentomatoes.png" language="en">
+<?xml version="1.0" encoding="utf-8"?>
+<scraper framework="1.0" date="2009-12-17" name="Rotten Tomatoes" content="movies" thumb="rottentomatoes.png" language="en">
 	<include>common/tmdb.xml</include>
 	<include>common/movieposterdb.xml</include>
 	<GetSettings dest="3">
@@ -24,6 +25,12 @@
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="\1" dest="3">
 			<expression noclean="1">(http://$INFO[locality]\.rottentomatoes\.com/m/[A-Za-z0-9_]*)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="&lt;url&gt;http://$INFO[locality].rottentomatoes.com/alias?type=imdbid&amp;amp;s=\2&lt;/url&gt;" dest="3+">
+			<expression>(imdb.com/)Title\?([0-9]+)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="&lt;url&gt;http://$INFO[locality].rottentomatoes.com/alias?type=imdbid&amp;amp;s=\2&lt;/url&gt;" dest="3+">
+			<expression>(imdb.com/title/tt)([0-9]*)</expression>
 		</RegExp>
 	</NfoUrl>
 	<CreateSearchUrl dest="3">
