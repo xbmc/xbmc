@@ -372,9 +372,10 @@ bool CRenderSystemDX::PresentRenderImpl()
   }
   hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
 
-  if( D3DERR_DEVICELOST == hr )
+  if( hr == D3DERR_DEVICELOST)
   {
-    CLog::Log(LOGDEBUG, "%s - lost device", __FUNCTION__);
+    //log spamming
+    //CLog::Log(LOGDEBUG, "%s - lost device", __FUNCTION__);
     return false;
   }
 
@@ -399,7 +400,8 @@ bool CRenderSystemDX::BeginRender()
     // and try again at a later time.
     if( m_nDeviceStatus == D3DERR_DEVICELOST )
     {
-      CLog::Log(LOGDEBUG, "D3DERR_DEVICELOST");
+      //logspamming
+      //CLog::Log(LOGDEBUG, "D3DERR_DEVICELOST");
       OnDeviceLost();
       return false;
     }

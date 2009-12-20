@@ -1144,11 +1144,13 @@ STDMETHODIMP CEVRAllocatorPresenter::GetService (/* [in] */ __RPC__in REFGUID gu
     CheckPointer(ppvObject, E_POINTER);
 
     // The only service GUID that we support is MR_VIDEO_RENDER_SERVICE.
-    if (guidService != MR_VIDEO_RENDER_SERVICE)
-    {
-        return MF_E_UNSUPPORTED_SERVICE;
-    }
+    
 
+    if (guidService == MR_VIDEO_ACCELERATION_SERVICE)
+      return m_pD3DPresentEngine->GetService(guidService,riid, (void**) ppvObject);
+    
+	if (guidService != MR_VIDEO_RENDER_SERVICE)
+      return MF_E_UNSUPPORTED_SERVICE;
     // First try to get the service interface from the D3DPresentEngine object.
     hr = m_pD3DPresentEngine->GetService(guidService, riid, ppvObject);
     if (FAILED(hr))
@@ -1160,8 +1162,7 @@ STDMETHODIMP CEVRAllocatorPresenter::GetService (/* [in] */ __RPC__in REFGUID gu
     return hr;
   /*if (guidService == MR_VIDEO_RENDER_SERVICE)
     return NonDelegatingQueryInterface (riid, ppvObject);
-  else if (guidService == MR_VIDEO_ACCELERATION_SERVICE)
-    return m_pDeviceManager->QueryInterface (__uuidof(IDirect3DDeviceManager9), (void**) ppvObject);
+  
 
   return E_NOINTERFACE;*/
 }

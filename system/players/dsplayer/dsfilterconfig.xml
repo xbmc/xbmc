@@ -94,16 +94,16 @@
   <rules>
     <!-- Still need to add the renderers -->
     <!-- TODO  .mpg .m2ts -->
-    <rule filetypes="avi" source="avisource" splitter="avisplitter" videodec="ffdvideodec" audiodec="mpaaudiodec"/>
-    <rule filetypes="flv" source="flvsource" splitter="flvsplitter" videodec="ffdvideodec" audiodec="mpaaudiodec"/>
+    <rule filetypes="avi" source="avisource" splitter="avisplitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
+    <rule filetypes="flv" source="flvsource" splitter="flvsplitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
 
-    <rule filetypes="mp4" source="mp4source" splitter="mp4splitter" videodec="ffdvideodec" audiodec="mpaaudiodec"/>
+    <rule filetypes="mp4" source="mp4source" splitter="mp4splitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
     <rule filetypes="mov" source="mp4source" splitter="mp4splitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
     <rule filetypes="m4v" source="mp4source" splitter="mp4splitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
     <rule filetypes="m2v" source="mpegsource" splitter="mpegsplitter" videodec="mpeg2videodec" audiodec="ffdaudiodec"/>
     <rule filetypes="ts" source="mpegsource" splitter="mpegsplitter" videodec="mpeg2videodec" audiodec="mpaaudiodec"/>
-    <rule filetypes="mpeg" source="mpegsource" splitter="mpegsplitter" videodec="ffdvideodec" audiodec="mpaaudiodec"/>
-    <rule filetypes="mpg" source="mpegsource" splitter="mpegsplitter" videodec="ffdvideodec" audiodec="mpaaudiodec"/>
+    <rule filetypes="mpeg" source="mpegsource" splitter="mpegsplitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
+    <rule filetypes="mpg" source="mpegsource" splitter="mpegsplitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
     <rule filetypes="m2ts" source="mpegsource" splitter="mpegsplitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
 
     <rule filetypes="mkv" source="mkvsource" splitter="mkvsplitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
