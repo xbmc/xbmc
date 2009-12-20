@@ -7,6 +7,7 @@
   <string id="31002">讨厌</string>
   <string id="31003">电源选项</string>
   <string id="31004">工作中...</string>
+  <string id="31005">隐藏信息</string>
 
   <string id="31007">插件</string>
 
@@ -17,7 +18,7 @@
   <string id="31024">页</string>
   <string id="31025">项</string>
   <string id="31026">其他选项</string>
-  <string id="31027">定位</string>
+  <string id="31027">所在地</string>
  
   <!-- View Type labels -->
   <string id="31028">海报卷动</string>

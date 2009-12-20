@@ -9,19 +9,16 @@
 	<controls>
 		<control type="group">
 			<posx>580</posx>
-			<animation effect="slide" start="700,0" end="0,0" time="400" tween="quadratic" easing="out" condition="![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation) | Window.IsVisible(124)]">WindowOpen</animation>
+			<animation effect="slide" start="700,0" end="0,0" time="400" tween="quadratic" easing="out" condition="![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowOpen</animation>
 			<animation effect="slide" start="-400,0" end="0,0" time="400" tween="quadratic" easing="out" condition="[Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowOpen</animation>
-			<animation effect="slide" start="100,0" end="0,0" time="200" tween="quadratic" easing="out" condition="Window.IsVisible(124)">WindowOpen</animation>
-			<animation effect="slide" start="0,0" end="700,0" time="400" tween="quadratic" easing="out" condition="![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation) | Window.IsVisible(124)]">WindowClose</animation>
+			<animation effect="slide" start="0,0" end="700,0" time="400" tween="quadratic" easing="out" condition="![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowClose</animation>
 			<animation effect="slide" start="0,0" end="-400,0" time="400" tween="quadratic" easing="out" condition="[Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowClose</animation>
-			<animation effect="slide" start="0,0" end="100,0" time="200" tween="quadratic" easing="out" condition="Window.IsVisible(124)">WindowClose</animation>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
 				<width>1100</width>
 				<height>720</height>
 				<texture border="15,0,0,0" flipx="true">MediaBladeSub.png</texture>
-				<visible>!Window.IsVisible(124)</visible>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
@@ -39,15 +36,6 @@
 				<onup>450</onup>
 				<ondown>450</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
-			</control>
-			<control type="image">
-				<description>media info background image</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>800</width>
-				<height>720</height>
-				<texture border="20,0,0,0" flipx="true">VisOsdPanel.png</texture>
-				<visible>Window.IsVisible(124)</visible>
 			</control>
 			<control type="group">
 				<animation effect="fade" delay="400" start="0" end="100" time="200">WindowOpen</animation>

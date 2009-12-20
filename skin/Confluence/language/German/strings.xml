@@ -2,13 +2,14 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Zippolighter-->
 <!--Email: hardrock_zippolighter@hotmail.com-->
-<!--Date of translation: 11/28/2009-->
+<!--Date of translation: 12/13/2009-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Wechsel Deine</string>
   <string id="31001">Liebe</string>
   <string id="31002">Hass</string>
   <string id="31003">Power Optionen</string>
+  <string id="31004">In Arbeit...</string>
   <string id="31007">Plugins</string>
   <string id="31020">Kürzlich hinzugefügt</string>
   <string id="31021">Video - Dateien</string>
@@ -87,7 +88,7 @@
   <string id="31304">Bild</string>
   <string id="31305">Keine Disk vorhanden</string>
   <string id="31306">Auswerfen</string>
-  <string id="31307">Verstecke Fanart</string>
+  <string id="31307">Verberge Fanart</string>
   <string id="31308">Film Details</string>
   <string id="31309">Speicher in Benutzung:</string>
   <string id="31310">Lied Nummer</string>
