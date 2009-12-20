@@ -414,7 +414,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, BYTE* pUnparsedData
       }
 
       // keep trace of all occouring pixels, even keeping the background in mind
-      stats[i_code & 0x3] += i_code >> 2;
+      pSPU->stats[i_code & 0x3] += i_code >> 2;
 
       // count the number of pixels for every occouring parts, without background
       if (pSPU->alpha[i_code & 0x3] != 0x00)
@@ -499,7 +499,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, BYTE* pUnparsedData
       // check alpha values
       // the array stats represents the nr of pixels for each color channel
       // thus if there are no pixels to display, we assume the alphas are incorrect.
-      if (!CanDisplayWithAlphas(pSPU->alpha, stats))
+      if (!pSPU->CanDisplayWithAlphas(pSPU->alpha))
       {
         CLog::Log(LOGINFO, "%s - no  matching color and alpha found, resetting alpha", __FUNCTION__);
 
@@ -635,13 +635,4 @@ void CDVDDemuxSPU::FindSubtitleColor(int last_color, int stats[4], CDVDOverlaySp
       DebugLog("ParseRLE: using custom palette (border %i, inner %i, shade %i)", last_color, i_inner, i_shade);
     }
   }
-}
-
-bool CDVDDemuxSPU::CanDisplayWithAlphas(int a[4], int stats[4])
-{
-  return(
-    a[0] * stats[0] > 0 ||
-    a[1] * stats[1] > 0 ||
-    a[2] * stats[2] > 0 ||
-    a[3] * stats[3] > 0);
 }
