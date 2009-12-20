@@ -84,9 +84,8 @@ bool CDeviceKitDiskDevice::Mount()
     CLog::Log(LOGDEBUG, "DeviceKit.Disks: Mounting %s", m_DeviceKitUDI.c_str());
     CDBusMessage message("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "FilesystemMount");
     message.AppendArgument("");
-    const char *array[1];// = {"sync"};
-    array[0] = "sync";
-    message.AppendArgument(array, 1);
+    const char *array[] = {};
+    message.AppendArgument(array, 0);
 
     DBusMessage *reply = message.SendSystem();
     if (reply)
@@ -114,7 +113,7 @@ bool CDeviceKitDiskDevice::UnMount()
   {
     CDBusMessage message("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "FilesystemUnmount");
 
-    const char *array[0];
+    const char *array[1];
     message.AppendArgument(array, 0);
 
     DBusMessage *reply = message.SendSystem();
@@ -134,7 +133,7 @@ CMediaSource CDeviceKitDiskDevice::ToMediaShare()
   CMediaSource source;
   source.strPath = m_MountPath;
   if (m_Label.empty())
-    source.strName.Format("%.1f GB %s", m_PartitionSizeGiB, g_localizeStrings.Get(13376).c_str());
+    source.strName.Format("%.1f GB %s", m_PartitionSizeGiB, g_localizeStrings.Get(155).c_str());
   else
     source.strName = m_Label;
   source.m_iDriveType =  m_isRemovable ? CMediaSource::SOURCE_TYPE_REMOVABLE : CMediaSource::SOURCE_TYPE_LOCAL;
@@ -304,6 +303,7 @@ void CDeviceKitDisksProvider::DeviceAdded(const char *object, IStorageEventsCall
   if (g_advancedSettings.m_handleMounting)
     device->Mount();
 
+  CLog::Log(LOGDEBUG, "DeviceKit.Disks: DeviceAdded - %s", device->toString().c_str());
   if (device->m_isMounted && device->IsApproved())
   {
     CLog::Log(LOGNOTICE, "DeviceKit.Disks: Added %s", device->m_MountPath.c_str());
@@ -345,6 +345,8 @@ void CDeviceKitDisksProvider::DeviceChanged(const char *object, IStorageEventsCa
       callback->OnStorageAdded(device->m_MountPath, device->m_Label);
     else if (mounted && !device->m_isMounted && callback)
       callback->OnStorageSafelyRemoved(device->m_Label);
+
+    CLog::Log(LOGDEBUG, "DeviceKit.Disks: DeviceChanged - %s", device->toString().c_str());
   }
 }
 

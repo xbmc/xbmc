@@ -112,10 +112,10 @@
 			<RegExp input="$$1" output="&lt;url cache=&quot;allmusic-artist.html&quot; function=&quot;ParseAMGArtist&quot;&gt;placeholder&lt;/url&gt;" dest="5">
 				<expression />
 			</RegExp>
-			<RegExp input="$$2" conditional="htbthumbs" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" conditional="htbthumbs" output="&lt;url cache=&quot;htb-$$2.html&quot; function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$2" conditional="htbfanart" output="&lt;url function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" conditional="htbfanart" output="&lt;url cache=&quot;htb-$$2.html&quot; function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="8">

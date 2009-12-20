@@ -592,6 +592,11 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
 
     SetSortOrder(SORT_ORDER_ASC);
   }
+  else if (items.m_strPath == "special://musicplaylists/")
+  { // playlists list sorts by label only, ignoring folders
+    AddSortMethod(SORT_METHOD_LABEL_IGNORE_FOLDERS, 551, LABEL_MASKS("%F", "%D", "%L", ""));  // Filename, Duration | Foldername, empty
+    SetSortMethod(SORT_METHOD_LABEL_IGNORE_FOLDERS);
+  }
   else
   {
     CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");
@@ -618,15 +623,13 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
 
 VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
 {
-  bool bIsSourceName = true;
   // plugins share
   if (CPluginDirectory::HasPlugins("music") && g_advancedSettings.m_bVirtualShares)
   {
     CMediaSource share;
     share.strName = g_localizeStrings.Get(1038);
     share.strPath = "plugin://music/";
-    if (CUtil::GetMatchingSource(share.strName, g_settings.m_musicSources, bIsSourceName) < 0)
-      g_settings.m_musicSources.push_back(share);
+    AddOrReplace(g_settings.m_musicSources,share);
   }
   return g_settings.m_musicSources;
 }

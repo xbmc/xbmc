@@ -88,6 +88,8 @@ void CMusicInfoScraper::FindAlbuminfo()
   m_vecAlbums.erase(m_vecAlbums.begin(), m_vecAlbums.end());
 
   CScraperParser parser;
+  parser.ClearCache();
+
   if (!parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath) || !parser.HasFunction("CreateAlbumSearchUrl"))
     return;
 
@@ -199,6 +201,8 @@ void CMusicInfoScraper::FindArtistinfo()
   m_vecArtists.erase(m_vecArtists.begin(), m_vecArtists.end());
 
   CScraperParser parser;
+  parser.ClearCache();
+
   if (!parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath) || !parser.HasFunction("CreateArtistSearchUrl"))
     return;
 
@@ -377,4 +381,25 @@ void CMusicInfoScraper::Process()
   {
     CLog::Log(LOGERROR, "Exception in CMusicInfoScraper::Process()");
   }
+}
+
+bool CMusicInfoScraper::CheckValidOrFallback(const CStdString &fallbackScraper)
+{
+  CScraperParser parser;
+  if (parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath))
+    return true;
+  if (m_info.strPath != fallbackScraper &&
+      parser.Load("special://xbmc/system/scrapers/music/" + fallbackScraper))
+  {
+    CLog::Log(LOGWARNING, "%s - scraper %s fails to load, falling back to %s", __FUNCTION__, m_info.strPath.c_str(), fallbackScraper.c_str());
+    m_info.strPath = fallbackScraper;
+    m_info.strContent = "albums";
+    m_info.strTitle = parser.GetName();
+    m_info.strDate = parser.GetDate();
+    m_info.strFramework = parser.GetFramework();
+    m_info.strLanguage = parser.GetLanguage();
+    m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + m_info.strPath);
+    return true;
+  }
+  return false;
 }

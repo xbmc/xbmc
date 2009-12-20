@@ -24,6 +24,7 @@
 #include "system.h"
 
 #include <string>
+#include <sstream>
 
 class CDVDInputStream;
 
@@ -36,20 +37,12 @@ public:
   virtual ~CDVDSubtitleStream();
 
   bool Open(const std::string& strFile);
-  void Close();
-  int Read(BYTE* buf, int buf_size);
-  __int64 Seek(__int64 offset, int whence);
+  int Read(char* buf, int buf_size);
+  long Seek(long offset, int whence);
 
   char* ReadLine(char* pBuffer, int iLen);
   //wchar* ReadLineW(wchar* pBuffer, int iLen) { return NULL; };
 
-protected:
-  CDVDInputStream* m_pInputStream;
-  BYTE* m_buffer;
-  int   m_iMaxBufferSize;
-  int   m_iBufferSize;
-  int   m_iBufferPos;
-
-  __int64 m_iStreamPos;
+  std::stringstream m_stringstream;
 };
 

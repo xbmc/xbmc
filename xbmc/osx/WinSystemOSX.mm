@@ -30,6 +30,7 @@
 #include "KeyboardStat.h"
 #include "utils/log.h"
 #include "XBMCHelper.h"
+#include "SystemInfo.h"
 #undef BOOL
 
 #import <Cocoa/Cocoa.h>
@@ -342,27 +343,29 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
 bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {  
-  static NSView* lastView = NULL;
-  static CGDirectDisplayID fullScreenDisplayID = 0;
-  static NSScreen* lastScreen = NULL;
-  static NSWindow* mainWindow = NULL;
-  static NSPoint last_origin;
-  static NSSize view_size;
-  static NSPoint view_origin;
-  int screen_index;
-  NSOpenGLContext* context;
+  static NSWindow* windowedFullScreenwindow = NULL;
+  static NSScreen* last_window_screen = NULL;
+  static NSPoint last_window_origin;
+  static NSView* last_view = NULL;
+  static NSSize last_view_size;
+  static NSPoint last_view_origin;
+  bool was_fullscreen = m_bFullScreen;
+  NSOpenGLContext* cur_context;
+  
+  // If we're already fullscreen then we must be moving to a different display.
+  // Recurse to reset fullscreen mode and then continue.
+  if (was_fullscreen && fullScreen)
+  {
+    RESOLUTION_INFO& window = g_settings.m_ResInfo[RES_WINDOW];
+    CWinSystemOSX::SetFullScreen(false, window, blankOtherDisplays);
+  }
   
   m_nWidth      = res.iWidth;
   m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
 
-  // If we're already fullscreen then we must be moving to a different display.
-  // Recurse to reset fullscreen mode and then continue.
-  if (m_bFullScreen == true && lastScreen != NULL)
-    SetFullScreen(false, res, blankOtherDisplays);
-  
-  context = [NSOpenGLContext currentContext];
-  if (!context)
+  cur_context = [NSOpenGLContext currentContext];
+  if (!cur_context)
     return false;
   
   if (m_bFullScreen)
@@ -373,25 +376,74 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // Fade to black to hide resolution-switching flicker and garbage.
     CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack();
     
-    // Save and make sure the view is on the screen that we're activating (to hide it).
-    lastView = [context view];
-    lastScreen = [[lastView window] screen];
-    screen_index = res.iScreen;
+    // Save info about the windowed context so we can restore it when returning to windowed.
+    last_view = [cur_context view];
+    last_view_size = [last_view frame].size;
+    last_view_origin = [last_view frame].origin;
+    last_window_screen = [[last_view window] screen];
+    last_window_origin = [[last_view window] frame].origin;
     
-    if (!g_guiSettings.GetBool("videoscreen.fakefullscreen"))
+    if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
+    {
+      // This is Cocca Windowed FullScreen Mode
+      // Get the screen rect of our current display
+      NSScreen* pScreen = [[NSScreen screens] objectAtIndex:res.iScreen];
+      NSRect    screenRect = [pScreen frame];
+      
+      // remove frame origin offset of orginal display
+      screenRect.origin = NSZeroPoint;
+      
+      // make a new window to act as the windowedFullScreen
+      windowedFullScreenwindow = [[NSWindow alloc] initWithContentRect:screenRect
+        styleMask:NSBorderlessWindowMask
+        backing:NSBackingStoreBuffered
+        defer:NO 
+        screen:pScreen];
+                                              
+      [windowedFullScreenwindow setBackgroundColor:[NSColor blackColor]];
+      [windowedFullScreenwindow makeKeyAndOrderFront:nil];
+      
+      // make our window the same level as the rest to enable cmd+tab switching
+      [windowedFullScreenwindow setLevel:NSNormalWindowLevel]; 
+      // this will make our window topmost and hide all system messages
+      //[windowedFullScreenwindow setLevel:CGShieldingWindowLevel()];
+
+      // ...and the original one beneath it and on the same screen.
+      [[last_view window] setLevel:NSNormalWindowLevel-1];
+      [[last_view window] setFrameOrigin:[pScreen frame].origin];
+      // expand the mouse bounds in SDL view to fullscreen
+      [ last_view setFrameOrigin:NSMakePoint(0.0, 0.0)];
+      [ last_view setFrameSize:NSMakeSize(m_nWidth, m_nHeight) ];
+          
+      NSView* blankView = [[NSView alloc] init];
+      [windowedFullScreenwindow setContentView:blankView];
+      [windowedFullScreenwindow setContentSize:NSMakeSize(m_nWidth, m_nHeight)];
+      [windowedFullScreenwindow update];
+      [blankView setFrameSize:NSMakeSize(m_nWidth, m_nHeight)];
+      
+      // Obtain windowed pixel format and create a new context.
+      newContext = (NSOpenGLContext*)CreateWindowedContext((void* )cur_context);
+      [newContext setView:blankView];
+      
+      // Hide the menu bar.
+      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
+        HideMenuBar();
+          
+      // Blank other displays if requested.
+      if (blankOtherDisplays)
+        BlankOtherDisplays(res.iScreen);
+    }
+    else
     {
       // hide the window
-      view_size = [lastView frame].size;
-      view_origin = [lastView frame].origin;
-      last_origin = [[lastView window] frame].origin;
-      [[lastView window] setFrameOrigin:[lastScreen frame].origin];
+      [[last_view window] setFrameOrigin:[last_window_screen frame].origin];
       // expand the mouse bounds in SDL view to fullscreen
-      [ lastView setFrameOrigin:NSMakePoint(0.0, 0.0)];
-      [ lastView setFrameSize:NSMakeSize(m_nWidth, m_nHeight) ];
+      [ last_view setFrameOrigin:NSMakePoint(0.0, 0.0)];
+      [ last_view setFrameSize:NSMakeSize(m_nWidth, m_nHeight) ];
 
       // This is OpenGL FullScreen Mode
       // create our new context (sharing with the current one)
-      newContext = (NSOpenGLContext*)CreateFullScreenContext(screen_index, (void*)context);
+      newContext = (NSOpenGLContext*)CreateFullScreenContext(res.iScreen, (void*)cur_context);
       if (!newContext)
         return false;
       
@@ -402,80 +454,25 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       [newContext setFullScreen];
       
       // Capture the display before going fullscreen.
-      fullScreenDisplayID = GetDisplayID(screen_index);
       if (blankOtherDisplays == true)
         CGCaptureAllDisplays();
       else
-        CGDisplayCapture(fullScreenDisplayID);
+        CGDisplayCapture(GetDisplayID(res.iScreen));
 
       // If we don't hide menu bar, it will get events and interrupt the program.
-      if (fullScreenDisplayID == kCGDirectMainDisplay)
+      if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
         HideMenuBar();
-    }
-    else
-    {
-      // This is Cocca Windowed FullScreen Mode
-      // Get the screen rect of our current display
-      NSScreen* pScreen = [[NSScreen screens] objectAtIndex:screen_index];
-      NSRect    screenRect = [pScreen frame];
-      
-      // remove frame origin offset of orginal display
-      screenRect.origin = NSZeroPoint;
-      
-      // make a new window to act as the windowedFullScreen
-      mainWindow = [[NSWindow alloc] initWithContentRect:screenRect
-        styleMask:NSBorderlessWindowMask
-        backing:NSBackingStoreBuffered
-        defer:NO 
-        screen:pScreen];
-                                              
-      [mainWindow setBackgroundColor:[NSColor blackColor]];
-      [mainWindow makeKeyAndOrderFront:nil];
-      
-      // make our window the same level as the rest to enable cmd+tab switching
-      [mainWindow setLevel:NSNormalWindowLevel]; 
-      // this will make our window topmost and hide all system messages
-      //[mainWindow setLevel:CGShieldingWindowLevel()];
-
-      // ...and the original one beneath it and on the same screen.
-      view_size = [lastView frame].size;
-      view_origin = [lastView frame].origin;
-      last_origin = [[lastView window] frame].origin;
-      [[lastView window] setLevel:NSNormalWindowLevel-1];
-      [[lastView window] setFrameOrigin:[pScreen frame].origin];
-      // expand the mouse bounds in SDL view to fullscreen
-      [ lastView setFrameOrigin:NSMakePoint(0.0, 0.0)];
-      [ lastView setFrameSize:NSMakeSize(m_nWidth, m_nHeight) ];
-          
-      NSView* blankView = [[NSView alloc] init];
-      [mainWindow setContentView:blankView];
-      [mainWindow setContentSize:NSMakeSize(m_nWidth, m_nHeight)];
-      [mainWindow update];
-      [blankView setFrameSize:NSMakeSize(m_nWidth, m_nHeight)];
-      
-      // Obtain windowed pixel format and create a new context.
-      newContext = (NSOpenGLContext*)CreateWindowedContext((void* )context);
-      [newContext setView:blankView];
-      
-      // Hide the menu bar.
-      fullScreenDisplayID = GetDisplayID(screen_index);
-      if (fullScreenDisplayID == kCGDirectMainDisplay)
-        HideMenuBar();
-          
-      // Blank other displays if requested.
-      if (blankOtherDisplays)
-        BlankOtherDisplays(screen_index);
     }
 
     // Hide the mouse.
     [NSCursor hide];
     
     // Release old context if we created it.
-    if (m_lastOwnedContext == context)
+    if (m_lastOwnedContext == cur_context)
     {
       [ NSOpenGLContext clearCurrentContext ];
-      [ context clearDrawable ];
-      [ context release ];
+      [ cur_context clearDrawable ];
+      [ cur_context release ];
     }
     
     // activate context
@@ -491,55 +488,54 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack();
     
     // exit fullscreen
-    [context clearDrawable];
+    [cur_context clearDrawable];
     
     [NSCursor unhide];
     
     // Show menubar.
-    if (fullScreenDisplayID == kCGDirectMainDisplay)
+    if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
       ShowMenuBar();
 
-    if (!g_guiSettings.GetBool("videoscreen.fakefullscreen"))
+    if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
+    {
+      // restore the windowed window level
+      [[last_view window] setLevel:NSNormalWindowLevel];
+      
+      // Get rid of the new window we created.
+      [windowedFullScreenwindow close];
+      [windowedFullScreenwindow release];
+      windowedFullScreenwindow = NULL;
+      
+      // Unblank.
+      if (blankOtherDisplays)
+        UnblankDisplays();
+    }
+    else
     {
       // release displays
       CGReleaseAllDisplays();
     }
-    else
-    {
-      [[lastView window] setLevel:NSNormalWindowLevel];
-      
-      // Get rid of the new window we created.
-      [mainWindow close];
-      [mainWindow release];
-      
-      // Unblank.
-      if (blankOtherDisplays)
-      {
-        lastScreen = [[lastView window] screen];
-        screen_index = GetDisplayIndex( GetDisplayIDFromScreen(lastScreen) );
-
-        UnblankDisplays();
-      }
-    }
     
     // create our new context (sharing with the current one)
-    NSOpenGLContext* newContext = (NSOpenGLContext*)CreateWindowedContext((void* )context);
+    NSOpenGLContext* newContext = (NSOpenGLContext*)CreateWindowedContext((void* )cur_context);
     if (!newContext)
       return false;
     
     // Assign view from old context, move back to original screen.
-    [newContext setView:lastView];
-    [[lastView window] setFrameOrigin:last_origin];
+    [newContext setView:last_view];
+    [[last_view window] setFrameOrigin:last_window_origin];
     // return the mouse bounds in SDL view to prevous size
-    [ lastView setFrameSize:view_size ];
-    [ lastView setFrameOrigin:view_origin ];
+    [ last_view setFrameSize:last_view_size ];
+    [ last_view setFrameOrigin:last_view_origin ];
+    // done with restoring windowed window, don't set last_view to NULL as we can lose it under dual displays.
+    //last_window_screen = NULL;
     
     // Release the fullscreen context.
-    if (m_lastOwnedContext == context)
+    if (m_lastOwnedContext == cur_context)
     {
       [ NSOpenGLContext clearCurrentContext ];
-      [ context clearDrawable ];
-      [ context release ];
+      [ cur_context clearDrawable ];
+      [ cur_context release ];
     }
     
     // Activate context.
@@ -547,18 +543,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     m_lastOwnedContext = newContext;
     
     DisplayFadeFromBlack(fade_token);
-    
-    // Reset.
-    lastView = NULL;
-    lastScreen = NULL;
-    mainWindow = NULL;
-    fullScreenDisplayID = 0;
   }
-
-  context = [NSOpenGLContext currentContext];
-  [context makeCurrentContext];
-  
-  m_glContext = context;
 
   // need to make sure SDL tracks any window size changes
   ResizeWindow(m_nWidth, m_nHeight, -1, -1);
@@ -653,7 +638,20 @@ void* CWinSystemOSX::CreateWindowedContext(void* shareCtx)
   
   NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs];
   if (!pixFmt)
-    return nil;
+  {
+    // bah, try again for non-accelerated renderer
+    NSOpenGLPixelFormatAttribute wattrs2[] =
+    {
+      NSOpenGLPFADoubleBuffer,
+      NSOpenGLPFAWindow,
+      NSOpenGLPFANoRecovery,
+      NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)8,
+      (NSOpenGLPixelFormatAttribute)0
+    };
+    NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs2];
+    if (!pixFmt)
+      return nil;
+  }
     
   NSOpenGLContext* newContext = [[NSOpenGLContext alloc] initWithFormat:(NSOpenGLPixelFormat*)pixFmt
     shareContext:(NSOpenGLContext*)shareCtx];
@@ -911,36 +909,52 @@ bool CWinSystemOSX::Show(bool raise)
 
 void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
 {
-  NSDictionary* errorDict;
-  NSAppleScript* scriptObject;
-  NSAppleEventDescriptor* returnDescriptor;
-
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
-  // If we don't call this, the screen saver will just stop and then start up again.
-  UpdateSystemActivity(UsrActivity);
-  
-  if (bEnable)
+/* not working any more, problems on 10.6 and atv)
+  if (!g_sysinfo.IsAppleTV() )
   {
-    // tell application id "com.apple.ScreenSaver.Engine" to launch
-    scriptObject = [[NSAppleScript alloc] initWithSource:
-      @"launch application \"ScreenSaverEngine\""];
-  }
-  else
-  {
-    // tell application id "com.apple.ScreenSaver.Engine" to quit
-    scriptObject = [[NSAppleScript alloc] initWithSource:
-      @"tell application \"ScreenSaverEngine\" to quit"];
-  }
-  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
-  [scriptObject release];
+    NSDictionary* errorDict;
+    NSAppleScript* scriptObject;
+    NSAppleEventDescriptor* returnDescriptor;
 
-  [pool release];
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+    // If we don't call this, the screen saver will just stop and then start up again.
+    UpdateSystemActivity(UsrActivity);
+    
+    if (bEnable)
+    {
+      // tell application id "com.apple.ScreenSaver.Engine" to launch
+      scriptObject = [[NSAppleScript alloc] initWithSource:
+        @"launch application \"ScreenSaverEngine\""];
+    }
+    else
+    {
+      // tell application id "com.apple.ScreenSaver.Engine" to quit
+      scriptObject = [[NSAppleScript alloc] initWithSource:
+        @"tell application \"ScreenSaverEngine\" to quit"];
+    }
+    returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
+    [scriptObject release];
+
+    [pool release];
+  }
+*/
 }
 
 bool CWinSystemOSX::IsSystemScreenSaverEnabled()
 {
-  return (g_xbmcHelper.GetProcessPid("ScreenSaverEngine") != -1);
+  bool sss_enabled = false;
+/*
+  if (g_sysinfo.IsAppleTV() )
+  {
+    sss_enabled = false;
+  }
+  else
+  {
+    sss_enabled = g_xbmcHelper.GetProcessPid("ScreenSaverEngine") != -1;
+  }
+*/
+  return(sss_enabled);
 }
 
 #endif

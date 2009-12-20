@@ -19,7 +19,7 @@
 				<posy>0</posy>
 				<width>1100</width>
 				<height>640</height>
-				<texture border="20">Dialogback.png</texture>
+				<texture border="20">DialogBack.png</texture>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>

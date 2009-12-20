@@ -1,38 +1,50 @@
 <scraperfunctions>
 	<GetTMDBFanartById dest="4">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBFanart&quot; cache=&quot;tmdb-images-tt\1.xml&quot;&gt;http://api.themoviedb.org/2.1/Movie.getImages/en/xml/57983e31fb435df4df77afb854740ea9/tt\1&lt;/url&gt;" dest="5">
+				<expression>/tt([0-9]+)</expression>
+			</RegExp>
 			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBFanart&quot; cache=&quot;tmdb-images-\1.xml&quot;&gt;http://api.themoviedb.org/2.1/Movie.getImages/en/xml/57983e31fb435df4df77afb854740ea9/\1&lt;/url&gt;" dest="5">
 				<expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBFanart&quot; cache=&quot;tmdb-images-tt\1.xml&quot;&gt;http://api.themoviedb.org/2.1/Movie.getImages/en/xml/57983e31fb435df4df77afb854740ea9/tt\1&lt;/url&gt;" dest="5">
-				<expression>/tt([0-9]*)</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTMDBFanartById>
 	<GetTMDBFanart dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;\2&quot;&gt;\1&lt;/thumb&gt;" dest="2">
-				<expression repeat="yes">&lt;backdrop.*?url=&quot;([^&quot;]*)&quot; size=&quot;original&quot;.*?url=&quot;([^&quot;]*)&quot; size=&quot;thumb&quot;.*?&lt;/backdrop&gt;</expression>
+			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="3">
+				<expression noclean="1" repeat="yes">&lt;backdrop[^&gt;]*&gt;(.*?)&lt;/backdrop&gt;</expression>
 			</RegExp>
-			<expression noclean="1">(.+)</expression>
+			<RegExp input="$$3" output="&lt;thumb preview=&quot;\2&quot;&gt;\1\3&lt;/thumb&gt;" dest="4">
+				<expression noclean="1,3" repeat="yes">&lt;thumb&gt;(.*?)url=&quot;([^&quot;]*)&quot; size=&quot;poster&quot;(.*?)&lt;/thumb&gt;</expression>
+			</RegExp>
+			<RegExp input="$$4" output="&lt;thumb\1&gt;\2&lt;/thumb&gt;" dest="2">
+				<expression repeat="yes" noclean="1">&lt;thumb([^&gt;]*)&gt;.*?url=&quot;([^&quot;]*)&quot; size=&quot;original&quot;.*?&lt;/thumb&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetTMDBFanart>
 	<GetTMDBThumbsById dest="4">>
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBThumbs&quot; cache=&quot;tmdb-images-tt\1.xml&quot;&gt;http://api.themoviedb.org/2.1/Movie.getImages/en/xml/57983e31fb435df4df77afb854740ea9/tt\1&lt;/url&gt;" dest="5">
+				<expression>/tt([0-9]+)</expression>
+			</RegExp>
 			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBThumbs&quot; cache=&quot;tmdb-images-\1.xml&quot;&gt;http://api.themoviedb.org/2.1/Movie.getImages/en/xml/57983e31fb435df4df77afb854740ea9/\1&lt;/url&gt;" dest="5">
 				<expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBThumbs&quot; cache=&quot;tmdb-images-tt\1.xml&quot;&gt;http://api.themoviedb.org/2.1/Movie.getImages/en/xml/57983e31fb435df4df77afb854740ea9/tt\1&lt;/url&gt;" dest="5">
-				<expression>/tt([0-9]*)</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTMDBThumbsById>
 	<GetTMDBThumbs dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;\2&quot;&gt;\1&lt;/thumb&gt;" dest="2">
-				<expression repeat="yes">&lt;poster.*?url=&quot;([^&quot;]*)&quot; size=&quot;original&quot;.*?url=&quot;([^&quot;]*)&quot; size=&quot;thumb&quot;.*?&lt;/poster&gt;</expression>
+			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="3">
+				<expression noclean="1" repeat="yes">&lt;poster[^&gt;]*&gt;(.*?)&lt;/poster&gt;</expression>
+			</RegExp>
+			<RegExp input="$$3" output="&lt;thumb preview=&quot;\2&quot;&gt;\1\3&lt;/thumb&gt;" dest="4">
+				<expression noclean="1,3" repeat="yes">&lt;thumb&gt;(.*?)url=&quot;([^&quot;]*)&quot; size=&quot;mid&quot;(.*?)&lt;/thumb&gt;</expression>
+			</RegExp>
+			<RegExp input="$$4" output="&lt;thumb\1&gt;\2&lt;/thumb&gt;" dest="2">
+				<expression repeat="yes" noclean="1">&lt;thumb([^&gt;]*)&gt;.*?url=&quot;([^&quot;]*)&quot; size=&quot;original&quot;.*?&lt;/thumb&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>

@@ -23,7 +23,6 @@
 #include "Util.h"
 #include "Settings.h"
 #include "Crc32.h"
-#include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "AutoPtrHandle.h"
 #include "utils/log.h"
@@ -102,9 +101,6 @@ bool CDatabase::Open()
   CStdString strDatabase;
   CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), m_strDatabaseFile, strDatabase);
 
-  // test id dbs already exists, if not we need 2 create the tables
-  bool bDatabaseExists = XFILE::CFile::Exists(strDatabase);
-
   m_pDB.reset(new SqliteDatabase() ) ;
   m_pDB->setDatabase(_P(strDatabase).c_str());
 
@@ -113,11 +109,12 @@ bool CDatabase::Open()
 
   if ( m_pDB->connect() != DB_CONNECTION_OK)
   {
-    CLog::Log(LOGERROR, "Unable to open %s (old version?)", m_strDatabaseFile.c_str());
+    CLog::Log(LOGERROR, "Unable to open %s (old version?)", strDatabase.c_str());
     return false;
   }
   
-  if (!bDatabaseExists)
+  // test if db already exists, if not we need to create the tables
+  if (!m_pDB->exists())
   {
     CreateTables();
   }
@@ -140,7 +137,7 @@ bool CDatabase::Open()
       { // old version - drop db completely
         CLog::Log(LOGERROR, "Unable to open %s (old version?)", m_strDatabaseFile.c_str());
         Close();
-        XFILE::CFile::Delete(strDatabase);
+        m_pDB->drop();
         return false;
       }
       if (fVersion < 3)

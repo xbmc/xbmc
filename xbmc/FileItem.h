@@ -132,6 +132,7 @@ public:
   bool IsHDHomeRun() const;
   bool IsVTP() const;
   bool IsLiveTV() const;
+  bool IsRSS() const;
 
   void RemoveExtension();
   void CleanString();
@@ -142,6 +143,9 @@ public:
   CURL GetAsUrl() const;
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
+  bool SortsOnTop() const { return m_specialSort == SORT_ON_TOP; }
+  bool SortsOnBottom() const { return m_specialSort == SORT_ON_BOTTOM; }
+  void SetSpecialSort(SPECIAL_SORT sort) { m_specialSort = sort; }
 
   inline bool HasMusicInfoTag() const
   {
@@ -275,6 +279,7 @@ public:
   int m_iBadPwdCount;
 private:
 
+  SPECIAL_SORT m_specialSort;
   bool m_bIsParentFolder;
   bool m_bCanQueue;
   bool m_bLabelPreformated;

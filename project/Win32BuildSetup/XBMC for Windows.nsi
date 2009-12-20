@@ -207,7 +207,6 @@ Section "Confluence" SecSkinConfluence
 SectionEnd
 Section "PM3.HD" SecSkinPM3.HD
   SectionIn 1 2 #section is in installtype Full and Minimal
-  SectionIn RO
   SetOutPath "$INSTDIR\skin\PM3.HD"
   File /r "${xbmc_root}\Xbmc\skin\PM3.HD\*.*"
 SectionEnd
@@ -379,7 +378,7 @@ SectionEnd
 ;DirectX webinstaller Section
 
 !if "${xbmc_target}" == "dx"
-Section "DirectX Install" SEC_DIRECTX
+Section "DirectX WebInstall" SEC_DIRECTX
  
   SectionIn RO
  
@@ -401,7 +400,7 @@ SectionEnd
 
 Section "Microsoft Visual C++ 2008 Redistributable Package (x86)" SEC_VCREDIST
 
-  SectionIn 1 2
+  SectionIn RO
   
   SetOutPath "$TEMP"
   File "${xbmc_root}\Xbmc\vcredist_x86.exe"

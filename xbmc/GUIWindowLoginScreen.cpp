@@ -309,8 +309,7 @@ void CGUIWindowLoginScreen::LoadProfile(int profile)
   }
   else
   {
-    g_windowManager.ChangeActiveWindow(WINDOW_HOME);
-    g_windowManager.ActivateWindow(g_guiSettings.GetInt("lookandfeel.startupwindow"));
+    g_windowManager.ChangeActiveWindow(startWindow);
   }
 
   g_application.UpdateLibraries();

@@ -138,7 +138,16 @@ int xbp_chdir(const char *dirname)
 
   if (strlen(dirname) > MAX_PATH) return -1;
   strcpy(xbp_cw_dir, dirname);
+
+#if (defined USE_EXTERNAL_PYTHON)
+  /* TODO: Need to figure out how to make system level Python make call to
+   * XBMC's chdir instead of non-threadsafe system chdir
+   */
+  CStdString strName = _P(dirname);
+  return chdir(strName.c_str());
+#else
   return 0;
+#endif
 }
 
 int xbp_unlink(const char *filename)

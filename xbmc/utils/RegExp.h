@@ -29,9 +29,7 @@
 namespace PCRE {
 #ifdef _WIN32
 #define PCRE_STATIC
-#include "lib/libpcre/pcre.h"
-#elif defined (__APPLE__)
-#include "lib/libpcre/pcre.h"
+#include "lib/pcre/pcre.h"
 #else
 #include <pcre.h>
 #endif

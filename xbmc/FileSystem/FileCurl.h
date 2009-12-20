@@ -139,6 +139,8 @@ namespace XFILE
       CStdString      m_postdata;
       CStdString      m_referer;
       CStdString      m_contenttype;
+      CStdString      m_username;
+      CStdString      m_password;
       bool            m_ftppasvip;
       int             m_connecttimeout;
       int             m_lowspeedtime;

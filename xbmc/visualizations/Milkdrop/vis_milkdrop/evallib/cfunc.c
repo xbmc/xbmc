@@ -152,12 +152,24 @@ __declspec ( naked ) void _asm_int(void)
 
   res = nextBlock++;
 
+  _asm mov	edx, DWORD PTR a
+  _asm fld	QWORD PTR [edx]
+   _asm mov	edx, DWORD PTR res
+   _asm fistp 	DWORD PTR [edx]
+   _asm fild DWORD PTR[edx]
+   _asm fstp QWORD PTR [edx]
+   _asm mov eax, res
+   _asm ret
+
+/*
+ MrC - The old version uses _ftol2_sse which stomps over our stack
   *res = (double) ((int)(*((double*)a)));
   __asm 
   {
     mov eax, res
     ret
   }
+*/
 }
 
 //---------------------------------------------------------------------------------------------------------------

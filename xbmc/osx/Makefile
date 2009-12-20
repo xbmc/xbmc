@@ -9,6 +9,7 @@ SRCS = \
 	CocoaInterface.mm \
 	CoreAudio.cpp \
 	CoreAudioSoundManager.cpp \
+	DarwinStorageProvider.cpp \
 	CocoaPowerSyscall.cpp \
 	OSXGNUReplacements.c \
 	ZeroconfOSX.cpp \

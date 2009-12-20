@@ -188,7 +188,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 #if defined(_LINUX) || defined(_WIN32)
   int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
-  if( num_threads > 1
+  if( num_threads > 1 && !hints.software // thumbnail extraction fails when run threaded
 #ifdef HAVE_LIBVDPAU
   &&  !g_VDPAU
 #endif

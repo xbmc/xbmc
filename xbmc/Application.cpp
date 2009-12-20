@@ -280,32 +280,16 @@ using namespace DBUSSERVER;
 #if defined(_WIN32)
  #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
   #if defined(HAS_FILESYSTEM)
-    #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
-    #pragma comment (lib,"../../xbmc/lib/libxdaap/libxdaapd.lib") // SECTIONNAME=LIBXDAAP
     #pragma comment (lib,"../../xbmc/lib/libRTV/libRTVd_win32.lib")
   #endif
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32d.lib") // SECTIONNAME=LIBHTTP
-  #pragma comment (lib,"../../xbmc/lib/sqLite/libSQLite3_win32d.lib")
-  #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32d.lib" )
   #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32d.lib" )
-  #pragma comment (lib,"../../xbmc/lib/libiconv/libiconvd.lib")
-  #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidid.lib")
-  #pragma comment (lib,"../../xbmc/lib/libpcre/libpcred.lib")
-  #pragma comment (lib,"../../xbmc/lib/libsamplerate/libsamplerate_win32d.lib")
  #else
   #ifdef HAS_FILESYSTEM
-    #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMS.lib")
-    #pragma comment (lib,"../../xbmc/lib/libxdaap/libxdaap.lib")
     #pragma comment (lib,"../../xbmc/lib/libRTV/libRTV_win32.lib")
   #endif
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
-  #pragma comment (lib,"../../xbmc/lib/sqLite/libSQLite3_win32.lib")
-  #pragma comment (lib,"../../xbmc/lib/libshout/libshout_win32.lib" )
   #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32.lib" )
-  #pragma comment (lib,"../../xbmc/lib/libiconv/libiconv.lib")
-  #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidi.lib")
-  #pragma comment (lib,"../../xbmc/lib/libpcre/libpcre.lib")
-  #pragma comment (lib,"../../xbmc/lib/libsamplerate/libsamplerate_win32.lib")
  #endif
 #endif
 
@@ -418,8 +402,10 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       {
         // Special media keys are mapped to WM_APPCOMMAND on Windows (and to DBUS events on Linux?)
         // XBMC translates WM_APPCOMMAND to XBMC_APPCOMMAND events.
+        // Set .amount1 = 1 for APPCOMMANDS like VOL_UP and DOWN that need to know how much to change the volume
         CAction action;
         action.id = newEvent.appcommand.action;
+        action.amount1 = 1;
         g_application.OnAction(action);
       }
       break;
@@ -652,12 +638,23 @@ HRESULT CApplication::Create(HWND hWnd)
     g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
   }
 
+#ifdef __APPLE__
+  // force initial window creation to be windowed, if fullscreen, it will switch to it below
+  // fixes the white screen of death if starting fullscreen and switching to windowed.
+  bool bFullScreen = false;
+  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
+  {
+    CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
+    return E_FAIL;
+  }
+#else
   bool bFullScreen = g_guiSettings.m_LookAndFeelResolution != RES_WINDOW;
   if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return E_FAIL;
   }
+#endif
 
   if (!g_Windowing.InitRenderSystem())
   {
@@ -1251,22 +1248,13 @@ HRESULT CApplication::Initialize()
   }
   else
   {
+    // test for a startup window, and activate that instead of home
     RESOLUTION res = RES_INVALID;
     CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml", &res);
     int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
-    // test for a startup window, and activate that instead of home
     if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
-    {
-      g_windowManager.ActivateWindow(WINDOW_STARTUP);
-    }
-    else
-    {
-      // We need to Popup the WindowHome to initiate the GUIWindowManger for MasterCode popup dialog!
-      // Then we can start the StartUpWindow! To prevent BlackScreen if the target Window is Protected with MasterCode!
-      g_windowManager.ActivateWindow(WINDOW_HOME);
-      if (startWindow != WINDOW_HOME)
-        g_windowManager.ActivateWindow(startWindow);
-    }
+      startWindow = WINDOW_STARTUP;
+    g_windowManager.ActivateWindow(startWindow);
   }
 
 #ifdef HAS_PYTHON
@@ -1839,6 +1827,7 @@ void CApplication::UnloadSkin()
   g_windowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
   g_TextureManager.Cleanup();
+  g_largeTextureManager.CleanupUnusedImages(true);
 
   g_fontManager.Clear();
 
@@ -2144,6 +2133,8 @@ void CApplication::Render()
 
   MEASURE_FUNCTION;
 
+  bool decrement = false;
+
   { // frame rate limiter (really bad, but it does the trick :p)
     static unsigned int lastFrameTime = 0;
     unsigned int currentTime = CTimeUtils::GetTimeMS();
@@ -2177,6 +2168,7 @@ void CApplication::Render()
 #else
       m_bPresentFrame = true;
 #endif
+      decrement = m_bPresentFrame;
     }
     else
     {
@@ -2204,6 +2196,7 @@ void CApplication::Render()
           nDelayTime = lastFrameTime + singleFrameTime - currentTime;
         Sleep(nDelayTime);
       }
+      decrement = true;
     }
 
     lastFrameTime = CTimeUtils::GetTimeMS();
@@ -2223,7 +2216,7 @@ void CApplication::Render()
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
-  if(m_frameCount > 0)
+  if(m_frameCount > 0 && decrement)
     m_frameCount--;
   SDL_mutexV(m_frameMutex);
   SDL_CondBroadcast(m_frameCond);
@@ -2298,22 +2291,17 @@ bool CApplication::OnKey(CKey& key)
   CButtonTranslator::GetInstance().GetAction(iWin, key, action);
 
   // a key has been pressed.
-  // Reset the screensaver timer
-  // but not for the analog thumbsticks/triggers
-  if (!key.IsAnalogButton())
+  // reset Idle Timer
+  m_idleTimer.StartZero();
+  bool processKey = AlwaysProcess(action);
+
+  ResetScreenSaver();
+
+  // allow some keys to be processed while the screensaver is active
+  if (WakeUpScreenSaverAndDPMS() && !processKey)
   {
-    // reset Idle Timer
-    m_idleTimer.StartZero();
-    bool processKey = AlwaysProcess(action);
-
-    ResetScreenSaver();
-
-    // allow some keys to be processed while the screensaver is active
-    if (WakeUpScreenSaverAndDPMS() && !processKey)
-    {
-      g_Keyboard.Reset();
-      return true;
-    }
+    g_Keyboard.Reset();
+    return true;
   }
 
   // change this if we have a dialog up
@@ -2362,7 +2350,7 @@ bool CApplication::OnKey(CKey& key)
       if (control)
       {
         if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||
-            (control->IsContainer() && g_Keyboard.GetShift()))
+            (control->IsContainer() && g_Keyboard.GetShift() && !(g_Keyboard.GetCtrl() || g_Keyboard.GetAlt() || g_Keyboard.GetRAlt())))
           useKeyboard = true;
       }
     }
@@ -3204,6 +3192,16 @@ bool CApplication::ProcessKeyboard()
     else
       keyID = KEY_UNICODE;
     //  CLog::Log(LOGDEBUG,"Keyboard: time=%i key=%i", CTimeUtils::GetFrameTime(), vkey);
+
+    // Check what modifiers are held down and update the key code as appropriate
+    if (g_Keyboard.GetCtrl())
+        keyID |= CKey::MODIFIER_CTRL;
+    if (g_Keyboard.GetShift())
+        keyID |= CKey::MODIFIER_SHIFT;
+    if (g_Keyboard.GetAlt())
+        keyID |= CKey::MODIFIER_ALT;
+
+    // Create a key object with the keypress data and pass it to OnKey to be executed
     CKey key(keyID);
     key.SetHeld(g_Keyboard.KeyHeld());
     return OnKey(key);
@@ -3804,7 +3802,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   bool bResult;
   if (m_pPlayer)
+  {
+    // don't hold graphicscontext here since player
+    // may wait on another thread, that requires gfx
+    CSingleExit ex(g_graphicsContext);
     bResult = m_pPlayer->OpenFile(item, options);
+  }
   else
   {
     CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.m_strPath.c_str());
@@ -3829,7 +3832,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
        SwitchToFullScreen();
 
       // Save information about the stream if we currently have no data
-      if (item.HasVideoInfoTag())
+      if (item.HasVideoInfoTag() && !item.IsDVDImage() && !item.IsDVDFile())
       {
         CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
         if (!details->HasStreamDetails())
@@ -3857,6 +3860,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // we must have started, otherwise player might send this later
     if(IsPlaying())
       OnPlayBackStarted();
+    else
+      OnPlayBackEnded();
   }
   else
   {
@@ -4115,20 +4120,33 @@ void CApplication::SaveFileState()
   {
     if (m_progressTrackingItem->IsVideo())
     {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for video file %s", __FUNCTION__, progressTrackingFile.c_str());
+      CLog::Log(LOGDEBUG, "%s - Saving file state for video item %s", __FUNCTION__, progressTrackingFile.c_str());
 
       CVideoDatabase videodatabase;
       if (videodatabase.Open())
       {
-        if (m_progressTrackingPlayCountUpdate)
+        // No resume & watched status for livetv
+        if (!m_progressTrackingItem->IsLiveTV())
         {
-          CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, progressTrackingFile.c_str());
+          if (m_progressTrackingPlayCountUpdate)
+          {
+            CLog::Log(LOGDEBUG, "%s - Marking video item %s as watched", __FUNCTION__, progressTrackingFile.c_str());
 
-          // consider this item as played
-          videodatabase.MarkAsWatched(*m_progressTrackingItem);
-          CUtil::DeleteVideoDatabaseDirectoryCache();
-          CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
-          g_windowManager.SendMessage(message);
+            // consider this item as played
+            videodatabase.MarkAsWatched(*m_progressTrackingItem);
+            CUtil::DeleteVideoDatabaseDirectoryCache();
+            CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
+            g_windowManager.SendMessage(message);
+          }
+
+          if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
+          {
+            videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
+          }
+          else if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
+          {
+            videodatabase.AddBookMarkToFile(progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
+          }
         }
 
         if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
@@ -4136,22 +4154,24 @@ void CApplication::SaveFileState()
           videodatabase.SetVideoSettings(progressTrackingFile, g_stSettings.m_currentVideoSettings);
         }
 
-        if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
+        if ((m_progressTrackingItem->IsDVDImage() ||
+             m_progressTrackingItem->IsDVDFile()    ) &&
+             m_progressTrackingItem->HasVideoInfoTag() &&
+             m_progressTrackingItem->GetVideoInfoTag()->HasStreamDetails())
         {
-          videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
-        }
-        else
-        if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
-        {
-          videodatabase.AddBookMarkToFile(progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
+          videodatabase.SetStreamDetailsForFile(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails,progressTrackingFile);
+          CUtil::DeleteVideoDatabaseDirectoryCache();
+          CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
+          g_windowManager.SendMessage(message);
         }
 
         videodatabase.Close();
       }
     }
-    else
+
+    if (m_progressTrackingItem->IsAudio())
     {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for audio file %s", __FUNCTION__, progressTrackingFile.c_str());
+      CLog::Log(LOGDEBUG, "%s - Saving file state for audio item %s", __FUNCTION__, progressTrackingFile.c_str());
 
       if (m_progressTrackingPlayCountUpdate)
       {
@@ -4160,7 +4180,7 @@ void CApplication::SaveFileState()
         if (dialog && !dialog->IsDialogRunning())
         {
           // consider this item as played
-          CLog::Log(LOGDEBUG, "%s - Marking audio file %s as listened", __FUNCTION__, progressTrackingFile.c_str());
+          CLog::Log(LOGDEBUG, "%s - Marking audio item %s as listened", __FUNCTION__, progressTrackingFile.c_str());
 
           CMusicDatabase musicdatabase;
           if (musicdatabase.Open())
@@ -4204,6 +4224,14 @@ void CApplication::UpdateFileState()
 
     if (m_progressTrackingItem->IsVideo())
     {
+      if ((m_progressTrackingItem->IsDVDImage() ||
+           m_progressTrackingItem->IsDVDFile()    ) &&
+          m_pPlayer->GetTotalTime() > 15*60)
+
+      {
+        m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.Reset();
+        m_pPlayer->GetStreamDetails(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails);
+      }
       // Update bookmark for save
       m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
       m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();

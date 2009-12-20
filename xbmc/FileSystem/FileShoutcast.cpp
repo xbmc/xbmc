@@ -33,6 +33,7 @@
 #include "GUIWindowManager.h"
 #include "URL.h"
 #include "utils/TimeUtils.h"
+#include "LocalizeStrings.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -62,7 +63,7 @@ extern "C"
 }
 #endif
 
-const int SHOUTCASTTIMEOUT = 100;
+const int SHOUTCASTTIMEOUT = 10;
 static CRingBuffer m_ringbuf;
 
 static FileState m_fileState;
@@ -308,7 +309,7 @@ bool CFileShoutcast::Open(const CURL& url)
       Sleep(100);
       char szTmp[1024];
       //g_dialog.SetCaption(0, "Shoutcast" );
-      sprintf(szTmp, "Buffering %i bytes", m_ringbuf.GetMaxReadSize());
+      sprintf(szTmp, g_localizeStrings.Get(23052).c_str(), m_ringbuf.GetMaxReadSize());
       if (dlgProgress)
       {
         dlgProgress->SetLine(2, szTmp );
@@ -352,7 +353,8 @@ bool CFileShoutcast::Open(const CURL& url)
     if (dlgProgress)
     {
       dlgProgress->SetLine(1, 257);
-      dlgProgress->SetLine(2, m_errorInfo.error_str);
+      dlgProgress->SetLine(2, 16029);
+      CLog::Log(LOGERROR, "%s: error - %s", __FUNCTION__, m_errorInfo.error_str);
       dlgProgress->Progress();
 
       Sleep(1500);

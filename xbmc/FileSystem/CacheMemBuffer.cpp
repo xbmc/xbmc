@@ -88,6 +88,8 @@ int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize)
     nToWrite = 0;
   }
 
+  m_written.PulseEvent();
+
   return nToWrite;
 }
 
@@ -125,6 +127,9 @@ int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize)
     m_forwardBuffer.Clear();
   }
 
+  if (nRead > 0)
+    m_space.PulseEvent();
+
   return nRead;
 }
 
@@ -135,7 +140,7 @@ int64_t CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int millis)
 
   unsigned int time = CTimeUtils::GetTimeMS() + millis;
   while (!IsEndOfInput() && (unsigned int) m_buffer.GetMaxReadSize() < iMinAvail && CTimeUtils::GetTimeMS() < time )
-    Sleep(50); // may miss the deadline. shouldn't be a problem.
+    m_written.WaitMSec(50); // may miss the deadline. shouldn't be a problem.
 
   return m_buffer.GetMaxReadSize();
 }
@@ -176,6 +181,7 @@ int64_t CacheMemBuffer::Seek(int64_t iFilePosition, int iWhence)
     }
 
     m_nStartPosition = iFilePosition;
+    m_space.PulseEvent();
     return m_nStartPosition;
   }
 
@@ -204,6 +210,7 @@ int64_t CacheMemBuffer::Seek(int64_t iFilePosition, int iWhence)
     m_HistoryBuffer.Clear();
 
     m_nStartPosition = iFilePosition;
+    m_space.PulseEvent();
     return m_nStartPosition;
   }
 

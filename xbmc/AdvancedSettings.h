@@ -92,6 +92,9 @@ class CAdvancedSettings
     CStdString m_audioHost;
     bool m_audioApplyDrc;
 
+    int m_videoHighQualityScaling;
+    int m_videoHighQualityScalingMethod;
+
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
     float m_videoPlayCountMinimumPercent;
@@ -108,6 +111,7 @@ class CAdvancedSettings
     int m_lcdAddress4;
     bool m_lcdHeartbeat;
     int m_lcdScrolldelay;
+    CStdString m_lcdHostName;
 
     int m_autoDetectPingTime;
 
@@ -227,6 +231,9 @@ class CAdvancedSettings
     CStdString m_cpuTempCmd;
     CStdString m_gpuTempCmd;
     int m_bgInfoLoaderMaxThreads;
+
+    bool m_measureRefreshrate; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
+                               //otherwise it will use the windows refreshrate
 };
 
 extern CAdvancedSettings g_advancedSettings;

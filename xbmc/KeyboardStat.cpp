@@ -64,6 +64,36 @@ struct XBMC_KeyMapping
   WCHAR Unicode;
 };
 
+// Convert control keypresses e.g. ctrl-A from 0x01 to 0x41
+static XBMC_KeyMapping g_mapping_ctrlkeys[] =
+{ {0x61, 0x41, XBMCK_a, XBMCK_a}
+, {0x62, 0x42, XBMCK_b, XBMCK_b}
+, {0x63, 0x43, XBMCK_c, XBMCK_c}
+, {0x64, 0x44, XBMCK_d, XBMCK_d}
+, {0x65, 0x45, XBMCK_e, XBMCK_e}
+, {0x66, 0x46, XBMCK_f, XBMCK_f}
+, {0x67, 0x47, XBMCK_g, XBMCK_g}
+, {0x68, 0x48, XBMCK_h, XBMCK_h}
+, {0x69, 0x49, XBMCK_i, XBMCK_i}
+, {0x6a, 0x4a, XBMCK_j, XBMCK_j}
+, {0x6b, 0x4b, XBMCK_k, XBMCK_k}
+, {0x6c, 0x4c, XBMCK_l, XBMCK_l}
+, {0x6d, 0x4d, XBMCK_m, XBMCK_m}
+, {0x6e, 0x4e, XBMCK_n, XBMCK_n}
+, {0x6f, 0x4f, XBMCK_o, XBMCK_o}
+, {0x70, 0x50, XBMCK_p, XBMCK_p}
+, {0x71, 0x51, XBMCK_q, XBMCK_q}
+, {0x72, 0x52, XBMCK_r, XBMCK_r}
+, {0x73, 0x53, XBMCK_s, XBMCK_s}
+, {0x74, 0x54, XBMCK_t, XBMCK_t}
+, {0x75, 0x55, XBMCK_u, XBMCK_u}
+, {0x76, 0x56, XBMCK_v, XBMCK_v}
+, {0x77, 0x57, XBMCK_w, XBMCK_w}
+, {0x78, 0x58, XBMCK_x, XBMCK_x}
+, {0x79, 0x59, XBMCK_y, XBMCK_y}
+, {0x7a, 0x5a, XBMCK_z, XBMCK_z}
+};
+
 // based on the evdev mapped scancodes in /user/share/X11/xkb/keycodes
 static XBMC_KeyMapping g_mapping_evdev[] =
 { { 121, 0xad } // Volume mute
@@ -749,6 +779,19 @@ void CKeyboardStat::Update(XBMC_Event& event)
       else if (event.key.keysym.unicode == '"') { m_VKey = 0xee; m_cAscii = '"'; }
       else if (event.key.keysym.unicode == '\'') { m_VKey = 0xee; m_cAscii = '\''; }
 
+      // For control key combinations, e.g. ctrl-P, the UNICODE gets set
+      // to 1 for ctrl-A, 2 for ctrl-B etc. This mapping sets the UNICODE
+      // back to 'a', 'b', etc.
+      // It isn't clear to me if this applies to Linux and Mac as well as
+      // Windows.
+      if (m_bCtrl)
+      {
+        if (!m_VKey && !m_cAscii)
+          LookupKeyMapping(&m_VKey, NULL, &m_wUnicode
+                         , event.key.keysym.sym
+                         , g_mapping_ctrlkeys
+                         , sizeof(g_mapping_ctrlkeys)/sizeof(g_mapping_ctrlkeys[0]));
+      }
 
       /* Check for standard non printable keys */
       if (!m_VKey && !m_cAscii)

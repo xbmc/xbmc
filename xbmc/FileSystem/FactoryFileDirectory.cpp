@@ -28,6 +28,7 @@
 #include "NSFFileDirectory.h"
 #include "SIDFileDirectory.h"
 #include "ASAPFileDirectory.h"
+#include "RSSDirectory.h"
 #include "cores/paplayer/ASAPCodec.h"
 #endif
 #include "RarDirectory.h"
@@ -59,7 +60,6 @@ CFactoryFileDirectory::~CFactoryFileDirectory(void)
 IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileItem* pItem, const CStdString& strMask)
 {
   CStdString strExtension=CUtil::GetExtension(strPath);
-  if (strExtension.size() == 0) return NULL;
   strExtension.MakeLower();
 
 #ifdef HAS_FILESYSTEM
@@ -95,6 +95,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     delete pDir;
     return NULL;
   }
+#ifdef HAS_ASAP_CODEC
   if (ASAPCodec::IsSupportedFormat(strExtension) && CFile::Exists(strPath))
   {
     IFileDirectory* pDir=new CASAPFileDirectory;
@@ -105,6 +106,11 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     delete pDir;
     return NULL;
   }
+#endif
+
+  if (pItem->IsRSS())
+    return new CRSSDirectory();
+
 #endif
   if (strExtension.Equals(".zip"))
   {

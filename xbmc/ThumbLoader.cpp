@@ -98,17 +98,21 @@ bool CThumbExtractor::DoWork()
 {
   if (CUtil::IsLiveTV(m_path)
   ||  CUtil::IsUPnP(m_path)
-  ||  CUtil::IsDAAP(m_path))
+  ||  CUtil::IsDAAP(m_path)
+  ||  m_item.IsDVD()
+  ||  m_item.IsDVDImage()
+  ||  m_item.IsDVDFile(false, true))
     return false;
 
   if (CUtil::IsRemote(m_path) && !CUtil::IsOnLAN(m_path))
     return false;
 
-  if (m_thumb && g_guiSettings.GetBool("myvideos.extractflags") && 
+  bool result=false;
+  if (m_thumb && g_guiSettings.GetBool("myvideos.extractflags") &&
       g_guiSettings.GetBool("myvideos.extractthumb"))
   {
     CLog::Log(LOGDEBUG,"%s - trying to extract thumb from video file %s", __FUNCTION__, m_path.c_str());
-    CDVDFileInfo::ExtractThumb(m_path, m_target, &m_item.GetVideoInfoTag()->m_streamDetails);
+    result=CDVDFileInfo::ExtractThumb(m_path, m_target, &m_item.GetVideoInfoTag()->m_streamDetails);
     if (CFile::Exists(m_target))
     {
       m_item.SetProperty("HasAutoThumb", "1");
@@ -120,10 +124,10 @@ bool CThumbExtractor::DoWork()
            g_guiSettings.GetBool("myvideos.extractflags")   &&
            !m_item.GetVideoInfoTag()->HasStreamDetails())
   {
-    CDVDFileInfo::GetFileStreamDetails(&m_item);
+    result = CDVDFileInfo::GetFileStreamDetails(&m_item);
   }
 
-  return true;
+  return result;
 }
 
 CVideoThumbLoader::CVideoThumbLoader() :
@@ -181,11 +185,13 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
   CFileItem item(*pItem);
   CStdString cachedThumb(item.GetCachedVideoThumb());
-  
+
   if (!pItem->HasThumbnail())
   {
     item.SetUserVideoThumb();
-    if (!CFile::Exists(cachedThumb))
+    if (CFile::Exists(cachedThumb))
+      pItem->SetThumbnailImage(cachedThumb);
+    else
     {
       CStdString strPath, strFileName;
       CUtil::Split(cachedThumb, strPath, strFileName);
@@ -196,6 +202,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       {
         pItem->SetProperty("HasAutoThumb", "1");
         pItem->SetProperty("AutoThumbImage", cachedThumb);
+        pItem->SetThumbnailImage(cachedThumb);
       }
       else if (!item.m_bIsFolder && item.IsVideo() && !item.IsInternetStream() && !item.IsPlayList())
       {
@@ -203,14 +210,15 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         if (item.IsStack())
           path = CStackDirectory::GetFirstStackedFile(item.m_strPath);
 
+        if (item.IsVideoDb() && item.HasVideoInfoTag())
+          path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+
         CThumbExtractor* extract = new CThumbExtractor(item, pItem->m_strPath, true, path, cachedThumb);
         AddJob(extract);
       }
     }
-    if (CFile::Exists(cachedThumb))
-      pItem->SetThumbnailImage(cachedThumb);
   }
-  else
+  else if (!pItem->GetThumbnailImage().Left(10).Equals("special://"))
     LoadRemoteThumb(pItem);
 
   if (!pItem->HasProperty("fanart_image"))
@@ -232,16 +240,19 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
 void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
-  CThumbExtractor* loader = (CThumbExtractor*)job;
-  loader->m_item.m_strPath = loader->m_listpath;
-  CVideoInfoTag* info = loader->m_item.GetVideoInfoTag();
-  if (m_pStreamDetailsObs)
-    m_pStreamDetailsObs->OnStreamDetails(info->m_streamDetails, info->m_strFileNameAndPath, info->m_iFileId);
-  if (m_pObserver)
-    m_pObserver->OnItemLoaded(&loader->m_item);
-  CFileItemPtr pItem(new CFileItem(loader->m_item));
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
-  g_windowManager.SendThreadMessage(msg);
+  if (success)
+  {
+    CThumbExtractor* loader = (CThumbExtractor*)job;
+    loader->m_item.m_strPath = loader->m_listpath;
+    CVideoInfoTag* info = loader->m_item.GetVideoInfoTag();
+    if (m_pStreamDetailsObs)
+      m_pStreamDetailsObs->OnStreamDetails(info->m_streamDetails, info->m_strFileNameAndPath, info->m_iFileId);
+    if (m_pObserver)
+      m_pObserver->OnItemLoaded(&loader->m_item);
+    CFileItemPtr pItem(new CFileItem(loader->m_item));
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
+    g_windowManager.SendThreadMessage(msg);
+  }
   CJobQueue::OnJobComplete(jobID, success, job);
 }
 

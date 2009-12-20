@@ -131,7 +131,6 @@ public:
   virtual bool SupportsGamma() { return false; }
   virtual bool SupportsMultiPassRendering() { return false; }
 
-  virtual void AutoCrop(bool bCrop);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
 protected:

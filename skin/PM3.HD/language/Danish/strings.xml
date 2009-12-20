@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Language file translated with Notepad++ -->
+<!--Language file translated with Team XBMC Translator-->
 <!--Translator: Kim Buchwald Christensen-->
-<!--Email: kimbchr@gmail.com-->
-<!--Date of translation: 04/13/2009-->
+<!--Email: kimbchr at gmail dot com-->
+<!--Date of translation: 12/04/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 17639-->
+<!--Based on english strings version 24928-->
 <strings>
   <string id="31000">Lyden er skruet helt ned</string>
-  <string id="31001"></string>
+  <string id="31001">Arbejder...</string>
   <string id="31002"></string>
   <string id="31003"></string>
   <string id="31004"></string>
@@ -26,14 +26,12 @@
   <string id="31017"></string>
   <string id="31018"></string>
   <string id="31019"></string>
-
   <string id="31020">Kapiteltitel</string>
   <string id="31021">Video - filer</string>
   <string id="31022">Musik - filer</string>
   <string id="31023"></string>
   <string id="31024">Side</string>
   <string id="31025">Objekter</string>
-
   <string id="31026"></string>
   <string id="31027"></string>
   <string id="31028">DVD-ikoner</string>
@@ -43,36 +41,28 @@
   <string id="31032">Coverflow</string>
   <string id="31033">Billedeikoner</string>
   <string id="31034">Brede ikoner</string>
-
   <string id="31040">Nuværende film[CR]Billede til Fankunst[CR][CR]Klik for at skifte</string>
   <string id="31041">Nuværende TV-serie[CR]Billede til fankunst[CR][CR]Klik for at skifte</string>
   <string id="31042">AFSPILLER</string>
   <string id="31043">PAUSE</string>
-  <string id="31044">HURTIGT FREMAD</string>
+  <string id="31044">SPOL FREM</string>
   <string id="31045">SPOL TILBAGE</string>
   <string id="31046">Velkommen til XBMC - log venligst ind</string>
   <string id="31047">Sidst logget ind</string>
   <string id="31048">Nuværende kunstner[CR]Billede til fankunst[CR]Klik for at skifte</string>
-
   <string id="31050"></string>
   <string id="31051"></string>
   <string id="31052"></string>
-
-  <!-- Lyrics Script Extra labels -->
   <string id="31053">XBMC SANGTEKSTER</string>
   <string id="31054">Vælg sang fra listen</string>
-
-  <!-- Playlist Editor labels -->
   <string id="31055">Åbn afspilningsliste</string>
   <string id="31056">Gem afspilningsliste</string>
   <string id="31057">Luk afspilningsliste</string>
   <string id="31058">Systemmusikfiler</string>
   <string id="31059">Nuværende afspilningsliste</string>
   <string id="31060">Denne fil er stakket. Vælg den del, der skal afspilles fra.</string>
-  
-  <!-- Skin Settings labels -->
   <string id="31100">Indstillinger for baggrunde</string>
-  <string id="31101">Indstillinger til hjemmevinduet</string>
+  <string id="31101">Indstillinger til hovedsiden</string>
   <string id="31102">Baggrunde</string>
   <string id="31103">Vis teksten "Pause" ved visning af billedserie</string>
   <string id="31104">Nedlukningsmenu - brug dvale i stedet for standby</string>
@@ -80,12 +70,14 @@
   <string id="31106">Diverse indstillinger</string>
   <string id="31107">Fjern skanningslinjer fra baggrunden</string>
   <string id="31108">Fjern skanningslinjer fra baggrunden ved videoafspilning</string>
-  <string id="31109">Baggrunde til hjemmevinduet</string>
-  <string id="31110">knap - Aktiver egne baggrunde</string>
+  <string id="31109">Baggrunde til hovedsiden</string>
+  <string id="31110">knap - Egne baggrunde</string>
   <string id="31111">Vis altid musikinfo samtidigt med sangtekster</string>
   <string id="31112">Vis medietitler i visningen "bred"</string>
-
-  <!-- Script Settings labels -->
+  <string id="31113">Enkelt billede</string>
+  <string id="31114">Flere billeder</string>
+  <string id="31115">Erstat knap til lydindstillinger med Tekst-TV</string>
+  <string id="31116">Skjul ikoner for videotype i medievisningerne</string>
   <string id="31200">Specielle valgmuligheder til skript</string>
   <string id="31201"></string>
   <string id="31202"></string>
@@ -93,10 +85,8 @@
   <string id="31204">Sti til skript</string>
   <string id="31205"></string>
   <string id="31206"></string>
-  <string id="31207"></string>
-  <string id="31208">Vis knappen til sangtekst-skriptprogrammet i OSD</string>
+  <string id="31207">Vis knap til at hente undertekster på OSD på videoskærmen</string>
+  <string id="31208">Vis knap til sangtekst-skriptprogrammet på OSD på musikskærmen</string>
   <string id="31209">Aktiver knappen til hurtigstart af skripts for -</string>
-
-  <!-- AMT Script Extra labels -->
   <string id="31300">Vis medvirkende</string>
 </strings>

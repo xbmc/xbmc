@@ -85,7 +85,7 @@ CGUILargeTextureManager::CLargeTexture::CLargeTexture(const CStdString &path)
   m_path = path;
   m_refCount = 1;
   m_timeToDelete = 0;
-};
+}
 
 CGUILargeTextureManager::CLargeTexture::~CLargeTexture()
 {
@@ -113,9 +113,9 @@ bool CGUILargeTextureManager::CLargeTexture::DecrRef(bool deleteImmediately)
   return false;
 }
 
-bool CGUILargeTextureManager::CLargeTexture::DeleteIfRequired()
+bool CGUILargeTextureManager::CLargeTexture::DeleteIfRequired(bool deleteImmediately)
 {
-  if (m_refCount == 0 && m_timeToDelete < CTimeUtils::GetFrameTime())
+  if (m_refCount == 0 && (deleteImmediately || m_timeToDelete < CTimeUtils::GetFrameTime()))
   {
     delete this;
     return true;
@@ -138,7 +138,7 @@ CGUILargeTextureManager::~CGUILargeTextureManager()
 {
 }
 
-void CGUILargeTextureManager::CleanupUnusedImages()
+void CGUILargeTextureManager::CleanupUnusedImages(bool immediately)
 {
   CSingleLock lock(m_listSection);
   // check for items to remove from allocated list, and remove
@@ -146,7 +146,7 @@ void CGUILargeTextureManager::CleanupUnusedImages()
   while (it != m_allocated.end())
   {
     CLargeTexture *image = *it;
-    if (image->DeleteIfRequired())
+    if (image->DeleteIfRequired(immediately))
       it = m_allocated.erase(it);
     else
       ++it;

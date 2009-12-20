@@ -205,7 +205,7 @@
 					<font>-</font>
 					<aligny>-</aligny>
 					<onclick>ActivateWindow(ShutdownMenu)</onclick>
-					<texturefocus>home-power.png</texturefocus>
+					<texturefocus>home-power-FO.png</texturefocus>
 					<texturenofocus>home-power.png</texturenofocus>
 					<onleft>52</onleft>
 					<onright>52</onright>

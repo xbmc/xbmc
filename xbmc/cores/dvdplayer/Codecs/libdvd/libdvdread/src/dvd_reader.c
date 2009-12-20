@@ -369,14 +369,12 @@ dvd_reader_t *DVDOpen( const char *ppath )
     ret = stat( path, &fileinfo );
 
     if( ret < 0 ) {
-#if 0
         /* maybe "host:port" url? try opening it with acCeSS library */
         if( strchr(path,':') ) {
 			ret_val = DVDOpenImageFile( path, have_css );
 			free(path);
 	        return ret_val;
         }
-#endif
 	/* If we can't stat the file, give up */
 	fprintf( stderr, "libdvdread: Can't stat %s\n", path );
 	perror("");

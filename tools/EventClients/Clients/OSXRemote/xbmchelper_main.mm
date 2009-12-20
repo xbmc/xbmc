@@ -21,7 +21,7 @@ bool g_verbose_mode = false;
 
 //
 const char* PROGNAME="XBMCHelper";
-const char* PROGVERS="0.6";
+const char* PROGVERS="0.7";
 
 void ParseOptions(int argc, char** argv);
 void ReadConfig();

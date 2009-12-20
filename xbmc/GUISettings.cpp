@@ -247,7 +247,7 @@ void CGUISettings::Initialize()
   AddBool(2, "musiclibrary.showcompilationartists", 13414, true);
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.downloadinfo", 20192, false);
-  AddString(6, "musiclibrary.defaultscraper", 20194, "discogs.xml", SPIN_CONTROL_TEXT);
+  AddString(6, "musiclibrary.scraper", 20194, "allmusic.xml", SPIN_CONTROL_TEXT);
   AddString(7, "musiclibrary.scrapersettings", 21417, "", BUTTON_CONTROL_STANDARD);
   AddBool(8, "musiclibrary.updateonstartup", 22000, false);
   AddBool(0, "musiclibrary.backgroundupdate", 22001, false);
@@ -332,11 +332,13 @@ void CGUISettings::Initialize()
   bool showSetting = true;
   if (g_sysinfo.IsAeroDisabled())
     fakeFullScreen = false;
+#if defined (__APPLE__)
   if (g_sysinfo.IsAppleTV())
   {
     fakeFullScreen = false;
-    showSetting = false;
   }
+  showSetting = false;
+#endif
   AddBool(showSetting ? 2 : 0, "videoscreen.fakefullscreen", 14083, fakeFullScreen);
   AddBool(3, "videoscreen.blankdisplays", 13130, false);
   AddSeparator(4, "videoscreen.sep1");
@@ -348,7 +350,10 @@ void CGUISettings::Initialize()
   AddInt(5, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
 #endif
   AddString(6, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
+#ifndef HAS_DX
+  // Todo: Implement test pattern for DX
   AddString(7, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
+#endif
 #if defined(_LINUX) && !defined(__APPLE__)
   AddSeparator(8, "videoscreen.sep2");
   AddBool(9, "videoscreen.haslcd", 4501, false);
@@ -406,14 +411,6 @@ void CGUISettings::Initialize()
   // hidden masterlock settings
   AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT);
 
-  //AddCategory(4, "autorun", 447);
-  AddBool(1, "autorun.dvd", 240, true);
-  AddBool(2, "autorun.vcd", 241, true);
-  AddBool(3, "autorun.cdda", 242, true);
-  AddBool(5, "autorun.video", 244, true);
-  AddBool(6, "autorun.music", 245, true);
-  AddBool(7, "autorun.pictures", 246, true);
-
   AddCategory(4, "cache", 439);
   AddInt(0, "cache.harddisk", 14025, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
   AddSeparator(0, "cache.sep1");
@@ -456,36 +453,39 @@ void CGUISettings::Initialize()
 #else
   AddInt(3, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_SOFTWARE, SPIN_CONTROL_TEXT);
 #endif
+#ifdef HAS_GL
+  AddBool(4, "videoplayer.usepbo", 13424, false);
+#endif
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
-  AddBool(4, "videoplayer.adjustrefreshrate", 170, false);
+  AddBool(5, "videoplayer.adjustrefreshrate", 170, false);
   //sync settings not available on windows gl build
 #if defined(_WIN32) && defined(HAS_GL)
   #define SYNCSETTINGS 0
 #else
   #define SYNCSETTINGS 1
 #endif
-  AddBool(SYNCSETTINGS ? 5 : 0, "videoplayer.usedisplayasclock", 13510, false);
-  AddInt(SYNCSETTINGS ? 6 : 0, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
+  AddBool(SYNCSETTINGS ? 6 : 0, "videoplayer.usedisplayasclock", 13510, false);
+  AddInt(SYNCSETTINGS ? 7 : 0, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
   AddFloat(0, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
   AddInt(0, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
-  AddInt(7, "videoplayer.aspecterror", 22021, 3, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_PERCENT, TEXT_NONE);
+  AddInt(8, "videoplayer.errorinaspect", 22021, 0, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_PERCENT, TEXT_NONE);
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.strictbinding", 13120, false);
   AddBool(0, "videoplayer.vdpau_allow_xrandr", 13122, false);
 #endif
 #ifdef HAS_GL
-  AddSeparator(8, "videoplayer.sep1.5");
+  AddSeparator(9, "videoplayer.sep1.5");
   AddInt(0, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
-  AddBool(10, "videoplayer.vdpauUpscalingLevel", 13121, false);
-  AddBool(11, "videoplayer.vdpaustudiolevel", 13122, true);
+  AddBool(0, "videoplayer.vdpauUpscalingLevel", 13121, false);
+  AddBool(10, "videoplayer.vdpaustudiolevel", 13122, false);
 #endif
 #endif
-  AddSeparator(12, "videoplayer.sep5");
-  AddBool(13, "videoplayer.teletextenabled", 23050, true);
+  AddSeparator(11, "videoplayer.sep5");
+  AddBool(12, "videoplayer.teletextenabled", 23050, true);
 
   AddCategory(5, "myvideos", 14081);
   AddBool(0, "myvideos.treatstackasfile", 20051, true);
@@ -609,8 +609,8 @@ void CGUISettings::Initialize()
   AddString(3, "locale.charset", 14091, "DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
 #if defined(_LINUX) && !defined(__APPLE__)
   AddSeparator(4, "locale.sep1");
-  AddString(8, "locale.timezone", 14079, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
-  AddString(7, "locale.timezonecountry", 14080, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
+  AddString(7, "locale.timezonecountry", 14079, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
+  AddString(8, "locale.timezone", 14080, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
 #endif
 #ifdef HAS_TIME_SERVER
   AddSeparator(9, "locale.sep2");
@@ -633,7 +633,7 @@ void CGUISettings::Initialize()
   AddBool(4, "screensaver.usedimonpause", 22014, true);
   AddSeparator(5, "screensaver.sep1");
   AddInt(6, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddPath(7, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddPath(7, "screensaver.slideshowpath", 774, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddSeparator(8, "screensaver.sep2");
   AddString(9, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
 

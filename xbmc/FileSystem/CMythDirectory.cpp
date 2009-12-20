@@ -34,8 +34,8 @@
 
 extern "C"
 {
-#include "lib/libcmyth/cmyth.h"
-#include "lib/libcmyth/mvp_refmem.h"
+#include "cmyth/include/cmyth/cmyth.h"
+#include "cmyth/include/refmem/refmem.h"
 }
 
 using namespace DIRECTORY;
@@ -170,8 +170,19 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &
       CDateTime starttime(program[i].starttime);
       CDateTime endtime(program[i].endtime);
 
-      tm *local = localtime(&program[i].starttime);
-      CDateTime localstart = *local;
+      CDateTime localstart;
+      if (program[i].starttime)
+      {
+        tm *local = localtime(&program[i].starttime); // Conversion to local time
+        /*
+         * Microsoft implementation of localtime returns NULL if on or before epoch.
+         * (http://msdn.microsoft.com/en-us/library/bf12f0hc(VS.80).aspx)
+         */
+        if (local)
+          localstart = *local;
+        else
+          localstart = program[i].starttime; // Use the actual start time as close enough.
+      }
       CStdString title;
       title.Format("%s - %s", localstart.GetAsLocalizedTime("HH:mm", false), program[i].title);
 
@@ -278,6 +289,11 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
 
       CFileItemPtr item(new CFileItem(url.Get(), false));
       m_session->UpdateItem(*item, program);
+      /*
+       * TODO: Refactor UpdateItem so it doesn't change the path of a program that is currently
+       * recording if it wasn't opened through Live TV.
+       */
+      item->m_strPath = url.Get(); // Overwrite potentially incorrect change to path if recording
 
       url.SetFileName("files/" + path + ".png");
       item->SetThumbnailImage(url.Get());

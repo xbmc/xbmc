@@ -188,7 +188,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return false;
 
           CFileItemPtr item = m_vecItems->Get(iItem);
-          if (m_vecItems->IsPlugin())
+          if (m_vecItems->IsPlugin() || m_vecItems->IsRSS())
             info.strContent = "plugin";
           else if(m_vecItems->IsLiveTV())
             info.strContent = "livetv";
@@ -1233,11 +1233,15 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     OnRenameItem(itemNumber);
     return true;
   case CONTEXT_BUTTON_MARK_WATCHED:
-    MarkWatched(item,true);
-    CUtil::DeleteVideoDatabaseDirectoryCache();
-    Update(m_vecItems->m_strPath);
-    return true;
+    {
+      int newSelection = m_viewControl.GetSelectedItem() + 1;
+      MarkWatched(item,true);
+      m_viewControl.SetSelectedItem(newSelection);
 
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+      Update(m_vecItems->m_strPath);
+      return true;
+    }
   case CONTEXT_BUTTON_MARK_UNWATCHED:
     MarkWatched(item,false);
     CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -1860,7 +1864,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info, 
   if (!item)
     return 0;
 
-  if (m_vecItems->IsPlugin())
+  if (m_vecItems->IsPlugin() || m_vecItems->IsRSS())
   {
     info.strContent = "plugin";
     return 0;

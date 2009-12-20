@@ -447,10 +447,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
     }
-    else if (strSetting.Equals("musiclibrary.defaultscraper"))
+    else if (strSetting.Equals("musiclibrary.scraper"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("musiclibrary.defaultscraper"), "music");
+      FillInScrapers(pControl, g_guiSettings.GetString("musiclibrary.scraper"), "music");
     }
     else if (strSetting.Equals("scrapers.moviedefault"))
     {
@@ -584,6 +584,20 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
 #endif
     }
+    else if (strSetting.Equals("services.webserverport"))
+    {
+#ifdef HAS_WEB_SERVER
+      CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+      control->SetDelayed();
+#endif
+    }
+    else if (strSetting.Equals("services.esport"))
+    {
+#ifdef HAS_EVENT_SERVER
+      CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+      control->SetDelayed();
+#endif
+    }
     else if (strSetting.Equals("network.assignment"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -592,6 +606,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(717), NETWORK_STATIC);
       pControl->AddLabel(g_localizeStrings.Get(787), NETWORK_DISABLED);
       pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("network.httpproxyport"))
+    {
+      CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+      control->SetDelayed();
     }
     else if (strSetting.Equals("subtitles.style"))
     {
@@ -808,13 +827,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("lookandfeel.startupwindow"))
     {
       FillInStartupWindow(pSetting);
-    }
-    else if (strSetting.Equals("videoplayer.externaldvdplayer"))
-    {
-      CSettingString *pSettingString = (CSettingString *)pSetting;
-      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
-      if (pSettingString->GetData().IsEmpty())
-        pControl->SetLabel2(g_localizeStrings.Get(20009));
     }
     else if (strSetting.Equals("locale.country"))
     {
@@ -1275,7 +1287,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CScraperParser parser;
       bool enabled=false;
-      if (parser.Load("special://xbmc/system/scrapers/music/"+g_guiSettings.GetString("musiclibrary.defaultscraper")))
+      if (parser.Load("special://xbmc/system/scrapers/music/"+g_guiSettings.GetString("musiclibrary.scraper")))
         enabled = parser.HasFunction("GetSettings");
 
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1388,7 +1400,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   if (!pSettingControl->OnClick())
   {
     UpdateSettings();
-    return;
+    if (!pSettingControl->IsDelayed())
+      return;
   }
 
   if (pSettingControl->IsDelayed())
@@ -1476,7 +1489,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     musicdatabase.Clean();
     CUtil::DeleteMusicDatabaseDirectoryCache();
   }
-  else if (strSetting.Equals("musiclibrary.defaultscraper"))
+  else if (strSetting.Equals("musiclibrary.scraper"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     FillInScrapers(pControl, pControl->GetCurrentLabel(), "music");
@@ -1506,59 +1519,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       videodatabase.Close();
     }
   }
-  else if (strSetting.Equals("videolibrary.export") || strSetting.Equals("musiclibrary.export"))
-  {
-    int iHeading = 647;
-    if (strSetting.Equals("musiclibrary.export"))
-      iHeading = 20196;
-    CStdString path(g_settings.GetDatabaseFolder());
-    VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
-    bool singleFile;
-    bool thumbs=false;
-    bool actorThumbs=false;
-    bool overwrite=false;
-    bool cancelled;
-
-    singleFile = CGUIDialogYesNo::ShowAndGetInput(iHeading,20426,20427,-1,20428,20429,cancelled);
-    if (cancelled)
-      return;
-
-    if (singleFile)
-      thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20430,-1,-1,cancelled);
-    if (cancelled)
-      return;
-
-    if (thumbs && strSetting.Equals("videolibrary.export"))
-      actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20436,-1,-1,cancelled);
-    if (cancelled)
-      return;
-
-    if (singleFile)
-      overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
-    if (cancelled)
-      return;
-
-    if (singleFile || CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
-    {
-      if (strSetting.Equals("videolibrary.export"))
-      {
-        CUtil::AddFileToFolder(path, "videodb.xml", path);
-        CVideoDatabase videodatabase;
-        videodatabase.Open();
-        videodatabase.ExportToXML(path, singleFile, thumbs, actorThumbs, overwrite);
-        videodatabase.Close();
-      }
-      else
-      {
-        CUtil::AddFileToFolder(path, "musicdb.xml", path);
-        CMusicDatabase musicdatabase;
-        musicdatabase.Open();
-        musicdatabase.ExportToXML(path, singleFile, thumbs, overwrite);
-        musicdatabase.Close();
-      }
-    }
-  }
+  else if (strSetting.Equals("videolibrary.export"))
+    CBuiltins::Execute("exportlibrary(video)");  
+  else if (strSetting.Equals("musiclibrary.export"))
+    CBuiltins::Execute("exportlibrary(music)");  
   else if (strSetting.Equals("karaoke.export") )
   {
     vector<CStdString> choices;
@@ -1700,17 +1664,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
             strSetting.Equals("services.webserverusername") || strSetting.Equals("services.webserverpassword"))
   {
     if (strSetting.Equals("services.webserverport"))
-    {
-      CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
-      // check that it's a valid port
-      int port = atoi(pSetting->GetData().c_str());
-      if (port <= 0 || port > 65535)
-#ifndef _LINUX
-        pSetting->SetData("80");
-#else
-        pSetting->SetData((geteuid() == 0)? "80" : "8080");
-#endif
-    }
+      ValidatePortNumber(pSettingControl, "8080", "80");
 #ifdef HAS_WEB_SERVER
     g_application.StopWebServer(true);
     if (g_guiSettings.GetBool("services.webserver"))
@@ -1749,11 +1703,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
   else if (strSetting.Equals("network.httpproxyport"))
   {
-    CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
-    // check that it's a valid port
-    int port = atoi(pSetting->GetData().c_str());
-    if (port <= 0 || port > 65535)
-      pSetting->SetData("8080");
+    ValidatePortNumber(pSettingControl, "8080", "8080", false);
   }
   else if (strSetting.Equals("videoplayer.calibrate") || strSetting.Equals("videoscreen.guicalibration"))
   { // activate the video calibration screen
@@ -2140,21 +2090,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("services.esport"))
   {
 #ifdef HAS_EVENT_SERVER
-    CStdString port_string = g_guiSettings.GetString("services.esport");
-    int port = 0;
-    if(port_string.length() == 0)
-    {
-      CLog::Log(LOGERROR, "ES: No port specified, defaulting to 9777");
-      g_guiSettings.SetString("services.esport", "9777");
-    }
-    else
-      port = atoi(port_string);
-    //verify valid port
-    if (port > 65535 || port < 1)
-    {
-      CLog::Log(LOGERROR, "ES: Invalid port specified %d, defaulting to 9777", port);
-      g_guiSettings.SetString("services.esport", "9777");
-    }
+    ValidatePortNumber(pSettingControl, "9777", "9777");
     //restart eventserver without asking user
     if (g_application.StopEventServer(true, false))
       g_application.StartEventServer();
@@ -3077,8 +3013,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
 
   int iCurrentScr = -1;
   vector<CStdString> vecScr;
-  int i = 0;
-  for (i = 0; i < items.Size(); ++i)
+  for (int i = 0; i < items.Size(); ++i)
   {
     CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder)
@@ -3109,7 +3044,7 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
     strDefaultScr.Delete(strDefaultScr.size() - 4, 4);
 
   sort(vecScr.begin(), vecScr.end(), sortstringbyname());
-  for (i = 0; i < (int) vecScr.size(); ++i)
+  for (int i = 0; i < (int) vecScr.size(); ++i)
   {
     CStdString strScr = vecScr[i];
 
@@ -3449,14 +3384,14 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
       {
         if (strContent.Equals("music")) // native strContent would be albums or artists but we're using the same scraper for both
         {
-          if (g_guiSettings.GetString("musiclibrary.defaultscraper") != strSelected)
+          if (g_guiSettings.GetString("musiclibrary.scraper") != strSelected)
           {
-            g_guiSettings.SetString("musiclibrary.defaultscraper", CUtil::GetFileName(items[i]->m_strPath));
+            g_guiSettings.SetString("musiclibrary.scraper", CUtil::GetFileName(items[i]->m_strPath));
 
             SScraperInfo info;
             CMusicDatabase database;
 
-            info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
+            info.strPath = g_guiSettings.GetString("musiclibrary.scraper");
             info.strContent = "albums";
             info.strTitle = parser.GetName();
 
@@ -3707,4 +3642,24 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
       GetSetting("network.essid")->GetSetting()->FromString("");
       GetSetting("network.key")->GetSetting()->FromString("");
    }
+}
+
+void CGUIWindowSettingsCategory::ValidatePortNumber(CBaseSettingControl* pSettingControl, const CStdString& userPort, const CStdString& privPort, bool listening/*=true*/)
+{
+  CSettingString *pSetting = (CSettingString *)pSettingControl->GetSetting();
+  // check that it's a valid port
+  int port = atoi(pSetting->GetData().c_str());
+#ifdef _LINUX
+  if (listening && geteuid() != 0 && (port < 1024 || port > 65535))
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 850, 852, -1);
+    pSetting->SetData(userPort.c_str());
+  }
+  else
+#endif
+  if (port <= 0 || port > 65535)
+  {
+    CGUIDialogOK::ShowAndGetInput(257, 850, 851, -1);
+    pSetting->SetData(privPort.c_str());
+  }
 }

@@ -578,7 +578,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
       query = field + " is NULL or " + field + parameter;
     }
   }
-  else if (query.IsEmpty() && m_field != FIELD_NONE)
+  if (query.IsEmpty() && m_field != FIELD_NONE)
     query = GetDatabaseField(m_field,strType) + negate + parameter;
   // if we fail to get a dbfield, we empty query so it doesn't fail
   if (query.Equals(negate + parameter))

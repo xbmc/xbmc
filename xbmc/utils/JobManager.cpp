@@ -35,7 +35,6 @@ bool CJob::ShouldCancel(unsigned int progress, unsigned int total) const
 CJobWorker::CJobWorker(CJobManager *manager)
 {
   m_jobManager = manager;
-  SetName("Jobworker");
   Create(true); // start work immediately, and kill ourselves when we're done
 }
 
@@ -45,12 +44,14 @@ CJobWorker::~CJobWorker()
   // occurs during processing, we may skip over that step.  Thus, before we
   // go out of scope, ensure the job manager knows we're gone.
   m_jobManager->RemoveWorker(this);
-  StopThread();
+  if(!IsAutoDelete())
+    StopThread();
 }
 
 void CJobWorker::Process()
 {
   SetPriority( GetMinPriority() );
+  SetName("Jobworker");
   while (true)
   {
     // request an item from our manager (this call is blocking)
@@ -148,14 +149,8 @@ void CJobManager::CancelJobs()
   
   // cancel any callbacks on jobs still processing
   for_each(m_processing.begin(), m_processing.end(), mem_fun_ref(&CWorkItem::Cancel));
-}
 
-CJobManager::~CJobManager()
-{
-  CSingleLock lock(m_section);
-
-  // cancel any jobs, and tell our workers to finish
-  CancelJobs();
+  // tell our workers to finish
   while (m_workers.size())
   {
     lock.Leave();
@@ -163,6 +158,10 @@ CJobManager::~CJobManager()
     Sleep(0); // yield after setting the event to give the workers some time to die
     lock.Enter();
   }
+}
+
+CJobManager::~CJobManager()
+{
 }
 
 unsigned int CJobManager::AddJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority)

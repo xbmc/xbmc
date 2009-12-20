@@ -107,8 +107,10 @@ public:
    Loaded textures are reference counted, and upon reaching reference count 0 through ReleaseImage()
    they are flagged as unused with the current time.  After a delay they may be unloaded, hence
    CleanupUnusedImages() should be called periodically to ensure this occurs.
+
+   \param immediately set to true to cleanup images regardless of whether the delay has passed
    */
-  void CleanupUnusedImages();
+  void CleanupUnusedImages(bool immediately = false);
 
 private:
   class CLargeTexture
@@ -119,7 +121,7 @@ private:
 
     void AddRef();
     bool DecrRef(bool deleteImmediately);
-    bool DeleteIfRequired();
+    bool DeleteIfRequired(bool deleteImmediately = false);
     void SetTexture(CBaseTexture* texture);
     
     const CStdString &GetPath() const { return m_path; };

@@ -41,7 +41,7 @@
 				<posy>0</posy>
 				<width>1160</width>
 				<height>660</height>
-				<texture border="20">Dialogback.png</texture>
+				<texture border="20">DialogBack.png</texture>
 			</control>
 			<control type="image">
 				<posx>268</posx>

@@ -85,6 +85,8 @@ void CAdvancedSettings::Initialize()
   m_videoIgnoreAtStart = 15;
   m_videoIgnoreAtEnd = 5; 
   m_videoPlayCountMinimumPercent = 90.0f;
+  m_videoHighQualityScaling = SOFTWARE_UPSCALING_DISABLED;
+  m_videoHighQualityScalingMethod = VS_SCALINGMETHOD_BICUBIC_SOFTWARE;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -109,6 +111,7 @@ void CAdvancedSettings::Initialize()
   m_lcdAddress4 = 0x54;
   m_lcdHeartbeat = false;
   m_lcdScrolldelay = 1;
+  m_lcdHostName = "localhost";
 
   m_autoDetectPingTime = 30;
 
@@ -123,14 +126,14 @@ void CAdvancedSettings::Initialize()
 #endif
   m_cddbAddress = "freedb.freedb.org";
 
-  m_handleMounting = false;
+  m_handleMounting = g_application.IsStandAlone();
 
   m_fullScreenOnMovieStart = true;
   m_noDVDROM = false;
   m_cachePath = "special://temp/";
   m_displayRemoteCodes = false;
 
-  m_videoCleanDateTimeRegExp = "(.+[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
+  m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
 
   m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvd5|dvd9|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
   m_videoCleanStringRegExps.push_back("(\\[.*\\])");
@@ -139,11 +142,12 @@ void CAdvancedSettings::Initialize()
   m_moviesExcludeFromScanRegExps.push_back("[-._ ]sample");
   m_tvshowExcludeFromScanRegExps.push_back("[-._ ]sample[-._ ]");
 
-  m_videoStackRegExps.push_back("(.*?)([ _.-]?(?:cd|dvd|p(?:ar)t|dis[ck])[ _.-]*[1-4a-d]+)(.*?)(\\.[^.]+)$");
-  m_videoStackRegExps.push_back("(.*?)([ ._-]?[a-d])([ ._-]?.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ ._-]*[a-d])(.*?)(\\.[^.]+)$");
   // This one is a bit too greedy to enable by default.  It will stack sequels
   // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
-  //m_videoStackRegExps.push_back("(.*?)([ ._-]?[0-9])([ ._-]?.*?)(\\.[^.]+)$");
+  //m_videoStackRegExps.push_back("(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$");
 
   // foo_[s01]_[e01]
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
@@ -250,6 +254,8 @@ void CAdvancedSettings::Initialize()
 #endif
 
   m_bgInfoLoaderMaxThreads = 5;
+
+  m_measureRefreshrate = false;
 }
 
 bool CAdvancedSettings::Load()
@@ -257,6 +263,7 @@ bool CAdvancedSettings::Load()
   // NOTE: This routine should NOT set the default of any of these parameters
   //       it should instead use the versions of GetString/Integer/Float that
   //       don't take defaults in.  Defaults are set in the constructor above
+  Initialize(); // In case of profile switch.
   CStdString advancedSettingsXML;
   advancedSettingsXML  = g_settings.GetUserDataItem("advancedsettings.xml");
   TiXmlDocument advancedXML;
@@ -392,6 +399,8 @@ bool CAdvancedSettings::Load()
 
     XMLUtils::GetString(pElement,"cleandatetime", m_videoCleanDateTimeRegExp);
     XMLUtils::GetString(pElement,"postprocessing",m_videoPPFFmpegType);
+    XMLUtils::GetInt(pElement,"highqualityscaling",m_videoHighQualityScaling);
+    XMLUtils::GetInt(pElement,"highqualityscalingmethod",m_videoHighQualityScalingMethod);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -448,6 +457,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "address4", m_lcdAddress4, 0, 0x100);
     XMLUtils::GetBoolean(pElement, "heartbeat", m_lcdHeartbeat);
     XMLUtils::GetInt(pElement, "scrolldelay", m_lcdScrolldelay, -8, 8);
+    XMLUtils::GetString(pElement, "hostname", m_lcdHostName);
   }
   pElement = pRootElement->FirstChildElement("network");
   if (pElement)
@@ -690,6 +700,8 @@ bool CAdvancedSettings::Load()
 
   XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", m_bgInfoLoaderMaxThreads);
   m_bgInfoLoaderMaxThreads = std::max(1, m_bgInfoLoaderMaxThreads);
+
+  XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
