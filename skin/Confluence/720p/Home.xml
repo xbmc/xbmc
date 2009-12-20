@@ -71,9 +71,10 @@
 			<control type="image">
 				<description>Cover image</description>
 				<posx>200r</posx>
-				<posy>160</posy>
+				<posy>60</posy>
 				<width>180</width>
-				<height>180</height>
+				<height>280</height>
+				<aspectratio aligny="bottom">keep</aspectratio>
 				<texture>$INFO[MusicPlayer.Cover]</texture>
 				<bordertexture border="8">ThumbBorder.png</bordertexture>
 				<bordersize>5</bordersize>
