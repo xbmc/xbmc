@@ -1,0 +1,626 @@
+2009-05-19  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.devel (AUTOMAKE, ACLOCAL): Switch to version 1.11.
+	* autogen.sh: Update comments.
+
+2009-01-25  Bruno Haible  <bruno@clisp.org>
+
+	Don't install charset.alias on MacOS X >= 10.3.
+	* INTEGRATE: Don't install charset.alias on MacOS X >= 10.3, if the
+	file does not yet exist.
+
+2009-01-25  Bruno Haible  <bruno@clisp.org>
+
+	Don't install charset.alias on mingw and Cygwin.
+	* INTEGRATE: Don't install charset.alias on mingw and Cygwin, if the
+	file does not yet exist. The result for these platforms is hardcoded in
+	localcharset.c.
+
+2009-01-24  Bruno Haible  <bruno@clisp.org>
+
+	* tools/all-charsets: Add CP1131, ARMSCII-8, PT154 to the list of
+	allowed encodings.
+	* tools/darwin-7.5: Regenerated.
+	* tools/darwin-9.5: Regenerated.
+
+2009-01-18  Bruno Haible  <bruno@clisp.org>
+
+	* tools/darwin-9.5: New file.
+
+2009-01-18  Bruno Haible  <bruno@clisp.org>
+
+	* tools/locale_monthnames.c: New file.
+
+2009-01-16  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.in (install-strip): New target.
+	Reported by Alon Bar-Lev <alon.barlev@gmail.com>.
+
+2009-01-14  Bruno Haible  <bruno@clisp.org>
+
+	* configure.ac: More consistent m4 quoting.
+
+2008-09-28  Bruno Haible  <bruno@clisp.org>
+
+	* build-aux/ltmain.sh (func_emit_cwrapperexe_src): On mingw,
+	preprocess the argument vector through prepare_spawn.
+
+2008-09-16  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.devel (AUTOCONF, AUTOHEADER): Switch to version 2.63.
+
+2008-09-07  Bruno Haible  <bruno@clisp.org>
+
+	* m4/libtool.m4: Update from libtool-2.2.6, with modifications:
+	2008-04-06  Bruno Haible  <bruno@clisp.org>
+		* m4/libtool.m4 (LT_INIT): When setting LIBTOOL, use
+		CONFIG_SHELL; don't assume that the Makefile.in will set SHELL
+		to ${CONFIG_SHELL}.
+	* m4/ltoptions.m4: Update from libtool-2.2.6.
+	* m4/ltsugar.m4: Likewise.
+	* m4/ltversion.m4: Likewise.
+	* build-aux/ltmain.sh: Likewise.
+
+2008-05-18  Bruno Haible  <bruno@clisp.org>
+
+	* m4/libtool.m4: Update from libtool-2.2.4, with modifications:
+	2008-04-06  Bruno Haible  <bruno@clisp.org>
+		* m4/libtool.m4 (LT_INIT): When setting LIBTOOL, use
+		CONFIG_SHELL; don't assume that the Makefile.in will set SHELL
+		to ${CONFIG_SHELL}.
+	* m4/ltoptions.m4: Update from libtool-2.2.4.
+	* m4/ltversion.m4: Likewise.
+	* m4/lt~obsolete.m4: Likewise.
+	* build-aux/ltmain.sh: Likewise.
+
+2008-04-14  Bruno Haible  <bruno@clisp.org>
+
+	* configure.ac: Invoke AC_USE_SYSTEM_EXTENSIONS instead of AC_AIX and
+	AC_MINIX.
+	* Makefile.devel (AUTOCONF, AUTOHEADER): Require autoconf-2.62.
+
+2008-04-06  Bruno Haible  <bruno@clisp.org>
+
+	* m4/libtool.m4: Update from libtool-2.2.2, with modifications:
+	2008-04-06  Bruno Haible  <bruno@clisp.org>
+		* m4/libtool.m4 (LT_INIT): When setting LIBTOOL, use
+		CONFIG_SHELL; don't assume that the Makefile.in will set SHELL
+		to ${CONFIG_SHELL}.
+	* m4/ltoptions.m4: New file, from libtool-2.2.2.
+	* m4/ltsugar.m4: New file, from libtool-2.2.2.
+	* m4/ltversion.m4: New file, from libtool-2.2.2.
+	* m4/lt~obsolete.m4: New file, from libtool-2.2.2.
+	* build-aux/ltmain.sh: New file, from libtool-2.2.2.
+	* configure.ac: Use LT_INIT instead of AC_PROG_LIBTOOL.
+
+2007-11-14  Bruno Haible  <bruno@clisp.org>
+
+	* tools/all-locales: Add "C" for Darwin. Treat OpenBSD like Darwin.
+
+2007-11-11  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.devel (AUTOCONF, AUTOHEADER): Require version 2.61.
+	(ACLOCAL): Require version 1.10.
+
+2007-10-26  Bruno Haible  <bruno@clisp.org>
+
+	* m4/libtool.m4: Update, based on libtool-1.5.24.
+	* build-aux/ltmain.sh: Update, based on libtool-1.5.24.
+
+2007-06-30  Bruno Haible  <bruno@clisp.org>
+
+	* autogen.sh: New file.
+	* DEPENDENCIES: New file.
+	* HACKING: New file.
+
+2007-03-04  Bruno Haible  <bruno@clisp.org>
+
+	* configure.ac: Invoke gl_RELOCATABLE_LIBRARY instead of
+	AC_RELOCATABLE_LIBRARY.
+	* m4/relocatable-lib.m4: New file, from gnulib.
+	* m4/relocatable.m4: Remove file.
+
+2007-02-16  Juan Manuel Guerrero  <juan.guerrero@gmx.de>
+
+	* djgpp/*: Update.
+
+2006-10-31  Bruno Haible  <bruno@clisp.org>
+
+	Update from GNU gettext.
+	2006-10-25  Bruno Haible  <bruno@clisp.org>
+		* m4/relocatable.m4 (AC_RELOCATABLE_BODY): Renamed from
+		AC_RELOCATABLE, without the AC_LIBOBJ invocation.
+		(AC_RELOCATABLE): New macro. Invoke AC_LIBOBJ here.
+
+2006-10-18  Bruno Haible  <bruno@clisp.org>
+
+	* INTEGRATE: Remove recommendation to test for setlocale.
+
+2006-07-29  Bruno Haible  <bruno@clisp.org>
+
+	* configure.ac: Assume <stddef.h>, <stdlib.h>, <string.h> exist.
+
+2006-07-29  Bruno Haible  <bruno@clisp.org>
+
+	* configure.ac: Remove obsolete calls AC_PROG_GCC_TRADITIONAL,
+	AC_ISC_POSIX.
+
+2006-07-25  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.msvc: Remove file.
+	* Makefile.devel (config.h.msvc): Remove rule.
+	(include/libcharset.h.msvc-shared, include/localcharset.h.msvc-shared):
+	Remove rules.
+	(all): Update.
+
+2006-07-25  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.vms: Remove file.
+	* Makefile.devel (config.h_vms): Remove rule.
+	(all): Update.
+
+2006-06-27  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.devel (AUTOCONF, AUTOHEADER): Use autoconf-2.60.
+	* Makefile.in (datarootdir): New variable.
+	* configure.ac (mandir): Remove customization.
+
+2006-03-28  Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* m4/libtool.m4 (_LT_SYS_DYNAMIC_LINKER) [ linux ]: Avoid warning when
+	"parsing" /etc/ld.so.conf and empty /etc/ld.so.conf.d.
+
+2006-05-15  Bruno Haible  <bruno@clisp.org>
+
+	* m4/relocatable.m4: Update from GNU gettext.
+
+2006-05-14  Bruno Haible  <bruno@clisp.org>,
+            Ralf Wildenhues  <Ralf.Wildenhues@gmx.de>
+
+	* m4/libtool.m4 [ linux ] (AC_LIBTOOL_LANG_CXX_CONFIG)
+	(AC_LIBTOOL_POSTDEP_PREDEP, AC_LIBTOOL_PROG_COMPILER_PIC)
+	(AC_LIBTOOL_PROG_LD_SHLIBS): Add support for Sun C 5.9,
+	Sun C++ 5.9, and Sun Fortran 8.3 on Linux.
+
+2006-05-06  Charles Wilson  <cygwin@cwilson.fastmail.fm>
+
+	* m4/libtool.m4: On Cygwin, like on mingw, define DLL_EXPORT when
+	compiling a shared library object.
+
+2006-03-31  Juan Manuel Guerrero  <juan.guerrero@gmx.de>
+
+	* djgpp/*: Update.
+
+2005-12-29  Bruno Haible  <bruno@clisp.org>
+
+	* configure.ac: Renamed from configure.in.
+	* Makefile.devel (configure, config.h.in): Update.
+	* djgpp/Makefile.maint (fnchange.lst, README): Update.
+
+2005-12-29  Bruno Haible  <bruno@clisp.org>
+
+	* build-aux/config.guess: Update to GNU version 2005-12-23.
+	* build-aux/config.sub: Likewise.
+	* build-aux/config.libpath: Update from GNU gettext.
+
+2005-12-29  Bruno Haible  <bruno@clisp.org>
+
+	* m4/codeset.m4: Update from GNU gettext.
+	* m4/glibc21.m4: Update from GNU gettext.
+	* m4/relocatable.m4: Update from GNU gettext.
+	* configure: Invoke gl_GLIBC21 instead of jm_GLIBC21.
+
+2005-12-29  Bruno Haible  <bruno@clisp.org>
+
+	* m4/libtool.m4: Update, based on libtool-1.5.22.
+	* build-aux/ltmain.sh: Update, based on libtool-1.5.22.
+
+2005-09-18  Bruno Haible  <bruno@clisp.org>
+
+	* m4/libtool.m4: Update, based on libtool-1.5.20.
+	* build-aux/ltmain.sh: Update, based on libtool-1.5.20.
+
+2005-07-24  Bruno Haible  <bruno@clisp.org>
+
+	Tidy up exported symbols.
+	* m4/visibility.m4: New file.
+	* include/export.h: New file.
+	* configure.in Invoke gl_VISIBILITY. Use AC_CONFIG_FILES. Arrange to
+	create also include/localcharset.h.inst.
+	(VERSION): Bump to 1.4.
+	* Makefile.devel (all): Depend on include/localcharset.h.build.in.
+	(include/localcharset.h.build.in): New rule.
+	* Makefile.in (all): Remove dependency on include/localcharset.h.
+	(include/localcharset.h): Remove rule.
+	(install-lib, install): Install include/localcharset.h.inst,
+	not the include/localcharset.h that was used for building.
+	(distclean, maintainer-clean): Remove also include/localcharset.h.inst.
+
+2005-07-08  Bruno Haible  <bruno@clisp.org>
+
+	* m4/libtool.m4 (postinstall_cmds) [cygwin,mingw,pw32]: Make DLL
+	executable after installing it.
+
+2005-07-07  Bruno Haible  <bruno@clisp.org>
+
+	* configure.in: Bump version number.
+	* windows/charset.rc: Likewise.
+
+2005-07-05  Bruno Haible  <bruno@clisp.org>
+
+	* m4/relocatable.m4 (AC_RELOCATABLE): On mingw, simply set
+	SET_RELOCATABLE to a trivial value.
+
+2005-07-05  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.devel (AUTOHEADER, ACLOCAL): New variables.
+	(autoconf/aclocal.m4, config.h.in): Use them.
+
+2005-03-22  Bruno Haible  <bruno@clisp.org>
+
+	* build-aux: New directory, renamed from autoconf.
+	* configure.in (AC_CONFIG_AUX_DIR): Use build-aux.
+	* Makefile.in (mkinstalldirs): Update.
+
+2005-01-05  Bruno Haible  <bruno@clisp.org>
+
+	* m4/libtool.m4: Update from GNU gettext, based on libtool-1.5.10.
+	* autoconf/ltmain.sh: Update from GNU gettext, based on libtool-1.5.10.
+
+2004-09-21  Juan Manuel Guerrero  <st001906@hrz1.hrz.tu-darmstadt.de>
+
+	* djgpp/config.bat: Update.
+	* djgpp/config.sed: Update.
+	* djgpp/config.site: Update.
+	* djgpp/fnchange.in: Update.
+	* djgpp/README.in: Update.
+
+2004-08-25  Bruno Haible  <bruno@clisp.org>
+
+	* m4/libtool.m4: Update from GNU gettext, based on libtool-1.5.6.
+	* autoconf/ltmain.sh: Update from GNU gettext, based on libtool-1.5.6.
+
+2004-01-20  Bruno Haible  <bruno@clisp.org>
+
+	Upgrade from gettext-0.14.
+
+	2003-08-24  Bruno Haible  <bruno@clisp.org>
+	* m4/relocatable.m4 (AC_RELOCATABLE): Use $(host) instead of @host@,
+	since the substitution of @host@ may occur before the substitution of
+	@SET_RELOCATABLE@.
+
+2004-01-20  Bruno Haible  <bruno@clisp.org>
+
+	Assume automake-1.8.
+	* Makefile.devel (AUTOCONF): Assume autoconf-2.59.
+
+2003-06-18  Bruno Haible  <bruno@clisp.org>
+
+	* config/install-sh: Update from automake-1.7.5.
+
+2003-06-07  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.devel (config.h_vms): Remove INSTALLPREFIX.
+	Reported by Jouk Jansen <joukj@hrem.stm.tudelft.nl>.
+
+2003-05-19  Bruno Haible  <bruno@clisp.org>
+
+	* windows/charset.rc: Include <winver.h>.
+	Reported by Perry Rapp.
+
+2003-05-07  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.vms: New file.
+	* Makefile.devel (config.h_vms): New rule.
+	(all): Depend on it.
+
+2003-05-06  Bruno Haible  <bruno@clisp.org>
+
+	* m4/libtool.m4: Update from GNU gettext, based on libtool-1.5.
+
+2003-05-06  Bruno Haible  <bruno@clisp.org>
+
+	* autoconf/config.guess: Update to GNU version 2003-02-22.
+	* autoconf/config.sub: Likewise.
+
+2003-05-06  Bruno Haible  <bruno@clisp.org>
+
+	* autoconf/ltmain.sh: Update from GNU gettext, based on libtool-1.5.
+
+2003-04-12  Bruno Haible  <bruno@clisp.org>
+
+	* configure.in (mandir): Change default value.
+	* Makefile.in (datadir): New variable.
+
+2003-04-05  Bruno Haible  <bruno@clisp.org>
+
+	Support for relocatable installation.
+	* m4/relocatable.m4: New file, from GNU gettext.
+	* autoconf/config.libpath: New file, from GNU gettext.
+	* configure.in: Invoke AC_RELOCATABLE_LIBRARY.
+	* include/libcharset.h.in: New file.
+	* Makefile.devel (include/libcharset.h.msvc-shared): New rule.
+	(all): Depend on it.
+	(autoconf/aclocal.m4): Update aclocal invocation.
+	(config.h.msvc): Handle INSTALLPREFIX.
+	* Makefile.in (include/libcharset.h): New rule.
+	(all): Depend on it.
+	(install-lib, install): Also install libcharset.h.
+	(uninstall): Uninstall libcharset.h.
+	(distclean, maintainer-clean): Remove include/libcharset.h.
+	* Makefile.msvc (all): Create include/libcharset.h.
+	(install): Also install libcharset.h.
+	(uninstall): Uninstall libcharset.h.
+	(mostlyclean, clean, distclean, maintainer-clean): Remove
+	include/libcharset.h.
+	* INSTALL.generic: Document --enable-relocatable and
+	--with-libintl-prefix. Remove the recommendation to set CPPFLAGS and
+	LDFLAGS. The lib-link.m4 macros make this unnecessary.
+
+2003-04-05  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.msvc (PREFIX): New variable.
+	(prefix): Use it.
+	(distclean, maintainer-clean): Drop Unix specific removals.
+	* man/Makefile.msvc (PREFIX): New variable.
+	(prefix): Use it.
+	(clean): Drop unnecessary removals.
+	(distclean): Drop Unix specific removal.
+
+2003-04-05  Bruno Haible  <bruno@clisp.org>
+
+	* configure.in: Invoke AM_LANGINFO_CODESET, not jm_LANGINFO_CODESET.
+	* autoconf/ltmain.sh: Update from GNU gettext.
+	2003-02-18  Bruno Haible  <bruno@clisp.org>
+		Fix the 2002-09-16 fix.
+		* ltmain.sh (install): If "ln -s -f" fails (this is the case
+		with /usr/bin/ln on Solaris 2.7), fall back to "rm && ln -s".
+	* m4/codeset.m4: Update from GNU gettext-0.10.40.
+	* m4/glibc21.m4: Update from GNU gettext-0.10.40.
+
+2003-03-17  Bruno Haible  <bruno@clisp.org>
+
+	Improved MSVC support.
+	* windows/charset.rc: New file.
+	* Makefile.msvc (prefix): Use less Unixy value.
+	(local_prefix): Remove variable.
+	(libdir, includedir): Use backslashes.
+	(bindir): New variable.
+	(mandir): Remove variable.
+	(INSTALL, INSTALL_PROGRAM, INSTALL_DATA): New variables.
+	(mostlyclean, clean): Remove config.h and include/localcharset.h.
+	(install, installdirs, uninstall): Rewritten.
+	* README.woe32: Mention automatic installation command.
+
+	Rename libcharset.h to localcharset.h.
+	* include/localcharset.h.in: Renamed from include/libcharset.h.in.
+	* tools/locale_charset.c: Include localcharset.h, not libcharset.h.
+	* Makefile.in (include/localcharset.h): Renamed from
+	include/libcharset.h.
+	(all): Update dependency.
+	(install-lib, install, uninstall, distclean, maintainer-clean): Update.
+	* Makefile.msvc (all): Create include/localcharset.h, not
+	include/libcharset.h.
+	* Makefile.devel (include/localcharset.h.msvc-shared): Renamed from
+	include/libcharset.h.msvc-shared.
+	(all): Update dependency.
+	(config.h.in): Touch the file when done; autoheader doesn't do it.
+	(config.h.msvc): Make rule more robust.
+	* INTEGRATE: Mention localcharset.h only once.
+	* djgpp/README.in, djgpp/README: Update.
+	* djgpp/config.bat: Update.
+	* djgpp/config.sed: Update.
+	* djgpp/fnchange.in, djgpp/fnchange.lst: Update.
+	* configure.in (VERSION): Bump to 1.2.
+	* NEWS: New file.
+
+2003-02-14  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.devel (AUTOCONF): Switch to autoconf-2.57.
+	(configure, config.h.in): Update rules.
+
+2003-01-03  Albert Chin  <libtool@thewrittenword.com>
+
+	* autoconf/ltmain.sh: Don't pass -R flags found in a .la's
+	dependency_libs variable directly down to the linker.
+	Reported by Tim Mooney <mooney@dogbert.cc.ndsu.nodak.edu>.
+
+2003-01-12  Bruno Haible  <bruno@clisp.org>
+
+	* INTEGRATE: Mention localcharset.h.
+
+2003-01-01  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.in (mkinstalldirs): Renamed from MKINSTALLDIRS.
+	(install-lib, install, installdirs): Use it.
+
+2002-09-27  Bruno Haible  <bruno@clisp.org>
+
+	* autoconf/mkinstalldirs: Upgrade to automake-1.7.2 version.
+
+2002-11-07  Bruno Haible  <bruno@clisp.org>
+
+	* m4/libtool.m4: Upgrade to libtool-1.4.3.
+	* autoconf/ltmain.sh: Upgrade to libtool-1.4.3.
+
+2002-07-14  Bruno Haible  <bruno@clisp.org>
+
+	* m4/libtool.m4 (_LT_AC_LTCONFIG_HACK): Add support for GNU/FreeBSD.
+
+2002-06-12  Bruno Haible  <bruno@clisp.org>
+
+	* configure.in: Use new AC_* names of libtool macros. Invoke
+	AC_LIBTOOL_WIN32_DLL.
+
+2002-11-07  Bruno Haible  <bruno@clisp.org>
+
+	Make "make install" without prior "make" work.
+	* Makefile.in (install): Depend on include/libcharset.h.
+	Reported by Martin Mokrejš <mmokrejs@natur.cuni.cz>.
+
+2002-05-12  Bruno Haible  <bruno@clisp.org>
+
+	* tools/all-charsets: Update for change of lib/config.charset.
+
+2002-05-12  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.devel (AUTOCONF): New variable.
+	(configure): Use the AUTOCONF variable.
+
+2002-05-08  Bruno Haible  <bruno@clisp.org>
+
+	* README.woe32: Renamed from README.win32.
+
+2002-02-06  Bruno Haible  <bruno@clisp.org>
+
+	* m4/libtool.m4: Upgrade to libtool-1.4.2.
+	* autoconf/ltmain.sh: Likewise.
+
+2002-02-02  Bruno Haible  <bruno@clisp.org>
+
+	* autoconf/ltmain.sh: Add DESTDIR support on ELF systems.
+
+2001-11-03  Bruno Haible  <haible@clisp.cons.org>
+
+	* autoconf/ltmain.sh: chmod 777 the .libs directory, so that
+	"make install" succeeds.
+
+2001-12-04  Bruno Haible  <bruno@clisp.org>
+
+	* INTEGRATE: Change the install rule to not create $(libdir) if
+	there is no file to install in it.
+
+2001-07-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* configure.in (VERSION): Bump to 1.1.
+
+2001-06-08  Bruno Haible  <haible@clisp.cons.org>
+
+	* m4/libtool.m4: Upgrade to libtool-1.4.
+	* autoconf/ltmain.sh: Likewise.
+	* autoconf/ltconfig: Remove file.
+
+2001-06-08  Bruno Haible  <haible@clisp.cons.org>
+
+	* autoconf/config.guess: Update to GNU version 2001-05-11.
+	* autoconf/config.sub: Likewise.
+
+2001-05-21  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in (include/libcharset.h): New target.
+	(all): Depend on it.
+
+2001-05-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* INTEGRATE (Makefile.in): Fix syntax error.
+
+2001-05-06  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.msvc (config.h): Allow the 'del' command to fail.
+
+2001-03-21  Bruno Haible  <haible@clisp.cons.org>
+
+	* INSTALL.generic (Particular Systems): Add recommendations for AIX 3.
+
+2001-03-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* INSTALL.generic: New section "Particular Systems".
+
+2001-03-05  Bruno Haible  <haible@clisp.cons.org>
+
+	* tools/all-charsets: Update for change of lib/config.charset.
+
+2001-03-01  Bruno Haible  <haible@clisp.cons.org>
+
+	* tools/all-charsets: Update for change of lib/config.charset.
+
+2001-02-25  Bruno Haible  <haible@clisp.cons.org>
+
+	* autoconf/ltconfig:
+	sed -e 's/reload object files/produce relocatable object files/'.
+
+2001-02-25  Bruno Haible  <haible@clisp.cons.org>
+
+	* include/libcharset.h.in (locale_charset): Return value is never
+	NULL any more.
+
+2001-02-22  Bruno Haible  <haible@clisp.cons.org>
+
+	* INTEGRATE (Makefile.am): Change $@-t to t-$@. For DJGPP.
+	Patch by Juan Manuel Guerrero <st001906@hrz1.hrz.tu-darmstadt.de>.
+
+2001-02-20  Bruno Haible  <haible@clisp.cons.org>
+
+	Better support for DOS/Windows platforms.
+	* autoconf/ltconfig: Upgrade to libtool-1.3.5.
+	* autoconf/ltmain.sh: Likewise.
+	* m4/libtool.m4: Likewise.
+	* autoconf/aclocal.m4: Likewise.
+	* configure.in: Call AC_OBJEXT and AC_EXEEXT.
+
+2001-02-20  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in (libdir, includedir, mandir): Use the autoconf
+	determined value, in order to respect the configure arguments.
+	* lib/Makefile.in (libdir): Likewise.
+
+2000-12-13  Bruno Haible  <haible@clisp.cons.org>
+
+	* autoconf/install-sh: Update to a newer version from fileutils.
+
+2000-12-12  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in: Use $(MAKE) instead of $(MAKE) -r. Needed with Solaris
+	"make", which doesn't set MAKE as expected by @SET_MAKE@ if -r is
+	given. Reported by Toshimitsu Fujiwara.
+
+2000-12-08  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in (exec_prefix): Use configure's --exec-prefix argument.
+
+2000-12-02  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.msvc (check): Depend on target 'force' as well.
+	(mostlyclean, clean, distclean, maintainer-clean): Fix dependency.
+
+	* Makefile.msvc: Replace STATIC with its opposite flag, DLL.
+
+2000-11-24  Bruno Haible  <haible@clisp.cons.org>
+
+	* tools/all-charsets: Update for 2000-10-31 change of
+	lib/config.charset.
+
+2000-11-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in (install-lib): Fix for builddir != srcdir.
+
+2000-11-22  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in (all): Fix for builddir != srcdir.
+
+2000-11-21  Bruno Haible  <haible@clisp.cons.org>
+
+	* include/libcharset.h.in: Renamed from include/libcharset.h.
+	* windows/dllexport.h: New file.
+	* Makefile.devel (all): Add config.h.msvc,
+	include/libcharset.h.msvc-shared.
+	(config.h.msvc, include/libcharset.h.msvc-shared): New targets.
+	* Makefile.msvc (MFLAGS): New variable.
+	(all): Create include\libcharset.h.
+	(distclean, maintainer-clean): Remove include\libcharset.h.
+	* Makefile.in (CP): New variable.
+	(all): Create include/libcharset.h.
+	(distclean, maintainer-clean): Remove include/libcharset.h.
+
+2000-11-18  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.devel (config.h.in): Rename from config.h.
+
+2000-11-16  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in: After "cd", use "&&" not ";".
+
+2000-10-31  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.msvc: New file.
+	* README.win32: New file.

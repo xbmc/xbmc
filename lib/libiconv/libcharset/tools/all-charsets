@@ -1,0 +1,34 @@
+#! /bin/sh
+
+# Prints a table of the charsets (system dependent name and portable name)
+# for all locales.
+
+${CC-cc} -o locale_codeset locale_codeset.c
+${CC-cc} -o locale_charset -I../include locale_charset.c \
+    -DHAVE_CONFIG_H -I.. -DLIBDIR='"'`cd ../lib && pwd`'"' \
+    ../lib/localcharset.c
+
+printf '%-15s%-17s%-17s %-17s\n\n' \
+       "locale name" "locale charmap" "nl_langinfo(CODESET)" "locale_charset()"
+for lc in `./all-locales | sort | uniq`
+do
+  charmap=`LC_ALL=$lc ./locale_charmap 2>/dev/null || echo '<error>'`
+  codeset=`LC_ALL=$lc ./locale_codeset 2>/dev/null || echo '<error>'`
+  charset=`LC_ALL=$lc ./locale_charset 2>/dev/null || echo '<error>'`
+  case "$charset" in
+    ASCII | ANSI_X3.4-1968 | \
+    ISO-8859-1 | ISO-8859-2 | ISO-8859-3 | ISO-8859-4 | ISO-8859-5 | ISO-8859-6 | \
+    ISO-8859-7 | ISO-8859-8 | ISO-8859-9 | ISO-8859-13 | ISO-8859-14 | ISO-8859-15 | \
+    KOI8-R | KOI8-U | KOI8-T | \
+    CP437 | CP775 | CP850 | CP852 | CP855 | CP856 | CP857 | CP861 | CP862 | CP864 | CP865 | CP866 | CP869 | CP874 | CP922 | CP932 | CP943 | CP949 | CP950 | CP1046 | CP1124 | CP1125 | CP1129 | CP1131 | \
+    CP1250 | CP1251 | CP1252 | CP1253 | CP1254 | CP1255 | CP1256 | CP1257 | \
+    GB2312 | EUC-JP | EUC-KR | EUC-TW | BIG5 | BIG5-HKSCS | GBK | GB18030 | SHIFT_JIS | JOHAB | \
+    TIS-620 | VISCII | TCVN5712-1 | ARMSCII-8 | GEORGIAN-PS | PT154 | \
+    HP-ROMAN8 | HP-ARABIC8 | HP-GREEK8 | HP-HEBREW8 | HP-TURKISH8 | HP-KANA8 | \
+    DEC-KANJI | DEC-HANYU | \
+    UTF-8 ) comment="";;
+    * ) comment="bug";;
+  esac
+  printf '%-15s  %-17s %-17s %-17s %s\n' \
+         "$lc" "$charmap" "$codeset" "$charset" "$comment"
+done

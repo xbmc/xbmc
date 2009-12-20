@@ -1,0 +1,3 @@
+locale name    locale charmap   nl_langinfo(CODESET) locale_charset()
+
+C                <error>           <error>           UTF-8
