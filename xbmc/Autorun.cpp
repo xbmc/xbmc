@@ -140,6 +140,10 @@ void CAutorun::RunMedia(bool bypassSettings)
     g_playlistPlayer.Play(nSize);
   }
 }
+
+/**
+ * This method tries to determine what type of disc is located in the given drive and starts to play the content appropriately.
+ */
 bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings /* = false */)
 {
   bool bPlaying(false);
@@ -162,6 +166,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     bAllowMusic = !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked();
   }
 
+  // is this a root folder we have to check the content to determine a disc type
   if( bRoot )
   {
 
@@ -170,8 +175,10 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     {
       CFileItemPtr pItem = vecItems[i];
 
+      // is the current item a (non system) folder?
       if (pItem->m_bIsFolder && pItem->m_strPath != "." && pItem->m_strPath != "..")
       {
+        // Check if the current foldername indicates a DVD structure (name is "VIDEO_TS")
         if (pItem->m_strPath.Find( "VIDEO_TS" ) != -1 && bAllowVideo
         && (bypassSettings || g_guiSettings.GetBool("dvds.autorun")))
         {
@@ -179,11 +186,26 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           bPlaying = true;
           return true;
         }
+
+        // Check if the current foldername indicates a Blu-Ray structure (default is "BDMV").
+        // A BR should also include an "AACS" folder for encryption, Sony-BRs can also include update folders for PS3 (PS3_UPDATE / PS3_VPRM).
+        // ToDo: for the time beeing, the DVD autorun settings are used to determine if the BR should be started automatically.
+        if (pItem->m_strPath.Find( "BDMV" ) != -1 && bAllowVideo
+        && (bypassSettings || g_guiSettings.GetBool("dvds.autorun")))
+        {
+          CUtil::PlayDVD("bd");
+          bPlaying = true;
+          return true;
+        }
+      
+        // Video CDs can have multiple file formats. First we need to determine which one is used on the CD
         CStdString strExt;
         if (pItem->m_strPath.Find("MPEGAV") != -1)
           strExt = ".dat";
         if (pItem->m_strPath.Find("MPEG2") != -1)
           strExt = ".mpg";
+
+        // If a file format was extracted we are sure this is a VCD. Autoplay if settings indicate we should.
         if (!strExt.IsEmpty() && bAllowVideo
              && (bypassSettings || g_guiSettings.GetBool("dvds.autorun")))
         {
@@ -308,9 +330,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
             break;
           }
         }
-      }
-    }
-  }
+      } // if (non system) folder
+    } // for all items in directory
+  } // if root folder
 
   return bPlaying;
 }

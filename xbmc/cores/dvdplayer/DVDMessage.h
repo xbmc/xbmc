@@ -130,10 +130,10 @@ public:
   /**
    * decrease the reference counter by one.
    */
-  long Acquire()
+  CDVDMsg* Acquire()
   {
-    long count = InterlockedIncrement(&m_references);
-    return count;
+    InterlockedIncrement(&m_references);
+    return this;
   }
 
   /**

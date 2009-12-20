@@ -123,7 +123,8 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_fForcedAspectRatio = 0;
   m_iNrOfPicturesNotToSkip = 0;
   InitializeCriticalSection(&m_critCodecSection);
-  m_messageQueue.SetMaxDataSize(40 * 256 * 1024);
+  m_messageQueue.SetMaxDataSize(8 * 1024 * 1024);
+  m_messageQueue.SetMaxTimeSize(4.0);
   g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
 
   m_iCurrentPts = DVD_NOPTS_VALUE;
@@ -350,9 +351,10 @@ void CDVDPlayerVideo::Process()
         continue;
 
       //Okey, start rendering at stream fps now instead, we are likely in a stillframe
-      if( !m_stalled && m_started )
+      if( !m_stalled )
       {
-        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
+        if(m_started)
+          CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
         m_stalled = true;
         pts+= frametime*4;
       }
@@ -444,6 +446,7 @@ void CDVDPlayerVideo::Process()
         m_iFrameRateLength = 1;
         m_bAllowDrop = !m_bCalcFrameRate;
         m_iFrameRateErr = 0;
+        m_stalled = true;
       }
       break;
       case CDVDMsg::VIDEO_NOSKIP:
@@ -1290,9 +1293,9 @@ void CDVDPlayerVideo::UpdateMenuPicture()
 std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "vq:"     << setw(2) << min(99,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
+  s << "vq:"     << setw(2) << min(99,m_messageQueue.GetLevel()) << "%";
   s << ", dc:"   << m_codecname;
-  s << ", MB/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
+  s << ", Mb/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
   s << ", drop:" << m_iDroppedFrames;
 
   int pc = m_pullupCorrection.GetPatternLength();

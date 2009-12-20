@@ -85,6 +85,8 @@ void CAdvancedSettings::Initialize()
   m_videoIgnoreAtStart = 15;
   m_videoIgnoreAtEnd = 5; 
   m_videoPlayCountMinimumPercent = 90.0f;
+  m_videoHighQualityScaling = SOFTWARE_UPSCALING_DISABLED;
+  m_videoHighQualityScalingMethod = VS_SCALINGMETHOD_BICUBIC_SOFTWARE;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -124,7 +126,7 @@ void CAdvancedSettings::Initialize()
 #endif
   m_cddbAddress = "freedb.freedb.org";
 
-  m_handleMounting = false;
+  m_handleMounting = g_application.IsStandAlone();
 
   m_fullScreenOnMovieStart = true;
   m_noDVDROM = false;
@@ -397,6 +399,8 @@ bool CAdvancedSettings::Load()
 
     XMLUtils::GetString(pElement,"cleandatetime", m_videoCleanDateTimeRegExp);
     XMLUtils::GetString(pElement,"postprocessing",m_videoPPFFmpegType);
+    XMLUtils::GetInt(pElement,"highqualityscaling",m_videoHighQualityScaling);
+    XMLUtils::GetInt(pElement,"highqualityscalingmethod",m_videoHighQualityScalingMethod);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");

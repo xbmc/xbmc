@@ -226,7 +226,7 @@ void CLinuxRendererGL::ChooseUpscalingMethod()
   m_upscalingWidth  = m_destRect.Width();
   m_upscalingHeight = m_destRect.Height();
 
-  int upscale = g_guiSettings.GetInt("videoplayer.highqualityupscaling");
+  int upscale = g_advancedSettings.m_videoHighQualityScaling;
   
   // See if we're a candiate for upscaling.
   bool candidateForUpscaling = false;
@@ -245,13 +245,13 @@ void CLinuxRendererGL::ChooseUpscalingMethod()
 
   if (candidateForUpscaling)
   {
-    ESCALINGMETHOD ret = (ESCALINGMETHOD)g_guiSettings.GetInt("videoplayer.upscalingalgorithm");
+    ESCALINGMETHOD ret = (ESCALINGMETHOD)g_advancedSettings.m_videoHighQualityScalingMethod;
 
     // Make sure to override the default setting for the video
     g_stSettings.m_currentVideoSettings.m_ScalingMethod = ret;
 
     // Initialize software upscaling.
-    if (g_guiSettings.GetInt("videoplayer.upscalingalgorithm") < 10) //non-hardware
+    if (g_advancedSettings.m_videoHighQualityScalingMethod < 10) //non-hardware
     {
       InitializeSoftwareUpscaling();
       CLog::Log(LOGWARNING, "Upscale: selected algorithm %d", ret);
@@ -942,7 +942,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
       break;
     }
 
-    m_pVideoFilterShader = new BicubicFilterShader(0.3f, 0.3f);
+    m_pVideoFilterShader = new BicubicFilterShader(0.0f, 0.5f);
     if (!m_pVideoFilterShader->CompileAndLink())
     {
       CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
@@ -2395,12 +2395,13 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
   && m_renderMethod == RENDER_GLSL)
     return true;
 
-#if 0
-  if(method == VS_SCALINGMETHOD_BICUBIC_SOFTWARE
-  || method == VS_SCALINGMETHOD_LANCZOS_SOFTWARE
-  || method == VS_SCALINGMETHOD_SINC_SOFTWARE)
-    return true;
-#endif
+  if (g_advancedSettings.m_videoHighQualityScaling != SOFTWARE_UPSCALING_DISABLED)
+  {
+    if(method == VS_SCALINGMETHOD_BICUBIC_SOFTWARE
+    || method == VS_SCALINGMETHOD_LANCZOS_SOFTWARE
+    || method == VS_SCALINGMETHOD_SINC_SOFTWARE)
+      return true;
+  }
 
   if(method == VS_SCALINGMETHOD_VDPAU_HARDWARE && m_renderMethod & RENDER_METHOD_VDPAU)
     return true;

@@ -63,7 +63,7 @@ extern "C"
 }
 #endif
 
-const int SHOUTCASTTIMEOUT = 100;
+const int SHOUTCASTTIMEOUT = 10;
 static CRingBuffer m_ringbuf;
 
 static FileState m_fileState;

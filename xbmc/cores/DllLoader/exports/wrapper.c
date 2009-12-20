@@ -76,7 +76,7 @@ int dll_putc(int c, FILE *stream);
 int dll_fseek ( FILE * stream , long offset , int origin );
 int dll_fseek64(FILE *stream, off64_t offset, int origin);
 long dll_ftell(FILE *stream);
-off64_t ftell64(FILE *stream);
+off64_t dll_ftell64(FILE *stream);
 void dll_rewind(FILE* stream);
 int dll_fgetpos(FILE* stream, fpos_t* pos);
 int dll_fgetpos64(FILE *stream, fpos64_t *pos);

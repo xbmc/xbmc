@@ -1790,12 +1790,14 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
   return CThumbnailCache::GetThumbnailCache()->IsCached(strFileName);
 }
 
-void CUtil::PlayDVD()
+void CUtil::PlayDVD(const CStdString& strProtocol)
 {
 #ifdef HAS_DVDPLAYER
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
-  CFileItem item("dvd://1", false);
+  CStdString strPath;
+  strPath.Format("%s://1", strProtocol.c_str());
+  CFileItem item(strPath, false);
   item.SetLabel(g_mediaManager.GetDiskLabel());
   g_application.PlayFile(item);
 #endif
@@ -1869,7 +1871,7 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
     D3DLOCKED_RECT lr;
     D3DSURFACE_DESC desc;
     lpSurface->GetDesc(&desc);
-    if (SUCCEEDED(lpSurface->LockRect(&lr, NULL, 0)))
+    if (SUCCEEDED(lpSurface->LockRect(&lr, NULL, D3DLOCK_READONLY)))
     {
       width = desc.Width;
       height = desc.Height;
@@ -1922,11 +1924,6 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
   for (int y = 0; y < height; y++)
     memcpy(outpixels + y * stride, pixels + (height - y - 1) * stride, stride);
 
-  //set alpha byte to 0xFF
-  unsigned char* alphaptr = outpixels - 1;
-  for (int i = 0; i < width * height; i++)
-    *(alphaptr += 4) = 0xFF;
-
   delete pixels; 
 
 #else
@@ -1941,6 +1938,14 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
   }
 
   CLog::Log(LOGDEBUG, "Saving screenshot %s", filename.c_str());
+
+  //set alpha byte to 0xFF
+  for (int y = 0; y < height; y++)
+  {
+    unsigned char* alphaptr = outpixels - 1 + y * stride;
+    for (int x = 0; x < width; x++)
+      *(alphaptr += 4) = 0xFF;
+  }
 
   //if sync is true, the png file needs to be completely written when this function returns
   if (sync)

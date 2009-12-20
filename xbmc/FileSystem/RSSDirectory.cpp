@@ -436,8 +436,11 @@ static void ParseItem(CFileItem* item, TiXmlElement* root)
   }
 }
 
-bool CRSSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
 {
+  CStdString strPath(path);
+  CUtil::RemoveSlashAtEnd(strPath);
+
   /* check cache */
   if(m_path == strPath)
   {

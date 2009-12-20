@@ -22,21 +22,24 @@
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "utils/log.h"
+#include "SingleLock.h"
+#include "DVDClock.h"
+#include "MathUtils.h"
 
 using namespace std;
 
 CDVDMessageQueue::CDVDMessageQueue(const string &owner)
 {
   m_owner = owner;
-  m_pFirstMessage = NULL;
-  m_pLastMessage  = NULL;
   m_iDataSize     = 0;
   m_bAbortRequest = false;
   m_bInitialized  = false;
   m_bCaching      = false;
   m_bEmptied      = true;
 
-  InitializeCriticalSection(&m_critSection);
+  m_TimeBack      = DVD_NOPTS_VALUE;
+  m_TimeFront     = DVD_NOPTS_VALUE;
+  m_TimeSize      = 1.0 / 4.0; /* 4 seconds */
   m_hEvent = CreateEvent(NULL, true, false, NULL);
 }
 
@@ -45,88 +48,68 @@ CDVDMessageQueue::~CDVDMessageQueue()
   // remove all remaining messages
   Flush();
 
-  DeleteCriticalSection(&m_critSection);
   CloseHandle(m_hEvent);
 }
 
 void CDVDMessageQueue::Init()
 {
-  m_pFirstMessage = NULL;
-  m_pLastMessage  = NULL;
   m_iDataSize     = 0;
   m_bAbortRequest = false;
   m_bEmptied      = true;
   m_bInitialized  = true;
+  m_TimeBack      = DVD_NOPTS_VALUE;
+  m_TimeFront     = DVD_NOPTS_VALUE;
 }
 
 void CDVDMessageQueue::Flush(CDVDMsg::Message type)
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_section);
 
-  if (m_bInitialized)
+  for(SList::iterator it = m_list.begin(); it != m_list.end();)
   {
-    DVDMessageListItem first;
-    first.pNext = m_pFirstMessage;
-
-    DVDMessageListItem *pLast = &first;
-    DVDMessageListItem *pCurr;
-    while ((pCurr = pLast->pNext))
+    if (it->pMsg->IsType(type) ||  type == CDVDMsg::NONE)
     {
-      if (pCurr->pMsg->IsType(type) ||  type == CDVDMsg::NONE)
-      {
-        pLast->pNext = pCurr->pNext;
-        pCurr->pMsg->Release();
-        delete pCurr;
-      }
-      else
-        pLast = pCurr;
+      it->pMsg->Release();
+      it = m_list.erase(it);
     }
-
-    m_pFirstMessage = first.pNext;
-    if(pLast == &first)
-      m_pLastMessage = NULL;
     else
-      m_pLastMessage = pLast;
+      it++;
   }
 
   if (type == CDVDMsg::DEMUXER_PACKET ||  type == CDVDMsg::NONE)
   {
     m_iDataSize = 0;
+    m_TimeBack  = DVD_NOPTS_VALUE;
+    m_TimeFront = DVD_NOPTS_VALUE;
     m_bEmptied = true;
   }
-
-  LeaveCriticalSection(&m_critSection);
 }
 
 void CDVDMessageQueue::Abort()
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_section);
 
   m_bAbortRequest = true;
 
   SetEvent(m_hEvent); // inform waiter for abort action
-
-  LeaveCriticalSection(&m_critSection);
 }
 
 void CDVDMessageQueue::End()
 {
+  CSingleLock lock(m_section);
+
   Flush();
 
-  EnterCriticalSection(&m_critSection);
-
   m_bInitialized  = false;
-  m_pFirstMessage = NULL;
-  m_pLastMessage  = NULL;
   m_iDataSize     = 0;
   m_bAbortRequest = false;
-
-  LeaveCriticalSection(&m_critSection);
 }
 
 
 MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
 {
+  CSingleLock lock(m_section);
+
   if (!m_bInitialized)
   {
     CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Put MSGQ_NOT_INITIALIZED", m_owner.c_str());
@@ -139,66 +122,44 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
     return MSGQ_INVALID_MSG;
   }
 
-  DVDMessageListItem* msgItem = new DVDMessageListItem;
+  DVDMessageListItem item;
 
-  if (!msgItem)
+  item.pMsg = pMsg;
+  item.priority = priority;
+
+  SList::iterator it = m_list.begin();
+  while(it != m_list.end())
   {
-    CLog::Log(LOGFATAL, "CDVDMessageQueue(%s)::Put MSGQ_OUT_OF_MEMORY", m_owner.c_str());
-    return MSGQ_OUT_OF_MEMORY;
+    if(priority <= it->priority)
+      break;
+    it++;
   }
-
-  msgItem->pMsg = pMsg;
-  msgItem->pNext = NULL;
-  msgItem->priority = priority;
-
-  EnterCriticalSection(&m_critSection);
-
-  if(!m_pLastMessage || (m_pLastMessage && m_pLastMessage->priority >= priority))
-  {
-    /* quick path to just add at the end */
-    if (!m_pFirstMessage) m_pFirstMessage = msgItem;
-    else m_pLastMessage->pNext = msgItem;
-    m_pLastMessage = msgItem;
-  }
-  else
-  {
-    /* add in prio order */
-    DVDMessageListItem* pCurr = m_pFirstMessage;
-    DVDMessageListItem* pLast = NULL;
-
-    while (pCurr && pCurr->priority >= priority)
-    {
-      pLast = pCurr;
-      pCurr = pCurr->pNext;
-    }
-
-    msgItem->pNext = pCurr;
-    if (pLast)
-      pLast->pNext = msgItem;
-    if (msgItem->pNext == NULL)
-      m_pLastMessage = msgItem;
-    if (msgItem->pNext == m_pFirstMessage)
-      m_pFirstMessage = msgItem;
-  }
+  m_list.insert(it, item);
 
   if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
   {
-    CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)pMsg;
-    m_iDataSize += pMsgDemuxerPacket->GetPacketSize();
+    DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)item.pMsg)->GetPacket();
+    if(packet)
+    {
+      m_iDataSize += packet->iSize;
+      if     (packet->dts != DVD_NOPTS_VALUE)
+        m_TimeFront = packet->dts;
+      else if(packet->pts != DVD_NOPTS_VALUE)
+        m_TimeFront = packet->pts;
+    }
   }
 
   SetEvent(m_hEvent); // inform waiter for new packet
-
-  LeaveCriticalSection(&m_critSection);
 
   return MSGQ_OK;
 }
 
 MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int priority)
 {
+  CSingleLock lock(m_section);
+
   *pMsg = NULL;
 
-  DVDMessageListItem* msgItem;
   int ret = 0;
 
   if (!m_bInitialized)
@@ -207,21 +168,24 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
     return MSGQ_NOT_INITIALIZED;
   }
 
-  EnterCriticalSection(&m_critSection);
-
   while (!m_bAbortRequest)
   {
-    msgItem = m_pFirstMessage;
-    if (msgItem && msgItem->priority >= priority && !m_bCaching)
+    if(m_list.size() && m_list.back().priority >= priority && !m_bCaching)
     {
-      m_pFirstMessage = msgItem->pNext;
+      DVDMessageListItem item(m_list.back());
 
-      if (!m_pFirstMessage) m_pLastMessage = NULL;
-
-      if (msgItem->pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
+      if (item.pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
       {
-        CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)msgItem->pMsg;
-        m_iDataSize -= pMsgDemuxerPacket->GetPacketSize();
+        DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)item.pMsg)->GetPacket();
+        if(packet)
+        {
+          m_iDataSize -= packet->iSize;
+          if     (packet->dts != DVD_NOPTS_VALUE)
+            m_TimeBack = packet->dts;
+          else if(packet->pts != DVD_NOPTS_VALUE)
+            m_TimeBack = packet->pts;
+        }
+
         if(m_iDataSize == 0)
         {
           if(!m_bEmptied && m_owner != "teletext") // Prevent log flooding
@@ -232,9 +196,8 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
           m_bEmptied = false;
       }
 
-      *pMsg = msgItem->pMsg;
-
-      delete msgItem; // free the list item we allocated in ::Put()
+      *pMsg = item.pMsg;
+      m_list.pop_back();
 
       ret = MSGQ_OK;
       break;
@@ -247,18 +210,15 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
     else
     {
       ResetEvent(m_hEvent);
-      LeaveCriticalSection(&m_critSection);
+      lock.Leave();
 
       // wait for a new message
       if (WaitForSingleObject(m_hEvent, iTimeoutInMilliSeconds) == WAIT_TIMEOUT)
-      {
-        // just return here directly, we have already left critical section
         return MSGQ_TIMEOUT;
-      }
-      EnterCriticalSection(&m_critSection);
+
+      lock.Enter();
     }
   }
-  LeaveCriticalSection(&m_critSection);
 
   if (m_bAbortRequest) return MSGQ_ABORT;
 
@@ -268,21 +228,18 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
 
 unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
 {
+  CSingleLock lock(m_section);
+
   if (!m_bInitialized)
     return 0;
 
-  EnterCriticalSection(&m_critSection);
-
   unsigned count = 0;
-  DVDMessageListItem* msgItem = m_pFirstMessage;
-  while(msgItem)
+  for(SList::iterator it = m_list.begin(); it != m_list.end();it++)
   {
-    if( msgItem->pMsg->IsType(type) )
+    if(it->pMsg->IsType(type))
       count++;
-    msgItem = msgItem->pNext;
   }
 
-  LeaveCriticalSection(&m_critSection);
   return count;
 }
 
@@ -290,8 +247,22 @@ void CDVDMessageQueue::WaitUntilEmpty()
 {
     CLog::Log(LOGNOTICE, "CDVDMessageQueue(%s)::WaitUntilEmpty", m_owner.c_str());
     CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(40000, 0);
-    msg->Acquire();
-    Put(msg);
+    Put(msg->Acquire());
     msg->Wait(&m_bAbortRequest, 0);
     msg->Release();
+}
+
+int CDVDMessageQueue::GetLevel() const
+{
+  if(m_iDataSize > m_iMaxDataSize)
+    return 100;
+  if(m_iDataSize == 0)
+    return 0;
+
+  if(m_TimeBack  == DVD_NOPTS_VALUE
+  || m_TimeFront == DVD_NOPTS_VALUE
+  || m_TimeFront <= m_TimeBack)
+    return min(100, 100 * m_iDataSize / m_iMaxDataSize);
+
+  return min(100, MathUtils::round_int(100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE ));
 }

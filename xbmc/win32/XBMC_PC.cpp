@@ -118,18 +118,21 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
     return 0;
   }
 
+#ifndef HAS_DX
   if(CWIN32Util::GetDesktopColorDepth() < 32)
   {
     //FIXME: replace it by a SDL window for all ports
     MessageBox(NULL, "Desktop Color Depth isn't 32Bit", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
     return 0;
   }
+#endif
 
   // parse the command line
   CStdStringW strcl(commandLine);
   LPWSTR *szArglist;
   int nArgs;
 
+  setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
   szArglist = CommandLineToArgvW(strcl.c_str(), &nArgs);
   if(szArglist != NULL)
