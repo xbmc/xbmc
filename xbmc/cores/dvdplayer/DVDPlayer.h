@@ -210,7 +210,13 @@ public:
   
   virtual CStdString GetPlayingTitle();
 
-  virtual bool IsCaching() const { return m_caching; }
+  enum ECacheState
+  { CACHESTATE_DONE = 0
+  , CACHESTATE_FULL     // player is filling up the demux queue
+  , CACHESTATE_NEXT     // player is waiting for first packet of each stream
+  };
+
+  virtual bool IsCaching() const { return m_caching == CACHESTATE_FULL; }
   virtual int GetCacheLevel() const ;
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
@@ -244,7 +250,7 @@ protected:
    */
   void SetPlaySpeed(int iSpeed);
   int GetPlaySpeed()                                                { return m_playSpeed; }
-  void SetCaching(bool enabled);
+  void SetCaching(ECacheState state);
 
   __int64 GetTotalTimeInMsec();
   void FlushBuffers(bool queued);
@@ -278,7 +284,7 @@ protected:
 
   std::string m_filename; // holds the actual filename
   std::string m_content;  // hold a hint to what content file contains (mime type)
-  bool        m_caching;  // player is filling up the demux queue
+  ECacheState m_caching;
   bool        m_seeking;  // player is currently trying to fullfill a seek request
   CFileItem   m_item;
 
