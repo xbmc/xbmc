@@ -414,6 +414,10 @@ bool CRenderSystemDX::BeginRender()
   if(FAILED (m_pD3DDevice->BeginScene()))
   {
     CLog::Log(LOGERROR, "m_pD3DDevice->BeginScene() failed");
+    // When XBMC caught an exception after BeginScene(), EndScene() may never been called
+    // and thus all following BeginScene() will fail too.
+    if(FAILED (m_pD3DDevice->EndScene()))
+      CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed");
     return false;
   }
   m_inScene = true;
