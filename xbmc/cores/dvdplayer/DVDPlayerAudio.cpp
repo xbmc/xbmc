@@ -482,7 +482,7 @@ void CDVDPlayerAudio::Process()
   {
     //Don't let anybody mess with our global variables
     EnterCriticalSection(&m_critCodecSection);
-    result = DecodeFrame(audioframe, m_speed != DVD_PLAYSPEED_NORMAL); // blocks if no audio is available, but leaves critical section before doing so
+    result = DecodeFrame(audioframe, m_speed > DVD_PLAYSPEED_NORMAL || m_speed < 0); // blocks if no audio is available, but leaves critical section before doing so
     LeaveCriticalSection(&m_critCodecSection);
 
     if( result & DECODE_FLAG_ERROR )
