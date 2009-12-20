@@ -15,8 +15,12 @@ extern "C" {
 #ifndef __GNUC__
 #pragma warning(disable:4244)
 #endif
-#if (defined USE_EXTERNAL_FFMPEG) || (defined _WIN32)
-  #include <libavformat/avformat.h>
+#if (defined USE_EXTERNAL_FFMPEG)
+  #if (defined HAVE_LIBAVFORMAT_AVFORMAT_H)
+    #include <libavformat/avformat.h>
+  #else
+    #include <ffmpeg/avformat.h>
+  #endif
 #else
   #include "libavformat/avformat.h"
 #endif
