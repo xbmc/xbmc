@@ -23,11 +23,11 @@
 
 #include "DVDMessage.h"
 #include <string>
+#include <list>
 
 typedef struct stDVDMessageListItem
 {
   CDVDMsg* pMsg;
-  struct stDVDMessageListItem *pNext;
   int priority;
 }
 DVDMessageListItem;
@@ -79,9 +79,6 @@ private:
   HANDLE m_hEvent;
   mutable CRITICAL_SECTION m_critSection;
 
-  DVDMessageListItem* m_pFirstMessage;
-  DVDMessageListItem* m_pLastMessage;
-
   bool m_bAbortRequest;
   bool m_bInitialized;
   bool m_bCaching;
@@ -90,5 +87,8 @@ private:
   int m_iMaxDataSize;
   bool m_bEmptied;
   std::string m_owner;
+
+  typedef std::list<DVDMessageListItem> SList;
+  SList m_list;
 };
 
