@@ -30,7 +30,7 @@
 #ifndef AVCODEC_LZW_H
 #define AVCODEC_LZW_H
 
-#include "get_bits.h"
+struct PutBitContext;
 
 enum FF_LZW_MODES{
     FF_LZW_GIF,
@@ -52,8 +52,11 @@ void ff_lzw_decode_tail(LZWState *lzw);
 struct LZWEncodeState;
 extern const int ff_lzw_encode_state_size;
 
-void ff_lzw_encode_init(struct LZWEncodeState * s, uint8_t * outbuf, int outsize, int maxbits);
+void ff_lzw_encode_init(struct LZWEncodeState *s, uint8_t *outbuf, int outsize,
+                        int maxbits, enum FF_LZW_MODES mode,
+                        void (*lzw_put_bits)(struct PutBitContext *, int, unsigned int));
 int ff_lzw_encode(struct LZWEncodeState * s, const uint8_t * inbuf, int insize);
-int ff_lzw_encode_flush(struct LZWEncodeState * s);
+int ff_lzw_encode_flush(struct LZWEncodeState *s,
+                        void (*lzw_flush_put_bits)(struct PutBitContext *));
 
 #endif /* AVCODEC_LZW_H */

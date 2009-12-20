@@ -8,11 +8,12 @@ PROGS-$(CONFIG_FFMPEG)   += ffmpeg
 PROGS-$(CONFIG_FFPLAY)   += ffplay
 PROGS-$(CONFIG_FFSERVER) += ffserver
 
-PROGS       = $(addsuffix   $(EXESUF), $(PROGS-yes))
+PROGS      := $(addsuffix   $(EXESUF), $(PROGS-yes))
 PROGS_G     = $(addsuffix _g$(EXESUF), $(PROGS-yes))
 OBJS        = $(addsuffix .o,          $(PROGS-yes)) cmdutils.o
 MANPAGES    = $(addprefix doc/, $(addsuffix .1, $(PROGS-yes)))
 TOOLS       = $(addprefix tools/, $(addsuffix $(EXESUF), cws2fws pktdumper probetest qt-faststart trasher))
+HOSTPROGS   = $(addprefix tests/, audiogen videogen rotozoom tiny_psnr)
 
 BASENAMES   = ffmpeg ffplay ffserver
 ALLPROGS    = $(addsuffix   $(EXESUF), $(BASENAMES))
@@ -32,11 +33,11 @@ FF_LDFLAGS   := $(FFLDFLAGS)
 FF_EXTRALIBS := $(FFEXTRALIBS)
 FF_DEP_LIBS  := $(DEP_LIBS)
 
-ALL_TARGETS-$(BUILD_DOC)    += documentation
+ALL_TARGETS-$(CONFIG_DOC)       += documentation
 
-ifneq ($(PROGS),)
+ifdef PROGS
 INSTALL_TARGETS-yes             += install-progs install-data
-INSTALL_TARGETS-$(BUILD_DOC)    += install-man
+INSTALL_TARGETS-$(CONFIG_DOC)   += install-man
 endif
 INSTALL_PROGS_TARGETS-$(CONFIG_SHARED) = install-libs
 
@@ -47,7 +48,8 @@ $(PROGS): %$(EXESUF): %_g$(EXESUF)
 	$(STRIP) $@
 
 SUBDIR_VARS := OBJS FFLIBS CLEANFILES DIRS TESTPROGS EXAMPLES SKIPHEADERS \
-               ALTIVEC-OBJS MMX-OBJS NEON-OBJS X86-OBJS YASM-OBJS-FFT YASM-OBJS
+               ALTIVEC-OBJS MMX-OBJS NEON-OBJS X86-OBJS YASM-OBJS-FFT YASM-OBJS \
+               HOSTPROGS
 
 define RESET
 $(1) :=
@@ -80,8 +82,9 @@ cmdutils.o cmdutils.d: version.h
 
 alltools: $(TOOLS)
 
-documentation: $(addprefix doc/, developer.html faq.html ffmpeg-doc.html ffserver-doc.html \
-                                 ffplay-doc.html general.html $(ALLMANPAGES))
+documentation: $(addprefix doc/, developer.html faq.html ffmpeg-doc.html \
+                                 ffplay-doc.html ffserver-doc.html       \
+                                 general.html libavfilter.html $(ALLMANPAGES))
 
 doc/%.html: doc/%.texi
 	texi2html -monolithic -number $<
@@ -186,6 +189,7 @@ CODEC_TESTS = $(addprefix regtest-,             \
         dnxhd_720p_rd                           \
         svq1                                    \
         flashsv                                 \
+        roq                                     \
         mp2                                     \
         ac3                                     \
         g726                                    \
@@ -194,6 +198,7 @@ CODEC_TESTS = $(addprefix regtest-,             \
         adpcm_ms                                \
         adpcm_yam                               \
         adpcm_swf                               \
+        alac                                    \
         flac                                    \
         wma                                     \
         pcm                                     \
@@ -295,10 +300,10 @@ $(CODEC_TESTS) regtest-ref: tests/tiny_psnr$(HOSTEXESUF)
 	$(SRC_PATH)/tests/codec-regression.sh $@ rotozoom tests/vsynth2 a "$(TARGET_EXEC)" "$(TARGET_PATH)"
 
 $(LAVF_TESTS):
-	$(SRC_PATH)/tests/codec-regression.sh $@ lavf tests/vsynth1 b "$(TARGET_EXEC)" "$(TARGET_PATH)"
+	$(SRC_PATH)/tests/lavf-regression.sh $@ lavf tests/vsynth1 b "$(TARGET_EXEC)" "$(TARGET_PATH)"
 
 $(LAVFI_TESTS):
-	$(SRC_PATH)/tests/codec-regression.sh $@ lavfi tests/vsynth1 b "$(TARGET_EXEC)" "$(TARGET_PATH)"
+	$(SRC_PATH)/tests/lavfi-regression.sh $@ lavfi tests/vsynth1 b "$(TARGET_EXEC)" "$(TARGET_PATH)"
 
 seektest: codectest lavftest tests/seek_test$(EXESUF)
 	$(SRC_PATH)/tests/seek-regression.sh $(SEEK_REFFILE) "$(TARGET_EXEC)" "$(TARGET_PATH)"
@@ -321,9 +326,6 @@ tests/vsynth2/00.pgm: tests/rotozoom$(HOSTEXESUF)
 tests/data/asynth1.sw: tests/audiogen$(HOSTEXESUF)
 	mkdir -p tests/data
 	$(BUILD_ROOT)/$< $@
-
-tests/%$(HOSTEXESUF): tests/%.c
-	$(HOSTCC) $(HOSTCFLAGS) $(HOSTLDFLAGS) -o $@ $< $(HOSTLIBS)
 
 tests/seek_test$(EXESUF): tests/seek_test.o $(FF_DEP_LIBS)
 	$(LD) $(FF_LDFLAGS) -o $@ $< $(FF_EXTRALIBS)

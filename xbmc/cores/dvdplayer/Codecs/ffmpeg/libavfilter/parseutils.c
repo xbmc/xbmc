@@ -227,7 +227,7 @@ int av_parse_color(uint8_t *rgba_color, const char *color_string, void *log_ctx)
     if (!strncmp(color_string, "0x", 2)) {
         char *tail;
         int len = strlen(color_string);
-        int rgba = strtol(color_string, &tail, 16);
+        unsigned int rgba = strtoul(color_string, &tail, 16);
 
         if (*tail || (len != 8 && len != 10)) {
             av_log(log_ctx, AV_LOG_ERROR, "Invalid 0xRRGGBB[AA] color string: '%s'\n", color_string);
@@ -292,6 +292,8 @@ static int parse_key_value_pair(void *ctx, const char **buf,
     av_log(ctx, AV_LOG_DEBUG, "Setting value '%s' for key '%s'\n", val, key);
 
     ret = av_set_string3(ctx, key, val, 1, NULL);
+    if (ret == AVERROR(ENOENT))
+        av_log(ctx, AV_LOG_ERROR, "Key '%s' not found.\n", key);
 
     av_free(key);
     av_free(val);
@@ -412,6 +414,7 @@ int main(void)
             "Red",
             "0x000000",
             "0x0000000",
+            "0xff000000",
             "0x3e34ff",
             "0x3e34ffaa",
             "0xffXXee",

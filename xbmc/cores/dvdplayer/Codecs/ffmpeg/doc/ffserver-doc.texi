@@ -242,7 +242,15 @@ Show version.
 @item -L
 Show license.
 @item -formats
-Show available formats, codecs, protocols, ...
+Show available formats.
+@item -codecs
+Show available codecs.
+@item -bsfs
+Show available bitstream filters.
+@item -protocols
+Show available protocols.
+@item -filters
+Show available libavfilter filters.
 @item -h
 Show help.
 @item -loglevel @var{loglevel}

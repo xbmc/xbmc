@@ -347,10 +347,10 @@ typedef struct DSPContext {
      * subtract huffyuv's variant of median prediction
      * note, this might read from src1[-1], src2[-1]
      */
-    void (*sub_hfyu_median_prediction)(uint8_t *dst, uint8_t *src1, uint8_t *src2, int w, int *left, int *left_top);
-    void (*add_hfyu_median_prediction)(uint8_t *dst, uint8_t *top, uint8_t *diff, int w, int *left, int *left_top);
-    int  (*add_hfyu_left_prediction)(uint8_t *dst, uint8_t *src, int w, int acc);
-    void (*add_hfyu_left_prediction_bgr32)(uint8_t *dst, uint8_t *src, int w, int *red, int *green, int *blue);
+    void (*sub_hfyu_median_prediction)(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int w, int *left, int *left_top);
+    void (*add_hfyu_median_prediction)(uint8_t *dst, const uint8_t *top, const uint8_t *diff, int w, int *left, int *left_top);
+    int  (*add_hfyu_left_prediction)(uint8_t *dst, const uint8_t *src, int w, int left);
+    void (*add_hfyu_left_prediction_bgr32)(uint8_t *dst, const uint8_t *src, int w, int *red, int *green, int *blue);
     /* this might write to dst[w] */
     void (*add_png_paeth_prediction)(uint8_t *dst, uint8_t *src, uint8_t *top, int w, int bpp);
     void (*bswap_buf)(uint32_t *dst, const uint32_t *src, int w);
@@ -386,7 +386,7 @@ typedef struct DSPContext {
     void (*vorbis_inverse_coupling)(float *mag, float *ang, int blocksize);
     void (*ac3_downmix)(float (*samples)[256], float (*matrix)[2], int out_ch, int in_ch, int len);
     /* no alignment needed */
-    void (*flac_compute_autocorr)(const int32_t *data, int len, int lag, double *autoc);
+    void (*lpc_compute_autocorr)(const int32_t *data, int len, int lag, double *autoc);
     /* assume len is a multiple of 8, and arrays are 16-byte aligned */
     void (*vector_fmul)(float *dst, const float *src, int len);
     void (*vector_fmul_reverse)(float *dst, const float *src0, const float *src1, int len);
@@ -560,23 +560,19 @@ typedef struct DSPContext {
     void (*x8_setup_spatial_compensation)(uint8_t *src, uint8_t *dst, int linesize,
            int * range, int * sum,  int edges);
 
-    /* ape functions */
-    /**
-     * Add contents of the second vector to the first one.
-     * @param len length of vectors, should be multiple of 16
-     */
-    void (*add_int16)(int16_t *v1/*align 16*/, int16_t *v2, int len);
-    /**
-     * Add contents of the second vector to the first one.
-     * @param len length of vectors, should be multiple of 16
-     */
-    void (*sub_int16)(int16_t *v1/*align 16*/, int16_t *v2, int len);
     /**
      * Calculate scalar product of two vectors.
      * @param len length of vectors, should be multiple of 16
      * @param shift number of bits to discard from product
      */
     int32_t (*scalarproduct_int16)(int16_t *v1, int16_t *v2/*align 16*/, int len, int shift);
+    /* ape functions */
+    /**
+     * Calculate scalar product of v1 and v2,
+     * and v1[i] += v3[i] * mul
+     * @param len length of vectors, should be multiple of 16
+     */
+    int32_t (*scalarproduct_and_madd_int16)(int16_t *v1/*align 16*/, int16_t *v2, int16_t *v3, int len, int mul);
 
     /* rv30 functions */
     qpel_mc_func put_rv30_tpel_pixels_tab[4][16];
@@ -742,7 +738,52 @@ typedef struct FFTContext {
 #define FF_MDCT_PERM_INTERLEAVE 1
 } FFTContext;
 
-extern FFTSample* const ff_cos_tabs[13];
+#if CONFIG_HARDCODED_TABLES
+#define COSTABLE_CONST const
+#define SINTABLE_CONST const
+#else
+#define COSTABLE_CONST
+#define SINTABLE_CONST
+#endif
+
+#define COSTABLE(size) \
+    COSTABLE_CONST DECLARE_ALIGNED_16(FFTSample, ff_cos_##size[size/2])
+#define SINTABLE(size) \
+    SINTABLE_CONST DECLARE_ALIGNED_16(FFTSample, ff_sin_##size[size/2])
+extern COSTABLE(16);
+extern COSTABLE(32);
+extern COSTABLE(64);
+extern COSTABLE(128);
+extern COSTABLE(256);
+extern COSTABLE(512);
+extern COSTABLE(1024);
+extern COSTABLE(2048);
+extern COSTABLE(4096);
+extern COSTABLE(8192);
+extern COSTABLE(16384);
+extern COSTABLE(32768);
+extern COSTABLE(65536);
+extern COSTABLE_CONST FFTSample* const ff_cos_tabs[17];
+
+/**
+ * Initializes the cosine table in ff_cos_tabs[index]
+ * \param index index in ff_cos_tabs array of the table to initialize
+ */
+void ff_init_ff_cos_tabs(int index);
+
+extern SINTABLE(16);
+extern SINTABLE(32);
+extern SINTABLE(64);
+extern SINTABLE(128);
+extern SINTABLE(256);
+extern SINTABLE(512);
+extern SINTABLE(1024);
+extern SINTABLE(2048);
+extern SINTABLE(4096);
+extern SINTABLE(8192);
+extern SINTABLE(16384);
+extern SINTABLE(32768);
+extern SINTABLE(65536);
 
 /**
  * Sets up a complex FFT.
@@ -836,8 +877,8 @@ typedef struct {
     int sign_convention;
 
     /* pre/post rotation tables */
-    FFTSample *tcos;
-    FFTSample *tsin;
+    const FFTSample *tcos;
+    SINTABLE_CONST FFTSample *tsin;
     FFTContext fft;
 } RDFTContext;
 

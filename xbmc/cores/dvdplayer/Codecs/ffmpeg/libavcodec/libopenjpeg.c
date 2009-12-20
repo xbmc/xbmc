@@ -39,12 +39,12 @@ typedef struct {
 
 static int check_image_attributes(opj_image_t *image)
 {
-    return(image->comps[0].dx == image->comps[1].dx &&
+    return image->comps[0].dx == image->comps[1].dx &&
            image->comps[1].dx == image->comps[2].dx &&
            image->comps[0].dy == image->comps[1].dy &&
            image->comps[1].dy == image->comps[2].dy &&
            image->comps[0].prec == image->comps[1].prec &&
-           image->comps[1].prec == image->comps[2].prec);
+           image->comps[1].prec == image->comps[2].prec;
 }
 
 static av_cold int libopenjpeg_decode_init(AVCodecContext *avctx)
@@ -78,9 +78,13 @@ static int libopenjpeg_decode_frame(AVCodecContext *avctx,
     if((AV_RB32(buf) == 12) &&
        (AV_RB32(buf + 4) == JP2_SIG_TYPE) &&
        (AV_RB32(buf + 8) == JP2_SIG_VALUE)) {
-         dec = opj_create_decompress(CODEC_JP2);
+        dec = opj_create_decompress(CODEC_JP2);
     } else {
-         dec = opj_create_decompress(CODEC_J2K);
+        // If the AVPacket contains a jp2c box, then skip to
+        // the starting byte of the codestream.
+        if (AV_RB32(buf + 4) == AV_RB32("jp2c"))
+            buf += 8;
+        dec = opj_create_decompress(CODEC_J2K);
     }
 
     if(!dec) {

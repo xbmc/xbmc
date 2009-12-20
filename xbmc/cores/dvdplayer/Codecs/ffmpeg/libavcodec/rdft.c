@@ -27,20 +27,23 @@
  */
 
 /* sin(2*pi*x/n) for 0<=x<n/4, followed by n/2<=x<3n/4 */
-DECLARE_ALIGNED_16(FFTSample, ff_sin_16[8]);
-DECLARE_ALIGNED_16(FFTSample, ff_sin_32[16]);
-DECLARE_ALIGNED_16(FFTSample, ff_sin_64[32]);
-DECLARE_ALIGNED_16(FFTSample, ff_sin_128[64]);
-DECLARE_ALIGNED_16(FFTSample, ff_sin_256[128]);
-DECLARE_ALIGNED_16(FFTSample, ff_sin_512[256]);
-DECLARE_ALIGNED_16(FFTSample, ff_sin_1024[512]);
-DECLARE_ALIGNED_16(FFTSample, ff_sin_2048[1024]);
-DECLARE_ALIGNED_16(FFTSample, ff_sin_4096[2048]);
-DECLARE_ALIGNED_16(FFTSample, ff_sin_8192[4096]);
-DECLARE_ALIGNED_16(FFTSample, ff_sin_16384[8192]);
-DECLARE_ALIGNED_16(FFTSample, ff_sin_32768[16384]);
-DECLARE_ALIGNED_16(FFTSample, ff_sin_65536[32768]);
-FFTSample * const ff_sin_tabs[] = {
+#if !CONFIG_HARDCODED_TABLES
+SINTABLE(16);
+SINTABLE(32);
+SINTABLE(64);
+SINTABLE(128);
+SINTABLE(256);
+SINTABLE(512);
+SINTABLE(1024);
+SINTABLE(2048);
+SINTABLE(4096);
+SINTABLE(8192);
+SINTABLE(16384);
+SINTABLE(32768);
+SINTABLE(65536);
+#endif
+SINTABLE_CONST FFTSample * const ff_sin_tabs[] = {
+    NULL, NULL, NULL, NULL,
     ff_sin_16, ff_sin_32, ff_sin_64, ff_sin_128, ff_sin_256, ff_sin_512, ff_sin_1024,
     ff_sin_2048, ff_sin_4096, ff_sin_8192, ff_sin_16384, ff_sin_32768, ff_sin_65536,
 };
@@ -61,12 +64,14 @@ av_cold int ff_rdft_init(RDFTContext *s, int nbits, enum RDFTransformType trans)
     if (ff_fft_init(&s->fft, nbits-1, trans == IRDFT || trans == RIDFT) < 0)
         return -1;
 
-    s->tcos = ff_cos_tabs[nbits-4];
-    s->tsin = ff_sin_tabs[nbits-4]+(trans == RDFT || trans == IRIDFT)*(n>>2);
+    ff_init_ff_cos_tabs(nbits);
+    s->tcos = ff_cos_tabs[nbits];
+    s->tsin = ff_sin_tabs[nbits]+(trans == RDFT || trans == IRIDFT)*(n>>2);
+#if !CONFIG_HARDCODED_TABLES
     for (i = 0; i < (n>>2); i++) {
-        s->tcos[i] = cos(i*theta);
         s->tsin[i] = sin(i*theta);
     }
+#endif
     return 0;
 }
 

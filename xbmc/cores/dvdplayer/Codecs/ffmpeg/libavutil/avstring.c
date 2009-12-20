@@ -24,6 +24,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "avstring.h"
+#include "mem.h"
 
 int av_strstart(const char *str, const char *pfx, const char **ptr)
 {
@@ -75,4 +76,11 @@ size_t av_strlcatf(char *dst, size_t size, const char *fmt, ...)
     va_end(vl);
 
     return len;
+}
+
+char *av_d2str(double d)
+{
+    char *str= av_malloc(16);
+    if(str) snprintf(str, 16, "%f", d);
+    return str;
 }

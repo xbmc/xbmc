@@ -22,6 +22,7 @@
 #include "libavutil/avstring.h"
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
+#include "riff.h"
 #include "rm.h"
 
 struct RMStream {
@@ -47,6 +48,23 @@ typedef struct {
     int audio_stream_num; ///< Stream number for audio packets
     int audio_pkt_cnt; ///< Output packet counter
 } RMDemuxContext;
+
+static const AVCodecTag rm_codec_tags[] = {
+    { CODEC_ID_RV10,   MKTAG('R','V','1','0') },
+    { CODEC_ID_RV20,   MKTAG('R','V','2','0') },
+    { CODEC_ID_RV20,   MKTAG('R','V','T','R') },
+    { CODEC_ID_RV30,   MKTAG('R','V','3','0') },
+    { CODEC_ID_RV40,   MKTAG('R','V','4','0') },
+    { CODEC_ID_AC3,    MKTAG('d','n','e','t') },
+    { CODEC_ID_RA_144, MKTAG('l','p','c','J') },
+    { CODEC_ID_RA_288, MKTAG('2','8','_','8') },
+    { CODEC_ID_COOK,   MKTAG('c','o','o','k') },
+    { CODEC_ID_ATRAC3, MKTAG('a','t','r','c') },
+    { CODEC_ID_SIPR,   MKTAG('s','i','p','r') },
+    { CODEC_ID_AAC,    MKTAG('r','a','a','c') },
+    { CODEC_ID_AAC,    MKTAG('r','a','c','p') },
+    { CODEC_ID_NONE },
+};
 
 static const unsigned char sipr_swaps[38][2] = {
     {  0, 63 }, {  1, 22 }, {  2, 44 }, {  3, 90 },
@@ -82,6 +100,20 @@ static void get_str8(ByteIOContext *pb, char *buf, int buf_size)
     get_strl(pb, buf, buf_size, get_byte(pb));
 }
 
+static int rm_read_extradata(ByteIOContext *pb, AVCodecContext *avctx, unsigned size)
+{
+    if (size >= 1<<24)
+        return -1;
+    avctx->extradata = av_malloc(size + FF_INPUT_BUFFER_PADDING_SIZE);
+    if (!avctx->extradata)
+        return AVERROR_NOMEM;
+    avctx->extradata_size = get_buffer(pb, avctx->extradata, size);
+    memset(avctx->extradata + avctx->extradata_size, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+    if (avctx->extradata_size != size)
+        return AVERROR(EIO);
+    return 0;
+}
+
 static void rm_read_metadata(AVFormatContext *s, int wide)
 {
     char buf[1024];
@@ -110,28 +142,32 @@ static int rm_read_audio_stream_info(AVFormatContext *s, ByteIOContext *pb,
 {
     char buf[256];
     uint32_t version;
+    int ret;
 
     /* ra type header */
-    version = get_be32(pb); /* version */
-    if (((version >> 16) & 0xff) == 3) {
+    version = get_be16(pb); /* version */
+    if (version == 3) {
+        int header_size = get_be16(pb);
         int64_t startpos = url_ftell(pb);
         url_fskip(pb, 14);
         rm_read_metadata(s, 0);
-        if ((startpos + (version & 0xffff)) >= url_ftell(pb) + 2) {
+        if ((startpos + header_size) >= url_ftell(pb) + 2) {
             // fourcc (should always be "lpcJ")
             get_byte(pb);
             get_str8(pb, buf, sizeof(buf));
         }
         // Skip extra header crap (this should never happen)
-        if ((startpos + (version & 0xffff)) > url_ftell(pb))
-            url_fskip(pb, (version & 0xffff) + startpos - url_ftell(pb));
+        if ((startpos + header_size) > url_ftell(pb))
+            url_fskip(pb, header_size + startpos - url_ftell(pb));
         st->codec->sample_rate = 8000;
         st->codec->channels = 1;
         st->codec->codec_type = CODEC_TYPE_AUDIO;
         st->codec->codec_id = CODEC_ID_RA_144;
     } else {
         int flavor, sub_packet_h, coded_framesize, sub_packet_size;
+        int codecdata_length;
         /* old version (4) */
+        url_fskip(pb, 2); /* unused */
         get_be32(pb); /* .ra4 */
         get_be32(pb); /* data size */
         get_be16(pb); /* version2 */
@@ -145,13 +181,13 @@ static int rm_read_audio_stream_info(AVFormatContext *s, ByteIOContext *pb,
         st->codec->block_align= get_be16(pb); /* frame size */
         ast->sub_packet_size = sub_packet_size = get_be16(pb); /* sub packet size */
         get_be16(pb); /* ??? */
-        if (((version >> 16) & 0xff) == 5) {
+        if (version == 5) {
             get_be16(pb); get_be16(pb); get_be16(pb);
         }
         st->codec->sample_rate = get_be16(pb);
         get_be32(pb);
         st->codec->channels = get_be16(pb);
-        if (((version >> 16) & 0xff) == 5) {
+        if (version == 5) {
             get_be32(pb);
             get_buffer(pb, buf, 4);
             buf[4] = 0;
@@ -160,11 +196,13 @@ static int rm_read_audio_stream_info(AVFormatContext *s, ByteIOContext *pb,
             get_str8(pb, buf, sizeof(buf)); /* desc */
         }
         st->codec->codec_type = CODEC_TYPE_AUDIO;
-        if (!strcmp(buf, "dnet")) {
-            st->codec->codec_id = CODEC_ID_AC3;
+        st->codec->codec_tag  = AV_RL32(buf);
+        st->codec->codec_id   = ff_codec_get_id(rm_codec_tags, st->codec->codec_tag);
+        switch (st->codec->codec_id) {
+        case CODEC_ID_AC3:
             st->need_parsing = AVSTREAM_PARSE_FULL;
-        } else if (!strcmp(buf, "28_8")) {
-            st->codec->codec_id = CODEC_ID_RA_288;
+            break;
+        case CODEC_ID_RA_288:
             st->codec->extradata_size= 0;
             ast->audio_framesize = st->codec->block_align;
             st->codec->block_align = coded_framesize;
@@ -175,10 +213,12 @@ static int rm_read_audio_stream_info(AVFormatContext *s, ByteIOContext *pb,
             }
 
             av_new_packet(&ast->pkt, ast->audio_framesize * sub_packet_h);
-        } else if ((!strcmp(buf, "cook")) || (!strcmp(buf, "atrc")) || (!strcmp(buf, "sipr"))) {
-            int codecdata_length;
+            break;
+        case CODEC_ID_COOK:
+        case CODEC_ID_ATRAC3:
+        case CODEC_ID_SIPR:
             get_be16(pb); get_byte(pb);
-            if (((version >> 16) & 0xff) == 5)
+            if (version == 5)
                 get_byte(pb);
             codecdata_length = get_be32(pb);
             if(codecdata_length + FF_INPUT_BUFFER_PADDING_SIZE <= (unsigned)codecdata_length){
@@ -205,9 +245,8 @@ static int rm_read_audio_stream_info(AVFormatContext *s, ByteIOContext *pb,
                 }
                 st->codec->block_align = ast->sub_packet_size;
             }
-            st->codec->extradata_size= codecdata_length;
-            st->codec->extradata= av_mallocz(st->codec->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
-            get_buffer(pb, st->codec->extradata, st->codec->extradata_size);
+            if ((ret = rm_read_extradata(s->pb, st->codec, codecdata_length)) < 0)
+                return ret;
 
             if(ast->audio_framesize >= UINT_MAX / sub_packet_h){
                 av_log(s, AV_LOG_ERROR, "rm->audio_framesize * sub_packet_h too large\n");
@@ -215,10 +254,10 @@ static int rm_read_audio_stream_info(AVFormatContext *s, ByteIOContext *pb,
             }
 
             av_new_packet(&ast->pkt, ast->audio_framesize * sub_packet_h);
-        } else if (!strcmp(buf, "raac") || !strcmp(buf, "racp")) {
-            int codecdata_length;
+            break;
+        case CODEC_ID_AAC:
             get_be16(pb); get_byte(pb);
-            if (((version >> 16) & 0xff) == 5)
+            if (version == 5)
                 get_byte(pb);
             st->codec->codec_id = CODEC_ID_AAC;
             codecdata_length = get_be32(pb);
@@ -227,13 +266,12 @@ static int rm_read_audio_stream_info(AVFormatContext *s, ByteIOContext *pb,
                 return -1;
             }
             if (codecdata_length >= 1) {
-                st->codec->extradata_size = codecdata_length - 1;
-                st->codec->extradata = av_mallocz(st->codec->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
                 get_byte(pb);
-                get_buffer(pb, st->codec->extradata, st->codec->extradata_size);
+                if ((ret = rm_read_extradata(s->pb, st->codec, codecdata_length - 1)) < 0)
+                    return ret;
             }
-        } else {
-            st->codec->codec_id = CODEC_ID_NONE;
+            break;
+        default:
             av_strlcpy(st->codec->codec_name, buf, sizeof(st->codec->codec_name));
         }
         if (read_all) {
@@ -253,6 +291,7 @@ ff_rm_read_mdpr_codecdata (AVFormatContext *s, ByteIOContext *pb,
     unsigned int v;
     int size;
     int64_t codec_pos;
+    int ret;
 
     av_set_pts_info(st, 64, 1, 1000);
     codec_pos = url_ftell(pb);
@@ -269,12 +308,9 @@ ff_rm_read_mdpr_codecdata (AVFormatContext *s, ByteIOContext *pb,
             goto skip;
         }
         st->codec->codec_tag = get_le32(pb);
+        st->codec->codec_id  = ff_codec_get_id(rm_codec_tags, st->codec->codec_tag);
 //        av_log(s, AV_LOG_DEBUG, "%X %X\n", st->codec->codec_tag, MKTAG('R', 'V', '2', '0'));
-        if (   st->codec->codec_tag != MKTAG('R', 'V', '1', '0')
-            && st->codec->codec_tag != MKTAG('R', 'V', '2', '0')
-            && st->codec->codec_tag != MKTAG('R', 'V', '3', '0')
-            && st->codec->codec_tag != MKTAG('R', 'V', '4', '0')
-            && st->codec->codec_tag != MKTAG('R', 'V', 'T', 'R'))
+        if (st->codec->codec_id == CODEC_ID_NONE)
             goto fail1;
         st->codec->width = get_be16(pb);
         st->codec->height = get_be16(pb);
@@ -284,26 +320,20 @@ ff_rm_read_mdpr_codecdata (AVFormatContext *s, ByteIOContext *pb,
         get_be32(pb);
         fps2= get_be32(pb);
 
-        st->codec->extradata_size= codec_data_size - (url_ftell(pb) - codec_pos);
-
-        if(st->codec->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE <= (unsigned)st->codec->extradata_size){
-            //check is redundant as get_buffer() will catch this
-            av_log(s, AV_LOG_ERROR, "st->codec->extradata_size too large\n");
-            return -1;
-        }
-        st->codec->extradata= av_mallocz(st->codec->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
-        if (!st->codec->extradata)
-            return AVERROR(ENOMEM);
-        get_buffer(pb, st->codec->extradata, st->codec->extradata_size);
+        if ((ret = rm_read_extradata(s->pb, st->codec, codec_data_size - (url_ftell(pb) - codec_pos))) < 0)
+            return ret;
 
 //        av_log(s, AV_LOG_DEBUG, "fps= %d fps2= %d\n", fps, fps2);
         st->codec->time_base.den = fps2;
-        switch(((uint8_t*)st->codec->extradata)[4]>>4){
+        //XXX: do we really need that?
+        switch(st->codec->extradata[4]>>4){
         case 1: st->codec->codec_id = CODEC_ID_RV10; break;
         case 2: st->codec->codec_id = CODEC_ID_RV20; break;
         case 3: st->codec->codec_id = CODEC_ID_RV30; break;
         case 4: st->codec->codec_id = CODEC_ID_RV40; break;
-        default: goto fail1;
+        default:
+            av_log(st->codec, AV_LOG_ERROR, "extra:%02X %02X %02X %02X %02X\n", st->codec->extradata[0], st->codec->extradata[1], st->codec->extradata[2], st->codec->extradata[3], st->codec->extradata[4]);
+            goto fail1;
         }
     }
 

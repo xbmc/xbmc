@@ -146,6 +146,20 @@ void ff_write_quant_matrix(PutBitContext *pb, uint16_t *matrix){
         put_bits(pb, 1, 0);
 }
 
+/**
+ * init s->current_picture.qscale_table from s->lambda_table
+ */
+void ff_init_qscale_tab(MpegEncContext *s){
+    int8_t * const qscale_table= s->current_picture.qscale_table;
+    int i;
+
+    for(i=0; i<s->mb_num; i++){
+        unsigned int lam= s->lambda_table[ s->mb_index2xy[i] ];
+        int qp= (lam*139 + FF_LAMBDA_SCALE*64) >> (FF_LAMBDA_SHIFT + 7);
+        qscale_table[ s->mb_index2xy[i] ]= av_clip(qp, s->avctx->qmin, s->avctx->qmax);
+    }
+}
+
 static void copy_picture_attributes(MpegEncContext *s, AVFrame *dst, AVFrame *src){
     int i;
 
@@ -381,6 +395,14 @@ av_cold int MPV_encode_init(AVCodecContext *avctx)
         return -1;
     }
 
+    if ((s->codec_id == CODEC_ID_MPEG4 || s->codec_id == CODEC_ID_H263 ||
+         s->codec_id == CODEC_ID_H263P) &&
+        (avctx->sample_aspect_ratio.num > 255 || avctx->sample_aspect_ratio.den > 255)) {
+        av_log(avctx, AV_LOG_ERROR, "Invalid pixel aspect ratio %i/%i, limit is 255/255\n",
+               avctx->sample_aspect_ratio.num, avctx->sample_aspect_ratio.den);
+        return -1;
+    }
+
     if((s->flags & (CODEC_FLAG_INTERLACED_DCT|CODEC_FLAG_INTERLACED_ME|CODEC_FLAG_ALT_SCAN))
        && s->codec_id != CODEC_ID_MPEG4 && s->codec_id != CODEC_ID_MPEG2VIDEO){
         av_log(avctx, AV_LOG_ERROR, "interlacing not supported by codec\n");
@@ -517,12 +539,18 @@ av_cold int MPV_encode_init(AVCodecContext *avctx)
     case CODEC_ID_MJPEG:
         s->out_format = FMT_MJPEG;
         s->intra_only = 1; /* force intra only for jpeg */
-        s->mjpeg_vsample[0] = 2;
-        s->mjpeg_vsample[1] = 2>>chroma_v_shift;
-        s->mjpeg_vsample[2] = 2>>chroma_v_shift;
-        s->mjpeg_hsample[0] = 2;
-        s->mjpeg_hsample[1] = 2>>chroma_h_shift;
-        s->mjpeg_hsample[2] = 2>>chroma_h_shift;
+        if(avctx->codec->id == CODEC_ID_LJPEG && avctx->pix_fmt == PIX_FMT_BGRA){
+            s->mjpeg_vsample[0] = s->mjpeg_hsample[0] =
+            s->mjpeg_vsample[1] = s->mjpeg_hsample[1] =
+            s->mjpeg_vsample[2] = s->mjpeg_hsample[2] = 1;
+        }else{
+            s->mjpeg_vsample[0] = 2;
+            s->mjpeg_vsample[1] = 2>>chroma_v_shift;
+            s->mjpeg_vsample[2] = 2>>chroma_v_shift;
+            s->mjpeg_hsample[0] = 2;
+            s->mjpeg_hsample[1] = 2>>chroma_h_shift;
+            s->mjpeg_hsample[2] = 2>>chroma_h_shift;
+        }
         if (!(CONFIG_MJPEG_ENCODER || CONFIG_LJPEG_ENCODER)
             || ff_mjpeg_encode_init(s) < 0)
             return -1;
@@ -2690,6 +2718,8 @@ static int estimate_qp(MpegEncContext *s, int dry_run){
             if (CONFIG_H263_ENCODER)
                 ff_clean_h263_qscales(s);
             break;
+        default:
+            ff_init_qscale_tab(s);
         }
 
         s->lambda= s->lambda_table[0];
@@ -3760,7 +3790,7 @@ AVCodec flv_encoder = {
     MPV_encode_picture,
     MPV_encode_end,
     .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= NULL_IF_CONFIG_SMALL("Flash Video (FLV)"),
+    .long_name= NULL_IF_CONFIG_SMALL("Flash Video (FLV) / Sorenson Spark / Sorenson H.263"),
 };
 
 AVCodec mpeg4_encoder = {

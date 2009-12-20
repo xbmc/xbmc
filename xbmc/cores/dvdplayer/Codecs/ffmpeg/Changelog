@@ -41,6 +41,11 @@ version <next>:
 - Atrac1 decoder
 - MD STUDIO audio demuxer
 - RF64 support in WAV demuxer
+- MPEG-4 Audio Lossless Coding (ALS) decoder
+- -formats option split into -formats, -codecs, -bsfs, and -protocols
+- IV8 demuxer
+- CDG demuxer and decoder
+- R210 decoder
 
 
 

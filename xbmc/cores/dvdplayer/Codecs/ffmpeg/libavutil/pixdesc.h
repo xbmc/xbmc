@@ -19,12 +19,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVCODEC_PIXDESC_H
-#define AVCODEC_PIXDESC_H
+#ifndef AVUTIL_PIXDESC_H
+#define AVUTIL_PIXDESC_H
 
 #include <inttypes.h>
 
-#include "libavutil/intreadwrite.h"
+#include "intreadwrite.h"
 
 typedef struct AVComponentDescriptor{
     uint16_t plane        :2;            ///< which of the 4 planes contains the component
@@ -55,13 +55,14 @@ typedef struct AVComponentDescriptor{
  */
 typedef struct AVPixFmtDescriptor{
     const char *name;
-    uint8_t nb_channels;        ///< The number of components each pixel has, (1-4)
+    uint8_t nb_components;      ///< The number of components each pixel has, (1-4)
 
     /**
      * Amount to shift the luma width right to find the chroma width.
      * For YV12 this is 1 for example.
      * chroma_width = -((-luma_width) >> log2_chroma_w)
      * The note above is needed to ensure rounding up.
+     * This value only refers to the chroma components.
      */
     uint8_t log2_chroma_w;      ///< chroma_width = -((-luma_width )>>log2_chroma_w)
 
@@ -70,15 +71,23 @@ typedef struct AVPixFmtDescriptor{
      * For YV12 this is 1 for example.
      * chroma_height= -((-luma_height) >> log2_chroma_h)
      * The note above is needed to ensure rounding up.
+     * This value only refers to the chroma components.
      */
     uint8_t log2_chroma_h;
     uint8_t flags;
-    AVComponentDescriptor comp[4]; ///< parameters that describe how pixels are packed
+
+    /**
+     * Parameters that describe how pixels are packed. If the format
+     * has chroma components, they must be stored in comp[1] and
+     * comp[2].
+     */
+    AVComponentDescriptor comp[4];
 }AVPixFmtDescriptor;
 
-#define PIX_FMT_BE        1 ///< big-endian
+#define PIX_FMT_BE        1 ///< Pixel format is big-endian.
 #define PIX_FMT_PAL       2 ///< Pixel format has a palette in data[1], values are indexes in this palette.
 #define PIX_FMT_BITSTREAM 4 ///< All values of a component are bit-wise packed end to end.
+#define PIX_FMT_HWACCEL   8 ///< Pixel format is an HW accelerated format.
 
 /**
  * The array of all the pixel format descriptors.
@@ -203,4 +212,4 @@ static inline void write_line(const uint16_t *src, uint8_t *data[4], const int l
  */
 int av_get_bits_per_pixel(const AVPixFmtDescriptor *pixdesc);
 
-#endif /* AVCODEC_PIXDESC_H */
+#endif /* AVUTIL_PIXDESC_H */
