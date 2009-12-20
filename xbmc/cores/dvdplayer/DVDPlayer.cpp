@@ -46,7 +46,7 @@
 #include "FileSystem/cdioSupport.h"
 #include "FileSystem/File.h"
 #include "Picture.h"
-#include "../ffmpeg/DllSwScale.h"
+#include "Codecs/DllSwScale.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif

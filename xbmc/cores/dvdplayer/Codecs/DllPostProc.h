@@ -29,8 +29,8 @@ extern "C" {
     #include <postproc/postprocess.h>
   #endif
 #else
-  #include "avutil.h"
-  #include "postprocess.h"
+  #include "libavutil/avutil.h"
+  #include "libpostproc/postprocess.h"
 #endif
 }
 

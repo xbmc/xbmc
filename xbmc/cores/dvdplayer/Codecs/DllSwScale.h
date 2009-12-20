@@ -39,9 +39,9 @@ extern "C" {
     #include <ffmpeg/rgb2rgb.h>
   #endif
 #else
-  #include "avutil.h"
-  #include "swscale.h"
-  #include "rgb2rgb.h"
+  #include "libavutil/avutil.h"
+  #include "libswscale/swscale.h"
+  #include "libswscale/rgb2rgb.h"
 #endif
 }
 

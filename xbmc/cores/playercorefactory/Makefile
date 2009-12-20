@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../ -I../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I../paplayer -I../ffmpeg
+INCLUDES=-I. -I../ -I../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I../paplayer -I../dvdplayer/Codecs/ffmpeg
 
 SRCS=PlayerCoreFactory.cpp \
      PlayerSelectionRule.cpp

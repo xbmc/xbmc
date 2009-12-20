@@ -22,7 +22,7 @@ extern "C" {
     #include <ffmpeg/avformat.h>
   #endif
 #else
-  #include "avformat.h"
+  #include "libavformat/avformat.h"
 #endif
 }
 

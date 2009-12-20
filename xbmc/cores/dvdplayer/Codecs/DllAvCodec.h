@@ -33,10 +33,10 @@ extern "C" {
     #endif
   #endif
   /* We'll just inlude this header in our project for now */
-  #include "audioconvert.h"
+  #include "libavcodec/audioconvert.h"
 #else
-  #include "avcodec.h"
-  #include "audioconvert.h"
+  #include "libavcodec/avcodec.h"
+  #include "libavcodec/audioconvert.h"
 #endif
 }
 
