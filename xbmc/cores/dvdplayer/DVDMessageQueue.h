@@ -71,7 +71,9 @@ public:
   void WaitUntilEmpty();
 
   // non messagequeue related functions
-  bool IsFull() const                   { return (m_iDataSize >= m_iMaxDataSize); }
+  bool IsFull() const                   { return GetLevel() == 100; }
+  int  GetLevel() const;
+
   void SetMaxDataSize(int iMaxDataSize) { m_iMaxDataSize = iMaxDataSize; }
   int GetMaxDataSize() const            { return m_iMaxDataSize; }
   bool IsInited() const                 { return m_bInitialized; }

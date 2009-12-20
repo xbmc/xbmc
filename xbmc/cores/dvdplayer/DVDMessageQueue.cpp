@@ -227,3 +227,8 @@ void CDVDMessageQueue::WaitUntilEmpty()
     msg->Wait(&m_bAbortRequest, 0);
     msg->Release();
 }
+
+int CDVDMessageQueue::GetLevel() const
+{
+  return std::min(100, 100 * m_iDataSize / m_iMaxDataSize);
+}

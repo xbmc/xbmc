@@ -3223,8 +3223,8 @@ bool CDVDPlayer::AddSubtitle(const CStdString& strSubPath)
 
 int CDVDPlayer::GetCacheLevel() const
 {
-  int a = min(100,100 * m_dvdPlayerAudio.m_messageQueue.GetDataSize() / m_dvdPlayerAudio.m_messageQueue.GetMaxDataSize());
-  int v = min(100,100 * m_dvdPlayerVideo.m_messageQueue.GetDataSize() / m_dvdPlayerVideo.m_messageQueue.GetMaxDataSize());
+  int a = m_dvdPlayerAudio.m_messageQueue.GetLevel();
+  int v = m_dvdPlayerVideo.m_messageQueue.GetLevel();
   return max(a, v);
 }
 
