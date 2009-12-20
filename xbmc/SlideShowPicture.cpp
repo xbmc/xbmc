@@ -105,6 +105,10 @@ void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY
   { // rotate to 270 degrees
     m_fAngle = 3.0f;
   }
+  if (pTexture->GetOrientation() == 2)
+  { // rotate to 180 degrees
+      m_fAngle = 2.0f;
+  }
   if (pTexture->GetOrientation() == 5)
   { // rotate to 90 degrees
     m_fAngle = 1.0f;
