@@ -22,6 +22,7 @@
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "utils/log.h"
+#include "SingleLock.h"
 
 using namespace std;
 
@@ -34,7 +35,6 @@ CDVDMessageQueue::CDVDMessageQueue(const string &owner)
   m_bCaching      = false;
   m_bEmptied      = true;
 
-  InitializeCriticalSection(&m_critSection);
   m_hEvent = CreateEvent(NULL, true, false, NULL);
 }
 
@@ -43,7 +43,6 @@ CDVDMessageQueue::~CDVDMessageQueue()
   // remove all remaining messages
   Flush();
 
-  DeleteCriticalSection(&m_critSection);
   CloseHandle(m_hEvent);
 }
 
@@ -57,7 +56,7 @@ void CDVDMessageQueue::Init()
 
 void CDVDMessageQueue::Flush(CDVDMsg::Message type)
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_section);
 
   for(SList::iterator it = m_list.begin(); it != m_list.end();)
   {
@@ -75,37 +74,33 @@ void CDVDMessageQueue::Flush(CDVDMsg::Message type)
     m_iDataSize = 0;
     m_bEmptied = true;
   }
-
-  LeaveCriticalSection(&m_critSection);
 }
 
 void CDVDMessageQueue::Abort()
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_section);
 
   m_bAbortRequest = true;
 
   SetEvent(m_hEvent); // inform waiter for abort action
-
-  LeaveCriticalSection(&m_critSection);
 }
 
 void CDVDMessageQueue::End()
 {
-  Flush();
+  CSingleLock lock(m_section);
 
-  EnterCriticalSection(&m_critSection);
+  Flush();
 
   m_bInitialized  = false;
   m_iDataSize     = 0;
   m_bAbortRequest = false;
-
-  LeaveCriticalSection(&m_critSection);
 }
 
 
 MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
 {
+  CSingleLock lock(m_section);
+
   if (!m_bInitialized)
   {
     CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Put MSGQ_NOT_INITIALIZED", m_owner.c_str());
@@ -123,9 +118,6 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
   item.pMsg = pMsg;
   item.priority = priority;
 
-  EnterCriticalSection(&m_critSection);
-
-
   SList::iterator it = m_list.begin();
   while(it != m_list.end())
   {
@@ -135,7 +127,6 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
   }
   m_list.insert(it, item);
 
-
   if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
   {
     CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)pMsg;
@@ -144,13 +135,13 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
 
   SetEvent(m_hEvent); // inform waiter for new packet
 
-  LeaveCriticalSection(&m_critSection);
-
   return MSGQ_OK;
 }
 
 MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int priority)
 {
+  CSingleLock lock(m_section);
+
   *pMsg = NULL;
 
   int ret = 0;
@@ -160,8 +151,6 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
     CLog::Log(LOGFATAL, "CDVDMessageQueue(%s)::Get MSGQ_NOT_INITIALIZED", m_owner.c_str());
     return MSGQ_NOT_INITIALIZED;
   }
-
-  EnterCriticalSection(&m_critSection);
 
   while (!m_bAbortRequest)
   {
@@ -197,18 +186,15 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
     else
     {
       ResetEvent(m_hEvent);
-      LeaveCriticalSection(&m_critSection);
+      lock.Leave();
 
       // wait for a new message
       if (WaitForSingleObject(m_hEvent, iTimeoutInMilliSeconds) == WAIT_TIMEOUT)
-      {
-        // just return here directly, we have already left critical section
         return MSGQ_TIMEOUT;
-      }
-      EnterCriticalSection(&m_critSection);
+
+      lock.Enter();
     }
   }
-  LeaveCriticalSection(&m_critSection);
 
   if (m_bAbortRequest) return MSGQ_ABORT;
 
@@ -218,10 +204,10 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
 
 unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
 {
+  CSingleLock lock(m_section);
+
   if (!m_bInitialized)
     return 0;
-
-  EnterCriticalSection(&m_critSection);
 
   unsigned count = 0;
   for(SList::iterator it = m_list.begin(); it != m_list.end();it++)
@@ -230,7 +216,6 @@ unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
       count++;
   }
 
-  LeaveCriticalSection(&m_critSection);
   return count;
 }
 

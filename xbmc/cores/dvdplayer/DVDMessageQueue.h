@@ -24,6 +24,7 @@
 #include "DVDMessage.h"
 #include <string>
 #include <list>
+#include "CriticalSection.h"
 
 typedef struct stDVDMessageListItem
 {
@@ -77,7 +78,7 @@ public:
 private:
 
   HANDLE m_hEvent;
-  mutable CRITICAL_SECTION m_critSection;
+  mutable CCriticalSection m_section;
 
   bool m_bAbortRequest;
   bool m_bInitialized;
