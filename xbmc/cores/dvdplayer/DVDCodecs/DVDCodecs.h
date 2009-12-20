@@ -43,11 +43,7 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 #if (defined USE_EXTERNAL_FFMPEG) || (defined _WIN32)
-  #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
-    #include <libavcodec/avcodec.h>
-  #else
-    #include <ffmpeg/avcodec.h>
-  #endif
+  #include <libavcodec/avcodec.h>
 #else
   #include "libavcodec/avcodec.h"
 #endif

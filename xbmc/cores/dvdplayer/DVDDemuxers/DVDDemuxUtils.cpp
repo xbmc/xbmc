@@ -27,11 +27,7 @@
 #include "utils/log.h"
 extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG) || (defined WIN32)
-  #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
-    #include <libavcodec/avcodec.h>
-  #else
-    #include <ffmpeg/avcodec.h>
-  #endif
+  #include <libavcodec/avcodec.h>
 #else
   #include "libavcodec/avcodec.h"
 #endif
