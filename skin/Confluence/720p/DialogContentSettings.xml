@@ -31,7 +31,7 @@
 				<posy>18</posy>
 				<width>760</width>
 				<height>30</height>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<label>$LOCALIZE[20333]</label>
 				<align>center</align>
 				<aligny>center</aligny>
@@ -90,7 +90,7 @@
 				<posy>100</posy>
 				<width>280</width>
 				<height>40</height>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<label>$INFO[Control.GetLabel(3)]</label>
 				<align>left</align>
 				<aligny>center</aligny>
@@ -300,7 +300,7 @@
 					<aligny>center</aligny>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<texturefocus border="5">button-focus.png</texturefocus>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<label>186</label>
 					<onleft>6</onleft>
 					<onright>29</onright>
@@ -317,7 +317,7 @@
 					<aligny>center</aligny>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<texturefocus border="5">button-focus.png</texturefocus>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<label>222</label>
 					<onleft>28</onleft>
 					<onright>6</onright>
@@ -334,7 +334,7 @@
 					<aligny>center</aligny>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<texturefocus border="5">button-focus.png</texturefocus>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<label>5</label>
 					<onleft>29</onleft>
 					<onright>28</onright>

@@ -24,7 +24,7 @@
 					<height>30</height>
 					<label>$LOCALIZE[31001]</label>
 					<align>right</align>
-					<font>font10caps_title</font>
+					<font>font10_title</font>
 					<textoffsetx>35</textoffsetx>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
@@ -44,7 +44,7 @@
 					<height>30</height>
 					<label>$LOCALIZE[31002]</label>
 					<align>left</align>
-					<font>font10caps_title</font>
+					<font>font10_title</font>
 					<textoffsetx>35</textoffsetx>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
