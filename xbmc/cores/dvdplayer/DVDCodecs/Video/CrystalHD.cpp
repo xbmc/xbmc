@@ -570,11 +570,26 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
 {
   BCM::BC_STATUS ret;
   BCM::BC_DTS_PROC_OUT procOut;
+  BCM::BC_DTS_STATUS decoder_status;
   CMPCDecodeBuffer *pBuffer = NULL;
   bool got_picture = false;
   
   do
   {
+    ret = BCM::DtsGetDriverStatus(m_Device, &decoder_status);
+    if (ret == BCM::BC_STS_SUCCESS)
+    {
+      int ready_count;
+      
+      ready_count = decoder_status.ReadyListCount;
+      /*
+      CLog::Log(LOGDEBUG, "%s: ReadyListCount %d FreeListCount %d PIBMissCount %d\n", __MODULE_NAME__,
+        decoder_status.ReadyListCount, decoder_status.FreeListCount, decoder_status.PIBMissCount);
+      CLog::Log(LOGDEBUG, "%s: FramesDropped %d FramesCaptured %d FramesRepeated %d\n", __MODULE_NAME__,
+        decoder_status.FramesDropped, decoder_status.FramesCaptured, decoder_status.FramesRepeated);
+      */
+    }
+
     // Setup output struct
     memset(&procOut, 0, sizeof(BCM::BC_DTS_PROC_OUT));
 
