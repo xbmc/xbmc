@@ -87,7 +87,7 @@
 				<label>$LOCALIZE[31040]</label>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<textcolor>blue</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
@@ -100,7 +100,7 @@
 				<label>$INFO[MusicPlayer.Artist]</label>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
@@ -126,7 +126,7 @@
 				<label>$INFO[MusicPlayer.Title]</label>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
@@ -181,7 +181,7 @@
 					<label>$LOCALIZE[31040]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -194,7 +194,7 @@
 					<label>$INFO[VideoPlayer.Title]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -234,7 +234,7 @@
 					<label>$LOCALIZE[31040]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -247,7 +247,7 @@
 					<label>$INFO[VideoPlayer.Studio]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -273,7 +273,7 @@
 					<label>$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year,[COLOR=grey] (,)[/COLOR]]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -313,7 +313,7 @@
 					<label>$LOCALIZE[31040]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -326,7 +326,7 @@
 					<label>$INFO[VideoPlayer.TVShowTitle]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -352,7 +352,7 @@
 					<label>$INFO[VideoPlayer.Title]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>

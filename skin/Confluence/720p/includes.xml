@@ -230,7 +230,7 @@
 		<textoffsetx>20</textoffsetx>
 		<textwidth>195</textwidth>
 		<aligny>center</aligny>
-		<font>font12caps_title</font>
+		<font>font12_title</font>
 		<texturefocus border="5">button-focus.png</texturefocus>
 		<texturenofocus border="5">button-nofocus.png</texturenofocus>
 		<pulseonselect>false</pulseonselect>
@@ -241,7 +241,7 @@
 		<textoffsetx>20</textoffsetx>
 		<textwidth>195</textwidth>
 		<aligny>center</aligny>
-		<font>font12caps_title</font>
+		<font>font12_title</font>
 		<texturefocus border="5">button-focus.png</texturefocus>
 		<texturenofocus border="5">button-nofocus.png</texturenofocus>
 		<pulseonselect>false</pulseonselect>
@@ -252,7 +252,7 @@
 		<textoffsetx>20</textoffsetx>
 		<align>center</align>
 		<aligny>center</aligny>
-		<font>font12caps_title</font>
+		<font>font12_title</font>
 		<texturefocus border="5">button-focus.png</texturefocus>
 		<texturenofocus border="5">button-nofocus.png</texturenofocus>
 		<pulseonselect>false</pulseonselect>
@@ -315,7 +315,7 @@
 			<label>$INFO[MusicPlayer.Artist]</label>
 			<align>left</align>
 			<aligny>center</aligny>
-			<font>font12caps_title</font>
+			<font>font12_title</font>
 			<textcolor>grey2</textcolor>
 			<shadowcolor>black</shadowcolor>
 		</control>
@@ -328,7 +328,7 @@
 			<label>$INFO[MusicPlayer.Title]</label>
 			<align>left</align>
 			<aligny>center</aligny>
-			<font>font13caps_title</font>
+			<font>font13_title</font>
 			<textcolor>white</textcolor>
 			<shadowcolor>black</shadowcolor>
 			<scrollout>false</scrollout>
@@ -402,7 +402,7 @@
 			<label>$INFO[VideoPlayer.Studio]</label>
 			<align>left</align>
 			<aligny>center</aligny>
-			<font>font12caps_title</font>
+			<font>font12_title</font>
 			<textcolor>grey2</textcolor>
 			<shadowcolor>black</shadowcolor>
 			<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos)</visible>
@@ -416,7 +416,7 @@
 			<label>$INFO[VideoPlayer.tvshowtitle]</label>
 			<align>left</align>
 			<aligny>center</aligny>
-			<font>font12caps_title</font>
+			<font>font12_title</font>
 			<textcolor>white</textcolor>
 			<shadowcolor>black</shadowcolor>
 			<visible>videoplayer.content(episodes)</visible>
@@ -430,7 +430,7 @@
 			<label>$INFO[VideoPlayer.Artist]</label>
 			<align>left</align>
 			<aligny>center</aligny>
-			<font>font12caps_title</font>
+			<font>font12_title</font>
 			<textcolor>white</textcolor>
 			<shadowcolor>black</shadowcolor>
 			<visible>videoplayer.content(musicvideos)</visible>
@@ -446,7 +446,7 @@
 			<label>$INFO[VideoPlayer.Title]</label>
 			<align>left</align>
 			<aligny>center</aligny>
-			<font>font13caps_title</font>
+			<font>font13_title</font>
 			<textcolor>white</textcolor>
 			<shadowcolor>black</shadowcolor>
 			<scrollout>false</scrollout>
@@ -515,7 +515,7 @@
 			<posy>0</posy>
 			<width>250</width>
 			<height>40</height>
-			<font>font28caps_title</font>
+			<font>font28_title</font>
 			<textcolor>grey2</textcolor>
 			<align>right</align>
 			<aligny>center</aligny>
@@ -861,7 +861,7 @@
 				<aligny>center</aligny>
 				<label>$INFO[ListItem.SortLetter]</label>
 				<textcolor>white</textcolor>
-				<font>font30caps_title</font>
+				<font>font30_title</font>
 			</control>
                 </control>
 	</include>

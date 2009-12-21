@@ -39,7 +39,7 @@
 					<posy>18</posy>
 					<width>460</width>
 					<height>30</height>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<label>31300</label>
 					<align>center</align>
 					<aligny>center</aligny>
@@ -52,7 +52,7 @@
 					<posy>60</posy>
 					<width>460</width>
 					<height>30</height>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<scroll>false</scroll>
 					<align>center</align>
@@ -272,7 +272,7 @@
 					<posy>18</posy>
 					<width>460</width>
 					<height>30</height>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<label>10508</label>
 					<align>center</align>
 					<aligny>center</aligny>
@@ -289,7 +289,7 @@
 						<posy>0</posy>
 						<width>460</width>
 						<height>35</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<info>Window.Property(Day0.Title)</info>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -388,7 +388,7 @@
 						<posy>0</posy>
 						<width>460</width>
 						<height>35</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<info>Window.Property(Day1.Title)</info>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -487,7 +487,7 @@
 						<posy>0</posy>
 						<width>460</width>
 						<height>35</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<info>Window.Property(Day2.Title)</info>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -586,7 +586,7 @@
 						<posy>0</posy>
 						<width>460</width>
 						<height>35</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<info>Window.Property(Day3.Title)</info>
 						<align>center</align>
 						<aligny>center</aligny>

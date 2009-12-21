@@ -20,7 +20,7 @@
 				<posy>18</posy>
 				<width>410</width>
 				<height>30</height>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<label>31321</label>
 				<align>center</align>
 				<aligny>center</aligny>
@@ -33,7 +33,7 @@
 				<posy>65</posy>
 				<width>410</width>
 				<height>30</height>
-				<font>font28caps_title</font>
+				<font>font28_title</font>
 				<textcolor>selected</textcolor>
 				<align>center</align>
 				<aligny>center</aligny>

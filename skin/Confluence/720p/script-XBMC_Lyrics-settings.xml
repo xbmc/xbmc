@@ -66,7 +66,7 @@
 				<posy>20</posy>
 				<width>550</width>
 				<height>30</height>
-				<font>font24caps_title</font>
+				<font>font24_title</font>
 				<label>$LOCALIZE[SCRIPT0]</label>
 				<align>left</align>
 				<aligny>center</aligny>
@@ -294,7 +294,7 @@
 					<width>215</width>
 					<height>51</height>
 					<label>$LOCALIZE[SCRIPT250]</label>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<align>right</align>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<texturefocus border="5">MenuItemFO.png</texturefocus>
@@ -310,7 +310,7 @@
 					<width>215</width>
 					<height>51</height>
 					<label>$LOCALIZE[SCRIPT251]</label>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<align>right</align>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<texturefocus border="5">MenuItemFO.png</texturefocus>
@@ -326,7 +326,7 @@
 					<width>215</width>
 					<height>51</height>
 					<label>$LOCALIZE[SCRIPT252]</label>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<align>right</align>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<texturefocus border="5">MenuItemFO.png</texturefocus>
@@ -342,7 +342,7 @@
 					<width>215</width>
 					<height>51</height>
 					<label>$LOCALIZE[SCRIPT254]</label>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<align>right</align>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<texturefocus border="5">MenuItemFO.png</texturefocus>
@@ -358,7 +358,7 @@
 					<width>215</width>
 					<height>51</height>
 					<label>$LOCALIZE[SCRIPT255]</label>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<align>right</align>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<texturefocus border="5">MenuItemFO.png</texturefocus>
@@ -374,7 +374,7 @@
 					<width>215</width>
 					<height>51</height>
 					<label>$LOCALIZE[SCRIPT253]</label>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<align>right</align>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<texturefocus border="5">MenuItemFO.png</texturefocus>

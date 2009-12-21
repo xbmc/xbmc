@@ -268,7 +268,7 @@
 							<posy>510</posy>
 							<width>400</width>
 							<height>30</height>
-							<font>font24caps_title</font>
+							<font>font24_title</font>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<scroll>true</scroll>
@@ -318,7 +318,7 @@
 							<posy>510</posy>
 							<width>400</width>
 							<height>30</height>
-							<font>font24caps_title</font>
+							<font>font24_title</font>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<scroll>true</scroll>
@@ -452,7 +452,7 @@
 						<posy>530</posy>
 						<width>1280</width>
 						<height>35</height>
-						<font>font30caps_title</font>
+						<font>font30_title</font>
 						<textcolor>white</textcolor>
 						<scroll>true</scroll>
 						<align>center</align>
@@ -464,7 +464,7 @@
 						<posy>580</posy>
 						<width>1280</width>
 						<height>35</height>
-						<font>font30caps</font>
+						<font>font30</font>
 						<textcolor>white</textcolor>
 						<scroll>true</scroll>
 						<align>center</align>
