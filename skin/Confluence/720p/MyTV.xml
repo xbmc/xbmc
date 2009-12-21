@@ -80,7 +80,7 @@
 				<height>390</height>
 				<texture fallback="special://skin/backgrounds/tv.jpg">$INFO[Skin.String(Home_Custom_Back_TV_Folder)]</texture>
 				<include>VisibleFadeEffect</include>
-				<visible>!Player.HasMedia</visible>
+				<visible>!Player.HasVideo</visible>
 			</control>
 			<control type="videowindow">
 				<posx>85</posx>
@@ -89,13 +89,13 @@
 				<height>390</height>
 				<visible>Player.HasVideo</visible>
 			</control>
-			<control type="visualisation">
+			<!-- control type="visualisation">
 				<posx>85</posx>
 				<posy>85</posy>
 				<width>700</width>
 				<height>390</height>
 				<visible>Player.HasAudio</visible>
-			</control>
+			</control -->
 		</control>
 		<control type="label">
 			<posx>40</posx>
