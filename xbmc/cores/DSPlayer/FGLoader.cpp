@@ -38,6 +38,9 @@ CFGLoader::CFGLoader(IGraphBuilder2* gb)
 
 CFGLoader::~CFGLoader()
 {
+  CAutoLock cAutoLock(this);
+  while(!m_configFilter.IsEmpty()) 
+    delete m_configFilter.RemoveHead();
 }
 
 

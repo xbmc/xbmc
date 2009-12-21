@@ -1684,14 +1684,20 @@ HRESULT CEVRAllocatorPresenter::DeliverSample(IMFSample *pSample, BOOL bRepaint)
     BOOL bPresentNow = ((m_RenderState != RENDER_STATE_STARTED) ||  IsScrubbing() || bRepaint);
 
     // Check the D3D device state.
-    hr = m_pD3DPresentEngine->CheckDeviceState(&state);
+    hr = g_Windowing.GetDeviceStatus();
+    if (FAILED(hr))
+    {
+      CLog::Log(LOGDEBUG,"Device Need reset to develiver sample");
+    }
 
     if (SUCCEEDED(hr))
     {
         hr = m_scheduler.ScheduleSample(pSample, bPresentNow);
     }
 
-    if (FAILED(hr))
+    if (hr == D3DERR_DEVICELOST)
+      state = D3DPresentEngine::DeviceReset;
+    if (hr == D3DERR_DEVICENOTRESET)
     {
         // Notify the EVR that we have failed during streaming. The EVR will notify the 
         // pipeline (ie, it will notify the Filter Graph Manager in DirectShow or the 

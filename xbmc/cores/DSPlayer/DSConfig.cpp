@@ -23,6 +23,7 @@
 #include "Utils/log.h"
 #include "DShowUtil/DShowUtil.h"
 #include "CharsetConverter.h"
+
 //audio settings
 // required setting XBAudioConfig::HasDigitalOutput
 //
@@ -36,6 +37,9 @@ CDSConfig::CDSConfig()
 
 CDSConfig::~CDSConfig()
 {
+  if (m_pIMpaDecFilter)
+    m_pIMpaDecFilter.Release();
+  
 }
 
 HRESULT CDSConfig::LoadGraph(CComPtr<IGraphBuilder2> pGB)
@@ -51,11 +55,26 @@ void CDSConfig::LoadFilters()
 {
   BeginEnumFilters(m_pGraphBuilder, pEF, pBF)
   {
+    //GetAudioSelector(pBF);
     GetStreamSelector(pBF);
-	GetMpcVideoDec(pBF);
-	GetMpaDec(pBF);
+	  GetMpcVideoDec(pBF);
+	  GetMpaDec(pBF);
   }
   EndEnumFilters
+}
+
+bool CDSConfig::GetAudioSelector(IBaseFilter* pBF)
+{
+  if (!DShowUtil::IsSplitter(pBF,false))
+    return false;
+  HRESULT hr;
+  CLSID clsid;
+  pBF->GetClassID(&clsid);
+  CComPtr<IUnknown> m_pUnk;
+  m_pAudioSelector = new CAudioStreamSelector(m_pUnk,&hr,clsid);
+  
+  if (SUCCEEDED(hr))
+    CLog::Log(LOGDEBUG,"YEAH");
 }
 
 bool CDSConfig::GetStreamSelector(IBaseFilter* pBF)

@@ -2245,6 +2245,14 @@
 				<Filter
 					Name="Filters"
 					>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\AudioStreamSelector.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\AudioStreamSelector.h"
+						>
+					</File>
 					<Filter
 						Name="Source"
 						>

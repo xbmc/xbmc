@@ -38,6 +38,7 @@ public:
     // this object does not derive from IUnknown.)
     virtual HRESULT GetService(REFGUID guidService, REFIID riid, void** ppv);
     virtual HRESULT CheckFormat(D3DFORMAT format);
+  
 
     // Video window / destination rectangle:
     // This object implements a sub-set of the functions defined by the 
@@ -52,7 +53,7 @@ public:
     HRESULT CreateVideoSamples(IMFMediaType *pFormat, VideoSampleList& videoSampleQueue);
     void    ReleaseResources();
 
-    HRESULT CheckDeviceState(DeviceState *pState);
+    
     HRESULT PresentSample(IMFSample* pSample, LONGLONG llTarget); 
 
     UINT    RefreshRate() const { return m_DisplayMode.RefreshRate; }

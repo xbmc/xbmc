@@ -26,7 +26,7 @@
 #include "File.h"
 #include "FileItem.h"
 #include "tinyXML/tinyxml.h"
-class CFGLoader
+class CFGLoader : public CCritSec
 {
 public:
   CFGLoader(IGraphBuilder2* gb);
@@ -43,9 +43,10 @@ protected:
   CStdString               m_xbmcConfigFilePath;
   GUID                     m_mpcVideoDecGuid;
   CAtlList<CFGFilterFile*> m_configFilter;
-  CInterfaceList<IUnknown, &IID_IUnknown> pUnk;
   CFile                    m_File;
   CComPtr<IBaseFilter>     m_SourceF;
   IBaseFilter              *m_SplitterF;
+
+  CInterfaceList<IUnknown, &IID_IUnknown> pUnk;
 };
 

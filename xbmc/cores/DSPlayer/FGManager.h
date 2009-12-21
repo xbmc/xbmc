@@ -76,7 +76,7 @@ protected:
   CFile                m_File;
   CComPtr<IBaseFilter> m_FileSource;
   CComPtr<IBaseFilter> m_XbmcVideoDec;
-    CFGLoader*           m_CfgLoader;
+  CFGLoader*           m_CfgLoader;
 	CStdString           m_xbmcConfigFilePath;
 	// IFilterGraph
 

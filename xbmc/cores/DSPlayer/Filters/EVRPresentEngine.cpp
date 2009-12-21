@@ -68,32 +68,24 @@ D3DPresentEngine::~D3DPresentEngine()
 
 HRESULT D3DPresentEngine::GetService(REFGUID guidService, REFIID riid, void** ppv)
 {
-    assert(ppv != NULL);
+  assert(ppv != NULL);
 
-    HRESULT hr = S_OK;
+  HRESULT hr = S_OK;
 
-    if (riid == __uuidof(IDirect3DDeviceManager9))
-    {
-        if (m_pDeviceManager == NULL)
-        {
-            hr = MF_E_UNSUPPORTED_SERVICE;
-        }
-        else
-        {
-            *ppv = m_pDeviceManager;
-            m_pDeviceManager->AddRef();
-        }
-    }
+  if (riid == __uuidof(IDirect3DDeviceManager9))
+  {
+    if (!m_pDeviceManager)
+      return MF_E_UNSUPPORTED_SERVICE;
     else
     {
-        hr = MF_E_UNSUPPORTED_SERVICE;
+      *ppv = m_pDeviceManager;
+      m_pDeviceManager->AddRef();
     }
+  }
+  else
+    return MF_E_UNSUPPORTED_SERVICE;
 
-    return hr;
-  /*if (guidService == MR_VIDEO_ACCELERATION_SERVICE)
-    return m_pDeviceManager->QueryInterface (__uuidof(IDirect3DDeviceManager9), (void**) ppv);*/
-
-  //return E_NOINTERFACE;
+  return hr;
 }
 
 
@@ -279,68 +271,6 @@ void D3DPresentEngine::ReleaseResources()
     S_RELEASE(m_pSurfaceRepaint);
 }
 
-
-//-----------------------------------------------------------------------------
-// CheckDeviceState
-// 
-// Tests the Direct3D device state.
-//
-// pState: Receives the state of the device (OK, reset, removed)
-//-----------------------------------------------------------------------------
-
-HRESULT D3DPresentEngine::CheckDeviceState(DeviceState *pState)
-{
-    HRESULT hr = S_OK;
-
-    CAutoLock lock(&m_ObjectLock);
-
-    
-  if(DShowUtil::IsVistaOrAbove())
-	{
-		// Check the device state. Not every failure code is a critical failure.
-		//hr = ((IDirect3DDevice9*)m_pDevice)->CheckDeviceState(m_hwnd);
-	}
-	else
-	{
-		/* Add support for XP!! Wait, fuck XP */
-		hr = m_pDevice->TestCooperativeLevel();
-	}
-
-    *pState = DeviceOK;
-
-    switch (hr)
-    {
-    case S_OK:
-    case S_PRESENT_OCCLUDED:
-      case S_PRESENT_MODE_CHANGED:
-        // state is DeviceOK
-        hr = S_OK;
-        break;
-
-    case D3DERR_DEVICELOST:
-    case D3DERR_DEVICEHUNG:
-        // Lost/hung device. Destroy the device and create a new one.
-        CHECK_HR(hr = CreateD3DDevice());
-        *pState = DeviceReset;
-        hr = S_OK;
-        break;
-
-    case D3DERR_DEVICEREMOVED:
-        // This is a fatal error.
-        *pState = DeviceRemoved;
-        break;
-
-    case E_INVALIDARG:
-        // CheckDeviceState can return E_INVALIDARG if the window is not valid
-        // We'll assume that the window was destroyed; we'll recreate the device 
-        // if the application sets a new window.
-        hr = S_OK;
-    }
-
-done:
-    return hr;
-}
-
 //-----------------------------------------------------------------------------
 // PresentSample
 //
@@ -359,9 +289,11 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
 
     IMFMediaBuffer* pBuffer = NULL;
     IDirect3DSurface9* pSurface = NULL;
-    //IDirect3DSwapChain9* pSwapChain = NULL;
+    
   if (!g_renderManager.IsConfigured())
     return S_OK;
+  hr = g_Windowing.GetDeviceStatus();
+  CHECK_HR(hr);
   if (pSample)
   {
     CHECK_HR(hr = pSample->GetBufferByIndex(0, &pBuffer));
@@ -373,7 +305,7 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
 
   if (pSurface)
   {
-    m_pDevice->StretchRect(pSurface,NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);    
+    hr = m_pDevice->StretchRect(pSurface,NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);    
     g_renderManager.PaintVideoTexture(m_pVideoTexture,m_pVideoSurface);
     g_application.NewFrame();
     g_application.WaitFrame(100);
@@ -568,18 +500,10 @@ HRESULT D3DPresentEngine::CreateD3DSample(IDirect3DSurface9 *pSurface, IMFSample
 	HRESULT hr = S_OK;
     D3DCOLOR clrBlack = D3DCOLOR_ARGB(0xFF, 0x00, 0x00, 0x00);
 
-    //IDirect3DSurface9* pSurface = NULL;
     IMFSample* pSample = NULL;
-
-    // Get the back buffer surface.
-	//CHECK_HR(hr = pSwapChain->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &pSurface));
-
-    // Fill it with black.
-	//CHECK_HR(hr = m_pDevice->ColorFill(pSurface, NULL, clrBlack));
-
     // Create the sample.
     CHECK_HR(hr = pfMFCreateVideoSampleFromSurface(pSurface, &pSample));
-    hr = pSample->SetUINT32(GUID_SURFACE_INDEX,surfaceIndex);
+    CHECK_HR(hr = pSample->SetUINT32(GUID_SURFACE_INDEX,surfaceIndex));
 
     // Return the pointer to the caller.
 	*ppVideoSample = pSample;
