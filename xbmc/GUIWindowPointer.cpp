@@ -71,6 +71,7 @@ void CGUIWindowPointer::OnWindowLoaded()
   }
   CGUIWindow::OnWindowLoaded();
   DynamicResourceAlloc(false);
+  m_dwPointer = 0;
 }
 
 void CGUIWindowPointer::Render()
