@@ -740,6 +740,8 @@ int CBuiltins::Execute(const CStdString& execString)
       CStdString strTime;
       if( CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading) )
         seconds = static_cast<float>(atoi(strTime.c_str())*60);
+      else
+        return false;
     }
     if (params.size() > 3 && params[3].CompareNoCase("true") == 0)
       silent = true;
