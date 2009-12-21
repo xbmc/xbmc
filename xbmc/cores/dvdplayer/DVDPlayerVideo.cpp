@@ -875,6 +875,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   }
   else if(pSource->format == DVDVideoPicture::FMT_NV12)
   {
+    AutoCrop(pSource);
     CDVDCodecUtils::CopyNV12Picture(pDest, pSource);
   }
 
