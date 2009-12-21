@@ -51,7 +51,6 @@
       <!-- hold right -->      <button id="10">Right</button>
       <!-- new aluminium remote buttons  -->
       <!-- play  -->           <button id="12">Play</button>
-      <!-- play hold -->       <button id="13">ContextMenu</button>
       <!-- Learned remote buttons (ATV >2.3) -->
       <!-- Play -->      <button id="70">Play</button>
       <!-- Pause -->      <button id="71">Pause</button>
