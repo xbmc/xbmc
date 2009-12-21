@@ -183,8 +183,8 @@ bool CDVDCodecUtils::CopyNV12Picture(YV12Image* pImage, DVDVideoPicture *pSrc)
   d = pImage->plane[1];
   w = pSrc->iWidth;
   h = pSrc->iHeight >> 1;
-  // Copy packed UV (stride is same as for Y as it's both U and V components
-  if ((w==pSrc->iLineSize[1]) && ((unsigned int) pSrc->iLineSize[1]==pImage->stride[0]))
+  // Copy packed UV (width is same as for Y as it's both U and V components)
+  if ((w==pSrc->iLineSize[1]) && ((unsigned int) pSrc->iLineSize[1]==pImage->stride[1]))
   {
     fast_memcpy(d, s, w*h);
   }
@@ -194,7 +194,7 @@ bool CDVDCodecUtils::CopyNV12Picture(YV12Image* pImage, DVDVideoPicture *pSrc)
     {
       fast_memcpy(d, s, w);
       s += pSrc->iLineSize[1];
-      d += pImage->stride[0];
+      d += pImage->stride[1];
     }
   }
 
