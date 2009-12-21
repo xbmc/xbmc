@@ -49,7 +49,7 @@
 				<posy>18</posy>
 				<width>570</width>
 				<height>30</height>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<align>center</align>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
@@ -199,7 +199,7 @@
 					<height>40</height>
 					<align>center</align>
 					<label>186</label>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>white</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
@@ -217,7 +217,7 @@
 					<height>40</height>
 					<align>center</align>
 					<label>222</label>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>white</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
@@ -235,7 +235,7 @@
 					<height>40</height>
 					<align>center</align>
 					<label>23000</label>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>white</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>

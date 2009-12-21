@@ -38,7 +38,7 @@
 					<posy>50</posy>
 					<width>1080</width>
 					<height>30</height>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<label>18126</label>
 					<align>center</align>
 					<aligny>center</aligny>
@@ -55,7 +55,7 @@
 						<posy>0</posy>
 						<width>340</width>
 						<height>70</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<label>31506</label>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -159,7 +159,7 @@
 						<posy>0</posy>
 						<width>340</width>
 						<height>70</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<label>31507</label>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -277,7 +277,7 @@
 						<posy>0</posy>
 						<width>340</width>
 						<height>70</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<label>$LOCALIZE[31508][CR]$INFO[Control.GetLabel(20)]</label>
 						<align>center</align>
 						<aligny>center</aligny>

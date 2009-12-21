@@ -127,7 +127,7 @@
 						<posy>20</posy>
 						<width>300</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -140,7 +140,7 @@
 						<posy>20</posy>
 						<width>600</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -153,7 +153,7 @@
 						<posy>20</posy>
 						<width>140</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -241,7 +241,7 @@
 								<posy>0</posy>
 								<width>80</width>
 								<height>40</height>
-								<font>font10caps</font>
+								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
@@ -262,7 +262,7 @@
 								<posy>0</posy>
 								<width>80</width>
 								<height>40</height>
-								<font>font10caps</font>
+								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
@@ -352,7 +352,7 @@
 								<posy>0</posy>
 								<width>80</width>
 								<height>40</height>
-								<font>font10caps</font>
+								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
@@ -373,7 +373,7 @@
 								<posy>0</posy>
 								<width>80</width>
 								<height>40</height>
-								<font>font10caps</font>
+								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
@@ -429,7 +429,7 @@
 						<posy>20</posy>
 						<width>100</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -442,7 +442,7 @@
 						<posy>20</posy>
 						<width>250</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -455,7 +455,7 @@
 						<posy>20</posy>
 						<width>550</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -468,7 +468,7 @@
 						<posy>20</posy>
 						<width>140</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -575,7 +575,7 @@
 								<posy>0</posy>
 								<width>80</width>
 								<height>40</height>
-								<font>font10caps</font>
+								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
@@ -596,7 +596,7 @@
 								<posy>0</posy>
 								<width>80</width>
 								<height>40</height>
-								<font>font10caps</font>
+								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
@@ -705,7 +705,7 @@
 								<posy>0</posy>
 								<width>80</width>
 								<height>40</height>
-								<font>font10caps</font>
+								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
@@ -726,7 +726,7 @@
 								<posy>0</posy>
 								<width>80</width>
 								<height>40</height>
-								<font>font10caps</font>
+								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
@@ -1991,7 +1991,7 @@
 						<scroll>true</scroll>
 						<align>center</align>
 						<aligny>center</aligny>
-						<font>font24caps_title</font>
+						<font>font24_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 					</control>
@@ -2025,7 +2025,7 @@
 						<posy>20</posy>
 						<width>300</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -2038,7 +2038,7 @@
 						<posy>20</posy>
 						<width>600</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -2051,7 +2051,7 @@
 						<posy>20</posy>
 						<width>200</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -2286,7 +2286,7 @@
 						<posy>20</posy>
 						<width>300</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -2299,7 +2299,7 @@
 						<posy>20</posy>
 						<width>250</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -2312,7 +2312,7 @@
 						<posy>20</posy>
 						<width>350</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -2325,7 +2325,7 @@
 						<posy>20</posy>
 						<width>140</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -2432,7 +2432,7 @@
 								<posy>0</posy>
 								<width>80</width>
 								<height>40</height>
-								<font>font10caps</font>
+								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
@@ -2453,7 +2453,7 @@
 								<posy>0</posy>
 								<width>80</width>
 								<height>40</height>
-								<font>font10caps</font>
+								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
@@ -2562,7 +2562,7 @@
 								<posy>0</posy>
 								<width>80</width>
 								<height>40</height>
-								<font>font10caps</font>
+								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
@@ -2583,7 +2583,7 @@
 								<posy>0</posy>
 								<width>80</width>
 								<height>40</height>
-								<font>font10caps</font>
+								<font>font10</font>
 								<align>left</align>
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>

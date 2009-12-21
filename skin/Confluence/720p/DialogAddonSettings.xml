@@ -46,7 +46,7 @@
 			<posy>18</posy>
 			<width>760</width>
 			<height>30</height>
-			<font>font13caps_title</font>
+			<font>font13_title</font>
 			<label>-</label>
 			<align>center</align>
 			<aligny>center</aligny>
@@ -96,7 +96,7 @@
 		</control>
 		<control type="label" id="7">
 			<height>45</height>
-			<font>font13caps_title</font>
+			<font>font13_title</font>
 			<label>-</label>
 			<textcolor>blue</textcolor>
 			<shadowcolor>black</shadowcolor>
@@ -120,7 +120,7 @@
 				<aligny>center</aligny>
 				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 				<texturefocus border="5">button-focus.png</texturefocus>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<label>186</label>
 				<onleft>12</onleft>
 				<onright>11</onright>
@@ -137,7 +137,7 @@
 				<aligny>center</aligny>
 				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 				<texturefocus border="5">button-focus.png</texturefocus>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<label>222</label>
 				<onleft>10</onleft>
 				<onright>12</onright>
@@ -154,7 +154,7 @@
 				<aligny>center</aligny>
 				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 				<texturefocus border="5">button-focus.png</texturefocus>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<label>409</label>
 				<onleft>11</onleft>
 				<onright>10</onright>
