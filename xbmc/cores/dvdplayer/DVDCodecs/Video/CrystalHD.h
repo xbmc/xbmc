@@ -109,8 +109,10 @@ typedef struct YV12Image YV12Image;
 class CCrystalHD
 {
 public:
-  CCrystalHD();
   virtual ~CCrystalHD();
+
+  static void RemoveInstance();
+  static CCrystalHD* GetInstance();
 
   bool Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type);
   void Close(void);
@@ -126,11 +128,8 @@ protected:
   void*     m_dl_handle;
   void*     m_Device;
   
-  bool      InitHardware(void);
-
-  //Display*  m_Display;
-  bool      m_IsConfigured;
   bool      m_Inited;
+  bool      m_IsConfigured;
   bool      m_drop_state;
   const char* m_pFormatName;
   bool      m_interlace;
@@ -138,8 +137,9 @@ protected:
 
   CMPCInputThread* m_pInputThread;
   CMPCOutputThread* m_pOutputThread;
+private:
+  CCrystalHD();
+  static CCrystalHD* m_pInstance;
 };
-
-extern CCrystalHD*          g_CrystalHD;
 
 #endif

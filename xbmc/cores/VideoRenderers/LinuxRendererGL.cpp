@@ -43,10 +43,6 @@
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
 
-#ifdef HAVE_LIBCRYSTALHD
-#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
-#endif
-
 #ifdef HAS_GLX
 #include <GL/glx.h>
 #endif
@@ -1000,7 +996,7 @@ void CLinuxRendererGL::LoadShaders(int field)
   else 
 #endif //HAVE_LIBVDPAU
 #ifdef HAVE_LIBCRYSTALHD
-  if ((requestedMethod == RENDER_METHOD_CRYSTALHD) && g_CrystalHD)
+  if (requestedMethod == RENDER_METHOD_CRYSTALHD)
   {
     err = false;
     CLog::Log(LOGNOTICE, "GL: Using Crystal HD render method");
@@ -1608,12 +1604,6 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 void CLinuxRendererGL::RenderCrystalHD(int index, int field)
 {
 #ifdef HAVE_LIBCRYSTALHD
-  if (!g_CrystalHD)
-  {
-    CLog::Log(LOGERROR,"(CrystalHD) m_Surface is NULL");
-    return;
-  }
-
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[field];

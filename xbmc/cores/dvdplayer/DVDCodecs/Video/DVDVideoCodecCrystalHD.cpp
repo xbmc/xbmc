@@ -148,14 +148,14 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
     else
       m_annexbfiltering = false;
 
-    m_Device = new CCrystalHD();
+    m_Device = CCrystalHD::GetInstance();
     if (!m_Device)
     {
       CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD", __MODULE_NAME__);
       return false;
     }
     
-    if (!m_Device->Open(stream_type, codec_type))
+    if (m_Device && !m_Device->Open(stream_type, codec_type))
     {
       CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD", __MODULE_NAME__);
       return false;
@@ -173,7 +173,6 @@ void CDVDVideoCodecCrystalHD::Dispose()
   if (m_Device)
   {
     m_Device->Close();
-    delete m_Device;
     m_Device = NULL;
   }
 }
@@ -186,6 +185,9 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
   unsigned int lastTime;
   unsigned int maxTime;
   bool annexbfiltered = false;
+
+  if (!pData)
+    return VC_BUFFER;
 
   if (pData)
   {
@@ -220,35 +222,28 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
       else
       {
         CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full", __MODULE_NAME__);
+        Sleep(1);
       }
     }
-    
+
     // Handle Output
     if (m_Device->GetReadyCount())
       ret |= VC_PICTURE;
-    
+
     if (m_Device->GetInputCount() < 25)
       ret |= VC_BUFFER;
 
     if (!pData && (ret & VC_PICTURE))
       break;
-      
-    if (!pData)
-    {
-      if (ret & VC_PICTURE)
-        break;
-        
-    }
 
   } while ((lastTime = CTimeUtils::GetTimeMS()) < maxTime);
   
-
   if (lastTime >= maxTime)
     CLog::Log(LOGDEBUG, "%s: Timeout in CDVDVideoCodecCrystalHD::Decode. ret: 0x%08x pData: %p", __MODULE_NAME__, ret, pData);
-
+    
   if (!ret)
     ret = VC_ERROR;
-    
+
   return ret;
 }
 

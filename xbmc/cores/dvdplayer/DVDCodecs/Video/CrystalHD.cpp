@@ -372,96 +372,96 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
   switch (resolution) 
   {
     case BCM::vdecRESOLUTION_480p0:
-      m_framerate = 60;
+      m_framerate = 60.0;
     break;
     case BCM::vdecRESOLUTION_576p0:
-      m_framerate = 25;
+      m_framerate = 25.0;
     break;
     case BCM::vdecRESOLUTION_720p0:
-      m_framerate = 60;
+      m_framerate = 60.0;
     break;
     case BCM::vdecRESOLUTION_1080p0:
-      m_framerate = 23.976;
+      m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_480i0:
-      m_framerate = 59.94;
+      m_framerate = 60.0 * 1000.0 / 1001.0;
       m_interlace = TRUE;
     break;
     case BCM::vdecRESOLUTION_1080i0:
-      m_framerate = 59.94;
+      m_framerate = 60.0 * 1000.0 / 1001.0;
       m_interlace = TRUE;
     break;
     case BCM::vdecRESOLUTION_1080p23_976:
-      m_framerate = 23.976;
+      m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_1080p29_97 :
-      m_framerate = 29.97;
+      m_framerate = 30.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_1080p30  :
-      m_framerate = 30;
+      m_framerate = 30.0;
     break;
     case BCM::vdecRESOLUTION_1080p24  :
-      m_framerate = 24;
+      m_framerate = 24.0;
     break;
     case BCM::vdecRESOLUTION_1080p25 :
-      m_framerate = 25;
+      m_framerate = 25.0;
     break;
     case BCM::vdecRESOLUTION_1080i29_97:
-      m_framerate = 59.94;
+      m_framerate = 60.0 * 1000.0 / 1001.0;
       m_interlace = TRUE;
     break;
     case BCM::vdecRESOLUTION_1080i25:
-      m_framerate = 50;
+      m_framerate = 50.0;
       m_interlace = TRUE;
     break;
     case BCM::vdecRESOLUTION_1080i:
-      m_framerate = 59.94;
+      m_framerate = 60.0 * 1000.0 / 1001.0;
       m_interlace = TRUE;
     break;
     case BCM::vdecRESOLUTION_720p59_94:
-      m_framerate = 59.94;
+      m_framerate = 60.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_720p50:
-      m_framerate = 50;
+      m_framerate = 50.0;
     break;
     case BCM::vdecRESOLUTION_720p:
-      m_framerate = 60;
+      m_framerate = 60.0;
     break;
     case BCM::vdecRESOLUTION_720p23_976:
-      m_framerate = 23.976;
+      m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_720p24:
-      m_framerate = 25;
+      m_framerate = 25.0;
       break;
     case BCM::vdecRESOLUTION_720p29_97:
-      m_framerate = 29.97;
+      m_framerate = 30.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_480i:
-      m_framerate = 59.94;    
+      m_framerate = 60.0 * 1000.0 / 1001.0;    
       m_interlace = TRUE;
     break;
     case BCM::vdecRESOLUTION_NTSC:
-      m_framerate = 60;
+      m_framerate = 60.0;
       m_interlace = TRUE;
     break;
     case BCM::vdecRESOLUTION_480p:
-      m_framerate = 60;
+      m_framerate = 60.0;
     break;
     case BCM::vdecRESOLUTION_PAL1:
-      m_framerate = 50;
+      m_framerate = 50.0;
       m_interlace = TRUE;
     break;
     case BCM::vdecRESOLUTION_480p23_976:
-      m_framerate = 23.976; 
+      m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_480p29_97:
-      m_framerate = 29.97;
+      m_framerate = 30.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_576p25:
-      m_framerate = 25;
+      m_framerate = 25.0;
     break;          
     default:
-      m_framerate = 23.976;
+      m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
   }
   
@@ -570,26 +570,11 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
 {
   BCM::BC_STATUS ret;
   BCM::BC_DTS_PROC_OUT procOut;
-  BCM::BC_DTS_STATUS decoder_status;
   CMPCDecodeBuffer *pBuffer = NULL;
   bool got_picture = false;
   
   do
   {
-    ret = BCM::DtsGetDriverStatus(m_Device, &decoder_status);
-    if (ret == BCM::BC_STS_SUCCESS)
-    {
-      int ready_count;
-      
-      ready_count = decoder_status.ReadyListCount;
-      /*
-      CLog::Log(LOGDEBUG, "%s: ReadyListCount %d FreeListCount %d PIBMissCount %d\n", __MODULE_NAME__,
-        decoder_status.ReadyListCount, decoder_status.FreeListCount, decoder_status.PIBMissCount);
-      CLog::Log(LOGDEBUG, "%s: FramesDropped %d FramesCaptured %d FramesRepeated %d\n", __MODULE_NAME__,
-        decoder_status.FramesDropped, decoder_status.FramesCaptured, decoder_status.FramesRepeated);
-      */
-    }
-
     // Setup output struct
     memset(&procOut, 0, sizeof(BCM::BC_DTS_PROC_OUT));
 
@@ -711,6 +696,7 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
               break;
             }
 
+            AddFrame(pBuffer);
             got_picture = true;
           }
           else
@@ -766,12 +752,12 @@ void CMPCOutputThread::Process()
     // Crystal HD likes this structure, video video starts to glitch if removed.
     if (GetReadyCount() < 2)
     {  
-      CMPCDecodeBuffer* pBuffer = GetDecoderOutput(); // Check for output frames
-      if (pBuffer)
-        AddFrame(pBuffer);
+      GetDecoderOutput(); // Check for output frames
     }
     else
-      Sleep(10);    
+    {
+      Sleep(10);
+    }
   }
   CLog::Log(LOGDEBUG, "%s: Output Thread Stopped...", __MODULE_NAME__);
 }
@@ -780,32 +766,17 @@ void CMPCOutputThread::Process()
 #if defined(__APPLE__)
 #pragma mark -
 #endif
+CCrystalHD* CCrystalHD::m_pInstance = NULL;
+
 CCrystalHD::CCrystalHD() :
-  m_IsConfigured(false),
   m_Inited(false),
+  m_IsConfigured(false),
   m_drop_state(false),
   m_pInputThread(NULL),
   m_pOutputThread(NULL)
 {
-  InitHardware();
-  g_CrystalHD = this;
-}
-
-CCrystalHD::~CCrystalHD()
-{
-  if (m_Device)
-  {
-    BCM::DtsDeviceClose(m_Device);
-    m_Device = NULL;
-  }
-  g_CrystalHD = NULL;
-}
-
-bool CCrystalHD::InitHardware(void)
-{
-  // driver should NOT download firmware a second time in CCrystalHD::Open
-  // disable this and skip a double firmware downlaad until we figure out why?
   BCM::BC_STATUS res;
+  //BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | BCM::DTS_SKIP_TX_CHK_CPB | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
   BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
   
   m_Inited = false;
@@ -818,8 +789,34 @@ bool CCrystalHD::InitHardware(void)
   {
     CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD", __MODULE_NAME__);
   }
+}
 
-  return(m_Inited);
+CCrystalHD::~CCrystalHD()
+{
+  if (m_Device)
+  {
+    BCM::DtsDeviceClose(m_Device);
+    m_Device = NULL;
+  }
+  g_CrystalHD = NULL;
+}
+
+void CCrystalHD::RemoveInstance()
+{
+  if (m_pInstance)
+  {
+    delete m_pInstance;
+    m_pInstance = NULL;
+  }
+}
+
+CCrystalHD* CCrystalHD::GetInstance()
+{
+  if (!m_pInstance)
+  {
+    m_pInstance = new CCrystalHD();
+  }
+  return m_pInstance;
 }
 
 bool CCrystalHD::Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type)
@@ -1008,8 +1005,8 @@ bool CCrystalHD::ResetPicture(DVDVideoPicture* pDvdVideoPicture)
   if (pDvdVideoPicture->private_data)
   {
     m_pOutputThread->FreeBuffer((CMPCDecodeBuffer*)pDvdVideoPicture->private_data);
-    pDvdVideoPicture->private_data = NULL;
   }
+  memset(pDvdVideoPicture, 0, sizeof(DVDVideoPicture));
   
   return true;
 }
