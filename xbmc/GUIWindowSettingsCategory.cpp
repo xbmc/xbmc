@@ -1886,6 +1886,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     else
       g_guiSettings.SetString("lookandfeel.soundskin", pControl->GetCurrentLabel());
 
+    g_audioManager.Enable(true);
     g_audioManager.Load();
   }
   else if (strSetting.Equals("input.enablemouse"))
