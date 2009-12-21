@@ -1,0 +1,4 @@
+Installation on Woe32 (WinNT/2000/XP/Vista, Win95/98/ME):
+
+Building requires the mingw development environment (includes gcc).
+MS Visual C/C++ with "nmake" is no longer supported.
