@@ -475,88 +475,87 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
 
 void CMPCOutputThread::SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info)
 {
-	switch(pic_info->aspect_ratio) {
-	case BCM::vdecAspectRatioSquare:
-		m_aspectratio_x = 1;
-		m_aspectratio_y = 1;
-		break;
-	case BCM::vdecAspectRatio12_11:
-		m_aspectratio_x = 12;
-		m_aspectratio_y = 11;
-		break;
-	case BCM::vdecAspectRatio10_11:
-		m_aspectratio_x = 10;
-		m_aspectratio_y = 11;
-		break;
-	case BCM::vdecAspectRatio16_11:
-		m_aspectratio_x = 16;
-		m_aspectratio_y = 11;
-		break;
-	case BCM::vdecAspectRatio40_33:
-		m_aspectratio_x = 40;
-		m_aspectratio_y = 33;
-		break;
-	case BCM::vdecAspectRatio24_11:
-		m_aspectratio_x = 24;
-		m_aspectratio_y = 11;
-		break;
-	case BCM::vdecAspectRatio20_11:
-		m_aspectratio_x = 20;
-		m_aspectratio_y = 11;
-		break;
-	case BCM::vdecAspectRatio32_11:
-		m_aspectratio_x = 32;
-		m_aspectratio_y = 11;
-		break;
-	case BCM::vdecAspectRatio80_33:
-		m_aspectratio_x = 80;
-		m_aspectratio_y = 33;
-		break;
-	case BCM::vdecAspectRatio18_11:
-		m_aspectratio_x = 18;
-		m_aspectratio_y = 11;
-		break;
-	case BCM::vdecAspectRatio15_11:
-		m_aspectratio_x = 15;
-		m_aspectratio_y = 11;
-		break;
-	case BCM::vdecAspectRatio64_33:
-		m_aspectratio_x = 64;
-		m_aspectratio_y = 33;
-		break;
-	case BCM::vdecAspectRatio160_99:
-		m_aspectratio_x = 160;
-		m_aspectratio_y = 99;
-		break;
-	case BCM::vdecAspectRatio4_3:
-		m_aspectratio_x = 4;
-		m_aspectratio_y = 3;
-		break;
-	case BCM::vdecAspectRatio16_9:
-		m_aspectratio_x = 16;
-		m_aspectratio_y = 9;
-		break;
-	case BCM::vdecAspectRatio221_1:
-		m_aspectratio_x = 221;
-		m_aspectratio_y = 1;
-		break;
-	case BCM::vdecAspectRatioUnknown:
-		m_aspectratio_x = 0;
-		m_aspectratio_y = 0;
-
-		break;
-	case BCM::vdecAspectRatioOther:
-		m_aspectratio_x = pic_info->custom_aspect_ratio_width_height & 0x0000ffff;
-		m_aspectratio_y = pic_info->custom_aspect_ratio_width_height >> 16;
-		break;
-	default:
-		break;
-	}
-	if(m_aspectratio_x == 0)
+  switch(pic_info->aspect_ratio)
+  {
+    case BCM::vdecAspectRatioSquare:
+      m_aspectratio_x = 1;
+      m_aspectratio_y = 1;
+    break;
+    case BCM::vdecAspectRatio12_11:
+      m_aspectratio_x = 12;
+      m_aspectratio_y = 11;
+    break;
+    case BCM::vdecAspectRatio10_11:
+      m_aspectratio_x = 10;
+      m_aspectratio_y = 11;
+    break;
+    case BCM::vdecAspectRatio16_11:
+      m_aspectratio_x = 16;
+      m_aspectratio_y = 11;
+    break;
+    case BCM::vdecAspectRatio40_33:
+      m_aspectratio_x = 40;
+      m_aspectratio_y = 33;
+    break;
+    case BCM::vdecAspectRatio24_11:
+      m_aspectratio_x = 24;
+      m_aspectratio_y = 11;
+    break;
+    case BCM::vdecAspectRatio20_11:
+      m_aspectratio_x = 20;
+      m_aspectratio_y = 11;
+    break;
+    case BCM::vdecAspectRatio32_11:
+      m_aspectratio_x = 32;
+      m_aspectratio_y = 11;
+    break;
+    case BCM::vdecAspectRatio80_33:
+      m_aspectratio_x = 80;
+      m_aspectratio_y = 33;
+    break;
+    case BCM::vdecAspectRatio18_11:
+      m_aspectratio_x = 18;
+      m_aspectratio_y = 11;
+    break;
+    case BCM::vdecAspectRatio15_11:
+      m_aspectratio_x = 15;
+      m_aspectratio_y = 11;
+    break;
+    case BCM::vdecAspectRatio64_33:
+      m_aspectratio_x = 64;
+      m_aspectratio_y = 33;
+    break;
+    case BCM::vdecAspectRatio160_99:
+      m_aspectratio_x = 160;
+      m_aspectratio_y = 99;
+    break;
+    case BCM::vdecAspectRatio4_3:
+      m_aspectratio_x = 4;
+      m_aspectratio_y = 3;
+    break;
+    case BCM::vdecAspectRatio16_9:
+      m_aspectratio_x = 16;
+      m_aspectratio_y = 9;
+    break;
+    case BCM::vdecAspectRatio221_1:
+      m_aspectratio_x = 221;
+      m_aspectratio_y = 1;
+    break;
+    case BCM::vdecAspectRatioUnknown:
+      m_aspectratio_x = 0;
+      m_aspectratio_y = 0;
+    break;
+    
+    case BCM::vdecAspectRatioOther:
+      m_aspectratio_x = pic_info->custom_aspect_ratio_width_height & 0x0000ffff;
+      m_aspectratio_y = pic_info->custom_aspect_ratio_width_height >> 16;
+    break;
+  }
+  if(m_aspectratio_x == 0)
   {
     m_aspectratio_x = 1;
     m_aspectratio_y = 1;
-	}
+  }
 
   CLog::Log(LOGDEBUG, "%s: dec_par x = %d, dec_par y = %d", __MODULE_NAME__, m_aspectratio_x, m_aspectratio_y);
 }
