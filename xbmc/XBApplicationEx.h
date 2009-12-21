@@ -35,12 +35,12 @@ public:
   bool m_AppFocused;
 
   // Overridable functions for the 3D scene created by the app
-  virtual HRESULT Initialize() { return S_OK; }
-  virtual HRESULT Cleanup() { return S_OK; }
+  virtual bool Initialize() { return true; }
+  virtual bool Cleanup() { return true; }
 
 public:
   // Functions to create, run, and clean up the application
-  virtual HRESULT Create(HWND hWnd);
+  virtual bool Create(HWND hWnd);
   INT Run();
   VOID Destroy();
 
