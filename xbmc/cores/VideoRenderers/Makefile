@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../../ -I../../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer/Codecs/ffmpeg
+INCLUDES=-I. -I.. -I../../ -I../../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer/Codecs/ffmpeg -I../dvdplayer
 
 SRCS=LinuxRenderer.cpp \
      RenderManager.cpp \
