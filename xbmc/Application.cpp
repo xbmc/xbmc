@@ -498,6 +498,13 @@ HRESULT CApplication::Create(HWND hWnd)
     delete profile;
   }
 
+  if (!CLog::Init(_P(g_stSettings.m_logFolder).c_str()))
+  {
+    fprintf(stderr,"Could not init logging classes. Permission errors on ~/.xbmc?\n");
+    return E_FAIL;
+  }
+
+
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(__APPLE__)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s (SVN:%s)", __DATE__, SVN_REV);
