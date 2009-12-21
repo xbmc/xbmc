@@ -1,6 +1,6 @@
 //
 //  HIDRemote.h
-//  HIDRemote V1.1
+//  HIDRemote V1.1.1
 //
 //  Created by Felix Schwarz on 06.04.07.
 //  Copyright 2007-2009 IOSPIRIT GmbH. All rights reserved.
@@ -265,6 +265,8 @@ typedef enum
 - (unsigned)activeRemoteControlCount;
 
 - (SInt32)lastSeenRemoteControlID;
+
+- (void)setLastSeenModel:(HIDRemoteModel)aModel;
 - (HIDRemoteModel)lastSeenModel;
 
 - (void)setDelegate:(NSObject <HIDRemoteDelegate> *)newDelegate;
@@ -278,7 +280,6 @@ typedef enum
 
 #pragma mark -- PUBLIC: Expert APIs --
 - (void)setEnableSecureEventInputWorkaround:(BOOL)newEnableSecureEventInputWorkaround;
-
 - (BOOL)enableSecureEventInputWorkaround;
 
 - (void)setExclusiveLockLendingEnabled:(BOOL)newExclusiveLockLendingEnabled;
