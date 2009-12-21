@@ -559,7 +559,12 @@ void CLinuxRendererGL::LoadTextures(int source)
     if (deinterlacing)
     {
       // Load Y fields
-      LoadPlane( fields[FIELD_ODD][0] , GL_LUMINANCE, buf.flipindex
+      if (m_pboused)
+        LoadPlane( fields[FIELD_ODD][0] , GL_LUMINANCE, buf.flipindex
+               , im->width, im->height >> 1
+               , im->stride[0]*2, im->plane[0] + 1 );
+      else
+        LoadPlane( fields[FIELD_ODD][0] , GL_LUMINANCE, buf.flipindex
                , im->width, im->height >> 1
                , im->stride[0]*2, im->plane[0] );
 
@@ -585,11 +590,21 @@ void CLinuxRendererGL::LoadTextures(int source)
     if (deinterlacing)
     {
       // Load Even U & V Fields
-      LoadPlane( fields[FIELD_ODD][1], GL_LUMINANCE, buf.flipindex
+      if (m_pboused)
+        LoadPlane( fields[FIELD_ODD][1], GL_LUMINANCE, buf.flipindex
+               , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+               , im->stride[1]*2, im->plane[1] + 1 );
+      else
+        LoadPlane( fields[FIELD_ODD][1], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[1]*2, im->plane[1] );
 
-      LoadPlane( fields[FIELD_ODD][2], GL_LUMINANCE, buf.flipindex
+      if (m_pboused)
+        LoadPlane( fields[FIELD_ODD][2], GL_LUMINANCE, buf.flipindex
+               , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+               , im->stride[2]*2, im->plane[2] + 1 );
+      else
+        LoadPlane( fields[FIELD_ODD][2], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[2]*2, im->plane[2] );
       
