@@ -138,6 +138,10 @@ void CLog::Log(int loglevel, const char *format, ... )
 
 bool CLog::Init(const char* path)
 {
+#ifdef _WIN32
+  return InitW(path);
+#endif
+
   CSingleLock waitLock(critSec);
   if (!m_file)
   {
@@ -157,6 +161,32 @@ bool CLog::Init(const char* path)
       return false;
 
     m_file = fopen(strLogFile.c_str(),"wb");
+  }
+
+  return m_file != NULL;
+}
+
+bool CLog::InitW(const char* path)
+{
+  CSingleLock waitLock(critSec);
+  if (!m_file)
+  {
+    CStdStringW pathW;
+    g_charsetConverter.utf8ToW(path, pathW, false);
+    CStdStringW strLogFile, strLogFileOld;
+
+    strLogFile.Format("%sxbmc.log", pathW);
+    strLogFileOld.Format("%sxbmc.old.log", pathW);
+
+    struct stat64 info;
+    if (_wstat64(strLogFileOld.c_str(),&info) == 0 &&
+        !::DeleteFileW(strLogFileOld.c_str()))
+      return false;
+    if (_wstat64(strLogFile.c_str(),&info) == 0 &&
+        !::MoveFileW(strLogFile.c_str(),strLogFileOld.c_str()))
+      return false;
+
+    m_file = _wfopen(strLogFile.c_str(),"wb");
   }
 
   return m_file != NULL;
