@@ -434,7 +434,7 @@
   <string id="494">Margen total de sonido (dB)</string>
   <string id="495">Sobremuestrear vídeos a resolución XBMC</string>
   <string id="496">Calibración</string>
-  <string id="497">Ocultar extensiones</string>
+  <string id="497">Mostrar extensiones de archivo</string>
   <string id="498">Por: Tipo</string>
   <string id="499">No se puede conectar al servicio de búsqueda online</string>
   <string id="500">Error al obtener información de álbum</string>
@@ -1088,7 +1088,7 @@
   <string id="13303">- Fuentes del skin</string>
   <string id="13304">Invertir cadenas bidireccionales</string>
   <string id="13305">Activar noticias RSS</string>
-  <string id="13306">Ocultar iconos de subir de directorio</string>
+  <string id="13306">Mostrar icono de subir directorio</string>
   <string id="13307">Plantilla de nombrado de pistas</string>
   <string id="13308">¿Desea reiniciar su equipo</string>
   <string id="13309">en lugar de sólo XBMC?</string>
@@ -1948,7 +1948,7 @@ para esta visualización</string>
   <string id="21379">Habilitar 720p</string>
   <string id="21380">Habilitar 1080i</string>
   <string id="21381">Introduzca nombre de nueva lista de rep.</string>
-  <string id="21382">Deshabilitar "añadir fuente" en listas de ficheros</string>
+  <string id="21382">Mostrar "añadir fuente" en listas de ficheros</string>
   <string id="21383">Habilitar barras de desplazamiento</string>
   <string id="21384">Convertir el filtro mostrado en una opción de la biblioteca de vídeo</string>
   <string id="21385">Abierto</string>
