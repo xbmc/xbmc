@@ -7170,7 +7170,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         if (singleFiles)
         {
           CStdString tempFile, nfoFile;
-          CFileItem item(tvshow.m_strPath,false);
+          CFileItem item(tvshow.m_strPath, true);
           CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "tvshow.nfo", tempFile);
           CUtil::AddFileToFolder(tvshow.m_strPath, "tvshow.nfo", nfoFile);
 
