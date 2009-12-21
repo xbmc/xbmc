@@ -925,6 +925,11 @@ void CCrystalHD::Close(void)
   m_IsConfigured = false;
 }
 
+bool CCrystalHD::IsOpenforDecode(void)
+{
+  return(m_IsConfigured);
+}
+
 void CCrystalHD::Flush(void)
 {
   m_pInputThread->Flush();

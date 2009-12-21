@@ -116,6 +116,7 @@ public:
 
   bool Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type);
   void Close(void);
+  bool IsOpenforDecode(void);
   void Flush(void);
   unsigned int GetInputCount();
   bool AddInput(unsigned char *pData, size_t size, double pts);
