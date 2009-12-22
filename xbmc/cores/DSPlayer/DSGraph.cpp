@@ -50,7 +50,8 @@ using namespace std;
 using namespace MediaInfoDLL;
 
 CDSGraph::CDSGraph() :
-                 m_pGraphBuilder(NULL)
+m_pGraphBuilder(NULL),
+m_pDsConfig(NULL)
 {
   
   m_PlaybackRate = 1;
@@ -58,15 +59,17 @@ CDSGraph::CDSGraph() :
   g_userId = 0xACDCACDC;
   m_State.Clear();
   m_VideoInfo.Clear();
-  CoInitialize(0);
+  HRESULT hr;
+  hr = CoInitialize(0);
 }
 
 CDSGraph::~CDSGraph()
 {
   if (m_pGraphBuilder)
     m_pGraphBuilder->RemoveFromROT();
+  m_pGraphBuilder = NULL;
   CloseFile();
-  CoUninitialize();
+  //CoUninitialize();
 }
 
 //This is alo creating the Graph
@@ -90,8 +93,9 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   hr = m_pGraphBuilder.QueryInterface(&m_pMediaEvent);
   hr = m_pGraphBuilder.QueryInterface(&m_pBasicAudio);
   hr = m_pGraphBuilder.QueryInterface(&m_pBasicVideo);
+  m_pDsConfig = new CDSConfig();
   //Get all custom interface
-  m_pDsConfig.LoadGraph(m_pGraphBuilder);
+  m_pDsConfig->LoadGraph(m_pGraphBuilder);
 
   UpdateCurrentVideoInfo(file.GetAsUrl().GetFileName());
   
@@ -109,11 +113,8 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 void CDSGraph::CloseFile()
 {
   OnPlayStop();
-  //m_pMediaControl.Release();
-  //m_pMediaEvent.Release();
-  //m_pMediaSeeking.Release();
-  //m_pBasicAudio.Release();
-  
+  if (m_pDsConfig)
+    m_pDsConfig = NULL;
   BeginEnumFilters(m_pGraphBuilder,pEF,pBF)
   {
     m_pGraphBuilder->RemoveFilter(pBF);
@@ -132,29 +133,6 @@ bool CDSGraph::InitializedOutputDevice()
 #else
   return false;
 #endif
-}
-
-HRESULT CDSGraph::CloseGraph()
-{
-  try
-  {
-  HRESULT hr;
-  if (!m_pGraphBuilder)
-    return S_OK;
-  m_pMediaControl->Stop();
-  hr = m_pGraphBuilder->Abort();
-  if FAILED(m_pGraphBuilder->RemoveFromROT())
-    CLog::Log(LOGERROR,"%s m_pGraphBuilder->RemoveFromROT",__FUNCTION__);  
-  }
-  catch (...)
-  {
-	  CLog::Log(LOGERROR,"%s error while closing graph",__FUNCTION__);
-  }
-  m_File.Close();
-  m_pMediaControl.Release();
-  m_pBasicAudio.Release();
-  m_pGraphBuilder.Release();
-  return S_OK;
 }
 
 void CDSGraph::UpdateTime()
@@ -206,7 +184,7 @@ void CDSGraph::UpdateState()
 void CDSGraph::UpdateCurrentVideoInfo(CStdString currentFile)
 {
 
-  m_VideoInfo.dxva_info= m_pDsConfig.GetDxvaMode();
+  m_VideoInfo.dxva_info= m_pDsConfig->GetDxvaMode();
   MediaInfo MI;
   MI.Open(currentFile.c_str());
   MI.Option(_T("Complete"));

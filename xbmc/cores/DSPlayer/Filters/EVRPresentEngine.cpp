@@ -19,7 +19,6 @@ D3DPresentEngine::D3DPresentEngine(HRESULT& hr) :
     m_pD3D9(NULL),
     m_pDevice(NULL),
     m_pDeviceManager(NULL),
-    m_pSurfaceRepaint(NULL),
 	m_pCallback(NULL),
 	m_bufferCount(4)
 {
@@ -48,7 +47,6 @@ D3DPresentEngine::D3DPresentEngine(HRESULT& hr) :
 D3DPresentEngine::~D3DPresentEngine()
 {
   m_pDevice = NULL;
-  m_pSurfaceRepaint = NULL;
   m_pDeviceManager = NULL;
 	m_pCallback = NULL;
 }
@@ -267,8 +265,25 @@ void D3DPresentEngine::ReleaseResources()
 {
     // Let the derived class release any resources it created.
 	OnReleaseResources();
-
-    S_RELEASE(m_pSurfaceRepaint);
+  HANDLE hDev;
+  HRESULT hr;
+  hr = m_pDeviceManager->OpenDeviceHandle(&hDev);
+  CHECK_HR(hr);
+  IDirect3DDevice9* pD3dDev;
+  hr = m_pDeviceManager->LockDevice(hDev,&pD3dDev,true);
+  if (SUCCEEDED(hr))
+  {
+    SAFE_RELEASE(m_pVideoTexture);
+    SAFE_RELEASE(m_pVideoSurface);
+    for (int i = 0; i < 7; i++)
+    {
+      SAFE_RELEASE(m_pInternalVideoTexture[i]);
+      SAFE_RELEASE(m_pInternalVideoSurface[i]);
+    }
+  }
+done:
+  if (FAILED(hr))
+    CLog::Log(LOGDEBUG,"ReleaseResources Failed!");
 }
 
 //-----------------------------------------------------------------------------

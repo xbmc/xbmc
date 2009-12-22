@@ -152,7 +152,8 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   SetViewPort(rc);
 
   BuildPresentParameters();
-
+  //Creating a new device is at least not making xbmc crash for the directshow rendered but still need to figure out how to do it correctly
+  m_needNewDevice = true;
   OnDeviceLost();
   OnDeviceReset();
   
@@ -165,8 +166,8 @@ void CRenderSystemDX::BuildPresentParameters()
   bool useWindow = g_guiSettings.GetBool("videoscreen.fakefullscreen") || !m_bFullScreenDevice;
   m_D3DPP.Windowed					= useWindow;
   m_D3DPP.SwapEffect				= D3DSWAPEFFECT_DISCARD;
-  m_D3DPP.BackBufferCount			= 1;
-  m_D3DPP.EnableAutoDepthStencil	= TRUE;
+  m_D3DPP.BackBufferCount			= 3;//testing 3 was 1
+  m_D3DPP.EnableAutoDepthStencil	= true;
   m_D3DPP.hDeviceWindow			= m_hDeviceWnd;
   m_D3DPP.BackBufferWidth			= m_nBackBufferWidth;
   m_D3DPP.BackBufferHeight			= m_nBackBufferHeight;

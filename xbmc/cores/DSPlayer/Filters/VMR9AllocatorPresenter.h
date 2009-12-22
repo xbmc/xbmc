@@ -20,8 +20,15 @@ using namespace std;
 #include "geometry.h"
 
 #include "VideoReferenceClock.h"
-#define VMRBITMAP_UPDATE            0x80000000
+
 class CDSGraph;
+enum VMR_STATE
+{
+  RENDER_STATE_NEEDDEVICE = 0,
+  RENDER_STATE_RUNNING,
+  RENDER_STATE_DEVICELOST,
+  
+};
 
 [uuid("A2636B41-5E3C-4426-B6BC-CD8616600912")]
 class CVMR9AllocatorPresenter  : public CDsRenderer,
@@ -30,9 +37,8 @@ class CVMR9AllocatorPresenter  : public CDsRenderer,
                     
 {
 public:
-  CCritSec        m_VMR9AlphaBitmapLock;
-  void          UpdateAlphaBitmap();
   CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error);
+  virtual ~CVMR9AllocatorPresenter();
 
   // IVMRSurfaceAllocator9
   virtual STDMETHODIMP InitializeDevice(DWORD_PTR dwUserID, VMR9AllocationInfo *lpAllocInfo, DWORD *lpNumBuffers);
@@ -57,18 +63,15 @@ public:
   STDMETHODIMP_(bool) Paint(bool fAll) { return true; } ;
   STDMETHODIMP_(void) SetTime(REFERENCE_TIME rtNow) {};
   
-  
+  virtual void OnDestroyDevice();
+  virtual void OnCreateDevice();
 protected:
   void DeleteSurfaces();
   void GetCurrentVideoSize();
 
   
   D3DFORMAT            m_DisplayType;
-
-  VMR9AlphaBitmap      m_VMR9AlphaBitmap;
-  CAutoVectorPtr<BYTE>  m_VMR9AlphaBitmapData;
-  tagRECT          m_VMR9AlphaBitmapRect;
-  int            m_VMR9AlphaBitmapWidthBytes;
+  
   bool m_fUseInternalTimer;
   //Clock stuff
   REFERENCE_TIME m_rtTimePerFrame;
@@ -84,6 +87,7 @@ private:
   vector<CComPtr<IDirect3DSurface9> >     m_pSurfaces;
   int                                     m_pNbrSurface;
   int                                     m_pCurSurface;
+  VMR_STATE                               m_vmrState;
 };
 
 #endif // _DXALLOCATORPRESENTER_H

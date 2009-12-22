@@ -2245,14 +2245,6 @@
 				<Filter
 					Name="Filters"
 					>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\AudioStreamSelector.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\AudioStreamSelector.h"
-						>
-					</File>
 					<Filter
 						Name="Source"
 						>
@@ -2278,6 +2270,58 @@
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="Renderers"
+						>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsRenderer.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsRenderer.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EvrHelper.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EvrHelper.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRPresentEngine.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRPresentEngine.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRScheduler.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRScheduler.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.h"
 							>
 						</File>
 					</Filter>
@@ -2307,58 +2351,6 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IMPCVideoDecFilter.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Renderers"
-					>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsRenderer.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsRenderer.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EvrHelper.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EvrHelper.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRPresentEngine.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRPresentEngine.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRScheduler.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRScheduler.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.h"
 						>
 					</File>
 				</Filter>

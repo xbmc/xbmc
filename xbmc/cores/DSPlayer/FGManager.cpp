@@ -136,12 +136,14 @@ STDMETHODIMP CFGManager::AddFilter(IBaseFilter* pFilter, LPCWSTR pName)
   CAutoLock cAutoLock(this);
 
   HRESULT hr;
-  if(FAILED(hr = CComQIPtr<IFilterGraph2>(m_pUnkInner)->AddFilter(pFilter, pName)))
+  hr = CComQIPtr<IFilterGraph2>(m_pUnkInner)->AddFilter(pFilter, pName);
+  if(FAILED(hr))
     return hr;
 
   // TODO
   hr = pFilter->JoinFilterGraph(NULL, NULL);
   hr = pFilter->JoinFilterGraph(this, pName);
+  
 
   return hr;
 }

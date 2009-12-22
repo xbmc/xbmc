@@ -264,7 +264,7 @@ protected:
     CCritSec                     m_ObjectLock;			// Serializes our public methods.  
 
 	// Samples and scheduling
-    CEvrScheduler                   m_scheduler;			// Manages scheduling of samples.
+    
     SamplePool                  m_SamplePool;           // Pool of allocated samples.
     DWORD                       m_TokenCounter;         // Counter. Incremented whenever we create new samples.
 
@@ -279,6 +279,7 @@ protected:
 
     // Deletable objects.
     D3DPresentEngine            *m_pD3DPresentEngine;    // Rendering engine. (Never null if the constructor succeeds.)
+    CEvrScheduler               m_scheduler;			       // Manages scheduling of samples.
 
     // COM interfaces.
     IMFClock                    *m_pClock;               // The EVR's clock.

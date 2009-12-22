@@ -55,26 +55,11 @@ void CDSConfig::LoadFilters()
 {
   BeginEnumFilters(m_pGraphBuilder, pEF, pBF)
   {
-    //GetAudioSelector(pBF);
     GetStreamSelector(pBF);
 	  GetMpcVideoDec(pBF);
 	  GetMpaDec(pBF);
   }
   EndEnumFilters
-}
-
-bool CDSConfig::GetAudioSelector(IBaseFilter* pBF)
-{
-  if (!DShowUtil::IsSplitter(pBF,false))
-    return false;
-  HRESULT hr;
-  CLSID clsid;
-  pBF->GetClassID(&clsid);
-  CComPtr<IUnknown> m_pUnk;
-  m_pAudioSelector = new CAudioStreamSelector(m_pUnk,&hr,clsid);
-  
-  if (SUCCEEDED(hr))
-    CLog::Log(LOGDEBUG,"YEAH");
 }
 
 bool CDSConfig::GetStreamSelector(IBaseFilter* pBF)

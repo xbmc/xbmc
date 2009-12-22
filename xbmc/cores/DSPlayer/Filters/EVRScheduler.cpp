@@ -157,10 +157,10 @@ HRESULT CEvrScheduler::StopScheduler()
 
     // Ask the scheduler thread to exit.
     PostThreadMessage(m_dwThreadID, eTerminate, 0, 0);
-    
+    CLog::Log(LOGDEBUG,"Waiting for CEvrScheduler to stop");
     // Wait for the thread to exit.
     WaitForSingleObject(m_hSchedulerThread, INFINITE);
-
+    CLog::Log(LOGDEBUG,"done waiting for CEvrScheduler thread to stop");
     // Close handles.
     CloseHandle(m_hSchedulerThread);
     m_hSchedulerThread = NULL;
@@ -169,7 +169,6 @@ HRESULT CEvrScheduler::StopScheduler()
     m_hFlushEvent = NULL;
 
     // Discard samples.
-    //m_ScheduledSamples.RemoveAll();
     m_ScheduledSamples.Clear();
 
     // Restore the timer resolution.

@@ -83,7 +83,7 @@ bool CDSPlayer::CloseFile()
   //SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
   // set the abort request so that other threads can finish up
   m_bAbortRequest = true;
-  m_pDsGraph.CloseGraph();
+  m_pDsGraph.CloseFile();
   //g_renderManager.UnInit();
   CLog::Log(LOGNOTICE, "CDSPlayer: finished waiting");
   //StopThread();

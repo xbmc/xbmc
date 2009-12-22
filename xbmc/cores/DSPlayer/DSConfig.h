@@ -28,7 +28,7 @@
 #include "Filters/IMpaDecFilter.h"
 #include "Filters/IMPCVideoDecFilter.h"
 #include "Filters/IffdshowDecVideo.h"
-#include "audiostreamselector.h"
+
 
 class CDSConfig
 {
@@ -45,7 +45,6 @@ public:
   virtual void SetAudioStream(int iStream);
   
 protected:
-  bool GetAudioSelector(IBaseFilter* pBF);
   bool GetStreamSelector(IBaseFilter* pBF);
   bool GetMpaDec(IBaseFilter* pBF);
   bool GetMpcVideoDec(IBaseFilter* pBF);
@@ -62,6 +61,5 @@ private:
   //CComPtr<IffdshowDecVideoA>	 m_pIffdDecFilter;
   CComQIPtr<IMpaDecFilter>       m_pIMpaDecFilter;
   CComQIPtr<IAMStreamSelect>     m_pIAMStreamSelect;
-  CAudioStreamSelector*          m_pAudioSelector;
   CStdString                     m_pStdDxva;
 };

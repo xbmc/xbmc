@@ -81,23 +81,22 @@ protected:
 protected:
   
 	IEVRPresenterCallback		*m_pCallback;
-  UINT                        m_DeviceResetToken;     // Reset token for the D3D device manager.
-	int							m_bufferCount;
-  int             m_iVideoHeight;
-  int             m_iVideoWidth;
-	RECT						m_rcDestRect;           // Destination rectangle.
-    D3DDISPLAYMODE              m_DisplayMode;          // Adapter's display mode.
+  UINT                     m_DeviceResetToken;     // Reset token for the D3D device manager.
+	int							         m_bufferCount;
+  int                      m_iVideoHeight;
+  int                      m_iVideoWidth;
+	RECT						         m_rcDestRect;           // Destination rectangle.
+  D3DDISPLAYMODE              m_DisplayMode;          // Adapter's display mode.
 
-    CCritSec                     m_ObjectLock;           // Thread lock for the D3D device.
+  CCritSec                     m_ObjectLock;           // Thread lock for the D3D device.
 
     // COM interfaces
   CComPtr<IDirect3D9>                     m_pD3D9;
   CComPtr<IDirect3DDevice9>               m_pDevice;
   IDirect3DDeviceManager9     *m_pDeviceManager;        // Direct3D device manager.
-  IDirect3DSurface9                *m_pSurfaceRepaint;       // Surface for repaint requests.
 	
-  CD3DTexture*                m_pVideoTexture;
-  CComPtr<IDirect3DSurface9>  m_pVideoSurface;
+  CD3DTexture                 *m_pVideoTexture;
+  IDirect3DSurface9           *m_pVideoSurface;
   IDirect3DTexture9           *m_pInternalVideoTexture[7];
   IDirect3DSurface9           *m_pInternalVideoSurface[7];
 

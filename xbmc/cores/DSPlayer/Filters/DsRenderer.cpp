@@ -38,6 +38,7 @@ CDsRenderer::CDsRenderer()
   m_D3DDev = g_Windowing.Get3DDevice();
   m_nCurSurface = 0;
   g_renderManager.PreInit(true);
+  g_Windowing.Register(this);
   
   
 }
@@ -47,6 +48,7 @@ CDsRenderer::~CDsRenderer()
   g_renderManager.UnInit();
   
 }
+
 
 UINT CDsRenderer::GetAdapter(IDirect3D9* pD3D)
 {
@@ -90,6 +92,23 @@ HRESULT CDsRenderer::CreateSurfaces(D3DFORMAT Format)
     hr = m_pVideoTexture[i]->GetSurfaceLevel(0, &m_pVideoSurface[i]);
   }
   return hr;
+}
+
+void CDsRenderer::DeleteSurfaces()
+{
+  CAutoLock cAutoLock(this);
+  CAutoLock cRenderLock(&m_RenderLock);
+  try
+  {
+  for( int i = 0; i < DS_MAX_3D_SURFACE-1; ++i ) 
+  {
+    m_pVideoTexture[i]->Release();
+    m_pVideoSurface[i] = NULL;
+  }
+  }
+  catch (...)
+  {
+  }
 }
 
 STDMETHODIMP CDsRenderer::RenderPresent(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface,REFERENCE_TIME pTimeStamp)

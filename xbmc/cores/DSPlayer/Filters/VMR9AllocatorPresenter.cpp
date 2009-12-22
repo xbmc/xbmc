@@ -39,18 +39,15 @@ class COuterVMR9
   , public IVideoWindow
   , public IBasicVideo2
   , public IVMRWindowlessControl
-  , public IVMRMixerBitmap9
 {
   CComPtr<IUnknown>  m_pVMR;
-  VMR9AlphaBitmap*  m_pVMR9AlphaBitmap;
   CVMR9AllocatorPresenter *m_pAllocatorPresenter;
 
 public:
 
-  COuterVMR9(const TCHAR* pName, LPUNKNOWN pUnk, VMR9AlphaBitmap* pVMR9AlphaBitmap, CVMR9AllocatorPresenter *_pAllocatorPresenter) : CUnknown(pName, pUnk)
+  COuterVMR9(const TCHAR* pName, LPUNKNOWN pUnk, CVMR9AllocatorPresenter *_pAllocatorPresenter) : CUnknown(pName, pUnk)
   {
     m_pVMR.CoCreateInstance(CLSID_VideoMixingRenderer9, GetOwner());
-    m_pVMR9AlphaBitmap = pVMR9AlphaBitmap;
     m_pAllocatorPresenter = _pAllocatorPresenter;
   }
 
@@ -286,35 +283,6 @@ public:
 
     return E_NOTIMPL;
   }
-
-  // IVMRMixerBitmap9
-  STDMETHODIMP GetAlphaBitmapParameters(VMR9AlphaBitmap* pBmpParms)
-  {
-    CheckPointer(pBmpParms, E_POINTER);
-    CAutoLock BitMapLock(&m_pAllocatorPresenter->m_VMR9AlphaBitmapLock);
-    memcpy (pBmpParms, m_pVMR9AlphaBitmap, sizeof(VMR9AlphaBitmap));
-    return S_OK;
-  }
-  
-  STDMETHODIMP SetAlphaBitmap(const VMR9AlphaBitmap*  pBmpParms)
-  {
-    CheckPointer(pBmpParms, E_POINTER);
-    CAutoLock BitMapLock(&m_pAllocatorPresenter->m_VMR9AlphaBitmapLock);
-    memcpy (m_pVMR9AlphaBitmap, pBmpParms, sizeof(VMR9AlphaBitmap));
-    m_pVMR9AlphaBitmap->dwFlags |= VMRBITMAP_UPDATE;
-    m_pAllocatorPresenter->UpdateAlphaBitmap();
-    return S_OK;
-  }
-
-  STDMETHODIMP UpdateAlphaBitmapParameters(const VMR9AlphaBitmap* pBmpParms)
-  {
-    CheckPointer(pBmpParms, E_POINTER);
-    CAutoLock BitMapLock(&m_pAllocatorPresenter->m_VMR9AlphaBitmapLock);
-    memcpy (m_pVMR9AlphaBitmap, pBmpParms, sizeof(VMR9AlphaBitmap));
-    m_pVMR9AlphaBitmap->dwFlags |= VMRBITMAP_UPDATE;
-    m_pAllocatorPresenter->UpdateAlphaBitmap();
-    return S_OK;
-  }
 };
 
 CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error)
@@ -327,6 +295,14 @@ CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error
   m_D3DDev = g_Windowing.Get3DDevice();
   hr = S_OK;
   m_renderingOk = true;
+  m_vmrState = RENDER_STATE_NEEDDEVICE;
+}
+
+CVMR9AllocatorPresenter::~CVMR9AllocatorPresenter()
+{
+  DeleteSurfaces();
+  
+
 }
 
 void CVMR9AllocatorPresenter::DeleteSurfaces()
@@ -343,6 +319,7 @@ void CVMR9AllocatorPresenter::DeleteSurfaces()
 STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9AllocationInfo *lpAllocInfo, DWORD *lpNumBuffers)
 {
   m_pPrevEndFrame=0;
+  m_vmrState = RENDER_STATE_RUNNING;
   CLog::Log(LOGNOTICE,"vmr9:InitializeDevice() %dx%d AR %d:%d flags:%d buffers:%d  fmt:(%x) %c%c%c%c", 
     lpAllocInfo->dwWidth ,lpAllocInfo->dwHeight ,lpAllocInfo->szAspectRatio.cx,lpAllocInfo->szAspectRatio.cy,
     lpAllocInfo->dwFlags ,*lpNumBuffers, lpAllocInfo->Format, ((char)lpAllocInfo->Format&0xff),
@@ -436,6 +413,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   
   CComPtr<IDirect3DTexture9> pTexture;
   hr = lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
+
   if(pTexture)
   {
     // When using VMR9AllocFlag_TextureSurface
@@ -528,13 +506,16 @@ STDMETHODIMP CVMR9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID ,DWORD Surfa
   //return if the surface index is higher than the size of the surfaces we have
   if (SurfaceIndex >= m_pSurfaces.size() ) 
     return E_FAIL;
-
+  
   CAutoLock cRenderLock(&m_RenderLock);
+  if (m_vmrState == RENDER_STATE_NEEDDEVICE)
+    return S_OK;
   if (m_pNbrSurface)
   {
     ++m_pCurSurface;
     m_pCurSurface = m_pCurSurface % m_pNbrSurface;
-    (*lplpSurface = m_pSurfaces[m_pCurSurface + SurfaceIndex])->AddRef();
+    if (m_pSurfaces[m_pCurSurface + SurfaceIndex])
+      (*lplpSurface = m_pSurfaces[m_pCurSurface + SurfaceIndex])->AddRef();
   }
   else
   {
@@ -561,6 +542,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::StartPresenting(DWORD_PTR dwUserID)
   CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
   HRESULT hr = S_OK;
+  
   ASSERT( m_D3DDev );
   if( !m_D3DDev )
     hr =  E_FAIL;
@@ -634,7 +616,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     CMacrovisionKicker* pMK = new CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL);
     CComPtr<IUnknown> pUnk = (IUnknown*)(INonDelegatingUnknown*)pMK;
 
-    COuterVMR9 *pOuter = new COuterVMR9(NAME("COuterVMR9"), pUnk, &m_VMR9AlphaBitmap, this);
+    COuterVMR9 *pOuter = new COuterVMR9(NAME("COuterVMR9"), pUnk, this);
 
 
     pMK->SetInner((IUnknown*)(INonDelegatingUnknown*)pOuter);
@@ -691,25 +673,21 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   return E_FAIL;
 }
 
-void CVMR9AllocatorPresenter::UpdateAlphaBitmap()
+void CVMR9AllocatorPresenter::OnDestroyDevice()
 {
-  m_VMR9AlphaBitmapData.Free();
+  CAutoLock CAutoLock(this);
 
-  if ((m_VMR9AlphaBitmap.dwFlags & VMRBITMAP_DISABLE) == 0)
-  {
-    HBITMAP      hBitmap = (HBITMAP)GetCurrentObject (m_VMR9AlphaBitmap.hdc, OBJ_BITMAP);
-    if (!hBitmap)
-      return;
-    DIBSECTION    info = {0};
-    if (!::GetObject(hBitmap, sizeof( DIBSECTION ), &info ))
-      return;
+  DeleteSurfaces();
+}
 
-    m_VMR9AlphaBitmapRect = g_geometryHelper.CreateRect(0, 0, info.dsBm.bmWidth, info.dsBm.bmHeight);
-    m_VMR9AlphaBitmapWidthBytes = info.dsBm.bmWidthBytes;
-
-    if (m_VMR9AlphaBitmapData.Allocate(info.dsBm.bmWidthBytes * info.dsBm.bmHeight))
-    {
-      memcpy((BYTE *)m_VMR9AlphaBitmapData, info.dsBm.bmBits, info.dsBm.bmWidthBytes * info.dsBm.bmHeight);
-    }
-  }
+void CVMR9AllocatorPresenter::OnCreateDevice()
+{
+  CAutoLock cAutoLock(this);
+	CAutoLock cRenderLock(&m_RenderLock);
+  // yay, we're back - make a new copy of the texture
+  HRESULT hr;
+  hr = CreateSurfaces();
+  hr = m_pIVMRSurfAllocNotify->ChangeD3DDevice(g_Windowing.Get3DDevice(),g_Windowing.Get3DObject()->GetAdapterMonitor(GetAdapter(g_Windowing.Get3DObject())));
+  if (SUCCEEDED(hr))
+    CLog::Log(LOGDEBUG,"YEAH");
 }

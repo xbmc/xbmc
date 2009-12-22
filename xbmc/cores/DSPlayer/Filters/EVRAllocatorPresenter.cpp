@@ -282,9 +282,9 @@ CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
   SAFE_RELEASE(m_pMixer);
   SAFE_RELEASE(m_pMediaEventSink);
   SAFE_RELEASE(m_pMediaType);
-
   // Deletable objects
   SAFE_DELETE(m_pD3DPresentEngine);
+  
 
   g_renderManager.UnInit();
 }
