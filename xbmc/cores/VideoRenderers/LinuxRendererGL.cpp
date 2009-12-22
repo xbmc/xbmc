@@ -417,7 +417,7 @@ bool CLinuxRendererGL::LoadYV12Textures(int source)
   if (!(im->flags&IMAGE_FLAG_READY))
   {
     SetEvent(m_eventTexturesDone[source]);
-    return(true);
+    return true;
   }
 
   // See if we need to recreate textures.
@@ -684,7 +684,7 @@ bool CLinuxRendererGL::LoadYV12Textures(int source)
 
   glDisable(m_textureTarget);
 
-  return(true);
+  return true;
 }
 
 void CLinuxRendererGL::Reset()
@@ -1770,7 +1770,7 @@ bool CLinuxRendererGL::DeleteYV12Texture(int index)
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
-  if( fields[FIELD_FULL][0].id == 0 ) return(true);
+  if( fields[FIELD_FULL][0].id == 0 ) return true;
 
   CLog::Log(LOGDEBUG, "Deleted YV12 texture %i", index);
   /* finish up all textures, and delete them */
@@ -1816,7 +1816,7 @@ bool CLinuxRendererGL::DeleteYV12Texture(int index)
     }
   }
   
-  return(true);
+  return true;
 }
 
 bool CLinuxRendererGL::CreateYV12Texture(int index)
@@ -1977,16 +1977,16 @@ bool CLinuxRendererGL::LoadVDPAUTextures(int source)
 #endif
   SetEvent(m_eventTexturesDone[source]);
   glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-  return(true);
+  return true;
 }
 bool CLinuxRendererGL::CreateVDPAUTexture(int index)
 {
   SetEvent(m_eventTexturesDone[index]);
-  return(true);
+  return true;
 }
 bool CLinuxRendererGL::DeleteVDPAUTexture(int index)
 {
-  return(true);
+  return true;
 }
 
 //********************************************************************************************************
@@ -2001,7 +2001,7 @@ bool CLinuxRendererGL::LoadNV12Textures(int source)
   if (!(im->flags & IMAGE_FLAG_READY))
   {
     SetEvent(m_eventTexturesDone[source]);
-    return(true);
+    return true;
   }
   
   bool deinterlacing;
@@ -2114,7 +2114,7 @@ bool CLinuxRendererGL::LoadNV12Textures(int source)
 
   glDisable(m_textureTarget);
 
-  return(true);
+  return true;
 }
 bool CLinuxRendererGL::CreateNV12Texture(int index)
 {
@@ -2235,7 +2235,7 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
   glDisable(m_textureTarget);
   SetEvent(m_eventTexturesDone[index]);
 
-  return(true);
+  return true;
 }
 bool CLinuxRendererGL::DeleteNV12Texture(int index)
 {
@@ -2243,7 +2243,7 @@ bool CLinuxRendererGL::DeleteNV12Texture(int index)
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
-  if( fields[FIELD_FULL][0].id == 0 ) return(true);
+  if( fields[FIELD_FULL][0].id == 0 ) return true;
 
   CLog::Log(LOGDEBUG, "Deleted NV12 texture %i", index);
   
@@ -2290,7 +2290,7 @@ bool CLinuxRendererGL::DeleteNV12Texture(int index)
     }
   }
 
-  return(true);
+  return true;
 }
 
 void CLinuxRendererGL::SetTextureFilter(GLenum method)
