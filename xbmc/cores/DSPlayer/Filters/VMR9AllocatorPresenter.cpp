@@ -294,18 +294,19 @@ CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error
   m_D3D = g_Windowing.Get3DObject();
   m_D3DDev = g_Windowing.Get3DDevice();
   hr = S_OK;
-  m_renderingOk = true;
+  m_bRenderCreated = false;
   m_vmrState = RENDER_STATE_NEEDDEVICE;
 }
 
 CVMR9AllocatorPresenter::~CVMR9AllocatorPresenter()
 {
+  DeleteVmrSurfaces();
   DeleteSurfaces();
   
 
 }
 
-void CVMR9AllocatorPresenter::DeleteSurfaces()
+void CVMR9AllocatorPresenter::DeleteVmrSurfaces()
 {
   CAutoLock cAutoLock(this);
 	CAutoLock cRenderLock(&m_RenderLock);
@@ -320,6 +321,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
 {
   m_pPrevEndFrame=0;
   m_vmrState = RENDER_STATE_RUNNING;
+  m_bRenderCreated = true;
   CLog::Log(LOGNOTICE,"vmr9:InitializeDevice() %dx%d AR %d:%d flags:%d buffers:%d  fmt:(%x) %c%c%c%c", 
     lpAllocInfo->dwWidth ,lpAllocInfo->dwHeight ,lpAllocInfo->szAspectRatio.cx,lpAllocInfo->szAspectRatio.cy,
     lpAllocInfo->dwFlags ,*lpNumBuffers, lpAllocInfo->Format, ((char)lpAllocInfo->Format&0xff),
@@ -375,7 +377,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
   
   if ( FAILED( hr ) )
     return hr;
-  hr = m_D3DDev->ColorFill(m_pVideoSurface[0], NULL, 0);
+  hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[0], NULL, 0);
   if ( FAILED( hr ) )
   {
     CLog::Log(LOGERROR,"%s ColorFill returned:0x%x",__FUNCTION__,hr);
@@ -388,57 +390,6 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
 	*lpNumBuffers = (nOriginal < *lpNumBuffers) ? nOriginal : *lpNumBuffers;
 	m_pCurSurface = 0;
   return hr;
-}
-
-STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9PresentationInfo *lpPresInfo)
-{
-  HRESULT hr;
-  CheckPointer(m_pIVMRSurfAllocNotify, E_UNEXPECTED);
-  if( !m_pIVMRSurfAllocNotify )
-    return E_FAIL;
-  
-
-  if (!g_renderManager.IsConfigured())
-  {
-    GetCurrentVideoSize();
-  }
-
-  if (!g_renderManager.IsStarted())
-    return E_FAIL;
-  
-  if(!lpPresInfo || !lpPresInfo->lpSurf)
-    return E_POINTER;
-  CAutoLock cAutoLock(this);
-	CAutoLock cRenderLock(&m_RenderLock);
-  
-  CComPtr<IDirect3DTexture9> pTexture;
-  hr = lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
-
-  if(pTexture)
-  {
-    // When using VMR9AllocFlag_TextureSurface
-    // Didnt got it working yet
-  }
-  else
-  {
-    hr = m_D3DDev->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
-    if (FAILED(hr))
-    {
-      CLog::Log(LOGERROR,"%s %s",__FUNCTION__,DXGetErrorStringA(hr));
-      bool retry = false;
-      while (retry)
-      {
-        hr = m_D3DDev->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
-        if (SUCCEEDED(hr))
-          retry = true;
-        if (retry)
-          break;
-        Sleep(1);
-      }
-    }
-  }
-  RenderPresent(m_pVideoTexture[m_nCurSurface], m_pVideoSurface[m_nCurSurface],lpPresInfo->rtEnd);
-  return S_OK;
 }
 
 void CVMR9AllocatorPresenter::GetCurrentVideoSize()
@@ -494,7 +445,7 @@ void CVMR9AllocatorPresenter::GetCurrentVideoSize()
 
 STDMETHODIMP CVMR9AllocatorPresenter::TerminateDevice(DWORD_PTR dwID)
 {
-    DeleteSurfaces();
+    DeleteVmrSurfaces();
     return S_OK;
 }
     
@@ -673,21 +624,76 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   return E_FAIL;
 }
 
+
+STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9PresentationInfo *lpPresInfo)
+{
+  HRESULT hr;
+  CheckPointer(m_pIVMRSurfAllocNotify, E_UNEXPECTED);
+
+  if (!g_renderManager.IsConfigured())
+  {
+    GetCurrentVideoSize();
+  }
+
+  if (!g_renderManager.IsStarted())
+    return E_FAIL;
+  
+  if(!lpPresInfo || !lpPresInfo->lpSurf)
+    return E_POINTER;
+
+  CAutoLock cAutoLock(this);
+	CAutoLock cRenderLock(&m_RenderLock);
+  
+  CComPtr<IDirect3DTexture9> pTexture;
+  hr = lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
+
+  if(pTexture)
+  {
+    // When using VMR9AllocFlag_TextureSurface
+    // Didnt got it working yet
+  }
+  else
+  {
+    hr = g_Windowing.Get3DDevice()->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
+  }
+  if (SUCCEEDED(hr))
+    RenderPresent(m_pVideoTexture[m_nCurSurface], m_pVideoSurface[m_nCurSurface]);
+  
+  return S_OK;
+}
+
+void CVMR9AllocatorPresenter::ChangeD3dDev()
+{
+  HRESULT hr;
+  DeleteVmrSurfaces();
+  hr = m_pIVMRSurfAllocNotify->ChangeD3DDevice(g_Windowing.Get3DDevice(),g_Windowing.Get3DObject()->GetAdapterMonitor(GetAdapter(g_Windowing.Get3DObject())));
+  if (SUCCEEDED(hr))
+  {
+    CLog::Log(LOGDEBUG,"%s Changed d3d device",__FUNCTION__);
+    m_bRenderCreated = true;
+  }
+}
+void CVMR9AllocatorPresenter::OnLostDevice()
+{
+  
+  m_bRenderCreated = false;
+  
+}
 void CVMR9AllocatorPresenter::OnDestroyDevice()
 {
-  CAutoLock CAutoLock(this);
-
+  DeleteVmrSurfaces();
   DeleteSurfaces();
+  m_bRenderCreated = false;
+  
 }
 
 void CVMR9AllocatorPresenter::OnCreateDevice()
 {
-  CAutoLock cAutoLock(this);
-	CAutoLock cRenderLock(&m_RenderLock);
+
+  ChangeD3dDev();
   // yay, we're back - make a new copy of the texture
-  HRESULT hr;
-  hr = CreateSurfaces();
-  hr = m_pIVMRSurfAllocNotify->ChangeD3DDevice(g_Windowing.Get3DDevice(),g_Windowing.Get3DObject()->GetAdapterMonitor(GetAdapter(g_Windowing.Get3DObject())));
-  if (SUCCEEDED(hr))
-    CLog::Log(LOGDEBUG,"YEAH");
+  //hr = CreateSurfaces();
+  
+  
+  
 }

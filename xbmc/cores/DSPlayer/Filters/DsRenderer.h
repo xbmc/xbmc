@@ -33,7 +33,7 @@ public:
   DECLARE_IUNKNOWN;
   // IDSRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer) { return E_NOTIMPL; };
-  STDMETHODIMP RenderPresent(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface,REFERENCE_TIME pTimeStamp);
+  STDMETHODIMP RenderPresent(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface);
   
 protected:
   HRESULT CreateSurfaces(D3DFORMAT Format = D3DFMT_X8R8G8B8);

@@ -63,10 +63,12 @@ public:
   STDMETHODIMP_(bool) Paint(bool fAll) { return true; } ;
   STDMETHODIMP_(void) SetTime(REFERENCE_TIME rtNow) {};
   
+  void ChangeD3dDev();
+  virtual void OnLostDevice();
   virtual void OnDestroyDevice();
   virtual void OnCreateDevice();
 protected:
-  void DeleteSurfaces();
+  void DeleteVmrSurfaces();
   void GetCurrentVideoSize();
 
   
@@ -80,7 +82,7 @@ protected:
 
   float          m_fps;
   int            m_fFrameRate;
-  bool           m_renderingOk;
+  bool           m_bRenderCreated;
 private:
   long        m_refCount;
   CComPtr<IVMRSurfaceAllocatorNotify9>    m_pIVMRSurfAllocNotify;
