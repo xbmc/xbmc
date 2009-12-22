@@ -629,13 +629,8 @@ void CDVDPlayerVideo::Process()
             }
             else
             {
-              // Don't reset decoder if no picture for NV12 (crystalhd)
-              // It will do this when starting up and a reset is bad.
-              if (picture.format != DVDVideoPicture::FMT_NV12)
-              {
-                CLog::Log(LOGWARNING, "Decoder Error getting videoPicture.");
-                m_pVideoCodec->Reset();
-              }
+              CLog::Log(LOGWARNING, "Decoder Error getting videoPicture.");
+              m_pVideoCodec->Reset();
             }
           }
           
