@@ -45,4 +45,4 @@ build
 cd $THISDIR
 
 # Get files from chroot
-cp $WORKDIR/binary.iso .
+mv $WORKDIR/binary.iso .

@@ -100,7 +100,7 @@ cd $WORKPATH/buildLive
 ./build.sh
 cd $THISDIR
 
-mv $WORKPATH/binary.iso .
+mv $WORKPATH/buildLive/binary.iso .
 chmod 777 *.iso
 
 rm -rf $WORKPATH
