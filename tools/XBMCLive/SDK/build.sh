@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# Depencency list: git apt-cacher-ng debootstrap asciidoc docbook-xsl curl build-essential
+# Depencency list: git-core apt-cacher-ng debootstrap asciidoc docbook-xsl curl build-essential
 #
 
 #
