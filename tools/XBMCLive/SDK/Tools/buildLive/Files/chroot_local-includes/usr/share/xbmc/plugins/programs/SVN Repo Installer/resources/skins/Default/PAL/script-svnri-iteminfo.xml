@@ -1,0 +1,368 @@
+<window>
+	<defaultcontrol>23</defaultcontrol>
+	<animation effect="fade" time="200">WindowOpen</animation>
+	<animation effect="fade" time="200">WindowClose</animation>
+	<coordinates>
+		<system>1</system>
+		<posx>50</posx>
+		<posy>25</posy>
+	</coordinates>
+	<controls>
+		<control type="image">
+			<posx>-50</posx>
+			<posy>-25</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>black.png</texture>
+			<animation effect="fade" time="2000">WindowOpen</animation>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>25</posx>
+			<posy>35</posy>
+			<width>570</width>
+			<height>485</height>
+			<texture border="20,10,10,30">dialog-panel.png</texture>
+		</control>
+
+		<control type="label" id="4">
+			<description>Item Title</description>
+			<posx>30</posx>
+			<posy>45</posy>
+			<width>590</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<textcolor>0xFFFFFFFF</textcolor>
+			<label></label>
+			<font>font13</font>
+		</control>
+		<control type="image">
+			<posx>40</posx>
+			<posy>80</posy>
+			<width>550</width>
+			<height>2</height>
+			<texture>separator.png</texture>
+		</control>
+
+		<control type="group">
+			<posx>260</posx>
+			<posy>90</posy>
+			<height>300</height>
+			<width>350</width>
+			<height>200</height>
+			<visible>true</visible>
+			<control type="label" id="5">
+				<description>Author label</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>100</width>
+				<height>25</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[30023]</label>
+				<font>font12</font>
+				<textcolor>DDced8da</textcolor>
+			</control>
+			<control type="label" id="6">
+				<description>Author value</description>
+				<posx>10</posx>
+				<posy>0</posy>
+				<width>350</width>
+				<height>25</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label></label>
+				<font>font12</font>
+				<textcolor>0x66FFFFFF</textcolor>
+				<scroll>true</scroll>
+			</control>
+
+			<control type="label" id="7">
+				<description>Version label</description>
+				<posx>0</posx>
+				<posy>25</posy>
+				<width>100</width>
+				<height>25</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[30025]</label>
+				<font>font12</font>
+				<textcolor>DDced8da</textcolor>
+			</control>
+			<control type="label" id="8">
+				<description>Version value</description>
+				<posx>10</posx>
+				<posy>25</posy>
+				<width>200</width>
+				<height>25</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label></label>
+				<font>font12</font>
+				<textcolor>0x66FFFFFF</textcolor>
+			</control>
+
+			<control type="label" id="9">
+				<description>Date label</description>
+				<posx>0</posx>
+				<posy>50</posy>
+				<width>100</width>
+				<height>25</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[30024]</label>
+				<font>font12</font>
+				<textcolor>DDced8da</textcolor>
+			</control>
+			<control type="label" id="10">
+				<description>Date value</description>
+				<posx>10</posx>
+				<posy>50</posy>
+				<width>250</width>
+				<height>25</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label></label>
+				<font>font12</font>
+				<textcolor>0x66FFFFFF</textcolor>
+			</control>
+
+			<control type="label" id="11">
+				<description>Category label</description>
+				<posx>0</posx>
+				<posy>75</posy>
+				<width>100</width>
+				<height>30</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[30026]</label>
+				<font>font12</font>
+				<textcolor>DDced8da</textcolor>
+			</control>
+			<control type="label" id="12">
+				<description>Category value</description>
+				<posx>10</posx>
+				<posy>75</posy>
+				<width>550</width>
+				<height>30</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label></label>
+				<font>font12</font>
+				<textcolor>0x66FFFFFF</textcolor>
+			</control>
+		</control>
+
+		<control type="group">
+			<posx>205</posx>
+			<posy>200</posy>
+			<width>380</width>
+			<height>35</height>
+			<visible>true</visible>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>380</width>
+				<height>2</height>
+				<texture>separator.png</texture>
+			</control>
+			<control type="label" id="19">
+				<description>Compatibility label</description>
+				<posx>0</posx>
+				<posy>5</posy>
+				<width>380</width>
+				<height>30</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label></label>
+				<font>special13</font>
+				<textcolor>DDced8da</textcolor>
+			</control>
+		</control>
+
+		<control type="group">
+			<posx>40</posx>
+			<posy>240</posy>
+			<height>220</height>
+			<width>540</width>
+			<visible>true</visible>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>550</width>
+				<height>2</height>
+				<texture>separator.png</texture>
+			</control>
+			<control type="textbox" id="30">
+				<description>textarea</description>
+				<posx>0</posx>
+				<posy>5</posy>
+				<width>515</width>
+				<height>220</height>
+				<label></label>
+				<font>font10</font>
+				<align>left</align>
+				<textcolor>0xFFFFFFFF</textcolor>
+				<pagecontrol>61</pagecontrol>
+			</control>
+			<control type="button">
+				<posx>0r</posx>
+				<posy>5</posy>
+				<width>10</width>
+				<height>15</height>
+				<texturefocus border="2">scrollbar-up-arrow-focus.png</texturefocus>
+				<texturenofocus border="2">scrollbar-up-arrow-nofocus.png</texturenofocus>
+				<onclick>PageUp(30)</onclick>
+				<visible>Control.IsVisible(61)</visible>
+			</control>
+			<control type="scrollbar" id="61">
+				<posx>0r</posx>
+				<posy>20</posy>
+				<width>10</width>
+				<height>195</height>
+				<texturesliderbackground border="4">scrollbar-background.png</texturesliderbackground>
+				<texturesliderbar border="4">scrollbar-bar-nofocus.png</texturesliderbar>
+				<texturesliderbarfocus border="4">scrollbar-bar-focus.png</texturesliderbarfocus>
+				<textureslidernib>scrollbar-nib-nofocus.png</textureslidernib>
+				<textureslidernibfocus>scrollbar-nib-focus.png</textureslidernibfocus>
+				<onleft>20</onleft>
+				<onright>20</onright>
+				<ondown>20</ondown>
+				<onup>20</onup>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+				<visible>Control.IsVisible(10)</visible>
+			</control>
+			<control type="button">
+				<posx>0r</posx>
+				<posy>215</posy>
+				<width>10</width>
+				<height>15</height>
+				<texturefocus border="2">scrollbar-down-arrow-focus.png</texturefocus>
+				<texturenofocus border="2">scrollbar-down-arrow-nofocus.png</texturenofocus>
+				<visible>Control.IsVisible(61)</visible>
+				<onclick>PageDown(30)</onclick>
+			</control>
+		</control>
+
+		<control type="group">
+			<posx>40</posx>
+			<posy>85</posy>
+			<height>40</height>
+			<width>160</width>
+			<height>120</height>
+			<visible>true</visible>
+			<control type="image">
+				<description>item image frame</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>160</width>
+				<height>160</height>
+				<texture>dialog-panel.png</texture>
+			</control>
+			<control type="image" id="31">
+				<description>item image</description>
+				<posx>6</posx>
+				<posy>5</posy>
+				<width>152</width>
+				<height>140</height>
+				<aspectratio>keep</aspectratio>
+				<texture></texture>
+			</control>
+		</control>
+
+		<control type="group">
+			<posx>10</posx>
+			<posy>469</posy>
+			<height>40</height>
+			<visible>true</visible>
+			<control type="button" id="20">
+				<description>Install</description>
+				<posx>35</posx>
+				<posy>0</posy>
+				<width>100</width>
+				<height>25</height>
+				<label>$LOCALIZE[30021]</label>
+				<font>font12</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="3">button-nofocus.png</texturenofocus>
+				<texturefocus border="3">button-focus.png</texturefocus>
+				<onleft>24</onleft>
+				<onright>21</onright>
+				<onup>61</onup>
+				<ondown>61</ondown>
+			</control>
+			<control type="button" id="21">
+				<description>UnInstall</description>
+				<posx>145</posx>
+				<posy>0</posy>
+				<width>100</width>
+				<height>25</height>
+				<label>$LOCALIZE[30022]</label>
+				<font>font12</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="3">button-nofocus.png</texturenofocus>
+				<texturefocus border="3">button-focus.png</texturefocus>
+				<onleft>20</onleft>
+				<onright>22</onright>
+				<onup>61</onup>
+				<ondown>61</ondown>
+			</control>
+			<control type="button" id="22">
+				<description>Readme</description>
+				<posx>250</posx>
+				<posy>0</posy>
+				<width>100</width>
+				<height>25</height>
+				<label>$LOCALIZE[30530]</label>
+				<font>font12</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="3">button-nofocus.png</texturenofocus>
+				<texturefocus border="3">button-focus.png</texturefocus>
+				<onleft>21</onleft>
+				<onright>23</onright>
+				<onup>61</onup>
+				<ondown>61</ondown>
+			</control>
+			<control type="button" id="23">
+				<description>Changelog</description>
+				<posx>360</posx>
+				<posy>0</posy>
+				<width>100</width>
+				<height>25</height>
+				<label>$LOCALIZE[30540]</label>
+				<font>font12</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="3">button-nofocus.png</texturenofocus>
+				<texturefocus border="3">button-focus.png</texturefocus>
+				<onleft>22</onleft>
+				<onright>24</onright>
+				<onup>61</onup>
+				<ondown>61</ondown>
+			</control>
+			<control type="button" id="24">
+				<description>Close</description>
+				<posx>470</posx>
+				<posy>0</posy>
+				<width>100</width>
+				<height>25</height>
+				<label>$LOCALIZE[30027]</label>
+				<font>font12</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="3">button-nofocus.png</texturenofocus>
+				<texturefocus border="3">button-focus.png</texturefocus>
+				<onleft>23</onleft>
+				<onright>20</onright>
+				<onup>61</onup>
+				<ondown>61</ondown>
+			</control>
+		</control>
+
+	</controls>
+</window>

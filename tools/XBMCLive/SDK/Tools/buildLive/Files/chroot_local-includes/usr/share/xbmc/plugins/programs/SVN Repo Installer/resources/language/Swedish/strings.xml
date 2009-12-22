@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: blittan-->
+<!--Email: blittan@xbmc.org-->
+<!--Date of translation: 07/27/2009-->
+<!--$Revision$-->
+<strings>
+  <string id="30000">Vill du installera detta tillägg?</string>
+  <string id="30001">Hämtar fil...</string>
+  <string id="30002">Hämtar fillista...</string>
+  <string id="30003">Var god vänta...</string>
+  <string id="30004">Säkerhetskopia skapad</string>
+  <string id="30005">Hämtar:</string>
+  <string id="30006">Sökväg:</string>
+  <string id="30007">Fil:</string>
+  <string id="30008">Ditt nya tillägg installerades i:</string>
+  <string id="30009">Söker efter installerade tillägg...</string>
+  <string id="30010">Kontrollerar SVN ...</string>
+  <string id="30011">OK</string>
+  <string id="30012">Inte i  SVN</string>
+  <string id="30013">Okänd version</string>
+  <string id="30014">Ny</string>
+  <string id="30015">Inte kompatibel</string>
+  <string id="30016">Uppdatering</string>
+  <string id="30017">Ändringslogg</string>
+  <string id="30018">Borttagen</string>
+  <string id="30019">Uppdatera alla</string>
+  <string id="30020">Hoppa över</string>
+  <string id="30021">Installera</string>
+  <string id="30022">Ta bort</string>
+  <string id="30023">Författare:</string>
+  <string id="30024">Datum:</string>
+  <string id="30025">Version:</string>
+  <string id="30026">Kategori:</string>
+  <string id="30027">Stäng</string>
+  <string id="30030">Ett fel uppstod under installationen av tillägget!</string>
+  <string id="30500">Kontrollera uppdateringar</string>
+  <string id="30510">Uppdateringar: Visa tillägg som inte finns i SVN?</string>
+  <string id="30520">Uppdateringar: Visa tillägg med okänd version?</string>
+  <string id="30530">Visa LäsMig</string>
+  <string id="30540">Visa ändringslogg</string>
+  <string id="30600">Visa ändringslogg</string>
+  <string id="30610">Visa LäsMig</string>
+  <string id="30700">version</string>
+  <string id="30701">Denna version av %s kräver en</string>
+  <string id="30702">XBMC version %s eller höre för att köras.</string>
+  <string id="30703">Var god uppdatera ditt XBMC.</string>
+  <string id="30704">Kompatibel</string>
+  <string id="30705">Inkompatibel</string>
+  <string id="30706">Okänd</string>
+</strings>

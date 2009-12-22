@@ -1,0 +1,635 @@
+commit 96aa9285ee39f4d3d4245acd8c78accdf73c1fa8
+Author: Daniel Baumann <daniel@debian.org>
+
+    Bumping version to 1.104.1-1.
+
+ Makefile            |    2 +-
+ debian/changelog    |    2 +-
+ docs/parameters.txt |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 1a226e19e03be8ff90aaa50a7b5b9f202f65b8a4
+Author: Daniel Baumann <daniel@debian.org>
+
+    Merging casper 1.104.
+
+ docs/ChangeLog.casper |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+commit bb97432f7c5eeb330d108be6607edfe0de85bfa7
+Author: Daniel Baumann <daniel@debian.org>
+
+    Bumping version to 1.103.1-1.
+
+ Makefile            |    2 +-
+ debian/changelog    |    2 +-
+ docs/parameters.txt |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 29c11f22032ccdb71aaccd5f6eb4a9be3efa5741
+Author: Daniel Baumann <daniel@debian.org>
+
+    Merging casper 1.103.
+
+ docs/ChangeLog.casper                |    8 ++++++++
+ scripts/live-bottom/23networking     |   24 +++++++++++++++---------
+ scripts/live-bottom/25configure_init |    8 +++-----
+ 3 files changed, 26 insertions(+), 14 deletions(-)
+
+commit 66a175b6255aa061dc78fbd301c9844489c42fc8
+Author: Daniel Baumann <daniel@debian.org>
+
+    Preparing live-initramfs 1.102.2-1.
+
+ Makefile            |   10 +++++-----
+ debian/changelog    |    6 ++++++
+ docs/parameters.txt |    2 +-
+ 3 files changed, 12 insertions(+), 6 deletions(-)
+
+commit 0b8cf3f17ed46e96fb5efd658c8e308ba1a2dd1a
+Author: Daniel Baumann <daniel@debian.org>
+
+    Releasing live-initramfs 1.102.1-1.
+
+ debian/changelog |    2 +-
+ docs/ChangeLog   |  195 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 196 insertions(+), 1 deletions(-)
+
+commit b782261bbdf33ff5c69780cc4c788c339d707f9b
+Author: Daniel Baumann <daniel@debian.org>
+
+    Sorting Depends.
+
+ debian/control |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 17b3b36ef3c1fa5cbe5b11c9690a2b0a403db693
+Author: Daniel Baumann <daniel@debian.org>
+
+    Applied patch from Michael Prokop <mika@grml.org> to depend on busybox.
+
+ debian/control |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 27cc7504bc8310e2836014d64576be7d9c974be2
+Author: Daniel Baumann <daniel@debian.org>
+
+    Bumping version to 1.102.1-1.
+
+ Makefile            |    2 +-
+ debian/changelog    |    2 +-
+ docs/parameters.txt |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 9e5b3c1cbeb80a472ba4387ef7e59b5e6bce913b
+Author: Daniel Baumann <daniel@debian.org>
+
+    Merging casper 1.102.
+
+ docs/ChangeLog.casper                       |   10 ++++++
+ scripts/live-bottom/42disable_apparmor      |   36 ++++++++++++++++++++++
+ scripts/live-bottom/42disable_cups_apparmor |   43 ---------------------------
+ 3 files changed, 46 insertions(+), 43 deletions(-)
+
+commit 7b5c1e3232d0e02e712a4f984cd1e5009c9e4e9c
+Author: Daniel Baumann <daniel@debian.org>
+
+    Adding noapparmor boot parameter.
+
+ scripts/live                                |    5 +++++
+ scripts/live-bottom/42disable_cups_apparmor |    5 +++++
+ 2 files changed, 10 insertions(+), 0 deletions(-)
+
+commit ea5fee194ea66ab0f41a0a973034db201651e09a
+Author: Daniel Baumann <daniel@debian.org>
+
+    Bumping version to 1.101.1-1.
+
+ Makefile            |    2 +-
+ debian/changelog    |    2 +-
+ docs/parameters.txt |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit b525502a2fdf073f4e326c1ca4dd8c89258ef65d
+Author: Daniel Baumann <daniel@debian.org>
+
+    Adjusting to live-initramfs.
+
+ scripts/live-bottom/42disable_cups_apparmor |   37 ++++++++++++++++----------
+ 1 files changed, 23 insertions(+), 14 deletions(-)
+
+commit 9b2894eaf50ce542d03329a0b49bf8df7d633371
+Author: Daniel Baumann <daniel@debian.org>
+
+    Merging casper 1.101.
+
+ docs/ChangeLog.casper                       |    9 ++++++++
+ scripts/live-bottom/42disable_cups_apparmor |   29 +++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+), 0 deletions(-)
+
+commit f1e9fafee6e04a269a506edd31c62abd6917ecee
+Author: Daniel Baumann <daniel@debian.org>
+
+    Merging casper 1.100.
+
+ docs/ChangeLog.casper           |    8 ++++++++
+ scripts/live-bottom/41apt_cdrom |    3 ---
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+commit 2df075f459f0a232a084ca6ad037d89764727d5f
+Author: Daniel Baumann <daniel@debian.org>
+
+    Using new Homepage field now.
+
+ debian/control |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+commit d29346c7b4c7a67fed080ea46be15421dec12fe7
+Author: Daniel Baumann <daniel@debian.org>
+
+    Applied patch from Frederic Boiteux <fboiteux@calistel.com> about NFSROOT=auto, <http://lists.alioth.debian.org/pipermail/debian-live-devel/2007-September/002173.html>.
+
+ scripts/live |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 4f4c8e22af7a539cfa8bc9ba371c6a57b8e7cb0c
+Author: Daniel Baumann <daniel@debian.org>
+
+    Applied patch from Michael Prokop <mika@grml.org> to migrate live-snapshot.en.1 and live-snapshot.it.1 to asciidoc as well.
+
+ manpages/Makefile               |   17 ++++--
+ manpages/live-snapshot.en.1     |   71 --------------------------
+ manpages/live-snapshot.en.1.txt |  100 ++++++++++++++++++++++++++++++++++++
+ manpages/live-snapshot.it.1     |   70 -------------------------
+ manpages/live-snapshot.it.1.txt |  107 +++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 219 insertions(+), 146 deletions(-)
+
+commit 3226d2bfd4e2463c9aa7a691f7e9ea132e258af6
+Author: Daniel Baumann <daniel@debian.org>
+
+    Adding Marco Amadori <marco.amadori@gmail.com>.
+
+ docs/CREDITS |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+commit 757b214139daa0f7f312434ed0f77961ea380c4e
+Author: Daniel Baumann <daniel@debian.org>
+
+    Sorting Build-Depends.
+
+ debian/control |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+commit 8d6e39ce90ed0be835514a15fbf3a007a2b9f3fa
+Author: Daniel Baumann <daniel@debian.org>
+
+    Simplifying make calls.
+
+ debian/rules |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit bef37dff239b6c28fef89679537bea8643628fe1
+Author: Daniel Baumann <daniel@debian.org>
+
+    Applied patch from Michael Prokop <mika@grml.org> to remove deprecated manpages/live-initramfs.en.7 (switched to asiidoc).
+
+ manpages/live-initramfs.en.7 |  127 ------------------------------------------
+ 1 files changed, 0 insertions(+), 127 deletions(-)
+
+commit 6a86b38986ab23d5cda24b38dca27c4a659bdfbd
+Author: Daniel Baumann <daniel@debian.org>
+
+    Applied patch from Michael Prokop <mika@grml.org> to update debian/control and debian/rules for use of asciidoc.
+
+ debian/control |    2 +-
+ debian/rules   |    2 ++
+ 2 files changed, 3 insertions(+), 1 deletions(-)
+
+commit 6685b97a4041477b2ccbfc9683e35c022cbe9ce7
+Author: Daniel Baumann <daniel@debian.org>
+
+    Applied patch from Michael Prokop <mika@grml.org> to switch to asciidoc for documentation.
+
+ manpages/Makefile                |   21 +++
+ manpages/live-initramfs.en.7.txt |  304 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 325 insertions(+), 0 deletions(-)
+
+commit 3b545dfb73b7ce99c3fd6e107d6843891f005ab1
+Author: Daniel Baumann <daniel@debian.org>
+
+    Fixing typing error.
+
+ debian/control |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+commit ab933503a8204649724c525facbc14f734f1cd4e
+Author: Daniel Baumann <daniel@debian.org>
+
+    Preparing live-initramfs 1.99.3-1.
+
+ Makefile                     |    8 ++++----
+ debian/changelog             |    6 ++++++
+ docs/parameters.txt          |    2 +-
+ manpages/live-initramfs.en.7 |    2 +-
+ manpages/live-snapshot.en.1  |    2 +-
+ 5 files changed, 13 insertions(+), 7 deletions(-)
+
+2007-09-09  Daniel Baumann  <daniel@debian.org>
+
+	* Using common indenting.
+	* scripts/live:
+	  - Applied patch from Jim Paris <jim@jtan.com> to fix wrong usage of
+	    ipconfig (Closes: #440235).
+	* Uploaded 1.99.2-1.
+
+2007-09-09  Michael Prokop <mika@grml.org>
+
+	* scripts/live:
+	  - Extending toram parameter to specify module.
+	  - Adding forgotten nofstab boot parameter.
+	* scripts/live-bottom/40install_driver_updates:
+	  - Adding check driver updates.
+	* scripts/live-bottom/25configure_init:
+	  - Adding check for file-rc.
+	* scripts/live-bottom/21xvidemode:
+	  - Sorting variable checks always before logging.
+	* scripts/live, live-bottom/*:
+	  - Adding boot parameters to disable each service.
+	* scripts/live, live-bottom/22gnome_panel_date:
+	  - Adding nognomefstab boot parameter.
+	* scripts/live-bottom/38disable_restricted_manager:
+	  - Removing leftover reference to casper-functions.
+
+2007-09-05  Daniel Baumann  <daniel@debian.org>
+
+	* scripts/live, scripts/live-bottom:
+	  - Added nouser parameter to disable user creation.
+	  - Added noxautoconfig parameter to disable xorg re-configuration.
+	  - Added nohosts parameter to disable /etc/hosts creation.
+	* scripts/live-bottom/15autologin:
+	  - Moved disabling of kpersonalizer to 34disable_kpersonalizer.
+
+2007-09-01  Daniel Baumann  <daniel@debian.org>
+
+	* Merging changes from casper 1.97, 1.98 and 1.99.
+	* Uploaded 1.99.1-1.
+
+2007-08-29  Daniel Baumann  <daniel@debian.org>
+
+	* scripts/live-bottom/12fstab:
+	  - By default, we do not have fstab, so it is save to just append the
+	    unionfs mount rather than overwritting it.
+	* hooks/live:
+	  - Including wget if available.
+	* Uploaded 1.96.2-1.
+
+2007-08-21  Daniel Baumann  <daniel@debian.org>
+
+	* Merging changes from casper 1.96.
+	* Uploaded 1.96.1-1.
+
+2007-08-21  Daniel Baumann  <daniel@debian.org>
+
+	* scripts/live:
+	  - Applied patch from Jesse W. Hathaway <jesse@mbuki-mvuki.org> to
+	    not use nfsro with kernels larger than 2.6.22 (where unionfs 2.x
+	    is supposed to be available soon).
+	* Uploaded 1.95.3-1.
+
+2007-08-11  Daniel Baumann  <daniel@debian.org>
+
+	* Uploaded 1.95.2-1.
+
+2007-08-01  Daniel Baumann  <daniel@debian.org>
+
+	* scripts/live-bottom/10adduser:
+	  - Setting debconf preseeding for passwd/make-user manually to true,
+	    overriding any users preseeding on that, so that the user account
+	    gets created for sure.
+
+2007-07-29  Daniel Baumann  <daniel@debian.org>
+
+	* Merging changes from casper 1.95.
+	* Uploaded 1.95.1-1.
+
+2007-07-26  Daniel Baumann  <daniel@debian.org>
+
+	* Merging changes from casper 1.92, 1.93 and 1.94.
+
+2007-07-26  Daniel Baumann  <daniel@debian.org>
+
+	* bin/live-md5check:
+	  - Removed, using standard md5sum which makes the md5 check slower,
+	    doesn't integrate well with usplash yet, but it makes live-initramfs
+	    architecture independent now.
+	* scripts/live:
+	  - Fixed typo.
+	  - Added live-media-path as suggested by Jordi Pujol
+	    <jordi_pujol@telefonica.net>.
+	* Uploaded 1.91.6-1.
+
+2007-07-19  Daniel Baumann  <daniel@debian.org>
+
+	* scripts/live, scripts/live-bottom/02_timezone:
+	  - Added utc boot parameter as suggested by Vladimir Stavrinov
+	    <vs@inist.ru>
+
+2007-07-18  Daniel Baumann  <daniel@debian.org>
+
+	* docs/parameters.txt:
+	  - Added values for vga parameter.
+	* scripts/live:
+	  - Added patch from Thomas Lange <lange@informatik.uni-koeln.de> to
+	    respect rootserver name from dhcp.
+	* Uploaded 1.91.5-1.
+
+2007-07-12  Daniel Baumann  <daniel@debian.org>
+
+	* bin/live-snapshot, scripts/live:
+	  - Moved /cow to /live/cow.
+	* scripts/live, scripts/live-bottom/01integrity_check, 05mountpoints:
+	  - Moved /live_media to /live/image.
+	* Uploaded 1.91.4-1.
+
+2007-07-07  Daniel Baumann  <daniel@debian.org>
+
+	* scripts/live:
+	  - Added debug parameter.
+
+2007-06-31  Daniel Baumann  <daniel@debian.org>
+
+	* scripts/live:
+	  - Added patch from Julian Andres Klode <jak@jak-linux.org> to add
+	    support for aufs.
+	* hooks/live, manpage/live-initramfs.en.7, scripts/live-bottom/12fstab:
+	  - Added aufs support.
+	* Uploaded 1.91.3-1.
+
+2007-06-30  Daniel Baumann  <daniel@debian.org>
+
+	* scripts/live-bottom/12fstab:
+	  - Added disabling of /etc/init.d/checkfs.sh to avoid file systemcheck
+	    at boot time. Added nofastboot parameter to be able to change that.
+	  - Disabled removal of checkroot.sh.
+
+2007-06-28  Daniel Baumann  <daniel@debian.org>
+
+	* Applied patch from Mathieu Geli <mathieu.geli@gmail.com> to set the
+	  timezone with a boot parameter.
+
+2007-06-25  Daniel Baumann  <daniel@debian.org>
+
+	* scripts/live:
+	  - Added missing nfsopts boot parameter.
+	  - Changed default module name from 'order' to 'filesystem'.
+	  - Changed module extension from '.lst' to '.module'.
+	  - Check not just for $MODULE.module, but also
+	    filesystem.$MODULE.module
+	  - Cleaned up parse_cmdline and is_live_path functions.
+	* debian/control, debian/live-initramfs.init,
+	  scripts/live-premount/10driver_updates:
+	  - Moving eject to recommends.
+	  - Added checks for eject existence.
+	* Uploaded 1.91.2-1.
+
+2007-06-17  Daniel Baumann  <daniel@debian.org>
+
+	* debian/live-initramfs.postinst:
+	  - Made update-initramfs call conditional as suggested by Thomas Lange
+	    <lange@informatik.uni-koeln.de>.
+	* debian/live-initramfs.postrm:
+	  - Added update-initramfs call to cleanup.
+
+2007-06-17  Daniel Baumann  <daniel@debiann.org>
+
+	* Added patch from Thomas Lange <lange@informatik.uni-koeln.de> to
+	  properly load ide-generic after udev.
+	* Uploaded 1.91.1-1.
+
+2007-06-15  Daniel Baumann  <daniel@debian.org>
+
+	* Merging changes from casper 1.91.
+
+2007-06-14  Daniel Baumann  <daniel@debian.org>
+
+	* scripts/live-bottom/18hostname:
+	 - Appending to /etc/hosts to not overwrite custom settings.
+
+2007-06-08  Daniel Baumann  <daniel@debian.org>
+
+	* Merging changes from casper 1.88.
+	* Merging changes from casper 1.90.
+	* hooks/live:
+	  - Added force loading of ide-generic module. It is required on some
+	    systems to boot (reported as needed also for some qemu versions).
+	* Uploaded 1.90.1-1.
+
+2007-06-04  Daniel Baumann  <daniel@debian.org>
+
+	* Uploaded 1.87.6-1.
+
+2007-05-28  Daniel Baumann  <daniel@debian.org>
+
+	* scripts/live-bottom/42apt_upgrade:
+	  - Moved to dedicated live-initscripts package.
+
+2007-05-24  Daniel Baumann  <daniel@debian.org>
+
+	* debian/control:
+	  - Added casper transitional package.
+	  - Removed usplash conflicts.
+	* scripts/live-bottom/42apt_upgrade:
+	  - Added, idea taken from Kais webconverger.
+	* Uploaded 1.87.5-1.
+
+2007-05-23  Daniel Baumann  <daniel@debian.org>
+
+	* scripts/*:
+	  - Minor code cleanup.
+
+2007-05-18  Daniel Baumann  <daniel@debian.org>
+
+	* scripts/live, scripts/live-bottom/05mountpoints:
+	  - Replaced 'mount -o move' with 'mount --move'.
+	* scripts/live, scripts/live-bottom/10adduser:
+	  - Added check for 'nosudo' bootparameter to disable automatic
+	    sudo configuration.
+	* scripts/live, scripts/live-bottom/13swap:
+	  - Renamed 'swapoff' parameter to 'noswap'.
+	* scripts/live, scripts/live-bottom/15autologin:
+	  - Added check for 'noxautologin' bootparameter to disable automatic
+	    gdm/kdm login.
+	* scripts/live, scripts/live-bottom/25configure_init:
+	  - Added check for 'noautologin' bootparameter to disable automatic
+	    terminal login.
+	* bin/live-snapshot, scripts/live, scripts/live-helpers:
+	  - Also recognize ext3, but treat it like ext2.
+	* Uploaded 1.87.4-1.
+
+2007-05-12  Daniel Baumann  <daniel@debian.org>
+
+	* scripts/live-bottom/*:
+	  - Added generic header.
+
+2007-05-12  Daniel Baumann  <daniel@debian.org>
+
+	* scripts/live:
+	  - Renamed CASPERCONF to LIVECONF.
+	  - Renamed CASPERGETTY to LIVE_GETTY.
+	  - Renamed LIVEMEDIA_* to LIVE_MEDIA_*.
+	* Uploaded 1.87.3-1.
+
+2007-05-11  Daniel Baumann  <daniel@debian.org>
+
+	* hooks/live:
+	  - Reformated.
+	* scripts/live, scripts/live-bottom/13swap:
+	  - Added check for swapoff bootparameter to disable usage of local swap
+	    partitions.
+
+2007-05-09  Daniel Baumann  <daniel@debian.org>
+
+	* manpages/*:
+	  - Added language suffix.
+	  - Partially rewritten and reformated.
+
+2007-05-08  Daniel Baumann  <daniel@debian.org>
+
+	* Makefile, doc/AUTHORS, doc/CREDITS:
+	  - Added.
+	* doc:
+	  - Renamed to docs.
+
+2007-05-07  Daniel Baumann  <daniel@debian.org>
+
+	* debian/control:
+	  - Added suggests to genext2fs and squashfs-tools.
+	  - Removed depends to dmsetup.
+	* scripts/live-bottom/10adduser:
+	  - Added patch from Ben Armstrong <synrg@debian.org> to write
+	    $HOME/.su-to-rootrc file.
+	* scripts/live, scripts/live-bottom/21xvideomode:
+	  - Added patch from Mathieu Geli <mathieu.geli@gmail.com> to have the
+	    ability to force X video mode from kernel append line.
+
+2007-05-06  Daniel Baumann  <daniel@debian.org>
+
+	* Merging patches from casper 1.81+debian-4, see ChangeLog.casper.
+	* conf/live.conf:
+	  - Renamed HOST to HOSTNAME.
+	* debian/init:
+	  - Added quickreboot.
+	  - Renamed /cdrom to /live_media.
+	* doc/ChangeLog.casper:
+	  - Added missing debian uploads.
+	* manpages/live-initramfs.7:
+	  - Updated.
+	* hooks/live:
+	  - Reading live.conf earlier.
+	  - Making some udev copies conditional for ubuntu.
+	  - Allowing local keymap when using encrypted filesystems.
+	* scripts/live:
+	  - Renamed HOST to HOSTNAME.
+	  - Renamed /cdrom to /live_media.
+	  - Added support for live-snapshot.
+	  - Parsing commandline in one central place now.
+	  - Added support for encrypted filesytem images.
+	  - Added support for multiple filesystem images.
+	* scripts/live-bottom/01integrity_check:
+	  - Renamed /cdrom to /live_media.
+	* scripts/live-bottom/02etc_live_conf:
+	  - Added.
+	* scripts/live-bottom/05mountpoints:
+	  - Renamed /cdrom to /live_media.
+	  - Don't do anything if not required.
+	* scripts/live-bottom/10adduser:
+	  - Changed default password.
+	  - Disabling xscreensaver locking and copying ubiquity desktop only on
+	    ubuntu.
+	* scripts/live-bottom/14locales:
+	  - Added handling of locale bootparameter.
+	* scripts/live-bottom/15autologin:
+	  - Added workaround for using gdm default config.
+	* scripts/live-bottom/18hostname:
+	  - Renamed HOST to HOSTNAME.
+	* scripts/live-bottom/19keyboard:
+	  - Added handling of keyboard bootparameter.
+	* scripts/live-bottom/20xconfig:
+	  - Added handling of keyboard bootparameter.
+	  - Added handling of locale bootparameter.
+	* scripts/live-bottom/23networking:
+	  - Disabled loop over fixed network devices.
+	* scripts/live-bottom/24preseed:
+	  - Added handling of multiple preseeding files.
+	  - Removed locale handling.
+	* scripts/live-bottom/25configure_init:
+	  - Added handling of serial ttys.
+	* scripts/live-bottom/30accessibility:
+	  - Removed extra parsing of commandline.
+	* scripts/live-functions:
+	  - Added function to really export variables.
+	* scripts/live-helpers:
+	  - Added support for encrypted filesytem images.
+
+2007-05-06  Daniel Baumann  <daniel@debian.org>
+
+	* bin/casper-getty, casper-login, casper-preseed, casper-reconfigure,
+	  casper-snapshot:
+	  - Renamed to live-*.
+	* casper-md5check:
+	  - Moved to bin.
+	  - Renamed to live-md5check.
+	* casper.conf:
+	  - Moved to conf/live.conf.
+	* caspermon:
+	  - Removed.
+	* hooks/casper, scripts/casper, casper-bottom, casper-functions,
+	  casper-helpers, casper-premount:
+	  - Renamed to live*.
+	* bin/live-getty, live-login:
+	  - Reformated.
+	* conf/live.conf:
+	  - Reformated.
+	  - Setting Debian defaults.
+	* bin/live-snapshot, debian/dirs, debian/install, debian/rules,
+	  hooks/live, scripts/live:
+	  - Replaces casper directory and file names with live-initramfs
+	    directory and file names.
+	* debian/manpage:
+	  - Moved to manpages.
+	  - Renamed casper.7 to live-initramfs.7.
+	  - Renamed casper-snapshot.1 to live-snapshot.1.
+	* debian/init:
+	  - Changed activation parameter from boot=casper to boot=live.
+	* scripts/live-bottom/02_timezone:
+	  - Fixed wrong script description.
+	* Uploaded 1.87.2-1.
+
+2007-04-30  Daniel Baumann  <daniel@debian.org>
+
+	* Forked casper 1.87.
+	* COPYING:
+	  - Added.
+	* debian/control, debian/ubiquity-casper.install, ubiquity-hooks:
+	  - Removed ubiquity support.
+	* debian/changelog:
+	  - Moved old changelog to doc/ChangeLog.casper.
+	  - Added new changelog for live-initramfs.
+	* debian/casper.dirs, casper.init, casper.install, casper.manpages,
+	  casper.postinst:
+	  - Renamed, removed packagename prefix from filename.
+	* debian/compat, copyright, dirs, manpages:
+	  - Updated.
+	* debian/examples, links:
+	  - Added.
+	* debian/rules:
+	  - Updated.
+	  - Added upstream target.
+	* debian/control:
+	  - Updated.
+	  - Added depends to file.
+	  - Added conflicts/replaces to casper.
+	* debian/postinst:
+	  - Running 'update-initramfs' for all kernel versions instead of latest
+	    only.
+	* Uploaded 1.87.1-1.

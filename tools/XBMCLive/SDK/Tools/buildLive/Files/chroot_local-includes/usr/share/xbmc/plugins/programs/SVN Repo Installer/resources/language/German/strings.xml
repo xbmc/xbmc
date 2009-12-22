@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- German strings.xml by bootsy (bootsycollins82@gmail.com) -->
+<strings>
+    <!-- Update messages -->
+    <string id="30000">Möchtest du dieses Addon installieren?</string>
+    <string id="30001">Lade Datei ...</string>
+    <string id="30002">Lade Dateilisten...</string>
+    <string id="30003">Bitte warten...</string>
+    <string id="30004">Backup erstellt</string>
+    <string id="30005">Lade:</string>
+    <string id="30006">Pfad:</string>
+    <string id="30007">Datei:</string>
+    <string id="30008">Das Addon wurde hierher installiert:</string>
+    <string id="30009">Suche nach installierten Addons ...:</string>
+    <string id="30010">Checke SVN ...</string>
+    <string id="30011">OK</string>
+    <string id="30012">Nicht in SVN</string>
+    <string id="30013">Unbekannte Version</string>
+    <string id="30014">Neu</string>
+    <string id="30015">Inkompatibel</string>
+    <string id="30016">Update</string>
+    <string id="30017">ChangeLog</string>
+    <string id="30018">Deinstalliert</string>
+    <string id="30019">Alle Aktualisieren</string>
+
+    <string id="30020">Überspringen</string>
+    <string id="30021">Installieren</string>
+    <string id="30022">Deinstallieren</string>
+    <string id="30023">Autor:</string>
+    <string id="30024">Datum:</string>
+    <string id="30025">Version:</string>
+    <string id="30026">Kategorie:</string>
+    <string id="30027">Schließen</string>
+
+    <!-- settings -->
+    <string id="30500">Nach Updates suchen</string>
+    <string id="30510">Updates: Nicht-SVN Addons anzeigen?</string>
+    <string id="30520">Updates: Addons ohne Version anzeigen?</string>
+    <string id="30530">Readme anzeigen</string>
+    <string id="30540">Changelog anzeigen</string>
+
+    <!-- context menu -->
+    <string id="30600">Changelog anzeigen</string>
+    <string id="30610">Readme anzeigen</string>
+
+    <!-- compatible messages -->
+    <string id="30700">version</string>
+    <string id="30701">Diese Version von %s benötigt eine</string>
+    <string id="30702">XBMC Revision von %s oder höher.</string>
+    <string id="30703">Bitte aktualisiere dein XBMC.</string>
+    <string id="30704">Kompatibel</string>
+    <string id="30705">Inkompatibel</string>
+    <string id="30706">Unbekannt</string>
+
+    <!-- Update error messages -->
+    <string id="30030">Fehler beim Installieren des Addons!</string>
+</strings>

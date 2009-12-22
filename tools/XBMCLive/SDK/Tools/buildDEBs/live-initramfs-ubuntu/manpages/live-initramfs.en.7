@@ -1,0 +1,314 @@
+.\"     Title: live-initramfs
+.\"    Author: 
+.\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
+.\"      Date: 06/29/2009
+.\"    Manual: 
+.\"    Source: 
+.\"
+.TH "LIVE\-INITRAMFS" "7" "06/29/2009" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+live-initramfs \- Debian Live initramfs hook
+.SH "SYNOPSIS"
+BOOT=live
+.sp
+as kernel parameter at boot prompt\&.
+.sp
+.SH "DESCRIPTION"
+live\-initramfs is a hook for the initramfs\-tools, used to generate a initramfs capable to boot live systems, such as those created by \fBlive\-helper\fR(7)\&. This includes the Debian Live isos, netboot tarballs, and usb stick images\&.
+.sp
+At boot time it will look for a (read\-only) media containing a "/live" directory where a root filesystems (often a compressed filesystem image like squashfs) is stored\&. If found, it will create a writable environment, using aufs, for Debian like systems to boot from\&.
+.sp
+You probably do not want to install this package onto a non\-live system, although it will do no harm\&.
+.sp
+live\-initramfs is a fork of \fIcasper\fR\&[1]\&. casper was originally written by Tollef Fog Heen <tfheen@canonical\&.com> and Matt Zimmerman <mdz@canonical\&.com>\&.
+.sp
+.SH "BOOT OPTIONS"
+Here is the complete list of recognized boot parameters by live\-initramfs\&.
+.PP
+access=\fBACCESS\fR
+.RS 4
+Set the accessibility level for physically or visually impared users\&. ACCESS must be one of v1, v2, v3, m1, or m2\&. v1=lesser visual impairment, v2=moderate visual impairment, v3=blindness, m1=minor motor difficulties, m2=moderate motor difficulties\&.
+.RE
+.PP
+console=\fBTTY,SPEED\fR
+.RS 4
+Set the default console to be used with the "live\-getty" option\&. Example: "console=ttyS0,115200"
+.RE
+.PP
+debug
+.RS 4
+Makes initramfs boot process more verbose\&.
+.RE
+.PP
+fetch=\fBURL\fR
+.RS 4
+Another form of netboot by downloading a squashfs image from a given url, copying to ram and booting it\&. Due to current limitations in busyboxs wget and DNS resolution, an URL can not contain a hostname but an IP only\&.
+.RE
+Not working: http://example\&.com/path/to/your_filesystem\&.squashfs Working: http://1\&.2\&.3\&.4/path/to/your_filesystem\&.squashfs
+.sp
+Also note that therefore it\'s currently not possible to fetch an image from a namebased virtualhost of an httpd if it is sharing the ip with the main httpd instance\&.
+.PP
+hostname=\fBHOSTNAME\fR, username=\fBUSER\fR, userfullname=\fBUSERFULLNAME\fR
+.RS 4
+Those parameters lets you override values read from the config file\&.
+.sp
+.RS 4
+.nf
+ignore_uuid
+.fi
+.RE
+.RE
+Do not check that any UUID embedded in the initramfs matches the discovered medium\&. live\-initramfs may be told to generate a UUID by setting LIVE_GENERATE_UUID=1 when building the initramfs\&.
+.PP
+integrity\-check
+.RS 4
+If specified, an MD5 sum is calculated on the live media during boot and compared to the value found in md5sum\&.txt found in the root directory of the live media\&.
+.RE
+.PP
+ip=\fB[CLIENT_IP]:[SERVER_IP]:[GATEWAY_IP]:[NETMASK]:[HOSTNAME]:[DEVICE]:[AUTOCONF] [,[CLIENT_IP]:[SERVER_IP]:[GATEWAY_IP]:[NETMASK]:[HOSTNAME]:[DEVICE]:[AUTOCONF]]\fR*
+.RS 4
+Let you specify the name(s) and the options of the interface(s) that should be configured at boot time\&. Do not specify this if you want to use dhcp (default)\&. It will be changed in a future release to mimick official kernel boot param specification (e\&.g\&. ip=10\&.0\&.0\&.1::10\&.0\&.0\&.254:255\&.255\&.255\&.0::eth0,:::::eth1:dhcp)\&.
+.RE
+.PP
+ip=[\fBfrommedia\fR]
+.RS 4
+If this variable is set, dhcp and static configuration are just skipped and the system will use the (must be) media\-preconfigured /etc/network/interfaces instead\&.
+.RE
+.PP
+{keyb|kbd\-chooser/method}=\fBKEYBOARD\fR, {klayout|console\-setup/layoutcode}=\fBLAYOUT\fR, {kvariant|console\-setup/variantcode}=\fBVARIANT\fR, {kmodel|console\-setup/modelcode}=\fBCODE\fR, koptions=\fBOPTIONS\fR
+.RS 4
+Configure the running keyboard as specified, if this one misses live\-initramfs behaves as if "keyb=us" was specified\&. It will be interfered from "locale=" if locale is only 2 lowecase letters as a special case\&. You could also specify console layout, variant, code, and options (no defaults)\&.
+.RE
+.PP
+live\-getty
+.RS 4
+This changes the auto\-login on virtual terminals to use the (experimental) live\-getty code\&. With this option set the standard kernel argument "console=" is parsed and if a serial console is specified then live\-getty is used to autologin on the serial console\&.
+.RE
+.PP
+{live\-media|bootfrom}=\fBDEVICE\fR
+.RS 4
+If you specify one of this two equivalent forms, live\-initramfs will first try to find this device for the "/live" directory where the read\-only root filesystem should reside\&. If it did not find something usable, the normal scan for block devices is performed\&.
+.RE
+Instead of specifing an actual device name, the keyword \fIremovable\fR can be used to limit the search of acceptable live media to removable type only\&. Note that if you want to further restrict the media to usb mass storage only, you can use the \fIremovable\-usb\fR keyword\&.
+.PP
+{live\-media\-encryption|encryption}=\fBTYPE\fR
+.RS 4
+live\-initramfs will mount the encrypted rootfs TYPE, asking the passphrase, useful to build paranoid live systems :\-)\&. TYPE supported so far are "aes" for loop\-aes encryption type\&.
+.RE
+.PP
+live\-media\-offset=\fBBYTES\fR
+.RS 4
+This way you could tell live\-initramfs that your image starts at offset BYTES in the above specified or autodiscovered device, this could be useful to hide the Debian Live iso or image inside another iso or image, to create "clean" images\&.
+.RE
+.PP
+live\-media\-path=\fBPATH\fR
+.RS 4
+Sets the path to the live filesystem on the medium\&. By default, it is set to
+\fI/live\fR
+and you should not change that unless you have customized your media accordingly\&.
+.RE
+.PP
+live\-media\-timeout=\fBSECONDS\fR
+.RS 4
+Set the timeout in seconds for the device specified by "live\-media=" to become ready before giving up\&.
+.RE
+.PP
+{locale|debian\-installer/locale}=\fBLOCALE\fR
+.RS 4
+Configure the running locale as specified, if not present the live\-media rootfs configured locale will be used and if also this one misses live\-initramfs behave as "locale=en_US\&.UTF\-8" was specified\&. If only 2 lowercase letter are specified (like "it"), the "maybe wanted" locale is generated (like en:EN\&.UTF\-8), in this case if also "keyb=" is unspecified is set with those 2 lowercase letters (keyb=us)\&. Beside that facility, only UTF8 locales are supported by live\-initramfs\&.
+.RE
+.PP
+module=\fBNAME\fR
+.RS 4
+Instead of using the default optional file "filesystem\&.module" (see below) another file could be specified without the extension "\&.module"; it should be placed on "/live" directory of the live medium\&.
+.RE
+.PP
+netboot[=\fBnfs\fR|\fBcifs\fR]
+.RS 4
+This tells live\-initramfs to perform a network mount\&. The parameter "nfsroot=" (with optional "nfsopts="), should specify where is the location of the root filesystem\&. With no args, will try cifs first, and if it fails nfs\&.
+.RE
+.PP
+nfsopts=
+.RS 4
+This lets you specify custom nfs options\&.
+.RE
+.PP
+noautologin
+.RS 4
+This parameter disables the automatic terminal login only, not touching gdk/kdm\&.
+.RE
+.PP
+noxautologin
+.RS 4
+This parameter disables the automatic login of gdm/kdm only, not touching terminals\&.
+.RE
+.PP
+nofastboot
+.RS 4
+This parameter disables the default disabling of filesystem checks in /etc/fstab\&. If you have static filesystems on your harddisk and you want them to be checked at boot time, use this parameter, otherwise they are skipped\&.
+.RE
+.PP
+nopersistent
+.RS 4
+disables the "persistent" feature, useful if the bootloader (like syslinux) has been installed with persistent enabled\&.
+.sp
+.RS 4
+.nf
+noprompt
+.fi
+.RE
+.RE
+Do not prompt to eject the CD on reboot\&.
+.PP
+nosudo
+.RS 4
+This parameter disables the automatic configuration of sudo\&.
+.RE
+.PP
+swapon
+.RS 4
+This parameter enables usage of local swap partitions\&.
+.RE
+.PP
+nouser
+.RS 4
+This parameter disables the creation of the default user completely\&.
+.RE
+.PP
+noxautoconfig
+.RS 4
+This parameter disables Xorg auto\-reconfiguration at boot time\&. This is valuable if you either do the detection on your own, or, if you want to ship a custom, premade xorg\&.conf in your live system\&.
+.RE
+.PP
+persistent[=nofiles]
+.RS 4
+live\-initramfs will look for persistent and snapshot partitions or files labeled "live\-rw", "home\-rw", and files called "live\-sn*", "home\-sn*" and will try to, in order: mount as /cow the first, mount the second in /home, and just copy the contents of the latter in appropriate locations (snapshots)\&. Snapshots will be tried to be updated on reboot/shutdown\&. Look at live\-snapshot(1) for more informations\&. If "nofiles" is specified, only filesystems with matching labels will be searched; no filesystems will be traversed looking for archives or image files\&. This results in shorter boot times\&.
+.sp
+.RS 4
+.nf
+persistent\-path=PATH
+.fi
+.RE
+.RE
+live\-initramfs will look for persistency files in the root directory of a partition, with this parameter, the path can be configured so that you can have multiple directories on the same partition to store persistency files\&.
+.PP
+{preseed/file|file}=\fBFILE\fR
+.RS 4
+A path to a file present on the rootfs could be used to preseed debconf database\&.
+.RE
+.PP
+package/question=\fBVALUE\fR
+.RS 4
+All debian installed packages could be preseeded from command\-line that way, beware of blanks spaces, they will interfere with parsing, use a preseed file in this case\&.
+.RE
+.PP
+quickreboot
+.RS 4
+This option causes live\-initramfs to reboot without attempting to eject the media and without asking the user to remove the boot media\&.
+.RE
+.PP
+showmounts
+.RS 4
+This parameter will make live\-initramfs to show on "/" the ro filesystems (mostly compressed) on "/live"\&. This is not enabled by default because could lead to problems by applications like "mono" which store binary paths on installation\&.
+.sp
+.RS 4
+.nf
+silent
+.fi
+.RE
+.RE
+If you boot with the normal quiet parameter, live\-initramfs hides most messages of its own\&. When adding silent, it hides all\&.
+.sp
+.sp
+.RS 4
+.nf
+textonly
+.fi
+.RE
+Start up to text\-mode shell prompts, disabling the graphical user interface\&.
+.PP
+timezone=\fBTIMEZONE\fR
+.RS 4
+By default, timezone is set to UTC\&. Using the timezone parameter, you can set it to your local zone, e\&.g\&. Europe/Zurich\&.
+.RE
+.PP
+todisk=\fBDEVICE\fR
+.RS 4
+Adding this parameter, live\-initramfs will try to copy the entire read\-only media to the specified device before mounting the root filesystem\&. It probably needs a lot of free space\&. Subsequent boots should then skip this step and just specify the "live\-media=DEVICE" boot parameter with the same DEVICE used this time\&.
+.RE
+.PP
+toram
+.RS 4
+Adding this parameter, live\-initramfs will try to copy the whole read\-only media to the computer\'s RAM before mounting the root filesystem\&. This could need a lot of ram, according to the space used by the read\-only media\&.
+.RE
+.PP
+union=\fBaufs\fR|\fBunionfs\fR
+.RS 4
+By default, live\-initramfs uses aufs\&. With this parameter, you can switch to unionfs\&.
+.RE
+.PP
+utc=\fByes\fR|\fBno\fR
+.RS 4
+By default, Debian systems do assume that the hardware clock is set to UTC\&. You can change or explicitly set it with this parameter\&.
+.RE
+.PP
+xdebconf
+.RS 4
+Uses xdebconfigurator, if present on the rootfs, to configure X instead of the standard procedure (experimental)\&.
+.RE
+.PP
+xvideomode=\fBRESOLUTION\fR
+.RS 4
+Doesn\'t do xorg autodetection, but enforces a given resolution\&.
+.RE
+.SH "FILES"
+.sp
+.RS 4
+.nf
+/etc/live\&.conf
+.fi
+.RE
+Some variables can be configured via this config file (inside the live system)\&.
+.sp
+.sp
+.RS 4
+.nf
+/live/filesystem\&.module
+.fi
+.RE
+This optional file (inside the live media) contains a list of white\-space or carriage\-return\-separated file names corresponding to disk images in the "/live" directory\&. If this file exists, only images listed here will be merged into the root aufs, and they will be loaded in the order listed here\&. The first entry in this file will be the "lowest" point in the aufs, and the last file in this list will be on the "top" of the aufs, directly below /cow\&. Without this file, any images in the "/live" directory are loaded in alphanumeric order\&.
+.sp
+.sp
+.RS 4
+.nf
+/etc/live\-persistence\&.binds
+.fi
+.RE
+This optional file (which resides in the rootfs system, not in the live media) is used as a list of directories which not need be persistent: ie\&. their content does not need to survive reboots when using the persistence features\&.
+.sp
+This saves expensive writes and speeds up operations on volatile data such as web caches and temporary files (like e\&.g\&. /tmp and \&.mozilla) which are regenerated each time\&. This is achieved by bind mounting each listed directory with a tmpfs on the original path\&.
+.sp
+.SH "SEE ALSO"
+live\-snapshot(1), initramfs\-tools(8), live\-helper(7), live\-initscripts(7), live\-webhelper(7)
+.sp
+.SH "BUGS"
+Report bugs against live\-initramfs \fIhttp://packages\&.qa\&.debian\&.org/live\-initramfs\fR\&.
+.sp
+.SH "HOMEPAGE"
+More information about the Debian Live project can be found at \fIhttp://debian\-live\&.alioth\&.debian\&.org/\fR and \fIhttp://wiki\&.debian\&.org/DebianLive/\fR\&.
+.sp
+.SH "AUTHORS"
+live\-initramfs is maintained by Daniel Baumann <daniel@debian\&.org> for the Debian project\&.
+.sp
+live\-initramfs is a fork of \fIcasper\fR\&[1]\&. casper was originally written by Tollef Fog Heen <tfheen@canonical\&.com> and Matt Zimmerman <mdz@canonical\&.com>\&.
+.sp
+.SH "NOTES"
+.IP " 1." 4
+casper
+.RS 4
+\%http://packages.ubuntu.com/casper/
+.RE

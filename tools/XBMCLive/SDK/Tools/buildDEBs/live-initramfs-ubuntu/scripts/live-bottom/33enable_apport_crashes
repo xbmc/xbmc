@@ -1,0 +1,39 @@
+#!/bin/sh
+
+#set -e
+
+# initramfs-tools header
+
+PREREQ=""
+
+prereqs()
+{
+	echo "${PREREQ}"
+}
+
+case "${1}" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+# live-initramfs header
+
+if [ -n "${NOPROGRAMCRASHES}" ]
+then
+	exit 0
+fi
+
+. /scripts/live-functions
+
+log_begin_msg "Enabling detection of crashes"
+
+# live-initramfs script
+
+if [ -e /root/etc/default/apport ]
+then
+	sed -i 's/enabled=0/enabled=1/' /root/etc/default/apport
+fi
+
+log_end_msg

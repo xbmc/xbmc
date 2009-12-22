@@ -1,0 +1,2402 @@
+casper (1.157) jaunty; urgency=low
+
+  [ Emmet Hikory ]
+  * 10adduser: add Category=Favorites support for netbook-launcher
+    (LP: #334656)
+
+  [ Luke Yelavich ]
+  * scripts/casper-bottom/30accessibility && ubiquity-hooks/30accessibility:
+    - Remove the fast user switch applet from the top panel, to re-enable
+      the logout/shutdown menu options in the system menu. This is done for
+      the speech and braille accessibility profiles. Requiring several
+      keyboard shortcuts to access something that is not entirely accessible
+      yet only makes things difficult for blind/vision impaired users, and is
+      likely to cause much confusion if sed menu entries are not present.
+
+ -- Luke Yelavich <themuso@ubuntu.com>  Tue, 03 Mar 2009 15:49:21 +1100
+
+casper (1.156) jaunty; urgency=low
+
+  * scripts/casper-bottom/30accessibility &
+    ubiquity-hooks/30accessibility:
+    - If using a laptop, enable the laptop keyboard layout
+    - There is no longer a need to set gconf values as root in only-ubiquity
+      mode
+
+ -- Luke Yelavich <themuso@ubuntu.com>  Fri, 06 Feb 2009 08:59:52 +0100
+
+casper (1.155) jaunty; urgency=low
+
+  [ Colin Watson ]
+  * Add myself to debian/copyright as an author, as I've done fairly
+    significant work on this.
+  * Eliminate casper-md5check's libm linkage; patch from "SurJector" who
+    points out that the automatic conversion is sufficient (LP: #293613).
+  * Restore showmounts/show-cow option (thanks, Carlo de Wolf and "probono";
+    LP: #159006, #290330).
+
+  [ Evan Dandrea ]
+  * Add support for ext4.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 30 Jan 2009 12:14:00 +0000
+
+casper (1.154) jaunty; urgency=low
+
+  [ Evan Dandrea ]
+  * scripts/casper-bottom/02timezone:
+    - Remove as it's no longer needed and resets the timezone when
+      persistence is enabled (LP: #296855).
+
+  [ Colin Watson ]
+  * Preseed console-setup/optionscode and console-setup/codesetcode to the
+    empty string on boot to avoid debris from the live filesystem build
+    process getting in the way of installation (LP: #94177).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Sun, 23 Nov 2008 12:44:45 +0000
+
+casper (1.153) jaunty; urgency=low
+
+  * scripts/casper-bottom/10adduser:
+    - Create links for Mythbuntu items on the Desktop too.
+    - Don't show removable drives on Mythbuntu desktop
+  * scripts/casper-bottom/46disable_services:
+    - New script for disabling services unnecessary to Live
+      mode that should still start after being installed.
+
+ -- Mario Limonciello <superm1@ubuntu.com>  Tue, 04 Nov 2008 01:25:59 -0600
+
+casper (1.152) intrepid; urgency=low
+
+  * Use kde4rc now for accessibility profiles
+
+ -- Jonathan Riddell <jriddell@ubuntu.com>  Sat, 25 Oct 2008 23:44:54 +0100
+
+casper (1.151) intrepid; urgency=low
+
+  * Force ubiquity to --automatic mode for ubuntu-mid
+
+ -- Emmet Hikory <persia@ubuntu.com>  Thu, 16 Oct 2008 15:31:16 +0100
+
+casper (1.150) intrepid; urgency=low
+
+  * Fix path to Kubuntu help file in 10adduser (really)
+
+ -- Jonathan Riddell <jriddell@ubuntu.com>  Thu, 16 Oct 2008 12:16:54 +0100
+
+casper (1.149) intrepid; urgency=low
+
+  * scripts/casper-bottom/30accessibility &
+    ubiquity-hooks/30accessibility:
+    - Revert to using gconf keys for starting orca, as this is now what
+      orca does when the user chooses to automatically start orca from Orca's
+      preferences window.
+    - Explicitly set orca as the program to start up for magnification,
+      speech, and braille.
+
+ -- Luke Yelavich <themuso@ubuntu.com>  Thu, 16 Oct 2008 11:33:02 +1100
+
+casper (1.148) intrepid; urgency=low
+
+  * Skip remounting read-only in try_mount as it's unnecessary and
+    breaks persistence.  Thanks James Westby (LP: #274076).
+
+ -- Evan Dandrea <evand@ubuntu.com>  Wed, 15 Oct 2008 13:09:57 -0400
+
+casper (1.147) intrepid; urgency=low
+
+  * Fix path to Kubuntu help file in 10adduser
+
+ -- Jonathan Riddell <jriddell@ubuntu.com>  Wed, 15 Oct 2008 12:49:29 +0100
+
+casper (1.146) intrepid; urgency=low
+
+  * Update About Kubuntu link in 10adduser for KDE 4
+
+ -- Jonathan Riddell <jriddell@ubuntu.com>  Mon, 06 Oct 2008 17:54:15 +0100
+
+casper (1.145) intrepid; urgency=low
+
+  * 38disable_restricted_manager: Remove some obsolete l-r-m and
+    restricted-manager code, and rename the script to 38jockey_disable_check
+    to better reflect its purpose.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Mon, 06 Oct 2008 09:21:40 +0200
+
+casper (1.144) intrepid; urgency=low
+
+  * Bump media detection timeout to a minute; thanks to Tormod Volden and
+    Steve Beattie for analysis (LP: #258432).
+  * Note that this changes (fixes?) the semantics of LIVEMEDIA_TIMEOUT due
+    to not using hex values in a for loop which aren't understood by test
+    -lt (thanks, Steve Beattie).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 26 Sep 2008 18:35:13 +0100
+
+casper (1.143) intrepid; urgency=low
+
+  * scripts/casper-bottom/30accessibility &
+    ubiquity-hooks/30accessibility: Change the way that orca is set to
+    automatically start. Orca can be started via a gconf key, however this
+    is not reflected in the orca UI, and doesn't easily allow the user to
+    prevent orca from autostarting on an installed system.
+
+ -- Luke Yelavich <themuso@ubuntu.com>  Wed, 24 Sep 2008 10:37:35 +1000
+
+casper (1.142) intrepid; urgency=low
+
+  * Fix syntax error introduced by is_nice_device regex fix.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 19 Sep 2008 02:30:59 +0100
+
+casper (1.141) intrepid; urgency=low
+
+  [ Johannes Ballé ]
+  * Handle spaces in file names in md5sum.txt (LP: #251112).
+
+  [ Colin Watson ]
+  * Support ?= (set value but don't mark as seen) preseeding syntax in
+    preseed script; previously we only supported it in the keyboard script,
+    which confusingly doesn't deal with propagating console-setup/* preseeds
+    to the target filesystem (LP: #253749).
+  * Update to localechooser's new languagelist format.
+
+  [ Tormod Volden ]
+  * scripts/casper: don't scan floppy drives for livefs images (LP: #97306)
+  * scripts/casper: fix broken RE in is_nice_device() (LP: #250328)
+  * scripts/casper: properly use argument $1 in matches_uuid()
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 19 Sep 2008 02:14:05 +0100
+
+casper (1.140) intrepid; urgency=low
+
+  [ Colin Watson ]
+  * Disable jockey as well as the old restricted-manager. While jockey does
+    do more than restricted-manager did, it also still uses a good chunk of
+    memory for a use case that's fairly limited on the live CD.
+
+  [ Luke Yelavich ]
+  * scripts/casper-bottom/30accessibility &
+    ubiquity-hooks/30accessibility:
+    - Check that usr/bin/orca exists and is executable before creating user
+      settings files.
+
+ -- Luke Yelavich <themuso@ubuntu.com>  Fri, 12 Sep 2008 19:23:41 +1000
+
+casper (1.139) intrepid; urgency=low
+
+  * add compcache conf.d configuration for initramfs-tools
+
+ -- Oliver Grawert <ogra@ubuntu.com>  Thu, 14 Aug 2008 00:25:54 +0200
+
+casper (1.138) intrepid; urgency=low
+
+  [ Tormod Volden ]
+  * use full path for vol_id in swap-on-raid detection (LP: #136804)
+
+  [ Martin Pitt ]
+  * 33enable_apport_crashes: Change the apport default file, not the
+    update-notifier gconf keys, to undo the corresponding change for disabling
+    apport right before the release.
+  * Add 45disable_guest_account: Purge the gdm-guest-session package from the
+    live system, since having guest sessions in a live session does not make
+    much sense. (See gdm-guest-login spec)
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Thu, 31 Jul 2008 14:19:07 +0200
+
+casper (1.137) intrepid; urgency=low
+
+  * Update scripts/casper-bottom/15autologin for KDM from KDE 4.
+  * Update 32disable_hibernation for KDE 4.
+
+ -- Jonathan Riddell <jriddell@ubuntu.com>  Thu, 17 Jul 2008 13:41:38 +0100
+
+casper (1.136) intrepid; urgency=low
+
+  * Remove bad-and-wrong setting of PATH to include directories under /root;
+    now that grep links to more libraries than before, this broke a number
+    of things. Requires initramfs-tools (>= 0.92bubuntu5) because this
+    doesn't work with klibc chroot.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 11 Jul 2008 12:34:35 +0100
+
+casper (1.135) intrepid; urgency=low
+
+  [ Loic Minier ]
+  * Fix use of PREREQ instead of PREREQS in hooks/casper.
+
+  [ Colin Watson ]
+  * Fix mount argument ordering for klibc mount.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 09 Jul 2008 12:34:26 +0100
+
+casper (1.134) intrepid; urgency=low
+
+  [ Evan Dandrea ]
+  * Do not use mode= when mounting /cow using persistent mode (LP: #219192).
+
+  [ Colin Watson ]
+  * Support ?= (set value but don't mark as seen) preseeding syntax for
+    console-setup/* (LP: #64058).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 30 Jun 2008 23:52:41 +0100
+
+casper (1.133) intrepid; urgency=low
+
+  [ Tormod Volden ]
+  * Do not use swap on RAID raw devices (LP: #136804)
+
+  [ Agostino Russo ]
+  * Test if livemedia is a directory before trying to mount it as a
+    loopfile
+  * Reverted changes to casper-helpers as requested by Mithrandir since
+    replaying the journal on a hibernated system would lead to file system
+    corruption (LP: #230703).
+
+ -- Evan Dandrea <evand@ubuntu.com>  Wed, 18 Jun 2008 12:34:58 -0400
+
+casper (1.132ubuntu0.2) hardy-proposed; urgency=low
+
+  * Test if livemedia is a directory before trying to mount it as a
+    loopfile
+  * Reverted changes to casper-helpers as requested by Mithrandir since
+    replaying the journal on a hibernated system would lead to file system
+    corruption (LP: #230703).
+
+ -- Agostino Russo <agostino.russo@gmail.com>  Tue, 10 Jun 2008 00:27:12 +0100
+
+casper (1.132ubuntu0.1) hardy-proposed; urgency=low
+
+  * Do not scan only vfat volumes when looking for cow devices (LP: #230703)
+  * Allow casper to use a squashfs filesystem within an arbitrary path (LP:
+    #230716, #207137)
+
+ -- Agostino Russo <agostino.russo@gmail.com>  Thu, 15 May 2008 22:10:50 +0100
+
+casper (1.132) intrepid; urgency=low
+
+  [ Colin Watson ]
+  * Switch default unionfs implementation to aufs.
+
+  [ Agostino Russo ]
+  * Do not scan only vfat volumes when looking for cow devices (LP: #230703)
+  * Allow casper to use a squashfs filesystem within an arbitrary path (LP:
+    #230716, #207137)
+
+ -- Evan Dandrea <evand@ubuntu.com>  Wed, 28 May 2008 15:01:30 -0400
+
+casper (1.131) hardy; urgency=low
+
+  [ Luke Yelavich ]
+  * scripts/casper-bottom/30accessibility: Set gconf and orca config values as
+    root in automatic-ubiquity, only-ubiquity, and debug-ubiquity modes.
+  * ubiquity-hooks/30accessibility: Remove unneeded gconf call to disable esd.
+
+  [ Colin Watson ]
+  * Ensure that the live CD user's Desktop directory is owned by them, not
+    by root (LP: #218576).
+  * Duplicate a chunk of console-setup logic into the keyboard script so
+    that we can deal with non-Latin keymaps and the like without having to
+    have gfxboot-theme-ubuntu help us; the previous approach broke other
+    uses of console-setup, and thus the alternate install CD (LP: #218754).
+    This should later be replaced by just running console-setup, and I'll
+    open another bug for this.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 21 Apr 2008 14:52:05 +0100
+
+casper (1.130) hardy; urgency=low
+
+  * Handle use of debian-installer/language for locale selection
+    (LP: #213930).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Sat, 12 Apr 2008 00:30:10 +0100
+
+casper (1.129) hardy; urgency=low
+
+  * Add COPYING file with GPL text (LP: #211923).
+  * Add casper-new-uuid script to simplify UUID regeneration process,
+    contributed by Mario Limonciello of Dell (LP: #209847).
+  * Update casper-snapshot for genext2fs --reserved-blocks =>
+    --reserved-percentage option change (LP: #202048). Add a Breaks as the
+    most lightweight available method of documenting that we need genext2fs
+    >= 1.4.1 for this.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 10 Apr 2008 01:45:47 +0100
+
+casper (1.128) hardy; urgency=low
+
+  [ Luke Yelavich ]
+  * scripts/casper-bottom/30accessibility &
+    ubiquity-hooks/30accessibility:
+    - Update gconf keys to ensure onboard actually gets loaded.
+    - Change ownership of created orca settings files to the user.
+    - Add extra bits to make orca settings actually work.
+
+  [ Evan Dandrea ]
+  * Add mode=755 to the tmpfs mount that becomes / in the unionfs mount
+    so that / in the live filesystem does not end up with 777 permissions
+    (LP: #206030).
+
+  [ Colin Watson ]
+  * Make scripts/casper-bottom/38disable_restricted_manager executable
+    again.
+  * Depend on uuid-runtime for uuidgen.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 31 Mar 2008 18:11:55 +0100
+
+casper (1.127) hardy; urgency=low
+
+  * Leave spawning the noninteractive ubiquity frontend to its initscript.
+
+ -- Evan Dandrea <evand@ubuntu.com>  Tue, 25 Mar 2008 15:52:32 -0400
+
+casper (1.126) hardy; urgency=low
+
+  * scripts/casper-bottom/10adduser: Test for konqueror not kdesktop,
+    stops putting a broken icon on the Kubuntu KDE 4 desktop
+
+ -- Jonathan Riddell <jriddell@ubuntu.com>  Tue, 25 Mar 2008 15:42:31 +0000
+
+casper (1.125) hardy; urgency=low
+
+  [ Colin Watson ]
+  * Stop quoting Exec arguments in .desktop files. Apparently this used to
+    work but now the system conforms more strictly to the desktop entry
+    specification (LP: #204185).
+
+  [ Jonathan Riddell ]
+  * scripts/casper-bottom/15autologin: Enable auto-login for KDM-KDE4
+
+ -- Jonathan Riddell <jriddell@ubuntu.com>  Thu, 20 Mar 2008 10:20:17 +0000
+
+casper (1.124) hardy; urgency=low
+
+  [ Colin Watson ]
+  * Name generated snapshot images according to their type (LP: #202699).
+
+  [ Martin Pitt ]
+  * scripts/casper-bottom/44pk_allow_ubuntu: Remove erroneous blank line at
+    the start of PolicyKit.conf, since this is invalid XML. This broke
+    PolicyKit completely on the live system.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Tue, 18 Mar 2008 10:20:08 +0100
+
+casper (1.123) hardy; urgency=low
+
+  * Add scripts/casper-bottom/44pk_allow_ubuntu: Allow PolicyKit privileges
+    without password to the default live session user. This avoids the need to
+    press Enter at the password prompt, which is quite confusing. Thanks to
+    MarioDebian! (LP: #201852)
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Fri, 14 Mar 2008 17:26:37 +0100
+
+casper (1.122) hardy; urgency=low
+
+  * Fix paths in About Kubuntu links
+
+ -- Jonathan Riddell <jriddell@ubuntu.com>  Fri, 14 Mar 2008 15:12:38 +0000
+
+casper (1.121) hardy; urgency=low
+
+  * Use a link for About Kubuntu docs in Kubuntu-KDE4
+
+ -- Jonathan Riddell <jriddell@ubuntu.com>  Wed, 12 Mar 2008 23:57:50 +0000
+
+casper (1.120) hardy; urgency=low
+
+  * Use dhclient directly instead of ifupdown for the url= kernel cmdline
+    argument so that we don't have to worry about the interfaces file
+    propagating to the installed system.
+
+ -- Evan Dandrea <evand@ubuntu.com>  Tue, 11 Mar 2008 13:08:08 -0400
+
+casper (1.119) hardy; urgency=low
+
+  [ Luke Yelavich ]
+  * scripts/casper-bottom/30accessibility &
+    ubiquity-hooks/30accessibility:
+    - Disable compiz for screen reader and braille terminal accessibility
+      profiles. It is currently not possible to get feedback about open
+      windows when cycling through them using ALT + Tab with Compiz.
+  * ubiquity-hooks/30accessibility: Add braille terminal profile.
+
+  [ Colin Watson ]
+  * Always set language in both /etc/default/locale and /etc/environment
+    (thanks, Sebastien Bacher).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 03 Mar 2008 10:21:42 +0000
+
+casper (1.118) hardy; urgency=low
+
+  [ Julian Andres Klode, Colin Watson ]
+  * Use aufs instead of unionfs if union=aufs is given (LP: #187259).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 14 Feb 2008 18:00:36 +0000
+
+casper (1.117) hardy; urgency=low
+
+  * Disable speech for magnifier and braille profiles again.  Thanks
+    Luke Yelavich.
+  * esd is enabled by default, so the comment in 30accessibility is no
+    longer relevant.
+
+ -- Evan Dandrea <evand@ubuntu.com>  Wed, 13 Feb 2008 01:20:22 -0500
+
+casper (1.116) hardy; urgency=low
+
+  * Fix setting orca options in 30accessibility.
+  * Remove gdm and kdm from init when using automatic-ubiquity and
+    only-ubiquity.  The ubiquity initscript will take care of spawning
+    these.
+
+ -- Evan Dandrea <evand@ubuntu.com>  Mon, 11 Feb 2008 12:19:39 -0500
+
+casper (1.115) hardy; urgency=low
+
+  * Add the user to the groups specified by user-setup-udeb.
+
+ -- Evan Dandrea <evand@ubuntu.com>  Thu, 24 Jan 2008 19:08:33 +0000
+
+casper (1.114) hardy; urgency=low
+
+  [ Colin Watson ]
+  * casper-md5check: Close md5_file before exiting.
+  * Disable tracker-applet as well as trackerd, otherwise the former starts
+    the latter.
+  * casper-snapshot: Fix argument parsing (thanks, Tormod Volden;
+    LP: #179411).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 15 Jan 2008 18:25:21 +0000
+
+casper (1.113) hardy; urgency=low
+
+  [ Tollef Fog Heen ]
+  * dpkg-divert away update-initramfs as it's useless on live CDs and
+    annoying when people install LVM and similar tools in order to rescue
+    a system.  LP: #150188
+
+  [ Colin Watson ]
+  * Adjust /etc/sudoers editing code so that it doesn't repeatedly add
+    "NOPASSWD:" in persistent mode (LP: #175159).
+  * Avoid ejecting the CD if booting from an ISO image rather than from a
+    physical CD (thanks, Agostino Russo; LP: #176014).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 19 Dec 2007 09:17:50 +0000
+
+casper (1.112) hardy; urgency=low
+
+  * hooks/casper: no need to copy udevinfo into the initramfs, it's already
+    there inside udevadm
+  * scripts/casper: call udevadm with trigger and settle arguments
+  * scripts/casper-bottom/23networking: call udevadm with trigger and
+    settle arguments
+  * scripts/casper-helpers: call udevadm with info and settle arguments
+
+ -- Scott James Remnant <scott@ubuntu.com>  Fri, 14 Dec 2007 15:00:29 +0000
+
+casper (1.111) hardy; urgency=low
+
+  * Remove code to set the progress bar to throbbing, this now comes as
+    standard so we don't need to duplicate it or override things that
+    attempted to set progress.  LP: #162397.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Tue, 13 Nov 2007 20:49:31 +0000
+
+casper (1.110) gutsy; urgency=low
+
+  * Don't generate fglrx or the nvidia modules in the live session at boot;
+    we disable restricted-manager in the live session anyway so they aren't
+    straightforward to use (see #43706). Saves about 19 MB of memory.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 05 Oct 2007 21:28:29 +0100
+
+casper (1.109) gutsy; urgency=low
+
+  * Cache the stty binary before ejecting the CD.
+  * Skip the CD eject prompt if 'noprompt' is on the kernel command line
+    (LP: #149159).
+  * Try each of (e.g.) 2.6.22-13-generic, 2.6.22-13, and 2.6.22 in turn as
+    directory names for driver updates (LP: #122430).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 05 Oct 2007 03:24:43 +0100
+
+casper (1.108) gutsy; urgency=low
+
+  * If CASPER_GENERATE_UUID is set, generate a random UUID in the initramfs,
+    and check it against the discovered medium (unless booting with the
+    ignore_uuid parameter). This allows live CD images to be safely copied
+    to the hard disk without causing problems when booting future live CDs
+    (LP: #144800).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 04 Oct 2007 14:23:37 +0100
+
+casper (1.107) gutsy; urgency=low
+
+  * Fix gconf keys for suspend and hibernate (thanks, Oliver Grawert;
+    LP: #144790).
+  * Enable suspend again since as far as I can see we no longer need to
+    probe DMI while figuring out whether to enable it (see #61535).
+  * Add a 'textonly' boot option to disable X (LP: #65818).
+  * Write the please-remove-CD message to /dev/console so that it works even
+    if usplash isn't running, and make sure to set /dev/console into a sane
+    state so that pressing Enter doesn't just result in ^M being displayed.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 02 Oct 2007 15:12:57 +0100
+
+casper (1.106) gutsy; urgency=low
+
+  * Support preseed/early_command; code supplied here will be run using 'sh
+    -c' from casper-bottom, and can chroot to /root if needed (LP: #144845).
+  * Make sure we don't accidentally continue to boot if casper-md5check
+    fails (LP: #82856).
+  * Clear out debconf database backup files after preseeding to save memory
+    (LP: #43706).
+  * Mount everything as noatime to avoid unnecessary metadata writes.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 28 Sep 2007 15:27:52 +0100
+
+casper (1.105) gutsy; urgency=low
+
+  * scripts/casper-bottom/36disable_trackerd: Disable trackerd in the live
+    session; it's not very useful in this context and it uses a fair bit of
+    memory.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 24 Sep 2007 17:25:50 +0100
+
+casper (1.104) gutsy; urgency=low
+
+  * casper-md5check: Fall back to text output if opening the usplash FIFO
+    fails (LP: #131209).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 20 Sep 2007 01:07:45 +0100
+
+casper (1.103) gutsy; urgency=low
+
+  * Disable anacron harder so that it doesn't get started by battery events.
+  * Don't write out DHCP network interface stanzas if network-manager is
+    installed (LP: #139403).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 19 Sep 2007 12:52:21 +0100
+
+casper (1.102) gutsy; urgency=low
+
+  * Rename 42disable_cups_apparmor to 42disable_apparmor and remove AppArmor's
+    rc.d startup links instead of just disabling the cups profile. AA profiles
+    will not generally work on the live system, so disabling it completely
+    allows us to ship more profiles without worrying any further.
+    (LP: #131976)
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Fri, 14 Sep 2007 08:37:50 +0200
+
+casper (1.101) gutsy; urgency=low
+
+  * Add scripts/casper-bottom/42disable_cups_apparmor: Disable AppArmor
+    protection for cups on the live CD by switching the profiles to complain
+    mode. This is necessary until AppArmor works properly on stacked file
+    systems. (LP: #131976)
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Wed, 12 Sep 2007 16:44:02 +0200
+
+casper (1.100) gutsy; urgency=low
+
+  * scripts/casper-bottom/41apt_cdrom: Remove unnecessary /root/cdrom
+    mounting/unmounting code, which only serves to generate error messages
+    (scripts/casper-bottom/05mountpoints handles this already).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 11 Sep 2007 19:47:58 +0100
+
+casper (1.99) gutsy; urgency=low
+
+  [ Luke Yelavich ]
+  * scripts/casper-bottom/30accessibility &
+    ubiquity-hooks/30accessibility:
+    - Change gconf setting used to automatically start Orca (LP: #131808).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 31 Aug 2007 13:09:46 +0100
+
+casper (1.98) gutsy; urgency=low
+
+  * Load /preseed.cfg if it exists in the initramfs.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 29 Aug 2007 16:18:27 +0100
+
+casper (1.97) gutsy; urgency=low
+
+  * Fix paths in scripts/casper-bottom/10adduser and
+    scripts/casper-bottom/38disable_restricted_manager
+
+ -- Jonathan Riddell <jriddell@ubuntu.com>  Wed, 29 Aug 2007 15:26:33 +0100
+
+casper (1.96) gutsy; urgency=low
+
+  [ Colin Watson ]
+  * Fix name and executability of timezone script.
+
+  [ Jonathan Riddell ]
+  * In 10adduser add About Kubuntu document to desktop and remove
+    restricted-manager autostart files
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 07 Aug 2007 12:51:02 +0100
+
+casper (1.95) gutsy; urgency=low
+
+  * Fix regex syntax error while looking for non-CD devices for driver
+    updates.
+  * Fix ip= boot parameter, documented but not properly merged from Debian.
+    (LP: #128689).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 27 Jul 2007 15:03:41 +0100
+
+casper (1.94) gutsy; urgency=low
+
+  [ Colin Watson ]
+  * Hack around keyboard configuration not being done until after the keymap
+    is set by having /etc/init.d/usplash reconfigure the console
+    (LP: #68487).
+  * Disable pam_lastlog on the console if doing autologin (LP: #126800).
+
+  [ Luke Yelavich ]
+  * scripts/casper-bottom/30accessibility &
+    ubiquity-hooks/30accessibility:
+    - Prevent gksu from grabbing keyboard focus for the v2, v3, and m1
+      accessibility profiles. (LP: #67172)
+  * Start Orca when a Braille device is configured from choosing the
+    Braille option in the Accessibility menu. (Partially fixes Launchpad
+    bug #122024)
+  * Re-enable desktop sounds for the blindness accessibility profile, as
+    eSpeak should be able to speak alongside audio playback.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 24 Jul 2007 16:24:55 +0100
+
+casper (1.93) gutsy; urgency=low
+
+  * revert gdm-cdd.conf handling for autologin to the chrooted code
+    as we had it in feisty. not chrooting brings up problems with the
+    alternatives system (dead symlinks) used for gdm-cdd.conf
+
+ -- Oliver Grawert <ogra@ubuntu.com>  Wed, 18 Jul 2007 15:08:16 +0200
+
+casper (1.92) gutsy; urgency=low
+
+  [ Colin Watson ]
+  * Don't bother chrooting just to run test(1).
+
+  [ Evan Dandrea ]
+  * Added support for URL-based preseeding.
+  * Added 'noninteractive' option that starts ubiquity in noninteractive
+    mode on tty1.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 09 Jul 2007 15:23:51 +0100
+
+casper (1.91) gutsy; urgency=low
+
+  * Fix Maintainer field (ubuntu-devel-discuss, not ubuntu-devel).
+  * Remember to strip directories from paths when dealing with driver update
+    .debs (LP: #120217).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 14 Jun 2007 09:51:33 +0100
+
+casper (1.90) gutsy; urgency=low
+
+  * Added to 22screensaver, to stop the screen automatically locking.
+    Fixes LP: #13497 for kubuntu as well.
+
+ -- Sarah Hobbs <hobbsee@ubuntu.com>  Thu, 07 Jun 2007 00:50:42 +1000
+
+casper (1.89) UNRELEASED; urgency=low
+
+  * Update Maintainer field to reflect reality; this package is no longer
+    maintained by me.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Wed, 06 Jun 2007 14:56:46 +0200
+
+casper (1.88) gutsy; urgency=low
+
+  * Add default values for root_persistence, home_persistence,
+    root_snapshot_label, and home_snapshot_label, and parse the persistent
+    command-line option, which went missing in the last merge from Debian.
+    This goes some way towards LP #84591 but doesn't quite fix it for me
+    since the USB stick inexplicably doesn't appear until a little too late.
+  * Use 'losetup -f' instead of walking /sys/block/loop*. Requires
+    busybox-initramfs 1:1.1.3-4ubuntu3.
+  * Install temporary workaround for /dev/loop* breakage in post-2.6.21
+    kernels (LP: #118561).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 04 Jun 2007 16:26:59 +0100
+
+casper (1.87) feisty; urgency=low
+
+  [ Colin Watson ]
+  * Improve language at end of MD5 check (LP: #100088).
+
+  [ Martin Pitt ]
+  * Add casper-bottom/33enable_apport_crashes: Enable apport crash
+    notifications. They are disabled now by default in the installed system
+    for the final release.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Mon,  9 Apr 2007 14:31:50 +0200
+
+casper (1.86) feisty; urgency=low
+
+  [ Luke Yelavich ]
+  * scripts/casper-bottom/30accessibility &
+    ubiquity-hooks/30accessibility:
+    - Point to new settings file for gnome-orca, as package was changed
+      from python-support to pycentral. (LP: #91868)
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu,  5 Apr 2007 16:42:54 +0100
+
+casper (1.85) feisty; urgency=low
+
+  * Stop disabling nvidia and fglrx drivers.  LP: #94359
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Mon,  2 Apr 2007 13:16:46 +0200
+
+casper (1.84) feisty; urgency=low
+
+  [ Jani Monoses ]
+  * scripts/casper-bottom/13swap: Call /bin/dd not dd so it
+    correctly detects and uses existing swap partitions (LP: #62868)
+
+  [ Tollef Fog Heen ]
+  * Make sure that we are settled before trying to set up netbooting.
+    (LP: #96076)
+  * Bind-mount /dev too, when configuring X, this should make it easier
+    for X to be correctly configured on a lot of systems.
+  * Add /root/lib and /root/usr/lib to /etc/ld.so.conf in the initramfs.
+  * Add any sources on the CD to APT using apt-cdrom.
+  * Set the time zone to UTC.  LP: #13782
+  * Fix deletion of checkroot script.  LP: #66585.
+
+  [ Colin Watson ]
+  * Fix error message if do_netmount fails (LP: #95134).
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Fri, 30 Mar 2007 12:37:58 +0200
+
+casper (1.83) feisty; urgency=low
+
+  * Fix usplash version in Conflicts.
+  * Add XS-Vcs-Bzr field to debian/control.
+  * scripts/casper-bottom/25configure_init: Support for "respawn COMMAND"
+    has been dropped from upstart jobs; cope with /etc/event.d/tty* using
+    "respawn" plus "exec COMMAND" now instead (LP: #92928).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 19 Mar 2007 16:44:22 +0000
+
+casper (1.82) feisty; urgency=low
+
+  [ Ben Collins ]
+  * Depends on eject package, and copy it into initramfs.
+  * Add log_wait_msg function to use usplash_write INPUTENTER.
+  * Conflict with usplash older than the one that fixes INPUTENTER.
+  * Add driver-updates hooks.
+
+  [ Colin Watson ]
+  * Fix more leftover /live_media wreckage (LP: #84592).
+  * Add a ubiquity hook to install driver-updates on the target system.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon,  5 Mar 2007 11:19:48 +0000
+
+casper (1.81+debian-4) unstable; urgency=low
+
+  * Added patch from Serkan Sakar <serkan.sakar@gmx.net> to allow local keymap
+    for use with encryption.
+
+ -- Daniel Baumann <daniel@debian.org>  Wed, 11 Apr 2007 09:04:00 +0200
+
+casper (1.81+debian-3) unstable; urgency=low
+
+  * Added depends to eject.
+  * Removed recommends to live-package.
+
+ -- Daniel Baumann <daniel@debian.org>  Wed, 21 Mar 2007 00:30:00 +0100
+
+casper (1.81+debian-2) unstable; urgency=low
+
+  [ Daniel Baumann ]
+  * Applied patch from Sebastian Raveau <sebastien.raveau@epita.fr> to
+    add support for filesystem images encrypted with loop-aes.
+
+  [ Marco Amadori ]
+  * Added a "quickreboot" boot parameter, that prevent casper to eject the
+    media, useful for remote rebooting of a casper system, thanks to
+    Jonathan Hall <flimzy@flimzy.com> for the patch.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Fri, 16 Feb 2007 17:26:58 +0100
+
+casper (1.81+debian-1) unstable; urgency=low
+
+  * New upstream release.
+  * Some cleaning and renaming involved because most of the debian-only code
+    was merged in ubuntu sources, then back here.
+  * Extended manpage, thanks to Alex Owen <r.alex.owen@gmail.com> and
+    Jonathan Hall <flimzy@flimzy.com> (Closes: #409980).
+  * Included a slightly reworked and bug fixed version of "Allow specific
+    ordering of images" by Jonathan Hall <flimzy@flimzy.com> with a new boot
+    parameter: module=NAME.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Thu, 15 Feb 2007 10:21:01 +0100
+
+casper (1.81) feisty; urgency=low
+
+  * Merge in Debian's changes.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Wed,  7 Feb 2007 14:39:30 +0100
+
+casper (1.80) feisty; urgency=low
+
+  * scripts/casper-bottom/31disable_update_notifier: Allow update-notifier
+    to run for crash report handling, but disable its apt-check hook.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu,  1 Feb 2007 00:11:06 +0000
+
+casper (1.79+debian-3) unstable; urgency=low
+
+  * Fix DEFCONSOLE for autoserial console, thanks to
+    "Alex Owen" <r.alex.owen@gmail.com>.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Sun,  4 Feb 2007 20:12:08 +0100
+
+casper (1.79+debian-2) unstable; urgency=low
+
+  * It now depends also on "file" (Closes: #409308).
+  * Fixed LIVEMEDIA_TIMEOUT values (Closes: #409300).
+    Thanks for both to Jonathan Hall <flimzy@flimzy.com>.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Sat,  3 Feb 2007 18:29:20 +0100
+
+casper (1.79+debian-1) unstable; urgency=low
+
+  * New Upstream release.
+  * Reverted: "Mount the first squashfs as /rofs."
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Tue, 16 Jan 2007 12:12:34 +0100
+
+casper (1.79) feisty; urgency=low
+
+  [ Colin Watson ]
+  * ubiquity-hooks/30accessibility: Change /root to /target in
+    kderc_addtoprefixes (thanks, Jani Monoses).
+  * Call udevsettle after udevtrigger (thanks, Matthias Urlichs; LP:
+    #77438).
+  * Send casper-reconfigure error messages to stderr rather than stdout to
+    avoid interfering with debconf.
+
+  [ Jani Monoses ]
+  * ubiquity-hooks/30accessibility, scripts/casper-bottom/30accessibility:
+    Fix v2 option to start orca in magnifier not speech mode.
+    Add v1, v2, v3, m1 and m2 Xubuntu options
+
+  [ Tollef Fog Heen ]
+  * Apply patch from Luka Renko to support kde-guidance-powermanager and
+    ksmserver instead of klaptoprc as the latter is no longer used.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Wed, 10 Jan 2007 20:37:30 +0100
+
+casper (1.78) edgy; urgency=low
+
+  * Mount the first squashfs as /rofs. Breaks showmounts and won't work
+    properly with stacked filesystems, but works around a kernel oops with
+    multiply-mounted squashfses for Edgy.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 25 Oct 2006 12:46:05 +0100
+
+casper (1.77+debian-7) testing; urgency=medium
+
+  * Backported two 1 line fixes (both serious bugs) from casper-1.79+debian-1
+    and casper-1.79+debian-3:
+    - It now depends also on "file" (Closes: #409308).
+    - Fix DEFCONSOLE for autoserial console, thanks to
+      "Alex Owen" <r.alex.owen@gmail.com>.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Thu,  8 Feb 2007 11:19:46 +0100
+
+casper (1.77+debian-6) unstable; urgency=medium
+
+  * Improved snapshots features (even still experimental).
+  * Added "live-media-offset=BYTES" boot param, to enable "hiding"
+    feature, thanks to Sebastien Raveau <sebastien.raveau@epita.fr>.
+  * Now it creates /etc/resolv.conf if netbooted.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Fri,  1 Dec 2006 17:43:30 +0100
+
+casper (1.77+debian-5) unstable; urgency=low
+
+  * Fixed preseeding locale and keyboard's variant and options.
+  * Reorganized scans of /proc/cmdline.
+  * Improved manpages, thanks to Oliver Osburg for syntax corrections.
+  * Added "nopersistent" boot option to disable the "persistent" boot param.
+  * Added "xdebconf" boot option, that uses xdebconfigurator on the
+    rootfs to configure X (experimental).
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Mon, 20 Nov 2006 22:12:18 +0100
+
+casper (1.77+debian-4) unstable; urgency=medium
+
+  * Removed -phigh from casper-reconfigure, not needed anymore.
+  * Fixed netboot /etc/network/interfaces generation, thanks to Hadar
+    <whadar@gmail.com>.
+  * Fixed X keyboard setup. Thanks to <ascii_77@yahoo.fr> for the idea.
+  * Fixed keyboard setup.
+  * Allow commandline-device to show up late, thanks to Bas Wijnen
+    <wijnen@debian.org> for the code and the care (Closes: #397320).
+  * Urgency is set to medium to try reaching Etch with important
+    features/bugfixes.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Mon,  6 Nov 2006 19:00:29 +0100
+
+casper (1.77+debian-3) unstable; urgency=medium
+
+  * Fixed "todisk=" parsing.
+  * Urgency is set to medium to try reaching Etch with important
+    features/bugfixes.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Wed,  1 Nov 2006 11:15:56 +0100
+
+casper (1.77+debian-2) unstable; urgency=medium
+
+  [ Marco Amadori ]
+  * Improved snapshotting (but still experimental).
+  * Renamed "host=" boot parameter to "hostname=" and shell variable "HOST" to
+    "HOSTNAME" for consistence, with linux and with username/USERNAME, as
+    requested by many people.
+  * Fixed a "keyb=" typo.
+  * Added dependence on lsb-base (used by init-script and
+    casper-snapshot).
+  * Removed DM support (obsolete).
+  * Changed a bit locale and keyboard handling.
+  * Fixed locale generation.
+  * Urgency is set to medium to try reaching Etch with important
+    features/bugfixes.
+
+  [ Otavio Salvador ]
+  * Really lowered usplash conflicts since Debian doesn't has 0.4.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Mon, 30 Oct 2006 17:06:48 +0100
+
+casper (1.77+debian-1) unstable; urgency=low
+
+  * New upstream release.
+  * Added snapshot persistence feature (copy on boot, sync on reboot) via
+    different ways: squashfs, cpio.gz, and block device filesystems.
+  * Added boot parameter "live-media=<device>" to force trying to boot from
+    a specified device.
+  * Added support for "todisk=<device>" to copy the live media to a
+    device filesystem, subsequent boots could use "live-media=<device>".
+  * Slightly polished locales and keyboards handling.
+  * Extendend manpages.
+  * Readded a missing "sleep 1", reworked how live_media is detected,
+    thanks to Bas Wijnen <wijnen@debian.org> for the reports.
+    (Closes: #394308, #394554).
+  * Reworked casper-getty system, thanks to Alex Owen (Closes: #394686).
+  * Postint now rebuild all initramfs.
+  * Casper now Recommends also squashfs-tools and genext2fs, maybe
+    needed by casper-snapshot.
+  * Lowered usplash requirements, since usplash 0.4 is not in debian
+    yet.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Sun, 22 Oct 2006 20:25:38 +0200
+
+casper (1.77) edgy; urgency=low
+
+  * Honour console-setup/modelcode preseeding. Needed for Malone #66719,
+    #66774.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 20 Oct 2006 19:59:39 +0100
+
+casper (1.76) edgy; urgency=low
+
+  [ Colin Watson ]
+  * Copy access=m2 accessibility changes into the corresponding ubiquity
+    hook.
+  * Remove spurious quoting from accessibility script.
+  * Clear console-setup/layoutcode and console-setup/variantcode if they
+    aren't supplied on the command line.
+
+  [ Michael Vogt ]
+  * scripts/casper-bottom/35fix_language_selector:
+    - run fontconfig-voodoo if available to make sure that we have
+      optimal fontconfig settings for the CJK languages (lp: #49334)
+
+  [ Henrik Nilsen Omma ]
+  * Fix a few accessibility items that were out of date, changing
+    gnopernicus -> orca and gok -> onboard (the gok entry was missing some
+    brackets as well; patch from Malone #58836, closes: Malone #65861).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 16 Oct 2006 20:20:15 +0100
+
+casper (1.75) edgy; urgency=low
+
+  * Turn on accessibility in "Motor Difficulties - pointing devices" which
+    makes onboard start properly.  closes: Malone: #65861.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Fri, 13 Oct 2006 14:12:10 +0200
+
+casper (1.74) edgy; urgency=low
+
+  [ Tollef Fog Heen ]
+  * Sync up ubiquity-hooks/30accessibility with
+    scripts/casper-bottom/30accessibility fixing spelling errors and
+    enabling accessibility in KDE.
+
+  [ Colin Watson ]
+  * Fix check for presence of gconf2 (closes: Malone #58836).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 11 Oct 2006 11:18:00 +0100
+
+casper (1.73) edgy; urgency=low
+
+  * Never run install-keymap or preseed debian-installer/keymap if
+    console-setup is detected, even if console-setup wasn't explicitly
+    preseeded. Contributes to Malone #60067.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Sat,  7 Oct 2006 01:56:20 +0100
+
+casper (1.72) edgy; urgency=low
+
+  * Force suspend and hibernate both off, since reconfiguring
+    gnome-power-manager kills usplash here.  Fixes Malone: #61535
+    completely.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Fri,  6 Oct 2006 14:22:23 +0200
+
+casper (1.71+debian-1) unstable; urgency=low
+
+  * New upstream release.
+  * Added experimental casper-snapshot script and manpage.
+  * Tagged for debtags project.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Thu, 28 Sep 2006 16:04:54 +0200
+
+casper (1.71) edgy; urgency=low
+
+  * Use TEXT-URGENT in shutdown script to make sure we display the "please
+    remove disc and press enter" text.  Malone: #61533
+  * Increase usplash timeout since "TIMEOUT 0" no longer means "spin
+    forever".
+  * Don't move-mount all the squashfs-es into / since that confuses mono
+    (and some other apps too).  Malone: #62756
+  * Disable kwallet by default.  Malone: #47743
+  * Add -n to language selector to make it not whine about
+    not-fully-installed langpacks.  Malone. #37568
+  * Override definition of log_end_msg in casper-functions.  Make sure all
+    casper-bottom scripts use this.
+  * Pulsate bar in casper-top and casper-bottom.  Malone: #61535
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Wed,  4 Oct 2006 09:52:06 +0200
+
+casper (1.70) edgy; urgency=low
+
+  * Check for new file= alias as well as preseed/file= (closes: Malone
+    #63145).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed,  4 Oct 2006 08:59:53 +0100
+
+casper (1.69) edgy; urgency=low
+
+  [ Tollef Fog Heen ]
+  * Use grep -E in scripts/casper. Malone: #57620
+  * Fix syntax error in accessibility script
+
+  [ Colin Watson ]
+  * Run 'sh -n' over everything in build target to avoid future syntax
+    errors.
+  * Fix check for /etc/default/console-setup (closes: Malone #62775).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon,  2 Oct 2006 10:58:19 +0100
+
+casper (1.68+debian-3) unstable; urgency=low
+
+  * Really add casper manpage (Closes: #389867).
+  * Lintian cleanness reached.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Thu, 28 Sep 2006 12:36:29 +0200
+
+casper (1.68+debian-2) unstable; urgency=low
+
+  * Changed "staticip=" boot param to just "ip=".
+  * Added a manpage for casper.
+  * Lintian cleanings.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Tue, 26 Sep 2006 00:45:21 +0200
+
+casper (1.68+debian-1) unstable; urgency=low
+
+  * New upstream release.
+  * Added static network configuration support.
+  * Fixed gnome-screensaver-lock differences between ubuntu.
+  * username, host, and userfullname are now also settable
+    via kernel parameters.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Fri,  8 Sep 2006 11:26:02 +0200
+
+casper (1.68) edgy; urgency=low
+
+  * Honour console-setup/layoutcode and console-setup/variantcode preseeding
+    (closes: Malone #61573).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 22 Sep 2006 16:09:53 +0100
+
+casper (1.67) edgy; urgency=low
+
+  * Make sure to write xorg.conf md5sum to the installed system, not the
+    live system in ubiquity-hooks/20xconfig
+  * Implement support for setting KDE's accessibility options too, thanks
+    to Jonathan Riddell for the patch.
+  * Use usplash's TEXT-URGENT for important messages when doing md5 checks
+  * Fix flashing of progress bar on 32 bit arches
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Wed, 23 Aug 2006 14:34:57 +0200
+
+casper (1.66+debian-1) unstable; urgency=low
+
+  * Added "magic" to make it work seamlessy also on ubuntu systems.
+  * Default user password now "live".
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Fri,  1 Sep 2006 17:18:07 +0200
+
+casper (1.66) edgy; urgency=low
+
+  * Fix use of db_get in ubiquity accessibility hook.
+  * Use sudo instead of su to get to the live session user from the
+    initramfs or to the newly-installed user from ubiquity. su's argument
+    handling has changed so that the previous code no longer worked, and su
+    was never all that good for arguments containing spaces anyway.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon,  4 Sep 2006 15:46:55 +0100
+
+casper (1.65+debian-1) unstable; urgency=low
+
+  * New upstream release.
+  * Re-included ubiquity sources since it is here anyway in diff.gz.
+  * Included remote getty patch from Alex Owen (enable it with "casper-getty"
+    as kernel parameter).
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Thu, 17 Aug 2006 14:06:10 +0200
+
+casper (1.65) edgy; urgency=low
+
+  * Update to call udevsettle/udevtrigger instead of udevplug
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Mon, 21 Aug 2006 19:37:58 +0200
+
+casper (1.64) edgy; urgency=low
+
+  * Fix moving of squashfs mount points so that /proc/mounts in the
+    installed system refers to them correctly (closes: Malone #55019). As a
+    bonus, this lets us mount them on subdirectories of /casper/ right from
+    the start.
+  * Treat locale= as equivalent to debian-installer/locale= (closes: Malone
+    #53444).
+  * Fix ubiquity-hooks/30accessibility not to use log_end_msg, and to chroot
+    to /target instead of /root (closes: Malone #53277).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu,  3 Aug 2006 14:00:22 +0100
+
+casper (1.63+debian-3) unstable; urgency=low
+
+  * Really do not try to eject cd if netbooted.
+  * Fixed unionfs ro param in case of nfs netboot (Closes: 383346).
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Wed, 16 Aug 2006 20:10:11 +0200
+
+casper (1.63+debian-2) unstable; urgency=low
+
+  * Working netboot support (Closes: #380506).
+  * Polished kernel parameters parsing a bit.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Sun, 13 Aug 2006 15:52:14 +0200
+
+casper (1.63+debian-1) unstable; urgency=low
+
+  [Marco Amadori]
+  * New upstream release.
+  * Fixed upstream changelog.
+  * Really fixed the user password issue, now really "debian".
+  * Reincluded casper-md5ckeck in debian/rules and 05mountpoints in
+    script/casper-bottom.
+  * Rewrote netboot support now will support all types of rootfs file images
+    (not only plain dirs) like cd/dvd one.
+  * Included a fix for USB by Davide Natalini <davide.natalini@studio.unibo.it>
+  * Included support for plain directory as RO rootfs.
+  * Removed xfs support (not implemented in make-live, maybe useless).
+
+  [Alex Owen]
+  * Added NFS netboot support (Closes: #380506).
+  * Fixed /etc/inittab editing (Closes: #380488).
+  * Do not try to eject cd if netbooted (Closes: #380502).
+
+  [Daniel Baumann]
+  * Minor debian/rules reordering.
+  * Changed "Section:" from "admin" to "misc".
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Sun, 30 Jul 2006 19:10:23 +0200
+
+casper (1.63) edgy; urgency=low
+
+  [ Tollef Fog Heen ]
+  * Change "Live CD user" to "live session user" in the adduser script.
+    Malone #46882
+  * Wait for persistent devices for 30 seconds, not 1500.
+  * Make sure that readahead-list is installed before chmod -x'ing it.
+  * Only disable l-r-m and anacron if they are installed.
+  * Make sure laptop-detect is installed before trying to call it.
+  * Do not install init script from the initramfs any more.  It should
+    have rc.d links already in the squashfs.
+  * Minor build system fixes.
+  * Only copy devmapper relevant files if devmapper is installed.
+  * Remove ubuntu-specific branding from the default casper.
+  * Install default configuration file and make it end up in the
+    initramfs.
+  * Get rid of CD references and replace with medium or other appropriate
+    terms.
+  * Add stacked file system support
+
+  [ Marco Amadori ]
+  * Added possibility to set locale on chroot, not only at runtime.
+  * Updated 14locales to latest debian policy.
+
+  [ Malcolm Gilles ]
+  * USB devices can have ID_PATH with pci-*-usb, too.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Tue, 18 Jul 2006 10:20:51 +0200
+
+casper (1.61+debian-2) unstable; urgency=low
+
+  * Set password for user to 'debian'.
+
+ -- Daniel Baumann <daniel@debian.org>  Wed, 19 Jul 2006 20:56:00 +0200
+
+casper (1.61+debian-1) unstable; urgency=low
+
+  [ Daniel Baumann ]
+  * Rebuild tarball without debian directory.
+  * Using dpatch for upstream modifications.
+  * Added patch for proper GDM autologin from Arnaud Cornet
+    <arnaud.cornet@gmail.com>.
+
+  [ Marco Amadori ]
+  * New upstream release (Resynced with 1.61, bzr 258).
+  * Usb discover patch from Malcom Gilles <live@ouabain.org>.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Tue, 18 Jul 2006 23:34:59 +0200
+
+casper (1.61) edgy; urgency=low
+
+  * Move PATH setting to top of casper script to avoid silliness where
+    PATH isn't correctly set.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Mon, 17 Jul 2006 12:53:59 +0200
+
+casper (1.60) edgy; urgency=low
+
+  * Change start symlinks to kill symlinks for anacron, to avoid it being
+    started by invoke-rc.d and similar.
+  * Rearrange source package.
+  * Redo how the init script works and require it to be installed in the
+    live fs.
+  * Bump version number to be higher than Debian's so we don't
+    automatically sync.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Wed, 31 May 2006 00:01:40 +0200
+
+casper (1.59+debian-1) unstable; urgency=low
+
+  [ Daniel Baumann ]
+  * Upload to unstable (Closes: #354539).
+
+  [ Marco Amadori ]
+  * Added possibility to set locale on chroot, not only at runtime.
+  * Removed "persistent" wait.
+  * Fixed persistence lock and added "homepersistence" boot parameter.
+  * Updated locales handling to latest debian policy.
+  * Cleanups
+
+ -- Daniel Baumann <daniel@debian.org>  Thu, 22 Jun 2006 06:21:00 +0200
+
+casper (1.59+debian-0) UNRELEASED; urgency=low
+
+  * Added "toram" boot parameter.
+  * Extendend fs support to ext2 and xfs file image.
+  * Changed debian-inexistant "-Q" modprobe option with "-q".
+  * Removed ubiquity code.
+  * USERNAME and HOST defaulted to "debian".
+  * Preliminary netboot (cifs) patch by
+    "Jason D. Clinton" <me@jasonclinton.com>
+  * Lowered dependence of dmsetup code (now only Suggests).
+  * Checks for replacing "udevplug" (ubuntu-only) with "udevtrigger".
+  * Reworked xorg and anacron patches from
+    Frederic Lehobey <Frederic.Lehobey@free.fr>.
+  * scripts/casper-bottom/10adduser: configuring only the $USERNAME for sudo
+      instead of group 'admin'.
+
+ -- Marco Amadori <marco.amadori@gmail.com>  Fri, 16 Jun 2006 11:01:48 +0200
+
+casper (1.58) dapper; urgency=low
+
+  * Really rename properly, without dirname.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Tue, 30 May 2006 22:47:04 +0100
+
+casper (1.57) dapper; urgency=low
+
+  * Rename the anacron rc.d/S* symlinks to K*, instead of removing them.
+    Because otherwise pbbuttonsd decides that starting anacron on the
+    LiveCD would be a clever thing to do.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Wed, 24 May 2006 23:06:04 +0100
+
+casper (1.56) dapper; urgency=low
+
+  * Hopefully work a bit better when checking DVDs on 32 bit
+    architectures.
+  * Do an explicit read from /dev/console when waiting for keypress after
+    CD/DVD has been ejected.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Mon, 22 May 2006 16:43:03 +0200
+
+casper (1.55) dapper; urgency=low
+
+  * Reconfigure gnome-power-manager when doing live installations.
+    Malone #45654
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Mon, 22 May 2006 11:16:46 +0200
+
+casper (1.54) dapper; urgency=low
+
+  [ Luke Yelavich ]
+  * Set large print fonts for the v1 accessibility profile. Closes
+    Malone #45376.
+
+  [ Colin Watson ]
+  * Fix preseed/file handling (closes: Malone #43683).
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Thu, 18 May 2006 19:36:24 +0200
+
+casper (1.53) dapper; urgency=low
+
+  [ Tollef Fog Heen ]
+  * Disable fglrx and nvidida drivers by default.  Somewhat addresses
+    #43706
+
+  [ Colin Watson ]
+  * Pass all command-line preseed arguments (other than preseed/file) to
+    /root's debconf db.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Sat, 13 May 2006 10:14:36 +0200
+
+casper (1.52) dapper; urgency=low
+
+  * Export the path in casper-reconfigure so X and friends actually have
+    sbin in their path.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Thu, 11 May 2006 21:04:11 +0200
+
+casper (1.51) dapper; urgency=low
+
+  [ Luke Yelavich ]
+  * casper-bottom/30accessibility:
+    - Removed stale reference to acessx_applet.
+    - Fix some typos for gconf values that had to be set as lists.
+
+  [ Colin Watson ]
+  * Pass debian-installer/locale to /root's debconf db (closes: Malone
+    #41896).
+  * Identify ourselves as casper when communicating with debconf.
+  * Factor out preseeding code into casper-preseed; this knows that it only
+    needs to register a question if it fails to set it, which saves memory
+    by avoiding debconf having to rewrite templates.dat.
+  * Preseed kbd-chooser/method as well as debian-installer/keymap, so that
+    kbd-chooser run from ubiquity picks up the selected keyboard (closes:
+    Malone #42202).
+  * Use new dpkg-reconfigure --no-reload option (debconf 1.4.72ubuntu6) to
+    avoid needlessly rewriting templates.dat.
+
+  [ Tollef Fog Heen ]
+  * Add ... to the end of all usplash messages.  Malone #43856
+  * Add maybe_break casper-bottom to allow breaking before running bottom
+    scripts.  Malone #43860
+  * Don't show the name of the live cd user that's added.
+  * Mount COW filesystem if show-cow is present on the kernel command line.
+    Malone #43687
+  * Disable the Kubuntu update notifier too.  Malone #43806
+  * Disable hibernation and enable sleep where appropriate.  Malone #23882
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Thu, 11 May 2006 12:11:08 +0200
+
+casper (1.50) dapper; urgency=low
+
+  [ Luke Yelavich ]
+  * Fixed some typos, and added missing settings to some accessibility
+    profiles, as they were either not working properly, or at all. Malone:
+    #39472, #39473
+  * Removed the desktop wallpaper, and changed the background colour to gray
+    for the v1 accessibility profile.
+  * Set the whiteglass mouse theme for the v1 accessibility profile.
+  * Moved the gconftool-2 -s flag to individual gct calls, to allow for future
+    use of gconftool-2 flags that are incompatible with -s.
+
+  [ Daniele Favara ]
+  * Allow custom HOST, USERNAME, USERFULLNAME.  Malone: #42118
+  * Add example file
+    - debian/casper.dir: Add examples dir
+    - debian/casper.conf: Explain briefly how to use new variables
+    - debian/rules: Install casper.conf as example_conf_casper
+
+  [ Tollef Fog Heen ]
+  * Stylistic changes to Daniele's changes.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Tue,  2 May 2006 14:12:31 +0200
+
+casper (1.49) dapper; urgency=low
+
+  * Also look for hardware named wlan*
+
+ -- Scott James Remnant <scott@ubuntu.com>  Wed, 26 Apr 2006 13:37:13 +0100
+
+casper (1.48) dapper; urgency=low
+
+  * Write /etc/network/interfaces entries for eth0, eth1, eth2, ath0 and
+    wlan0 if there's no hardware detected for them; as it may be plugged
+    in after boot.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Wed, 26 Apr 2006 12:31:38 +0100
+
+casper (1.47) dapper; urgency=low
+
+  [ Tollef Fog Heen ]
+  * Turn on debugging of the X config.
+  * Log to a file which gets copied to /var/log/casper.log.  Malone: #39895
+  * Only pick UTF-8 locales.  Malone: #40178
+  * Use correct /root rather than /target for seeing what version of
+    gnome-panel-data is installed.
+  * Make festival (and probably some other apps) happier by using
+    127.0.1.1 for our ubuntu hostname and 127.0.0.1 just resolves to
+    "localhost".
+  * Make casper-md5check read from tty8 since it wants to get keypresses
+    from the active console (where usplash runs).  Malone: #40490.
+  * Copy /etc/modules when installing with ubiquity.  Malone: #40311
+  * /etc/gdm/gdm-cdd.conf can be a symlink.  Cope with that.  Malone: #40767
+
+  [ Colin Watson ]
+  * ubiquity-casper conflicts/replaces espresso-casper.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Mon, 24 Apr 2006 09:41:14 +0200
+
+casper (1.46) dapper; urgency=low
+
+  * Use debian-installer/dummy for preseeding rather than espresso/dummy,
+    since the latter was removed in espresso 0.99.38.
+  * espresso is being renamed to ubiquity. Rename espresso-casper to
+    ubiquity-casper to match.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Fri, 21 Apr 2006 12:52:48 +0100
+
+casper (1.45) dapper; urgency=low
+
+  [ Matt Zimmerman ]
+  * [share/shutdown] Disable the usplash timeout and wrap the prompt to two
+    lines
+
+  [ Tollef Fog Heen ]
+  * Use devmapper for ia64, hppa and sparc.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Wed, 19 Apr 2006 11:36:49 +0200
+
+casper (1.44) dapper; urgency=low
+
+  * Reset the timeout after casper-premount has run so we're sure that the
+    timeout is what we want it to be.  Udev seems to change it too.
+  * Remove a few set -x commands to make the boot slightly less verbose.
+  * Fix 10adduser to actually install the correct icons for espresso.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Wed, 12 Apr 2006 14:20:53 +0200
+
+casper (1.43) dapper; urgency=low
+
+  * Copy espresso-kdeui.desktop file to user's desktop
+    Branch at http://kubuntu.org/~jriddell/bzr/casper/trunk/
+
+ -- Jonathan Riddell <jriddell@ubuntu.com>  Thu, 13 Apr 2006 15:37:49 +0100
+
+casper (1.42) dapper; urgency=low
+
+  [ Luke Yelavich ]
+  * casper-bottom/30accessibility:
+    - Removed some settings from accessibility profiles as these are now
+      in the relevant packages.
+
+  [ Tollef Fog Heen ]
+  * Make sure to call gconftool as the right user.  Malone #38408
+  * Write an entry for / in fstab.  Hopefully fixes Malone #34330
+  * Change gdm-cdd.conf if it exists, not gdm.conf. Malone #37467
+  * Really disable update-notifier, this time by removing the correct
+    file.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Tue, 11 Apr 2006 15:43:24 +0200
+
+casper (1.41) dapper; urgency=low
+
+  * Don't mkdir then install -D, just install -D (this should prevent
+    ~ubuntu/Desktop being owned by root)
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Wed, 29 Mar 2006 10:52:42 +0200
+
+casper (1.40) dapper; urgency=low
+
+  * Add snd_powermac to /etc/modules on ppc.  (Malone: #27862)
+  * Use chmod -x instead of mv to disable readahead in order to not
+    trigger unionfs bugs
+  * Reboot the system when a key is pressed at the end of the integrity
+    check.  (Malone: #29203)
+  * Use usplash_write too when doing shutdown.  (Malone: #34537)
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Tue, 28 Mar 2006 10:09:49 +0200
+
+casper (1.39) dapper; urgency=low
+
+  [ Tollef Fog Heen ]
+  * Disable update-notifier by default, as it won't make much sense for
+    most people.
+
+  [ Colin Watson ]
+  * Clear out user-setup questions from the debconf database after creating
+    the live CD user, to avoid confusing espresso into offering "Ubuntu
+    LiveCD user" as the user's default full name.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Mon, 13 Mar 2006 11:38:39 +0100
+
+casper (1.38) dapper; urgency=low
+
+  * Disable readahead since it breaks too much with squashfs and unionfs.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Thu,  9 Mar 2006 09:43:39 +0100
+
+casper (1.37) dapper; urgency=low
+
+  * Add support for having the squashfs directly on a device, thanks to
+    Paul Sladen for idea and a patch.
+  * If a directory "Examples" exists in ~ after we've run adduser, move it
+    to the Desktop subdirectory for greater visibility.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Sat,  4 Mar 2006 11:55:50 +0100
+
+casper (1.36) dapper; urgency=low
+
+  [ Tollef Fog Heen ]
+  * Fix typo in find_cow_device so block devices didn't work at all.
+    Malone #31639.  Thanks to Richard Nemec for the catch.
+  * Update accessibility framework, thanks to Luke Yelavich.
+
+  [ Colin Watson ]
+  * Move the /cdrom mount into the new root filesystem.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Wed,  1 Mar 2006 11:13:54 +0100
+
+casper (1.35) dapper; urgency=low
+
+  * Check for preseed/file= in /proc/cmdline and feed any given file to
+    debconf-set-selections.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 27 Feb 2006 17:32:02 +0000
+
+casper (1.34) dapper; urgency=low
+
+  [ Luke Yelavich ]
+  * Add initial accessibility support framework
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Wed, 22 Feb 2006 14:36:07 +0100
+
+casper (1.33) dapper; urgency=low
+
+  * Make sure Desktop and the espresso-$ui.desktop is owned by the Ubuntu
+    user.  Malone #31991
+  * Fix check for rc6.d/S90reboot at the bottom of 25configure_init to
+    actually look in the right place.
+  * Make me the maintainer of the package.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Mon, 20 Feb 2006 09:49:02 +0100
+
+casper (1.32) dapper; urgency=low
+
+  * Fix copying of /usr/share/applications/espresso-gtkui.desktop.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 16 Feb 2006 16:47:15 +0000
+
+casper (1.31) dapper; urgency=low
+
+  [ Tollef Fog Heen ]
+  * Print message about rebooting the system when the md5 check is
+    finished.
+  * Just have one copy of the casper shutdown scripts and symlink those
+    into the right place.  Malone #20978
+
+  [ Colin Watson ]
+  * Copy /usr/share/applications/espresso-gtkui.desktop to the live CD
+    user's desktop.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Tue, 14 Feb 2006 14:52:16 +0100
+
+casper (1.30) dapper; urgency=low
+
+  * Set a blank password for the ubuntu user.  This hopefully resolves
+    Malone #30118
+  * Pass keyboard layout information to xserver-xorg in the "new" scheme.
+  * Set up the right console keymap.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Tue, 14 Feb 2006 14:48:14 +0100
+
+casper (1.29) dapper; urgency=low
+
+  [ Tollef Fog Heen ]
+  * Fix typo in 22gnome_panel_data
+  * Configure all detected network interfaces.
+  * Add support for putting the persistent storage in a loopback file on
+    vfat volumes
+  * Configure all detected network interfaces.
+  * Allow putting the live filesystem image on a VFAT volume
+  * Allow putting the persistent storage in a loopback file on a VFAT
+    volume
+  * Lots of cleanups
+
+  [ Colin Watson ]
+  * Change casper-reconfigure to take the target root filesystem as its
+    first argument.
+  * Add espresso-casper package with hooks to repeat some things done by
+    casper in the installed system.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Wed, 25 Jan 2006 14:25:45 +0100
+
+casper (1.28) dapper; urgency=low
+
+  * Depend on user-setup
+  * First shot at IEEE1394 support.  Add sbp2 and ohci1394 as modules to
+    be copied into the initramfs.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Mon, 16 Jan 2006 22:06:35 +0100
+
+casper (1.27) dapper; urgency=low
+
+  * Try using unionfs on ppc again
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Tue, 10 Jan 2006 20:55:19 +0100
+
+casper (1.26) dapper; urgency=low
+
+  * Add persistency support
+  * Usplash integration
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Tue, 10 Jan 2006 17:53:54 +0100
+
+casper (1.25) dapper; urgency=low
+
+  * Make /rofs available to in the target system.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Mon,  9 Jan 2006 15:25:12 +0100
+
+casper (1.24) dapper; urgency=low
+
+  * For debconf-communicate, use a here-doc rather than trying to have \n
+    working in shell variables.
+  * The usplash fifo has moved, update paths accordingly.  Also conflict
+    with the old usplash and depend on new enough initramfs-tools.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Fri,  6 Jan 2006 14:20:37 +0100
+
+casper (1.23) dapper; urgency=low
+
+  * Move the building to binary-dep, since we're an arch: any package
+    now.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Thu,  5 Jan 2006 10:37:31 +0100
+
+casper (1.22) dapper; urgency=low
+
+  * Bunch debconf-communicate commands together to speed up the boot a
+    little bit.
+  * Add integrity checker, this is compiled code, so casper is now arch:
+    any
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Wed,  4 Jan 2006 12:56:13 +0100
+
+casper (1.21) dapper; urgency=low
+
+  * If locale is unset, use en_US.UTF8, not whatever comes first in the
+    list of supported locales.
+  * Generate locale and set the locale in /etc/environment
+  * Use user-setup to create the user, rather than doing it ourselves.
+  * Various cleanups and fixes, such as making debconf-communicate silent
+  * Disable checkroot when booting
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Mon,  2 Jan 2006 11:00:25 +0100
+
+casper (1.20) dapper; urgency=low
+
+  * Remove a large bunch of debugging output
+  * Depend on dmsetup so the hook script can copy in that
+  * Handle both squashfs and cloop images, with run-time detection
+  * Use devmapper + cloop on powerpc, not unionfs, since unionfs is a
+    disaster there.
+  * Make sure we have both SCSI and IDE CDROM modules available in the
+    initramfs.
+  * Do some initial keyboard setup handling so X will, at least in some
+    cases, have a chance of giving the user a sane keymap.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Mon, 19 Dec 2005 14:23:13 +0100
+
+casper (1.19) dapper; urgency=low
+
+  * Switch to initramfs, so casper only survives in spirit
+  * Use unionfs instead of a writeable devmapper snapshot
+  * Remove all debconfiscation, since we're an initramfs script now
+  * Make the postinst call update-initramfs -u
+  * Mount the CD read-only explicitly
+  * Make udevinfo silent if the device is not found.
+
+ -- Tollef Fog Heen <tfheen@ubuntu.com>  Tue, 13 Dec 2005 16:22:45 +0100
+
+casper (1.18) breezy; urgency=low
+
+  * Update translations from Rosetta: Greek, Spanish, French, Hungarian,
+    Brazilian Portuguese.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 19 Sep 2005 20:05:02 +0100
+
+casper (1.17) breezy; urgency=low
+
+  * Set /apps/gnome-screensaver/lock if gnome-screensaver is installed
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Fri, 16 Sep 2005 15:24:35 -0700
+
+casper (1.16) breezy; urgency=low
+
+  * Install a fake script in /lib/debian-installer.d/S72menu-exit after
+    pivoting that just calls sleep, to prevent scary console messages as d-i
+    tries to exit without its root filesystem.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed, 14 Sep 2005 10:28:06 +0100
+
+casper (1.15) breezy; urgency=low
+
+  * Neutralize branding in startup message
+  * Use clear in addition to reset, in hopes of concealing error messages on
+    the console from d-i's death throes
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Fri,  9 Sep 2005 11:24:14 -0700
+
+casper (1.14) breezy; urgency=low
+
+  * Set RUNNING_UNDER_GDM=yes in the user's environment to stop xscreensaver
+    locking the screen (Ubuntu #7150).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu,  8 Sep 2005 13:37:00 +0100
+
+casper (1.13) breezy; urgency=low
+
+  * Use reset, rather than clear, to clean up after the colored dialogs on vt1
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Wed,  7 Sep 2005 16:09:45 -0700
+
+casper (1.12) breezy; urgency=low
+
+  * Kill bterm after pivoting so that we can use vt1 rather than vt2,
+    thereby avoiding a fight between gdm and the X server (closes: Ubuntu
+    #14851).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Wed,  7 Sep 2005 15:48:40 +0100
+
+casper (1.11) breezy; urgency=low
+
+  * Remove debugging code which crept into 1.10
+  * Revert changes to casper-udeb.postinst which were intended for
+    starting usplash earlier (pre-1.10)
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Fri,  2 Sep 2005 13:43:03 -0700
+
+casper (1.10) breezy; urgency=low
+
+  * Instead of starting usplash directly, create an init script which will
+    start it later (after the new init), to avoid it being killed by
+    busybox init
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Mon, 29 Aug 2005 20:26:58 -0700
+
+casper (1.9) breezy; urgency=low
+
+  * Remember to re-run 30copy-dev from 94usplash, in order to preserve the
+    device nodes clobbered by udev
+  * Redirect stdin of /etc/init.d/udev from /dev/console, to avoid
+    incredibly obnoxious 60-second sleep because it thinks we're
+    interactive
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Mon, 29 Aug 2005 18:30:38 -0700
+
+casper (1.8) breezy; urgency=low
+
+  * Add usplash support
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Mon, 29 Aug 2005 17:30:57 -0700
+
+casper (1.7) breezy; urgency=low
+
+  * Set DEBUG_XORG_PACKAGE=yes when reconfiguring xserver-xorg.  The
+    output is only written to post.log and isn't visible to the user, and
+    can be invaluable for debugging
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Mon, 22 Aug 2005 10:25:38 -0700
+
+casper (1.6) breezy; urgency=low
+
+  * Use debconf-copydb again (thanks, Tollef)
+  * Rename pre.d/20xconfig to pre.d/20prexconfig so that it is distinct from
+    post.d/20xconfig for purposes of the progress bar (no text for it; it's
+    very fast)
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Wed, 17 Aug 2005 14:55:24 -0700
+
+casper (1.5) breezy; urgency=low
+
+  * Call MAKEDEV console in post.d/20xconfig as a workaround for bug
+    #13523
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Tue, 16 Aug 2005 15:24:06 -0700
+
+casper (1.4) breezy; urgency=low
+
+  * Revert to the old debconf hack; the debconf-copydb approach needs more
+    work
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Mon, 15 Aug 2005 22:48:11 -0700
+
+casper (1.3) breezy; urgency=low
+
+  * Revert unintentional release of experimental unionfs code in 1.2
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Sat, 13 Aug 2005 11:19:50 -0700
+
+casper (1.2) breezy; urgency=low
+
+  * Fix debconf-copydb regex in 20xconfig
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Sat, 13 Aug 2005 11:07:46 -0700
+
+casper (1.1) breezy; urgency=low
+
+  * Cope with xserver-xorg's rename of force_keyboard_detection to
+    autodetect_keyboard
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Mon,  4 Jul 2005 02:52:07 -0700
+
+casper (1.0) breezy; urgency=low
+
+  * Version number bump (we've been through a stable Ubuntu release, after
+    all)
+  * Rename pre.d/10snapshot to post.d/10filesystem, as it is about to
+    become more generic
+  * Seed xserver-xorg/force_keyboard_detection to true in 20xconfig, so as
+    to cause the keyboard layout to (continue to) be autodetected based on
+    d-i settings
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Thu, 16 Jun 2005 11:21:54 -0700
+
+casper (0.65) breezy; urgency=low
+
+  * As a performance optimization, only reconfigure gnome-panel-data if
+    booting on a laptop
+  * Disable the "lock screen" menu item (Ubuntu bug#7150)
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Wed,  8 Jun 2005 16:02:14 -0700
+
+casper (0.64) breezy; urgency=low
+
+  * Merge colin.watson@canonical.com--2005/casper--debconf-copydb--0
+    - Use debconf-copydb rather than our temporary hack
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Tue, 31 May 2005 12:08:51 -0700
+
+casper (0.63) breezy; urgency=low
+
+  * Merge colin.watson@canonical.com--2005/casper--cdebconf-info--0
+    - Update for cdebconf 0.75: use db_info rather than db_x_setbacktitle.
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Mon, 18 Apr 2005 20:59:58 -0700
+
+casper (0.62) hoary; urgency=low
+
+  * Updated translations from
+    colin.watson@canonical.com--2005/casper--translations--0 (nb)
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Tue,  5 Apr 2005 09:01:02 -0700
+
+casper (0.61) hoary; urgency=low
+
+  * Updated translations from
+    colin.watson@canonical.com--2005/casper--translations--0 (el, es, ro)
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Tue,  5 Apr 2005 08:06:51 -0700
+
+casper (0.60) hoary; urgency=low
+
+  * Updated translations from
+    colin.watson@canonical.com--2005/casper--translations--0 (hu, id, pl)
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Mon, 28 Mar 2005 11:26:21 -0800
+
+casper (0.59) hoary; urgency=low
+
+  * Updated translations from
+    colin.watson@canonical.com--2005/casper--translations--0 (de, pt_BR)
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Fri, 25 Mar 2005 16:51:17 -0800
+
+casper (0.58) hoary; urgency=low
+
+  * Remove postfix shutdown links, as well as startup, to avoid an ugly error
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Thu, 24 Mar 2005 18:24:03 -0800
+
+casper (0.57) hoary; urgency=low
+
+  * Merge colin.watson@canonical.com--2005/casper--translations--0 up to
+    patch-2
+  * Preseed netcfg/wireless_essid_again for noninteractive network setup, +new
+    in netcfg 1.08ubuntu3 [colin.watson@canonical.com--2005/casper--netcfg--0]
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Wed, 23 Mar 2005 08:33:46 -0800
+
+casper (0.56) hoary; urgency=low
+
+  * Suppress error output from eject
+  * Remind the user to close the CD tray if they have one (Ubuntu #6668)
+  * Add arch-build target to debian/rules
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Tue, 22 Mar 2005 10:21:41 -0800
+
+casper (0.55) hoary; urgency=low
+
+  * Remove the hack introduced in 0.54, xorg 6.8.2-5 should be fixed
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Wed, 16 Mar 2005 18:11:05 -0800
+
+casper (0.54) hoary; urgency=low
+
+  * Temporarily set RECONFIGURE=true when reconfiguring xserver-xorg, to work
+    around a bug introduced in 6.8.2-3
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Wed, 16 Mar 2005 15:08:45 -0800
+
+casper (0.53) hoary; urgency=low
+
+  * Provide target-base-system (i.e. base system installed in /target, also
+    provided by base-installer).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 15 Mar 2005 13:01:53 +0000
+
+casper (0.52) hoary; urgency=low
+
+  * Arrange for $LANG to be set after pivot_root, so that (e.g.)
+    xserver-xorg can use it to infer the keymap (Ubuntu #7138)
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Sat, 12 Mar 2005 02:10:59 -0800
+
+casper (0.51) hoary; urgency=low
+
+  * Disable kpersonalizer startup on first login
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Sat,  5 Mar 2005 13:47:13 -0800
+
+casper (0.50) hoary; urgency=low
+
+  * Add support for configuring kdm autologin
+  * Rename 15gdm-autologin to 15autologin, and the corresponding debconf template
+  * Remove obsolete XORG_FORCE_PROBE from 20xconfig
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Thu,  3 Mar 2005 10:37:31 -0800
+
+casper (0.49) hoary; urgency=low
+
+  * Fix 20xconfig harder
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Wed,  2 Mar 2005 21:20:03 -0800
+
+casper (0.48) hoary; urgency=low
+
+  * Source confmodule in 20xconfig
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Wed,  2 Mar 2005 21:02:35 -0800
+
+casper (0.47) hoary; urgency=low
+
+  * Copy over the value of debian-installer/keymap into the target system,
+    to allow the new logic in xserver-xorg.config to work
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Wed,  2 Mar 2005 20:45:38 -0800
+
+casper (0.46) hoary; urgency=low
+
+  * Lock the live user's password entirely.  Since the user is now
+    automagically logged in, continuously, both on the console and in X,
+    their password is irrelevant.
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Mon, 28 Feb 2005 08:31:13 -0800
+
+casper (0.45) hoary; urgency=low
+
+  * Enable TimedLogin in gdm, so that if the user logs out, they are
+    automatically logged back in after a few seconds (Ubuntu #6667)
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Sun, 27 Feb 2005 16:06:16 -0800
+
+casper (0.44) hoary; urgency=low
+
+  * Configure init to spawn shells on virtual consoles, rather than login
+    prompts (Ubuntu #6666)
+  * Skip X configuration if a serial console is in use
+  * Set the live user's password to be blank, rather than "ubuntu".  This
+    is, paradoxically, more secure if the user decides to install
+    openssh-server, since empty passwords are disallowed by default
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Sun, 27 Feb 2005 15:40:15 -0800
+
+casper (0.43) hoary; urgency=low
+
+  * Override localechooser progress bar text to be more appropriate for the
+    live CD (closes: Ubuntu #6664).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Thu, 24 Feb 2005 19:12:00 +0000
+
+casper (0.42) hoary; urgency=low
+
+  * Preseed netcfg/no_interfaces, to avoid prompt when no network interfaces
+    can be configured (closes: Ubuntu #6107).
+  * Remove redundant DH_COMPAT setting in debian/rules, since there's
+    already a (different) debian/compat.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 22 Feb 2005 12:43:43 +0000
+
+casper (0.41) hoary; urgency=low
+
+  * Cope with change in default /etc/sudoers (admin group).
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 22 Feb 2005 09:14:30 +0000
+
+casper (0.40) hoary; urgency=low
+
+  * Copy /dev/tts to the live system as well as /dev/vc, for serial console.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Mon, 21 Feb 2005 19:03:54 +0000
+
+casper (0.39) hoary; urgency=low
+
+  * Fix reboot operation (cache the reboot binary)
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Thu, 10 Feb 2005 20:51:08 -0800
+
+casper (0.38) hoary; urgency=low
+
+  * Eject the CD during shutdown/reboot
+    - Awful hack to copy /dev/cdroms to the live system, because the CD is
+      mounted using devfs names
+    - Add /usr/share/casper/shutdown script to casper-udeb
+    - Copy /usr/share/casper/shutdown to /etc/rc[06].d in 25configure-init
+  * Remove caspermon binary package, inadvertently enabled (not even
+    remotely ready)
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Thu, 10 Feb 2005 13:43:56 -0800
+
+casper (0.37) hoary; urgency=low
+
+  * Fix casper-udeb/runlevel template
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Tue,  8 Feb 2005 19:37:43 -0800
+
+casper (0.36) hoary; urgency=low
+
+  * Rename post.d/25disable-init-scripts to 25configure-init
+  * Add casper-udeb/runlevel, to allow the default runlevel
+    to be set
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Tue,  8 Feb 2005 19:14:16 -0800
+
+casper (0.35) hoary; urgency=low
+
+  * Preseed netcfg/wireless_essid
+  * Remove obsolete confmodule load from pre.d/12fstab
+  * Don't mount a tmpfs on /var/run; it doesn't save a huge amount of
+    snapshot space, and packages expect their directories there to be
+    persistent
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Mon,  7 Feb 2005 15:46:52 -0800
+
+casper (0.34) hoary; urgency=low
+
+  * Use casper-reconfigure in 10adduser as well
+  * Add post.d/93save-logs to save copies of the bootstrap logs to
+    /var/log/casper
+  * Stop reconfiguring fontconfig; it insists on rebuilding the entire
+    font cache, and the only benefit was to unable subpixel hints
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Wed,  2 Feb 2005 10:42:19 -0800
+
+casper (0.33) hoary; urgency=low
+
+  * Re-upload to fix borked source package
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Sun, 30 Jan 2005 12:21:07 -0800
+
+casper (0.32) hoary; urgency=low
+
+  * Factor out debconf hackery into casper-reconfigure
+  * Mount sysfs earlier, so we don't need to mess with it in 20xconfig
+  * Break 22simple-reconfig into 22fontconfig and 22gnome-panel-data, and
+    create progress bar text for them
+  * Preseed netcfg/dhcp_failed, to avoid a prompt when DHCP fails
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Sat, 29 Jan 2005 14:03:36 -0800
+
+casper (0.31) hoary; urgency=low
+
+  * Clear tty2 and print a nice message, before signalling init
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Sat, 29 Jan 2005 13:15:44 -0800
+
+casper (0.30) hoary; urgency=low
+
+  * Reconfigure fontconfig, to enable subpixel rendering based on the
+    hardware in use
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Thu, 27 Jan 2005 14:21:49 -0800
+
+casper (0.29) hoary; urgency=low
+
+  * Fix the problem described in 0.28 by preseeding a default for
+    netcfg/get_hostname
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Tue, 25 Jan 2005 23:04:03 -0800
+
+casper (0.28) hoary; urgency=low
+
+  * Suppress network configuration questions
+
+    - The goal is to make a reasonable effort to configure one interface
+    automatically, but if that is not possible, fall back to no
+    configuration.  We aren't quite there yet.
+
+    - If we fail to resolve our IP into a hostname using DNS, netcfg seems
+    to fall back to an empty value, rather than the default in the
+    template.
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Tue, 25 Jan 2005 22:55:35 -0800
+
+casper (0.27) hoary; urgency=low
+
+  * Add post.d/22simple-reconfig
+    - Reconfigure gnome-panel-data if it is installed, to set up the GNOME
+      session based on whether the system is a laptop
+    - Corresponding progress template
+    - mount /proc earlier (needed for, e.g. laptop-detect)
+  * Warn about screen blanking in X configuration progress message
+  * Simplify post.d/20xconfig and pre.d/13swap a bit
+  * Update TODO
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Sat, 22 Jan 2005 15:56:49 -0800
+
+casper (0.26) hoary; urgency=low
+
+  * Set NOPASSWD in /etc/sudoers for the initial user
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Fri, 21 Jan 2005 16:53:49 -0800
+
+casper (0.25) hoary; urgency=low
+
+  * mount /proc before signalling init, as it now uses /proc to determine
+    what is and is not a kernel thread
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Fri, 21 Jan 2005 16:04:52 -0800
+
+casper (0.24) hoary; urgency=low
+
+  * Add a backtitle properly
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Fri, 21 Jan 2005 09:07:19 -0800
+
+casper (0.23) hoary; urgency=low
+
+  * Add a backtitle
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Fri, 21 Jan 2005 09:02:01 -0800
+
+casper (0.22) hoary; urgency=low
+
+  * Search for swap on SCSI disks as well as IDE
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Wed, 19 Jan 2005 14:27:09 -0800
+
+casper (0.21) unstable; urgency=low
+
+  * Cosmetic changes to debconf templates
+  * Fix 10adduser to register debconf questions before setting their
+    values and flags
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Wed, 19 Jan 2005 14:14:20 -0800
+
+casper (0.20) hoary; urgency=low
+
+  * Remove legacy symlinks from casper/pre.d; they are now contained in
+    the relevant udebs
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Wed, 19 Jan 2005 13:22:33 -0800
+
+casper (0.19) hoary; urgency=low
+
+  * Update TODO
+  * casper-udeb Depends: md-modules
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Wed, 19 Jan 2005 11:23:51 -0800
+
+casper (0.18) hoary; urgency=low
+
+  * Enable new adduser code, using db_fset ... seen to suppress the questions
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Tue, 18 Jan 2005 15:06:48 -0800
+
+casper (0.17) hoary; urgency=low
+
+  * Convert snapshot setup to use debconf instead of hardcoded parameters
+  * Remove obselete-before-being-used username template
+  * Convert post.d/10adduser to use debconf passthrough to the passwd package,
+    and thus share its user-adding code rather than duplicating it.
+    - But don't enable it yet, since we need to find a way to prevent its
+    questions from being asked
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Tue, 18 Jan 2005 13:04:48 -0800
+
+casper (0.16) hoary; urgency=low
+
+  * casper-udeb Depends: casper-check, harddrive-detection
+  * Automatically find and enable swap devices
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Tue, 18 Jan 2005 11:23:48 -0800
+
+casper (0.15) hoary; urgency=low
+
+  * Set anna/standard_modules to false at startup to suppress unnecessary
+    udeb retrieval.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 18 Jan 2005 13:41:00 +0000
+
+casper (0.14) hoary; urgency=low
+
+  * Enable X autoconfiguration(!)
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Sat, 15 Jan 2005 02:19:58 -0800
+
+casper (0.13) hoary; urgency=low
+
+  * Rename templates so that they are named after the {pre,post}.d hook
+    which uses them
+  * Remove some unused templates
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Fri, 14 Jan 2005 10:11:02 -0800
+
+casper (0.12) hoary; urgency=low
+
+  * Add debconf templates for various things that we currently hardcode.
+    Not actually used yet due to need for testing, but having the
+    templates present greatly simplifies testing the remaining integration
+    work
+
+ -- Matt Zimmerman <mdz@ubuntu.com>  Thu, 13 Jan 2005 20:32:39 -0800
+
+casper (0.11) hoary; urgency=low
+
+  * Update post.d/20xconfig to use debconf passthrough to cdebconf
+    (requires debconf 1.4.42 and cdebconf 0.75), but leave it disabled for
+    now
+  * Create /etc/fstab in the target (this also seems to solve the problem
+    with noatime disappearing, and so should reduce snapshot utilization)
+
+ -- Matt Zimmerman <mdz@debian.org>  Thu, 13 Jan 2005 18:25:36 -0800
+
+casper (0.10) hoary; urgency=low
+
+  * Remove rc?.d/K??hwclock.sh links, to avoid changing the system clock
+    during reboot or shutdown
+
+ -- Matt Zimmerman <mdz@debian.org>  Thu, 13 Jan 2005 18:13:31 -0800
+
+casper (0.9) hoary; urgency=low
+
+  * Fix gdm autologin configuration (broken in 0.8)
+
+ -- Matt Zimmerman <mdz@debian.org>  Wed, 12 Jan 2005 10:52:05 -0800
+
+casper (0.8) hoary; urgency=low
+
+  * Add debian-installer/casper-udeb/title template, to specify more
+    readable menu item text
+  * Create /usr/lib/casper/{pre,post}.d and move all of our internal logic
+    there
+  * Create temporary symlinks in pre.d for the prebaseconfig.d items we
+    want
+  * Convert errors into proper error dialogs
+  * Make some pre.d scripts idempotent, for ease of testing
+
+ -- Matt Zimmerman <mdz@debian.org>  Tue, 11 Jan 2005 16:59:35 -0800
+
+casper (0.7) hoary; urgency=low
+
+  * Disable X configuration temporarily; need to resolve debconf issues
+
+ -- Matt Zimmerman <mdz@canonical.com>  Tue, 11 Jan 2005 13:14:43 -0800
+
+casper (0.6) hoary; urgency=low
+
+  * Allow "modprobe ext2" to fail; apparently it's sometimes compiled in
+
+ -- Matt Zimmerman <mdz@debian.org>  Tue, 11 Jan 2005 12:12:28 -0800
+
+casper (0.5) hoary; urgency=low
+
+  * Attempt to configure X
+    - This doesn't work very well yet (PCI BusID doesn't seem to get
+    updated, for example), so we still don't start gdm by default)
+  * Conditionalize some of the configuration code, so we automatically do
+    the right thing if gdm or X isn't installed
+  * Add German translation from Andreas Mueller
+  * modprobe ext2, to let powerpc work (this should probably happen
+    elsewhere, but for now...)
+
+ -- Matt Zimmerman <mdz@debian.org>  Sun,  9 Jan 2005 17:49:56 -0800
+
+casper (0.4) hoary; urgency=low
+
+  * Mount tmpfs on /tmp and /var/run, should save many writes to the snapshot
+
+ -- Matt Zimmerman <mdz@debian.org>  Fri,  7 Jan 2005 18:35:26 -0800
+
+casper (0.3) hoary; urgency=low
+
+  * Disable anacron and postfix startup
+  * Don't cripple /bin/apt-install in d-i (this was a workaround to
+    prevent d-i from installing packages which should have been present in
+    the filesystem image anyway, but weren't)
+
+ -- Matt Zimmerman <mdz@debian.org>  Fri,  7 Jan 2005 18:10:55 -0800
+
+casper (0.2) hoary; urgency=low
+
+  * Use mount --move to move the cdrom mount point, so that we can unmount
+    /initrd and free up the memory used by d-i
+  * Use /dev/ram1 rather than /dev/ram0 for the COW stuff, since /dev/ram0
+    is used for initrds and we want to avoid confusion
+  * Organize casper-udeb.postinst into shell functions
+  * Add a progress bar
+  * Add a debian/compat file (version 4)
+
+ -- Matt Zimmerman <mdz@debian.org>  Fri,  7 Jan 2005 08:01:21 -0800
+
+casper (0.1) hoary; urgency=low
+
+  * Initial Release.
+
+ -- Matt Zimmerman <mdz@canonical.com>  Wed,  5 Jan 2005 14:30:28 -0800
