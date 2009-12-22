@@ -347,16 +347,16 @@ void CGUIWindowFileManager::UpdateButtons()
    if ( m_bViewSource )
    {
     if (m_strSourceDirectory.IsEmpty())
-     bSortOrder=g_stSettings.m_bMyFilesSourceRootSortOrder;
+     bSortOrder=g_settings.m_bMyFilesSourceRootSortOrder;
     else
-     bSortOrder=g_stSettings.m_bMyFilesSourceSortOrder;
+     bSortOrder=g_settings.m_bMyFilesSourceSortOrder;
    }
    else
    {
     if (m_strDestDirectory.IsEmpty())
-     bSortOrder=g_stSettings.m_bMyFilesDestRootSortOrder;
+     bSortOrder=g_settings.m_bMyFilesDestRootSortOrder;
     else
-     bSortOrder=g_stSettings.m_bMyFilesDestSortOrder;
+     bSortOrder=g_settings.m_bMyFilesDestSortOrder;
    }
 
    if (bSortOrder)

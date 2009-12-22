@@ -116,7 +116,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
-  SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+  SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
 
   ManageDisplay();
 
@@ -427,8 +427,8 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     verts[i].y -= 0.5;
   }
 
-  float contrast   = g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f;
-  float blacklevel = g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f;
+  float contrast   = g_settings.m_currentVideoSettings.m_Contrast * 0.02f;
+  float blacklevel = g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f;
 
   D3DXMATRIX temp, mat;
   D3DXMatrixIdentity(&mat);

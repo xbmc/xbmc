@@ -343,7 +343,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
   // virtual music window which returns the last open music window (aka the music start window)
   if (iWindowID == WINDOW_MUSIC)
   {
-    iWindowID = g_stSettings.m_iMyMusicStartWindow;
+    iWindowID = g_settings.m_iMyMusicStartWindow;
     // ensure the music virtual window only returns music files and music library windows
     if (iWindowID != WINDOW_MUSIC_NAV)
       iWindowID = WINDOW_MUSIC_FILES;
@@ -353,7 +353,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
   // virtual video window which returns the last open video window (aka the video start window)
   if (iWindowID == WINDOW_VIDEOS)
   {
-    iWindowID = g_stSettings.m_iVideoStartWindow;
+    iWindowID = g_settings.m_iVideoStartWindow;
     // ensure the virtual video window only returns video windows
     if (iWindowID != WINDOW_VIDEO_NAV)
       iWindowID = WINDOW_VIDEO_FILES;

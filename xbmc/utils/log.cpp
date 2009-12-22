@@ -142,7 +142,7 @@ bool CLog::Init(const char* path)
   CSingleLock waitLock(critSec);
   if (!m_file)
   {
-    // g_stSettings.m_logFolder is initialized in the CSettings constructor
+    // g_settings.m_logFolder is initialized in the CSettings constructor
     // and changed in CApplication::Create()
 #ifdef _WIN32
     CStdStringW pathW;

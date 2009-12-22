@@ -138,75 +138,69 @@ public:
   void ResetSkinSetting(const CStdString &setting);
   void ResetSkinSettings();
 
-  struct stSettings
-  {
-public:
-    CStdString m_pictureExtensions;
-    CStdString m_musicExtensions;
-    CStdString m_videoExtensions;
+  CStdString m_pictureExtensions;
+  CStdString m_musicExtensions;
+  CStdString m_videoExtensions;
 
-    CStdString m_logFolder;
+  CStdString m_logFolder;
 
-    bool m_bMyMusicSongInfoInVis;
-    bool m_bMyMusicSongThumbInVis;
+  bool m_bMyMusicSongInfoInVis;
+  bool m_bMyMusicSongThumbInVis;
 
-    CViewState m_viewStateMusicNavArtists;
-    CViewState m_viewStateMusicNavAlbums;
-    CViewState m_viewStateMusicNavSongs;
-    CViewState m_viewStateMusicShoutcast;
-    CViewState m_viewStateMusicLastFM;
-    CViewState m_viewStateVideoNavActors;
-    CViewState m_viewStateVideoNavYears;
-    CViewState m_viewStateVideoNavGenres;
-    CViewState m_viewStateVideoNavTitles;
-    CViewState m_viewStateVideoNavEpisodes;
-    CViewState m_viewStateVideoNavSeasons;
-    CViewState m_viewStateVideoNavTvShows;
-    CViewState m_viewStateVideoNavMusicVideos;
+  CViewState m_viewStateMusicNavArtists;
+  CViewState m_viewStateMusicNavAlbums;
+  CViewState m_viewStateMusicNavSongs;
+  CViewState m_viewStateMusicShoutcast;
+  CViewState m_viewStateMusicLastFM;
+  CViewState m_viewStateVideoNavActors;
+  CViewState m_viewStateVideoNavYears;
+  CViewState m_viewStateVideoNavGenres;
+  CViewState m_viewStateVideoNavTitles;
+  CViewState m_viewStateVideoNavEpisodes;
+  CViewState m_viewStateVideoNavSeasons;
+  CViewState m_viewStateVideoNavTvShows;
+  CViewState m_viewStateVideoNavMusicVideos;
 
-    CViewState m_viewStatePrograms;
-    CViewState m_viewStatePictures;
-    CViewState m_viewStateMusicFiles;
-    CViewState m_viewStateVideoFiles;
+  CViewState m_viewStatePrograms;
+  CViewState m_viewStatePictures;
+  CViewState m_viewStateMusicFiles;
+  CViewState m_viewStateVideoFiles;
 
-    bool m_bMyMusicPlaylistRepeat;
-    bool m_bMyMusicPlaylistShuffle;
-    int m_iMyMusicStartWindow;
+  bool m_bMyMusicPlaylistRepeat;
+  bool m_bMyMusicPlaylistShuffle;
+  int m_iMyMusicStartWindow;
 
-    // for scanning
-    bool m_bMyMusicIsScanning;
+  // for scanning
+  bool m_bMyMusicIsScanning;
 
-    CVideoSettings m_defaultVideoSettings;
-    CVideoSettings m_currentVideoSettings;
+  CVideoSettings m_defaultVideoSettings;
+  CVideoSettings m_currentVideoSettings;
 
-    float m_fZoomAmount;      // current zoom amount
-    float m_fPixelRatio;      // current pixel ratio
+  float m_fZoomAmount;      // current zoom amount
+  float m_fPixelRatio;      // current pixel ratio
 
-    int m_iMyVideoWatchMode;
+  int m_iMyVideoWatchMode;
 
-    bool m_bMyVideoPlaylistRepeat;
-    bool m_bMyVideoPlaylistShuffle;
-    bool m_bMyVideoNavFlatten;
-    bool m_bStartVideoWindowed;
+  bool m_bMyVideoPlaylistRepeat;
+  bool m_bMyVideoPlaylistShuffle;
+  bool m_bMyVideoNavFlatten;
+  bool m_bStartVideoWindowed;
 
-    int m_iVideoStartWindow;
+  int m_iVideoStartWindow;
 
-    int m_iMyVideoStack;
+  int m_iMyVideoStack;
 
-    int iAdditionalSubtitleDirectoryChecked;
+  int iAdditionalSubtitleDirectoryChecked;
 
-    int m_HttpApiBroadcastPort;
-    int m_HttpApiBroadcastLevel;
-    int m_nVolumeLevel;                     // measured in milliBels -60dB -> 0dB range.
-    int m_dynamicRangeCompressionLevel;     // measured in milliBels  0dB -> 30dB range.
-    int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
-    bool m_bMute;
-    int m_iSystemTimeTotalUp;    // Uptime in minutes!
+  int m_HttpApiBroadcastPort;
+  int m_HttpApiBroadcastLevel;
+  int m_nVolumeLevel;                     // measured in milliBels -60dB -> 0dB range.
+  int m_dynamicRangeCompressionLevel;     // measured in milliBels  0dB -> 30dB range.
+  int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
+  bool m_bMute;
+  int m_iSystemTimeTotalUp;    // Uptime in minutes!
 
-    VOICE_MASK m_karaokeVoiceMask[4];
-  };
-
-  stSettings m_stSettings;
+  VOICE_MASK m_karaokeVoiceMask[4];
 
   struct RssSet
   {
@@ -314,4 +308,3 @@ protected:
 };
 
 extern class CSettings g_settings;
-extern struct CSettings::stSettings& g_stSettings;

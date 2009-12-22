@@ -2852,10 +2852,10 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
   if (strCurMask.CompareNoCase("None") == 0 || strCurMask.CompareNoCase("Custom") == 0 )
   {
 #define XVOICE_MASK_PARAM_DISABLED (-1.0f)
-    g_stSettings.m_karaokeVoiceMask[dwPort].energy = XVOICE_MASK_PARAM_DISABLED;
-    g_stSettings.m_karaokeVoiceMask[dwPort].pitch = XVOICE_MASK_PARAM_DISABLED;
-    g_stSettings.m_karaokeVoiceMask[dwPort].whisper = XVOICE_MASK_PARAM_DISABLED;
-    g_stSettings.m_karaokeVoiceMask[dwPort].robotic = XVOICE_MASK_PARAM_DISABLED;
+    g_settings.m_karaokeVoiceMask[dwPort].energy = XVOICE_MASK_PARAM_DISABLED;
+    g_settings.m_karaokeVoiceMask[dwPort].pitch = XVOICE_MASK_PARAM_DISABLED;
+    g_settings.m_karaokeVoiceMask[dwPort].whisper = XVOICE_MASK_PARAM_DISABLED;
+    g_settings.m_karaokeVoiceMask[dwPort].robotic = XVOICE_MASK_PARAM_DISABLED;
     return;
   }
 
@@ -2885,7 +2885,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
               if (pChild->FirstChild())
               {
                 CStdString strName = pChild->FirstChild()->Value();
-                g_stSettings.m_karaokeVoiceMask[dwPort].energy = (float) atof(strName.c_str());
+                g_settings.m_karaokeVoiceMask[dwPort].energy = (float) atof(strName.c_str());
               }
             }
             else if (strValue.CompareNoCase("fPitchScale") == 0)
@@ -2893,7 +2893,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
               if (pChild->FirstChild())
               {
                 CStdString strName = pChild->FirstChild()->Value();
-                g_stSettings.m_karaokeVoiceMask[dwPort].pitch = (float) atof(strName.c_str());
+                g_settings.m_karaokeVoiceMask[dwPort].pitch = (float) atof(strName.c_str());
               }
             }
             else if (strValue.CompareNoCase("fWhisperValue") == 0)
@@ -2901,7 +2901,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
               if (pChild->FirstChild())
               {
                 CStdString strName = pChild->FirstChild()->Value();
-                g_stSettings.m_karaokeVoiceMask[dwPort].whisper = (float) atof(strName.c_str());
+                g_settings.m_karaokeVoiceMask[dwPort].whisper = (float) atof(strName.c_str());
               }
             }
             else if (strValue.CompareNoCase("fRoboticValue") == 0)
@@ -2909,7 +2909,7 @@ void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *p
               if (pChild->FirstChild())
               {
                 CStdString strName = pChild->FirstChild()->Value();
-                g_stSettings.m_karaokeVoiceMask[dwPort].robotic = (float) atof(strName.c_str());
+                g_settings.m_karaokeVoiceMask[dwPort].robotic = (float) atof(strName.c_str());
               }
             }
           }

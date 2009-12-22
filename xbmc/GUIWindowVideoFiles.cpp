@@ -77,7 +77,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");
-        g_stSettings.m_iVideoStartWindow = GetID();
+        g_settings.m_iVideoStartWindow = GetID();
         CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
         // reset directory path, as we have effectively cleared it here
         m_history.ClearPathHistory();
@@ -169,10 +169,10 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         // toggle between the following states:
         //   0 : no stacking
         //   1 : stacking
-        g_stSettings.m_iMyVideoStack++;
+        g_settings.m_iMyVideoStack++;
 
-        if (g_stSettings.m_iMyVideoStack > STACK_SIMPLE)
-          g_stSettings.m_iMyVideoStack = STACK_NONE;
+        if (g_settings.m_iMyVideoStack > STACK_SIMPLE)
+          g_settings.m_iMyVideoStack = STACK_NONE;
 
         g_settings.Save();
         UpdateButtons();
@@ -247,12 +247,12 @@ void CGUIWindowVideoFiles::UpdateButtons()
       CONTROL_ENABLE(CONTROL_STACK);
       if (stack->GetControlType() == CGUIControl::GUICONTROL_RADIO)
       {
-        SET_CONTROL_SELECTED(GetID(), CONTROL_STACK, g_stSettings.m_iMyVideoStack == STACK_SIMPLE);
+        SET_CONTROL_SELECTED(GetID(), CONTROL_STACK, g_settings.m_iMyVideoStack == STACK_SIMPLE);
         SET_CONTROL_LABEL(CONTROL_STACK, 14000);  // Stack
       }
       else
       {
-        SET_CONTROL_LABEL(CONTROL_STACK, g_stSettings.m_iMyVideoStack + 14000);
+        SET_CONTROL_LABEL(CONTROL_STACK, g_settings.m_iMyVideoStack + 14000);
       }
     }
     else
@@ -283,7 +283,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
     m_stackingAvailable = false;
     m_cleaningAvailable = false;
   }
-  else if (!items.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
+  else if (!items.IsStack() && g_settings.m_iMyVideoStack != STACK_NONE)
     items.Stack();
 
   if ((!info2.strContent.IsEmpty() && !info2.strContent.Equals("None")) && items.GetContent().IsEmpty())

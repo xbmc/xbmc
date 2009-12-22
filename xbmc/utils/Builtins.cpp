@@ -436,7 +436,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     // set fullscreen or windowed
     if (params.size() >= 2 && params[1] == "1")
-      g_stSettings.m_bStartVideoWindowed = true;
+      g_settings.m_bStartVideoWindowed = true;
 
     // ask if we need to check guisettings to resume
     bool askToResume = true;
@@ -599,7 +599,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
       {
 #ifdef HAS_WEB_SERVER
-        if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+        if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
           g_application.getApplicationMessenger().HttpApi(g_application.m_pPlayer->IsRecording()?"broadcastlevel; RecordStopping;1":"broadcastlevel; RecordStarting;1");
 #endif
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
@@ -642,11 +642,11 @@ int CBuiltins::Execute(const CStdString& execString)
       switch (iPlaylist)
       {
       case PLAYLIST_MUSIC:
-        g_stSettings.m_bMyMusicPlaylistShuffle = g_playlistPlayer.IsShuffled(iPlaylist);
+        g_settings.m_bMyMusicPlaylistShuffle = g_playlistPlayer.IsShuffled(iPlaylist);
         g_settings.Save();
         break;
       case PLAYLIST_VIDEO:
-        g_stSettings.m_bMyVideoPlaylistShuffle = g_playlistPlayer.IsShuffled(iPlaylist);
+        g_settings.m_bMyVideoPlaylistShuffle = g_playlistPlayer.IsShuffled(iPlaylist);
         g_settings.Save();
       }
 
@@ -680,11 +680,11 @@ int CBuiltins::Execute(const CStdString& execString)
       switch (iPlaylist)
       {
       case PLAYLIST_MUSIC:
-        g_stSettings.m_bMyMusicPlaylistRepeat = (state == PLAYLIST::REPEAT_ALL);
+        g_settings.m_bMyMusicPlaylistRepeat = (state == PLAYLIST::REPEAT_ALL);
         g_settings.Save();
         break;
       case PLAYLIST_VIDEO:
-        g_stSettings.m_bMyVideoPlaylistRepeat = (state == PLAYLIST::REPEAT_ALL);
+        g_settings.m_bMyVideoPlaylistRepeat = (state == PLAYLIST::REPEAT_ALL);
         g_settings.Save();
       }
 
