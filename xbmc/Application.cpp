@@ -306,7 +306,6 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_pXbmcHttp = NULL;
   m_prevMedia="";
 #endif
-  m_pFileZilla = NULL;
   m_pPlayer = NULL;
   m_bScreenSave = false;
   m_dpms = NULL;

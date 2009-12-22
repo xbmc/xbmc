@@ -61,7 +61,6 @@ class CFileItemList;
 #endif
 
 class CWebServer;
-class CXBFileZilla;
 class CSNTPClient;
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
@@ -224,7 +223,6 @@ public:
 #endif
   CSNTPClient *m_psntpClient;
   CWebServer* m_pWebServer;
-  CXBFileZilla* m_pFileZilla;
   IPlayer* m_pPlayer;
 
   inline bool IsInScreenSaver() { return m_bScreenSave; };

@@ -778,9 +778,6 @@ void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
   it = settingsMap.find("masterlock.startuplock");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
-    it = settingsMap.find("autodetect.nickname");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
 }
 
 

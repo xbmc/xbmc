@@ -88,13 +88,6 @@ public:
   bool value;
 };
 
-struct VOICE_MASK {
-  float energy;
-  float pitch;
-  float robotic;
-  float whisper;
-};
-
 class CGUISettings;
 class TiXmlElement;
 class TiXmlNode;
@@ -199,8 +192,6 @@ public:
   int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
   bool m_bMute;
   int m_iSystemTimeTotalUp;    // Uptime in minutes!
-
-  VOICE_MASK m_karaokeVoiceMask[4];
 
   struct RssSet
   {
