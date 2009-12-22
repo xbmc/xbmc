@@ -44,8 +44,8 @@ case "$1" in
          \${misc:Depends},"
         if [ $(lsb_release -cs) = "karmic" ]; then
             XBMC_LIVE_DEPENDS="$XBMC_LIVE_DEPENDS
-         devkit-disks,
-         devkit-power,"
+         devicekit-disks,
+         devicekit-power,"
         fi
         printf "$XBMC_LIVE_DEPENDS"
 esac
