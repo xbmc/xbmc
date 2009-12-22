@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addoninfo>
+    <!-- (required) guuid: unique identifier of this addon
+    guuids can be generated online at sites such as http://www.famkruithof.net/uuid/uuidgen -->
+    <guid>ec5744f0-cf27-11de-8a39-0800200c9a66</guid>
+
+    <!-- (required) type:
+    1:  visualization
+    2:  skin
+    3:  pvrdll
+    4:  script
+    5:  scraper
+    6:  screensaver
+    7:  plugin-pvr
+    8:  plugin-video
+    9:  plugin-music
+    10: plugin-program
+    11: plugin-pictures
+    12: plugin-weather -->
+    <type>4</type>
+
+    <!-- (required) Title -->
+    <title>RSS Editor</title>
+
+    <!-- (required) Major.minor.build -->
+    <version>1.5.5</version>
+
+    <!-- (required) author name & email.  at least one author name is required -->
+    <authors>
+        <author name="rwparris2" email="rwparris2@xbmc.org" />
+    </authors>
+
+    <!-- (required) Short description of addon. -->
+    <summary>A Script for editing XBMC's built in RSS Ticker</summary>
+
+    <!-- minimum revision of xbmc your addon will run on.  Leave blank all for revisions-->
+    <minrevision></minrevision>
+
+    <!--patforms compatible with your addon.   xbox, osx, windows, linux, or all -->
+    <platforms>
+        <platform>all</platform>
+    </platforms>
+
+    <!-- (optional) The License the addon is released under.-->
+    <license>GPL</license>
+</addoninfo>

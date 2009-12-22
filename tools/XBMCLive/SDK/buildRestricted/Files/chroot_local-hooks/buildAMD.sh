@@ -25,7 +25,7 @@ cd ./Files
 for modulesdir in /lib/modules/*
 do
 	kernelVersion=$(basename $modulesdir)
-	apt-get install linux-headers-$kernelVersion
+	apt-get -y install linux-headers-$kernelVersion
 
 	pushd .
 	cd usr/src/fglrx-*/
@@ -39,14 +39,17 @@ do
 	cd $modulesdir
 	mkdir -p updates/dkms
 	
+	cp /tmp/fglrx.ko updates/dkms
 	depmod -a $kernelVersion
 	tar cvf /tmp/modules.tar modules.* updates
+	rm updates/dkms/fglrx.ko
 	popd
 
 	pushd .
 	mkdir -p lib/modules/$kernelVersion
 	cd lib/modules/$kernelVersion
 	tar xvf /tmp/modules.tar
+	rm /tmp/modules.tar
 	popd
 done
 

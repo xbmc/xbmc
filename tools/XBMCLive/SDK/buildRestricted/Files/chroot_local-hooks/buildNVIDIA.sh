@@ -13,7 +13,10 @@ cd /root
 sh ./NVIDIA-Linux-*.run --extract-only
 
 cd NVIDIA-Linux-*
+
+# TODO, make it cleaner
 mv * usr/bin
+
 pushd .
 cd usr/lib
 ln -s libcuda.so.* libcuda.so.1
@@ -68,15 +71,18 @@ do
 	pushd .
 	cd $modulesdir
 	mkdir -p updates/dkms
+
 	cp /tmp/nvidia.ko updates/dkms
 	depmod -a $kernelVersion
 	tar cvf /tmp/modules.tar modules.* updates
+	rm updates/dkms/nvidia.ko
 	popd
 
 	pushd .
 	mkdir -p lib/modules/$kernelVersion
 	cd lib/modules/$kernelVersion
 	tar xvf /tmp/modules.tar
+	rm /tmp/modules.tar
 	popd
 done
 

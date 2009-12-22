@@ -6,6 +6,7 @@ WORKDIR=workarea
 . $THISDIR/getInstallers.sh
 . $THISDIR/mkConfig.sh
 
+# USE_LOCAL_INSTALLERS="yes"
 
 build()
 {
@@ -36,8 +37,14 @@ fi
 #
 #
 
-# Get latest installers if instructed
-getInstallers
+# Get latest installers 
+if [ -z "$USE_LOCAL_INSTALLERS" ]; then
+	rm *.run &> /dev/null
+	getInstallers
+else
+	mv NVIDIA*.run Files/chroot_local-includes/root
+	mv ati*.run Files/chroot_local-includes/root
+fi
 
 # Clean any previous run
 rm -rf *.ext3 &> /dev/null

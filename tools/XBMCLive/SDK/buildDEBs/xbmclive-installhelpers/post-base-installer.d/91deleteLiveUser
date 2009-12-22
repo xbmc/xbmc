@@ -4,5 +4,12 @@
 in-target deluser --quiet xbmc
 in-target sed -i -e "/XBMC/d" /etc/sudoers
 
-# TODO clean /etc/PolicyKit/PolicyKit.conf
-# sed -i -e 's%<config version="0.1">%&\n\n<match user="'${user_name}'">\n    <return result="yes"/>\n</match>%' /etc/PolicyKit/PolicyKit.conf
+cat > /target/tmp/editPolkit.sh << 'EOF'
+xbmcUser=$(getent passwd 1000 | sed -e 's/\:.*//')
+sed -i -e "s/xbmc/$xbmcUser/" /etc/PolicyKit/PolicyKit.conf
+EOF
+
+# Modify /etc/PolicyKit/PolicyKit.conf
+in-target sh /tmp/editPolkit.sh
+
+rm /target/tmp/editPolkit.sh

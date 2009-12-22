@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<repo>
+    <url>http://passion-xbmc.googlecode.com/svn/</url>
+    <root>/trunk</root>
+    <structure name="plugins" noffset="-2" install="" ioffset="2" voffset="0" />
+    <structure name="scrapers" noffset="-2" install="system" ioffset="2" voffset="0" />
+    <structure name="scripts" noffset="-1" install="" ioffset="2" voffset="0" />
+    <structure name="skin" noffset="-1" install="" ioffset="2" voffset="0"  /> 
+</repo>
