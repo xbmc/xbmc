@@ -2062,7 +2062,7 @@ bool CLinuxRendererGL::LoadNV12Textures(int source)
   // calculate the source rectangle
   for(int field = 0; field < MAX_FIELDS; field++)
   {
-    for(int plane = 0; plane < MAX_PLANES-1; plane++)
+    for(int plane = 0; plane < 2; plane++)
     {
       YUVPLANE& p = fields[field][plane];
 
@@ -2152,9 +2152,9 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
     CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
     m_pboused = true;
 
-    glGenBuffersARB(MAX_PLANES-1, pbo);
+    glGenBuffersARB(2, pbo);
 
-    for (int i = 0; i < MAX_PLANES-1; i++)
+    for (int i = 0; i < 2; i++)
     {
       glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
       glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i], 0, GL_STREAM_DRAW_ARB);
@@ -2168,14 +2168,14 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
     CLog::Log(LOGNOTICE, "GL: Not using GL_ARB_pixel_buffer_object");
     m_pboused = false;
 
-    for (int i = 0; i < MAX_PLANES-1; i++)
+    for (int i = 0; i < 2; i++)
       im.plane[i] = new BYTE[im.planesize[i]];
   }
 
   glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)
   {
-    for(int p = 0;p<MAX_PLANES-1;p++)
+    for(int p = 0;p<2;p++)
     {
       if (!glIsTexture(fields[f][p].id))
       {
@@ -2200,14 +2200,14 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
 
     if(m_renderMethod & RENDER_POT)
     {
-      for(int p = 0; p < MAX_PLANES-1; p++)
+      for(int p = 0; p < 2; p++)
       {
         planes[p].texwidth  = NP2(planes[p].texwidth);
         planes[p].texheight = NP2(planes[p].texheight);
       }
     }
 
-    for(int p = 0; p < MAX_PLANES-1; p++)
+    for(int p = 0; p < 2; p++)
     {
       YUVPLANE &plane = planes[p];
       if (plane.texwidth * plane.texheight == 0)
@@ -2251,7 +2251,7 @@ bool CLinuxRendererGL::DeleteNV12Texture(int index)
   g_graphicsContext.BeginPaint();  //FIXME
   for(int f = 0;f<MAX_FIELDS;f++)
   {
-    for(int p = 0;p<MAX_PLANES-1;p++)
+    for(int p = 0;p<2;p++)
     {
       if( fields[f][p].id )
       {
@@ -2266,7 +2266,7 @@ bool CLinuxRendererGL::DeleteNV12Texture(int index)
   }
   g_graphicsContext.EndPaint();
 
-  for(int p = 0;p<MAX_PLANES-1;p++)
+  for(int p = 0;p<2;p++)
   {
     if (pbo[p])
     {
