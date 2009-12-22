@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo ""
-echo "Adjust defaut groups for new users..."
+echo "Adjust default groups for new users..."
 echo ""
 
 # Probably not needed at all now
