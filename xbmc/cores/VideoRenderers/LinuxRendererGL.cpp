@@ -992,7 +992,7 @@ void CLinuxRendererGL::LoadShaders(int field)
   bool err = false;
 
 #ifdef HAVE_LIBVDPAU
-  if ((requestedMethod == RENDER_METHOD_VDPAU) && g_VDPAU)
+  if (g_VDPAU)
   {
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
     m_renderMethod = RENDER_VDPAU;
