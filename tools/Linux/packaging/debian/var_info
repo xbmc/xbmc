@@ -33,6 +33,21 @@ case "$1" in
 	    sed 's/^[^[:space:]]\+\?[[:space:]]\+\?[^[:space:]]\+\?[[:space:]]\+\?\(.*\)$/\1/')
 	printf "$LIBCURL_DEPENDS"
 	;;
+    XBMC_LIVE_DEPENDS)
+        XBMC_LIVE_DEPENDS="xbmc-standalone (= \${binary:Version}),
+         policykit,
+         openssh-server,
+         \${python:Depends},
+         python-apt,
+         adduser,
+         sudo,
+         \${misc:Depends},"
+        if [ $(lsb_release -cs) = "karmic" ]; then
+            XBMC_LIVE_DEPENDS="$XBMC_LIVE_DEPENDS
+         devkit-disks,
+         devkit-power,"
+        fi
+        printf "$XBMC_LIVE_DEPENDS"
 esac
 
 exit 0
