@@ -21,9 +21,9 @@ ln -s libGLcore.so.* libGLcore.so.1
 ln -s libGL.so.* libGL.so.1
 ln -s libnvidia-cfg.so.* libnvidia-cfg.so.1
 ln -s libnvidia-tls.so.* libnvidia-tls.so.1
-ln -s libvdpau_nvidia.so.* libvdpau_nvidia.so.1
+ln -s vdpau/libvdpau_nvidia.so.* libvdpau_nvidia.so.1
 ln -s libvdpau.so.* libvdpau.so.1
-ln -s libvdpau_trace.so.* libvdpau_trace.so.1
+ln -s vdpau/libvdpau_trace.so.* libvdpau_trace.so.1
 ln -s libcuda.so.1 libcuda.so
 ln -s libGLcore.so.1 libGLcore.so
 ln -s libGL.so.1 libGL.so
