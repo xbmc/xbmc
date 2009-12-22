@@ -796,16 +796,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   {
     GetInteger(pElement, "volumelevel", m_nVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
     GetInteger(pElement, "dynamicrangecompression", m_dynamicRangeCompressionLevel, VOLUME_DRC_MINIMUM, VOLUME_DRC_MINIMUM, VOLUME_DRC_MAXIMUM);
-    for (int i = 0; i < 4; i++)
-    {
-      CStdString setting;
-      setting.Format("karaoke%i", i);
-#define XVOICE_MASK_PARAM_DISABLED (-1.0f)
-      GetFloat(pElement, setting + "energy", m_karaokeVoiceMask[i].energy, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
-      GetFloat(pElement, setting + "pitch", m_karaokeVoiceMask[i].pitch, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
-      GetFloat(pElement, setting + "whisper", m_karaokeVoiceMask[i].whisper, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
-      GetFloat(pElement, setting + "robotic", m_karaokeVoiceMask[i].robotic, XVOICE_MASK_PARAM_DISABLED, XVOICE_MASK_PARAM_DISABLED, 1.0f);
-    }
   }
 
   LoadCalibration(pRootElement, strSettingsFile);
@@ -965,15 +955,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   if (!pNode) return false;
   XMLUtils::SetInt(pNode, "volumelevel", m_nVolumeLevel);
   XMLUtils::SetInt(pNode, "dynamicrangecompression", m_dynamicRangeCompressionLevel);
-  for (int i = 0; i < 4; i++)
-  {
-    CStdString setting;
-    setting.Format("karaoke%i", i);
-    XMLUtils::SetFloat(pNode, setting + "energy", m_karaokeVoiceMask[i].energy);
-    XMLUtils::SetFloat(pNode, setting + "pitch", m_karaokeVoiceMask[i].pitch);
-    XMLUtils::SetFloat(pNode, setting + "whisper", m_karaokeVoiceMask[i].whisper);
-    XMLUtils::SetFloat(pNode, setting + "robotic", m_karaokeVoiceMask[i].robotic);
-  }
 
   SaveCalibration(pRoot);
 
