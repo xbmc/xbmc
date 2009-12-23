@@ -92,6 +92,7 @@ makeDEBs()
 echo "Selecting and downloading the kernel package..."
 packageName=$(getPackage)
 if [ ! -f "$packageName" ]; then
+	echo "Error retrieving installer kernel, exiting..."
 	exit 1
 fi
 
