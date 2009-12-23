@@ -36,6 +36,7 @@ fi
 #
 #
 #
+mkdir -p Files/chroot_local-includes/root &> /dev/null
 
 # Get latest installers 
 if [ -z "$USE_LOCAL_INSTALLERS" ]; then
