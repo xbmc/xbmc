@@ -783,6 +783,7 @@ void CMPCOutputThread::Process()
 CCrystalHD* CCrystalHD::m_pInstance = NULL;
 
 CCrystalHD::CCrystalHD() :
+  m_Device(NULL),
   m_Inited(false),
   m_IsConfigured(false),
   m_drop_state(false),
