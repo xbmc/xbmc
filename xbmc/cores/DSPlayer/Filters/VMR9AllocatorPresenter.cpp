@@ -320,6 +320,8 @@ void CVMR9AllocatorPresenter::DeleteVmrSurfaces()
 //IVMRSurfaceAllocator9
 STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9AllocationInfo *lpAllocInfo, DWORD *lpNumBuffers)
 {
+  CAutoLock cAutoLock(this);
+  CAutoLock cRenderLock(&m_RenderLock);
   m_pPrevEndFrame=0;
   m_vmrState = RENDER_STATE_RUNNING;
   m_bRenderCreated = true;
@@ -375,15 +377,17 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
 
   //INITIALIZE VIDEO SURFACE THERE
   hr = CreateSurfaces();
-  
+
   if ( FAILED( hr ) )
     return hr;
-  if (m_pVideoSurface[0])
-    hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[0], NULL, 0);
-  else if(m_pVideoSurface[1])
-    hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[1], NULL, 0);
-  else
-    hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[2], NULL, 0);
+
+  for( int i = 0; i < DS_MAX_3D_SURFACE-1; ++i ) 
+  {
+    hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[i], NULL, 0);
+    if (SUCCEEDED(hr))
+      break;
+  }
+
   if ( FAILED( hr ) )
   {
     CLog::Log(LOGERROR,"%s ColorFill returned:0x%x",__FUNCTION__,hr);
