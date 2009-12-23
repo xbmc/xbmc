@@ -167,7 +167,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   m_bPassthrough = bPassthrough;
   m_uiBytesPerSecond = uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
 
-  m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
+  m_nCurrentVolume = g_settings.m_nVolumeLevel;
 
   m_dwPacketSize = iChannels*(uiBitsPerSample/8)*512;
   m_dwNumPackets = 16;
@@ -485,6 +485,11 @@ unsigned int CPulseAudioDirectSound::AddPackets(const void* data, unsigned int l
 float CPulseAudioDirectSound::GetCacheTime()
 {
   return (float)(m_uiBufferSize - GetSpace()) / (float)m_uiBytesPerSecond;
+}
+
+float CPulseAudioDirectSound::GetCacheTotal()
+{
+  return (float)m_uiBufferSize / (float)m_uiBytesPerSecond;
 }
 
 float CPulseAudioDirectSound::GetDelay()

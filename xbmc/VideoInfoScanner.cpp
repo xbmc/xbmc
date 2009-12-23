@@ -209,7 +209,7 @@ namespace VIDEO
       if (m_pObserver)
         m_pObserver->OnStateChanged(FETCHING_MOVIE_INFO);
 
-      CDirectory::GetDirectory(strDirectory,items,g_stSettings.m_videoExtensions);
+      CDirectory::GetDirectory(strDirectory,items,g_settings.m_videoExtensions);
       items.m_strPath = strDirectory;
       items.Stack();
       int numFilesInFolder = GetPathHash(items, hash);
@@ -243,7 +243,7 @@ namespace VIDEO
 
       if (iFound == 1 && !settings.parent_name_root)
       {
-        CDirectory::GetDirectory(strDirectory,items,g_stSettings.m_videoExtensions);
+        CDirectory::GetDirectory(strDirectory,items,g_settings.m_videoExtensions);
         items.m_strPath = strDirectory;
         GetPathHash(items, hash);
         bSkip = true;
@@ -269,7 +269,7 @@ namespace VIDEO
       if (m_pObserver)
         m_pObserver->OnStateChanged(FETCHING_MUSICVIDEO_INFO);
 
-      CDirectory::GetDirectory(strDirectory,items,g_stSettings.m_videoExtensions);
+      CDirectory::GetDirectory(strDirectory,items,g_settings.m_videoExtensions);
       items.m_strPath = strDirectory;
 
       int numFilesInFolder = GetPathHash(items, hash);
@@ -662,7 +662,7 @@ namespace VIDEO
     // load subfolder
     CFileItemList items;
     CLog::Log(LOGDEBUG, "%s - processing dir: %s", __FUNCTION__, strPath.c_str());
-    CDirectory::GetDirectory(strPath, items, g_stSettings.m_videoExtensions, true);
+    CDirectory::GetDirectory(strPath, items, g_settings.m_videoExtensions, true);
     if (m_info.strContent.Equals("movies"))
       items.Stack();
 
@@ -688,7 +688,7 @@ namespace VIDEO
 
     if (item->m_bIsFolder)
     {
-      CUtil::GetRecursiveListing(item->m_strPath,items,g_stSettings.m_videoExtensions,true);
+      CUtil::GetRecursiveListing(item->m_strPath,items,g_settings.m_videoExtensions,true);
       CStdString hash, dbHash;
       int numFilesInFolder = GetPathHash(items, hash);
 

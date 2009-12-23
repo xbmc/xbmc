@@ -5,7 +5,7 @@ include $(SUBDIR)../common.mak
 LIBVERSION := $(lib$(NAME)_VERSION)
 LIBMAJOR   := $(lib$(NAME)_VERSION_MAJOR)
 
-ifeq ($(CONFIG_STATIC),yes)
+ifdef CONFIG_STATIC
 all: $(SUBDIR)$(LIBNAME)
 
 install-libs: install-lib$(NAME)-static
@@ -36,7 +36,8 @@ $(SUBDIR)x86/%.o: $(SUBDIR)x86/%.asm
 
 clean::
 	rm -f $(addprefix $(SUBDIR),*-example$(EXESUF) *-test$(EXESUF) $(CLEANFILES) $(CLEANSUFFIXES) $(LIBSUFFIXES)) \
-	    $(addprefix $(SUBDIR), $(foreach suffix,$(CLEANSUFFIXES),$(addsuffix /$(suffix),$(DIRS))))
+	    $(addprefix $(SUBDIR), $(foreach suffix,$(CLEANSUFFIXES),$(addsuffix /$(suffix),$(DIRS)))) \
+	    $(HOSTOBJS) $(HOSTPROGS)
 
 distclean:: clean
 	rm -f  $(addprefix $(SUBDIR),$(DISTCLEANSUFFIXES)) \

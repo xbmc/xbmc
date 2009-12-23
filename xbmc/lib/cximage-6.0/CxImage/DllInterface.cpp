@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
+#define strcmpi _strcmpi
 #endif
 
 #define RESAMPLE_QUALITY 0

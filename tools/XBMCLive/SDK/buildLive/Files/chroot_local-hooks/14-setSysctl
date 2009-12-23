@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo ""
+echo "Set sysctl.conf..."
+echo ""
+
+echo "dev.cdrom.lock=0" >> /etc/sysctl.conf
+

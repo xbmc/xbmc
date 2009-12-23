@@ -42,7 +42,7 @@
 					<posy>60</posy>
 					<width>440</width>
 					<height>30</height>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<label>-</label>
 					<align>right</align>
 					<aligny>bottom</aligny>
@@ -143,7 +143,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<textcolor>blue</textcolor>
-					<font>font12caps</font>
+					<font>font12</font>
 					<label>($INFO[Container(503).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(503).CurrentPage]/$INFO[Container(503).NumPages])</label>
 					<visible>Control.IsVisible(503)</visible>
 				</control>
@@ -218,7 +218,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<textcolor>blue</textcolor>
-					<font>font12caps</font>
+					<font>font12</font>
 					<label>($INFO[Container(504).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(504).CurrentPage]/$INFO[Container(504).NumPages])</label>
 					<visible>Control.IsVisible(504)</visible>
 				</control>

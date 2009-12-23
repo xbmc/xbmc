@@ -341,7 +341,7 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     m_presentfield = sync;
     m_presentstep  = PRESENT_FLIP;
     m_presentsource = source;
-    m_presentmethod = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
+    m_presentmethod = g_settings.m_currentVideoSettings.m_InterlaceMethod;
 
     /* select render method for auto */
     if(m_presentmethod == VS_INTERLACEMETHOD_AUTO)

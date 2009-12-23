@@ -1,0 +1,14 @@
+#!/bin/sh
+
+echo ""
+echo "Set hts_tvheadend web credentials..."
+echo ""
+
+# dpkg-reconfigure hts-tvheadend
+
+cat > /home/hts/.hts/tvheadend/superuser << EOF
+{
+"username": "xbmc",
+"password": "xbmc"
+}
+EOF

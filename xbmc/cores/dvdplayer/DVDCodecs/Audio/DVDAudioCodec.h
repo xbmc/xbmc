@@ -39,7 +39,7 @@ extern "C" {
     #include <ffmpeg/avcodec.h>
   #endif
 #else
-  #include "avcodec.h"
+  #include "libavcodec/avcodec.h"
 #endif
 }
 #endif

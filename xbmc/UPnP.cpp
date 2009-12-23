@@ -1476,9 +1476,9 @@ CUPnPRenderer::UpdateState()
 
     CStdString buffer;
     int volume;
-    if (g_stSettings.m_bMute) {
+    if (g_settings.m_bMute) {
         rct->SetStateVariable("Mute", "1");
-        volume = g_stSettings.m_iPreMuteVolumeLevel;
+        volume = g_settings.m_iPreMuteVolumeLevel;
     } else {
         rct->SetStateVariable("Mute", "0");
         volume = g_application.GetVolume();
@@ -1765,7 +1765,7 @@ CUPnPRenderer::OnSetMute(PLT_ActionReference& action)
 {
     NPT_String mute;
     NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredMute",mute));
-    if((mute == "1") ^ g_stSettings.m_bMute)
+    if((mute == "1") ^ g_settings.m_bMute)
         g_application.Mute();
     return NPT_SUCCESS;
 }

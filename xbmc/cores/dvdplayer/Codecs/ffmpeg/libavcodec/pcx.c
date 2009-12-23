@@ -71,7 +71,8 @@ static void pcx_palette(const uint8_t **src, uint32_t *dst, unsigned int pallen)
 
     for (i=0; i<pallen; i++)
         *dst++ = bytestream_get_be24(src);
-    memset(dst, 0, (256 - pallen) * sizeof(*dst));
+    if (pallen < 256)
+        memset(dst, 0, (256 - pallen) * sizeof(*dst));
 }
 
 static int pcx_decode_frame(AVCodecContext *avctx, void *data, int *data_size,

@@ -143,6 +143,8 @@
       <enter>AspectRatio</enter>
       <select>AspectRatio</select>
       <teletext>XBMC.ActivateWindow(Teletext)</teletext>
+      <subtitle>ShowSubtitles</subtitle>
+      <language>AudioNextLanguage</language>
     </remote>
   </FullscreenVideo>
   <FullscreenInfo>

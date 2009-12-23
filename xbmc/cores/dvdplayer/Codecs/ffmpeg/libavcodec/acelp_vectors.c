@@ -23,6 +23,7 @@
 #include <inttypes.h>
 #include "avcodec.h"
 #include "acelp_vectors.h"
+#include "celp_math.h"
 
 const uint8_t ff_fc_2pulses_9bits_track1[16] =
 {
@@ -126,6 +127,26 @@ void ff_acelp_fc_pulse_per_track(
     fc_v[tab2[pulse_indexes]] += (pulse_signs & 1) ? 8191 : -8192;
 }
 
+void ff_decode_10_pulses_35bits(const int16_t *fixed_index,
+                                AMRFixed *fixed_sparse,
+                                const uint8_t *gray_decode,
+                                int half_pulse_count, int bits)
+{
+    int i;
+    int mask = (1 << bits) - 1;
+
+    fixed_sparse->n = 2 * half_pulse_count;
+    for (i = 0; i < half_pulse_count; i++) {
+        const int pos1   = gray_decode[fixed_index[2*i+1] & mask] + i;
+        const int pos2   = gray_decode[fixed_index[2*i  ] & mask] + i;
+        const float sign = (fixed_index[2*i+1] & (1 << bits)) ? -1.0 : 1.0;
+        fixed_sparse->x[2*i+1] = pos1;
+        fixed_sparse->x[2*i  ] = pos2;
+        fixed_sparse->y[2*i+1] = sign;
+        fixed_sparse->y[2*i  ] = pos2 < pos1 ? -sign : sign;
+    }
+}
+
 void ff_acelp_weighted_vector_sum(
         int16_t* out,
         const int16_t *in_a,
@@ -154,4 +175,70 @@ void ff_weighted_vector_sumf(float *out, const float *in_a, const float *in_b,
     for(i=0; i<length; i++)
         out[i] = weight_coeff_a * in_a[i]
                + weight_coeff_b * in_b[i];
+}
+
+void ff_adaptative_gain_control(float *buf_out, float speech_energ,
+                                int size, float alpha, float *gain_mem)
+{
+    int i;
+    float postfilter_energ = ff_dot_productf(buf_out, buf_out, size);
+    float gain_scale_factor = 1.0;
+    float mem = *gain_mem;
+
+    if (postfilter_energ)
+        gain_scale_factor = sqrt(speech_energ / postfilter_energ);
+
+    gain_scale_factor *= 1.0 - alpha;
+
+    for (i = 0; i < size; i++) {
+        mem = alpha * mem + gain_scale_factor;
+        buf_out[i] *= mem;
+    }
+
+    *gain_mem = mem;
+}
+
+void ff_scale_vector_to_given_sum_of_squares(float *out, const float *in,
+                                             float sum_of_squares, const int n)
+{
+    int i;
+    float scalefactor = ff_dot_productf(in, in, n);
+    if (scalefactor)
+        scalefactor = sqrt(sum_of_squares / scalefactor);
+    for (i = 0; i < n; i++)
+        out[i] = in[i] * scalefactor;
+}
+
+void ff_set_fixed_vector(float *out, const AMRFixed *in, float scale, int size)
+{
+    int i;
+
+    for (i=0; i < in->n; i++) {
+        int x   = in->x[i];
+        float y = in->y[i] * scale;
+        out[x] += y;
+
+        x += in->pitch_lag;
+        while (x < size) {
+            y *= in->pitch_fac;
+            out[x] += y;
+            x += in->pitch_lag;
+        }
+    }
+}
+
+void ff_clear_fixed_vector(float *out, const AMRFixed *in, int size)
+{
+    int i;
+
+    for (i=0; i < in->n; i++) {
+        int x  = in->x[i];
+        out[x] = 0.0;
+
+        x += in->pitch_lag;
+        while (x < size) {
+            out[x] = 0.0;
+            x += in->pitch_lag;
+        }
+    }
 }

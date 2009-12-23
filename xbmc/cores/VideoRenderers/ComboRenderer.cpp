@@ -116,7 +116,7 @@ void CComboRenderer::ManageDisplay()
   float fScreenHeight = (float)rv.bottom - rv.top;
   float fOffsetX1 = (float)rv.left;
   float fOffsetY1 = (float)rv.top;
-  float fPixelRatio = g_stSettings.m_fPixelRatio;
+  float fPixelRatio = g_settings.m_fPixelRatio;
   float fMaxScreenWidth = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iWidth;
   float fMaxScreenHeight = (float)g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight;
   if (fOffsetX1 < 0) fOffsetX1 = 0;
@@ -133,12 +133,12 @@ void CComboRenderer::ManageDisplay()
   }
 
   // source rect
-  rs.left = g_stSettings.m_currentVideoSettings.m_CropLeft;
-  rs.top = g_stSettings.m_currentVideoSettings.m_CropTop;
-  rs.right = m_iSourceWidth - g_stSettings.m_currentVideoSettings.m_CropRight;
-  rs.bottom = m_iSourceHeight - g_stSettings.m_currentVideoSettings.m_CropBottom;
+  rs.left = g_settings.m_currentVideoSettings.m_CropLeft;
+  rs.top = g_settings.m_currentVideoSettings.m_CropTop;
+  rs.right = m_iSourceWidth - g_settings.m_currentVideoSettings.m_CropRight;
+  rs.bottom = m_iSourceHeight - g_settings.m_currentVideoSettings.m_CropBottom;
 
-  CalcNormalDisplayRect(fOffsetX1, fOffsetY1, fScreenWidth, fScreenHeight, GetAspectRatio() * fPixelRatio, g_stSettings.m_fZoomAmount);
+  CalcNormalDisplayRect(fOffsetX1, fOffsetY1, fScreenWidth, fScreenHeight, GetAspectRatio() * fPixelRatio, g_settings.m_fZoomAmount);
 
   // check whether we need to alter our source rect
   if (rd.left < fOffsetX1 || rd.right > fOffsetX1 + fScreenWidth)

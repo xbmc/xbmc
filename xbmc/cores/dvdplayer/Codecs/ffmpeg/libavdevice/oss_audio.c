@@ -248,34 +248,15 @@ static int audio_read_packet(AVFormatContext *s1, AVPacket *pkt)
     int64_t cur_time;
     struct audio_buf_info abufi;
 
-    if (av_new_packet(pkt, s->frame_size) < 0)
-        return AVERROR(EIO);
-    for(;;) {
-        struct timeval tv;
-        fd_set fds;
-
-        tv.tv_sec = 0;
-        tv.tv_usec = 30 * 1000; /* 30 msecs -- a bit shorter than 1 frame at 30fps */
-
-        FD_ZERO(&fds);
-        FD_SET(s->fd, &fds);
-
-        /* This will block until data is available or we get a timeout */
-        (void) select(s->fd + 1, &fds, 0, 0, &tv);
+    if ((ret=av_new_packet(pkt, s->frame_size)) < 0)
+        return ret;
 
         ret = read(s->fd, pkt->data, pkt->size);
-        if (ret > 0)
-            break;
-        if (ret == -1 && (errno == EAGAIN || errno == EINTR)) {
-            av_free_packet(pkt);
-            pkt->size = 0;
-            pkt->pts = av_gettime();
-            return 0;
-        }
-        if (!(ret == 0 || (ret == -1 && (errno == EAGAIN || errno == EINTR)))) {
-            av_free_packet(pkt);
-            return AVERROR(EIO);
-        }
+    if (ret <= 0){
+        av_free_packet(pkt);
+        pkt->size = 0;
+        if (ret<0)  return AVERROR(errno);
+        else        return AVERROR(EOF);
     }
     pkt->size = ret;
 

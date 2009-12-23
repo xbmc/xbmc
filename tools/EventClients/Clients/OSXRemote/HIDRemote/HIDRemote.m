@@ -1,6 +1,6 @@
 //
 //  HIDRemote.m
-//  HIDRemote V1.1 (13th November 2009)
+//  HIDRemote V1.1.1 (14th December 2009)
 //
 //  Created by Felix Schwarz on 06.04.07.
 //  Copyright 2007-2009 IOSPIRIT GmbH. All rights reserved.
@@ -397,6 +397,11 @@ static HIDRemote *sHIDRemote = nil;
 - (HIDRemoteModel)lastSeenModel
 {
 	return (_lastSeenModel);
+}
+
+- (void)setLastSeenModel:(HIDRemoteModel)aModel
+{
+	_lastSeenModel = aModel;
 }
 
 - (void)setSimulateHoldEvents:(BOOL)newSimulateHoldEvents
@@ -1585,6 +1590,13 @@ static HIDRemote *sHIDRemote = nil;
 					}
 				}
 			break;
+		}
+		
+		// As soon as we have received a code that's unique to the Aluminum Remote, we can tell kHIDRemoteButtonCodePlayHold and kHIDRemoteButtonCodeCenterHold apart.
+		// Prior to that, a long press of the new "Play" button will be submitted as a "kHIDRemoteButtonCodeCenterHold", not a "kHIDRemoteButtonCodePlayHold" code.
+		if ((buttonCode == kHIDRemoteButtonCodeCenterHold) && (_lastSeenModel == kHIDRemoteModelAluminum))
+		{
+			buttonCode = kHIDRemoteButtonCodePlayHold;
 		}
 	
 		[((NSObject <HIDRemoteDelegate> *)[self delegate]) hidRemote:self eventWithButton:(buttonCode & (~kHIDRemoteButtonCodeAluminumMask)) isPressed:isPressed fromHardwareWithAttributes:hidAttribsDict];

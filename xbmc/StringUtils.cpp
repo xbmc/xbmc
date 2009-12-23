@@ -383,13 +383,3 @@ void StringUtils::WordToDigits(CStdString &word)
   }
 }
 
-float StringUtils::GetFloat(const char* str)
-{
-  istringstream converter;
-  converter.imbue(locale("C"));
-  converter.str(str);
-  float result;
-  converter >> result;
-
-  return result;
-}

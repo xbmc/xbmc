@@ -778,9 +778,6 @@ void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
   it = settingsMap.find("masterlock.startuplock");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
-    it = settingsMap.find("autodetect.nickname");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
 }
 
 
@@ -941,12 +938,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   for (mapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
   {
     LoadFromXML(pRootElement, it, hideSettings);
-  }
-  // setup logging...
-  if (GetBool("debug.showloginfo"))
-  {
-    g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
-    CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting (%d)", g_advancedSettings.m_logLevel);
   }
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");

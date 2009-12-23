@@ -95,4 +95,9 @@ size_t av_strlcat(char *dst, const char *src, size_t size);
  */
 size_t av_strlcatf(char *dst, size_t size, const char *fmt, ...);
 
+/**
+ * Convert a number to a av_malloced string.
+ */
+char *av_d2str(double d);
+
 #endif /* AVUTIL_AVSTRING_H */

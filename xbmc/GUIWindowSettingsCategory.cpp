@@ -433,17 +433,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     CSetting *pSetting = settings[i];
     AddSetting(pSetting, group->GetWidth(), iControlID);
     CStdString strSetting = pSetting->GetSetting();
-    if (strSetting.Equals("myprograms.ntscmode"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      for (int i = pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i++)
-      {
-        pControl->AddLabel(g_localizeStrings.Get(16106 + i), i);
-      }
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting.Equals("musicplayer.visualisation"))
+    if (strSetting.Equals("musicplayer.visualisation"))
     {
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
     }
@@ -466,22 +456,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
       FillInScrapers(pControl, g_guiSettings.GetString("scrapers.musicvideodefault"), "musicvideos");
-    }
-    else if (strSetting.Equals("karaoke.port0voicemask"))
-    {
-      FillInVoiceMasks(0, pSetting);
-    }
-    else if (strSetting.Equals("karaoke.port1voicemask"))
-    {
-      FillInVoiceMasks(1, pSetting);
-    }
-    else if (strSetting.Equals("karaoke.port2voicemask"))
-    {
-      FillInVoiceMasks(2, pSetting);
-    }
-    else if (strSetting.Equals("karaoke.port3voicemask"))
-    {
-      FillInVoiceMasks(3, pSetting);
     }
     else if (strSetting.Equals("audiooutput.mode"))
     {
@@ -519,48 +493,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(602), CDDARIP_QUALITY_STANDARD);
       pControl->AddLabel(g_localizeStrings.Get(603), CDDARIP_QUALITY_EXTREME);
       pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting.Equals("harddisk.aamlevel"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(21388), AAM_QUIET);
-      pControl->AddLabel(g_localizeStrings.Get(21387), AAM_FAST);
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting.Equals("harddisk.apmlevel"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(21391), APM_HIPOWER);
-      pControl->AddLabel(g_localizeStrings.Get(21392), APM_LOPOWER);
-      pControl->AddLabel(g_localizeStrings.Get(21393), APM_HIPOWER_STANDBY);
-      pControl->AddLabel(g_localizeStrings.Get(21394), APM_LOPOWER_STANDBY);
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting.Equals("system.targettemperature"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      for (int i = pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i++)
-      {
-        CTemperature temp=CTemperature::CreateFromCelsius(i);
-        pControl->AddLabel(temp.ToString(), i);
-      }
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting.Equals("system.fanspeed") || strSetting.Equals("system.minfanspeed"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      CStdString strPercentMask = g_localizeStrings.Get(14047);
-      for (int i=pSettingInt->m_iMin; i <= pSettingInt->m_iMax; i += pSettingInt->m_iStep)
-      {
-        CStdString strLabel;
-        strLabel.Format(strPercentMask.c_str(), i*2);
-        pControl->AddLabel(strLabel, i);
-      }
-      pControl->SetValue(int(pSettingInt->GetData()));
     }
     else if (strSetting.Equals("services.webserverusername"))
     {
@@ -1044,21 +976,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("musicplayer.crossfade") > 0);
     }
-    else if (strSetting.Left(12).Equals("karaoke.port") || strSetting.Equals("karaoke.volume"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("karaoke.voiceenabled"));
-    }
-    else if (strSetting.Equals("system.fanspeed"))
-    { // only visible if we have fancontrolspeed enabled
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("system.fanspeedcontrol"));
-    }
-    else if (strSetting.Equals("system.targettemperature") || strSetting.Equals("system.minfanspeed"))
-    { // only visible if we have autotemperature enabled
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("system.autotemperature"));
-    }
     else if (strSetting.Equals("services.webserverusername"))
     {
       CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
@@ -1180,11 +1097,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("postprocessing.enable"));
     }
-    else if (strSetting.Equals("VideoPlayer.InvertFieldSync"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetBool("VideoPlayer.FieldSync"));
-    }
     else if (strSetting.Equals("subtitles.color") || strSetting.Equals("subtitles.style") || strSetting.Equals("subtitles.charset"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
@@ -1257,21 +1169,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("locale.timeserver"));
     }
 #endif
-    else if (strSetting.Equals("autodetect.nickname") || strSetting.Equals("autodetect.senduserpw"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("autodetect.onoff") && (g_settings.m_iLastLoadedProfileIndex == 0));
-    }
-    else if ( strSetting.Equals("autodetect.popupinfo"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("autodetect.onoff"));
-    }
-    else if (strSetting.Equals("videoplayer.externaldvdplayer"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.useexternaldvdplayer"));
-    }
     else if (strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("debug.screenshotpath"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
@@ -1459,30 +1356,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC_TEMP, g_guiSettings.GetBool("musicfiles.repeat") ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
   }*/
-  else if (strSetting.Equals("karaoke.port0voicemask"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    g_guiSettings.SetString("karaoke.port0voicemask", pControl->GetCurrentLabel());
-    FillInVoiceMaskValues(0, g_guiSettings.GetSetting("karaoke.port0voicemask"));
-  }
-  else if (strSetting.Equals("karaoke.port1voicemask"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    g_guiSettings.SetString("karaoke.port1voicemask", pControl->GetCurrentLabel());
-    FillInVoiceMaskValues(1, g_guiSettings.GetSetting("karaoke.port1voicemask"));
-  }
-  else if (strSetting.Equals("karaoke.port2voicemask"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    g_guiSettings.SetString("karaoke.port2voicemask", pControl->GetCurrentLabel());
-    FillInVoiceMaskValues(2, g_guiSettings.GetSetting("karaoke.port2voicemask"));
-  }
-  else if (strSetting.Equals("karaoke.port2voicemask"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    g_guiSettings.SetString("karaoke.port3voicemask", pControl->GetCurrentLabel());
-    FillInVoiceMaskValues(3, g_guiSettings.GetSetting("karaoke.port3voicemask"));
-  }
   else if (strSetting.Equals("musiclibrary.cleanup"))
   {
     CMusicDatabase musicdatabase;
@@ -1713,16 +1586,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   { // activate the test pattern
     g_windowManager.ActivateWindow(WINDOW_TEST_PATTERN);
   }
-  else if (strSetting.Equals("videoplayer.externaldvdplayer"))
-  {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
-    CStdString path = pSettingString->GetData();
-    VECSOURCES shares;
-    g_mediaManager.GetLocalDrives(shares);
-    // TODO 2.0: Localize this
-    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".xbe", g_localizeStrings.Get(655), path))
-      pSettingString->SetData(path);
-  }
   else if (strSetting.Equals("subtitles.height"))
   {
     if (!CUtil::IsUsingTTFSubtitles())
@@ -1842,6 +1705,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     else
       g_guiSettings.SetString("lookandfeel.soundskin", pControl->GetCurrentLabel());
 
+    g_audioManager.Enable(true);
     g_audioManager.Load();
   }
   else if (strSetting.Equals("input.enablemouse"))
@@ -2791,134 +2655,6 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, iWinID, iControlID, iCurrentVis);
     g_windowManager.SendMessage(msg);
   }
-}
-
-void CGUIWindowSettingsCategory::FillInVoiceMasks(DWORD dwPort, CSetting *pSetting)
-{
-  CSettingString *pSettingString = (CSettingString*)pSetting;
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-  pControl->SetShowRange(true); // show the range
-  int iCurrentMask = 0;
-  int iMask = 0;
-  vector<CStdString> vecMask;
-
-  //find masks in xml...
-  TiXmlDocument xmlDoc;
-  CStdString fileName = "special://xbmc/system/voicemasks.xml";
-  if ( !xmlDoc.LoadFile(fileName) ) return ;
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
-  CStdString strValue = pRootElement->Value();
-  if ( strValue != "VoiceMasks") return ;
-  if (pRootElement)
-  {
-    const TiXmlNode *pChild = pRootElement->FirstChild("Name");
-    while (pChild)
-    {
-      if (pChild->FirstChild())
-      {
-        CStdString strName = pChild->FirstChild()->Value();
-        vecMask.push_back(strName);
-      }
-      pChild = pChild->NextSibling("Name");
-    }
-  }
-  xmlDoc.Clear();
-
-
-  CStdString strDefaultMask = pSettingString->GetData();
-
-  sort(vecMask.begin(), vecMask.end(), sortstringbyname());
-//  CStdString strCustom = "Custom";
-  CStdString strNone = "None";
-//  vecMask.insert(vecMask.begin(), strCustom);
-  vecMask.insert(vecMask.begin(), strNone);
-  for (int i = 0; i < (int) vecMask.size(); ++i)
-  {
-    CStdString strMask = vecMask[i];
-
-    if (strcmpi(strMask.c_str(), strDefaultMask.c_str()) == 0)
-      iCurrentMask = iMask;
-
-    pControl->AddLabel(strMask, iMask++);
-  }
-
-  pControl->SetValue(iCurrentMask);
-}
-
-void CGUIWindowSettingsCategory::FillInVoiceMaskValues(DWORD dwPort, CSetting *pSetting)
-{
-  CStdString strCurMask = g_guiSettings.GetString(pSetting->GetSetting());
-  if (strCurMask.CompareNoCase("None") == 0 || strCurMask.CompareNoCase("Custom") == 0 )
-  {
-#define XVOICE_MASK_PARAM_DISABLED (-1.0f)
-    g_stSettings.m_karaokeVoiceMask[dwPort].energy = XVOICE_MASK_PARAM_DISABLED;
-    g_stSettings.m_karaokeVoiceMask[dwPort].pitch = XVOICE_MASK_PARAM_DISABLED;
-    g_stSettings.m_karaokeVoiceMask[dwPort].whisper = XVOICE_MASK_PARAM_DISABLED;
-    g_stSettings.m_karaokeVoiceMask[dwPort].robotic = XVOICE_MASK_PARAM_DISABLED;
-    return;
-  }
-
-  //find mask values in xml...
-  TiXmlDocument xmlDoc;
-  CStdString fileName = "special://xbmc/system/voicemasks.xml";
-  if ( !xmlDoc.LoadFile( fileName ) ) return ;
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
-  CStdString strValue = pRootElement->Value();
-  if ( strValue != "VoiceMasks") return ;
-  if (pRootElement)
-  {
-    const TiXmlNode *pChild = pRootElement->FirstChild("Name");
-    while (pChild)
-    {
-      CStdString strMask = pChild->FirstChild()->Value();
-      if (strMask.CompareNoCase(strCurMask) == 0)
-      {
-        for (int i = 0; i < 4;i++)
-        {
-          pChild = pChild->NextSibling();
-          if (pChild)
-          {
-            CStdString strValue = pChild->Value();
-            if (strValue.CompareNoCase("fSpecEnergyWeight") == 0)
-            {
-              if (pChild->FirstChild())
-              {
-                CStdString strName = pChild->FirstChild()->Value();
-                g_stSettings.m_karaokeVoiceMask[dwPort].energy = (float) atof(strName.c_str());
-              }
-            }
-            else if (strValue.CompareNoCase("fPitchScale") == 0)
-            {
-              if (pChild->FirstChild())
-              {
-                CStdString strName = pChild->FirstChild()->Value();
-                g_stSettings.m_karaokeVoiceMask[dwPort].pitch = (float) atof(strName.c_str());
-              }
-            }
-            else if (strValue.CompareNoCase("fWhisperValue") == 0)
-            {
-              if (pChild->FirstChild())
-              {
-                CStdString strName = pChild->FirstChild()->Value();
-                g_stSettings.m_karaokeVoiceMask[dwPort].whisper = (float) atof(strName.c_str());
-              }
-            }
-            else if (strValue.CompareNoCase("fRoboticValue") == 0)
-            {
-              if (pChild->FirstChild())
-              {
-                CStdString strName = pChild->FirstChild()->Value();
-                g_stSettings.m_karaokeVoiceMask[dwPort].robotic = (float) atof(strName.c_str());
-              }
-            }
-          }
-        }
-        break;
-      }
-      pChild = pChild->NextSibling("Name");
-    }
-  }
-  xmlDoc.Clear();
 }
 
 void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool playbackSetting)

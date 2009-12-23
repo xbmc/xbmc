@@ -71,7 +71,7 @@
 						<posy>15</posy>
 						<width>380</width>
 						<height>25</height>
-						<font>font24caps_title</font>
+						<font>font24_title</font>
 						<textcolor>grey3</textcolor>
 						<align>right</align>
 						<aligny>center</aligny>
@@ -103,7 +103,7 @@
 						<posy>15</posy>
 						<width>380</width>
 						<height>25</height>
-						<font>font24caps_title</font>
+						<font>font24_title</font>
 						<textcolor>white</textcolor>
 						<align>right</align>
 						<aligny>center</aligny>
@@ -188,7 +188,7 @@
 					<control type="label" id="100">
 						<width>750</width>
 						<height>45</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<label>31106</label>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
@@ -234,7 +234,7 @@
 					<control type="label" id="104">
 						<width>750</width>
 						<height>45</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<label>20343</label>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
@@ -256,7 +256,7 @@
 					<control type="label" id="106">
 						<width>750</width>
 						<height>45</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<label>512</label>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
@@ -292,7 +292,7 @@
 					<control type="label" id="109">
 						<width>750</width>
 						<height>45</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<label>31102</label>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
@@ -339,7 +339,7 @@
 					<control type="label" id="200">
 						<width>750</width>
 						<height>45</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<label>31101</label>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
@@ -401,7 +401,7 @@
 					<control type="label" id="206">
 						<width>750</width>
 						<height>45</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<label>31108</label>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
@@ -540,7 +540,7 @@
 						<posy>0</posy>
 						<width>680</width>
 						<height>45</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<label>31109</label>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
@@ -737,7 +737,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31113</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -756,7 +756,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31114</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -775,7 +775,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>571</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -797,7 +797,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31113</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -816,7 +816,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31114</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -835,7 +835,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>571</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -857,7 +857,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31113</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -876,7 +876,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31114</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -895,7 +895,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>571</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -917,7 +917,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31113</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -936,7 +936,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31114</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -955,7 +955,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>571</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -977,7 +977,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31113</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -996,7 +996,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31114</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -1015,7 +1015,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>571</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -1037,7 +1037,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31113</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -1056,7 +1056,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31114</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -1075,7 +1075,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>571</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -1097,7 +1097,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31113</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -1116,7 +1116,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31114</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -1135,7 +1135,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>571</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -1157,7 +1157,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31113</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -1176,7 +1176,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31114</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -1195,7 +1195,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>571</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -1217,7 +1217,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31113</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -1236,7 +1236,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>31114</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -1255,7 +1255,7 @@
 								<width>180</width>
 								<height>40</height>
 								<label>571</label>
-								<font>font12caps_title</font>
+								<font>font12_title</font>
 								<textcolor>grey2</textcolor>
 								<focusedcolor>white</focusedcolor>
 								<align>center</align>
@@ -1308,7 +1308,7 @@
 						<control type="label" id="400">
 							<width>750</width>
 							<height>45</height>
-							<font>font13caps_title</font>
+							<font>font13_title</font>
 							<label>31118</label>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
@@ -1553,7 +1553,7 @@
 						<control type="label" id="419">
 							<width>750</width>
 							<height>45</height>
-							<font>font13caps_title</font>
+							<font>font13_title</font>
 							<label>31122</label>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
@@ -1603,7 +1603,7 @@
 						<control type="label" id="423">
 							<width>750</width>
 							<height>45</height>
-							<font>font13caps_title</font>
+							<font>font13_title</font>
 							<label>31128</label>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>

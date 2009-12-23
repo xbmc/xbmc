@@ -42,7 +42,7 @@
 				<posy>30</posy>
 				<width>550</width>
 				<height>30</height>
-				<font>font30caps_title</font>
+				<font>font30_title</font>
 				<label>$LOCALIZE[SCRIPT0]</label>
 				<align>right</align>
 				<aligny>center</aligny>
@@ -55,7 +55,7 @@
 				<posy>60</posy>
 				<width>550</width>
 				<height>30</height>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<label>$INFO[MusicPlayer.Artist]</label>
 				<align>right</align>
 				<aligny>center</aligny>
@@ -68,7 +68,7 @@
 				<posy>85</posy>
 				<width>550</width>
 				<height>30</height>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<label>$INFO[MusicPlayer.Title]</label>
 				<align>right</align>
 				<aligny>center</aligny>
@@ -104,7 +104,7 @@
 				<posx>520</posx>
 				<posy>650</posy>
 				<subtype>page</subtype>
-				<font>font12caps</font>
+				<font>font12</font>
 				<onleft>101</onleft>
 				<onright>101</onright>
 				<ondown>101</ondown>
@@ -176,7 +176,7 @@
 				<posx>520</posx>
 				<posy>650</posy>
 				<subtype>page</subtype>
-				<font>font12caps</font>
+				<font>font12</font>
 				<onleft>110</onleft>
 				<onright>110</onright>
 				<ondown>110</ondown>
@@ -193,7 +193,7 @@
 				<height>30</height>
 				<align>center</align>
 				<aligny>center</aligny>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<label>31203</label>
 				<textcolor>white</textcolor>
 				<visible>Control.IsVisible(120) + ![Control.IsVisible(100) | Control.IsVisible(110)]</visible>
@@ -267,7 +267,7 @@
 				<posx>520</posx>
 				<posy>650</posy>
 				<subtype>page</subtype>
-				<font>font12caps</font>
+				<font>font12</font>
 				<onleft>120</onleft>
 				<onright>120</onright>
 				<ondown>120</ondown>
@@ -290,7 +290,7 @@
 				<width>550</width>
 				<height>30</height>
 				<label>$LOCALIZE[31205] - $INFO[Control.GetLabel(200)]</label>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<align>right</align>
 				<aligny>center</aligny>
 				<textcolor>grey2</textcolor>

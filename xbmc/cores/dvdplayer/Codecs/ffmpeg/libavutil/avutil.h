@@ -35,7 +35,7 @@
 #define AV_VERSION(a, b, c) AV_VERSION_DOT(a, b, c)
 
 #define LIBAVUTIL_VERSION_MAJOR 50
-#define LIBAVUTIL_VERSION_MINOR  3
+#define LIBAVUTIL_VERSION_MINOR  7
 #define LIBAVUTIL_VERSION_MICRO  0
 
 #define LIBAVUTIL_VERSION_INT   AV_VERSION_INT(LIBAVUTIL_VERSION_MAJOR, \
@@ -52,6 +52,16 @@
  * Returns the LIBAVUTIL_VERSION_INT constant.
  */
 unsigned avutil_version(void);
+
+/**
+ * Returns the libavutil build-time configuration.
+ */
+const char * avutil_configuration(void);
+
+/**
+ * Returns the libavutil license.
+ */
+const char * avutil_license(void);
 
 #include "common.h"
 #include "mathematics.h"

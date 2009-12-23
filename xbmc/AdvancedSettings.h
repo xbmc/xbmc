@@ -92,6 +92,9 @@ class CAdvancedSettings
     CStdString m_audioHost;
     bool m_audioApplyDrc;
 
+    int m_videoHighQualityScaling;
+    int m_videoHighQualityScalingMethod;
+
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
     float m_videoPlayCountMinimumPercent;
