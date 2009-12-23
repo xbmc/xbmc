@@ -65,6 +65,7 @@ extractModule()
 	rm -rf $THISDIR/squashfs-udeb/modules/*
 
 	# Copy the new tree in place
+	mkdir $THISDIR/squashfs-udeb/modules
 	mv $modulesDir $THISDIR/squashfs-udeb/modules
 
 	# Cleanup
