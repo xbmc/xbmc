@@ -11,7 +11,18 @@ if [ "$(id -u)" != "0" ]; then
 	exit 1
 fi
 
-# set -e
+
+# Clean our mess on exiting
+cleanup()
+{
+	if [ -n "$WORKPATH" ]; then
+		echo "Cleaning workarea..." 
+		rm -rf $WORKPATH
+		rm -rf $THISDIR/*.iso
+		echo "All clean"
+	fi
+}
+trap 'cleanup' EXIT TERM INT
 
 # Using apt-cacher(-ng) to speed up apt-get downloads
 export APT_HTTP_PROXY="http://127.0.0.1:3142"
@@ -27,6 +38,8 @@ export UBUNTUMIRROR_BASEURL="http://mirror.bytemark.co.uk/ubuntu/"
 THISDIR=$(pwd)
 WORKDIR=workarea
 WORKPATH=$THISDIR/$WORKDIR
+
+trap 'cleanup' EXIT
 
 if [ -d "$WORKPATH" ]; then
 	rm -rf $WORKPATH
@@ -102,5 +115,3 @@ cd $THISDIR
 
 mv $WORKPATH/buildLive/binary.iso .
 chmod 777 *.iso
-
-rm -rf $WORKPATH
