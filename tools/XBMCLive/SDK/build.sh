@@ -11,15 +11,21 @@ if [ "$(id -u)" != "0" ]; then
 	exit 1
 fi
 
+# May be useful for debugging purposes
+# KEEP_WORKAREA="yes"
 
 # Clean our mess on exiting
 cleanup()
 {
 	if [ -n "$WORKPATH" ]; then
-		echo "Cleaning workarea..." 
-		rm -rf $WORKPATH
-		chmod 777 $THISDIR/binary.iso 
-		echo "All clean"
+		if [ -z "$KEEP_WORKAREA" ]; then
+			echo "Cleaning workarea..." 
+			rm -rf $WORKPATH
+			if [ -f $THISDIR/binary.iso ]; then
+				chmod 777 $THISDIR/binary.iso 
+			fi
+			echo "All clean"
+		fi
 	fi
 }
 trap 'cleanup' EXIT TERM INT
@@ -53,8 +59,6 @@ if ! which lh > /dev/null ; then
 	cd $WORKPATH/Tools
 	git clone git://live.debian.net/git/live-helper.git
 	if [ "$?" -ne "0" ]; then
-		cd $THISDIR
-		rm -rf $WORKPATH
 		exit 1
 	fi
 
@@ -76,7 +80,6 @@ fi
 cd $WORKPATH/buildDEBs
 ./build.sh
 if [ "$?" -ne "0" ]; then
-	rm -rf $WORKPATH
 	exit 1
 fi
 cd $THISDIR
@@ -87,7 +90,6 @@ cd $THISDIR
 cd $WORKPATH/buildRestricted
 ./build.sh
 if [ "$?" -ne "0" ]; then
-	rm -rf $WORKPATH
 	exit 1
 fi
 cd $THISDIR
