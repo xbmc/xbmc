@@ -539,9 +539,8 @@ void CDVDPlayerVideo::Process()
           // check for a new picture
           if (iDecoderState & VC_PICTURE)
           {
-            // reset picture structure, this is codec dependent
-            m_pVideoCodec->ResetPicture(&picture);
             // try to retrieve the picture (should never fail!), unless there is a demuxer bug ofcours
+            memset(&picture, 0, sizeof(DVDVideoPicture));
             if (m_pVideoCodec->GetPicture(&picture))
             {
               picture.iGroupId = pPacket->iGroupId;
@@ -1271,16 +1270,12 @@ void CDVDPlayerVideo::UpdateMenuPicture()
   if (m_pVideoCodec)
   {
     DVDVideoPicture picture;
-    memset(&picture, 0, sizeof(DVDVideoPicture));
-    
     EnterCriticalSection(&m_critCodecSection);
     if (m_pVideoCodec->GetPicture(&picture))
     {
       picture.iFlags |= DVP_FLAG_NOSKIP;
       OutputPicture(&picture, 0);
     }
-    // reset picture structure, this is codec dependent
-    m_pVideoCodec->ResetPicture(&picture);
     LeaveCriticalSection(&m_critCodecSection);
   }
 }

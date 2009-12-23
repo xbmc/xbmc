@@ -120,16 +120,6 @@ public:
 
   /*
    * returns true if successfull
-   * the DVDVideoPicture structure is reset or initialized.
-   */
-  virtual bool ResetPicture(DVDVideoPicture* pDvdVideoPicture)
-  {
-    memset(pDvdVideoPicture, 0, sizeof(DVDVideoPicture));
-    return true;
-  }
-
-  /*
-   * returns true if successfull
    * the data is valid until the next Decode call
    */
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture) = 0;
