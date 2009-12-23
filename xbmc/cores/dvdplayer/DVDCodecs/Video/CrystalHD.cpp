@@ -266,7 +266,6 @@ CCrystalHD* CCrystalHD::m_pInstance = NULL;
 
 CCrystalHD::CCrystalHD() :
   m_Device(NULL),
-  m_Inited(false),
   m_IsConfigured(false),
   m_drop_state(false),
   m_y_buffer_ptr(NULL),
@@ -277,11 +276,10 @@ CCrystalHD::CCrystalHD() :
   //BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | BCM::DTS_SKIP_TX_CHK_CPB | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
   BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
   
-  m_Inited = false;
   res = BCM::DtsDeviceOpen(&m_Device, mode);
   if (res == BCM::BC_STS_SUCCESS)
   {
-    m_Inited = true;
+    m_Device = NULL;
   }
   else
   {
@@ -291,7 +289,7 @@ CCrystalHD::CCrystalHD() :
 
 CCrystalHD::~CCrystalHD()
 {
-  if (m_Device && m_Inited)
+  if (m_Device)
   {
     BCM::DtsDeviceClose(m_Device);
     m_Device = NULL;

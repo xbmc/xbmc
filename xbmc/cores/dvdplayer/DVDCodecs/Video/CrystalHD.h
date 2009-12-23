@@ -136,7 +136,6 @@ protected:
   void*     m_dl_handle;
   void*     m_Device;
   
-  bool      m_Inited;
   bool      m_IsConfigured;
   bool      m_drop_state;
   const char* m_pFormatName;
