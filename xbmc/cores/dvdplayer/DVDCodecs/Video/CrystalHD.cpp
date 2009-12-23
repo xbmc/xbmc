@@ -807,7 +807,7 @@ CCrystalHD::CCrystalHD() :
 
 CCrystalHD::~CCrystalHD()
 {
-  if (m_Device)
+  if (m_Device && m_Inited)
   {
     BCM::DtsDeviceClose(m_Device);
     m_Device = NULL;
