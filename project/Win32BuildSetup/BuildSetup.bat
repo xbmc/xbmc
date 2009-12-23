@@ -29,18 +29,25 @@ FOR %%b in (%1, %2, %3, %4) DO (
 SET buildconfig=Release (OpenGL)
 IF %target%==dx SET buildconfig=Release (DirectX)
 
-	IF "%VS90COMNTOOLS%"=="" (
-	  set NET="%ProgramFiles%\Microsoft Visual Studio 9.0 Express\Common7\IDE\VCExpress.exe"
-	) ELSE (
-	  set NET="%VS90COMNTOOLS%\..\IDE\VCExpress.exe"
-	)
-	IF NOT EXIST %NET% (
-	  set DIETEXT=Visual Studio .NET 2008 Express was not found.
-	  goto DIE
-	) 
-    set OPTS_EXE="..\VS2008Express\XBMC for Windows.sln" /build "%buildconfig%"
-	set CLEAN_EXE="..\VS2008Express\XBMC for Windows.sln" /clean "%buildconfig%"
-	set EXE= "..\VS2008Express\XBMC\%buildconfig%\XBMC.exe"
+IF "%VS90COMNTOOLS%"=="" (
+  set NET="%ProgramFiles%\Microsoft Visual Studio 9.0 Express\Common7\IDE\VCExpress.exe"
+) ELSE (
+  IF EXIST "%VS90COMNTOOLS%\..\IDE\VCExpress.exe" (
+    set NET="%VS90COMNTOOLS%\..\IDE\VCExpress.exe"
+  ) ELSE (
+    IF EXIST "%VS90COMNTOOLS%\..\IDE\devenv.exe" (
+      set NET="%VS90COMNTOOLS%\..\IDE\devenv.exe"
+    )
+  )
+)
+IF NOT EXIST %NET% (
+  set DIETEXT=Visual Studio .NET 2008 Express was not found.
+  goto DIE
+) 
+
+set OPTS_EXE="..\VS2008Express\XBMC for Windows.sln" /build "%buildconfig%"
+set CLEAN_EXE="..\VS2008Express\XBMC for Windows.sln" /clean "%buildconfig%"
+set EXE= "..\VS2008Express\XBMC\%buildconfig%\XBMC.exe"
 	
   rem	CONFIG END
   rem -------------------------------------------------------------
