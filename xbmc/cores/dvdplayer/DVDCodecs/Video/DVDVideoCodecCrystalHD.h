@@ -41,13 +41,13 @@ public:
 
   // Required overrides
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-  virtual void Dispose();
+  virtual void Dispose(void);
   virtual int  Decode(BYTE* pData, int iSize, double pts);
-  virtual void Reset();
+  virtual void Reset(void);
   virtual bool ResetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
-  virtual const char* GetName() { return (const char*)m_pFormatName; }
+  virtual const char* GetName(void) { return (const char*)m_pFormatName; }
 
 protected:
   bool init_h264_mp4toannexb_filter(CDVDStreamInfo &hints);

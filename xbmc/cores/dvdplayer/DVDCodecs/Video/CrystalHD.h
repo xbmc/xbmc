@@ -73,10 +73,10 @@ public:
   CMPCDecodeBuffer(size_t size);
   CMPCDecodeBuffer(unsigned char* pBuffer, size_t size);
   virtual ~CMPCDecodeBuffer();
-  size_t GetSize();
-  unsigned char* GetPtr();
+  size_t GetSize(void);
+  unsigned char* GetPtr(void);
   void SetPts(uint64_t pts);
-  uint64_t GetPts();
+  uint64_t GetPts(void);
 protected:
   size_t m_Size;
   unsigned char* m_pBuffer;
@@ -106,26 +106,33 @@ class CMPCInputThread;
 class CMPCOutputThread;
 typedef struct YV12Image YV12Image;
 
+#define CRYSTALHD_FIELD_FULL        0x00
+#define CRYSTALHD_FIELD_EVEN        0x01
+#define CRYSTALHD_FIELD_ODD         0x02
+
 class CCrystalHD
 {
 public:
   virtual ~CCrystalHD();
 
-  static void RemoveInstance();
-  static CCrystalHD* GetInstance();
+  static void RemoveInstance(void);
+  static CCrystalHD* GetInstance(void);
 
   bool Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type);
   void Close(void);
   bool IsOpenforDecode(void);
   void Flush(void);
-  unsigned int GetInputCount();
+  unsigned int GetInputCount(void);
   bool AddInput(unsigned char *pData, size_t size, double pts);
-  unsigned int GetReadyCount();
+  bool GotPicture(int* field);
   bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
-  bool ResetPicture(DVDVideoPicture* pDvdVideoPicture);
   void SetDropState(bool bDrop);
 
 protected:
+  void SetFrameRate(uint32_t resolution);
+  void SetAspectRatio(uint32_t aspect_ratio, uint32_t custom_aspect_ratio_width_height);
+  bool GetDecoderOutput(void);
+  
   void*     m_dl_handle;
   void*     m_Device;
   
@@ -133,11 +140,22 @@ protected:
   bool      m_IsConfigured;
   bool      m_drop_state;
   const char* m_pFormatName;
-  bool      m_interlace;
-  double    m_framerate;
+  unsigned int        m_OutputTimeout;
+  unsigned int        m_field;
+  unsigned int        m_width;
+  unsigned int        m_height;
+  bool                m_interlace;
+  double              m_framerate;
+  uint64_t            m_timestamp;
+  unsigned int        m_PictureNumber;
+  unsigned int        m_aspectratio_x;
+  unsigned int        m_aspectratio_y;
+  unsigned char*      m_y_buffer_ptr;
+  unsigned char*      m_uv_buffer_ptr;
+  int                 m_y_buffer_size;
+  int                 m_uv_buffer_size;
 
   CMPCInputThread* m_pInputThread;
-  CMPCOutputThread* m_pOutputThread;
 private:
   CCrystalHD();
   static CCrystalHD* m_pInstance;

@@ -168,7 +168,7 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
   return false;
 }
 
-void CDVDVideoCodecCrystalHD::Dispose()
+void CDVDVideoCodecCrystalHD::Dispose(void)
 {
   if (m_Device)
   {
@@ -181,6 +181,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
 {
   int ret = 0;
 
+  int pict_field;
   int maxWait = 40;
   unsigned int lastTime;
   unsigned int maxTime;
@@ -227,8 +228,11 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
     }
 
     // Handle Output
-    if (m_Device->GetReadyCount())
+    if (m_Device->GotPicture(&pict_field))
+    {
+      if (pict_field != CRYSTALHD_FIELD_EVEN)
       ret |= VC_PICTURE;
+    }
 
     if (m_Device->GetInputCount() < 25)
       ret |= VC_BUFFER;
@@ -247,14 +251,13 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
   return ret;
 }
 
-void CDVDVideoCodecCrystalHD::Reset()
+void CDVDVideoCodecCrystalHD::Reset(void)
 {
   m_Device->Flush();
 }
 
 bool CDVDVideoCodecCrystalHD::ResetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
-  m_Device->ResetPicture(pDvdVideoPicture);
   memset(pDvdVideoPicture, 0, sizeof(DVDVideoPicture));
 
   return true;
@@ -273,6 +276,7 @@ void CDVDVideoCodecCrystalHD::SetDropState(bool bDrop)
   m_Device->SetDropState(bDrop);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
 bool CDVDVideoCodecCrystalHD::init_h264_mp4toannexb_filter(CDVDStreamInfo &hints)
 {
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
@@ -411,8 +415,5 @@ bool CDVDVideoCodecCrystalHD::h264_mp4toannexb_filter(BYTE* pData, int iSize, ui
 
   return true;
 }
-
-/////////////////////////////////////////////////////////////////////
-
 
 #endif
