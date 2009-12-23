@@ -44,7 +44,7 @@ bool CMusicInfoTagLoaderSHN::Load(const CStdString& strFileName, CMusicInfoTag& 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "Tag loader ape: exception in file %s", strFileName.c_str());
+    CLog::Log(LOGERROR, "Tag loader shn: exception in file %s", strFileName.c_str());
   }
 
   tag.SetLoaded(false);
