@@ -100,10 +100,16 @@ void CDsRenderer::DeleteSurfaces()
   CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
 
-  for( int i = 0; i < DS_MAX_3D_SURFACE-1; ++i ) 
+  for( int i = 0; i < DS_MAX_3D_SURFACE; ++i ) 
   {
-    SAFE_RELEASE(m_pVideoTexture[i]);
-    m_pVideoSurface[i] = NULL;
+    try
+    {
+      SAFE_RELEASE(m_pVideoTexture[i]);
+      m_pVideoSurface[i] = NULL;
+    }
+    catch (...)
+    {
+    }
   }
 
 }

@@ -295,6 +295,7 @@ CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error
   m_D3DDev = g_Windowing.Get3DDevice();
   hr = S_OK;
   m_bRenderCreated = false;
+  m_bNeedNewDevice = false;
   m_vmrState = RENDER_STATE_NEEDDEVICE;
 }
 
@@ -377,7 +378,12 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
   
   if ( FAILED( hr ) )
     return hr;
-  hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[0], NULL, 0);
+  if (m_pVideoSurface[0])
+    hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[0], NULL, 0);
+  else if(m_pVideoSurface[1])
+    hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[1], NULL, 0);
+  else
+    hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[2], NULL, 0);
   if ( FAILED( hr ) )
   {
     CLog::Log(LOGERROR,"%s ColorFill returned:0x%x",__FUNCTION__,hr);
@@ -459,8 +465,6 @@ STDMETHODIMP CVMR9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID ,DWORD Surfa
     return E_FAIL;
   
   CAutoLock cRenderLock(&m_RenderLock);
-  if (m_vmrState == RENDER_STATE_NEEDDEVICE)
-    return S_OK;
   if (m_pNbrSurface)
   {
     ++m_pCurSurface;
@@ -624,7 +628,6 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   return E_FAIL;
 }
 
-
 STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9PresentationInfo *lpPresInfo)
 {
   HRESULT hr;
@@ -641,12 +644,23 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   if(!lpPresInfo || !lpPresInfo->lpSurf)
     return E_POINTER;
 
-  CAutoLock cAutoLock(this);
-	CAutoLock cRenderLock(&m_RenderLock);
+	CAutoLock Lock(&m_RenderLock);
   
+  
+    
   CComPtr<IDirect3DTexture9> pTexture;
-  hr = lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
-
+  lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
+  HRESULT hrrr;
+  
+  if (m_bNeedNewDevice)
+  {
+    if (SUCCEEDED(g_Windowing.GetDeviceStatus()))
+      hr = ChangeD3dDev();
+    else
+      CLog::Log(LOGDEBUG,"Need new device but 3d device suck");
+    
+    return S_OK;
+  }
   if(pTexture)
   {
     // When using VMR9AllocFlag_TextureSurface
@@ -659,38 +673,42 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   if (SUCCEEDED(hr))
     RenderPresent(m_pVideoTexture[m_nCurSurface], m_pVideoSurface[m_nCurSurface]);
   
-  return S_OK;
+  return hr;
 }
 
-void CVMR9AllocatorPresenter::ChangeD3dDev()
+HRESULT CVMR9AllocatorPresenter::ChangeD3dDev()
 {
   HRESULT hr;
   DeleteVmrSurfaces();
+  DeleteSurfaces();
   hr = m_pIVMRSurfAllocNotify->ChangeD3DDevice(g_Windowing.Get3DDevice(),g_Windowing.Get3DObject()->GetAdapterMonitor(GetAdapter(g_Windowing.Get3DObject())));
   if (SUCCEEDED(hr))
   {
     CLog::Log(LOGDEBUG,"%s Changed d3d device",__FUNCTION__);
-    m_bRenderCreated = true;
+    m_bNeedNewDevice = false;
   }
+  return hr;
 }
 void CVMR9AllocatorPresenter::OnLostDevice()
 {
-  
+  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
   m_bRenderCreated = false;
   
 }
 void CVMR9AllocatorPresenter::OnDestroyDevice()
 {
+  m_bNeedNewDevice = true;
+  /*CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
   DeleteVmrSurfaces();
   DeleteSurfaces();
-  m_bRenderCreated = false;
+  m_bRenderCreated = false;*/
   
 }
 
 void CVMR9AllocatorPresenter::OnCreateDevice()
 {
-
-  ChangeD3dDev();
+  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+  //ChangeD3dDev();
   // yay, we're back - make a new copy of the texture
   //hr = CreateSurfaces();
   
