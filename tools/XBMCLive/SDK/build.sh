@@ -18,7 +18,7 @@ cleanup()
 	if [ -n "$WORKPATH" ]; then
 		echo "Cleaning workarea..." 
 		rm -rf $WORKPATH
-		rm -rf $THISDIR/*.iso
+		chmod 777 $THISDIR/binary.iso 
 		echo "All clean"
 	fi
 }
