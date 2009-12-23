@@ -97,7 +97,6 @@ Section "XBMC" SecXBMC
   File "${xbmc_root}\Xbmc\XBMC.exe"
   File "${xbmc_root}\Xbmc\copying.txt"
   File "${xbmc_root}\Xbmc\LICENSE.GPL"
-  File "${xbmc_root}\Xbmc\known_issues.txt"
   File "${xbmc_root}\Xbmc\*.dll"
   SetOutPath "$INSTDIR\credits"
   File /r /x *.so "${xbmc_root}\Xbmc\credits\*.*"
