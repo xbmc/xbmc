@@ -91,7 +91,7 @@ makeDEBs()
 # Get matching package
 echo "Selecting and downloading the kernel package..."
 packageName=$(getPackage)
-if [ "$?" -ne "0" ]; then
+if [ ! -f "$packageName" ]; then
 	exit 1
 fi
 
