@@ -444,6 +444,16 @@ void CGUIDialogMediaSource::OnOK()
     m_confirmed = true;
     Close();
   }
+
+  if (CUtil::IsMultiPath(share.strPath))
+  {
+    CVideoDatabase database;
+    database.Open();
+    database.GetScraperForPath(share.strPath, m_info, m_settings);
+    database.SetScraperForPath(share.strPath, m_info, m_settings);
+    database.Close();
+  }
+
   // and remove the share again
   if (shares)
     shares->erase(--shares->end());
