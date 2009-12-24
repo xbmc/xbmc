@@ -83,6 +83,7 @@ void CBoblightClient::Start()
 
     m_enabled = true;
     m_captureandsend = false;
+    m_needsettingload = true;
     m_captureevent.Set();
 
     Create();
@@ -235,33 +236,30 @@ bool CBoblightClient::LoadSettings()
 {
   bool result = false;
 
-  if      (m_value         != g_settings.m_currentVideoSettings.m_BoblightValue)
-    result = true;
-  else if (m_valuerangemin != g_settings.m_currentVideoSettings.m_BoblightValueMin)
-    result = true;
-  else if (m_valuerangemax != g_settings.m_currentVideoSettings.m_BoblightValueMax)
-    result = true;
-  else if (m_saturation    != g_settings.m_currentVideoSettings.m_BoblightSaturation)
-    result = true;
-  else if (m_satrangemin   != g_settings.m_currentVideoSettings.m_BoblightSaturationMin)
-    result = true;
-  else if (m_satrangemax   != g_settings.m_currentVideoSettings.m_BoblightSaturationMax)
-    result = true;
-  else if (m_speed         != g_settings.m_currentVideoSettings.m_BoblightSpeed)
-    result = true;
-  else if (m_autospeed     != g_settings.m_currentVideoSettings.m_BoblightAutoSpeed)
-    result = true;
+  if (m_value         != g_settings.m_currentVideoSettings.m_BoblightValue ||
+      m_valuerangemin != g_settings.m_currentVideoSettings.m_BoblightValueMin ||
+      m_valuerangemax != g_settings.m_currentVideoSettings.m_BoblightValueMax ||
+      m_saturation    != g_settings.m_currentVideoSettings.m_BoblightSaturation ||
+      m_satrangemin   != g_settings.m_currentVideoSettings.m_BoblightSaturationMin ||
+      m_satrangemax   != g_settings.m_currentVideoSettings.m_BoblightSaturationMax ||
+      m_speed         != g_settings.m_currentVideoSettings.m_BoblightSpeed ||
+      m_autospeed     != g_settings.m_currentVideoSettings.m_BoblightAutoSpeed ||
+      m_needsettingload)
+  {
+    m_value         = g_settings.m_currentVideoSettings.m_BoblightValue;
+    m_valuerangemin = g_settings.m_currentVideoSettings.m_BoblightValueMin;
+    m_valuerangemax = g_settings.m_currentVideoSettings.m_BoblightValueMax;
+    m_saturation    = g_settings.m_currentVideoSettings.m_BoblightSaturation;
+    m_satrangemin   = g_settings.m_currentVideoSettings.m_BoblightSaturationMin;
+    m_satrangemax   = g_settings.m_currentVideoSettings.m_BoblightSaturationMax;
+    m_speed         = g_settings.m_currentVideoSettings.m_BoblightSpeed;
+    m_autospeed     = g_settings.m_currentVideoSettings.m_BoblightAutoSpeed;
 
-  m_value         = g_settings.m_currentVideoSettings.m_BoblightValue;
-  m_valuerangemin = g_settings.m_currentVideoSettings.m_BoblightValueMin;
-  m_valuerangemax = g_settings.m_currentVideoSettings.m_BoblightValueMax;
-  m_saturation    = g_settings.m_currentVideoSettings.m_BoblightSaturation;
-  m_satrangemin   = g_settings.m_currentVideoSettings.m_BoblightSaturationMin;
-  m_satrangemax   = g_settings.m_currentVideoSettings.m_BoblightSaturationMax;
-  m_speed         = g_settings.m_currentVideoSettings.m_BoblightSpeed;
-  m_autospeed     = g_settings.m_currentVideoSettings.m_BoblightAutoSpeed;
+    m_needsettingload = false;
+    return true;
+  }
 
-  return result;
+  return false;
 }
 
 bool CBoblightClient::Connect()

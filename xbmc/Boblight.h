@@ -47,6 +47,7 @@ class CBoblightClient : public CThread
     bool     m_captureandsend;
 
     bool     LoadSettings();
+    bool     m_needsettingload;
     float    m_value;
     float    m_valuerangemin;
     float    m_valuerangemax;
