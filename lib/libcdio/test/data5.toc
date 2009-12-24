@@ -1,0 +1,13 @@
+// $Id: data5.toc,v 1.2 2005/01/23 00:45:57 rocky Exp $
+// XA disk 
+// 
+
+CD_ROM_XA
+
+TRACK MODE2_FORM2
+FILE "isofs-m1.bin" 00:00:00 00:13:57
+
+TRACK MODE2_FORM1
+PREGAP 0:2:0
+FILE "isofs-m1.bin" 00:20:71 00:00:00
+

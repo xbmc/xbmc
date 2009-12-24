@@ -1,0 +1,107 @@
+#!/bin/sh
+# $Id: run_doxygen,v 1.1 2003/11/09 14:11:02 rocky Exp $
+
+# Runs doxygen and massages the output files.
+# Copyright (C) 2001, 2002, 2003 Free Software Foundation, Inc.
+#
+# Synopsis:  run_doxygen --mode=[user|maint|man]  v3srcdir  v3builddir
+#
+# Originally hacked together by Phil Edwards <pme@gcc.gnu.org>
+
+
+# We can check now that the version of doxygen is >= this variable.
+DOXYVER=1.2.15
+doxygen=
+
+find_doxygen() {
+    v_required=`echo $DOXYVER |  \
+                awk -F. '{if(NF<3)$3=0;print ($1*100+$2)*100+$3}'`
+    testing_version=
+    # thank you goat book
+    set `IFS=:; X="$PATH:/usr/local/bin:/bin:/usr/bin"; echo $X`
+    for dir
+    do
+      # AC_EXEEXT could come in useful here
+      maybedoxy="$dir/doxygen"
+      test -f "$maybedoxy" && testing_version=`$maybedoxy --version`
+      if test -n "$testing_version"; then
+       v_found=`echo $testing_version |  \
+                awk -F. '{if(NF<3)$3=0;print ($1*100+$2)*100+$3}'`
+       if test $v_found -ge $v_required; then
+         doxygen="$maybedoxy"
+         break
+       fi
+      fi
+    done
+    if test -z "$doxygen"; then
+        echo run_doxygen error:  Could not find Doxygen $DOXYVER in path. 1>&2
+        print_usage
+    fi
+}
+
+print_usage() {
+    cat 1>&2 <<EOF
+Usage:  run_doxygen --mode=MODE [<options>] <v3-src-dir> <v3-build-dir>
+      MODE is one of:
+          user           Generate user-level HTML library documentation.
+          maint          Generate maintainers' HTML documentation (lots more;
+                             exposes non-public members, etc).
+          man            Generate user-level man pages.
+
+      more options when i think of them
+
+Note:  Requires Doxygen ${DOXYVER} or later; get it at
+       ftp://ftp.stack.nl/pub/users/dimitri/doxygen-${DOXYVER}.src.tar.gz
+
+EOF
+    exit 1
+}
+
+parse_options() {
+  for o
+  do
+    # Blatantly ripped from autoconf, er, I mean, "gratefully standing
+    # on the shoulders of those giants who have gone before us."
+    case "$o" in
+      -*=*) arg=`echo "$o" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+      *) arg= ;;
+    esac
+
+    case "$o" in
+      --mode=*)
+        mode=$arg ;;
+      --mode | --help | -h)
+        print_usage ;;
+      *)
+        # this turned out to be a mess, maybe change to --srcdir=, etc
+        if test $srcdir = unset; then
+          srcdir=$o
+        elif test $outdir = unset; then
+          builddir=${o}
+          outdir=${o}/doc/doxygen
+        else
+          echo run_doxygen error:  Too many arguments 1>&2
+          exit 1
+        fi
+        ;;
+      esac
+  done
+}
+
+
+# script begins here
+mode=unset
+srcdir=unset
+outdir=unset
+do_html=no
+do_man=no
+enabled_sections=
+DATEtext=`date '+%Y-%m-%d'`
+
+parse_options $*
+find_doxygen
+$doxygen ./Doxyfile
+
+exit 0
+
+# vim:ts=4:et:

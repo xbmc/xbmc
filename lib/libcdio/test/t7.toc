@@ -1,0 +1,12 @@
+// check two tracks with pre-gap and ISRC
+
+
+TRACK AUDIO
+NO COPY
+FILE "cdda.bin" 1:0:0
+
+TRACK AUDIO
+NO COPY
+ISRC "DEMUA9800001"
+FILE "cdda.bin" 1:0:0
+START 0:5:0   // pre-gap
