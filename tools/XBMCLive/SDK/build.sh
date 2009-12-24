@@ -45,8 +45,6 @@ THISDIR=$(pwd)
 WORKDIR=workarea
 WORKPATH=$THISDIR/$WORKDIR
 
-trap 'cleanup' EXIT
-
 if [ -d "$WORKPATH" ]; then
 	rm -rf $WORKPATH
 fi
@@ -101,11 +99,34 @@ mkdir -p $WORKPATH/buildLive/Files/chroot_local-packages &> /dev/null
 mkdir -p $WORKPATH/buildLive/Files/binary_local-udebs &> /dev/null
 mkdir -p $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers &> /dev/null
 
+if ! ls $WORKPATH/buildDEBs/live-initramfs*.* > /dev/null 2>&1; then
+        echo "Files missing (1), exiting..."
+        exit 1
+fi
 cp $WORKPATH/buildDEBs/live-initramfs*.* $WORKPATH/buildLive/Files/chroot_local-packages
+
+if ! ls $WORKPATH/buildDEBs/squashfs-udeb*.* > /dev/null 2>&1; then
+        echo "Files missing (2), exiting..."
+        exit 1
+fi
 cp $WORKPATH/buildDEBs/squashfs-udeb*.* $WORKPATH/buildLive/Files/binary_local-udebs
+
+if ! ls $WORKPATH/buildDEBs/live-installer*.* > /dev/null 2>&1; then
+        echo "Files missing (3), exiting..."
+        exit 1
+fi
 cp $WORKPATH/buildDEBs/live-installer*.* $WORKPATH/buildLive/Files/binary_local-udebs
+
+if ! ls $WORKPATH/buildDEBs/xbmclive-installhelpers*.* > /dev/null 2>&1; then
+        echo "Files missing (4), exiting..."
+        exit 1
+fi
 cp $WORKPATH/buildDEBs/xbmclive-installhelpers*.* $WORKPATH/buildLive/Files/binary_local-udebs
 
+if ! ls $WORKPATH/buildRestricted/*.ext3 > /dev/null 2>&1; then
+        echo "Files missing (5), exiting..."
+        exit 1
+fi
 cp $WORKPATH/buildRestricted/*.ext3 $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers
 
 #
