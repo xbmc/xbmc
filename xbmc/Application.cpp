@@ -2146,7 +2146,7 @@ void CApplication::Render()
 
   MEASURE_FUNCTION;
 
-  if (IsPlayingVideo())
+  if (IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo())
     g_boblight.ProcessVideo();
 
   bool decrement = false;
@@ -2224,7 +2224,7 @@ void CApplication::Render()
 
   RenderNoPresent();
 
-  if (IsPlayingVideo() && (m_frameLoaded || g_graphicsContext.IsFullScreenVideo()))
+  if (IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo())
   {
     g_boblight.CaptureVideo();
     m_frameLoaded = false;
@@ -4859,7 +4859,7 @@ void CApplication::Process()
     ProcessSlow();
   }
 
-  if (!IsPlayingVideo())
+  if (!IsPlayingVideo() || !g_graphicsContext.IsFullScreenVideo())
     g_boblight.Disable();
 }
 
