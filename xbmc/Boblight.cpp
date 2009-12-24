@@ -84,6 +84,7 @@ void CBoblightClient::Start()
     m_enabled = true;
     m_captureandsend = false;
     m_needsettingload = true;
+    m_needsprocessing = false;
     m_captureevent.Set();
 
     Create();
@@ -131,6 +132,8 @@ void CBoblightClient::CaptureVideo()
 
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
 
+    m_needsprocessing = true;
+
     if (g_guiSettings.GetBool("videoplayer.boblighttestmode"))
     {
       glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, m_pbo);
@@ -143,7 +146,7 @@ void CBoblightClient::CaptureVideo()
 
 void CBoblightClient::ProcessVideo()
 {
-  if (m_enabled && g_renderManager.IsConfigured())
+  if (m_enabled && g_renderManager.IsConfigured() && m_needsprocessing)
   {
     CSingleLock lock(m_critsection);
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, m_pbo);
@@ -151,6 +154,7 @@ void CBoblightClient::ProcessVideo()
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
 
     m_captureandsend = true;
+    m_needsprocessing = false;
     lock.Leave();
     m_captureevent.Set();
   }
@@ -162,6 +166,7 @@ void CBoblightClient::Disable()
   {
     CSingleLock lock(m_critsection);
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, m_pbo);
+    glUnmapBufferARB(GL_PIXEL_PACK_BUFFER_ARB);
     m_pixels = (unsigned char*)glMapBufferARB(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY_ARB);
     memset(m_pixels, 0, WIDTH * HEIGHT * 4);
     glUnmapBufferARB(GL_PIXEL_PACK_BUFFER_ARB);
@@ -234,8 +239,6 @@ void CBoblightClient::Process()
 
 bool CBoblightClient::LoadSettings()
 {
-  bool result = false;
-
   if (m_value         != g_settings.m_currentVideoSettings.m_BoblightValue ||
       m_valuerangemin != g_settings.m_currentVideoSettings.m_BoblightValueMin ||
       m_valuerangemax != g_settings.m_currentVideoSettings.m_BoblightValueMax ||
