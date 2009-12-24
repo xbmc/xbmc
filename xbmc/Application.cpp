@@ -2144,7 +2144,7 @@ void CApplication::Render()
 
   MEASURE_FUNCTION;
 
-  if (IsPlaying())
+  if (IsPlayingVideo())
     g_boblight.ProcessVideo();
 
   bool decrement = false;
@@ -2222,7 +2222,7 @@ void CApplication::Render()
 
   RenderNoPresent();
 
-  if (IsPlaying())
+  if (IsPlayingVideo())
     g_boblight.CaptureVideo();
 
   g_Windowing.EndRender();
@@ -4854,7 +4854,7 @@ void CApplication::Process()
     ProcessSlow();
   }
 
-  if (!IsPlaying())
+  if (!IsPlayingVideo())
     g_boblight.Disable();
 }
 
