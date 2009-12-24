@@ -66,6 +66,8 @@ void CBoblightClient::Start()
       return;
     }
 
+    memset(m_pixels, 0, WIDTH * HEIGHT * 4);
+
     //hack hack, CBaseTexture::GetPixels() needs to return NULL for the pbo to work
     m_texture.Allocate(WIDTH, HEIGHT, XB_FMT_A8R8G8B8);
     m_texture.LoadToGPU();
@@ -73,13 +75,8 @@ void CBoblightClient::Start()
 
     glGenBuffersARB(1, &m_pbo);
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, m_pbo);
-    glBufferDataARB(GL_PIXEL_PACK_BUFFER_ARB, WIDTH * HEIGHT * 4, 0, GL_STREAM_READ_ARB);
-    unsigned char* pbodata = (unsigned char*)glMapBufferARB(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY_ARB);
-    memset(pbodata, 0, WIDTH * HEIGHT * 4);
-    glUnmapBufferARB(GL_PIXEL_PACK_BUFFER_ARB);
+    glBufferDataARB(GL_PIXEL_PACK_BUFFER_ARB, WIDTH * HEIGHT * 4, (GLvoid*)m_pixels, GL_STREAM_READ_ARB);
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
-
-    memset(m_pixels, 0, WIDTH * HEIGHT * 4);
 
     m_enabled = true;
     m_captureandsend = false;
@@ -104,13 +101,8 @@ void CBoblightClient::Stop()
 
   if (m_pbo)
   {
-    glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, m_pbo);
-    glUnmapBufferARB(GL_PIXEL_PACK_BUFFER_ARB);
-    glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
     glDeleteBuffersARB(1, &m_pbo);
     m_pbo = 0;
-    delete m_pixels;
-    m_pixels = NULL;
   }
 }
 
