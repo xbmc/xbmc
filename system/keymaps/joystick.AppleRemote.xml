@@ -91,7 +91,7 @@
   </MyMusicPlaylist>
   <MyMusicPlaylistEditor>
     <joystick name="AppleRemote">
-      <button id="6">Playlist</button>
+      <button id="6">ParentDir</button>
     </joystick>
   </MyMusicPlaylistEditor>
   <MyMusicFiles>
