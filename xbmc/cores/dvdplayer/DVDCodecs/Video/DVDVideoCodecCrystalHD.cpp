@@ -33,92 +33,6 @@
 
 #define __MODULE_NAME__ "DVDVideoCodecCrystalHD"
 
-class CExecTimer
-{
-public:
-  CExecTimer() :
-    m_StartTime(0),
-    m_PunchInTime(0),
-    m_PunchOutTime(0),
-    m_LastCallInterval(0)
-  {
-    m_CounterFreq = CurrentHostFrequency() / 1000; // Scale to ms
-  }
-  
-  void Start()
-  {
-    m_StartTime = CurrentHostCounter();
-  }
-  
-  void PunchIn()
-  {
-    m_PunchInTime = CurrentHostCounter();
-    if (m_PunchOutTime)
-      m_LastCallInterval = m_PunchInTime - m_PunchOutTime;
-    else
-      m_LastCallInterval = 0;
-    m_PunchOutTime = 0;
-  }
-  
-  void PunchOut()
-  {
-    if (m_PunchInTime)
-      m_PunchOutTime = CurrentHostCounter();
-  }
-  
-  void Reset()
-  {
-    m_StartTime = 0;
-    m_PunchInTime = 0;
-    m_PunchOutTime = 0;
-    m_LastCallInterval = 0;
-  }
-
-  uint64_t GetTimeSincePunchIn()
-  {
-    if (m_PunchInTime)
-    {
-      return (CurrentHostCounter() - m_PunchInTime)/m_CounterFreq;  
-    }
-    else
-      return 0;
-  }
-
-  uint64_t GetElapsedTime()
-  {
-    if (m_StartTime)
-    {
-      return (CurrentHostCounter() - m_StartTime)/m_CounterFreq;  
-    }
-    else
-      return 0;
-  }
-  
-  uint64_t GetExecTime()
-  {
-    if (m_PunchOutTime && m_PunchInTime)
-      return (m_PunchOutTime - m_PunchInTime)/m_CounterFreq;  
-    else
-      return 0;
-  }
-  
-  uint64_t GetIntervalTime()
-  {
-    return m_LastCallInterval/m_CounterFreq;
-  }
-  
-protected:
-  uint64_t m_StartTime;
-  uint64_t m_PunchInTime;
-  uint64_t m_PunchOutTime;
-  uint64_t m_LastCallInterval;
-  uint64_t m_CounterFreq;
-};
-
-CExecTimer g_InputTimer;
-CExecTimer g_OutputTimer;
-CExecTimer g_ClientTimer;
-
 CDVDVideoCodecCrystalHD::CDVDVideoCodecCrystalHD() :
   m_Device(NULL),
   m_DropPictures(false),
@@ -151,17 +65,17 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
     m_Device = CCrystalHD::GetInstance();
     if (!m_Device)
     {
-      CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD", __MODULE_NAME__);
+      CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Codec", __MODULE_NAME__);
       return false;
     }
     
     if (m_Device && !m_Device->Open(stream_type, codec_type))
     {
-      CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD", __MODULE_NAME__);
+      CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Codec", __MODULE_NAME__);
       return false;
     }
 
-    CLog::Log(LOGDEBUG, "%s: Opened Broadcom Crystal HD", __MODULE_NAME__);
+    CLog::Log(LOGINFO, "%s: Opened Broadcom Crystal HD Codec", __MODULE_NAME__);
     return true;
   }
   
@@ -177,36 +91,43 @@ void CDVDVideoCodecCrystalHD::Dispose(void)
   }
 }
 
-int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
+int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
 {
   int ret = 0;
 
   int pict_field;
-  int maxWait = 40;
+  int maxWait;
   unsigned int lastTime;
   unsigned int maxTime;
   bool annexbfiltered = false;
 
+  // in NULL is passed, DVDPlayer wants us to flush any internal picture frame.
+  // we don't have internal picture frames so just return.
   if (!pData)
     return VC_BUFFER;
 
-  if (pData)
+  if (m_annexbfiltering)
   {
-    if (m_annexbfiltering)
+    int outbuf_size = 0;
+    uint8_t *outbuf = NULL;
+    
+    h264_mp4toannexb_filter(pData, iSize, &outbuf, &outbuf_size);
+    if (outbuf)
     {
-      int outbuf_size = 0;
-      uint8_t *outbuf = NULL;
-      
-      h264_mp4toannexb_filter(pData, iSize, &outbuf, &outbuf_size);
-      if (outbuf)
-      {
-        annexbfiltered = true;
-        pData = outbuf;
-        iSize = outbuf_size;
-      }
+      annexbfiltered = true;
+      pData = outbuf;
+      iSize = outbuf_size;
     }
   }
-      
+  
+  // we have to throttle input demux packets by waiting for a returned picture frame
+  // or we can suck vqueue dry and DVDPlayer starts thrashing about. If we are dropping
+  // frames, then drop the timeout so we can catch up quickly.
+  if (m_DropPictures)
+    maxWait = 5;
+  else
+    maxWait = 40;
+  
   lastTime = CTimeUtils::GetTimeMS();
   maxTime = lastTime + maxWait;
   do
@@ -219,11 +140,12 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
         if (annexbfiltered)
           free(pData);
         pData = NULL;
+        ret |= VC_BUFFER;
       }
       else
       {
-        CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full", __MODULE_NAME__);
-        Sleep(1);
+        CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
+        Sleep(10);
       }
     }
 
@@ -231,19 +153,18 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
     if (m_Device->GotPicture(&pict_field))
     {
       if (pict_field != CRYSTALHD_FIELD_EVEN)
-      ret |= VC_PICTURE;
+        ret |= VC_PICTURE;
     }
-
-    if (m_Device->GetInputCount() < 25)
-      ret |= VC_BUFFER;
-
+    
+    // wait for both consumed demux packet and a returned picture frame
+    // this help throttle consuming demux packets and we don't drain vqueue.
     if (!pData && (ret & VC_PICTURE))
       break;
 
   } while ((lastTime = CTimeUtils::GetTimeMS()) < maxTime);
-  
-  if (lastTime >= maxTime)
-    CLog::Log(LOGDEBUG, "%s: Timeout in CDVDVideoCodecCrystalHD::Decode. ret: 0x%08x pData: %p", __MODULE_NAME__, ret, pData);
+
+  //if (lastTime >= maxTime)
+  //  CLog::Log(LOGDEBUG, "%s: Timeout in CDVDVideoCodecCrystalHD::Decode. ret: 0x%08x pData: %p", __MODULE_NAME__, ret, pData);
     
   if (!ret)
     ret = VC_ERROR;
@@ -253,20 +174,19 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
 
 void CDVDVideoCodecCrystalHD::Reset(void)
 {
+  CLog::Log(LOGDEBUG, "%s: Reset, flushing decoder.", __MODULE_NAME__);   
   m_Device->Flush();
 }
 
 bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
-  m_Device->GetPicture(pDvdVideoPicture);
-  //CLog::Log(LOGDEBUG, "%s: Fetching next decoded picture", __MODULE_NAME__);   
-
-  return true;
+  return  m_Device->GetPicture(pDvdVideoPicture);
 }
 
 void CDVDVideoCodecCrystalHD::SetDropState(bool bDrop)
 {
-  m_Device->SetDropState(bDrop);
+  m_DropPictures = bDrop;
+  m_Device->SetDropState(m_DropPictures);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -330,8 +250,8 @@ bool CDVDVideoCodecCrystalHD::init_h264_mp4toannexb_filter(CDVDStreamInfo &hints
 }
 
 void CDVDVideoCodecCrystalHD::alloc_and_copy(uint8_t **poutbuf,     int *poutbuf_size,
-                                  const uint8_t *sps_pps, uint32_t sps_pps_size,
-                                  const uint8_t *in,      uint32_t in_size)
+                                       const uint8_t *sps_pps, uint32_t sps_pps_size,
+                                       const uint8_t *in,      uint32_t in_size)
 {
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>

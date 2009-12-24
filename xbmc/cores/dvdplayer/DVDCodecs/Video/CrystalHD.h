@@ -22,67 +22,7 @@
 
 #if defined(HAVE_LIBCRYSTALHD)
 
-#include <deque>
-#include <vector>
-
 #include "DVDVideoCodec.h"
-#include "utils/CriticalSection.h"
-namespace Surface { class CSurface; }
-
-////////////////////////////////////////////////////////////////////////////////////////////
-template <class T>
-class CSyncPtrQueue
-{
-public:
-  CSyncPtrQueue()
-  {
-    InitializeCriticalSection(&m_Lock);
-  }
-  virtual ~CSyncPtrQueue()
-  {
-    DeleteCriticalSection(&m_Lock);
-  }
-  void Push(T* p)
-  {
-    EnterCriticalSection(&m_Lock);
-    m_Queue.push_back(p);
-    LeaveCriticalSection(&m_Lock);
-  }
-  T* Pop()
-  {
-    T* p = NULL;
-    EnterCriticalSection(&m_Lock);
-    if (m_Queue.size())
-    {
-      p = m_Queue.front();
-      m_Queue.pop_front();
-    }
-    LeaveCriticalSection(&m_Lock);
-    return p;
-  }
-  unsigned int Count(){return m_Queue.size();}
-protected:
-  std::deque<T*> m_Queue;
-  CRITICAL_SECTION m_Lock;
-};
-
-////////////////////////////////////////////////////////////////////////////////////////////
-class CMPCDecodeBuffer
-{
-public:
-  CMPCDecodeBuffer(size_t size);
-  CMPCDecodeBuffer(unsigned char* pBuffer, size_t size);
-  virtual ~CMPCDecodeBuffer();
-  size_t GetSize(void);
-  unsigned char* GetPtr(void);
-  void SetPts(uint64_t pts);
-  uint64_t GetPts(void);
-protected:
-  size_t m_Size;
-  unsigned char* m_pBuffer;
-  unsigned int m_Id;
-  uint64_t m_Pts;
-};
 
 /* We really don't want to include ffmpeg headers, so define these */
 enum _BCM_CODEC_TYPES
@@ -102,9 +42,6 @@ enum _BCM_STREAM_TYPE
 typedef uint32_t BCM_CODEC_TYPE;
 typedef uint32_t BCM_STREAM_TYPE;
 ////////////////////////////////////////////////////////////////////////////////////////////
-class CMPCInputThread;
-class CMPCOutputThread;
-typedef struct YV12Image YV12Image;
 
 #define CRYSTALHD_FIELD_FULL        0x00
 #define CRYSTALHD_FIELD_EVEN        0x01
@@ -133,31 +70,30 @@ protected:
   void SetAspectRatio(uint32_t aspect_ratio, uint32_t custom_aspect_ratio_width_height);
   bool GetDecoderOutput(void);
   
-  void*     m_dl_handle;
-  void*     m_Device;
+  void          *m_dl_handle;
+  void          *m_Device;
   
-  bool      m_IsConfigured;
-  bool      m_drop_state;
-  const char* m_pFormatName;
-  unsigned int        m_OutputTimeout;
-  unsigned int        m_field;
-  unsigned int        m_width;
-  unsigned int        m_height;
-  bool                m_interlace;
-  double              m_framerate;
-  uint64_t            m_timestamp;
-  unsigned int        m_PictureNumber;
-  unsigned int        m_aspectratio_x;
-  unsigned int        m_aspectratio_y;
-  unsigned char*      m_y_buffer_ptr;
-  unsigned char*      m_uv_buffer_ptr;
-  int                 m_y_buffer_size;
-  int                 m_uv_buffer_size;
+  bool          m_IsConfigured;
+  bool          m_drop_state;
+  const char    *m_pFormatName;
+  unsigned int  m_OutputTimeout;
+  unsigned int  m_field;
+  unsigned int  m_width;
+  unsigned int  m_height;
+  bool          m_interlace;
+  double        m_framerate;
+  uint64_t      m_timestamp;
+  unsigned int  m_PictureNumber;
+  unsigned int  m_aspectratio_x;
+  unsigned int  m_aspectratio_y;
+  unsigned char *m_y_buffer_ptr;
+  unsigned char *m_uv_buffer_ptr;
+  int           m_y_buffer_size;
+  int           m_uv_buffer_size;
 
-  CMPCInputThread* m_pInputThread;
 private:
   CCrystalHD();
-  static CCrystalHD* m_pInstance;
+  static CCrystalHD *m_pInstance;
 };
 
 #endif
