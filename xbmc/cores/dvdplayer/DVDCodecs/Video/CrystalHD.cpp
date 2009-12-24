@@ -280,9 +280,6 @@ CCrystalHD::CCrystalHD() :
   if (res != BCM::BC_STS_SUCCESS)
   {
     m_Device = NULL;
-  }
-  else
-  {
     CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD", __MODULE_NAME__);
   }
 }
