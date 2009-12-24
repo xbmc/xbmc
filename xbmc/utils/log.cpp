@@ -161,7 +161,7 @@ bool CLog::Init(const char* path)
         !::MoveFileW(strLogFile.c_str(),strLogFileOld.c_str()))
       return false;
 
-    m_file = _wfopen(strLogFile.c_str(),L"wb");
+    m_file = _wfsopen(strLogFile.c_str(),L"wb", _SH_DENYWR);
 #else
     CStdString strLogFile, strLogFileOld;
 
