@@ -277,7 +277,7 @@ CCrystalHD::CCrystalHD() :
   BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
   
   res = BCM::DtsDeviceOpen(&m_Device, mode);
-  if (res == BCM::BC_STS_SUCCESS)
+  if (res != BCM::BC_STS_SUCCESS)
   {
     m_Device = NULL;
   }
