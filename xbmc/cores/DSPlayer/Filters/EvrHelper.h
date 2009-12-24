@@ -636,7 +636,7 @@ template<class T>
     }
 
 namespace MediaFoundationSamples
-{	
+{
     class MediaTypeBuilder;
     class AudioTypeBuilder;
     class VideoTypeBuilder;
@@ -649,7 +649,7 @@ namespace MediaFoundationSamples
     HRESULT     GetFrameRate(IMFMediaType *pType, MFRatio *pRatio);
     HRESULT     GetVideoDisplayArea(IMFMediaType *pType, MFVideoArea *pArea);
     BOOL        IsFormatInterlaced(IMFMediaType *pType);
-
+  
 
     // DXVA media type helpers
 #ifdef __dxva2api_h__
@@ -699,7 +699,9 @@ namespace MediaFoundationSamples
     {
     protected:
         IMFMediaType* m_pType;
-
+        HMODULE m_hModuleMFPLAT;
+        typedef HRESULT __stdcall TMFCreateMediaType(IMFMediaType** ppIMediaType);
+        TMFCreateMediaType* m_pMFCreateMediaType;
     protected:
         BOOL IsValid()
         {
@@ -731,13 +733,24 @@ namespace MediaFoundationSamples
         // Create a new media type.
         MediaTypeBuilder(HRESULT& hr)
         {
-
-            hr = MFCreateMediaType(&m_pType);
+          hr=E_FAIL;
+            char sysFold[260];
+            GetSystemDirectory(sysFold,sizeof(sysFold));
+            char mfplatPath[260];
+            sprintf(mfplatPath,"%s\\mfplat.dll", sysFold);
+            m_hModuleMFPLAT=LoadLibrary(mfplatPath);
+            m_pMFCreateMediaType=(TMFCreateMediaType*)GetProcAddress(m_hModuleMFPLAT,"MFCreateMediaType");
+            if (m_pMFCreateMediaType)
+              hr = m_pMFCreateMediaType(&m_pType);
+          
         }
 
         virtual ~MediaTypeBuilder()
         {
-            S_RELEASE(m_pType);
+          if (m_hModuleMFPLAT)
+            FreeLibrary(m_hModuleMFPLAT);
+          
+          S_RELEASE(m_pType);
         }
 
     public:

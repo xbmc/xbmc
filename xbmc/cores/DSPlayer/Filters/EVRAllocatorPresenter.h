@@ -61,7 +61,6 @@ class COuterEVR;
 class CEVRAllocatorPresenter : public IDsRenderer,
                                public IMFVideoDeviceID,
                                public IMFVideoPresenter,
-                               //public IDirect3DDeviceManager9,
                                public IMFGetService,
                                public IMFTopologyServiceLookupClient,
                                public IMFVideoDisplayControl,
@@ -208,7 +207,7 @@ inline HRESULT CheckShutdown() const
     // Formats
     HRESULT CreateOptimalVideoType(IMFMediaType* pProposed, IMFMediaType **ppOptimal);
     HRESULT CalculateOutputRectangle(IMFMediaType *pProposed, RECT *prcOutput);
-    HRESULT SetMediaType(IMFMediaType *pMediaType);
+    HRESULT SetMediaType(IMFMediaType *pType);
     HRESULT IsMediaTypeSupported(IMFMediaType *pMediaType);
 
     // Message handlers

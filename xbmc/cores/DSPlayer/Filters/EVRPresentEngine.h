@@ -69,22 +69,19 @@ private:
 protected:
 	HRESULT InitializeD3D();
     HRESULT GetSwapChainPresentParameters(IMFMediaType *pType, D3DPRESENT_PARAMETERS* pPP);
-	HRESULT CreateD3DDevice();
 	HRESULT CreateD3DSample(IDirect3DSurface9 *pSurface, IMFSample **ppVideoSample,int surfaceIndex);
 
 	// A derived class can override these handlers to allocate any additional D3D resources.
 	virtual HRESULT OnCreateVideoSamples(D3DPRESENT_PARAMETERS& pp) { return S_OK; }
 	virtual void	OnReleaseResources() { }
 
-    virtual HRESULT PresentSwapChain(IDirect3DSwapChain9* pSwapChain, IDirect3DSurface9* pSurface);
-
 protected:
   
 	IEVRPresenterCallback		*m_pCallback;
   UINT                     m_DeviceResetToken;     // Reset token for the D3D device manager.
 	int							         m_bufferCount;
-  int                      m_iVideoHeight;
-  int                      m_iVideoWidth;
+  UINT32                   m_iVideoHeight;
+  UINT32                   m_iVideoWidth;
 	RECT						         m_rcDestRect;           // Destination rectangle.
   D3DDISPLAYMODE              m_DisplayMode;          // Adapter's display mode.
 

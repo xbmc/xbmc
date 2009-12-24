@@ -23,7 +23,7 @@ public:
         m_pCB = pCB;
     }
 
-    void SetFrameRate(const MFRatio& fps);
+    void SetFrameRate(MFTIME TimePerFrame);
     void SetClockRate(float fRate) { m_fRate = fRate; }
 
     const LONGLONG& LastSampleTime() const { return m_LastSampleTime; }

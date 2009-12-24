@@ -19,16 +19,6 @@ using namespace std;
 #include "DsRenderer.h"
 #include "geometry.h"
 
-#include "VideoReferenceClock.h"
-
-class CDSGraph;
-enum VMR_STATE
-{
-  RENDER_STATE_NEEDDEVICE = 0,
-  RENDER_STATE_RUNNING,
-  RENDER_STATE_DEVICELOST,
-  
-};
 
 [uuid("A2636B41-5E3C-4426-B6BC-CD8616600912")]
 class CVMR9AllocatorPresenter  : public CDsRenderer,
@@ -72,14 +62,11 @@ protected:
   void GetCurrentVideoSize();
   HRESULT ChangeD3dDev();
 
-  D3DFORMAT            m_DisplayType;
+  D3DFORMAT m_DisplayType;
   
   bool m_fUseInternalTimer;
   //Clock stuff
   REFERENCE_TIME m_rtTimePerFrame;
-  REFERENCE_TIME m_pPrevEndFrame;
-  
-
   float          m_fps;
   int            m_fFrameRate;
   bool           m_bRenderCreated;
@@ -90,7 +77,6 @@ private:
   vector<CComPtr<IDirect3DSurface9> >     m_pSurfaces;
   int                                     m_pNbrSurface;
   int                                     m_pCurSurface;
-  VMR_STATE                               m_vmrState;
 };
 
 #endif // _DXALLOCATORPRESENTER_H

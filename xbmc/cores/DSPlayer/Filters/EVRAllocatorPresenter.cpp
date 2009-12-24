@@ -1427,17 +1427,31 @@ HRESULT CEVRAllocatorPresenter::SetMediaType(IMFMediaType* pType)
     // Add the samples to the sample pool.
     CHECK_HR(hr = m_SamplePool.Initialize(sampleQueue));
 
+  //Getting the time per frame without using MFFrameRateToAverageTimePerFrame
+  IMFVideoMediaType *pVideoMediaType;
+  AM_MEDIA_TYPE* pAMMedia = NULL;
+  MFVIDEOFORMAT* videoFormat = NULL;
+
+  pType->GetRepresentation(FORMAT_MFVideoFormat,(void**)&pAMMedia);
+  videoFormat = (MFVIDEOFORMAT*)pAMMedia->pbFormat;
+  hr = pfMFCreateVideoMediaType(videoFormat, &pVideoMediaType);
+    
+  
+  REFERENCE_TIME avgframe;
+  //This method for getting the time per frame is coming from mediaportal
+  if (videoFormat->videoInfo.FramesPerSecond.Numerator != 0)
+    avgframe = (20000000I64*videoFormat->videoInfo.FramesPerSecond.Denominator)/videoFormat->videoInfo.FramesPerSecond.Numerator;
+  //DShowUtil::ExtractAvgTimePerFrame(pAMMedia,avgframe);
     // Set the frame rate on the scheduler. 
-    if (SUCCEEDED(MediaFoundationSamples::GetFrameRate(pType, &fps)) && (fps.Numerator != 0) && (fps.Denominator != 0))
+    if (avgframe > 0)// SUCCEEDED(MediaFoundationSamples::GetFrameRate(pType, &fps)) && (fps.Numerator != 0) && (fps.Denominator != 0))
     {
-        m_scheduler.SetFrameRate(fps);
+        m_scheduler.SetFrameRate(avgframe);
     }
     else
     {
-        // NOTE: The mixer's proposed type might not have a frame rate, in which case 
-        // we'll use an arbitary default. (Although it's unlikely the video source
-        // does not have a frame rate.)
-        m_scheduler.SetFrameRate(g_DefaultFrameRate);
+      //If anything did go wrong in the getting time per frame putthing this default frame rate
+      //This is the default frame rate
+        m_scheduler.SetFrameRate(400000);
     }
 
     // Store the media type.

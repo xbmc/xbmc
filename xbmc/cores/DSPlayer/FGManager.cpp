@@ -885,7 +885,7 @@ CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd)
     CLog::Log(LOGERROR,"Failed loading %s",fileconfigtmp.c_str());
 
   // Renderers
-  if (DShowUtil::IsVistaOrAbove())
+  if (1)//DShowUtil::IsVistaOrAbove())
     m_transform.AddTail(new CFGFilterVideoRenderer(__uuidof(CEVRAllocatorPresenter), L"Xbmc EVR", m_vrmerit));
   else
     m_transform.AddTail(new CFGFilterVideoRenderer(__uuidof(CVMR9AllocatorPresenter), L"Xbmc VMR9 (Renderless)", m_vrmerit));

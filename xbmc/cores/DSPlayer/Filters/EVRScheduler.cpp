@@ -55,14 +55,14 @@ CEvrScheduler::~CEvrScheduler()
 // Specifies the frame rate of the video, in frames per second.
 //-----------------------------------------------------------------------------
 
-void CEvrScheduler::SetFrameRate(const MFRatio& fps)
+void CEvrScheduler::SetFrameRate(MFTIME TimePerFrame)
 {
-    UINT64 AvgTimePerFrame = 0;
+    //UINT64 AvgTimePerFrame = 0;
 
     // Convert to a duration.
-    MFFrameRateToAverageTimePerFrame(fps.Numerator, fps.Denominator, &AvgTimePerFrame);
+    //MFFrameRateToAverageTimePerFrame(fps.Numerator, fps.Denominator, &AvgTimePerFrame);
   
-    m_PerFrameInterval = (MFTIME)AvgTimePerFrame;
+    m_PerFrameInterval = (MFTIME)TimePerFrame;
 
     // Calculate 1/4th of this value, because we use it frequently.
     m_PerFrame_1_4th = m_PerFrameInterval / 4;

@@ -294,9 +294,7 @@ CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error
   m_D3D = g_Windowing.Get3DObject();
   m_D3DDev = g_Windowing.Get3DDevice();
   hr = S_OK;
-  m_bRenderCreated = false;
   m_bNeedNewDevice = false;
-  m_vmrState = RENDER_STATE_NEEDDEVICE;
 }
 
 CVMR9AllocatorPresenter::~CVMR9AllocatorPresenter()
@@ -322,10 +320,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
 {
   CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
-  m_pPrevEndFrame=0;
-  m_vmrState = RENDER_STATE_RUNNING;
-  m_bRenderCreated = true;
-  CLog::Log(LOGNOTICE,"vmr9:InitializeDevice() %dx%d AR %d:%d flags:%d buffers:%d  fmt:(%x) %c%c%c%c", 
+  CLog::Log(LOGDEBUG,"%s %dx%d AR %d:%d flags:%d buffers:%d  fmt:(%x) %c%c%c%c", __FUNCTION__,
     lpAllocInfo->dwWidth ,lpAllocInfo->dwHeight ,lpAllocInfo->szAspectRatio.cx,lpAllocInfo->szAspectRatio.cy,
     lpAllocInfo->dwFlags ,*lpNumBuffers, lpAllocInfo->Format, ((char)lpAllocInfo->Format&0xff),
 	((char)(lpAllocInfo->Format>>8)&0xff) ,((char)(lpAllocInfo->Format>>16)&0xff) ,((char)(lpAllocInfo->Format>>24)&0xff));
@@ -334,6 +329,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
     return E_POINTER;
   if( !m_pIVMRSurfAllocNotify)
     return E_FAIL;
+  
   HRESULT hr = S_OK;
 
   if(lpAllocInfo->Format == '21VY' || lpAllocInfo->Format == '024I')
@@ -344,19 +340,17 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
   //To do implement the texture surface on the present image
   //if(lpAllocInfo->dwFlags & VMR9AllocFlag_3DRenderTarget)
   //lpAllocInfo->dwFlags |= VMR9AllocFlag_TextureSurface;
-  CStdString strVmr9Flags;
-  strVmr9Flags.append("VMR9 Flags:");
   if (lpAllocInfo->dwFlags & VMR9AllocFlag_3DRenderTarget)
-    strVmr9Flags.append(" 3drendertarget,");
+    CLog::Log(LOGDEBUG,"VMR9AllocFlag_3DRenderTarget");
   if (lpAllocInfo->dwFlags & VMR9AllocFlag_DXVATarget)
-    strVmr9Flags.append(" DXVATarget,");
+    CLog::Log(LOGDEBUG,"VMR9AllocFlag_DXVATarget");
   if (lpAllocInfo->dwFlags & VMR9AllocFlag_OffscreenSurface) 
-    strVmr9Flags.append(" OffscreenSurface,");
+    CLog::Log(LOGDEBUG,"VMR9AllocFlag_OffscreenSurface");
   if (lpAllocInfo->dwFlags & VMR9AllocFlag_RGBDynamicSwitch) 
-    strVmr9Flags.append(" RGBDynamicSwitch,");
-  if (lpAllocInfo->dwFlags & VMR9AllocFlag_TextureSurface)
-    strVmr9Flags.append(" TextureSurface.");
-  CLog::Log(LOGNOTICE,"%s",strVmr9Flags.c_str());
+    CLog::Log(LOGDEBUG,"VMR9AllocFlag_RGBDynamicSwitch");
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_TextureSurface )
+    CLog::Log(LOGDEBUG,"VMR9AllocFlag_TextureSurface");
+  
   if (*lpNumBuffers == 1)
 	{
 		*lpNumBuffers = 4;
@@ -649,13 +643,6 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
     return E_POINTER;
 
 	CAutoLock Lock(&m_RenderLock);
-  
-  
-    
-  CComPtr<IDirect3DTexture9> pTexture;
-  lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
-  HRESULT hrrr;
-  
   if (m_bNeedNewDevice)
   {
     if (SUCCEEDED(g_Windowing.GetDeviceStatus()))
@@ -665,6 +652,10 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
     
     return S_OK;
   }
+
+  CComPtr<IDirect3DTexture9> pTexture;
+  lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
+  HRESULT hrrr;
   if(pTexture)
   {
     // When using VMR9AllocFlag_TextureSurface
@@ -695,27 +686,17 @@ HRESULT CVMR9AllocatorPresenter::ChangeD3dDev()
 }
 void CVMR9AllocatorPresenter::OnLostDevice()
 {
-  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
-  m_bRenderCreated = false;
+  //CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
   
 }
 void CVMR9AllocatorPresenter::OnDestroyDevice()
 {
+  //Only this one is required for changing the device
+  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
   m_bNeedNewDevice = true;
-  /*CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
-  DeleteVmrSurfaces();
-  DeleteSurfaces();
-  m_bRenderCreated = false;*/
-  
 }
 
 void CVMR9AllocatorPresenter::OnCreateDevice()
 {
   CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
-  //ChangeD3dDev();
-  // yay, we're back - make a new copy of the texture
-  //hr = CreateSurfaces();
-  
-  
-  
 }
