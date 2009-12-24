@@ -67,6 +67,15 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 #define VIDEO_SETTING_VDPAU_NOISE         19
 #define VIDEO_SETTING_VDPAU_SHARPNESS     20
 
+#define VIDEO_SETTING_BOBLIGHT_VALUE      30
+#define VIDEO_SETTING_BOBLIGHT_VALUEMIN   31
+#define VIDEO_SETTING_BOBLIGHT_VALUEMAX   32
+#define VIDEO_SETTING_BOBLIGHT_SATURATION 33
+#define VIDEO_SETTING_BOBLIGHT_SATMIN     34
+#define VIDEO_SETTING_BOBLIGHT_SATMAX     35
+#define VIDEO_SETTING_BOBLIGHT_SPEED      36
+#define VIDEO_SETTING_BOBLIGHT_AUTOSPEED  37
+
 void CGUIDialogVideoSettings::CreateSettings()
 {
   m_usePopupSliders = g_SkinInfo.HasSkinFile("DialogSlider.xml");
@@ -148,6 +157,16 @@ void CGUIDialogVideoSettings::CreateSettings()
   AddSeparator(8);
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
   AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
+
+  AddSeparator(9);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUE, 23055, &g_settings.m_currentVideoSettings.m_BoblightValue, 0.0, 0.1, 20.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUEMIN, 23056, &g_settings.m_currentVideoSettings.m_BoblightValueMin, 0.0, 0.01, 1.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUEMAX, 23057, &g_settings.m_currentVideoSettings.m_BoblightValueMax, 0.0, 0.01, 1.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_SATURATION, 23058, &g_settings.m_currentVideoSettings.m_BoblightSaturation, 0.0, 0.1, 20.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_SATMIN, 23059, &g_settings.m_currentVideoSettings.m_BoblightSaturationMin, 0.0, 0.01, 1.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_SATMAX, 23060, &g_settings.m_currentVideoSettings.m_BoblightSaturationMax, 0.0, 0.01, 1.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_SPEED, 23061, &g_settings.m_currentVideoSettings.m_BoblightSpeed, 0.0, 0.25, 100.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_AUTOSPEED, 23062, &g_settings.m_currentVideoSettings.m_BoblightAutoSpeed, 0.0, 0.25, 100.0, FormatFloat);
 }
 
 void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
@@ -199,6 +218,27 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
       g_settings.Save();
     }
   }
+  else if (setting.id == VIDEO_SETTING_BOBLIGHT_VALUEMIN)
+  {
+    if (g_settings.m_currentVideoSettings.m_BoblightValueMin > g_settings.m_currentVideoSettings.m_BoblightValueMax)
+      g_settings.m_currentVideoSettings.m_BoblightValueMin = g_settings.m_currentVideoSettings.m_BoblightValueMax;
+  }
+  else if (setting.id == VIDEO_SETTING_BOBLIGHT_VALUEMAX)
+  {
+    if (g_settings.m_currentVideoSettings.m_BoblightValueMax < g_settings.m_currentVideoSettings.m_BoblightValueMin)
+      g_settings.m_currentVideoSettings.m_BoblightValueMax = g_settings.m_currentVideoSettings.m_BoblightValueMin;
+  }
+  else if (setting.id == VIDEO_SETTING_BOBLIGHT_SATMIN)
+  {
+    if (g_settings.m_currentVideoSettings.m_BoblightSaturationMin > g_settings.m_currentVideoSettings.m_BoblightSaturationMax)
+      g_settings.m_currentVideoSettings.m_BoblightSaturationMin = g_settings.m_currentVideoSettings.m_BoblightSaturationMax;
+  }
+  else if (setting.id == VIDEO_SETTING_BOBLIGHT_SATMAX)
+  {
+    if (g_settings.m_currentVideoSettings.m_BoblightSaturationMax < g_settings.m_currentVideoSettings.m_BoblightSaturationMin)
+      g_settings.m_currentVideoSettings.m_BoblightSaturationMax = g_settings.m_currentVideoSettings.m_BoblightSaturationMin;
+  }
+
 }
 
 CStdString CGUIDialogVideoSettings::FormatInteger(float value, float minimum)

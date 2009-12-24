@@ -788,6 +788,15 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetFloat(pElement, "audiodelay", m_defaultVideoSettings.m_AudioDelay, 0.0f, -10.0f, 10.0f);
     GetFloat(pElement, "subtitledelay", m_defaultVideoSettings.m_SubtitleDelay, 0.0f, -10.0f, 10.0f);
 
+    GetFloat(pElement, "boblightvalue", m_defaultVideoSettings.m_BoblightValue, 10.0, 0.0, 20.0);
+    GetFloat(pElement, "boblightvaluemin", m_defaultVideoSettings.m_BoblightValueMin, 0.0, 0.0, 1.0);
+    GetFloat(pElement, "boblightvaluemax", m_defaultVideoSettings.m_BoblightValueMax, 1.0, 0.0, 1.0);
+    GetFloat(pElement, "boblightsaturation", m_defaultVideoSettings.m_BoblightSaturation, 5.0, 0.0, 20.0);
+    GetFloat(pElement, "boblightsaturationmin", m_defaultVideoSettings.m_BoblightSaturationMin, 0.0, 0.0, 1.0);
+    GetFloat(pElement, "boblightsaturationmax", m_defaultVideoSettings.m_BoblightSaturationMax, 1.0, 0.0, 1.0);
+    GetFloat(pElement, "boblightspeed", m_defaultVideoSettings.m_BoblightSpeed, 10.0, 0.0, 100.0);
+    GetFloat(pElement, "boblightautospeed", m_defaultVideoSettings.m_BoblightAutoSpeed, 5.0, 0.0, 100.0);
+
     m_defaultVideoSettings.m_SubtitleCached = false;
   }
   // audio settings
@@ -947,6 +956,15 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetFloat(pNode, "gamma", m_defaultVideoSettings.m_Gamma);
   XMLUtils::SetFloat(pNode, "audiodelay", m_defaultVideoSettings.m_AudioDelay);
   XMLUtils::SetFloat(pNode, "subtitledelay", m_defaultVideoSettings.m_SubtitleDelay);
+
+  XMLUtils::SetFloat(pNode, "boblightvalue", m_defaultVideoSettings.m_BoblightValue);
+  XMLUtils::SetFloat(pNode, "boblightvaluemin", m_defaultVideoSettings.m_BoblightValueMin);
+  XMLUtils::SetFloat(pNode, "boblightvaluemax", m_defaultVideoSettings.m_BoblightValueMax);
+  XMLUtils::SetFloat(pNode, "boblightsaturation", m_defaultVideoSettings.m_BoblightSaturation);
+  XMLUtils::SetFloat(pNode, "boblightsaturationmin", m_defaultVideoSettings.m_BoblightSaturationMin);
+  XMLUtils::SetFloat(pNode, "boblightsaturationmax", m_defaultVideoSettings.m_BoblightSaturationMax);
+  XMLUtils::SetFloat(pNode, "boblightspeed", m_defaultVideoSettings.m_BoblightSpeed);
+  XMLUtils::SetFloat(pNode, "boblightautospeed", m_defaultVideoSettings.m_BoblightAutoSpeed);
 
 
   // audio settings

@@ -56,6 +56,15 @@ CVideoSettings::CVideoSettings()
   m_CropBottom = 0;
   m_CropLeft = 0;
   m_CropRight = 0;
+
+  m_BoblightValue = 10.0;
+  m_BoblightValueMin = 0.0;
+  m_BoblightValueMax = 1.0;
+  m_BoblightSaturation = 5.0;
+  m_BoblightSaturationMin = 0.0;
+  m_BoblightSaturationMax = 1.0;
+  m_BoblightSpeed = 10.0;
+  m_BoblightAutoSpeed = 5.0;
 }
 
 bool CVideoSettings::operator!=(const CVideoSettings &right) const
@@ -82,5 +91,15 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_CropBottom != right.m_CropBottom) return true;
   if (m_CropLeft != right.m_CropLeft) return true;
   if (m_CropRight != right.m_CropRight) return true;
+
+  if (m_BoblightValue != right.m_BoblightValue) return true;
+  if (m_BoblightValueMin != right.m_BoblightValueMin) return true;
+  if (m_BoblightValueMax != right.m_BoblightValueMax) return true;
+  if (m_BoblightSaturation != right.m_BoblightSaturation) return true;
+  if (m_BoblightSaturationMin != right.m_BoblightSaturationMin) return true;
+  if (m_BoblightSaturationMax != right.m_BoblightSaturationMax) return true;
+  if (m_BoblightSpeed != right.m_BoblightSpeed) return true;
+  if (m_BoblightAutoSpeed != right.m_BoblightAutoSpeed) return true;
+
   return false;
 }

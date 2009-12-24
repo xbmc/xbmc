@@ -1576,6 +1576,9 @@ void CLinuxRendererGL::RenderSoftware(int index, int field)
 
 void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width, unsigned int height)
 {
+  if (!m_bValidated)
+    return;
+
   // get our screen rect
   const CRect& rv = g_graphicsContext.GetViewWindow();
 

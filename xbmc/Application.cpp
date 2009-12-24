@@ -257,6 +257,8 @@
   #include "common/IRServerSuite/IRServerSuite.h"
 #endif
 
+#include "Boblight.h"
+
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -455,6 +457,8 @@ bool CApplication::Create(HWND hWnd)
 {
   g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
+
+  g_boblight.Initialize();
 
   m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
   g_Windowing.EnableSystemScreenSaver(false);
@@ -727,6 +731,9 @@ bool CApplication::Create(HWND hWnd)
   CUtil::InitRandomSeed();
 
   g_mediaManager.Initialize();
+
+  if (g_guiSettings.GetBool("videoplayer.boblightenabled"))
+    g_boblight.Start();
 
   return Initialize();
 }
@@ -2137,6 +2144,9 @@ void CApplication::Render()
 
   MEASURE_FUNCTION;
 
+  if (IsPlaying())
+    g_boblight.ProcessVideo();
+
   bool decrement = false;
 
   { // frame rate limiter (really bad, but it does the trick :p)
@@ -2211,6 +2221,10 @@ void CApplication::Render()
     return;
 
   RenderNoPresent();
+
+  if (IsPlaying())
+    g_boblight.CaptureVideo();
+
   g_Windowing.EndRender();
   g_graphicsContext.Flip();
   CTimeUtils::UpdateFrameTime();
@@ -3340,6 +3354,7 @@ bool CApplication::Cleanup()
     g_guiSettings.Clear();
     g_advancedSettings.Clear();
     g_Mouse.Cleanup();
+    g_boblight.Stop();
 
 #ifdef _LINUX
     CXHandle::DumpObjectTracker();
@@ -4838,6 +4853,9 @@ void CApplication::Process()
     m_slowTimer.Reset();
     ProcessSlow();
   }
+
+  if (!IsPlaying())
+    g_boblight.Disable();
 }
 
 // We get called every 500ms

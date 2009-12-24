@@ -97,6 +97,15 @@ public:
   int m_CropLeft;
   int m_CropRight;
 
+  float m_BoblightValue;
+  float m_BoblightValueMin;
+  float m_BoblightValueMax;
+  float m_BoblightSaturation;
+  float m_BoblightSaturationMin;
+  float m_BoblightSaturationMax;
+  float m_BoblightSpeed;
+  float m_BoblightAutoSpeed;
+
 private:
 };
 

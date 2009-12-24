@@ -107,6 +107,7 @@
 #include "LangInfo.h"
 #include "StringUtils.h"
 #include "WindowingFactory.h"
+#include "Boblight.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -2116,6 +2117,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
            strSetting.Equals("videolibrary.removeduplicates"))
   {
     CUtil::DeleteVideoDatabaseDirectoryCache();
+  }
+  else if (strSetting.Equals("videoplayer.boblightenabled"))
+  {
+    if (g_guiSettings.GetBool("videoplayer.boblightenabled"))
+      g_boblight.Start();
+    else
+      g_boblight.Stop();
   }
 
   UpdateSettings();
