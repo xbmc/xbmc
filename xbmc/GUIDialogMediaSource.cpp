@@ -445,6 +445,9 @@ void CGUIDialogMediaSource::OnOK()
     Close();
   }
 
+  // Special handling of multipath:// shares.
+  // * GetScraperForPath takes the first path of the multipath:// element to fetch needed scraper and scan settings.
+  // * SetScraperForPath loops through all elements and adds the appropriate settings for each path.
   if (CUtil::IsMultiPath(share.strPath))
   {
     CVideoDatabase database;
