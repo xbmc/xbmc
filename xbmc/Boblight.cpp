@@ -120,6 +120,8 @@ void CBoblightClient::CaptureVideo()
 
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
 
+    glFlush();
+
     m_needsprocessing = true;
 
     if (g_guiSettings.GetBool("videoplayer.boblighttestmode"))
