@@ -28,7 +28,6 @@
 #include "Settings.h"
 #include "utils/log.h"
 #include "StdString.h"
-#include "utils/SingleLock.h"
 
 #define WIDTH     64
 #define HEIGHT    64
@@ -50,7 +49,7 @@ void CBoblightClient::Initialize()
   m_captureandsend = false;
   m_enabled = false;
   m_boblight = NULL;
-  m_pixels = NULL;
+  m_pixels = new unsigned char[WIDTH * HEIGHT * 4];
   m_pbo = 0;
 }
 
@@ -75,11 +74,12 @@ void CBoblightClient::Start()
     glGenBuffersARB(1, &m_pbo);
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, m_pbo);
     glBufferDataARB(GL_PIXEL_PACK_BUFFER_ARB, WIDTH * HEIGHT * 4, 0, GL_STREAM_READ_ARB);
-    m_pixels = (unsigned char*)glMapBufferARB(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY_ARB);
-    memset(m_pixels, 0, WIDTH * HEIGHT * 4);
+    unsigned char* pbodata = (unsigned char*)glMapBufferARB(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY_ARB);
+    memset(pbodata, 0, WIDTH * HEIGHT * 4);
     glUnmapBufferARB(GL_PIXEL_PACK_BUFFER_ARB);
-    m_pixels = NULL;
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
+
+    memset(m_pixels, 0, WIDTH * HEIGHT * 4);
 
     m_enabled = true;
     m_captureandsend = false;
@@ -104,12 +104,12 @@ void CBoblightClient::Stop()
 
   if (m_pbo)
   {
-    CSingleLock lock(m_critsection);
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, m_pbo);
     glUnmapBufferARB(GL_PIXEL_PACK_BUFFER_ARB);
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
     glDeleteBuffersARB(1, &m_pbo);
     m_pbo = 0;
+    delete m_pixels;
     m_pixels = NULL;
   }
 }
@@ -118,11 +118,7 @@ void CBoblightClient::CaptureVideo()
 {
   if (m_enabled && g_renderManager.IsConfigured())
   {
-    CSingleLock lock(m_critsection);
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, m_pbo);
-    glUnmapBufferARB(GL_PIXEL_PACK_BUFFER_ARB);
-    m_pixels = NULL;
-    lock.Leave();
 
     glReadBuffer(GL_AUX0);
     glDrawBuffer(GL_AUX0);
@@ -148,14 +144,14 @@ void CBoblightClient::ProcessVideo()
 {
   if (m_enabled && g_renderManager.IsConfigured() && m_needsprocessing)
   {
-    CSingleLock lock(m_critsection);
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, m_pbo);
-    m_pixels = (unsigned char*)glMapBufferARB(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY_ARB);
+    unsigned char* pbodata = (unsigned char*)glMapBufferARB(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY_ARB);
+    memcpy(m_pixels, pbodata, WIDTH * HEIGHT * 4);
+    glUnmapBufferARB(GL_PIXEL_PACK_BUFFER_ARB);
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
 
     m_captureandsend = true;
     m_needsprocessing = false;
-    lock.Leave();
     m_captureevent.Set();
   }
 }
@@ -164,14 +160,7 @@ void CBoblightClient::Disable()
 {
   if (m_captureandsend)
   {
-    CSingleLock lock(m_critsection);
-    glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, m_pbo);
-    glUnmapBufferARB(GL_PIXEL_PACK_BUFFER_ARB);
-    m_pixels = (unsigned char*)glMapBufferARB(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY_ARB);
     memset(m_pixels, 0, WIDTH * HEIGHT * 4);
-    glUnmapBufferARB(GL_PIXEL_PACK_BUFFER_ARB);
-    m_pixels = NULL;
-    glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
 
     m_captureandsend = false;
     m_captureevent.Set();
@@ -192,10 +181,6 @@ void CBoblightClient::Process()
 
     if (m_captureandsend)
     {
-      CSingleLock lock(m_critsection);
-      if (!m_pixels)
-        continue;
-
       boblight_setscanrange(m_boblight, WIDTH, HEIGHT);
 
       int rgb[3];
@@ -212,8 +197,6 @@ void CBoblightClient::Process()
           boblight_addpixelxy(m_boblight, x, y, rgb);
         }
       }
-
-      lock.Leave();
 
       boblight_sendrgb(m_boblight, 1, NULL);
 

@@ -24,7 +24,6 @@
 
 #include "Thread.h"
 #include "Texture.h"
-#include "utils/CriticalSection.h"
 
 class CBoblightClient : public CThread
 {
@@ -65,7 +64,6 @@ class CBoblightClient : public CThread
 
     unsigned char*   m_pixels;
     GLuint           m_pbo;
-    CCriticalSection m_critsection;
 };
 
 extern CBoblightClient g_boblight;
