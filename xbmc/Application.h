@@ -322,6 +322,7 @@ protected:
 
 #ifdef HAS_SDL
   int        m_frameCount;
+  bool       m_frameLoaded;
   SDL_mutex* m_frameMutex;
   SDL_cond*  m_frameCond;
 #endif

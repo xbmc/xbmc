@@ -45,6 +45,7 @@ class CBoblightClient : public CThread
     CEvent   m_captureevent;
     bool     m_enabled;
     bool     m_captureandsend;
+    bool     m_needsprocessing;
 
     bool     LoadSettings();
     bool     m_needsettingload;

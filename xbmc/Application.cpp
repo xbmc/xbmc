@@ -333,6 +333,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
 
 #ifdef HAS_SDL
   m_frameCount = 0;
+  m_frameLoaded = false;
   m_frameMutex = SDL_CreateMutex();
   m_frameCond = SDL_CreateCond();
 #endif
@@ -2127,6 +2128,7 @@ void CApplication::NewFrame()
   // We just posted another frame. Keep track and notify.
   SDL_mutexP(m_frameMutex);
   m_frameCount++;
+  m_frameLoaded = true;
   SDL_mutexV(m_frameMutex);
 
   SDL_CondBroadcast(m_frameCond);
@@ -2222,8 +2224,11 @@ void CApplication::Render()
 
   RenderNoPresent();
 
-  if (IsPlayingVideo())
+  if (IsPlayingVideo() && (m_frameLoaded || g_graphicsContext.IsFullScreenVideo()))
+  {
     g_boblight.CaptureVideo();
+    m_frameLoaded = false;
+  }
 
   g_Windowing.EndRender();
   g_graphicsContext.Flip();
