@@ -1726,7 +1726,7 @@ HRESULT CEVRAllocatorPresenter::DeliverSample(IMFSample *pSample, BOOL bRepaint)
     CLog::Log(LOGDEBUG,"%s Device reseting sending EC_DISPLAY_CHANGED to EVR",__FUNCTION__);
   }
 
-    return hr;
+  return hr;
 }
 
 //-----------------------------------------------------------------------------

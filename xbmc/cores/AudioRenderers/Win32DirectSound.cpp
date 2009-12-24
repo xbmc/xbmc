@@ -27,7 +27,7 @@
 #include "SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-
+#include "dxerr.h"
 #pragma comment(lib, "dxguid.lib")
 
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, WAVE_FORMAT_IEEE_FLOAT, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
@@ -337,7 +337,7 @@ void CWin32DirectSound::UpdateCacheStatus()
   HRESULT res = m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor); // Get the current playback and safe write positions
   if (DS_OK != res)
   {
-    CLog::Log(LOGERROR,__FUNCTION__ ": GetCurrentPosition failed. Unable to determine buffer status. HRESULT = 0x%08x", res);
+    CLog::Log(LOGERROR,__FUNCTION__ ": GetCurrentPosition failed. Unable to determine buffer status. HRESULT = 0x%08x Error description:%s", res,DXGetErrorDescriptionA(res));
     return;
   }
 
