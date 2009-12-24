@@ -26,7 +26,6 @@
 #include "DVDInputStreamNavigator.h"
 #include "DVDInputStreamHttp.h"
 #include "DVDInputStreamFFmpeg.h"
-#include "../../../FileSystem/cdioSupport.h"
 #include "DVDInputStreamTV.h"
 #include "DVDInputStreamRTMP.h"
 #include "DVDInputStreamMPLS.h"
@@ -40,17 +39,14 @@
 #include "DVDInputStreamMMS.h"
 #endif
 #include "FileItem.h"
+#include "MediaManager.h"
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
 {
   CFileItem item(file.c_str(), false);
   if (item.IsDVDFile(false, true) || item.IsDVDImage() ||
 #ifdef HAS_DVD_DRIVE
-#ifdef _WIN32
-    file.compare(MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()+4) == 0 )
-#else
-    file.compare(MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()) == 0 )
-#endif
+    file.compare(g_mediaManager.TranslateDevicePath("")) == 0 )
 #else
   0 )
 #endif

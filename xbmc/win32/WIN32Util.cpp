@@ -501,10 +501,10 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
   char cDL = cDriveLetter;
   if( !cDL )
   {
-    char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    CStdString dvdDevice = g_mediaManager.TranslateDevicePath("");
     if(dvdDevice == "")
       return S_FALSE;
-    cDL = dvdDevice[4];
+    cDL = dvdDevice[0];
   }
   
   CStdString strVolFormat; 
@@ -536,10 +536,10 @@ HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
   char cDL = cDriveLetter;
   if( !cDL )
   {
-    char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    CStdString dvdDevice = g_mediaManager.TranslateDevicePath("");
     if(dvdDevice == "")
       return S_FALSE;
-    cDL = dvdDevice[4];
+    cDL = dvdDevice[0];
   }
   
   CStdString strVolFormat; 
@@ -556,10 +556,10 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
   char cDL = cDriveLetter;
   if( !cDL )
   {
-    char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    CStdString dvdDevice = g_mediaManager.TranslateDevicePath("");
     if(dvdDevice == "")
       return S_FALSE;
-    cDL = dvdDevice[4];
+    cDL = dvdDevice[0];
   }
   
   CStdString strVolFormat; 
