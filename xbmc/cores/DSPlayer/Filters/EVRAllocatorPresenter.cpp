@@ -240,6 +240,7 @@ m_SampleFreeCB(this, &CEVRAllocatorPresenter::OnSampleFree)
   m_nrcSource.bottom = 1;
   m_nrcSource.right = 1;
   m_pD3DPresentEngine = new D3DPresentEngine(hr);
+  m_bNeedNewDevice = false;
   if (!m_pD3DPresentEngine)
     hr = E_OUTOFMEMORY;
   
@@ -272,6 +273,7 @@ m_SampleFreeCB(this, &CEVRAllocatorPresenter::OnSampleFree)
   pfAvSetMmThreadCharacteristicsW    = hLib ? (PTR_AvSetMmThreadCharacteristicsW)  GetProcAddress (hLib, "AvSetMmThreadCharacteristicsW") : NULL;
   pfAvSetMmThreadPriority        = hLib ? (PTR_AvSetMmThreadPriority)      GetProcAddress (hLib, "AvSetMmThreadPriority") : NULL;
   pfAvRevertMmThreadCharacteristics  = hLib ? (PTR_AvRevertMmThreadCharacteristics)  GetProcAddress (hLib, "AvRevertMmThreadCharacteristics") : NULL;
+  g_Windowing.Register(this);
   g_renderManager.PreInit(true);
 }
 
@@ -285,7 +287,7 @@ CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
   // Deletable objects
   SAFE_DELETE(m_pD3DPresentEngine);
   
-
+  g_Windowing.Unregister(this);
   g_renderManager.UnInit();
 }
 
@@ -305,8 +307,8 @@ STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     CComQIPtr<IBaseFilter> pBF = pUnk;
     if (FAILED (hr))
     {
-    CLog::Log(LOGERROR,"Create enchanced video renderer");
-    break;
+      CLog::Log(LOGERROR,"%s Failed creating enchanced video renderer",__FUNCTION__);
+      break;
     }
     CComPtr<IMFVideoPresenter>    pVP;
     CComPtr<IMFVideoRenderer>    pMFVR;
@@ -347,9 +349,7 @@ STDMETHODIMP CEVRAllocatorPresenter::OnClockStart(MFTIME hnsSystemTime,  LONGLON
         // If the clock position changes while the clock is active, it 
         // is a seek request. We need to flush all pending samples.
         if (llClockStartOffset != PRESENTATION_CURRENT_POSITION)
-        {
             Flush();
-        }
     }
     else
     {
@@ -416,16 +416,16 @@ STDMETHODIMP CEVRAllocatorPresenter::OnClockRestart(MFTIME hnsSystemTime)
 
   m_RenderState = RENDER_STATE_STARTED;
 
-    // Possibly we are in the middle of frame-stepping OR we have samples waiting 
-    // in the frame-step queue. Deal with these two cases first:
-    hr = StartFrameStep();
-    if (FAILED(hr))
-      return hr;
-
-    // Now resume the presentation loop.
-    ProcessOutputLoop();
-    CLog::Log(LOGDEBUG,"%s OnClockRestart  hnsSystemTime = %I64d\n", __FUNCTION__, hnsSystemTime);
+  // Possibly we are in the middle of frame-stepping OR we have samples waiting 
+  // in the frame-step queue. Deal with these two cases first:
+  hr = StartFrameStep();
+  if (FAILED(hr))
     return hr;
+
+  // Now resume the presentation loop.
+  ProcessOutputLoop();
+  CLog::Log(LOGDEBUG,"%s OnClockRestart  hnsSystemTime = %I64d\n", __FUNCTION__, hnsSystemTime);
+  return hr;
 }
 
 
@@ -1582,7 +1582,7 @@ HRESULT CEVRAllocatorPresenter::ProcessOutput()
     {
         // Repaint request. Ask the mixer for the most recent sample.
         SetDesiredSampleTime(pSample, m_scheduler.LastSampleTime(), m_scheduler.FrameDuration());
-        m_bRepaint = FALSE; // OK to clear this flag now.
+        m_bRepaint = false; // OK to clear this flag now.
     }
     else
     {
@@ -1627,7 +1627,7 @@ HRESULT CEVRAllocatorPresenter::ProcessOutput()
         {
             // The mixer needs more input. 
             // We have to wait for the mixer to get more input.
-            m_bSampleNotify = FALSE; 
+            m_bSampleNotify = false; 
         }
     }
     else
@@ -1684,46 +1684,47 @@ done:
 
 HRESULT CEVRAllocatorPresenter::DeliverSample(IMFSample *pSample, BOOL bRepaint)
 {
-    assert(pSample != NULL);
+  assert(pSample != NULL);
 
-    HRESULT hr = S_OK;
-    D3DPresentEngine::DeviceState state = D3DPresentEngine::DeviceOK;
+  HRESULT hr = S_OK;
+  D3DPresentEngine::DeviceState state = D3DPresentEngine::DeviceOK;
     
-    if (!g_renderManager.IsConfigured())
+  if (!g_renderManager.IsConfigured())
     g_renderManager.Configure(m_pD3DPresentEngine->GetVideoWidth(),m_pD3DPresentEngine->GetVideoHeight(),m_pD3DPresentEngine->GetVideoWidth(),m_pD3DPresentEngine->GetVideoHeight(),m_scheduler.GetFps(),CONF_FLAGS_FULLSCREEN);
-    // If we are not actively playing, OR we are scrubbing (rate = 0) OR this is a 
-    // repaint request, then we need to present the sample immediately. Otherwise, 
-    // schedule it normally.
+  // If we are not actively playing, OR we are scrubbing (rate = 0) OR this is a 
+  // repaint request, then we need to present the sample immediately. Otherwise, 
+  // schedule it normally.
 
-    BOOL bPresentNow = ((m_RenderState != RENDER_STATE_STARTED) ||  IsScrubbing() || bRepaint);
+  BOOL bPresentNow = ((m_RenderState != RENDER_STATE_STARTED) ||  IsScrubbing() || bRepaint);
 
-    // Check the D3D device state.
-    hr = g_Windowing.GetDeviceStatus();
-    if (FAILED(hr))
-    {
-      CLog::Log(LOGDEBUG,"Device Need reset to develiver sample");
-    }
+  // If we need new device dont deliver the sample
+  hr = g_Windowing.GetDeviceStatus();
+  if (m_bNeedNewDevice)
+  {
+    CLog::Log(LOGDEBUG,"%s Device Need reset to develiver sample",__FUNCTION__);
+    m_pD3DPresentEngine->ResetD3dDevice();
+    state = D3DPresentEngine::DeviceReset;
+  }
+  if (SUCCEEDED(hr) || !m_bNeedNewDevice)
+    hr = m_scheduler.ScheduleSample(pSample, bPresentNow);
 
-    if (SUCCEEDED(hr))
-    {
-        hr = m_scheduler.ScheduleSample(pSample, bPresentNow);
-    }
-
-    if (hr == D3DERR_DEVICELOST)
-      state = D3DPresentEngine::DeviceReset;
-    if (hr == D3DERR_DEVICENOTRESET)
-    {
-        // Notify the EVR that we have failed during streaming. The EVR will notify the 
-        // pipeline (ie, it will notify the Filter Graph Manager in DirectShow or the 
-        // Media Session in Media Foundation).
-
-        NotifyEvent(EC_ERRORABORT, hr, 0);
-    }
-    else if (state == D3DPresentEngine::DeviceReset)
-    {
-        // The Direct3D device was re-set. Notify the EVR.
-        NotifyEvent(EC_DISPLAY_CHANGED, S_OK, 0);
-    }
+  if (hr == D3DERR_DEVICELOST)
+    state = D3DPresentEngine::DeviceReset;
+  if (hr == D3DERR_DEVICENOTRESET)
+  {
+    // Notify the EVR that we have failed during streaming. The EVR will notify the 
+    // pipeline (ie, it will notify the Filter Graph Manager in DirectShow or the 
+    // Media Session in Media Foundation).
+    CLog::Log(LOGERROR,"%s D3d device error dsplayer aborting",__FUNCTION__);
+    NotifyEvent(EC_ERRORABORT, hr, 0);
+  }
+  else if (state == D3DPresentEngine::DeviceReset)
+  {
+    // The Direct3D device was re-set. Notify the EVR.
+    NotifyEvent(EC_DISPLAY_CHANGED, S_OK, 0);
+    m_bNeedNewDevice = false;
+    CLog::Log(LOGDEBUG,"%s Device reseting sending EC_DISPLAY_CHANGED to EVR",__FUNCTION__);
+  }
 
     return hr;
 }
@@ -1924,6 +1925,24 @@ HRESULT CEVRAllocatorPresenter::SetBufferCount(int bufferCount)
 {
 	return m_pD3DPresentEngine->SetBufferCount(bufferCount);
 }
+
+void CEVRAllocatorPresenter::OnLostDevice()
+{
+  //CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+}
+void CEVRAllocatorPresenter::OnDestroyDevice()
+{
+  //Only this one is required for changing the device
+  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+  m_bNeedNewDevice = true;
+  
+}
+
+void CEVRAllocatorPresenter::OnCreateDevice()
+{
+  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+}
+
 
 
 RECT CorrectAspectRatio(const RECT& src, const MFRatio& srcPAR, const MFRatio& destPAR)

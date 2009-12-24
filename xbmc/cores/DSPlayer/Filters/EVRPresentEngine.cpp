@@ -332,7 +332,7 @@ HRESULT D3DPresentEngine::InitializeD3D()
 
   if (SUCCEEDED(hr))
   {
-  CLog::Log(LOGNOTICE,"Sucess to create DXVA2CreateDirect3DDeviceManager9");
+    CLog::Log(LOGNOTICE,"Sucess to create DXVA2CreateDirect3DDeviceManager9");
     hr = m_pDeviceManager->ResetDevice(m_pDevice, m_DeviceResetToken);
   }
   CComPtr<IDirectXVideoDecoderService>  pDecoderService;
@@ -344,6 +344,14 @@ HRESULT D3DPresentEngine::InitializeD3D()
     HookDirectXVideoDecoderService (pDecoderService);
     m_pDeviceManager->CloseDeviceHandle (hDevice);
   }
+  return hr;
+}
+
+HRESULT D3DPresentEngine::ResetD3dDevice()
+{
+  HRESULT hr;
+  m_pDevice = g_Windowing.Get3DDevice();
+  hr = m_pDeviceManager->ResetDevice(m_pDevice ,m_DeviceResetToken);
   return hr;
 }
 

@@ -684,11 +684,13 @@ HRESULT CVMR9AllocatorPresenter::ChangeD3dDev()
   }
   return hr;
 }
+
 void CVMR9AllocatorPresenter::OnLostDevice()
 {
   //CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
   
 }
+
 void CVMR9AllocatorPresenter::OnDestroyDevice()
 {
   //Only this one is required for changing the device

@@ -63,12 +63,13 @@ public:
 	HRESULT SetBufferCount(int bufferCount);
   int GetVideoWidth(){return m_iVideoWidth;};
   int GetVideoHeight(){return m_iVideoHeight;};
+  HRESULT ResetD3dDevice();
 private:
   PTR_MFCreateVideoSampleFromSurface    pfMFCreateVideoSampleFromSurface;
   PTR_DXVA2CreateDirect3DDeviceManager9  pfDXVA2CreateDirect3DDeviceManager9;
 protected:
 	HRESULT InitializeD3D();
-    HRESULT GetSwapChainPresentParameters(IMFMediaType *pType, D3DPRESENT_PARAMETERS* pPP);
+  HRESULT GetSwapChainPresentParameters(IMFMediaType *pType, D3DPRESENT_PARAMETERS* pPP);
 	HRESULT CreateD3DSample(IDirect3DSurface9 *pSurface, IMFSample **ppVideoSample,int surfaceIndex);
 
 	// A derived class can override these handlers to allocate any additional D3D resources.

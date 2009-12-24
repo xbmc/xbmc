@@ -222,34 +222,34 @@ HRESULT CDSGraph::HandleGraphEvent(void)
 // Free memory associated with callback, since we're not using it
   hr = m_pMediaEvent->FreeEventParams(evCode, evParam1, evParam2);
   switch(evCode)
-    {
-        case EC_STEP_COMPLETE:
-			CLog::Log(LOGDEBUG,"%s EC_STEP_COMPLETE",__FUNCTION__);
-            g_application.m_pPlayer->CloseFile();
-            break;
-        case EC_COMPLETE:
+  {
+    case EC_STEP_COMPLETE:
+		  CLog::Log(LOGDEBUG,"%s EC_STEP_COMPLETE",__FUNCTION__);
+      g_application.m_pPlayer->CloseFile();
+      break;
+    case EC_COMPLETE:
 			CLog::Log(LOGDEBUG,"%s EC_COMPLETE",__FUNCTION__);
 			g_application.m_pPlayer->CloseFile();
 			break;
-        case EC_USERABORT:
+    case EC_USERABORT:
 			CLog::Log(LOGDEBUG,"%s EC_USERABORT",__FUNCTION__);
 			g_application.m_pPlayer->CloseFile();
 			break;
-        case EC_ERRORABORT:
+    case EC_ERRORABORT:
 		  CLog::Log(LOGDEBUG,"%s EC_ERRORABORT",__FUNCTION__);
-          g_application.m_pPlayer->CloseFile();
-            break;
+      g_application.m_pPlayer->CloseFile();
+      break;
 		case EC_STATE_CHANGE:
-          CLog::Log(LOGDEBUG,"%s EC_STATE_CHANGE",__FUNCTION__);
-          break;
+      CLog::Log(LOGDEBUG,"%s EC_STATE_CHANGE",__FUNCTION__);
+      break;
 		case EC_DEVICE_LOST:
-          CLog::Log(LOGDEBUG,"%s EC_DEVICE_LOST",__FUNCTION__);
-          break;
+      CLog::Log(LOGDEBUG,"%s EC_DEVICE_LOST",__FUNCTION__);
+      break;
 		case EC_VMR_RECONNECTION_FAILED:
-          CLog::Log(LOGDEBUG,"%s EC_VMR_RECONNECTION_FAILED",__FUNCTION__);
-          break;
-        default:
-            break;
+      CLog::Log(LOGDEBUG,"%s EC_VMR_RECONNECTION_FAILED",__FUNCTION__);
+      break;
+      default:
+      break;
     }
     }
 

@@ -10,7 +10,8 @@
 #include <streams.h>
 #include <d3d9.h>
 
-#include "dsrenderer.h"
+#include "idsrenderer.h"
+#include "D3DResource.h"
 #include "IEvrPresenter.h"
 #include "EvrPresentEngine.h"
 #include "EvrScheduler.h"
@@ -67,7 +68,8 @@ class CEVRAllocatorPresenter : public IDsRenderer,
                                public IEVRPresenterRegisterCallback,
 	                             public IEVRPresenterSettings,
                                public IEVRTrustedVideoPlugin,
-                               public IQualProp
+                               public IQualProp,
+                               public ID3DResource
 {
 public:
   CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error);
@@ -121,22 +123,22 @@ public:
   STDMETHODIMP STDMETHODCALLTYPE OnClockSetRate(/* [in] */ MFTIME hnsSystemTime, /* [in] */ float flRate);
 
   // IMFVideoDisplayControl
-    STDMETHODIMP GetNativeVideoSize(SIZE *pszVideo, SIZE *pszARVideo){return E_NOTIMPL;};    
-    STDMETHODIMP GetIdealVideoSize(SIZE *pszMin, SIZE *pszMax){return E_NOTIMPL;};
-    STDMETHODIMP SetVideoPosition(const MFVideoNormalizedRect *pnrcSource, const LPRECT prcDest){return E_NOTIMPL;};
-    STDMETHODIMP GetVideoPosition(MFVideoNormalizedRect *pnrcSource, LPRECT prcDest){return E_NOTIMPL;};
-    STDMETHODIMP SetAspectRatioMode(DWORD dwAspectRatioMode){return E_NOTIMPL;};
-    STDMETHODIMP GetAspectRatioMode(DWORD *pdwAspectRatioMode){return E_NOTIMPL;};
-    STDMETHODIMP SetVideoWindow(HWND hwndVideo){return E_NOTIMPL;};
-    STDMETHODIMP GetVideoWindow(HWND *phwndVideo){return E_NOTIMPL;};
-    STDMETHODIMP RepaintVideo( void){return E_NOTIMPL;};
-    STDMETHODIMP GetCurrentImage(BITMAPINFOHEADER *pBih, BYTE **pDib, DWORD *pcbDib, LONGLONG *pTimeStamp){return E_NOTIMPL;};
-    STDMETHODIMP SetBorderColor(COLORREF Clr){return E_NOTIMPL;};
-    STDMETHODIMP GetBorderColor(COLORREF *pClr){return E_NOTIMPL;};
-    STDMETHODIMP SetRenderingPrefs(DWORD dwRenderFlags){return E_NOTIMPL;};
-    STDMETHODIMP GetRenderingPrefs(DWORD *pdwRenderFlags){return E_NOTIMPL;};
-    STDMETHODIMP SetFullscreen(BOOL fFullscreen){return E_NOTIMPL;};
-    STDMETHODIMP GetFullscreen(BOOL *pfFullscreen){return E_NOTIMPL;};
+  STDMETHODIMP GetNativeVideoSize(SIZE *pszVideo, SIZE *pszARVideo){return E_NOTIMPL;};    
+  STDMETHODIMP GetIdealVideoSize(SIZE *pszMin, SIZE *pszMax){return E_NOTIMPL;};
+  STDMETHODIMP SetVideoPosition(const MFVideoNormalizedRect *pnrcSource, const LPRECT prcDest){return E_NOTIMPL;};
+  STDMETHODIMP GetVideoPosition(MFVideoNormalizedRect *pnrcSource, LPRECT prcDest){return E_NOTIMPL;};
+  STDMETHODIMP SetAspectRatioMode(DWORD dwAspectRatioMode){return E_NOTIMPL;};
+  STDMETHODIMP GetAspectRatioMode(DWORD *pdwAspectRatioMode){return E_NOTIMPL;};
+  STDMETHODIMP SetVideoWindow(HWND hwndVideo){return E_NOTIMPL;};
+  STDMETHODIMP GetVideoWindow(HWND *phwndVideo){return E_NOTIMPL;};
+  STDMETHODIMP RepaintVideo( void){return E_NOTIMPL;};
+  STDMETHODIMP GetCurrentImage(BITMAPINFOHEADER *pBih, BYTE **pDib, DWORD *pcbDib, LONGLONG *pTimeStamp){return E_NOTIMPL;};
+  STDMETHODIMP SetBorderColor(COLORREF Clr){return E_NOTIMPL;};
+  STDMETHODIMP GetBorderColor(COLORREF *pClr){return E_NOTIMPL;};
+  STDMETHODIMP SetRenderingPrefs(DWORD dwRenderFlags){return E_NOTIMPL;};
+  STDMETHODIMP GetRenderingPrefs(DWORD *pdwRenderFlags){return E_NOTIMPL;};
+  STDMETHODIMP SetFullscreen(BOOL fFullscreen){return E_NOTIMPL;};
+  STDMETHODIMP GetFullscreen(BOOL *pfFullscreen){return E_NOTIMPL;};
 
   // IEVRPresenterRegisterCallback methods
 	STDMETHOD(RegisterCallback)(IEVRPresenterCallback *pCallback);
@@ -144,17 +146,22 @@ public:
 	// IEVRPresenterSettings methods
 	STDMETHOD(SetBufferCount)(int bufferCount);
 
-    // IEVRTrustedVideoPlugin
-    STDMETHODIMP IsInTrustedVideoMode(BOOL *pYes);
-    STDMETHODIMP CanConstrict(BOOL *pYes);
-    STDMETHODIMP SetConstriction(DWORD dwKPix);
-    STDMETHODIMP DisableImageExport(BOOL bDisable);
+  // IEVRTrustedVideoPlugin
+  STDMETHODIMP IsInTrustedVideoMode(BOOL *pYes);
+  STDMETHODIMP CanConstrict(BOOL *pYes);
+  STDMETHODIMP SetConstriction(DWORD dwKPix);
+  STDMETHODIMP DisableImageExport(BOOL bDisable);
 
+  // ID3dRessource
+  virtual void OnLostDevice();
+  virtual void OnDestroyDevice();
+  virtual void OnCreateDevice();
 private:
   long m_refCount;
   
   COuterEVR *m_pOuterEVR;
-  bool									m_fUseInternalTimer;
+  bool m_fUseInternalTimer;
+  bool m_bNeedNewDevice;
 
 // === Functions pointers on Vista / .Net3 specifics library
   PTR_DXVA2CreateDirect3DDeviceManager9  pfDXVA2CreateDirect3DDeviceManager9;
