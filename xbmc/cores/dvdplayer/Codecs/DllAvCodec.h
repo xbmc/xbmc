@@ -33,10 +33,10 @@ extern "C" {
     #endif
   #endif
   /* We'll just inlude this header in our project for now */
-  #include "libavcodec/audioconvert.h"
+  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/audioconvert.h"
 #else
-  #include "libavcodec/avcodec.h"
-  #include "libavcodec/audioconvert.h"
+  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/avcodec.h"
+  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/audioconvert.h"
 #endif
 }
 

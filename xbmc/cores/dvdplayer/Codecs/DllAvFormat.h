@@ -22,7 +22,7 @@ extern "C" {
     #include <ffmpeg/avformat.h>
   #endif
 #else
-  #include "libavformat/avformat.h"
+  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/avformat.h"
 #endif
 }
 

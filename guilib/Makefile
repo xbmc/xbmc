@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../ -Icommon -I../xbmc -I../xbmc/cores/dvdplayer/Codecs/ffmpeg -I../xbmc/linux -I../xbmc/utils -I/usr/include/freetype2 -I/usr/include/SDL -I../xbmc/lib/libsquish
+INCLUDES=-I. -I../ -Icommon -I../xbmc -I../xbmc/linux -I../xbmc/utils -I/usr/include/freetype2 -I/usr/include/SDL -I../xbmc/lib/libsquish
 
 SRCS=AnimatedGif.cpp \
      AudioContext.cpp \

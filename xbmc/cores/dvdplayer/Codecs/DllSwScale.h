@@ -39,9 +39,9 @@ extern "C" {
     #include <ffmpeg/rgb2rgb.h>
   #endif
 #else
-  #include "libavutil/avutil.h"
-  #include "libswscale/swscale.h"
-  #include "libswscale/rgb2rgb.h"
+  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavutil/avutil.h"
+  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libswscale/swscale.h"
+  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libswscale/rgb2rgb.h"
 #endif
 }
 
@@ -71,7 +71,7 @@ class DllSwScale : public DllDynamic, public DllSwScaleInterface
 public:
   virtual ~DllSwScale() {}
   virtual struct SwsContext *sws_getContext(int srcW, int srcH, int srcFormat, int dstW, int dstH, int dstFormat, int flags,
-                               SwsFilter *srcFilter, SwsFilter *dstFilter, double *param) 
+                               SwsFilter *srcFilter, SwsFilter *dstFilter, double *param)
     { return ::sws_getContext(srcW, srcH, (enum PixelFormat)srcFormat, dstW, dstH, (enum PixelFormat)dstFormat, flags, srcFilter, dstFilter, param); }
 
   virtual int sws_scale(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,

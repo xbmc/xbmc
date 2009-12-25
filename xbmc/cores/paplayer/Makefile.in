@@ -3,9 +3,6 @@ ARCH=@ARCH@
 .PHONY: compile
 
 INCLUDES=-I../../.. -I. -I../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I..
-ifneq (@USE_EXTERNAL_FFMPEG@,1)
-  INCLUDES+=-I../dvdplayer/Codecs/ffmpeg
-endif
 
 CFLAGS+=-DHAS_ALSA
 
