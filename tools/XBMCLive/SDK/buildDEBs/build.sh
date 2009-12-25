@@ -65,6 +65,7 @@ extractModule()
 	rm -rf $THISDIR/squashfs-udeb/modules/*
 
 	# Copy the new tree in place
+	mkdir $THISDIR/squashfs-udeb/modules
 	mv $modulesDir $THISDIR/squashfs-udeb/modules
 
 	# Cleanup
@@ -90,7 +91,8 @@ makeDEBs()
 # Get matching package
 echo "Selecting and downloading the kernel package..."
 packageName=$(getPackage)
-if [ "$?" -ne "0" ]; then
+if [ ! -f "$packageName" ]; then
+	echo "Error retrieving installer kernel, exiting..."
 	exit 1
 fi
 

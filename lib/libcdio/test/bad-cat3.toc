@@ -1,0 +1,8 @@
+// $Id: bad-cat3.toc,v 1.1 2004/05/08 20:36:02 rocky Exp $
+// test catalog number - non-digit catalog name
+
+CATALOG "123456789A123"
+
+TRACK AUDIO
+NO COPY
+FILE "cdda.bin" 1:0:0

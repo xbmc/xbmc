@@ -1,0 +1,6 @@
+// $Id: bad-msf-3.toc,v 1.1 2004/07/10 01:18:02 rocky Exp $
+// bad MSF in second field
+
+TRACK AUDIO
+NO COPY       // so that all CTL flags are 0
+FILE "cdda.bin" xx:yy:zz  // Should be digits
