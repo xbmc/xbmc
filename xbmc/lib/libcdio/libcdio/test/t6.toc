@@ -1,7 +1,0 @@
-// test ISRC code
-
-
-TRACK AUDIO
-NO COPY
-ISRC "DEMUA9800001"
-FILE "cdda.bin" 1:0:0

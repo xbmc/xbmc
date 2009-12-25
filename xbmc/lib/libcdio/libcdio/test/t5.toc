@@ -1,8 +1,0 @@
-// test catalog number
-
-CATALOG "1234567890123"
-
-TRACK AUDIO
-NO COPY
-FILE "cdda.bin" 1:0:0
-
