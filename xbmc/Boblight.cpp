@@ -154,7 +154,7 @@ void CBoblightClient::CaptureVideo()
 
 void CBoblightClient::ProcessVideo()
 {
-  if (m_enabled && g_renderManager.IsConfigured() && m_needsprocessing)
+  if (m_enabled && m_needsprocessing)
   {
     GLuint queryresult;
     glGetQueryObjectuivARB(m_query, GL_QUERY_RESULT_AVAILABLE_ARB, &queryresult);
