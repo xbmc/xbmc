@@ -1,0 +1,6 @@
+Konstanty Bialkowski <konstanty@ieee.org> Tue Apr  7 15:00:00 AEST 2009
+	New release of small fixes from contributers and downstream distributions. (Package config Libs.private addin (from Debian)), usage of uint32_t vs uint for load_abc.cpp,load_mid.cpp,load_pat.cpp.
+
+Konstanty Bialkowski <konstanty@ieee.org> Mon Mar 20 10:00:00 AEST 2006
+	New Release based on fixes contributed since last release.
+	

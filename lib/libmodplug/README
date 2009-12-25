@@ -1,0 +1,233 @@
+Modplug Plugin for XMMS v2.0 / libmodplug v0.8.5
+ Based on the ModPlug sound engine by Olivier Lapicque <olivierl@jps.net>
+ XMMS plugin by Kenton Varda <temporal@gauge3d.org>
+ Maintainer is now Konstanty Bialkowski <konstanty@ieee.org>
+
+Olivier Lapicque, author of Modplug, which is arguably the best quality
+MOD-playing software available, has placed his sound rendering code in the
+public domain.  This library and plugin is based on that code.
+
+For more information on libmodplug, the library for decoding mod-like music
+formats, see libmodplug/README.
+
+Contents
+--------
+ 1. Requirements
+ 2. Features
+ 3. Options
+ 4. Troubleshooting
+
+---------------
+1. Requirements
+---------------
+- POSIX OS (Linux or other unix*)
+- XMMS 1.0.0 or higher (only for modplug-xmms plugin).
+
+* This library is only guaranteed to work on Linux.  I have received
+  conflicting reports on whether or not it will work on Solaris x86.
+  One person reported that the plugin compiled fine with the
+  "-fpermissive" compiler flag, which I have added.  Others had far
+  more trouble.  Note that a recent change to the library should allow
+  it to work on PPC and other big-endian systems.
+
+* Under linux there is also modplugplay contributed, which allows command
+ line playing of mod files under Linux.
+
+-----------
+2. Features
+-----------
+- Plays 22 different mod formats, including:
+    MOD, S3M, XM, IT, 669, AMF (both of them), AMS, DBM, DMF, DSM, FAR,
+    MDL, MED, MTM, OKT, PTM, STM, ULT, UMX, MT2, PSM
+- Plays zip, rar, gzip, and bzip2 compressed mods.  The following
+    extensions are recognized:
+    zip:  MDZ,  S3Z,  XMZ,  ITZ
+    rar:  MDR,  S3R,  XMR,  ITR
+    gzip: MDGZ, S3GZ, XMGZ, ITGZ
+   You can also load plain old ZIP, RAR, and GZ files.  If ModPlug finds
+   a mod in them, it will play it.
+   Note: To play these formats, you need to have the associated
+    decompression utilities (unzip, gunzip, unrar) installed.
+   Note(2): The format of the mod is NOT determined from the extension on
+    compressed mods.  For example, if you zipped a UMX mod and gave it the
+    extension MDZ, it would work fine.
+- plays timidity's GUS patch files (*.pat):
+   a multi sample pat file with n samples can be played with a Frere Jacques 
+   canon with n voices.
+- plays all types of MIDI files (*.mid):
+   uses the timidity .pat files for samples (when available)
+   recognizes environment variables:
+
+     MMPAT_PATH_TO_CFG	set to the directory where the file "timidity.cfg" and
+      the subdirectory "instruments" can be found,
+       default: "/usr/local/share/timidity".
+      MMMID_SPEED for experimenting with the mod speed (1 thru 9)
+      MMMID_VERBOSE for feedback on the conversion process
+      MMMID_DEBUG for sake of completeness, only useful for maintainers
+
+- plays textfiles written in the ABC music notation (*.abc):
+   uses the timidity .pat files for samples (when available)
+   recognizes environment variables:
+
+      MMPAT_PATH_TO_CFG	set to the directory where the file "timidity.cfg" and
+       the subdirectory "instruments" can be found,
+       default: "/usr/local/share/timidity".
+
+      MMABC_NO_RANDOM_PICK when not set and the abc file contains multiple songs
+       (X:n) the first song to be played will be picked at random another click 
+       on the play button advances to the next
+       song in the file (or the first when the last song has been
+       played), when set it can be 0 (zero) or not numeric
+       to let it play all songs in the file, a positive number n to
+       let it play the n-th song in the file, a negative number -n to
+       let it play the n-th song in the file and advancing to the next
+       song when the play button is clicked.
+
+      MMABC_DUMPTRACKS when set it gives diagnostic information on stdout, 
+       values can be:
+
+        all - every event is printed
+        nonotes - only the control events (looping, breaks etc.) are printed
+           any other value prints the control events and every note event
+           immediately succeeding the control events.
+- Slightly better sound quality than Mikmod.  Vastly superior quality
+   over Winamp.
+- All XMMS calls are supported exept for the band gains on the
+   equalizer.  The preamp is supported, but MOD music is not anywhere
+   near as cheap to equalize as MP3.  Thus, equalization does is not
+   supported in this version.  However, a variable bass boost option
+   is available in the configuration dialog (see below).
+- Tons of playback options (see below).
+
+----------
+3. Options
+----------
+All of the following items are configurable from the plugin
+configuration dialog box.
+
+Sampling rate: Higher is better.  Note that the sound is rendered at a
+ higher sampling rate and converted down to increase quality.
+
+Bits per sample: 8-bit or 16-bit sound.  Note that all computations are
+ done at 32-bit and converted down to the sampling rate you specify.
+
+Channels: mono/stereo.  Note that all computations are done in stereo.
+ If you choose mono, the channels will be mixed.
+
+Resampling: Method used to convert samples to different sampling rates.
+ "Nearest" is the fastest setting (but sounds terrible), while
+ "8-tap fir" is the best-quality setting.
+
+Noise Reduction: Reduces noise. :)
+
+Fast Playlist Info: When this option is on, names of songs in your
+ playlist will load considerably faster, but song lengths will not be
+ shown and only MOD, S3M, XM, and IT formats will have their names shown.
+ Don't worry, though, because all the data which is skipped will still be
+ loaded when you actually play the song.  This should probably always be
+ on.
+
+Reverb: A nice reverb effect.  The depth and delay of the reverb can be
+ tuned to your liking using the sliders.
+
+Bass boost: Variable bass boost effect.  The "range" slider controls the
+ frequency range of the bass boost.  If you increase this value, higher
+ frequencies will be boosted, but the overall volume increase will be
+ less.  (you can compensate by using the volume slider:)
+
+Surround: Dolby Pro-Logic surround effect.  Depth and delay can be fine
+ tuned.
+
+Preamp: A global volume boost.  Note that setting the preamp too high
+ will cause clipping (nasty clicks and pops).
+
+Looping: Some mods have loops built-in.  Normally, these loops are
+ ignored because otherwise the same mod would play forever.  However,
+ you can choose to respect the loops, or even set a number of times to
+ follow a loop.
+
+------------------
+4. Troubleshooting
+------------------
+
+Problem:
+ None of the config options seem to have any affect on the sound quality.
+
+Possible cause:
+ You did not disable MikMod, so mods are being played by it rather than
+ by ModPlug.
+
+Solution:
+ Disable MikMod in the XMMS input plugins configuration dialog.
+
+Alternative cause:
+ You are not playing a mod-like file.  ModPlug only plays mod-like file
+ formats, and has no affect on mp3's or other non-mod formats.  (Note:
+ Yes, I have actually had people e-mail me with this problem.)
+
+Solution:
+ Download some mods.  You can start at <http://www.traxinspace.org>.
+
+
+Problem:
+ Some of my files load up, but show garbled info in the playlist and/or
+ don't play correctly.
+
+Possible cause:
+ The mod is in a different format than its file format suggests.
+ Modplug-XMMS uses a combination of file extension and contents to figure
+ out what format a mod is in, and can be thrown off if a mod is
+ incorrectly labeled.
+
+Solution:
+ Turning off "fast info" in the configuration may fix the problem.  This
+ will cause Modplug-XMMS to detect all basic mod types by content, but
+ archive types will still be detected by extension.  If this doesn't
+ solve the problem, then you probably have files which are actually
+ compressed archives but are not labeled as such.  For example, you may
+ have a file "aws_anew.xm" which is actually a ZIP archive.  You will
+ have to either unzip these files or rename them to have an extension
+ associated with their type.  In the case of a ZIP, you can use any of
+ the extensions "ZIP, MDZ, S3Z, XMZ, ITZ".  (Note that these five types
+ are all treated exactly the same -- the actual format of the mod is
+ detected by contents.)
+
+
+Problem:
+ Everything appears to be working, but no sound is being generated.
+ MP3's play just fine.
+
+Possible cause:
+ Modplug has a relatively low default volume, and you may just not be
+ hearing it.  (Note:  Yes, more that one person has e-mailed me with
+ this problem.)
+
+Solution:
+ Turn up your volume.  You may wish to do this via the "preamp"
+ setting in the ModPlug configuration.  This way, you won't have to
+ turn down your volume again when you play an MP3.
+
+
+Problem:
+ You have a mod which is rendered incorrectly by ModPlug-XMMS.
+
+Possible cause:
+ This could be our fault. :)
+
+Solution:
+ First, test the mod using the Windows version of ModPlug, if you can.
+ If it sounds wrong there, then send the mod and a bug report to
+ Olivier Lapicque <olivierl@jps.net>.  If the mod plays correctly in
+ Windows, however, then the bug is my fault.  In that case, e-mail
+ me (Konstanty) <konstanty@ieee.org>. (previously Kenton Varda at 
+ <temporal@gauge3d.org>).
+
+
+Problem:
+ I have a problem which is not listed here, or an idea for a cool
+ feature.
+
+Solution:
+ E-mail me (Konstanty) at <konstanty@ieee.org>.  I would be
+ happy to hear any suggestions or problems you have.
+

@@ -72,7 +72,6 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/WavPackCodec \
 	xbmc/cores/paplayer/GYMCodec \
 	xbmc/cores/paplayer/YMCodec/StSoundLibrary \
-	xbmc/cores/paplayer/ModuleCodec \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU \
 	xbmc/cores/paplayer/vgmstream \
 
@@ -93,7 +92,8 @@ LIB_DIRS=\
 	xbmc/lib/libhdhomerun \
 	xbmc/lib/libid3tag \
 	xbmc/lib/libapetag \
-	xbmc/lib/libPython/linux
+	xbmc/lib/libPython/linux \
+	lib/libmodplug
 
 SS_DIRS=\
 	xbmc/screensavers/rsxs-0.9/xbmc
@@ -295,6 +295,8 @@ libid3tag: dllloader
 	$(MAKE) -C xbmc/lib/libid3tag
 libapetag: dllloader
 	$(MAKE) -C xbmc/lib/libapetag
+libmodplug: dllloader
+	$(MAKE) -C lib/libmodplug
 papcodecs: dllloader dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
@@ -307,7 +309,6 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/timidity
 	$(MAKE) -C xbmc/cores/paplayer/NSFCodec
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
-	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
 ifeq (@USE_ASAP_CODEC@,1)
   ifneq ($(findstring osx,$(ARCH)), osx)
 	  $(MAKE) -C xbmc/cores/paplayer/asap asap-xbmc
@@ -324,7 +325,7 @@ imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-libs: libhdhomerun libid3tag libapetag imagelib libexif python
+libs: libhdhomerun libid3tag libapetag libmodplug imagelib libexif python
 externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
@@ -383,6 +384,7 @@ OBJSXBMC=	\
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
+	lib/libmodplug/src/.libs/libmodplug.a \
 	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
 	xbmc/visualizations/visualization.a

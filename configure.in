@@ -999,7 +999,6 @@ OUTPUT_FILES="Makefile \
              xbmc/cores/paplayer/timidity/Makefile \
              xbmc/cores/paplayer/AC3Codec/Makefile \
              xbmc/cores/paplayer/ADPCMCodec/Makefile \
-             xbmc/cores/paplayer/ModuleCodec/Makefile \
              xbmc/cores/paplayer/GYMCodec/Makefile \
              xbmc/cores/paplayer/NSFCodec/Makefile \
              xbmc/cores/paplayer/SIDCodec/Makefile \
@@ -1454,6 +1453,10 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [
 
 XB_CONFIG_MODULE([xbmc/lib/libapetag], [
   ./configure
+], [0])
+
+XB_CONFIG_MODULE([lib/libmodplug], [
+  ./configure --with-pic --enable-static
 ], [0])
 
 AC_OUTPUT
