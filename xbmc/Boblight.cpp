@@ -144,10 +144,8 @@ void CBoblightClient::CaptureVideo()
 
     if (g_guiSettings.GetBool("videoplayer.boblighttestmode"))
     {
-      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, m_pbo);
       glRasterPos2i(WIDTH, HEIGHT * 2);
-      glDrawPixels(WIDTH, HEIGHT, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
-      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+      glDrawPixels(WIDTH, HEIGHT, GL_BGRA, GL_UNSIGNED_BYTE, m_pixels);
     }
   }
 }

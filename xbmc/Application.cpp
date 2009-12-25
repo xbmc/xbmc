@@ -2221,7 +2221,7 @@ void CApplication::Render()
 
   RenderNoPresent();
 
-  if (IsPlayingVideo())
+  if (IsPlayingVideo() && (g_graphicsContext.IsFullScreenVideo() || m_frameLoaded))
   {
     g_boblight.CaptureVideo();
     m_frameLoaded = false;
@@ -4856,7 +4856,7 @@ void CApplication::Process()
     ProcessSlow();
   }
 
-  if (!IsPlayingVideo() || !g_graphicsContext.IsFullScreenVideo())
+  if (!IsPlayingVideo())
     g_boblight.Disable();
 }
 
