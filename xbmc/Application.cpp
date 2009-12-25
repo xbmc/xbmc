@@ -2146,9 +2146,6 @@ void CApplication::Render()
 
   MEASURE_FUNCTION;
 
-  if (IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo())
-    g_boblight.ProcessVideo();
-
   bool decrement = false;
 
   { // frame rate limiter (really bad, but it does the trick :p)
@@ -2224,7 +2221,7 @@ void CApplication::Render()
 
   RenderNoPresent();
 
-  if (IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo())
+  if (IsPlayingVideo())
   {
     g_boblight.CaptureVideo();
     m_frameLoaded = false;

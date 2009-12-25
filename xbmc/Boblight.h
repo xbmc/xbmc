@@ -64,6 +64,7 @@ class CBoblightClient : public CThread
 
     unsigned char*   m_pixels;
     GLuint           m_pbo;
+    GLuint           m_query;
 };
 
 extern CBoblightClient g_boblight;

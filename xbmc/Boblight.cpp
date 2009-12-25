@@ -51,6 +51,7 @@ void CBoblightClient::Initialize()
   m_boblight = NULL;
   m_pixels = new unsigned char[WIDTH * HEIGHT * 4];
   m_pbo = 0;
+  m_query = 0;
 }
 
 void CBoblightClient::Start()
@@ -66,6 +67,12 @@ void CBoblightClient::Start()
       return;
     }
 
+    if (!glewIsSupported("GL_ARB_occlusion_query"))
+    {
+      CLog::Log(LOGERROR, "CBoblightClient: GL_ARB_occlusion_query not supported");
+      return;
+    }
+
     memset(m_pixels, 0, WIDTH * HEIGHT * 4);
 
     //hack hack, CBaseTexture::GetPixels() needs to return NULL for the pbo to work
@@ -77,6 +84,8 @@ void CBoblightClient::Start()
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, m_pbo);
     glBufferDataARB(GL_PIXEL_PACK_BUFFER_ARB, WIDTH * HEIGHT * 4, (GLvoid*)m_pixels, GL_STREAM_READ_ARB);
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
+
+    glGenQueriesARB(1, &m_query);
 
     m_enabled = true;
     m_captureandsend = false;
@@ -104,12 +113,21 @@ void CBoblightClient::Stop()
     glDeleteBuffersARB(1, &m_pbo);
     m_pbo = 0;
   }
+  if (m_query)
+  {
+    glDeleteQueriesARB(1, &m_query);
+    m_query = 0;
+  }
 }
 
 void CBoblightClient::CaptureVideo()
 {
-  if (m_enabled && g_renderManager.IsConfigured())
+  ProcessVideo();
+
+  if (m_enabled && g_renderManager.IsConfigured() && !m_needsprocessing)
   {
+    glBeginQueryARB(GL_SAMPLES_PASSED_ARB, m_query);
+
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, m_pbo);
 
     glReadBuffer(GL_AUX0);
@@ -120,7 +138,7 @@ void CBoblightClient::CaptureVideo()
 
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
 
-    glFlush();
+    glEndQueryARB(GL_SAMPLES_PASSED_ARB);
 
     m_needsprocessing = true;
 
@@ -138,6 +156,11 @@ void CBoblightClient::ProcessVideo()
 {
   if (m_enabled && g_renderManager.IsConfigured() && m_needsprocessing)
   {
+    GLuint queryresult;
+    glGetQueryObjectuivARB(m_query, GL_QUERY_RESULT_AVAILABLE_ARB, &queryresult);
+    if (!queryresult)
+      return;
+
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, m_pbo);
     unsigned char* pbodata = (unsigned char*)glMapBufferARB(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY_ARB);
     memcpy(m_pixels, pbodata, WIDTH * HEIGHT * 4);
@@ -156,6 +179,7 @@ void CBoblightClient::Disable()
   {
     memset(m_pixels, 0, WIDTH * HEIGHT * 4);
 
+    m_needsprocessing = false;
     m_captureandsend = false;
     m_captureevent.Set();
   }
