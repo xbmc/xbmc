@@ -194,7 +194,6 @@ void CDSPlayer::Process()
 	    m_pDsGraph.UpdateTime();
 	  }
   }
-
   m_callback.OnPlayBackEnded();
   //g_renderManager.UnInit();
   

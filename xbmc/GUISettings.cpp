@@ -524,7 +524,12 @@ void CGUISettings::Initialize()
   AddString(3, "scrapers.musicvideodefault", 21415, "mtv.xml", SPIN_CONTROL_TEXT);
   AddSeparator(4,"scrapers.sep2");
   AddBool(5, "scrapers.langfallback", 21416, false);
-
+#ifdef HAS_DX
+  //Dsplayer
+  AddCategory(5,"dsplayer",33100);
+  //If vista or higher non default is vmr9
+  AddBool(5, "dsplayer.forcenondefaultrenderer", 33101 ? 33102 : g_sysinfo.IsVistaOrHigher(), false);
+#endif
   // network settings
   AddGroup(6, 705);
 

@@ -293,6 +293,16 @@ bool CSysInfo::IsAeroDisabled()
 #endif
   return false;
 }
+bool CSysInfo::IsVistaOrHigher()
+{
+#ifdef _WIN32
+  OSVERSIONINFO osver;
+  osver.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );	
+  if (GetVersionEx( &osver ) && osver.dwPlatformId == VER_PLATFORM_WIN32_NT && (osver.dwMajorVersion >= 6 ) )
+    return true;  
+#endif
+  return false;
+}
 
 CStdString CSysInfo::GetKernelVersion()
 {

@@ -65,9 +65,6 @@ m_pDsConfig(NULL)
 
 CDSGraph::~CDSGraph()
 {
-  if (m_pGraphBuilder)
-    m_pGraphBuilder->RemoveFromROT();
-  m_pGraphBuilder = NULL;
   CloseFile();
   //CoUninitialize();
 }
@@ -115,6 +112,9 @@ void CDSGraph::CloseFile()
   OnPlayStop();
   if (m_pDsConfig)
     m_pDsConfig = NULL;
+  HRESULT hr;
+  if (m_pGraphBuilder)
+    hr = m_pGraphBuilder->RemoveFromROT();
   BeginEnumFilters(m_pGraphBuilder,pEF,pBF)
   {
     m_pGraphBuilder->RemoveFilter(pBF);

@@ -287,7 +287,6 @@ CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
   // Deletable objects
   SAFE_DELETE(m_pD3DPresentEngine);
   
-  g_Windowing.Unregister(this);
   g_renderManager.UnInit();
 }
 

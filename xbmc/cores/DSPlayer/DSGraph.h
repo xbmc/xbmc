@@ -102,7 +102,6 @@ public:
   virtual int  GetAudioStream()       { return m_pDsConfig->GetAudioStream(); }
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { m_pDsConfig->GetAudioStreamName(iStream,strStreamName); };
   virtual void SetAudioStream(int iStream) { m_pDsConfig->SetAudioStream(iStream); };
-  
   HRESULT SetFile(const CFileItem& file, const CPlayerOptions &options);
   void OnPlayStop();
   void CloseFile();

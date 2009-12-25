@@ -34,6 +34,11 @@
 #include "FGLoader.h"
 using namespace XFILE;
 
+enum DIRECTSHOW_RENDERER
+{
+    DIRECTSHOW_RENDERER_VMR9 = 1,
+    DIRECTSHOW_RENDERER_EVR = 2,
+};
 class CFGManager
 	: public CUnknown
 	, public IGraphBuilder2
@@ -77,6 +82,8 @@ protected:
   CComPtr<IBaseFilter> m_FileSource;
   CComPtr<IBaseFilter> m_XbmcVideoDec;
   CFGLoader*           m_CfgLoader;
+  DIRECTSHOW_RENDERER  m_CurrentRenderer;
+
 	CStdString           m_xbmcConfigFilePath;
 	// IFilterGraph
 

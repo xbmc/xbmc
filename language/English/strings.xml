@@ -2150,4 +2150,8 @@
   <string id="33081">This file is stacked, select the part you want to play from.</string>
   <string id="33082">Path to script</string>
   <string id="33083">Enable custom script button</string>
+  
+  <string id="33100">DsPlayer</string>
+  <string id="33101">Force Windows xp default renderer VMR9</string>
+  <string id="33102">Force Windows Vista and higher default renderer EVR</string>
 </strings>

@@ -28,6 +28,8 @@
 #include "CharsetConverter.h"
 #include "DShowUtil/dshowutil.h"
 #include "DShowUtil/DshowCommon.h"
+#include "SystemInfo.h" //g_sysinfo
+#include "GUISettings.h"//g_guiSettings
 
 #include "filters/VMR9AllocatorPresenter.h"
 #include "filters/evrAllocatorPresenter.h"
@@ -679,13 +681,13 @@ STDMETHODIMP CFGManager::AddToROT()
 
     HRESULT hr;
 
-  if(m_dwRegister) return S_FALSE;
-
+  if(m_dwRegister)
+    return S_FALSE;
     CComPtr<IRunningObjectTable> pROT;
   CComPtr<IMoniker> pMoniker;
   WCHAR wsz[256];
-    swprintf(wsz, L"FilterGraph %08p pid %08x (XBMC)", (DWORD_PTR)this, GetCurrentProcessId());
-    if(SUCCEEDED(hr = GetRunningObjectTable(0, &pROT))
+  swprintf(wsz, L"FilterGraph %08p pid %08x (XBMC)", (DWORD_PTR)this, GetCurrentProcessId());
+  if(SUCCEEDED(hr = GetRunningObjectTable(0, &pROT))
   && SUCCEEDED(hr = CreateItemMoniker(L"!", wsz, &pMoniker)))
         hr = pROT->Register(ROTFLAGS_REGISTRATIONKEEPSALIVE, (IGraphBuilder2*)this, pMoniker, &m_dwRegister);
 
@@ -779,9 +781,9 @@ CFGManagerCustom::CFGManagerCustom(LPCTSTR pName, LPUNKNOWN pUnk)
 
 // mainconcept color space converter
   m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{272D77A0-A852-4851-ADA4-9091FEAD4C86}")), MERIT64_DO_NOT_USE));
-//TODO
+
 //Block if vmr9 is used
-  if(!DShowUtil::IsVistaOrAbove())
+  if(m_CurrentRenderer == DIRECTSHOW_RENDERER_VMR9 )
     m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{9852A670-F845-491B-9BE6-EBD841B8A613}")), MERIT64_DO_NOT_USE));
   
 }
@@ -883,9 +885,20 @@ CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd)
     CLog::Log(LOGNOTICE,"Successfully loaded %s",fileconfigtmp.c_str());
   else
     CLog::Log(LOGERROR,"Failed loading %s",fileconfigtmp.c_str());
+  if (g_sysinfo.IsVistaOrHigher())
+    if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
+      m_CurrentRenderer = DIRECTSHOW_RENDERER_VMR9;
+    else 
+      m_CurrentRenderer = DIRECTSHOW_RENDERER_EVR;
+  else
+    if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
+      m_CurrentRenderer = DIRECTSHOW_RENDERER_EVR;
+    else 
+      m_CurrentRenderer = DIRECTSHOW_RENDERER_VMR9;
+    
 
   // Renderers
-  if (DShowUtil::IsVistaOrAbove())
+  if (m_CurrentRenderer == DIRECTSHOW_RENDERER_EVR)
     m_transform.AddTail(new CFGFilterVideoRenderer(__uuidof(CEVRAllocatorPresenter), L"Xbmc EVR", m_vrmerit));
   else
     m_transform.AddTail(new CFGFilterVideoRenderer(__uuidof(CVMR9AllocatorPresenter), L"Xbmc VMR9 (Renderless)", m_vrmerit));
