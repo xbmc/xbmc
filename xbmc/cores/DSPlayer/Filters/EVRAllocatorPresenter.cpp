@@ -233,7 +233,6 @@ m_fRate(1.0f),
 m_TokenCounter(0),
 m_SampleFreeCB(this, &CEVRAllocatorPresenter::OnSampleFree)
 {
-  
   // Initial source rectangle = (0,0,1,1)
   m_nrcSource.top = 0;
   m_nrcSource.left = 0;
@@ -566,6 +565,38 @@ STDMETHODIMP CEVRAllocatorPresenter::NonDelegatingQueryInterface(REFIID riid, vo
   return hr;
 }
 
+
+//IQualProp
+HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::get_FramesDroppedInRenderer(int *frameDropped)
+{
+  return E_NOTIMPL;
+}
+
+HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::get_FramesDrawn(int *frameDrawn)
+{
+  return E_NOTIMPL;
+}
+
+HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::get_AvgFrameRate(int *avgFrameRate)
+{
+  return E_NOTIMPL;
+}
+
+HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::get_Jitter(int *iJitter)
+{
+  return E_NOTIMPL;
+}
+
+HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::get_AvgSyncOffset(int *piAvg)
+{
+  return E_NOTIMPL;
+}
+
+HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::get_DevSyncOffset(int *piDev)
+{
+  return E_NOTIMPL;
+}
+
 //IMFVideoPresenter
 HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::ProcessMessage(MFVP_MESSAGE_TYPE eMessage, ULONG_PTR ulParam)
 {
@@ -889,42 +920,64 @@ HRESULT CEVRAllocatorPresenter::CancelFrameStep()
 
 HRESULT CEVRAllocatorPresenter::CreateOptimalVideoType(IMFMediaType* pProposedType, IMFMediaType **ppOptimalType)
 {
-    HRESULT hr = S_OK;
-    
-    RECT rcOutput;
-    ZeroMemory(&rcOutput, sizeof(rcOutput));
+  HRESULT hr = S_OK;
+  
+  RECT rcOutput;
+  ZeroMemory(&rcOutput, sizeof(rcOutput));
 
-    MFVideoArea displayArea;
-    ZeroMemory(&displayArea, sizeof(displayArea));
+  MFVideoArea displayArea;
+  ZeroMemory(&displayArea, sizeof(displayArea));
 
-    IMFMediaType *pOptimalType = NULL;
-    MediaFoundationSamples::VideoTypeBuilder *pmtOptimal = NULL;
+  IMFMediaType *pOptimalType = NULL;
+  MediaFoundationSamples::VideoTypeBuilder *pmtOptimal = NULL;
 
-    // Create the helper object to manipulate the optimal type.
-    CHECK_HR(hr = MediaFoundationSamples::MediaTypeBuilder::Create(&pmtOptimal));
+  // Create the helper object to manipulate the optimal type.
+  CHECK_HR(hr = MediaFoundationSamples::MediaTypeBuilder::Create(&pmtOptimal));
 
-    // Clone the proposed type.
-    CHECK_HR(hr = pmtOptimal->CopyFrom(pProposedType));
+  // Clone the proposed type.
+  CHECK_HR(hr = pmtOptimal->CopyFrom(pProposedType));
 
-    // Modify the new type.
+  // Modify the new type.
 
-    // For purposes of this SDK sample, we assume 
-    // 1) The monitor's pixels are square.
-    // 2) The presenter always preserves the pixel aspect ratio.
+  // For purposes of this SDK sample, we assume 
+  // 1) The monitor's pixels are square.
+  // 2) The presenter always preserves the pixel aspect ratio.
 
-    // Set the pixel aspect ratio (PAR) to 1:1 (see assumption #1, above)
-    CHECK_HR(hr = pmtOptimal->SetPixelAspectRatio(1, 1));
+  // Set the pixel aspect ratio (PAR) to 1:1 (see assumption #1, above)
+  CHECK_HR(hr = pmtOptimal->SetPixelAspectRatio(1, 1));
 
-    // Get the output rectangle.
-    rcOutput = m_pD3DPresentEngine->GetDestinationRect();
-    if (IsRectEmpty(&rcOutput))
+  // Get the output rectangle.
+  rcOutput = m_pD3DPresentEngine->GetDestinationRect();
+
+  // If the rectangle is empty calculate the output rectangle based on the media type.
+  if (IsRectEmpty(&rcOutput))
+    CHECK_HR(hr = CalculateOutputRectangle(pProposedType, &rcOutput));
+
+  UINT32 fWidth,fHeight;
+  if (SUCCEEDED(pmtOptimal->GetFrameDimensions(&fWidth,&fHeight)))
+  {
+    //HD
+    if (fWidth >= 1280 || fHeight >=720)
     {
-        // Calculate the output rectangle based on the media type.
-        CHECK_HR(hr = CalculateOutputRectangle(pProposedType, &rcOutput));
+      CHECK_HR(hr = pmtOptimal->SetYUVMatrix(MFVideoTransferMatrix_BT709));
+      CLog::Log(LOGNOTICE,"%s Setting to HD with Didnt get any frame dimensions on video sample defaulting the MF_MT_YUV_MATRIX to MFVideoTransferMatrix_BT709",__FUNCTION__);
     }
-
-    // Set the extended color information: Use BT.709 
+    //SD
+    else
+    {
+      CHECK_HR(hr = pmtOptimal->SetYUVMatrix(MFVideoTransferMatrix_BT601));
+      CLog::Log(LOGNOTICE,"%s Setting to SD with MF_MT_YUV_MATRIX to MFVideoTransferMatrix_BT601",__FUNCTION__);
+    }
+  }
+  else
+    //Defaulting to bt709
+  {
     CHECK_HR(hr = pmtOptimal->SetYUVMatrix(MFVideoTransferMatrix_BT709));
+    CLog::Log(LOGNOTICE,"%s Didnt get any frame dimensions on video sample defaulting the MF_MT_YUV_MATRIX to MFVideoTransferMatrix_BT709",__FUNCTION__);
+  }
+    // Set the extended color information: Use BT.709 
+
+    
     CHECK_HR(hr = pmtOptimal->SetTransferFunction(MFVideoTransFunc_709));
     CHECK_HR(hr = pmtOptimal->SetVideoPrimaries(MFVideoPrimaries_BT709));
     CHECK_HR(hr = pmtOptimal->SetVideoNominalRange(MFNominalRange_16_235));
@@ -936,7 +989,7 @@ HRESULT CEVRAllocatorPresenter::CreateOptimalVideoType(IMFMediaType* pProposedTy
     // Set the geometric aperture, and disable pan/scan.
     displayArea = MakeArea(0, 0, rcOutput.right, rcOutput.bottom);
 
-    CHECK_HR(hr = pmtOptimal->SetPanScanEnabled(FALSE));
+    CHECK_HR(hr = pmtOptimal->SetPanScanEnabled(false));
 
     CHECK_HR(hr = pmtOptimal->SetGeometricAperture(displayArea));
 
@@ -2207,5 +2260,3 @@ done:
     SAFE_RELEASE(pAttributes);
     return hr;
 }
-
-#pragma warning( pop )

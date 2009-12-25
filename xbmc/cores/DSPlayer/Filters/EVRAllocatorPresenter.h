@@ -89,12 +89,12 @@ public:
   STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
   //IQualProp
-  virtual HRESULT STDMETHODCALLTYPE get_FramesDroppedInRenderer(int *pcFrames){return E_NOTIMPL;};
-  virtual HRESULT STDMETHODCALLTYPE get_FramesDrawn(int *pcFramesDrawn){return E_NOTIMPL;};
-  virtual HRESULT STDMETHODCALLTYPE get_AvgFrameRate(int *piAvgFrameRate){return E_NOTIMPL;};
-  virtual HRESULT STDMETHODCALLTYPE get_Jitter(int *iJitter){return E_NOTIMPL;};
-  virtual HRESULT STDMETHODCALLTYPE get_AvgSyncOffset(int *piAvg){return E_NOTIMPL;};
-  virtual HRESULT STDMETHODCALLTYPE get_DevSyncOffset(int *piDev){return E_NOTIMPL;};
+  virtual HRESULT STDMETHODCALLTYPE get_FramesDroppedInRenderer(int *frameDropped);
+  virtual HRESULT STDMETHODCALLTYPE get_FramesDrawn(int *frameDrawn);
+  virtual HRESULT STDMETHODCALLTYPE get_AvgFrameRate(int *avgFrameRate);
+  virtual HRESULT STDMETHODCALLTYPE get_Jitter(int *iJitter);
+  virtual HRESULT STDMETHODCALLTYPE get_AvgSyncOffset(int *piAvg);
+  virtual HRESULT STDMETHODCALLTYPE get_DevSyncOffset(int *piDev);
 
   //IMFAsyncCallback
   virtual HRESULT STDMETHODCALLTYPE GetParameters(DWORD *pdwFlags ,DWORD *pdwQueue){return E_NOTIMPL;};
