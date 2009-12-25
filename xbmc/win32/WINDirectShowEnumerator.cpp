@@ -41,13 +41,10 @@ std::vector<DSFilterInfo> CDirectShowEnumerator::GetAudioRenderers()
 {
   CSingleLock lock (m_critSection);
   vDSFilterInfo.clear();
-
   ICreateDevEnum *sys_dev_enum = NULL;
   IEnumMoniker *enum_moniker = NULL;
   HRESULT hr;
   int ret = -1;
-  
-
   do {
     hr = CoCreateInstance(CLSID_SystemDeviceEnum, NULL, CLSCTX_INPROC_SERVER, IID_ICreateDevEnum, (void**)&sys_dev_enum);
     if (FAILED(hr)) 
@@ -63,7 +60,6 @@ std::vector<DSFilterInfo> CDirectShowEnumerator::GetAudioRenderers()
     ULONG f;
     while (enum_moniker->Next(1, &moniker, &f) == NOERROR) 
     {
-      
       if (SUCCEEDED(moniker->BindToStorage(NULL, NULL, IID_IPropertyBag, (void**)&propbag)))
       {
         VARIANT				var;
@@ -71,21 +67,13 @@ std::vector<DSFilterInfo> CDirectShowEnumerator::GetAudioRenderers()
         CStdString filterName;
         CStdString filterGuid;
         if (SUCCEEDED(propbag->Read(L"FriendlyName", &var, 0)))
-        {
           filterName = CStdString(var.bstrVal);
-        }
         VariantClear(&var);
         VariantInit(&var);
         if (SUCCEEDED(propbag->Read(L"CLSID", &var, 0)))
-        {
           filterGuid = CStdString(var.bstrVal);
-          
-        }
         directshow_add_filter(filterGuid,filterName);
-
       }
-      
-      
     }   
   } while (0);
 
@@ -99,6 +87,6 @@ bool CDirectShowEnumerator::directshow_add_filter(LPCTSTR lpstrGuid, LPCTSTR lpc
   dInfo.lpstrName = lpcstrName;
   g_charsetConverter.unknownToUTF8(dInfo.lpstrName);
   CDirectShowEnumerator::vDSFilterInfo.push_back(dInfo);
-  CLog::Log(LOGDEBUG, "%s - found Device: %s", __FUNCTION__,lpcstrName);
+  CLog::Log(LOGDEBUG, "%s - found Device: %s with guid %s", __FUNCTION__,lpcstrName,lpstrGuid);
   return true;
 }

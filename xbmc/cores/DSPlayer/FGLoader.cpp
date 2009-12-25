@@ -30,6 +30,8 @@
 
 #include "FileSystem/SpecialProtocol.h"
 #include "XMLUtils.h"
+#include "WINDirectShowEnumerator.h"
+#include "GuiSettings.h"
 using namespace std;
 CFGLoader::CFGLoader(IGraphBuilder2* gb)
 :m_pGraphBuilder(gb)
@@ -202,6 +204,34 @@ HRESULT CFGLoader::InsertVideoDecoder(TiXmlElement *pRule)
   return hr;
 }
 
+HRESULT CFGLoader::InsertAudioRenderer()
+{
+  HRESULT hr = S_OK;
+  CComPtr<IBaseFilter> ppBF;
+  CFGFilterRegistry* pFGF;
+  CStdString currentGuid,currentName;
+
+  CDirectShowEnumerator p_dsound;
+  std::vector<DSFilterInfo> deviceList = p_dsound.GetAudioRenderers();
+  std::vector<DSFilterInfo>::const_iterator iter = deviceList.begin();
+  for (int i=0; iter != deviceList.end(); i++)
+  {
+    DSFilterInfo dev = *iter;
+    if (g_guiSettings.GetString("dsplayer.audiorenderer").Equals(dev.lpstrName))
+    {
+      currentGuid = dev.lpstrGuid;
+      currentName=dev.lpstrName;
+    }
+
+    ++iter;
+  }
+  pFGF = new CFGFilterRegistry(DShowUtil::GUIDFromCString(currentGuid));
+  hr = pFGF->Create(&ppBF, pUnk);
+  hr = m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(currentName));
+  ppBF.Release();
+  return hr;
+}
+
 HRESULT CFGLoader::InsertAutoLoad()
 {
   HRESULT hr = S_OK;
@@ -260,9 +290,15 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 	  
       if (FAILED(InsertAudioDecoder(pRules)))
         hr = E_FAIL;
-
-      if (FAILED(InsertAutoLoad()))
-        hr = E_FAIL;
+      
+      if (FAILED(InsertAudioRenderer()))
+      {
+        //wont do shit if its not inserted or is inserted correctly
+        hr = S_OK;
+      }
+      //AutoLoad is useless the only filters autoloading is the one that dont work with audio renderers 
+      //if (FAILED(InsertAutoLoad()))
+      //  hr = E_FAIL;
     }
     pRules = pRules->NextSiblingElement();
   }

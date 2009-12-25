@@ -1644,6 +1644,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_guiSettings.SetString("audiooutput.audiodevice", pControl->GetCurrentLabel());
 #endif
   }
+  else if (strSetting.Equals("dsplayer.audiorenderer"))
+  {
+#ifdef HAS_DX
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    g_guiSettings.SetString("dsplayer.audiorenderer", pControl->GetCurrentLabel());
+#endif
+  }
 #if defined(_LINUX)
   else if (strSetting.Equals("audiooutput.passthroughdevice"))
   {
@@ -3566,13 +3573,12 @@ void CGUIWindowSettingsCategory::FillInDirectShowAudioRenderers(CSetting* pSetti
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
   CDirectShowEnumerator p_dsound;
-  std::vector<DSFilterInfo > deviceList = p_dsound.GetAudioRenderers();
-  std::vector<DSFilterInfo >::const_iterator iter = deviceList.begin();
+  std::vector<DSFilterInfo> deviceList = p_dsound.GetAudioRenderers();
+  std::vector<DSFilterInfo>::const_iterator iter = deviceList.begin();
   for (int i=0; iter != deviceList.end(); i++)
   {
     DSFilterInfo dev = *iter;
     pControl->AddLabel(dev.lpstrName, i);
-
     if (g_guiSettings.GetString("dsplayer.audiorenderer").Equals(dev.lpstrName))
         pControl->SetValue(i);
 
