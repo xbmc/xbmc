@@ -63,7 +63,7 @@ CVideoSettings::CVideoSettings()
   m_BoblightSaturation = 5.0;
   m_BoblightSaturationMin = 0.0;
   m_BoblightSaturationMax = 1.0;
-  m_BoblightSpeed = 10.0;
+  m_BoblightSpeed = 50.0;
   m_BoblightAutoSpeed = 5.0;
 }
 
