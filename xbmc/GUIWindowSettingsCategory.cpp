@@ -95,6 +95,7 @@
 #ifdef _WIN32
 #include "WIN32Util.h"
 #include "WINDirectSound.h"
+#include "WinDirectshowEnumerator.h"
 #endif
 #include <map>
 #include "ScraperSettings.h"
@@ -839,6 +840,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("audiooutput.audiodevice"))
     {
       FillInAudioDevices(pSetting);
+    }
+    else if (strSetting.Equals("dsplayer.audiorenderer"))
+    {
+      FillInDirectShowAudioRenderers(pSetting);
     }
     else if (strSetting.Equals("audiooutput.passthroughdevice"))
     {
@@ -3551,6 +3556,28 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
     ++iter;
   }
 #endif
+}
+
+void CGUIWindowSettingsCategory::FillInDirectShowAudioRenderers(CSetting* pSetting)
+{
+  //in case dsplayer didnt do it yet
+  HRESULT hr;
+  hr = CoInitialize(NULL);
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+  CDirectShowEnumerator p_dsound;
+  std::vector<DSFilterInfo > deviceList = p_dsound.GetAudioRenderers();
+  std::vector<DSFilterInfo >::const_iterator iter = deviceList.begin();
+  for (int i=0; iter != deviceList.end(); i++)
+  {
+    DSFilterInfo dev = *iter;
+    pControl->AddLabel(dev.lpstrName, i);
+
+    if (g_guiSettings.GetString("dsplayer.audiorenderer").Equals(dev.lpstrName))
+        pControl->SetValue(i);
+
+    ++iter;
+  }
 }
 
 void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected)

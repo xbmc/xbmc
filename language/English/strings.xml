@@ -2154,4 +2154,5 @@
   <string id="33100">DsPlayer</string>
   <string id="33101">Force Windows xp default renderer VMR9</string>
   <string id="33102">Force Windows Vista and higher default renderer EVR</string>
+  <string id="33103">Audio Renderer</string>
 </strings>

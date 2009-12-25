@@ -56,7 +56,6 @@ public:
 //static void DumpStreamConfig(TCHAR* fn, IAMStreamConfig* pAMVSCCap);
   static long MFTimeToMsec(const LONGLONG& time);
   static CStdString GetFilterPath(CStdString pClsid);
-  static bool IsVistaOrAbove();
   static CStdStringW AnsiToUTF16(const CStdString strFrom);
   static int CountPins(IBaseFilter* pBF, int& nIn, int& nOut, int& nInC, int& nOutC);
   static bool IsSplitter(IBaseFilter* pBF, bool fCountConnectedOnly = false);
@@ -65,6 +64,7 @@ public:
   static bool IsStreamEnd(IBaseFilter* pBF);
   static bool IsVideoRenderer(IBaseFilter* pBF);
   static bool IsAudioWaveRenderer(IBaseFilter* pBF);
+  static std::vector<CComPtr<IMoniker>> GetAudioRenderersGuid();
   static HRESULT RemoveUnconnectedFilters(IGraphBuilder *pGraph);
   static IBaseFilter* GetUpStreamFilter(IBaseFilter* pBF, IPin* pInputPin = NULL);
   static IPin* GetUpStreamPin(IBaseFilter* pBF, IPin* pInputPin = NULL);

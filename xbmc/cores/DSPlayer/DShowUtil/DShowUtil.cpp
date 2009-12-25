@@ -37,15 +37,22 @@ CStdString DShowUtil::GetFilterPath(CStdString pClsid)
 }
 
 
-bool DShowUtil::IsVistaOrAbove()
+std::vector<CComPtr<IMoniker>> DShowUtil::GetAudioRenderersGuid()
 {
-  OSVERSIONINFO osver;
-  osver.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );	
-  if (::GetVersionEx( &osver ) && osver.dwPlatformId == VER_PLATFORM_WIN32_NT && (osver.dwMajorVersion >= 6 ) )
-    return true;
-
-  return false;
+  
+  std::vector<CComPtr<IMoniker>> vAudioRenderers;
+  //CLSID_AudioRendererCategory
+  CComPtr<IEnumMoniker> pEM;
+  BeginEnumSysDev(CLSID_AudioRendererCategory, pMoniker)
+	{
+	  vAudioRenderers.push_back(pMoniker);
+    //pMoniker
+	  //m_armerit = max(m_armerit, f.GetMerit());
+  }
+	EndEnumSysDev
+  return vAudioRenderers;
 }
+
 CStdStringW DShowUtil::AnsiToUTF16(const CStdString strFrom)
 {
   CStdStringW strTo;

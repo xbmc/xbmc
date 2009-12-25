@@ -978,9 +978,11 @@ HRESULT CEVRAllocatorPresenter::CreateOptimalVideoType(IMFMediaType* pProposedTy
     // Set the extended color information: Use BT.709 
 
     
-    CHECK_HR(hr = pmtOptimal->SetTransferFunction(MFVideoTransFunc_709));
-    CHECK_HR(hr = pmtOptimal->SetVideoPrimaries(MFVideoPrimaries_BT709));
-    CHECK_HR(hr = pmtOptimal->SetVideoNominalRange(MFNominalRange_16_235));
+    //CHECK_HR(hr = pmtOptimal->SetTransferFunction(MFVideoTransFunc_709));
+    //CHECK_HR(hr = pmtOptimal->SetVideoPrimaries(MFVideoPrimaries_BT709));
+    //MFNominalRange_0_255 is MFNominalRange_Normal
+    CHECK_HR(hr = pmtOptimal->SetVideoNominalRange(MFNominalRange_0_255));
+    //MFVideoLighting_dim; for example, a living room with a television and additional low lighting.
     CHECK_HR(hr = pmtOptimal->SetVideoLighting(MFVideoLighting_dim));
 
     // Set the target rect dimensions. 

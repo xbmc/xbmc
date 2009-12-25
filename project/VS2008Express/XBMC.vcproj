@@ -2241,6 +2241,14 @@
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypeEx.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\xbmc\win32\WINDirectShowEnumerator.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\win32\WINDirectShowEnumerator.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Filters"
