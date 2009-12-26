@@ -39,7 +39,7 @@ export http_proxy="http://127.0.0.1:3142"
 export ftp_proxy="http://127.0.0.1:3142"
 
 # Closest Ubuntu mirror
-export UBUNTUMIRROR_BASEURL="http://mirror.bytemark.co.uk/ubuntu/"
+export UBUNTUMIRROR_BASEURL="http://archive.ubuntu.com/ubuntu/"
 
 THISDIR=$(pwd)
 WORKDIR=workarea
