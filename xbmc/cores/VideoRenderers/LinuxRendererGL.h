@@ -141,23 +141,22 @@ protected:
   void UpdateVideoFilter();
 
   // textures
-  typedef bool (CLinuxRendererGL::*TextureFuncPtr)(int index);
+  typedef void (CLinuxRendererGL::*TextureFuncLoadPtr)(int index);
+  typedef void (CLinuxRendererGL::*TextureFuncDeletePtr)(int index);
+  typedef bool (CLinuxRendererGL::*TextureFuncCreatePtr)(int index, bool clear);
 
-  TextureFuncPtr LoadTexturesFuncPtr;
-  TextureFuncPtr CreateTextureFuncPtr;
-  TextureFuncPtr DeleteTextureFuncPtr;
+  TextureFuncLoadPtr LoadTexturesFuncPtr;
+  TextureFuncDeletePtr DeleteTextureFuncPtr;
+  TextureFuncCreatePtr CreateTextureFuncPtr;
 
-  bool LoadYV12Textures(int source);
-  bool CreateYV12Texture(int index);
-  bool DeleteYV12Texture(int index);
+  void LoadYV12Textures(int source);
+  void DeleteYV12Texture(int index);
+  void ClearYV12Texture(int index);
+  bool CreateYV12Texture(int index, bool clear = true);
 
-  bool LoadVDPAUTextures(int source);
-  bool CreateVDPAUTexture(int index);
-  bool DeleteVDPAUTexture(int index);
-
-  bool LoadNV12Textures(int source);
-  bool CreateNV12Texture(int index);
-  bool DeleteNV12Texture(int index);
+  void LoadNV12Textures(int source);
+  void DeleteNV12Texture(int index);
+  bool CreateNV12Texture(int index, bool clear = true);
 
   // renderers
   void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer

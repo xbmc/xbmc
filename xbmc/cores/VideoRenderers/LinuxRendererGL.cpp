@@ -114,10 +114,10 @@ CLinuxRendererGL::CLinuxRendererGL()
 
   memset(m_buffers, 0, sizeof(m_buffers));
 
-  // NULL texture handlers, they get setup later
-  LoadTexturesFuncPtr  = NULL;
-  CreateTextureFuncPtr = NULL;
-  DeleteTextureFuncPtr = NULL;
+  // default texture handlers to YUV
+  LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadYV12Textures;
+  CreateTextureFuncPtr = &CLinuxRendererGL::CreateYV12Texture;
+  DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteYV12Texture;
 
   m_rgbBuffer = NULL;
   m_rgbBufferSize = 0;
@@ -177,12 +177,9 @@ bool CLinuxRendererGL::ValidateRenderTarget()
 
      // create the yuv textures    
     LoadShaders();
-    if (CreateTextureFuncPtr)
+    for (int i = 0 ; i < m_NumYV12Buffers ; i++)
     {
-      for (int i = 0 ; i < m_NumYV12Buffers ; i++)
-      {
-        (this->*CreateTextureFuncPtr)(i);
-      }
+      (this->*CreateTextureFuncPtr)(i, true);
     }
     m_bValidated = true;
     return true;
@@ -408,26 +405,31 @@ void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
   plane.flipindex = flipindex;
 }
 
-bool CLinuxRendererGL::LoadYV12Textures(int source)
+void CLinuxRendererGL::LoadYV12Textures(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
+#ifdef HAVE_LIBVDPAU
+  if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU)
+  {
+    SetEvent(m_eventTexturesDone[source]);
+    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+    return;
+  }
+#endif
   if (!(im->flags&IMAGE_FLAG_READY))
   {
     SetEvent(m_eventTexturesDone[source]);
-    return true;
+    return;
   }
 
   // See if we need to recreate textures.
   if (m_isSoftwareUpscaling != IsSoftwareUpscaling())
   {
-    if (CreateTextureFuncPtr)
-    {
-      for (int i = 0 ; i < m_NumYV12Buffers ; i++)
-        (this->*CreateTextureFuncPtr)(i);
-    }
+    for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+      (this->*CreateTextureFuncPtr)(i, true);
     im->flags = IMAGE_FLAG_READY;
   }
 
@@ -683,8 +685,6 @@ bool CLinuxRendererGL::LoadYV12Textures(int source)
   }
 
   glDisable(m_textureTarget);
-
-  return true;
 }
 
 void CLinuxRendererGL::Reset()
@@ -1137,17 +1137,7 @@ void CLinuxRendererGL::LoadShaders(int field)
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
 
   // Now that we now the render method, setup texture function handlers
-#ifdef HAVE_LIBVDPAU
-  if (m_renderMethod & RENDER_VDPAU)
-  {
-    LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadVDPAUTextures;
-    CreateTextureFuncPtr = &CLinuxRendererGL::CreateVDPAUTexture;
-    DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteVDPAUTexture;
-  }
-else 
-#endif
 #ifdef HAVE_LIBCRYSTALHD
-  // FIXME: add m_renderMethod for RENDER_CRYSTALHD
   if (m_renderMethod & RENDER_CRYSTALHD)
   {
     LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadNV12Textures;
@@ -1182,11 +1172,8 @@ void CLinuxRendererGL::UnInit()
 #endif
 
   // YV12 textures
-  if (DeleteTextureFuncPtr)
-  {
-    for (int i = 0; i < NUM_BUFFERS; ++i)
-      (this->*DeleteTextureFuncPtr)(i);
-  }
+  for (int i = 0; i < NUM_BUFFERS; ++i)
+    (this->*DeleteTextureFuncPtr)(i);
   // cleanup framebuffer object if it was in use
   m_fbo.Cleanup();
   m_bValidated = false;
@@ -1219,8 +1206,8 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   else
     m_currentField = FIELD_FULL;
 
-  if (LoadTexturesFuncPtr)
-    (this->*LoadTexturesFuncPtr)(renderBuffer);
+  // call texture load function
+  (this->*LoadTexturesFuncPtr)(renderBuffer);
 
   if (m_renderMethod & RENDER_GLSL)
   {
@@ -1764,13 +1751,13 @@ void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width
 //********************************************************************************************************
 // YV12 Texture loading, creation and deletion
 //********************************************************************************************************
-bool CLinuxRendererGL::DeleteYV12Texture(int index)
+void CLinuxRendererGL::DeleteYV12Texture(int index)
 {
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
-  if( fields[FIELD_FULL][0].id == 0 ) return true;
+  if( fields[FIELD_FULL][0].id == 0 ) return;
 
   CLog::Log(LOGDEBUG, "Deleted YV12 texture %i", index);
   /* finish up all textures, and delete them */
@@ -1815,12 +1802,29 @@ bool CLinuxRendererGL::DeleteYV12Texture(int index)
       }
     }
   }
-  
-  return true;
 }
 
-bool CLinuxRendererGL::CreateYV12Texture(int index)
+void CLinuxRendererGL::ClearYV12Texture(int index)
 {
+  //YV12Image &im = m_image[index];
+
+  //memset(im.plane[0], 0,   im.stride[0] * im.height);
+  //memset(im.plane[1], 128, im.stride[1] * im.height>>im.cshift_y );
+  //memset(im.plane[2], 128, im.stride[2] * im.height>>im.cshift_y );
+  //SetEvent(m_eventTexturesDone[index]);
+}
+
+bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
+{
+/*
+#ifdef HAVE_LIBVDPAU
+  if (m_renderMethod & RENDER_VDPAU)
+  {
+    SetEvent(m_eventTexturesDone[index]);
+    return true;
+  }
+#endif
+*/
   // Remember if we're software upscaling.
   m_isSoftwareUpscaling = IsSoftwareUpscaling();
 
@@ -1831,46 +1835,48 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
-  // Delete any old textures
-  if (DeleteTextureFuncPtr)
+  if (clear)
+  {
+    // Delete any old textures
     (this->*DeleteTextureFuncPtr)(index);
 
-  im.height = m_sourceHeight;
-  im.width  = m_sourceWidth;
-  im.cshift_x = 1;
-  im.cshift_y = 1;
+    im.height = m_sourceHeight;
+    im.width  = m_sourceWidth;
+    im.cshift_x = 1;
+    im.cshift_y = 1;
 
-  im.stride[0] = im.width;
-  im.stride[1] = im.width >> im.cshift_x;
-  im.stride[2] = im.width >> im.cshift_x;
+    im.stride[0] = im.width;
+    im.stride[1] = im.width >> im.cshift_x;
+    im.stride[2] = im.width >> im.cshift_x;
 
-  im.planesize[0] = im.stride[0] * im.height;
-  im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );
-  im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
+    im.planesize[0] = im.stride[0] * im.height;
+    im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );
+    im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
 
-  if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo"))
-  {
-    CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
-    m_pboused = true;
-
-    glGenBuffersARB(3, pbo);
-
-    for (int i = 0; i < 3; i++)
+    if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo"))
     {
-      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
-      glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i], 0, GL_STREAM_DRAW_ARB);
-      im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+      CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
+      m_pboused = true;
+
+      glGenBuffersARB(3, pbo);
+
+      for (int i = 0; i < 3; i++)
+      {
+        glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
+        glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i], 0, GL_STREAM_DRAW_ARB);
+        im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+      }
+
+      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
     }
+    else
+    {
+      CLog::Log(LOGNOTICE, "GL: Not using GL_ARB_pixel_buffer_object");
+      m_pboused = false;
 
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
-  }
-  else
-  {
-    CLog::Log(LOGNOTICE, "GL: Not using GL_ARB_pixel_buffer_object");
-    m_pboused = false;
-
-    for (int i = 0; i < 3; i++)
-      im.plane[i] = new BYTE[im.planesize[i]];
+      for (int i = 0; i < 3; i++)
+        im.plane[i] = new BYTE[im.planesize[i]];
+    }
   }
 
   glEnable(m_textureTarget);
@@ -1967,32 +1973,9 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
 }
 
 //********************************************************************************************************
-// VDPAU Texture loading, creation and deletion
-//********************************************************************************************************
-bool CLinuxRendererGL::LoadVDPAUTextures(int source)
-{
-#ifdef HAVE_LIBVDPAU
-  if (g_VDPAU)
-    g_VDPAU->CheckRecover();
-#endif
-  SetEvent(m_eventTexturesDone[source]);
-  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-  return true;
-}
-bool CLinuxRendererGL::CreateVDPAUTexture(int index)
-{
-  SetEvent(m_eventTexturesDone[index]);
-  return true;
-}
-bool CLinuxRendererGL::DeleteVDPAUTexture(int index)
-{
-  return true;
-}
-
-//********************************************************************************************************
 // NV12 Texture loading, creation and deletion
 //********************************************************************************************************
-bool CLinuxRendererGL::LoadNV12Textures(int source)
+void CLinuxRendererGL::LoadNV12Textures(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
   YV12Image* im     = &buf.image;
@@ -2001,7 +1984,7 @@ bool CLinuxRendererGL::LoadNV12Textures(int source)
   if (!(im->flags & IMAGE_FLAG_READY))
   {
     SetEvent(m_eventTexturesDone[source]);
-    return true;
+    return;
   }
   
   bool deinterlacing;
@@ -2113,63 +2096,63 @@ bool CLinuxRendererGL::LoadNV12Textures(int source)
   }
 
   glDisable(m_textureTarget);
-
-  return true;
 }
-bool CLinuxRendererGL::CreateNV12Texture(int index)
+bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
 {
   // since we also want the field textures, pitch must be texture aligned
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
-  // Delte any old texture
-  if (DeleteTextureFuncPtr)
+  if (clear)
+  {
+    // Delte any old texture
     (this->*DeleteTextureFuncPtr)(index);
 
-  im.height = m_sourceHeight;
-  im.width  = m_sourceWidth;
-  im.cshift_x = 1;
-  im.cshift_y = 1;
+    im.height = m_sourceHeight;
+    im.width  = m_sourceWidth;
+    im.cshift_x = 1;
+    im.cshift_y = 1;
 
-  im.stride[0] = im.width;
-  im.stride[1] = im.width;
-  im.stride[2] = 0;
-  
-  im.plane[0] = NULL;
-  im.plane[1] = NULL;
-  im.plane[2] = NULL;
+    im.stride[0] = im.width;
+    im.stride[1] = im.width;
+    im.stride[2] = 0;
+    
+    im.plane[0] = NULL;
+    im.plane[1] = NULL;
+    im.plane[2] = NULL;
 
-  // Y plane
-  im.planesize[0] = im.stride[0] * im.height;
-  // packed UV plane
-  im.planesize[1] = im.stride[1] * im.height / 2;
-  // third plane is not used
-  im.planesize[2] = 0;
+    // Y plane
+    im.planesize[0] = im.stride[0] * im.height;
+    // packed UV plane
+    im.planesize[1] = im.stride[1] * im.height / 2;
+    // third plane is not used
+    im.planesize[2] = 0;
 
-  if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo"))
-  {
-    CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
-    m_pboused = true;
-
-    glGenBuffersARB(2, pbo);
-
-    for (int i = 0; i < 2; i++)
+    if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo"))
     {
-      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
-      glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i], 0, GL_STREAM_DRAW_ARB);
-      im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+      CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
+      m_pboused = true;
+
+      glGenBuffersARB(2, pbo);
+
+      for (int i = 0; i < 2; i++)
+      {
+        glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
+        glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i], 0, GL_STREAM_DRAW_ARB);
+        im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+      }
+
+      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
     }
+    else
+    {
+      CLog::Log(LOGNOTICE, "GL: Not using GL_ARB_pixel_buffer_object");
+      m_pboused = false;
 
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
-  }
-  else
-  {
-    CLog::Log(LOGNOTICE, "GL: Not using GL_ARB_pixel_buffer_object");
-    m_pboused = false;
-
-    for (int i = 0; i < 2; i++)
-      im.plane[i] = new BYTE[im.planesize[i]];
+      for (int i = 0; i < 2; i++)
+        im.plane[i] = new BYTE[im.planesize[i]];
+    }
   }
 
   glEnable(m_textureTarget);
@@ -2237,13 +2220,13 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
 
   return true;
 }
-bool CLinuxRendererGL::DeleteNV12Texture(int index)
+void CLinuxRendererGL::DeleteNV12Texture(int index)
 {
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
-  if( fields[FIELD_FULL][0].id == 0 ) return true;
+  if( fields[FIELD_FULL][0].id == 0 ) return;
 
   CLog::Log(LOGDEBUG, "Deleted NV12 texture %i", index);
   
@@ -2289,8 +2272,6 @@ bool CLinuxRendererGL::DeleteNV12Texture(int index)
       }
     }
   }
-
-  return true;
 }
 
 void CLinuxRendererGL::SetTextureFilter(GLenum method)
