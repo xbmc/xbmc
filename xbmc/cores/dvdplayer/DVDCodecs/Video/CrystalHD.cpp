@@ -107,6 +107,7 @@ protected:
   CSyncPtrQueue<CMPCDecodeBuffer> m_InputList;
   
   BCM::HANDLE         m_Device;
+  int                 m_SleepTime;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,7 +151,8 @@ BCM::U64 CMPCDecodeBuffer::GetPts(void)
 #endif
 CMPCInputThread::CMPCInputThread(BCM::HANDLE device) :
   CThread(),
-  m_Device(device)
+  m_Device(device),
+  m_SleepTime(10)
 {
 }
   
@@ -217,13 +219,12 @@ void CMPCInputThread::Process(void)
       }
       else if (ret == BCM::BC_STS_BUSY)
       {
-        BCM::DtsFlushInput(m_Device, 0);
-        //Sleep(40); // Buffer is full
+        Sleep(1); // Buffer is full
       }
     }
     else
     {
-      Sleep(10);
+      Sleep(m_SleepTime);
     }
   }
 
@@ -417,9 +418,6 @@ void CCrystalHD::Flush(void)
 {
   m_pInputThread->Flush();
 
-  // Flush all the decoder buffers, input, decoded and to be decoded.
-  BCM::DtsFlushInput(m_Device, 2);
-  
   m_timestamp = DVD_NOPTS_VALUE;
 
   CLog::Log(LOGDEBUG, "%s: Flush...", __MODULE_NAME__);
@@ -430,7 +428,7 @@ unsigned int CCrystalHD::GetInputCount(void)
   if (m_pInputThread)
     return m_pInputThread->GetQueueLen();
   else
-    return false;  
+    return 0;  
 }
 
 bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double pts)
@@ -732,8 +730,15 @@ bool CCrystalHD::GetDecoderOutput(void)
   switch (ret)
   {
     case BCM::BC_STS_SUCCESS:
-      if (!m_drop_state && procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID)
+      if (procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID)
       {
+        if (m_drop_state)
+        {
+          got_picture = true;
+          BCM::DtsReleaseOutputBuffs(m_Device, NULL, FALSE);
+          break;
+        }
+          
         if (procOut.PicInfo.timeStamp && (procOut.PicInfo.timeStamp != m_timestamp))
         {
           int w = procOut.PicInfo.width;

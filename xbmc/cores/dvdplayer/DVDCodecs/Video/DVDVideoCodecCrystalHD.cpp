@@ -75,6 +75,8 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
       return false;
     }
 
+    m_DropPictures = false;
+    
     CLog::Log(LOGINFO, "%s: Opened Broadcom Crystal HD Codec", __MODULE_NAME__);
     return true;
   }
@@ -127,7 +129,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
     maxWait = 5;
   else
     maxWait = 40;
-  
+
   lastTime = CTimeUtils::GetTimeMS();
   maxTime = lastTime + maxWait;
   do
@@ -166,7 +168,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
   } while ((lastTime = CTimeUtils::GetTimeMS()) < maxTime);
 
   if (lastTime >= maxTime)
-    CLog::Log(LOGDEBUG, "%s: Timeout in CDVDVideoCodecCrystalHD::Decode. ret: 0x%08x pData: %p", __MODULE_NAME__, ret, pData);
+    CLog::Log(LOGDEBUG, "%s: Timeout in Decode. maxWait: %d, ret: 0x%08x pData: %p", __MODULE_NAME__, maxWait, ret, pData);
     
   if (!ret)
     ret = VC_ERROR;
