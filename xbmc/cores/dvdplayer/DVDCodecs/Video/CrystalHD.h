@@ -22,8 +22,68 @@
 
 #if defined(HAVE_LIBCRYSTALHD)
 
+#include <deque>
+#include <vector>
+
 #include "DVDVideoCodec.h"
 
+////////////////////////////////////////////////////////////////////////////////////////////
+template <class T>
+class CSyncPtrQueue
+{
+public:
+  CSyncPtrQueue()
+  {
+    InitializeCriticalSection(&m_Lock);
+  }
+  virtual ~CSyncPtrQueue()
+  {
+    DeleteCriticalSection(&m_Lock);
+  }
+  void Push(T* p)
+  {
+    EnterCriticalSection(&m_Lock);
+    m_Queue.push_back(p);
+    LeaveCriticalSection(&m_Lock);
+  }
+  T* Pop()
+  {
+    T* p = NULL;
+    EnterCriticalSection(&m_Lock);
+    if (m_Queue.size())
+    {
+      p = m_Queue.front();
+      m_Queue.pop_front();
+    }
+    LeaveCriticalSection(&m_Lock);
+    return p;
+  }
+  unsigned int Count(){return m_Queue.size();}
+protected:
+  std::deque<T*> m_Queue;
+  CRITICAL_SECTION m_Lock;
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////
+class CMPCDecodeBuffer
+{
+public:
+  CMPCDecodeBuffer(size_t size);
+  CMPCDecodeBuffer(unsigned char* pBuffer, size_t size);
+  virtual ~CMPCDecodeBuffer();
+  size_t GetSize(void);
+  unsigned char* GetPtr(void);
+  void SetPts(uint64_t pts);
+  uint64_t GetPts(void);
+protected:
+  size_t m_Size;
+  unsigned char* m_pBuffer;
+  unsigned int m_Id;
+  uint64_t m_Pts;
+};
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
 /* We really don't want to include ffmpeg headers, so define these */
 enum _BCM_CODEC_TYPES
 {
@@ -46,6 +106,8 @@ typedef uint32_t BCM_STREAM_TYPE;
 #define CRYSTALHD_FIELD_FULL        0x00
 #define CRYSTALHD_FIELD_EVEN        0x01
 #define CRYSTALHD_FIELD_ODD         0x02
+
+class CMPCInputThread;
 
 class CCrystalHD
 {
@@ -91,6 +153,7 @@ protected:
   int           m_y_buffer_size;
   int           m_uv_buffer_size;
 
+  CMPCInputThread* m_pInputThread;
 private:
   CCrystalHD();
   static CCrystalHD *m_pInstance;

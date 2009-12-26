@@ -140,7 +140,6 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
         if (annexbfiltered)
           free(pData);
         pData = NULL;
-        ret |= VC_BUFFER;
       }
       else
       {
@@ -156,6 +155,9 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
         ret |= VC_PICTURE;
     }
     
+    if (m_Device->GetInputCount() < 25)
+      ret |= VC_BUFFER;
+
     // wait for both consumed demux packet and a returned picture frame
     // this help throttle consuming demux packets and we don't drain vqueue.
     if (!pData && (ret & VC_PICTURE))
@@ -163,8 +165,8 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
 
   } while ((lastTime = CTimeUtils::GetTimeMS()) < maxTime);
 
-  //if (lastTime >= maxTime)
-  //  CLog::Log(LOGDEBUG, "%s: Timeout in CDVDVideoCodecCrystalHD::Decode. ret: 0x%08x pData: %p", __MODULE_NAME__, ret, pData);
+  if (lastTime >= maxTime)
+    CLog::Log(LOGDEBUG, "%s: Timeout in CDVDVideoCodecCrystalHD::Decode. ret: 0x%08x pData: %p", __MODULE_NAME__, ret, pData);
     
   if (!ret)
     ret = VC_ERROR;
