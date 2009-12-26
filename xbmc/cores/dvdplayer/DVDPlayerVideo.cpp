@@ -440,7 +440,8 @@ void CDVDPlayerVideo::Process()
           m_pVideoCodec->Reset();
         LeaveCriticalSection(&m_critCodecSection);
         
-        m_pullupCorrection.Flush();
+        if (m_bCalcFrameRate)
+          m_pullupCorrection.Flush();
         //we need to recalculate the framerate
         //TODO: this needs to be set on a streamchange instead
         m_iFrameRateLength = 1;
@@ -947,14 +948,15 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   // check if our output will limit speed
   if(m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL > maxfps*0.9)
     limited = true;
-
-  //correct any pattern in the timestamps
-  m_pullupCorrection.Add(pts);
-  pts += m_pullupCorrection.Correction();
   
   //try to calculate the framerate
   if (m_bCalcFrameRate)
+  {
+    //correct any pattern in the timestamps
+    m_pullupCorrection.Add(pts);
+    pts += m_pullupCorrection.Correction();
     CalcFrameRate();
+  }
   
   // signal to clock what our framerate is, it may want to adjust it's
   // speed to better match with our video renderer's output speed
@@ -1023,7 +1025,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     if (m_bAllowDrop)
     {
       result |= EOS_VERYLATE;
-      m_pullupCorrection.Flush(); //dropped frames mess up the pattern, so just flush it
+      if (m_bCalcFrameRate)
+        m_pullupCorrection.Flush(); //dropped frames mess up the pattern, so just flush it
     }
   }
 
@@ -1055,7 +1058,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     while(!m_bStop && m_dropbase < m_droptime)             m_dropbase += frametime;
     while(!m_bStop && m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
     
-    m_pullupCorrection.Flush();
+    if (m_bCalcFrameRate)
+      m_pullupCorrection.Flush();
   }
   else
   {
