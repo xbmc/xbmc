@@ -87,6 +87,8 @@
 #include "LocalizeStrings.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "Picture.h"
+#include "JobManager.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -1794,12 +1796,14 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
   return CThumbnailCache::GetThumbnailCache()->IsCached(strFileName);
 }
 
-void CUtil::PlayDVD()
+void CUtil::PlayDVD(const CStdString& strProtocol)
 {
 #ifdef HAS_DVDPLAYER
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
-  CFileItem item("dvd://1", false);
+  CStdString strPath;
+  strPath.Format("%s://1", false);
+  CFileItem item(strPath, false);
   item.SetLabel(g_mediaManager.GetDiskLabel());
   g_application.PlayFile(item);
 #endif
@@ -1848,71 +1852,126 @@ void CUtil::Tokenize(const CStdString& path, vector<CStdString>& tokens, const s
   }
 }
 
-void CUtil::TakeScreenshot(const CStdString &filename)
+void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
 {
+  int            width;
+  int            height;
+  int            stride;
+  unsigned char* outpixels = NULL;
+
 #ifdef HAS_DX
-    LPDIRECT3DSURFACE9 lpSurface = NULL;
+  LPDIRECT3DSURFACE9 lpSurface = NULL;
 
-    g_graphicsContext.Lock();
-    if (g_application.IsPlayingVideo())
-    {
+  g_graphicsContext.Lock();
+  if (g_application.IsPlayingVideo())
+  {
 #ifdef HAS_VIDEO_PLAYBACK
-      g_renderManager.SetupScreenshot();
+    g_renderManager.SetupScreenshot();
 #endif
-    }
-    if (0)
-    { // reset calibration to defaults
-      OVERSCAN oscan;
-      memcpy(&oscan, &g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan, sizeof(OVERSCAN));
-      g_graphicsContext.ResetOverscan(g_graphicsContext.GetVideoResolution(), g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan);
-      g_application.Render();
-      memcpy(&g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan, &oscan, sizeof(OVERSCAN));
-    }
-    // now take screenshot
-    g_application.RenderNoPresent();
-    if (SUCCEEDED(g_Windowing.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+  }
+
+  // now take screenshot
+  g_application.RenderNoPresent();
+  if (SUCCEEDED(g_Windowing.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+  {
+    D3DLOCKED_RECT lr;
+    D3DSURFACE_DESC desc;
+    lpSurface->GetDesc(&desc);
+    if (SUCCEEDED(lpSurface->LockRect(&lr, NULL, 0)))
     {
-      if (FAILED(XGWriteSurfaceToFile(lpSurface, filename.c_str())))
-      {
-        CLog::Log(LOGERROR, "Failed to Generate Screenshot");
-      }
-      else
-      {
-        CLog::Log(LOGINFO, "Screen shot saved as %s", filename.c_str());
-      }
-      lpSurface->Release();
+      width = desc.Width;
+      height = desc.Height;
+      stride = lr.Pitch;
+      outpixels = new unsigned char[height * stride];
+      memcpy(outpixels, lr.pBits, height * stride);
+      lpSurface->UnlockRect();
     }
-    g_graphicsContext.Unlock();
+    else
+    {
+      CLog::Log(LOGERROR, "%s LockRect failed", __FUNCTION__);
+    }
+    lpSurface->Release();
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "%s GetBackBuffer failed", __FUNCTION__);
+  }
+  g_graphicsContext.Unlock();
+
+#elif defined(HAS_GL)
+
+  g_graphicsContext.BeginPaint();
+  if (g_application.IsPlayingVideo())
+  {
+#ifdef HAS_VIDEO_PLAYBACK
+    g_renderManager.SetupScreenshot();
+#endif
+  }
+  g_application.RenderNoPresent();
+
+  glReadBuffer(GL_BACK);
+
+  //get current viewport
+  GLint viewport[4];
+  glGetIntegerv(GL_VIEWPORT, viewport);
+
+  width  = viewport[2] - viewport[0];
+  height = viewport[3] - viewport[1];
+  stride = width * 4;
+  unsigned char* pixels = new unsigned char[stride * height];
+
+  //read pixels from the backbuffer
+  glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, (GLvoid*)pixels);
+
+  g_graphicsContext.EndPaint();
+
+  //make a new buffer and copy the read image to it with the Y axis inverted
+  outpixels = new unsigned char[stride * height];
+  for (int y = 0; y < height; y++)
+    memcpy(outpixels + y * stride, pixels + (height - y - 1) * stride, stride);
+
+  //set alpha byte to 0xFF
+  unsigned char* alphaptr = outpixels - 1;
+  for (int i = 0; i < width * height; i++)
+    *(alphaptr += 4) = 0xFF;
+
+  delete pixels; 
+
 #else
-
+  //nothing to take a screenshot from
+  return;
 #endif
 
-#if defined(HAS_GL)
+  if (!outpixels)
+  {
+    CLog::Log(LOGERROR, "Screenshot %s failed", filename.c_str());
+    return;
+  }
 
-    g_graphicsContext.BeginPaint();
-    if (g_application.IsPlayingVideo())
-    {
-#ifdef HAS_VIDEO_PLAYBACK
-      g_renderManager.SetupScreenshot();
-#endif
-    }
-    g_application.RenderNoPresent();
+  CLog::Log(LOGDEBUG, "Saving screenshot %s", filename.c_str());
 
-    GLint viewport[4];
-    void *pixels = NULL;
-    glReadBuffer(GL_BACK);
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    pixels = malloc(viewport[2] * viewport[3] * 4);
-    if (pixels)
-    {
-      glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, pixels);
-      XGWriteSurfaceToFile(pixels, viewport[2], viewport[3], filename.c_str());
-      free(pixels);
-    }
-    g_graphicsContext.EndPaint();
+  //if sync is true, the png file needs to be completely written when this function returns
+  if (sync)
+  {
+    if (!CPicture::CreateThumbnailFromSurface(outpixels, width, height, stride, filename))
+      CLog::Log(LOGERROR, "Unable to write screenshot %s", filename.c_str());
 
-#endif
+    delete outpixels;
+  }
+  else
+  {
+    //make sure the file exists to avoid concurrency issues
+    FILE* fp = fopen(filename.c_str(), "w");
+    if (fp)
+      fclose(fp);
+    else
+      CLog::Log(LOGERROR, "Unable to create file %s", filename.c_str());
 
+    //write .png file asynchronous with CThumbnailWriter, prevents stalling of the render thread
+    //outpixels is deleted from CThumbnailWriter
+    CThumbnailWriter* thumbnailwriter = new CThumbnailWriter(outpixels, width, height, stride, filename);
+    CJobManager::GetInstance().AddJob(thumbnailwriter, NULL);
+  }
 }
 
 void CUtil::TakeScreenshot()
@@ -1937,11 +1996,11 @@ void CUtil::TakeScreenshot()
 
   if (!strDir.IsEmpty())
   {
-    CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(strDir, "screenshot%03d.bmp"), 999);
+    CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(strDir, "screenshot%03d.png"), 999);
 
     if (!file.IsEmpty())
     {
-      TakeScreenshot(file);
+      TakeScreenshot(file, false);
       if (savingScreenshots)
         screenShots.push_back(file);
       if (promptUser)
@@ -1951,7 +2010,7 @@ void CUtil::TakeScreenshot()
         {
           for (unsigned int i = 0; i < screenShots.size(); i++)
           {
-            CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(newDir, "screenshot%03d.bmp"), 999);
+            CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(newDir, "screenshot%03d.png"), 999);
             CFile::Cache(screenShots[i], file);
           }
           screenShots.clear();

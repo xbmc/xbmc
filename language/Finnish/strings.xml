@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 12/12/2009 -->
-<!--Finnish strings based on English strings revision 25406 -->
+<!--Date of translation: 15/12/2009 -->
+<!--Finnish strings based on English strings revision 25728 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -215,13 +215,13 @@
   <string id="269">Järjestä: Esittäjä</string>
   <string id="270">Järjestä: Albumi</string>
   <string id="271">100 suosituinta</string>
-  <string id="272">Määritä kuvan vasen yläkulma</string>
-  <string id="273">Määritä kuvan oikea alakulma</string>
-  <string id="274">Määritä tekstityksen sijainti</string>
+  <string id="272">Kuvan vasen yläkulma</string>
+  <string id="273">Kuvan oikea alakulma</string>
+  <string id="274">Aseta tekstityksen paikka</string>
   <string id="275">Määritä pikselin muoto</string>
   <string id="276">Siirtämällä nuolta voit määrittää näkyvän kuva-alan</string>
-  <string id="277">Siirtämällä palkkia voit määrittää tekstityksen paikan kuvaruudulla</string>
-  <string id="278">Muuta laatikon sivujen suhdetta siten, että laatikosta tulee täysin neliö</string>
+  <string id="277">Siirtämällä palkkia voit määrittää tekstityksen paikan</string>
+  <string id="278">Säädä suorakulmiosta täysin neliö</string>
   <string id="279">Asetuksia ei voitu ladata</string>
   <string id="280">Oletusasetukset otettu käyttöön</string>
   <string id="281">Tarkista XML-tiedostot</string>
@@ -744,7 +744,7 @@
 
   <string id="1210">Poista</string>
   <string id="1211">Musiikki</string>
-  <string id="1212">Videot</string>
+  <string id="1212">Video</string>
   <string id="1213">Kuvat</string>
   <string id="1214">Tiedostot</string>
   <string id="1215">Musiikki ja videot</string>
@@ -875,12 +875,12 @@
   <string id="10514"></string>
   <string id="10515"></string>
   <string id="10516">Musiikki - Kirjasto</string>
-  <string id="10517">Musiikki - Nyt soitossa</string>
+  <string id="10517">Musiikki - Nyt toistetaan</string>
   <string id="10518"></string>
   <string id="10519"></string>
   <string id="10520"></string>
   <string id="10521"></string>
-  <string id="10522">Videot - Nyt soitossa</string>
+  <string id="10522">Videot - Nyt toistetaan</string>
   <string id="10523">Albumin tiedot</string>
   <string id="10524">Elokuvan tiedot</string>
 
@@ -950,7 +950,7 @@
   <string id="12356">Muuta lukitus</string>
   <string id="12357">Sijainnin lukitus</string>
   <string id="12358">Salasana oli tyhjä. Yritä uudelleen.</string>
-  <string id="12360">Pääkäyttäjän lukitus</string>
+  <string id="12360">Käytön esto</string>
   <string id="12362">Sammuta laite lukituksen poistoyritysten maksimimäärän jälkeen</string>
   <string id="12367">Pääkäyttäjän koodi ei ole oikea</string>
   <string id="12368">Anna oikea pääkäyttäjän koodi</string>
@@ -1440,7 +1440,7 @@
   <string id="15218">Libre.fm-käyttäjätunnus</string>
   <string id="15219">Libre.fm-salasana</string>
   <string id="15220">Libre.fm</string>
-  <string id="15221">Kappaleiden lähetys</string>
+  <string id="15221">Musiikin lähetys</string>
 
   <string id="15250">Last.fm-radion lähetys käytössä</string>
   <string id="15251">Yhdistetään Last.fm palveluun...</string>
@@ -1817,7 +1817,7 @@
   <string id="20337">Näyttelijä</string>
   <string id="20338">Elokuva</string>
   <string id="20339">Ohjaaja</string>
-  <string id="20340">Halutko poistaa kirjastosta kaikki kohteet</string>
+  <string id="20340">Halutko poistaa XBMC-kirjastosta kaikki kohteet,</string>
   <string id="20341">jotka on tässä polussa?</string>
   <string id="20342">Elokuvat</string>
   <string id="20343">TV-ohjelmat</string>

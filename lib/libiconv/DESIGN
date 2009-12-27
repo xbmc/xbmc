@@ -1,0 +1,64 @@
+While some other iconv(3) implementations - like FreeBSD iconv(3) - choose
+the "many small shared libraries" and dlopen(3) approach, this implementation
+packs everything into a single shared library. Here is a comparison of the
+two designs.
+
+* Run-time efficiency
+  1. A dlopen() based approach needs a cache of loaded shared libraries.
+  Otherwise, every iconv_open() call will result in a call to dlopen()
+  and thus to file system related system calls - which is prohibitive
+  because some applications use the iconv_open/iconv/iconv_close sequence
+  for every single filename, string, or piece of text.
+  2. In terms of virtual memory use, both approaches are on par. Being shared
+  libraries, the tables are shared between any processes that use them.
+  And because of the demand loading used by Unix systems (and because libiconv
+  does not have initialization functions), only those parts of the tables
+  which are needed (typically very few kilobytes) will be read from disk and
+  paged into main memory.
+  3. Even with a cache of loaded shared libraries, the dlopen() based approach
+  makes more system calls, because it has to load one or two shared libraries
+  for every encoding in use.
+
+* Total size
+  In the dlopen(3) approach, every shared library has a symbol table and
+  relocation offset. All together, FreeBSD iconv installs more than 200 shared
+  libraries with a total size of 2.3 MB. Whereas libiconv installs 0.45 MB.
+
+* Extensibility
+  The dlopen(3) approach is good for guaranteeing extensibility if the iconv
+  implementation is distributed without source. (Or when, as in glibc, you
+  cannot rebuild iconv without rebuilding your libc, thus possibly
+  destabilizing your system.)
+  The libiconv package achieves extensibility through the LGPL license:
+  Every user has access to the source of the package and can extend and
+  replace just libiconv.so.
+  The places which have to be modified when a new encoding is added are as
+  follows: add an #include statement in iconv.c, add an entry in the table in
+  iconv.c, and of course, update the README and iconv_open.3 manual page.
+
+* Use within other packages
+  If you want to incorporate an iconv implementation into another package
+  (such as a mail user agent or web browser), the single library approach
+  is easier, because:
+  1. In the shared library approach you have to provide the right directory
+  prefix which will be used at run time.
+  2. Incorporating iconv as a static library into the executable is easy -
+  it won't need dynamic loading. (This assumes that your package is under
+  the LGPL or GPL license.)
+
+
+All conversions go through Unicode. This is possible because most of the
+world's characters have already been allocated in the Unicode standard.
+Therefore we have for each encoding two functions:
+- For conversion from the encoding to Unicode, a function called xxx_mbtowc.
+- For conversion from Unicode to the encoding, a function called xxx_wctomb,
+  and for stateful encodings, a function called xxx_reset which returns to
+  the initial shift state.
+
+
+All our functions operate on a single Unicode character at a time. This is
+obviously less efficient than operating on an entire buffer of characters at
+a time, but it makes the coding considerably easier and less bug-prone. Those
+who wish best performance should install the Real Thing (TM): GNU libc 2.1
+or newer.
+

@@ -1,0 +1,108 @@
+.\" Copyright (c) Bruno Haible <bruno@clisp.org>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 3 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" References consulted:
+.\"   OpenGroup's Single Unix specification http://www.UNIX-systems.org/online.html
+.\"   POSIX 2001 draft6
+.\"
+.TH ICONV 1  "March 31, 2007" "GNU" "Linux Programmer's Manual"
+.SH NAME
+iconv \- character set conversion
+.SH SYNOPSIS
+.nf
+iconv [\fIOPTION\fP...] [\fB\-f\fP \fIencoding\fP] [\fB\-t\fP \fIencoding\fP] [\fIinputfile\fP ...]
+iconv \fB\-l\fP
+.fi
+.SH DESCRIPTION
+The \fBiconv\fP program converts text from one encoding to another encoding.
+More precisely, it converts \fBfrom\fP the encoding given for the \fB\-f\fP
+option \fBto\fP the encoding given for the \fB\-t\fP option. Either of these
+encodings defaults to the encoding of the current locale. All the
+\fIinputfile\fPs are read and converted in turn; if no \fIinputfile\fP is
+given, the standard input is used. The converted text is printed to standard
+output.
+.PP
+The encodings permitted are system dependent. For the libiconv implementation,
+they are listed in the iconv_open(3) manual page.
+.PP
+Options controlling the input and output format:
+.TP
+\fB\-f\fP \fIencoding\fP, \fB\-\-from\-code=\fP\fIencoding\fP
+Specifies the encoding of the input.
+.TP
+\fB\-t\fP \fIencoding\fP, \fB\-\-to\-code=\fP\fIencoding\fP
+Specifies the encoding of the output.
+.PP
+Options controlling conversion problems:
+.TP
+\fB\-c\fP
+When this option is given, characters that cannot be converted are silently
+discarded, instead of leading to a conversion error.
+.TP
+\fB\-\-unicode\-subst=\fP\fIformatstring\fP
+When this option is given, Unicode characters that cannot be represented in
+the target encoding are replaced with a placeholder string that is constructed
+from the given \fIformatstring\fP, applied to the Unicode code point. The
+\fIformatstring\fP must be a format string in the same format as for the
+.I printf
+command or the
+.I printf()
+function, taking either no argument or exactly one unsigned integer argument.
+.TP
+\fB\-\-byte\-subst=\fP\fIformatstring\fP
+When this option is given, bytes in the input that are not valid in the source
+encoding are replaced with a placeholder string that is constructed from the
+given \fIformatstring\fP, applied to the byte's value. The \fIformatstring\fP
+must be a format string in the same format as for the
+.I printf
+command or the
+.I printf()
+function, taking either no argument or exactly one unsigned integer argument.
+.TP
+\fB\-\-widechar\-subst=\fP\fIformatstring\fP
+When this option is given, wide characters in the input that are not valid in
+the source encoding are replaced with a placeholder string that is constructed
+from the given \fIformatstring\fP, applied to the byte's value. The
+\fIformatstring\fP must be a format string in the same format as for the
+.I printf
+command or the
+.I printf()
+function, taking either no argument or exactly one unsigned integer argument.
+.PP
+Options controlling error output:
+.TP
+\fB\-s\fP, \fB\-\-silent\fP
+When this option is given, error messages about invalid or unconvertible
+characters are omitted, but the actual converted text is unaffected.
+.PP
+The \fBiconv \-l\fP or \fBiconv \-\-list\fP command lists the names of the
+supported encodings, in a system dependent format. For the libiconv
+implementation, the names are printed in upper case, separated by whitespace,
+and alias names of an encoding are listed on the same line as the encoding
+itself.
+.SH EXAMPLES
+.TP
+\fBiconv \-f ISO\-8859\-1 \-t UTF\-8\fP
+converts input from the old West-European encoding ISO\-8859\-1 to Unicode.
+.PP
+.nf
+\fBiconv \-f KOI8\-R \-\-byte\-subst="<0x%x>"\fP
+\fB                \-\-unicode\-subst="<U+%04X>"\fP
+.fi
+.RS
+converts input from the old Russian encoding KOI8\-R to the locale encoding,
+substituting an angle bracket notation with hexadecimal numbers for invalid
+bytes and for valid but unconvertible characters.
+.RE
+.TP
+\fBiconv \-\-list\fP
+lists the supported encodings.
+.SH "CONFORMING TO"
+POSIX:2001
+.SH "SEE ALSO"
+.BR iconv_open (3),
+.BR locale (7)

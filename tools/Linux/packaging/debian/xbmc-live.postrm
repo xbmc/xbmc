@@ -93,6 +93,21 @@ if [ "$1" = "purge" ]; then
 	if [ -f "/etc/init/xbmc-live-install" ]; then
 		rm /etc/init/xbmc-live-install.conf >/dev/null
 	fi
+
+
+	# Remove <xbmc=* > from grub's kernel entries
+	if [ -f /boot/grub/menu.lst ]; then
+		if grep -q -i "xbmc=" /boot/grub/menu.lst ; then
+			sed -i -e "s/xbmc=autostart,nodiskmount,setvolume loglevel=0//" /boot/grub/menu.lst
+		fi
+	fi
+
+	if [ -f /boot/grub/grub.cfg ]; then
+		if grep -q -i "xbmc=" /etc/default/grub ; then
+			sed -i -e "s/xbmc=autostart,nodiskmount,setvolume loglevel=0//" /etc/default/grub
+			update-grub
+		fi
+	fi
 fi
 
 update-rc.d -f xbmc-live remove >/dev/null

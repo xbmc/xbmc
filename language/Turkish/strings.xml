@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 07/12/2009-->
-<!--Based on English strings revision 25426-->
+<!--Date of translation: 15/12/2009-->
+<!--Based on English strings revision 25728-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -1821,7 +1821,7 @@
   <string id="20338">Film</string>
   <string id="20339">Yönetmen</string>
   <string id="20340">Bu yol içindeki tüm ögeleri</string>
-  <string id="20341">kitaplıktan kaldırmak istiyor musunuz?</string>
+  <string id="20341">XBMC kitaplığından kaldırmak istiyor musunuz?</string>
   <string id="20342">Filmler</string>
   <string id="20343">TV programları</string>
   <string id="20344">Bu dizinin içeriği</string>

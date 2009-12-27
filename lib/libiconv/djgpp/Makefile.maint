@@ -1,0 +1,32 @@
+# Maintainer's Makefile                                         -*-Makefile-*-
+
+top_srcdir = ..
+srcdir = .
+
+SHELL = /bin/sh
+
+all: README fnchange.lst
+
+fnchange.lst: fnchange.in $(top_srcdir)/configure.ac
+	rm -f $@; \
+	PACKAGE=`grep "^AM_INIT_AUTOMAKE(" $(top_srcdir)/configure.ac | sed -e 's/^.*(\([A-Za-z]*\),.*$$/\1/'`; \
+	VERSION=`grep "^AM_INIT_AUTOMAKE(" $(top_srcdir)/configure.ac | sed -e 's/^.*,[ 	]\([0-9.]*\).*$$/\1/'`; \
+	sed \
+	    -e '/^#/d' \
+	    -e "s/@V@/$${PACKAGE}-$${VERSION}/g" \
+	  $(srcdir)/fnchange.in > t-$@
+	mv t-$@ $@
+
+README: README.in $(top_srcdir)/configure.ac
+	rm -f $@; \
+	PACKAGE=`grep "^AM_INIT_AUTOMAKE(" $(top_srcdir)/configure.ac | sed -e 's/^.*(\([A-Za-z]*\),.*$$/\1/'`; \
+	VERSION=`grep "^AM_INIT_AUTOMAKE(" $(top_srcdir)/configure.ac | sed -e 's/^.*,[ 	]\([0-9.]*\).*$$/\1/'`; \
+	packageversion=`echo "$${VERSION}" | sed 's/\.//g'`; \
+	treeversion=`echo "$${VERSION}" | sed 's/\.//g'`; \
+	sed \
+	    -e "s/@V@/$${PACKAGE}-$${VERSION}/g" \
+	    -e "s/@VER@/$${VERSION}/g" \
+	    -e "s/@packageversion@/$$packageversion/g" \
+	    -e "s/@treeversion@/$$treeversion/g" \
+	  $(srcdir)/README.in > t-$@
+	mv t-$@ $@

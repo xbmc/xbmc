@@ -1,0 +1,207 @@
+AC_PREREQ(2.56)
+
+dnl Define different version variables.
+dnl
+dnl Making releases:
+dnl   FRIBIDI_MICRO_VERSION++;
+dnl   FRIBIDI_INTERFACE_AGE++;
+dnl   FRIBIDI_RPM_RELEASE = 1;
+dnl
+dnl If any functions have been added:
+dnl   FRIBIDI_INTERFACE_AGE = 0;
+dnl   FRIBIDI_INTERFACE_VERSION++;
+dnl   FRIBIDI_BINARY_AGE++;
+dnl
+dnl If binary backwards compatibility has been broken:
+dnl   FRIBIDI_BINARY_AGE = FRIBIDI_INTERFACE_AGE = 0;
+dnl
+dnl Building RPMs:
+dnl   FRIBIDI_RPM_RELEASE++;
+dnl
+m4_define(fribidi_major_version, 0)dnl
+m4_define(fribidi_minor_version, 10)dnl
+m4_define(fribidi_micro_version, 9)dnl
+m4_define(fribidi_interface_version, 2)dnl
+m4_define(fribidi_interface_age, 9)dnl
+m4_define(fribidi_binary_age, 8)dnl
+m4_define(fribidi_rpm_release, 1)dnl
+dnl
+m4_define(fribidi_version,
+	  m4_if(m4_eval(fribidi_micro_version()),0,
+	    fribidi_major_version.fribidi_minor_version,
+	    fribidi_major_version.fribidi_minor_version.fribidi_micro_version))dnl
+
+AC_INIT([GNU FriBidi],fribidi_version(),[http://fribidi.org/bug])
+AC_REVISION([$Id: configure.in,v 1.22.2.15 2007/08/09 23:37:57 behdad Exp $])
+AC_CONFIG_SRCDIR(fribidi.c)
+AC_CONFIG_HEADERS(config.h)
+AM_INIT_AUTOMAKE([gnu])
+
+FRIBIDI_MAJOR_VERSION=fribidi_major_version()
+FRIBIDI_MINOR_VERSION=fribidi_minor_version()
+FRIBIDI_MICRO_VERSION=fribidi_micro_version()
+FRIBIDI_VERSION=fribidi_version()
+FRIBIDI_INTERFACE_VERSION=fribidi_interface_version()
+FRIBIDI_INTERFACE_AGE=fribidi_interface_age()
+FRIBIDI_BINARY_AGE=fribidi_binary_age()
+FRIBIDI_RPM_RELEASE=fribidi_rpm_release
+
+AC_SUBST(FRIBIDI_MAJOR_VERSION)
+AC_SUBST(FRIBIDI_MINOR_VERSION)
+AC_SUBST(FRIBIDI_MICRO_VERSION)
+AC_SUBST(FRIBIDI_VERSION)
+AC_SUBST(FRIBIDI_INTERFACE_VERSION)
+AC_SUBST(FRIBIDI_INTERFACE_AGE)
+AC_SUBST(FRIBIDI_BINARY_AGE)
+AC_SUBST(FRIBIDI_RPM_RELEASE)
+
+dnl libtool versioning.
+m4_define(lt_current, fribidi_interface_version())dnl
+m4_define(lt_revision, fribidi_interface_age())dnl
+m4_define(lt_age, fribidi_binary_age())dnl
+LT_VERSION_INFO=lt_current():lt_revision():lt_age()
+LT_CURRENT_MINUS_AGE=m4_eval(lt_current - lt_age)
+
+AC_SUBST(LT_VERSION_INFO)
+AC_SUBST(LT_CURRENT_MINUS_AGE)
+
+dnl Checks for programs.
+AC_PROG_AWK
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+
+
+dnl Checks for libraries
+
+dnl Initialize libtool
+AM_PROG_LIBTOOL
+
+
+dnl Checks for typedefs
+
+AC_CHECK_SIZEOF(short, 2)
+SIZEOF_SHORT=$ac_cv_sizeof_short
+AC_SUBST(SIZEOF_SHORT)
+
+AC_CHECK_SIZEOF(int, 4)
+SIZEOF_INT=$ac_cv_sizeof_int
+AC_SUBST(SIZEOF_INT)
+
+AC_CHECK_SIZEOF(long, 4)
+SIZEOF_LONG=$ac_cv_sizeof_long
+AC_SUBST(SIZEOF_LONG)
+
+
+dnl Checks for compiler characteristics
+
+changequote(,)dnl
+if test "x$GCC" = "xyes"; then
+  case " $CFLAGS " in
+  *[\ \	]-Wall[\ \	]*) ;;
+  *) CFLAGS="$CFLAGS -Wall " ;;
+  esac
+  case " $CFLAGS " in
+  *[\ \	]-pedantic[\ \	]*) ;;
+  *) CFLAGS="$CFLAGS -pedantic " ;;
+  esac
+  case " $CFLAGS " in
+  *[\ \	]strict-aliasing[\ \	]*) ;;
+  *) CFLAGS="$CFLAGS -fno-strict-aliasing " ;;
+  esac
+fi
+changequote([,])dnl
+
+dnl Cygwin does not set srcdir to ".".
+if test x$srcdir = x; then
+  xsrcdir=.
+else
+  xsrcdir="$srcdir"
+fi
+
+dnl check for fribidi_tab_char_type_*.i files
+
+AH_TEMPLATE(HAS_FRIBIDI_TAB_CHAR_TYPE_2_I)
+AH_TEMPLATE(HAS_FRIBIDI_TAB_CHAR_TYPE_3_I)
+AH_TEMPLATE(HAS_FRIBIDI_TAB_CHAR_TYPE_4_I)
+AH_TEMPLATE(HAS_FRIBIDI_TAB_CHAR_TYPE_5_I)
+AH_TEMPLATE(HAS_FRIBIDI_TAB_CHAR_TYPE_6_I)
+AH_TEMPLATE(HAS_FRIBIDI_TAB_CHAR_TYPE_7_I)
+AH_TEMPLATE(HAS_FRIBIDI_TAB_CHAR_TYPE_8_I)
+AH_TEMPLATE(HAS_FRIBIDI_TAB_CHAR_TYPE_9_I)
+for n in 2 3 4 5 6 7 8 9; do
+  if test -f "${srcdir}/fribidi_tab_char_type_$n.i" ||
+     test -f         "./fribidi_tab_char_type_$n.i"; then
+    AC_DEFINE_UNQUOTED(HAS_FRIBIDI_TAB_CHAR_TYPE_${n}_I)
+  fi
+done
+
+echo "creating fribidi_tab_char_type_stamp"
+echo "time-stamp" > fribidi_tab_char_type_stamp
+
+
+dnl Check for configure options
+
+dnl --enable-debug
+AC_ARG_ENABLE(debug, dnl
+[  --enable-debug          turn debugging information on [default=no]],
+[case "${enableval}" in
+  yes) AC_DEFINE(DEBUG,1,
+                 [Define to 1 if you want to include debug code in the library]) ;;
+  no) ;;
+  *) AC_MSG_ERROR(bad value ${enableval} for --enable-debug) ;;
+esac])
+
+dnl --enable-malloc
+AC_ARG_ENABLE(malloc, dnl
+[  --enable-malloc         do not allocate chunks of memory  [default=no]],
+[case "${enableval}" in
+  yes) AC_DEFINE(USE_SIMPLE_MALLOC,1,
+                 [Define to 1 if you prefer simple malloc instead of chunk memory]) ;;
+  no) ;;
+  *) AC_MSG_ERROR(bad value ${enableval} for --enable-malloc) ;;
+esac])
+
+dnl --enable-memopt
+AC_ARG_ENABLE(memopt, dnl
+[  --enable-memopt         optimize for memory usage [default=no]],
+[case "${enableval}" in
+  yes) AC_DEFINE(MEM_OPTIMIZED,1,
+                 [Define to 1 if you want to optimize for memory instead of speed])
+       memopt=true ;;
+  no)  memopt=false ;;
+  *) AC_MSG_ERROR(bad value ${enableval} for --enable-memopt) ;;
+esac],[memopt=false])
+
+dnl --without-charsets
+AC_ARG_WITH(charsets, dnl
+[  --without-charsets      exclude character set converters from library
+                          causes command-line tool to use iconv],
+[case "${withval}" in
+  yes) AC_DEFINE(FRIBIDI_NO_CHARSETS,1,
+                 [Define to 1 if you do not want character set conversion routines])
+       charsets=true ;;
+  no)  charsets=false ;;
+  *) AC_MSG_ERROR(bad value ${withval} for --without-charsets) ;;
+esac],[charsets=true])
+if test x"$charsets" = xfalse; then
+  FRIBIDI_NO_CHARSETS=1
+else
+  FRIBIDI_NO_CHARSETS=0
+fi
+AC_SUBST(FRIBIDI_NO_CHARSETS)
+
+AC_DEFINE(FRIBIDI_EXPORTS,1,
+          [Define to 1])
+
+AC_OUTPUT([
+Makefile
+fribidi_config.h
+fribidi-config
+fribidi.pc
+fribidi.spec
+],[case "$CONFIG_FILES" in
+*fribidi-config*)chmod +x fribidi-config;;
+esac])

@@ -7,7 +7,7 @@
 #undef HAVE_DOPRNT
 
 /* use enca */
-#undef HAVE_ENCA
+#define CONFIG_ENCA 1
 
 /* Define to 1 if you have the <enca.h> header file. */
 #undef HAVE_ENCA_H
@@ -128,7 +128,7 @@
 #undef TM_IN_SYS_TIME
 
 /* use iconv */
-#undef USE_ICONV
+#define CONFIG_ICONV 1
 
 /* Version number of package */
 #undef VERSION

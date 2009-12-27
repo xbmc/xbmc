@@ -928,7 +928,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
       break;
     }
 
-    m_pVideoFilterShader = new BicubicFilterShader(0.3f, 0.3f);
+    m_pVideoFilterShader = new BicubicFilterShader(0.0f, 0.5f);
     if (!m_pVideoFilterShader->CompileAndLink())
     {
       CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");

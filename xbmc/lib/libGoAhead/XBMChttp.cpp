@@ -1206,6 +1206,33 @@ int CXbmcHttp::xbmcClearPlayList(int numParas, CStdString paras[])
   return SetResponse(openTag+"OK");
 }
 
+int CXbmcHttp::xbmcSwapPlayListItems(int numParas, CStdString paras[])
+{
+  int iPlayList ;
+  if (numParas < 3)
+    return SetResponse(openTag+"Error: Not enough parameters");
+  iPlayList=g_playlistPlayer.GetCurrentPlaylist();
+  if (numParas > 2)
+    iPlayList = atoi(paras[2]); 
+  CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlayList);
+
+  int item1;
+  if (StringUtils::IsNaturalNumber(paras[0]))
+    item1 = atoi(paras[0]);
+  else
+    item1=FindPathInPlayList(iPlayList,paras[0]);
+  int item2;
+  if (StringUtils::IsNaturalNumber(paras[1]))
+    item2 = atoi(paras[1]);
+  else
+    item2=FindPathInPlayList(iPlayList,paras[1]);
+
+  if (playlist.Swap(item1,item2))
+    return SetResponse(openTag+"OK");
+
+  return SetResponse(openTag+"Error swapping items");
+}
+
 int CXbmcHttp::xbmcGetDirectory(int numParas, CStdString paras[])
 {
   if (numParas>0)
@@ -1787,6 +1814,20 @@ int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb)
     thumb+=paras[0];
     thumb+="\">";
   }
+  if (tempSkipWebFooterHeader)
+  {
+    CStdString strHttpResponseHeaders;
+    strHttpResponseHeaders.Format(
+    "HTTP/1.0 200 OK\r\n"
+    "Pragma: no-cache\r\n"
+    "Cache-control: no-cache\r\n"
+    "Content-Length: %i\r\n"
+    "Content-Type: text/plain\r\n"
+    "\r\n"
+    ,thumb.length()
+    );
+    return SetResponse( strHttpResponseHeaders + thumb);
+  }
   return SetResponse(thumb) ;
 }
 
@@ -2364,6 +2405,20 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
         {
           if (dest=="special://temp/xbmcDownloadInternetFile.tmp")
             CFile::Delete(dest);
+          if (tempSkipWebFooterHeader)
+          {
+            CStdString strHttpResponseHeaders;
+            strHttpResponseHeaders.Format(
+            "HTTP/1.0 200 OK\r\n"
+            "Pragma: no-cache\r\n"
+            "Cache-control: no-cache\r\n"
+            "Content-Length: %i\r\n"
+            "Content-Type: text/plain\r\n"
+            "\r\n"
+            ,encoded.length()
+            );
+            return SetResponse( strHttpResponseHeaders + encoded);
+          }
           return SetResponse(encoded) ;
         }
       }
@@ -2784,10 +2839,10 @@ bool CXbmcHttp::xbmcBroadcast(CStdString message, int level)
   {
     if (!pUdpBroadcast)
       pUdpBroadcast = new CUdpBroadcast();
-	CStdString LocalAddress = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
+    CStdString LocalAddress = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
     CStdString msg;
-	if ((g_stSettings.m_HttpApiBroadcastLevel & 128)==128)
-	   message += ";"+g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
+    if ((g_stSettings.m_HttpApiBroadcastLevel & 128)==128)
+      message += ";"+g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
     msg.Format(openBroadcast+message+";%i"+closeBroadcast, level);
     return pUdpBroadcast->broadcast(msg, g_stSettings.m_HttpApiBroadcastPort);
   }
@@ -2821,7 +2876,7 @@ int CXbmcHttp::xbmcSetBroadcast(int numParas, CStdString paras[])
   {
     g_stSettings.m_HttpApiBroadcastLevel=atoi(paras[0]);
     if (g_stSettings.m_HttpApiBroadcastLevel==128)
-	g_stSettings.m_HttpApiBroadcastLevel=0;
+      g_stSettings.m_HttpApiBroadcastLevel=0;
     if (numParas>1)
       g_stSettings.m_HttpApiBroadcastPort=atoi(paras[1]);
     return SetResponse(openTag+"OK");
@@ -2881,8 +2936,8 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
       filepath = paras[0];
     if (numParas>5)
     {
-      CStdString tmpFile = "special://temp/temp.bmp";
-      CUtil::TakeScreenshot(tmpFile);
+      CStdString tmpFile = "special://temp/temp.png";
+      CUtil::TakeScreenshot(tmpFile, true);
       int height, width;
       if (paras[4]=="")
         if (paras[3]=="")
@@ -3115,6 +3170,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
     if (command == "clearplaylist")                   retVal = xbmcClearPlayList(numParas, paras);  
       else if (command == "addtoplaylist")            retVal = xbmcAddToPlayList(numParas, paras);  
       else if (command == "addtoplaylistfromdb")      retVal = xbmcAddToPlayListFromDB(numParas, paras);  
+      else if (command == "swapplaylistitems")        retVal = xbmcSwapPlayListItems(numParas, paras);  
       else if (command == "playfile")                 retVal = xbmcPlayerPlayFile(numParas, paras); 
       else if (command == "pause")                    retVal = xbmcAction(numParas, paras,1);
       else if (command == "stop")                     retVal = xbmcAction(numParas, paras,2);

@@ -147,10 +147,10 @@ public:
   static bool ThumbCached(const CStdString& strFileName);
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
   static void ThumbCacheClear();
-  static void PlayDVD();
+  static void PlayDVD(const CStdString& strProtocol="dvd");
   static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static void TakeScreenshot();
-  static void TakeScreenshot(const CStdString &filename);
+  static void TakeScreenshot(const CStdString &filename, bool sync);
   static void Tokenize(const CStdString& path, std::vector<CStdString>& tokens, const std::string& delimiters);
   static void ClearCache();
   static void StatToStatI64(struct _stati64 *result, struct stat *stat);

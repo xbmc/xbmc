@@ -55,8 +55,6 @@
 #include <windows.h>
 #include <time.h>
 
-#define vsnprintf _vsnprintf
-
 typedef signed __int64 int64_t;
 typedef unsigned __int64 u_int64_t;
 
