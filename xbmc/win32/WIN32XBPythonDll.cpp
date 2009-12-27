@@ -251,6 +251,12 @@ extern "C"
   FUNCTION12(PyType_GenericNew)
   FUNCTION8(PySys_SetArgv)
   FUNCTION12(PyObject_RichCompare)
+  FUNCTION12(PyErr_Fetch)
+  FUNCTION4(PyImport_AddModule)
+  FUNCTION4(PyImport_ImportModule)
+  FUNCTION4(PyObject_Str)
+  FUNCTION16(PyRun_File)
+  FUNCTION16(PyRun_String)
 
   // PyFloat_FromDouble(double)
   void* (__cdecl* p_PyFloat_FromDouble)(double a); \
@@ -368,7 +374,13 @@ extern "C"
       dll.ResolveExport(DLL_OBJECT_DATA(PyInt_Type)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyUnicode_Type)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyTuple_Type)) &&
-      dll.ResolveExport(DLL_OBJECT_DATA(PyDict_Type)));
+      dll.ResolveExport(DLL_OBJECT_DATA(PyDict_Type)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyErr_Fetch)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyImport_AddModule)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyImport_ImportModule)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyObject_Str)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyRun_File)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyRun_String)));
 
     return bResult;
   }
