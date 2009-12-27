@@ -30,6 +30,7 @@
 #endif
 
 #ifdef _WIN32
+#include "Win32WASAPI.h"
 #include "Win32DirectSound.h"
 #endif
 #ifdef __APPLE__
@@ -123,6 +124,7 @@ void CAudioRendererFactory::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool
 
 #ifdef WIN32
   CWin32DirectSound::EnumerateAudioSinks(vAudioSinks, passthrough);
+  CWin32WASAPI::EnumerateAudioSinks(vAudioSinks, passthrough);
 #endif
 
 #ifdef __APPLE__
@@ -140,7 +142,9 @@ IAudioRenderer *CAudioRendererFactory::CreateFromUri(const CStdString &soundsyst
 #endif
 
 #ifdef WIN32
-  if (soundsystem.Equals("directsound"))
+  if (soundsystem.Equals("wasapi"))
+    return new CWin32WASAPI();
+  else if (soundsystem.Equals("directsound"))
     return new CWin32DirectSound();
 #endif
 

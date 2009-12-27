@@ -94,7 +94,7 @@
 
 #ifdef _WIN32
 #include "WIN32Util.h"
-#include "WINDirectSound.h"
+#include "cores/AudioRenderers/AudioRendererFactory.h"
 #endif
 #include <map>
 #include "ScraperSettings.h"
@@ -1506,7 +1506,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("audiooutput.audiodevice"))
   {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-#if defined(_LINUX) && !defined(__APPLE__)
+#if !defined(__APPLE__)
       g_guiSettings.SetString("audiooutput.audiodevice", m_AnalogAudioSinkMap[pControl->GetCurrentLabel()]);
 #else
       g_guiSettings.SetString("audiooutput.audiodevice", pControl->GetCurrentLabel());
@@ -3201,7 +3201,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
     deviceList.pop_front();
   }
   pControl->SetValue(activeDevice);
-#elif defined(_LINUX)
+#else
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
@@ -3220,7 +3220,6 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
     m_AnalogAudioSinkMap["custom"] = "custom";
   }
   
-
   int numberSinks = 0;
 
   int selectedValue = -1;
@@ -3255,10 +3254,12 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
     numberSinks = sinkList.size();
   }
 
+#ifdef _LINUX
   if (currentDevice.Equals("custom"))
     selectedValue = numberSinks;
 
   pControl->AddLabel("custom", numberSinks++);
+#endif
 
   if (selectedValue < 0)
   {
@@ -3268,24 +3269,6 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   }
   else
     pControl->SetValue(selectedValue);
-#elif defined(_WIN32)
-  if (Passthrough)
-    return;
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-  pControl->Clear();
-  CWDSound p_dsound;
-  std::vector<DSDeviceInfo > deviceList = p_dsound.GetSoundDevices();
-  std::vector<DSDeviceInfo >::const_iterator iter = deviceList.begin();
-  for (int i=0; iter != deviceList.end(); i++)
-  {
-    DSDeviceInfo dev = *iter;
-    pControl->AddLabel(dev.strDescription, i);
-
-    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(dev.strDescription))
-        pControl->SetValue(i);
-
-    ++iter;
-  }
 #endif
 }
 
