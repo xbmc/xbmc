@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../../ -I../../.. -I../../Codecs/ffmpeg -I../../../../ -I../../../../linux -I../../../../../guilib
+INCLUDES=-I../../../../.. -I. -I../../ -I../../.. -I../../Codecs/ffmpeg -I../../../../ -I../../../../linux -I../../../../../guilib
 CXXFLAGS+=-DHAVE_MMX
 
 SRCS=	DVDAudioCodecFFmpeg.cpp \

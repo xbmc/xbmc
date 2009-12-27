@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>   <!--  11.12.2009 Finnish   -->
+  <string id="0">RSS-muokkaus</string>
+  <string id="30">Setin muokkaus</string>
+
+  <string id="1">Vaihda setti</string>
+  <string id="4">Syöte</string>
+  <string id="5">Setti</string>
+  <string id="6">Muokkaa atribuutteja</string>
+
+  <string id="11">Valitse poistettava syöte</string>
+  <string id="12">RSS-syötteen URL</string>
+  <string id="13">Päivitysväli</string>
+  <string id="14">Anna RSS-syötteen %s polku</string>
+
+   <string id="20">Mitä ovat setit?</string>
+  <string id="21">Käyttääksesi erilaisia settejä,</string>
+  <string id="22">käyttöliittymän täytyy kutsua kutakin</string>
+  <string id="23">omalla id-tunnuksella</string>
+  <string id="24">Valitse setti </string>
+  <string id="25">Setin ID</string>
+  <string id="26">Setti %s on jo olemassa</string>
+  <string id="27">Ota oikealta vasemmalle käyttöön?</string>
+
+  <string id="40">Virhe: </string>
+  <string id="41">ei löytynyt järjestelmästä tai</string>
+  <string id="42">ei sisällä sopivaa XML-tiedostoa.</string>
+  <string id="43">Yritä poistaa se userdata-kansiosta ja käynnistä XBMC uudelleen.</string>
+  <string id="44">Poistaaksesi</string>
+  <string id="45">Et voi poistaa settiä 1</string>
+  <string id="46">Setti 1 vaaditaan. Et voi poistaa sitä.</string>
+  <string id="47">Palauta setti 1 oletukseksi?</string>
+  <string id="48">Palautus täytyy suorittaa</string>
+  <string id="49">XBMC täytyy käynnistää uudelleen, ottaksesi muutokset käyttöön</string>
+  <string id="50">Setti %s on jo olemassa.</string>
+  <string id="51">RSSFeeds.xml-tiedosto on vioittunut.</string>
+  <string id="52">Yritetään muodostaa uudelleen</string>
+  <string id="53">Kaikki aiemmat asetukset menetetään</string>
+</strings>

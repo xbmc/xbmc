@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo ""
+echo "Set lirc..."
+echo ""
+
+# TOFIX
+# does not work in chroot (?), we setup lirc by including the proper files in chroot
+# dpkg-reconfigure lirc
+

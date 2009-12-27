@@ -260,11 +260,11 @@ CStdString CXbmcHttp::procMask(CStdString mask)
 {
   mask=mask.ToLower();
   if(mask=="[music]")
-    return g_stSettings.m_musicExtensions;
+    return g_settings.m_musicExtensions;
   if(mask=="[video]")
-    return g_stSettings.m_videoExtensions;
+    return g_settings.m_videoExtensions;
   if(mask=="[pictures]")
-    return g_stSettings.m_pictureExtensions;
+    return g_settings.m_pictureExtensions;
   if(mask=="[files]")
     return "";
   return mask;
@@ -661,19 +661,19 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   case MUSIC:
     {
       pShares = &g_settings.m_musicSources;
-      strMask = g_stSettings.m_musicExtensions;
+      strMask = g_settings.m_musicExtensions;
     }
     break;
   case VIDEO:
     {
       pShares = &g_settings.m_videoSources;
-      strMask = g_stSettings.m_videoExtensions;
+      strMask = g_settings.m_videoExtensions;
     }
     break;
   case PICTURES:
     {
       pShares = &g_settings.m_pictureSources;
-      strMask = g_stSettings.m_pictureExtensions;
+      strMask = g_settings.m_pictureExtensions;
     }
     break;
   case FILES:
@@ -2659,59 +2659,59 @@ int CXbmcHttp::xbmcSTSetting(int numParas, CStdString paras[])
     for (i=0; i<numParas; i++)
     {
       if (paras[i]=="myvideowatchmode")
-        tmp.Format("%i",g_stSettings.m_iMyVideoWatchMode);
+        tmp.Format("%i",g_settings.m_iMyVideoWatchMode);
       else if (paras[i]=="mymusicstartwindow")
-        tmp.Format("%i",g_stSettings.m_iMyMusicStartWindow);
+        tmp.Format("%i",g_settings.m_iMyMusicStartWindow);
       else if (paras[i]=="videostartwindow")
-        tmp.Format("%i",g_stSettings.m_iVideoStartWindow);
+        tmp.Format("%i",g_settings.m_iVideoStartWindow);
       else if (paras[i]=="myvideostack")
-        tmp.Format("%i",g_stSettings.m_iMyVideoStack);
+        tmp.Format("%i",g_settings.m_iMyVideoStack);
       else if (paras[i]=="additionalsubtitledirectorychecked")
-        tmp.Format("%i",g_stSettings.iAdditionalSubtitleDirectoryChecked);
+        tmp.Format("%i",g_settings.iAdditionalSubtitleDirectoryChecked);
       else if (paras[i]=="httpapibroadcastport")
-        tmp.Format("%i",g_stSettings.m_HttpApiBroadcastPort);
+        tmp.Format("%i",g_settings.m_HttpApiBroadcastPort);
       else if (paras[i]=="httpapibroadcastlevel")
-        tmp.Format("%i",g_stSettings.m_HttpApiBroadcastLevel);
+        tmp.Format("%i",g_settings.m_HttpApiBroadcastLevel);
       else if (paras[i]=="volumelevel")
-        tmp.Format("%i",g_stSettings.m_nVolumeLevel);
+        tmp.Format("%i",g_settings.m_nVolumeLevel);
       else if (paras[i]=="dynamicrangecompressionlevel")
-        tmp.Format("%i",g_stSettings.m_dynamicRangeCompressionLevel);
+        tmp.Format("%i",g_settings.m_dynamicRangeCompressionLevel);
       else if (paras[i]=="premutevolumelevel")
-        tmp.Format("%i",g_stSettings.m_iPreMuteVolumeLevel);
+        tmp.Format("%i",g_settings.m_iPreMuteVolumeLevel);
       else if (paras[i]=="systemtimetotalup")
-        tmp.Format("%i",g_stSettings.m_iSystemTimeTotalUp);
+        tmp.Format("%i",g_settings.m_iSystemTimeTotalUp);
       else if (paras[i]=="mute")
-        tmp = (g_stSettings.m_bMute==0) ? "False" : "True";
+        tmp = (g_settings.m_bMute==0) ? "False" : "True";
       else if (paras[i]=="startvideowindowed")
-        tmp = (g_stSettings.m_bStartVideoWindowed==0) ? "False" : "True";
+        tmp = (g_settings.m_bStartVideoWindowed==0) ? "False" : "True";
       else if (paras[i]=="myvideonavflatten")
-        tmp = (g_stSettings.m_bMyVideoNavFlatten==0) ? "False" : "True";
+        tmp = (g_settings.m_bMyVideoNavFlatten==0) ? "False" : "True";
       else if (paras[i]=="myvideoplaylistshuffle")
-        tmp = (g_stSettings.m_bMyVideoPlaylistShuffle==0) ? "False" : "True";
+        tmp = (g_settings.m_bMyVideoPlaylistShuffle==0) ? "False" : "True";
       else if (paras[i]=="myvideoplaylistrepeat")
-        tmp = (g_stSettings.m_bMyVideoPlaylistRepeat==0) ? "False" : "True";
+        tmp = (g_settings.m_bMyVideoPlaylistRepeat==0) ? "False" : "True";
       else if (paras[i]=="mymusicisscanning")
-        tmp = (g_stSettings.m_bMyMusicIsScanning==0) ? "False" : "True";
+        tmp = (g_settings.m_bMyMusicIsScanning==0) ? "False" : "True";
       else if (paras[i]=="mymusicplaylistshuffle")
-        tmp = (g_stSettings.m_bMyMusicPlaylistShuffle==0) ? "False" : "True";
+        tmp = (g_settings.m_bMyMusicPlaylistShuffle==0) ? "False" : "True";
       else if (paras[i]=="mymusicplaylistrepeat")
-        tmp = (g_stSettings.m_bMyMusicPlaylistRepeat==0) ? "False" : "True";
+        tmp = (g_settings.m_bMyMusicPlaylistRepeat==0) ? "False" : "True";
       else if (paras[i]=="mymusicsongthumbinvis")
-        tmp = (g_stSettings.m_bMyMusicSongThumbInVis==0) ? "False" : "True";
+        tmp = (g_settings.m_bMyMusicSongThumbInVis==0) ? "False" : "True";
       else if (paras[i]=="mymusicsonginfoinvis")
-        tmp = (g_stSettings.m_bMyMusicSongInfoInVis==0) ? "False" : "True";
+        tmp = (g_settings.m_bMyMusicSongInfoInVis==0) ? "False" : "True";
       else if (paras[i]=="zoomamount")
-        tmp.Format("%f", g_stSettings.m_fZoomAmount);
+        tmp.Format("%f", g_settings.m_fZoomAmount);
       else if (paras[i]=="pixelratio")
-        tmp.Format("%f", g_stSettings.m_fPixelRatio);
+        tmp.Format("%f", g_settings.m_fPixelRatio);
       else if (paras[i]=="pictureextensions")
-        tmp = g_stSettings.m_pictureExtensions;
+        tmp = g_settings.m_pictureExtensions;
       else if (paras[i]=="musicextensions")
-        tmp = g_stSettings.m_musicExtensions;
+        tmp = g_settings.m_musicExtensions;
       else if (paras[i]=="videoextensions")
-        tmp = g_stSettings.m_videoExtensions;
+        tmp = g_settings.m_videoExtensions;
       else if (paras[i]=="logfolder")
-        tmp = g_stSettings.m_logFolder;
+        tmp = g_settings.m_logFolder;
       else
         tmp = "Error:Unknown setting " + paras[i];
       strInfo += openTag + tmp;
@@ -2760,11 +2760,11 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
   {
     //getoption has been deprecated so the following is just to prevent (my) legacy client code breaking (to be removed later)
     if (paras[1]=="pictureextensions")
-      response=openTag+g_stSettings.m_pictureExtensions;
+      response=openTag+g_settings.m_pictureExtensions;
     else if (paras[1]=="videoextensions")
-      response=openTag+g_stSettings.m_videoExtensions;
+      response=openTag+g_settings.m_videoExtensions;
     else if (paras[1]=="musicextensions")
-      response=openTag+g_stSettings.m_musicExtensions;
+      response=openTag+g_settings.m_musicExtensions;
     else
       response=openTag+"Error:Function is deprecated";
     //ret=XbmcWebsHttpAPIConfigGetOption(response, argc, argv);
@@ -2835,16 +2835,16 @@ int CXbmcHttp::xbmcGetSystemInfoByName(int numParas, CStdString paras[])
 
 bool CXbmcHttp::xbmcBroadcast(CStdString message, int level)
 {
-  if  ((g_stSettings.m_HttpApiBroadcastLevel & 127)>=level)
+  if  ((g_settings.m_HttpApiBroadcastLevel & 127)>=level)
   {
     if (!pUdpBroadcast)
       pUdpBroadcast = new CUdpBroadcast();
     CStdString LocalAddress = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
     CStdString msg;
-    if ((g_stSettings.m_HttpApiBroadcastLevel & 128)==128)
+    if ((g_settings.m_HttpApiBroadcastLevel & 128)==128)
       message += ";"+g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
     msg.Format(openBroadcast+message+";%i"+closeBroadcast, level);
-    return pUdpBroadcast->broadcast(msg, g_stSettings.m_HttpApiBroadcastPort);
+    return pUdpBroadcast->broadcast(msg, g_settings.m_HttpApiBroadcastPort);
   }
   else
     return true;
@@ -2860,7 +2860,7 @@ int CXbmcHttp::xbmcBroadcast(int numParas, CStdString paras[])
     if (numParas>1)
       succ=pUdpBroadcast->broadcast(paras[0], atoi(paras[1]));
     else
-      succ=pUdpBroadcast->broadcast(paras[0], g_stSettings.m_HttpApiBroadcastPort);
+      succ=pUdpBroadcast->broadcast(paras[0], g_settings.m_HttpApiBroadcastPort);
     if (succ)
       return SetResponse(openTag+"OK");
     else
@@ -2874,11 +2874,11 @@ int CXbmcHttp::xbmcSetBroadcast(int numParas, CStdString paras[])
 {
   if (numParas>0)
   {
-    g_stSettings.m_HttpApiBroadcastLevel=atoi(paras[0]);
-    if (g_stSettings.m_HttpApiBroadcastLevel==128)
-      g_stSettings.m_HttpApiBroadcastLevel=0;
+    g_settings.m_HttpApiBroadcastLevel=atoi(paras[0]);
+    if (g_settings.m_HttpApiBroadcastLevel==128)
+      g_settings.m_HttpApiBroadcastLevel=0;
     if (numParas>1)
-      g_stSettings.m_HttpApiBroadcastPort=atoi(paras[1]);
+      g_settings.m_HttpApiBroadcastPort=atoi(paras[1]);
     return SetResponse(openTag+"OK");
   }
   else
@@ -2888,7 +2888,7 @@ int CXbmcHttp::xbmcSetBroadcast(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcGetBroadcast()
 {
   CStdString tmp;
-  tmp.Format("%i;%i", g_stSettings.m_HttpApiBroadcastLevel,g_stSettings.m_HttpApiBroadcastPort);
+  tmp.Format("%i;%i", g_settings.m_HttpApiBroadcastLevel,g_settings.m_HttpApiBroadcastPort);
   return SetResponse(openTag+tmp);
 }
 

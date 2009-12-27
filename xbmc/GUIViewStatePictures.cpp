@@ -53,16 +53,16 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
     AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
     AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | FolderName, empty
 
-    SetSortMethod(g_stSettings.m_viewStatePictures.m_sortMethod);
-    SetViewAsControl(g_stSettings.m_viewStatePictures.m_viewMode);
-    SetSortOrder(g_stSettings.m_viewStatePictures.m_sortOrder);
+    SetSortMethod(g_settings.m_viewStatePictures.m_sortMethod);
+    SetViewAsControl(g_settings.m_viewStatePictures.m_viewMode);
+    SetSortOrder(g_settings.m_viewStatePictures.m_sortOrder);
   }
   LoadViewState(items.m_strPath, WINDOW_PICTURES);
 }
 
 void CGUIViewStateWindowPictures::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_PICTURES, &g_stSettings.m_viewStatePictures);
+  SaveViewToDb(m_items.m_strPath, WINDOW_PICTURES, &g_settings.m_viewStatePictures);
 }
 
 CStdString CGUIViewStateWindowPictures::GetLockType()
@@ -73,9 +73,9 @@ CStdString CGUIViewStateWindowPictures::GetLockType()
 CStdString CGUIViewStateWindowPictures::GetExtensions()
 {
   if (g_guiSettings.GetBool("pictures.showvideos"))
-    return g_stSettings.m_pictureExtensions+"|"+g_stSettings.m_videoExtensions;
+    return g_settings.m_pictureExtensions+"|"+g_settings.m_videoExtensions;
 
-  return g_stSettings.m_pictureExtensions;
+  return g_settings.m_pictureExtensions;
 }
 
 VECSOURCES& CGUIViewStateWindowPictures::GetSources()

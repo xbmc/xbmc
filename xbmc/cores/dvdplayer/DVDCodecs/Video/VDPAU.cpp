@@ -338,27 +338,27 @@ void CVDPAU::CheckFeatures()
 #endif
   }
 
-  if (tmpBrightness != g_stSettings.m_currentVideoSettings.m_Brightness ||
-      tmpContrast   != g_stSettings.m_currentVideoSettings.m_Contrast)
+  if (tmpBrightness != g_settings.m_currentVideoSettings.m_Brightness ||
+      tmpContrast   != g_settings.m_currentVideoSettings.m_Contrast)
   {
     SetColor(vid_height);
-    tmpBrightness = g_stSettings.m_currentVideoSettings.m_Brightness;
-    tmpContrast = g_stSettings.m_currentVideoSettings.m_Contrast;
+    tmpBrightness = g_settings.m_currentVideoSettings.m_Brightness;
+    tmpContrast = g_settings.m_currentVideoSettings.m_Contrast;
   }
-  if (tmpNoiseReduction != g_stSettings.m_currentVideoSettings.m_NoiseReduction)
+  if (tmpNoiseReduction != g_settings.m_currentVideoSettings.m_NoiseReduction)
   {
-    tmpNoiseReduction = g_stSettings.m_currentVideoSettings.m_NoiseReduction;
+    tmpNoiseReduction = g_settings.m_currentVideoSettings.m_NoiseReduction;
     SetNoiseReduction();
   }
-  if (tmpSharpness != g_stSettings.m_currentVideoSettings.m_Sharpness)
+  if (tmpSharpness != g_settings.m_currentVideoSettings.m_Sharpness)
   {
-    tmpSharpness = g_stSettings.m_currentVideoSettings.m_Sharpness;
+    tmpSharpness = g_settings.m_currentVideoSettings.m_Sharpness;
     SetSharpness();
   }
 
-  if (interlaced && tmpDeint && tmpDeint != g_stSettings.m_currentVideoSettings.m_InterlaceMethod)
+  if (interlaced && tmpDeint && tmpDeint != g_settings.m_currentVideoSettings.m_InterlaceMethod)
   {
-    tmpDeint = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
+    tmpDeint = g_settings.m_currentVideoSettings.m_InterlaceMethod;
     SetDeinterlacing();
   }
 }
@@ -367,10 +367,10 @@ void CVDPAU::SetColor(int Height)
 {
   VdpStatus vdp_st;
 
-  if (tmpBrightness != g_stSettings.m_currentVideoSettings.m_Brightness)
-    m_Procamp.brightness = (float)((g_stSettings.m_currentVideoSettings.m_Brightness)-50) / 100;
-  if (tmpContrast != g_stSettings.m_currentVideoSettings.m_Contrast)
-    m_Procamp.contrast = (float)((g_stSettings.m_currentVideoSettings.m_Contrast)+50) / 100;
+  if (tmpBrightness != g_settings.m_currentVideoSettings.m_Brightness)
+    m_Procamp.brightness = (float)((g_settings.m_currentVideoSettings.m_Brightness)-50) / 100;
+  if (tmpContrast != g_settings.m_currentVideoSettings.m_Contrast)
+    m_Procamp.contrast = (float)((g_settings.m_currentVideoSettings.m_Contrast)+50) / 100;
   vdp_st = vdp_generate_csc_matrix(&m_Procamp, 
                                    (Height < 720)? VDP_COLOR_STANDARD_ITUR_BT_601 : VDP_COLOR_STANDARD_ITUR_BT_709,
                                    &m_CSCMatrix);
@@ -394,7 +394,7 @@ void CVDPAU::SetNoiseReduction()
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL };
   VdpStatus vdp_st;
 
-  if (!g_stSettings.m_currentVideoSettings.m_NoiseReduction) 
+  if (!g_settings.m_currentVideoSettings.m_NoiseReduction) 
   {
     VdpBool enabled[]= {0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
@@ -404,8 +404,8 @@ void CVDPAU::SetNoiseReduction()
   VdpBool enabled[]={1};
   vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
-  void* nr[] = { &g_stSettings.m_currentVideoSettings.m_NoiseReduction };
-  CLog::Log(LOGNOTICE,"Setting Noise Reduction to %f",g_stSettings.m_currentVideoSettings.m_NoiseReduction);
+  void* nr[] = { &g_settings.m_currentVideoSettings.m_NoiseReduction };
+  CLog::Log(LOGNOTICE,"Setting Noise Reduction to %f",g_settings.m_currentVideoSettings.m_NoiseReduction);
   vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, ARSIZE(attributes), attributes, nr);
   CheckStatus(vdp_st, __LINE__);
 }
@@ -416,7 +416,7 @@ void CVDPAU::SetSharpness()
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_SHARPNESS_LEVEL };
   VdpStatus vdp_st;
 
-  if (!g_stSettings.m_currentVideoSettings.m_Sharpness) 
+  if (!g_settings.m_currentVideoSettings.m_Sharpness) 
   {
     VdpBool enabled[]={0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
@@ -426,8 +426,8 @@ void CVDPAU::SetSharpness()
   VdpBool enabled[]={1};
   vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
-  void* sh[] = { &g_stSettings.m_currentVideoSettings.m_Sharpness };
-  CLog::Log(LOGNOTICE,"Setting Sharpness to %f",g_stSettings.m_currentVideoSettings.m_Sharpness);
+  void* sh[] = { &g_settings.m_currentVideoSettings.m_Sharpness };
+  CLog::Log(LOGNOTICE,"Setting Sharpness to %f",g_settings.m_currentVideoSettings.m_Sharpness);
   vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, ARSIZE(attributes), attributes, sh);
   CheckStatus(vdp_st, __LINE__);
 }
@@ -464,25 +464,25 @@ void CVDPAU::SetDeinterlacing()
 
   VdpStatus vdp_st;
 
-  if (!g_stSettings.m_currentVideoSettings.m_InterlaceMethod) 
+  if (!g_settings.m_currentVideoSettings.m_InterlaceMethod) 
   {
     VdpBool enabled[]={0,0,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
-  else if (g_stSettings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_AUTO) 
+  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_AUTO) 
   {
     VdpBool enabled[]={1,0,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
-  else if (g_stSettings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_RENDER_BLEND) 
+  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_RENDER_BLEND) 
   {
     VdpBool enabled[]={1,1,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
-  else if (g_stSettings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_INVERSE_TELECINE) 
+  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_INVERSE_TELECINE) 
   {
     VdpBool enabled[]={0,0,1};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);

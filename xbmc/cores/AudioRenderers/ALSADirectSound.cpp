@@ -70,7 +70,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   m_bPassthrough = bPassthrough;
   m_uiBytesPerSecond = uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
 
-  m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
+  m_nCurrentVolume = g_settings.m_nVolumeLevel;
   if (!m_bPassthrough)
      m_amp.SetVolume(m_nCurrentVolume);
 

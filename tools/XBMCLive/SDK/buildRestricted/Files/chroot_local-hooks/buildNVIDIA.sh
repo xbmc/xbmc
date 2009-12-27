@@ -13,7 +13,10 @@ cd /root
 sh ./NVIDIA-Linux-*.run --extract-only
 
 cd NVIDIA-Linux-*
+
+# TODO, make it cleaner
 mv * usr/bin
+
 pushd .
 cd usr/lib
 ln -s libcuda.so.* libcuda.so.1
@@ -21,9 +24,9 @@ ln -s libGLcore.so.* libGLcore.so.1
 ln -s libGL.so.* libGL.so.1
 ln -s libnvidia-cfg.so.* libnvidia-cfg.so.1
 ln -s libnvidia-tls.so.* libnvidia-tls.so.1
-ln -s libvdpau_nvidia.so.* libvdpau_nvidia.so.1
+ln -s vdpau/libvdpau_nvidia.so.* libvdpau_nvidia.so.1
 ln -s libvdpau.so.* libvdpau.so.1
-ln -s libvdpau_trace.so.* libvdpau_trace.so.1
+ln -s vdpau/libvdpau_trace.so.* libvdpau_trace.so.1
 ln -s libcuda.so.1 libcuda.so
 ln -s libGLcore.so.1 libGLcore.so
 ln -s libGL.so.1 libGL.so
@@ -68,15 +71,18 @@ do
 	pushd .
 	cd $modulesdir
 	mkdir -p updates/dkms
+
 	cp /tmp/nvidia.ko updates/dkms
 	depmod -a $kernelVersion
 	tar cvf /tmp/modules.tar modules.* updates
+	rm updates/dkms/nvidia.ko
 	popd
 
 	pushd .
 	mkdir -p lib/modules/$kernelVersion
 	cd lib/modules/$kernelVersion
 	tar xvf /tmp/modules.tar
+	rm /tmp/modules.tar
 	popd
 done
 

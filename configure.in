@@ -1205,7 +1205,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-shared \
       --enable-postproc \
       --enable-gpl \
-      `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; fi` \
+      `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; else echo --disable-vdpau; fi` \
       --enable-libfaad \
       --enable-protocol=http \
       --enable-pthreads \

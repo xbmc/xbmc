@@ -1,0 +1,74 @@
+#
+default 0
+timeout 10
+
+foreground eeeeee
+background 333333
+
+splashimage=/boot/grub/splash.xpm.gz
+
+#
+notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nofstab nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed
+
+
+
+title  XBMCLive - NVIDIA GPU
+kernel /live/vmlinuz boot=live vga=788 xbmc=autostart,tempfs,nodiskmount,setvolume splash quiet loglevel=0 module=nvidia persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
+initrd /live/initrd.img
+quiet
+boot
+
+title  XBMCLive - NVIDIA GPU, SAFE MODE
+kernel /live/vmlinuz boot=live vga=788 xbmc=tempfs,nodiskmount,setvolume quiet loglevel=0 module=nvidia persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
+initrd /live/initrd.img
+quiet
+boot
+
+title  XBMCLive - ATI/AMD GPU
+kernel /live/vmlinuz boot=live vga=788 xbmc=autostart,tempfs,nodiskmount,setvolume splash quiet loglevel=0 module=amd persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
+initrd /live/initrd.img
+quiet
+boot
+
+title  XBMCLive - ATI/AMD GPU, SAFE MODE
+kernel /live/vmlinuz boot=live vga=788 xbmc=tempfs,nodiskmount,setvolume quiet loglevel=0 module=amd persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
+initrd /live/initrd.img
+quiet
+boot
+
+title  XBMCLive - Intel GPU
+kernel /live/vmlinuz boot=live vga=788 xbmc=autostart,tempfs,nodiskmount,setvolume splash quiet loglevel=0 persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
+initrd /live/initrd.img
+quiet
+boot
+
+title  XBMCLive - Intel GPU, SAFE MODE
+kernel /live/vmlinuz boot=live vga=788 xbmc=tempfs,nodiskmount,setvolume quiet loglevel=0 persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
+initrd /live/initrd.img
+quiet
+boot
+
+title  ---
+root
+
+title  Install XBMCLive to disk
+kernel /install/vmlinuz vga=normal quiet preseed/file=/cdrom/install/preseed.cfg cdrom-detect/try-usb=true priority=critical -- 
+initrd /install/initrd.gz
+quiet
+boot
+
+title  ---
+root
+
+title Boot Operating System on Hard Disk
+root (hd0)
+savedefault
+makeactive
+chainloader +1
+quiet
+boot
+
+title Memory test (memtest86+)
+kernel /live/memtest   
+quiet
+boot

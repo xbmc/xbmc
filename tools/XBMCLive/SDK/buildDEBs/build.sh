@@ -1,7 +1,8 @@
 #!/bin/sh
 
 #
-# rationale: karmic d-i does not include squashfs module, we need one!
+# rationale for squashfs-udeb: 
+# karmic d-i does not include squashfs module, we need one!
 # Lucid has been fixed already:
 # https://bugs.launchpad.net/ubuntu/+source/grub-installer/+bug/484832
 #
@@ -14,10 +15,10 @@ WORKDIR="workarea"
 
 getPackage()
 {
-	udebListURL="$UBUNTUMIRROR_BASEURL/dists/karmic/main/installer-i386/current/images/udeb.list"
+	udebListURL="${UBUNTUMIRROR_BASEURL}dists/karmic/main/installer-i386/current/images/udeb.list"
 
 	tmpFile=$(mktemp -q)
-	curl -x "" -f -s -o $tmpFile $udebListURL
+	curl -x "" -s -f -o $tmpFile $udebListURL
 	if [ "$?" -ne "0" ]; then
 		echo "Installer udeb list not found, exiting..."
 		exit 1
@@ -33,7 +34,7 @@ getPackage()
 	# linux-image-2.6.31-14-generic_2.6.31-14.48_i386.deb
 	packageName=linux-image-$(echo $kernelVersion | awk -F'.' '{ print $1"."$2"."$3}')-generic_"$kernelVersion"_i386.deb
 
-	packageURL="$UBUNTUMIRROR_BASEURL/pool/main/l/linux/$packageName"
+	packageURL="${UBUNTUMIRROR_BASEURL}pool/main/l/linux/$packageName"
 
 	wget -q $packageURL
 	if [ "$?" -ne "0" ]; then
@@ -47,6 +48,11 @@ getPackage()
 
 extractModule()
 {
+	if [ -d $WORKDIR ]; then
+		rm -rf $WORKDIR 
+	fi
+	mkdir $WORKDIR
+
 	# Extract package
 	dpkg -x $1 $WORKDIR
 
@@ -81,11 +87,6 @@ makeDEBs()
 	cd $THISDIR
 }
 
-if [ -d $WORKDIR ]; then
-	rm -rf $WORKDIR 
-fi
-mkdir $WORKDIR
-
 # Get matching package
 echo "Selecting and downloading the kernel package..."
 packageName=$(getPackage)
@@ -98,3 +99,19 @@ extractModule $packageName
 
 echo "Making debs..."
 makeDEBs
+
+# Retrieve live_installer from Debian's repositories
+# TODO identify & retrieve the latest!
+echo "Retrieving live_installer udebs..."
+wget -q "http://ftp.uk.debian.org/debian/pool/main/l/live-installer/live-installer_13_i386.udeb"
+if [ "$?" -ne "0" ]; then
+	echo "Needed package (1) not found, exiting..."
+	exit 1
+fi
+
+wget -q "http://ftp.uk.debian.org/debian/pool/main/l/live-installer/live-installer-launcher_13_all.deb"
+if [ "$?" -ne "0" ]; then
+	echo "Needed package (2) not found, exiting..."
+	exit 1
+fi
+
