@@ -3803,13 +3803,13 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetTitle();
     if (item->HasPVRChannelInfoTag())
-      return CorrectAllItemsSortHack(item->GetPVRChannelInfoTag()->NowTitle());
+      return item->GetPVRChannelInfoTag()->NowTitle();
     if (item->HasPVRRecordingInfoTag())
-      return CorrectAllItemsSortHack(item->GetPVRRecordingInfoTag()->m_strTitle);
+      return item->GetPVRRecordingInfoTag()->m_strTitle;
     if (item->HasEPGInfoTag())
-      return CorrectAllItemsSortHack(item->GetEPGInfoTag()->Title());
+      return item->GetEPGInfoTag()->Title();
     if (item->HasPVRTimerInfoTag())
-      return CorrectAllItemsSortHack(item->GetPVRTimerInfoTag()->Title());
+      return item->GetPVRTimerInfoTag()->Title();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strTitle;
     break;
@@ -3866,11 +3866,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetGenre();
     if (item->HasPVRChannelInfoTag())
-      return CorrectAllItemsSortHack(item->GetPVRChannelInfoTag()->NowGenre());
+      return item->GetPVRChannelInfoTag()->NowGenre();
     if (item->HasPVRRecordingInfoTag())
-      return CorrectAllItemsSortHack(item->GetPVRRecordingInfoTag()->m_strGenre);
+      return item->GetPVRRecordingInfoTag()->m_strGenre;
     if (item->HasEPGInfoTag())
-      return CorrectAllItemsSortHack(item->GetEPGInfoTag()->Genre());
+      return item->GetEPGInfoTag()->Genre();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strGenre;
     break;
@@ -4263,7 +4263,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_NEXT_GENRE:
     if (item->HasPVRChannelInfoTag())
-      return CorrectAllItemsSortHack(item->GetPVRChannelInfoTag()->NextGenre());
+      return item->GetPVRChannelInfoTag()->NextGenre();
     break;
   }
   return "";

@@ -193,7 +193,7 @@ long CTVDatabase::AddClient(const CStdString &client, const CStdString &guid)
     {
       CStdString SQL=FormatSQL("insert into Clients (idClient, Name, GUID) values (NULL, '%s', '%s')\n", client.c_str(), guid.c_str());
       m_pDS->exec(SQL.c_str());
-      clientId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      clientId = (long)m_pDS->lastinsertid();
 
       CLog::Log(LOGNOTICE, "TVDatabase: Added new PVR Client ID '%i' with Name '%s' and GUID '%s'", clientId, client.c_str(), guid.c_str());
     }
@@ -229,7 +229,7 @@ long CTVDatabase::AddDBChannel(const cPVRChannelInfoTag &info)
                                  info.m_strFileNameAndPath.c_str());
 
       m_pDS->exec(SQL.c_str());
-      channelId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      channelId = (long)m_pDS->lastinsertid();
     }
 
     return channelId;
@@ -336,7 +336,7 @@ long CTVDatabase::UpdateDBChannel(const cPVRChannelInfoTag &info)
                       info.m_strFileNameAndPath.c_str());
 
       m_pDS->exec(SQL.c_str());
-      channelId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      channelId = (long)m_pDS->lastinsertid();
       return channelId;
     }
   }
@@ -588,7 +588,7 @@ long CTVDatabase::AddGroup(const CStdString &groupname)
     {
       CStdString SQL=FormatSQL("insert into Groups (idClient, idGroup, Name) values (NULL, NULL, '%s')", groupname.c_str());
       m_pDS->exec(SQL.c_str());
-      groupId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      groupId = (long)m_pDS->lastinsertid();
     }
 
     return groupId;

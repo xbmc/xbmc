@@ -585,11 +585,11 @@ char* CAddonUtils::GetSupportedMedia(int media)
 {
   CStdString result;
   if (media == 0)
-    result = g_stSettings.m_videoExtensions;
+    result = g_settings.m_videoExtensions;
   else if (media == 1)
-    result = g_stSettings.m_musicExtensions;
+    result = g_settings.m_musicExtensions;
   else if (media == 2)
-    result = g_stSettings.m_pictureExtensions;
+    result = g_settings.m_pictureExtensions;
 
   char *buffer = (char*) malloc (result.length()+1);
   strcpy(buffer, result.c_str());

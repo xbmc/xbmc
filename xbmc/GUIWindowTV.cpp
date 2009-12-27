@@ -1763,7 +1763,7 @@ bool CGUIWindowTV::PlayFile(CFileItem *item, bool playMinimized)
     }
     else
     {
-      g_stSettings.m_bStartVideoWindowed = true;
+      g_settings.m_bStartVideoWindowed = true;
     }
   }
   if (!g_application.PlayFile(*item))

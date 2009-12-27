@@ -44,9 +44,9 @@ CGUIViewStateWindowTV::CGUIViewStateWindowTV(const CFileItemList& items) : CGUIV
     AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
     AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | FolderName, empty
 
-    SetSortMethod(g_stSettings.m_viewStateVideoFiles.m_sortMethod);
-    SetViewAsControl(g_stSettings.m_viewStateVideoFiles.m_viewMode);
-    SetSortOrder(g_stSettings.m_viewStateVideoFiles.m_sortOrder);
+    SetSortMethod(g_settings.m_viewStateVideoFiles.m_sortMethod);
+    SetViewAsControl(g_settings.m_viewStateVideoFiles.m_viewMode);
+    SetSortOrder(g_settings.m_viewStateVideoFiles.m_sortOrder);
   }
   LoadViewState(items.m_strPath, WINDOW_TV);
 }

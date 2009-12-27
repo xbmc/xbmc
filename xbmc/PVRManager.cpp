@@ -1428,10 +1428,10 @@ void CPVRManager::SaveCurrentChannelSettings()
   if (m_currentPlayingChannel)
   {
     // save video settings
-    if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
+    if (g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings)
     {
       m_database.Open();
-      m_database.SetChannelSettings(m_currentPlayingChannel->GetPVRChannelInfoTag()->ChannelID(), g_stSettings.m_currentVideoSettings);
+      m_database.SetChannelSettings(m_currentPlayingChannel->GetPVRChannelInfoTag()->ChannelID(), g_settings.m_currentVideoSettings);
       m_database.Close();
     }
   }
@@ -1450,137 +1450,137 @@ void CPVRManager::LoadCurrentChannelSettings()
     CVideoSettings loadedChannelSettings;
 
     // Switch to default options
-    g_stSettings.m_currentVideoSettings = g_stSettings.m_defaultVideoSettings;
+    g_settings.m_currentVideoSettings = g_settings.m_defaultVideoSettings;
 
     m_database.Open();
     if (m_database.GetChannelSettings(m_currentPlayingChannel->GetPVRChannelInfoTag()->ChannelID(), loadedChannelSettings))
     {
-      if (loadedChannelSettings.m_AudioDelay != g_stSettings.m_currentVideoSettings.m_AudioDelay)
+      if (loadedChannelSettings.m_AudioDelay != g_settings.m_currentVideoSettings.m_AudioDelay)
       {
-        g_stSettings.m_currentVideoSettings.m_AudioDelay = loadedChannelSettings.m_AudioDelay;
+        g_settings.m_currentVideoSettings.m_AudioDelay = loadedChannelSettings.m_AudioDelay;
 
         if (g_application.m_pPlayer)
-          g_application.m_pPlayer->SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
+          g_application.m_pPlayer->SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
       }
 
-      if (loadedChannelSettings.m_AudioStream != g_stSettings.m_currentVideoSettings.m_AudioStream)
+      if (loadedChannelSettings.m_AudioStream != g_settings.m_currentVideoSettings.m_AudioStream)
       {
-        g_stSettings.m_currentVideoSettings.m_AudioStream = loadedChannelSettings.m_AudioStream;
+        g_settings.m_currentVideoSettings.m_AudioStream = loadedChannelSettings.m_AudioStream;
 
         // only change the audio stream if a different one has been asked for
-        if (g_application.m_pPlayer->GetAudioStream() != g_stSettings.m_currentVideoSettings.m_AudioStream)
+        if (g_application.m_pPlayer->GetAudioStream() != g_settings.m_currentVideoSettings.m_AudioStream)
         {
-          g_application.m_pPlayer->SetAudioStream(g_stSettings.m_currentVideoSettings.m_AudioStream);    // Set the audio stream to the one selected
+          g_application.m_pPlayer->SetAudioStream(g_settings.m_currentVideoSettings.m_AudioStream);    // Set the audio stream to the one selected
         }
       }
 
-      if (loadedChannelSettings.m_Brightness != g_stSettings.m_currentVideoSettings.m_Brightness)
+      if (loadedChannelSettings.m_Brightness != g_settings.m_currentVideoSettings.m_Brightness)
       {
-        g_stSettings.m_currentVideoSettings.m_Brightness = loadedChannelSettings.m_Brightness;
+        g_settings.m_currentVideoSettings.m_Brightness = loadedChannelSettings.m_Brightness;
       }
 
-      if (loadedChannelSettings.m_Contrast != g_stSettings.m_currentVideoSettings.m_Contrast)
+      if (loadedChannelSettings.m_Contrast != g_settings.m_currentVideoSettings.m_Contrast)
       {
-        g_stSettings.m_currentVideoSettings.m_Contrast = loadedChannelSettings.m_Contrast;
+        g_settings.m_currentVideoSettings.m_Contrast = loadedChannelSettings.m_Contrast;
       }
 
-      if (loadedChannelSettings.m_Gamma != g_stSettings.m_currentVideoSettings.m_Gamma)
+      if (loadedChannelSettings.m_Gamma != g_settings.m_currentVideoSettings.m_Gamma)
       {
-        g_stSettings.m_currentVideoSettings.m_Gamma = loadedChannelSettings.m_Gamma;
+        g_settings.m_currentVideoSettings.m_Gamma = loadedChannelSettings.m_Gamma;
       }
 
-      if (loadedChannelSettings.m_Crop != g_stSettings.m_currentVideoSettings.m_Crop)
+      if (loadedChannelSettings.m_Crop != g_settings.m_currentVideoSettings.m_Crop)
       {
-        g_stSettings.m_currentVideoSettings.m_Crop = loadedChannelSettings.m_Crop;
+        g_settings.m_currentVideoSettings.m_Crop = loadedChannelSettings.m_Crop;
         // AutoCrop changes will get picked up automatically by dvdplayer
       }
 
-      if (loadedChannelSettings.m_CropLeft != g_stSettings.m_currentVideoSettings.m_CropLeft)
+      if (loadedChannelSettings.m_CropLeft != g_settings.m_currentVideoSettings.m_CropLeft)
       {
-        g_stSettings.m_currentVideoSettings.m_CropLeft = loadedChannelSettings.m_CropLeft;
+        g_settings.m_currentVideoSettings.m_CropLeft = loadedChannelSettings.m_CropLeft;
       }
 
-      if (loadedChannelSettings.m_CropRight != g_stSettings.m_currentVideoSettings.m_CropRight)
+      if (loadedChannelSettings.m_CropRight != g_settings.m_currentVideoSettings.m_CropRight)
       {
-        g_stSettings.m_currentVideoSettings.m_CropRight = loadedChannelSettings.m_CropRight;
+        g_settings.m_currentVideoSettings.m_CropRight = loadedChannelSettings.m_CropRight;
       }
 
-      if (loadedChannelSettings.m_CropTop != g_stSettings.m_currentVideoSettings.m_CropTop)
+      if (loadedChannelSettings.m_CropTop != g_settings.m_currentVideoSettings.m_CropTop)
       {
-        g_stSettings.m_currentVideoSettings.m_CropTop = loadedChannelSettings.m_CropTop;
+        g_settings.m_currentVideoSettings.m_CropTop = loadedChannelSettings.m_CropTop;
       }
 
-      if (loadedChannelSettings.m_CropBottom != g_stSettings.m_currentVideoSettings.m_CropBottom)
+      if (loadedChannelSettings.m_CropBottom != g_settings.m_currentVideoSettings.m_CropBottom)
       {
-        g_stSettings.m_currentVideoSettings.m_CropBottom = loadedChannelSettings.m_CropBottom;
+        g_settings.m_currentVideoSettings.m_CropBottom = loadedChannelSettings.m_CropBottom;
       }
 
-      if (loadedChannelSettings.m_VolumeAmplification != g_stSettings.m_currentVideoSettings.m_VolumeAmplification)
+      if (loadedChannelSettings.m_VolumeAmplification != g_settings.m_currentVideoSettings.m_VolumeAmplification)
       {
-        g_stSettings.m_currentVideoSettings.m_VolumeAmplification = loadedChannelSettings.m_VolumeAmplification;
+        g_settings.m_currentVideoSettings.m_VolumeAmplification = loadedChannelSettings.m_VolumeAmplification;
 
         if (g_application.m_pPlayer)
-          g_application.m_pPlayer->SetDynamicRangeCompression((long)(g_stSettings.m_currentVideoSettings.m_VolumeAmplification * 100));
+          g_application.m_pPlayer->SetDynamicRangeCompression((long)(g_settings.m_currentVideoSettings.m_VolumeAmplification * 100));
       }
 
-      if (loadedChannelSettings.m_OutputToAllSpeakers != g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers)
+      if (loadedChannelSettings.m_OutputToAllSpeakers != g_settings.m_currentVideoSettings.m_OutputToAllSpeakers)
       {
-        g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers = loadedChannelSettings.m_OutputToAllSpeakers;
+        g_settings.m_currentVideoSettings.m_OutputToAllSpeakers = loadedChannelSettings.m_OutputToAllSpeakers;
       }
 
-      if (loadedChannelSettings.m_ViewMode != g_stSettings.m_currentVideoSettings.m_ViewMode)
+      if (loadedChannelSettings.m_ViewMode != g_settings.m_currentVideoSettings.m_ViewMode)
       {
-        g_stSettings.m_currentVideoSettings.m_ViewMode = loadedChannelSettings.m_ViewMode;
+        g_settings.m_currentVideoSettings.m_ViewMode = loadedChannelSettings.m_ViewMode;
 
-        g_renderManager.SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
-        g_stSettings.m_currentVideoSettings.m_CustomZoomAmount = g_stSettings.m_fZoomAmount;
-        g_stSettings.m_currentVideoSettings.m_CustomPixelRatio = g_stSettings.m_fPixelRatio;
+        g_renderManager.SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
+        g_settings.m_currentVideoSettings.m_CustomZoomAmount = g_settings.m_fZoomAmount;
+        g_settings.m_currentVideoSettings.m_CustomPixelRatio = g_settings.m_fPixelRatio;
       }
 
-      if (loadedChannelSettings.m_CustomPixelRatio != g_stSettings.m_currentVideoSettings.m_CustomPixelRatio)
+      if (loadedChannelSettings.m_CustomPixelRatio != g_settings.m_currentVideoSettings.m_CustomPixelRatio)
       {
-        g_stSettings.m_currentVideoSettings.m_CustomPixelRatio = loadedChannelSettings.m_CustomPixelRatio;
+        g_settings.m_currentVideoSettings.m_CustomPixelRatio = loadedChannelSettings.m_CustomPixelRatio;
       }
 
-      if (loadedChannelSettings.m_CustomZoomAmount != g_stSettings.m_currentVideoSettings.m_CustomZoomAmount)
+      if (loadedChannelSettings.m_CustomZoomAmount != g_settings.m_currentVideoSettings.m_CustomZoomAmount)
       {
-        g_stSettings.m_currentVideoSettings.m_CustomZoomAmount = loadedChannelSettings.m_CustomZoomAmount;
+        g_settings.m_currentVideoSettings.m_CustomZoomAmount = loadedChannelSettings.m_CustomZoomAmount;
       }
 
-      if (loadedChannelSettings.m_NoiseReduction != g_stSettings.m_currentVideoSettings.m_NoiseReduction)
+      if (loadedChannelSettings.m_NoiseReduction != g_settings.m_currentVideoSettings.m_NoiseReduction)
       {
-        g_stSettings.m_currentVideoSettings.m_NoiseReduction = loadedChannelSettings.m_NoiseReduction;
+        g_settings.m_currentVideoSettings.m_NoiseReduction = loadedChannelSettings.m_NoiseReduction;
       }
 
-      if (loadedChannelSettings.m_Sharpness != g_stSettings.m_currentVideoSettings.m_Sharpness)
+      if (loadedChannelSettings.m_Sharpness != g_settings.m_currentVideoSettings.m_Sharpness)
       {
-        g_stSettings.m_currentVideoSettings.m_Sharpness = loadedChannelSettings.m_Sharpness;
+        g_settings.m_currentVideoSettings.m_Sharpness = loadedChannelSettings.m_Sharpness;
       }
 
-      if (loadedChannelSettings.m_SubtitleDelay != g_stSettings.m_currentVideoSettings.m_SubtitleDelay)
+      if (loadedChannelSettings.m_SubtitleDelay != g_settings.m_currentVideoSettings.m_SubtitleDelay)
       {
-        g_stSettings.m_currentVideoSettings.m_SubtitleDelay = loadedChannelSettings.m_SubtitleDelay;
+        g_settings.m_currentVideoSettings.m_SubtitleDelay = loadedChannelSettings.m_SubtitleDelay;
 
-        g_application.m_pPlayer->SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
+        g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
       }
 
-      if (loadedChannelSettings.m_SubtitleOn != g_stSettings.m_currentVideoSettings.m_SubtitleOn)
+      if (loadedChannelSettings.m_SubtitleOn != g_settings.m_currentVideoSettings.m_SubtitleOn)
       {
-        g_stSettings.m_currentVideoSettings.m_SubtitleOn = loadedChannelSettings.m_SubtitleOn;
+        g_settings.m_currentVideoSettings.m_SubtitleOn = loadedChannelSettings.m_SubtitleOn;
 
-        g_application.m_pPlayer->SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
+        g_application.m_pPlayer->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
       }
 
-      if (loadedChannelSettings.m_SubtitleStream != g_stSettings.m_currentVideoSettings.m_SubtitleStream)
+      if (loadedChannelSettings.m_SubtitleStream != g_settings.m_currentVideoSettings.m_SubtitleStream)
       {
-        g_stSettings.m_currentVideoSettings.m_SubtitleStream = loadedChannelSettings.m_SubtitleStream;
+        g_settings.m_currentVideoSettings.m_SubtitleStream = loadedChannelSettings.m_SubtitleStream;
 
-        g_application.m_pPlayer->SetSubtitle(g_stSettings.m_currentVideoSettings.m_SubtitleStream);
+        g_application.m_pPlayer->SetSubtitle(g_settings.m_currentVideoSettings.m_SubtitleStream);
       }
 
-      if (loadedChannelSettings.m_InterlaceMethod != g_stSettings.m_currentVideoSettings.m_InterlaceMethod)
+      if (loadedChannelSettings.m_InterlaceMethod != g_settings.m_currentVideoSettings.m_InterlaceMethod)
       {
-        g_stSettings.m_currentVideoSettings.m_InterlaceMethod = loadedChannelSettings.m_InterlaceMethod;
+        g_settings.m_currentVideoSettings.m_InterlaceMethod = loadedChannelSettings.m_InterlaceMethod;
       }
     }
     m_database.Close();
