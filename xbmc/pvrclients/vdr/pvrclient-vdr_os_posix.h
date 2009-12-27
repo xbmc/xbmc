@@ -32,13 +32,14 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <sys/syscall.h>
 #include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
 #include <sys/time.h>
 #include <sys/timeb.h>
 #include <sys/wait.h>
 #include <sys/signal.h>
+#include <sys/resource.h>
+#include <sys/prctl.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -48,7 +49,25 @@
 typedef int bool_t;
 typedef int SOCKET;
 
-#define closesocket(a) close(a)
+#define __close(a) close(a)
+#define __select select
+#define __recv recv
+#define __shutdown shutdown
+#define __socket socket
+#define __bind bind
+#define __getsockname getsockname
+#define __connect connect
+#define __getpeername getpeername
+#define __send send
+#define __getsockopt getsockopt
+#define __listen listen
+#define __accept accept
+#define __setsockopt setsockopt
+#define __fcntl fcntl
+#define __gethostbyname gethostbyname
+#define __read read
+#define __write write
+#define __poll poll
 #define SOCKET_ERROR   (-1)
 #define INVALID_SOCKET (-1)
 #define SD_BOTH SHUT_RDWR
@@ -59,6 +78,15 @@ typedef int SOCKET;
 #define console_vprintf vprintf
 #define console_printf printf
 #define THREAD_FUNC_PREFIX void *
+
+#ifndef __STL_CONFIG_H
+template<class T> inline T min(T a, T b) { return a <= b ? a : b; }
+template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
+template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
+template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
+#endif
+
+#define Sleep(t) usleep(t*1000)
 
 static inline uint64_t getcurrenttime(void)
 {

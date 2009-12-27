@@ -20,20 +20,24 @@
  *
  */
 
-#include <string>
 #include <vector>
+#include "StdString.h"
+#include "thread.h"
+#include "tools.h"
 
-#include "pvrclient-vdr_os.h"
+#define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
+
+enum eSocketId {
+  siLive,
+  siReplay,
+  siLiveFilter,
+  siDataRespond,
+  si_Count
+};
 
 class CVTPTransceiver
 {
 public:
-  CVTPTransceiver();
-  ~CVTPTransceiver();
-  bool Open(const std::string &host, int port);
-  void Close();
-  bool IsConnected(SOCKET socket, fd_set *rd, fd_set *wr, fd_set *ex);
-
   bool ReadResponse(int &code, std::string &line);
   bool ReadResponse(int &code, std::vector<std::string> &lines);
 
@@ -41,24 +45,56 @@ public:
   bool SendCommand(const std::string &command, int &code, std::string line);
   bool SendCommand(const std::string &command, int &code, std::vector<std::string> &lines);
 
-  bool   SetChannel(unsigned int channel);
-  SOCKET GetStreamLive(unsigned int channel);
-  SOCKET GetStreamRecording(int recording, uint64_t *size, uint32_t *frames);
-  SOCKET GetStreamData();
-  void   AbortStreamLive();
-  void   AbortStreamRecording();
-  void   AbortStreamData();
-  bool   CanStreamLive(int channel);
-  bool   IsOpen();
-  bool   SuspendServer();
-  bool   Quit();
-
 private:
+	SOCKET m_DataSockets[si_Count];
+	SOCKET m_VTPSocket;
+	cMutex m_Mutex;
+
   struct sockaddr_in m_LocalAddr;
   struct sockaddr_in m_RemoteAddr;
 
-  bool   OpenStreamSocket(SOCKET& socket, struct sockaddr_in& address);
-  bool   AcceptStreamSocket(SOCKET& socket);
+  bool OpenStreamSocket(SOCKET& socket, struct sockaddr_in& address);
+  bool AcceptStreamSocket(SOCKET& socket);
+  bool Connect(const std::string &host, int port);
+  void Close();
+  bool IsConnected(SOCKET socket, fd_set *rd, fd_set *wr, fd_set *ex);
 
-  SOCKET m_socket;
+public:
+  CVTPTransceiver();
+  ~CVTPTransceiver();
+
+  void Reset(void);
+
+  bool IsOpen(void) const { return m_VTPSocket != INVALID_SOCKET; }
+  bool CheckConnection();
+  bool ProvidesChannel(unsigned int Channel, int Priority);
+  bool CreateDataConnection(eSocketId Id);
+  bool CloseDataConnection(eSocketId Id);
+  SOCKET DataSocket(eSocketId Id) const { return m_DataSockets[Id]; }
+  bool SetChannelDevice(unsigned int Channel);
+  bool SetRecordingIndex(unsigned int Recording, uint64_t *size, uint32_t *frames);
+  CStdString GetBackendName();
+  CStdString GetBackendVersion();
+  PVR_ERROR GetDriveSpace(long long *total, long long *used);
+  PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset);
+  PVR_ERROR RequestEPGForChannel(const PVR_CHANNEL &channel, PVRHANDLE handle, time_t start = NULL, time_t end = NULL);
+  int GetNumChannels(void);
+  PVR_ERROR RequestChannelList(PVRHANDLE handle, bool radio = false);
+  int GetNumRecordings(void);
+  PVR_ERROR RequestRecordingsList(PVRHANDLE handle);
+  PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo);
+  PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname);
+  int GetNumTimers(void);
+  PVR_ERROR RequestTimerList(PVRHANDLE handle);
+  PVR_ERROR GetTimerInfo(unsigned int timernumber, PVR_TIMERINFO &tag);
+  PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo);
+  PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force = false);
+  PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname);
+  PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo);
+  PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo, unsigned int channel);
+  int TransferRecordingToSocket(uint64_t position, int size);
+  bool SuspendServer(void);
+  bool Quit(void);
 };
+
+extern class CVTPTransceiver VTPTransceiver;

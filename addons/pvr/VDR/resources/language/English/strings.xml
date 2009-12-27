@@ -9,4 +9,5 @@
     <string id="30005">Connect timeout (s)</string>
     <string id="30006">Ignore Channels without VPID and APID</string>
     <string id="30007">Allow VDR Messages</string>
+    <string id="30008">Priority</string>
 </strings>

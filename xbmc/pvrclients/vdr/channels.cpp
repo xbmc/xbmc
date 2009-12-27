@@ -25,7 +25,7 @@
 
 #include <string>
 #include <vector>
-#include "pvrclient-vdr.h"
+#include "vtptransceiver.h"
 #include "pvrclient-vdr_os.h"
 #include "channels.h"
 #include "client.h"
@@ -156,23 +156,23 @@ bool cChannel::ReadFromVTP(int channel)
   int            code;
   char           buffer[64];
 
-  if (!cPVRClientVDR::GetTransceiver()->IsOpen())
+  if (!VTPTransceiver.CheckConnection())
     return false;
 
   sprintf(buffer, "LSTC %i", channel);
-  while (!cPVRClientVDR::GetTransceiver()->SendCommand(buffer, code, lines))
+  while (!VTPTransceiver.SendCommand(buffer, code, lines))
   {
     if (code != 451)
       return false;
 
-    usleep(750);
+    Sleep(100);
   }
 
   vector<string>::iterator it = lines.begin();
   string& data(*it);
   CStdString str_result = data;
 
-  if (m_bCharsetConv)
+  if (g_bCharsetConv)
     XBMC_unknown_to_utf8(str_result);
 
   Parse(str_result.c_str());

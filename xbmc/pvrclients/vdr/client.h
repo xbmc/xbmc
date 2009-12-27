@@ -23,40 +23,32 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include <string>
 #include "StdString.h"
-#include "pvrclient-vdr_os.h"
-#include "../../addons/include/xbmc_addon_lib++.h"
-#include "../../addons/include/xbmc_pvr_lib++.h"
 
-#define DEFAULT_HOST        "127.0.0.1"
-#define DEFAULT_PORT        2004
-#define DEFAULT_FTA_ONLY    false
-#define DEFAULT_RADIO       true
-#define DEFAULT_CHARCONV    false
-#define DEFAULT_TIMEOUT     3
-#define DEFAULT_BADCHANNELS true
-#define DEFAULT_HANDLE_MSG  true
+#define DEFAULT_HOST          "127.0.0.1"
+#define DEFAULT_PORT          2004
+#define DEFAULT_FTA_ONLY      false
+#define DEFAULT_RADIO         true
+#define DEFAULT_CHARCONV      false
+#define DEFAULT_BADCHANNELS   true
+#define DEFAULT_HANDLE_MSG    true
+#define DEFAULT_PRIORITY      99
+#define DEFAULT_TIMEOUT       3
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+extern bool         g_bCreated;           ///< Shows that the Create function was successfully called
+extern int          g_iClientID;          ///< The PVR client ID used by XBMC for this driver
+extern CStdString   g_szUserPath;         ///< The Path to the user directory inside user profile
+extern CStdString   g_szClientPath;       ///< The Path where this driver is located
 
-extern bool         m_bCreated;
-extern std::string  m_sHostname;
-extern int          m_iPort;
-extern bool         m_bOnlyFTA;
-extern bool         m_bRadioEnabled;
-extern bool         m_bCharsetConv;
-extern int          m_iConnectTimeout;
-extern bool         m_bNoBadChannels;
-extern bool         m_bHandleMessages;
-extern int          g_clientID;
-extern std::string  g_szUserPath;
-extern std::string  g_szClientPath;
-
-#ifdef __cplusplus
-}
-#endif
+/* Client Settings */
+extern CStdString   g_szHostname;         ///< The Host name or IP of the VDR
+extern int          g_iPort;              ///< The VTP Port of the VDR (default is 2004)
+extern int          g_iPriority;          ///< The Priority this client have in response to other clients
+extern int          g_iConnectTimeout;    ///< The Socket connection timeout
+extern bool         g_bOnlyFTA;           ///< Send only Free-To-Air Channels inside Channel list to XBMC
+extern bool         g_bRadioEnabled;      ///< Send also Radio channels list to XBMC
+extern bool         g_bCharsetConv;       ///< Convert VDR's incoming strings to UTF8 character set
+extern bool         g_bNoBadChannels;     ///< Ignore channels without a PID, APID and DPID
+extern bool         g_bHandleMessages;    ///< Send VDR's OSD status messages to XBMC OSD
 
 #endif /* CLIENT_H */

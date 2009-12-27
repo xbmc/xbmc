@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\addons\include;."
+				AdditionalIncludeDirectories="..\..\..\..\addons\include;.;..\..\pthread_win32"
 				PreprocessorDefinitions="_WIN32;_DEBUG;_WINDOWS;VDR_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -65,7 +65,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="ws2_32.lib"
+				AdditionalDependencies="ws2_32.lib ..\..\pthread_win32\pthreadVC2.lib"
 				OutputFile="../../../../../addons/pvr/VDR/XBMC_VDR_win32.pvr"
 				LinkIncremental="1"
 				IgnoreAllDefaultLibraries="false"
@@ -126,7 +126,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\addons\include;."
+				AdditionalIncludeDirectories="..\..\..\..\addons\include;.;..\..\pthread_win32"
 				PreprocessorDefinitions="_WIN32;NDEBUG;_WINDOWS;VDR_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T"
 				ExceptionHandling="1"
 				BasicRuntimeChecks="0"
@@ -148,7 +148,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="ws2_32.lib"
+				AdditionalDependencies="ws2_32.lib ..\..\pthread_win32\pthreadVC2.lib"
 				OutputFile="../../../../../addons/pvr/VDR/XBMC_VDR_win32.pvr"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc;libcmt"
@@ -206,11 +206,23 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\pvrclient-vdr.cpp"
+				RelativePath="..\..\pvrclient-vdr_os_windows.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\recordings.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\ringbuffer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\select.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\thread.cpp"
 				>
 			</File>
 			<File
@@ -244,10 +256,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\pvrclient-vdr.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\pvrclient-vdr_os.h"
 				>
 			</File>
@@ -264,15 +272,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\stdbool.h"
+				RelativePath="..\..\ringbuffer.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\stdint.h"
+				RelativePath="..\..\select.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\StdString.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\thread.h"
 				>
 			</File>
 			<File
@@ -294,6 +306,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
+		<File
+			RelativePath="..\..\README"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

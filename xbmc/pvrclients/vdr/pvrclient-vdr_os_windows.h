@@ -20,35 +20,15 @@
  *
  */
 
-
 #ifndef PVRCLIENT_VDR_OS_WIN_H
 #define PVRCLIENT_VDR_OS_WIN_H
 
-#include <process.h>
-#include <io.h>
-#include <winsock2.h>
-#include <windows.h>
-#include <ws2tcpip.h>
-#include <wspiapi.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include <signal.h>
-#include <time.h>
-#include <sys/types.h>
-#include <sys/timeb.h>
-
-#if defined(DLL_IMPORT)
-#define LIBTYPE __declspec( dllexport )
-#elif  defined(DLL_EXPORT)
-#define LIBTYPE __declspec( dllimport )
-#else
-#define LIBTYPE
+#if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64
+# define __USE_FILE_OFFSET64	1
 #endif
 
-#define strncasecmp strnicmp
-
+typedef int ssize_t;
+typedef int mode_t;
 typedef int bool_t;
 typedef signed __int8 int8_t;
 typedef signed __int16 int16_t;
@@ -58,164 +38,290 @@ typedef unsigned __int8 uint8_t;
 typedef unsigned __int16 uint16_t;
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int64 uint64_t;
-typedef HANDLE pthread_t;
-typedef HANDLE pthread_mutex_t;
-typedef LONG_PTR ssize_t;
 
-#define socklen_t int
-#define close closesocket
-#define sock_getlasterror WSAGetLastError()
-#define sock_getlasterror_socktimeout (WSAGetLastError() == WSAETIMEDOUT)
+#if defined __USE_FILE_OFFSET64
+typedef int64_t off_t;
+typedef uint64_t ino_t;
+#else
+typedef long off_t;
+#endif
+
+#define INT64_MAX _I64_MAX
+#define INT64_MIN _I64_MIN
+
+/* Some tricks for MS Compilers */
+#define THREADLOCAL __declspec(thread)
+
+#ifndef DEFFILEMODE
+#define DEFFILEMODE 0
+#endif
+
+
+#define alloca _alloca
+#define chdir _chdir
+#define dup _dup
+#define dup2 _dup2
+#define fdopen _fdopen
+#define fileno _fileno
+#define getcwd _getcwd
+#define getpid _getpid
+#define ioctl ioctlsocket
+#define mkdir(p) _mkdir(p)
+#define mktemp _mktemp
+#define open _open
+#define pclose _pclose
+#define popen _popen
+#define putenv _putenv
+#define setmode _setmode
+#define sleep(t) Sleep((t)*1000)
+#define usleep(t) Sleep((t)/1000)
+#define snprintf _snprintf
+#define strcasecmp _stricmp
+#define strdup _strdup
+#define strlwr _strlwr
+#define strncasecmp _strnicmp
+#define tempnam _tempnam
+#define umask _umask
+#define unlink _unlink
+#define close _close
+
+#define O_RDONLY        _O_RDONLY
+#define O_WRONLY        _O_WRONLY
+#define O_RDWR          _O_RDWR
+#define O_APPEND        _O_APPEND
+
+#define O_CREAT         _O_CREAT
+#define O_TRUNC         _O_TRUNC
+#define O_EXCL          _O_EXCL
+
+#define O_TEXT          _O_TEXT
+#define O_BINARY        _O_BINARY
+#define O_RAW           _O_BINARY
+#define O_TEMPORARY     _O_TEMPORARY
+#define O_NOINHERIT     _O_NOINHERIT
+#define O_SEQUENTIAL    _O_SEQUENTIAL
+#define O_RANDOM        _O_RANDOM
+#define O_NDELAY	0
+
+#define S_IRWXO 007
+#define	S_ISDIR(m) (((m) & _S_IFDIR) == _S_IFDIR)
+#define	S_ISREG(m) (((m) & _S_IFREG) == _S_IFREG)
+
+#ifndef SIGHUP
+#define	SIGHUP	1	/* hangup */
+#endif
+#ifndef SIGBUS
+#define	SIGBUS  7	/* bus error */
+#endif
+#ifndef SIGKILL
+#define	SIGKILL	9	/* kill (cannot be caught or ignored) */
+#endif
+#ifndef	SIGSEGV
+#define	SIGSEGV 11      /* segment violation */
+#endif
+#ifndef SIGPIPE
+#define	SIGPIPE	13	/* write on a pipe with no one to read it */
+#endif
+#ifndef SIGCHLD
+#define	SIGCHLD	20	/* to parent on child stop or exit */
+#endif
+#ifndef SIGUSR1
+#define SIGUSR1 30	/* user defined signal 1 */
+#endif
+#ifndef SIGUSR2
+#define SIGUSR2 31	/* user defined signal 2 */
+#endif
+
+typedef unsigned short in_port_t;
+typedef unsigned short int ushort;
+typedef unsigned int in_addr_t;
+typedef int socklen_t;
+typedef int uid_t;
+typedef int gid_t;
+
+#if defined __USE_FILE_OFFSET64
+#define stat _stati64
+#define lseek _lseeki64
+#define fstat _fstati64
+#define tell _telli64
+#else
+#define stat _stat
+#define lseek _lseek
+#define fstat _fstat
+#define tell _tell
+#endif
+
+#define atoll _atoi64
 #ifndef va_copy
 #define va_copy(x, y) x = y
 #endif
-#define atoll _atoi64
-#define strdup _strdup
-#define strcasecmp _stricmp
-#define snprintf _snprintf
-#define fseeko _fseeki64
-#define ftello _ftelli64
-#define THREAD_FUNC_PREFIX DWORD WINAPI
-#define SIGPIPE SIGABRT
-#define read _read
-#define write _write
-#define poll WSAPoll
 
-#if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
-  #define DELTA_EPOCH_IN_MICROSECS  11644473600000000Ui64
-#else
-  #define DELTA_EPOCH_IN_MICROSECS  11644473600000000ULL
+#include <stddef.h>
+#include <process.h>
+#if defined(_MSC_VER) /* Microsoft C Compiler ONLY */
+/* Hack to suppress compiler warnings on FD_SET() & FD_CLR() */
+#pragma warning (push)
+#pragma warning (disable:4142)
 #endif
- 
-struct timespec
+/* prevent inclusion of wingdi.h */
+#define NOGDI
+#include <ws2spi.h>
+#include <ws2ipdef.h>
+#if defined(_MSC_VER) /* Microsoft C Compiler ONLY */
+#pragma warning (pop)
+#endif
+#include <io.h>
+#include <stdlib.h>
+#include <errno.h>
+#include "pthread_win32/pthread.h"
+
+typedef char * caddr_t;
+
+#undef FD_CLOSE
+#undef FD_OPEN
+#undef FD_READ
+#undef FD_WRITE
+#define EISCONN WSAEISCONN
+#define EINPROGRESS WSAEINPROGRESS
+#define EWOULDBLOCK WSAEWOULDBLOCK
+#define EALREADY WSAEALREADY
+#define ETIMEDOUT WSAETIMEDOUT
+#define ECONNABORTED WSAECONNABORTED
+#define ECONNREFUSED WSAECONNREFUSED
+#define ECONNRESET WSAECONNRESET
+#define ERESTART WSATRY_AGAIN
+#define ENOTCONN WSAENOTCONN
+#define ENOBUFS WSAENOBUFS
+#define EOVERFLOW 2006
+
+#undef h_errno
+#define h_errno errno /* we'll set it ourselves */
+
+struct timezone
 {
-  long tv_sec;
-  long tv_nsec;
+  int	tz_minuteswest;	/* minutes west of Greenwich */
+  int	tz_dsttime;	/* type of dst correction */
 };
 
-struct timezone 
-{
-  int  tz_minuteswest; /* minutes W of Greenwich */
-  int  tz_dsttime;     /* type of dst correction */
-};
+extern int gettimeofday(struct timeval *, struct timezone *);
 
-__inline int gettimeofday(struct timeval *tv, struct timezone *tz)
-{
-  FILETIME ft;
-  unsigned __int64 tmpres = 0;
-  static int tzflag;
- 
-  if (NULL != tv)
-  {
-    GetSystemTimeAsFileTime(&ft);
- 
-    tmpres |= ft.dwHighDateTime;
-    tmpres <<= 32;
-    tmpres |= ft.dwLowDateTime;
- 
-    /*converting file time to unix epoch*/
-    tmpres -= DELTA_EPOCH_IN_MICROSECS; 
-    tmpres /= 10;  /*convert into microseconds*/
-    tv->tv_sec = (long)(tmpres / 1000000UL);
-    tv->tv_usec = (long)(tmpres % 1000000UL);
-  }
- 
-  if (NULL != tz)
-  {
-    if (!tzflag)
-    {
-      _tzset();
-      tzflag++;
-    }
-    tz->tz_minuteswest = _timezone / 60;
-    tz->tz_dsttime = _daylight;
-  }
- 
-  return 0;
-}
+/* Unix socket emulation macros */
+#define __close closesocket
 
-static inline int usleep(unsigned int us)
-{
-	Sleep((us)/1000);
-	return 0;
-}
+#undef FD_CLR
+#define FD_CLR(fd, set) do { \
+    u_int __i; \
+    SOCKET __sock = _get_osfhandle(fd); \
+    for (__i = 0; __i < ((fd_set FAR *)(set))->fd_count ; __i++) { \
+        if (((fd_set FAR *)(set))->fd_array[__i] == __sock) { \
+            while (__i < ((fd_set FAR *)(set))->fd_count-1) { \
+                ((fd_set FAR *)(set))->fd_array[__i] = \
+                    ((fd_set FAR *)(set))->fd_array[__i+1]; \
+                __i++; \
+            } \
+            ((fd_set FAR *)(set))->fd_count--; \
+            break; \
+        } \
+    } \
+} while(0)
 
-static inline int sleep(unsigned int sec)
-{
-	Sleep((sec)*1000);
-	return 0;
-}
+#undef FD_SET
+#define FD_SET(fd, set) do { \
+    u_int __i; \
+    SOCKET __sock = _get_osfhandle(fd); \
+    for (__i = 0; __i < ((fd_set FAR *)(set))->fd_count; __i++) { \
+        if (((fd_set FAR *)(set))->fd_array[__i] == (__sock)) { \
+            break; \
+        } \
+    } \
+    if (__i == ((fd_set FAR *)(set))->fd_count) { \
+        if (((fd_set FAR *)(set))->fd_count < FD_SETSIZE) { \
+            ((fd_set FAR *)(set))->fd_array[__i] = (__sock); \
+            ((fd_set FAR *)(set))->fd_count++; \
+        } \
+    } \
+} while(0)
 
-static inline uint64_t getcurrenttime(void)
-{
-	struct timeb tb;
-	ftime(&tb);
-	return ((uint64_t)tb.time * 1000) + tb.millitm;
-}
+#undef FD_ISSET
+#define FD_ISSET(fd, set) __WSAFDIsSet((SOCKET)(_get_osfhandle(fd)), (fd_set FAR *)(set))
 
-static inline int setsocktimeout(int s, int level, int optname, uint64_t timeout)
-{
-	int t = (int)timeout;
-	return setsockopt(s, level, optname, (char *)&t, sizeof(t));
-}
+extern THREADLOCAL int ws32_result;
+#define __poll(f,n,t) \
+	(SOCKET_ERROR == WSAPoll(f,n,t) ? \
+	(errno = WSAGetLastError()), -1 : 0)
+#define __socket(f,t,p) \
+	(INVALID_SOCKET == ((SOCKET)(ws32_result = (int)socket(f,t,p))) ? \
+	((WSAEMFILE == (errno = WSAGetLastError()) ? errno = EMFILE : -1), -1) : \
+	(SOCKET)_open_osfhandle(ws32_result,0))
+#define __accept(s,a,l) \
+	(INVALID_SOCKET == ((SOCKET)(ws32_result = (int)accept(_get_osfhandle(s),a,l))) ? \
+	((WSAEMFILE == (errno = WSAGetLastError()) ? errno = EMFILE : -1), -1) : \
+	(SOCKET)_open_osfhandle(ws32_result,0))
+#define __bind(s,n,l) \
+	(SOCKET_ERROR == bind(_get_osfhandle(s),n,l) ? \
+	(errno = WSAGetLastError()), -1 : 0)
+#define __connect(s,n,l) \
+	(SOCKET_ERROR == connect(_get_osfhandle(s),n,l) ? \
+	(WSAEMFILE == (errno = WSAGetLastError()) ? errno = EMFILE : -1, -1) : 0)
+#define __listen(s,b) \
+	(SOCKET_ERROR == listen(_get_osfhandle(s),b) ? \
+	(WSAEMFILE == (errno = WSAGetLastError()) ? errno = EMFILE : -1, -1) : 0)
+#define __shutdown(s,h) \
+	(SOCKET_ERROR == shutdown(_get_osfhandle(s),h) ? \
+	(errno = WSAGetLastError()), -1 : 0)
+#define __select(n,r,w,e,t) \
+	(SOCKET_ERROR == (ws32_result = select(n,r,w,e,t)) ? \
+	(errno = WSAGetLastError()), -1 : ws32_result)
+#define __recv(s,b,l,f) \
+	(SOCKET_ERROR == (ws32_result = recv(_get_osfhandle(s),b,l,f)) ? \
+  (errno = WSAGetLastError()), -1 : ws32_result)
+#define __recvfrom(s,b,l,f,fr,frl) \
+	(SOCKET_ERROR == (ws32_result = recvfrom(_get_osfhandle(s),b,l,f,fr,frl)) ? \
+	(errno = WSAGetLastError()), -1 : ws32_result)
+#define __send(s,b,l,f) \
+	(SOCKET_ERROR == (ws32_result = send(_get_osfhandle(s),b,l,f)) ? \
+	(errno = WSAGetLastError()), -1 : ws32_result)
+#define __sendto(s,b,l,f,t,tl) \
+	(SOCKET_ERROR == (ws32_result = sendto(_get_osfhandle(s),b,l,f,t,tl)) ? \
+	(errno = WSAGetLastError()), -1 : ws32_result)
+#define __getsockname(s,n,l) \
+	(SOCKET_ERROR == getsockname(_get_osfhandle(s),n,l) ? \
+	(errno = WSAGetLastError()), -1 : 0)
+#define __getpeername(s,n,l) \
+	(SOCKET_ERROR == getpeername(_get_osfhandle(s),n,l) ? \
+	(errno = WSAGetLastError()), -1 : 0)
+#define __getsockopt(s,l,o,v,n) \
+	(Sleep(1), SOCKET_ERROR == getsockopt(_get_osfhandle(s),l,o,(char*)v,n) ? \
+	(errno = WSAGetLastError()), -1 : 0)
+#define __setsockopt(s,l,o,v,n) \
+	(SOCKET_ERROR == setsockopt(_get_osfhandle(s),l,o,v,n) ? \
+	(errno = WSAGetLastError()), -1 : 0)
+#define __ioctlsocket(s,c,a) \
+	(SOCKET_ERROR == ioctlsocket(_get_osfhandle(s),c,a) ? \
+	(errno = WSAGetLastError()), -1 : 0)
+#define __gethostname(n,l) \
+	(SOCKET_ERROR == gethostname(n,l) ? \
+	(errno = WSAGetLastError()), -1 : 0)
+#define __gethostbyname(n) \
+	(NULL == ((HOSTENT FAR*)(ws32_result = (int)gethostbyname(n))) ? \
+	(errno = WSAGetLastError()), NULL : (HOSTENT FAR*)ws32_result)
+#define __getservbyname(n,p) \
+	(NULL == ((SERVENT FAR*)(ws32_result = (int)getservbyname(n,p))) ? \
+	(errno = WSAGetLastError()), NULL : (SERVENT FAR*)ws32_result)
+#define __gethostbyaddr(a,l,t) \
+	(NULL == ((HOSTENT FAR*)(ws32_result = (int)gethostbyaddr(a,l,t))) ? \
+	(errno = WSAGetLastError()), NULL : (HOSTENT FAR*)ws32_result)
+extern THREADLOCAL int _so_err;
+extern THREADLOCAL int _so_err_siz;
+#define __read(fd,buf,siz) \
+	(_so_err_siz = sizeof(_so_err), \
+	__getsockopt((fd),SOL_SOCKET,SO_ERROR,&_so_err,&_so_err_siz) \
+	== 0 ? __recv((fd),(char *)(buf),(siz),0) : _read((fd),(char *)(buf),(siz)))
+#define __write(fd,buf,siz) \
+	(_so_err_siz = sizeof(_so_err), \
+	__getsockopt((fd),SOL_SOCKET,SO_ERROR,&_so_err,&_so_err_siz) \
+	== 0 ? __send((fd),(const char *)(buf),(siz),0) : _write((fd),(const char *)(buf),(siz)))
 
-static inline int pthread_create(pthread_t *tid, void *attr, LPTHREAD_START_ROUTINE start, void *arg)
-{
-	*tid = CreateThread(NULL, 0, start, arg, 0, NULL);
-	if (!*tid) {
-		return (int)GetLastError();
-	}
-	return 0;
-}
-
-static inline int pthread_join(pthread_t tid, void **value_ptr)
-{
-	while (1) {
-		DWORD ExitCode = 0;
-		if (!GetExitCodeThread(tid, &ExitCode)) {
-			return (int)GetLastError();
-		}
-		if (ExitCode != STILL_ACTIVE) {
-			return 0;
-		}
-	}
-}
-
-static inline void pthread_mutex_init(pthread_mutex_t *mutex, void *attr)
-{
-	*mutex = CreateMutex(NULL, FALSE, NULL);
-}
-
-static inline void pthread_mutex_lock(pthread_mutex_t *mutex)
-{
-	WaitForSingleObject(*mutex, INFINITE);
-}
-
-static inline void pthread_mutex_unlock(pthread_mutex_t *mutex)
-{
-	ReleaseMutex(*mutex);
-}
-
-/*
- * The console output format should be set to UTF-8, however in XP and Vista this breaks batch file processing.
- * Attempting to restore on exit fails to restore if the program is terminated by the user.
- * Solution - set the output format each printf.
- */
-static inline void console_vprintf(const char *fmt, va_list ap)
-{
-	UINT cp = GetConsoleOutputCP();
-	SetConsoleOutputCP(CP_UTF8);
-	vprintf(fmt, ap);
-	SetConsoleOutputCP(cp);
-}
-
-static inline void console_printf(const char *fmt, ...)
-{
-	va_list ap;
-	va_start(ap, fmt);
-	console_vprintf(fmt, ap);
-	va_end(ap);
-}
 
 #if !defined(__MINGW32__)
 #define strtok_r( _s, _sep, _lasts ) \

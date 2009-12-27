@@ -29,7 +29,7 @@ endif
 
 -include Make.config
 
-OBJS = client.o pvrclient-vdr.o vtptransceiver.o timers.o channels.o recordings.o epg.o tools.o
+OBJS = client.o vtptransceiver.o timers.o channels.o recordings.o epg.o tools.o thread.o ringbuffer.o select.o
 
 all: pvrVDR
 

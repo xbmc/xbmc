@@ -24,13 +24,9 @@
  */
 
 #include "timers.h"
-#include "../../addons/include/xbmc_addon_lib++.h"
+#include "tools.h"
 
 #define SECSINDAY  86400
-
-#if !defined(__WINDOWS__)
-template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
-#endif
 
 cTimer::cTimer()
 {
@@ -115,7 +111,7 @@ bool cTimer::Parse(const char *s)
     strn0cpy(file, filebuffer, 256);
     strreplace(file, '|', ':');
 
-    if (xbmc_isnumber(channelbuffer))
+    if (IsNumber(channelbuffer))
       channel = atoi(channelbuffer);
     else
     {
