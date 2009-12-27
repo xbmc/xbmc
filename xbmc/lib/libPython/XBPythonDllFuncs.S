@@ -53,8 +53,14 @@
   FUNCTION(PyThreadState_New)
   FUNCTION(PyErr_Print)
   FUNCTION(PyErr_Occurred)
+  FUNCTION(PyRun_String)
+  FUNCTION(PyRun_File)
+  FUNCTION(PyImport_AddModule)
+  FUNCTION(PyObject_Str)
   FUNCTION(PyRun_SimpleFile)
   FUNCTION(PySys_SetPath)
+  FUNCTION(PyErr_Fetch)
+  FUNCTION(PyImport_ImportModule)
 #ifdef _LINUX
   FUNCTION(Py_GetPath)
 #endif
