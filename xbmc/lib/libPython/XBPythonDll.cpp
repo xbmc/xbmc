@@ -51,11 +51,17 @@ extern "C"
   FUNCTION(Py_EndInterpreter)
   FUNCTION(PyThreadState_Swap)
   FUNCTION(PyErr_SetString)
+  FUNCTION(PyRun_File)
   FUNCTION(PyThreadState_New)
   FUNCTION(PyErr_Print)
   FUNCTION(PyErr_Occurred)
   FUNCTION(PyRun_SimpleFile)
   FUNCTION(PySys_SetPath)
+  FUNCTION(PyRun_String)
+  FUNCTION(PyImport_AddModule)
+  FUNCTION(PyObject_Str)
+  FUNCTION(PyErr_Fetch)
+  FUNCTION(PyImport_ImportModule)
 #ifdef _LINUX
   FUNCTION(Py_GetPath)
 #endif
@@ -160,6 +166,12 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyErr_Occurred)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleFile)) &&
       dll.ResolveExport(DLL_FUNCTION(PySys_SetPath)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyRun_String)) && 
+      dll.ResolveExport(DLL_FUNCTION(PyImport_AddModule)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyRun_File)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyObject_Str)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyErr_Fetch)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyImport_ImportModule)) &&
 #ifdef _LINUX
       dll.ResolveExport(DLL_FUNCTION(Py_GetPath)) &&
 #endif
