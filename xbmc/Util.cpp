@@ -378,9 +378,8 @@ void CUtil::RemoveExtension(CStdString& strFileName)
   }
 }
 
-void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bIsFolder /* = false */)
+void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension /* = false */)
 {
-
   strTitleAndYear = strFileName;
 
   if (strFileName.Equals(".."))
@@ -449,9 +448,8 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     strTitleAndYear = strTitle + " (" + strYear + ")";
 
   // restore extension if needed
-  if (g_guiSettings.GetBool("filelists.showextensions") && !bIsFolder)
+  if (!bRemoveExtension)
     strTitleAndYear += strExtension;
-
 }
 
 void CUtil::GetCommonPath(CStdString& strParent, const CStdString& strPath)

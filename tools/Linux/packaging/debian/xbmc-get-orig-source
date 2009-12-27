@@ -6,8 +6,9 @@
 # Common variables used to ease maintenance of this script
 XBMC_TARBALL=""
 XBMC_TARBALL_CHECKSUM=""
-SVN_REVISION="24886"
-XBMC_VERSION="9.11~svn$SVN_REVISION.beta1~deb1"
+SVN_REVISION="25484"
+XBMC_VERSION="9.11~svn$SVN_REVISION.beta2~deb1"
+XBMC_URL="http://xbmc.svn.sourceforge.net/svnroot/xbmc/tags/Camelot_beta2"
 
 USAGE="\n\
 This script is used to generate the orig tarball used in building\n\
@@ -34,7 +35,7 @@ done
 # This will generate the orig.tar.gz
 make_current_tarball() {
     # We do an export from svn trunk
-    svn export -r$SVN_REVISION https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk xbmc-$XBMC_VERSION
+    svn export -r$SVN_REVISION $XBMC_URL xbmc-$XBMC_VERSION
 
     # Remove libdvdcss
     echo "Remove libdvdcss"

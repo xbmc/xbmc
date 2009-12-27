@@ -1,4 +1,4 @@
-xbmc (1:9.11~svn24886.beta1~deb1-1) experimental; urgency=low
+xbmc (1:9.11~svn25484.beta2~deb1-1) experimental; urgency=low
 
   * Package XBMC for Debian. (Closes: #469397)
     (LP: #307162)
@@ -58,7 +58,7 @@ xbmc (1:9.11~svn24886.beta1~deb1-1) experimental; urgency=low
   * Add Suggests of mesa-utils and x11-utils for use of glxinfo and xdpyinfo.
   * Convert to source format 3.0 (quilt).
 
- -- Andres Mejia <mcitadel@gmail.com>  Sun, 22 Nov 2009 17:42:11 -0500
+ -- Andres Mejia <mcitadel@gmail.com>  Wed, 09 Dec 2009 14:48:19 -0500
 
 xbmc (9.04.1.0.20670-jaunty1) jaunty; urgency=low
 

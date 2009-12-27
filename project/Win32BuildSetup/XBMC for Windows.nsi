@@ -207,7 +207,6 @@ Section "Confluence" SecSkinConfluence
 SectionEnd
 Section "PM3.HD" SecSkinPM3.HD
   SectionIn 1 2 #section is in installtype Full and Minimal
-  SectionIn RO
   SetOutPath "$INSTDIR\skin\PM3.HD"
   File /r "${xbmc_root}\Xbmc\skin\PM3.HD\*.*"
 SectionEnd

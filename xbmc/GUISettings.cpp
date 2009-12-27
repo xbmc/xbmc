@@ -353,7 +353,10 @@ void CGUISettings::Initialize()
   AddInt(5, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
 #endif
   AddString(6, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
+#ifndef HAS_DX
+  // Todo: Implement test pattern for DX
   AddString(7, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
+#endif
 #if defined(_LINUX) && !defined(__APPLE__)
   AddSeparator(8, "videoscreen.sep2");
   AddBool(9, "videoscreen.haslcd", 4501, false);
@@ -481,7 +484,7 @@ void CGUISettings::Initialize()
   AddInt(0, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.vdpauUpscalingLevel", 13121, false);
-  AddBool(10, "videoplayer.vdpaustudiolevel", 13122, true);
+  AddBool(10, "videoplayer.vdpaustudiolevel", 13122, false);
 #endif
 #endif
   AddSeparator(11, "videoplayer.sep5");

@@ -69,14 +69,43 @@ ENDOFBLOCK
 
 	SUDOERS_TEMPFILE=$(mktemp -q)
 
+	# Simply create a sudoers file if none exists
+	if [ ! -e /etc/sudoers ]; then
+	    cat > /etc/sudoers <<ENDOFBLOCK
+# /etc/sudoers
+#
+# This file MUST be edited with the 'visudo' command as root.
+#
+# See the man page for details on how to write a sudoers file.
+#
+
+Defaults        env_reset
+
+# Host alias specification
+
+# User alias specification
+
+# Cmnd alias specification
+
+# User privilege specification
+root    ALL=(ALL) ALL
+
+# Uncomment to allow members of group sudo to not need a password
+# (Note that later entries override this, so you might need to move
+# it further down)
+%sudo ALL=NOPASSWD: ALL
+ENDOFBLOCK
+	    # chmod 0440 /etc/sudoers
+	fi
+
 	# Add xbmc to the sudoers file (if not already done)
-	if ! grep -i -q XBMC-specific /etc/sudoers ; then 
+	if ! grep -i -q XBMC-specific /etc/sudoers ; then
 		cat /etc/sudoers $SUDOERSBLOCK_TEMPFILE > $SUDOERS_TEMPFILE
 
 		# Check if sudoers file is ok with visudo and write to /etc/sudoers if
 		# it is ok, else display a message to the user.
 		if visudo -c -f $SUDOERS_TEMPFILE >/dev/null 2>&1; then
-			cp $SUDOERS_TEMPFILE /etc/sudoers
+			cp -f $SUDOERS_TEMPFILE /etc/sudoers
 		else
 			# TODO: Use debconf for this message.
 			echo "Couldn't edit /etc/sudoers, must be manually edited."
@@ -88,7 +117,6 @@ ENDOFBLOCK
 
 	rm $SUDOERS_TEMPFILE
 	rm $SUDOERSBLOCK_TEMPFILE
-
 
 	# Our set of PolicyKit actions
 

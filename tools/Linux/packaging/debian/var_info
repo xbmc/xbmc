@@ -28,6 +28,11 @@ case "$1" in
     BUILD_DEPENDS)
         printf "$BUILD_DEPENDS"
         ;;
+    LIBCURL_DEPENDS)
+	LIBCURL_DEPENDS=$(cat /var/lib/dpkg/info/libcurl3.shlibs | \
+	    sed 's/^[^[:space:]]\+\?[[:space:]]\+\?[^[:space:]]\+\?[[:space:]]\+\?\(.*\)$/\1/')
+	printf "$LIBCURL_DEPENDS"
+	;;
 esac
 
 exit 0
