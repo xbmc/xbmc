@@ -49,7 +49,8 @@ std::vector<DSFilterInfo> CDirectShowEnumerator::GetAudioRenderers()
     hr = CoCreateInstance(CLSID_SystemDeviceEnum, NULL, CLSCTX_INPROC_SERVER, IID_ICreateDevEnum, (void**)&sys_dev_enum);
     if (FAILED(hr)) 
       break;
-
+    //would it be better to enum with this flag CDEF_DEVMON_FILTER
+    //this is enumerating only the native DirectShow filters.
     hr = sys_dev_enum->CreateClassEnumerator(CLSID_AudioRendererCategory, &enum_moniker, 0);
     if (hr != NOERROR) 
       break;

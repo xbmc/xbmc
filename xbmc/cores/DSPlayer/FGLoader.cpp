@@ -214,16 +214,21 @@ HRESULT CFGLoader::InsertAudioRenderer()
   CDirectShowEnumerator p_dsound;
   std::vector<DSFilterInfo> deviceList = p_dsound.GetAudioRenderers();
   std::vector<DSFilterInfo>::const_iterator iter = deviceList.begin();
+  //see if there a config first 
   for (int i=0; iter != deviceList.end(); i++)
   {
     DSFilterInfo dev = *iter;
     if (g_guiSettings.GetString("dsplayer.audiorenderer").Equals(dev.lpstrName))
     {
       currentGuid = dev.lpstrGuid;
-      currentName=dev.lpstrName;
+      currentName = dev.lpstrName;
     }
-
     ++iter;
+  }
+  if (currentName.IsEmpty())
+  {
+    currentGuid = DShowUtil::CStringFromGUID(CLSID_DSoundRender);
+    currentName.Format("Default DirectSound Device");
   }
   pFGF = new CFGFilterRegistry(DShowUtil::GUIDFromCString(currentGuid));
   hr = pFGF->Create(&ppBF, pUnk);

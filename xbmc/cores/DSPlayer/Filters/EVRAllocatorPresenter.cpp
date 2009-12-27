@@ -358,14 +358,14 @@ STDMETHODIMP CEVRAllocatorPresenter::OnClockStart(MFTIME hnsSystemTime,  LONGLON
         CHECK_HR(hr = StartFrameStep());
     }
   ProcessOutputLoop();
-  CLog::Log(LOGDEBUG,"%s hnsSystemTime = %I64d,   llClockStartOffset = %I64d\n", __FUNCTION__,hnsSystemTime, llClockStartOffset);
+  CLog::Log(LOGDEBUG,"%s hnsSystemTime = %I64d,   llClockStartOffset = %I64d", __FUNCTION__,hnsSystemTime, llClockStartOffset);
 done:
   return hr;
 }
 
 STDMETHODIMP CEVRAllocatorPresenter::OnClockStop(MFTIME hnsSystemTime)
 {
-  CLog::Log(LOGDEBUG,"%s OnClockStop  hnsSystemTime = %I64d\n", __FUNCTION__, hnsSystemTime);
+  CLog::Log(LOGDEBUG,"%s OnClockStop  hnsSystemTime = %I64d", __FUNCTION__, hnsSystemTime);
 
   CAutoLock lock(&m_ObjectLock);
 
@@ -1752,27 +1752,21 @@ HRESULT CEVRAllocatorPresenter::DeliverSample(IMFSample *pSample, BOOL bRepaint)
   BOOL bPresentNow = ((m_RenderState != RENDER_STATE_STARTED) ||  IsScrubbing() || bRepaint);
 
   // If we need new device dont deliver the sample
-  hr = g_Windowing.GetDeviceStatus();
   if (m_bNeedNewDevice)
   {
     CLog::Log(LOGDEBUG,"%s Device Need reset to develiver sample",__FUNCTION__);
-    m_pD3DPresentEngine->ResetD3dDevice();
-    state = D3DPresentEngine::DeviceReset;
+    if (SUCCEEDED(m_pD3DPresentEngine->ResetD3dDevice()))
+    {
+      //We got the device back so we can restart schedule sample now
+      state = D3DPresentEngine::DeviceReset;
+    }
   }
-  if (SUCCEEDED(hr) || !m_bNeedNewDevice)
-    hr = m_scheduler.ScheduleSample(pSample, bPresentNow);
-
-  if (hr == D3DERR_DEVICELOST)
-    state = D3DPresentEngine::DeviceReset;
-  if (hr == D3DERR_DEVICENOTRESET)
+  else
   {
-    // Notify the EVR that we have failed during streaming. The EVR will notify the 
-    // pipeline (ie, it will notify the Filter Graph Manager in DirectShow or the 
-    // Media Session in Media Foundation).
-    CLog::Log(LOGERROR,"%s D3d device error dsplayer aborting",__FUNCTION__);
-    NotifyEvent(EC_ERRORABORT, hr, 0);
+    hr = m_scheduler.ScheduleSample(pSample, bPresentNow);
   }
-  else if (state == D3DPresentEngine::DeviceReset)
+
+  if (state == D3DPresentEngine::DeviceReset)
   {
     // The Direct3D device was re-set. Notify the EVR.
     NotifyEvent(EC_DISPLAY_CHANGED, S_OK, 0);

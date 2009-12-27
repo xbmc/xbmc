@@ -21,6 +21,7 @@ D3DPresentEngine::D3DPresentEngine(HRESULT& hr) :
   m_pCallback(NULL),
 	m_bufferCount(4)
 {
+  m_bNeedNewDevice = false;
 	SetRectEmpty(&m_rcDestRect);
   HMODULE    hLib;
   hLib = LoadLibrary ("dxva2.dll");
@@ -270,8 +271,9 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
     
   if (!g_renderManager.IsConfigured())
     return S_OK;
-  hr = g_Windowing.GetDeviceStatus();
-  CHECK_HR(hr);
+  if (m_bNeedNewDevice)
+    return S_OK;
+  
   if (pSample)
   {
     CHECK_HR(hr = pSample->GetBufferByIndex(0, &pBuffer));
@@ -280,7 +282,8 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
     CHECK_HR(hr = pServ->GetService(MR_BUFFER_SERVICE, __uuidof(IDirect3DSurface9), (void**)&pSurface))
     SAFE_RELEASE(pServ);
   }
-
+  if (m_bNeedNewDevice || !m_pDevice)
+    return S_OK;
   if (pSurface)
   {
     hr = m_pDevice->StretchRect(pSurface,NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);    
@@ -349,9 +352,17 @@ HRESULT D3DPresentEngine::InitializeD3D()
 
 HRESULT D3DPresentEngine::ResetD3dDevice()
 {
-  HRESULT hr;
+  HRESULT hr = E_FAIL;
   m_pDevice = g_Windowing.Get3DDevice();
-  hr = m_pDeviceManager->ResetDevice(m_pDevice ,m_DeviceResetToken);
+  if (m_pDevice)
+  {
+    hr = m_pDeviceManager->ResetDevice(m_pDevice ,m_DeviceResetToken);
+    if (SUCCEEDED(hr))
+      m_bNeedNewDevice = false;
+  }
+
+  if (FAILED(hr))
+    m_bNeedNewDevice = true;
   return hr;
 }
 

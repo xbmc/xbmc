@@ -38,6 +38,7 @@
 
 #include "DshowUtil/MediaTypeEx.h"
 #include "MediaInfoDll/MediaInfoDLL.h"
+#include "timeutils.h"
 enum 
 {
 	WM_GRAPHNOTIFY = WM_APP+1,
@@ -93,9 +94,12 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   m_pDsConfig = new CDSConfig();
   //Get all custom interface
   m_pDsConfig->LoadGraph(m_pGraphBuilder);
-
+  LONGLONG tmestamp;
+  tmestamp = CTimeUtils::GetTimeMS();
+  CLog::Log(LOGDEBUG,"%s Timestamp before loading video info with mediainfo.dll %I64d",__FUNCTION__,tmestamp);
   UpdateCurrentVideoInfo(file.GetAsUrl().GetFileName());
-  
+  tmestamp = CTimeUtils::GetTimeMS();
+  CLog::Log(LOGDEBUG,"%s Timestamp after loading video info with mediainfo.dll  %I64d",__FUNCTION__,tmestamp);
   
 
   SetVolume(g_stSettings.m_nVolumeLevel);
