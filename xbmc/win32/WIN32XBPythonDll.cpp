@@ -255,7 +255,7 @@ extern "C"
   FUNCTION4(PyImport_AddModule)
   FUNCTION4(PyImport_ImportModule)
   FUNCTION4(PyObject_Str)
-  FUNCTION16(PyRun_File)
+  FUNCTION20(PyRun_File)
   FUNCTION16(PyRun_String)
 
   // PyFloat_FromDouble(double)
