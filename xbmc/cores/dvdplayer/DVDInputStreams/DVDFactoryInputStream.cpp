@@ -30,6 +30,7 @@
 #include "DVDInputStreamPVRManager.h"
 #include "DVDInputStreamTV.h"
 #include "DVDInputStreamRTMP.h"
+#include "DVDInputStreamMPLS.h"
 #ifdef HAS_FILESYSTEM_HTSP
 #include "DVDInputStreamHTSP.h"
 #endif
@@ -59,6 +60,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   }
   else if(file.substr(0, 6) == "pvr://")
     return new CDVDInputStreamPVRManager(pPlayer);
+#ifdef HAS_LIBBDNAV
+  else if (item.IsType(".mpls"))
+    return new CDVDInputStreamMPLS;
+#endif
   else if(file.substr(0, 6) == "rtp://"
        || file.substr(0, 7) == "rtsp://"
        || file.substr(0, 6) == "sdp://"

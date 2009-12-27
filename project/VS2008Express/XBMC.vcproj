@@ -1378,14 +1378,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\AdplugCodec.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\AdplugCodec.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\paplayer\AIFFcodec.cpp"
 					>
 				</File>
@@ -2531,14 +2523,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\MusicInfoTagLoaderAAC.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\MusicInfoTagLoaderAdplug.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\MusicInfoTagLoaderAdplug.h"
 					>
 				</File>
 				<File

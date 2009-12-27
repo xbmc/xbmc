@@ -906,6 +906,9 @@ compute_cbuf2_size (SPLITPOINT_OPTIONS *sp_opt, int bitrate,
     long mic_to_rw_start, mic_to_rw_end;
     long mic_to_cb_start, mic_to_cb_end;
 
+    if(meta_interval == 0)
+      return;
+
     debug_printf ("---------------------------------------------------\n");
     debug_printf ("xs_search_window: %d,%d\n",
 		  sp_opt->xs_search_window_1,sp_opt->xs_search_window_2);

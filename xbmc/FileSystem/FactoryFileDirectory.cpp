@@ -95,6 +95,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     delete pDir;
     return NULL;
   }
+#ifdef HAS_ASAP_CODEC
   if (ASAPCodec::IsSupportedFormat(strExtension) && CFile::Exists(strPath))
   {
     IFileDirectory* pDir=new CASAPFileDirectory;
@@ -105,6 +106,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     delete pDir;
     return NULL;
   }
+#endif
 
   if (pItem->IsRSS())
     return new CRSSDirectory();

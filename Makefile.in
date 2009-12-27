@@ -82,6 +82,11 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/vgmstream \
 	xbmc/cores/paplayer/MACDll
 
+ifeq (@USE_ASAP_CODEC@,1)
+PAPCODEC_DIRS+= \
+	xbmc/cores/paplayer/asap
+endif
+
 ifeq ($(findstring osx,$(ARCH)),osx)
 PAPCODEC_DIRS+= \
 	xbmc/cores/paplayer/vorbisfile \
@@ -259,6 +264,8 @@ xbmc/pvrclients/pvrclient.a: force
 	$(MAKE) -C xbmc/pvrclients
 xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
+xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a: force
+	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libbdnav
 
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
@@ -318,6 +325,11 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/NSFCodec
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
 	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
+ifeq (@USE_ASAP_CODEC@,1)
+  ifneq ($(findstring osx,$(ARCH)), osx)
+	  $(MAKE) -C xbmc/cores/paplayer/asap asap-xbmc
+  endif
+endif
 ifneq (@USE_EXTERNAL_LIBWAVPACK@,1)
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
 endif
@@ -339,6 +351,7 @@ xcode_depends: \
 	codecs libs python pvrclients visualizations screensavers eventclients \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	skins \
+	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
 	xbmc/lib/cmyth/libcmyth/libcmyth.a \
 	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/lib/libRTMP/librtmp.a \
@@ -370,6 +383,7 @@ OBJSXBMC=	\
 	xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a \
 	xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a \
 	xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a \
+	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
 	xbmc/cores/AudioRenderers/audiorenderers.a \
 	xbmc/cores/ExternalPlayer/ExternalPlayer.a \
 	xbmc/FileSystem/filesystem.a \

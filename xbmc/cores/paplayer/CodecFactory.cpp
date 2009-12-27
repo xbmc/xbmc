@@ -39,13 +39,14 @@
 #endif
 #include "GYMCodec.h"
 #include "SIDCodec.h"
-#include "AdplugCodec.h"
 #include "VGMCodec.h"
 #include "YMCodec.h"
 #include "AIFFcodec.h"
 #include "ADPCMCodec.h"
 #include "TimidityCodec.h"
+#ifdef HAS_ASAP_CODEC
 #include "ASAPCodec.h"
+#endif
 #include "URL.h"
 #include "DVDPlayerCodec.h"
 #ifdef HAS_DTS_CODEC
@@ -97,8 +98,6 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new GYMCodec();
   else if (strFileType.Equals("sid") || strFileType.Equals("sidstream"))
     return new SIDCodec();
-  else if (AdplugCodec::IsSupportedFormat(strFileType))
-    return new AdplugCodec();
   else if (VGMCodec::IsSupportedFormat(strFileType))
     return new VGMCodec();
   else if (strFileType.Equals("ym"))
@@ -111,8 +110,10 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new ADPCMCodec();
   else if (TimidityCodec::IsSupportedFormat(strFileType))
     return new TimidityCodec();
+#ifdef HAS_ASAP_CODEC
   else if (ASAPCodec::IsSupportedFormat(strFileType) || strFileType.Equals("asapstream"))
     return new ASAPCodec();
+#endif
   else if (strFileType.Equals("tta"))
     return new DVDPlayerCodec();
 

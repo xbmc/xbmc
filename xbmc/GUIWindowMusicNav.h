@@ -57,7 +57,7 @@ protected:
   virtual bool OnClick(int iItem);
   void FilterItems(CFileItemList &items);
 
-  void SetThumb(int iItem, CONTEXT_BUTTON button);
+  void SetPluginThumb(int iItem, const VECSOURCES &sources);
   bool GetSongsFromPlayList(const CStdString& strPlayList, CFileItemList &items);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
   CStdString GetQuickpathName(const CStdString& strPath) const;

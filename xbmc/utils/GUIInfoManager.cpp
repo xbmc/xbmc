@@ -480,6 +480,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     int pos = strTest.Find(",");
     int info = TranslateString(strTest.Mid(14, pos-14));
+    int info2 = TranslateString(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    if (info2 > 0)
+      return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, -info2));
     int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, compareString));
   }
@@ -2175,10 +2178,25 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           bReturn = GetImage(info.GetData1(), contextWindow).IsEmpty();
         break;
       case STRING_COMPARE:
-        if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-          bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
-        else
-          bReturn = GetImage(info.GetData1(), contextWindow).Equals(m_stringParameters[info.GetData2()]);
+        {
+          CStdString compare;
+          if (info.GetData2() < 0) // info labels are stored with negative numbers
+          {
+            int info2 = -info.GetData2();
+            if (item && item->IsFileItem() && info2 >= LISTITEM_START && info2 < LISTITEM_END)
+              compare = GetItemImage((const CFileItem *)item, info2);
+            else
+              compare = GetImage(info2, contextWindow);
+          }
+          else if (info.GetData2() < (int)m_stringParameters.size())
+          { // conditional string
+            compare = m_stringParameters[info.GetData2()];
+          }
+          if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+            bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).Equals(compare);
+          else
+            bReturn = GetImage(info.GetData1(), contextWindow).Equals(compare);
+        }
         break;
       case INTEGER_GREATER_THAN:
         if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
@@ -3767,17 +3785,6 @@ int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
   return (int)m_stringParameters.size() - 1;
 }
 
-// This is required as in order for the "* All Albums" etc. items to sort
-// correctly, they must have fake artist/album etc. information generated.
-// This looks nasty if we attempt to render it to the GUI, thus this (further)
-// workaround
-const CStdString &CorrectAllItemsSortHack(const CStdString &item)
-{
-  if ((item.size() == 1 && item[0] == 0x01) || (item.size() > 1 && ((unsigned char) item[1]) == 0xff))
-    return StringUtils::EmptyString;
-  return item;
-}
-
 CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
 {
   if (!item) return "";
@@ -3796,7 +3803,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     return item->GetLabel2();
   case LISTITEM_TITLE:
     if (item->HasMusicInfoTag())
-      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetTitle());
+      return item->GetMusicInfoTag()->GetTitle();
     if (item->HasPVRChannelInfoTag())
       return CorrectAllItemsSortHack(item->GetPVRChannelInfoTag()->NowTitle());
     if (item->HasPVRRecordingInfoTag())
@@ -3806,7 +3813,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasPVRTimerInfoTag())
       return CorrectAllItemsSortHack(item->GetPVRTimerInfoTag()->Title());
     if (item->HasVideoInfoTag())
-      return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strTitle);
+      return item->GetVideoInfoTag()->m_strTitle;
     break;
   case LISTITEM_TRACKNUMBER:
     {
@@ -3818,20 +3825,20 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     }
   case LISTITEM_ARTIST:
     if (item->HasMusicInfoTag())
-      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetArtist());
+      return item->GetMusicInfoTag()->GetArtist();
     if (item->HasVideoInfoTag())
-      return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strArtist);
+      return item->GetVideoInfoTag()->m_strArtist;
     break;
   case LISTITEM_ALBUM_ARTIST:
     if (item->HasMusicInfoTag())
-      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetAlbumArtist());
+      return item->GetMusicInfoTag()->GetAlbumArtist();
     break;
   case LISTITEM_DIRECTOR:
     if (item->HasVideoInfoTag())
-      return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strDirector);
+      return item->GetVideoInfoTag()->m_strDirector;
   case LISTITEM_ALBUM:
     if (item->HasMusicInfoTag())
-      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetAlbum());
+      return item->GetMusicInfoTag()->GetAlbum();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strAlbum;
     break;
@@ -3859,7 +3866,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_GENRE:
     if (item->HasMusicInfoTag())
-      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetGenre());
+      return item->GetMusicInfoTag()->GetGenre();
     if (item->HasPVRChannelInfoTag())
       return CorrectAllItemsSortHack(item->GetPVRChannelInfoTag()->NowGenre());
     if (item->HasPVRRecordingInfoTag())
@@ -3867,13 +3874,13 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasEPGInfoTag())
       return CorrectAllItemsSortHack(item->GetEPGInfoTag()->Genre());
     if (item->HasVideoInfoTag())
-      return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strGenre);
+      return item->GetVideoInfoTag()->m_strGenre;
     break;
   case LISTITEM_FILENAME:
     if (item->IsMusicDb() && item->HasMusicInfoTag())
-      return CUtil::GetFileName(CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL()));
+      return CUtil::GetFileName(item->GetMusicInfoTag()->GetURL());
     if (item->IsVideoDb() && item->HasVideoInfoTag())
-      return CUtil::GetFileName(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath));
+      return CUtil::GetFileName(item->GetVideoInfoTag()->m_strFileNameAndPath);
     return CUtil::GetFileName(item->m_strPath);
   case LISTITEM_DATE:
     if (item->HasEPGInfoTag())
@@ -4034,13 +4041,13 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     {
       CStdString path;
       if (item->IsMusicDb() && item->HasMusicInfoTag())
-        CUtil::GetDirectory(CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL()), path);
+        CUtil::GetDirectory(item->GetMusicInfoTag()->GetURL(), path);
       else if (item->IsVideoDb() && item->HasVideoInfoTag())
       {
         if( item->m_bIsFolder )
 	  path = item->GetVideoInfoTag()->m_strPath;
         else
-          CUtil::GetParentPath(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath), path);
+          CUtil::GetParentPath(item->GetVideoInfoTag()->m_strFileNameAndPath, path);
       }
       else
         CUtil::GetParentPath(item->m_strPath, path);
@@ -4057,9 +4064,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     {
       CStdString path;
     if (item->IsMusicDb() && item->HasMusicInfoTag())
-        path = CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL());
+        path = item->GetMusicInfoTag()->GetURL();
       else if (item->IsVideoDb() && item->HasVideoInfoTag())
-        path = CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath);
+        path = item->GetVideoInfoTag()->m_strFileNameAndPath;
       else
         path = item->m_strPath;
       path = CURL(path).GetWithoutUserDetails();

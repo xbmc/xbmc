@@ -105,12 +105,13 @@ Architecture: all
 Depends: xbmc-bin (>= ${source:Version}),
          xbmc-bin (<< ${source:Version}.1~),
          mesa-utils,
+         x11-utils,
          ${python:Depends},
          ${misc:Depends}
 Provides: xbmc-common
 Replaces: xbmc-common
 Conflicts: xbmc-common
-Suggests: mesa-utils, x11-utils, xbmc-test-helper
+Suggests: xbmc-test-helper
 Recommends: python-qt3
 Description: XBMC Media Center (arch-independent data package)
  XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
