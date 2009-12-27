@@ -113,6 +113,7 @@ void CLog::Log(int loglevel, const char *format, ... )
 
     fwrite(strPrefix.c_str(),strPrefix.size(),1,m_file);
     fwrite(strData.c_str(),strData.size(),1,m_file);
+    fflush(m_file);
   }
 #ifndef _LINUX
 #if defined(_DEBUG) || defined(PROFILE)
@@ -160,7 +161,7 @@ bool CLog::Init(const char* path)
         !::MoveFileW(strLogFile.c_str(),strLogFileOld.c_str()))
       return false;
 
-    m_file = _wfopen(strLogFile.c_str(),L"wb");
+    m_file = _wfsopen(strLogFile.c_str(),L"wb", _SH_DENYWR);
 #else
     CStdString strLogFile, strLogFileOld;
 

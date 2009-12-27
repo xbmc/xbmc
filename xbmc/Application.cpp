@@ -253,7 +253,7 @@
 #endif
 
 #ifdef HAS_DVD_DRIVE
-#include "lib/libcdio/logging.h"
+#include <cdio/logging.h>
 #endif
 
 #ifdef HAS_HAL
@@ -300,13 +300,11 @@ using namespace DBUSSERVER;
     #pragma comment (lib,"../../xbmc/lib/libRTV/libRTVd_win32.lib")
   #endif
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32d.lib") // SECTIONNAME=LIBHTTP
-  #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32d.lib" )
  #else
   #ifdef HAS_FILESYSTEM
     #pragma comment (lib,"../../xbmc/lib/libRTV/libRTV_win32.lib")
   #endif
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
-  #pragma comment (lib,"../../xbmc/lib/libcdio/libcdio_win32.lib" )
  #endif
 #endif
 
@@ -4198,7 +4196,7 @@ void CApplication::SaveFileState()
       if (videodatabase.Open())
       {
         // No resume & watched status for livetv
-        if (m_progressTrackingItem->IsLiveTV())
+        if (!m_progressTrackingItem->IsLiveTV())
         {
           if (m_progressTrackingPlayCountUpdate)
           {

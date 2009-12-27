@@ -45,7 +45,6 @@
 #include "GUIDialogFullScreenInfo.h"
 #include "Application.h"
 #include "DVDPerformanceCounter.h"
-#include "FileSystem/cdioSupport.h"
 #include "FileSystem/File.h"
 #include "Picture.h"
 #include "Codecs/DllSwScale.h"
@@ -67,6 +66,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "utils/StreamDetails.h"
+#include "MediaManager.h"
 
 using namespace std;
 
@@ -424,13 +424,7 @@ bool CDVDPlayer::OpenInputStream()
   ||  filename.CompareNoCase("d:\\video_ts\\video_ts.ifo") == 0
   ||  filename.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
   {
-#ifdef HAS_DVD_DRIVE
-#ifdef _WIN32
-    m_filename = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()+4;
-#else
-    m_filename = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
-#endif
-#endif
+    m_filename = g_mediaManager.TranslateDevicePath("");
   }
 
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_content);

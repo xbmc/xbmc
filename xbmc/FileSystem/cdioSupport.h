@@ -37,13 +37,7 @@
 
 #include "../utils/IoSupport.h"
 
-#ifndef _LINUX
-#include "lib/libcdio/cdio.h"
-#include "lib/libcdio/cd_Types.h"
-#include "lib/libcdio/cdtext.h"
-#else
 #include <cdio/cdio.h>
-#endif
 #include "../utils/CriticalSection.h"
 #include "../guilib/StdString.h"
 
