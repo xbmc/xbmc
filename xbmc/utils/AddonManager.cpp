@@ -143,7 +143,10 @@ void CAddonStatusHandler::Process()
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
-    CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
+    //restart is performed by addontype's manager
+    IAddonCallback* cb = NULL;
+    cb = CAddonMgr::Get()->GetCallbackForType(m_addon->Type());
+    if (cb) cb->RequestRestart(m_addon, true);
   }
   /* Request to restart XBMC (hope no AddOn need or do this) */
   else if (m_status == STATUS_NEED_EMER_RESTART)
