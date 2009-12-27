@@ -49,6 +49,7 @@ INPUT_FILES = debian/control.in \
 	perl -p \
 	-e 's{#BUILD_DEPENDS#}{qx(sh debian/var_info BUILD_DEPENDS)}ge;' \
 	-e 's{#LIBCURL_DEPENDS#}{qx(sh debian/var_info LIBCURL_DEPENDS)}ge;' \
+	-e 's{#XBMC_LIVE_DEPENDS#}{qx(sh debian/var_info XBMC_LIVE_DEPENDS)}ge;' \
 	< $@ > $$(echo $@ | sed 's/\.in$$//')
 
 override_dh_clean:

@@ -5,8 +5,8 @@
 
 #include "../../../guilib/FrameBufferObject.h"
 #include "../../../guilib/Shader.h"
-#include "../ffmpeg/DllSwScale.h"
-#include "../ffmpeg/DllAvCodec.h"
+#include "../dvdplayer/Codecs/DllSwScale.h"
+#include "../dvdplayer/Codecs/DllAvCodec.h"
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
 #include "GraphicContext.h"

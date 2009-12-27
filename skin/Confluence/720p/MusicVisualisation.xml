@@ -37,7 +37,7 @@
 						<height>25</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 						<label>31043</label>
 						<visible>[Player.Paused + !Player.Caching] + !Player.Seeking</visible>
@@ -50,7 +50,7 @@
 						<height>25</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[15107] $INFO[Player.CacheLevel]%</label>
 						<visible>[Player.Paused + Player.Caching] + !Player.Seeking</visible>
@@ -63,7 +63,7 @@
 						<height>25</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 						<label>[UPPERCASE]$LOCALIZE[773][/UPPERCASE]</label>
 						<visible>Player.Seeking</visible>
@@ -76,7 +76,7 @@
 						<height>25</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[31044] x2</label>
 						<visible>Player.Forwarding2x</visible>
@@ -89,7 +89,7 @@
 						<height>25</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[31044] x4</label>
 						<visible>Player.Forwarding4x</visible>
@@ -102,7 +102,7 @@
 						<height>25</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[31044] x8</label>
 						<visible>Player.Forwarding8x</visible>
@@ -115,7 +115,7 @@
 						<height>25</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[31044] x16</label>
 						<visible>Player.Forwarding16x</visible>
@@ -128,7 +128,7 @@
 						<height>25</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[31044] x32</label>
 						<visible>Player.Forwarding32x</visible>
@@ -141,7 +141,7 @@
 						<height>25</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[31045] x2</label>
 						<visible>Player.Rewinding2x</visible>
@@ -154,7 +154,7 @@
 						<height>25</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[31045] x4</label>
 						<visible>Player.Rewinding4x</visible>
@@ -167,7 +167,7 @@
 						<height>25</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[31045] x8</label>
 						<visible>Player.Rewinding8x</visible>
@@ -180,7 +180,7 @@
 						<height>25</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[31045] x16</label>
 						<visible>Player.Rewinding16x</visible>
@@ -193,7 +193,7 @@
 						<height>25</height>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[31045] x32</label>
 						<visible>Player.Rewinding32x</visible>
@@ -230,7 +230,7 @@
 						<scroll>true</scroll>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>font24caps_title</font>
+						<font>font24_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 					</control>
@@ -242,7 +242,7 @@
 						<label>$INFO[musicplayer.Playlistposition,$LOCALIZE[554]: ]$INFO[musicplayer.Playlistlength, / ]</label>
 						<align>left</align>
 						<aligny>center</aligny>
-						<font>font12caps_title</font>
+						<font>font12_title</font>
 						<textcolor>grey2</textcolor>
 						<shadowcolor>black</shadowcolor>
 					</control>
@@ -254,7 +254,7 @@
 						<label>[COLOR=blue]$LOCALIZE[209] :[/COLOR] $INFO[MusicPlayer.offset(1).Artist,, - ]$INFO[MusicPlayer.offset(1).Title]</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font12caps_title</font>
+						<font>font12_title</font>
 						<textcolor>grey2</textcolor>
 						<shadowcolor>black</shadowcolor>
 					</control>
@@ -272,7 +272,7 @@
 						<posy>100</posy>
 						<width>375</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<align>left</align>
 						<aligny>center</aligny>
@@ -285,7 +285,7 @@
 						<posy>100</posy>
 						<width>375</width>
 						<height>20</height>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<align>left</align>
 						<aligny>center</aligny>
@@ -300,7 +300,7 @@
 						<label>$INFO[Player.Duration]</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<shadowcolor>black</shadowcolor>
 					</control>
@@ -363,7 +363,7 @@
 				<label>$LOCALIZE[31046]</label>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
@@ -387,7 +387,7 @@
 				<label>$LOCALIZE[250]</label>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
@@ -425,7 +425,7 @@
 				<label>$LOCALIZE[31047]</label>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>

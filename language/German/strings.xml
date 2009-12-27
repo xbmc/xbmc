@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Zippolighter-->
 <!--Email: hardrock_zippolighter@hotmail.com-->
-<!--Date of translation: 12/14/2009-->
+<!--Date of translation: 12/20/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 25464-->
+<!--Based on english strings version 25744-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -102,7 +102,7 @@
   <string id="154">Laufwerke</string>
   <string id="155">Laufwerk</string>
   <string id="156">Frei</string>
-  <string id="157">Bildschirm</string>
+  <string id="157">Video</string>
   <string id="158">Freier Hauptspeicher</string>
   <string id="159">Keine Verbindung</string>
   <string id="160">Frei</string>
@@ -155,7 +155,7 @@
   </string>
   <string id="201">
   </string>
-  <string id="202">Beschreibung</string>
+  <string id="202">Kurz Info</string>
   <string id="203">Handlung</string>
   <string id="204">
   </string>
@@ -496,7 +496,7 @@
   <string id="560">ID</string>
   <string id="561">Datei</string>
   <string id="562">Jahr</string>
-  <string id="563">Bewertung</string>
+  <string id="563">Prädikat</string>
   <string id="564">Typ</string>
   <string id="565">Gebrauch</string>
   <string id="566">Album-Interpret</string>
@@ -626,7 +626,7 @@
   <string id="746">Bitte wieder zur Datei-Ansicht wechseln.</string>
   <string id="747">Fehler beim Laden des Bildes!</string>
   <string id="748">Pfad bearbeiten</string>
-  <string id="749">Quelle hinzufügen</string>
+  <string id="749">Spiegelbild</string>
   <string id="750">Sicher?</string>
   <string id="751">Quelle entfernen</string>
   <string id="752">
@@ -1662,7 +1662,7 @@
   <string id="20071">Mit neuen Medien-Quellen beginnen</string>
   <string id="20072">Bitte sicherstellen, dass der gewählte Ordner beschreibbar ist</string>
   <string id="20073">und dass der neue Ordnername gültig ist.</string>
-  <string id="20074">Altersfreigabe</string>
+  <string id="20074">FSK</string>
   <string id="20075">Bitte das Master-Passwort eingeben</string>
   <string id="20076">Master-Passwort beim Start abfragen</string>
   <string id="20077">Skin-Optionen</string>
@@ -2130,8 +2130,8 @@
   <string id="22020">Handbuch</string>
   <string id="22021">Erlaube Fehler im Seitenverhältnis (%)</string>
   <string id="22022">Video Dateien in Listen aufnehmen</string>
-  <string id="22023">DirectX Anbieter:</string>
-  <string id="22024">Direct3D Version:</string>
+  <string id="22023">DirectX Anbieter</string>
+  <string id="22024">Direct3D Version</string>
   <string id="22030">Schriftart</string>
   <string id="22031">- Größe</string>
   <string id="22032">- Farben</string>

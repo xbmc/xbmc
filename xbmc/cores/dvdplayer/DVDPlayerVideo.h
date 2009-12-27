@@ -127,7 +127,9 @@ protected:
   double m_iSubtitleDelay;
   double m_FlipTimeStamp; // time stamp of last flippage. used to play at a forced framerate
 
+  int m_iLateFrames;
   int m_iDroppedFrames;
+  int m_iDroppedRequest;
 
   void   CalcFrameRate();
   

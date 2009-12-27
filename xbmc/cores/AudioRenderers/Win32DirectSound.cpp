@@ -79,7 +79,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   m_uiBitsPerSample = uiBitsPerSample;
   m_Passthrough = bAudioPassthrough;
 
-  m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
+  m_nCurrentVolume = g_settings.m_nVolumeLevel;
   
   WAVEFORMATEXTENSIBLE wfxex = {0};
 
@@ -166,7 +166,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
 
   m_pBuffer->Stop();
   
-  if (DSERR_CONTROLUNAVAIL == m_pBuffer->SetVolume(g_stSettings.m_nVolumeLevel))
+  if (DSERR_CONTROLUNAVAIL == m_pBuffer->SetVolume(g_settings.m_nVolumeLevel))
     CLog::Log(LOGINFO, __FUNCTION__": Volume control is unavailable in the current configuration");
 
   m_bIsAllocated = true;

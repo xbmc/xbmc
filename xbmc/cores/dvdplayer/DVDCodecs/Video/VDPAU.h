@@ -22,10 +22,10 @@
  */
 
 #include "DVDVideoCodec.h"
-#include "cores/ffmpeg/DllAvCodec.h"
-#include "cores/ffmpeg/DllAvFormat.h"
-#include "cores/ffmpeg/DllSwScale.h"
-#include "cores/ffmpeg/vdpau.h"
+#include "Codecs/DllAvCodec.h"
+#include "Codecs/DllAvFormat.h"
+#include "Codecs/DllSwScale.h"
+#include "libavcodec/vdpau.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #define GL_GLEXT_PROTOTYPES

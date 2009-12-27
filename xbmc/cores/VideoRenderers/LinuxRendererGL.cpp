@@ -198,7 +198,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
-  SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+  SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
   ManageDisplay();
 
   ChooseUpscalingMethod();
@@ -245,7 +245,7 @@ void CLinuxRendererGL::ChooseUpscalingMethod()
     ESCALINGMETHOD ret = (ESCALINGMETHOD)g_advancedSettings.m_videoHighQualityScalingMethod;
 
     // Make sure to override the default setting for the video
-    g_stSettings.m_currentVideoSettings.m_ScalingMethod = ret;
+    g_settings.m_currentVideoSettings.m_ScalingMethod = ret;
 
     // Initialize software upscaling.
     if (g_advancedSettings.m_videoHighQualityScalingMethod < 10) //non-hardware
@@ -287,8 +287,8 @@ bool CLinuxRendererGL::IsSoftwareUpscaling()
   // See if we should be performing software upscaling on this frame.
   if (m_scalingMethod < VS_SCALINGMETHOD_BICUBIC_SOFTWARE ||
        (m_currentField != FIELD_FULL && 
-        g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE && 
-        g_stSettings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_DEINTERLACE))
+        g_settings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_NONE && 
+        g_settings.m_currentVideoSettings.m_InterlaceMethod!=VS_INTERLACEMETHOD_DEINTERLACE))
   {
     return false;
   }
@@ -517,11 +517,11 @@ void CLinuxRendererGL::LoadYV12Textures(int source)
   if (m_renderMethod & RENDER_SW)
   {
     if (imaging==1 &&
-        ((g_stSettings.m_currentVideoSettings.m_Brightness!=50) ||
-         (g_stSettings.m_currentVideoSettings.m_Contrast!=50)))
+        ((g_settings.m_currentVideoSettings.m_Brightness!=50) ||
+         (g_settings.m_currentVideoSettings.m_Contrast!=50)))
     {
-      GLfloat brightness = ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;;
-      GLfloat contrast   = ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0f;
+      GLfloat brightness = ((GLfloat)g_settings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;;
+      GLfloat contrast   = ((GLfloat)g_settings.m_currentVideoSettings.m_Contrast)/50.0f;
 
       glPixelTransferf(GL_RED_SCALE  , contrast);
       glPixelTransferf(GL_GREEN_SCALE, contrast);
@@ -890,9 +890,9 @@ unsigned int CLinuxRendererGL::PreInit()
 
 void CLinuxRendererGL::UpdateVideoFilter()
 {
-  if (m_scalingMethodGui == g_stSettings.m_currentVideoSettings.m_ScalingMethod)
+  if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod)
     return;
-  m_scalingMethodGui = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
+  m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
 
   if(!Supports(m_scalingMethod))
@@ -1290,8 +1290,8 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
-  m_pYUVShader->SetBlack(g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetBlack(g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(im.width);
   m_pYUVShader->SetHeight(im.height);
   if     (field == FIELD_ODD)
@@ -1391,8 +1391,8 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
   m_fbo.BeginRender();
   VerifyGLState();
 
-  m_pYUVShader->SetBlack(g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetBlack(g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(im.width);
   m_pYUVShader->SetHeight(im.height);
   if     (field == FIELD_ODD)
@@ -1630,8 +1630,8 @@ void CLinuxRendererGL::RenderCrystalHD(int index, int field)
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
-  m_pYUVShader->SetBlack(g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetBlack(g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(im.width);
   m_pYUVShader->SetHeight(im.height);
   if     (field == FIELD_ODD)

@@ -362,16 +362,17 @@ static int rv20_decode_picture_header(MpegEncContext *s)
             new_w= 4*((uint8_t*)s->avctx->extradata)[6+2*f];
             new_h= 4*((uint8_t*)s->avctx->extradata)[7+2*f];
         }else{
-            new_w= s->width; //FIXME wrong we of course must save the original in the context
-            new_h= s->height;
+            new_w= s->orig_width ;
+            new_h= s->orig_height;
         }
         if(new_w != s->width || new_h != s->height){
             av_log(s->avctx, AV_LOG_DEBUG, "attempting to change resolution to %dx%d\n", new_w, new_h);
-            if (avcodec_check_dimensions(s->avctx, new_h, new_w) < 0)
+            if (avcodec_check_dimensions(s->avctx, new_w, new_h) < 0)
                 return -1;
             MPV_common_end(s);
-            s->width  = s->avctx->width = new_w;
-            s->height = s->avctx->height= new_h;
+            avcodec_set_dimensions(s->avctx, new_w, new_h);
+            s->width  = new_w;
+            s->height = new_h;
             if (MPV_common_init(s) < 0)
                 return -1;
         }
@@ -452,8 +453,8 @@ static av_cold int rv10_decode_init(AVCodecContext *avctx)
     s->out_format = FMT_H263;
     s->codec_id= avctx->codec_id;
 
-    s->width = avctx->coded_width;
-    s->height = avctx->coded_height;
+    s->orig_width = s->width  = avctx->coded_width;
+    s->orig_height= s->height = avctx->coded_height;
 
     s->h263_long_vectors= ((uint8_t*)avctx->extradata)[3] & 1;
     avctx->sub_id= AV_RB32((uint8_t*)avctx->extradata + 4);
@@ -519,7 +520,7 @@ static av_cold int rv10_decode_end(AVCodecContext *avctx)
 }
 
 static int rv10_decode_packet(AVCodecContext *avctx,
-                             const uint8_t *buf, int buf_size)
+                             const uint8_t *buf, int buf_size, int buf_size2)
 {
     MpegEncContext *s = avctx->priv_data;
     int mb_count, mb_pos, left, start_mb_x;
@@ -602,6 +603,12 @@ static int rv10_decode_packet(AVCodecContext *avctx,
         s->mv_type = MV_TYPE_16X16;
         ret=ff_h263_decode_mb(s, s->block);
 
+        if (ret != SLICE_ERROR && s->gb.size_in_bits < get_bits_count(&s->gb) && 8*buf_size2 >= get_bits_count(&s->gb)){
+            av_log(avctx, AV_LOG_DEBUG, "update size from %d to %d\n", s->gb.size_in_bits, 8*buf_size2);
+            s->gb.size_in_bits= 8*buf_size2;
+            ret= SLICE_OK;
+        }
+
         if (ret == SLICE_ERROR || s->gb.size_in_bits < get_bits_count(&s->gb)) {
             av_log(s->avctx, AV_LOG_ERROR, "ERROR at MB %d %d\n", s->mb_x, s->mb_y);
             return -1;
@@ -624,7 +631,7 @@ static int rv10_decode_packet(AVCodecContext *avctx,
 
     ff_er_add_slice(s, start_mb_x, s->resync_mb_y, s->mb_x-1, s->mb_y, AC_END|DC_END|MV_END);
 
-    return buf_size;
+    return s->gb.size_in_bits;
 }
 
 static int get_slice_offset(AVCodecContext *avctx, const uint8_t *buf, int n)
@@ -661,14 +668,20 @@ static int rv10_decode_frame(AVCodecContext *avctx,
 
     for(i=0; i<slice_count; i++){
         int offset= get_slice_offset(avctx, slices_hdr, i);
-        int size;
+        int size, size2;
 
         if(i+1 == slice_count)
             size= buf_size - offset;
         else
             size= get_slice_offset(avctx, slices_hdr, i+1) - offset;
 
-        rv10_decode_packet(avctx, buf+offset, size);
+        if(i+2 >= slice_count)
+            size2= buf_size - offset;
+        else
+            size2= get_slice_offset(avctx, slices_hdr, i+2) - offset;
+
+        if(rv10_decode_packet(avctx, buf+offset, size, size2) > 8*size)
+            i++;
     }
 
     if(s->current_picture_ptr != NULL && s->mb_y>=s->mb_height){

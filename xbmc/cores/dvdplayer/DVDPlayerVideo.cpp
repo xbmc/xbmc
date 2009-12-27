@@ -182,6 +182,9 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   m_iFrameRateLength = 1;
   m_iFrameRateErr = 0;
 
+  m_iDroppedRequest = 0;
+  m_iLateFrames = 0;
+
   if (hint.vfr)
     m_autosync = 1;
 
@@ -559,7 +562,7 @@ void CDVDPlayerVideo::Process()
 
             //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
             //this video
-            EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
+            EINTERLACEMETHOD mInt = g_settings.m_currentVideoSettings.m_InterlaceMethod;
             if((mInt == VS_INTERLACEMETHOD_DEINTERLACE)
             || (mInt == VS_INTERLACEMETHOD_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)
                                                 && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)))
@@ -1002,9 +1005,13 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   m_FlipTimeStamp += max(0.0, iSleepTime);
   m_FlipTimeStamp += iFrameDuration;
 
+  if (iClockSleep <= 0)
+    m_iLateFrames++;
+  else
+    m_iLateFrames = 0;
+
   // ask decoder to drop frames next round, as we are very late
-  if( (limited == false  && iClockSleep < -DVD_MSEC_TO_TIME(100))
-  ||  (limited == true   && iClockSleep < -iFrameDuration*0.5) )
+  if(m_iLateFrames > 10)
   {
     //if we're calculating the framerate,
     //don't drop frames until we've calculated a stable framerate
@@ -1014,6 +1021,19 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       if (m_bCalcFrameRate)
         m_pullupCorrection.Flush(); //dropped frames mess up the pattern, so just flush it
     }
+
+    //if we requested 5 drops in a row and we're still late, drop on output
+    //this keeps a/v sync if the decoder can't drop, or we're still calculating the framerate
+    if (m_iDroppedRequest > 5)
+    {
+      m_iDroppedRequest--; //decrease so we only drop half the frames
+      return result | EOS_DROPPED;
+    }
+    m_iDroppedRequest++;
+  }
+  else
+  {
+    m_iDroppedRequest = 0;
   }
 
   if( m_speed < 0 )
@@ -1100,7 +1120,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
   {
     RECT crop;
 
-    if (g_stSettings.m_currentVideoSettings.m_Crop)
+    if (g_settings.m_currentVideoSettings.m_Crop)
       AutoCrop(pPicture, crop);
     else
     { // reset to defaults
@@ -1122,16 +1142,16 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
 
     //compare with hysteresis
 # define HYST(n, o) ((n) > (o) || (n) + 1 < (o))
-    if(HYST(g_stSettings.m_currentVideoSettings.m_CropLeft  , crop.left)
-    || HYST(g_stSettings.m_currentVideoSettings.m_CropRight , crop.right)
-    || HYST(g_stSettings.m_currentVideoSettings.m_CropTop   , crop.top)
-    || HYST(g_stSettings.m_currentVideoSettings.m_CropBottom, crop.bottom))
+    if(HYST(g_settings.m_currentVideoSettings.m_CropLeft  , crop.left)
+    || HYST(g_settings.m_currentVideoSettings.m_CropRight , crop.right)
+    || HYST(g_settings.m_currentVideoSettings.m_CropTop   , crop.top)
+    || HYST(g_settings.m_currentVideoSettings.m_CropBottom, crop.bottom))
     {
-      g_stSettings.m_currentVideoSettings.m_CropLeft   = crop.left;
-      g_stSettings.m_currentVideoSettings.m_CropRight  = crop.right;
-      g_stSettings.m_currentVideoSettings.m_CropTop    = crop.top;
-      g_stSettings.m_currentVideoSettings.m_CropBottom = crop.bottom;
-      g_renderManager.SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+      g_settings.m_currentVideoSettings.m_CropLeft   = crop.left;
+      g_settings.m_currentVideoSettings.m_CropRight  = crop.right;
+      g_settings.m_currentVideoSettings.m_CropTop    = crop.top;
+      g_settings.m_currentVideoSettings.m_CropBottom = crop.bottom;
+      g_renderManager.SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
     }
 # undef HYST
   }
@@ -1139,10 +1159,10 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
 
 void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
 {
-  crop.left   = g_stSettings.m_currentVideoSettings.m_CropLeft;
-  crop.right  = g_stSettings.m_currentVideoSettings.m_CropRight;
-  crop.top    = g_stSettings.m_currentVideoSettings.m_CropTop;
-  crop.bottom = g_stSettings.m_currentVideoSettings.m_CropBottom;
+  crop.left   = g_settings.m_currentVideoSettings.m_CropLeft;
+  crop.right  = g_settings.m_currentVideoSettings.m_CropRight;
+  crop.top    = g_settings.m_currentVideoSettings.m_CropTop;
+  crop.bottom = g_settings.m_currentVideoSettings.m_CropBottom;
 
   int black  = 16; // what is black in the image
   int level  = 8;  // how high above this should we detect

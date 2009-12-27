@@ -220,7 +220,7 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
   case NODE_TYPE_TITLE_MOVIES:
     if (strDirectory.Equals("videodb://1/2/"))
     {
-      if (g_stSettings.m_bMyVideoNavFlatten)
+      if (g_settings.m_bMyVideoNavFlatten)
         return "DefaultMovies.png";
       return "DefaultMovieTitle.png";
     }
@@ -228,7 +228,7 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
   case NODE_TYPE_TITLE_TVSHOWS:
     if (strDirectory.Equals("videodb://2/2/"))
     {
-      if (g_stSettings.m_bMyVideoNavFlatten)
+      if (g_settings.m_bMyVideoNavFlatten)
         return "DefaultTVShows.png";
       return "DefaultTVShowTitle.png";
     }
@@ -236,7 +236,7 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
   case NODE_TYPE_TITLE_MUSICVIDEOS:
     if (strDirectory.Equals("videodb://3/2/"))
     {
-      if (g_stSettings.m_bMyVideoNavFlatten)
+      if (g_settings.m_bMyVideoNavFlatten)
         return "DefaultMusicVideos.png";
       return "DefaultMusicVideoTitle.png";
     }

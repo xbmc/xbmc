@@ -1007,13 +1007,13 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     strLabel.Format("%02.2f", m_fps);
     break;
   case PLAYER_VOLUME:
-    strLabel.Format("%2.1f dB", (float)(g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel) * 0.01f);
+    strLabel.Format("%2.1f dB", (float)(g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel) * 0.01f);
     break;
   case PLAYER_SUBTITLE_DELAY:
-    strLabel.Format("%2.3f s", g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
+    strLabel.Format("%2.3f s", g_settings.m_currentVideoSettings.m_SubtitleDelay);
     break;
   case PLAYER_AUDIO_DELAY:
-    strLabel.Format("%2.3f s", g_stSettings.m_currentVideoSettings.m_AudioDelay);
+    strLabel.Format("%2.3f s", g_settings.m_currentVideoSettings.m_AudioDelay);
     break;
   case PLAYER_CHAPTER:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
@@ -1656,7 +1656,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = (pWindow && pWindow->IsMediaWindow());
   }
   else if (condition == PLAYER_MUTED)
-    bReturn = g_stSettings.m_bMute;
+    bReturn = g_settings.m_bMute;
   else if (condition >= LIBRARY_HAS_MUSIC && condition <= LIBRARY_HAS_MUSICVIDEOS)
     bReturn = GetLibraryBool(condition);
   else if (condition == LIBRARY_IS_SCANNING)
@@ -1747,13 +1747,11 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   }
   else if (condition == SKIN_HAS_VIDEO_OVERLAY)
   {
-    bReturn = !g_application.IsInScreenSaver() && g_windowManager.IsOverlayAllowed() &&
-              g_application.IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO;
+    bReturn = g_windowManager.IsOverlayAllowed() && g_application.IsPlayingVideo();
   }
   else if (condition == SKIN_HAS_MUSIC_OVERLAY)
   {
-    bReturn = !g_application.IsInScreenSaver() && g_windowManager.IsOverlayAllowed() &&
-              g_application.IsPlayingAudio();
+    bReturn = g_windowManager.IsOverlayAllowed() && g_application.IsPlayingAudio();
   }
   else if (condition == CONTAINER_HASFILES || condition == CONTAINER_HASFOLDERS)
   {
@@ -2188,7 +2186,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         break;
       case SYSTEM_SETTING:
         if ( m_stringParameters[info.GetData1()].Equals("hidewatched") )
-          bReturn = g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED;
+          bReturn = g_settings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED;
         break;
       case CONTAINER_ON_NEXT:
       case CONTAINER_ON_PREVIOUS:

@@ -33,9 +33,9 @@
 static int ape_tag_read_field(AVFormatContext *s)
 {
     ByteIOContext *pb = s->pb;
-    uint8_t key[1024], value[1024];
+    uint8_t key[1024], *value;
     uint32_t size, flags;
-    int i, l, c;
+    int i, c;
 
     size = get_le32(pb);  /* field size */
     flags = get_le32(pb); /* field flags */
@@ -51,13 +51,14 @@ static int ape_tag_read_field(AVFormatContext *s)
         av_log(s, AV_LOG_WARNING, "Invalid APE tag key '%s'.\n", key);
         return -1;
     }
-    l = FFMIN(size, sizeof(value)-1);
-    get_buffer(pb, value, l);
-    value[l] = 0;
-    url_fskip(pb, size-l);
-    if (l < size)
-        av_log(s, AV_LOG_WARNING, "Too long '%s' tag was truncated.\n", key);
-    av_metadata_set(&s->metadata, key, value);
+    if (size >= UINT_MAX)
+        return -1;
+    value = av_malloc(size+1);
+    if (!value)
+        return AVERROR_NOMEM;
+    get_buffer(pb, value, size);
+    value[size] = 0;
+    av_metadata_set2(&s->metadata, key, value, AV_METADATA_DONT_STRDUP_VAL);
     return 0;
 }
 
@@ -107,16 +108,4 @@ void ff_ape_parse_tag(AVFormatContext *s)
 
     for (i=0; i<fields; i++)
         if (ape_tag_read_field(s) < 0) break;
-
-#if ENABLE_DEBUG
-    av_log(s, AV_LOG_DEBUG, "\nAPE Tags:\n\n");
-    av_log(s, AV_LOG_DEBUG, "title     = %s\n", s->title);
-    av_log(s, AV_LOG_DEBUG, "author    = %s\n", s->author);
-    av_log(s, AV_LOG_DEBUG, "copyright = %s\n", s->copyright);
-    av_log(s, AV_LOG_DEBUG, "comment   = %s\n", s->comment);
-    av_log(s, AV_LOG_DEBUG, "album     = %s\n", s->album);
-    av_log(s, AV_LOG_DEBUG, "year      = %d\n", s->year);
-    av_log(s, AV_LOG_DEBUG, "track     = %d\n", s->track);
-    av_log(s, AV_LOG_DEBUG, "genre     = %s\n", s->genre);
-#endif
 }

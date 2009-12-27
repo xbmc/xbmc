@@ -206,7 +206,7 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
   DWORD spconfig = DSSPEAKER_USE_DEFAULT;
   if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
   {
-    if (g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers && !bIsMusic)
+    if (g_settings.m_currentVideoSettings.m_OutputToAllSpeakers && !bIsMusic)
     {
       if( g_audioConfig.GetAC3Enabled() )
       {

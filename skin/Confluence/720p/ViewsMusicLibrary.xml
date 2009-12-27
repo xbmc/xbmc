@@ -158,7 +158,7 @@
 					<scroll>true</scroll>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -184,7 +184,7 @@
 					<scroll>true</scroll>
 					<align>center</align>
 					<aligny>top</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<wrapmultiline>true</wrapmultiline>
@@ -199,7 +199,7 @@
 					<scroll>true</scroll>
 					<align>center</align>
 					<aligny>top</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<wrapmultiline>true</wrapmultiline>
@@ -214,7 +214,7 @@
 					<label>$INFO[listitem.TrackNumber,[COLOR=blue]$LOCALIZE[31310]: [/COLOR]]</label>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<visible>!Container.Content(Albums)</visible>
 				</control>
@@ -227,7 +227,7 @@
 					<label>$INFO[listitem.Year,[COLOR=blue]$LOCALIZE[345]: [/COLOR]]</label>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 				</control>
 				<control type="image">
@@ -342,7 +342,7 @@
 				<posy>195</posy>
 				<width>1200</width>
 				<height>30</height>
-				<font>font24caps_title</font>
+				<font>font24_title</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 				<scroll>true</scroll>
@@ -551,7 +551,7 @@
 					<scroll>true</scroll>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -577,7 +577,7 @@
 					<scroll>true</scroll>
 					<align>center</align>
 					<aligny>top</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<wrapmultiline>true</wrapmultiline>
@@ -606,7 +606,7 @@
 					<label>$INFO[listitem.Year,[COLOR=blue]$LOCALIZE[345]: [/COLOR]]</label>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 				</control>
 				<control type="image">
@@ -723,7 +723,7 @@
 					<label>$INFO[ListItem.Label]</label>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<wrapmultiline>true</wrapmultiline>
@@ -780,7 +780,7 @@
 						<label>$LOCALIZE[21893]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 						<visible>!IsEmpty(ListItem.Property(Artist_Born))</visible>
 					</control>
@@ -806,7 +806,7 @@
 						<label>$LOCALIZE[21894]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 						<visible>!IsEmpty(ListItem.Property(Artist_Formed))</visible>
 					</control>
@@ -832,7 +832,7 @@
 						<label>$LOCALIZE[515]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
@@ -1044,7 +1044,7 @@
 					<scroll>true</scroll>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -1070,7 +1070,7 @@
 					<scroll>true</scroll>
 					<align>center</align>
 					<aligny>top</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<wrapmultiline>true</wrapmultiline>
@@ -1084,7 +1084,7 @@
 					<label>$INFO[listitem.Year,[COLOR=blue]$LOCALIZE[345]: [/COLOR]]</label>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 				</control>
 				<control type="image">
@@ -1112,7 +1112,7 @@
 					<label>21821</label>
 					<align>left</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>

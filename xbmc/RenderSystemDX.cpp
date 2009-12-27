@@ -387,6 +387,7 @@ bool CRenderSystemDX::BeginRender()
   if (!m_bRenderCreated)
     return false;
 
+  DWORD oldStatus = m_nDeviceStatus;
   if( FAILED( m_nDeviceStatus = m_pD3DDevice->TestCooperativeLevel() ) )
   {
     // The device has been lost but cannot be reset at this time. 
@@ -394,7 +395,8 @@ bool CRenderSystemDX::BeginRender()
     // and try again at a later time.
     if( m_nDeviceStatus == D3DERR_DEVICELOST )
     {
-      CLog::Log(LOGDEBUG, "D3DERR_DEVICELOST");
+      if (m_nDeviceStatus != oldStatus)
+        CLog::Log(LOGDEBUG, "D3DERR_DEVICELOST");
       OnDeviceLost();
       return false;
     }
@@ -414,6 +416,10 @@ bool CRenderSystemDX::BeginRender()
   if(FAILED (m_pD3DDevice->BeginScene()))
   {
     CLog::Log(LOGERROR, "m_pD3DDevice->BeginScene() failed");
+    // When XBMC caught an exception after BeginScene(), EndScene() may never been called
+    // and thus all following BeginScene() will fail too.
+    if(FAILED (m_pD3DDevice->EndScene()))
+      CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed");
     return false;
   }
   m_inScene = true;

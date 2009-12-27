@@ -3,7 +3,7 @@ the last major version increase.
 The last version increases were:
 libavcodec:  ?
 libavdevice: ?
-libavfilter: ?
+libavfilter: 2009-10-18
 libavformat: ?
 libpostproc: ?
 libswscale:  ?
@@ -11,6 +11,53 @@ libavutil:   2009-03-08
 
 
 API changes, most recent first:
+
+2009-12-13 - r20834 - lavf 52.43.0 - metadata API
+  add av_metadata_set2(), AV_METADATA_DONT_STRDUP_KEY and AV_METADATA_DONT_STRDUP_VAL
+
+2009-12-13 - r20829 - lavu 50.7.0 - avstring.h API
+  add av_d2str()
+
+2009-12-13 - r20826 - lavc 52.42.0 - AVStream
+  add avg_frame_rate
+
+2009-12-12 - r20808 - lavu 50.6.0 - av_bmg_next()
+  Introduce the av_bmg_next() function.
+
+2009-12-05 - r20734 - lavfi 1.12.0 - avfilter_draw_slice()
+  Add a slice_dir parameter to avfilter_draw_slice().
+
+2009-11-26 - r20611 - lavfi 1.11.0 - AVFilter
+  Remove the next field from AVFilter, this is not anymore required.
+
+2009-11-25 - r20607 - lavfi 1.10.0 - avfilter_next()
+  Introduce the avfilter_next() function.
+
+2009-11-25 - r20605 - lavfi 1.9.0 - avfilter_register()
+  Change the signature of avfilter_register() to make it return an
+  int. This is required since now the registration operation may fail.
+
+2009-11-25 - r20603 - lavu 50.5.0 - pixdesc.h API
+  Make the pixdesc.h API public.
+
+2009-10-27 - r20385 - lavfi 1.5.0 - AVFilter.next
+  Add a next field to AVFilter, this is used for simplifying the
+  registration and management of the registered filters.
+
+2009-10-23 - r20356 - lavfi 1.4.1 - AVFilter.description
+  Add a description field to AVFilter.
+
+2009-10-19 - r20302 - lavfi 1.3.0 - avfilter_make_format_list()
+  Change the interface of avfilter_make_format_list() from
+  avfilter_make_format_list(int n, ...) to
+  avfilter_make_format_list(enum PixelFormat *pix_fmts).
+
+2009-10-18 - r20272 - lavfi 1.0.0 - avfilter_get_video_buffer()
+  Make avfilter_get_video_buffer() recursive and add the w and h
+  parameters to it.
+
+2009-10-07 - r20189 - lavfi 0.5.1 - AVFilterPic
+  Added w and h fields to AVFilterPic.
 
 2009-06-22 - r19250 - lavf 52.34.1 - AVFormatContext.packet_size
   This is now an unsigned int instead of a signed int.

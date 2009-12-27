@@ -113,7 +113,7 @@ protected:
                           NPT_Int32                index, 
                           NPT_Int32                count,
                           bool                     browse_metadata = false,
-                          const char*              filter = "dc:date,upnp:genre,res@duration,res@size,upnp:albumArtURI,upnp:album,upnp:artist,upnp:author", 
+                          const char*              filter = "", 
                           const char*              sort = "");
 private:
     NPT_Result Find(const char* ip, PLT_DeviceDataReference& device);

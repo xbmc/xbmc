@@ -25,7 +25,7 @@
  */
 
 #include "avcodec.h"
-#include "get_bits.h"
+#include "libavutil/common.h"
 #include "put_bits.h"
 #include "dsputil.h"
 #include "mpeg12data.h"
@@ -140,11 +140,11 @@ static av_cold void init_vlcs(ASV1Context *a){
 
 //FIXME write a reversed bitstream reader to avoid the double reverse
 static inline int asv2_get_bits(GetBitContext *gb, int n){
-    return ff_reverse[ get_bits(gb, n) << (8-n) ];
+    return av_reverse[ get_bits(gb, n) << (8-n) ];
 }
 
 static inline void asv2_put_bits(PutBitContext *pb, int n, int v){
-    put_bits(pb, n, ff_reverse[ v << (8-n) ]);
+    put_bits(pb, n, av_reverse[ v << (8-n) ]);
 }
 
 static inline int asv1_get_level(GetBitContext *gb){
@@ -394,7 +394,7 @@ static int decode_frame(AVCodecContext *avctx,
     int buf_size = avpkt->size;
     ASV1Context * const a = avctx->priv_data;
     AVFrame *picture = data;
-    AVFrame * const p= (AVFrame*)&a->picture;
+    AVFrame * const p= &a->picture;
     int mb_x, mb_y;
 
     if(p->data[0])
@@ -417,7 +417,7 @@ static int decode_frame(AVCodecContext *avctx,
     else{
         int i;
         for(i=0; i<buf_size; i++)
-            a->bitstream_buffer[i]= ff_reverse[ buf[i] ];
+            a->bitstream_buffer[i]= av_reverse[ buf[i] ];
     }
 
     init_get_bits(&a->gb, a->bitstream_buffer, buf_size*8);
@@ -474,7 +474,7 @@ for(i=0; i<s->avctx->extradata_size; i++){
 static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size, void *data){
     ASV1Context * const a = avctx->priv_data;
     AVFrame *pict = data;
-    AVFrame * const p= (AVFrame*)&a->picture;
+    AVFrame * const p= &a->picture;
     int size;
     int mb_x, mb_y;
 
@@ -519,7 +519,7 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
     else{
         int i;
         for(i=0; i<4*size; i++)
-            buf[i]= ff_reverse[ buf[i] ];
+            buf[i]= av_reverse[ buf[i] ];
     }
 
     return size*4;
@@ -536,13 +536,13 @@ static av_cold void common_init(AVCodecContext *avctx){
     a->mb_width2  = (avctx->width  + 0) / 16;
     a->mb_height2 = (avctx->height + 0) / 16;
 
-    avctx->coded_frame= (AVFrame*)&a->picture;
+    avctx->coded_frame= &a->picture;
     a->avctx= avctx;
 }
 
 static av_cold int decode_init(AVCodecContext *avctx){
     ASV1Context * const a = avctx->priv_data;
-    AVFrame *p= (AVFrame*)&a->picture;
+    AVFrame *p= &a->picture;
     int i;
     const int scale= avctx->codec_id == CODEC_ID_ASV1 ? 1 : 2;
 
@@ -551,7 +551,7 @@ static av_cold int decode_init(AVCodecContext *avctx){
     ff_init_scantable(a->dsp.idct_permutation, &a->scantable, scantab);
     avctx->pix_fmt= PIX_FMT_YUV420P;
 
-    a->inv_qscale= ((uint8_t*)avctx->extradata)[0];
+    a->inv_qscale= avctx->extradata[0];
     if(a->inv_qscale == 0){
         av_log(avctx, AV_LOG_ERROR, "illegal qscale 0\n");
         if(avctx->codec_id == CODEC_ID_ASV1)
@@ -606,6 +606,9 @@ static av_cold int decode_end(AVCodecContext *avctx){
     av_freep(&a->bitstream_buffer);
     av_freep(&a->picture.qscale_table);
     a->bitstream_buffer_size=0;
+
+    if(a->picture.data[0])
+        avctx->release_buffer(avctx, &a->picture);
 
     return 0;
 }

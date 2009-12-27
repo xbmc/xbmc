@@ -10,28 +10,15 @@
 		<control type="image" id="997">
 			<description>background top image</description>
 			<posx>0</posx>
-			<posy>-74</posy>
+			<posy>-54</posy>
 			<width>370</width>
-			<height>74</height>
+			<height>54</height>
 			<texture border="45,45,45,0">DialogContextTop.png</texture>
-		</control>
-		<control type="label">
-			<description>header label</description>
-			<posx>34</posx>
-			<posy>-40</posy>
-			<width>297</width>
-			<height>30</height>
-			<font>font28caps_title</font>
-			<label>31302</label>
-			<align>center</align>
-			<aligny>center</aligny>
-			<textcolor>white</textcolor>
-			<shadowcolor>black</shadowcolor>
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
 			<posx>260</posx>
-			<posy>-44</posy>
+			<posy>-24</posy>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>

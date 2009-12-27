@@ -64,13 +64,13 @@ static bool IsPathToMedia(const CStdString& strPath )
 
   extension.ToLower();
 
-  if (g_stSettings.m_videoExtensions.Find(extension) != -1)
+  if (g_settings.m_videoExtensions.Find(extension) != -1)
     return true;
 
-  if (g_stSettings.m_musicExtensions.Find(extension) != -1)
+  if (g_settings.m_musicExtensions.Find(extension) != -1)
     return true;
 
-  if (g_stSettings.m_pictureExtensions.Find(extension) != -1)
+  if (g_settings.m_pictureExtensions.Find(extension) != -1)
     return true;
 
   return false;
@@ -88,7 +88,7 @@ static bool IsPathToThumbnail(const CStdString& strPath )
 
   extension.ToLower();
 
-  if (g_stSettings.m_pictureExtensions.Find(extension) != -1)
+  if (g_settings.m_pictureExtensions.Find(extension) != -1)
     return true;
 
   return false;

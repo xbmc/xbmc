@@ -31,7 +31,7 @@
 			<posy>18</posy>
 			<width>760</width>
 			<height>30</height>
-			<font>font13caps_title</font>
+			<font>font13_title</font>
 			<label>-</label>
 			<align>center</align>
 			<aligny>center</aligny>
@@ -45,7 +45,7 @@
 			<posy>70</posy>
 			<width>760</width>
 			<align>center</align>
-			<font>font12caps_title</font>
+			<font>font12_title</font>
 			<label>-</label>
 			<textcolor>white</textcolor>
 			<shadowcolor>black</shadowcolor>
@@ -55,7 +55,7 @@
 			<posy>95</posy>
 			<width>760</width>
 			<align>center</align>
-			<font>font12caps_title</font>
+			<font>font12_title</font>
 			<label>$INFO[Control.GetLabel(40)]$INFO[Control.GetLabel(50), - ]</label>
 			<textcolor>white</textcolor>
 			<shadowcolor>black</shadowcolor>
@@ -190,7 +190,7 @@
 			<align>center</align>
 			<aligny>center</aligny>
 			<textcolor>blue</textcolor>
-			<font>font12caps</font>
+			<font>font12</font>
 			<label>($INFO[Container(100).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(100).CurrentPage]/$INFO[Container(100).NumPages])</label>
 			<visible>!Control.IsVisible(451)</visible>
 		</control>

@@ -5,12 +5,8 @@ makeConfig()
 
 	configString=""
 	configString="$configString --distribution karmic"
-	configString="$configString --mirror-bootstrap $UBUNTUMIRROR_BASEURL"
-	configString="$configString --mirror-binary $UBUNTUMIRROR_BASEURL"
-	configString="$configString --mirror-chroot $UBUNTUMIRROR_BASEURL"
-	configString="$configString --mirror-chroot-security http://security.ubuntu.com/ubuntu/"
-	configString="$configString --mirror-binary-security http://security.ubuntu.com/ubuntu/"
-	configString="$configString --packages-lists packages.txt"
+	# configString="$configString --mirror-chroot-security http://security.ubuntu.com/ubuntu/"
+	# configString="$configString --mirror-binary-security http://security.ubuntu.com/ubuntu/"
 
 
 	if [ -n "$APT_HTTP_PROXY" ]; then
@@ -18,6 +14,12 @@ makeConfig()
 	fi
 	if [ -n "$APT_FTP_PROXY" ]; then
 		configString="$configString --apt-ftp-proxy $APT_FTP_PROXY"
+	fi
+
+	if [ -n "$UBUNTUMIRROR_BASEURL" ]; then
+		configString="$configString --mirror-bootstrap $UBUNTUMIRROR_BASEURL"
+		configString="$configString --mirror-binary $UBUNTUMIRROR_BASEURL"
+		configString="$configString --mirror-chroot $UBUNTUMIRROR_BASEURL"
 	fi
 
 	lh config --mode ubuntu --archive-areas "$CATEGORIES" $configString

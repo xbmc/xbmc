@@ -364,9 +364,9 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     strExtension += "|";
 
     CStdString strFileMask;
-    strFileMask = g_stSettings.m_pictureExtensions;
-    strFileMask += "|" + g_stSettings.m_musicExtensions;
-    strFileMask += "|" + g_stSettings.m_videoExtensions;
+    strFileMask = g_settings.m_pictureExtensions;
+    strFileMask += "|" + g_settings.m_musicExtensions;
+    strFileMask += "|" + g_settings.m_videoExtensions;
 #if defined(__APPLE__)
     strFileMask += "|.py|.xml|.milk|.xpr|.cdg|.app|.applescript|.workflow";
 #else
@@ -1363,20 +1363,20 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   ReplaceExtension(strFileName, "", strFileNameNoExt);
   strLookInPaths.push_back(strPath);
 
-  if (!g_stSettings.iAdditionalSubtitleDirectoryChecked && !g_guiSettings.GetString("subtitles.custompath").IsEmpty()) // to avoid checking non-existent directories (network) every time..
+  if (!g_settings.iAdditionalSubtitleDirectoryChecked && !g_guiSettings.GetString("subtitles.custompath").IsEmpty()) // to avoid checking non-existent directories (network) every time..
   {
     if (!g_application.getNetwork().IsAvailable() && !IsHD(g_guiSettings.GetString("subtitles.custompath")))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonaccessible");
-      g_stSettings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
+      g_settings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
     }
     else if (!CDirectory::Exists(g_guiSettings.GetString("subtitles.custompath")))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonexistant");
-      g_stSettings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
+      g_settings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
     }
 
-    g_stSettings.iAdditionalSubtitleDirectoryChecked = 1;
+    g_settings.iAdditionalSubtitleDirectoryChecked = 1;
   }
 
   if (strMovie.substr(0,6) == "rar://") // <--- if this is found in main path then ignore it!
@@ -1428,7 +1428,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   // .. done checking for cd-dirs
 
   // this is last because we dont want to check any common subdirs or cd-dirs in the alternate <subtitles> dir.
-  if (g_stSettings.iAdditionalSubtitleDirectoryChecked == 1)
+  if (g_settings.iAdditionalSubtitleDirectoryChecked == 1)
   {
     strPath = g_guiSettings.GetString("subtitles.custompath");
     if (!HasSlashAtEnd(strPath))

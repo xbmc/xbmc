@@ -45,25 +45,6 @@
 #include <fcntl.h>
 #endif
 
-const uint8_t ff_reverse[256]={
-0x00,0x80,0x40,0xC0,0x20,0xA0,0x60,0xE0,0x10,0x90,0x50,0xD0,0x30,0xB0,0x70,0xF0,
-0x08,0x88,0x48,0xC8,0x28,0xA8,0x68,0xE8,0x18,0x98,0x58,0xD8,0x38,0xB8,0x78,0xF8,
-0x04,0x84,0x44,0xC4,0x24,0xA4,0x64,0xE4,0x14,0x94,0x54,0xD4,0x34,0xB4,0x74,0xF4,
-0x0C,0x8C,0x4C,0xCC,0x2C,0xAC,0x6C,0xEC,0x1C,0x9C,0x5C,0xDC,0x3C,0xBC,0x7C,0xFC,
-0x02,0x82,0x42,0xC2,0x22,0xA2,0x62,0xE2,0x12,0x92,0x52,0xD2,0x32,0xB2,0x72,0xF2,
-0x0A,0x8A,0x4A,0xCA,0x2A,0xAA,0x6A,0xEA,0x1A,0x9A,0x5A,0xDA,0x3A,0xBA,0x7A,0xFA,
-0x06,0x86,0x46,0xC6,0x26,0xA6,0x66,0xE6,0x16,0x96,0x56,0xD6,0x36,0xB6,0x76,0xF6,
-0x0E,0x8E,0x4E,0xCE,0x2E,0xAE,0x6E,0xEE,0x1E,0x9E,0x5E,0xDE,0x3E,0xBE,0x7E,0xFE,
-0x01,0x81,0x41,0xC1,0x21,0xA1,0x61,0xE1,0x11,0x91,0x51,0xD1,0x31,0xB1,0x71,0xF1,
-0x09,0x89,0x49,0xC9,0x29,0xA9,0x69,0xE9,0x19,0x99,0x59,0xD9,0x39,0xB9,0x79,0xF9,
-0x05,0x85,0x45,0xC5,0x25,0xA5,0x65,0xE5,0x15,0x95,0x55,0xD5,0x35,0xB5,0x75,0xF5,
-0x0D,0x8D,0x4D,0xCD,0x2D,0xAD,0x6D,0xED,0x1D,0x9D,0x5D,0xDD,0x3D,0xBD,0x7D,0xFD,
-0x03,0x83,0x43,0xC3,0x23,0xA3,0x63,0xE3,0x13,0x93,0x53,0xD3,0x33,0xB3,0x73,0xF3,
-0x0B,0x8B,0x4B,0xCB,0x2B,0xAB,0x6B,0xEB,0x1B,0x9B,0x5B,0xDB,0x3B,0xBB,0x7B,0xFB,
-0x07,0x87,0x47,0xC7,0x27,0xA7,0x67,0xE7,0x17,0x97,0x57,0xD7,0x37,0xB7,0x77,0xF7,
-0x0F,0x8F,0x4F,0xCF,0x2F,0xAF,0x6F,0xEF,0x1F,0x9F,0x5F,0xDF,0x3F,0xBF,0x7F,0xFF,
-};
-
 static int volatile entangled_thread_counter=0;
 int (*ff_lockmgr_cb)(void **mutex, enum AVLockOp op);
 static void *codec_mutex;
@@ -145,17 +126,19 @@ void avcodec_align_dimensions(AVCodecContext *s, int *width, int *height){
     case PIX_FMT_YUYV422:
     case PIX_FMT_UYVY422:
     case PIX_FMT_YUV422P:
+    case PIX_FMT_YUV440P:
     case PIX_FMT_YUV444P:
     case PIX_FMT_GRAY8:
     case PIX_FMT_GRAY16BE:
     case PIX_FMT_GRAY16LE:
     case PIX_FMT_YUVJ420P:
     case PIX_FMT_YUVJ422P:
+    case PIX_FMT_YUVJ440P:
     case PIX_FMT_YUVJ444P:
     case PIX_FMT_YUVA420P:
         w_align= 16; //FIXME check for non mpeg style codecs and use less alignment
         h_align= 16;
-        if(s->codec_id == CODEC_ID_MPEG2VIDEO)
+        if(s->codec_id == CODEC_ID_MPEG2VIDEO || s->codec_id == CODEC_ID_MJPEG || s->codec_id == CODEC_ID_AMV || s->codec_id == CODEC_ID_THP)
             h_align= 32; // interlaced is rounded up to 2 MBs
         break;
     case PIX_FMT_YUV411P:
@@ -384,8 +367,10 @@ int avcodec_default_reget_buffer(AVCodecContext *s, AVFrame *pic){
     }
 
     /* If internal buffer type return the same buffer */
-    if(pic->type == FF_BUFFER_TYPE_INTERNAL)
+    if(pic->type == FF_BUFFER_TYPE_INTERNAL) {
+        pic->reordered_opaque= s->reordered_opaque;
         return 0;
+    }
 
     /*
      * Not internal type and reget_buffer not overridden, emulate cr buffer
@@ -409,6 +394,16 @@ int avcodec_default_execute(AVCodecContext *c, int (*func)(AVCodecContext *c2, v
 
     for(i=0; i<count; i++){
         int r= func(c, (char*)arg + i*size);
+        if(ret) ret[i]= r;
+    }
+    return 0;
+}
+
+int avcodec_default_execute2(AVCodecContext *c, int (*func)(AVCodecContext *c2, void *arg2, int jobnr, int threadnr),void *arg, int *ret, int count){
+    int i;
+
+    for(i=0; i<count; i++){
+        int r= func(c, arg, i, 0);
         if(ret) ret[i]= r;
     }
     return 0;
@@ -684,7 +679,7 @@ int avcodec_close(AVCodecContext *avctx)
 
     if (HAVE_THREADS && avctx->thread_opaque)
         avcodec_thread_free(avctx);
-    if (avctx->codec->close)
+    if (avctx->codec && avctx->codec->close)
         avctx->codec->close(avctx);
     avcodec_default_free_buffers(avctx);
     av_freep(&avctx->priv_data);
@@ -748,6 +743,35 @@ AVCodec *avcodec_find_decoder_by_name(const char *name)
         p = p->next;
     }
     return NULL;
+}
+
+int av_get_bit_rate(AVCodecContext *ctx)
+{
+    int bit_rate;
+    int bits_per_sample;
+
+    switch(ctx->codec_type) {
+    case CODEC_TYPE_VIDEO:
+        bit_rate = ctx->bit_rate;
+        break;
+    case CODEC_TYPE_AUDIO:
+        bits_per_sample = av_get_bits_per_sample(ctx->codec_id);
+        bit_rate = bits_per_sample ? ctx->sample_rate * ctx->channels * bits_per_sample : ctx->bit_rate;
+        break;
+    case CODEC_TYPE_DATA:
+        bit_rate = ctx->bit_rate;
+        break;
+    case CODEC_TYPE_SUBTITLE:
+        bit_rate = ctx->bit_rate;
+        break;
+    case CODEC_TYPE_ATTACHMENT:
+        bit_rate = ctx->bit_rate;
+        break;
+    default:
+        bit_rate = 0;
+        break;
+    }
+    return bit_rate;
 }
 
 void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)
@@ -822,7 +846,6 @@ void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)
             snprintf(buf + strlen(buf), buf_size - strlen(buf),
                      ", q=%d-%d", enc->qmin, enc->qmax);
         }
-        bitrate = enc->bit_rate;
         break;
     case CODEC_TYPE_AUDIO:
         snprintf(buf, buf_size,
@@ -838,58 +861,15 @@ void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)
             snprintf(buf + strlen(buf), buf_size - strlen(buf),
                      ", %s", avcodec_get_sample_fmt_name(enc->sample_fmt));
         }
-
-        /* for PCM codecs, compute bitrate directly */
-        switch(enc->codec_id) {
-        case CODEC_ID_PCM_F64BE:
-        case CODEC_ID_PCM_F64LE:
-            bitrate = enc->sample_rate * enc->channels * 64;
-            break;
-        case CODEC_ID_PCM_S32LE:
-        case CODEC_ID_PCM_S32BE:
-        case CODEC_ID_PCM_U32LE:
-        case CODEC_ID_PCM_U32BE:
-        case CODEC_ID_PCM_F32BE:
-        case CODEC_ID_PCM_F32LE:
-            bitrate = enc->sample_rate * enc->channels * 32;
-            break;
-        case CODEC_ID_PCM_S24LE:
-        case CODEC_ID_PCM_S24BE:
-        case CODEC_ID_PCM_U24LE:
-        case CODEC_ID_PCM_U24BE:
-        case CODEC_ID_PCM_S24DAUD:
-            bitrate = enc->sample_rate * enc->channels * 24;
-            break;
-        case CODEC_ID_PCM_S16LE:
-        case CODEC_ID_PCM_S16BE:
-        case CODEC_ID_PCM_S16LE_PLANAR:
-        case CODEC_ID_PCM_U16LE:
-        case CODEC_ID_PCM_U16BE:
-            bitrate = enc->sample_rate * enc->channels * 16;
-            break;
-        case CODEC_ID_PCM_S8:
-        case CODEC_ID_PCM_U8:
-        case CODEC_ID_PCM_ALAW:
-        case CODEC_ID_PCM_MULAW:
-        case CODEC_ID_PCM_ZORK:
-            bitrate = enc->sample_rate * enc->channels * 8;
-            break;
-        default:
-            bitrate = enc->bit_rate;
-            break;
-        }
         break;
     case CODEC_TYPE_DATA:
         snprintf(buf, buf_size, "Data: %s", codec_name);
-        bitrate = enc->bit_rate;
         break;
     case CODEC_TYPE_SUBTITLE:
         snprintf(buf, buf_size, "Subtitle: %s", codec_name);
-        bitrate = enc->bit_rate;
         break;
     case CODEC_TYPE_ATTACHMENT:
         snprintf(buf, buf_size, "Attachment: %s", codec_name);
-        bitrate = enc->bit_rate;
         break;
     default:
         snprintf(buf, buf_size, "Invalid Codec type %d", enc->codec_type);
@@ -903,6 +883,7 @@ void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)
             snprintf(buf + strlen(buf), buf_size - strlen(buf),
                      ", pass 2");
     }
+    bitrate = av_get_bit_rate(enc);
     if (bitrate != 0) {
         snprintf(buf + strlen(buf), buf_size - strlen(buf),
                  ", %d kb/s", bitrate / 1000);
@@ -912,6 +893,17 @@ void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)
 unsigned avcodec_version( void )
 {
   return LIBAVCODEC_VERSION_INT;
+}
+
+const char * avcodec_configuration(void)
+{
+    return FFMPEG_CONFIGURATION;
+}
+
+const char * avcodec_license(void)
+{
+#define LICENSE_PREFIX "libavcodec license: "
+    return LICENSE_PREFIX FFMPEG_LICENSE + sizeof(LICENSE_PREFIX) - 1;
 }
 
 void avcodec_init(void)
@@ -936,6 +928,8 @@ void avcodec_default_free_buffers(AVCodecContext *s){
 
     if(s->internal_buffer==NULL) return;
 
+    if (s->internal_buffer_count)
+        av_log(s, AV_LOG_WARNING, "Found %i unreleased buffers!\n", s->internal_buffer_count);
     for(i=0; i<INTERNAL_BUFFER_SIZE; i++){
         InternalBuffer *buf= &((InternalBuffer*)s->internal_buffer)[i];
         for(j=0; j<4; j++){

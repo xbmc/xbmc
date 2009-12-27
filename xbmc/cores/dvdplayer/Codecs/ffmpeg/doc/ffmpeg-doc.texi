@@ -235,9 +235,20 @@ Show help.
 Show version.
 
 @item -formats
-Show available formats, codecs, bitstream filters, protocols, and frame size and frame rate abbreviations.
+Show available formats.
 
-The fields preceding the format and codec names have the following meanings:
+The fields preceding the format names have the following meanings:
+@table @samp
+@item D
+Decoding available
+@item E
+Encoding available
+@end table
+
+@item -codecs
+Show available codecs.
+
+The fields preceding the codec names have the following meanings:
 @table @samp
 @item D
 Decoding available
@@ -252,6 +263,15 @@ Codec supports direct rendering
 @item T
 Codec can handle input truncated at random locations instead of only at frame boundaries
 @end table
+
+@item -bsfs
+Show available bitstream filters.
+
+@item -protocols
+Show available protocols.
+
+@item -filters
+Show available libavfilter filters.
 
 @item -f @var{fmt}
 Force format.
@@ -484,6 +504,9 @@ stream.
 
 @item -newvideo
 Add a new video stream to the current output stream.
+
+@item -vlang @var{code}
+Set the ISO 639 language code (3 letters) of the current video stream.
 
 @end table
 
@@ -816,13 +839,17 @@ awkward to specify on the command line. Lines starting with the hash
 ('#') character are ignored and are used to provide comments. Check
 the @file{ffpresets} directory in the FFmpeg source tree for examples.
 
-Preset files are specified with the @code{vpre}, @code{apre} and
-@code{spre} options. The options specified in a preset file are
+Preset files are specified with the @code{vpre}, @code{apre},
+@code{spre}, and @code{fpre} options. The @code{fpre} option takes the
+filename of the preset instead of a preset name as input and can be
+used for any kind of codec. For the @code{vpre}, @code{apre}, and
+@code{spre} options, the options specified in a preset file are
 applied to the currently selected codec of the same type as the preset
 option.
 
-The argument passed to the preset options identifies the preset file
-to use according to the following rules.
+The argument passed to the @code{vpre}, @code{apre}, and @code{spre}
+preset options identifies the preset file to use according to the
+following rules:
 
 First ffmpeg searches for a file named @var{arg}.ffpreset in the
 directories @file{$HOME/.ffmpeg}, and in the datadir defined at
@@ -836,11 +863,6 @@ directories, where @var{codec_name} is the name of the codec to which
 the preset file options will be applied. For example, if you select
 the video codec with @code{-vcodec libx264} and use @code{-vpre max},
 then it will search for the file @file{libx264-max.ffpreset}.
-
-Finally, if the above rules failed and the argument specifies an
-absolute pathname, ffmpeg will search for that filename. This way you
-can specify the absolute and complete filename of the preset file, for
-example @file{./ffpresets/libx264-max.ffpreset}.
 
 @anchor{FFmpeg formula evaluator}
 @section FFmpeg formula evaluator
@@ -933,7 +955,7 @@ to standard output.
 
 FFmpeg also handles many protocols specified with an URL syntax.
 
-Use 'ffmpeg -formats' to see a list of the supported protocols.
+Use 'ffmpeg -protocols' to see a list of the supported protocols.
 
 The protocol @code{http:} is currently used only to communicate with
 FFserver (see the FFserver documentation). When FFmpeg will be a

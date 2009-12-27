@@ -564,17 +564,17 @@ bool CAdvancedSettings::Load()
   CStdString extraExtensions;
   TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
   if (pExts)
-    GetCustomExtensions(pExts,g_stSettings.m_pictureExtensions);
+    GetCustomExtensions(pExts,g_settings.m_pictureExtensions);
 
   // music extensions
   pExts = pRootElement->FirstChildElement("musicextensions");
   if (pExts)
-    GetCustomExtensions(pExts,g_stSettings.m_musicExtensions);
+    GetCustomExtensions(pExts,g_settings.m_musicExtensions);
 
   // video extensions
   pExts = pRootElement->FirstChildElement("videoextensions");
   if (pExts)
-    GetCustomExtensions(pExts,g_stSettings.m_videoExtensions);
+    GetCustomExtensions(pExts,g_settings.m_videoExtensions);
 
   m_vecTokens.clear();
   CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"),m_vecTokens);
