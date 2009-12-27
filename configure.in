@@ -1394,7 +1394,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   if test "$host_vendor" = "apple" ; then
     rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_C_FLAGS:STRING="-fno-common" -D CMAKE_CXX_FLAGS:STRING="-fno-common" -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
   else
-    rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+    rm -f CMakeCache.txt && CC="" CXX=""  cmake -D BUILD_PROJECTM_STATIC:BOOL=ON -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
   fi
 ], [0])
 

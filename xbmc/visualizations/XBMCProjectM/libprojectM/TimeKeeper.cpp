@@ -3,11 +3,22 @@
 #else
 #endif /** !WIN32 */
 #include <stdlib.h>
+#ifdef LINUX
+#include <GL/gl.h>
+#endif
+#ifdef WIN32
+#include "glew.h"
+#endif
+
+#ifdef __APPLE__
+#include <GL/gl.h>
+#endif
+
 #include "TimeKeeper.hpp"
 #include "RandomNumberGenerators.hpp"
 
 TimeKeeper::TimeKeeper(double presetDuration, double smoothDuration, double easterEgg)
-  {    
+  {
     _smoothDuration = smoothDuration;
     _presetDuration = presetDuration;
     _easterEgg = easterEgg;
@@ -55,10 +66,10 @@ TimeKeeper::TimeKeeper(double presetDuration, double smoothDuration, double east
     _presetFrameA = _presetFrameB;
     _presetDurationA = _presetDurationB;
   }
- 
+
   bool TimeKeeper::CanHardCut()
   {
-    return ((_currentTime - _presetTimeA) > HARD_CUT_DELAY);      
+    return ((_currentTime - _presetTimeA) > HARD_CUT_DELAY);
   }
 
   double TimeKeeper::SmoothRatio()
@@ -73,7 +84,7 @@ TimeKeeper::TimeKeeper(double presetDuration, double smoothDuration, double east
   double TimeKeeper::GetRunningTime()
   {
     return _currentTime;
-  } 
+  }
 
   double TimeKeeper::PresetProgressA()
   {

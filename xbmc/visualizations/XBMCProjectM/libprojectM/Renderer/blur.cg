@@ -1,0 +1,151 @@
+struct outtype {float4 color : COLOR;};
+
+uniform float4 srctexsize;
+
+outtype blur1(float2 uv : TEXCOORD0, uniform sampler2D sampler_blur : TEX0)
+{
+float2 uv2 = uv.xy + srctexsize.zw*float2(1,1);
+
+float d=.00175;
+
+float3 val =  tex2D(sampler_blur, float2(uv.x-d, uv.y)).xyz;
+val += tex2D(sampler_blur, float2(uv.x+d, uv.y)).xyz;
+val += tex2D(sampler_blur, float2(uv.x, uv.y + d)).xyz;
+val += tex2D(sampler_blur, float2(uv.x, uv.y - d)).xyz;
+
+float3 val2 =  tex2D(sampler_blur, float2(uv.x-d, uv.y -d)).xyz;
+val += tex2D(sampler_blur, float2(uv.x-d, uv.y +d)).xyz;
+val += tex2D(sampler_blur, float2(uv.x+d, uv.y + d)).xyz;
+val += tex2D(sampler_blur, float2(uv.x +d, uv.y - d)).xyz;
+
+outtype OUT;
+val *= 0.65;
+val2 *= 0.35;
+
+OUT.color.xyz = val* 0.25 + val2 * 0.25;
+OUT.color.w = 1;
+return OUT;
+}
+
+outtype blur2(float2 uv : TEXCOORD0, uniform sampler2D sampler_blur : TEX0)
+{
+float2 uv2 = uv.xy + srctexsize.zw*float2(1,0);
+
+float d = srctexsize.z;
+d=.0015;
+
+float3 val =  tex2D(sampler_blur, float2(uv.x-d, uv.y)).xyz;
+val += tex2D(sampler_blur, float2(uv.x+d, uv.y)).xyz;
+val += tex2D(sampler_blur, float2(uv.x, uv.y + d)).xyz;
+val += tex2D(sampler_blur, float2(uv.x, uv.y - d)).xyz;
+
+val *= 0.25;
+
+float t = min( min(uv.x, uv.y), 1-max(uv.x,uv.y) );
+t = sqrt(t);
+
+float minimum = 0.5;
+float variance = 0.5;
+float size = 50;
+
+t = minimum + variance*saturate(t*size);
+t = 1;
+val.xyz *= t;
+
+outtype OUT;
+OUT.color.xyz = val;
+OUT.color.w = 1;
+return OUT;
+}
+
+outtype blurHoriz(float2 uv : TEXCOORD0, uniform sampler2D sampler_blur : TEX0)
+{
+
+	 // LONG HORIZ. PASS 1:
+	    const float w[8] = { 4.0, 3.8, 3.5, 2.9, 1.9, 1.2, 0.7, 0.3 };
+	    const float w1 = w[0] + w[1];
+	    const float w2 = w[2] + w[3];
+	    const float w3 = w[4] + w[5];
+	    const float w4 = w[6] + w[7];
+	    const float d1 = 0 + 2*w[1]/w1;
+	    const float d2 = 2 + 2*w[3]/w2;
+	    const float d3 = 4 + 2*w[5]/w3;
+	    const float d4 = 6 + 2*w[7]/w4;
+	    const float w_div = 0.5/(w1+w2+w3+w4);
+
+float  fscale = 1;
+float  fbias = 0;
+
+
+	    // note: if you just take one sample at exactly uv.xy, you get an avg of 4 pixels.
+	    //float2 uv2 = uv.xy;// + srctexsize.zw*float2(0.5,0.5);
+	    float2 uv2 = uv.xy + srctexsize.zw*float2(1,1);     // + moves blur UP, LEFT by 1-pixel increments
+
+	    float3 blur =
+	            ( tex2D( sampler_blur, uv2 + float2( d1*srctexsize.z,0) ).xyz
+	            + tex2D( sampler_blur, uv2 + float2(-d1*srctexsize.z,0) ).xyz)*w1 +
+	            ( tex2D( sampler_blur, uv2 + float2( d2*srctexsize.z,0) ).xyz
+	            + tex2D( sampler_blur, uv2 + float2(-d2*srctexsize.z,0) ).xyz)*w2 +
+	            ( tex2D( sampler_blur, uv2 + float2( d3*srctexsize.z,0) ).xyz
+	            + tex2D( sampler_blur, uv2 + float2(-d3*srctexsize.z,0) ).xyz)*w3 +
+	            ( tex2D( sampler_blur, uv2 + float2( d4*srctexsize.z,0) ).xyz
+	            + tex2D( sampler_blur, uv2 + float2(-d4*srctexsize.z,0) ).xyz)*w4
+	            ;
+	    blur.xyz *= w_div;
+
+	    blur.xyz = blur.xyz*fscale + fbias;
+
+	    outtype OUT;
+	    OUT.color.xyz = blur;
+	    OUT.color.w   = 1;
+
+return OUT;
+}
+
+outtype blurVert(float2 uv : TEXCOORD0, uniform sampler2D sampler_blur : TEX0)
+{
+	 //SHORT VERTICAL PASS 2:
+
+
+	const float w[8] = { 4.0, 3.8, 3.5, 2.9, 1.9, 1.2, 0.7, 0.3 };
+
+	 const float w1 = w[0]+w[1] + w[2]+w[3];
+		    const float w2 = w[4]+w[5] + w[6]+w[7];
+		    const float d1 = 0 + 2*((w[2]+w[3])/w1);
+		    const float d2 = 2 + 2*((w[6]+w[7])/w2);
+		  const float w_div = 1.0/((w1+w2)*2);
+
+
+
+	    // note: if you just take one sample at exactly uv.xy, you get an avg of 4 pixels.
+	    //float2 uv2 = uv.xy;// + srctexsize.zw*float2(-0.5,-0.5);
+	    float2 uv2 = uv.xy + srctexsize.zw*float2(1,0);     // + moves blur UP, LEFT by TWO-pixel increments! (since texture is 1/2 the size of blur1_ps)
+
+	    float3 blur =
+	            ( tex2D( sampler_blur, uv2 + float2(0, d1*srctexsize.w) ).xyz
+	            + tex2D( sampler_blur, uv2 + float2(0,-d1*srctexsize.w) ).xyz)*w1 +
+	            ( tex2D( sampler_blur, uv2 + float2(0, d2*srctexsize.w) ).xyz
+	            + tex2D( sampler_blur, uv2 + float2(0,-d2*srctexsize.w) ).xyz)*w2
+	            ;
+	    blur.xyz *= w_div;
+
+	    // tone it down at the edges:  (only happens on 1st X pass!)
+	    float t = min( min(uv.x, uv.y), 1-max(uv.x,uv.y) );
+
+	    float minimum = 0.5;
+	    float variance = 0.5;
+	    float size = 50;
+
+
+	    blur.xyz *= t;
+
+	    t = sqrt(t);
+	    t = minimum + variance*saturate(t*size);
+	    t=1;
+	    blur.xyz *= t;
+
+outtype OUT;
+OUT.color.xyz = blur;
+OUT.color.w = 1;
+return OUT;
+}

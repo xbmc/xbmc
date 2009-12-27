@@ -5,6 +5,8 @@
 #include <cassert>
 #include <iostream>
 
+#define WEIGHTED_RANDOM_DEBUG 0
+
 namespace RandomNumberGenerators {
 
 inline float uniform()
@@ -67,26 +69,17 @@ inline std::size_t uniformInteger(std::size_t upperBound=1) {
 /// sum of passed in weights should be 1.0
 inline std::size_t weightedRandomNormalized(std::vector<float> weights) {
 
-#ifdef WIN32	
-    // Choose a random bounded mass between 0 and 1
-	float cutoff = ((float)(rand())) / RAND_MAX;
-#endif 
+        // Choose a random bounded mass between 0 and 1
+	float cutoff = ((float)(rand())) / (float)RAND_MAX;
 
-#ifdef LINUX
-    // Choose a random bounded mass between 0 and 1
-	float cutoff = ((float)(random())) / RAND_MAX;
-#endif
-
-#ifdef MACOS
-    // Choose a random bounded mass between 0 and 1
-	float cutoff = ((float)(rand())) / RAND_MAX;
-#endif
+	//std::cout << "cutoff : " << cutoff << std::endl;
 
     // Sum up mass, stopping when cutoff is reached. This is the typical
     // weighted sampling algorithm.
 	float mass = 0;
-	for (std::size_t i = 0; i< weights.size() ; i) {
+	for (std::size_t i = 0; i< weights.size() ; i++) {
 		mass += weights[i];
+		//std::cout << "mass: " << mass << std::endl;
 		if (mass >= cutoff)
 			return i;
 	}
@@ -103,14 +96,25 @@ inline std::size_t weightedRandom(const std::vector<int> & weights, unsigned int
 			weightTotalHint += weights[i];
 	}
 	
-	int sampledSum = uniformInteger(weightTotalHint);
+	const int sampledSum = uniformInteger(weightTotalHint);
 	int sum = 0;
-	
+	if (WEIGHTED_RANDOM_DEBUG) std::cout << "[RNG::weightedRandom()] weightTotal = " << weightTotalHint <<
+			 std::endl; 
+
 	for (std::size_t i = 0; i < weights.size();i++) {
+		if (WEIGHTED_RANDOM_DEBUG) 
+		std::cout << "[RNG::weightedRandom()] weight[" << i << "] = " << weights[i] <<
+			 std::endl; 
+
 		sum += weights[i];
-		if (sampledSum <= sum)
+		if (sampledSum <= sum) {
+			if (WEIGHTED_RANDOM_DEBUG) 
+			std::cout << "[RNG::weightedRandom()] sampled index " << i << "(" <<
+			 "running sum = " << sum << ", sampled sum = " << sampledSum << std::endl;
 			return i;
+		}
 	}
+
 	return weights.size()-1;
 }
 

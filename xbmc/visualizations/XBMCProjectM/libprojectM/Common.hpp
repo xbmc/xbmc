@@ -24,12 +24,13 @@
  * $Log$
  */
 
-#ifndef COMMON_H
-#define COMMON_H
-
-#include <stdarg.h>
-
-#ifdef _MSC_VER
+#ifndef COMMON_HPP
+#define COMMON_HPP
+#include <vector>
+#include <typeinfo>
+#include <cstdarg>
+#include <cassert>
+#ifdef _MSC_sVER
 #define strcasecmp(s, t) _strcmpi(s, t)
 #endif
 
@@ -51,17 +52,11 @@ extern FILE *fmemopen(void *buf, size_t len, const char *pMode);
 #define STRING_BUFFER_SIZE 1024*150
 #define STRING_LINE_SIZE 1024
 
-			 
-#ifdef LINUX
-#include <cstdlib>
-#endif
-			 
-#ifdef LINUX
-#define projectM_isnan isnan
-#endif
 
 #ifdef LINUX
+#include <cstdlib>
 #define projectM_isnan isnan
+
 #endif
 
 #ifdef WIN32
@@ -112,13 +107,13 @@ extern FILE *fmemopen(void *buf, size_t len, const char *pMode);
 #define MIN_INT_SIZE -10000000
 
 /* default float initial value */
-#define DEFAULT_DOUBLE_IV 0.0 
+#define DEFAULT_DOUBLE_IV 0.0
 
 /* default float lower bound */
-#define DEFAULT_DOUBLE_LB MIN_DOUBLE_SIZE 
+#define DEFAULT_DOUBLE_LB MIN_DOUBLE_SIZE
 
 /* default float upper bound */
-#define DEFAULT_DOUBLE_UB MAX_DOUBLE_SIZE 
+#define DEFAULT_DOUBLE_UB MAX_DOUBLE_SIZE
 
 #ifdef WIN32
 #include <float.h>
@@ -133,13 +128,99 @@ extern FILE *fmemopen(void *buf, size_t len, const char *pMode);
 #else
 #define PATH_SEPARATOR UNIX_PATH_SEPARATOR
 #endif /** WIN32 */
+#include <string>
 
-inline void DWRITE( char *fmt, ... ) {
-	return;
-    va_list args;
-    va_start( args, fmt );
-    va_end( args );
+const unsigned int NUM_Q_VARIABLES(32);
+const std::string PROJECTM_FILE_EXTENSION("prjm");
+const std::string MILKDROP_FILE_EXTENSION("milk");
+const std::string PROJECTM_MODULE_EXTENSION("so");
+
+ template <class TraverseFunctor, class Container>
+  void traverse(Container & container)
+  {
+
+    TraverseFunctor functor;
+
+    for (typename Container::iterator pos = container.begin(); pos != container.end(); ++pos)
+    {
+      assert(pos->second);
+      functor(pos->second);
+    }
+
   }
+
+
+  template <class TraverseFunctor, class Container>
+  void traverseVector(Container & container)
+  {
+
+    TraverseFunctor functor;
+
+    for (typename Container::iterator pos = container.begin(); pos != container.end(); ++pos)
+    {
+      assert(*pos);
+      functor(*pos);
+    }
+
+  }
+
+  template <class TraverseFunctor, class Container>
+  void traverse(Container & container, TraverseFunctor & functor)
+  {
+
+    for (typename Container::iterator pos = container.begin(); pos != container.end(); ++pos)
+    {
+      assert(pos->second);
+      functor(pos->second);
+    }
+
+  }
+
+  namespace TraverseFunctors
+  {
+    template <class Data>
+    class Delete
+    {
+
+    public:
+
+      void operator() (Data * data)
+      {
+        assert(data);
+        delete(data);
+      }
+
+    };
+  }
+
+
+inline std::string parseExtension(const std::string & filename) {
+
+std::size_t start = filename.find_last_of('.');
+
+if (start == std::string::npos || start >= (filename.length()-1))
+	return "";
+else
+	return filename.substr(start+1, filename.length());
+
+}
+
+
+inline double meanSquaredError(const double & x, const double & y) {
+		return (x-y)*(x-y);
+}
+
+
+enum PresetRatingType {
+	FIRST_RATING_TYPE = 0,
+	HARD_CUT_RATING_TYPE = FIRST_RATING_TYPE,
+	SOFT_CUT_RATING_TYPE,
+	LAST_RATING_TYPE = SOFT_CUT_RATING_TYPE,
+	TOTAL_RATING_TYPES = SOFT_CUT_RATING_TYPE+1
+};
+
+
+typedef std::vector<int> RatingList;
 
 #endif
 

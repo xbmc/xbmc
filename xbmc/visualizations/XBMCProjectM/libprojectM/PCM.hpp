@@ -29,39 +29,41 @@
 #ifndef _PCM_H
 #define _PCM_H
 
-class PCM {
+#include "dlldefs.h"
+
+class DLLEXPORT PCM {
 public:
-    mutable float **PCMd;
-    mutable int start;
+    float **PCMd;
+    int start;
 
     /** Use wave smoothing */
     float waveSmoothing;
 
     int *ip;
     double *w;
-    mutable int newsamples;
+    int newsamples;
 
-    mutable int numsamples; //size of new PCM info
-    float *pcmdataL;     //holder for most recent pcm data 
-    float *pcmdataR;     //holder for most recent pcm data 
+    int numsamples; //size of new PCM info
+    float *pcmdataL;     //holder for most recent pcm data
+    float *pcmdataR;     //holder for most recent pcm data
 
     /** PCM data */
-    mutable float vdataL[512];  //holders for FFT data (spectrum)
-    mutable float vdataR[512];
+    float vdataL[512];  //holders for FFT data (spectrum)
+    float vdataR[512];
 
     static int maxsamples;
     PCM();
     ~PCM();
     void initPCM(int maxsamples);
-    void addPCMfloat(const float *PCMdata, int samples) const;
-    void addPCM16(short [2][512]) const;
-    void addPCM16Data(const short* pcm_data, short samples) const;
-    void addPCM8( unsigned char [2][1024]) const;
-	void addPCM8_512( const unsigned char [2][512]) const;
-    void getPCM(float *data, int samples, int channel, int freq, float smoothing, int derive) const;
+    void addPCMfloat(const float *PCMdata, int samples);
+    void addPCM16(short [2][512]);
+    void addPCM16Data(const short* pcm_data, short samples);
+    void addPCM8( unsigned char [2][1024]);
+	void addPCM8_512( const unsigned char [2][512]);
+    void getPCM(float *data, int samples, int channel, int freq, float smoothing, int derive);
     void freePCM();
-    int getPCMnew(float *PCMdata, int channel, int freq, float smoothing, int derive,int reset) const;
-    
+    int getPCMnew(float *PCMdata, int channel, int freq, float smoothing, int derive,int reset);
+
 
   };
 

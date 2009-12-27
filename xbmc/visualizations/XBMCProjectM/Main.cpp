@@ -143,8 +143,6 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   g_configPM.aspectCorrection = true;
   g_configPM.easterEgg = 0.0;
   g_configPM.shuffleEnabled = true;
-  g_configPM.windowLeft = iPosX;
-  g_configPM.windowBottom = iPosY;
 
   {
     FILE *f;
@@ -163,7 +161,6 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
       if (config.keyExists("Aspect Correction")) g_configPM.aspectCorrection = config.read<bool> ("Aspect Correction", true);
       if (config.keyExists("Easter Egg")) g_configPM.easterEgg = config.read<float> ("Easter Egg", 0.0);
       if (config.keyExists("Shuffle Enabled")) g_configPM.shuffleEnabled = config.read<bool> ("Shuffle Enabled", true);
-      if (config.keyExists("Use FBO")) g_configPM.useFBO = config.read<bool> ("Use FBO", false);
     }
     else {
 #ifndef WIN32
@@ -425,22 +422,18 @@ extern "C" void UpdateSetting(int num, StructSetting*** sSet)
     {
       if ( setting.current == 0 ) // low
       {
-        g_configPM.useFBO = false;
         g_configPM.textureSize = 256;
       }
       else if ( setting.current == 1 ) // med
       {
-        g_configPM.useFBO = false;
         g_configPM.textureSize = 512;
       }
       else if ( setting.current == 2 ) // high
       {
-        g_configPM.useFBO = false;
         g_configPM.textureSize = 1024;
       }
       else if ( setting.current == 3 ) // max
       {
-        g_configPM.useFBO = false;
         g_configPM.textureSize = 2048;
       }
     }

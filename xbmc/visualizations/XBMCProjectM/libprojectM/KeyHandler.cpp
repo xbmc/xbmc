@@ -37,6 +37,10 @@
 class Preset;
 interface_t current_interface = DEFAULT_INTERFACE;
 
+void selectRandom(const bool hardCut);
+void selectNext(const bool hardCut);
+void selectPrevious(const bool hardCut);
+
 void refreshConsole() {
 
   switch (current_interface) {
@@ -57,11 +61,11 @@ void refreshConsole() {
     break;
   default:
     break;
-  } 
- 
+  }
+
 }
 
-DLLEXPORT void projectM::key_handler( projectMEvent event,
+void projectM::key_handler( projectMEvent event,
                             projectMKeycode keycode, projectMModifier modifier ) {
 
 	switch( event ) {
@@ -105,7 +109,7 @@ void projectM::default_key_handler( projectMEvent event, projectMKeycode keycode
 	switch( event ) {
 
 	case PROJECTM_KEYDOWN:
-	 
+
 	  switch( keycode )
 	    {
 	    case PROJECTM_K_UP:
@@ -123,7 +127,7 @@ void projectM::default_key_handler( projectMEvent event, projectMKeycode keycode
 	    case PROJECTM_K_F1:
 	      renderer->showhelp = !renderer->showhelp;
 	      renderer->showstats=false;
-	      renderer->showfps=false; 
+	      renderer->showfps=false;
 	      break;
 	    case PROJECTM_K_y:
 		this->setShuffleEnabled(!this->isShuffleEnabled());
@@ -149,7 +153,7 @@ void projectM::default_key_handler( projectMEvent event, projectMKeycode keycode
 #else
         case PROJECTM_K_F8:
 #endif
-		
+
 	      renderer->studio = !renderer->studio;
 	      break;
 
@@ -158,59 +162,30 @@ void projectM::default_key_handler( projectMEvent event, projectMKeycode keycode
 	        break;
 	      }
 	    case PROJECTM_K_f:
-	   
-	      break; 
+
+	      break;
 	    case PROJECTM_K_a:
 		    renderer->correction = !renderer->correction;
 	        break;
 	    case PROJECTM_K_b:
 	      break;
             case PROJECTM_K_n:
-		m_presetChooser->nextPreset(*m_presetPos);
-		presetSwitchedEvent(true, **m_presetPos);
-		m_activePreset =  m_presetPos->allocate(this->presetInputs, this->presetOutputs);
-		renderer->setPresetName(m_activePreset->presetName());
-		timeKeeper->StartPreset();
+		selectNext(true);
 	      break;
-
+            case PROJECTM_K_N:
+		selectNext(false);
+	      break;
 	    case PROJECTM_K_r:
-
-		if (m_presetChooser->empty())
-			break;
-
-		*m_presetPos = m_presetChooser->weightedRandom();
-		presetSwitchedEvent(true, **m_presetPos);
-		m_activePreset = m_presetPos->allocate(this->presetInputs, this->presetOutputs);
-			
-		assert(m_activePreset.get());
-			
-		renderer->setPresetName(m_activePreset->presetName());
-	       
-		timeKeeper->StartPreset();
+		selectRandom(true);
+		break;
+	    case PROJECTM_K_R:
+		selectRandom(false);
 		break;
 	    case PROJECTM_K_p:
-
-		if (m_presetChooser->empty())
-			break;
-
-		// Case: idle preset currently running, selected last preset of chooser
-		else if (*m_presetPos == m_presetChooser->end()) {
-			--(*m_presetPos); 
-		}
-
-		else if (*m_presetPos != m_presetChooser->begin()) {
-			--(*m_presetPos);			
-		} 
-		
-		else {
-		   *m_presetPos = m_presetChooser->end();
-		   --(*m_presetPos);
-		}
-
-		m_activePreset =  m_presetPos->allocate(this->presetInputs, this->presetOutputs);
-		renderer->setPresetName(m_activePreset->presetName());
-               
-	       	timeKeeper->StartPreset();
+	      selectPrevious(true);
+	      break;
+	    case PROJECTM_K_P:
+	      selectPrevious(false);
 	      break;
 	    case PROJECTM_K_l:
 		renderer->noSwitch=!renderer->noSwitch;
@@ -231,7 +206,7 @@ void projectM::default_key_handler( projectMEvent event, projectMKeycode keycode
 //	      nWaveMode=7;
 	      break;
 	    case PROJECTM_K_m:
-	      break;	     
+	      break;
 	    case PROJECTM_K_t:
 	      break;
 	    default:
@@ -242,3 +217,4 @@ void projectM::default_key_handler( projectMEvent event, projectMKeycode keycode
 
 	}
 }
+

@@ -1,9 +1,14 @@
 ARCH=@ARCH@
 INCLUDES=-I. -I.. -I../../linux -I../../ -I../../../guilib -I../../../visualisations
 OBJS=Main.o
-SLIB=../../../visualisations/ProjectM.vis
+VIS_DIR=../../../visualisations
+SLIB=$(VIS_DIR)/ProjectM.vis
 CXXFLAGS=-O3 -g -fPIC
 DIRS=libprojectM
+PROJECTM_LIBS=libprojectM/NativePresetFactory/libNativePresetFactory.a \
+	      libprojectM/MilkdropPresetFactory/libMilkdropPresetFactory.a \
+	      libprojectM/Renderer/libRenderer.a \
+	      libprojectM/libprojectM.a
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 CXXFLAGS+=-fno-common 
@@ -17,10 +22,12 @@ $(SLIB): $(OBJS) libprojectM/libprojectM.dylib
 libprojectM/libprojectM.dylib:
 	$(MAKE) -C libprojectM
 else
-$(SLIB): $(OBJS) libprojectM/libprojectM.so
-	$(CXX) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared $(CFLAGS) -o $(SLIB) $(OBJS) `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
+$(SLIB): $(OBJS) $(PROJECTM_LIBS)
+	$(CXX) -Wl,--whole-archive $(PROJECTM_LIBS) -Wl,--no-whole-archive -fPIC -shared $(CFLAGS) -o $(SLIB) $(OBJS) `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
+	cp -rfT libprojectM/presets $(VIS_DIR)/projectM
 
-libprojectM/libprojectM.so: 
+$(PROJECTM_LIBS): libprojectM/libprojectM.so;
+libprojectM/libprojectM.so:
 	$(MAKE) -C libprojectM
 endif
 
@@ -35,7 +42,8 @@ DISTCLEAN_FILES=	\
 	libprojectM/Makefile \
 	libprojectM/cmake_install.cmake \
 	libprojectM/config.inp \
-	libprojectM/libprojectM.pc
+	libprojectM/libprojectM.pc \
+	$(VIS_DIR)/projectM
 
 include ../../../Makefile.include
 

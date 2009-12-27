@@ -35,7 +35,7 @@ DIR *opendir(const char *name)
     {
         size_t base_length = strlen(name);
         const char *all = /* search pattern must end with suitable wildcard */
-            strchr("/\\", name[base_length - 1]) ? "" : "/";
+            strchr("/\\", name[base_length - 1]) ? "*" : "/*";
 
         if((dir = (DIR *) malloc(sizeof *dir)) != 0 &&
            (dir->name = (char *) malloc(base_length + strlen(all) + 1)) != 0)
@@ -144,7 +144,7 @@ int scandir(
 	int(*compar)(const void*, const void*)
 ) {
 	int entries = 0;
-	int max_entries = 1024; // assume 2*512 = 1024 entries (used for allocation)
+	int max_entries = 512; // assume 2*512 = 1024 entries (used for allocation)
 	DIR* d;
 	
 	*namelist = 0;
