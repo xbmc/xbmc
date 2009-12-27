@@ -638,7 +638,20 @@ void* CWinSystemOSX::CreateWindowedContext(void* shareCtx)
   
   NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs];
   if (!pixFmt)
-    return nil;
+  {
+    // bah, try again for non-accelerated renderer
+    NSOpenGLPixelFormatAttribute wattrs2[] =
+    {
+      NSOpenGLPFADoubleBuffer,
+      NSOpenGLPFAWindow,
+      NSOpenGLPFANoRecovery,
+      NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)8,
+      (NSOpenGLPixelFormatAttribute)0
+    };
+    NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs2];
+    if (!pixFmt)
+      return nil;
+  }
     
   NSOpenGLContext* newContext = [[NSOpenGLContext alloc] initWithFormat:(NSOpenGLPixelFormat*)pixFmt
     shareContext:(NSOpenGLContext*)shareCtx];

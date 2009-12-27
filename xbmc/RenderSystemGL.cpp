@@ -80,7 +80,7 @@ bool CRenderSystemGL::InitRenderSystem()
   if (glewIsSupported("GL_EXT_texture_compression_s3tc"))
     m_renderCaps |= RENDER_CAPS_DXT;
 
-  if (GLEW_ARB_texture_non_power_of_two || m_RenderVersionMajor >= 2)
+  if (glewIsSupported("GL_ARB_texture_non_power_of_two"))
   {
     m_renderCaps |= RENDER_CAPS_NPOT;
     if (m_renderCaps & RENDER_CAPS_DXT  && !g_sysinfo.IsAppleTV())    // This may not be correct on all hardware, Apple Tv(Nvidia 7300) having problems with this 

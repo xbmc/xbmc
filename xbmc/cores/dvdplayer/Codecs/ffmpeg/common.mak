@@ -61,6 +61,8 @@ FFLDFLAGS   := $(addprefix -L$(BUILD_ROOT)/lib,$(ALLFFLIBS)) $(LDFLAGS)
 EXAMPLES  := $(addprefix $(SUBDIR),$(addsuffix -example$(EXESUF),$(EXAMPLES)))
 OBJS      := $(addprefix $(SUBDIR),$(OBJS))
 TESTPROGS := $(addprefix $(SUBDIR),$(addsuffix -test$(EXESUF),$(TESTPROGS)))
+HOSTOBJS  := $(addprefix $(SUBDIR),$(addsuffix .o,$(HOSTPROGS)))
+HOSTPROGS := $(addprefix $(SUBDIR),$(addsuffix $(HOSTEXESUF),$(HOSTPROGS)))
 
 DEP_LIBS := $(foreach NAME,$(FFLIBS),$(BUILD_ROOT_REL)/lib$(NAME)/$($(CONFIG_SHARED:yes=S)LIBNAME))
 
@@ -68,11 +70,17 @@ ALLHEADERS := $(subst $(SRC_DIR)/,$(SUBDIR),$(wildcard $(SRC_DIR)/*.h $(SRC_DIR)
 SKIPHEADERS = $(addprefix $(SUBDIR),$(SKIPHEADERS-))
 checkheaders: $(filter-out $(SKIPHEADERS:.h=.ho),$(ALLHEADERS:.h=.ho))
 
+$(HOSTOBJS): %.o: %.c
+	$(HOSTCC) $(HOSTCFLAGS) -c -o $@ $<
+
+$(HOSTPROGS): %$(HOSTEXESUF): %.o
+	$(HOSTCC) $(HOSTLDFLAGS) -o $@ $< $(HOSTLIBS)
+
 DEPS := $(OBJS:.o=.d)
 depend dep: $(DEPS)
 
-CLEANSUFFIXES     = *.o *~ *.ho *.map
-DISTCLEANSUFFIXES = *.d *.pc
+CLEANSUFFIXES     = *.d *.o *~ *.ho *.map
+DISTCLEANSUFFIXES = *.pc
 LIBSUFFIXES       = *.a *.lib *.so *.so.* *.dylib *.dll *.def *.dll.a *.exp
 
 -include $(wildcard $(DEPS))

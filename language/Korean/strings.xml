@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 12/16/2009-->
+<!--Date of translation: 12/18/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -987,7 +987,6 @@
   <string id="13279">네트워크</string>
   <string id="13280">비디오</string>
   <string id="13281">하드웨어</string>
-  <string id="13282">_</string>
   <string id="13283">운영체제:</string>
   <string id="13284">CPU 속도:</string>
   <string id="13285">감지된 BIOS:</string>

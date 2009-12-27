@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="regex;..\..\..\cores\paplayer;..\..\..\xbmc\cores\dvdplayer\DVDCodecs;..\..\libiconv;..\..\..\cores\dvdplayer\DVDCodecs\Audio\libmad"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;XBMC"
+				AdditionalIncludeDirectories="regex;..\..\..\cores\paplayer;..\..\..\xbmc\cores\dvdplayer\DVDCodecs;..\..\libiconv;..\..\..\cores\dvdplayer\DVDCodecs\Audio\libmad;..\..\..\..\lib\libiconv\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;XBMC;HAVE_ICONV"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -106,8 +106,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="regex;..\..\..\cores\paplayer;..\..\..\xbmc\cores\dvdplayer\DVDCodecs;..\..\libiconv;..\..\..\cores\dvdplayer\DVDCodecs\Audio\libmad"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;XBMC"
+				AdditionalIncludeDirectories="regex;..\..\..\cores\paplayer;..\..\..\xbmc\cores\dvdplayer\DVDCodecs;..\..\libiconv;..\..\..\cores\dvdplayer\DVDCodecs\Audio\libmad;..\..\..\..\lib\libiconv\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;XBMC;HAVE_ICONV"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -332,16 +332,6 @@
 				>
 			</File>
 		</Filter>
-		<Filter
-			Name="Ressourcendateien"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
-		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

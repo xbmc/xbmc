@@ -54,7 +54,6 @@ public:
   static int FindEndBracket(const CStdString &str, char opener, char closer, int startPos = 0);
   static int DateStringToYYYYMMDD(const CStdString &dateString);
   static void WordToDigits(CStdString &word);
-  static float GetFloat(const char* str); // ignores locale
   static CStdString CreateUUID();
   static bool ValidateUUID(const CStdString &uuid); // NB only validates syntax
 private:

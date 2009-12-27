@@ -192,6 +192,8 @@
 		<green>green</green>
 		<yellow>yellow</yellow>
 		<blue>blue</blue>
+		<subtitle>subtitle</subtitle>
+		<language>audio</language>
 	</remote>
 	<remote device="iMON-PAD">
 		<power>Power</power>

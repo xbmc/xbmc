@@ -135,11 +135,17 @@ static int decode_frame(AVCodecContext *avctx,
 static av_cold int decode_init(AVCodecContext *avctx){
 //    QdrawContext * const a = avctx->priv_data;
 
-    if (avcodec_check_dimensions(avctx, avctx->width, avctx->height) < 0) {
-        return 1;
-    }
-
     avctx->pix_fmt= PIX_FMT_PAL8;
+
+    return 0;
+}
+
+static av_cold int decode_end(AVCodecContext *avctx){
+    QdrawContext * const a = avctx->priv_data;
+    AVFrame *pic = &a->pic;
+
+    if (pic->data[0])
+        avctx->release_buffer(avctx, pic);
 
     return 0;
 }
@@ -151,7 +157,7 @@ AVCodec qdraw_decoder = {
     sizeof(QdrawContext),
     decode_init,
     NULL,
-    NULL,
+    decode_end,
     decode_frame,
     CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Apple QuickDraw"),

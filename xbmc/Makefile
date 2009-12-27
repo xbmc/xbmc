@@ -1,4 +1,4 @@
-INCLUDES+=-I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem -I/usr/include/freetype2 -Icores/dvdplayer -Icores/ffmpeg
+INCLUDES+=-I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem -I/usr/include/freetype2 -Icores/dvdplayer -Icores/dvdplayer/Codecs/ffmpeg
 
 INCLUDES+=-Ilib/libUPnP/Platinum/Source/Core \
           -Ilib/libUPnP/Platinum/Source/Platinum \

@@ -504,20 +504,6 @@ static inline void restore_ac_coeffs(MpegEncContext * s, DCTELEM block[6][64], i
 }
 
 /**
- * init s->current_picture.qscale_table from s->lambda_table
- */
-static void ff_init_qscale_tab(MpegEncContext *s){
-    int8_t * const qscale_table= s->current_picture.qscale_table;
-    int i;
-
-    for(i=0; i<s->mb_num; i++){
-        unsigned int lam= s->lambda_table[ s->mb_index2xy[i] ];
-        int qp= (lam*139 + FF_LAMBDA_SCALE*64) >> (FF_LAMBDA_SHIFT + 7);
-        qscale_table[ s->mb_index2xy[i] ]= av_clip(qp, s->avctx->qmin, s->avctx->qmax);
-    }
-}
-
-/**
  * modify qscale so that encoding is acually possible in h263 (limit difference to -2..2)
  */
 void ff_clean_h263_qscales(MpegEncContext *s){
@@ -2994,7 +2980,7 @@ static int h263_decode_gob_header(MpegEncContext *s)
 
         /* We have a GBSC probably with GSTUFF */
     skip_bits(&s->gb, 16); /* Drop the zeros */
-    left= s->gb.size_in_bits - get_bits_count(&s->gb);
+    left= get_bits_left(&s->gb);
     //MN: we must check the bits left or we might end in a infinite loop (or segfault)
     for(;left>13; left--){
         if(get_bits1(&s->gb)) break; /* Seek the '1' bit */
@@ -3329,7 +3315,7 @@ int ff_h263_resync(MpegEncContext *s){
     //OK, it's not where it is supposed to be ...
     s->gb= s->last_resync_gb;
     align_get_bits(&s->gb);
-    left= s->gb.size_in_bits - get_bits_count(&s->gb);
+    left= get_bits_left(&s->gb);
 
     for(;left>16+1+5+5; left-=8){
         if(show_bits(&s->gb, 16)==0){
@@ -3774,7 +3760,7 @@ static int mpeg4_decode_partitioned_mb(MpegEncContext *s, DCTELEM block[6][64])
     /* per-MB end of slice check */
 
     if(--s->mb_num_left <= 0){
-//printf("%06X %d\n", show_bits(&s->gb, 24), s->gb.size_in_bits - get_bits_count(&s->gb));
+//printf("%06X %d\n", show_bits(&s->gb, 24), get_bits_left(&s->gb));
         if(mpeg4_is_resync(s))
             return SLICE_END;
         else
@@ -5034,7 +5020,7 @@ int h263_decode_picture_header(MpegEncContext *s)
 
     startcode= get_bits(&s->gb, 22-8);
 
-    for(i= s->gb.size_in_bits - get_bits_count(&s->gb); i>24; i-=8) {
+    for(i= get_bits_left(&s->gb); i>24; i-=8) {
         startcode = ((startcode << 8) | get_bits(&s->gb, 8)) & 0x003FFFFF;
 
         if(startcode == 0x20)
@@ -5917,7 +5903,11 @@ static int decode_vop_header(MpegEncContext *s, GetBitContext *gb){
         av_log(s->avctx, AV_LOG_ERROR, "hmm, seems the headers are not complete, trying to guess time_increment_bits\n");
 
         for(s->time_increment_bits=1 ;s->time_increment_bits<16; s->time_increment_bits++){
-            if(show_bits(gb, s->time_increment_bits+1)&1) break;
+            if (    s->pict_type == FF_P_TYPE
+                || (s->pict_type == FF_S_TYPE && s->vol_sprite_usage==GMC_SPRITE)) {
+                if((show_bits(gb, s->time_increment_bits+6)&0x37) == 0x30) break;
+            }else
+                if((show_bits(gb, s->time_increment_bits+5)&0x1F) == 0x18) break;
         }
 
         av_log(s->avctx, AV_LOG_ERROR, "my guess is %d bits ;)\n",s->time_increment_bits);

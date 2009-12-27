@@ -145,6 +145,8 @@
       <select>AspectRatio</select>
       <guide>XBMC.ActivateWindow(PVROSDGuide)</guide>
       <teletext>XBMC.ActivateWindow(Teletext)</teletext>
+      <subtitle>ShowSubtitles</subtitle>
+      <language>AudioNextLanguage</language>
     </remote>
   </FullscreenVideo>
   <FullscreenInfo>

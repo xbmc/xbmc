@@ -22,8 +22,10 @@
 #ifndef AVFILTER_AVFILTER_H
 #define AVFILTER_AVFILTER_H
 
-#define LIBAVFILTER_VERSION_MAJOR  0
-#define LIBAVFILTER_VERSION_MINOR  5
+#include "libavutil/avutil.h"
+
+#define LIBAVFILTER_VERSION_MAJOR  1
+#define LIBAVFILTER_VERSION_MINOR 12
 #define LIBAVFILTER_VERSION_MICRO  0
 
 #define LIBAVFILTER_VERSION_INT AV_VERSION_INT(LIBAVFILTER_VERSION_MAJOR, \
@@ -41,6 +43,17 @@
  * Returns the LIBAVFILTER_VERSION_INT constant.
  */
 unsigned avfilter_version(void);
+
+/**
+ * Returns the libavfilter build-time configuration.
+ */
+const char * avfilter_configuration(void);
+
+/**
+ * Returns the libavfilter license.
+ */
+const char * avfilter_license(void);
+
 
 typedef struct AVFilterContext AVFilterContext;
 typedef struct AVFilterLink    AVFilterLink;
@@ -71,6 +84,8 @@ typedef struct AVFilterPic
      * reallocating it from scratch.
      */
     void (*free)(struct AVFilterPic *pic);
+
+    int w, h;                  ///< width and height of the allocated buffer
 } AVFilterPic;
 
 /**
@@ -162,20 +177,19 @@ typedef struct AVFilterFormats AVFilterFormats;
 struct AVFilterFormats
 {
     unsigned format_count;      ///< number of formats
-    int *formats;               ///< list of formats
+    enum PixelFormat *formats;  ///< list of pixel formats
 
     unsigned refcount;          ///< number of references to this list
     AVFilterFormats ***refs;    ///< references to this list
 };
 
 /**
- * Helper function to create a list of supported formats.  This is intended
- * for use in AVFilter->query_formats().
- * @param len the number of formats supported
- * @param ... a list of the supported formats
- * @return    the format list, with no existing references
+ * Creates a list of supported formats. This is intended for use in
+ * AVFilter->query_formats().
+ * @param pix_fmt list of pixel formats, terminated by PIX_FMT_NONE
+ * @return the format list, with no existing references
  */
-AVFilterFormats *avfilter_make_format_list(int len, ...);
+AVFilterFormats *avfilter_make_format_list(const enum PixelFormat *pix_fmts);
 
 /**
  * Returns a list of all colorspaces supported by FFmpeg.
@@ -287,11 +301,11 @@ struct AVFilterPad
 
     /**
      * Callback function to get a buffer. If NULL, the filter system will
-     * handle buffer requests.
+     * use avfilter_default_get_video_buffer().
      *
      * Input video pads only.
      */
-    AVFilterPicRef *(*get_video_buffer)(AVFilterLink *link, int perms);
+    AVFilterPicRef *(*get_video_buffer)(AVFilterLink *link, int perms, int w, int h);
 
     /**
      * Callback called after the slices of a frame are completely sent. If
@@ -308,7 +322,7 @@ struct AVFilterPad
      *
      * Input video pads only.
      */
-    void (*draw_slice)(AVFilterLink *link, int y, int height);
+    void (*draw_slice)(AVFilterLink *link, int y, int height, int slice_dir);
 
     /**
      * Frame poll callback. This returns the number of immediately available
@@ -350,7 +364,7 @@ struct AVFilterPad
 /** default handler for start_frame() for video inputs */
 void avfilter_default_start_frame(AVFilterLink *link, AVFilterPicRef *picref);
 /** default handler for draw_slice() for video inputs */
-void avfilter_default_draw_slice(AVFilterLink *link, int y, int h);
+void avfilter_default_draw_slice(AVFilterLink *link, int y, int h, int slice_dir);
 /** default handler for end_frame() for video inputs */
 void avfilter_default_end_frame(AVFilterLink *link);
 /** default handler for config_props() for video outputs */
@@ -359,7 +373,7 @@ int avfilter_default_config_output_link(AVFilterLink *link);
 int avfilter_default_config_input_link (AVFilterLink *link);
 /** default handler for get_video_buffer() for video inputs */
 AVFilterPicRef *avfilter_default_get_video_buffer(AVFilterLink *link,
-                                                  int perms);
+                                                  int perms, int w, int h);
 /**
  * A helper for query_formats() which sets all links to the same list of
  * formats. If there are no links hooked to this filter, the list of formats is
@@ -373,7 +387,7 @@ int avfilter_default_query_formats(AVFilterContext *ctx);
  * Filter definition. This defines the pads a filter contains, and all the
  * callback functions used to interact with the filter.
  */
-typedef struct
+typedef struct AVFilter
 {
     const char *name;         ///< filter name
 
@@ -405,6 +419,12 @@ typedef struct
 
     const AVFilterPad *inputs;  ///< NULL terminated list of inputs. NULL if none
     const AVFilterPad *outputs; ///< NULL terminated list of outputs. NULL if none
+
+    /**
+     * A description for the filter. You should use the
+     * NULL_IF_CONFIG_SMALL() macro to define it.
+     */
+    const char *description;
 } AVFilter;
 
 /** An instance of a filter */
@@ -497,10 +517,13 @@ int avfilter_config_links(AVFilterContext *filter);
  * @param link  the output link to the filter from which the picture will
  *              be requested
  * @param perms the required access permissions
+ * @param w     the minimum width of the buffer to allocate
+ * @param h     the minimum height of the buffer to allocate
  * @return      A reference to the picture. This must be unreferenced with
  *              avfilter_unref_pic when you are finished with it.
  */
-AVFilterPicRef *avfilter_get_video_buffer(AVFilterLink *link, int perms);
+AVFilterPicRef *avfilter_get_video_buffer(AVFilterLink *link, int perms,
+                                          int w, int h);
 
 /**
  * Requests an input frame from the filter at the other end of the link.
@@ -535,16 +558,25 @@ void avfilter_end_frame(AVFilterLink *link);
 
 /**
  * Sends a slice to the next filter.
+ *
+ * Slices have to be provided in sequential order, either in
+ * top-bottom or bottom-top order. If slices are provided in
+ * non-sequential order the behavior of the function is undefined.
+ *
  * @param link the output link over which the frame is being sent
  * @param y    offset in pixels from the top of the image for this slice
  * @param h    height of this slice in pixels
+ * @param slice_dir the assumed direction for sending slices,
+ *             from the top slice to the bottom slice if the value is 1,
+ *             from the bottom slice to the top slice if the value is -1,
+ *             for other values the behavior of the function is undefined.
  */
-void avfilter_draw_slice(AVFilterLink *link, int y, int h);
+void avfilter_draw_slice(AVFilterLink *link, int y, int h, int slice_dir);
 
-/** Initialize the filter system. Registers all builtin filters */
+/** Initializes the filter system. Registers all builtin filters. */
 void avfilter_register_all(void);
 
-/** Uninitialize the filter system. Unregisters all filters */
+/** Uninitializes the filter system. Unregisters all filters. */
 void avfilter_uninit(void);
 
 /**
@@ -553,8 +585,10 @@ void avfilter_uninit(void);
  * filter can still by instantiated with avfilter_open even if it is not
  * registered.
  * @param filter the filter to register
+ * @return 0 if the registration was succesfull, a negative value
+ * otherwise
  */
-void avfilter_register(AVFilter *filter);
+int avfilter_register(AVFilter *filter);
 
 /**
  * Gets a filter definition matching the given name.
@@ -563,6 +597,14 @@ void avfilter_register(AVFilter *filter);
  *             NULL if none found.
  */
 AVFilter *avfilter_get_by_name(const char *name);
+
+/**
+ * If filter is NULL, returns a pointer to the first registered filter pointer,
+ * if filter is non-NULL, returns the next pointer after filter.
+ * If the returned pointer points to NULL, the last registered filter
+ * was already reached.
+ */
+AVFilter **av_filter_next(AVFilter **filter);
 
 /**
  * Creates a filter instance.

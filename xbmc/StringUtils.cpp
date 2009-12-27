@@ -387,17 +387,6 @@ void StringUtils::WordToDigits(CStdString &word)
   }
 }
 
-float StringUtils::GetFloat(const char* str)
-{
-  istringstream converter;
-  converter.imbue(locale("C"));
-  converter.str(str);
-  float result;
-  converter >> result;
-
-  return result;
-}
-
 CStdString StringUtils::CreateUUID()
 {
   /* This function generate a DCE 1.1, ISO/IEC 11578:1996 and IETF RFC-4122
@@ -452,4 +441,3 @@ bool StringUtils::ValidateUUID(const CStdString &uuid)
   guidRE.RegComp(ADDON_GUID_RE);
   return (guidRE.RegFind(uuid.c_str()) == 0);
 }
-

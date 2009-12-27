@@ -472,6 +472,13 @@ public:
 
   void SetHeld(unsigned int held);
   unsigned int GetHeld() const;
+
+  enum Modifier {
+    MODIFIER_CTRL = 0x00010000,
+    MODIFIER_SHIFT = 0x00020000,
+    MODIFIER_ALT = 0x00040000
+  };
+
 private:
   uint32_t m_buttonCode;
   uint8_t m_leftTrigger;

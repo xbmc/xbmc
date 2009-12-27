@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../ -I../../../ -I../../ffmpeg -I../../../linux -I../../../../guilib -I../../../FileSystem/ -I../DVDCodecs/Overlay/
+INCLUDES=-I. -I../ -I../../../ -I../Codecs/ffmpeg -I../../../linux -I../../../../guilib -I../../../FileSystem/ -I../DVDCodecs/Overlay/
 
 SRCS=	DVDFactorySubtitle.cpp \
 	DVDSubtitleLineCollection.cpp \

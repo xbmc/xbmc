@@ -22,8 +22,8 @@
  */
 
 #include "DVDAudioCodec.h"
-#include "cores/ffmpeg/DllAvCodec.h"
-#include "cores/ffmpeg/DllAvFormat.h"
+#include "Codecs/DllAvCodec.h"
+#include "Codecs/DllAvFormat.h"
 
 class CDVDAudioCodecFFmpeg : public CDVDAudioCodec
 {

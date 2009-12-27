@@ -1064,6 +1064,8 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton.Equals("green")) buttonCode = XINPUT_IR_REMOTE_GREEN;
   else if (strButton.Equals("yellow")) buttonCode = XINPUT_IR_REMOTE_YELLOW;
   else if (strButton.Equals("blue")) buttonCode = XINPUT_IR_REMOTE_BLUE;
+  else if (strButton.Equals("subtitle")) buttonCode = XINPUT_IR_REMOTE_SUBTITLE;
+  else if (strButton.Equals("language")) buttonCode = XINPUT_IR_REMOTE_LANGUAGE;
   else CLog::Log(LOGERROR, "Remote Translator: Can't find button %s", strButton.c_str());
   return buttonCode;
 }
@@ -1183,6 +1185,7 @@ uint32_t CButtonTranslator::TranslateKeyboardString(const char *szButton)
 
 uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
 {
+  uint32_t button_id = 0;
   const char *szButton = pButton->Value();
 
   if (!szButton) return 0;
@@ -1191,15 +1194,40 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
   {
     int id = 0;
     if (pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS)
-      return (uint32_t)id;
+      button_id = (uint32_t)id;
     else
       CLog::Log(LOGERROR, "Keyboard Translator: `key' button has no id");
   }
   else
   {
-    return TranslateKeyboardString(szButton);
+    button_id = TranslateKeyboardString(szButton);
   }
-  return 0;
+
+  // Process the ctrl/shift/alt modifiers
+  CStdString strMod;
+  if (pButton->QueryValueAttribute("mod", &strMod) == TIXML_SUCCESS)
+  {
+    strMod.ToLower();
+
+    CStdStringArray modArray;
+    StringUtils::SplitString(strMod, ",", modArray);
+    for (unsigned int i = 0; i < modArray.size(); i++)
+    {
+      CStdString& substr = modArray[i];
+      substr.Trim();
+
+      if (substr == "ctrl" || substr == "control")
+        button_id |= CKey::MODIFIER_CTRL;
+      else if (substr == "shift")
+        button_id |= CKey::MODIFIER_SHIFT;
+      else if (substr == "alt")
+        button_id |= CKey::MODIFIER_ALT;
+      else
+        CLog::Log(LOGERROR, "Keyboard Translator: Unknown key modifier %s in %s", substr.c_str(), strMod.c_str());
+     }
+  }
+
+  return button_id;
 }
 
 void CButtonTranslator::Clear()

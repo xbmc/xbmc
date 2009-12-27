@@ -45,10 +45,6 @@
 #define IN6_IS_ADDR_MULTICAST(a) (((uint8_t *) (a))[0] == 0xff)
 #endif
 
-#ifndef MSG_DONTWAIT 
-#define MSG_DONTWAIT 0x00//0x40
-#endif
-
 typedef struct {
     int udp_fd;
     int ttl;

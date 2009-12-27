@@ -37,12 +37,12 @@
  * which gives a low latency suitable for real-time playback.
  */
 
-#include "libavformat/avformat.h"
 #include <alsa/asoundlib.h>
+#include "libavformat/avformat.h"
 
 #include "alsa-audio.h"
 
-av_cold static int audio_write_header(AVFormatContext *s1)
+static av_cold int audio_write_header(AVFormatContext *s1)
 {
     AlsaData *s = s1->priv_data;
     AVStream *st;

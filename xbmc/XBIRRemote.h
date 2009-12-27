@@ -22,6 +22,9 @@
 
 #define XINPUT_IR_REMOTE_SELECT       11
 
+#define XINPUT_IR_REMOTE_SUBTITLE     44
+#define XINPUT_IR_REMOTE_LANGUAGE     45
+
 #define XINPUT_IR_REMOTE_MENU         247
 #define XINPUT_IR_REMOTE_BACK         216
 
