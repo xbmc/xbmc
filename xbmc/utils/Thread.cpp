@@ -303,10 +303,11 @@ ThreadIdentifier CThread::ThreadId() const
 #ifdef _LINUX
   if (m_ThreadHandle && m_ThreadHandle->m_threadValid)
     return m_ThreadHandle->m_hThread;
+  else
+    return 0;
 #else
   return m_ThreadId;
 #endif
-  return 0;
 }
 
 

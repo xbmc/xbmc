@@ -198,7 +198,6 @@ bool VGMCodec::IsSupportedFormat(const CStdString& strExt)
       strExt == "rwx" ||
       strExt == "rxw" ||
       strExt == "sad" ||
-      strExt == "sap" ||
       strExt == "sdt" ||
       strExt == "seg" ||
       strExt == "sfl" ||

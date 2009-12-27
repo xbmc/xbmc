@@ -85,7 +85,7 @@ CGUILargeTextureManager::CLargeTexture::CLargeTexture(const CStdString &path)
   m_path = path;
   m_refCount = 1;
   m_timeToDelete = 0;
-};
+}
 
 CGUILargeTextureManager::CLargeTexture::~CLargeTexture()
 {

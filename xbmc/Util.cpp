@@ -360,19 +360,20 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     CStdString strExtension;
     CUtil::GetExtension(strFileName, strExtension);
     strExtension.ToLower();
+    strExtension += "|";
 
     CStdString strFileMask;
     strFileMask = g_stSettings.m_pictureExtensions;
-    strFileMask += g_stSettings.m_musicExtensions;
-    strFileMask += g_stSettings.m_videoExtensions;
+    strFileMask += "|" + g_stSettings.m_musicExtensions;
+    strFileMask += "|" + g_stSettings.m_videoExtensions;
 #if defined(__APPLE__)
-    strFileMask += ".py|.xml|.milk|.xpr|.cdg|.app|.applescript|.workflow";
+    strFileMask += "|.py|.xml|.milk|.xpr|.cdg|.app|.applescript|.workflow";
 #else
-    strFileMask += ".py|.xml|.milk|.xpr|.cdg";
+    strFileMask += "|.py|.xml|.milk|.xpr|.cdg";
 #endif
+    strFileMask += "|";
 
-    // Only remove if its a valid media extension
-    if (strFileMask.Find(strExtension.c_str()) >= 0)
+    if (strFileMask.Find(strExtension) >= 0)
       strFileName = strFileName.Left(iPos);
   }
 }
@@ -404,8 +405,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     }
   }
 
-  if (!bIsFolder)
-    RemoveExtension(strTitleAndYear);
+  RemoveExtension(strTitleAndYear);
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {

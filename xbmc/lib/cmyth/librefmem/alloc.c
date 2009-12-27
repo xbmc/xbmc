@@ -468,7 +468,9 @@ ref_release(void *p)
 #ifdef DEBUG
 			ref->magic = 0;
 			guard->magic = 0;
+#ifndef _WIN32
 			refmem_ref_remove(ref);
+#endif
 			ref->next = NULL;
 #endif /* DEBUG */
 			free(block);
