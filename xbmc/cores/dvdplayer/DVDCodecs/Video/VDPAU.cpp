@@ -102,12 +102,17 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
   {
     SpewHardwareAvailable();
 
+    VdpDecoderProfile profile = 0;
     if(codec == CODEC_ID_H264)
+      profile = VDP_DECODER_PROFILE_H264_HIGH;
+    else if(codec == CODEC_ID_MPEG4)
+      profile = VDP_DECODER_PROFILE_MPEG4_PART2_ASP;
+
+    if(profile)
     {
       /* attempt to create a decoder with this width/height, some sizes are note supported by hw */
       VdpStatus vdp_st;
-      vdp_st = vdp_decoder_create(vdp_device, VDP_DECODER_PROFILE_H264_HIGH,
-                                  width, height, 5, &decoder);
+      vdp_st = vdp_decoder_create(vdp_device, profile, width, height, 5, &decoder);
 
       if(vdp_st != VDP_STATUS_OK)
       {
@@ -899,6 +904,9 @@ void CVDPAU::ReadFormatOf( PixelFormat fmt
       vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_ADVANCED;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
+    case PIX_FMT_VDPAU_MPEG4:
+      vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG4_PART2_ASP;
+      vdp_chroma_type     = VDP_CHROMA_TYPE_420;
     default:
       vdp_decoder_profile = 0;
       vdp_chroma_type     = 0;
