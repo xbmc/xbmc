@@ -1006,6 +1006,8 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   
   vdpau_render_state * render = NULL;
 
+  vdp->CheckRecover(false);
+
   // find unused surface
   for(unsigned int i = 0; i < vdp->m_videoSurfaces.size(); i++)
   {
@@ -1092,6 +1094,8 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)s->opaque;
   CVDPAU*               vdp = ctx->GetContextVDPAU();
+
+  vdp->CheckRecover(false);
 
   assert(src->linesize[0]==0 && src->linesize[1]==0 && src->linesize[2]==0);
   assert(offset[0]==0 && offset[1]==0 && offset[2]==0);
