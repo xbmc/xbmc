@@ -2469,10 +2469,6 @@
 		E38E15960D25F9FA00618676 /* DVDSubtitleStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleStream.cpp; sourceTree = "<group>"; };
 		E38E15970D25F9FA00618676 /* DVDSubtitleStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleStream.h; sourceTree = "<group>"; };
 		E38E159A0D25F9FA00618676 /* IDVDPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDVDPlayer.h; sourceTree = "<group>"; };
-		E38E15A50D25F9FA00618676 /* DllAvCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAvCodec.h; sourceTree = "<group>"; };
-		E38E15A60D25F9FA00618676 /* DllAvFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAvFormat.h; sourceTree = "<group>"; };
-		E38E15A70D25F9FA00618676 /* DllPostProc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllPostProc.h; sourceTree = "<group>"; };
-		E38E15A80D25F9FA00618676 /* DllSwScale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllSwScale.h; sourceTree = "<group>"; };
 		E38E15B50D25F9FA00618676 /* IAudioCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAudioCallback.h; sourceTree = "<group>"; };
 		E38E15B60D25F9FA00618676 /* IPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPlayer.h; sourceTree = "<group>"; };
 		E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AC3CDDACodec.cpp; sourceTree = "<group>"; };
@@ -2972,27 +2968,6 @@
 		E38E18590D25F9FA00618676 /* LangInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LangInfo.h; sourceTree = "<group>"; };
 		E38E185A0D25F9FA00618676 /* LastFmManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LastFmManager.cpp; sourceTree = "<group>"; };
 		E38E185B0D25F9FA00618676 /* LastFmManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFmManager.h; sourceTree = "<group>"; };
-		E38E18620D25F9FA00618676 /* bytesex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bytesex.h; sourceTree = "<group>"; };
-		E38E18630D25F9FA00618676 /* bytesex_asm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bytesex_asm.h; sourceTree = "<group>"; };
-		E38E18640D25F9FA00618676 /* cd_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cd_types.h; sourceTree = "<group>"; };
-		E38E18650D25F9FA00618676 /* cdda.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdda.h; sourceTree = "<group>"; };
-		E38E18660D25F9FA00618676 /* cdio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdio.h; sourceTree = "<group>"; };
-		E38E18670D25F9FA00618676 /* cdtext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdtext.h; sourceTree = "<group>"; };
-		E38E18690D25F9FA00618676 /* device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = device.h; sourceTree = "<group>"; };
-		E38E186A0D25F9FA00618676 /* disc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = disc.h; sourceTree = "<group>"; };
-		E38E186B0D25F9FA00618676 /* ds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ds.h; sourceTree = "<group>"; };
-		E38E186C0D25F9FA00618676 /* dvd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dvd.h; sourceTree = "<group>"; };
-		E38E186E0D25F9FA00618676 /* iso9660.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iso9660.h; sourceTree = "<group>"; };
-		E38E18720D25F9FA00618676 /* logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = logging.h; sourceTree = "<group>"; };
-		E38E18730D25F9FA00618676 /* paranoia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = paranoia.h; sourceTree = "<group>"; };
-		E38E18740D25F9FA00618676 /* read.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = read.h; sourceTree = "<group>"; };
-		E38E18750D25F9FA00618676 /* scsi_mmc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scsi_mmc.h; sourceTree = "<group>"; };
-		E38E18760D25F9FA00618676 /* sector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sector.h; sourceTree = "<group>"; };
-		E38E18770D25F9FA00618676 /* track.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = track.h; sourceTree = "<group>"; };
-		E38E18780D25F9FA00618676 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
-		E38E18790D25F9FA00618676 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
-		E38E187A0D25F9FA00618676 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
-		E38E187B0D25F9FA00618676 /* xa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xa.h; sourceTree = "<group>"; };
 		E38E187D0D25F9FA00618676 /* CDRip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDRip.h; sourceTree = "<group>"; };
 		E38E18800D25F9FA00618676 /* cdripxlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdripxlib.h; sourceTree = "<group>"; };
 		E38E18810D25F9FA00618676 /* ICDAudioCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICDAudioCallback.h; sourceTree = "<group>"; };
@@ -4844,7 +4819,6 @@
 				E38E14F60D25F9F900618676 /* DummyVideoPlayer.cpp */,
 				E38E14F70D25F9F900618676 /* DummyVideoPlayer.h */,
 				E38E14F80D25F9F900618676 /* dvdplayer */,
-				E38E159F0D25F9FA00618676 /* ffmpeg */,
 				E38E15B50D25F9FA00618676 /* IAudioCallback.h */,
 				7C5608C30F1754930056433A /* ExternalPlayer */,
 				E38E15B60D25F9FA00618676 /* IPlayer.h */,
@@ -5201,17 +5175,6 @@
 				F5EEBA86107015070019B552 /* SamiTagConvertor.h */,
 			);
 			path = DVDSubtitles;
-			sourceTree = "<group>";
-		};
-		E38E159F0D25F9FA00618676 /* ffmpeg */ = {
-			isa = PBXGroup;
-			children = (
-				E38E15A50D25F9FA00618676 /* DllAvCodec.h */,
-				E38E15A60D25F9FA00618676 /* DllAvFormat.h */,
-				E38E15A70D25F9FA00618676 /* DllPostProc.h */,
-				E38E15A80D25F9FA00618676 /* DllSwScale.h */,
-			);
-			path = ffmpeg;
 			sourceTree = "<group>";
 		};
 		E38E15D20D25F9FA00618676 /* paplayer */ = {
@@ -5670,7 +5633,6 @@
 		E38E185C0D25F9FA00618676 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				E38E18610D25F9FA00618676 /* libcdio */,
 				E38E187C0D25F9FA00618676 /* libCDRip */,
 				E38E18820D25F9FA00618676 /* libexif */,
 				E38E194C0D25F9FB00618676 /* libGoAhead */,
@@ -5692,34 +5654,6 @@
 				E38E1D650D25F9FC00618676 /* zlib */,
 			);
 			path = lib;
-			sourceTree = "<group>";
-		};
-		E38E18610D25F9FA00618676 /* libcdio */ = {
-			isa = PBXGroup;
-			children = (
-				E38E18620D25F9FA00618676 /* bytesex.h */,
-				E38E18630D25F9FA00618676 /* bytesex_asm.h */,
-				E38E18640D25F9FA00618676 /* cd_types.h */,
-				E38E18650D25F9FA00618676 /* cdda.h */,
-				E38E18660D25F9FA00618676 /* cdio.h */,
-				E38E18670D25F9FA00618676 /* cdtext.h */,
-				E38E18690D25F9FA00618676 /* device.h */,
-				E38E186A0D25F9FA00618676 /* disc.h */,
-				E38E186B0D25F9FA00618676 /* ds.h */,
-				E38E186C0D25F9FA00618676 /* dvd.h */,
-				E38E186E0D25F9FA00618676 /* iso9660.h */,
-				E38E18720D25F9FA00618676 /* logging.h */,
-				E38E18730D25F9FA00618676 /* paranoia.h */,
-				E38E18740D25F9FA00618676 /* read.h */,
-				E38E18750D25F9FA00618676 /* scsi_mmc.h */,
-				E38E18760D25F9FA00618676 /* sector.h */,
-				E38E18770D25F9FA00618676 /* track.h */,
-				E38E18780D25F9FA00618676 /* types.h */,
-				E38E18790D25F9FA00618676 /* util.h */,
-				E38E187A0D25F9FA00618676 /* version.h */,
-				E38E187B0D25F9FA00618676 /* xa.h */,
-			);
-			path = libcdio;
 			sourceTree = "<group>";
 		};
 		E38E187C0D25F9FA00618676 /* libCDRip */ = {

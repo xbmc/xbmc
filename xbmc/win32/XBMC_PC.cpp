@@ -127,6 +127,9 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   }
 #endif
 
+  //Initialize COM
+  CoInitializeEx(NULL, COINIT_MULTITHREADED);
+
   // parse the command line
   CStdStringW strcl(commandLine);
   LPWSTR *szArglist;
@@ -168,6 +171,9 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 #endif
 
   g_application.Run();
+
+  //Uninitialize COM
+  CoUninitialize();
 
   return 0;
 }

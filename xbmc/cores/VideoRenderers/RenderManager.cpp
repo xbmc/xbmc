@@ -538,7 +538,6 @@ void CXBMCRenderManager::Recover()
   if (g_VDPAU)
   {
     glFlush(); // attempt to have gpu done with pixmap
-    g_VDPAU->CheckRecover(true);
   }
 #endif
 }

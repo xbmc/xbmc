@@ -200,8 +200,6 @@ void XBPyThread::Process()
   
   xbp_chdir(sourcedir);
   
-  int retval = -1;
-  
   if (m_type == 'F')
   {
     // run script from file
