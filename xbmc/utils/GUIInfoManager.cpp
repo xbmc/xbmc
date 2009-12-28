@@ -3962,7 +3962,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->Plot();
     if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->m_strPlotOutline;
+      return item->GetPVRRecordingInfoTag()->Plot();
     if (item->HasVideoInfoTag())
     {
       if (!(!item->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && item->GetVideoInfoTag()->m_iSeason == -1)) // dont apply to tvshows
@@ -3978,7 +3978,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->PlotOutline();
     if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->m_strPlotOutline;
+      return item->GetPVRRecordingInfoTag()->PlotOutline();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strPlotOutline;
     break;
