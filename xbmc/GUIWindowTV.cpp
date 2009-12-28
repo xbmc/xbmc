@@ -1099,7 +1099,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString strNewName = pItem->GetPVRRecordingInfoTag()->Title();
       if (CGUIDialogKeyboard::ShowAndGetInput(strNewName, g_localizeStrings.Get(19041), false))
       {
-        if (cPVRRecordings::DeleteRecording(*pItem))
+        if (cPVRRecordings::RenameRecording(*pItem, strNewName))
         {
           UpdateRecordings();
         }
