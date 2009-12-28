@@ -79,6 +79,17 @@ CVDPAU::CVDPAU(int width, int height)
   memset(&outRect, 0, sizeof(VdpRect));
   memset(&outRectVid, 0, sizeof(VdpRect));
 
+  tmpBrightness  = 0;
+  tmpContrast    = 0;
+  interlaced     = false;
+  VDPAUSwitching = false;
+  max_references = 0;
+
+  for (int i = 0; i < NUM_OUTPUT_SURFACES; i++)
+    outputSurfaces[i] = VDP_INVALID_HANDLE;
+
+  videoMixer = VDP_INVALID_HANDLE;
+
   dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
   if (!dl_handle) 
   {
@@ -87,21 +98,12 @@ CVDPAU::CVDPAU(int width, int height)
   }
 
   InitVDPAUProcs();
-  SpewHardwareAvailable();
-
-  tmpBrightness  = 0;
-  tmpContrast    = 0;
-  interlaced     = false;
-  VDPAUSwitching = false;
-  max_references = 0;
 
   if (vdp_device)
+  {
     InitCSCMatrix(height);
-
-  for (int i = 0; i < NUM_OUTPUT_SURFACES; i++)
-    outputSurfaces[i] = VDP_INVALID_HANDLE;
-
-  videoMixer = VDP_INVALID_HANDLE;
+		SpewHardwareAvailable();
+	}
 }
 
 CVDPAU::~CVDPAU()
