@@ -368,6 +368,12 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
                                          m_pCodecContext->pix_fmt, m_pCodecContext->width, m_pCodecContext->height,
                                          PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
+    if(context == NULL)
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::Decode - unable to obtain sws context for w:%i, h:%i, pixfmt: %i", m_pCodecContext->width, m_pCodecContext->height, m_pCodecContext->pix_fmt);
+      return VC_ERROR;
+    }
+
     m_dllSwScale.sws_scale(context
                           , m_pFrame->data
                           , m_pFrame->linesize
