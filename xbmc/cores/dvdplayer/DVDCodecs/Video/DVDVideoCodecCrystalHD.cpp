@@ -97,12 +97,13 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
 {
   int ret = 0;
 
-  int pict_field;
   int maxWait;
   unsigned int lastTime;
   unsigned int maxTime;
   bool annexbfiltered = false;
 
+  m_Device->ClearBusyList();
+  
   // in NULL is passed, DVDPlayer wants us to flush any internal picture frame.
   // we don't have internal picture frames so just return.
   if (!pData)
@@ -126,7 +127,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
   // or we can suck vqueue dry and DVDPlayer starts thrashing about. If we are dropping
   // frames, then drop the timeout so we can catch up quickly.
   if (m_DropPictures)
-    maxWait = 5;
+    maxWait = 1;
   else
     maxWait = 40;
 
@@ -149,27 +150,29 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
         Sleep(10);
       }
     }
-
-    // Handle Output
-    if (m_Device->GotPicture(&pict_field))
-    {
-      if (pict_field != CRYSTALHD_FIELD_EVEN)
-        ret |= VC_PICTURE;
-    }
     
     if (m_Device->GetInputCount() < 25)
       ret |= VC_BUFFER;
 
+    if (!m_DropPictures)
+      Sleep(5);
+      
+    // Handle Output
     // wait for both consumed demux packet and a returned picture frame
     // this help throttle consuming demux packets and we don't drain vqueue.
-    if (!pData && (ret & VC_PICTURE))
-      break;
-
+    if (m_Device->GetReadyCount())
+    {
+      ret |= VC_PICTURE;
+      if (!pData)
+        break;
+    }
   } while ((lastTime = CTimeUtils::GetTimeMS()) < maxTime);
 
   if (lastTime >= maxTime)
+  {
     CLog::Log(LOGDEBUG, "%s: Timeout in Decode. maxWait: %d, ret: 0x%08x pData: %p", __MODULE_NAME__, maxWait, ret, pData);
-    
+  }
+  
   if (!ret)
     ret = VC_ERROR;
 

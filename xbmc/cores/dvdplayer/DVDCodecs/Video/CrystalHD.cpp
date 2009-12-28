@@ -88,6 +88,24 @@ const char* g_DtsStatusText[] = {
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////
+class CMPCDecodeBuffer
+{
+public:
+  CMPCDecodeBuffer(size_t size);
+  CMPCDecodeBuffer(unsigned char* pBuffer, size_t size);
+  virtual ~CMPCDecodeBuffer();
+  size_t GetSize();
+  unsigned char* GetPtr();
+  void SetPts(uint64_t pts);
+  uint64_t GetPts();
+protected:
+  size_t m_Size;
+  unsigned char* m_pBuffer;
+  unsigned int m_Id;
+  uint64_t m_Pts;
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////
 class CMPCInputThread : public CThread
 {
 public:
@@ -96,7 +114,7 @@ public:
   
   bool                AddInput(unsigned char* pData, size_t size, uint64_t pts);
   void                Flush(void);
-  unsigned int        GetQueueLen(void);
+  unsigned int        GetInputCount(void);
   
 protected:
   CMPCDecodeBuffer*   AllocBuffer(size_t size);
@@ -109,6 +127,39 @@ protected:
   BCM::HANDLE         m_Device;
   int                 m_SleepTime;
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////
+class CMPCOutputThread : public CThread
+{
+public:
+  CMPCOutputThread(BCM::HANDLE device);
+  virtual ~CMPCOutputThread();
+  
+  unsigned int        GetReadyCount(void);
+  CPictureBuffer*     GetNextPicture(void);
+  void                FreeBuffer(CPictureBuffer* pBuffer);
+  void                Flush(void);
+
+protected:
+  void                SetFrameRate(uint32_t resolution);
+  void                SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info);
+  bool                GetDecoderOutput(void);
+  virtual void        Process(void);
+  
+  CSyncPtrQueue<CPictureBuffer> m_FreeList;
+  CSyncPtrQueue<CPictureBuffer> m_ReadyList;
+
+  BCM::HANDLE         m_Device;
+  unsigned int        m_OutputTimeout;
+  int                 m_width;
+  int                 m_height;
+  uint64_t            m_timestamp;
+  int                 m_interlace;
+  double              m_framerate;
+  int                 m_aspectratio_x;
+  int                 m_aspectratio_y;
+};
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 #if defined(__APPLE__)
@@ -145,7 +196,7 @@ BCM::U64 CMPCDecodeBuffer::GetPts(void)
   return m_Pts;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
 #if defined(__APPLE__)
 #pragma mark -
 #endif
@@ -180,7 +231,7 @@ void CMPCInputThread::Flush(void)
     delete m_InputList.Pop();
 }
 
-unsigned int CMPCInputThread::GetQueueLen(void)
+unsigned int CMPCInputThread::GetInputCount(void)
 {
   return m_InputList.Count();
 }
@@ -211,15 +262,31 @@ void CMPCInputThread::Process(void)
 
     if (pInput)
     {
-      BCM::BC_STATUS ret = BCM::DtsProcInput(m_Device, pInput->GetPtr(), pInput->GetSize(), pInput->GetPts(), FALSE);
+      BCM::BC_STATUS ret;
+      BCM::BC_DTS_STATUS decoder_status;
+
+      ret = BCM::DtsGetDriverStatus(m_Device, &decoder_status);
       if (ret == BCM::BC_STS_SUCCESS)
       {
-        delete pInput;
-        pInput = NULL;
-      }
-      else if (ret == BCM::BC_STS_BUSY)
-      {
-        Sleep(1); // Buffer is full
+        if (decoder_status.ReadyListCount <= 8)
+        {
+          BCM::BC_STATUS ret = BCM::DtsProcInput(m_Device, pInput->GetPtr(), pInput->GetSize(), pInput->GetPts(), FALSE);
+          if (ret == BCM::BC_STS_SUCCESS)
+          {
+            delete pInput;
+            pInput = NULL;
+          }
+          else if (ret == BCM::BC_STS_BUSY)
+          {
+            CLog::Log(LOGDEBUG, "%s: DtsProcInput returned BC_STS_BUSY", __MODULE_NAME__);
+            Sleep(m_SleepTime); // Buffer is full
+          }
+        }
+        else
+        {
+          //CLog::Log(LOGDEBUG, "%s: ReadyListCount > 5", __MODULE_NAME__);
+          Sleep(m_SleepTime);
+        }
       }
     }
     else
@@ -231,296 +298,72 @@ void CMPCInputThread::Process(void)
   CLog::Log(LOGDEBUG, "%s: Input Thread Stopped...", __MODULE_NAME__);
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////
-union pts_union
-{
-  double  pts_d;
-  int64_t pts_i;
-};
-
-static int64_t pts_dtoi(double pts)
-{
-  pts_union u;
-  u.pts_d = pts;
-  return u.pts_i;
-}
-
-static double pts_itod(int64_t pts)
-{
-  pts_union u;
-  u.pts_i = pts;
-  return u.pts_d;
-}
-
 #if defined(__APPLE__)
 #pragma mark -
 #endif
-CCrystalHD* CCrystalHD::m_pInstance = NULL;
-
-CCrystalHD::CCrystalHD() :
-  m_Device(NULL),
-  m_IsConfigured(false),
-  m_drop_state(false),
-  m_y_buffer_ptr(NULL),
-  m_uv_buffer_ptr(NULL),
-  m_pInputThread(NULL)
+CPictureBuffer::CPictureBuffer(int m_width, int m_height)
 {
-  BCM::BC_STATUS res;
-  //BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | BCM::DTS_SKIP_TX_CHK_CPB | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
-  BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
-  
-  res = BCM::DtsDeviceOpen(&m_Device, mode);
-  if (res != BCM::BC_STS_SUCCESS)
-  {
-    m_Device = NULL;
-    CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Device", __MODULE_NAME__);
-  }
-  else
-  {
-    CLog::Log(LOGINFO, "%s: Opened Broadcom Crystal HD Device", __MODULE_NAME__);
-  }
-}
-
-CCrystalHD::~CCrystalHD()
-{
-  if (m_IsConfigured)
-    Close();
-    
-  if (m_Device)
-  {
-    BCM::DtsDeviceClose(m_Device);
-    m_Device = NULL;
-  }
-  CLog::Log(LOGINFO, "%s: Closed Broadcom Crystal HD Device", __MODULE_NAME__);
-}
-
-void CCrystalHD::RemoveInstance(void)
-{
-  if (m_pInstance)
-  {
-    delete m_pInstance;
-    m_pInstance = NULL;
-  }
-}
-
-CCrystalHD* CCrystalHD::GetInstance(void)
-{
-  if (!m_pInstance)
-  {
-    m_pInstance = new CCrystalHD();
-  }
-  return m_pInstance;
-}
-
-bool CCrystalHD::Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type)
-{
-  BCM::BC_STATUS res;
-  
-  if (m_IsConfigured)
-    Close();
-
-  BCM::U32 videoAlg = 0;
-  switch (codec_type)
-  {
-    case BC_CODEC_ID_VC1:
-      videoAlg = BCM::BC_VID_ALGO_VC1;
-      m_pFormatName = "bcm-vc1";
-    break;
-    case BC_CODEC_ID_H264:
-      videoAlg = BCM::BC_VID_ALGO_H264;
-      m_pFormatName = "bcm-h264";
-    break;
-    case BC_CODEC_ID_MPEG2:
-      videoAlg = BCM::BC_VID_ALGO_MPEG2;
-      m_pFormatName = "bcm-mpeg2";
-    break;
-    default:
-      return false;
-    break;
-  }
-
-  do 
-  {
-    res = BCM::DtsOpenDecoder(m_Device, stream_type);
-    if (res != BCM::BC_STS_SUCCESS)
-    {
-      CLog::Log(LOGERROR, "%s: Failed to open decoder", __MODULE_NAME__);
-      break;
-    }
-    res = BCM::DtsSetVideoParams(m_Device, videoAlg, FALSE, FALSE, TRUE, 0x80000000 | BCM::vdecFrameRate23_97);
-    if (res != BCM::BC_STS_SUCCESS)
-    {
-      CLog::Log(LOGERROR, "%s: Failed to set video params", __MODULE_NAME__);
-      break;
-    }
-    res = BCM::DtsStartDecoder(m_Device);
-    if (res != BCM::BC_STS_SUCCESS)
-    {
-      CLog::Log(LOGERROR, "%s: Failed to start decoder", __MODULE_NAME__);
-      break;
-    }
-    res = BCM::DtsStartCapture(m_Device);
-    if (res != BCM::BC_STS_SUCCESS)
-    {
-      CLog::Log(LOGERROR, "%s: Failed to start capture", __MODULE_NAME__);
-      break;
-    }
- 
-    m_pInputThread = new CMPCInputThread(m_Device);
-    m_pInputThread->Create();
-
-    m_timestamp = DVD_NOPTS_VALUE;
-    m_drop_state = false;
-    m_IsConfigured = true;
-    CLog::Log(LOGDEBUG, "%s: Opened Broadcom Crystal HD Codec", __MODULE_NAME__);
-  } while(false);
-  
-  return m_IsConfigured;
-}
-
-void CCrystalHD::Close(void)
-{
-  if (m_pInputThread)
-  {
-    m_pInputThread->StopThread();
-    delete m_pInputThread;
-    m_pInputThread = NULL;
-  }
-
-  if (m_Device)
-  {
-    BCM::DtsFlushRxCapture(m_Device, TRUE);
-    BCM::DtsStopDecoder(m_Device);
-    BCM::DtsCloseDecoder(m_Device);
-  }
-  if (m_y_buffer_ptr)
-  {
-    _aligned_free(m_y_buffer_ptr);
-    m_y_buffer_ptr = NULL;
-  }
-  if (m_uv_buffer_ptr)
-  {
-    _aligned_free(m_uv_buffer_ptr);
-    m_uv_buffer_ptr = NULL;
-  }
-  m_IsConfigured = false;
-
-  CLog::Log(LOGDEBUG, "%s: Closed Broadcom Crystal HD Codec", __MODULE_NAME__);
-}
-
-bool CCrystalHD::IsOpenforDecode(void)
-{
-  return m_IsConfigured;
-}
-
-void CCrystalHD::Flush(void)
-{
-  m_pInputThread->Flush();
-
+  m_field = CRYSTALHD_FIELD_FULL;
+  m_interlace = false;
   m_timestamp = DVD_NOPTS_VALUE;
-
-  CLog::Log(LOGDEBUG, "%s: Flush...", __MODULE_NAME__);
+  m_PictureNumber = 0;
+  m_y_buffer_size = m_width * m_height;
+  m_uv_buffer_size = m_y_buffer_size / 2;
+  m_y_buffer_ptr = (unsigned char*)_aligned_malloc(m_y_buffer_size, 16);
+  m_uv_buffer_ptr = (unsigned char*)_aligned_malloc(m_uv_buffer_size, 16);
 }
 
-unsigned int CCrystalHD::GetInputCount(void)
+CPictureBuffer::~CPictureBuffer()
 {
-  if (m_pInputThread)
-    return m_pInputThread->GetQueueLen();
-  else
-    return 0;  
+  if (m_y_buffer_ptr) _aligned_free(m_y_buffer_ptr);
+  if (m_uv_buffer_ptr) _aligned_free(m_uv_buffer_ptr);
 }
 
-bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double pts)
+/////////////////////////////////////////////////////////////////////////////////////////////
+#if defined(__APPLE__)
+#pragma mark -
+#endif
+CMPCOutputThread::CMPCOutputThread(BCM::HANDLE device) :
+  CThread(),
+  m_Device(device),
+  m_OutputTimeout(20)
 {
-  if (m_pInputThread)
-    return m_pInputThread->AddInput(pData, size, pts_dtoi(pts) );
-  else
-    return false;
 }
 
-bool CCrystalHD::GotPicture(int *field)
+CMPCOutputThread::~CMPCOutputThread()
 {
-  BCM::BC_STATUS ret;
-  BCM::BC_DTS_STATUS decoder_status;
-  bool got_picture = false;
+  while(m_ReadyList.Count())
+    delete m_ReadyList.Pop();
+  while(m_FreeList.Count())
+    delete m_FreeList.Pop();
+}
 
-  ret = BCM::DtsGetDriverStatus(m_Device, &decoder_status);
-  if (ret == BCM::BC_STS_SUCCESS)
+unsigned int CMPCOutputThread::GetReadyCount(void)
+{
+  return m_ReadyList.Count();
+}
+
+CPictureBuffer* CMPCOutputThread::GetNextPicture(void)
+{
+  CPictureBuffer *pBuffer = m_ReadyList.Pop();
+  return pBuffer;
+}
+
+void CMPCOutputThread::FreeBuffer(CPictureBuffer* pBuffer)
+{
+  m_FreeList.Push(pBuffer);
+}
+
+void CMPCOutputThread::Flush(void)
+{
+  while(m_ReadyList.Count())
   {
-    if (decoder_status.ReadyListCount > 0)
-    {
-      got_picture = GetDecoderOutput();
-      if ( got_picture )
-      {
-        *field = m_field;
-      }
-      /*
-      CLog::Log(LOGDEBUG, "%s: ReadyListCount %d FreeListCount %d PIBMissCount %d\n", __MODULE_NAME__,
-        decoder_status.ReadyListCount, decoder_status.FreeListCount, decoder_status.PIBMissCount);
-      CLog::Log(LOGDEBUG, "%s: FramesDropped %d FramesCaptured %d FramesRepeated %d\n", __MODULE_NAME__,
-        decoder_status.FramesDropped, decoder_status.FramesCaptured, decoder_status.FramesRepeated);
-      */
-    }
-  }
-
-  return got_picture;
-}
-
-bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
-{
-  pDvdVideoPicture->pts = pts_itod(m_timestamp);
-  pDvdVideoPicture->iWidth = m_width;
-  pDvdVideoPicture->iHeight = m_height;
-  pDvdVideoPicture->iDisplayWidth = m_width;
-  pDvdVideoPicture->iDisplayHeight = m_height;
-  
-  // Y plane
-  pDvdVideoPicture->data[0] = (BYTE*)m_y_buffer_ptr;
-  pDvdVideoPicture->iLineSize[0] = m_width;
-  // UV packed plane
-  pDvdVideoPicture->data[1] = (BYTE*)m_uv_buffer_ptr;
-  pDvdVideoPicture->iLineSize[1] = m_width;
-  // unused
-  pDvdVideoPicture->data[2] = NULL;
-  pDvdVideoPicture->iLineSize[2] = 0;
-
-  pDvdVideoPicture->iRepeatPicture = 0;
-  //pDvdVideoPicture->iDuration = 0;
-  pDvdVideoPicture->iDuration = (DVD_TIME_BASE / m_framerate);
-  pDvdVideoPicture->color_range = 1;
-  // todo 
-  //pDvdVideoPicture->color_matrix = 1;
-  pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
-  pDvdVideoPicture->iFlags |= m_interlace ? DVP_FLAG_INTERLACED : 0;
-  //if (m_interlace)
-  //  pDvdVideoPicture->iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
-  pDvdVideoPicture->iFlags |= m_drop_state ? DVP_FLAG_DROPPED : 0;
-  pDvdVideoPicture->format = DVDVideoPicture::FMT_NV12;
-
-  //CLog::Log(LOGDEBUG, "%s: GetPicture, pts = %f", __MODULE_NAME__, pDvdVideoPicture->pts);
-  return true;
-}
-
-void CCrystalHD::SetDropState(bool bDrop)
-{
-  if (m_drop_state != bDrop)
-  {
-    m_drop_state = bDrop;
-    if (m_drop_state)
-    {
-      BCM::DtsSetFFRate(m_Device, 2);
-    }
-    else
-    {
-      BCM::DtsSetFFRate(m_Device, 1);
-    }
-    
-    CLog::Log(LOGDEBUG, "%s: SetDropState... %d", __MODULE_NAME__, m_drop_state);
+    m_FreeList.Push( m_ReadyList.Pop() );
   }
 }
 
-void CCrystalHD::SetFrameRate(uint32_t resolution)
+void CMPCOutputThread::SetFrameRate(uint32_t resolution)
 {
   m_interlace = FALSE;
   
@@ -628,9 +471,9 @@ void CCrystalHD::SetFrameRate(uint32_t resolution)
 
 }
 
-void CCrystalHD::SetAspectRatio(uint32_t aspect_ratio, uint32_t custom_aspect_ratio_width_height)
+void CMPCOutputThread::SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info)
 {
-  switch(aspect_ratio)
+	switch(pic_info->aspect_ratio)
   {
     case BCM::vdecAspectRatioSquare:
       m_aspectratio_x = 1;
@@ -702,8 +545,8 @@ void CCrystalHD::SetAspectRatio(uint32_t aspect_ratio, uint32_t custom_aspect_ra
     break;
     
     case BCM::vdecAspectRatioOther:
-      m_aspectratio_x = custom_aspect_ratio_width_height & 0x0000ffff;
-      m_aspectratio_y = custom_aspect_ratio_width_height >> 16;
+      m_aspectratio_x = pic_info->custom_aspect_ratio_width_height & 0x0000ffff;
+      m_aspectratio_y = pic_info->custom_aspect_ratio_width_height >> 16;
     break;
   }
   if(m_aspectratio_x == 0)
@@ -715,10 +558,11 @@ void CCrystalHD::SetAspectRatio(uint32_t aspect_ratio, uint32_t custom_aspect_ra
   CLog::Log(LOGDEBUG, "%s: dec_par x = %d, dec_par y = %d", __MODULE_NAME__, m_aspectratio_x, m_aspectratio_y);
 }
 
-bool CCrystalHD::GetDecoderOutput(void)
+bool CMPCOutputThread::GetDecoderOutput(void)
 {
   BCM::BC_STATUS ret;
   BCM::BC_DTS_PROC_OUT procOut;
+  CPictureBuffer *pBuffer = NULL;
   bool got_picture = false;
   
   // Setup output struct
@@ -732,21 +576,29 @@ bool CCrystalHD::GetDecoderOutput(void)
     case BCM::BC_STS_SUCCESS:
       if (procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID)
       {
-        if (m_drop_state)
-        {
-          got_picture = true;
-          BCM::DtsReleaseOutputBuffs(m_Device, NULL, FALSE);
-          break;
-        }
-          
         if (procOut.PicInfo.timeStamp && (procOut.PicInfo.timeStamp != m_timestamp))
         {
+          m_timestamp = procOut.PicInfo.timeStamp;
+          
+          // Get next output buffer from the free list
+          pBuffer = m_FreeList.Pop();
+          if (!pBuffer)
+          {
+            // No free pre-allocated buffers so make one
+            pBuffer = new CPictureBuffer(m_width, m_height); 
+            CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());    
+          }
+          
+          pBuffer->m_width = m_width;
+          pBuffer->m_height = m_height;
+          pBuffer->m_field = CRYSTALHD_FIELD_FULL;
+          pBuffer->m_interlace = m_interlace;
+          pBuffer->m_framerate = m_framerate;
+          pBuffer->m_timestamp = m_timestamp;
+          pBuffer->m_PictureNumber = procOut.PicInfo.picture_number;
+
           int w = procOut.PicInfo.width;
           int h = procOut.PicInfo.height;
-              
-          m_field = CRYSTALHD_FIELD_FULL;
-          m_timestamp = procOut.PicInfo.timeStamp;
-          m_PictureNumber = procOut.PicInfo.picture_number;
 
           switch(procOut.PicInfo.width)
           {
@@ -754,22 +606,22 @@ bool CCrystalHD::GetDecoderOutput(void)
             case 1280:
             case 1920:
             {
-              if (m_interlace)
+              if (pBuffer->m_interlace)
               {
                 // we get a 1/2 height frame (field) from hw, not seeing the odd/even flags so
                 // can't tell which frames are odd, which are even so use picture number.
                 unsigned char *s, *d;
                 int stride = w*2;
 
-                if (m_PictureNumber & 1)
-                  m_field = CRYSTALHD_FIELD_ODD;
+                if (pBuffer->m_PictureNumber & 1)
+                  pBuffer->m_field = CRYSTALHD_FIELD_ODD;
                 else
-                  m_field = CRYSTALHD_FIELD_EVEN;
+                  pBuffer->m_field = CRYSTALHD_FIELD_EVEN;
                 
                 // copy y
                 s = procOut.Ybuff;
-                d = m_y_buffer_ptr;
-                if (m_field == CRYSTALHD_FIELD_ODD)
+                d = pBuffer->m_y_buffer_ptr;
+                if (pBuffer->m_field == CRYSTALHD_FIELD_ODD)
                   d += stride;
                 for (int y = 0; y < h/2; y++, s += w, d += stride)
                 {
@@ -777,8 +629,8 @@ bool CCrystalHD::GetDecoderOutput(void)
                 }
                 // copy uv
                 s = procOut.UVbuff;
-                d = m_uv_buffer_ptr;
-                if (m_field == CRYSTALHD_FIELD_ODD)
+                d = pBuffer->m_uv_buffer_ptr;
+                if (pBuffer->m_field == CRYSTALHD_FIELD_ODD)
                   d += stride;
                 for (int y = 0; y < h/4; y++, s += w, d += stride)
                 {
@@ -788,9 +640,9 @@ bool CCrystalHD::GetDecoderOutput(void)
               else
               {
                 // copy y
-                fast_memcpy(m_y_buffer_ptr, procOut.Ybuff, m_y_buffer_size);
+                fast_memcpy(pBuffer->m_y_buffer_ptr, procOut.Ybuff, pBuffer->m_y_buffer_size);
                 // copy uv
-                fast_memcpy(m_uv_buffer_ptr, procOut.UVbuff, m_uv_buffer_size);
+                fast_memcpy(pBuffer->m_uv_buffer_ptr, procOut.UVbuff, pBuffer->m_uv_buffer_size);
               }
             }
             break;
@@ -805,12 +657,12 @@ bool CCrystalHD::GetDecoderOutput(void)
               {
                 // copy y
                 s = procOut.Ybuff;
-                d = m_y_buffer_ptr;
+                d = pBuffer->m_y_buffer_ptr;
                 for (int y = 0; y < h; y++, s += 720, d += w)
                   fast_memcpy(d, s, w);
                 // copy uv
                 s = procOut.UVbuff;
-                d = m_uv_buffer_ptr;
+                d = pBuffer->m_uv_buffer_ptr;
                 for (int y = 0; y < h/2; y++, s += 720, d += w)
                   fast_memcpy(d, s, w);
               }
@@ -818,12 +670,12 @@ bool CCrystalHD::GetDecoderOutput(void)
               {
                 // copy y
                 s = procOut.Ybuff;
-                d = m_y_buffer_ptr;
+                d = pBuffer->m_y_buffer_ptr;
                 for (int y = 0; y < h; y++, s += 1280, d += w)
                   fast_memcpy(d, s, w);
                 // copy uv
                 s = procOut.UVbuff;
-                d = m_uv_buffer_ptr;
+                d = pBuffer->m_uv_buffer_ptr;
                 for (int y = 0; y < h/2; y++, s += 1280, d += w)
                   fast_memcpy(d, s, w);
               }
@@ -831,12 +683,12 @@ bool CCrystalHD::GetDecoderOutput(void)
               {
                 // copy y
                 s = procOut.Ybuff;
-                d = m_y_buffer_ptr;
+                d = pBuffer->m_y_buffer_ptr;
                 for (int y = 0; y < h; y++, s += 1920, d += w)
                   fast_memcpy(d, s, w);
                 // copy uv
                 s = procOut.UVbuff;
-                d = m_uv_buffer_ptr;
+                d = pBuffer->m_uv_buffer_ptr;
                 for (int y = 0; y < h/2; y++, s += 1920, d += w)
                   fast_memcpy(d, s, w);
               }
@@ -844,6 +696,7 @@ bool CCrystalHD::GetDecoderOutput(void)
             break;
           }
 
+          m_ReadyList.Push(pBuffer);
           got_picture = true;
         }
         else
@@ -864,22 +717,13 @@ bool CCrystalHD::GetDecoderOutput(void)
       {
         PrintFormat(procOut.PicInfo);
         
-        SetAspectRatio(procOut.PicInfo.aspect_ratio, procOut.PicInfo.custom_aspect_ratio_width_height);
-        SetFrameRate(procOut.PicInfo.frame_rate);
         if (procOut.PicInfo.height == 1088) {
           procOut.PicInfo.height = 1080;
         }
         m_width = procOut.PicInfo.width;
         m_height = procOut.PicInfo.height;
-        m_PictureNumber = procOut.PicInfo.picture_number;
-        
-        m_y_buffer_size = m_width * m_height;
-        m_uv_buffer_size = m_y_buffer_size / 2;
-        if (m_y_buffer_ptr) _aligned_free(m_y_buffer_ptr);
-        if (m_uv_buffer_ptr) _aligned_free(m_uv_buffer_ptr);
-        m_y_buffer_ptr = (unsigned char*)_aligned_malloc(m_y_buffer_size, 16);
-        m_uv_buffer_ptr = (unsigned char*)_aligned_malloc(m_uv_buffer_size, 16);
-
+        SetAspectRatio(&procOut.PicInfo);
+        SetFrameRate(procOut.PicInfo.frame_rate);
         m_OutputTimeout = 2000;
       }
     break;
@@ -894,6 +738,319 @@ bool CCrystalHD::GetDecoderOutput(void)
   
   return got_picture;
 }
+
+void CMPCOutputThread::Process(void)
+{
+  bool got_picture;
+  BCM::BC_STATUS ret;
+  BCM::BC_DTS_STATUS decoder_status;
+
+  CLog::Log(LOGDEBUG, "%s: Output Thread Started...", __MODULE_NAME__);
+  while (!m_bStop)
+  {
+    got_picture = false;
+    
+    ret = BCM::DtsGetDriverStatus(m_Device, &decoder_status);
+    if (ret == BCM::BC_STS_SUCCESS)
+    {
+      if (decoder_status.ReadyListCount > 0)
+      {
+        got_picture = GetDecoderOutput();
+        /*
+        CLog::Log(LOGDEBUG, "%s: ReadyListCount %d FreeListCount %d PIBMissCount %d\n", __MODULE_NAME__,
+          decoder_status.ReadyListCount, decoder_status.FreeListCount, decoder_status.PIBMissCount);
+        CLog::Log(LOGDEBUG, "%s: FramesDropped %d FramesCaptured %d FramesRepeated %d\n", __MODULE_NAME__,
+          decoder_status.FramesDropped, decoder_status.FramesCaptured, decoder_status.FramesRepeated);
+        */
+      }
+    }
+    
+    if (!got_picture)
+      Sleep(10);
+  }
+  CLog::Log(LOGDEBUG, "%s: Output Thread Stopped...", __MODULE_NAME__);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+#if defined(__APPLE__)
+#pragma mark -
+#endif
+union pts_union
+{
+  double  pts_d;
+  int64_t pts_i;
+};
+
+static int64_t pts_dtoi(double pts)
+{
+  pts_union u;
+  u.pts_d = pts;
+  return u.pts_i;
+}
+
+static double pts_itod(int64_t pts)
+{
+  pts_union u;
+  u.pts_i = pts;
+  return u.pts_d;
+}
+
+CCrystalHD* CCrystalHD::m_pInstance = NULL;
+
+CCrystalHD::CCrystalHD() :
+  m_Device(NULL),
+  m_IsConfigured(false),
+  m_drop_state(false),
+  m_pInputThread(NULL),
+  m_pOutputThread(NULL)
+{
+  BCM::BC_STATUS res;
+  //BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | BCM::DTS_SKIP_TX_CHK_CPB | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
+  BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
+  
+  res = BCM::DtsDeviceOpen(&m_Device, mode);
+  if (res != BCM::BC_STS_SUCCESS)
+  {
+    m_Device = NULL;
+    CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Device", __MODULE_NAME__);
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "%s: Opened Broadcom Crystal HD Device", __MODULE_NAME__);
+  }
+}
+
+CCrystalHD::~CCrystalHD()
+{
+  if (m_IsConfigured)
+    Close();
+    
+  if (m_Device)
+  {
+    BCM::DtsDeviceClose(m_Device);
+    m_Device = NULL;
+  }
+  CLog::Log(LOGINFO, "%s: Closed Broadcom Crystal HD Device", __MODULE_NAME__);
+}
+
+void CCrystalHD::RemoveInstance(void)
+{
+  if (m_pInstance)
+  {
+    delete m_pInstance;
+    m_pInstance = NULL;
+  }
+}
+
+CCrystalHD* CCrystalHD::GetInstance(void)
+{
+  if (!m_pInstance)
+  {
+    m_pInstance = new CCrystalHD();
+  }
+  return m_pInstance;
+}
+
+bool CCrystalHD::Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type)
+{
+  BCM::BC_STATUS res;
+  
+  if (m_IsConfigured)
+    Close();
+
+  BCM::U32 videoAlg = 0;
+  switch (codec_type)
+  {
+    case BC_CODEC_ID_VC1:
+      videoAlg = BCM::BC_VID_ALGO_VC1;
+      m_pFormatName = "bcm-vc1";
+    break;
+    case BC_CODEC_ID_H264:
+      videoAlg = BCM::BC_VID_ALGO_H264;
+      m_pFormatName = "bcm-h264";
+    break;
+    case BC_CODEC_ID_MPEG2:
+      videoAlg = BCM::BC_VID_ALGO_MPEG2;
+      m_pFormatName = "bcm-mpeg2";
+    break;
+    default:
+      return false;
+    break;
+  }
+
+  do 
+  {
+    res = BCM::DtsOpenDecoder(m_Device, stream_type);
+    if (res != BCM::BC_STS_SUCCESS)
+    {
+      CLog::Log(LOGERROR, "%s: Failed to open decoder", __MODULE_NAME__);
+      break;
+    }
+    res = BCM::DtsSetVideoParams(m_Device, videoAlg, FALSE, FALSE, TRUE, 0x80000000 | BCM::vdecFrameRate23_97);
+    if (res != BCM::BC_STS_SUCCESS)
+    {
+      CLog::Log(LOGERROR, "%s: Failed to set video params", __MODULE_NAME__);
+      break;
+    }
+    res = BCM::DtsStartDecoder(m_Device);
+    if (res != BCM::BC_STS_SUCCESS)
+    {
+      CLog::Log(LOGERROR, "%s: Failed to start decoder", __MODULE_NAME__);
+      break;
+    }
+    res = BCM::DtsStartCapture(m_Device);
+    if (res != BCM::BC_STS_SUCCESS)
+    {
+      CLog::Log(LOGERROR, "%s: Failed to start capture", __MODULE_NAME__);
+      break;
+    }
+ 
+    m_pInputThread = new CMPCInputThread(m_Device);
+    m_pInputThread->Create();
+    m_pOutputThread = new CMPCOutputThread(m_Device);
+    m_pOutputThread->Create();
+
+    m_drop_state = false;
+    m_IsConfigured = true;
+    CLog::Log(LOGDEBUG, "%s: Opened Broadcom Crystal HD Codec", __MODULE_NAME__);
+  } while(false);
+  
+  return m_IsConfigured;
+}
+
+void CCrystalHD::Close(void)
+{
+  if (m_pInputThread)
+  {
+    m_pInputThread->StopThread();
+    delete m_pInputThread;
+    m_pInputThread = NULL;
+  }
+  if (m_pOutputThread)
+  {
+    while(m_BusyList.Count())
+      m_pOutputThread->FreeBuffer( m_BusyList.Pop() );
+      
+    m_pOutputThread->StopThread();
+    delete m_pOutputThread;
+    m_pOutputThread = NULL;
+  }
+
+  if (m_Device)
+  {
+    BCM::DtsFlushRxCapture(m_Device, TRUE);
+    BCM::DtsStopDecoder(m_Device);
+    BCM::DtsCloseDecoder(m_Device);
+  }
+  m_IsConfigured = false;
+
+  CLog::Log(LOGDEBUG, "%s: Closed Broadcom Crystal HD Codec", __MODULE_NAME__);
+}
+
+bool CCrystalHD::IsOpenforDecode(void)
+{
+  return m_IsConfigured;
+}
+
+void CCrystalHD::Flush(void)
+{
+  m_pInputThread->Flush();
+  m_pOutputThread->Flush();
+
+  CLog::Log(LOGDEBUG, "%s: Flush...", __MODULE_NAME__);
+}
+
+unsigned int CCrystalHD::GetInputCount(void)
+{
+  if (m_pInputThread)
+    return m_pInputThread->GetInputCount();
+  else
+    return 0;  
+}
+
+bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double pts)
+{
+  if (m_pInputThread)
+    return m_pInputThread->AddInput(pData, size, pts_dtoi(pts) );
+  else
+    return false;
+}
+
+int CCrystalHD::GetReadyCount(void)
+{
+  if (m_pOutputThread)
+    return m_pOutputThread->GetReadyCount();
+  else
+    return 0;
+}
+
+void CCrystalHD::ClearBusyList(void)
+{
+  if (m_pOutputThread)
+  {
+    // leave one around, DVDPlayer expects it
+    while( m_BusyList.Count() > 1)
+      m_pOutputThread->FreeBuffer( m_BusyList.Pop() );
+  }
+}
+
+bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
+{
+  CPictureBuffer* pBuffer = m_pOutputThread->GetNextPicture();
+
+  pDvdVideoPicture->pts = pts_itod(pBuffer->m_timestamp);
+  pDvdVideoPicture->iWidth = pBuffer->m_width;
+  pDvdVideoPicture->iHeight = pBuffer->m_height;
+  pDvdVideoPicture->iDisplayWidth = pBuffer->m_width;
+  pDvdVideoPicture->iDisplayHeight = pBuffer->m_height;
+  
+  // Y plane
+  pDvdVideoPicture->data[0] = (BYTE*)pBuffer->m_y_buffer_ptr;
+  pDvdVideoPicture->iLineSize[0] = pBuffer->m_width;
+  // UV packed plane
+  pDvdVideoPicture->data[1] = (BYTE*)pBuffer->m_uv_buffer_ptr;
+  pDvdVideoPicture->iLineSize[1] = pBuffer->m_width;
+  // unused
+  pDvdVideoPicture->data[2] = NULL;
+  pDvdVideoPicture->iLineSize[2] = 0;
+
+  pDvdVideoPicture->iRepeatPicture = 0;
+  pDvdVideoPicture->iDuration = 0;
+  //pDvdVideoPicture->iDuration = (DVD_TIME_BASE / pBuffer->m_framerate);
+  pDvdVideoPicture->color_range = 1;
+  // todo 
+  //pDvdVideoPicture->color_matrix = 1;
+  pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
+  pDvdVideoPicture->iFlags |= pBuffer->m_interlace ? DVP_FLAG_INTERLACED : 0;
+  //if (m_interlace)
+  //  pDvdVideoPicture->iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
+  pDvdVideoPicture->iFlags |= m_drop_state ? DVP_FLAG_DROPPED : 0;
+  pDvdVideoPicture->format = DVDVideoPicture::FMT_NV12;
+
+  m_BusyList.Push(pBuffer);
+  
+  //CLog::Log(LOGDEBUG, "%s: GetPicture, pts = %f", __MODULE_NAME__, pDvdVideoPicture->pts);
+  return true;
+}
+
+void CCrystalHD::SetDropState(bool bDrop)
+{
+  if (m_drop_state != bDrop)
+  {
+    m_drop_state = bDrop;
+    if (m_drop_state)
+    {
+      BCM::DtsSetFFRate(m_Device, 2);
+    }
+    else
+    {
+      BCM::DtsSetFFRate(m_Device, 1);
+    }
+    
+    CLog::Log(LOGDEBUG, "%s: SetDropState... %d", __MODULE_NAME__, m_drop_state);
+  }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 void PrintFormat(BCM::BC_PIC_INFO_BLOCK &pib)

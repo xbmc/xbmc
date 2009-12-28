@@ -65,21 +65,23 @@ protected:
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-class CMPCDecodeBuffer
+class CPictureBuffer
 {
 public:
-  CMPCDecodeBuffer(size_t size);
-  CMPCDecodeBuffer(unsigned char* pBuffer, size_t size);
-  virtual ~CMPCDecodeBuffer();
-  size_t GetSize(void);
-  unsigned char* GetPtr(void);
-  void SetPts(uint64_t pts);
-  uint64_t GetPts(void);
-protected:
-  size_t m_Size;
-  unsigned char* m_pBuffer;
-  unsigned int m_Id;
-  uint64_t m_Pts;
+  CPictureBuffer(int ybuffsize, int uvbuffsize);
+  virtual ~CPictureBuffer();
+
+  unsigned int  m_width;
+  unsigned int  m_height;
+  unsigned int  m_field;
+  bool          m_interlace;
+  double        m_framerate;
+  uint64_t      m_timestamp;
+  unsigned int  m_PictureNumber;
+  unsigned char *m_y_buffer_ptr;
+  unsigned char *m_uv_buffer_ptr;
+  int           m_y_buffer_size;
+  int           m_uv_buffer_size;
 };
 
 
@@ -108,6 +110,7 @@ typedef uint32_t BCM_STREAM_TYPE;
 #define CRYSTALHD_FIELD_ODD         0x02
 
 class CMPCInputThread;
+class CMPCOutputThread;
 
 class CCrystalHD
 {
@@ -123,14 +126,16 @@ public:
   void Flush(void);
   unsigned int GetInputCount(void);
   bool AddInput(unsigned char *pData, size_t size, double pts);
-  bool GotPicture(int* field);
+  
+  int  GetReadyCount(void);
+  void ClearBusyList(void);
+  
   bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   void SetDropState(bool bDrop);
 
 protected:
   void SetFrameRate(uint32_t resolution);
   void SetAspectRatio(uint32_t aspect_ratio, uint32_t custom_aspect_ratio_width_height);
-  bool GetDecoderOutput(void);
   
   void          *m_dl_handle;
   void          *m_Device;
@@ -142,18 +147,10 @@ protected:
   unsigned int  m_field;
   unsigned int  m_width;
   unsigned int  m_height;
-  bool          m_interlace;
-  double        m_framerate;
-  uint64_t      m_timestamp;
-  unsigned int  m_PictureNumber;
-  unsigned int  m_aspectratio_x;
-  unsigned int  m_aspectratio_y;
-  unsigned char *m_y_buffer_ptr;
-  unsigned char *m_uv_buffer_ptr;
-  int           m_y_buffer_size;
-  int           m_uv_buffer_size;
 
-  CMPCInputThread* m_pInputThread;
+  CMPCInputThread *m_pInputThread;
+  CMPCOutputThread *m_pOutputThread;
+  CSyncPtrQueue<CPictureBuffer> m_BusyList;
 private:
   CCrystalHD();
   static CCrystalHD *m_pInstance;
