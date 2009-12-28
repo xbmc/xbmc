@@ -257,6 +257,13 @@ bool CVDPAU::MakePixmap(int width, int height)
     return false;
   }
 
+  XGCValues values = {};
+  GC xgc;
+  values.foreground = BlackPixel (m_Display, DefaultScreen (m_Display));
+  xgc = XCreateGC(m_Display, m_Pixmap, GCForeground, &values);
+  XFillRectangle(m_Display, m_Pixmap, xgc, 0, 0, OutWidth, OutHeight);
+  XFreeGC(m_Display, xgc);
+
   if(!MakePixmapGL())
     return false;
 
