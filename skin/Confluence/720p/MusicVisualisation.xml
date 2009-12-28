@@ -11,7 +11,7 @@
 		</control>
 
 		<control type="group">
-			<visible>Player.ShowInfo</visible>
+			<visible>Player.ShowInfo + ![Window.IsVisible(VisualisationSettings) | Window.IsVisible(VisualisationPresetList)]</visible>
 			<animation effect="slide" start="0,160" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
 			<animation effect="slide" start="0,0" end="0,160" time="300" delay="150" tween="quadratic" easing="out">WindowClose</animation>
 			<animation effect="slide" start="0,160" end="0,0" time="300" tween="quadratic" easing="out">visible</animation>
@@ -313,7 +313,7 @@
 			<animation effect="slide" start="0,0" end="0,260" time="300" delay="150" tween="quadratic" easing="out">WindowClose</animation>
 			<animation effect="slide" start="0,260" end="0,0" time="300" tween="quadratic" easing="out">visible</animation>
 			<animation effect="slide" start="0,0" end="0,260" time="300" delay="150" tween="quadratic" easing="out">hidden</animation>
-			<visible>Player.ShowInfo</visible>
+			<visible>Player.ShowInfo + ![Window.IsVisible(VisualisationSettings) | Window.IsVisible(VisualisationPresetList)]</visible>
 			<control type="image">
 				<description>cover image</description>
 				<posx>10</posx>

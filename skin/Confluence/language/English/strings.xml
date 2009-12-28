@@ -78,6 +78,11 @@
   <string id="31126">Enable Lyrics in Music OSD</string>
   <string id="31127">PATH TO LYRICS SCRIPT</string>
   <string id="31128">XBMC Lyrics</string>
+  <string id="31129">Enable Subtitle Download in Video OSD</string>
+  <string id="31130">PATH TO SUBTITLE SCRIPT</string>
+
+  <string id="31140">Music OSD</string>
+  <string id="31141">Video OSD</string>
 
   <!-- Script labels -->
   <string id="31200">Shortcuts</string>
@@ -124,6 +129,15 @@
   <string id="31328">Recently Added</string>
   <string id="31329">[B]TIMER SET![/B] [COLOR=grey2] - SYSTEM AUTO SHUTDOWN IN[/COLOR]</string>
 
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Pause</string>
+  <string id="31352">Stop</string>
+  <string id="31353">Fast Forward</string>
+  <string id="31354">Rewind</string>
+  <string id="31355">Movie menu</string>
+  <string id="31356">Download Subtitles</string>
+  <string id="31357"></string>
+
   <!-- Description Labels  -->
   <string id="31400">[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver</string>
   <string id="31401">[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts</string>
@@ -135,7 +149,6 @@
   <string id="31407">[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds</string>
   <string id="31408">[B]CONFIGURE TV SETTINGS[/B][CR][CR]Manage PVR Addons · Change fullscreen info[CR]Manage EPG data settings</string>
 
-  <string id="31420">[B][COLOR=white]XBMC has not detected a Disc.[/COLOR][/B][CR][CR]Please Insert a disc into your drive and try again or Cancel</string>
   <string id="31421">Select your XBMC user Profile[CR]to login and continue</string>
 
   <!-- Extra Unified PVR labels -->
