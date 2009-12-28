@@ -310,6 +310,7 @@ void CVDPAU::CheckRecover(bool force)
 bool CVDPAU::IsVDPAUFormat(PixelFormat format)
 {
   if ((format >= PIX_FMT_VDPAU_H264) && (format <= PIX_FMT_VDPAU_VC1)) return true;
+  if (format == PIX_FMT_VDPAU_MPEG4) return true;
   else return false;
 }
 
