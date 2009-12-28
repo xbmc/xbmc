@@ -929,16 +929,13 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   else
     max_references = 2;
 
-  if (IsVDPAUFormat(avctx->pix_fmt)) 
-  {
-    vdp_st = vdp_decoder_create(vdp_device,
-                                vdp_decoder_profile,
-                                vid_width,
-                                vid_height,
-                                max_references,
-                                &decoder);
-    CheckStatus(vdp_st, __LINE__);
-  }
+  vdp_st = vdp_decoder_create(vdp_device,
+                              vdp_decoder_profile,
+                              vid_width,
+                              vid_height,
+                              max_references,
+                              &decoder);
+  CheckStatus(vdp_st, __LINE__);
 
   InitVDPAUOutput();
 
