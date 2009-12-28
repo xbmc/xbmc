@@ -294,25 +294,12 @@ static double pts_itod(int64_t pts)
   return u.pts_d;
 }
 
-void log_demux_packet(BYTE* pData, int iSize, double pts)
-{
-  char filename[1024];
-  
-  sprintf(filename, "xdmx-pts-%f", pts);
-  FILE* file = fopen(filename,"wb");
-
-  fwrite(pData, iSize, 1, file);
-  fclose(file);
-}
-
 int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 {
   int iGotPicture = 0, len = 0, result = 0;
 
   if (!m_pCodecContext)
     return VC_ERROR;
-
-  log_demux_packet(pData, iSize, pts);
 
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
   try
