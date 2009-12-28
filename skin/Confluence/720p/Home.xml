@@ -917,7 +917,7 @@
 					<posy>0</posy>
 					<width>43</width>
 					<height>43</height>
-					<label>-</label>
+					<label>31003</label>
 					<font>-</font>
 					<aligny>-</aligny>
 					<onclick>ActivateWindow(ShutdownMenu)</onclick>
@@ -934,7 +934,7 @@
 					<posy>0</posy>
 					<width>43</width>
 					<height>43</height>
-					<label>-</label>
+					<label>1036</label>
 					<font>-</font>
 					<aligny>-</aligny>
 					<onclick>ActivateWindow(Favourites)</onclick>
@@ -951,7 +951,7 @@
 					<posy>0</posy>
 					<width>43</width>
 					<height>43</height>
-					<label>-</label>
+					<label>16004</label>
 					<font>-</font>
 					<aligny>-</aligny>
 					<onclick>XBMC.PlayDVD()</onclick>
@@ -969,7 +969,7 @@
 					<posy>0</posy>
 					<width>43</width>
 					<height>43</height>
-					<label>-</label>
+					<label>16004</label>
 					<font>-</font>
 					<aligny>-</aligny>
 					<onclick>ActivateWindow(1113)</onclick>
