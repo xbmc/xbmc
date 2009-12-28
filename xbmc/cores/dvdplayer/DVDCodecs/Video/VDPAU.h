@@ -87,7 +87,6 @@ public:
 
   static void             VDPPreemptionCallbackFunction(VdpDevice device, void* context);
 
-  void Create(int width, int height);
   void PrePresent(AVCodecContext *avctx, AVFrame *pFrame);
   void Present();
   int  ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
@@ -192,7 +191,6 @@ public:
   uint32_t max_references;
   Display* m_Display;
   bool     vdpauConfigured;
-  bool     vdpauInited;
 
   static bool IsVDPAUFormat(PixelFormat fmt);
   static void ReadFormatOf( PixelFormat fmt

@@ -61,7 +61,7 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
   dl_handle  = NULL;
   surfaceNum      = presentSurfaceNum = 0;
   picAge.b_age    = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
-  vdpauConfigured = vdpauInited = false;
+  vdpauConfigured = false;
   recover = VDPAURecovered = false;
 
   m_glPixmap = 0;
@@ -122,8 +122,8 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
     }
 
     InitCSCMatrix(height);
+    MakePixmap(width,height);
   }
-
 }
 
 CVDPAU::~CVDPAU()
@@ -141,17 +141,17 @@ CVDPAU::~CVDPAU()
     XFreePixmap(m_Display, m_Pixmap);
     m_Pixmap = NULL;
   }
-  if (vdpauInited)
-  {
-    FiniVDPAUOutput();
-    FiniVDPAUProcs();
-  }
+
+  FiniVDPAUOutput();
+  FiniVDPAUProcs();
+
   if (m_glContext)
   {
     CLog::Log(LOGINFO, "GLX: Destroying glContext");
     glXDestroyContext(m_Display, m_glContext);
     m_glContext = NULL;
   }
+
   if (dl_handle)
   {
     dlclose(dl_handle);
@@ -274,16 +274,6 @@ void CVDPAU::ReleasePixmap()
     glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
   }
   else CLog::Log(LOGERROR,"(VDPAU) ReleasePixmap called without valid pixmap");
-}
-
-void CVDPAU::Create(int width, int height)
-{
-  if (vdpauInited)
-    return;
-
-  CSingleLock lock(g_graphicsContext);
-  MakePixmap(width,height);
-  vdpauInited = true;
 }
 
 void CVDPAU::CheckRecover(bool force)
@@ -1016,9 +1006,6 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   struct pictureAge*    pA         = &vdp->picAge;
   
   vdpau_render_state * render = NULL;
-
-  vdp->Create(avctx->width,avctx->height);
-
 
   // find unused surface
   for(unsigned int i = 0; i < vdp->m_videoSurfaces.size(); i++)
