@@ -125,9 +125,9 @@ public:
 
   //  protected:
   void      InitVDPAUProcs();
-  VdpStatus FiniVDPAUProcs();
+  void      FiniVDPAUProcs();
   void      InitVDPAUOutput();
-  VdpStatus FiniVDPAUOutput();
+  void      FiniVDPAUOutput();
 
   VdpDevice                            vdp_device;
   VdpGetProcAddress *                  vdp_get_proc_address;

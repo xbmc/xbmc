@@ -795,16 +795,15 @@ void CVDPAU::InitVDPAUProcs()
   CheckStatus(vdp_st, __LINE__);
 }
 
-VdpStatus CVDPAU::FiniVDPAUProcs()
+void CVDPAU::FiniVDPAUProcs()
 {
-  VdpStatus vdp_st = VDP_STATUS_ERROR;
-  if (!vdp_device) return VDP_STATUS_OK;
+  if (!vdp_device) return;
 
+  VdpStatus vdp_st;
   vdp_st = vdp_device_destroy(vdp_device);
   CheckStatus(vdp_st, __LINE__);
   vdp_device = NULL;
   vdpauConfigured = false;
-  return VDP_STATUS_OK;
 }
 
 void CVDPAU::InitVDPAUOutput()
@@ -835,13 +834,13 @@ void CVDPAU::InitCSCMatrix(int Height)
   CheckStatus(vdp_st, __LINE__);
 }
 
-VdpStatus CVDPAU::FiniVDPAUOutput()
+void CVDPAU::FiniVDPAUOutput()
 {
-  CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
-  VdpStatus vdp_st = VDP_STATUS_ERROR;
+  if (!vdp_device || !vdpauConfigured) return;
 
-  if (!vdp_device) return VDP_STATUS_OK;
-  if (!vdpauConfigured) return VDP_STATUS_OK;
+  CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
+
+  VdpStatus vdp_st;
 
   vdp_st = vdp_decoder_destroy(decoder);
   CheckStatus(vdp_st, __LINE__);
@@ -871,8 +870,6 @@ VdpStatus CVDPAU::FiniVDPAUOutput()
     free(m_videoSurfaces[i]);
   }
   m_videoSurfaces.clear();
-
-  return VDP_STATUS_OK;
 }
 
 
