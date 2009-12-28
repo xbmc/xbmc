@@ -109,7 +109,7 @@ public:
   int        tmpDeint;
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
-  bool       interlaced,m_bPixmapCreated;
+  bool       interlaced;
   int        OutWidth, OutHeight;
 
   VdpProcamp    m_Procamp;

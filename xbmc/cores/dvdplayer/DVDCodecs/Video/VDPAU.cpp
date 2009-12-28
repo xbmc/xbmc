@@ -68,7 +68,6 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
   m_glPixmapTexture = 0;
   m_Pixmap = 0;
   m_glContext = 0;
-  m_bPixmapCreated = false;
   if (!glXBindTexImageEXT)
     glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
   if (!glXReleaseTexImageEXT)
@@ -129,13 +128,13 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
 CVDPAU::~CVDPAU()
 {
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
-  if (m_glPixmap && m_bPixmapCreated)
+  if (m_glPixmap)
   {
     CLog::Log(LOGINFO, "GLX: Destroying glPixmap");
     glXDestroyPixmap(m_Display, m_glPixmap);
     m_glPixmap = NULL;
   }
-  if (m_Pixmap && m_bPixmapCreated)
+  if (m_Pixmap)
   {
     CLog::Log(LOGINFO, "GLX: Destroying XPixmap");
     XFreePixmap(m_Display, m_Pixmap);
