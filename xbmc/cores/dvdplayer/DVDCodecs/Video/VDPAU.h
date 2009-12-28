@@ -61,7 +61,7 @@ public:
   };
 
 
-  CVDPAU(int width, int height);
+  CVDPAU(int width, int height, CodecID codec);
   virtual ~CVDPAU();
 
   bool MakePixmap(int width, int height);

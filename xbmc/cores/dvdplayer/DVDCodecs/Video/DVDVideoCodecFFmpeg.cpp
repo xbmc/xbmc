@@ -108,7 +108,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if(pCodec && !hints.software)
   {
     CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating VDPAU(%ix%i)",hints.width, hints.height);
-    g_VDPAU = new CVDPAU(hints.width, hints.height);
+    g_VDPAU = new CVDPAU(hints.width, hints.height, hints.codec);
     if(!g_VDPAU->GetVdpDevice())
     {
       CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Failed to get VDPAU device");

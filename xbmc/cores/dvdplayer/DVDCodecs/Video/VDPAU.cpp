@@ -53,7 +53,7 @@ static float studioCSC[3][4] =
     { 1.0f, 1.85556000f,        0.0f,-0.92780000f}
 };
 
-CVDPAU::CVDPAU(int width, int height)
+CVDPAU::CVDPAU(int width, int height, CodecID codec)
 {
   glXBindTexImageEXT = NULL;
   glXReleaseTexImageEXT = NULL;
@@ -101,9 +101,29 @@ CVDPAU::CVDPAU(int width, int height)
 
   if (vdp_device)
   {
+    SpewHardwareAvailable();
+
+    if(codec == CODEC_ID_H264)
+    {
+      /* attempt to create a decoder with this width/height, some sizes are note supported by hw */
+      VdpStatus vdp_st;
+      vdp_st = vdp_decoder_create(vdp_device, VDP_DECODER_PROFILE_H264_HIGH,
+                                  width, height, 5, &decoder);
+
+      if(vdp_st != VDP_STATUS_OK)
+      {
+        CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) checking for decoder support\n", vdp_get_error_string(vdp_st), vdp_st);
+        FiniVDPAUProcs();
+        return;
+      }
+
+      vdp_decoder_destroy(decoder);
+      CheckStatus(vdp_st, __LINE__);
+    }
+
     InitCSCMatrix(height);
-		SpewHardwareAvailable();
-	}
+  }
+
 }
 
 CVDPAU::~CVDPAU()
@@ -782,6 +802,7 @@ VdpStatus CVDPAU::FiniVDPAUProcs()
 
   vdp_st = vdp_device_destroy(vdp_device);
   CheckStatus(vdp_st, __LINE__);
+  vdp_device = NULL;
   vdpauConfigured = false;
   return VDP_STATUS_OK;
 }
