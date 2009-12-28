@@ -27,12 +27,14 @@
 				<textcolor>grey2</textcolor>
 				<focusedcolor>white</focusedcolor>
 				<onclick>XBMC.PlayDVD()</onclick>
+				<onclick>Dialog.Close(1113)</onclick>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
 				<onleft>Dialog.Close(1113)</onleft>
 				<onright>1</onright>
 				<onup>3</onup>
 				<ondown>2</ondown>
+				<enable>System.HasMediaDVD</enable>
 			</control>
 			<control type="button" id="2">
 				<description>Eject Button</description>
