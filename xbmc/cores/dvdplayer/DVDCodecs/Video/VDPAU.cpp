@@ -159,14 +159,10 @@ CVDPAU::~CVDPAU()
   }
 }
 
-bool CVDPAU::MakePixmap(int width, int height)
+bool CVDPAU::MakePixmapGL()
 {
   int num=0;
-  GLXFBConfig *fbConfigs=NULL;
   int fbConfigIndex = 0;
-  XVisualInfo *visInfo=NULL;
-
-  bool status = false;
 
   int doubleVisAttributes[] = {
     GLX_RENDER_TYPE, GLX_RGBA_BIT,
@@ -183,32 +179,67 @@ bool CVDPAU::MakePixmap(int width, int height)
     None
   };
 
-  OutWidth = g_graphicsContext.GetWidth();
-  OutHeight = g_graphicsContext.GetHeight();
-
-  CLog::Log(LOGNOTICE,"Creating %ix%i pixmap", OutWidth, OutHeight);
   int pixmapAttribs[] = {
     GLX_TEXTURE_TARGET_EXT, GLX_TEXTURE_2D_EXT,
     GLX_TEXTURE_FORMAT_EXT, GLX_TEXTURE_FORMAT_RGBA_EXT,
     None
   };
 
+  GLXFBConfig *fbConfigs;
   fbConfigs = glXChooseFBConfig(m_Display, DefaultScreen(m_Display), doubleVisAttributes, &num);
+  if (fbConfigs==NULL)
+  {
+    CLog::Log(LOGERROR, "GLX Error: MakePixmap: No compatible framebuffers found");
+    return false;
+  }
+  CLog::Log(LOGDEBUG, "Found %d fbconfigs.", num);
+  fbConfigIndex = 0;
+  CLog::Log(LOGDEBUG, "Using fbconfig index %d.", fbConfigIndex);
+
+  m_glPixmap = glXCreatePixmap(m_Display, fbConfigs[fbConfigIndex], m_Pixmap, pixmapAttribs);
+
+  if (!m_glPixmap)
+  {
+    CLog::Log(LOGINFO, "GLX Error: Could not create Pixmap");
+    XFree(fbConfigs);
+    return false;
+  }
+
+  XVisualInfo *visInfo;
+  visInfo = glXGetVisualFromFBConfig(m_Display, fbConfigs[fbConfigIndex]);
+  if (!visInfo)
+  {
+    CLog::Log(LOGINFO, "GLX Error: Could not obtain X Visual Info for pixmap");
+    XFree(fbConfigs);
+    return false;
+  }
+  XFree(fbConfigs);
+
+  CLog::Log(LOGINFO, "GLX: Creating Pixmap context");
+  m_glContext = glXCreateContext(m_Display, visInfo, NULL, True);
+  XFree(visInfo);
+
+  if (!glXMakeCurrent(m_Display, m_glPixmap, m_glContext))
+  {
+    CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
+    return false;
+  }
+
+  return true;
+
+}
+
+bool CVDPAU::MakePixmap(int width, int height)
+{
+  OutWidth = g_graphicsContext.GetWidth();
+  OutHeight = g_graphicsContext.GetHeight();
+
+  CLog::Log(LOGNOTICE,"Creating %ix%i pixmap", OutWidth, OutHeight);
 
     // Get our window attribs.
   XWindowAttributes wndattribs;
   XGetWindowAttributes(m_Display, DefaultRootWindow(m_Display), &wndattribs); // returns a status but I don't know what success is
 
-  CLog::Log(LOGDEBUG, "Found %d fbconfigs.", num);
-  fbConfigIndex = 0;
-
-  if (fbConfigs==NULL) 
-  {
-    CLog::Log(LOGERROR, "GLX Error: MakePixmap: No compatible framebuffers found");
-    XFree(fbConfigs);
-    return status;
-  }
-  CLog::Log(LOGDEBUG, "Using fbconfig index %d.", fbConfigIndex);
   m_Pixmap = XCreatePixmap(m_Display,
                            DefaultRootWindow(m_Display),
                            OutWidth,
@@ -217,37 +248,13 @@ bool CVDPAU::MakePixmap(int width, int height)
   if (!m_Pixmap)
   {
     CLog::Log(LOGERROR, "GLX Error: MakePixmap: Unable to create XPixmap");
-    XFree(fbConfigs);
-    return status;
+    return false;
   }
-  m_glPixmap = glXCreatePixmap(m_Display, fbConfigs[fbConfigIndex], m_Pixmap, pixmapAttribs);
 
-  if (m_glPixmap)
-  {
-    visInfo = glXGetVisualFromFBConfig(m_Display, fbConfigs[fbConfigIndex]);
-    if (!visInfo)
-    {
-      CLog::Log(LOGINFO, "GLX Error: Could not obtain X Visual Info for pixmap");
-      return false;
-    }
-    CLog::Log(LOGINFO, "GLX: Creating Pixmap context");
-    m_glContext = glXCreateContext(m_Display, visInfo, NULL, True);
-    XFree(visInfo);
-    if (!glXMakeCurrent(m_Display, m_glPixmap, m_glContext))
-    {
-      CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
-      status = false;
-    }
-    else
-      m_bPixmapCreated = true;
-  }
-  else
-  {
-    CLog::Log(LOGINFO, "GLX Error: Could not create Pixmap");
-    status = false;
-  }
-  XFree(fbConfigs);
-  return status;
+  if(!MakePixmapGL())
+    return false;
+
+  return true;
 }
 
 void CVDPAU::BindPixmap()

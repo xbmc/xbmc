@@ -65,6 +65,8 @@ public:
   virtual ~CVDPAU();
 
   bool MakePixmap(int width, int height);
+  bool MakePixmapGL();
+
   void ReleasePixmap();
   void BindPixmap();
 
