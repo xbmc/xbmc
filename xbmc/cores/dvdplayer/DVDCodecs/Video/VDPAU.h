@@ -126,7 +126,6 @@ public:
   //  protected:
   void      InitVDPAUProcs();
   void      FiniVDPAUProcs();
-  void      InitVDPAUOutput();
   void      FiniVDPAUOutput();
 
   VdpDevice                            vdp_device;

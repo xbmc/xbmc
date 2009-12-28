@@ -806,20 +806,6 @@ void CVDPAU::FiniVDPAUProcs()
   vdpauConfigured = false;
 }
 
-void CVDPAU::InitVDPAUOutput()
-{
-  VdpStatus vdp_st;
-  vdp_st = vdp_presentation_queue_target_create_x11(vdp_device,
-                                                    m_Pixmap, //x_window,
-                                                    &vdp_flip_target);
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_presentation_queue_create(vdp_device,
-                                         vdp_flip_target,
-                                         &vdp_flip_queue);
-  CheckStatus(vdp_st, __LINE__);
-}
-
 void CVDPAU::InitCSCMatrix(int Height)
 {
   VdpStatus vdp_st;
@@ -937,7 +923,15 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
                               &decoder);
   CheckStatus(vdp_st, __LINE__);
 
-  InitVDPAUOutput();
+  vdp_st = vdp_presentation_queue_target_create_x11(vdp_device,
+                                                    m_Pixmap, //x_window,
+                                                    &vdp_flip_target);
+  CheckStatus(vdp_st, __LINE__);
+
+  vdp_st = vdp_presentation_queue_create(vdp_device,
+                                         vdp_flip_target,
+                                         &vdp_flip_queue);
+  CheckStatus(vdp_st, __LINE__);
 
   totalAvailableOutputSurfaces = 0;
 
