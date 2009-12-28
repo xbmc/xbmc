@@ -133,7 +133,7 @@ protected:
   bool IsSoftwareUpscaling();
   void InitializeSoftwareUpscaling();
 
-  void ManageTextures();
+  virtual void ManageTextures();
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
   virtual void LoadShaders(int field=FIELD_FULL);

@@ -312,14 +312,12 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 
   YV12Image &im = m_buffers[source].image;
   
-  if (!(m_renderMethod & RENDER_VDPAU) && !(m_renderMethod & RENDER_CRYSTALHD))
+  if (!im.plane[0])
   {
-    if (!im.plane[0])
-    {
-       CLog::Log(LOGDEBUG, "CLinuxRendererGL::GetImage - image planes not allocated");
-       return -1;
-    }
+     CLog::Log(LOGDEBUG, "CLinuxRendererGL::GetImage - image planes not allocated");
+     return -1;
   }
+
   if ((im.flags&(~IMAGE_FLAG_READY)) != 0)
   {
      CLog::Log(LOGDEBUG, "CLinuxRenderer::GetImage - request image but none to give");
@@ -430,6 +428,7 @@ void CLinuxRendererGL::LoadYV12Textures(int source)
   {
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
       (this->*CreateTextureFuncPtr)(i, true);
+      
     im->flags = IMAGE_FLAG_READY;
   }
 
@@ -787,7 +786,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 void CLinuxRendererGL::FlipPage(int source)
 {
 #ifdef HAVE_LIBVDPAU
-  if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU)
+  if (g_VDPAU)
     g_VDPAU->Present();
 #endif
 
@@ -844,6 +843,7 @@ unsigned int CLinuxRendererGL::DrawSlice(unsigned char *src[], int stride[], int
 
   // copy V
   p = 2;
+  // check for valid yv12, nv12 does not use the third plane.
   if(im.plane[p] && src[p])
   {
     d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
@@ -1167,13 +1167,14 @@ void CLinuxRendererGL::UnInit()
   m_rgbBufferSize = 0;
 
 #ifdef HAVE_LIBVDPAU
-  if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU)
+  if (g_VDPAU)
     g_VDPAU->ReleasePixmap();
 #endif
 
   // YV12 textures
   for (int i = 0; i < NUM_BUFFERS; ++i)
     (this->*DeleteTextureFuncPtr)(i);
+
   // cleanup framebuffer object if it was in use
   m_fbo.Cleanup();
   m_bValidated = false;
@@ -2306,7 +2307,7 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 bool CLinuxRendererGL::SupportsBrightness()
 {
 #ifdef HAVE_LIBVDPAU
-  if ((m_renderMethod & RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
+  if (g_VDPAU && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
     return true;
 #endif
   return m_renderMethod == RENDER_GLSL
@@ -2317,7 +2318,7 @@ bool CLinuxRendererGL::SupportsBrightness()
 bool CLinuxRendererGL::SupportsContrast()
 {
 #ifdef HAVE_LIBVDPAU
-  if ((m_renderMethod & RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
+  if (g_VDPAU && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
     return true;
 #endif
   return m_renderMethod == RENDER_GLSL
@@ -2341,7 +2342,7 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   || method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
-  if(m_renderMethod & RENDER_METHOD_VDPAU)
+  if(m_renderMethod == RENDER_METHOD_VDPAU)
   {
     if(method == VS_INTERLACEMETHOD_VDPAU
     || method == VS_INTERLACEMETHOD_RENDER_BLEND
@@ -2384,7 +2385,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
       return true;
   }
 
-  if(method == VS_SCALINGMETHOD_VDPAU_HARDWARE && m_renderMethod & RENDER_METHOD_VDPAU)
+  if(method == VS_SCALINGMETHOD_VDPAU_HARDWARE && m_renderMethod == RENDER_METHOD_VDPAU)
     return true;
 
   return false;
