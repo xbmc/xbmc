@@ -30,7 +30,6 @@
 #ifdef HAS_FILESYSTEM_HTSP
 #include "DVDDemuxHTSP.h"
 #endif
-#include "DVDDemuxTS.h"
 
 using namespace std;
 

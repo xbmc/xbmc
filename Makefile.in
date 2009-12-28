@@ -40,7 +40,6 @@ BIN_DIRS=	\
 	xbmc/lib/libUPnP \
 	xbmc/lib/libXBMS \
 	xbmc/lib/libXDAAP \
-	xbmc/lib/libxdmx \
 	xbmc/lib/sqLite \
 	xbmc/lib/UnrarXLib \
 	xbmc/lib/libsquish \
@@ -233,8 +232,6 @@ xbmc/lib/libXDAAP/libxdaap-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libXDAAP
 xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libGoAhead
-xbmc/lib/libxdmx/libxdmx.a: force
-	$(MAKE) -C xbmc/lib/libxdmx
 xbmc/lib/sqLite/sqllite.a: force
 	$(MAKE) -C xbmc/lib/sqLite
 xbmc/lib/UnrarXLib/UnrarXLib.a: force
@@ -384,7 +381,6 @@ OBJSXBMC=	\
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
-	xbmc/lib/libxdmx/libxdmx.a \
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/screensavers/screensaver.a \
