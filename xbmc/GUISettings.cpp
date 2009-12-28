@@ -654,7 +654,6 @@ void CGUISettings::Initialize()
   AddCategory(8,"pvrmenu", 18004);
   AddInt(1, "pvrmenu.daystodisplay", 18005, 2, 1, 1, 4, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
   AddInt(2, "pvrmenu.lingertime", 18006, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddBool(3, "pvrmenu.showradio", 18008, true);
   AddBool(4, "pvrmenu.infoswitch", 18010, true);
   AddBool(5, "pvrmenu.infotimeout", 18011, true);
   AddInt(6, "pvrmenu.infotime", 18009, 5, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
