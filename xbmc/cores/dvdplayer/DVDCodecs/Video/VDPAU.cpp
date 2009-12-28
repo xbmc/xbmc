@@ -85,8 +85,9 @@ CVDPAU::CVDPAU(int width, int height)
     CLog::Log(LOGNOTICE,"(VDPAU) unable to get handle to libvdpau");
     return;
   }
-  
+
   InitVDPAUProcs();
+  SpewHardwareAvailable();
 
   tmpBrightness  = 0;
   tmpContrast    = 0;
@@ -949,7 +950,6 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   surfaceNum = presentSurfaceNum = 0;
   outputSurface = outputSurfaces[surfaceNum];
 
-  SpewHardwareAvailable();
   vdpauConfigured = true;
   return 0;
 }
