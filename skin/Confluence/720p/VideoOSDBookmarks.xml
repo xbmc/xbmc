@@ -2,9 +2,8 @@
 	<defaultcontrol always="true">2</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>440</posx>
-		<posy>75</posy>
-		<origin x="240" y="75">!Window.IsVisible(FullscreenInfo)</origin>
+		<posx>240</posx>
+		<posy>115</posy>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>

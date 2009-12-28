@@ -117,8 +117,8 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   if (m_currentlyCrossFading) CloseFileInternal(false); //user seems to be in a hurry
 
   m_crossFading = g_guiSettings.GetInt("musicplayer.crossfade");
-  //no crossfading for cdda, cd-reading goes mad and no crossfading for last.fm doesn't like two connections
-  if (file.IsCDDA() || file.IsLastFM() || file.IsShoutCast() ) m_crossFading = 0;
+  //WASAPI doesn't support multiple streams, no crossfading for cdda, cd-reading goes mad and no crossfading for last.fm doesn't like two connections
+  if (file.IsCDDA() || file.IsLastFM() || file.IsShoutCast() || g_guiSettings.GetString("audiooutput.audiodevice").find("wasapi:") != CStdString::npos) m_crossFading = 0;
   if (m_crossFading && IsPlaying())
   {
     //do a short crossfade on trackskip

@@ -4,7 +4,7 @@
 		<control type="group">
 			<animation effect="slide" start="0,160" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
 			<animation effect="slide" start="0,0" end="0,160" time="300" delay="150" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="0,0" end="0,160" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(SliderDialog)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="0,160" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)">Conditional</animation>
 			<control type="image">
 				<description>media info background image</description>
 				<posx>0</posx>
@@ -423,7 +423,7 @@
 			<visible>VideoPlayer.Content(Movies)</visible>
 			<animation effect="slide" start="0,380" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
 			<animation effect="slide" start="0,0" end="0,380" time="300" delay="150" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="0,0" end="0,380" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(SliderDialog)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="0,380" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)">Conditional</animation>
 			<control type="image">
 				<description>cover image</description>
 				<posx>10</posx>
@@ -449,7 +449,7 @@
 			<visible>!VideoPlayer.Content(Movies)</visible>
 			<animation effect="slide" start="0,260" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
 			<animation effect="slide" start="0,0" end="0,260" time="300" delay="150" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="0,0" end="0,260" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(SliderDialog)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="0,260" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)">Conditional</animation>
 			<control type="image">
 				<description>cover image</description>
 				<posx>10</posx>
