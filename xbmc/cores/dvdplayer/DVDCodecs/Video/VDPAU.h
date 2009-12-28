@@ -102,10 +102,6 @@ public:
   void SetHWUpscaling();
   bool VDPAURecovered, VDPAUSwitching;
 
-  VdpTime    lastSwapTime, frameLagTime, frameLagTimeRunning, frameLagAverage;
-  VdpTime    previousTime;
-
-  INT64      frameCounter;
   pictureAge picAge;
   bool       recover;
   VdpVideoSurface past[2], current, future;
@@ -114,13 +110,11 @@ public:
   float      tmpBrightness, tmpContrast;
   bool       interlaced,m_bPixmapCreated;
   int        OutWidth, OutHeight;
-  int        lastDisplayedSurface;
 
   VdpProcamp    m_Procamp;
   VdpCSCMatrix  m_CSCMatrix;
   VdpDevice     HasDevice() { return vdp_device != VDP_INVALID_HANDLE; };
   VdpChromaType vdp_chroma_type;
-  VdpVideoMixerPictureStructure structure;
 
 
   //  protected:
