@@ -78,6 +78,11 @@
   <string id="31126">Enable Lyrics in Music OSD</string>
   <string id="31127">PATH TO LYRICS SCRIPT</string>
   <string id="31128">XBMC Lyrics</string>
+  <string id="31129">Enable Subtitle Download in Video OSD</string>
+  <string id="31130">PATH TO SUBTITLE SCRIPT</string>
+
+  <string id="31140">Music OSD</string>
+  <string id="31141">Video OSD</string>
 
   <!-- Script labels -->
   <string id="31200">Shortcuts</string>
@@ -123,6 +128,15 @@
   <string id="31327">Resolution</string>
   <string id="31328">Recently Added</string>
   <string id="31329">[B]TIMER SET![/B] [COLOR=grey2] - SYSTEM AUTO SHUTDOWN IN[/COLOR]</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Pause</string>
+  <string id="31352">Stop</string>
+  <string id="31353">Fast Forward</string>
+  <string id="31354">Rewind</string>
+  <string id="31355">Movie menu</string>
+  <string id="31356">Download Subtitles</string>
+  <string id="31357"></string>
 
   <!-- Description Labels  -->
   <string id="31400">[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver</string>
