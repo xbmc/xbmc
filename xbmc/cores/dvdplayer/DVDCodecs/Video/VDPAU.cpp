@@ -908,7 +908,8 @@ void CVDPAU::ReadFormatOf( PixelFormat fmt
 
 int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 {
-  if (vdpauConfigured || !avctx) return 1;
+  FiniVDPAUOutput();
+
   VdpStatus vdp_st;
   VdpDecoderProfile vdp_decoder_profile;
   vid_width = avctx->width;
@@ -1121,10 +1122,7 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   if(vdp->decoder == VDP_INVALID_HANDLE 
   || vdp->vdpauConfigured == false
   || vdp->max_references < max_refs)
-  {
-    vdp->FiniVDPAUOutput();
     vdp->ConfigVDPAU(s, max_refs);
-  }
 
   vdp_st = vdp->vdp_decoder_render(vdp->decoder,
                                    render->surface,
