@@ -57,7 +57,7 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
 {
   glXBindTexImageEXT = NULL;
   glXReleaseTexImageEXT = NULL;
-  vdp_device = NULL;
+  vdp_device = VDP_INVALID_HANDLE;
   dl_handle  = NULL;
   surfaceNum      = presentSurfaceNum = 0;
   picAge.b_age    = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
@@ -99,7 +99,7 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
 
   InitVDPAUProcs();
 
-  if (vdp_device)
+  if (vdp_device != VDP_INVALID_HANDLE)
   {
     SpewHardwareAvailable();
 
@@ -523,7 +523,7 @@ void CVDPAU::InitVDPAUProcs()
   if (error)
   {
     CLog::Log(LOGERROR,"(VDPAU) - %s in %s",error,__FUNCTION__);
-    vdp_device = NULL;
+    vdp_device = VDP_INVALID_HANDLE;
     return;
   }
 
@@ -546,14 +546,14 @@ void CVDPAU::InitVDPAUProcs()
   if (vdp_st != VDP_STATUS_OK)
   {
     CLog::Log(LOGERROR,"(VDPAU) unable to init VDPAU - vdp_st = 0x%x.  Falling back.",vdp_st);
-    vdp_device = NULL;
+    vdp_device = VDP_INVALID_HANDLE;
     return;
   }
   
   if (vdp_st != VDP_STATUS_OK) 
   {
     CLog::Log(LOGERROR,"(VDPAU) - Unable to create X11 device in %s",__FUNCTION__);
-    vdp_device = NULL;
+    vdp_device = VDP_INVALID_HANDLE;
     return;
   }
 
@@ -797,12 +797,12 @@ void CVDPAU::InitVDPAUProcs()
 
 void CVDPAU::FiniVDPAUProcs()
 {
-  if (!vdp_device) return;
+  if (vdp_device == VDP_INVALID_HANDLE) return;
 
   VdpStatus vdp_st;
   vdp_st = vdp_device_destroy(vdp_device);
   CheckStatus(vdp_st, __LINE__);
-  vdp_device = NULL;
+  vdp_device = VDP_INVALID_HANDLE;
   vdpauConfigured = false;
 }
 
@@ -822,7 +822,7 @@ void CVDPAU::InitCSCMatrix(int Height)
 
 void CVDPAU::FiniVDPAUOutput()
 {
-  if (!vdp_device || !vdpauConfigured) return;
+  if (vdp_device == VDP_INVALID_HANDLE || !vdpauConfigured) return;
 
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
 
@@ -830,12 +830,15 @@ void CVDPAU::FiniVDPAUOutput()
 
   vdp_st = vdp_decoder_destroy(decoder);
   CheckStatus(vdp_st, __LINE__);
+  decoder = VDP_INVALID_HANDLE;
 
   vdp_st = vdp_presentation_queue_destroy(vdp_flip_queue);
   CheckStatus(vdp_st, __LINE__);
+  vdp_flip_queue = VDP_INVALID_HANDLE;
 
   vdp_st = vdp_presentation_queue_target_destroy(vdp_flip_target);
   CheckStatus(vdp_st, __LINE__);
+  vdp_flip_target = VDP_INVALID_HANDLE;
 
   for (int i = 0; i < totalAvailableOutputSurfaces; i++) 
   {

@@ -118,7 +118,7 @@ public:
 
   VdpProcamp    m_Procamp;
   VdpCSCMatrix  m_CSCMatrix;
-  VdpDevice     GetVdpDevice() { return vdp_device; };
+  VdpDevice     HasDevice() { return vdp_device != VDP_INVALID_HANDLE; };
   VdpChromaType vdp_chroma_type;
   VdpVideoMixerPictureStructure structure;
 
