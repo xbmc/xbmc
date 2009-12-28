@@ -204,6 +204,10 @@ bool CVDPAU::MakePixmapGL()
     return false;
   }
 
+  /* to make the pixmap usable, it needs to have any context associated with it */
+  GLXContext  lastctx = glXGetCurrentContext();
+  GLXDrawable lastdrw = glXGetCurrentDrawable();
+
   XVisualInfo *visInfo;
   visInfo = glXGetVisualFromFBConfig(m_Display, fbConfigs[fbConfigIndex]);
   if (!visInfo)
@@ -223,6 +227,9 @@ bool CVDPAU::MakePixmapGL()
     CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
     return false;
   }
+
+  /* restore what thread had before */
+  glXMakeCurrent(m_Display, lastdrw, lastctx);
 
   return true;
 
