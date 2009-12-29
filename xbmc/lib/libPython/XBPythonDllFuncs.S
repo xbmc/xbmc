@@ -120,6 +120,8 @@
   FUNCTION(PySys_SetArgv)
   FUNCTION(PyObject_RichCompare)
   FUNCTION(PyFloat_FromDouble)
+  FUNCTION(PyRun_FileExFlags)
+  FUNCTION(PyRun_StringFlags)
 
 #if defined(__linux__) && defined(__ELF__)
 .section .note.GNU-stack,"",%progbits
