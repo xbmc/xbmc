@@ -5253,14 +5253,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\RenderSystemDX9Ex.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\RenderSystemDX9Ex.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\RenderSystemGL.cpp"
 						>
 					</File>
