@@ -232,6 +232,8 @@ xbmc/lib/libXDAAP/libxdaap-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libXDAAP
 xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libGoAhead
+xbmc/lib/libjsoncpp/libjsoncpp.a: force
+	$(MAKE) -C xbmc/lib/libjsoncpp
 xbmc/lib/sqLite/sqllite.a: force
 	$(MAKE) -C xbmc/lib/sqLite
 xbmc/lib/UnrarXLib/UnrarXLib.a: force
@@ -340,7 +342,8 @@ xcode_depends: \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
-	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a
+	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
+  xbmc/lib/libjsoncpp/libjsoncpp.a
 
 # platform independend objects
 OBJSXBMC=	\
@@ -381,6 +384,7 @@ OBJSXBMC=	\
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
+  xbmc/lib/libjsoncpp/libjsoncpp.a \
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/screensavers/screensaver.a \
