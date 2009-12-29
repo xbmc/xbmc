@@ -138,8 +138,14 @@
 			<RegExp conditional="trailer" input="$$1" output="&lt;url function=&quot;GetIMDBTrailer&quot;&gt;http://akas.imdb.com/video/imdb/vi\1/player&lt;/url&gt;" dest="5+">
 				<expression>/vi([0-9]*)/&quot;</expression>
 			</RegExp>
-			<RegExp conditional="dtrailer" input="$$1" output="&lt;url function=&quot;GetDTrailerLink&quot;&gt;http://en.dtrailer.com/movies/search/\1&lt;/url&gt;" dest="5+">
-				<expression trim="1" noclean="1">&lt;title&gt;([^&lt;|^(]*)</expression>
+			<RegExp conditional="dtrailer" input="$$6" output="&lt;url function=&quot;GetDTrailerLink&quot;&gt;http://en.dtrailer.com/movies/search/\1&lt;/url&gt;" dest="5+"> 
+				<RegExp input="$$4" output="\1-" dest="6"> 
+					<RegExp input="$$1" output="\1" dest="4"> 
+						<expression trim="1" noclean="1">&lt;h1&gt;([^&lt;]*)</expression> 
+					</RegExp> 
+					<expression repeat="yes">([a-zA-Z0-9]+)</expression> 
+				</RegExp> 
+				<expression/>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMDBThumbs&quot;&gt;$$3posters&lt;/url&gt;" dest="5+">
 				<expression/>
