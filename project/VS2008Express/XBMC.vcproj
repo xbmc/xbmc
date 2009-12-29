@@ -868,11 +868,27 @@
 						Name="Video"
 						>
 						<File
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DllLibMpeg2.h"
 							>
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodec.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodecCrystalHD.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodecCrystalHD.h"
 							>
 						</File>
 						<File
@@ -5234,6 +5250,14 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\RenderSystemDX.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\RenderSystemDX9Ex.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\RenderSystemDX9Ex.h"
 						>
 					</File>
 					<File
