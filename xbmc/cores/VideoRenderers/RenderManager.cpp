@@ -46,9 +46,6 @@
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
-#ifdef HAVE_LIBCRYSTALHD
-#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
-#endif
 
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"

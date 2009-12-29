@@ -1026,7 +1026,7 @@ void CLinuxRendererGL::LoadShaders(int field)
       delete m_pYUVShader;
       m_pYUVShader = NULL;
       err = true;
-      CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB ARB shader");
+      CLog::Log(LOGERROR, "GL: Error enabling NV12toRGB ARB shader");
     }
   }
   else 
@@ -1750,7 +1750,7 @@ void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width
 }
 
 //********************************************************************************************************
-// YV12 Texture loading, creation and deletion
+// YV12 Texture creation, deletion, copying + clearing
 //********************************************************************************************************
 void CLinuxRendererGL::DeleteYV12Texture(int index)
 {
@@ -1838,8 +1838,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
   if (clear)
   {
-    // Delete any old textures
-    (this->*DeleteTextureFuncPtr)(index);
+    DeleteYV12Texture(index);
 
     im.height = m_sourceHeight;
     im.width  = m_sourceWidth;
@@ -2108,7 +2107,7 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
   if (clear)
   {
     // Delte any old texture
-    (this->*DeleteTextureFuncPtr)(index);
+    DeleteNV12Texture(index);
 
     im.height = m_sourceHeight;
     im.width  = m_sourceWidth;

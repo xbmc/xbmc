@@ -8,7 +8,6 @@ SRCS=	DVDDemux.cpp \
 	DVDFactoryDemuxer.cpp \
 	DVDDemuxVobsub.cpp \
 	DVDDemuxHTSP.cpp \
-	DVDDemuxTS.cpp \
 
 LIB=	DVDDemuxers.a
 

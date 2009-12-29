@@ -39,7 +39,6 @@ struct DVDVideoPicture
   double pts; // timestamp in seconds, used in the CDVDPlayer class to keep track of pts
   BYTE* data[4];      // [4] = alpha channel, currently not used
   int iLineSize[4];   // [4] = alpha channel, currently not used
-  void* private_data;
 
   unsigned int iFlags;
 
@@ -112,7 +111,7 @@ public:
    */
   virtual int Decode(BYTE* pData, int iSize, double pts) = 0;
 
-  /*
+ /*
    * Reset the decoder.
    * Should be the same as calling Dispose and Open after each other
    */
