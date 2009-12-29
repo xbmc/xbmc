@@ -47,6 +47,18 @@ static int doubleVisAttributes[] =
   None
 };
 
+static int doubleVisAttributesOld[] =
+{
+  GLX_RGBA,
+  GLX_RED_SIZE, 8,
+  GLX_GREEN_SIZE, 8,
+  GLX_BLUE_SIZE, 8,
+  GLX_ALPHA_SIZE, 8,
+  GLX_DEPTH_SIZE, 8,
+  GLX_DOUBLEBUFFER,
+  None
+};
+
 CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 {
   m_eWindowSystem = WINDOW_SYSTEM_X11;
@@ -279,6 +291,12 @@ bool CWinSystemX11::RefreshGlxContext()
   m_glWindow = info.info.x11.window;
   m_wmWindow = info.info.x11.wmwindow;
 
+  int major, minor;
+  if(!glXQueryVersion(m_dpy, &major, &minor))
+    return false;
+
+  if(major > 1 || (major == 1 && minor >= 3))
+  {
   // query compatible framebuffers based on double buffered attributes
   if (!(fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs)))
   {
@@ -301,6 +319,9 @@ bool CWinSystemX11::RefreshGlxContext()
       vInfo = NULL;
     }
   }
+  }
+  else
+    vInfo = glXChooseVisual(m_dpy, DefaultScreen(m_dpy), doubleVisAttributesOld);
 
   if (vInfo) 
   {
