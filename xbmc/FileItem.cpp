@@ -2229,6 +2229,7 @@ void CFileItemList::Stack()
         // the label is converted from utf8, but the filename is not)
         if (!g_guiSettings.GetBool("filelists.showextensions"))
           CUtil::RemoveExtension(stackName);
+        CUtil::UrlDecode(stackName);
         item1->SetLabel(stackName);
         item1->m_dwSize = size;
         break;
@@ -2676,6 +2677,7 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 
   CUtil::RemoveSlashAtEnd(strMovieName);
   strMovieName = CUtil::GetFileName(strMovieName);
+  CUtil::UrlDecode(strMovieName);
 
   return strMovieName;
 }

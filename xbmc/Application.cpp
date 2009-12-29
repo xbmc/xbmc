@@ -1779,7 +1779,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_windowManager.AddMsgTarget(&g_fontManager);
   g_windowManager.SetCallback(*this);
   g_windowManager.Initialize();
-  g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
+  g_audioManager.Enable(true);
   g_audioManager.Load();
 
   CGUIDialogFullScreenInfo* pDialog = NULL;
@@ -1820,7 +1820,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 void CApplication::UnloadSkin()
 {
   g_ApplicationRenderer.Stop();
-  g_audioManager.DeInitialize(CAudioContext::DEFAULT_DEVICE);
+  g_audioManager.Enable(false);
 
   g_windowManager.DeInitialize();
 
