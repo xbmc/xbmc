@@ -297,28 +297,28 @@ bool CWinSystemX11::RefreshGlxContext()
 
   if(major > 1 || (major == 1 && minor >= 3))
   {
-  // query compatible framebuffers based on double buffered attributes
-  if (!(fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs)))
-  {
-    CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
-    return false;
-  }
-
-  for (int i = 0; i < availableFBs; i++)
-  {
-    // obtain the xvisual from the first compatible framebuffer
-    vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
-    if (vInfo)
+    // query compatible framebuffers based on double buffered attributes
+    if (!(fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs)))
     {
-      if (vInfo->depth == 24)
-      {
-        CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
-        break;
-      }
-      XFree(vInfo);
-      vInfo = NULL;
+      CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
+      return false;
     }
-  }
+
+    for (int i = 0; i < availableFBs; i++)
+    {
+      // obtain the xvisual from the first compatible framebuffer
+      vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
+      if (vInfo)
+      {
+        if (vInfo->depth == 24)
+        {
+          CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
+          break;
+        }
+        XFree(vInfo);
+        vInfo = NULL;
+      }
+    }
   }
   else
     vInfo = glXChooseVisual(m_dpy, DefaultScreen(m_dpy), doubleVisAttributesOld);
