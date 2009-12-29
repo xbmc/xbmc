@@ -126,6 +126,9 @@
 #ifdef HAS_DBUS_SERVER
 #include "utils/DbusServer.h"
 #endif
+#if defined(HAVE_LIBCRYSTALHD)
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
+#endif
 
 // Windows includes
 #include "GUIWindowManager.h"
@@ -1304,6 +1307,9 @@ bool CApplication::Initialize()
 
 #ifdef __APPLE__
   g_xbmcHelper.CaptureAllInput();
+#endif
+#if defined(HAVE_LIBCRYSTALHD)
+  CCrystalHD::GetInstance();
 #endif
 
   g_powerManager.Initialize();
@@ -3443,6 +3449,10 @@ void CApplication::Stop()
 #ifdef __APPLE__
     if (g_xbmcHelper.IsAlwaysOn() == false)
       g_xbmcHelper.Stop();
+#endif
+
+#if defined(HAVE_LIBCRYSTALHD)
+    CCrystalHD::RemoveInstance();
 #endif
 
   g_mediaManager.Stop();

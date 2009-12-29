@@ -734,6 +734,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
 #ifdef HAVE_LIBVDPAU
       pControl->AddLabel(g_localizeStrings.Get(13421), RENDER_METHOD_VDPAU);
 #endif
+#ifdef HAVE_LIBCRYSTALHD
+      pControl->AddLabel(g_localizeStrings.Get(13425), RENDER_METHOD_CRYSTALHD);
+#endif
 #endif
       pControl->SetValue(pSettingInt->GetData());
     }
