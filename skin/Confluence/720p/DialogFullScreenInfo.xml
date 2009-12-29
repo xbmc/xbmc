@@ -4,7 +4,7 @@
 		<control type="group">
 			<animation effect="slide" start="0,160" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
 			<animation effect="slide" start="0,0" end="0,160" time="300" delay="150" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="0,0" end="0,160" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="0,160" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)">Conditional</animation>
 			<control type="image">
 				<description>media info background image</description>
 				<posx>0</posx>
@@ -239,7 +239,7 @@
 					<font>font12_title</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
-					<visible>Player.ChapterCount + !VideoPlayer.Content(Episodes)</visible>
+					<visible>Player.ChapterCount + !VideoPlayer.Content(Episodes) + !VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="label">
 					<posx>0</posx>
@@ -255,6 +255,19 @@
 					<visible>VideoPlayer.Content(Episodes)</visible>
 				</control>
 				<control type="label">
+					<posx>0</posx>
+					<posy>67</posy>
+					<width>360</width>
+					<height>20</height>
+					<label>$INFO[VideoPlayer.ChannelName]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<textcolor>grey2</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<visible>VideoPlayer.Content(LiveTV)</visible>
+				</control>
+				<control type="label">
 					<posx>870</posx>
 					<posy>67</posy>
 					<width>360</width>
@@ -265,6 +278,20 @@
 					<font>font12_title</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
+				</control>
+				<control type="label">
+					<posx>870</posx>
+					<posy>67</posy>
+					<width>360</width>
+					<height>20</height>
+					<label>$LOCALIZE[209] : $INFO[VideoPlayer.NextTitle]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<textcolor>grey2</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<visible>VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="progress">
 					<description>Progressbar</description>
@@ -437,7 +464,7 @@
 			<visible>VideoPlayer.Content(Movies)</visible>
 			<animation effect="slide" start="0,380" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
 			<animation effect="slide" start="0,0" end="0,380" time="300" delay="150" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="0,0" end="0,380" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="0,380" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)">Conditional</animation>
 			<control type="image">
 				<description>cover image</description>
 				<posx>10</posx>
@@ -463,7 +490,7 @@
 			<visible>!VideoPlayer.Content(Movies)</visible>
 			<animation effect="slide" start="0,260" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
 			<animation effect="slide" start="0,0" end="0,260" time="300" delay="150" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="0,0" end="0,260" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="0,260" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)">Conditional</animation>
 			<control type="image">
 				<description>cover image</description>
 				<posx>10</posx>
