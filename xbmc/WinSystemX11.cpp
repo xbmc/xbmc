@@ -187,6 +187,7 @@ void CWinSystemX11::UpdateResolutions()
 
 
 #if defined(HAS_XRANDR)
+  if(g_xrandr.Query())
   {
     XOutput out  = g_xrandr.GetCurrentOutput();
     XMode   mode = g_xrandr.GetCurrentMode(out.name);
