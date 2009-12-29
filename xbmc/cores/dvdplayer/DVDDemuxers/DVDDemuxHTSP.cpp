@@ -126,11 +126,48 @@ void CDVDDemuxHTSP::Flush()
 {
 }
 
+bool CDVDDemuxHTSP::ReadStream(uint8_t* buf, int len)
+{
+  int ret;
+  while(len > 0)
+  {
+    ret = m_Input->Read(buf, len);
+    if(ret <= 0)
+      return false;
+    len -= ret;
+    buf += ret;
+  }
+  return true;
+}
+
+htsmsg_t* CDVDDemuxHTSP::ReadStream()
+{
+  if(m_Input->IsStreamType(DVDSTREAM_TYPE_HTSP))
+    return ((CDVDInputStreamHTSP*)m_Input)->ReadStream();
+
+  uint32_t l;
+  if(!ReadStream((uint8_t*)&l, 4))
+    return NULL;
+
+  l = ntohl(l);
+  if(l == 0)
+    return htsmsg_create_map();
+
+  uint8_t* buf = (uint8_t*)malloc(l);
+  if(!buf)
+    return NULL;
+
+  if(!ReadStream(buf, l))
+    return NULL;
+
+  return htsmsg_binary_deserialize(buf, l, buf); /* consumes 'buf' */
+}
+
 DemuxPacket* CDVDDemuxHTSP::Read()
 {
   htsmsg_t *  msg;
   const char* method;
-  while((msg = m_Input->ReadStream()))
+  while((msg = ReadStream()))
   {
     method = htsmsg_get_str(msg, "method");
     if(method == NULL)
