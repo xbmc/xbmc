@@ -138,6 +138,7 @@ void XBPyThread::Process()
 
   char path[1024];
   char sourcedir[1024];
+  int m_Py_file_input = Py_file_input;
 
   // get the global lock
   PyEval_AcquireLock();
@@ -179,7 +180,9 @@ void XBPyThread::Process()
     FILE *fp = fopen_utf8(_P(source).c_str(), "r");
     if (fp)
     {
-      retval = PyRun_SimpleFile(fp, _P(source).c_str());
+      PyObject* module = PyImport_AddModule("__main__");
+      PyObject* moduleDict = PyModule_GetDict(module);
+      PyRun_File(fp, _P(source).c_str(), m_Py_file_input, moduleDict, moduleDict);
       fclose(fp);
     }
     else
@@ -188,31 +191,86 @@ void XBPyThread::Process()
   else
   {
     //run script
-    retval = PyRun_SimpleString(source);
+    PyObject* module = PyImport_AddModule("__main__");
+    PyObject* moduleDict = PyModule_GetDict(module);
+    PyRun_String(source, m_Py_file_input, moduleDict, moduleDict);
   }
-  if (retval == -1)
+  if (PyErr_Occurred())
   {
-    CLog::Log(LOGERROR, "Scriptresult: Error");
-    if (PyErr_Occurred())
-      PyErr_Print();
-   
-    CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
-    if (pDlgToast)
-    {
-      CStdString desc;
-      CStdString path;
-      CStdString script;
-      CUtil::Split(source, path, script);
-      if (script.Equals("default.py"))
-      {
-        CStdString path2;
-        CUtil::RemoveSlashAtEnd(path);
-        CUtil::Split(path, path2, script);
-      }
+    PyObject* exc_type;
+    PyObject* exc_value;
+    PyObject* exc_traceback;
+    PyObject* pystring;
+    pystring = NULL;
 
-      desc.Format(g_localizeStrings.Get(2100), script);
-      pDlgToast->QueueNotification(g_localizeStrings.Get(257), desc);
+    PyErr_Fetch(&exc_type, &exc_value, &exc_traceback);
+    if (exc_type == 0 && exc_value == 0 && exc_traceback == 0)
+    {
+      CLog::Log(LOGINFO, "Strange: No Python exception occured");
     }
+    else
+    {
+      if (exc_type != NULL && (pystring = PyObject_Str(exc_type)) != NULL && (PyString_Check(pystring)))
+      {
+        if (strncmp(PyString_AsString(pystring), "exceptions.KeyboardInterrupt", 28) == 0)
+          CLog::Log(LOGINFO, "Scriptresult: Interrupted by user");
+        else
+        {
+          PyObject *tracebackModule;
+
+          CLog::Log(LOGINFO, "-->Python script returned the following error<--");
+          CLog::Log(LOGERROR, "Error Type: %s", PyString_AsString(PyObject_Str(exc_type)));
+          CLog::Log(LOGERROR, "Error Contents: %s", PyString_AsString(PyObject_Str(exc_value)));
+
+          tracebackModule = PyImport_ImportModule("traceback");
+          if (tracebackModule != NULL)
+          {
+            PyObject *tbList, *emptyString, *strRetval;
+
+            tbList = PyObject_CallMethod(tracebackModule, "format_exception", "OOO", exc_type, exc_value == NULL ? Py_None : exc_value, exc_traceback == NULL ? Py_None : exc_traceback);
+            emptyString = PyString_FromString("");
+            strRetval = PyObject_CallMethod(emptyString, "join", "O", tbList);
+
+            CLog::Log(LOGERROR, "%s", PyString_AsString(strRetval));
+
+            Py_DECREF(tbList);
+            Py_DECREF(emptyString);
+            Py_DECREF(strRetval);
+            Py_DECREF(tracebackModule);
+          }
+          CLog::Log(LOGINFO, "-->End of Python script error report<--");
+        }
+      }
+      else
+      {
+        pystring = NULL;
+        CLog::Log(LOGINFO, "<unknown exception type>");
+      }
+    }
+    if (pystring != NULL && strncmp(PyString_AsString(pystring), "exceptions.KeyboardInterrupt", 28) != 0)
+    {
+      CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+      if (pDlgToast)
+      {
+        CStdString desc;
+        CStdString path;
+        CStdString script;
+        CUtil::Split(source, path, script);
+        if (script.Equals("default.py"))
+        {
+          CStdString path2;
+          CUtil::RemoveSlashAtEnd(path);
+          CUtil::Split(path, path2, script);
+        }
+
+        desc.Format(g_localizeStrings.Get(2100), script);
+        pDlgToast->QueueNotification(g_localizeStrings.Get(257), desc);
+      }
+    }
+    Py_XDECREF(exc_type);
+    Py_XDECREF(exc_value); // caller owns all 3
+    Py_XDECREF(exc_traceback); // already NULL'd out
+    Py_XDECREF(pystring);
   }
   else
     CLog::Log(LOGINFO, "Scriptresult: Success");

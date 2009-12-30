@@ -133,6 +133,12 @@ extern "C"
   FUNCTION4(PyThreadState_New)
   FUNCTION(PyErr_Print)
   FUNCTION(PyErr_Occurred)
+  FUNCTION(PyRun_String)
+  FUNCTION(PyRun_File)
+  FUNCTION(PyImport_AddModule)
+  FUNCTION(PyObject_Str)
+  FUNCTION(PyErr_Fetch)
+  FUNCTION(PyImport_ImportModule)
   FUNCTION8(PyRun_SimpleFile)
   FUNCTION4(PySys_SetPath)
   FUNCTION4(PyThreadState_Delete)
@@ -349,7 +355,14 @@ extern "C"
       dll.ResolveExport(DLL_OBJECT_DATA(PyInt_Type)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyUnicode_Type)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyTuple_Type)) &&
-      dll.ResolveExport(DLL_OBJECT_DATA(PyDict_Type)));
+      dll.ResolveExport(DLL_OBJECT_DATA(PyDict_Type)) &&
+
+      dll.ResolveExport(DLL_FUNCTION(PyRun_String)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyImport_AddModule)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyRun_File)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyObject_Str)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyErr_Fetch)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyImport_ImportModule)));
 
     return bResult;
   }
