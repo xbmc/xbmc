@@ -15,6 +15,17 @@ CWebServer::CWebServer()
   m_daemon = NULL;
 }
 
+
+int PrintOutKey(void *cls, enum MHD_ValueKind kind, const char *key, const char *value) 
+{
+  printf("%s %s\n", key, value);
+
+  map<CStdString, CStdString> *arguments = (map<CStdString, CStdString> *)cls;
+  arguments->insert( pair<CStdString,CStdString>(key,value) );
+
+  return MHD_YES; 
+} 
+
 int CWebServer::answer_to_connection (void *cls, struct MHD_Connection *connection,
                       const char *url, const char *method,
                       const char *version, const char *upload_data,
@@ -23,9 +34,55 @@ int CWebServer::answer_to_connection (void *cls, struct MHD_Connection *connecti
   printf("%s | %s\n", method, url);
 
   CStdString strURL = url;
+#ifdef HAS_JSONRPC
+  if (strURL.Equals("/jsonrpc") && strcmp (method, "POST") == 0)
+  {
+    char jsoncall[*upload_data_size + 1];
+    memcpy(jsoncall, upload_data, *upload_data_size);
+    jsoncall[*upload_data_size] = '\0';
+    if (*upload_data_size > 204800)
+      CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call wich is bigger than 200KiB, skipping logging it");
+    else
+      CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call - %s", jsoncall);
+    printf("%s\n", jsoncall);
+    CStdString jsonresponse = CJSONRPC::MethodCall(jsoncall);
 
+    struct MHD_Response *response = MHD_create_response_from_data(jsonresponse.length(), (void *) jsonresponse.c_str(), MHD_NO, MHD_YES);
+    int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+    MHD_destroy_response(response);
+
+    return ret;
+  }
+#endif
   if (strcmp(method, "GET") == 0)
   {
+    if (strURL.Left(6).Equals("/thumb"))
+    {
+      strURL = strURL.Right(strURL.length() - 7);
+      strURL = strURL.Left(strURL.length() - 4);
+    }
+    else if (strURL.Left(4).Equals("/vfs"))
+    {
+      strURL = strURL.Right(strURL.length() - 5);
+      CUtil::UrlDecode(strURL);
+    }
+#ifdef HAS_HTTPAPI
+    else if (strURL.Left(18).Equals("/xbmcCmds/xbmcHttp"))
+    {
+      printf("getting argumentkinds\n");
+      map<CStdString, CStdString> arguments;
+      if (MHD_get_connection_values(connection, MHD_GET_ARGUMENT_KIND, PrintOutKey, &arguments) > 0)
+      {
+        CStdString httpapiresponse = CHttpApi::MethodCall(arguments["command"], arguments["parameter"]);
+
+        struct MHD_Response *response = MHD_create_response_from_data(httpapiresponse.length(), (void *) httpapiresponse.c_str(), MHD_NO, MHD_YES);
+        int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+        MHD_destroy_response(response);
+
+        return ret;
+      }
+    }
+#endif
 #ifdef HAS_WEB_INTERFACE
     else if (strURL.Equals("/"))
       strURL = "special://home/web/index.html";
