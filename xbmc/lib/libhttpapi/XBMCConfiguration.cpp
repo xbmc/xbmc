@@ -22,15 +22,7 @@
 #include "Settings.h"
 #include "XBMCConfiguration.h"
 #include "Util.h"
-#include "includes.h"
 #include "URL.h"
-
-#ifndef __GNUC__
-#pragma code_seg("WEB_TEXT")
-#pragma data_seg("WEB_DATA")
-#pragma bss_seg("WEB_BSS")
-#pragma const_seg("WEB_RD")
-#endif
 
 CXbmcConfiguration::CXbmcConfiguration()
 {
@@ -673,3 +665,32 @@ bool CXbmcConfiguration::IsValidOption(char* option)
 	if (!strcmp("screenshots", option)) return true;
 	return false;
 }
+
+bool XbmcWebConfigInit()
+{
+  if (!pXbmcWebConfig) {
+    pXbmcWebConfig = new CXbmcConfiguration();
+	return true;
+  }
+  else
+	return false;
+}
+
+void XbmcWebConfigRelease()
+{
+  if (pXbmcWebConfig)
+  {
+	delete pXbmcWebConfig;
+	pXbmcWebConfig=NULL;
+  }
+}
+
+int XbmcWebsHttpAPIConfigBookmarkSize(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->BookmarkSize(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigGetBookmark(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetBookmark(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigAddBookmark(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->AddBookmark(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigSaveBookmark(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveBookmark(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigRemoveBookmark(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->RemoveBookmark(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigSaveConfiguration(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SaveConfiguration(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigGetOption(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->GetOption(-1, NULL, response, argc, argv) : -1; }
+int XbmcWebsHttpAPIConfigSetOption(CStdString& response, int argc, char_t **argv) { return pXbmcWebConfig ? pXbmcWebConfig->SetOption(-1, NULL, response, argc, argv) : -1; }
+

@@ -1,0 +1,8 @@
+INCLUDES=-I. -I../ -I../../ -I../../../ -I../../utils -I../../FileSystem -I../../linux -I../../cores -I../../../guilib
+
+SRCS=HttpApi.cpp XBMChttp.cpp
+
+LIB= libhttpapi.a
+
+include ../../../Makefile.include
+

@@ -22,7 +22,6 @@ public:
 	int		SaveConfiguration( int eid, webs_t wp, CStdString& response, int argc, char_t **argv);
 	int		GetOption( int eid, webs_t wp, CStdString& response, int argc, char_t **argv);
 	int		SetOption( int eid, webs_t wp, CStdString& response, int argc, char_t **argv);
-
 private:
 	int		Load();
 	bool	IsValidOption(char* option);
@@ -31,3 +30,15 @@ private:
 	bool	xbmcCfgLoaded;
 };
 
+
+  bool XbmcWebConfigInit();
+  void XbmcWebConfigRelease();
+
+  int XbmcWebsHttpAPIConfigBookmarkSize(CStdString& response, int argc, char_t **argv);
+  int XbmcWebsHttpAPIConfigGetBookmark(CStdString& response, int argc, char_t **argv);
+  int XbmcWebsHttpAPIConfigAddBookmark(CStdString& response, int argc, char_t **argv);
+  int XbmcWebsHttpAPIConfigSaveBookmark(CStdString& response, int argc, char_t **argv);
+  int XbmcWebsHttpAPIConfigRemoveBookmark(CStdString& response, int argc, char_t **argv);
+  int XbmcWebsHttpAPIConfigSaveConfiguration(CStdString& response, int argc, char_t **argv);
+  int XbmcWebsHttpAPIConfigGetOption(CStdString& response, int argc, char_t **argv);
+  int XbmcWebsHttpAPIConfigSetOption(CStdString& response, int argc, char_t **argv);

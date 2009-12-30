@@ -10,9 +10,9 @@
 /********************************* Includes ***********************************/
 
 #include "Application.h"
-#include "WebServer.h"
+#include "XBMCConfiguration.h"
 #include "XBMChttp.h"
-#include "includes.h"
+//#include "includes.h"
 #include "GUIWindowManager.h"
 
 #include "PlayListFactory.h"
@@ -67,7 +67,6 @@ using namespace MUSIC_INFO;
 #define NO_EID -1
 
 CXbmcHttp* m_pXbmcHttp;
-CXbmcHttpShim* pXbmcHttpShim;
 
 
 CUdpBroadcast::CUdpBroadcast() : CUdpClient()
@@ -395,7 +394,7 @@ int CXbmcHttp::displayDir(int numParas, CStdString paras[])
     numLines = atoi(paras[4]);
   if (!CDirectory::GetDirectory(folder, dirItems, mask))
   {
-    return SetResponse(openTag+"Error:Not folder");
+    return SetResponse(openTag+"Error: " + folder + "Not folder");
   }
   if (option=="size")
   {
@@ -1206,33 +1205,6 @@ int CXbmcHttp::xbmcClearPlayList(int numParas, CStdString paras[])
   return SetResponse(openTag+"OK");
 }
 
-int CXbmcHttp::xbmcSwapPlayListItems(int numParas, CStdString paras[])
-{
-  int iPlayList ;
-  if (numParas < 3)
-    return SetResponse(openTag+"Error: Not enough parameters");
-  iPlayList=g_playlistPlayer.GetCurrentPlaylist();
-  if (numParas > 2)
-    iPlayList = atoi(paras[2]); 
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlayList);
-
-  int item1;
-  if (StringUtils::IsNaturalNumber(paras[0]))
-    item1 = atoi(paras[0]);
-  else
-    item1=FindPathInPlayList(iPlayList,paras[0]);
-  int item2;
-  if (StringUtils::IsNaturalNumber(paras[1]))
-    item2 = atoi(paras[1]);
-  else
-    item2=FindPathInPlayList(iPlayList,paras[1]);
-
-  if (playlist.Swap(item1,item2))
-    return SetResponse(openTag+"OK");
-
-  return SetResponse(openTag+"Error swapping items");
-}
-
 int CXbmcHttp::xbmcGetDirectory(int numParas, CStdString paras[])
 {
   if (numParas>0)
@@ -1814,20 +1786,6 @@ int CXbmcHttp::xbmcGetThumb(int numParas, CStdString paras[], bool bGetThumb)
     thumb+=paras[0];
     thumb+="\">";
   }
-  if (tempSkipWebFooterHeader)
-  {
-    CStdString strHttpResponseHeaders;
-    strHttpResponseHeaders.Format(
-    "HTTP/1.0 200 OK\r\n"
-    "Pragma: no-cache\r\n"
-    "Cache-control: no-cache\r\n"
-    "Content-Length: %i\r\n"
-    "Content-Type: text/plain\r\n"
-    "\r\n"
-    ,thumb.length()
-    );
-    return SetResponse( strHttpResponseHeaders + thumb);
-  }
   return SetResponse(thumb) ;
 }
 
@@ -2405,20 +2363,6 @@ int CXbmcHttp::xbmcDownloadInternetFile(int numParas, CStdString paras[])
         {
           if (dest=="special://temp/xbmcDownloadInternetFile.tmp")
             CFile::Delete(dest);
-          if (tempSkipWebFooterHeader)
-          {
-            CStdString strHttpResponseHeaders;
-            strHttpResponseHeaders.Format(
-            "HTTP/1.0 200 OK\r\n"
-            "Pragma: no-cache\r\n"
-            "Cache-control: no-cache\r\n"
-            "Content-Length: %i\r\n"
-            "Content-Type: text/plain\r\n"
-            "\r\n"
-            ,encoded.length()
-            );
-            return SetResponse( strHttpResponseHeaders + encoded);
-          }
           return SetResponse(encoded) ;
         }
       }
@@ -2723,7 +2667,7 @@ int CXbmcHttp::xbmcSTSetting(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
 {
-  int argc=0, ret=-1;
+/*  int argc=0, ret=-1;
   char_t* argv[20]; 
   CStdString response="";
   
@@ -2735,7 +2679,7 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
       argv[argc]=(char_t*)paras[argc+1].c_str();
   }
   argv[argc]=NULL;
-  bool createdWebConfigObj=XbmcWebConfigInit();
+  bool createdWebConfigObj = XbmcWebConfigInit();
   if (paras[0]=="bookmarksize")
   {
     ret=XbmcWebsHttpAPIConfigBookmarkSize(response, argc, argv);
@@ -2779,12 +2723,12 @@ int CXbmcHttp::xbmcConfig(int numParas, CStdString paras[])
   }
   if (createdWebConfigObj)
     XbmcWebConfigRelease();
-  if (ret==-1)
-    return SetResponse(openTag+"Error:WebServer needs to be running - is it?");
-  else
+  if (ret==-1)*/
+    return SetResponse(openTag+"Error:Deprecated");
+/*  else
   {
     return SetResponse(openTag+response);
-  }
+  }*/
 }
 
 int CXbmcHttp::xbmcGetSystemInfo(int numParas, CStdString paras[])
@@ -2839,10 +2783,10 @@ bool CXbmcHttp::xbmcBroadcast(CStdString message, int level)
   {
     if (!pUdpBroadcast)
       pUdpBroadcast = new CUdpBroadcast();
-    CStdString LocalAddress = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
+	CStdString LocalAddress = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
     CStdString msg;
-    if ((g_settings.m_HttpApiBroadcastLevel & 128)==128)
-      message += ";"+g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
+	if ((g_settings.m_HttpApiBroadcastLevel & 128)==128)
+	   message += ";"+g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
     msg.Format(openBroadcast+message+";%i"+closeBroadcast, level);
     return pUdpBroadcast->broadcast(msg, g_settings.m_HttpApiBroadcastPort);
   }
@@ -2876,7 +2820,7 @@ int CXbmcHttp::xbmcSetBroadcast(int numParas, CStdString paras[])
   {
     g_settings.m_HttpApiBroadcastLevel=atoi(paras[0]);
     if (g_settings.m_HttpApiBroadcastLevel==128)
-      g_settings.m_HttpApiBroadcastLevel=0;
+	g_settings.m_HttpApiBroadcastLevel=0;
     if (numParas>1)
       g_settings.m_HttpApiBroadcastPort=atoi(paras[1]);
     return SetResponse(openTag+"OK");
@@ -2936,7 +2880,7 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
       filepath = paras[0];
     if (numParas>5)
     {
-      CStdString tmpFile = "special://temp/temp.png";
+      CStdString tmpFile = "special://temp/temp.bmp";
       CUtil::TakeScreenshot(tmpFile, true);
       int height, width;
       if (paras[4]=="")
@@ -3057,7 +3001,7 @@ int CXbmcHttp::xbmcSetLogLevel(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcWebServerStatus(int numParas, CStdString paras[])
 {
-  if (numParas==0)
+/*  if (numParas==0)
   {
     if (g_application.m_pWebServer)
       return SetResponse(openTag+"On");
@@ -3084,7 +3028,8 @@ int CXbmcHttp::xbmcWebServerStatus(int numParas, CStdString paras[])
         return SetResponse(openTag+"OK");
       }
     else
-        return SetResponse(openTag+"Error:Unknown parameter");
+        return SetResponse(openTag+"Error:Unknown parameter");*/
+  return false;
 }
 
 int CXbmcHttp::xbmcSetResponseFormat(int numParas, CStdString paras[])
@@ -3170,7 +3115,6 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
     if (command == "clearplaylist")                   retVal = xbmcClearPlayList(numParas, paras);  
       else if (command == "addtoplaylist")            retVal = xbmcAddToPlayList(numParas, paras);  
       else if (command == "addtoplaylistfromdb")      retVal = xbmcAddToPlayListFromDB(numParas, paras);  
-      else if (command == "swapplaylistitems")        retVal = xbmcSwapPlayListItems(numParas, paras);  
       else if (command == "playfile")                 retVal = xbmcPlayerPlayFile(numParas, paras); 
       else if (command == "pause")                    retVal = xbmcAction(numParas, paras,1);
       else if (command == "stop")                     retVal = xbmcAction(numParas, paras,2);
@@ -3285,158 +3229,9 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
   return retVal;
 }
 
-CXbmcHttpShim::CXbmcHttpShim()
-{
-  CLog::Log(LOGDEBUG, "xbmcHttpShim starts");
-}
-
-CXbmcHttpShim::~CXbmcHttpShim()
-{
-CLog::Log(LOGDEBUG, "xbmcHttpShim ends");
-}
-
-bool CXbmcHttpShim::checkForFunctionTypeParas(CStdString &cmd, CStdString &paras)
-{
-  int open, close;
-  open = cmd.Find("(");
-  if (open>0)
-  {
-    close=cmd.length();
-    while (close>open && cmd.Mid(close,1)!=")")
-      close--;
-    if (close>open)
-    {
-      paras = cmd.Mid(open + 1, close - open - 1);
-      cmd = cmd.Left(open);
-      return (close-open)>1;
-    }
-  }
-  return false;
-}
-
-CStdString CXbmcHttpShim::flushResult(int eid, webs_t wp, const CStdString &output)
-{
-  if (output!="")
-  {
-    if (eid==NO_EID && wp!=NULL)
-      websWriteBlock(wp, (char_t *) output.c_str(), output.length()) ;
-    else if (eid!=NO_EID)
-      ejSetResult( eid, (char_t *)output.c_str());
-    else
-      return output;
-  }
-  return "";
-}
-
-CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
-{
-  if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
-      return "";
-  int open, close;
-  CStdString parameter="", cmd=command, execute;
-  open = cmd.Find("(");
-  if (open>0)
-  {
-    close=cmd.length();
-    while (close>open && cmd.Mid(close,1)!=")")
-      close--;
-    if (close>open)
-    {
-      parameter = cmd.Mid(open + 1, close - open - 1);
-      parameter.Replace(",",";");
-      execute = cmd.Left(open);
-    }
-    else //open bracket but no close
-      return "";
-  }
-  else //no parameters
-    execute = cmd;
-  CUtil::UrlDecode(parameter);
-  return xbmcProcessCommand(NO_EID, NULL, (char_t *) execute.c_str(), (char_t *) parameter.c_str());
-}
-
-/* Parse an XBMC HTTP API command */
-CStdString CXbmcHttpShim::xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter)
-{
-  if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
-    return "";
-  CStdString cmd=command, paras=parameter, response="[No response yet]", retVal;
-  bool legalCmd=true;
-  //CLog::Log(LOGDEBUG, "XBMCHTTPShim: Received command %s (%s)", cmd.c_str(), paras.c_str());
-  int cnt=0;
-
-  checkForFunctionTypeParas(cmd, paras);
-  if (wp!=NULL)
-  {
-    //we are being called via the webserver (rather than Python) so add any specific checks here
-    if ((cmd=="webserverstatus") && (paras!=""))//(strcmp(parameter,XBMC_NONE)))
-    {
-      response=m_pXbmcHttp->GetOpenTag()+"Error:Can't turn off/on WebServer via a web call";
-      legalCmd=false;
-    }
-  }
-  if (legalCmd)
-  {
-    if (paras!="")
-      g_application.getApplicationMessenger().HttpApi(cmd+"; "+paras, true);
-    else
-      g_application.getApplicationMessenger().HttpApi(cmd, true);
-    //wait for response - max 20s
-    Sleep(0);
-    response=g_application.getApplicationMessenger().GetResponse();
-    while (response=="[No response yet]" && cnt++<200) 
-    {
-      response=g_application.getApplicationMessenger().GetResponse();
-      CLog::Log(LOGDEBUG, "XBMCHTTPShim: waiting %d", cnt);
-      Sleep(100);
-    }
-    if (cnt>199)
-    {
-      response=m_pXbmcHttp->GetOpenTag()+"Error:Timed out";
-      CLog::Log(LOGDEBUG, "HttpApi Timed out");
-    }
-  }
-  //flushresult
-  if (wp!=NULL)
-  {
-    if (eid==NO_EID && m_pXbmcHttp && !m_pXbmcHttp->tempSkipWebFooterHeader)
-    {
-      if (m_pXbmcHttp->incWebHeader)
-          websHeader(wp);
-    }
-  }
-  retVal=flushResult(eid, wp, m_pXbmcHttp->userHeader+response+m_pXbmcHttp->userFooter);
-  if (m_pXbmcHttp) //this should always be true unless something is very wrong
-    if ((wp!=NULL) && (m_pXbmcHttp->incWebFooter) && eid==NO_EID && !m_pXbmcHttp->tempSkipWebFooterHeader)
-      websFooter(wp);
-  return retVal;
-}
-
-
-/* XBMC Javascript binding for ASP. This will be invoked when "APICommand" is
- *  embedded in an ASP page.
- */
-int CXbmcHttpShim::xbmcCommand( int eid, webs_t wp, int argc, char_t **argv)
-{
-  char_t *command, *parameter;
-  if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
-    return -1;
-
-  int parameters = ejArgs(argc, argv, T((char*)"%s %s"), &command, &parameter);
-  if (parameters < 1) 
-  {
-    websError(wp, 500, T((char*)"Error:Insufficient args"));
-    return -1;
-  }
-  else if (parameters < 2) 
-    parameter = (char*)"";
-  xbmcProcessCommand( eid, wp, command, parameter);
-  return 0;
-}
-
 /* XBMC form for posted data (in-memory CGI). 
  */
-void CXbmcHttpShim::xbmcForm(webs_t wp, char_t *path, char_t *query)
+/*void CXbmcHttpShim::xbmcForm(webs_t wp, char_t *path, char_t *query)
 {
   char_t  *command, *parameter;
 
@@ -3453,4 +3248,4 @@ void CXbmcHttpShim::xbmcForm(webs_t wp, char_t *path, char_t *query)
     websDone(wp, 200);
   else
     CLog::Log(LOGERROR, "HttpApi Timeout command: %s", query);
-}
+}*/

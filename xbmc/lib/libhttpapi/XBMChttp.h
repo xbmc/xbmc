@@ -15,24 +15,10 @@
 /********************************* Includes ***********************************/
 
 typedef char char_t;
-typedef struct websRec *webs_t;
 
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
-class CXbmcHttpShim
-{
-public:
-  CXbmcHttpShim();
-  ~CXbmcHttpShim();
 
-  void xbmcForm(webs_t wp, char_t *path, char_t *query);
-  int  xbmcCommand( int eid, webs_t wp, int argc, char_t **argv);
-  CStdString xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter);
-  CStdString xbmcExternalCall(char *command);
-  bool checkForFunctionTypeParas(CStdString &cmd, CStdString &paras);
-private:
-  CStdString flushResult(int eid, webs_t wp, const CStdString &output);
-};
 
 class CUdpBroadcast : public CUdpClient
 {
@@ -70,7 +56,6 @@ public:
   int xbmcRemoveFromPlayList(int numParas, CStdString paras[]);
   int xbmcSetPlayListSong(int numParas, CStdString paras[]);
   int xbmcGetPlayListSong(int numParas, CStdString paras[]);
-  int xbmcSwapPlayListItems(int numParas, CStdString paras[]);
   int xbmcSetPlaySpeed(int numParas, CStdString paras[]);
   int xbmcGetPlaySpeed();
   int xbmcPlayListNext();
@@ -157,7 +142,6 @@ private:
   int splitParameter(const CStdString &parameter, CStdString& command, CStdString paras[], const CStdString &sep);
   bool playableFile(const CStdString &filename);
   int SetResponse(const CStdString &response);
-  CStdString flushResult(int eid, webs_t wp, const CStdString &output);
   int displayDir(int numParas, CStdString paras[]);
   void SetCurrentMediaItem(CFileItem& newItem);
   void AddItemToPlayList(const CFileItemPtr &pItem, int playList, int sortMethod, CStdString mask, bool recursive);
@@ -174,4 +158,3 @@ private:
 #define WEB_PARAMETER T("parameter")
 
 extern CXbmcHttp* m_pXbmcHttp; //make it global so Application.cpp can access it for key/button messages
-extern CXbmcHttpShim* pXbmcHttpShim;
