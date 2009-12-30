@@ -31,6 +31,7 @@ BIN_DIRS=	\
 	xbmc/lib/cmyth/librefmem \
 	xbmc/lib/libhts \
   xbmc/lib/libjsoncpp \
+  xbmc/lib/libjsonrpc \
   xbmc/lib/libhttpapi \
 	xbmc/lib/libPython \
 	xbmc/lib/libPython/xbmcmodule \
@@ -233,6 +234,8 @@ xbmc/lib/libXDAAP/libxdaap-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libXDAAP
 xbmc/lib/libjsoncpp/libjsoncpp.a: force
 	$(MAKE) -C xbmc/lib/libjsoncpp
+xbmc/lib/libjsonrpc/libjsonrpc.a: force
+	$(MAKE) -C xbmc/lib/libjsonrpc
 xbmc/lib/libhttpapi/libhttpapi.a: force
 	$(MAKE) -C xbmc/lib/libhttpapi
 xbmc/lib/sqLite/sqllite.a: force

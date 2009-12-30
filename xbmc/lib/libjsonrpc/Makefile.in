@@ -1,0 +1,8 @@
+INCLUDES=-I. -I../ -I../../ -I../../../ -I../../utils -I../../FileSystem -I../../linux -I../../cores -I../../../guilib
+
+SRCS=JSONRPC.cpp PlayerActions.cpp FileActions.cpp MusicLibrary.cpp VideoLibrary.cpp LibraryBase.cpp
+
+LIB= libjsonrpc.a
+
+include ../../../Makefile.include
+
