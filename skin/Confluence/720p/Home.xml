@@ -313,7 +313,7 @@
 				<texture>HomeNowPlayingBack.png</texture>
 			</control>
 			<control type="group">
-				<visible>!VideoPlayer.Content(Movies) + !VideoPlayer.Content(Episodes)</visible>
+				<visible>!VideoPlayer.Content(Movies) + !VideoPlayer.Content(Episodes) + !VideoPlayer.Content(LiveTV)</visible>
 				<control type="image">
 					<description>Cover image</description>
 					<posx>200r</posx>
@@ -512,6 +512,85 @@
 				<control type="label">
 					<description>Time Label</description>
 					<posx>260r</posx>
+					<posy>310</posy>
+					<height>30</height>
+					<width>325</width>
+					<label>$INFO[Player.Time]$INFO[Player.Duration, / ]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</control>
+			<control type="group">
+				<visible>VideoPlayer.Content(LiveTV)</visible>
+				<control type="image">
+					<description>Cover image</description>
+					<posx>200r</posx>
+					<posy>0</posy>
+					<width>180</width>
+					<height>340</height>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<texture>$INFO[VideoPlayer.Cover]</texture>
+					<bordertexture border="8">ThumbBorder.png</bordertexture>
+					<bordersize>5</bordersize>
+				</control>
+				<control type="label">
+					<description>NowPlaying label</description>
+					<posx>210r</posx>
+					<posy>210</posy>
+					<height>30</height>
+					<width>660</width>
+					<label>$LOCALIZE[31040] ($LOCALIZE[31502])</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>Channel label</description>
+					<posx>210r</posx>
+					<posy>235</posy>
+					<height>30</height>
+					<width>660</width>
+					<label>$INFO[VideoPlayer.ChannelName]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>Title label</description>
+					<posx>210r</posx>
+					<posy>260</posy>
+					<height>30</height>
+					<width>660</width>
+					<label>$INFO[VideoPlayer.Title]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>Next Label</description>
+					<posx>210r</posx>
+					<posy>285</posy>
+					<height>30</height>
+					<width>660</width>
+					<label>$LOCALIZE[209] : $INFO[VideoPlayer.NextTitle]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>Time Label</description>
+					<posx>210r</posx>
 					<posy>310</posy>
 					<height>30</height>
 					<width>325</width>

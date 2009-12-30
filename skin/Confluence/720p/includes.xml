@@ -405,7 +405,7 @@
 			<font>font12_title</font>
 			<textcolor>grey2</textcolor>
 			<shadowcolor>black</shadowcolor>
-			<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos)</visible>
+			<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos) + !videoplayer.content(LiveTV)</visible>
 		</control>
 		<control type="label">
 			<description>TV Show Title label</description>
@@ -434,6 +434,22 @@
 			<textcolor>white</textcolor>
 			<shadowcolor>black</shadowcolor>
 			<visible>videoplayer.content(musicvideos)</visible>
+			<scrollout>false</scrollout>
+			<pauseatend>2000</pauseatend>
+		</control>
+		<control type="fadelabel">
+			<description>Channel label</description>
+			<posx>160</posx>
+			<posy>20</posy>
+			<height>30</height>
+			<width>325</width>
+			<label>$INFO[VideoPlayer.ChannelName]</label>
+			<align>left</align>
+			<aligny>center</aligny>
+			<font>font12_title</font>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<visible>videoplayer.content(LiveTV)</visible>
 			<scrollout>false</scrollout>
 			<pauseatend>2000</pauseatend>
 		</control>
