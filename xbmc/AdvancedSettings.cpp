@@ -63,7 +63,7 @@ CAdvancedSettings::CAdvancedSettings()
   m_videoPercentSeekBackwardBig = -10;
   m_videoBlackBarColour = 1;
   m_videoPPFFmpegType = "linblenddeint";
-  m_videoDefaultPlayer = "dvdplayer";
+  m_videoDefaultPlayer = "mplayer";
   m_videoIgnoreAtStart = 15;
   m_videoIgnoreAtEnd = 5;
   m_videoPlayCountMinimumPercent = 90.0f;
