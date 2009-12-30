@@ -347,6 +347,7 @@ xcode_depends: \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
   xbmc/lib/libjsoncpp/libjsoncpp.a \
+  xbmc/lib/libjsonrpc/libjsonrpc.a \
   xbmc/lib/libhttpapi/libhttpapi.a
 
 # platform independend objects
@@ -388,6 +389,7 @@ OBJSXBMC=	\
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
   xbmc/lib/libjsoncpp/libjsoncpp.a \
+  xbmc/lib/libjsonrpc/libjsonrpc.a \
   xbmc/lib/libhttpapi/libhttpapi.a \
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
