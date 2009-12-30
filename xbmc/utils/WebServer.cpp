@@ -123,8 +123,9 @@ void CWebServer::ContentReaderFreeCallback(void *cls)
 
 bool CWebServer::Initialize()
 {
+#ifdef HAS_JSONRPC
   CJSONRPC::Initialize();
-
+#endif
   return true;
 }
 
