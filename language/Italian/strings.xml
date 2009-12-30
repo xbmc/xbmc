@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: KoTiX-->
 <!--Email: marcotix@libero.it-->
-<!--Date of translation: 11/20/2009-->
-<!--Based on english strings version 24792-->
+<!--Date of translation: 12/15/2009-->
+<!--Based on english strings version 25742-->
 <strings>
   <string id="0">Programmi</string>
   <string id="1">Immagini</string>
@@ -1167,7 +1167,7 @@ per questo effetto grafico</string>
   <string id="13411">Minima vel. ventola</string>
   <string id="13412"></string>
   <string id="13413">Download in corso</string>
-  <string id="13414">Mostra gli artisti presenti solo nelle compilation</string>
+  <string id="13414">Includi gli artisti presenti solo nelle compilation</string>
   <string id="13415">Metodo di render</string>
   <string id="13416">Automatico</string>
   <string id="13417">Sfumatura di base (ARB)</string>
@@ -1177,6 +1177,7 @@ per questo effetto grafico</string>
   <string id="13421">VDPAU</string>
   <string id="13422">Avvia lo slideshow da qui</string>
   <string id="13423">Ricorda per questo percorso</string>
+  <string id="13424">Usa oggetti pixel buffer</string> 
   <string id="13500">Metodo di sincronizzazione A/V</string>
   <string id="13501">Clock audio</string>
   <string id="13502">Clock video (Lascia/Aggiungi audio)</string>
@@ -1813,7 +1814,7 @@ per questo effetto grafico</string>
   <string id="20338">Film</string>
   <string id="20339">Regista</string>
   <string id="20340">Vuoi rimuovere tutti gli elementi in</string>
-  <string id="20341">questo percorso dall'archivio?</string>
+  <string id="20341">questo percorso dall'archivio di XBMC?</string>
   <string id="20342">Film</string>
   <string id="20343">Serie TV</string>
   <string id="20344">Questa directory contiene</string>
@@ -2120,7 +2121,6 @@ per questo effetto grafico</string>
   <string id="22022">Mostra i file video nelle liste</string>
   <string id="22023">DirectX Vendor</string>
   <string id="22024">Versione Direct3D</string>
-
   <string id="22030">Carattere</string>
   <string id="22031">- Dimensione</string>
   <string id="22032">- Colore</string>
@@ -2138,6 +2138,8 @@ per questo effetto grafico</string>
   <string id="23000">Plugin meteo</string>
   <string id="23001">- Impostazioni plugin</string>
   <string id="23050">Attiva il Teletext</string>
+  <string id="23051">Parte %i</string> 
+  <string id="23052">Buffering %i bytes</string> 
   <string id="23100">Player Esterno Attivato</string>
   <string id="23101">Premi OK per chiudere il player</string>
   <string id="23104">Premi OK al termine della riproduzione</string>
@@ -2210,4 +2212,9 @@ per questo effetto grafico</string>
   <string id="33076">Aggiorna XBMC.</string>
   <string id="33077">Nessun informazione trovata!</string>
   <string id="33078">Prossima pagina</string>
+  <string id="33079">Amore</string> 
+  <string id="33080">Odio</string> 
+  <string id="33081">Questo file è multiplo, seleziona la parte da cui iniziare la riproduzione.</string> 
+  <string id="33082">Percorso per lo script</string> 
+  <string id="33083">Abilita il pulsante per lo script personalizzato</string> 
 </strings>

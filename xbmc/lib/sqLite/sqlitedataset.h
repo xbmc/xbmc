@@ -70,6 +70,8 @@ public:
   virtual int create();
 /* func. deletes database */
   virtual int drop();
+/* check if database exists (ie has tables/views defined) */
+  virtual bool exists();
 
   virtual long nextid(const char* seq_name);
 
@@ -144,6 +146,8 @@ or insert() operations default = false) */
   virtual void close(void);
 /* Cancel changes, made in insert or edit states of dataset */
   virtual void cancel();
+/* last inserted id */
+  virtual int64_t lastinsertid();
 /* sequence numbers */
   virtual long nextid(const char *seq_name);
 /* sequence numbers */

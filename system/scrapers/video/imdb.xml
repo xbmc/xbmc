@@ -42,7 +42,7 @@
 			<expression clear="yes" noclean="1">(imdb.com/title/tt)([0-9]*)</expression>
 		</RegExp>
 	</NfoUrl>
-	<CreateSearchUrl dest="3">
+	<CreateSearchUrl dest="3" SearchStringEncoding="iso-8859-1">
 		<RegExp input="$$1" output="&lt;url&gt;http://akas.imdb.com/find?s=tt;q=\1$$4&lt;/url&gt;" dest="3">
 			<RegExp input="$$2" output="%20(\1)" dest="4">
 				<expression clear="yes">(.+)</expression>

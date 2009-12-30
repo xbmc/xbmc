@@ -1362,12 +1362,14 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
     newPlaylist.reset(new CFileItem("newplaylist://", false));
     newPlaylist->SetLabel(g_localizeStrings.Get(525));
     newPlaylist->SetLabelPreformated(true);
+    newPlaylist->SetSpecialSort(SORT_ON_BOTTOM);    
     newPlaylist->SetCanQueue(false);
     items.Add(newPlaylist);
 
     newPlaylist.reset(new CFileItem("newsmartplaylist://music", false));
     newPlaylist->SetLabel(g_localizeStrings.Get(21437));
     newPlaylist->SetLabelPreformated(true);
+    newPlaylist->SetSpecialSort(SORT_ON_BOTTOM);
     newPlaylist->SetCanQueue(false);
     items.Add(newPlaylist);
   }

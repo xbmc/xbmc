@@ -275,7 +275,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
       strSQL+=strSQL1;
 
       m_pDS->exec(strSQL.c_str());
-      idSong = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      idSong = (int)m_pDS->lastinsertid();
     }
 
     // add extra artists and genres
@@ -328,7 +328,7 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, int idArtist, const CS
       m_pDS->exec(strSQL.c_str());
 
       CAlbumCache album;
-      album.idAlbum = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      album.idAlbum = (int)m_pDS->lastinsertid();
       album.strAlbum = strAlbum;
       album.idArtist = idArtist;
       album.strArtist = strArtist;
@@ -394,7 +394,7 @@ int CMusicDatabase::AddGenre(const CStdString& strGenre1)
       strSQL=FormatSQL("insert into genre (idGenre, strGenre) values( NULL, '%s' )", strGenre.c_str());
       m_pDS->exec(strSQL.c_str());
 
-      int idGenre = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      int idGenre = (int)m_pDS->lastinsertid();
       m_genreCache.insert(pair<CStdString, int>(strGenre1, idGenre));
       return idGenre;
     }
@@ -444,7 +444,7 @@ int CMusicDatabase::AddArtist(const CStdString& strArtist1)
       // doesnt exists, add it
       strSQL=FormatSQL("insert into artist (idArtist, strArtist) values( NULL, '%s' )", strArtist.c_str());
       m_pDS->exec(strSQL.c_str());
-      int idArtist = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      int idArtist = (int)m_pDS->lastinsertid();
       m_artistCache.insert(pair<CStdString, int>(strArtist1, idArtist));
       return idArtist;
     }
@@ -619,7 +619,7 @@ int CMusicDatabase::AddPath(const CStdString& strPath)
       strSQL=FormatSQL("insert into path (idPath, strPath) values( NULL, '%s' )", strPath.c_str());
       m_pDS->exec(strSQL.c_str());
 
-      int idPath = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      int idPath = (int)m_pDS->lastinsertid();
       m_pathCache.insert(pair<CStdString, int>(strPath, idPath));
       return idPath;
     }
@@ -1684,7 +1684,7 @@ int CMusicDatabase::SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONG
                   album.iRating,
                   album.iYear);
     m_pDS->exec(strSQL.c_str());
-    int idAlbumInfo = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+    int idAlbumInfo = (int)m_pDS->lastinsertid();
 
     if (SetAlbumInfoSongs(idAlbumInfo, songs))
     {
@@ -1740,7 +1740,7 @@ int CMusicDatabase::SetArtistInfo(int idArtist, const CArtist& artist)
                   artist.thumbURL.m_xml.c_str(),
                   artist.fanart.m_xml.c_str());
     m_pDS->exec(strSQL.c_str());
-    int idArtistInfo = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+    int idArtistInfo = (int)m_pDS->lastinsertid();
     for (unsigned int i=0;i<artist.discography.size();++i)
     {
       strSQL=FormatSQL("insert into discography (idArtist,strAlbum,strYear) values (%i,'%s','%s')",idArtist,artist.discography[i].first.c_str(),artist.discography[i].second.c_str());
@@ -3232,7 +3232,7 @@ int CMusicDatabase::AddThumb(const CStdString& strThumb1)
       strSQL=FormatSQL("insert into thumb (idThumb, strThumb) values( NULL, '%s' )", strThumb.c_str());
       m_pDS->exec(strSQL.c_str());
 
-      int idPath = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      int idPath = (int)m_pDS->lastinsertid();
       m_thumbCache.insert(pair<CStdString, int>(strThumb1, idPath));
       return idPath;
     }
@@ -4157,8 +4157,12 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
       CStdString strPath;
       GetAlbumPath(album.idAlbum,strPath);
       album.Save(pMain, "album", strPath);
-      if (singleFiles && CDirectory::Exists(strPath))
+      if (singleFiles)
       {
+        if (!CDirectory::Exists(strPath))
+          CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, strPath.c_str());
+        else
+        {
         CStdString nfoFile;
         CUtil::AddFileToFolder(strPath, "album.nfo", nfoFile);
         if (overwrite || !CFile::Exists(nfoFile))
@@ -4166,7 +4170,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
           if (!xmlDoc.SaveFile(nfoFile))
             CLog::Log(LOGERROR, "%s: Album nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
         }
-        
+
         if (images)
         {
           CStdString strThumb;
@@ -4177,6 +4181,8 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
         xmlDoc.InsertEndChild(decl);
       }
+      }
+
       if ((current % 50) == 0 && progress)
       {
         progress->SetLine(1, album.strAlbum);
@@ -4220,8 +4226,12 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
       CStdString strPath;
       GetArtistPath(artist.idArtist,strPath);
       artist.Save(pMain, "artist", strPath);
-      if (singleFiles && CDirectory::Exists(strPath))
+      if (singleFiles)
       {
+        if (!CDirectory::Exists(strPath))
+          CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, strPath.c_str());
+        else
+        {
         CStdString nfoFile;
         CUtil::AddFileToFolder(strPath, "artist.nfo", nfoFile);
         if (overwrite || !CFile::Exists(nfoFile))
@@ -4229,7 +4239,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
           if (!xmlDoc.SaveFile(nfoFile))
             CLog::Log(LOGERROR, "%s: Artist nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
         }
-        
+
         if (images)
         {
           CFileItem item(artist);
@@ -4242,6 +4252,8 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
         xmlDoc.InsertEndChild(decl);
       }
+      }
+      
       if ((current % 50) == 0 && progress)
       {
         progress->SetLine(1, artist.strArtist);

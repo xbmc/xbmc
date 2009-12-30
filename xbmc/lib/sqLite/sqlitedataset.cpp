@@ -190,6 +190,24 @@ int SqliteDatabase::connect() {
   return DB_CONNECTION_NONE;
 }
 
+bool SqliteDatabase::exists(void)
+{
+  bool bRet = false;
+  if (!active) return bRet;
+  result_set res;
+  char sqlcmd[512];
+
+  // performing a select all on the sqlite_master will return rows if there are tables
+  // defined indicating it's not empty and therefore must "exist".
+  sprintf(sqlcmd,"SELECT * FROM sqlite_master");
+  if ((last_err = sqlite3_exec(getHandle(),sqlcmd, &callback, &res,NULL)) == SQLITE_OK)
+  {
+    bRet = (res.records.size() > 0);
+  }
+
+  return bRet;
+}
+
 void SqliteDatabase::disconnect(void) {
   if (active == false) return;
   sqlite3_close(conn);
@@ -567,6 +585,11 @@ bool SqliteDataset::seek(int pos) {
   return false;
 }
 
+int64_t SqliteDataset::lastinsertid()
+{
+  if(!handle()) throw DbErrors("No Database Connection");
+  return sqlite3_last_insert_rowid(handle());
+}
 
 
 long SqliteDataset::nextid(const char *seq_name) {

@@ -2017,8 +2017,6 @@ bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStr
     return false;
 
   CStdString strExclude = strFileOrFolder;
-  RemoveSlashAtEnd(strExclude);
-  strExclude = GetFileName(strExclude);
   strExclude.MakeLower();
 
   CRegExp regExExcludes;
@@ -2032,7 +2030,7 @@ bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStr
     }
     if (regExExcludes.RegFind(strExclude) > -1)
     {
-      CLog::Log(LOGDEBUG, "%s: File '%s' excluded. (Matches exclude rule RegExp:'%s')", __FUNCTION__, strFileOrFolder.c_str(), regexps[i].c_str());
+      CLog::Log(LOGDEBUG, "%s: File '%s' excluded. (Matches exclude rule RegExp:'%s')", __FUNCTION__, strExclude.c_str(), regexps[i].c_str());
       return true;
     }
   }

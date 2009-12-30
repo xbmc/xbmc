@@ -70,6 +70,7 @@ public:
   int xbmcRemoveFromPlayList(int numParas, CStdString paras[]);
   int xbmcSetPlayListSong(int numParas, CStdString paras[]);
   int xbmcGetPlayListSong(int numParas, CStdString paras[]);
+  int xbmcSwapPlayListItems(int numParas, CStdString paras[]);
   int xbmcSetPlaySpeed(int numParas, CStdString paras[]);
   int xbmcGetPlaySpeed();
   int xbmcPlayListNext();

@@ -312,13 +312,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   if (pItem)
   {
     pItem->m_bIsFolder = true;
-    CStdString strFake;
-    //  HACK: This item will stay on top of a list
-    strFake.Format("%c", 0x01);
-    if (g_advancedSettings.m_bVideoLibraryAllItemsOnBottom)
-      //  HACK: This item will stay on bottom of a list
-      strFake.Format("%c", 0xff);
-    pItem->GetVideoInfoTag()->m_strTitle = strFake;
+    pItem->SetSpecialSort(g_advancedSettings.m_bVideoLibraryAllItemsOnBottom ? SORT_ON_BOTTOM : SORT_ON_TOP);
     pItem->SetCanQueue(false);
     pItem->SetLabelPreformated(true);
     items.Add(pItem);

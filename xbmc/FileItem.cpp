@@ -302,6 +302,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bCanQueue=item.m_bCanQueue;
   m_contenttype = item.m_contenttype;
   m_extrainfo = item.m_extrainfo;
+  m_specialSort = item.m_specialSort;
   return *this;
 }
 
@@ -339,6 +340,7 @@ void CFileItem::Reset()
   delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
   m_extrainfo.Empty();
+  m_specialSort = SORT_NORMALLY;
   SetInvalid();
 }
 
@@ -368,6 +370,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar << m_bCanQueue;
     ar << m_contenttype;
     ar << m_extrainfo;
+    ar << m_specialSort;
 
     if (m_musicInfoTag)
     {
@@ -406,15 +409,17 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_idepth;
     ar >> m_lStartOffset;
     ar >> m_lEndOffset;
-    int lockmode;
-    ar >> (int &)lockmode;
-    m_iLockMode = (LockType)lockmode;
+    int temp;
+    ar >> temp;
+    m_iLockMode = (LockType)temp;
     ar >> m_strLockCode;
     ar >> m_iBadPwdCount;
 
     ar >> m_bCanQueue;
     ar >> m_contenttype;
     ar >> m_extrainfo;
+    ar >> temp;
+    m_specialSort = (SPECIAL_SORT)temp;
 
     int iType;
     ar >> iType;
@@ -1025,6 +1030,7 @@ void CFileItem::SetLabel(const CStdString &strLabel)
   {
     m_bIsParentFolder=true;
     m_bIsFolder=true;
+    m_specialSort = SORT_ON_TOP;
     SetLabelPreformated(true);
   }
   CGUIListItem::SetLabel(strLabel);
@@ -1455,7 +1461,7 @@ void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 {
   CSingleLock lock(m_lock);
   DWORD dwStart = GetTickCount();
-  std::sort(m_items.begin(), m_items.end(), func);
+  std::stable_sort(m_items.begin(), m_items.end(), func);
   DWORD dwElapsed = GetTickCount() - dwStart;
   CLog::Log(LOGDEBUG,"%s, sorting took %u millis", __FUNCTION__, dwElapsed);
 }
@@ -1475,6 +1481,7 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   switch (sortMethod)
   {
   case SORT_METHOD_LABEL:
+  case SORT_METHOD_LABEL_IGNORE_FOLDERS:
     FillSortFields(SSortFileItem::ByLabel);
     break;
   case SORT_METHOD_LABEL_IGNORE_THE:
@@ -1568,7 +1575,8 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   }
   if (sortMethod == SORT_METHOD_FILE        ||
       sortMethod == SORT_METHOD_VIDEO_SORT_TITLE ||
-      sortMethod == SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE)
+      sortMethod == SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE ||
+      sortMethod == SORT_METHOD_LABEL_IGNORE_FOLDERS)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::IgnoreFoldersAscending : SSortFileItem::IgnoreFoldersDescending);
   else if (sortMethod != SORT_METHOD_NONE)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::Ascending : SSortFileItem::Descending);

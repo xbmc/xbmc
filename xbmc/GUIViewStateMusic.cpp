@@ -594,6 +594,11 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
 
     SetSortOrder(SORT_ORDER_ASC);
   }
+  else if (items.m_strPath == "special://musicplaylists/")
+  { // playlists list sorts by label only, ignoring folders
+    AddSortMethod(SORT_METHOD_LABEL_IGNORE_FOLDERS, 551, LABEL_MASKS("%F", "%D", "%L", ""));  // Filename, Duration | Foldername, empty
+    SetSortMethod(SORT_METHOD_LABEL_IGNORE_FOLDERS);
+  }
   else
   {
     CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");

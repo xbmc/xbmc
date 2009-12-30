@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 12/13/2009-->
+<!--Date of translation: 12/16/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 25637-->
+<!--Based on english strings version 25761-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -1672,8 +1672,8 @@
   <string id="20337">Ηθοποιός</string>
   <string id="20338">Ταινία</string>
   <string id="20339">Σκηνοθέτης</string>
-  <string id="20340">Θέλετε να διαγράψετε όλα τα αντικείμενα</string>
-  <string id="20341">από τη συλλογή;</string>
+  <string id="20340">Θέλετε να απομακρύνετε όλα τα αντικείμενα που βρίσκονται</string>
+  <string id="20341">σ΄ αυτή την διαδρομή από τη συλλογή του XBMC;</string>
   <string id="20342">Ταινίες</string>
   <string id="20343">Τηλεοπτικές σειρές</string>
   <string id="20344">Αυτός ο φάκελος περιέχει</string>

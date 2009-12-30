@@ -51,6 +51,7 @@
 #include "ASAPCodec.h"
 #include "URL.h"
 
+
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
   if (strFileType.Equals("mp3") || strFileType.Equals("mp2"))
@@ -115,17 +116,18 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 
 ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdString& strContent, unsigned int filecache)
 {
+  CURL urlFile(strFile);
   if( strContent.Equals("audio/mpeg") )
     return new MP3Codec();
-  else if( strContent.Equals("audio/aac") 
+  else if( strContent.Equals("audio/aac")
     || strContent.Equals("audio/aacp") )
     return new AACCodec();
 
-  CURL urlFile(strFile);
-  if (urlFile.GetProtocol() == "lastfm")
+  if (urlFile.GetProtocol() == "lastfm" || urlFile.GetProtocol() == "shout")
   {
     return new MP3Codec();
   }
+
   if (urlFile.GetFileType().Equals("wav"))
   {
     ICodec* codec;

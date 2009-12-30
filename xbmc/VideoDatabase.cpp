@@ -499,7 +499,7 @@ int CVideoDatabase::AddPath(const CStdString& strPath)
 
     strSQL=FormatSQL("insert into path (idPath, strPath, strContent, strScraper) values (NULL,'%s','','')", strPath1.c_str());
     m_pDS->exec(strSQL.c_str());
-    idPath = (int)sqlite3_last_insert_rowid( m_pDB->getHandle() );
+    idPath = (int)m_pDS->lastinsertid();
     return idPath;
   }
   catch (...)
@@ -564,7 +564,7 @@ int CVideoDatabase::AddFile(const CStdString& strFileNameAndPath)
     m_pDS->close();
     strSQL=FormatSQL("insert into files (idFile,idPath,strFileName) values(NULL, %i, '%s')", idPath,strFileName.c_str());
     m_pDS->exec(strSQL.c_str());
-    idFile = (int)sqlite3_last_insert_rowid( m_pDB->getHandle() );
+    idFile = (int)m_pDS->lastinsertid();
     return idFile;
   }
   catch (...)
@@ -915,7 +915,7 @@ int CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath)
     {
       CStdString strSQL=FormatSQL("insert into movie (idMovie, idFile) values (NULL, %i)", idFile);
       m_pDS->exec(strSQL.c_str());
-      idMovie = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      idMovie = (int)m_pDS->lastinsertid();
 //      CommitTransaction();
     }
 
@@ -942,7 +942,7 @@ int CVideoDatabase::AddTvShow(const CStdString& strPath)
 
     strSQL=FormatSQL("insert into tvshow (idShow) values (NULL)");
     m_pDS->exec(strSQL.c_str());
-    int idTvShow = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+    int idTvShow = (int)m_pDS->lastinsertid();
 
     int idPath = GetPathId(strPath);
     if (idPath < 0)
@@ -976,7 +976,7 @@ int CVideoDatabase::AddEpisode(int idShow, const CStdString& strFilenameAndPath)
 
     CStdString strSQL=FormatSQL("insert into episode (idEpisode, idFile) values (NULL, %i)", idFile);
     m_pDS->exec(strSQL.c_str());
-    idEpisode = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+    idEpisode = (int)m_pDS->lastinsertid();
 
     strSQL=FormatSQL("insert into tvshowlinkepisode (idShow,idEpisode) values (%i,%i)",idShow,idEpisode);
     m_pDS->exec(strSQL.c_str());
@@ -1008,7 +1008,7 @@ int CVideoDatabase::AddMusicVideo(const CStdString& strFilenameAndPath)
     {
       CStdString strSQL=FormatSQL("insert into musicvideo (idMVideo, idFile) values (NULL, %i)", idFile);
       m_pDS->exec(strSQL.c_str());
-      idMVideo = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      idMVideo = (int)m_pDS->lastinsertid();
     }
 
     return idMVideo;
@@ -1036,7 +1036,7 @@ int CVideoDatabase::AddGenre(const CStdString& strGenre)
       // doesnt exists, add it
       strSQL=FormatSQL("insert into genre (idGenre, strGenre) values( NULL, '%s')", strGenre.c_str());
       m_pDS->exec(strSQL.c_str());
-      int idGenre = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      int idGenre = (int)m_pDS->lastinsertid();
       return idGenre;
     }
     else
@@ -1070,7 +1070,7 @@ int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& strTh
       // doesnt exists, add it
       strSQL=FormatSQL("insert into Actors (idActor, strActor, strThumb) values( NULL, '%s','%s')", strActor.c_str(),strThumb.c_str());
       m_pDS->exec(strSQL.c_str());
-      int idActor = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      int idActor = (int)m_pDS->lastinsertid();
       return idActor;
     }
     else
@@ -1106,7 +1106,7 @@ int CVideoDatabase::AddSet(const CStdString& strSet)
       // doesn't exist, add it
       strSQL=FormatSQL("insert into sets (idSet, strSet) values(NULL, '%s')", strSet.c_str());
       m_pDS->exec(strSQL.c_str());
-      int idSet = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      int idSet = (int)m_pDS->lastinsertid();
       return idSet;
     }
     else
@@ -1140,7 +1140,7 @@ int CVideoDatabase::AddStudio(const CStdString& strStudio)
       // doesnt exists, add it
       strSQL=FormatSQL("insert into studio (idStudio, strStudio) values( NULL, '%s')", strStudio.c_str());
       m_pDS->exec(strSQL.c_str());
-      int idStudio = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      int idStudio = (int)m_pDS->lastinsertid();
       return idStudio;
     }
     else
@@ -2358,7 +2358,7 @@ void CVideoDatabase::AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBook
     m_pDS->exec(strSQL.c_str());
 
     AddBookMarkToFile(tag.m_strFileNameAndPath, bookmark, CBookmark::EPISODE);
-    int idBookmark = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
+    int idBookmark = (int)m_pDS->lastinsertid();
     strSQL = FormatSQL("update episode set c%02d=%i where c%02d=%i and c%02d=%i and idFile=%i", VIDEODB_ID_EPISODE_BOOKMARK, idBookmark, VIDEODB_ID_EPISODE_SEASON, tag.m_iSeason, VIDEODB_ID_EPISODE_EPISODE, tag.m_iEpisode, idFile);
     m_pDS->exec(strSQL.c_str());
   }
@@ -6976,10 +6976,14 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
       if (CUtil::IsWritable(movie.m_strFileNameAndPath))
       {
-        if (singleFiles && CFile::Exists(movie.m_strFileNameAndPath))
+        if (singleFiles)
+        {
+        CFileItem item(movie.m_strFileNameAndPath,false);
+          if (!item.Exists())
+            CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, movie.m_strFileNameAndPath.c_str());
+          else
         {
           CStdString nfoFile;
-          CFileItem item(movie.m_strFileNameAndPath,false);
           CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
 
           if (overwrite || !CFile::Exists(nfoFile))
@@ -7023,6 +7027,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
           }
         }
       }
+      }
       m_pDS->next();
       current++;
     }
@@ -7059,10 +7064,14 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
       if (CUtil::IsWritable(movie.m_strFileNameAndPath))
       {
-        if (singleFiles && CFile::Exists(movie.m_strFileNameAndPath))
+        if (singleFiles)
+        {
+        CFileItem item(movie.m_strFileNameAndPath,false);
+          if (!item.Exists())
+            CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, movie.m_strFileNameAndPath.c_str());
+          else
         {
           CStdString nfoFile;
-          CFileItem item(movie.m_strFileNameAndPath,false);
           CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
 
           if (overwrite || !CFile::Exists(nfoFile))
@@ -7096,6 +7105,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
           }
         }
+      }
       }
       m_pDS->next();
       current++;
@@ -7133,10 +7143,14 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
       if (CUtil::IsWritable(tvshow.m_strPath))
       {
-        if (singleFiles && CDirectory::Exists(tvshow.m_strPath))
+        if (singleFiles)
+        {
+        CFileItem item(tvshow.m_strPath,false);
+          if (!item.Exists())
+            CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, tvshow.m_strPath.c_str());
+          else
         {
           CStdString nfoFile;
-          CFileItem item(tvshow.m_strPath,false);
           CUtil::AddFileToFolder(tvshow.m_strPath, "tvshow.nfo", nfoFile);
 
           if (overwrite || !CFile::Exists(nfoFile))
@@ -7228,6 +7242,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             }
           }
         }
+        }
 
         // now save the episodes from this show
         sql = FormatSQL("select * from episodeview where idShow=%i",tvshow.m_iDbId);
@@ -7244,10 +7259,14 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
           // reset old skip state
           bool bSkip = false;
 
-          if (singleFiles && CFile::Exists(episode.m_strFileNameAndPath))
+          if (singleFiles)
+          {
+          CFileItem item(episode.m_strFileNameAndPath,false);
+            if (!item.Exists())
+              CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, episode.m_strFileNameAndPath.c_str());
+            else
           {
             CStdString nfoFile;
-            CFileItem item(episode.m_strFileNameAndPath,false);
             CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
 
             if (overwrite || !CFile::Exists(nfoFile))
@@ -7282,6 +7301,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
               if (actorThumbs)
                 ExportActorThumbs(episode, overwrite);
             }
+          }
           }
           pDS->next();
         }
