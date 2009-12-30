@@ -56,11 +56,14 @@ class CFileItemList;
 #include "XBMC_events.h"
 #include "utils/Thread.h"
 
+#ifdef HAS_WEB_SERVER
+#include "utils/WebServer.h"
+#endif
+
 #ifdef HAS_SDL
 #include <SDL/SDL_mutex.h>
 #endif
 
-class CWebServer;
 class CSNTPClient;
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
@@ -222,7 +225,11 @@ public:
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
   CSNTPClient *m_psntpClient;
-  CWebServer* m_pWebServer;
+
+#ifdef HAS_WEB_SERVER
+  CWebServer m_WebServer;
+#endif
+
   IPlayer* m_pPlayer;
 
   inline bool IsInScreenSaver() { return m_bScreenSave; };
@@ -333,7 +340,6 @@ protected:
   bool PlayStack(const CFileItem& item, bool bRestart);
   bool SwitchToFullScreen();
   bool ProcessMouse();
-  bool ProcessHTTPApiButtons();
   bool ProcessKeyboard();
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
@@ -342,7 +348,6 @@ protected:
   bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
 
   float NavigationIdleTime();
-  void CheckForTitleChange();
   static bool AlwaysProcess(const CAction& action);
 
   void SaveCurrentFileSettings();

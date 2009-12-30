@@ -346,6 +346,7 @@ AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssl],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([microhttpd],  [main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([MAD],        [mad],
                   [INCLUDES+=" $MAD_CFLAGS"; LIBS+=" $MAD_LIBS"],
                   AC_MSG_ERROR($missing_library))
@@ -1041,7 +1042,6 @@ OUTPUT_FILES="Makefile \
              xbmc/lib/libexif/Makefile \
              xbmc/lib/libXDAAP/Makefile \
              xbmc/lib/libhdhomerun/Makefile \
-             xbmc/lib/libGoAhead/Makefile \
              xbmc/lib/libjsoncpp/Makefile \
              xbmc/lib/libshout/Makefile \
              xbmc/lib/libsquish/Makefile \
