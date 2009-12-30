@@ -46,7 +46,8 @@
 #include "infotagvideo.h"
 #include "infotagmusic.h"
 #ifdef HAS_WEB_SERVER
-//#include "lib/libGoAhead/XBMChttp.h"
+#include "lib/libhttpapi/XBMChttp.h"
+#include "lib/libhttpapi/HttpApi.h"
 #endif
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"
@@ -303,17 +304,11 @@ namespace PYXBMC
     CStdString ret;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
     if (!m_pXbmcHttp)
-    {
-      CSectionLoader::Load("LIBHTTP");
       m_pXbmcHttp = new CXbmcHttp();
-    }
-    if (!pXbmcHttpShim)
-    {
-      pXbmcHttpShim = new CXbmcHttpShim();
-      if (!pXbmcHttpShim)
-        return NULL;
-    }
-    ret=pXbmcHttpShim->xbmcExternalCall(cLine);
+
+    CStdString method = cLine, parameter;
+
+    ret = CHttpApi::MethodCall(method, parameter);
 
     return PyString_FromString(ret.c_str());
 #endif
