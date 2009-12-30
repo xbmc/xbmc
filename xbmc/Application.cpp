@@ -1353,7 +1353,7 @@ void CApplication::StartWebServer()
 void CApplication::StopWebServer(bool bWait)
 {
 #ifdef HAS_WEB_SERVER
-  if (m_pWebServer)
+//  if (m_WebServer.IsStarted())
   {
     if (!bWait)
     {

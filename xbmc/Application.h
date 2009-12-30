@@ -165,6 +165,7 @@ public:
   void CheckScreenSaverAndDPMS();
   void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
+  void CheckForTitleChange();
   void ActivateScreenSaver(bool forceType = false);
 
   virtual void Process();
@@ -344,7 +345,7 @@ protected:
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
   bool ProcessEventServer(float frameTime);
-
+  bool ProcessHTTPApiButtons();
   bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
 
   float NavigationIdleTime();
