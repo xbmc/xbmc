@@ -840,6 +840,10 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
   if(host.length() == 0)
     return false;
 
+  // assume a hostname without dot's
+  // is local (smb netbios hostnames)
+  if(host.find('.') == string::npos)
+    return true;
 
   unsigned long address = ntohl(inet_addr(host.c_str()));
   if(address == INADDR_NONE)
@@ -849,21 +853,16 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
       address = ntohl(inet_addr(ip.c_str()));
   }
 
-  if(address == INADDR_NONE)
-  {
-    // assume a hostname without dot's
-    // is local (smb netbios hostnames)
-    if(host.find('.') == string::npos)
-      return true;
-  }
-  else
+  if(address != INADDR_NONE)
   {
     // check if we are on the local subnet
     if (!g_application.getNetwork().GetFirstConnectedInterface())
       return false;
+    
     if (g_application.getNetwork().HasInterfaceForIP(address))
       return true;
   }
+  
   return false;
 }
 
