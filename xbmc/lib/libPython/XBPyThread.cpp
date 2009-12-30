@@ -206,7 +206,7 @@ void XBPyThread::Process()
     FILE *fp = fopen_utf8(_P(m_source).c_str(), "r");
     if (fp)
     {
-      PyObject* module = PyImport_AddModule("__main__");
+      PyObject* module = PyImport_AddModule((char*)"__main__");
       PyObject* moduleDict = PyModule_GetDict(module);
       PyRun_File(fp, _P(m_source).c_str(), m_Py_file_input, moduleDict, moduleDict);
       fclose(fp);
@@ -217,7 +217,7 @@ void XBPyThread::Process()
   else
   {
     //run script
-    PyObject* module = PyImport_AddModule("__main__");
+    PyObject* module = PyImport_AddModule((char*)"__main__");
     PyObject* moduleDict = PyModule_GetDict(module);
     PyRun_String(m_source, m_Py_file_input, moduleDict, moduleDict);
   }
@@ -248,14 +248,14 @@ void XBPyThread::Process()
           CLog::Log(LOGERROR, "Error Type: %s", PyString_AsString(PyObject_Str(exc_type)));
           CLog::Log(LOGERROR, "Error Contents: %s", PyString_AsString(PyObject_Str(exc_value)));
 
-          tracebackModule = PyImport_ImportModule("traceback");
+          tracebackModule = PyImport_ImportModule((char*)"traceback");
           if (tracebackModule != NULL)
           {
             PyObject *tbList, *emptyString, *strRetval;
 
-            tbList = PyObject_CallMethod(tracebackModule, "format_exception", "OOO", exc_type, exc_value == NULL ? Py_None : exc_value, exc_traceback == NULL ? Py_None : exc_traceback);
+            tbList = PyObject_CallMethod(tracebackModule, (char*)"format_exception", (char*)"OOO", exc_type, exc_value == NULL ? Py_None : exc_value, exc_traceback == NULL ? Py_None : exc_traceback);
             emptyString = PyString_FromString("");
-            strRetval = PyObject_CallMethod(emptyString, "join", "O", tbList);
+            strRetval = PyObject_CallMethod(emptyString, (char*)"join", (char*)"O", tbList);
 
             CLog::Log(LOGERROR, "%s", PyString_AsString(strRetval));
 

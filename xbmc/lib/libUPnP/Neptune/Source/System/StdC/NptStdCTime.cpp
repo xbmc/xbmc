@@ -90,7 +90,7 @@ NPT_Time::GetGMTDateFromTimeStamp(const NPT_TimeStamp& time, NPT_Date& date)
     time_t     ltime;
     struct tm  gmt;
 
-    NPT_SetMemory(&gmt, sizeof(gmt), 0);
+    NPT_SetMemory(&gmt, 0, sizeof(gmt));
 
     ltime = (time_t) time.m_Seconds;
     int result = gmtime_s(&gmt, &ltime);
@@ -112,7 +112,7 @@ NPT_Time::GetLocalDate(NPT_LocalDate& today, NPT_TimeStamp& now)
     time_t    ltime;
     struct tm local;
 
-    NPT_SetMemory(&local, sizeof(local), 0);
+    NPT_SetMemory(&local, 0, sizeof(local));
 
     /* get the current time stamp */
     NPT_CHECK_SEVERE(NPT_System::GetCurrentTimeStamp(now));

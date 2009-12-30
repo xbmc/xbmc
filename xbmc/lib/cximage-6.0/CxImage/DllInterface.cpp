@@ -189,7 +189,6 @@ int ResampleKeepAspect(CxImage &image, unsigned int width, unsigned int height, 
 
 int ResampleKeepAspectArea(CxImage &image, unsigned int area)
 {
-  bool bResize = false;
   float fAspect = ((float)image.GetWidth()) / ((float)image.GetHeight());
   unsigned int width = (unsigned int)sqrt(area * fAspect);
   unsigned int height = (unsigned int)sqrt(area / fAspect);
