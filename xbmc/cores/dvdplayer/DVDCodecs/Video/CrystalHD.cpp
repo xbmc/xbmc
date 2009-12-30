@@ -42,9 +42,9 @@ namespace BCM
   #define __LINUX_USER__
   #endif
 
-  #include "crystalhd/bc_dts_types.h"
-  #include "crystalhd/bc_dts_defs.h"
-  #include "crystalhd/bc_ldil_if.h"
+  #include "libcrystalhd/bc_dts_types.h"
+  #include "libcrystalhd/bc_dts_defs.h"
+  #include "libcrystalhd/libcrystalhd_if.h"
 #endif //defined(WIN32)
 };
 
@@ -186,12 +186,12 @@ unsigned char* CMPCDecodeBuffer::GetPtr(void)
   return m_pBuffer;
 }
 
-void CMPCDecodeBuffer::SetPts(BCM::U64 pts)
+void CMPCDecodeBuffer::SetPts(uint64_t pts)
 {
   m_Pts = pts;
 }
 
-BCM::U64 CMPCDecodeBuffer::GetPts(void)
+uint64_t CMPCDecodeBuffer::GetPts(void)
 {
   return m_Pts;
 }
@@ -806,7 +806,8 @@ CCrystalHD::CCrystalHD() :
 {
   BCM::BC_STATUS res;
   //BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | BCM::DTS_SKIP_TX_CHK_CPB | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
-  BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
+  uint32_t mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | 
+DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
   
   res = BCM::DtsDeviceOpen(&m_Device, mode);
   if (res != BCM::BC_STS_SUCCESS)
@@ -858,7 +859,7 @@ bool CCrystalHD::Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type)
   if (m_IsConfigured)
     Close();
 
-  BCM::U32 videoAlg = 0;
+  uint32_t videoAlg = 0;
   switch (codec_type)
   {
     case BC_CODEC_ID_VC1:
