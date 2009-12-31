@@ -2770,6 +2770,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
           CLog::Log(LOGDEBUG,
                     "DVDNAV_STILL_FRAME - waiting %i sec, with delay of %d sec",
                     still_event->length, time / 1000);
+          SetCaching(CACHESTATE_PLAY);
         }
         return NAVRESULT_HOLD;
       }
