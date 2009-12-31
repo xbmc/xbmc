@@ -116,7 +116,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
   if (m_pBuffer) delete[] m_pBuffer;
   m_pBuffer = new BYTE[m_dwPacketSize];
 
-  
+
   return true;
 }
 
@@ -150,7 +150,7 @@ void CDVDAudio::SetSpeed(int iSpeed)
 }
 
 DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock)
-{ 
+{
   //Since we write same data size each time, we can drop full chunks to simulate a specific playback speed
   //m_iSpeedStep = (m_iSpeedStep+1) % m_iSpeed;
   //if( m_iSpeedStep )
@@ -173,7 +173,7 @@ DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock 
   DWORD  total = len;
   DWORD  copied;
   do
-  {    
+  {
     copied = m_pAudioDecoder->AddPackets(data, len);
     data += copied;
     len -= copied;
@@ -210,7 +210,7 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 
     memcpy(m_pBuffer + m_iBufferSize, data, copied); // Tack the caller's data onto the end of the buffer
     data += copied; // Move forward in caller's data
-    len -= copied; // Decrease amount of data available from caller 
+    len -= copied; // Decrease amount of data available from caller
     m_iBufferSize += copied; // Increase amount of data available in buffer
 
     if(m_iBufferSize < m_dwPacketSize) // If we don't have enough data to give to the renderer, wait until next time
@@ -249,7 +249,7 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 void CDVDAudio::Finish()
 {
   CSingleLock lock (m_critSection);
-  if (!m_pAudioDecoder) 
+  if (!m_pAudioDecoder)
     return;
 
   DWORD silence = m_dwPacketSize - m_iBufferSize % m_dwPacketSize;
@@ -271,7 +271,7 @@ void CDVDAudio::Drain()
 {
   Finish();
   CSingleLock lock (m_critSection);
-  if (m_pAudioDecoder) 
+  if (m_pAudioDecoder)
     m_pAudioDecoder->WaitCompletion();
 }
 
@@ -334,8 +334,8 @@ bool CDVDAudio::IsValidFormat(const DVDAudioFrame &audioframe)
   if(audioframe.passthrough != m_bPassthrough)
     return false;
 
-  if(audioframe.channels != m_iChannels 
-  || audioframe.sample_rate != m_iBitrate 
+  if(audioframe.channels != m_iChannels
+  || audioframe.sample_rate != m_iBitrate
   || audioframe.bits_per_sample != m_iBitsPerSample)
     return false;
 

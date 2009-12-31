@@ -63,8 +63,8 @@ public:
   bool             inited;
   const StreamType type;
   // stuff to handle starting after seek
-  double                     startpts;
-  CDVDMsgGeneralSynchronize* startsync;
+  double   startpts;
+  CDVDMsg* startsync;
 
   CCurrentStream(StreamType t)
     : type(t)
@@ -203,7 +203,14 @@ public:
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
 
-  virtual bool IsCaching() const { return m_caching; }
+  enum ECacheState
+  { CACHESTATE_DONE = 0
+  , CACHESTATE_FULL     // player is filling up the demux queue
+  , CACHESTATE_INIT     // player is waiting for first packet of each stream
+  , CACHESTATE_PLAY     // player is waiting for players to not be stalled
+  };
+
+  virtual bool IsCaching() const { return m_caching == CACHESTATE_FULL; }
   virtual int GetCacheLevel() const ; 
 
   virtual int OnDVDNavResult(void* pData, int iMessage);    
@@ -234,7 +241,7 @@ protected:
    */
   void SetPlaySpeed(int iSpeed);
   int GetPlaySpeed()                                                { return m_playSpeed; }
-  void SetCaching(bool enabled);
+  void SetCaching(ECacheState state);
 
   __int64 GetTotalTimeInMsec();
   void FlushBuffers(bool queued);
@@ -268,8 +275,7 @@ protected:
 
   std::string m_filename; // holds the actual filename
   std::string m_content;  // hold a hint to what content file contains (mime type)
-  bool        m_caching;  // player is filling up the demux queue
-  bool        m_seeking;  // player is currently trying to fullfill a seek request
+  ECacheState m_caching;
   CFileItem   m_item;
 
   CCurrentStream m_CurrentAudio;

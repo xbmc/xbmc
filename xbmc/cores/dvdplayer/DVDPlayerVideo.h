@@ -86,8 +86,7 @@ public:
   double GetSubtitleDelay()                                { return m_iSubtitleDelay; }
   void SetSubtitleDelay(double delay)                      { m_iSubtitleDelay = delay; }
 
-  bool IsStalled()                                  { return m_stalled
-                                                          && m_messageQueue.GetDataSize() == 0; }
+  bool IsStalled()                                  { return m_stalled; }
   int GetNrOfDroppedFrames()                        { return m_iDroppedFrames; }
 
   bool InitializedOutputDevice();
@@ -128,8 +127,10 @@ protected:
   double m_iSubtitleDelay;
   double m_FlipTimeStamp; // time stamp of last flippage. used to play at a forced framerate
 
+  int m_iLateFrames;
   int m_iDroppedFrames;
   bool m_bDropFrames;
+  int m_iDroppedRequest;
 
   float m_fFrameRate;
 

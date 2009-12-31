@@ -7145,7 +7145,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       {
         if (singleFiles)
         {
-        CFileItem item(tvshow.m_strPath,false);
+          CFileItem item(tvshow.m_strPath, true);
           if (!item.Exists())
             CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, tvshow.m_strPath.c_str());
           else

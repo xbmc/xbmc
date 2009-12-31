@@ -847,6 +847,13 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   CLog::Log(LOGNOTICE, "Default Video Player: %s", g_advancedSettings.m_videoDefaultPlayer.c_str());
   CLog::Log(LOGNOTICE, "Default Audio Player: %s", g_advancedSettings.m_audioDefaultPlayer.c_str());
 
+  // setup logging...
+  if (g_guiSettings.GetBool("debug.showloginfo") && g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_FREEMEM)
+  {
+    g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
+    CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting");
+  }
+  
   // Override settings with avpack settings
   if ( m_vecProfiles[m_iLastLoadedProfileIndex].useAvpackSettings())
   {

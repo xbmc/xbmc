@@ -1768,6 +1768,10 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
   if(host.length() == 0)
     return false;
 
+  // assume a hostname without dot's
+  // is local (smb netbios hostnames)
+  if(host.find('.') == string::npos)
+    return true;
 
   unsigned long address = ntohl(inet_addr(host.c_str()));
   if(address == INADDR_NONE)
@@ -1777,14 +1781,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
       address = ntohl(inet_addr(ip.c_str()));
   }
 
-  if(address == INADDR_NONE)
-  {
-    // assume a hostname without dot's
-    // is local (smb netbios hostnames)
-    if(host.find('.') == string::npos)
-      return true;
-  }
-  else
+  if(address != INADDR_NONE)
   {
     // check if we are on the local subnet
     unsigned long subnet = ntohl(inet_addr(g_network.m_networkinfo.subnet));
@@ -1792,6 +1789,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
     if( (address & subnet) == (local & subnet) )
       return true;
   }
+  
   return false;
 }
 

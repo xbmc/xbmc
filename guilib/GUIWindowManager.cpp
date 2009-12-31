@@ -753,6 +753,9 @@ void CGUIWindowManager::UnloadNotOnDemandWindows()
 
 bool CGUIWindowManager::IsOverlayAllowed() const
 {
+  if (GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+      GetActiveWindow() == WINDOW_SCREENSAVER)
+    return false;
   return m_bShowOverlay;
 }
 

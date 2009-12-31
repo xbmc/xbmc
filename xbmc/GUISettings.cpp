@@ -878,12 +878,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   {
     LoadFromXML(pRootElement, it, hideSettings);
   }
-  // setup logging...
-  if (GetBool("debug.showloginfo") && g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_FREEMEM)
-  {
-    g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
-    CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting");
-  }
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");
   if (GetInt("audiooutput.mode") == AUDIO_DIGITAL && !g_audioConfig.HasDigitalOutput())

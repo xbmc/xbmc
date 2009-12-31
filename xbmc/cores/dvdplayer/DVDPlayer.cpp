@@ -255,8 +255,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_bAbortRequest = false;
   m_errorCount = 0;
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
-  m_caching = false;
-  m_seeking = false;
+  m_caching = CACHESTATE_DONE;
 
   m_pDlgCache = NULL;
 
@@ -298,7 +297,6 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
       m_pDlgCache = new CDlgCache(3000, ""                          , m_item.GetLabel());
 #endif
     m_bAbortRequest = false;
-    m_seeking = false;
 
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
@@ -805,12 +803,8 @@ void CDVDPlayer::Process()
   if (m_pDlgCache)
     m_pDlgCache->SetMessage(g_localizeStrings.Get(10213));
 
-  // We keep this in place as Xbox will suffer from A/V desync
-  // at start otherwise
-  if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
-  && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV)
-  && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
-    SetCaching(true);
+  // make sure all selected stream have data on startup
+  SetCaching(CACHESTATE_INIT);
 
 
   while (!m_bAbortRequest)
@@ -877,8 +871,7 @@ void CDVDPlayer::Process()
     ||  (!m_dvdPlayerVideo.AcceptsData() && m_CurrentVideo.id >= 0))
     {
       Sleep(10);
-      if (m_caching)
-        SetCaching(false);
+      SetCaching(CACHESTATE_DONE);
       continue;
     }
 
@@ -955,8 +948,7 @@ void CDVDPlayer::Process()
       m_CurrentSubtitle.inited = false;
 
       // if we are caching, start playing it again
-      if (m_caching && !m_bAbortRequest)
-        SetCaching(false);
+      SetCaching(CACHESTATE_DONE);
 
       // while players are still playing, keep going to allow seekbacks
       if(m_dvdPlayerAudio.m_messageQueue.GetDataSize() > 0 
@@ -1063,8 +1055,7 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   }
 
   // check if we are too slow and need to recache
-  if(CheckStartCaching(m_CurrentAudio) && m_dvdPlayerAudio.IsStalled())
-    SetCaching(true);
+  CheckStartCaching(m_CurrentAudio);
 
   CheckContinuity(m_CurrentAudio, pPacket);
   if(pPacket->dts != DVD_NOPTS_VALUE)
@@ -1099,8 +1090,7 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
   }
 
   // check if we are too slow and need to recache
-  if(CheckStartCaching(m_CurrentVideo) && m_dvdPlayerVideo.IsStalled())
-    SetCaching(true);
+  CheckStartCaching(m_CurrentVideo);
 
   if( pPacket->iSize != 4) //don't check the EOF_SEQUENCE of stillframes
   {
@@ -1156,6 +1146,21 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
 void CDVDPlayer::HandlePlaySpeed()
 {
+  if(m_caching == CACHESTATE_INIT)
+  {
+    // if all enabled streams have been inited we are done
+    if((m_CurrentVideo.id < 0 || m_CurrentVideo.inited)
+    && (m_CurrentAudio.id < 0 || m_CurrentAudio.inited))
+      SetCaching(CACHESTATE_PLAY);
+  }
+  if(m_caching == CACHESTATE_PLAY)
+  {
+    // if all enabled streams have started playing we are done
+    if((m_CurrentVideo.id < 0 || !m_dvdPlayerVideo.AcceptsData() || !m_dvdPlayerVideo.IsStalled())
+    && (m_CurrentAudio.id < 0 || !m_dvdPlayerAudio.AcceptsData() || !m_dvdPlayerAudio.IsStalled()))
+      SetCaching(CACHESTATE_DONE);
+  }
+
   if(GetPlaySpeed() != DVD_PLAYSPEED_NORMAL && GetPlaySpeed() != DVD_PLAYSPEED_PAUSE)
   {
     if (IsInMenu())
@@ -1197,9 +1202,27 @@ void CDVDPlayer::HandlePlaySpeed()
 
 bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
 {
-  return !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
-      && !m_caching && m_playSpeed == DVD_PLAYSPEED_NORMAL
-      && current.inited;
+  if(m_caching   != CACHESTATE_DONE
+  || m_playSpeed != DVD_PLAYSPEED_NORMAL)
+    return false;
+
+  if(current.type == STREAM_AUDIO && m_dvdPlayerAudio.IsStalled()
+  || current.type == STREAM_VIDEO && m_dvdPlayerVideo.IsStalled())
+  {
+    if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
+    || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP)
+    || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+      SetCaching(CACHESTATE_INIT);
+    else
+    {
+      if(current.inited)
+        SetCaching(CACHESTATE_FULL);
+      else
+        SetCaching(CACHESTATE_INIT);
+    }
+    return true;
+  }
+  return false;
 }
 
 bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
@@ -1486,8 +1509,7 @@ void CDVDPlayer::SyncronizeDemuxer(DWORD timeout)
     return;
 
   CDVDMsgGeneralSynchronize* message = new CDVDMsgGeneralSynchronize(timeout, 0);
-  message->Acquire();  
-  m_messenger.Put(message);
+  m_messenger.Put(message->Acquire());
   message->Wait(&m_bStop, 0);
   message->Release();
 }
@@ -1509,27 +1531,24 @@ void CDVDPlayer::SyncronizePlayers(DWORD sources, double pts)
   CDVDMsgGeneralSynchronize* message = new CDVDMsgGeneralSynchronize(timeout, sources);
   if (m_CurrentAudio.id >= 0)
   {
-    message->Acquire();
     m_CurrentAudio.dts = DVD_NOPTS_VALUE;
     m_CurrentAudio.startpts  = pts;
-    m_CurrentAudio.startsync = message;
+    m_CurrentAudio.startsync = message->Acquire();
   }
   if (m_CurrentVideo.id >= 0)
   {
-    message->Acquire();
     m_CurrentVideo.dts = DVD_NOPTS_VALUE;
     m_CurrentVideo.startpts  = pts;
-    m_CurrentVideo.startsync = message;
+    m_CurrentVideo.startsync = message->Acquire();
   }
 /* TODO - we have to rewrite the sync class, to not require
           all other players waiting for subtitle, should only
           be the oposite way
   if (m_CurrentSubtitle.id >= 0)
   {
-    message->Acquire();
     m_CurrentSubtitle.dts = DVD_NOPTS_VALUE;
     m_CurrentSubtitle.startpts  = pts;
-    m_CurrentSubtitle.startsync = message;
+    m_CurrentSubtitle.startsync = message->Acquire();
   }
 */
   message->Release();
@@ -1563,7 +1582,7 @@ void CDVDPlayer::OnExit()
     CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
 
     // set event to inform openfile something went wrong in case openfile is still waiting for this event
-    SetCaching(false);
+    SetCaching(CACHESTATE_DONE);
 
     // close each stream
     if (!m_bAbortRequest) CLog::Log(LOGNOTICE, "DVDPlayer: eof, waiting for queues to empty");
@@ -1812,7 +1831,7 @@ void CDVDPlayer::HandleMessages()
         // 1. disable audio
         // 2. skip frames and adjust their pts or the clock
         m_playSpeed = speed;
-        m_caching = false;
+        m_caching = CACHESTATE_DONE;
         m_clock.SetSpeed(speed);
         m_dvdPlayerAudio.SetSpeed(speed);
         m_dvdPlayerVideo.SetSpeed(speed);
@@ -1861,27 +1880,28 @@ void CDVDPlayer::HandleMessages()
   }
 }
 
-void CDVDPlayer::SetCaching(bool enabled)
+void CDVDPlayer::SetCaching(ECacheState state)
 {
-  if(m_caching == enabled)
+  if(m_caching == state)
     return;
 
-  if(enabled)
+  CLog::Log(LOGDEBUG, "CDVDPlayer::SetCaching - caching state %d", state);
+  if(state == CACHESTATE_FULL
+  || state == CACHESTATE_INIT)
   {
-    CLog::Log(LOGDEBUG, "CDVDPlayer::SetCaching - started caching");
     m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
-    m_caching = true;
   }
-  else
+
+  if(state == CACHESTATE_PLAY
+  || state == CACHESTATE_DONE)
   {
-    CLog::Log(LOGDEBUG, "CDVDPlayer::SetCaching - stopped caching");
     m_clock.SetSpeed(m_playSpeed);
     m_dvdPlayerAudio.SetSpeed(m_playSpeed);
     m_dvdPlayerVideo.SetSpeed(m_playSpeed);
-    m_caching = false;
   }
+  m_caching = state;
 }
 
 void CDVDPlayer::SetPlaySpeed(int speed)
@@ -1894,9 +1914,9 @@ void CDVDPlayer::SetPlaySpeed(int speed)
 
 void CDVDPlayer::Pause()
 {
-  if(m_playSpeed != DVD_PLAYSPEED_PAUSE && m_caching)
+  if(m_playSpeed != DVD_PLAYSPEED_PAUSE && m_caching == CACHESTATE_FULL)
   {
-    SetCaching(false);
+    SetCaching(CACHESTATE_DONE);
     return;
   }
 
@@ -1915,7 +1935,7 @@ void CDVDPlayer::Pause()
 
 bool CDVDPlayer::IsPaused() const
 {
-  return (m_playSpeed == DVD_PLAYSPEED_PAUSE) || m_caching;
+  return (m_playSpeed == DVD_PLAYSPEED_PAUSE) || m_caching == CACHESTATE_FULL;
 }
 
 bool CDVDPlayer::HasVideo() const
@@ -2530,6 +2550,16 @@ void CDVDPlayer::FlushBuffers(bool queued)
 
     // clear subtitle and menu overlays
     m_overlayContainer.Clear();
+
+    // make sure players are properly flushed, should put them in stalled state
+    CDVDMsgGeneralSynchronize* msg = new CDVDMsgGeneralSynchronize(1000, 0);
+    m_dvdPlayerAudio.m_messageQueue.Put(msg->Acquire(), 1);
+    m_dvdPlayerVideo.m_messageQueue.Put(msg->Acquire(), 1);
+    msg->Wait(&m_bStop, 0);
+    msg->Release();
+
+    // we should now wait for init cache
+    SetCaching(CACHESTATE_INIT);
   }
   m_CurrentAudio.inited = false;
   m_CurrentVideo.inited = false;
@@ -3025,8 +3055,8 @@ bool CDVDPlayer::AddSubtitle(const CStdString& strSubPath)
 
 int CDVDPlayer::GetCacheLevel() const
 {
-  int a = min(100,100 * m_dvdPlayerAudio.m_messageQueue.GetDataSize() / m_dvdPlayerAudio.m_messageQueue.GetMaxDataSize());
-  int v = min(100,100 * m_dvdPlayerVideo.m_messageQueue.GetDataSize() / m_dvdPlayerVideo.m_messageQueue.GetMaxDataSize());
+  int a = m_dvdPlayerAudio.m_messageQueue.GetLevel();
+  int v = m_dvdPlayerVideo.m_messageQueue.GetLevel();
   return max(a, v);
 }
 
@@ -3260,32 +3290,11 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
 CDVDPlayer::CPlayerSeek::CPlayerSeek(CDVDPlayer* player)
       : m_player(*player)
 {
-  if(m_player.m_playSpeed != DVD_PLAYSPEED_NORMAL)
-    return;
-
-  if(m_player.m_caching)
-    return;
-
   g_infoManager.SetDisplayAfterSeek(100000);
-  m_player.m_seeking = true;
-  m_player.m_playSpeed = DVD_PLAYSPEED_PAUSE;
-  m_player.m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
-  m_player.m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
-  m_player.m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
+  m_player.SetCaching(CACHESTATE_INIT);
 }
 
 CDVDPlayer::CPlayerSeek::~CPlayerSeek()
 {
-  if(m_player.m_playSpeed != DVD_PLAYSPEED_PAUSE)
-    return;
-
-  if(m_player.m_caching)
-    return;
-  
   g_infoManager.SetDisplayAfterSeek();
-  m_player.m_playSpeed = DVD_PLAYSPEED_NORMAL;
-  m_player.m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_NORMAL);
-  m_player.m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_NORMAL);
-  m_player.m_clock.SetSpeed(DVD_PLAYSPEED_NORMAL);
-  m_player.m_seeking = false;
 }

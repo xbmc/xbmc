@@ -1833,13 +1833,11 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   }
   else if (condition == SKIN_HAS_VIDEO_OVERLAY)
   {
-    bReturn = !g_application.IsInScreenSaver() && g_windowManager.IsOverlayAllowed() &&
-              g_application.IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO;
+    bReturn = g_windowManager.IsOverlayAllowed() && g_application.IsPlayingVideo();
   }
   else if (condition == SKIN_HAS_MUSIC_OVERLAY)
   {
-    bReturn = !g_application.IsInScreenSaver() && g_windowManager.IsOverlayAllowed() &&
-              g_application.IsPlayingAudio();
+    bReturn = g_windowManager.IsOverlayAllowed() && g_application.IsPlayingAudio();
   }
   else if (condition == CONTAINER_HASFILES || condition == CONTAINER_HASFOLDERS)
   {

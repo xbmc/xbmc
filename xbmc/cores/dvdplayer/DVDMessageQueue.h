@@ -23,11 +23,12 @@
 
 #include "DVDMessage.h"
 #include <string>
+#include <list>
+#include "CriticalSection.h"
 
 typedef struct stDVDMessageListItem
 {
   CDVDMsg* pMsg;
-  struct stDVDMessageListItem *pNext;
   int priority;
 }
 DVDMessageListItem;
@@ -70,25 +71,33 @@ public:
   void WaitUntilEmpty();
   
   // non messagequeue related functions
-  bool IsFull() const                   { return (m_iDataSize >= m_iMaxDataSize); }
+  bool IsFull() const                   { return GetLevel() == 100; }
+  int  GetLevel() const;
+
   void SetMaxDataSize(int iMaxDataSize) { m_iMaxDataSize = iMaxDataSize; }
+  void SetMaxTimeSize(double sec)       { m_TimeSize  = 0.5 / std::max(1.0, sec); }
   int GetMaxDataSize() const            { return m_iMaxDataSize; }
   bool IsInited() const                 { return m_bInitialized; }
+
 private:
 
   HANDLE m_hEvent;
-  mutable CRITICAL_SECTION m_critSection;
-  
-  DVDMessageListItem* m_pFirstMessage;
-  DVDMessageListItem* m_pLastMessage;
+  mutable CCriticalSection m_section;
   
   bool m_bAbortRequest;
   bool m_bInitialized;
   bool m_bCaching;
 
   int m_iDataSize;
+  double m_TimeFront;
+  double m_TimeBack;
+  double m_TimeSize;
+
   int m_iMaxDataSize;
   bool m_bEmptied;
   std::string m_owner;
+
+  typedef std::list<DVDMessageListItem> SList;
+  SList m_list;
 };
 
