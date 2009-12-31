@@ -69,10 +69,14 @@ JSON_STATUS CJSONRPC::Introspect(const CStdString &method, const Value& paramete
   int length = sizeof(commands)/sizeof(JSON_ACTION);
   for (int i = 0; i < length; i++)
   {
+    Value val;
+
     if (getCommands)
-      result["commands"].append(commands[i].command);
+      val["command"] = commands[i].command;
     if (getDescriptions)
-      result["commands"].append(commands[i].description);
+      val["description"] = commands[i].description;
+
+    result["commands"].append(val);
   }
 
   return OK;
