@@ -112,7 +112,7 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString)
     errorCode = ParseError;
 
   outputroot["jsonrpc"] = "2.0";
-  outputroot["id"] = 1;//inputroot.get("id", 0).asInt();
+  outputroot["id"] = inputroot.get("id", 0);
 
   switch (errorCode)
   {
