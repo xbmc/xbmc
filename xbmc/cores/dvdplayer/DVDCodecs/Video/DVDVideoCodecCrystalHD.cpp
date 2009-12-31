@@ -51,11 +51,11 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
   
   if ((requestedMethod == RENDER_METHOD_CRYSTALHD) && !hints.software)
   {
-    BCM_CODEC_TYPE codec_type;
-    BCM_STREAM_TYPE stream_type;
+    CRYSTALHD_CODEC_TYPE codec_type;
+    CRYSTALHD_STREAM_TYPE stream_type;
     
     codec_type = hints.codec;
-    stream_type = BC_STREAM_TYPE_ES;
+    stream_type = CRYSTALHD_STREAM_TYPE_ES;
     
     if (hints.codec == CODEC_ID_H264)
       m_annexbfiltering = init_h264_mp4toannexb_filter(hints);
@@ -165,6 +165,7 @@ void CDVDVideoCodecCrystalHD::SetDropState(bool bDrop)
 {
   m_DropPictures = bDrop;
   m_Device->SetDropState(m_DropPictures);
+  CLog::Log(LOGDEBUG, "%s: SetDropState %d, InputCount: %d, ReadyCount: %d", __MODULE_NAME__, m_Device->GetInputCount(), m_Device->GetReadyCount());
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

@@ -26,6 +26,7 @@
 #if defined(HAVE_LIBCRYSTALHD)
 #include "CrystalHD.h"
 #include "DVDClock.h"
+#include "DynamicDll.h"
 #include "utils/Atomics.h" 
 #include "utils/Thread.h"
 #include "utils/log.h"
@@ -37,6 +38,9 @@ namespace BCM
   typedef void		*HANDLE;
   #include "lib/crystalhd/include/bc_dts_defs.h"
   #include "lib/crystalhd/include/windows/bc_drv_if.h"
+
+  #pragma comment(lib, "bcmDIL.lib")
+  #define DLL_PATH_LIBCRYSTALHD "bcmDIL.dll"
 #else
   #ifndef __LINUX_USER__
   #define __LINUX_USER__
@@ -45,12 +49,73 @@ namespace BCM
   #include "libcrystalhd/bc_dts_types.h"
   #include "libcrystalhd/bc_dts_defs.h"
   #include "libcrystalhd/libcrystalhd_if.h"
+
+  #if defined (__APPLE__)
+    #define DLL_PATH_LIBCRYSTALHD "/usr/lib/libcrystalhd.dylib"
+  #else
+    #define DLL_PATH_LIBCRYSTALHD "/usr/lib/libcrystalhd.so"
+  #endif
 #endif //defined(WIN32)
 };
 
-#if defined(WIN32)
-#pragma comment(lib, "bcmDIL.lib")
-#endif
+class DllLibCrystalHDInterface
+{
+public:
+  virtual ~DllLibCrystalHDInterface() {}
+  virtual BCM::BC_STATUS DtsDeviceOpen(void *hDevice, uint32_t mode)=0;
+  virtual BCM::BC_STATUS DtsDeviceClose(void *hDevice)=0;
+  virtual BCM::BC_STATUS DtsOpenDecoder(void *hDevice, uint32_t StreamType)=0;
+  virtual BCM::BC_STATUS DtsCloseDecoder(void *hDevice)=0;
+  virtual BCM::BC_STATUS DtsStartDecoder(void *hDevice)=0;
+  virtual BCM::BC_STATUS DtsSetVideoParams(void *hDevice, uint32_t videoAlg, int FGTEnable, int MetaDataEnable, int Progressive, uint32_t OptFlags)=0;
+  virtual BCM::BC_STATUS DtsStartCapture(void *hDevice)=0;
+  virtual BCM::BC_STATUS DtsFlushRxCapture(void *hDevice, int bDiscardOnly)=0;
+  virtual BCM::BC_STATUS DtsSetFFRate(void *hDevice, uint32_t rate)=0;
+  virtual BCM::BC_STATUS DtsGetDriverStatus(void *hDevice, BCM::BC_DTS_STATUS *pStatus)=0;
+  virtual BCM::BC_STATUS DtsProcInput(void *hDevice, uint8_t *pUserData, uint32_t ulSizeInBytes, uint64_t timeStamp, int encrypted)=0;
+  virtual BCM::BC_STATUS DtsProcOutput(void *hDevice, uint32_t milliSecWait, BCM::BC_DTS_PROC_OUT *pOut)=0;
+  virtual BCM::BC_STATUS DtsProcOutputNoCopy(void *hDevice, uint32_t milliSecWait, BCM::BC_DTS_PROC_OUT *pOut)=0;
+  virtual BCM::BC_STATUS DtsReleaseOutputBuffs(void *hDevice, void *Reserved, int fChange)=0;
+};
+
+class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
+{
+  DECLARE_DLL_WRAPPER(DllLibCrystalHD, DLL_PATH_LIBCRYSTALHD)
+
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsDeviceOpen,      (void *p1, uint32_t p2))
+  DEFINE_METHOD1(BCM::BC_STATUS, DtsDeviceClose,     (void *p1))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsOpenDecoder,     (void *p1, uint32_t p2))
+  DEFINE_METHOD1(BCM::BC_STATUS, DtsCloseDecoder,    (void *p1))
+  DEFINE_METHOD1(BCM::BC_STATUS, DtsStartDecoder,    (void *p1))
+  DEFINE_METHOD1(BCM::BC_STATUS, DtsStopDecoder,     (void *p1))
+  DEFINE_METHOD6(BCM::BC_STATUS, DtsSetVideoParams,  (void *p1, uint32_t p2, int p3, int p4, int p5, uint32_t p6))
+  DEFINE_METHOD1(BCM::BC_STATUS, DtsStartCapture,    (void *p1))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsFlushRxCapture,  (void *p1, int p2))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsSetFFRate,       (void *p1, uint32_t p2))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsGetDriverStatus, (void *p1, BCM::BC_DTS_STATUS *p2))
+  DEFINE_METHOD5(BCM::BC_STATUS, DtsProcInput,       (void *p1, uint8_t *p2, uint32_t p3, uint64_t p4, int p5))
+  DEFINE_METHOD3(BCM::BC_STATUS, DtsProcOutput,      (void *p1, uint32_t p2, BCM::BC_DTS_PROC_OUT *p3))
+  DEFINE_METHOD3(BCM::BC_STATUS, DtsProcOutputNoCopy,(void *p1, uint32_t p2, BCM::BC_DTS_PROC_OUT *p3))
+  DEFINE_METHOD3(BCM::BC_STATUS, DtsReleaseOutputBuffs,(void *p1, void *p2, int p3))
+
+  BEGIN_METHOD_RESOLVE()
+    RESOLVE_METHOD_RENAME(DtsDeviceOpen,      DtsDeviceOpen)
+    RESOLVE_METHOD_RENAME(DtsDeviceClose,     DtsDeviceClose)
+    RESOLVE_METHOD_RENAME(DtsOpenDecoder,     DtsOpenDecoder)
+    RESOLVE_METHOD_RENAME(DtsCloseDecoder,    DtsCloseDecoder)
+    RESOLVE_METHOD_RENAME(DtsStartDecoder,    DtsStartDecoder)
+    RESOLVE_METHOD_RENAME(DtsStopDecoder,     DtsStopDecoder)
+    RESOLVE_METHOD_RENAME(DtsSetVideoParams,  DtsSetVideoParams)
+    RESOLVE_METHOD_RENAME(DtsStartCapture,    DtsStartCapture)
+    RESOLVE_METHOD_RENAME(DtsFlushRxCapture,  DtsFlushRxCapture)
+    RESOLVE_METHOD_RENAME(DtsSetFFRate,       DtsSetFFRate)
+    RESOLVE_METHOD_RENAME(DtsGetDriverStatus, DtsGetDriverStatus)
+    RESOLVE_METHOD_RENAME(DtsProcInput,       DtsProcInput)
+    RESOLVE_METHOD_RENAME(DtsProcOutput,      DtsProcOutput)
+    RESOLVE_METHOD_RENAME(DtsProcOutputNoCopy,DtsProcOutputNoCopy)
+    RESOLVE_METHOD_RENAME(DtsReleaseOutputBuffs,DtsReleaseOutputBuffs)
+  END_METHOD_RESOLVE()
+};
 
 #define __MODULE_NAME__ "CrystalHD"
 
@@ -108,7 +173,7 @@ protected:
 class CMPCInputThread : public CThread
 {
 public:
-  CMPCInputThread(BCM::HANDLE device);
+  CMPCInputThread(void *device, DllLibCrystalHD *dll);
   virtual ~CMPCInputThread();
   
   bool                AddInput(unsigned char* pData, size_t size, uint64_t pts);
@@ -123,7 +188,8 @@ protected:
 
   CSyncPtrQueue<CMPCDecodeBuffer> m_InputList;
   
-  BCM::HANDLE         m_Device;
+  DllLibCrystalHD     *m_dll;
+  void                *m_Device;
   int                 m_SleepTime;
 };
 
@@ -131,7 +197,7 @@ protected:
 class CMPCOutputThread : public CThread
 {
 public:
-  CMPCOutputThread(BCM::HANDLE device);
+  CMPCOutputThread(void *device, DllLibCrystalHD *dll);
   virtual ~CMPCOutputThread();
   
   unsigned int        GetReadyCount(void);
@@ -148,7 +214,8 @@ protected:
   CSyncPtrQueue<CPictureBuffer> m_FreeList;
   CSyncPtrQueue<CPictureBuffer> m_ReadyList;
 
-  BCM::HANDLE         m_Device;
+  DllLibCrystalHD     *m_dll;
+  void                *m_Device;
   unsigned int        m_OutputTimeout;
   int                 m_width;
   int                 m_height;
@@ -199,8 +266,9 @@ uint64_t CMPCDecodeBuffer::GetPts(void)
 #if defined(__APPLE__)
 #pragma mark -
 #endif
-CMPCInputThread::CMPCInputThread(BCM::HANDLE device) :
+CMPCInputThread::CMPCInputThread(void *device, DllLibCrystalHD *dll) :
   CThread(),
+  m_dll(dll),
   m_Device(device),
   m_SleepTime(10)
 {
@@ -308,8 +376,9 @@ CPictureBuffer::~CPictureBuffer()
 #if defined(__APPLE__)
 #pragma mark -
 #endif
-CMPCOutputThread::CMPCOutputThread(BCM::HANDLE device) :
+CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll) :
   CThread(),
+  m_dll(dll),
   m_Device(device),
   m_OutputTimeout(20)
 {
@@ -766,22 +835,29 @@ CCrystalHD::CCrystalHD() :
   m_pInputThread(NULL),
   m_pOutputThread(NULL)
 {
-  BCM::BC_STATUS res;
-  //BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | BCM::DTS_SKIP_TX_CHK_CPB | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
-  uint32_t mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | 
-DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
-  
-  res = BCM::DtsDeviceOpen(&m_Device, mode);
-  if (res != BCM::BC_STS_SUCCESS)
+/*
+  m_dll = new DllLibCrystalHD;
+  m_dll->Load();
+  if (m_dll->IsLoaded())
   {
-    m_Device = NULL;
-    CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Device", __MODULE_NAME__);
+*/
+    BCM::BC_STATUS res;
+    uint32_t mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
+    
+    res = BCM::DtsDeviceOpen(&m_Device, mode);
+    if (res != BCM::BC_STS_SUCCESS)
+    {
+      m_Device = NULL;
+      CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Device", __MODULE_NAME__);
+    }
+    else
+    {
+      CLog::Log(LOGINFO, "%s: Opened Broadcom Crystal HD Device", __MODULE_NAME__);
+    }
   }
-  else
-  {
-    CLog::Log(LOGINFO, "%s: Opened Broadcom Crystal HD Device", __MODULE_NAME__);
-  }
+/*
 }
+*/
 
 CCrystalHD::~CCrystalHD()
 {
@@ -794,6 +870,10 @@ CCrystalHD::~CCrystalHD()
     m_Device = NULL;
   }
   CLog::Log(LOGINFO, "%s: Closed Broadcom Crystal HD Device", __MODULE_NAME__);
+
+/*
+  delete m_dll;
+*/
 }
 
 void CCrystalHD::RemoveInstance(void)
@@ -814,25 +894,28 @@ CCrystalHD* CCrystalHD::GetInstance(void)
   return m_pInstance;
 }
 
-bool CCrystalHD::Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type)
+bool CCrystalHD::Open(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE codec_type)
 {
   BCM::BC_STATUS res;
   
+  if (!m_Device)
+    return false;
+    
   if (m_IsConfigured)
     Close();
 
   uint32_t videoAlg = 0;
   switch (codec_type)
   {
-    case BC_CODEC_ID_VC1:
+    case CRYSTALHD_CODEC_ID_VC1:
       videoAlg = BCM::BC_VID_ALGO_VC1;
       m_pFormatName = "bcm-vc1";
     break;
-    case BC_CODEC_ID_H264:
+    case CRYSTALHD_CODEC_ID_H264:
       videoAlg = BCM::BC_VID_ALGO_H264;
       m_pFormatName = "bcm-h264";
     break;
-    case BC_CODEC_ID_MPEG2:
+    case CRYSTALHD_CODEC_ID_MPEG2:
       videoAlg = BCM::BC_VID_ALGO_MPEG2;
       m_pFormatName = "bcm-mpeg2";
     break;
@@ -868,9 +951,9 @@ bool CCrystalHD::Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type)
       break;
     }
  
-    m_pInputThread = new CMPCInputThread(m_Device);
+    m_pInputThread = new CMPCInputThread(m_Device, m_dll);
     m_pInputThread->Create();
-    m_pOutputThread = new CMPCOutputThread(m_Device);
+    m_pOutputThread = new CMPCOutputThread(m_Device, m_dll);
     m_pOutputThread->Create();
 
     m_drop_state = false;
@@ -912,7 +995,7 @@ void CCrystalHD::Close(void)
 
 bool CCrystalHD::IsOpenforDecode(void)
 {
-  return m_IsConfigured;
+  return m_Device && m_IsConfigured;
 }
 
 void CCrystalHD::Flush(void)
@@ -1045,6 +1128,5 @@ void PrintFormat(BCM::BC_PIC_INFO_BLOCK &pib)
   CLog::Log(LOGDEBUG, "\tFrames to Drop: %d\n", pib.n_drop);
   CLog::Log(LOGDEBUG, "\tH264 Valid Fields: 0x%08x\n", pib.other.h264.valid);
 }
-
 
 #endif
