@@ -48,6 +48,7 @@ public:
 
   static JSON_STATUS Introspect(const CStdString &method, const Json::Value& parameterObject, Json::Value &result);
   static JSON_STATUS Version(const CStdString &method, const Json::Value& parameterObject, Json::Value &result);
+  static JSON_STATUS Permission(const CStdString &method, const Json::Value& parameterObject, Json::Value &result);
 private:
   static JSON_STATUS InternalMethodCall(const CStdString& method, Json::Value& o, Json::Value &result);
   static ActionMap m_actionMap;

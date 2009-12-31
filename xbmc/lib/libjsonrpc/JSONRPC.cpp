@@ -9,6 +9,7 @@ const JSON_ACTION commands[] = {
 // JSON-RPC
   { "JSONRPC.Introspect",               CJSONRPC::Introspect,                   RO, "Enumerates all actions and descriptions" },
   { "JSONRPC.Version",                  CJSONRPC::Version,                      RO, "Retrieve the jsonrpc protocol version" },
+  { "JSONRPC.Permission",               CJSONRPC::Permission,                   RO, "Retrieve the clients permissions" },
 
 // Player
 // Static methods
@@ -59,6 +60,8 @@ System.Suspend and such
 using namespace Json;
 using namespace std;
 
+#define ALLOWEDPERMISSION RW
+
 ActionMap CJSONRPC::m_actionMap;
 
 JSON_STATUS CJSONRPC::Introspect(const CStdString &method, const Value& parameterObject, Value &result)
@@ -85,6 +88,13 @@ JSON_STATUS CJSONRPC::Introspect(const CStdString &method, const Value& paramete
 JSON_STATUS CJSONRPC::Version(const CStdString &method, const Value& parameterObject, Value &result)
 {
   result["version"] = 1;
+
+  return OK;
+}
+
+JSON_STATUS CJSONRPC::Permission(const CStdString &method, const Value& parameterObject, Value &result)
+{
+  result["permission"] = (ALLOWEDPERMISSION == RW ? "RW" : "RO");
 
   return OK;
 }
@@ -149,8 +159,6 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString)
   CStdString str = writer.write(outputroot);
   return str;
 }
-
-#define ALLOWEDPERMISSION RW
 
 JSON_STATUS CJSONRPC::InternalMethodCall(const CStdString& method, Value& o, Value &result)
 {
