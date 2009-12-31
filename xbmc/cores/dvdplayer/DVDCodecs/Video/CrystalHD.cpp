@@ -844,24 +844,25 @@ CCrystalHD::CCrystalHD() :
   {
     BCM::BC_STATUS res;
     uint32_t mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
-    
+
     res = m_dll->DtsDeviceOpen(&m_Device, mode);
     if (res != BCM::BC_STS_SUCCESS)
     {
       m_Device = NULL;
-      CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Device", __MODULE_NAME__);
+      CLog::Log(LOGERROR, "%s: device open failed", __MODULE_NAME__);
     }
     else
     {
-      CLog::Log(LOGINFO, "%s: Opened Broadcom Crystal HD Device", __MODULE_NAME__);
+      CLog::Log(LOGINFO, "%s: device opened", __MODULE_NAME__);
     }
   }
-  
+
   // delete dll if device open fails, minimizes ram footprint
   if (!m_Device)
   {
     delete m_dll;
     m_dll = NULL;
+    CLog::Log(LOGINFO, "%s: broadcom crystal hd not found", __MODULE_NAME__);
   }
 }
 
@@ -870,13 +871,13 @@ CCrystalHD::~CCrystalHD()
 {
   if (m_IsConfigured)
     Close();
-    
+
   if (m_Device)
   {
     m_dll->DtsDeviceClose(m_Device);
     m_Device = NULL;
   }
-  CLog::Log(LOGINFO, "%s: Closed Broadcom Crystal HD Device", __MODULE_NAME__);
+  CLog::Log(LOGINFO, "%s: device closed", __MODULE_NAME__);
 
   if (m_dll)
     delete m_dll;
@@ -903,10 +904,10 @@ CCrystalHD* CCrystalHD::GetInstance(void)
 bool CCrystalHD::Open(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE codec_type)
 {
   BCM::BC_STATUS res;
-  
+
   if (!m_Device)
     return false;
-    
+
   if (m_IsConfigured)
     Close();
 
@@ -935,25 +936,25 @@ bool CCrystalHD::Open(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE co
     res = m_dll->DtsOpenDecoder(m_Device, stream_type);
     if (res != BCM::BC_STS_SUCCESS)
     {
-      CLog::Log(LOGERROR, "%s: Failed to open decoder", __MODULE_NAME__);
+      CLog::Log(LOGERROR, "%s: open decoder failed", __MODULE_NAME__);
       break;
     }
     res = m_dll->DtsSetVideoParams(m_Device, videoAlg, FALSE, FALSE, TRUE, 0x80000000 | BCM::vdecFrameRate23_97);
     if (res != BCM::BC_STS_SUCCESS)
     {
-      CLog::Log(LOGERROR, "%s: Failed to set video params", __MODULE_NAME__);
+      CLog::Log(LOGERROR, "%s: set video params failed", __MODULE_NAME__);
       break;
     }
     res = m_dll->DtsStartDecoder(m_Device);
     if (res != BCM::BC_STS_SUCCESS)
     {
-      CLog::Log(LOGERROR, "%s: Failed to start decoder", __MODULE_NAME__);
+      CLog::Log(LOGERROR, "%s: start decoder failed", __MODULE_NAME__);
       break;
     }
     res = m_dll->DtsStartCapture(m_Device);
     if (res != BCM::BC_STS_SUCCESS)
     {
-      CLog::Log(LOGERROR, "%s: Failed to start capture", __MODULE_NAME__);
+      CLog::Log(LOGERROR, "%s: start capture failed", __MODULE_NAME__);
       break;
     }
  
@@ -965,9 +966,10 @@ bool CCrystalHD::Open(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE co
     m_drop_state = false;
     m_ignore_drop_count = 10;
     m_IsConfigured = true;
-    CLog::Log(LOGDEBUG, "%s: Opened Broadcom Crystal HD Codec", __MODULE_NAME__);
+    
+    CLog::Log(LOGDEBUG, "%s: codec opened", __MODULE_NAME__);
   } while(false);
-  
+
   return m_IsConfigured;
 }
 
@@ -997,7 +999,7 @@ void CCrystalHD::Close(void)
   }
   m_IsConfigured = false;
 
-  CLog::Log(LOGDEBUG, "%s: Closed Broadcom Crystal HD Codec", __MODULE_NAME__);
+  CLog::Log(LOGDEBUG, "%s: codec closed", __MODULE_NAME__);
 }
 
 bool CCrystalHD::IsOpenforDecode(void)
@@ -1013,7 +1015,7 @@ void CCrystalHD::Flush(void)
   m_pOutputThread->Flush();
   m_dll->DtsFlushInput(m_Device, 2);
 
-  CLog::Log(LOGDEBUG, "%s: Flush...", __MODULE_NAME__);
+  CLog::Log(LOGDEBUG, "%s: codec flush", __MODULE_NAME__);
 }
 
 unsigned int CCrystalHD::GetInputCount(void)
@@ -1084,8 +1086,6 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   pDvdVideoPicture->format = DVDVideoPicture::FMT_NV12;
 
   m_BusyList.Push(pBuffer);
-  
-  //CLog::Log(LOGDEBUG, "%s: GetPicture, pts = %f", __MODULE_NAME__, pDvdVideoPicture->pts);
   return true;
 }
 
