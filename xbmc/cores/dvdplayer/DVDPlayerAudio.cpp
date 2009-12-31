@@ -521,6 +521,7 @@ void CDVDPlayerAudio::Process()
 
       // we are not running until something is cached in output device
 //      if(m_stalled && m_dvdAudio.GetCacheTime() > 0.0)
+      if(m_stalled && m_messageQueue.GetDataSize() > 0)
         m_stalled = false;
     }
 
