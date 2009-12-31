@@ -53,7 +53,7 @@
   <string id="31101">主界面选项</string>
   <string id="31102">背景</string>
   <string id="31103">图片幻灯片播放时显示“暂停”状态</string>
-  <string id="31104"></string>
+  <string id="31104">窗口播放预告片[COLOR=grey3]（仅在视频信息显示画面）[/COLOR]</string>
   <string id="31105">背景扫描器显示媒体标题</string>
   <string id="31106">其他选项</string>
   <string id="31107"></string>
@@ -79,6 +79,11 @@
   <string id="31126">在音乐OSD菜单启用歌词按钮</string>
   <string id="31127">歌词脚本目录</string>
   <string id="31128">XBMC歌词</string>
+  <string id="31129">在视频OSD菜单启用字幕下载</string>
+  <string id="31130">字幕脚本目录</string>
+
+  <string id="31140">音乐OSD</string>
+  <string id="31141">视频OSD</string>
 
   <!-- Script labels -->
   <string id="31200">快捷方式</string>
@@ -124,6 +129,16 @@
   <string id="31327">分辨率</string>
   <string id="31328">最新增加</string>
   <string id="31329">[B]时钟设置！[/B] [COLOR=grey2] - 系统自动关闭于[/COLOR]</string>
+  <string id="31330">点此按钮播放预告片</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">暂停</string>
+  <string id="31352">停止</string>
+  <string id="31353">快进</string>
+  <string id="31354">快退</string>
+  <string id="31355">电影菜单</string>
+  <string id="31356">下载字幕</string>
+  <string id="31357"></string>
 
   <!-- Description Labels  -->
   <string id="31400">[B]设置用户界面[/B][CR][CR]变换皮肤 · 设置语言和区域 · 修改文件列表参数 · 设置屏幕保护</string>
@@ -136,6 +151,5 @@
   <string id="31407">[B]设置皮肤参数[/B][CR][CR]设置Confluence皮肤 · 增加和删除主菜单项 · 修改皮肤背景</string>
 
 
-  <string id="31420">[B][COLOR=white]XBMC未检测到光盘[/COLOR][/B][CR][CR]请插入光盘并重试或取消</string>
   <string id="31421">选择您的用户配置文件[CR]登录并继续</string>
 </strings>
