@@ -165,7 +165,7 @@ void CDVDVideoCodecCrystalHD::SetDropState(bool bDrop)
 {
   m_DropPictures = bDrop;
   m_Device->SetDropState(m_DropPictures);
-  CLog::Log(LOGDEBUG, "%s: SetDropState %d, InputCount: %d, ReadyCount: %d", __MODULE_NAME__, m_Device->GetInputCount(), m_Device->GetReadyCount());
+  CLog::Log(LOGDEBUG, "%s: SetDropState %d, InputCount: %d, ReadyCount: %d", __MODULE_NAME__, m_DropPictures, m_Device->GetInputCount(), m_Device->GetReadyCount());
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
