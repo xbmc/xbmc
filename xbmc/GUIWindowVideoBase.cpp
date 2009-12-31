@@ -188,6 +188,10 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return false;
 
           CFileItemPtr item = m_vecItems->Get(iItem);
+
+          if (item->m_strPath.Equals("add") || item->IsParentFolder())
+            return false;
+
           if (m_vecItems->IsPlugin() || m_vecItems->IsRSS())
             info.strContent = "plugin";
           else if(m_vecItems->IsLiveTV())
@@ -297,7 +301,12 @@ void CGUIWindowVideoBase::UpdateButtons()
 
 void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
 {
-  if ( !pItem ) return ;
+  if (!pItem)
+    return;
+
+  if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || pItem->m_strPath.Equals("add"))
+    return;
+
   // ShowIMDB can kill the item as this window can be closed while we do it,
   // so take a copy of the item now
   CFileItem item(*pItem);
@@ -308,6 +317,39 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
     else
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
   }
+  else
+  {
+    if (item.m_bIsFolder && !info.strContent.Equals("tvshows"))
+    {
+      CFileItemList items;
+      CDirectory::GetDirectory(item.m_strPath, items);
+      items.Stack();
+
+      // check for media files
+      bool bFoundFile(false);
+      for (int i = 0; i < items.Size(); ++i)
+      {
+        CFileItemPtr item2 = items[i];
+
+        if (item2->IsVideo() && !item2->IsPlayList() &&
+	    !CUtil::ExcludeFileOrFolder(item2->m_strPath, g_advancedSettings.m_moviesExcludeFromScanRegExps))
+        {
+          item.m_strPath = item2->m_strPath;
+          item.m_bIsFolder = false;
+          bFoundFile = true;
+          break;
+        }
+      }
+
+      // no video file in this folder
+      if (!bFoundFile)
+      {
+        CGUIDialogOK::ShowAndGetInput(13346,20349,20022,20022);
+        return;
+      }
+    }
+  }
+
   bool modified = ShowIMDB(&item, info);
   if (modified && !info.strContent.Equals("plugin") && !info.strContent.Equals("livetv") &&
      (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
