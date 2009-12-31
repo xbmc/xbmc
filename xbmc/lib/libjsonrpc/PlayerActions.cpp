@@ -5,37 +5,32 @@ using namespace Json;
 
 JSON_STATUS CPlayerActions::GetActivePlayers(const CStdString &method, const Value& parameterObject, Value &result)
 {
-/*  printf("%s\n", __FUNCTION__);
-
   PLAYERCOREID playerCore = g_application.GetCurrentPlayer();
-  vector<CStdString> players;
 
   switch (playerCore)
   {
     case EPC_DVDPLAYER:
-      players.push_back("dvdplayer");
+      result["players"].append("dvdplayer");
       break;
     case EPC_MPLAYER:
-      players.push_back("mplayer");
+      result["players"].append("mplayer");
       break;
     case EPC_PAPLAYER:
-      players.push_back("papplayer");
+      result["players"].append("papplayer");
       break;
     case EPC_EXTPLAYER:
-      players.push_back("extplayer");
+      result["players"].append("extplayer");
       break;
     default:
       break;
   }
-
-  result.Add("player", players);*/
 
   return OK;
 }
 
 JSON_STATUS CPlayerActions::Pause(const CStdString &method, const Value& parameterObject, Value &result)
 {
- // if (parameterObject.has<string>("player"))
+  if (parameterObject.isMember("player"))
   {
     printf("%s\n", __FUNCTION__);
 
@@ -47,12 +42,24 @@ JSON_STATUS CPlayerActions::Pause(const CStdString &method, const Value& paramet
 
 JSON_STATUS CPlayerActions::SkipNext(const CStdString &method, const Value& parameterObject, Value &result)
 {
-  printf("%s\n", __FUNCTION__);
-  return OK;
+  if (parameterObject.isMember("player"))
+  {
+    printf("%s\n", __FUNCTION__);
+
+    return OK;
+  }
+
+  return InvalidParams;
 }
 
 JSON_STATUS CPlayerActions::SkipPrevious(const CStdString &method, const Value& parameterObject, Value &result)
 {
-  printf("%s\n", __FUNCTION__);
-  return OK;
+  if (parameterObject.isMember("player"))
+  {
+    printf("%s\n", __FUNCTION__);
+
+    return OK;
+  }
+
+  return InvalidParams;
 }
