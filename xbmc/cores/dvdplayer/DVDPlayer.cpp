@@ -2722,10 +2722,7 @@ void CDVDPlayer::FlushBuffers(bool queued)
     msg->Release();
 
     // we should now wait for init cache
-    if (m_dvd.state = DVDSTATE_STILL)
-      SetCaching(CACHESTATE_PLAY);
-    else
-      SetCaching(CACHESTATE_INIT);
+    SetCaching(CACHESTATE_INIT);
   }
   m_CurrentAudio.inited = false;
   m_CurrentVideo.inited = false;
