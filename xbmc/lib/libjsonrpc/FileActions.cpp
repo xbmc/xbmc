@@ -11,7 +11,7 @@ using namespace Json;
 
 JSON_STATUS CFileActions::GetRootDirectory(const CStdString &method, const Value& parameterObject, Value &result)
 {
-  CStdString type = parameterObject.get("type", "files").asString();
+  CStdString type = parameterObject.get("type", "null").asString();
   type = type.ToLower();
 
   if (type.Equals("video") || type.Equals("music") || type.Equals("pictures") || type.Equals("files") || type.Equals("programs"))
@@ -82,8 +82,8 @@ JSON_STATUS CFileActions::GetDirectory(const CStdString &method, const Value& pa
       return OK;
     }
   }
-  else
-    return InvalidParams;
+
+  return InvalidParams;
 }
 
 JSON_STATUS CFileActions::Download(const CStdString &method, const Value& parameterObject, Value &result)
