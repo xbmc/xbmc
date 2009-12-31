@@ -96,13 +96,9 @@ void CDVDVideoCodecCrystalHD::Dispose(void)
 int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
 {
   int ret = 0;
-
-  int maxWait;
-  unsigned int lastTime;
-  unsigned int maxTime;
   bool annexbfiltered = false;
 
-  m_Device->ClearBusyList();
+  m_Device->BusyListPop();
   
   // in NULL is passed, DVDPlayer wants us to flush any internal picture frame.
   // we don't have internal picture frames so just return.
@@ -123,56 +119,31 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
     }
   }
   
-  // we have to throttle input demux packets by waiting for a returned picture frame
-  // or we can suck vqueue dry and DVDPlayer starts thrashing about. If we are dropping
-  // frames, then drop the timeout so we can catch up quickly.
-  if (m_DropPictures)
-    maxWait = 1;
-  else
-    maxWait = 40;
-
-  lastTime = CTimeUtils::GetTimeMS();
-  maxTime = lastTime + maxWait;
-  do
+  if (pData)
   {
-    // Handle Input
-    if (pData)
+    if ( m_Device->AddInput(pData, iSize, pts) )
     {
-      if ( m_Device->AddInput(pData, iSize, pts) )
-      {
-        if (annexbfiltered)
-          free(pData);
-        pData = NULL;
-      }
-      else
-      {
-        CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
-        Sleep(10);
-      }
+      if (annexbfiltered)
+        free(pData);
+      pData = NULL;
     }
-    
-    if (m_Device->GetInputCount() < 25)
-      ret |= VC_BUFFER;
-
-    if (!m_DropPictures)
-      Sleep(5);
-      
-    // Handle Output
-    // wait for both consumed demux packet and a returned picture frame
-    // this help throttle consuming demux packets and we don't drain vqueue.
-    if (m_Device->GetReadyCount())
+    else
     {
-      ret |= VC_PICTURE;
-      if (!pData)
-        break;
+      CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
+      Sleep(10);
     }
-  } while ((lastTime = CTimeUtils::GetTimeMS()) < maxTime);
-
-  if (lastTime >= maxTime)
-  {
-    CLog::Log(LOGDEBUG, "%s: Timeout in Decode. maxWait: %d, ret: 0x%08x pData: %p", __MODULE_NAME__, maxWait, ret, pData);
   }
-  
+    
+  if (m_Device->GetInputCount() < 10)
+    ret |= VC_BUFFER;
+
+  if (!m_DropPictures)
+    Sleep(20);
+      
+  // Handle Output
+  if (m_Device->GetReadyCount())
+    ret |= VC_PICTURE;
+    
   if (!ret)
     ret = VC_ERROR;
 

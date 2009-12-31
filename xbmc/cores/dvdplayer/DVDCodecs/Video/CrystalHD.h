@@ -128,7 +128,7 @@ public:
   bool AddInput(unsigned char *pData, size_t size, double pts);
   
   int  GetReadyCount(void);
-  void ClearBusyList(void);
+  void BusyListPop(void);
   
   bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   void SetDropState(bool bDrop);

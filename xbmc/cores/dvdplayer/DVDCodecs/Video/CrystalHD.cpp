@@ -48,7 +48,6 @@ namespace BCM
 #endif //defined(WIN32)
 };
 
-
 #if defined(WIN32)
 #pragma comment(lib, "bcmDIL.lib")
 #endif
@@ -136,8 +135,8 @@ public:
   virtual ~CMPCOutputThread();
   
   unsigned int        GetReadyCount(void);
-  CPictureBuffer*     GetNextPicture(void);
-  void                FreeBuffer(CPictureBuffer* pBuffer);
+  CPictureBuffer*     ReadyListPop(void);
+  void                FreeListPush(CPictureBuffer* pBuffer);
   void                Flush(void);
 
 protected:
@@ -262,31 +261,16 @@ void CMPCInputThread::Process(void)
 
     if (pInput)
     {
-      BCM::BC_STATUS ret;
-      BCM::BC_DTS_STATUS decoder_status;
-
-      ret = BCM::DtsGetDriverStatus(m_Device, &decoder_status);
+      BCM::BC_STATUS ret = BCM::DtsProcInput(m_Device, pInput->GetPtr(), pInput->GetSize(), pInput->GetPts(), FALSE);
       if (ret == BCM::BC_STS_SUCCESS)
       {
-        if (decoder_status.ReadyListCount <= 8)
-        {
-          BCM::BC_STATUS ret = BCM::DtsProcInput(m_Device, pInput->GetPtr(), pInput->GetSize(), pInput->GetPts(), FALSE);
-          if (ret == BCM::BC_STS_SUCCESS)
-          {
-            delete pInput;
-            pInput = NULL;
-          }
-          else if (ret == BCM::BC_STS_BUSY)
-          {
-            CLog::Log(LOGDEBUG, "%s: DtsProcInput returned BC_STS_BUSY", __MODULE_NAME__);
-            Sleep(m_SleepTime); // Buffer is full
-          }
-        }
-        else
-        {
-          //CLog::Log(LOGDEBUG, "%s: ReadyListCount > 5", __MODULE_NAME__);
-          Sleep(m_SleepTime);
-        }
+        delete pInput;
+        pInput = NULL;
+      }
+      else if (ret == BCM::BC_STS_BUSY)
+      {
+        CLog::Log(LOGDEBUG, "%s: DtsProcInput returned BC_STS_BUSY", __MODULE_NAME__);
+        Sleep(m_SleepTime); // Buffer is full
       }
     }
     else
@@ -344,13 +328,13 @@ unsigned int CMPCOutputThread::GetReadyCount(void)
   return m_ReadyList.Count();
 }
 
-CPictureBuffer* CMPCOutputThread::GetNextPicture(void)
+CPictureBuffer* CMPCOutputThread::ReadyListPop(void)
 {
   CPictureBuffer *pBuffer = m_ReadyList.Pop();
   return pBuffer;
 }
 
-void CMPCOutputThread::FreeBuffer(CPictureBuffer* pBuffer)
+void CMPCOutputThread::FreeListPush(CPictureBuffer* pBuffer)
 {
   m_FreeList.Push(pBuffer);
 }
@@ -741,32 +725,10 @@ bool CMPCOutputThread::GetDecoderOutput(void)
 
 void CMPCOutputThread::Process(void)
 {
-  bool got_picture;
-  BCM::BC_STATUS ret;
-  BCM::BC_DTS_STATUS decoder_status;
-
   CLog::Log(LOGDEBUG, "%s: Output Thread Started...", __MODULE_NAME__);
   while (!m_bStop)
   {
-    got_picture = false;
-    
-    ret = BCM::DtsGetDriverStatus(m_Device, &decoder_status);
-    if (ret == BCM::BC_STS_SUCCESS)
-    {
-      if (decoder_status.ReadyListCount > 0)
-      {
-        got_picture = GetDecoderOutput();
-        /*
-        CLog::Log(LOGDEBUG, "%s: ReadyListCount %d FreeListCount %d PIBMissCount %d\n", __MODULE_NAME__,
-          decoder_status.ReadyListCount, decoder_status.FreeListCount, decoder_status.PIBMissCount);
-        CLog::Log(LOGDEBUG, "%s: FramesDropped %d FramesCaptured %d FramesRepeated %d\n", __MODULE_NAME__,
-          decoder_status.FramesDropped, decoder_status.FramesCaptured, decoder_status.FramesRepeated);
-        */
-      }
-    }
-    
-    if (!got_picture)
-      Sleep(10);
+    GetDecoderOutput();
   }
   CLog::Log(LOGDEBUG, "%s: Output Thread Stopped...", __MODULE_NAME__);
 }
@@ -930,7 +892,7 @@ void CCrystalHD::Close(void)
   if (m_pOutputThread)
   {
     while(m_BusyList.Count())
-      m_pOutputThread->FreeBuffer( m_BusyList.Pop() );
+      m_pOutputThread->FreeListPush( m_BusyList.Pop() );
       
     m_pOutputThread->StopThread();
     delete m_pOutputThread;
@@ -957,6 +919,7 @@ void CCrystalHD::Flush(void)
 {
   m_pInputThread->Flush();
   m_pOutputThread->Flush();
+  BCM::DtsFlushInput(m_Device, 2);
 
   CLog::Log(LOGDEBUG, "%s: Flush...", __MODULE_NAME__);
 }
@@ -985,19 +948,19 @@ int CCrystalHD::GetReadyCount(void)
     return 0;
 }
 
-void CCrystalHD::ClearBusyList(void)
+void CCrystalHD::BusyListPop(void)
 {
   if (m_pOutputThread)
   {
     // leave one around, DVDPlayer expects it
     while( m_BusyList.Count() > 1)
-      m_pOutputThread->FreeBuffer( m_BusyList.Pop() );
+      m_pOutputThread->FreeListPush( m_BusyList.Pop() );
   }
 }
 
 bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 {
-  CPictureBuffer* pBuffer = m_pOutputThread->GetNextPicture();
+  CPictureBuffer* pBuffer = m_pOutputThread->ReadyListPop();
 
   pDvdVideoPicture->pts = pts_itod(pBuffer->m_timestamp);
   pDvdVideoPicture->iWidth = pBuffer->m_width;
@@ -1016,8 +979,8 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   pDvdVideoPicture->iLineSize[2] = 0;
 
   pDvdVideoPicture->iRepeatPicture = 0;
-  pDvdVideoPicture->iDuration = 0;
-  //pDvdVideoPicture->iDuration = (DVD_TIME_BASE / pBuffer->m_framerate);
+  //pDvdVideoPicture->iDuration = 0;
+  pDvdVideoPicture->iDuration = (DVD_TIME_BASE / pBuffer->m_framerate);
   pDvdVideoPicture->color_range = 1;
   // todo 
   //pDvdVideoPicture->color_matrix = 1;
@@ -1048,10 +1011,18 @@ void CCrystalHD::SetDropState(bool bDrop)
       BCM::DtsSetFFRate(m_Device, 1);
     }
     
+    if (m_drop_state)
+    {
+      // pop all picture off the ready list and push back into the free list
+      while (m_pOutputThread->GetReadyCount())
+      {
+        m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
+      }
+    }
+
     CLog::Log(LOGDEBUG, "%s: SetDropState... %d", __MODULE_NAME__, m_drop_state);
   }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 void PrintFormat(BCM::BC_PIC_INFO_BLOCK &pib)
