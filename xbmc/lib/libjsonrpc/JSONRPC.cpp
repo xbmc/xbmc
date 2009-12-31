@@ -124,15 +124,15 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString)
       outputroot["result"] = result;
       break;
     case InvalidParams:
-      outputroot["error"]["code"] = -32602;
+      outputroot["error"]["code"] = InvalidParams;
       outputroot["error"]["message"] = "Invalid params.";
       break;
     case MethodNotFound:
-      outputroot["error"]["code"] = -32601;
+      outputroot["error"]["code"] = MethodNotFound;
       outputroot["error"]["message"] = "Method not found.";
       break;
     case ParseError:
-      outputroot["error"]["code"] = -32700;
+      outputroot["error"]["code"] = ParseError;
       outputroot["error"]["message"] = "Parse error.";
       break;
     case BadPermission:
@@ -140,7 +140,7 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString)
       outputroot["error"]["message"] = "Server error.";
       break;
     default:
-      outputroot["error"]["code"] = -32603;
+      outputroot["error"]["code"] = InternalError;
       outputroot["error"]["message"] = "Internal error.";
       break;
   }
