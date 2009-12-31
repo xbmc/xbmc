@@ -8,6 +8,7 @@
 const JSON_ACTION commands[] = {
 // JSON-RPC
   { "JSONRPC.Introspect",               MustHaveParameters, CJSONRPC::Introspect,                   "Enumerates all actions and descriptions" },
+  { "JSONRPC.Version",                  NoParameters,       CJSONRPC::Version,                      "Retrieve the jsonrpc protocol version" },
 
 // Player
 // Static methods
@@ -73,6 +74,13 @@ JSON_STATUS CJSONRPC::Introspect(const CStdString &method, const Value& paramete
     if (getDescriptions)
       result["commands"].append(commands[i].description);
   }
+
+  return OK;
+}
+
+JSON_STATUS CJSONRPC::Version(const CStdString &method, const Value& parameterObject, Value &result)
+{
+  result["version"] = 1;
 
   return OK;
 }
