@@ -24,13 +24,6 @@ enum JSON_STATUS
 */
 typedef JSON_STATUS (*MethodCall) (const CStdString &method, const Json::Value& parameterObject, Json::Value &result);
 
-enum ParameterNeeds
-{
-  NoParameters = 0,
-  MayHaveParameters = 1,
-  MustHaveParameters = 2,
-};
-
 enum OperationPermission
 {
   RO = false,
@@ -40,7 +33,6 @@ enum OperationPermission
 typedef struct
 {
   const char* command;
-  ParameterNeeds parameters;
   MethodCall method;
   OperationPermission permission;
   const char* description;

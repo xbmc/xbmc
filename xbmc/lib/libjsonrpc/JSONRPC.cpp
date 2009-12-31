@@ -7,46 +7,46 @@
 
 const JSON_ACTION commands[] = {
 // JSON-RPC
-  { "JSONRPC.Introspect",               MustHaveParameters, CJSONRPC::Introspect,                   RO, "Enumerates all actions and descriptions" },
-  { "JSONRPC.Version",                  NoParameters,       CJSONRPC::Version,                      RO, "Retrieve the jsonrpc protocol version" },
+  { "JSONRPC.Introspect",               CJSONRPC::Introspect,                   RO, "Enumerates all actions and descriptions" },
+  { "JSONRPC.Version",                  CJSONRPC::Version,                      RO, "Retrieve the jsonrpc protocol version" },
 
 // Player
 // Static methods
-  { "Player.GetActivePlayers",          NoParameters,       CPlayerActions::GetActivePlayers,       RO, "Returns all active players IDs"},
+  { "Player.GetActivePlayers",          CPlayerActions::GetActivePlayers,       RO, "Returns all active players IDs"},
 // Object methods
-  { "Player.Pause",                     MustHaveParameters, CPlayerActions::Pause,                  RW, "Pauses playback" },
-  { "Player.SkipNext",                  MustHaveParameters, CPlayerActions::SkipNext,               RW, "Skips choosen player to next item on the playlist" },
-  { "Player.SkipPrevious",              MustHaveParameters, CPlayerActions::SkipPrevious,           RW, "Skips choosen player to previous item on the playlist" },
+  { "Player.Pause",                     CPlayerActions::Pause,                  RW, "Pauses playback" },
+  { "Player.SkipNext",                  CPlayerActions::SkipNext,               RW, "Skips choosen player to next item on the playlist" },
+  { "Player.SkipPrevious",              CPlayerActions::SkipPrevious,           RW, "Skips choosen player to previous item on the playlist" },
 
 // File
 // Static methods
-  { "Files.GetShares",                  MustHaveParameters, CFileActions::GetRootDirectory,         RO, "Get the root directory of the media windows" },
-  { "Files.Download",                   MustHaveParameters, CFileActions::Download,                 RO, "Specify a file to download to get info about how to download it, i.e a proper URL" },
+  { "Files.GetShares",                  CFileActions::GetRootDirectory,         RO, "Get the root directory of the media windows" },
+  { "Files.Download",                   CFileActions::Download,                 RO, "Specify a file to download to get info about how to download it, i.e a proper URL" },
 // Object methods
-  { "Files.GetDirectory",               MustHaveParameters, CFileActions::GetDirectory,             RO, "Retrieve the specified directory" },
+  { "Files.GetDirectory",               CFileActions::GetDirectory,             RO, "Retrieve the specified directory" },
 
 // Music library
 // Static/Object methods
-  { "MusicLibrary.GetArtists",          MayHaveParameters,  CMusicLibrary::GetArtists,              RO, "Retrieve all artists" },
-  { "MusicLibrary.GetAlbums",           MayHaveParameters,  CMusicLibrary::GetAlbums,               RO, "Retrieve all albums from specified artist or genre" },
-  { "MusicLibrary.GetSongs",            MayHaveParameters,  CMusicLibrary::GetSongs,                RO, "Retrieve all songs from specified album, artist or genre" },
+  { "MusicLibrary.GetArtists",          CMusicLibrary::GetArtists,              RO, "Retrieve all artists" },
+  { "MusicLibrary.GetAlbums",           CMusicLibrary::GetAlbums,               RO, "Retrieve all albums from specified artist or genre" },
+  { "MusicLibrary.GetSongs",            CMusicLibrary::GetSongs,                RO, "Retrieve all songs from specified album, artist or genre" },
 // Object methods
-  { "MusicLibrary.GetSongInfo",         MustHaveParameters, CMusicLibrary::GetSongInfo,             RO, "Retrieve the wanted info from the specified song" },
+  { "MusicLibrary.GetSongInfo",         CMusicLibrary::GetSongInfo,             RO, "Retrieve the wanted info from the specified song" },
 
 // Video library
-  { "VideoLibrary.GetMovies",           MayHaveParameters,  CVideoLibrary::GetMovies,               RO, "Retrieve all movies" },
+  { "VideoLibrary.GetMovies",           CVideoLibrary::GetMovies,               RO, "Retrieve all movies" },
 
-  { "VideoLibrary.GetTVShows",          MayHaveParameters,  CVideoLibrary::GetTVShows,              RO, "" },
-  { "VideoLibrary.GetSeasons",          MustHaveParameters, CVideoLibrary::GetSeasons,              RO, "" },
-  { "VideoLibrary.GetEpisodes",         MustHaveParameters, CVideoLibrary::GetEpisodes,             RO, "" },
+  { "VideoLibrary.GetTVShows",          CVideoLibrary::GetTVShows,              RO, "" },
+  { "VideoLibrary.GetSeasons",          CVideoLibrary::GetSeasons,              RO, "" },
+  { "VideoLibrary.GetEpisodes",         CVideoLibrary::GetEpisodes,             RO, "" },
 
-  { "VideoLibrary.GetMusicVideoAlbums", MayHaveParameters,  CVideoLibrary::GetMusicVideoAlbums,     RO, "" },
-  { "VideoLibrary.GetMusicVideos",      MayHaveParameters,  CVideoLibrary::GetMusicVideos,          RO, "" },
+  { "VideoLibrary.GetMusicVideoAlbums", CVideoLibrary::GetMusicVideoAlbums,     RO, "" },
+  { "VideoLibrary.GetMusicVideos",      CVideoLibrary::GetMusicVideos,          RO, "" },
 // Object methods
-  { "VideoLibrary.GetMovieInfo",        MustHaveParameters, CVideoLibrary::GetMovieInfo,            RO, "" },
-  { "VideoLibrary.GetTVShowInfo",       MustHaveParameters, CVideoLibrary::GetTVShowInfo,           RO, "" },
-  { "VideoLibrary.GetEpisodeInfo",      MustHaveParameters, CVideoLibrary::GetEpisodeInfo,          RO, "" },
-  { "VideoLibrary.GetMusicVideoInfo",   MustHaveParameters, CVideoLibrary::GetMusicVideoInfo,       RO, "" }
+  { "VideoLibrary.GetMovieInfo",        CVideoLibrary::GetMovieInfo,            RO, "" },
+  { "VideoLibrary.GetTVShowInfo",       CVideoLibrary::GetTVShowInfo,           RO, "" },
+  { "VideoLibrary.GetEpisodeInfo",      CVideoLibrary::GetEpisodeInfo,          RO, "" },
+  { "VideoLibrary.GetMusicVideoInfo",   CVideoLibrary::GetMusicVideoInfo,       RO, "" }
 
 /* Planned features
 "XBMC.PlayMedia" - Should take movieid, tvshowid and so on. also filepath
@@ -150,20 +150,13 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString)
 
 JSON_STATUS CJSONRPC::InternalMethodCall(const CStdString& method, Value& o, Value &result)
 {
-  bool hasParameters = o.isMember("params");
-
   ActionMap::iterator iter = m_actionMap.find(method);
   if( iter != m_actionMap.end() )
   {
-    if ((iter->second.parameters == MayHaveParameters) || (iter->second.parameters > 0 == hasParameters))
-    {
-      if (iter->second.permission == RO || iter->second.permission == ALLOWEDPERMISSION)
-        return iter->second.method(method, o["params"], result);
-      else
-        return BadPermission;
-    }
+    if (iter->second.permission == RO || iter->second.permission == ALLOWEDPERMISSION)
+      return iter->second.method(method, o["params"], result);
     else
-      return InvalidParams;
+      return BadPermission;
   }
   else
     return MethodNotFound;
