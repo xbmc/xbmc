@@ -10,133 +10,70 @@ using namespace Json;
 
 JSON_STATUS CMusicLibrary::GetArtists(const CStdString &method, const Value& parameterObject, Value &result)
 {
-/*  CMusicDatabase musicdatabase;
+  CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
   int genreID = parameterObject.get("genreid", -1).asInt();
 
   CFileItemList items;
-  std::vector<CJSONObject> artists;
   if (musicdatabase.GetArtistsNav("", items, genreID, false))
   {
-    unsigned int size  = (unsigned int)items.Size();
-    unsigned int start = parameterObject.has<long>("start") ? (unsigned int)parameterObject.get<long>("start") : 0;
-    unsigned int end   = parameterObject.has<long>("end")   ? (unsigned int)parameterObject.get<long>("end")   : size;
-    end = end > size ? size : end;
-
-    result.Add("start", (long)start);
-    result.Add("end",  (long)end);
-    result.Add("total", (long)items.Size());
-    for (unsigned int i = start; i < end; i++)
-    {
-      CJSONObject object;
-      CFileItemPtr item = items.Get(i);
-      CUtil::RemoveSlashAtEnd(item->m_strPath);
-      object.Add("artistid", atol(item->m_strPath.c_str()));
-      object.Add("artist", item->GetMusicInfoTag()->GetArtist());
-      if (!item->GetThumbnailImage().IsEmpty())
-        object.Add("thumbnail", item->GetThumbnailImage());
-      artists.push_back(object);
-    }
+    unsigned start, end;
+    HandleFileItemList("artistid", "artists", items, start, end, parameterObject, result);
   }
 
-  if (artists.size() > 0)
-    result.Add("artists", artists);
-
-  musicdatabase.Close();*/
+  musicdatabase.Close();
   return OK;
 }
 
 JSON_STATUS CMusicLibrary::GetAlbums(const CStdString &method, const Value& parameterObject, Value &result)
 {
-/*  int artistID = parameterObject.has<long>("artistid") ? (int)parameterObject.get<long>("artistid") : -1;
-  int genreID  = parameterObject.has<long>("genreid")  ? (int)parameterObject.get<long>("genreid")  : -1;
-
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
+  int artistID = parameterObject.get("artistid", -1).asInt();
+  int genreID = parameterObject.get("genreid", -1).asInt();
+
   CFileItemList items;
-  std::vector<CJSONObject> albums;
   if (musicdatabase.GetAlbumsNav("", items, genreID, artistID))
   {
-    unsigned int size   = (unsigned int)items.Size();
-    unsigned int start = parameterObject.has<long>("start") ? (unsigned int)parameterObject.get<long>("start") : 0;
-    unsigned int end   = parameterObject.has<long>("end")   ? (unsigned int)parameterObject.get<long>("end")   : size;
-    end = end > size ? size : end;
-
-    result.Add("start", (long)start);
-    result.Add("end",  (long)end);
-    result.Add("total", (long)items.Size());
-    for (unsigned int i = start; i < end; i++)
-    {
-      CJSONObject object;
-      CFileItemPtr item = items.Get(i);
-      CUtil::RemoveSlashAtEnd(item->m_strPath);
-      object.Add("albumid", atol(item->m_strPath.c_str()));
-      object.Add("album", item->GetMusicInfoTag()->GetAlbum());
-      if (!item->GetThumbnailImage().IsEmpty())
-        object.Add("thumbnail", item->GetThumbnailImage());
-      albums.push_back(object);
-    }
+    unsigned start, end;
+    HandleFileItemList("albumid", "albums", items, start, end, parameterObject, result);
   }
 
-  if (albums.size() > 0)
-    result.Add("albums", albums);
-
-  musicdatabase.Close();*/
+  musicdatabase.Close();
   return OK;
 }
 
 JSON_STATUS CMusicLibrary::GetSongs(const CStdString &method, const Value& parameterObject, Value &result)
 {
-/*  int artistID = parameterObject.has<long>("artistid") ? (int)parameterObject.get<long>("artistid") : -1;
-  int albumID  = parameterObject.has<long>("albumid")  ? (int)parameterObject.get<long>("albumid")  : -1;
-  int genreID  = parameterObject.has<long>("genreid")  ? (int)parameterObject.get<long>("genreid")  : -1;
-
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
+  int artistID = parameterObject.get("artistid", -1).asInt();
+  int albumID = parameterObject.get("albumid", -1).asInt();
+  int genreID = parameterObject.get("genreid", -1).asInt();
+
   CFileItemList items;
-  std::vector<CJSONObject> songs;
   if (musicdatabase.GetSongsNav("", items, genreID, artistID, albumID))
   {
-    unsigned int size   = (unsigned int)items.Size();
-    unsigned int start = parameterObject.has<long>("start") ? (unsigned int)parameterObject.get<long>("start") : 0;
-    unsigned int end   = parameterObject.has<long>("end")   ? (unsigned int)parameterObject.get<long>("end")   : size;
-    end = end > size ? size : end;
-
-    result.Add("start", (long)start);
-    result.Add("end",  (long)end);
-    result.Add("total", (long)items.Size());
-    for (unsigned int i = start; i < end; i++)
-    {
-      CJSONObject object;
-      CFileItemPtr item = items.Get(i);
-      CUtil::RemoveSlashAtEnd(item->m_strPath);
-      object.Add("songid", atol(item->m_strPath.c_str()));
-      object.Add("title", item->GetMusicInfoTag()->GetTitle());
-      if (!item->GetThumbnailImage().IsEmpty())
-        object.Add("thumbnail", item->GetThumbnailImage());
-      songs.push_back(object);
-    }
+    unsigned start, end;
+    HandleFileItemList("songid", "songs", items, start, end, parameterObject, result);
   }
 
-  if (songs.size() > 0)
-    result.Add("songs", songs);
-
-  musicdatabase.Close();*/
+  musicdatabase.Close();
   return OK;
 }
 
 JSON_STATUS CMusicLibrary::GetSongInfo(const CStdString &method, const Value& parameterObject, Value &result)
 {
- /* if (!parameterObject.has<long>("songid"))
-    return InvalidParams;
+  int songID = parameterObject.get("songid", -1).asInt();
 
-  int songID = (int)parameterObject.get<long>("songid");
+  if (songID < 0)
+    return InvalidParams;
 
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
@@ -146,30 +83,30 @@ JSON_STATUS CMusicLibrary::GetSongInfo(const CStdString &method, const Value& pa
   if (musicdatabase.GetSongById(songID, songInfo))
   {
     if (!songInfo.strTitle.IsEmpty())
-      result.Add("title", songInfo.strTitle);
+      result["title"] = songInfo.strTitle.c_str();
     if (!songInfo.strArtist.IsEmpty())
-      result.Add("artist", songInfo.strArtist);
+      result["artist"] = songInfo.strArtist.c_str();
     if (!songInfo.strAlbum.IsEmpty())
-      result.Add("album", songInfo.strAlbum);
+      result["album"] = songInfo.strAlbum.c_str();
     if (!songInfo.strAlbumArtist.IsEmpty())
-      result.Add("albumartist", songInfo.strAlbumArtist);
+      result["albumartist"] = songInfo.strAlbumArtist.c_str();
     if (!songInfo.strGenre.IsEmpty())
-      result.Add("genre", songInfo.strGenre);
+      result["genre"] = songInfo.strGenre.c_str();
     if (!songInfo.strThumb.IsEmpty())
-      result.Add("thumbnail", songInfo.strThumb);
+      result["thumbnail"] = songInfo.strThumb.c_str();
     if (!songInfo.strComment.IsEmpty())
-      result.Add("comment", songInfo.strComment);
+      result["comment"] = songInfo.strComment.c_str();
 
     if (!songInfo.iTrack > 0)
-      result.Add("track", (long)songInfo.iTrack);
+      result["track"] = songInfo.iTrack;
     if (!songInfo.iDuration > 0)
-      result.Add("duration", (long)songInfo.iDuration);
+      result["duration"] = songInfo.iDuration;
 
-    result.Add("rating",      (long)songInfo.rating);
-    result.Add("year",        (long)songInfo.iYear);
-    result.Add("timesplayed", (long)songInfo.iTimesPlayed);
+    result["rating"]      = songInfo.rating;
+    result["year"]        = songInfo.iYear;
+    result["timesplayed"] = songInfo.iTimesPlayed;
   }
 
-  musicdatabase.Close();*/
+  musicdatabase.Close();
   return OK;
 }

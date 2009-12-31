@@ -11,9 +11,6 @@ void CLibraryBase::FillVideoDetails(const CVideoInfoTag *videoInfo, const Value&
   if (!videoInfo->m_strTitle.IsEmpty())
     result["title"] = videoInfo->m_strTitle.c_str();
 
-/*  if (!parameterObject.isMember("fields"))
-    return;*/
-
   const Value fields = parameterObject["fields"];
   for (unsigned int i = 0; i < fields.size(); i++)
   {
@@ -36,9 +33,6 @@ void CLibraryBase::FillVideoDetails(const CVideoInfoTag *videoInfo, const Value&
 
 void CLibraryBase::FillMusicDetails(const CMusicInfoTag *musicInfo, const Value& parameterObject, Value &result)
 {
-  if (!musicInfo->Loaded())
-    return;
-
   if (!musicInfo->GetTitle().IsEmpty())
     result["title"] =  musicInfo->GetTitle().c_str();
   else if (!musicInfo->GetAlbum().IsEmpty())
@@ -120,18 +114,14 @@ void CLibraryBase::HandleFileItemList(const CStdString &id, const CStdString &re
     Value object;
     CFileItemPtr item = items.Get(i);
     CUtil::RemoveSlashAtEnd(item->m_strPath);
-printf("foo(%s)\n", item->m_strPath.c_str());
     object[id] = atoi(item->m_strPath.c_str());
     if (!item->GetThumbnailImage().IsEmpty())
       object["thumbnail"] = item->GetThumbnailImage().c_str();
 
-    if (parameterObject.isMember("fields"))
-    {
-      if (item->HasVideoInfoTag())
-        FillVideoDetails(item->GetVideoInfoTag(), parameterObject, object);
-      if (item->HasMusicInfoTag())
-        FillMusicDetails(item->GetMusicInfoTag(), parameterObject, object);
-    }
+    if (item->HasVideoInfoTag())
+      FillVideoDetails(item->GetVideoInfoTag(), parameterObject, object);
+    if (item->HasMusicInfoTag())
+      FillMusicDetails(item->GetMusicInfoTag(), parameterObject, object);
     result[resultname].append(object);
   }
 }
