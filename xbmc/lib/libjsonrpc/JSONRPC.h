@@ -15,6 +15,8 @@ enum JSON_STATUS
   InvalidParams = -32602,
   InternalError = -32603,
   ParseError = -32700,
+//-32099..-32000 Reserved for implementation-defined server-errors.
+  BadPermission = -32099 
 };
 
 /* The method call needs to be perfectly threadsafe
@@ -29,11 +31,18 @@ enum ParameterNeeds
   MustHaveParameters = 2,
 };
 
+enum OperationPermission
+{
+  RO = false,
+  RW = true
+};
+
 typedef struct
 {
   const char* command;
   ParameterNeeds parameters;
   MethodCall method;
+  OperationPermission permission;
   const char* description;
 } JSON_ACTION;
 
