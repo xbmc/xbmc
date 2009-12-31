@@ -215,7 +215,7 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
   LibraryLoader* pLoader;
 #ifdef _LINUX
   if (strstr(sName, ".so") != NULL || strstr(sName, ".vis") != NULL || strstr(sName, ".xbs") != NULL
-      || strstr(sName, ".mvis") != NULL)
+      || strstr(sName, ".mvis") != NULL || strstr(sName, ".dylib") != NULL)
     pLoader = new SoLoader(sName, bLoadSymbols);
   else
 #elif defined(_WIN32)
