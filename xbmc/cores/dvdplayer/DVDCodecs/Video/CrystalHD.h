@@ -95,10 +95,10 @@ enum _CRYSTALHD_CODEC_TYPES
 };
 enum _CRYSTALHD_STREAM_TYPE
 {
-	CRYSTALHD_STREAM_TYPE_ES         = 0,
-	CRYSTALHD_STREAM_TYPE_PES        = 1,
-	CRYSTALHD_STREAM_TYPE_TS         = 2,
-	CRYSTALHD_STREAM_TYPE_ES_TSTAMP  = 6,
+  CRYSTALHD_STREAM_TYPE_ES         = 0,
+  CRYSTALHD_STREAM_TYPE_PES        = 1,
+  CRYSTALHD_STREAM_TYPE_TS         = 2,
+  CRYSTALHD_STREAM_TYPE_ES_TSTAMP  = 6,
 };
 
 typedef uint32_t CRYSTALHD_CODEC_TYPE;
@@ -143,6 +143,7 @@ protected:
 
   bool          m_IsConfigured;
   bool          m_drop_state;
+  int           m_ignore_drop_count;
   const char    *m_pFormatName;
   unsigned int  m_OutputTimeout;
   unsigned int  m_field;

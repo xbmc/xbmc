@@ -832,6 +832,7 @@ CCrystalHD::CCrystalHD() :
   m_Device(NULL),
   m_IsConfigured(false),
   m_drop_state(false),
+  m_ignore_drop_count(0),
   m_pInputThread(NULL),
   m_pOutputThread(NULL)
 {
@@ -957,6 +958,7 @@ bool CCrystalHD::Open(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE co
     m_pOutputThread->Create();
 
     m_drop_state = false;
+    m_ignore_drop_count = 10;
     m_IsConfigured = true;
     CLog::Log(LOGDEBUG, "%s: Opened Broadcom Crystal HD Codec", __MODULE_NAME__);
   } while(false);
@@ -1000,6 +1002,8 @@ bool CCrystalHD::IsOpenforDecode(void)
 
 void CCrystalHD::Flush(void)
 {
+  m_ignore_drop_count = 10;
+
   m_pInputThread->Flush();
   m_pOutputThread->Flush();
   BCM::DtsFlushInput(m_Device, 2);
@@ -1087,6 +1091,12 @@ void CCrystalHD::SetDropState(bool bDrop)
     m_drop_state = bDrop;
     if (m_drop_state)
     {
+      if (m_ignore_drop_count-- > 0)
+      {
+        m_drop_state = false;
+        return;
+      }
+
       BCM::DtsSetFFRate(m_Device, 2);
     }
     else
