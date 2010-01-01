@@ -1217,6 +1217,9 @@ void CDVDPlayer::ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket
 
 void CDVDPlayer::HandlePlaySpeed()
 {
+  if(IsInMenu() && m_caching != CACHESTATE_DONE)
+    SetCaching(CACHESTATE_DONE);
+
   if(m_caching == CACHESTATE_INIT)
   {
     // if all enabled streams have been inited we are done
@@ -1277,11 +1280,13 @@ bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
   || m_playSpeed != DVD_PLAYSPEED_NORMAL)
     return false;
 
+  if(IsInMenu())
+    return false;
+
   if((current.type == STREAM_AUDIO && m_dvdPlayerAudio.IsStalled())
   || (current.type == STREAM_VIDEO && m_dvdPlayerVideo.IsStalled()))
   {
-    if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
-    || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP)
+    if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP)
     || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
       SetCaching(CACHESTATE_INIT);
     else
@@ -2770,7 +2775,6 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
           CLog::Log(LOGDEBUG,
                     "DVDNAV_STILL_FRAME - waiting %i sec, with delay of %d sec",
                     still_event->length, time / 1000);
-          SetCaching(CACHESTATE_PLAY);
         }
         return NAVRESULT_HOLD;
       }
