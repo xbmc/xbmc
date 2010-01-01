@@ -43,11 +43,7 @@
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
 
-#if defined(HAVE_LIBCRYSTALHD)
-#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
-#endif
-
-#ifdef HAS_GLX
+ #ifdef HAS_GLX
 #include <GL/glx.h>
 #endif
 
@@ -999,12 +995,11 @@ void CLinuxRendererGL::LoadShaders(int field)
   }
   else 
 #endif //HAVE_LIBVDPAU
-#ifdef HAVE_LIBCRYSTALHD
-  if (requestedMethod == RENDER_METHOD_CRYSTALHD && CCrystalHD::GetInstance()->IsOpenforDecode() )
+  if (m_iFlags & CONF_FLAGS_FORMAT_NV12)
   {
     err = false;
-    CLog::Log(LOGNOTICE, "GL: Using Crystal HD render method");
-    m_renderMethod = RENDER_CRYSTALHD;
+    CLog::Log(LOGNOTICE, "GL: Using NV12 render method");
+    m_renderMethod = RENDER_NV12;
     if (m_pYUVShader)
     {
       m_pYUVShader->Free();
@@ -1030,7 +1025,6 @@ void CLinuxRendererGL::LoadShaders(int field)
     }
   }
   else 
-#endif //HAVE_LIBCRYSTALHD
   /*
     Try GLSL shaders if they're supported and if the user has
     requested for it. (settings -> video -> player -> rendermethod)
@@ -1137,15 +1131,13 @@ void CLinuxRendererGL::LoadShaders(int field)
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
 
   // Now that we now the render method, setup texture function handlers
-#ifdef HAVE_LIBCRYSTALHD
-  if (m_renderMethod & RENDER_CRYSTALHD)
+  if (m_renderMethod & RENDER_NV12)
   {
     LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadNV12Textures;
     CreateTextureFuncPtr = &CLinuxRendererGL::CreateNV12Texture;
     DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteNV12Texture;
   }
   else
-#endif
   {
     // setup default YV12 texture handlers
     LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadYV12Textures;
@@ -1242,12 +1234,10 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     RenderVDPAU(renderBuffer, m_currentField);
   }
 #endif
-#ifdef HAVE_LIBCRYSTALHD
-  else if (m_renderMethod & RENDER_CRYSTALHD)
+  else if (m_renderMethod & RENDER_NV12)
   {
-    RenderCrystalHD(renderBuffer, m_currentField);
+    RenderNV12(renderBuffer, m_currentField);
   }
-#endif
   else
   {
     RenderSoftware(renderBuffer, m_currentField);
@@ -1593,15 +1583,8 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 #endif
 }
 
-void CLinuxRendererGL::RenderCrystalHD(int index, int field)
+void CLinuxRendererGL::RenderNV12(int index, int field)
 {
-#ifdef HAVE_LIBCRYSTALHD
-  if (!CCrystalHD::GetInstance()->IsOpenforDecode()) 
-  { 
-    CLog::Log(LOGERROR,"(CrystalHD) m_Surface is NULL"); 
-    return; 
-  }
-  
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[field];
@@ -1675,7 +1658,6 @@ void CLinuxRendererGL::RenderCrystalHD(int index, int field)
   glMatrixMode(GL_MODELVIEW);
 
   VerifyGLState();
-#endif
 }
 
 void CLinuxRendererGL::RenderSoftware(int index, int field)

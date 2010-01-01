@@ -901,6 +901,22 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       default:
         flags |= CONF_FLAGS_YUVCOEF_BT709;
     }
+    switch(pPicture->format)
+    {
+      case DVDVideoPicture::FMT_YUV420P:
+      case DVDVideoPicture::FMT_VDPAU:
+        flags |= CONF_FLAGS_FORMAT_YV12;
+        break;
+      case DVDVideoPicture::FMT_NV12:
+        flags |= CONF_FLAGS_FORMAT_NV12;
+        break;
+      case DVDVideoPicture::FMT_UYVY:
+        flags |= CONF_FLAGS_FORMAT_UYVY;
+        break;
+      case DVDVideoPicture::FMT_YUY2:
+        flags |= CONF_FLAGS_FORMAT_YUY2;
+        break;
+    }
 
     if(m_bAllowFullscreen)
     {

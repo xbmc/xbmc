@@ -45,4 +45,10 @@
 #define CONF_FLAGS_YUV_FULLRANGE 0x08
 #define CONF_FLAGS_FULLSCREEN    0x10
 
+#define CONF_FLAGS_FORMAT_MASK(a) ((a) & 0xff000)
+#define CONF_FLAGS_FORMAT_YV12   0x01000
+#define CONF_FLAGS_FORMAT_NV12   0x02000
+#define CONF_FLAGS_FORMAT_UYVY   0x04000 /* place holder for future expansion */
+#define CONF_FLAGS_FORMAT_YUY2   0x08000 /* place holder for future expansion */
+
 #endif
