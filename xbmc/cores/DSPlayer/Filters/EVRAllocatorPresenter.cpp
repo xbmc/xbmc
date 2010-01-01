@@ -1200,8 +1200,8 @@ STDMETHODIMP CEVRAllocatorPresenter::GetService (/* [in] */ __RPC__in REFGUID gu
     // The only service GUID that we support is MR_VIDEO_RENDER_SERVICE.
     
 
-    if (guidService == MR_VIDEO_ACCELERATION_SERVICE)
-      return m_pD3DPresentEngine->GetService(guidService,riid, (void**) ppvObject);
+  if (guidService == MR_VIDEO_ACCELERATION_SERVICE)
+    return m_pD3DPresentEngine->GetService(guidService,riid, (void**) ppvObject);
     
 	if (guidService != MR_VIDEO_RENDER_SERVICE)
       return MF_E_UNSUPPORTED_SERVICE;
@@ -1448,7 +1448,7 @@ HRESULT CEVRAllocatorPresenter::SetMediaType(IMFMediaType* pType)
 
     // Cannot set the media type after shutdown.
     CHECK_HR(hr = CheckShutdown());
-
+    
     // Check if the new type is actually different.
     // Note: This function safely handles NULL input parameters.
     if (AreMediaTypesEqual(m_pMediaType, pType))  

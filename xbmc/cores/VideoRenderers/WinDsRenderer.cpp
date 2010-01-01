@@ -32,7 +32,7 @@
 #include "FileSystem/File.h"
 #include "MathUtils.h"
 #include "DShowUtil/DShowUtil.h"
-
+#include "Subtitles/DsSubtitleManager.h"
 CWinDsRenderer::CWinDsRenderer()
 {
 }
@@ -203,6 +203,10 @@ void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
   hr = m_pD3DDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
   hr = m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(verts[0]));
   m_pD3DDevice->SetTexture(0, NULL);
+
+  //Render Subtitles
+  //if (g_dllMpcSubs.Enabled())
+  //  g_dllMpcSubs.Render(300,300,640,480);
   if (FAILED(hr))
     CLog::Log(LOGDEBUG,"RenderDshowBuffer TextureCopy CWinDsRenderer::RenderDshowBuffer"); 
 }

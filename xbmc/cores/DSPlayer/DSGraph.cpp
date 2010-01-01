@@ -38,6 +38,8 @@
 
 #include "DshowUtil/MediaTypeEx.h"
 #include "MediaInfoDll/MediaInfoDLL.h"
+#include "Subtitles/DsSubtitleManager.h"
+
 #include "timeutils.h"
 enum 
 {
@@ -106,6 +108,10 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   UpdateState();
   if (m_pMediaControl)
     m_pMediaControl->Run();
+  //g_dllMpcSubs.Load(); //return true if loaded
+  //g_dllMpcSubs.LoadSubtitles(m_Filename.c_str(),m_pGraphBuilder,"path to subtitle file");
+  //g_dllMpcSubs.EnableSubtitle(true);
+  
   m_currentSpeed = 10000;
 
   return hr;

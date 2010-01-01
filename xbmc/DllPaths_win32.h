@@ -53,5 +53,8 @@
 #define DLL_PATH_VORBIS_ENC    "special://xbmc/system/cdrip/vorbisenc.dll"
 #define DLL_PATH_VORBIS        "special://xbmc/system/cdrip/vorbis.dll"
 
+/* dsplayer */
+#define DLL_PATH_LIBMPCSUBS    "special://xbmc/system/players/dsplayer/mpcSubs.dll"
+
 #endif
 

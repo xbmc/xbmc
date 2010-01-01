@@ -314,7 +314,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     CFGFilterList fl;
 
     CAtlArray<GUID> types;
-     DShowUtil::ExtractMediaTypes(pPinOut, types);
+    DShowUtil::ExtractMediaTypes(pPinOut, types);
 
     POSITION pos = m_transform.GetHeadPosition();
     while(pos)

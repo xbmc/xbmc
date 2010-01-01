@@ -2249,34 +2249,6 @@
 						RelativePath="..\..\xbmc\win32\WINDirectShowEnumerator.h"
 						>
 					</File>
-					<Filter
-						Name="Interfaces"
-						>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\IDsRenderer.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IEvrPresenter.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecVideo.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\IGraphBuilder2.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IMpaDecFilter.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IMPCVideoDecFilter.h"
-							>
-						</File>
-					</Filter>
 				</Filter>
 				<Filter
 					Name="Filters"
@@ -2284,10 +2256,6 @@
 					<Filter
 						Name="Source"
 						>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncflt.h"
-							>
-						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncio.cpp"
 							>
@@ -2298,6 +2266,10 @@
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.h"
 							>
 						</File>
 						<File
@@ -2361,6 +2333,54 @@
 							>
 						</File>
 					</Filter>
+				</Filter>
+				<Filter
+					Name="Subtitles"
+					>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibmpcSubs.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DsSubtitleManager.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DsSubtitleManager.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\mpcSubs.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Interfaces"
+					>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\IDsRenderer.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IEvrPresenter.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecVideo.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\IGraphBuilder2.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IMpaDecFilter.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IMPCVideoDecFilter.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>

@@ -22,15 +22,7 @@
  */
 
 #if !defined(_LINUX) && !defined(HAS_GL)
-
-
-
-
 #include "WinBaseRenderer.h"
-
-
-
-
 #include <atlbase.h>
 //#define MP_DIRECTRENDERING
 
