@@ -1339,8 +1339,15 @@ void CApplication::StartWebServer()
       m_pWebServer->SetPassword(g_guiSettings.GetString("services.webserverpassword").c_str());*/
 
       // publish web frontend and API services
-      CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
-      CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort);
+#ifdef HAS_WEBINTERFACE
+       CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
+#endif
+#ifdef HAS_HTTPAPI
+       CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort);
+#endif
+#ifdef HAS_JSONRPC
+      CZeroconf::GetInstance()->PublishService("servers.webjsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", webPort);
+#endif
     }
 #ifdef HAS_WEB_SERVER_BROADCAST
     if (m_pWebServer && m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
