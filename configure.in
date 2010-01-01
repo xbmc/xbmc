@@ -121,7 +121,7 @@ AC_ARG_ENABLE([vdpau],
 
 AC_ARG_ENABLE([crystalhd],
             [AS_HELP_STRING([--enable-crystalhd],
-               [enable CrystalHD decoding (default is yes)])],
+               [enable CrystalHD decoding (default is no)])],
             [use_crystalhd=$enableval],
             [use_crystalhd=no])
 
@@ -680,13 +680,9 @@ fi
 
 # CrystalHD
 if test "$use_crystalhd" = "yes"; then
-  AC_CHECK_LIB([crystalhd], [main], 
-    LIBS=" -lcrystalhd $LIBS";INCLUDES="$INCLUDES -D__LINUX_USER__";AC_DEFINE([HAVE_LIBCRYSTALHD], [], [Define to 1 if you have the 'Crystal 
-HD' library (-lcrystalhd).]),
-    use_crystalhd=no;AC_MSG_RESULT($crystalhd_not_found))
-  #AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h],AC_DEFINE([HAVE_LIBCRYSTALHD], [], 
-  #  [Define to 1 if you have the `crystalhd' library (-lcrystalhd).]), 
-  #  use_crystalhd=no;AC_MSG_RESULT($crystalhd_not_found), [#define __LINUX_USER__])
+  AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h],AC_DEFINE([HAVE_LIBCRYSTALHD], [], 
+    [Define to 1 if you have the `Broadcom Crystal HD' library.]), 
+    use_crystalhd=no;AC_MSG_RESULT($crystalhd_not_found), [#define __LINUX_USER__])
 else
   AC_MSG_NOTICE($crystalhd_disabled)
 fi
