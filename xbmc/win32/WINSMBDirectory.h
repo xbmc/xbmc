@@ -37,10 +37,11 @@ public:
   virtual bool Create(const char* strPath);
   virtual bool Exists(const char* strPath);
   virtual bool Remove(const char* strPath);
+
+  bool ConnectToShare(const CURL& url);
 private:
   bool m_bHost;
   bool EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items);
-  bool ConnectToShare(const CURL& url);
   CStdString GetLocal(const CStdString& strPath);
   CStdString URLEncode(const CURL &url);
 };
