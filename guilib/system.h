@@ -85,6 +85,7 @@
 #define HAS_WIN32_NETWORK
 #define HAS_IRSERVERSUITE
 #define HAS_AUDIO
+#define HAVE_LIBCRYSTALHD
 #endif
 
 /*****************

@@ -21,6 +21,8 @@
 
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
+#elif defined(_WIN32)
+#include "system.h"
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
@@ -36,8 +38,9 @@ namespace BCM
 {
 #if defined(WIN32)
   typedef void		*HANDLE;
-  #include "lib/crystalhd/include/bc_dts_defs.h"
-  #include "lib/crystalhd/include/windows/bc_drv_if.h"
+  #include <bc_dts_types.h>
+  #include <bc_dts_defs.h>
+  #include "lib/libcrystalhd/linux_lib/libcrystalhd/libcrystalhd_if.h"
 
   #define DLL_PATH_LIBCRYSTALHD "bcmDIL.dll"
 #else
