@@ -14,10 +14,22 @@ const JSON_ACTION commands[] = {
 // Player
 // Static methods
   { "Player.GetActivePlayers",          CPlayerActions::GetActivePlayers,       RO, "Returns all active players IDs"},
+  { "Player.GetAvailablePlayers",       CPlayerActions::GetAvailablePlayers,    RO, "Returns all active players IDs"},
 // Object methods
-  { "Player.Pause",                     CPlayerActions::Pause,                  RW, "Pauses playback" },
-  { "Player.SkipNext",                  CPlayerActions::SkipNext,               RW, "Skips choosen player to next item on the playlist" },
-  { "Player.SkipPrevious",              CPlayerActions::SkipPrevious,           RW, "Skips choosen player to previous item on the playlist" },
+  { "Player.PlayPause",                 CPlayerActions::PlayPause,              RW, "Pauses or unpause playback" },
+  { "Player.Stop",                      CPlayerActions::Stop,                   RW, "Stops playback" },
+  { "Player.SkipPrevious",              CPlayerActions::SkipPrevious,           RW, "Skips to previous item on the playlist" },
+  { "Player.SkipNext",                  CPlayerActions::SkipNext,               RW, "Skips to next item on the playlist" },
+
+  { "Player.BigSkipBackward",           CPlayerActions::BigSkipBackward,        RW, "" },
+  { "Player.BigSkipForward",            CPlayerActions::BigSkipForward,         RW, "" },
+  { "Player.SmallSkipBackward",         CPlayerActions::SmallSkipBackward,      RW, "" },
+  { "Player.SmallSkipForward",          CPlayerActions::SmallSkipForward,       RW, "" },
+
+  { "Player.Rewind",                    CPlayerActions::Rewind,                 RW, "Rewind current playback" },
+  { "Player.Forward",                   CPlayerActions::Forward,                RW, "Forward current playback" },
+
+  { "Player.Record",                    CPlayerActions::Record,                 RW, "" },
 
 // File
 // Static methods
