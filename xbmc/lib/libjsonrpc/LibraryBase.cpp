@@ -113,8 +113,17 @@ void CLibraryBase::HandleFileItemList(const CStdString &id, const CStdString &re
   {
     Value object;
     CFileItemPtr item = items.Get(i);
-    CUtil::RemoveSlashAtEnd(item->m_strPath);
-    object[id] = atoi(item->m_strPath.c_str());
+
+    if (item->HasMusicInfoTag())
+      object[id] = (int)item->GetMusicInfoTag()->GetDatabaseId();
+    else if (item->HasVideoInfoTag())
+      object[id] = item->GetVideoInfoTag()->m_iDbId;
+    else
+    {
+//      CUtil::RemoveSlashAtEnd(item->m_strPath);
+      object[id] = item->m_strPath.c_str();
+    }
+
     if (!item->GetThumbnailImage().IsEmpty())
       object["thumbnail"] = item->GetThumbnailImage().c_str();
 
@@ -122,6 +131,7 @@ void CLibraryBase::HandleFileItemList(const CStdString &id, const CStdString &re
       FillVideoDetails(item->GetVideoInfoTag(), parameterObject, object);
     if (item->HasMusicInfoTag())
       FillMusicDetails(item->GetMusicInfoTag(), parameterObject, object);
+
     result[resultname].append(object);
   }
 }
