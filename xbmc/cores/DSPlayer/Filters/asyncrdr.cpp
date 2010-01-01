@@ -21,20 +21,8 @@ DEFINE_GUID(CLSID_AsyncSample,
 
 // --- CAsyncOutputPin implementation ---
 
-CAsyncOutputPin::CAsyncOutputPin(
-    HRESULT * phr,
-    CAsyncReader *pReader,
-    CAsyncIo *pIo,
-    CCritSec * pLock)
-  : CBasePin(
-    NAME("Async output pin"),
-    pReader,
-    pLock,
-    phr,
-    L"Output",
-    PINDIR_OUTPUT),
-    m_pReader(pReader),
-    m_pIo(pIo)
+CAsyncOutputPin::CAsyncOutputPin(HRESULT * phr, CAsyncReader *pReader, CAsyncIo *pIo, CCritSec * pLock)
+  : CBasePin(NAME("Async output pin"), pReader, pLock, phr, L"Output", PINDIR_OUTPUT), m_pReader(pReader), m_pIo(pIo)
 {
 }
 
@@ -47,15 +35,15 @@ STDMETHODIMP CAsyncOutputPin::NonDelegatingQueryInterface(REFIID riid, void** pp
 {
     CheckPointer(ppv,E_POINTER);
 
-    if(riid == IID_IAsyncReader)
-    {
-        m_bQueriedForAsyncReader = TRUE;
-        return GetInterface((IAsyncReader*) this, ppv);
-    }
-    else
-    {
-        return CBasePin::NonDelegatingQueryInterface(riid, ppv);
-    }
+  if(riid == IID_IAsyncReader)
+  {
+    m_bQueriedForAsyncReader = TRUE;
+    return GetInterface((IAsyncReader*) this, ppv);
+  }
+  else
+  {
+    return CBasePin::NonDelegatingQueryInterface(riid, ppv);
+  }
 }
 
 

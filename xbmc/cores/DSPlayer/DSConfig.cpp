@@ -39,6 +39,8 @@ CDSConfig::~CDSConfig()
 {
   if (m_pIMpaDecFilter)
     m_pIMpaDecFilter.Release();
+  if (m_pIMpcDecFilter)
+    m_pIMpcDecFilter.Release();
   
 }
 
@@ -71,9 +73,9 @@ bool CDSConfig::GetStreamSelector(IBaseFilter* pBF)
   {
     DWORD nStreams = 0, flags, group, prevgroup = -1;
     LCID lcid;
-	CStdString destname;
-	WCHAR* wname = NULL;
-	CComPtr<IUnknown> pObj, pUnk;
+	  CStdString destname;
+	  WCHAR* wname = NULL;
+	  CComPtr<IUnknown> pObj, pUnk;
     m_pIAMStreamSelect->Count(&nStreams);
     flags = 0;
     group = 0;
@@ -160,10 +162,18 @@ bool CDSConfig::GetMpcVideoDec(IBaseFilter* pBF)
     return false;
   m_pIMpcDecFilter = pBF;
   m_pStdDxva.Format("");
-  if ( m_pIMpcDecFilter )
+  if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
   {
-    m_pStdDxva = DShowUtil::GetDXVAMode(m_pIMpcDecFilter->GetDXVADecoderGuid());
-    CLog::Log(LOGDEBUG,"Got IMPCVideoDecFilter");
+    m_pStdDxva = CStdString("DXVA WILL NEVER WORK WITH NON DEFAULT RENDERER ON");
+    CLog::Log(LOGERROR,"DXVA WILL NEVER WORK WITH NON DEFAULT RENDERER ON");
+  }
+  else
+  {
+    if ( m_pIMpcDecFilter )
+    {
+      m_pStdDxva = DShowUtil::GetDXVAMode(m_pIMpcDecFilter->GetDXVADecoderGuid());
+      CLog::Log(LOGDEBUG,"Got IMPCVideoDecFilter");
+    }
   }
 
   return true;

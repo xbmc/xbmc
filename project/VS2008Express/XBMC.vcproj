@@ -2282,7 +2282,7 @@
 						</File>
 					</Filter>
 					<Filter
-						Name="Renderers"
+						Name="Video Renderers"
 						>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsRenderer.cpp"

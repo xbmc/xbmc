@@ -4,8 +4,7 @@ using namespace XFILE;
 
 #include <streams.h>
 
-#include "asyncio.h"
-#include "asyncrdr.h"
+
 #include "XBMCFileSource.h"
 #include "utils/log.h"
 

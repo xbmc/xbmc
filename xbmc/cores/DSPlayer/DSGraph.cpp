@@ -34,7 +34,7 @@
 #include <streams.h>
 #include "DShowUtil/DShowUtil.h"
 #include "FgManager.h"
-
+#include "qnetwork.h"
 
 #include "DshowUtil/MediaTypeEx.h"
 #include "MediaInfoDll/MediaInfoDLL.h"
@@ -281,10 +281,28 @@ void CDSGraph::SetDynamicRangeCompression(long drc)
 void CDSGraph::OnPlayStop()
 {
   LONGLONG pos = 0;
+  
   if (m_pMediaSeeking)
     m_pMediaSeeking->SetPositions(&pos, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
   if (m_pMediaControl)
     m_pMediaControl->Stop();
+  BeginEnumFilters(m_pGraphBuilder, pEF, pBF)
+  {
+    CComQIPtr<IAMNetworkStatus, &IID_IAMNetworkStatus> pAMNS = pBF;
+    CComQIPtr<IFileSourceFilter> pFSF = pBF;
+    if(pAMNS && pFSF)
+    {
+      WCHAR* pFN = NULL;
+      AM_MEDIA_TYPE mt;
+      if(SUCCEEDED(pFSF->GetCurFile(&pFN, &mt)) && pFN && *pFN)
+      {
+        pFSF->Load(pFN, NULL);
+        CoTaskMemFree(pFN);
+      }
+      break;
+    }
+  }
+  EndEnumFilters
 
 }
 void CDSGraph::Play()

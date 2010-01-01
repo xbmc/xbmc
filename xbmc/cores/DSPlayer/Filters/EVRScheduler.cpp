@@ -189,27 +189,24 @@ HRESULT CEvrScheduler::StopScheduler()
 
 HRESULT CEvrScheduler::Flush()
 {
+//This is not an error
+  if (!m_hSchedulerThread)
+    CLog::Log(LOGDEBUG,"%s No scheduler thread!",__FUNCTION__);
 
-    if (m_hSchedulerThread == NULL)
-      CLog::Log(LOGERROR,"%s No scheduler thread!",__FUNCTION__);
+  if (m_hSchedulerThread)
+  {
+    // Ask the scheduler thread to flush.
+    PostThreadMessage(m_dwThreadID, eFlush, 0 , 0);
 
-    if (m_hSchedulerThread)
-    {
-        // Ask the scheduler thread to flush.
-        PostThreadMessage(m_dwThreadID, eFlush, 0 , 0);
+    // Wait for the scheduler thread to signal the flush event,
+    // OR for the thread to terminate.
+    HANDLE objects[] = { m_hFlushEvent, m_hSchedulerThread };
 
-        // Wait for the scheduler thread to signal the flush event,
-        // OR for the thread to terminate.
-        HANDLE objects[] = { m_hFlushEvent, m_hSchedulerThread };
-
-        WaitForMultipleObjects((sizeof(objects) / sizeof(objects[0])), objects, FALSE, SCHEDULER_TIMEOUT); 
-
-        //TRACE((L"CEvrScheduler::Flush completed."));
-    }
+    WaitForMultipleObjects((sizeof(objects) / sizeof(objects[0])), objects, FALSE, SCHEDULER_TIMEOUT);
+  }
 
     return S_OK;
 }
-
 
 //-----------------------------------------------------------------------------
 // ScheduleSample
@@ -226,7 +223,7 @@ HRESULT CEvrScheduler::ScheduleSample(IMFSample *pSample, BOOL bPresentNow)
   if (!m_pCB)
     return MF_E_NOT_INITIALIZED;
 
-  if (m_hSchedulerThread == NULL)
+  if (!m_hSchedulerThread)
     return MF_E_NOT_INITIALIZED;
 
   HRESULT hr = S_OK;
