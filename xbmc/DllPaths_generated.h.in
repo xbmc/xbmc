@@ -79,5 +79,12 @@
 #define DLL_PATH_VORBIS        "special://xbmc/system/cdrip/vorbis-@ARCH@.so"
 #endif
 
+/* broadcom crystalhd */
+#if defined(_LINUX) && !defined(__APPLE__)
+#define DLL_PATH_LIBCRYSTALHD "libcrystalhd.so"
+#else
+#define DLL_PATH_LIBCRYSTALHD "libcrystalhd.dylib"
+#endif
+
 #endif
 

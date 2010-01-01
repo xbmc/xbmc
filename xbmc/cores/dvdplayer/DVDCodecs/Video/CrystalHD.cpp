@@ -49,12 +49,6 @@ namespace BCM
   #include "libcrystalhd/bc_dts_types.h"
   #include "libcrystalhd/bc_dts_defs.h"
   #include "libcrystalhd/libcrystalhd_if.h"
-
-  #if defined (__APPLE__)
-    #define DLL_PATH_LIBCRYSTALHD "/usr/lib/libcrystalhd.dylib"
-  #else
-    #define DLL_PATH_LIBCRYSTALHD "/usr/lib/libcrystalhd.so"
-  #endif
 #endif
 };
 
