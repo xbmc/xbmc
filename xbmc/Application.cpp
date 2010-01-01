@@ -3009,8 +3009,7 @@ void  CApplication::CheckForTitleChange()
 
 bool CApplication::ProcessHTTPApiButtons()
 {
-#ifdef HAS_WEB_SERVER
-/* //NO HTTPAPI button support yet.
+#ifdef HAS_HTTPAPI
   if (m_pXbmcHttp)
   {
     // copy key from webserver, and reset it in case we're called again before
@@ -3036,7 +3035,7 @@ bool CApplication::ProcessHTTPApiButtons()
         OnKey(keyHttp);
       return true;
     }
-  }*/
+  }
   return false;
 #endif
 }
