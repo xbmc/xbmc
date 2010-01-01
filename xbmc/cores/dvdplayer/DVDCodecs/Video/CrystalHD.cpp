@@ -41,8 +41,6 @@ namespace BCM
   #include <bc_dts_types.h>
   #include <bc_dts_defs.h>
   #include "lib/libcrystalhd/linux_lib/libcrystalhd/libcrystalhd_if.h"
-
-  #define DLL_PATH_LIBCRYSTALHD "bcmDIL.dll"
 #else
   #ifndef __LINUX_USER__
   #define __LINUX_USER__
