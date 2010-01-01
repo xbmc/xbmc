@@ -22,7 +22,7 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #elif defined(_WIN32)
-#include "system.h"
+  #include "system.h"
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
@@ -43,7 +43,7 @@ namespace BCM
   #include "lib/libcrystalhd/linux_lib/libcrystalhd/libcrystalhd_if.h"
 #else
   #ifndef __LINUX_USER__
-  #define __LINUX_USER__
+    #define __LINUX_USER__
   #endif
 
   #include "libcrystalhd/bc_dts_types.h"
