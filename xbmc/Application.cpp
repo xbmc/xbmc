@@ -122,6 +122,9 @@
 #ifdef HAS_DBUS_SERVER
 #include "utils/DbusServer.h"
 #endif
+#ifdef HAS_HTTPAPI
+#include "lib/libhttpapi/XBMChttp.h"
+#endif
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
@@ -1346,11 +1349,11 @@ void CApplication::StartWebServer()
       CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort);
 #endif
 #ifdef HAS_JSONRPC
-     CZeroconf::GetInstance()->PublishService("servers.webjsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.webjsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", webPort);
 #endif
     }
-#ifdef HAS_WEB_SERVER_BROADCAST
-    if (m_pWebServer && m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+#ifdef HAS_HTTPAPI
+    if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
 #endif
   }
@@ -2442,14 +2445,14 @@ bool CApplication::OnKey(CKey& key)
 
 bool CApplication::OnAction(CAction &action)
 {
-#ifdef HAS_WEB_SERVER
-/*  // Let's tell the outside world about this action
+#ifdef HAS_HTTPAPI
+  // Let's tell the outside world about this action
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=2)
   {
     CStdString tmp;
     tmp.Format("%i",action.id);
     getApplicationMessenger().HttpApi("broadcastlevel; OnAction:"+tmp+";2");
-  }*/
+  }
 #endif
 
   // special case for switching between GUI & fullscreen mode.
@@ -2967,7 +2970,7 @@ bool CApplication::ProcessMouse()
 
 void  CApplication::CheckForTitleChange()
 {
-#ifdef HAS_WEB_SERVER_BROADCAST
+#ifdef HAS_HTTPAPI
   if (g_settings.m_HttpApiBroadcastLevel>=1)
   {
     if (IsPlayingVideo())
@@ -3033,8 +3036,8 @@ bool CApplication::ProcessHTTPApiButtons()
         OnKey(keyHttp);
       return true;
     }
-  }
-  return false;*/
+  }*/
+  return false;
 #endif
 }
 
@@ -3368,7 +3371,7 @@ void CApplication::Stop()
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();
 
-#ifdef HAS_WEB_SERVER_BROADCAST
+#ifdef HAS_HTTPAPI
     if (m_pXbmcHttp)
     {
       if (g_settings.m_HttpApiBroadcastLevel >= 1)
@@ -3898,7 +3901,7 @@ void CApplication::OnPlayBackEnded()
   g_pythonParser.OnPlayBackEnded();
 #endif
 
-#ifdef HAS_WEB_SERVER_BROADCAST
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
@@ -3926,7 +3929,7 @@ void CApplication::OnPlayBackStarted()
   g_pythonParser.OnPlayBackStarted();
 #endif
 
-#ifdef HAS_WEB_SERVER_BROADCAST
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
@@ -3946,7 +3949,7 @@ void CApplication::OnQueueNextItem()
   g_pythonParser.OnQueueNextItem(); // currently unimplemented
 #endif
 
-#ifdef HAS_WEB_SERVER_BROADCAST
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnQueueNextItem;1");
@@ -3974,7 +3977,7 @@ void CApplication::OnPlayBackStopped()
   g_pythonParser.OnPlayBackStopped();
 #endif
 
-#ifdef HAS_WEB_SERVER_BROADCAST
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
@@ -3994,7 +3997,7 @@ void CApplication::OnPlayBackPaused()
   g_pythonParser.OnPlayBackPaused();
 #endif
 
-#ifdef HAS_WEB_SERVER_BROADCAST
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackPaused;1");
@@ -4009,7 +4012,7 @@ void CApplication::OnPlayBackResumed()
   g_pythonParser.OnPlayBackResumed();
 #endif
 
-#ifdef HAS_WEB_SERVER_BROADCAST
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackResumed;1");
@@ -4024,7 +4027,7 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   g_pythonParser.OnPlayBackSpeedChanged(iSpeed);
 #endif
 
-#ifdef HAS_WEB_SERVER_BROADCAST
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
   {
@@ -4043,7 +4046,7 @@ void CApplication::OnPlayBackSeek(int iTime)
   g_pythonParser.OnPlayBackSeek(iTime);
 #endif
 
-#ifdef HAS_WEB_SERVER_BROADCAST
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
   {
@@ -4062,7 +4065,7 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
   g_pythonParser.OnPlayBackSeekChapter(iChapter);
 #endif
 
-#ifdef HAS_WEB_SERVER_BROADCAST
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
   {
