@@ -364,6 +364,70 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   m_bImageReady = true;
 }
 
+void CLinuxRendererGL::CalculateTextureSourceRects(int source, int num_planes)
+{
+  YUVBUFFER& buf    =  m_buffers[source];
+  YV12Image* im     = &buf.image;
+  YUVFIELDS& fields =  buf.fields;
+
+  // calculate the source rectangle
+  for(int field = 0; field < 3; field++)
+  {
+    for(int plane = 0; plane < num_planes; plane++)
+    {
+      YUVPLANE& p = fields[field][plane];
+
+      /* software upscaling is precropped */
+      if(IsSoftwareUpscaling())
+        p.rect.SetRect(0, 0, im->width, im->height);
+      else      
+        p.rect = m_sourceRect;
+
+      p.width  = im->width;
+      p.height = im->height;
+
+      if(field != FIELD_FULL)
+      {
+        /* correct for field offsets and chroma offsets */
+        float offset_y = 0.5;
+        if(plane != 0)
+          offset_y += 0.5;
+        if(field == FIELD_EVEN)
+          offset_y *= -1;
+
+        p.rect.y1 += offset_y;
+        p.rect.y2 += offset_y;
+
+        /* half the height if this is a field */
+        p.height  *= 0.5f;
+        p.rect.y1 *= 0.5f; 
+        p.rect.y2 *= 0.5f;
+      }
+
+      if(plane != 0)
+      {
+        p.width   /= 1 << im->cshift_x;
+        p.height  /= 1 << im->cshift_y;
+
+        p.rect.x1 /= 1 << im->cshift_x;
+        p.rect.x2 /= 1 << im->cshift_x;
+        p.rect.y1 /= 1 << im->cshift_y;
+        p.rect.y2 /= 1 << im->cshift_y;
+      }
+
+      if (m_textureTarget == GL_TEXTURE_2D)
+      {
+        p.height  /= p.texheight;
+        p.rect.y1 /= p.texheight;
+        p.rect.y2 /= p.texheight;
+        p.width   /= p.texwidth;
+        p.rect.x1 /= p.texwidth;
+        p.rect.x2 /= p.texwidth;
+      }
+    }
+  }
+}
+
 void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                                 , unsigned width, unsigned height
                                 , int stride, void* data )
@@ -622,62 +686,7 @@ void CLinuxRendererGL::LoadYV12Textures(int source)
   }
   SetEvent(m_eventTexturesDone[source]);
 
-  // calculate the source rectangle
-  for(int field = 0; field < 3; field++)
-  {
-    for(int plane = 0; plane < 3; plane++)
-    {
-      YUVPLANE& p = fields[field][plane];
-
-      /* software upscaling is precropped */
-      if(IsSoftwareUpscaling())
-        p.rect.SetRect(0, 0, im->width, im->height);
-      else      
-        p.rect = m_sourceRect;
-
-      p.width  = im->width;
-      p.height = im->height;
-
-      if(field != FIELD_FULL)
-      {
-        /* correct for field offsets and chroma offsets */
-        float offset_y = 0.5;
-        if(plane != 0)
-          offset_y += 0.5;
-        if(field == FIELD_EVEN)
-          offset_y *= -1;
-
-        p.rect.y1 += offset_y;
-        p.rect.y2 += offset_y;
-
-        /* half the height if this is a field */
-        p.height  *= 0.5f;
-        p.rect.y1 *= 0.5f; 
-        p.rect.y2 *= 0.5f;
-      }
-
-      if(plane != 0)
-      {
-        p.width   /= 1 << im->cshift_x;
-        p.height  /= 1 << im->cshift_y;
-
-        p.rect.x1 /= 1 << im->cshift_x;
-        p.rect.x2 /= 1 << im->cshift_x;
-        p.rect.y1 /= 1 << im->cshift_y;
-        p.rect.y2 /= 1 << im->cshift_y;
-      }
-
-      if (m_textureTarget == GL_TEXTURE_2D)
-      {
-        p.height  /= p.texheight;
-        p.rect.y1 /= p.texheight;
-        p.rect.y2 /= p.texheight;
-        p.width   /= p.texwidth;
-        p.rect.x1 /= p.texwidth;
-        p.rect.x2 /= p.texwidth;
-      }
-    }
-  }
+  CalculateTextureSourceRects(source, 3);
 
   glDisable(m_textureTarget);
 }
@@ -2021,61 +2030,9 @@ void CLinuxRendererGL::LoadNV12Textures(int source)
              , im->width >> im->cshift_x, im->height >> im->cshift_y
              , im->stride[1]/2, im->plane[1] );
   }
-
   SetEvent(m_eventTexturesDone[source]);
 
-  // calculate the source rectangle
-  for(int field = 0; field < MAX_FIELDS; field++)
-  {
-    for(int plane = 0; plane < 2; plane++)
-    {
-      YUVPLANE& p = fields[field][plane];
-
-      p.rect = m_sourceRect;
-
-      p.width  = im->width;
-      p.height = im->height;
-
-      if(field != FIELD_FULL)
-      {
-        /* correct for field offsets and chroma offsets */
-        float offset_y = 0.5;
-        if(plane != 0)
-          offset_y += 0.5;
-        if(field == FIELD_EVEN)
-          offset_y *= -1;
-
-        p.rect.y1 += offset_y;
-        p.rect.y2 += offset_y;
-
-        /* half the height if this is a field */
-        p.height  *= 0.5f;
-        p.rect.y1 *= 0.5f; 
-        p.rect.y2 *= 0.5f;
-      }
-
-      if(plane != 0)
-      {
-        p.width   /= 1 << im->cshift_x;
-        p.height  /= 1 << im->cshift_y;
-
-        p.rect.x1 /= 1 << im->cshift_x;
-        p.rect.x2 /= 1 << im->cshift_x;
-        p.rect.y1 /= 1 << im->cshift_y;
-        p.rect.y2 /= 1 << im->cshift_y;
-      }
-
-      if (m_textureTarget == GL_TEXTURE_2D)
-      {
-        p.height  /= p.texheight;
-        p.rect.y1 /= p.texheight;
-        p.rect.y2 /= p.texheight;
-        p.width   /= p.texwidth;
-        p.rect.x1 /= p.texwidth;
-        p.rect.x2 /= p.texwidth;
-      }
-    }
-  }
+  CalculateTextureSourceRects(source, 2);
 
   glDisable(m_textureTarget);
 }

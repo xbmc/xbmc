@@ -158,6 +158,8 @@ protected:
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index, bool clear = true);
 
+  void CalculateTextureSourceRects(int source, int num_planes);
+  
   // renderers
   void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
