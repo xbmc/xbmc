@@ -31,6 +31,7 @@
 #include "SystemInfo.h" //g_sysinfo
 #include "GUISettings.h"//g_guiSettings
 
+
 #include "filters/VMR9AllocatorPresenter.h"
 #include "filters/evrAllocatorPresenter.h"
 #include <initguid.h>
@@ -152,6 +153,8 @@ STDMETHODIMP CFGManager::AddFilter(IBaseFilter* pFilter, LPCWSTR pName)
 
 STDMETHODIMP CFGManager::RemoveFilter(IBaseFilter* pFilter)
 {
+  if(!m_pUnkInner) 
+    return E_UNEXPECTED;
   CAutoLock cAutoLock(this);
 
   return CComQIPtr<IFilterGraph2>(m_pUnkInner)->RemoveFilter(pFilter);
@@ -159,13 +162,19 @@ STDMETHODIMP CFGManager::RemoveFilter(IBaseFilter* pFilter)
 
 STDMETHODIMP CFGManager::EnumFilters(IEnumFilters** ppEnum)
 {
-  CAutoLock cAutoLock(this);
+  if(!m_pUnkInner) 
+    return E_UNEXPECTED;
+  //Locking make crash reclock
+  //solution comming from mpc-hc
+  //CAutoLock cAutoLock(this);
 
   return CComQIPtr<IFilterGraph2>(m_pUnkInner)->EnumFilters(ppEnum);
 }
 
 STDMETHODIMP CFGManager::FindFilterByName(LPCWSTR pName, IBaseFilter** ppFilter)
 {
+  if(!m_pUnkInner) 
+    return E_UNEXPECTED;
   CAutoLock cAutoLock(this);
 
   return CComQIPtr<IFilterGraph2>(m_pUnkInner)->FindFilterByName(pName, ppFilter);
@@ -173,13 +182,30 @@ STDMETHODIMP CFGManager::FindFilterByName(LPCWSTR pName, IBaseFilter** ppFilter)
 
 STDMETHODIMP CFGManager::ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MEDIA_TYPE* pmt)
 {
-  CAutoLock cAutoLock(this);
+  if(!m_pUnkInner) 
+    return E_UNEXPECTED;
 
-  return CComQIPtr<IFilterGraph2>(m_pUnkInner)->ConnectDirect(pPinOut, pPinIn, pmt);
+	CAutoLock cAutoLock(this);
+
+  CComPtr<IBaseFilter> pBF = DShowUtil::GetFilterFromPin(pPinIn);
+	CLSID clsid = DShowUtil::GetCLSID(pBF);
+
+	// TODO: GetUpStreamFilter goes up on the first input pin only
+	for(CComPtr<IBaseFilter> pBFUS = DShowUtil::GetFilterFromPin(pPinOut); pBFUS; pBFUS = DShowUtil::GetUpStreamFilter(pBFUS))
+	{
+		if(pBFUS == pBF) 
+      return VFW_E_CIRCULAR_GRAPH;
+    if(DShowUtil::GetCLSID(pBFUS) == clsid) 
+      return VFW_E_CANNOT_CONNECT;
+	}
+
+	return CComQIPtr<IFilterGraph2>(m_pUnkInner)->ConnectDirect(pPinOut, pPinIn, pmt);
 }
 
 STDMETHODIMP CFGManager::Reconnect(IPin* ppin)
 {
+  if(!m_pUnkInner) 
+    return E_UNEXPECTED;
   CAutoLock cAutoLock(this);
 
   return CComQIPtr<IFilterGraph2>(m_pUnkInner)->Reconnect(ppin);
@@ -187,6 +213,8 @@ STDMETHODIMP CFGManager::Reconnect(IPin* ppin)
 
 STDMETHODIMP CFGManager::Disconnect(IPin* ppin)
 {
+  if(!m_pUnkInner) 
+    return E_UNEXPECTED;
   CAutoLock cAutoLock(this);
 
   return CComQIPtr<IFilterGraph2>(m_pUnkInner)->Disconnect(ppin);

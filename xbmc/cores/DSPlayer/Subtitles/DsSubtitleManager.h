@@ -33,10 +33,13 @@ public:
   bool LoadSubtitles(const char* fn, IGraphBuilder* pGB, const char* paths);
   void EnableSubtitle(bool enable);
   bool Enabled() {return m_bCurrentlyEnabled;};
+  void InitDefaultStyle();
+  void GetSubtitlesList();
   void Render(int x, int y, int width, int height);
 protected:
   DllLibMpcSubs m_dllMpcSubs;
   bool m_bCurrentlyEnabled;
+  SubtitleStyle_t m_pCurrentStyle;
 };
 
 extern CDsSubManager g_dllMpcSubs;

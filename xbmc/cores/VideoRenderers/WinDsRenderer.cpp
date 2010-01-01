@@ -205,8 +205,8 @@ void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
   m_pD3DDevice->SetTexture(0, NULL);
 
   //Render Subtitles
-  //if (g_dllMpcSubs.Enabled())
-  //  g_dllMpcSubs.Render(300,300,640,480);
+  if (g_dllMpcSubs.Enabled())
+    g_dllMpcSubs.Render(0,0,(int)m_destRect.Width(),(int)m_destRect.Height());
   if (FAILED(hr))
     CLog::Log(LOGDEBUG,"RenderDshowBuffer TextureCopy CWinDsRenderer::RenderDshowBuffer"); 
 }

@@ -78,9 +78,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   HRESULT hr;
   if (m_pGraphBuilder)
 	  CloseFile();
-  //CStdString homepath;
-  //CUtil::GetHomePath(homepath);
-  
+
   m_pGraphBuilder = new CFGManagerPlayer(_T("CFGManagerPlayer"), NULL, g_hWnd);
   hr = m_pGraphBuilder->AddToROT();
   //Adding every filters required for this file into the igraphbuilder
@@ -106,12 +104,15 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 
   SetVolume(g_stSettings.m_nVolumeLevel);
   UpdateState();
+
+  bool ok;
+  ok = g_dllMpcSubs.Load(); //return true if loaded
+  ok = g_dllMpcSubs.LoadSubtitles(m_Filename.c_str(),m_pGraphBuilder,"H:\\Downloads\\Two.and.a.Half.Men.S07E11.Warning.Its.Dirty.HDTV.XviD-FQM.srt");
+  g_dllMpcSubs.EnableSubtitle(true);
+  g_dllMpcSubs.GetSubtitlesList();
+
   if (m_pMediaControl)
     m_pMediaControl->Run();
-  //g_dllMpcSubs.Load(); //return true if loaded
-  //g_dllMpcSubs.LoadSubtitles(m_Filename.c_str(),m_pGraphBuilder,"path to subtitle file");
-  //g_dllMpcSubs.EnableSubtitle(true);
-  
   m_currentSpeed = 10000;
 
   return hr;
@@ -195,6 +196,7 @@ void CDSGraph::UpdateCurrentVideoInfo(CStdString currentFile)
 {
 
   m_VideoInfo.dxva_info= m_pDsConfig->GetDxvaMode();
+  
   MediaInfo MI;
   MI.Open(currentFile.c_str());
   MI.Option(_T("Complete"));

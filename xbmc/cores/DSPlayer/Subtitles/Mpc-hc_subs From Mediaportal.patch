@@ -1,0 +1,94 @@
+Index: src/mpc-hc_subs/mpc-hc_subs.vcproj
+===================================================================
+--- src/mpc-hc_subs/mpc-hc_subs.vcproj	(revision 23908)
++++ src/mpc-hc_subs/mpc-hc_subs.vcproj	(working copy)
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="windows-1255"?>
+ <VisualStudioProject
+ 	ProjectType="Visual C++"
+-	Version="9.00"
++	Version="9,00"
+ 	Name="mpcSubs"
+ 	ProjectGUID="{CEE9D3EA-D6F9-49F1-9D36-0C3C0789AE97}"
+ 	RootNamespace="mpchc_subs"
+@@ -66,6 +66,7 @@
+ 				AdditionalDependencies="Winmm.lib strmbasd.lib vfw32.lib version.lib "
+ 				LinkIncremental="2"
+ 				AdditionalLibraryDirectories="&quot;$(DSHOW_BASE)Debug&quot;"
++				IgnoreDefaultLibraryNames="MSVCRTD;LIBCMT"
+ 				GenerateDebugInformation="true"
+ 				SubSystem="2"
+ 				TargetMachine="1"
+@@ -143,6 +144,7 @@
+ 				AdditionalDependencies="Winmm.lib strmbase.lib vfw32.lib Version.lib"
+ 				LinkIncremental="1"
+ 				AdditionalLibraryDirectories="&quot;$(DSHOW_BASE)Release&quot;"
++				IgnoreDefaultLibraryNames="MSVCRT"
+ 				GenerateDebugInformation="false"
+ 				SubSystem="2"
+ 				OptimizeReferences="2"
+Index: src/mpc-hc_subs/SubManager.cpp
+===================================================================
+--- src/mpc-hc_subs/SubManager.cpp	(revision 23908)
++++ src/mpc-hc_subs/SubManager.cpp	(working copy)
+@@ -312,7 +312,7 @@
+ 	{
+ 		ATLTRACE(L"Processing filter: %s", GetFilterName(pBF).GetString());
+ 		if(!IsSplitter(pBF)) continue;
+-		ATLTRACE("Is splitter!");
++		ATLTRACE(" Is splitter!");
+ 		BeginEnumPins(pBF, pEP, pPin)
+ 		{
+ 			PIN_DIRECTION pindir;
+@@ -336,13 +336,15 @@
+ 			name.Format(L"TextPassThru%08x", pTPTF);
+ 			if(FAILED(pGB->AddFilter(pTPTF, name)))
+ 				continue;
+-
++			HRESULT hr;
+ 			CComQIPtr<ISubStream> pSubStream;
+-			HRESULT hr;
++			
+ 			do
+ 			{
+-				if (FAILED(hr = pGB->ConnectDirect(pPin, GetFirstPin(pTPTF, PINDIR_INPUT), NULL)))
++				if (FAILED(hr = pGB->ConnectDirect(pPin, GetFirstPin(pTPTF, PINDIR_INPUT), NULL))
++					|| FAILED(hr = pGB->ConnectDirect(GetFirstPin(pTPTF, PINDIR_OUTPUT), pPinTo, NULL)))
+ 				{
++					hr = pGB->ConnectDirect(pPin, pPinTo, NULL);
+ 					ATLTRACE("connection to TextPassThruFilter failed: %x", hr);
+ 					break;
+ 				}
+@@ -534,10 +536,10 @@
+ {
+ 	{//hook vmr
+ 		CComPtr<IBaseFilter> vmr;
+-		pGB->FindFilterByName(L"Enhanced Video Renderer", &vmr);
++		pGB->FindFilterByName(L"Xbmc EVR", &vmr);
+ 		if (!vmr)
+ 		{
+-			pGB->FindFilterByName(L"Video Mixing Renderer 9", &vmr);
++			pGB->FindFilterByName(L"Xbmc VMR9 (Renderless)", &vmr);
+ 		}
+ 		if (vmr)
+ 		{
+Index: src/mpc-hc_subs/TextPassThruFilter.cpp
+===================================================================
+--- src/mpc-hc_subs/TextPassThruFilter.cpp	(revision 23908)
++++ src/mpc-hc_subs/TextPassThruFilter.cpp	(working copy)
+@@ -189,7 +189,14 @@
+ {
+ 	HRESULT hr;
+ 	m_pInput = new CTextPassThruInputPin(this, this, &m_pMainFrame->m_csSubLock, &hr);
+-	m_pOutput = new CTextPassThruOutputPin(this, this, &hr);
++	if (FAILED(hr))
++		ATLTRACE("connection to CTextPassThruInputPin failed \n");
++	if (SUCCEEDED(hr))
++	{
++		m_pOutput = new CTextPassThruOutputPin(this, this, &hr);
++		if (FAILED(hr))
++			ATLTRACE("connection to CTextPassThruOutputPin failed \n");
++	}
+ }
+ 
+ CTextPassThruFilter::~CTextPassThruFilter()
