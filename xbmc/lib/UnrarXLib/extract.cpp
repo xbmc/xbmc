@@ -254,7 +254,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 
   // wchar ArcFileNameW[NM];
   CSmartStrW ArcFileNameW(NM);
-  *ArcFileNameW=0;
+  *((wchar *)ArcFileNameW)=0;
 
   int MatchType=MATCH_WILDSUBPATH;
   
@@ -285,7 +285,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
 #ifdef _APPLE
   if (WideName)
   {
-    WideToUtf(Arc.NewLhd.FileNameW,ArcFileName,sizeof(ArcFileName));
+    WideToUtf(Arc.NewLhd.FileNameW,ArcFileName,ArcFileName.BufferSize());
     WideName=false;
   }
 #endif

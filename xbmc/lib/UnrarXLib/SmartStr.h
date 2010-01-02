@@ -5,11 +5,11 @@
 class CSmartStr
 {
 public:
-  CSmartStr(int iCount) : m_szPtr(NULL)
+  CSmartStr(unsigned int uBufferSize) : m_szPtr(0), m_uBufferSize(uBufferSize)
   {
-    if (iCount)
+    if (m_uBufferSize)
     {
-      m_szPtr = new char[iCount];
+      m_szPtr = new char[m_uBufferSize];
     }
   }
 
@@ -19,6 +19,8 @@ public:
     {
       delete[] m_szPtr;
     }
+
+    m_uBufferSize = 0;
   }
 
   operator char *()
@@ -26,18 +28,24 @@ public:
     return m_szPtr;
   }
 
+  unsigned int BufferSize()
+  {
+    return m_uBufferSize;
+  }
+
 private:
   char *m_szPtr;
+  unsigned int m_uBufferSize;
 };
 
 class CSmartStrW
 {
 public:
-  CSmartStrW(int iCount) : m_szPtr(NULL)
+  CSmartStrW(unsigned int uBufferSize) : m_szPtr(0), m_uBufferSize(uBufferSize)
   {
-    if (iCount)
+    if (m_uBufferSize)
     {
-      m_szPtr = new wchar[iCount];
+      m_szPtr = new wchar[m_uBufferSize];
     }
   }
 
@@ -54,8 +62,14 @@ public:
     return m_szPtr;
   }
 
+  unsigned int BufferSize()
+  {
+    return m_uBufferSize;
+  }
+
 private:
   wchar * m_szPtr;
+  unsigned int m_uBufferSize;
 };
 
 #endif /* SMARTSTR_H_ */
