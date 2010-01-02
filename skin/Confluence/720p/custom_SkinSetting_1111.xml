@@ -231,6 +231,18 @@
 						<onclick>Skin.ToggleSetting(No_Media_Titles_In_Scanner)</onclick>
 						<selected>!Skin.HasSetting(No_Media_Titles_In_Scanner)</selected>
 					</control>
+					<control type="radiobutton" id="112">
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<label>31104</label>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<onclick>Skin.ToggleSetting(WindowedTrailer)</onclick>
+						<selected>Skin.HasSetting(WindowedTrailer)</selected>
+					</control>
 					<control type="label" id="104">
 						<width>750</width>
 						<height>45</height>
@@ -1604,7 +1616,7 @@
 							<width>750</width>
 							<height>45</height>
 							<font>font13_title</font>
-							<label>31128</label>
+							<label>31140</label>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<align>left</align>
@@ -1635,6 +1647,43 @@
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<onclick>Skin.SetFile(LyricScript_Path,.py)</onclick>
 							<visible>Skin.HasSetting(LyricScript_Enable)</visible>
+						</control>
+
+						<control type="label" id="426">
+							<width>750</width>
+							<height>45</height>
+							<font>font13_title</font>
+							<label>31141</label>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+						</control>
+
+						<control type="radiobutton" id="427">
+							<width>750</width>
+							<height>35</height>
+							<font>font13</font>
+							<label>$LOCALIZE[31129]</label>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.ToggleSetting(SubtitleDownload_Enable)</onclick>
+							<selected>Skin.HasSetting(SubtitleDownload_Enable)</selected>
+						</control>
+						<control type="button" id="428">
+							<width>750</width>
+							<height>35</height>
+							<font>font12</font>
+							<label>- $LOCALIZE[31130]</label>
+							<label2>[COLOR=selected]$INFO[Skin.String(SubtitleScript_Path)][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetFile(SubtitleScript_Path,.py)</onclick>
+							<visible>Skin.HasSetting(SubtitleDownload_Enable)</visible>
 						</control>
 					</control>
 				</control>

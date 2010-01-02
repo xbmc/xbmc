@@ -445,13 +445,11 @@ void CGUISettings::Initialize()
   AddCategory(5, "videoplayer", 14086);
   AddInt(1, "videoplayer.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
   AddSeparator(2, "videoplayer.sep1");
-#ifdef HAVE_LIBVDPAU
-  AddInt(3, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_VDPAU, SPIN_CONTROL_TEXT);
-#elif defined(_WIN32) && defined(HAS_DX)
+#if defined(_WIN32) && defined(HAS_DX)
   // No render methods other than AUTO on win32 DirectX
   AddInt(0, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_AUTO, SPIN_CONTROL_TEXT);
 #else
-  AddInt(3, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_SOFTWARE, SPIN_CONTROL_TEXT);
+  AddInt(3, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_CRYSTALHD, SPIN_CONTROL_TEXT);
 #endif
 #ifdef HAS_GL
   AddBool(4, "videoplayer.usepbo", 13424, false);

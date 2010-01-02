@@ -24,6 +24,7 @@
 #include "VideoInfoTag.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#include <limits.h>
 
 extern "C" {
 #include "lib/libhts/net.h"
@@ -120,11 +121,41 @@ void CDVDInputStreamHTSP::Close()
 {
   CDVDInputStream::Close();
   m_session.Close();
+  m_read.Clear();
 }
 
 int CDVDInputStreamHTSP::Read(BYTE* buf, int buf_size)
 {
-  return -1;
+  size_t count = m_read.Size();
+  if(count == 0)
+  {
+    htsmsg_t* msg = ReadStream();
+    if(msg == NULL)
+      return -1;
+
+    uint8_t* p;
+    if(htsmsg_binary_serialize(msg, (void**)&p, &count, INT_MAX) < 0)
+    {
+      htsmsg_destroy(msg);
+      return -1;
+    }
+    htsmsg_destroy(msg);
+
+    m_read.Clear();
+    m_read.buf = p;
+    m_read.cur = p;
+    m_read.end = p + count;
+  }
+
+  if(count == 0)
+    return 0;
+
+  if(count > (size_t)buf_size)
+    count = buf_size;
+
+  memcpy(buf, m_read.cur, count);
+  m_read.cur += count;
+  return count;
 }
 
 bool CDVDInputStreamHTSP::SetChannel(int channel)

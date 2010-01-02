@@ -189,7 +189,6 @@ int ResampleKeepAspect(CxImage &image, unsigned int width, unsigned int height, 
 
 int ResampleKeepAspectArea(CxImage &image, unsigned int area)
 {
-  bool bResize = false;
   float fAspect = ((float)image.GetWidth()) / ((float)image.GetHeight());
   unsigned int width = (unsigned int)sqrt(area * fAspect);
   unsigned int height = (unsigned int)sqrt(area / fAspect);
@@ -534,7 +533,14 @@ extern "C"
     if (fullyTransparent || fullyOpaque)
       image.AlphaDelete();
     image.SetJpegQuality(90);
-    if (!image.Save(thumb, image.AlphaIsValid() ? CXIMAGE_FORMAT_PNG : CXIMAGE_FORMAT_JPG))
+
+    DWORD type;
+    if (image.AlphaIsValid() || GetImageType(thumb) == CXIMAGE_FORMAT_PNG)
+      type = CXIMAGE_FORMAT_PNG;
+    else
+      type = CXIMAGE_FORMAT_JPG;
+
+    if (!image.Save(thumb, type))
     {
       printf("PICTURE::CreateThumbnailFromSurface: Unable to save thumb to %s", thumb);
       return false;

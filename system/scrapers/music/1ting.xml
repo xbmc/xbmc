@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<scraper framework="1.0" date="2009-12-27" name="1ting" content="albums" thumb="1ting.png" language="zh">
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="\1/" dest="3">
+			<expression>(http://www.1ting.com/album/.*)</expression>
+		</RegExp>
+	</NfoUrl>
+	<CreateAlbumSearchUrl dest="3">
+		<RegExp input="$$1" output="http://so.1ting.com/album.do?q=\1/" dest="3">
+			<expression/>
+		</RegExp>
+	</CreateAlbumSearchUrl>
+	<GetAlbumSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;url&gt;\1&lt;/url&gt;&lt;title&gt;\2&lt;/title&gt;&lt;artist&gt;\3&lt;/artist&gt;&lt;year&gt;\4&lt;/year&gt;&lt;/entity&gt;" dest="5">
+				<expression repeat="yes" noclean="1,2,3,4">&lt;a class=&quot;light&quot; href=&quot;(http://www.1ting.com/album/.*?)&quot; target=&quot;_blank&quot;&gt;([^&lt;]*)&lt;/a&gt;.*?target=&quot;_blank&quot;&gt;([^&lt;]*)&lt;/a&gt;.*?发行时间：([0-9]+)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>		
+	</GetAlbumSearchResults>
+	<GetAlbumDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
+				<expression noclean="1">class=&quot;album_text&quot;&gt;.*?&lt;h3&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;artist&gt;\1&lt;/artist&gt;" dest="5+">
+				<expression noclean="1">歌手：&lt;a href=.*?target=&quot;_self&quot;&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;review&gt;\1&lt;/review&gt;" dest="5+">
+				<expression>&lt;h3&gt;专辑介绍&lt;/h3&gt;(.*?)&lt;/div&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
+				<expression noclean="1">class=&quot;album_pic&quot;&gt;.*?img src=&quot;(http://img.1ting.com/images/.*?)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression noclean="1">&lt;li&gt;发行时间：([0-9]+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;releasedate&gt;\1&lt;/releasedate&gt;" dest="5+">
+				<expression noclean="1">&lt;li&gt;发行时间：([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<expression noclean="1" trim="1" repeat="yes">href=&quot;http://www.1ting.com/genre/.*?&gt;([^&lt;|/]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;track&gt;&lt;position&gt;\1&lt;/position&gt;&lt;title&gt;\2&lt;/title&gt;&lt;/track&gt;" dest="5+">
+				<expression repeat="yes" trim="2">&lt;td align=&quot;center&quot;&gt;([0-9]+)&lt;/td&gt;.*?title=&quot;([^&quot;|-]*)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp> 
+	</GetAlbumDetails> 
+	<CreateArtistSearchUrl dest="3">
+		<RegExp input="$$1" output="http://so.1ting.com/singer.do?q=\1/" dest="3">
+			<expression/>
+		</RegExp>
+	</CreateArtistSearchUrl>
+	<GetArtistSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes">&lt;a class=&quot;light&quot; href=&quot;(http://www.1ting.com/singer/.*?)&quot; target=&quot;_blank&quot;&gt;([^&lt;]*)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetArtistSearchResults>
+	<GetArtistDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="5">
+				<expression noclean="1">&lt;h1&gt;([^&lt;]*)&lt;/h1&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;born&gt;\1&lt;/born&gt;" dest="5+">
+				<expression noclean="1">&lt;li&gt;生日：[\n\t ]*([0-9]+)-([0-9]+)-([0-9]+)</expression>
+			</RegExp>
+			<RegExp input="$$4" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="5+">
+				<RegExp input="$$1" output="\1\n" dest="7">
+					<expression noclean="1">详细资料&lt;/h3&gt;(.*?)&lt;/ul&gt;</expression>
+				</RegExp>
+				<RegExp input="$$7" output="\1" dest="8">
+					<expression repeat="yes" noclean="1">(.*?)[\n\t ]</expression>
+				</RegExp>
+				<RegExp input="$$8" output="\1\n" dest="4">
+					<expression repeat="yes">(.*?)&lt;/li&gt;</expression>
+				</RegExp>
+				<expression/>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
+				<expression noclean="1">img src=&quot;(http://img.1ting.com/images/singer/[^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;album&gt;&lt;title&gt;\1&lt;/title&gt;&lt;year&gt;\2&lt;/year&gt;&lt;/album&gt;" dest="5+">
+				<expression repeat="yes">title=&quot;专辑: [^&quot;]*&quot;&gt;([^&lt;]*)&lt;/a&gt;&lt;/p&gt; \n&lt;p title=&quot;发行日期: [^&quot;]*&quot;&gt;([0-9]+)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetArtistDetails>
+</scraper> 

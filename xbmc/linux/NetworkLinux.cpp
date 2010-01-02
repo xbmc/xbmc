@@ -637,6 +637,7 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
    if (!fw)
    {
       // TODO
+      fclose(fr);
       return;
    }
 
