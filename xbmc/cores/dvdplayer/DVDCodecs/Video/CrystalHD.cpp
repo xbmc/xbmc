@@ -826,7 +826,7 @@ static double pts_itod(int64_t pts)
 CCrystalHD* CCrystalHD::m_pInstance = NULL;
 
 CCrystalHD::CCrystalHD() :
-  m_Device(NULL);
+  m_Device(NULL),
   m_IsConfigured(false),
   m_drop_state(false),
   m_ignore_drop_count(0),
