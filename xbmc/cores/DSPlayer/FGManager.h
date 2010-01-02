@@ -124,6 +124,7 @@ protected:
 	STDMETHODIMP FindInterface(REFIID iid, void** ppv, BOOL bRemove);
 	STDMETHODIMP AddToROT();
 	STDMETHODIMP RemoveFromROT();
+  STDMETHODIMP GetFileInfo(CStdString* sourceInfo,CStdString* splitterInfo,CStdString* audioInfo,CStdString* videoInfo,CStdString* audioRenderer);
 
 	// IGraphBuilderDeadEnd
 

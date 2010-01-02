@@ -78,7 +78,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   HRESULT hr;
   if (m_pGraphBuilder)
 	  CloseFile();
-
+  m_VideoInfo.Clear();
   m_pGraphBuilder = new CFGManagerPlayer(_T("CFGManagerPlayer"), NULL, g_hWnd);
   hr = m_pGraphBuilder->AddToROT();
   //Adding every filters required for this file into the igraphbuilder
@@ -94,10 +94,13 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   m_pDsConfig = new CDSConfig();
   //Get all custom interface
   m_pDsConfig->LoadGraph(m_pGraphBuilder);
+
   LONGLONG tmestamp;
   tmestamp = CTimeUtils::GetTimeMS();
   CLog::Log(LOGDEBUG,"%s Timestamp before loading video info with mediainfo.dll %I64d",__FUNCTION__,tmestamp);
+  
   UpdateCurrentVideoInfo(file.GetAsUrl().GetFileName());
+  
   tmestamp = CTimeUtils::GetTimeMS();
   CLog::Log(LOGDEBUG,"%s Timestamp after loading video info with mediainfo.dll  %I64d",__FUNCTION__,tmestamp);
   
@@ -196,8 +199,10 @@ void CDSGraph::UpdateCurrentVideoInfo(CStdString currentFile)
 {
 
   m_VideoInfo.dxva_info= m_pDsConfig->GetDxvaMode();
+  m_pGraphBuilder->GetFileInfo(&m_VideoInfo.filter_source,&m_VideoInfo.filter_splitter,&m_VideoInfo.filter_audio_dec,&m_VideoInfo.filter_video_dec,&m_VideoInfo.filter_audio_renderer);
   
-  MediaInfo MI;
+  
+  /*MediaInfo MI;
   MI.Open(currentFile.c_str());
   MI.Option(_T("Complete"));
   m_VideoInfo.codec_video.AppendFormat("Codec video:%s",MI.Get(Stream_Video,0,_T("CodecID/Hint")).c_str());
@@ -211,7 +216,7 @@ void CDSGraph::UpdateCurrentVideoInfo(CStdString currentFile)
   m_VideoInfo.codec_audio.AppendFormat(" %s chn, %s, %s",MI.Get(Stream_Audio,0,_T("Channel(s)")).c_str(),
                                                          MI.Get(Stream_Audio,0,_T("Resolution/String")).c_str(),
                                                          MI.Get(Stream_Audio,0,_T("SamplingRate/String")).c_str());
-  CLog::Log(LOGDEBUG,"%s",m_VideoInfo.codec_audio.c_str());
+  CLog::Log(LOGDEBUG,"%s",m_VideoInfo.codec_audio.c_str());*/
 //Codec:XviD@1196 Kbps Res:624x352 @ 23.976 fps
 //Codec:MP3@1195 Kbps, 2 chn, 16 bits, 48.0 KHz
 //need too fix the audio kbps
@@ -471,12 +476,38 @@ float CDSGraph::GetPercentage()
 
 std::string CDSGraph::GetGeneralInfo()
 {
-  return m_VideoInfo.dxva_info.c_str();
+  std::string generalInfo;
+  generalInfo.append("Source Filter:");
+  generalInfo.append(m_VideoInfo.filter_source.c_str());
+  if (m_VideoInfo.filter_splitter.length() > 0)
+  {
+    generalInfo.append(" | ");
+    generalInfo.append(m_VideoInfo.filter_splitter.c_str());
+  }
+  return generalInfo;
+}
+
+std::string CDSGraph::GetAudioInfo()
+{
+  std::string audioInfo;
+  audioInfo.append("Audio Decoder: ");
+  audioInfo.append(m_VideoInfo.filter_audio_dec.c_str());
+  audioInfo.append(" | Renderer: ");
+  audioInfo.append(m_VideoInfo.filter_audio_renderer.c_str());
+  return  audioInfo;
 }
 
 std::string CDSGraph::GetVideoInfo()
 {
-  return m_VideoInfo.codec_video.c_str();
+  std::string videoInfo;
+  videoInfo.append("Video Decoder: ");
+  videoInfo.append(m_VideoInfo.filter_video_dec.c_str());
+  if ( m_VideoInfo.dxva_info.length()>0 )
+  {
+    videoInfo.append(" | ");
+    videoInfo.append(m_VideoInfo.dxva_info.c_str());
+  }
+  return  videoInfo;
 }
 
 bool CDSGraph::CanSeek()

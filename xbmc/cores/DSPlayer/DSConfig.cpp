@@ -164,8 +164,8 @@ bool CDSConfig::GetMpcVideoDec(IBaseFilter* pBF)
   m_pStdDxva.Format("");
   if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
   {
-    m_pStdDxva = CStdString("DXVA WILL NEVER WORK WITH NON DEFAULT RENDERER ON");
-    CLog::Log(LOGERROR,"DXVA WILL NEVER WORK WITH NON DEFAULT RENDERER ON");
+    m_pStdDxva = CStdString("");
+    CLog::Log(LOGERROR,"%s DXVA WILL NEVER WORK WITH NON DEFAULT RENDERER ON",__FUNCTION__);
   }
   else
   {

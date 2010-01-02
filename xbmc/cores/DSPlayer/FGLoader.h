@@ -31,18 +31,31 @@ class CFGLoader : public CCritSec
 public:
   CFGLoader(IGraphBuilder2* gb);
   virtual ~CFGLoader();
-  HRESULT LoadConfig(CStdString configFile);
-  HRESULT LoadFilterRules(const CFileItem& pFileItem);
-  HRESULT InsertSourceFilter(const CFileItem& pFileItem,TiXmlElement *pRule);
-  HRESULT InsertSplitter(TiXmlElement *pRule);
-  HRESULT InsertAudioDecoder(TiXmlElement *pRule);
-  HRESULT InsertVideoDecoder(TiXmlElement *pRule);
-  HRESULT InsertAudioRenderer();
-  HRESULT InsertAutoLoad();
+
+
+  HRESULT    LoadConfig(CStdString configFile);
+  HRESULT    LoadFilterRules(const CFileItem& pFileItem);
+  HRESULT    InsertSourceFilter(const CFileItem& pFileItem,TiXmlElement *pRule);
+  HRESULT    InsertSplitter(TiXmlElement *pRule);
+  HRESULT    InsertAudioDecoder(TiXmlElement *pRule);
+  HRESULT    InsertVideoDecoder(TiXmlElement *pRule);
+  HRESULT    InsertAudioRenderer();
+  HRESULT    InsertAutoLoad();
+
+
+  CStdString GetVideoDecInfo(){return  m_pStrVideodec;};
+  CStdString GetAudioDecInfo(){return  m_pStrAudiodec;};
+  CStdString GetSourceFilterInfo(){return  m_pStrSource;};
+  CStdString GetSplitterFilterInfo(){return  m_pStrSplitter;};
+  CStdString GetAudioRenderer(){return  m_pStrAudioRenderer;};
 protected:
   CComPtr<IGraphBuilder2>  m_pGraphBuilder;
   CStdString               m_xbmcConfigFilePath;
-  GUID                     m_mpcVideoDecGuid;
+  CStdString               m_pStrVideodec;
+  CStdString               m_pStrAudiodec;
+  CStdString               m_pStrAudioRenderer;
+  CStdString               m_pStrSource;
+  CStdString               m_pStrSplitter;
   CAtlList<CFGFilterFile*> m_configFilter;
   CFile                    m_File;
   CComPtr<IBaseFilter>     m_SourceF;

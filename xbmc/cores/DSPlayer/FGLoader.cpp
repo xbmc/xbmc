@@ -57,7 +57,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
   pWinFilePath = pFileItem.m_strPath;
 
   if ((pWinFilePath.Left(6)).Equals("smb://",false))
-	pWinFilePath.Replace("smb://","\\\\");
+	  pWinFilePath.Replace("smb://","\\\\");
 
   if ((pWinFilePath.Left(6)).Equals("rar://",false))
     pForceXbmcSourceFilter = true;
@@ -75,26 +75,28 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
       {
         if(SUCCEEDED(pFGF->Create(&m_SourceF, pUnk)))
           break;
-	    else
-	    {
-          CLog::Log(LOGERROR,"DSPlayer %s Failed to create the source filter",__FUNCTION__);
-          return E_FAIL;
+	      else
+	      {
+        CLog::Log(LOGERROR,"DSPlayer %s Failed to create the source filter",__FUNCTION__);
+        return E_FAIL;
         }
-	  }
-  }
-
-  m_pGraphBuilder->AddFilter(m_SourceF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
-	IFileSourceFilter *pFS = NULL;
-	m_SourceF->QueryInterface(IID_IFileSourceFilter, (void**)&pFS);
+	    }
+    }
+  
+  
+    m_pGraphBuilder->AddFilter(m_SourceF,pFGF->GetName().c_str());
+    g_charsetConverter.wToUTF8(pFGF->GetName(),m_pStrSource);
+	  IFileSourceFilter *pFS = NULL;
+	  m_SourceF->QueryInterface(IID_IFileSourceFilter, (void**)&pFS);
     CStdStringW strFileW;
     g_charsetConverter.subtitleCharsetToW(pWinFilePath,strFileW);
     hr = pFS->Load(strFileW.c_str(), NULL);
     //If the source filter is the splitter set the splitter the same as source
-	if (DShowUtil::IsSplitter(m_SourceF,false))
-	{
+	  if (DShowUtil::IsSplitter(m_SourceF,false))
+	  {
       m_SplitterF = m_SourceF;
-	}
-	return hr;
+    }
+	  return hr;
   }
   else
   {
@@ -113,6 +115,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
     
       m_SourceF = pSrc;
       m_pGraphBuilder->AddFilter(m_SourceF, L"XBMC File Source");
+      m_pStrSource = CStdString("XBMC File Source");
       return hr;
     }
     return hr;
@@ -139,7 +142,8 @@ HRESULT CFGLoader::InsertSplitter(TiXmlElement *pRule)
 	}
   }
 
-  m_pGraphBuilder->AddFilter(m_SplitterF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
+  m_pGraphBuilder->AddFilter(m_SplitterF,pFGF->GetName().c_str());
+  g_charsetConverter.wToUTF8(pFGF->GetName(),m_pStrSplitter);
   hr = ::ConnectFilters(m_pGraphBuilder,m_SourceF,m_SplitterF);
   //If the splitter successully connected to the source
   if ( SUCCEEDED( hr ) )
@@ -172,7 +176,10 @@ HRESULT CFGLoader::InsertAudioDecoder(TiXmlElement *pRule)
       }
 	}
   }
-  m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
+  m_pGraphBuilder->AddFilter(ppBF,pFGF->GetName().c_str());
+  g_charsetConverter.wToUTF8(pFGF->GetName(),m_pStrAudiodec);
+
+  
   ppBF.Release();
   CLog::Log(LOGDEBUG,"DSPlayer %s Sucessfully added the audio decoder filter",__FUNCTION__);
   return hr;
@@ -198,7 +205,8 @@ HRESULT CFGLoader::InsertVideoDecoder(TiXmlElement *pRule)
       }
     }
   }
-  m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
+  m_pGraphBuilder->AddFilter(ppBF,pFGF->GetName().c_str());
+  g_charsetConverter.wToUTF8(pFGF->GetName(),m_pStrVideodec);
   ppBF.Release();
   CLog::Log(LOGDEBUG,"DSPlayer %s Sucessfully added the video decoder filter",__FUNCTION__);
   return hr;
@@ -230,6 +238,7 @@ HRESULT CFGLoader::InsertAudioRenderer()
     currentGuid = DShowUtil::CStringFromGUID(CLSID_DSoundRender);
     currentName.Format("Default DirectSound Device");
   }
+  m_pStrAudioRenderer = currentName;
   pFGF = new CFGFilterRegistry(DShowUtil::GUIDFromCString(currentGuid));
   hr = pFGF->Create(&ppBF, pUnk);
   hr = m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(currentName));
@@ -251,7 +260,7 @@ HRESULT CFGLoader::InsertAutoLoad()
     {
       if (SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
 	    {
-        m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(pFGF->GetXFilterName().c_str()).c_str());
+        m_pGraphBuilder->AddFilter(ppBF,pFGF->GetName().c_str());
         ppBF = NULL;
 	    }
 	    else
@@ -336,13 +345,10 @@ HRESULT CFGLoader::LoadConfig(CStdString configFile)
   TiXmlElement* graphConfigRoot = graphConfigXml.RootElement();
   if ( !graphConfigRoot)
     return false;
-  CStdString strFPath;
-  CStdString strFGuid;
-  CStdString strFAutoLoad;
-  CStdString strFileType;
-  CStdString strTrimedPath;
-  CStdString strTmpFilterName;
-  CStdString strTmpFilterType;
+  CStdString strFPath, strFGuid, strFAutoLoad, strFileType;
+  CStdString strTmpFilterName, strTmpFilterType,strTmpOsdName;
+  CStdStringW strTmpOsdNameW;
+
   CFGFilterFile* pFGF;
   TiXmlElement *pFilters = graphConfigRoot->FirstChildElement("filters");
   pFilters = pFilters->FirstChildElement("filter");
@@ -350,6 +356,8 @@ HRESULT CFGLoader::LoadConfig(CStdString configFile)
   {
     strTmpFilterName = pFilters->Attribute("name");
     strTmpFilterType = pFilters->Attribute("type");
+    XMLUtils::GetString(pFilters,"osdname",strTmpOsdName);
+    g_charsetConverter.subtitleCharsetToW(strTmpOsdName,strTmpOsdNameW);
     if (XMLUtils::GetString(pFilters,"path",strFPath))
 	  {
 		  CStdString strPath2;
@@ -359,16 +367,14 @@ HRESULT CFGLoader::LoadConfig(CStdString configFile)
 
 		  XMLUtils::GetString(pFilters,"guid",strFGuid);
 		  XMLUtils::GetString(pFilters,"filetype",strFileType);
-		  pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,L"",MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
-		  if (strTmpFilterName.Equals("mpcvideodec",false))
-		    m_mpcVideoDecGuid = DShowUtil::GUIDFromCString(strFGuid);
+		  pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,strTmpOsdNameW.c_str(),MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
 	  }
 	  else
 	  {
       XMLUtils::GetString(pFilters,"guid",strFGuid);
       XMLUtils::GetString(pFilters,"filetype",strFileType);
 	    strFPath = DShowUtil::GetFilterPath(strFGuid);
-	    pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,L"",MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
+	    pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,strTmpOsdNameW.c_str(),MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
 	  }
     if (XMLUtils::GetString(pFilters,"alwaysload",strFAutoLoad))
 	  {

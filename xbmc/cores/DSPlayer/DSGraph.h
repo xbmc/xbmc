@@ -113,7 +113,7 @@ public:
 
 //INFORMATION REQUESTED FOR THE GUI
   std::string GetGeneralInfo();
-  std::string GetAudioInfo() { return m_VideoInfo.codec_audio.c_str(); };
+  std::string GetAudioInfo();
   std::string GetVideoInfo();
 
   
@@ -157,12 +157,23 @@ protected:
       time_total    = 0;
       codec_video   = "";
       codec_audio   = "";
-	  dxva_info     ="";
-	  time_format   = GUID_NULL;
+	    dxva_info     = "";
+      filter_audio_dec = "";
+      filter_audio_renderer = "";
+      filter_video_dec = "";
+      filter_source = "";
+      filter_splitter = "";
+	    time_format   = GUID_NULL;
     }
     double time_total;        // total playback time
     CStdString codec_video;
     CStdString codec_audio;
+
+    CStdString filter_audio_dec;
+    CStdString filter_audio_renderer;
+    CStdString filter_video_dec;
+    CStdString filter_source;
+    CStdString filter_splitter;
     CStdString dxva_info;
 	GUID time_format;
   } m_VideoInfo;

@@ -42,6 +42,7 @@ interface IGraphBuilder2 : public IFilterGraph2
 	STDMETHOD(AddToROT) () = 0;
 	STDMETHOD(RemoveFromROT) () = 0;
 	STDMETHOD(RenderFileXbmc) (const CFileItem& pFileItem) = 0;
+  STDMETHOD(GetFileInfo) (CStdString* sourceInfo,CStdString* splitterInfo,CStdString* audioInfo,CStdString* videoInfo,CStdString* audioRenderer) = 0;
 };
 
 // private use only

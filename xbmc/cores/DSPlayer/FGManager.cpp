@@ -469,6 +469,16 @@ STDMETHODIMP CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   
 }
 
+STDMETHODIMP CFGManager::GetFileInfo(CStdString* sourceInfo,CStdString* splitterInfo,CStdString* audioInfo,CStdString* videoInfo,CStdString* audioRenderer)
+{
+  *sourceInfo = m_CfgLoader->GetSourceFilterInfo();
+  *splitterInfo = m_CfgLoader->GetSplitterFilterInfo();
+  *audioInfo = m_CfgLoader->GetAudioDecInfo();
+  *videoInfo = m_CfgLoader->GetVideoDecInfo();
+  *audioRenderer = m_CfgLoader->GetAudioRenderer();
+  return S_OK;
+}
+
 STDMETHODIMP CFGManager::Abort()
 {
   CAutoLock cAutoLock(this);
