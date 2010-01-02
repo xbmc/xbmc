@@ -58,18 +58,18 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
     StringUtils::RemoveCRLF(strBuffer);
 
-    struct ftpparse lp = {};
-    if (ftpparse(&lp, (char*)strBuffer.c_str(), strBuffer.size()) == 1)
+    CFTPParse parse;
+    if (parse.FTPParse(strBuffer))
     {
-      if( lp.namelen == 0 )
+      if( parse.getName().length() == 0 )
         continue;
 
-      if( lp.flagtrycwd == 0 && lp.flagtryretr == 0 )
+      if( parse.getFlagtrycwd() == 0 && parse.getFlagtryretr() == 0 )
         continue;
 
-      /* buffer name as it's not allways null terminated */
+      /* buffer name */
       CStdString name;
-      name.assign(lp.name, lp.namelen);
+      name.assign(parse.getName());
 
       if( name.Equals("..") || name.Equals(".") )
         continue;
@@ -81,7 +81,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       CFileItemPtr pItem(new CFileItem(name));
 
       pItem->m_strPath = path + name;
-      pItem->m_bIsFolder = (bool)(lp.flagtrycwd != 0);
+      pItem->m_bIsFolder = (bool)(parse.getFlagtrycwd() != 0);
       if (pItem->m_bIsFolder)
         CUtil::AddSlashAtEnd(pItem->m_strPath);
 
@@ -89,8 +89,8 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       url.SetFileName(pItem->m_strPath);
       pItem->m_strPath = url.Get();
 
-      pItem->m_dwSize = lp.size;
-      pItem->m_dateTime=lp.mtime;
+      pItem->m_dwSize = parse.getSize();
+      pItem->m_dateTime=parse.getTime();
 
       items.Add(pItem);
     }

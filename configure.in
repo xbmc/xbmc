@@ -357,6 +357,10 @@ PKG_CHECK_MODULES([PCRE],       [libpcre],
                   [INCLUDES+=" $PCRE_CFLAGS"; LIBS+=" $PCRE_LIBS"]; \
                   AC_DEFINE([HAVE_LIBPCRE],[1],["Define to 1 if libpcre is installed"]),
                   AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([PCRECPP],    [libpcrecpp],
+                  [INCLUDES+=" $PCRECPP_CFLAGS"; LIBS+=" $PCRECPP_LIBS"]; \
+                  AC_DEFINE([HAVE_LIBPCRECPP],[1],["Define to 1 if libpcrecpp is installed"]),
+                  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([CDIO],       [libcdio],
                   [INCLUDES+=" $CDIO_CFLAGS"; LIBS+=" $CDIO_LIBS"],
                   AC_MSG_ERROR($missing_library))

@@ -1,450 +1,500 @@
-//-----------------------------------------------------------------------------------
-// library for parsing FTP LIST responses [ftpparse.c, FTPParse.h: ]
-// D. J. Bernstein, djb@cr.yp.to http://cr.yp.to/FTPParse.html
-//
-// Commercial use is fine, if you let me know what programs you're using this in.
-// Currently covered formats:
-//        EPLF.                             WFTPD.
-//        UNIX ls, with or without gid.     NetPresenz (Mac).
-//        Microsoft FTP Service.            NetWare.
-//        Windows NT FTP Server.            MSDOS.
-//        VMS.
-//
-// Definitely not covered:
-// Long VMS filenames, with information split across two lines.
-// NCSA Telnet FTP server. Has LIST = NLST (and bad NLST for directories).
-//-----------------------------------------------------------------------------------
+/*
+ *      Copyright (C) 2010 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
-#include <time.h>
+#include <pcrecpp.h>
+#include <cmath>
 #include "FTPParse.h"
 
-
-static long totai(long year,long month,long mday)
+CFTPParse::CFTPParse()
 {
-  long result;
-  if (month >= 2) month -= 2;
-  else { month += 10; --year; }
-  result = (mday - 1) * 10 + 5 + 306 * month;
-  result /= 10;
-  if (result == 365) { year -= 3; result = 1460; }
-  else result += 365 * (year % 4);
-  year /= 4;
-  result += 1461 * (year % 25);
-  year /= 25;
-  if (result == 36524) { year -= 3; result = 146096; }
-  else { result += 36524 * (year % 4); }
-  year /= 4;
-  result += 146097 * (year - 5);
-  result += 11017;
-  return result * 86400;
+  m_name = "";
+  m_flagtrycwd = 0;
+  m_flagtryretr = 0;
+  m_size = 0;
+  m_time = 0;
 }
 
-static int flagneedbase = 1;
-static time_t base; /* time() value on this OS at the beginning of 1970 TAI */
-static long now; /* current time */
-static int flagneedcurrentyear = 1;
-static long currentyear; /* approximation to current year */
-static const char *months[12] = {"jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"} ;
-static void initbase(void)
+string CFTPParse::getName()
 {
-  struct tm *t;
-  if (!flagneedbase) return;
-
-  base = 0;
-  t = gmtime(&base);
-  base = -(totai(t->tm_year + 1900,t->tm_mon,t->tm_mday) + t->tm_hour * 3600 + t->tm_min * 60 + t->tm_sec);
-  /* assumes the right time_t, counting seconds. */
-  /* base may be slightly off if time_t counts non-leap seconds. */
-  flagneedbase = 0;
+  return m_name;
 }
 
-static void initnow(void)
+int CFTPParse::getFlagtrycwd()
 {
-  long day;
-  long year;
+  return m_flagtrycwd;
+}
 
-  initbase();
-  now = time((time_t *) 0) - base;
+int CFTPParse::getFlagtryretr()
+{
+  return m_flagtryretr;
+}
 
-  if (flagneedcurrentyear) {
-    day = now / 86400;
-    if ((now % 86400) < 0) --day;
-    day -= 11017;
-    year = 5 + day / 146097;
-    day = day % 146097;
-    if (day < 0) { day += 146097; --year; }
-    year *= 4;
-    if (day == 146096) { year += 3; day = 36524; }
-    else { year += day / 36524; day %= 36524; }
-    year *= 25;
-    year += day / 1461;
-    day %= 1461;
-    year *= 4;
-    if (day == 1460) { year += 3; day = 365; }
-    else { year += day / 365; day %= 365; }
-    day *= 10;
-    if ((day + 5) / 306 >= 10) ++year;
-    currentyear = year;
-    flagneedcurrentyear = 0;
+long CFTPParse::getSize()
+{
+  return m_size;
+}
+
+time_t CFTPParse::getTime()
+{
+  return m_time;
+}
+
+void CFTPParse::setTime(string str)
+{
+  /* Variables used to capture patterns via the regexes */
+  string month;
+  string day;
+  string year;
+  string time_of_day;
+  string hour;
+  string minute;
+  string second;
+  string am_or_pm;
+
+  /* time struct used to set the time_t variable */
+  struct tm time_struct = {};
+
+  /* Regex to read Unix, NetWare and NetPresenz time format */
+  pcrecpp::RE unix_re("^([A-Za-z]{3})" // month
+    "\\s+(\\d{1,2})" // day of month
+    "\\s+([:\\d]{4,5})$" // time of day or year
+  );
+
+  /* Regex to read MultiNet time format */
+  pcrecpp::RE multinet_re("^(\\d{1,2})" // day of month
+    "-([A-Za-z]{3})" // month
+    "-(\\d{4})" // year
+    "\\s+(\\d{2})" // hour
+    ":(\\d{2})" // minute
+    "(:(\\d{2}))?$" // second
+  );
+
+  /* Regex to read MSDOS time format */
+  pcrecpp::RE msdos_re("^(\\d{2})" // month
+    "-(\\d{2})" // day of month
+    "-(\\d{2})" // year
+    "\\s+(\\d{2})" // hour
+    ":(\\d{2})" // minute
+    "([AP]M)$" // AM or PM
+  );
+
+  if (unix_re.FullMatch(str, &month, &day, &year))
+  {
+    /* set the month */
+    if (pcrecpp::RE("jan",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 0;
+    else if (pcrecpp::RE("feb",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 1;
+    else if (pcrecpp::RE("mar",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 2;
+    else if (pcrecpp::RE("apr",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 3;
+    else if (pcrecpp::RE("may",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 4;
+    else if (pcrecpp::RE("jun",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 5;
+    else if (pcrecpp::RE("jul",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 6;
+    else if (pcrecpp::RE("aug",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 7;
+    else if (pcrecpp::RE("sep",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 8;
+    else if (pcrecpp::RE("oct",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 9;
+    else if (pcrecpp::RE("nov",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 10;
+    else if (pcrecpp::RE("dec",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 11;
+
+    /* set the day of the month */
+    time_struct.tm_mday = atoi(day.c_str());
+
+    time_t t = time(NULL);
+    struct tm *current_time = localtime(&t);
+    if (pcrecpp::RE("(\\d{2}):(\\d{2})").FullMatch(year, &hour, &minute))
+    {
+      /* set the hour and minute */
+      time_struct.tm_hour = atoi(hour.c_str());
+      time_struct.tm_min = atoi(minute.c_str());
+
+      /* set the year */
+      if ((current_time->tm_mon - time_struct.tm_mon < 0) ||
+         ((current_time->tm_mon - time_struct.tm_mon == 0) &&
+          (current_time->tm_mday - time_struct.tm_mday < 0)))
+        time_struct.tm_year = current_time->tm_year - 1;
+      else
+        time_struct.tm_year = current_time->tm_year;
+    }
+    else
+    {
+      /* set the year */
+      time_struct.tm_year = atoi(year.c_str()) - 1900;
+    }
+
+    /* set the day of the week */
+    time_struct.tm_wday = getDayOfWeek(time_struct.tm_mon + 1,
+                                   time_struct.tm_mday,
+                                   time_struct.tm_year + 1900);
   }
-}
+  else if (multinet_re.FullMatch(str, &day, &month, &year,
+                            &hour, &minute, (void*)NULL, &second))
+  {
+    /* set the month */
+    if (pcrecpp::RE("jan",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 0;
+    else if (pcrecpp::RE("feb",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 1;
+    else if (pcrecpp::RE("mar",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 2;
+    else if (pcrecpp::RE("apr",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 3;
+    else if (pcrecpp::RE("may",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 4;
+    else if (pcrecpp::RE("jun",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 5;
+    else if (pcrecpp::RE("jul",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 6;
+    else if (pcrecpp::RE("aug",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 7;
+    else if (pcrecpp::RE("sep",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 8;
+    else if (pcrecpp::RE("oct",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 9;
+    else if (pcrecpp::RE("nov",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 10;
+    else if (pcrecpp::RE("dec",
+        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
+      time_struct.tm_mon = 11;
 
-/* UNIX ls does not show the year for dates in the last six months. */
-/* So we have to guess the year. */
-/* Apparently NetWare uses ``twelve months'' instead of ``six months''; ugh. */
-/* Some versions of ls also fail to show the year for future dates. */
-static long guesstai(long month,long mday)
-{
-  long year;
-  long t;
+    /* set the day of the month and year */
+    time_struct.tm_mday = atoi(day.c_str());
+    time_struct.tm_year = atoi(year.c_str()) - 1900;
 
-  initnow();
+    /* set the hour and minute */
+    time_struct.tm_hour = atoi(hour.c_str());
+    time_struct.tm_min = atoi(minute.c_str());
 
-  for (year = currentyear - 1;year < currentyear + 100;++year) {
-    t = totai(year,month,mday);
-    if (now - t < 350 * 86400)
-      return t;
+    /* set the second if given*/
+    if (second.length() > 0)
+      time_struct.tm_sec = atoi(second.c_str());
+
+    /* set the day of the week */
+    time_struct.tm_wday = getDayOfWeek(time_struct.tm_mon + 1,
+                                   time_struct.tm_mday,
+                                   time_struct.tm_year + 1900);
   }
-  return currentyear; // return something
-}
+  else if (msdos_re.FullMatch(str, &month, &day,
+                              &year, &hour, &minute, &am_or_pm))
+  {
+    /* set the month and the day of the month */
+    time_struct.tm_mon = atoi(month.c_str()) - 1;
+    time_struct.tm_mday = atoi(day.c_str());
 
-static int check(char *buf,const char *monthname)
-{
-  if ((buf[0] != monthname[0]) && (buf[0] != monthname[0] - 32)) return 0;
-  if ((buf[1] != monthname[1]) && (buf[1] != monthname[1] - 32)) return 0;
-  if ((buf[2] != monthname[2]) && (buf[2] != monthname[2] - 32)) return 0;
-  return 1;
-}
-static int getmonth(char *buf,int len)
-{
-  int i;
-  if (len == 3)
-    for (i = 0;i < 12;++i)
-      if (check(buf,months[i])) return i;
-  return -1;
-}
+    /* set the year */
+    time_struct.tm_year = atoi(year.c_str());
+    if (time_struct.tm_year < 70)
+      time_struct.tm_year += 100;
 
-static long getlong(char *buf,int len)
-{
-  long u = 0;
-  while (len-- > 0)
-    u = u * 10 + (*buf++ - '0');
-  return u;
-}
+    /* set the hour */
+    time_struct.tm_hour = atoi(hour.c_str());
+    if (time_struct.tm_hour == 12)
+      time_struct.tm_hour -= 12;
+    if (pcrecpp::RE("PM").FullMatch(am_or_pm))
+      time_struct.tm_hour += 12;
 
-int ftpparse(struct ftpparse *fp,char *buf,int len)
-{
-  int i;
-  int j;
-  int state;
-  long size;
-  long year;
-  long month;
-  long mday;
-  long hour;
-  long minute;
+    /* set the minute */
+    time_struct.tm_min = atoi(minute.c_str());
 
-  size = 0;
-  month = 0;
-  mday = 0;
-
-  fp->name = 0;
-  fp->namelen = 0;
-  fp->flagtrycwd = 0;
-  fp->flagtryretr = 0;
-  fp->sizetype = FTPPARSE_SIZE_UNKNOWN;
-  fp->size = 0;
-  fp->mtimetype = FTPPARSE_MTIME_UNKNOWN;
-  fp->mtime = 0;
-  fp->idtype = FTPPARSE_ID_UNKNOWN;
-  fp->id = 0;
-  fp->idlen = 0;
-
-  if (len < 2) /* an empty name in EPLF, with no info, could be 2 chars */
-    return 0;
-
-  switch(*buf) {
-    /* see http://pobox.com/~djb/proto/eplf.txt */
-    /* "+i8388621.29609,m824255902,/,\tdev" */
-    /* "+i8388621.44468,m839956783,r,s10376,\tRFCEPLF" */
-    case '+':
-      i = 1;
-      for (j = 1;j < len;++j) {
-        if (buf[j] == 9) {
-          fp->name = buf + j + 1;
-          fp->namelen = len - j - 1;
-          return 1;
-        }
-        if (buf[j] == ',') {
-          switch(buf[i]) {
-            case '/':
-              fp->flagtrycwd = 1;
-              break;
-            case 'r':
-              fp->flagtryretr = 1;
-              break;
-            case 's':
-              fp->sizetype = FTPPARSE_SIZE_BINARY;
-              fp->size = getlong(buf + i + 1,j - i - 1);
-              break;
-            case 'm':
-              fp->mtimetype = FTPPARSE_MTIME_LOCAL;
-              initbase();
-              fp->mtime = base + getlong(buf + i + 1,j - i - 1);
-              break;
-            case 'i':
-              fp->idtype = FTPPARSE_ID_FULL;
-              fp->id = buf + i + 1;
-              fp->idlen = j - i - 1;
-          }
-          i = j + 1;
-        }
-      }
-      return 0;
-
-    /* UNIX-style listing, without inum and without blocks */
-    /* "-rw-r--r--   1 root     other        531 Jan 29 03:26 README" */
-    /* "dr-xr-xr-x   2 root     other        512 Apr  8  1994 etc" */
-    /* "dr-xr-xr-x   2 root     512 Apr  8  1994 etc" */
-    /* "lrwxrwxrwx   1 root     other          7 Jan 25 00:17 bin -> usr/bin" */
-    /* Also produced by Microsoft's FTP servers for Windows: */
-    /* "----------   1 owner    group         1803128 Jul 10 10:18 ls-lR.Z" */
-    /* "d---------   1 owner    group               0 May  9 19:45 Softlib" */
-    /* Also WFTPD for MSDOS: */
-    /* "-rwxrwxrwx   1 noone    nogroup      322 Aug 19  1996 message.ftp" */
-    /* Also NetWare: */
-    /* "d [R----F--] supervisor            512       Jan 16 18:53    login" */
-    /* "- [R----F--] rhesus             214059       Oct 20 15:27    cx.exe" */
-    /* Also NetPresenz for the Mac: */
-    /* "-------r--         326  1391972  1392298 Nov 22  1995 MegaPhone.sit" */
-    /* "drwxrwxr-x               folder        2 May 10  1996 network" */
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'l':
-    case 'p':
-    case 's':
-    case '-':
-
-      if (*buf == 'd') fp->flagtrycwd = 1;
-      if (*buf == '-') fp->flagtryretr = 1;
-      if (*buf == 'l') fp->flagtrycwd = fp->flagtryretr = 1;
-
-      state = 1;
-      i = 0;
-      for (j = 1;j < len;++j)
-        if ((buf[j] == ' ') && (buf[j - 1] != ' ')) {
-          switch(state) {
-            case 1: /* skipping perm */
-              state = 2;
-              break;
-            case 2: /* skipping nlink */
-              state = 3;
-              if ((j - i == 6) && (buf[i] == 'f')) /* for NetPresenz */
-                state = 4;
-              break;
-            case 3: /* skipping uid */
-              state = 4;
-              break;
-            case 4: /* getting tentative size */
-              size = getlong(buf + i,j - i);
-              state = 5;
-              break;
-            case 5: /* searching for month, otherwise getting tentative size */
-              month = getmonth(buf + i,j - i);
-              if (month >= 0)
-                state = 6;
-              else
-                size = getlong(buf + i,j - i);
-              break;
-            case 6: /* have size and month */
-              mday = getlong(buf + i,j - i);
-              state = 7;
-              break;
-            case 7: /* have size, month, mday */
-              if ((j - i == 4) && (buf[i + 1] == ':')) {
-                hour = getlong(buf + i,1);
-                minute = getlong(buf + i + 2,2);
-                fp->mtimetype = FTPPARSE_MTIME_REMOTEMINUTE;
-                initbase();
-                fp->mtime = base + guesstai(month,mday) + hour * 3600 + minute * 60;
-              } else if ((j - i == 5) && (buf[i + 2] == ':')) {
-                hour = getlong(buf + i,2);
-                minute = getlong(buf + i + 3,2);
-                fp->mtimetype = FTPPARSE_MTIME_REMOTEMINUTE;
-                initbase();
-                fp->mtime = base + guesstai(month,mday) + hour * 3600 + minute * 60;
-              }
-              else if (j - i >= 4) {
-                year = getlong(buf + i,j - i);
-                fp->mtimetype = FTPPARSE_MTIME_REMOTEDAY;
-                initbase();
-                fp->mtime = base + totai(year,month,mday);
-              }
-              else
-                return 0;
-              fp->name = buf + j + 1;
-              fp->namelen = len - j - 1;
-              state = 8;
-              break;
-            case 8: /* twiddling thumbs */
-              break;
-          }
-          i = j + 1;
-          while ((i < len) && (buf[i] == ' ')) ++i;
-        }
-
-      if (state != 8)
-        return 0;
-
-      fp->size = size;
-      fp->sizetype = FTPPARSE_SIZE_BINARY;
-
-      if (*buf == 'l')
-        for (i = 0;i + 3 < fp->namelen;++i)
-          if (fp->name[i] == ' ')
-            if (fp->name[i + 1] == '-')
-              if (fp->name[i + 2] == '>')
-                if (fp->name[i + 3] == ' ') {
-                  fp->namelen = i;
-                  break;
-                }
-
-      /* eliminate extra NetWare spaces */
-      if ((buf[1] == ' ') || (buf[1] == '['))
-        if (fp->namelen > 3)
-          if (fp->name[0] == ' ')
-            if (fp->name[1] == ' ')
-              if (fp->name[2] == ' ') {
-                fp->name += 3;
-                fp->namelen -= 3;
-              }
-
-      // remove white spaces of file name
-      while (fp->name && fp->name[0] == ' ')
-      {
-        fp->name++;
-        fp->namelen--;
-      }
-
-      return 1;
+    /* set the day of the week */
+    time_struct.tm_wday = getDayOfWeek(time_struct.tm_mon + 1,
+                                   time_struct.tm_mday,
+                                   time_struct.tm_year + 1900);
   }
 
-  /* MultiNet (some spaces removed from examples) */
-  /* "00README.TXT;1      2 30-DEC-1996 17:44 [SYSTEM] (RWED,RWED,RE,RE)" */
-  /* "CORE.DIR;1          1  8-SEP-1996 16:09 [SYSTEM] (RWE,RWE,RE,RE)" */
-  /* and non-MutliNet VMS: */
-  /* "CII-MANUAL.TEX;1  213/216  29-JAN-1996 03:33:12  [ANONYMOU,ANONYMOUS]   (RWED,RWED,,)" */
-  for (i = 0;i < len;++i)
-    if (buf[i] == ';')
-      break;
-  if (i < len) {
-    fp->name = buf;
-    fp->namelen = i;
-    if (i > 4)
-      if (buf[i - 4] == '.')
-        if (buf[i - 3] == 'D')
-          if (buf[i - 2] == 'I')
-            if (buf[i - 1] == 'R') {
-              fp->namelen -= 4;
-              fp->flagtrycwd = 1;
-            }
-    if (!fp->flagtrycwd)
-      fp->flagtryretr = 1;
-    while (buf[i] != ' ') if (++i == len) return 0;
-    while (buf[i] == ' ') if (++i == len) return 0;
-    while (buf[i] != ' ') if (++i == len) return 0;
-    while (buf[i] == ' ') if (++i == len) return 0;
-    j = i;
-    while (buf[j] != '-') if (++j == len) return 0;
-    mday = getlong(buf + i,j - i);
-    while (buf[j] == '-') if (++j == len) return 0;
-    i = j;
-    while (buf[j] != '-') if (++j == len) return 0;
-    month = getmonth(buf + i,j - i);
-    if (month < 0) return 0;
-    while (buf[j] == '-') if (++j == len) return 0;
-    i = j;
-    while (buf[j] != ' ') if (++j == len) return 0;
-    year = getlong(buf + i,j - i);
-    while (buf[j] == ' ') if (++j == len) return 0;
-    i = j;
-    while (buf[j] != ':') if (++j == len) return 0;
-    hour = getlong(buf + i,j - i);
-    while (buf[j] == ':') if (++j == len) return 0;
-    i = j;
-    while ((buf[j] != ':') && (buf[j] != ' ')) if (++j == len) return 0;
-    minute = getlong(buf + i,j - i);
+  /* now set m_time */
+  m_time = mktime(&time_struct);
+}
 
-    fp->mtimetype = FTPPARSE_MTIME_REMOTEMINUTE;
-    initbase();
-    fp->mtime = base + totai(year,month,mday) + hour * 3600 + minute * 60;
+int CFTPParse::getDayOfWeek(int month, int date, int year)
+{
+  /* Here we use the Doomsday rule to calculate the day of the week */
+
+  /* First determine the anchor day */
+  int anchor;
+  if (year >= 1900 && year < 2000)
+    anchor = 3;
+  else if (year >= 2000 && year < 2100)
+    anchor = 2;
+  else if (year >= 2100 && year < 2200)
+    anchor = 0;
+  else if (year >= 2200 && year < 2300)
+    anchor = 5;
+  else // must have been given an invalid year :-/
+    return -1;
+
+  /* Now determine the doomsday */
+  int y = year % 100;
+  int dday =
+    (((int)floor(y/12) + (y % 12) + (int)floor((y % 12)/4)) % 7) + anchor;
+
+  /* Determine if the given year is a leap year */
+  int leap_year = 0;
+  if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0))
+    leap_year = 1;
+
+  /* Now select a doomsday for the given month */
+  int mdday;
+  if (month == 1)
+  {
+    if (leap_year)
+      mdday = 4;
+    else
+      mdday = 3;
+  }
+  if (month == 2)
+  {
+    if (leap_year)
+      mdday = 1;
+    else
+      mdday = 7;
+  }
+  if (month == 3)
+    mdday = 7;
+  if (month == 4)
+    mdday = 4;
+  if (month == 5)
+    mdday = 9;
+  if (month == 6)
+    mdday = 6;
+  if (month == 7)
+    mdday = 11;
+  if (month == 8)
+    mdday = 8;
+  if (month == 9)
+    mdday = 5;
+  if (month == 10)
+    mdday = 10;
+  if (month == 11)
+    mdday = 9;
+  if (month == 12)
+    mdday = 12;
+
+  /* Now calculate the day of the week
+   * Sunday = 0, Monday = 1, Tuesday = 2, Wednesday = 3, Thursday = 4,
+   * Friday = 5, Saturday = 6.
+   */
+  int day_of_week = ((date - 1) % 7) - ((mdday - 1) % 7) + dday;
+  if (day_of_week >= 7)
+    day_of_week -= 7;
+
+  return day_of_week;
+}
+
+int CFTPParse::FTPParse(string str)
+{
+  /* Various variable to capture patterns via the regexes */
+  string permissions;
+  string link_count;
+  string owner;
+  string group;
+  string size;
+  string date;
+  string name;
+  string type;
+  string stuff;
+  string facts;
+  string version;
+  string file_id;
+
+  /* Regex for standard Unix listing formats */
+  pcrecpp::RE unix_re("^([-bcdlps])" // type
+    "([-rwxXsStT]{9})" // permissions
+    "\\s+(\\d+)" // hard link count
+    "\\s+(\\w+)" // owner
+    "\\s+(\\w+)" // group
+    "\\s+(\\d+)" // size
+    "\\s+([A-Za-z]{3}\\s+\\d{1,2}\\s+[:\\d]{4,5})" // modification date
+    "\\s+(.+)$" // name
+  );
+
+  /* Regex for NetWare listing formats */
+  /* See http://www.novell.com/documentation/oes/ftp_enu/data/a3ep22p.html#fbhbaijf */
+  pcrecpp::RE netware_re("^([-d])" // type
+    "\\s+(\\[[-SRWCIEMFA]{8}\\])" // rights
+    "\\s+(\\w+)" // owner
+    "\\s+(\\d+)" // size
+    "\\s+([A-Za-z]{3}\\s+\\d{1,2}\\s+[:\\d]{4,5})" // time
+    "\\s+(.+)$" // name
+  );
+
+  /* Regex for NetPresenz */
+  /* See http://files.stairways.com/other/ftp-list-specs-info.txt */
+  /* Here we will capture permissions and size if given */
+  pcrecpp::RE netpresenz_re("^([-dl])" // type
+    "([-rwx]{9}|)" // permissions
+    "\\s+(.*)" // stuff
+    "\\s+(\\d+|)" // size
+    "\\s+([A-Za-z]{3}\\s+\\d{1,2}\\s+[:\\d]{4,5})" // modification date
+    "\\s+(.+)$" // name
+  );
+
+  /* Regex for EPLF */
+  /* See http://cr.yp.to/ftp/list/eplf.html */
+  /* SAVE: "(/,|r,|s\\d+,|m\\d+,|i[\\d!#@$%^&*()]+(\\.[\\d!#@$%^&*()]+|),)+" */
+  pcrecpp::RE eplf_re("^\\+" // initial "plus" sign
+    "([^\\s]+)" // facts
+    "\\s(.+)$" // name
+  );
+
+  /* Regex for MultiNet */
+  /* Best documentation found was
+   * http://www-sld.slac.stanford.edu/SLDWWW/workbook/vms_files.html */
+  pcrecpp::RE multinet_re("^([^;]+)" // name
+    ";(\\d+)" // version
+    "\\s+([\\d/]+)" // file id
+    "\\s+(\\d{1,2}-[A-Za-z]{3}-\\d{4}\\s+\\d{2}:\\d{2}(:\\d{2})?)" // date
+    "\\s+\\[([^\\]]+)\\]" // owner,group
+    "\\s+\\(([^\\)]+)\\)$" // permissions
+  );
+
+  /* Regex for MSDOS */
+  pcrecpp::RE msdos_re("^(\\d{2}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}[AP]M)" // date
+    "\\s+(<DIR>|[\\d]+)" // dir or size
+    "\\s+(.+)$" // name
+  );
+
+  if (unix_re.FullMatch(str, &type, &permissions, &link_count, &owner, &group, &size, &date, &name))
+  {
+    m_name = name;
+    m_size = strtol(size.c_str(), NULL, 0);
+    if (pcrecpp::RE("d").FullMatch(type))
+      m_flagtrycwd = 1;
+    if (pcrecpp::RE("-").FullMatch(type))
+      m_flagtryretr = 1;
+    if (pcrecpp::RE("l").FullMatch(type))
+      m_flagtrycwd = m_flagtryretr = 1;
+    setTime(date);
 
     return 1;
   }
-
-  /* MSDOS format */
-  /* 04-27-00  09:09PM       <DIR>          licensed */
-  /* 07-18-00  10:16AM       <DIR>          pub */
-  /* 04-14-00  03:47PM                  589 readme.htm */
-  if ((*buf >= '0') && (*buf <= '9')) {
-    i = 0;
-    j = 0;
-    while (buf[j] != '-') if (++j == len) return 0;
-    month = getlong(buf + i,j - i) - 1;
-    while (buf[j] == '-') if (++j == len) return 0;
-    i = j;
-    while (buf[j] != '-') if (++j == len) return 0;
-    mday = getlong(buf + i,j - i);
-    while (buf[j] == '-') if (++j == len) return 0;
-    i = j;
-    while (buf[j] != ' ') if (++j == len) return 0;
-    year = getlong(buf + i,j - i);
-    if (year < 50) year += 2000;
-    if (year < 1000) year += 1900;
-    while (buf[j] == ' ') if (++j == len) return 0;
-    i = j;
-    while (buf[j] != ':') if (++j == len) return 0;
-    hour = getlong(buf + i,j - i);
-    while (buf[j] == ':') if (++j == len) return 0;
-    i = j;
-    while ((buf[j] != 'A') && (buf[j] != 'P')) if (++j == len) return 0;
-    minute = getlong(buf + i,j - i);
-    if (hour == 12) hour = 0;
-    if (buf[j] == 'A') if (++j == len) return 0;
-    if (buf[j] == 'P') { hour += 12; if (++j == len) return 0; }
-    if (buf[j] == 'M') if (++j == len) return 0;
-
-    while (buf[j] == ' ') if (++j == len) return 0;
-    if (buf[j] == '<') {
-      fp->flagtrycwd = 1;
-      while (buf[j] != ' ') if (++j == len) return 0;
-    }
-    else {
-      i = j;
-      while (buf[j] != ' ') if (++j == len) return 0;
-      fp->size = getlong(buf + i,j - i);
-      fp->sizetype = FTPPARSE_SIZE_BINARY;
-      fp->flagtryretr = 1;
-    }
-    while (buf[j] == ' ') if (++j == len) return 0;
-
-    fp->name = buf + j;
-    fp->namelen = len - j;
-
-    fp->mtimetype = FTPPARSE_MTIME_REMOTEMINUTE;
-    initbase();
-    fp->mtime = base + totai(year,month,mday) + hour * 3600 + minute * 60;
+  if (netware_re.FullMatch(str, &type, &permissions, &owner, &size, &date, &name))
+  {
+    m_name = name;
+    m_size = strtol(size.c_str(), NULL, 0);
+    if (pcrecpp::RE("d").FullMatch(type))
+      m_flagtrycwd = 1;
+    if (pcrecpp::RE("-").FullMatch(type))
+      m_flagtryretr = 1;
+    setTime(date);
 
     return 1;
   }
+  if (netpresenz_re.FullMatch(str, &type, &permissions, &stuff, &size, &date, &name))
+  {
+    m_name = name;
+    m_size = strtol(size.c_str(), NULL, 0);
+    if (pcrecpp::RE("d").FullMatch(type))
+      m_flagtrycwd = 1;
+    if (pcrecpp::RE("-").FullMatch(type))
+      m_flagtryretr = 1;
+    if (pcrecpp::RE("l").FullMatch(type))
+      m_flagtrycwd = m_flagtryretr = 1;
+    setTime(date);
 
-  /* Some useless lines, safely ignored: */
-  /* "Total of 11 Files, 10966 Blocks." (VMS) */
-  /* "total 14786" (UNIX) */
-  /* "DISK$ANONFTP:[ANONYMOUS]" (VMS) */
-  /* "Directory DISK$PCSA:[ANONYM]" (VMS) */
+    return 1;
+  }
+  if (eplf_re.FullMatch(str, &facts, &name))
+  {
+    /* Get the type, size, and date from the facts */
+    pcrecpp::RE("(\\+|,)(r|/),").PartialMatch(facts, (void*)NULL, &type);
+    pcrecpp::RE("(\\+|,)s(\\d+),").PartialMatch(facts, (void*)NULL, &size);
+    pcrecpp::RE("(\\+|,)m(\\d+),").PartialMatch(facts, (void*)NULL, &date);
+
+    m_name = name;
+    m_size = strtol(size.c_str(), NULL, 0);
+    if (pcrecpp::RE("/").FullMatch(type))
+      m_flagtrycwd = 1;
+    if (pcrecpp::RE("r").FullMatch(type))
+      m_flagtryretr = 1;
+    /* eplf stores the date in time_t format already */
+    m_time = atoi(date.c_str());
+
+    return 1;
+  }
+  if (multinet_re.FullMatch(str, &name, &version, &file_id, &date, (void*)NULL, &owner, &permissions))
+  {
+    if (pcrecpp::RE("\\.DIR$").PartialMatch(name))
+    {
+      name.resize(name.size() - 4);
+      m_flagtrycwd = 1;
+    }
+    else
+      m_flagtryretr = 1;
+    m_name = name;
+    setTime(date);
+    /* Multinet doesn't provide a size */
+    m_size = 0;
+
+    return 1;
+  }
+  if (msdos_re.FullMatch(str, &date, &size, &name))
+  {
+    m_name = name;
+    if (pcrecpp::RE("<DIR>").FullMatch(size))
+    {
+      m_flagtrycwd = 1;
+      m_size = 0;
+    }
+    else
+    {
+      m_flagtryretr = 1;
+      m_size = strtol(size.c_str(), NULL, 0);
+    }
+    setTime(date);
+
+    return 1;
+  }
 
   return 0;
 }
-
