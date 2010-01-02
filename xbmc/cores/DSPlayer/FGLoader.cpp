@@ -52,6 +52,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
 {
 
   HRESULT hr = S_OK;
+  bool failedWithFirstSourceFilter = false;
   CStdString pWinFilePath;
   bool pForceXbmcSourceFilter=false;
   pWinFilePath = pFileItem.m_strPath;
@@ -82,8 +83,6 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
         }
 	    }
     }
-  
-  
     m_pGraphBuilder->AddFilter(m_SourceF,pFGF->GetName().c_str());
     g_charsetConverter.wToUTF8(pFGF->GetName(),m_pStrSource);
 	  IFileSourceFilter *pFS = NULL;
@@ -91,14 +90,19 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
     CStdStringW strFileW;
     g_charsetConverter.subtitleCharsetToW(pWinFilePath,strFileW);
     hr = pFS->Load(strFileW.c_str(), NULL);
+    if (SUCCEEDED(hr))
+    {
+      failedWithFirstSourceFilter = true;
     //If the source filter is the splitter set the splitter the same as source
-	  if (DShowUtil::IsSplitter(m_SourceF,false))
-	  {
-      m_SplitterF = m_SourceF;
+	    if (DShowUtil::IsSplitter(m_SourceF,false))
+        m_SplitterF = m_SourceF;
+      return hr;
     }
-	  return hr;
+    
+	  
   }
-  else
+  
+  if (!failedWithFirstSourceFilter)
   {
     
     CLog::Log(LOGNOTICE,"%s DSplayer: Inserting xbmc source filter for this file \"%s\"",__FUNCTION__,pWinFilePath.c_str());
@@ -107,12 +111,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
     if(m_File.Open(pFileItem.m_strPath, READ_TRUNCATED | READ_BUFFERED))
     {
       CComPtr<IBaseFilter> pSrc;
-	  
-      CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File,&pSrc);
-    //CXBMCFileReader* pXBMCReader = new CXBMCFileReader(pXBMCStream, NULL, &hr);
-    //if (!pXBMCReader)
-    //  CLog::Log(LOGERROR,"%s Failed Loading XBMC File Source filter",__FUNCTION__);
-    
+      CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File,&pSrc,&hr);
       m_SourceF = pSrc;
       m_pGraphBuilder->AddFilter(m_SourceF, L"XBMC File Source");
       m_pStrSource = CStdString("XBMC File Source");

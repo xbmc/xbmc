@@ -9,7 +9,7 @@ class CXBMCFileReader;
 class CXBMCFileStream : public CAsyncStream
 {
 public:
-  CXBMCFileStream(CFile *file, IBaseFilter **pBF);
+  CXBMCFileStream(CFile *file, IBaseFilter **pBF,HRESULT *phr);
   HRESULT SetPointer(LONGLONG llPos);
   HRESULT Read(PBYTE pbBuffer, DWORD dwBytesToRead, BOOL bAlign, LPDWORD pdwBytesRead);
   LONGLONG Size(LONGLONG *pSizeAvailable);
