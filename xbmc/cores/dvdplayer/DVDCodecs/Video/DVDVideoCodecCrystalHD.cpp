@@ -55,13 +55,30 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
     CRYSTALHD_CODEC_TYPE codec_type;
     CRYSTALHD_STREAM_TYPE stream_type;
     
-    codec_type = hints.codec;
-    stream_type = CRYSTALHD_STREAM_TYPE_ES;
-    
-    if (hints.codec == CODEC_ID_H264)
-      m_annexbfiltering = init_h264_mp4toannexb_filter(hints);
-    else
-      m_annexbfiltering = false;
+    switch (hints.codec)
+    {
+      case CODEC_ID_MPEG2VIDEO:
+        codec_type = CRYSTALHD_CODEC_ID_MPEG2;
+        stream_type = CRYSTALHD_STREAM_TYPE_ES;
+        m_annexbfiltering = false;
+        m_pFormatName = "bcm-mpeg2";
+      break;
+      case CODEC_ID_H264:
+        codec_type = CRYSTALHD_CODEC_ID_H264;
+        stream_type = CRYSTALHD_STREAM_TYPE_ES;
+        m_annexbfiltering = init_h264_mp4toannexb_filter(hints);
+        m_pFormatName = "bcm-h264";
+      break;
+      case CODEC_ID_VC1:
+        codec_type = CRYSTALHD_CODEC_ID_VC1;
+        stream_type = CRYSTALHD_STREAM_TYPE_ES;
+        m_annexbfiltering = false;
+        m_pFormatName = "bcm-vc1";
+      break;
+      default:
+        return false;
+      break;
+    }
 
     m_Device = CCrystalHD::GetInstance();
     if (!m_Device)

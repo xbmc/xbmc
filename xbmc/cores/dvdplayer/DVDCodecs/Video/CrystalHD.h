@@ -146,7 +146,6 @@ protected:
   bool          m_IsConfigured;
   bool          m_drop_state;
   int           m_ignore_drop_count;
-  const char    *m_pFormatName;
   unsigned int  m_OutputTimeout;
   unsigned int  m_field;
   unsigned int  m_width;

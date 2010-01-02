@@ -916,15 +916,12 @@ bool CCrystalHD::Open(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE co
   {
     case CRYSTALHD_CODEC_ID_VC1:
       videoAlg = BCM::BC_VID_ALGO_VC1;
-      m_pFormatName = "bcm-vc1";
     break;
     case CRYSTALHD_CODEC_ID_H264:
       videoAlg = BCM::BC_VID_ALGO_H264;
-      m_pFormatName = "bcm-h264";
     break;
     case CRYSTALHD_CODEC_ID_MPEG2:
       videoAlg = BCM::BC_VID_ALGO_MPEG2;
-      m_pFormatName = "bcm-mpeg2";
     break;
     default:
       return false;
