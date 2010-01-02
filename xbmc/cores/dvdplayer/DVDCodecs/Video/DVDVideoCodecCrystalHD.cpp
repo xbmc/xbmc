@@ -50,7 +50,10 @@ CDVDVideoCodecCrystalHD::~CDVDVideoCodecCrystalHD()
 
 bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if (!hints.software)
+  int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
+
+  if ((requestedMethod == RENDER_METHOD_AUTO || 
+       requestedMethod == RENDER_METHOD_CRYSTALHD) && !hints.software)
   {
     CRYSTALHD_CODEC_TYPE codec_type;
     CRYSTALHD_STREAM_TYPE stream_type;
