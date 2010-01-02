@@ -557,9 +557,22 @@ if test "$use_external_libraries" = "yes" || test "$use_external_ffmpeg" = "yes"
   # Disable vdpau support if external libavcodec doesn't have it
   AC_CHECK_LIB([avcodec], [ff_vdpau_vc1_decode_picture],,
     use_vdpau=no;AC_MSG_RESULT($ffmpeg_vdpau_not_supported))
+
+  # Check for 'PIX_FMT_VDPAU_MPEG4' from libavutil
+  if test "$use_vdpau" = "yes"; then
+    AC_LANG_PUSH([C++])
+    AC_LINK_IFELSE([
+        #include <libavutil/pixfmt.h>
+        int main() { PixelFormat format = PIX_FMT_VDPAU_MPEG4; }
+      ],
+      [AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1],
+       [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])],)
+    AC_LANG_POP([C++])
+  fi
 else
   AC_MSG_NOTICE($external_ffmpeg_disabled)
   USE_EXTERNAL_FFMPEG=0
+  AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
 fi
 
 # External liba52

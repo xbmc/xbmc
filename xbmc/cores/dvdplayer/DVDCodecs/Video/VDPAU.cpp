@@ -316,7 +316,9 @@ void CVDPAU::CheckRecover(bool force)
 bool CVDPAU::IsVDPAUFormat(PixelFormat format)
 {
   if ((format >= PIX_FMT_VDPAU_H264) && (format <= PIX_FMT_VDPAU_VC1)) return true;
+#if (defined PIX_FMT_VDPAU_MPEG4_IN_AVUTIL)
   if (format == PIX_FMT_VDPAU_MPEG4) return true;
+#endif
   else return false;
 }
 
@@ -905,7 +907,8 @@ void CVDPAU::ReadFormatOf( PixelFormat fmt
       vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_ADVANCED;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
-#ifdef VDP_DECODER_PROFILE_MPEG4_PART2_ASP
+#if (defined PIX_FMT_VDPAU_MPEG4_IN_AVUTIL) && \
+    (defined VDP_DECODER_PROFILE_MPEG4_PART2_ASP)
     case PIX_FMT_VDPAU_MPEG4:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG4_PART2_ASP;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
