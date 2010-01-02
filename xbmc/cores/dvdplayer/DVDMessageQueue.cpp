@@ -24,7 +24,7 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "SingleLock.h"
 #include "DVDClock.h"
-#include "MathUtils.h"
+#include "Util.h"
 
 using namespace std;
 
