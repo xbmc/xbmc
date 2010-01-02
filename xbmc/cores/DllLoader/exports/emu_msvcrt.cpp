@@ -594,7 +594,7 @@ extern "C"
   {
     char str[XBMC_MAX_PATH];
     int size = sizeof(str);
-    CURL url(file);
+    CURL url(_P(file));
     if (url.IsLocal())
     {
       // move to CFile classes
@@ -643,7 +643,7 @@ extern "C"
     }
     CStdString fName = url.GetFileName();
     url.SetFileName("");
-    strURL=url.Get();
+    strURL = url.Get();
     bVecDirsInited = true;
     vecDirsOpen[iDirSlot].items.Clear();
     vecDirsOpen[iDirSlot].Directory = CFactoryDirectory::Create(strURL);
