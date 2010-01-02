@@ -30,10 +30,10 @@ D3DPresentEngine::D3DPresentEngine(HRESULT& hr) :
   pfMFCreateVideoSampleFromSurface  = hLib ? (PTR_MFCreateVideoSampleFromSurface)  GetProcAddress (hLib, "MFCreateVideoSampleFromSurface") : NULL;
   if (!pfMFCreateVideoSampleFromSurface)
     CLog::Log(LOGERROR,"Could not find MFCreateVideoSampleFromSurface (evr.dll)");
-
-    ZeroMemory(&m_DisplayMode, sizeof(m_DisplayMode));
-
-    hr = InitializeD3D();
+  m_pVideoSurface = NULL;
+  m_pVideoTexture = new CD3DTexture();
+  ZeroMemory(&m_DisplayMode, sizeof(m_DisplayMode));
+  hr = InitializeD3D();
 }
 
 
@@ -187,10 +187,8 @@ HRESULT D3DPresentEngine::CreateVideoSamples(
   
   
 	
-  if (m_pVideoSurface)
-    m_pVideoSurface = NULL;
-	if (m_pVideoTexture)
-    m_pVideoTexture = new CD3DTexture();
+  m_pVideoSurface = NULL;
+  m_pVideoTexture = new CD3DTexture();
      
   if (!m_pVideoTexture->Create(m_iVideoWidth ,m_iVideoHeight ,
                           1,
@@ -247,6 +245,28 @@ void D3DPresentEngine::ReleaseResources()
 {
     // Let the derived class release any resources it created.
 	OnReleaseResources();
+  HANDLE hDev; 
+  HRESULT hr = S_OK; 
+  //hr = m_pDeviceManager->OpenDeviceHandle(&hDev); 
+  CHECK_HR(hr); 
+  IDirect3DDevice9* pD3dDev; 
+  //hr = m_pDeviceManager->LockDevice(hDev,&pD3dDev,true); 
+  if (SUCCEEDED(hr)) 
+  { 
+    m_pVideoTexture = NULL;
+    m_pVideoSurface = NULL;
+       //SAFE_RELEASE(m_pVideoSurface);
+     for (int i = 0; i < 7; i++) 
+     { 
+       m_pInternalVideoTexture[i] = NULL;
+       m_pInternalVideoSurface[i] = NULL;
+     } 
+   }
+  //hr = m_pDeviceManager->UnlockDevice(hDev,
+ done: 
+   if (FAILED(hr)) 
+     CLog::Log(LOGDEBUG,"ReleaseResources Failed!"); 
+
   //TODO
 }
 
