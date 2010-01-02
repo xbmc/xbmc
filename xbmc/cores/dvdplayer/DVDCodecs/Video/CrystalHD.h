@@ -121,6 +121,8 @@ public:
   static void RemoveInstance(void);
   static CCrystalHD* GetInstance(void);
 
+  bool DevicePresent(void);
+
   bool Open(CRYSTALHD_CODEC_TYPE stream_type, CRYSTALHD_STREAM_TYPE codec_type);
   void Close(void);
   bool IsOpenforDecode(void);

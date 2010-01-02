@@ -108,6 +108,10 @@
 #include "StringUtils.h"
 #include "WindowingFactory.h"
 
+#if defined(HAVE_LIBCRYSTALHD)
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
+#endif
+
 using namespace std;
 using namespace DIRECTORY;
 
@@ -735,7 +739,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13421), RENDER_METHOD_VDPAU);
 #endif
 #ifdef HAVE_LIBCRYSTALHD
-      pControl->AddLabel(g_localizeStrings.Get(13425), RENDER_METHOD_CRYSTALHD);
+      if (CCrystalHD::GetInstance()->DevicePresent())
+        pControl->AddLabel(g_localizeStrings.Get(13425), RENDER_METHOD_CRYSTALHD);
 #endif
 #endif
       pControl->SetValue(pSettingInt->GetData());

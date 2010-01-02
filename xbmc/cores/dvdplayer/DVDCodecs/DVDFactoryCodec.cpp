@@ -119,7 +119,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   CDVDCodecOptions options;
 
 #if defined(HAVE_LIBCRYSTALHD)
-  if (!hint.software)
+  if (!hint.software && CCrystalHD::GetInstance()->DevicePresent())
   {
     if (hint.width <= 720 && (hint.codec == CODEC_ID_MPEG2VIDEO))
     {
