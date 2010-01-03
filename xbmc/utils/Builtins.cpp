@@ -30,6 +30,7 @@
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogVideoScan.h"
+#include "GUIDialogYesNo.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVideoBase.h"
@@ -145,6 +146,7 @@ const BUILT_IN commands[] = {
   { "SetFocus",                   true,   "Change current focus to a different control id" },
   { "UpdateLibrary",              true,   "Update the selected library (music or video)" },
   { "CleanLibrary",               true,   "Clean the video library" },
+  { "ExportLibrary",              true,   "Export the video/music library" },
   { "PageDown",                   true,   "Send a page down event to the pagecontrol with given id" },
   { "PageUp",                     true,   "Send a page up event to the pagecontrol with given id" },
   { "LastFM.Love",                false,  "Add the current playing last.fm radio track to the last.fm loved tracks" },
@@ -434,7 +436,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     // set fullscreen or windowed
     if (params.size() >= 2 && params[1] == "1")
-      g_stSettings.m_bStartVideoWindowed = true;
+      g_settings.m_bStartVideoWindowed = true;
 
     // ask if we need to check guisettings to resume
     bool askToResume = true;
@@ -597,7 +599,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
       {
 #ifdef HAS_WEB_SERVER
-        if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
+        if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
           g_application.getApplicationMessenger().HttpApi(g_application.m_pPlayer->IsRecording()?"broadcastlevel; RecordStopping;1":"broadcastlevel; RecordStarting;1");
 #endif
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
@@ -640,11 +642,11 @@ int CBuiltins::Execute(const CStdString& execString)
       switch (iPlaylist)
       {
       case PLAYLIST_MUSIC:
-        g_stSettings.m_bMyMusicPlaylistShuffle = g_playlistPlayer.IsShuffled(iPlaylist);
+        g_settings.m_bMyMusicPlaylistShuffle = g_playlistPlayer.IsShuffled(iPlaylist);
         g_settings.Save();
         break;
       case PLAYLIST_VIDEO:
-        g_stSettings.m_bMyVideoPlaylistShuffle = g_playlistPlayer.IsShuffled(iPlaylist);
+        g_settings.m_bMyVideoPlaylistShuffle = g_playlistPlayer.IsShuffled(iPlaylist);
         g_settings.Save();
       }
 
@@ -678,11 +680,11 @@ int CBuiltins::Execute(const CStdString& execString)
       switch (iPlaylist)
       {
       case PLAYLIST_MUSIC:
-        g_stSettings.m_bMyMusicPlaylistRepeat = (state == PLAYLIST::REPEAT_ALL);
+        g_settings.m_bMyMusicPlaylistRepeat = (state == PLAYLIST::REPEAT_ALL);
         g_settings.Save();
         break;
       case PLAYLIST_VIDEO:
-        g_stSettings.m_bMyVideoPlaylistRepeat = (state == PLAYLIST::REPEAT_ALL);
+        g_settings.m_bMyVideoPlaylistRepeat = (state == PLAYLIST::REPEAT_ALL);
         g_settings.Save();
       }
 
@@ -708,9 +710,45 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("playlist.playoffset"))
   {
-    // get current playlist
-    int pos = atol(parameter.c_str());
-    g_playlistPlayer.PlayNext(pos);
+    // playlist.playoffset(offset)
+    // playlist.playoffset(music|video,offset)
+    CStdString strPos = parameter;
+    CStdString strPlaylist;
+    if (params.size() > 1)
+    {
+      // ignore any other parameters if present
+      strPlaylist = params[0];
+      strPos = params[1];
+
+      int iPlaylist = PLAYLIST_NONE;
+      if (strPlaylist.Equals("music"))
+        iPlaylist = PLAYLIST_MUSIC;
+      else if (strPlaylist.Equals("video"))
+        iPlaylist = PLAYLIST_VIDEO;
+
+      // unknown playlist
+      if (iPlaylist == PLAYLIST_NONE)
+      {
+        CLog::Log(LOGERROR,"Playlist.PlayOffset called with unknown playlist: %s", strPlaylist.c_str());
+        return false;
+      }
+
+      // user wants to play the 'other' playlist
+      if (iPlaylist != g_playlistPlayer.GetCurrentPlaylist())
+      {
+        g_application.StopPlaying();
+        g_playlistPlayer.Reset();
+        g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
+      }
+    }
+    // play the desired offset
+    int pos = atol(strPos.c_str());
+    // playlist is already playing
+    if (g_application.IsPlaying())
+      g_playlistPlayer.PlayNext(pos);
+    // we start playing the 'other' playlist so we need to use play to initialize the player state
+    else
+      g_playlistPlayer.Play(pos);
   }
   else if (execute.Equals("playlist.clear"))
   {
@@ -740,6 +778,8 @@ int CBuiltins::Execute(const CStdString& execString)
       CStdString strTime;
       if( CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading) )
         seconds = static_cast<float>(atoi(strTime.c_str())*60);
+      else
+        return false;
     }
     if (params.size() > 3 && params[3].CompareNoCase("true") == 0)
       silent = true;
@@ -763,12 +803,12 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("cancelalarm"))
   {
     g_alarmClock.stop(parameter);
-  }  
+  }
   else if (execute.Equals("playdvd"))
   {
-#ifdef HAS_DVD_DRIVE    
+#ifdef HAS_DVD_DRIVE
     CAutorun::PlayDisc();
-#endif    
+#endif
   }
   else if (execute.Equals("skin.togglesetting"))
   {
@@ -900,7 +940,7 @@ int CBuiltins::Execute(const CStdString& execString)
         source.strName = g_localizeStrings.Get(247);
         localShares.push_back(source);
       }
-    
+
       if (params.size() > 2)
       {
         value = params[2];
@@ -1020,6 +1060,87 @@ int CBuiltins::Execute(const CStdString& execString)
       }
       else
         CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
+    }
+  }
+  else if (execute.Equals("exportlibrary"))
+  {
+    int iHeading = 647;
+    if (params[0].Equals("music"))
+      iHeading = 20196;
+    CStdString path;
+    VECSOURCES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    bool singleFile;
+    bool thumbs=false;
+    bool actorThumbs=false;
+    bool overwrite=false;
+    bool cancelled=false;
+
+    if (params.size() > 1)
+      singleFile = params[1].Equals("true");
+    else
+      singleFile = CGUIDialogYesNo::ShowAndGetInput(iHeading,20426,20427,-1,20428,20429,cancelled);
+
+    if (cancelled)
+        return -1;
+
+    if (singleFile)
+    {
+      if (params.size() > 2)
+        thumbs = params[2].Equals("true");
+      else
+        thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20430,-1,-1,cancelled);
+    }
+
+    if (cancelled)
+      return -1;
+
+    if (singleFile)
+    {
+      if (params.size() > 3)
+        overwrite = params[3].Equals("true");
+      else
+        overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
+    }
+
+    if (cancelled)
+      return -1;
+
+    if (thumbs && params[0].Equals("video"))
+    {
+      if (params.size() > 4)
+        actorThumbs = params[4].Equals("true");
+      else
+        actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20436,-1,-1,cancelled);
+    }
+
+    if (cancelled)
+      return -1;
+
+    if (params.size() > 2)
+      path=params[2];
+    if (singleFile || !path.IsEmpty() ||
+        CGUIDialogFileBrowser::ShowAndGetDirectory(shares,
+				  g_localizeStrings.Get(661), path, true))
+    {
+      if (params[0].Equals("video"))
+      {
+        if (CUtil::HasSlashAtEnd(path))
+          CUtil::AddFileToFolder(path, "videodb.xml", path);
+        CVideoDatabase videodatabase;
+        videodatabase.Open();
+        videodatabase.ExportToXML(path, singleFile, thumbs, actorThumbs, overwrite);
+        videodatabase.Close();
+      }
+      else
+      {
+        if (CUtil::HasSlashAtEnd(path))
+          CUtil::AddFileToFolder(path, "musicdb.xml", path);
+        CMusicDatabase musicdatabase;
+        musicdatabase.Open();
+        musicdatabase.ExportToXML(path, singleFile, thumbs, overwrite);
+        musicdatabase.Close();
+      }
     }
   }
   else if (execute.Equals("lastfm.love"))

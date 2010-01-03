@@ -1,0 +1,153 @@
+Integration of this library into your package:
+
+* Copy the lib/ sourcefiles (localcharset.c, config.charset, ref-add.sin,
+  ref-del.sin) and the include file (include/localcharset.h) into your
+  package.
+
+* Add the m4/ files (codeset.m4, glibc21.m4) to your aclocal.m4 file or, if
+  you are using automake, to your m4/ directory.
+
+* Add the following lines to your configure.ac file:
+
+    AC_CANONICAL_HOST
+    AM_LANGINFO_CODESET
+    jm_GLIBC21
+    AC_CHECK_HEADERS(stddef.h stdlib.h string.h)
+
+  and make sure that it sets and AC_SUBSTs the PACKAGE variable.
+
+* If you are not using automake, add rules to your Makefile.in:
+
+  - Augment target "all" by
+      localcharset.o charset.alias ref-add.sed ref-del.sed
+    with special rules for the last three:
+
+    charset.alias: $(srcdir)/config.charset
+	$(SHELL) $(srcdir)/config.charset '@host@' > t-$@
+	mv t-$@ $@
+
+    ref-add.sed : $(srcdir)/ref-add.sin
+	sed -e '/^#/d' -e 's/@''PACKAGE''@/@PACKAGE@/g' $(srcdir)/ref-add.sin > t-$@
+	mv t-$@ $@
+
+    ref-del.sed : $(srcdir)/ref-del.sin
+	sed -e '/^#/d' -e 's/@''PACKAGE''@/@PACKAGE@/g' $(srcdir)/ref-del.sin > t-$@
+	mv t-$@ $@
+
+  - Augment target "install" by
+
+	if test @GLIBC21@ = no; then \
+	  case '@host_os@' in \
+	    darwin[56]*) \
+	      need_charset_alias=true ;; \
+	    darwin* | cygwin* | mingw* | pw32* | cegcc*) \
+	      need_charset_alias=false ;; \
+	    *) \
+	      need_charset_alias=true ;; \
+	  esac ; \
+	else \
+	  need_charset_alias=false ; \
+	fi ; \
+	if $$need_charset_alias; then \
+	  $(mkinstalldirs) $(DESTDIR)$(libdir) ; \
+	fi ; \
+	if test -f $(DESTDIR)$(libdir)/charset.alias; then \
+	  sed -f ref-add.sed $(DESTDIR)$(libdir)/charset.alias > $(DESTDIR)$(libdir)/t-charset.alias; \
+	  $(INSTALL_DATA) $(DESTDIR)$(libdir)/t-charset.alias $(DESTDIR)$(libdir)/charset.alias; \
+	  rm -f $(DESTDIR)$(libdir)/t-charset.alias; \
+	else \
+	  if $$need_charset_alias; then \
+	    sed -f ref-add.sed charset.alias > $(DESTDIR)$(libdir)/t-charset.alias; \
+	    $(INSTALL_DATA) $(DESTDIR)$(libdir)/t-charset.alias $(DESTDIR)$(libdir)/charset.alias; \
+	    rm -f $(DESTDIR)$(libdir)/t-charset.alias; \
+	  fi; \
+	fi
+
+  - Augment target "installdirs" by
+
+	if test @GLIBC21@ = no; then \
+	  case '@host_os@' in \
+	    darwin[56]*) \
+	      need_charset_alias=true ;; \
+	    darwin* | cygwin* | mingw* | pw32* | cegcc*) \
+	      need_charset_alias=false ;; \
+	    *) \
+	      need_charset_alias=true ;; \
+	  esac ; \
+	else \
+	  need_charset_alias=false ; \
+	fi ; \
+	if $$need_charset_alias; then \
+	  $(mkinstalldirs) $(DESTDIR)$(libdir) ; \
+	fi ; \
+
+  - Augment target "uninstall" by
+
+	if test -f $(DESTDIR)$(libdir)/charset.alias; then \
+	  sed -f ref-del.sed $(DESTDIR)$(libdir)/charset.alias > $(DESTDIR)$(libdir)/t-charset.alias; \
+	  if grep '^# Packages using this file: $$' $(DESTDIR)$(libdir)/t-charset.alias > /dev/null; then \
+	    rm -f $(DESTDIR)$(libdir)/charset.alias; \
+	  else \
+	    $(INSTALL_DATA) $(DESTDIR)$(libdir)/t-charset.alias $(DESTDIR)$(libdir)/charset.alias; \
+	  fi; \
+	  rm -f $(DESTDIR)$(libdir)/t-charset.alias; \
+	fi
+
+    - Augment target "clean" by
+
+	rm -f charset.alias ref-add.sed ref-del.sed
+
+* If you are using automake, add rules to your Makefile.am:
+
+  - Augment the main *_SOURCES variable by
+
+        localcharset.h localcharset.c
+
+  - Augment EXTRA_DIST by
+
+        config.charset ref-add.sin ref-del.sin
+
+  - Augment target "all-local" by
+
+        charset.alias ref-add.sed ref-del.sed
+
+  - Add the lines:
+
+charset_alias = $(DESTDIR)$(libdir)/charset.alias
+charset_tmp = $(DESTDIR)$(libdir)/charset.tmp
+install-exec-local: all-local
+	test @GLIBC21@ != no || $(mkinstalldirs) $(DESTDIR)$(libdir)
+	if test -f $(charset_alias); then \
+	  sed -f ref-add.sed $(charset_alias) > $(charset_tmp) ; \
+	  $(INSTALL_DATA) $(charset_tmp) $(charset_alias) ; \
+	  rm -f $(charset_tmp) ; \
+	else \
+	  if test @GLIBC21@ = no; then \
+	    sed -f ref-add.sed charset.alias > $(charset_tmp) ; \
+	    $(INSTALL_DATA) $(charset_tmp) $(charset_alias) ; \
+	    rm -f $(charset_tmp) ; \
+	  fi ; \
+	fi
+
+uninstall-local: all-local
+	if test -f $(charset_alias); then \
+	  sed -f ref-del.sed $(charset_alias) > $(charset_tmp); \
+	  if grep '^# Packages using this file: $$' $(charset_tmp) \
+	      > /dev/null; then \
+	    rm -f $(charset_alias); \
+	  else \
+	    $(INSTALL_DATA) $(charset_tmp) $(charset_alias); \
+	  fi; \
+	  rm -f $(charset_tmp); \
+	fi
+
+charset.alias: config.charset
+	$(SHELL) $(srcdir)/config.charset '@host@' > t-$@
+	mv t-$@ $@
+
+SUFFIXES = .sed .sin
+.sin.sed:
+	sed -e '/^#/d' -e 's/@''PACKAGE''@/@PACKAGE@/g' $< > t-$@
+	mv t-$@ $@
+
+CLEANFILES = charset.alias ref-add.sed ref-del.sed

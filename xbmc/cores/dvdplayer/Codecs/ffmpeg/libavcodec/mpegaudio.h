@@ -88,7 +88,25 @@ typedef int32_t MPA_INT;
 #define BACKSTEP_SIZE 512
 #define EXTRABYTES 24
 
-struct GranuleDef;
+/* layer 3 "granule" */
+typedef struct GranuleDef {
+    uint8_t scfsi;
+    int part2_3_length;
+    int big_values;
+    int global_gain;
+    int scalefac_compress;
+    uint8_t block_type;
+    uint8_t switch_point;
+    int table_select[3];
+    int subblock_gain[3];
+    uint8_t scalefac_scale;
+    uint8_t count1table_select;
+    int region_size[3]; /* number of huffman codes in each region */
+    int preflag;
+    int short_start, long_end; /* long/short band indexes */
+    uint8_t scale_factors[40];
+    int32_t sb_hybrid[SBLIMIT * 18]; /* 576 samples */
+} GranuleDef;
 
 #define MPA_DECODE_HEADER \
     int frame_size; \
@@ -118,6 +136,7 @@ typedef struct MPADecodeContext {
     int synth_buf_offset[MPA_MAX_CHANNELS];
     DECLARE_ALIGNED_16(int32_t, sb_samples[MPA_MAX_CHANNELS][36][SBLIMIT]);
     int32_t mdct_buf[MPA_MAX_CHANNELS][SBLIMIT * 18]; /* previous samples, for layer 3 MDCT */
+    GranuleDef granules[2][2]; /* Used in Layer 3 */
 #ifdef DEBUG
     int frame_count;
 #endif
@@ -137,6 +156,7 @@ typedef struct HuffTable {
 
 int ff_mpa_l2_select_table(int bitrate, int nb_channels, int freq, int lsf);
 int ff_mpa_decode_header(AVCodecContext *avctx, uint32_t head, int *sample_rate, int *channels, int *frame_size, int *bitrate);
+extern MPA_INT ff_mpa_synth_window[];
 void ff_mpa_synth_init(MPA_INT *window);
 void ff_mpa_synth_filter(MPA_INT *synth_buf_ptr, int *synth_buf_offset,
                          MPA_INT *window, int *dither_state,

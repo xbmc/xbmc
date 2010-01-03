@@ -115,6 +115,14 @@ namespace Shaders {
     GLint m_hField;
   };
 
+  class NV12ToRGBProgressiveShaderARB : public BaseYUV2RGBARBShader
+  {
+  public:
+    NV12ToRGBProgressiveShaderARB(bool rect=false, unsigned flags=0);
+    void OnCompiledAndLinked();
+    bool OnEnabled();
+  };
+
 } // end namespace
 
 #ifndef __GNUC__

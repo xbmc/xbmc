@@ -30,12 +30,13 @@
 #endif // _MSC_VER > 1000
 
 #include "IAudioRenderer.h"
+#include "Win32ChannelRemap.h"
 #include "utils/CriticalSection.h"
 
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
 
-class CWin32DirectSound : public IAudioRenderer
+class CWin32DirectSound : private CWin32ChannelRemap, public IAudioRenderer
 {
 public:
   virtual void UnRegisterAudioCallback();
@@ -43,6 +44,7 @@ public:
   virtual unsigned int GetChunkLen();
   virtual float GetDelay();
   virtual float GetCacheTime();
+  virtual float GetCacheTotal();
   CWin32DirectSound();
   virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
   virtual ~CWin32DirectSound();
@@ -61,12 +63,11 @@ public:
   virtual void WaitCompletion();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
-  static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough) { };
+  static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough);
+
 private:
   void UpdateCacheStatus();
   void CheckPlayStatus();
-  void MapDataIntoBuffer(unsigned char* pData, unsigned int len, unsigned char* pOut);
-  unsigned char* GetChannelMap(unsigned int channels, const char* strAudioCodec);
 
   LPDIRECTSOUNDBUFFER  m_pBuffer;
   LPDIRECTSOUND8 m_pDSound;

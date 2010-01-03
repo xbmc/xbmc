@@ -56,7 +56,10 @@ struct DVDVideoPicture
 
   enum EFormat {
     FMT_YUV420P = 0,
-    FMT_VDPAU
+    FMT_VDPAU,
+    FMT_NV12,
+    FMT_UYVY,       // place holder for future expansion
+    FMT_YUY2        //place holder for future expansion
   } format;
 };
 

@@ -63,6 +63,7 @@ int main(int argc, char* argv[])
   sa.sa_handler = SIG_IGN;
   sigaction(SIGCHLD, &sa, NULL);
 #endif
+  setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
   if (argc > 1)
   {
@@ -127,7 +128,7 @@ int main(int argc, char* argv[])
   }
 
   g_application.Preflight();
-  if (g_application.Create(NULL) != S_OK)
+  if (!g_application.Create(NULL))
   {
     fprintf(stderr, "ERROR: Unable to create application. Exiting\n");
     return -1;

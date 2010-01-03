@@ -1,6 +1,6 @@
 INCLUDES=-I. -I../include
 
-SRCS=alloc.c debug.c
+SRCS=alloc.c debug_refmem.c
 
 LIB=librefmem.a
 

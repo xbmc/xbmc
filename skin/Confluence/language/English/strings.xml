@@ -6,6 +6,7 @@
   <string id="31002">Hate</string>
   <string id="31003">Power Options</string>
   <string id="31004">Working...</string>
+  <string id="31005">Hide INFO</string>
 
   <string id="31007">Plugins</string>
 
@@ -51,7 +52,7 @@
   <string id="31101">Home screen options</string>
   <string id="31102">Background</string>
   <string id="31103">Show "Paused" in picture slide show</string>
-  <string id="31104"></string>
+  <string id="31104">Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]</string>
   <string id="31105">Show media titles in background scanner</string>
   <string id="31106">Miscellaneous options</string>
   <string id="31107"></string>
@@ -77,6 +78,11 @@
   <string id="31126">Enable Lyrics in Music OSD</string>
   <string id="31127">PATH TO LYRICS SCRIPT</string>
   <string id="31128">XBMC Lyrics</string>
+  <string id="31129">Enable Subtitle Download in Video OSD</string>
+  <string id="31130">PATH TO SUBTITLE SCRIPT</string>
+
+  <string id="31140">Music OSD</string>
+  <string id="31141">Video OSD</string>
 
   <!-- Script labels -->
   <string id="31200">Shortcuts</string>
@@ -103,7 +109,7 @@
   <string id="31308">Movie Details</string>
   <string id="31309">Memory Used:</string>
   <string id="31310">Track Number</string>
-  <string id="31311">FANART IMAGE[CR][CR]UNAVAILABLE[CR][CR] CLICK BUTTON TO SET</string>
+  <string id="31311">Fanart image[CR][CR]Unavailable[CR][CR] Click button to set</string>
   <string id="31312">Current Scraper</string>
   <string id="31313">Choose a Scraper</string>
   <string id="31314">Content Scanning Options</string>
@@ -121,7 +127,17 @@
   <string id="31326">Created</string>
   <string id="31327">Resolution</string>
   <string id="31328">Recently Added</string>
-  <string id="31329">[B]TIMER SET![/B] [COLOR=grey2] - SYSTEM AUTO SHUTDOWN IN[/COLOR]</string>
+  <string id="31329">[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]</string>
+  <string id="31330">Click button to play[CR][CR]Movie trailer</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Pause</string>
+  <string id="31352">Stop</string>
+  <string id="31353">Fast Forward</string>
+  <string id="31354">Rewind</string>
+  <string id="31355">Movie menu</string>
+  <string id="31356">Download Subtitles</string>
+  <string id="31357"></string>
 
   <!-- Description Labels  -->
   <string id="31400">[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver</string>
@@ -133,6 +149,5 @@
   <string id="31406">[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock</string>
   <string id="31407">[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds</string>
 
-  <string id="31420">[B][COLOR=white]XBMC has not detected a Disc.[/COLOR][/B][CR][CR]Please Insert a disc into your drive and try again or Cancel</string>
   <string id="31421">Select your XBMC user Profile[CR]to login and continue</string>
 </strings>

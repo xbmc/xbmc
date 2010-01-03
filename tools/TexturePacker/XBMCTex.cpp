@@ -20,6 +20,7 @@
  */
 
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
 #include <squish.h>
 #include <string>
@@ -104,6 +105,7 @@ bool IsGIF(const char *strFileName)
 void CreateSkeletonHeaderImpl(CXBTF& xbtf, std::string fullPath, std::string relativePath)
 {
   struct dirent* dp;
+  struct stat stat_p;
   DIR *dirp = opendir(fullPath.c_str());
 
   while ((dp = readdir(dirp)) != NULL)
@@ -113,7 +115,11 @@ void CreateSkeletonHeaderImpl(CXBTF& xbtf, std::string fullPath, std::string rel
       continue;
     }
 
-    if (dp->d_type == DT_DIR)
+    //stat to check for dir type (reiserfs fix)
+    std::string fileN = fullPath + "/" + dp->d_name;
+    stat(fileN.c_str(), &stat_p);
+
+    if (dp->d_type == DT_DIR || stat_p.st_mode & S_IFDIR)
     {
       std::string tmpPath = relativePath;
       if (tmpPath.size() > 0)

@@ -1,7 +1,0 @@
-#!/bin/sh
-
-in-target deluser --remove-home --quiet xbmc
-in-target sed -i -e "/XBMC/d" /etc/sudoers
-
-# TODO clean /etc/PolicyKit/PolicyKit.conf
-# sed -i -e 's%<config version="0.1">%&\n\n<match user="'${user_name}'">\n    <return result="yes"/>\n</match>%' /etc/PolicyKit/PolicyKit.conf

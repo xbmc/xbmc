@@ -1,6 +1,6 @@
 //
 //  HIDRemote.h
-//  HIDRemote V1.0
+//  HIDRemote V1.1.1
 //
 //  Created by Felix Schwarz on 06.04.07.
 //  Copyright 2007-2009 IOSPIRIT GmbH. All rights reserved.
@@ -89,26 +89,41 @@ typedef enum
 	/* A code reserved for "no button" (needed for tracking) */
 	kHIDRemoteButtonCodeNone	= 0L,
 
-	/* HID Remote standard codes - you'll be able to receive all of these in your HIDRemote delegate */
-	kHIDRemoteButtonCodePlus,
-	kHIDRemoteButtonCodeMinus,
+	/* Standard codes - available for white plastic and aluminum remote */
+	kHIDRemoteButtonCodeUp,
+	kHIDRemoteButtonCodeDown,
 	kHIDRemoteButtonCodeLeft,
 	kHIDRemoteButtonCodeRight,
-	kHIDRemoteButtonCodePlayPause,
+	kHIDRemoteButtonCodeCenter,
 	kHIDRemoteButtonCodeMenu,
 
-	/* Masks */
-	kHIDRemoteButtonCodeCodeMask    = 0xFFL,
-	kHIDRemoteButtonCodeHoldMask    = (1L << 16L),
-	kHIDRemoteButtonCodeSpecialMask = (1L << 17L),
+	/* Extra codes - Only available for the new aluminum version of the remote */
+	kHIDRemoteButtonCodePlay,
 
-	/* Hold button codes */
-	kHIDRemoteButtonCodePlusHold      = (kHIDRemoteButtonCodeHoldMask|kHIDRemoteButtonCodePlus),
-	kHIDRemoteButtonCodeMinusHold     = (kHIDRemoteButtonCodeHoldMask|kHIDRemoteButtonCodeMinus),
-	kHIDRemoteButtonCodeLeftHold      = (kHIDRemoteButtonCodeHoldMask|kHIDRemoteButtonCodeLeft),
-	kHIDRemoteButtonCodeRightHold     = (kHIDRemoteButtonCodeHoldMask|kHIDRemoteButtonCodeRight),
-	kHIDRemoteButtonCodePlayPauseHold = (kHIDRemoteButtonCodeHoldMask|kHIDRemoteButtonCodePlayPause),
-	kHIDRemoteButtonCodeMenuHold	  = (kHIDRemoteButtonCodeHoldMask|kHIDRemoteButtonCodeMenu),
+	/* Masks */
+	kHIDRemoteButtonCodeCodeMask      = 0xFFL,
+	kHIDRemoteButtonCodeHoldMask      = (1L << 16L),
+	kHIDRemoteButtonCodeSpecialMask   = (1L << 17L),
+	kHIDRemoteButtonCodeAluminumMask  = (1L << 21L), // PRIVATE - only used internally
+
+	/* Hold button standard codes - available for white plastic and aluminum remote */
+	kHIDRemoteButtonCodeUpHold       = (kHIDRemoteButtonCodeHoldMask|kHIDRemoteButtonCodeUp),
+	kHIDRemoteButtonCodeDownHold     = (kHIDRemoteButtonCodeHoldMask|kHIDRemoteButtonCodeDown),
+	kHIDRemoteButtonCodeLeftHold     = (kHIDRemoteButtonCodeHoldMask|kHIDRemoteButtonCodeLeft),
+	kHIDRemoteButtonCodeRightHold    = (kHIDRemoteButtonCodeHoldMask|kHIDRemoteButtonCodeRight),
+	kHIDRemoteButtonCodeCenterHold	 = (kHIDRemoteButtonCodeHoldMask|kHIDRemoteButtonCodeCenter),
+	kHIDRemoteButtonCodeMenuHold	 = (kHIDRemoteButtonCodeHoldMask|kHIDRemoteButtonCodeMenu),
+
+	/* Hold button extra codes - Only available for aluminum version of the remote */
+	kHIDRemoteButtonCodePlayHold	  = (kHIDRemoteButtonCodeHoldMask|kHIDRemoteButtonCodePlay),
+
+	/* DEPRECATED codes - compatibility with HIDRemote 1.0 */
+	kHIDRemoteButtonCodePlus	  = kHIDRemoteButtonCodeUp,
+	kHIDRemoteButtonCodePlusHold      = kHIDRemoteButtonCodeUpHold,
+	kHIDRemoteButtonCodeMinus	  = kHIDRemoteButtonCodeDown,
+	kHIDRemoteButtonCodeMinusHold     = kHIDRemoteButtonCodeDownHold,
+	kHIDRemoteButtonCodePlayPause	  = kHIDRemoteButtonCodeCenter,
+	kHIDRemoteButtonCodePlayPauseHold = kHIDRemoteButtonCodeCenterHold,
 
 	/* Special purpose codes */
 	kHIDRemoteButtonCodeIDChanged  = (kHIDRemoteButtonCodeSpecialMask|(1L << 18L)),	// (the ID of the connected remote has changed, you can safely ignore this)
@@ -118,6 +133,20 @@ typedef enum
 		#undef _HIDREMOTE_EXTENSIONS_SECTION
 	#endif /* _HIDREMOTE_EXTENSIONS */
 } HIDRemoteButtonCode;
+
+typedef enum
+{
+	kHIDRemoteModelUndetermined = 0L,				// Assume a white plastic remote
+	kHIDRemoteModelWhitePlastic,					// Signal *likely* to be coming from a white plastic remote
+	kHIDRemoteModelAluminum						// Signal *definitely* coming from an aluminum remote
+} HIDRemoteModel;
+
+typedef enum
+{
+	kHIDRemoteAluminumRemoteSupportLevelNone = 0L,			// This system has no support for the Aluminum Remote at all
+	kHIDRemoteAluminumRemoteSupportLevelEmulation,			// This system possibly has support for the Aluminum Remote (via emulation)
+	kHIDRemoteAluminumRemoteSupportLevelNative			// This system has native support for the Aluminum Remote
+} HIDRemoteAluminumRemoteSupportLevel;
 
 @class HIDRemote;
 
@@ -183,6 +212,9 @@ typedef enum
 	// Matching iterator
 	io_iterator_t _matchingServicesIterator;
 	
+	// SecureInput notification
+	io_object_t _secureInputNotification;
+	
 	// Service attributes
 	NSMutableDictionary *_serviceAttribMap;
 	
@@ -194,8 +226,10 @@ typedef enum
 	// Delegate
 	NSObject <HIDRemoteDelegate> *_delegate;
 	
-	// Last seen ID
+	// Last seen ID and remote model
 	SInt32 _lastSeenRemoteID;
+	HIDRemoteModel _lastSeenModel;
+	SInt32 _lastSeenModelRemoteID;
 	
 	// Unused button codes
 	NSArray *_unusedButtonCodes;
@@ -205,7 +239,8 @@ typedef enum
 	
 	// SecureEventInput workaround
 	BOOL _secureEventInputWorkAround;
-	BOOL _statusSecureEventInputWorkAroundEnabled;
+	UInt64 _lastSecureEventInputPIDSum;
+	uid_t _lastFrontUserSession;
 	
 	// Exclusive lock lending
 	BOOL _exclusiveLockLending;
@@ -219,6 +254,7 @@ typedef enum
 #pragma mark -- PUBLIC: System Information --
 + (BOOL)isCandelairInstalled;
 + (BOOL)isCandelairInstallationRequiredForRemoteMode:(HIDRemoteMode)remoteMode;
+- (HIDRemoteAluminumRemoteSupportLevel)aluminiumRemoteSystemSupportLevel;
 
 #pragma mark -- PUBLIC: Interface / API --
 - (BOOL)startRemoteControl:(HIDRemoteMode)hidRemoteMode;	
@@ -230,6 +266,9 @@ typedef enum
 
 - (SInt32)lastSeenRemoteControlID;
 
+- (void)setLastSeenModel:(HIDRemoteModel)aModel;
+- (HIDRemoteModel)lastSeenModel;
+
 - (void)setDelegate:(NSObject <HIDRemoteDelegate> *)newDelegate;
 - (NSObject <HIDRemoteDelegate> *)delegate;
 
@@ -240,9 +279,7 @@ typedef enum
 - (NSArray *)unusedButtonCodes;
 
 #pragma mark -- PUBLIC: Expert APIs --
-
 - (void)setEnableSecureEventInputWorkaround:(BOOL)newEnableSecureEventInputWorkaround;
-
 - (BOOL)enableSecureEventInputWorkaround;
 
 - (void)setExclusiveLockLendingEnabled:(BOOL)newExclusiveLockLendingEnabled;
@@ -255,6 +292,7 @@ typedef enum
 
 #pragma mark -- PRIVATE: Service setup and destruction --
 - (BOOL)_prematchService:(io_object_t)service;
+- (HIDRemoteButtonCode)buttonCodeForUsage:(unsigned int)usage usagePage:(unsigned int)usagePage;
 - (BOOL)_setupService:(io_object_t)service;
 - (void)_destructService:(io_object_t)service;
 
@@ -269,6 +307,8 @@ typedef enum
 #pragma mark -- PRIVATE: Notification handling --
 - (void)_serviceMatching:(io_iterator_t)iterator;
 - (void)_serviceNotificationFor:(io_service_t)service messageType:(natural_t)messageType messageArgument:(void *)messageArgument;
+- (void)_updateSessionInformation;
+- (void)_secureInputNotificationFor:(io_service_t)service messageType:(natural_t)messageType messageArgument:(void *)messageArgument;
 
 @end
 
@@ -288,6 +328,8 @@ extern NSString *kHIDRemoteLastButtonPressed;
 extern NSString *kHIDRemoteService;
 extern NSString *kHIDRemoteSimulateHoldEventsTimer;
 extern NSString *kHIDRemoteSimulateHoldEventsOriginButtonCode;
+extern NSString *kHIDRemoteAluminumRemoteSupportLevel;
+extern NSString *kHIDRemoteAluminumRemoteSupportOnDemand;
 
 #pragma mark -- Distributed notifications --
 extern NSString *kHIDRemoteDNHIDRemotePing;

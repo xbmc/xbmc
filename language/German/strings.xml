@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Zippolighter-->
 <!--Email: hardrock_zippolighter@hotmail.com-->
-<!--Date of translation: 11/23/2009-->
+<!--Date of translation: 12/20/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 24865-->
+<!--Based on english strings version 25744-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -102,7 +102,7 @@
   <string id="154">Laufwerke</string>
   <string id="155">Laufwerk</string>
   <string id="156">Frei</string>
-  <string id="157">Bildschirm</string>
+  <string id="157">Video</string>
   <string id="158">Freier Hauptspeicher</string>
   <string id="159">Keine Verbindung</string>
   <string id="160">Frei</string>
@@ -155,7 +155,7 @@
   </string>
   <string id="201">
   </string>
-  <string id="202">Beschreibung</string>
+  <string id="202">Kurz Info</string>
   <string id="203">Handlung</string>
   <string id="204">
   </string>
@@ -496,7 +496,7 @@
   <string id="560">ID</string>
   <string id="561">Datei</string>
   <string id="562">Jahr</string>
-  <string id="563">Bewertung</string>
+  <string id="563">Prädikat</string>
   <string id="564">Typ</string>
   <string id="565">Gebrauch</string>
   <string id="566">Album-Interpret</string>
@@ -626,7 +626,7 @@
   <string id="746">Bitte wieder zur Datei-Ansicht wechseln.</string>
   <string id="747">Fehler beim Laden des Bildes!</string>
   <string id="748">Pfad bearbeiten</string>
-  <string id="749">Quelle hinzufügen</string>
+  <string id="749">Spiegelbild</string>
   <string id="750">Sicher?</string>
   <string id="751">Quelle entfernen</string>
   <string id="752">
@@ -876,7 +876,7 @@
   <string id="10521">
   </string>
   <string id="10522">Abspielliste - Videos</string>
-  <string id="10523">Album-Informationen</string>
+  <string id="10523">Album Info</string>
   <string id="10524">Film-Informationen</string>
   <string id="12000">Auswahl-Dialog</string>
   <string id="12001">Musik/Informationen</string>
@@ -1139,7 +1139,7 @@
   <string id="13348">Film in IMDb suchen...</string>
   <string id="13349">Neue Inhalte suchen</string>
   <string id="13350">Abspielliste anzeigen</string>
-  <string id="13351">Album-informationen</string>
+  <string id="13351">Albuminformationen</string>
   <string id="13352">In Datenbank aufnehmen</string>
   <string id="13353">Aktualisieren abbrechen</string>
   <string id="13354">Render-Methode</string>
@@ -1647,7 +1647,7 @@
   </string>
   <string id="20057">Thumbnail entfernen</string>
   <string id="20058">Profil hinzufügen...</string>
-  <string id="20059">Lade alle Alben-Infos</string>
+  <string id="20059">Alle Alben-Info laden</string>
   <string id="20060">Medien-Informationen</string>
   <string id="20061">Eigenständig</string>
   <string id="20062">Wie Hauptbenutzer</string>
@@ -1662,7 +1662,7 @@
   <string id="20071">Mit neuen Medien-Quellen beginnen</string>
   <string id="20072">Bitte sicherstellen, dass der gewählte Ordner beschreibbar ist</string>
   <string id="20073">und dass der neue Ordnername gültig ist.</string>
-  <string id="20074">Altersfreigabe</string>
+  <string id="20074">FSK</string>
   <string id="20075">Bitte das Master-Passwort eingeben</string>
   <string id="20076">Master-Passwort beim Start abfragen</string>
   <string id="20077">Skin-Optionen</string>
@@ -1894,7 +1894,7 @@
   <string id="20397">Zum Album wechseln</string>
   <string id="20398">Titel abspielen</string>
   <string id="20399">Zu Musikvideos des Albums</string>
-  <string id="20400">Zu Musikvideos des Interpreten</string>
+  <string id="20400">Musikvideos-Interpreten</string>
   <string id="20401">Musikvideo abspielen</string>
   <string id="20402">Schauspieler Bilder automatisch herunterladen</string>
   <string id="20403">Schauspieler Bild setzen</string>
@@ -2150,6 +2150,7 @@
   <string id="23001">- Plugin Einstellungen</string>
   <string id="23050">Videotext aktivieren</string>
   <string id="23051">Teil</string>
+  <string id="23052">Zwischenspeichern - %i Bytes</string>
   <string id="23100">External Player ist aktiv</string>
   <string id="23101">Drücke OK um den Player zu beenden</string>
   <string id="23102">

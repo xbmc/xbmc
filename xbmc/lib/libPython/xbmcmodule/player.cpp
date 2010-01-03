@@ -119,7 +119,7 @@ namespace PYXBMC
     }
 
     // set fullscreen or windowed
-    g_stSettings.m_bStartVideoWindowed = (0 != bWindowed);
+    g_settings.m_bStartVideoWindowed = (0 != bWindowed);
 
     // force a playercore before playing
     g_application.m_eForcedNextPlayer = self->playerCore;
@@ -448,54 +448,54 @@ namespace PYXBMC
 
     int nStream = g_application.m_pPlayer->GetSubtitleCount();
 
-    g_stSettings.m_currentVideoSettings.m_SubtitleOn = true;
+    g_settings.m_currentVideoSettings.m_SubtitleOn = true;
     g_application.m_pPlayer->SetSubtitleVisible(true);
     g_application.m_pPlayer->AddSubtitle(cLine);
     g_application.m_pPlayer->SetSubtitle(nStream);
-    
+
     Py_INCREF(Py_None);
     return Py_None;
   }
 
-	
+
   // Player_GetSubtitles
   PyDoc_STRVAR(getSubtitles__doc__,
     "getSubtitles() -- get subtitle stream name\n");
-	
+
   PyObject* Player_GetSubtitles(PyObject *self)
   {
     if (g_application.m_pPlayer)
-    {	
+    {
       int i = g_application.m_pPlayer->GetSubtitle();
       CStdString strName;
       g_application.m_pPlayer->GetSubtitleName(i, strName);
 
       if (strName == "Unknown(Invalid)")
-        strName = "";		  
+        strName = "";
       return Py_BuildValue((char*)"s", strName.c_str());
     }
-	  
+
     Py_INCREF(Py_None);
-    return Py_None;	  
-  }	
+    return Py_None;
+  }
 
   // Player_DisableSubtitles
   PyDoc_STRVAR(DisableSubtitles__doc__,
     "DisableSubtitles() -- disable subtitles\n");
-	
+
   PyObject* Player_DisableSubtitles(PyObject *self)
   {
-    if (g_application.m_pPlayer)	  
-    {	
-      g_stSettings.m_currentVideoSettings.m_SubtitleOn = false;
+    if (g_application.m_pPlayer)
+    {
+      g_settings.m_currentVideoSettings.m_SubtitleOn = false;
       g_application.m_pPlayer->SetSubtitleVisible(false);
-		
+
       Py_INCREF(Py_None);
       return Py_None;
     }
     return NULL;
   }
-	
+
   PyMethodDef Player_methods[] = {
     {(char*)"play", (PyCFunction)Player_Play, METH_VARARGS|METH_KEYWORDS, play__doc__},
     {(char*)"stop", (PyCFunction)pyPlayer_Stop, METH_VARARGS, stop__doc__},

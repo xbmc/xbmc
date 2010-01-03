@@ -7,8 +7,8 @@ set -e
 if [ "$1" = "purge" ]; then
 	SUDOERS_TEMPFILE=$(mktemp -q)
 
-	# Add xbmc to the sudoers file (if not already done)
-	if ! grep -i -q XBMC-specific /etc/sudoers ; then 
+	# Remove xbmc specific entries from /etc/sudoers
+	if test -r /etc/sudoers && grep -i -q XBMC-specific /etc/sudoers ; then
 		cat /etc/sudoers > $SUDOERS_TEMPFILE
 
 		sed -i -e "/XBMC/d" $SUDOERS_TEMPFILE
@@ -23,6 +23,9 @@ if [ "$1" = "purge" ]; then
 			echo "Please edit /etc/sudoers using 'visudo' and remove the lines with 'XBMC'"
 		fi
 	fi
+
+	# Remove XBMC sudoers files
+	rm $SUDOERS_TEMPFILE
 
 	POLKIT_ACTIONS="org.freedesktop.hal.dockstation.undock
 		org.freedesktop.hal.wol.enabled
@@ -64,7 +67,12 @@ if [ "$1" = "purge" ]; then
 		org.freedesktop.hal.power-management.keyboard-backlight
 		org.freedesktop.devicekit.power.suspend
 		org.freedesktop.devicekit.power.Hibernate
-		org.freedesktop.consolekit.system.stop"
+		org.freedesktop.consolekit.system.stop
+		org.freedesktop.devicekit.disks.filesystem-mount
+		org.freedesktop.devicekit.disks.filesystem-mount-system-internal
+		org.freedesktop.devicekit.disks.filesystem-unmount-others
+		org.freedesktop.devicekit.disks.drive-eject
+		org.freedesktop.devicekit.disks.drive-detach"
 
 	# Grant the 'xbmc' user each action from the list if not done already
 	for ACTION in $POLKIT_ACTIONS; do
@@ -89,6 +97,21 @@ if [ "$1" = "purge" ]; then
 	fi
 	if [ -f "/etc/init/xbmc-live-install" ]; then
 		rm /etc/init/xbmc-live-install.conf >/dev/null
+	fi
+
+
+	# Remove <xbmc=* > from grub's kernel entries
+	if [ -f /boot/grub/menu.lst ]; then
+		if grep -q -i "xbmc=" /boot/grub/menu.lst ; then
+			sed -i -e "s/xbmc=autostart,nodiskmount,setvolume loglevel=0//" /boot/grub/menu.lst
+		fi
+	fi
+
+	if [ -f /boot/grub/grub.cfg ]; then
+		if grep -q -i "xbmc=" /etc/default/grub ; then
+			sed -i -e "s/xbmc=autostart,nodiskmount,setvolume loglevel=0//" /etc/default/grub
+			update-grub
+		fi
 	fi
 fi
 

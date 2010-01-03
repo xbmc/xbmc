@@ -106,7 +106,7 @@
 				<posy>530</posy>
 				<width>1220</width>
 				<height>35</height>
-				<font>font30caps_title</font>
+				<font>font30_title</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 				<scroll>true</scroll>
@@ -119,7 +119,7 @@
 				<posy>580</posy>
 				<width>1280</width>
 				<height>35</height>
-				<font>font30caps</font>
+				<font>font30</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 				<scroll>true</scroll>
@@ -135,7 +135,7 @@
 				<posy>510</posy>
 				<width>1220</width>
 				<height>35</height>
-				<font>font30caps_title</font>
+				<font>font30_title</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 				<scroll>true</scroll>
@@ -148,7 +148,7 @@
 				<posy>550</posy>
 				<width>1280</width>
 				<height>35</height>
-				<font>font30caps</font>
+				<font>font30</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 				<scroll>true</scroll>
@@ -198,7 +198,7 @@
 				<posy>530</posy>
 				<width>1220</width>
 				<height>35</height>
-				<font>font30caps_title</font>
+				<font>font30_title</font>
 				<textcolor>white</textcolor>
 				<scroll>true</scroll>
 				<align>center</align>
@@ -210,7 +210,7 @@
 				<posy>570</posy>
 				<width>1280</width>
 				<height>35</height>
-				<font>font30caps</font>
+				<font>font30</font>
 				<textcolor>white</textcolor>
 				<scroll>true</scroll>
 				<align>center</align>
@@ -249,7 +249,7 @@
 				<posy>530</posy>
 				<width>1220</width>
 				<height>35</height>
-				<font>font30caps_title</font>
+				<font>font30_title</font>
 				<textcolor>white</textcolor>
 				<scroll>true</scroll>
 				<align>center</align>
@@ -261,7 +261,7 @@
 				<posy>570</posy>
 				<width>1280</width>
 				<height>35</height>
-				<font>font30caps</font>
+				<font>font30</font>
 				<textcolor>white</textcolor>
 				<scroll>true</scroll>
 				<align>center</align>
@@ -410,7 +410,7 @@
 				<posy>188</posy>
 				<width>1200</width>
 				<height>30</height>
-				<font>font24caps_title</font>
+				<font>font24_title</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 				<scroll>true</scroll>
@@ -438,7 +438,7 @@
 		<control type="group">
 			<posx>180</posx>
 			<posy>30</posy>
-			<visible>Control.IsVisible(508) + !Skin.HasSetting(View508HideInfo) + !Window.IsVisible(VideoFiles) + !ListItem.IsFolder</visible>
+			<visible>Control.IsVisible(508) + !Skin.HasSetting(View508HideInfo) + !Window.IsVisible(VideoFiles) + ![ListItem.IsFolder + Container.Content(Movies)]</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="image">
 				<posx>0</posx>
@@ -456,7 +456,7 @@
 					<posy>0</posy>
 					<width>400</width>
 					<height>30</height>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>
@@ -534,7 +534,7 @@
 					<posy>0</posy>
 					<width>400</width>
 					<height>30</height>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>
@@ -560,7 +560,7 @@
 					<posy>75</posy>
 					<width>400</width>
 					<height>30</height>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>
@@ -591,7 +591,7 @@
 					<posy>0</posy>
 					<width>400</width>
 					<height>30</height>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>
@@ -654,7 +654,7 @@
 					<posy>0</posy>
 					<width>400</width>
 					<height>30</height>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>
@@ -710,7 +710,7 @@
 					<posy>0</posy>
 					<width>400</width>
 					<height>30</height>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>
@@ -939,7 +939,7 @@
 					<label>$LOCALIZE[20360]:</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>blue</textcolor>
 				</control>
 				<control type="label">
@@ -963,7 +963,7 @@
 					<label>$LOCALIZE[20416]:</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>blue</textcolor>
 				</control>
 				<control type="label">
@@ -987,7 +987,7 @@
 					<label>$LOCALIZE[515]:</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>blue</textcolor>
 				</control>
 				<control type="label">
@@ -1069,7 +1069,7 @@
 					<label>$INFO[ListItem.Episode,, $LOCALIZE[20360]]</label>
 					<align>left</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -1082,7 +1082,7 @@
 					<label>$INFO[ListItem.Property(WatchedEpisodes),, $LOCALIZE[16102]]</label>
 					<align>left</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -1095,7 +1095,7 @@
 					<label>$INFO[ListItem.Property(UnWatchedEpisodes),, $LOCALIZE[16101]]</label>
 					<align>left</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -1147,7 +1147,7 @@
 					<label>$INFO[ListItem.Label]</label>
 					<align>left</align>
 					<aligny>center</aligny>
-					<font>font30caps</font>
+					<font>font30</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -1160,7 +1160,7 @@
 					<label>$INFO[ListItem.Episode,, $LOCALIZE[20360]]</label>
 					<align>left</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -1173,7 +1173,7 @@
 					<label>$INFO[ListItem.Property(WatchedEpisodes),, $LOCALIZE[16102]]</label>
 					<align>left</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -1186,7 +1186,7 @@
 					<label>$INFO[ListItem.Property(UnWatchedEpisodes),, $LOCALIZE[16101]]</label>
 					<align>left</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -1224,7 +1224,7 @@
 					<label>$INFO[ListItem.Title]</label>
 					<align>left</align>
 					<aligny>top</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<wrapmultiline>true</wrapmultiline>
@@ -1238,7 +1238,7 @@
 					<label>$INFO[ListItem.Season,[COLOR=blue]$LOCALIZE[20373] :[/COLOR] ]</label>
 					<align>left</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -1251,7 +1251,7 @@
 					<label>$INFO[ListItem.episode,[COLOR=blue]$LOCALIZE[20359] :[/COLOR] ]</label>
 					<align>left</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<scroll>true</scroll>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
@@ -1265,7 +1265,7 @@
 					<label>$INFO[ListItem.premiered,[COLOR=blue]$LOCALIZE[31322] :[/COLOR] ]</label>
 					<align>left</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -1519,7 +1519,7 @@
 					<label>$INFO[ListItem.Label]</label>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<wrapmultiline>true</wrapmultiline>
@@ -1592,7 +1592,7 @@
 						<label>$LOCALIZE[20416]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
@@ -1616,7 +1616,7 @@
 						<label>$LOCALIZE[515]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
@@ -1663,7 +1663,7 @@
 						<label>$LOCALIZE[20416]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
@@ -1687,7 +1687,7 @@
 						<label>$LOCALIZE[515]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
@@ -1711,7 +1711,7 @@
 						<label>$LOCALIZE[20360]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
@@ -1758,7 +1758,7 @@
 						<label>$LOCALIZE[515]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
@@ -1782,7 +1782,7 @@
 						<label>$LOCALIZE[20360]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
@@ -1831,7 +1831,7 @@
 					<label>$INFO[ListItem.Label]</label>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<wrapmultiline>true</wrapmultiline>
@@ -1902,7 +1902,7 @@
 						<label>$LOCALIZE[345]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
@@ -1926,7 +1926,7 @@
 						<label>$LOCALIZE[515]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
@@ -1993,7 +1993,7 @@
 						<label>$LOCALIZE[345]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
@@ -2017,7 +2017,7 @@
 						<label>$LOCALIZE[515]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
@@ -2047,7 +2047,7 @@
 					<label>$INFO[ListItem.TVShowTitle]</label>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<wrapmultiline>true</wrapmultiline>
@@ -2081,7 +2081,7 @@
 					<label>$INFO[ListItem.Label]</label>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<wrapmultiline>true</wrapmultiline>
@@ -2114,7 +2114,7 @@
 					<label>$INFO[ListItem.Title]</label>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<wrapmultiline>true</wrapmultiline>
@@ -2170,7 +2170,7 @@
 						<label>$LOCALIZE[20416]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">
@@ -2194,7 +2194,7 @@
 						<label>$LOCALIZE[20359]:</label>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>blue</textcolor>
 					</control>
 					<control type="label">

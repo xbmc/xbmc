@@ -442,6 +442,19 @@ void CGUIDialogMediaSource::OnOK()
     m_confirmed = true;
     Close();
   }
+
+  // Special handling of multipath:// shares.
+  // * GetScraperForPath takes the first path of the multipath:// element to fetch needed scraper and scan settings.
+  // * SetScraperForPath loops through all elements and adds the appropriate settings for each path.
+  if (CUtil::IsMultiPath(share.strPath))
+  {
+    CVideoDatabase database;
+    database.Open();
+    database.GetScraperForPath(share.strPath, m_info, m_settings);
+    database.SetScraperForPath(share.strPath, m_info, m_settings);
+    database.Close();
+  }
+
   // and remove the share again
   if (shares)
     shares->erase(--shares->end());

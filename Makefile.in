@@ -77,6 +77,11 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/vgmstream \
 	xbmc/cores/paplayer/MACDll
 
+ifeq (@USE_ASAP_CODEC@,1)
+PAPCODEC_DIRS+= \
+	xbmc/cores/paplayer/asap
+endif
+
 ifeq ($(findstring osx,$(ARCH)),osx)
 PAPCODEC_DIRS+= \
 	xbmc/cores/paplayer/vorbisfile \
@@ -119,7 +124,10 @@ INCLUDES=@INCLUDES@
 CLEAN_FILES=xbmc.bin xbmc-xrandr
 
 DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
-        autom4te.cache config.h.in~
+        autom4te.cache config.h.in~ \
+        xbmc/lib/libPython/Python/Include/pyconfig.h \
+        xbmc/lib/libPython/Python/configure.lineno \
+        xbmc/lib/libPython/Python/libpython2.4.so.1.0
 
 all : Makefile externals xbmc.bin xbmc-xrandr skins
 
@@ -244,6 +252,8 @@ xbmc/visualizations/visualization.a: force
 	$(MAKE) -C xbmc/visualizations
 xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
+xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a: force
+	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libbdnav
 
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
@@ -297,6 +307,11 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/NSFCodec
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
 	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
+ifeq (@USE_ASAP_CODEC@,1)
+  ifneq ($(findstring osx,$(ARCH)), osx)
+	  $(MAKE) -C xbmc/cores/paplayer/asap asap-xbmc
+  endif
+endif
 ifneq (@USE_EXTERNAL_LIBWAVPACK@,1)
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
 endif
@@ -318,6 +333,7 @@ xcode_depends: \
 	codecs libs python visualizations screensavers eventclients \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	skins \
+	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
 	xbmc/lib/cmyth/libcmyth/libcmyth.a \
 	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/lib/libRTMP/librtmp.a \
@@ -349,6 +365,7 @@ OBJSXBMC=	\
 	xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a \
 	xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a \
 	xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a \
+	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
 	xbmc/cores/AudioRenderers/audiorenderers.a \
 	xbmc/cores/ExternalPlayer/ExternalPlayer.a \
 	xbmc/FileSystem/filesystem.a \
@@ -456,7 +473,7 @@ install-datas: install-scripts
 	@# Arch independent files
 	@find addons language media scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Skins
-	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %-75.75f\r"
+	@find skin -regextype posix-extended -type f -not -iregex '.*/\.svn/.*|^skin/[^/]*/media/.*[^x][^b][^t]' -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %-75.75f\r"
 	@# Icons and links
 	@mkdir -p $(prefix)/share/applications $(prefix)/share/pixmaps
 	@cp -a tools/Linux/xbmc.png $(prefix)/share/pixmaps/

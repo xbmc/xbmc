@@ -1,0 +1,160 @@
+.TH PCRESTACK 3
+.SH NAME
+PCRE - Perl-compatible regular expressions
+.SH "PCRE DISCUSSION OF STACK USAGE"
+.rs
+.sp
+When you call \fBpcre_exec()\fP, it makes use of an internal function called
+\fBmatch()\fP. This calls itself recursively at branch points in the pattern,
+in order to remember the state of the match so that it can back up and try a
+different alternative if the first one fails. As matching proceeds deeper and
+deeper into the tree of possibilities, the recursion depth increases.
+.P
+Not all calls of \fBmatch()\fP increase the recursion depth; for an item such
+as a* it may be called several times at the same level, after matching
+different numbers of a's. Furthermore, in a number of cases where the result of
+the recursive call would immediately be passed back as the result of the
+current call (a "tail recursion"), the function is just restarted instead.
+.P
+The \fBpcre_dfa_exec()\fP function operates in an entirely different way, and
+hardly uses recursion at all. The limit on its complexity is the amount of
+workspace it is given. The comments that follow do NOT apply to
+\fBpcre_dfa_exec()\fP; they are relevant only for \fBpcre_exec()\fP.
+.P
+You can set limits on the number of times that \fBmatch()\fP is called, both in
+total and recursively. If the limit is exceeded, an error occurs. For details,
+see the
+.\" HTML <a href="pcreapi.html#extradata">
+.\" </a>
+section on extra data for \fBpcre_exec()\fP
+.\"
+in the
+.\" HREF
+\fBpcreapi\fP
+.\"
+documentation.
+.P
+Each time that \fBmatch()\fP is actually called recursively, it uses memory
+from the process stack. For certain kinds of pattern and data, very large
+amounts of stack may be needed, despite the recognition of "tail recursion".
+You can often reduce the amount of recursion, and therefore the amount of stack
+used, by modifying the pattern that is being matched. Consider, for example,
+this pattern:
+.sp
+  ([^<]|<(?!inet))+
+.sp
+It matches from wherever it starts until it encounters "<inet" or the end of
+the data, and is the kind of pattern that might be used when processing an XML
+file. Each iteration of the outer parentheses matches either one character that
+is not "<" or a "<" that is not followed by "inet". However, each time a
+parenthesis is processed, a recursion occurs, so this formulation uses a stack
+frame for each matched character. For a long string, a lot of stack is
+required. Consider now this rewritten pattern, which matches exactly the same
+strings:
+.sp
+  ([^<]++|<(?!inet))+
+.sp
+This uses very much less stack, because runs of characters that do not contain
+"<" are "swallowed" in one item inside the parentheses. Recursion happens only
+when a "<" character that is not followed by "inet" is encountered (and we
+assume this is relatively rare). A possessive quantifier is used to stop any
+backtracking into the runs of non-"<" characters, but that is not related to
+stack usage.
+.P
+This example shows that one way of avoiding stack problems when matching long
+subject strings is to write repeated parenthesized subpatterns to match more
+than one character whenever possible.
+.
+.SS "Compiling PCRE to use heap instead of stack"
+.rs
+.sp
+In environments where stack memory is constrained, you might want to compile
+PCRE to use heap memory instead of stack for remembering back-up points. This
+makes it run a lot more slowly, however. Details of how to do this are given in
+the
+.\" HREF
+\fBpcrebuild\fP
+.\"
+documentation. When built in this way, instead of using the stack, PCRE obtains
+and frees memory by calling the functions that are pointed to by the
+\fBpcre_stack_malloc\fP and \fBpcre_stack_free\fP variables. By default, these
+point to \fBmalloc()\fP and \fBfree()\fP, but you can replace the pointers to
+cause PCRE to use your own functions. Since the block sizes are always the
+same, and are always freed in reverse order, it may be possible to implement
+customized memory handlers that are more efficient than the standard functions.
+.
+.SS "Limiting PCRE's stack usage"
+.rs
+.sp
+PCRE has an internal counter that can be used to limit the depth of recursion,
+and thus cause \fBpcre_exec()\fP to give an error code before it runs out of
+stack. By default, the limit is very large, and unlikely ever to operate. It
+can be changed when PCRE is built, and it can also be set when
+\fBpcre_exec()\fP is called. For details of these interfaces, see the
+.\" HREF
+\fBpcrebuild\fP
+.\"
+and
+.\" HREF
+\fBpcreapi\fP
+.\"
+documentation.
+.P
+As a very rough rule of thumb, you should reckon on about 500 bytes per
+recursion. Thus, if you want to limit your stack usage to 8Mb, you
+should set the limit at 16000 recursions. A 64Mb stack, on the other hand, can
+support around 128000 recursions. The \fBpcretest\fP test program has a command
+line option (\fB-S\fP) that can be used to increase the size of its stack.
+.
+.SS "Changing stack size in Unix-like systems"
+.rs
+.sp
+In Unix-like environments, there is not often a problem with the stack unless
+very long strings are involved, though the default limit on stack size varies
+from system to system. Values from 8Mb to 64Mb are common. You can find your
+default limit by running the command:
+.sp
+  ulimit -s
+.sp
+Unfortunately, the effect of running out of stack is often SIGSEGV, though
+sometimes a more explicit error message is given. You can normally increase the
+limit on stack size by code such as this:
+.sp
+  struct rlimit rlim;
+  getrlimit(RLIMIT_STACK, &rlim);
+  rlim.rlim_cur = 100*1024*1024;
+  setrlimit(RLIMIT_STACK, &rlim);
+.sp
+This reads the current limits (soft and hard) using \fBgetrlimit()\fP, then
+attempts to increase the soft limit to 100Mb using \fBsetrlimit()\fP. You must
+do this before calling \fBpcre_exec()\fP.
+.
+.SS "Changing stack size in Mac OS X"
+.rs
+.sp
+Using \fBsetrlimit()\fP, as described above, should also work on Mac OS X. It
+is also possible to set a stack size when linking a program. There is a
+discussion about stack sizes in Mac OS X at this web site:
+.\" HTML <a href="http://developer.apple.com/qa/qa2005/qa1419.html">
+.\" </a>
+http://developer.apple.com/qa/qa2005/qa1419.html.
+.\"
+.
+.
+.SH AUTHOR
+.rs
+.sp
+.nf
+Philip Hazel
+University Computing Service
+Cambridge CB2 3QH, England.
+.fi
+.
+.
+.SH REVISION
+.rs
+.sp
+.nf
+Last updated: 09 July 2008
+Copyright (c) 1997-2008 University of Cambridge.
+.fi

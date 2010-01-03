@@ -1,0 +1,60 @@
+          LIBCHARSET - portable character set determination library
+
+This library provides a function which determines the character set / encoding
+of text in the currently selected locale (the LC_CTYPE locale facet).
+
+It is useful for portable programs which need to process text in other
+encodings and locales than the currently selected one. Possible uses:
+
+  * Use of Unicode in POSIX compliant applications.
+  * Conversion of text between the current locale's encoding and UTF-8 (or
+    any other given encoding).
+  * Mail agents.
+
+In theory, this would be very simple: The Single Unix Specification (SUSV2)
+provides the nl_langinfo function, in such a way that
+
+                  nl_langinfo (CODESET)
+
+returns the encoding name. But the nl_langinfo function still does not exist
+on some systems, and on those where it exists it returns unstandardized
+variations of the encoding names, like (on Solaris) "PCK" for "Shift_JIS".
+
+This library fixes these flaws and provides a function
+
+       const char * locale_charset (void);
+
+It determines the current locale's character encoding, and canonicalizes it
+into one of the canonical names listed in config.charset. The result must
+not be freed; it is statically allocated. If the canonical name cannot be
+determined, the result is a non-canonical name.
+
+
+Installation:
+
+As usual for GNU packages:
+
+    $ ./configure --prefix=/usr/local
+    $ make
+    $ make install
+
+
+This library is used in
+  GNU sh-utils, fileutils, textutils
+  GNU gettext
+  GNU clisp
+
+
+To integrate this library into your package:
+See file INTEGRATE.
+
+
+Distribution:
+    The libcharset directory of
+    ftp://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.8.tar.gz
+
+Homepage:
+    http://www.haible.de/bruno/packages-libcharset.html
+
+
+Bruno Haible <bruno@clisp.org>

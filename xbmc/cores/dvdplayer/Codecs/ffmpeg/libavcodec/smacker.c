@@ -514,10 +514,6 @@ static av_cold int decode_init(AVCodecContext *avctx)
 
     c->avctx = avctx;
 
-    if (avcodec_check_dimensions(avctx, avctx->width, avctx->height) < 0) {
-        return 1;
-    }
-
     avctx->pix_fmt = PIX_FMT_PAL8;
 
 
@@ -559,6 +555,7 @@ static av_cold int decode_end(AVCodecContext *avctx)
 static av_cold int smka_decode_init(AVCodecContext *avctx)
 {
     avctx->channel_layout = (avctx->channels==2) ? CH_LAYOUT_STEREO : CH_LAYOUT_MONO;
+    avctx->sample_fmt = avctx->bits_per_coded_sample == 8 ? SAMPLE_FMT_U8 : SAMPLE_FMT_S16;
     return 0;
 }
 

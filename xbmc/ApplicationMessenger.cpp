@@ -306,7 +306,7 @@ case TMSG_POWERDOWN:
           else
             CUtil::CreateArchivePath(strPath, "rar", pMsg->strParam.c_str(), "");
 
-          CUtil::GetRecursiveListing(strPath, items, g_stSettings.m_pictureExtensions);
+          CUtil::GetRecursiveListing(strPath, items, g_settings.m_pictureExtensions);
           if (items.Size() > 0)
           {
             for (int i=0;i<items.Size();++i)
@@ -344,7 +344,7 @@ case TMSG_POWERDOWN:
           CUtil::GetRecursiveListing(g_settings.GetMusicFanartFolder(), items, ".tbn");
         }
         else
-          CUtil::GetRecursiveListing(strPath, items, g_stSettings.m_pictureExtensions);
+          CUtil::GetRecursiveListing(strPath, items, g_settings.m_pictureExtensions);
 
         if (items.Size() > 0)
         {

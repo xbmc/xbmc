@@ -97,7 +97,6 @@ Section "XBMC" SecXBMC
   File "${xbmc_root}\Xbmc\XBMC.exe"
   File "${xbmc_root}\Xbmc\copying.txt"
   File "${xbmc_root}\Xbmc\LICENSE.GPL"
-  File "${xbmc_root}\Xbmc\known_issues.txt"
   File "${xbmc_root}\Xbmc\*.dll"
   SetOutPath "$INSTDIR\credits"
   File /r /x *.so "${xbmc_root}\Xbmc\credits\*.*"
@@ -207,7 +206,6 @@ Section "Confluence" SecSkinConfluence
 SectionEnd
 Section "PM3.HD" SecSkinPM3.HD
   SectionIn 1 2 #section is in installtype Full and Minimal
-  SectionIn RO
   SetOutPath "$INSTDIR\skin\PM3.HD"
   File /r "${xbmc_root}\Xbmc\skin\PM3.HD\*.*"
 SectionEnd
@@ -381,7 +379,7 @@ SectionEnd
 !if "${xbmc_target}" == "dx"
 Section "DirectX WebInstall" SEC_DIRECTX
  
-  SectionIn RO
+  SectionIn 1 2
  
   SetOutPath "$TEMP"
   File "${xbmc_root}\Xbmc\dxwebsetup.exe"
@@ -401,7 +399,7 @@ SectionEnd
 
 Section "Microsoft Visual C++ 2008 Redistributable Package (x86)" SEC_VCREDIST
 
-  SectionIn RO
+  SectionIn 1 2
   
   SetOutPath "$TEMP"
   File "${xbmc_root}\Xbmc\vcredist_x86.exe"

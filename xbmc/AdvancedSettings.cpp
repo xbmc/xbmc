@@ -85,6 +85,8 @@ void CAdvancedSettings::Initialize()
   m_videoIgnoreAtStart = 15;
   m_videoIgnoreAtEnd = 5; 
   m_videoPlayCountMinimumPercent = 90.0f;
+  m_videoHighQualityScaling = SOFTWARE_UPSCALING_DISABLED;
+  m_videoHighQualityScalingMethod = VS_SCALINGMETHOD_BICUBIC_SOFTWARE;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -124,7 +126,7 @@ void CAdvancedSettings::Initialize()
 #endif
   m_cddbAddress = "freedb.freedb.org";
 
-  m_handleMounting = false;
+  m_handleMounting = g_application.IsStandAlone();
 
   m_fullScreenOnMovieStart = true;
   m_noDVDROM = false;
@@ -140,8 +142,8 @@ void CAdvancedSettings::Initialize()
   m_moviesExcludeFromScanRegExps.push_back("[-._ ]sample");
   m_tvshowExcludeFromScanRegExps.push_back("[-._ ]sample[-._ ]");
 
-  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)t)|dis[ck]|d)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
-  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)t)|dis[ck]|d)[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
   m_videoStackRegExps.push_back("(.*?)([ ._-]*[a-d])(.*?)(\\.[^.]+)$");
   // This one is a bit too greedy to enable by default.  It will stack sequels
   // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
@@ -160,7 +162,7 @@ void CAdvancedSettings::Initialize()
   // foo.103*, 103 foo
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
 
-  m_tvshowMultiPartStackRegExp = "^[-EeXx]+([0-9]+[^ip])";
+  m_tvshowMultiPartStackRegExp = "^[-EeXx]+([0-9]+)";
 
   m_remoteRepeat = 480;
   m_controllerDeadzone = 0.2f;
@@ -261,6 +263,7 @@ bool CAdvancedSettings::Load()
   // NOTE: This routine should NOT set the default of any of these parameters
   //       it should instead use the versions of GetString/Integer/Float that
   //       don't take defaults in.  Defaults are set in the constructor above
+  Initialize(); // In case of profile switch.
   CStdString advancedSettingsXML;
   advancedSettingsXML  = g_settings.GetUserDataItem("advancedsettings.xml");
   TiXmlDocument advancedXML;
@@ -396,6 +399,8 @@ bool CAdvancedSettings::Load()
 
     XMLUtils::GetString(pElement,"cleandatetime", m_videoCleanDateTimeRegExp);
     XMLUtils::GetString(pElement,"postprocessing",m_videoPPFFmpegType);
+    XMLUtils::GetInt(pElement,"highqualityscaling",m_videoHighQualityScaling);
+    XMLUtils::GetInt(pElement,"highqualityscalingmethod",m_videoHighQualityScalingMethod);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -559,17 +564,17 @@ bool CAdvancedSettings::Load()
   CStdString extraExtensions;
   TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
   if (pExts)
-    GetCustomExtensions(pExts,g_stSettings.m_pictureExtensions);
+    GetCustomExtensions(pExts,g_settings.m_pictureExtensions);
 
   // music extensions
   pExts = pRootElement->FirstChildElement("musicextensions");
   if (pExts)
-    GetCustomExtensions(pExts,g_stSettings.m_musicExtensions);
+    GetCustomExtensions(pExts,g_settings.m_musicExtensions);
 
   // video extensions
   pExts = pRootElement->FirstChildElement("videoextensions");
   if (pExts)
-    GetCustomExtensions(pExts,g_stSettings.m_videoExtensions);
+    GetCustomExtensions(pExts,g_settings.m_videoExtensions);
 
   m_vecTokens.clear();
   CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"),m_vecTokens);

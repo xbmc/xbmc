@@ -139,7 +139,7 @@
         bx              lr
         .endm
 
-        .macro pixels8
+        .macro pixels8 avg=0
 1:      vld1.64         {d0}, [r1], r2
         vld1.64         {d1}, [r1], r2
         vld1.64         {d2}, [r1], r2
@@ -148,6 +148,17 @@
         pld             [r1]
         pld             [r1, r2]
         pld             [r1, r2, lsl #1]
+.if \avg
+        vld1.64         {d4}, [r0,:64], r2
+        vrhadd.u8       d0,  d0,  d4
+        vld1.64         {d5}, [r0,:64], r2
+        vrhadd.u8       d1,  d1,  d5
+        vld1.64         {d6}, [r0,:64], r2
+        vrhadd.u8       d2,  d2,  d6
+        vld1.64         {d7}, [r0,:64], r2
+        vrhadd.u8       d3,  d3,  d7
+        sub             r0,  r0,  r2,  lsl #2
+.endif
         subs            r3,  r3,  #4
         vst1.64         {d0}, [r0,:64], r2
         vst1.64         {d1}, [r0,:64], r2
@@ -238,7 +249,7 @@ function ff_\pfx\name\suf\()_neon, export=1
         .endm
 
 function ff_put_h264_qpel16_mc00_neon, export=1
-        mov   r3, #16
+        mov             r3,  #16
         .endfunc
 
         pixfunc  put_ pixels16
@@ -247,19 +258,25 @@ function ff_put_h264_qpel16_mc00_neon, export=1
         pixfunc2 put_ pixels16_xy2, _no_rnd, vshrn.u16, 1
 
 function ff_avg_h264_qpel16_mc00_neon, export=1
-        mov   r3, #16
+        mov             r3,  #16
         .endfunc
 
         pixfunc  avg_ pixels16,, 1
 
 function ff_put_h264_qpel8_mc00_neon, export=1
-        mov   r3, #8
+        mov             r3,  #8
         .endfunc
 
         pixfunc  put_ pixels8
         pixfunc2 put_ pixels8_x2,   _no_rnd, vhadd.u8
         pixfunc2 put_ pixels8_y2,   _no_rnd, vhadd.u8
         pixfunc2 put_ pixels8_xy2,  _no_rnd, vshrn.u16, 1
+
+function ff_avg_h264_qpel8_mc00_neon, export=1
+        mov             r3,  #8
+        .endfunc
+
+        pixfunc  avg_ pixels8,, 1
 
 function ff_put_pixels_clamped_neon, export=1
         vld1.64         {d16-d19}, [r0,:128]!

@@ -9,19 +9,16 @@
 	<controls>
 		<control type="group">
 			<posx>580</posx>
-			<animation effect="slide" start="700,0" end="0,0" time="400" tween="quadratic" easing="out" condition="![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation) | Window.IsVisible(124)]">WindowOpen</animation>
+			<animation effect="slide" start="700,0" end="0,0" time="400" tween="quadratic" easing="out" condition="![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowOpen</animation>
 			<animation effect="slide" start="-400,0" end="0,0" time="400" tween="quadratic" easing="out" condition="[Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowOpen</animation>
-			<animation effect="slide" start="100,0" end="0,0" time="200" tween="quadratic" easing="out" condition="Window.IsVisible(124)">WindowOpen</animation>
-			<animation effect="slide" start="0,0" end="700,0" time="400" tween="quadratic" easing="out" condition="![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation) | Window.IsVisible(124)]">WindowClose</animation>
+			<animation effect="slide" start="0,0" end="700,0" time="400" tween="quadratic" easing="out" condition="![Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowClose</animation>
 			<animation effect="slide" start="0,0" end="-400,0" time="400" tween="quadratic" easing="out" condition="[Window.IsVisible(MovieInformation) | Window.IsVisible(MusicInformation)]">WindowClose</animation>
-			<animation effect="slide" start="0,0" end="100,0" time="200" tween="quadratic" easing="out" condition="Window.IsVisible(124)">WindowClose</animation>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
 				<width>1100</width>
 				<height>720</height>
 				<texture border="15,0,0,0" flipx="true">MediaBladeSub.png</texture>
-				<visible>!Window.IsVisible(124)</visible>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
@@ -40,15 +37,6 @@
 				<ondown>450</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
-			<control type="image">
-				<description>media info background image</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>800</width>
-				<height>720</height>
-				<texture border="20,0,0,0" flipx="true">VisOsdPanel.png</texture>
-				<visible>Window.IsVisible(124)</visible>
-			</control>
 			<control type="group">
 				<animation effect="fade" delay="400" start="0" end="100" time="200">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
@@ -58,7 +46,7 @@
 					<posy>40</posy>
 					<width>630</width>
 					<height>30</height>
-					<font>font30caps_title</font>
+					<font>font30_title</font>
 					<label>1023</label>
 					<align>right</align>
 					<aligny>center</aligny>
@@ -312,7 +300,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<textcolor>blue</textcolor>
-					<font>font12caps</font>
+					<font>font12</font>
 					<label>($INFO[Container(450).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(450).CurrentPage]/$INFO[Container(450).NumPages])</label>
 					<visible>!Control.IsVisible(451)</visible>
 				</control>
@@ -325,7 +313,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<textcolor>blue</textcolor>
-					<font>font12caps</font>
+					<font>font12</font>
 					<label>($INFO[Container(451).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(451).CurrentPage]/$INFO[Container(451).NumPages])</label>
 					<visible>Control.IsVisible(451)</visible>
 				</control>

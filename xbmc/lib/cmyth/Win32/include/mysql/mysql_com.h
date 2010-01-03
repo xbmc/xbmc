@@ -20,9 +20,13 @@
 #ifndef _mysql_com_h
 #define _mysql_com_h
 
-#define NAME_LEN	64		/* Field/table name length */
 #define HOSTNAME_LENGTH 60
-#define USERNAME_LENGTH 16
+#define SYSTEM_CHARSET_MBMAXLEN 3
+#define NAME_CHAR_LEN	64              /* Field/table name length */
+#define USERNAME_CHAR_LENGTH 16
+#define NAME_LEN                (NAME_CHAR_LEN*SYSTEM_CHARSET_MBMAXLEN)
+#define USERNAME_LENGTH         (USERNAME_CHAR_LENGTH*SYSTEM_CHARSET_MBMAXLEN)
+
 #define SERVER_VERSION_LENGTH 60
 #define SQLSTATE_LENGTH 5
 
@@ -56,7 +60,7 @@ enum enum_server_command
   COM_TIME, COM_DELAYED_INSERT, COM_CHANGE_USER, COM_BINLOG_DUMP,
   COM_TABLE_DUMP, COM_CONNECT_OUT, COM_REGISTER_SLAVE,
   COM_STMT_PREPARE, COM_STMT_EXECUTE, COM_STMT_SEND_LONG_DATA, COM_STMT_CLOSE,
-  COM_STMT_RESET, COM_SET_OPTION, COM_STMT_FETCH,
+  COM_STMT_RESET, COM_SET_OPTION, COM_STMT_FETCH, COM_DAEMON,
   /* don't forget to update const char *command_name[] in sql_parse.cc */
 
   /* Must be last */
@@ -90,11 +94,16 @@ enum enum_server_command
 #define TIMESTAMP_FLAG	1024		/* Field is a timestamp */
 #define SET_FLAG	2048		/* field is a set */
 #define NO_DEFAULT_VALUE_FLAG 4096	/* Field doesn't have default value */
+#define ON_UPDATE_NOW_FLAG 8192         /* Field is set to NOW on UPDATE */
 #define NUM_FLAG	32768		/* Field is num (for clients) */
 #define PART_KEY_FLAG	16384		/* Intern; Part of some key */
 #define GROUP_FLAG	32768		/* Intern: Group field */
 #define UNIQUE_FLAG	65536		/* Intern: Used by sql_yacc */
 #define BINCMP_FLAG	131072		/* Intern: Used by sql_yacc */
+#define GET_FIXED_FIELDS_FLAG (1 << 18) /* Used to get fields in item tree */
+#define FIELD_IN_PART_FUNC_FLAG (1 << 19)/* Field part of partition func */
+#define FIELD_IN_ADD_INDEX (1<< 20)	/* Intern: Field used in ADD INDEX */
+#define FIELD_IS_RENAMED (1<< 21)       /* Intern: Field is being renamed */
 
 #define REFRESH_GRANT		1	/* Refresh grant tables */
 #define REFRESH_LOG		2	/* Start on new log file */
@@ -139,24 +148,74 @@ enum enum_server_command
 #define CLIENT_SSL_VERIFY_SERVER_CERT (1UL << 30)
 #define CLIENT_REMEMBER_OPTIONS (1UL << 31)
 
+/* Gather all possible capabilites (flags) supported by the server */
+#define CLIENT_ALL_FLAGS  (CLIENT_LONG_PASSWORD | \
+                           CLIENT_FOUND_ROWS | \
+                           CLIENT_LONG_FLAG | \
+                           CLIENT_CONNECT_WITH_DB | \
+                           CLIENT_NO_SCHEMA | \
+                           CLIENT_COMPRESS | \
+                           CLIENT_ODBC | \
+                           CLIENT_LOCAL_FILES | \
+                           CLIENT_IGNORE_SPACE | \
+                           CLIENT_PROTOCOL_41 | \
+                           CLIENT_INTERACTIVE | \
+                           CLIENT_SSL | \
+                           CLIENT_IGNORE_SIGPIPE | \
+                           CLIENT_TRANSACTIONS | \
+                           CLIENT_RESERVED | \
+                           CLIENT_SECURE_CONNECTION | \
+                           CLIENT_MULTI_STATEMENTS | \
+                           CLIENT_MULTI_RESULTS | \
+                           CLIENT_SSL_VERIFY_SERVER_CERT | \
+                           CLIENT_REMEMBER_OPTIONS)
+
+/*
+  Switch off the flags that are optional and depending on build flags
+  If any of the optional flags is supported by the build it will be switched
+  on before sending to the client during the connection handshake.
+*/
+#define CLIENT_BASIC_FLAGS (((CLIENT_ALL_FLAGS & ~CLIENT_SSL) \
+                                               & ~CLIENT_COMPRESS) \
+                                               & ~CLIENT_SSL_VERIFY_SERVER_CERT)
+
 #define SERVER_STATUS_IN_TRANS     1	/* Transaction has started */
 #define SERVER_STATUS_AUTOCOMMIT   2	/* Server in auto_commit mode */
 #define SERVER_MORE_RESULTS_EXISTS 8    /* Multi query - next query exists */
 #define SERVER_QUERY_NO_GOOD_INDEX_USED 16
 #define SERVER_QUERY_NO_INDEX_USED      32
-/*
+/**
   The server was able to fulfill the clients request and opened a
   read-only non-scrollable cursor for a query. This flag comes
   in reply to COM_STMT_EXECUTE and COM_STMT_FETCH commands.
 */
 #define SERVER_STATUS_CURSOR_EXISTS 64
-/*
+/**
   This flag is sent when a read-only cursor is exhausted, in reply to
   COM_STMT_FETCH command.
 */
 #define SERVER_STATUS_LAST_ROW_SENT 128
 #define SERVER_STATUS_DB_DROPPED        256 /* A database was dropped */
 #define SERVER_STATUS_NO_BACKSLASH_ESCAPES 512
+/**
+  Sent to the client if after a prepared statement reprepare
+  we discovered that the new statement returns a different 
+  number of result set columns.
+*/
+#define SERVER_STATUS_METADATA_CHANGED 1024
+
+/**
+  Server status flags that must be cleared when starting
+  execution of a new SQL statement.
+  Flags from this set are only added to the
+  current server status by the execution engine, but 
+  never removed -- the execution engine expects them 
+  to disappear automagically by the next command.
+*/
+#define SERVER_STATUS_CLEAR_SET (SERVER_QUERY_NO_GOOD_INDEX_USED| \
+                                 SERVER_QUERY_NO_INDEX_USED|\
+                                 SERVER_MORE_RESULTS_EXISTS|\
+                                 SERVER_STATUS_METADATA_CHANGED)
 
 #define MYSQL_ERRMSG_SIZE	512
 #define NET_READ_TIMEOUT	30		/* Timeout on read */
@@ -164,6 +223,7 @@ enum enum_server_command
 #define NET_WAIT_TIMEOUT	8*60*60		/* Wait for new query */
 
 #define ONLY_KILL_QUERY         1
+
 
 struct st_vio;					/* Only C */
 typedef struct st_vio Vio;
@@ -174,52 +234,51 @@ typedef struct st_vio Vio;
 #define MAX_INT_WIDTH           10      /* Max width for a LONG w.o. sign */
 #define MAX_BIGINT_WIDTH        20      /* Max width for a LONGLONG */
 #define MAX_CHAR_WIDTH		255	/* Max length for a CHAR colum */
-#define MAX_BLOB_WIDTH		8192	/* Default width for blob */
+#define MAX_BLOB_WIDTH		16777216	/* Default width for blob */
 
 typedef struct st_net {
 #if !defined(CHECK_EMBEDDED_DIFFERENCES) || !defined(EMBEDDED_LIBRARY)
-  Vio* vio;
+  Vio *vio;
   unsigned char *buff,*buff_end,*write_pos,*read_pos;
   my_socket fd;					/* For Perl DBI/dbd */
-  unsigned long max_packet,max_packet_size;
-  unsigned int pkt_nr,compress_pkt_nr;
-  unsigned int write_timeout, read_timeout, retry_count;
-  int fcntl;
-  my_bool compress;
   /*
     The following variable is set if we are doing several queries in one
     command ( as in LOAD TABLE ... FROM MASTER ),
     and do not want to confuse the client with OK at the wrong time
   */
   unsigned long remain_in_buf,length, buf_length, where_b;
+  unsigned long max_packet,max_packet_size;
+  unsigned int pkt_nr,compress_pkt_nr;
+  unsigned int write_timeout, read_timeout, retry_count;
+  int fcntl;
   unsigned int *return_status;
   unsigned char reading_or_writing;
   char save_char;
-  my_bool no_send_ok;  /* For SPs and other things that do multiple stmts */
-  my_bool no_send_eof; /* For SPs' first version read-only cursors */
-  /*
-    Set if OK packet is already sent, and we do not need to send error
-    messages
-  */
-  my_bool no_send_error;
+  my_bool unused0; /* Please remove with the next incompatible ABI change. */
+  my_bool unused; /* Please remove with the next incompatible ABI change */
+  my_bool compress;
+  my_bool unused1; /* Please remove with the next incompatible ABI change. */
   /*
     Pointer to query object in query cache, do not equal NULL (0) for
     queries in cache that have not stored its results yet
   */
 #endif
-  char last_error[MYSQL_ERRMSG_SIZE], sqlstate[SQLSTATE_LENGTH+1];
-  unsigned int last_errno;
-  unsigned char error;
-
   /*
     'query_cache_query' should be accessed only via query cache
     functions and methods to maintain proper locking.
   */
-  gptr query_cache_query;
-
-  my_bool report_error; /* We should report error (we have unreported error) */
+  unsigned char *query_cache_query;
+  unsigned int last_errno;
+  unsigned char error; 
+  my_bool unused2; /* Please remove with the next incompatible ABI change. */
   my_bool return_errno;
+  /** Client library error message buffer. Actually belongs to struct MYSQL. */
+  char last_error[MYSQL_ERRMSG_SIZE];
+  /** Client library sqlstate buffer. Set along with the error message. */
+  char sqlstate[SQLSTATE_LENGTH+1];
+  void *extension;
 } NET;
+
 
 #define packet_error (~(unsigned long) 0)
 
@@ -335,14 +394,14 @@ extern "C" {
 my_bool	my_net_init(NET *net, Vio* vio);
 void	my_net_local_init(NET *net);
 void	net_end(NET *net);
-void	net_clear(NET *net);
-my_bool net_realloc(NET *net, unsigned long length);
+  void	net_clear(NET *net, my_bool clear_buffer);
+my_bool net_realloc(NET *net, size_t length);
 my_bool	net_flush(NET *net);
-my_bool	my_net_write(NET *net,const char *packet,unsigned long len);
+my_bool	my_net_write(NET *net,const unsigned char *packet, size_t len);
 my_bool	net_write_command(NET *net,unsigned char command,
-			  const char *header, unsigned long head_len,
-			  const char *packet, unsigned long len);
-int	net_real_write(NET *net,const char *packet,unsigned long len);
+			  const unsigned char *header, size_t head_len,
+			  const unsigned char *packet, size_t len);
+int	net_real_write(NET *net,const unsigned char *packet, size_t len);
 unsigned long my_net_read(NET *net);
 
 #ifdef _global_h
@@ -381,18 +440,24 @@ typedef struct st_udf_args
   char *maybe_null;			/* Set to 1 for all maybe_null args */
   char **attributes;                    /* Pointer to attribute name */
   unsigned long *attribute_lengths;     /* Length of attribute arguments */
+  void *extension;
 } UDF_ARGS;
 
   /* This holds information about the result */
 
 typedef struct st_udf_init
 {
-  my_bool maybe_null;			/* 1 if function can return NULL */
-  unsigned int decimals;		/* for real functions */
-  unsigned long max_length;		/* For string functions */
-  char	  *ptr;				/* free pointer for function data */
-  my_bool const_item;			/* 0 if result is independent of arguments */
+  my_bool maybe_null;          /* 1 if function can return NULL */
+  unsigned int decimals;       /* for real functions */
+  unsigned long max_length;    /* For string functions */
+  char *ptr;                   /* free pointer for function data */
+  my_bool const_item;          /* 1 if function always returns the same value */
+  void *extension;
 } UDF_INIT;
+/* 
+  TODO: add a notion for determinism of the UDF. 
+  See Item_udf_func::update_used_tables ()
+*/
 
   /* Constants when using compression */
 #define NET_HEADER_SIZE 4		/* standard header size */
@@ -432,24 +497,18 @@ char *octet2hex(char *to, const char *str, unsigned int len);
 
 /* end of password.c */
 
-char *get_tty_password(char *opt_message);
+char *get_tty_password(const char *opt_message);
 const char *mysql_errno_to_sqlstate(unsigned int mysql_errno);
 
 /* Some other useful functions */
 
-my_bool my_init(void);
-extern int modify_defaults_file(const char *file_location, const char *option,
-                                const char *option_value,
-                                const char *section_name, int remove_option);
-int load_defaults(const char *conf_file, const char **groups,
-		  int *argc, char ***argv);
 my_bool my_thread_init(void);
 void my_thread_end(void);
 
 #ifdef _global_h
 ulong STDCALL net_field_length(uchar **packet);
 my_ulonglong net_field_length_ll(uchar **packet);
-char *net_store_length(char *pkg, ulonglong length);
+uchar *net_store_length(uchar *pkg, ulonglong length);
 #endif
 
 #ifdef __cplusplus

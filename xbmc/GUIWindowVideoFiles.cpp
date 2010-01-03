@@ -77,7 +77,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");
-        g_stSettings.m_iVideoStartWindow = GetID();
+        g_settings.m_iVideoStartWindow = GetID();
         CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
         // reset directory path, as we have effectively cleared it here
         m_history.ClearPathHistory();
@@ -169,10 +169,10 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         // toggle between the following states:
         //   0 : no stacking
         //   1 : stacking
-        g_stSettings.m_iMyVideoStack++;
+        g_settings.m_iMyVideoStack++;
 
-        if (g_stSettings.m_iMyVideoStack > STACK_SIMPLE)
-          g_stSettings.m_iMyVideoStack = STACK_NONE;
+        if (g_settings.m_iMyVideoStack > STACK_SIMPLE)
+          g_settings.m_iMyVideoStack = STACK_NONE;
 
         g_settings.Save();
         UpdateButtons();
@@ -228,10 +228,11 @@ bool CGUIWindowVideoFiles::OnAction(const CAction &action)
   if (action.id == ACTION_TOGGLE_WATCHED)
   {
     CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
-    if (pItem && pItem->GetOverlayImage().Equals("OverlayUnWatched.png")) 
-      return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_WATCHED);
+
     if (pItem && pItem->GetOverlayImage().Equals("OverlayWatched.png"))
       return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_UNWATCHED);
+    else
+      return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_WATCHED);
   }
   return CGUIWindowVideoBase::OnAction(action);
 }
@@ -247,12 +248,12 @@ void CGUIWindowVideoFiles::UpdateButtons()
       CONTROL_ENABLE(CONTROL_STACK);
       if (stack->GetControlType() == CGUIControl::GUICONTROL_RADIO)
       {
-        SET_CONTROL_SELECTED(GetID(), CONTROL_STACK, g_stSettings.m_iMyVideoStack == STACK_SIMPLE);
+        SET_CONTROL_SELECTED(GetID(), CONTROL_STACK, g_settings.m_iMyVideoStack == STACK_SIMPLE);
         SET_CONTROL_LABEL(CONTROL_STACK, 14000);  // Stack
       }
       else
       {
-        SET_CONTROL_LABEL(CONTROL_STACK, g_stSettings.m_iMyVideoStack + 14000);
+        SET_CONTROL_LABEL(CONTROL_STACK, g_settings.m_iMyVideoStack + 14000);
       }
     }
     else
@@ -283,7 +284,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
     m_stackingAvailable = false;
     m_cleaningAvailable = false;
   }
-  else if (!items.IsStack() && g_stSettings.m_iMyVideoStack != STACK_NONE)
+  else if (!items.IsStack() && g_settings.m_iMyVideoStack != STACK_NONE)
     items.Stack();
 
   if (info2 && info2->Content() != CONTENT_NONE)
@@ -300,7 +301,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
 void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowVideoBase::OnPrepareFileItems(items);
-  if (g_guiSettings.GetBool("myvideos.cleanstrings"))
+  if (g_guiSettings.GetBool("myvideos.cleanstrings") && !items.IsVirtualDirectoryRoot())
   {
     for (int i = 0; i < (int)items.Size(); ++i)
     {
@@ -309,6 +310,11 @@ void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
         item->CleanString();
     }
   }
+}
+
+bool CGUIWindowVideoFiles::OnClick(int iItem)
+{
+  return CGUIWindowVideoBase::OnClick(iItem);
 }
 
 bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
@@ -339,112 +345,6 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
 
     return CGUIWindowVideoBase::OnPlayMedia(iItem);
   }
-}
-
-void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const ADDON::CScraperPtr& scraper)
-{
-  if ( !pItem ) return ;
-  bool bFolder(false);
-  if (scraper && scraper->Content() == CONTENT_TVSHOWS)
-  {
-    CGUIWindowVideoBase::OnInfo(pItem,scraper);
-    return;
-  }
-  CStdString strFolder = "";
-  CStdString strFile = pItem->m_strPath;
-  if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
-  if (pItem->m_bIsShareOrDrive) // oh no u don't
-    return ;
-  if (pItem->m_bIsFolder)
-  {
-    // IMDB is done on a folder
-    // stack and then find first file in folder
-    bFolder = true;
-    CFileItemList vecitems;
-    GetStackedDirectory(pItem->m_strPath, vecitems);
-    bool bFoundFile(false);
-    for (int i = 0; i < (int)vecitems.Size(); ++i)
-    {
-      CFileItemPtr item = vecitems[i];
-      if (!item->m_bIsFolder)
-      {
-        if (item->IsVideo() && !item->IsNFO() && !item->IsPlayList() &&
-            item->m_strPath.Find("-trailer.") == -1)
-        {
-          bFoundFile = true;
-          strFile = item->m_strPath;
-          break;
-        }
-      }
-      else
-      { // check for a dvdfolder
-        if (item->GetLabel().CompareNoCase("VIDEO_TS") == 0)
-        { // found a dvd folder - grab the main .ifo file
-          CUtil::AddFileToFolder(item->m_strPath, "VIDEO_TS.IFO", strFile);
-          if (CFile::Exists(strFile))
-          {
-            bFoundFile = true;
-            break;
-          }
-        }
-        // check for a "CD1" folder
-        if (item->GetLabel().CompareNoCase("CD1") == 0)
-        {
-          CFileItemList items;
-          GetStackedDirectory(item->m_strPath, items);
-          for (int i = 0; i < items.Size(); i++)
-          {
-            CFileItemPtr item = items[i];
-            if (!item->m_bIsFolder && item->IsVideo() && !item->IsNFO() &&
-                !item->IsPlayList())
-            {
-              bFoundFile = true;
-              strFile = item->m_strPath;
-              break;
-            }
-          }
-          if (bFoundFile)
-            break;
-        }
-      }
-    }
-    if (!bFoundFile)
-    {
-      // no video file in this folder?
-      if (scraper->Content() == CONTENT_MOVIES)
-        CGUIDialogOK::ShowAndGetInput(13346,20349,20022,20022);
-
-      return ;
-    }
-  }
-
-  // setup our item with the label and thumb information
-  CFileItem item(strFile, false);
-  item.SetLabel(pItem->GetLabel());
-
-  // hack since our label sometimes contains extensions
-  if(!pItem->m_bIsFolder && g_guiSettings.GetBool("filelists.showextensions") &&
-     !pItem->IsLabelPreformated())
-  {
-    item.RemoveExtension();
-  }
-
-  item.SetCachedVideoThumb();
-  if (!item.HasThumbnail() && pItem->GetProperty("HasAutoThumb") != "1") // inherit from the original item if it exists
-    item.SetThumbnailImage(pItem->GetThumbnailImage());
-
-  if (scraper->Content() != CONTENT_PLUGIN)
-    AddFileToDatabase(&item);
-  else
-  {
-    if (pItem->HasVideoInfoTag())
-      *item.GetVideoInfoTag() = *pItem->GetVideoInfoTag();
-  }
-  // we need to also request any thumbs also be applied to the folder item
-  if (pItem->m_bIsFolder)
-    item.SetProperty("set_folder_thumb", pItem->m_strPath);
-  if (scraper->Content() != CONTENT_PLUGIN && ShowIMDB(&item,scraper->Content()))
-    Update(m_vecItems->m_strPath);
 }
 
 void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
@@ -628,7 +528,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           if (info && info->Content() == CONTENT_MUSICVIDEOS)
             infoString = 20393;
 
-          if (item->m_bIsFolder)
+          if (item->m_bIsFolder && !item->IsParentFolder())
           {
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
               if (!item->IsPlayList() && !item->IsLiveTV())
@@ -687,9 +587,10 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       }
       if (m_vecItems->IsPlugin() && item->HasVideoInfoTag() && !item->GetPropertyBOOL("pluginreplacecontextitems"))
         buttons.Add(CONTEXT_BUTTON_INFO,13346); // only movie information for now
+
       if (item->GetOverlayImage().Equals("OverlayWatched.png"))
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-      if (item->GetOverlayImage().Equals("OverlayUnWatched.png"))
+      else
         buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
     }
   }

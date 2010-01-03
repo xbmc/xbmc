@@ -86,6 +86,7 @@ bool CNetworkInterfaceLinux::IsEnabled()
 bool CNetworkInterfaceLinux::IsConnected()
 {
    struct ifreq ifr;
+   int zero = 0;
    memset(&ifr,0,sizeof(struct ifreq));
    strcpy(ifr.ifr_name, m_interfaceName.c_str());
    if (ioctl(m_network->GetSocket(), SIOCGIFFLAGS, &ifr) < 0)
@@ -98,7 +99,7 @@ bool CNetworkInterfaceLinux::IsConnected()
       return false;
 
    // return only interfaces which has ip address
-   return iRunning && (*(int*)&ifr.ifr_addr.sa_data != 0);
+   return iRunning && (0 != memcmp(ifr.ifr_addr.sa_data+sizeof(short), &zero, sizeof(int)));
 }
 
 CStdString CNetworkInterfaceLinux::GetMacAddress()
@@ -134,7 +135,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentIPAddress(void)
    ifr.ifr_addr.sa_family = AF_INET;
    if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) >= 0)
    {
-      result = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+      result = inet_ntoa((*((struct sockaddr_in *)&ifr.ifr_addr)).sin_addr);
    }
 
    return result;
@@ -149,7 +150,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentNetmask(void)
    ifr.ifr_addr.sa_family = AF_INET;
    if (ioctl(m_network->GetSocket(), SIOCGIFNETMASK, &ifr) >= 0)
    {
-      result = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+      result = inet_ntoa((*((struct sockaddr_in*)&ifr.ifr_addr)).sin_addr);
    }
 
    return result;
@@ -636,6 +637,7 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
    if (!fw)
    {
       // TODO
+      fclose(fr);
       return;
    }
 

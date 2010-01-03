@@ -41,6 +41,7 @@
 #endif
 #elif defined(_WIN32)
 #include "win32/Win32PowerSyscall.h"
+extern HWND g_hWnd;
 #endif
 
 #ifdef HAS_LIRC
@@ -74,6 +75,9 @@ void CPowerManager::Initialize()
 #ifdef HAS_HAL
   else
     m_instance = new CHALPowerSyscall();
+#else
+  else
+    m_instance = new CNULLPowerSyscall();
 #endif
 #elif defined(_WIN32)
   m_instance = new CWin32PowerSyscall();
@@ -162,12 +166,17 @@ void CPowerManager::Resume()
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
 
 #ifdef HAS_SDL
-  // Hack to reclaim focus, thus rehiding system mouse pointer.
-  // Surely there's a better way?
   if (g_Windowing.IsFullScreen())
   {
+#ifdef _WIN32
+    ShowWindow(g_hWnd,SW_RESTORE);
+    SetForegroundWindow(g_hWnd);
+#else
+    // Hack to reclaim focus, thus rehiding system mouse pointer.
+    // Surely there's a better way?
     g_graphicsContext.ToggleFullScreenRoot();
     g_graphicsContext.ToggleFullScreenRoot();
+#endif
   }
   g_application.ResetScreenSaver();
 #endif

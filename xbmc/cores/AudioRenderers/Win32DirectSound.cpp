@@ -27,6 +27,7 @@
 #include "SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "CharsetConverter.h"
 
 #pragma comment(lib, "dxguid.lib")
 
@@ -41,9 +42,24 @@ const int dsound_channel_mask[] =
   SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_LOW_FREQUENCY,
   SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT,
   SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT   | SPEAKER_LOW_FREQUENCY,
-  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_CENTER | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT     | SPEAKER_LOW_FREQUENCY
+  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_FRONT_CENTER | SPEAKER_SIDE_LEFT    | SPEAKER_SIDE_RIGHT     | SPEAKER_LOW_FREQUENCY,
+  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_FRONT_CENTER | SPEAKER_SIDE_LEFT    | SPEAKER_SIDE_RIGHT     | SPEAKER_BACK_CENTER | SPEAKER_LOW_FREQUENCY,
+  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT     | SPEAKER_SIDE_LEFT | SPEAKER_SIDE_RIGHT | SPEAKER_LOW_FREQUENCY
 };
 
+#define DSOUND_CHANNEL_MASK_COUNT 8
+
+static BOOL CALLBACK DSEnumCallback(LPGUID lpGuid, LPCTSTR lpcstrDescription, LPCTSTR lpcstrModule, LPVOID lpContext)
+{
+  AudioSinkList& enumerator = *static_cast<AudioSinkList*>(lpContext);
+  
+  CStdString device(lpcstrDescription);
+  g_charsetConverter.unknownToUTF8(device);
+  
+  enumerator.push_back(AudioSink(CStdString("DirectSound: ").append(device), CStdString("directsound:").append(device)));
+
+  return TRUE;
+}
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -63,6 +79,12 @@ CWin32DirectSound::CWin32DirectSound() :
 
 bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
 {
+  if(iChannels > DSOUND_CHANNEL_MASK_COUNT)
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Unsupported number of channels. %i specified while max is %i", iChannels, DSOUND_CHANNEL_MASK_COUNT);
+    return false;
+  }
+
   bool bAudioOnAllSpeakers(false);
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
   if(bAudioPassthrough)
@@ -79,7 +101,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   m_uiBitsPerSample = uiBitsPerSample;
   m_Passthrough = bAudioPassthrough;
 
-  m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
+  m_nCurrentVolume = g_settings.m_nVolumeLevel;
   
   WAVEFORMATEXTENSIBLE wfxex = {0};
 
@@ -98,10 +120,13 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   } 
   else
   {
+    wfxex.dwChannelMask          = dsound_channel_mask[iChannels - 1];
+
     if (iChannels > 2)
       wfxex.Format.wFormatTag    = WAVE_FORMAT_EXTENSIBLE;
     else
       wfxex.Format.wFormatTag    = WAVE_FORMAT_PCM;
+
     wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_PCM;
     wfxex.Format.wBitsPerSample  = uiBitsPerSample;
   }
@@ -109,7 +134,6 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   wfxex.Samples.wValidBitsPerSample = wfxex.Format.wBitsPerSample;
   wfxex.Format.nBlockAlign       = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
   wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
-  wfxex.dwChannelMask            = dsound_channel_mask[iChannels - 1];
 
   m_AvgBytesPerSec = wfxex.Format.nAvgBytesPerSec;
 
@@ -162,11 +186,11 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   CLog::Log(LOGDEBUG, __FUNCTION__": secondary buffer created");
 
   // Set up channel mapping
-  m_pChannelMap = GetChannelMap(iChannels, strAudioCodec);
+  SetChannelMap(iChannels, uiBitsPerSample, bAudioPassthrough, strAudioCodec);
 
   m_pBuffer->Stop();
   
-  if (DSERR_CONTROLUNAVAIL == m_pBuffer->SetVolume(g_stSettings.m_nVolumeLevel))
+  if (DSERR_CONTROLUNAVAIL == m_pBuffer->SetVolume(g_settings.m_nVolumeLevel))
     CLog::Log(LOGINFO, __FUNCTION__": Volume control is unavailable in the current configuration");
 
   m_bIsAllocated = true;
@@ -419,6 +443,12 @@ float CWin32DirectSound::GetCacheTime()
   return (float)m_CacheLen / (float)m_AvgBytesPerSec;
 }
 
+float CWin32DirectSound::GetCacheTotal()
+{
+  CSingleLock lock (m_critSection);
+  return (float)m_dwBufferLen / (float)m_AvgBytesPerSec;
+}
+
 //***********************************************************************************************
 unsigned int CWin32DirectSound::GetChunkLen()
 {
@@ -492,76 +522,18 @@ void CWin32DirectSound::WaitCompletion()
   m_pBuffer->Stop();
 }
 
-void CWin32DirectSound::MapDataIntoBuffer(unsigned char* pData, unsigned int len, unsigned char* pOut)
-{
-  // TODO: Add support for 8, 24, and 32-bit audio
-  if (m_pChannelMap && !m_Passthrough && m_uiBitsPerSample == 16)
-  {
-    short* pOutFrame = (short*)pOut;
-    for (short* pInFrame = (short*)pData;
-      pInFrame < (short*)pData + (len / sizeof(short)); 
-      pInFrame += m_uiChannels, pOutFrame += m_uiChannels)
-    {
-      // Remap a single frame
-      for (unsigned int chan = 0; chan < m_uiChannels; chan++)
-        pOutFrame[m_pChannelMap[chan]] = pInFrame[chan]; // Copy sample into correct position in the output buffer
-    }
-  }
-  else
-  {
-    memcpy(pOut, pData, len);
-  }
-}
-
-// Channel maps
-// Our output order is FL, FR, C, LFE, SL, SR,
-const unsigned char ac3_51_Map[] = {0,1,4,5,2,3};    // Sent as FL, FR, SL, SR, C, LFE
-const unsigned char ac3_50_Map[] = {0,1,4,2,3};      // Sent as FL, FR, SL, SR, C
-const unsigned char eac3_51_Map[] = {0,4,1,2,3,5};   // Sent as FL, C, FR, SL, SR, LFE
-const unsigned char eac3_50_Map[] = {0,4,1,2,3};     // Sent as FL, C, FR, SL, SR, LFE
-const unsigned char aac_51_Map[] = {4,0,1,2,3,5};    // Sent as C, FL, FR, SL, SR, LFE
-const unsigned char aac_50_Map[] = {4,0,1,2,3};      // Sent as C, FL, FR, SL, SR
-const unsigned char vorbis_51_Map[] = {0,4,1,2,3,5}; // Sent as FL, C, FR, SL, SR, LFE
-const unsigned char vorbis_50_Map[] = {0,4,1,2,3};   // Sent as FL, C, FR, SL, SR
-
-// TODO: This could be a lot more efficient
-unsigned char* CWin32DirectSound::GetChannelMap(unsigned int channels, const char* strAudioCodec)
-{
-  if (!strcmp(strAudioCodec, "AC3") || !strcmp(strAudioCodec, "DTS"))
-  {
-    if (channels == 6)
-      return (unsigned char*)ac3_51_Map;
-    else if (channels == 5)
-      return (unsigned char*)ac3_50_Map;
-  }
-  else if (!strcmp(strAudioCodec, "AAC"))
-  {
-    if (channels == 6)
-      return (unsigned char*)aac_51_Map;
-    else if (channels == 5)
-      return (unsigned char*)aac_50_Map;
-  }
-  else if (!strcmp(strAudioCodec, "Vorbis"))
-  {
-    if (channels == 6)
-      return (unsigned char*)vorbis_51_Map;
-    else if (channels == 5)
-      return (unsigned char*)vorbis_50_Map;
-  }
-  else if (!strcmp(strAudioCodec, "EAC3"))
-  {
-    if (channels == 6)
-      return (unsigned char*)eac3_51_Map;
-    else if (channels == 5)
-      return (unsigned char*)eac3_50_Map;
-  }
-  return NULL; // We don't know how to map this, so just leave it alone
-}
-
 //***********************************************************************************************
 void CWin32DirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 {
   return;
+}
+
+//***********************************************************************************************
+
+void CWin32DirectSound::EnumerateAudioSinks(AudioSinkList &vAudioSinks, bool passthrough)
+{
+  if (FAILED(DirectSoundEnumerate(DSEnumCallback, &vAudioSinks)))
+    CLog::Log(LOGERROR, "%s - failed to enumerate output devices", __FUNCTION__);
 }
 
 //***********************************************************************************************

@@ -1,0 +1,62 @@
+@node Enabling Relocatability
+@section Enabling Relocatability
+
+It has been a pain for many users of GNU packages for a long time that
+packages are not relocatable.  It means a user cannot copy a program,
+installed by another user on the same machine, to his home directory,
+and have it work correctly (including i18n).  So many users need to go
+through @code{configure; make; make install} with all its
+dependencies, options, and hurdles.
+
+Red Hat, Debian, and similar package systems solve the ``ease of
+installation'' problem, but they hardwire path names, usually to
+@file{/usr} or @file{/usr/local}.  This means that users need root
+privileges to install a binary package, and prevents installing two
+different versions of the same binary package.
+
+A relocatable program can be moved or copied to a different location
+on the filesystem.  It is possible to make symlinks to the installed
+and moved programs, and invoke them through the symlink. It is
+possible to do the same thing with a hard link @emph{only} if the hard
+link file is in the same directory as the real program.
+
+To configure a program to be relocatable, add
+@option{--enable-relocatable} to the @command{configure} command line.
+
+On some OSes the executables remember the location of shared libraries
+and prefer them over any other search path.  Therefore, such an
+executable will look for its shared libraries first in the original
+installation directory and only then in the current installation
+directory.  Thus, for reliability, it is best to also give a
+@option{--prefix} option pointing to a directory that does not exist
+now and which never will be created, e.g.@:
+@option{--prefix=/nonexistent}.  You may use
+@code{DESTDIR=@var{dest-dir}} on the @command{make} command line to
+avoid installing into that directory.
+
+We do not recommend using a prefix writable by unprivileged users
+(e.g.@: @file{/tmp/inst$$}) because such a directory can be recreated
+by an unprivileged user after the original directory has been removed.
+We also do not recommend prefixes that might be behind an automounter
+(e.g.@: @file{$HOME/inst$$}) because of the performance impact of
+directory searching.
+
+Here's a sample installation run that takes into account all these
+recommendations:
+
+@example
+./configure --enable-relocatable --prefix=/nonexistent
+make
+make install DESTDIR=/tmp/inst$$
+@end example
+
+Installation with @option{--enable-relocatable} will not work for
+setuid or setgid executables, because such executables search only
+system library paths for security reasons.  Also, installation with
+@option{--enable-relocatable} might not work on OpenBSD, when the
+package contains shared libraries and libtool versions 1.5.xx are used.
+
+The runtime penalty and size penalty are negligible on GNU/Linux (just
+one system call more when an executable is launched), and small on
+other systems (the wrapper program just sets an environment variable
+and executes the real program).

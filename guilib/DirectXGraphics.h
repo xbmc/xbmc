@@ -163,11 +163,6 @@ typedef struct {
 } BMPHEAD;
 #pragma pack(pop)
 
-#ifdef HAS_DX
-HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE9 pSurface, const char *fileName);
-#else
-HRESULT XGWriteSurfaceToFile(void* pixels, int width, int height, const char *fileName);
-#endif
 void Unswizzle(const void *src, unsigned int depth, unsigned int width, unsigned int height, void *dest);
 void DXT1toARGB(const void *src, void *dest, unsigned int destWidth);
 void DXT4toARGB(const void *src, void *dest, unsigned int destWidth);

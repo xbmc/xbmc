@@ -8,7 +8,7 @@
   <string id="0">Program</string>
   <string id="1">Bilder</string>
   <string id="2">Musik</string>
-  <string id="3">Filmer</string>
+  <string id="3">Videor</string>
   <string id="4">TV-guide</string>
   <string id="5">Inställningar</string>
   <string id="7">Filhanterare</string>
@@ -39,6 +39,18 @@
   <string id="45">Fre</string>
   <string id="46">Lör</string>
   <string id="47">Sön</string>
+  <string id="51">Jan</string>
+  <string id="52">Feb</string>
+  <string id="53">Mar</string>
+  <string id="54">Apr</string>
+  <string id="55">Maj</string>
+  <string id="56">Jun</string>
+  <string id="57">Jul</string>
+  <string id="58">Aug</string>
+  <string id="59">Sep</string>
+  <string id="60">Okt</string>
+  <string id="61">Nov</string>
+  <string id="62">Dec</string>
   <string id="98">Vy: Auto</string>
   <string id="99">Vy: Auto stor</string>
   <string id="100">Vy: Ikoner</string>
@@ -1100,7 +1112,7 @@
   <string id="13410">Ställ in på Last.fm</string>
   <string id="13411">Minsta fläkthastighet</string>
   <string id="13413">Laddar ner</string>
-  <string id="13414">Dölj artister som endast är med på samlingar</string>
+  <string id="13414">Inkludera artister som endast är med på samlingsalbum</string>
   <string id="13415">Renderingsmetod</string>
   <string id="13416">Autodetektera</string>
   <string id="13417">Grundläggande shaders (ARB)</string>
@@ -1600,8 +1612,8 @@
   <string id="20337">Skådespelare</string>
   <string id="20338">Film</string>
   <string id="20339">Regissör</string>
-  <string id="20340">Vill du ta bort alla objekt i</string>
-  <string id="20341">denna sökväg från biblioteket?</string>
+  <string id="20340">Vill du ta bort alla objekt för</string>
+  <string id="20341">XBMC-biblioteket i denna sökväg?</string>
   <string id="20342">Filmer</string>
   <string id="20343">TV-serier</string>
   <string id="20344">Denna mapp innehåller</string>
@@ -1724,7 +1736,7 @@
   <string id="21373">Grafikutgång</string>
   <string id="21374">Bildläge</string>
   <string id="21375">Normal</string>
-  <string id="21376">Brevlådeformat</string>
+  <string id="21376">Letterbox</string>
   <string id="21377">Bredbild</string>
   <string id="21378">Aktivera 480p</string>
   <string id="21379">Aktivera 720p</string>
@@ -1893,8 +1905,8 @@
   <string id="22020">Guide</string>
   <string id="22021">Felmarginal i bildförhållande för att minska svarta ränder</string>
   <string id="22022">Visa videofiler i listningar</string>
-  <string id="22023">DirectX tillverkare</string>
-  <string id="22024">Direct3D version</string>
+  <string id="22023">DirectX tillverkare:</string>
+  <string id="22024">Direct3D version:</string>
   <string id="22030">Typsnitt</string>
   <string id="22031">- Storlek</string>
   <string id="22032">- Färger</string>

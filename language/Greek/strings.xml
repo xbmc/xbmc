@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 12/04/2009-->
+<!--Date of translation: 12/16/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 25274-->
+<!--Based on english strings version 25761-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -1161,7 +1161,7 @@
   <string id="13411">Ελάχιστη ταχύτητα ανεμιστήρα</string>
   <string id="13412">- Ροές τίτλων ειδήσεων με κατοπτρική γραφή</string>
   <string id="13413">Λήψη</string>
-  <string id="13414">Εμφάνιση καλλιτεχνών που εμφανίζονται μόνο στις συνθέσεις</string>
+  <string id="13414">Ενσωμάτωση καλλιτεχνών που εμφανίζονται μόνο στις συνθέσεις</string>
   <string id="13415">Μέθοδος απόδοσης</string>
   <string id="13416">Αυτόματη ανίχνευση</string>
   <string id="13417">Στοιχειώδης (ARB)</string>
@@ -1672,8 +1672,8 @@
   <string id="20337">Ηθοποιός</string>
   <string id="20338">Ταινία</string>
   <string id="20339">Σκηνοθέτης</string>
-  <string id="20340">Θέλετε να διαγράψετε όλα τα αντικείμενα</string>
-  <string id="20341">από τη συλλογή;</string>
+  <string id="20340">Θέλετε να απομακρύνετε όλα τα αντικείμενα που βρίσκονται</string>
+  <string id="20341">σ΄ αυτή την διαδρομή από τη συλλογή του XBMC;</string>
   <string id="20342">Ταινίες</string>
   <string id="20343">Τηλεοπτικές σειρές</string>
   <string id="20344">Αυτός ο φάκελος περιέχει</string>
@@ -1975,8 +1975,8 @@
   <string id="22020">Οδηγός</string>
   <string id="22021">Επιτρεπόμενο σφάλμα στο λόγο απεικόνισης για να ελαχιστοποιηθούν οι μαύρες μπάρες</string>
   <string id="22022">Εμφάνιση αρχείων βίντεο στις λίστες</string>
-  <string id="22023">Κατασκευαστής DirectX</string>
-  <string id="22024">Έκδοση DirectX </string>
+  <string id="22023">Κατασκευαστής DirectX:</string>
+  <string id="22024">Έκδοση Direct3D:</string>
   <string id="22030">Γραμματοσειρά</string>
   <string id="22031">- Μέγεθος</string>
   <string id="22032">- Χρώματα</string>

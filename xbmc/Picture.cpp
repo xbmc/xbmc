@@ -66,7 +66,7 @@ bool CPicture::CacheImage(const CStdString& sourceFile, const CStdString& destFi
   if (!dll.Load()) return false;
   if (!dll.CreateThumbnail(sourceFile.c_str(), destFile.c_str(), 1280, 720, g_guiSettings.GetBool("pictures.useexifrotation")))
   {
-    CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFilec_str(), sourceFile.c_str());
+    CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceFile.c_str());
     return false;
   }
   return true;
@@ -129,3 +129,28 @@ int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile,
   }
   return ret;
 }
+
+CThumbnailWriter::CThumbnailWriter(unsigned char* buffer, int width, int height, int stride, const CStdString& thumbFile)
+{
+  m_buffer    = buffer;
+  m_width     = width;
+  m_height    = height;
+  m_stride    = stride;
+  m_thumbFile = thumbFile;
+}
+
+bool CThumbnailWriter::DoWork()
+{
+  bool success = true;
+
+  if (!CPicture::CreateThumbnailFromSurface(m_buffer, m_width, m_height, m_stride, m_thumbFile))
+  {
+    CLog::Log(LOGERROR, "CThumbnailWriter::DoWork unable to write %s", m_thumbFile.c_str());
+    success = false;
+  }
+
+  delete m_buffer;
+
+  return success;
+}
+

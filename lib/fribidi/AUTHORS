@@ -1,0 +1,34 @@
+behdad: Behdad Esfahbod <behdad@gnu.org>
+#
+# Behdad Esfahbod is the only author that actually codes these days.  He
+# maintains the package too.
+#
+
+dov-g: Dov Grobgeld <dov@imagic.weizmann.ac.il>
+#
+# Dov Grobgeld originally wrote FriBidi.  The 0.1.* releases were all done
+# by him.  After that, Dov rarely touched the code, but contributed ideas. 
+# All files that he has originally authored have him listed as an author in
+# the header of the file.
+#
+
+roozbeh: Roozbeh Pournader <roozbeh@gnu.org>
+#
+# Roozbeh Pournader hasn't contributed much code to FriBidi personally; but
+# has maintained, promoted, and supported the project for a while.  He has
+# helped with making GNU FriBidi standards compliant, and has sometimes
+# lobbied with the Unicode Consortium when needed.  Roozbeh was supposed to
+# be a co-maintainer of GNU FriBidi, but he's not doing that yet.
+#
+
+
+#
+# Note: wcwidth.c implementation is by Markus Kuhn.  It is distributed with
+# and used in GNU FriBidi, but is not part of GNU FriBidi.
+#
+# Note: GNU getopt is distributed with and used in GNU FriBidi, but is not
+# part of GNU FriBidi.
+#
+# Note: Parts of the Unicode Character Database are distributed with and used
+# in GNU FriBidi under unidata/, but are not part of GNU FriBidi.
+#

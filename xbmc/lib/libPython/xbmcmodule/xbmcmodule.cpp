@@ -633,7 +633,7 @@ namespace PYXBMC
   {
     PyObject *pObjectText;
     if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText)) return NULL;
- 
+
     string strText;
     if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
@@ -714,7 +714,7 @@ namespace PYXBMC
     if (CUtil::IsPlugin(strText))
     {
       strPath = strText;
-      strPath.Replace("plugin://","special://home/plugins/");  
+      strPath.Replace("plugin://","special://home/plugins/");
     }
 
     strPath = CSpecialProtocol::TranslatePath(strText);
@@ -802,11 +802,11 @@ namespace PYXBMC
 
     CStdString result;
     if (strcmpi(media, "video") == 0)
-      result = g_stSettings.m_videoExtensions;
+      result = g_settings.m_videoExtensions;
     else if (strcmpi(media, "music") == 0)
-      result = g_stSettings.m_musicExtensions;
+      result = g_settings.m_musicExtensions;
     else if (strcmpi(media, "picture") == 0)
-      result = g_stSettings.m_pictureExtensions;
+      result = g_settings.m_pictureExtensions;
     else
     {
       PyErr_SetString(PyExc_ValueError, "media = (video, music, picture)");
@@ -929,7 +929,7 @@ namespace PYXBMC
   {
     // init general xbmc modules
     PyObject* pXbmcModule;
-    
+
     Py_INCREF(&Keyboard_Type);
     Py_INCREF(&Player_Type);
     Py_INCREF(&PlayList_Type);

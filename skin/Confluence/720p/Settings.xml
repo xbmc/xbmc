@@ -55,7 +55,7 @@
 						<posy>0</posy>
 						<width>380</width>
 						<height>61</height>
-						<font>font24caps_title</font>
+						<font>font24_title</font>
 						<textcolor>grey3</textcolor>
 						<align>right</align>
 						<aligny>center</aligny>
@@ -75,7 +75,7 @@
 						<posy>0</posy>
 						<width>380</width>
 						<height>61</height>
-						<font>font24caps_title</font>
+						<font>font24_title</font>
 						<textcolor>white</textcolor>
 						<align>right</align>
 						<aligny>center</aligny>
@@ -102,7 +102,7 @@
 						<icon>special://skin/backgrounds/music.jpg</icon>
 					</item>
 					<item id="4">
-						<label>31304</label>
+						<label>1</label>
 						<label2>31403</label2>
 						<onclick>ActivateWindow(PicturesSettings)</onclick>
 						<icon>special://skin/backgrounds/pictures.jpg</icon>

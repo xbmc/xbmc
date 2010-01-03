@@ -7,7 +7,7 @@
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Trailers from Dtrailer.com&quot; type=&quot;bool&quot; id=&quot;trailer&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Trailers from Dtrailer.com&quot; type=&quot;bool&quot; id=&quot;dtrailer&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<expression noclean="1"/>
@@ -89,8 +89,14 @@
 			<RegExp conditional="fanart" input="$$1" output="&lt;url cache=&quot;tmdb-$$2.xml&quot; function=&quot;GetTMDBFanartById&quot;&gt;$$3&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp conditional="dtrailer" input="$$1" output="&lt;url function=&quot;GetDTrailerLink&quot;&gt;http://en.dtrailer.com/movies/search/\1&lt;/url&gt;" dest="5+">
-				<expression trim="1" noclean="1">&lt;name&gt;([^&lt;]*)&lt;/name&gt;</expression>
+			<RegExp conditional="dtrailer" input="$$6" output="&lt;url function=&quot;GetDTrailerLink&quot;&gt;http://en.dtrailer.com/movies/search/\1&lt;/url&gt;" dest="5+"> 
+				<RegExp input="$$4" output="\1-" dest="6"> 
+					<RegExp input="$$1" output="\1" dest="4"> 
+						<expression>&lt;name&gt;([^&lt;]*)&lt;/name&gt;</expression> 
+					</RegExp> 
+					<expression repeat="yes">([a-zA-Z0-9]+)</expression> 
+				</RegExp> 
+				<expression/>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>

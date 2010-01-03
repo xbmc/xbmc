@@ -80,7 +80,7 @@ do_start()
 			fi
 		fi
 
-		RUNX="$(echo $CMDLINE | grep splash)"
+		RUNX="$(echo $XBMC_PARAMS | grep autostart)"
 		if [ ! -n "$RUNX" ]; then
 		        log_warning_msg "Not starting X."
 

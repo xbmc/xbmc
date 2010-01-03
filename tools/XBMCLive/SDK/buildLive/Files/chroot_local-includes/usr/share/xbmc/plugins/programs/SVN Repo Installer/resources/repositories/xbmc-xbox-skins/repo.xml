@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<repo>
+    <url>http://xbmc-xbox-skins.googlecode.com/svn</url>
+    <root>/trunk</root>
+    <structure name="skin" noffset="-1" install="" ioffset="2" voffset="0" />
+</repo>

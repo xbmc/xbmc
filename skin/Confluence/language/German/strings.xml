@@ -2,13 +2,15 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Zippolighter-->
 <!--Email: hardrock_zippolighter@hotmail.com-->
-<!--Date of translation: 11/28/2009-->
+<!--Date of translation: 12/18/2009-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Wechsel Deine</string>
   <string id="31001">Liebe</string>
   <string id="31002">Hass</string>
   <string id="31003">Power Optionen</string>
+  <string id="31004">In Arbeit...</string>
+  <string id="31005">Verberge Info</string>
   <string id="31007">Plugins</string>
   <string id="31020">Kürzlich hinzugefügt</string>
   <string id="31021">Video - Dateien</string>
@@ -57,7 +59,7 @@
   <string id="31113">Einzel Bild</string>
   <string id="31114">Mehrfach Bild</string>
   <string id="31115">Spezifische</string>
-  <string id="31116">Erweiterung Scripts</string>
+  <string id="31116">Erweit. Scripte</string>
   <string id="31117">Zeige kürzlich hinzugefüge Videos</string>
   <string id="31118">Home Seite Untermenü</string>
   <string id="31119">Aktiviere spezielle Script Button</string>
@@ -87,7 +89,7 @@
   <string id="31304">Bild</string>
   <string id="31305">Keine Disk vorhanden</string>
   <string id="31306">Auswerfen</string>
-  <string id="31307">Verstecke Fanart</string>
+  <string id="31307">Verberge Fanart</string>
   <string id="31308">Film Details</string>
   <string id="31309">Speicher in Benutzung:</string>
   <string id="31310">Lied Nummer</string>

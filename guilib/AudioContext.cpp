@@ -22,7 +22,6 @@
 #include "system.h"
 #include "AudioContext.h"
 #include "GUIAudioManager.h"
-#include "IAudioDeviceChangedCallback.h"
 #include "Settings.h"
 #include "GUISettings.h"
 #include "XBAudioConfig.h"
@@ -70,7 +69,6 @@ CAudioContext::~CAudioContext()
 }
 
 // \brief Create a new device by type (DEFAULT_DEVICE, DIRECTSOUND_DEVICE, AC97_DEVICE)
-// Note: DEFAULT_DEVICE is created by the IAudioDeviceChangedCallback
 void CAudioContext::SetActiveDevice(int iDevice)
 {
   /* if device is the same, no need to bother */
@@ -206,7 +204,7 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
   DWORD spconfig = DSSPEAKER_USE_DEFAULT;
   if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
   {
-    if (g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers && !bIsMusic)
+    if (g_settings.m_currentVideoSettings.m_OutputToAllSpeakers && !bIsMusic)
     {
       if( g_audioConfig.GetAC3Enabled() )
       {

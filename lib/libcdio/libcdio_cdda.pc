@@ -1,0 +1,11 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libcdio_cdda
+Description: CD paranoia CD-DA library from libcdio
+Version: 0.72
+#Requires: glib-2.0 
+Libs: -L${libdir} -lcdio_cdda
+Cflags: -I${includedir}

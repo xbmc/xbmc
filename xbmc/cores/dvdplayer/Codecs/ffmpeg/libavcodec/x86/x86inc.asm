@@ -53,7 +53,7 @@
 ; in memory) must use an address mode that does fit.
 ; So all accesses to global variables must use this macro, e.g.
 ;     mov eax, [foo GLOBAL]
-;   instead of
+; instead of
 ;     mov eax, [foo]
 ;
 ; x86_32 doesn't require PIC.
@@ -84,7 +84,7 @@
 ; PROLOGUE can also be invoked by adding the same options to cglobal
 
 ; e.g.
-; cglobal foo, 2,3, dst, src, tmp
+; cglobal foo, 2,3,0, dst, src, tmp
 ; declares a function (foo), taking two args (dst and src) and one local variable (tmp)
 
 ; TODO Some functions can use some args directly from the stack. If they're the
@@ -221,6 +221,7 @@ DECLARE_REG_TMP_SIZE 0,1,2,3,4,5,6,7
             CAT_UNDEF arg_name %+ %%i, d
             CAT_UNDEF arg_name %+ %%i, w
             CAT_UNDEF arg_name %+ %%i, b
+            CAT_UNDEF arg_name %+ %%i, m
             CAT_UNDEF arg_name, %%i
             %assign %%i %%i+1
         %endrep
@@ -232,6 +233,7 @@ DECLARE_REG_TMP_SIZE 0,1,2,3,4,5,6,7
         %xdefine %1d r %+ %%i %+ d
         %xdefine %1w r %+ %%i %+ w
         %xdefine %1b r %+ %%i %+ b
+        %xdefine %1m r %+ %%i %+ m
         CAT_XDEFINE arg_name, %%i, %1
         %assign %%i %%i+1
         %rotate 1
@@ -436,6 +438,7 @@ DECLARE_REG 6, ebp, ebp, bp, null, [esp + stack_offset + 28]
     %ifdef PREFIX
         %xdefine %1 _ %+ %1
     %endif
+    %xdefine %1.skip_prologue %1 %+ .skip_prologue
     %ifidn __OUTPUT_FORMAT__,elf
         global %1:function hidden
     %else
@@ -597,9 +600,6 @@ INIT_MMX
 %endmacro
 
 ;Substitutions that reduce instruction size but are functionally equivalent
-%define movdqa movaps
-%define movdqu movups
-
 %macro add 2
     %ifnum %2
         %if %2==128

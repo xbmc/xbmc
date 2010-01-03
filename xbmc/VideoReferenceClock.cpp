@@ -321,9 +321,17 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
   char   Buff[255];
   int    ReturnV;
   struct lconv *Locale = localeconv();
+  FILE*  NvSettings;
 
-  FILE* NvSettings = popen(NVSETTINGSCMD, "r");
+  CStdString Vendor = (const char*) glGetString(GL_VENDOR);
+  Vendor.ToLower();
+  if (Vendor.find("nvidia") == std::string::npos)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GL_VENDOR:%s, not using nvidia-settings", Vendor.c_str());
+    return false;
+  }
 
+  NvSettings = popen(NVSETTINGSCMD, "r");
   if (!NvSettings)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s: %s", NVSETTINGSCMD, strerror(errno));
@@ -449,16 +457,16 @@ void CVideoReferenceClock::RunGLX()
         return;
 
       //because of a bug in the nvidia driver, glXWaitVideoSyncSGI breaks when the vblank counter resets
-      ReturnV = glXMakeCurrent(m_Dpy, None, NULL);
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detaching glX context");
+      ReturnV = glXMakeCurrent(m_Dpy, None, NULL);
       if (ReturnV != True)
       {
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
         return;
       }
       
-      glXMakeCurrent(m_Dpy, m_Window, m_Context);
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Attaching glX context");
+      glXMakeCurrent(m_Dpy, m_Window, m_Context);
       if (ReturnV != True)
       {
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);

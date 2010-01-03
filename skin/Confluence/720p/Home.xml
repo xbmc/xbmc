@@ -71,9 +71,10 @@
 			<control type="image">
 				<description>Cover image</description>
 				<posx>200r</posx>
-				<posy>160</posy>
+				<posy>60</posy>
 				<width>180</width>
-				<height>180</height>
+				<height>280</height>
+				<aspectratio aligny="bottom">keep</aspectratio>
 				<texture>$INFO[MusicPlayer.Cover]</texture>
 				<bordertexture border="8">ThumbBorder.png</bordertexture>
 				<bordersize>5</bordersize>
@@ -87,7 +88,7 @@
 				<label>$LOCALIZE[31040]</label>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<textcolor>blue</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
@@ -100,7 +101,7 @@
 				<label>$INFO[MusicPlayer.Artist]</label>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
@@ -126,7 +127,7 @@
 				<label>$INFO[MusicPlayer.Title]</label>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
@@ -181,7 +182,7 @@
 					<label>$LOCALIZE[31040]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -194,7 +195,7 @@
 					<label>$INFO[VideoPlayer.Title]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -234,7 +235,7 @@
 					<label>$LOCALIZE[31040]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -247,7 +248,7 @@
 					<label>$INFO[VideoPlayer.Studio]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -273,7 +274,7 @@
 					<label>$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year,[COLOR=grey] (,)[/COLOR]]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -313,7 +314,7 @@
 					<label>$LOCALIZE[31040]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -326,7 +327,7 @@
 					<label>$INFO[VideoPlayer.TVShowTitle]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -352,7 +353,7 @@
 					<label>$INFO[VideoPlayer.Title]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -916,7 +917,7 @@
 					<posy>0</posy>
 					<width>43</width>
 					<height>43</height>
-					<label>-</label>
+					<label>31003</label>
 					<font>-</font>
 					<aligny>-</aligny>
 					<onclick>ActivateWindow(ShutdownMenu)</onclick>
@@ -933,7 +934,7 @@
 					<posy>0</posy>
 					<width>43</width>
 					<height>43</height>
-					<label>-</label>
+					<label>1036</label>
 					<font>-</font>
 					<aligny>-</aligny>
 					<onclick>ActivateWindow(Favourites)</onclick>
@@ -950,25 +951,7 @@
 					<posy>0</posy>
 					<width>43</width>
 					<height>43</height>
-					<label>-</label>
-					<font>-</font>
-					<aligny>-</aligny>
-					<onclick>XBMC.PlayDVD()</onclick>
-					<texturefocus>home-playmedia-FO.png</texturefocus>
-					<texturenofocus>home-playmedia.png</texturenofocus>
-					<onleft>9000</onleft>
-					<onright>21</onright>
-					<onup>9000</onup>
-					<ondown>9000</ondown>
-					<visible>System.HasMediaDVD</visible>
-				</control>
-				<control type="button" id="22">
-					<description>Play Disc Media push button</description>
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>43</width>
-					<height>43</height>
-					<label>-</label>
+					<label>16004</label>
 					<font>-</font>
 					<aligny>-</aligny>
 					<onclick>ActivateWindow(1113)</onclick>
@@ -978,7 +961,6 @@
 					<onright>21</onright>
 					<onup>9000</onup>
 					<ondown>9000</ondown>
-					<visible>!System.HasMediaDVD</visible>
 				</control>
 			</control>
 		</control>

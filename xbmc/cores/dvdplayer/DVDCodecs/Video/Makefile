@@ -1,9 +1,11 @@
-INCLUDES=-I. -I../../ -I../../../../ -I../../../ffmpeg -I../../../../linux -I../../../../../guilib
+INCLUDES=-I../../../../.. -I. -I../../ -I../../../../ -I../../Codecs/ffmpeg -I../../../../linux -I../../../../../guilib
 
 SRCS=	DVDVideoCodecFFmpeg.cpp \
 	DVDVideoCodecLibMpeg2.cpp \
 	DVDVideoPPFFmpeg.cpp \
 	VDPAU.cpp \
+	CrystalHD.cpp \
+	DVDVideoCodecCrystalHD.cpp \
 
 LIB=Video.a
 

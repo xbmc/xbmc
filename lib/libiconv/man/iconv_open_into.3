@@ -1,0 +1,47 @@
+.\" Copyright (c) Bruno Haible <bruno@clisp.org>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 3 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" References consulted:
+.\"   iconv.h
+.\"
+.TH ICONV_OPEN_INTO 3  "September 21, 2008" "GNU" "Linux Programmer's Manual"
+.SH NAME
+iconv_open_into \- initialize descriptor for character set conversion
+.SH SYNOPSIS
+.nf
+.B #include <iconv.h>
+.sp
+.BI "int iconv_open_into (const char* " tocode ", const char* " fromcode ","
+.BI "                     iconv_allocation_t* " resultp );
+.fi
+.SH DESCRIPTION
+The \fBiconv_open_into\fP function initializes a conversion descriptor suitable
+for converting byte sequences from character encoding \fIfromcode\fP to
+character encoding \fItocode\fP.  The conversion descriptor is stored in the
+memory pointed to by \fIresultp\fP.
+.PP
+The values permitted for \fIfromcode\fP and \fItocode\fP are the same as for
+the function \fBiconv_open\fP.
+.PP
+After a successful return from this function, \fIresultp\fP can be be used
+as an \fBiconv_t\fP object with the \fBiconv\fP function.
+.SH "RETURN VALUE"
+The \fBiconv_open_into\fP function fills \fB*\fP\fIresultp\fP and returns 0 if
+it succeeds. In case of error, it sets \fBerrno\fP and returns \-1.
+.SH ERRORS
+The following error can occur, among others:
+.TP
+.B EINVAL
+The conversion from \fIfromcode\fP to \fItocode\fP is not supported by the
+implementation.
+.SH "CONFORMING TO"
+This function is implemented only in GNU libiconv and not in other \fBiconv\fP
+implementations. It is not backed by a standard. You can test for its presence
+through \fB(_LIBICONV_VERSION >= 0x010D)\fP.
+.SH "SEE ALSO"
+.BR iconv_open (3)
+.BR iconv (3)

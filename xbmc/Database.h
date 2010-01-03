@@ -56,7 +56,7 @@ protected:
   float m_preV2version;
 //#endif
   CStdString m_strDatabaseFile;
-  std::auto_ptr<dbiplus::SqliteDatabase> m_pDB;
+  std::auto_ptr<dbiplus::Database> m_pDB;
   std::auto_ptr<dbiplus::Dataset> m_pDS;
   std::auto_ptr<dbiplus::Dataset> m_pDS2;
 

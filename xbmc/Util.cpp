@@ -86,6 +86,8 @@
 #include "LocalizeStrings.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "Picture.h"
+#include "JobManager.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -359,26 +361,26 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     CStdString strExtension;
     CUtil::GetExtension(strFileName, strExtension);
     strExtension.ToLower();
+    strExtension += "|";
 
     CStdString strFileMask;
-    strFileMask = g_stSettings.m_pictureExtensions;
-    strFileMask += g_stSettings.m_musicExtensions;
-    strFileMask += g_stSettings.m_videoExtensions;
+    strFileMask = g_settings.m_pictureExtensions;
+    strFileMask += "|" + g_settings.m_musicExtensions;
+    strFileMask += "|" + g_settings.m_videoExtensions;
 #if defined(__APPLE__)
-    strFileMask += ".py|.xml|.milk|.xpr|.cdg|.app|.applescript|.workflow";
+    strFileMask += "|.py|.xml|.milk|.xpr|.cdg|.app|.applescript|.workflow";
 #else
-    strFileMask += ".py|.xml|.milk|.xpr|.cdg";
+    strFileMask += "|.py|.xml|.milk|.xpr|.cdg";
 #endif
+    strFileMask += "|";
 
-    // Only remove if its a valid media extension
-    if (strFileMask.Find(strExtension.c_str()) >= 0)
+    if (strFileMask.Find(strExtension) >= 0)
       strFileName = strFileName.Left(iPos);
   }
 }
 
-void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bIsFolder /* = false */)
+void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension /* = false */)
 {
-
   strTitleAndYear = strFileName;
 
   if (strFileName.Equals(".."))
@@ -403,8 +405,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     }
   }
 
-  if (!bIsFolder)
-    RemoveExtension(strTitleAndYear);
+  RemoveExtension(strTitleAndYear);
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
@@ -448,9 +449,8 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     strTitleAndYear = strTitle + " (" + strYear + ")";
 
   // restore extension if needed
-  if (g_guiSettings.GetBool("filelists.showextensions") && !bIsFolder)
+  if (!bRemoveExtension)
     strTitleAndYear += strExtension;
-
 }
 
 void CUtil::GetCommonPath(CStdString& strParent, const CStdString& strPath)
@@ -840,6 +840,10 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
   if(host.length() == 0)
     return false;
 
+  // assume a hostname without dot's
+  // is local (smb netbios hostnames)
+  if(host.find('.') == string::npos)
+    return true;
 
   unsigned long address = ntohl(inet_addr(host.c_str()));
   if(address == INADDR_NONE)
@@ -849,21 +853,16 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
       address = ntohl(inet_addr(ip.c_str()));
   }
 
-  if(address == INADDR_NONE)
-  {
-    // assume a hostname without dot's
-    // is local (smb netbios hostnames)
-    if(host.find('.') == string::npos)
-      return true;
-  }
-  else
+  if(address != INADDR_NONE)
   {
     // check if we are on the local subnet
     if (!g_application.getNetwork().GetFirstConnectedInterface())
       return false;
+    
     if (g_application.getNetwork().HasInterfaceForIP(address))
       return true;
   }
+  
   return false;
 }
 
@@ -1112,8 +1111,6 @@ bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStr
     return false;
 
   CStdString strExclude = strFileOrFolder;
-  RemoveSlashAtEnd(strExclude);
-  strExclude = GetFileName(strExclude);
   strExclude.MakeLower();
 
   CRegExp regExExcludes;
@@ -1127,7 +1124,7 @@ bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStr
     }
     if (regExExcludes.RegFind(strExclude) > -1)
     {
-      CLog::Log(LOGDEBUG, "%s: File '%s' excluded. (Matches exclude rule RegExp:'%s')", __FUNCTION__, strFileOrFolder.c_str(), regexps[i].c_str());
+      CLog::Log(LOGDEBUG, "%s: File '%s' excluded. (Matches exclude rule RegExp:'%s')", __FUNCTION__, strExclude.c_str(), regexps[i].c_str());
       return true;
     }
   }
@@ -1365,20 +1362,20 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   ReplaceExtension(strFileName, "", strFileNameNoExt);
   strLookInPaths.push_back(strPath);
 
-  if (!g_stSettings.iAdditionalSubtitleDirectoryChecked && !g_guiSettings.GetString("subtitles.custompath").IsEmpty()) // to avoid checking non-existent directories (network) every time..
+  if (!g_settings.iAdditionalSubtitleDirectoryChecked && !g_guiSettings.GetString("subtitles.custompath").IsEmpty()) // to avoid checking non-existent directories (network) every time..
   {
     if (!g_application.getNetwork().IsAvailable() && !IsHD(g_guiSettings.GetString("subtitles.custompath")))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonaccessible");
-      g_stSettings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
+      g_settings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
     }
     else if (!CDirectory::Exists(g_guiSettings.GetString("subtitles.custompath")))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonexistant");
-      g_stSettings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
+      g_settings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
     }
 
-    g_stSettings.iAdditionalSubtitleDirectoryChecked = 1;
+    g_settings.iAdditionalSubtitleDirectoryChecked = 1;
   }
 
   if (strMovie.substr(0,6) == "rar://") // <--- if this is found in main path then ignore it!
@@ -1430,7 +1427,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   // .. done checking for cd-dirs
 
   // this is last because we dont want to check any common subdirs or cd-dirs in the alternate <subtitles> dir.
-  if (g_stSettings.iAdditionalSubtitleDirectoryChecked == 1)
+  if (g_settings.iAdditionalSubtitleDirectoryChecked == 1)
   {
     strPath = g_guiSettings.GetString("subtitles.custompath");
     if (!HasSlashAtEnd(strPath))
@@ -1792,12 +1789,14 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
   return CThumbnailCache::GetThumbnailCache()->IsCached(strFileName);
 }
 
-void CUtil::PlayDVD()
+void CUtil::PlayDVD(const CStdString& strProtocol)
 {
 #ifdef HAS_DVDPLAYER
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
-  CFileItem item("dvd://1", false);
+  CStdString strPath;
+  strPath.Format("%s://1", strProtocol.c_str());
+  CFileItem item(strPath, false);
   item.SetLabel(g_mediaManager.GetDiskLabel());
   g_application.PlayFile(item);
 #endif
@@ -1846,71 +1845,129 @@ void CUtil::Tokenize(const CStdString& path, vector<CStdString>& tokens, const s
   }
 }
 
-void CUtil::TakeScreenshot(const CStdString &filename)
+void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
 {
+  int            width;
+  int            height;
+  int            stride;
+  unsigned char* outpixels = NULL;
+
 #ifdef HAS_DX
-    LPDIRECT3DSURFACE9 lpSurface = NULL;
+  LPDIRECT3DSURFACE9 lpSurface = NULL;
 
-    g_graphicsContext.Lock();
-    if (g_application.IsPlayingVideo())
-    {
+  g_graphicsContext.Lock();
+  if (g_application.IsPlayingVideo())
+  {
 #ifdef HAS_VIDEO_PLAYBACK
-      g_renderManager.SetupScreenshot();
+    g_renderManager.SetupScreenshot();
 #endif
-    }
-    if (0)
-    { // reset calibration to defaults
-      OVERSCAN oscan;
-      memcpy(&oscan, &g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan, sizeof(OVERSCAN));
-      g_graphicsContext.ResetOverscan(g_graphicsContext.GetVideoResolution(), g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan);
-      g_application.Render();
-      memcpy(&g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan, &oscan, sizeof(OVERSCAN));
-    }
-    // now take screenshot
-    g_application.RenderNoPresent();
-    if (SUCCEEDED(g_Windowing.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+  }
+
+  // now take screenshot
+  g_application.RenderNoPresent();
+  if (SUCCEEDED(g_Windowing.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+  {
+    D3DLOCKED_RECT lr;
+    D3DSURFACE_DESC desc;
+    lpSurface->GetDesc(&desc);
+    if (SUCCEEDED(lpSurface->LockRect(&lr, NULL, D3DLOCK_READONLY)))
     {
-      if (FAILED(XGWriteSurfaceToFile(lpSurface, filename.c_str())))
-      {
-        CLog::Log(LOGERROR, "Failed to Generate Screenshot");
-      }
-      else
-      {
-        CLog::Log(LOGINFO, "Screen shot saved as %s", filename.c_str());
-      }
-      lpSurface->Release();
+      width = desc.Width;
+      height = desc.Height;
+      stride = lr.Pitch;
+      outpixels = new unsigned char[height * stride];
+      memcpy(outpixels, lr.pBits, height * stride);
+      lpSurface->UnlockRect();
     }
-    g_graphicsContext.Unlock();
+    else
+    {
+      CLog::Log(LOGERROR, "%s LockRect failed", __FUNCTION__);
+    }
+    lpSurface->Release();
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "%s GetBackBuffer failed", __FUNCTION__);
+  }
+  g_graphicsContext.Unlock();
+
+#elif defined(HAS_GL)
+
+  g_graphicsContext.BeginPaint();
+  if (g_application.IsPlayingVideo())
+  {
+#ifdef HAS_VIDEO_PLAYBACK
+    g_renderManager.SetupScreenshot();
+#endif
+  }
+  g_application.RenderNoPresent();
+
+  glReadBuffer(GL_BACK);
+
+  //get current viewport
+  GLint viewport[4];
+  glGetIntegerv(GL_VIEWPORT, viewport);
+
+  width  = viewport[2] - viewport[0];
+  height = viewport[3] - viewport[1];
+  stride = width * 4;
+  unsigned char* pixels = new unsigned char[stride * height];
+
+  //read pixels from the backbuffer
+  glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, (GLvoid*)pixels);
+
+  g_graphicsContext.EndPaint();
+
+  //make a new buffer and copy the read image to it with the Y axis inverted
+  outpixels = new unsigned char[stride * height];
+  for (int y = 0; y < height; y++)
+    memcpy(outpixels + y * stride, pixels + (height - y - 1) * stride, stride);
+
+  delete [] pixels; 
+
 #else
-
+  //nothing to take a screenshot from
+  return;
 #endif
 
-#if defined(HAS_GL)
+  if (!outpixels)
+  {
+    CLog::Log(LOGERROR, "Screenshot %s failed", filename.c_str());
+    return;
+  }
 
-    g_graphicsContext.BeginPaint();
-    if (g_application.IsPlayingVideo())
-    {
-#ifdef HAS_VIDEO_PLAYBACK
-      g_renderManager.SetupScreenshot();
-#endif
-    }
-    g_application.RenderNoPresent();
+  CLog::Log(LOGDEBUG, "Saving screenshot %s", filename.c_str());
 
-    GLint viewport[4];
-    void *pixels = NULL;
-    glReadBuffer(GL_BACK);
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    pixels = malloc(viewport[2] * viewport[3] * 4);
-    if (pixels)
-    {
-      glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, pixels);
-      XGWriteSurfaceToFile(pixels, viewport[2], viewport[3], filename.c_str());
-      free(pixels);
-    }
-    g_graphicsContext.EndPaint();
+  //set alpha byte to 0xFF
+  for (int y = 0; y < height; y++)
+  {
+    unsigned char* alphaptr = outpixels - 1 + y * stride;
+    for (int x = 0; x < width; x++)
+      *(alphaptr += 4) = 0xFF;
+  }
 
-#endif
+  //if sync is true, the png file needs to be completely written when this function returns
+  if (sync)
+  {
+    if (!CPicture::CreateThumbnailFromSurface(outpixels, width, height, stride, filename))
+      CLog::Log(LOGERROR, "Unable to write screenshot %s", filename.c_str());
 
+    delete [] outpixels;
+  }
+  else
+  {
+    //make sure the file exists to avoid concurrency issues
+    FILE* fp = fopen(filename.c_str(), "w");
+    if (fp)
+      fclose(fp);
+    else
+      CLog::Log(LOGERROR, "Unable to create file %s", filename.c_str());
+
+    //write .png file asynchronous with CThumbnailWriter, prevents stalling of the render thread
+    //outpixels is deleted from CThumbnailWriter
+    CThumbnailWriter* thumbnailwriter = new CThumbnailWriter(outpixels, width, height, stride, filename);
+    CJobManager::GetInstance().AddJob(thumbnailwriter, NULL);
+  }
 }
 
 void CUtil::TakeScreenshot()
@@ -1935,11 +1992,11 @@ void CUtil::TakeScreenshot()
 
   if (!strDir.IsEmpty())
   {
-    CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(strDir, "screenshot%03d.bmp"), 999);
+    CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(strDir, "screenshot%03d.png"), 999);
 
     if (!file.IsEmpty())
     {
-      TakeScreenshot(file);
+      TakeScreenshot(file, false);
       if (savingScreenshots)
         screenShots.push_back(file);
       if (promptUser)
@@ -1949,7 +2006,7 @@ void CUtil::TakeScreenshot()
         {
           for (unsigned int i = 0; i < screenShots.size(); i++)
           {
-            CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(newDir, "screenshot%03d.bmp"), 999);
+            CStdString file = CUtil::GetNextFilename(CUtil::AddFileToFolder(newDir, "screenshot%03d.png"), 999);
             CFile::Cache(screenShots[i], file);
           }
           screenShots.clear();

@@ -306,6 +306,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bCanQueue=item.m_bCanQueue;
   m_contenttype = item.m_contenttype;
   m_extrainfo = item.m_extrainfo;
+  m_specialSort = item.m_specialSort;
   return *this;
 }
 
@@ -343,6 +344,7 @@ void CFileItem::Reset()
   delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
   m_extrainfo.Empty();
+  m_specialSort = SORT_NORMALLY;
   SetInvalid();
 }
 
@@ -372,6 +374,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar << m_bCanQueue;
     ar << m_contenttype;
     ar << m_extrainfo;
+    ar << m_specialSort;
 
     if (m_musicInfoTag)
     {
@@ -410,15 +413,17 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_idepth;
     ar >> m_lStartOffset;
     ar >> m_lEndOffset;
-    int lockmode;
-    ar >> lockmode;
-    m_iLockMode = (LockType)lockmode;
+    int temp;
+    ar >> temp;
+    m_iLockMode = (LockType)temp;
     ar >> m_strLockCode;
     ar >> m_iBadPwdCount;
 
     ar >> m_bCanQueue;
     ar >> m_contenttype;
     ar >> m_extrainfo;
+    ar >> temp;
+    m_specialSort = (SPECIAL_SORT)temp;
 
     int iType;
     ar >> iType;
@@ -496,7 +501,7 @@ bool CFileItem::IsVideo() const
 
   extension.ToLower();
 
-  if (g_stSettings.m_videoExtensions.Find(extension) != -1)
+  if (g_settings.m_videoExtensions.Find(extension) != -1)
     return true;
 
   return false;
@@ -531,7 +536,7 @@ bool CFileItem::IsAudio() const
     return false;
 
   extension.ToLower();
-  if (g_stSettings.m_musicExtensions.Find(extension) != -1)
+  if (g_settings.m_musicExtensions.Find(extension) != -1)
     return true;
 
   return false;
@@ -539,9 +544,9 @@ bool CFileItem::IsAudio() const
 
 bool CFileItem::IsKaraoke() const
 {
-  if ( !IsAudio() )
+  if ( !IsAudio() || IsLastFM() || IsShoutCast())
     return false;
-  
+ 
   return CKaraokeLyricsFactory::HasLyrics( m_strPath );
 }
 
@@ -561,7 +566,7 @@ bool CFileItem::IsPicture() const
     return false;
 
   extension.ToLower();
-  if (g_stSettings.m_pictureExtensions.Find(extension) != -1)
+  if (g_settings.m_pictureExtensions.Find(extension) != -1)
     return true;
 
   if (extension == ".tbn" || extension == ".dds")
@@ -1021,7 +1026,7 @@ void CFileItem::CleanString()
 
   CStdString strLabel = GetLabel();
   CStdString strTitle, strTitleAndYear, strYear;
-  CUtil::CleanString(strLabel, strTitle, strTitleAndYear, strYear, bIsFolder);
+  CUtil::CleanString(strLabel, strTitle, strTitleAndYear, strYear, (bIsFolder || !g_guiSettings.GetBool("filelists.showextensions") ) );
   SetLabel(strTitleAndYear);
 }
 
@@ -1031,6 +1036,7 @@ void CFileItem::SetLabel(const CStdString &strLabel)
   {
     m_bIsParentFolder=true;
     m_bIsFolder=true;
+    m_specialSort = SORT_ON_TOP;
     SetLabelPreformated(true);
   }
   CGUIListItem::SetLabel(strLabel);
@@ -1459,7 +1465,7 @@ void CFileItemList::Reserve(int iCount)
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 {
   CSingleLock lock(m_lock);
-  std::sort(m_items.begin(), m_items.end(), func);
+  std::stable_sort(m_items.begin(), m_items.end(), func);
 }
 
 void CFileItemList::FillSortFields(FILEITEMFILLFUNC func)
@@ -1477,6 +1483,7 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   switch (sortMethod)
   {
   case SORT_METHOD_LABEL:
+  case SORT_METHOD_LABEL_IGNORE_FOLDERS:
     FillSortFields(SSortFileItem::ByLabel);
     break;
   case SORT_METHOD_LABEL_IGNORE_THE:
@@ -1570,7 +1577,8 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   }
   if (sortMethod == SORT_METHOD_FILE        ||
       sortMethod == SORT_METHOD_VIDEO_SORT_TITLE ||
-      sortMethod == SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE)
+      sortMethod == SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE ||
+      sortMethod == SORT_METHOD_LABEL_IGNORE_FOLDERS)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::IgnoreFoldersAscending : SSortFileItem::IgnoreFoldersDescending);
   else if (sortMethod != SORT_METHOD_NONE)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::Ascending : SSortFileItem::Descending);
@@ -1820,7 +1828,7 @@ void CFileItemList::FilterCueItems()
                 else
                 { // try replacing the extension with one of our allowed ones.
                   CStdStringArray extensions;
-                  StringUtils::SplitString(g_stSettings.m_musicExtensions, "|", extensions);
+                  StringUtils::SplitString(g_settings.m_musicExtensions, "|", extensions);
                   for (unsigned int i = 0; i < extensions.size(); i++)
                   {
                     CUtil::ReplaceExtension(pItem->m_strPath, extensions[i], strMediaFile);
@@ -1963,7 +1971,7 @@ void CFileItemList::Stack()
         if (folderName.Left(2).Equals("CD") && StringUtils::IsNaturalNumber(folderName.Mid(2)))
         {
           CFileItemList items;
-          CDirectory::GetDirectory(item->m_strPath,items,g_stSettings.m_videoExtensions,true);
+          CDirectory::GetDirectory(item->m_strPath,items,g_settings.m_videoExtensions,true);
           // optimized to only traverse listing once by checking for filecount
           // and recording last file item for later use
           int nFiles = 0;
@@ -1999,6 +2007,17 @@ void CFileItemList::Stack()
             dvdPath.Empty();
             if (CFile::Exists(path))
               dvdPath = path;
+          }
+          if (dvdPath.IsEmpty())
+          {
+            CUtil::AddFileToFolder(item->m_strPath, "BDMV", dvdPath);
+            CUtil::AddFileToFolder(dvdPath, "PLAYLIST/00000.mpls", path);
+            dvdPath.Empty();
+            if (CFile::Exists(path))
+            {
+              dvdPath = path;
+              dvdPath.Replace("00000.mpls","main.mpls");
+            }
           }
           if (!dvdPath.IsEmpty())
           {
@@ -2210,6 +2229,7 @@ void CFileItemList::Stack()
         // the label is converted from utf8, but the filename is not)
         if (!g_guiSettings.GetBool("filelists.showextensions"))
           CUtil::RemoveExtension(stackName);
+        CUtil::UrlDecode(stackName);
         item1->SetLabel(stackName);
         item1->m_dwSize = size;
         break;
@@ -2638,9 +2658,15 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
   if (CUtil::IsStack(strMovieName))
     strMovieName = CStackDirectory::GetStackedTitlePath(strMovieName);
 
+  int pos;
+  if ((pos=strMovieName.Find("BDMV/")) != -1 ||
+      (pos=strMovieName.Find("BDMV\\")) != -1)
+    strMovieName = strMovieName.Mid(0,pos+5);
+
   if ((!m_bIsFolder || IsDVDFile(false, true) || CUtil::IsInArchive(m_strPath)) && bUseFolderNames)
   {
-    CUtil::GetParentPath(m_strPath, strMovieName);
+    CStdString name2(strMovieName);
+    CUtil::GetParentPath(name2,strMovieName);
     if (CUtil::IsInArchive(m_strPath) || strMovieName.Find( "VIDEO_TS" ) != -1)
     {
       CStdString strArchivePath;
@@ -2651,6 +2677,7 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 
   CUtil::RemoveSlashAtEnd(strMovieName);
   strMovieName = CUtil::GetFileName(strMovieName);
+  CUtil::UrlDecode(strMovieName);
 
   return strMovieName;
 }
@@ -2741,7 +2768,7 @@ CStdString CFileItem::GetLocalFanart() const
     return "";
 
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
+  CDirectory::GetDirectory(strDir, items, g_settings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
 
   CStdStringArray fanarts;
   StringUtils::SplitString(g_advancedSettings.m_fanartImages, "|", fanarts);
@@ -3106,7 +3133,7 @@ CStdString CFileItem::FindTrailer() const
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions, true, false, DIR_CACHE_ALWAYS, false);
+  CDirectory::GetDirectory(strDir, items, g_settings.m_videoExtensions, true, false, DIR_CACHE_ALWAYS, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-trailer";
   CStdString strFile3 = CUtil::AddFileToFolder(strDir, "movie-trailer");

@@ -216,7 +216,7 @@ namespace VIDEO
       if (m_pObserver)
         m_pObserver->OnStateChanged(FETCHING_MOVIE_INFO);
 
-      CDirectory::GetDirectory(strDirectory,items,g_stSettings.m_videoExtensions);
+      CDirectory::GetDirectory(strDirectory,items,g_settings.m_videoExtensions);
       items.m_strPath = strDirectory;
       items.Stack();
       int numFilesInFolder = GetPathHash(items, hash);
@@ -250,7 +250,7 @@ namespace VIDEO
 
       if (iFound == 1 && !settings.parent_name_root)
       {
-        CDirectory::GetDirectory(strDirectory,items,g_stSettings.m_videoExtensions);
+        CDirectory::GetDirectory(strDirectory,items,g_settings.m_videoExtensions);
         items.m_strPath = strDirectory;
         GetPathHash(items, hash);
         bSkip = true;
@@ -276,7 +276,7 @@ namespace VIDEO
       if (m_pObserver)
         m_pObserver->OnStateChanged(FETCHING_MUSICVIDEO_INFO);
 
-      CDirectory::GetDirectory(strDirectory,items,g_stSettings.m_videoExtensions);
+      CDirectory::GetDirectory(strDirectory,items,g_settings.m_videoExtensions);
       items.m_strPath = strDirectory;
 
       int numFilesInFolder = GetPathHash(items, hash);
@@ -649,7 +649,7 @@ namespace VIDEO
     // load subfolder
     CFileItemList items;
     CLog::Log(LOGDEBUG, "%s - processing dir: %s", __FUNCTION__, strPath.c_str());
-    CDirectory::GetDirectory(strPath, items, g_stSettings.m_videoExtensions, true);
+    CDirectory::GetDirectory(strPath, items, g_settings.m_videoExtensions, true);
     if (m_info->Content() == CONTENT_MOVIES)
       items.Stack();
 
@@ -675,7 +675,7 @@ namespace VIDEO
 
     if (item->m_bIsFolder)
     {
-      CUtil::GetRecursiveListing(item->m_strPath,items,g_stSettings.m_videoExtensions,true);
+      CUtil::GetRecursiveListing(item->m_strPath,items,g_settings.m_videoExtensions,true);
       CStdString hash, dbHash;
       int numFilesInFolder = GetPathHash(items, hash);
 
@@ -984,8 +984,17 @@ namespace VIDEO
         CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedFanart().c_str());
     }
 
-    pItem->SetUserVideoThumb();
-    // get & save thumbnail
+    CStdString strUserThumb = pItem->GetUserVideoThumb();
+    if (bApplyToDir && strUserThumb.IsEmpty())
+    {
+      CStdString strParent;
+      CUtil::GetParentPath(pItem->m_strPath,strParent);
+      CFileItem item(*pItem);
+      item.m_strPath = strParent;
+      item.m_bIsFolder = true;
+      strUserThumb = item.GetUserVideoThumb();
+    }
+
     CStdString strThumb = pItem->GetCachedVideoThumb();
     if (content == CONTENT_TVSHOWS && !pItem->m_bIsFolder && CFile::Exists(strThumb))
     {
@@ -993,8 +1002,9 @@ namespace VIDEO
       CFileItem item(movieDetails);
       strThumb = item.GetCachedEpisodeThumb();
     }
+
     CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
-    if (strImage.size() > 0 && pItem->GetUserVideoThumb().IsEmpty())
+    if (strImage.size() > 0 && strUserThumb.IsEmpty())
     {
       if (pDialog)
       {
@@ -1020,6 +1030,8 @@ namespace VIDEO
         CFile::Delete(strThumb);
       }
     }
+    else
+      CPicture::CacheImage(strUserThumb, strThumb);
 
     CStdString strCheck=pItem->m_strPath;
     CStdString strDirectory;

@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="libass_win32"
+	Name="libass_dll"
 	ProjectGUID="{BA5B08FC-2ECB-4571-9F25-F8054522FC65}"
 	RootNamespace="libass_win32"
 	Keyword="Win32Proj"
@@ -42,11 +42,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\lib\fontconfig_win32\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\"
+				AdditionalIncludeDirectories="..\..\..\..\lib\libiconv\include;..\..\..\..\lib\fontconfig_win32\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\;..\..\..\..\lib\enca\lib;$(NOINHERIT)"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBASS_WIN32_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="4"
@@ -63,15 +63,16 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/libass_win32.dll"
+				AdditionalDependencies="..\..\..\..\lib\fontconfig_win32\lib\fontconfig.lib"
+				OutputFile="..\..\..\..\system\players\dvdplayer\libass.dll"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/libass_win32.pdb"
+				ProgramDatabaseFile="Debug/libass_win32.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/libass_win32.lib"
+				ImportLibrary="Debug/libass_win32.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -121,7 +122,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\lib\fontconfig_win32\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\"
+				Optimization="3"
+				AdditionalIncludeDirectories="..\..\..\..\lib\libiconv\include;..\..\..\..\lib\fontconfig_win32\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\;..\..\..\..\lib\enca\lib"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBASS_WIN32_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -145,13 +147,13 @@
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libcmt;libcmtd"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+				ProgramDatabaseFile="Release/$(TargetName).pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/libass_win32.lib"
+				ImportLibrary="Release/libass_win32.lib"
 				TargetMachine="1"
 			/>
 			<Tool

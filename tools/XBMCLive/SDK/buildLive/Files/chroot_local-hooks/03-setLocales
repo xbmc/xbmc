@@ -1,0 +1,12 @@
+#!/bin/sh
+
+echo ""
+echo "Set locales..."
+echo ""
+
+# Edit /etc/environment adding the following two lines:
+echo "LC_ALL=en_US.utf8" >> /etc/environment
+echo "LANG=en_US.utf8" >> /etc/environment
+
+# generate locales
+# apt-get install --reinstall language-pack-en

@@ -146,12 +146,13 @@ void XBPyThread::Process()
 
   char path[1024];
   char sourcedir[1024];
+  int m_Py_file_input = Py_file_input;
 
   // get the global lock
   PyEval_AcquireLock();
 
   m_threadState = Py_NewInterpreter();
-  
+
   PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
 
@@ -166,7 +167,7 @@ void XBPyThread::Process()
   PyThreadState_Swap(m_threadState);
 
   m_pExecuter->InitializeInterpreter();
-  
+
   CLog::Log(LOGDEBUG, "%s - The source file to load is %s", __FUNCTION__, m_source);
 
   // get path from script file name and add python path's
@@ -194,20 +195,20 @@ void XBPyThread::Process()
   PySys_SetPath(path);
   // Remove the PY_PATH_SEP at the end
   sourcedir[strlen(sourcedir)-1] = 0;
-  
+
   CLog::Log(LOGDEBUG, "%s - Entering source directory %s", __FUNCTION__, sourcedir);
-  
+
   xbp_chdir(sourcedir);
-  
-  int retval = -1;
-  
+
   if (m_type == 'F')
   {
     // run script from file
     FILE *fp = fopen_utf8(_P(m_source).c_str(), "r");
     if (fp)
     {
-      retval = PyRun_SimpleFile(fp, _P(m_source).c_str());
+      PyObject* module = PyImport_AddModule((char*)"__main__");
+      PyObject* moduleDict = PyModule_GetDict(module);
+      PyRun_File(fp, _P(m_source).c_str(), m_Py_file_input, moduleDict, moduleDict);
       fclose(fp);
     }
     else
@@ -216,31 +217,86 @@ void XBPyThread::Process()
   else
   {
     //run script
-    retval = PyRun_SimpleString(m_source);
+    PyObject* module = PyImport_AddModule((char*)"__main__");
+    PyObject* moduleDict = PyModule_GetDict(module);
+    PyRun_String(m_source, m_Py_file_input, moduleDict, moduleDict);
   }
-  if (retval == -1)
+  if (PyErr_Occurred())
   {
-    CLog::Log(LOGERROR, "Scriptresult: Error");
-    if (PyErr_Occurred())
-      PyErr_Print();
-   
-    CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
-    if (pDlgToast)
-    {
-      CStdString desc;
-      CStdString path;
-      CStdString script;
-      CUtil::Split(m_source, path, script);
-      if (script.Equals("default.py"))
-      {
-        CStdString path2;
-        CUtil::RemoveSlashAtEnd(path);
-        CUtil::Split(path, path2, script);
-      }
+    PyObject* exc_type;
+    PyObject* exc_value;
+    PyObject* exc_traceback;
+    PyObject* pystring;
+    pystring = NULL;
 
-      desc.Format(g_localizeStrings.Get(2100), script);
-      pDlgToast->QueueNotification(g_localizeStrings.Get(257), desc);
+    PyErr_Fetch(&exc_type, &exc_value, &exc_traceback);
+    if (exc_type == 0 && exc_value == 0 && exc_traceback == 0)
+    {
+      CLog::Log(LOGINFO, "Strange: No Python exception occured");
     }
+    else
+    {
+      if (exc_type != NULL && (pystring = PyObject_Str(exc_type)) != NULL && (PyString_Check(pystring)))
+      {
+        if (strncmp(PyString_AsString(pystring), "exceptions.KeyboardInterrupt", 28) == 0)
+          CLog::Log(LOGINFO, "Scriptresult: Interrupted by user");
+        else
+        {
+          PyObject *tracebackModule;
+
+          CLog::Log(LOGINFO, "-->Python script returned the following error<--");
+          CLog::Log(LOGERROR, "Error Type: %s", PyString_AsString(PyObject_Str(exc_type)));
+          CLog::Log(LOGERROR, "Error Contents: %s", PyString_AsString(PyObject_Str(exc_value)));
+
+          tracebackModule = PyImport_ImportModule((char*)"traceback");
+          if (tracebackModule != NULL)
+          {
+            PyObject *tbList, *emptyString, *strRetval;
+
+            tbList = PyObject_CallMethod(tracebackModule, (char*)"format_exception", (char*)"OOO", exc_type, exc_value == NULL ? Py_None : exc_value, exc_traceback == NULL ? Py_None : exc_traceback);
+            emptyString = PyString_FromString("");
+            strRetval = PyObject_CallMethod(emptyString, (char*)"join", (char*)"O", tbList);
+
+            CLog::Log(LOGERROR, "%s", PyString_AsString(strRetval));
+
+            Py_DECREF(tbList);
+            Py_DECREF(emptyString);
+            Py_DECREF(strRetval);
+            Py_DECREF(tracebackModule);
+          }
+          CLog::Log(LOGINFO, "-->End of Python script error report<--");
+        }
+      }
+      else
+      {
+        pystring = NULL;
+        CLog::Log(LOGINFO, "<unknown exception type>");
+      }
+    }
+    if (pystring != NULL && strncmp(PyString_AsString(pystring), "exceptions.KeyboardInterrupt", 28) != 0)
+    {
+      CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+      if (pDlgToast)
+      {
+        CStdString desc;
+        CStdString path;
+        CStdString script;
+        CUtil::Split(m_source, path, script);
+        if (script.Equals("default.py"))
+        {
+          CStdString path2;
+          CUtil::RemoveSlashAtEnd(path);
+          CUtil::Split(path, path2, script);
+        }
+
+        desc.Format(g_localizeStrings.Get(2100), script);
+        pDlgToast->QueueNotification(g_localizeStrings.Get(257), desc);
+      }
+    }
+    Py_XDECREF(exc_type);
+    Py_XDECREF(exc_value); // caller owns all 3
+    Py_XDECREF(exc_traceback); // already NULL'd out
+    Py_XDECREF(pystring);
   }
   else
     CLog::Log(LOGINFO, "Scriptresult: Success");
@@ -305,7 +361,7 @@ bool XBPyThread::isStopping() {
 void XBPyThread::stop()
 {
   m_stopping = true;
-  
+
   if (m_threadState)
   {
     PyEval_AcquireLock();

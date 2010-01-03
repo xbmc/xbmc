@@ -42,13 +42,15 @@
       <!-- minus      -->      <button id="2">Down</button>
       <!-- left       -->      <button id="3">Left</button>
       <!-- right      -->      <button id="4">Right</button>
-      <!-- play/pause -->      <button id="5">Select</button>
+      <!-- center     -->      <button id="5">Select</button>
       <!-- menu       -->      <button id="6">PreviousMenu</button>
-      <!-- hold play  -->      <button id="7">Fullscreen</button>
+      <!-- hold center  -->    <button id="7">Fullscreen</button>
       <!-- hold menu  -->      <button id="8">ContextMenu</button>
       <!-- old buttons for ATV <2.2, used on OSX  -->
       <!-- hold left  -->      <button id="9">Left</button>
       <!-- hold right -->      <button id="10">Right</button>
+      <!-- new aluminium remote buttons  -->
+      <!-- play  -->           <button id="12">Play</button>
       <!-- Learned remote buttons (ATV >2.3) -->
       <!-- Play -->      <button id="70">Play</button>
       <!-- Pause -->      <button id="71">Pause</button>
@@ -89,7 +91,7 @@
   </MyMusicPlaylist>
   <MyMusicPlaylistEditor>
     <joystick name="AppleRemote">
-      <button id="6">Playlist</button>
+      <button id="6">ParentDir</button>
     </joystick>
   </MyMusicPlaylistEditor>
   <MyMusicFiles>
@@ -160,6 +162,7 @@
       <button id="4">NextPicture</button>
       <button id="6">Stop</button>
       <button id="7">Info</button>
+      <button id="8">Rotate</button>
     </joystick>
   </SlideShow>
   <ScreenCalibration>

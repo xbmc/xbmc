@@ -75,7 +75,7 @@
 				<label>-</label>
 				<align>center</align>
 				<aligny>center</aligny>
-				<font>font24caps_title</font>
+				<font>font24_title</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>

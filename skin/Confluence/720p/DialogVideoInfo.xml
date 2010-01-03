@@ -39,7 +39,7 @@
 					<posy>50</posy>
 					<width>1030</width>
 					<height>30</height>
-					<font>font35caps_title</font>
+					<font>font35_title</font>
 					<label>$INFO[Listitem.Title]</label>
 					<align>center</align>
 					<aligny>center</aligny>
@@ -96,7 +96,7 @@
 							<posy>0</posy>
 							<width>675</width>
 							<height>380</height>
-							<font>font30caps_title</font>
+							<font>font30_title</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<align>center</align>
@@ -106,7 +106,50 @@
 					</control>
 				</control>
 				<control type="group">
-					<visible>[!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)] + !Control.HasFocus(12)</visible>
+					<posy>90</posy>
+					<posx>387</posx>
+					<visible>Control.HasFocus(15)</visible>
+					<include>VisibleFadeEffect</include>
+					<control type="image">
+						<description>Border</description>
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>675</width>
+						<height>380</height>
+						<texture border="5">button-nofocus.png</texture>
+					</control>
+					<control type="image">
+						<description>background</description>
+						<posx>5</posx>
+						<posy>5</posy>
+						<width>665</width>
+						<height>370</height>
+						<texture>black-back.png</texture>
+					</control>
+					<control type="label">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>675</width>
+						<height>380</height>
+						<font>font30_title</font>
+						<textcolor>grey2</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>31330</label>
+						<visible>!Player.HasVideo</visible>
+					</control>
+					<control type="videowindow">
+						<description>No Fanart Back</description>
+						<posx>5</posx>
+						<posy>5</posy>
+						<width>665</width>
+						<height>370</height>
+						<visible>Player.HasVideo</visible>
+					</control>
+				</control>
+				<control type="group">
+					<visible>[!container.content(tvshows) + !container.content(episodes) + !container.content(musicvideos)] + ![Control.HasFocus(12) | Control.HasFocus(15)]</visible>
 					<posy>90</posy>
 					<posx>210</posx>
 					<include>VisibleFadeEffect</include>
@@ -146,7 +189,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -181,7 +224,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -320,7 +363,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -355,7 +398,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -464,7 +507,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -499,7 +542,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -609,7 +652,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -644,7 +687,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -774,7 +817,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -809,7 +852,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -894,7 +937,7 @@
 					<posy>480</posy>
 					<width>400</width>
 					<height>30</height>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>
@@ -908,7 +951,7 @@
 					<posy>480</posy>
 					<width>400</width>
 					<height>30</height>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>
@@ -1062,7 +1105,14 @@
 						<description>Play Trailer</description>
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>20410</label>
-						<visible>!IsEmpty(ListItem.Trailer)</visible>
+						<visible>!IsEmpty(ListItem.Trailer) + !Skin.HasSetting(WindowedTrailer)</visible>
+					</control>
+					<control type="button" id="15">
+						<description>Play Trailer Windowed</description>
+						<include>ButtonInfoDialogsCommonValues</include>
+						<label>20410</label>
+						<onclick>PlayMedia($INFO[ListItem.Trailer],1)</onclick>
+						<visible>!IsEmpty(ListItem.Trailer) + Skin.HasSetting(WindowedTrailer)</visible>
 					</control>
 				</control>
 			</control>

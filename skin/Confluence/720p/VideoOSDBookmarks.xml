@@ -2,9 +2,8 @@
 	<defaultcontrol always="true">2</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>440</posx>
-		<posy>75</posy>
-		<origin x="240" y="75">!Window.IsVisible(FullscreenInfo)</origin>
+		<posx>240</posx>
+		<posy>115</posy>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
@@ -48,7 +47,7 @@
 			<posy>18</posy>
 			<width>760</width>
 			<height>30</height>
-			<font>font13caps_title</font>
+			<font>font13_title</font>
 			<label>[UPPERCASE]$LOCALIZE[298][/UPPERCASE] - ($INFO[Container(11).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages])</label>
 			<align>center</align>
 			<aligny>center</aligny>

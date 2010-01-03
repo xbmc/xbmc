@@ -27,11 +27,7 @@
 #include "SingleLock.h"
 #include "log.h"
 
-#ifndef _LINUX
-#include "lib/libiconv/iconv.h"
-#else
 #include <iconv.h>
-#endif
 
 #ifdef __APPLE__
 #ifdef __POWERPC__

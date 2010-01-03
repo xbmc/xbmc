@@ -1,0 +1,46 @@
+* Linux with libc6 (glibc-2.1):
+  OK
+
+* Linux with libc6 (glibc-2.0.7):
+  OK
+
+* Linux with libc5:
+  OK
+
+* Solaris 2.7:
+  OK
+
+* Solaris 2.6:
+  OK
+
+* OSF/1 5.1:
+  OK
+
+* OSF/1 4.0d:
+  OK
+
+* Irix 6.5:
+  OK
+
+* HP-UX 10.20:
+  OK
+
+* AIX 4.2:
+  OK
+
+* SunOS 4:
+  OK when configured --enable-static --disable-shared
+  (gcc cannot create shared libraries without relocations)
+
+* FreeBSD 3.3:
+  OK
+
+* BeOS 5:
+  OK
+
+* Woe32 with MSVC 4.0:
+  OK
+
+* Woe32 with MSVC 5.0:
+  OK
+

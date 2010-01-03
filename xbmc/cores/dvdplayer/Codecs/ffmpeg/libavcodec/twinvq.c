@@ -22,6 +22,7 @@
 #include "avcodec.h"
 #include "get_bits.h"
 #include "dsputil.h"
+#include "lsp.h"
 
 #include <math.h>
 #include <stdint.h>
@@ -536,17 +537,6 @@ static void rearrange_lsp(int order, float *lsp, float min_dist)
         }
 }
 
-static void bubblesort(float *lsp, int lp_order)
-{
-    int i,j;
-
-    /* sort lsp in ascending order. float bubble agorithm,
-       O(n) if data already sorted, O(n^2) - otherwise */
-    for (i = 0; i < lp_order - 1; i++)
-        for (j = i; j >= 0 && lsp[j] > lsp[j+1]; j--)
-            FFSWAP(float, lsp[j], lsp[j+1]);
-}
-
 static void decode_lsp(TwinContext *tctx, int lpc_idx1, uint8_t *lpc_idx2,
                        int lpc_hist_idx, float *lsp, float *hist)
 {
@@ -583,7 +573,7 @@ static void decode_lsp(TwinContext *tctx, int lpc_idx1, uint8_t *lpc_idx2,
 
     rearrange_lsp(mtab->n_lsp, lsp, 0.0001);
     rearrange_lsp(mtab->n_lsp, lsp, 0.000095);
-    bubblesort(lsp, mtab->n_lsp);
+    ff_sort_nearly_sorted_floats(lsp, mtab->n_lsp);
 }
 
 static void dec_lpc_spectrum_inv(TwinContext *tctx, float *lsp,
@@ -1014,6 +1004,7 @@ static av_cold void init_bitstream_params(TwinContext *tctx)
     int bsize_no_main_cb[3];
     int bse_bits[3];
     int i;
+    enum FrameType frametype;
 
     for (i = 0; i < 3; i++)
         // +1 for history usage switch
@@ -1062,8 +1053,8 @@ static av_cold void init_bitstream_params(TwinContext *tctx)
         tctx->length_change[i] = num_rounded_up;
     }
 
-    for (i = 0; i < 4; i++)
-        construct_perm_table(tctx, i);
+    for (frametype = FT_SHORT; frametype <= FT_PPC; frametype++)
+        construct_perm_table(tctx, frametype);
 }
 
 static av_cold int twin_decode_init(AVCodecContext *avctx)

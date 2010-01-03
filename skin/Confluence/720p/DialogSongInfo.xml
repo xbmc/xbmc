@@ -56,7 +56,7 @@
 				<posy>20</posy>
 				<width>580</width>
 				<height>30</height>
-				<font>font30caps_title</font>
+				<font>font30_title</font>
 				<label>$LOCALIZE[658]</label>
 				<align>left</align>
 				<aligny>center</aligny>
@@ -100,7 +100,7 @@
 				<height>25</height>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>blue</textcolor>
 				<label>$LOCALIZE[557]:</label>
 			</control>
@@ -124,7 +124,7 @@
 				<height>25</height>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>blue</textcolor>
 				<label>$LOCALIZE[558]:</label>
 			</control>
@@ -148,7 +148,7 @@
 				<height>25</height>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>blue</textcolor>
 				<label>$LOCALIZE[515]:</label>
 			</control>
@@ -172,7 +172,7 @@
 				<height>25</height>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>blue</textcolor>
 				<label>$LOCALIZE[562]:</label>
 			</control>
@@ -196,7 +196,7 @@
 				<height>25</height>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>blue</textcolor>
 				<label>$LOCALIZE[554]:</label>
 			</control>
@@ -220,7 +220,7 @@
 				<height>25</height>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>blue</textcolor>
 				<label>$LOCALIZE[563]:</label>
 			</control>
@@ -272,7 +272,7 @@
 				<height>25</height>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>blue</textcolor>
 				<label>$LOCALIZE[569]:</label>
 			</control>
@@ -296,7 +296,7 @@
 					<width>240</width>
 					<height>41</height>
 					<label>186</label>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<align>right</align>
 					<texturenofocus>MenuItemNF.png</texturenofocus>
 					<texturefocus>MenuItemFO.png</texturefocus>
@@ -312,7 +312,7 @@
 					<width>240</width>
 					<height>41</height>
 					<label>222</label>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<align>right</align>
 					<texturenofocus>MenuItemNF.png</texturenofocus>
 					<texturefocus>MenuItemFO.png</texturefocus>
@@ -328,7 +328,7 @@
 					<width>240</width>
 					<height>41</height>
 					<label>10523</label>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<align>right</align>
 					<texturenofocus>MenuItemNF.png</texturenofocus>
 					<texturefocus>MenuItemFO.png</texturefocus>
@@ -344,7 +344,7 @@
 					<width>240</width>
 					<height>41</height>
 					<label>13405</label>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<align>right</align>
 					<texturenofocus>MenuItemNF.png</texturenofocus>
 					<texturefocus>MenuItemFO.png</texturefocus>

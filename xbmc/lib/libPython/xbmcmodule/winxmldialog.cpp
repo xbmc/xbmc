@@ -50,7 +50,7 @@
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
-#endif 
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -69,7 +69,7 @@ namespace PYXBMC
 
     new(&self->sXMLFileName) string();
     new(&self->sFallBackPath) string();
-    new(&self->vecControls) std::vector<Control*>();  
+    new(&self->vecControls) std::vector<Control*>();
 
     self->iWindowId = -1;
     PyObject* pyOXMLname = NULL;
@@ -92,7 +92,7 @@ namespace PYXBMC
     {
       // Check to see if the XML file exists in current skin. If not use fallback path to find a skin for the script
       strSkinPath = g_SkinInfo.GetSkinPath(strXMLname, &res);
-      
+
       if (!XFILE::CFile::Exists(strSkinPath))
       {
         // Check for the matching folder for the skin in the fallback skins folder
@@ -138,8 +138,8 @@ namespace PYXBMC
     if (!Window_CreateNewWindow((Window*)self, true))
     {
       // error is already set by Window_CreateNewWindow, just release the memory
-      self->sFallBackPath.~string();          
-      self->sXMLFileName.~string();          
+      self->sFallBackPath.~string();
+      self->sXMLFileName.~string();
       self->ob_type->tp_free((PyObject*)self);
       return NULL;
     }

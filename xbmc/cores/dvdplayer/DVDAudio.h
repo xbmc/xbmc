@@ -39,7 +39,7 @@ extern "C" {
     #include <ffmpeg/avcodec.h>
   #endif
 #else
-  #include "avcodec.h"
+  #include "libavcodec/avcodec.h"
 #endif
 }
 #endif
@@ -65,6 +65,8 @@ public:
   void Destroy();
   DWORD AddPackets(const DVDAudioFrame &audioframe);
   double GetDelay(); // returns the time it takes to play a packet if we add one at this time
+  double GetCacheTime();  // returns total amount of data cached in audio output at this time
+  double GetCacheTotal(); // returns total amount the audio device can buffer
   void Flush();
   void Finish();
   void Drain();

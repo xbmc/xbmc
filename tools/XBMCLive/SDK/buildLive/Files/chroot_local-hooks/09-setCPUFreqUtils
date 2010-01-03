@@ -1,0 +1,20 @@
+#!/bin/sh
+
+echo ""
+echo "Set CPU throttling..."
+echo ""
+
+package=cpufrequtils
+
+if ! (apt-cache policy $package | grep Installed | grep none) ; then
+      echo ""
+      echo "Set default settings for CPU throttling..."
+      echo ""
+
+      cat > /etc/default/cpufrequtils <<End-of-file
+ENABLE="true"
+GOVERNOR="ondemand"
+MAX_SPEED="0"
+MIN_SPEED="1800000"
+End-of-file
+fi

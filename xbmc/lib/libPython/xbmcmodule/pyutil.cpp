@@ -31,7 +31,7 @@
 using namespace std;
 
 static int iPyXBMCGUILockRef = 0;
-static TiXmlDocument pySkinReferences; 
+static TiXmlDocument pySkinReferences;
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
@@ -57,7 +57,7 @@ namespace PYXBMC
 
       CStdStringW utf16String = (wchar_t*) PyUnicode_AsUnicode(pObject);
       g_charsetConverter.wToUTF8(utf16String, utf8String);
-      
+
       buf = utf8String;
       return 1;
     }
@@ -68,7 +68,7 @@ namespace PYXBMC
       buf = utf8String;
       return 1;
     }
-    
+
     // Object is not a unicode or a normal string.
     buf = "";
     if (pos != -1) PyErr_Format(PyExc_TypeError, "argument %.200i must be unicode or str", pos);
@@ -169,6 +169,6 @@ void _PyXBMC_MakePendingCalls()
     //(*((*iter).first))((*iter).second);
     lock.Enter();
     iter = g_callQueue.begin();
-  }  
+  }
 }
 

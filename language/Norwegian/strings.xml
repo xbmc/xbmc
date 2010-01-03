@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 12/02/2009-->
-<!--$Revision$-->
-<!--Based on english strings version 25165-->
+<!--Based on english strings version 25428-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Bilder</string>
   <string id="2">Musikk</string>
-  <string id="3">Filmer</string>
+  <string id="3">Videoer</string>
   <string id="4">TV-guide</string>
   <string id="5">Innstillinger</string>
   <string id="6">XBMC SVN</string>
@@ -71,7 +69,7 @@
   <string id="124">Flytt disse filene?</string>
   <string id="125">Slett disse filene? Dette kan ikke angres.</string>
   <string id="126">Status</string>
-  <string id="127">Objekter</string>
+  <string id="127">objekter</string>
   <string id="128">Generelt</string>
   <string id="129">Bildefremvisning</string>
   <string id="130">Systeminformasjon</string>
@@ -101,7 +99,7 @@
   <string id="154">Lagring</string>
   <string id="155">Stasjon</string>
   <string id="156">Ledig</string>
-  <string id="157">Videobrikke</string>
+  <string id="157">Video</string>
   <string id="158">Ledig minne</string>
   <string id="159">Ingen forbindelse</string>
   <string id="160">Ledig</string>
@@ -178,7 +176,7 @@
   <string id="226">Testbilder</string>
   <string id="227">Finn CD-informasjon på internett</string>
   <string id="228">Bland spillelisten ved lasting</string>
-  <string id="229">Tid før ventemodus for harddisk (min)</string>
+  <string id="229">Tid før harddisk spinner ned (min)</string>
   <string id="230">Videofiltre</string>
   <string id="231">Ingen</string>
   <string id="232">Punkt</string>
@@ -214,7 +212,7 @@
   <string id="255">CDDB</string>
   <string id="256">Henter CD-informasjon</string>
   <string id="257">Feil</string>
-  <string id="258">Aktiver taginformasjon</string>
+  <string id="258">Aktiver tagginformasjon</string>
   <string id="259">Åpner</string>
   <string id="260">Internettradio</string>
   <string id="261">Venter på oppstart....</string>
@@ -232,7 +230,7 @@
   <string id="273">Høyre hjørne nede</string>
   <string id="274">Plassering av undertekst</string>
   <string id="275">Justering av pikselforhold</string>
-  <string id="276">Juster pilen for å endre overscan</string>
+  <string id="276">Juster pilen for å endre overskanning</string>
   <string id="277">Juster linjen for å endre plassering av undertekster</string>
   <string id="278">Juster firkanten til den blir helt kvadratisk</string>
   <string id="279">Kunne ikke laste innstillinger</string>
@@ -261,13 +259,13 @@
   <string id="308">- Vertikalt deblocking-filter</string>
   <string id="309">- Horisontalt deblocking-filter</string>
   <string id="310">- Automatisk lysstyrke/kontrast</string>
-  <string id="311">- Ringartifakt filter</string>
+  <string id="311">- Ringartefakt filter</string>
   <string id="312">(0=automatisk)</string>
   <string id="313">Renser database</string>
   <string id="314">Forbereder...</string>
   <string id="315">Databasefeil</string>
   <string id="316">Søker i sanger...</string>
-  <string id="317">Opprensing av database fullført</string>
+  <string id="317">Opprensking av database fullført</string>
   <string id="318">Renser opp i sanger</string>
   <string id="319">Feil ved rensing av sanger</string>
   <string id="320">Renser opp i artister</string>
@@ -362,7 +360,7 @@
   <string id="413">Manuelt</string>
   <string id="414">Ingen anmeldelse av dette albumet</string>
   <string id="415">Laster ned miniatyrbilde...</string>
-  <string id="416">Ikke tilgengelig</string>
+  <string id="416">Ikke tilgjengelig</string>
   <string id="417">Viser: Store ikoner</string>
   <string id="418">
   </string>
@@ -444,7 +442,7 @@
   <string id="489">Spill automatisk av neste fil</string>
   <string id="491">- Bruke store ikoner</string>
   <string id="492">Endre størrelse på VobSub</string>
-  <string id="493">Avanserte instillinger (kun eksperter)</string>
+  <string id="493">Avanserte innstillinger (kun eksperter)</string>
   <string id="494">Gjennomsnittlig headroom (dB)</string>
   <string id="495">Oppskaler film til grensesnittets oppløsning</string>
   <string id="496">Kalibrering</string>
@@ -478,10 +476,10 @@
   <string id="526">Legg til i spilleliste</string>
   <string id="527">Legg til i biblioteket manuelt</string>
   <string id="528">Skriv inn tittel</string>
-  <string id="529">Feil: Ekstisterende tittel</string>
+  <string id="529">Feil: Eksisterende tittel</string>
   <string id="530">Velg sjanger</string>
   <string id="531">Ny sjanger</string>
-  <string id="532">Manuellt tillegg</string>
+  <string id="532">Manuelt tillegg</string>
   <string id="533">Skriv inn sjanger</string>
   <string id="534">Visning: %s</string>
   <string id="535">Liste</string>
@@ -554,7 +552,7 @@
   <string id="610">Ripp musikkspor</string>
   <string id="611">Skriv inn nummer</string>
   <string id="620">CD-ripping</string>
-  <string id="621">Enkoder</string>
+  <string id="621">Koder</string>
   <string id="622">Kvalitet</string>
   <string id="623">Bitrate</string>
   <string id="624">Inkluder spornummer</string>
@@ -584,7 +582,7 @@
   <string id="651">Bla etter bibliotek</string>
   <string id="652">År</string>
   <string id="653">Oppdater bibliotek</string>
-  <string id="654">Vis debug informasjon</string>
+  <string id="654">Vis feilsøkingsinformasjon</string>
   <string id="655">Bla etter kjørbar fil</string>
   <string id="656">Bla etter spilleliste</string>
   <string id="657">Bla etter mappe</string>
@@ -661,10 +659,10 @@
   <string id="763">Lysegrønn</string>
   <string id="764">Gul/grønn</string>
   <string id="765">Blå/grønn</string>
-  <string id="766">Reserved</string>
-  <string id="767">Reserved</string>
-  <string id="768">Reserved</string>
-  <string id="769">Reserved</string>
+  <string id="766">Reservert</string>
+  <string id="767">Reservert</string>
+  <string id="768">Reservert</string>
+  <string id="769">Reservert</string>
   <string id="770">Feil %i: delt mappe ikke tilgjengelig</string>
   <string id="771">- Automatisk FATX begrensning</string>
   <string id="772">Lydmaskinvare</string>
@@ -674,7 +672,7 @@
   <string id="776">- Trådløst nettverksnavn (ESSID)</string>
   <string id="777">- Trådløst passord</string>
   <string id="778">- Trådløst sikkerhet</string>
-  <string id="779">Lagre og bruk nettverksinstillingene</string>
+  <string id="779">Lagre og bruk nettverksinnstillingene</string>
   <string id="780">Ingen kryptering</string>
   <string id="781">WEP</string>
   <string id="782">WPA</string>
@@ -738,13 +736,13 @@
   <string id="1034">Undermeny</string>
   <string id="1035">Aktiver undermenyknapper</string>
   <string id="1036">Favoritter</string>
-  <string id="1037">Film-plugin</string>
+  <string id="1037">Video-plugin</string>
   <string id="1038">Musikk-plugin</string>
   <string id="1039">Bilde-plugin</string>
   <string id="1040">Laster katalog</string>
   <string id="1041">Gjenopprettet %i deler</string>
   <string id="1042">Gjenopprettet %i av %i deler</string>
-  <string id="1043">Program-plugins</string>
+  <string id="1043">Program-plugin</string>
   <string id="1044">Velg miniatyrbilde for plugin</string>
   <string id="1045">Plugin-innstillinger</string>
   <string id="1046">Aksesspunkt</string>
@@ -760,28 +758,28 @@
   <string id="1208">Monter delte SMB-mapper</string>
   <string id="1210">Fjern</string>
   <string id="1211">Musikk</string>
-  <string id="1212">Filmer</string>
+  <string id="1212">Video</string>
   <string id="1213">Bilder</string>
   <string id="1214">Filer</string>
-  <string id="1215">Musikk &amp; film</string>
+  <string id="1215">Musikk &amp; video</string>
   <string id="1216">Musikk &amp; bilder</string>
   <string id="1217">Musikk &amp; filer</string>
-  <string id="1218">Filmer &amp; bilder</string>
-  <string id="1219">Filmer &amp; filer</string>
+  <string id="1218">Video &amp; bilder</string>
+  <string id="1219">Video &amp; filer</string>
   <string id="1220">Bilder &amp; filer</string>
-  <string id="1221">Musikk &amp; filmer &amp; bilder</string>
-  <string id="1222">Musikk &amp; filmer &amp; bilder &amp; filer</string>
+  <string id="1221">Musikk &amp; video &amp; bilder</string>
+  <string id="1222">Musikk &amp; video &amp; bilder &amp; filer</string>
   <string id="1223">Skrudd av</string>
-  <string id="1226">Filer &amp; musikk &amp; filmer</string>
+  <string id="1226">Filer &amp; musikk &amp; video</string>
   <string id="1227">Filer &amp; bilder &amp; musikk</string>
-  <string id="1228">Filer &amp; bilder &amp; filmer</string>
+  <string id="1228">Filer &amp; bilder &amp; video</string>
   <string id="1229">Musikk &amp; programmer</string>
-  <string id="1230">Filmer &amp; programmer</string>
+  <string id="1230">Video &amp; programmer</string>
   <string id="1231">Bilder &amp; programmer</string>
-  <string id="1232">Musikk &amp; filmer &amp; bilder &amp; programmer</string>
-  <string id="1233">Programmer &amp; filmer &amp; musikk</string>
+  <string id="1232">Musikk &amp; video &amp; bilder &amp; programmer</string>
+  <string id="1233">Programmer &amp; video &amp; musikk</string>
   <string id="1234">Programmer &amp; bilder &amp; musikk</string>
-  <string id="1235">Programmer &amp; bilder &amp; filmer</string>
+  <string id="1235">Programmer &amp; bilder &amp; video</string>
   <string id="1245">FTP brukernavn</string>
   <string id="1246">FTP passord</string>
   <string id="1247">Brukerpassord ble endret</string>
@@ -832,18 +830,18 @@
   <string id="10003">Filbehandler</string>
   <string id="10004">Innstillinger</string>
   <string id="10005">Musikk</string>
-  <string id="10006">Filmer</string>
+  <string id="10006">Videoer</string>
   <string id="10007">Systeminformasjon</string>
   <string id="10008">Innstillinger - Generelt</string>
   <string id="10009">Innstillinger - Skjerm</string>
   <string id="10010">Innstillinger - Utseende - GUI-kalibrering</string>
-  <string id="10011">Innstillinger - Filmer - Kalibrering av skjerm</string>
+  <string id="10011">Innstillinger - Videoer - Kalibrering av skjerm</string>
   <string id="10012">Innstillinger - Bilder</string>
   <string id="10013">Innstillinger - Programmer</string>
   <string id="10014">Innstillinger - Været</string>
   <string id="10015">Innstillinger - Musikk</string>
   <string id="10016">Innstillinger - System</string>
-  <string id="10017">Innstillinger - Filmer</string>
+  <string id="10017">Innstillinger - Videoer</string>
   <string id="10018">Innstillinger - Nettverk</string>
   <string id="10019">Innstillinger - Utseende</string>
   <string id="10020">Skript</string>
@@ -894,22 +892,22 @@
   </string>
   <string id="10521">
   </string>
-  <string id="10522">Spilles nå - Filmer</string>
+  <string id="10522">Spilles nå - Videoer</string>
   <string id="10523">Albuminformasjon</string>
   <string id="10524">Informasjon om film</string>
   <string id="12000">Velg dialog</string>
   <string id="12001">Musikk/Info</string>
   <string id="12002">Dialog OK</string>
-  <string id="12003">Filmer/Info</string>
+  <string id="12003">Videoer/Info</string>
   <string id="12004">Skript/Info</string>
   <string id="12005">Fullskjermsvideo</string>
   <string id="12006">Lydvisualisering</string>
   <string id="12007">
   </string>
   <string id="12008">Filstablingsdialog</string>
-  <string id="12009">Gjenoppbygg index...</string>
+  <string id="12009">Gjenoppbygg indeks...</string>
   <string id="12010">Returner til musikk</string>
-  <string id="12011">Returner til filmer</string>
+  <string id="12011">Returner til videoer</string>
   <string id="12012">Oppdater trainer-liste</string>
   <string id="12013">Trainer</string>
   <string id="12014">Ingen trainere funnet</string>
@@ -971,9 +969,9 @@
   <string id="12377">Dette vil slette alle tidligere innstillinger</string>
   <string id="12378">Vis hvert bilde i</string>
   <string id="12379">Bruk effekter med panorering og zooming</string>
-  <string id="12380">Spill NTSC-filmer som PAL</string>
-  <string id="12381">Spill PAL-filmer som NTSC</string>
-  <string id="12382">Spill NTSC-filmer som PAL60</string>
+  <string id="12380">Spill NTSC-videoer som PAL</string>
+  <string id="12381">Spill PAL-videoer som NTSC</string>
+  <string id="12382">Spill NTSC-videoer som PAL60</string>
   <string id="12383">12-timers klokke</string>
   <string id="12384">24-timers klokke</string>
   <string id="12385">Dag/måned</string>
@@ -989,13 +987,13 @@
   <string id="12900">Skjermbeskytter</string>
   <string id="12901">Fullskjerm OSD</string>
   <string id="13000">System</string>
-  <string id="13001">Sette harddisk i ventemodus umiddelbart</string>
-  <string id="13002">Kun film</string>
+  <string id="13001">Spinn ned harddisk umiddelbart</string>
+  <string id="13002">Kun video</string>
   <string id="13003">- Forsinkelse</string>
   <string id="13004">- Minimum filvarighet</string>
   <string id="13005">Slå av</string>
-  <string id="13006">Dashbord</string>
-  <string id="13007">Bruk egendefinert sti til dashbord</string>
+  <string id="13006">Instrumentbord</string>
+  <string id="13007">Bruk egendefinert sti til instrumentbord</string>
   <string id="13008">Standardinnstilling for avslutning</string>
   <string id="13009">Avslutt</string>
   <string id="13010">Dvalemodus</string>
@@ -1003,7 +1001,7 @@
   <string id="13012">Avslutt</string>
   <string id="13013">Omstart</string>
   <string id="13014">Minimer</string>
-  <string id="13015">Hendelse ved trykk på power-knapp</string>
+  <string id="13015">Hendelse ved trykk på av/på-knapp</string>
   <string id="13020">Er en annen sesjon aktiv, eventuelt over ssh?</string>
   <string id="13021">Montert utskiftbar harddisk</string>
   <string id="13022">Usikker fjerning av enhet</string>
@@ -1043,10 +1041,10 @@
   <string id="13150">HDD nøkkel:</string>
   <string id="13151">HDD temperatur:</string>
   <string id="13152">DVD modell:</string>
-  <string id="13153">DVD firmware:</string>
+  <string id="13153">DVD fastvare:</string>
   <string id="13154">HDD modell:</string>
   <string id="13155">HDD serienummer:</string>
-  <string id="13156">HDD firmware:</string>
+  <string id="13156">HDD fastvare:</string>
   <string id="13157">HDD passord:</string>
   <string id="13158">HDD låsstatus:</string>
   <string id="13159">Nettverksmaske:</string>
@@ -1056,7 +1054,7 @@
   <string id="13163">Kontrollere</string>
   <string id="13164">Tastatur</string>
   <string id="13165">Mus på port:</string>
-  <string id="13166">Headset/Mikrofon</string>
+  <string id="13166">Hodetelefoner/Mikrofon</string>
   <string id="13167">Minnepinne</string>
   <string id="13168">Fjernkontroll</string>
   <string id="13169">Kontrollerport</string>
@@ -1112,7 +1110,7 @@
   <string id="13301">Automatisk temperaturkontroll</string>
   <string id="13302">Hastighetskontroll for vifte</string>
   <string id="13303">- Skrifttyper</string>
-  <string id="13304">Snu tekstsstrenger</string>
+  <string id="13304">Snu tekststrenger</string>
   <string id="13305">Vis RSS-nyhetsstrømmer</string>
   <string id="13306">Vis oppføring i overordnet mappe</string>
   <string id="13307">Spornavnformat</string>
@@ -1122,7 +1120,7 @@
   <string id="13311">Flyteffekt</string>
   <string id="13312">Reduksjon av sort felt</string>
   <string id="13313">Omstart</string>
-  <string id="13314">Crossfade</string>
+  <string id="13314">Overtoning</string>
   <string id="13315">Regenerer miniatyrbilder</string>
   <string id="13316">Rekursive miniatyrbilder</string>
   <string id="13317">Vis bildefremvisning</string>
@@ -1194,7 +1192,7 @@
   <string id="13397">Aktiver undertekster</string>
   <string id="13398">Snarveier</string>
   <string id="13399">Ignorer "the" ved sortering</string>
-  <string id="13400">Crossfade for spor av samme album</string>
+  <string id="13400">Overtoning for spor av samme album</string>
   <string id="13401">Bla etter %s</string>
   <string id="13402">Vis sporposisjon</string>
   <string id="13403">Fjern standard</string>
@@ -1209,7 +1207,7 @@
   <string id="13412">
   </string>
   <string id="13413">Laster ned</string>
-  <string id="13414">Skjul artist som bare opptrer i samlinger</string>
+  <string id="13414">Inkluder artister som bare opptrer i samlinger</string>
   <string id="13415">Rendringsmetode</string>
   <string id="13416">Oppdag automatisk</string>
   <string id="13417">Basic shaders (ARB)</string>
@@ -1472,7 +1470,7 @@
   <string id="15201">Send sanger til Last.fm</string>
   <string id="15202">Last.fm brukernavn</string>
   <string id="15203">Last.fm passord</string>
-  <string id="15204">Kunne ikke utføre handshake: i dvale...</string>
+  <string id="15204">Kunne ikke utføre håndtrykk: i dvale...</string>
   <string id="15205">Vennligst oppdater XBMC</string>
   <string id="15206">Feil ved autorisasjon: Sjekk brukernavn og passord</string>
   <string id="15207">Tilkoblet</string>
@@ -1494,17 +1492,17 @@
   <string id="15251">Kobler til Last.fm...</string>
   <string id="15252">Velger stasjon...</string>
   <string id="15253">Søk etter liknende artister...</string>
-  <string id="15254">Søk etter liknende tager...</string>
+  <string id="15254">Søk etter liknende tagger...</string>
   <string id="15255">Din profil (%name%)</string>
-  <string id="15256">Mest brukte tag-er generelt</string>
-  <string id="15257">Høyest rangerte artister for tag %name%</string>
-  <string id="15258">Høyest rangerte albumer for tag %name%</string>
-  <string id="15259">Høyest rangerte spor for tag %name%</string>
-  <string id="15260">Hør på tag %name% Last.fm radio</string>
+  <string id="15256">Mest brukte tagger generelt</string>
+  <string id="15257">Høyest rangerte artister for tagg %name%</string>
+  <string id="15258">Høyest rangerte albumer for tagg %name%</string>
+  <string id="15259">Høyest rangerte spor for tagg %name%</string>
+  <string id="15260">Hør på tagg %name% Last.fm radio</string>
   <string id="15261">Liknende artister som %name%</string>
   <string id="15262">Topp %name% album</string>
   <string id="15263">Topp %name% spor</string>
-  <string id="15264">Topp %name% tag-er</string>
+  <string id="15264">Topp %name% tagger</string>
   <string id="15265">Største fans av %name%</string>
   <string id="15266">Hør på fans av %name% fra Last.fm</string>
   <string id="15267">Hør på artister som likner på %name% fra Last.fm</string>
@@ -1522,7 +1520,7 @@
   <string id="15279">Mottar liste fra Last.fm...</string>
   <string id="15280">Kan ikke motta liste fra Last.fm...</string>
   <string id="15281">Skriv inn et artistnavn for å finne relaterte</string>
-  <string id="15282">Skriv inn et tag-navn for å finne liknende</string>
+  <string id="15282">Skriv inn et tagg-navn for å finne liknende</string>
   <string id="15283">Spor nylig lyttet til av %name%</string>
   <string id="15284">Hør på %name%'s anbefalinger for Last.fm radio</string>
   <string id="15285">Toppliste for bruker %name%</string>
@@ -1563,10 +1561,10 @@
   <string id="16017">Skriv inn søketekst</string>
   <string id="16018">Ingen</string>
   <string id="16019">Velg automatisk</string>
-  <string id="16020">De-interlace</string>
+  <string id="16020">Fjern sammenfletting</string>
   <string id="16021">Bob</string>
-  <string id="16022">Bob (inverted)</string>
-  <string id="16023">Håndtering av interlacing</string>
+  <string id="16022">Bob (invertert)</string>
+  <string id="16023">Håndtering av sammenfletting</string>
   <string id="16024">Avbryter...</string>
   <string id="16025">Skriv inn artistnavn</string>
   <string id="16026">Avspilling mislyktes</string>
@@ -1589,7 +1587,7 @@
   <string id="16107">Bruk kun NTSC-M</string>
   <string id="16108">Bruk kun NTSC-J</string>
   <string id="16109">Bruk kun PAL-60</string>
-  <string id="16110">For 60hz spill</string>
+  <string id="16110">For 60Hz spill</string>
   <string id="16200">Handlingen ble avbrutt</string>
   <string id="16201">Kopiering mislykket</string>
   <string id="16202">Kunne ikke kopiere en eller flere av filene</string>
@@ -1607,11 +1605,11 @@
   <string id="16307">Bikubisk (programvare)</string>
   <string id="16308">Lanczos (programvare)</string>
   <string id="16309">Sinc (programvare)</string>
-  <string id="16310">(VDPAU)Temporal</string>
-  <string id="16311">(VDPAU)Temporal/romlig</string>
-  <string id="16312">(VDPAU)Støyreduksjon</string>
-  <string id="16313">(VDPAU)Skarphet</string>
-  <string id="16314">Inverse Telecine</string>
+  <string id="16310">(VDPAU) Temporal</string>
+  <string id="16311">(VDPAU) Temporal/romlig</string>
+  <string id="16312">(VDPAU) Støyreduksjon</string>
+  <string id="16313">(VDPAU) Skarphet</string>
+  <string id="16314">Omvendt telecine</string>
   <string id="17500">Slå av skjerm etter</string>
   <string id="19000">Bytt til kanal</string>
   <string id="20000">Mappe for lagret musikk</string>
@@ -1685,7 +1683,7 @@
   <string id="20074">Aldersgrense (MPAA)</string>
   <string id="20075">Skriv inn masterlåskode</string>
   <string id="20076">Spør etter masterlåskode ved oppstart</string>
-  <string id="20077">Skinn-innstillnger</string>
+  <string id="20077">Skinn-innstillinger</string>
   <string id="20078">- ingen link satt -</string>
   <string id="20079">Aktiver animasjoner</string>
   <string id="20080">Deaktiver RSS ved musikkavspilling</string>
@@ -1718,7 +1716,7 @@
   <string id="20107">Separer (låst)</string>
   <string id="20108">Rot</string>
   <string id="20109">- Zoom</string>
-  <string id="20110">UPnP-instillinger</string>
+  <string id="20110">UPnP-innstillinger</string>
   <string id="20111">Start UPnP-klient automatisk</string>
   <string id="20112">Siste innlogging: %s</string>
   <string id="20113">Aldri pålogget</string>
@@ -1796,9 +1794,9 @@
   <string id="20186">Vennligst vent</string>
   <string id="20187">Tar backup av EEPROM</string>
   <string id="20188">Tar backup av BIOS</string>
-  <string id="20189">Aktiver autoscroll for plott og anmeldelse</string>
+  <string id="20189">Aktiver autorulling for plott og anmeldelse</string>
   <string id="20190">Egendefinert</string>
-  <string id="20191">Aktiver debuglogging</string>
+  <string id="20191">Aktiver feilsøkingslogging</string>
   <string id="20192">Last ned ekstra informasjon under oppdateringer</string>
   <string id="20193">
   </string>
@@ -1882,7 +1880,7 @@
   <string id="20366">* Alle sesonger</string>
   <string id="20367">Skjul sette</string>
   <string id="20368">Prod. kode</string>
-  <string id="20369">Skjul plott for episoder som ikke er sett</string>
+  <string id="20369">Vis omtale for videoer som ikke er sett</string>
   <string id="20370">* Skjult for ikke å røpe handling *</string>
   <string id="20371">Sett miniatyrbilde for sesong</string>
   <string id="20372">Bilde for sesong</string>
@@ -1922,7 +1920,7 @@
   </string>
   <string id="20405">Fjern bokmerke for episode</string>
   <string id="20406">Sett bokmerke for episode</string>
-  <string id="20407">Skraperinstillinger</string>
+  <string id="20407">Skraperinnstillinger</string>
   <string id="20408">Last ned musikkvideoinformasjon</string>
   <string id="20409">Laster ned informasjon om TV-serie</string>
   <string id="20410">Trailer</string>
@@ -1948,7 +1946,7 @@
   <string id="20429">Separer</string>
   <string id="20430">Eksporter miniatyrbilder og FanArt?</string>
   <string id="20431">Overskriv gamle filer?</string>
-  <string id="20432">Eksluder sti fra biblioteksoppdateringer</string>
+  <string id="20432">Ekskluder sti fra biblioteksoppdateringer</string>
   <string id="20433">Ekstraher miniatyrer og videoinformasjon</string>
   <string id="20434">Sett</string>
   <string id="20435">Sett filmsettminiatyr</string>
@@ -2024,7 +2022,7 @@
   <string id="21414">Standard skraper for TV-serie</string>
   <string id="21415">Standard skraper for musikkvideo</string>
   <string id="21416">Aktiver fallback basert på skraper-språk</string>
-  <string id="21417">- Instillinger</string>
+  <string id="21417">- Innstillinger</string>
   <string id="21418">Flerspråklig</string>
   <string id="21420">Verdi å sammenligne</string>
   <string id="21421">Smart spillelisteoppsett</string>
@@ -2070,7 +2068,7 @@
   <string id="21822">Kameramerke</string>
   <string id="21823">Kameramodell</string>
   <string id="21824">EXIF-kommentar</string>
-  <string id="21825">Firmware</string>
+  <string id="21825">Fastvare</string>
   <string id="21826">Blenderåpning</string>
   <string id="21827">Brennvidde</string>
   <string id="21828">Fokusdistanse</string>
@@ -2152,8 +2150,8 @@
   <string id="22020">Guide</string>
   <string id="22021">Tillatt avvik i høyde/bredde-forhold for reduksjon av sort felt</string>
   <string id="22022">Vis filmfiler i lister</string>
-  <string id="22023">DirectX forhandler</string>
-  <string id="22024">Direct3D versjon</string>
+  <string id="22023">DirectX forhandler:</string>
+  <string id="22024">Direct3D versjon:</string>
   <string id="22030">Skrifttype</string>
   <string id="22031">- Størrelse</string>
   <string id="22032">- Farger</string>
@@ -2172,7 +2170,7 @@
   <string id="23001">- Plugin-innstillinger</string>
   <string id="23050">Aktiver tekst-tv</string>
   <string id="23051">Del %i</string>
-  <string id="23052">Buffrer %i byte</string>
+  <string id="23052">Bufrer %i byte</string>
   <string id="23100">Ekstern spiller aktiv</string>
   <string id="23101">Trykk OK for å avslutte spilleren</string>
   <string id="23102">
@@ -2204,7 +2202,7 @@
   <string id="33014">Bruk DVD-avspiller i stedet for vanlig avspiller</string>
   <string id="33015">Spør om nedlasting før filmer spilles</string>
   <string id="33016">Klipp</string>
-  <string id="33017">Restart plugin for å aktivere</string>
+  <string id="33017">Omstart plugin for å aktivere</string>
   <string id="33018">I kveld</string>
   <string id="33019">I morgen kveld</string>
   <string id="33020">Forhold</string>

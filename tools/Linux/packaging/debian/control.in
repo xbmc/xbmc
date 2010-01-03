@@ -1,15 +1,14 @@
 Source: xbmc
 Section: non-free/video
 Priority: optional
-Maintainer: Debian Multimedia Maintainers <pkg-multimedia-maintainers@lists.alioth.debian.org>
-Uploaders: Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>,
-           Andres Mejia <mcitadel@gmail.com>
+Maintainer: Andres Mejia <mcitadel@gmail.com>
+Uploaders: Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>
 DM-Upload-Allowed: yes
 Build-Depends: #BUILD_DEPENDS#
 Standards-Version: 3.8.3
 Homepage: http://xbmc.org/
-Vcs-Git: git://git.debian.org/git/pkg-multimedia/xbmc.git
-Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/xbmc.git;a=summary
+Vcs-Git: git://git.debian.org/git/collab-maint/xbmc.git
+Vcs-Browser: http://git.debian.org/?p=collab-maint/xbmc.git;a=summary
 
 Package: xbmc
 Architecture: all
@@ -42,13 +41,7 @@ Description: XBMC Media Center (full metapackage)
 
 Package: xbmc-live
 Architecture: all
-Depends: xbmc-standalone (= ${binary:Version}),
-         policykit,
-         openssh-server,
-         ${python:Depends},
-         python-apt,
-         adduser,
-         ${misc:Depends}
+Depends: #XBMC_LIVE_DEPENDS#
 Conflicts: kdm, gdm, xdm, wdm
 Description: XBMC Media Center (XBMC Live package)
  XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
@@ -103,12 +96,11 @@ Package: xbmc-data
 Architecture: all
 Depends: xbmc-bin (>= ${source:Version}),
          xbmc-bin (<< ${source:Version}.1~),
+         mesa-utils,
+         x11-utils,
          ${python:Depends},
          ${misc:Depends}
-Provides: xbmc-common
-Replaces: xbmc-common
-Conflicts: xbmc-common
-Suggests: mesa-utils, x11-utils, xbmc-test-helper
+Suggests: xbmc-test-helper
 Recommends: python-qt3
 Description: XBMC Media Center (arch-independent data package)
  XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
@@ -132,9 +124,12 @@ Description: XBMC Media Center (arch-independent data package)
  working XBMC.
 
 Package: xbmc-bin
-Architecture: i386 amd64 powerpc ppc64
-Depends: libcurl3, ${shlibs:Depends},
+Architecture: i386 amd64 powerpc ppc64 lpia
+Depends: #LIBCURL_DEPENDS#, ${shlibs:Depends},
          ${misc:Depends}
+Provides: xbmc-common
+Replaces: xbmc-common
+Conflicts: xbmc-common
 Description: XBMC Media Center (binary data package)
  XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
  open source software media-player and entertainment hub for all your digital
@@ -156,7 +151,7 @@ Description: XBMC Media Center (binary data package)
  This package contains all the binary data needed to have a working XBMC.
 
 Package: xbmc-dbg
-Architecture: i386 amd64 powerpc ppc64
+Architecture: i386 amd64 powerpc ppc64 lpia
 Section: non-free/debug
 Priority: extra
 Depends: xbmc-bin (= ${binary:Version}),
@@ -380,7 +375,7 @@ Description: XBMC Media Center (Event Client Dev package)
  This is the Development package for XBMC Event Client.
 
 Package: xbmc-eventclients-wiiremote
-Architecture: i386 amd64 powerpc ppc64
+Architecture: i386 amd64 powerpc ppc64 lpia
 Depends: xbmc-eventclients-common (= ${source:Version}),
          ${shlibs:Depends},
          ${misc:Depends}

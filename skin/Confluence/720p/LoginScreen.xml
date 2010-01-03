@@ -109,7 +109,7 @@
 						<posy>10</posy>
 						<width>580</width>
 						<height>40</height>
-						<font>font24caps_title</font>
+						<font>font24_title</font>
 						<textcolor>grey2</textcolor>
 						<selectedcolor>selected</selectedcolor>
 						<align>left</align>
@@ -160,7 +160,7 @@
 						<posy>10</posy>
 						<width>580</width>
 						<height>40</height>
-						<font>font24caps_title</font>
+						<font>font24_title</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
 						<align>left</align>
@@ -205,7 +205,7 @@
 					<font>-</font>
 					<aligny>-</aligny>
 					<onclick>ActivateWindow(ShutdownMenu)</onclick>
-					<texturefocus>home-power.png</texturefocus>
+					<texturefocus>home-power-FO.png</texturefocus>
 					<texturenofocus>home-power.png</texturenofocus>
 					<onleft>52</onleft>
 					<onright>52</onright>

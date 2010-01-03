@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Based on Confluence english strings version 24877-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Changement des</string>
   <string id="31001">Aimer</string>
   <string id="31002">Détester</string>
   <string id="31003">Options d'alimentation</string>
+  <string id="31004">En cours...</string>
+  <string id="31005">Cacher INFO</string>
 
   <string id="31007">Plugins</string>
 
@@ -22,7 +23,7 @@
   <string id="31028">Affiche Wrap</string>
   <string id="31029">Fanart</string>
   <string id="31030">Liste complète</string>
-  <string id="31031">Pic Thumbs</string>
+  <string id="31031">Vignettes</string>
   <string id="31032">Image Wrap</string>
 
   <!-- Extra labels -->
@@ -39,12 +40,12 @@
 
 
   <!-- Playlist Editor labels -->
-  <string id="31055">Ouvrir playlist</string>
-  <string id="31056">Sauvegarder playlist</string>
-  <string id="31057">Fermer playlist</string>
+  <string id="31055">Ouvrir playliste</string>
+  <string id="31056">Sauvegarder playliste</string>
+  <string id="31057">Fermer playliste</string>
   <string id="31058">Système de fichiers de musique</string>
-  <string id="31059">Actuelle playlist</string>
-  <string id="31060">Ce fichier est empilée, sélectionnez la partie que vous souhaitez lire.</string>
+  <string id="31059">Playliste actuelle</string>
+  <string id="31060">Ce fichier est empilé, sélectionnez la partie que vous souhaitez lire.</string>
   
   <!-- Skin Settings labels -->
   <string id="31100"></string>
@@ -52,7 +53,7 @@
   <string id="31102">Arrière-plan</string>
   <string id="31103">Afficher "Pause" dans diaporama d'images</string>
   <string id="31104"></string>
-  <string id="31105">Afficher les titres des médias en tâche de fond lors du scanne</string>
+  <string id="31105">Afficher les titres des médias en tâche de fond lors du scan</string>
   <string id="31106">Options diverses</string>
   <string id="31107"></string>
   <string id="31108">Boutons du menu principal</string>
@@ -60,8 +61,8 @@
   <string id="31110">Modifier l'arrière-plan pour le bouton d'accueil</string>
   <string id="31111">Masquer</string>
   <string id="31112">Options</string>
-  <string id="31113">Image Simple</string>
-  <string id="31114">Image Multiple</string>
+  <string id="31113">Image simple</string>
+  <string id="31114">Image multiple</string>
   <string id="31115">Personnaliser</string>
   <string id="31116">Scripts Addon</string>
   <string id="31117">Afficher les vidéos récemment ajoutées</string>
@@ -70,7 +71,7 @@
   <string id="31120">ÉTIQUETTE DU BOUTON</string>
   <string id="31121">CHEMIN DU SCRIPT</string>
   <string id="31122">Page météo</string>
-  <string id="31123">Utilisez les "Affiches" au lieu des "Bannières" pour les émissions TV</string>
+  <string id="31123">Préférer les "Affiches" aux "Bannières" pour les émissions TV</string>
   <string id="31124">Afficher la vidéo en cours de lecture en arrière-plan</string>
   <string id="31125">Afficher la visualisation en cours de lecture en arrière-plan</string>
 
@@ -92,14 +93,14 @@
   <string id="31252">Script TWC</string>
 
   <!-- Extra labels -->
-  <string id="31300">Temp Actuel</string>
+  <string id="31300">Temp. Actuelle</string>
   <string id="31301">Dernière mise à jour</string>
   <string id="31302">Menu</string>
   <string id="31303"></string>
   <string id="31304">Image</string>
   <string id="31305">Aucun disque détecté</string>
   <string id="31306">Éjecter</string>
-  <string id="31307">Masquer Fanart</string>
+  <string id="31307">Sans Fanart</string>
   <string id="31308">Détails du film</string>
   <string id="31309">Mémoire utilisée:</string>
   <string id="31310">Numéro de le piste</string>
@@ -117,22 +118,21 @@
   <string id="31322">Diffusé</string>
   <string id="31323">Derniers films</string>
   <string id="31324">Derniers épisodes</string>
-  <string id="31325">Options Playlist</string>
+  <string id="31325">Options Playliste</string>
   <string id="31326">Créé</string>
   <string id="31327">Résolution</string>
   <string id="31328">Récemment ajouté</string>
   <string id="31329">[B]RÉGLAGE MINUTERIE![/B] [COLOR=grey2] - FERMER LE SYSTÈME AUTOMATIQUEMENT DANS[/COLOR]</string>
 
   <!-- Description Labels  -->
-  <string id="31400">[B]CONFIGURATION DES PARAMÈTRES APPARENCE[/B][CR][CR]Changer le skin · Changer la langue et la région · Changer les options énumérant les fichiers[CR]Changer l'économiseur d'écran</string>
-  <string id="31401">[B]CONFIGURATION DES PARAMÈTRES VIDÉO[/B][CR][CR]Gérer votre vidéothèque · Définissez les options de la lecture vidéo[CR]Changer les options énumérant les vidéos · Régler la police des sous-titres</string>
-  <string id="31402">[B]CONFIGURATION DES PARAMÈTRES MUSIQUE[/B][CR][CR]Gérez votre bibliothèque musicale · Définissez les options de la lecture musique · Changer les options énumérant la musique[CR]Permettre la soumission des chansons · Changer les options karaoké</string>
-  <string id="31403">[B]CONFIGURATION DES PARAMÈTRES IMAGE[/B][CR][CR]Définissez les options de la lecture des images · Configurer les diaporamas</string>
-  <string id="31404">[B]CONFIGURATION DES PARAMÈTRES MÉTÉO[/B][CR][CR]Régler les trois villes afin de recueillir les informations météorologiques</string>
+  <string id="31400">[B]CONFIGURATION DES PARAMÈTRES APPARENCE[/B][CR][CR]Changer le skin · Choisir la langue et la région · Changer les options de liste[CR]Changer l'économiseur d'écran</string>
+  <string id="31401">[B]CONFIGURATION DES PARAMÈTRES VIDÉO[/B][CR][CR]Gérer votre médiathèque · Définir les options de lecture · Changer les options de liste[CR]Régler la police des sous-titres</string>
+  <string id="31402">[B]CONFIGURATION DES PARAMÈTRES MUSIQUE[/B][CR][CR]Gérer votre médiathèque · Définir les options de lecture · Changer les options de liste[CR]Soumettre des chansons · Changer les options karaoké</string>  
+  <string id="31403">[B]CONFIGURATION DES PARAMÈTRES IMAGE[/B][CR][CR]Définir les options de lecture · Configurer les diaporamas</string>
+  <string id="31404">[B]CONFIGURATION DES PARAMÈTRES MÉTÉO[/B][CR][CR]Choisir les trois villes qui recueilleront les informations météorologiques</string>  
   <string id="31405">[B]CONFIGURATION DES PARAMÈTRES RÉSEAU[/B][CR][CR]Permettre le contrôle de XBMC via UPnP et HTTP · Configurer le partage des fichiers[CR]Définir les options d'accès Internet</string>
-  <string id="31406">[B]CONFIGURATION DES PARAMÈTRES SYSTÈME[/B][CR][CR]Organisation et calibrage d'affichages · Configurer sortie audio[CR]Configuration des contrôles à distance · Définissez les options d'économie d'énergie[CR]Activer le débogage · Configurer une sécurité</string>
+  <string id="31406">[B]CONFIGURATION DES PARAMÈTRES SYSTÈME[/B][CR][CR]Configurer les sorties vidéo et audio · Configurer les périphériques de contrôle[CR]Définir les options de gestion d'énergie · Activer le débogage · Configurer la sécurité</string>
   <string id="31407">[B]CONFIGURATION DES PARAMÈTRES THÈME[/B][CR][CR]Configuration du skin Confluence · Ajouter et supprimer des éléments du menu d'accueil[CR]Changer les arrière-plans du skin</string>
-
   <string id="31420">[B][COLOR=white]XBMC n'a pas détecté de disque.[/COLOR][/B][CR][CR]S'il vous plaît insérez un disque dans votre lecteur et essayez à nouveau ou annuler</string>
   <string id="31421">Sélectionnez le profil d'utilisateur de votre XBMC[CR]pour vous connecter et continuer</string>
-</strings>
+  </strings>

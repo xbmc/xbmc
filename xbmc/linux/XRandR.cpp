@@ -38,14 +38,16 @@ CXRandR::CXRandR(bool query)
     Query();
 }
 
-void CXRandR::Query(bool force)
+bool CXRandR::Query(bool force)
 {
   if (!force)
     if (m_bInit)
-      return;
+      return m_outputs.size() > 0;
+
+  m_bInit = true;
 
   if (getenv("XBMC_HOME") == NULL)
-    return;
+    return false;
 
   m_outputs.clear();
   m_current.clear();
@@ -58,7 +60,7 @@ void CXRandR::Query(bool force)
   if (!file)
   {
     CLog::Log(LOGERROR, "CXRandR::Query - unable to execute xrandr tool");
-    return;
+    return false;
   }
 
 
@@ -67,7 +69,7 @@ void CXRandR::Query(bool force)
   {
     CLog::Log(LOGERROR, "CXRandR::Query - unable to open xrandr xml");
     pclose(file);
-    return;
+    return false;
   }
   pclose(file);
 
@@ -75,10 +77,8 @@ void CXRandR::Query(bool force)
   if (strcasecmp(pRootElement->Value(), "screen") != 0)
   {
     // TODO ERROR
-    return;
+    return false;
   }
-
-  m_bInit = true;
 
   for (TiXmlElement* output = pRootElement->FirstChildElement("output"); output; output = output->NextSiblingElement("output"))
   {
@@ -115,6 +115,7 @@ void CXRandR::Query(bool force)
     }
     m_outputs.push_back(xoutput);
   }
+  return m_outputs.size() > 0;
 }
 
 std::vector<XOutput> CXRandR::GetModes(void)

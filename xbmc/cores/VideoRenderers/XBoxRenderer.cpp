@@ -139,10 +139,10 @@ void CXBoxRenderer::Setup_Y8A8Render()
   m_pD3DDevice->SetTextureStageState( 1, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
   m_pD3DDevice->SetTextureStageState( 1, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
 
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MAGFILTER, D3DTEXF_POINT /*g_stSettings.m_maxFilter*/ );
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MINFILTER, D3DTEXF_POINT /*g_stSettings.m_minFilter*/ );
+  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_settings.m_maxFilter*/ );
+  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_settings.m_minFilter*/ );
+  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MAGFILTER, D3DTEXF_POINT /*g_settings.m_maxFilter*/ );
+  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MINFILTER, D3DTEXF_POINT /*g_settings.m_minFilter*/ );
 
   m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
   m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
@@ -444,10 +444,10 @@ void CXBoxRenderer::RenderOSD()
   */
 
   // Set texture filters
-  //m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
-  //m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
-  //m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
-  //m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
+  //m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_settings.m_maxFilter*/ );
+  //m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_settings.m_minFilter*/ );
+  //m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_settings.m_maxFilter*/ );
+  //m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_settings.m_minFilter*/ );
 
   // clip the output if we are not in FSV so that zoomed subs don't go all over the GUI
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
@@ -499,8 +499,8 @@ RESOLUTION CXBoxRenderer::GetResolution()
 
 float CXBoxRenderer::GetAspectRatio()
 {
-  float fWidth = (float)m_iSourceWidth - g_stSettings.m_currentVideoSettings.m_CropLeft - g_stSettings.m_currentVideoSettings.m_CropRight;
-  float fHeight = (float)m_iSourceHeight - g_stSettings.m_currentVideoSettings.m_CropTop - g_stSettings.m_currentVideoSettings.m_CropBottom;
+  float fWidth = (float)m_iSourceWidth - g_settings.m_currentVideoSettings.m_CropLeft - g_settings.m_currentVideoSettings.m_CropRight;
+  float fHeight = (float)m_iSourceHeight - g_settings.m_currentVideoSettings.m_CropTop - g_settings.m_currentVideoSettings.m_CropBottom;
   return m_fSourceFrameRatio * fWidth / fHeight * m_iSourceHeight / m_iSourceWidth;
 }
 
@@ -605,12 +605,12 @@ void CXBoxRenderer::ManageDisplay()
   float fOffsetY1 = (float)rv.top;
 
   // source rect
-  rs.left = g_stSettings.m_currentVideoSettings.m_CropLeft;
-  rs.top = g_stSettings.m_currentVideoSettings.m_CropTop;
-  rs.right = m_iSourceWidth - g_stSettings.m_currentVideoSettings.m_CropRight;
-  rs.bottom = m_iSourceHeight - g_stSettings.m_currentVideoSettings.m_CropBottom;
+  rs.left = g_settings.m_currentVideoSettings.m_CropLeft;
+  rs.top = g_settings.m_currentVideoSettings.m_CropTop;
+  rs.right = m_iSourceWidth - g_settings.m_currentVideoSettings.m_CropRight;
+  rs.bottom = m_iSourceHeight - g_settings.m_currentVideoSettings.m_CropBottom;
 
-  CalcNormalDisplayRect(fOffsetX1, fOffsetY1, fScreenWidth, fScreenHeight, GetAspectRatio() * g_stSettings.m_fPixelRatio, g_stSettings.m_fZoomAmount);
+  CalcNormalDisplayRect(fOffsetX1, fOffsetY1, fScreenWidth, fScreenHeight, GetAspectRatio() * g_settings.m_fPixelRatio, g_settings.m_fZoomAmount);
 }
 
 void CXBoxRenderer::ChooseBestResolution(float fps)
@@ -790,7 +790,7 @@ bool CXBoxRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(m_fps);
-  SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+  SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
 
   ManageDisplay();
 
@@ -1099,18 +1099,18 @@ void CXBoxRenderer::Render(DWORD flags)
 void CXBoxRenderer::SetViewMode(int iViewMode)
 {
   if (iViewMode < VIEW_MODE_NORMAL || iViewMode > VIEW_MODE_CUSTOM) iViewMode = VIEW_MODE_NORMAL;
-  g_stSettings.m_currentVideoSettings.m_ViewMode = iViewMode;
+  g_settings.m_currentVideoSettings.m_ViewMode = iViewMode;
 
-  if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL)
+  if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL)
   { // normal mode...
-    g_stSettings.m_fPixelRatio = 1.0;
-    g_stSettings.m_fZoomAmount = 1.0;
+    g_settings.m_fPixelRatio = 1.0;
+    g_settings.m_fZoomAmount = 1.0;
     return ;
   }
-  if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_CUSTOM)
+  if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_CUSTOM)
   {
-    g_stSettings.m_fZoomAmount = g_stSettings.m_currentVideoSettings.m_CustomZoomAmount;
-    g_stSettings.m_fPixelRatio = g_stSettings.m_currentVideoSettings.m_CustomPixelRatio;
+    g_settings.m_fZoomAmount = g_settings.m_currentVideoSettings.m_CustomZoomAmount;
+    g_settings.m_fPixelRatio = g_settings.m_currentVideoSettings.m_CustomPixelRatio;
     return ;
   }
 
@@ -1122,75 +1122,75 @@ void CXBoxRenderer::SetViewMode(int iViewMode)
   // and the source frame ratio
   float fSourceFrameRatio = GetAspectRatio();
 
-  if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ZOOM)
+  if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ZOOM)
   { // zoom image so no black bars
-    g_stSettings.m_fPixelRatio = 1.0;
+    g_settings.m_fPixelRatio = 1.0;
     // calculate the desired output ratio
-    float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio;
+    float fOutputFrameRatio = fSourceFrameRatio * g_settings.m_fPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio;
     // now calculate the correct zoom amount.  First zoom to full height.
     float fNewHeight = fScreenHeight;
     float fNewWidth = fNewHeight * fOutputFrameRatio;
-    g_stSettings.m_fZoomAmount = fNewWidth / fScreenWidth;
+    g_settings.m_fZoomAmount = fNewWidth / fScreenWidth;
     if (fNewWidth < fScreenWidth)
     { // zoom to full width
       fNewWidth = fScreenWidth;
       fNewHeight = fNewWidth / fOutputFrameRatio;
-      g_stSettings.m_fZoomAmount = fNewHeight / fScreenHeight;
+      g_settings.m_fZoomAmount = fNewHeight / fScreenHeight;
     }
   }
-  else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_4x3)
+  else if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_4x3)
   { // stretch image to 4:3 ratio
-    g_stSettings.m_fZoomAmount = 1.0;
+    g_settings.m_fZoomAmount = 1.0;
     if (m_iResolution == PAL_4x3 || m_iResolution == PAL60_4x3 || m_iResolution == NTSC_4x3 || m_iResolution == HDTV_480p_4x3)
     { // stretch to the limits of the 4:3 screen.
       // incorrect behaviour, but it's what the users want, so...
-      g_stSettings.m_fPixelRatio = (fScreenWidth / fScreenHeight) * g_settings.m_ResInfo[m_iResolution].fPixelRatio / fSourceFrameRatio;
+      g_settings.m_fPixelRatio = (fScreenWidth / fScreenHeight) * g_settings.m_ResInfo[m_iResolution].fPixelRatio / fSourceFrameRatio;
     }
     else
     {
-      // now we need to set g_stSettings.m_fPixelRatio so that
+      // now we need to set g_settings.m_fPixelRatio so that
       // fOutputFrameRatio = 4:3.
-      g_stSettings.m_fPixelRatio = (4.0f / 3.0f) / fSourceFrameRatio;
+      g_settings.m_fPixelRatio = (4.0f / 3.0f) / fSourceFrameRatio;
     }
   }
-  else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_14x9)
+  else if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_14x9)
   { // stretch image to 14:9 ratio
-    // now we need to set g_stSettings.m_fPixelRatio so that
+    // now we need to set g_settings.m_fPixelRatio so that
     // fOutputFrameRatio = 14:9.
-    g_stSettings.m_fPixelRatio = (14.0f / 9.0f) / fSourceFrameRatio;
+    g_settings.m_fPixelRatio = (14.0f / 9.0f) / fSourceFrameRatio;
     // calculate the desired output ratio
-    float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio;
+    float fOutputFrameRatio = fSourceFrameRatio * g_settings.m_fPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio;
     // now calculate the correct zoom amount.  First zoom to full height.
     float fNewHeight = fScreenHeight;
     float fNewWidth = fNewHeight * fOutputFrameRatio;
-    g_stSettings.m_fZoomAmount = fNewWidth / fScreenWidth;
+    g_settings.m_fZoomAmount = fNewWidth / fScreenWidth;
     if (fNewWidth < fScreenWidth)
     { // zoom to full width
       fNewWidth = fScreenWidth;
       fNewHeight = fNewWidth / fOutputFrameRatio;
-      g_stSettings.m_fZoomAmount = fNewHeight / fScreenHeight;
+      g_settings.m_fZoomAmount = fNewHeight / fScreenHeight;
     }
   }
-  else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9)
+  else if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9)
   { // stretch image to 16:9 ratio
-    g_stSettings.m_fZoomAmount = 1.0;
+    g_settings.m_fZoomAmount = 1.0;
     if (m_iResolution == PAL_4x3 || m_iResolution == PAL60_4x3 || m_iResolution == NTSC_4x3 || m_iResolution == HDTV_480p_4x3)
-    { // now we need to set g_stSettings.m_fPixelRatio so that
+    { // now we need to set g_settings.m_fPixelRatio so that
       // fOutputFrameRatio = 16:9.
-      g_stSettings.m_fPixelRatio = (16.0f / 9.0f) / fSourceFrameRatio;
+      g_settings.m_fPixelRatio = (16.0f / 9.0f) / fSourceFrameRatio;
     }
     else
     { // stretch to the limits of the 16:9 screen.
       // incorrect behaviour, but it's what the users want, so...
-      g_stSettings.m_fPixelRatio = (fScreenWidth / fScreenHeight) * g_settings.m_ResInfo[m_iResolution].fPixelRatio / fSourceFrameRatio;
+      g_settings.m_fPixelRatio = (fScreenWidth / fScreenHeight) * g_settings.m_ResInfo[m_iResolution].fPixelRatio / fSourceFrameRatio;
     }
   }
-  else // if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ORIGINAL)
+  else // if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ORIGINAL)
   { // zoom image so that the height is the original size
-    g_stSettings.m_fPixelRatio = 1.0;
+    g_settings.m_fPixelRatio = 1.0;
     // get the size of the media file
     // calculate the desired output ratio
-    float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio;
+    float fOutputFrameRatio = fSourceFrameRatio * g_settings.m_fPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio;
     // now calculate the correct zoom amount.  First zoom to full width.
     float fNewWidth = fScreenWidth;
     float fNewHeight = fNewWidth / fOutputFrameRatio;
@@ -1200,7 +1200,7 @@ void CXBoxRenderer::SetViewMode(int iViewMode)
       fNewWidth = fNewHeight * fOutputFrameRatio;
     }
     // now work out the zoom amount so that no zoom is done
-    g_stSettings.m_fZoomAmount = (m_iSourceHeight - g_stSettings.m_currentVideoSettings.m_CropTop - g_stSettings.m_currentVideoSettings.m_CropBottom) / fNewHeight;
+    g_settings.m_fZoomAmount = (m_iSourceHeight - g_settings.m_currentVideoSettings.m_CropTop - g_settings.m_currentVideoSettings.m_CropBottom) / fNewHeight;
   }
 }
 

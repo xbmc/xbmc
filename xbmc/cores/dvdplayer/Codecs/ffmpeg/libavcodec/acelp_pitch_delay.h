@@ -220,4 +220,36 @@ int16_t ff_acelp_decode_gain_code(
     int subframe_size,
     int max_pred_order);
 
+/**
+ * Calculate fixed gain (part of section 6.1.3 of AMR spec)
+ *
+ * @param fixed_gain_factor gain correction factor
+ * @param fixed_energy decoded algebraic codebook vector energy
+ * @param prediction_error vector of the quantified predictor errors of
+ *        the four previous subframes. It is updated by this function.
+ * @param energy_mean desired mean innovation energy
+ * @param pred_table table of four moving average coefficients
+ */
+float ff_amr_set_fixed_gain(float fixed_gain_factor, float fixed_mean_energy,
+                            float *prediction_error, float energy_mean,
+                            const float *pred_table);
+
+
+/**
+ * Decode the adaptive codebook index to the integer and fractional parts
+ * of the pitch lag for one subframe at 1/3 fractional precision.
+ *
+ * The choice of pitch lag is described in 3GPP TS 26.090 section 5.6.1.
+ *
+ * @param lag_int             integer part of pitch lag of the current subframe
+ * @param lag_frac            fractional part of pitch lag of the current subframe
+ * @param pitch_index         parsed adaptive codebook (pitch) index
+ * @param prev_lag_int        integer part of pitch lag for the previous subframe
+ * @param subframe            current subframe number
+ * @param third_as_first      treat the third frame the same way as the first
+ */
+void ff_decode_pitch_lag(int *lag_int, int *lag_frac, int pitch_index,
+                         const int prev_lag_int, const int subframe,
+                         int third_as_first, int resolution);
+
 #endif /* AVCODEC_ACELP_PITCH_DELAY_H */

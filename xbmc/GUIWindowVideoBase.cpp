@@ -123,9 +123,9 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // save current window, unless the current window is the video playlist window
-      if (GetID() != WINDOW_VIDEO_PLAYLIST && g_stSettings.m_iVideoStartWindow != GetID())
+      if (GetID() != WINDOW_VIDEO_PLAYLIST && g_settings.m_iVideoStartWindow != GetID())
       {
-        g_stSettings.m_iVideoStartWindow = GetID();
+        g_settings.m_iVideoStartWindow = GetID();
         g_settings.Save();
       }
 
@@ -160,7 +160,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
         if (nNewWindow != GetID())
         {
-          g_stSettings.m_iVideoStartWindow = nNewWindow;
+          g_settings.m_iVideoStartWindow = nNewWindow;
           g_settings.Save();
           g_windowManager.ChangeActiveWindow(nNewWindow);
           CGUIMessage msg2(GUI_MSG_SETFOCUS, nNewWindow, CONTROL_BTNTYPE);
@@ -190,6 +190,10 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return false;
 
           CFileItemPtr item = m_vecItems->Get(iItem);
+
+          if (item->m_strPath.Equals("add") || item->IsParentFolder())
+            return false;
+
           if (m_vecItems->IsPlugin() || m_vecItems->IsRSS() || m_vecItems->IsLiveTV())
             scraper->m_pathContent = CONTENT_NONE;
           else
@@ -285,7 +289,7 @@ void CGUIWindowVideoBase::UpdateButtons()
   g_windowManager.SendMessage(msg2);
 
   // Select the current window as default item
-  int nWindow = g_stSettings.m_iVideoStartWindow-WINDOW_VIDEO_FILES;
+  int nWindow = g_settings.m_iVideoStartWindow-WINDOW_VIDEO_FILES;
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
   CONTROL_ENABLE(CONTROL_BTNSCAN);
@@ -296,7 +300,12 @@ void CGUIWindowVideoBase::UpdateButtons()
 
 void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::CScraperPtr& scraper)
 {
-  if ( !pItem ) return ;
+  if (!pItem)
+    return;
+
+  if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || pItem->m_strPath.Equals("add"))
+    return;
+
   // ShowIMDB can kill the item as this window can be closed while we do it,
   // so take a copy of the item now
   CFileItem item(*pItem);
@@ -307,6 +316,39 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::CScraperPtr& scr
     else
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
   }
+  else
+  {
+    if (item.m_bIsFolder && !info.strContent.Equals("tvshows"))
+    {
+      CFileItemList items;
+      CDirectory::GetDirectory(item.m_strPath, items);
+      items.Stack();
+
+      // check for media files
+      bool bFoundFile(false);
+      for (int i = 0; i < items.Size(); ++i)
+      {
+        CFileItemPtr item2 = items[i];
+
+        if (item2->IsVideo() && !item2->IsPlayList() &&
+	    !CUtil::ExcludeFileOrFolder(item2->m_strPath, g_advancedSettings.m_moviesExcludeFromScanRegExps))
+        {
+          item.m_strPath = item2->m_strPath;
+          item.m_bIsFolder = false;
+          bFoundFile = true;
+          break;
+        }
+      }
+
+      // no video file in this folder
+      if (!bFoundFile)
+      {
+        CGUIDialogOK::ShowAndGetInput(13346,20349,20022,20022);
+        return;
+      }
+    }
+  }
+
   bool modified = ShowIMDB(&item, scraper->Content());
   if (modified && scraper->Content() != CONTENT_PLUGIN &&
      (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
@@ -647,7 +689,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
           CStdString hash, strParent;
           CFileItemList items;
           CUtil::GetParentPath(list.m_strPath,strParent);
-          CDirectory::GetDirectory(strParent,items,g_stSettings.m_videoExtensions);
+          CDirectory::GetDirectory(strParent,items,g_settings.m_videoExtensions);
           scanner.GetPathHash(items, hash);
           m_database.SetPathHash(strParent, hash);
         }
@@ -1226,11 +1268,15 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     OnRenameItem(itemNumber);
     return true;
   case CONTEXT_BUTTON_MARK_WATCHED:
-    MarkWatched(item,true);
-    CUtil::DeleteVideoDatabaseDirectoryCache();
-    Update(m_vecItems->m_strPath);
-    return true;
+    {
+      int newSelection = m_viewControl.GetSelectedItem() + 1;
+      MarkWatched(item,true);
+      m_viewControl.SetSelectedItem(newSelection);
 
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+      Update(m_vecItems->m_strPath);
+      return true;
+    }
   case CONTEXT_BUTTON_MARK_UNWATCHED:
     MarkWatched(item,false);
     CUtil::DeleteVideoDatabaseDirectoryCache();

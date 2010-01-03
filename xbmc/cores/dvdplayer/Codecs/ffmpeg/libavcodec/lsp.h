@@ -40,6 +40,19 @@
 void ff_acelp_reorder_lsf(int16_t* lsfq, int lsfq_min_distance, int lsfq_min, int lsfq_max, int lp_order);
 
 /**
+ * Adjust the quantized LSFs so they are increasing and not too close.
+ *
+ * This step is not mentioned in the AMR spec but is in the reference C decoder.
+ * Omitting this step creates audible distortion on the sinusoidal sweep
+ * test vectors in 3GPP TS 26.074.
+ *
+ * @param[in,out] lsf    LSFs in Hertz
+ * @param min_spacing    minimum distance between two consecutive lsf values
+ * @param                size size of the lsf vector
+ */
+void ff_set_min_dist_lsf(float *lsf, double min_spacing, int order);
+
+/**
  * \brief Convert LSF to LSP
  * \param lsp [out] LSP coefficients (-0x8000 <= (0.15) < 0x8000)
  * \param lsf normalized LSF coefficients (0 <= (2.13) < 0x2000 * PI)
@@ -67,14 +80,40 @@ void ff_acelp_lsp2lpc(int16_t* lp, const int16_t* lsp, int lp_half_order);
  */
 void ff_acelp_lp_decode(int16_t* lp_1st, int16_t* lp_2nd, const int16_t* lsp_2nd, const int16_t* lsp_prev, int lp_order);
 
+
+#define MAX_LP_HALF_ORDER 8
+
 /**
  * Reconstructs LPC coefficients from the line spectral pair frequencies.
  *
  * @param lsp line spectral pairs in cosine domain
  * @param lpc linear predictive coding coefficients
+ * @param lp_half_order half the number of the amount of LPCs to be
+ *        reconstructed, need to be smaller or equal to MAX_LP_HALF_ORDER
+ *
+ * @note buffers should have a minimux size of 2*lp_half_order elements.
  *
  * TIA/EIA/IS-733 2.4.3.3.5
  */
-void ff_acelp_lspd2lpc(const double *lsp, float *lpc);
+void ff_acelp_lspd2lpc(const double *lsp, float *lpc, int lp_half_order);
+
+/**
+ * Sort values in ascending order.
+ *
+ * @note O(n) if data already sorted, O(n^2) - otherwise
+ */
+void ff_sort_nearly_sorted_floats(float *vals, int len);
+
+/**
+ * Computes the Pa / (1 + z(-1)) or Qa / (1 - z(-1)) coefficients
+ * needed for LSP to LPC conversion.
+ * We only need to calculate the 6 first elements of the polynomial.
+ *
+ * @param lsp line spectral pairs in cosine domain
+ * @param f [out] polynomial input/output as a vector
+ *
+ * TIA/EIA/IS-733 2.4.3.3.5-1/2
+ */
+void ff_lsp2polyf(const double *lsp, double *f, int lp_half_order);
 
 #endif /* AVCODEC_LSP_H */

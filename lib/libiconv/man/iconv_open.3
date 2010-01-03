@@ -1,0 +1,204 @@
+.\" Copyright (c) Bruno Haible <bruno@clisp.org>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 3 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" References consulted:
+.\"   GNU glibc-2 source code and manual
+.\"   OpenGroup's Single Unix specification http://www.UNIX-systems.org/online.html
+.\"
+.TH ICONV_OPEN 3  "January 24, 2009" "GNU" "Linux Programmer's Manual"
+.SH NAME
+iconv_open \- allocate descriptor for character set conversion
+.SH SYNOPSIS
+.nf
+.B #include <iconv.h>
+.sp
+.BI "iconv_t iconv_open (const char* " tocode ", const char* " fromcode );
+.fi
+.SH DESCRIPTION
+The \fBiconv_open\fP function allocates a conversion descriptor suitable
+for converting byte sequences from character encoding \fIfromcode\fP to
+character encoding \fItocode\fP.
+.PP
+The values permitted for \fIfromcode\fP and \fItocode\fP and the supported
+combinations are system dependent. For the libiconv library, the following
+encodings are supported, in all combinations.
+.TP
+European languages
+.nf
+.fi
+ASCII, ISO\-8859\-{1,2,3,4,5,7,9,10,13,14,15,16},
+KOI8\-R, KOI8\-U, KOI8\-RU,
+CP{1250,1251,1252,1253,1254,1257}, CP{850,866,1131},
+Mac{Roman,CentralEurope,Iceland,Croatian,Romania},
+Mac{Cyrillic,Ukraine,Greek,Turkish},
+Macintosh
+.TP
+Semitic languages
+.nf
+.fi
+ISO\-8859\-{6,8}, CP{1255,1256}, CP862, Mac{Hebrew,Arabic}
+.TP
+Japanese
+.nf
+.fi
+EUC\-JP, SHIFT_JIS, CP932, ISO\-2022\-JP, ISO\-2022\-JP\-2, ISO\-2022\-JP\-1
+.TP
+Chinese
+.nf
+.fi
+EUC\-CN, HZ, GBK, CP936, GB18030, EUC\-TW, BIG5, CP950, BIG5\-HKSCS,
+BIG5\-HKSCS:2001, BIG5\-HKSCS:1999, ISO\-2022\-CN, ISO\-2022\-CN\-EXT
+.TP
+Korean
+.nf
+.fi
+EUC\-KR, CP949, ISO\-2022\-KR, JOHAB
+.TP
+Armenian
+.nf
+.fi
+ARMSCII\-8
+.TP
+Georgian
+.nf
+.fi
+Georgian\-Academy, Georgian\-PS
+.TP
+Tajik
+.nf
+.fi
+KOI8\-T
+.TP
+Kazakh
+.nf
+.fi
+PT154, RK1048
+.TP
+Thai
+.nf
+.fi
+TIS\-620, CP874, MacThai
+.TP
+Laotian
+.nf
+.fi
+MuleLao\-1, CP1133
+.TP
+Vietnamese
+.nf
+.fi
+VISCII, TCVN, CP1258
+.TP
+Platform specifics
+.nf
+.fi
+HP\-ROMAN8, NEXTSTEP
+.TP
+Full Unicode
+.nf
+.fi
+UTF\-8
+.nf
+.fi
+UCS\-2, UCS\-2BE, UCS\-2LE
+.nf
+.fi
+UCS\-4, UCS\-4BE, UCS\-4LE
+.nf
+.fi
+UTF\-16, UTF\-16BE, UTF\-16LE
+.nf
+.fi
+UTF\-32, UTF\-32BE, UTF\-32LE
+.nf
+.fi
+UTF\-7
+.nf
+.fi
+C99, JAVA
+.TP
+Full Unicode, in terms of \fBuint16_t\fP or \fBuint32_t\fP
+(with machine dependent endianness and alignment)
+.nf
+.fi
+UCS\-2\-INTERNAL, UCS\-4\-INTERNAL
+.TP
+Locale dependent, in terms of \fBchar\fP or \fBwchar_t\fP
+(with machine dependent endianness and alignment, and with semantics
+depending on the OS and the current LC_CTYPE locale facet)
+.nf
+.fi
+char, wchar_t
+.PP
+When configured with the option \fB\-\-enable\-extra\-encodings\fP, it also
+provides support for a few extra encodings:
+.TP
+European languages
+.nf
+CP{437,737,775,852,853,855,857,858,860,861,863,865,869,1125}
+.fi
+.TP
+Semitic languages
+.nf
+.fi
+CP864
+.TP
+Japanese
+.nf
+.fi
+EUC\-JISX0213, Shift_JISX0213, ISO\-2022\-JP\-3
+.TP
+Chinese
+.nf
+.fi
+BIG5\-2003 (experimental)
+.TP
+Turkmen
+.nf
+.fi
+TDS565
+.TP
+Platform specifics
+.nf
+.fi
+ATARIST, RISCOS\-LATIN1
+.PP
+The empty encoding name "" is equivalent to "char": it denotes the
+locale dependent character encoding.
+.PP
+When the string "//TRANSLIT" is appended to \fItocode\fP, transliteration
+is activated. This means that when a character cannot be represented in the
+target character set, it can be approximated through one or several characters
+that look similar to the original character.
+.PP
+When the string "//IGNORE" is appended to \fItocode\fP, characters that
+cannot be represented in the target character set will be silently discarded.
+.PP
+The resulting conversion descriptor can be used with \fBiconv\fP any number
+of times. It remains valid until deallocated using \fBiconv_close\fP.
+.PP
+A conversion descriptor contains a conversion state. After creation using
+\fBiconv_open\fP, the state is in the initial state. Using \fBiconv\fP
+modifies the descriptor's conversion state. (This implies that a conversion
+descriptor can not be used in multiple threads simultaneously.) To bring the
+state back to the initial state, use \fBiconv\fP with NULL as \fIinbuf\fP
+argument.
+.SH "RETURN VALUE"
+The \fBiconv_open\fP function returns a freshly allocated conversion
+descriptor. In case of error, it sets \fBerrno\fP and returns (iconv_t)(\-1).
+.SH ERRORS
+The following error can occur, among others:
+.TP
+.B EINVAL
+The conversion from \fIfromcode\fP to \fItocode\fP is not supported by the
+implementation.
+.SH "CONFORMING TO"
+POSIX:2001
+.SH "SEE ALSO"
+.BR iconv (3)
+.BR iconvctl (3)
+.BR iconv_close (3)

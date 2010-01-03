@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../..;..\..\..\..\..\libpcre;../../../glib"
+				AdditionalIncludeDirectories="../../..;..\..\..\..\..\..\..\lib\pcre\;../../../glib"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;USE_SYSTEM_PCRE;GLIB_COMPILATION;HAVE_CONFIG_H;G_LOG_DOMAIN=\&quot;Glib\&quot;;G_ENABLE_DEBUG;G_DISABLE_DEPRECATED;PCRE_STATIC;LINK_SIZE=2;MAX_NAME_SIZE=32;MAX_NAME_COUNT=10000;NEWLINE=-1;POSIX_MALLOC_THRESHOLD=10;MATCH_LIMIT=10000000;MATCH_LIMIT_RECURSION=10000000"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -115,7 +115,7 @@
 				Optimization="3"
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="../../..;..\..\..\..\..\libpcre;../../../glib"
+				AdditionalIncludeDirectories="../../..;..\..\..\..\..\..\..\lib\pcre\;../../../glib"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;USE_SYSTEM_PCRE;GLIB_COMPILATION;HAVE_CONFIG_H;G_LOG_DOMAIN=\&quot;Glib\&quot;;G_DISABLE_DEPRECATED;PCRE_STATIC;LINK_SIZE=2;MAX_NAME_SIZE=32;MAX_NAME_COUNT=10000;NEWLINE=-1;POSIX_MALLOC_THRESHOLD=10;MATCH_LIMIT=10000000;MATCH_LIMIT_RECURSION=10000000"
 				RuntimeLibrary="0"
 				RuntimeTypeInfo="false"

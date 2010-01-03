@@ -284,7 +284,7 @@
 					<control type="radiobutton" id="205">
 						<description>Toggle Fanart View Media Info</description>
 						<include>ButtonMediaSubCommonValues</include>
-						<label>Hide INFO</label>
+						<label>31005</label>
 						<onclick>Skin.ToggleSetting(View508HideInfo)</onclick>
 						<selected>Skin.HasSetting(View508HideInfo)</selected>
 						<visible>Control.IsVisible(508)</visible>

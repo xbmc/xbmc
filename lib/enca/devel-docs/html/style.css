@@ -1,0 +1,167 @@
+.synopsis, .classsynopsis
+{
+  background: #eeeeee;
+  border: solid 1px #aaaaaa;
+  padding: 0.5em;
+}
+.programlisting
+{
+  background: #eeeeff;
+  border: solid 1px #aaaaff;
+  padding: 0.5em;
+}
+.variablelist
+{
+  padding: 4px;
+  margin-left: 3em;
+}
+.variablelist td:first-child
+{
+  vertical-align: top;
+}
+
+/* this is needed so that the local anchors are displayed below the naviagtion */
+@media screen {
+  sup a.footnote
+  {
+    position: relative;
+    top: 0em ! important;
+  }
+  div.refnamediv a[name], div.refsect1 a[name]
+  {
+    position: relative;
+    top: -4.5em;
+  }
+  table.navigation#top
+  {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0;
+    margin-bottom: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2em;
+    z-index: 1;
+  }
+  .navigation a
+  {
+    color: #770000;
+  }
+  .navigation a:visited
+  {
+    color: #550000;
+  }
+  td.shortcuts
+  {
+    color: #770000;
+    font-size: 80%;
+    white-space: nowrap;
+  }
+  div.refentry, div.chapter, div.reference, div.part, div.book, div.glossary, div.sect1, div.appendix, div.preface
+  {
+    position: relative;
+    top: 3em;
+    z-index: 0;
+  }
+  div.glossary, div.index
+  {
+    position: relative;
+    top: 2em;
+    z-index: 0;
+  }
+  div.refnamediv
+  {
+    margin-top: 2em;
+  }
+  body
+  {
+    padding-bottom: 20em;
+  }
+}
+@media print {
+  table.navigation {
+    visibility: collapse;
+    display: none;
+  }
+  div.titlepage table.navigation {
+    visibility: visible;
+    display: table;
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0;
+    margin-bottom: 0;
+    top: 0;
+    left: 0;
+    height: 2em;
+  }
+}
+
+.navigation .title
+{
+  font-size: 200%;
+}
+
+
+div.gallery-float
+{
+  float: left;
+  padding: 10px;
+}
+div.gallery-float img
+{
+  border-style: none;
+}
+div.gallery-spacer
+{
+  clear: both;
+}
+a
+{
+  text-decoration: none;
+}
+a:hover
+{
+  text-decoration: underline;
+  color: #FF0000;
+}
+
+div.table table
+{
+  border-collapse: collapse;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #777777;
+  border-width: 1px;
+}
+
+div.table table td, div.table table th
+{
+  border-style: solid;
+  border-color: #777777;
+  border-width: 1px;
+  padding: 3px;
+  vertical-align: top;
+}
+
+div.table table th
+{
+  background-color: #eeeeee;
+}
+
+hr
+{
+  color: #777777;
+  background: #777777;
+  border: 0;
+  height: 1px;
+  clear: both;
+}
+
+.footer
+{
+  padding-top: 3.5em;
+  color: #777777;
+  text-align: center;
+  font-size: 80%;
+}

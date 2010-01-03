@@ -30,6 +30,7 @@
 #endif
 
 #ifdef _WIN32
+#include "Win32WASAPI.h"
 #include "Win32DirectSound.h"
 #endif
 #ifdef __APPLE__
@@ -80,6 +81,15 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
       device = deviceString.Right(deviceString.length() - iPos - 1);
       ReturnOnValidInitialize();
 
+#ifdef _WIN32
+      //If WASAPI failed try DirectSound.
+      if(deviceString.Left(iPos).Equals("wasapi"))
+      {
+        audioSink = CreateFromUri("directsound");
+        ReturnOnValidInitialize();
+      }
+#endif
+
       audioSink = new CNullDirectSound();
       audioSink->Initialize(pCallback, device, iChannels, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough);
       return audioSink;
@@ -123,6 +133,7 @@ void CAudioRendererFactory::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool
 
 #ifdef WIN32
   CWin32DirectSound::EnumerateAudioSinks(vAudioSinks, passthrough);
+  CWin32WASAPI::EnumerateAudioSinks(vAudioSinks, passthrough);
 #endif
 
 #ifdef __APPLE__
@@ -140,7 +151,9 @@ IAudioRenderer *CAudioRendererFactory::CreateFromUri(const CStdString &soundsyst
 #endif
 
 #ifdef WIN32
-  if (soundsystem.Equals("directsound"))
+  if (soundsystem.Equals("wasapi"))
+    return new CWin32WASAPI();
+  else if (soundsystem.Equals("directsound"))
     return new CWin32DirectSound();
 #endif
 

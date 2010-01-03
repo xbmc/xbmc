@@ -125,13 +125,13 @@
   }
   switch(buttonCode)
   {
-    case kHIDRemoteButtonCodePlus:
+    case kHIDRemoteButtonCodeUp:
       if(isPressed)
         [mp_wrapper handleEvent:ATV_BUTTON_UP];
       else
         [mp_wrapper handleEvent:ATV_BUTTON_UP_RELEASE];
       break;
-    case kHIDRemoteButtonCodeMinus:
+    case kHIDRemoteButtonCodeDown:
       if(isPressed)
         [mp_wrapper handleEvent:ATV_BUTTON_DOWN];
       else
@@ -143,29 +143,14 @@
       else
         [mp_wrapper handleEvent:ATV_BUTTON_LEFT_RELEASE];
       break;
-    case kHIDRemoteButtonCodeLeftHold:
-      if(isPressed)
-        [mp_wrapper handleEvent:ATV_BUTTON_LEFT_H];
-      else
-        [mp_wrapper handleEvent:ATV_BUTTON_LEFT_H_RELEASE];
-      break;
     case kHIDRemoteButtonCodeRight:
       if(isPressed)
         [mp_wrapper handleEvent:ATV_BUTTON_RIGHT];
       else
         [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_RELEASE];
-      break;
-    case kHIDRemoteButtonCodeRightHold:
-      if(isPressed)
-        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_H];
-      else
-        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_H_RELEASE];
-      break;
-    case kHIDRemoteButtonCodePlayPause:
-      if(isPressed) [mp_wrapper handleEvent:ATV_BUTTON_PLAY];
-      break;
-    case kHIDRemoteButtonCodePlayPauseHold:
-      if(isPressed) [mp_wrapper handleEvent:ATV_BUTTON_PLAY_H];
+      break;      
+    case kHIDRemoteButtonCodeCenter:
+      if(isPressed) [mp_wrapper handleEvent:ATV_BUTTON_CENTER];
       break;
     case kHIDRemoteButtonCodeMenu:
       if(isPressed){
@@ -173,10 +158,41 @@
         [mp_wrapper handleEvent:ATV_BUTTON_MENU];
       }
       break;
+    case kHIDRemoteButtonCodePlay: //aluminium remote
+      if(isPressed) {
+        [mp_wrapper handleEvent:ATV_BUTTON_PLAY];
+      }
+      break;
+//    case kHIDRemoteButtonCodeUpHold:
+//      //TODO
+//      break;
+//    case kHIDRemoteButtonCodeDownHold:
+//      //TODO
+      break;
+    case kHIDRemoteButtonCodeLeftHold:
+      if(isPressed)
+        [mp_wrapper handleEvent:ATV_BUTTON_LEFT_H];
+      else
+        [mp_wrapper handleEvent:ATV_BUTTON_LEFT_H_RELEASE];
+      break;
+    case kHIDRemoteButtonCodeRightHold:
+      if(isPressed)
+        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_H];
+      else
+        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_H_RELEASE];
+      break;
+    case kHIDRemoteButtonCodeCenterHold:
+      if(isPressed) [mp_wrapper handleEvent:ATV_BUTTON_CENTER_H];
+      break;      
     case kHIDRemoteButtonCodeMenuHold:
       if(isPressed) {
         [self checkAndLaunchApp]; //launch mp_app_path if it's not running
         [mp_wrapper handleEvent:ATV_BUTTON_MENU_H];
+      }
+      break;
+    case kHIDRemoteButtonCodePlayHold: //aluminium remote
+      if(isPressed) {
+        [mp_wrapper handleEvent:ATV_BUTTON_PLAY_H];
       }
       break;
     default:

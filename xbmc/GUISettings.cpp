@@ -362,7 +362,10 @@ void CGUISettings::Initialize()
   AddInt(5, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
 #endif
   AddString(6, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
+#ifndef HAS_DX
+  // Todo: Implement test pattern for DX
   AddString(7, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
+#endif
 #if defined(_LINUX) && !defined(__APPLE__)
   AddSeparator(8, "videoscreen.sep2");
   AddBool(9, "videoscreen.haslcd", 4501, false);
@@ -420,14 +423,6 @@ void CGUISettings::Initialize()
   // hidden masterlock settings
   AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT);
 
-  //AddCategory(4, "autorun", 447);
-  AddBool(1, "autorun.dvd", 240, true);
-  AddBool(2, "autorun.vcd", 241, true);
-  AddBool(3, "autorun.cdda", 242, true);
-  AddBool(5, "autorun.video", 244, true);
-  AddBool(6, "autorun.music", 245, true);
-  AddBool(7, "autorun.pictures", 246, true);
-
   AddCategory(4, "cache", 439);
   AddInt(0, "cache.harddisk", 14025, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
   AddSeparator(0, "cache.sep1");
@@ -462,13 +457,11 @@ void CGUISettings::Initialize()
   AddCategory(5, "videoplayer", 14086);
   AddInt(1, "videoplayer.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
   AddSeparator(2, "videoplayer.sep1");
-#ifdef HAVE_LIBVDPAU
-  AddInt(3, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_VDPAU, SPIN_CONTROL_TEXT);
-#elif defined(_WIN32) && defined(HAS_DX)
+#if defined(_WIN32) && defined(HAS_DX)
   // No render methods other than AUTO on win32 DirectX
   AddInt(0, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_AUTO, SPIN_CONTROL_TEXT);
 #else
-  AddInt(3, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_SOFTWARE, SPIN_CONTROL_TEXT);
+  AddInt(3, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_CRYSTALHD, SPIN_CONTROL_TEXT);
 #endif
 #ifdef HAS_GL
   AddBool(4, "videoplayer.usepbo", 13424, false);
@@ -498,7 +491,7 @@ void CGUISettings::Initialize()
   AddInt(0, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.vdpauUpscalingLevel", 13121, false);
-  AddBool(10, "videoplayer.vdpaustudiolevel", 13122, true);
+  AddBool(10, "videoplayer.vdpaustudiolevel", 13122, false);
 #endif
 #endif
   AddSeparator(11, "videoplayer.sep5");
@@ -653,7 +646,7 @@ void CGUISettings::Initialize()
   AddBool(4, "screensaver.usedimonpause", 22014, true);
   AddSeparator(5, "screensaver.sep1");
   AddInt(6, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddPath(7, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddPath(7, "screensaver.slideshowpath", 774, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddSeparator(8, "screensaver.sep2");
   AddString(9, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(12, "screensaver.sep2");
@@ -798,9 +791,6 @@ void CGUISettings::LoadMasterLock(TiXmlElement *pRootElement)
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
   it = settingsMap.find("masterlock.startuplock");
-  if (it != settingsMap.end())
-    LoadFromXML(pRootElement, it);
-    it = settingsMap.find("autodetect.nickname");
   if (it != settingsMap.end())
     LoadFromXML(pRootElement, it);
 }
@@ -963,12 +953,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   for (mapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
   {
     LoadFromXML(pRootElement, it, hideSettings);
-  }
-  // setup logging...
-  if (GetBool("debug.showloginfo"))
-  {
-    g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
-    CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting (%d)", g_advancedSettings.m_logLevel);
   }
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");

@@ -90,7 +90,7 @@ namespace PYXBMC
 
     string url;
     if (!PyXBMCGetUnicodeString(url, pURL, 1) || !ListItem_CheckExact(pItem)) return NULL;
-    
+
     ListItem *pListItem = (ListItem *)pItem;
     pListItem->item->m_strPath = url;
     pListItem->item->m_bIsFolder = (0 != bIsFolder);
@@ -247,7 +247,7 @@ namespace PYXBMC
     };
 
     ListItem *pListItem = (ListItem *)pItem;
-    
+
     DIRECTORY::CPluginDirectory::SetResolvedUrl(handle, 0 != bSucceeded, pListItem->item.get());
 
     Py_INCREF(Py_None);
@@ -356,7 +356,7 @@ namespace PYXBMC
       PyErr_SetString(PyExc_ValueError, "Invalid id or value!");
       return NULL;
     }
-    
+
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -631,7 +631,7 @@ namespace PYXBMC
 
     pXbmcPluginModule = Py_InitModule((char*)"xbmcplugin", pluginMethods);
     if (pXbmcPluginModule == NULL) return;
-	
+
     // constants
     PyModule_AddStringConstant(pXbmcPluginModule, (char*)"__author__", (char*)PY_XBMC_AUTHOR);
     PyModule_AddStringConstant(pXbmcPluginModule, (char*)"__date__", (char*)"20 August 2007");

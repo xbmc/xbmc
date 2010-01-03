@@ -2,14 +2,13 @@
 	<defaultcontrol>5</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>440</posx>
-		<posy>75</posy>
-		<origin x="240" y="75">!Window.IsVisible(FullscreenInfo)</origin>
+		<posx>240</posx>
+		<posy>115</posy>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="400" condition="Window.IsVisible(SliderDialog)">Conditional</animation>
+			<animation effect="fade" start="100" end="0" time="400" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(FileBrowser)">Conditional</animation>
 			<control type="image">
 				<description>background image</description>
 				<posx>0</posx>
@@ -50,7 +49,7 @@
 				<posy>18</posy>
 				<width>760</width>
 				<height>30</height>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<label>$LOCALIZE[3] - $LOCALIZE[5]</label>
 				<align>center</align>
 				<aligny>center</aligny>
@@ -64,7 +63,7 @@
 				<posy>18</posy>
 				<width>760</width>
 				<height>30</height>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<label>$LOCALIZE[292] - $LOCALIZE[5]</label>
 				<align>center</align>
 				<aligny>center</aligny>

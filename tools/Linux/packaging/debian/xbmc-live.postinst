@@ -69,14 +69,43 @@ ENDOFBLOCK
 
 	SUDOERS_TEMPFILE=$(mktemp -q)
 
+	# Simply create a sudoers file if none exists
+	if [ ! -e /etc/sudoers ]; then
+	    cat > /etc/sudoers <<ENDOFBLOCK
+# /etc/sudoers
+#
+# This file MUST be edited with the 'visudo' command as root.
+#
+# See the man page for details on how to write a sudoers file.
+#
+
+Defaults        env_reset
+
+# Host alias specification
+
+# User alias specification
+
+# Cmnd alias specification
+
+# User privilege specification
+root    ALL=(ALL) ALL
+
+# Uncomment to allow members of group sudo to not need a password
+# (Note that later entries override this, so you might need to move
+# it further down)
+%sudo ALL=NOPASSWD: ALL
+ENDOFBLOCK
+	    chmod 0440 /etc/sudoers
+	fi
+
 	# Add xbmc to the sudoers file (if not already done)
-	if ! grep -i -q XBMC-specific /etc/sudoers ; then 
+	if ! grep -i -q XBMC-specific /etc/sudoers ; then
 		cat /etc/sudoers $SUDOERSBLOCK_TEMPFILE > $SUDOERS_TEMPFILE
 
 		# Check if sudoers file is ok with visudo and write to /etc/sudoers if
 		# it is ok, else display a message to the user.
 		if visudo -c -f $SUDOERS_TEMPFILE >/dev/null 2>&1; then
-			cp $SUDOERS_TEMPFILE /etc/sudoers
+			cp -f $SUDOERS_TEMPFILE /etc/sudoers
 		else
 			# TODO: Use debconf for this message.
 			echo "Couldn't edit /etc/sudoers, must be manually edited."
@@ -88,7 +117,6 @@ ENDOFBLOCK
 
 	rm $SUDOERS_TEMPFILE
 	rm $SUDOERSBLOCK_TEMPFILE
-
 
 	# Our set of PolicyKit actions
 
@@ -135,7 +163,12 @@ ENDOFBLOCK
 		org.freedesktop.hal.power-management.keyboard-backlight
 		org.freedesktop.devicekit.power.suspend
 		org.freedesktop.devicekit.power.Hibernate
-		org.freedesktop.consolekit.system.stop"
+		org.freedesktop.consolekit.system.stop
+		org.freedesktop.devicekit.disks.filesystem-mount
+		org.freedesktop.devicekit.disks.filesystem-mount-system-internal
+		org.freedesktop.devicekit.disks.filesystem-unmount-others
+		org.freedesktop.devicekit.disks.drive-eject
+		org.freedesktop.devicekit.disks.drive-detach"
 
 	# Grant the 'xbmc' user each action from the list if not done already
 	for ACTION in $POLKIT_ACTIONS; do
@@ -144,6 +177,23 @@ ENDOFBLOCK
 			polkit-auth --user $xbmcUser --grant $ACTION
 		fi
 	done
+
+
+	# Add <xbmc=autostart,nodiskmount,setvolume loglevel=0> to grub's kernel entries
+	if [ -f /boot/grub/menu.lst ]; then
+		if ! grep -q -i "xbmc=autostart" /boot/grub/menu.lst ; then
+			# TODO Do not modify single-mode entry
+			sed -i -e "/^kernel/s/\(.*\)/\1 xbmc=autostart,nodiskmount,setvolume loglevel=0/" /boot/grub/menu.lst
+			sed -i -e "/^# kopt=root=/s/\(.*\)/\1 xbmc=autostart,nodiskmount,setvolume loglevel=0/" /boot/grub/menu.lst
+		fi
+	fi
+
+	if [ -f /boot/grub/grub.cfg ]; then
+		if ! grep -q -i "xbmc=autostart" /etc/default/grub ; then
+			sed -i -e "/^GRUB_CMDLINE_LINUX_DEFAULT=/s/\"\(.*\)\"/\"\1 xbmc=autostart,nodiskmount,setvolume loglevel=0\"/" /etc/default/grub
+			update-grub
+		fi
+	fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
