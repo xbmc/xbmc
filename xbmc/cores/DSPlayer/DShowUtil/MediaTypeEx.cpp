@@ -353,7 +353,7 @@ CStdString CMediaTypeEx::GetSubtitleCodecName(const GUID& subtype)
 	return str;
 }
 
-void CMediaTypeEx::Dump(CAtlList<CStdString>& sl)
+void CMediaTypeEx::Dump(std::list<CStdString>& sl)
 {
 	CStdString str;
 

@@ -23,7 +23,7 @@
 
 #include "StdString.h"
 #include <streams.h>
-
+#include "smartptr.h"
 #include "igraphbuilder2.h"
 #include "Filters/IMpaDecFilter.h"
 #include "Filters/IMPCVideoDecFilter.h"
@@ -35,7 +35,7 @@ class CDSConfig
 public:
   CDSConfig();
   virtual ~CDSConfig();
-  virtual HRESULT LoadGraph(CComPtr<IGraphBuilder2> pGB);
+  virtual HRESULT LoadGraph(SmartPtr<IGraphBuilder2> pGB);
 
   CStdString GetDxvaMode()  { return m_pStdDxva; };
 //AudioStream
@@ -55,10 +55,10 @@ protected:
   
 private:
   //Direct Show Filters
-  CComPtr<IGraphBuilder2>        m_pGraphBuilder;
+  SmartPtr<IGraphBuilder2>        m_pGraphBuilder;
   CComQIPtr<IMPCVideoDecFilter>	 m_pIMpcDecFilter;
   //No guid defined for ffdshow video
-  //CComPtr<IffdshowDecVideoA>	 m_pIffdDecFilter;
+  //SmartPtr<IffdshowDecVideoA>	 m_pIffdDecFilter;
   CComQIPtr<IMpaDecFilter>       m_pIMpaDecFilter;
   CComQIPtr<IAMStreamSelect>     m_pIAMStreamSelect;
   CStdString                     m_pStdDxva;

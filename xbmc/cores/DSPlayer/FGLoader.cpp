@@ -51,7 +51,7 @@ CFGLoader::~CFGLoader()
 HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *pRule)
 {
 
-  HRESULT hr = S_OK;
+  HRESULT hr = E_FAIL;
   bool failedWithFirstSourceFilter = false;
   CStdString pWinFilePath;
   bool pForceXbmcSourceFilter=false;
@@ -74,19 +74,18 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
       {
         if(SUCCEEDED(pFGF->Create(&m_SourceF, pUnk)))
         {
-          m_pGraphBuilder->AddFilter(m_SourceF,pFGF->GetName().c_str());
+          hr = m_pGraphBuilder->AddFilter(m_SourceF,pFGF->GetName().c_str());
           g_charsetConverter.wToUTF8(pFGF->GetName(),m_pStrSource);
           break;
         }
 	      else
 	      {
-        CLog::Log(LOGERROR,"DSPlayer %s Failed to create the source filter",__FUNCTION__);
-        return E_FAIL;
+          CLog::Log(LOGERROR,"DSPlayer %s Failed to create the source filter",__FUNCTION__);
+          return E_FAIL;
         }
 	    }
-    
-    }
-    
+    }//end foreach
+
 	  IFileSourceFilter *pFS = NULL;
 	  m_SourceF->QueryInterface(IID_IFileSourceFilter, (void**)&pFS);
     CStdStringW strFileW;
@@ -111,15 +110,15 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
     //if(m_File.Open(pFileItem.GetAsUrl().GetFileName().c_str(), READ_TRUNCATED | READ_BUFFERED))
     if(m_File.Open(pFileItem.m_strPath, READ_TRUNCATED | READ_BUFFERED))
     {
-      CComPtr<IBaseFilter> pSrc;
+      SmartPtr<IBaseFilter> pSrc;
       CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File,&pSrc,&hr);
       m_SourceF = pSrc;
-      m_pGraphBuilder->AddFilter(m_SourceF, L"XBMC File Source");
+      hr = m_pGraphBuilder->AddFilter(m_SourceF, L"XBMC File Source");
       m_pStrSource = CStdString("XBMC File Source");
       return hr;
     }
-    return hr;
   }
+  return hr;
 }
 HRESULT CFGLoader::InsertSplitter(TiXmlElement *pRule)
 {
@@ -135,7 +134,8 @@ HRESULT CFGLoader::InsertSplitter(TiXmlElement *pRule)
         m_pGraphBuilder->AddFilter(m_SplitterF,pFGF->GetName().c_str());
         g_charsetConverter.wToUTF8(pFGF->GetName(),m_pStrSplitter);
         break;
-      }else
+      }
+      else
 	    {
         CLog::Log(LOGERROR,"DSPlayer %s Failed to create spliter",__FUNCTION__);
         return E_FAIL;
@@ -144,22 +144,24 @@ HRESULT CFGLoader::InsertSplitter(TiXmlElement *pRule)
   }
 
   
-  hr = ::ConnectFilters(m_pGraphBuilder,m_SourceF,m_SplitterF);
+  hr = ConnectFilters(m_pGraphBuilder,m_SourceF,m_SplitterF);
   //If the splitter successully connected to the source
   if ( SUCCEEDED( hr ) )
+  {
     CLog::Log(LOGNOTICE,"DSPlayer %s Connected the source to the spillter",__FUNCTION__);
+    return hr;
+  }
   else
   {
     CLog::Log(LOGERROR,"DSPlayer %s Failed to connect the source to the spliter",__FUNCTION__);
     return hr;
   }
-  return hr;
 }
 
 HRESULT CFGLoader::InsertAudioDecoder(TiXmlElement *pRule)
 {
-  HRESULT hr = S_OK;
-  CComPtr<IBaseFilter> ppBF;
+  HRESULT hr = E_FAIL;
+  SmartPtr<IBaseFilter> ppBF;
   
   BOOST_FOREACH(CFGFilterFile* pFGF, m_configFilter)
   {
@@ -167,7 +169,7 @@ HRESULT CFGLoader::InsertAudioDecoder(TiXmlElement *pRule)
     {
       if(SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
       {
-        m_pGraphBuilder->AddFilter(ppBF,pFGF->GetName().c_str());
+        hr = m_pGraphBuilder->AddFilter(ppBF,pFGF->GetName().c_str());
         g_charsetConverter.wToUTF8(pFGF->GetName(),m_pStrAudiodec);
         break;
       }
@@ -178,25 +180,26 @@ HRESULT CFGLoader::InsertAudioDecoder(TiXmlElement *pRule)
       }
 	  }
   }
-  
-
-  
   ppBF.Release();
-  CLog::Log(LOGDEBUG,"DSPlayer %s Sucessfully added the audio decoder filter",__FUNCTION__);
+  
+  if (FAILED(hr))
+    CLog::Log(LOGERROR,"%s Error occured while creating the filter or getting the rules from the config xml",__FUNCTION__);
+  else
+    CLog::Log(LOGNOTICE,"%s Sucessfully added the audio decoder filter called %s ",__FUNCTION__,m_pStrAudiodec.c_str());
   return hr;
 }
 
 HRESULT CFGLoader::InsertVideoDecoder(TiXmlElement *pRule)
 {
   HRESULT hr = S_OK;
-  CComPtr<IBaseFilter> ppBF;
+  SmartPtr<IBaseFilter> ppBF;
   BOOST_FOREACH(CFGFilterFile* pFGF, m_configFilter)
   {
     if ( ((CStdString)pRule->Attribute("videodec")).Equals(pFGF->GetXFilterName().c_str(),false) )
     {
       if(SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
       {
-        m_pGraphBuilder->AddFilter(ppBF,pFGF->GetName().c_str());
+        hr = m_pGraphBuilder->AddFilter(ppBF,pFGF->GetName().c_str());
         g_charsetConverter.wToUTF8(pFGF->GetName(),m_pStrVideodec);
         break;
       }
@@ -209,14 +212,17 @@ HRESULT CFGLoader::InsertVideoDecoder(TiXmlElement *pRule)
   }
   
   ppBF.Release();
-  CLog::Log(LOGDEBUG,"DSPlayer %s Sucessfully added the video decoder filter",__FUNCTION__);
+  if (FAILED(hr))
+    CLog::Log(LOGERROR,"%s Error occured while creating the filter or getting the rules from the config xml",__FUNCTION__);
+  else
+    CLog::Log(LOGNOTICE,"DSPlayer %s Sucessfully added the video decoder filter called %s ",__FUNCTION__,m_pStrVideodec.c_str());
   return hr;
 }
 
 HRESULT CFGLoader::InsertAudioRenderer()
 {
   HRESULT hr = S_OK;
-  CComPtr<IBaseFilter> ppBF;
+  SmartPtr<IBaseFilter> ppBF;
   CFGFilterRegistry* pFGF;
   CStdString currentGuid,currentName;
 
@@ -244,13 +250,17 @@ HRESULT CFGLoader::InsertAudioRenderer()
   hr = pFGF->Create(&ppBF, pUnk);
   hr = m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(currentName));
   ppBF.Release();
+  if (FAILED(hr))
+    CLog::Log(LOGERROR,"%s Error occured while creating the filter or getting the rules from the config xml",__FUNCTION__);
+  else
+    CLog::Log(LOGNOTICE,"%s Succesfully added the audio renderer called %s",__FUNCTION__,currentName);
   return hr;
 }
 
 HRESULT CFGLoader::InsertAutoLoad()
 {
   HRESULT hr = S_OK;
-  CComPtr<IBaseFilter> ppBF;
+  SmartPtr<IBaseFilter> ppBF;
   BOOST_FOREACH(CFGFilterFile* pFGF, m_configFilter)
   { 
     if ( pFGF->GetAutoLoad() )

@@ -6,7 +6,7 @@
 #include <d3dx9.h>
 #include <dxva.h>
 #include <dxva2api.h>
-
+#include "charsetconverter.h"
 #include "log.h"
 
 LONG DShowUtil::MFTimeToMsec(const LONGLONG& time)
@@ -20,29 +20,33 @@ CStdString DShowUtil::GetFilterPath(CStdString pClsid)
   int ret = -1;
   CStdString strReg,strResult;
   strReg = _T("\\CLSID\\") + pClsid + _T("\\InprocServer32");
-  CRegKey reg;
+  //CRegKey reg;
   
-  if (reg.Open(HKEY_CLASSES_ROOT, strReg, KEY_READ) == ERROR_SUCCESS) 
+  if (RegLoadKey(HKEY_CLASSES_ROOT,strReg,KEY_READ == ERROR_SUCCESS))//reg.Open(HKEY_CLASSES_ROOT, strReg, KEY_READ) == ERROR_SUCCESS) 
   {
-
 			TCHAR		val[1024];
-			ULONG		len;
-			reg.QueryStringValue(_T(""), val, &len);
-			strResult = val;
+			PLONG		len;
+      if (RegQueryValue(HKEY_CLASSES_ROOT,strReg,val,len) == ERROR_SUCCESS)
+      {
+        strResult = val;
+        ret = 0;
+      }
+			//reg.QueryStringValue(_T(""), val, &len);
+			
 
-			ret = 0;
-			reg.Close();
+			//ret = 0;
+			//reg.Close();
   }
 		return strResult;
 }
 
 
-std::vector<CComPtr<IMoniker>> DShowUtil::GetAudioRenderersGuid()
+std::vector<SmartPtr<IMoniker>> DShowUtil::GetAudioRenderersGuid()
 {
   
-  std::vector<CComPtr<IMoniker>> vAudioRenderers;
+  std::vector<SmartPtr<IMoniker>> vAudioRenderers;
   //CLSID_AudioRendererCategory
-  CComPtr<IEnumMoniker> pEM;
+  SmartPtr<IEnumMoniker> pEM;
   BeginEnumSysDev(CLSID_AudioRendererCategory, pMoniker)
 	{
 	  vAudioRenderers.push_back(pMoniker);
@@ -75,7 +79,7 @@ int DShowUtil::CountPins(IBaseFilter* pBF, int& nIn, int& nOut, int& nInC, int& 
     PIN_DIRECTION dir;
     if(SUCCEEDED(pPin->QueryDirection(&dir)))
     {
-      CComPtr<IPin> pPinConnectedTo;
+      SmartPtr<IPin> pPinConnectedTo;
       pPin->ConnectedTo(&pPinConnectedTo);
 
       if(dir == PINDIR_INPUT) {nIn++; if(pPinConnectedTo) nInC++;}
@@ -103,14 +107,17 @@ bool DShowUtil::IsMultiplexer(IBaseFilter* pBF, bool fCountConnectedOnly)
 
 bool DShowUtil::IsStreamStart(IBaseFilter* pBF)
 {
-  CComQIPtr<IAMFilterMiscFlags> pAMMF(pBF);
+  SmartPtr<IAMFilterMiscFlags> pAMMF;
+  pBF->QueryInterface(__uuidof(IAMFilterMiscFlags),(void **)&pAMMF);
+  
+  //CComQIPtr<IAMFilterMiscFlags> pAMMF(pBF);
   if(pAMMF && pAMMF->GetMiscFlags()&AM_FILTER_MISC_FLAGS_IS_SOURCE)
     return(true);
 
   int nIn, nOut, nInC, nOutC;
   CountPins(pBF, nIn, nOut, nInC, nOutC);
   AM_MEDIA_TYPE mt;
-  CComPtr<IPin> pIn = GetFirstPin(pBF);
+  SmartPtr<IPin> pIn = GetFirstPin(pBF);
   return((nOut > 1)
     || (nOut > 0 && nIn == 1 && pIn && SUCCEEDED(pIn->ConnectionMediaType(&mt)) && mt.majortype == MEDIATYPE_Stream));
 }
@@ -159,8 +166,9 @@ bool DShowUtil::IsAudioWaveRenderer(IBaseFilter* pBF)
 {
   int nIn, nOut, nInC, nOutC;
   CountPins(pBF, nIn, nOut, nInC, nOutC);
-
-  if(nInC > 0 && nOut == 0 && CComQIPtr<IBasicAudio>(pBF))
+  SmartPtr<IBasicAudio> pPFAudio;
+  pBF->QueryInterface(__uuidof(IBasicAudio),(void **)&pPFAudio);
+  if(nInC > 0 && nOut == 0 && pPFAudio)
   {
     BeginEnumPins(pBF, pEP, pPin)
     {
@@ -238,7 +246,7 @@ IPin* DShowUtil::GetUpStreamPin(IBaseFilter* pBF, IPin* pInputPin)
     if(pInputPin && pInputPin != pPin) continue;
 
     PIN_DIRECTION dir;
-    CComPtr<IPin> pPinConnectedTo;
+    SmartPtr<IPin> pPinConnectedTo;
     if(SUCCEEDED(pPin->QueryDirection(&dir)) && dir == PINDIR_INPUT
     && SUCCEEDED(pPin->ConnectedTo(&pPinConnectedTo)))
     {
@@ -280,7 +288,7 @@ IPin* DShowUtil::GetFirstDisconnectedPin(IBaseFilter* pBF, PIN_DIRECTION dir)
   {
     PIN_DIRECTION dir2;
     pPin->QueryDirection(&dir2);
-    CComPtr<IPin> pPinTo;
+    SmartPtr<IPin> pPinTo;
     if(dir == dir2 && (S_OK != pPin->ConnectedTo(&pPinTo)))
     {
       IPin* pRet = pPin.Detach();
@@ -296,7 +304,7 @@ IPin* DShowUtil::GetFirstDisconnectedPin(IBaseFilter* pBF, PIN_DIRECTION dir)
 IBaseFilter* DShowUtil::FindFilter(LPCWSTR clsid, IFilterGraph* pFG)
 {
   CLSID clsid2;
-  CLSIDFromString(CComBSTR(clsid), &clsid2);
+  CLSIDFromString(LPOLESTR(clsid), &clsid2);
   return(FindFilter(clsid2, pFG));
 }
 
@@ -318,7 +326,7 @@ IPin* DShowUtil::FindPin(IBaseFilter* pBF, PIN_DIRECTION direction, const AM_MED
   PIN_DIRECTION  pindir;
   BeginEnumPins(pBF, pEP, pPin)
   {
-    CComPtr<IPin>    pFellow;
+    SmartPtr<IPin>    pFellow;
 
     if (SUCCEEDED (pPin->QueryDirection(&pindir)) &&
       pindir == direction &&
@@ -392,24 +400,26 @@ IPin* DShowUtil::AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
     if(!pPin || DisplayName.IsEmpty() || !pGB)
       break;
 
-    CComPtr<IPin> pPinTo;
+    SmartPtr<IPin> pPinTo;
     PIN_DIRECTION dir;
     if(FAILED(pPin->QueryDirection(&dir)) || dir != PINDIR_OUTPUT || SUCCEEDED(pPin->ConnectedTo(&pPinTo)))
       break;
 
-    CComPtr<IBindCtx> pBindCtx;
+    SmartPtr<IBindCtx> pBindCtx;
     CreateBindCtx(0, &pBindCtx);
 
-    CComPtr<IMoniker> pMoniker;
+    SmartPtr<IMoniker> pMoniker;
     ULONG chEaten;
-    if(S_OK != MkParseDisplayName(pBindCtx, CComBSTR(DisplayName), &chEaten, &pMoniker))
+    CStdStringW strDisplayNameW;
+    g_charsetConverter.utf16LEtoW(DisplayName,strDisplayNameW);
+    if(S_OK != MkParseDisplayName(pBindCtx, LPOLESTR(strDisplayNameW.c_str()), &chEaten, &pMoniker))
       break;
 
-    CComPtr<IBaseFilter> pBF;
+    SmartPtr<IBaseFilter> pBF;
     if(FAILED(pMoniker->BindToObject(pBindCtx, 0, IID_IBaseFilter, (void**)&pBF)) || !pBF)
       break;
 
-    CComPtr<IPropertyBag> pPB;
+    SmartPtr<IPropertyBag> pPB;
     if(FAILED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB)))
       break;
 
@@ -474,7 +484,7 @@ IPin* DShowUtil::InsertFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
     if(FAILED(pPin->QueryDirection(&dir)))
       break;
 
-    CComPtr<IPin> pFrom, pTo;
+    SmartPtr<IPin> pFrom, pTo;
 
     if(dir == PINDIR_INPUT)
     {
@@ -490,19 +500,19 @@ IPin* DShowUtil::InsertFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
     if(!pFrom || !pTo)
       break;
 
-    CComPtr<IBindCtx> pBindCtx;
+    SmartPtr<IBindCtx> pBindCtx;
     CreateBindCtx(0, &pBindCtx);
 
-    CComPtr<IMoniker> pMoniker;
+    SmartPtr<IMoniker> pMoniker;
     ULONG chEaten;
     if(S_OK != MkParseDisplayName(pBindCtx, CComBSTR(DisplayName), &chEaten, &pMoniker))
       break;
 
-    CComPtr<IBaseFilter> pBF;
+    SmartPtr<IBaseFilter> pBF;
     if(FAILED(pMoniker->BindToObject(pBindCtx, 0, IID_IBaseFilter, (void**)&pBF)) || !pBF)
       break;
 
-    CComPtr<IPropertyBag> pPB;
+    SmartPtr<IPropertyBag> pPB;
     if(FAILED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB)))
       break;
 
@@ -513,7 +523,7 @@ IPin* DShowUtil::InsertFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
     if(FAILED(pGB->AddFilter(pBF, CStdStringW(var.bstrVal))))
       break;
 
-    CComPtr<IPin> pFromTo = GetFirstPin(pBF, PINDIR_INPUT);
+    SmartPtr<IPin> pFromTo = GetFirstPin(pBF, PINDIR_INPUT);
     if(!pFromTo)
     {
       pGB->RemoveFilter(pBF);
@@ -535,7 +545,7 @@ IPin* DShowUtil::InsertFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
       break;
     }
 
-    CComPtr<IPin> pToFrom = GetFirstPin(pBF, PINDIR_OUTPUT);
+    SmartPtr<IPin> pToFrom = GetFirstPin(pBF, PINDIR_OUTPUT);
     if(!pToFrom)
     {
       pGB->RemoveFilter(pBF);
@@ -580,7 +590,7 @@ void DShowUtil::ExtractMediaTypes(IPin* pPin, CAtlArray<GUID>& types)
   EndEnumMediaTypes(pmt)
 }
 
-void DShowUtil::ExtractMediaTypes(IPin* pPin, CAtlList<CMediaType>& mts)
+void DShowUtil::ExtractMediaTypes(IPin* pPin, std::list<CMediaType>& mts)
 {
   mts.RemoveAll();
 
@@ -702,7 +712,7 @@ CStdString DShowUtil::BinToCString(BYTE* ptr, int len)
   return(ret);
 }
 
-static void FindFiles(CStdString fn, CAtlList<CStdString>& files)
+static void FindFiles(CStdString fn, std::list<CStdString>& files)
 {
   CStdString path = fn;
   path.Replace('/', '\\');
@@ -755,7 +765,7 @@ CStdString GetDriveLabel(TCHAR drive)
       memset(&afi, 0, sizeof(afi));
       AVIFileInfo(pfile, &afi, sizeof(AVIFILEINFO));
 
-      CComPtr<IAVIStream> pavi;
+      SmartPtr<IAVIStream> pavi;
       if(AVIFileGetStream(pfile, &pavi, streamtypeVIDEO, 0) == AVIERR_OK)
       {
         AVISTREAMINFO si;
@@ -1060,10 +1070,10 @@ bool DShowUtil::CreateFilter(CStdStringW DisplayName, IBaseFilter** ppBF, CStdSt
   *ppBF = NULL;
   FriendlyName.Empty();
 
-  CComPtr<IBindCtx> pBindCtx;
+  SmartPtr<IBindCtx> pBindCtx;
   CreateBindCtx(0, &pBindCtx);
 
-  CComPtr<IMoniker> pMoniker;
+  SmartPtr<IMoniker> pMoniker;
   ULONG chEaten;
   if(S_OK != MkParseDisplayName(pBindCtx, CComBSTR(DisplayName), &chEaten, &pMoniker))
     return(false);
@@ -1071,7 +1081,7 @@ bool DShowUtil::CreateFilter(CStdStringW DisplayName, IBaseFilter** ppBF, CStdSt
   if(FAILED(pMoniker->BindToObject(pBindCtx, 0, IID_IBaseFilter, (void**)ppBF)) || !*ppBF)
     return(false);
 
-  CComPtr<IPropertyBag> pPB;
+  SmartPtr<IPropertyBag> pPB;
   CComVariant var;
   if(SUCCEEDED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB))
   && SUCCEEDED(pPB->Read(CComBSTR(_T("FriendlyName")), &var, NULL)))
@@ -1087,15 +1097,15 @@ IBaseFilter* DShowUtil::AppendFilter(IPin* pPin, IMoniker* pMoniker, IGraphBuild
     if(!pPin || !pMoniker || !pGB)
       break;
 
-    CComPtr<IPin> pPinTo;
+    SmartPtr<IPin> pPinTo;
     PIN_DIRECTION dir;
     if(FAILED(pPin->QueryDirection(&dir)) || dir != PINDIR_OUTPUT || SUCCEEDED(pPin->ConnectedTo(&pPinTo)))
       break;
 
-    CComPtr<IBindCtx> pBindCtx;
+    SmartPtr<IBindCtx> pBindCtx;
     CreateBindCtx(0, &pBindCtx);
 
-    CComPtr<IPropertyBag> pPB;
+    SmartPtr<IPropertyBag> pPB;
     if(FAILED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB)))
       break;
 
@@ -1103,7 +1113,7 @@ IBaseFilter* DShowUtil::AppendFilter(IPin* pPin, IMoniker* pMoniker, IGraphBuild
     if(FAILED(pPB->Read(CComBSTR(_T("FriendlyName")), &var, NULL)))
       break;
 
-    CComPtr<IBaseFilter> pBF;
+    SmartPtr<IBaseFilter> pBF;
     if(FAILED(pMoniker->BindToObject(pBindCtx, 0, IID_IBaseFilter, (void**)&pBF)) || !pBF)
       break;
 
@@ -1132,10 +1142,10 @@ CStdStringW GetFriendlyName(CStdStringW DisplayName)
 {
   CStdStringW FriendlyName;
 
-  CComPtr<IBindCtx> pBindCtx;
+  SmartPtr<IBindCtx> pBindCtx;
   CreateBindCtx(0, &pBindCtx);
 
-  CComPtr<IMoniker> pMoniker;
+  SmartPtr<IMoniker> pMoniker;
   ULONG chEaten;
   if(S_OK != MkParseDisplayName(pBindCtx, CComBSTR(DisplayName), &chEaten, &pMoniker))
   {
@@ -1144,7 +1154,7 @@ CStdStringW GetFriendlyName(CStdStringW DisplayName)
   }
     
 
-  CComPtr<IPropertyBag> pPB;
+  SmartPtr<IPropertyBag> pPB;
   CComVariant var;
   if(SUCCEEDED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB))
   && SUCCEEDED(pPB->Read(CComBSTR(_T("FriendlyName")), &var, NULL)))
@@ -1160,7 +1170,7 @@ typedef struct
   CLSID clsid;
 } ExternalObject;
 
-static CAtlList<ExternalObject> s_extobjs;
+static std::list<ExternalObject> s_extobjs;
 
 HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, void** ppv)
 {
@@ -1194,7 +1204,7 @@ HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, 
 
     if(p && FAILED(hr = p(clsid, iid, ppv)))
     {
-      CComPtr<IClassFactory> pCF;
+      SmartPtr<IClassFactory> pCF;
       if(SUCCEEDED(hr = p(clsid, __uuidof(IClassFactory), (void**)&pCF)))
       {
         hr = pCF->CreateInstance(NULL, iid, ppv);
@@ -1949,7 +1959,7 @@ CStdString LanguageToISO6392(LPCTSTR lang)
   str.MakeLower();
   for(int i = 0, j = countof(s_isolangs); i < j; i++)
   {
-    CAtlList<CStdString> sl;
+    std::list<CStdString> sl;
     Explode(CStdString(s_isolangs[i].name), sl, ';');
     POSITION pos = sl.GetHeadPosition();
     while(pos)
@@ -2097,7 +2107,7 @@ void DShowUtil::RegisterSourceFilter(const CLSID& clsid, const GUID& subtype2, L
   va_end(marker);
 }
 
-void DShowUtil::RegisterSourceFilter(const CLSID& clsid, const GUID& subtype2, const CAtlList<CStdString>& chkbytes, LPCTSTR ext, ...)
+void DShowUtil::RegisterSourceFilter(const CLSID& clsid, const GUID& subtype2, const std::list<CStdString>& chkbytes, LPCTSTR ext, ...)
 {
   CStdString null = CStringFromGUID(GUID_NULL);
   CStdString majortype = CStringFromGUID(MEDIATYPE_Stream);
@@ -2130,11 +2140,11 @@ void DShowUtil::UnRegisterSourceFilter(const GUID& subtype)
 CStdString DShowVideoInfo::GetInfoOnMajorType(IGraphBuilder *pGraphBuilder,          // Pointer to the filter graph manager.
                                   const GUID& clsidMajorType)  //MEDIATYPE_Video MEDIATYPE_Audio
 {
-CAtlList<CStdString> sl;
+std::list<CStdString> sl;
 
   BeginEnumFilters(pGraphBuilder, pEF, pBF)
   {
-    CComPtr<IBaseFilter> pUSBF = DShowUtil::GetUpStreamFilter(pBF,NULL);
+    SmartPtr<IBaseFilter> pUSBF = DShowUtil::GetUpStreamFilter(pBF,NULL);
 
     if(DShowUtil::GetCLSID(pBF) == CLSID_NetShowSource)
     {

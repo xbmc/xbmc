@@ -47,7 +47,7 @@ bool AreComObjectsEqual(T1 *p1, T2 *p2)
 // object, so we want to dis-allow calling AddRef or Release 
 // directly. The operator-> returns a _NoAddRefOrRelease pointer
 // instead of returning the raw COM pointer. (This behavior is the
-// same as ATL's CComPtr class.)
+// same as ATL's SmartPtr class.)
 template <class T>
 class _NoAddRefOrRelease : public T
 {
@@ -131,12 +131,19 @@ public:
     }
 
     // Templated version of QueryInterface
-
     template <class Q> // Q is another interface type
     HRESULT QueryInterface(Q **ppQ)
     {
         return m_ptr->QueryInterface(__uuidof(Q), (void**)ppQ);
     }
+
+
+    HRESULT CoCreateInstance(_In_ REFCLSID rclsid, _In_opt_ LPUNKNOWN pUnkOuter = NULL, _In_ DWORD dwClsContext = CLSCTX_ALL)
+    {
+      return ::CoCreateInstance(rclsid, pUnkOuter, dwClsContext, __uuidof(T), (void**)&m_ptr);
+    }
+
+    
 
     // safe Release() method
     ULONG Release()

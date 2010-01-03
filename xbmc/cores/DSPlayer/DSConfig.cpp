@@ -44,7 +44,7 @@ CDSConfig::~CDSConfig()
   
 }
 
-HRESULT CDSConfig::LoadGraph(CComPtr<IGraphBuilder2> pGB)
+HRESULT CDSConfig::LoadGraph(SmartPtr<IGraphBuilder2> pGB)
 {
   HRESULT hr = S_OK;
   m_pGraphBuilder = pGB.Detach();
@@ -75,7 +75,7 @@ bool CDSConfig::GetStreamSelector(IBaseFilter* pBF)
     LCID lcid;
 	  CStdString destname;
 	  WCHAR* wname = NULL;
-	  CComPtr<IUnknown> pObj, pUnk;
+	  SmartPtr<IUnknown> pObj, pUnk;
     m_pIAMStreamSelect->Count(&nStreams);
     flags = 0;
     group = 0;
@@ -106,7 +106,7 @@ int CDSConfig::GetAudioStream()
   DWORD nStreams = 0, flags, group, prevgroup = -1;
   LCID lcid;
   WCHAR* wname = NULL;
-  CComPtr<IUnknown> pObj, pUnk;
+  SmartPtr<IUnknown> pObj, pUnk;
   m_pIAMStreamSelect->Count(&nStreams);
   flags = 0;
   group = 0;
@@ -126,7 +126,7 @@ void CDSConfig::GetAudioStreamName(int iStream, CStdString &strStreamName)
   DWORD nStreams = 0, flags, group, prevgroup = -1;
   LCID lcid;
   WCHAR* wname = NULL;
-  CComPtr<IUnknown> pObj, pUnk;
+  SmartPtr<IUnknown> pObj, pUnk;
   flags = 0;
   group = 0;
   wname = NULL;
@@ -143,7 +143,7 @@ void CDSConfig::SetAudioStream(int iStream)
     return;
   DWORD nStreams = 0, flags, group, prevgroup = -1;
   WCHAR* wname = NULL;
-  CComPtr<IUnknown> pObj, pUnk;
+  SmartPtr<IUnknown> pObj, pUnk;
   m_pIAMStreamSelect->Count(&nStreams);
   flags = 0;
   group = 0;

@@ -26,9 +26,6 @@
 #define NO_DSHOW_STRSAFE
 #include <dshow.h> //needed for CLSID_VideoRenderer
 
-#include <atlbase.h>
-#include <atlstr.h>
-
 #include <initguid.h>
 #include <dvdmedia.h>
 #include <strmif.h>
@@ -38,9 +35,6 @@
 #include "util.h"
 #include "dsconfig.h"
 
-
-
-#include <atlcoll.h>
 
 #ifdef HAS_VIDEO_PLAYBACK
   #include "cores/VideoRenderers/RenderManager.h"
@@ -180,7 +174,7 @@ protected:
   
 private:
   //Direct Show Filters
-  CComPtr<IGraphBuilder2>         m_pGraphBuilder;
+  SmartPtr<IGraphBuilder2>         m_pGraphBuilder;
   CComQIPtr<IMediaControl>        m_pMediaControl;  
   CComQIPtr<IMediaEventEx>        m_pMediaEvent;
   CComQIPtr<IMediaSeeking>        m_pMediaSeeking;

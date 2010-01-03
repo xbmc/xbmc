@@ -26,7 +26,9 @@
 #include "File.h"
 #include "FileItem.h"
 #include "tinyXML/tinyxml.h"
+#include "smartptr.h"
 #include <list>
+
 class CFGLoader : public CCritSec
 {
 public:
@@ -50,7 +52,7 @@ public:
   CStdString GetSplitterFilterInfo(){return  m_pStrSplitter;};
   CStdString GetAudioRenderer(){return  m_pStrAudioRenderer;};
 protected:
-  CComPtr<IGraphBuilder2>   m_pGraphBuilder;
+  SmartPtr<IGraphBuilder2>   m_pGraphBuilder;
   CStdString                m_xbmcConfigFilePath;
   CStdString                m_pStrVideodec;
   CStdString                m_pStrAudiodec;

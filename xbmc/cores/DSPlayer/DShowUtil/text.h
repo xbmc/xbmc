@@ -1,13 +1,11 @@
 #pragma once
-
-#include <atlcoll.h>
-
+#include <list>
 // extern CString ExplodeMin(CString str, CAtlList<CString>& sl, TCHAR sep, int limit = 0);
 // extern CString Explode(CString str, CAtlList<CString>& sl, TCHAR sep, int limit = 0);
 // extern CString Implode(CAtlList<CString>& sl, TCHAR sep);
 
 template<class T, typename SEP>
-T Explode(T str, CAtlList<T>& sl, SEP sep, int limit = 0)
+T Explode(T str, std::list<T>& sl, SEP sep, int limit = 0)
 {
 	sl.RemoveAll();
 
@@ -30,7 +28,7 @@ T Explode(T str, CAtlList<T>& sl, SEP sep, int limit = 0)
 }
 
 template<class T, typename SEP>
-T ExplodeMin(T str, CAtlList<T>& sl, SEP sep, int limit = 0)
+T ExplodeMin(T str, std::list<T>& sl, SEP sep, int limit = 0)
 {
 	Explode(str, sl, sep, limit);
 	POSITION pos = sl.GetHeadPosition();
@@ -46,7 +44,7 @@ T ExplodeMin(T str, CAtlList<T>& sl, SEP sep, int limit = 0)
 }
 
 template<class T, typename SEP>
-T Implode(CAtlList<T>& sl, SEP sep)
+T Implode(std::list<T>& sl, SEP sep)
 {
 	T ret;
 	POSITION pos = sl.GetHeadPosition();
@@ -63,7 +61,7 @@ extern CStdStringA ConvertMBCS(CStdStringA str, DWORD SrcCharSet, DWORD DstCharS
 extern CStdStringA UrlEncode(CStdStringA str, bool fRaw = false);
 extern CStdStringA UrlDecode(CStdStringA str, bool fRaw = false);
 extern DWORD CharSetToCodePage(DWORD dwCharSet);
-extern CAtlList<CStdString>& MakeLower(CAtlList<CStdString>& sl);
-extern CAtlList<CStdString>& MakeUpper(CAtlList<CStdString>& sl);
-extern CAtlList<CStdString>& RemoveStrings(CAtlList<CStdString>& sl, int minlen, int maxlen);
+extern std::list<CStdString>& MakeLower(std::list<CStdString>& sl);
+extern std::list<CStdString>& MakeUpper(std::list<CStdString>& sl);
+extern std::list<CStdString>& RemoveStrings(std::list<CStdString>& sl, int minlen, int maxlen);
 

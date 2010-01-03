@@ -32,13 +32,13 @@ class CMacrovisionKicker
 	: public CUnknown
 	, public IKsPropertySet
 {
-	CComPtr<IUnknown> m_pInner;
+	SmartPtr<IUnknown> m_pInner;
 
 public:
 	CMacrovisionKicker(const TCHAR* pName, LPUNKNOWN pUnk);
 	virtual ~CMacrovisionKicker();
 
-	void SetInner(CComPtr<IUnknown> pUnk);
+	void SetInner(SmartPtr<IUnknown> pUnk);
 
 	DECLARE_IUNKNOWN;
 	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);

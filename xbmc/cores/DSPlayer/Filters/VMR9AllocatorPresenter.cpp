@@ -40,7 +40,7 @@ class COuterVMR9
   , public IBasicVideo2
   , public IVMRWindowlessControl
 {
-  CComPtr<IUnknown>  m_pVMR;
+  SmartPtr<IUnknown>  m_pVMR;
   CVMR9AllocatorPresenter *m_pAllocatorPresenter;
 
 public:
@@ -398,8 +398,8 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
 
 void CVMR9AllocatorPresenter::GetCurrentVideoSize()
 {
-  CComPtr<IBaseFilter> pVMR9;
-  CComPtr<IPin> pPin;
+  SmartPtr<IBaseFilter> pVMR9;
+  SmartPtr<IPin> pPin;
   CMediaType mt;
   if (SUCCEEDED (m_pIVMRSurfAllocNotify->QueryInterface (__uuidof(IBaseFilter), (void**)&pVMR9)) &&
       SUCCEEDED (pVMR9->FindPin(L"VMR Input0", &pPin)) &&
@@ -567,7 +567,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   do
   {
     CMacrovisionKicker* pMK = new CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL);
-    CComPtr<IUnknown> pUnk = (IUnknown*)(INonDelegatingUnknown*)pMK;
+    SmartPtr<IUnknown> pUnk = (IUnknown*)(INonDelegatingUnknown*)pMK;
 
     COuterVMR9 *pOuter = new COuterVMR9(NAME("COuterVMR9"), pUnk, this);
 
@@ -575,7 +575,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     pMK->SetInner((IUnknown*)(INonDelegatingUnknown*)pOuter);
     CComQIPtr<IBaseFilter> pBF = pUnk;
 
-    CComPtr<IPin> pPin = DShowUtil::GetFirstPin(pBF);
+    SmartPtr<IPin> pPin = DShowUtil::GetFirstPin(pBF);
     CComQIPtr<IMemInputPin> pMemInputPin = pPin;
     m_fUseInternalTimer = HookNewSegmentAndReceive((IPinC*)(IPin*)pPin, (IMemInputPinC*)(IMemInputPin*)pMemInputPin);
 
@@ -653,7 +653,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
     return S_OK;
   }
 
-  CComPtr<IDirect3DTexture9> pTexture;
+  SmartPtr<IDirect3DTexture9> pTexture;
   lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
   HRESULT hrrr;
   if(pTexture)

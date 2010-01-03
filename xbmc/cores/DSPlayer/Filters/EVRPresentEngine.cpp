@@ -358,7 +358,7 @@ HRESULT D3DPresentEngine::InitializeD3D()
     CLog::Log(LOGNOTICE,"Sucess to create DXVA2CreateDirect3DDeviceManager9");
     hr = m_pDeviceManager->ResetDevice(m_pDevice, m_DeviceResetToken);
   }
-  CComPtr<IDirectXVideoDecoderService>  pDecoderService;
+  SmartPtr<IDirectXVideoDecoderService>  pDecoderService;
   HANDLE hDevice;
   hr = m_pDeviceManager->OpenDeviceHandle(&hDevice);
   hr = m_pDeviceManager->GetVideoService(hDevice,__uuidof(IDirectXVideoDecoderService), (void**)&pDecoderService);

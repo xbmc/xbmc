@@ -496,7 +496,7 @@ DWORD CEvrScheduler::SchedulerThreadProcPrivate()
   CAutoLock				lock(&m_SampleQueueLock);
 	while (m_ScheduledSamples.GetCount() > 0)
 	{
-		CComPtr<IMFSample>		pMFSample;
+		SmartPtr<IMFSample>		pMFSample;
 		pMFSample = m_ScheduledSamples.RemoveHead();
 	}
 }*/

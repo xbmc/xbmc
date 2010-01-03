@@ -15,5 +15,5 @@ public:
 	static CStdString GetAudioCodecName(const GUID& subtype, WORD wFormatTag);
 	static CStdString GetSubtitleCodecName(const GUID& subtype);
 
-	void Dump(CAtlList<CStdString>& sl);
+	void Dump(std::list<CStdString>& sl);
 };

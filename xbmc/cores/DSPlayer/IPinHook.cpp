@@ -1015,7 +1015,7 @@ static void LogDecodeBufferDesc(DXVA2_DecodeBufferDesc* pDecodeBuff)
 class CFakeDirectXVideoDecoder : public CUnknown, public IDirectXVideoDecoder							   
 {
 private :
-	CComPtr<IDirectXVideoDecoder>		m_pDec;
+	SmartPtr<IDirectXVideoDecoder>		m_pDec;
 	BYTE*								m_ppBuffer[MAX_BUFFER_TYPE];
 	UINT								m_ppBufferLen[MAX_BUFFER_TYPE];
 
