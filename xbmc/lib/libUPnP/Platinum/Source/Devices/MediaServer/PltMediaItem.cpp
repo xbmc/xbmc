@@ -902,6 +902,9 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     res = PLT_XmlHelper::GetAttribute(entry, "parentID", m_ParentID);
     NPT_CHECK_LABEL_SEVERE(res, cleanup);
 
+    res = PLT_XmlHelper::GetAttribute(entry, "refID", m_ReferenceID);
+    NPT_CHECK_LABEL_SEVERE(res, cleanup);
+
     res = PLT_XmlHelper::GetChildText(entry, "title", m_Title, didl_namespace_dc);
     NPT_CHECK_LABEL_SEVERE(res, cleanup);
 
@@ -1044,6 +1047,10 @@ PLT_MediaItem::ToDidl(NPT_UInt32 mask, NPT_String& didl)
     PLT_Didl::AppendXmlEscape(tmp, m_ObjectID);
     tmp += "\" parentID=\"";
     PLT_Didl::AppendXmlEscape(tmp, m_ParentID);
+    if(!m_ReferenceID.IsEmpty()) {
+      tmp += "\" refID=\"";
+      PLT_Didl::AppendXmlEscape(tmp, m_ReferenceID);
+    }
     tmp += "\" restricted=\"";
     tmp += m_Restricted?"1\"":"0\"";
 
@@ -1115,6 +1122,10 @@ PLT_MediaContainer::ToDidl(NPT_UInt32 mask, NPT_String& didl)
 
     PLT_Didl::AppendXmlEscape(tmp, m_ObjectID);
     tmp += "\" parentID=\"";
+    if(!m_ReferenceID.IsEmpty()) {
+      tmp += "\" refID=\"";
+      PLT_Didl::AppendXmlEscape(tmp, m_ReferenceID);
+    }
     PLT_Didl::AppendXmlEscape(tmp, m_ParentID);
     tmp += "\" restricted=\"";
     tmp += m_Restricted?"1\"":"0\"";

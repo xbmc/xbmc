@@ -243,6 +243,7 @@ public:
     PLT_ObjectClass     m_ObjectClass;
     NPT_String          m_ObjectID;
     NPT_String          m_ParentID;
+    NPT_String          m_ReferenceID;
 
     /* metadata */
     NPT_String          m_Title;

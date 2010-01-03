@@ -388,6 +388,12 @@ CUPnPServer::PopulateObjectFromTag(CMusicInfoTag&         tag,
     object.m_People.artists.Add(!tag.GetAlbumArtist().empty()?tag.GetAlbumArtist().c_str():tag.GetArtist().c_str(), "AlbumArtist");
     object.m_Creator = tag.GetArtist();
     object.m_MiscInfo.original_track_number = tag.GetTrackNumber();
+    if(tag.GetDatabaseId() >= 0) {
+      object.m_ReferenceID = NPT_String::Format("musicdb://4/%i%s", tag.GetDatabaseId(), CUtil::GetExtension(tag.GetURL()).c_str());
+    }
+    if (object.m_ReferenceID == object.m_ObjectID)
+        object.m_ReferenceID = "";
+
     if (resource) resource->m_Duration = tag.GetDuration();
 
     return NPT_SUCCESS;
@@ -409,19 +415,31 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
       *file_path = tag.m_strFileNameAndPath;
 
     if (tag.m_iDbId != -1 ) {
-        if (tag.m_strShowTitle.IsEmpty()) {
-          object.m_ObjectClass.type = "object.item.videoItem"; // XBox 360 wants object.item.videoItem instead of object.item.videoItem.movie, is WMP happy?
+        if (!tag.m_strArtist.IsEmpty()) {
+          object.m_ObjectClass.type = "object.item.videoItem.musicVideoClip";
           object.m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
+          object.m_Creator = tag.m_strArtist;
           object.m_Title = tag.m_strTitle;
-        } else {
+          object.m_ReferenceID = NPT_String::Format("videodb://3/2/%i", tag.m_iDbId);
+        } else if (!tag.m_strShowTitle.IsEmpty()) {
           object.m_ObjectClass.type = "object.item.videoItem.videoBroadcast";
           object.m_Affiliation.album = tag.m_strShowTitle;
           object.m_Title = tag.m_strShowTitle + " - ";
           object.m_Title += "S" + ("0" + NPT_String::FromInteger(tag.m_iSeason)).Right(2);
           object.m_Title += "E" + ("0" + NPT_String::FromInteger(tag.m_iEpisode)).Right(2);
           object.m_Title += " : " + tag.m_strTitle;
+          if(tag.m_iSeason != -1)
+              object.m_ReferenceID = NPT_String::Format("videodb://2/2/1/%i/%i", tag.m_iSeason, tag.m_iDbId);
+        } else {
+          object.m_ObjectClass.type = "object.item.videoItem"; // XBox 360 wants object.item.videoItem instead of object.item.videoItem.movie, is WMP happy?
+          object.m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
+          object.m_Title = tag.m_strTitle;
+          object.m_ReferenceID = NPT_String::Format("videodb://1/2/%i", tag.m_iDbId);
         }
     }
+
+    if(object.m_ReferenceID == object.m_ObjectID)
+        object.m_ReferenceID = "";
 
     StringUtils::SplitString(tag.m_strGenre, " / ", strings);
     for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
@@ -1056,7 +1074,6 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
                                NPT_UInt32                    requested_count,
                                const NPT_List<NPT_String>&   sort_criteria,
                                const PLT_HttpRequestContext& context)
-
 {
     CLog::Log(LOGDEBUG, "Received Search request for object '%s' with search '%s'", 
         (const char*)object_id,
