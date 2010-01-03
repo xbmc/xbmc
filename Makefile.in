@@ -125,7 +125,10 @@ INCLUDES=@INCLUDES@
 CLEAN_FILES=xbmc.bin xbmc-xrandr
 
 DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
-        autom4te.cache config.h.in~
+        autom4te.cache config.h.in~ \
+        xbmc/lib/libPython/Python/Include/pyconfig.h \
+        xbmc/lib/libPython/Python/configure.lineno \
+        xbmc/lib/libPython/Python/libpython2.4.so.1.0
 
 all : Makefile externals xbmc.bin xbmc-xrandr skins
 
