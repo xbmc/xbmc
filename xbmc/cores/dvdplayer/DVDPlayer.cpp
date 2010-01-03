@@ -798,9 +798,36 @@ void CDVDPlayer::Process()
   }
   m_Edl.ReadEditDecisionLists(m_filename, fFramesPerSecond);
 
-  if( m_PlayerOptions.starttime > 0 )
+  /*
+   * Check to see if the demuxer should start at something other than time 0. This will be the case
+   * if there was a start time specified as part of the "Start from where last stopped" (aka
+   * auto-resume) feature or if there is an EDL cut or commercial break that starts at time 0.
+   */
+  CEdl::Cut cut;
+  int starttime = 0;
+  if(m_PlayerOptions.starttime > 0)
   {
-    int starttime = m_Edl.RestoreCutTime((__int64)m_PlayerOptions.starttime * 1000); // s to ms
+    starttime = m_Edl.RestoreCutTime((__int64)m_PlayerOptions.starttime * 1000); // s to ms
+    CLog::Log(LOGDEBUG, "%s - Start position set to last stopped position: %d", __FUNCTION__, starttime);
+  }
+  else if(m_Edl.InCut(0, &cut)
+      && (cut.action == CEdl::CUT || cut.action == CEdl::COMM_BREAK))
+  {
+    starttime = cut.end;
+    CLog::Log(LOGDEBUG, "%s - Start position set to end of first cut or commercial break: %d", __FUNCTION__, starttime);
+    if(cut.action == CEdl::COMM_BREAK)
+    {
+      /*
+       * Setup auto skip markers as if the commercial break had been skipped using standard
+       * detection.
+       */
+      m_EdlAutoSkipMarkers.commbreak_start = cut.start;
+      m_EdlAutoSkipMarkers.commbreak_end   = cut.end;
+      m_EdlAutoSkipMarkers.seek_to_start   = true;
+    }
+  }
+  if(starttime > 0)
+  {
     double startpts = DVD_NOPTS_VALUE;
     if(m_pDemuxer)
     {
@@ -1514,16 +1541,20 @@ void CDVDPlayer::CheckAutoSceneSkip()
     return;
 
   /*
-   * HACK: If there was a start time specified, only seek past cuts if the current clock time is
-   * greater than 5 seconds. There is some sort of race condition between the setting of the demuxer
-   * start time and the clock being updated to reflect that playback time. If this check is not
-   * performed the start time will be overwritten if there is a cut near the start of the file.
+   * HACK: If there was a start time specified by the "Start from where last stopped" (aka
+   * auto-resume) feature or the cut starts at time 0, the demuxer is set to start from that time.
    *
-   * 5 seconds should be a reasonable timeout for checking as start times aren't recorded for less
-   * than that amount of time.
+   * However, there is a race condition that sometimes prevents the clock being updated to reflect
+   * the actual playback time after setting the initial demuxer start time. So, only try and seek
+   * past the cut in either for either of these cases if the current clock time is greater than 2
+   * seconds (arbitrary timeout).
+   *
+   * If this check is not performed the intended start time set will be overwritten if there is a
+   * cut near the start of the file or playback will be jittery as the first cut that starts at 0
+   * keeps trying to break out of an initial general resync cycle.
    */
-  if(m_PlayerOptions.starttime > 0
-     && clock < 5*1000) // 5 seconds in msec
+  if((m_PlayerOptions.starttime > 0 || cut.start == 0)
+     && clock < 2*1000) // 2 seconds in msec
     return;
 
   /*
