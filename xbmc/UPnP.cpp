@@ -1223,7 +1223,8 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
 
       return BuildResponse(action, itemsall, filter, starting_index, requested_count, sort_criteria, context, NULL);
   } else if (NPT_String(search_criteria).Find("object.item.imageItem") >= 0) {
-      return NPT_SUCCESS;
+      CFileItemList items;
+      return BuildResponse(action, items, filter, starting_index, requested_count, sort_criteria, context, NULL);;
   }
 
   return NPT_FAILURE;
