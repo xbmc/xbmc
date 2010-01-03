@@ -57,16 +57,19 @@ CFGManager::CFGManager(LPCTSTR pName, LPUNKNOWN pUnk)
   : CUnknown(pName, pUnk)
   , m_dwRegister(0)
 {
-  m_pUnkInner.CoCreateInstance(CLSID_FilterGraph, GetOwner());
-  m_pFM.CoCreateInstance(CLSID_FilterMapper2);
+  CoCreateInstance(CLSID_FilterGraph, GetOwner(), CLSCTX_ALL, CLSID_FilterGraph, (void**)&m_pUnkInner);
+	CoCreateInstance(CLSID_FilterMapper2, NULL, CLSCTX_ALL, __uuidof(m_pFM), (void**)&m_pFM);
 }
 
 CFGManager::~CFGManager()
 {
   CAutoLock cAutoLock(this);
-  while(!m_source.empty()) m_source.pop_back();
-  while(!m_transform.empty()) m_transform.pop_back();
-  while(!m_override.empty()) m_override.pop_back();
+  while(!m_source.empty()) 
+    m_source.pop_back();
+  while(!m_transform.empty()) 
+    m_transform.pop_back();
+  while(!m_override.empty()) 
+    m_override.pop_back();
   m_FileSource.Release();
   m_XbmcVideoDec.Release();
   m_pUnks.RemoveAll();

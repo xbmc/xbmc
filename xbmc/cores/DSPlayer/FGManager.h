@@ -21,10 +21,7 @@
 
 #pragma once
 
-#include <atlcomcli.h>
-#include <atlcoll.h>
-#include <atlpath.h>
-
+#include "smartptr.h"
 #include "FGFilter.h"
 #include "IGraphBuilder2.h"
 #include "Filters/IMPCVideoDecFilter.h"
@@ -74,14 +71,14 @@ public:
 	};
 
 private:
-  CComPtr<IUnknown> m_pUnkInner;
+  SmartPtr<IUnknown> m_pUnkInner;
 	
   DWORD m_dwRegister;
   CStreamPath m_streampath;
   CAutoPtrArray<CStreamDeadEnd> m_deadends;
 
 protected:
-  CComPtr<IFilterMapper2> m_pFM;
+  SmartPtr<IFilterMapper2> m_pFM;
   CInterfaceList<IUnknown, &IID_IUnknown> m_pUnks;
   std::list<CFGFilter*> m_source, m_transform, m_override;
 
@@ -91,8 +88,8 @@ protected:
   STDMETHODIMP GetFfdshowVideoDecFilter(IffdshowDecVideoA** pBF);
   STDMETHODIMP RenderFileXbmc(const CFileItem& pFileItem);
   CFile                m_File;
-  CComPtr<IBaseFilter> m_FileSource;
-  CComPtr<IBaseFilter> m_XbmcVideoDec;
+  SmartPtr<IBaseFilter> m_FileSource;
+  SmartPtr<IBaseFilter> m_XbmcVideoDec;
   CFGLoader*           m_CfgLoader;
   DIRECTSHOW_RENDERER  m_CurrentRenderer;
 

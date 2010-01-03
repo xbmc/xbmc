@@ -2242,6 +2242,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\smartptr.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\win32\WINDirectShowEnumerator.cpp"
 						>
 					</File>
