@@ -88,7 +88,8 @@ std::vector< CStdString > CKaraokeLyricsTextUStar::readFile(const CStdString & l
   // Last line, if any
   if ( lineoffset != lyricSize )
   {
-    lyricData[lyricSize] = '\0';
+    if(lyricData.size() < lyricSize)
+      lyricData[lyricSize] = '\0';
     lines.push_back( &lyricData[lineoffset] );
   }
 
