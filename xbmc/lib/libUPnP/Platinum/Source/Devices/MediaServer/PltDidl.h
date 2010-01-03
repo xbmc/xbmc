@@ -57,6 +57,9 @@
 #define PLT_FILTER_MASK_ACTOR                       0x00000200
 #define PLT_FILTER_MASK_AUTHOR                      0x00000400
 #define PLT_FILTER_MASK_DATE                        0x00000800
+#define PLT_FILTER_MASK_PROGRAMTITLE                0x00001000
+#define PLT_FILTER_MASK_SERIESTITLE                 0x00002000
+#define PLT_FILTER_MASK_EPISODE                     0x00004000
 
 #define PLT_FILTER_MASK_RES                         0x00010000
 #define PLT_FILTER_MASK_RES_DURATION                0x00020000
@@ -80,6 +83,9 @@
 #define PLT_FILTER_FIELD_ALBUMARTURI                "upnp:albumArtURI"
 #define PLT_FILTER_FIELD_DESCRIPTION                "upnp:longDescription"
 #define PLT_FILTER_FIELD_ORIGINALTRACK              "upnp:originalTrackNumber"
+#define PLT_FILTER_FIELD_PROGRAMTITLE               "upnp:programTitle"
+#define PLT_FILTER_FIELD_SERIESTITLE                "upnp:seriesTitle"
+#define PLT_FILTER_FIELD_EPISODE                    "upnp:episodeNumber"
 #define PLT_FILTER_FIELD_SEARCHABLE                 "@searchable"
 #define PLT_FILTER_FIELD_CHILDCOUNT                 "@childcount"
 #define PLT_FILTER_FIELD_CONTAINER_CHILDCOUNT       "container@childCount"

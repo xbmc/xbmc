@@ -132,6 +132,12 @@ typedef struct {
     NPT_String  medium;
 } PLT_StorageInfo;
 
+typedef struct {
+    NPT_String program_title;
+    NPT_String series_title;
+    int        episode_number;
+} PLT_RecordedInfo;
+
 /*----------------------------------------------------------------------
 |   PLT_ProtocolInfo class
 +---------------------------------------------------------------------*/
@@ -252,6 +258,7 @@ public:
     PLT_PeopleInfo      m_People;
     PLT_AffiliationInfo m_Affiliation;
     PLT_Description     m_Description;
+    PLT_RecordedInfo    m_Recorded;
 
     /* properties */
     bool m_Restricted;

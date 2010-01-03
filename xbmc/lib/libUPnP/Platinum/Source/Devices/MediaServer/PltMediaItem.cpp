@@ -705,6 +705,10 @@ PLT_MediaObject::Reset()
     m_MiscInfo.toc = "";
     m_MiscInfo.user_annotation = "";
 
+    m_Recorded.program_title = "";
+    m_Recorded.series_title = "";
+    m_Recorded.episode_number = 0;
+
     m_Resources.Clear();
 
     m_Didl = "";
@@ -801,6 +805,27 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
         didl += "<upnp:originalTrackNumber>";
         didl += NPT_String::FromInteger(m_MiscInfo.original_track_number);
         didl += "</upnp:originalTrackNumber>";
+    }
+
+    // program title
+    if (mask & PLT_FILTER_MASK_PROGRAMTITLE && !m_Recorded.program_title.IsEmpty()) {
+        didl += "<upnp:programTitle>";
+        PLT_Didl::AppendXmlEscape(didl, m_Recorded.program_title);
+        didl += "</upnp:programTitle>";
+    }
+
+    // series title
+    if (mask & PLT_FILTER_MASK_SERIESTITLE && !m_Recorded.series_title.IsEmpty()) {
+        didl += "<upnp:seriesTitle>";
+        PLT_Didl::AppendXmlEscape(didl, m_Recorded.series_title);
+        didl += "</upnp:seriesTitle>";
+    }
+
+    // episode number
+    if (mask & PLT_FILTER_MASK_EPISODE && m_Recorded.episode_number > 0) {
+        didl += "<upnp:episodeNumber>";
+        didl += NPT_String::FromInteger(m_Recorded.episode_number);
+        didl += "</upnp:episodeNumber>";
     }
 
 	if (mask & PLT_FILTER_MASK_TOC & !m_MiscInfo.toc.IsEmpty()) {
@@ -919,6 +944,12 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     m_People.artists.FromDidl(children);
 
     PLT_XmlHelper::GetChildText(entry, "album", m_Affiliation.album, didl_namespace_upnp);
+    PLT_XmlHelper::GetChildText(entry, "programTitle", m_Recorded.program_title, didl_namespace_upnp);
+    PLT_XmlHelper::GetChildText(entry, "seriesTitle", m_Recorded.series_title, didl_namespace_upnp);
+    PLT_XmlHelper::GetChildText(entry, "episodeNumber", str, didl_namespace_upnp);
+    NPT_UInt32 value;
+    if (NPT_FAILED(str.ToInteger(value))) value = 0;
+    m_Recorded.episode_number = value;
 
     children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "genre", didl_namespace_upnp);
@@ -932,7 +963,6 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     PLT_XmlHelper::GetChildText(entry, "longDescription", m_Description.long_description, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "originalTrackNumber", str, didl_namespace_upnp);
 	PLT_XmlHelper::GetChildText(entry, "toc", m_MiscInfo.toc, didl_namespace_upnp);
-    NPT_UInt32 value;
     if (NPT_FAILED(str.ToInteger(value))) value = 0;
     m_MiscInfo.original_track_number = value;
 
