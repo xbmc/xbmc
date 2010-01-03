@@ -95,21 +95,25 @@ void CFGManager::CStreamPath::Append(IBaseFilter* pBF, IPin* pPin)
   p.clsid = DShowUtil::GetCLSID(pBF);
   p.filter = DShowUtil::GetFilterName(pBF);
   p.pin = DShowUtil::GetPinName(pPin);
-  AddTail(p);
+  push_back(p);
 }
 
 bool CFGManager::CStreamPath::Compare(const CStreamPath& path)
 {
-  POSITION pos1 = GetHeadPosition();
-  POSITION pos2 = path.GetHeadPosition();
-
-  while(pos1 && pos2)
+  PathListIter pos1 = begin();
+  PathListConstIter pos2 = path.begin();
+  
+  //for (FileListIter it = pInfo->fileList.begin(); it != pInfo->fileList.end(); ++it)
+  while((pos1 != end()) && (pos2 != path.end()))
   {
-    const path_t& p1 = GetNext(pos1);
-    const path_t& p2 = path.GetNext(pos2);
-
+    //const path_t& p1 = GetNext(pos1);
+    //const path_t& p2 = path.GetNext(pos2);
+    const path_t& p1 = *pos1;
+    const path_t& p2 = *pos2;
     if(p1.filter != p2.filter) return true;
     else if(p1.pin != p2.pin) return false;
+    pos1++;
+    pos2++;
   }
 
   return true;
@@ -445,9 +449,16 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
   if(fDeadEnd)
   {
     CAutoPtr<CStreamDeadEnd> psde(new CStreamDeadEnd());
-    psde->AddTailList(&m_streampath);
+    //psde->AddTailList(&m_streampath);
+    
+
+    path_t pth;
+    for (PathListIter it = m_streampath.begin();it != m_streampath.end(); it++)
+    {
+      psde->push_back(*it);
+    }
     BeginEnumMediaTypes(pPinOut, pEM, pmt)
-      psde->mts.AddTail(CMediaType(*pmt));
+      psde->mts.push_back(CMediaType(*pmt));
     EndEnumMediaTypes(pmt)
     m_deadends.Add(psde);
   }
@@ -606,7 +617,7 @@ STDMETHODIMP CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
 
       nTotal++;
 
-      m_streampath.RemoveTail();
+      m_streampath.pop_back();
 
       if(SUCCEEDED(hr) && pPinIn) 
         return S_OK;
@@ -760,26 +771,29 @@ STDMETHODIMP_(size_t) CFGManager::GetCount()
   return m_deadends.GetCount();
 }
 
-STDMETHODIMP CFGManager::GetDeadEnd(int iIndex, CAtlList<CStdStringW>& path, CAtlList<CMediaType>& mts)
+STDMETHODIMP CFGManager::GetDeadEnd(int iIndex, std::list<CStdStringW>& path, std::list<CMediaType>& mts)
 {
   CAutoLock cAutoLock(this);
 
-  if(iIndex < 0 || iIndex >= m_deadends.GetCount()) return E_FAIL;
+  if(iIndex < 0 || iIndex >= m_deadends.GetCount()) 
+    return E_FAIL;
 
-  path.RemoveAll();
-  mts.RemoveAll();
+  while (!path.empty())
+    path.pop_back();
+  while (!mts.empty())
+    mts.pop_back();
 
-  POSITION pos = m_deadends[iIndex]->GetHeadPosition();
-  while(pos)
+  path_t p;
+  for (PathListIter it = m_deadends[iIndex]->begin(); it != m_deadends[iIndex]->end(); it++)
   {
-    const path_t& p = m_deadends[iIndex]->GetNext(pos);
-
+    p = *it;
     CStdStringW str;
     str.Format(L"%s::%s", p.filter, p.pin);
-    path.AddTail(str);
+    path.push_back(str);
   }
 
-  mts.AddTailList(&m_deadends[iIndex]->mts);
+  for (MediaTypeListIter it = m_deadends[iIndex]->mts.begin(); it != m_deadends[iIndex]->mts.begin(); it++)
+    mts.push_back(*it);
 
   return S_OK;
 }

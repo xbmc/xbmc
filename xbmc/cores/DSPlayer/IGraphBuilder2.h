@@ -26,7 +26,7 @@
 #include "FileItem.h"
 #include "filters/IMPCVideoDecFilter.h"
 #include "Filters/IffdshowDecVideo.h"
-#include <atlcoll.h>
+#include <list>
 using namespace XFILE;
 
 [uuid("165BE9D6-0929-4363-9BA3-580D735AA0F6")]
@@ -50,5 +50,5 @@ interface IGraphBuilder2 : public IFilterGraph2
 interface IGraphBuilderDeadEnd : public IUnknown
 {
 	STDMETHOD_(size_t, GetCount)() = 0;
-	STDMETHOD(GetDeadEnd) (int iIndex, CAtlList<CStdStringW>& path, CAtlList<CMediaType>& mts) = 0;
+	STDMETHOD(GetDeadEnd) (int iIndex, std::list<CStdStringW>& path, std::list<CMediaType>& mts) = 0;
 };

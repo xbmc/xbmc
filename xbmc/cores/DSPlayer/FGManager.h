@@ -37,6 +37,13 @@
 
 typedef std::list<CFGFilter*> FilterList;
 typedef std::list<CFGFilter*>::iterator FilterListIter;
+typedef std::list<CMediaType> MediaTypeList;
+typedef std::list<CMediaType>::iterator MediaTypeListIter;
+
+struct path_t {CLSID clsid; CStdStringW filter, pin;};
+typedef std::list<path_t> PathList;
+typedef std::list<path_t>::iterator PathListIter;
+typedef std::list<path_t>::const_iterator PathListConstIter;
 
 using namespace XFILE;
 
@@ -52,9 +59,8 @@ class CFGManager
 	, public CCritSec
 {
 public:
-	struct path_t {CLSID clsid; CStdStringW filter, pin;};
 	
-	class CStreamPath : public CAtlList<path_t> 
+	class CStreamPath : public std::list<path_t> 
 	{
 	public: 
 		void Append(IBaseFilter* pBF, IPin* pPin); 
@@ -64,7 +70,7 @@ public:
 	class CStreamDeadEnd : public CStreamPath 
 	{
 	public: 
-		CAtlList<CMediaType> mts;
+    std::list<CMediaType> mts;
 	};
 
 private:
@@ -135,7 +141,7 @@ protected:
 	// IGraphBuilderDeadEnd
 
 	STDMETHODIMP_(size_t) GetCount();
-	STDMETHODIMP GetDeadEnd(int iIndex, CAtlList<CStdStringW>& path, CAtlList<CMediaType>& mts);
+	STDMETHODIMP GetDeadEnd(int iIndex, std::list<CStdStringW>& path, std::list<CMediaType>& mts);
 public:
 	CFGManager(LPCTSTR pName, LPUNKNOWN pUnk);
 	virtual ~CFGManager();
