@@ -417,22 +417,21 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
     if (tag.m_iDbId != -1 ) {
         if (!tag.m_strArtist.IsEmpty()) {
           object.m_ObjectClass.type = "object.item.videoItem.musicVideoClip";
-          object.m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
           object.m_Creator = tag.m_strArtist;
           object.m_Title = tag.m_strTitle;
           object.m_ReferenceID = NPT_String::Format("videodb://3/2/%i", tag.m_iDbId);
         } else if (!tag.m_strShowTitle.IsEmpty()) {
           object.m_ObjectClass.type = "object.item.videoItem.videoBroadcast";
-          object.m_Affiliation.album = tag.m_strShowTitle;
-          object.m_Title = tag.m_strShowTitle + " - ";
-          object.m_Title += "S" + ("0" + NPT_String::FromInteger(tag.m_iSeason)).Right(2);
-          object.m_Title += "E" + ("0" + NPT_String::FromInteger(tag.m_iEpisode)).Right(2);
-          object.m_Title += " : " + tag.m_strTitle;
+          object.m_Recorded.program_title  = "S" + ("0" + NPT_String::FromInteger(tag.m_iSeason)).Right(2);
+          object.m_Recorded.program_title += "E" + ("0" + NPT_String::FromInteger(tag.m_iEpisode)).Right(2);
+          object.m_Recorded.program_title += " : " + tag.m_strTitle;
+          object.m_Recorded.series_title = tag.m_strShowTitle;
+          object.m_Recorded.episode_number = tag.m_iSeason * 100 + tag.m_iEpisode;
+          object.m_Title = object.m_Recorded.series_title + " - " + object.m_Recorded.program_title;
           if(tag.m_iSeason != -1)
-              object.m_ReferenceID = NPT_String::Format("videodb://2/2/1/%i/%i", tag.m_iSeason, tag.m_iDbId);
+              object.m_ReferenceID = NPT_String::Format("videodb://2/0/%i", tag.m_iDbId);
         } else {
           object.m_ObjectClass.type = "object.item.videoItem"; // XBox 360 wants object.item.videoItem instead of object.item.videoItem.movie, is WMP happy?
-          object.m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
           object.m_Title = tag.m_strTitle;
           object.m_ReferenceID = NPT_String::Format("videodb://1/2/%i", tag.m_iDbId);
         }
@@ -449,7 +448,10 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
     for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
         object.m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
     }
+
+    object.m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
     object.m_People.director = tag.m_strDirector;
+    object.m_People.authors.Add(tag.m_strWritingCredits.c_str());
 
     object.m_Description.description = tag.m_strTagLine;
     object.m_Description.long_description = tag.m_strPlot;
@@ -1214,7 +1216,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
       items.Clear();
 
       // TODO - set proper base url for this
-      if (!database.GetEpisodesNav("videodb://2/0/", items)) {
+      if (!database.GetEpisodesByWhere("videodb://2/0/", "", items, false)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
@@ -2193,11 +2195,29 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
                                  PLT_MediaObject&       object,
                                  PLT_MediaItemResource* resource /* = NULL */)
 {
-    tag.m_strTitle    = object.m_Title;
+    if(object.m_Recorded.program_title.IsEmpty())
+    {
+        int episode;
+        int season;
+        int title = object.m_Recorded.program_title.Find(" : ");
+        if(sscanf(object.m_Recorded.program_title, "S%2dE%2d", &episode, &season) == 2 && title >= 0) {
+            tag.m_strTitle = object.m_Recorded.program_title.SubString(title + 3);
+            tag.m_iEpisode = episode;
+            tag.m_iSeason  = season;
+        } else {
+            tag.m_strTitle = object.m_Recorded.program_title;
+            tag.m_iSeason  = object.m_Recorded.episode_number / 100;
+            tag.m_iEpisode = object.m_Recorded.episode_number % 100;
+        }
+    }
+    else
+        tag.m_strTitle = object.m_Title;
     tag.m_strGenre    = JoinString(object.m_Affiliation.genre, " / ");
     tag.m_strDirector = object.m_People.director;
     tag.m_strTagLine  = object.m_Description.description;
     tag.m_strPlot     = object.m_Description.long_description;
+    tag.m_strShowTitle = object.m_Recorded.series_title;
+
     if(resource)
       tag.m_strRuntime.Format("%d",resource->m_Duration);
     return NPT_SUCCESS;
