@@ -31,6 +31,7 @@
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
 #include "utils/log.h"
+#include "DirectoryCache.h"
 
 extern "C"
 {
@@ -53,6 +54,28 @@ CCMythDirectory::CCMythDirectory()
 CCMythDirectory::~CCMythDirectory()
 {
   Release();
+}
+
+DIR_CACHE_TYPE CCMythDirectory::GetCacheType(const CStdString& strPath) const
+{
+  CURL url(strPath);
+  CStdString fileName = url.GetFileName();
+  CUtil::RemoveSlashAtEnd(fileName);
+
+  /*
+   * Always cache "All Recordings", "Guide" (top folder only), "Movies", and "TV Shows" (including
+   * sub folders).
+   *
+   * Entire directory cache for myth:// is invalidated when the root directory is requested to
+   * ensure content is always up-to-date.
+   */
+  if (fileName == "recordings"
+  ||  fileName == "guide"
+  ||  fileName == "movies"
+  ||  fileName.Left(7) == "tvshows")
+    return DIR_CACHE_ALWAYS;
+
+  return DIR_CACHE_ONCE;
 }
 
 void CCMythDirectory::Release()
@@ -547,6 +570,11 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
 
     // Sort by name only. Labels are preformated.
     items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
+
+    /*
+     * Clear the directory cache so the cached sub-folders are guaranteed to be accurate.
+     */
+    g_directoryCache.ClearSubPaths(base);
 
     return true;
   }
