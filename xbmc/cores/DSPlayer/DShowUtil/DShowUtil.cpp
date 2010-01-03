@@ -8,7 +8,8 @@
 #include <dxva2api.h>
 #include "charsetconverter.h"
 #include "log.h"
-
+#include "boost/foreach.hpp"
+#include "oaidl.H"
 LONG DShowUtil::MFTimeToMsec(const LONGLONG& time)
 {
   //Time / one sec / one millisec
@@ -392,8 +393,10 @@ IBaseFilter* DShowUtil::GetFilterFromPin(IPin* pPin)
 IPin* DShowUtil::AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder* pGB)
 {
   IPin* pRet = pPin;
-
-  CInterfaceList<IBaseFilter> pFilters;
+  //std::list<SmartPtr<IBaseFilter>> pFilters;
+  std::list<IBaseFilter*> pFilters;
+  
+  //CInterfaceList<IBaseFilter> pFilters;
 
   do
   {
@@ -411,7 +414,7 @@ IPin* DShowUtil::AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
     SmartPtr<IMoniker> pMoniker;
     ULONG chEaten;
     CStdStringW strDisplayNameW;
-    g_charsetConverter.utf16LEtoW(DisplayName,strDisplayNameW);
+    g_charsetConverter.subtitleCharsetToW(DisplayName,strDisplayNameW);
     if(S_OK != MkParseDisplayName(pBindCtx, LPOLESTR(strDisplayNameW.c_str()), &chEaten, &pMoniker))
       break;
 
@@ -423,21 +426,30 @@ IPin* DShowUtil::AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
     if(FAILED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB)))
       break;
 
-    CComVariant var;
-    if(FAILED(pPB->Read(CComBSTR(_T("FriendlyName")), &var, NULL)))
+    VARIANT var;
+    if(FAILED(pPB->Read(LPCOLESTR(_T("FriendlyName")), &var, NULL)))
       break;
 
-    pFilters.AddTail(pBF);
+    pFilters.push_back(pBF);
     BeginEnumFilters(pGB, pEnum, pBF2) 
-      pFilters.AddTail(pBF2); 
+      pFilters.push_back(pBF2); 
     EndEnumFilters
 
     if(FAILED(pGB->AddFilter(pBF, CStdStringW(var.bstrVal))))
       break;
 
-    BeginEnumFilters(pGB, pEnum, pBF2) 
-      if(!pFilters.Find(pBF2) && SUCCEEDED(pGB->RemoveFilter(pBF2))) 
-        pEnum->Reset();
+    BeginEnumFilters(pGB, pEnum, pBF2)
+    //CAtlList find replaced by this
+    BOOST_FOREACH(SmartPtr<IBaseFilter> pfindpBF,pFilters)
+    {
+      //find pBF2 in the list
+      if (pfindpBF == pBF2)
+      {
+        if (SUCCEEDED(pGB->RemoveFilter(pBF2)))
+          pEnum->Reset();
+      }
+    }
+        
     EndEnumFilters
 
     pPinTo = GetFirstPin(pBF, PINDIR_INPUT);
@@ -456,8 +468,17 @@ IPin* DShowUtil::AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
     }
 
     BeginEnumFilters(pGB, pEnum, pBF2) 
-      if(!pFilters.Find(pBF2) && SUCCEEDED(pGB->RemoveFilter(pBF2))) 
-        pEnum->Reset();
+      BOOST_FOREACH(SmartPtr<IBaseFilter> pfindpBF,pFilters)
+      {
+        //find pBF2 in the list
+        if (pfindpBF == pBF2)
+        {
+          if (SUCCEEDED(pGB->RemoveFilter(pBF2)))
+            pEnum->Reset();
+        }
+      }
+      //if(!pFilters.Find(pBF2) && SUCCEEDED(pGB->RemoveFilter(pBF2))) 
+      //  pEnum->Reset();
     EndEnumFilters
 
     pRet = GetFirstPin(pBF, PINDIR_OUTPUT);
@@ -505,7 +526,9 @@ IPin* DShowUtil::InsertFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
 
     SmartPtr<IMoniker> pMoniker;
     ULONG chEaten;
-    if(S_OK != MkParseDisplayName(pBindCtx, CComBSTR(DisplayName), &chEaten, &pMoniker))
+    CStdStringW DisplayNameW;
+    g_charsetConverter.utf8ToW(DisplayName,DisplayNameW);
+    if(S_OK != MkParseDisplayName(pBindCtx, LPCOLESTR(DisplayNameW.c_str()), &chEaten, &pMoniker))
       break;
 
     SmartPtr<IBaseFilter> pBF;
@@ -516,8 +539,8 @@ IPin* DShowUtil::InsertFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
     if(FAILED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB)))
       break;
 
-    CComVariant var;
-    if(FAILED(pPB->Read(CComBSTR(_T("FriendlyName")), &var, NULL)))
+    VARIANT var;
+    if(FAILED(pPB->Read(LPCOLESTR(L"FriendlyName"), &var, NULL)))
       break;
 
     if(FAILED(pGB->AddFilter(pBF, CStdStringW(var.bstrVal))))
@@ -567,15 +590,16 @@ IPin* DShowUtil::InsertFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
   return(pPin);
 }
 
-void DShowUtil::ExtractMediaTypes(IPin* pPin, CAtlArray<GUID>& types)
+void DShowUtil::ExtractMediaTypes(IPin* pPin, std::vector<GUID>& types)
 {
-  types.RemoveAll();
+  while (!types.empty())
+    types.pop_back();
 
     BeginEnumMediaTypes(pPin, pEM, pmt)
   {
     bool fFound = false;
 
-    for(int i = 0; !fFound && i < (int)types.GetCount(); i += 2)
+    for(int i = 0; !fFound && i < (int)types.size(); i += 2)
     {
       if(types[i] == pmt->majortype && types[i+1] == pmt->subtype)
         fFound = true;
@@ -583,8 +607,8 @@ void DShowUtil::ExtractMediaTypes(IPin* pPin, CAtlArray<GUID>& types)
 
     if(!fFound)
     {
-      types.Add(pmt->majortype);
-      types.Add(pmt->subtype);
+      types.push_back(pmt->majortype);
+      types.push_back(pmt->subtype);
     }
   }
   EndEnumMediaTypes(pmt)
@@ -592,13 +616,27 @@ void DShowUtil::ExtractMediaTypes(IPin* pPin, CAtlArray<GUID>& types)
 
 void DShowUtil::ExtractMediaTypes(IPin* pPin, std::list<CMediaType>& mts)
 {
-  mts.RemoveAll();
+  while (!mts.empty())
+    mts.pop_back();
 
-    BeginEnumMediaTypes(pPin, pEM, pmt)
+  BeginEnumMediaTypes(pPin, pEM, pmt)
   {
     bool fFound = false;
-
-    POSITION pos = mts.GetHeadPosition();
+  
+    BOOST_FOREACH(CMediaType& mt,mts)
+    {
+      if(mt.majortype == pmt->majortype && mt.subtype == pmt->subtype)
+        fFound = true;
+      if (!fFound)
+      {
+        mts.push_back(CMediaType(*pmt));
+      }
+      if (fFound)
+        break;
+    }
+  }
+  EndEnumMediaTypes(pmt)
+    /*POSITION pos = mts.GetHeadPosition();
     while(!fFound && pos)
     {
       CMediaType& mt = mts.GetNext(pos);
@@ -610,8 +648,10 @@ void DShowUtil::ExtractMediaTypes(IPin* pPin, std::list<CMediaType>& mts)
     {
       mts.AddTail(CMediaType(*pmt));
     }
-  }
-  EndEnumMediaTypes(pmt)
+    EndEnumMediaTypes(pmt)
+    */
+
+  
 }
 
 int Eval_Exception(int n_except)
@@ -639,11 +679,19 @@ CLSID DShowUtil::GetCLSID(IPin* pPin)
 
 bool DShowUtil::IsCLSIDRegistered(LPCTSTR clsid)
 {
+  bool resReg = false;
   CStdString rootkey1(_T("CLSID\\"));
   CStdString rootkey2(_T("CLSID\\{083863F1-70DE-11d0-BD40-00A0C911CE86}\\Instance\\"));
-
-  return ERROR_SUCCESS == CRegKey().Open(HKEY_CLASSES_ROOT, rootkey1 + clsid, KEY_READ)
-    || ERROR_SUCCESS == CRegKey().Open(HKEY_CLASSES_ROOT, rootkey2 + clsid, KEY_READ);
+  HKEY pkey;
+  if (ERROR_SUCCESS == RegOpenKey(HKEY_CLASSES_ROOT,rootkey1 + clsid,&pkey));
+    resReg=true;
+  RegCloseKey(pkey);
+  if (ERROR_SUCCESS == RegOpenKey(HKEY_CLASSES_ROOT,rootkey2 + clsid,&pkey));
+    resReg=true;
+  RegCloseKey(pkey);
+  //return ERROR_SUCCESS == CRegKey().Open(HKEY_CLASSES_ROOT, rootkey1 + clsid, KEY_READ)
+  //  || ERROR_SUCCESS == CRegKey().Open(HKEY_CLASSES_ROOT, rootkey2 + clsid, KEY_READ);
+  return resReg;
 }
 
 bool DShowUtil::IsCLSIDRegistered(const CLSID& clsid)
@@ -660,11 +708,12 @@ bool DShowUtil::IsCLSIDRegistered(const CLSID& clsid)
   return(fRet);
 }
 
-void DShowUtil::CStringToBin(CStdString str, CAtlArray<BYTE>& data)
+void DShowUtil::CStringToBin(CStdString str, std::vector<BYTE>& data)
 {
   str.Trim();
   ASSERT((str.GetLength()&1) == 0);
-  data.SetCount(str.GetLength()/2);
+  data.resize(str.GetLength()/2);
+  //was CAtlArray SetCount
 
   BYTE b = 0;
 
@@ -722,7 +771,7 @@ static void FindFiles(CStdString fn, std::list<CStdString>& files)
   HANDLE h = FindFirstFile(fn, &findData);
   if(h != INVALID_HANDLE_VALUE)
   {
-    do {files.AddTail(path + findData.cFileName);}
+    do {files.push_back(path + findData.cFileName);}
     while(FindNextFile(h, &findData));
 
     FindClose(h);
@@ -1075,16 +1124,16 @@ bool DShowUtil::CreateFilter(CStdStringW DisplayName, IBaseFilter** ppBF, CStdSt
 
   SmartPtr<IMoniker> pMoniker;
   ULONG chEaten;
-  if(S_OK != MkParseDisplayName(pBindCtx, CComBSTR(DisplayName), &chEaten, &pMoniker))
+  if(S_OK != MkParseDisplayName(pBindCtx, LPCOLESTR(DisplayName.c_str()), &chEaten, &pMoniker))
     return(false);
 
   if(FAILED(pMoniker->BindToObject(pBindCtx, 0, IID_IBaseFilter, (void**)ppBF)) || !*ppBF)
     return(false);
 
   SmartPtr<IPropertyBag> pPB;
-  CComVariant var;
+  VARIANT var;
   if(SUCCEEDED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB))
-  && SUCCEEDED(pPB->Read(CComBSTR(_T("FriendlyName")), &var, NULL)))
+  && SUCCEEDED(pPB->Read(LPCOLESTR(_T("FriendlyName")), &var, NULL)))
     FriendlyName = var.bstrVal;
 
   return(true);
@@ -1109,8 +1158,8 @@ IBaseFilter* DShowUtil::AppendFilter(IPin* pPin, IMoniker* pMoniker, IGraphBuild
     if(FAILED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB)))
       break;
 
-    CComVariant var;
-    if(FAILED(pPB->Read(CComBSTR(_T("FriendlyName")), &var, NULL)))
+    VARIANT var;
+    if(FAILED(pPB->Read(LPCOLESTR(_T("FriendlyName")), &var, NULL)))
       break;
 
     SmartPtr<IBaseFilter> pBF;
@@ -1147,7 +1196,7 @@ CStdStringW GetFriendlyName(CStdStringW DisplayName)
 
   SmartPtr<IMoniker> pMoniker;
   ULONG chEaten;
-  if(S_OK != MkParseDisplayName(pBindCtx, CComBSTR(DisplayName), &chEaten, &pMoniker))
+  if(S_OK != MkParseDisplayName(pBindCtx, LPCOLESTR(DisplayName.c_str()), &chEaten, &pMoniker))
   {
     FriendlyName.clear();
     return FriendlyName;
@@ -1155,9 +1204,9 @@ CStdStringW GetFriendlyName(CStdStringW DisplayName)
     
 
   SmartPtr<IPropertyBag> pPB;
-  CComVariant var;
+  VARIANT var;
   if(SUCCEEDED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB))
-  && SUCCEEDED(pPB->Read(CComBSTR(_T("FriendlyName")), &var, NULL)))
+  && SUCCEEDED(pPB->Read(LPCOLESTR(_T("FriendlyName")), &var, NULL)))
     FriendlyName = var.bstrVal;
 
   return FriendlyName;
@@ -1183,6 +1232,17 @@ HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, 
   HINSTANCE hInst = NULL;
   bool fFound = false;
 
+  
+  BOOST_FOREACH(ExternalObject& eo,s_extobjs)
+  {
+    if(!eo.path.CompareNoCase(fullpath))
+    {
+      hInst = eo.hInst;
+      fFound = true;
+      break;
+    }
+  }
+  /*
   POSITION pos = s_extobjs.GetHeadPosition();
   while(pos)
   {
@@ -1193,11 +1253,12 @@ HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, 
       fFound = true;
       break;
     }
-  }
+  }*/
 
   HRESULT hr = E_FAIL;
-
-  if(hInst || (hInst = CoLoadLibrary(CComBSTR(fullpath), TRUE)))
+  CStdStringW fullpathW;
+  g_charsetConverter.subtitleCharsetToW(fullpath,fullpathW);
+  if(hInst || (hInst = CoLoadLibrary(LPOLESTR(fullpathW.c_str()), TRUE)))
   {
     typedef HRESULT (__stdcall * PDllGetClassObject)(REFCLSID rclsid, REFIID riid, LPVOID* ppv);
     PDllGetClassObject p = (PDllGetClassObject)GetProcAddress(hInst, "DllGetClassObject");
@@ -1224,7 +1285,7 @@ HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, 
     eo.path = fullpath;
     eo.hInst = hInst;
     eo.clsid = clsid;
-    s_extobjs.AddTail(eo);
+    s_extobjs.push_back(eo);
   }
 
   return hr;
@@ -1240,10 +1301,8 @@ HRESULT DShowUtil::LoadExternalPropertyPage(IPersist* pP, REFCLSID clsid, IPrope
   CLSID clsid2 = GUID_NULL;
   if(FAILED(pP->GetClassID(&clsid2))) return E_FAIL;
 
-  POSITION pos = s_extobjs.GetHeadPosition();
-  while(pos)
+  BOOST_FOREACH(ExternalObject& eo,s_extobjs)
   {
-    ExternalObject& eo = s_extobjs.GetNext(pos);
     if(eo.clsid == clsid2)
     {
       return LoadExternalObject(eo.path, clsid, __uuidof(IPropertyPage), (void**)ppPP);
@@ -1255,13 +1314,12 @@ HRESULT DShowUtil::LoadExternalPropertyPage(IPersist* pP, REFCLSID clsid, IPrope
 
 void DShowUtil::UnloadExternalObjects()
 {
-  POSITION pos = s_extobjs.GetHeadPosition();
-  while(pos)
+  BOOST_FOREACH(ExternalObject& eo,s_extobjs)
   {
-    ExternalObject& eo = s_extobjs.GetNext(pos);
     CoFreeLibrary(eo.hInst);
   }
-  s_extobjs.RemoveAll();
+  while (!s_extobjs.empty())
+    s_extobjs.pop_back();
 }
 
 CStdString DShowUtil::GetMediaTypeName(const GUID& guid)
@@ -1292,7 +1350,9 @@ CStdString DShowUtil::GetMediaTypeName(const GUID& guid)
 GUID DShowUtil::GUIDFromCString(CStdString str)
 {
   GUID guid = GUID_NULL;
-  HRESULT hr = CLSIDFromString(CComBSTR(str), &guid);
+  CStdStringW strW;
+  g_charsetConverter.subtitleCharsetToW(str,strW);
+  HRESULT hr = CLSIDFromString(LPOLESTR(strW.c_str()), &guid);
   ASSERT(SUCCEEDED(hr));
   return guid;
 }
@@ -1300,7 +1360,9 @@ GUID DShowUtil::GUIDFromCString(CStdString str)
 HRESULT DShowUtil::GUIDFromCString(CStdString str, GUID& guid)
 {
   guid = GUID_NULL;
-  return CLSIDFromString(CComBSTR(str), &guid);
+  CStdStringW strW;
+  g_charsetConverter.subtitleCharsetToW(str,strW);
+  return CLSIDFromString(LPOLESTR(strW.c_str()), &guid);
 }
 
 CStdString DShowUtil::CStringFromGUID(const GUID& guid)
@@ -1961,12 +2023,17 @@ CStdString LanguageToISO6392(LPCTSTR lang)
   {
     std::list<CStdString> sl;
     Explode(CStdString(s_isolangs[i].name), sl, ';');
-    POSITION pos = sl.GetHeadPosition();
+    BOOST_FOREACH(CStdString ss ,sl)
+    {
+      if(!str.CompareNoCase(ss))
+        return CStdString(s_isolangs[i].iso6392);
+    }
+    /*POSITION pos = sl.GetHeadPosition();
     while(pos)
     {
       if(!str.CompareNoCase(sl.GetNext(pos)))
         return CStdString(s_isolangs[i].iso6392);
-    }
+    }*/
   }
   return _T("");
 }
@@ -2112,14 +2179,21 @@ void DShowUtil::RegisterSourceFilter(const CLSID& clsid, const GUID& subtype2, c
   CStdString null = CStringFromGUID(GUID_NULL);
   CStdString majortype = CStringFromGUID(MEDIATYPE_Stream);
   CStdString subtype = CStringFromGUID(subtype2);
-
-  POSITION pos = chkbytes.GetHeadPosition();
+  int i=0;
+  BOOST_FOREACH(CStdString ss ,chkbytes)
+  {
+    CStdString idx;
+    idx.Format(_T("%d"), i);
+    SetRegKeyValue(_T("Media Type\\") + majortype, subtype, idx, ss);
+    i++;
+  }
+  /*POSITION pos = chkbytes.GetHeadPosition();
   for(int i = 0; pos; i++)
   {
     CStdString idx;
     idx.Format(_T("%d"), i);
     SetRegKeyValue(_T("Media Type\\") + majortype, subtype, idx, chkbytes.GetNext(pos));
-  }
+  }*/
 
   SetRegKeyValue(_T("Media Type\\") + majortype, subtype, _T("Source Filter"), CStringFromGUID(clsid));
   
@@ -2179,7 +2253,13 @@ std::list<CStdString> sl;
       
       if( (!str.IsEmpty()) && ( mt.majortype == clsidMajorType ) )
       {
-        sl.AddTail(mt.ToString() + CStdString(L" [" + DShowUtil::GetPinName(pPin) + L"]"));
+        CStdString pinName1,pinName2,pinNameRes;
+        pinName1 = CStdString(mt.ToString().c_str());
+        g_charsetConverter.wToUTF8(CStdStringW(L" [" + DShowUtil::GetPinName(pPin) + L"]"),pinName2);
+        
+        sl.push_back(pinNameRes);
+        
+        //sl.AddTail(mt.ToString() + CStdString(L" [" + DShowUtil::GetPinName(pPin) + L"]"));
       }
     }
     EndEnumPins
