@@ -386,7 +386,10 @@ CUPnPServer::PopulateObjectFromTag(CMusicInfoTag&         tag,
     object.m_People.artists.Add(tag.GetArtist().c_str());
     object.m_People.artists.Add(tag.GetArtist().c_str(), "Performer");
     object.m_People.artists.Add(!tag.GetAlbumArtist().empty()?tag.GetAlbumArtist().c_str():tag.GetArtist().c_str(), "AlbumArtist");
-    object.m_Creator = tag.GetArtist();
+    if(tag.GetAlbumArtist().IsEmpty())
+        object.m_Creator = tag.GetArtist();
+    else
+        object.m_Creator = tag.GetAlbumArtist();
     object.m_MiscInfo.original_track_number = tag.GetTrackNumber();
     if(tag.GetDatabaseId() >= 0) {
       object.m_ReferenceID = NPT_String::Format("musicdb://4/%i%s", tag.GetDatabaseId(), CUtil::GetExtension(tag.GetURL()).c_str());
