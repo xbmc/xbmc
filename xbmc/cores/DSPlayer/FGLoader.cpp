@@ -104,7 +104,6 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
   
   if (!failedWithFirstSourceFilter)
   {
-    
     CLog::Log(LOGNOTICE,"%s DSplayer: Inserting xbmc source filter for this file \"%s\"",__FUNCTION__,pWinFilePath.c_str());
 	
     //if(m_File.Open(pFileItem.GetAsUrl().GetFileName().c_str(), READ_TRUNCATED | READ_BUFFERED))

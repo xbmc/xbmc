@@ -32,6 +32,12 @@
 #include "File.h"
 #include "FileItem.h"
 #include "FGLoader.h"
+
+#include <list>
+
+typedef std::list<CFGFilter*> FilterList;
+typedef std::list<CFGFilter*>::iterator FilterListIter;
+
 using namespace XFILE;
 
 enum DIRECTSHOW_RENDERER
@@ -71,7 +77,7 @@ private:
 protected:
   CComPtr<IFilterMapper2> m_pFM;
   CInterfaceList<IUnknown, &IID_IUnknown> m_pUnks;
-  CAtlList<CFGFilter*> m_source, m_transform, m_override;
+  std::list<CFGFilter*> m_source, m_transform, m_override;
 
   virtual HRESULT CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF, IUnknown** ppUnk);
 

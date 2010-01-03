@@ -64,9 +64,9 @@ CFGManager::CFGManager(LPCTSTR pName, LPUNKNOWN pUnk)
 CFGManager::~CFGManager()
 {
   CAutoLock cAutoLock(this);
-  while(!m_source.IsEmpty()) delete m_source.RemoveHead();
-  while(!m_transform.IsEmpty()) delete m_transform.RemoveHead();
-  while(!m_override.IsEmpty()) delete m_override.RemoveHead();
+  while(!m_source.empty()) m_source.pop_back();
+  while(!m_transform.empty()) m_transform.pop_back();
+  while(!m_override.empty()) m_override.pop_back();
   m_FileSource.Release();
   m_XbmcVideoDec.Release();
   m_pUnks.RemoveAll();
@@ -344,18 +344,23 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     CAtlArray<GUID> types;
     DShowUtil::ExtractMediaTypes(pPinOut, types);
 
-    POSITION pos = m_transform.GetHeadPosition();
-    while(pos)
+    
+    CFGFilter* pFGF;
+    for(FilterListIter it = m_transform.begin() ; it != m_transform.end(); it++ )
     {
-      CFGFilter* pFGF = m_transform.GetNext(pos);
+      
+      pFGF = *it;
+      
+      //CFGFilter* pFGF = m_transform.GetNext(pos);
       if(pFGF->GetMerit() < MERIT64_DO_USE || pFGF->CheckTypes(types, false)) 
         fl.Insert(pFGF, 0, pFGF->CheckTypes(types, true), false);
     }
 
-    pos = m_override.GetHeadPosition();
-    while(pos)
+    
+    for(FilterListIter it = m_override.begin() ; it != m_override.end() ; it++)
     {
-      CFGFilter* pFGF = m_override.GetNext(pos);
+      pFGF = *it;
+      //CFGFilter* pFGF = m_override.GetNext(pos);
       if(pFGF->GetMerit() < MERIT64_DO_USE || pFGF->CheckTypes(types, false)) 
         fl.Insert(pFGF, 0, pFGF->CheckTypes(types, true), false);
     }
@@ -375,7 +380,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     }
 //crashing right there on mkv
 //The subtitle might be the reason  
-    pos = fl.GetHeadPosition();
+    POSITION pos = fl.GetHeadPosition();
     while(pos)
     {
       CFGFilter* pFGF = fl.GetNext(pos);
@@ -798,31 +803,31 @@ CFGManagerCustom::CFGManagerCustom(LPCTSTR pName, LPUNKNOWN pUnk)
   
 // "Subtitle Mixer" makes an access violation around the 
 // 11-12th media type when enumerating them on its output.
-  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{00A95963-3BE5-48C0-AD9F-3356D67EA09D}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{00A95963-3BE5-48C0-AD9F-3356D67EA09D}")), MERIT64_DO_NOT_USE));
 
 // DiracSplitter.ax is crashing MPC-HC when opening invalid files...
-  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{09E7F58E-71A1-419D-B0A0-E524AE1454A9}")), MERIT64_DO_NOT_USE));
-  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{5899CFB9-948F-4869-A999-5544ECB38BA5}")), MERIT64_DO_NOT_USE));
-  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{F78CF248-180E-4713-B107-B13F7B5C31E1}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{09E7F58E-71A1-419D-B0A0-E524AE1454A9}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{5899CFB9-948F-4869-A999-5544ECB38BA5}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{F78CF248-180E-4713-B107-B13F7B5C31E1}")), MERIT64_DO_NOT_USE));
 
 // ISCR suxx
-  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{48025243-2D39-11CE-875D-00608CB78066}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{48025243-2D39-11CE-875D-00608CB78066}")), MERIT64_DO_NOT_USE));
 
 // Samsung's "mpeg-4 demultiplexor" can even open matroska files, amazing...
-  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{99EC0C72-4D1B-411B-AB1F-D561EE049D94}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{99EC0C72-4D1B-411B-AB1F-D561EE049D94}")), MERIT64_DO_NOT_USE));
 
 // LG Video Renderer (lgvid.ax) just crashes when trying to connect it
-  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{9F711C60-0668-11D0-94D4-0000C02BA972}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{9F711C60-0668-11D0-94D4-0000C02BA972}")), MERIT64_DO_NOT_USE));
 
 // palm demuxer crashes (even crashes graphedit when dropping an .ac3 onto it)
-  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{BE2CF8A7-08CE-4A2C-9A25-FD726A999196}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{BE2CF8A7-08CE-4A2C-9A25-FD726A999196}")), MERIT64_DO_NOT_USE));
 
 // mainconcept color space converter
-  m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{272D77A0-A852-4851-ADA4-9091FEAD4C86}")), MERIT64_DO_NOT_USE));
+  m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{272D77A0-A852-4851-ADA4-9091FEAD4C86}")), MERIT64_DO_NOT_USE));
 
 //Block if vmr9 is used
   if(m_CurrentRenderer == DIRECTSHOW_RENDERER_VMR9 )
-    m_transform.AddTail(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{9852A670-F845-491B-9BE6-EBD841B8A613}")), MERIT64_DO_NOT_USE));
+    m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{9852A670-F845-491B-9BE6-EBD841B8A613}")), MERIT64_DO_NOT_USE));
   
 }
 
@@ -937,9 +942,9 @@ CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd)
 
   // Renderers
   if (m_CurrentRenderer == DIRECTSHOW_RENDERER_EVR)
-    m_transform.AddTail(new CFGFilterVideoRenderer(__uuidof(CEVRAllocatorPresenter), L"Xbmc EVR", m_vrmerit));
+    m_transform.push_back(new CFGFilterVideoRenderer(__uuidof(CEVRAllocatorPresenter), L"Xbmc EVR", m_vrmerit));
   else
-    m_transform.AddTail(new CFGFilterVideoRenderer(__uuidof(CVMR9AllocatorPresenter), L"Xbmc VMR9 (Renderless)", m_vrmerit));
+    m_transform.push_back(new CFGFilterVideoRenderer(__uuidof(CVMR9AllocatorPresenter), L"Xbmc VMR9 (Renderless)", m_vrmerit));
   
 }
 
