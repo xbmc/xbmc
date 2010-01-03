@@ -597,6 +597,11 @@ int64_t CEdl::RemoveCutTime(int64_t iSeek)
   if (!HasCut())
     return iSeek;
 
+  /*
+   * TODO: Consider an optimisation of using the (now unused) total cut time if the seek time
+   * requested is later than the end of the last recorded cut. For example, when calculating the
+   * total duration for display.
+   */
   int64_t iCutTime = 0;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
@@ -633,10 +638,6 @@ bool CEdl::HasSceneMarker()
 
 CStdString CEdl::GetInfo()
 {
-  /*
-   * TODO: Update wiki (http://xbmc.org/wiki/?title=EDL_(commercial_skipping)_and_SceneMarker_support)
-   * if these different status strings are used.
-   */
   CStdString strInfo = "";
   if (HasCut())
   {
