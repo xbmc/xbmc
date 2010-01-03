@@ -420,7 +420,10 @@ bool CCMythFile::Delete(const CURL& url)
       return false;
 
     if(m_dll->proginfo_delete_recording(m_control, m_program))
+    {
+      CLog::Log(LOGDEBUG, "%s - Error deleting recording: %s", __FUNCTION__, url.GetFileName().c_str());
       return false;
+    }
 
     if (path.Left(8) == "tvshows/")
     {
