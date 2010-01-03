@@ -71,7 +71,7 @@ void CPythonPlayer::SetCallback(PyObject *object)
 int Py_XBMC_Event_OnPlayBackStarted(void* playerObject)
 {
   if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, (char*)"onPlayBackStarted", NULL);
-  Py_DECREF((PyObject*)playerObject);  
+  Py_DECREF((PyObject*)playerObject);
   return 0;
 }
 

@@ -74,7 +74,7 @@ namespace PYXBMC
     if (!self) return NULL;
     new(&self->sXMLFileName) string();
     new(&self->sFallBackPath) string();
-    new(&self->vecControls) std::vector<Control*>();    
+    new(&self->vecControls) std::vector<Control*>();
 
     self->iWindowId = -1;
 
@@ -86,8 +86,8 @@ namespace PYXBMC
       // error is already set by Window_CreateNewWindow, just release the memory
       self->vecControls.clear();
       self->vecControls.~vector();
-      self->sFallBackPath.~string();          
-      self->sXMLFileName.~string();         
+      self->sFallBackPath.~string();
+      self->sXMLFileName.~string();
       self->ob_type->tp_free((PyObject*)self);
       return NULL;
     }
@@ -183,9 +183,9 @@ namespace PYXBMC
     VECSOURCES *shares = g_settings.GetSourcesFromType(utf8Line[1]);
     if (!shares) return NULL;
 
-    if (useFileDirectories && !utf8Line[2].size() == 0) 
+    if (useFileDirectories && !utf8Line[2].size() == 0)
       utf8Line[2] += "|.rar|.zip";
-    
+
     value = cDefault;
     if (browsetype == 1)
       CGUIDialogFileBrowser::ShowAndGetFile(*shares, utf8Line[2], utf8Line[0], value, 0 != useThumbs, 0 != useFileDirectories);

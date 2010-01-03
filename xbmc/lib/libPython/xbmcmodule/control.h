@@ -85,18 +85,18 @@
 #define CONTROL_TEXT_OFFSET_X 10
 #define CONTROL_TEXT_OFFSET_Y 2
 
-#define PyObject_HEAD_XBMC_CONTROL		\
-    PyObject_HEAD				\
-    int iControlId;			\
-    int iParentId;			\
-    int dwPosX;					\
-    int dwPosY;					\
-    int dwWidth;				\
-    int dwHeight;				\
-    int iControlUp;			\
-    int iControlDown;		\
-    int iControlLeft;		\
-    int iControlRight;	\
+#define PyObject_HEAD_XBMC_CONTROL  \
+    PyObject_HEAD                   \
+    int iControlId;                 \
+    int iParentId;                  \
+    int dwPosX;                     \
+    int dwPosY;                     \
+    int dwWidth;                    \
+    int dwHeight;                   \
+    int iControlUp;                 \
+    int iControlDown;               \
+    int iControlLeft;               \
+    int iControlRight;              \
     CGUIControl* pGUIControl;
 
 #ifdef __cplusplus

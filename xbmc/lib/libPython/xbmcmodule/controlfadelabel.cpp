@@ -70,7 +70,7 @@ namespace PYXBMC
     self = (ControlFadeLabel*)type->tp_alloc(type, 0);
     if (!self) return NULL;
     new(&self->strFont) string();
-    new(&self->vecLabels) std::vector<string>();    
+    new(&self->vecLabels) std::vector<string>();
 
     // set up default values in case they are not supplied
     self->strFont = "font13";
@@ -103,11 +103,11 @@ namespace PYXBMC
   }
 
   void ControlFadeLabel_Dealloc(Control* self)
-  {  
+  {
     ControlFadeLabel *pControl = (ControlFadeLabel*)self;
     pControl->vecLabels.clear();
     pControl->vecLabels.~vector();
-    pControl->strFont.~string();    
+    pControl->strFont.~string();
     self->ob_type->tp_free((PyObject*)self);
   }
 
@@ -124,7 +124,7 @@ namespace PYXBMC
       (float)pControl->dwPosY,
       (float)pControl->dwWidth,
       (float)pControl->dwHeight,
-      label, 
+      label,
       true,
       CScrollInfo::defaultSpeed,
       0,
