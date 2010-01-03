@@ -27,6 +27,12 @@
 #define _onexit_t void*
 #endif
 
+#ifdef WIN32
+#include "win32-dirent.h"
+#else
+#include <dirent.h>
+#endif
+
 typedef void ( *PFV)(void);
 
 #define __IS_STDIN_STREAM(stream)   (stream == stdin  || stream->_file == 0)
@@ -76,14 +82,12 @@ extern "C"
   __off_t dll_lseek(int fd, __off_t lPos, int iWhence);
   char* dll_getenv(const char* szKey);
   int dll_fclose (FILE * stream);
-#ifndef _LINUX
-  intptr_t dll_findfirst(const char *file, struct _finddata_t *data);
-  int dll_findnext(intptr_t f, _finddata_t* data);
-  int dll_findclose(intptr_t handle);
-  intptr_t dll_findfirst64i32(const char *file, struct _finddata64i32_t *data);
-  int dll_findnext64i32(intptr_t f, _finddata64i32_t* data);
-  void dll__security_error_handler(int code, void *data);
-#endif
+  DIR *dll_opendir(const char *filename);
+  struct dirent *dll_readdir(DIR *dirp);
+  int dll_closedir(DIR *dirp);
+  void dll_rewinddir(DIR *dirp);
+  int dll_scandir( const char* dir, struct dirent*** namelist, int(*filter)(const struct dirent*), int(*compar)(const void*, const void*) );
+  int dll_alphasort(const void* lhs, const void* rhs);
   char * dll_fgets (char* pszString, int num , FILE * stream);
   int dll_fgetc (FILE* stream);
   int dll_feof (FILE * stream);

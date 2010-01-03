@@ -41,15 +41,12 @@ d4rk@xbmc.org
 #include "libprojectM/Preset.hpp"
 #include "libprojectM/PCM.hpp"
 #include <string>
-#ifdef WIN32
+/*#ifdef WIN32
 #include "libprojectM/win32-dirent.h"
 #include <io.h>
 #else
 #include <dirent.h>
-#endif
-
-#define PRESETS_DIR "special://xbmc/visualisations/projectM"
-#define CONFIG_FILE "special://xbmc/visualisations/projectM.conf"
+#endif*/
 
 projectM *globalPM = NULL;
 
@@ -67,17 +64,6 @@ projectM::Settings g_configPM;
 std::string g_configFile;
 
 // Some helper Functions
-
-// case-insensitive alpha sort from projectM's win32-dirent.cc
-#ifndef WIN32
-int alphasort(const void* lhs, const void* rhs)
-{
-  const struct dirent* lhs_ent = *(struct dirent**)lhs;
-  const struct dirent* rhs_ent = *(struct dirent**)rhs;
-  return strcasecmp(lhs_ent->d_name, rhs_ent->d_name);
-}
-#endif
-
 // check for a valid preset extension
 #ifdef __APPLE__
 int check_valid_extension(struct dirent* ent)
@@ -113,7 +99,6 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   g_configFile = string(visprops->datastore) + string("/projectm.conf");
   std::string presetsDir = string(visprops->presets);
 
-  printf("%s", presetsDir.c_str());
   g_configPM.meshX = gx;
   g_configPM.meshY = gy;
   g_configPM.fps = fps;

@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <string.h>
-#include <dirent.h>
 #include <utime.h>
 #include <fcntl.h>
 
@@ -19,7 +18,6 @@ int xbp_utime(const char *filename, struct utimbuf *times);
 int xbp_rename(const char *oldname, const char *newname);
 int xbp_mkdir(const char *dirname);
 int xbp_open(const char *filename, int oflag, int pmode);
-DIR *xbp_opendir(const char *name);
 #ifdef __APPLE__
 int xbp_stat(const char * path, struct stat * buf);
 int xbp_lstat(const char * path, struct stat * buf);
@@ -29,11 +27,6 @@ int xbp_dlclose(void *handle);
 void *xbp_dlsym(void *handle, const char *symbol);
 
 #define PYTHON_WRAP(func) __wrap_##func
-
-DIR* PYTHON_WRAP(opendir)(const char *name)
-{
-  return xbp_opendir(name);
-}
 
 int PYTHON_WRAP(access)(const char* path, int mode)
 {

@@ -78,9 +78,11 @@ struct SDirData
 {
   DIRECTORY::IDirectory* Directory;
   CFileItemList items;
+  unsigned int curr_entry;
   SDirData()
   {
     Directory = NULL;
+    curr_entry = 0;
   }
 };
 
@@ -654,26 +656,7 @@ extern "C"
     return EOF;
   }
 
-#ifndef _LINUX
-  // should be moved to CFile classes
-  intptr_t dll_findfirst(const char *file, struct _finddata_t *data)
-  {
-    struct _finddata64i32_t data64i32;
-    intptr_t ret = dll_findfirst64i32(file, &data64i32);
-    if (ret != -1)
-    {
-      int size = sizeof(data->name);
-      strncpy(data->name, data64i32.name, size);
-      if (size)
-        data->name[size - 1] = '\0';
-      data->size = (_fsize_t)data64i32.size;
-      data->time_write = (time_t)data64i32.time_write;
-      data->time_access = (time_t)data64i32.time_access;
-    }
-    return ret;
-  }
-
-  intptr_t dll_findfirst64i32(const char *file, struct _finddata64i32_t *data)
+  DIR *dll_opendir(const char *file)
   {
     char str[1024];
     int size = sizeof(str);
@@ -697,9 +680,8 @@ extern "C"
         if (size)
           str[size - 1] = '\0';
       }
-
       // Make sure the slashes are correct & translate the path
-      return _findfirst64i32(_P(CURL::ValidatePath(str)), data);
+      return opendir(_P(CURL::ValidatePath(str)));
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -718,7 +700,10 @@ extern "C"
     int iDirSlot=0; // locate next free directory
     while ((vecDirsOpen[iDirSlot].Directory) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
     if (iDirSlot >= MAX_OPEN_DIRS)
-      return -1; // no free slots
+    {
+      CLog::Log(LOGDEBUG, "Dll: Max open dirs reached");
+      return NULL; // no free slots
+    }
     if (url.GetProtocol().Equals("filereader"))
     {
       CURL url2(url.GetFileName());
@@ -734,96 +719,67 @@ extern "C"
     vecDirsOpen[iDirSlot].Directory->GetDirectory(strURL+fName,vecDirsOpen[iDirSlot].items);
     if (vecDirsOpen[iDirSlot].items.Size())
     {
-      int size = sizeof(data->name);
-      strncpy(data->name,vecDirsOpen[iDirSlot].items[0]->GetLabel().c_str(), size);
-      if (size)
-        data->name[size - 1] = '\0';
-      data->size = static_cast<_fsize_t>(vecDirsOpen[iDirSlot].items[0]->m_dwSize);
-      data->time_write = iDirSlot; // save for later lookups
-      data->time_access = 0;
-      return (intptr_t)&vecDirsOpen[iDirSlot];
+      return (DIR *)&vecDirsOpen[iDirSlot];
     }
     delete vecDirsOpen[iDirSlot].Directory;
     vecDirsOpen[iDirSlot].Directory = NULL;
-    return -1; // whatever != NULL
+    return NULL;
   }
 
-  // should be moved to CFile classes
-  int dll_findnext(intptr_t f, _finddata_t* data)
+  struct dirent *dll_readdir(DIR *dirp)
   {
-    struct _finddata64i32_t data64i32;
-    int ret = dll_findnext64i32(f, &data64i32);
-    if (ret == 0)
+    if (!dirp)
+      return NULL;
+
+    bool emulated(false);
+    for (int i = 0; i < MAX_OPEN_DIRS; i++)
     {
-      int size = sizeof(data->name);
-      strncpy(data->name, data64i32.name, size);
-      if (size)
-        data->name[size - 1] = '\0';
-      data->size = (_fsize_t)data64i32.size;
-      data->time_write = (time_t)data64i32.time_write;
-      data->time_access = (time_t)data64i32.time_access;
+      if (dirp == (DIR*)&vecDirsOpen[i] && vecDirsOpen[i].Directory)
+      {
+        emulated = true; 
+        break;
+      }
     }
-    return ret;
+    if (!emulated) {
+      return readdir(dirp); // local dir
+    }
+
+    // dirp is actually a SDirData*
+    SDirData* dirData = (SDirData*)dirp;
+    struct dirent *entry = NULL;
+    entry = (dirent*) malloc(sizeof *entry);
+    if (dirData->curr_entry+1 < dirData->items.Size()) // we have a winner!
+    {
+      int size = sizeof(entry->d_name);
+      strncpy(entry->d_name,dirData->items[dirData->curr_entry+1]->GetLabel().c_str(), size);
+      if (size)
+        entry->d_name[size-1] = '\0';
+      dirData->curr_entry++;
+      return entry;
+    }
+    dirData->items.Clear();
+    return NULL;
   }
 
-  int dll_findnext64i32(intptr_t f, _finddata64i32_t* data)
+  int dll_closedir(DIR *dirp)
   {
     int found = MAX_OPEN_DIRS;
     for (int i = 0; i < MAX_OPEN_DIRS; i++)
     {
-      if (f == (intptr_t)&vecDirsOpen[i] && vecDirsOpen[i].Directory)
+      if (dirp == (DIR*)&vecDirsOpen[i] && vecDirsOpen[i].Directory)
       {
         found = i;
         break;
       }
     }
     if (found >= MAX_OPEN_DIRS)
-      return _findnext64i32(f, data); // local dir
-
-    // we have a valid data struture. get next item!
-    int iItem=(int)data->time_access;
-    if (iItem+1 < vecDirsOpen[found].items.Size()) // we have a winner!
-    {
-      int size = sizeof(data->name);
-      strncpy(data->name,vecDirsOpen[found].items[iItem+1]->GetLabel().c_str(), size);
-      if (size)
-        data->name[size - 1] = '\0';
-      data->size = static_cast<_fsize_t>(vecDirsOpen[found].items[iItem+1]->m_dwSize);
-      data->time_access++;
-      return 0;
-    }
-
-    vecDirsOpen[found].items.Clear();
-    return -1;
-  }
-
-  int dll_findclose(intptr_t handle)
-  {
-    int found = MAX_OPEN_DIRS;
-    for (int i = 0; i < MAX_OPEN_DIRS; i++)
-    {
-      if (handle == (intptr_t)&vecDirsOpen[i] && vecDirsOpen[i].Directory)
-      {
-        found = i;
-        break;
-      }
-    }
-    if (found >= MAX_OPEN_DIRS)
-      return _findclose(handle);
+      return closedir(dirp);
 
     delete vecDirsOpen[found].Directory;
     vecDirsOpen[found].Directory = NULL;
     vecDirsOpen[found].items.Clear();
     return 0;
   }
-
-  void dll__security_error_handler(int code, void *data)
-  {
-    //NOTE: __security_error_handler has been removed in VS2005 and up
-    CLog::Log(LOGERROR, "security_error, code %i", code);
-  }
-
-#endif
 
   char* dll_fgets(char* pszString, int num ,FILE * stream)
   {

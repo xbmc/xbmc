@@ -96,7 +96,11 @@ bool CVisualisation::Create(int x, int y, int w, int h)
   m_pInfo->pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
   m_pInfo->name = Name().c_str();
   CStdString presets;
-  CUtil::AddFileToFolder(Path(), "presets", presets);
+  CUtil::AddFileToFolder(Path(), "presets.zip", presets);
+  CUtil::URLEncode(presets);
+  presets = "zip://" + presets;
+
+  CLog::Log(LOGERROR, "Afer urlencode **** %s", presets.c_str());
   m_pInfo->presets = _P(presets).c_str();
   CStdString store = _P(Profile());
   m_pInfo->datastore = store.c_str();
