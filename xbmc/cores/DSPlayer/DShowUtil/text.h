@@ -1,36 +1,46 @@
 #pragma once
 #include <list>
+#include "boost/foreach.hpp"
+
 // extern CString ExplodeMin(CString str, CAtlList<CString>& sl, TCHAR sep, int limit = 0);
 // extern CString Explode(CString str, CAtlList<CString>& sl, TCHAR sep, int limit = 0);
 // extern CString Implode(CAtlList<CString>& sl, TCHAR sep);
 
-template<class T, typename SEP>
-T Explode(T str, std::list<T>& sl, SEP sep, int limit = 0)
+//template<class T, typename SEP>
+using namespace std;
+CStdString Explode(CStdString str, list<CStdString>& sl, TCHAR sep, int limit = 0)
 {
-	sl.RemoveAll();
+  while (!sl.empty())
+    sl.pop_back();
 
 	for(int i = 0, j = 0; ; i = j+1)
 	{
 		j = str.Find(sep, i);
 
-		if(j < 0 || sl.GetCount() == limit-1)
+		if(j < 0 || sl.size() == limit-1)
 		{
-			sl.AddTail(str.Mid(i).Trim());
+			sl.push_back(str.Mid(i).Trim());
 			break;
 		}
 		else
 		{
-			sl.AddTail(str.Mid(i, j-i).Trim());
+			sl.push_back(str.Mid(i, j-i).Trim());
 		}		
 	}
-
-	return sl.GetHead();
+  std::list<CStdString>::iterator it = sl.begin();
+  CStdString strit;
+  strit = it->c_str();
+  return strit;//GetHead();
 }
 
-template<class T, typename SEP>
-T ExplodeMin(T str, std::list<T>& sl, SEP sep, int limit = 0)
+//template<class T, typename SEP>
+/*CStdString ExplodeMin(CStdString str, list<CStdString>& sl, TCHAR sep, int limit = 0)
 {
 	Explode(str, sl, sep, limit);
+  BOOST_FOREACH(CStdString ss,sl)
+  {
+    
+  }
 	POSITION pos = sl.GetHeadPosition();
 	while(pos) 
 	{
@@ -41,20 +51,27 @@ T ExplodeMin(T str, std::list<T>& sl, SEP sep, int limit = 0)
 	if(sl.IsEmpty()) sl.AddTail(T()); // eh
 
 	return sl.GetHead();
-}
+}*/
 
-template<class T, typename SEP>
-T Implode(std::list<T>& sl, SEP sep)
+//template<class T, typename SEP>
+CStdString Implode(list<CStdString>& sl, TCHAR sep)
 {
-	T ret;
-	POSITION pos = sl.GetHeadPosition();
+	CStdString ret;
+  BOOST_FOREACH(CStdString ss,sl)
+  {
+    ret += ss;
+    ret += sep;
+  }
+  
+	/*POSITION pos = sl.GetHeadPosition();
 	while(pos)
 	{
 		ret += sl.GetNext(pos);
 		if(pos) ret += sep;
-	}
+	}*/
 	return(ret);
 }
+
 //mfc required for CMapStringToString
 //extern CStdString ExtractTag(CStdString tag, CMapStringToString& attribs, bool& fClosing);
 extern CStdStringA ConvertMBCS(CStdStringA str, DWORD SrcCharSet, DWORD DstCharSet);

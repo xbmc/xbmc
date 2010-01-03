@@ -45,10 +45,10 @@ public:
   virtual void SetAudioStream(int iStream);
   
 protected:
-  bool GetStreamSelector(IBaseFilter* pBF);
-  bool GetMpaDec(IBaseFilter* pBF);
-  bool GetMpcVideoDec(IBaseFilter* pBF);
-  bool GetffdshowVideo(IBaseFilter* pBF);
+  bool GetStreamSelector(SmartPtr<IBaseFilter> pBF);
+  bool GetMpaDec(SmartPtr<IBaseFilter> pBF);
+  bool GetMpcVideoDec(SmartPtr<IBaseFilter> pBF);
+  bool GetffdshowVideo(SmartPtr<IBaseFilter> pBF);
   void LoadFilters();
   CCritSec m_pLock;
   //
@@ -56,10 +56,10 @@ protected:
 private:
   //Direct Show Filters
   SmartPtr<IGraphBuilder2>        m_pGraphBuilder;
-  CComQIPtr<IMPCVideoDecFilter>	 m_pIMpcDecFilter;
+  SmartPtr<IMPCVideoDecFilter>	 m_pIMpcDecFilter;//CComQIPtr
   //No guid defined for ffdshow video
   //SmartPtr<IffdshowDecVideoA>	 m_pIffdDecFilter;
-  CComQIPtr<IMpaDecFilter>       m_pIMpaDecFilter;
-  CComQIPtr<IAMStreamSelect>     m_pIAMStreamSelect;
+  SmartPtr<IMpaDecFilter>       m_pIMpaDecFilter;//CComQIPtr
+  SmartPtr<IAMStreamSelect>     m_pIAMStreamSelect;//CComQIPtr
   CStdString                     m_pStdDxva;
 };

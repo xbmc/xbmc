@@ -64,11 +64,12 @@ void CDSConfig::LoadFilters()
   EndEnumFilters
 }
 
-bool CDSConfig::GetStreamSelector(IBaseFilter* pBF)
+bool CDSConfig::GetStreamSelector(SmartPtr<IBaseFilter> pBF)
 {
   if (m_pIAMStreamSelect)
     return true;
-  m_pIAMStreamSelect = pBF;
+  pBF.QueryInterface(&m_pIAMStreamSelect);
+  //m_pIAMStreamSelect = pBF;
   if(m_pIAMStreamSelect)
   {
     DWORD nStreams = 0, flags, group, prevgroup = -1;
@@ -156,11 +157,12 @@ void CDSConfig::SetAudioStream(int iStream)
     CLog::Log(LOGDEBUG,"%s Sucessfully selected audio stream",__FUNCTION__);
 }
 
-bool CDSConfig::GetMpcVideoDec(IBaseFilter* pBF)
+bool CDSConfig::GetMpcVideoDec(SmartPtr<IBaseFilter> pBF)
 {
   if (m_pIMpcDecFilter)
     return false;
-  m_pIMpcDecFilter = pBF;
+  pBF->QueryInterface(&m_pIMpcDecFilter);
+  //m_pIMpcDecFilter = pBF;
   m_pStdDxva.Format("");
   if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
   {
@@ -179,11 +181,12 @@ bool CDSConfig::GetMpcVideoDec(IBaseFilter* pBF)
   return true;
 }
 
-bool CDSConfig::GetMpaDec(IBaseFilter* pBF)
+bool CDSConfig::GetMpaDec(SmartPtr<IBaseFilter> pBF)
 {
   if (m_pIMpaDecFilter)
     return false;
-  m_pIMpaDecFilter = pBF;
+  //m_pIMpaDecFilter = pBF;
+  pBF.QueryInterface(&m_pIMpaDecFilter);
 //definition of AC3 VALUE DEFINITION
 //A52_CHANNEL 0
 //A52_MONO 1
