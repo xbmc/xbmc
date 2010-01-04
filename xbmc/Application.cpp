@@ -405,7 +405,6 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
         // Set .amount1 = 1 for APPCOMMANDS like VOL_UP and DOWN that need to know how much to change the volume
         CAction action;
         action.id = newEvent.appcommand.action;
-        action.amount1 = 1;
         g_application.OnAction(action);
       }
       break;
