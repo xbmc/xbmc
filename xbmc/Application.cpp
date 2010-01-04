@@ -3895,12 +3895,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   m_bPlaybackStarting = true;
 
   // We should restart the player, unless the previous and next tracks are using
-  // one of the players that allows gapless playback (paplayer)
-  // NOTE: Disabled gapless playback for DVDPlayer for now since the renderer
-  // screws up every now and then
+  // one of the players that allows gapless playback (paplayer, dvdplayer)
   if (m_pPlayer)
   {
-    if ( !(m_eCurrentPlayer == eNewCore && m_eCurrentPlayer  == EPC_PAPLAYER) )
+    if ( !(m_eCurrentPlayer == eNewCore && (m_eCurrentPlayer == EPC_DVDPLAYER || m_eCurrentPlayer  == EPC_PAPLAYER)) )
     {
       delete m_pPlayer;
       m_pPlayer = NULL;

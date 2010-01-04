@@ -70,6 +70,7 @@ CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
   m_hLowMemShader = 0;
 
   m_iYV12RenderBuffer = 0;
+  m_NumYV12Buffers = 0;
 
   memset(m_image, 0, sizeof(m_image));
   memset(m_YUVTexture, 0, sizeof(m_YUVTexture));
@@ -724,9 +725,17 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
 
 bool CXBoxRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
+  if(m_iSourceWidth  != width
+  || m_iSourceHeight != height)
+  {
+    m_iSourceWidth = width;
+    m_iSourceHeight = height;
+    // need to recreate textures
+    m_NumYV12Buffers = 0;
+    m_iYV12RenderBuffer = 0;
+  }
+
   m_fps = fps;
-  m_iSourceWidth = width;
-  m_iSourceHeight = height;
   m_iFlags = flags;
   m_bConfigured = true;
   
@@ -1344,6 +1353,8 @@ void CXBoxRenderer::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int wid
 //********************************************************************************************************
 void CXBoxRenderer::DeleteYV12Texture(int index)
 {
+  CSingleLock lock(g_graphicsContext);
+  
   YV12Image &im = m_image[index];
   YUVFIELDS &fields = m_YUVTexture[index];
 
@@ -1367,6 +1378,8 @@ void CXBoxRenderer::DeleteYV12Texture(int index)
   for(int p = 0;p<MAX_PLANES;p++)
     im.plane[p] = NULL;
 
+  m_NumYV12Buffers = 0;
+  
   CLog::Log(LOGDEBUG, "Deleted YV12 texture %i", index);
 }
 
@@ -1386,6 +1399,7 @@ void CXBoxRenderer::ClearYV12Texture(int index)
 
 bool CXBoxRenderer::CreateYV12Texture(int index)
 {
+  CSingleLock lock(g_graphicsContext);
   DeleteYV12Texture(index);
 
   /* since we also want the field textures, pitch must be texture aligned */
