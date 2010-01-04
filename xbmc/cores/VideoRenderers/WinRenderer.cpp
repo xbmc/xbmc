@@ -105,13 +105,17 @@ void CWinRenderer::ManageTextures()
 
 bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
-  m_sourceWidth = width;
-  m_sourceHeight = height;
-  m_flags = flags;
+  if(m_sourceWidth  != width
+  || m_sourceHeight != height)
+  {
+    m_sourceWidth = width;
+    m_sourceHeight = height;
+    // need to recreate textures
+    m_NumYV12Buffers = 0;
+    m_iYV12RenderBuffer = 0;
+  }
 
-  // need to recreate textures
-  m_NumYV12Buffers = 0;
-  m_iYV12RenderBuffer = 0;
+  m_flags = flags;
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
@@ -202,11 +206,14 @@ void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 }
 
 void CWinRenderer::FlipPage(int source)
-{  
+{
+  if(source == AUTOSOURCE)
+    source = NextYV12Texture();
+
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
   else
-    m_iYV12RenderBuffer = NextYV12Texture();
+    m_iYV12RenderBuffer = 0;
 
 #ifdef MP_DIRECTRENDERING
   __asm wbinvd
