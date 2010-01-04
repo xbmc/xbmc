@@ -38,7 +38,6 @@ BIN_DIRS=	\
 	xbmc/lib/libscrobbler \
 	xbmc/lib/libshout \
 	xbmc/lib/libUPnP \
-	xbmc/lib/libXBMS \
 	xbmc/lib/libXDAAP \
 	xbmc/lib/sqLite \
 	xbmc/lib/UnrarXLib \
@@ -229,8 +228,6 @@ xbmc/lib/libshout/libshout-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libshout
 xbmc/lib/libUPnP/libupnp-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libUPnP
-xbmc/lib/libXBMS/libxbms-@ARCH@.a: force
-	$(MAKE) -C xbmc/lib/libXBMS
 xbmc/lib/libXDAAP/libxdaap-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libXDAAP
 xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a: force
@@ -339,7 +336,6 @@ xcode_depends: \
 	xbmc/lib/cmyth/libcmyth/libcmyth.a \
 	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/lib/libRTMP/librtmp.a \
-	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
@@ -381,7 +377,6 @@ OBJSXBMC=	\
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
-	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
 	xbmc/lib/sqLite/sqllite.a \

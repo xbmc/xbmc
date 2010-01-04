@@ -37,7 +37,6 @@ SRCS=ASAPFileDirectory.cpp \
      FileSpecialProtocol.cpp \
      FileSmb.cpp \
      FileTuxBox.cpp \
-     FileXBMSP.cpp \
      FileZip.cpp \
      FTPDirectory.cpp \
      FTPParse.cpp \
@@ -83,7 +82,6 @@ SRCS=ASAPFileDirectory.cpp \
      VTPDirectory.cpp \
      VTPSession.cpp \
      VTPFile.cpp \
-     XBMSDirectory.cpp \
      ZeroconfDirectory.cpp \
      ZipDirectory.cpp \
      ZipManager.cpp
