@@ -375,7 +375,7 @@ CStdString CAddon::GetSetting(const CStdString& key) const
 
 void CAddon::UpdateSetting(const CStdString& key, const CStdString& type, const CStdString& value)
 {
-  if (key == "" || type == "") return;
+  if (key == "") return;
 
   // Try to find the setting and change its value
   if (!m_userXmlDoc.RootElement())
@@ -390,13 +390,12 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& type, const 
     const char *storedtype = setting->Attribute("type");
     if (id && strcmpi(id, key) == 0)
     {
-      if (storedtype && strcmpi(storedtype, type) != 0)
+      if (type && storedtype && strcmpi(storedtype, type) != 0)
         setting->SetAttribute("type", type.c_str());
 
       setting->SetAttribute("value", value.c_str());
       return;
     }
-
     setting = setting->NextSiblingElement("setting");
   }
 
@@ -428,3 +427,4 @@ CStdString CAddon::GetUserSettingsPath()
 }
 
 } /* namespace ADDON */
+
