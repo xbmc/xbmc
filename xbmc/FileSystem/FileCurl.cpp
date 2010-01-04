@@ -528,11 +528,14 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
     url2.SetProtocol("ftp");
   else if( url2.GetProtocol().Equals("shout")
        ||  url2.GetProtocol().Equals("daap")
+       ||  url2.GetProtocol().Equals("dav")
        ||  url2.GetProtocol().Equals("tuxbox")
        ||  url2.GetProtocol().Equals("lastfm")
        ||  url2.GetProtocol().Equals("mms")
        ||  url2.GetProtocol().Equals("rss"))
     url2.SetProtocol("http");
+  else if (url2.GetProtocol().Equals("davs"))
+    url2.SetProtocol("https");
 
   if( url2.GetProtocol().Equals("ftp")
   ||  url2.GetProtocol().Equals("ftps") )

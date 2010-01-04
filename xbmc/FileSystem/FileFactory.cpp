@@ -105,6 +105,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   {
     if (strProtocol == "http"
     ||  strProtocol == "https"
+    ||  strProtocol == "dav"
+    ||  strProtocol == "davs"
     ||  strProtocol == "ftp"
     ||  strProtocol == "ftpx"
     ||  strProtocol == "ftps"
