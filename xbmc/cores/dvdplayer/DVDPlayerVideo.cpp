@@ -312,8 +312,13 @@ void CDVDPlayerVideo::Process()
   && m_hints.fpsscale )
   {
     int flags = 0;
-    flags |= m_bAllowFullscreen ? CONF_FLAGS_FULLSCREEN : 0;
-    flags |= CONF_FLAGS_YUVCOEF_BT709;
+    if(m_bAllowFullscreen)
+      flags |= CONF_FLAGS_FULLSCREEN;
+
+    if(m_hints.width > 1024 || m_hints.height >= 600)
+      flags |= CONF_FLAGS_YUVCOEF_BT709;
+    else
+      flags |= CONF_FLAGS_YUVCOEF_BT601;
 
     m_output.width     = m_hints.width;
     m_output.dwidth    = m_hints.width;
@@ -895,12 +900,19 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       case 4: // FCC
         flags |= CONF_FLAGS_YUVCOEF_BT601;
         break;
+      case 1: // ITU-R Rec.709 (1990) -- BT.709
+        flags |= CONF_FLAGS_YUVCOEF_BT709;
+        break;
       case 3: // RESERVED
       case 2: // UNSPECIFIED
-      case 1: // ITU-R Rec.709 (1990) -- BT.709
       default:
-        flags |= CONF_FLAGS_YUVCOEF_BT709;
+        if(pPicture->iWidth > 1024 || pPicture->iHeight >= 600)
+          flags |= CONF_FLAGS_YUVCOEF_BT709;
+        else
+          flags |= CONF_FLAGS_YUVCOEF_BT601;
+        break;
     }
+
     switch(pPicture->format)
     {
       case DVDVideoPicture::FMT_YUV420P:
