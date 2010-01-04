@@ -546,8 +546,10 @@ namespace VIDEO
           if ((info2.strContent.Equals("movies") && m_database.HasMovieInfo(pItem->m_strPath)) ||
               (info2.strContent.Equals("musicvideos") && m_database.HasMusicVideoInfo(pItem->m_strPath)))
              continue;
-
+          
           CNfoFile::NFOResult result;
+          if (!pURL)
+          {
           CScraperUrl scrUrl;
           // handle .nfo files
           result = CheckForNFOFile(pItem.get(),bDirNames,info2,scrUrl);
@@ -576,7 +578,7 @@ namespace VIDEO
           }
           if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
             pURL = &scrUrl;
-
+          }
           // Get the correct movie title 
           CStdString strMovieName = pItem->GetMovieName(bDirNames);
 
