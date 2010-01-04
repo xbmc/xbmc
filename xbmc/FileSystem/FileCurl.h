@@ -141,6 +141,7 @@ namespace XFILE
       CStdString      m_contenttype;
       CStdString      m_username;
       CStdString      m_password;
+      CStdString      m_httpauth;
       bool            m_ftppasvip;
       int             m_connecttimeout;
       int             m_lowspeedtime;

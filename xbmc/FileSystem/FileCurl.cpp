@@ -302,6 +302,7 @@ CFileCurl::CFileCurl()
   m_postdata = "";
   m_username = "";
   m_password = "";
+  m_httpauth = "";
   m_state = new CReadState();
 }
 
@@ -411,6 +412,19 @@ void CFileCurl::SetCommonOptions(CReadState* state)
       g_curlInterface.easy_setopt(h, CURLOPT_FTPSSLAUTH, CURLFTPAUTH_SSL);
     else if( m_ftpauth.Equals("tls") )
       g_curlInterface.easy_setopt(h, CURLOPT_FTPSSLAUTH, CURLFTPAUTH_TLS);
+  }
+
+  // setup requested http authentication method
+  if(m_httpauth.length() > 0 && m_username.length() > 0 && m_password.length() > 0)
+  {
+    if( m_httpauth.Equals("any") )
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+    else if( m_httpauth.Equals("anysafe") )
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANYSAFE);
+    else if( m_httpauth.Equals("digest") )
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
+    else if( m_httpauth.Equals("ntlm") )
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_NTLM);
   }
 
   // allow passive mode for ftp
@@ -645,10 +659,17 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
           name = (*it);
           value = "";
         }
+
         // url decode value
         CUtil::UrlDecode(value);
-        // set headers
-        if (name.Equals("User-Agent"))
+
+        if(name.Equals("auth"))
+        {
+          m_httpauth = value;
+          if(m_httpauth.IsEmpty())
+            m_httpauth = "any";
+        }
+        else if (name.Equals("User-Agent"))
           SetUserAgent(value);
         else
           SetRequestHeader(name, value);
