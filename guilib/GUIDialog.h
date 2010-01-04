@@ -63,6 +63,7 @@ protected:
   friend class CApplicationMessenger;
   void DoModal_Internal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
   void Show_Internal(); // modeless
+  void Close_Internal(bool forceClose = false);
 
   bool m_bRunning;
   bool m_bModal;
