@@ -6,6 +6,8 @@ class ObjectDefinition(GeneratorGroup):
     basechain = "NULL"
     tp_flags = "Py_TPFLAGS_DEFAULT"
     basetype = None
+    argref = ""    # set to "*" if arg to <type>_New should be pointer
+    argconst = ""   # set to "const " if arg to <type>_New should be const
 
     def __init__(self, name, prefix, itselftype):
         """ObjectDefinition constructor.  May be extended, but do not override.
@@ -22,7 +24,6 @@ class ObjectDefinition(GeneratorGroup):
         self.itselftype = itselftype
         self.objecttype = name + 'Object'
         self.typename = name + '_Type'
-        self.argref = ""    # set to "*" if arg to <type>_New should be pointer
         self.static = "static " # set to "" to make <type>_New and <type>_Convert public
         self.modulename = None
         if hasattr(self, "assertions"):
@@ -44,12 +45,8 @@ class ObjectDefinition(GeneratorGroup):
 
         OutHeader2("Object type " + self.name)
 
-        sf = self.static and "static "
-        Output("%sPyTypeObject %s;", sf, self.typename)
-        Output()
-        Output("#define %s_Check(x) ((x)->ob_type == &%s || PyObject_TypeCheck((x), &%s))",
-               self.prefix, self.typename, self.typename)
-        Output()
+        self.outputCheck()
+
         Output("typedef struct %s {", self.objecttype)
         IndentLevel()
         Output("PyObject_HEAD")
@@ -84,6 +81,14 @@ class ObjectDefinition(GeneratorGroup):
 
         OutHeader2("End object type " + self.name)
 
+    def outputCheck(self):
+        sf = self.static and "static "
+        Output("%sPyTypeObject %s;", sf, self.typename)
+        Output()
+        Output("#define %s_Check(x) ((x)->ob_type == &%s || PyObject_TypeCheck((x), &%s))",
+               self.prefix, self.typename, self.typename)
+        Output()
+
     def outputMethodChain(self):
         Output("%sPyMethodChain %s_chain = { %s_methods, %s };",
                 self.static,    self.prefix, self.prefix, self.basechain)
@@ -93,8 +98,8 @@ class ObjectDefinition(GeneratorGroup):
 
     def outputNew(self):
         Output()
-        Output("%sPyObject *%s_New(%s %sitself)", self.static, self.prefix,
-                self.itselftype, self.argref)
+        Output("%sPyObject *%s_New(%s%s %sitself)", self.static, self.prefix,
+                self.argconst, self.itselftype, self.argref)
         OutLbrace()
         Output("%s *it;", self.objecttype)
         self.outputCheckNewArg()
@@ -113,6 +118,7 @@ class ObjectDefinition(GeneratorGroup):
         "Override this method to apply additional checks/conversions"
 
     def outputConvert(self):
+        Output()
         Output("%sint %s_Convert(PyObject *v, %s *p_itself)", self.static, self.prefix,
                 self.itselftype)
         OutLbrace()
@@ -135,7 +141,7 @@ class ObjectDefinition(GeneratorGroup):
         OutLbrace()
         self.outputCleanupStructMembers()
         if self.basetype:
-            Output("self->ob_type->tp_base->tp_dealloc((PyObject *)self);")
+            Output("%s.tp_dealloc((PyObject *)self);", self.basetype)
         elif hasattr(self, 'output_tp_free'):
             # This is a new-style object with tp_free slot
             Output("self->ob_type->tp_free((PyObject *)self);")
@@ -214,6 +220,9 @@ class ObjectDefinition(GeneratorGroup):
         Output("if (PyType_Ready(&%s) < 0) return;", self.typename)
         Output("""Py_INCREF(&%s);""", self.typename)
         Output("PyModule_AddObject(m, \"%s\", (PyObject *)&%s);", self.name, self.typename);
+        self.outputTypeObjectInitializerCompat()
+
+    def outputTypeObjectInitializerCompat(self):
         Output("/* Backward-compatible name */")
         Output("""Py_INCREF(&%s);""", self.typename);
         Output("PyModule_AddObject(m, \"%sType\", (PyObject *)&%s);", self.name, self.typename);
@@ -373,11 +382,20 @@ class PEP253Mixin(PEP252Mixin):
     def outputHook_tp_free(self):
         Output("%s_tp_free, /* tp_free */", self.prefix)
 
+    def output_tp_initBody_basecall(self):
+        """If a type shares its init call with its base type set output_tp_initBody
+        to output_tp_initBody_basecall"""
+        if self.basetype:
+            Output("if (%s.tp_init)", self.basetype)
+            OutLbrace()
+            Output("if ( (*%s.tp_init)(_self, _args, _kwds) < 0) return -1;", self.basetype)
+            OutRbrace()
+
     output_tp_initBody = None
 
     def output_tp_init(self):
         if self.output_tp_initBody:
-            Output("static int %s_tp_init(PyObject *self, PyObject *args, PyObject *kwds)", self.prefix)
+            Output("static int %s_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)", self.prefix)
             OutLbrace()
             self.output_tp_initBody()
             OutRbrace()
@@ -399,19 +417,29 @@ class PEP253Mixin(PEP252Mixin):
         Output()
 
     def output_tp_newBody(self):
-        Output("PyObject *self;");
+        Output("PyObject *_self;");
         Output("%s itself;", self.itselftype);
         Output("char *kw[] = {\"itself\", 0};")
         Output()
-        Output("if (!PyArg_ParseTupleAndKeywords(args, kwds, \"O&\", kw, %s_Convert, &itself)) return NULL;",
+        Output("if (!PyArg_ParseTupleAndKeywords(_args, _kwds, \"O&\", kw, %s_Convert, &itself)) return NULL;",
             self.prefix);
-        Output("if ((self = type->tp_alloc(type, 0)) == NULL) return NULL;")
-        Output("((%s *)self)->ob_itself = itself;", self.objecttype)
-        Output("return self;")
+        if self.basetype:
+            Output("if (%s.tp_new)", self.basetype)
+            OutLbrace()
+            Output("if ( (*%s.tp_new)(type, _args, _kwds) == NULL) return NULL;", self.basetype)
+            Dedent()
+            Output("} else {")
+            Indent()
+            Output("if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;")
+            OutRbrace()
+        else:
+            Output("if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;")
+        Output("((%s *)_self)->ob_itself = itself;", self.objecttype)
+        Output("return _self;")
 
     def output_tp_new(self):
         if self.output_tp_newBody:
-            Output("static PyObject *%s_tp_new(PyTypeObject *type, PyObject *args, PyObject *kwds)", self.prefix)
+            Output("static PyObject *%s_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)", self.prefix)
             OutLbrace()
             self.output_tp_newBody()
             OutRbrace()

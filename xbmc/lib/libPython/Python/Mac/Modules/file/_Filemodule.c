@@ -7,6 +7,10 @@
 
 #include "pymactoolbox.h"
 
+#ifndef HAVE_OSX105_SDK
+typedef SInt16	FSIORefNum;
+#endif
+
 /* Macro to test whether a weak-loaded CFM function exists */
 #define PyMac_PRECHECK(rtn) do { if ( &rtn == NULL )  {\
         PyErr_SetString(PyExc_NotImplementedError, \
@@ -18,30 +22,45 @@
 #include <Carbon/Carbon.h>
 
 #ifdef USE_TOOLBOX_OBJECT_GLUE
-extern int _PyMac_GetFSSpec(PyObject *v, FSSpec *spec);
-extern int _PyMac_GetFSRef(PyObject *v, FSRef *fsr);
-extern PyObject *_PyMac_BuildFSSpec(FSSpec *spec);
-extern PyObject *_PyMac_BuildFSRef(FSRef *spec);
 
+#ifndef __LP64__
+extern int _PyMac_GetFSSpec(PyObject *v, FSSpec *spec);
+extern PyObject *_PyMac_BuildFSSpec(FSSpec *spec);
+#define PyMac_BuildFSSpec _PyMac_BuildFSSpec
+#endif /* __LP64__*/
+
+extern int _PyMac_GetFSRef(PyObject *v, FSRef *fsr);
+extern PyObject *_PyMac_BuildFSRef(FSRef *spec);
+#define PyMac_BuildFSRef _PyMac_BuildFSRef
 #define PyMac_GetFSSpec _PyMac_GetFSSpec
 #define PyMac_GetFSRef _PyMac_GetFSRef
-#define PyMac_BuildFSSpec _PyMac_BuildFSSpec
-#define PyMac_BuildFSRef _PyMac_BuildFSRef
-#else
+
+#else	/* !USE_TOOLBOX_OBJECT_GLUE */
+
+#ifndef __LP64__
 extern int PyMac_GetFSSpec(PyObject *v, FSSpec *spec);
-extern int PyMac_GetFSRef(PyObject *v, FSRef *fsr);
 extern PyObject *PyMac_BuildFSSpec(FSSpec *spec);
+#endif /* !__LP64__*/
+
+extern int PyMac_GetFSRef(PyObject *v, FSRef *fsr);
 extern PyObject *PyMac_BuildFSRef(FSRef *spec);
-#endif
+
+#endif	/* !USE_TOOLBOX_OBJECT_GLUE */
 
 /* Forward declarations */
-static PyObject *FInfo_New(FInfo *itself);
 static PyObject *FSRef_New(FSRef *itself);
+#ifndef __LP64__
+static PyObject *FInfo_New(FInfo *itself);
+
 static PyObject *FSSpec_New(FSSpec *itself);
-static PyObject *Alias_New(AliasHandle itself);
-static int FInfo_Convert(PyObject *v, FInfo *p_itself);
-#define FSRef_Convert PyMac_GetFSRef
 #define FSSpec_Convert PyMac_GetFSSpec
+#endif /* !__LP64__ */
+
+static PyObject *Alias_New(AliasHandle itself);
+#ifndef __LP64__
+static int FInfo_Convert(PyObject *v, FInfo *p_itself);
+#endif /* !__LP64__ */
+#define FSRef_Convert PyMac_GetFSRef
 static int Alias_Convert(PyObject *v, AliasHandle *p_itself);
 
 /*
@@ -50,36 +69,38 @@ static int Alias_Convert(PyObject *v, AliasHandle *p_itself);
 static int
 UTCDateTime_Convert(PyObject *v, UTCDateTime *ptr)
 {
-	return PyArg_Parse(v, "(HlH)", &ptr->highSeconds, &ptr->lowSeconds, &ptr->fraction);
+        return PyArg_Parse(v, "(HlH)", &ptr->highSeconds, &ptr->lowSeconds, &ptr->fraction);
 }
 
 static PyObject *
 UTCDateTime_New(UTCDateTime *ptr)
 {
-	return Py_BuildValue("(HlH)", ptr->highSeconds, ptr->lowSeconds, ptr->fraction);
+        return Py_BuildValue("(HlH)", ptr->highSeconds, ptr->lowSeconds, ptr->fraction);
 }
 
 /*
 ** Optional fsspec and fsref pointers. None will pass NULL
 */
+#ifndef __LP64__
 static int
 myPyMac_GetOptFSSpecPtr(PyObject *v, FSSpec **spec)
 {
-	if (v == Py_None) {
-		*spec = NULL;
-		return 1;
-	}
-	return PyMac_GetFSSpec(v, *spec);
+        if (v == Py_None) {
+                *spec = NULL;
+                return 1;
+        }
+        return PyMac_GetFSSpec(v, *spec);
 }
+#endif /* !__LP64__ */
 
 static int
 myPyMac_GetOptFSRefPtr(PyObject *v, FSRef **ref)
 {
-	if (v == Py_None) {
-		*ref = NULL;
-		return 1;
-	}
-	return PyMac_GetFSRef(v, *ref);
+        if (v == Py_None) {
+                *ref = NULL;
+                return 1;
+        }
+        return PyMac_GetFSRef(v, *ref);
 }
 
 /*
@@ -89,8 +110,55 @@ static PyObject *
 PyMac_BuildHFSUniStr255(HFSUniStr255 *itself)
 {
 
-	return Py_BuildValue("u#", itself->unicode, itself->length);
+        return Py_BuildValue("u#", itself->unicode, itself->length);
 }
+
+#ifndef __LP64__
+static OSErr
+_PyMac_GetFullPathname(FSSpec *fss, char *path, int len)
+{
+	FSRef fsr;
+	OSErr err;
+
+	*path = '\0';
+	err = FSpMakeFSRef(fss, &fsr);
+	if (err == fnfErr) {
+		/* FSSpecs can point to non-existing files, fsrefs can't. */
+		FSSpec fss2;
+		int tocopy;
+
+		err = FSMakeFSSpec(fss->vRefNum, fss->parID,
+				   (unsigned char*)"", &fss2);
+		if (err)
+			return err;
+		err = FSpMakeFSRef(&fss2, &fsr);
+		if (err)
+			return err;
+		err = (OSErr)FSRefMakePath(&fsr, (unsigned char*)path, len-1);
+		if (err)
+			return err;
+		/* This part is not 100% safe: we append the filename part, but
+		** I'm not sure that we don't run afoul of the various 8bit
+		** encodings here. Will have to look this up at some point...
+		*/
+		strcat(path, "/");
+		tocopy = fss->name[0];
+		if ((strlen(path) + tocopy) >= len)
+			tocopy = len - strlen(path) - 1;
+		if (tocopy > 0)
+			strncat(path, (char*)fss->name+1, tocopy);
+	}
+	else {
+		if (err)
+			return err;
+		err = (OSErr)FSRefMakePath(&fsr, (unsigned char*)path, len);
+		if (err)
+			return err;
+	}
+	return 0;
+}
+#endif /* !__LP64__ */
+
 
 static PyObject *File_Error;
 
@@ -108,12 +176,13 @@ typedef struct FSCatalogInfoObject {
 static PyObject *FSCatalogInfo_New(FSCatalogInfo *itself)
 {
 	FSCatalogInfoObject *it;
-	if (itself == NULL) return Py_None;
+	if (itself == NULL) { Py_INCREF(Py_None); return Py_None; }
 	it = PyObject_NEW(FSCatalogInfoObject, &FSCatalogInfo_Type);
 	if (it == NULL) return NULL;
 	it->ob_itself = *itself;
 	return (PyObject *)it;
 }
+
 static int FSCatalogInfo_Convert(PyObject *v, FSCatalogInfo *p_itself)
 {
 	if (!FSCatalogInfo_Check(v))
@@ -236,12 +305,28 @@ static int FSCatalogInfo_set_backupDate(FSCatalogInfoObject *self, PyObject *v, 
 
 static PyObject *FSCatalogInfo_get_permissions(FSCatalogInfoObject *self, void *closure)
 {
-	return Py_BuildValue("(llll)", self->ob_itself.permissions[0], self->ob_itself.permissions[1], self->ob_itself.permissions[2], self->ob_itself.permissions[3]);
+	FSPermissionInfo* info = (FSPermissionInfo*)&(self->ob_itself.permissions);
+	return Py_BuildValue("(llll)", info->userID, info->groupID, info->userAccess, info->mode);
 }
 
 static int FSCatalogInfo_set_permissions(FSCatalogInfoObject *self, PyObject *v, void *closure)
 {
-	return PyArg_Parse(v, "(llll)", &self->ob_itself.permissions[0], &self->ob_itself.permissions[1], &self->ob_itself.permissions[2], &self->ob_itself.permissions[3])-1;
+	long userID;
+	long groupID;
+	long userAccess;
+	long mode;
+	int r;
+
+	FSPermissionInfo* info = (FSPermissionInfo*)&(self->ob_itself.permissions);
+
+	r = PyArg_Parse(v, "(llll)", &userID, &groupID, &userAccess, &mode);
+	if (!r) {
+		return -1;
+	}
+	info->userID = userID;
+	info->groupID = groupID;
+	info->userAccess = userAccess;
+	info->mode = mode;
 	return 0;
 }
 
@@ -349,43 +434,43 @@ static PyGetSetDef FSCatalogInfo_getsetlist[] = {
 #define FSCatalogInfo_repr NULL
 
 #define FSCatalogInfo_hash NULL
-static int FSCatalogInfo_tp_init(PyObject *self, PyObject *args, PyObject *kwds)
+static int FSCatalogInfo_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
 	static char *kw[] = {
-			"nodeFlags",
-			"volume",
-			"parentDirID",
-			"nodeID",
-			"createDate",
-			"contentModDate",
-			"atributeModDate",
-			"accessDate",
-			"backupDate",
-			"valence",
-			"dataLogicalSize",
-			"dataPhysicalSize",
-			"rsrcLogicalSize",
-			"rsrcPhysicalSize",
-			"sharingFlags",
-			"userPrivileges"
-			, 0};
+	            "nodeFlags",
+	            "volume",
+	            "parentDirID",
+	            "nodeID",
+	            "createDate",
+	            "contentModDate",
+	            "atributeModDate",
+	            "accessDate",
+	            "backupDate",
+	            "valence",
+	            "dataLogicalSize",
+	            "dataPhysicalSize",
+	            "rsrcLogicalSize",
+	            "rsrcPhysicalSize",
+	            "sharingFlags",
+	            "userPrivileges"
+	            , 0};
 
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, "|HhllO&O&O&O&O&llllllb", kw, &((FSCatalogInfoObject *)self)->ob_itself.nodeFlags,
-			&((FSCatalogInfoObject *)self)->ob_itself.volume,
-			&((FSCatalogInfoObject *)self)->ob_itself.parentDirID,
-			&((FSCatalogInfoObject *)self)->ob_itself.nodeID,
-			UTCDateTime_Convert, &((FSCatalogInfoObject *)self)->ob_itself.createDate,
-			UTCDateTime_Convert, &((FSCatalogInfoObject *)self)->ob_itself.contentModDate,
-			UTCDateTime_Convert, &((FSCatalogInfoObject *)self)->ob_itself.attributeModDate,
-			UTCDateTime_Convert, &((FSCatalogInfoObject *)self)->ob_itself.accessDate,
-			UTCDateTime_Convert, &((FSCatalogInfoObject *)self)->ob_itself.backupDate,
-			&((FSCatalogInfoObject *)self)->ob_itself.valence,
-			&((FSCatalogInfoObject *)self)->ob_itself.dataLogicalSize,
-			&((FSCatalogInfoObject *)self)->ob_itself.dataPhysicalSize,
-			&((FSCatalogInfoObject *)self)->ob_itself.rsrcLogicalSize,
-			&((FSCatalogInfoObject *)self)->ob_itself.rsrcPhysicalSize,
-			&((FSCatalogInfoObject *)self)->ob_itself.sharingFlags,
-			&((FSCatalogInfoObject *)self)->ob_itself.userPrivileges))
+	if (!PyArg_ParseTupleAndKeywords(_args, _kwds, "|HhllO&O&O&O&O&llllllb", kw, &((FSCatalogInfoObject *)_self)->ob_itself.nodeFlags,
+	            &((FSCatalogInfoObject *)_self)->ob_itself.volume,
+	            &((FSCatalogInfoObject *)_self)->ob_itself.parentDirID,
+	            &((FSCatalogInfoObject *)_self)->ob_itself.nodeID,
+	            UTCDateTime_Convert, &((FSCatalogInfoObject *)_self)->ob_itself.createDate,
+	            UTCDateTime_Convert, &((FSCatalogInfoObject *)_self)->ob_itself.contentModDate,
+	            UTCDateTime_Convert, &((FSCatalogInfoObject *)_self)->ob_itself.attributeModDate,
+	            UTCDateTime_Convert, &((FSCatalogInfoObject *)_self)->ob_itself.accessDate,
+	            UTCDateTime_Convert, &((FSCatalogInfoObject *)_self)->ob_itself.backupDate,
+	            &((FSCatalogInfoObject *)_self)->ob_itself.valence,
+	            &((FSCatalogInfoObject *)_self)->ob_itself.dataLogicalSize,
+	            &((FSCatalogInfoObject *)_self)->ob_itself.dataPhysicalSize,
+	            &((FSCatalogInfoObject *)_self)->ob_itself.rsrcLogicalSize,
+	            &((FSCatalogInfoObject *)_self)->ob_itself.rsrcPhysicalSize,
+	            &((FSCatalogInfoObject *)_self)->ob_itself.sharingFlags,
+	            &((FSCatalogInfoObject *)_self)->ob_itself.userPrivileges))
 	{
 		return -1;
 	}
@@ -394,7 +479,7 @@ static int FSCatalogInfo_tp_init(PyObject *self, PyObject *args, PyObject *kwds)
 
 #define FSCatalogInfo_tp_alloc PyType_GenericAlloc
 
-static PyObject *FSCatalogInfo_tp_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+static PyObject *FSCatalogInfo_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
 {
 	PyObject *self;
 
@@ -455,6 +540,8 @@ static PyTypeObject FSCatalogInfo_Type = {
 
 /* ----------------------- Object type FInfo ------------------------ */
 
+#ifndef __LP64__
+
 static PyTypeObject FInfo_Type;
 
 #define FInfo_Check(x) ((x)->ob_type == &FInfo_Type || PyObject_TypeCheck((x), &FInfo_Type))
@@ -473,6 +560,7 @@ static PyObject *FInfo_New(FInfo *itself)
 	it->ob_itself = *itself;
 	return (PyObject *)it;
 }
+
 static int FInfo_Convert(PyObject *v, FInfo *p_itself)
 {
 	if (!FInfo_Check(v))
@@ -564,14 +652,14 @@ static PyGetSetDef FInfo_getsetlist[] = {
 #define FInfo_repr NULL
 
 #define FInfo_hash NULL
-static int FInfo_tp_init(PyObject *self, PyObject *args, PyObject *kwds)
+static int FInfo_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
 	FInfo *itself = NULL;
 	static char *kw[] = {"itself", 0};
 
-	if (PyArg_ParseTupleAndKeywords(args, kwds, "|O&", kw, FInfo_Convert, &itself))
+	if (PyArg_ParseTupleAndKeywords(_args, _kwds, "|O&", kw, FInfo_Convert, &itself))
 	{
-		if (itself) memcpy(&((FInfoObject *)self)->ob_itself, itself, sizeof(FInfo));
+		if (itself) memcpy(&((FInfoObject *)_self)->ob_itself, itself, sizeof(FInfo));
 		return 0;
 	}
 	return -1;
@@ -579,7 +667,7 @@ static int FInfo_tp_init(PyObject *self, PyObject *args, PyObject *kwds)
 
 #define FInfo_tp_alloc PyType_GenericAlloc
 
-static PyObject *FInfo_tp_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+static PyObject *FInfo_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
 {
 	PyObject *self;
 
@@ -635,6 +723,7 @@ static PyTypeObject FInfo_Type = {
 	FInfo_tp_free, /* tp_free */
 };
 
+#endif /* !__LP64__ */
 /* --------------------- End object type FInfo ---------------------- */
 
 
@@ -660,6 +749,7 @@ static PyObject *Alias_New(AliasHandle itself)
 	it->ob_freeit = NULL;
 	return (PyObject *)it;
 }
+
 static int Alias_Convert(PyObject *v, AliasHandle *p_itself)
 {
 	if (!Alias_Check(v))
@@ -681,6 +771,7 @@ static void Alias_dealloc(AliasObject *self)
 	self->ob_type->tp_free((PyObject *)self);
 }
 
+#ifndef __LP64__
 static PyObject *Alias_ResolveAlias(AliasObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -770,6 +861,7 @@ static PyObject *Alias_FollowFinderAlias(AliasObject *_self, PyObject *_args)
 	                     wasChanged);
 	return _res;
 }
+#endif /* !__LP64__ */
 
 static PyObject *Alias_FSResolveAliasWithMountFlags(AliasObject *_self, PyObject *_args)
 {
@@ -843,6 +935,7 @@ static PyObject *Alias_FSFollowFinderAlias(AliasObject *_self, PyObject *_args)
 }
 
 static PyMethodDef Alias_methods[] = {
+#ifndef __LP64__
 	{"ResolveAlias", (PyCFunction)Alias_ResolveAlias, 1,
 	 PyDoc_STR("(FSSpec fromFile) -> (FSSpec target, Boolean wasChanged)")},
 	{"GetAliasInfo", (PyCFunction)Alias_GetAliasInfo, 1,
@@ -851,6 +944,7 @@ static PyMethodDef Alias_methods[] = {
 	 PyDoc_STR("(FSSpec fromFile, unsigned long mountFlags) -> (FSSpec target, Boolean wasChanged)")},
 	{"FollowFinderAlias", (PyCFunction)Alias_FollowFinderAlias, 1,
 	 PyDoc_STR("(FSSpec fromFile, Boolean logon) -> (FSSpec target, Boolean wasChanged)")},
+#endif /* !__LP64__ */
 	{"FSResolveAliasWithMountFlags", (PyCFunction)Alias_FSResolveAliasWithMountFlags, 1,
 	 PyDoc_STR("(FSRef fromFile, unsigned long mountFlags) -> (FSRef target, Boolean wasChanged)")},
 	{"FSResolveAlias", (PyCFunction)Alias_FSResolveAlias, 1,
@@ -863,14 +957,14 @@ static PyMethodDef Alias_methods[] = {
 static PyObject *Alias_get_data(AliasObject *self, void *closure)
 {
 	int size;
-				PyObject *rv;
-				
-				size = GetHandleSize((Handle)self->ob_itself);
-				HLock((Handle)self->ob_itself);
-				rv = PyString_FromStringAndSize(*(Handle)self->ob_itself, size);
-				HUnlock((Handle)self->ob_itself);
-				return rv;
-			
+	                    PyObject *rv;
+
+	                    size = GetHandleSize((Handle)self->ob_itself);
+	                    HLock((Handle)self->ob_itself);
+	                    rv = PyString_FromStringAndSize(*(Handle)self->ob_itself, size);
+	                    HUnlock((Handle)self->ob_itself);
+	                    return rv;
+	            
 }
 
 #define Alias_set_data NULL
@@ -886,7 +980,7 @@ static PyGetSetDef Alias_getsetlist[] = {
 #define Alias_repr NULL
 
 #define Alias_hash NULL
-static int Alias_tp_init(PyObject *self, PyObject *args, PyObject *kwds)
+static int Alias_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
 	AliasHandle itself = NULL;
 	char *rawdata = NULL;
@@ -894,7 +988,7 @@ static int Alias_tp_init(PyObject *self, PyObject *args, PyObject *kwds)
 	Handle h;
 	static char *kw[] = {"itself", "rawdata", 0};
 
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, "|O&s#", kw, Alias_Convert, &itself, &rawdata, &rawdatalen))
+	if (!PyArg_ParseTupleAndKeywords(_args, _kwds, "|O&s#", kw, Alias_Convert, &itself, &rawdata, &rawdatalen))
 	return -1;
 	if (itself && rawdata)
 	{
@@ -916,16 +1010,16 @@ static int Alias_tp_init(PyObject *self, PyObject *args, PyObject *kwds)
 		HLock(h);
 		memcpy((char *)*h, rawdata, rawdatalen);
 		HUnlock(h);
-		((AliasObject *)self)->ob_itself = (AliasHandle)h;
+		((AliasObject *)_self)->ob_itself = (AliasHandle)h;
 		return 0;
 	}
-	((AliasObject *)self)->ob_itself = itself;
+	((AliasObject *)_self)->ob_itself = itself;
 	return 0;
 }
 
 #define Alias_tp_alloc PyType_GenericAlloc
 
-static PyObject *Alias_tp_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+static PyObject *Alias_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
 {
 	PyObject *self;
 
@@ -985,6 +1079,7 @@ static PyTypeObject Alias_Type = {
 
 
 /* ----------------------- Object type FSSpec ----------------------- */
+#ifndef __LP64__
 
 static PyTypeObject FSSpec_Type;
 
@@ -1253,49 +1348,6 @@ static PyObject *FSSpec_IsAliasFile(FSSpecObject *_self, PyObject *_args)
 	return _res;
 }
 
-static OSErr
-_PyMac_GetFullPathname(FSSpec *fss, char *path, int len)
-{
-	FSRef fsr;
-	OSErr err;
-
-	*path = '\0';
-	err = FSpMakeFSRef(fss, &fsr);
-	if (err == fnfErr) {
-		/* FSSpecs can point to non-existing files, fsrefs can't. */
-		FSSpec fss2;
-		int tocopy;
-
-		err = FSMakeFSSpec(fss->vRefNum, fss->parID, "", &fss2);
-		if (err)
-			return err;
-		err = FSpMakeFSRef(&fss2, &fsr);
-		if (err)
-			return err;
-		err = (OSErr)FSRefMakePath(&fsr, path, len-1);
-		if (err)
-			return err;
-		/* This part is not 100% safe: we append the filename part, but
-		** I'm not sure that we don't run afoul of the various 8bit
-		** encodings here. Will have to look this up at some point...
-		*/
-		strcat(path, "/");
-		tocopy = fss->name[0];
-		if ((strlen(path) + tocopy) >= len)
-			tocopy = len - strlen(path) - 1;
-		if (tocopy > 0)
-			strncat(path, fss->name+1, tocopy);
-	}
-	else {
-		if (err)
-			return err;
-		err = (OSErr)FSRefMakePath(&fsr, path, len);
-		if (err)
-			return err;
-	}
-	return 0;
-}
-
 static PyObject *FSSpec_as_pathname(FSSpecObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -1304,11 +1356,11 @@ static PyObject *FSSpec_as_pathname(FSSpecObject *_self, PyObject *_args)
 	OSErr err;
 
 	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
+	        return NULL;
 	err = _PyMac_GetFullPathname(&_self->ob_itself, strbuf, sizeof(strbuf));
 	if ( err ) {
-		PyMac_Error(err);
-		return NULL;
+	        PyMac_Error(err);
+	        return NULL;
 	}
 	_res = PyString_FromString(strbuf);
 	return _res;
@@ -1320,9 +1372,9 @@ static PyObject *FSSpec_as_tuple(FSSpecObject *_self, PyObject *_args)
 	PyObject *_res = NULL;
 
 	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
-	_res = Py_BuildValue("(iis#)", _self->ob_itself.vRefNum, _self->ob_itself.parID, 
-						&_self->ob_itself.name[1], _self->ob_itself.name[0]);
+	        return NULL;
+	_res = Py_BuildValue("(iis#)", _self->ob_itself.vRefNum, _self->ob_itself.parID,
+	                                        &_self->ob_itself.name[1], _self->ob_itself.name[0]);
 	return _res;
 
 }
@@ -1384,22 +1436,22 @@ static PyObject * FSSpec_repr(FSSpecObject *self)
 {
 	char buf[512];
 	PyOS_snprintf(buf, sizeof(buf), "%s((%d, %ld, '%.*s'))",
-			self->ob_type->tp_name,
-			self->ob_itself.vRefNum, 
-			self->ob_itself.parID,
-			self->ob_itself.name[0], self->ob_itself.name+1);
+	        self->ob_type->tp_name,
+	        self->ob_itself.vRefNum,
+	        self->ob_itself.parID,
+	        self->ob_itself.name[0], self->ob_itself.name+1);
 	return PyString_FromString(buf);
 }
 
 #define FSSpec_hash NULL
-static int FSSpec_tp_init(PyObject *self, PyObject *args, PyObject *kwds)
+static int FSSpec_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
 	PyObject *v = NULL;
 	char *rawdata = NULL;
 	int rawdatalen = 0;
 	static char *kw[] = {"itself", "rawdata", 0};
 
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, "|Os#", kw, &v, &rawdata, &rawdatalen))
+	if (!PyArg_ParseTupleAndKeywords(_args, _kwds, "|Os#", kw, &v, &rawdata, &rawdatalen))
 	return -1;
 	if (v && rawdata)
 	{
@@ -1418,16 +1470,16 @@ static int FSSpec_tp_init(PyObject *self, PyObject *args, PyObject *kwds)
 			PyErr_SetString(PyExc_TypeError, "FSSpec rawdata incorrect size");
 			return -1;
 		}
-		memcpy(&((FSSpecObject *)self)->ob_itself, rawdata, rawdatalen);
+		memcpy(&((FSSpecObject *)_self)->ob_itself, rawdata, rawdatalen);
 		return 0;
 	}
-	if (PyMac_GetFSSpec(v, &((FSSpecObject *)self)->ob_itself)) return 0;
+	if (PyMac_GetFSSpec(v, &((FSSpecObject *)_self)->ob_itself)) return 0;
 	return -1;
 }
 
 #define FSSpec_tp_alloc PyType_GenericAlloc
 
-static PyObject *FSSpec_tp_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+static PyObject *FSSpec_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
 {
 	PyObject *self;
 
@@ -1483,6 +1535,7 @@ static PyTypeObject FSSpec_Type = {
 	FSSpec_tp_free, /* tp_free */
 };
 
+#endif /* !__LP64__ */
 /* --------------------- End object type FSSpec --------------------- */
 
 
@@ -1563,7 +1616,9 @@ static PyObject *FSRef_FSCreateFileUnicode(FSRefObject *_self, PyObject *_args)
 	FSCatalogInfoBitmap whichInfo;
 	FSCatalogInfo catalogInfo;
 	FSRef newRef;
+#ifndef __LP64__
 	FSSpec newSpec;
+#endif
 	if (!PyArg_ParseTuple(_args, "u#lO&",
 	                      &nameLength__in__, &nameLength__in_len__,
 	                      &whichInfo,
@@ -1575,11 +1630,22 @@ static PyObject *FSRef_FSCreateFileUnicode(FSRefObject *_self, PyObject *_args)
 	                           whichInfo,
 	                           &catalogInfo,
 	                           &newRef,
-	                           &newSpec);
+#ifndef __LP64__
+	                           &newSpec
+#else	/* __LP64__ */
+				   NULL
+#endif /* __LP64__*/
+				  );
 	if (_err != noErr) return PyMac_Error(_err);
+
+#ifndef __LP64__
 	_res = Py_BuildValue("O&O&",
 	                     FSRef_New, &newRef,
 	                     FSSpec_New, &newSpec);
+#else /* __LP64__ */
+	_res = Py_BuildValue("O&O", FSRef_New, &newRef, Py_None);
+#endif /* __LP64__ */
+
 	return _res;
 }
 
@@ -1593,7 +1659,9 @@ static PyObject *FSRef_FSCreateDirectoryUnicode(FSRefObject *_self, PyObject *_a
 	FSCatalogInfoBitmap whichInfo;
 	FSCatalogInfo catalogInfo;
 	FSRef newRef;
+#ifndef __LP64__
 	FSSpec newSpec;
+#endif /* !__LP64__ */
 	UInt32 newDirID;
 	if (!PyArg_ParseTuple(_args, "u#lO&",
 	                      &nameLength__in__, &nameLength__in_len__,
@@ -1606,13 +1674,25 @@ static PyObject *FSRef_FSCreateDirectoryUnicode(FSRefObject *_self, PyObject *_a
 	                                whichInfo,
 	                                &catalogInfo,
 	                                &newRef,
+#ifndef __LP64__
 	                                &newSpec,
+#else /* !__LP64__ */
+					NULL,
+#endif /* !__LP64__ */
 	                                &newDirID);
 	if (_err != noErr) return PyMac_Error(_err);
+
+#ifndef __LP64__
 	_res = Py_BuildValue("O&O&l",
 	                     FSRef_New, &newRef,
 	                     FSSpec_New, &newSpec,
 	                     newDirID);
+#else	/* __LP64__ */
+	_res = Py_BuildValue("O&Ol",
+	                     FSRef_New, &newRef,
+	                     Py_None,
+	                     newDirID);
+#endif /* __LP64__ */
 	return _res;
 }
 
@@ -1694,7 +1774,9 @@ static PyObject *FSRef_FSGetCatalogInfo(FSRefObject *_self, PyObject *_args)
 	FSCatalogInfoBitmap whichInfo;
 	FSCatalogInfo catalogInfo;
 	HFSUniStr255 outName;
+#ifndef __LP64__
 	FSSpec fsSpec;
+#endif /* !__LP64__ */
 	FSRef parentRef;
 	if (!PyArg_ParseTuple(_args, "l",
 	                      &whichInfo))
@@ -1703,14 +1785,27 @@ static PyObject *FSRef_FSGetCatalogInfo(FSRefObject *_self, PyObject *_args)
 	                        whichInfo,
 	                        &catalogInfo,
 	                        &outName,
+#ifndef __LP64__
 	                        &fsSpec,
+#else	/* __LP64__ */
+				NULL,
+#endif /* __LP64__ */
 	                        &parentRef);
 	if (_err != noErr) return PyMac_Error(_err);
+
+#ifndef __LP64__
 	_res = Py_BuildValue("O&O&O&O&",
 	                     FSCatalogInfo_New, &catalogInfo,
 	                     PyMac_BuildHFSUniStr255, &outName,
 	                     FSSpec_New, &fsSpec,
 	                     FSRef_New, &parentRef);
+#else	/* __LP64__ */
+	_res = Py_BuildValue("O&O&OO&",
+	                     FSCatalogInfo_New, &catalogInfo,
+	                     PyMac_BuildHFSUniStr255, &outName,
+	                     Py_None,
+	                     FSRef_New, &parentRef);
+#endif /* __LP64__ */
 	return _res;
 }
 
@@ -1779,7 +1874,7 @@ static PyObject *FSRef_FSOpenFork(FSRefObject *_self, PyObject *_args)
 	UniCharCount forkNameLength__len__;
 	int forkNameLength__in_len__;
 	SInt8 permissions;
-	SInt16 forkRefNum;
+	FSIORefNum forkRefNum;
 	if (!PyArg_ParseTuple(_args, "u#b",
 	                      &forkNameLength__in__, &forkNameLength__in_len__,
 	                      &permissions))
@@ -1857,10 +1952,10 @@ static PyObject *FSRef_FSRefMakePath(FSRefObject *_self, PyObject *_args)
 	UInt32 maxPathSize = MAXPATHNAME;
 
 	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
+	        return NULL;
 	_err = FSRefMakePath(&_self->ob_itself,
-						 path,
-						 maxPathSize);
+	                                         path,
+	                                         maxPathSize);
 	if (_err != noErr) return PyMac_Error(_err);
 	_res = Py_BuildValue("s", path);
 	return _res;
@@ -1872,7 +1967,7 @@ static PyObject *FSRef_as_pathname(FSRefObject *_self, PyObject *_args)
 	PyObject *_res = NULL;
 
 	if (!PyArg_ParseTuple(_args, ""))
-		return NULL;
+	        return NULL;
 	_res = FSRef_FSRefMakePath(_self, _args);
 	return _res;
 
@@ -1936,14 +2031,14 @@ static PyGetSetDef FSRef_getsetlist[] = {
 #define FSRef_repr NULL
 
 #define FSRef_hash NULL
-static int FSRef_tp_init(PyObject *self, PyObject *args, PyObject *kwds)
+static int FSRef_tp_init(PyObject *_self, PyObject *_args, PyObject *_kwds)
 {
 	PyObject *v = NULL;
 	char *rawdata = NULL;
 	int rawdatalen = 0;
 	static char *kw[] = {"itself", "rawdata", 0};
 
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, "|Os#", kw, &v, &rawdata, &rawdatalen))
+	if (!PyArg_ParseTupleAndKeywords(_args, _kwds, "|Os#", kw, &v, &rawdata, &rawdatalen))
 	return -1;
 	if (v && rawdata)
 	{
@@ -1962,16 +2057,16 @@ static int FSRef_tp_init(PyObject *self, PyObject *args, PyObject *kwds)
 			PyErr_SetString(PyExc_TypeError, "FSRef rawdata incorrect size");
 			return -1;
 		}
-		memcpy(&((FSRefObject *)self)->ob_itself, rawdata, rawdatalen);
+		memcpy(&((FSRefObject *)_self)->ob_itself, rawdata, rawdatalen);
 		return 0;
 	}
-	if (PyMac_GetFSRef(v, &((FSRefObject *)self)->ob_itself)) return 0;
+	if (PyMac_GetFSRef(v, &((FSRefObject *)_self)->ob_itself)) return 0;
 	return -1;
 }
 
 #define FSRef_tp_alloc PyType_GenericAlloc
 
-static PyObject *FSRef_tp_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+static PyObject *FSRef_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
 {
 	PyObject *self;
 
@@ -2029,7 +2124,7 @@ static PyTypeObject FSRef_Type = {
 
 /* --------------------- End object type FSRef ---------------------- */
 
-
+#ifndef __LP64__
 static PyObject *File_UnmountVol(PyObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -2557,6 +2652,7 @@ static PyObject *File_FSMakeFSSpec(PyObject *_self, PyObject *_args)
 	                     FSSpec_New, &spec);
 	return _res;
 }
+#endif /* !__LP64__ */
 
 static PyObject *File_FSGetForkPosition(PyObject *_self, PyObject *_args)
 {
@@ -2780,6 +2876,7 @@ static PyObject *File_FNNotifyAll(PyObject *_self, PyObject *_args)
 	return _res;
 }
 
+#ifndef __LP64__
 static PyObject *File_NewAlias(PyObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -2928,6 +3025,7 @@ static PyObject *File_ResolveAliasFileWithMountFlagsNoUI(PyObject *_self, PyObje
 	                     wasAliased);
 	return _res;
 }
+#endif /* !__LP64__ */
 
 static PyObject *File_FSNewAlias(PyObject *_self, PyObject *_args)
 {
@@ -3032,19 +3130,20 @@ static PyObject *File_pathname(PyObject *_self, PyObject *_args)
 	PyObject *obj;
 
 	if (!PyArg_ParseTuple(_args, "O", &obj))
-		return NULL;
+	        return NULL;
 	if (PyString_Check(obj)) {
-		Py_INCREF(obj);
-		return obj;
+	        Py_INCREF(obj);
+	        return obj;
 	}
 	if (PyUnicode_Check(obj))
-		return PyUnicode_AsEncodedString(obj, "utf8", "strict");
+	        return PyUnicode_AsEncodedString(obj, "utf8", "strict");
 	_res = PyObject_CallMethod(obj, "as_pathname", NULL);
 	return _res;
 
 }
 
 static PyMethodDef File_methods[] = {
+#ifndef __LP64__
 	{"UnmountVol", (PyCFunction)File_UnmountVol, 1,
 	 PyDoc_STR("(Str63 volName, short vRefNum) -> None")},
 	{"FlushVol", (PyCFunction)File_FlushVol, 1,
@@ -3095,6 +3194,7 @@ static PyMethodDef File_methods[] = {
 	 PyDoc_STR("(short vRefNum, long dirID, Str255 oldName, long newDirID, Str255 newName) -> None")},
 	{"FSMakeFSSpec", (PyCFunction)File_FSMakeFSSpec, 1,
 	 PyDoc_STR("(short vRefNum, long dirID, Str255 fileName) -> (FSSpec spec)")},
+#endif /* !__LP64__*/
 	{"FSGetForkPosition", (PyCFunction)File_FSGetForkPosition, 1,
 	 PyDoc_STR("(SInt16 forkRefNum) -> (SInt64 position)")},
 	{"FSSetForkPosition", (PyCFunction)File_FSSetForkPosition, 1,
@@ -3119,6 +3219,7 @@ static PyMethodDef File_methods[] = {
 	 PyDoc_STR("(UInt8 * path, FNMessage message, OptionBits flags) -> None")},
 	{"FNNotifyAll", (PyCFunction)File_FNNotifyAll, 1,
 	 PyDoc_STR("(FNMessage message, OptionBits flags) -> None")},
+#ifndef  __LP64__
 	{"NewAlias", (PyCFunction)File_NewAlias, 1,
 	 PyDoc_STR("(FSSpec fromFile, FSSpec target) -> (AliasHandle alias)")},
 	{"NewAliasMinimalFromFullPath", (PyCFunction)File_NewAliasMinimalFromFullPath, 1,
@@ -3131,6 +3232,7 @@ static PyMethodDef File_methods[] = {
 	 PyDoc_STR("(FSSpec fromFile, FSSpec target, AliasHandle alias) -> (Boolean wasChanged)")},
 	{"ResolveAliasFileWithMountFlagsNoUI", (PyCFunction)File_ResolveAliasFileWithMountFlagsNoUI, 1,
 	 PyDoc_STR("(FSSpec theSpec, Boolean resolveAliasChains, unsigned long mountFlags) -> (FSSpec theSpec, Boolean targetIsFolder, Boolean wasAliased)")},
+#endif /* !__LP64__ */
 	{"FSNewAlias", (PyCFunction)File_FSNewAlias, 1,
 	 PyDoc_STR("(FSRef fromFile, FSRef target) -> (AliasHandle inAlias)")},
 	{"FSResolveAliasFileWithMountFlags", (PyCFunction)File_FSResolveAliasFileWithMountFlags, 1,
@@ -3145,90 +3247,98 @@ static PyMethodDef File_methods[] = {
 };
 
 
-
+#ifndef __LP64__
 int
 PyMac_GetFSSpec(PyObject *v, FSSpec *spec)
 {
-	Str255 path;
-	short refnum;
-	long parid;
-	OSErr err;
-	FSRef fsr;
+        Str255 path;
+        short refnum;
+        long parid;
+        OSErr err;
+        FSRef fsr;
 
-	if (FSSpec_Check(v)) {
-		*spec = ((FSSpecObject *)v)->ob_itself;
-		return 1;
-	}
+        if (FSSpec_Check(v)) {
+                *spec = ((FSSpecObject *)v)->ob_itself;
+                return 1;
+        }
 
-	if (PyArg_Parse(v, "(hlO&)",
-						&refnum, &parid, PyMac_GetStr255, &path)) {
-		err = FSMakeFSSpec(refnum, parid, path, spec);
-		if ( err && err != fnfErr ) {
-			PyMac_Error(err);
-			return 0;
-		}
-		return 1;
-	}
-	PyErr_Clear();
-	/* Otherwise we try to go via an FSRef. On OSX we go all the way,
-	** on OS9 we accept only a real FSRef object
-	*/
-	if ( PyMac_GetFSRef(v, &fsr) ) {
-		err = FSGetCatalogInfo(&fsr, kFSCatInfoNone, NULL, NULL, spec, NULL);
-		if (err != noErr) {
-			PyMac_Error(err);
-			return 0;
-		}
-		return 1;
-	}
-	return 0;
+        if (PyArg_Parse(v, "(hlO&)",
+                                                &refnum, &parid, PyMac_GetStr255, &path)) {
+                err = FSMakeFSSpec(refnum, parid, path, spec);
+                if ( err && err != fnfErr ) {
+                        PyMac_Error(err);
+                        return 0;
+                }
+                return 1;
+        }
+        PyErr_Clear();
+        /* Otherwise we try to go via an FSRef. On OSX we go all the way,
+        ** on OS9 we accept only a real FSRef object
+        */
+        if ( PyMac_GetFSRef(v, &fsr) ) {
+                err = FSGetCatalogInfo(&fsr, kFSCatInfoNone, NULL, NULL, spec, NULL);
+                if (err != noErr) {
+                        PyMac_Error(err);
+                        return 0;
+                }
+                return 1;
+        }
+        return 0;
 }
+#endif /* !__LP64__ */
 
 int
 PyMac_GetFSRef(PyObject *v, FSRef *fsr)
 {
-	OSStatus err;
-	FSSpec fss;
-	
-	if (FSRef_Check(v)) {
-		*fsr = ((FSRefObject *)v)->ob_itself;
-		return 1;
-	}
+        OSStatus err;
+#ifndef __LP64__
+        FSSpec fss;
+#endif /* !__LP64__ */
 
-	/* On OSX we now try a pathname */
-	if ( PyString_Check(v) || PyUnicode_Check(v)) {
-		char *path = NULL;
-		if (!PyArg_Parse(v, "et", Py_FileSystemDefaultEncoding, &path))
-			return NULL;
-		if ( (err=FSPathMakeRef(path, fsr, NULL)) ) {
-			PyMac_Error(err);
-		}
-		PyMem_Free(path);
-		return !err;
-	}
-	/* XXXX Should try unicode here too */
-	/* Otherwise we try to go via an FSSpec */
-	if (FSSpec_Check(v)) {
-		fss = ((FSSpecObject *)v)->ob_itself;
-		if ((err=FSpMakeFSRef(&fss, fsr)) == 0)
-			return 1;
-		PyMac_Error(err);
-		return 0;
-	}
-	PyErr_SetString(PyExc_TypeError, "FSRef, FSSpec or pathname required");
-	return 0;
+        if (FSRef_Check(v)) {
+                *fsr = ((FSRefObject *)v)->ob_itself;
+                return 1;
+        }
+
+        /* On OSX we now try a pathname */
+        if ( PyString_Check(v) || PyUnicode_Check(v)) {
+                char *path = NULL;
+                if (!PyArg_Parse(v, "et", Py_FileSystemDefaultEncoding, &path))
+                        return 0;
+                if ( (err=FSPathMakeRef((unsigned char*)path, fsr, NULL)) )
+                        PyMac_Error(err);
+                PyMem_Free(path);
+                return !err;
+        }
+        /* XXXX Should try unicode here too */
+
+#ifndef __LP64__
+        /* Otherwise we try to go via an FSSpec */
+        if (FSSpec_Check(v)) {
+                fss = ((FSSpecObject *)v)->ob_itself;
+                if ((err=FSpMakeFSRef(&fss, fsr)) == 0)
+                        return 1;
+                PyMac_Error(err);
+                return 0;
+        }
+#endif /* !__LP64__ */
+
+        PyErr_SetString(PyExc_TypeError, "FSRef, FSSpec or pathname required");
+        return 0;
 }
 
+#ifndef __LP64__
 extern PyObject *
 PyMac_BuildFSSpec(FSSpec *spec)
 {
-	return FSSpec_New(spec);
+        return FSSpec_New(spec);
 }
+#endif /* !__LP64__ */
 
 extern PyObject *
 PyMac_BuildFSRef(FSRef *spec)
 {
-	return FSRef_New(spec);
+        return FSRef_New(spec);
 }
 
 
@@ -3238,10 +3348,12 @@ void init_File(void)
 	PyObject *d;
 
 
-
+#ifndef __LP64__
 	PyMac_INIT_TOOLBOX_OBJECT_NEW(FSSpec *, PyMac_BuildFSSpec);
-	PyMac_INIT_TOOLBOX_OBJECT_NEW(FSRef *, PyMac_BuildFSRef);
 	PyMac_INIT_TOOLBOX_OBJECT_CONVERT(FSSpec, PyMac_GetFSSpec);
+#endif /* !__LP64__ */
+
+	PyMac_INIT_TOOLBOX_OBJECT_NEW(FSRef *, PyMac_BuildFSRef);
 	PyMac_INIT_TOOLBOX_OBJECT_CONVERT(FSRef, PyMac_GetFSRef);
 
 
@@ -3258,6 +3370,8 @@ void init_File(void)
 	/* Backward-compatible name */
 	Py_INCREF(&FSCatalogInfo_Type);
 	PyModule_AddObject(m, "FSCatalogInfoType", (PyObject *)&FSCatalogInfo_Type);
+
+#ifndef __LP64__
 	FInfo_Type.ob_type = &PyType_Type;
 	if (PyType_Ready(&FInfo_Type) < 0) return;
 	Py_INCREF(&FInfo_Type);
@@ -3265,6 +3379,7 @@ void init_File(void)
 	/* Backward-compatible name */
 	Py_INCREF(&FInfo_Type);
 	PyModule_AddObject(m, "FInfoType", (PyObject *)&FInfo_Type);
+#endif /* !__LP64__ */
 	Alias_Type.ob_type = &PyType_Type;
 	if (PyType_Ready(&Alias_Type) < 0) return;
 	Py_INCREF(&Alias_Type);
@@ -3272,6 +3387,8 @@ void init_File(void)
 	/* Backward-compatible name */
 	Py_INCREF(&Alias_Type);
 	PyModule_AddObject(m, "AliasType", (PyObject *)&Alias_Type);
+
+#ifndef __LP64__
 	FSSpec_Type.ob_type = &PyType_Type;
 	if (PyType_Ready(&FSSpec_Type) < 0) return;
 	Py_INCREF(&FSSpec_Type);
@@ -3279,6 +3396,7 @@ void init_File(void)
 	/* Backward-compatible name */
 	Py_INCREF(&FSSpec_Type);
 	PyModule_AddObject(m, "FSSpecType", (PyObject *)&FSSpec_Type);
+#endif /* !__LP64__ */
 	FSRef_Type.ob_type = &PyType_Type;
 	if (PyType_Ready(&FSRef_Type) < 0) return;
 	Py_INCREF(&FSRef_Type);

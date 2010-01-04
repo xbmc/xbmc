@@ -12,10 +12,13 @@ This software comes with no warranty. Use at your own risk.
 #include "Python.h"
 
 #include <stdio.h>
-#include <errno.h>
 #include <locale.h>
 #include <string.h>
 #include <ctype.h>
+
+#ifdef HAVE_ERRNO_H
+#include <errno.h>
+#endif
 
 #ifdef HAVE_LANGINFO_H
 #include <langinfo.h>
@@ -278,7 +281,7 @@ PyLocale_strcoll(PyObject* self, PyObject* args)
     wchar_t *ws1 = NULL, *ws2 = NULL;
     int rel1 = 0, rel2 = 0, len1, len2;
     
-    if (!PyArg_ParseTuple(args, "OO:strcoll", &os1, &os2))
+    if (!PyArg_UnpackTuple(args, "strcoll", 2, 2, &os1, &os2))
         return NULL;
     /* If both arguments are byte strings, use strcoll.  */
     if (PyString_Check(os1) && PyString_Check(os2))
@@ -298,7 +301,9 @@ PyLocale_strcoll(PyObject* self, PyObject* args)
     if (!PyUnicode_Check(os2)) {
         os2 = PyUnicode_FromObject(os2);
         if (!os2) {
-            Py_DECREF(os1);
+            if (rel1) {
+                Py_DECREF(os1);
+            }
             return NULL;
         } 
         rel2 = 1;
@@ -357,7 +362,7 @@ PyLocale_strxfrm(PyObject* self, PyObject* args)
     buf = PyMem_Malloc(n1);
     if (!buf)
         return PyErr_NoMemory();
-    n2 = strxfrm(buf, s, n1);
+    n2 = strxfrm(buf, s, n1) + 1;
     if (n2 > n1) {
         /* more space needed */
         buf = PyMem_Realloc(buf, n2);
@@ -382,11 +387,11 @@ PyLocale_getdefaultlocale(PyObject* self)
     if (GetLocaleInfo(LOCALE_USER_DEFAULT,
                       LOCALE_SISO639LANGNAME,
                       locale, sizeof(locale))) {
-        int i = strlen(locale);
+        Py_ssize_t i = strlen(locale);
         locale[i++] = '_';
         if (GetLocaleInfo(LOCALE_USER_DEFAULT,
                           LOCALE_SISO3166CTRYNAME,
-                          locale+i, sizeof(locale)-i))
+                          locale+i, (int)(sizeof(locale)-i)))
             return Py_BuildValue("ss", locale, encoding);
     }
 
@@ -426,7 +431,7 @@ static char *mac_getscript(void)
     /* XXX which one is mac-latin2? */
     }
     if (!name) {
-        /* This leaks a an object. */
+        /* This leaks an object. */
         name = CFStringConvertEncodingToIANACharSetName(enc);
     }
     return (char *)CFStringGetCStringPtr(name, 0); 
@@ -441,7 +446,7 @@ PyLocale_getdefaultlocale(PyObject* self)
 
 #ifdef HAVE_LANGINFO_H
 #define LANGINFO(X) {#X, X}
-struct langinfo_constant{
+static struct langinfo_constant{
 	char* name;
 	int value;
 } langinfo_constants[] = 
@@ -583,7 +588,7 @@ static PyObject*
 PyIntl_gettext(PyObject* self, PyObject *args)
 {
 	char *in;
-	if (!PyArg_ParseTuple(args, "z", &in))
+	if (!PyArg_ParseTuple(args, "s", &in))
 		return 0;
 	return PyString_FromString(gettext(in));
 }
@@ -596,7 +601,7 @@ static PyObject*
 PyIntl_dgettext(PyObject* self, PyObject *args)
 {
 	char *domain, *in;
-	if (!PyArg_ParseTuple(args, "zz", &domain, &in))
+	if (!PyArg_ParseTuple(args, "zs", &domain, &in))
 		return 0;
 	return PyString_FromString(dgettext(domain, in));
 }
@@ -610,7 +615,7 @@ PyIntl_dcgettext(PyObject *self, PyObject *args)
 {
 	char *domain, *msgid;
 	int category;
-	if (!PyArg_ParseTuple(args, "zzi", &domain, &msgid, &category))
+	if (!PyArg_ParseTuple(args, "zsi", &domain, &msgid, &category))
 		return 0;
 	return PyString_FromString(dcgettext(domain,msgid,category));
 }
@@ -640,9 +645,13 @@ PyDoc_STRVAR(bindtextdomain__doc__,
 static PyObject*
 PyIntl_bindtextdomain(PyObject* self,PyObject*args)
 {
-	char *domain,*dirname;
-	if (!PyArg_ParseTuple(args, "zz", &domain, &dirname))
+	char *domain, *dirname;
+	if (!PyArg_ParseTuple(args, "sz", &domain, &dirname))
 		return 0;
+	if (!strlen(domain)) {
+		PyErr_SetString(Error, "domain must be a non-empty string");
+		return 0;
+	}
 	dirname = bindtextdomain(domain, dirname);
 	if (!dirname) {
 		PyErr_SetFromErrno(PyExc_OSError);

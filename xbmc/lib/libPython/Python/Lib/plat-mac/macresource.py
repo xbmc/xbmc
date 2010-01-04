@@ -1,5 +1,8 @@
 """macresource - Locate and open the resources needed for a script."""
 
+from warnings import warnpy3k
+warnpy3k("In 3.x, the macresource module is removed.", stacklevel=2)
+
 from Carbon import Res
 import os
 import sys
@@ -76,8 +79,8 @@ def open_pathname(pathname, verbose=0):
     AppleSingle file"""
     try:
         refno = Res.FSpOpenResFile(pathname, 1)
-    except Res.Error, arg:
-        if arg[0] in (-37, -39):
+    except (AttributeError, Res.Error), arg:
+        if isinstance(arg, AttributeError) or arg[0] in (-37, -39):
             # No resource fork. We may be on OSX, and this may be either
             # a data-fork based resource file or a AppleSingle file
             # from the CVS repository.
@@ -103,8 +106,8 @@ def resource_pathname(pathname, verbose=0):
     try:
         refno = Res.FSpOpenResFile(pathname, 1)
         Res.CloseResFile(refno)
-    except Res.Error, arg:
-        if arg[0] in (-37, -39):
+    except (AttributeError, Res.Error), arg:
+        if isinstance(arg, AttributeError) or arg[0] in (-37, -39):
             # No resource fork. We may be on OSX, and this may be either
             # a data-fork based resource file or a AppleSingle file
             # from the CVS repository.

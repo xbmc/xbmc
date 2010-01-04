@@ -15,7 +15,7 @@ def pickle(ob_type, pickle_function, constructor_ob=None):
     if type(ob_type) is _ClassType:
         raise TypeError("copy_reg is not intended for use with classes")
 
-    if not callable(pickle_function):
+    if not hasattr(pickle_function, '__call__'):
         raise TypeError("reduction functions must be callable")
     dispatch_table[ob_type] = pickle_function
 
@@ -25,7 +25,7 @@ def pickle(ob_type, pickle_function, constructor_ob=None):
         constructor(constructor_ob)
 
 def constructor(object):
-    if not callable(object):
+    if not hasattr(object, '__call__'):
         raise TypeError("constructors must be callable")
 
 # Example: provide pickling support for complex numbers.
@@ -48,7 +48,8 @@ def _reconstructor(cls, base, state):
         obj = object.__new__(cls)
     else:
         obj = base.__new__(cls, state)
-        base.__init__(obj, state)
+        if base.__init__ != object.__init__:
+            base.__init__(obj, state)
     return obj
 
 _HEAPTYPE = 1<<9

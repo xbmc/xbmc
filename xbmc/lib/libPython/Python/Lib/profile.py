@@ -4,8 +4,6 @@
 #
 # Based on prior profile module by Sjoerd Mullender...
 #   which was hacked somewhat by: Guido van Rossum
-#
-# See profile.doc for more information
 
 """Class for profiling Python code."""
 
@@ -94,18 +92,10 @@ def runctx(statement, globals, locals, filename=None):
     else:
         return prof.print_stats()
 
-# print help
+# Backwards compatibility.
 def help():
-    for dirname in sys.path:
-        fullname = os.path.join(dirname, 'profile.doc')
-        if os.path.exists(fullname):
-            sts = os.system('${PAGER-more} ' + fullname)
-            if sts: print '*** Pager exit status:', sts
-            break
-    else:
-        print 'Sorry, can\'t find the help file "profile.doc"',
-        print 'along the Python search path.'
-
+    print "Documentation for the profile module can be found "
+    print "in the Python Library Reference, section 'The Python Profiler'."
 
 if os.name == "mac":
     import MacOS
@@ -117,6 +107,20 @@ if hasattr(os, "times"):
         t = timer()
         return t[0] + t[1]
 
+# Using getrusage(3) is better than clock(3) if available:
+# on some systems (e.g. FreeBSD), getrusage has a higher resolution
+# Furthermore, on a POSIX system, returns microseconds, which
+# wrap around after 36min.
+_has_res = 0
+try:
+    import resource
+    resgetrusage = lambda: resource.getrusage(resource.RUSAGE_SELF)
+    def _get_time_resource(timer=resgetrusage):
+        t = timer()
+        return t[0] + t[1]
+    _has_res = 1
+except ImportError:
+    pass
 
 class Profile:
     """Profiler class.
@@ -169,8 +173,12 @@ class Profile:
             bias = self.bias
         self.bias = bias     # Materialize in local dict for lookup speed.
 
-        if timer is None:
-            if os.name == 'mac':
+        if not timer:
+            if _has_res:
+                self.timer = resgetrusage
+                self.dispatcher = self.trace_dispatch
+                self.get_time = _get_time_resource
+            elif os.name == 'mac':
                 self.timer = MacOS.GetTicks
                 self.dispatcher = self.trace_dispatch_mac
                 self.get_time = _get_time_mac
@@ -310,7 +318,7 @@ class Profile:
         fn = ("", 0, self.c_func_name)
         self.cur = (t, 0, 0, fn, frame, self.cur)
         timings = self.timings
-        if timings.has_key(fn):
+        if fn in timings:
             cc, ns, tt, ct, callers = timings[fn]
             timings[fn] = cc, ns+1, tt, ct, callers
         else:
@@ -583,31 +591,29 @@ class Profile:
 def Stats(*args):
     print 'Report generating functions are in the "pstats" module\a'
 
-
-# When invoked as main program, invoke the profiler on a script
-if __name__ == '__main__':
+def main():
     usage = "profile.py [-o output_file_path] [-s sort] scriptfile [arg] ..."
-    if not sys.argv[1:]:
-        print "Usage: ", usage
-        sys.exit(2)
-
-    class ProfileParser(OptionParser):
-        def __init__(self, usage):
-            OptionParser.__init__(self)
-            self.usage = usage
-
-    parser = ProfileParser(usage)
+    parser = OptionParser(usage=usage)
     parser.allow_interspersed_args = False
     parser.add_option('-o', '--outfile', dest="outfile",
         help="Save stats to <outfile>", default=None)
     parser.add_option('-s', '--sort', dest="sort",
         help="Sort order when printing to stdout, based on pstats.Stats class", default=-1)
 
-    (options, args) = parser.parse_args()
-    sys.argv[:] = args
+    if not sys.argv[1:]:
+        parser.print_usage()
+        sys.exit(2)
 
-    if (len(sys.argv) > 0):
+    (options, args) = parser.parse_args()
+
+    if (len(args) > 0):
+        sys.argv[:] = args
         sys.path.insert(0, os.path.dirname(sys.argv[0]))
         run('execfile(%r)' % (sys.argv[0],), options.outfile, options.sort)
     else:
-        print "Usage: ", usage
+        parser.print_usage()
+    return parser
+
+# When invoked as main program, invoke the profiler on a script
+if __name__ == '__main__':
+    main()

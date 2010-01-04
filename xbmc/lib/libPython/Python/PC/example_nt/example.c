@@ -9,11 +9,11 @@ ex_foo(PyObject *self, PyObject *args)
 }
 
 static PyMethodDef example_methods[] = {
-	{"foo", ex_foo, 1, "foo() doc string"},
+	{"foo", ex_foo, METH_VARARGS, "foo() doc string"},
 	{NULL, NULL}
 };
 
-void
+PyMODINIT_FUNC
 initexample(void)
 {
 	Py_InitModule("example", example_methods);

@@ -6,6 +6,7 @@
 
 #include "patchlevel.h"
 #include "pyconfig.h"
+#include "pymacconfig.h"
 
 /* Cyclic gc is always enabled, starting with release 2.3a1.  Supply the
  * old symbol for the benefit of extension modules written before then
@@ -35,13 +36,15 @@
 #endif
 
 #include <string.h>
+#ifdef HAVE_ERRNO_H
 #include <errno.h>
+#endif
 #include <stdlib.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
-/* For uintptr_t, intptr_t */
+/* For size_t? */
 #ifdef HAVE_STDDEF_H
 #include <stddef.h>
 #endif
@@ -71,6 +74,7 @@
 #if defined(PYMALLOC_DEBUG) && !defined(WITH_PYMALLOC)
 #error "PYMALLOC_DEBUG requires WITH_PYMALLOC"
 #endif
+#include "pymath.h"
 #include "pymem.h"
 
 #include "object.h"
@@ -88,7 +92,10 @@
 #endif
 #include "rangeobject.h"
 #include "stringobject.h"
+/* #include "memoryobject.h" */
 #include "bufferobject.h"
+#include "bytesobject.h"
+#include "bytearrayobject.h"
 #include "tupleobject.h"
 #include "listobject.h"
 #include "dictobject.h"
@@ -106,6 +113,7 @@
 #include "iterobject.h"
 #include "genobject.h"
 #include "descrobject.h"
+#include "warnings.h"
 #include "weakrefobject.h"
 
 #include "codecs.h"
@@ -113,6 +121,7 @@
 
 #include "pystate.h"
 
+#include "pyarena.h"
 #include "modsupport.h"
 #include "pythonrun.h"
 #include "ceval.h"
@@ -126,10 +135,10 @@
 #include "eval.h"
 
 #include "pystrtod.h"
+#include "pystrcmp.h"
 
 /* _Py_Mangle is defined in compile.c */
-PyAPI_FUNC(int) _Py_Mangle(char *p, char *name, \
-				 char *buffer, size_t maxlen);
+PyAPI_FUNC(PyObject*) _Py_Mangle(PyObject *p, PyObject *name);
 
 /* PyArg_GetInt is deprecated and should not be used, use PyArg_Parse(). */
 #define PyArg_GetInt(v, a)	PyArg_Parse((v), "i", (a))
@@ -143,7 +152,7 @@ PyAPI_FUNC(int) _Py_Mangle(char *p, char *name, \
 #ifdef __CHAR_UNSIGNED__
 #define Py_CHARMASK(c)		(c)
 #else
-#define Py_CHARMASK(c)		((c) & 0xff)
+#define Py_CHARMASK(c)		((unsigned char)((c) & 0xff))
 #endif
 
 #include "pyfpe.h"

@@ -15,29 +15,13 @@ FTEXT, FHCRC, FEXTRA, FNAME, FCOMMENT = 1, 2, 4, 8, 16
 
 READ, WRITE = 1, 2
 
-def U32(i):
-    """Return i as an unsigned integer, assuming it fits in 32 bits.
-
-    If it's >= 2GB when viewed as a 32-bit unsigned int, return a long.
-    """
-    if i < 0:
-        i += 1L << 32
-    return i
-
-def LOWU32(i):
-    """Return the low-order 32 bits of an int, as a non-negative int."""
-    return i & 0xFFFFFFFFL
-
-def write32(output, value):
-    output.write(struct.pack("<l", value))
-
 def write32u(output, value):
     # The L format writes the bit pattern correctly whether signed
     # or unsigned.
     output.write(struct.pack("<L", value))
 
 def read32(input):
-    return struct.unpack("<l", input.read(4))[0]
+    return struct.unpack("<I", input.read(4))[0]
 
 def open(filename, mode="rb", compresslevel=9):
     """Shorthand for GzipFile(filename, mode, compresslevel).
@@ -55,7 +39,7 @@ class GzipFile:
     """
 
     myfileobj = None
-    max_read_chunk = 10 * 1024 * 1024
+    max_read_chunk = 10 * 1024 * 1024   # 10Mb
 
     def __init__(self, filename=None, mode=None,
                  compresslevel=9, fileobj=None):
@@ -106,7 +90,9 @@ class GzipFile:
             self._new_member = True
             self.extrabuf = ""
             self.extrasize = 0
-            self.filename = filename
+            self.name = filename
+            # Starts small, scales exponentially
+            self.min_readsize = 100
 
         elif mode[0:1] == 'w' or mode[0:1] == 'a':
             self.mode = WRITE
@@ -125,15 +111,21 @@ class GzipFile:
         if self.mode == WRITE:
             self._write_gzip_header()
 
+    @property
+    def filename(self):
+        import warnings
+        warnings.warn("use the name attribute", DeprecationWarning, 2)
+        if self.mode == WRITE and self.name[-3:] != ".gz":
+            return self.name + ".gz"
+        return self.name
+
     def __repr__(self):
         s = repr(self.fileobj)
         return '<gzip ' + s[1:-1] + ' ' + hex(id(self)) + '>'
 
     def _init_write(self, filename):
-        if filename[-3:] != '.gz':
-            filename = filename + '.gz'
-        self.filename = filename
-        self.crc = zlib.crc32("")
+        self.name = filename
+        self.crc = zlib.crc32("") & 0xffffffffL
         self.size = 0
         self.writebuf = []
         self.bufsize = 0
@@ -141,7 +133,9 @@ class GzipFile:
     def _write_gzip_header(self):
         self.fileobj.write('\037\213')             # magic header
         self.fileobj.write('\010')                 # compression method
-        fname = self.filename[:-3]
+        fname = self.name
+        if fname.endswith(".gz"):
+            fname = fname[:-3]
         flags = 0
         if fname:
             flags = FNAME
@@ -153,7 +147,7 @@ class GzipFile:
             self.fileobj.write(fname + '\000')
 
     def _init_read(self):
-        self.crc = zlib.crc32("")
+        self.crc = zlib.crc32("") & 0xffffffffL
         self.size = 0
 
     def _read_gzip_header(self):
@@ -199,7 +193,7 @@ class GzipFile:
             raise ValueError, "write() on closed GzipFile object"
         if len(data) > 0:
             self.size = self.size + len(data)
-            self.crc = zlib.crc32(data, self.crc)
+            self.crc = zlib.crc32(data, self.crc) & 0xffffffffL
             self.fileobj.write( self.compress.compress(data) )
             self.offset += len(data)
 
@@ -291,7 +285,7 @@ class GzipFile:
             self._new_member = True
 
     def _add_read_data(self, data):
-        self.crc = zlib.crc32(data, self.crc)
+        self.crc = zlib.crc32(data, self.crc) & 0xffffffffL
         self.extrabuf = self.extrabuf + data
         self.extrasize = self.extrasize + len(data)
         self.size = self.size + len(data)
@@ -304,18 +298,21 @@ class GzipFile:
         # stored is the true file size mod 2**32.
         self.fileobj.seek(-8, 1)
         crc32 = read32(self.fileobj)
-        isize = U32(read32(self.fileobj))   # may exceed 2GB
-        if U32(crc32) != U32(self.crc):
-            raise IOError, "CRC check failed"
-        elif isize != LOWU32(self.size):
+        isize = read32(self.fileobj)  # may exceed 2GB
+        if crc32 != self.crc:
+            raise IOError("CRC check failed %s != %s" % (hex(crc32),
+                                                         hex(self.crc)))
+        elif isize != (self.size & 0xffffffffL):
             raise IOError, "Incorrect length of data produced"
 
     def close(self):
+        if self.fileobj is None:
+            return
         if self.mode == WRITE:
             self.fileobj.write(self.compress.flush())
-            write32(self.fileobj, self.crc)
+            write32u(self.fileobj, self.crc)
             # self.size may exceed 2GB, or even 4GB
-            write32u(self.fileobj, LOWU32(self.size))
+            write32u(self.fileobj, self.size & 0xffffffffL)
             self.fileobj = None
         elif self.mode == READ:
             self.fileobj = None
@@ -334,8 +331,8 @@ class GzipFile:
 
     def flush(self,zlib_mode=zlib.Z_SYNC_FLUSH):
         if self.mode == WRITE:
-           # Ensure the compressor's buffer is flushed
-           self.fileobj.write(self.compress.flush(zlib_mode))
+            # Ensure the compressor's buffer is flushed
+            self.fileobj.write(self.compress.flush(zlib_mode))
         self.fileobj.flush()
 
     def fileno(self):
@@ -363,7 +360,12 @@ class GzipFile:
         self.extrasize = 0
         self.offset = 0
 
-    def seek(self, offset):
+    def seek(self, offset, whence=0):
+        if whence:
+            if whence == 1:
+                offset = self.offset + offset
+            else:
+                raise ValueError('Seek from end not supported')
         if self.mode == WRITE:
             if offset < self.offset:
                 raise IOError('Negative seek in write mode')
@@ -381,32 +383,35 @@ class GzipFile:
             self.read(count % 1024)
 
     def readline(self, size=-1):
-        if size < 0: size = sys.maxint
+        if size < 0:
+            size = sys.maxint
+            readsize = self.min_readsize
+        else:
+            readsize = size
         bufs = []
-        readsize = min(100, size)    # Read from the file in small chunks
-        while True:
-            if size == 0:
-                return "".join(bufs) # Return resulting line
-
+        while size != 0:
             c = self.read(readsize)
             i = c.find('\n')
-            if size is not None:
-                # We set i=size to break out of the loop under two
-                # conditions: 1) there's no newline, and the chunk is
-                # larger than size, or 2) there is a newline, but the
-                # resulting line would be longer than 'size'.
-                if i==-1 and len(c) > size: i=size-1
-                elif size <= i: i = size -1
+
+            # We set i=size to break out of the loop under two
+            # conditions: 1) there's no newline, and the chunk is
+            # larger than size, or 2) there is a newline, but the
+            # resulting line would be longer than 'size'.
+            if (size <= i) or (i == -1 and len(c) > size):
+                i = size - 1
 
             if i >= 0 or c == '':
-                bufs.append(c[:i+1])    # Add portion of last chunk
-                self._unread(c[i+1:])   # Push back rest of chunk
-                return ''.join(bufs)    # Return resulting line
+                bufs.append(c[:i + 1])    # Add portion of last chunk
+                self._unread(c[i + 1:])   # Push back rest of chunk
+                break
 
             # Append chunk to list, decrease 'size',
             bufs.append(c)
             size = size - len(c)
             readsize = min(size, readsize * 2)
+        if readsize > self.min_readsize:
+            self.min_readsize = min(readsize, self.min_readsize * 2, 512)
+        return ''.join(bufs) # Return resulting line
 
     def readlines(self, sizehint=0):
         # Negative numbers result in reading all the lines

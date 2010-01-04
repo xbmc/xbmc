@@ -51,7 +51,11 @@ class TestMacostools(unittest.TestCase):
 
     def test_touched(self):
         # This really only tests that nothing unforeseen happens.
-        macostools.touched(test_support.TESTFN)
+        import warnings
+        with warnings.catch_warnings():
+            warnings.filterwarnings('ignore', 'macostools.touched*',
+                                    DeprecationWarning)
+            macostools.touched(test_support.TESTFN)
 
     def test_copy(self):
         try:
@@ -71,18 +75,25 @@ class TestMacostools(unittest.TestCase):
         self.assertEqual(fss.as_pathname(), os.path.realpath(test_support.TESTFN))
 
     def test_mkalias_relative(self):
-        if not os.path.exists(sys.prefix):
-            return
         try:
             os.unlink(TESTFN2)
         except:
             pass
+        # If the directory doesn't exist, then chances are this is a new
+        # install of Python so don't create it since the user might end up
+        # running ``sudo make install`` and creating the directory here won't
+        # leave it with the proper permissions.
+        if not os.path.exists(sys.prefix):
+            return
         macostools.mkalias(test_support.TESTFN, TESTFN2, sys.prefix)
         fss, _, _ = Carbon.File.ResolveAliasFile(TESTFN2, 0)
         self.assertEqual(fss.as_pathname(), os.path.realpath(test_support.TESTFN))
 
 
 def test_main():
+    # Skip on wide unicode
+    if len(u'\0'.encode('unicode-internal')) == 4:
+        raise test_support.TestSkipped("test_macostools is broken in USC4")
     test_support.run_unittest(TestMacostools)
 
 

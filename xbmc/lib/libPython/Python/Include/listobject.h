@@ -35,22 +35,23 @@ typedef struct {
      * Items must normally not be NULL, except during construction when
      * the list is not yet visible outside the function that builds it.
      */
-    int allocated;
+    Py_ssize_t allocated;
 } PyListObject;
 
 PyAPI_DATA(PyTypeObject) PyList_Type;
 
-#define PyList_Check(op) PyObject_TypeCheck(op, &PyList_Type)
-#define PyList_CheckExact(op) ((op)->ob_type == &PyList_Type)
+#define PyList_Check(op) \
+		PyType_FastSubclass(Py_TYPE(op), Py_TPFLAGS_LIST_SUBCLASS)
+#define PyList_CheckExact(op) (Py_TYPE(op) == &PyList_Type)
 
-PyAPI_FUNC(PyObject *) PyList_New(int size);
-PyAPI_FUNC(int) PyList_Size(PyObject *);
-PyAPI_FUNC(PyObject *) PyList_GetItem(PyObject *, int);
-PyAPI_FUNC(int) PyList_SetItem(PyObject *, int, PyObject *);
-PyAPI_FUNC(int) PyList_Insert(PyObject *, int, PyObject *);
+PyAPI_FUNC(PyObject *) PyList_New(Py_ssize_t size);
+PyAPI_FUNC(Py_ssize_t) PyList_Size(PyObject *);
+PyAPI_FUNC(PyObject *) PyList_GetItem(PyObject *, Py_ssize_t);
+PyAPI_FUNC(int) PyList_SetItem(PyObject *, Py_ssize_t, PyObject *);
+PyAPI_FUNC(int) PyList_Insert(PyObject *, Py_ssize_t, PyObject *);
 PyAPI_FUNC(int) PyList_Append(PyObject *, PyObject *);
-PyAPI_FUNC(PyObject *) PyList_GetSlice(PyObject *, int, int);
-PyAPI_FUNC(int) PyList_SetSlice(PyObject *, int, int, PyObject *);
+PyAPI_FUNC(PyObject *) PyList_GetSlice(PyObject *, Py_ssize_t, Py_ssize_t);
+PyAPI_FUNC(int) PyList_SetSlice(PyObject *, Py_ssize_t, Py_ssize_t, PyObject *);
 PyAPI_FUNC(int) PyList_Sort(PyObject *);
 PyAPI_FUNC(int) PyList_Reverse(PyObject *);
 PyAPI_FUNC(PyObject *) PyList_AsTuple(PyObject *);
@@ -59,7 +60,7 @@ PyAPI_FUNC(PyObject *) _PyList_Extend(PyListObject *, PyObject *);
 /* Macro, trading safety for speed */
 #define PyList_GET_ITEM(op, i) (((PyListObject *)(op))->ob_item[i])
 #define PyList_SET_ITEM(op, i, v) (((PyListObject *)(op))->ob_item[i] = (v))
-#define PyList_GET_SIZE(op)    (((PyListObject *)(op))->ob_size)
+#define PyList_GET_SIZE(op)    Py_SIZE(op)
 
 #ifdef __cplusplus
 }

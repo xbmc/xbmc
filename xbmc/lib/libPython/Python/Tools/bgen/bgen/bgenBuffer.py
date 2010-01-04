@@ -38,23 +38,41 @@ class FixedInputOutputBufferType(InputOnlyType):
         self.sizeformat = sizeformat or type2format[sizetype]
         self.label_needed = 0
 
-    def declare(self, name):
-        self.declareBuffer(name)
-        self.declareSize(name)
+    def getArgDeclarations(self, name, reference=False, constmode=False, outmode=False):
+        if reference:
+            raise RuntimeError, "Cannot pass buffer types by reference"
+        return (self.getBufferDeclarations(name, constmode, outmode) +
+                self.getSizeDeclarations(name, outmode))
 
-    def declareBuffer(self, name):
-        self.declareInputBuffer(name)
-        self.declareOutputBuffer(name)
+    def getBufferDeclarations(self, name, constmode=False, outmode=False):
+        return self.getInputBufferDeclarations(name, constmode) + \
+                self.getOutputBufferDeclarations(name, constmode, outmode)
 
-    def declareInputBuffer(self, name):
-        Output("%s *%s__in__;", self.datatype, name)
+    def getInputBufferDeclarations(self, name, constmode=False):
+        if constmode:
+            const = "const "
+        else:
+            const = ""
+        return ["%s%s *%s__in__" % (const, self.datatype, name)]
 
-    def declareOutputBuffer(self, name):
-        Output("%s %s__out__[%s];", self.datatype, name, self.size)
+    def getOutputBufferDeclarations(self, name, constmode=False, outmode=False):
+        if constmode:
+            raise RuntimeError, "Cannot use const output buffer"
+        if outmode:
+            out = "*"
+        else:
+            out = ""
+        return ["%s%s %s__out__[%s]" % (self.datatype, out, name, self.size)]
 
-    def declareSize(self, name):
-        Output("%s %s__len__;", self.sizetype, name)
-        Output("int %s__in_len__;", name)
+    def getSizeDeclarations(self, name, outmode=False):
+        if outmode:
+            out = "*"
+        else:
+            out = ""
+        return ["%s%s %s__len__" %(self.sizetype, out, name)]
+
+    def getAuxDeclarations(self, name):
+        return ["int %s__in_len__" %(name)]
 
     def getargsFormat(self):
         return "s#"
@@ -102,14 +120,14 @@ class FixedCombinedInputOutputBufferType(FixedInputOutputBufferType):
 
 class InputOnlyBufferMixIn(InputOnlyMixIn):
 
-    def declareOutputBuffer(self, name):
-        pass
+    def getOutputBufferDeclarations(self, name, constmode=False, outmode=False):
+        return []
 
 
 class OutputOnlyBufferMixIn(OutputOnlyMixIn):
 
-    def declareInputBuffer(self, name):
-        pass
+    def getInputBufferDeclarations(self, name, constmode=False):
+        return []
 
 class OptionalInputBufferMixIn:
 
@@ -183,14 +201,27 @@ class StructInputOutputBufferType(FixedInputOutputBufferType):
         FixedInputOutputBufferType.__init__(self, "sizeof(%s)" % type)
         self.typeName = self.type = type
 
-    def declareInputBuffer(self, name):
-        Output("%s *%s__in__;", self.type, name)
+    def getInputBufferDeclarations(self, name, constmode=False):
+        if constmode:
+            const = "const "
+        else:
+            const = ""
+        return ["%s%s *%s__in__" % (const, self.type, name)]
 
-    def declareSize(self, name):
-        Output("int %s__in_len__;", name)
+    def getSizeDeclarations(self, name, outmode=False):
+        return []
 
-    def declareOutputBuffer(self, name):
-        Output("%s %s__out__;", self.type, name)
+    def getAuxDeclarations(self, name):
+        return ["int %s__in_len__" % (name)]
+
+    def getOutputBufferDeclarations(self, name, constmode=False, outmode=False):
+        if constmode:
+            raise RuntimeError, "Cannot use const output buffer"
+        if outmode:
+            out = "*"
+        else:
+            out = ""
+        return ["%s%s %s__out__" % (self.type, out, name)]
 
     def getargsArgs(self, name):
         return "(char **)&%s__in__, &%s__in_len__" % (name, name)
@@ -243,8 +274,11 @@ class StructOutputBufferType(OutputOnlyBufferMixIn, StructInputOutputBufferType)
     Instantiate with the struct type as parameter.
     """
 
-    def declareSize(self, name):
-        pass
+    def getSizeDeclarations(self, name, outmode=False):
+        return []
+
+    def getAuxDeclarations(self, name):
+        return []
 
     def passOutput(self, name):
         return "&%s__out__" % name
@@ -257,8 +291,11 @@ class ArrayOutputBufferType(OutputOnlyBufferMixIn, StructInputOutputBufferType):
     Instantiate with the struct type as parameter.
     """
 
-    def declareSize(self, name):
-        pass
+    def getSizeDeclarations(self, name, outmode=False):
+        return []
+
+    def getAuxDeclarations(self, name):
+        return []
 
     def passOutput(self, name):
         return "%s__out__" % name

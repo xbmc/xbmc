@@ -28,9 +28,15 @@
 #      Betancourt, Randall Hopper, Karl Putland, John Farrell, Greg
 #      Andruk, Just van Rossum, Thomas Heller, Mark R. Levinson, Mark
 #      Hammond, Bill Tutt, Hans Nowak, Uwe Zessin (OpenVMS support),
-#      Colin Kong, Trent Mick, Guido van Rossum
+#      Colin Kong, Trent Mick, Guido van Rossum, Anthony Baxter
 #
 #    History:
+#
+#    <see CVS and SVN checkin messages for history>
+#
+#    1.0.6 - added linux_distribution()
+#    1.0.5 - fixed Java support to allow running the module on Jython
+#    1.0.4 - added IronPython support
 #    1.0.3 - added normalization of Windows system name
 #    1.0.2 - added more Windows support
 #    1.0.1 - reformatted to make doc.py happy
@@ -85,7 +91,7 @@
 
 __copyright__ = """
     Copyright (c) 1999-2000, Marc-Andre Lemburg; mailto:mal@lemburg.com
-    Copyright (c) 2000-2003, eGenix.com Software GmbH; mailto:info@egenix.com
+    Copyright (c) 2000-2008, eGenix.com Software GmbH; mailto:info@egenix.com
 
     Permission to use, copy, modify, and distribute this software and its
     documentation for any purpose and without fee or royalty is hereby granted,
@@ -104,7 +110,7 @@ __copyright__ = """
 
 """
 
-__version__ = '1.0.2'
+__version__ = '1.0.6'
 
 import sys,string,os,re
 
@@ -133,6 +139,11 @@ def libc_ver(executable=sys.executable,lib='',version='',
         The file is read and scanned in chunks of chunksize bytes.
 
     """
+    if hasattr(os.path, 'realpath'):
+        # Python 2.2 introduced os.path.realpath(); it is used
+        # here to work around problems with Cygwin not being
+        # able to open symlinks for reading
+        executable = os.path.realpath(executable)
     f = open(executable,'rb')
     binary = f.read(chunksize)
     pos = 0
@@ -215,11 +226,125 @@ def _dist_try_harder(distname,version,id):
     return distname,version,id
 
 _release_filename = re.compile(r'(\w+)[-_](release|version)')
-_release_version = re.compile(r'([\d.]+)[^(]*(?:\((.+)\))?')
+_lsb_release_version = re.compile(r'(.+)'
+                                   ' release '
+                                   '([\d.]+)'
+                                   '[^(]*(?:\((.+)\))?')
+_release_version = re.compile(r'([^0-9]+)'
+                               '(?: release )?'
+                               '([\d.]+)'
+                               '[^(]*(?:\((.+)\))?')
+
+# See also http://www.novell.com/coolsolutions/feature/11251.html
+# and http://linuxmafia.com/faq/Admin/release-files.html
+# and http://data.linux-ntfs.org/rpm/whichrpm
+# and http://www.die.net/doc/linux/man/man1/lsb_release.1.html
+
+_supported_dists = (
+    'SuSE', 'debian', 'fedora', 'redhat', 'centos',
+    'mandrake', 'mandriva', 'rocks', 'slackware', 'yellowdog', 'gentoo',
+    'UnitedLinux', 'turbolinux')
+
+def _parse_release_file(firstline):
+
+    # Parse the first line
+    m = _lsb_release_version.match(firstline)
+    if m is not None:
+        # LSB format: "distro release x.x (codename)"
+        return tuple(m.groups())
+
+    # Pre-LSB format: "distro x.x (codename)"
+    m = _release_version.match(firstline)
+    if m is not None:
+        return tuple(m.groups())
+
+    # Unkown format... take the first two words
+    l = string.split(string.strip(firstline))
+    if l:
+        version = l[0]
+        if len(l) > 1:
+            id = l[1]
+        else:
+            id = ''
+    return '', version, id
+
+def _test_parse_release_file():
+
+    for input, output in (
+        # Examples of release file contents:
+        ('SuSE Linux 9.3 (x86-64)', ('SuSE Linux ', '9.3', 'x86-64'))
+        ('SUSE LINUX 10.1 (X86-64)', ('SUSE LINUX ', '10.1', 'X86-64'))
+        ('SUSE LINUX 10.1 (i586)', ('SUSE LINUX ', '10.1', 'i586'))
+        ('Fedora Core release 5 (Bordeaux)', ('Fedora Core', '5', 'Bordeaux'))
+        ('Red Hat Linux release 8.0 (Psyche)', ('Red Hat Linux', '8.0', 'Psyche'))
+        ('Red Hat Linux release 9 (Shrike)', ('Red Hat Linux', '9', 'Shrike'))
+        ('Red Hat Enterprise Linux release 4 (Nahant)', ('Red Hat Enterprise Linux', '4', 'Nahant'))
+        ('CentOS release 4', ('CentOS', '4', None))
+        ('Rocks release 4.2.1 (Cydonia)', ('Rocks', '4.2.1', 'Cydonia'))
+        ):
+        parsed = _parse_release_file(input)
+        if parsed != output:
+            print (input, parsed)
+
+def linux_distribution(distname='', version='', id='',
+
+                       supported_dists=_supported_dists,
+                       full_distribution_name=1):
+
+    """ Tries to determine the name of the Linux OS distribution name.
+
+        The function first looks for a distribution release file in
+        /etc and then reverts to _dist_try_harder() in case no
+        suitable files are found.
+
+        supported_dists may be given to define the set of Linux
+        distributions to look for. It defaults to a list of currently
+        supported Linux distributions identified by their release file
+        name.
+
+        If full_distribution_name is true (default), the full
+        distribution read from the OS is returned. Otherwise the short
+        name taken from supported_dists is used.
+
+        Returns a tuple (distname,version,id) which default to the
+        args given as parameters.
+
+    """
+    try:
+        etc = os.listdir('/etc')
+    except os.error:
+        # Probably not a Unix system
+        return distname,version,id
+    etc.sort()
+    for file in etc:
+        m = _release_filename.match(file)
+        if m is not None:
+            _distname,dummy = m.groups()
+            if _distname in supported_dists:
+                distname = _distname
+                break
+    else:
+        return _dist_try_harder(distname,version,id)
+
+    # Read the first line
+    f = open('/etc/'+file, 'r')
+    firstline = f.readline()
+    f.close()
+    _distname, _version, _id = _parse_release_file(firstline)
+
+    if _distname and full_distribution_name:
+        distname = _distname
+    if _version:
+        version = _version
+    if _id:
+        id = _id
+    return distname, version, id
+
+# To maintain backwards compatibility:
 
 def dist(distname='',version='',id='',
 
-         supported_dists=('SuSE','debian','redhat','mandrake')):
+         supported_dists=_supported_dists):
 
     """ Tries to determine the name of the Linux OS distribution name.
 
@@ -231,38 +356,9 @@ def dist(distname='',version='',id='',
         args given as parameters.
 
     """
-    try:
-        etc = os.listdir('/etc')
-    except os.error:
-        # Probably not a Unix system
-        return distname,version,id
-    for file in etc:
-        m = _release_filename.match(file)
-        if m:
-            _distname,dummy = m.groups()
-            if _distname in supported_dists:
-                distname = _distname
-                break
-    else:
-        return _dist_try_harder(distname,version,id)
-    f = open('/etc/'+file,'r')
-    firstline = f.readline()
-    f.close()
-    m = _release_version.search(firstline)
-    if m:
-        _version,_id = m.groups()
-        if _version:
-            version = _version
-        if _id:
-            id = _id
-    else:
-        # Unkown format... take the first two words
-        l = string.split(string.strip(firstline))
-        if l:
-            version = l[0]
-            if len(l) > 1:
-                id = l[1]
-    return distname,version,id
+    return linux_distribution(distname, version, id,
+                              supported_dists=supported_dists,
+                              full_distribution_name=0)
 
 class _popen:
 
@@ -351,7 +447,7 @@ def popen(cmd, mode='r', bufsize=None):
     else:
         return popen(cmd,mode,bufsize)
 
-def _norm_version(version,build=''):
+def _norm_version(version, build=''):
 
     """ Normalize the version and build strings and return a single
         version string using the format major.minor.build (or patchlevel).
@@ -372,7 +468,7 @@ _ver_output = re.compile(r'(?:([\w ]+) ([\w.]+) '
                          '.*'
                          'Version ([\d.]+))')
 
-def _syscmd_ver(system='',release='',version='',
+def _syscmd_ver(system='', release='', version='',
 
                supported_platforms=('win32','win16','dos','os2')):
 
@@ -412,7 +508,7 @@ def _syscmd_ver(system='',release='',version='',
     # Parse the output
     info = string.strip(info)
     m = _ver_output.match(info)
-    if m:
+    if m is not None:
         system,release,version = m.groups()
         # Strip trailing dots from version and release
         if release[-1] == '.':
@@ -431,7 +527,13 @@ def _win32_getvalue(key,name,default=''):
         In case this fails, default is returned.
 
     """
-    from win32api import RegQueryValueEx
+    try:
+        # Use win32api if available
+        from win32api import RegQueryValueEx
+    except ImportError:
+        # On Python 2.0 and later, emulate using _winreg
+        import _winreg
+        RegQueryValueEx = _winreg.QueryValueEx
     try:
         return RegQueryValueEx(key,name)
     except:
@@ -451,9 +553,9 @@ def win32_ver(release='',version='',csd='',ptype=''):
         means the OS version uses debugging code, i.e. code that
         checks arguments, ranges, etc. (Thomas Heller).
 
-        Note: this function only works if Mark Hammond's win32
-        package is installed and obviously only runs on Win32
-        compatible platforms.
+        Note: this function works best with Mark Hammond's win32
+        package installed, but also on Python 2.3 and later. It
+        obviously only runs on Win32 compatible platforms.
 
     """
     # XXX Is there any way to find out the processor type on WinXX ?
@@ -467,11 +569,29 @@ def win32_ver(release='',version='',csd='',ptype=''):
     # Import the needed APIs
     try:
         import win32api
+        from win32api import RegQueryValueEx, RegOpenKeyEx, \
+             RegCloseKey, GetVersionEx
+        from win32con import HKEY_LOCAL_MACHINE, VER_PLATFORM_WIN32_NT, \
+             VER_PLATFORM_WIN32_WINDOWS, VER_NT_WORKSTATION
     except ImportError:
-        return release,version,csd,ptype
-    from win32api import RegQueryValueEx,RegOpenKeyEx,RegCloseKey,GetVersionEx
-    from win32con import HKEY_LOCAL_MACHINE,VER_PLATFORM_WIN32_NT,\
-                         VER_PLATFORM_WIN32_WINDOWS
+        # Emulate the win32api module using Python APIs
+        try:
+            sys.getwindowsversion
+        except AttributeError:
+            # No emulation possible, so return the defaults...
+            return release,version,csd,ptype
+        else:
+            # Emulation using _winreg (added in Python 2.0) and
+            # sys.getwindowsversion() (added in Python 2.3)
+            import _winreg
+            GetVersionEx = sys.getwindowsversion
+            RegQueryValueEx = _winreg.QueryValueEx
+            RegOpenKeyEx = _winreg.OpenKeyEx
+            RegCloseKey = _winreg.CloseKey
+            HKEY_LOCAL_MACHINE = _winreg.HKEY_LOCAL_MACHINE
+            VER_PLATFORM_WIN32_WINDOWS = 1
+            VER_PLATFORM_WIN32_NT = 2
+            VER_NT_WORKSTATION = 1
 
     # Find out the registry key and some general version infos
     maj,min,buildno,plat,csd = GetVersionEx()
@@ -505,6 +625,23 @@ def win32_ver(release='',version='',csd='',ptype=''):
                 release = '2003Server'
             else:
                 release = 'post2003'
+        elif maj == 6:
+            if min == 0:
+                # Per http://msdn2.microsoft.com/en-us/library/ms724429.aspx
+                try:
+                    productType = GetVersionEx(1)[8]
+                except TypeError:
+                    # sys.getwindowsversion() doesn't take any arguments, so
+                    # we cannot detect 2008 Server that way.
+                    # XXX Add some other means of detecting 2008 Server ?!
+                    release = 'Vista'
+                else:
+                    if productType == VER_NT_WORKSTATION:
+                        release = 'Vista'
+                    else:
+                        release = '2008Server'
+            else:
+                release = 'post2008Server'
     else:
         if not release:
             # E.g. Win3.1 with win32s
@@ -513,9 +650,9 @@ def win32_ver(release='',version='',csd='',ptype=''):
 
     # Open the registry key
     try:
-        keyCurVer = RegOpenKeyEx(HKEY_LOCAL_MACHINE,regkey)
+        keyCurVer = RegOpenKeyEx(HKEY_LOCAL_MACHINE, regkey)
         # Get a value to make sure the key exists...
-        RegQueryValueEx(keyCurVer,'SystemRoot')
+        RegQueryValueEx(keyCurVer, 'SystemRoot')
     except:
         return release,version,csd,ptype
 
@@ -585,8 +722,22 @@ def mac_ver(release='',versioninfo=('','',''),machine=''):
         major = (sysv & 0xFF00) >> 8
         minor = (sysv & 0x00F0) >> 4
         patch = (sysv & 0x000F)
-        release = '%s.%i.%i' % (_bcd2str(major),minor,patch)
+
+        if (major, minor) >= (10, 4):
+            # the 'sysv' gestald cannot return patchlevels
+            # higher than 9. Apple introduced 3 new
+            # gestalt codes in 10.4 to deal with this
+            # issue (needed because patch levels can
+            # run higher than 9, such as 10.4.11)
+            major,minor,patch = _mac_ver_lookup(('sys1','sys2','sys3'))
+            release = '%i.%i.%i' %(major, minor, patch)
+        else:
+            release = '%s.%i.%i' % (_bcd2str(major),minor,patch)
+
     if sysu:
+        # NOTE: this block is left as documentation of the
+        # intention of this function, the 'sysu' gestalt is no
+        # longer available and there are no alternatives.
         major =  int((sysu & 0xFF000000L) >> 24)
         minor =  (sysu & 0x00F00000) >> 20
         bugfix = (sysu & 0x000F0000) >> 16
@@ -599,6 +750,8 @@ def mac_ver(release='',versioninfo=('','',''),machine=''):
                  0x60:'beta',
                  0x80:'final'}.get(stage,'')
         versioninfo = (version,stage,nonrel)
+
+
     if sysa:
         machine = {0x1: '68k',
                    0x2: 'PowerPC',
@@ -609,8 +762,11 @@ def _java_getprop(name,default):
 
     from java.lang import System
     try:
-        return System.getProperty(name)
-    except:
+        value = System.getProperty(name)
+        if value is None:
+            return default
+        return value
+    except AttributeError:
         return default
 
 def java_ver(release='',vendor='',vminfo=('','',''),osinfo=('','','')):
@@ -631,20 +787,20 @@ def java_ver(release='',vendor='',vminfo=('','',''),osinfo=('','','')):
     except ImportError:
         return release,vendor,vminfo,osinfo
 
-    vendor = _java_getprop('java.vendor',vendor)
-    release = _java_getprop('java.version',release)
-    vm_name,vm_release,vm_vendor = vminfo
-    vm_name = _java_getprop('java.vm.name',vm_name)
-    vm_vendor = _java_getprop('java.vm.vendor',vm_vendor)
-    vm_release = _java_getprop('java.vm.version',vm_release)
-    vminfo = vm_name,vm_release,vm_vendor
-    os_name,os_version,os_arch = osinfo
-    os_arch = _java_getprop('java.os.arch',os_arch)
-    os_name = _java_getprop('java.os.name',os_name)
-    os_version = _java_getprop('java.os.version',os_version)
-    osinfo = os_name,os_version,os_arch
+    vendor = _java_getprop('java.vendor', vendor)
+    release = _java_getprop('java.version', release)
+    vm_name, vm_release, vm_vendor = vminfo
+    vm_name = _java_getprop('java.vm.name', vm_name)
+    vm_vendor = _java_getprop('java.vm.vendor', vm_vendor)
+    vm_release = _java_getprop('java.vm.version', vm_release)
+    vminfo = vm_name, vm_release, vm_vendor
+    os_name, os_version, os_arch = osinfo
+    os_arch = _java_getprop('java.os.arch', os_arch)
+    os_name = _java_getprop('java.os.name', os_name)
+    os_version = _java_getprop('java.os.version', os_version)
+    osinfo = os_name, os_version, os_arch
 
-    return release,vendor,vminfo,osinfo
+    return release, vendor, vminfo, osinfo
 
 ### System name aliasing
 
@@ -710,7 +866,7 @@ def _platform(*args):
     # Format the platform string
     platform = string.join(
         map(string.strip,
-            filter(len,args)),
+            filter(len, args)),
         '-')
 
     # Cleanup some possible filename obstacles...
@@ -777,7 +933,7 @@ def _follow_symlinks(filepath):
     filepath = _abspath(filepath)
     while os.path.islink(filepath):
         filepath = os.path.normpath(
-            os.path.join(filepath,os.readlink(filepath)))
+            os.path.join(os.path.dirname(filepath),os.readlink(filepath)))
     return filepath
 
 def _syscmd_uname(option,default=''):
@@ -808,9 +964,12 @@ def _syscmd_file(target,default=''):
         case the command should fail.
 
     """
+    if sys.platform in ('dos','win32','win16','os2'):
+        # XXX Others too ?
+        return default
     target = _follow_symlinks(target)
     try:
-        f = os.popen('file %s 2> /dev/null' % target)
+        f = os.popen('file "%s" 2> /dev/null' % target)
     except (AttributeError,os.error):
         return default
     output = string.strip(f.read())
@@ -865,7 +1024,10 @@ def architecture(executable=sys.executable,bits='',linkage=''):
         bits = str(size*8) + 'bit'
 
     # Get data from the 'file' system command
-    output = _syscmd_file(executable,'')
+    if executable:
+        output = _syscmd_file(executable, '')
+    else:
+        output = ''
 
     if not output and \
        executable == sys.executable:
@@ -931,29 +1093,44 @@ def uname():
 
     """
     global _uname_cache
+    no_os_uname = 0
 
     if _uname_cache is not None:
         return _uname_cache
 
+    processor = ''
+
     # Get some infos from the builtin os.uname API...
     try:
         system,node,release,version,machine = os.uname()
-
     except AttributeError:
-        # Hmm, no uname... we'll have to poke around the system then.
-        system = sys.platform
-        release = ''
-        version = ''
-        node = _node()
-        machine = ''
-        processor = ''
-        use_syscmd_ver = 1
+        no_os_uname = 1
+
+    if no_os_uname or not filter(None, (system, node, release, version, machine)):
+        # Hmm, no there is either no uname or uname has returned
+        #'unknowns'... we'll have to poke around the system then.
+        if no_os_uname:
+            system = sys.platform
+            release = ''
+            version = ''
+            node = _node()
+            machine = ''
+
+        use_syscmd_ver = 01
 
         # Try win32_ver() on win32 platforms
         if system == 'win32':
             release,version,csd,ptype = win32_ver()
             if release and version:
                 use_syscmd_ver = 0
+            # Try to use the PROCESSOR_* environment variables
+            # available on Win XP and later; see
+            # http://support.microsoft.com/kb/888731 and
+            # http://www.geocities.com/rick_lively/MANUALS/ENV/MSWIN/PROCESSI.HTM
+            if not machine:
+                machine = os.environ.get('PROCESSOR_ARCHITECTURE', '')
+            if not processor:
+                processor = os.environ.get('PROCESSOR_IDENTIFIER', machine)
 
         # Try the 'ver' system command available on some
         # platforms
@@ -963,6 +1140,16 @@ def uname():
             # (_syscmd_ver() tends to return the vendor name as well)
             if system == 'Microsoft Windows':
                 system = 'Windows'
+            elif system == 'Microsoft' and release == 'Windows':
+                # Under Windows Vista and Windows Server 2008,
+                # Microsoft changed the output of the ver command. The
+                # release is no longer printed.  This causes the
+                # system and release to be misidentified.
+                system = 'Windows'
+                if '6.0' == version[:3]:
+                    release = 'Vista'
+                else:
+                    release = ''
 
         # In case we still don't know anything useful, we'll try to
         # help ourselves
@@ -985,30 +1172,28 @@ def uname():
             release,(version,stage,nonrel),machine = mac_ver()
             system = 'MacOS'
 
-    else:
-        # System specific extensions
-        if system == 'OpenVMS':
-            # OpenVMS seems to have release and version mixed up
-            if not release or release == '0':
-                release = version
-                version = ''
-            # Get processor information
-            try:
-                import vms_lib
-            except ImportError:
-                pass
-            else:
-                csid, cpu_number = vms_lib.getsyi('SYI$_CPU',0)
-                if (cpu_number >= 128):
-                    processor = 'Alpha'
-                else:
-                    processor = 'VAX'
+    # System specific extensions
+    if system == 'OpenVMS':
+        # OpenVMS seems to have release and version mixed up
+        if not release or release == '0':
+            release = version
+            version = ''
+        # Get processor information
+        try:
+            import vms_lib
+        except ImportError:
+            pass
         else:
-            # Get processor information from the uname system command
-            processor = _syscmd_uname('-p','')
+            csid, cpu_number = vms_lib.getsyi('SYI$_CPU',0)
+            if (cpu_number >= 128):
+                processor = 'Alpha'
+            else:
+                processor = 'VAX'
+    if not processor:
+        # Get processor information from the uname system command
+        processor = _syscmd_uname('-p','')
 
-    # 'unknown' is not really any useful as information; we'll convert
-    # it to '' which is more portable
+    #If any unknowns still exist, replace them with ''s, which are more portable
     if system == 'unknown':
         system = ''
     if node == 'unknown':
@@ -1021,6 +1206,12 @@ def uname():
         machine = ''
     if processor == 'unknown':
         processor = ''
+
+    #  normalize name
+    if system == 'Microsoft' and release == 'Windows':
+        system = 'Windows'
+        release = 'Vista'
+
     _uname_cache = system,node,release,version,machine,processor
     return _uname_cache
 
@@ -1086,37 +1277,136 @@ def processor():
 
 ### Various APIs for extracting information from sys.version
 
-_sys_version_parser = re.compile(r'([\w.+]+)\s*'
-                                  '\(#(\d+),\s*([\w ]+),\s*([\w :]+)\)\s*'
-                                  '\[([^\]]+)\]?')
-_sys_version_cache = None
+_sys_version_parser = re.compile(
+    r'([\w.+]+)\s*'
+    '\(#?([^,]+),\s*([\w ]+),\s*([\w :]+)\)\s*'
+    '\[([^\]]+)\]?')
 
-def _sys_version():
+_jython_sys_version_parser = re.compile(
+    r'([\d\.]+)')
+
+_ironpython_sys_version_parser = re.compile(
+    r'IronPython\s*'
+    '([\d\.]+)'
+    '(?: \(([\d\.]+)\))?'
+    ' on (.NET [\d\.]+)')
+
+_sys_version_cache = {}
+
+def _sys_version(sys_version=None):
 
     """ Returns a parsed version of Python's sys.version as tuple
-        (version, buildno, builddate, compiler) referring to the Python
-        version, build number, build date/time as string and the compiler
+        (name, version, branch, revision, buildno, builddate, compiler)
+        referring to the Python implementation name, version, branch,
+        revision, build number, build date/time as string and the compiler
         identification string.
 
         Note that unlike the Python sys.version, the returned value
         for the Python version will always include the patchlevel (it
         defaults to '.0').
 
-    """
-    global _sys_version_cache
+        The function returns empty strings for tuple entries that
+        cannot be determined.
 
-    if _sys_version_cache is not None:
-        return _sys_version_cache
-    version, buildno, builddate, buildtime, compiler = \
-             _sys_version_parser.match(sys.version).groups()
-    buildno = int(buildno)
-    builddate = builddate + ' ' + buildtime
+        sys_version may be given to parse an alternative version
+        string, e.g. if the version was read from a different Python
+        interpreter.
+
+    """
+    # Get the Python version
+    if sys_version is None:
+        sys_version = sys.version
+
+    # Try the cache first
+    result = _sys_version_cache.get(sys_version, None)
+    if result is not None:
+        return result
+
+    # Parse it
+    if sys_version[:10] == 'IronPython':
+        # IronPython
+        name = 'IronPython'
+        match = _ironpython_sys_version_parser.match(sys_version)
+        if match is None:
+            raise ValueError(
+                'failed to parse IronPython sys.version: %s' %
+                repr(sys_version))
+        version, alt_version, compiler = match.groups()
+        branch = ''
+        revision = ''
+        buildno = ''
+        builddate = ''
+
+    elif sys.platform[:4] == 'java':
+        # Jython
+        name = 'Jython'
+        match = _jython_sys_version_parser.match(sys_version)
+        if match is None:
+            raise ValueError(
+                'failed to parse Jython sys.version: %s' %
+                repr(sys_version))
+        version, = match.groups()
+        branch = ''
+        revision = ''
+        compiler = sys.platform
+        buildno = ''
+        builddate = ''
+
+    else:
+        # CPython
+        match = _sys_version_parser.match(sys_version)
+        if match is None:
+            raise ValueError(
+                'failed to parse CPython sys.version: %s' %
+                repr(sys_version))
+        version, buildno, builddate, buildtime, compiler = \
+              match.groups()
+        if hasattr(sys, 'subversion'):
+            # sys.subversion was added in Python 2.5
+            name, branch, revision = sys.subversion
+        else:
+            name = 'CPython'
+            branch = ''
+            revision = ''
+        builddate = builddate + ' ' + buildtime
+
+    # Add the patchlevel version if missing
     l = string.split(version, '.')
     if len(l) == 2:
         l.append('0')
         version = string.join(l, '.')
-    _sys_version_cache = (version, buildno, builddate, compiler)
-    return _sys_version_cache
+
+    # Build and cache the result
+    result = (name, version, branch, revision, buildno, builddate, compiler)
+    _sys_version_cache[sys_version] = result
+    return result
+
+def _test_sys_version():
+
+    _sys_version_cache.clear()
+    for input, output in (
+        ('2.4.3 (#1, Jun 21 2006, 13:54:21) \n[GCC 3.3.4 (pre 3.3.5 20040809)]',
+         ('CPython', '2.4.3', '', '', '1', 'Jun 21 2006 13:54:21', 'GCC 3.3.4 (pre 3.3.5 20040809)')),
+        ('IronPython 1.0.60816 on .NET 2.0.50727.42',
+         ('IronPython', '1.0.60816', '', '', '', '', '.NET 2.0.50727.42')),
+        ('IronPython 1.0 (1.0.61005.1977) on .NET 2.0.50727.42',
+         ('IronPython', '1.0.0', '', '', '', '', '.NET 2.0.50727.42')),
+        ):
+        parsed = _sys_version(input)
+        if parsed != output:
+            print (input, parsed)
+
+def python_implementation():
+
+    """ Returns a string identifying the Python implementation.
+
+        Currently, the following implementations are identified:
+        'CPython' (C implementation of Python),
+        'IronPython' (.NET implementation of Python),
+        'Jython' (Java implementation of Python).
+
+    """
+    return _sys_version()[0]
 
 def python_version():
 
@@ -1126,7 +1416,7 @@ def python_version():
         will always include the patchlevel (it defaults to 0).
 
     """
-    return _sys_version()[0]
+    return _sys_version()[1]
 
 def python_version_tuple():
 
@@ -1137,7 +1427,34 @@ def python_version_tuple():
         will always include the patchlevel (it defaults to 0).
 
     """
-    return string.split(_sys_version()[0], '.')
+    return tuple(string.split(_sys_version()[1], '.'))
+
+def python_branch():
+
+    """ Returns a string identifying the Python implementation
+        branch.
+
+        For CPython this is the Subversion branch from which the
+        Python binary was built.
+
+        If not available, an empty string is returned.
+
+    """
+
+    return _sys_version()[2]
+
+def python_revision():
+
+    """ Returns a string identifying the Python implementation
+        revision.
+
+        For CPython this is the Subversion revision from which the
+        Python binary was built.
+
+        If not available, an empty string is returned.
+
+    """
+    return _sys_version()[3]
 
 def python_build():
 
@@ -1145,7 +1462,7 @@ def python_build():
         build number and date as strings.
 
     """
-    return _sys_version()[1:3]
+    return _sys_version()[4:6]
 
 def python_compiler():
 
@@ -1153,7 +1470,7 @@ def python_compiler():
         Python.
 
     """
-    return _sys_version()[3]
+    return _sys_version()[6]
 
 ### The Opus Magnum of platform strings :-)
 
@@ -1214,7 +1531,7 @@ def platform(aliased=0, terse=0):
     elif system == 'Java':
         # Java platforms
         r,v,vminfo,(os_name,os_version,os_arch) = java_ver()
-        if terse:
+        if terse or not os_name:
             platform = _platform(system,release,version)
         else:
             platform = _platform(system,release,version,

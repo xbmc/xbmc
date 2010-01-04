@@ -47,7 +47,7 @@ cygwin in no-cygwin mode).
 
 # This module should be kept compatible with Python 2.1.
 
-__revision__ = "$Id: cygwinccompiler.py 37828 2004-11-10 22:23:15Z loewis $"
+__revision__ = "$Id: cygwinccompiler.py 73349 2009-06-11 09:17:19Z tarek.ziade $"
 
 import os,sys,copy
 from distutils.ccompiler import gen_preprocess_options, gen_lib_options
@@ -55,6 +55,29 @@ from distutils.unixccompiler import UnixCCompiler
 from distutils.file_util import write_file
 from distutils.errors import DistutilsExecError, CompileError, UnknownFileError
 from distutils import log
+
+def get_msvcr():
+    """Include the appropriate MSVC runtime library if Python was built
+    with MSVC 7.0 or later.
+    """
+    msc_pos = sys.version.find('MSC v.')
+    if msc_pos != -1:
+        msc_ver = sys.version[msc_pos+6:msc_pos+10]
+        if msc_ver == '1300':
+            # MSVC 7.0
+            return ['msvcr70']
+        elif msc_ver == '1310':
+            # MSVC 7.1
+            return ['msvcr71']
+        elif msc_ver == '1400':
+            # VS2005 / MSVC 8.0
+            return ['msvcr80']
+        elif msc_ver == '1500':
+            # VS2008 / MSVC 9.0
+            return ['msvcr90']
+        else:
+            raise ValueError("Unknown MS Compiler version %s " % msc_ver)
+
 
 class CygwinCCompiler (UnixCCompiler):
 
@@ -121,18 +144,9 @@ class CygwinCCompiler (UnixCCompiler):
             self.warn(
                 "Consider upgrading to a newer version of gcc")
         else:
-            self.dll_libraries=[]
             # Include the appropriate MSVC runtime library if Python was built
-            # with MSVC 7.0 or 7.1.
-            msc_pos = sys.version.find('MSC v.')
-            if msc_pos != -1:
-                msc_ver = sys.version[msc_pos+6:msc_pos+10]
-                if msc_ver == '1300':
-                    # MSVC 7.0
-                    self.dll_libraries = ['msvcr70']
-                elif msc_ver == '1310':
-                    # MSVC 7.1
-                    self.dll_libraries = ['msvcr71']
+            # with MSVC 7.0 or later.
+            self.dll_libraries = get_msvcr()
 
     # __init__ ()
 
@@ -320,16 +334,8 @@ class Mingw32CCompiler (CygwinCCompiler):
         self.dll_libraries=[]
 
         # Include the appropriate MSVC runtime library if Python was built
-        # with MSVC 7.0 or 7.1.
-        msc_pos = sys.version.find('MSC v.')
-        if msc_pos != -1:
-            msc_ver = sys.version[msc_pos+6:msc_pos+10]
-            if msc_ver == '1300':
-                # MSVC 7.0
-                self.dll_libraries = ['msvcr70']
-            elif msc_ver == '1310':
-                # MSVC 7.1
-                self.dll_libraries = ['msvcr71']
+        # with MSVC 7.0 or later.
+        self.dll_libraries = get_msvcr()
 
     # __init__ ()
 
@@ -398,7 +404,7 @@ def get_versions():
     """ Try to find out the versions of gcc, ld and dllwrap.
         If not possible it returns None for it.
     """
-    from distutils.version import StrictVersion
+    from distutils.version import LooseVersion
     from distutils.spawn import find_executable
     import re
 
@@ -409,7 +415,7 @@ def get_versions():
         out.close()
         result = re.search('(\d+\.\d+(\.\d+)*)',out_string)
         if result:
-            gcc_version = StrictVersion(result.group(1))
+            gcc_version = LooseVersion(result.group(1))
         else:
             gcc_version = None
     else:
@@ -421,7 +427,7 @@ def get_versions():
         out.close()
         result = re.search('(\d+\.\d+(\.\d+)*)',out_string)
         if result:
-            ld_version = StrictVersion(result.group(1))
+            ld_version = LooseVersion(result.group(1))
         else:
             ld_version = None
     else:
@@ -433,7 +439,7 @@ def get_versions():
         out.close()
         result = re.search(' (\d+\.\d+(\.\d+)*)',out_string)
         if result:
-            dllwrap_version = StrictVersion(result.group(1))
+            dllwrap_version = LooseVersion(result.group(1))
         else:
             dllwrap_version = None
     else:

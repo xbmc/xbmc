@@ -3,23 +3,16 @@ Test cases adapted from the test_bsddb.py module in Python's
 regression test suite.
 """
 
-import sys, os, string
+import os, string
 import unittest
-import tempfile
 
-from test_all import verbose
-
-try:
-    # For Pythons w/distutils pybsddb
-    from bsddb3 import db, hashopen, btopen, rnopen
-except ImportError:
-    # For Python 2.3
-    from bsddb import db, hashopen, btopen, rnopen
+from test_all import db, hashopen, btopen, rnopen, verbose, \
+        get_new_database_path
 
 
 class CompatibilityTestCase(unittest.TestCase):
     def setUp(self):
-        self.filename = tempfile.mktemp()
+        self.filename = get_new_database_path()
 
     def tearDown(self):
         try:
@@ -35,7 +28,7 @@ class CompatibilityTestCase(unittest.TestCase):
         self.do_bthash_test(hashopen, 'hashopen')
 
     def test03_rnopen(self):
-        data = string.split("The quick brown fox jumped over the lazy dog.")
+        data = "The quick brown fox jumped over the lazy dog.".split()
         if verbose:
             print "\nTesting: rnopen"
 
@@ -47,7 +40,7 @@ class CompatibilityTestCase(unittest.TestCase):
         if verbose:
             print '%s %s %s' % getTest
 
-        assert getTest[1] == 'quick', 'data mismatch!'
+        self.assertEqual(getTest[1], 'quick', 'data mismatch!')
 
         rv = f.set_location(3)
         if rv != (3, 'brown'):
@@ -120,13 +113,13 @@ class CompatibilityTestCase(unittest.TestCase):
             try:
                 rec = f.next()
             except KeyError:
-                assert rec == f.last(), 'Error, last <> last!'
+                self.assertEqual(rec, f.last(), 'Error, last <> last!')
                 f.previous()
                 break
             if verbose:
                 print rec
 
-        assert f.has_key('f'), 'Error, missing key!'
+        self.assert_(f.has_key('f'), 'Error, missing key!')
 
         # test that set_location() returns the next nearest key, value
         # on btree databases and raises KeyError on others.
@@ -140,7 +133,7 @@ class CompatibilityTestCase(unittest.TestCase):
             except KeyError:
                 pass
             else:
-                self.fail("set_location on non-existant key did not raise KeyError")
+                self.fail("set_location on non-existent key did not raise KeyError")
 
         f.sync()
         f.close()

@@ -4,7 +4,7 @@
 # Implements multiple version numbering conventions for the
 # Python Module Distribution Utilities.
 #
-# $Id: version.py 29687 2002-11-14 02:25:42Z akuchling $
+# $Id: version.py 71270 2009-04-05 21:11:43Z georg.brandl $
 #
 
 """Provides classes to represent module version numbers (one class for
@@ -162,7 +162,7 @@ class StrictVersion (Version):
 
 
 # The rules according to Greg Stein:
-# 1) a version number has 1 or more numbers separate by a period or by
+# 1) a version number has 1 or more numbers separated by a period or by
 #    sequences of letters. If only periods, then these are compared
 #    left-to-right to determine an ordering.
 # 2) sequences of letters are part of the tuple for comparison and are

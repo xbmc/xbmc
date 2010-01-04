@@ -4,6 +4,72 @@
 extern "C" {
 #endif
 
+/* Error objects */
+
+typedef struct {
+    PyObject_HEAD
+    PyObject *dict;
+    PyObject *args;
+    PyObject *message;
+} PyBaseExceptionObject;
+
+typedef struct {
+    PyObject_HEAD
+    PyObject *dict;
+    PyObject *args;
+    PyObject *message;
+    PyObject *msg;
+    PyObject *filename;
+    PyObject *lineno;
+    PyObject *offset;
+    PyObject *text;
+    PyObject *print_file_and_line;
+} PySyntaxErrorObject;
+
+#ifdef Py_USING_UNICODE
+typedef struct {
+    PyObject_HEAD
+    PyObject *dict;
+    PyObject *args;
+    PyObject *message;
+    PyObject *encoding;
+    PyObject *object;
+    Py_ssize_t start;
+    Py_ssize_t end;
+    PyObject *reason;
+} PyUnicodeErrorObject;
+#endif
+
+typedef struct {
+    PyObject_HEAD
+    PyObject *dict;
+    PyObject *args;
+    PyObject *message;
+    PyObject *code;
+} PySystemExitObject;
+
+typedef struct {
+    PyObject_HEAD
+    PyObject *dict;
+    PyObject *args;
+    PyObject *message;
+    PyObject *myerrno;
+    PyObject *strerror;
+    PyObject *filename;
+} PyEnvironmentErrorObject;
+
+#ifdef MS_WINDOWS
+typedef struct {
+    PyObject_HEAD
+    PyObject *dict;
+    PyObject *args;
+    PyObject *message;
+    PyObject *myerrno;
+    PyObject *strerror;
+    PyObject *filename;
+    PyObject *winerror;
+} PyWindowsErrorObject;
+#endif
 
 /* Error handling definitions */
 
@@ -15,16 +81,44 @@ PyAPI_FUNC(void) PyErr_Clear(void);
 PyAPI_FUNC(void) PyErr_Fetch(PyObject **, PyObject **, PyObject **);
 PyAPI_FUNC(void) PyErr_Restore(PyObject *, PyObject *, PyObject *);
 
+#ifdef Py_DEBUG
+#define _PyErr_OCCURRED() PyErr_Occurred()
+#else
+#define _PyErr_OCCURRED() (_PyThreadState_Current->curexc_type)
+#endif
+
 /* Error testing and normalization */
 PyAPI_FUNC(int) PyErr_GivenExceptionMatches(PyObject *, PyObject *);
 PyAPI_FUNC(int) PyErr_ExceptionMatches(PyObject *);
 PyAPI_FUNC(void) PyErr_NormalizeException(PyObject**, PyObject**, PyObject**);
 
+/* */
 
+#define PyExceptionClass_Check(x)					\
+	(PyClass_Check((x)) || (PyType_Check((x)) &&			\
+	  PyType_FastSubclass((PyTypeObject*)(x), Py_TPFLAGS_BASE_EXC_SUBCLASS)))
+
+#define PyExceptionInstance_Check(x)			\
+	(PyInstance_Check((x)) ||			\
+	 PyType_FastSubclass((x)->ob_type, Py_TPFLAGS_BASE_EXC_SUBCLASS))
+
+#define PyExceptionClass_Name(x)				   \
+	(PyClass_Check((x))					   \
+	 ? PyString_AS_STRING(((PyClassObject*)(x))->cl_name)	   \
+	 : (char *)(((PyTypeObject*)(x))->tp_name))
+
+#define PyExceptionInstance_Class(x)					\
+	((PyInstance_Check((x))						\
+	  ? (PyObject*)((PyInstanceObject*)(x))->in_class		\
+	  : (PyObject*)((x)->ob_type)))
+
+	
 /* Predefined exceptions */
 
+PyAPI_DATA(PyObject *) PyExc_BaseException;
 PyAPI_DATA(PyObject *) PyExc_Exception;
 PyAPI_DATA(PyObject *) PyExc_StopIteration;
+PyAPI_DATA(PyObject *) PyExc_GeneratorExit;
 PyAPI_DATA(PyObject *) PyExc_StandardError;
 PyAPI_DATA(PyObject *) PyExc_ArithmeticError;
 PyAPI_DATA(PyObject *) PyExc_LookupError;
@@ -66,7 +160,10 @@ PyAPI_DATA(PyObject *) PyExc_WindowsError;
 PyAPI_DATA(PyObject *) PyExc_VMSError;
 #endif
 
+PyAPI_DATA(PyObject *) PyExc_BufferError;
+
 PyAPI_DATA(PyObject *) PyExc_MemoryErrorInst;
+PyAPI_DATA(PyObject *) PyExc_RecursionErrorInst;
 
 /* Predefined warning categories */
 PyAPI_DATA(PyObject *) PyExc_Warning;
@@ -74,10 +171,11 @@ PyAPI_DATA(PyObject *) PyExc_UserWarning;
 PyAPI_DATA(PyObject *) PyExc_DeprecationWarning;
 PyAPI_DATA(PyObject *) PyExc_PendingDeprecationWarning;
 PyAPI_DATA(PyObject *) PyExc_SyntaxWarning;
-/* PyExc_OverflowWarning will go away for Python 2.5 */
-PyAPI_DATA(PyObject *) PyExc_OverflowWarning;
 PyAPI_DATA(PyObject *) PyExc_RuntimeWarning;
 PyAPI_DATA(PyObject *) PyExc_FutureWarning;
+PyAPI_DATA(PyObject *) PyExc_ImportWarning;
+PyAPI_DATA(PyObject *) PyExc_UnicodeWarning;
+PyAPI_DATA(PyObject *) PyExc_BytesWarning;
 
 
 /* Convenience functions */
@@ -129,15 +227,12 @@ PyAPI_FUNC(PyObject *) PyErr_NewException(char *name, PyObject *base,
                                          PyObject *dict);
 PyAPI_FUNC(void) PyErr_WriteUnraisable(PyObject *);
 
-/* Issue a warning or exception */
-PyAPI_FUNC(int) PyErr_Warn(PyObject *, char *);
-PyAPI_FUNC(int) PyErr_WarnExplicit(PyObject *, const char *,
-				   const char *, int, 
-				   const char *, PyObject *);
-
 /* In sigcheck.c or signalmodule.c */
 PyAPI_FUNC(int) PyErr_CheckSignals(void);
 PyAPI_FUNC(void) PyErr_SetInterrupt(void);
+
+/* In signalmodule.c */
+int PySignal_SetWakeupFd(int fd);
 
 /* Support for adding program text to SyntaxErrors */
 PyAPI_FUNC(void) PyErr_SyntaxLocation(const char *, int);
@@ -149,15 +244,15 @@ PyAPI_FUNC(PyObject *) PyErr_ProgramText(const char *, int);
 
 /* create a UnicodeDecodeError object */
 PyAPI_FUNC(PyObject *) PyUnicodeDecodeError_Create(
-	const char *, const char *, int, int, int, const char *);
+	const char *, const char *, Py_ssize_t, Py_ssize_t, Py_ssize_t, const char *);
 
 /* create a UnicodeEncodeError object */
 PyAPI_FUNC(PyObject *) PyUnicodeEncodeError_Create(
-	const char *, const Py_UNICODE *, int, int, int, const char *);
+	const char *, const Py_UNICODE *, Py_ssize_t, Py_ssize_t, Py_ssize_t, const char *);
 
 /* create a UnicodeTranslateError object */
 PyAPI_FUNC(PyObject *) PyUnicodeTranslateError_Create(
-	const Py_UNICODE *, int, int, int, const char *);
+	const Py_UNICODE *, Py_ssize_t, Py_ssize_t, Py_ssize_t, const char *);
 
 /* get the encoding attribute */
 PyAPI_FUNC(PyObject *) PyUnicodeEncodeError_GetEncoding(PyObject *);
@@ -170,27 +265,27 @@ PyAPI_FUNC(PyObject *) PyUnicodeTranslateError_GetObject(PyObject *);
 
 /* get the value of the start attribute (the int * may not be NULL)
    return 0 on success, -1 on failure */
-PyAPI_FUNC(int) PyUnicodeEncodeError_GetStart(PyObject *, int *);
-PyAPI_FUNC(int) PyUnicodeDecodeError_GetStart(PyObject *, int *);
-PyAPI_FUNC(int) PyUnicodeTranslateError_GetStart(PyObject *, int *);
+PyAPI_FUNC(int) PyUnicodeEncodeError_GetStart(PyObject *, Py_ssize_t *);
+PyAPI_FUNC(int) PyUnicodeDecodeError_GetStart(PyObject *, Py_ssize_t *);
+PyAPI_FUNC(int) PyUnicodeTranslateError_GetStart(PyObject *, Py_ssize_t *);
 
 /* assign a new value to the start attribute
    return 0 on success, -1 on failure */
-PyAPI_FUNC(int) PyUnicodeEncodeError_SetStart(PyObject *, int);
-PyAPI_FUNC(int) PyUnicodeDecodeError_SetStart(PyObject *, int);
-PyAPI_FUNC(int) PyUnicodeTranslateError_SetStart(PyObject *, int);
+PyAPI_FUNC(int) PyUnicodeEncodeError_SetStart(PyObject *, Py_ssize_t);
+PyAPI_FUNC(int) PyUnicodeDecodeError_SetStart(PyObject *, Py_ssize_t);
+PyAPI_FUNC(int) PyUnicodeTranslateError_SetStart(PyObject *, Py_ssize_t);
 
 /* get the value of the end attribute (the int *may not be NULL)
  return 0 on success, -1 on failure */
-PyAPI_FUNC(int) PyUnicodeEncodeError_GetEnd(PyObject *, int *);
-PyAPI_FUNC(int) PyUnicodeDecodeError_GetEnd(PyObject *, int *);
-PyAPI_FUNC(int) PyUnicodeTranslateError_GetEnd(PyObject *, int *);
+PyAPI_FUNC(int) PyUnicodeEncodeError_GetEnd(PyObject *, Py_ssize_t *);
+PyAPI_FUNC(int) PyUnicodeDecodeError_GetEnd(PyObject *, Py_ssize_t *);
+PyAPI_FUNC(int) PyUnicodeTranslateError_GetEnd(PyObject *, Py_ssize_t *);
 
 /* assign a new value to the end attribute
    return 0 on success, -1 on failure */
-PyAPI_FUNC(int) PyUnicodeEncodeError_SetEnd(PyObject *, int);
-PyAPI_FUNC(int) PyUnicodeDecodeError_SetEnd(PyObject *, int);
-PyAPI_FUNC(int) PyUnicodeTranslateError_SetEnd(PyObject *, int);
+PyAPI_FUNC(int) PyUnicodeEncodeError_SetEnd(PyObject *, Py_ssize_t);
+PyAPI_FUNC(int) PyUnicodeDecodeError_SetEnd(PyObject *, Py_ssize_t);
+PyAPI_FUNC(int) PyUnicodeTranslateError_SetEnd(PyObject *, Py_ssize_t);
 
 /* get the value of the reason attribute */
 PyAPI_FUNC(PyObject *) PyUnicodeEncodeError_GetReason(PyObject *);

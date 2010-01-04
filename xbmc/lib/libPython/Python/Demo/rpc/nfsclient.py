@@ -129,7 +129,7 @@ class NFSClient(UDPClient):
         self.unpacker = NFSUnpacker('')
 
     def mkcred(self):
-        if self.cred == None:
+        if self.cred is None:
             self.cred = rpc.AUTH_UNIX, rpc.make_auth_unix_default()
         return self.cred
 
@@ -170,7 +170,7 @@ class NFSClient(UDPClient):
             for fileid, name, cookie in entries:
                 list.append((fileid, name))
                 last_cookie = cookie
-            if eof or last_cookie == None:
+            if eof or last_cookie is None:
                 break
             ra = (ra[0], last_cookie, ra[2])
         return list
@@ -184,7 +184,7 @@ def test():
     else: filesys = None
     from mountclient import UDPMountClient, TCPMountClient
     mcl = TCPMountClient(host)
-    if filesys == None:
+    if filesys is None:
         list = mcl.Export()
         for item in list:
             print item
@@ -194,8 +194,8 @@ def test():
     fh = sf[1]
     if fh:
         ncl = NFSClient(host)
-        as = ncl.Getattr(fh)
-        print as
+        attrstat = ncl.Getattr(fh)
+        print attrstat
         list = ncl.Listdir(fh)
         for item in list: print item
         mcl.Umnt(filesys)

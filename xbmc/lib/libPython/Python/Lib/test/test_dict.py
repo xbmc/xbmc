@@ -1,7 +1,8 @@
 import unittest
 from test import test_support
 
-import sys, UserDict, cStringIO
+import UserDict, random, string
+import gc, weakref
 
 
 class DictTest(unittest.TestCase):
@@ -9,6 +10,17 @@ class DictTest(unittest.TestCase):
         # calling built-in types without argument must return empty
         self.assertEqual(dict(), {})
         self.assert_(dict() is not {})
+
+    def test_literal_constructor(self):
+        # check literal constructor for different sized dicts (to exercise the BUILD_MAP oparg
+        for n in (0, 1, 6, 256, 400):
+            items = [(''.join([random.choice(string.letters)
+                               for j in range(8)]),
+                      i)
+                     for i in range(n)]
+            random.shuffle(items)
+            dictliteral = '{' + ', '.join('%r: %d' % item for item in items) + '}'
+            self.assertEqual(eval(dictliteral), dict(items))
 
     def test_bool(self):
         self.assert_(not {})
@@ -86,6 +98,8 @@ class DictTest(unittest.TestCase):
         class BadEq(object):
             def __eq__(self, other):
                 raise Exc()
+            def __hash__(self):
+                return 24
 
         d = {}
         d[BadEq()] = 42
@@ -234,6 +248,10 @@ class DictTest(unittest.TestCase):
                 raise Exc()
 
         self.assertRaises(Exc, baddict2.fromkeys, [1])
+
+        # test fast path for dictionary inputs
+        d = dict(zip(range(6), range(6)))
+        self.assertEqual(dict.fromkeys(d, 0), dict(zip(range(6), [0]*6)))
 
     def test_copy(self):
         d = {1:1, 2:2, 3:3}
@@ -385,6 +403,8 @@ class DictTest(unittest.TestCase):
         class BadCmp(object):
             def __eq__(self, other):
                 raise Exc()
+            def __hash__(self):
+                return 42
 
         d1 = {BadCmp(): 1}
         d2 = {1: 1}
@@ -395,7 +415,162 @@ class DictTest(unittest.TestCase):
         else:
             self.fail("< didn't raise Exc")
 
-import mapping_tests
+    def test_missing(self):
+        # Make sure dict doesn't have a __missing__ method
+        self.assertEqual(hasattr(dict, "__missing__"), False)
+        self.assertEqual(hasattr({}, "__missing__"), False)
+        # Test several cases:
+        # (D) subclass defines __missing__ method returning a value
+        # (E) subclass defines __missing__ method raising RuntimeError
+        # (F) subclass sets __missing__ instance variable (no effect)
+        # (G) subclass doesn't define __missing__ at a all
+        class D(dict):
+            def __missing__(self, key):
+                return 42
+        d = D({1: 2, 3: 4})
+        self.assertEqual(d[1], 2)
+        self.assertEqual(d[3], 4)
+        self.assert_(2 not in d)
+        self.assert_(2 not in d.keys())
+        self.assertEqual(d[2], 42)
+        class E(dict):
+            def __missing__(self, key):
+                raise RuntimeError(key)
+        e = E()
+        try:
+            e[42]
+        except RuntimeError, err:
+            self.assertEqual(err.args, (42,))
+        else:
+            self.fail("e[42] didn't raise RuntimeError")
+        class F(dict):
+            def __init__(self):
+                # An instance variable __missing__ should have no effect
+                self.__missing__ = lambda key: None
+        f = F()
+        try:
+            f[42]
+        except KeyError, err:
+            self.assertEqual(err.args, (42,))
+        else:
+            self.fail("f[42] didn't raise KeyError")
+        class G(dict):
+            pass
+        g = G()
+        try:
+            g[42]
+        except KeyError, err:
+            self.assertEqual(err.args, (42,))
+        else:
+            self.fail("g[42] didn't raise KeyError")
+
+    def test_tuple_keyerror(self):
+        # SF #1576657
+        d = {}
+        try:
+            d[(1,)]
+        except KeyError, e:
+            self.assertEqual(e.args, ((1,),))
+        else:
+            self.fail("missing KeyError")
+
+    def test_bad_key(self):
+        # Dictionary lookups should fail if __cmp__() raises an exception.
+        class CustomException(Exception):
+            pass
+
+        class BadDictKey:
+            def __hash__(self):
+                return hash(self.__class__)
+
+            def __cmp__(self, other):
+                if isinstance(other, self.__class__):
+                    raise CustomException
+                return other
+
+        d = {}
+        x1 = BadDictKey()
+        x2 = BadDictKey()
+        d[x1] = 1
+        for stmt in ['d[x2] = 2',
+                     'z = d[x2]',
+                     'x2 in d',
+                     'd.has_key(x2)',
+                     'd.get(x2)',
+                     'd.setdefault(x2, 42)',
+                     'd.pop(x2)',
+                     'd.update({x2: 2})']:
+            try:
+                exec stmt in locals()
+            except CustomException:
+                pass
+            else:
+                self.fail("Statement didn't raise exception")
+
+    def test_resize1(self):
+        # Dict resizing bug, found by Jack Jansen in 2.2 CVS development.
+        # This version got an assert failure in debug build, infinite loop in
+        # release build.  Unfortunately, provoking this kind of stuff requires
+        # a mix of inserts and deletes hitting exactly the right hash codes in
+        # exactly the right order, and I can't think of a randomized approach
+        # that would be *likely* to hit a failing case in reasonable time.
+
+        d = {}
+        for i in range(5):
+            d[i] = i
+        for i in range(5):
+            del d[i]
+        for i in range(5, 9):  # i==8 was the problem
+            d[i] = i
+
+    def test_resize2(self):
+        # Another dict resizing bug (SF bug #1456209).
+        # This caused Segmentation faults or Illegal instructions.
+
+        class X(object):
+            def __hash__(self):
+                return 5
+            def __eq__(self, other):
+                if resizing:
+                    d.clear()
+                return False
+        d = {}
+        resizing = False
+        d[X()] = 1
+        d[X()] = 2
+        d[X()] = 3
+        d[X()] = 4
+        d[X()] = 5
+        # now trigger a resize
+        resizing = True
+        d[9] = 6
+
+    def test_empty_presized_dict_in_freelist(self):
+        # Bug #3537: if an empty but presized dict with a size larger
+        # than 7 was in the freelist, it triggered an assertion failure
+        try:
+            d = {'a': 1/0,  'b': None, 'c': None, 'd': None, 'e': None,
+                 'f': None, 'g': None, 'h': None}
+        except ZeroDivisionError:
+            pass
+        d = {}
+
+    def test_container_iterator(self):
+        # Bug #3680: tp_traverse was not implemented for dictiter objects
+        class C(object):
+            pass
+        iterators = (dict.iteritems, dict.itervalues, dict.iterkeys)
+        for i in iterators:
+            obj = C()
+            ref = weakref.ref(obj)
+            container = {obj: 1}
+            obj.x = i(container)
+            del obj, container
+            gc.collect()
+            self.assert_(ref() is None, "Cycle was not collected")
+
+
+from test import mapping_tests
 
 class GeneralMappingTests(mapping_tests.BasicTestMappingProtocol):
     type2test = dict

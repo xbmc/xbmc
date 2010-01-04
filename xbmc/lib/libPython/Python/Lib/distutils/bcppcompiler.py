@@ -13,10 +13,10 @@ for the Borland C++ compiler.
 
 # This module should be kept compatible with Python 2.1.
 
-__revision__ = "$Id: bcppcompiler.py 37828 2004-11-10 22:23:15Z loewis $"
+__revision__ = "$Id: bcppcompiler.py 61000 2008-02-23 17:40:11Z christian.heimes $"
 
 
-import sys, os
+import os
 from distutils.errors import \
      DistutilsExecError, DistutilsPlatformError, \
      CompileError, LibError, LinkError, UnknownFileError

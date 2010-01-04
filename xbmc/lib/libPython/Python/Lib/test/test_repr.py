@@ -5,10 +5,12 @@
 
 import sys
 import os
+import shutil
 import unittest
 
 from test.test_support import run_unittest
 from repr import repr as r # Don't shadow builtin repr
+from repr import Repr
 
 
 def nestedTuple(nesting):
@@ -32,6 +34,18 @@ class ReprTests(unittest.TestCase):
         s = "\""*30+"'"*100
         expected = repr(s)[:13] + "..." + repr(s)[-14:]
         eq(r(s), expected)
+
+    def test_tuple(self):
+        eq = self.assertEquals
+        eq(r((1,)), "(1,)")
+
+        t3 = (1, 2, 3)
+        eq(r(t3), "(1, 2, 3)")
+
+        r2 = Repr()
+        r2.maxtuple = 2
+        expected = repr(t3)[:-2] + "...)"
+        eq(r2.repr(t3), expected)
 
     def test_container(self):
         from array import array
@@ -135,7 +149,6 @@ class ReprTests(unittest.TestCase):
             '<built-in method split of str object at 0x'))
 
     def test_xrange(self):
-        import warnings
         eq = self.assertEquals
         eq(repr(xrange(1)), 'xrange(1)')
         eq(repr(xrange(1, 2)), 'xrange(1, 2)')
@@ -183,14 +196,20 @@ class ReprTests(unittest.TestCase):
         x = classmethod(C.foo)
         self.failUnless(repr(x).startswith('<classmethod object at 0x'))
 
+    def test_unsortable(self):
+        # Repr.repr() used to call sorted() on sets, frozensets and dicts
+        # without taking into account that not all objects are comparable
+        x = set([1j, 2j, 3j])
+        y = frozenset(x)
+        z = {1j: 1, 2j: 2}
+        r(x)
+        r(y)
+        r(z)
+
 def touch(path, text=''):
     fp = open(path, 'w')
     fp.write(text)
     fp.close()
-
-def zap(actions, dirname, names):
-    for name in names:
-        actions.append(os.path.join(dirname, name))
 
 class LongReprTest(unittest.TestCase):
     def setUp(self):
@@ -198,8 +217,10 @@ class LongReprTest(unittest.TestCase):
         self.pkgname = os.path.join(longname)
         self.subpkgname = os.path.join(longname, longname)
         # Make the package and subpackage
+        shutil.rmtree(self.pkgname, ignore_errors=True)
         os.mkdir(self.pkgname)
         touch(os.path.join(self.pkgname, '__init__'+os.extsep+'py'))
+        shutil.rmtree(self.subpkgname, ignore_errors=True)
         os.mkdir(self.subpkgname)
         touch(os.path.join(self.subpkgname, '__init__'+os.extsep+'py'))
         # Remember where we are
@@ -208,7 +229,9 @@ class LongReprTest(unittest.TestCase):
 
     def tearDown(self):
         actions = []
-        os.path.walk(self.pkgname, zap, actions)
+        for dirpath, dirnames, filenames in os.walk(self.pkgname):
+            for name in dirnames + filenames:
+                actions.append(os.path.join(dirpath, name))
         actions.append(self.pkgname)
         actions.sort()
         actions.reverse()

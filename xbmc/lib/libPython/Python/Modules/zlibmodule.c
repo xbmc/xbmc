@@ -197,10 +197,11 @@ PyZlib_decompress(PyObject *self, PyObject *args)
     PyObject *result_str;
     Byte *input;
     int length, err;
-    int wsize=DEF_WBITS, r_strlen=DEFAULTALLOC;
+    int wsize=DEF_WBITS;
+    Py_ssize_t r_strlen=DEFAULTALLOC;
     z_stream zst;
 
-    if (!PyArg_ParseTuple(args, "s#|ii:decompress",
+    if (!PyArg_ParseTuple(args, "s#|in:decompress",
 			  &input, &length, &wsize, &r_strlen))
 	return NULL;
 
@@ -653,6 +654,110 @@ PyZlib_flush(compobject *self, PyObject *args)
     return RetVal;
 }
 
+#ifdef HAVE_ZLIB_COPY
+PyDoc_STRVAR(comp_copy__doc__,
+"copy() -- Return a copy of the compression object.");
+
+static PyObject *
+PyZlib_copy(compobject *self)
+{
+    compobject *retval = NULL;
+    int err;
+
+    retval = newcompobject(&Comptype);
+    if (!retval) return NULL;
+
+    /* Copy the zstream state
+     * We use ENTER_ZLIB / LEAVE_ZLIB to make this thread-safe
+     */
+    ENTER_ZLIB
+    err = deflateCopy(&retval->zst, &self->zst);
+    switch(err) {
+    case(Z_OK):
+        break;
+    case(Z_STREAM_ERROR):
+        PyErr_SetString(PyExc_ValueError, "Inconsistent stream state");
+        goto error;
+    case(Z_MEM_ERROR):
+        PyErr_SetString(PyExc_MemoryError,
+                        "Can't allocate memory for compression object");
+        goto error;
+    default:
+        zlib_error(self->zst, err, "while copying compression object");
+        goto error;
+    }
+
+    Py_INCREF(self->unused_data);
+    Py_INCREF(self->unconsumed_tail);
+    Py_XDECREF(retval->unused_data);
+    Py_XDECREF(retval->unconsumed_tail);
+    retval->unused_data = self->unused_data;
+    retval->unconsumed_tail = self->unconsumed_tail;
+
+    /* Mark it as being initialized */
+    retval->is_initialised = 1;
+
+    LEAVE_ZLIB
+    return (PyObject *)retval;
+
+error:
+    LEAVE_ZLIB
+    Py_XDECREF(retval);
+    return NULL;
+}
+
+PyDoc_STRVAR(decomp_copy__doc__,
+"copy() -- Return a copy of the decompression object.");
+
+static PyObject *
+PyZlib_uncopy(compobject *self)
+{
+    compobject *retval = NULL;
+    int err;
+
+    retval = newcompobject(&Decomptype);
+    if (!retval) return NULL;
+
+    /* Copy the zstream state
+     * We use ENTER_ZLIB / LEAVE_ZLIB to make this thread-safe
+     */
+    ENTER_ZLIB
+    err = inflateCopy(&retval->zst, &self->zst);
+    switch(err) {
+    case(Z_OK):
+        break;
+    case(Z_STREAM_ERROR):
+        PyErr_SetString(PyExc_ValueError, "Inconsistent stream state");
+        goto error;
+    case(Z_MEM_ERROR):
+        PyErr_SetString(PyExc_MemoryError,
+                        "Can't allocate memory for decompression object");
+        goto error;
+    default:
+        zlib_error(self->zst, err, "while copying decompression object");
+        goto error;
+    }
+
+    Py_INCREF(self->unused_data);
+    Py_INCREF(self->unconsumed_tail);
+    Py_XDECREF(retval->unused_data);
+    Py_XDECREF(retval->unconsumed_tail);
+    retval->unused_data = self->unused_data;
+    retval->unconsumed_tail = self->unconsumed_tail;
+
+    /* Mark it as being initialized */
+    retval->is_initialised = 1;
+
+    LEAVE_ZLIB
+    return (PyObject *)retval;
+
+error:
+    LEAVE_ZLIB
+    Py_XDECREF(retval);
+    return NULL;
+}
+#endif
+
 PyDoc_STRVAR(decomp_flush__doc__,
 "flush( [length] ) -- Return a string containing any remaining\n"
 "decompressed data. length, if given, is the initial size of the\n"
@@ -669,6 +774,10 @@ PyZlib_unflush(compobject *self, PyObject *args)
 
     if (!PyArg_ParseTuple(args, "|i:flush", &length))
 	return NULL;
+    if (length <= 0) {
+	PyErr_SetString(PyExc_ValueError, "length must be greater than zero");
+	return NULL;
+    }
     if (!(retval = PyString_FromStringAndSize(NULL, length)))
 	return NULL;
 
@@ -725,6 +834,10 @@ static PyMethodDef comp_methods[] =
                  comp_compress__doc__},
     {"flush", (binaryfunc)PyZlib_flush, METH_VARARGS,
               comp_flush__doc__},
+#ifdef HAVE_ZLIB_COPY
+    {"copy",  (PyCFunction)PyZlib_copy, METH_NOARGS,
+              comp_copy__doc__},
+#endif
     {NULL, NULL}
 };
 
@@ -734,6 +847,10 @@ static PyMethodDef Decomp_methods[] =
                    decomp_decompress__doc__},
     {"flush", (binaryfunc)PyZlib_unflush, METH_VARARGS,
               decomp_flush__doc__},
+#ifdef HAVE_ZLIB_COPY
+    {"copy",  (PyCFunction)PyZlib_uncopy, METH_NOARGS,
+              decomp_copy__doc__},
+#endif
     {NULL, NULL}
 };
 
@@ -771,37 +888,46 @@ PyDoc_STRVAR(adler32__doc__,
 "adler32(string[, start]) -- Compute an Adler-32 checksum of string.\n"
 "\n"
 "An optional starting value can be specified.  The returned checksum is\n"
-"an integer.");
+"a signed integer.");
 
 static PyObject *
 PyZlib_adler32(PyObject *self, PyObject *args)
 {
-    uLong adler32val = adler32(0L, Z_NULL, 0);
+    unsigned int adler32val = 1;  /* adler32(0L, Z_NULL, 0) */
     Byte *buf;
-    int len;
+    int len, signed_val;
 
-    if (!PyArg_ParseTuple(args, "s#|k:adler32", &buf, &len, &adler32val))
+    if (!PyArg_ParseTuple(args, "s#|I:adler32", &buf, &len, &adler32val))
 	return NULL;
-    adler32val = adler32(adler32val, buf, len);
-    return PyInt_FromLong(adler32val);
+    /* In Python 2.x we return a signed integer regardless of native platform
+     * long size (the 32bit unsigned long is treated as 32-bit signed and sign
+     * extended into a 64-bit long inside the integer object).  3.0 does the
+     * right thing and returns unsigned. http://bugs.python.org/issue1202 */
+    signed_val = adler32(adler32val, buf, len);
+    return PyInt_FromLong(signed_val);
 }
 
 PyDoc_STRVAR(crc32__doc__,
 "crc32(string[, start]) -- Compute a CRC-32 checksum of string.\n"
 "\n"
 "An optional starting value can be specified.  The returned checksum is\n"
-"an integer.");
+"a signed integer.");
 
 static PyObject *
 PyZlib_crc32(PyObject *self, PyObject *args)
 {
-    uLong crc32val = crc32(0L, Z_NULL, 0);
+    unsigned int crc32val = 0;  /* crc32(0L, Z_NULL, 0) */
     Byte *buf;
-    int len;
-    if (!PyArg_ParseTuple(args, "s#|k:crc32", &buf, &len, &crc32val))
+    int len, signed_val;
+
+    if (!PyArg_ParseTuple(args, "s#|I:crc32", &buf, &len, &crc32val))
 	return NULL;
-    crc32val = crc32(crc32val, buf, len);
-    return PyInt_FromLong(crc32val);
+    /* In Python 2.x we return a signed integer regardless of native platform
+     * long size (the 32bit unsigned long is treated as 32-bit signed and sign
+     * extended into a 64-bit long inside the integer object).  3.0 does the
+     * right thing and returns unsigned. http://bugs.python.org/issue1202 */
+    signed_val = crc32(crc32val, buf, len);
+    return PyInt_FromLong(signed_val);
 }
 
 
@@ -823,8 +949,7 @@ static PyMethodDef zlib_methods[] =
 };
 
 static PyTypeObject Comptype = {
-    PyObject_HEAD_INIT(0)
-    0,
+    PyVarObject_HEAD_INIT(0, 0)
     "zlib.Compress",
     sizeof(compobject),
     0,
@@ -840,8 +965,7 @@ static PyTypeObject Comptype = {
 };
 
 static PyTypeObject Decomptype = {
-    PyObject_HEAD_INIT(0)
-    0,
+    PyVarObject_HEAD_INIT(0, 0)
     "zlib.Decompress",
     sizeof(compobject),
     0,
@@ -875,8 +999,8 @@ PyMODINIT_FUNC
 PyInit_zlib(void)
 {
     PyObject *m, *ver;
-    Comptype.ob_type = &PyType_Type;
-    Decomptype.ob_type = &PyType_Type;
+    Py_TYPE(&Comptype) = &PyType_Type;
+    Py_TYPE(&Decomptype) = &PyType_Type;
     m = Py_InitModule4("zlib", zlib_methods,
 		       zlib_module_documentation,
 		       (PyObject*)NULL,PYTHON_API_VERSION);

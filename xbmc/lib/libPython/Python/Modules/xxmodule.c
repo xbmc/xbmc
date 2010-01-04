@@ -25,7 +25,7 @@ typedef struct {
 
 static PyTypeObject Xxo_Type;
 
-#define XxoObject_Check(v)	((v)->ob_type == &Xxo_Type)
+#define XxoObject_Check(v)	(Py_TYPE(v) == &Xxo_Type)
 
 static XxoObject *
 newXxoObject(PyObject *arg)
@@ -97,8 +97,7 @@ Xxo_setattr(XxoObject *self, char *name, PyObject *v)
 static PyTypeObject Xxo_Type = {
 	/* The ob_type field must be initialized in the module init function
 	 * to be portable to Windows without using C++. */
-	PyObject_HEAD_INIT(NULL)
-	0,			/*ob_size*/
+	PyVarObject_HEAD_INIT(NULL, 0)
 	"xxmodule.Xxo",		/*tp_name*/
 	sizeof(XxoObject),	/*tp_basicsize*/
 	0,			/*tp_itemsize*/
@@ -216,8 +215,7 @@ xx_roj(PyObject *self, PyObject *args)
 static PyTypeObject Str_Type = {
 	/* The ob_type field must be initialized in the module init function
 	 * to be portable to Windows without using C++. */
-	PyObject_HEAD_INIT(NULL)
-	0,			/*ob_size*/
+	PyVarObject_HEAD_INIT(NULL, 0)
 	"xxmodule.Str",		/*tp_name*/
 	0,			/*tp_basicsize*/
 	0,			/*tp_itemsize*/
@@ -248,7 +246,7 @@ static PyTypeObject Str_Type = {
 	0,			/*tp_methods*/
 	0,			/*tp_members*/
 	0,			/*tp_getset*/
-	&PyString_Type,		/*tp_base*/
+	0, /* see initxx */	/*tp_base*/
 	0,			/*tp_dict*/
 	0,			/*tp_descr_get*/
 	0,			/*tp_descr_set*/
@@ -272,8 +270,7 @@ null_richcompare(PyObject *self, PyObject *other, int op)
 static PyTypeObject Null_Type = {
 	/* The ob_type field must be initialized in the module init function
 	 * to be portable to Windows without using C++. */
-	PyObject_HEAD_INIT(NULL)
-	0,			/*ob_size*/
+	PyVarObject_HEAD_INIT(NULL, 0)
 	"xxmodule.Null",	/*tp_name*/
 	0,			/*tp_basicsize*/
 	0,			/*tp_itemsize*/
@@ -304,14 +301,14 @@ static PyTypeObject Null_Type = {
 	0,			/*tp_methods*/
 	0,			/*tp_members*/
 	0,			/*tp_getset*/
-	&PyBaseObject_Type,	/*tp_base*/
+	0, /* see initxx */	/*tp_base*/
 	0,			/*tp_dict*/
 	0,			/*tp_descr_get*/
 	0,			/*tp_descr_set*/
 	0,			/*tp_dictoffset*/
 	0,			/*tp_init*/
 	0,			/*tp_alloc*/
-	PyType_GenericNew,	/*tp_new*/
+	0, /* see initxx */	/*tp_new*/
 	0,			/*tp_free*/
 	0,			/*tp_is_gc*/
 };
@@ -344,9 +341,15 @@ initxx(void)
 {
 	PyObject *m;
 
+	/* Due to cross platform compiler issues the slots must be filled
+	 * here. It's required for portability to Windows without requiring
+	 * C++. */
+	Null_Type.tp_base = &PyBaseObject_Type;
+	Null_Type.tp_new = PyType_GenericNew;
+	Str_Type.tp_base = &PyUnicode_Type;
+
 	/* Finalize the type object including setting type of the new type
-	 * object; doing it here is required for portability to Windows 
-	 * without requiring C++. */
+	 * object; doing it here is required for portability, too. */
 	if (PyType_Ready(&Xxo_Type) < 0)
 		return;
 

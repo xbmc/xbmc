@@ -69,9 +69,8 @@ a dictionary.
    >>> C = Cookie.SmartCookie()
    >>> C["fig"] = "newton"
    >>> C["sugar"] = "wafer"
-   >>> print C
-   Set-Cookie: fig=newton;
-   Set-Cookie: sugar=wafer;
+   >>> C.output()
+   'Set-Cookie: fig=newton\r\nSet-Cookie: sugar=wafer'
 
 Notice that the printable representation of a Cookie is the
 appropriate format for a Set-Cookie: header.  This is the
@@ -82,9 +81,9 @@ attributes by using the .output() function
    >>> C["rocky"] = "road"
    >>> C["rocky"]["path"] = "/cookie"
    >>> print C.output(header="Cookie:")
-   Cookie: rocky=road; Path=/cookie;
+   Cookie: rocky=road; Path=/cookie
    >>> print C.output(attrs=[], header="Cookie:")
-   Cookie: rocky=road;
+   Cookie: rocky=road
 
 The load() method of a Cookie extracts cookies from a string.  In a
 CGI script, you would use this method to extract the cookies from the
@@ -92,9 +91,8 @@ HTTP_COOKIE environment variable.
 
    >>> C = Cookie.SmartCookie()
    >>> C.load("chips=ahoy; vienna=finger")
-   >>> print C
-   Set-Cookie: chips=ahoy;
-   Set-Cookie: vienna=finger;
+   >>> C.output()
+   'Set-Cookie: chips=ahoy\r\nSet-Cookie: vienna=finger'
 
 The load() method is darn-tootin smart about identifying cookies
 within a string.  Escaped quotation marks, nested semicolons, and other
@@ -103,7 +101,7 @@ such trickeries do not confuse it.
    >>> C = Cookie.SmartCookie()
    >>> C.load('keebler="E=everybody; L=\\"Loves\\"; fudge=\\012;";')
    >>> print C
-   Set-Cookie: keebler="E=everybody; L=\"Loves\"; fudge=\012;";
+   Set-Cookie: keebler="E=everybody; L=\"Loves\"; fudge=\012;"
 
 Each element of the Cookie also supports all of the RFC 2109
 Cookie attributes.  Here's an example which sets the Path
@@ -113,7 +111,7 @@ attribute.
    >>> C["oreo"] = "doublestuff"
    >>> C["oreo"]["path"] = "/"
    >>> print C
-   Set-Cookie: oreo=doublestuff; Path=/;
+   Set-Cookie: oreo=doublestuff; Path=/
 
 Each dictionary element has a 'value' attribute, which gives you
 back the value associated with the key.
@@ -144,9 +142,8 @@ the value to a string, when the values are set dictionary-style.
    '7'
    >>> C["string"].value
    'seven'
-   >>> print C
-   Set-Cookie: number=7;
-   Set-Cookie: string=seven;
+   >>> C.output()
+   'Set-Cookie: number=7\r\nSet-Cookie: string=seven'
 
 
 SerialCookie
@@ -165,9 +162,8 @@ values, however.)
    7
    >>> C["string"].value
    'seven'
-   >>> print C
-   Set-Cookie: number="I7\012.";
-   Set-Cookie: string="S'seven'\012p1\012.";
+   >>> C.output()
+   'Set-Cookie: number="I7\\012."\r\nSet-Cookie: string="S\'seven\'\\012p1\\012."'
 
 Be warned, however, if SerialCookie cannot de-serialize a value (because
 it isn't a valid pickle'd object), IT WILL RAISE AN EXCEPTION.
@@ -190,9 +186,8 @@ as a string.
    7
    >>> C["string"].value
    'seven'
-   >>> print C
-   Set-Cookie: number="I7\012.";
-   Set-Cookie: string=seven;
+   >>> C.output()
+   'Set-Cookie: number="I7\\012."\r\nSet-Cookie: string=seven'
 
 
 Backwards Compatibility
@@ -228,6 +223,7 @@ __all__ = ["CookieError","BaseCookie","SimpleCookie","SerialCookie",
            "SmartCookie","Cookie"]
 
 _nulljoin = ''.join
+_semispacejoin = '; '.join
 _spacejoin = ' '.join
 
 #
@@ -309,8 +305,10 @@ _Translator       = {
     '\375' : '\\375',  '\376' : '\\376',  '\377' : '\\377'
     }
 
+_idmap = ''.join(chr(x) for x in xrange(256))
+
 def _quote(str, LegalChars=_LegalChars,
-           idmap=string._idmap, translate=string.translate):
+           idmap=_idmap, translate=string.translate):
     #
     # If the string does not need to be double-quoted,
     # then just return the string.  Otherwise, surround
@@ -410,6 +408,9 @@ class Morsel(dict):
     # For historical reasons, these attributes are also reserved:
     #   expires
     #
+    # This is an extension from Microsoft:
+    #   httponly
+    #
     # This dictionary provides a mapping from the lowercase
     # variant on the left to the appropriate traditional
     # formatting on the right.
@@ -419,6 +420,7 @@ class Morsel(dict):
                    "domain"      : "Domain",
                    "max-age" : "Max-Age",
                    "secure"      : "secure",
+                   "httponly"  : "httponly",
                    "version" : "Version",
                    }
 
@@ -444,7 +446,7 @@ class Morsel(dict):
 
     def set(self, key, val, coded_val,
             LegalChars=_LegalChars,
-            idmap=string._idmap, translate=string.translate ):
+            idmap=_idmap, translate=string.translate):
         # First we verify that the key isn't a reserved word
         # Second we make sure it only contains legal characters
         if key.lower() in self._reserved:
@@ -470,9 +472,9 @@ class Morsel(dict):
     def js_output(self, attrs=None):
         # Print javascript
         return """
-        <SCRIPT LANGUAGE="JavaScript">
+        <script type="text/javascript">
         <!-- begin hiding
-        document.cookie = \"%s\"
+        document.cookie = \"%s\";
         // end hiding -->
         </script>
         """ % ( self.OutputString(attrs), )
@@ -485,7 +487,7 @@ class Morsel(dict):
         RA = result.append
 
         # First, the key=value pair
-        RA("%s=%s;" % (self.key, self.coded_value))
+        RA("%s=%s" % (self.key, self.coded_value))
 
         # Now add any defined attributes
         if attrs is None:
@@ -496,16 +498,18 @@ class Morsel(dict):
             if V == "": continue
             if K not in attrs: continue
             if K == "expires" and type(V) == type(1):
-                RA("%s=%s;" % (self._reserved[K], _getdate(V)))
+                RA("%s=%s" % (self._reserved[K], _getdate(V)))
             elif K == "max-age" and type(V) == type(1):
-                RA("%s=%d;" % (self._reserved[K], V))
+                RA("%s=%d" % (self._reserved[K], V))
             elif K == "secure":
-                RA("%s;" % self._reserved[K])
+                RA(str(self._reserved[K]))
+            elif K == "httponly":
+                RA(str(self._reserved[K]))
             else:
-                RA("%s=%s;" % (self._reserved[K], V))
+                RA("%s=%s" % (self._reserved[K], V))
 
         # Return the result
-        return _spacejoin(result)
+        return _semispacejoin(result)
     # end OutputString
 # end Morsel class
 
@@ -581,7 +585,7 @@ class BaseCookie(dict):
         self.__set(key, rval, cval)
     # end __setitem__
 
-    def output(self, attrs=None, header="Set-Cookie:", sep="\n"):
+    def output(self, attrs=None, header="Set-Cookie:", sep="\015\012"):
         """Return a string suitable for HTTP."""
         result = []
         items = self.items()

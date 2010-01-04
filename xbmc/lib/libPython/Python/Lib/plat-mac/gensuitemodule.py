@@ -6,6 +6,9 @@ Based on aete.py.
 Reading and understanding this code is left as an exercise to the reader.
 """
 
+from warnings import warnpy3k
+warnpy3k("In 3.x, the gensuitemodule module is removed.", stacklevel=2)
+
 import MacOS
 import EasyDialogs
 import os
@@ -770,7 +773,7 @@ class SuiteCompiler:
             fp.write("        if _object:\n")
             fp.write("            _arguments['----'] = _object\n")
         else:
-            fp.write("        if _no_object != None: raise TypeError, 'No direct arg expected'\n")
+            fp.write("        if _no_object is not None: raise TypeError, 'No direct arg expected'\n")
         fp.write("\n")
         #
         # Do enum-name substitution

@@ -1,19 +1,21 @@
 """Interface to the compiler's internal symbol tables"""
 
 import _symtable
-from _symtable import USE, DEF_GLOBAL, DEF_LOCAL, DEF_PARAM, \
-     DEF_STAR, DEF_DOUBLESTAR, DEF_INTUPLE, DEF_FREE, \
-     DEF_FREE_GLOBAL, DEF_FREE_CLASS, DEF_IMPORT, DEF_BOUND, \
-     OPT_IMPORT_STAR, OPT_EXEC, OPT_BARE_EXEC
+from _symtable import (USE, DEF_GLOBAL, DEF_LOCAL, DEF_PARAM,
+     DEF_IMPORT, DEF_BOUND, OPT_IMPORT_STAR, OPT_EXEC, OPT_BARE_EXEC,
+     SCOPE_OFF, SCOPE_MASK, FREE, GLOBAL_IMPLICIT, GLOBAL_EXPLICIT)
 
+import warnings
 import weakref
 
-__all__ = ["symtable", "SymbolTable", "newSymbolTable", "Class",
-           "Function", "Symbol"]
+__all__ = ["symtable", "SymbolTable", "Class", "Function", "Symbol"]
 
 def symtable(code, filename, compile_type):
     raw = _symtable.symtable(code, filename, compile_type)
-    return newSymbolTable(raw[0], filename)
+    for top in raw.itervalues():
+        if top.name == 'top':
+            break
+    return _newSymbolTable(top, filename)
 
 class SymbolTableFactory:
     def __init__(self):
@@ -33,17 +35,11 @@ class SymbolTableFactory:
             obj = self.__memo[key] = self.new(table, filename)
         return obj
 
-newSymbolTable = SymbolTableFactory()
+_newSymbolTable = SymbolTableFactory()
 
-def is_free(flags):
-    if (flags & (USE | DEF_FREE)) \
-       and (flags & (DEF_LOCAL | DEF_PARAM | DEF_GLOBAL)):
-        return True
-    if flags & DEF_FREE_CLASS:
-        return True
-    return False
 
-class SymbolTable:
+class SymbolTable(object):
+
     def __init__(self, raw_table, filename):
         self._table = raw_table
         self._filename = filename
@@ -56,10 +52,11 @@ class SymbolTable:
             kind = "%s " % self.__class__.__name__
 
         if self._table.name == "global":
-            return "<%sSymbolTable for module %s>" % (kind, self._filename)
+            return "<{0}SymbolTable for module {1}>".format(kind, self._filename)
         else:
-            return "<%sSymbolTable for %s in %s>" % (kind, self._table.name,
-                                                     self._filename)
+            return "<{0}SymbolTable for {1} in {2}>".format(kind,
+                                                            self._table.name,
+                                                            self._filename)
 
     def get_type(self):
         if self._table.type == _symtable.TYPE_MODULE:
@@ -69,7 +66,7 @@ class SymbolTable:
         if self._table.type == _symtable.TYPE_CLASS:
             return "class"
         assert self._table.type in (1, 2, 3), \
-               "unexpected type: %s" % self._table.type
+               "unexpected type: {0}".format(self._table.type)
 
     def get_id(self):
         return self._table.id
@@ -113,13 +110,14 @@ class SymbolTable:
         return [self.lookup(ident) for ident in self.get_identifiers()]
 
     def __check_children(self, name):
-        return [newSymbolTable(st, self._filename)
+        return [_newSymbolTable(st, self._filename)
                 for st in self._table.children
                 if st.name == name]
 
     def get_children(self):
-        return [newSymbolTable(st, self._filename)
+        return [_newSymbolTable(st, self._filename)
                 for st in self._table.children]
+
 
 class Function(SymbolTable):
 
@@ -145,14 +143,17 @@ class Function(SymbolTable):
 
     def get_globals(self):
         if self.__globals is None:
-            glob = DEF_GLOBAL | DEF_FREE_GLOBAL
-            self.__globals = self.__idents_matching(lambda x:x & glob)
+            glob = (GLOBAL_IMPLICIT, GLOBAL_EXPLICIT)
+            test = lambda x:((x >> SCOPE_OFF) & SCOPE_MASK) in glob
+            self.__globals = self.__idents_matching(test)
         return self.__globals
 
     def get_frees(self):
         if self.__frees is None:
+            is_free = lambda x:((x >> SCOPE_OFF) & SCOPE_MASK) == FREE
             self.__frees = self.__idents_matching(is_free)
         return self.__frees
+
 
 class Class(SymbolTable):
 
@@ -166,14 +167,17 @@ class Class(SymbolTable):
             self.__methods = tuple(d)
         return self.__methods
 
-class Symbol:
+
+class Symbol(object):
+
     def __init__(self, name, flags, namespaces=None):
         self.__name = name
         self.__flags = flags
+        self.__scope = (flags >> SCOPE_OFF) & SCOPE_MASK # like PyST_GetScope()
         self.__namespaces = namespaces or ()
 
     def __repr__(self):
-        return "<symbol '%s'>" % self.__name
+        return "<symbol {0!r}>".format(self.__name)
 
     def get_name(self):
         return self.__name
@@ -185,25 +189,26 @@ class Symbol:
         return bool(self.__flags & DEF_PARAM)
 
     def is_global(self):
-        return bool((self.__flags & DEF_GLOBAL)
-                    or (self.__flags & DEF_FREE_GLOBAL))
+        return bool(self.__scope in (GLOBAL_IMPLICIT, GLOBAL_EXPLICIT))
 
     def is_vararg(self):
-        return bool(self.__flags & DEF_STAR)
+        warnings.warn("is_vararg() is obsolete and will be removed",
+                      DeprecationWarning, 2)
+        return False
 
     def is_keywordarg(self):
-        return bool(self.__flags & DEF_DOUBLESTAR)
+        warnings.warn("is_keywordarg() is obsolete and will be removed",
+                      DeprecationWarning, 2)
+        return False
+
+    def is_declared_global(self):
+        return bool(self.__scope == GLOBAL_EXPLICIT)
 
     def is_local(self):
         return bool(self.__flags & DEF_BOUND)
 
     def is_free(self):
-        if (self.__flags & (USE | DEF_FREE)) \
-            and (self.__flags & (DEF_LOCAL | DEF_PARAM | DEF_GLOBAL)):
-            return True
-        if self.__flags & DEF_FREE_CLASS:
-            return True
-        return False
+        return bool(self.__scope == FREE)
 
     def is_imported(self):
         return bool(self.__flags & DEF_IMPORT)
@@ -212,7 +217,8 @@ class Symbol:
         return bool(self.__flags & DEF_LOCAL)
 
     def is_in_tuple(self):
-        return bool(self.__flags & DEF_INTUPLE)
+        warnings.warn("is_in_tuple() is obsolete and will be removed",
+                      DeprecationWarning, 2)
 
     def is_namespace(self):
         """Returns true if name binding introduces new namespace.

@@ -124,15 +124,14 @@ class TclTest(unittest.TestCase):
         self.assertRaises(TclError,tcl.winfo_geometry)
         tcl.loadtk()
         self.assertEqual('1x1+0+0', tcl.winfo_geometry())
+        tcl.destroy()
 
     def testLoadTkFailure(self):
         import os
         old_display = None
         import sys
-        if (sys.platform.startswith('win') or
-                sys.platform.startswith('darwin') or
-                sys.platform.startswith('cygwin')):
-            return # no failure possible on windows?
+        if sys.platform.startswith(('win', 'darwin', 'cygwin')):
+            return  # no failure possible on windows?
         if 'DISPLAY' in os.environ:
             old_display = os.environ['DISPLAY']
             del os.environ['DISPLAY']

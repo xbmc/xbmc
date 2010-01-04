@@ -22,10 +22,7 @@ try:
 except:
     from dummy_thread import allocate_lock as _thread_allocate_lock
 
-__author__ = "Brett Cannon"
-__email__ = "brett@python.org"
-
-__all__ = ['strptime']
+__all__ = []
 
 def _getlang():
     # Figure out what the current language is set to.
@@ -147,6 +144,9 @@ class LocaleTime(object):
                 # strings (e.g., MacOS 9 having timezone as ('','')).
                 if old:
                     current_format = current_format.replace(old, new)
+            # If %W is used, then Sunday, 2005-01-03 will fall on week 0 since
+            # 2005-01-03 occurs before the first Monday of the year.  Otherwise
+            # %U is used.
             time_tuple = time.struct_time((1999,1,3,1,1,1,6,3,0))
             if '00' in time.strftime(directive, time_tuple):
                 U_W = '%W'
@@ -190,6 +190,7 @@ class TimeRE(dict):
         base.__init__({
             # The " \d" part of the regex is to make %c from ANSI C work
             'd': r"(?P<d>3[0-1]|[1-2]\d|0[1-9]|[1-9]| [1-9])",
+            'f': r"(?P<f>[0-9]{1,6})",
             'H': r"(?P<H>2[0-3]|[0-1]\d|\d)",
             'I': r"(?P<I>1[0-2]|0[1-9]|[1-9])",
             'j': r"(?P<j>36[0-6]|3[0-5]\d|[1-2]\d\d|0[1-9]\d|00[1-9]|[1-9]\d|0[1-9]|[1-9])",
@@ -250,7 +251,7 @@ class TimeRE(dict):
         regex_chars = re_compile(r"([\\.^$*+?\(\){}\[\]|])")
         format = regex_chars.sub(r"\\\1", format)
         whitespace_replacement = re_compile('\s+')
-        format = whitespace_replacement.sub('\s*', format)
+        format = whitespace_replacement.sub('\s+', format)
         while '%' in format:
             directive_index = format.index('%')+1
             processed_format = "%s%s%s" % (processed_format,
@@ -270,34 +271,64 @@ _TimeRE_cache = TimeRE()
 _CACHE_MAX_SIZE = 5 # Max number of regexes stored in _regex_cache
 _regex_cache = {}
 
-def strptime(data_string, format="%a %b %d %H:%M:%S %Y"):
+def _calc_julian_from_U_or_W(year, week_of_year, day_of_week, week_starts_Mon):
+    """Calculate the Julian day based on the year, week of the year, and day of
+    the week, with week_start_day representing whether the week of the year
+    assumes the week starts on Sunday or Monday (6 or 0)."""
+    first_weekday = datetime_date(year, 1, 1).weekday()
+    # If we are dealing with the %U directive (week starts on Sunday), it's
+    # easier to just shift the view to Sunday being the first day of the
+    # week.
+    if not week_starts_Mon:
+        first_weekday = (first_weekday + 1) % 7
+        day_of_week = (day_of_week + 1) % 7
+    # Need to watch out for a week 0 (when the first day of the year is not
+    # the same as that specified by %U or %W).
+    week_0_length = (7 - first_weekday) % 7
+    if week_of_year == 0:
+        return 1 + day_of_week - first_weekday
+    else:
+        days_to_week = week_0_length + (7 * (week_of_year - 1))
+        return 1 + days_to_week + day_of_week
+
+
+def _strptime(data_string, format="%a %b %d %H:%M:%S %Y"):
     """Return a time struct based on the input string and the format string."""
     global _TimeRE_cache, _regex_cache
-    _cache_lock.acquire()
-    try:
-        time_re = _TimeRE_cache
-        locale_time = time_re.locale_time
-        if _getlang() != locale_time.lang:
+    with _cache_lock:
+        if _getlang() != _TimeRE_cache.locale_time.lang:
             _TimeRE_cache = TimeRE()
-            _regex_cache = {}
+            _regex_cache.clear()
         if len(_regex_cache) > _CACHE_MAX_SIZE:
             _regex_cache.clear()
+        locale_time = _TimeRE_cache.locale_time
         format_regex = _regex_cache.get(format)
         if not format_regex:
-            format_regex = time_re.compile(format)
+            try:
+                format_regex = _TimeRE_cache.compile(format)
+            # KeyError raised when a bad format is found; can be specified as
+            # \\, in which case it was a stray % but with a space after it
+            except KeyError, err:
+                bad_directive = err.args[0]
+                if bad_directive == "\\":
+                    bad_directive = "%"
+                del err
+                raise ValueError("'%s' is a bad directive in format '%s'" %
+                                    (bad_directive, format))
+            # IndexError only occurs when the format string is "%"
+            except IndexError:
+                raise ValueError("stray %% in format '%s'" % format)
             _regex_cache[format] = format_regex
-    finally:
-        _cache_lock.release()
     found = format_regex.match(data_string)
     if not found:
-        raise ValueError("time data did not match format:  data=%s  fmt=%s" %
+        raise ValueError("time data %r does not match format %r" %
                          (data_string, format))
     if len(data_string) != found.end():
         raise ValueError("unconverted data remains: %s" %
                           data_string[found.end():])
     year = 1900
     month = day = 1
-    hour = minute = second = 0
+    hour = minute = second = fraction = 0
     tz = -1
     # Default to -1 to signify that values not known; not critical to have,
     # though
@@ -354,6 +385,11 @@ def strptime(data_string, format="%a %b %d %H:%M:%S %Y"):
             minute = int(found_dict['M'])
         elif group_key == 'S':
             second = int(found_dict['S'])
+        elif group_key == 'f':
+            s = found_dict['f']
+            # Pad to always return microseconds.
+            s += "0" * (6 - len(s))
+            fraction = int(s)
         elif group_key == 'A':
             weekday = locale_time.f_weekday.index(found_dict['A'].lower())
         elif group_key == 'a':
@@ -369,10 +405,10 @@ def strptime(data_string, format="%a %b %d %H:%M:%S %Y"):
         elif group_key in ('U', 'W'):
             week_of_year = int(found_dict[group_key])
             if group_key == 'U':
-                # U starts week on Sunday
+                # U starts week on Sunday.
                 week_of_year_start = 6
             else:
-                # W starts week on Monday
+                # W starts week on Monday.
                 week_of_year_start = 0
         elif group_key == 'Z':
             # Since -1 is default value only need to worry about setting tz if
@@ -390,48 +426,29 @@ def strptime(data_string, format="%a %b %d %H:%M:%S %Y"):
                         tz = value
                         break
     # If we know the week of the year and what day of that week, we can figure
-    # out the Julian day of the year
-    # Calculations below assume 0 is a Monday
+    # out the Julian day of the year.
     if julian == -1 and week_of_year != -1 and weekday != -1:
-        # Calculate how many days in week 0
-        first_weekday = datetime_date(year, 1, 1).weekday()
-        preceeding_days = 7 - first_weekday
-        if preceeding_days == 7:
-            preceeding_days = 0
-        # Adjust for U directive so that calculations are not dependent on
-        # directive used to figure out week of year
-        if weekday == 6 and week_of_year_start == 6:
-            week_of_year -= 1
-        # If a year starts and ends on a Monday but a week is specified to
-        # start on a Sunday we need to up the week to counter-balance the fact
-        # that with %W that first Monday starts week 1 while with %U that is
-        # week 0 and thus shifts everything by a week
-        if weekday == 0 and first_weekday == 0 and week_of_year_start == 6:
-            week_of_year += 1
-        # If in week 0, then just figure out how many days from Jan 1 to day of
-        # week specified, else calculate by multiplying week of year by 7,
-        # adding in days in week 0, and the number of days from Monday to the
-        # day of the week
-        if week_of_year == 0:
-            julian = 1 + weekday - first_weekday
-        else:
-            days_to_week = preceeding_days + (7 * (week_of_year - 1))
-            julian = 1 + days_to_week + weekday
+        week_starts_Mon = True if week_of_year_start == 0 else False
+        julian = _calc_julian_from_U_or_W(year, week_of_year, weekday,
+                                            week_starts_Mon)
     # Cannot pre-calculate datetime_date() since can change in Julian
-    #calculation and thus could have different value for the day of the week
-    #calculation
+    # calculation and thus could have different value for the day of the week
+    # calculation.
     if julian == -1:
         # Need to add 1 to result since first day of the year is 1, not 0.
         julian = datetime_date(year, month, day).toordinal() - \
                   datetime_date(year, 1, 1).toordinal() + 1
     else:  # Assume that if they bothered to include Julian day it will
-           #be accurate
+           # be accurate.
         datetime_result = datetime_date.fromordinal((julian - 1) + datetime_date(year, 1, 1).toordinal())
         year = datetime_result.year
         month = datetime_result.month
         day = datetime_result.day
     if weekday == -1:
         weekday = datetime_date(year, month, day).weekday()
-    return time.struct_time((year, month, day,
-                             hour, minute, second,
-                             weekday, julian, tz))
+    return (time.struct_time((year, month, day,
+                              hour, minute, second,
+                              weekday, julian, tz)), fraction)
+
+def _strptime_time(data_string, format="%a %b %d %H:%M:%S %Y"):
+    return _strptime(data_string, format)[0]

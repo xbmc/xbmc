@@ -92,7 +92,7 @@ Verify that parenthesis are required when used as a keyword argument value
 Verify that parenthesis are required when used as a keyword argument value
 
     >>> dict(a = (i for i in xrange(10))) #doctest: +ELLIPSIS
-    {'a': <generator object at ...>}
+    {'a': <generator object <genexpr> at ...>}
 
 Verify early binding for the outermost for-expression
 
@@ -109,7 +109,7 @@ for iterability
     Traceback (most recent call last):
       File "<pyshell#4>", line 1, in -toplevel-
         (i for i in 6)
-    TypeError: iteration over non-sequence
+    TypeError: 'int' object is not iterable
 
 Verify late binding for the outermost if-expression
 
@@ -129,7 +129,7 @@ Verify late binding for the innermost for-expression
 Verify re-use of tuples (a side benefit of using genexps over listcomps)
 
     >>> tupleids = map(id, ((i,i) for i in xrange(10)))
-    >>> max(tupleids) - min(tupleids)
+    >>> int(max(tupleids) - min(tupleids))
     0
 
 Verify that syntax error's are raised for genexps used as lvalues
@@ -137,13 +137,12 @@ Verify that syntax error's are raised for genexps used as lvalues
     >>> (y for y in (1,2)) = 10
     Traceback (most recent call last):
        ...
-    SyntaxError: assign to generator expression not possible
+    SyntaxError: can't assign to generator expression (<doctest test.test_genexps.__test__.doctests[40]>, line 1)
 
     >>> (y for y in (1,2)) += 10
     Traceback (most recent call last):
        ...
-    SyntaxError: augmented assign to tuple literal or generator expression not possible
-
+    SyntaxError: augmented assignment to generator expression not possible (<doctest test.test_genexps.__test__.doctests[41]>, line 1)
 
 
 ########### Tests borrowed from or inspired by test_generators.py ############

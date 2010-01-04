@@ -43,9 +43,9 @@ struct tok_state {
 	int decoding_state;	/* -1:decoding, 0:init, 1:raw */
 	int decoding_erred;	/* whether erred in decoding  */
 	int read_coding_spec;	/* whether 'coding:...' has been read  */
-	int issued_encoding_warning; /* whether non-ASCII warning was issued */
 	char *encoding;
 	int cont_line;          /* whether we are in a continuation line. */
+	const char* line_start;	/* pointer to start of current line */
 #ifndef PGEN
 	PyObject *decoding_readline; /* codecs.open(...).readline */
 	PyObject *decoding_buffer;
@@ -58,6 +58,10 @@ extern struct tok_state *PyTokenizer_FromString(const char *);
 extern struct tok_state *PyTokenizer_FromFile(FILE *, char *, char *);
 extern void PyTokenizer_Free(struct tok_state *);
 extern int PyTokenizer_Get(struct tok_state *, char **, char **);
+#if defined(PGEN) || defined(Py_USING_UNICODE)
+extern char * PyTokenizer_RestoreEncoding(struct tok_state* tok, 
+					  int len, int *offset);
+#endif
 
 #ifdef __cplusplus
 }

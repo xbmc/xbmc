@@ -7,7 +7,7 @@ extern "C" {
 
 /* Parser interface */
 
-#define MAXSTACK 500
+#define MAXSTACK 1500
 
 typedef struct {
 	int		 s_state;	/* State in current DFA */
@@ -25,14 +25,14 @@ typedef struct {
 	stack	 	p_stack;	/* Stack of parser states */
 	grammar		*p_grammar;	/* Grammar to use */
 	node		*p_tree;	/* Top of parse tree */
-#if 0 /* future keyword */
-	int		p_generators;	/* 1 if yield is a keyword */
+#ifdef PY_PARSER_REQUIRES_FUTURE_KEYWORD
+	unsigned long	p_flags;	/* see co_flags in Include/code.h */
 #endif
 } parser_state;
 
 parser_state *PyParser_New(grammar *g, int start);
 void PyParser_Delete(parser_state *ps);
-int PyParser_AddToken(parser_state *ps, int type, char *str, int lineno,
+int PyParser_AddToken(parser_state *ps, int type, char *str, int lineno, int col_offset,
                       int *expected_ret);
 void PyGrammar_AddAccelerators(grammar *g);
 

@@ -5,7 +5,6 @@ Tests common to list and UserList.UserList
 import sys
 import os
 
-import unittest
 from test import test_support, seq_tests
 
 class CommonTest(seq_tests.CommonTest):
@@ -46,6 +45,11 @@ class CommonTest(seq_tests.CommonTest):
         self.assertEqual(str(a2), "[0, 1, 2, [...], 3]")
         self.assertEqual(repr(a2), "[0, 1, 2, [...], 3]")
 
+        l0 = []
+        for i in xrange(sys.getrecursionlimit() + 100):
+            l0 = [l0]
+        self.assertRaises(RuntimeError, repr, l0)
+
     def test_print(self):
         d = self.type2test(xrange(200))
         d.append(d)
@@ -80,6 +84,8 @@ class CommonTest(seq_tests.CommonTest):
         self.assertRaises(StopIteration, r.next)
         self.assertEqual(list(reversed(self.type2test())),
                          self.type2test())
+        # Bug 3689: make sure list-reversed-iterator doesn't have __len__
+        self.assertRaises(TypeError, len, reversed([1,2,3]))
 
     def test_setitem(self):
         a = self.type2test([0, 1])
@@ -179,8 +185,10 @@ class CommonTest(seq_tests.CommonTest):
         self.assertEqual(a, self.type2test(range(10)))
 
         self.assertRaises(TypeError, a.__setslice__, 0, 1, 5)
+        self.assertRaises(TypeError, a.__setitem__, slice(0, 1, 5))
 
         self.assertRaises(TypeError, a.__setslice__)
+        self.assertRaises(TypeError, a.__setitem__)
 
     def test_delslice(self):
         a = self.type2test([0, 1])
@@ -269,7 +277,6 @@ class CommonTest(seq_tests.CommonTest):
         self.assertRaises(TypeError, a.insert)
 
     def test_pop(self):
-        from decimal import Decimal
         a = self.type2test([-1, 0, 1])
         a.pop()
         self.assertEqual(a, [-1, 0])
@@ -281,8 +288,6 @@ class CommonTest(seq_tests.CommonTest):
         self.assertRaises(IndexError, a.pop)
         self.assertRaises(TypeError, a.pop, 42, 42)
         a = self.type2test([0, 10, 20, 30, 40])
-        self.assertEqual(a.pop(Decimal(2)), 20)
-        self.assertRaises(IndexError, a.pop, Decimal(25))
 
     def test_remove(self):
         a = self.type2test([0, 0, 1])
@@ -308,6 +313,26 @@ class CommonTest(seq_tests.CommonTest):
 
         a = self.type2test([0, 1, 2, 3])
         self.assertRaises(BadExc, a.remove, BadCmp())
+
+        class BadCmp2:
+            def __eq__(self, other):
+                raise BadExc()
+
+        d = self.type2test('abcdefghcij')
+        d.remove('c')
+        self.assertEqual(d, self.type2test('abdefghcij'))
+        d.remove('c')
+        self.assertEqual(d, self.type2test('abdefghij'))
+        self.assertRaises(ValueError, d.remove, 'c')
+        self.assertEqual(d, self.type2test('abdefghij'))
+
+        # Handle comparison errors
+        d = self.type2test(['a', 'b', BadCmp2(), 'c'])
+        e = self.type2test(d)
+        self.assertRaises(BadExc, d.remove, 'c')
+        for x, y in zip(d, e):
+            # verify that original order and values are retained.
+            self.assert_(x is y)
 
     def test_count(self):
         a = self.type2test([0, 1, 2])*3
@@ -499,7 +524,5 @@ class CommonTest(seq_tests.CommonTest):
         # Bug #1242657
         class F(object):
             def __iter__(self):
-                yield 23
-            def __len__(self):
                 raise KeyboardInterrupt
         self.assertRaises(KeyboardInterrupt, list, F())

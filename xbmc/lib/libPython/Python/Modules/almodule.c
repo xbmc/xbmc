@@ -1633,9 +1633,11 @@ al_QueryValues(PyObject *self, PyObject *args)
 	if (nvals < 0)
 		goto cleanup;
 	if (nvals > setsize) {
+		ALvalue *old_return_set = return_set;
 		setsize = nvals;
 		PyMem_RESIZE(return_set, ALvalue, setsize);
 		if (return_set == NULL) {
+			return_set = old_return_set;
 			PyErr_NoMemory();
 			goto cleanup;
 		}
@@ -1686,7 +1688,7 @@ al_GetParamInfo(PyObject *self, PyObject *args)
 {
 	int res, param;
 	ALparamInfo pinfo;
-	PyObject *v, *item;;
+	PyObject *v, *item;
 
 	if (!PyArg_ParseTuple(args, "ii:GetParamInfo", &res, &param))
 		return NULL;
@@ -1993,6 +1995,10 @@ void
 inital(void)
 {
 	PyObject *m, *d, *x;
+
+	if (PyErr_WarnPy3k("the al module has been removed in "
+	                   "Python 3.0", 2) < 0)
+	    return;	
 
 	/* Create the module and add the functions */
 	m = Py_InitModule4("al", al_methods,

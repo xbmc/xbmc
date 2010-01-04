@@ -1,27 +1,12 @@
 """TestCases for using the DB.join and DBCursor.join_item methods.
 """
 
-import sys, os, string
-import tempfile
-import time
-from pprint import pprint
-
-try:
-    from threading import Thread, currentThread
-    have_threads = 1
-except ImportError:
-    have_threads = 0
+import os
 
 import unittest
-from test_all import verbose
 
-try:
-    # For Pythons w/distutils pybsddb
-    from bsddb3 import db, dbshelve
-except ImportError:
-    # For Python 2.3
-    from bsddb import db, dbshelve
-
+from test_all import db, dbshelve, test_support, verbose, \
+        get_new_environment_path, get_new_database_path
 
 #----------------------------------------------------------------------
 
@@ -49,19 +34,13 @@ class JoinTestCase(unittest.TestCase):
 
     def setUp(self):
         self.filename = self.__class__.__name__ + '.db'
-        homeDir = os.path.join(os.path.dirname(sys.argv[0]), 'db_home')
-        self.homeDir = homeDir
-        try: os.mkdir(homeDir)
-        except os.error: pass
+        self.homeDir = get_new_environment_path()
         self.env = db.DBEnv()
-        self.env.open(homeDir, db.DB_CREATE | db.DB_INIT_MPOOL | db.DB_INIT_LOCK )
+        self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL | db.DB_INIT_LOCK )
 
     def tearDown(self):
         self.env.close()
-        import glob
-        files = glob.glob(os.path.join(self.homeDir, '*'))
-        for file in files:
-            os.remove(file)
+        test_support.rmtree(self.homeDir)
 
     def test01_join(self):
         if verbose:
@@ -88,7 +67,7 @@ class JoinTestCase(unittest.TestCase):
             # Don't do the .set() in an assert, or you can get a bogus failure
             # when running python -O
             tmp = sCursor.set('red')
-            assert tmp
+            self.assert_(tmp)
 
             # FIXME: jCursor doesn't properly hold a reference to its
             # cursors, if they are closed before jcursor is used it

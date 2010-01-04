@@ -5,7 +5,7 @@
 # Converted to PyUnit by Peter Hansen <peter@engcorp.com>.
 # Currently maintained by Greg Ward.
 #
-# $Id: test_textwrap.py 38573 2005-03-05 02:38:33Z gward $
+# $Id: test_textwrap.py 67896 2008-12-21 17:01:26Z benjamin.peterson $
 #
 
 import unittest
@@ -129,6 +129,10 @@ What a mess!
         expect = ['And she said, "Go to hell!"  Can you believe that?']
         self.check(wrapper.wrap(text), expect)
 
+        text = 'File stdio.h is nice.'
+        expect = ['File stdio.h is nice.']
+        self.check(wrapper.wrap(text), expect)
+
     def test_wrap_short(self):
         # Wrapping to make short lines longer
 
@@ -170,7 +174,7 @@ What a mess!
         text = ("Python 1.0.0 was released on 1994-01-26.  Python 1.0.1 was\n"
                 "released on 1994-02-15.")
 
-        self.check_wrap(text, 30, ['Python 1.0.0 was released on',
+        self.check_wrap(text, 35, ['Python 1.0.0 was released on',
                                    '1994-01-26.  Python 1.0.1 was',
                                    'released on 1994-02-15.'])
         self.check_wrap(text, 40, ['Python 1.0.0 was released on 1994-01-26.',
@@ -328,17 +332,34 @@ What a mess!
         self.check_wrap(text, 30,
                         [" This is a sentence with", "leading whitespace."])
 
-    def test_unicode(self):
-        # *Very* simple test of wrapping Unicode strings.  I'm sure
-        # there's more to it than this, but let's at least make
-        # sure textwrap doesn't crash on Unicode input!
-        text = u"Hello there, how are you today?"
-        self.check_wrap(text, 50, [u"Hello there, how are you today?"])
-        self.check_wrap(text, 20, [u"Hello there, how are", "you today?"])
-        olines = self.wrapper.wrap(text)
-        assert isinstance(olines, list) and isinstance(olines[0], unicode)
-        otext = self.wrapper.fill(text)
-        assert isinstance(otext, unicode)
+    def test_no_drop_whitespace(self):
+        # SF patch #1581073
+        text = " This is a    sentence with     much whitespace."
+        self.check_wrap(text, 10,
+                        [" This is a", "    ", "sentence ",
+                         "with     ", "much white", "space."],
+                        drop_whitespace=False)
+
+    if test_support.have_unicode:
+        def test_unicode(self):
+            # *Very* simple test of wrapping Unicode strings.  I'm sure
+            # there's more to it than this, but let's at least make
+            # sure textwrap doesn't crash on Unicode input!
+            text = u"Hello there, how are you today?"
+            self.check_wrap(text, 50, [u"Hello there, how are you today?"])
+            self.check_wrap(text, 20, [u"Hello there, how are", "you today?"])
+            olines = self.wrapper.wrap(text)
+            assert isinstance(olines, list) and isinstance(olines[0], unicode)
+            otext = self.wrapper.fill(text)
+            assert isinstance(otext, unicode)
+
+        def test_no_split_at_umlaut(self):
+            text = u"Die Empf\xe4nger-Auswahl"
+            self.check_wrap(text, 13, [u"Die", u"Empf\xe4nger-", u"Auswahl"])
+
+        def test_umlaut_followed_by_dash(self):
+            text = u"aa \xe4\xe4-\xe4\xe4"
+            self.check_wrap(text, 7, [u"aa \xe4\xe4-", u"\xe4\xe4"])
 
     def test_split(self):
         # Ensure that the standard _split() method works as advertised
@@ -350,6 +371,14 @@ What a mess!
         self.check(result,
              ["Hello", " ", "there", " ", "--", " ", "you", " ", "goof-",
               "ball,", " ", "use", " ", "the", " ", "-b", " ",  "option!"])
+
+    def test_break_on_hyphens(self):
+        # Ensure that the break_on_hyphens attributes work
+        text = "yaba daba-doo"
+        self.check_wrap(text, 10, ["yaba daba-", "doo"],
+                        break_on_hyphens=True)
+        self.check_wrap(text, 10, ["yaba", "daba-doo"],
+                        break_on_hyphens=False)
 
     def test_bad_width(self):
         # Ensure that width <= 0 is caught.
@@ -388,6 +417,19 @@ How *do* you spell that odd word, anyways?
                          '               l',
                          '               o'],
                         subsequent_indent = ' '*15)
+
+        # bug 1146.  Prevent a long word to be wrongly wrapped when the
+        # preceding word is exactly one character shorter than the width
+        self.check_wrap(self.text, 12,
+                        ['Did you say ',
+                         '"supercalifr',
+                         'agilisticexp',
+                         'ialidocious?',
+                         '" How *do*',
+                         'you spell',
+                         'that odd',
+                         'word,',
+                         'anyways?'])
 
     def test_nobreak_long(self):
         # Test with break_long_words disabled
@@ -459,38 +501,42 @@ some (including a hanging indent).'''
 # of IndentTestCase!
 class DedentTestCase(unittest.TestCase):
 
+    def assertUnchanged(self, text):
+        """assert that dedent() has no effect on 'text'"""
+        self.assertEquals(text, dedent(text))
+
     def test_dedent_nomargin(self):
         # No lines indented.
         text = "Hello there.\nHow are you?\nOh good, I'm glad."
-        self.assertEquals(dedent(text), text)
+        self.assertUnchanged(text)
 
         # Similar, with a blank line.
         text = "Hello there.\n\nBoo!"
-        self.assertEquals(dedent(text), text)
+        self.assertUnchanged(text)
 
         # Some lines indented, but overall margin is still zero.
         text = "Hello there.\n  This is indented."
-        self.assertEquals(dedent(text), text)
+        self.assertUnchanged(text)
 
         # Again, add a blank line.
         text = "Hello there.\n\n  Boo!\n"
-        self.assertEquals(dedent(text), text)
+        self.assertUnchanged(text)
 
     def test_dedent_even(self):
         # All lines indented by two spaces.
         text = "  Hello there.\n  How are ya?\n  Oh good."
         expect = "Hello there.\nHow are ya?\nOh good."
-        self.assertEquals(dedent(text), expect)
+        self.assertEquals(expect, dedent(text))
 
         # Same, with blank lines.
         text = "  Hello there.\n\n  How are ya?\n  Oh good.\n"
         expect = "Hello there.\n\nHow are ya?\nOh good.\n"
-        self.assertEquals(dedent(text), expect)
+        self.assertEquals(expect, dedent(text))
 
         # Now indent one of the blank lines.
         text = "  Hello there.\n  \n  How are ya?\n  Oh good.\n"
         expect = "Hello there.\n\nHow are ya?\nOh good.\n"
-        self.assertEquals(dedent(text), expect)
+        self.assertEquals(expect, dedent(text))
 
     def test_dedent_uneven(self):
         # Lines indented unevenly.
@@ -504,18 +550,53 @@ def foo():
     while 1:
         return foo
 '''
-        self.assertEquals(dedent(text), expect)
+        self.assertEquals(expect, dedent(text))
 
         # Uneven indentation with a blank line.
         text = "  Foo\n    Bar\n\n   Baz\n"
         expect = "Foo\n  Bar\n\n Baz\n"
-        self.assertEquals(dedent(text), expect)
+        self.assertEquals(expect, dedent(text))
 
         # Uneven indentation with a whitespace-only line.
         text = "  Foo\n    Bar\n \n   Baz\n"
         expect = "Foo\n  Bar\n\n Baz\n"
-        self.assertEquals(dedent(text), expect)
+        self.assertEquals(expect, dedent(text))
 
+    # dedent() should not mangle internal tabs
+    def test_dedent_preserve_internal_tabs(self):
+        text = "  hello\tthere\n  how are\tyou?"
+        expect = "hello\tthere\nhow are\tyou?"
+        self.assertEquals(expect, dedent(text))
+
+        # make sure that it preserves tabs when it's not making any
+        # changes at all
+        self.assertEquals(expect, dedent(expect))
+
+    # dedent() should not mangle tabs in the margin (i.e.
+    # tabs and spaces both count as margin, but are *not*
+    # considered equivalent)
+    def test_dedent_preserve_margin_tabs(self):
+        text = "  hello there\n\thow are you?"
+        self.assertUnchanged(text)
+
+        # same effect even if we have 8 spaces
+        text = "        hello there\n\thow are you?"
+        self.assertUnchanged(text)
+
+        # dedent() only removes whitespace that can be uniformly removed!
+        text = "\thello there\n\thow are you?"
+        expect = "hello there\nhow are you?"
+        self.assertEquals(expect, dedent(text))
+
+        text = "  \thello there\n  \thow are you?"
+        self.assertEquals(expect, dedent(text))
+
+        text = "  \t  hello there\n  \t  how are you?"
+        self.assertEquals(expect, dedent(text))
+
+        text = "  \thello there\n  \t  how are you?"
+        expect = "hello there\n  how are you?"
+        self.assertEquals(expect, dedent(text))
 
 
 def test_main():

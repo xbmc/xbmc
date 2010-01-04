@@ -10,7 +10,7 @@
 /*
  * Written by Thomas Heller, May 2000
  *
- * $Id: install.c 38415 2005-02-03 20:37:04Z theller $
+ * $Id: install.c 69095 2009-01-29 12:31:51Z mark.hammond $
  */
 
 /*
@@ -133,6 +133,7 @@ char meta_name[80];		/* package name without version like
 char install_script[MAX_PATH];
 char *pre_install_script; /* run before we install a single file */
 
+char user_access_control[10]; // one of 'auto', 'force', otherwise none.
 
 int py_major, py_minor;		/* Python version selected for installation */
 
@@ -344,8 +345,15 @@ struct PyMethodDef {
 };
 typedef struct PyMethodDef PyMethodDef;
 
+// XXX - all of these are potentially fragile!  We load and unload
+// the Python DLL multiple times - so storing functions pointers 
+// is dangerous (although things *look* OK at present)
+// Better might be to roll prepare_script_environment() into
+// LoadPythonDll(), and create a new UnloadPythonDLL() which also
+// clears the global pointers.
 void *(*g_Py_BuildValue)(char *, ...);
 int (*g_PyArg_ParseTuple)(PyObject *, char *, ...);
+PyObject * (*g_PyLong_FromVoidPtr)(void *);
 
 PyObject *g_PyExc_ValueError;
 PyObject *g_PyExc_OSError;
@@ -597,7 +605,7 @@ static PyObject *PyMessageBox(PyObject *self, PyObject *args)
 
 static PyObject *GetRootHKey(PyObject *self)
 {
-	return g_Py_BuildValue("l", hkey_root);
+	return g_PyLong_FromVoidPtr(hkey_root);
 }
 
 #define METH_VARARGS 0x0001
@@ -631,7 +639,9 @@ static HINSTANCE LoadPythonDll(char *fname)
 		 "SOFTWARE\\Python\\PythonCore\\%d.%d\\InstallPath",
 		 py_major, py_minor);
 	if (ERROR_SUCCESS != RegQueryValue(HKEY_CURRENT_USER, subkey_name,
-					   fullpath, &size))
+	                                   fullpath, &size) &&
+	    ERROR_SUCCESS != RegQueryValue(HKEY_LOCAL_MACHINE, subkey_name,
+	                                   fullpath, &size))
 		return NULL;
 	strcat(fullpath, "\\");
 	strcat(fullpath, fname);
@@ -648,6 +658,7 @@ static int prepare_script_environment(HINSTANCE hPython)
 	DECLPROC(hPython, PyObject *, Py_BuildValue, (char *, ...));
 	DECLPROC(hPython, int, PyArg_ParseTuple, (PyObject *, char *, ...));
 	DECLPROC(hPython, PyObject *, PyErr_Format, (PyObject *, char *));
+	DECLPROC(hPython, PyObject *, PyLong_FromVoidPtr, (void *));
 	if (!PyImport_ImportModule || !PyObject_GetAttrString || 
 	    !PyObject_SetAttrString || !PyCFunction_New)
 		return 1;
@@ -667,6 +678,7 @@ static int prepare_script_environment(HINSTANCE hPython)
 	g_Py_BuildValue = Py_BuildValue;
 	g_PyArg_ParseTuple = PyArg_ParseTuple;
 	g_PyErr_Format = PyErr_Format;
+	g_PyLong_FromVoidPtr = PyLong_FromVoidPtr;
 
 	return 0;
 }
@@ -682,8 +694,9 @@ static int prepare_script_environment(HINSTANCE hPython)
  */
 
 static int
-run_installscript(HINSTANCE hPython, char *pathname, int argc, char **argv)
+do_run_installscript(HINSTANCE hPython, char *pathname, int argc, char **argv)
 {
+	int fh, result;
 	DECLPROC(hPython, void, Py_Initialize, (void));
 	DECLPROC(hPython, int, PySys_SetArgv, (int, char **));
 	DECLPROC(hPython, int, PyRun_SimpleString, (char *));
@@ -693,9 +706,6 @@ run_installscript(HINSTANCE hPython, char *pathname, int argc, char **argv)
 		 (PyMethodDef *, PyObject *));
 	DECLPROC(hPython, int, PyArg_ParseTuple, (PyObject *, char *, ...));
 	DECLPROC(hPython, PyObject *, PyErr_Format, (PyObject *, char *));
-
-	int result = 0;
-	int fh;
 
 	if (!Py_Initialize || !PySys_SetArgv
 	    || !PyRun_SimpleString || !Py_Finalize)
@@ -718,7 +728,7 @@ run_installscript(HINSTANCE hPython, char *pathname, int argc, char **argv)
 	}
 
 	SetDlgItemText(hDialog, IDC_INFO, "Running Script...");
-		
+
 	Py_Initialize();
 
 	prepare_script_environment(hPython);
@@ -739,7 +749,57 @@ run_installscript(HINSTANCE hPython, char *pathname, int argc, char **argv)
 	Py_Finalize();
 
 	close(fh);
+	return result;
+}
 
+static int
+run_installscript(char *pathname, int argc, char **argv, char **pOutput)
+{
+	HINSTANCE hPython;
+	int result = 1;
+	int out_buf_size;
+	HANDLE redirected, old_stderr, old_stdout;
+	char *tempname;
+
+	*pOutput = NULL;
+
+	tempname = tempnam(NULL, NULL);
+	// We use a static CRT while the Python version we load uses
+	// the CRT from one of various possibile DLLs.  As a result we
+	// need to redirect the standard handles using the API rather
+	// than the CRT.
+	redirected = CreateFile(
+					tempname,
+					GENERIC_WRITE | GENERIC_READ,
+					FILE_SHARE_READ,
+					NULL,
+					CREATE_ALWAYS,
+					FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
+					NULL);
+	old_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
+	old_stderr = GetStdHandle(STD_ERROR_HANDLE);
+	SetStdHandle(STD_OUTPUT_HANDLE, redirected);
+	SetStdHandle(STD_ERROR_HANDLE, redirected);
+
+	hPython = LoadPythonDll(pythondll);
+	if (hPython) {
+		result = do_run_installscript(hPython, pathname, argc, argv);
+		FreeLibrary(hPython);
+	} else {
+		fprintf(stderr, "*** Could not load Python ***");
+	}
+	SetStdHandle(STD_OUTPUT_HANDLE, old_stdout);
+	SetStdHandle(STD_ERROR_HANDLE, old_stderr);
+	out_buf_size = min(GetFileSize(redirected, NULL), 4096);
+	*pOutput = malloc(out_buf_size+1);
+	if (*pOutput) {
+		DWORD nread = 0;
+		SetFilePointer(redirected, 0, 0, FILE_BEGIN);
+		ReadFile(redirected, *pOutput, out_buf_size, &nread, NULL);
+		(*pOutput)[nread] = '\0';
+	}
+	CloseHandle(redirected);
+	DeleteFile(tempname);
 	return result;
 }
 
@@ -769,23 +829,33 @@ static int do_run_simple_script(HINSTANCE hPython, char *script)
 static int run_simple_script(char *script)
 {
 	int rc;
-	char *tempname;
 	HINSTANCE hPython;
-	tempname = tempnam(NULL, NULL);
-	freopen(tempname, "a", stderr);
-	freopen(tempname, "a", stdout);
+	char *tempname = tempnam(NULL, NULL);
+	// Redirect output using win32 API - see comments above...
+	HANDLE redirected = CreateFile(
+					tempname,
+					GENERIC_WRITE | GENERIC_READ,
+					FILE_SHARE_READ,
+					NULL,
+					CREATE_ALWAYS,
+					FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
+					NULL);
+	HANDLE old_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
+	HANDLE old_stderr = GetStdHandle(STD_ERROR_HANDLE);
+	SetStdHandle(STD_OUTPUT_HANDLE, redirected);
+	SetStdHandle(STD_ERROR_HANDLE, redirected);
 
 	hPython = LoadPythonDll(pythondll);
 	if (!hPython) {
-		set_failure_reason("Can't load Python for pre-install script");
+		char reason[128];
+		wsprintf(reason, "Can't load Python for pre-install script (%d)", GetLastError());
+		set_failure_reason(reason);
 		return -1;
 	}
 	rc = do_run_simple_script(hPython, script);
 	FreeLibrary(hPython);
-	fflush(stderr);
-	fclose(stderr);
-	fflush(stdout);
-	fclose(stdout);
+	SetStdHandle(STD_OUTPUT_HANDLE, old_stdout);
+	SetStdHandle(STD_ERROR_HANDLE, old_stderr);
 	/* We only care about the output when we fail.  If the script works
 	   OK, then we discard it
 	*/
@@ -794,24 +864,24 @@ static int run_simple_script(char *script)
 		char *err_buf;
 		const char *prefix = "Running the pre-installation script failed\r\n";
 		int prefix_len = strlen(prefix);
-		FILE *fp = fopen(tempname, "rb");
-		fseek(fp, 0, SEEK_END);
-		err_buf_size = ftell(fp);
-		fseek(fp, 0, SEEK_SET);
+		err_buf_size = GetFileSize(redirected, NULL);
+		if (err_buf_size==INVALID_FILE_SIZE) // an error - let's try anyway...
+			err_buf_size = 4096;
 		err_buf = malloc(prefix_len + err_buf_size + 1);
 		if (err_buf) {
-			int n;
+			DWORD n = 0;
 			strcpy(err_buf, prefix);
-			n = fread(err_buf+prefix_len, 1, err_buf_size, fp);
+			SetFilePointer(redirected, 0, 0, FILE_BEGIN);
+			ReadFile(redirected, err_buf+prefix_len, err_buf_size, &n, NULL);
 			err_buf[prefix_len+n] = '\0';
-			fclose(fp);
 			set_failure_reason(err_buf);
 			free(err_buf);
 		} else {
 			set_failure_reason("Out of memory!");
 		}
 	}
-	remove(tempname);
+	CloseHandle(redirected);
+	DeleteFile(tempname);
 	return rc;
 }
 
@@ -1932,12 +2002,9 @@ FinishedDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		if (success && install_script && install_script[0]) {
 			char fname[MAX_PATH];
-			char *tempname;
-			FILE *fp;
-			char buffer[4096];
-			int n;
+			char *buffer;
 			HCURSOR hCursor;
-			HINSTANCE hPython;
+			int result;
 
 			char *argv[3] = {NULL, "-install", NULL};
 
@@ -1950,48 +2017,21 @@ FinishedDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			if (logfile)
 				fprintf(logfile, "300 Run Script: [%s]%s\n", pythondll, fname);
 
-			tempname = tempnam(NULL, NULL);
-
-			if (!freopen(tempname, "a", stderr))
-				MessageBox(GetFocus(), "freopen stderr", NULL, MB_OK);
-			if (!freopen(tempname, "a", stdout))
-				MessageBox(GetFocus(), "freopen stdout", NULL, MB_OK);
-/*
-  if (0 != setvbuf(stdout, NULL, _IONBF, 0))
-  MessageBox(GetFocus(), "setvbuf stdout", NULL, MB_OK);
-*/
 			hCursor = SetCursor(LoadCursor(NULL, IDC_WAIT));
 
 			argv[0] = fname;
 
-			hPython = LoadPythonDll(pythondll);
-			if (hPython) {
-				int result;
-				result = run_installscript(hPython, fname, 2, argv);
-				if (-1 == result) {
-					fprintf(stderr, "*** run_installscript: internal error 0x%X ***\n", result);
-				}
-				FreeLibrary(hPython);
-			} else {
-				fprintf(stderr, "*** Could not load Python ***");
+			result = run_installscript(fname, 2, argv, &buffer);
+			if (0 != result) {
+				fprintf(stderr, "*** run_installscript: internal error 0x%X ***\n", result);
 			}
-			fflush(stderr);
-			fclose(stderr);
-			fflush(stdout);
-			fclose(stdout);
-	    
-			fp = fopen(tempname, "rb");
-			n = fread(buffer, 1, sizeof(buffer), fp);
-			fclose(fp);
-			remove(tempname);
-	    
-			buffer[n] = '\0';
-	    
-			SetDlgItemText(hwnd, IDC_INFO, buffer);
+			if (buffer)
+				SetDlgItemText(hwnd, IDC_INFO, buffer);
 			SetDlgItemText(hwnd, IDC_TITLE,
 					"Postinstall script finished.\n"
 					"Click the Finish button to exit the Setup wizard.");
 
+			free(buffer);
 			SetCursor(hCursor);
 			CloseLogfile();
 		}
@@ -2073,6 +2113,83 @@ void RunWizard(HWND hwnd)
 		PropertySheet(&psh);
 }
 
+// subtly different from HasLocalMachinePrivs(), in that after executing
+// an 'elevated' process, we expect this to return TRUE - but there is no
+// such implication for HasLocalMachinePrivs
+BOOL MyIsUserAnAdmin()
+{
+	typedef BOOL (WINAPI *PFNIsUserAnAdmin)();
+	static PFNIsUserAnAdmin pfnIsUserAnAdmin = NULL;
+	HMODULE shell32;
+	// This function isn't guaranteed to be available (and it can't hurt 
+	// to leave the library loaded)
+	if (0 == (shell32=LoadLibrary("shell32.dll")))
+		return FALSE;
+	if (0 == (pfnIsUserAnAdmin=(PFNIsUserAnAdmin)GetProcAddress(shell32, "IsUserAnAdmin")))
+		return FALSE;
+	return (*pfnIsUserAnAdmin)();
+}
+
+// Some magic for Vista's UAC.  If there is a target_version, and
+// if that target version is installed in the registry under
+// HKLM, and we are not current administrator, then
+// re-execute ourselves requesting elevation.
+// Split into 2 functions - "should we elevate" and "spawn elevated"
+
+// Returns TRUE if we should spawn an elevated child
+BOOL NeedAutoUAC()
+{
+	HKEY hk;
+	char key_name[80];
+	// no Python version info == we can't know yet.
+	if (target_version[0] == '\0')
+		return FALSE;
+	// see how python is current installed
+	wsprintf(key_name,
+			 "Software\\Python\\PythonCore\\%s\\InstallPath",
+			 target_version);
+	if (ERROR_SUCCESS != RegOpenKeyEx(HKEY_LOCAL_MACHINE, 
+	                                  key_name, 0, KEY_READ, &hk))
+		return FALSE;
+	RegCloseKey(hk);
+	// Python is installed in HKLM - we must elevate.
+	return TRUE;
+}
+
+// Returns TRUE if the platform supports UAC.
+BOOL PlatformSupportsUAC()
+{
+	// Note that win2k does seem to support ShellExecute with 'runas',
+	// but does *not* support IsUserAnAdmin - so we just pretend things
+	// only work on XP and later.
+	BOOL bIsWindowsXPorLater;
+	OSVERSIONINFO winverinfo;
+	winverinfo.dwOSVersionInfoSize = sizeof(winverinfo);
+	if (!GetVersionEx(&winverinfo))
+		return FALSE; // something bad has gone wrong
+	bIsWindowsXPorLater = 
+       ( (winverinfo.dwMajorVersion > 5) ||
+       ( (winverinfo.dwMajorVersion == 5) && (winverinfo.dwMinorVersion >= 1) ));
+	return bIsWindowsXPorLater;
+}
+
+// Spawn ourself as an elevated application.  On failure, a message is
+// displayed to the user - but this app will always terminate, even
+// on error.
+void SpawnUAC()
+{
+	// interesting failure scenario that has been seen: initial executable
+	// runs from a network drive - but once elevated, that network share
+	// isn't seen, and ShellExecute fails with SE_ERR_ACCESSDENIED.
+	int ret = (int)ShellExecute(0, "runas", modulename, "", NULL, 
+	                            SW_SHOWNORMAL);
+	if (ret <= 32) {
+		char msg[128];
+		wsprintf(msg, "Failed to start elevated process (ShellExecute returned %d)", ret);
+		MessageBox(0, msg, "Setup", MB_OK | MB_ICONERROR);
+	}
+}
+
 int DoInstall(void)
 {
 	char ini_buffer[4096];
@@ -2106,6 +2223,31 @@ int DoInstall(void)
 				 install_script, sizeof(install_script),
 				 ini_file);
 
+	GetPrivateProfileString("Setup", "user_access_control", "",
+				 user_access_control, sizeof(user_access_control), ini_file);
+
+	// See if we need to do the Vista UAC magic.
+	if (strcmp(user_access_control, "force")==0) {
+		if (PlatformSupportsUAC() && !MyIsUserAnAdmin()) {
+			SpawnUAC();
+			return 0;
+		}
+		// already admin - keep going
+	} else if (strcmp(user_access_control, "auto")==0) {
+		// Check if it looks like we need UAC control, based
+		// on how Python itself was installed.
+		if (PlatformSupportsUAC() && !MyIsUserAnAdmin() && NeedAutoUAC()) {
+			SpawnUAC();
+			return 0;
+		}
+	} else {
+		// display a warning about unknown values - only the developer
+		// of the extension will see it (until they fix it!)
+		if (user_access_control[0] && strcmp(user_access_control, "none") != 0) {
+			MessageBox(GetFocus(), "Bad user_access_control value", "oops", MB_OK);
+		// nothing to do.
+		}
+	}
 
 	hwndMain = CreateBackground(title);
 
@@ -2302,42 +2444,17 @@ BOOL Run_RemoveScript(char *line)
 	/* this function may be called more than one time with the same
 	   script, only run it one time */
 	if (strcmp(lastscript, scriptname)) {
-		HINSTANCE hPython;
 		char *argv[3] = {NULL, "-remove", NULL};
-		char buffer[4096];
-		FILE *fp;
-		char *tempname;
-		int n;
+		char *buffer = NULL;
 
 		argv[0] = scriptname;
 
-		tempname = tempnam(NULL, NULL);
+		if (0 != run_installscript(scriptname, 2, argv, &buffer))
+			fprintf(stderr, "*** Could not run installation script ***");
 
-		if (!freopen(tempname, "a", stderr))
-			MessageBox(GetFocus(), "freopen stderr", NULL, MB_OK);
-		if (!freopen(tempname, "a", stdout))
-			MessageBox(GetFocus(), "freopen stdout", NULL, MB_OK);
-	
-		hPython = LoadLibrary(dllname);
-		if (hPython) {
-			if (0x80000000 == run_installscript(hPython, scriptname, 2, argv))
-				fprintf(stderr, "*** Could not load Python ***");
-			FreeLibrary(hPython);
-		}
-	
-		fflush(stderr);
-		fclose(stderr);
-		fflush(stdout);
-		fclose(stdout);
-	
-		fp = fopen(tempname, "rb");
-		n = fread(buffer, 1, sizeof(buffer), fp);
-		fclose(fp);
-		remove(tempname);
-	
-		buffer[n] = '\0';
-		if (buffer[0])
+		if (buffer && buffer[0])
 			MessageBox(GetFocus(), buffer, "uninstall-script", MB_OK);
+		free(buffer);
 
 		strcpy(lastscript, scriptname);
 	}

@@ -11,11 +11,8 @@ Suggested usage is::
         import dummy_thread as thread
 
 """
-__author__ = "Brett Cannon"
-__email__ = "brett@python.org"
-
-# Exports only things specified by thread documentation
-# (skipping obsolete synonyms allocate(), start_new(), exit_thread())
+# Exports only things specified by thread documentation;
+# skipping obsolete synonyms allocate(), start_new(), exit_thread().
 __all__ = ['error', 'start_new_thread', 'exit', 'get_ident', 'allocate_lock',
            'interrupt_main', 'LockType']
 
@@ -75,6 +72,12 @@ def allocate_lock():
     """Dummy implementation of thread.allocate_lock()."""
     return LockType()
 
+def stack_size(size=None):
+    """Dummy implementation of thread.stack_size()."""
+    if size is not None:
+        raise error("setting thread stack size not supported")
+    return 0
+
 class LockType(object):
     """Class implementing dummy implementation of thread.LockType.
 
@@ -100,18 +103,20 @@ class LockType(object):
         aren't triggered and throw a little fit.
 
         """
-        if waitflag is None:
+        if waitflag is None or waitflag:
             self.locked_status = True
-            return None
-        elif not waitflag:
+            return True
+        else:
             if not self.locked_status:
                 self.locked_status = True
                 return True
             else:
                 return False
-        else:
-            self.locked_status = True
-            return True
+
+    __enter__ = acquire
+
+    def __exit__(self, typ, val, tb):
+        self.release()
 
     def release(self):
         """Release the dummy lock."""

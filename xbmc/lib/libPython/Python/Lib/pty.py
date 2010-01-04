@@ -118,6 +118,12 @@ def fork():
         if (slave_fd > STDERR_FILENO):
             os.close (slave_fd)
 
+        # Explicitly open the tty to make it become a controlling tty.
+        tmp_fd = os.open(os.ttyname(STDOUT_FILENO), os.O_RDWR)
+        os.close(tmp_fd)
+    else:
+        os.close(slave_fd)
+
     # Parent and child process.
     return pid, master_fd
 

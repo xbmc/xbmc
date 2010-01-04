@@ -28,6 +28,9 @@ this model:
 __all__ = ["BundleBuilder", "BundleBuilderError", "AppBuilder", "buildapp"]
 
 
+from warnings import warnpy3k
+warnpy3k("In 3.x, the bundlebuilder module is removed.", stacklevel=2)
+
 import sys
 import os, errno, shutil
 import imp, marshal
@@ -145,11 +148,24 @@ class BundleBuilder(Defaults):
         self.message("Building %s" % repr(self.bundlepath), 1)
         if os.path.exists(self.bundlepath):
             shutil.rmtree(self.bundlepath)
-        os.mkdir(self.bundlepath)
-        self.preProcess()
-        self._copyFiles()
-        self._addMetaFiles()
-        self.postProcess()
+        if os.path.exists(self.bundlepath + '~'):
+            shutil.rmtree(self.bundlepath + '~')
+        bp = self.bundlepath
+
+        # Create the app bundle in a temporary location and then
+        # rename the completed bundle. This way the Finder will
+        # never see an incomplete bundle (where it might pick up
+        # and cache the wrong meta data)
+        self.bundlepath = bp + '~'
+        try:
+            os.mkdir(self.bundlepath)
+            self.preProcess()
+            self._copyFiles()
+            self._addMetaFiles()
+            self.postProcess()
+            os.rename(self.bundlepath, bp)
+        finally:
+            self.bundlepath = bp
         self.message("Done.", 1)
 
     def preProcess(self):
@@ -321,7 +337,6 @@ PYTHONFRAMEWORKGOODIES = [
     "Python",  # the Python core library
     "Resources/English.lproj",
     "Resources/Info.plist",
-    "Resources/version.plist",
 ]
 
 def isFramework():
@@ -645,7 +660,7 @@ class AppBuilder(BundleBuilder):
                 if USE_ZIPIMPORT:
                     if name != "zlib":
                         # neatly pack all extension modules in a subdirectory,
-                        # except zlib, since it's neccesary for bootstrapping.
+                        # except zlib, since it's necessary for bootstrapping.
                         dstpath = pathjoin("ExtensionModules", dstpath)
                     # Python modules are stored in a Zip archive, but put
                     # extensions in Contents/Resources/. Add a tiny "loader"

@@ -27,15 +27,19 @@ typedef struct {
 
 PyAPI_DATA(PyTypeObject) PyInt_Type;
 
-#define PyInt_Check(op) PyObject_TypeCheck(op, &PyInt_Type)
+#define PyInt_Check(op) \
+		 PyType_FastSubclass((op)->ob_type, Py_TPFLAGS_INT_SUBCLASS)
 #define PyInt_CheckExact(op) ((op)->ob_type == &PyInt_Type)
 
 PyAPI_FUNC(PyObject *) PyInt_FromString(char*, char**, int);
 #ifdef Py_USING_UNICODE
-PyAPI_FUNC(PyObject *) PyInt_FromUnicode(Py_UNICODE*, int, int);
+PyAPI_FUNC(PyObject *) PyInt_FromUnicode(Py_UNICODE*, Py_ssize_t, int);
 #endif
 PyAPI_FUNC(PyObject *) PyInt_FromLong(long);
+PyAPI_FUNC(PyObject *) PyInt_FromSize_t(size_t);
+PyAPI_FUNC(PyObject *) PyInt_FromSsize_t(Py_ssize_t);
 PyAPI_FUNC(long) PyInt_AsLong(PyObject *);
+PyAPI_FUNC(Py_ssize_t) PyInt_AsSsize_t(PyObject *);
 PyAPI_FUNC(unsigned long) PyInt_AsUnsignedLongMask(PyObject *);
 #ifdef HAVE_LONG_LONG
 PyAPI_FUNC(unsigned PY_LONG_LONG) PyInt_AsUnsignedLongLongMask(PyObject *);
@@ -54,6 +58,21 @@ PyAPI_FUNC(long) PyInt_GetMax(void);
  */
 PyAPI_FUNC(unsigned long) PyOS_strtoul(char *, char **, int);
 PyAPI_FUNC(long) PyOS_strtol(char *, char **, int);
+
+/* free list api */
+PyAPI_FUNC(int) PyInt_ClearFreeList(void);
+
+/* Convert an integer to the given base.  Returns a string.
+   If base is 2, 8 or 16, add the proper prefix '0b', '0o' or '0x'.
+   If newstyle is zero, then use the pre-2.6 behavior of octal having
+   a leading "0" */
+PyAPI_FUNC(PyObject*) _PyInt_Format(PyIntObject* v, int base, int newstyle);
+
+/* Format the object based on the format_spec, as defined in PEP 3101
+   (Advanced String Formatting). */
+PyAPI_FUNC(PyObject *) _PyInt_FormatAdvanced(PyObject *obj,
+					     char *format_spec,
+					     Py_ssize_t format_spec_len);
 
 #ifdef __cplusplus
 }

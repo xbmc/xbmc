@@ -3,6 +3,8 @@
 
 #include "Python.h"
 
+#ifndef __LP64__
+	/* Carbon GUI stuff, not available in 64-bit mode */
 
 
 #include "pymactoolbox.h"
@@ -18,9 +20,9 @@
 #include <Carbon/Carbon.h>
 
 
-int ThemeButtonDrawInfo_Convert(PyObject *v, ThemeButtonDrawInfo *p_itself)
+static int ThemeButtonDrawInfo_Convert(PyObject *v, ThemeButtonDrawInfo *p_itself)
 {
-	return PyArg_Parse(v, "(iHH)", &p_itself->state, &p_itself->value, &p_itself->adornment);
+        return PyArg_Parse(v, "(iHH)", &p_itself->state, &p_itself->value, &p_itself->adornment);
 }
 
 
@@ -45,6 +47,7 @@ PyObject *ThemeDrawingStateObj_New(ThemeDrawingState itself)
 	it->ob_itself = itself;
 	return (PyObject *)it;
 }
+
 int ThemeDrawingStateObj_Convert(PyObject *v, ThemeDrawingState *p_itself)
 {
 	if (!ThemeDrawingStateObj_Check(v))
@@ -115,16 +118,16 @@ static PyMethodDef ThemeDrawingStateObj_methods[] = {
 
 #define ThemeDrawingStateObj_tp_alloc PyType_GenericAlloc
 
-static PyObject *ThemeDrawingStateObj_tp_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+static PyObject *ThemeDrawingStateObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
 {
-	PyObject *self;
+	PyObject *_self;
 	ThemeDrawingState itself;
 	char *kw[] = {"itself", 0};
 
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&", kw, ThemeDrawingStateObj_Convert, &itself)) return NULL;
-	if ((self = type->tp_alloc(type, 0)) == NULL) return NULL;
-	((ThemeDrawingStateObject *)self)->ob_itself = itself;
-	return self;
+	if (!PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, ThemeDrawingStateObj_Convert, &itself)) return NULL;
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((ThemeDrawingStateObject *)_self)->ob_itself = itself;
+	return _self;
 }
 
 #define ThemeDrawingStateObj_tp_free PyObject_Del
@@ -1791,17 +1794,25 @@ static PyMethodDef App_methods[] = {
 };
 
 
+#else  	/* __LP64__ */
+
+static PyMethodDef App_methods[] = {
+	{NULL, NULL, 0}
+};
+
+#endif /* __LP64__ */
 
 
 void init_App(void)
 {
 	PyObject *m;
+#ifndef __LP64__
 	PyObject *d;
-
-
+#endif /* !__LP64__ */
 
 
 	m = Py_InitModule("_App", App_methods);
+#ifndef __LP64__
 	d = PyModule_GetDict(m);
 	App_Error = PyMac_GetOSErrException();
 	if (App_Error == NULL ||
@@ -1814,6 +1825,7 @@ void init_App(void)
 	/* Backward-compatible name */
 	Py_INCREF(&ThemeDrawingState_Type);
 	PyModule_AddObject(m, "ThemeDrawingStateType", (PyObject *)&ThemeDrawingState_Type);
+#endif /* __LP64__ */
 }
 
 /* ======================== End module _App ========================= */

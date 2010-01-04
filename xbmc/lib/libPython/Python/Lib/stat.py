@@ -3,12 +3,7 @@
 Suggested usage: from stat import *
 """
 
-# XXX Strictly spoken, this module may have to be adapted for each POSIX
-# implementation; in practice, however, the numeric constants used by
-# stat() are almost universal (even for stat() emulations on non-UNIX
-# systems like MS-DOS).
-
-# Indices for stat struct members in tuple returned by os.stat()
+# Indices for stat struct members in the tuple returned by os.stat()
 
 ST_MODE  = 0
 ST_INO   = 1
@@ -84,3 +79,16 @@ S_IRWXO = 00007
 S_IROTH = 00004
 S_IWOTH = 00002
 S_IXOTH = 00001
+
+# Names for file flags
+
+UF_NODUMP    = 0x00000001
+UF_IMMUTABLE = 0x00000002
+UF_APPEND    = 0x00000004
+UF_OPAQUE    = 0x00000008
+UF_NOUNLINK  = 0x00000010
+SF_ARCHIVED  = 0x00010000
+SF_IMMUTABLE = 0x00020000
+SF_APPEND    = 0x00040000
+SF_NOUNLINK  = 0x00100000
+SF_SNAPSHOT  = 0x00200000

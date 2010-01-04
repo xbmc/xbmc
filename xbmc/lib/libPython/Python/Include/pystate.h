@@ -21,6 +21,7 @@ typedef struct _is {
     PyObject *modules;
     PyObject *sysdict;
     PyObject *builtins;
+    PyObject *modules_reloading;
 
     PyObject *codec_search_path;
     PyObject *codec_search_cache;
@@ -53,12 +54,16 @@ typedef int (*Py_tracefunc)(PyObject *, struct _frame *, int, PyObject *);
 #define PyTrace_C_RETURN 6
 
 typedef struct _ts {
+    /* See Python/ceval.c for comments explaining most fields */
 
     struct _ts *next;
     PyInterpreterState *interp;
 
     struct _frame *frame;
     int recursion_depth;
+    /* 'tracing' keeps track of the execution depth when tracing/profiling.
+       This is to prevent the actual trace/profile code from being recorded in
+       the trace/profile. */
     int tracing;
     int use_tracing;
 
@@ -75,7 +80,7 @@ typedef struct _ts {
     PyObject *exc_value;
     PyObject *exc_traceback;
 
-    PyObject *dict;
+    PyObject *dict;  /* Stores per-thread state */
 
     /* tick_counter is incremented whenever the check_interval ticker
      * reaches zero. The purpose is to give a useful measure of the number
@@ -166,6 +171,11 @@ PyAPI_FUNC(void) PyGILState_Release(PyGILState_STATE);
    on the main thread.
 */
 PyAPI_FUNC(PyThreadState *) PyGILState_GetThisThreadState(void);
+
+/* The implementation of sys._current_frames()  Returns a dict mapping
+   thread id to that thread's current frame.
+*/
+PyAPI_FUNC(PyObject *) _PyThread_CurrentFrames(void);
 
 /* Routines for advanced debuggers, requested by David Beazley.
    Don't use unless you know what you are doing! */

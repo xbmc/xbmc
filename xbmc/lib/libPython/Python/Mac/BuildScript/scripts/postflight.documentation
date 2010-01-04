@@ -1,6 +1,5 @@
 #!/bin/sh
 
-# FIXME
 PYVER="@PYVER@"
 
 if [ -d /Developer/Documentation ]; then

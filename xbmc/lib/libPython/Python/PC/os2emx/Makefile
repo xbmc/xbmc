@@ -1,16 +1,16 @@
 #####################==================----------------
 #
-# Top-Level Makefile for Building Python 2.4 for OS/2 using GCC/EMX
+# Top-Level Makefile for Building Python 2.6 for OS/2 using GCC/EMX
 # Originally written by Andrew Zabolotny, <bit@eltech.ru> for Python 1.5.2
-# Modified by Andrew MacIntyre, <andymac@pcug.org.au> for Python 2.4
+# Modified by Andrew MacIntyre, <andymac@pcug.org.au> for Python 2.6
 #
 # This makefile was developed for use with [P]GCC/EMX compiler any
 # version and GNU Make.
 #
-# The output of the build is a largish Python24.DLL containing the
+# The output of the build is a largish Python26.DLL containing the
 # essential modules of Python and a small Python.exe program to start
 # the interpreter. When embedding Python within another program, only
-# Python24.DLL is needed. We also build python_s.a static library (which
+# Python26.DLL is needed. We also build python_s.a static library (which
 # can be converted into OMF (.lib) format using emxomf tool) and both
 # python.a and python.lib import libraries.  Then the optional 
 # extension modules, which are OS/2 DLLs renamed with a PYD file extension.
@@ -64,7 +64,7 @@ HAVE_OPENSSL=	no
 
 # === install locations ===
 # default value of PYTHONHOME
-LIB_DIR=C:/Python24
+LIB_DIR=C:/Python26
 # default is to have everything in or under PYTHONHOME
 EXE_DIR=$(LIB_DIR)
 DLL_DIR=$(EXE_DIR)
@@ -236,8 +236,8 @@ $(OUT)%$O: %.c
 	@echo STACKSIZE 2097152 >>$@
 
 # Output file names
-PYTHON_VER=	2.4
-PYTHON_LIB=	python24
+PYTHON_VER=	2.6
+PYTHON_LIB=	python26
 PYTHON.LIB=	$(PYTHON_LIB)_s$A
 PYTHON.IMPLIB=	$(PYTHON_LIB)$A
 ifeq ($(EXEOMF),yes)
@@ -287,7 +287,7 @@ SRC.MODULES=	$(addprefix $(TOP), \
 		Modules/binascii.c \
 		Modules/cmathmodule.c \
 		Modules/_codecsmodule.c \
-		Modules/collectionsmodule.c \
+		Modules/_collectionsmodule.c \
 		Modules/cPickle.c \
 		Modules/cStringIO.c \
 		Modules/_csv.c \
@@ -295,22 +295,23 @@ SRC.MODULES=	$(addprefix $(TOP), \
 		Modules/dlmodule.c \
 		Modules/errnomodule.c \
 		Modules/fcntlmodule.c \
+		Modules/_fileio.c \
+		Modules/_functoolsmodule.c \
 		Modules/_heapqmodule.c \
 		Modules/imageop.c \
 		Modules/itertoolsmodule.c \
 		Modules/_localemodule.c \
 		Modules/mathmodule.c \
-		Modules/md5c.c \
+		Modules/md5.c \
 		Modules/md5module.c \
 		Modules/operator.c \
 		Modules/_randommodule.c \
-		Modules/regexmodule.c \
-		Modules/regexpr.c \
-		Modules/rgbimgmodule.c \
 		Modules/shamodule.c \
+		Modules/sha256module.c \
+		Modules/sha512module.c \
 		Modules/_sre.c \
 		Modules/stropmodule.c \
-		Modules/structmodule.c \
+		Modules/_struct.c \
 		Modules/symtablemodule.c \
 		Modules/termios.c \
 		Modules/timemodule.c \
@@ -333,12 +334,17 @@ SRC.PARSE2=	$(addprefix $(TOP), \
 SRC.PARSER=	$(SRC.PARSE1) \
 		$(SRC.PARSE2)
 SRC.PYTHON=	$(addprefix $(TOP), \
+		Python/Python-ast.c \
+		Python/asdl.c \
+		Python/ast.c \
 		Python/bltinmodule.c \
 		Python/exceptions.c \
 		Python/ceval.c \
 		Python/compile.c \
 		Python/codecs.c \
 		Python/errors.c \
+		Python/formatter_string.c \
+		Python/formatter_unicode.c \
 		Python/frozen.c \
 		Python/frozenmain.c \
 		Python/future.c \
@@ -355,7 +361,10 @@ SRC.PYTHON=	$(addprefix $(TOP), \
 		Python/modsupport.c \
 		Python/mysnprintf.c \
 		Python/mystrtoul.c \
+		Python/peephole.c \
+		Python/pyarena.c \
 		Python/pyfpe.c \
+		Python/pymath.c \
 		Python/pystate.c \
 		Python/pystrtod.c \
 		Python/pythonrun.c \
@@ -365,14 +374,18 @@ SRC.PYTHON=	$(addprefix $(TOP), \
 		Python/traceback.c \
 		Python/getopt.c \
 		Python/dynload_shlib.c \
-		Python/thread.c)
+		Python/thread.c \
+		Python/_warnings.c)
 SRC.OBJECT=	$(addprefix $(TOP), \
 		Objects/abstract.c \
 		Objects/boolobject.c \
 		Objects/bufferobject.c \
+		Objects/bytearrayobject.c \
+		Objects/bytes_methods.c \
 		Objects/cellobject.c \
 		Objects/classobject.c \
 		Objects/cobject.c \
+		Objects/codeobject.c \
 		Objects/complexobject.c \
 		Objects/descrobject.c \
 		Objects/dictobject.c \

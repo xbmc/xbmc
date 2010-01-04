@@ -1,0 +1,102 @@
+.. _2to3-reference:
+
+2to3 - Automated Python 2 to 3 code translation
+===============================================
+
+.. sectionauthor:: Benjamin Peterson <benjamin@python.org>
+
+2to3 is a Python program that reads Python 2.x source code and applies a series
+of *fixers* to transform it into valid Python 3.x code.  The standard library
+contains a rich set of fixers that will handle almost all code.  2to3 supporting
+library :mod:`lib2to3` is, however, a flexible and generic library, so it is
+possible to write your own fixers for 2to3.  :mod:`lib2to3` could also be
+adapted to custom applications in which Python code needs to be edited
+automatically.
+
+
+Using 2to3
+----------
+
+2to3 will usually be installed with the Python interpreter as a script.  It is
+also located in the :file:`Tools/scripts` directory of the Python root.
+
+2to3's basic arguments are a list of files or directories to transform.  The
+directories are to recursively traversed for Python sources.
+
+Here is a sample Python 2.x source file, :file:`example.py`::
+
+   def greet(name):
+       print "Hello, {0}!".format(name)
+   print "What's your name?"
+   name = raw_input()
+   greet(name)
+
+It can be converted to Python 3.x code via 2to3 on the command line::
+
+   $ 2to3 example.py
+
+A diff against the original source file is printed.  2to3 can also write the
+needed modifications right back to the source file.  (A backup of the original
+file is made unless :option:`-n` is also given.)  Writing the changes back is
+enabled with the :option:`-w` flag::
+
+   $ 2to3 -w example.py
+
+After transformation, :file:`example.py` looks like this::
+
+   def greet(name):
+       print("Hello, {0}!".format(name))
+   print("What's your name?")
+   name = input()
+   greet(name)
+
+Comments and exact indentation are preserved throughout the translation process.
+
+By default, 2to3 runs a set of predefined fixers.  The :option:`-l` flag lists
+all available fixers.  An explicit set of fixers to run can be given with
+:option:`-f`.  Likewise the :option:`-x` explicitly disables a fixer.  The
+following example runs only the ``imports`` and ``has_key`` fixers::
+
+   $ 2to3 -f imports -f has_key example.py
+
+This command runs every fixer except the ``apply`` fixer::
+
+   $ 2to3 -x apply example.py
+
+Some fixers are *explicit*, meaning they aren't run by default and must be
+listed on the command line to be run.  Here, in addition to the default fixers,
+the ``idioms`` fixer is run::
+
+   $ 2to3 -f all -f idioms example.py
+
+Notice how passing ``all`` enables all default fixers.
+
+Sometimes 2to3 will find a place in your source code that needs to be changed,
+but 2to3 cannot fix automatically.  In this case, 2to3 will print a warning
+beneath the diff for a file.  You should address the warning in order to have
+compliant 3.x code.
+
+2to3 can also refactor doctests.  To enable this mode, use the :option:`-d`
+flag.  Note that *only* doctests will be refactored.  This also doesn't require
+the module to be valid Python.  For example, doctest like examples in a reST
+document could also be refactored with this option.
+
+The :option:`-v` option enables output of more information on the translation
+process.
+
+
+:mod:`lib2to3` - 2to3's library
+-------------------------------
+
+.. module:: lib2to3
+   :synopsis: the 2to3 library
+.. moduleauthor:: Guido van Rossum
+.. moduleauthor:: Collin Winter
+
+
+.. note::
+
+   The :mod:`lib2to3` API should be considered unstable and may change
+   drastically in the future.
+
+.. XXX What is the public interface anyway?

@@ -3,6 +3,7 @@
 
 #include "Python.h"
 
+#ifndef __LP64__
 
 
 #include "pymactoolbox.h"
@@ -25,12 +26,12 @@ static PyObject *
 FMRec_New(FMetricRec *itself)
 {
 
-	return Py_BuildValue("O&O&O&O&O&", 
-		PyMac_BuildFixed, itself->ascent,
-		PyMac_BuildFixed, itself->descent,
-		PyMac_BuildFixed, itself->leading,
-		PyMac_BuildFixed, itself->widMax,
-		ResObj_New, itself->wTabHandle);
+        return Py_BuildValue("O&O&O&O&O&",
+                PyMac_BuildFixed, itself->ascent,
+                PyMac_BuildFixed, itself->descent,
+                PyMac_BuildFixed, itself->leading,
+                PyMac_BuildFixed, itself->widMax,
+                ResObj_New, itself->wTabHandle);
 }
 
 #if 0
@@ -38,12 +39,12 @@ FMRec_New(FMetricRec *itself)
 static int
 FMRec_Convert(PyObject *v, FMetricRec *p_itself)
 {
-	return PyArg_ParseTuple(v, "O&O&O&O&O&",
-		PyMac_GetFixed, &itself->ascent,
-		PyMac_GetFixed, &itself->descent,
-		PyMac_GetFixed, &itself->leading,
-		PyMac_GetFixed, &itself->widMax,
-		ResObj_Convert, &itself->wTabHandle);
+        return PyArg_ParseTuple(v, "O&O&O&O&O&",
+                PyMac_GetFixed, &itself->ascent,
+                PyMac_GetFixed, &itself->descent,
+                PyMac_GetFixed, &itself->leading,
+                PyMac_GetFixed, &itself->widMax,
+                ResObj_Convert, &itself->wTabHandle);
 }
 #endif
 
@@ -335,23 +336,32 @@ static PyMethodDef Fm_methods[] = {
 	{NULL, NULL, 0}
 };
 
+#else  /* __LP64__ */
 
+static PyMethodDef Fm_methods[] = {
+	{NULL, NULL, 0}
+};
 
+#endif  /* __LP64__ */
 
 void init_Fm(void)
 {
 	PyObject *m;
+#ifndef __LP64__
 	PyObject *d;
+#endif  /* __LP64__ */
 
 
 
 
 	m = Py_InitModule("_Fm", Fm_methods);
+#ifndef __LP64__
 	d = PyModule_GetDict(m);
 	Fm_Error = PyMac_GetOSErrException();
 	if (Fm_Error == NULL ||
 	    PyDict_SetItemString(d, "Error", Fm_Error) != 0)
 		return;
+#endif  /* __LP64__ */
 }
 
 /* ========================= End module _Fm ========================= */

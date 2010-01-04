@@ -28,7 +28,11 @@ class StructSeqTest(unittest.TestCase):
 
     def test_repr(self):
         t = time.gmtime()
-        repr(t)
+        self.assert_(repr(t))
+        t = time.gmtime(0)
+        self.assertEqual(repr(t),
+            "time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=0, "
+            "tm_min=0, tm_sec=0, tm_wday=3, tm_yday=1, tm_isdst=0)")
 
     def test_concat(self):
         t1 = time.gmtime()
@@ -96,6 +100,18 @@ class StructSeqTest(unittest.TestCase):
     def test_reduce(self):
         t = time.gmtime()
         x = t.__reduce__()
+
+    def test_extended_getslice(self):
+        # Test extended slicing by comparing with list slicing.
+        t = time.gmtime()
+        L = list(t)
+        indices = (0, None, 1, 3, 19, 300, -1, -2, -31, -300)
+        for start in indices:
+            for stop in indices:
+                # Skip step 0 (invalid)
+                for step in indices[1:]:
+                    self.assertEqual(list(t[start:stop:step]),
+                                     L[start:stop:step])
 
 def test_main():
     test_support.run_unittest(StructSeqTest)

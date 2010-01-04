@@ -1,8 +1,8 @@
 import unittest
 from test import test_support
-import sys
+from _testcapi import getargs_keywords
 
-import warnings, re
+import warnings
 warnings.filterwarnings("ignore",
                         category=DeprecationWarning,
                         message=".*integer argument expected, got float",
@@ -48,7 +48,7 @@ LARGE = 0x7FFFFFFF
 VERY_LARGE = 0xFF0000121212121212121242L
 
 from _testcapi import UCHAR_MAX, USHRT_MAX, UINT_MAX, ULONG_MAX, INT_MAX, \
-     INT_MIN, LONG_MIN, LONG_MAX
+     INT_MIN, LONG_MIN, LONG_MAX, PY_SSIZE_T_MIN, PY_SSIZE_T_MAX
 
 # fake, they are not defined in Python's header files
 LLONG_MAX = 2**63-1
@@ -182,6 +182,23 @@ class Signed_TestCase(unittest.TestCase):
         self.failUnlessEqual(42, getargs_l(42L))
         self.assertRaises(OverflowError, getargs_l, VERY_LARGE)
 
+    def test_n(self):
+        from _testcapi import getargs_n
+        # n returns 'Py_ssize_t', and does range checking
+        # (PY_SSIZE_T_MIN ... PY_SSIZE_T_MAX)
+        self.failUnlessEqual(3, getargs_n(3.14))
+        self.failUnlessEqual(99, getargs_n(Long()))
+        self.failUnlessEqual(99, getargs_n(Int()))
+
+        self.assertRaises(OverflowError, getargs_n, PY_SSIZE_T_MIN-1)
+        self.failUnlessEqual(PY_SSIZE_T_MIN, getargs_n(PY_SSIZE_T_MIN))
+        self.failUnlessEqual(PY_SSIZE_T_MAX, getargs_n(PY_SSIZE_T_MAX))
+        self.assertRaises(OverflowError, getargs_n, PY_SSIZE_T_MAX+1)
+
+        self.failUnlessEqual(42, getargs_n(42))
+        self.failUnlessEqual(42, getargs_n(42L))
+        self.assertRaises(OverflowError, getargs_n, VERY_LARGE)
+
 
 class LongLong_TestCase(unittest.TestCase):
     def test_L(self):
@@ -220,7 +237,7 @@ class LongLong_TestCase(unittest.TestCase):
 class Tuple_TestCase(unittest.TestCase):
     def test_tuple(self):
         from _testcapi import getargs_tuple
-        
+
         ret = getargs_tuple(1, (2, 3))
         self.assertEquals(ret, (1,2,3))
 
@@ -232,9 +249,57 @@ class Tuple_TestCase(unittest.TestCase):
                 raise ValueError
         self.assertRaises(TypeError, getargs_tuple, 1, seq())
 
+class Keywords_TestCase(unittest.TestCase):
+    def test_positional_args(self):
+        # using all positional args
+        self.assertEquals(
+            getargs_keywords((1,2), 3, (4,(5,6)), (7,8,9), 10),
+            (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+            )
+    def test_mixed_args(self):
+        # positional and keyword args
+        self.assertEquals(
+            getargs_keywords((1,2), 3, (4,(5,6)), arg4=(7,8,9), arg5=10),
+            (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+            )
+    def test_keyword_args(self):
+        # all keywords
+        self.assertEquals(
+            getargs_keywords(arg1=(1,2), arg2=3, arg3=(4,(5,6)), arg4=(7,8,9), arg5=10),
+            (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+            )
+    def test_optional_args(self):
+        # missing optional keyword args, skipping tuples
+        self.assertEquals(
+            getargs_keywords(arg1=(1,2), arg2=3, arg5=10),
+            (1, 2, 3, -1, -1, -1, -1, -1, -1, 10)
+            )
+    def test_required_args(self):
+        # required arg missing
+        try:
+            getargs_keywords(arg1=(1,2))
+        except TypeError, err:
+            self.assertEquals(str(err), "Required argument 'arg2' (pos 2) not found")
+        else:
+            self.fail('TypeError should have been raised')
+    def test_too_many_args(self):
+        try:
+            getargs_keywords((1,2),3,(4,(5,6)),(7,8,9),10,111)
+        except TypeError, err:
+            self.assertEquals(str(err), "function takes at most 5 arguments (6 given)")
+        else:
+            self.fail('TypeError should have been raised')
+    def test_invalid_keyword(self):
+        # extraneous keyword arg
+        try:
+            getargs_keywords((1,2),3,arg5=10,arg666=666)
+        except TypeError, err:
+            self.assertEquals(str(err), "'arg666' is an invalid keyword argument for this function")
+        else:
+            self.fail('TypeError should have been raised')
 
 def test_main():
-    tests = [Signed_TestCase, Unsigned_TestCase, Tuple_TestCase]
+    tests = [Signed_TestCase, Unsigned_TestCase, Tuple_TestCase, Keywords_TestCase]
     try:
         from _testcapi import getargs_L, getargs_K
     except ImportError:

@@ -53,8 +53,12 @@
 ** Brandon Long, September 2001.
 */
 
+#define PY_SSIZE_T_CLEAN
 
 #include "Python.h"
+#ifdef USE_ZLIB_CRC32
+#include "zlib.h"
+#endif
 
 static PyObject *Error;
 static PyObject *Incomplete;
@@ -137,7 +141,7 @@ static char table_a2b_base64[] = {
 #define BASE64_PAD '='
 
 /* Max binary chunk size; limited only by available memory */
-#define BASE64_MAXBIN (INT_MAX/2 - sizeof(PyStringObject) - 3)
+#define BASE64_MAXBIN (PY_SSIZE_T_MAX/2 - sizeof(PyStringObject) - 3)
 
 static unsigned char table_b2a_base64[] =
 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -189,7 +193,7 @@ binascii_a2b_uu(PyObject *self, PyObject *args)
 	unsigned char this_ch;
 	unsigned int leftchar = 0;
 	PyObject *rv;
-	int ascii_len, bin_len;
+	Py_ssize_t ascii_len, bin_len;
 
 	if ( !PyArg_ParseTuple(args, "t#:a2b_uu", &ascii_data, &ascii_len) )
 		return NULL;
@@ -267,7 +271,7 @@ binascii_b2a_uu(PyObject *self, PyObject *args)
 	unsigned char this_ch;
 	unsigned int leftchar = 0;
 	PyObject *rv;
-	int bin_len;
+	Py_ssize_t bin_len;
 
 	if ( !PyArg_ParseTuple(args, "s#:b2a_uu", &bin_data, &bin_len) )
 		return NULL;
@@ -309,7 +313,7 @@ binascii_b2a_uu(PyObject *self, PyObject *args)
 
 
 static int
-binascii_find_valid(unsigned char *s, int slen, int num)
+binascii_find_valid(unsigned char *s, Py_ssize_t slen, int num)
 {
 	/* Finds & returns the (num+1)th
 	** valid character for base64, or -1 if none.
@@ -343,7 +347,7 @@ binascii_a2b_base64(PyObject *self, PyObject *args)
 	unsigned char this_ch;
 	unsigned int leftchar = 0;
 	PyObject *rv;
-	int ascii_len, bin_len;
+	Py_ssize_t ascii_len, bin_len;
 	int quad_pos = 0;
 
 	if ( !PyArg_ParseTuple(args, "t#:a2b_base64", &ascii_data, &ascii_len) )
@@ -351,7 +355,7 @@ binascii_a2b_base64(PyObject *self, PyObject *args)
 
 	assert(ascii_len >= 0);
 
-	if (ascii_len > INT_MAX - 3)
+	if (ascii_len > PY_SSIZE_T_MAX - 3)
 		return PyErr_NoMemory();
 
 	bin_len = ((ascii_len+3)/4)*3; /* Upper bound, corrected later */
@@ -439,7 +443,7 @@ binascii_b2a_base64(PyObject *self, PyObject *args)
 	unsigned char this_ch;
 	unsigned int leftchar = 0;
 	PyObject *rv;
-	int bin_len;
+	Py_ssize_t bin_len;
 
 	if ( !PyArg_ParseTuple(args, "s#:b2a_base64", &bin_data, &bin_len) )
 		return NULL;
@@ -495,7 +499,7 @@ binascii_a2b_hqx(PyObject *self, PyObject *args)
 	unsigned char this_ch;
 	unsigned int leftchar = 0;
 	PyObject *rv;
-	int len;
+	Py_ssize_t len;
 	int done = 0;
 
 	if ( !PyArg_ParseTuple(args, "t#:a2b_hqx", &ascii_data, &len) )
@@ -503,7 +507,7 @@ binascii_a2b_hqx(PyObject *self, PyObject *args)
 
 	assert(len >= 0);
 
-	if (len > INT_MAX - 2)
+	if (len > PY_SSIZE_T_MAX - 2)
 		return PyErr_NoMemory();
 
 	/* Allocate a string that is too big (fixed later) 
@@ -564,14 +568,14 @@ binascii_rlecode_hqx(PyObject *self, PyObject *args)
 	unsigned char *in_data, *out_data;
 	PyObject *rv;
 	unsigned char ch;
-	int in, inend, len;
+	Py_ssize_t in, inend, len;
 
 	if ( !PyArg_ParseTuple(args, "s#:rlecode_hqx", &in_data, &len) )
 		return NULL;
 
 	assert(len >= 0);
 
-	if (len > INT_MAX / 2 - 2)
+	if (len > PY_SSIZE_T_MAX / 2 - 2)
 		return PyErr_NoMemory();
 
 	/* Worst case: output is twice as big as input (fixed later) */
@@ -618,14 +622,14 @@ binascii_b2a_hqx(PyObject *self, PyObject *args)
 	unsigned char this_ch;
 	unsigned int leftchar = 0;
 	PyObject *rv;
-	int len;
+	Py_ssize_t len;
 
 	if ( !PyArg_ParseTuple(args, "s#:b2a_hqx", &bin_data, &len) )
 		return NULL;
 
 	assert(len >= 0);
 
-	if (len > INT_MAX / 2 - 2)
+	if (len > PY_SSIZE_T_MAX / 2 - 2)
 		return PyErr_NoMemory();
 
 	/* Allocate a buffer that is at least large enough */
@@ -661,7 +665,7 @@ binascii_rledecode_hqx(PyObject *self, PyObject *args)
 	unsigned char *in_data, *out_data;
 	unsigned char in_byte, in_repeat;
 	PyObject *rv;
-	int in_len, out_len, out_len_left;
+	Py_ssize_t in_len, out_len, out_len_left;
 
 	if ( !PyArg_ParseTuple(args, "s#:rledecode_hqx", &in_data, &in_len) )
 		return NULL;
@@ -670,9 +674,9 @@ binascii_rledecode_hqx(PyObject *self, PyObject *args)
 
 	/* Empty string is a special case */
 	if ( in_len == 0 )
-		return Py_BuildValue("s", "");
-	else if (in_len > INT_MAX / 2)
-		return PyErr_NoMemory();
+		return PyString_FromString("");
+    else if (in_len > PY_SSIZE_T_MAX / 2)
+        return PyErr_NoMemory();
 
 	/* Allocate a buffer of reasonable size. Resized when needed */
 	out_len = in_len*2;
@@ -698,7 +702,7 @@ binascii_rledecode_hqx(PyObject *self, PyObject *args)
 #define OUTBYTE(b) \
 	do { \
 		 if ( --out_len_left < 0 ) { \
-			  if ( out_len > INT_MAX / 2) return PyErr_NoMemory(); \
+			  if ( out_len > PY_SSIZE_T_MAX / 2) return PyErr_NoMemory(); \
 			  _PyString_Resize(&rv, 2*out_len); \
 			  if ( rv == NULL ) return NULL; \
 			  out_data = (unsigned char *)PyString_AsString(rv) \
@@ -762,7 +766,7 @@ binascii_crc_hqx(PyObject *self, PyObject *args)
 {
 	unsigned char *bin_data;
 	unsigned int crc;
-	int len;
+	Py_ssize_t len;
 
 	if ( !PyArg_ParseTuple(args, "s#i:crc_hqx", &bin_data, &len, &crc) )
 		return NULL;
@@ -777,6 +781,26 @@ binascii_crc_hqx(PyObject *self, PyObject *args)
 PyDoc_STRVAR(doc_crc32,
 "(data, oldcrc = 0) -> newcrc. Compute CRC-32 incrementally");
 
+#ifdef USE_ZLIB_CRC32
+/* This was taken from zlibmodule.c PyZlib_crc32 (but is PY_SSIZE_T_CLEAN) */
+static PyObject *
+binascii_crc32(PyObject *self, PyObject *args)
+{
+    unsigned int crc32val = 0;  /* crc32(0L, Z_NULL, 0) */
+    Byte *buf;
+    Py_ssize_t len;
+    int signed_val;
+
+    if (!PyArg_ParseTuple(args, "s#|I:crc32", &buf, &len, &crc32val))
+	return NULL;
+    /* In Python 2.x we return a signed integer regardless of native platform
+     * long size (the 32bit unsigned long is treated as 32-bit signed and sign
+     * extended into a 64-bit long inside the integer object).  3.0 does the
+     * right thing and returns unsigned. http://bugs.python.org/issue1202 */
+    signed_val = crc32(crc32val, buf, len);
+    return PyInt_FromLong(signed_val);
+}
+#else  /* USE_ZLIB_CRC32 */
 /*  Crc - 32 BIT ANSI X3.66 CRC checksum files
     Also known as: ISO 3307
 **********************************************************************|
@@ -840,109 +864,97 @@ PyDoc_STRVAR(doc_crc32,
      using byte-swap instructions.
 ********************************************************************/
 
-static unsigned long crc_32_tab[256] = {
-0x00000000UL, 0x77073096UL, 0xee0e612cUL, 0x990951baUL, 0x076dc419UL,
-0x706af48fUL, 0xe963a535UL, 0x9e6495a3UL, 0x0edb8832UL, 0x79dcb8a4UL,
-0xe0d5e91eUL, 0x97d2d988UL, 0x09b64c2bUL, 0x7eb17cbdUL, 0xe7b82d07UL,
-0x90bf1d91UL, 0x1db71064UL, 0x6ab020f2UL, 0xf3b97148UL, 0x84be41deUL,
-0x1adad47dUL, 0x6ddde4ebUL, 0xf4d4b551UL, 0x83d385c7UL, 0x136c9856UL,
-0x646ba8c0UL, 0xfd62f97aUL, 0x8a65c9ecUL, 0x14015c4fUL, 0x63066cd9UL,
-0xfa0f3d63UL, 0x8d080df5UL, 0x3b6e20c8UL, 0x4c69105eUL, 0xd56041e4UL,
-0xa2677172UL, 0x3c03e4d1UL, 0x4b04d447UL, 0xd20d85fdUL, 0xa50ab56bUL,
-0x35b5a8faUL, 0x42b2986cUL, 0xdbbbc9d6UL, 0xacbcf940UL, 0x32d86ce3UL,
-0x45df5c75UL, 0xdcd60dcfUL, 0xabd13d59UL, 0x26d930acUL, 0x51de003aUL,
-0xc8d75180UL, 0xbfd06116UL, 0x21b4f4b5UL, 0x56b3c423UL, 0xcfba9599UL,
-0xb8bda50fUL, 0x2802b89eUL, 0x5f058808UL, 0xc60cd9b2UL, 0xb10be924UL,
-0x2f6f7c87UL, 0x58684c11UL, 0xc1611dabUL, 0xb6662d3dUL, 0x76dc4190UL,
-0x01db7106UL, 0x98d220bcUL, 0xefd5102aUL, 0x71b18589UL, 0x06b6b51fUL,
-0x9fbfe4a5UL, 0xe8b8d433UL, 0x7807c9a2UL, 0x0f00f934UL, 0x9609a88eUL,
-0xe10e9818UL, 0x7f6a0dbbUL, 0x086d3d2dUL, 0x91646c97UL, 0xe6635c01UL,
-0x6b6b51f4UL, 0x1c6c6162UL, 0x856530d8UL, 0xf262004eUL, 0x6c0695edUL,
-0x1b01a57bUL, 0x8208f4c1UL, 0xf50fc457UL, 0x65b0d9c6UL, 0x12b7e950UL,
-0x8bbeb8eaUL, 0xfcb9887cUL, 0x62dd1ddfUL, 0x15da2d49UL, 0x8cd37cf3UL,
-0xfbd44c65UL, 0x4db26158UL, 0x3ab551ceUL, 0xa3bc0074UL, 0xd4bb30e2UL,
-0x4adfa541UL, 0x3dd895d7UL, 0xa4d1c46dUL, 0xd3d6f4fbUL, 0x4369e96aUL,
-0x346ed9fcUL, 0xad678846UL, 0xda60b8d0UL, 0x44042d73UL, 0x33031de5UL,
-0xaa0a4c5fUL, 0xdd0d7cc9UL, 0x5005713cUL, 0x270241aaUL, 0xbe0b1010UL,
-0xc90c2086UL, 0x5768b525UL, 0x206f85b3UL, 0xb966d409UL, 0xce61e49fUL,
-0x5edef90eUL, 0x29d9c998UL, 0xb0d09822UL, 0xc7d7a8b4UL, 0x59b33d17UL,
-0x2eb40d81UL, 0xb7bd5c3bUL, 0xc0ba6cadUL, 0xedb88320UL, 0x9abfb3b6UL,
-0x03b6e20cUL, 0x74b1d29aUL, 0xead54739UL, 0x9dd277afUL, 0x04db2615UL,
-0x73dc1683UL, 0xe3630b12UL, 0x94643b84UL, 0x0d6d6a3eUL, 0x7a6a5aa8UL,
-0xe40ecf0bUL, 0x9309ff9dUL, 0x0a00ae27UL, 0x7d079eb1UL, 0xf00f9344UL,
-0x8708a3d2UL, 0x1e01f268UL, 0x6906c2feUL, 0xf762575dUL, 0x806567cbUL,
-0x196c3671UL, 0x6e6b06e7UL, 0xfed41b76UL, 0x89d32be0UL, 0x10da7a5aUL,
-0x67dd4accUL, 0xf9b9df6fUL, 0x8ebeeff9UL, 0x17b7be43UL, 0x60b08ed5UL,
-0xd6d6a3e8UL, 0xa1d1937eUL, 0x38d8c2c4UL, 0x4fdff252UL, 0xd1bb67f1UL,
-0xa6bc5767UL, 0x3fb506ddUL, 0x48b2364bUL, 0xd80d2bdaUL, 0xaf0a1b4cUL,
-0x36034af6UL, 0x41047a60UL, 0xdf60efc3UL, 0xa867df55UL, 0x316e8eefUL,
-0x4669be79UL, 0xcb61b38cUL, 0xbc66831aUL, 0x256fd2a0UL, 0x5268e236UL,
-0xcc0c7795UL, 0xbb0b4703UL, 0x220216b9UL, 0x5505262fUL, 0xc5ba3bbeUL,
-0xb2bd0b28UL, 0x2bb45a92UL, 0x5cb36a04UL, 0xc2d7ffa7UL, 0xb5d0cf31UL,
-0x2cd99e8bUL, 0x5bdeae1dUL, 0x9b64c2b0UL, 0xec63f226UL, 0x756aa39cUL,
-0x026d930aUL, 0x9c0906a9UL, 0xeb0e363fUL, 0x72076785UL, 0x05005713UL,
-0x95bf4a82UL, 0xe2b87a14UL, 0x7bb12baeUL, 0x0cb61b38UL, 0x92d28e9bUL,
-0xe5d5be0dUL, 0x7cdcefb7UL, 0x0bdbdf21UL, 0x86d3d2d4UL, 0xf1d4e242UL,
-0x68ddb3f8UL, 0x1fda836eUL, 0x81be16cdUL, 0xf6b9265bUL, 0x6fb077e1UL,
-0x18b74777UL, 0x88085ae6UL, 0xff0f6a70UL, 0x66063bcaUL, 0x11010b5cUL,
-0x8f659effUL, 0xf862ae69UL, 0x616bffd3UL, 0x166ccf45UL, 0xa00ae278UL,
-0xd70dd2eeUL, 0x4e048354UL, 0x3903b3c2UL, 0xa7672661UL, 0xd06016f7UL,
-0x4969474dUL, 0x3e6e77dbUL, 0xaed16a4aUL, 0xd9d65adcUL, 0x40df0b66UL,
-0x37d83bf0UL, 0xa9bcae53UL, 0xdebb9ec5UL, 0x47b2cf7fUL, 0x30b5ffe9UL,
-0xbdbdf21cUL, 0xcabac28aUL, 0x53b39330UL, 0x24b4a3a6UL, 0xbad03605UL,
-0xcdd70693UL, 0x54de5729UL, 0x23d967bfUL, 0xb3667a2eUL, 0xc4614ab8UL,
-0x5d681b02UL, 0x2a6f2b94UL, 0xb40bbe37UL, 0xc30c8ea1UL, 0x5a05df1bUL,
-0x2d02ef8dUL
+static unsigned int crc_32_tab[256] = {
+0x00000000U, 0x77073096U, 0xee0e612cU, 0x990951baU, 0x076dc419U,
+0x706af48fU, 0xe963a535U, 0x9e6495a3U, 0x0edb8832U, 0x79dcb8a4U,
+0xe0d5e91eU, 0x97d2d988U, 0x09b64c2bU, 0x7eb17cbdU, 0xe7b82d07U,
+0x90bf1d91U, 0x1db71064U, 0x6ab020f2U, 0xf3b97148U, 0x84be41deU,
+0x1adad47dU, 0x6ddde4ebU, 0xf4d4b551U, 0x83d385c7U, 0x136c9856U,
+0x646ba8c0U, 0xfd62f97aU, 0x8a65c9ecU, 0x14015c4fU, 0x63066cd9U,
+0xfa0f3d63U, 0x8d080df5U, 0x3b6e20c8U, 0x4c69105eU, 0xd56041e4U,
+0xa2677172U, 0x3c03e4d1U, 0x4b04d447U, 0xd20d85fdU, 0xa50ab56bU,
+0x35b5a8faU, 0x42b2986cU, 0xdbbbc9d6U, 0xacbcf940U, 0x32d86ce3U,
+0x45df5c75U, 0xdcd60dcfU, 0xabd13d59U, 0x26d930acU, 0x51de003aU,
+0xc8d75180U, 0xbfd06116U, 0x21b4f4b5U, 0x56b3c423U, 0xcfba9599U,
+0xb8bda50fU, 0x2802b89eU, 0x5f058808U, 0xc60cd9b2U, 0xb10be924U,
+0x2f6f7c87U, 0x58684c11U, 0xc1611dabU, 0xb6662d3dU, 0x76dc4190U,
+0x01db7106U, 0x98d220bcU, 0xefd5102aU, 0x71b18589U, 0x06b6b51fU,
+0x9fbfe4a5U, 0xe8b8d433U, 0x7807c9a2U, 0x0f00f934U, 0x9609a88eU,
+0xe10e9818U, 0x7f6a0dbbU, 0x086d3d2dU, 0x91646c97U, 0xe6635c01U,
+0x6b6b51f4U, 0x1c6c6162U, 0x856530d8U, 0xf262004eU, 0x6c0695edU,
+0x1b01a57bU, 0x8208f4c1U, 0xf50fc457U, 0x65b0d9c6U, 0x12b7e950U,
+0x8bbeb8eaU, 0xfcb9887cU, 0x62dd1ddfU, 0x15da2d49U, 0x8cd37cf3U,
+0xfbd44c65U, 0x4db26158U, 0x3ab551ceU, 0xa3bc0074U, 0xd4bb30e2U,
+0x4adfa541U, 0x3dd895d7U, 0xa4d1c46dU, 0xd3d6f4fbU, 0x4369e96aU,
+0x346ed9fcU, 0xad678846U, 0xda60b8d0U, 0x44042d73U, 0x33031de5U,
+0xaa0a4c5fU, 0xdd0d7cc9U, 0x5005713cU, 0x270241aaU, 0xbe0b1010U,
+0xc90c2086U, 0x5768b525U, 0x206f85b3U, 0xb966d409U, 0xce61e49fU,
+0x5edef90eU, 0x29d9c998U, 0xb0d09822U, 0xc7d7a8b4U, 0x59b33d17U,
+0x2eb40d81U, 0xb7bd5c3bU, 0xc0ba6cadU, 0xedb88320U, 0x9abfb3b6U,
+0x03b6e20cU, 0x74b1d29aU, 0xead54739U, 0x9dd277afU, 0x04db2615U,
+0x73dc1683U, 0xe3630b12U, 0x94643b84U, 0x0d6d6a3eU, 0x7a6a5aa8U,
+0xe40ecf0bU, 0x9309ff9dU, 0x0a00ae27U, 0x7d079eb1U, 0xf00f9344U,
+0x8708a3d2U, 0x1e01f268U, 0x6906c2feU, 0xf762575dU, 0x806567cbU,
+0x196c3671U, 0x6e6b06e7U, 0xfed41b76U, 0x89d32be0U, 0x10da7a5aU,
+0x67dd4accU, 0xf9b9df6fU, 0x8ebeeff9U, 0x17b7be43U, 0x60b08ed5U,
+0xd6d6a3e8U, 0xa1d1937eU, 0x38d8c2c4U, 0x4fdff252U, 0xd1bb67f1U,
+0xa6bc5767U, 0x3fb506ddU, 0x48b2364bU, 0xd80d2bdaU, 0xaf0a1b4cU,
+0x36034af6U, 0x41047a60U, 0xdf60efc3U, 0xa867df55U, 0x316e8eefU,
+0x4669be79U, 0xcb61b38cU, 0xbc66831aU, 0x256fd2a0U, 0x5268e236U,
+0xcc0c7795U, 0xbb0b4703U, 0x220216b9U, 0x5505262fU, 0xc5ba3bbeU,
+0xb2bd0b28U, 0x2bb45a92U, 0x5cb36a04U, 0xc2d7ffa7U, 0xb5d0cf31U,
+0x2cd99e8bU, 0x5bdeae1dU, 0x9b64c2b0U, 0xec63f226U, 0x756aa39cU,
+0x026d930aU, 0x9c0906a9U, 0xeb0e363fU, 0x72076785U, 0x05005713U,
+0x95bf4a82U, 0xe2b87a14U, 0x7bb12baeU, 0x0cb61b38U, 0x92d28e9bU,
+0xe5d5be0dU, 0x7cdcefb7U, 0x0bdbdf21U, 0x86d3d2d4U, 0xf1d4e242U,
+0x68ddb3f8U, 0x1fda836eU, 0x81be16cdU, 0xf6b9265bU, 0x6fb077e1U,
+0x18b74777U, 0x88085ae6U, 0xff0f6a70U, 0x66063bcaU, 0x11010b5cU,
+0x8f659effU, 0xf862ae69U, 0x616bffd3U, 0x166ccf45U, 0xa00ae278U,
+0xd70dd2eeU, 0x4e048354U, 0x3903b3c2U, 0xa7672661U, 0xd06016f7U,
+0x4969474dU, 0x3e6e77dbU, 0xaed16a4aU, 0xd9d65adcU, 0x40df0b66U,
+0x37d83bf0U, 0xa9bcae53U, 0xdebb9ec5U, 0x47b2cf7fU, 0x30b5ffe9U,
+0xbdbdf21cU, 0xcabac28aU, 0x53b39330U, 0x24b4a3a6U, 0xbad03605U,
+0xcdd70693U, 0x54de5729U, 0x23d967bfU, 0xb3667a2eU, 0xc4614ab8U,
+0x5d681b02U, 0x2a6f2b94U, 0xb40bbe37U, 0xc30c8ea1U, 0x5a05df1bU,
+0x2d02ef8dU
 };
 
 static PyObject *
 binascii_crc32(PyObject *self, PyObject *args)
 { /* By Jim Ahlstrom; All rights transferred to CNRI */
 	unsigned char *bin_data;
-	unsigned long crc = 0UL;	/* initial value of CRC */
-	int len;
-	long result;
+	unsigned int crc = 0U;	/* initial value of CRC */
+	Py_ssize_t len;
+	int result;
 
-	if ( !PyArg_ParseTuple(args, "s#|l:crc32", &bin_data, &len, &crc) )
+	if ( !PyArg_ParseTuple(args, "s#|I:crc32", &bin_data, &len, &crc) )
 		return NULL;
 
 	crc = ~ crc;
-#if SIZEOF_LONG > 4
-	/* only want the trailing 32 bits */
-	crc &= 0xFFFFFFFFUL;
-#endif
 	while (len-- > 0)
-		crc = crc_32_tab[(crc ^ *bin_data++) & 0xffUL] ^ (crc >> 8);
+		crc = crc_32_tab[(crc ^ *bin_data++) & 0xffU] ^ (crc >> 8);
 		/* Note:  (crc >> 8) MUST zero fill on left */
 
-	result = (long)(crc ^ 0xFFFFFFFFUL);
-#if SIZEOF_LONG > 4
-	/* Extend the sign bit.  This is one way to ensure the result is the
-	 * same across platforms.  The other way would be to return an
-	 * unbounded unsigned long, but the evidence suggests that lots of
-	 * code outside this treats the result as if it were a signed 4-byte
-	 * integer.
-	 */
-	result |= -(result & (1L << 31));
-#endif
+	result = (int)(crc ^ 0xFFFFFFFFU);
 	return PyInt_FromLong(result);
 }
+#endif  /* USE_ZLIB_CRC32 */
 
 
 static PyObject *
 binascii_hexlify(PyObject *self, PyObject *args)
 {
 	char* argbuf;
-	int arglen;
+	Py_ssize_t arglen;
 	PyObject *retval;
 	char* retbuf;
-	int i, j;
+	Py_ssize_t i, j;
 
 	if (!PyArg_ParseTuple(args, "s#:b2a_hex", &argbuf, &arglen))
 		return NULL;
 
 	assert(arglen >= 0);
-	if (arglen > INT_MAX / 2)
+	if (arglen > PY_SSIZE_T_MAX / 2)
 		return PyErr_NoMemory();
 
 	retval = PyString_FromStringAndSize(NULL, arglen*2);
@@ -994,10 +1006,10 @@ static PyObject *
 binascii_unhexlify(PyObject *self, PyObject *args)
 {
 	char* argbuf;
-	int arglen;
+	Py_ssize_t arglen;
 	PyObject *retval;
 	char* retbuf;
-	int i, j;
+	Py_ssize_t i, j;
 
 	if (!PyArg_ParseTuple(args, "s#:a2b_hex", &argbuf, &arglen))
 		return NULL;
@@ -1063,10 +1075,10 @@ PyDoc_STRVAR(doc_a2b_qp, "Decode a string of qp-encoded data");
 static PyObject*
 binascii_a2b_qp(PyObject *self, PyObject *args, PyObject *kwargs)
 {
-	unsigned int in, out;
+	Py_ssize_t in, out;
 	char ch;
 	unsigned char *data, *odata;
-	unsigned int datalen = 0;
+	Py_ssize_t datalen = 0;
 	PyObject *rv;
 	static char *kwlist[] = {"data", "header", NULL};
 	int header = 0;
@@ -1092,8 +1104,7 @@ binascii_a2b_qp(PyObject *self, PyObject *args, PyObject *kwargs)
 			in++;
 			if (in >= datalen) break;
 			/* Soft line breaks */
-			if ((data[in] == '\n') || (data[in] == '\r') ||
-			    (data[in] == ' ') || (data[in] == '\t')) {
+			if ((data[in] == '\n') || (data[in] == '\r')) {
 				if (data[in] != '\n') {
 					while (in < datalen && data[in] != '\n') in++;
 				}
@@ -1164,12 +1175,13 @@ both encoded.  When quotetabs is set, space and tabs are encoded.");
 static PyObject*
 binascii_b2a_qp (PyObject *self, PyObject *args, PyObject *kwargs)
 {
-	unsigned int in, out;
+	Py_ssize_t in, out;
 	unsigned char *data, *odata;
-	unsigned int datalen = 0, odatalen = 0;
+	Py_ssize_t datalen = 0, odatalen = 0;
 	PyObject *rv;
 	unsigned int linelen = 0;
-	static char *kwlist[] = {"data", "quotetabs", "istext", "header", NULL};
+	static char *kwlist[] = {"data", "quotetabs", "istext",
+                                       "header", NULL};
 	int istext = 1;
 	int quotetabs = 0;
 	int header = 0;
@@ -1185,7 +1197,7 @@ binascii_b2a_qp (PyObject *self, PyObject *args, PyObject *kwargs)
 	/* XXX: this function has the side effect of converting all of
 	 * the end of lines to be the same depending on this detection
 	 * here */
-	p = (unsigned char *) strchr((char *)data, '\n');
+	p = (unsigned char *) memchr(data, '\n', datalen);
 	if ((p != NULL) && (p > data) && (*(p-1) == '\r'))
 		crlf = 1;
 
@@ -1195,12 +1207,14 @@ binascii_b2a_qp (PyObject *self, PyObject *args, PyObject *kwargs)
 		if ((data[in] > 126) ||
 		    (data[in] == '=') ||
 		    (header && data[in] == '_') ||
-		    ((data[in] == '.') && (linelen == 1)) ||
+		    ((data[in] == '.') && (linelen == 0) &&
+		     (data[in+1] == '\n' || data[in+1] == '\r' || data[in+1] == 0)) ||
 		    (!istext && ((data[in] == '\r') || (data[in] == '\n'))) ||
 		    ((data[in] == '\t' || data[in] == ' ') && (in + 1 == datalen)) ||
 		    ((data[in] < 33) &&
 		     (data[in] != '\r') && (data[in] != '\n') &&
-		     (quotetabs && ((data[in] != '\t') || (data[in] != ' ')))))
+		     (quotetabs ||
+		     	(!quotetabs && ((data[in] != '\t') && (data[in] != ' '))))))
 		{
 			if ((linelen + 3) >= MAXLINESIZE) {
 				linelen = 0;
@@ -1265,12 +1279,14 @@ binascii_b2a_qp (PyObject *self, PyObject *args, PyObject *kwargs)
 		if ((data[in] > 126) ||
 		    (data[in] == '=') ||
 		    (header && data[in] == '_') ||
-		    ((data[in] == '.') && (linelen == 1)) ||
+		    ((data[in] == '.') && (linelen == 0) &&
+		     (data[in+1] == '\n' || data[in+1] == '\r' || data[in+1] == 0)) ||
 		    (!istext && ((data[in] == '\r') || (data[in] == '\n'))) ||
 		    ((data[in] == '\t' || data[in] == ' ') && (in + 1 == datalen)) ||
 		    ((data[in] < 33) &&
 		     (data[in] != '\r') && (data[in] != '\n') &&
-		     (quotetabs && ((data[in] != '\t') || (data[in] != ' ')))))
+		     (quotetabs ||
+		     	(!quotetabs && ((data[in] != '\t') && (data[in] != ' '))))))
 		{
 			if ((linelen + 3 )>= MAXLINESIZE) {
 				odata[out++] = '=';

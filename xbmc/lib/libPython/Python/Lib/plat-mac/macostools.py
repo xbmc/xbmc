@@ -4,12 +4,13 @@ mkalias(src, dst) - Create a finder alias 'dst' pointing to 'src'
 copy(src, dst) - Full copy of 'src' to 'dst'
 """
 
+from warnings import warnpy3k
+warnpy3k("In 3.x, the macostools module is removed.", stacklevel=2)
+
 from Carbon import Res
 from Carbon import File, Files
 import os
-import sys
 import MacOS
-import time
 try:
     openrf = MacOS.openrf
 except AttributeError:
@@ -61,25 +62,20 @@ def mkdirs(dst):
     if os.sep == ':' and not ':' in head:
         head = head + ':'
     mkdirs(head)
-    os.mkdir(dst, 0777)
+
+    try:
+        os.mkdir(dst, 0777)
+    except OSError, e:
+        # be happy if someone already created the path
+        if e.errno != errno.EEXIST:
+            raise
+
 
 def touched(dst):
     """Tell the finder a file has changed. No-op on MacOSX."""
-    if sys.platform != 'mac': return
     import warnings
-    warnings.filterwarnings("ignore", "macfs.*", DeprecationWarning, __name__)
-    import macfs
-    file_fss = macfs.FSSpec(dst)
-    vRefNum, dirID, name = file_fss.as_tuple()
-    dir_fss = macfs.FSSpec((vRefNum, dirID, ''))
-    crdate, moddate, bkdate = dir_fss.GetDates()
-    now = time.time()
-    if now == moddate:
-        now = now + 1
-    try:
-        dir_fss.SetDates(crdate, now, bkdate)
-    except macfs.error:
-        pass
+    warnings.warn("macostools.touched() has been deprecated",
+                    DeprecationWarning, 2)
 
 def touched_ae(dst):
     """Tell the finder a file has changed"""
@@ -120,7 +116,7 @@ def copy(src, dst, createpath=0, copydates=1, forcetype=None):
     sf = srcfss.FSpGetFInfo()
     df = dstfss.FSpGetFInfo()
     df.Creator, df.Type = sf.Creator, sf.Type
-    if forcetype != None:
+    if forcetype is not None:
         df.Type = forcetype
     df.Flags = (sf.Flags & COPY_FLAGS)
     dstfss.FSpSetFInfo(df)
@@ -129,7 +125,6 @@ def copy(src, dst, createpath=0, copydates=1, forcetype=None):
         dstfsr = File.FSRef(dst)
         catinfo, _, _, _ = srcfsr.FSGetCatalogInfo(Files.kFSCatInfoAllDates)
         dstfsr.FSSetCatalogInfo(Files.kFSCatInfoAllDates, catinfo)
-    touched(dstfss)
 
 def copytree(src, dst, copydates=1):
     """Copy a complete file tree to a new destination"""

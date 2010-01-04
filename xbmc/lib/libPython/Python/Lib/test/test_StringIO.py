@@ -62,6 +62,7 @@ class TestGenericStringIO(unittest.TestCase):
         eq(f.getvalue(), 'abcde')
         f.write('xyz')
         eq(f.getvalue(), 'abcdexyz')
+        self.assertRaises(IOError, f.truncate, -1)
         f.close()
         self.assertRaises(ValueError, f.write, 'frobnitz')
 
@@ -75,6 +76,13 @@ class TestGenericStringIO(unittest.TestCase):
         f.close()
         self.assertEqual(f.closed, True)
 
+    def test_isatty(self):
+        f = self.MODULE.StringIO()
+        self.assertRaises(TypeError, f.isatty, None)
+        self.assertEqual(f.isatty(), False)
+        f.close()
+        self.assertRaises(ValueError, f.isatty)
+
     def test_iterator(self):
         eq = self.assertEqual
         unless = self.failUnless
@@ -87,6 +95,8 @@ class TestGenericStringIO(unittest.TestCase):
             eq(line, self._line + '\n')
             i += 1
         eq(i, 5)
+        self._fp.close()
+        self.assertRaises(ValueError, self._fp.next)
 
 class TestStringIO(TestGenericStringIO):
     MODULE = StringIO

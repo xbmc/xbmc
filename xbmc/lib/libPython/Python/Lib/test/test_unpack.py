@@ -55,7 +55,7 @@ Unpacking non-sequence
     >>> a, b, c = 7
     Traceback (most recent call last):
       ...
-    TypeError: unpack non-sequence
+    TypeError: 'int' object is not iterable
 
 Unpacking tuple of wrong size
 
@@ -122,7 +122,6 @@ error)
 __test__ = {'doctests' : doctests}
 
 def test_main(verbose=False):
-    import sys
     from test import test_support
     from test import test_unpack
     test_support.run_doctest(test_unpack, verbose)

@@ -3,7 +3,86 @@ Tests common to tuple, list and UserList.UserList
 """
 
 import unittest
-from test import test_support
+import sys
+
+# Various iterables
+# This is used for checking the constructor (here and in test_deque.py)
+def iterfunc(seqn):
+    'Regular generator'
+    for i in seqn:
+        yield i
+
+class Sequence:
+    'Sequence using __getitem__'
+    def __init__(self, seqn):
+        self.seqn = seqn
+    def __getitem__(self, i):
+        return self.seqn[i]
+
+class IterFunc:
+    'Sequence using iterator protocol'
+    def __init__(self, seqn):
+        self.seqn = seqn
+        self.i = 0
+    def __iter__(self):
+        return self
+    def next(self):
+        if self.i >= len(self.seqn): raise StopIteration
+        v = self.seqn[self.i]
+        self.i += 1
+        return v
+
+class IterGen:
+    'Sequence using iterator protocol defined with a generator'
+    def __init__(self, seqn):
+        self.seqn = seqn
+        self.i = 0
+    def __iter__(self):
+        for val in self.seqn:
+            yield val
+
+class IterNextOnly:
+    'Missing __getitem__ and __iter__'
+    def __init__(self, seqn):
+        self.seqn = seqn
+        self.i = 0
+    def next(self):
+        if self.i >= len(self.seqn): raise StopIteration
+        v = self.seqn[self.i]
+        self.i += 1
+        return v
+
+class IterNoNext:
+    'Iterator missing next()'
+    def __init__(self, seqn):
+        self.seqn = seqn
+        self.i = 0
+    def __iter__(self):
+        return self
+
+class IterGenExc:
+    'Test propagation of exceptions'
+    def __init__(self, seqn):
+        self.seqn = seqn
+        self.i = 0
+    def __iter__(self):
+        return self
+    def next(self):
+        3 // 0
+
+class IterFuncStop:
+    'Test immediate stop'
+    def __init__(self, seqn):
+        pass
+    def __iter__(self):
+        return self
+    def next(self):
+        raise StopIteration
+
+from itertools import chain, imap
+def itermulti(seqn):
+    'Test multiple tiers of iterators'
+    return chain(imap(lambda x:x, iterfunc(IterGen(Sequence(seqn)))))
 
 class CommonTest(unittest.TestCase):
     # The type to be tested
@@ -39,6 +118,17 @@ class CommonTest(unittest.TestCase):
         s = "this is also a sequence"
         vv = self.type2test(s)
         self.assertEqual(len(vv), len(s))
+
+        # Create from various iteratables
+        for s in ("123", "", range(1000), ('do', 1.2), xrange(2000,2200,5)):
+            for g in (Sequence, IterFunc, IterGen,
+                      itermulti, iterfunc):
+                self.assertEqual(self.type2test(g(s)), self.type2test(s))
+            self.assertEqual(self.type2test(IterFuncStop(s)), self.type2test())
+            self.assertEqual(self.type2test(c for c in "123"), self.type2test("123"))
+            self.assertRaises(TypeError, self.type2test, IterNextOnly(s))
+            self.assertRaises(TypeError, self.type2test, IterNoNext(s))
+            self.assertRaises(ZeroDivisionError, self.type2test, IterGenExc(s))
 
     def test_truth(self):
         self.assert_(not self.type2test())
@@ -117,6 +207,32 @@ class CommonTest(unittest.TestCase):
 
         self.assertRaises(TypeError, u.__contains__)
 
+    def test_contains_fake(self):
+        class AllEq:
+            # Sequences must use rich comparison against each item
+            # (unless "is" is true, or an earlier item answered)
+            # So instances of AllEq must be found in all non-empty sequences.
+            def __eq__(self, other):
+                return True
+            __hash__ = None # Can't meet hash invariant requirements
+        self.assert_(AllEq() not in self.type2test([]))
+        self.assert_(AllEq() in self.type2test([1]))
+
+    def test_contains_order(self):
+        # Sequences must test in-order.  If a rich comparison has side
+        # effects, these will be visible to tests against later members.
+        # In this test, the "side effect" is a short-circuiting raise.
+        class DoNotTestEq(Exception):
+            pass
+        class StopCompares:
+            def __eq__(self, other):
+                raise DoNotTestEq
+
+        checkfirst = self.type2test([1, StopCompares()])
+        self.assert_(1 in checkfirst)
+        checklast = self.type2test([StopCompares(), 1])
+        self.assertRaises(DoNotTestEq, checklast.__contains__, 1)
+
     def test_len(self):
         self.assertEqual(len(self.type2test()), 0)
         self.assertEqual(len(self.type2test([])), 0)
@@ -189,6 +305,15 @@ class CommonTest(unittest.TestCase):
             self.assertEqual(self.type2test(s)*(-4), self.type2test([]))
             self.assertEqual(id(s), id(s*1))
 
+    def test_bigrepeat(self):
+        import sys
+        if sys.maxint <= 2147483647:
+            x = self.type2test([0])
+            x *= 2**16
+            self.assertRaises(MemoryError, x.__mul__, 2**16)
+            if hasattr(x, '__imul__'):
+                self.assertRaises(MemoryError, x.__imul__, 2**16)
+
     def test_subscript(self):
         a = self.type2test([10, 11])
         self.assertEqual(a.__getitem__(0L), 10)
@@ -204,3 +329,64 @@ class CommonTest(unittest.TestCase):
         self.assertEqual(a.__getitem__(slice(3,5)), self.type2test([]))
         self.assertRaises(ValueError, a.__getitem__, slice(0, 10, 0))
         self.assertRaises(TypeError, a.__getitem__, 'x')
+
+    def test_count(self):
+        a = self.type2test([0, 1, 2])*3
+        self.assertEqual(a.count(0), 3)
+        self.assertEqual(a.count(1), 3)
+        self.assertEqual(a.count(3), 0)
+
+        self.assertRaises(TypeError, a.count)
+
+        class BadExc(Exception):
+            pass
+
+        class BadCmp:
+            def __eq__(self, other):
+                if other == 2:
+                    raise BadExc()
+                return False
+
+        self.assertRaises(BadExc, a.count, BadCmp())
+
+    def test_index(self):
+        u = self.type2test([0, 1])
+        self.assertEqual(u.index(0), 0)
+        self.assertEqual(u.index(1), 1)
+        self.assertRaises(ValueError, u.index, 2)
+
+        u = self.type2test([-2, -1, 0, 0, 1, 2])
+        self.assertEqual(u.count(0), 2)
+        self.assertEqual(u.index(0), 2)
+        self.assertEqual(u.index(0, 2), 2)
+        self.assertEqual(u.index(-2, -10), 0)
+        self.assertEqual(u.index(0, 3), 3)
+        self.assertEqual(u.index(0, 3, 4), 3)
+        self.assertRaises(ValueError, u.index, 2, 0, -10)
+
+        self.assertRaises(TypeError, u.index)
+
+        class BadExc(Exception):
+            pass
+
+        class BadCmp:
+            def __eq__(self, other):
+                if other == 2:
+                    raise BadExc()
+                return False
+
+        a = self.type2test([0, 1, 2, 3])
+        self.assertRaises(BadExc, a.index, BadCmp())
+
+        a = self.type2test([-2, -1, 0, 0, 1, 2])
+        self.assertEqual(a.index(0), 2)
+        self.assertEqual(a.index(0, 2), 2)
+        self.assertEqual(a.index(0, -4), 2)
+        self.assertEqual(a.index(-2, -10), 0)
+        self.assertEqual(a.index(0, 3), 3)
+        self.assertEqual(a.index(0, -3), 3)
+        self.assertEqual(a.index(0, 3, 4), 3)
+        self.assertEqual(a.index(0, -3, -2), 3)
+        self.assertEqual(a.index(0, -4*sys.maxint, 4*sys.maxint), 2)
+        self.assertRaises(ValueError, a.index, 0, 4*sys.maxint,-4*sys.maxint)
+        self.assertRaises(ValueError, a.index, 2, 0, -10)

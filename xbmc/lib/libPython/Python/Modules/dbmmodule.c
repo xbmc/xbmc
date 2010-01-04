@@ -21,6 +21,9 @@ static char *which_dbm = "GNU gdbm";  /* EMX port of GDBM */
 #elif defined(HAVE_GDBM_NDBM_H)
 #include <gdbm/ndbm.h>
 static char *which_dbm = "GNU gdbm";
+#elif defined(HAVE_GDBM_DASH_NDBM_H)
+#include <gdbm-ndbm.h>
+static char *which_dbm = "GNU gdbm";
 #elif defined(HAVE_BERKDB_H)
 #include <db.h>
 static char *which_dbm = "Berkeley DB";
@@ -36,7 +39,7 @@ typedef struct {
 
 static PyTypeObject Dbmtype;
 
-#define is_dbmobject(v) ((v)->ob_type == &Dbmtype)
+#define is_dbmobject(v) (Py_TYPE(v) == &Dbmtype)
 #define check_dbmobject_open(v) if ((v)->di_dbm == NULL) \
                { PyErr_SetString(DbmError, "DBM object has already been closed"); \
                  return NULL; }
@@ -70,7 +73,7 @@ dbm_dealloc(register dbmobject *dp)
 	PyObject_Del(dp);
 }
 
-static int
+static Py_ssize_t
 dbm_length(dbmobject *dp)
 {
         if (dp->di_dbm == NULL) {
@@ -161,17 +164,47 @@ dbm_ass_sub(dbmobject *dp, PyObject *v, PyObject *w)
 	return 0;
 }
 
+static int
+dbm_contains(register dbmobject *dp, PyObject *v)
+{
+	datum key, val;
+
+	if (PyString_AsStringAndSize(v, (char **)&key.dptr,
+	                             (Py_ssize_t *)&key.dsize)) {
+		return -1;
+	}
+
+	/* Expand check_dbmobject_open to return -1 */
+	if (dp->di_dbm == NULL) {
+		PyErr_SetString(DbmError, "DBM object has already been closed");
+		return -1;
+	}
+	val = dbm_fetch(dp->di_dbm, key);
+	return val.dptr != NULL;
+}
+
+static PySequenceMethods dbm_as_sequence = {
+    (lenfunc)dbm_length,        /*_length*/
+    0,                          /*sq_concat*/
+    0,                          /*sq_repeat*/
+    0,                          /*sq_item*/
+    0,                          /*sq_slice*/
+    0,                          /*sq_ass_item*/
+    0,                          /*sq_ass_slice*/
+    (objobjproc)dbm_contains,   /*sq_contains*/
+    0,                          /*sq_inplace_concat*/
+    0                           /*sq_inplace_repeat*/
+};
+
 static PyMappingMethods dbm_as_mapping = {
-	(inquiry)dbm_length,		/*mp_length*/
+	(lenfunc)dbm_length,		/*mp_length*/
 	(binaryfunc)dbm_subscript,	/*mp_subscript*/
 	(objobjargproc)dbm_ass_sub,	/*mp_ass_subscript*/
 };
 
 static PyObject *
-dbm__close(register dbmobject *dp, PyObject *args)
+dbm__close(register dbmobject *dp, PyObject *unused)
 {
-	if (!PyArg_ParseTuple(args, ":close"))
-		return NULL;
         if (dp->di_dbm)
 		dbm_close(dp->di_dbm);
 	dp->di_dbm = NULL;
@@ -180,14 +213,12 @@ dbm__close(register dbmobject *dp, PyObject *args)
 }
 
 static PyObject *
-dbm_keys(register dbmobject *dp, PyObject *args)
+dbm_keys(register dbmobject *dp, PyObject *unused)
 {
 	register PyObject *v, *item;
 	datum key;
 	int err;
 
-	if (!PyArg_ParseTuple(args, ":keys"))
-		return NULL;
         check_dbmobject_open(dp);
 	v = PyList_New(0);
 	if (v == NULL)
@@ -212,11 +243,13 @@ dbm_keys(register dbmobject *dp, PyObject *args)
 static PyObject *
 dbm_has_key(register dbmobject *dp, PyObject *args)
 {
+	char *tmp_ptr;
 	datum key, val;
 	int tmp_size;
 	
-	if (!PyArg_ParseTuple(args, "s#:has_key", &key.dptr, &tmp_size))
+	if (!PyArg_ParseTuple(args, "s#:has_key", &tmp_ptr, &tmp_size))
 		return NULL;
+	key.dptr = tmp_ptr;
 	key.dsize = tmp_size;
         check_dbmobject_open(dp);
 	val = dbm_fetch(dp->di_dbm, key);
@@ -228,11 +261,13 @@ dbm_get(register dbmobject *dp, PyObject *args)
 {
 	datum key, val;
 	PyObject *defvalue = Py_None;
+	char *tmp_ptr;
 	int tmp_size;
 
 	if (!PyArg_ParseTuple(args, "s#|O:get",
-                              &key.dptr, &tmp_size, &defvalue))
+                              &tmp_ptr, &tmp_size, &defvalue))
 		return NULL;
+	key.dptr = tmp_ptr;
 	key.dsize = tmp_size;
         check_dbmobject_open(dp);
 	val = dbm_fetch(dp->di_dbm, key);
@@ -249,11 +284,13 @@ dbm_setdefault(register dbmobject *dp, PyObject *args)
 {
 	datum key, val;
 	PyObject *defvalue = NULL;
+	char *tmp_ptr;
 	int tmp_size;
 
 	if (!PyArg_ParseTuple(args, "s#|S:setdefault",
-                              &key.dptr, &tmp_size, &defvalue))
+                              &tmp_ptr, &tmp_size, &defvalue))
 		return NULL;
+	key.dptr = tmp_ptr;
 	key.dsize = tmp_size;
         check_dbmobject_open(dp);
 	val = dbm_fetch(dp->di_dbm, key);
@@ -277,9 +314,9 @@ dbm_setdefault(register dbmobject *dp, PyObject *args)
 }
 
 static PyMethodDef dbm_methods[] = {
-	{"close",	(PyCFunction)dbm__close,	METH_VARARGS,
+	{"close",	(PyCFunction)dbm__close,	METH_NOARGS,
 	 "close()\nClose the database."},
-	{"keys",	(PyCFunction)dbm_keys,		METH_VARARGS,
+	{"keys",	(PyCFunction)dbm_keys,		METH_NOARGS,
 	 "keys() -> list\nReturn a list of all keys in the database."},
 	{"has_key",	(PyCFunction)dbm_has_key,	METH_VARARGS,
 	 "has_key(key} -> boolean\nReturn true iff key is in the database."},
@@ -300,8 +337,7 @@ dbm_getattr(dbmobject *dp, char *name)
 }
 
 static PyTypeObject Dbmtype = {
-	PyObject_HEAD_INIT(NULL)
-	0,
+	PyVarObject_HEAD_INIT(NULL, 0)
 	"dbm.dbm",
 	sizeof(dbmobject),
 	0,
@@ -312,8 +348,15 @@ static PyTypeObject Dbmtype = {
 	0,			  /*tp_compare*/
 	0,			  /*tp_repr*/
 	0,			  /*tp_as_number*/
-	0,			  /*tp_as_sequence*/
+    &dbm_as_sequence,     /*tp_as_sequence*/
 	&dbm_as_mapping,	  /*tp_as_mapping*/
+    0,                    /*tp_hash*/
+    0,                    /*tp_call*/
+    0,                    /*tp_str*/
+    0,                    /*tp_getattro*/
+    0,                    /*tp_setattro*/
+    0,                    /*tp_as_buffer*/
+    Py_TPFLAGS_DEFAULT,   /*tp_xxx4*/
 };
 
 /* ----------------------------------------------------------------- */

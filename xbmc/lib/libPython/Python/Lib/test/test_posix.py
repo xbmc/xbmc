@@ -9,7 +9,8 @@ except ImportError:
 
 import time
 import os
-import sys
+import pwd
+import shutil
 import unittest
 import warnings
 warnings.filterwarnings('ignore', '.* potential security risk .*',
@@ -99,6 +100,37 @@ class PosixTester(unittest.TestCase):
             self.fdopen_helper('r')
             self.fdopen_helper('r', 100)
 
+    def test_osexlock(self):
+        if hasattr(posix, "O_EXLOCK"):
+            fd = os.open(test_support.TESTFN,
+                         os.O_WRONLY|os.O_EXLOCK|os.O_CREAT)
+            self.assertRaises(OSError, os.open, test_support.TESTFN,
+                              os.O_WRONLY|os.O_EXLOCK|os.O_NONBLOCK)
+            os.close(fd)
+
+            if hasattr(posix, "O_SHLOCK"):
+                fd = os.open(test_support.TESTFN,
+                             os.O_WRONLY|os.O_SHLOCK|os.O_CREAT)
+                self.assertRaises(OSError, os.open, test_support.TESTFN,
+                                  os.O_WRONLY|os.O_EXLOCK|os.O_NONBLOCK)
+                os.close(fd)
+
+    def test_osshlock(self):
+        if hasattr(posix, "O_SHLOCK"):
+            fd1 = os.open(test_support.TESTFN,
+                         os.O_WRONLY|os.O_SHLOCK|os.O_CREAT)
+            fd2 = os.open(test_support.TESTFN,
+                          os.O_WRONLY|os.O_SHLOCK|os.O_CREAT)
+            os.close(fd2)
+            os.close(fd1)
+
+            if hasattr(posix, "O_EXLOCK"):
+                fd = os.open(test_support.TESTFN,
+                             os.O_WRONLY|os.O_SHLOCK|os.O_CREAT)
+                self.assertRaises(OSError, os.open, test_support.TESTFN,
+                                  os.O_RDONLY|os.O_EXLOCK|os.O_NONBLOCK)
+                os.close(fd)
+
     def test_fstat(self):
         if hasattr(posix, 'fstat'):
             fp = open(test_support.TESTFN)
@@ -110,6 +142,33 @@ class PosixTester(unittest.TestCase):
     def test_stat(self):
         if hasattr(posix, 'stat'):
             self.assert_(posix.stat(test_support.TESTFN))
+
+    if hasattr(posix, 'chown'):
+        def test_chown(self):
+            # raise an OSError if the file does not exist
+            os.unlink(test_support.TESTFN)
+            self.assertRaises(OSError, posix.chown, test_support.TESTFN, -1, -1)
+
+            # re-create the file
+            open(test_support.TESTFN, 'w').close()
+            if os.getuid() == 0:
+                try:
+                    # Many linux distros have a nfsnobody user as MAX_UID-2
+                    # that makes a good test case for signedness issues.
+                    #   http://bugs.python.org/issue1747858
+                    # This part of the test only runs when run as root.
+                    # Only scary people run their tests as root.
+                    ent = pwd.getpwnam('nfsnobody')
+                    posix.chown(test_support.TESTFN, ent.pw_uid, ent.pw_gid)
+                except KeyError:
+                    pass
+            else:
+                # non-root cannot chown to root, raises OSError
+                self.assertRaises(OSError, posix.chown,
+                                  test_support.TESTFN, 0, 0)
+
+            # test a successful chown call
+            posix.chown(test_support.TESTFN, os.getuid(), os.getgid())
 
     def test_chdir(self):
         if hasattr(posix, 'chdir'):
@@ -160,6 +219,57 @@ class PosixTester(unittest.TestCase):
             self.assertRaises(TypeError, posix.utime, test_support.TESTFN, (None, now))
             posix.utime(test_support.TESTFN, (int(now), int(now)))
             posix.utime(test_support.TESTFN, (now, now))
+
+    def test_chflags(self):
+        if hasattr(posix, 'chflags'):
+            st = os.stat(test_support.TESTFN)
+            if hasattr(st, 'st_flags'):
+                posix.chflags(test_support.TESTFN, st.st_flags)
+
+    def test_lchflags(self):
+        if hasattr(posix, 'lchflags'):
+            st = os.stat(test_support.TESTFN)
+            if hasattr(st, 'st_flags'):
+                posix.lchflags(test_support.TESTFN, st.st_flags)
+
+    def test_getcwd_long_pathnames(self):
+        if hasattr(posix, 'getcwd'):
+            dirname = 'getcwd-test-directory-0123456789abcdef-01234567890abcdef'
+            curdir = os.getcwd()
+            base_path = os.path.abspath(test_support.TESTFN) + '.getcwd'
+
+            try:
+                os.mkdir(base_path)
+                os.chdir(base_path)
+            except:
+#               Just returning nothing instead of the TestSkipped exception,
+#               because the test results in Error in that case.
+#               Is that ok?
+#                raise test_support.TestSkipped, "cannot create directory for testing"
+                return
+
+            try:
+                def _create_and_do_getcwd(dirname, current_path_length = 0):
+                    try:
+                        os.mkdir(dirname)
+                    except:
+                        raise test_support.TestSkipped, "mkdir cannot create directory sufficiently deep for getcwd test"
+
+                    os.chdir(dirname)
+                    try:
+                        os.getcwd()
+                        if current_path_length < 1027:
+                            _create_and_do_getcwd(dirname, current_path_length + len(dirname) + 1)
+                    finally:
+                        os.chdir('..')
+                        os.rmdir(dirname)
+
+                _create_and_do_getcwd(dirname)
+
+            finally:
+                os.chdir(curdir)
+                shutil.rmtree(base_path)
+
 
 def test_main():
     test_support.run_unittest(PosixTester)

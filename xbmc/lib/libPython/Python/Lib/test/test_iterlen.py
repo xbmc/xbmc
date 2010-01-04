@@ -43,11 +43,22 @@ enumerate(iter('abc')).
 
 import unittest
 from test import test_support
-from itertools import repeat, count
+from itertools import repeat
 from collections import deque
-from UserList import UserList
+from __builtin__ import len as _len
 
 n = 10
+
+def len(obj):
+    try:
+        return _len(obj)
+    except TypeError:
+        try:
+            # note: this is an internal undocumented API,
+            # don't rely on it in your own programs
+            return obj.__length_hint__()
+        except AttributeError:
+            raise TypeError
 
 class TestInvariantWithoutMutations(unittest.TestCase):
 
@@ -184,43 +195,44 @@ class TestListReversed(TestInvariantWithoutMutations):
         d.extend(xrange(20))
         self.assertEqual(len(it), 0)
 
-class TestSeqIter(TestInvariantWithoutMutations):
+## -- Check to make sure exceptions are not suppressed by __length_hint__()
 
-    def setUp(self):
-        self.it = iter(UserList(range(n)))
 
-    def test_mutation(self):
-        d = UserList(range(n))
-        it = iter(d)
-        it.next()
-        it.next()
-        self.assertEqual(len(it), n-2)
-        d.append(n)
-        self.assertEqual(len(it), n-1)  # grow with append
-        d[1:] = []
-        self.assertEqual(len(it), 0)
-        self.assertEqual(list(it), [])
-        d.extend(xrange(20))
-        self.assertEqual(len(it), 0)
+class BadLen(object):
+    def __iter__(self): return iter(range(10))
+    def __len__(self):
+        raise RuntimeError('hello')
 
-class TestSeqIterReversed(TestInvariantWithoutMutations):
+class BadLengthHint(object):
+    def __iter__(self): return iter(range(10))
+    def __length_hint__(self):
+        raise RuntimeError('hello')
 
-    def setUp(self):
-        self.it = reversed(UserList(range(n)))
+class NoneLengthHint(object):
+    def __iter__(self): return iter(range(10))
+    def __length_hint__(self):
+        return None
 
-    def test_mutation(self):
-        d = UserList(range(n))
-        it = reversed(d)
-        it.next()
-        it.next()
-        self.assertEqual(len(it), n-2)
-        d.append(n)
-        self.assertEqual(len(it), n-2)  # ignore append
-        d[1:] = []
-        self.assertEqual(len(it), 0)
-        self.assertEqual(list(it), [])  # confirm invariant
-        d.extend(xrange(20))
-        self.assertEqual(len(it), 0)
+class TestLengthHintExceptions(unittest.TestCase):
+
+    def test_issue1242657(self):
+        self.assertRaises(RuntimeError, list, BadLen())
+        self.assertRaises(RuntimeError, list, BadLengthHint())
+        self.assertRaises(RuntimeError, [].extend, BadLen())
+        self.assertRaises(RuntimeError, [].extend, BadLengthHint())
+        self.assertRaises(RuntimeError, zip, BadLen())
+        self.assertRaises(RuntimeError, zip, BadLengthHint())
+        self.assertRaises(RuntimeError, filter, None, BadLen())
+        self.assertRaises(RuntimeError, filter, None, BadLengthHint())
+        self.assertRaises(RuntimeError, map, chr, BadLen())
+        self.assertRaises(RuntimeError, map, chr, BadLengthHint())
+        b = bytearray(range(10))
+        self.assertRaises(RuntimeError, b.extend, BadLen())
+        self.assertRaises(RuntimeError, b.extend, BadLengthHint())
+
+    def test_invalid_hint(self):
+        # Make sure an invalid result doesn't muck-up the works
+        self.assertEqual(list(NoneLengthHint()), list(range(10)))
 
 
 def test_main():
@@ -237,8 +249,7 @@ def test_main():
         TestSet,
         TestList,
         TestListReversed,
-        TestSeqIter,
-        TestSeqIterReversed,
+        TestLengthHintExceptions,
     ]
     test_support.run_unittest(*unittests)
 

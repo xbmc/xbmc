@@ -3,6 +3,7 @@
 
 #include "Python.h"
 
+#ifndef __LP64__
 
 
 #include "pymactoolbox.h"
@@ -34,55 +35,55 @@ static pascal Boolean Dlg_UnivFilterProc(DialogPtr dialog,
                                          EventRecord *event,
                                          short *itemHit)
 {
-	Boolean rv;
-	PyObject *args, *res;
-	PyObject *callback = Dlg_FilterProc_callback;
-	if (callback == NULL)
-		return 0; /* Default behavior */
-	Dlg_FilterProc_callback = NULL; /* We'll restore it when call successful */
-	args = Py_BuildValue("O&O&", DlgObj_WhichDialog, dialog, PyMac_BuildEventRecord, event);
-	if (args == NULL)
-		res = NULL;
-	else {
-		res = PyEval_CallObject(callback, args);
-		Py_DECREF(args);
-	}
-	if (res == NULL) {
-		PySys_WriteStderr("Exception in Dialog Filter\n");
-		PyErr_Print();
-		*itemHit = -1; /* Fake return item */
-		return 1; /* We handled it */
-	}
-	else {
-		Dlg_FilterProc_callback = callback;
-		if (PyInt_Check(res)) {
-			*itemHit = PyInt_AsLong(res);
-			rv = 1;
-		}
-		else
-			rv = PyObject_IsTrue(res);
-	}
-	Py_DECREF(res);
-	return rv;
+        Boolean rv;
+        PyObject *args, *res;
+        PyObject *callback = Dlg_FilterProc_callback;
+        if (callback == NULL)
+                return 0; /* Default behavior */
+        Dlg_FilterProc_callback = NULL; /* We'll restore it when call successful */
+        args = Py_BuildValue("O&O&", DlgObj_WhichDialog, dialog, PyMac_BuildEventRecord, event);
+        if (args == NULL)
+                res = NULL;
+        else {
+                res = PyEval_CallObject(callback, args);
+                Py_DECREF(args);
+        }
+        if (res == NULL) {
+                PySys_WriteStderr("Exception in Dialog Filter\n");
+                PyErr_Print();
+                *itemHit = -1; /* Fake return item */
+                return 1; /* We handled it */
+        }
+        else {
+                Dlg_FilterProc_callback = callback;
+                if (PyInt_Check(res)) {
+                        *itemHit = PyInt_AsLong(res);
+                        rv = 1;
+                }
+                else
+                        rv = PyObject_IsTrue(res);
+        }
+        Py_DECREF(res);
+        return rv;
 }
 
 static ModalFilterUPP
 Dlg_PassFilterProc(PyObject *callback)
 {
-	PyObject *tmp = Dlg_FilterProc_callback;
-	static ModalFilterUPP UnivFilterUpp = NULL;
-	
-	Dlg_FilterProc_callback = NULL;
-	if (callback == Py_None) {
-		Py_XDECREF(tmp);
-		return NULL;
-	}
-	Py_INCREF(callback);
-	Dlg_FilterProc_callback = callback;
-	Py_XDECREF(tmp);
-	if ( UnivFilterUpp == NULL )
-		UnivFilterUpp = NewModalFilterUPP(&Dlg_UnivFilterProc);
-	return UnivFilterUpp;
+        PyObject *tmp = Dlg_FilterProc_callback;
+        static ModalFilterUPP UnivFilterUpp = NULL;
+
+        Dlg_FilterProc_callback = NULL;
+        if (callback == Py_None) {
+                Py_XDECREF(tmp);
+                return NULL;
+        }
+        Py_INCREF(callback);
+        Dlg_FilterProc_callback = callback;
+        Py_XDECREF(tmp);
+        if ( UnivFilterUpp == NULL )
+                UnivFilterUpp = NewModalFilterUPP(&Dlg_UnivFilterProc);
+        return UnivFilterUpp;
 }
 
 static PyObject *Dlg_UserItemProc_callback = NULL;
@@ -90,24 +91,24 @@ static PyObject *Dlg_UserItemProc_callback = NULL;
 static pascal void Dlg_UnivUserItemProc(DialogPtr dialog,
                                          short item)
 {
-	PyObject *args, *res;
+        PyObject *args, *res;
 
-	if (Dlg_UserItemProc_callback == NULL)
-		return; /* Default behavior */
-	Dlg_FilterProc_callback = NULL; /* We'll restore it when call successful */
-	args = Py_BuildValue("O&h", DlgObj_WhichDialog, dialog, item);
-	if (args == NULL)
-		res = NULL;
-	else {
-		res = PyEval_CallObject(Dlg_UserItemProc_callback, args);
-		Py_DECREF(args);
-	}
-	if (res == NULL) {
-		PySys_WriteStderr("Exception in Dialog UserItem proc\n");
-		PyErr_Print();
-	}
-	Py_XDECREF(res);
-	return;
+        if (Dlg_UserItemProc_callback == NULL)
+                return; /* Default behavior */
+        Dlg_FilterProc_callback = NULL; /* We'll restore it when call successful */
+        args = Py_BuildValue("O&h", DlgObj_WhichDialog, dialog, item);
+        if (args == NULL)
+                res = NULL;
+        else {
+                res = PyEval_CallObject(Dlg_UserItemProc_callback, args);
+                Py_DECREF(args);
+        }
+        if (res == NULL) {
+                PySys_WriteStderr("Exception in Dialog UserItem proc\n");
+                PyErr_Print();
+        }
+        Py_XDECREF(res);
+        return;
 }
 
 #if 0
@@ -139,13 +140,14 @@ typedef struct DialogObject {
 PyObject *DlgObj_New(DialogPtr itself)
 {
 	DialogObject *it;
-	if (itself == NULL) return Py_None;
+	if (itself == NULL) { Py_INCREF(Py_None); return Py_None; }
 	it = PyObject_NEW(DialogObject, &Dialog_Type);
 	if (it == NULL) return NULL;
 	it->ob_itself = itself;
 	SetWRefCon(GetDialogWindow(itself), (long)it);
 	return (PyObject *)it;
 }
+
 int DlgObj_Convert(PyObject *v, DialogPtr *p_itself)
 {
 	if (v == Py_None) { *p_itself = NULL; return 1; }
@@ -958,16 +960,16 @@ static int DlgObj_hash(DialogObject *self)
 
 #define DlgObj_tp_alloc PyType_GenericAlloc
 
-static PyObject *DlgObj_tp_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+static PyObject *DlgObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
 {
-	PyObject *self;
+	PyObject *_self;
 	DialogPtr itself;
 	char *kw[] = {"itself", 0};
 
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&", kw, DlgObj_Convert, &itself)) return NULL;
-	if ((self = type->tp_alloc(type, 0)) == NULL) return NULL;
-	((DialogObject *)self)->ob_itself = itself;
-	return self;
+	if (!PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, DlgObj_Convert, &itself)) return NULL;
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((DialogObject *)_self)->ob_itself = itself;
+	return _self;
 }
 
 #define DlgObj_tp_free PyObject_Del
@@ -1452,28 +1454,28 @@ static PyObject *Dlg_SetUserItemHandler(PyObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
 
-		PyObject *new = NULL;
-		
-		
-		if (!PyArg_ParseTuple(_args, "|O", &new))
-			return NULL;
+	        PyObject *new = NULL;
 
-		if (Dlg_UserItemProc_callback && new && new != Py_None) {
-			PyErr_SetString(Dlg_Error, "Another UserItemProc is already installed");
-			return NULL;
-		}
-		
-		if (new == NULL || new == Py_None) {
-			new = NULL;
-			_res = Py_None;
-			Py_INCREF(Py_None);
-		} else {
-			Py_INCREF(new);
-			_res = Py_BuildValue("O&", ResObj_New, (Handle)NewUserItemUPP(Dlg_UnivUserItemProc));
-		}
-		
-		Dlg_UserItemProc_callback = new;
-		return _res;
+
+	        if (!PyArg_ParseTuple(_args, "|O", &new))
+	                return NULL;
+
+	        if (Dlg_UserItemProc_callback && new && new != Py_None) {
+	                PyErr_SetString(Dlg_Error, "Another UserItemProc is already installed");
+	                return NULL;
+	        }
+
+	        if (new == NULL || new == Py_None) {
+	                new = NULL;
+	                _res = Py_None;
+	                Py_INCREF(Py_None);
+	        } else {
+	                Py_INCREF(new);
+	                _res = Py_BuildValue("O&", ResObj_New, (Handle)NewUserItemUPP(Dlg_UnivUserItemProc));
+	        }
+
+	        Dlg_UserItemProc_callback = new;
+	        return _res;
 
 }
 
@@ -1528,9 +1530,9 @@ static PyMethodDef Dlg_methods[] = {
 WindowPtr
 DlgObj_ConvertToWindow(PyObject *self)
 {
-	if ( DlgObj_Check(self) )
-		return GetDialogWindow(((DialogObject *)self)->ob_itself);
-	return NULL;
+        if ( DlgObj_Check(self) )
+                return GetDialogWindow(((DialogObject *)self)->ob_itself);
+        return NULL;
 }
 #endif
 /* Return the object corresponding to the dialog, or None */
@@ -1538,45 +1540,56 @@ DlgObj_ConvertToWindow(PyObject *self)
 PyObject *
 DlgObj_WhichDialog(DialogPtr d)
 {
-	PyObject *it;
-	
-	if (d == NULL) {
-		it = Py_None;
-		Py_INCREF(it);
-	} else {
-		WindowPtr w = GetDialogWindow(d);
-		
-		it = (PyObject *) GetWRefCon(w);
-		if (it == NULL || ((DialogObject *)it)->ob_itself != d || !DlgObj_Check(it)) {
+        PyObject *it;
+
+        if (d == NULL) {
+                it = Py_None;
+                Py_INCREF(it);
+        } else {
+                WindowPtr w = GetDialogWindow(d);
+
+                it = (PyObject *) GetWRefCon(w);
+                if (it == NULL || ((DialogObject *)it)->ob_itself != d || !DlgObj_Check(it)) {
 #if 0
-			/* Should do this, but we don't have an ob_freeit for dialogs yet. */
-			it = WinObj_New(w);
-			((WindowObject *)it)->ob_freeit = NULL;
+                        /* Should do this, but we don't have an ob_freeit for dialogs yet. */
+                        it = WinObj_New(w);
+                        ((WindowObject *)it)->ob_freeit = NULL;
 #else
-			it = Py_None;
-			Py_INCREF(it);
+                        it = Py_None;
+                        Py_INCREF(it);
 #endif
-		} else {
-			Py_INCREF(it);
-		}
-	}
-	return it;
+                } else {
+                        Py_INCREF(it);
+                }
+        }
+        return it;
 }
+
+#else /* __LP64__ */
+
+static PyMethodDef Dlg_methods[] = {
+	{NULL, NULL, 0}
+};
+
+#endif /* __LP64__ */
 
 
 void init_Dlg(void)
 {
 	PyObject *m;
+#ifndef __LP64__
 	PyObject *d;
 
 
 
-		PyMac_INIT_TOOLBOX_OBJECT_NEW(DialogPtr, DlgObj_New);
-		PyMac_INIT_TOOLBOX_OBJECT_NEW(DialogPtr, DlgObj_WhichDialog);
-		PyMac_INIT_TOOLBOX_OBJECT_CONVERT(DialogPtr, DlgObj_Convert);
-
+	        PyMac_INIT_TOOLBOX_OBJECT_NEW(DialogPtr, DlgObj_New);
+	        PyMac_INIT_TOOLBOX_OBJECT_NEW(DialogPtr, DlgObj_WhichDialog);
+	        PyMac_INIT_TOOLBOX_OBJECT_CONVERT(DialogPtr, DlgObj_Convert);
+#endif /* !__LP64__ */
 
 	m = Py_InitModule("_Dlg", Dlg_methods);
+
+#ifndef __LP64__
 	d = PyModule_GetDict(m);
 	Dlg_Error = PyMac_GetOSErrException();
 	if (Dlg_Error == NULL ||
@@ -1589,6 +1602,7 @@ void init_Dlg(void)
 	/* Backward-compatible name */
 	Py_INCREF(&Dialog_Type);
 	PyModule_AddObject(m, "DialogType", (PyObject *)&Dialog_Type);
+#endif /* !__LP64__ */
 }
 
 /* ======================== End module _Dlg ========================= */

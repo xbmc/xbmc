@@ -25,6 +25,9 @@ the repr() of the original object.  This is precomputed when the
 bastion is created.
 
 """
+from warnings import warnpy3k
+warnpy3k("the Bastion module has been removed in Python 3.0", stacklevel=2)
+del warnpy3k
 
 __all__ = ["BastionClass", "Bastion"]
 
@@ -97,7 +100,7 @@ def Bastion(object, filter = lambda name: name[:1] != '_',
 
     """
 
-    raise RuntimeError, "This code is not secure in Python 2.2 and 2.3"
+    raise RuntimeError, "This code is not secure in Python 2.2 and later"
 
     # Note: we define *two* ad-hoc functions here, get1 and get2.
     # Both are intended to be called in the same way: get(name).

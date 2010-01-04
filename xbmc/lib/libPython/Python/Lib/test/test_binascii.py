@@ -134,7 +134,7 @@ class BinASCIITest(unittest.TestCase):
             pass
         else:
             self.fail("binascii.a2b_qp(**{1:1}) didn't raise TypeError")
-        self.assertEqual(binascii.a2b_qp("= "), "")
+        self.assertEqual(binascii.a2b_qp("= "), "= ")
         self.assertEqual(binascii.a2b_qp("=="), "=")
         self.assertEqual(binascii.a2b_qp("=AX"), "=AX")
         self.assertRaises(TypeError, binascii.b2a_qp, foo="bar")
@@ -147,6 +147,15 @@ class BinASCIITest(unittest.TestCase):
             binascii.b2a_qp("0"*75+"\xff\r\n\xff\r\n\xff"),
             "0"*75+"=\r\n=FF\r\n=FF\r\n=FF"
         )
+
+        self.assertEqual(binascii.b2a_qp('\0\n'), '=00\n')
+        self.assertEqual(binascii.b2a_qp('\0\n', quotetabs=True), '=00\n')
+        self.assertEqual(binascii.b2a_qp('foo\tbar\t\n'), 'foo\tbar=09\n')
+        self.assertEqual(binascii.b2a_qp('foo\tbar\t\n', quotetabs=True), 'foo=09bar=09\n')
+
+        self.assertEqual(binascii.b2a_qp('.'), '=2E')
+        self.assertEqual(binascii.b2a_qp('.\n'), '=2E\n')
+        self.assertEqual(binascii.b2a_qp('a.\n'), 'a.\n')
 
     def test_empty_string(self):
         # A test for SF bug #1022953.  Make sure SystemError is not raised.

@@ -10,7 +10,7 @@ for the Microsoft Visual Studio.
 
 # This module should be kept compatible with Python 2.1.
 
-__revision__ = "$Id: msvccompiler.py 50980 2006-07-30 13:31:20Z martin.v.loewis $"
+__revision__ = "$Id: msvccompiler.py 62197 2008-04-07 01:53:39Z mark.hammond $"
 
 import sys, os, string
 from distutils.errors import \
@@ -174,6 +174,33 @@ def get_build_version():
     # else we don't know what version of the compiler this is
     return None
 
+def get_build_architecture():
+    """Return the processor architecture.
+
+    Possible results are "Intel", "Itanium", or "AMD64".
+    """
+
+    prefix = " bit ("
+    i = string.find(sys.version, prefix)
+    if i == -1:
+        return "Intel"
+    j = string.find(sys.version, ")", i)
+    return sys.version[i+len(prefix):j]
+
+def normalize_and_reduce_paths(paths):
+    """Return a list of normalized paths with duplicates removed.
+
+    The current order of paths is maintained.
+    """
+    # Paths are normalized so things like:  /a and /a/ aren't both preserved.
+    reduced_paths = []
+    for p in paths:
+        np = os.path.normpath(p)
+        # XXX(nnorwitz): O(n**2), if reduced_paths gets long perhaps use a set.
+        if np not in reduced_paths:
+            reduced_paths.append(np)
+    return reduced_paths
+
 
 class MSVCCompiler (CCompiler) :
     """Concrete class that implements an interface to Microsoft Visual C++,
@@ -208,29 +235,47 @@ class MSVCCompiler (CCompiler) :
     def __init__ (self, verbose=0, dry_run=0, force=0):
         CCompiler.__init__ (self, verbose, dry_run, force)
         self.__version = get_build_version()
-        if self.__version >= 7:
-            self.__root = r"Software\Microsoft\VisualStudio"
-            self.__macros = MacroExpander(self.__version)
+        self.__arch = get_build_architecture()
+        if self.__arch == "Intel":
+            # x86
+            if self.__version >= 7:
+                self.__root = r"Software\Microsoft\VisualStudio"
+                self.__macros = MacroExpander(self.__version)
+            else:
+                self.__root = r"Software\Microsoft\Devstudio"
+            self.__product = "Visual Studio version %s" % self.__version
         else:
-            self.__root = r"Software\Microsoft\Devstudio"
+            # Win64. Assume this was built with the platform SDK
+            self.__product = "Microsoft SDK compiler %s" % (self.__version + 6)
+
         self.initialized = False
 
     def initialize(self):
-        self.__paths = self.get_msvc_paths("path")
+        self.__paths = []
+        if "DISTUTILS_USE_SDK" in os.environ and "MSSdk" in os.environ and self.find_exe("cl.exe"):
+            # Assume that the SDK set up everything alright; don't try to be
+            # smarter
+            self.cc = "cl.exe"
+            self.linker = "link.exe"
+            self.lib = "lib.exe"
+            self.rc = "rc.exe"
+            self.mc = "mc.exe"
+        else:
+            self.__paths = self.get_msvc_paths("path")
 
-        if len (self.__paths) == 0:
-            raise DistutilsPlatformError, \
-                  ("Python was built with version %s of Visual Studio, "
-                   "and extensions need to be built with the same "
-                   "version of the compiler, but it isn't installed." % self.__version)
+            if len (self.__paths) == 0:
+                raise DistutilsPlatformError, \
+                      ("Python was built with %s, "
+                       "and extensions need to be built with the same "
+                       "version of the compiler, but it isn't installed." % self.__product)
 
-        self.cc = self.find_exe("cl.exe")
-        self.linker = self.find_exe("link.exe")
-        self.lib = self.find_exe("lib.exe")
-        self.rc = self.find_exe("rc.exe")   # resource compiler
-        self.mc = self.find_exe("mc.exe")   # message compiler
-        self.set_path_env_var('lib')
-        self.set_path_env_var('include')
+            self.cc = self.find_exe("cl.exe")
+            self.linker = self.find_exe("link.exe")
+            self.lib = self.find_exe("lib.exe")
+            self.rc = self.find_exe("rc.exe")   # resource compiler
+            self.mc = self.find_exe("mc.exe")   # message compiler
+            self.set_path_env_var('lib')
+            self.set_path_env_var('include')
 
         # extend the MSVC path with the current path
         try:
@@ -238,13 +283,21 @@ class MSVCCompiler (CCompiler) :
                 self.__paths.append(p)
         except KeyError:
             pass
+        self.__paths = normalize_and_reduce_paths(self.__paths)
         os.environ['path'] = string.join(self.__paths, ';')
 
         self.preprocess_options = None
-        self.compile_options = [ '/nologo', '/Ox', '/MD', '/W3', '/GX' ,
-                                 '/DNDEBUG']
-        self.compile_options_debug = ['/nologo', '/Od', '/MDd', '/W3', '/GX',
-                                      '/Z7', '/D_DEBUG']
+        if self.__arch == "Intel":
+            self.compile_options = [ '/nologo', '/Ox', '/MD', '/W3', '/GX' ,
+                                     '/DNDEBUG']
+            self.compile_options_debug = ['/nologo', '/Od', '/MDd', '/W3', '/GX',
+                                          '/Z7', '/D_DEBUG']
+        else:
+            # Win64
+            self.compile_options = [ '/nologo', '/Ox', '/MD', '/W3', '/GS-' ,
+                                     '/DNDEBUG']
+            self.compile_options_debug = ['/nologo', '/Od', '/MDd', '/W3', '/GS-',
+                                          '/Z7', '/D_DEBUG']
 
         self.ldflags_shared = ['/DLL', '/nologo', '/INCREMENTAL:NO']
         if self.__version >= 7:
@@ -258,7 +311,6 @@ class MSVCCompiler (CCompiler) :
         self.ldflags_static = [ '/nologo']
 
         self.initialized = True
-
 
     # -- Worker methods ------------------------------------------------
 
@@ -598,3 +650,11 @@ class MSVCCompiler (CCompiler) :
             p = self.get_msvc_paths(name)
         if p:
             os.environ[name] = string.join(p, ';')
+
+
+if get_build_version() >= 8.0:
+    log.debug("Importing new compiler from distutils.msvc9compiler")
+    OldMSVCCompiler = MSVCCompiler
+    from distutils.msvc9compiler import MSVCCompiler
+    # get_build_architecture not really relevant now we support cross-compile
+    from distutils.msvc9compiler import MacroExpander

@@ -1,6 +1,6 @@
 import unittest
-import warnings
 import sys
+import _ast
 from test import test_support
 
 class TestSpecifics(unittest.TestCase):
@@ -36,6 +36,9 @@ class TestSpecifics(unittest.TestCase):
 
     def test_syntax_error(self):
         self.assertRaises(SyntaxError, compile, "1+*3", "filename", "exec")
+
+    def test_none_keyword_arg(self):
+        self.assertRaises(SyntaxError, compile, "f(None=1)", "<string>", "exec")
 
     def test_duplicate_global_local(self):
         try:
@@ -101,6 +104,29 @@ class TestSpecifics(unittest.TestCase):
         exec 'z = a' in g, d
         self.assertEqual(d['z'], 12)
 
+    def test_extended_arg(self):
+        longexpr = 'x = x or ' + '-x' * 2500
+        code = '''
+def f(x):
+    %s
+    %s
+    %s
+    %s
+    %s
+    %s
+    %s
+    %s
+    %s
+    %s
+    # the expressions above have no effect, x == argument
+    while x:
+        x -= 1
+        # EXTENDED_ARG/JUMP_ABSOLUTE here
+    return x
+''' % ((longexpr,)*10)
+        exec code
+        self.assertEqual(f(5), 0)
+
     def test_complex_args(self):
 
         def comp_args((a, b)):
@@ -143,9 +169,21 @@ if 1:
         pass"""
         compile(s, "<string>", "exec")
 
+    # This test is probably specific to CPython and may not generalize
+    # to other implementations.  We are trying to ensure that when
+    # the first line of code starts after 256, correct line numbers
+    # in tracebacks are still produced.
+    def test_leading_newlines(self):
+        s256 = "".join(["\n"] * 256 + ["spam"])
+        co = compile(s256, 'fn', 'exec')
+        self.assertEqual(co.co_firstlineno, 257)
+        self.assertEqual(co.co_lnotab, '')
+
     def test_literals_with_leading_zeroes(self):
         for arg in ["077787", "0xj", "0x.", "0e",  "090000000000000",
-                    "080000000000000", "000000000000009", "000000000000008"]:
+                    "080000000000000", "000000000000009", "000000000000008",
+                    "0b42", "0BADCAFE", "0o123456789", "0b1.1", "0o4.2",
+                    "0b101j2", "0o153j2", "0b100e1", "0o777e1", "0o8", "0o78"]:
             self.assertRaises(SyntaxError, eval, arg)
 
         self.assertEqual(eval("0777"), 511)
@@ -173,6 +211,14 @@ if 1:
         self.assertEqual(eval("000000000000007"), 7)
         self.assertEqual(eval("000000000000008."), 8.)
         self.assertEqual(eval("000000000000009."), 9.)
+        self.assertEqual(eval("0b101010"), 42)
+        self.assertEqual(eval("-0b000000000010"), -2)
+        self.assertEqual(eval("0o777"), 511)
+        self.assertEqual(eval("-0o0000010"), -8)
+        self.assertEqual(eval("020000000000.0"), 20000000000.0)
+        self.assertEqual(eval("037777777777e0"), 37777777777.0)
+        self.assertEqual(eval("01000000000000000000000.0"),
+                         1000000000000000000000.0)
 
     def test_unary_minus(self):
         # Verify treatment of unary minus on negative numbers SF bug #660455
@@ -188,6 +234,25 @@ if 1:
             self.assertEqual(eval("-" + all_one_bits), -18446744073709551615L)
         else:
             self.fail("How many bits *does* this machine have???")
+        # Verify treatment of contant folding on -(sys.maxint+1)
+        # i.e. -2147483648 on 32 bit platforms.  Should return int, not long.
+        self.assertTrue(isinstance(eval("%s" % (-sys.maxint - 1)), int))
+        self.assertTrue(isinstance(eval("%s" % (-sys.maxint - 2)), long))
+
+    if sys.maxint == 9223372036854775807:
+        def test_32_63_bit_values(self):
+            a = +4294967296  # 1 << 32
+            b = -4294967296  # 1 << 32
+            c = +281474976710656  # 1 << 48
+            d = -281474976710656  # 1 << 48
+            e = +4611686018427387904  # 1 << 62
+            f = -4611686018427387904  # 1 << 62
+            g = +9223372036854775807  # 1 << 63 - 1
+            h = -9223372036854775807  # 1 << 63 - 1
+
+            for variable in self.test_32_63_bit_values.func_code.co_consts:
+                if variable is not None:
+                    self.assertTrue(isinstance(variable, int))
 
     def test_sequence_unpacking_error(self):
         # Verify sequence packing/unpacking with "or".  SF bug #757818
@@ -215,6 +280,8 @@ if 1:
         succeed = [
             'import sys',
             'import os, sys',
+            'import os as bar',
+            'import os.path as bar',
             'from __future__ import nested_scopes, generators',
             'from __future__ import (nested_scopes,\ngenerators)',
             'from __future__ import (nested_scopes,\ngenerators,)',
@@ -234,6 +301,10 @@ if 1:
             'import (sys',
             'import sys)',
             'import (os,)',
+            'import os As bar',
+            'import os.path a bar',
+            'from sys import stdin As stdout',
+            'from sys import stdin a stdout',
             'from (sys) import stdin',
             'from __future__ import (nested_scopes',
             'from __future__ import nested_scopes)',
@@ -262,8 +333,133 @@ if 1:
         self.assertNotEqual(id(f1.func_code), id(f2.func_code))
 
     def test_unicode_encoding(self):
-        # SF bug 1115379
-        self.assertRaises(SyntaxError, compile, u"# -*- coding: utf-8 -*-\npass\n", "tmp", "exec")
+        code = u"# -*- coding: utf-8 -*-\npass\n"
+        self.assertRaises(SyntaxError, compile, code, "tmp", "exec")
+
+    def test_subscripts(self):
+        # SF bug 1448804
+        # Class to make testing subscript results easy
+        class str_map(object):
+            def __init__(self):
+                self.data = {}
+            def __getitem__(self, key):
+                return self.data[str(key)]
+            def __setitem__(self, key, value):
+                self.data[str(key)] = value
+            def __delitem__(self, key):
+                del self.data[str(key)]
+            def __contains__(self, key):
+                return str(key) in self.data
+        d = str_map()
+        # Index
+        d[1] = 1
+        self.assertEqual(d[1], 1)
+        d[1] += 1
+        self.assertEqual(d[1], 2)
+        del d[1]
+        self.assertEqual(1 in d, False)
+        # Tuple of indices
+        d[1, 1] = 1
+        self.assertEqual(d[1, 1], 1)
+        d[1, 1] += 1
+        self.assertEqual(d[1, 1], 2)
+        del d[1, 1]
+        self.assertEqual((1, 1) in d, False)
+        # Simple slice
+        d[1:2] = 1
+        self.assertEqual(d[1:2], 1)
+        d[1:2] += 1
+        self.assertEqual(d[1:2], 2)
+        del d[1:2]
+        self.assertEqual(slice(1, 2) in d, False)
+        # Tuple of simple slices
+        d[1:2, 1:2] = 1
+        self.assertEqual(d[1:2, 1:2], 1)
+        d[1:2, 1:2] += 1
+        self.assertEqual(d[1:2, 1:2], 2)
+        del d[1:2, 1:2]
+        self.assertEqual((slice(1, 2), slice(1, 2)) in d, False)
+        # Extended slice
+        d[1:2:3] = 1
+        self.assertEqual(d[1:2:3], 1)
+        d[1:2:3] += 1
+        self.assertEqual(d[1:2:3], 2)
+        del d[1:2:3]
+        self.assertEqual(slice(1, 2, 3) in d, False)
+        # Tuple of extended slices
+        d[1:2:3, 1:2:3] = 1
+        self.assertEqual(d[1:2:3, 1:2:3], 1)
+        d[1:2:3, 1:2:3] += 1
+        self.assertEqual(d[1:2:3, 1:2:3], 2)
+        del d[1:2:3, 1:2:3]
+        self.assertEqual((slice(1, 2, 3), slice(1, 2, 3)) in d, False)
+        # Ellipsis
+        d[...] = 1
+        self.assertEqual(d[...], 1)
+        d[...] += 1
+        self.assertEqual(d[...], 2)
+        del d[...]
+        self.assertEqual(Ellipsis in d, False)
+        # Tuple of Ellipses
+        d[..., ...] = 1
+        self.assertEqual(d[..., ...], 1)
+        d[..., ...] += 1
+        self.assertEqual(d[..., ...], 2)
+        del d[..., ...]
+        self.assertEqual((Ellipsis, Ellipsis) in d, False)
+
+    def test_mangling(self):
+        class A:
+            def f():
+                __mangled = 1
+                __not_mangled__ = 2
+                import __mangled_mod
+                import __package__.module
+
+        self.assert_("_A__mangled" in A.f.func_code.co_varnames)
+        self.assert_("__not_mangled__" in A.f.func_code.co_varnames)
+        self.assert_("_A__mangled_mod" in A.f.func_code.co_varnames)
+        self.assert_("__package__" in A.f.func_code.co_varnames)
+
+    def test_compile_ast(self):
+        fname = __file__
+        if fname.lower().endswith(('pyc', 'pyo')):
+            fname = fname[:-1]
+        with open(fname, 'r') as f:
+            fcontents = f.read()
+        sample_code = [
+            ['<assign>', 'x = 5'],
+            ['<print1>', 'print 1'],
+            ['<printv>', 'print v'],
+            ['<printTrue>', 'print True'],
+            ['<printList>', 'print []'],
+            ['<ifblock>', """if True:\n    pass\n"""],
+            ['<forblock>', """for n in [1, 2, 3]:\n    print n\n"""],
+            ['<deffunc>', """def foo():\n    pass\nfoo()\n"""],
+            [fname, fcontents],
+        ]
+
+        for fname, code in sample_code:
+            co1 = compile(code, '%s1' % fname, 'exec')
+            ast = compile(code, '%s2' % fname, 'exec', _ast.PyCF_ONLY_AST)
+            self.assert_(type(ast) == _ast.Module)
+            co2 = compile(ast, '%s3' % fname, 'exec')
+            self.assertEqual(co1, co2)
+            # the code object's filename comes from the second compilation step
+            self.assertEqual(co2.co_filename, '%s3' % fname)
+
+        # raise exception when node type doesn't match with compile mode
+        co1 = compile('print 1', '<string>', 'exec', _ast.PyCF_ONLY_AST)
+        self.assertRaises(TypeError, compile, co1, '<ast>', 'eval')
+
+        # raise exception when node type is no start node
+        self.assertRaises(TypeError, compile, _ast.If(), '<ast>', 'exec')
+
+        # raise exception when node has invalid children
+        ast = _ast.Module()
+        ast.body = [_ast.BoolOp()]
+        self.assertRaises(TypeError, compile, ast, '<ast>', 'exec')
+
 
 def test_main():
     test_support.run_unittest(TestSpecifics)

@@ -121,7 +121,7 @@ request_queue = Queue.Queue(0)
 response_queue = Queue.Queue(0)
 
 
-class SocketIO:
+class SocketIO(object):
 
     nextseq = 0
 
@@ -199,7 +199,9 @@ class SocketIO:
         except socket.error:
             raise
         except:
-            self.debug("localcall:EXCEPTION")
+            msg = "*** Internal Error: rpc.py:SocketIO.localcall()\n\n"\
+                  " Object: %s \n Method: %s \n Args: %s\n"
+            print>>sys.__stderr__, msg % (oid, method, args)
             traceback.print_exc(file=sys.__stderr__)
             return ("EXCEPTION", None)
 
@@ -328,9 +330,10 @@ class SocketIO:
             try:
                 r, w, x = select.select([], [self.sock], [])
                 n = self.sock.send(s[:BUFSIZE])
-            except (AttributeError, socket.error):
-                # socket was closed
-                raise IOError
+            except (AttributeError, TypeError):
+                raise IOError, "socket no longer exists"
+            except socket.error:
+                raise
             else:
                 s = s[n:]
 
@@ -475,7 +478,7 @@ class SocketIO:
 
 #----------------- end class SocketIO --------------------
 
-class RemoteObject:
+class RemoteObject(object):
     # Token mix-in class
     pass
 
@@ -484,7 +487,7 @@ def remoteref(obj):
     objecttable[oid] = obj
     return RemoteProxy(oid)
 
-class RemoteProxy:
+class RemoteProxy(object):
 
     def __init__(self, oid):
         self.oid = oid
@@ -533,7 +536,7 @@ class RPCClient(SocketIO):
     def get_remote_proxy(self, oid):
         return RPCProxy(self, oid)
 
-class RPCProxy:
+class RPCProxy(object):
 
     __methods = None
     __attributes = None
@@ -549,7 +552,11 @@ class RPCProxy:
             return MethodProxy(self.sockio, self.oid, name)
         if self.__attributes is None:
             self.__getattributes()
-        if not self.__attributes.has_key(name):
+        if self.__attributes.has_key(name):
+            value = self.sockio.remotecall(self.oid, '__getattribute__',
+                                           (name,), {})
+            return value
+        else:
             raise AttributeError, name
 
     def __getattributes(self):
@@ -579,7 +586,7 @@ def _getattributes(obj, attributes):
         if not callable(attr):
             attributes[name] = 1
 
-class MethodProxy:
+class MethodProxy(object):
 
     def __init__(self, sockio, oid, name):
         self.sockio = sockio

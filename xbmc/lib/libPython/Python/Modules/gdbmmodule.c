@@ -36,7 +36,7 @@ typedef struct {
 
 static PyTypeObject Dbmtype;
 
-#define is_dbmobject(v) ((v)->ob_type == &Dbmtype)
+#define is_dbmobject(v) (Py_TYPE(v) == &Dbmtype)
 #define check_dbmobject_open(v) if ((v)->di_dbm == NULL) \
     { PyErr_SetString(DbmError, "GDBM object has already been closed"); \
       return NULL; }
@@ -86,7 +86,7 @@ dbm_dealloc(register dbmobject *dp)
     PyObject_Del(dp);
 }
 
-static int
+static Py_ssize_t
 dbm_length(dbmobject *dp)
 {
     if (dp->di_dbm == NULL) {
@@ -97,6 +97,7 @@ dbm_length(dbmobject *dp)
         datum key,okey;
         int size;
         okey.dsize=0;
+        okey.dptr=NULL;
 
         size = 0;
         for (key=gdbm_firstkey(dp->di_dbm); key.dptr;
@@ -177,8 +178,42 @@ dbm_ass_sub(dbmobject *dp, PyObject *v, PyObject *w)
     return 0;
 }
 
+static int
+dbm_contains(register dbmobject *dp, PyObject *arg)
+{
+    datum key;
+
+    if ((dp)->di_dbm == NULL) {
+        PyErr_SetString(DbmError,
+                        "GDBM object has already been closed");
+        return -1;
+    }
+    if (!PyString_Check(arg)) {
+        PyErr_Format(PyExc_TypeError,
+                     "gdbm key must be string, not %.100s",
+                     arg->ob_type->tp_name);
+        return -1;
+    }
+    key.dptr = PyString_AS_STRING(arg);
+    key.dsize = PyString_GET_SIZE(arg);
+    return gdbm_exists(dp->di_dbm, key);
+}
+
+static PySequenceMethods dbm_as_sequence = {
+    (lenfunc)dbm_length,               /*_length*/
+       0,              /*sq_concat*/
+       0,                      /*sq_repeat*/
+       0,                      /*sq_item*/
+       0,                      /*sq_slice*/
+       0,                      /*sq_ass_item*/
+       0,                  /*sq_ass_slice*/
+       (objobjproc)dbm_contains,               /*sq_contains*/
+       0,                  /*sq_inplace_concat*/
+       0                   /*sq_inplace_repeat*/
+};
+
 static PyMappingMethods dbm_as_mapping = {
-    (inquiry)dbm_length,		/*mp_length*/
+    (lenfunc)dbm_length,		/*mp_length*/
     (binaryfunc)dbm_subscript,          /*mp_subscript*/
     (objobjargproc)dbm_ass_sub,         /*mp_ass_subscript*/
 };
@@ -188,10 +223,8 @@ PyDoc_STRVAR(dbm_close__doc__,
 Closes the database.");
 
 static PyObject *
-dbm_close(register dbmobject *dp, PyObject *args)
+dbm_close(register dbmobject *dp, PyObject *unused)
 {
-    if (!PyArg_ParseTuple(args, ":close"))
-        return NULL;
     if (dp->di_dbm)
         gdbm_close(dp->di_dbm);
     dp->di_dbm = NULL;
@@ -204,7 +237,7 @@ PyDoc_STRVAR(dbm_keys__doc__,
 Get a list of all keys in the database.");
 
 static PyObject *
-dbm_keys(register dbmobject *dp, PyObject *args)
+dbm_keys(register dbmobject *dp, PyObject *unused)
 {
     register PyObject *v, *item;
     datum key, nextkey;
@@ -214,9 +247,6 @@ dbm_keys(register dbmobject *dp, PyObject *args)
         PyErr_BadInternalCall();
         return NULL;
     }
-    if (!PyArg_ParseTuple(args, ":keys"))
-        return NULL;
-
     check_dbmobject_open(dp);
 
     v = PyList_New(0);
@@ -268,13 +298,11 @@ hash values, and won't be sorted by the key values. This method\n\
 returns the starting key.");
 
 static PyObject *
-dbm_firstkey(register dbmobject *dp, PyObject *args)
+dbm_firstkey(register dbmobject *dp, PyObject *unused)
 {
     register PyObject *v;
     datum key;
 
-    if (!PyArg_ParseTuple(args, ":firstkey"))
-        return NULL;
     check_dbmobject_open(dp);
     key = gdbm_firstkey(dp->di_dbm);
     if (key.dptr) {
@@ -329,10 +357,8 @@ by using this reorganization; otherwise, deleted file space will be\n\
 kept and reused as new (key,value) pairs are added.");
 
 static PyObject *
-dbm_reorganize(register dbmobject *dp, PyObject *args)
+dbm_reorganize(register dbmobject *dp, PyObject *unused)
 {
-    if (!PyArg_ParseTuple(args, ":reorganize"))
-        return NULL;
     check_dbmobject_open(dp);
     errno = 0;
     if (gdbm_reorganize(dp->di_dbm) < 0) {
@@ -352,10 +378,8 @@ When the database has been opened in fast mode, this method forces\n\
 any unwritten data to be written to the disk.");
 
 static PyObject *
-dbm_sync(register dbmobject *dp, PyObject *args)
+dbm_sync(register dbmobject *dp, PyObject *unused)
 {
-    if (!PyArg_ParseTuple(args, ":sync"))
-        return NULL;
     check_dbmobject_open(dp);
     gdbm_sync(dp->di_dbm);
     Py_INCREF(Py_None);
@@ -363,13 +387,13 @@ dbm_sync(register dbmobject *dp, PyObject *args)
 }
 
 static PyMethodDef dbm_methods[] = {
-    {"close",	  (PyCFunction)dbm_close,   METH_VARARGS, dbm_close__doc__},
-    {"keys",	  (PyCFunction)dbm_keys,    METH_VARARGS, dbm_keys__doc__},
+    {"close",	  (PyCFunction)dbm_close,   METH_NOARGS, dbm_close__doc__},
+    {"keys",	  (PyCFunction)dbm_keys,    METH_NOARGS, dbm_keys__doc__},
     {"has_key",   (PyCFunction)dbm_has_key, METH_VARARGS, dbm_has_key__doc__},
-    {"firstkey",  (PyCFunction)dbm_firstkey,METH_VARARGS, dbm_firstkey__doc__},
+    {"firstkey",  (PyCFunction)dbm_firstkey,METH_NOARGS, dbm_firstkey__doc__},
     {"nextkey",	  (PyCFunction)dbm_nextkey, METH_VARARGS, dbm_nextkey__doc__},
-    {"reorganize",(PyCFunction)dbm_reorganize,METH_VARARGS, dbm_reorganize__doc__},
-    {"sync",      (PyCFunction)dbm_sync,    METH_VARARGS, dbm_sync__doc__},
+    {"reorganize",(PyCFunction)dbm_reorganize,METH_NOARGS, dbm_reorganize__doc__},
+    {"sync",      (PyCFunction)dbm_sync,    METH_NOARGS, dbm_sync__doc__},
     {NULL,		NULL}		/* sentinel */
 };
 
@@ -380,8 +404,7 @@ dbm_getattr(dbmobject *dp, char *name)
 }
 
 static PyTypeObject Dbmtype = {
-    PyObject_HEAD_INIT(0)
-    0,
+    PyVarObject_HEAD_INIT(0, 0)
     "gdbm.gdbm",
     sizeof(dbmobject),
     0,
@@ -392,7 +415,7 @@ static PyTypeObject Dbmtype = {
     0,                                  /*tp_compare*/
     0,                                  /*tp_repr*/
     0,                                  /*tp_as_number*/
-    0,                                  /*tp_as_sequence*/
+    &dbm_as_sequence,                   /*tp_as_sequence*/
     &dbm_as_mapping,                    /*tp_as_mapping*/
     0,                                  /*tp_hash*/
     0,                                  /*tp_call*/
@@ -400,7 +423,7 @@ static PyTypeObject Dbmtype = {
     0,                                  /*tp_getattro*/
     0,                                  /*tp_setattro*/
     0,                                  /*tp_as_buffer*/
-    0,                                  /*tp_xxx4*/
+    Py_TPFLAGS_DEFAULT,                 /*tp_xxx4*/
     gdbm_object__doc__,                 /*tp_doc*/
 };
 

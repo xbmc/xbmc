@@ -1,9 +1,29 @@
 import ConfigParser
 import StringIO
 import unittest
+import UserDict
 
 from test import test_support
 
+class SortedDict(UserDict.UserDict):
+    def items(self):
+        result = self.data.items()
+        result.sort()
+        return result
+
+    def keys(self):
+        result = self.data.keys()
+        result.sort()
+        return result
+
+    def values(self):
+        result = self.items()
+        return [i[1] for i in values]
+
+    def iteritems(self): return iter(self.items())
+    def iterkeys(self): return iter(self.keys())
+    __iter__ = iterkeys
+    def itervalues(self): return iter(self.values())
 
 class TestCaseBase(unittest.TestCase):
     def newconfig(self, defaults=None):
@@ -67,11 +87,11 @@ class TestCaseBase(unittest.TestCase):
         # Make sure the right things happen for remove_option();
         # added to include check for SourceForge bug #123324:
         self.failUnless(cf.remove_option('Foo Bar', 'foo'),
-                        "remove_option() failed to report existance of option")
+                        "remove_option() failed to report existence of option")
         self.failIf(cf.has_option('Foo Bar', 'foo'),
                     "remove_option() failed to remove option")
         self.failIf(cf.remove_option('Foo Bar', 'foo'),
-                    "remove_option() failed to report non-existance of option"
+                    "remove_option() failed to report non-existence of option"
                     " that was removed")
 
         self.assertRaises(ConfigParser.NoSectionError,
@@ -244,7 +264,7 @@ class TestCaseBase(unittest.TestCase):
         file1 = test_support.findfile("cfgparser.1")
         # check when we pass a mix of readable and non-readable files:
         cf = self.newconfig()
-        parsed_files = cf.read([file1, "nonexistant-file"])
+        parsed_files = cf.read([file1, "nonexistent-file"])
         self.assertEqual(parsed_files, [file1])
         self.assertEqual(cf.get("Foo Bar", "foo"), "newbar")
         # check when we pass only a filename:
@@ -254,7 +274,7 @@ class TestCaseBase(unittest.TestCase):
         self.assertEqual(cf.get("Foo Bar", "foo"), "newbar")
         # check when we pass only missing files:
         cf = self.newconfig()
-        parsed_files = cf.read(["nonexistant-file"])
+        parsed_files = cf.read(["nonexistent-file"])
         self.assertEqual(parsed_files, [])
         # check when we pass no files:
         cf = self.newconfig()
@@ -402,6 +422,22 @@ class SafeConfigParserTestCase(ConfigParserTestCase):
         self.assertEqual(cf.get("section", "ok"), "xxx/%s")
         self.assertEqual(cf.get("section", "not_ok"), "xxx/xxx/%s")
 
+    def test_set_malformatted_interpolation(self):
+        cf = self.fromstring("[sect]\n"
+                             "option1=foo\n")
+
+        self.assertEqual(cf.get('sect', "option1"), "foo")
+
+        self.assertRaises(ValueError, cf.set, "sect", "option1", "%foo")
+        self.assertRaises(ValueError, cf.set, "sect", "option1", "foo%")
+        self.assertRaises(ValueError, cf.set, "sect", "option1", "f%oo")
+
+        self.assertEqual(cf.get('sect', "option1"), "foo")
+
+        # bug #5741: double percents are *not* malformed
+        cf.set("sect", "option2", "foo%%bar")
+        self.assertEqual(cf.get("sect", "option2"), "foo%bar")
+
     def test_set_nonstring_types(self):
         cf = self.fromstring("[sect]\n"
                              "option1=foo\n")
@@ -414,12 +450,44 @@ class SafeConfigParserTestCase(ConfigParserTestCase):
         self.assertRaises(TypeError, cf.set, "sect", "option2", 1.0)
         self.assertRaises(TypeError, cf.set, "sect", "option2", object())
 
+    def test_add_section_default_1(self):
+        cf = self.newconfig()
+        self.assertRaises(ValueError, cf.add_section, "default")
+
+    def test_add_section_default_2(self):
+        cf = self.newconfig()
+        self.assertRaises(ValueError, cf.add_section, "DEFAULT")
+
+class SortedTestCase(RawConfigParserTestCase):
+    def newconfig(self, defaults=None):
+        self.cf = self.config_class(defaults=defaults, dict_type=SortedDict)
+        return self.cf
+
+    def test_sorted(self):
+        self.fromstring("[b]\n"
+                        "o4=1\n"
+                        "o3=2\n"
+                        "o2=3\n"
+                        "o1=4\n"
+                        "[a]\n"
+                        "k=v\n")
+        output = StringIO.StringIO()
+        self.cf.write(output)
+        self.assertEquals(output.getvalue(),
+                          "[a]\n"
+                          "k = v\n\n"
+                          "[b]\n"
+                          "o1 = 4\n"
+                          "o2 = 3\n"
+                          "o3 = 2\n"
+                          "o4 = 1\n\n")
 
 def test_main():
     test_support.run_unittest(
         ConfigParserTestCase,
         RawConfigParserTestCase,
-        SafeConfigParserTestCase
+        SafeConfigParserTestCase,
+        SortedTestCase
     )
 
 if __name__ == "__main__":

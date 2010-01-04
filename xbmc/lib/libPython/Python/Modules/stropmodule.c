@@ -1,5 +1,6 @@
 /* strop module */
 
+#define PY_SSIZE_T_CLEAN
 #include "Python.h"
 #include <ctype.h>
 
@@ -26,10 +27,11 @@ PyDoc_STRVAR(strop_module__doc__,
 
 
 static PyObject *
-split_whitespace(char *s, int len, int maxsplit)
+split_whitespace(char *s, Py_ssize_t len, Py_ssize_t maxsplit)
 {
-	int i = 0, j, err;
-	int countsplit = 0;
+	Py_ssize_t i = 0, j;
+	int err;
+	Py_ssize_t countsplit = 0;
 	PyObject* item;
 	PyObject *list = PyList_New(0);
 
@@ -45,7 +47,7 @@ split_whitespace(char *s, int len, int maxsplit)
 			i = i+1;
 		}
 		if (j < i) {
-			item = PyString_FromStringAndSize(s+j, (int)(i-j));
+			item = PyString_FromStringAndSize(s+j, i-j);
 			if (item == NULL)
 				goto finally;
 
@@ -60,7 +62,7 @@ split_whitespace(char *s, int len, int maxsplit)
 			}
 			if (maxsplit && (countsplit >= maxsplit) && i < len) {
 				item = PyString_FromStringAndSize(
-                                        s+i, (int)(len - i));
+                                        s+i, len - i);
 				if (item == NULL)
 					goto finally;
 
@@ -94,8 +96,8 @@ PyDoc_STRVAR(splitfields__doc__,
 static PyObject *
 strop_splitfields(PyObject *self, PyObject *args)
 {
-	int len, n, i, j, err;
-	int splitcount, maxsplit;
+	Py_ssize_t len, n, i, j, err;
+	Py_ssize_t splitcount, maxsplit;
 	char *s, *sub;
 	PyObject *list, *item;
 
@@ -104,7 +106,7 @@ strop_splitfields(PyObject *self, PyObject *args)
 	n = 0;
 	splitcount = 0;
 	maxsplit = 0;
-	if (!PyArg_ParseTuple(args, "t#|z#i:split", &s, &len, &sub, &n, &maxsplit))
+	if (!PyArg_ParseTuple(args, "t#|z#n:split", &s, &len, &sub, &n, &maxsplit))
 		return NULL;
 	if (sub == NULL)
 		return split_whitespace(s, len, maxsplit);
@@ -120,7 +122,7 @@ strop_splitfields(PyObject *self, PyObject *args)
 	i = j = 0;
 	while (i+n <= len) {
 		if (s[i] == sub[0] && (n == 1 || memcmp(s+i, sub, n) == 0)) {
-			item = PyString_FromStringAndSize(s+j, (int)(i-j));
+			item = PyString_FromStringAndSize(s+j, i-j);
 			if (item == NULL)
 				goto fail;
 			err = PyList_Append(list, item);
@@ -135,7 +137,7 @@ strop_splitfields(PyObject *self, PyObject *args)
 		else
 			i++;
 	}
-	item = PyString_FromStringAndSize(s+j, (int)(len-j));
+	item = PyString_FromStringAndSize(s+j, len-j);
 	if (item == NULL)
 		goto fail;
 	err = PyList_Append(list, item);
@@ -166,11 +168,11 @@ strop_joinfields(PyObject *self, PyObject *args)
 {
 	PyObject *seq;
 	char *sep = NULL;
-	int seqlen, seplen = 0;
-	int i, reslen = 0, slen = 0, sz = 100;
+	Py_ssize_t seqlen, seplen = 0;
+	Py_ssize_t i, reslen = 0, slen = 0, sz = 100;
 	PyObject *res = NULL;
 	char* p = NULL;
-	intargfunc getitemfunc;
+	ssizeargfunc getitemfunc;
 
 	WARN;
 	if (!PyArg_ParseTuple(args, "O|t#:join", &seq, &sep, &seplen))
@@ -214,6 +216,13 @@ strop_joinfields(PyObject *self, PyObject *args)
 				return NULL;
 			}
 			slen = PyString_GET_SIZE(item);
+			if (slen > PY_SSIZE_T_MAX - reslen ||
+			    seplen > PY_SSIZE_T_MAX - reslen - seplen) {
+				PyErr_SetString(PyExc_OverflowError,
+						"input too long");
+				Py_DECREF(res);
+				return NULL;
+			}
 			while (reslen + slen + seplen >= sz) {
 				if (_PyString_Resize(&res, sz * 2) < 0)
 					return NULL;
@@ -251,6 +260,14 @@ strop_joinfields(PyObject *self, PyObject *args)
 			return NULL;
 		}
 		slen = PyString_GET_SIZE(item);
+		if (slen > PY_SSIZE_T_MAX - reslen ||
+		    seplen > PY_SSIZE_T_MAX - reslen - seplen) {
+			PyErr_SetString(PyExc_OverflowError,
+					"input too long");
+			Py_DECREF(res);
+			Py_XDECREF(item);
+			return NULL;
+		}
 		while (reslen + slen + seplen >= sz) {
 			if (_PyString_Resize(&res, sz * 2) < 0) {
 				Py_DECREF(item);
@@ -287,10 +304,10 @@ static PyObject *
 strop_find(PyObject *self, PyObject *args)
 {
 	char *s, *sub;
-	int len, n, i = 0, last = INT_MAX;
+	Py_ssize_t len, n, i = 0, last = PY_SSIZE_T_MAX;
 
 	WARN;
-	if (!PyArg_ParseTuple(args, "t#t#|ii:find", &s, &len, &sub, &n, &i, &last))
+	if (!PyArg_ParseTuple(args, "t#t#|nn:find", &s, &len, &sub, &n, &i, &last))
 		return NULL;
 
 	if (last > len)
@@ -330,11 +347,11 @@ static PyObject *
 strop_rfind(PyObject *self, PyObject *args)
 {
 	char *s, *sub;
-	int len, n, j;
-	int i = 0, last = INT_MAX;
+	Py_ssize_t len, n, j;
+	Py_ssize_t i = 0, last = PY_SSIZE_T_MAX;
 
 	WARN;
-	if (!PyArg_ParseTuple(args, "t#t#|ii:rfind", &s, &len, &sub, &n, &i, &last))
+	if (!PyArg_ParseTuple(args, "t#t#|nn:rfind", &s, &len, &sub, &n, &i, &last))
 		return NULL;
 
 	if (last > len)
@@ -364,7 +381,7 @@ static PyObject *
 do_strip(PyObject *args, int striptype)
 {
 	char *s;
-	int len, i, j;
+	Py_ssize_t len, i, j;
 
 
 	if (PyString_AsStringAndSize(args, &s, &len))
@@ -443,17 +460,17 @@ static PyObject *
 strop_lower(PyObject *self, PyObject *args)
 {
 	char *s, *s_new;
-	int i, n;
-	PyObject *new;
+	Py_ssize_t i, n;
+	PyObject *newstr;
 	int changed;
 
 	WARN;
 	if (PyString_AsStringAndSize(args, &s, &n))
 		return NULL;
-	new = PyString_FromStringAndSize(NULL, n);
-	if (new == NULL)
+	newstr = PyString_FromStringAndSize(NULL, n);
+	if (newstr == NULL)
 		return NULL;
-	s_new = PyString_AsString(new);
+	s_new = PyString_AsString(newstr);
 	changed = 0;
 	for (i = 0; i < n; i++) {
 		int c = Py_CHARMASK(*s++);
@@ -465,11 +482,11 @@ strop_lower(PyObject *self, PyObject *args)
 		s_new++;
 	}
 	if (!changed) {
-		Py_DECREF(new);
+		Py_DECREF(newstr);
 		Py_INCREF(args);
 		return args;
 	}
-	return new;
+	return newstr;
 }
 
 
@@ -482,17 +499,17 @@ static PyObject *
 strop_upper(PyObject *self, PyObject *args)
 {
 	char *s, *s_new;
-	int i, n;
-	PyObject *new;
+	Py_ssize_t i, n;
+	PyObject *newstr;
 	int changed;
 
 	WARN;
 	if (PyString_AsStringAndSize(args, &s, &n))
 		return NULL;
-	new = PyString_FromStringAndSize(NULL, n);
-	if (new == NULL)
+	newstr = PyString_FromStringAndSize(NULL, n);
+	if (newstr == NULL)
 		return NULL;
-	s_new = PyString_AsString(new);
+	s_new = PyString_AsString(newstr);
 	changed = 0;
 	for (i = 0; i < n; i++) {
 		int c = Py_CHARMASK(*s++);
@@ -504,11 +521,11 @@ strop_upper(PyObject *self, PyObject *args)
 		s_new++;
 	}
 	if (!changed) {
-		Py_DECREF(new);
+		Py_DECREF(newstr);
 		Py_INCREF(args);
 		return args;
 	}
-	return new;
+	return newstr;
 }
 
 
@@ -522,17 +539,17 @@ static PyObject *
 strop_capitalize(PyObject *self, PyObject *args)
 {
 	char *s, *s_new;
-	int i, n;
-	PyObject *new;
+	Py_ssize_t i, n;
+	PyObject *newstr;
 	int changed;
 
 	WARN;
 	if (PyString_AsStringAndSize(args, &s, &n))
 		return NULL;
-	new = PyString_FromStringAndSize(NULL, n);
-	if (new == NULL)
+	newstr = PyString_FromStringAndSize(NULL, n);
+	if (newstr == NULL)
 		return NULL;
-	s_new = PyString_AsString(new);
+	s_new = PyString_AsString(newstr);
 	changed = 0;
 	if (0 < n) {
 		int c = Py_CHARMASK(*s++);
@@ -553,11 +570,11 @@ strop_capitalize(PyObject *self, PyObject *args)
 		s_new++;
 	}
 	if (!changed) {
-		Py_DECREF(new);
+		Py_DECREF(newstr);
 		Py_INCREF(args);
 		return args;
 	}
-	return new;
+	return newstr;
 }
 
 
@@ -576,10 +593,10 @@ strop_expandtabs(PyObject *self, PyObject *args)
 	char* e;
 	char* p;
 	char* q;
-	int i, j, old_j;
+	Py_ssize_t i, j, old_j;
 	PyObject* out;
 	char* string;
-	int stringlen;
+	Py_ssize_t stringlen;
 	int tabsize = 8;
 
 	WARN;
@@ -655,12 +672,12 @@ static PyObject *
 strop_count(PyObject *self, PyObject *args)
 {
 	char *s, *sub;
-	int len, n;
-	int i = 0, last = INT_MAX;
-	int m, r;
+	Py_ssize_t len, n;
+	Py_ssize_t i = 0, last = PY_SSIZE_T_MAX;
+	Py_ssize_t m, r;
 
 	WARN;
-	if (!PyArg_ParseTuple(args, "t#t#|ii:count", &s, &len, &sub, &n, &i, &last))
+	if (!PyArg_ParseTuple(args, "t#t#|nn:count", &s, &len, &sub, &n, &i, &last))
 		return NULL;
 	if (last > len)
 		last = len;
@@ -699,17 +716,17 @@ static PyObject *
 strop_swapcase(PyObject *self, PyObject *args)
 {
 	char *s, *s_new;
-	int i, n;
-	PyObject *new;
+	Py_ssize_t i, n;
+	PyObject *newstr;
 	int changed;
 
 	WARN;
 	if (PyString_AsStringAndSize(args, &s, &n))
 		return NULL;
-	new = PyString_FromStringAndSize(NULL, n);
-	if (new == NULL)
+	newstr = PyString_FromStringAndSize(NULL, n);
+	if (newstr == NULL)
 		return NULL;
-	s_new = PyString_AsString(new);
+	s_new = PyString_AsString(newstr);
 	changed = 0;
 	for (i = 0; i < n; i++) {
 		int c = Py_CHARMASK(*s++);
@@ -726,11 +743,11 @@ strop_swapcase(PyObject *self, PyObject *args)
 		s_new++;
 	}
 	if (!changed) {
-		Py_DECREF(new);
+		Py_DECREF(newstr);
 		Py_INCREF(args);
 		return args;
 	}
-	return new;
+	return newstr;
 }
 
 
@@ -768,7 +785,7 @@ strop_atoi(PyObject *self, PyObject *args)
 		x = (long) PyOS_strtoul(s, &end, base);
 	else
 		x = PyOS_strtol(s, &end, base);
-	if (end == s || !isalnum((int)end[-1]))
+	if (end == s || !isalnum(Py_CHARMASK(end[-1])))
 		goto bad;
 	while (*end && isspace(Py_CHARMASK(*end)))
 		end++;
@@ -895,7 +912,7 @@ static PyObject *
 strop_maketrans(PyObject *self, PyObject *args)
 {
 	unsigned char *c, *from=NULL, *to=NULL;
-	int i, fromlen=0, tolen=0;
+	Py_ssize_t i, fromlen=0, tolen=0;
 	PyObject *result;
 
 	if (!PyArg_ParseTuple(args, "t#t#:maketrans", &from, &fromlen, &to, &tolen))
@@ -932,10 +949,11 @@ static PyObject *
 strop_translate(PyObject *self, PyObject *args)
 {
 	register char *input, *table, *output;
-	register int i, c, changed = 0;
+	Py_ssize_t i; 
+	int c, changed = 0;
 	PyObject *input_obj;
 	char *table1, *output_start, *del_table=NULL;
-	int inlen, tablen, dellen = 0;
+	Py_ssize_t inlen, tablen, dellen = 0;
 	PyObject *result;
 	int trans_table[256];
 
@@ -950,7 +968,7 @@ strop_translate(PyObject *self, PyObject *args)
 	}
 
 	table = table1;
-	inlen = PyString_Size(input_obj);
+	inlen = PyString_GET_SIZE(input_obj);
 	result = PyString_FromStringAndSize((char *)NULL, inlen);
 	if (result == NULL)
 		return NULL;
@@ -1008,10 +1026,10 @@ strop_translate(PyObject *self, PyObject *args)
   found, or -1 if not found.  If len of PAT is greater than length of
   MEM, the function returns -1.
 */
-static int 
-mymemfind(const char *mem, int len, const char *pat, int pat_len)
+static Py_ssize_t 
+mymemfind(const char *mem, Py_ssize_t len, const char *pat, Py_ssize_t pat_len)
 {
-	register int ii;
+	register Py_ssize_t ii;
 
 	/* pattern can not occur in the last pat_len-1 chars */
 	len -= pat_len;
@@ -1033,11 +1051,11 @@ mymemfind(const char *mem, int len, const char *pat, int pat_len)
    meaning mem=1111 and pat==11 returns 2.
            mem=11111 and pat==11 also return 2.
  */
-static int 
-mymemcnt(const char *mem, int len, const char *pat, int pat_len)
+static Py_ssize_t 
+mymemcnt(const char *mem, Py_ssize_t len, const char *pat, Py_ssize_t pat_len)
 {
-	register int offset = 0;
-	int nfound = 0;
+	register Py_ssize_t offset = 0;
+	Py_ssize_t nfound = 0;
 
 	while (len >= 0) {
 		offset = mymemfind(mem, len, pat, pat_len);
@@ -1070,15 +1088,15 @@ mymemcnt(const char *mem, int len, const char *pat, int pat_len)
        NULL if an error occurred.
 */
 static char *
-mymemreplace(const char *str, int len,		/* input string */
-             const char *pat, int pat_len,	/* pattern string to find */
-             const char *sub, int sub_len,	/* substitution string */
-             int count,				/* number of replacements */
-	     int *out_len)
+mymemreplace(const char *str, Py_ssize_t len,		/* input string */
+             const char *pat, Py_ssize_t pat_len,	/* pattern string to find */
+             const char *sub, Py_ssize_t sub_len,	/* substitution string */
+             Py_ssize_t count,				/* number of replacements */
+	     Py_ssize_t *out_len)
 {
 	char *out_s;
 	char *new_s;
-	int nfound, offset, new_len;
+	Py_ssize_t nfound, offset, new_len;
 
 	if (len == 0 || pat_len > len)
 		goto return_same;
@@ -1086,7 +1104,7 @@ mymemreplace(const char *str, int len,		/* input string */
 	/* find length of output string */
 	nfound = mymemcnt(str, len, pat, pat_len);
 	if (count < 0)
-		count = INT_MAX;
+		count = PY_SSIZE_T_MAX;
 	else if (nfound > count)
 		nfound = count;
 	if (nfound == 0)
@@ -1147,12 +1165,12 @@ static PyObject *
 strop_replace(PyObject *self, PyObject *args)
 {
 	char *str, *pat,*sub,*new_s;
-	int len,pat_len,sub_len,out_len;
-	int count = -1;
-	PyObject *new;
+	Py_ssize_t len,pat_len,sub_len,out_len;
+	Py_ssize_t count = -1;
+	PyObject *newstr;
 
 	WARN;
-	if (!PyArg_ParseTuple(args, "t#t#t#|i:replace",
+	if (!PyArg_ParseTuple(args, "t#t#t#|n:replace",
 			      &str, &len, &pat, &pat_len, &sub, &sub_len,
 			      &count))
 		return NULL;
@@ -1173,14 +1191,14 @@ strop_replace(PyObject *self, PyObject *args)
 	}
 	if (out_len == -1) {
 		/* we're returning another reference to the input string */
-		new = PyTuple_GetItem(args, 0);
-		Py_XINCREF(new);
+		newstr = PyTuple_GetItem(args, 0);
+		Py_XINCREF(newstr);
 	}
 	else {
-		new = PyString_FromStringAndSize(new_s, out_len);
+		newstr = PyString_FromStringAndSize(new_s, out_len);
 		PyMem_FREE(new_s);
 	}
-	return new;
+	return newstr;
 }
 
 

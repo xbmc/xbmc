@@ -12,6 +12,11 @@ def get_file():
     return __file__
 """
 
+absimp = "import sub\n"
+relimp = "from . import sub\n"
+deeprelimp = "from .... import sub\n"
+futimp = "from __future__ import absolute_import\n"
+
 reload_src = test_src+"""\
 reloaded = True
 """
@@ -19,16 +24,13 @@ reloaded = True
 test_co = compile(test_src, "<???>", "exec")
 reload_co = compile(reload_src, "<???>", "exec")
 
+test2_oldabs_co = compile(absimp + test_src, "<???>", "exec")
+test2_newabs_co = compile(futimp + absimp + test_src, "<???>", "exec")
+test2_newrel_co = compile(relimp + test_src, "<???>", "exec")
+test2_deeprel_co = compile(deeprelimp + test_src, "<???>", "exec")
+test2_futrel_co = compile(futimp + relimp + test_src, "<???>", "exec")
+
 test_path = "!!!_test_!!!"
-
-
-class ImportTracker:
-    """Importer that only tracks attempted imports."""
-    def __init__(self):
-        self.imports = []
-    def find_module(self, fullname, path=None):
-        self.imports.append(fullname)
-        return None
 
 
 class TestImporter:
@@ -37,7 +39,13 @@ class TestImporter:
         "hooktestmodule": (False, test_co),
         "hooktestpackage": (True, test_co),
         "hooktestpackage.sub": (True, test_co),
-        "hooktestpackage.sub.subber": (False, test_co),
+        "hooktestpackage.sub.subber": (True, test_co),
+        "hooktestpackage.oldabs": (False, test2_oldabs_co),
+        "hooktestpackage.newabs": (False, test2_newabs_co),
+        "hooktestpackage.newrel": (False, test2_newrel_co),
+        "hooktestpackage.sub.subber.subest": (True, test2_deeprel_co),
+        "hooktestpackage.futrel": (False, test2_futrel_co),
+        "sub": (False, test_co),
         "reloadmodule": (False, test_co),
     }
 
@@ -135,17 +143,15 @@ class ImportHooksBaseTestCase(unittest.TestCase):
         self.meta_path = sys.meta_path[:]
         self.path_hooks = sys.path_hooks[:]
         sys.path_importer_cache.clear()
-        self.tracker = ImportTracker()
-        sys.meta_path.insert(0, self.tracker)
+        self.modules_before = sys.modules.copy()
 
     def tearDown(self):
         sys.path[:] = self.path
         sys.meta_path[:] = self.meta_path
         sys.path_hooks[:] = self.path_hooks
         sys.path_importer_cache.clear()
-        for fullname in self.tracker.imports:
-            if fullname in sys.modules:
-                del sys.modules[fullname]
+        sys.modules.clear()
+        sys.modules.update(self.modules_before)
 
 
 class ImportHooksTestCase(ImportHooksBaseTestCase):
@@ -176,6 +182,38 @@ class ImportHooksTestCase(ImportHooksBaseTestCase):
         TestImporter.modules['reloadmodule'] = (False, reload_co)
         reload(reloadmodule)
         self.failUnless(hasattr(reloadmodule,'reloaded'))
+
+        import hooktestpackage.oldabs
+        self.assertEqual(hooktestpackage.oldabs.get_name(),
+                         "hooktestpackage.oldabs")
+        self.assertEqual(hooktestpackage.oldabs.sub,
+                         hooktestpackage.sub)
+
+        import hooktestpackage.newrel
+        self.assertEqual(hooktestpackage.newrel.get_name(),
+                         "hooktestpackage.newrel")
+        self.assertEqual(hooktestpackage.newrel.sub,
+                         hooktestpackage.sub)
+
+        import hooktestpackage.sub.subber.subest as subest
+        self.assertEqual(subest.get_name(),
+                         "hooktestpackage.sub.subber.subest")
+        self.assertEqual(subest.sub,
+                         hooktestpackage.sub)
+
+        import hooktestpackage.futrel
+        self.assertEqual(hooktestpackage.futrel.get_name(),
+                         "hooktestpackage.futrel")
+        self.assertEqual(hooktestpackage.futrel.sub,
+                         hooktestpackage.sub)
+
+        import sub
+        self.assertEqual(sub.get_name(), "sub")
+
+        import hooktestpackage.newabs
+        self.assertEqual(hooktestpackage.newabs.get_name(),
+                         "hooktestpackage.newabs")
+        self.assertEqual(hooktestpackage.newabs.sub, sub)
 
     def testMetaPath(self):
         i = MetaImporter()
@@ -212,13 +250,7 @@ class ImportHooksTestCase(ImportHooksBaseTestCase):
         for mname in mnames:
             m = __import__(mname, globals(), locals(), ["__dummy__"])
             m.__loader__  # to make sure we actually handled the import
-        # Delete urllib from modules because urlparse was imported above.
-        # Without this hack, test_socket_ssl fails if run in this order:
-        # regrtest.py test_codecmaps_tw test_importhooks test_socket_ssl
-        try:
-            del sys.modules['urllib']
-        except KeyError:
-            pass
+
 
 def test_main():
     test_support.run_unittest(ImportHooksTestCase)

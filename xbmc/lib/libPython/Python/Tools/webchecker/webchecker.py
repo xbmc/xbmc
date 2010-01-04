@@ -103,7 +103,7 @@ rooturl   -- URL to start checking
 """
 
 
-__version__ = "$Revision: 36560 $"
+__version__ = "$Revision: 50851 $"
 
 
 import sys
@@ -760,7 +760,8 @@ class MyURLopener(urllib.FancyURLopener):
             try:
                 names = os.listdir(path)
             except os.error, msg:
-                raise IOError, msg, sys.exc_traceback
+                exc_type, exc_value, exc_tb = sys.exc_info()
+                raise IOError, msg, exc_tb
             names.sort()
             s = MyStringIO("file:"+url, {'content-type': 'text/html'})
             s.write('<BASE HREF="file:%s">\n' %
@@ -784,7 +785,7 @@ class MyHTMLParser(sgmllib.SGMLParser):
         self.url = url
         sgmllib.SGMLParser.__init__(self)
 
-    def check_name_id( self, attributes ):
+    def check_name_id(self, attributes):
         """ Check the name or id attributes on an element.
         """
         # We must rescue the NAME or id (name is deprecated in XHTML)
@@ -799,7 +800,7 @@ class MyHTMLParser(sgmllib.SGMLParser):
                 else: self.names.append(value)
                 break
 
-    def unknown_starttag( self, tag, attributes ):
+    def unknown_starttag(self, tag, attributes):
         """ In XHTML, you can have id attributes on any element.
         """
         self.check_name_id(attributes)

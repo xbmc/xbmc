@@ -1,4 +1,4 @@
-"""TELNET client class.
+r"""TELNET client class.
 
 Based on RFC 854: TELNET Protocol Specification, by J. Postel and
 J. Reynolds
@@ -184,17 +184,18 @@ class Telnet:
 
     """
 
-    def __init__(self, host=None, port=0):
+    def __init__(self, host=None, port=0,
+                 timeout=socket._GLOBAL_DEFAULT_TIMEOUT):
         """Constructor.
 
         When called without arguments, create an unconnected instance.
-        With a hostname argument, it connects the instance; a port
-        number is optional.
-
+        With a hostname argument, it connects the instance; port number
+        and timeout are optional.
         """
         self.debuglevel = DEBUGLEVEL
         self.host = host
         self.port = port
+        self.timeout = timeout
         self.sock = None
         self.rawq = ''
         self.irawq = 0
@@ -205,36 +206,23 @@ class Telnet:
         self.sbdataq = ''
         self.option_callback = None
         if host is not None:
-            self.open(host, port)
+            self.open(host, port, timeout)
 
-    def open(self, host, port=0):
+    def open(self, host, port=0, timeout=socket._GLOBAL_DEFAULT_TIMEOUT):
         """Connect to a host.
 
         The optional second argument is the port number, which
         defaults to the standard telnet port (23).
 
         Don't try to reopen an already connected instance.
-
         """
         self.eof = 0
         if not port:
             port = TELNET_PORT
         self.host = host
         self.port = port
-        msg = "getaddrinfo returns an empty list"
-        for res in socket.getaddrinfo(host, port, 0, socket.SOCK_STREAM):
-            af, socktype, proto, canonname, sa = res
-            try:
-                self.sock = socket.socket(af, socktype, proto)
-                self.sock.connect(sa)
-            except socket.error, msg:
-                if self.sock:
-                    self.sock.close()
-                self.sock = None
-                continue
-            break
-        if not self.sock:
-            raise socket.error, msg
+        self.timeout = timeout
+        self.sock = socket.create_connection((host, port), timeout)
 
     def __del__(self):
         """Destructor -- close the connection."""
@@ -445,7 +433,7 @@ class Telnet:
                     else:
                         self.iacseq += c
                 elif len(self.iacseq) == 1:
-                    'IAC: IAC CMD [OPTION only for WILL/WONT/DO/DONT]'
+                    # 'IAC: IAC CMD [OPTION only for WILL/WONT/DO/DONT]'
                     if c in (DO, DONT, WILL, WONT):
                         self.iacseq += c
                         continue
@@ -661,7 +649,7 @@ def test():
             port = socket.getservbyname(portstr, 'tcp')
     tn = Telnet()
     tn.set_debuglevel(debuglevel)
-    tn.open(host, port)
+    tn.open(host, port, timeout=0.5)
     tn.interact()
     tn.close()
 

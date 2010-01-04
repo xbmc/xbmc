@@ -1,7 +1,3 @@
-#
-# Instant Python
-# $Id: tkMessageBox.py 37376 2004-09-18 16:01:23Z loewis $
-#
 # tk common message boxes
 #
 # this module provides an interface to the native message boxes
@@ -67,9 +63,10 @@ class Message(Dialog):
 #
 # convenience stuff
 
-def _show(title=None, message=None, icon=None, type=None, **options):
-    if icon:    options["icon"] = icon
-    if type:    options["type"] = type
+# Rename _icon and _type options to allow overriding them in options
+def _show(title=None, message=None, _icon=None, _type=None, **options):
+    if _icon and "icon" not in options:    options["icon"] = _icon
+    if _type and "type" not in options:    options["type"] = _type
     if title:   options["title"] = title
     if message: options["message"] = message
     res = Message(**options).show()
@@ -105,6 +102,15 @@ def askyesno(title=None, message=None, **options):
     s = _show(title, message, QUESTION, YESNO, **options)
     return s == YES
 
+def askyesnocancel(title=None, message=None, **options):
+    "Ask a question; return true if the answer is yes, None if cancelled."
+    s = _show(title, message, QUESTION, YESNOCANCEL, **options)
+    # s might be a Tcl index object, so convert it to a string
+    s = str(s)
+    if s == CANCEL:
+        return None
+    return s == YES
+
 def askretrycancel(title=None, message=None, **options):
     "Ask if operation should be retried; return true if the answer is yes"
     s = _show(title, message, WARNING, RETRYCANCEL, **options)
@@ -122,4 +128,5 @@ if __name__ == "__main__":
     print "question", askquestion("Spam", "Question?")
     print "proceed", askokcancel("Spam", "Proceed?")
     print "yes/no", askyesno("Spam", "Got it?")
+    print "yes/no/cancel", askyesnocancel("Spam", "Want it?")
     print "try again", askretrycancel("Spam", "Try again?")

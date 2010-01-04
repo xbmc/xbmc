@@ -30,9 +30,13 @@ Class HtmlDiff:
 
 __all__ = ['get_close_matches', 'ndiff', 'restore', 'SequenceMatcher',
            'Differ','IS_CHARACTER_JUNK', 'IS_LINE_JUNK', 'context_diff',
-           'unified_diff', 'HtmlDiff']
+           'unified_diff', 'HtmlDiff', 'Match']
 
 import heapq
+from collections import namedtuple as _namedtuple
+from functools import reduce
+
+Match = _namedtuple('Match', 'a b size')
 
 def _calculate_ratio(matches, length):
     if length:
@@ -86,8 +90,7 @@ class SequenceMatcher:
     >>> for block in s.get_matching_blocks():
     ...     print "a[%d] and b[%d] match for %d elements" % block
     a[0] and b[0] match for 8 elements
-    a[8] and b[17] match for 6 elements
-    a[14] and b[23] match for 15 elements
+    a[8] and b[17] match for 21 elements
     a[29] and b[38] match for 0 elements
 
     Note that the last tuple returned by .get_matching_blocks() is always a
@@ -101,8 +104,7 @@ class SequenceMatcher:
     ...     print "%6s a[%d:%d] b[%d:%d]" % opcode
      equal a[0:8] b[0:8]
     insert a[8:8] b[8:17]
-     equal a[8:14] b[17:23]
-     equal a[14:29] b[23:38]
+     equal a[8:29] b[17:38]
 
     See the Differ class for a fancy human-friendly file differencer, which
     uses SequenceMatcher both to compare sequences of lines, and to compare
@@ -201,7 +203,7 @@ class SequenceMatcher:
         #      DON'T USE!  Only __chain_b uses this.  Use isbjunk.
         # isbjunk
         #      for x in b, isbjunk(x) == isjunk(x) but much faster;
-        #      it's really the has_key method of a hidden dict.
+        #      it's really the __contains__ method of a hidden dict.
         #      DOES NOT WORK for x in a!
         # isbpopular
         #      for x in b, isbpopular(x) is true iff b is reasonably long
@@ -343,8 +345,8 @@ class SequenceMatcher:
         # lot of junk in the sequence, the number of *unique* junk
         # elements is probably small.  So the memory burden of keeping
         # this dict alive is likely trivial compared to the size of b2j.
-        self.isbjunk = junkdict.has_key
-        self.isbpopular = populardict.has_key
+        self.isbjunk = junkdict.__contains__
+        self.isbpopular = populardict.__contains__
 
     def find_longest_match(self, alo, ahi, blo, bhi):
         """Find longest matching block in a[alo:ahi] and b[blo:bhi].
@@ -365,7 +367,7 @@ class SequenceMatcher:
 
         >>> s = SequenceMatcher(None, " abcd", "abcd abcd")
         >>> s.find_longest_match(0, 5, 0, 9)
-        (0, 4, 5)
+        Match(a=0, b=4, size=5)
 
         If isjunk is defined, first the longest matching block is
         determined as above, but with the additional restriction that no
@@ -381,13 +383,13 @@ class SequenceMatcher:
 
         >>> s = SequenceMatcher(lambda x: x==" ", " abcd", "abcd abcd")
         >>> s.find_longest_match(0, 5, 0, 9)
-        (1, 0, 4)
+        Match(a=1, b=0, size=4)
 
         If no blocks match, return (alo, blo, 0).
 
         >>> s = SequenceMatcher(None, "ab", "c")
         >>> s.find_longest_match(0, 2, 0, 1)
-        (0, 0, 0)
+        Match(a=0, b=0, size=0)
         """
 
         # CAUTION:  stripping common prefix or suffix would be incorrect.
@@ -454,45 +456,78 @@ class SequenceMatcher:
               a[besti+bestsize] == b[bestj+bestsize]:
             bestsize = bestsize + 1
 
-        return besti, bestj, bestsize
+        return Match(besti, bestj, bestsize)
 
     def get_matching_blocks(self):
         """Return list of triples describing matching subsequences.
 
         Each triple is of the form (i, j, n), and means that
         a[i:i+n] == b[j:j+n].  The triples are monotonically increasing in
-        i and in j.
+        i and in j.  New in Python 2.5, it's also guaranteed that if
+        (i, j, n) and (i', j', n') are adjacent triples in the list, and
+        the second is not the last triple in the list, then i+n != i' or
+        j+n != j'.  IOW, adjacent triples never describe adjacent equal
+        blocks.
 
         The last triple is a dummy, (len(a), len(b), 0), and is the only
         triple with n==0.
 
         >>> s = SequenceMatcher(None, "abxcd", "abcd")
         >>> s.get_matching_blocks()
-        [(0, 0, 2), (3, 2, 2), (5, 4, 0)]
+        [Match(a=0, b=0, size=2), Match(a=3, b=2, size=2), Match(a=5, b=4, size=0)]
         """
 
         if self.matching_blocks is not None:
             return self.matching_blocks
-        self.matching_blocks = []
         la, lb = len(self.a), len(self.b)
-        self.__helper(0, la, 0, lb, self.matching_blocks)
-        self.matching_blocks.append( (la, lb, 0) )
-        return self.matching_blocks
 
-    # builds list of matching blocks covering a[alo:ahi] and
-    # b[blo:bhi], appending them in increasing order to answer
+        # This is most naturally expressed as a recursive algorithm, but
+        # at least one user bumped into extreme use cases that exceeded
+        # the recursion limit on their box.  So, now we maintain a list
+        # ('queue`) of blocks we still need to look at, and append partial
+        # results to `matching_blocks` in a loop; the matches are sorted
+        # at the end.
+        queue = [(0, la, 0, lb)]
+        matching_blocks = []
+        while queue:
+            alo, ahi, blo, bhi = queue.pop()
+            i, j, k = x = self.find_longest_match(alo, ahi, blo, bhi)
+            # a[alo:i] vs b[blo:j] unknown
+            # a[i:i+k] same as b[j:j+k]
+            # a[i+k:ahi] vs b[j+k:bhi] unknown
+            if k:   # if k is 0, there was no matching block
+                matching_blocks.append(x)
+                if alo < i and blo < j:
+                    queue.append((alo, i, blo, j))
+                if i+k < ahi and j+k < bhi:
+                    queue.append((i+k, ahi, j+k, bhi))
+        matching_blocks.sort()
 
-    def __helper(self, alo, ahi, blo, bhi, answer):
-        i, j, k = x = self.find_longest_match(alo, ahi, blo, bhi)
-        # a[alo:i] vs b[blo:j] unknown
-        # a[i:i+k] same as b[j:j+k]
-        # a[i+k:ahi] vs b[j+k:bhi] unknown
-        if k:
-            if alo < i and blo < j:
-                self.__helper(alo, i, blo, j, answer)
-            answer.append(x)
-            if i+k < ahi and j+k < bhi:
-                self.__helper(i+k, ahi, j+k, bhi, answer)
+        # It's possible that we have adjacent equal blocks in the
+        # matching_blocks list now.  Starting with 2.5, this code was added
+        # to collapse them.
+        i1 = j1 = k1 = 0
+        non_adjacent = []
+        for i2, j2, k2 in matching_blocks:
+            # Is this block adjacent to i1, j1, k1?
+            if i1 + k1 == i2 and j1 + k1 == j2:
+                # Yes, so collapse them -- this just increases the length of
+                # the first block by the length of the second, and the first
+                # block so lengthened remains the block to compare against.
+                k1 += k2
+            else:
+                # Not adjacent.  Remember the first block (k1==0 means it's
+                # the dummy we started with), and make the second block the
+                # new block to compare against.
+                if k1:
+                    non_adjacent.append((i1, j1, k1))
+                i1, j1, k1 = i2, j2, k2
+        if k1:
+            non_adjacent.append((i1, j1, k1))
+
+        non_adjacent.append( (la, lb, 0) )
+        self.matching_blocks = non_adjacent
+        return map(Match._make, self.matching_blocks)
 
     def get_opcodes(self):
         """Return list of 5-tuples describing how to turn a into b.
@@ -643,7 +678,7 @@ class SequenceMatcher:
         # avail[x] is the number of times x appears in 'b' less the
         # number of times we've seen it in 'a' so far ... kinda
         avail = {}
-        availhas, matches = avail.has_key, 0
+        availhas, matches = avail.__contains__, 0
         for elt in self.a:
             if availhas(elt):
                 numb = avail[elt]
@@ -1280,7 +1315,7 @@ def ndiff(a, b, linejunk=None, charjunk=IS_CHARACTER_JUNK):
 
 def _mdiff(fromlines, tolines, context=None, linejunk=None,
            charjunk=IS_CHARACTER_JUNK):
-    """Returns generator yielding marked up from/to side by side differences.
+    r"""Returns generator yielding marked up from/to side by side differences.
 
     Arguments:
     fromlines -- list of text lines to compared to tolines
@@ -1294,7 +1329,7 @@ def _mdiff(fromlines, tolines, context=None, linejunk=None,
     (from line tuple, to line tuple, boolean flag)
 
     from/to line tuple -- (line num, line text)
-        line num -- integer or None (to indicate a context seperation)
+        line num -- integer or None (to indicate a context separation)
         line text -- original line text with following markers inserted:
             '\0+' -- marks start of added text
             '\0-' -- marks start of deleted text
@@ -1417,8 +1452,7 @@ def _mdiff(fromlines, tolines, context=None, linejunk=None,
                 num_blanks_pending -= 1
                 yield _make_line(lines,'-',0), None, True
                 continue
-            elif s.startswith('--?+') or s.startswith('--+') or \
-                 s.startswith('- '):
+            elif s.startswith(('--?+', '--+', '- ')):
                 # in delete block and see a intraline change or unchanged line
                 # coming: yield the delete line and then blanks
                 from_line,to_line = _make_line(lines,'-',0), None
@@ -1442,7 +1476,7 @@ def _mdiff(fromlines, tolines, context=None, linejunk=None,
                 num_blanks_pending += 1
                 yield None, _make_line(lines,'+',1), True
                 continue
-            elif s.startswith('+ ') or s.startswith('+-'):
+            elif s.startswith(('+ ', '+-')):
                 # will be leaving an add block: yield blanks then add line
                 from_line, to_line = None, _make_line(lines,'+',1)
                 num_blanks_to_yield,num_blanks_pending = num_blanks_pending+1,0
@@ -1915,8 +1949,7 @@ class HtmlDiff(object):
         fromlist,tolist,flaglist,next_href,next_id = self._convert_flags(
             fromlist,tolist,flaglist,context,numlines)
 
-        import cStringIO
-        s = cStringIO.StringIO()
+        s = []
         fmt = '            <tr><td class="diff_next"%s>%s</td>%s' + \
               '<td class="diff_next">%s</td>%s</tr>\n'
         for i in range(len(flaglist)):
@@ -1924,9 +1957,9 @@ class HtmlDiff(object):
                 # mdiff yields None on separator lines skip the bogus ones
                 # generated for the first line
                 if i > 0:
-                    s.write('        </tbody>        \n        <tbody>\n')
+                    s.append('        </tbody>        \n        <tbody>\n')
             else:
-                s.write( fmt % (next_id[i],next_href[i],fromlist[i],
+                s.append( fmt % (next_id[i],next_href[i],fromlist[i],
                                            next_href[i],tolist[i]))
         if fromdesc or todesc:
             header_row = '<thead><tr>%s%s%s%s</tr></thead>' % (
@@ -1938,7 +1971,7 @@ class HtmlDiff(object):
             header_row = ''
 
         table = self._table_template % dict(
-            data_rows=s.getvalue(),
+            data_rows=''.join(s),
             header_row=header_row,
             prefix=self._prefix[1])
 

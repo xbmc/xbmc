@@ -5,12 +5,12 @@ executing have not been removed.
 
 """
 import unittest
-from test.test_support import TestSkipped, TestFailed, run_unittest, TESTFN
+from test.test_support import TestSkipped, run_unittest, TESTFN, EnvironmentVarGuard
 import __builtin__
 import os
 import sys
 import encodings
-import tempfile
+import subprocess
 # Need to make sure to not import 'site' if someone specified ``-S`` at the
 # command-line.  Detect this by just making sure 'site' has not been imported
 # already.
@@ -18,6 +18,11 @@ if "site" in sys.modules:
     import site
 else:
     raise TestSkipped("importation of site.py suppressed")
+
+if not os.path.isdir(site.USER_SITE):
+    # need to add user site directory for tests
+    os.makedirs(site.USER_SITE)
+    site.addsitedir(site.USER_SITE)
 
 class HelperFunctionsTests(unittest.TestCase):
     """Tests for helper functions.
@@ -91,6 +96,33 @@ class HelperFunctionsTests(unittest.TestCase):
         finally:
             pth_file.cleanup()
 
+    def test_s_option(self):
+        usersite = site.USER_SITE
+        self.assert_(usersite in sys.path)
+
+        rc = subprocess.call([sys.executable, '-c',
+            'import sys; sys.exit(%r in sys.path)' % usersite])
+        self.assertEqual(rc, 1)
+
+        rc = subprocess.call([sys.executable, '-s', '-c',
+            'import sys; sys.exit(%r in sys.path)' % usersite])
+        self.assertEqual(rc, 0)
+
+        env = os.environ.copy()
+        env["PYTHONNOUSERSITE"] = "1"
+        rc = subprocess.call([sys.executable, '-c',
+            'import sys; sys.exit(%r in sys.path)' % usersite],
+            env=env)
+        self.assertEqual(rc, 0)
+
+        env = os.environ.copy()
+        env["PYTHONUSERBASE"] = "/tmp"
+        rc = subprocess.call([sys.executable, '-c',
+            'import sys, site; sys.exit(site.USER_BASE.startswith("/tmp"))'],
+            env=env)
+        self.assertEqual(rc, 1)
+
+
 class PthFile(object):
     """Helper class for handling testing of .pth files"""
 
@@ -117,7 +149,7 @@ class PthFile(object):
         Make sure to call self.cleanup() to undo anything done by this method.
 
         """
-        FILE = open(self.file_path, 'wU')
+        FILE = open(self.file_path, 'w')
         try:
             print>>FILE, "#import @bad module name"
             print>>FILE, "\n"
@@ -224,13 +256,8 @@ class ImportSideEffectTests(unittest.TestCase):
             else:
                 self.fail("sitecustomize not imported automatically")
 
-
-
-
 def test_main():
     run_unittest(HelperFunctionsTests, ImportSideEffectTests)
-
-
 
 if __name__ == "__main__":
     test_main()

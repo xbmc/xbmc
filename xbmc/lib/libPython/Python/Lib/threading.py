@@ -8,14 +8,29 @@ except ImportError:
     del _sys.modules[__name__]
     raise
 
+import warnings
+
+from functools import wraps
 from time import time as _time, sleep as _sleep
 from traceback import format_exc as _format_exc
 from collections import deque
 
+# Note regarding PEP 8 compliant aliases
+#  This threading model was originally inspired by Java, and inherited
+# the convention of camelCase function and method names from that
+# language. While those names are not in any imminent danger of being
+# deprecated, starting with Python 2.6, the module now provides a
+# PEP 8 compliant alias for any such method name.
+# Using the new PEP 8 compliant names also facilitates substitution
+# with the multiprocessing module, which doesn't provide the old
+# Java inspired names.
+
+
 # Rename some stuff so "from threading import *" is safe
-__all__ = ['activeCount', 'Condition', 'currentThread', 'enumerate', 'Event',
+__all__ = ['activeCount', 'active_count', 'Condition', 'currentThread',
+           'current_thread', 'enumerate', 'Event',
            'Lock', 'RLock', 'Semaphore', 'BoundedSemaphore', 'Thread',
-           'Timer', 'setprofile', 'settrace', 'local']
+           'Timer', 'setprofile', 'settrace', 'local', 'stack_size']
 
 _start_new_thread = thread.start_new_thread
 _allocate_lock = thread.allocate_lock
@@ -23,6 +38,11 @@ _get_ident = thread.get_ident
 ThreadError = thread.error
 del thread
 
+
+# sys.exc_clear is used to work around the fact that except blocks
+# don't fully clear the exception until 3.0.
+warnings.filterwarnings('ignore', category=DeprecationWarning,
+                        module='threading', message='sys.exc_clear')
 
 # Debug support (adapted from ihooks.py).
 # All the major classes here derive from _Verbose.  We force that to
@@ -45,7 +65,7 @@ if __debug__:
             if self.__verbose:
                 format = format % args
                 format = "%s: %s\n" % (
-                    currentThread().getName(), format)
+                    current_thread().name, format)
                 _sys.stderr.write(format)
 
 else:
@@ -85,13 +105,14 @@ class _RLock(_Verbose):
         self.__count = 0
 
     def __repr__(self):
+        owner = self.__owner
         return "<%s(%s, %d)>" % (
                 self.__class__.__name__,
-                self.__owner and self.__owner.getName(),
+                owner and owner.name,
                 self.__count)
 
     def acquire(self, blocking=1):
-        me = currentThread()
+        me = current_thread()
         if self.__owner is me:
             self.__count = self.__count + 1
             if __debug__:
@@ -108,9 +129,11 @@ class _RLock(_Verbose):
                 self._note("%s.acquire(%s): failure", self, blocking)
         return rc
 
+    __enter__ = acquire
+
     def release(self):
-        me = currentThread()
-        assert self.__owner is me, "release() of un-acquire()d lock"
+        if self.__owner is not current_thread():
+            raise RuntimeError("cannot release un-aquired lock")
         self.__count = count = self.__count - 1
         if not count:
             self.__owner = None
@@ -121,9 +144,13 @@ class _RLock(_Verbose):
             if __debug__:
                 self._note("%s.release(): non-final release", self)
 
+    def __exit__(self, t, v, tb):
+        self.release()
+
     # Internal methods used by condition variables
 
-    def _acquire_restore(self, (count, owner)):
+    def _acquire_restore(self, count_owner):
+        count, owner = count_owner
         self.__block.acquire()
         self.__count = count
         self.__owner = owner
@@ -141,7 +168,7 @@ class _RLock(_Verbose):
         return (count, owner)
 
     def _is_owned(self):
-        return self.__owner is currentThread()
+        return self.__owner is current_thread()
 
 
 def Condition(*args, **kwargs):
@@ -174,6 +201,12 @@ class _Condition(_Verbose):
             pass
         self.__waiters = []
 
+    def __enter__(self):
+        return self.__lock.__enter__()
+
+    def __exit__(self, *args):
+        return self.__lock.__exit__(*args)
+
     def __repr__(self):
         return "<Condition(%s, %d)>" % (self.__lock, len(self.__waiters))
 
@@ -184,7 +217,7 @@ class _Condition(_Verbose):
         self.__lock.acquire()           # Ignore saved state
 
     def _is_owned(self):
-        # Return True if lock is owned by currentThread.
+        # Return True if lock is owned by current_thread.
         # This method is called only if __lock doesn't have _is_owned().
         if self.__lock.acquire(0):
             self.__lock.release()
@@ -193,7 +226,8 @@ class _Condition(_Verbose):
             return True
 
     def wait(self, timeout=None):
-        assert self._is_owned(), "wait() of un-acquire()d lock"
+        if not self._is_owned():
+            raise RuntimeError("cannot wait on un-aquired lock")
         waiter = _allocate_lock()
         waiter.acquire()
         self.__waiters.append(waiter)
@@ -234,7 +268,8 @@ class _Condition(_Verbose):
             self._acquire_restore(saved_state)
 
     def notify(self, n=1):
-        assert self._is_owned(), "notify() of un-acquire()d lock"
+        if not self._is_owned():
+            raise RuntimeError("cannot notify on un-aquired lock")
         __waiters = self.__waiters
         waiters = __waiters[:n]
         if not waiters:
@@ -253,6 +288,8 @@ class _Condition(_Verbose):
     def notifyAll(self):
         self.notify(len(self.__waiters))
 
+    notify_all = notifyAll
+
 
 def Semaphore(*args, **kwargs):
     return _Semaphore(*args, **kwargs)
@@ -262,7 +299,8 @@ class _Semaphore(_Verbose):
     # After Tim Peters' semaphore class, but not quite the same (no maximum)
 
     def __init__(self, value=1, verbose=None):
-        assert value >= 0, "Semaphore initial value must be >= 0"
+        if value < 0:
+            raise ValueError("semaphore initial value must be >= 0")
         _Verbose.__init__(self, verbose)
         self.__cond = Condition(Lock())
         self.__value = value
@@ -286,6 +324,8 @@ class _Semaphore(_Verbose):
         self.__cond.release()
         return rc
 
+    __enter__ = acquire
+
     def release(self):
         self.__cond.acquire()
         self.__value = self.__value + 1
@@ -294,6 +334,9 @@ class _Semaphore(_Verbose):
                        self, self.__value)
         self.__cond.notify()
         self.__cond.release()
+
+    def __exit__(self, t, v, tb):
+        self.release()
 
 
 def BoundedSemaphore(*args, **kwargs):
@@ -326,11 +369,13 @@ class _Event(_Verbose):
     def isSet(self):
         return self.__flag
 
+    is_set = isSet
+
     def set(self):
         self.__cond.acquire()
         try:
             self.__flag = True
-            self.__cond.notifyAll()
+            self.__cond.notify_all()
         finally:
             self.__cond.release()
 
@@ -358,7 +403,7 @@ def _newname(template="Thread-%d"):
 
 # Active thread administration
 _active_limbo_lock = _allocate_lock()
-_active = {}
+_active = {}    # maps thread id to Thread object
 _limbo = {}
 
 
@@ -372,17 +417,23 @@ class Thread(_Verbose):
     # shutdown and thus raises an exception about trying to perform some
     # operation on/with a NoneType
     __exc_info = _sys.exc_info
+    # Keep sys.exc_clear too to clear the exception just before
+    # allowing .join() to return.
+    __exc_clear = _sys.exc_clear
 
     def __init__(self, group=None, target=None, name=None,
-                 args=(), kwargs={}, verbose=None):
+                 args=(), kwargs=None, verbose=None):
         assert group is None, "group argument must be None for now"
         _Verbose.__init__(self, verbose)
+        if kwargs is None:
+            kwargs = {}
         self.__target = target
         self.__name = str(name or _newname())
         self.__args = args
         self.__kwargs = kwargs
         self.__daemonic = self._set_daemon()
-        self.__started = False
+        self.__ident = None
+        self.__started = Event()
         self.__stopped = False
         self.__block = Condition(Lock())
         self.__initialized = True
@@ -392,40 +443,72 @@ class Thread(_Verbose):
 
     def _set_daemon(self):
         # Overridden in _MainThread and _DummyThread
-        return currentThread().isDaemon()
+        return current_thread().daemon
 
     def __repr__(self):
         assert self.__initialized, "Thread.__init__() was not called"
         status = "initial"
-        if self.__started:
+        if self.__started.is_set():
             status = "started"
         if self.__stopped:
             status = "stopped"
         if self.__daemonic:
-            status = status + " daemon"
+            status += " daemon"
+        if self.__ident is not None:
+            status += " %s" % self.__ident
         return "<%s(%s, %s)>" % (self.__class__.__name__, self.__name, status)
 
     def start(self):
-        assert self.__initialized, "Thread.__init__() not called"
-        assert not self.__started, "thread already started"
+        if not self.__initialized:
+            raise RuntimeError("thread.__init__() not called")
+        if self.__started.is_set():
+            raise RuntimeError("thread already started")
         if __debug__:
             self._note("%s.start(): starting thread", self)
         _active_limbo_lock.acquire()
         _limbo[self] = self
         _active_limbo_lock.release()
         _start_new_thread(self.__bootstrap, ())
-        self.__started = True
-        _sleep(0.000001)    # 1 usec, to let the thread run (Solaris hack)
+        self.__started.wait()
 
     def run(self):
-        if self.__target:
-            self.__target(*self.__args, **self.__kwargs)
+        try:
+            if self.__target:
+                self.__target(*self.__args, **self.__kwargs)
+        finally:
+            # Avoid a refcycle if the thread is running a function with
+            # an argument that has a member that points to the thread.
+            del self.__target, self.__args, self.__kwargs
 
     def __bootstrap(self):
+        # Wrapper around the real bootstrap code that ignores
+        # exceptions during interpreter cleanup.  Those typically
+        # happen when a daemon thread wakes up at an unfortunate
+        # moment, finds the world around it destroyed, and raises some
+        # random exception *** while trying to report the exception in
+        # __bootstrap_inner() below ***.  Those random exceptions
+        # don't help anybody, and they confuse users, so we suppress
+        # them.  We suppress them only when it appears that the world
+        # indeed has already been destroyed, so that exceptions in
+        # __bootstrap_inner() during normal business hours are properly
+        # reported.  Also, we only suppress them for daemonic threads;
+        # if a non-daemonic encounters this, something else is wrong.
         try:
-            self.__started = True
+            self.__bootstrap_inner()
+        except:
+            if self.__daemonic and _sys is None:
+                return
+            raise
+
+    def _set_ident(self):
+        self.__ident = _get_ident()
+
+    def __bootstrap_inner(self):
+        try:
+            self._set_ident()
+            self.__started.set()
             _active_limbo_lock.acquire()
-            _active[_get_ident()] = self
+            _active[self.__ident] = self
             del _limbo[self]
             _active_limbo_lock.release()
             if __debug__:
@@ -452,7 +535,7 @@ class Thread(_Verbose):
                 # self.
                 if _sys:
                     _sys.stderr.write("Exception in thread %s:\n%s\n" %
-                                      (self.getName(), _format_exc()))
+                                      (self.name, _format_exc()))
                 else:
                     # Do the best job possible w/o a huge amt. of code to
                     # approximate a traceback (code ideas from
@@ -460,7 +543,7 @@ class Thread(_Verbose):
                     exc_type, exc_value, exc_tb = self.__exc_info()
                     try:
                         print>>self.__stderr, (
-                            "Exception in thread " + self.getName() +
+                            "Exception in thread " + self.name +
                             " (most likely raised during interpreter shutdown):")
                         print>>self.__stderr, (
                             "Traceback (most recent call last):")
@@ -479,17 +562,26 @@ class Thread(_Verbose):
             else:
                 if __debug__:
                     self._note("%s.__bootstrap(): normal return", self)
+            finally:
+                # Prevent a race in
+                # test_threading.test_no_refcycle_through_target when
+                # the exception keeps the target alive past when we
+                # assert that it's dead.
+                self.__exc_clear()
         finally:
-            self.__stop()
-            try:
-                self.__delete()
-            except:
-                pass
+            with _active_limbo_lock:
+                self.__stop()
+                try:
+                    # We don't call self.__delete() because it also
+                    # grabs _active_limbo_lock.
+                    del _active[_get_ident()]
+                except:
+                    pass
 
     def __stop(self):
         self.__block.acquire()
         self.__stopped = True
-        self.__block.notifyAll()
+        self.__block.notify_all()
         self.__block.release()
 
     def __delete(self):
@@ -516,20 +608,25 @@ class Thread(_Verbose):
         # since it isn't if dummy_threading is *not* being used then don't
         # hide the exception.
 
-        _active_limbo_lock.acquire()
         try:
-            try:
+            with _active_limbo_lock:
                 del _active[_get_ident()]
-            except KeyError:
-                if 'dummy_threading' not in _sys.modules:
-                    raise
-        finally:
-            _active_limbo_lock.release()
+                # There must not be any python code between the previous line
+                # and after the lock is released.  Otherwise a tracing function
+                # could try to acquire the lock again in the same thread, (in
+                # current_thread()), and would block.
+        except KeyError:
+            if 'dummy_threading' not in _sys.modules:
+                raise
 
     def join(self, timeout=None):
-        assert self.__initialized, "Thread.__init__() not called"
-        assert self.__started, "cannot join thread before it is started"
-        assert self is not currentThread(), "cannot join current thread"
+        if not self.__initialized:
+            raise RuntimeError("Thread.__init__() not called")
+        if not self.__started.is_set():
+            raise RuntimeError("cannot join thread before it is started")
+        if self is current_thread():
+            raise RuntimeError("cannot join current thread")
+
         if __debug__:
             if not self.__stopped:
                 self._note("%s.join(): waiting until thread stops", self)
@@ -555,26 +652,51 @@ class Thread(_Verbose):
         finally:
             self.__block.release()
 
-    def getName(self):
+    @property
+    def name(self):
         assert self.__initialized, "Thread.__init__() not called"
         return self.__name
 
-    def setName(self, name):
+    @name.setter
+    def name(self, name):
         assert self.__initialized, "Thread.__init__() not called"
         self.__name = str(name)
 
+    @property
+    def ident(self):
+        assert self.__initialized, "Thread.__init__() not called"
+        return self.__ident
+
     def isAlive(self):
         assert self.__initialized, "Thread.__init__() not called"
-        return self.__started and not self.__stopped
+        return self.__started.is_set() and not self.__stopped
 
-    def isDaemon(self):
+    is_alive = isAlive
+
+    @property
+    def daemon(self):
         assert self.__initialized, "Thread.__init__() not called"
         return self.__daemonic
 
-    def setDaemon(self, daemonic):
-        assert self.__initialized, "Thread.__init__() not called"
-        assert not self.__started, "cannot set daemon status of active thread"
+    @daemon.setter
+    def daemon(self, daemonic):
+        if not self.__initialized:
+            raise RuntimeError("Thread.__init__() not called")
+        if self.__started.is_set():
+            raise RuntimeError("cannot set daemon status of active thread");
         self.__daemonic = daemonic
+
+    def isDaemon(self):
+        return self.daemon
+
+    def setDaemon(self, daemonic):
+        self.daemon = daemonic
+
+    def getName(self):
+        return self.name
+
+    def setName(self, name):
+        self.name = name
 
 # The timer class was contributed by Itamar Shtull-Trauring
 
@@ -603,7 +725,7 @@ class _Timer(Thread):
 
     def run(self):
         self.finished.wait(self.interval)
-        if not self.finished.isSet():
+        if not self.finished.is_set():
             self.function(*self.args, **self.kwargs)
         self.finished.set()
 
@@ -614,17 +736,16 @@ class _MainThread(Thread):
 
     def __init__(self):
         Thread.__init__(self, name="MainThread")
-        self._Thread__started = True
+        self._Thread__started.set()
+        self._set_ident()
         _active_limbo_lock.acquire()
         _active[_get_ident()] = self
         _active_limbo_lock.release()
-        import atexit
-        atexit.register(self.__exitfunc)
 
     def _set_daemon(self):
         return False
 
-    def __exitfunc(self):
+    def _exitfunc(self):
         self._Thread__stop()
         t = _pickSomeNonDaemonThread()
         if t:
@@ -639,15 +760,16 @@ class _MainThread(Thread):
 
 def _pickSomeNonDaemonThread():
     for t in enumerate():
-        if not t.isDaemon() and t.isAlive():
+        if not t.daemon and t.is_alive():
             return t
     return None
 
 
 # Dummy thread class to represent threads not started here.
-# These aren't garbage collected when they die,
-# nor can they be waited for.
-# Their purpose is to return *something* from currentThread().
+# These aren't garbage collected when they die, nor can they be waited for.
+# If they invoke anything in threading.py that calls current_thread(), they
+# leave an entry in the _active dict forever after.
+# Their purpose is to return *something* from current_thread().
 # They are marked as daemon threads so we won't wait for them
 # when we exit (conform previous semantics).
 
@@ -655,7 +777,14 @@ class _DummyThread(Thread):
 
     def __init__(self):
         Thread.__init__(self, name=_newname("Dummy-%d"))
-        self._Thread__started = True
+
+        # Thread.__block consumes an OS-level locking primitive, which
+        # can never be used by a _DummyThread.  Since a _DummyThread
+        # instance is immortal, that's bad, so release this resource.
+        del self._Thread__block
+
+        self._Thread__started.set()
+        self._set_ident()
         _active_limbo_lock.acquire()
         _active[_get_ident()] = self
         _active_limbo_lock.release()
@@ -673,8 +802,10 @@ def currentThread():
     try:
         return _active[_get_ident()]
     except KeyError:
-        ##print "currentThread(): no current thread for", _get_ident()
+        ##print "current_thread(): no current thread for", _get_ident()
         return _DummyThread()
+
+current_thread = currentThread
 
 def activeCount():
     _active_limbo_lock.acquire()
@@ -682,15 +813,21 @@ def activeCount():
     _active_limbo_lock.release()
     return count
 
+active_count = activeCount
+
 def enumerate():
     _active_limbo_lock.acquire()
     active = _active.values() + _limbo.values()
     _active_limbo_lock.release()
     return active
 
-# Create the main thread object
+from thread import stack_size
 
-_MainThread()
+# Create the main thread object,
+# and make it available for the interpreter
+# (Py_Main) as threading._shutdown.
+
+_shutdown = _MainThread()._exitfunc
 
 # get thread-local implementation, either from the thread
 # module, or from the python fallback
@@ -699,6 +836,40 @@ try:
     from thread import _local as local
 except ImportError:
     from _threading_local import local
+
+
+def _after_fork():
+    # This function is called by Python/ceval.c:PyEval_ReInitThreads which
+    # is called from PyOS_AfterFork.  Here we cleanup threading module state
+    # that should not exist after a fork.
+
+    # Reset _active_limbo_lock, in case we forked while the lock was held
+    # by another (non-forked) thread.  http://bugs.python.org/issue874900
+    global _active_limbo_lock
+    _active_limbo_lock = _allocate_lock()
+
+    # fork() only copied the current thread; clear references to others.
+    new_active = {}
+    current = current_thread()
+    with _active_limbo_lock:
+        for thread in _active.itervalues():
+            if thread is current:
+                # There is only one active thread. We reset the ident to
+                # its new value since it can have changed.
+                ident = _get_ident()
+                thread._Thread__ident = ident
+                new_active[ident] = thread
+            else:
+                # All the others are already stopped.
+                # We don't call _Thread__stop() because it tries to acquire
+                # thread._Thread__block which could also have been held while
+                # we forked.
+                thread._Thread__stopped = True
+
+        _limbo.clear()
+        _active.clear()
+        _active.update(new_active)
+        assert len(_active) == 1
 
 
 # Self-test code
@@ -749,7 +920,7 @@ def _test():
             counter = 0
             while counter < self.quota:
                 counter = counter + 1
-                self.queue.put("%s.%d" % (self.getName(), counter))
+                self.queue.put("%s.%d" % (self.name, counter))
                 _sleep(random() * 0.00001)
 
 
@@ -774,7 +945,7 @@ def _test():
     P = []
     for i in range(NP):
         t = ProducerThread(Q, NI)
-        t.setName("Producer-%d" % (i+1))
+        t.name = ("Producer-%d" % (i+1))
         P.append(t)
     C = ConsumerThread(Q, NI*NP)
     for t in P:

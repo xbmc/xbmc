@@ -1,4 +1,5 @@
 import unittest
+import sys
 
 from test import test_support
 
@@ -99,7 +100,8 @@ class EnumerateTestCase(unittest.TestCase):
     def test_argumentcheck(self):
         self.assertRaises(TypeError, self.enum) # no arguments
         self.assertRaises(TypeError, self.enum, 1) # wrong type (not iterable)
-        self.assertRaises(TypeError, self.enum, 'abc', 2) # too many arguments
+        self.assertRaises(TypeError, self.enum, 'abc', 'a') # wrong type
+        self.assertRaises(TypeError, self.enum, 'abc', 2, 3) # too many arguments
 
     def test_tuple_reuse(self):
         # Tests an implementation detail where tuple is reused
@@ -136,6 +138,8 @@ class TestReversed(unittest.TestCase):
         for data in 'abc', range(5), tuple(enumerate('abc')), A(), xrange(1,17,5):
             self.assertEqual(list(data)[::-1], list(reversed(data)))
         self.assertRaises(TypeError, reversed, {})
+        # don't allow keyword arguments
+        self.assertRaises(TypeError, reversed, [], a=1)
 
     def test_xrange_optimization(self):
         x = xrange(1)
@@ -143,6 +147,7 @@ class TestReversed(unittest.TestCase):
 
     def test_len(self):
         # This is an implementation detail, not an interface requirement
+        from test.test_iterlen import len
         for s in ('hello', tuple('hello'), list('hello'), xrange(5)):
             self.assertEqual(len(reversed(s)), len(s))
             r = reversed(s)
@@ -174,6 +179,38 @@ class TestReversed(unittest.TestCase):
     def test_args(self):
         self.assertRaises(TypeError, reversed)
         self.assertRaises(TypeError, reversed, [], 'extra')
+
+    def test_bug1229429(self):
+        # this bug was never in reversed, it was in
+        # PyObject_CallMethod, and reversed_new calls that sometimes.
+        if not hasattr(sys, "getrefcount"):
+            return
+        def f():
+            pass
+        r = f.__reversed__ = object()
+        rc = sys.getrefcount(r)
+        for i in range(10):
+            try:
+                reversed(f)
+            except TypeError:
+                pass
+            else:
+                self.fail("non-callable __reversed__ didn't raise!")
+        self.assertEqual(rc, sys.getrefcount(r))
+
+
+class TestStart(EnumerateTestCase):
+
+    enum = lambda i: enumerate(i, start=11)
+    seq, res = 'abc', [(1, 'a'), (2, 'b'), (3, 'c')]
+
+
+class TestLongStart(EnumerateTestCase):
+
+    enum = lambda i: enumerate(i, start=sys.maxint+1)
+    seq, res = 'abc', [(sys.maxint+1,'a'), (sys.maxint+2,'b'),
+                       (sys.maxint+3,'c')]
+
 
 def test_main(verbose=None):
     testclasses = (EnumerateTestCase, SubclassTestCase, TestEmpty, TestBig,

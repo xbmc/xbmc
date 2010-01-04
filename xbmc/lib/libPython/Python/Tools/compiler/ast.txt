@@ -6,20 +6,25 @@
 #    !   this child is a sequence that contains nodes in it
 #    &   this child may be set to None
 #  = ... a default value for the node constructor (optional args)
+#
+# If you add node types here, please be sure to update the list of 
+# Node types in Doc/lib/asttable.tex.
 Module: doc*, node
 Stmt: nodes!
 Decorators: nodes!
 Function: decorators&, name*, argnames*, defaults!, flags*, doc*, code
 Lambda: argnames*, defaults!, flags*, code
-Class: name*, bases!, doc*, code
+Class: name*, bases!, doc*, code, decorators& = None
 Pass: 
 Break: 
 Continue: 
 For: assign, list, body, else_&
 While: test, body, else_&
+With: expr, vars&, body
 If: tests!, else_&
+IfExp: test, then, else_
 Exec: expr, locals&, globals&
-From: modname*, names*
+From: modname*, names*, level*
 Import: names*
 Raise: expr1&, expr2&, expr3&
 TryFinally: body, final
@@ -39,7 +44,7 @@ AssAttr: expr, attrname*, flags*
 ListComp: expr, quals!
 ListCompFor: assign, list, ifs!
 ListCompIf: test
-GenExpr: code 
+GenExpr: code
 GenExprInner: expr, quals!
 GenExprFor: assign, iter, ifs!
 GenExprIf: test
@@ -92,7 +97,7 @@ init(Lambda):
         self.kwargs = 1
 
 init(GenExpr):
-    self.argnames = ['[outmost-iterable]']
+    self.argnames = ['.0']
     self.varargs = self.kwargs = None
 
 init(GenExprFor):

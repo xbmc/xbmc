@@ -14,14 +14,14 @@ int Py_TabcheckFlag;
 
 
 /* Forward */
-static node *parsetok(struct tok_state *, grammar *, int, perrdetail *, int);
+static node *parsetok(struct tok_state *, grammar *, int, perrdetail *, int *);
 static void initerr(perrdetail *err_ret, const char* filename);
 
 /* Parse input coming from a string.  Return error code, print some errors. */
 node *
 PyParser_ParseString(const char *s, grammar *g, int start, perrdetail *err_ret)
 {
-	return PyParser_ParseStringFlags(s, g, start, err_ret, 0);
+	return PyParser_ParseStringFlagsFilename(s, NULL, g, start, err_ret, 0);
 }
 
 node *
@@ -37,12 +37,22 @@ PyParser_ParseStringFlagsFilename(const char *s, const char *filename,
 			  grammar *g, int start,
 		          perrdetail *err_ret, int flags)
 {
+	int iflags = flags;
+	return PyParser_ParseStringFlagsFilenameEx(s, filename, g, start,
+						   err_ret, &iflags);
+}
+
+node *
+PyParser_ParseStringFlagsFilenameEx(const char *s, const char *filename,
+			  grammar *g, int start,
+		          perrdetail *err_ret, int *flags)
+{
 	struct tok_state *tok;
 
 	initerr(err_ret, filename);
 
 	if ((tok = PyTokenizer_FromString(s)) == NULL) {
-		err_ret->error = E_NOMEM;
+		err_ret->error = PyErr_Occurred() ? E_DECODE : E_NOMEM;
 		return NULL;
 	}
 
@@ -55,7 +65,6 @@ PyParser_ParseStringFlagsFilename(const char *s, const char *filename,
 
 	return parsetok(tok, g, start, err_ret, flags);
 }
-
 
 /* Parse input coming from a file.  Return error code, print some errors. */
 
@@ -70,6 +79,14 @@ PyParser_ParseFile(FILE *fp, const char *filename, grammar *g, int start,
 node *
 PyParser_ParseFileFlags(FILE *fp, const char *filename, grammar *g, int start,
 			char *ps1, char *ps2, perrdetail *err_ret, int flags)
+{
+	int iflags = flags;
+	return PyParser_ParseFileFlagsEx(fp, filename, g, start, ps1, ps2, err_ret, &iflags);
+}
+
+node *
+PyParser_ParseFileFlagsEx(FILE *fp, const char *filename, grammar *g, int start,
+			  char *ps1, char *ps2, perrdetail *err_ret, int *flags)
 {
 	struct tok_state *tok;
 
@@ -86,34 +103,50 @@ PyParser_ParseFileFlags(FILE *fp, const char *filename, grammar *g, int start,
 			tok->alterror++;
 	}
 
-
 	return parsetok(tok, g, start, err_ret, flags);
 }
+
+#if 0
+static char with_msg[] =
+"%s:%d: Warning: 'with' will become a reserved keyword in Python 2.6\n";
+
+static char as_msg[] =
+"%s:%d: Warning: 'as' will become a reserved keyword in Python 2.6\n";
+
+static void
+warn(const char *msg, const char *filename, int lineno)
+{
+	if (filename == NULL)
+		filename = "<string>";
+	PySys_WriteStderr(msg, filename, lineno);
+}
+#endif
 
 /* Parse input coming from the given tokenizer structure.
    Return error code. */
 
-#if 0 /* future keyword */
-static char yield_msg[] =
-"%s:%d: Warning: 'yield' will become a reserved keyword in the future\n";
-#endif
-
 static node *
 parsetok(struct tok_state *tok, grammar *g, int start, perrdetail *err_ret,
-	 int flags)
+	 int *flags)
 {
 	parser_state *ps;
 	node *n;
-	int started = 0;
+	int started = 0, handling_import = 0, handling_with = 0;
 
 	if ((ps = PyParser_New(g, start)) == NULL) {
 		fprintf(stderr, "no mem for new parser\n");
 		err_ret->error = E_NOMEM;
+		PyTokenizer_Free(tok);
 		return NULL;
 	}
-#if 0 /* future keyword */
-	if (flags & PyPARSE_YIELD_IS_KEYWORD)
-		ps->p_generators = 1;
+#ifdef PY_PARSER_REQUIRES_FUTURE_KEYWORD
+	if (*flags & PyPARSE_PRINT_IS_FUNCTION) {
+		ps->p_flags |= CO_FUTURE_PRINT_FUNCTION;
+	}
+	if (*flags & PyPARSE_UNICODE_LITERALS) {
+		ps->p_flags |= CO_FUTURE_UNICODE_LITERALS;
+	}
+
 #endif
 
 	for (;;) {
@@ -121,6 +154,7 @@ parsetok(struct tok_state *tok, grammar *g, int start, perrdetail *err_ret,
 		int type;
 		size_t len;
 		char *str;
+		int col_offset;
 
 		type = PyTokenizer_Get(tok, &a, &b);
 		if (type == ERRORTOKEN) {
@@ -129,12 +163,13 @@ parsetok(struct tok_state *tok, grammar *g, int start, perrdetail *err_ret,
 		}
 		if (type == ENDMARKER && started) {
 			type = NEWLINE; /* Add an extra newline */
+			handling_with = handling_import = 0;
 			started = 0;
 			/* Add the right number of dedent tokens,
 			   except if a certain flag is given --
 			   codeop.py uses this. */
 			if (tok->indent &&
-			    !(flags & PyPARSE_DONT_IMPLY_DEDENT))
+			    !(*flags & PyPARSE_DONT_IMPLY_DEDENT))
 			{
 				tok->pendin = -tok->indent;
 				tok->indent = 0;
@@ -153,21 +188,20 @@ parsetok(struct tok_state *tok, grammar *g, int start, perrdetail *err_ret,
 			strncpy(str, a, len);
 		str[len] = '\0';
 
-#if 0 /* future keyword */
-		/* Warn about yield as NAME */
-		if (type == NAME && !ps->p_generators &&
-		    len == 5 && str[0] == 'y' && strcmp(str, "yield") == 0)
-			PySys_WriteStderr(yield_msg,
-					  err_ret->filename==NULL ?
-					  "<string>" : err_ret->filename,
-					  tok->lineno);
+#ifdef PY_PARSER_REQUIRES_FUTURE_KEYWORD
 #endif
-
+		if (a >= tok->line_start)
+			col_offset = a - tok->line_start;
+		else
+			col_offset = -1;
+			
 		if ((err_ret->error =
-		     PyParser_AddToken(ps, (int)type, str, tok->lineno,
+		     PyParser_AddToken(ps, (int)type, str, tok->lineno, col_offset,
 				       &(err_ret->expected))) != E_OK) {
-			if (err_ret->error != E_DONE)
+			if (err_ret->error != E_DONE) {
 				PyObject_FREE(str);
+				err_ret->token = type;
+			}				
 			break;
 		}
 	}
@@ -179,21 +213,34 @@ parsetok(struct tok_state *tok, grammar *g, int start, perrdetail *err_ret,
 	else
 		n = NULL;
 
+#ifdef PY_PARSER_REQUIRES_FUTURE_KEYWORD
+	*flags = ps->p_flags;
+#endif
 	PyParser_Delete(ps);
 
 	if (n == NULL) {
 		if (tok->lineno <= 1 && tok->done == E_EOF)
 			err_ret->error = E_EOF;
 		err_ret->lineno = tok->lineno;
-		err_ret->offset = tok->cur - tok->buf;
 		if (tok->buf != NULL) {
-			size_t len = tok->inp - tok->buf;
-			err_ret->text = (char *) PyObject_MALLOC(len + 1);
-			if (err_ret->text != NULL) {
-				if (len > 0)
-					strncpy(err_ret->text, tok->buf, len);
-				err_ret->text[len] = '\0';
+			char *text = NULL;
+			size_t len;
+			assert(tok->cur - tok->buf < INT_MAX);
+			err_ret->offset = (int)(tok->cur - tok->buf);
+			len = tok->inp - tok->buf;
+#ifdef Py_USING_UNICODE
+			text = PyTokenizer_RestoreEncoding(tok, len, &err_ret->offset);
+
+#endif
+			if (text == NULL) {
+				text = (char *) PyObject_MALLOC(len + 1);
+				if (text != NULL) {
+					if (len > 0)
+						strncpy(text, tok->buf, len);
+					text[len] = '\0';
+				}
 			}
+			err_ret->text = text;
 		}
 	} else if (tok->encoding != NULL) {
 		node* r = PyNode_New(encoding_decl);
@@ -216,7 +263,7 @@ done:
 }
 
 static void
-initerr(perrdetail *err_ret, const char* filename)
+initerr(perrdetail *err_ret, const char *filename)
 {
 	err_ret->error = E_OK;
 	err_ret->filename = filename;

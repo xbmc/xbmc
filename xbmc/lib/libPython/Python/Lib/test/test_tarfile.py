@@ -1,7 +1,12 @@
+# -*- coding: iso-8859-15 -*-
+
 import sys
 import os
 import shutil
 import tempfile
+import StringIO
+from hashlib import md5
+import errno
 
 import unittest
 import tarfile
@@ -19,279 +24,674 @@ try:
 except ImportError:
     bz2 = None
 
+def md5sum(data):
+    return md5(data).hexdigest()
+
 def path(path):
     return test_support.findfile(path)
 
-testtar = path("testtar.tar")
-tempdir = os.path.join(tempfile.gettempdir(), "testtar" + os.extsep + "dir")
-tempname = test_support.TESTFN
-membercount = 10
+TEMPDIR = os.path.join(tempfile.gettempdir(), "test_tarfile_tmp")
+tarname = path("testtar.tar")
+gzipname = os.path.join(TEMPDIR, "testtar.tar.gz")
+bz2name = os.path.join(TEMPDIR, "testtar.tar.bz2")
+tmpname = os.path.join(TEMPDIR, "tmp.tar")
 
-def tarname(comp=""):
-    if not comp:
-        return testtar
-    return os.path.join(tempdir, "%s%s%s" % (testtar, os.extsep, comp))
-
-def dirname():
-    if not os.path.exists(tempdir):
-        os.mkdir(tempdir)
-    return tempdir
-
-def tmpname():
-    return tempname
+md5_regtype = "65f477c818ad9e15f7feab0c6d37742f"
+md5_sparse = "a54fbc4ca4f4399a90e1b27164012fc6"
 
 
-class BaseTest(unittest.TestCase):
-    comp = ''
-    mode = 'r'
-    sep = ':'
+class ReadTest(unittest.TestCase):
+
+    tarname = tarname
+    mode = "r:"
 
     def setUp(self):
-        mode = self.mode + self.sep + self.comp
-        self.tar = tarfile.open(tarname(self.comp), mode)
+        self.tar = tarfile.open(self.tarname, mode=self.mode, encoding="iso8859-1")
 
     def tearDown(self):
         self.tar.close()
 
-class ReadTest(BaseTest):
 
-    def test(self):
-        """Test member extraction.
-        """
-        members = 0
-        for tarinfo in self.tar:
-            members += 1
-            if not tarinfo.isreg():
-                continue
-            f = self.tar.extractfile(tarinfo)
-            self.assert_(len(f.read()) == tarinfo.size,
-                         "size read does not match expected size")
-            f.close()
+class UstarReadTest(ReadTest):
 
-        self.assert_(members == membercount,
-                     "could not find all members")
+    def test_fileobj_regular_file(self):
+        tarinfo = self.tar.getmember("ustar/regtype")
+        fobj = self.tar.extractfile(tarinfo)
+        data = fobj.read()
+        self.assert_((len(data), md5sum(data)) == (tarinfo.size, md5_regtype),
+                "regular file extraction failed")
 
-    def test_sparse(self):
-        """Test sparse member extraction.
-        """
-        if self.sep != "|":
-            f1 = self.tar.extractfile("S-SPARSE")
-            f2 = self.tar.extractfile("S-SPARSE-WITH-NULLS")
-            self.assert_(f1.read() == f2.read(),
-                         "_FileObject failed on sparse file member")
+    def test_fileobj_readlines(self):
+        self.tar.extract("ustar/regtype", TEMPDIR)
+        tarinfo = self.tar.getmember("ustar/regtype")
+        fobj1 = open(os.path.join(TEMPDIR, "ustar/regtype"), "rU")
+        fobj2 = self.tar.extractfile(tarinfo)
 
-    def test_readlines(self):
-        """Test readlines() method of _FileObject.
-        """
-        if self.sep != "|":
-            filename = "0-REGTYPE-TEXT"
-            self.tar.extract(filename, dirname())
-            lines1 = file(os.path.join(dirname(), filename), "rU").readlines()
-            lines2 = self.tar.extractfile(filename).readlines()
-            self.assert_(lines1 == lines2,
-                         "_FileObject.readline() does not work correctly")
+        lines1 = fobj1.readlines()
+        lines2 = fobj2.readlines()
+        self.assert_(lines1 == lines2,
+                "fileobj.readlines() failed")
+        self.assert_(len(lines2) == 114,
+                "fileobj.readlines() failed")
+        self.assert_(lines2[83] == \
+                "I will gladly admit that Python is not the fastest running scripting language.\n",
+                "fileobj.readlines() failed")
 
-    def test_seek(self):
-        """Test seek() method of _FileObject, incl. random reading.
-        """
-        if self.sep != "|":
-            filename = "0-REGTYPE"
-            self.tar.extract(filename, dirname())
-            data = file(os.path.join(dirname(), filename), "rb").read()
+    def test_fileobj_iter(self):
+        self.tar.extract("ustar/regtype", TEMPDIR)
+        tarinfo = self.tar.getmember("ustar/regtype")
+        fobj1 = open(os.path.join(TEMPDIR, "ustar/regtype"), "rU")
+        fobj2 = self.tar.extractfile(tarinfo)
+        lines1 = fobj1.readlines()
+        lines2 = [line for line in fobj2]
+        self.assert_(lines1 == lines2,
+                     "fileobj.__iter__() failed")
 
-            tarinfo = self.tar.getmember(filename)
-            fobj = self.tar.extractfile(tarinfo)
-
-            text = fobj.read()
-            fobj.seek(0)
-            self.assert_(0 == fobj.tell(),
-                         "seek() to file's start failed")
-            fobj.seek(2048, 0)
-            self.assert_(2048 == fobj.tell(),
-                         "seek() to absolute position failed")
-            fobj.seek(-1024, 1)
-            self.assert_(1024 == fobj.tell(),
-                         "seek() to negative relative position failed")
-            fobj.seek(1024, 1)
-            self.assert_(2048 == fobj.tell(),
-                         "seek() to positive relative position failed")
-            s = fobj.read(10)
-            self.assert_(s == data[2048:2058],
-                         "read() after seek failed")
-            fobj.seek(0, 2)
-            self.assert_(tarinfo.size == fobj.tell(),
-                         "seek() to file's end failed")
-            self.assert_(fobj.read() == "",
-                         "read() at file's end did not return empty string")
-            fobj.seek(-tarinfo.size, 2)
-            self.assert_(0 == fobj.tell(),
-                         "relative seek() to file's start failed")
-            fobj.seek(512)
-            s1 = fobj.readlines()
-            fobj.seek(512)
-            s2 = fobj.readlines()
-            self.assert_(s1 == s2,
-                         "readlines() after seek failed")
-            fobj.close()
-
-    def test_old_dirtype(self):
-        """Test old style dirtype member (bug #1336623).
-        """
-        # Old tars create directory members using a REGTYPE
-        # header with a "/" appended to the filename field.
-
-        # Create an old tar style directory entry.
-        filename = tmpname()
-        tarinfo = tarfile.TarInfo("directory/")
-        tarinfo.type = tarfile.REGTYPE
-
-        fobj = file(filename, "w")
-        fobj.write(tarinfo.tobuf())
+    def test_fileobj_seek(self):
+        self.tar.extract("ustar/regtype", TEMPDIR)
+        fobj = open(os.path.join(TEMPDIR, "ustar/regtype"), "rb")
+        data = fobj.read()
         fobj.close()
 
-        # Test if it is still a directory entry when
-        # read back.
-        tar = tarfile.open(filename)
-        tarinfo = tar.getmembers()[0]
+        tarinfo = self.tar.getmember("ustar/regtype")
+        fobj = self.tar.extractfile(tarinfo)
+
+        text = fobj.read()
+        fobj.seek(0)
+        self.assert_(0 == fobj.tell(),
+                     "seek() to file's start failed")
+        fobj.seek(2048, 0)
+        self.assert_(2048 == fobj.tell(),
+                     "seek() to absolute position failed")
+        fobj.seek(-1024, 1)
+        self.assert_(1024 == fobj.tell(),
+                     "seek() to negative relative position failed")
+        fobj.seek(1024, 1)
+        self.assert_(2048 == fobj.tell(),
+                     "seek() to positive relative position failed")
+        s = fobj.read(10)
+        self.assert_(s == data[2048:2058],
+                     "read() after seek failed")
+        fobj.seek(0, 2)
+        self.assert_(tarinfo.size == fobj.tell(),
+                     "seek() to file's end failed")
+        self.assert_(fobj.read() == "",
+                     "read() at file's end did not return empty string")
+        fobj.seek(-tarinfo.size, 2)
+        self.assert_(0 == fobj.tell(),
+                     "relative seek() to file's start failed")
+        fobj.seek(512)
+        s1 = fobj.readlines()
+        fobj.seek(512)
+        s2 = fobj.readlines()
+        self.assert_(s1 == s2,
+                     "readlines() after seek failed")
+        fobj.seek(0)
+        self.assert_(len(fobj.readline()) == fobj.tell(),
+                     "tell() after readline() failed")
+        fobj.seek(512)
+        self.assert_(len(fobj.readline()) + 512 == fobj.tell(),
+                     "tell() after seek() and readline() failed")
+        fobj.seek(0)
+        line = fobj.readline()
+        self.assert_(fobj.read() == data[len(line):],
+                     "read() after readline() failed")
+        fobj.close()
+
+
+class MiscReadTest(ReadTest):
+
+    def test_no_name_argument(self):
+        fobj = open(self.tarname, "rb")
+        tar = tarfile.open(fileobj=fobj, mode=self.mode)
+        self.assertEqual(tar.name, os.path.abspath(fobj.name))
+
+    def test_no_name_attribute(self):
+        data = open(self.tarname, "rb").read()
+        fobj = StringIO.StringIO(data)
+        self.assertRaises(AttributeError, getattr, fobj, "name")
+        tar = tarfile.open(fileobj=fobj, mode=self.mode)
+        self.assertEqual(tar.name, None)
+
+    def test_empty_name_attribute(self):
+        data = open(self.tarname, "rb").read()
+        fobj = StringIO.StringIO(data)
+        fobj.name = ""
+        tar = tarfile.open(fileobj=fobj, mode=self.mode)
+        self.assertEqual(tar.name, None)
+
+    def test_fileobj_with_offset(self):
+        # Skip the first member and store values from the second member
+        # of the testtar.
+        tar = tarfile.open(self.tarname, mode=self.mode)
+        tar.next()
+        t = tar.next()
+        name = t.name
+        offset = t.offset
+        data = tar.extractfile(t).read()
         tar.close()
 
-        self.assert_(tarinfo.type == tarfile.DIRTYPE)
-        self.assert_(tarinfo.name.endswith("/"))
+        # Open the testtar and seek to the offset of the second member.
+        if self.mode.endswith(":gz"):
+            _open = gzip.GzipFile
+        elif self.mode.endswith(":bz2"):
+            _open = bz2.BZ2File
+        else:
+            _open = open
+        fobj = _open(self.tarname, "rb")
+        fobj.seek(offset)
 
-class ReadStreamTest(ReadTest):
-    sep = "|"
+        # Test if the tarfile starts with the second member.
+        tar = tar.open(self.tarname, mode="r:", fileobj=fobj)
+        t = tar.next()
+        self.assertEqual(t.name, name)
+        # Read to the end of fileobj and test if seeking back to the
+        # beginning works.
+        tar.getmembers()
+        self.assertEqual(tar.extractfile(t).read(), data,
+                "seek back did not work")
+        tar.close()
 
-    def test(self):
-        """Test member extraction, and for StreamError when
-           seeking backwards.
-        """
-        ReadTest.test(self)
-        tarinfo = self.tar.getmembers()[0]
-        f = self.tar.extractfile(tarinfo)
+    def test_fail_comp(self):
+        # For Gzip and Bz2 Tests: fail with a ReadError on an uncompressed file.
+        if self.mode == "r:":
+            return
+        self.assertRaises(tarfile.ReadError, tarfile.open, tarname, self.mode)
+        fobj = open(tarname, "rb")
+        self.assertRaises(tarfile.ReadError, tarfile.open, fileobj=fobj, mode=self.mode)
+
+    def test_v7_dirtype(self):
+        # Test old style dirtype member (bug #1336623):
+        # Old V7 tars create directory members using an AREGTYPE
+        # header with a "/" appended to the filename field.
+        tarinfo = self.tar.getmember("misc/dirtype-old-v7")
+        self.assert_(tarinfo.type == tarfile.DIRTYPE,
+                "v7 dirtype failed")
+
+    def test_xstar_type(self):
+        # The xstar format stores extra atime and ctime fields inside the
+        # space reserved for the prefix field. The prefix field must be
+        # ignored in this case, otherwise it will mess up the name.
+        try:
+            self.tar.getmember("misc/regtype-xstar")
+        except KeyError:
+            self.fail("failed to find misc/regtype-xstar (mangled prefix?)")
+
+    def test_check_members(self):
+        for tarinfo in self.tar:
+            self.assert_(int(tarinfo.mtime) == 07606136617,
+                    "wrong mtime for %s" % tarinfo.name)
+            if not tarinfo.name.startswith("ustar/"):
+                continue
+            self.assert_(tarinfo.uname == "tarfile",
+                    "wrong uname for %s" % tarinfo.name)
+
+    def test_find_members(self):
+        self.assert_(self.tar.getmembers()[-1].name == "misc/eof",
+                "could not find all members")
+
+    def test_extract_hardlink(self):
+        # Test hardlink extraction (e.g. bug #857297).
+        tar = tarfile.open(tarname, errorlevel=1, encoding="iso8859-1")
+
+        tar.extract("ustar/regtype", TEMPDIR)
+        try:
+            tar.extract("ustar/lnktype", TEMPDIR)
+        except EnvironmentError, e:
+            if e.errno == errno.ENOENT:
+                self.fail("hardlink not extracted properly")
+
+        data = open(os.path.join(TEMPDIR, "ustar/lnktype"), "rb").read()
+        self.assertEqual(md5sum(data), md5_regtype)
+
+        try:
+            tar.extract("ustar/symtype", TEMPDIR)
+        except EnvironmentError, e:
+            if e.errno == errno.ENOENT:
+                self.fail("symlink not extracted properly")
+
+        data = open(os.path.join(TEMPDIR, "ustar/symtype"), "rb").read()
+        self.assertEqual(md5sum(data), md5_regtype)
+
+    def test_extractall(self):
+        # Test if extractall() correctly restores directory permissions
+        # and times (see issue1735).
+        tar = tarfile.open(tarname, encoding="iso8859-1")
+        directories = [t for t in tar if t.isdir()]
+        tar.extractall(TEMPDIR, directories)
+        for tarinfo in directories:
+            path = os.path.join(TEMPDIR, tarinfo.name)
+            if sys.platform != "win32":
+                # Win32 has no support for fine grained permissions.
+                self.assertEqual(tarinfo.mode & 0777, os.stat(path).st_mode & 0777)
+            self.assertEqual(tarinfo.mtime, os.path.getmtime(path))
+        tar.close()
+
+
+class StreamReadTest(ReadTest):
+
+    mode="r|"
+
+    def test_fileobj_regular_file(self):
+        tarinfo = self.tar.next() # get "regtype" (can't use getmember)
+        fobj = self.tar.extractfile(tarinfo)
+        data = fobj.read()
+        self.assert_((len(data), md5sum(data)) == (tarinfo.size, md5_regtype),
+                "regular file extraction failed")
+
+    def test_provoke_stream_error(self):
+        tarinfos = self.tar.getmembers()
+        f = self.tar.extractfile(tarinfos[0]) # read the first member
         self.assertRaises(tarfile.StreamError, f.read)
 
-    def test_stream(self):
-        """Compare the normal tar and the stream tar.
-        """
-        stream = self.tar
-        tar = tarfile.open(tarname(), 'r')
+    def test_compare_members(self):
+        tar1 = tarfile.open(tarname, encoding="iso8859-1")
+        tar2 = self.tar
 
-        while 1:
-            t1 = tar.next()
-            t2 = stream.next()
+        while True:
+            t1 = tar1.next()
+            t2 = tar2.next()
             if t1 is None:
                 break
             self.assert_(t2 is not None, "stream.next() failed.")
 
             if t2.islnk() or t2.issym():
-                self.assertRaises(tarfile.StreamError, stream.extractfile, t2)
+                self.assertRaises(tarfile.StreamError, tar2.extractfile, t2)
                 continue
-            v1 = tar.extractfile(t1)
-            v2 = stream.extractfile(t2)
+
+            v1 = tar1.extractfile(t1)
+            v2 = tar2.extractfile(t2)
             if v1 is None:
                 continue
             self.assert_(v2 is not None, "stream.extractfile() failed")
             self.assert_(v1.read() == v2.read(), "stream extraction failed")
 
-        stream.close()
+        tar1.close()
 
-class WriteTest(BaseTest):
-    mode = 'w'
 
-    def setUp(self):
-        mode = self.mode + self.sep + self.comp
-        self.src = tarfile.open(tarname(self.comp), 'r')
-        self.dstname = tmpname()
-        self.dst = tarfile.open(self.dstname, mode)
+class DetectReadTest(unittest.TestCase):
 
-    def tearDown(self):
-        self.src.close()
-        self.dst.close()
+    def _testfunc_file(self, name, mode):
+        try:
+            tarfile.open(name, mode)
+        except tarfile.ReadError:
+            self.fail()
 
-    def test_posix(self):
-        self.dst.posix = 1
-        self._test()
+    def _testfunc_fileobj(self, name, mode):
+        try:
+            tarfile.open(name, mode, fileobj=open(name, "rb"))
+        except tarfile.ReadError:
+            self.fail()
 
-    def test_nonposix(self):
-        self.dst.posix = 0
-        self._test()
+    def _test_modes(self, testfunc):
+        testfunc(tarname, "r")
+        testfunc(tarname, "r:")
+        testfunc(tarname, "r:*")
+        testfunc(tarname, "r|")
+        testfunc(tarname, "r|*")
 
-    def test_small(self):
-        self.dst.add(os.path.join(os.path.dirname(__file__),"cfgparser.1"))
-        self.dst.close()
-        self.assertNotEqual(os.stat(self.dstname).st_size, 0)
+        if gzip:
+            self.assertRaises(tarfile.ReadError, tarfile.open, tarname, mode="r:gz")
+            self.assertRaises(tarfile.ReadError, tarfile.open, tarname, mode="r|gz")
+            self.assertRaises(tarfile.ReadError, tarfile.open, gzipname, mode="r:")
+            self.assertRaises(tarfile.ReadError, tarfile.open, gzipname, mode="r|")
 
-    def _test(self):
-        for tarinfo in self.src:
-            if not tarinfo.isreg():
-                continue
-            f = self.src.extractfile(tarinfo)
-            if self.dst.posix and len(tarinfo.name) > tarfile.LENGTH_NAME:
-                self.assertRaises(ValueError, self.dst.addfile,
-                                 tarinfo, f)
-            else:
-                self.dst.addfile(tarinfo, f)
+            testfunc(gzipname, "r")
+            testfunc(gzipname, "r:*")
+            testfunc(gzipname, "r:gz")
+            testfunc(gzipname, "r|*")
+            testfunc(gzipname, "r|gz")
 
-class WriteSize0Test(BaseTest):
-    mode = 'w'
+        if bz2:
+            self.assertRaises(tarfile.ReadError, tarfile.open, tarname, mode="r:bz2")
+            self.assertRaises(tarfile.ReadError, tarfile.open, tarname, mode="r|bz2")
+            self.assertRaises(tarfile.ReadError, tarfile.open, bz2name, mode="r:")
+            self.assertRaises(tarfile.ReadError, tarfile.open, bz2name, mode="r|")
 
-    def setUp(self):
-        self.tmpdir = dirname()
-        self.dstname = tmpname()
-        self.dst = tarfile.open(self.dstname, "w")
+            testfunc(bz2name, "r")
+            testfunc(bz2name, "r:*")
+            testfunc(bz2name, "r:bz2")
+            testfunc(bz2name, "r|*")
+            testfunc(bz2name, "r|bz2")
 
-    def tearDown(self):
-        self.dst.close()
+    def test_detect_file(self):
+        self._test_modes(self._testfunc_file)
 
-    def test_file(self):
-        path = os.path.join(self.tmpdir, "file")
-        file(path, "w")
-        tarinfo = self.dst.gettarinfo(path)
+    def test_detect_fileobj(self):
+        self._test_modes(self._testfunc_fileobj)
+
+
+class MemberReadTest(ReadTest):
+
+    def _test_member(self, tarinfo, chksum=None, **kwargs):
+        if chksum is not None:
+            self.assert_(md5sum(self.tar.extractfile(tarinfo).read()) == chksum,
+                    "wrong md5sum for %s" % tarinfo.name)
+
+        kwargs["mtime"] = 07606136617
+        kwargs["uid"] = 1000
+        kwargs["gid"] = 100
+        if "old-v7" not in tarinfo.name:
+            # V7 tar can't handle alphabetic owners.
+            kwargs["uname"] = "tarfile"
+            kwargs["gname"] = "tarfile"
+        for k, v in kwargs.iteritems():
+            self.assert_(getattr(tarinfo, k) == v,
+                    "wrong value in %s field of %s" % (k, tarinfo.name))
+
+    def test_find_regtype(self):
+        tarinfo = self.tar.getmember("ustar/regtype")
+        self._test_member(tarinfo, size=7011, chksum=md5_regtype)
+
+    def test_find_conttype(self):
+        tarinfo = self.tar.getmember("ustar/conttype")
+        self._test_member(tarinfo, size=7011, chksum=md5_regtype)
+
+    def test_find_dirtype(self):
+        tarinfo = self.tar.getmember("ustar/dirtype")
+        self._test_member(tarinfo, size=0)
+
+    def test_find_dirtype_with_size(self):
+        tarinfo = self.tar.getmember("ustar/dirtype-with-size")
+        self._test_member(tarinfo, size=255)
+
+    def test_find_lnktype(self):
+        tarinfo = self.tar.getmember("ustar/lnktype")
+        self._test_member(tarinfo, size=0, linkname="ustar/regtype")
+
+    def test_find_symtype(self):
+        tarinfo = self.tar.getmember("ustar/symtype")
+        self._test_member(tarinfo, size=0, linkname="regtype")
+
+    def test_find_blktype(self):
+        tarinfo = self.tar.getmember("ustar/blktype")
+        self._test_member(tarinfo, size=0, devmajor=3, devminor=0)
+
+    def test_find_chrtype(self):
+        tarinfo = self.tar.getmember("ustar/chrtype")
+        self._test_member(tarinfo, size=0, devmajor=1, devminor=3)
+
+    def test_find_fifotype(self):
+        tarinfo = self.tar.getmember("ustar/fifotype")
+        self._test_member(tarinfo, size=0)
+
+    def test_find_sparse(self):
+        tarinfo = self.tar.getmember("ustar/sparse")
+        self._test_member(tarinfo, size=86016, chksum=md5_sparse)
+
+    def test_find_umlauts(self):
+        tarinfo = self.tar.getmember("ustar/umlauts-ִײÜהצüß")
+        self._test_member(tarinfo, size=7011, chksum=md5_regtype)
+
+    def test_find_ustar_longname(self):
+        name = "ustar/" + "12345/" * 39 + "1234567/longname"
+        self.assert_(name in self.tar.getnames())
+
+    def test_find_regtype_oldv7(self):
+        tarinfo = self.tar.getmember("misc/regtype-old-v7")
+        self._test_member(tarinfo, size=7011, chksum=md5_regtype)
+
+    def test_find_pax_umlauts(self):
+        self.tar = tarfile.open(self.tarname, mode=self.mode, encoding="iso8859-1")
+        tarinfo = self.tar.getmember("pax/umlauts-ִײÜהצüß")
+        self._test_member(tarinfo, size=7011, chksum=md5_regtype)
+
+
+class LongnameTest(ReadTest):
+
+    def test_read_longname(self):
+        # Test reading of longname (bug #1471427).
+        longname = self.subdir + "/" + "123/" * 125 + "longname"
+        try:
+            tarinfo = self.tar.getmember(longname)
+        except KeyError:
+            self.fail("longname not found")
+        self.assert_(tarinfo.type != tarfile.DIRTYPE, "read longname as dirtype")
+
+    def test_read_longlink(self):
+        longname = self.subdir + "/" + "123/" * 125 + "longname"
+        longlink = self.subdir + "/" + "123/" * 125 + "longlink"
+        try:
+            tarinfo = self.tar.getmember(longlink)
+        except KeyError:
+            self.fail("longlink not found")
+        self.assert_(tarinfo.linkname == longname, "linkname wrong")
+
+    def test_truncated_longname(self):
+        longname = self.subdir + "/" + "123/" * 125 + "longname"
+        tarinfo = self.tar.getmember(longname)
+        offset = tarinfo.offset
+        self.tar.fileobj.seek(offset)
+        fobj = StringIO.StringIO(self.tar.fileobj.read(3 * 512))
+        self.assertRaises(tarfile.ReadError, tarfile.open, name="foo.tar", fileobj=fobj)
+
+    def test_header_offset(self):
+        # Test if the start offset of the TarInfo object includes
+        # the preceding extended header.
+        longname = self.subdir + "/" + "123/" * 125 + "longname"
+        offset = self.tar.getmember(longname).offset
+        fobj = open(tarname)
+        fobj.seek(offset)
+        tarinfo = tarfile.TarInfo.frombuf(fobj.read(512))
+        self.assertEqual(tarinfo.type, self.longnametype)
+
+
+class GNUReadTest(LongnameTest):
+
+    subdir = "gnu"
+    longnametype = tarfile.GNUTYPE_LONGNAME
+
+    def test_sparse_file(self):
+        tarinfo1 = self.tar.getmember("ustar/sparse")
+        fobj1 = self.tar.extractfile(tarinfo1)
+        tarinfo2 = self.tar.getmember("gnu/sparse")
+        fobj2 = self.tar.extractfile(tarinfo2)
+        self.assert_(fobj1.read() == fobj2.read(),
+                "sparse file extraction failed")
+
+
+class PaxReadTest(LongnameTest):
+
+    subdir = "pax"
+    longnametype = tarfile.XHDTYPE
+
+    def test_pax_global_headers(self):
+        tar = tarfile.open(tarname, encoding="iso8859-1")
+
+        tarinfo = tar.getmember("pax/regtype1")
+        self.assertEqual(tarinfo.uname, "foo")
+        self.assertEqual(tarinfo.gname, "bar")
+        self.assertEqual(tarinfo.pax_headers.get("VENDOR.umlauts"), u"ִײÜהצüß")
+
+        tarinfo = tar.getmember("pax/regtype2")
+        self.assertEqual(tarinfo.uname, "")
+        self.assertEqual(tarinfo.gname, "bar")
+        self.assertEqual(tarinfo.pax_headers.get("VENDOR.umlauts"), u"ִײÜהצüß")
+
+        tarinfo = tar.getmember("pax/regtype3")
+        self.assertEqual(tarinfo.uname, "tarfile")
+        self.assertEqual(tarinfo.gname, "tarfile")
+        self.assertEqual(tarinfo.pax_headers.get("VENDOR.umlauts"), u"ִײÜהצüß")
+
+    def test_pax_number_fields(self):
+        # All following number fields are read from the pax header.
+        tar = tarfile.open(tarname, encoding="iso8859-1")
+        tarinfo = tar.getmember("pax/regtype4")
+        self.assertEqual(tarinfo.size, 7011)
+        self.assertEqual(tarinfo.uid, 123)
+        self.assertEqual(tarinfo.gid, 123)
+        self.assertEqual(tarinfo.mtime, 1041808783.0)
+        self.assertEqual(type(tarinfo.mtime), float)
+        self.assertEqual(float(tarinfo.pax_headers["atime"]), 1041808783.0)
+        self.assertEqual(float(tarinfo.pax_headers["ctime"]), 1041808783.0)
+
+
+class WriteTestBase(unittest.TestCase):
+    # Put all write tests in here that are supposed to be tested
+    # in all possible mode combinations.
+
+    def test_fileobj_no_close(self):
+        fobj = StringIO.StringIO()
+        tar = tarfile.open(fileobj=fobj, mode=self.mode)
+        tar.addfile(tarfile.TarInfo("foo"))
+        tar.close()
+        self.assert_(fobj.closed is False, "external fileobjs must never closed")
+
+
+class WriteTest(WriteTestBase):
+
+    mode = "w:"
+
+    def test_100_char_name(self):
+        # The name field in a tar header stores strings of at most 100 chars.
+        # If a string is shorter than 100 chars it has to be padded with '\0',
+        # which implies that a string of exactly 100 chars is stored without
+        # a trailing '\0'.
+        name = "0123456789" * 10
+        tar = tarfile.open(tmpname, self.mode)
+        t = tarfile.TarInfo(name)
+        tar.addfile(t)
+        tar.close()
+
+        tar = tarfile.open(tmpname)
+        self.assert_(tar.getnames()[0] == name,
+                "failed to store 100 char filename")
+        tar.close()
+
+    def test_tar_size(self):
+        # Test for bug #1013882.
+        tar = tarfile.open(tmpname, self.mode)
+        path = os.path.join(TEMPDIR, "file")
+        fobj = open(path, "wb")
+        fobj.write("aaa")
+        fobj.close()
+        tar.add(path)
+        tar.close()
+        self.assert_(os.path.getsize(tmpname) > 0,
+                "tarfile is empty")
+
+    # The test_*_size tests test for bug #1167128.
+    def test_file_size(self):
+        tar = tarfile.open(tmpname, self.mode)
+
+        path = os.path.join(TEMPDIR, "file")
+        fobj = open(path, "wb")
+        fobj.close()
+        tarinfo = tar.gettarinfo(path)
         self.assertEqual(tarinfo.size, 0)
-        file(path, "w").write("aaa")
-        tarinfo = self.dst.gettarinfo(path)
+
+        fobj = open(path, "wb")
+        fobj.write("aaa")
+        fobj.close()
+        tarinfo = tar.gettarinfo(path)
         self.assertEqual(tarinfo.size, 3)
 
-    def test_directory(self):
-        path = os.path.join(self.tmpdir, "directory")
+        tar.close()
+
+    def test_directory_size(self):
+        path = os.path.join(TEMPDIR, "directory")
         os.mkdir(path)
-        tarinfo = self.dst.gettarinfo(path)
-        self.assertEqual(tarinfo.size, 0)
-
-    def test_symlink(self):
-        if hasattr(os, "symlink"):
-            path = os.path.join(self.tmpdir, "symlink")
-            os.symlink("link_target", path)
-            tarinfo = self.dst.gettarinfo(path)
+        try:
+            tar = tarfile.open(tmpname, self.mode)
+            tarinfo = tar.gettarinfo(path)
             self.assertEqual(tarinfo.size, 0)
+        finally:
+            os.rmdir(path)
+
+    def test_link_size(self):
+        if hasattr(os, "link"):
+            link = os.path.join(TEMPDIR, "link")
+            target = os.path.join(TEMPDIR, "link_target")
+            open(target, "wb").close()
+            os.link(target, link)
+            try:
+                tar = tarfile.open(tmpname, self.mode)
+                tarinfo = tar.gettarinfo(link)
+                self.assertEqual(tarinfo.size, 0)
+            finally:
+                os.remove(target)
+                os.remove(link)
+
+    def test_symlink_size(self):
+        if hasattr(os, "symlink"):
+            path = os.path.join(TEMPDIR, "symlink")
+            os.symlink("link_target", path)
+            try:
+                tar = tarfile.open(tmpname, self.mode)
+                tarinfo = tar.gettarinfo(path)
+                self.assertEqual(tarinfo.size, 0)
+            finally:
+                os.remove(path)
+
+    def test_add_self(self):
+        # Test for #1257255.
+        dstname = os.path.abspath(tmpname)
+
+        tar = tarfile.open(tmpname, self.mode)
+        self.assert_(tar.name == dstname, "archive name must be absolute")
+
+        tar.add(dstname)
+        self.assert_(tar.getnames() == [], "added the archive to itself")
+
+        cwd = os.getcwd()
+        os.chdir(TEMPDIR)
+        tar.add(dstname)
+        os.chdir(cwd)
+        self.assert_(tar.getnames() == [], "added the archive to itself")
+
+    def test_exclude(self):
+        tempdir = os.path.join(TEMPDIR, "exclude")
+        os.mkdir(tempdir)
+        try:
+            for name in ("foo", "bar", "baz"):
+                name = os.path.join(tempdir, name)
+                open(name, "wb").close()
+
+            def exclude(name):
+                return os.path.isfile(name)
+
+            tar = tarfile.open(tmpname, self.mode, encoding="iso8859-1")
+            tar.add(tempdir, arcname="empty_dir", exclude=exclude)
+            tar.close()
+
+            tar = tarfile.open(tmpname, "r")
+            self.assertEqual(len(tar.getmembers()), 1)
+            self.assertEqual(tar.getnames()[0], "empty_dir")
+        finally:
+            shutil.rmtree(tempdir)
 
 
-class WriteStreamTest(WriteTest):
-    sep = '|'
+class StreamWriteTest(WriteTestBase):
 
-class WriteGNULongTest(unittest.TestCase):
-    """This testcase checks for correct creation of GNU Longname
-       and Longlink extensions.
+    mode = "w|"
 
-       It creates a tarfile and adds empty members with either
-       long names, long linknames or both and compares the size
-       of the tarfile with the expected size.
+    def test_stream_padding(self):
+        # Test for bug #1543303.
+        tar = tarfile.open(tmpname, self.mode)
+        tar.close()
 
-       It checks for SF bug #812325 in TarFile._create_gnulong().
+        if self.mode.endswith("gz"):
+            fobj = gzip.GzipFile(tmpname)
+            data = fobj.read()
+            fobj.close()
+        elif self.mode.endswith("bz2"):
+            dec = bz2.BZ2Decompressor()
+            data = open(tmpname, "rb").read()
+            data = dec.decompress(data)
+            self.assert_(len(dec.unused_data) == 0,
+                    "found trailing data")
+        else:
+            fobj = open(tmpname, "rb")
+            data = fobj.read()
+            fobj.close()
 
-       While I was writing this testcase, I noticed a second bug
-       in the same method:
-       Long{names,links} weren't null-terminated which lead to
-       bad tarfiles when their length was a multiple of 512. This
-       is tested as well.
-    """
+        self.assert_(data.count("\0") == tarfile.RECORDSIZE,
+                         "incorrect zero padding")
 
-    def setUp(self):
-        self.tar = tarfile.open(tmpname(), "w")
-        self.tar.posix = False
 
-    def tearDown(self):
-        self.tar.close()
+class GNUWriteTest(unittest.TestCase):
+    # This testcase checks for correct creation of GNU Longname
+    # and Longlink extended headers (cp. bug #812325).
 
     def _length(self, s):
         blocks, remainder = divmod(len(s) + 1, 512)
@@ -300,19 +700,17 @@ class WriteGNULongTest(unittest.TestCase):
         return blocks * 512
 
     def _calc_size(self, name, link=None):
-        # initial tar header
+        # Initial tar header
         count = 512
 
         if len(name) > tarfile.LENGTH_NAME:
-            # gnu longname extended header + longname
+            # GNU longname extended header + longname
             count += 512
             count += self._length(name)
-
         if link is not None and len(link) > tarfile.LENGTH_LINK:
-            # gnu longlink extended header + longlink
+            # GNU longlink extended header + longlink
             count += 512
             count += self._length(link)
-
         return count
 
     def _test(self, name, link=None):
@@ -321,11 +719,22 @@ class WriteGNULongTest(unittest.TestCase):
             tarinfo.linkname = link
             tarinfo.type = tarfile.LNKTYPE
 
-        self.tar.addfile(tarinfo)
+        tar = tarfile.open(tmpname, "w")
+        tar.format = tarfile.GNU_FORMAT
+        tar.addfile(tarinfo)
 
         v1 = self._calc_size(name, link)
-        v2 = self.tar.offset
-        self.assertEqual(v1, v2, "GNU longname/longlink creation failed")
+        v2 = tar.offset
+        self.assert_(v1 == v2, "GNU longname/longlink creation failed")
+
+        tar.close()
+
+        tar = tarfile.open(tmpname)
+        member = tar.next()
+        self.failIf(member is None, "unable to read longname member")
+        self.assert_(tarinfo.name == member.name and \
+                     tarinfo.linkname == member.linkname, \
+                     "unable to read longname member")
 
     def test_longname_1023(self):
         self._test(("longnam/" * 127) + "longnam")
@@ -357,151 +766,468 @@ class WriteGNULongTest(unittest.TestCase):
         self._test(("longnam/" * 127) + "longname_",
                    ("longlnk/" * 127) + "longlink_")
 
-class ExtractHardlinkTest(BaseTest):
 
-    def test_hardlink(self):
-        """Test hardlink extraction (bug #857297)
-        """
-        # Prevent errors from being caught
-        self.tar.errorlevel = 1
-
-        self.tar.extract("0-REGTYPE", dirname())
-        try:
-            # Extract 1-LNKTYPE which is a hardlink to 0-REGTYPE
-            self.tar.extract("1-LNKTYPE", dirname())
-        except EnvironmentError, e:
-            import errno
-            if e.errno == errno.ENOENT:
-                self.fail("hardlink not extracted properly")
-
-class CreateHardlinkTest(BaseTest):
-    """Test the creation of LNKTYPE (hardlink) members in an archive.
-       In this respect tarfile.py mimics the behaviour of GNU tar: If
-       a file has a st_nlink > 1, it will be added a REGTYPE member
-       only the first time.
-    """
+class HardlinkTest(unittest.TestCase):
+    # Test the creation of LNKTYPE (hardlink) members in an archive.
 
     def setUp(self):
-        self.tar = tarfile.open(tmpname(), "w")
+        self.foo = os.path.join(TEMPDIR, "foo")
+        self.bar = os.path.join(TEMPDIR, "bar")
 
-        self.foo = os.path.join(dirname(), "foo")
-        self.bar = os.path.join(dirname(), "bar")
+        fobj = open(self.foo, "wb")
+        fobj.write("foo")
+        fobj.close()
 
-        if os.path.exists(self.foo):
-            os.remove(self.foo)
-        if os.path.exists(self.bar):
-            os.remove(self.bar)
+        os.link(self.foo, self.bar)
 
-        file(self.foo, "w").write("foo")
+        self.tar = tarfile.open(tmpname, "w")
         self.tar.add(self.foo)
 
+    def tearDown(self):
+        self.tar.close()
+        os.remove(self.foo)
+        os.remove(self.bar)
+
     def test_add_twice(self):
-        # If st_nlink == 1 then the same file will be added as
-        # REGTYPE every time.
+        # The same name will be added as a REGTYPE every
+        # time regardless of st_nlink.
         tarinfo = self.tar.gettarinfo(self.foo)
-        self.assertEqual(tarinfo.type, tarfile.REGTYPE,
+        self.assert_(tarinfo.type == tarfile.REGTYPE,
                 "add file as regular failed")
 
     def test_add_hardlink(self):
-        # If st_nlink > 1 then the same file will be added as
-        # LNKTYPE.
-        os.link(self.foo, self.bar)
-        tarinfo = self.tar.gettarinfo(self.foo)
-        self.assertEqual(tarinfo.type, tarfile.LNKTYPE,
-                "add file as hardlink failed")
-
         tarinfo = self.tar.gettarinfo(self.bar)
-        self.assertEqual(tarinfo.type, tarfile.LNKTYPE,
+        self.assert_(tarinfo.type == tarfile.LNKTYPE,
                 "add file as hardlink failed")
 
     def test_dereference_hardlink(self):
         self.tar.dereference = True
-        os.link(self.foo, self.bar)
         tarinfo = self.tar.gettarinfo(self.bar)
-        self.assertEqual(tarinfo.type, tarfile.REGTYPE,
+        self.assert_(tarinfo.type == tarfile.REGTYPE,
                 "dereferencing hardlink failed")
 
 
-# Gzip TestCases
-class ReadTestGzip(ReadTest):
-    comp = "gz"
-class ReadStreamTestGzip(ReadStreamTest):
-    comp = "gz"
-class WriteTestGzip(WriteTest):
-    comp = "gz"
-class WriteStreamTestGzip(WriteStreamTest):
-    comp = "gz"
+class PaxWriteTest(GNUWriteTest):
 
-# Filemode test cases
+    def _test(self, name, link=None):
+        # See GNUWriteTest.
+        tarinfo = tarfile.TarInfo(name)
+        if link:
+            tarinfo.linkname = link
+            tarinfo.type = tarfile.LNKTYPE
 
-class FileModeTest(unittest.TestCase):
-    def test_modes(self):
-        self.assertEqual(tarfile.filemode(0755), '-rwxr-xr-x')
-        self.assertEqual(tarfile.filemode(07111), '---s--s--t')
+        tar = tarfile.open(tmpname, "w", format=tarfile.PAX_FORMAT)
+        tar.addfile(tarinfo)
+        tar.close()
+
+        tar = tarfile.open(tmpname)
+        if link:
+            l = tar.getmembers()[0].linkname
+            self.assert_(link == l, "PAX longlink creation failed")
+        else:
+            n = tar.getmembers()[0].name
+            self.assert_(name == n, "PAX longname creation failed")
+
+    def test_pax_global_header(self):
+        pax_headers = {
+                u"foo": u"bar",
+                u"uid": u"0",
+                u"mtime": u"1.23",
+                u"test": u"הצü",
+                u"הצü": u"test"}
+
+        tar = tarfile.open(tmpname, "w", format=tarfile.PAX_FORMAT, \
+                pax_headers=pax_headers)
+        tar.addfile(tarfile.TarInfo("test"))
+        tar.close()
+
+        # Test if the global header was written correctly.
+        tar = tarfile.open(tmpname, encoding="iso8859-1")
+        self.assertEqual(tar.pax_headers, pax_headers)
+        self.assertEqual(tar.getmembers()[0].pax_headers, pax_headers)
+
+        # Test if all the fields are unicode.
+        for key, val in tar.pax_headers.iteritems():
+            self.assert_(type(key) is unicode)
+            self.assert_(type(val) is unicode)
+            if key in tarfile.PAX_NUMBER_FIELDS:
+                try:
+                    tarfile.PAX_NUMBER_FIELDS[key](val)
+                except (TypeError, ValueError):
+                    self.fail("unable to convert pax header field")
+
+    def test_pax_extended_header(self):
+        # The fields from the pax header have priority over the
+        # TarInfo.
+        pax_headers = {u"path": u"foo", u"uid": u"123"}
+
+        tar = tarfile.open(tmpname, "w", format=tarfile.PAX_FORMAT, encoding="iso8859-1")
+        t = tarfile.TarInfo()
+        t.name = u"הצü"     # non-ASCII
+        t.uid = 8**8        # too large
+        t.pax_headers = pax_headers
+        tar.addfile(t)
+        tar.close()
+
+        tar = tarfile.open(tmpname, encoding="iso8859-1")
+        t = tar.getmembers()[0]
+        self.assertEqual(t.pax_headers, pax_headers)
+        self.assertEqual(t.name, "foo")
+        self.assertEqual(t.uid, 123)
 
 
-if bz2:
-    # Bzip2 TestCases
-    class ReadTestBzip2(ReadTestGzip):
-        comp = "bz2"
-    class ReadStreamTestBzip2(ReadStreamTestGzip):
-        comp = "bz2"
-    class WriteTestBzip2(WriteTest):
-        comp = "bz2"
-    class WriteStreamTestBzip2(WriteStreamTestGzip):
-        comp = "bz2"
+class UstarUnicodeTest(unittest.TestCase):
+    # All *UnicodeTests FIXME
 
-# If importing gzip failed, discard the Gzip TestCases.
-if not gzip:
-    del ReadTestGzip
-    del ReadStreamTestGzip
-    del WriteTestGzip
-    del WriteStreamTestGzip
+    format = tarfile.USTAR_FORMAT
+
+    def test_iso8859_1_filename(self):
+        self._test_unicode_filename("iso8859-1")
+
+    def test_utf7_filename(self):
+        self._test_unicode_filename("utf7")
+
+    def test_utf8_filename(self):
+        self._test_unicode_filename("utf8")
+
+    def _test_unicode_filename(self, encoding):
+        tar = tarfile.open(tmpname, "w", format=self.format, encoding=encoding, errors="strict")
+        name = u"הצü"
+        tar.addfile(tarfile.TarInfo(name))
+        tar.close()
+
+        tar = tarfile.open(tmpname, encoding=encoding)
+        self.assert_(type(tar.getnames()[0]) is not unicode)
+        self.assertEqual(tar.getmembers()[0].name, name.encode(encoding))
+        tar.close()
+
+    def test_unicode_filename_error(self):
+        tar = tarfile.open(tmpname, "w", format=self.format, encoding="ascii", errors="strict")
+        tarinfo = tarfile.TarInfo()
+
+        tarinfo.name = "הצü"
+        if self.format == tarfile.PAX_FORMAT:
+            self.assertRaises(UnicodeError, tar.addfile, tarinfo)
+        else:
+            tar.addfile(tarinfo)
+
+        tarinfo.name = u"הצü"
+        self.assertRaises(UnicodeError, tar.addfile, tarinfo)
+
+        tarinfo.name = "foo"
+        tarinfo.uname = u"הצü"
+        self.assertRaises(UnicodeError, tar.addfile, tarinfo)
+
+    def test_unicode_argument(self):
+        tar = tarfile.open(tarname, "r", encoding="iso8859-1", errors="strict")
+        for t in tar:
+            self.assert_(type(t.name) is str)
+            self.assert_(type(t.linkname) is str)
+            self.assert_(type(t.uname) is str)
+            self.assert_(type(t.gname) is str)
+        tar.close()
+
+    def test_uname_unicode(self):
+        for name in (u"הצü", "הצü"):
+            t = tarfile.TarInfo("foo")
+            t.uname = name
+            t.gname = name
+
+            fobj = StringIO.StringIO()
+            tar = tarfile.open("foo.tar", mode="w", fileobj=fobj, format=self.format, encoding="iso8859-1")
+            tar.addfile(t)
+            tar.close()
+            fobj.seek(0)
+
+            tar = tarfile.open("foo.tar", fileobj=fobj, encoding="iso8859-1")
+            t = tar.getmember("foo")
+            self.assertEqual(t.uname, "הצü")
+            self.assertEqual(t.gname, "הצü")
+
+
+class GNUUnicodeTest(UstarUnicodeTest):
+
+    format = tarfile.GNU_FORMAT
+
+
+class PaxUnicodeTest(UstarUnicodeTest):
+
+    format = tarfile.PAX_FORMAT
+
+    def _create_unicode_name(self, name):
+        tar = tarfile.open(tmpname, "w", format=self.format)
+        t = tarfile.TarInfo()
+        t.pax_headers["path"] = name
+        tar.addfile(t)
+        tar.close()
+
+    def test_error_handlers(self):
+        # Test if the unicode error handlers work correctly for characters
+        # that cannot be expressed in a given encoding.
+        self._create_unicode_name(u"הצü")
+
+        for handler, name in (("utf-8", u"הצü".encode("utf8")),
+                    ("replace", "???"), ("ignore", "")):
+            tar = tarfile.open(tmpname, format=self.format, encoding="ascii",
+                    errors=handler)
+            self.assertEqual(tar.getnames()[0], name)
+
+        self.assertRaises(UnicodeError, tarfile.open, tmpname,
+                encoding="ascii", errors="strict")
+
+    def test_error_handler_utf8(self):
+        # Create a pathname that has one component representable using
+        # iso8859-1 and the other only in iso8859-15.
+        self._create_unicode_name(u"הצü/₪")
+
+        tar = tarfile.open(tmpname, format=self.format, encoding="iso8859-1",
+                errors="utf-8")
+        self.assertEqual(tar.getnames()[0], "הצü/" + u"₪".encode("utf8"))
+
+
+class AppendTest(unittest.TestCase):
+    # Test append mode (cp. patch #1652681).
+
+    def setUp(self):
+        self.tarname = tmpname
+        if os.path.exists(self.tarname):
+            os.remove(self.tarname)
+
+    def _add_testfile(self, fileobj=None):
+        tar = tarfile.open(self.tarname, "a", fileobj=fileobj)
+        tar.addfile(tarfile.TarInfo("bar"))
+        tar.close()
+
+    def _create_testtar(self, mode="w:"):
+        src = tarfile.open(tarname, encoding="iso8859-1")
+        t = src.getmember("ustar/regtype")
+        t.name = "foo"
+        f = src.extractfile(t)
+        tar = tarfile.open(self.tarname, mode)
+        tar.addfile(t, f)
+        tar.close()
+
+    def _test(self, names=["bar"], fileobj=None):
+        tar = tarfile.open(self.tarname, fileobj=fileobj)
+        self.assertEqual(tar.getnames(), names)
+
+    def test_non_existing(self):
+        self._add_testfile()
+        self._test()
+
+    def test_empty(self):
+        open(self.tarname, "w").close()
+        self._add_testfile()
+        self._test()
+
+    def test_empty_fileobj(self):
+        fobj = StringIO.StringIO()
+        self._add_testfile(fobj)
+        fobj.seek(0)
+        self._test(fileobj=fobj)
+
+    def test_fileobj(self):
+        self._create_testtar()
+        data = open(self.tarname).read()
+        fobj = StringIO.StringIO(data)
+        self._add_testfile(fobj)
+        fobj.seek(0)
+        self._test(names=["foo", "bar"], fileobj=fobj)
+
+    def test_existing(self):
+        self._create_testtar()
+        self._add_testfile()
+        self._test(names=["foo", "bar"])
+
+    def test_append_gz(self):
+        if gzip is None:
+            return
+        self._create_testtar("w:gz")
+        self.assertRaises(tarfile.ReadError, tarfile.open, tmpname, "a")
+
+    def test_append_bz2(self):
+        if bz2 is None:
+            return
+        self._create_testtar("w:bz2")
+        self.assertRaises(tarfile.ReadError, tarfile.open, tmpname, "a")
+
+
+class LimitsTest(unittest.TestCase):
+
+    def test_ustar_limits(self):
+        # 100 char name
+        tarinfo = tarfile.TarInfo("0123456789" * 10)
+        tarinfo.tobuf(tarfile.USTAR_FORMAT)
+
+        # 101 char name that cannot be stored
+        tarinfo = tarfile.TarInfo("0123456789" * 10 + "0")
+        self.assertRaises(ValueError, tarinfo.tobuf, tarfile.USTAR_FORMAT)
+
+        # 256 char name with a slash at pos 156
+        tarinfo = tarfile.TarInfo("123/" * 62 + "longname")
+        tarinfo.tobuf(tarfile.USTAR_FORMAT)
+
+        # 256 char name that cannot be stored
+        tarinfo = tarfile.TarInfo("1234567/" * 31 + "longname")
+        self.assertRaises(ValueError, tarinfo.tobuf, tarfile.USTAR_FORMAT)
+
+        # 512 char name
+        tarinfo = tarfile.TarInfo("123/" * 126 + "longname")
+        self.assertRaises(ValueError, tarinfo.tobuf, tarfile.USTAR_FORMAT)
+
+        # 512 char linkname
+        tarinfo = tarfile.TarInfo("longlink")
+        tarinfo.linkname = "123/" * 126 + "longname"
+        self.assertRaises(ValueError, tarinfo.tobuf, tarfile.USTAR_FORMAT)
+
+        # uid > 8 digits
+        tarinfo = tarfile.TarInfo("name")
+        tarinfo.uid = 010000000
+        self.assertRaises(ValueError, tarinfo.tobuf, tarfile.USTAR_FORMAT)
+
+    def test_gnu_limits(self):
+        tarinfo = tarfile.TarInfo("123/" * 126 + "longname")
+        tarinfo.tobuf(tarfile.GNU_FORMAT)
+
+        tarinfo = tarfile.TarInfo("longlink")
+        tarinfo.linkname = "123/" * 126 + "longname"
+        tarinfo.tobuf(tarfile.GNU_FORMAT)
+
+        # uid >= 256 ** 7
+        tarinfo = tarfile.TarInfo("name")
+        tarinfo.uid = 04000000000000000000L
+        self.assertRaises(ValueError, tarinfo.tobuf, tarfile.GNU_FORMAT)
+
+    def test_pax_limits(self):
+        tarinfo = tarfile.TarInfo("123/" * 126 + "longname")
+        tarinfo.tobuf(tarfile.PAX_FORMAT)
+
+        tarinfo = tarfile.TarInfo("longlink")
+        tarinfo.linkname = "123/" * 126 + "longname"
+        tarinfo.tobuf(tarfile.PAX_FORMAT)
+
+        tarinfo = tarfile.TarInfo("name")
+        tarinfo.uid = 04000000000000000000L
+        tarinfo.tobuf(tarfile.PAX_FORMAT)
+
+
+class GzipMiscReadTest(MiscReadTest):
+    tarname = gzipname
+    mode = "r:gz"
+class GzipUstarReadTest(UstarReadTest):
+    tarname = gzipname
+    mode = "r:gz"
+class GzipStreamReadTest(StreamReadTest):
+    tarname = gzipname
+    mode = "r|gz"
+class GzipWriteTest(WriteTest):
+    mode = "w:gz"
+class GzipStreamWriteTest(StreamWriteTest):
+    mode = "w|gz"
+
+
+class Bz2MiscReadTest(MiscReadTest):
+    tarname = bz2name
+    mode = "r:bz2"
+class Bz2UstarReadTest(UstarReadTest):
+    tarname = bz2name
+    mode = "r:bz2"
+class Bz2StreamReadTest(StreamReadTest):
+    tarname = bz2name
+    mode = "r|bz2"
+class Bz2WriteTest(WriteTest):
+    mode = "w:bz2"
+class Bz2StreamWriteTest(StreamWriteTest):
+    mode = "w|bz2"
+
+class Bz2PartialReadTest(unittest.TestCase):
+    # Issue5068: The _BZ2Proxy.read() method loops forever
+    # on an empty or partial bzipped file.
+
+    def _test_partial_input(self, mode):
+        class MyStringIO(StringIO.StringIO):
+            hit_eof = False
+            def read(self, n):
+                if self.hit_eof:
+                    raise AssertionError("infinite loop detected in tarfile.open()")
+                self.hit_eof = self.pos == self.len
+                return StringIO.StringIO.read(self, n)
+
+        data = bz2.compress(tarfile.TarInfo("foo").tobuf())
+        for x in range(len(data) + 1):
+            tarfile.open(fileobj=MyStringIO(data[:x]), mode=mode)
+
+    def test_partial_input(self):
+        self._test_partial_input("r")
+
+    def test_partial_input_bz2(self):
+        self._test_partial_input("r:bz2")
+
 
 def test_main():
-    if gzip:
-        # create testtar.tar.gz
-        gzip.open(tarname("gz"), "wb").write(file(tarname(), "rb").read())
-    if bz2:
-        # create testtar.tar.bz2
-        bz2.BZ2File(tarname("bz2"), "wb").write(file(tarname(), "rb").read())
+    if not os.path.exists(TEMPDIR):
+        os.mkdir(TEMPDIR)
 
     tests = [
-        FileModeTest,
-        ReadTest,
-        ReadStreamTest,
+        UstarReadTest,
+        MiscReadTest,
+        StreamReadTest,
+        DetectReadTest,
+        MemberReadTest,
+        GNUReadTest,
+        PaxReadTest,
         WriteTest,
-        WriteSize0Test,
-        WriteStreamTest,
-        WriteGNULongTest,
+        StreamWriteTest,
+        GNUWriteTest,
+        PaxWriteTest,
+        UstarUnicodeTest,
+        GNUUnicodeTest,
+        PaxUnicodeTest,
+        AppendTest,
+        LimitsTest,
     ]
 
     if hasattr(os, "link"):
-        tests.append(ExtractHardlinkTest)
-        tests.append(CreateHardlinkTest)
+        tests.append(HardlinkTest)
+
+    fobj = open(tarname, "rb")
+    data = fobj.read()
+    fobj.close()
 
     if gzip:
-        tests.extend([
-            ReadTestGzip, ReadStreamTestGzip,
-            WriteTestGzip, WriteStreamTestGzip
-        ])
+        # Create testtar.tar.gz and add gzip-specific tests.
+        tar = gzip.open(gzipname, "wb")
+        tar.write(data)
+        tar.close()
+
+        tests += [
+            GzipMiscReadTest,
+            GzipUstarReadTest,
+            GzipStreamReadTest,
+            GzipWriteTest,
+            GzipStreamWriteTest,
+        ]
 
     if bz2:
-        tests.extend([
-            ReadTestBzip2, ReadStreamTestBzip2,
-            WriteTestBzip2, WriteStreamTestBzip2
-        ])
+        # Create testtar.tar.bz2 and add bz2-specific tests.
+        tar = bz2.BZ2File(bz2name, "wb")
+        tar.write(data)
+        tar.close()
+
+        tests += [
+            Bz2MiscReadTest,
+            Bz2UstarReadTest,
+            Bz2StreamReadTest,
+            Bz2WriteTest,
+            Bz2StreamWriteTest,
+            Bz2PartialReadTest,
+        ]
+
     try:
         test_support.run_unittest(*tests)
     finally:
-        if gzip:
-            os.remove(tarname("gz"))
-        if bz2:
-            os.remove(tarname("bz2"))
-        if os.path.exists(dirname()):
-            shutil.rmtree(dirname())
-        if os.path.exists(tmpname()):
-            os.remove(tmpname())
+        if os.path.exists(TEMPDIR):
+            shutil.rmtree(TEMPDIR)
 
 if __name__ == "__main__":
     test_main()

@@ -1,7 +1,7 @@
 Building Python using VC++ 6.0 or 5.0
 -------------------------------------
 This directory is used to build Python for Win32 platforms, e.g. Windows
-95, 98 and NT.  It requires Microsoft Visual C++ 6.x or 5.x.
+2000 and XP.  It requires Microsoft Visual C++ 6.x or 5.x.
 (For other Windows platforms and compilers, see ../readme.txt.)
 
 All you need to do is open the workspace "pcbuild.dsw" in MSVC++, select
@@ -11,9 +11,7 @@ and build the projects.
 The proper order to build subprojects:
 
 1) pythoncore (this builds the main Python DLL and library files,
-               python21.{dll, lib} in Release mode)
-              NOTE:  in previous releases, this subproject was
-              named after the release number, e.g. python20.
+               python26.{dll, lib} in Release mode)
 
 2) python (this builds the main Python executable,
            python.exe in Release mode)
@@ -24,7 +22,7 @@ The proper order to build subprojects:
    to the subsystems they implement; see SUBPROJECTS below)
 
 When using the Debug setting, the output files have a _d added to
-their name:  python21_d.dll, python_d.exe, parser_d.pyd, and so on.
+their name:  python26_d.dll, python_d.exe, pyexpat_d.pyd, and so on.
 
 SUBPROJECTS
 -----------
@@ -39,6 +37,9 @@ python
     .exe
 pythonw
     pythonw.exe, a variant of python.exe that doesn't pop up a DOS box
+_msi
+    _msi.c. You need to install Windows Installer SDK to build this module.
+    http://www.microsoft.com/msdownload/platformsdk/sdkupdate/psdk-full.htm
 _socket
     socketmodule.c
 _testcapi
@@ -62,40 +63,44 @@ unpack into new subdirectories of dist\.
 
 _tkinter
     Python wrapper for the Tk windowing system.  Requires building
-    Tcl/Tk first.  Following are instructions for Tcl/Tk 8.4.3:
+    Tcl/Tk first.  Following are instructions for Tcl/Tk 8.5.2.
 
     Get source
     ----------
-    Go to
-        http://prdownloads.sourceforge.net/tcl/
-    and download
-        tcl843-src.zip
-        tk843-src.zip
-    Unzip into
-        dist\tcl8.4.3\
-        dist\tk8.4.3\
-    respectively.
+    In the dist directory, run
+    svn export http://svn.python.org/projects/external/tcl-8.5.2.1 tcl8.5.2
+    svn export http://svn.python.org/projects/external/tk-8.5.2.0 tk8.5.2
+    svn export http://svn.python.org/projects/external/tix-8.4.3.1 tix8.4.3
 
-    Build Tcl first (done here w/ MSVC 6 on Win98SE)
+    Debug Build
+    -----------
+    To build debug version, add DEBUG=1 to all nmake call bellow.
+
+    Build Tcl first (done here w/ MSVC 6 on Win2K)
     ---------------
-    cd dist\tcl8.4.3\win
-    run vcvars32.bat [necessary even on Win2K]
+    If your environment doesn't have struct _stat64, you need to apply
+    tcl852.patch in this directory to dist\tcl8.5.2\generic\tcl.h.
+
+    cd dist\tcl8.5.2\win
+    run vcvars32.bat
     nmake -f makefile.vc
-    nmake -f makefile.vc INSTALLDIR=..\..\tcl84 install
+    nmake -f makefile.vc INSTALLDIR=..\..\tcltk install
 
     XXX Should we compile with OPTS=threads?
 
-    XXX Some tests failed in "nmake -f makefile.vc test".
-    XXX all.tcl:  Total 10480   Passed 9743    Skipped 719     Failed 18
-    XXX
-    XXX That was on Win98SE.  On Win2K:
-    XXX all.tcl   Total 10480   Passed 9781    Skipped 698     Failed  1
+    Optional:  run tests, via
+        nmake -f makefile.vc test
+
+        all.tcl:        Total   24242   Passed  23358   Skipped 877     Failed  7
+        Sourced 137 Test Files.
+        Files with failing tests: exec.test http.test io.test main.test string.test stri
+        ngObj.test
 
     Build Tk
     --------
-    cd dist\tk8.4.3\win
-    nmake -f makefile.vc TCLDIR=..\..\tcl8.4.3
-    nmake -f makefile.vc TCLDIR=..\..\tcl8.4.3 INSTALLDIR=..\..\tcl84 install
+    cd dist\tk8.5.2\win
+    nmake -f makefile.vc TCLDIR=..\..\tcl8.5.2
+    nmake -f makefile.vc TCLDIR=..\..\tcl8.5.2 INSTALLDIR=..\..\tcltk install
 
     XXX Should we compile with OPTS=threads?
 
@@ -103,96 +108,59 @@ _tkinter
     XXX failed.  It popped up tons of little windows, and did lots of
     XXX stuff, and nothing blew up.
 
-    XXX Our installer copies a lot of stuff out of the Tcl/Tk install
-    XXX directory.  Is all of that really needed for Python use of Tcl/Tk?
-
-    Make sure the installer matches
-    -------------------------------
-    Ensure that the Wise compiler vrbl _TCLDIR_ is set to the name of
-    the common Tcl/Tk installation directory (tcl84 for the instructions
-    above).  This is needed so the installer can copy various Tcl/Tk
-    files into the Python distribution.
-
-
-zlib
-    Python wrapper for the zlib compression library.  Get the source code
-    for version 1.1.4 from a convenient mirror at:
-        http://www.gzip.org/zlib/
-    Unpack into dist\zlib-1.1.4.
-    A custom pre-link step in the zlib project settings should manage to
-    build zlib-1.1.4\zlib.lib by magic before zlib.pyd (or zlib_d.pyd) is
-    linked in PCbuild\.
-    However, the zlib project is not smart enough to remove anything under
-    zlib-1.1.4\ when you do a clean, so if you want to rebuild zlib.lib
-    you need to clean up zlib-1.1.4\ by hand.
+    Build Tix
+    ---------
+    cd dist\tix8.4.3\win
+    nmake -f python.mak TCL_MAJOR=8 TCL_MINOR=5 TCL_PATCH=2 MACHINE=IX86 DEBUG=0
+    nmake -f python.mak TCL_MAJOR=8 TCL_MINOR=5 TCL_PATCH=2 MACHINE=IX86 DEBUG=0 INSTALL_DIR=..\..\tcltk install
 
 bz2
     Python wrapper for the libbz2 compression library.  Homepage
-        http://sources.redhat.com/bzip2/
-    Download the source tarball, bzip2-1.0.2.tar.gz.
-    Unpack into dist\bzip2-1.0.2.  WARNING:  If you're using WinZip, you
-    must disable its "TAR file smart CR/LF conversion" feature (under
-    Options -> Configuration -> Miscellaneous -> Other) for the duration.
+        http://www.bzip.org/
+    Download the source from the python.org copy into the dist
+    directory:
 
-    A custom pre-link step in the bz2 project settings should manage to
-    build bzip2-1.0.2\libbz2.lib by magic before bz2.pyd (or bz2_d.pyd) is
-    linked in PCbuild\.
-    However, the bz2 project is not smart enough to remove anything under
-    bzip2-1.0.2\ when you do a clean, so if you want to rebuild bzip2.lib
-    you need to clean up bzip2-1.0.2\ by hand.
+    svn export http://svn.python.org/projects/external/bzip2-1.0.5
 
-    The build step shouldn't yield any warnings or errors, and should end
-    by displaying 6 blocks each terminated with
-        FC: no differences encountered
-    If FC finds differences, see the warning abou WinZip above (when I
-    first tried it, sample3.ref failed due to CRLF conversion).
+    And requires building bz2 first.
 
-    All of this managed to build bzip2-1.0.2\libbz2.lib, which the Python
+    cd dist\bzip2-1.0.5
+    nmake -f makefile.msc
+
+    All of this managed to build bzip2-1.0.5\libbz2.lib, which the Python
     project links in.
 
 
 _bsddb
-    Go to Sleepycat's download page:
-        http://www.sleepycat.com/download/
+    To use the version of bsddb that Python is built with by default, invoke
+    (in the dist directory)
 
-    and download version 4.1.25.  The file name is db-4.1.25.NC.zip.
-    XXX with or without strong cryptography?  I picked "without".
+     svn export http://svn.python.org/projects/external/db-4.7.25.0 db-4.7.25
 
-    Unpack into
-        dist\db-4.1.25
+    Then open db-4.7.25\build_windows\Berkeley_DB.dsw and build the
+    "db_static" project for "Release" mode.
 
-    [If using WinZip to unpack the db-4.1.25.NC distro, that requires
-     renaming the directory (to remove ".NC") after unpacking.
-    ]
+    Alternatively, if you want to start with the original sources,
+    go to Oracle's download page:
+        http://www.oracle.com/technology/software/products/berkeley-db/db/
 
-    Open
-        dist\db-4.1.25\docs\index.html
+    and download version 4.7.25.
 
-    and follow the Windows instructions for building the Sleepycat
-    software.  Note that Berkeley_DB.dsw is in the build_win32 subdirectory.
-    Build the Release version ("build_all -- Win32 Release").
+    With or without strong cryptography? You can choose either with or
+    without strong cryptography, as per the instructions below.  By
+    default, Python is built and distributed WITHOUT strong crypto.
 
-    XXX We're actually linking against Release_static\libdb41s.lib.
-    XXX This yields the following warnings:
-"""
-Compiling...
-_bsddb.c
-Linking...
-   Creating library ./_bsddb.lib and object ./_bsddb.exp
-LINK : warning LNK4049: locally defined symbol "_malloc" imported
-LINK : warning LNK4049: locally defined symbol "_free" imported
-LINK : warning LNK4049: locally defined symbol "_fclose" imported
-LINK : warning LNK4049: locally defined symbol "_fopen" imported
-_bsddb.pyd - 0 error(s), 4 warning(s)
-"""
-    XXX This isn't encouraging, but I don't know what to do about it.
+    Unpack the sources; if you downloaded the non-crypto version, rename
+    the directory from db-4.7.25.NC to db-4.7.25.
+
+    Now apply any patches that apply to your version.
 
     To run extensive tests, pass "-u bsddb" to regrtest.py.  test_bsddb3.py
     is then enabled.  Running in verbose mode may be helpful.
 
     XXX The test_bsddb3 tests don't always pass, on Windows (according to
-    XXX me) or on Linux (according to Barry).  I had much better luck
-    XXX on Win2K than on Win98SE.  The common failure mode across platforms
+    XXX me) or on Linux (according to Barry).  (I had much better luck
+    XXX on Win2K than on Win98SE.)  The common failure mode across platforms
     XXX is
     XXX     DBAgainError: (11, 'Resource temporarily unavailable -- unable
     XXX                         to join the environment')
@@ -217,6 +185,17 @@ _bsddb.pyd - 0 error(s), 4 warning(s)
     XXX threads are invisible to unittest).
 
 
+_sqlite3
+    Python wrapper for SQLite library.
+    
+    Get the source code through
+    
+    svn export http://svn.python.org/projects/external/sqlite-source-3.3.4
+    
+    To use the extension module in a Python build tree, copy sqlite3.dll into
+    the PC/VC6 folder.
+
+
 _ssl
     Python wrapper for the secure sockets library.
 
@@ -224,13 +203,13 @@ _ssl
         http://www.openssl.org
 
     You (probably) don't want the "engine" code.  For example, get
-        openssl-0.9.6g.tar.gz
+        openssl-0.9.8g.tar.gz
     not
-        openssl-engine-0.9.6g.tar.gz
+        openssl-engine-0.9.8g.tar.gz
 
     Unpack into the "dist" directory, retaining the folder name from
     the archive - for example, the latest stable OpenSSL will install as
-        dist/openssl-0.9.6g
+        dist/openssl-0.9.8g
 
     You can (theoretically) use any version of OpenSSL you like - the
     build process will automatically select the latest version.
@@ -239,11 +218,9 @@ _ssl
         http://www.activestate.com/Products/ActivePerl/
     as this is used by the OpenSSL build process.  Complain to them <wink>.
 
-    The MSVC project simply invokes PCBuild/build_ssl.py to perform
+    The MSVC project simply invokes PC/VC6/build_ssl.py to perform
     the build.  This Python script locates and builds your OpenSSL
     installation, then invokes a simple makefile to build the final .pyd.
-
-    Win9x users:  see "Win9x note" below.
 
     build_ssl.py attempts to catch the most common errors (such as not
     being able to find OpenSSL sources, or not being able to find a Perl
@@ -255,30 +232,6 @@ _ssl
 
     build_ssl.py/MSVC isn't clever enough to clean OpenSSL - you must do
     this by hand.
-
-    Win9x note:  If, near the start of the build process, you see
-    something like
-
-        C:\Code\openssl-0.9.6g>set OPTS=no-asm
-        Out of environment space
-
-    then you're in trouble, and will probably also see these errors near
-    the end of the process:
-
-        NMAKE : fatal error U1073: don't know how to make
-            'crypto\md5\asm\m5_win32.asm'
-        Stop.
-        NMAKE : fatal error U1073: don't know how to make
-            'C:\Code\openssl-0.9.6g/out32/libeay32.lib'
-        Stop.
-
-    You need more environment space.  Win9x only has room for 256 bytes
-    by default, and especially after installing ActivePerl (which fiddles
-    the PATH envar), you're likely to run out.  KB Q230205
-
-        http://support.microsoft.com/default.aspx?scid=KB;en-us;q230205
-
-    explains how to edit CONFIG.SYS to cure this.
 
 
 YOUR OWN EXTENSION DLLs

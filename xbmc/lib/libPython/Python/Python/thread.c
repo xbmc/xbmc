@@ -75,10 +75,11 @@ static int initialized;
 
 static void PyThread__init_thread(void); /* Forward */
 
-void PyThread_init_thread(void)
+void
+PyThread_init_thread(void)
 {
 #ifdef Py_DEBUG
-	char *p = getenv("THREADDEBUG");
+	char *p = Py_GETENV("PYTHONTHREADDEBUG");
 
 	if (p) {
 		if (*p)
@@ -93,6 +94,11 @@ void PyThread_init_thread(void)
 	dprintf(("PyThread_init_thread called\n"));
 	PyThread__init_thread();
 }
+
+/* Support for runtime thread stack size tuning.
+   A value of 0 means using the platform's default stack size
+   or the size specified by the THREAD_STACK_SIZE macro. */
+static size_t _pythread_stacksize = 0;
 
 #ifdef SGI_THREADS
 #include "thread_sgi.h"
@@ -148,6 +154,28 @@ void PyThread_init_thread(void)
 #include "thread_foobar.h"
 #endif
 */
+
+/* return the current thread stack size */
+size_t
+PyThread_get_stacksize(void)
+{
+	return _pythread_stacksize;
+}
+
+/* Only platforms defining a THREAD_SET_STACKSIZE() macro
+   in thread_<platform>.h support changing the stack size.
+   Return 0 if stack size is valid,
+          -1 if stack size value is invalid,
+          -2 if setting stack size is not supported. */
+int
+PyThread_set_stacksize(size_t size)
+{
+#if defined(THREAD_SET_STACKSIZE)
+	return THREAD_SET_STACKSIZE(size);
+#else
+	return -2;
+#endif
+}
 
 #ifndef Py_HAVE_NATIVE_TLS
 /* If the platform has not supplied a platform specific
@@ -236,13 +264,25 @@ static int nkeys = 0;  /* PyThread_create_key() hands out nkeys+1 next */
 static struct key *
 find_key(int key, void *value)
 {
-	struct key *p;
+	struct key *p, *prev_p;
 	long id = PyThread_get_thread_ident();
 
+	if (!keymutex)
+		return NULL;
 	PyThread_acquire_lock(keymutex, 1);
+	prev_p = NULL;
 	for (p = keyhead; p != NULL; p = p->next) {
 		if (p->id == id && p->key == key)
 			goto Done;
+		/* Sanity check.  These states should never happen but if
+		 * they do we must abort.  Otherwise we'll end up spinning in
+		 * in a tight loop with the lock held.  A similar check is done
+		 * in pystate.c tstate_delete_common().  */
+		if (p == prev_p)
+			Py_FatalError("tls find_key: small circular list(!)");
+		prev_p = p;
+		if (p->next == keyhead)
+			Py_FatalError("tls find_key: circular list(!)");
 	}
 	if (value == NULL) {
 		assert(p == NULL);
@@ -349,6 +389,37 @@ PyThread_delete_key_value(int key)
 			q = &p->next;
 	}
 	PyThread_release_lock(keymutex);
+}
+
+/* Forget everything not associated with the current thread id.
+ * This function is called from PyOS_AfterFork().  It is necessary
+ * because other thread ids which were in use at the time of the fork
+ * may be reused for new threads created in the forked process.
+ */
+void
+PyThread_ReInitTLS(void)
+{
+	long id = PyThread_get_thread_ident();
+	struct key *p, **q;
+
+	if (!keymutex)
+		return;
+	
+	/* As with interpreter_lock in PyEval_ReInitThreads()
+	   we just create a new lock without freeing the old one */
+	keymutex = PyThread_allocate_lock();
+
+	/* Delete all keys which do not match the current thread id */
+	q = &keyhead;
+	while ((p = *q) != NULL) {
+		if (p->id != id) {
+			*q = p->next;
+			free((void *)p);
+			/* NB This does *not* free p->value! */
+		}
+		else
+			q = &p->next;
+	}
 }
 
 #endif /* Py_HAVE_NATIVE_TLS */

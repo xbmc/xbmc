@@ -6,21 +6,33 @@ import codecs
 
 ### Codec APIs
 
-class Codec(codecs.Codec):
+encode = codecs.utf_7_encode
 
-    # Note: Binding these as C functions will result in the class not
-    # converting them to methods. This is intended.
+def decode(input, errors='strict'):
+    return codecs.utf_7_decode(input, errors, True)
+
+class IncrementalEncoder(codecs.IncrementalEncoder):
+    def encode(self, input, final=False):
+        return codecs.utf_7_encode(input, self.errors)[0]
+
+class IncrementalDecoder(codecs.BufferedIncrementalDecoder):
+    _buffer_decode = codecs.utf_7_decode
+
+class StreamWriter(codecs.StreamWriter):
     encode = codecs.utf_7_encode
+
+class StreamReader(codecs.StreamReader):
     decode = codecs.utf_7_decode
-
-class StreamWriter(Codec,codecs.StreamWriter):
-    pass
-
-class StreamReader(Codec,codecs.StreamReader):
-    pass
 
 ### encodings module API
 
 def getregentry():
-
-    return (Codec.encode,Codec.decode,StreamReader,StreamWriter)
+    return codecs.CodecInfo(
+        name='utf-7',
+        encode=encode,
+        decode=decode,
+        incrementalencoder=IncrementalEncoder,
+        incrementaldecoder=IncrementalDecoder,
+        streamreader=StreamReader,
+        streamwriter=StreamWriter,
+    )

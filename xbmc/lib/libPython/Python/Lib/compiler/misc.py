@@ -1,9 +1,8 @@
-import types
 
 def flatten(tup):
     elts = []
     for elt in tup:
-        if type(elt) == types.TupleType:
+        if isinstance(elt, tuple):
             elts = elts + flatten(elt)
         else:
             elts.append(elt)
@@ -15,13 +14,13 @@ class Set:
     def __len__(self):
         return len(self.elts)
     def __contains__(self, elt):
-        return self.elts.has_key(elt)
+        return elt in self.elts
     def add(self, elt):
         self.elts[elt] = elt
     def elements(self):
         return self.elts.keys()
     def has_elt(self, elt):
-        return self.elts.has_key(elt)
+        return elt in self.elts
     def remove(self, elt):
         del self.elts[elt]
     def copy(self):

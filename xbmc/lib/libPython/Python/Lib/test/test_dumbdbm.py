@@ -38,6 +38,30 @@ class DumbDBMTestCase(unittest.TestCase):
         self.read_helper(f)
         f.close()
 
+    def test_dumbdbm_creation_mode(self):
+        # On platforms without chmod, don't do anything.
+        if not (hasattr(os, 'chmod') and hasattr(os, 'umask')):
+            return
+
+        try:
+            old_umask = os.umask(0002)
+            f = dumbdbm.open(_fname, 'c', 0637)
+            f.close()
+        finally:
+            os.umask(old_umask)
+
+        expected_mode = 0635
+        if os.name != 'posix':
+            # Windows only supports setting the read-only attribute.
+            # This shouldn't fail, but doesn't work like Unix either.
+            expected_mode = 0666
+
+        import stat
+        st = os.stat(_fname + '.dat')
+        self.assertEqual(stat.S_IMODE(st.st_mode), expected_mode)
+        st = os.stat(_fname + '.dir')
+        self.assertEqual(stat.S_IMODE(st.st_mode), expected_mode)
+
     def test_close_twice(self):
         f = dumbdbm.open(_fname)
         f['a'] = 'b'

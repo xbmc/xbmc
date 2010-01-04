@@ -16,7 +16,7 @@ extern "C" {
 
 PyAPI_DATA(PyTypeObject) PyCObject_Type;
 
-#define PyCObject_Check(op) ((op)->ob_type == &PyCObject_Type)
+#define PyCObject_Check(op) (Py_TYPE(op) == &PyCObject_Type)
 
 /* Create a PyCObject from a pointer to a C object and an optional
    destructor function.  If the second argument is non-null, then it
@@ -47,6 +47,15 @@ PyAPI_FUNC(void *) PyCObject_Import(char *module_name, char *cobject_name);
 
 /* Modify a C object. Fails (==0) if object has a destructor. */
 PyAPI_FUNC(int) PyCObject_SetVoidPtr(PyObject *self, void *cobj);
+
+
+typedef struct {
+    PyObject_HEAD
+    void *cobject;
+    void *desc;
+    void (*destructor)(void *);
+} PyCObject;
+
 
 #ifdef __cplusplus
 }

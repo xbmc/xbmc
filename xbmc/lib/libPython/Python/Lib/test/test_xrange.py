@@ -2,6 +2,7 @@
 
 import test.test_support, unittest
 import sys
+import pickle
 
 import warnings
 warnings.filterwarnings("ignore", "integer argument expected",
@@ -54,13 +55,18 @@ class XrangeTest(unittest.TestCase):
         self.assertRaises(OverflowError, xrange, 0, 2*sys.maxint)
 
         r = xrange(-sys.maxint, sys.maxint, 2)
-        if sys.maxint > 0x7fffffff:
-            # XXX raising ValueError is less than ideal, but this can't
-            # be fixed until range_length() returns a long in rangeobject.c
-            self.assertRaises(ValueError, len, r)
-        else:
-            self.assertEqual(len(r), sys.maxint)
+        self.assertEqual(len(r), sys.maxint)
         self.assertRaises(OverflowError, xrange, -sys.maxint-1, sys.maxint, 2)
+
+    def test_pickling(self):
+        testcases = [(13,), (0, 11), (-22, 10), (20, 3, -1),
+                     (13, 21, 3), (-2, 2, 2)]
+        for proto in range(pickle.HIGHEST_PROTOCOL + 1):
+            for t in testcases:
+                r = xrange(*t)
+                self.assertEquals(list(pickle.loads(pickle.dumps(r, proto))),
+                                  list(r))
+
 
 def test_main():
     test.test_support.run_unittest(XrangeTest)

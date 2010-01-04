@@ -20,8 +20,6 @@ from xml.dom import EMPTY_NAMESPACE, EMPTY_PREFIX, XMLNS_NAMESPACE, domreg
 from xml.dom.minicompat import *
 from xml.dom.xmlbuilder import DOMImplementationLS, DocumentLS
 
-_TupleType = type(())
-
 # This is used by the ID-cache invalidation checks; the list isn't
 # actually complete, since the nodes being checked will never be the
 # DOCUMENT_NODE or DOCUMENT_FRAGMENT_NODE.  (The node being checked is
@@ -31,7 +29,7 @@ _nodeTypes_with_children = (xml.dom.Node.ELEMENT_NODE,
                             xml.dom.Node.ENTITY_REFERENCE_NODE)
 
 
-class Node(xml.dom.Node, GetattrMagic):
+class Node(xml.dom.Node):
     namespaceURI = None # this is non-null only for elements and attributes
     parentNode = None
     ownerDocument = None
@@ -205,6 +203,8 @@ class Node(xml.dom.Node, GetattrMagic):
                 L.append(child)
                 if child.nodeType == Node.ELEMENT_NODE:
                     child.normalize()
+        if L:
+            L[-1].nextSibling = None
         self.childNodes[:] = L
 
     def cloneNode(self, deep):
@@ -245,7 +245,7 @@ class Node(xml.dom.Node, GetattrMagic):
         except AttributeError:
             d = {}
             self._user_data = d
-        if d.has_key(key):
+        if key in d:
             old = d[key][0]
         if data is None:
             # ignore handlers passed for None
@@ -459,7 +459,7 @@ defproperty(Attr, "localName",  doc="Namespace-local name of this attribute.")
 defproperty(Attr, "schemaType", doc="Schema type for this attribute.")
 
 
-class NamedNodeMap(NewStyle, GetattrMagic):
+class NamedNodeMap(object):
     """The attribute list is a transient interface to the underlying
     dictionaries.  Mutations here will change the underlying element's
     dictionary.
@@ -516,6 +516,7 @@ class NamedNodeMap(NewStyle, GetattrMagic):
 
     __len__ = _get_length
 
+    __hash__ = None # Mutable type can't be correctly hashed
     def __cmp__(self, other):
         if self._attrs is getattr(other, "_attrs", None):
             return 0
@@ -523,7 +524,7 @@ class NamedNodeMap(NewStyle, GetattrMagic):
             return cmp(id(self), id(other))
 
     def __getitem__(self, attname_or_tuple):
-        if isinstance(attname_or_tuple, _TupleType):
+        if isinstance(attname_or_tuple, tuple):
             return self._attrsNS[attname_or_tuple]
         else:
             return self._attrs[attname_or_tuple]
@@ -562,7 +563,7 @@ class NamedNodeMap(NewStyle, GetattrMagic):
             _clear_id_cache(self._ownerElement)
             del self._attrs[n.nodeName]
             del self._attrsNS[(n.namespaceURI, n.localName)]
-            if n.__dict__.has_key('ownerElement'):
+            if 'ownerElement' in n.__dict__:
                 n.__dict__['ownerElement'] = None
             return n
         else:
@@ -574,7 +575,7 @@ class NamedNodeMap(NewStyle, GetattrMagic):
             _clear_id_cache(self._ownerElement)
             del self._attrsNS[(n.namespaceURI, n.localName)]
             del self._attrs[n.nodeName]
-            if n.__dict__.has_key('ownerElement'):
+            if 'ownerElement' in n.__dict__:
                 n.__dict__['ownerElement'] = None
             return n
         else:
@@ -613,7 +614,7 @@ defproperty(NamedNodeMap, "length",
 AttributeList = NamedNodeMap
 
 
-class TypeInfo(NewStyle):
+class TypeInfo(object):
     __slots__ = 'namespace', 'name'
 
     def __init__(self, namespace, name):
@@ -958,7 +959,7 @@ class CharacterData(Childless, Node):
             dotdotdot = "..."
         else:
             dotdotdot = ""
-        return "<DOM %s node \"%s%s\">" % (
+        return '<DOM %s node "%r%s">' % (
             self.__class__.__name__, data[0:10], dotdotdot)
 
     def substringData(self, offset, count):
@@ -1128,6 +1129,8 @@ class Comment(Childless, CharacterData):
         self.data = self.nodeValue = data
 
     def writexml(self, writer, indent="", addindent="", newl=""):
+        if "--" in self.data:
+            raise ValueError("'--' is not allowed in a comment node")
         writer.write("%s<!--%s-->%s" % (indent, self.data, newl))
 
 
@@ -1146,7 +1149,7 @@ class CDATASection(Text):
         writer.write("<![CDATA[%s]]>" % self.data)
 
 
-class ReadOnlySequentialNamedNodeMap(NewStyle, GetattrMagic):
+class ReadOnlySequentialNamedNodeMap(object):
     __slots__ = '_seq',
 
     def __init__(self, seq=()):
@@ -1170,7 +1173,7 @@ class ReadOnlySequentialNamedNodeMap(NewStyle, GetattrMagic):
                 return n
 
     def __getitem__(self, name_or_tuple):
-        if isinstance(name_or_tuple, _TupleType):
+        if isinstance(name_or_tuple, tuple):
             node = self.getNamedItemNS(*name_or_tuple)
         else:
             node = self.getNamedItem(name_or_tuple)
@@ -1418,7 +1421,7 @@ class DOMImplementation(DOMImplementationLS):
     def _create_document(self):
         return Document()
 
-class ElementInfo(NewStyle):
+class ElementInfo(object):
     """Object that represents content-model information for an element.
 
     This implementation is not expected to be used in practice; DOM
@@ -1662,7 +1665,7 @@ class Document(Node, DocumentLS):
         return n
 
     def getElementById(self, id):
-        if self._id_cache.has_key(id):
+        if id in self._id_cache:
             return self._id_cache[id]
         if not (self._elem_info or self._magic_id_count):
             return None

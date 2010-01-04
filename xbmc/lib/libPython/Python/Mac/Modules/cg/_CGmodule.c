@@ -26,67 +26,67 @@ extern int GrafObj_Convert(PyObject *, GrafPtr *);
 PyObject *CGPoint_New(CGPoint *itself)
 {
 
-	return Py_BuildValue("(ff)",
-			itself->x,
-			itself->y);
+        return Py_BuildValue("(ff)",
+                        itself->x,
+                        itself->y);
 }
 
 int
 CGPoint_Convert(PyObject *v, CGPoint *p_itself)
 {
-	if( !PyArg_Parse(v, "(ff)",
-			&p_itself->x,
-			&p_itself->y) )
-		return 0;
-	return 1;
+        if( !PyArg_Parse(v, "(ff)",
+                        &p_itself->x,
+                        &p_itself->y) )
+                return 0;
+        return 1;
 }
 
 PyObject *CGRect_New(CGRect *itself)
 {
 
-	return Py_BuildValue("(ffff)",
-			itself->origin.x,
-			itself->origin.y,
-			itself->size.width,
-			itself->size.height);
+        return Py_BuildValue("(ffff)",
+                        itself->origin.x,
+                        itself->origin.y,
+                        itself->size.width,
+                        itself->size.height);
 }
 
 int
 CGRect_Convert(PyObject *v, CGRect *p_itself)
 {
-	if( !PyArg_Parse(v, "(ffff)",
-			&p_itself->origin.x,
-			&p_itself->origin.y,
-			&p_itself->size.width,
-			&p_itself->size.height) )
-		return 0;
-	return 1;
+        if( !PyArg_Parse(v, "(ffff)",
+                        &p_itself->origin.x,
+                        &p_itself->origin.y,
+                        &p_itself->size.width,
+                        &p_itself->size.height) )
+                return 0;
+        return 1;
 }
 
 PyObject *CGAffineTransform_New(CGAffineTransform *itself)
 {
 
-	return Py_BuildValue("(ffffff)",
-			itself->a,
-			itself->b,
-			itself->c,
-			itself->d,
-			itself->tx,
-			itself->ty);
+        return Py_BuildValue("(ffffff)",
+                        itself->a,
+                        itself->b,
+                        itself->c,
+                        itself->d,
+                        itself->tx,
+                        itself->ty);
 }
 
 int
 CGAffineTransform_Convert(PyObject *v, CGAffineTransform *p_itself)
 {
-	if( !PyArg_Parse(v, "(ffffff)",
-			&p_itself->a,
-			&p_itself->b,
-			&p_itself->c,
-			&p_itself->d,
-			&p_itself->tx,
-			&p_itself->ty) )
-		return 0;
-	return 1;
+        if( !PyArg_Parse(v, "(ffffff)",
+                        &p_itself->a,
+                        &p_itself->b,
+                        &p_itself->c,
+                        &p_itself->d,
+                        &p_itself->tx,
+                        &p_itself->ty) )
+                return 0;
+        return 1;
 }
 
 static PyObject *CG_Error;
@@ -110,6 +110,7 @@ PyObject *CGContextRefObj_New(CGContextRef itself)
 	it->ob_itself = itself;
 	return (PyObject *)it;
 }
+
 int CGContextRefObj_Convert(PyObject *v, CGContextRef *p_itself)
 {
 	if (!CGContextRefObj_Check(v))
@@ -1024,6 +1025,7 @@ static PyObject *CGContextRefObj_CGContextSetShouldAntialias(CGContextRefObject 
 	return _res;
 }
 
+#ifndef __LP64__
 static PyObject *CGContextRefObj_SyncCGContextOriginWithPort(CGContextRefObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -1054,6 +1056,7 @@ static PyObject *CGContextRefObj_ClipCGContextToRegion(CGContextRefObject *_self
 	_res = Py_None;
 	return _res;
 }
+#endif
 
 static PyMethodDef CGContextRefObj_methods[] = {
 	{"CGContextSaveGState", (PyCFunction)CGContextRefObj_CGContextSaveGState, 1,
@@ -1172,10 +1175,12 @@ static PyMethodDef CGContextRefObj_methods[] = {
 	 PyDoc_STR("() -> None")},
 	{"CGContextSetShouldAntialias", (PyCFunction)CGContextRefObj_CGContextSetShouldAntialias, 1,
 	 PyDoc_STR("(int shouldAntialias) -> None")},
+#ifndef __LP64__
 	{"SyncCGContextOriginWithPort", (PyCFunction)CGContextRefObj_SyncCGContextOriginWithPort, 1,
 	 PyDoc_STR("(CGrafPtr port) -> None")},
 	{"ClipCGContextToRegion", (PyCFunction)CGContextRefObj_ClipCGContextToRegion, 1,
 	 PyDoc_STR("(Rect portRect, RgnHandle region) -> None")},
+#endif
 	{NULL, NULL, 0}
 };
 
@@ -1191,16 +1196,16 @@ static PyMethodDef CGContextRefObj_methods[] = {
 
 #define CGContextRefObj_tp_alloc PyType_GenericAlloc
 
-static PyObject *CGContextRefObj_tp_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+static PyObject *CGContextRefObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
 {
-	PyObject *self;
+	PyObject *_self;
 	CGContextRef itself;
 	char *kw[] = {"itself", 0};
 
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&", kw, CGContextRefObj_Convert, &itself)) return NULL;
-	if ((self = type->tp_alloc(type, 0)) == NULL) return NULL;
-	((CGContextRefObject *)self)->ob_itself = itself;
-	return self;
+	if (!PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, CGContextRefObj_Convert, &itself)) return NULL;
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((CGContextRefObject *)_self)->ob_itself = itself;
+	return _self;
 }
 
 #define CGContextRefObj_tp_free PyObject_Del
@@ -1253,6 +1258,7 @@ PyTypeObject CGContextRef_Type = {
 /* ------------------ End object type CGContextRef ------------------ */
 
 
+#ifndef __LP64__
 static PyObject *CG_CreateCGContextForPort(PyObject *_self, PyObject *_args)
 {
 	PyObject *_res = NULL;
@@ -1261,19 +1267,22 @@ static PyObject *CG_CreateCGContextForPort(PyObject *_self, PyObject *_args)
 	OSStatus _err;
 
 	if (!PyArg_ParseTuple(_args, "O&", GrafObj_Convert, &port))
-		return NULL;
+	        return NULL;
 
 	_err = CreateCGContextForPort(port, &ctx);
 	if (_err != noErr)
-		if (_err != noErr) return PyMac_Error(_err);
+	        if (_err != noErr) return PyMac_Error(_err);
 	_res = Py_BuildValue("O&", CGContextRefObj_New, ctx);
 	return _res;
 
 }
+#endif
 
 static PyMethodDef CG_methods[] = {
+#ifndef __LP64__
 	{"CreateCGContextForPort", (PyCFunction)CG_CreateCGContextForPort, 1,
 	 PyDoc_STR("(CGrafPtr) -> CGContextRef")},
+#endif
 	{NULL, NULL, 0}
 };
 

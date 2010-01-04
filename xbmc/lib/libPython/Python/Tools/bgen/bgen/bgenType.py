@@ -19,12 +19,38 @@ class Type:
         self.typeName = typeName
         self.fmt = fmt
 
-    def declare(self, name):
+    def declare(self, name, reference=False):
         """Declare a variable of the type with a given name.
 
         Example: int.declare('spam') prints "int spam;"
         """
-        Output("%s %s;", self.typeName, name)
+        for decl in self.getArgDeclarations(name, reference):
+            Output("%s;", decl)
+        for decl in self.getAuxDeclarations(name):
+            Output("%s;", decl)
+
+    def getArgDeclarations(self, name, reference=False, constmode=False, outmode=False):
+        """Return the main part of the declarations for this type: the items
+        that will be passed as arguments in the C/C++ function call."""
+        if reference:
+            ref = "&"
+        else:
+            ref = ""
+        if constmode:
+            const = "const "
+        else:
+            const = ""
+        if outmode:
+            out = "*"
+        else:
+            out = ""
+        return ["%s%s%s%s %s" % (const, self.typeName, ref, out, name)]
+
+    def getAuxDeclarations(self, name):
+        """Return any auxiliary declarations needed for implementing this
+        type, such as helper variables used to hold sizes, etc. These declarations
+        are not part of the C/C++ function call interface."""
+        return []
 
     def getargs(self):
         return self.getargsFormat(), self.getargsArgs()
@@ -44,11 +70,18 @@ class Type:
         """
         return "&" + name
 
+    def getargsPreCheck(self, name):
+        """Perform any actions needed before calling getargs().
+
+        This could include declaring temporary variables and such.
+        """
+
     def getargsCheck(self, name):
         """Perform any needed post-[new]getargs() checks.
 
         This is type-dependent; the default does not check for errors.
-        An example would be a check for a maximum string length."""
+        An example would be a check for a maximum string length, or it
+        could do post-getargs() copying or conversion."""
 
     def passInput(self, name):
         """Return an argument for passing a variable into a call.
@@ -63,6 +96,12 @@ class Type:
         Example: int.passOutput("spam") returns the string "&spam".
         """
         return "&" + name
+
+    def passReference(self, name):
+        """Return an argument for C++ pass-by-reference.
+        Default is to call passInput().
+        """
+        return self.passInput(name)
 
     def errorCheck(self, name):
         """Check for an error returned in the variable.
@@ -95,6 +134,12 @@ class Type:
         Example: int.mkvalueArgs("spam") returns the string "spam".
         """
         return name
+
+    def mkvaluePreCheck(self, name):
+        """Perform any actions needed before calling mkvalue().
+
+        This could include declaring temporary variables and such.
+        """
 
     def cleanup(self, name):
         """Clean up if necessary.
@@ -172,8 +217,11 @@ class FakeType(InputOnlyType):
         self.substitute = substitute
         self.typeName = None    # Don't show this argument in __doc__ string
 
-    def declare(self, name):
-        pass
+    def getArgDeclarations(self, name, reference=False, constmode=False, outmode=False):
+        return []
+
+    def getAuxDeclarations(self, name, reference=False):
+        return []
 
     def getargsFormat(self):
         return ""
@@ -236,6 +284,25 @@ class OpaqueByValueType(OpaqueType):
 
     def mkvalueArgs(self, name):
         return "%s, %s" % (self.new, name)
+
+class OpaqueByRefType(OpaqueType):
+    """An opaque object type, passed by reference.
+
+    Instantiate with the type name, and optionally an object type name whose
+    New/Convert functions will be used.
+    """
+
+    def passInput(self, name):
+        return name
+
+#    def passOutput(self, name):
+#        return name
+
+    def mkvalueFormat(self):
+        return "O"
+
+    def mkvalueArgs(self, name):
+        return "%s(%s)" % (self.new, name)
 
 class OpaqueByValueStructType(OpaqueByValueType):
     """Similar to OpaqueByValueType, but we also pass this to mkvalue by

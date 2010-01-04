@@ -9,6 +9,9 @@ Exported classes:
 
     DynLoadSuffixImporter
 """
+from warnings import warnpy3k
+warnpy3k("the imputil module has been removed in Python 3.0", stacklevel=2)
+del warnpy3k
 
 # note: avoid importing non-builtin modules
 import imp                      ### not available in JPython?
@@ -552,6 +555,10 @@ class _FilesystemImporter(Importer):
         # This method is only used when we look for a module within a package.
         assert parent
 
+        for submodule_path in parent.__path__:
+            code = self._import_pathname(_os_path_join(submodule_path, modname), fqname)
+            if code is not None:
+                return code
         return self._import_pathname(_os_path_join(parent.__pkgdir__, modname),
                                      fqname)
 

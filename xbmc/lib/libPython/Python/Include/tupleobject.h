@@ -33,23 +33,26 @@ typedef struct {
 
 PyAPI_DATA(PyTypeObject) PyTuple_Type;
 
-#define PyTuple_Check(op) PyObject_TypeCheck(op, &PyTuple_Type)
-#define PyTuple_CheckExact(op) ((op)->ob_type == &PyTuple_Type)
+#define PyTuple_Check(op) \
+                 PyType_FastSubclass(Py_TYPE(op), Py_TPFLAGS_TUPLE_SUBCLASS)
+#define PyTuple_CheckExact(op) (Py_TYPE(op) == &PyTuple_Type)
 
-PyAPI_FUNC(PyObject *) PyTuple_New(int size);
-PyAPI_FUNC(int) PyTuple_Size(PyObject *);
-PyAPI_FUNC(PyObject *) PyTuple_GetItem(PyObject *, int);
-PyAPI_FUNC(int) PyTuple_SetItem(PyObject *, int, PyObject *);
-PyAPI_FUNC(PyObject *) PyTuple_GetSlice(PyObject *, int, int);
-PyAPI_FUNC(int) _PyTuple_Resize(PyObject **, int);
-PyAPI_FUNC(PyObject *) PyTuple_Pack(int, ...);
+PyAPI_FUNC(PyObject *) PyTuple_New(Py_ssize_t size);
+PyAPI_FUNC(Py_ssize_t) PyTuple_Size(PyObject *);
+PyAPI_FUNC(PyObject *) PyTuple_GetItem(PyObject *, Py_ssize_t);
+PyAPI_FUNC(int) PyTuple_SetItem(PyObject *, Py_ssize_t, PyObject *);
+PyAPI_FUNC(PyObject *) PyTuple_GetSlice(PyObject *, Py_ssize_t, Py_ssize_t);
+PyAPI_FUNC(int) _PyTuple_Resize(PyObject **, Py_ssize_t);
+PyAPI_FUNC(PyObject *) PyTuple_Pack(Py_ssize_t, ...);
 
 /* Macro, trading safety for speed */
 #define PyTuple_GET_ITEM(op, i) (((PyTupleObject *)(op))->ob_item[i])
-#define PyTuple_GET_SIZE(op)    (((PyTupleObject *)(op))->ob_size)
+#define PyTuple_GET_SIZE(op)    Py_SIZE(op)
 
 /* Macro, *only* to be used to fill in brand new tuples */
 #define PyTuple_SET_ITEM(op, i, v) (((PyTupleObject *)(op))->ob_item[i] = v)
+
+PyAPI_FUNC(int) PyTuple_ClearFreeList(void);
 
 #ifdef __cplusplus
 }

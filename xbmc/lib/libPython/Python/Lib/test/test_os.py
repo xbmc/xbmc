@@ -5,10 +5,55 @@
 import os
 import unittest
 import warnings
+import sys
 from test import test_support
 
 warnings.filterwarnings("ignore", "tempnam", RuntimeWarning, __name__)
 warnings.filterwarnings("ignore", "tmpnam", RuntimeWarning, __name__)
+
+# Tests creating TESTFN
+class FileTests(unittest.TestCase):
+    def setUp(self):
+        if os.path.exists(test_support.TESTFN):
+            os.unlink(test_support.TESTFN)
+    tearDown = setUp
+
+    def test_access(self):
+        f = os.open(test_support.TESTFN, os.O_CREAT|os.O_RDWR)
+        os.close(f)
+        self.assert_(os.access(test_support.TESTFN, os.W_OK))
+
+    def test_closerange(self):
+        first = os.open(test_support.TESTFN, os.O_CREAT|os.O_RDWR)
+        # We must allocate two consecutive file descriptors, otherwise
+        # it will mess up other file descriptors (perhaps even the three
+        # standard ones).
+        second = os.dup(first)
+        try:
+            retries = 0
+            while second != first + 1:
+                os.close(first)
+                retries += 1
+                if retries > 10:
+                    # XXX test skipped
+                    print >> sys.stderr, (
+                        "couldn't allocate two consecutive fds, "
+                        "skipping test_closerange")
+                    return
+                first, second = second, os.dup(second)
+        finally:
+            os.close(second)
+        # close a fd that is open, and one that isn't
+        os.closerange(first, first + 2)
+        self.assertRaises(OSError, os.write, first, "a")
+
+    def test_rename(self):
+        path = unicode(test_support.TESTFN)
+        old = sys.getrefcount(path)
+        self.assertRaises(TypeError, os.rename, path, 0)
+        new = sys.getrefcount(path)
+        self.assertEqual(old, new)
+
 
 class TemporaryFileTests(unittest.TestCase):
     def setUp(self):
@@ -45,6 +90,44 @@ class TemporaryFileTests(unittest.TestCase):
     def test_tmpfile(self):
         if not hasattr(os, "tmpfile"):
             return
+        # As with test_tmpnam() below, the Windows implementation of tmpfile()
+        # attempts to create a file in the root directory of the current drive.
+        # On Vista and Server 2008, this test will always fail for normal users
+        # as writing to the root directory requires elevated privileges.  With
+        # XP and below, the semantics of tmpfile() are the same, but the user
+        # running the test is more likely to have administrative privileges on
+        # their account already.  If that's the case, then os.tmpfile() should
+        # work.  In order to make this test as useful as possible, rather than
+        # trying to detect Windows versions or whether or not the user has the
+        # right permissions, just try and create a file in the root directory
+        # and see if it raises a 'Permission denied' OSError.  If it does, then
+        # test that a subsequent call to os.tmpfile() raises the same error. If
+        # it doesn't, assume we're on XP or below and the user running the test
+        # has administrative privileges, and proceed with the test as normal.
+        if sys.platform == 'win32':
+            name = '\\python_test_os_test_tmpfile.txt'
+            if os.path.exists(name):
+                os.remove(name)
+            try:
+                fp = open(name, 'w')
+            except IOError, first:
+                # open() failed, assert tmpfile() fails in the same way.
+                # Although open() raises an IOError and os.tmpfile() raises an
+                # OSError(), 'args' will be (13, 'Permission denied') in both
+                # cases.
+                try:
+                    fp = os.tmpfile()
+                except OSError, second:
+                    self.assertEqual(first.args, second.args)
+                else:
+                    self.fail("expected os.tmpfile() to raise OSError")
+                return
+            else:
+                # open() worked, therefore, tmpfile() should work.  Close our
+                # dummy file and proceed with the test as normal.
+                fp.close()
+                os.remove(name)
+
         fp = os.tmpfile()
         fp.write("foobar")
         fp.seek(0,0)
@@ -111,7 +194,11 @@ class StatAttributeTests(unittest.TestCase):
         for name in dir(stat):
             if name[:3] == 'ST_':
                 attr = name.lower()
-                self.assertEquals(getattr(result, attr),
+                if name.endswith("TIME"):
+                    def trunc(x): return int(x)
+                else:
+                    def trunc(x): return x
+                self.assertEquals(trunc(getattr(result, attr)),
                                   result[getattr(stat, name)])
                 self.assert_(attr in members)
 
@@ -158,7 +245,6 @@ class StatAttributeTests(unittest.TestCase):
         if not hasattr(os, "statvfs"):
             return
 
-        import statvfs
         try:
             result = os.statvfs(self.fname)
         except OSError, e:
@@ -168,16 +254,13 @@ class StatAttributeTests(unittest.TestCase):
                 return
 
         # Make sure direct access works
-        self.assertEquals(result.f_bfree, result[statvfs.F_BFREE])
+        self.assertEquals(result.f_bfree, result[3])
 
-        # Make sure all the attributes are there
-        members = dir(result)
-        for name in dir(statvfs):
-            if name[:2] == 'F_':
-                attr = name.lower()
-                self.assertEquals(getattr(result, attr),
-                                  result[getattr(statvfs, name)])
-                self.assert_(attr in members)
+        # Make sure all the attributes are there.
+        members = ('bsize', 'frsize', 'blocks', 'bfree', 'bavail', 'files',
+                    'ffree', 'favail', 'flag', 'namemax')
+        for value, member in enumerate(members):
+            self.assertEquals(getattr(result, 'f_' + member), result[value])
 
         # Make sure that assignment really fails
         try:
@@ -205,6 +288,41 @@ class StatAttributeTests(unittest.TestCase):
         except TypeError:
             pass
 
+    def test_utime_dir(self):
+        delta = 1000000
+        st = os.stat(test_support.TESTFN)
+        # round to int, because some systems may support sub-second
+        # time stamps in stat, but not in utime.
+        os.utime(test_support.TESTFN, (st.st_atime, int(st.st_mtime-delta)))
+        st2 = os.stat(test_support.TESTFN)
+        self.assertEquals(st2.st_mtime, int(st.st_mtime-delta))
+
+    # Restrict test to Win32, since there is no guarantee other
+    # systems support centiseconds
+    if sys.platform == 'win32':
+        def get_file_system(path):
+            root = os.path.splitdrive(os.path.abspath(path))[0] + '\\'
+            import ctypes
+            kernel32 = ctypes.windll.kernel32
+            buf = ctypes.create_string_buffer("", 100)
+            if kernel32.GetVolumeInformationA(root, None, 0, None, None, None, buf, len(buf)):
+                return buf.value
+
+        if get_file_system(test_support.TESTFN) == "NTFS":
+            def test_1565150(self):
+                t1 = 1159195039.25
+                os.utime(self.fname, (t1, t1))
+                self.assertEquals(os.stat(self.fname).st_mtime, t1)
+
+        def test_1686475(self):
+            # Verify that an open file can be stat'ed
+            try:
+                os.stat(r"c:\pagefile.sys")
+            except WindowsError, e:
+                if e.errno == 2: # file does not exist; cannot run test
+                    return
+                self.fail("Could not stat pagefile.sys")
+
 from test import mapping_tests
 
 class EnvironTests(mapping_tests.BasicTestMappingProtocol):
@@ -222,6 +340,13 @@ class EnvironTests(mapping_tests.BasicTestMappingProtocol):
         os.environ.clear()
         os.environ.update(self.__save)
 
+    # Bug 1110478
+    def test_update2(self):
+        if os.path.exists("/bin/sh"):
+            os.environ.update(HELLO="World")
+            value = os.popen("/bin/sh -c 'echo $HELLO'").read().strip()
+            self.assertEquals(value, "World")
+
 class WalkTests(unittest.TestCase):
     """Tests for os.walk()."""
 
@@ -230,75 +355,104 @@ class WalkTests(unittest.TestCase):
         from os.path import join
 
         # Build:
-        #     TESTFN/               a file kid and two directory kids
+        #     TESTFN/
+        #       TEST1/              a file kid and two directory kids
         #         tmp1
         #         SUB1/             a file kid and a directory kid
-        #             tmp2
-        #             SUB11/        no kids
-        #         SUB2/             just a file kid
-        #             tmp3
-        sub1_path = join(test_support.TESTFN, "SUB1")
+        #           tmp2
+        #           SUB11/          no kids
+        #         SUB2/             a file kid and a dirsymlink kid
+        #           tmp3
+        #           link/           a symlink to TESTFN.2
+        #       TEST2/
+        #         tmp4              a lone file
+        walk_path = join(test_support.TESTFN, "TEST1")
+        sub1_path = join(walk_path, "SUB1")
         sub11_path = join(sub1_path, "SUB11")
-        sub2_path = join(test_support.TESTFN, "SUB2")
-        tmp1_path = join(test_support.TESTFN, "tmp1")
+        sub2_path = join(walk_path, "SUB2")
+        tmp1_path = join(walk_path, "tmp1")
         tmp2_path = join(sub1_path, "tmp2")
         tmp3_path = join(sub2_path, "tmp3")
+        link_path = join(sub2_path, "link")
+        t2_path = join(test_support.TESTFN, "TEST2")
+        tmp4_path = join(test_support.TESTFN, "TEST2", "tmp4")
 
         # Create stuff.
         os.makedirs(sub11_path)
         os.makedirs(sub2_path)
-        for path in tmp1_path, tmp2_path, tmp3_path:
+        os.makedirs(t2_path)
+        for path in tmp1_path, tmp2_path, tmp3_path, tmp4_path:
             f = file(path, "w")
             f.write("I'm " + path + " and proud of it.  Blame test_os.\n")
             f.close()
+        if hasattr(os, "symlink"):
+            os.symlink(os.path.abspath(t2_path), link_path)
+            sub2_tree = (sub2_path, ["link"], ["tmp3"])
+        else:
+            sub2_tree = (sub2_path, [], ["tmp3"])
 
         # Walk top-down.
-        all = list(os.walk(test_support.TESTFN))
+        all = list(os.walk(walk_path))
         self.assertEqual(len(all), 4)
         # We can't know which order SUB1 and SUB2 will appear in.
         # Not flipped:  TESTFN, SUB1, SUB11, SUB2
         #     flipped:  TESTFN, SUB2, SUB1, SUB11
         flipped = all[0][1][0] != "SUB1"
         all[0][1].sort()
-        self.assertEqual(all[0], (test_support.TESTFN, ["SUB1", "SUB2"], ["tmp1"]))
+        self.assertEqual(all[0], (walk_path, ["SUB1", "SUB2"], ["tmp1"]))
         self.assertEqual(all[1 + flipped], (sub1_path, ["SUB11"], ["tmp2"]))
         self.assertEqual(all[2 + flipped], (sub11_path, [], []))
-        self.assertEqual(all[3 - 2 * flipped], (sub2_path, [], ["tmp3"]))
+        self.assertEqual(all[3 - 2 * flipped], sub2_tree)
 
         # Prune the search.
         all = []
-        for root, dirs, files in os.walk(test_support.TESTFN):
+        for root, dirs, files in os.walk(walk_path):
             all.append((root, dirs, files))
             # Don't descend into SUB1.
             if 'SUB1' in dirs:
                 # Note that this also mutates the dirs we appended to all!
                 dirs.remove('SUB1')
         self.assertEqual(len(all), 2)
-        self.assertEqual(all[0], (test_support.TESTFN, ["SUB2"], ["tmp1"]))
-        self.assertEqual(all[1], (sub2_path, [], ["tmp3"]))
+        self.assertEqual(all[0], (walk_path, ["SUB2"], ["tmp1"]))
+        self.assertEqual(all[1], sub2_tree)
 
         # Walk bottom-up.
-        all = list(os.walk(test_support.TESTFN, topdown=False))
+        all = list(os.walk(walk_path, topdown=False))
         self.assertEqual(len(all), 4)
         # We can't know which order SUB1 and SUB2 will appear in.
         # Not flipped:  SUB11, SUB1, SUB2, TESTFN
         #     flipped:  SUB2, SUB11, SUB1, TESTFN
         flipped = all[3][1][0] != "SUB1"
         all[3][1].sort()
-        self.assertEqual(all[3], (test_support.TESTFN, ["SUB1", "SUB2"], ["tmp1"]))
+        self.assertEqual(all[3], (walk_path, ["SUB1", "SUB2"], ["tmp1"]))
         self.assertEqual(all[flipped], (sub11_path, [], []))
         self.assertEqual(all[flipped + 1], (sub1_path, ["SUB11"], ["tmp2"]))
-        self.assertEqual(all[2 - 2 * flipped], (sub2_path, [], ["tmp3"]))
+        self.assertEqual(all[2 - 2 * flipped], sub2_tree)
 
+        if hasattr(os, "symlink"):
+            # Walk, following symlinks.
+            for root, dirs, files in os.walk(walk_path, followlinks=True):
+                if root == link_path:
+                    self.assertEqual(dirs, [])
+                    self.assertEqual(files, ["tmp4"])
+                    break
+            else:
+                self.fail("Didn't follow symlink with followlinks=True")
+
+    def tearDown(self):
         # Tear everything down.  This is a decent use for bottom-up on
         # Windows, which doesn't have a recursive delete command.  The
         # (not so) subtlety is that rmdir will fail unless the dir's
         # kids are removed first, so bottom up is essential.
         for root, dirs, files in os.walk(test_support.TESTFN, topdown=False):
             for name in files:
-                os.remove(join(root, name))
+                os.remove(os.path.join(root, name))
             for name in dirs:
-                os.rmdir(join(root, name))
+                dirname = os.path.join(root, name)
+                if not os.path.islink(dirname):
+                    os.rmdir(dirname)
+                else:
+                    os.remove(dirname)
         os.rmdir(test_support.TESTFN)
 
 class MakedirTests (unittest.TestCase):
@@ -350,18 +504,169 @@ class URandomTests (unittest.TestCase):
             self.assertEqual(len(os.urandom(10)), 10)
             self.assertEqual(len(os.urandom(100)), 100)
             self.assertEqual(len(os.urandom(1000)), 1000)
+            # see http://bugs.python.org/issue3708
+            self.assertEqual(len(os.urandom(0.9)), 0)
+            self.assertEqual(len(os.urandom(1.1)), 1)
+            self.assertEqual(len(os.urandom(2.0)), 2)
         except NotImplementedError:
             pass
 
+class Win32ErrorTests(unittest.TestCase):
+    def test_rename(self):
+        self.assertRaises(WindowsError, os.rename, test_support.TESTFN, test_support.TESTFN+".bak")
+
+    def test_remove(self):
+        self.assertRaises(WindowsError, os.remove, test_support.TESTFN)
+
+    def test_chdir(self):
+        self.assertRaises(WindowsError, os.chdir, test_support.TESTFN)
+
+    def test_mkdir(self):
+        self.assertRaises(WindowsError, os.chdir, test_support.TESTFN)
+
+    def test_utime(self):
+        self.assertRaises(WindowsError, os.utime, test_support.TESTFN, None)
+
+    def test_access(self):
+        self.assertRaises(WindowsError, os.utime, test_support.TESTFN, 0)
+
+    def test_chmod(self):
+        self.assertRaises(WindowsError, os.utime, test_support.TESTFN, 0)
+
+class TestInvalidFD(unittest.TestCase):
+    singles = ["fchdir", "fdopen", "dup", "fdatasync", "fstat",
+               "fstatvfs", "fsync", "tcgetpgrp", "ttyname"]
+    #singles.append("close")
+    #We omit close because it doesn'r raise an exception on some platforms
+    def get_single(f):
+        def helper(self):
+            if  hasattr(os, f):
+                self.check(getattr(os, f))
+        return helper
+    for f in singles:
+        locals()["test_"+f] = get_single(f)
+
+    def check(self, f, *args):
+        self.assertRaises(OSError, f, test_support.make_bad_fd(), *args)
+
+    def test_isatty(self):
+        if hasattr(os, "isatty"):
+            self.assertEqual(os.isatty(test_support.make_bad_fd()), False)
+
+    def test_closerange(self):
+        if hasattr(os, "closerange"):
+            fd = test_support.make_bad_fd()
+            # Make sure none of the descriptors we are about to close are
+            # currently valid (issue 6542).
+            for i in range(10):
+                try: os.fstat(fd+i)
+                except OSError:
+                    pass
+                else:
+                    break
+            if i < 2:
+                # Unable to acquire a range of invalid file descriptors,
+                # so skip the test (in 2.6+ this is a unittest.SkipTest).
+                return
+            self.assertEqual(os.closerange(fd, fd + i-1), None)
+
+    def test_dup2(self):
+        if hasattr(os, "dup2"):
+            self.check(os.dup2, 20)
+
+    def test_fchmod(self):
+        if hasattr(os, "fchmod"):
+            self.check(os.fchmod, 0)
+
+    def test_fchown(self):
+        if hasattr(os, "fchown"):
+            self.check(os.fchown, -1, -1)
+
+    def test_fpathconf(self):
+        if hasattr(os, "fpathconf"):
+            self.check(os.fpathconf, "PC_NAME_MAX")
+
+    #this is a weird one, it raises IOError unlike the others
+    def test_ftruncate(self):
+        if hasattr(os, "ftruncate"):
+            self.assertRaises(IOError, os.ftruncate, test_support.make_bad_fd(),
+                              0)
+
+    def test_lseek(self):
+        if hasattr(os, "lseek"):
+            self.check(os.lseek, 0, 0)
+
+    def test_read(self):
+        if hasattr(os, "read"):
+            self.check(os.read, 1)
+
+    def test_tcsetpgrpt(self):
+        if hasattr(os, "tcsetpgrp"):
+            self.check(os.tcsetpgrp, 0)
+
+    def test_write(self):
+        if hasattr(os, "write"):
+            self.check(os.write, " ")
+
+if sys.platform != 'win32':
+    class Win32ErrorTests(unittest.TestCase):
+        pass
+
+    class PosixUidGidTests(unittest.TestCase):
+        if hasattr(os, 'setuid'):
+            def test_setuid(self):
+                if os.getuid() != 0:
+                    self.assertRaises(os.error, os.setuid, 0)
+                self.assertRaises(OverflowError, os.setuid, 1<<32)
+
+        if hasattr(os, 'setgid'):
+            def test_setgid(self):
+                if os.getuid() != 0:
+                    self.assertRaises(os.error, os.setgid, 0)
+                self.assertRaises(OverflowError, os.setgid, 1<<32)
+
+        if hasattr(os, 'seteuid'):
+            def test_seteuid(self):
+                if os.getuid() != 0:
+                    self.assertRaises(os.error, os.seteuid, 0)
+                self.assertRaises(OverflowError, os.seteuid, 1<<32)
+
+        if hasattr(os, 'setegid'):
+            def test_setegid(self):
+                if os.getuid() != 0:
+                    self.assertRaises(os.error, os.setegid, 0)
+                self.assertRaises(OverflowError, os.setegid, 1<<32)
+
+        if hasattr(os, 'setreuid'):
+            def test_setreuid(self):
+                if os.getuid() != 0:
+                    self.assertRaises(os.error, os.setreuid, 0, 0)
+                self.assertRaises(OverflowError, os.setreuid, 1<<32, 0)
+                self.assertRaises(OverflowError, os.setreuid, 0, 1<<32)
+
+        if hasattr(os, 'setregid'):
+            def test_setregid(self):
+                if os.getuid() != 0:
+                    self.assertRaises(os.error, os.setregid, 0, 0)
+                self.assertRaises(OverflowError, os.setregid, 1<<32, 0)
+                self.assertRaises(OverflowError, os.setregid, 0, 1<<32)
+else:
+    class PosixUidGidTests(unittest.TestCase):
+        pass
+
 def test_main():
     test_support.run_unittest(
+        FileTests,
         TemporaryFileTests,
         StatAttributeTests,
         EnvironTests,
         WalkTests,
         MakedirTests,
         DevNullTests,
-        URandomTests
+        URandomTests,
+        Win32ErrorTests,
+        TestInvalidFD,
+        PosixUidGidTests
     )
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@
 
 #include "Python.h"
 
+#ifndef __LP64__
 
 
 #include "pymactoolbox.h"
@@ -50,9 +51,9 @@ PyObject *ListObj_New(ListHandle itself)
 {
 	ListObject *it;
 	if (itself == NULL) {
-						PyErr_SetString(List_Error,"Cannot create null List");
-						return NULL;
-					}
+	                                PyErr_SetString(List_Error,"Cannot create null List");
+	                                return NULL;
+	                        }
 	it = PyObject_NEW(ListObject, &List_Type);
 	if (it == NULL) return NULL;
 	it->ob_itself = itself;
@@ -61,6 +62,7 @@ PyObject *ListObj_New(ListHandle itself)
 	SetListRefCon(itself, (long)it);
 	return (PyObject *)it;
 }
+
 int ListObj_Convert(PyObject *v, ListHandle *p_itself)
 {
 	if (!ListObj_Check(v))
@@ -738,16 +740,16 @@ static PyGetSetDef ListObj_getsetlist[] = {
 
 #define ListObj_tp_alloc PyType_GenericAlloc
 
-static PyObject *ListObj_tp_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+static PyObject *ListObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
 {
-	PyObject *self;
+	PyObject *_self;
 	ListHandle itself;
 	char *kw[] = {"itself", 0};
 
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&", kw, ListObj_Convert, &itself)) return NULL;
-	if ((self = type->tp_alloc(type, 0)) == NULL) return NULL;
-	((ListObject *)self)->ob_itself = itself;
-	return self;
+	if (!PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, ListObj_Convert, &itself)) return NULL;
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((ListObject *)_self)->ob_itself = itself;
+	return _self;
 }
 
 #define ListObj_tp_free PyObject_Del
@@ -826,10 +828,10 @@ static PyObject *List_CreateCustomList(PyObject *_self, PyObject *_args)
 	                      &hasGrow,
 	                      &scrollHoriz,
 	                      &scrollVert))
-		return NULL;
+	        return NULL;
 
 
-	/* Carbon applications use the CreateCustomList API */ 
+	/* Carbon applications use the CreateCustomList API */
 	theSpec.u.userProc = myListDefFunctionUPP;
 	CreateCustomList(&rView,
 	                 &dataBounds,
@@ -845,7 +847,7 @@ static PyObject *List_CreateCustomList(PyObject *_self, PyObject *_args)
 
 	_res = ListObj_New(outList);
 	if (_res == NULL)
-		return NULL;
+	        return NULL;
 	Py_INCREF(listDefFunc);
 	((ListObject*)_res)->ob_ldef_func = listDefFunc;
 	return _res;
@@ -1024,15 +1026,17 @@ static PyObject *List_as_List(PyObject *_self, PyObject *_args)
 	Handle h;
 	ListObject *l;
 	if (!PyArg_ParseTuple(_args, "O&", ResObj_Convert, &h))
-		return NULL;
+	        return NULL;
 	l = (ListObject *)ListObj_New(as_List(h));
 	l->ob_must_be_disposed = 0;
 	_res = Py_BuildValue("O", l);
 	return _res;
 
 }
+#endif /* __LP64__ */
 
 static PyMethodDef List_methods[] = {
+#ifndef __LP64__
 	{"CreateCustomList", (PyCFunction)List_CreateCustomList, 1,
 	 PyDoc_STR("(Rect rView, Rect dataBounds, Point cellSize, ListDefSpec theSpec, WindowPtr theWindow, Boolean drawIt, Boolean hasGrow, Boolean scrollHoriz, Boolean scrollVert) -> (ListHandle outList)")},
 	{"LNew", (PyCFunction)List_LNew, 1,
@@ -1055,9 +1059,11 @@ static PyMethodDef List_methods[] = {
 	 PyDoc_STR("(ListHandle list, OptionBits selectionFlags) -> None")},
 	{"as_List", (PyCFunction)List_as_List, 1,
 	 PyDoc_STR("(Resource)->List.\nReturns List object (which is not auto-freed!)")},
+#endif /* __LP64__ */
 	{NULL, NULL, 0}
 };
 
+#ifndef __LP64__
 
 
 static void myListDefFunction(SInt16 message,
@@ -1066,40 +1072,42 @@ static void myListDefFunction(SInt16 message,
                        Cell theCell,
                        SInt16 dataOffset,
                        SInt16 dataLen,
-                       ListHandle theList)  
+                       ListHandle theList)
 {
-	PyObject *listDefFunc, *args, *rv=NULL;
-	ListObject *self;
-	
-	self = (ListObject*)GetListRefCon(theList);
-	if (self == NULL || self->ob_itself != theList)
-		return;  /* nothing we can do */
-	listDefFunc = self->ob_ldef_func;
-	if (listDefFunc == NULL)
-		return;  /* nothing we can do */
-	args = Py_BuildValue("hbO&O&hhO", message,
-	                                  selected,
-	                                  PyMac_BuildRect, cellRect,
-	                                  PyMac_BuildPoint, theCell,
-	                                  dataOffset,
-	                                  dataLen,
-	                                  self);
-	if (args != NULL) {
-		rv = PyEval_CallObject(listDefFunc, args);
-		Py_DECREF(args);
-	}
-	if (rv == NULL) {
-		PySys_WriteStderr("error in list definition callback:\n");
-		PyErr_Print();
-	} else {
-		Py_DECREF(rv);
-	}
+        PyObject *listDefFunc, *args, *rv=NULL;
+        ListObject *self;
+
+        self = (ListObject*)GetListRefCon(theList);
+        if (self == NULL || self->ob_itself != theList)
+                return;  /* nothing we can do */
+        listDefFunc = self->ob_ldef_func;
+        if (listDefFunc == NULL)
+                return;  /* nothing we can do */
+        args = Py_BuildValue("hbO&O&hhO", message,
+                                          selected,
+                                          PyMac_BuildRect, cellRect,
+                                          PyMac_BuildPoint, theCell,
+                                          dataOffset,
+                                          dataLen,
+                                          self);
+        if (args != NULL) {
+                rv = PyEval_CallObject(listDefFunc, args);
+                Py_DECREF(args);
+        }
+        if (rv == NULL) {
+                PySys_WriteStderr("error in list definition callback:\n");
+                PyErr_Print();
+        } else {
+                Py_DECREF(rv);
+        }
 }
+#endif /* __LP64__ */
 
 
 void init_List(void)
 {
 	PyObject *m;
+#ifndef __LP64__
 	PyObject *d;
 
 
@@ -1108,9 +1116,11 @@ void init_List(void)
 
 	PyMac_INIT_TOOLBOX_OBJECT_NEW(ListHandle, ListObj_New);
 	PyMac_INIT_TOOLBOX_OBJECT_CONVERT(ListHandle, ListObj_Convert);
+#endif /* __LP64__ */
 
 
 	m = Py_InitModule("_List", List_methods);
+#ifndef __LP64__
 	d = PyModule_GetDict(m);
 	List_Error = PyMac_GetOSErrException();
 	if (List_Error == NULL ||
@@ -1123,6 +1133,7 @@ void init_List(void)
 	/* Backward-compatible name */
 	Py_INCREF(&List_Type);
 	PyModule_AddObject(m, "ListType", (PyObject *)&List_Type);
+#endif /* __LP64__ */
 }
 
 /* ======================== End module _List ======================== */

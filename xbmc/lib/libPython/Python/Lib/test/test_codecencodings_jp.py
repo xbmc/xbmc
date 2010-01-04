@@ -3,7 +3,6 @@
 # test_codecencodings_jp.py
 #   Codec encoding tests for Japanese encodings.
 #
-# $CJKCodecs: test_codecencodings_jp.py,v 1.3 2004/06/19 06:09:55 perky Exp $
 
 from test import test_support
 from test import test_multibytecodec_support
@@ -100,13 +99,7 @@ class Test_SJISX0213(test_multibytecodec_support.TestBase, unittest.TestCase):
     )
 
 def test_main():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(Test_CP932))
-    suite.addTest(unittest.makeSuite(Test_EUC_JISX0213))
-    suite.addTest(unittest.makeSuite(Test_EUC_JP_COMPAT))
-    suite.addTest(unittest.makeSuite(Test_SJIS_COMPAT))
-    suite.addTest(unittest.makeSuite(Test_SJISX0213))
-    test_support.run_suite(suite)
+    test_support.run_unittest(__name__)
 
 if __name__ == "__main__":
     test_main()

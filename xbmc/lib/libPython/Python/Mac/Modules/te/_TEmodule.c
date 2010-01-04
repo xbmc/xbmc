@@ -3,6 +3,7 @@
 
 #include "Python.h"
 
+#ifndef __LP64__
 
 
 #include "pymactoolbox.h"
@@ -35,21 +36,21 @@ static PyObject *
 TextStyle_New(TextStylePtr itself)
 {
 
-	return Py_BuildValue("lllO&", (long)itself->tsFont, (long)itself->tsFace, (long)itself->tsSize, QdRGB_New,
-				&itself->tsColor);
+        return Py_BuildValue("lllO&", (long)itself->tsFont, (long)itself->tsFace, (long)itself->tsSize, QdRGB_New,
+                                &itself->tsColor);
 }
 
 static int
 TextStyle_Convert(PyObject *v, TextStylePtr p_itself)
 {
-	long font, face, size;
-	
-	if( !PyArg_ParseTuple(v, "lllO&", &font, &face, &size, QdRGB_Convert, &p_itself->tsColor) )
-		return 0;
-	p_itself->tsFont = (short)font;
-	p_itself->tsFace = (Style)face;
-	p_itself->tsSize = (short)size;
-	return 1;
+        long font, face, size;
+
+        if( !PyArg_ParseTuple(v, "lllO&", &font, &face, &size, QdRGB_Convert, &p_itself->tsColor) )
+                return 0;
+        p_itself->tsFont = (short)font;
+        p_itself->tsFace = (Style)face;
+        p_itself->tsSize = (short)size;
+        return 1;
 }
 
 static PyObject *TE_Error;
@@ -69,14 +70,15 @@ PyObject *TEObj_New(TEHandle itself)
 {
 	TEObject *it;
 	if (itself == NULL) {
-						PyErr_SetString(TE_Error,"Cannot create null TE");
-						return NULL;
-					}
+	                                PyErr_SetString(TE_Error,"Cannot create null TE");
+	                                return NULL;
+	                        }
 	it = PyObject_NEW(TEObject, &TE_Type);
 	if (it == NULL) return NULL;
 	it->ob_itself = itself;
 	return (PyObject *)it;
 }
+
 int TEObj_Convert(PyObject *v, TEHandle *p_itself)
 {
 	if (!TEObj_Check(v))
@@ -983,16 +985,16 @@ static PyGetSetDef TEObj_getsetlist[] = {
 
 #define TEObj_tp_alloc PyType_GenericAlloc
 
-static PyObject *TEObj_tp_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+static PyObject *TEObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
 {
-	PyObject *self;
+	PyObject *_self;
 	TEHandle itself;
 	char *kw[] = {"itself", 0};
 
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&", kw, TEObj_Convert, &itself)) return NULL;
-	if ((self = type->tp_alloc(type, 0)) == NULL) return NULL;
-	((TEObject *)self)->ob_itself = itself;
-	return self;
+	if (!PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, TEObj_Convert, &itself)) return NULL;
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((TEObject *)_self)->ob_itself = itself;
+	return _self;
 }
 
 #define TEObj_tp_free PyObject_Del
@@ -1266,8 +1268,10 @@ static PyObject *TE_as_TE(PyObject *_self, PyObject *_args)
 	                     TEObj_New, _rv);
 	return _res;
 }
+#endif /* __LP64__ */
 
 static PyMethodDef TE_methods[] = {
+#ifndef __LP64__
 	{"TEScrapHandle", (PyCFunction)TE_TEScrapHandle, 1,
 	 PyDoc_STR("() -> (Handle _rv)")},
 	{"TEGetScrapLength", (PyCFunction)TE_TEGetScrapLength, 1,
@@ -1294,6 +1298,7 @@ static PyMethodDef TE_methods[] = {
 	 PyDoc_STR("(UInt8 value) -> None")},
 	{"as_TE", (PyCFunction)TE_as_TE, 1,
 	 PyDoc_STR("(Handle h) -> (TEHandle _rv)")},
+#endif /* __LP64__ */
 	{NULL, NULL, 0}
 };
 
@@ -1303,15 +1308,18 @@ static PyMethodDef TE_methods[] = {
 void init_TE(void)
 {
 	PyObject *m;
+#ifndef __LP64__
 	PyObject *d;
 
 
 
-		PyMac_INIT_TOOLBOX_OBJECT_NEW(TEHandle, TEObj_New);
-		PyMac_INIT_TOOLBOX_OBJECT_CONVERT(TEHandle, TEObj_Convert);
+	        PyMac_INIT_TOOLBOX_OBJECT_NEW(TEHandle, TEObj_New);
+	        PyMac_INIT_TOOLBOX_OBJECT_CONVERT(TEHandle, TEObj_Convert);
 
+#endif /* __LP64__ */
 
 	m = Py_InitModule("_TE", TE_methods);
+#ifndef __LP64__
 	d = PyModule_GetDict(m);
 	TE_Error = PyMac_GetOSErrException();
 	if (TE_Error == NULL ||
@@ -1324,6 +1332,7 @@ void init_TE(void)
 	/* Backward-compatible name */
 	Py_INCREF(&TE_Type);
 	PyModule_AddObject(m, "TEType", (PyObject *)&TE_Type);
+#endif /* __LP64__ */
 }
 
 /* ========================= End module _TE ========================= */

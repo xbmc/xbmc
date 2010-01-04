@@ -6,7 +6,7 @@ being built/installed/distributed.
 
 # This module should be kept compatible with Python 2.1.
 
-__revision__ = "$Id: dist.py 37828 2004-11-10 22:23:15Z loewis $"
+__revision__ = "$Id: dist.py 68035 2008-12-29 22:36:22Z tarek.ziade $"
 
 import sys, os, string, re
 from types import *
@@ -22,6 +22,9 @@ from distutils.fancy_getopt import FancyGetopt, translate_longopt
 from distutils.util import check_environ, strtobool, rfc822_escape
 from distutils import log
 from distutils.debug import DEBUG
+
+# Encoding used for the PKG-INFO files
+PKG_INFO_ENCODING = 'utf-8'
 
 # Regex to define acceptable Distutils command names.  This is not *quite*
 # the same as a Python NAME -- I don't allow leading underscores.  The fact
@@ -58,6 +61,15 @@ class Distribution:
                       ('dry-run', 'n', "don't actually do anything"),
                       ('help', 'h', "show detailed help message"),
                      ]
+
+    # 'common_usage' is a short (2-3 line) string describing the common
+    # usage of the setup script.
+    common_usage = """\
+Common commands: (see '--help-commands' for more)
+
+  setup.py build      will build the package underneath 'build/'
+  setup.py install    will install the package
+"""
 
     # options that are not propagated to the commands
     display_options = [
@@ -97,6 +109,12 @@ class Distribution:
          "print the list of classifiers"),
         ('keywords', None,
          "print the list of keywords"),
+        ('provides', None,
+         "print the list of packages/modules provided"),
+        ('requires', None,
+         "print the list of packages/modules required"),
+        ('obsoletes', None,
+         "print the list of packages/modules made obsolete")
         ]
     display_option_names = map(lambda x: translate_longopt(x[0]),
                                display_options)
@@ -162,6 +180,17 @@ class Distribution:
         #   command_options = { command_name : { option : (source, value) } }
         self.command_options = {}
 
+        # 'dist_files' is the list of (command, pyversion, file) that
+        # have been created by any dist commands run so far. This is
+        # filled regardless of whether the run is dry or not. pyversion
+        # gives sysconfig.get_python_version() if the dist file is
+        # specific to a Python version, 'any' if it is good for all
+        # Python versions on the target platform, and '' for a source
+        # file. pyversion should not be used to specify minimum or
+        # maximum required Python versions; use the metainfo for that
+        # instead.
+        self.dist_files = []
+
         # These options are really the business of various commands, rather
         # than of the Distribution itself.  We provide aliases for them in
         # Distribution as a convenience to the developer.
@@ -201,20 +230,19 @@ class Distribution:
         # distribution options.
 
         if attrs:
-
             # Pull out the set of command options and work on them
             # specifically.  Note that this order guarantees that aliased
             # command options will override any supplied redundantly
             # through the general options dictionary.
             options = attrs.get('options')
-            if options:
+            if options is not None:
                 del attrs['options']
                 for (command, cmd_options) in options.items():
                     opt_dict = self.get_option_dict(command)
                     for (opt, val) in cmd_options.items():
                         opt_dict[opt] = ("setup script", val)
 
-            if attrs.has_key('licence'):
+            if 'licence' in attrs:
                 attrs['license'] = attrs['licence']
                 del attrs['licence']
                 msg = "'licence' distribution option is deprecated; use 'license'"
@@ -226,7 +254,9 @@ class Distribution:
             # Now work on the rest of the attributes.  Any attribute that's
             # not already defined is invalid!
             for (key,val) in attrs.items():
-                if hasattr(self.metadata, key):
+                if hasattr(self.metadata, "set_" + key):
+                    getattr(self.metadata, "set_" + key)(val)
+                elif hasattr(self.metadata, key):
                     setattr(self.metadata, key, val)
                 elif hasattr(self, key):
                     setattr(self, key, val)
@@ -316,10 +346,9 @@ class Distribution:
             user_filename = "pydistutils.cfg"
 
         # And look for the user config file
-        if os.environ.has_key('HOME'):
-            user_file = os.path.join(os.environ.get('HOME'), user_filename)
-            if os.path.isfile(user_file):
-                files.append(user_file)
+        user_file = os.path.join(os.path.expanduser('~'), user_filename)
+        if os.path.isfile(user_file):
+            files.append(user_file)
 
         # All platforms support local setup.cfg
         local_file = "setup.cfg"
@@ -332,7 +361,6 @@ class Distribution:
 
 
     def parse_config_files (self, filenames=None):
-
         from ConfigParser import ConfigParser
 
         if filenames is None:
@@ -361,7 +389,7 @@ class Distribution:
         # If there was a "global" section in the config file, use it
         # to set Distribution options.
 
-        if self.command_options.has_key('global'):
+        if 'global' in self.command_options:
             for (opt, (src, val)) in self.command_options['global'].items():
                 alias = self.negative_opt.get(opt)
                 try:
@@ -608,7 +636,7 @@ class Distribution:
             else:
                 options = self.global_options
             parser.set_option_table(options)
-            parser.print_help("Global options:")
+            parser.print_help(self.common_usage + "\nGlobal options:")
             print
 
         if display_options:
@@ -669,7 +697,8 @@ class Distribution:
                 value = getattr(self.metadata, "get_"+opt)()
                 if opt in ['keywords', 'platforms']:
                     print string.join(value, ',')
-                elif opt == 'classifiers':
+                elif opt in ('classifiers', 'provides', 'requires',
+                             'obsoletes'):
                     print string.join(value, '\n')
                 else:
                     print value
@@ -879,7 +908,7 @@ class Distribution:
 
             try:
                 is_string = type(value) is StringType
-                if neg_opt.has_key(option) and is_string:
+                if option in neg_opt and is_string:
                     setattr(command_obj, neg_opt[option], not strtobool(value))
                 elif option in bool_opts and is_string:
                     setattr(command_obj, option, strtobool(value))
@@ -1015,7 +1044,10 @@ class DistributionMetadata:
                          "license", "description", "long_description",
                          "keywords", "platforms", "fullname", "contact",
                          "contact_email", "license", "classifiers",
-                         "download_url")
+                         "download_url",
+                         # PEP 314
+                         "provides", "requires", "obsoletes",
+                         )
 
     def __init__ (self):
         self.name = None
@@ -1032,40 +1064,67 @@ class DistributionMetadata:
         self.platforms = None
         self.classifiers = None
         self.download_url = None
+        # PEP 314
+        self.provides = None
+        self.requires = None
+        self.obsoletes = None
 
     def write_pkg_info (self, base_dir):
         """Write the PKG-INFO file into the release tree.
         """
-
         pkg_info = open( os.path.join(base_dir, 'PKG-INFO'), 'w')
 
-        pkg_info.write('Metadata-Version: 1.0\n')
-        pkg_info.write('Name: %s\n' % self.get_name() )
-        pkg_info.write('Version: %s\n' % self.get_version() )
-        pkg_info.write('Summary: %s\n' % self.get_description() )
-        pkg_info.write('Home-page: %s\n' % self.get_url() )
-        pkg_info.write('Author: %s\n' % self.get_contact() )
-        pkg_info.write('Author-email: %s\n' % self.get_contact_email() )
-        pkg_info.write('License: %s\n' % self.get_license() )
-        if self.download_url:
-            pkg_info.write('Download-URL: %s\n' % self.download_url)
-
-        long_desc = rfc822_escape( self.get_long_description() )
-        pkg_info.write('Description: %s\n' % long_desc)
-
-        keywords = string.join( self.get_keywords(), ',')
-        if keywords:
-            pkg_info.write('Keywords: %s\n' % keywords )
-
-        for platform in self.get_platforms():
-            pkg_info.write('Platform: %s\n' % platform )
-
-        for classifier in self.get_classifiers():
-            pkg_info.write('Classifier: %s\n' % classifier )
+        self.write_pkg_file(pkg_info)
 
         pkg_info.close()
 
     # write_pkg_info ()
+
+    def write_pkg_file (self, file):
+        """Write the PKG-INFO format data to a file object.
+        """
+        version = '1.0'
+        if self.provides or self.requires or self.obsoletes:
+            version = '1.1'
+
+        self._write_field(file, 'Metadata-Version', version)
+        self._write_field(file, 'Name', self.get_name())
+        self._write_field(file, 'Version', self.get_version())
+        self._write_field(file, 'Summary', self.get_description())
+        self._write_field(file, 'Home-page', self.get_url())
+        self._write_field(file, 'Author', self.get_contact())
+        self._write_field(file, 'Author-email', self.get_contact_email())
+        self._write_field(file, 'License', self.get_license())
+        if self.download_url:
+            self._write_field(file, 'Download-URL', self.download_url)
+
+        long_desc = rfc822_escape( self.get_long_description())
+        self._write_field(file, 'Description', long_desc)
+
+        keywords = string.join( self.get_keywords(), ',')
+        if keywords:
+            self._write_field(file, 'Keywords', keywords)
+
+        self._write_list(file, 'Platform', self.get_platforms())
+        self._write_list(file, 'Classifier', self.get_classifiers())
+
+        # PEP 314
+        self._write_list(file, 'Requires', self.get_requires())
+        self._write_list(file, 'Provides', self.get_provides())
+        self._write_list(file, 'Obsoletes', self.get_obsoletes())
+
+    def _write_field(self, file, name, value):
+
+        if isinstance(value, unicode):
+            value = value.encode(PKG_INFO_ENCODING)
+        else:
+            value = str(value)
+        file.write('%s: %s\n' % (name, value))
+
+    def _write_list (self, file, name, values):
+
+        for value in values:
+            self._write_field(file, name, value)
 
     # -- Metadata query methods ----------------------------------------
 
@@ -1124,6 +1183,36 @@ class DistributionMetadata:
 
     def get_download_url(self):
         return self.download_url or "UNKNOWN"
+
+    # PEP 314
+
+    def get_requires(self):
+        return self.requires or []
+
+    def set_requires(self, value):
+        import distutils.versionpredicate
+        for v in value:
+            distutils.versionpredicate.VersionPredicate(v)
+        self.requires = value
+
+    def get_provides(self):
+        return self.provides or []
+
+    def set_provides(self, value):
+        value = [v.strip() for v in value]
+        for v in value:
+            import distutils.versionpredicate
+            distutils.versionpredicate.split_provision(v)
+        self.provides = value
+
+    def get_obsoletes(self):
+        return self.obsoletes or []
+
+    def set_obsoletes(self, value):
+        import distutils.versionpredicate
+        for v in value:
+            distutils.versionpredicate.VersionPredicate(v)
+        self.obsoletes = value
 
 # class DistributionMetadata
 

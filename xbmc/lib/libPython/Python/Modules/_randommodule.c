@@ -84,7 +84,7 @@ typedef struct {
 
 static PyTypeObject Random_Type;
 
-#define RandomObject_Check(v)	   ((v)->ob_type == &Random_Type)
+#define RandomObject_Check(v)	   (Py_TYPE(v) == &Random_Type)
 
 
 /* Random methods */
@@ -319,12 +319,12 @@ random_getstate(RandomObject *self)
 	if (state == NULL)
 		return NULL;
 	for (i=0; i<N ; i++) {
-		element = PyInt_FromLong((long)(self->state[i]));
+		element = PyLong_FromUnsignedLong(self->state[i]);
 		if (element == NULL)
 			goto Fail;
 		PyTuple_SET_ITEM(state, i, element);
 	}
-	element = PyInt_FromLong((long)(self->index));
+	element = PyLong_FromLong((long)(self->index));
 	if (element == NULL)
 		goto Fail;
 	PyTuple_SET_ITEM(state, i, element);
@@ -339,7 +339,8 @@ static PyObject *
 random_setstate(RandomObject *self, PyObject *state)
 {
 	int i;
-	long element;
+	unsigned long element;
+	long index;
 
 	if (!PyTuple_Check(state)) {
 		PyErr_SetString(PyExc_TypeError,
@@ -353,16 +354,16 @@ random_setstate(RandomObject *self, PyObject *state)
 	}
 
 	for (i=0; i<N ; i++) {
-		element = PyInt_AsLong(PyTuple_GET_ITEM(state, i));
-		if (element == -1 && PyErr_Occurred())
+		element = PyLong_AsUnsignedLong(PyTuple_GET_ITEM(state, i));
+		if (element == (unsigned long)-1 && PyErr_Occurred())
 			return NULL;
-		self->state[i] = (unsigned long)element;
+		self->state[i] = element & 0xffffffffUL; /* Make sure we get sane state */
 	}
 
-	element = PyInt_AsLong(PyTuple_GET_ITEM(state, i));
-	if (element == -1 && PyErr_Occurred())
+	index = PyLong_AsLong(PyTuple_GET_ITEM(state, i));
+	if (index == -1 && PyErr_Occurred())
 		return NULL;
-	self->index = (int)element;
+	self->index = (int)index;
 
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -404,7 +405,7 @@ random_jumpahead(RandomObject *self, PyObject *n)
 	if (!PyInt_Check(n) && !PyLong_Check(n)) {
 		PyErr_Format(PyExc_TypeError, "jumpahead requires an "
 			     "integer, not '%s'",
-			     n->ob_type->tp_name);
+			     Py_TYPE(n)->tp_name);
 		return NULL;
 	}
 
@@ -481,7 +482,7 @@ random_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	RandomObject *self;
 	PyObject *tmp;
 
-	if (!_PyArg_NoKeywords("Random()", kwds))
+	if (type == &Random_Type && !_PyArg_NoKeywords("Random()", kwds))
 		return NULL;
 
 	self = (RandomObject *)type->tp_alloc(type, 0);
@@ -518,8 +519,7 @@ PyDoc_STRVAR(random_doc,
 "Random() -> create a random number generator with its own internal state.");
 
 static PyTypeObject Random_Type = {
-	PyObject_HEAD_INIT(NULL)
-	0,				/*ob_size*/
+	PyVarObject_HEAD_INIT(NULL, 0)
 	"_random.Random",		/*tp_name*/
 	sizeof(RandomObject),		/*tp_basicsize*/
 	0,				/*tp_itemsize*/

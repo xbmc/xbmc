@@ -4,24 +4,11 @@
    Roger E. Masse
 """
 
-from test.test_support import verbose, unlink, findfile
+from test.test_support import verbose, unlink, findfile, import_module
 
-import imgfile, uu, os
+imgfile = import_module('imgfile', deprecated=True)
+import uu
 
-
-def main():
-
-    uu.decode(findfile('testrgb.uue'), 'test.rgb')
-    uu.decode(findfile('greyrgb.uue'), 'greytest.rgb')
-
-    # Test a 3 byte color image
-    testimage('test.rgb')
-
-    # Test a 1 byte greyscale image
-    testimage('greytest.rgb')
-
-    unlink('test.rgb')
-    unlink('greytest.rgb')
 
 def testimage(name):
     """Run through the imgfile's battery of possible methods
@@ -113,4 +100,20 @@ def testimage(name):
 
     os.unlink(outputfile)
 
-main()
+
+def test_main():
+
+    uu.decode(findfile('testrgb.uue'), 'test.rgb')
+    uu.decode(findfile('greyrgb.uue'), 'greytest.rgb')
+
+    # Test a 3 byte color image
+    testimage('test.rgb')
+
+    # Test a 1 byte greyscale image
+    testimage('greytest.rgb')
+
+    unlink('test.rgb')
+    unlink('greytest.rgb')
+
+if __name__ == '__main__':
+    test_main()

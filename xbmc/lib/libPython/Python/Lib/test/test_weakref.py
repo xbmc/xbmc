@@ -3,9 +3,12 @@ import sys
 import unittest
 import UserList
 import weakref
+import operator
 
 from test import test_support
 
+# Used in ReferencesTestCase.test_ref_created_during_del() .
+ref_from_del = None
 
 class C:
     def method(self):
@@ -185,11 +188,31 @@ class ReferencesTestCase(TestBase):
         self.assertEqual(L3[:5], p3[:5])
         self.assertEqual(L3[2:5], p3[2:5])
 
+    def test_proxy_index(self):
+        class C:
+            def __index__(self):
+                return 10
+        o = C()
+        p = weakref.proxy(o)
+        self.assertEqual(operator.index(p), 10)
+
+    def test_proxy_div(self):
+        class C:
+            def __floordiv__(self, other):
+                return 42
+            def __ifloordiv__(self, other):
+                return 21
+        o = C()
+        p = weakref.proxy(o)
+        self.assertEqual(p // 5, 42)
+        p //= 5
+        self.assertEqual(p, 21)
+
     # The PyWeakref_* C API is documented as allowing either NULL or
     # None as the value for the callback, where either means "no
     # callback".  The "no callback" ref and proxy objects are supposed
     # to be shared so long as they exist by all callers so long as
-    # they are active.  In Python 2.3.3 and earlier, this guaranttee
+    # they are active.  In Python 2.3.3 and earlier, this guarantee
     # was not honored, and was broken in different ways for
     # PyWeakref_NewRef() and PyWeakref_NewProxy().  (Two tests.)
 
@@ -630,8 +653,28 @@ class ReferencesTestCase(TestBase):
         finally:
             gc.set_threshold(*thresholds)
 
+    def test_ref_created_during_del(self):
+        # Bug #1377858
+        # A weakref created in an object's __del__() would crash the
+        # interpreter when the weakref was cleaned up since it would refer to
+        # non-existent memory.  This test should not segfault the interpreter.
+        class Target(object):
+            def __del__(self):
+                global ref_from_del
+                ref_from_del = weakref.ref(self)
 
-class SubclassableWeakrefTestCase(unittest.TestCase):
+        w = Target()
+
+    def test_init(self):
+        # Issue 3634
+        # <weakref to class>.__init__() doesn't check errors correctly
+        r = weakref.ref(Exception)
+        self.assertRaises(TypeError, r.__init__, 0, 0, 0, 0, 0)
+        # No exception should be raised here
+        gc.collect()
+
+
+class SubclassableWeakrefTestCase(TestBase):
 
     def test_subclass_refs(self):
         class MyRef(weakref.ref):
@@ -694,6 +737,44 @@ class SubclassableWeakrefTestCase(unittest.TestCase):
         self.assertEqual(r.slot2, "def")
         self.assertEqual(r.meth(), "abcdef")
         self.failIf(hasattr(r, "__dict__"))
+
+    def test_subclass_refs_with_cycle(self):
+        # Bug #3110
+        # An instance of a weakref subclass can have attributes.
+        # If such a weakref holds the only strong reference to the object,
+        # deleting the weakref will delete the object. In this case,
+        # the callback must not be called, because the ref object is
+        # being deleted.
+        class MyRef(weakref.ref):
+            pass
+
+        # Use a local callback, for "regrtest -R::"
+        # to detect refcounting problems
+        def callback(w):
+            self.cbcalled += 1
+
+        o = C()
+        r1 = MyRef(o, callback)
+        r1.o = o
+        del o
+
+        del r1 # Used to crash here
+
+        self.assertEqual(self.cbcalled, 0)
+
+        # Same test, with two weakrefs to the same object
+        # (since code paths are different)
+        o = C()
+        r1 = MyRef(o, callback)
+        r2 = MyRef(o, callback)
+        r1.r = r2
+        r2.o = o
+        del o
+        del r2
+
+        del r1 # Used to crash here
+
+        self.assertEqual(self.cbcalled, 0)
 
 
 class Object:
@@ -769,9 +850,53 @@ class MappingTestCase(TestBase):
         dict, objects = self.make_weak_keyed_dict()
         self.check_iters(dict)
 
+        # Test keyrefs()
+        refs = dict.keyrefs()
+        self.assertEqual(len(refs), len(objects))
+        objects2 = list(objects)
+        for wr in refs:
+            ob = wr()
+            self.assert_(dict.has_key(ob))
+            self.assert_(ob in dict)
+            self.assertEqual(ob.arg, dict[ob])
+            objects2.remove(ob)
+        self.assertEqual(len(objects2), 0)
+
+        # Test iterkeyrefs()
+        objects2 = list(objects)
+        self.assertEqual(len(list(dict.iterkeyrefs())), len(objects))
+        for wr in dict.iterkeyrefs():
+            ob = wr()
+            self.assert_(dict.has_key(ob))
+            self.assert_(ob in dict)
+            self.assertEqual(ob.arg, dict[ob])
+            objects2.remove(ob)
+        self.assertEqual(len(objects2), 0)
+
     def test_weak_valued_iters(self):
         dict, objects = self.make_weak_valued_dict()
         self.check_iters(dict)
+
+        # Test valuerefs()
+        refs = dict.valuerefs()
+        self.assertEqual(len(refs), len(objects))
+        objects2 = list(objects)
+        for wr in refs:
+            ob = wr()
+            self.assertEqual(ob, dict[ob.arg])
+            self.assertEqual(ob.arg, dict[ob.arg].arg)
+            objects2.remove(ob)
+        self.assertEqual(len(objects2), 0)
+
+        # Test itervaluerefs()
+        objects2 = list(objects)
+        self.assertEqual(len(list(dict.itervaluerefs())), len(objects))
+        for wr in dict.itervaluerefs():
+            ob = wr()
+            self.assertEqual(ob, dict[ob.arg])
+            self.assertEqual(ob.arg, dict[ob.arg].arg)
+            objects2.remove(ob)
+        self.assertEqual(len(objects2), 0)
 
     def check_iters(self, dict):
         # item iterator:
@@ -1001,7 +1126,7 @@ class WeakKeyDictionaryTestCase(mapping_tests.BasicTestMappingProtocol):
     def _reference(self):
         return self.__ref.copy()
 
-libreftest = """ Doctest for examples in the library reference: libweakref.tex
+libreftest = """ Doctest for examples in the library reference: weakref.rst
 
 >>> import weakref
 >>> class Dict(dict):
@@ -1092,6 +1217,7 @@ def test_main():
         MappingTestCase,
         WeakValueDictionaryTestCase,
         WeakKeyDictionaryTestCase,
+        SubclassableWeakrefTestCase,
         )
     test_support.run_doctest(sys.modules[__name__])
 

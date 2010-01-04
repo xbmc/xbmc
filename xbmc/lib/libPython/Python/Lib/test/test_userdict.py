@@ -1,6 +1,5 @@
 # Check every path through every method of UserDict
 
-import unittest
 from test import test_support, mapping_tests
 import UserDict
 
@@ -148,6 +147,55 @@ class UserDictTest(mapping_tests.TestHashMappingProtocol):
         self.assertEqual(t.popitem(), ("x", 42))
         self.assertRaises(KeyError, t.popitem)
 
+    def test_missing(self):
+        # Make sure UserDict doesn't have a __missing__ method
+        self.assertEqual(hasattr(UserDict, "__missing__"), False)
+        # Test several cases:
+        # (D) subclass defines __missing__ method returning a value
+        # (E) subclass defines __missing__ method raising RuntimeError
+        # (F) subclass sets __missing__ instance variable (no effect)
+        # (G) subclass doesn't define __missing__ at a all
+        class D(UserDict.UserDict):
+            def __missing__(self, key):
+                return 42
+        d = D({1: 2, 3: 4})
+        self.assertEqual(d[1], 2)
+        self.assertEqual(d[3], 4)
+        self.assert_(2 not in d)
+        self.assert_(2 not in d.keys())
+        self.assertEqual(d[2], 42)
+        class E(UserDict.UserDict):
+            def __missing__(self, key):
+                raise RuntimeError(key)
+        e = E()
+        try:
+            e[42]
+        except RuntimeError, err:
+            self.assertEqual(err.args, (42,))
+        else:
+            self.fail("e[42] didn't raise RuntimeError")
+        class F(UserDict.UserDict):
+            def __init__(self):
+                # An instance variable __missing__ should have no effect
+                self.__missing__ = lambda key: None
+                UserDict.UserDict.__init__(self)
+        f = F()
+        try:
+            f[42]
+        except KeyError, err:
+            self.assertEqual(err.args, (42,))
+        else:
+            self.fail("f[42] didn't raise KeyError")
+        class G(UserDict.UserDict):
+            pass
+        g = G()
+        try:
+            g[42]
+        except KeyError, err:
+            self.assertEqual(err.args, (42,))
+        else:
+            self.fail("g[42] didn't raise KeyError")
+
 ##########################
 # Test Dict Mixin
 
@@ -191,12 +239,12 @@ class SeqDict(UserDict.DictMixin):
         for key, value in self.iteritems():
             d[key] = value
         return d
+    @classmethod
     def fromkeys(cls, keys, value=None):
         d = cls()
         for key in keys:
             d[key] = value
         return d
-    fromkeys = classmethod(fromkeys)
 
 class UserDictMixinTest(mapping_tests.TestMappingProtocol):
     type2test = SeqDict

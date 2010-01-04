@@ -24,6 +24,9 @@ term = os.environ.get('TERM')
 if not term or term == 'unknown':
     raise TestSkipped, "$TERM=%r, calling initscr() may cause exit" % term
 
+if sys.platform == "cygwin":
+    raise TestSkipped("cygwin's curses mostly just hangs")
+
 def window_funcs(stdscr):
     "Test the methods of windows"
     win = curses.newwin(10,10)
@@ -126,6 +129,12 @@ def window_funcs(stdscr):
     stdscr.touchline(5,5,0)
     stdscr.vline('a', 3)
     stdscr.vline('a', 3, curses.A_STANDOUT)
+    stdscr.chgat(5, 2, 3, curses.A_BLINK)
+    stdscr.chgat(3, curses.A_BOLD)
+    stdscr.chgat(5, 8, curses.A_UNDERLINE)
+    stdscr.chgat(curses.A_BLINK)
+    stdscr.refresh()
+
     stdscr.vline(1,1, 'a', 3)
     stdscr.vline(1,1, 'a', 3, curses.A_STANDOUT)
 
@@ -209,6 +218,13 @@ def module_funcs(stdscr):
             m = curses.getmouse()
             curses.ungetmouse(*m)
 
+    if hasattr(curses, 'is_term_resized'):
+        curses.is_term_resized(*stdscr.getmaxyx())
+    if hasattr(curses, 'resizeterm'):
+        curses.resizeterm(*stdscr.getmaxyx())
+    if hasattr(curses, 'resize_term'):
+        curses.resize_term(*stdscr.getmaxyx())
+
 def unit_tests():
     from curses import ascii
     for ch, expected in [('a', 'a'), ('A', 'A'),
@@ -231,12 +247,21 @@ def test_userptr_without_set(stdscr):
     except curses.panel.error:
         pass
 
+def test_resize_term(stdscr):
+    if hasattr(curses, 'resizeterm'):
+        lines, cols = curses.LINES, curses.COLS
+        curses.resizeterm(lines - 1, cols + 1)
+
+        if curses.LINES != lines - 1 or curses.COLS != cols + 1:
+            raise RuntimeError, "Expected resizeterm to update LINES and COLS"
+
 def main(stdscr):
     curses.savetty()
     try:
         module_funcs(stdscr)
         window_funcs(stdscr)
         test_userptr_without_set(stdscr)
+        test_resize_term(stdscr)
     finally:
         curses.resetty()
 
@@ -244,13 +269,12 @@ if __name__ == '__main__':
     curses.wrapper(main)
     unit_tests()
 else:
+    # testing setupterm() inside initscr/endwin
+    # causes terminal breakage
+    curses.setupterm(fd=sys.__stdout__.fileno())
     try:
-        # testing setupterm() inside initscr/endwin
-        # causes terminal breakage
-        curses.setupterm(fd=sys.__stdout__.fileno())
         stdscr = curses.initscr()
         main(stdscr)
     finally:
         curses.endwin()
-
     unit_tests()

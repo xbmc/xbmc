@@ -8,7 +8,7 @@ extern "C" {
 /* Dictionary object type -- mapping from hashable object to object */
 
 /* The distribution includes a separate file, Objects/dictnotes.txt,
-   describing explorations into dictionary design and optimization.  
+   describing explorations into dictionary design and optimization.
    It covers typical dictionary use patterns, the parameters for
    tuning dictionaries, and several ideas for possible optimizations.
 */
@@ -48,7 +48,11 @@ meaning otherwise.
 #define PyDict_MINSIZE 8
 
 typedef struct {
-	long me_hash;      /* cached hash code of me_key */
+	/* Cached hash code of me_key.  Note that hash codes are C longs.
+	 * We have to use Py_ssize_t instead because dict_popitem() abuses
+	 * me_hash to hold a search finger.
+	 */
+	Py_ssize_t me_hash;
 	PyObject *me_key;
 	PyObject *me_value;
 } PyDictEntry;
@@ -65,14 +69,14 @@ it's two-thirds full.
 typedef struct _dictobject PyDictObject;
 struct _dictobject {
 	PyObject_HEAD
-	int ma_fill;  /* # Active + # Dummy */
-	int ma_used;  /* # Active */
+	Py_ssize_t ma_fill;  /* # Active + # Dummy */
+	Py_ssize_t ma_used;  /* # Active */
 
 	/* The table contains ma_mask + 1 slots, and that's a power of 2.
 	 * We store the mask instead of the size because the mask is more
 	 * frequently needed.
 	 */
-	int ma_mask;
+	Py_ssize_t ma_mask;
 
 	/* ma_table points to ma_smalltable for small tables, else to
 	 * additional malloc'ed memory.  ma_table is never NULL!  This rule
@@ -86,8 +90,9 @@ struct _dictobject {
 
 PyAPI_DATA(PyTypeObject) PyDict_Type;
 
-#define PyDict_Check(op) PyObject_TypeCheck(op, &PyDict_Type)
-#define PyDict_CheckExact(op) ((op)->ob_type == &PyDict_Type)
+#define PyDict_Check(op) \
+                 PyType_FastSubclass(Py_TYPE(op), Py_TPFLAGS_DICT_SUBCLASS)
+#define PyDict_CheckExact(op) (Py_TYPE(op) == &PyDict_Type)
 
 PyAPI_FUNC(PyObject *) PyDict_New(void);
 PyAPI_FUNC(PyObject *) PyDict_GetItem(PyObject *mp, PyObject *key);
@@ -95,13 +100,17 @@ PyAPI_FUNC(int) PyDict_SetItem(PyObject *mp, PyObject *key, PyObject *item);
 PyAPI_FUNC(int) PyDict_DelItem(PyObject *mp, PyObject *key);
 PyAPI_FUNC(void) PyDict_Clear(PyObject *mp);
 PyAPI_FUNC(int) PyDict_Next(
-	PyObject *mp, int *pos, PyObject **key, PyObject **value);
+	PyObject *mp, Py_ssize_t *pos, PyObject **key, PyObject **value);
+PyAPI_FUNC(int) _PyDict_Next(
+	PyObject *mp, Py_ssize_t *pos, PyObject **key, PyObject **value, long *hash);
 PyAPI_FUNC(PyObject *) PyDict_Keys(PyObject *mp);
 PyAPI_FUNC(PyObject *) PyDict_Values(PyObject *mp);
 PyAPI_FUNC(PyObject *) PyDict_Items(PyObject *mp);
-PyAPI_FUNC(int) PyDict_Size(PyObject *mp);
+PyAPI_FUNC(Py_ssize_t) PyDict_Size(PyObject *mp);
 PyAPI_FUNC(PyObject *) PyDict_Copy(PyObject *mp);
 PyAPI_FUNC(int) PyDict_Contains(PyObject *mp, PyObject *key);
+PyAPI_FUNC(int) _PyDict_Contains(PyObject *mp, PyObject *key, long hash);
+PyAPI_FUNC(PyObject *) _PyDict_NewPresized(Py_ssize_t minused);
 
 /* PyDict_Update(mp, other) is equivalent to PyDict_Merge(mp, other, 1). */
 PyAPI_FUNC(int) PyDict_Update(PyObject *mp, PyObject *other);

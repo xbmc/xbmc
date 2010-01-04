@@ -73,10 +73,15 @@ __all__ = ["HTTPServer", "BaseHTTPRequestHandler"]
 import sys
 import time
 import socket # For gethostbyaddr()
-import mimetools
+from warnings import filterwarnings, catch_warnings
+with catch_warnings():
+    if sys.py3kwarning:
+        filterwarnings("ignore", ".*mimetools has been removed",
+                        DeprecationWarning)
+    import mimetools
 import SocketServer
 
-# Default error message
+# Default error message template
 DEFAULT_ERROR_MESSAGE = """\
 <head>
 <title>Error response</title>
@@ -88,6 +93,8 @@ DEFAULT_ERROR_MESSAGE = """\
 <p>Error code explanation: %(code)s = %(explain)s.
 </body>
 """
+
+DEFAULT_ERROR_CONTENT_TYPE = "text/html"
 
 def _quote_html(html):
     return html.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
@@ -216,6 +223,12 @@ class BaseHTTPRequestHandler(SocketServer.StreamRequestHandler):
     # where each string is of the form name[/version].
     server_version = "BaseHTTP/" + __version__
 
+    # The default request version.  This only affects responses up until
+    # the point where the request line is parsed, so it mainly decides what
+    # the client gets back when sending a malformed request line.
+    # Most web servers default to HTTP 0.9, i.e. don't send a status line.
+    default_request_version = "HTTP/0.9"
+
     def parse_request(self):
         """Parse a request (internal).
 
@@ -228,7 +241,7 @@ class BaseHTTPRequestHandler(SocketServer.StreamRequestHandler):
 
         """
         self.command = None  # set in case of error on the first line
-        self.request_version = version = "HTTP/0.9" # Default
+        self.request_version = version = self.default_request_version
         self.close_connection = 1
         requestline = self.raw_requestline
         if requestline[-2:] == '\r\n':
@@ -342,13 +355,14 @@ class BaseHTTPRequestHandler(SocketServer.StreamRequestHandler):
         content = (self.error_message_format %
                    {'code': code, 'message': _quote_html(message), 'explain': explain})
         self.send_response(code, message)
-        self.send_header("Content-Type", "text/html")
+        self.send_header("Content-Type", self.error_content_type)
         self.send_header('Connection', 'close')
         self.end_headers()
         if self.command != 'HEAD' and code >= 200 and code not in (204, 304):
             self.wfile.write(content)
 
     error_message_format = DEFAULT_ERROR_MESSAGE
+    error_content_type = DEFAULT_ERROR_CONTENT_TYPE
 
     def send_response(self, code, message=None):
         """Send the response header and log the response code.
@@ -396,7 +410,7 @@ class BaseHTTPRequestHandler(SocketServer.StreamRequestHandler):
         self.log_message('"%s" %s %s',
                          self.requestline, str(code), str(size))
 
-    def log_error(self, *args):
+    def log_error(self, format, *args):
         """Log an error.
 
         This is called when a request cannot be fulfilled.  By
@@ -408,7 +422,7 @@ class BaseHTTPRequestHandler(SocketServer.StreamRequestHandler):
 
         """
 
-        self.log_message(*args)
+        self.log_message(format, *args)
 
     def log_message(self, format, *args):
         """Log an arbitrary message.
@@ -436,10 +450,11 @@ class BaseHTTPRequestHandler(SocketServer.StreamRequestHandler):
         """Return the server software version string."""
         return self.server_version + ' ' + self.sys_version
 
-    def date_time_string(self):
+    def date_time_string(self, timestamp=None):
         """Return the current date and time formatted for a message header."""
-        now = time.time()
-        year, month, day, hh, mm, ss, wd, y, z = time.gmtime(now)
+        if timestamp is None:
+            timestamp = time.time()
+        year, month, day, hh, mm, ss, wd, y, z = time.gmtime(timestamp)
         s = "%s, %02d %3s %4d %02d:%02d:%02d GMT" % (
                 self.weekdayname[wd],
                 day, self.monthname[month], year,
@@ -482,7 +497,7 @@ class BaseHTTPRequestHandler(SocketServer.StreamRequestHandler):
 
     # Table mapping response codes to messages; entries have the
     # form {code: (shortmessage, longmessage)}.
-    # See http://www.w3.org/hypertext/WWW/Protocols/HTTP/HTRESP.html
+    # See RFC 2616.
     responses = {
         100: ('Continue', 'Request received, please continue'),
         101: ('Switching Protocols',
@@ -493,7 +508,7 @@ class BaseHTTPRequestHandler(SocketServer.StreamRequestHandler):
         202: ('Accepted',
               'Request accepted, processing continues off-line'),
         203: ('Non-Authoritative Information', 'Request fulfilled from cache'),
-        204: ('No response', 'Request fulfilled, nothing follows'),
+        204: ('No Content', 'Request fulfilled, nothing follows'),
         205: ('Reset Content', 'Clear input form for further input.'),
         206: ('Partial Content', 'Partial content follows.'),
 
@@ -502,7 +517,7 @@ class BaseHTTPRequestHandler(SocketServer.StreamRequestHandler):
         301: ('Moved Permanently', 'Object moved permanently -- see URI list'),
         302: ('Found', 'Object moved temporarily -- see URI list'),
         303: ('See Other', 'Object moved -- see Method and URL list'),
-        304: ('Not modified',
+        304: ('Not Modified',
               'Document has not changed since given time'),
         305: ('Use Proxy',
               'You must use proxy specified in Location to access this '
@@ -510,11 +525,11 @@ class BaseHTTPRequestHandler(SocketServer.StreamRequestHandler):
         307: ('Temporary Redirect',
               'Object moved temporarily -- see URI list'),
 
-        400: ('Bad request',
+        400: ('Bad Request',
               'Bad request syntax or unsupported method'),
         401: ('Unauthorized',
               'No permission -- see authorization schemes'),
-        402: ('Payment required',
+        402: ('Payment Required',
               'No payment -- see charging schemes'),
         403: ('Forbidden',
               'Request forbidden -- authorization will not help'),
@@ -524,7 +539,7 @@ class BaseHTTPRequestHandler(SocketServer.StreamRequestHandler):
         406: ('Not Acceptable', 'URI not available in preferred format.'),
         407: ('Proxy Authentication Required', 'You must authenticate with '
               'this proxy before proceeding.'),
-        408: ('Request Time-out', 'Request timed out; try again later.'),
+        408: ('Request Timeout', 'Request timed out; try again later.'),
         409: ('Conflict', 'Request conflict.'),
         410: ('Gone',
               'URI no longer exists and has been permanently removed.'),
@@ -538,15 +553,15 @@ class BaseHTTPRequestHandler(SocketServer.StreamRequestHandler):
         417: ('Expectation Failed',
               'Expect condition could not be satisfied.'),
 
-        500: ('Internal error', 'Server got itself in trouble'),
+        500: ('Internal Server Error', 'Server got itself in trouble'),
         501: ('Not Implemented',
               'Server does not support this operation'),
         502: ('Bad Gateway', 'Invalid responses from another server/proxy.'),
-        503: ('Service temporarily overloaded',
+        503: ('Service Unavailable',
               'The server cannot process the request due to a high load'),
-        504: ('Gateway timeout',
+        504: ('Gateway Timeout',
               'The gateway server did not receive a timely response'),
-        505: ('HTTP Version not supported', 'Cannot fulfill request.'),
+        505: ('HTTP Version Not Supported', 'Cannot fulfill request.'),
         }
 
 

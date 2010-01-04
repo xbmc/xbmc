@@ -45,21 +45,22 @@ PyObject *OSAObj_New(ComponentInstance itself)
 {
 	OSAComponentInstanceObject *it;
 	if (itself == NULL) {
-						PyErr_SetString(OSA_Error,"NULL ComponentInstance");
-						return NULL;
-					}
+	                                PyErr_SetString(OSA_Error,"NULL ComponentInstance");
+	                                return NULL;
+	                        }
 	it = PyObject_NEW(OSAComponentInstanceObject, &OSAComponentInstance_Type);
 	if (it == NULL) return NULL;
 	it->ob_itself = itself;
 	return (PyObject *)it;
 }
+
 int OSAObj_Convert(PyObject *v, ComponentInstance *p_itself)
 {
 
-				if (CmpInstObj_Convert(v, p_itself))
-					return 1;
-				PyErr_Clear();
-				
+	                if (CmpInstObj_Convert(v, p_itself))
+	                        return 1;
+	                PyErr_Clear();
+	                
 	if (!OSAObj_Check(v))
 	{
 		PyErr_SetString(PyExc_TypeError, "OSAComponentInstance required");
@@ -725,314 +726,6 @@ static PyObject *OSAObj_OSAMakeContext(OSAComponentInstanceObject *_self, PyObje
 	return _res;
 }
 
-static PyObject *OSAObj_OSADebuggerCreateSession(OSAComponentInstanceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	OSAError _err;
-	OSAID inScript;
-	OSAID inContext;
-	OSADebugSessionRef outSession;
-#ifndef OSADebuggerCreateSession
-	PyMac_PRECHECK(OSADebuggerCreateSession);
-#endif
-	if (!PyArg_ParseTuple(_args, "ll",
-	                      &inScript,
-	                      &inContext))
-		return NULL;
-	_err = OSADebuggerCreateSession(_self->ob_itself,
-	                                inScript,
-	                                inContext,
-	                                &outSession);
-	if (_err != noErr) return PyMac_Error(_err);
-	_res = Py_BuildValue("l",
-	                     outSession);
-	return _res;
-}
-
-static PyObject *OSAObj_OSADebuggerGetSessionState(OSAComponentInstanceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	OSAError _err;
-	OSADebugSessionRef inSession;
-	AERecord outState;
-#ifndef OSADebuggerGetSessionState
-	PyMac_PRECHECK(OSADebuggerGetSessionState);
-#endif
-	if (!PyArg_ParseTuple(_args, "l",
-	                      &inSession))
-		return NULL;
-	_err = OSADebuggerGetSessionState(_self->ob_itself,
-	                                  inSession,
-	                                  &outState);
-	if (_err != noErr) return PyMac_Error(_err);
-	_res = Py_BuildValue("O&",
-	                     AEDesc_New, &outState);
-	return _res;
-}
-
-static PyObject *OSAObj_OSADebuggerSessionStep(OSAComponentInstanceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	OSAError _err;
-	OSADebugSessionRef inSession;
-	OSADebugStepKind inKind;
-#ifndef OSADebuggerSessionStep
-	PyMac_PRECHECK(OSADebuggerSessionStep);
-#endif
-	if (!PyArg_ParseTuple(_args, "ll",
-	                      &inSession,
-	                      &inKind))
-		return NULL;
-	_err = OSADebuggerSessionStep(_self->ob_itself,
-	                              inSession,
-	                              inKind);
-	if (_err != noErr) return PyMac_Error(_err);
-	Py_INCREF(Py_None);
-	_res = Py_None;
-	return _res;
-}
-
-static PyObject *OSAObj_OSADebuggerDisposeSession(OSAComponentInstanceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	OSAError _err;
-	OSADebugSessionRef inSession;
-#ifndef OSADebuggerDisposeSession
-	PyMac_PRECHECK(OSADebuggerDisposeSession);
-#endif
-	if (!PyArg_ParseTuple(_args, "l",
-	                      &inSession))
-		return NULL;
-	_err = OSADebuggerDisposeSession(_self->ob_itself,
-	                                 inSession);
-	if (_err != noErr) return PyMac_Error(_err);
-	Py_INCREF(Py_None);
-	_res = Py_None;
-	return _res;
-}
-
-static PyObject *OSAObj_OSADebuggerGetStatementRanges(OSAComponentInstanceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	OSAError _err;
-	OSADebugSessionRef inSession;
-	AEDescList outStatementRangeArray;
-#ifndef OSADebuggerGetStatementRanges
-	PyMac_PRECHECK(OSADebuggerGetStatementRanges);
-#endif
-	if (!PyArg_ParseTuple(_args, "l",
-	                      &inSession))
-		return NULL;
-	_err = OSADebuggerGetStatementRanges(_self->ob_itself,
-	                                     inSession,
-	                                     &outStatementRangeArray);
-	if (_err != noErr) return PyMac_Error(_err);
-	_res = Py_BuildValue("O&",
-	                     AEDesc_New, &outStatementRangeArray);
-	return _res;
-}
-
-static PyObject *OSAObj_OSADebuggerGetBreakpoint(OSAComponentInstanceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	OSAError _err;
-	OSADebugSessionRef inSession;
-	UInt32 inSrcOffset;
-	OSAID outBreakpoint;
-#ifndef OSADebuggerGetBreakpoint
-	PyMac_PRECHECK(OSADebuggerGetBreakpoint);
-#endif
-	if (!PyArg_ParseTuple(_args, "ll",
-	                      &inSession,
-	                      &inSrcOffset))
-		return NULL;
-	_err = OSADebuggerGetBreakpoint(_self->ob_itself,
-	                                inSession,
-	                                inSrcOffset,
-	                                &outBreakpoint);
-	if (_err != noErr) return PyMac_Error(_err);
-	_res = Py_BuildValue("l",
-	                     outBreakpoint);
-	return _res;
-}
-
-static PyObject *OSAObj_OSADebuggerSetBreakpoint(OSAComponentInstanceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	OSAError _err;
-	OSADebugSessionRef inSession;
-	UInt32 inSrcOffset;
-	OSAID inBreakpoint;
-#ifndef OSADebuggerSetBreakpoint
-	PyMac_PRECHECK(OSADebuggerSetBreakpoint);
-#endif
-	if (!PyArg_ParseTuple(_args, "lll",
-	                      &inSession,
-	                      &inSrcOffset,
-	                      &inBreakpoint))
-		return NULL;
-	_err = OSADebuggerSetBreakpoint(_self->ob_itself,
-	                                inSession,
-	                                inSrcOffset,
-	                                inBreakpoint);
-	if (_err != noErr) return PyMac_Error(_err);
-	Py_INCREF(Py_None);
-	_res = Py_None;
-	return _res;
-}
-
-static PyObject *OSAObj_OSADebuggerGetDefaultBreakpoint(OSAComponentInstanceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	OSAError _err;
-	OSADebugSessionRef inSession;
-	OSAID outBreakpoint;
-#ifndef OSADebuggerGetDefaultBreakpoint
-	PyMac_PRECHECK(OSADebuggerGetDefaultBreakpoint);
-#endif
-	if (!PyArg_ParseTuple(_args, "l",
-	                      &inSession))
-		return NULL;
-	_err = OSADebuggerGetDefaultBreakpoint(_self->ob_itself,
-	                                       inSession,
-	                                       &outBreakpoint);
-	if (_err != noErr) return PyMac_Error(_err);
-	_res = Py_BuildValue("l",
-	                     outBreakpoint);
-	return _res;
-}
-
-static PyObject *OSAObj_OSADebuggerGetCurrentCallFrame(OSAComponentInstanceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	OSAError _err;
-	OSADebugSessionRef inSession;
-	OSADebugCallFrameRef outCallFrame;
-#ifndef OSADebuggerGetCurrentCallFrame
-	PyMac_PRECHECK(OSADebuggerGetCurrentCallFrame);
-#endif
-	if (!PyArg_ParseTuple(_args, "l",
-	                      &inSession))
-		return NULL;
-	_err = OSADebuggerGetCurrentCallFrame(_self->ob_itself,
-	                                      inSession,
-	                                      &outCallFrame);
-	if (_err != noErr) return PyMac_Error(_err);
-	_res = Py_BuildValue("l",
-	                     outCallFrame);
-	return _res;
-}
-
-static PyObject *OSAObj_OSADebuggerGetCallFrameState(OSAComponentInstanceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	OSAError _err;
-	OSADebugCallFrameRef inCallFrame;
-	AERecord outState;
-#ifndef OSADebuggerGetCallFrameState
-	PyMac_PRECHECK(OSADebuggerGetCallFrameState);
-#endif
-	if (!PyArg_ParseTuple(_args, "l",
-	                      &inCallFrame))
-		return NULL;
-	_err = OSADebuggerGetCallFrameState(_self->ob_itself,
-	                                    inCallFrame,
-	                                    &outState);
-	if (_err != noErr) return PyMac_Error(_err);
-	_res = Py_BuildValue("O&",
-	                     AEDesc_New, &outState);
-	return _res;
-}
-
-static PyObject *OSAObj_OSADebuggerGetVariable(OSAComponentInstanceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	OSAError _err;
-	OSADebugCallFrameRef inCallFrame;
-	AEDesc inVariableName;
-	OSAID outVariable;
-#ifndef OSADebuggerGetVariable
-	PyMac_PRECHECK(OSADebuggerGetVariable);
-#endif
-	if (!PyArg_ParseTuple(_args, "lO&",
-	                      &inCallFrame,
-	                      AEDesc_Convert, &inVariableName))
-		return NULL;
-	_err = OSADebuggerGetVariable(_self->ob_itself,
-	                              inCallFrame,
-	                              &inVariableName,
-	                              &outVariable);
-	if (_err != noErr) return PyMac_Error(_err);
-	_res = Py_BuildValue("l",
-	                     outVariable);
-	return _res;
-}
-
-static PyObject *OSAObj_OSADebuggerSetVariable(OSAComponentInstanceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	OSAError _err;
-	OSADebugCallFrameRef inCallFrame;
-	AEDesc inVariableName;
-	OSAID inVariable;
-#ifndef OSADebuggerSetVariable
-	PyMac_PRECHECK(OSADebuggerSetVariable);
-#endif
-	if (!PyArg_ParseTuple(_args, "lO&l",
-	                      &inCallFrame,
-	                      AEDesc_Convert, &inVariableName,
-	                      &inVariable))
-		return NULL;
-	_err = OSADebuggerSetVariable(_self->ob_itself,
-	                              inCallFrame,
-	                              &inVariableName,
-	                              inVariable);
-	if (_err != noErr) return PyMac_Error(_err);
-	Py_INCREF(Py_None);
-	_res = Py_None;
-	return _res;
-}
-
-static PyObject *OSAObj_OSADebuggerGetPreviousCallFrame(OSAComponentInstanceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	OSAError _err;
-	OSADebugCallFrameRef inCurrentFrame;
-	OSADebugCallFrameRef outPrevFrame;
-#ifndef OSADebuggerGetPreviousCallFrame
-	PyMac_PRECHECK(OSADebuggerGetPreviousCallFrame);
-#endif
-	if (!PyArg_ParseTuple(_args, "l",
-	                      &inCurrentFrame))
-		return NULL;
-	_err = OSADebuggerGetPreviousCallFrame(_self->ob_itself,
-	                                       inCurrentFrame,
-	                                       &outPrevFrame);
-	if (_err != noErr) return PyMac_Error(_err);
-	_res = Py_BuildValue("l",
-	                     outPrevFrame);
-	return _res;
-}
-
-static PyObject *OSAObj_OSADebuggerDisposeCallFrame(OSAComponentInstanceObject *_self, PyObject *_args)
-{
-	PyObject *_res = NULL;
-	OSAError _err;
-	OSADebugCallFrameRef inCallFrame;
-#ifndef OSADebuggerDisposeCallFrame
-	PyMac_PRECHECK(OSADebuggerDisposeCallFrame);
-#endif
-	if (!PyArg_ParseTuple(_args, "l",
-	                      &inCallFrame))
-		return NULL;
-	_err = OSADebuggerDisposeCallFrame(_self->ob_itself,
-	                                   inCallFrame);
-	if (_err != noErr) return PyMac_Error(_err);
-	Py_INCREF(Py_None);
-	_res = Py_None;
-	return _res;
-}
-
 static PyMethodDef OSAObj_methods[] = {
 	{"OSALoad", (PyCFunction)OSAObj_OSALoad, 1,
 	 PyDoc_STR("(AEDesc scriptData, long modeFlags) -> (OSAID resultingScriptID)")},
@@ -1090,34 +783,6 @@ static PyMethodDef OSAObj_methods[] = {
 	 PyDoc_STR("(AppleEvent theAppleEvent, OSAID contextID, long modeFlags) -> (AppleEvent reply)")},
 	{"OSAMakeContext", (PyCFunction)OSAObj_OSAMakeContext, 1,
 	 PyDoc_STR("(AEDesc contextName, OSAID parentContext) -> (OSAID resultingContextID)")},
-	{"OSADebuggerCreateSession", (PyCFunction)OSAObj_OSADebuggerCreateSession, 1,
-	 PyDoc_STR("(OSAID inScript, OSAID inContext) -> (OSADebugSessionRef outSession)")},
-	{"OSADebuggerGetSessionState", (PyCFunction)OSAObj_OSADebuggerGetSessionState, 1,
-	 PyDoc_STR("(OSADebugSessionRef inSession) -> (AERecord outState)")},
-	{"OSADebuggerSessionStep", (PyCFunction)OSAObj_OSADebuggerSessionStep, 1,
-	 PyDoc_STR("(OSADebugSessionRef inSession, OSADebugStepKind inKind) -> None")},
-	{"OSADebuggerDisposeSession", (PyCFunction)OSAObj_OSADebuggerDisposeSession, 1,
-	 PyDoc_STR("(OSADebugSessionRef inSession) -> None")},
-	{"OSADebuggerGetStatementRanges", (PyCFunction)OSAObj_OSADebuggerGetStatementRanges, 1,
-	 PyDoc_STR("(OSADebugSessionRef inSession) -> (AEDescList outStatementRangeArray)")},
-	{"OSADebuggerGetBreakpoint", (PyCFunction)OSAObj_OSADebuggerGetBreakpoint, 1,
-	 PyDoc_STR("(OSADebugSessionRef inSession, UInt32 inSrcOffset) -> (OSAID outBreakpoint)")},
-	{"OSADebuggerSetBreakpoint", (PyCFunction)OSAObj_OSADebuggerSetBreakpoint, 1,
-	 PyDoc_STR("(OSADebugSessionRef inSession, UInt32 inSrcOffset, OSAID inBreakpoint) -> None")},
-	{"OSADebuggerGetDefaultBreakpoint", (PyCFunction)OSAObj_OSADebuggerGetDefaultBreakpoint, 1,
-	 PyDoc_STR("(OSADebugSessionRef inSession) -> (OSAID outBreakpoint)")},
-	{"OSADebuggerGetCurrentCallFrame", (PyCFunction)OSAObj_OSADebuggerGetCurrentCallFrame, 1,
-	 PyDoc_STR("(OSADebugSessionRef inSession) -> (OSADebugCallFrameRef outCallFrame)")},
-	{"OSADebuggerGetCallFrameState", (PyCFunction)OSAObj_OSADebuggerGetCallFrameState, 1,
-	 PyDoc_STR("(OSADebugCallFrameRef inCallFrame) -> (AERecord outState)")},
-	{"OSADebuggerGetVariable", (PyCFunction)OSAObj_OSADebuggerGetVariable, 1,
-	 PyDoc_STR("(OSADebugCallFrameRef inCallFrame, AEDesc inVariableName) -> (OSAID outVariable)")},
-	{"OSADebuggerSetVariable", (PyCFunction)OSAObj_OSADebuggerSetVariable, 1,
-	 PyDoc_STR("(OSADebugCallFrameRef inCallFrame, AEDesc inVariableName, OSAID inVariable) -> None")},
-	{"OSADebuggerGetPreviousCallFrame", (PyCFunction)OSAObj_OSADebuggerGetPreviousCallFrame, 1,
-	 PyDoc_STR("(OSADebugCallFrameRef inCurrentFrame) -> (OSADebugCallFrameRef outPrevFrame)")},
-	{"OSADebuggerDisposeCallFrame", (PyCFunction)OSAObj_OSADebuggerDisposeCallFrame, 1,
-	 PyDoc_STR("(OSADebugCallFrameRef inCallFrame) -> None")},
 	{NULL, NULL, 0}
 };
 
@@ -1133,16 +798,16 @@ static PyMethodDef OSAObj_methods[] = {
 
 #define OSAObj_tp_alloc PyType_GenericAlloc
 
-static PyObject *OSAObj_tp_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+static PyObject *OSAObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
 {
-	PyObject *self;
+	PyObject *_self;
 	ComponentInstance itself;
 	char *kw[] = {"itself", 0};
 
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&", kw, OSAObj_Convert, &itself)) return NULL;
-	if ((self = type->tp_alloc(type, 0)) == NULL) return NULL;
-	((OSAComponentInstanceObject *)self)->ob_itself = itself;
-	return self;
+	if (!PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, OSAObj_Convert, &itself)) return NULL;
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((OSAComponentInstanceObject *)_self)->ob_itself = itself;
+	return _self;
 }
 
 #define OSAObj_tp_free PyObject_Del
@@ -1210,8 +875,8 @@ void init_OSA(void)
 
 
 	/*
-		PyMac_INIT_TOOLBOX_OBJECT_NEW(ComponentInstance, OSAObj_New);
-		PyMac_INIT_TOOLBOX_OBJECT_CONVERT(ComponentInstance, OSAObj_Convert);
+	        PyMac_INIT_TOOLBOX_OBJECT_NEW(ComponentInstance, OSAObj_New);
+	        PyMac_INIT_TOOLBOX_OBJECT_CONVERT(ComponentInstance, OSAObj_Convert);
 	*/
 
 

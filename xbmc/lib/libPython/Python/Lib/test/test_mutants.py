@@ -36,7 +36,7 @@ dict2 = {}
 dict1keys = []
 dict2keys = []
 
-# Global flag telling maybe_mutate() wether to *consider* mutating.
+# Global flag telling maybe_mutate() whether to *consider* mutating.
 mutate = 0
 
 # If global mutate is true, consider mutating a dict.  May or may not
@@ -69,14 +69,12 @@ def maybe_mutate():
 
     elif keys:
         # Delete a key at random.
+        mutate = 0   # disable mutation until key deleted
         i = random.randrange(len(keys))
         key = keys[i]
         del target[key]
-        # CAUTION:  don't use keys.remove(key) here.  Or do <wink>.  The
-        # point is that .remove() would trigger more comparisons, and so
-        # also more calls to this routine.  We're mutating often enough
-        # without that.
         del keys[i]
+        mutate = 1
 
 # A horrid class that triggers random mutations of dict1 and dict2 when
 # instances are compared.
@@ -93,11 +91,16 @@ class Horrid:
         self.hashcode = random.randrange(1000000000)
 
     def __hash__(self):
+        return 42
         return self.hashcode
 
     def __cmp__(self, other):
         maybe_mutate()   # The point of the test.
         return cmp(self.i, other.i)
+
+    def __eq__(self, other):
+        maybe_mutate()   # The point of the test.
+        return self.i == other.i
 
     def __repr__(self):
         return "Horrid(%d)" % self.i
@@ -134,7 +137,10 @@ def test_one(n):
     while dict1 and len(dict1) == len(dict2):
         if verbose:
             print ".",
-        c = cmp(dict1, dict2)
+        if random.random() < 0.5:
+            c = cmp(dict1, dict2)
+        else:
+            c = dict1 == dict2
     if verbose:
         print
 
@@ -283,3 +289,4 @@ finally:
     os.unlink(TESTFN)
 
 del dict
+del dict1, dict2, dict1keys, dict2keys

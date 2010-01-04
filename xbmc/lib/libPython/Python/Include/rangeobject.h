@@ -20,9 +20,7 @@ they are represented by a start, stop, and step datamembers.
 
 PyAPI_DATA(PyTypeObject) PyRange_Type;
 
-#define PyRange_Check(op) ((op)->ob_type == &PyRange_Type)
-
-PyAPI_FUNC(PyObject *) PyRange_New(long, long, long, int);
+#define PyRange_Check(op) (Py_TYPE(op) == &PyRange_Type)
 
 #ifdef __cplusplus
 }

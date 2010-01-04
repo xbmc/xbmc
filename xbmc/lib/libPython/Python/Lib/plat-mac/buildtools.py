@@ -1,5 +1,9 @@
 """tools for BuildApplet and BuildApplication"""
 
+import warnings
+warnings.warnpy3k("the buildtools module is deprecated and is removed in 3.0",
+              stacklevel=2)
+
 import sys
 import os
 import string
@@ -11,7 +15,10 @@ import Carbon.File
 import MacOS
 import macostools
 import macresource
-import EasyDialogs
+try:
+    import EasyDialogs
+except ImportError:
+    EasyDialogs = None
 import shutil
 
 
@@ -63,9 +70,13 @@ def process(template, filename, destname, copy_codefragment=0,
         rsrcname=None, others=[], raw=0, progress="default", destroot=""):
 
     if progress == "default":
-        progress = EasyDialogs.ProgressBar("Processing %s..."%os.path.split(filename)[1], 120)
-        progress.label("Compiling...")
-        progress.inc(0)
+        if EasyDialogs is None:
+            print "Compiling %s"%(os.path.split(filename)[1],)
+            process = None
+        else:
+            progress = EasyDialogs.ProgressBar("Processing %s..."%os.path.split(filename)[1], 120)
+            progress.label("Compiling...")
+            progress.inc(0)
     # check for the script name being longer than 32 chars. This may trigger a bug
     # on OSX that can destroy your sourcefile.
     if '#' in os.path.split(filename)[1]:
@@ -115,7 +126,11 @@ def update(template, filename, output):
     if MacOS.runtimemodel == 'macho':
         raise BuildError, "No updating yet for MachO applets"
     if progress:
-        progress = EasyDialogs.ProgressBar("Updating %s..."%os.path.split(filename)[1], 120)
+        if EasyDialogs is None:
+            print "Updating %s"%(os.path.split(filename)[1],)
+            progress = None
+        else:
+            progress = EasyDialogs.ProgressBar("Updating %s..."%os.path.split(filename)[1], 120)
     else:
         progress = None
     if not output:
@@ -200,13 +215,13 @@ def process_common(template, progress, code, rsrcname, destname, is_update,
     dummy, tmplowner = copyres(input, output, skiptypes, 1, progress)
 
     Res.CloseResFile(input)
-##  if ownertype == None:
+##  if ownertype is None:
 ##      raise BuildError, "No owner resource found in either resource file or template"
     # Make sure we're manipulating the output resource file now
 
     Res.UseResFile(output)
 
-    if ownertype == None:
+    if ownertype is None:
         # No owner resource in the template. We have skipped the
         # Python owner resource, so we have to add our own. The relevant
         # bundle stuff is already included in the interpret/applet template.
@@ -293,15 +308,6 @@ def process_common_macho(template, progress, code, rsrcname, destname, is_update
         dft_icnsname = os.path.join(sys.prefix, 'Resources/Python.app/Contents/Resources/PythonApplet.icns')
         if os.path.exists(dft_icnsname):
             icnsname = dft_icnsname
-        else:
-            # This part will work when we're in the build environment
-            import __main__
-            dft_icnsname = os.path.join(
-                    os.path.dirname(__main__.__file__),
-                    'PythonApplet.icns')
-            if os.paht.exists(dft_icnsname):
-                icnsname = dft_icnsname
-
     if not os.path.exists(rsrcname):
         rsrcname = None
     if progress:

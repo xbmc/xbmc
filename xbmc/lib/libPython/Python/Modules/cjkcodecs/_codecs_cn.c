@@ -2,7 +2,6 @@
  * _codecs_cn.c: Codecs collection for Mainland Chinese encodings
  *
  * Written by Hye-Shik Chang <perky@FreeBSD.org>
- * $CJKCodecs: _codecs_cn.c,v 1.8 2004/07/07 14:59:26 perky Exp $
  */
 
 #include "cjkcodecs.h"
@@ -198,6 +197,7 @@ ENCODER(gb18030)
 		REQUIRE_OUTBUF(2)
 
 		GBK_ENCODE(c, code)
+		else TRYMAP_ENC(gb18030ext, code, c);
 		else {
 			const struct _gb18030_to_unibmp_ranges *utrrange;
 

@@ -1,10 +1,10 @@
 from collections import deque
 import unittest
-from test import test_support
-from weakref import proxy
+from test import test_support, seq_tests
+import gc
+import weakref
 import copy
 import cPickle as pickle
-from cStringIO import StringIO
 import random
 import os
 
@@ -14,11 +14,23 @@ def fail():
     raise SyntaxError
     yield 1
 
+class BadCmp:
+    def __eq__(self, other):
+        raise RuntimeError
+
+class MutateCmp:
+    def __init__(self, deque, result):
+        self.deque = deque
+        self.result = result
+    def __eq__(self, other):
+        self.deque.clear()
+        return self.result
+
 class TestBasic(unittest.TestCase):
 
     def test_basics(self):
-        d = deque(xrange(100))
-        d.__init__(xrange(100, 200))
+        d = deque(xrange(-5125, -5000))
+        d.__init__(xrange(200))
         for i in xrange(200, 400):
             d.append(i)
         for i in reversed(xrange(-200, 0)):
@@ -34,6 +46,46 @@ class TestBasic(unittest.TestCase):
         right.reverse()
         self.assertEqual(right, range(150, 400))
         self.assertEqual(list(d), range(50, 150))
+
+    def test_maxlen(self):
+        self.assertRaises(ValueError, deque, 'abc', -1)
+        self.assertRaises(ValueError, deque, 'abc', -2)
+        d = deque(range(10), maxlen=3)
+        self.assertEqual(repr(d), 'deque([7, 8, 9], maxlen=3)')
+        self.assertEqual(list(d), range(7, 10))
+        self.assertEqual(d, deque(range(10), 3))
+        d.append(10)
+        self.assertEqual(list(d), range(8, 11))
+        d.appendleft(7)
+        self.assertEqual(list(d), range(7, 10))
+        d.extend([10, 11])
+        self.assertEqual(list(d), range(9, 12))
+        d.extendleft([8, 7])
+        self.assertEqual(list(d), range(7, 10))
+        d = deque(xrange(200), maxlen=10)
+        d.append(d)
+        test_support.unlink(test_support.TESTFN)
+        fo = open(test_support.TESTFN, "wb")
+        try:
+            print >> fo, d,
+            fo.close()
+            fo = open(test_support.TESTFN, "rb")
+            self.assertEqual(fo.read(), repr(d))
+        finally:
+            fo.close()
+            test_support.unlink(test_support.TESTFN)
+
+        d = deque(range(10), maxlen=None)
+        self.assertEqual(repr(d), 'deque([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])')
+        fo = open(test_support.TESTFN, "wb")
+        try:
+            print >> fo, d,
+            fo.close()
+            fo = open(test_support.TESTFN, "rb")
+            self.assertEqual(fo.read(), repr(d))
+        finally:
+            fo.close()
+            test_support.unlink(test_support.TESTFN)
 
     def test_comparisons(self):
         d = deque('xabc'); d.popleft()
@@ -197,6 +249,30 @@ class TestBasic(unittest.TestCase):
         d.clear()               # clear an emtpy deque
         self.assertEqual(list(d), [])
 
+    def test_remove(self):
+        d = deque('abcdefghcij')
+        d.remove('c')
+        self.assertEqual(d, deque('abdefghcij'))
+        d.remove('c')
+        self.assertEqual(d, deque('abdefghij'))
+        self.assertRaises(ValueError, d.remove, 'c')
+        self.assertEqual(d, deque('abdefghij'))
+
+        # Handle comparison errors
+        d = deque(['a', 'b', BadCmp(), 'c'])
+        e = deque(d)
+        self.assertRaises(RuntimeError, d.remove, 'c')
+        for x, y in zip(d, e):
+            # verify that original order and values are retained.
+            self.assert_(x is y)
+
+        # Handle evil mutator
+        for match in (True, False):
+            d = deque(['ab'])
+            d.extend([MutateCmp(d, match), 'c'])
+            self.assertRaises(IndexError, d.remove, 'c')
+            self.assertEqual(d, deque())
+
     def test_repr(self):
         d = deque(xrange(200))
         e = eval(repr(d))
@@ -207,18 +283,19 @@ class TestBasic(unittest.TestCase):
     def test_print(self):
         d = deque(xrange(200))
         d.append(d)
+        test_support.unlink(test_support.TESTFN)
+        fo = open(test_support.TESTFN, "wb")
         try:
-            fo = open(test_support.TESTFN, "wb")
             print >> fo, d,
             fo.close()
             fo = open(test_support.TESTFN, "rb")
             self.assertEqual(fo.read(), repr(d))
         finally:
             fo.close()
-            os.remove(test_support.TESTFN)
+            test_support.unlink(test_support.TESTFN)
 
     def test_init(self):
-        self.assertRaises(TypeError, deque, 'abc', 2);
+        self.assertRaises(TypeError, deque, 'abc', 2, 3);
         self.assertRaises(TypeError, deque, 1);
 
     def test_hash(self):
@@ -297,19 +374,19 @@ class TestBasic(unittest.TestCase):
 
     def test_pickle(self):
         d = deque(xrange(200))
-        for i in (0, 1, 2):
+        for i in range(pickle.HIGHEST_PROTOCOL + 1):
             s = pickle.dumps(d, i)
             e = pickle.loads(s)
             self.assertNotEqual(id(d), id(e))
             self.assertEqual(list(d), list(e))
 
-    def test_pickle_recursive(self):
-        d = deque('abc')
-        d.append(d)
-        for i in (0, 1, 2):
-            e = pickle.loads(pickle.dumps(d, i))
-            self.assertNotEqual(id(d), id(e))
-            self.assertEqual(id(e), id(e[-1]))
+##    def test_pickle_recursive(self):
+##        d = deque('abc')
+##        d.append(d)
+##        for i in range(pickle.HIGHEST_PROTOCOL + 1):
+##            e = pickle.loads(pickle.dumps(d, i))
+##            self.assertNotEqual(id(d), id(e))
+##            self.assertEqual(id(e), id(e[-1]))
 
     def test_deepcopy(self):
         mut = [10]
@@ -342,98 +419,44 @@ class TestBasic(unittest.TestCase):
             d.append(1)
             gc.collect()
 
-def R(seqn):
-    'Regular generator'
-    for i in seqn:
-        yield i
-
-class G:
-    'Sequence using __getitem__'
-    def __init__(self, seqn):
-        self.seqn = seqn
-    def __getitem__(self, i):
-        return self.seqn[i]
-
-class I:
-    'Sequence using iterator protocol'
-    def __init__(self, seqn):
-        self.seqn = seqn
-        self.i = 0
-    def __iter__(self):
-        return self
-    def next(self):
-        if self.i >= len(self.seqn): raise StopIteration
-        v = self.seqn[self.i]
-        self.i += 1
-        return v
-
-class Ig:
-    'Sequence using iterator protocol defined with a generator'
-    def __init__(self, seqn):
-        self.seqn = seqn
-        self.i = 0
-    def __iter__(self):
-        for val in self.seqn:
-            yield val
-
-class X:
-    'Missing __getitem__ and __iter__'
-    def __init__(self, seqn):
-        self.seqn = seqn
-        self.i = 0
-    def next(self):
-        if self.i >= len(self.seqn): raise StopIteration
-        v = self.seqn[self.i]
-        self.i += 1
-        return v
-
-class N:
-    'Iterator missing next()'
-    def __init__(self, seqn):
-        self.seqn = seqn
-        self.i = 0
-    def __iter__(self):
-        return self
-
-class E:
-    'Test propagation of exceptions'
-    def __init__(self, seqn):
-        self.seqn = seqn
-        self.i = 0
-    def __iter__(self):
-        return self
-    def next(self):
-        3 // 0
-
-class S:
-    'Test immediate stop'
-    def __init__(self, seqn):
-        pass
-    def __iter__(self):
-        return self
-    def next(self):
-        raise StopIteration
-
-from itertools import chain, imap
-def L(seqn):
-    'Test multiple tiers of iterators'
-    return chain(imap(lambda x:x, R(Ig(G(seqn)))))
-
+    def test_container_iterator(self):
+        # Bug #3680: tp_traverse was not implemented for deque iterator objects
+        class C(object):
+            pass
+        for i in range(2):
+            obj = C()
+            ref = weakref.ref(obj)
+            if i == 0:
+                container = deque([obj, 1])
+            else:
+                container = reversed(deque([obj, 1]))
+            obj.x = iter(container)
+            del obj, container
+            gc.collect()
+            self.assert_(ref() is None, "Cycle was not collected")
 
 class TestVariousIteratorArgs(unittest.TestCase):
 
     def test_constructor(self):
         for s in ("123", "", range(1000), ('do', 1.2), xrange(2000,2200,5)):
-            for g in (G, I, Ig, S, L, R):
+            for g in (seq_tests.Sequence, seq_tests.IterFunc,
+                      seq_tests.IterGen, seq_tests.IterFuncStop,
+                      seq_tests.itermulti, seq_tests.iterfunc):
                 self.assertEqual(list(deque(g(s))), list(g(s)))
-            self.assertRaises(TypeError, deque, X(s))
-            self.assertRaises(TypeError, deque, N(s))
-            self.assertRaises(ZeroDivisionError, deque, E(s))
+            self.assertRaises(TypeError, deque, seq_tests.IterNextOnly(s))
+            self.assertRaises(TypeError, deque, seq_tests.IterNoNext(s))
+            self.assertRaises(ZeroDivisionError, deque, seq_tests.IterGenExc(s))
 
     def test_iter_with_altered_data(self):
         d = deque('abcdefg')
         it = iter(d)
         d.pop()
+        self.assertRaises(RuntimeError, it.next)
+
+    def test_runtime_error_on_empty_deque(self):
+        d = deque()
+        it = iter(d)
+        d.append(10)
         self.assertRaises(RuntimeError, it.next)
 
 class Deque(deque):
@@ -446,8 +469,8 @@ class DequeWithBadIter(deque):
 class TestSubclass(unittest.TestCase):
 
     def test_basics(self):
-        d = Deque(xrange(100))
-        d.__init__(xrange(100, 200))
+        d = Deque(xrange(25))
+        d.__init__(xrange(200))
         for i in xrange(200, 400):
             d.append(i)
         for i in reversed(xrange(-200, 0)):
@@ -485,28 +508,44 @@ class TestSubclass(unittest.TestCase):
         self.assertEqual(type(d), type(e))
         self.assertEqual(list(d), list(e))
 
-    def test_pickle(self):
-        d = Deque('abc')
-        d.append(d)
+        d = Deque('abcde', maxlen=4)
 
-        e = pickle.loads(pickle.dumps(d))
+        e = d.__copy__()
+        self.assertEqual(type(d), type(e))
+        self.assertEqual(list(d), list(e))
+
+        e = Deque(d)
+        self.assertEqual(type(d), type(e))
+        self.assertEqual(list(d), list(e))
+
+        s = pickle.dumps(d)
+        e = pickle.loads(s)
         self.assertNotEqual(id(d), id(e))
         self.assertEqual(type(d), type(e))
-        dd = d.pop()
-        ee = e.pop()
-        self.assertEqual(id(e), id(ee))
-        self.assertEqual(d, e)
+        self.assertEqual(list(d), list(e))
 
-        d.x = d
-        e = pickle.loads(pickle.dumps(d))
-        self.assertEqual(id(e), id(e.x))
-
-        d = DequeWithBadIter('abc')
-        self.assertRaises(TypeError, pickle.dumps, d)
+##    def test_pickle(self):
+##        d = Deque('abc')
+##        d.append(d)
+##
+##        e = pickle.loads(pickle.dumps(d))
+##        self.assertNotEqual(id(d), id(e))
+##        self.assertEqual(type(d), type(e))
+##        dd = d.pop()
+##        ee = e.pop()
+##        self.assertEqual(id(e), id(ee))
+##        self.assertEqual(d, e)
+##
+##        d.x = d
+##        e = pickle.loads(pickle.dumps(d))
+##        self.assertEqual(id(e), id(e.x))
+##
+##        d = DequeWithBadIter('abc')
+##        self.assertRaises(TypeError, pickle.dumps, d)
 
     def test_weakref(self):
         d = deque('gallahad')
-        p = proxy(d)
+        p = weakref.proxy(d)
         self.assertEqual(str(p), str(d))
         d = None
         self.assertRaises(ReferenceError, str, p)
@@ -519,6 +558,16 @@ class TestSubclass(unittest.TestCase):
         d2 = X([4,5,6])
         d1 == d2   # not clear if this is supposed to be True or False,
                    # but it used to give a SystemError
+
+
+class SubclassWithKwargs(deque):
+    def __init__(self, newarg=1):
+        deque.__init__(self)
+
+class TestSubclassWithKwargs(unittest.TestCase):
+    def test_subclass_with_kwargs(self):
+        # SF bug #1486663 -- this used to erroneously raise a TypeError
+        SubclassWithKwargs(newarg=1)
 
 #==============================================================================
 
@@ -633,6 +682,7 @@ def test_main(verbose=None):
         TestBasic,
         TestVariousIteratorArgs,
         TestSubclass,
+        TestSubclassWithKwargs,
     )
 
     test_support.run_unittest(*test_classes)

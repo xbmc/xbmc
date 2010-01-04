@@ -13,11 +13,10 @@ the "typical" Unix-style command-line C compiler:
   * link shared library handled by 'cc -shared'
 """
 
-__revision__ = "$Id: unixccompiler.py 52231 2006-10-08 17:41:25Z ronald.oussoren $"
+__revision__ = "$Id: unixccompiler.py 74729 2009-09-09 08:34:06Z tarek.ziade $"
 
 import os, sys
 from types import StringType, NoneType
-from copy import copy
 
 from distutils import sysconfig
 from distutils.dep_util import newer
@@ -45,7 +44,7 @@ from distutils import log
 def _darwin_compiler_fixup(compiler_so, cc_args):
     """
     This function will strip '-isysroot PATH' and '-arch ARCH' from the
-    compile flag if the user has specified one of them in extra_compile_flags.
+    compile flags if the user has specified one them in extra_compile_flags.
 
     This is needed because '-arch ARCH' adds another architecture to the
     build, without a way to remove an architecture. Furthermore GCC will
@@ -65,7 +64,7 @@ def _darwin_compiler_fixup(compiler_so, cc_args):
         stripArch = '-arch' in cc_args
         stripSysroot = '-isysroot' in cc_args
 
-    if stripArch:
+    if stripArch or 'ARCHFLAGS' in os.environ:
         while 1:
             try:
                 index = compiler_so.index('-arch')
@@ -73,6 +72,11 @@ def _darwin_compiler_fixup(compiler_so, cc_args):
                 del compiler_so[index:index+2]
             except ValueError:
                 break
+
+    if 'ARCHFLAGS' in os.environ and not stripArch:
+        # User specified different -arch flags in the environ,
+        # see also distutils.sysconfig
+        compiler_so = compiler_so + os.environ['ARCHFLAGS'].split()
 
     if stripSysroot:
         try:
@@ -82,8 +86,23 @@ def _darwin_compiler_fixup(compiler_so, cc_args):
         except ValueError:
             pass
 
-    return compiler_so
+    # Check if the SDK that is used during compilation actually exists,
+    # the universal build requires the usage of a universal SDK and not all
+    # users have that installed by default.
+    sysroot = None
+    if '-isysroot' in cc_args:
+        idx = cc_args.index('-isysroot')
+        sysroot = cc_args[idx+1]
+    elif '-isysroot' in compiler_so:
+        idx = compiler_so.index('-isysroot')
+        sysroot = compiler_so[idx+1]
 
+    if sysroot and not os.path.isdir(sysroot):
+        log.warn("Compiling with an SDK that doesn't seem to exist: %s",
+                sysroot)
+        log.warn("Please check your Xcode installation")
+
+    return compiler_so
 
 class UnixCCompiler(CCompiler):
 
@@ -218,7 +237,18 @@ class UnixCCompiler(CCompiler):
                 else:
                     linker = self.linker_so[:]
                 if target_lang == "c++" and self.compiler_cxx:
-                    linker[0] = self.compiler_cxx[0]
+                    # skip over environment variable settings if /usr/bin/env
+                    # is used to set up the linker's environment.
+                    # This is needed on OSX. Note: this assumes that the
+                    # normal and C++ compiler have the same environment
+                    # settings.
+                    i = 0
+                    if os.path.basename(linker[0]) == "env":
+                        i = 1
+                        while '=' in linker[i]:
+                            i = i + 1
+
+                    linker[i] = self.compiler_cxx[i]
 
                 if sys.platform == 'darwin':
                     linker = _darwin_compiler_fixup(linker, ld_args)
@@ -254,7 +284,9 @@ class UnixCCompiler(CCompiler):
             # MacOSX's linker doesn't understand the -R flag at all
             return "-L" + dir
         elif sys.platform[:5] == "hp-ux":
-            return "+s -L" + dir
+            if "gcc" in compiler or "g++" in compiler:
+                return ["-Wl,+s", "-L" + dir]
+            return ["+s", "-L" + dir]
         elif sys.platform[:7] == "irix646" or sys.platform[:6] == "osf1V5":
             return ["-rpath", dir]
         elif compiler[:3] == "gcc" or compiler[:3] == "g++":

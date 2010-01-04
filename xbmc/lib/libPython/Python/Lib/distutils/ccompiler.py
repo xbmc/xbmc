@@ -5,7 +5,7 @@ for the Distutils compiler abstraction model."""
 
 # This module should be kept compatible with Python 2.1.
 
-__revision__ = "$Id: ccompiler.py 37828 2004-11-10 22:23:15Z loewis $"
+__revision__ = "$Id: ccompiler.py 67896 2008-12-21 17:01:26Z benjamin.peterson $"
 
 import sys, os, re
 from types import *
@@ -15,7 +15,6 @@ from distutils.spawn import spawn
 from distutils.file_util import move_file
 from distutils.dir_util import mkpath
 from distutils.dep_util import newer_pairwise, newer_group
-from distutils.sysconfig import python_build
 from distutils.util import split_quoted, execute
 from distutils import log
 
@@ -160,7 +159,7 @@ class CCompiler:
         # basically the same things with Unix C compilers.
 
         for key in args.keys():
-            if not self.executables.has_key(key):
+            if key not in self.executables:
                 raise ValueError, \
                       "unknown executable '%s' for class %s" % \
                       (key, self.__class__.__name__)
@@ -368,7 +367,7 @@ class CCompiler:
 
         # Get the list of expected output (object) files
         objects = self.object_filenames(sources,
-                                        strip_dir=python_build,
+                                        strip_dir=0,
                                         output_dir=outdir)
         assert len(objects) == len(sources)
 
@@ -475,8 +474,7 @@ class CCompiler:
         which source files can be skipped.
         """
         # Get the list of expected output (object) files
-        objects = self.object_filenames(sources, strip_dir=python_build,
-                                        output_dir=output_dir)
+        objects = self.object_filenames(sources, output_dir=output_dir)
         assert len(objects) == len(sources)
 
         if self.force:
@@ -1043,7 +1041,7 @@ main (int argc, char **argv) {
         return move_file (src, dst, dry_run=self.dry_run)
 
     def mkpath (self, name, mode=0777):
-        mkpath (name, mode, self.dry_run)
+        mkpath (name, mode, dry_run=self.dry_run)
 
 
 # class CCompiler

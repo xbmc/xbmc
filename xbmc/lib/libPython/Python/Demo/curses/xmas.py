@@ -1,10 +1,10 @@
 # asciixmas
 # December 1989             Larry Bartz           Indianapolis, IN
 #
-# $Id: xmas.py 36559 2004-07-18 05:56:09Z tim_one $
+# $Id: xmas.py 46623 2006-06-03 22:59:23Z andrew.kuchling $
 #
 # I'm dreaming of an ascii character-based monochrome Christmas,
-# Just like the one's I used to know!
+# Just like the ones I used to know!
 # Via a full duplex communications channel,
 # At 9600 bits per second,
 # Even though it's kinda slow.
@@ -272,7 +272,7 @@ def strng5():
 def blinkit():
     treescrn8.touchwin()
 
-    for cycle in range(0, 5):
+    for cycle in range(5):
         if cycle == 0:
             treescrn3.overlay(treescrn8)
             treescrn8.refresh()
@@ -380,7 +380,7 @@ def reindeer():
         middeer0.refresh()
         w_del_msg.refresh()
 
-        for looper in range(0, 2):
+        for looper in range(2):
             deer_step(middeer3, y_pos, x_pos)
             deer_step(middeer2, y_pos, x_pos)
             deer_step(middeer1, y_pos, x_pos)

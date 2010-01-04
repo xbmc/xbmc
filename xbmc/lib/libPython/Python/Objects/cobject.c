@@ -9,13 +9,6 @@
 typedef void (*destructor1)(void *);
 typedef void (*destructor2)(void *, void*);
 
-typedef struct {
-    PyObject_HEAD
-    void *cobject;
-    void *desc;
-    void (*destructor)(void *);
-} PyCObject;
-
 PyObject *
 PyCObject_FromVoidPtr(void *cobj, void (*destr)(void *))
 {
@@ -135,26 +128,26 @@ extension modules, so that extension modules can use the Python import\n\
 mechanism to link to one another.");
 
 PyTypeObject PyCObject_Type = {
-    PyObject_HEAD_INIT(&PyType_Type)
-    0,					/*ob_size*/
-    "PyCObject",			/*tp_name*/
-    sizeof(PyCObject),			/*tp_basicsize*/
-    0,					/*tp_itemsize*/
+    PyVarObject_HEAD_INIT(&PyType_Type, 0)
+    "PyCObject",		/*tp_name*/
+    sizeof(PyCObject),		/*tp_basicsize*/
+    0,				/*tp_itemsize*/
     /* methods */
-    (destructor)PyCObject_dealloc,	/*tp_dealloc*/
-    (printfunc)0,			/*tp_print*/
-    (getattrfunc)0,			/*tp_getattr*/
-    (setattrfunc)0,			/*tp_setattr*/
-    (cmpfunc)0,				/*tp_compare*/
-    (reprfunc)0,			/*tp_repr*/
-    0,					/*tp_as_number*/
-    0,					/*tp_as_sequence*/
-    0,					/*tp_as_mapping*/
-    (hashfunc)0,			/*tp_hash*/
-    (ternaryfunc)0,			/*tp_call*/
-    (reprfunc)0,			/*tp_str*/
-
-    /* Space for future expansion */
-    0L,0L,0L,0L,
-    PyCObject_Type__doc__ 		/* Documentation string */
+    (destructor)PyCObject_dealloc, /*tp_dealloc*/
+    0,				/*tp_print*/
+    0,				/*tp_getattr*/
+    0,				/*tp_setattr*/
+    0,				/*tp_compare*/
+    0,				/*tp_repr*/
+    0,				/*tp_as_number*/
+    0,				/*tp_as_sequence*/
+    0,				/*tp_as_mapping*/
+    0,				/*tp_hash*/
+    0,				/*tp_call*/
+    0,				/*tp_str*/
+    0,				/*tp_getattro*/
+    0,				/*tp_setattro*/
+    0,				/*tp_as_buffer*/
+    0,				/*tp_flags*/
+    PyCObject_Type__doc__	/*tp_doc*/
 };

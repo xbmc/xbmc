@@ -1,4 +1,4 @@
-# Copyright 2001-2005 by Vinay Sajip. All Rights Reserved.
+# Copyright 2001-2007 by Vinay Sajip. All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and its
 # documentation for any purpose and without fee is hereby granted,
@@ -22,7 +22,7 @@ by Apache's log4j system.
 Should work under Python versions >= 1.5.2, except that source line
 information is not available unless 'sys._getframe()' is.
 
-Copyright (C) 2001-2004 Vinay Sajip. All Rights Reserved.
+Copyright (C) 2001-2008 Vinay Sajip. All Rights Reserved.
 
 To use, simply 'import logging' and log away!
 """
@@ -52,7 +52,7 @@ else:
 #   _listener holds the server object doing the listening
 _listener = None
 
-def fileConfig(fname, defaults=None):
+def fileConfig(fname, defaults=None, disable_existing_loggers=1):
     """
     Read the logging configuration from a ConfigParser-format file.
 
@@ -72,134 +72,200 @@ def fileConfig(fname, defaults=None):
         cp.readfp(fname)
     else:
         cp.read(fname)
-    #first, do the formatters...
-    flist = cp.get("formatters", "keys")
-    if len(flist):
-        flist = string.split(flist, ",")
-        formatters = {}
-        for form in flist:
-            sectname = "formatter_%s" % form
-            opts = cp.options(sectname)
-            if "format" in opts:
-                fs = cp.get(sectname, "format", 1)
-            else:
-                fs = None
-            if "datefmt" in opts:
-                dfs = cp.get(sectname, "datefmt", 1)
-            else:
-                dfs = None
-            f = logging.Formatter(fs, dfs)
-            formatters[form] = f
-    #next, do the handlers...
-    #critical section...
+
+    formatters = _create_formatters(cp)
+
+    # critical section
     logging._acquireLock()
     try:
-        try:
-            #first, lose the existing handlers...
-            logging._handlers.clear()
-            #now set up the new ones...
-            hlist = cp.get("handlers", "keys")
-            if len(hlist):
-                hlist = string.split(hlist, ",")
-                handlers = {}
-                fixups = [] #for inter-handler references
-                for hand in hlist:
-                    try:
-                        sectname = "handler_%s" % hand
-                        klass = cp.get(sectname, "class")
-                        opts = cp.options(sectname)
-                        if "formatter" in opts:
-                            fmt = cp.get(sectname, "formatter")
-                        else:
-                            fmt = ""
-                        klass = eval(klass, vars(logging))
-                        args = cp.get(sectname, "args")
-                        args = eval(args, vars(logging))
-                        h = apply(klass, args)
-                        if "level" in opts:
-                            level = cp.get(sectname, "level")
-                            h.setLevel(logging._levelNames[level])
-                        if len(fmt):
-                            h.setFormatter(formatters[fmt])
-                        #temporary hack for FileHandler and MemoryHandler.
-                        if klass == logging.handlers.MemoryHandler:
-                            if "target" in opts:
-                                target = cp.get(sectname,"target")
-                            else:
-                                target = ""
-                            if len(target): #the target handler may not be loaded yet, so keep for later...
-                                fixups.append((h, target))
-                        handlers[hand] = h
-                    except:     #if an error occurs when instantiating a handler, too bad
-                        pass    #this could happen e.g. because of lack of privileges
-                #now all handlers are loaded, fixup inter-handler references...
-                for fixup in fixups:
-                    h = fixup[0]
-                    t = fixup[1]
-                    h.setTarget(handlers[t])
-            #at last, the loggers...first the root...
-            llist = cp.get("loggers", "keys")
-            llist = string.split(llist, ",")
-            llist.remove("root")
-            sectname = "logger_root"
-            root = logging.root
-            log = root
-            opts = cp.options(sectname)
-            if "level" in opts:
-                level = cp.get(sectname, "level")
-                log.setLevel(logging._levelNames[level])
-            for h in root.handlers[:]:
-                root.removeHandler(h)
-            hlist = cp.get(sectname, "handlers")
-            if len(hlist):
-                hlist = string.split(hlist, ",")
-                for hand in hlist:
-                    log.addHandler(handlers[hand])
-            #and now the others...
-            #we don't want to lose the existing loggers,
-            #since other threads may have pointers to them.
-            #existing is set to contain all existing loggers,
-            #and as we go through the new configuration we
-            #remove any which are configured. At the end,
-            #what's left in existing is the set of loggers
-            #which were in the previous configuration but
-            #which are not in the new configuration.
-            existing = root.manager.loggerDict.keys()
-            #now set up the new ones...
-            for log in llist:
-                sectname = "logger_%s" % log
-                qn = cp.get(sectname, "qualname")
-                opts = cp.options(sectname)
-                if "propagate" in opts:
-                    propagate = cp.getint(sectname, "propagate")
-                else:
-                    propagate = 1
-                logger = logging.getLogger(qn)
-                if qn in existing:
-                    existing.remove(qn)
-                if "level" in opts:
-                    level = cp.get(sectname, "level")
-                    logger.setLevel(logging._levelNames[level])
-                for h in logger.handlers[:]:
-                    logger.removeHandler(h)
-                logger.propagate = propagate
-                logger.disabled = 0
-                hlist = cp.get(sectname, "handlers")
-                if len(hlist):
-                    hlist = string.split(hlist, ",")
-                    for hand in hlist:
-                        logger.addHandler(handlers[hand])
-            #Disable any old loggers. There's no point deleting
-            #them as other threads may continue to hold references
-            #and by disabling them, you stop them doing any logging.
-            for log in existing:
-                root.manager.loggerDict[log].disabled = 1
-        except:
-            ei = sys.exc_info()
-            traceback.print_exception(ei[0], ei[1], ei[2], None, sys.stderr)
-            del ei
+        logging._handlers.clear()
+        del logging._handlerList[:]
+        # Handlers add themselves to logging._handlers
+        handlers = _install_handlers(cp, formatters)
+        _install_loggers(cp, handlers, disable_existing_loggers)
     finally:
         logging._releaseLock()
+
+
+def _resolve(name):
+    """Resolve a dotted name to a global object."""
+    name = string.split(name, '.')
+    used = name.pop(0)
+    found = __import__(used)
+    for n in name:
+        used = used + '.' + n
+        try:
+            found = getattr(found, n)
+        except AttributeError:
+            __import__(used)
+            found = getattr(found, n)
+    return found
+
+def _strip_spaces(alist):
+    return map(lambda x: string.strip(x), alist)
+
+def _create_formatters(cp):
+    """Create and return formatters"""
+    flist = cp.get("formatters", "keys")
+    if not len(flist):
+        return {}
+    flist = string.split(flist, ",")
+    flist = _strip_spaces(flist)
+    formatters = {}
+    for form in flist:
+        sectname = "formatter_%s" % form
+        opts = cp.options(sectname)
+        if "format" in opts:
+            fs = cp.get(sectname, "format", 1)
+        else:
+            fs = None
+        if "datefmt" in opts:
+            dfs = cp.get(sectname, "datefmt", 1)
+        else:
+            dfs = None
+        c = logging.Formatter
+        if "class" in opts:
+            class_name = cp.get(sectname, "class")
+            if class_name:
+                c = _resolve(class_name)
+        f = c(fs, dfs)
+        formatters[form] = f
+    return formatters
+
+
+def _install_handlers(cp, formatters):
+    """Install and return handlers"""
+    hlist = cp.get("handlers", "keys")
+    if not len(hlist):
+        return {}
+    hlist = string.split(hlist, ",")
+    hlist = _strip_spaces(hlist)
+    handlers = {}
+    fixups = [] #for inter-handler references
+    for hand in hlist:
+        sectname = "handler_%s" % hand
+        klass = cp.get(sectname, "class")
+        opts = cp.options(sectname)
+        if "formatter" in opts:
+            fmt = cp.get(sectname, "formatter")
+        else:
+            fmt = ""
+        try:
+            klass = eval(klass, vars(logging))
+        except (AttributeError, NameError):
+            klass = _resolve(klass)
+        args = cp.get(sectname, "args")
+        args = eval(args, vars(logging))
+        h = klass(*args)
+        if "level" in opts:
+            level = cp.get(sectname, "level")
+            h.setLevel(logging._levelNames[level])
+        if len(fmt):
+            h.setFormatter(formatters[fmt])
+        if issubclass(klass, logging.handlers.MemoryHandler):
+            if "target" in opts:
+                target = cp.get(sectname,"target")
+            else:
+                target = ""
+            if len(target): #the target handler may not be loaded yet, so keep for later...
+                fixups.append((h, target))
+        handlers[hand] = h
+    #now all handlers are loaded, fixup inter-handler references...
+    for h, t in fixups:
+        h.setTarget(handlers[t])
+    return handlers
+
+
+def _install_loggers(cp, handlers, disable_existing_loggers):
+    """Create and install loggers"""
+
+    # configure the root first
+    llist = cp.get("loggers", "keys")
+    llist = string.split(llist, ",")
+    llist = map(lambda x: string.strip(x), llist)
+    llist.remove("root")
+    sectname = "logger_root"
+    root = logging.root
+    log = root
+    opts = cp.options(sectname)
+    if "level" in opts:
+        level = cp.get(sectname, "level")
+        log.setLevel(logging._levelNames[level])
+    for h in root.handlers[:]:
+        root.removeHandler(h)
+    hlist = cp.get(sectname, "handlers")
+    if len(hlist):
+        hlist = string.split(hlist, ",")
+        hlist = _strip_spaces(hlist)
+        for hand in hlist:
+            log.addHandler(handlers[hand])
+
+    #and now the others...
+    #we don't want to lose the existing loggers,
+    #since other threads may have pointers to them.
+    #existing is set to contain all existing loggers,
+    #and as we go through the new configuration we
+    #remove any which are configured. At the end,
+    #what's left in existing is the set of loggers
+    #which were in the previous configuration but
+    #which are not in the new configuration.
+    existing = root.manager.loggerDict.keys()
+    #The list needs to be sorted so that we can
+    #avoid disabling child loggers of explicitly
+    #named loggers. With a sorted list it is easier
+    #to find the child loggers.
+    existing.sort()
+    #We'll keep the list of existing loggers
+    #which are children of named loggers here...
+    child_loggers = []
+    #now set up the new ones...
+    for log in llist:
+        sectname = "logger_%s" % log
+        qn = cp.get(sectname, "qualname")
+        opts = cp.options(sectname)
+        if "propagate" in opts:
+            propagate = cp.getint(sectname, "propagate")
+        else:
+            propagate = 1
+        logger = logging.getLogger(qn)
+        if qn in existing:
+            i = existing.index(qn)
+            prefixed = qn + "."
+            pflen = len(prefixed)
+            num_existing = len(existing)
+            i = i + 1 # look at the entry after qn
+            while (i < num_existing) and (existing[i][:pflen] == prefixed):
+                child_loggers.append(existing[i])
+                i = i + 1
+            existing.remove(qn)
+        if "level" in opts:
+            level = cp.get(sectname, "level")
+            logger.setLevel(logging._levelNames[level])
+        for h in logger.handlers[:]:
+            logger.removeHandler(h)
+        logger.propagate = propagate
+        logger.disabled = 0
+        hlist = cp.get(sectname, "handlers")
+        if len(hlist):
+            hlist = string.split(hlist, ",")
+            hlist = _strip_spaces(hlist)
+            for hand in hlist:
+                logger.addHandler(handlers[hand])
+
+    #Disable any old loggers. There's no point deleting
+    #them as other threads may continue to hold references
+    #and by disabling them, you stop them doing any logging.
+    #However, don't disable children of named loggers, as that's
+    #probably not what was intended by the user.
+    for log in existing:
+        logger = root.manager.loggerDict[log]
+        if log in child_loggers:
+            logger.level = logging.NOTSET
+            logger.handlers = []
+            logger.propagate = 1
+        elif disable_existing_loggers:
+            logger.disabled = 1
+
 
 def listen(port=DEFAULT_LOGGING_CONFIG_PORT):
     """
@@ -247,7 +313,12 @@ def listen(port=DEFAULT_LOGGING_CONFIG_PORT):
                     f = open(file, "w")
                     f.write(chunk)
                     f.close()
-                    fileConfig(file)
+                    try:
+                        fileConfig(file)
+                    except (KeyboardInterrupt, SystemExit):
+                        raise
+                    except:
+                        traceback.print_exc()
                     os.remove(file)
             except socket.error, e:
                 if type(e.args) != types.TupleType:

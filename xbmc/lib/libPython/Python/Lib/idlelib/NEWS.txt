@@ -1,76 +1,283 @@
-What's New in IDLE 1.1.5?
+What's New in Python 2.6.4rc1
+=============================
+
+*Release date: XX-Oct-2009*
+
+- OutputWindow/PyShell right click menu "Go to file/line" wasn't working with
+  file paths containing spaces.  Bug 5559.
+
+What's New in Python 2.6.3
+==========================
+
+*Release date: 02-Oct-2009*
+
+What's New in IDLE 2.6.3rc1?
+============================
+
+*Release date: 28-Sep-2009*
+
+- On OS X IDLE 2.6 shows two Preference menu items.  Issue6951.
+
+- Windows: Version string for the .chm help file changed, file not being
+  accessed  Patch 5783 Guilherme Polo
+
+- Tk 8.5 Text widget requires 'wordprocessor' tabstyle attr to handle
+  mixed space/tab properly. Issue 5129, patch by Guilherme Polo.
+
+What's New in IDLE 2.6.2rc1?
+============================
+
+*Release date: 06-Apr-2009*
+
+- Issue #3549: On MacOS the preferences menu was not present
+
+What's New in IDLE 2.6?
+=======================
+
+*Release date: 01-Oct-2008*
+
+- Issue #2665: On Windows, an IDLE installation upgraded from an old version
+  would not start if a custom theme was defined.
+
+- Home / Control-A toggles between left margin and end of leading white
+  space.  Patch 1196903 Jeff Shute.
+
+- Improved AutoCompleteWindow logic.  Patch 2062 Tal Einat.
+
+- Autocompletion of filenames now support alternate separators, e.g. the
+  '/' char on Windows.  Patch 2061 Tal Einat.
+
+What's New in IDLE 2.6a1?
 =========================
 
-*Release date: 11-Mar-2006*
+*Release date: 29-Feb-2008*
 
-What's New in IDLE 1.1.5c1?
+- Configured selection highlighting colors were ignored; updating highlighting
+  in the config dialog would cause non-Python files to be colored as if they
+  were Python source; improve use of ColorDelagator.  Patch 1334. Tal Einat.
+
+- ScriptBinding event handlers weren't returning 'break'. Patch 2050, Tal Einat
+
+- There was an error on exit if no sys.exitfunc was defined. Issue 1647.
+
+- Could not open files in .idlerc directory if latter was hidden on Windows.
+  Issue 1743, Issue 1862.
+
+- Configure Dialog: improved layout for keybinding.  Patch 1457 Tal Einat.
+
+- tabpage.py updated: tabbedPages.py now supports multiple dynamic rows
+  of tabs.  Patch 1612746 Tal Einat.
+
+- Add confirmation dialog before printing.  Patch 1717170 Tal Einat.
+
+- Show paste position if > 80 col.  Patch 1659326 Tal Einat.
+
+- Update cursor color without restarting.  Patch 1725576 Tal Einat.
+
+- Allow keyboard interrupt only when user code is executing in subprocess.
+  Patch 1225 Tal Einat (reworked from IDLE-Spoon).
+
+- configDialog cleanup. Patch 1730217 Tal Einat.
+
+- textView cleanup. Patch 1718043 Tal Einat.
+
+- Clean up EditorWindow close.
+
+- Patch 1693258: Fix for duplicate "preferences" menu-OS X. Backport of r56204.
+
+- OSX: Avoid crash for those versions of Tcl/Tk which don't have a console
+
+- Bug in idlelib.MultiCall: Options dialog was crashing IDLE if there was an
+  option in config-extensions w/o a value. Patch #1672481, Tal Einat
+
+- Corrected some bugs in AutoComplete.  Also, Page Up/Down in ACW implemented;
+  mouse and cursor selection in ACWindow implemented; double Tab inserts
+  current selection and closes ACW (similar to double-click and Return); scroll
+  wheel now works in ACW.  Added AutoComplete instructions to IDLE Help.
+
+- AutoCompleteWindow moved below input line, will move above if there
+  isn't enough space.  Patch 1621265 Tal Einat
+
+- Calltips now 'handle' tuples in the argument list (display '<tuple>' :)
+  Suggested solution by Christos Georgiou, Bug 791968.
+
+- Add 'raw' support to configHandler. Patch 1650174 Tal Einat.
+
+- Avoid hang when encountering a duplicate in a completion list. Bug 1571112.
+
+- Patch #1362975: Rework CodeContext indentation algorithm to
+  avoid hard-coding pixel widths.
+
+- Bug #813342: Start the IDLE subprocess with -Qnew if the parent
+  is started with that option.
+
+- Honor the "Cancel" action in the save dialog (Debian bug #299092)
+
+- Some syntax errors were being caught by tokenize during the tabnanny
+  check, resulting in obscure error messages.  Do the syntax check
+  first.  Bug 1562716, 1562719
+
+- IDLE's version number takes a big jump to match the version number of
+  the Python release of which it's a part.
+
+
+What's New in IDLE 1.2?
+=======================
+
+*Release date: 19-SEP-2006*
+
+
+What's New in IDLE 1.2c1?
 =========================
 
-*Release date: 02-Mar-2006*
+*Release date: 17-AUG-2006*
 
-What's New in IDLE 1.1.4?
+- File menu hotkeys: there were three 'p' assignments.  Reassign the
+  'Save Copy As' and 'Print' hotkeys to 'y' and 't'.  Change the
+  Shell hotkey from 's' to 'l'.
+
+- IDLE honors new quit() and exit() commands from site.py Quitter() object.
+  Patch 1540892, Jim Jewett
+
+- The 'with' statement is now a Code Context block opener.
+  Patch 1540851, Jim Jewett
+
+- Retrieval of previous shell command was not always preserving indentation
+  (since 1.2a1) Patch 1528468 Tal Einat.
+
+- Changing tokenize (39046) to detect dedent broke tabnanny check (since 1.2a1)
+
+- ToggleTab dialog was setting indent to 8 even if cancelled (since 1.2a1).
+
+- When used w/o subprocess, all exceptions were preceded by an error
+  message claiming they were IDLE internal errors (since 1.2a1).
+
+What's New in IDLE 1.2b3?
 =========================
 
-*Release date: 18-OCT-2006*
+*Release date: 03-AUG-2006*
 
-What's New in IDLE 1.1.4c1?
-===========================
+- Bug #1525817: Don't truncate short lines in IDLE's tool tips.
 
-*Release date: 11-OCT-2006*
+- Bug #1517990: IDLE keybindings on MacOS X now work correctly
 
-What's New in IDLE 1.1.3?
+- Bug #1517996: IDLE now longer shows the default Tk menu when a
+  path browser, class browser or debugger is the frontmost window on MacOS X
+
+- EditorWindow.test() was failing.  Bug 1417598
+
+- EditorWindow failed when used stand-alone if sys.ps1 not set.
+  Bug 1010370 Dave Florek
+
+- Tooltips failed on new-syle class __init__ args.  Bug 1027566 Loren Guthrie
+
+- Avoid occasional failure to detect closing paren properly.
+  Patch 1407280 Tal Einat
+
+- Rebinding Tab key was inserting 'tab' instead of 'Tab'.  Bug 1179168.
+
+- Colorizer now handles #<builtin> correctly, also unicode strings and
+  'as' keyword in comment directly following import command. Closes 1325071.
+  Patch 1479219 Tal Einat
+
+What's New in IDLE 1.2b2?
 =========================
 
-*Release date: 29-MAR-2006*
+*Release date: 11-JUL-2006*
 
-What's New in IDLE 1.1.3c1?
-===========================
+What's New in IDLE 1.2b1?
+=========================
 
-*Release date: 23-MAR-2006*
+*Release date: 20-JUN-2006*
+
+What's New in IDLE 1.2a2?
+=========================
+
+*Release date: 27-APR-2006*
+
+What's New in IDLE 1.2a1?
+=========================
+
+*Release date: 05-APR-2006*
+
+- Patch #1162825: Support non-ASCII characters in IDLE window titles.
 
 - Source file f.flush() after writing; trying to avoid lossage if user
-  kills GUI.  Reported by Bruce Sherwood.
+  kills GUI.
 
+- Options / Keys / Advanced dialog made functional.  Also, allow binding
+  of 'movement' keys.
 
-What's New in IDLE 1.1.2?
-=========================
+- 'syntax' patch adds improved calltips and a new class attribute listbox.
+  MultiCall module allows binding multiple actions to an event.
+  Patch 906702 Noam Raphael
 
-*Release date: 28-SEP-2005*
+- Better indentation after first line of string continuation.
+  IDLEfork Patch 681992, Noam Raphael
 
-What's New in IDLE 1.1.2c1?
-===========================
+- Fixed CodeContext alignment problem, following suggestion from Tal Einat.
 
-*Release date: 21-SEP-2005*
+- Increased performance in CodeContext extension  Patch 936169 Noam Raphael
 
 - Mac line endings were incorrect when pasting code from some browsers
   when using X11 and the Fink distribution.  Python Bug 1263656.
 
+- <Enter> when cursor is on a previous command retrieves that command.  Instead
+  of replacing the input line, the previous command is now appended to the
+  input line. Indentation is preserved, and undo is enabled.
+  Patch 1196917  Jeff Shute
 
-What's New in IDLE 1.1.1?
-=========================
+- Clarify "tab/space" Error Dialog and "Tab Width" Dialog associated with
+  the Untabify command.
 
-*Release date: 30-MAR-2005*
+- Corrected "tab/space" Error Dialog to show correct menu for Untabify.
+  Patch 1196980 Jeff Shute
 
+- New files are colorized by default, and colorizing is removed when
+  saving as non-Python files. Patch 1196895 Jeff Shute
+  Closes Python Bugs 775012 and 800432, partial fix IDLEfork 763524
 
-What's New in IDLE 1.1.1c2?
-===========================
+- Improve subprocess link error notification.
 
-*Release date: 17-MAR-2005*
+- run.py: use Queue's blocking feature instead of sleeping in the main
+  loop.  Patch # 1190163 Michiel de Hoon
 
+- Add config-main option to make the 'history' feature non-cyclic.
+  Default remains cyclic.  Python Patch 914546 Noam Raphael.
 
-What's New in IDLE 1.1.1c1?
-===========================
+- Removed ability to configure tabs indent from Options dialog.  This 'feature'
+  has never worked and no one has complained.  It is still possible to set a
+  default tabs (v. spaces) indent 'manually' via config-main.def (or to turn on
+  tabs for the current EditorWindow via the Format menu) but IDLE will
+  encourage indentation via spaces.
 
-*Release date: 10-MAR-2005*
+- Enable setting the indentation width using the Options dialog.
+  Bug # 783877
+
+- Add keybindings for del-word-left and del-word-right.
+
+- Discourage using an indent width other than 8 when using tabs to indent
+  Python code.
+
+- Restore use of EditorWindow.set_indentation_params(), was dead code since
+  Autoindent was merged into EditorWindow.  This allows IDLE to conform to the
+  indentation width of a loaded file.  (But it still will not switch to tabs
+  even if the file uses tabs.)  Any change in indent width is local to that
+  window.
+
+- Add Tabnanny check before Run/F5, not just when Checking module.
 
 - If an extension can't be loaded, print warning and skip it instead of
   erroring out.
 
-- Improve error handling when .idlerc can't be created (warn and exit)
+- Improve error handling when .idlerc can't be created (warn and exit).
 
-- The GUI was hanging if the shell window was closed while a raw_input() 
+- The GUI was hanging if the shell window was closed while a raw_input()
   was pending.  Restored the quit() of the readline() mainloop().
   http://mail.python.org/pipermail/idle-dev/2004-December/002307.html
+
+- The remote procedure call module rpc.py can now access data attributes of
+  remote registered objects.  Changes to these attributes are local, however.
 
 What's New in IDLE 1.1?
 =======================
@@ -118,7 +325,7 @@ What's New in IDLE 1.1a3?
   window raising, especially in the Windows menu and in the debugger.
   IDLEfork 763524.
 
-- If user passes a non-existant filename on the commandline, just
+- If user passes a non-existent filename on the commandline, just
   open a new file, don't raise a dialog.  IDLEfork 854928.
 
 
@@ -157,12 +364,12 @@ What's New in IDLE 1.1a1?
 - If nulls somehow got into the strings in recent-files.lst
   EditorWindow.update_recent_files_list() was failing.  Python Bug 931336.
 
-- If the normal background is changed via Configure/Highlighting, it will update
-  immediately, thanks to the previously mentioned patch by Nigel Rowe.
+- If the normal background is changed via Configure/Highlighting, it will
+  update immediately, thanks to the previously mentioned patch by Nigel Rowe.
 
 - Add a highlight theme for builtin keywords.  Python Patch 805830 Nigel Rowe
-  This also fixed IDLEfork bug [ 693418 ] Normal text background color not refreshed
-  and Python bug [897872 ] Unknown color name on HP-UX
+  This also fixed IDLEfork bug [ 693418 ] Normal text background color not
+  refreshed and Python bug [897872 ] Unknown color name on HP-UX
 
 - rpc.py:SocketIO - Large modules were generating large pickles when downloaded
   to the execution server.  The return of the OK response from the subprocess
@@ -204,7 +411,7 @@ What's New in IDLE 1.0?
 
 *Release date: 29-Jul-2003*
 
-- Added a banner to the shell discussimg warnings possibly raised by personal
+- Added a banner to the shell discussing warnings possibly raised by personal
   firewall software.  Added same comment to README.txt.
 
 

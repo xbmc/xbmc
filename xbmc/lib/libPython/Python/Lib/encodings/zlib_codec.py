@@ -50,6 +50,38 @@ class Codec(codecs.Codec):
     def decode(self, input, errors='strict'):
         return zlib_decode(input, errors)
 
+class IncrementalEncoder(codecs.IncrementalEncoder):
+    def __init__(self, errors='strict'):
+        assert errors == 'strict'
+        self.errors = errors
+        self.compressobj = zlib.compressobj()
+
+    def encode(self, input, final=False):
+        if final:
+            c = self.compressobj.compress(input)
+            return c + self.compressobj.flush()
+        else:
+            return self.compressobj.compress(input)
+
+    def reset(self):
+        self.compressobj = zlib.compressobj()
+
+class IncrementalDecoder(codecs.IncrementalDecoder):
+    def __init__(self, errors='strict'):
+        assert errors == 'strict'
+        self.errors = errors
+        self.decompressobj = zlib.decompressobj()
+
+    def decode(self, input, final=False):
+        if final:
+            c = self.decompressobj.decompress(input)
+            return c + self.decompressobj.flush()
+        else:
+            return self.decompressobj.decompress(input)
+
+    def reset(self):
+        self.decompressobj = zlib.decompressobj()
+
 class StreamWriter(Codec,codecs.StreamWriter):
     pass
 
@@ -59,5 +91,12 @@ class StreamReader(Codec,codecs.StreamReader):
 ### encodings module API
 
 def getregentry():
-
-    return (zlib_encode,zlib_decode,StreamReader,StreamWriter)
+    return codecs.CodecInfo(
+        name='zlib',
+        encode=zlib_encode,
+        decode=zlib_decode,
+        incrementalencoder=IncrementalEncoder,
+        incrementaldecoder=IncrementalDecoder,
+        streamreader=StreamReader,
+        streamwriter=StreamWriter,
+    )

@@ -1,13 +1,21 @@
 @rem Fetches (and builds if necessary) external dependencies
 
 @rem Assume we start inside the Python source directory
-cd ..
+call "Tools\buildbot\external-common.bat"
+call "%VS90COMNTOOLS%\vsvars32.bat"
 
-@rem bzip
-if not exist bzip2-1.0.3 svn export http://svn.python.org/projects/external/bzip2-1.0.3
+if not exist tcltk\bin\tcl85g.dll (
+    @rem all and install need to be separate invocations, otherwise nmakehlp is not found on install
+    cd tcl-8.5.2.1\win
+    nmake -f makefile.vc COMPILERFLAGS=-DWINVER=0x0500 DEBUG=1 INSTALLDIR=..\..\tcltk clean all 
+    nmake -f makefile.vc DEBUG=1 INSTALLDIR=..\..\tcltk install
+    cd ..\..
+)
 
-@rem OpenSSL
-if exist openssl-0.9.7d rd /s/q openssl-0.9.7d
-if exist openssl-0.9.8a rd /s/q openssl-0.9.8a
-if not exist openssl-0.9.7l svn export http://svn.python.org/projects/external/openssl-0.9.7l
-
+if not exist tcltk\bin\tk85g.dll (
+    cd tk-8.5.2.0\win    
+    nmake -f makefile.vc COMPILERFLAGS=-DWINVER=0x0500 OPTS=noxp DEBUG=1 INSTALLDIR=..\..\tcltk TCLDIR=..\..\tcl-8.5.2.1 clean
+    nmake -f makefile.vc COMPILERFLAGS=-DWINVER=0x0500 OPTS=noxp DEBUG=1 INSTALLDIR=..\..\tcltk TCLDIR=..\..\tcl-8.5.2.1 all
+    nmake -f makefile.vc COMPILERFLAGS=-DWINVER=0x0500 OPTS=noxp DEBUG=1 INSTALLDIR=..\..\tcltk TCLDIR=..\..\tcl-8.5.2.1 install
+    cd ..\..
+)

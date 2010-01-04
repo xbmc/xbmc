@@ -3,7 +3,7 @@
 
 #include "Python.h"
 
-
+#ifndef __LP64__
 
 #include "pymactoolbox.h"
 
@@ -36,7 +36,7 @@ extern int _WinObj_Convert(PyObject *, WindowRef *);
 static void
 PyMac_AutoDisposeWindow(WindowPtr w)
 {
-	DisposeWindow(w);
+        DisposeWindow(w);
 }
 
 static PyObject *Win_Error;
@@ -69,6 +69,7 @@ PyObject *WinObj_New(WindowPtr itself)
 	}
 	return (PyObject *)it;
 }
+
 int WinObj_Convert(PyObject *v, WindowPtr *p_itself)
 {
 
@@ -2309,13 +2310,13 @@ static PyObject *WinObj_AutoDispose(WindowObject *_self, PyObject *_args)
 
 	int onoff, old = 0;
 	if (!PyArg_ParseTuple(_args, "i", &onoff))
-		return NULL;
+	        return NULL;
 	if ( _self->ob_freeit )
-		old = 1;
+	        old = 1;
 	if ( onoff )
-		_self->ob_freeit = PyMac_AutoDisposeWindow;
+	        _self->ob_freeit = PyMac_AutoDisposeWindow;
 	else
-		_self->ob_freeit = NULL;
+	        _self->ob_freeit = NULL;
 	_res = Py_BuildValue("i", old);
 	return _res;
 
@@ -2590,16 +2591,16 @@ static int WinObj_hash(WindowObject *self)
 
 #define WinObj_tp_alloc PyType_GenericAlloc
 
-static PyObject *WinObj_tp_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+static PyObject *WinObj_tp_new(PyTypeObject *type, PyObject *_args, PyObject *_kwds)
 {
-	PyObject *self;
+	PyObject *_self;
 	WindowPtr itself;
 	char *kw[] = {"itself", 0};
 
-	if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&", kw, WinObj_Convert, &itself)) return NULL;
-	if ((self = type->tp_alloc(type, 0)) == NULL) return NULL;
-	((WindowObject *)self)->ob_itself = itself;
-	return self;
+	if (!PyArg_ParseTupleAndKeywords(_args, _kwds, "O&", kw, WinObj_Convert, &itself)) return NULL;
+	if ((_self = type->tp_alloc(type, 0)) == NULL) return NULL;
+	((WindowObject *)_self)->ob_itself = itself;
+	return _self;
 }
 
 #define WinObj_tp_free PyObject_Del
@@ -3121,7 +3122,7 @@ static PyObject *Win_WhichWindow(PyObject *_self, PyObject *_args)
 	long ptr;
 
 	if ( !PyArg_ParseTuple(_args, "i", &ptr) )
-		return NULL;
+	        return NULL;
 	_res = WinObj_WhichWindow((WindowPtr)ptr);
 	return _res;
 
@@ -3146,8 +3147,10 @@ static PyObject *Win_FindWindow(PyObject *_self, PyObject *_args)
 	                     WinObj_WhichWindow, theWindow);
 	return _res;
 }
+#endif /* __LP64__ */
 
 static PyMethodDef Win_methods[] = {
+#ifndef __LP64__
 	{"GetNewCWindow", (PyCFunction)Win_GetNewCWindow, 1,
 	 PyDoc_STR("(short windowID, WindowPtr behind) -> (WindowPtr _rv)")},
 	{"NewWindow", (PyCFunction)Win_NewWindow, 1,
@@ -3199,46 +3202,50 @@ static PyMethodDef Win_methods[] = {
 	{"FindWindow", (PyCFunction)Win_FindWindow, 1,
 	 PyDoc_STR("(Point thePoint) -> (short _rv, WindowPtr theWindow)")},
 	{NULL, NULL, 0}
+#endif /* __LP64__ */
 };
 
 
 
+#ifndef __LP64__
 /* Return the object corresponding to the window, or NULL */
 
 PyObject *
 WinObj_WhichWindow(WindowPtr w)
 {
-	PyObject *it;
-	
-	if (w == NULL) {
-		it = Py_None;
-		Py_INCREF(it);
-	} else {
-		it = (PyObject *) GetWRefCon(w);
-		if (it == NULL || !IsPointerValid((Ptr)it) || ((WindowObject *)it)->ob_itself != w || !WinObj_Check(it)) {
-			it = WinObj_New(w);
-			((WindowObject *)it)->ob_freeit = NULL;
-		} else {
-			Py_INCREF(it);
-		}
-	}
-	return it;
+        PyObject *it;
+
+        if (w == NULL) {
+                it = Py_None;
+                Py_INCREF(it);
+        } else {
+                it = (PyObject *) GetWRefCon(w);
+                if (it == NULL || !IsPointerValid((Ptr)it) || ((WindowObject *)it)->ob_itself != w || !WinObj_Check(it)) {
+                        it = WinObj_New(w);
+                        ((WindowObject *)it)->ob_freeit = NULL;
+                } else {
+                        Py_INCREF(it);
+                }
+        }
+        return it;
 }
 
+#endif /* __LP64__ */
 
 void init_Win(void)
 {
 	PyObject *m;
+#ifndef __LP64__
 	PyObject *d;
 
+	PyMac_INIT_TOOLBOX_OBJECT_NEW(WindowPtr, WinObj_New);
+	PyMac_INIT_TOOLBOX_OBJECT_NEW(WindowPtr, WinObj_WhichWindow);
+	PyMac_INIT_TOOLBOX_OBJECT_CONVERT(WindowPtr, WinObj_Convert);
 
-
-		PyMac_INIT_TOOLBOX_OBJECT_NEW(WindowPtr, WinObj_New);
-		PyMac_INIT_TOOLBOX_OBJECT_NEW(WindowPtr, WinObj_WhichWindow);
-		PyMac_INIT_TOOLBOX_OBJECT_CONVERT(WindowPtr, WinObj_Convert);
-
+#endif /* __LP64__ */
 
 	m = Py_InitModule("_Win", Win_methods);
+#ifndef __LP64__
 	d = PyModule_GetDict(m);
 	Win_Error = PyMac_GetOSErrException();
 	if (Win_Error == NULL ||
@@ -3251,6 +3258,7 @@ void init_Win(void)
 	/* Backward-compatible name */
 	Py_INCREF(&Window_Type);
 	PyModule_AddObject(m, "WindowType", (PyObject *)&Window_Type);
+#endif /* __LP64__ */
 }
 
 /* ======================== End module _Win ========================= */

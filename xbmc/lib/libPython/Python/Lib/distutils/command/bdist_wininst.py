@@ -5,7 +5,7 @@ exe-program."""
 
 # This module should be kept compatible with Python 2.1.
 
-__revision__ = "$Id: bdist_wininst.py 37828 2004-11-10 22:23:15Z loewis $"
+__revision__ = "$Id: bdist_wininst.py 71422 2009-04-09 22:48:19Z tarek.ziade $"
 
 import sys, os, string
 from distutils.core import Command
@@ -21,6 +21,9 @@ class bdist_wininst (Command):
 
     user_options = [('bdist-dir=', None,
                      "temporary directory for creating the distribution"),
+                    ('plat-name=', 'p',
+                     "platform name to embed in generated filenames "
+                     "(default: %s)" % get_platform()),
                     ('keep-temp', 'k',
                      "keep the pseudo-installation tree around after " +
                      "creating the distribution archive"),
@@ -47,6 +50,10 @@ class bdist_wininst (Command):
                      "Fully qualified filename of a script to be run before "
                      "any files are installed.  This script need not be in the "
                      "distribution"),
+                    ('user-access-control=', None,
+                     "specify Vista's UAC handling - 'none'/default=no "
+                     "handling, 'auto'=use UAC if target Python installed for "
+                     "all users, 'force'=always use UAC"),
                    ]
 
     boolean_options = ['keep-temp', 'no-target-compile', 'no-target-optimize',
@@ -54,6 +61,7 @@ class bdist_wininst (Command):
 
     def initialize_options (self):
         self.bdist_dir = None
+        self.plat_name = None
         self.keep_temp = 0
         self.no_target_compile = 0
         self.no_target_optimize = 0
@@ -64,12 +72,19 @@ class bdist_wininst (Command):
         self.skip_build = 0
         self.install_script = None
         self.pre_install_script = None
+        self.user_access_control = None
 
     # initialize_options()
 
 
     def finalize_options (self):
         if self.bdist_dir is None:
+            if self.skip_build and self.plat_name:
+                # If build is skipped and plat_name is overridden, bdist will
+                # not see the correct 'plat_name' - so set that up manually.
+                bdist = self.distribution.get_command_obj('bdist')
+                bdist.plat_name = self.plat_name
+                # next the command will be initialized using that name
             bdist_base = self.get_finalized_command('bdist').bdist_base
             self.bdist_dir = os.path.join(bdist_base, 'wininst')
         if not self.target_version:
@@ -82,7 +97,10 @@ class bdist_wininst (Command):
                       " option must be specified" % (short_version,)
             self.target_version = short_version
 
-        self.set_undefined_options('bdist', ('dist_dir', 'dist_dir'))
+        self.set_undefined_options('bdist',
+                                   ('dist_dir', 'dist_dir'),
+                                   ('plat_name', 'plat_name'),
+                                  )
 
         if self.install_script:
             for script in self.distribution.scripts:
@@ -110,6 +128,7 @@ class bdist_wininst (Command):
         install.root = self.bdist_dir
         install.skip_build = self.skip_build
         install.warn_dir = 0
+        install.plat_name = self.plat_name
 
         install_lib = self.reinitialize_command('install_lib')
         # we do not want to include pyc or pyo files
@@ -127,7 +146,7 @@ class bdist_wininst (Command):
             if not target_version:
                 assert self.skip_build, "Should have already checked this"
                 target_version = sys.version[0:3]
-            plat_specifier = ".%s-%s" % (get_platform(), target_version)
+            plat_specifier = ".%s-%s" % (self.plat_name, target_version)
             build = self.get_finalized_command('build')
             build.build_lib = os.path.join(build.build_base,
                                            'lib' + plat_specifier)
@@ -162,6 +181,12 @@ class bdist_wininst (Command):
                                     root_dir=self.bdist_dir)
         # create an exe containing the zip-file
         self.create_exe(arcname, fullname, self.bitmap)
+        if self.distribution.has_ext_modules():
+            pyversion = get_python_version()
+        else:
+            pyversion = 'any'
+        self.distribution.dist_files.append(('bdist_wininst', pyversion,
+                                             self.get_installer_filename(fullname)))
         # remove the zip-file again
         log.debug("removing temporary file '%s'", arcname)
         os.remove(arcname)
@@ -206,6 +231,8 @@ class bdist_wininst (Command):
         lines.append("target_optimize=%d" % (not self.no_target_optimize))
         if self.target_version:
             lines.append("target_version=%s" % self.target_version)
+        if self.user_access_control:
+            lines.append("user_access_control=%s" % self.user_access_control)
 
         title = self.title or self.distribution.get_fullname()
         lines.append("title=%s" % escape(title))
@@ -279,11 +306,11 @@ class bdist_wininst (Command):
             # if we create an installer for a specific python version,
             # it's better to include this in the name
             installer_name = os.path.join(self.dist_dir,
-                                          "%s.win32-py%s.exe" %
-                                           (fullname, self.target_version))
+                                          "%s.%s-py%s.exe" %
+                                           (fullname, self.plat_name, self.target_version))
         else:
             installer_name = os.path.join(self.dist_dir,
-                                          "%s.win32.exe" % fullname)
+                                          "%s.%s.exe" % (fullname, self.plat_name))
         return installer_name
     # get_installer_filename()
 
@@ -306,9 +333,9 @@ class bdist_wininst (Command):
                 bv = get_build_version()
             else:
                 if self.target_version < "2.4":
-                    bv = "6"
+                    bv = 6.0
                 else:
-                    bv = "7.1"
+                    bv = 7.1
         else:
             # for current version - use authoritative check.
             bv = get_build_version()
@@ -317,6 +344,15 @@ class bdist_wininst (Command):
         directory = os.path.dirname(__file__)
         # we must use a wininst-x.y.exe built with the same C compiler
         # used for python.  XXX What about mingw, borland, and so on?
-        filename = os.path.join(directory, "wininst-%s.exe" % bv)
+
+        # if plat_name starts with "win" but is not "win32"
+        # we want to strip "win" and leave the rest (e.g. -amd64)
+        # for all other cases, we don't want any suffix
+        if self.plat_name != 'win32' and self.plat_name[:3] == 'win':
+            sfix = self.plat_name[3:]
+        else:
+            sfix = ''
+
+        filename = os.path.join(directory, "wininst-%.1f%s.exe" % (bv, sfix))
         return open(filename, "rb").read()
 # class bdist_wininst

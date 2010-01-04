@@ -2,6 +2,9 @@
 
 DEBUG=0
 
+from warnings import warnpy3k
+warnpy3k("In 3.x, the FrameWork module is removed.", stacklevel=2)
+
 import MacOS
 import traceback
 
@@ -92,7 +95,7 @@ _watch = None
 def setwatchcursor():
     global _watch
 
-    if _watch == None:
+    if _watch is None:
         _watch = GetCursor(4).data
     SetCursor(_watch)
 
@@ -129,7 +132,7 @@ class Application:
         self._quititem = MenuItem(m, "Quit", "Q", self._quit)
 
     def gethelpmenu(self):
-        if self._helpmenu == None:
+        if self._helpmenu is None:
             self._helpmenu = HelpMenu(self.menubar)
         return self._helpmenu
 
@@ -266,7 +269,7 @@ class Application:
         else:
             name = "do_%d" % partcode
 
-        if wid == None:
+        if wid is None:
             # No window, or a non-python window
             try:
                 handler = getattr(self, name)
@@ -475,7 +478,7 @@ class MenuBar:
         self.menus = None
 
     def addmenu(self, title, after = 0, id=None):
-        if id == None:
+        if id is None:
             id = self.getnextid()
         if DEBUG: print 'Newmenu', title, id # XXXX
         m = NewMenu(id, title)
@@ -907,8 +910,8 @@ class ScrolledWindow(ControlsWindow):
         self.barx_enabled = self.bary_enabled = 1
         x0, y0, x1, y1 = self.wid.GetWindowPort().GetPortBounds()
         vx, vy = self.getscrollbarvalues()
-        if vx == None: self.barx_enabled, vx = 0, 0
-        if vy == None: self.bary_enabled, vy = 0, 0
+        if vx is None: self.barx_enabled, vx = 0, 0
+        if vy is None: self.bary_enabled, vy = 0, 0
         if wantx:
             rect = x0-1, y1-(SCROLLBARWIDTH-1), x1-(SCROLLBARWIDTH-2), y1+1
             self.barx = NewControl(self.wid, rect, "", 1, vx, 0, 32767, 16, 0)
@@ -1007,7 +1010,7 @@ class ScrolledWindow(ControlsWindow):
         SetPort(self.wid)
         vx, vy = self.getscrollbarvalues()
         if self.barx:
-            if vx == None:
+            if vx is None:
                 self.barx.HiliteControl(255)
                 self.barx_enabled = 0
             else:
@@ -1017,7 +1020,7 @@ class ScrolledWindow(ControlsWindow):
                         self.barx.HiliteControl(0)
                 self.barx.SetControlValue(vx)
         if self.bary:
-            if vy == None:
+            if vy is None:
                 self.bary.HiliteControl(255)
                 self.bary_enabled = 0
             else:

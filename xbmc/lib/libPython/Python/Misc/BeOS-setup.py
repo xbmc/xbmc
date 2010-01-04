@@ -4,7 +4,7 @@
 
 __version__ = "special BeOS after 1.37"
 
-import sys, os, getopt
+import sys, os
 from distutils import sysconfig
 from distutils import text_file
 from distutils.errors import *
@@ -176,8 +176,6 @@ class PyBuildExt(build_ext):
         #
 
         # Some modules that are normally always on:
-        exts.append( Extension('regex', ['regexmodule.c', 'regexpr.c']) )
-
         exts.append( Extension('_weakref', ['_weakref.c']) )
         exts.append( Extension('_symtable', ['symtablemodule.c']) )
 

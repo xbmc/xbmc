@@ -4,10 +4,13 @@ csv.py - read/write/investigate CSV files
 """
 
 import re
+from functools import reduce
 from _csv import Error, __version__, writer, reader, register_dialect, \
                  unregister_dialect, get_dialect, list_dialects, \
+                 field_size_limit, \
                  QUOTE_MINIMAL, QUOTE_ALL, QUOTE_NONNUMERIC, QUOTE_NONE, \
                  __doc__
+from _csv import Dialect as _Dialect
 
 try:
     from cStringIO import StringIO
@@ -15,11 +18,19 @@ except ImportError:
     from StringIO import StringIO
 
 __all__ = [ "QUOTE_MINIMAL", "QUOTE_ALL", "QUOTE_NONNUMERIC", "QUOTE_NONE",
-            "Error", "Dialect", "excel", "excel_tab", "reader", "writer",
+            "Error", "Dialect", "__doc__", "excel", "excel_tab",
+            "field_size_limit", "reader", "writer",
             "register_dialect", "get_dialect", "list_dialects", "Sniffer",
             "unregister_dialect", "__version__", "DictReader", "DictWriter" ]
 
 class Dialect:
+    """Describe an Excel dialect.
+
+    This must be subclassed (see csv.excel).  Valid attributes are:
+    delimiter, quotechar, escapechar, doublequote, skipinitialspace,
+    lineterminator, quoting.
+
+    """
     _name = ""
     _valid = False
     # placeholders
@@ -34,50 +45,17 @@ class Dialect:
     def __init__(self):
         if self.__class__ != Dialect:
             self._valid = True
-        errors = self._validate()
-        if errors != []:
-            raise Error, "Dialect did not validate: %s" % ", ".join(errors)
+        self._validate()
 
     def _validate(self):
-        errors = []
-        if not self._valid:
-            errors.append("can't directly instantiate Dialect class")
-
-        if self.delimiter is None:
-            errors.append("delimiter character not set")
-        elif (not isinstance(self.delimiter, str) or
-              len(self.delimiter) > 1):
-            errors.append("delimiter must be one-character string")
-
-        if self.quotechar is None:
-            if self.quoting != QUOTE_NONE:
-                errors.append("quotechar not set")
-        elif (not isinstance(self.quotechar, str) or
-              len(self.quotechar) > 1):
-            errors.append("quotechar must be one-character string")
-
-        if self.lineterminator is None:
-            errors.append("lineterminator not set")
-        elif not isinstance(self.lineterminator, str):
-            errors.append("lineterminator must be a string")
-
-        if self.doublequote not in (True, False):
-            errors.append("doublequote parameter must be True or False")
-
-        if self.skipinitialspace not in (True, False):
-            errors.append("skipinitialspace parameter must be True or False")
-
-        if self.quoting is None:
-            errors.append("quoting parameter not set")
-
-        if self.quoting is QUOTE_NONE:
-            if (not isinstance(self.escapechar, (unicode, str)) or
-                len(self.escapechar) > 1):
-                errors.append("escapechar must be a one-character string or unicode object")
-
-        return errors
+        try:
+            _Dialect(self)
+        except TypeError, e:
+            # We do this for compatibility with py2.3
+            raise Error(str(e))
 
 class excel(Dialect):
+    """Describe the usual properties of Excel-generated CSV files."""
     delimiter = ','
     quotechar = '"'
     doublequote = True
@@ -87,6 +65,7 @@ class excel(Dialect):
 register_dialect("excel", excel)
 
 class excel_tab(excel):
+    """Describe the usual properties of Excel-generated TAB-delimited files."""
     delimiter = '\t'
 register_dialect("excel-tab", excel_tab)
 
@@ -94,19 +73,36 @@ register_dialect("excel-tab", excel_tab)
 class DictReader:
     def __init__(self, f, fieldnames=None, restkey=None, restval=None,
                  dialect="excel", *args, **kwds):
-        self.fieldnames = fieldnames    # list of keys for the dict
+        self._fieldnames = fieldnames   # list of keys for the dict
         self.restkey = restkey          # key to catch long rows
         self.restval = restval          # default value for short rows
         self.reader = reader(f, dialect, *args, **kwds)
+        self.dialect = dialect
+        self.line_num = 0
 
     def __iter__(self):
         return self
 
+    @property
+    def fieldnames(self):
+        if self._fieldnames is None:
+            try:
+                self._fieldnames = self.reader.next()
+            except StopIteration:
+                pass
+        self.line_num = self.reader.line_num
+        return self._fieldnames
+
+    @fieldnames.setter
+    def fieldnames(self, value):
+        self._fieldnames = value
+
     def next(self):
+        if self.line_num == 0:
+            # Used only for its side effect.
+            self.fieldnames
         row = self.reader.next()
-        if self.fieldnames is None:
-            self.fieldnames = row
-            row = self.reader.next()
+        self.line_num = self.reader.line_num
 
         # unlike the basic reader, we prefer not to return blanks,
         # because we will typically wind up with a dict full of None
@@ -138,9 +134,10 @@ class DictWriter:
 
     def _dict_to_list(self, rowdict):
         if self.extrasaction == "raise":
-            for k in rowdict.keys():
-                if k not in self.fieldnames:
-                    raise ValueError, "dict contains fields not in fieldnames"
+            wrong_fields = [k for k in rowdict if k not in self.fieldnames]
+            if wrong_fields:
+                raise ValueError("dict contains fields not in fieldnames: " +
+                                 ", ".join(wrong_fields))
         return [rowdict.get(key, self.restval) for key in self.fieldnames]
 
     def writerow(self, rowdict):
@@ -175,9 +172,12 @@ class Sniffer:
 
         quotechar, delimiter, skipinitialspace = \
                    self._guess_quote_and_delimiter(sample, delimiters)
-        if delimiter is None:
+        if not delimiter:
             delimiter, skipinitialspace = self._guess_delimiter(sample,
                                                                 delimiters)
+
+        if not delimiter:
+            raise Error, "Could not determine delimiter"
 
         class dialect(Dialect):
             _name = "sniffed"
@@ -352,8 +352,12 @@ class Sniffer:
                                         data[0].count("%c " % d))
                     return (d, skipinitialspace)
 
-        # finally, just return the first damn character in the list
-        delim = delims.keys()[0]
+        # nothing else indicates a preference, pick the character that
+        # dominates(?)
+        items = [(v,k) for (k,v) in delims.items()]
+        items.sort()
+        delim = items[-1][1]
+
         skipinitialspace = (data[0].count(delim) ==
                             data[0].count("%c " % delim))
         return (delim, skipinitialspace)

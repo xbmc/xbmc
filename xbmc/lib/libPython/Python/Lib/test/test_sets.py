@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+import warnings
+warnings.filterwarnings("ignore", "the sets module is deprecated",
+                        DeprecationWarning, "test\.test_sets")
+
 import unittest, operator, copy, pickle, random
 from sets import Set, ImmutableSet
 from test import test_support
@@ -819,7 +823,8 @@ Set(['Jack', 'Jane', 'Janice', 'John', 'Marvin', 'Sam', 'Zack'])
 __test__ = {'libreftest' : libreftest}
 
 def test_main(verbose=None):
-    import test_sets, doctest
+    import doctest
+    from test import test_sets
     test_support.run_unittest(
         TestSetOfSets,
         TestExceptionPropagation,

@@ -3,7 +3,10 @@
 
 #include "Python.h"
 
+#define FLAG_SIZE_T 1
 typedef double va_double;
+
+static PyObject *va_build_value(const char *, va_list, int);
 
 /* Package context -- the full module name for package imports */
 char *_Py_PackageContext = NULL;
@@ -26,7 +29,7 @@ static char api_version_warning[] =
  This Python has API version %d, module %.100s has version %d.";
 
 PyObject *
-Py_InitModule4(char *name, PyMethodDef *methods, char *doc,
+Py_InitModule4(const char *name, PyMethodDef *methods, const char *doc,
 	       PyObject *passthrough, int module_api_version)
 {
 	PyObject *m, *d, *v, *n;
@@ -103,7 +106,7 @@ Py_InitModule4(char *name, PyMethodDef *methods, char *doc,
 /* Helper for mkvalue() to scan the length of a format */
 
 static int
-countformat(char *format, int endchar)
+countformat(const char *format, int endchar)
 {
 	int count = 0;
 	int level = 0;
@@ -146,14 +149,14 @@ countformat(char *format, int endchar)
 /* Generic function to create a value -- the inverse of getargs() */
 /* After an original idea and first implementation by Steven Miale */
 
-static PyObject *do_mktuple(char**, va_list *, int, int);
-static PyObject *do_mklist(char**, va_list *, int, int);
-static PyObject *do_mkdict(char**, va_list *, int, int);
-static PyObject *do_mkvalue(char**, va_list *);
+static PyObject *do_mktuple(const char**, va_list *, int, int, int);
+static PyObject *do_mklist(const char**, va_list *, int, int, int);
+static PyObject *do_mkdict(const char**, va_list *, int, int, int);
+static PyObject *do_mkvalue(const char**, va_list *, int);
 
 
 static PyObject *
-do_mkdict(char **p_format, va_list *p_va, int endchar, int n)
+do_mkdict(const char **p_format, va_list *p_va, int endchar, int n, int flags)
 {
 	PyObject *d;
 	int i;
@@ -167,13 +170,13 @@ do_mkdict(char **p_format, va_list *p_va, int endchar, int n)
 	for (i = 0; i < n; i+= 2) {
 		PyObject *k, *v;
 		int err;
-		k = do_mkvalue(p_format, p_va);
+		k = do_mkvalue(p_format, p_va, flags);
 		if (k == NULL) {
 			itemfailed = 1;
 			Py_INCREF(Py_None);
 			k = Py_None;
 		}
-		v = do_mkvalue(p_format, p_va);
+		v = do_mkvalue(p_format, p_va, flags);
 		if (v == NULL) {
 			itemfailed = 1;
 			Py_INCREF(Py_None);
@@ -199,38 +202,41 @@ do_mkdict(char **p_format, va_list *p_va, int endchar, int n)
 }
 
 static PyObject *
-do_mklist(char **p_format, va_list *p_va, int endchar, int n)
+do_mklist(const char **p_format, va_list *p_va, int endchar, int n, int flags)
 {
 	PyObject *v;
 	int i;
 	int itemfailed = 0;
 	if (n < 0)
 		return NULL;
-	if ((v = PyList_New(n)) == NULL)
+	v = PyList_New(n);
+	if (v == NULL)
 		return NULL;
 	/* Note that we can't bail immediately on error as this will leak
 	   refcounts on any 'N' arguments. */
 	for (i = 0; i < n; i++) {
-		PyObject *w = do_mkvalue(p_format, p_va);
+		PyObject *w = do_mkvalue(p_format, p_va, flags);
 		if (w == NULL) {
 			itemfailed = 1;
 			Py_INCREF(Py_None);
 			w = Py_None;
 		}
-		PyList_SetItem(v, i, w);
+		PyList_SET_ITEM(v, i, w);
 	}
-	if (v != NULL && **p_format != endchar) {
+
+	if (itemfailed) {
+		/* do_mkvalue() should have already set an error */
 		Py_DECREF(v);
-		v = NULL;
+		return NULL;
+	}
+	if (**p_format != endchar) {
+		Py_DECREF(v);
 		PyErr_SetString(PyExc_SystemError,
 				"Unmatched paren in format");
+		return NULL;
 	}
-	else if (endchar)
+	if (endchar)
 		++*p_format;
-	if (itemfailed) {
-		Py_DECREF(v);
-		v = NULL;
-	}
 	return v;
 }
 
@@ -246,7 +252,7 @@ _ustrlen(Py_UNICODE *u)
 #endif
 
 static PyObject *
-do_mktuple(char **p_format, va_list *p_va, int endchar, int n)
+do_mktuple(const char **p_format, va_list *p_va, int endchar, int n, int flags)
 {
 	PyObject *v;
 	int i;
@@ -258,45 +264,46 @@ do_mktuple(char **p_format, va_list *p_va, int endchar, int n)
 	/* Note that we can't bail immediately on error as this will leak
 	   refcounts on any 'N' arguments. */
 	for (i = 0; i < n; i++) {
-		PyObject *w = do_mkvalue(p_format, p_va);
+		PyObject *w = do_mkvalue(p_format, p_va, flags);
 		if (w == NULL) {
 			itemfailed = 1;
 			Py_INCREF(Py_None);
 			w = Py_None;
 		}
-		PyTuple_SetItem(v, i, w);
+		PyTuple_SET_ITEM(v, i, w);
 	}
-	if (v != NULL && **p_format != endchar) {
+	if (itemfailed) {
+		/* do_mkvalue() should have already set an error */
 		Py_DECREF(v);
-		v = NULL;
+		return NULL;
+	}
+	if (**p_format != endchar) {
+		Py_DECREF(v);
 		PyErr_SetString(PyExc_SystemError,
 				"Unmatched paren in format");
+		return NULL;
 	}
-	else if (endchar)
+	if (endchar)
 		++*p_format;
-	if (itemfailed) {
-		Py_DECREF(v);
-		v = NULL;
-	}
 	return v;
 }
 
 static PyObject *
-do_mkvalue(char **p_format, va_list *p_va)
+do_mkvalue(const char **p_format, va_list *p_va, int flags)
 {
 	for (;;) {
 		switch (*(*p_format)++) {
 		case '(':
 			return do_mktuple(p_format, p_va, ')',
-					  countformat(*p_format, ')'));
+					  countformat(*p_format, ')'), flags);
 
 		case '[':
 			return do_mklist(p_format, p_va, ']',
-					 countformat(*p_format, ']'));
+					 countformat(*p_format, ']'), flags);
 
 		case '{':
 			return do_mkdict(p_format, p_va, '}',
-					 countformat(*p_format, '}'));
+					 countformat(*p_format, '}'), flags);
 
 		case 'b':
 		case 'B':
@@ -317,6 +324,11 @@ do_mkvalue(char **p_format, va_list *p_va)
 				return PyInt_FromLong(n);
 		}
 		
+		case 'n':
+#if SIZEOF_SIZE_T!=SIZEOF_LONG
+			return PyInt_FromSsize_t(va_arg(*p_va, Py_ssize_t));
+#endif
+			/* Fall through from 'n' to 'l' if Py_ssize_t is long */
 		case 'l':
 			return PyInt_FromLong(va_arg(*p_va, long));
 
@@ -342,10 +354,13 @@ do_mkvalue(char **p_format, va_list *p_va)
 		{
 			PyObject *v;
 			Py_UNICODE *u = va_arg(*p_va, Py_UNICODE *);
-			int n;
+			Py_ssize_t n;	
 			if (**p_format == '#') {
 				++*p_format;
-				n = va_arg(*p_va, int);
+				if (flags & FLAG_SIZE_T)
+					n = va_arg(*p_va, Py_ssize_t);
+				else
+					n = va_arg(*p_va, int);
 			}
 			else
 				n = -1;
@@ -375,7 +390,7 @@ do_mkvalue(char **p_format, va_list *p_va)
 		case 'c':
 		{
 			char p[1];
-			p[0] = va_arg(*p_va, int);
+			p[0] = (char)va_arg(*p_va, int);
 			return PyString_FromStringAndSize(p, 1);
 		}
 
@@ -384,10 +399,13 @@ do_mkvalue(char **p_format, va_list *p_va)
 		{
 			PyObject *v;
 			char *str = va_arg(*p_va, char *);
-			int n;
+			Py_ssize_t n;
 			if (**p_format == '#') {
 				++*p_format;
-				n = va_arg(*p_va, int);
+				if (flags & FLAG_SIZE_T)
+					n = va_arg(*p_va, Py_ssize_t);
+				else
+					n = va_arg(*p_va, int);
 			}
 			else
 				n = -1;
@@ -398,12 +416,12 @@ do_mkvalue(char **p_format, va_list *p_va)
 			else {
 				if (n < 0) {
 					size_t m = strlen(str);
-					if (m > INT_MAX) {
+					if (m > PY_SSIZE_T_MAX) {
 						PyErr_SetString(PyExc_OverflowError,
 							"string too long for Python string");
 						return NULL;
 					}
-					n = (int)m;
+					n = (Py_ssize_t)m;
 				}
 				v = PyString_FromStringAndSize(str, n);
 			}
@@ -458,20 +476,43 @@ do_mkvalue(char **p_format, va_list *p_va)
 
 
 PyObject *
-Py_BuildValue(char *format, ...)
+Py_BuildValue(const char *format, ...)
 {
 	va_list va;
 	PyObject* retval;
 	va_start(va, format);
-	retval = Py_VaBuildValue(format, va);
+	retval = va_build_value(format, va, 0);
 	va_end(va);
 	return retval;
 }
 
 PyObject *
-Py_VaBuildValue(char *format, va_list va)
+_Py_BuildValue_SizeT(const char *format, ...)
 {
-	char *f = format;
+	va_list va;
+	PyObject* retval;
+	va_start(va, format);
+	retval = va_build_value(format, va, FLAG_SIZE_T);
+	va_end(va);
+	return retval;
+}
+
+PyObject *
+Py_VaBuildValue(const char *format, va_list va)
+{
+	return va_build_value(format, va, 0);
+}
+
+PyObject *
+_Py_VaBuildValue_SizeT(const char *format, va_list va)
+{
+	return va_build_value(format, va, FLAG_SIZE_T);
+}
+
+static PyObject *
+va_build_value(const char *format, va_list va, int flags)
+{
+	const char *f = format;
 	int n = countformat(f, '\0');
 	va_list lva;
 
@@ -492,13 +533,13 @@ Py_VaBuildValue(char *format, va_list va)
 		return Py_None;
 	}
 	if (n == 1)
-		return do_mkvalue(&f, &lva);
-	return do_mktuple(&f, &lva, '\0', n);
+		return do_mkvalue(&f, &lva, flags);
+	return do_mktuple(&f, &lva, '\0', n, flags);
 }
 
 
 PyObject *
-PyEval_CallFunction(PyObject *obj, char *format, ...)
+PyEval_CallFunction(PyObject *obj, const char *format, ...)
 {
 	va_list vargs;
 	PyObject *args;
@@ -520,7 +561,7 @@ PyEval_CallFunction(PyObject *obj, char *format, ...)
 
 
 PyObject *
-PyEval_CallMethod(PyObject *obj, char *methodname, char *format, ...)
+PyEval_CallMethod(PyObject *obj, const char *methodname, const char *format, ...)
 {
 	va_list vargs;
 	PyObject *meth;
@@ -549,7 +590,7 @@ PyEval_CallMethod(PyObject *obj, char *methodname, char *format, ...)
 }
 
 int
-PyModule_AddObject(PyObject *m, char *name, PyObject *o)
+PyModule_AddObject(PyObject *m, const char *name, PyObject *o)
 {
 	PyObject *dict;
 	if (!PyModule_Check(m)) {
@@ -578,13 +619,25 @@ PyModule_AddObject(PyObject *m, char *name, PyObject *o)
 }
 
 int 
-PyModule_AddIntConstant(PyObject *m, char *name, long value)
+PyModule_AddIntConstant(PyObject *m, const char *name, long value)
 {
-	return PyModule_AddObject(m, name, PyInt_FromLong(value));
+	PyObject *o = PyInt_FromLong(value);
+	if (!o)
+		return -1;
+	if (PyModule_AddObject(m, name, o) == 0)
+		return 0;
+	Py_DECREF(o);
+	return -1;
 }
 
 int 
-PyModule_AddStringConstant(PyObject *m, char *name, char *value)
+PyModule_AddStringConstant(PyObject *m, const char *name, const char *value)
 {
-	return PyModule_AddObject(m, name, PyString_FromString(value));
+	PyObject *o = PyString_FromString(value);
+	if (!o)
+		return -1;
+	if (PyModule_AddObject(m, name, o) == 0)
+		return 0;
+	Py_DECREF(o);
+	return -1;
 }

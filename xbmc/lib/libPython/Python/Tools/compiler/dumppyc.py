@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 
 import marshal
-import os
 import dis
 import types
 
@@ -28,7 +27,7 @@ def walk(co, match=None):
         if type(obj) == types.CodeType:
             walk(obj, match)
 
-def main(filename, codename=None):
+def load(filename, codename=None):
     co = loadCode(filename)
     walk(co, codename)
 
@@ -39,6 +38,9 @@ if __name__ == "__main__":
     else:
         filename = sys.argv[1]
         codename = None
-    if filename.endswith('.py') and os.path.exists(filename+"c"):
-        filename += "c"
-    main(filename, codename)
+    if filename.endswith('.py'):
+        buf = open(filename).read()
+        co = compile(buf, filename, "exec")
+        walk(co)
+    else:
+        load(filename, codename)

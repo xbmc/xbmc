@@ -6,6 +6,7 @@ from itertools import count
 from Tkinter import *
 import tkSimpleDialog
 import tkMessageBox
+from MultiCall import MultiCallCreator
 
 import webbrowser
 import idlever
@@ -16,9 +17,20 @@ import ReplaceDialog
 import PyParse
 from configHandler import idleConf
 import aboutDialog, textView, configDialog
+import macosxSupport
 
 # The default tab setting for a Text widget, in average-width characters.
 TK_TABWIDTH_DEFAULT = 8
+
+def _sphinx_version():
+    "Format sys.version_info to produce the Sphinx version string used to install the chm docs"
+    major, minor, micro, level, serial = sys.version_info
+    release = '%s%s' % (major, minor)
+    if micro:
+        release += '%s' % micro
+    if level != 'final':
+        release += '%s%s' % (level[0], serial)
+    return release
 
 def _find_module(fullname, path=None):
     """Version of imp.find_module() that handles hierarchical module names"""
@@ -37,11 +49,11 @@ def _find_module(fullname, path=None):
             raise ImportError, 'No source for module ' + module.__name__
     return file, filename, descr
 
-class EditorWindow:
+class EditorWindow(object):
     from Percolator import Percolator
     from ColorDelegator import ColorDelegator
     from UndoDelegator import UndoDelegator
-    from IOBinding import IOBinding
+    from IOBinding import IOBinding, filesystemencoding, encoding
     import Bindings
     from Tkinter import Toplevel
     from MultiStatusBar import MultiStatusBar
@@ -62,11 +74,11 @@ class EditorWindow:
                                            'Doc', 'index.html')
             elif sys.platform[:3] == 'win':
                 chmfile = os.path.join(sys.prefix, 'Doc',
-                                       'Python%d%d.chm' % sys.version_info[:2])
+                                       'Python%s.chm' % _sphinx_version())
                 if os.path.isfile(chmfile):
                     dochome = chmfile
-
-            elif sys.platform == 'darwin':
+            elif macosxSupport.runningAsOSXApp():
+                # documentation is stored inside the python framework
                 dochome = os.path.join(sys.prefix,
                         'Resources/English.lproj/Documentation/index.html')
             dochome = os.path.normpath(dochome)
@@ -76,39 +88,43 @@ class EditorWindow:
                     # Safari requires real file:-URLs
                     EditorWindow.help_url = 'file://' + EditorWindow.help_url
             else:
-                EditorWindow.help_url = "http://www.python.org/doc/current"
+                EditorWindow.help_url = "http://docs.python.org/%d.%d" % sys.version_info[:2]
         currentTheme=idleConf.CurrentTheme()
         self.flist = flist
         root = root or flist.root
         self.root = root
+        try:
+            sys.ps1
+        except AttributeError:
+            sys.ps1 = '>>> '
         self.menubar = Menu(root)
         self.top = top = WindowList.ListedToplevel(root, menu=self.menubar)
         if flist:
             self.tkinter_vars = flist.vars
             #self.top.instance_dict makes flist.inversedict avalable to
             #configDialog.py so it can access all EditorWindow instaces
-            self.top.instance_dict=flist.inversedict
+            self.top.instance_dict = flist.inversedict
         else:
             self.tkinter_vars = {}  # keys: Tkinter event names
                                     # values: Tkinter variable instances
-        self.recent_files_path=os.path.join(idleConf.GetUserCfgDir(),
+            self.top.instance_dict = {}
+        self.recent_files_path = os.path.join(idleConf.GetUserCfgDir(),
                 'recent-files.lst')
-        self.vbar = vbar = Scrollbar(top, name='vbar')
         self.text_frame = text_frame = Frame(top)
+        self.vbar = vbar = Scrollbar(text_frame, name='vbar')
         self.width = idleConf.GetOption('main','EditorWindow','width')
-        self.text = text = Text(text_frame, name='text', padx=5, wrap='none',
-                foreground=idleConf.GetHighlight(currentTheme,
-                        'normal',fgBg='fg'),
-                background=idleConf.GetHighlight(currentTheme,
-                        'normal',fgBg='bg'),
-                highlightcolor=idleConf.GetHighlight(currentTheme,
-                        'hilite',fgBg='fg'),
-                highlightbackground=idleConf.GetHighlight(currentTheme,
-                        'hilite',fgBg='bg'),
-                insertbackground=idleConf.GetHighlight(currentTheme,
-                        'cursor',fgBg='fg'),
-                width=self.width,
-                height=idleConf.GetOption('main','EditorWindow','height') )
+        text_options = {
+                'name': 'text',
+                'padx': 5,
+                'wrap': 'none',
+                'width': self.width,
+                'height': idleConf.GetOption('main', 'EditorWindow', 'height')}
+        if TkVersion >= 8.5:
+            # Starting with tk 8.5 we have to set the new tabstyle option
+            # to 'wordprocessor' to achieve the same display of tabs as in
+            # older tk versions.
+            text_options['tabstyle'] = 'wordprocessor'
+        self.text = text = MultiCallCreator(Text)(text_frame, **text_options)
         self.top.focused_widget = self.text
 
         self.createmenubar()
@@ -116,6 +132,9 @@ class EditorWindow:
 
         self.top.protocol("WM_DELETE_WINDOW", self.close)
         self.top.bind("<<close-window>>", self.close_event)
+        if macosxSupport.runningAsOSXApp():
+            # Command-W on editorwindows doesn't work without this.
+            text.bind('<<close-window>>', self.close_event)
         text.bind("<<cut>>", self.cut)
         text.bind("<<copy>>", self.copy)
         text.bind("<<paste>>", self.paste)
@@ -148,6 +167,9 @@ class EditorWindow:
         text.bind("<<change-indentwidth>>",self.change_indentwidth_event)
         text.bind("<Left>", self.move_at_edge_if_selection(0))
         text.bind("<Right>", self.move_at_edge_if_selection(1))
+        text.bind("<<del-word-left>>", self.del_word_left)
+        text.bind("<<del-word-right>>", self.del_word_right)
+        text.bind("<<beginning-of-line>>", self.home_callback)
 
         if flist:
             flist.inversedict[self] = key
@@ -162,22 +184,53 @@ class EditorWindow:
         vbar['command'] = text.yview
         vbar.pack(side=RIGHT, fill=Y)
         text['yscrollcommand'] = vbar.set
-        fontWeight='normal'
-        if idleConf.GetOption('main','EditorWindow','font-bold',type='bool'):
+        fontWeight = 'normal'
+        if idleConf.GetOption('main', 'EditorWindow', 'font-bold', type='bool'):
             fontWeight='bold'
-        text.config(font=(idleConf.GetOption('main','EditorWindow','font'),
-                idleConf.GetOption('main','EditorWindow','font-size'),
-                fontWeight))
+        text.config(font=(idleConf.GetOption('main', 'EditorWindow', 'font'),
+                          idleConf.GetOption('main', 'EditorWindow', 'font-size'),
+                          fontWeight))
         text_frame.pack(side=LEFT, fill=BOTH, expand=1)
         text.pack(side=TOP, fill=BOTH, expand=1)
         text.focus_set()
 
+        # usetabs true  -> literal tab characters are used by indent and
+        #                  dedent cmds, possibly mixed with spaces if
+        #                  indentwidth is not a multiple of tabwidth,
+        #                  which will cause Tabnanny to nag!
+        #         false -> tab characters are converted to spaces by indent
+        #                  and dedent cmds, and ditto TAB keystrokes
+        # Although use-spaces=0 can be configured manually in config-main.def,
+        # configuration of tabs v. spaces is not supported in the configuration
+        # dialog.  IDLE promotes the preferred Python indentation: use spaces!
+        usespaces = idleConf.GetOption('main', 'Indent', 'use-spaces', type='bool')
+        self.usetabs = not usespaces
+
+        # tabwidth is the display width of a literal tab character.
+        # CAUTION:  telling Tk to use anything other than its default
+        # tab setting causes it to use an entirely different tabbing algorithm,
+        # treating tab stops as fixed distances from the left margin.
+        # Nobody expects this, so for now tabwidth should never be changed.
+        self.tabwidth = 8    # must remain 8 until Tk is fixed.
+
+        # indentwidth is the number of screen characters per indent level.
+        # The recommended Python indentation is four spaces.
+        self.indentwidth = self.tabwidth
+        self.set_notabs_indentwidth()
+
+        # If context_use_ps1 is true, parsing searches back for a ps1 line;
+        # else searches for a popular (if, def, ...) Python stmt.
+        self.context_use_ps1 = False
+
+        # When searching backwards for a reliable place to begin parsing,
+        # first start num_context_lines[0] lines back, then
+        # num_context_lines[1] lines back if that didn't work, and so on.
+        # The last value should be huge (larger than the # of lines in a
+        # conceivable file).
+        # Making the initial values larger slows things down more often.
+        self.num_context_lines = 50, 500, 5000000
+
         self.per = per = self.Percolator(text)
-        if self.ispythonsource(filename):
-            self.color = color = self.ColorDelegator()
-            per.insertfilter(color)
-        else:
-            self.color = None
 
         self.undo = undo = self.UndoDelegator()
         per.insertfilter(undo)
@@ -196,12 +249,16 @@ class EditorWindow:
                                              menu=self.recent_files_menu)
         self.update_recent_files_list()
 
+        self.color = None # initialized below in self.ResetColorizer
         if filename:
             if os.path.exists(filename) and not os.path.isdir(filename):
                 io.loadfile(filename)
             else:
                 io.set_filename(filename)
+        self.ResetColorizer()
         self.saved_change_hook()
+
+        self.set_indentation_params(self.ispythonsource(filename))
 
         self.load_extensions()
 
@@ -221,22 +278,82 @@ class EditorWindow:
         self.askinteger = tkSimpleDialog.askinteger
         self.showerror = tkMessageBox.showerror
 
-        if self.extensions.has_key('AutoIndent'):
-            self.extensions['AutoIndent'].set_indentation_params(
-                self.ispythonsource(filename))
+    def _filename_to_unicode(self, filename):
+        """convert filename to unicode in order to display it in Tk"""
+        if isinstance(filename, unicode) or not filename:
+            return filename
+        else:
+            try:
+                return filename.decode(self.filesystemencoding)
+            except UnicodeDecodeError:
+                # XXX
+                try:
+                    return filename.decode(self.encoding)
+                except UnicodeDecodeError:
+                    # byte-to-byte conversion
+                    return filename.decode('iso8859-1')
 
     def new_callback(self, event):
         dirname, basename = self.io.defaultfilename()
         self.flist.new(dirname)
         return "break"
 
+    def home_callback(self, event):
+        if (event.state & 12) != 0 and event.keysym == "Home":
+            # state&1==shift, state&4==control, state&8==alt
+            return # <Modifier-Home>; fall back to class binding
+
+        if self.text.index("iomark") and \
+           self.text.compare("iomark", "<=", "insert lineend") and \
+           self.text.compare("insert linestart", "<=", "iomark"):
+            insertpt = int(self.text.index("iomark").split(".")[1])
+        else:
+            line = self.text.get("insert linestart", "insert lineend")
+            for insertpt in xrange(len(line)):
+                if line[insertpt] not in (' ','\t'):
+                    break
+            else:
+                insertpt=len(line)
+
+        lineat = int(self.text.index("insert").split('.')[1])
+
+        if insertpt == lineat:
+            insertpt = 0
+
+        dest = "insert linestart+"+str(insertpt)+"c"
+
+        if (event.state&1) == 0:
+            # shift not pressed
+            self.text.tag_remove("sel", "1.0", "end")
+        else:
+            if not self.text.index("sel.first"):
+                self.text.mark_set("anchor","insert")
+
+            first = self.text.index(dest)
+            last = self.text.index("anchor")
+
+            if self.text.compare(first,">",last):
+                first,last = last,first
+
+            self.text.tag_remove("sel", "1.0", "end")
+            self.text.tag_add("sel", first, last)
+
+        self.text.mark_set("insert", dest)
+        self.text.see("insert")
+        return "break"
+
     def set_status_bar(self):
         self.status_bar = self.MultiStatusBar(self.top)
+        if macosxSupport.runningAsOSXApp():
+            # Insert some padding to avoid obscuring some of the statusbar
+            # by the resize widget.
+            self.status_bar.set_label('_padding1', '    ', side=RIGHT)
         self.status_bar.set_label('column', 'Col: ?', side=RIGHT)
         self.status_bar.set_label('line', 'Ln: ?', side=RIGHT)
         self.status_bar.pack(side=BOTTOM, fill=X)
-        self.text.bind('<KeyRelease>', self.set_line_and_column)
-        self.text.bind('<ButtonRelease>', self.set_line_and_column)
+        self.text.bind("<<set-line-and-column>>", self.set_line_and_column)
+        self.text.event_add("<<set-line-and-column>>",
+                            "<KeyRelease>", "<ButtonRelease>")
         self.text.after_idle(self.set_line_and_column)
 
     def set_line_and_column(self, event=None):
@@ -254,6 +371,11 @@ class EditorWindow:
         ("help", "_Help"),
     ]
 
+    if macosxSupport.runningAsOSXApp():
+        del menu_specs[-3]
+        menu_specs[-2] = ("windows", "_Window")
+
+
     def createmenubar(self):
         mbar = self.menubar
         self.menudict = menudict = {}
@@ -261,6 +383,12 @@ class EditorWindow:
             underline, label = prepstr(label)
             menudict[name] = menu = Menu(mbar, name=name)
             mbar.add_cascade(label=label, menu=menu, underline=underline)
+
+        if macosxSupport.runningAsOSXApp():
+            # Insert the application menu
+            menudict['application'] = menu = Menu(mbar, name='apple')
+            mbar.add_cascade(label='IDLE', menu=menu)
+
         self.fill_menus()
         self.base_helpmenu_length = self.menudict['help'].index(END)
         self.reset_help_menu_entries()
@@ -312,7 +440,7 @@ class EditorWindow:
 
     def help_dialog(self, event=None):
         fn=os.path.join(os.path.abspath(os.path.dirname(__file__)),'help.txt')
-        textView.TextViewer(self.top,'Help',fn)
+        textView.view_file(self.top,'Help',fn)
 
     def python_docs(self, event=None):
         if sys.platform[:3] == 'win':
@@ -326,11 +454,15 @@ class EditorWindow:
         return "break"
 
     def copy(self,event):
+        if not self.text.tag_ranges("sel"):
+            # There is no selection, so do nothing and maybe interrupt.
+            return
         self.text.event_generate("<<Copy>>")
         return "break"
 
     def paste(self,event):
         self.text.event_generate("<<Paste>>")
+        self.text.see("insert")
         return "break"
 
     def select_all(self, event=None):
@@ -362,6 +494,14 @@ class EditorWindow:
                 except TclError:
                     pass
         return move_at_edge
+
+    def del_word_left(self, event):
+        self.text.event_generate('<Meta-Delete>')
+        return "break"
+
+    def del_word_right(self, event):
+        self.text.event_generate('<Meta-d>')
+        return "break"
 
     def find_event(self, event):
         SearchDialog.find(self.text)
@@ -454,7 +594,7 @@ class EditorWindow:
             self.center()
 
     def ispythonsource(self, filename):
-        if not filename:
+        if not filename or os.path.isdir(filename):
             return True
         base, ext = os.path.splitext(os.path.basename(filename))
         if os.path.normcase(ext) in (".py", ".pyw"):
@@ -469,7 +609,8 @@ class EditorWindow:
 
     def close_hook(self):
         if self.flist:
-            self.flist.close_edit(self)
+            self.flist.unregister_maybe_terminate(self)
+            self.flist = None
 
     def set_close_hook(self, close_hook):
         self.close_hook = close_hook
@@ -479,35 +620,42 @@ class EditorWindow:
             self.flist.filename_changed_edit(self)
         self.saved_change_hook()
         self.top.update_windowlist_registry(self)
-        if self.ispythonsource(self.io.filename):
-            self.addcolorizer()
-        else:
-            self.rmcolorizer()
+        self.ResetColorizer()
 
-    def addcolorizer(self):
+    def _addcolorizer(self):
         if self.color:
             return
-        self.per.removefilter(self.undo)
-        self.color = self.ColorDelegator()
-        self.per.insertfilter(self.color)
-        self.per.insertfilter(self.undo)
+        if self.ispythonsource(self.io.filename):
+            self.color = self.ColorDelegator()
+        # can add more colorizers here...
+        if self.color:
+            self.per.removefilter(self.undo)
+            self.per.insertfilter(self.color)
+            self.per.insertfilter(self.undo)
 
-    def rmcolorizer(self):
+    def _rmcolorizer(self):
         if not self.color:
             return
-        self.per.removefilter(self.undo)
+        self.color.removecolors()
         self.per.removefilter(self.color)
         self.color = None
-        self.per.insertfilter(self.undo)
 
     def ResetColorizer(self):
-        "Update the colour theme if it is changed"
-        # Called from configDialog.py
-        if self.color:
-            self.color = self.ColorDelegator()
-            self.per.insertfilter(self.color)
+        "Update the colour theme"
+        # Called from self.filename_change_hook and from configDialog.py
+        self._rmcolorizer()
+        self._addcolorizer()
         theme = idleConf.GetOption('main','Theme','name')
-        self.text.config(idleConf.GetHighlight(theme, "normal"))
+        normal_colors = idleConf.GetHighlight(theme, 'normal')
+        cursor_color = idleConf.GetHighlight(theme, 'cursor', fgBg='fg')
+        select_colors = idleConf.GetHighlight(theme, 'hilite')
+        self.text.config(
+            foreground=normal_colors['foreground'],
+            background=normal_colors['background'],
+            insertbackground=cursor_color,
+            selectforeground=select_colors['foreground'],
+            selectbackground=select_colors['background'],
+            )
 
     def ResetFont(self):
         "Update the text widgets' font if it is changed"
@@ -519,36 +667,56 @@ class EditorWindow:
                 idleConf.GetOption('main','EditorWindow','font-size'),
                 fontWeight))
 
-    def ResetKeybindings(self):
-        "Update the keybindings if they are changed"
+    def RemoveKeybindings(self):
+        "Remove the keybindings before they are changed."
         # Called from configDialog.py
-        self.Bindings.default_keydefs=idleConf.GetCurrentKeySet()
-        keydefs = self.Bindings.default_keydefs
+        self.Bindings.default_keydefs = keydefs = idleConf.GetCurrentKeySet()
         for event, keylist in keydefs.items():
-            self.text.event_delete(event)
+            self.text.event_delete(event, *keylist)
+        for extensionName in self.get_standard_extension_names():
+            xkeydefs = idleConf.GetExtensionBindings(extensionName)
+            if xkeydefs:
+                for event, keylist in xkeydefs.items():
+                    self.text.event_delete(event, *keylist)
+
+    def ApplyKeybindings(self):
+        "Update the keybindings after they are changed"
+        # Called from configDialog.py
+        self.Bindings.default_keydefs = keydefs = idleConf.GetCurrentKeySet()
         self.apply_bindings()
+        for extensionName in self.get_standard_extension_names():
+            xkeydefs = idleConf.GetExtensionBindings(extensionName)
+            if xkeydefs:
+                self.apply_bindings(xkeydefs)
         #update menu accelerators
-        menuEventDict={}
+        menuEventDict = {}
         for menu in self.Bindings.menudefs:
-            menuEventDict[menu[0]]={}
+            menuEventDict[menu[0]] = {}
             for item in menu[1]:
                 if item:
-                    menuEventDict[menu[0]][prepstr(item[0])[1]]=item[1]
+                    menuEventDict[menu[0]][prepstr(item[0])[1]] = item[1]
         for menubarItem in self.menudict.keys():
-            menu=self.menudict[menubarItem]
-            end=menu.index(END)+1
-            for index in range(0,end):
-                if menu.type(index)=='command':
-                    accel=menu.entrycget(index,'accelerator')
+            menu = self.menudict[menubarItem]
+            end = menu.index(END) + 1
+            for index in range(0, end):
+                if menu.type(index) == 'command':
+                    accel = menu.entrycget(index, 'accelerator')
                     if accel:
-                        itemName=menu.entrycget(index,'label')
-                        event=''
+                        itemName = menu.entrycget(index, 'label')
+                        event = ''
                         if menuEventDict.has_key(menubarItem):
                             if menuEventDict[menubarItem].has_key(itemName):
-                                event=menuEventDict[menubarItem][itemName]
+                                event = menuEventDict[menubarItem][itemName]
                         if event:
-                            accel=get_accelerator(keydefs, event)
-                            menu.entryconfig(index,accelerator=accel)
+                            accel = get_accelerator(keydefs, event)
+                            menu.entryconfig(index, accelerator=accel)
+
+    def set_notabs_indentwidth(self):
+        "Update the indentwidth if changed and not using tabs in this window"
+        # Called from configDialog.py
+        if not self.usetabs:
+            self.indentwidth = idleConf.GetOption('main', 'Indent','num-spaces',
+                                                  type='int')
 
     def reset_help_menu_entries(self):
         "Update the additional help entries on the Help menu"
@@ -570,7 +738,7 @@ class EditorWindow:
     def __extra_help_callback(self, helpfile):
         "Create a callback with the helpfile value frozen at definition time"
         def display_extra_help(helpfile=helpfile):
-            if not (helpfile.startswith('www') or helpfile.startswith('http')):
+            if not helpfile.startswith(('www', 'http')):
                 url = os.path.normpath(helpfile)
             if sys.platform[:3] == 'win':
                 os.startfile(helpfile)
@@ -611,8 +779,10 @@ class EditorWindow:
             menu.delete(1, END)  # clear, and rebuild:
             for i, file in zip(count(), rf_list):
                 file_name = file[0:-1]  # zap \n
+                # make unicode string to display non-ASCII chars correctly
+                ufile_name = self._filename_to_unicode(file_name)
                 callback = instance.__recent_file_callback(file_name)
-                menu.add_command(label=ulchars[i] + " " + file_name,
+                menu.add_command(label=ulchars[i] + " " + ufile_name,
                                  command=callback,
                                  underline=0)
 
@@ -652,10 +822,12 @@ class EditorWindow:
         filename = self.io.filename
         if filename:
             filename = os.path.basename(filename)
-        return filename
+        # return unicode string to display non-ASCII chars correctly
+        return self._filename_to_unicode(filename)
 
     def long_title(self):
-        return self.io.filename or ""
+        # return unicode string to display non-ASCII chars correctly
+        return self._filename_to_unicode(self.io.filename or "")
 
     def center_insert_event(self, event):
         self.center()
@@ -703,7 +875,7 @@ class EditorWindow:
 
     def close(self):
         reply = self.maybesave()
-        if reply != "cancel":
+        if str(reply) != "cancel":
             self._close()
         return reply
 
@@ -711,22 +883,21 @@ class EditorWindow:
         if self.io.filename:
             self.update_recent_files_list(new_file=self.io.filename)
         WindowList.unregister_callback(self.postwindowsmenu)
-        if self.close_hook:
-            self.close_hook()
-        self.flist = None
-        colorizing = 0
         self.unload_extensions()
-        self.io.close(); self.io = None
-        self.undo = None # XXX
+        self.io.close()
+        self.io = None
+        self.undo = None
         if self.color:
-            colorizing = self.color.colorizing
-            doh = colorizing and self.top
-            self.color.close(doh) # Cancel colorization
+            self.color.close(False)
+            self.color = None
         self.text = None
         self.tkinter_vars = None
-        self.per.close(); self.per = None
-        if not colorizing:
-            self.top.destroy()
+        self.per.close()
+        self.per = None
+        self.top.destroy()
+        if self.close_hook:
+            # unless override: unregister from flist, terminate if last window
+            self.close_hook()
 
     def load_extensions(self):
         self.extensions = {}
@@ -755,7 +926,7 @@ class EditorWindow:
             mod = __import__(name, globals(), locals(), [])
         except ImportError:
             print "\nFailed to import extension: ", name
-            return None
+            return
         cls = getattr(mod, name)
         keydefs = idleConf.GetExtensionBindings(name)
         if hasattr(cls, "menudefs"):
@@ -773,7 +944,6 @@ class EditorWindow:
                 methodname = methodname + "_event"
                 if hasattr(ins, methodname):
                     self.text.bind(vevent, getattr(ins, methodname))
-        return ins
 
     def apply_bindings(self, keydefs=None):
         if keydefs is None:
@@ -889,62 +1059,19 @@ class EditorWindow:
                                   "n" * newtabwidth)
             text.configure(tabs=pixels)
 
-### begin autoindent code ###
-
-    # usetabs true  -> literal tab characters are used by indent and
-    #                  dedent cmds, possibly mixed with spaces if
-    #                  indentwidth is not a multiple of tabwidth
-    #         false -> tab characters are converted to spaces by indent
-    #                  and dedent cmds, and ditto TAB keystrokes
-    # indentwidth is the number of characters per logical indent level.
-    # tabwidth is the display width of a literal tab character.
-    # CAUTION:  telling Tk to use anything other than its default
-    # tab setting causes it to use an entirely different tabbing algorithm,
-    # treating tab stops as fixed distances from the left margin.
-    # Nobody expects this, so for now tabwidth should never be changed.
-    usetabs = 0
-    indentwidth = 4
-    tabwidth = 8    # for IDLE use, must remain 8 until Tk is fixed
-
-    # If context_use_ps1 is true, parsing searches back for a ps1 line;
-    # else searches for a popular (if, def, ...) Python stmt.
-    context_use_ps1 = 0
-
-    # When searching backwards for a reliable place to begin parsing,
-    # first start num_context_lines[0] lines back, then
-    # num_context_lines[1] lines back if that didn't work, and so on.
-    # The last value should be huge (larger than the # of lines in a
-    # conceivable file).
-    # Making the initial values larger slows things down more often.
-    num_context_lines = 50, 500, 5000000
-
-    def config(self, **options):
-        for key, value in options.items():
-            if key == 'usetabs':
-                self.usetabs = value
-            elif key == 'indentwidth':
-                self.indentwidth = value
-            elif key == 'tabwidth':
-                self.tabwidth = value
-            elif key == 'context_use_ps1':
-                self.context_use_ps1 = value
-            else:
-                raise KeyError, "bad option name: %r" % (key,)
-
     # If ispythonsource and guess are true, guess a good value for
     # indentwidth based on file content (if possible), and if
     # indentwidth != tabwidth set usetabs false.
     # In any case, adjust the Text widget's view of what a tab
     # character means.
 
-    def set_indentation_params(self, ispythonsource, guess=1):
+    def set_indentation_params(self, ispythonsource, guess=True):
         if guess and ispythonsource:
             i = self.guess_indent()
             if 2 <= i <= 8:
                 self.indentwidth = i
             if self.indentwidth != self.tabwidth:
-                self.usetabs = 0
-
+                self.usetabs = False
         self.set_tabwidth(self.tabwidth)
 
     def smart_backspace_event(self, event):
@@ -996,8 +1123,9 @@ class EditorWindow:
         # if intraline selection:
         #     delete it
         # elif multiline selection:
-        #     do indent-region & return
-        # indent one level
+        #     do indent-region
+        # else:
+        #     indent one level
         text = self.text
         first, last = self.get_selection_indices()
         text.undo_block_start()
@@ -1013,6 +1141,7 @@ class EditorWindow:
                 # only whitespace to the left
                 self.reindent_to(effective + self.indentwidth)
             else:
+                # tab to the next 'stop' within or to right of line's text:
                 if self.usetabs:
                     pad = '\t'
                 else:
@@ -1061,22 +1190,37 @@ class EditorWindow:
             # open/close first need to find the last stmt
             lno = index2line(text.index('insert'))
             y = PyParse.Parser(self.indentwidth, self.tabwidth)
-            for context in self.num_context_lines:
-                startat = max(lno - context, 1)
-                startatindex = repr(startat) + ".0"
+            if not self.context_use_ps1:
+                for context in self.num_context_lines:
+                    startat = max(lno - context, 1)
+                    startatindex = `startat` + ".0"
+                    rawtext = text.get(startatindex, "insert")
+                    y.set_str(rawtext)
+                    bod = y.find_good_parse_start(
+                              self.context_use_ps1,
+                              self._build_char_in_string_func(startatindex))
+                    if bod is not None or startat == 1:
+                        break
+                y.set_lo(bod or 0)
+            else:
+                r = text.tag_prevrange("console", "insert")
+                if r:
+                    startatindex = r[1]
+                else:
+                    startatindex = "1.0"
                 rawtext = text.get(startatindex, "insert")
                 y.set_str(rawtext)
-                bod = y.find_good_parse_start(
-                          self.context_use_ps1,
-                          self._build_char_in_string_func(startatindex))
-                if bod is not None or startat == 1:
-                    break
-            y.set_lo(bod or 0)
+                y.set_lo(0)
+
             c = y.get_continuation_type()
             if c != PyParse.C_NONE:
                 # The current stmt hasn't ended yet.
-                if c == PyParse.C_STRING:
-                    # inside a string; just mimic the current indent
+                if c == PyParse.C_STRING_FIRST_LINE:
+                    # after the first line of a string; do not indent at all
+                    pass
+                elif c == PyParse.C_STRING_NEXT_LINES:
+                    # inside a string which started before this line;
+                    # just mimic the current indent
                     text.insert("insert", indent)
                 elif c == PyParse.C_BRACKET:
                     # line up with the first (if any) element of the
@@ -1186,28 +1330,34 @@ class EditorWindow:
     def toggle_tabs_event(self, event):
         if self.askyesno(
               "Toggle tabs",
-              "Turn tabs " + ("on", "off")[self.usetabs] + "?",
+              "Turn tabs " + ("on", "off")[self.usetabs] +
+              "?\nIndent width " +
+              ("will be", "remains at")[self.usetabs] + " 8." +
+              "\n Note: a tab is always 8 columns",
               parent=self.text):
             self.usetabs = not self.usetabs
+            # Try to prevent inconsistent indentation.
+            # User must change indent width manually after using tabs.
+            self.indentwidth = 8
         return "break"
 
-    # XXX this isn't bound to anything -- see class tabwidth comments
-    def change_tabwidth_event(self, event):
-        new = self._asktabwidth()
-        if new != self.tabwidth:
-            self.tabwidth = new
-            self.set_indentation_params(0, guess=0)
-        return "break"
+    # XXX this isn't bound to anything -- see tabwidth comments
+##     def change_tabwidth_event(self, event):
+##         new = self._asktabwidth()
+##         if new != self.tabwidth:
+##             self.tabwidth = new
+##             self.set_indentation_params(0, guess=0)
+##         return "break"
 
     def change_indentwidth_event(self, event):
         new = self.askinteger(
                   "Indent width",
-                  "New indent width (2-16)",
+                  "New indent width (2-16)\n(Always use 8 when using tabs)",
                   parent=self.text,
                   initialvalue=self.indentwidth,
                   minvalue=2,
                   maxvalue=16)
-        if new and new != self.indentwidth:
+        if new and new != self.indentwidth and not self.usetabs:
             self.indentwidth = new
         return "break"
 
@@ -1262,7 +1412,7 @@ class EditorWindow:
     def _asktabwidth(self):
         return self.askinteger(
             "Tab width",
-            "Spaces per tab? (2-16)",
+            "Columns per tab? (2-16)",
             parent=self.text,
             initialvalue=self.indentwidth,
             minvalue=2,
@@ -1308,7 +1458,7 @@ import tokenize
 _tokenize = tokenize
 del tokenize
 
-class IndentSearcher:
+class IndentSearcher(object):
 
     # .run() chews over the Text widget, looking for a block opener
     # and the stmt following it.  Returns a pair,
@@ -1409,6 +1559,7 @@ def test():
         filename = None
     edit = EditorWindow(root=root, filename=filename)
     edit.set_close_hook(root.quit)
+    edit.text.bind("<<close-all-windows>>", edit.close_event)
     root.mainloop()
     root.destroy()
 

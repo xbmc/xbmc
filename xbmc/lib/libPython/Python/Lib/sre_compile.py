@@ -11,7 +11,7 @@
 """Internal support module for sre"""
 
 import _sre, sys
-
+import sre_parse
 from sre_constants import *
 
 assert _sre.MAGIC == MAGIC, "SRE module mismatch"
@@ -24,14 +24,25 @@ else:
 def _identityfunction(x):
     return x
 
+def set(seq):
+    s = {}
+    for elem in seq:
+        s[elem] = 1
+    return s
+
+_LITERAL_CODES = set([LITERAL, NOT_LITERAL])
+_REPEATING_CODES = set([REPEAT, MIN_REPEAT, MAX_REPEAT])
+_SUCCESS_CODES = set([SUCCESS, FAILURE])
+_ASSERT_CODES = set([ASSERT, ASSERT_NOT])
+
 def _compile(code, pattern, flags):
     # internal: compile a (sub)pattern
     emit = code.append
     _len = len
-    LITERAL_CODES = {LITERAL:1, NOT_LITERAL:1}
-    REPEATING_CODES = {REPEAT:1, MIN_REPEAT:1, MAX_REPEAT:1}
-    SUCCESS_CODES = {SUCCESS:1, FAILURE:1}
-    ASSERT_CODES = {ASSERT:1, ASSERT_NOT:1}
+    LITERAL_CODES = _LITERAL_CODES
+    REPEATING_CODES = _REPEATING_CODES
+    SUCCESS_CODES = _SUCCESS_CODES
+    ASSERT_CODES = _ASSERT_CODES
     for op, av in pattern:
         if op in LITERAL_CODES:
             if flags & SRE_FLAG_IGNORECASE:
@@ -269,7 +280,7 @@ def _mk_bitmap(bits):
 
 # To represent a big charset, first a bitmap of all characters in the
 # set is constructed. Then, this bitmap is sliced into chunks of 256
-# characters, duplicate chunks are eliminitated, and each chunk is
+# characters, duplicate chunks are eliminated, and each chunk is
 # given a number. In the compiled expression, the charset is
 # represented by a 16-bit word sequence, consisting of one word for
 # the number of different chunks, a sequence of 256 bytes (128 words)
@@ -491,7 +502,6 @@ def compile(p, flags=0):
     # internal: convert pattern list to internal format
 
     if isstring(p):
-        import sre_parse
         pattern = p
         p = sre_parse.parse(p, flags)
     else:
@@ -514,7 +524,7 @@ def compile(p, flags=0):
         indexgroup[i] = k
 
     return _sre.compile(
-        pattern, flags, code,
+        pattern, flags | p.pattern.flags, code,
         p.pattern.groups-1,
         groupindex, indexgroup
         )

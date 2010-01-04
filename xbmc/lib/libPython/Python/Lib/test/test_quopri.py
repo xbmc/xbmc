@@ -1,8 +1,8 @@
 from test import test_support
 import unittest
 
-from cStringIO import StringIO
-from quopri import *
+import sys, cStringIO, subprocess
+import quopri
 
 
 
@@ -44,6 +44,23 @@ characters... have fun!
 """
 
 
+def withpythonimplementation(testfunc):
+    def newtest(self):
+        # Test default implementation
+        testfunc(self)
+        # Test Python implementation
+        if quopri.b2a_qp is not None or quopri.a2b_qp is not None:
+            oldencode = quopri.b2a_qp
+            olddecode = quopri.a2b_qp
+            try:
+                quopri.b2a_qp = None
+                quopri.a2b_qp = None
+                testfunc(self)
+            finally:
+                quopri.b2a_qp = oldencode
+                quopri.a2b_qp = olddecode
+    newtest.__name__ = testfunc.__name__
+    return newtest
 
 class QuopriTestCase(unittest.TestCase):
     # Each entry is a tuple of (plaintext, encoded string).  These strings are
@@ -110,44 +127,69 @@ zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz''')
         ('hello_world', 'hello=5Fworld'),
         )
 
+    @withpythonimplementation
     def test_encodestring(self):
         for p, e in self.STRINGS:
-            self.assert_(encodestring(p) == e)
+            self.assert_(quopri.encodestring(p) == e)
 
+    @withpythonimplementation
     def test_decodestring(self):
         for p, e in self.STRINGS:
-            self.assert_(decodestring(e) == p)
+            self.assert_(quopri.decodestring(e) == p)
 
+    @withpythonimplementation
     def test_idempotent_string(self):
         for p, e in self.STRINGS:
-            self.assert_(decodestring(encodestring(e)) == e)
+            self.assert_(quopri.decodestring(quopri.encodestring(e)) == e)
 
+    @withpythonimplementation
     def test_encode(self):
         for p, e in self.STRINGS:
-            infp = StringIO(p)
-            outfp = StringIO()
-            encode(infp, outfp, quotetabs=0)
+            infp = cStringIO.StringIO(p)
+            outfp = cStringIO.StringIO()
+            quopri.encode(infp, outfp, quotetabs=False)
             self.assert_(outfp.getvalue() == e)
 
+    @withpythonimplementation
     def test_decode(self):
         for p, e in self.STRINGS:
-            infp = StringIO(e)
-            outfp = StringIO()
-            decode(infp, outfp)
+            infp = cStringIO.StringIO(e)
+            outfp = cStringIO.StringIO()
+            quopri.decode(infp, outfp)
             self.assert_(outfp.getvalue() == p)
 
+    @withpythonimplementation
     def test_embedded_ws(self):
         for p, e in self.ESTRINGS:
-            self.assert_(encodestring(p, quotetabs=1) == e)
-            self.assert_(decodestring(e) == p)
+            self.assert_(quopri.encodestring(p, quotetabs=True) == e)
+            self.assert_(quopri.decodestring(e) == p)
 
+    @withpythonimplementation
     def test_encode_header(self):
         for p, e in self.HSTRINGS:
-            self.assert_(encodestring(p, header = 1) == e)
+            self.assert_(quopri.encodestring(p, header=True) == e)
 
+    @withpythonimplementation
     def test_decode_header(self):
         for p, e in self.HSTRINGS:
-            self.assert_(decodestring(e, header = 1) == p)
+            self.assert_(quopri.decodestring(e, header=True) == p)
+
+    def test_scriptencode(self):
+        (p, e) = self.STRINGS[-1]
+        process = subprocess.Popen([sys.executable, "-mquopri"],
+                                   stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        cout, cerr = process.communicate(p)
+        # On Windows, Python will output the result to stdout using
+        # CRLF, as the mode of stdout is text mode. To compare this
+        # with the expected result, we need to do a line-by-line comparison.
+        self.assertEqual(cout.splitlines(), e.splitlines())
+
+    def test_scriptdecode(self):
+        (p, e) = self.STRINGS[-1]
+        process = subprocess.Popen([sys.executable, "-mquopri", "-d"],
+                                   stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        cout, cerr = process.communicate(e)
+        self.assertEqual(cout.splitlines(), p.splitlines())
 
 def test_main():
     test_support.run_unittest(QuopriTestCase)

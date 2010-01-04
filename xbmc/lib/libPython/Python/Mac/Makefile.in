@@ -1,0 +1,317 @@
+# This file can be invoked from the various frameworkinstall... targets in the 
+# main Makefile. The next couple of variables are overridden on the 
+# commandline in that case.
+
+VERSION=@VERSION@
+builddir = ..
+srcdir=@srcdir@
+prefix=@prefix@
+LIBDEST=$(prefix)/lib/python$(VERSION)
+RUNSHARED=@RUNSHARED@
+BUILDEXE=@BUILDEXEEXT@
+BUILDPYTHON=$(builddir)/python$(BUILDEXE)
+DESTDIR=
+LDFLAGS=@LDFLAGS@
+FRAMEWORKUNIXTOOLSPREFIX=@FRAMEWORKUNIXTOOLSPREFIX@
+PYTHONFRAMEWORK=@PYTHONFRAMEWORK@
+PYTHONFRAMEWORKIDENTIFIER=@PYTHONFRAMEWORKIDENTIFIER@
+
+
+# These are normally glimpsed from the previous set
+bindir=$(prefix)/bin
+PYTHONAPPSDIR=/Applications/$(PYTHONFRAMEWORK) $(VERSION)
+APPINSTALLDIR=$(prefix)/Resources/Python.app
+
+# Variables for installing the "normal" unix binaries
+INSTALLED_PYTHONAPP=$(APPINSTALLDIR)/Contents/MacOS/$(PYTHONFRAMEWORK)
+
+# Items more-or-less copied from the main Makefile
+DIRMODE=755
+FILEMODE=644
+INSTALL=@INSTALL@
+INSTALL_SYMLINK=ln -fsn
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+INSTALL_SCRIPT= @INSTALL_SCRIPT@
+INSTALL_DATA=@INSTALL_DATA@
+LN=@LN@
+STRIPFLAG=-s
+CPMAC=/Developer/Tools/CpMac
+
+APPTEMPLATE=$(srcdir)/Resources/app
+APPSUBDIRS=MacOS Resources Resources/English.lproj \
+	Resources/English.lproj/Documentation \
+	Resources/English.lproj/Documentation/doc \
+	Resources/English.lproj/Documentation/ide
+DOCDIR=$(srcdir)/Resources/app/Resources/English.lproj/Documentation
+DOCINDEX=$(DOCDIR)/"Documentation idx"
+CACHERSRC=$(srcdir)/scripts/cachersrc.py
+compileall=$(srcdir)/../Lib/compileall.py
+
+installapps: install_Python install_BuildApplet install_PythonLauncher \
+	install_IDLE checkapplepython install_pythonw install_versionedtools
+
+installapps4way: install_Python4way install_BuildApplet install_PythonLauncher install_IDLE install_pythonw4way install_versionedtools
+
+
+install_pythonw: pythonw
+	$(INSTALL_PROGRAM) $(STRIPFLAG) pythonw "$(DESTDIR)$(prefix)/bin/pythonw$(VERSION)"
+	$(INSTALL_PROGRAM) $(STRIPFLAG) pythonw "$(DESTDIR)$(prefix)/bin/python$(VERSION)"
+	ln -sf python$(VERSION) "$(DESTDIR)$(prefix)/bin/python"
+	ln -sf pythonw$(VERSION) "$(DESTDIR)$(prefix)/bin/pythonw"
+
+
+# Install 3 variants of python/pythonw: 
+# 	- 32-bit (i386 and ppc)
+# 	- 64-bit (x86_64 and ppc64)
+# 	- all    (all four architectures)
+# 	- Make 'python' and 'pythonw' aliases for the 32-bit variant
+install_pythonw4way: pythonw-32 pythonw-64 pythonw
+	$(INSTALL_PROGRAM) $(STRIPFLAG) pythonw-64 "$(DESTDIR)$(prefix)/bin/pythonw$(VERSION)-64"
+	$(INSTALL_PROGRAM) $(STRIPFLAG) pythonw-64 "$(DESTDIR)$(prefix)/bin/python$(VERSION)-64"
+	ln -sf python$(VERSION)-64 "$(DESTDIR)$(prefix)/bin/python-64"
+	ln -sf pythonw$(VERSION)-64 "$(DESTDIR)$(prefix)/bin/pythonw-64"
+
+	$(INSTALL_PROGRAM) $(STRIPFLAG) pythonw-32 "$(DESTDIR)$(prefix)/bin/pythonw$(VERSION)-32"
+	$(INSTALL_PROGRAM) $(STRIPFLAG) pythonw-32 "$(DESTDIR)$(prefix)/bin/python$(VERSION)-32"
+	ln -sf python$(VERSION)-32 "$(DESTDIR)$(prefix)/bin/python-32"
+	ln -sf pythonw$(VERSION)-32 "$(DESTDIR)$(prefix)/bin/pythonw-32"
+
+	$(INSTALL_PROGRAM) $(STRIPFLAG) pythonw "$(DESTDIR)$(prefix)/bin/pythonw$(VERSION)-all"
+	$(INSTALL_PROGRAM) $(STRIPFLAG) pythonw "$(DESTDIR)$(prefix)/bin/python$(VERSION)-all"
+	ln -sf python$(VERSION)-all "$(DESTDIR)$(prefix)/bin/python-all"
+	ln -sf pythonw$(VERSION)-all "$(DESTDIR)$(prefix)/bin/pythonw-all"
+
+	ln -sf pythonw$(VERSION)-32	"$(DESTDIR)$(prefix)/bin/pythonw$(VERSION)"
+	ln -sf python$(VERSION)-32	"$(DESTDIR)$(prefix)/bin/python$(VERSION)"
+	ln -sf pythonw$(VERSION)-32	"$(DESTDIR)$(prefix)/bin/pythonw"
+	ln -sf python$(VERSION)-32	"$(DESTDIR)$(prefix)/bin/python"
+
+#
+# Install unix tools in /usr/local/bin. These are just aliases for the 
+# actual installation inside the framework.
+#
+installunixtools:
+	if [ ! -d "$(DESTDIR)$(FRAMEWORKUNIXTOOLSPREFIX)/bin" ]; then  \
+		$(INSTALL) -d -m $(DIRMODE) "$(DESTDIR)$(FRAMEWORKUNIXTOOLSPREFIX)/bin" ;\
+	fi
+	for fn in python pythonw idle pydoc python-config smtpd.py   \
+		  python$(VERSION) pythonw$(VERSION) idle$(VERSION) \
+		  pydoc$(VERSION) python$(VERSION)-config smtpd$(VERSION).py ;\
+	do \
+		ln -fs "$(prefix)/bin/$${fn}" "$(DESTDIR)$(FRAMEWORKUNIXTOOLSPREFIX)/bin/$${fn}" ;\
+	done
+
+
+# TODO: install symlinks for -32, -64 and -all as well
+installunixtools4way: installunixtools
+
+
+#
+# Like installunixtools, but only install links to the versioned binaries.
+#
+altinstallunixtools:
+	if [ ! -d "$(DESTDIR)$(FRAMEWORKUNIXTOOLSPREFIX)/bin" ]; then  \
+		$(INSTALL) -d -m $(DIRMODE) "$(DESTDIR)$(FRAMEWORKUNIXTOOLSPREFIX)/bin" ;\
+	fi
+	for fn in python$(VERSION) pythonw$(VERSION) idle$(VERSION) \
+		  pydoc$(VERSION) python$(VERSION)-config smtpd$(VERSION).py ;\
+	do \
+		ln -fs "$(prefix)/bin/$${fn}" "$(DESTDIR)$(FRAMEWORKUNIXTOOLSPREFIX)/bin/$${fn}" ;\
+	done
+
+# TODO: -32, -64 and -all variants
+altinstallunixtools4way: altinstallunixtools
+
+# By default most tools are installed without a version in their basename, to
+# make it easier to install (and use) several python versions side-by-side move
+# the tools to a version-specific name and add the non-versioned name as an
+# alias.
+install_versionedtools:
+	for fn in idle pydoc ;\
+	do \
+		if [ -h "$(DESTDIR)$(prefix)/bin/$${fn}" ]; then \
+			continue ;\
+		fi ;\
+		mv "$(DESTDIR)$(prefix)/bin/$${fn}" "$(DESTDIR)$(prefix)/bin/$${fn}$(VERSION)"  ;\
+		ln -sf "$${fn}$(VERSION)" "$(DESTDIR)$(prefix)/bin/$${fn}" ;\
+	done
+	if [ ! -h "$(DESTDIR)$(prefix)/bin/python-config" ]; then \
+		mv "$(DESTDIR)$(prefix)/bin/python-config" "$(DESTDIR)$(prefix)/bin/python$(VERSION)-config" ;\
+		ln -sf "python$(VERSION)-config" "$(DESTDIR)$(prefix)/bin/python-config" ; \
+	fi
+	if [ ! -h "$(DESTDIR)$(prefix)/bin/smtpd.py" ]; then \
+		mv "$(DESTDIR)$(prefix)/bin/smtpd.py" "$(DESTDIR)$(prefix)/bin/smtpd$(VERSION).py"  ;\
+		ln -sf "smtpd$(VERSION).py" "$(DESTDIR)$(prefix)/bin/smtpd.py" ;\
+	fi
+
+
+pythonw: $(srcdir)/Tools/pythonw.c Makefile
+	$(CC) $(LDFLAGS) -o $@ $(srcdir)/Tools/pythonw.c \
+		-DPYTHONWEXECUTABLE='"$(APPINSTALLDIR)/Contents/MacOS/$(PYTHONFRAMEWORK)"'
+
+pythonw-32: $(srcdir)/Tools/pythonw.c Makefile
+	$(CC) $(LDFLAGS) -o $@ -arch i386 -arch ppc $(srcdir)/Tools/pythonw.c \
+		-DPYTHONWEXECUTABLE='"$(APPINSTALLDIR)/Contents/MacOS/$(PYTHONFRAMEWORK)-32"'
+
+pythonw-64: $(srcdir)/Tools/pythonw.c Makefile
+	$(CC) $(LDFLAGS) -o $@ -arch x86_64 -arch ppc64 $(srcdir)/Tools/pythonw.c \
+		-DPYTHONWEXECUTABLE='"$(APPINSTALLDIR)/Contents/MacOS/$(PYTHONFRAMEWORK)-64"'
+
+install_PythonLauncher:
+	cd PythonLauncher && make install DESTDIR=$(DESTDIR)
+
+install_Python:
+	@if test ! -f $(DOCINDEX); then \
+		echo WARNING: you should run Apple Help Indexing Tool on $(DOCDIR); \
+	fi
+	@for i in "$(PYTHONAPPSDIR)" "$(APPINSTALLDIR)" "$(APPINSTALLDIR)/Contents"; do \
+		if test ! -d "$(DESTDIR)$$i"; then \
+			echo "Creating directory $(DESTDIR)$$i"; \
+			$(INSTALL) -d -m $(DIRMODE) "$(DESTDIR)$$i"; \
+		fi;\
+	done
+	@for i in $(APPSUBDIRS); do \
+		if test ! -d "$(DESTDIR)$(APPINSTALLDIR)/Contents/$$i"; then \
+			echo "Creating directory $(DESTDIR)$(APPINSTALLDIR)/Contents/$$i"; \
+			$(INSTALL) -d -m $(DIRMODE) "$(DESTDIR)$(APPINSTALLDIR)/Contents/$$i"; \
+		else	true; \
+		fi; \
+	done
+	@for d in . $(APPSUBDIRS); \
+	do \
+		a=$(APPTEMPLATE)/$$d; \
+		if test ! -d $$a; then continue; else true; fi; \
+		b="$(DESTDIR)$(APPINSTALLDIR)/Contents/$$d"; \
+		for i in $$a/*; \
+		do \
+			case $$i in \
+			*CVS) ;; \
+			*.svn) ;; \
+			*.py[co]) ;; \
+			*.orig) ;; \
+			*~) ;; \
+			*idx) \
+				echo $(CPMAC) "$$i" $$b; \
+				$(CPMAC) "$$i" "$$b"; \
+				;; \
+			*) \
+				if test -d $$i; then continue; fi; \
+				if test -x $$i; then \
+				    echo $(INSTALL_SCRIPT) "$$i" "$$b"; \
+				    $(INSTALL_SCRIPT) "$$i" "$$b"; \
+				else \
+				    echo $(INSTALL_DATA) "$$i" "$$b"; \
+				    $(INSTALL_DATA) "$$i" "$$b"; \
+				fi;; \
+			esac; \
+		done; \
+	done
+	$(INSTALL_PROGRAM) $(STRIPFLAG) $(BUILDPYTHON) "$(DESTDIR)$(APPINSTALLDIR)/Contents/MacOS/$(PYTHONFRAMEWORK)"
+	sed -e "s!%bundleid%!$(PYTHONFRAMEWORKIDENTIFIER)!g" \
+		-e "s!%version%!`$(RUNSHARED) $(BUILDPYTHON) \
+		-c 'import platform; print(platform.python_version())'`!g" \
+		< "$(DESTDIR)$(APPINSTALLDIR)/Contents/Info.plist.in" \
+		> "$(DESTDIR)$(APPINSTALLDIR)/Contents/Info.plist"
+	rm "$(DESTDIR)$(APPINSTALLDIR)/Contents/Info.plist.in"
+
+install_Python4way: install_Python
+	lipo  -extract i386 -extract ppc7400 -output "$(DESTDIR)$(APPINSTALLDIR)/Contents/MacOS/$(PYTHONFRAMEWORK)-32" "$(DESTDIR)$(APPINSTALLDIR)/Contents/MacOS/$(PYTHONFRAMEWORK)"
+	lipo  -extract x86_64 -extract ppc64 -output "$(DESTDIR)$(APPINSTALLDIR)/Contents/MacOS/$(PYTHONFRAMEWORK)-64" "$(DESTDIR)$(APPINSTALLDIR)/Contents/MacOS/$(PYTHONFRAMEWORK)"
+
+
+
+install_IDLE:
+	cd IDLE && make install
+
+install_BuildApplet:
+	$(RUNSHARED) @ARCH_RUN_32BIT@ $(BUILDPYTHON) $(srcdir)/scripts/BuildApplet.py \
+		--destroot "$(DESTDIR)" \
+		--python=$(prefix)/Resources/Python.app/Contents/MacOS/$(PYTHONFRAMEWORK)`test -f "$(DESTDIR)$(prefix)/Resources/Python.app/Contents/MacOS/$(PYTHONFRAMEWORK)-32" && echo "-32"`  \
+		--output "$(DESTDIR)$(PYTHONAPPSDIR)/Build Applet.app" \
+		$(srcdir)/scripts/BuildApplet.py
+
+MACLIBDEST=$(LIBDEST)/plat-mac
+MACTOOLSDEST=$(prefix)/Mac/Tools
+MACTOOLSSRC=$(srcdir)/Mac/Tools
+MACTOOLSSUBDIRS=IDE
+
+installmacsubtree:
+	@for i in $(MACTOOLSDEST); \
+	do \
+		if test ! -d $(DESTDIR)$$i; then \
+			echo "Creating directory $(DESTDIR)$$i"; \
+			$(INSTALL) -d -m $(DIRMODE) $(DESTDIR)$$i; \
+		else	true; \
+		fi; \
+	done
+	@for d in $(MACTOOLSSUBDIRS); \
+	do \
+		a=$(MACTOOLSSRC)/$$d; \
+		if test ! -d $$a; then continue; else true; fi; \
+		b=$(DESTDIR)$(MACTOOLSDEST)/$$d; \
+		if test ! -d $$b; then \
+			echo "Creating directory $$b"; \
+			$(INSTALL) -d -m $(DIRMODE) $$b; \
+		else	true; \
+		fi; \
+	done
+	@for d in $(MACTOOLSSUBDIRS); \
+	do \
+		a=$(MACTOOLSSRC)/$$d; \
+		if test ! -d $$a; then continue; else true; fi; \
+		b=$(DESTDIR)$(MACTOOLSDEST)/$$d; \
+		for i in $$a/*; \
+		do \
+			case $$i in \
+			*CVS) ;; \
+			*.svn) ;; \
+			*.py[co]) ;; \
+			*.orig) ;; \
+			*~) ;; \
+			*.rsrc) \
+				echo $(CPMAC) $$i $$b ; \
+				$(CPMAC) $$i $$b ; \
+				;; \
+			*) \
+				if test -d $$i; then continue; fi; \
+				if test -x $$i; then \
+				    echo $(INSTALL_SCRIPT) $$i $$b; \
+				    $(INSTALL_SCRIPT) $$i $$b; \
+				else \
+				    echo $(INSTALL_DATA) $$i $$b; \
+				    $(INSTALL_DATA) $$i $$b; \
+				fi;; \
+			esac; \
+		done; \
+	done
+
+
+	$(RUNSHARED) @ARCH_RUN_32BIT@ $(BUILDPYTHON) $(CACHERSRC) -v $(DESTDIR)$(MACLIBDEST) $(DESTDIR)$(MACTOOLSDEST)
+	$(RUNSHARED) $(BUILDPYTHON) -Wi -tt $(compileall) -d $(MACTOOLSDEST) -x badsyntax $(DESTDIR)$(MACTOOLSDEST)
+	$(RUNSHARED) $(BUILDPYTHON) -O -Wi -tt $(compileall) -d $(MACTOOLSDEST) -x badsyntax $(DESTDIR)$(MACTOOLSDEST)
+
+$(INSTALLED_PYTHONAPP): install_Python
+
+installextras: $(srcdir)/Extras.ReadMe.txt $(srcdir)/Extras.install.py
+	$(INSTALL) -d "$(DESTDIR)$(PYTHONAPPSDIR)/Extras"
+	$(INSTALL) $(srcdir)/Extras.ReadMe.txt "$(DESTDIR)$(PYTHONAPPSDIR)/Extras/ReadMe.txt"
+	$(RUNSHARED) $(BUILDPYTHON) $(srcdir)/Extras.install.py $(srcdir)/../Demo \
+		"$(DESTDIR)$(PYTHONAPPSDIR)/Extras/Demo"
+	$(RUNSHARED) $(BUILDPYTHON) $(srcdir)/Extras.install.py $(srcdir)/Demo \
+		"$(DESTDIR)$(PYTHONAPPSDIR)/Extras/Demo.Mac"
+
+
+checkapplepython: $(srcdir)/Tools/fixapplepython23.py
+	@if ! $(RUNSHARED) $(BUILDPYTHON) $(srcdir)/Tools/fixapplepython23.py -n; then \
+		echo "* WARNING: Apple-installed Python 2.3 will have trouble building extensions from now on."; \
+		echo "* WARNING: Run $(srcdir)/Tools/fixapplepython23.py with \"sudo\" to fix this."; \
+	fi
+
+
+clean:
+	rm pythonw
+	cd PythonLauncher && make clean
+	cd IDLE && make clean
+
+Makefile: $(srcdir)/Makefile.in ../config.status
+	cd .. && CONFIG_FILES=Mac/Makefile CONFIG_HEADERS= $(SHELL) ./config.status

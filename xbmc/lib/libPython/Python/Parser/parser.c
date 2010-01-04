@@ -75,16 +75,16 @@ PyParser_New(grammar *g, int start)
 	
 	if (!g->g_accel)
 		PyGrammar_AddAccelerators(g);
-	ps = PyMem_NEW(parser_state, 1);
+	ps = (parser_state *)PyMem_MALLOC(sizeof(parser_state));
 	if (ps == NULL)
 		return NULL;
 	ps->p_grammar = g;
-#if 0 /* future keyword */
-	ps->p_generators = 0;
+#ifdef PY_PARSER_REQUIRES_FUTURE_KEYWORD
+	ps->p_flags = 0;
 #endif
 	ps->p_tree = PyNode_New(start);
 	if (ps->p_tree == NULL) {
-		PyMem_DEL(ps);
+		PyMem_FREE(ps);
 		return NULL;
 	}
 	s_reset(&ps->p_stack);
@@ -98,18 +98,18 @@ PyParser_Delete(parser_state *ps)
 	/* NB If you want to save the parse tree,
 	   you must set p_tree to NULL before calling delparser! */
 	PyNode_Free(ps->p_tree);
-	PyMem_DEL(ps);
+	PyMem_FREE(ps);
 }
 
 
 /* PARSER STACK OPERATIONS */
 
 static int
-shift(register stack *s, int type, char *str, int newstate, int lineno)
+shift(register stack *s, int type, char *str, int newstate, int lineno, int col_offset)
 {
 	int err;
 	assert(!s_empty(s));
-	err = PyNode_AddChild(s->s_top->s_parent, type, str, lineno);
+	err = PyNode_AddChild(s->s_top->s_parent, type, str, lineno, col_offset);
 	if (err)
 		return err;
 	s->s_top->s_state = newstate;
@@ -117,13 +117,13 @@ shift(register stack *s, int type, char *str, int newstate, int lineno)
 }
 
 static int
-push(register stack *s, int type, dfa *d, int newstate, int lineno)
+push(register stack *s, int type, dfa *d, int newstate, int lineno, int col_offset)
 {
 	int err;
 	register node *n;
 	n = s->s_top->s_parent;
 	assert(!s_empty(s));
-	err = PyNode_AddChild(n, type, (char *)NULL, lineno);
+	err = PyNode_AddChild(n, type, (char *)NULL, lineno, col_offset);
 	if (err)
 		return err;
 	s->s_top->s_state = newstate;
@@ -144,18 +144,18 @@ classify(parser_state *ps, int type, char *str)
 		register label *l = g->g_ll.ll_label;
 		register int i;
 		for (i = n; i > 0; i--, l++) {
-			if (l->lb_type == NAME && l->lb_str != NULL &&
-					l->lb_str[0] == s[0] &&
-					strcmp(l->lb_str, s) == 0) {
-#if 0 /* future keyword */
-				if (!ps->p_generators &&
-				    s[0] == 'y' &&
-				    strcmp(s, "yield") == 0)
-					break; /* not a keyword */
+			if (l->lb_type != NAME || l->lb_str == NULL ||
+			    l->lb_str[0] != s[0] ||
+			    strcmp(l->lb_str, s) != 0)
+				continue;
+#ifdef PY_PARSER_REQUIRES_FUTURE_KEYWORD
+                        if (ps->p_flags & CO_FUTURE_PRINT_FUNCTION &&
+                            s[0] == 'p' && strcmp(s, "print") == 0) { 
+                                break; /* no longer a keyword */
+                        }
 #endif
-				D(printf("It's a keyword\n"));
-				return n - i;
-			}
+			D(printf("It's a keyword\n"));
+			return n - i;
 		}
 	}
 	
@@ -174,25 +174,43 @@ classify(parser_state *ps, int type, char *str)
 	return -1;
 }
 
-#if 0 /* future keyword */
+#ifdef PY_PARSER_REQUIRES_FUTURE_KEYWORD
 static void
 future_hack(parser_state *ps)
 {
 	node *n = ps->p_stack.s_top->s_parent;
-	node *ch;
+	node *ch, *cch;
 	int i;
 
-	if (strcmp(STR(CHILD(n, 0)), "from") != 0)
+	/* from __future__ import ..., must have at least 4 children */
+	n = CHILD(n, 0);
+	if (NCH(n) < 4)
+		return;
+	ch = CHILD(n, 0);
+	if (STR(ch) == NULL || strcmp(STR(ch), "from") != 0)
 		return;
 	ch = CHILD(n, 1);
-	if (strcmp(STR(CHILD(ch, 0)), "__future__") != 0)
+	if (NCH(ch) == 1 && STR(CHILD(ch, 0)) &&
+	    strcmp(STR(CHILD(ch, 0)), "__future__") != 0)
 		return;
-	for (i = 3; i < NCH(n); i += 2) {
-		ch = CHILD(n, i);
-		if (NCH(ch) >= 1 && TYPE(CHILD(ch, 0)) == NAME &&
-		    strcmp(STR(CHILD(ch, 0)), "generators") == 0) {
-			ps->p_generators = 1;
-			break;
+	ch = CHILD(n, 3);
+	/* ch can be a star, a parenthesis or import_as_names */
+	if (TYPE(ch) == STAR)
+		return;
+	if (TYPE(ch) == LPAR)
+		ch = CHILD(n, 4);
+	
+	for (i = 0; i < NCH(ch); i += 2) {
+		cch = CHILD(ch, i);
+		if (NCH(cch) >= 1 && TYPE(CHILD(cch, 0)) == NAME) {
+			char *str_ch = STR(CHILD(cch, 0));
+			if (strcmp(str_ch, FUTURE_WITH_STATEMENT) == 0) {
+				ps->p_flags |= CO_FUTURE_WITH_STATEMENT;
+			} else if (strcmp(str_ch, FUTURE_PRINT_FUNCTION) == 0) {
+				ps->p_flags |= CO_FUTURE_PRINT_FUNCTION;
+			} else if (strcmp(str_ch, FUTURE_UNICODE_LITERALS) == 0) {
+				ps->p_flags |= CO_FUTURE_UNICODE_LITERALS;
+			}
 		}
 	}
 }
@@ -200,7 +218,7 @@ future_hack(parser_state *ps)
 
 int
 PyParser_AddToken(register parser_state *ps, register int type, char *str,
-	          int lineno, int *expected_ret)
+	          int lineno, int col_offset, int *expected_ret)
 {
 	register int ilabel;
 	int err;
@@ -232,7 +250,7 @@ PyParser_AddToken(register parser_state *ps, register int type, char *str,
 					dfa *d1 = PyGrammar_FindDFA(
 						ps->p_grammar, nt);
 					if ((err = push(&ps->p_stack, nt, d1,
-						arrow, lineno)) > 0) {
+						arrow, lineno, col_offset)) > 0) {
 						D(printf(" MemError: push\n"));
 						return err;
 					}
@@ -242,7 +260,7 @@ PyParser_AddToken(register parser_state *ps, register int type, char *str,
 				
 				/* Shift the token */
 				if ((err = shift(&ps->p_stack, type, str,
-						x, lineno)) > 0) {
+						x, lineno, col_offset)) > 0) {
 					D(printf(" MemError: shift.\n"));
 					return err;
 				}
@@ -255,7 +273,7 @@ PyParser_AddToken(register parser_state *ps, register int type, char *str,
 						 "Direct pop.\n",
 						 d->d_name,
 						 ps->p_stack.s_top->s_state));
-#if 0 /* future keyword */
+#ifdef PY_PARSER_REQUIRES_FUTURE_KEYWORD
 					if (d->d_name[0] == 'i' &&
 					    strcmp(d->d_name,
 						   "import_stmt") == 0)
@@ -273,7 +291,7 @@ PyParser_AddToken(register parser_state *ps, register int type, char *str,
 		}
 		
 		if (s->s_accept) {
-#if 0 /* future keyword */
+#ifdef PY_PARSER_REQUIRES_FUTURE_KEYWORD
 			if (d->d_name[0] == 'i' &&
 			    strcmp(d->d_name, "import_stmt") == 0)
 				future_hack(ps);

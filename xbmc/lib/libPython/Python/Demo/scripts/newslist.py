@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #######################################################################
-# Newslist  $Revision: 37320 $
+# Newslist  $Revision: 66429 $
 #
 # Syntax:
 #    newslist [ -a ]
@@ -105,7 +105,7 @@ for dir in os.curdir, os.environ['HOME']:
 from nntplib import NNTP
 from stat import *
 
-rcsrev = '$Revision: 37320 $'
+rcsrev = '$Revision: 66429 $'
 rcsrev = string.join(filter(lambda s: '$' not in s, string.split(rcsrev)))
 desc = {}
 
@@ -321,7 +321,7 @@ def main():
     tree={}
 
     # Check that the output directory exists
-    checkopdir(pagedir);
+    checkopdir(pagedir)
 
     try:
         print 'Connecting to '+newshost+'...'

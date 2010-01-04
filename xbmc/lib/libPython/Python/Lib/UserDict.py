@@ -14,7 +14,12 @@ class UserDict:
         else:
             return cmp(self.data, dict)
     def __len__(self): return len(self.data)
-    def __getitem__(self, key): return self.data[key]
+    def __getitem__(self, key):
+        if key in self.data:
+            return self.data[key]
+        if hasattr(self.__class__, "__missing__"):
+            return self.__class__.__missing__(self, key)
+        raise KeyError(key)
     def __setitem__(self, key, item): self.data[key] = item
     def __delitem__(self, key): del self.data[key]
     def clear(self): self.data.clear()
@@ -36,7 +41,7 @@ class UserDict:
     def iterkeys(self): return self.data.iterkeys()
     def itervalues(self): return self.data.itervalues()
     def values(self): return self.data.values()
-    def has_key(self, key): return self.data.has_key(key)
+    def has_key(self, key): return key in self.data
     def update(self, dict=None, **kwargs):
         if dict is None:
             pass
@@ -50,11 +55,11 @@ class UserDict:
         if len(kwargs):
             self.data.update(kwargs)
     def get(self, key, failobj=None):
-        if not self.has_key(key):
+        if key not in self:
             return failobj
         return self[key]
     def setdefault(self, key, failobj=None):
-        if not self.has_key(key):
+        if key not in self:
             self[key] = failobj
         return self[key]
     def pop(self, key, *args):
@@ -63,16 +68,20 @@ class UserDict:
         return self.data.popitem()
     def __contains__(self, key):
         return key in self.data
+    @classmethod
     def fromkeys(cls, iterable, value=None):
         d = cls()
         for key in iterable:
             d[key] = value
         return d
-    fromkeys = classmethod(fromkeys)
 
 class IterableUserDict(UserDict):
     def __iter__(self):
         return iter(self.data)
+
+import _abcoll
+_abcoll.MutableMapping.register(IterableUserDict)
+
 
 class DictMixin:
     # Mixin defining all dictionary methods for classes that already have

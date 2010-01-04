@@ -25,13 +25,19 @@ class GroupDatabaseTestCase(unittest.TestCase):
         for e in entries:
             self.check_value(e)
 
+        if len(entries) > 1000:  # Huge group file (NIS?) -- skip the rest
+            return
+
         for e in entries:
             e2 = grp.getgrgid(e.gr_gid)
             self.check_value(e2)
             self.assertEqual(e2.gr_gid, e.gr_gid)
             e2 = grp.getgrnam(e.gr_name)
             self.check_value(e2)
-            self.assertEqual(e2.gr_name, e.gr_name)
+            # There are instances where getgrall() returns group names in
+            # lowercase while getgrgid() returns proper casing.
+            # Discovered on Ubuntu 5.04 (custom).
+            self.assertEqual(e2.gr_name.lower(), e.gr_name.lower())
 
     def test_errors(self):
         self.assertRaises(TypeError, grp.getgrgid)
@@ -42,6 +48,8 @@ class GroupDatabaseTestCase(unittest.TestCase):
         bynames = {}
         bygids = {}
         for (n, p, g, mem) in grp.getgrall():
+            if not n or n == '+':
+                continue # skip NIS entries etc.
             bynames[n] = g
             bygids[g] = n
 
@@ -49,7 +57,7 @@ class GroupDatabaseTestCase(unittest.TestCase):
         namei = 0
         fakename = allnames[namei]
         while fakename in bynames:
-            chars = map(None, fakename)
+            chars = list(fakename)
             for i in xrange(len(chars)):
                 if chars[i] == 'z':
                     chars[i] = 'A'
@@ -66,7 +74,7 @@ class GroupDatabaseTestCase(unittest.TestCase):
                 except IndexError:
                     # should never happen... if so, just forget it
                     break
-            fakename = ''.join(map(None, chars))
+            fakename = ''.join(chars)
 
         self.assertRaises(KeyError, grp.getgrnam, fakename)
 

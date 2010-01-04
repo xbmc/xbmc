@@ -52,6 +52,10 @@ s = m.getheadertext(pred) # text of message's headers, filtered by pred
 s = m.getbodytext()     # text of message's body, decoded
 s = m.getbodytext(0)    # text of message's body, not decoded
 """
+from warnings import warnpy3k
+warnpy3k("the mhlib module has been removed in Python 3.0; use the mailbox "
+            "module instead", stacklevel=2)
+del warnpy3k
 
 # XXX To do, functionality:
 # - annotate messages
@@ -697,7 +701,10 @@ class Message(mimetools.Message):
         encoding = self.getencoding()
         if not decode or encoding in ('', '7bit', '8bit', 'binary'):
             return self.fp.read()
-        from StringIO import StringIO
+        try:
+            from cStringIO import StringIO
+        except ImportError:
+            from StringIO import StringIO
         output = StringIO()
         mimetools.decode(self.fp, output, encoding)
         return output.getvalue()
@@ -979,11 +986,11 @@ def test():
     context = mh.getcontext()
     f = mh.openfolder(context)
     do('f.getcurrent()')
-    for seq in ['first', 'last', 'cur', '.', 'prev', 'next',
+    for seq in ('first', 'last', 'cur', '.', 'prev', 'next',
                 'first:3', 'last:3', 'cur:3', 'cur:-3',
                 'prev:3', 'next:3',
                 '1:3', '1:-3', '100:3', '100:-3', '10000:3', '10000:-3',
-                'all']:
+                'all'):
         try:
             do('f.parsesequence(%r)' % (seq,))
         except Error, msg:

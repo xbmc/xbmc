@@ -26,20 +26,23 @@ typedef struct _frame {
        to the current stack top. */
     PyObject **f_stacktop;
     PyObject *f_trace;		/* Trace function */
+
+    /* If an exception is raised in this frame, the next three are used to
+     * record the exception info (if any) originally in the thread state.  See
+     * comments before set_exc_info() -- it's not obvious.
+     * Invariant:  if _type is NULL, then so are _value and _traceback.
+     * Desired invariant:  all three are NULL, or all three are non-NULL.  That
+     * one isn't currently true, but "should be".
+     */
     PyObject *f_exc_type, *f_exc_value, *f_exc_traceback;
+
     PyThreadState *f_tstate;
     int f_lasti;		/* Last instruction if called */
     /* As of 2.3 f_lineno is only valid when tracing is active (i.e. when
        f_trace is set) -- at other times use PyCode_Addr2Line instead. */
     int f_lineno;		/* Current line number */
-    int f_restricted;		/* Flag set if restricted operations
-				   in this scope */
     int f_iblock;		/* index in f_blockstack */
     PyTryBlock f_blockstack[CO_MAXBLOCKS]; /* for try and loop blocks */
-    int f_nlocals;		/* number of locals */
-    int f_ncells;
-    int f_nfreevars;
-    int f_stacksize;		/* size of value stack */
     PyObject *f_localsplus[1];	/* locals+stack, dynamically sized */
 } PyFrameObject;
 
@@ -49,6 +52,8 @@ typedef struct _frame {
 PyAPI_DATA(PyTypeObject) PyFrame_Type;
 
 #define PyFrame_Check(op) ((op)->ob_type == &PyFrame_Type)
+#define PyFrame_IsRestricted(f) \
+	((f)->f_builtins != (f)->f_tstate->interp->builtins)
 
 PyAPI_FUNC(PyFrameObject *) PyFrame_New(PyThreadState *, PyCodeObject *,
                                        PyObject *, PyObject *);
@@ -69,6 +74,8 @@ PyAPI_FUNC(PyObject **) PyFrame_ExtendStack(PyFrameObject *, int, int);
 
 PyAPI_FUNC(void) PyFrame_LocalsToFast(PyFrameObject *, int);
 PyAPI_FUNC(void) PyFrame_FastToLocals(PyFrameObject *);
+
+PyAPI_FUNC(int) PyFrame_ClearFreeList(void);
 
 #ifdef __cplusplus
 }

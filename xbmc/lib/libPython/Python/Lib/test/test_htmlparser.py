@@ -2,7 +2,6 @@
 
 import HTMLParser
 import pprint
-import sys
 import unittest
 from test import test_support
 
@@ -115,7 +114,7 @@ comment1b-->
 <Img sRc='Bar' isMAP>sample
 text
 &#x201C;
-<!--comment2a-- --comment2b-->
+<!--comment2a-- --comment2b--><!>
 </Html>
 """, [
     ("data", "\n"),
@@ -308,6 +307,11 @@ DOCTYPE html [
             ("data", " <not a='start tag'> "),
             ("endtag", "script"),
             ])
+
+    def test_entityrefs_in_attributes(self):
+        self._run_check("<html foo='&euro;&amp;&#97;&#x61;&unsupported;'>", [
+                ("starttag", "html", [("foo", u"\u20AC&aa&unsupported;")])
+                ])
 
 
 def test_main():

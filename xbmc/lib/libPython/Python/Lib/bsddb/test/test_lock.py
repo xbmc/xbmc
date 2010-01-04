@@ -2,49 +2,39 @@
 TestCases for testing the locking sub-system.
 """
 
-import sys, os, string
-import tempfile
 import time
-from pprint import pprint
-
-try:
-    from threading import Thread, currentThread
-    have_threads = 1
-except ImportError:
-    have_threads = 0
-
 
 import unittest
-from test_all import verbose
+from test_all import db, test_support, verbose, have_threads, \
+        get_new_environment_path, get_new_database_path
 
-try:
-    # For Pythons w/distutils pybsddb
-    from bsddb3 import db
-except ImportError:
-    # For Python 2.3
-    from bsddb import db
-
+if have_threads :
+    from threading import Thread
+    import sys
+    if sys.version_info[0] < 3 :
+        from threading import currentThread
+    else :
+        from threading import current_thread as currentThread
 
 #----------------------------------------------------------------------
 
 class LockingTestCase(unittest.TestCase):
+    import sys
+    if sys.version_info[:3] < (2, 4, 0):
+        def assertTrue(self, expr, msg=None):
+            self.failUnless(expr,msg=msg)
+
 
     def setUp(self):
-        homeDir = os.path.join(os.path.dirname(sys.argv[0]), 'db_home')
-        self.homeDir = homeDir
-        try: os.mkdir(homeDir)
-        except os.error: pass
+        self.homeDir = get_new_environment_path()
         self.env = db.DBEnv()
-        self.env.open(homeDir, db.DB_THREAD | db.DB_INIT_MPOOL |
-                      db.DB_INIT_LOCK | db.DB_CREATE)
+        self.env.open(self.homeDir, db.DB_THREAD | db.DB_INIT_MPOOL |
+                                    db.DB_INIT_LOCK | db.DB_CREATE)
 
 
     def tearDown(self):
         self.env.close()
-        import glob
-        files = glob.glob(os.path.join(self.homeDir, '*'))
-        for file in files:
-            os.remove(file)
+        test_support.rmtree(self.homeDir)
 
 
     def test01_simple(self):
@@ -58,12 +48,10 @@ class LockingTestCase(unittest.TestCase):
         lock = self.env.lock_get(anID, "some locked thing", db.DB_LOCK_WRITE)
         if verbose:
             print "Aquired lock: %s" % lock
-        time.sleep(1)
         self.env.lock_put(lock)
         if verbose:
             print "Released lock: %s" % lock
-
-
+        self.env.lock_id_free(anID)
 
 
     def test02_threaded(self):
@@ -73,39 +61,86 @@ class LockingTestCase(unittest.TestCase):
 
         threads = []
         threads.append(Thread(target = self.theThread,
-                              args=(5, db.DB_LOCK_WRITE)))
+                              args=(db.DB_LOCK_WRITE,)))
         threads.append(Thread(target = self.theThread,
-                              args=(1, db.DB_LOCK_READ)))
+                              args=(db.DB_LOCK_READ,)))
         threads.append(Thread(target = self.theThread,
-                              args=(1, db.DB_LOCK_READ)))
+                              args=(db.DB_LOCK_READ,)))
         threads.append(Thread(target = self.theThread,
-                              args=(1, db.DB_LOCK_WRITE)))
+                              args=(db.DB_LOCK_WRITE,)))
         threads.append(Thread(target = self.theThread,
-                              args=(1, db.DB_LOCK_READ)))
+                              args=(db.DB_LOCK_READ,)))
         threads.append(Thread(target = self.theThread,
-                              args=(1, db.DB_LOCK_READ)))
+                              args=(db.DB_LOCK_READ,)))
         threads.append(Thread(target = self.theThread,
-                              args=(1, db.DB_LOCK_WRITE)))
+                              args=(db.DB_LOCK_WRITE,)))
         threads.append(Thread(target = self.theThread,
-                              args=(1, db.DB_LOCK_WRITE)))
+                              args=(db.DB_LOCK_WRITE,)))
         threads.append(Thread(target = self.theThread,
-                              args=(1, db.DB_LOCK_WRITE)))
+                              args=(db.DB_LOCK_WRITE,)))
 
         for t in threads:
+            import sys
+            if sys.version_info[0] < 3 :
+                t.setDaemon(True)
+            else :
+                t.daemon = True
             t.start()
         for t in threads:
             t.join()
 
-    def test03_set_timeout(self):
-        # test that the set_timeout call works
-        if hasattr(self.env, 'set_timeout'):
-            self.env.set_timeout(0, db.DB_SET_LOCK_TIMEOUT)
-            self.env.set_timeout(0, db.DB_SET_TXN_TIMEOUT)
-            self.env.set_timeout(123456, db.DB_SET_LOCK_TIMEOUT)
-            self.env.set_timeout(7890123, db.DB_SET_TXN_TIMEOUT)
+    def test03_lock_timeout(self):
+        self.env.set_timeout(0, db.DB_SET_LOCK_TIMEOUT)
+        self.env.set_timeout(0, db.DB_SET_TXN_TIMEOUT)
+        self.env.set_timeout(123456, db.DB_SET_LOCK_TIMEOUT)
+        self.env.set_timeout(7890123, db.DB_SET_TXN_TIMEOUT)
 
-    def theThread(self, sleepTime, lockType):
-        name = currentThread().getName()
+        def deadlock_detection() :
+            while not deadlock_detection.end :
+                deadlock_detection.count = \
+                    self.env.lock_detect(db.DB_LOCK_EXPIRE)
+                if deadlock_detection.count :
+                    while not deadlock_detection.end :
+                        pass
+                    break
+                time.sleep(0.01)
+
+        deadlock_detection.end=False
+        deadlock_detection.count=0
+        t=Thread(target=deadlock_detection)
+        import sys
+        if sys.version_info[0] < 3 :
+            t.setDaemon(True)
+        else :
+            t.daemon = True
+        t.start()
+        self.env.set_timeout(100000, db.DB_SET_LOCK_TIMEOUT)
+        anID = self.env.lock_id()
+        anID2 = self.env.lock_id()
+        self.assertNotEqual(anID, anID2)
+        lock = self.env.lock_get(anID, "shared lock", db.DB_LOCK_WRITE)
+        start_time=time.time()
+        self.assertRaises(db.DBLockNotGrantedError,
+                self.env.lock_get,anID2, "shared lock", db.DB_LOCK_READ)
+        end_time=time.time()
+        deadlock_detection.end=True
+        self.assertTrue((end_time-start_time) >= 0.0999)
+        self.env.lock_put(lock)
+        t.join()
+
+        self.env.lock_id_free(anID)
+        self.env.lock_id_free(anID2)
+
+        if db.version() >= (4,6):
+            self.assertTrue(deadlock_detection.count>0)
+
+    def theThread(self, lockType):
+        import sys
+        if sys.version_info[0] < 3 :
+            name = currentThread().getName()
+        else :
+            name = currentThread().name
+
         if lockType ==  db.DB_LOCK_WRITE:
             lt = "write"
         else:
@@ -115,15 +150,16 @@ class LockingTestCase(unittest.TestCase):
         if verbose:
             print "%s: locker ID: %s" % (name, anID)
 
-        lock = self.env.lock_get(anID, "some locked thing", lockType)
-        if verbose:
-            print "%s: Aquired %s lock: %s" % (name, lt, lock)
+        for i in xrange(1000) :
+            lock = self.env.lock_get(anID, "some locked thing", lockType)
+            if verbose:
+                print "%s: Aquired %s lock: %s" % (name, lt, lock)
 
-        time.sleep(sleepTime)
+            self.env.lock_put(lock)
+            if verbose:
+                print "%s: Released %s lock: %s" % (name, lt, lock)
 
-        self.env.lock_put(lock)
-        if verbose:
-            print "%s: Released %s lock: %s" % (name, lt, lock)
+        self.env.lock_id_free(anID)
 
 
 #----------------------------------------------------------------------

@@ -1,43 +1,31 @@
 
-import sys, os, string
+import os, string
 import unittest
-import glob
 
-try:
-    # For Pythons w/distutils pybsddb
-    from bsddb3 import db, dbobj
-except ImportError:
-    # For Python 2.3
-    from bsddb import db, dbobj
-
+from test_all import db, dbobj, test_support, get_new_environment_path, \
+        get_new_database_path
 
 #----------------------------------------------------------------------
 
 class dbobjTestCase(unittest.TestCase):
     """Verify that dbobj.DB and dbobj.DBEnv work properly"""
-    db_home = 'db_home'
     db_name = 'test-dbobj.db'
 
     def setUp(self):
-        homeDir = os.path.join(os.path.dirname(sys.argv[0]), 'db_home')
-        self.homeDir = homeDir
-        try: os.mkdir(homeDir)
-        except os.error: pass
+        self.homeDir = get_new_environment_path()
 
     def tearDown(self):
         if hasattr(self, 'db'):
             del self.db
         if hasattr(self, 'env'):
             del self.env
-        files = glob.glob(os.path.join(self.homeDir, '*'))
-        for file in files:
-            os.remove(file)
+        test_support.rmtree(self.homeDir)
 
     def test01_both(self):
         class TestDBEnv(dbobj.DBEnv): pass
         class TestDB(dbobj.DB):
             def put(self, key, *args, **kwargs):
-                key = string.upper(key)
+                key = key.upper()
                 # call our parent classes put method with an upper case key
                 return apply(dbobj.DB.put, (self, key) + args, kwargs)
         self.env = TestDBEnv()
@@ -45,10 +33,10 @@ class dbobjTestCase(unittest.TestCase):
         self.db = TestDB(self.env)
         self.db.open(self.db_name, db.DB_HASH, db.DB_CREATE)
         self.db.put('spam', 'eggs')
-        assert self.db.get('spam') == None, \
-               "overridden dbobj.DB.put() method failed [1]"
-        assert self.db.get('SPAM') == 'eggs', \
-               "overridden dbobj.DB.put() method failed [2]"
+        self.assertEqual(self.db.get('spam'), None,
+               "overridden dbobj.DB.put() method failed [1]")
+        self.assertEqual(self.db.get('SPAM'), 'eggs',
+               "overridden dbobj.DB.put() method failed [2]")
         self.db.close()
         self.env.close()
 
@@ -60,14 +48,18 @@ class dbobjTestCase(unittest.TestCase):
         # __setitem__
         self.db['spam'] = 'eggs'
         # __len__
-        assert len(self.db) == 1
+        self.assertEqual(len(self.db), 1)
         # __getitem__
-        assert self.db['spam'] == 'eggs'
+        self.assertEqual(self.db['spam'], 'eggs')
         # __del__
         del self.db['spam']
-        assert self.db.get('spam') == None, "dbobj __del__ failed"
+        self.assertEqual(self.db.get('spam'), None, "dbobj __del__ failed")
         self.db.close()
         self.env.close()
+
+    def test03_dbobj_type_before_open(self):
+        # Ensure this doesn't cause a segfault.
+        self.assertRaises(db.DBInvalidArgError, db.DB().type)
 
 #----------------------------------------------------------------------
 

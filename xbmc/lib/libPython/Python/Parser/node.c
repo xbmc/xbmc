@@ -62,10 +62,10 @@ fancy_roundup(int n)
  * Win98).
  *
  * In a run of compileall across the 2.3a0 Lib directory, Andrew MacIntyre
- * reported that, with this scheme, 89% of PyMem_RESIZE calls in
+ * reported that, with this scheme, 89% of PyObject_REALLOC calls in
  * PyNode_AddChild passed 1 for the size, and 9% passed 4.  So this usually
  * wastes very little memory, but is very effective at sidestepping
- * platform-realloc disasters on vulnernable platforms.
+ * platform-realloc disasters on vulnerable platforms.
  *
  * Note that this would be straightforward if a node stored its current
  * capacity.  The code is tricky to avoid that.
@@ -76,7 +76,7 @@ fancy_roundup(int n)
 
 
 int
-PyNode_AddChild(register node *n1, int type, char *str, int lineno)
+PyNode_AddChild(register node *n1, int type, char *str, int lineno, int col_offset)
 {
 	const int nch = n1->n_nchildren;
 	int current_capacity;
@@ -106,6 +106,7 @@ PyNode_AddChild(register node *n1, int type, char *str, int lineno)
 	n->n_type = type;
 	n->n_str = str;
 	n->n_lineno = lineno;
+	n->n_col_offset = col_offset;
 	n->n_nchildren = 0;
 	n->n_child = NULL;
 	return 0;

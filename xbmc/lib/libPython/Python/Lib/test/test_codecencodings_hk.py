@@ -3,7 +3,6 @@
 # test_codecencodings_hk.py
 #   Codec encoding tests for HongKong encodings.
 #
-# $CJKCodecs: test_codecencodings_hk.py,v 1.1 2004/07/10 17:35:20 perky Exp $
 
 from test import test_support
 from test import test_multibytecodec_support
@@ -22,9 +21,7 @@ class Test_Big5HKSCS(test_multibytecodec_support.TestBase, unittest.TestCase):
     )
 
 def test_main():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(Test_Big5HKSCS))
-    test_support.run_suite(suite)
+    test_support.run_unittest(__name__)
 
 if __name__ == "__main__":
     test_main()

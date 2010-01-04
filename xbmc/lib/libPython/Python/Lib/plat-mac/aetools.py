@@ -21,6 +21,9 @@ files: the pack stuff from aepack, the objects from aetypes.
 """
 
 
+from warnings import warnpy3k
+warnpy3k("In 3.x, the aetools module is removed.", stacklevel=2)
+
 from types import *
 from Carbon import AE
 from Carbon import Evt
@@ -233,7 +236,7 @@ class TalkTo:
         """Send 'activate' command"""
         self.send('misc', 'actv')
 
-    def _get(self, _object, as=None, _attributes={}):
+    def _get(self, _object, asfile=None, _attributes={}):
         """_get: get data from an object
         Required argument: the object
         Keyword argument _attributes: AppleEvent attribute dictionary
@@ -243,8 +246,8 @@ class TalkTo:
         _subcode = 'getd'
 
         _arguments = {'----':_object}
-        if as:
-            _arguments['rtyp'] = mktype(as)
+        if asfile:
+            _arguments['rtyp'] = mktype(asfile)
 
         _reply, _arguments, _attributes = self.send(_code, _subcode,
                 _arguments, _attributes)
@@ -253,8 +256,8 @@ class TalkTo:
 
         if _arguments.has_key('----'):
             return _arguments['----']
-            if as:
-                item.__class__ = as
+            if asfile:
+                item.__class__ = asfile
             return item
 
     get = _get

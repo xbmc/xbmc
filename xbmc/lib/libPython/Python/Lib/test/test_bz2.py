@@ -5,7 +5,7 @@ from test.test_support import TESTFN
 import unittest
 from cStringIO import StringIO
 import os
-import popen2
+import subprocess
 import sys
 
 import bz2
@@ -21,18 +21,20 @@ class BaseTest(unittest.TestCase):
 
     if has_cmdline_bunzip2:
         def decompress(self, data):
-            pop = popen2.Popen3("bunzip2", capturestderr=1)
-            pop.tochild.write(data)
-            pop.tochild.close()
-            ret = pop.fromchild.read()
-            pop.fromchild.close()
+            pop = subprocess.Popen("bunzip2", shell=True,
+                                   stdin=subprocess.PIPE,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.STDOUT)
+            pop.stdin.write(data)
+            pop.stdin.close()
+            ret = pop.stdout.read()
+            pop.stdout.close()
             if pop.wait() != 0:
                 ret = bz2.decompress(data)
             return ret
 
     else:
-        # popen2.Popen3 doesn't exist on Windows, and even if it did, bunzip2
-        # isn't available to run.
+        # bunzip2 isn't available to run on Windows.
         def decompress(self, data):
             return bz2.decompress(data)
 
@@ -109,6 +111,17 @@ class BZ2FileTest(BaseTest):
         sio = StringIO(self.TEXT)
         self.assertEqual(list(iter(bz2f)), sio.readlines())
         bz2f.close()
+
+    def testClosedIteratorDeadlock(self):
+        # "Test that iteration on a closed bz2file releases the lock."
+        # http://bugs.python.org/issue3309
+        self.createTempFile()
+        bz2f = BZ2File(self.filename)
+        bz2f.close()
+        self.assertRaises(ValueError, bz2f.next)
+        # This call will deadlock of the above .next call failed to
+        # release the lock.
+        self.assertRaises(ValueError, bz2f.readlines)
 
     def testXReadLines(self):
         # "Test BZ2File.xreadlines()"
@@ -363,6 +376,7 @@ def test_main():
         BZ2DecompressorTest,
         FuncTest
     )
+    test_support.reap_children()
 
 if __name__ == '__main__':
     test_main()

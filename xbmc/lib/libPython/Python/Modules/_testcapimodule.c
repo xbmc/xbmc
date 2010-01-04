@@ -6,11 +6,12 @@
  */
 
 #include "Python.h"
+#include <float.h>
+#include "structmember.h"
 
 #ifdef WITH_THREAD
 #include "pythread.h"
 #endif /* WITH_THREAD */
-
 static PyObject *TestError;	/* set to exception object in init */
 
 /* Raise TestError with test_name + ": " + msg, and return NULL. */
@@ -36,13 +37,13 @@ raiseTestError(const char* test_name, const char* msg)
    platforms have these hardcoded.  Better safe than sorry.
 */
 static PyObject*
-sizeof_error(const char* fatname, const char* typename,
+sizeof_error(const char* fatname, const char* typname,
         int expected, int got)
 {
 	char buf[1024];
 	PyOS_snprintf(buf, sizeof(buf),
 		"%.200s #define == %d but sizeof(%.200s) == %d",
-		fatname, expected, typename, got);
+		fatname, expected, typname, got);
 	PyErr_SetString(TestError, buf);
 	return (PyObject*)NULL;
 }
@@ -115,7 +116,8 @@ test_list_api(PyObject *self)
 static int
 test_dict_inner(int count)
 {
-	int pos = 0, iterations = 0, i;
+	Py_ssize_t pos = 0, iterations = 0;
+	int i;
 	PyObject *dict = PyDict_New();
 	PyObject *v, *k;
 
@@ -168,6 +170,106 @@ test_dict_iteration(PyObject* self)
 
 	Py_INCREF(Py_None);
 	return Py_None;
+}
+
+
+/* Issue #4701: Check that PyObject_Hash implicitly calls
+ *   PyType_Ready if it hasn't already been called
+ */
+static PyTypeObject _HashInheritanceTester_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0,			/* Number of items for varobject */
+	"hashinheritancetester",	/* Name of this type */
+	sizeof(PyObject),	/* Basic object size */
+	0,			/* Item size for varobject */
+	(destructor)PyObject_Del, /* tp_dealloc */
+	0,			/* tp_print */
+	0,			/* tp_getattr */
+	0,			/* tp_setattr */
+	0,			/* tp_compare */
+	0,			/* tp_repr */
+	0,			/* tp_as_number */
+	0,			/* tp_as_sequence */
+	0,			/* tp_as_mapping */
+	0,			/* tp_hash */
+	0,			/* tp_call */
+	0,			/* tp_str */
+	PyObject_GenericGetAttr,  /* tp_getattro */
+	0,			/* tp_setattro */
+	0,			/* tp_as_buffer */
+	Py_TPFLAGS_DEFAULT,	/* tp_flags */
+	0,			/* tp_doc */
+	0,			/* tp_traverse */
+	0,			/* tp_clear */
+	0,			/* tp_richcompare */
+	0,			/* tp_weaklistoffset */
+	0,			/* tp_iter */
+	0,			/* tp_iternext */
+	0,			/* tp_methods */
+	0,			/* tp_members */
+	0,			/* tp_getset */
+	0,			/* tp_base */
+	0,			/* tp_dict */
+	0,			/* tp_descr_get */
+	0,			/* tp_descr_set */
+	0,			/* tp_dictoffset */
+	0,			/* tp_init */
+	0,			/* tp_alloc */
+	PyType_GenericNew,		/* tp_new */
+};
+
+static PyObject*
+test_lazy_hash_inheritance(PyObject* self)
+{
+	PyTypeObject *type;
+	PyObject *obj;
+	long hash;
+
+	type = &_HashInheritanceTester_Type;
+	obj = PyObject_New(PyObject, type);
+	if (obj == NULL) {
+		PyErr_Clear();
+		PyErr_SetString(
+			TestError,
+			"test_lazy_hash_inheritance: failed to create object");
+		return NULL;
+	}
+
+	if (type->tp_dict != NULL) {
+		PyErr_SetString(
+			TestError,
+			"test_lazy_hash_inheritance: type initialised too soon");
+		Py_DECREF(obj);
+		return NULL;
+	}
+
+	hash = PyObject_Hash(obj);
+	if ((hash == -1) && PyErr_Occurred()) {
+		PyErr_Clear();
+		PyErr_SetString(
+			TestError,
+			"test_lazy_hash_inheritance: could not hash object");
+		Py_DECREF(obj);
+		return NULL;
+	}
+
+	if (type->tp_dict == NULL) {
+		PyErr_SetString(
+			TestError,
+			"test_lazy_hash_inheritance: type not initialised by hash()");
+		Py_DECREF(obj);
+		return NULL;
+	}
+
+	if (type->tp_hash != PyType_Type.tp_hash) {
+		PyErr_SetString(
+			TestError,
+			"test_lazy_hash_inheritance: unexpected hash function");
+		Py_DECREF(obj);
+		return NULL;
+	}
+
+	Py_RETURN_NONE;
 }
 
 
@@ -234,7 +336,7 @@ raise_test_longlong_error(const char* msg)
 #include "testcapi_long.h"
 
 static PyObject *
-test_longlong_api(PyObject* self)
+test_longlong_api(PyObject* self, PyObject *args)
 {
 	return TESTNAME(raise_test_longlong_error);
 }
@@ -304,6 +406,22 @@ getargs_tuple(PyObject *self, PyObject *args)
 	return Py_BuildValue("iii", a, b, c);
 }
 
+/* test PyArg_ParseTupleAndKeywords */
+static PyObject *getargs_keywords(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+	static char *keywords[] = {"arg1","arg2","arg3","arg4","arg5", NULL};
+	static char *fmt="(ii)i|(i(ii))(iii)i";
+	int int_args[10]={-1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+
+	if (!PyArg_ParseTupleAndKeywords(args, kwargs, fmt, keywords,
+		&int_args[0], &int_args[1], &int_args[2], &int_args[3], &int_args[4],
+		&int_args[5], &int_args[6], &int_args[7], &int_args[8], &int_args[9]))
+		return NULL;
+	return Py_BuildValue("iiiiiiiiii",
+		int_args[0], int_args[1], int_args[2], int_args[3], int_args[4],
+		int_args[5], int_args[6], int_args[7], int_args[8], int_args[9]);
+}
+
 /* Functions to call PyArg_ParseTuple with integer format codes,
    and return the result.
 */
@@ -370,6 +488,15 @@ getargs_l(PyObject *self, PyObject *args)
 	return PyLong_FromLong(value);
 }
 
+static PyObject *
+getargs_n(PyObject *self, PyObject *args)
+{
+	Py_ssize_t value;
+	if (!PyArg_ParseTuple(args, "n", &value))
+	return NULL;
+	return PyInt_FromSsize_t(value);
+}
+
 #ifdef HAVE_LONG_LONG
 static PyObject *
 getargs_L(PyObject *self, PyObject *args)
@@ -414,7 +541,7 @@ test_k_code(PyObject *self)
 
         PyTuple_SET_ITEM(tuple, 0, num);
 
-        value = -1;
+        value = 0;
         if (PyArg_ParseTuple(tuple, "k:test_k_code", &value) < 0)
         	return NULL;
         if (value != ULONG_MAX)
@@ -433,7 +560,7 @@ test_k_code(PyObject *self)
 
         PyTuple_SET_ITEM(tuple, 0, num);
 
-	value = -1;
+	value = 0;
         if (PyArg_ParseTuple(tuple, "k:test_k_code", &value) < 0)
         	return NULL;
         if (value != (unsigned long)-0x42)
@@ -447,6 +574,8 @@ test_k_code(PyObject *self)
 
 #ifdef Py_USING_UNICODE
 
+static volatile int x;
+
 /* Test the u and u# codes for PyArg_ParseTuple. May leak memory in case
    of an error.
 */
@@ -456,6 +585,10 @@ test_u_code(PyObject *self)
 	PyObject *tuple, *obj;
 	Py_UNICODE *value;
 	int len;
+
+	/* issue4122: Undefined reference to _Py_ascii_whitespace on Windows */
+	/* Just use the macro and check that it compiles */
+	x = Py_UNICODE_ISSPACE(25);
 
         tuple = PyTuple_New(1);
         if (tuple == NULL)
@@ -485,6 +618,52 @@ test_u_code(PyObject *self)
 	Py_DECREF(tuple);
 	Py_INCREF(Py_None);
 	return Py_None;
+}
+
+static PyObject *
+test_empty_argparse(PyObject *self)
+{
+	/* Test that formats can begin with '|'. See issue #4720. */
+	PyObject *tuple, *dict = NULL;
+	static char *kwlist[] = {NULL};
+	int result;
+	tuple = PyTuple_New(0);
+	if (!tuple)
+		return NULL;
+	if ((result = PyArg_ParseTuple(tuple, "|:test_empty_argparse")) < 0)
+		goto done;
+	dict = PyDict_New();
+	if (!dict)
+		goto done;
+	result = PyArg_ParseTupleAndKeywords(tuple, dict, "|:test_empty_argparse", kwlist);
+  done:
+	Py_DECREF(tuple);
+	Py_XDECREF(dict);
+	if (result < 0)
+		return NULL;
+	else {
+		Py_RETURN_NONE;
+	}
+}
+
+static PyObject *
+codec_incrementalencoder(PyObject *self, PyObject *args)
+{
+	const char *encoding, *errors = NULL;
+	if (!PyArg_ParseTuple(args, "s|s:test_incrementalencoder",
+			      &encoding, &errors))
+		return NULL;
+	return PyCodec_IncrementalEncoder(encoding, errors);
+}
+
+static PyObject *
+codec_incrementaldecoder(PyObject *self, PyObject *args)
+{
+	const char *encoding, *errors = NULL;
+	if (!PyArg_ParseTuple(args, "s|s:test_incrementaldecoder",
+			      &encoding, &errors))
+		return NULL;
+	return PyCodec_IncrementalDecoder(encoding, errors);
 }
 
 #endif
@@ -553,6 +732,10 @@ raise_exception(PyObject *self, PyObject *args)
 	if (!PyArg_ParseTuple(args, "Oi:raise_exception",
 			      &exc, &num_args))
 		return NULL;
+	if (!PyExceptionClass_Check(exc)) {
+		PyErr_Format(PyExc_TypeError, "an exception class is required");
+		return NULL;
+	}
 
 	exc_args = PyTuple_New(num_args);
 	if (exc_args == NULL)
@@ -581,14 +764,17 @@ raise_exception(PyObject *self, PyObject *args)
  */
 static PyThread_type_lock thread_done = NULL;
 
-static void
+static int
 _make_call(void *callable)
 {
 	PyObject *rc;
+	int success;
 	PyGILState_STATE s = PyGILState_Ensure();
-	rc = PyObject_CallFunction(callable, "");
+	rc = PyObject_CallFunction((PyObject *)callable, "");
+	success = (rc != NULL);
 	Py_XDECREF(rc);
 	PyGILState_Release(s);
+	return success;
 }
 
 /* Same thing, but releases `thread_done` when it returns.  This variant
@@ -605,9 +791,16 @@ static PyObject *
 test_thread_state(PyObject *self, PyObject *args)
 {
 	PyObject *fn;
+	int success = 1;
 
 	if (!PyArg_ParseTuple(args, "O:test_thread_state", &fn))
 		return NULL;
+
+	if (!PyCallable_Check(fn)) {
+		PyErr_Format(PyExc_TypeError, "'%s' object is not callable",
+			fn->ob_type->tp_name);
+		return NULL;
+	}
 
 	/* Ensure Python is set up for threading */
 	PyEval_InitThreads();
@@ -619,10 +812,10 @@ test_thread_state(PyObject *self, PyObject *args)
 	/* Start a new thread with our callback. */
 	PyThread_start_new_thread(_make_call_from_thread, fn);
 	/* Make the callback with the thread lock held by this thread */
-	_make_call(fn);
+	success &= _make_call(fn);
 	/* Do it all again, but this time with the thread-lock released */
 	Py_BEGIN_ALLOW_THREADS
-	_make_call(fn);
+	success &= _make_call(fn);
 	PyThread_acquire_lock(thread_done, 1);  /* wait for thread to finish */
 	Py_END_ALLOW_THREADS
 
@@ -632,241 +825,301 @@ test_thread_state(PyObject *self, PyObject *args)
 	*/
 	Py_BEGIN_ALLOW_THREADS
 	PyThread_start_new_thread(_make_call_from_thread, fn);
-	_make_call(fn);
+	success &= _make_call(fn);
 	PyThread_acquire_lock(thread_done, 1);  /* wait for thread to finish */
 	Py_END_ALLOW_THREADS
 
+	/* Release lock we acquired above.  This is required on HP-UX. */
+	PyThread_release_lock(thread_done);
+
 	PyThread_free_lock(thread_done);
+	if (!success)
+		return NULL;
 	Py_RETURN_NONE;
 }
 #endif
 
-/* a classic-type with copyable instances */
-
-typedef struct {
-	PyObject_HEAD
-	/* instance tag (a string). */
-	PyObject* tag;
-} CopyableObject;
-
-staticforward PyTypeObject Copyable_Type;
-
-#define Copyable_CheckExact(op) ((op)->ob_type == &Copyable_Type)
-
-/* -------------------------------------------------------------------- */
-
-/* copyable constructor and destructor */
-static PyObject*
-copyable_new(PyObject* tag)
+/* Some tests of PyString_FromFormat().  This needs more tests. */
+static PyObject *
+test_string_from_format(PyObject *self, PyObject *args)
 {
-	CopyableObject* self;
+	PyObject *result;
+	char *msg;
 
-	self = PyObject_New(CopyableObject, &Copyable_Type);
-	if (self == NULL)
-		return NULL;
-	Py_INCREF(tag);
-	self->tag = tag;
-	return (PyObject*) self;
+#define CHECK_1_FORMAT(FORMAT, TYPE) 			\
+	result = PyString_FromFormat(FORMAT, (TYPE)1);	\
+	if (result == NULL)				\
+		return NULL;				\
+	if (strcmp(PyString_AsString(result), "1")) {	\
+		msg = FORMAT " failed at 1";		\
+		goto Fail;				\
+	}						\
+	Py_DECREF(result)
+
+	CHECK_1_FORMAT("%d", int);
+	CHECK_1_FORMAT("%ld", long);
+	/* The z width modifier was added in Python 2.5. */
+	CHECK_1_FORMAT("%zd", Py_ssize_t);
+
+	/* The u type code was added in Python 2.5. */
+	CHECK_1_FORMAT("%u", unsigned int);
+	CHECK_1_FORMAT("%lu", unsigned long);
+	CHECK_1_FORMAT("%zu", size_t);
+
+	Py_RETURN_NONE;
+
+ Fail:
+ 	Py_XDECREF(result);
+	return raiseTestError("test_string_from_format", msg);
+
+#undef CHECK_1_FORMAT
 }
 
-static PyObject*
-copyable(PyObject* self, PyObject* args, PyObject* kw)
+/* This is here to provide a docstring for test_descr. */
+static PyObject *
+test_with_docstring(PyObject *self)
 {
-	PyObject* elem;
-	PyObject* tag;
-	if (!PyArg_ParseTuple(args, "O:Copyable", &tag))
-		return NULL;
-	elem = copyable_new(tag);
-	return elem;
+	Py_RETURN_NONE;
 }
 
-static void
-copyable_dealloc(CopyableObject* self)
+/* To test the format of tracebacks as printed out. */
+static PyObject *
+traceback_print(PyObject *self, PyObject *args)
 {
-	/* discard attributes */
-	Py_DECREF(self->tag);
-	PyObject_Del(self);
-}
-
-/* copyable methods */
-
-static PyObject*
-copyable_copy(CopyableObject* self, PyObject* args)
-{
-	CopyableObject* copyable;
-	if (!PyArg_ParseTuple(args, ":__copy__"))
-		return NULL;
-	copyable = (CopyableObject*)copyable_new(self->tag);
-	if (!copyable)
-		return NULL;
-	return (PyObject*) copyable;
-}
-
-PyObject* _copy_deepcopy;
-
-static PyObject*
-copyable_deepcopy(CopyableObject* self, PyObject* args)
-{
-	CopyableObject* copyable = 0;
-	PyObject* memo;
-	PyObject* tag_copy;
-	if (!PyArg_ParseTuple(args, "O:__deepcopy__", &memo))
-		return NULL;
-
-	tag_copy = PyObject_CallFunctionObjArgs(_copy_deepcopy, self->tag, memo, NULL);
-
-	if(tag_copy) {
-		copyable = (CopyableObject*)copyable_new(tag_copy);
-		Py_DECREF(tag_copy);
-	}
-	return (PyObject*) copyable;
-}
-
-static PyObject*
-copyable_repr(CopyableObject* self)
-{
-	PyObject* repr;
-	char buffer[100];
+	PyObject *file;
+	PyObject *traceback;
+	int result;
 	
-	repr = PyString_FromString("<Copyable {");
-
-	PyString_ConcatAndDel(&repr, PyObject_Repr(self->tag));
-
-	sprintf(buffer, "} at %p>", self);
-	PyString_ConcatAndDel(&repr, PyString_FromString(buffer));
-
-	return repr;
-}
-
-static int
-copyable_compare(CopyableObject* obj1, CopyableObject* obj2)
-{
-	return PyObject_Compare(obj1->tag, obj2->tag);
-}
-
-static PyMethodDef copyable_methods[] = {
-	{"__copy__", (PyCFunction) copyable_copy, METH_VARARGS},
-	{"__deepcopy__", (PyCFunction) copyable_deepcopy, METH_VARARGS},
-	{NULL, NULL}
-};
-
-static PyObject*  
-copyable_getattr(CopyableObject* self, char* name)
-{
-	PyObject* res;
-	res = Py_FindMethod(copyable_methods, (PyObject*) self, name);
-	if (res)
-	return res;
-	PyErr_Clear();
-	if (strcmp(name, "tag") == 0) {
-	res = self->tag;
-	} else {
-		PyErr_SetString(PyExc_AttributeError, name);
+	if (!PyArg_ParseTuple(args, "OO:traceback_print",
+				&traceback, &file))
 		return NULL;
-	}
-	if (!res)
+		
+	result = PyTraceBack_Print(traceback, file);
+	if (result < 0)
 		return NULL;
-	Py_INCREF(res);
-	return res;
+	Py_RETURN_NONE;
 }
-
-static int
-copyable_setattr(CopyableObject* self, const char* name, PyObject* value)
-{
-	if (value == NULL) {
-		PyErr_SetString(
-			PyExc_AttributeError,
-			"can't delete copyable attributes"
-			);
-		return -1;
-	}
-	if (strcmp(name, "tag") == 0) {
-		Py_DECREF(self->tag);
-		self->tag = value;
-		Py_INCREF(self->tag);
-	} else {
-		PyErr_SetString(PyExc_AttributeError, name);
-		return -1;
-	}
-	return 0;
-}
-
-statichere PyTypeObject Copyable_Type = {
-	PyObject_HEAD_INIT(NULL)
-	0, "Copyable", sizeof(CopyableObject), 0,
-	/* methods */
-	(destructor)copyable_dealloc, /* tp_dealloc */
-	0, /* tp_print */
-	(getattrfunc)copyable_getattr, /* tp_getattr */
-	(setattrfunc)copyable_setattr, /* tp_setattr */
-	(cmpfunc)copyable_compare, /* tp_compare */
-	(reprfunc)copyable_repr, /* tp_repr */
-	0, /* tp_as_number */
-};
 
 static PyMethodDef TestMethods[] = {
 	{"raise_exception",	raise_exception,		 METH_VARARGS},
 	{"test_config",		(PyCFunction)test_config,	 METH_NOARGS},
 	{"test_list_api",	(PyCFunction)test_list_api,	 METH_NOARGS},
 	{"test_dict_iteration",	(PyCFunction)test_dict_iteration,METH_NOARGS},
+	{"test_lazy_hash_inheritance",	(PyCFunction)test_lazy_hash_inheritance,METH_NOARGS},
 	{"test_long_api",	(PyCFunction)test_long_api,	 METH_NOARGS},
 	{"test_long_numbits",	(PyCFunction)test_long_numbits,	 METH_NOARGS},
 	{"test_k_code",		(PyCFunction)test_k_code,	 METH_NOARGS},
+	{"test_empty_argparse", (PyCFunction)test_empty_argparse,METH_NOARGS},
 	{"test_null_strings",	(PyCFunction)test_null_strings,	 METH_NOARGS},
+	{"test_string_from_format", (PyCFunction)test_string_from_format, METH_NOARGS},
+	{"test_with_docstring", (PyCFunction)test_with_docstring, METH_NOARGS,
+	 PyDoc_STR("This is a pretty normal docstring.")},
 
-	{"getargs_tuple",	(PyCFunction)getargs_tuple,	 METH_VARARGS},
-	{"getargs_b",		(PyCFunction)getargs_b,		 METH_VARARGS},
-	{"getargs_B",		(PyCFunction)getargs_B,		 METH_VARARGS},
-	{"getargs_H",		(PyCFunction)getargs_H,		 METH_VARARGS},
-	{"getargs_I",		(PyCFunction)getargs_I,		 METH_VARARGS},
-	{"getargs_k",		(PyCFunction)getargs_k,		 METH_VARARGS},
-	{"getargs_i",		(PyCFunction)getargs_i,		 METH_VARARGS},
-	{"getargs_l",		(PyCFunction)getargs_l,		 METH_VARARGS},
+	{"getargs_tuple",	getargs_tuple,			 METH_VARARGS},
+	{"getargs_keywords", (PyCFunction)getargs_keywords, 
+	  METH_VARARGS|METH_KEYWORDS},
+	{"getargs_b",		getargs_b,			 METH_VARARGS},
+	{"getargs_B",		getargs_B,			 METH_VARARGS},
+	{"getargs_H",		getargs_H,			 METH_VARARGS},
+	{"getargs_I",		getargs_I,			 METH_VARARGS},
+	{"getargs_k",		getargs_k,			 METH_VARARGS},
+	{"getargs_i",		getargs_i,			 METH_VARARGS},
+	{"getargs_l",		getargs_l,			 METH_VARARGS},
+	{"getargs_n",		getargs_n, 			 METH_VARARGS},
 #ifdef HAVE_LONG_LONG
-	{"getargs_L",		(PyCFunction)getargs_L,		 METH_VARARGS},
-	{"getargs_K",		(PyCFunction)getargs_K,		 METH_VARARGS},
-	{"test_longlong_api",	(PyCFunction)test_longlong_api,	 METH_NOARGS},
+	{"getargs_L",		getargs_L,			 METH_VARARGS},
+	{"getargs_K",		getargs_K,			 METH_VARARGS},
+	{"test_longlong_api",	test_longlong_api,		 METH_NOARGS},
 	{"test_L_code",		(PyCFunction)test_L_code,	 METH_NOARGS},
+	{"codec_incrementalencoder",
+	 (PyCFunction)codec_incrementalencoder,	 METH_VARARGS},
+	{"codec_incrementaldecoder",
+	 (PyCFunction)codec_incrementaldecoder,	 METH_VARARGS},
 #endif
 #ifdef Py_USING_UNICODE
 	{"test_u_code",		(PyCFunction)test_u_code,	 METH_NOARGS},
 #endif
 #ifdef WITH_THREAD
-	{"_test_thread_state",	(PyCFunction)test_thread_state, METH_VARARGS},
+	{"_test_thread_state",  test_thread_state, 		 METH_VARARGS},
 #endif
-	{"make_copyable",	(PyCFunction) copyable,		METH_VARARGS},
+	{"traceback_print", traceback_print, 	         METH_VARARGS},
 	{NULL, NULL} /* sentinel */
-
 };
 
 #define AddSym(d, n, f, v) {PyObject *o = f(v); PyDict_SetItemString(d, n, o); Py_DECREF(o);}
+
+typedef struct {
+	char bool_member;
+	char byte_member;
+	unsigned char ubyte_member;
+	short short_member;
+	unsigned short ushort_member;
+	int int_member;
+	unsigned int uint_member;
+	long long_member;
+	unsigned long ulong_member;
+	float float_member;
+	double double_member;
+#ifdef HAVE_LONG_LONG
+	PY_LONG_LONG longlong_member;
+	unsigned PY_LONG_LONG ulonglong_member;
+#endif
+} all_structmembers;
+
+typedef struct {
+    PyObject_HEAD
+	all_structmembers structmembers;
+} test_structmembers;
+
+static struct PyMemberDef test_members[] = {
+	{"T_BOOL", T_BOOL, offsetof(test_structmembers, structmembers.bool_member), 0, NULL},
+	{"T_BYTE", T_BYTE, offsetof(test_structmembers, structmembers.byte_member), 0, NULL},
+	{"T_UBYTE", T_UBYTE, offsetof(test_structmembers, structmembers.ubyte_member), 0, NULL},
+	{"T_SHORT", T_SHORT, offsetof(test_structmembers, structmembers.short_member), 0, NULL},
+	{"T_USHORT", T_USHORT, offsetof(test_structmembers, structmembers.ushort_member), 0, NULL},
+	{"T_INT", T_INT, offsetof(test_structmembers, structmembers.int_member), 0, NULL},
+	{"T_UINT", T_UINT, offsetof(test_structmembers, structmembers.uint_member), 0, NULL},
+	{"T_LONG", T_LONG, offsetof(test_structmembers, structmembers.long_member), 0, NULL},
+	{"T_ULONG", T_ULONG, offsetof(test_structmembers, structmembers.ulong_member), 0, NULL},
+	{"T_FLOAT", T_FLOAT, offsetof(test_structmembers, structmembers.float_member), 0, NULL},
+	{"T_DOUBLE", T_DOUBLE, offsetof(test_structmembers, structmembers.double_member), 0, NULL},
+#ifdef HAVE_LONG_LONG
+	{"T_LONGLONG", T_LONGLONG, offsetof(test_structmembers, structmembers.longlong_member), 0, NULL},
+	{"T_ULONGLONG", T_ULONGLONG, offsetof(test_structmembers, structmembers.ulonglong_member), 0, NULL},
+#endif
+	{NULL}
+};
+
+
+static PyObject *
+test_structmembers_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
+{
+	static char *keywords[] = {
+		"T_BOOL", "T_BYTE", "T_UBYTE", "T_SHORT", "T_USHORT",
+		"T_INT", "T_UINT", "T_LONG", "T_ULONG",
+		"T_FLOAT", "T_DOUBLE",
+#ifdef HAVE_LONG_LONG	
+		"T_LONGLONG", "T_ULONGLONG",
+#endif
+		NULL};
+	static char *fmt = "|bbBhHiIlkfd"
+#ifdef HAVE_LONG_LONG
+		"LK"
+#endif
+		;
+	test_structmembers *ob;
+	ob = PyObject_New(test_structmembers, type);
+	if (ob == NULL)
+		return NULL;
+	memset(&ob->structmembers, 0, sizeof(all_structmembers));
+	if (!PyArg_ParseTupleAndKeywords(args, kwargs, fmt, keywords,
+					 &ob->structmembers.bool_member,
+					 &ob->structmembers.byte_member,
+					 &ob->structmembers.ubyte_member,
+					 &ob->structmembers.short_member,
+					 &ob->structmembers.ushort_member,
+					 &ob->structmembers.int_member,
+					 &ob->structmembers.uint_member, 
+					 &ob->structmembers.long_member,
+					 &ob->structmembers.ulong_member,
+					 &ob->structmembers.float_member,
+					 &ob->structmembers.double_member
+#ifdef HAVE_LONG_LONG
+					 , &ob->structmembers.longlong_member,
+					 &ob->structmembers.ulonglong_member
+#endif
+		)) {
+		Py_DECREF(ob);
+		return NULL;
+	}
+	return (PyObject *)ob;
+}
+
+static void
+test_structmembers_free(PyObject *ob)
+{
+	PyObject_FREE(ob);
+}
+
+static PyTypeObject test_structmembersType = {
+    PyVarObject_HEAD_INIT(NULL, 0)
+	"test_structmembersType",
+	sizeof(test_structmembers),	/* tp_basicsize */
+	0,				/* tp_itemsize */
+	test_structmembers_free,	/* destructor tp_dealloc */
+	0,				/* tp_print */
+	0,				/* tp_getattr */
+	0,				/* tp_setattr */
+	0,				/* tp_compare */
+	0,				/* tp_repr */
+	0,				/* tp_as_number */
+	0,				/* tp_as_sequence */
+	0,				/* tp_as_mapping */
+	0,				/* tp_hash */
+	0,				/* tp_call */
+	0,				/* tp_str */
+	PyObject_GenericGetAttr,	/* tp_getattro */
+	PyObject_GenericSetAttr,	/* tp_setattro */
+	0,				/* tp_as_buffer */
+	0,				/* tp_flags */
+	"Type containing all structmember types",
+	0,				/* traverseproc tp_traverse */
+	0,				/* tp_clear */
+	0,				/* tp_richcompare */
+	0,				/* tp_weaklistoffset */
+	0,				/* tp_iter */
+	0,				/* tp_iternext */
+	0,				/* tp_methods */
+	test_members,			/* tp_members */
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	test_structmembers_new,	       	/* tp_new */
+};
+
 
 PyMODINIT_FUNC
 init_testcapi(void)
 {
 	PyObject *m;
-	PyObject *copy_module;
-
-
-	copy_module = PyImport_ImportModule("copy");
-	if(!copy_module)
-		return;
-	_copy_deepcopy = PyObject_GetAttrString(copy_module, "deepcopy");
-	Py_DECREF(copy_module);
-	Copyable_Type.ob_type = &PyType_Type;
 
 	m = Py_InitModule("_testcapi", TestMethods);
 	if (m == NULL)
 		return;
 
+	Py_TYPE(&_HashInheritanceTester_Type)=&PyType_Type;
+
+	Py_TYPE(&test_structmembersType)=&PyType_Type;
+	Py_INCREF(&test_structmembersType);
+	PyModule_AddObject(m, "test_structmembersType", (PyObject *)&test_structmembersType);
+
+	PyModule_AddObject(m, "CHAR_MAX", PyInt_FromLong(CHAR_MAX));
+	PyModule_AddObject(m, "CHAR_MIN", PyInt_FromLong(CHAR_MIN));
 	PyModule_AddObject(m, "UCHAR_MAX", PyInt_FromLong(UCHAR_MAX));
+	PyModule_AddObject(m, "SHRT_MAX", PyInt_FromLong(SHRT_MAX));
+	PyModule_AddObject(m, "SHRT_MIN", PyInt_FromLong(SHRT_MIN));
 	PyModule_AddObject(m, "USHRT_MAX", PyInt_FromLong(USHRT_MAX));
+	PyModule_AddObject(m, "INT_MAX",  PyLong_FromLong(INT_MAX));
+	PyModule_AddObject(m, "INT_MIN",  PyLong_FromLong(INT_MIN));
 	PyModule_AddObject(m, "UINT_MAX",  PyLong_FromUnsignedLong(UINT_MAX));
-	PyModule_AddObject(m, "ULONG_MAX", PyLong_FromUnsignedLong(ULONG_MAX));
-	PyModule_AddObject(m, "INT_MIN", PyInt_FromLong(INT_MIN));
-	PyModule_AddObject(m, "LONG_MIN", PyInt_FromLong(LONG_MIN));
-	PyModule_AddObject(m, "INT_MAX", PyInt_FromLong(INT_MAX));
 	PyModule_AddObject(m, "LONG_MAX", PyInt_FromLong(LONG_MAX));
+	PyModule_AddObject(m, "LONG_MIN", PyInt_FromLong(LONG_MIN));
+	PyModule_AddObject(m, "ULONG_MAX", PyLong_FromUnsignedLong(ULONG_MAX));
+	PyModule_AddObject(m, "FLT_MAX", PyFloat_FromDouble(FLT_MAX));
+	PyModule_AddObject(m, "FLT_MIN", PyFloat_FromDouble(FLT_MIN));
+	PyModule_AddObject(m, "DBL_MAX", PyFloat_FromDouble(DBL_MAX));
+	PyModule_AddObject(m, "DBL_MIN", PyFloat_FromDouble(DBL_MIN));
+	PyModule_AddObject(m, "LLONG_MAX", PyLong_FromLongLong(PY_LLONG_MAX));
+	PyModule_AddObject(m, "LLONG_MIN", PyLong_FromLongLong(PY_LLONG_MIN));
+	PyModule_AddObject(m, "ULLONG_MAX", PyLong_FromUnsignedLongLong(PY_ULLONG_MAX));
+	PyModule_AddObject(m, "PY_SSIZE_T_MAX", PyInt_FromSsize_t(PY_SSIZE_T_MAX));
+	PyModule_AddObject(m, "PY_SSIZE_T_MIN", PyInt_FromSsize_t(PY_SSIZE_T_MIN));
+	PyModule_AddObject(m, "SIZEOF_PYGC_HEAD", PyInt_FromSsize_t(sizeof(PyGC_Head)));
 
 	TestError = PyErr_NewException("_testcapi.error", NULL, NULL);
 	Py_INCREF(TestError);

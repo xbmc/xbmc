@@ -19,7 +19,22 @@ typedef struct {
 PyAPI_DATA(PyTypeObject) PyFloat_Type;
 
 #define PyFloat_Check(op) PyObject_TypeCheck(op, &PyFloat_Type)
-#define PyFloat_CheckExact(op) ((op)->ob_type == &PyFloat_Type)
+#define PyFloat_CheckExact(op) (Py_TYPE(op) == &PyFloat_Type)
+
+#ifdef Py_NAN
+#define Py_RETURN_NAN return PyFloat_FromDouble(Py_NAN)
+#endif
+
+#define Py_RETURN_INF(sign) do					\
+	if (copysign(1., sign) == 1.) {				\
+		return PyFloat_FromDouble(Py_HUGE_VAL);	\
+	} else {						\
+		return PyFloat_FromDouble(-Py_HUGE_VAL);	\
+	} while(0)
+
+PyAPI_FUNC(double) PyFloat_GetMax(void);
+PyAPI_FUNC(double) PyFloat_GetMin(void);
+PyAPI_FUNC(PyObject *) PyFloat_GetInfo(void);
 
 /* Return Python float from string PyObject.  Second argument ignored on
    input, and, if non-NULL, NULL is stored into *junk (this tried to serve a
@@ -55,13 +70,18 @@ PyAPI_FUNC(void) PyFloat_AsString(char*, PyFloatObject *v);
  * routines produce a C double from such a string.  The suffix (4 or 8)
  * specifies the number of bytes in the string.
  *
- * Excepting NaNs and infinities (which aren't handled correctly), the 4-
- * byte format is identical to the IEEE-754 single precision format, and
- * the 8-byte format to the IEEE-754 double precision format.  On non-
- * IEEE platforms with more precision, or larger dynamic range, than
- * 754 supports, not all values can be packed; on non-IEEE platforms with
- * less precision, or smaller dynamic range, not all values can be
- * unpacked.  What happens in such cases is partly accidental (alas).
+ * On platforms that appear to use (see _PyFloat_Init()) IEEE-754 formats
+ * these functions work by copying bits.  On other platforms, the formats the
+ * 4- byte format is identical to the IEEE-754 single precision format, and
+ * the 8-byte format to the IEEE-754 double precision format, although the
+ * packing of INFs and NaNs (if such things exist on the platform) isn't
+ * handled correctly, and attempting to unpack a string containing an IEEE
+ * INF or NaN will raise an exception.
+ *
+ * On non-IEEE platforms with more precision, or larger dynamic range, than
+ * 754 supports, not all values can be packed; on non-IEEE platforms with less
+ * precision, or smaller dynamic range, not all values can be unpacked.  What
+ * happens in such cases is partly accidental (alas).
  */
 
 /* The pack routines write 4 or 8 bytes, starting at p.  le is a bool
@@ -70,24 +90,36 @@ PyAPI_FUNC(void) PyFloat_AsString(char*, PyFloatObject *v);
  * first, at p).
  * Return value:  0 if all is OK, -1 if error (and an exception is
  * set, most likely OverflowError).
- * Bug:  What this does is undefined if x is a NaN or infinity.
- * Bug:  -0.0 and +0.0 produce the same string.
+ * There are two problems on non-IEEE platforms:
+ * 1):  What this does is undefined if x is a NaN or infinity.
+ * 2):  -0.0 and +0.0 produce the same string.
  */
 PyAPI_FUNC(int) _PyFloat_Pack4(double x, unsigned char *p, int le);
 PyAPI_FUNC(int) _PyFloat_Pack8(double x, unsigned char *p, int le);
+
+/* Used to get the important decimal digits of a double */
+PyAPI_FUNC(int) _PyFloat_Digits(char *buf, double v, int *signum);
+PyAPI_FUNC(void) _PyFloat_DigitsInit(void);
 
 /* The unpack routines read 4 or 8 bytes, starting at p.  le is a bool
  * argument, true if the string is in little-endian format (exponent
  * last, at p+3 or p+7), false if big-endian (exponent first, at p).
  * Return value:  The unpacked double.  On error, this is -1.0 and
  * PyErr_Occurred() is true (and an exception is set, most likely
- * OverflowError).
- * Bug:  What this does is undefined if the string represents a NaN or
- * infinity.
+ * OverflowError).  Note that on a non-IEEE platform this will refuse
+ * to unpack a string that represents a NaN or infinity.
  */
 PyAPI_FUNC(double) _PyFloat_Unpack4(const unsigned char *p, int le);
 PyAPI_FUNC(double) _PyFloat_Unpack8(const unsigned char *p, int le);
 
+/* free list api */
+PyAPI_FUNC(int) PyFloat_ClearFreeList(void);
+
+/* Format the object based on the format_spec, as defined in PEP 3101
+   (Advanced String Formatting). */
+PyAPI_FUNC(PyObject *) _PyFloat_FormatAdvanced(PyObject *obj,
+					       char *format_spec,
+					       Py_ssize_t format_spec_len);
 
 #ifdef __cplusplus
 }

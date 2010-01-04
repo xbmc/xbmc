@@ -1,10 +1,12 @@
 import unittest
 import pickle
 import cPickle
+import StringIO
 import pickletools
 import copy_reg
 
-from test.test_support import TestFailed, have_unicode, TESTFN
+from test.test_support import TestFailed, have_unicode, TESTFN, \
+                              run_with_locale
 
 # Tests that try a number of pickle protocols should have a
 #     for proto in protocols:
@@ -427,6 +429,16 @@ class AbstractPickleTests(unittest.TestCase):
             self.assertEqual(len(x), 1)
             self.assert_(x is x[0])
 
+    def test_recursive_tuple(self):
+        t = ([],)
+        t[0].append(t)
+        for proto in protocols:
+            s = self.dumps(t, proto)
+            x = self.loads(s)
+            self.assertEqual(len(x), 1)
+            self.assertEqual(len(x[0]), 1)
+            self.assert_(x is x[0][0])
+
     def test_recursive_dict(self):
         d = {}
         d[1] = d
@@ -479,13 +491,20 @@ class AbstractPickleTests(unittest.TestCase):
 
     if have_unicode:
         def test_unicode(self):
-            endcases = [unicode(''), unicode('<\\u>'), unicode('<\\\u1234>'),
-                        unicode('<\n>'),  unicode('<\\>')]
+            endcases = [u'', u'<\\u>', u'<\\\u1234>', u'<\n>',
+                        u'<\\>', u'<\\\U00012345>']
             for proto in protocols:
                 for u in endcases:
                     p = self.dumps(u, proto)
                     u2 = self.loads(p)
                     self.assertEqual(u2, u)
+
+        def test_unicode_high_plane(self):
+            t = u'\U00012345'
+            for proto in protocols:
+                p = self.dumps(t, proto)
+                t2 = self.loads(p)
+                self.assertEqual(t2, t)
 
     def test_ints(self):
         import sys
@@ -526,6 +545,21 @@ class AbstractPickleTests(unittest.TestCase):
             p = self.dumps(n, 2)
             got = self.loads(p)
             self.assertEqual(n, got)
+
+    def test_float(self):
+        test_values = [0.0, 4.94e-324, 1e-310, 7e-308, 6.626e-34, 0.1, 0.5,
+                       3.14, 263.44582062374053, 6.022e23, 1e30]
+        test_values = test_values + [-x for x in test_values]
+        for proto in protocols:
+            for value in test_values:
+                pickle = self.dumps(value, proto)
+                got = self.loads(pickle)
+                self.assertEqual(value, got)
+
+    @run_with_locale('LC_ALL', 'de_DE', 'fr_FR')
+    def test_float_format(self):
+        # make sure that floats are formatted locale independent
+        self.assertEqual(self.dumps(1.2)[0:3], 'F1.')
 
     def test_reduce(self):
         pass
@@ -825,6 +859,47 @@ class AbstractPickleTests(unittest.TestCase):
             y = self.loads(s)
             self.assertEqual(y._proto, None)
 
+    def test_reduce_ex_calls_base(self):
+        for proto in 0, 1, 2:
+            x = REX_four()
+            self.assertEqual(x._proto, None)
+            s = self.dumps(x, proto)
+            self.assertEqual(x._proto, proto)
+            y = self.loads(s)
+            self.assertEqual(y._proto, proto)
+
+    def test_reduce_calls_base(self):
+        for proto in 0, 1, 2:
+            x = REX_five()
+            self.assertEqual(x._reduce_called, 0)
+            s = self.dumps(x, proto)
+            self.assertEqual(x._reduce_called, 1)
+            y = self.loads(s)
+            self.assertEqual(y._reduce_called, 1)
+
+    def test_reduce_bad_iterator(self):
+        # Issue4176: crash when 4th and 5th items of __reduce__()
+        # are not iterators
+        class C(object):
+            def __reduce__(self):
+                # 4th item is not an iterator
+                return list, (), None, [], None
+        class D(object):
+            def __reduce__(self):
+                # 5th item is not an iterator
+                return dict, (), None, None, []
+
+        # Protocol 0 is less strict and also accept iterables.
+        for proto in 0, 1, 2:
+            try:
+                self.dumps(C(), proto)
+            except (AttributeError, pickle.PickleError, cPickle.PickleError):
+                pass
+            try:
+                self.dumps(D(), proto)
+            except (AttributeError, pickle.PickleError, cPickle.PickleError):
+                pass
+
 # Test classes for reduce_ex
 
 class REX_one(object):
@@ -848,6 +923,20 @@ class REX_three(object):
         return REX_two, ()
     def __reduce__(self):
         raise TestFailed, "This __reduce__ shouldn't be called"
+
+class REX_four(object):
+    _proto = None
+    def __reduce_ex__(self, proto):
+        self._proto = proto
+        return object.__reduce_ex__(self, proto)
+    # Calling base class method should succeed
+
+class REX_five(object):
+    _reduce_called = 0
+    def __reduce__(self):
+        self._reduce_called = 1
+        return object.__reduce__(self)
+    # This one used to fail with infinite recursion
 
 # Test classes for newobj
 
@@ -926,6 +1015,10 @@ class AbstractPickleModuleTests(unittest.TestCase):
         self.module.dumps(123, protocol=-1)
         self.module.Pickler(f, -1)
         self.module.Pickler(f, protocol=-1)
+
+    def test_incomplete_input(self):
+        s = StringIO.StringIO("X''.")
+        self.assertRaises(EOFError, self.module.load, s)
 
 class AbstractPersistentPicklerTests(unittest.TestCase):
 

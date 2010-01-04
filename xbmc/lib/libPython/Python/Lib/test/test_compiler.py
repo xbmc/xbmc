@@ -1,10 +1,18 @@
-import compiler
-import os, sys, time, unittest
 import test.test_support
+compiler = test.test_support.import_module('compiler', deprecated=True)
+from compiler.ast import flatten
+import os, sys, time, unittest
 from random import random
+from StringIO import StringIO
 
 # How much time in seconds can pass before we print a 'Still working' message.
 _PRINT_WORKING_MSG_INTERVAL = 5 * 60
+
+class TrivialContext(object):
+    def __enter__(self):
+        return self
+    def __exit__(self, *exc_info):
+        pass
 
 class CompilerTest(unittest.TestCase):
 
@@ -37,16 +45,58 @@ class CompilerTest(unittest.TestCase):
                 f = open(path, "U")
                 buf = f.read()
                 f.close()
-                if "badsyntax" in basename:
+                if "badsyntax" in basename or "bad_coding" in basename:
                     self.assertRaises(SyntaxError, compiler.compile,
                                       buf, basename, "exec")
                 else:
-                    compiler.compile(buf, basename, "exec")
+                    try:
+                        compiler.compile(buf, basename, "exec")
+                    except Exception, e:
+                        args = list(e.args)
+                        args.append("in file %s]" % basename)
+                        #args[0] += "[in file %s]" % basename
+                        e.args = tuple(args)
+                        raise
+
+    def testNewClassSyntax(self):
+        compiler.compile("class foo():pass\n\n","<string>","exec")
+
+    def testYieldExpr(self):
+        compiler.compile("def g(): yield\n\n", "<string>", "exec")
+
+    def testKeywordAfterStarargs(self):
+        def f(*args, **kwargs):
+            self.assertEqual((args, kwargs), ((2,3), {'x': 1, 'y': 4}))
+        c = compiler.compile('f(x=1, *(2, 3), y=4)', '<string>', 'exec')
+        exec c in {'f': f}
+
+        self.assertRaises(SyntaxError, compiler.parse, "foo(a=1, b)")
+        self.assertRaises(SyntaxError, compiler.parse, "foo(1, *args, 3)")
+
+    def testTryExceptFinally(self):
+        # Test that except and finally clauses in one try stmt are recognized
+        c = compiler.compile("try:\n 1/0\nexcept:\n e = 1\nfinally:\n f = 1",
+                             "<string>", "exec")
+        dct = {}
+        exec c in dct
+        self.assertEquals(dct.get('e'), 1)
+        self.assertEquals(dct.get('f'), 1)
+
+    def testDefaultArgs(self):
+        self.assertRaises(SyntaxError, compiler.parse, "def foo(a=1, b): pass")
+
+    def testDocstrings(self):
+        c = compiler.compile('"doc"', '<string>', 'exec')
+        self.assert_('__doc__' in c.co_names)
+        c = compiler.compile('def f():\n "doc"', '<string>', 'exec')
+        g = {}
+        exec c in g
+        self.assertEquals(g['f'].__doc__, "doc")
 
     def testLineNo(self):
         # Test that all nodes except Module have a correct lineno attribute.
         filename = __file__
-        if filename.endswith(".pyc") or filename.endswith(".pyo"):
+        if filename.endswith((".pyc", ".pyo")):
             filename = filename[:-1]
         tree = compiler.parseFile(filename)
         self.check_lineno(tree)
@@ -67,6 +117,91 @@ class CompilerTest(unittest.TestCase):
         for child in node.getChildNodes():
             self.check_lineno(child)
 
+    def testFlatten(self):
+        self.assertEquals(flatten([1, [2]]), [1, 2])
+        self.assertEquals(flatten((1, (2,))), [1, 2])
+
+    def testNestedScope(self):
+        c = compiler.compile('def g():\n'
+                             '    a = 1\n'
+                             '    def f(): return a + 2\n'
+                             '    return f()\n'
+                             'result = g()',
+                             '<string>',
+                             'exec')
+        dct = {}
+        exec c in dct
+        self.assertEquals(dct.get('result'), 3)
+
+    def testGenExp(self):
+        c = compiler.compile('list((i,j) for i in range(3) if i < 3'
+                             '           for j in range(4) if j > 2)',
+                             '<string>',
+                             'eval')
+        self.assertEquals(eval(c), [(0, 3), (1, 3), (2, 3)])
+
+    def testWith(self):
+        # SF bug 1638243
+        c = compiler.compile('from __future__ import with_statement\n'
+                             'def f():\n'
+                             '    with TrivialContext():\n'
+                             '        return 1\n'
+                             'result = f()',
+                             '<string>',
+                             'exec' )
+        dct = {'TrivialContext': TrivialContext}
+        exec c in dct
+        self.assertEquals(dct.get('result'), 1)
+
+    def testWithAss(self):
+        c = compiler.compile('from __future__ import with_statement\n'
+                             'def f():\n'
+                             '    with TrivialContext() as tc:\n'
+                             '        return 1\n'
+                             'result = f()',
+                             '<string>',
+                             'exec' )
+        dct = {'TrivialContext': TrivialContext}
+        exec c in dct
+        self.assertEquals(dct.get('result'), 1)
+
+
+    def testPrintFunction(self):
+        c = compiler.compile('from __future__ import print_function\n'
+                             'print("a", "b", sep="**", end="++", '
+                                    'file=output)',
+                             '<string>',
+                             'exec' )
+        dct = {'output': StringIO()}
+        exec c in dct
+        self.assertEquals(dct['output'].getvalue(), 'a**b++')
+
+    def _testErrEnc(self, src, text, offset):
+        try:
+            compile(src, "", "exec")
+        except SyntaxError, e:
+            self.assertEquals(e.offset, offset)
+            self.assertEquals(e.text, text)
+
+    def testSourceCodeEncodingsError(self):
+        # Test SyntaxError with encoding definition
+        sjis = "print '\x83\x70\x83\x43\x83\x5c\x83\x93', '\n"
+        ascii = "print '12345678', '\n"
+        encdef = "#! -*- coding: ShiftJIS -*-\n"
+
+        # ascii source without encdef
+        self._testErrEnc(ascii, ascii, 19)
+
+        # ascii source with encdef
+        self._testErrEnc(encdef+ascii, ascii, 19)
+
+        # non-ascii source with encdef
+        self._testErrEnc(encdef+sjis, sjis, 19)
+
+        # ShiftJIS source without encdef
+        self._testErrEnc(sjis, sjis, 19)
+
+
 NOLINENO = (compiler.ast.Module, compiler.ast.Stmt, compiler.ast.Discard)
 
 ###############################################################################
@@ -83,6 +218,12 @@ a, b = 2, 3
 l = [(x, y) for x, y in zip(range(5), range(5,10))]
 l[0]
 l[3:4]
+d = {'a': 2}
+d = {}
+t = ()
+t = (1, 2)
+l = []
+l = [1, 2]
 if l:
     pass
 else:

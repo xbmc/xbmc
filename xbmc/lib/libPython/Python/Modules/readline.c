@@ -1,9 +1,7 @@
 /* This module makes GNU readline available to Python.  It has ideas
  * contributed by Lee Busby, LLNL, and William Magro, Cornell Theory
- * Center.  The completer interface was inspired by Lele Gaifax.
- *
- * More recently, it was largely rewritten by Guido van Rossum who is
- * now maintaining it.
+ * Center.  The completer interface was inspired by Lele Gaifax.  More
+ * recently, it was largely rewritten by Guido van Rossum.
  */
 
 /* Standard definitions */
@@ -36,7 +34,17 @@
 #ifdef HAVE_RL_COMPLETION_MATCHES
 #define completion_matches(x, y) \
 	rl_completion_matches((x), ((rl_compentry_func_t *)(y)))
+#else
+#if defined(_RL_FUNCTION_TYPEDEF)
+extern char **completion_matches(char *, rl_compentry_func_t *);
+#else
+extern char **completion_matches(char *, CPFunction *);
 #endif
+#endif
+
+static void
+on_completion_display_matches_hook(char **matches,
+				   int num_matches, int max_length);
 
 
 /* Exported function to send one line to readline's init file parser */
@@ -55,8 +63,7 @@ parse_and_bind(PyObject *self, PyObject *args)
 	strcpy(copy, s);
 	rl_parse_and_bind(copy);
 	free(copy); /* Free the copy */
-	Py_INCREF(Py_None);
-	return Py_None;
+	Py_RETURN_NONE;
 }
 
 PyDoc_STRVAR(doc_parse_and_bind,
@@ -75,8 +82,7 @@ read_init_file(PyObject *self, PyObject *args)
 	errno = rl_read_init_file(s);
 	if (errno)
 		return PyErr_SetFromErrno(PyExc_IOError);
-	Py_INCREF(Py_None);
-	return Py_None;
+	Py_RETURN_NONE;
 }
 
 PyDoc_STRVAR(doc_read_init_file,
@@ -96,8 +102,7 @@ read_history_file(PyObject *self, PyObject *args)
 	errno = read_history(s);
 	if (errno)
 		return PyErr_SetFromErrno(PyExc_IOError);
-	Py_INCREF(Py_None);
-	return Py_None;
+	Py_RETURN_NONE;
 }
 
 static int _history_length = -1; /* do not truncate history by default */
@@ -120,8 +125,7 @@ write_history_file(PyObject *self, PyObject *args)
 		history_truncate_file(s, _history_length);
 	if (errno)
 		return PyErr_SetFromErrno(PyExc_IOError);
-	Py_INCREF(Py_None);
-	return Py_None;
+	Py_RETURN_NONE;
 }
 
 PyDoc_STRVAR(doc_write_history_file,
@@ -139,8 +143,7 @@ set_history_length(PyObject *self, PyObject *args)
 	if (!PyArg_ParseTuple(args, "i:set_history_length", &length))
 		return NULL;
 	_history_length = length;
-	Py_INCREF(Py_None);
-	return Py_None;
+	Py_RETURN_NONE;
 }
 
 PyDoc_STRVAR(set_history_length_doc,
@@ -191,18 +194,45 @@ set_hook(const char *funcname, PyObject **hook_var, PyObject *args)
 		PyErr_SetString(PyExc_TypeError, buf);
 		return NULL;
 	}
-	Py_INCREF(Py_None);
-	return Py_None;
+	Py_RETURN_NONE;
 }
 
 
 /* Exported functions to specify hook functions in Python */
 
+static PyObject *completion_display_matches_hook = NULL;
 static PyObject *startup_hook = NULL;
 
 #ifdef HAVE_RL_PRE_INPUT_HOOK
 static PyObject *pre_input_hook = NULL;
 #endif
+
+static PyObject *
+set_completion_display_matches_hook(PyObject *self, PyObject *args)
+{
+	PyObject *result = set_hook("completion_display_matches_hook",
+			&completion_display_matches_hook, args);
+#ifdef HAVE_RL_COMPLETION_DISPLAY_MATCHES_HOOK
+	/* We cannot set this hook globally, since it replaces the
+	   default completion display. */
+	rl_completion_display_matches_hook =
+		completion_display_matches_hook ?
+#if defined(_RL_FUNCTION_TYPEDEF)
+		(rl_compdisp_func_t *)on_completion_display_matches_hook : 0;
+#else
+		(VFunction *)on_completion_display_matches_hook : 0;
+#endif
+#endif
+	return result;
+
+}
+
+PyDoc_STRVAR(doc_set_completion_display_matches_hook,
+"set_completion_display_matches_hook([function]) -> None\n\
+Set or remove the completion display function.\n\
+The function is called as\n\
+  function(substitution, [matches], longest_match_length)\n\
+once each time matches need to be displayed.");
 
 static PyObject *
 set_startup_hook(PyObject *self, PyObject *args)
@@ -245,6 +275,18 @@ static PyObject *begidx = NULL;
 static PyObject *endidx = NULL;
 
 
+/* Get the completion type for the scope of the tab-completion */
+static PyObject *
+get_completion_type(PyObject *self, PyObject *noarg)
+{
+  return PyInt_FromLong(rl_completion_type);
+}
+
+PyDoc_STRVAR(doc_get_completion_type,
+"get_completion_type() -> int\n\
+Get the type of completion being attempted.");
+
+
 /* Get the beginning index for the scope of the tab-completion */
 
 static PyObject *
@@ -285,8 +327,7 @@ set_completer_delims(PyObject *self, PyObject *args)
 	}
 	free((void*)rl_completer_word_break_characters);
 	rl_completer_word_break_characters = strdup(break_chars);
-	Py_INCREF(Py_None);
-	return Py_None;
+	Py_RETURN_NONE;
 }
 
 PyDoc_STRVAR(doc_set_completer_delims,
@@ -296,32 +337,31 @@ set the readline word delimiters for tab-completion");
 static PyObject *
 py_remove_history(PyObject *self, PyObject *args)
 {
-        int entry_number;
-        HIST_ENTRY *entry;
+	int entry_number;
+	HIST_ENTRY *entry;
 
-        if (!PyArg_ParseTuple(args, "i:remove_history", &entry_number))
-                return NULL;
-        if (entry_number < 0) {
-                PyErr_SetString(PyExc_ValueError,
-                                "History index cannot be negative");
-                return NULL;
-        }
-        entry = remove_history(entry_number);
-        if (!entry) {
-                PyErr_Format(PyExc_ValueError,
-                             "No history item at position %d",
-                             entry_number);
-                return NULL;
-        }
-        /* free memory allocated for the history entry */
-        if (entry->line)
-                free(entry->line);
-        if (entry->data)
-                free(entry->data);
-        free(entry);
+	if (!PyArg_ParseTuple(args, "i:remove_history", &entry_number))
+		return NULL;
+	if (entry_number < 0) {
+		PyErr_SetString(PyExc_ValueError,
+				"History index cannot be negative");
+		return NULL;
+	}
+	entry = remove_history(entry_number);
+	if (!entry) {
+		PyErr_Format(PyExc_ValueError,
+			     "No history item at position %d",
+			      entry_number);
+		return NULL;
+	}
+	/* free memory allocated for the history entry */
+	if (entry->line)
+		free(entry->line);
+	if (entry->data)
+		free(entry->data);
+	free(entry);
 
-        Py_INCREF(Py_None);
-        return Py_None;
+	Py_RETURN_NONE;
 }
 
 PyDoc_STRVAR(doc_remove_history,
@@ -331,34 +371,34 @@ remove history item given by its position");
 static PyObject *
 py_replace_history(PyObject *self, PyObject *args)
 {
-        int entry_number;
-        char *line;
-        HIST_ENTRY *old_entry;
+	int entry_number;
+	char *line;
+	HIST_ENTRY *old_entry;
 
-        if (!PyArg_ParseTuple(args, "is:replace_history", &entry_number, &line)) {
-                return NULL;
-        }
-        if (entry_number < 0) {
-                PyErr_SetString(PyExc_ValueError,
-                                "History index cannot be negative");
-                return NULL;
-        }
-        old_entry = replace_history_entry(entry_number, line, (void *)NULL);
-        if (!old_entry) {
-                PyErr_Format(PyExc_ValueError,
-                             "No history item at position %d",
-                             entry_number);
-                return NULL;
-        }
-        /* free memory allocated for the old history entry */
-        if (old_entry->line)
-            free(old_entry->line);
-        if (old_entry->data)
-            free(old_entry->data);
-        free(old_entry);
+	if (!PyArg_ParseTuple(args, "is:replace_history", &entry_number,
+	      		      &line)) {
+		return NULL;
+	}
+	if (entry_number < 0) {
+		PyErr_SetString(PyExc_ValueError,
+				"History index cannot be negative");
+		return NULL;
+	}
+	old_entry = replace_history_entry(entry_number, line, (void *)NULL);
+	if (!old_entry) {
+		PyErr_Format(PyExc_ValueError,
+			     "No history item at position %d",
+			     entry_number);
+		return NULL;
+	}
+	/* free memory allocated for the old history entry */
+	if (old_entry->line)
+	    free(old_entry->line);
+	if (old_entry->data)
+	    free(old_entry->data);
+	free(old_entry);
 
-        Py_INCREF(Py_None);
-        return Py_None;
+	Py_RETURN_NONE;
 }
 
 PyDoc_STRVAR(doc_replace_history,
@@ -376,8 +416,7 @@ py_add_history(PyObject *self, PyObject *args)
 		return NULL;
 	}
 	add_history(line);
-	Py_INCREF(Py_None);
-	return Py_None;
+	Py_RETURN_NONE;
 }
 
 PyDoc_STRVAR(doc_add_history,
@@ -418,8 +457,7 @@ static PyObject *
 get_completer(PyObject *self, PyObject *noargs)
 {
 	if (completer == NULL) {
-		Py_INCREF(Py_None);
-		return Py_None;
+		Py_RETURN_NONE;
 	}
 	Py_INCREF(completer);
 	return completer;
@@ -443,8 +481,7 @@ get_history_item(PyObject *self, PyObject *args)
 	if ((hist_ent = history_get(idx)))
 		return PyString_FromString(hist_ent->line);
 	else {
-		Py_INCREF(Py_None);
-		return Py_None;
+		Py_RETURN_NONE;
 	}
 }
 
@@ -490,8 +527,7 @@ static PyObject *
 py_clear_history(PyObject *self, PyObject *noarg)
 {
 	clear_history();
-	Py_INCREF(Py_None);
-	return Py_None;
+	Py_RETURN_NONE;
 }
 
 PyDoc_STRVAR(doc_clear_history,
@@ -509,8 +545,7 @@ insert_text(PyObject *self, PyObject *args)
 	if (!PyArg_ParseTuple(args, "s:insert_text", &s))
 		return NULL;
 	rl_insert_text(s);
-	Py_INCREF(Py_None);
-	return Py_None;
+	Py_RETURN_NONE;
 }
 
 PyDoc_STRVAR(doc_insert_text,
@@ -524,8 +559,7 @@ static PyObject *
 redisplay(PyObject *self, PyObject *noarg)
 {
 	rl_redisplay();
-	Py_INCREF(Py_None);
-	return Py_None;
+	Py_RETURN_NONE;
 }
 
 PyDoc_STRVAR(doc_redisplay,
@@ -551,23 +585,27 @@ static struct PyMethodDef readline_methods[] =
 	 METH_VARARGS, doc_get_history_item},
 	{"get_current_history_length", (PyCFunction)get_current_history_length,
 	 METH_NOARGS, doc_get_current_history_length},
- 	{"set_history_length", set_history_length,
+	{"set_history_length", set_history_length,
 	 METH_VARARGS, set_history_length_doc},
- 	{"get_history_length", get_history_length,
+	{"get_history_length", get_history_length,
 	 METH_NOARGS, get_history_length_doc},
 	{"set_completer", set_completer, METH_VARARGS, doc_set_completer},
 	{"get_completer", get_completer, METH_NOARGS, doc_get_completer},
+	{"get_completion_type", get_completion_type,
+	 METH_NOARGS, doc_get_completion_type},
 	{"get_begidx", get_begidx, METH_NOARGS, doc_get_begidx},
 	{"get_endidx", get_endidx, METH_NOARGS, doc_get_endidx},
 
 	{"set_completer_delims", set_completer_delims,
 	 METH_VARARGS, doc_set_completer_delims},
 	{"add_history", py_add_history, METH_VARARGS, doc_add_history},
-        {"remove_history_item", py_remove_history, METH_VARARGS, doc_remove_history},
-        {"replace_history_item", py_replace_history, METH_VARARGS, doc_replace_history},
+	{"remove_history_item", py_remove_history, METH_VARARGS, doc_remove_history},
+	{"replace_history_item", py_replace_history, METH_VARARGS, doc_replace_history},
 	{"get_completer_delims", get_completer_delims,
 	 METH_NOARGS, doc_get_completer_delims},
 
+	{"set_completion_display_matches_hook", set_completion_display_matches_hook,
+	 METH_VARARGS, doc_set_completion_display_matches_hook},
 	{"set_startup_hook", set_startup_hook,
 	 METH_VARARGS, doc_set_startup_hook},
 #ifdef HAVE_RL_PRE_INPUT_HOOK
@@ -589,7 +627,7 @@ on_hook(PyObject *func)
 	int result = 0;
 	if (func != NULL) {
 		PyObject *r;
-#ifdef WITH_THREAD	      
+#ifdef WITH_THREAD
 		PyGILState_STATE gilstate = PyGILState_Ensure();
 #endif
 		r = PyObject_CallFunction(func, NULL);
@@ -608,7 +646,7 @@ on_hook(PyObject *func)
 		PyErr_Clear();
 		Py_XDECREF(r);
 	  done:
-#ifdef WITH_THREAD	      
+#ifdef WITH_THREAD
 		PyGILState_Release(gilstate);
 #endif
 		return result;
@@ -631,10 +669,55 @@ on_pre_input_hook(void)
 #endif
 
 
+/* C function to call the Python completion_display_matches */
+
+static void
+on_completion_display_matches_hook(char **matches,
+				   int num_matches, int max_length)
+{
+	int i;
+	PyObject *m=NULL, *s=NULL, *r=NULL;
+#ifdef WITH_THREAD
+	PyGILState_STATE gilstate = PyGILState_Ensure();
+#endif
+	m = PyList_New(num_matches);
+	if (m == NULL)
+		goto error;
+	for (i = 0; i < num_matches; i++) {
+		s = PyString_FromString(matches[i+1]);
+		if (s == NULL)
+			goto error;
+		if (PyList_SetItem(m, i, s) == -1)
+			goto error;
+	}
+
+	r = PyObject_CallFunction(completion_display_matches_hook,
+				  "sOi", matches[0], m, max_length);
+
+	Py_DECREF(m), m=NULL;
+	
+	if (r == NULL ||
+	    (r != Py_None && PyInt_AsLong(r) == -1 && PyErr_Occurred())) {
+		goto error;
+	}
+	Py_XDECREF(r), r=NULL;
+
+	if (0) {
+	error:
+		PyErr_Clear();
+		Py_XDECREF(m);
+		Py_XDECREF(r);
+	}
+#ifdef WITH_THREAD
+	PyGILState_Release(gilstate);
+#endif
+}
+
+
 /* C function to call the Python completer. */
 
 static char *
-on_completion(char *text, int state)
+on_completion(const char *text, int state)
 {
 	char *result = NULL;
 	if (completer != NULL) {
@@ -770,10 +853,16 @@ readline_until_enter_or_signal(char *prompt, int *signal)
 
 		while (!has_input)
 		{	struct timeval timeout = {0, 100000}; /* 0.1 seconds */
+
+			/* [Bug #1552726] Only limit the pause if an input hook has been 
+			   defined.  */
+		 	struct timeval *timeoutp = NULL;
+			if (PyOS_InputHook) 
+				timeoutp = &timeout;
 			FD_SET(fileno(rl_instream), &selectset);
 			/* select resets selectset if no input was available */
 			has_input = select(fileno(rl_instream) + 1, &selectset,
-					   NULL, NULL, &timeout);
+					   NULL, NULL, timeoutp);
 			if(PyOS_InputHook) PyOS_InputHook();
 		}
 

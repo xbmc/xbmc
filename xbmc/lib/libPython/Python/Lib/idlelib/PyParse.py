@@ -2,7 +2,8 @@ import re
 import sys
 
 # Reason last stmt is continued (or C_NONE if it's not).
-C_NONE, C_BACKSLASH, C_STRING, C_BRACKET = range(4)
+(C_NONE, C_BACKSLASH, C_STRING_FIRST_LINE,
+ C_STRING_NEXT_LINES, C_BRACKET) = range(5)
 
 if 0:   # for throwaway debugging output
     def dump(*stuff):
@@ -13,9 +14,7 @@ if 0:   # for throwaway debugging output
 _synchre = re.compile(r"""
     ^
     [ \t]*
-    (?: if
-    |   for
-    |   while
+    (?: while
     |   else
     |   def
     |   return
@@ -144,29 +143,11 @@ class Parser:
     # This will be reliable iff given a reliable is_char_in_string
     # function, meaning that when it says "no", it's absolutely
     # guaranteed that the char is not in a string.
-    #
-    # Ack, hack: in the shell window this kills us, because there's
-    # no way to tell the differences between output, >>> etc and
-    # user input.  Indeed, IDLE's first output line makes the rest
-    # look like it's in an unclosed paren!:
-    # Python 1.5.2 (#0, Apr 13 1999, ...
 
-    def find_good_parse_start(self, use_ps1, is_char_in_string=None,
+    def find_good_parse_start(self, is_char_in_string=None,
                               _synchre=_synchre):
         str, pos = self.str, None
-        if use_ps1:
-            # shell window
-            ps1 = '\n' + sys.ps1
-            i = str.rfind(ps1)
-            if i >= 0:
-                pos = i + len(ps1)
-                # make it look like there's a newline instead
-                # of ps1 at the start -- hacking here once avoids
-                # repeated hackery later
-                self.str = str[:pos-1] + '\n' + str[pos:]
-            return pos
 
-        # File window -- real work.
         if not is_char_in_string:
             # no clue -- make the caller pass everything
             return None
@@ -281,6 +262,7 @@ class Parser:
                 quote = ch
                 if str[i-1:i+2] == quote * 3:
                     quote = quote * 3
+                firstlno = lno
                 w = len(quote) - 1
                 i = i+w
                 while i < n:
@@ -315,7 +297,12 @@ class Parser:
                 else:
                     # didn't break out of the loop, so we're still
                     # inside a string
-                    continuation = C_STRING
+                    if (lno - 1) == firstlno:
+                        # before the previous \n in str, we were in the first
+                        # line of the string
+                        continuation = C_STRING_FIRST_LINE
+                    else:
+                        continuation = C_STRING_NEXT_LINES
                 continue    # with outer loop
 
             if ch == '#':
@@ -335,7 +322,8 @@ class Parser:
         # The last stmt may be continued for all 3 reasons.
         # String continuation takes precedence over bracket
         # continuation, which beats backslash continuation.
-        if continuation != C_STRING and level > 0:
+        if (continuation != C_STRING_FIRST_LINE
+            and continuation != C_STRING_NEXT_LINES and level > 0):
             continuation = C_BRACKET
         self.continuation = continuation
 
@@ -355,6 +343,11 @@ class Parser:
     # Creates:
     #     self.stmt_start, stmt_end
     #         slice indices of last interesting stmt
+    #     self.stmt_bracketing
+    #         the bracketing structure of the last interesting stmt;
+    #         for example, for the statement "say(boo) or die", stmt_bracketing
+    #         will be [(0, 0), (3, 1), (8, 0)]. Strings and comments are
+    #         treated as brackets, for the matter.
     #     self.lastch
     #         last non-whitespace character before optional trailing
     #         comment
@@ -396,6 +389,7 @@ class Parser:
         lastch = ""
         stack = []  # stack of open bracket indices
         push_stack = stack.append
+        bracketing = [(p, 0)]
         while p < q:
             # suck up all except ()[]{}'"#\\
             m = _chew_ordinaryre(str, p, q)
@@ -416,6 +410,7 @@ class Parser:
 
             if ch in "([{":
                 push_stack(p)
+                bracketing.append((p, len(stack)))
                 lastch = ch
                 p = p+1
                 continue
@@ -425,6 +420,7 @@ class Parser:
                     del stack[-1]
                 lastch = ch
                 p = p+1
+                bracketing.append((p, len(stack)))
                 continue
 
             if ch == '"' or ch == "'":
@@ -435,14 +431,18 @@ class Parser:
                 # strings to a couple of characters per line.  study1
                 # also needed to keep track of newlines, and we don't
                 # have to.
+                bracketing.append((p, len(stack)+1))
                 lastch = ch
                 p = _match_stringre(str, p, q).end()
+                bracketing.append((p, len(stack)))
                 continue
 
             if ch == '#':
                 # consume comment and trailing newline
+                bracketing.append((p, len(stack)+1))
                 p = str.find('\n', p, q) + 1
                 assert p > 0
+                bracketing.append((p, len(stack)))
                 continue
 
             assert ch == '\\'
@@ -458,6 +458,7 @@ class Parser:
         self.lastch = lastch
         if stack:
             self.lastopenbracketpos = stack[-1]
+        self.stmt_bracketing = tuple(bracketing)
 
     # Assuming continuation is C_BRACKET, return the number
     # of spaces the next line should be indented.
@@ -582,3 +583,12 @@ class Parser:
     def get_last_open_bracket_pos(self):
         self._study2()
         return self.lastopenbracketpos
+
+    # the structure of the bracketing of the last interesting statement,
+    # in the format defined in _study2, or None if the text didn't contain
+    # anything
+    stmt_bracketing = None
+
+    def get_last_stmt_bracketing(self):
+        self._study2()
+        return self.stmt_bracketing

@@ -39,7 +39,6 @@ used, and this module (and the readline module) are silently inactive.
 
 """
 
-import readline
 import __builtin__
 import __main__
 
@@ -93,6 +92,11 @@ class Completer:
         except IndexError:
             return None
 
+    def _callable_postfix(self, val, word):
+        if hasattr(val, '__call__'):
+            word = word + "("
+        return word
+
     def global_matches(self, text):
         """Compute matches when text is a simple name.
 
@@ -103,12 +107,13 @@ class Completer:
         import keyword
         matches = []
         n = len(text)
-        for list in [keyword.kwlist,
-                     __builtin__.__dict__,
-                     self.namespace]:
-            for word in list:
+        for word in keyword.kwlist:
+            if word[:n] == text:
+                matches.append(word)
+        for nspace in [__builtin__.__dict__, self.namespace]:
+            for word, val in nspace.items():
                 if word[:n] == text and word != "__builtins__":
-                    matches.append(word)
+                    matches.append(self._callable_postfix(val, word))
         return matches
 
     def attr_matches(self, text):
@@ -126,18 +131,28 @@ class Completer:
         import re
         m = re.match(r"(\w+(\.\w+)*)\.(\w*)", text)
         if not m:
-            return
+            return []
         expr, attr = m.group(1, 3)
-        object = eval(expr, self.namespace)
-        words = dir(object)
-        if hasattr(object,'__class__'):
+        try:
+            thisobject = eval(expr, self.namespace)
+        except Exception:
+            return []
+
+        # get the content of the object, except __builtins__
+        words = dir(thisobject)
+        if "__builtins__" in words:
+            words.remove("__builtins__")
+
+        if hasattr(thisobject, '__class__'):
             words.append('__class__')
-            words = words + get_class_members(object.__class__)
+            words.extend(get_class_members(thisobject.__class__))
         matches = []
         n = len(attr)
         for word in words:
-            if word[:n] == attr and word != "__builtins__":
-                matches.append("%s.%s" % (expr, word))
+            if word[:n] == attr and hasattr(thisobject, word):
+                val = getattr(thisobject, word)
+                word = self._callable_postfix(val, "%s.%s" % (expr, word))
+                matches.append(word)
         return matches
 
 def get_class_members(klass):
@@ -147,4 +162,9 @@ def get_class_members(klass):
             ret = ret + get_class_members(base)
     return ret
 
-readline.set_completer(Completer().complete)
+try:
+    import readline
+except ImportError:
+    pass
+else:
+    readline.set_completer(Completer().complete)

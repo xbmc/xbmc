@@ -24,20 +24,26 @@ typedef struct {
 	int f_newlinetypes;	/* Types of newlines seen */
 	int f_skipnextlf;	/* Skip next \n */
 	PyObject *f_encoding;
+	PyObject *f_errors;
 	PyObject *weakreflist; /* List of weak references */
+	int unlocked_count;	/* Num. currently running sections of code
+				   using f_fp with the GIL released. */
 } PyFileObject;
 
 PyAPI_DATA(PyTypeObject) PyFile_Type;
 
 #define PyFile_Check(op) PyObject_TypeCheck(op, &PyFile_Type)
-#define PyFile_CheckExact(op) ((op)->ob_type == &PyFile_Type)
+#define PyFile_CheckExact(op) (Py_TYPE(op) == &PyFile_Type)
 
 PyAPI_FUNC(PyObject *) PyFile_FromString(char *, char *);
 PyAPI_FUNC(void) PyFile_SetBufSize(PyObject *, int);
 PyAPI_FUNC(int) PyFile_SetEncoding(PyObject *, const char *);
+PyAPI_FUNC(int) PyFile_SetEncodingAndErrors(PyObject *, const char *, char *errors);
 PyAPI_FUNC(PyObject *) PyFile_FromFile(FILE *, char *, char *,
                                              int (*)(FILE *));
 PyAPI_FUNC(FILE *) PyFile_AsFile(PyObject *);
+PyAPI_FUNC(void) PyFile_IncUseCount(PyFileObject *);
+PyAPI_FUNC(void) PyFile_DecUseCount(PyFileObject *);
 PyAPI_FUNC(PyObject *) PyFile_Name(PyObject *);
 PyAPI_FUNC(PyObject *) PyFile_GetLine(PyObject *, int);
 PyAPI_FUNC(int) PyFile_WriteObject(PyObject *, PyObject *, int);
@@ -56,6 +62,11 @@ PyAPI_DATA(const char *) Py_FileSystemDefaultEncoding;
 #define PY_STDIOTEXTMODE "b"
 char *Py_UniversalNewlineFgets(char *, int, FILE*, PyObject *);
 size_t Py_UniversalNewlineFread(char *, size_t, FILE *, PyObject *);
+
+/* A routine to do sanity checking on the file mode string.  returns
+   non-zero on if an exception occurred
+*/
+int _PyFile_SanitizeMode(char *mode);
 
 #ifdef __cplusplus
 }

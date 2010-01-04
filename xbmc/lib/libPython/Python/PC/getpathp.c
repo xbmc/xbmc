@@ -62,8 +62,14 @@
 #include <tchar.h>
 #endif
 
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif /* HAVE_SYS_TYPES_H */
+
+#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
+#endif /* HAVE_SYS_STAT_H */
+
 #include <string.h>
 
 /* Search in some common locations for the associated Python libraries.
@@ -169,7 +175,8 @@ join(char *buffer, char *stuff)
 static int
 gotlandmark(char *landmark)
 {
-	int n, ok;
+	int ok;
+	Py_ssize_t n;
 
 	n = strlen(prefix);
 	join(prefix, landmark);
@@ -194,6 +201,7 @@ search_for_prefix(char *argv0_path, char *landmark)
 }
 
 #ifdef MS_WINDOWS
+#ifdef Py_ENABLE_SHARED
 
 /* a string loaded from the DLL at startup.*/
 extern const char *PyWin_DLLVersionString;
@@ -290,6 +298,10 @@ getpythonregpath(HKEY keyBase, int skipcore)
 		}
 		RegCloseKey(subKey);
 	}
+
+	/* return null if no path to return */
+	if (dataSize == 0) goto done;
+
 	/* original datasize from RegQueryInfo doesn't include the \0 */
 	dataBuf = malloc((dataSize+1) * sizeof(TCHAR));
 	if (dataBuf) {
@@ -302,10 +314,11 @@ getpythonregpath(HKEY keyBase, int skipcore)
 				dataSize--;
 			}
 			if (ppPaths[index]) {
-				int len = _tcslen(ppPaths[index]);
+				Py_ssize_t len = _tcslen(ppPaths[index]);
 				_tcsncpy(szCur, ppPaths[index], len);
 				szCur += len;
-				dataSize -= len;
+				assert(dataSize > (DWORD)len);
+				dataSize -= (DWORD)len;
 			}
 		}
 		if (skipcore)
@@ -351,6 +364,7 @@ done:
 		free(keyBuf);
 	return retval;
 }
+#endif /* Py_ENABLE_SHARED */
 #endif /* MS_WINDOWS */
 
 static void
@@ -368,6 +382,7 @@ get_progpath(void)
 	   but makes no mention of the null terminator.  Play it safe.
 	   PLUS Windows itself defines MAX_PATH as the same, but anyway...
 	*/
+#ifdef Py_ENABLE_SHARED
 	wprogpath[MAXPATHLEN]=_T('\0');
 	if (PyWin_DLLhModule &&
 	    GetModuleFileName(PyWin_DLLhModule, wprogpath, MAXPATHLEN)) {
@@ -376,6 +391,9 @@ get_progpath(void)
 		                    dllpath, MAXPATHLEN+1, 
 		                    NULL, NULL);
 	}
+#else
+	dllpath[0] = 0;
+#endif
 	wprogpath[MAXPATHLEN]=_T('\0');
 	if (GetModuleFileName(NULL, wprogpath, MAXPATHLEN)) {
 		WideCharToMultiByte(CP_ACP, 0, 
@@ -386,9 +404,13 @@ get_progpath(void)
 	}
 #else
 	/* static init of progpath ensures final char remains \0 */
+#ifdef Py_ENABLE_SHARED
 	if (PyWin_DLLhModule)
 		if (!GetModuleFileName(PyWin_DLLhModule, dllpath, MAXPATHLEN))
 			dllpath[0] = 0;
+#else
+	dllpath[0] = 0;
+#endif
 	if (GetModuleFileName(NULL, progpath, MAXPATHLEN))
 		return;
 #endif
@@ -489,8 +511,10 @@ calculate_path(void)
 	}
  
 	skiphome = pythonhome==NULL ? 0 : 1;
+#ifdef Py_ENABLE_SHARED
 	machinepath = getpythonregpath(HKEY_LOCAL_MACHINE, skiphome);
 	userpath = getpythonregpath(HKEY_CURRENT_USER, skiphome);
+#endif
 	/* We only use the default relative PYTHONPATH if we havent
 	   anything better to use! */
 	skipdefault = envpath!=NULL || pythonhome!=NULL || \
@@ -632,13 +656,13 @@ calculate_path(void)
 		char lookBuf[MAXPATHLEN+1];
 		char *look = buf - 1; /* 'buf' is at the end of the buffer */
 		while (1) {
-			int nchars;
+			Py_ssize_t nchars;
 			char *lookEnd = look;
 			/* 'look' will end up one character before the
 			   start of the path in question - even if this
 			   is one character before the start of the buffer
 			*/
-			while (*look != DELIM && look >= module_search_path)
+			while (look >= module_search_path && *look != DELIM)
 				look--;
 			nchars = lookEnd-look;
 			strncpy(lookBuf, look+1, nchars);

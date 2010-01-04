@@ -4,8 +4,12 @@
 '''
 import unittest
 import os, tempfile, re
+import warnings
 
-from test.test_support import TestSkipped, run_unittest
+warnings.filterwarnings('ignore', r".*commands.getstatus.. is deprecated",
+                        DeprecationWarning)
+
+from test.test_support import TestSkipped, run_unittest, reap_children
 from commands import *
 
 # The module says:
@@ -58,6 +62,7 @@ class CommandTests(unittest.TestCase):
 
 def test_main():
     run_unittest(CommandTests)
+    reap_children()
 
 
 if __name__ == "__main__":

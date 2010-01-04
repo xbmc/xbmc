@@ -2,35 +2,7 @@ import unittest
 from test.test_support import run_unittest, TESTFN
 import glob
 import os
-
-def mkdirs(fname):
-    if os.path.exists(fname) or fname == '':
-        return
-    base, file = os.path.split(fname)
-    mkdirs(base)
-    os.mkdir(fname)
-
-def touchfile(fname):
-    base, file = os.path.split(fname)
-    mkdirs(base)
-    f = open(fname, 'w')
-    f.close()
-
-def deltree(fname):
-    for f in os.listdir(fname):
-        fullname = os.path.join(fname, f)
-        if os.path.isdir(fullname):
-            deltree(fullname)
-        else:
-            try:
-                os.unlink(fullname)
-            except:
-                pass
-    try:
-        os.rmdir(fname)
-    except:
-        pass
-
+import shutil
 
 class GlobTests(unittest.TestCase):
 
@@ -38,7 +10,12 @@ class GlobTests(unittest.TestCase):
         return os.path.normpath(os.path.join(self.tempdir, *parts))
 
     def mktemp(self, *parts):
-        touchfile(self.norm(*parts))
+        filename = self.norm(*parts)
+        base, file = os.path.split(filename)
+        if not os.path.exists(base):
+            os.makedirs(base)
+        f = open(filename, 'w')
+        f.close()
 
     def setUp(self):
         self.tempdir = TESTFN+"_dir"
@@ -53,7 +30,7 @@ class GlobTests(unittest.TestCase):
             os.symlink(self.norm('broken'), self.norm('sym2'))
 
     def tearDown(self):
-        deltree(self.tempdir)
+        shutil.rmtree(self.tempdir)
 
     def glob(self, *parts):
         if len(parts) == 1:
@@ -61,7 +38,9 @@ class GlobTests(unittest.TestCase):
         else:
             pattern = os.path.join(*parts)
         p = os.path.join(self.tempdir, pattern)
-        return glob.glob(p)
+        res = glob.glob(p)
+        self.assertEqual(list(glob.iglob(p)), res)
+        return res
 
     def assertSequencesEqual_noorder(self, l1, l2):
         self.assertEqual(set(l1), set(l2))
@@ -72,6 +51,16 @@ class GlobTests(unittest.TestCase):
         eq(self.glob('a', 'D'), [self.norm('a', 'D')])
         eq(self.glob('aab'), [self.norm('aab')])
         eq(self.glob('zymurgy'), [])
+
+        # test return types are unicode, but only if os.listdir
+        # returns unicode filenames
+        uniset = set([unicode])
+        tmp = os.listdir(u'.')
+        if set(type(x) for x in tmp) == uniset:
+            u1 = glob.glob(u'*')
+            u2 = glob.glob(u'./*')
+            self.assertEquals(set(type(r) for r in u1), uniset)
+            self.assertEquals(set(type(r) for r in u2), uniset)
 
     def test_glob_one_directory(self):
         eq = self.assertSequencesEqual_noorder
@@ -100,6 +89,14 @@ class GlobTests(unittest.TestCase):
            [self.norm('a', 'bcd', 'efg', 'ha')])
         eq(self.glob('?a?', '*F'), map(self.norm, [os.path.join('aaa', 'zzzF'),
                                                    os.path.join('aab', 'F')]))
+
+    def test_glob_directory_with_trailing_slash(self):
+        # We are verifying that when there is wildcard pattern which
+        # ends with os.sep doesn't blow up.
+        res = glob.glob(self.tempdir + '*' + os.sep)
+        self.assertEqual(len(res), 1)
+        # either of these results are reasonable
+        self.assertTrue(res[0] in [self.tempdir, self.tempdir + os.sep])
 
     def test_glob_broken_symlinks(self):
         if hasattr(os, 'symlink'):

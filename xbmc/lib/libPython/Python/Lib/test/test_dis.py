@@ -1,11 +1,11 @@
-from test.test_support import verify, verbose, TestFailed, run_unittest
+# Minimal tests for dis module
+
+from test.test_support import run_unittest
+import unittest
 import sys
 import dis
 import StringIO
 
-# Minimal tests for dis module
-
-import unittest
 
 def _f(a):
     print a
@@ -46,6 +46,48 @@ dis_bug708901 = """\
      bug708901.func_code.co_firstlineno + 2,
      bug708901.func_code.co_firstlineno + 3)
 
+
+def bug1333982(x=[]):
+    assert 0, ([s for s in x] +
+              1)
+    pass
+
+dis_bug1333982 = """\
+ %-4d         0 LOAD_CONST               1 (0)
+              3 JUMP_IF_TRUE            41 (to 47)
+              6 POP_TOP
+              7 LOAD_GLOBAL              0 (AssertionError)
+             10 BUILD_LIST               0
+             13 DUP_TOP
+             14 STORE_FAST               1 (_[1])
+             17 LOAD_FAST                0 (x)
+             20 GET_ITER
+        >>   21 FOR_ITER                13 (to 37)
+             24 STORE_FAST               2 (s)
+             27 LOAD_FAST                1 (_[1])
+             30 LOAD_FAST                2 (s)
+             33 LIST_APPEND
+             34 JUMP_ABSOLUTE           21
+        >>   37 DELETE_FAST              1 (_[1])
+
+ %-4d        40 LOAD_CONST               2 (1)
+             43 BINARY_ADD
+             44 RAISE_VARARGS            2
+        >>   47 POP_TOP
+
+ %-4d        48 LOAD_CONST               0 (None)
+             51 RETURN_VALUE
+"""%(bug1333982.func_code.co_firstlineno + 1,
+     bug1333982.func_code.co_firstlineno + 2,
+     bug1333982.func_code.co_firstlineno + 3)
+
+_BIG_LINENO_FORMAT = """\
+%3d           0 LOAD_GLOBAL              0 (spam)
+              3 POP_TOP
+              4 LOAD_CONST               0 (None)
+              7 RETURN_VALUE
+"""
+
 class DisTests(unittest.TestCase):
     def do_disassembly_test(self, func, expected):
         s = StringIO.StringIO()
@@ -82,6 +124,29 @@ class DisTests(unittest.TestCase):
 
     def test_bug_708901(self):
         self.do_disassembly_test(bug708901, dis_bug708901)
+
+    def test_bug_1333982(self):
+        # This one is checking bytecodes generated for an `assert` statement,
+        # so fails if the tests are run with -O.  Skip this test then.
+        if __debug__:
+            self.do_disassembly_test(bug1333982, dis_bug1333982)
+
+    def test_big_linenos(self):
+        def func(count):
+            namespace = {}
+            func = "def foo():\n " + "".join(["\n "] * count + ["spam\n"])
+            exec func in namespace
+            return namespace['foo']
+
+        # Test all small ranges
+        for i in xrange(1, 300):
+            expected = _BIG_LINENO_FORMAT % (i + 2)
+            self.do_disassembly_test(func(i), expected)
+
+        # Test some larger ranges too
+        for i in xrange(300, 5000, 10):
+            expected = _BIG_LINENO_FORMAT % (i + 2)
+            self.do_disassembly_test(func(i), expected)
 
 def test_main():
     run_unittest(DisTests)

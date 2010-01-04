@@ -10,10 +10,12 @@ the package, and perhaps a particular module inside it.
 
 """
 
-__revision__ = "$Id: __init__.py 36560 2004-07-18 06:16:08Z tim_one $"
+__revision__ = "$Id: __init__.py 61064 2008-02-25 16:29:58Z andrew.kuchling $"
 
 from _curses import *
 from curses.wrapper import wrapper
+import os as _os
+import sys as _sys
 
 # Some constants, most notably the ACS_* ones, are only added to the C
 # _curses module's dictionary after initscr() is called.  (Some
@@ -25,6 +27,10 @@ from curses.wrapper import wrapper
 
 def initscr():
     import _curses, curses
+    # we call setupterm() here because it raises an error
+    # instead of calling exit() in error cases.
+    setupterm(term=_os.environ.get("TERM", "unknown"),
+              fd=_sys.__stdout__.fileno())
     stdscr = _curses.initscr()
     for key, value in _curses.__dict__.items():
         if key[0:4] == 'ACS_' or key in ('LINES', 'COLS'):

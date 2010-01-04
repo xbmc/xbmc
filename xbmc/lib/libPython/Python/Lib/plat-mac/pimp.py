@@ -12,16 +12,20 @@ dependencies and installing packages.
 There is a minimal main program that works as a command line tool, but the
 intention is that the end user will use this through a GUI.
 """
+
+from warnings import warnpy3k
+warnpy3k("In 3.x, the pimp module is removed.", stacklevel=2)
+
 import sys
 import os
-import popen2
+import subprocess
 import urllib
 import urllib2
 import urlparse
 import plistlib
 import distutils.util
 import distutils.sysconfig
-import md5
+import hashlib
 import tarfile
 import tempfile
 import shutil
@@ -101,10 +105,11 @@ def _cmd(output, dir, *cmditems):
         output.write("+ %s\n" % cmd)
     if NO_EXECUTE:
         return 0
-    child = popen2.Popen4(cmd)
-    child.tochild.close()
+    child = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    child.stdin.close()
     while 1:
-        line = child.fromchild.readline()
+        line = child.stdout.readline()
         if not line:
             break
         if output:
@@ -693,7 +698,7 @@ class PimpPackage:
             sys.stderr.write("Warning: no MD5Sum for %s\n" % self.fullname())
             return 1
         data = open(self.archiveFilename, 'rb').read()
-        checksum = md5.new(data).hexdigest()
+        checksum = hashlib.md5(data).hexdigest()
         return checksum == self._dict['MD5Sum']
 
     def unpackPackageOnly(self, output=None):

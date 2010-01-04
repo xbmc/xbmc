@@ -22,6 +22,12 @@
 #include <conio.h>
 #include <sys/locking.h>
 
+#ifdef _MSC_VER
+#if _MSC_VER >= 1500
+#include <crtassem.h>
+#endif
+#endif
+
 // Force the malloc heap to clean itself up, and free unused blocks
 // back to the OS.  (According to the docs, only works on NT.)
 static PyObject *
@@ -143,6 +149,24 @@ msvcrt_getch(PyObject *self, PyObject *args)
 	return PyString_FromStringAndSize(s, 1);
 }
 
+#ifdef _WCONIO_DEFINED
+static PyObject *
+msvcrt_getwch(PyObject *self, PyObject *args)
+{
+	Py_UNICODE ch;
+	Py_UNICODE u[1];
+
+	if (!PyArg_ParseTuple(args, ":getwch"))
+		return NULL;
+
+	Py_BEGIN_ALLOW_THREADS
+	ch = _getwch();
+	Py_END_ALLOW_THREADS
+	u[0] = ch;
+	return PyUnicode_FromUnicode(u, 1);
+}
+#endif
+
 static PyObject *
 msvcrt_getche(PyObject *self, PyObject *args)
 {
@@ -159,6 +183,24 @@ msvcrt_getche(PyObject *self, PyObject *args)
 	return PyString_FromStringAndSize(s, 1);
 }
 
+#ifdef _WCONIO_DEFINED
+static PyObject *
+msvcrt_getwche(PyObject *self, PyObject *args)
+{
+	Py_UNICODE ch;
+	Py_UNICODE s[1];
+
+	if (!PyArg_ParseTuple(args, ":getwche"))
+		return NULL;
+
+	Py_BEGIN_ALLOW_THREADS
+	ch = _getwche();
+	Py_END_ALLOW_THREADS
+	s[0] = ch;
+	return PyUnicode_FromUnicode(s, 1);
+}
+#endif
+
 static PyObject *
 msvcrt_putch(PyObject *self, PyObject *args)
 {
@@ -171,6 +213,27 @@ msvcrt_putch(PyObject *self, PyObject *args)
 	Py_INCREF(Py_None);
 	return Py_None;
 }
+
+#ifdef _WCONIO_DEFINED
+static PyObject *
+msvcrt_putwch(PyObject *self, PyObject *args)
+{
+	Py_UNICODE *ch;
+	int size;
+
+	if (!PyArg_ParseTuple(args, "u#:putwch", &ch, &size))
+		return NULL;
+
+	if (size == 0) {
+		PyErr_SetString(PyExc_ValueError,
+			"Expected unicode string of length 1");
+		return NULL;
+	}
+	_putwch(*ch);
+	Py_RETURN_NONE;
+
+}
+#endif
 
 static PyObject *
 msvcrt_ungetch(PyObject *self, PyObject *args)
@@ -186,6 +249,21 @@ msvcrt_ungetch(PyObject *self, PyObject *args)
 	return Py_None;
 }
 
+#ifdef _WCONIO_DEFINED
+static PyObject *
+msvcrt_ungetwch(PyObject *self, PyObject *args)
+{
+	Py_UNICODE ch;
+
+	if (!PyArg_ParseTuple(args, "u:ungetwch", &ch))
+		return NULL;
+
+	if (_ungetch(ch) == EOF)
+		return PyErr_SetFromErrno(PyExc_IOError);
+	Py_INCREF(Py_None);
+	return Py_None;
+}
+#endif
 
 static void
 insertint(PyObject *d, char *name, int value)
@@ -214,12 +292,19 @@ static struct PyMethodDef msvcrt_functions[] = {
 	{"getche",		msvcrt_getche, METH_VARARGS},
 	{"putch",		msvcrt_putch, METH_VARARGS},
 	{"ungetch",		msvcrt_ungetch, METH_VARARGS},
+#ifdef _WCONIO_DEFINED
+	{"getwch",		msvcrt_getwch, METH_VARARGS},
+	{"getwche",		msvcrt_getwche, METH_VARARGS},
+	{"putwch",		msvcrt_putwch, METH_VARARGS},
+	{"ungetwch",		msvcrt_ungetwch, METH_VARARGS},
+#endif
 	{NULL,			NULL}
 };
 
 PyMODINIT_FUNC
 initmsvcrt(void)
 {
+	int st;
 	PyObject *d;
 	PyObject *m = Py_InitModule("msvcrt", msvcrt_functions);
 	if (m == NULL)
@@ -232,4 +317,21 @@ initmsvcrt(void)
 	insertint(d, "LK_NBRLCK", _LK_NBRLCK);
 	insertint(d, "LK_RLCK", _LK_RLCK);
 	insertint(d, "LK_UNLCK", _LK_UNLCK);
+
+	/* constants for the crt versions */
+#ifdef _VC_ASSEMBLY_PUBLICKEYTOKEN
+	st = PyModule_AddStringConstant(m, "VC_ASSEMBLY_PUBLICKEYTOKEN",
+					_VC_ASSEMBLY_PUBLICKEYTOKEN);
+	if (st < 0)return;
+#endif
+#ifdef _CRT_ASSEMBLY_VERSION
+	st = PyModule_AddStringConstant(m, "CRT_ASSEMBLY_VERSION",
+					_CRT_ASSEMBLY_VERSION);
+	if (st < 0)return;
+#endif
+#ifdef __LIBRARIES_ASSEMBLY_NAME_PREFIX
+	st = PyModule_AddStringConstant(m, "LIBRARIES_ASSEMBLY_NAME_PREFIX",
+					__LIBRARIES_ASSEMBLY_NAME_PREFIX);
+	if (st < 0)return;
+#endif
 }

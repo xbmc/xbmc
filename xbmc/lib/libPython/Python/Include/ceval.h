@@ -18,9 +18,11 @@ PyAPI_FUNC(PyObject *) PyEval_CallObject(PyObject *, PyObject *);
 #define PyEval_CallObject(func,arg) \
         PyEval_CallObjectWithKeywords(func, arg, (PyObject *)NULL)
 
-PyAPI_FUNC(PyObject *) PyEval_CallFunction(PyObject *obj, char *format, ...);
+PyAPI_FUNC(PyObject *) PyEval_CallFunction(PyObject *obj,
+                                           const char *format, ...);
 PyAPI_FUNC(PyObject *) PyEval_CallMethod(PyObject *obj,
-                                        char *methodname, char *format, ...);
+                                         const char *methodname,
+                                         const char *format, ...);
 
 PyAPI_FUNC(void) PyEval_SetProfile(Py_tracefunc, PyObject *);
 PyAPI_FUNC(void) PyEval_SetTrace(Py_tracefunc, PyObject *);
@@ -60,11 +62,12 @@ PyAPI_DATA(int) _Py_CheckRecursionLimit;
 #  define _Py_MakeRecCheck(x)  (++(x) > _Py_CheckRecursionLimit)
 #endif
 
-PyAPI_FUNC(char *) PyEval_GetFuncName(PyObject *);
-PyAPI_FUNC(char *) PyEval_GetFuncDesc(PyObject *);
+PyAPI_FUNC(const char *) PyEval_GetFuncName(PyObject *);
+PyAPI_FUNC(const char *) PyEval_GetFuncDesc(PyObject *);
 
 PyAPI_FUNC(PyObject *) PyEval_GetCallStats(PyObject *);
 PyAPI_FUNC(PyObject *) PyEval_EvalFrame(struct _frame *);
+PyAPI_FUNC(PyObject *) PyEval_EvalFrameEx(struct _frame *f, int exc);
 
 /* this used to be handled on a per-thread basis - now just two globals */
 PyAPI_DATA(volatile int) _Py_Ticker;
@@ -145,7 +148,7 @@ PyAPI_FUNC(void) PyEval_ReInitThreads(void);
 
 #endif /* !WITH_THREAD */
 
-PyAPI_FUNC(int) _PyEval_SliceIndex(PyObject *, int *);
+PyAPI_FUNC(int) _PyEval_SliceIndex(PyObject *, Py_ssize_t *);
 
 
 #ifdef __cplusplus

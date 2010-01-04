@@ -26,7 +26,7 @@
  * as best as is possible, but most imports will fail.
  *
  * Before any searches are done, the location of the executable is
- * determined.  If argv[0] has one or more slashs in it, it is used
+ * determined.  If argv[0] has one or more slashes in it, it is used
  * unchanged.  Otherwise, it must have been invoked from the shell's path,
  * so we search $PATH for the named executable and use that.  If the
  * executable was not found on $PATH (or there was no $PATH environment
@@ -91,12 +91,13 @@
  * process to find the installed Python tree.
  */
 
-#ifndef VERSION
-#if defined(__VMS)
-#define VERSION "2_1"
-#else
-#define VERSION "2.1"
+#ifdef __cplusplus
+ extern "C" {
 #endif
+
+
+#ifndef VERSION
+#define VERSION "2.1"
 #endif
 
 #ifndef VPATH
@@ -104,7 +105,11 @@
 #endif
 
 #ifndef PREFIX
-#define PREFIX "/usr/local"
+#  ifdef __VMS
+#    define PREFIX ""
+#  else
+#    define PREFIX "/usr/local"
+#  endif
 #endif
 
 #ifndef EXEC_PREFIX
@@ -566,7 +571,7 @@ calculate_path(void)
     bufsz += strlen(exec_prefix) + 1;
 
     /* This is the only malloc call in this file */
-    buf = PyMem_Malloc(bufsz);
+    buf = (char *)PyMem_Malloc(bufsz);
 
     if (buf == NULL) {
         /* We can't exit, so print a warning and limp along */
@@ -681,3 +686,9 @@ Py_GetProgramFullPath(void)
         calculate_path();
     return progpath;
 }
+
+
+#ifdef __cplusplus
+}
+#endif
+

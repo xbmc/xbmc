@@ -7,7 +7,9 @@
 static int
 bool_print(PyBoolObject *self, FILE *fp, int flags)
 {
+	Py_BEGIN_ALLOW_THREADS
 	fputs(self->ob_ival == 0 ? "False" : "True", fp);
+	Py_END_ALLOW_THREADS
 	return 0;
 }
 
@@ -103,51 +105,50 @@ The class bool is a subclass of the class int, and cannot be subclassed.");
 /* Arithmetic methods -- only so we can override &, |, ^. */
 
 static PyNumberMethods bool_as_number = {
-	0,					/* nb_add */
-	0,					/* nb_subtract */
-	0,					/* nb_multiply */
-	0,					/* nb_divide */
-	0,					/* nb_remainder */
-	0,					/* nb_divmod */
-	0,					/* nb_power */
-	0,					/* nb_negative */
-	0,					/* nb_positive */
-	0,					/* nb_absolute */
-	0,					/* nb_nonzero */
-	0,					/* nb_invert */
-	0,					/* nb_lshift */
-	0,					/* nb_rshift */
-	(binaryfunc)bool_and,			/* nb_and */
-	(binaryfunc)bool_xor,			/* nb_xor */
-	(binaryfunc)bool_or,			/* nb_or */
-	0,					/* nb_coerce */
-	0,					/* nb_int */
-	0,					/* nb_long */
-	0,					/* nb_float */
-	0,					/* nb_oct */
-	0,		 			/* nb_hex */
-	0,					/* nb_inplace_add */
-	0,					/* nb_inplace_subtract */
-	0,					/* nb_inplace_multiply */
-	0,					/* nb_inplace_divide */
-	0,					/* nb_inplace_remainder */
-	0,					/* nb_inplace_power */
-	0,					/* nb_inplace_lshift */
-	0,					/* nb_inplace_rshift */
-	0,					/* nb_inplace_and */
-	0,					/* nb_inplace_xor */
-	0,					/* nb_inplace_or */
-	0,					/* nb_floor_divide */
-	0,					/* nb_true_divide */
-	0,					/* nb_inplace_floor_divide */
-	0,					/* nb_inplace_true_divide */
+	0,			/* nb_add */
+	0,			/* nb_subtract */
+	0,			/* nb_multiply */
+	0,			/* nb_divide */
+	0,			/* nb_remainder */
+	0,			/* nb_divmod */
+	0,			/* nb_power */
+	0,			/* nb_negative */
+	0,			/* nb_positive */
+	0,			/* nb_absolute */
+	0,			/* nb_nonzero */
+	0,			/* nb_invert */
+	0,			/* nb_lshift */
+	0,			/* nb_rshift */
+	bool_and,		/* nb_and */
+	bool_xor,		/* nb_xor */
+	bool_or,		/* nb_or */
+	0,			/* nb_coerce */
+	0,			/* nb_int */
+	0,			/* nb_long */
+	0,			/* nb_float */
+	0,			/* nb_oct */
+	0,		 	/* nb_hex */
+	0,			/* nb_inplace_add */
+	0,			/* nb_inplace_subtract */
+	0,			/* nb_inplace_multiply */
+	0,			/* nb_inplace_divide */
+	0,			/* nb_inplace_remainder */
+	0,			/* nb_inplace_power */
+	0,			/* nb_inplace_lshift */
+	0,			/* nb_inplace_rshift */
+	0,			/* nb_inplace_and */
+	0,			/* nb_inplace_xor */
+	0,			/* nb_inplace_or */
+	0,			/* nb_floor_divide */
+	0,			/* nb_true_divide */
+	0,			/* nb_inplace_floor_divide */
+	0,			/* nb_inplace_true_divide */
 };
 
 /* The type object for bool.  Note that this cannot be subclassed! */
 
 PyTypeObject PyBool_Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,
+	PyVarObject_HEAD_INIT(&PyType_Type, 0)
 	"bool",
 	sizeof(PyIntObject),
 	0,

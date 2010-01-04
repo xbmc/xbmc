@@ -12,6 +12,20 @@
 #endif
 #include <signal.h>
 
+/* The POSIX spec requires that use of pthread_attr_setstacksize
+   be conditional on _POSIX_THREAD_ATTR_STACKSIZE being defined. */
+#ifdef _POSIX_THREAD_ATTR_STACKSIZE
+#ifndef THREAD_STACK_SIZE
+#define	THREAD_STACK_SIZE	0	/* use default stack size */
+#endif
+/* for safety, ensure a viable minimum stacksize */
+#define	THREAD_STACK_MIN	0x8000	/* 32kB */
+#else  /* !_POSIX_THREAD_ATTR_STACKSIZE */
+#ifdef THREAD_STACK_SIZE
+#error "THREAD_STACK_SIZE defined but _POSIX_THREAD_ATTR_STACKSIZE undefined"
+#endif
+#endif
+
 /* The POSIX spec says that implementations supporting the sem_*
    family of functions must indicate this by defining
    _POSIX_SEMAPHORES. */   
@@ -23,6 +37,16 @@
 #else
 #include <semaphore.h>
 #include <errno.h>
+#endif
+#endif
+
+/* Before FreeBSD 5.4, system scope threads was very limited resource
+   in default setting.  So the process scope is preferred to get
+   enough number of threads to work. */
+#ifdef __FreeBSD__
+#include <osreldate.h>
+#if __FreeBSD_version >= 500000 && __FreeBSD_version < 504101
+#undef PTHREAD_SYSTEM_SCHED_SUPPORTED
 #endif
 #endif
 
@@ -128,17 +152,29 @@ PyThread_start_new_thread(void (*func)(void *), void *arg)
 #if defined(THREAD_STACK_SIZE) || defined(PTHREAD_SYSTEM_SCHED_SUPPORTED)
 	pthread_attr_t attrs;
 #endif
+#if defined(THREAD_STACK_SIZE)
+	size_t	tss;
+#endif
+
 	dprintf(("PyThread_start_new_thread called\n"));
 	if (!initialized)
 		PyThread_init_thread();
 
 #if defined(THREAD_STACK_SIZE) || defined(PTHREAD_SYSTEM_SCHED_SUPPORTED)
-	pthread_attr_init(&attrs);
+	if (pthread_attr_init(&attrs) != 0)
+		return -1;
 #endif
-#ifdef THREAD_STACK_SIZE
-	pthread_attr_setstacksize(&attrs, THREAD_STACK_SIZE);
+#if defined(THREAD_STACK_SIZE)
+	tss = (_pythread_stacksize != 0) ? _pythread_stacksize
+					 : THREAD_STACK_SIZE;
+	if (tss != 0) {
+		if (pthread_attr_setstacksize(&attrs, tss) != 0) {
+			pthread_attr_destroy(&attrs);
+			return -1;
+		}
+	}
 #endif
-#if defined(PTHREAD_SYSTEM_SCHED_SUPPORTED) && !defined(__FreeBSD__)
+#if defined(PTHREAD_SYSTEM_SCHED_SUPPORTED)
         pthread_attr_setscope(&attrs, PTHREAD_SCOPE_SYSTEM);
 #endif
 
@@ -355,8 +391,8 @@ PyThread_allocate_lock(void)
 		PyThread_init_thread();
 
 	lock = (pthread_lock *) malloc(sizeof(pthread_lock));
-	memset((void *)lock, '\0', sizeof(pthread_lock));
 	if (lock) {
+		memset((void *)lock, '\0', sizeof(pthread_lock));
 		lock->locked = 0;
 
 		status = pthread_mutex_init(&lock->mut,
@@ -450,3 +486,48 @@ PyThread_release_lock(PyThread_type_lock lock)
 }
 
 #endif /* USE_SEMAPHORES */
+
+/* set the thread stack size.
+ * Return 0 if size is valid, -1 if size is invalid,
+ * -2 if setting stack size is not supported.
+ */
+static int
+_pythread_pthread_set_stacksize(size_t size)
+{
+#if defined(THREAD_STACK_SIZE)
+	pthread_attr_t attrs;
+	size_t tss_min;
+	int rc = 0;
+#endif
+
+	/* set to default */
+	if (size == 0) {
+		_pythread_stacksize = 0;
+		return 0;
+	}
+
+#if defined(THREAD_STACK_SIZE)
+#if defined(PTHREAD_STACK_MIN)
+	tss_min = PTHREAD_STACK_MIN > THREAD_STACK_MIN ? PTHREAD_STACK_MIN
+						       : THREAD_STACK_MIN;
+#else
+	tss_min = THREAD_STACK_MIN;
+#endif
+	if (size >= tss_min) {
+		/* validate stack size by setting thread attribute */
+		if (pthread_attr_init(&attrs) == 0) {
+			rc = pthread_attr_setstacksize(&attrs, size);
+			pthread_attr_destroy(&attrs);
+			if (rc == 0) {
+				_pythread_stacksize = size;
+				return 0;
+			}
+		}
+	}
+	return -1;
+#else
+	return -2;
+#endif
+}
+
+#define THREAD_SET_STACKSIZE(x)	_pythread_pthread_set_stacksize(x)

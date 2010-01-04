@@ -20,14 +20,14 @@ t1 = os.times() # If this doesn't work, just get rid of the timing code!
 try:
     FAQDIR = "/usr/people/guido/python/FAQ"
     SRCDIR = "/usr/people/guido/python/src/Tools/faqwiz"
-    import os, sys, time, operator
+    import os, sys
     os.chdir(FAQDIR)
     sys.path.insert(0, SRCDIR)
     import faqwiz
 except SystemExit, n:
     sys.exit(n)
 except:
-    t, v, tb = sys.exc_type, sys.exc_value, sys.exc_traceback
+    t, v, tb = sys.exc_info()
     print
     import cgi
     cgi.print_exception(t, v, tb)

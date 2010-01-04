@@ -32,6 +32,9 @@ try:
 except (ImportError, locale.Error):
     pass
 
+# Encoding for file names
+filesystemencoding = sys.getfilesystemencoding()
+
 encoding = "ascii"
 if sys.platform == 'win32':
     # On Windows, we could use "mbcs". However, to give the user
@@ -206,7 +209,7 @@ class IOBinding:
                 # gets set to "not modified" at every new prompt.
                 try:
                     interp = self.editwin.interp
-                except:
+                except AttributeError:
                     interp = None
                 if not self.filename and self.get_saved() and not interp:
                     self.editwin.flist.open(filename, self.loadfile)
@@ -462,13 +465,23 @@ class IOBinding:
             self.text.insert("end-1c", "\n")
 
     def print_window(self, event):
+        m = tkMessageBox.Message(
+            title="Print",
+            message="Print to Default Printer",
+            icon=tkMessageBox.QUESTION,
+            type=tkMessageBox.OKCANCEL,
+            default=tkMessageBox.OK,
+            master=self.text)
+        reply = m.show()
+        if reply != tkMessageBox.OK:
+            self.text.focus_set()
+            return "break"
         tempfilename = None
         saved = self.get_saved()
         if saved:
             filename = self.filename
         # shell undo is reset after every prompt, looks saved, probably isn't
         if not saved or filename is None:
-            # XXX KBK 08Jun03 Wouldn't it be better to ask the user to save?
             (tfd, tempfilename) = tempfile.mkstemp(prefix='IDLE_tmp_')
             filename = tempfilename
             os.close(tfd)
@@ -518,7 +531,10 @@ class IOBinding:
         if not self.opendialog:
             self.opendialog = tkFileDialog.Open(master=self.text,
                                                 filetypes=self.filetypes)
-        return self.opendialog.show(initialdir=dir, initialfile=base)
+        filename = self.opendialog.show(initialdir=dir, initialfile=base)
+        if isinstance(filename, unicode):
+            filename = filename.encode(filesystemencoding)
+        return filename
 
     def defaultfilename(self, mode="open"):
         if self.filename:
@@ -537,7 +553,10 @@ class IOBinding:
         if not self.savedialog:
             self.savedialog = tkFileDialog.SaveAs(master=self.text,
                                                   filetypes=self.filetypes)
-        return self.savedialog.show(initialdir=dir, initialfile=base)
+        filename = self.savedialog.show(initialdir=dir, initialfile=base)
+        if isinstance(filename, unicode):
+            filename = filename.encode(filesystemencoding)
+        return filename
 
     def updaterecentfileslist(self,filename):
         "Update recent file list on all editor windows"

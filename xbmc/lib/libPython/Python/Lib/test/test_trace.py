@@ -4,6 +4,7 @@ from test import test_support
 import unittest
 import sys
 import difflib
+import gc
 
 # A very basic example.  If this fails, we're in deep trouble.
 def basic():
@@ -13,7 +14,15 @@ basic.events = [(0, 'call'),
                 (1, 'line'),
                 (1, 'return')]
 
-# Armin Rigo's failing example:
+# Many of the tests below are tricky because they involve pass statements.
+# If there is implicit control flow around a pass statement (in an except
+# clause or else caluse) under what conditions do you set a line number
+# following that clause?
+
+
+# The entire "while 0:" statement is optimized away.  No code
+# exists for it, so the line numbers skip directly from "del x"
+# to "x = 1".
 def arigo_example():
     x = 1
     del x
@@ -24,7 +33,6 @@ def arigo_example():
 arigo_example.events = [(0, 'call'),
                         (1, 'line'),
                         (2, 'line'),
-                        (3, 'line'),
                         (5, 'line'),
                         (5, 'return')]
 
@@ -60,14 +68,16 @@ no_pop_tops.events = [(0, 'call'),
                       (2, 'return')]
 
 def no_pop_blocks():
-    while 0:
+    y = 1
+    while not y:
         bla
     x = 1
 
 no_pop_blocks.events = [(0, 'call'),
                         (1, 'line'),
-                        (3, 'line'),
-                        (3, 'return')]
+                        (2, 'line'),
+                        (4, 'line'),
+                        (4, 'return')]
 
 def called(): # line -3
     x = 1
@@ -127,6 +137,13 @@ settrace_and_raise.events = [(2, 'exception'),
                              (4, 'return')]
 
 # implicit return example
+# This test is interesting because of the else: pass
+# part of the code.  The code generate for the true
+# part of the if contains a jump past the else branch.
+# The compiler then generates an implicit "return None"
+# Internally, the compiler visits the pass statement
+# and stores its line number for use on the next instruction.
+# The next instruction is the implicit return None.
 def ireturn_example():
     a = 5
     b = 5
@@ -140,7 +157,8 @@ ireturn_example.events = [(0, 'call'),
                           (2, 'line'),
                           (3, 'line'),
                           (4, 'line'),
-                          (4, 'return')]
+                          (6, 'line'),
+                          (6, 'return')]
 
 # Tight loop with while(1) example (SF #765624)
 def tightloop_example():
@@ -187,30 +205,75 @@ tighterloop_example.events = [(0, 'call'),
                             (6, 'line'),
                             (6, 'return')]
 
+def generator_function():
+    try:
+        yield True
+        "continued"
+    finally:
+        "finally"
+def generator_example():
+    # any() will leave the generator before its end
+    x = any(generator_function())
+
+    # the following lines were not traced
+    for x in range(10):
+        y = x
+
+generator_example.events = ([(0, 'call'),
+                             (2, 'line'),
+                             (-6, 'call'),
+                             (-5, 'line'),
+                             (-4, 'line'),
+                             (-4, 'return'),
+                             (-4, 'call'),
+                             (-4, 'exception'),
+                             (-1, 'line'),
+                             (-1, 'return')] +
+                            [(5, 'line'), (6, 'line')] * 10 +
+                            [(5, 'line'), (5, 'return')])
+
+
 class Tracer:
     def __init__(self):
         self.events = []
     def trace(self, frame, event, arg):
         self.events.append((frame.f_lineno, event))
         return self.trace
+    def traceWithGenexp(self, frame, event, arg):
+        (o for o in [1])
+        self.events.append((frame.f_lineno, event))
+        return self.trace
 
 class TraceTestCase(unittest.TestCase):
+
+    # Disable gc collection when tracing, otherwise the
+    # deallocators may be traced as well.
+    def setUp(self):
+        self.using_gc = gc.isenabled()
+        gc.disable()
+
+    def tearDown(self):
+        if self.using_gc:
+            gc.enable()
+
     def compare_events(self, line_offset, events, expected_events):
         events = [(l - line_offset, e) for (l, e) in events]
         if events != expected_events:
             self.fail(
                 "events did not match expectation:\n" +
-                "\n".join(difflib.ndiff(map(str, expected_events),
-                                        map(str, events))))
+                "\n".join(difflib.ndiff([str(x) for x in expected_events],
+                                        [str(x) for x in events])))
 
-
-    def run_test(self, func):
+    def run_and_compare(self, func, events):
         tracer = Tracer()
         sys.settrace(tracer.trace)
         func()
         sys.settrace(None)
         self.compare_events(func.func_code.co_firstlineno,
-                            tracer.events, func.events)
+                            tracer.events, events)
+
+    def run_test(self, func):
+        self.run_and_compare(func, func.events)
 
     def run_test2(self, func):
         tracer = Tracer()
@@ -218,6 +281,20 @@ class TraceTestCase(unittest.TestCase):
         sys.settrace(None)
         self.compare_events(func.func_code.co_firstlineno,
                             tracer.events, func.events)
+
+    def set_and_retrieve_none(self):
+        sys.settrace(None)
+        assert sys.gettrace() is None
+
+    def set_and_retrieve_func(self):
+        def fn(*args):
+            pass
+
+        sys.settrace(fn)
+        try:
+            assert sys.gettrace() is fn
+        finally:
+            sys.settrace(None)
 
     def test_01_basic(self):
         self.run_test(basic)
@@ -244,6 +321,71 @@ class TraceTestCase(unittest.TestCase):
         self.run_test(tightloop_example)
     def test_12_tighterloop(self):
         self.run_test(tighterloop_example)
+
+    def test_13_genexp(self):
+        self.run_test(generator_example)
+        # issue1265: if the trace function contains a generator,
+        # and if the traced function contains another generator
+        # that is not completely exhausted, the trace stopped.
+        # Worse: the 'finally' clause was not invoked.
+        tracer = Tracer()
+        sys.settrace(tracer.traceWithGenexp)
+        generator_example()
+        sys.settrace(None)
+        self.compare_events(generator_example.__code__.co_firstlineno,
+                            tracer.events, generator_example.events)
+
+    def test_14_onliner_if(self):
+        def onliners():
+            if True: False
+            else: True
+            return 0
+        self.run_and_compare(
+            onliners,
+            [(0, 'call'),
+             (1, 'line'),
+             (3, 'line'),
+             (3, 'return')])
+
+    def test_15_loops(self):
+        # issue1750076: "while" expression is skipped by debugger
+        def for_example():
+            for x in range(2):
+                pass
+        self.run_and_compare(
+            for_example,
+            [(0, 'call'),
+             (1, 'line'),
+             (2, 'line'),
+             (1, 'line'),
+             (2, 'line'),
+             (1, 'line'),
+             (1, 'return')])
+
+        def while_example():
+            # While expression should be traced on every loop
+            x = 2
+            while x > 0:
+                x -= 1
+        self.run_and_compare(
+            while_example,
+            [(0, 'call'),
+             (2, 'line'),
+             (3, 'line'),
+             (4, 'line'),
+             (3, 'line'),
+             (4, 'line'),
+             (3, 'line'),
+             (3, 'return')])
+
+    def test_16_blank_lines(self):
+        exec("def f():\n" + "\n" * 256 + "    pass")
+        self.run_and_compare(
+            f,
+            [(0, 'call'),
+             (257, 'line'),
+             (257, 'return')])
+
 
 class RaisingTraceFuncTestCase(unittest.TestCase):
     def trace(self, frame, event, arg):
@@ -597,6 +739,23 @@ class JumpTestCase(unittest.TestCase):
         self.run_test(no_jump_to_non_integers)
     def test_19_no_jump_without_trace_function(self):
         no_jump_without_trace_function()
+
+    def test_20_large_function(self):
+        d = {}
+        exec("""def f(output):        # line 0
+            x = 0                     # line 1
+            y = 1                     # line 2
+            '''                       # line 3
+            %s                        # lines 4-1004
+            '''                       # line 1005
+            x += 1                    # line 1006
+            output.append(x)          # line 1007
+            return""" % ('\n' * 1000,), d)
+        f = d['f']
+
+        f.jump = (2, 1007)
+        f.output = [0]
+        self.run_test(f)
 
 def test_main():
     test_support.run_unittest(

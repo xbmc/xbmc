@@ -1,23 +1,8 @@
 import unittest
 from test import test_support
 import zlib
+import binascii
 import random
-
-# print test_support.TESTFN
-
-def getbuf():
-    # This was in the original.  Avoid non-repeatable sources.
-    # Left here (unused) in case something wants to be done with it.
-    import imp
-    try:
-        t = imp.find_module('test_zlib')
-        file = t[0]
-    except ImportError:
-        file = open(__file__)
-    buf = file.read() * 8
-    file.close()
-    return buf
-
 
 
 class ChecksumTestCase(unittest.TestCase):
@@ -54,22 +39,54 @@ class ChecksumTestCase(unittest.TestCase):
         self.assertEqual(zlib.crc32("penguin"), zlib.crc32("penguin", 0))
         self.assertEqual(zlib.adler32("penguin"),zlib.adler32("penguin",1))
 
+    def test_abcdefghijklmnop(self):
+        """test issue1202 compliance: signed crc32, adler32 in 2.x"""
+        foo = 'abcdefghijklmnop'
+        # explicitly test signed behavior
+        self.assertEqual(zlib.crc32(foo), -1808088941)
+        self.assertEqual(zlib.crc32('spam'), 1138425661)
+        self.assertEqual(zlib.adler32(foo+foo), -721416943)
+        self.assertEqual(zlib.adler32('spam'), 72286642)
+
+    def test_same_as_binascii_crc32(self):
+        foo = 'abcdefghijklmnop'
+        self.assertEqual(binascii.crc32(foo), zlib.crc32(foo))
+        self.assertEqual(binascii.crc32('spam'), zlib.crc32('spam'))
+
+    def test_negative_crc_iv_input(self):
+        # The range of valid input values for the crc state should be
+        # -2**31 through 2**32-1 to allow inputs artifically constrained
+        # to a signed 32-bit integer.
+        self.assertEqual(zlib.crc32('ham', -1), zlib.crc32('ham', 0xffffffffL))
+        self.assertEqual(zlib.crc32('spam', -3141593),
+                         zlib.crc32('spam',  0xffd01027L))
+        self.assertEqual(zlib.crc32('spam', -(2**31)),
+                         zlib.crc32('spam',  (2**31)))
 
 
 class ExceptionTestCase(unittest.TestCase):
     # make sure we generate some expected errors
-    def test_bigbits(self):
-        # specifying total bits too large causes an error
-        self.assertRaises(zlib.error,
-                zlib.compress, 'ERROR', zlib.MAX_WBITS + 1)
+    def test_badlevel(self):
+        # specifying compression level out of range causes an error
+        # (but -1 is Z_DEFAULT_COMPRESSION and apparently the zlib
+        # accepts 0 too)
+        self.assertRaises(zlib.error, zlib.compress, 'ERROR', 10)
 
     def test_badcompressobj(self):
         # verify failure on building compress object with bad params
         self.assertRaises(ValueError, zlib.compressobj, 1, zlib.DEFLATED, 0)
+        # specifying total bits too large causes an error
+        self.assertRaises(ValueError,
+                zlib.compressobj, 1, zlib.DEFLATED, zlib.MAX_WBITS + 1)
 
     def test_baddecompressobj(self):
         # verify failure on building decompress object with bad params
         self.assertRaises(ValueError, zlib.decompressobj, 0)
+
+    def test_decompressobj_badflush(self):
+        # verify failure on calling decompressobj.flush with bad params
+        self.assertRaises(ValueError, zlib.decompressobj().flush, 0)
+        self.assertRaises(ValueError, zlib.decompressobj().flush, -1)
 
 
 
@@ -302,6 +319,65 @@ class CompressObjectTestCase(unittest.TestCase):
         dco = zlib.decompressobj()
         self.assertEqual(dco.flush(), "") # Returns nothing
 
+    if hasattr(zlib.compressobj(), "copy"):
+        def test_compresscopy(self):
+            # Test copying a compression object
+            data0 = HAMLET_SCENE
+            data1 = HAMLET_SCENE.swapcase()
+            c0 = zlib.compressobj(zlib.Z_BEST_COMPRESSION)
+            bufs0 = []
+            bufs0.append(c0.compress(data0))
+
+            c1 = c0.copy()
+            bufs1 = bufs0[:]
+
+            bufs0.append(c0.compress(data0))
+            bufs0.append(c0.flush())
+            s0 = ''.join(bufs0)
+
+            bufs1.append(c1.compress(data1))
+            bufs1.append(c1.flush())
+            s1 = ''.join(bufs1)
+
+            self.assertEqual(zlib.decompress(s0),data0+data0)
+            self.assertEqual(zlib.decompress(s1),data0+data1)
+
+        def test_badcompresscopy(self):
+            # Test copying a compression object in an inconsistent state
+            c = zlib.compressobj()
+            c.compress(HAMLET_SCENE)
+            c.flush()
+            self.assertRaises(ValueError, c.copy)
+
+    if hasattr(zlib.decompressobj(), "copy"):
+        def test_decompresscopy(self):
+            # Test copying a decompression object
+            data = HAMLET_SCENE
+            comp = zlib.compress(data)
+
+            d0 = zlib.decompressobj()
+            bufs0 = []
+            bufs0.append(d0.decompress(comp[:32]))
+
+            d1 = d0.copy()
+            bufs1 = bufs0[:]
+
+            bufs0.append(d0.decompress(comp[32:]))
+            s0 = ''.join(bufs0)
+
+            bufs1.append(d1.decompress(comp[32:]))
+            s1 = ''.join(bufs1)
+
+            self.assertEqual(s0,s1)
+            self.assertEqual(s0,data)
+
+        def test_baddecompresscopy(self):
+            # Test copying a compression object in an inconsistent state
+            data = zlib.compress(HAMLET_SCENE)
+            d = zlib.decompressobj()
+            d.decompress(data)
+            d.flush()
+            self.assertRaises(ValueError, d.copy)
 
 def genblock(seed, length, step=1024, generator=random):
     """length-byte stream of random data from a seed (in step-byte blocks)."""
@@ -402,21 +478,3 @@ def test_main():
 
 if __name__ == "__main__":
     test_main()
-
-def test(tests=''):
-    if not tests: tests = 'o'
-    testcases = []
-    if 'k' in tests: testcases.append(ChecksumTestCase)
-    if 'x' in tests: testcases.append(ExceptionTestCase)
-    if 'c' in tests: testcases.append(CompressTestCase)
-    if 'o' in tests: testcases.append(CompressObjectTestCase)
-    test_support.run_unittest(*testcases)
-
-if False:
-    import sys
-    sys.path.insert(1, '/Py23Src/python/dist/src/Lib/test')
-    import test_zlib as tz
-    ts, ut = tz.test_support, tz.unittest
-    su = ut.TestSuite()
-    su.addTest(ut.makeSuite(tz.CompressTestCase))
-    ts.run_suite(su)

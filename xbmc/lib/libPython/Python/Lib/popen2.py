@@ -8,6 +8,9 @@ and popen3(cmd) which return two or three pipes to the spawned command.
 
 import os
 import sys
+import warnings
+warnings.warn("The popen2 module is deprecated.  Use the subprocess module.",
+              DeprecationWarning, stacklevel=2)
 
 __all__ = ["popen2", "popen3", "popen4"]
 
@@ -20,11 +23,17 @@ _active = []
 
 def _cleanup():
     for inst in _active[:]:
-        inst.poll()
+        if inst.poll(_deadstate=sys.maxint) >= 0:
+            try:
+                _active.remove(inst)
+            except ValueError:
+                # This can happen if two threads create a new Popen instance.
+                # It's harmless that it was already removed, so ignore.
+                pass
 
 class Popen3:
-    """Class representing a child process.  Normally instances are created
-    by the factory functions popen2() and popen3()."""
+    """Class representing a child process.  Normally, instances are created
+    internally by the functions popen2() and popen3()."""
 
     sts = -1                    # Child not completed yet
 
@@ -39,6 +48,7 @@ class Popen3:
         specified, it specifies the size of the I/O buffers to/from the child
         process."""
         _cleanup()
+        self.cmd = cmd
         p2cread, p2cwrite = os.pipe()
         c2pread, c2pwrite = os.pipe()
         if capturestderr:
@@ -60,41 +70,46 @@ class Popen3:
             self.childerr = os.fdopen(errout, 'r', bufsize)
         else:
             self.childerr = None
-        _active.append(self)
+
+    def __del__(self):
+        # In case the child hasn't been waited on, check if it's done.
+        self.poll(_deadstate=sys.maxint)
+        if self.sts < 0:
+            if _active is not None:
+                # Child is still running, keep us alive until we can wait on it.
+                _active.append(self)
 
     def _run_child(self, cmd):
         if isinstance(cmd, basestring):
             cmd = ['/bin/sh', '-c', cmd]
-        for i in xrange(3, MAXFD):
-            try:
-                os.close(i)
-            except OSError:
-                pass
+        os.closerange(3, MAXFD)
         try:
             os.execvp(cmd[0], cmd)
         finally:
             os._exit(1)
 
-    def poll(self):
+    def poll(self, _deadstate=None):
         """Return the exit status of the child process if it has finished,
         or -1 if it hasn't finished yet."""
         if self.sts < 0:
             try:
                 pid, sts = os.waitpid(self.pid, os.WNOHANG)
+                # pid will be 0 if self.pid hasn't terminated
                 if pid == self.pid:
                     self.sts = sts
-                    _active.remove(self)
             except os.error:
-                pass
+                if _deadstate is not None:
+                    self.sts = _deadstate
         return self.sts
 
     def wait(self):
         """Wait for and return the exit status of the child process."""
         if self.sts < 0:
             pid, sts = os.waitpid(self.pid, 0)
-            if pid == self.pid:
-                self.sts = sts
-                _active.remove(self)
+            # This used to be a test, but it is believed to be
+            # always true, so I changed it to an assertion - mvl
+            assert pid == self.pid
+            self.sts = sts
         return self.sts
 
 
@@ -103,6 +118,7 @@ class Popen4(Popen3):
 
     def __init__(self, cmd, bufsize=-1):
         _cleanup()
+        self.cmd = cmd
         p2cread, p2cwrite = os.pipe()
         c2pread, c2pwrite = os.pipe()
         self.pid = os.fork()
@@ -116,7 +132,6 @@ class Popen4(Popen3):
         self.tochild = os.fdopen(p2cwrite, 'w', bufsize)
         os.close(c2pwrite)
         self.fromchild = os.fdopen(c2pread, 'r', bufsize)
-        _active.append(self)
 
 
 if sys.platform[:3] == "win" or sys.platform == "os2emx":
@@ -184,41 +199,3 @@ else:
         return inst.fromchild, inst.tochild
 
     __all__.extend(["Popen3", "Popen4"])
-
-def _test():
-    cmd  = "cat"
-    teststr = "ab cd\n"
-    if os.name == "nt":
-        cmd = "more"
-    # "more" doesn't act the same way across Windows flavors,
-    # sometimes adding an extra newline at the start or the
-    # end.  So we strip whitespace off both ends for comparison.
-    expected = teststr.strip()
-    print "testing popen2..."
-    r, w = popen2(cmd)
-    w.write(teststr)
-    w.close()
-    got = r.read()
-    if got.strip() != expected:
-        raise ValueError("wrote %r read %r" % (teststr, got))
-    print "testing popen3..."
-    try:
-        r, w, e = popen3([cmd])
-    except:
-        r, w, e = popen3(cmd)
-    w.write(teststr)
-    w.close()
-    got = r.read()
-    if got.strip() != expected:
-        raise ValueError("wrote %r read %r" % (teststr, got))
-    got = e.read()
-    if got:
-        raise ValueError("unexpected %r on stderr" % (got,))
-    for inst in _active[:]:
-        inst.wait()
-    if _active:
-        raise ValueError("_active not empty")
-    print "All OK"
-
-if __name__ == '__main__':
-    _test()

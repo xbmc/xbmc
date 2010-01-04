@@ -128,7 +128,7 @@ def compile(file, cfile=None, dfile=None, doraise=False):
         if doraise:
             raise py_exc
         else:
-            sys.stderr.write(py_exc.msg)
+            sys.stderr.write(py_exc.msg + '\n')
             return
     if cfile is None:
         cfile = file + (__debug__ and 'c' or 'o')
@@ -154,11 +154,15 @@ def main(args=None):
     """
     if args is None:
         args = sys.argv[1:]
+    rv = 0
     for filename in args:
         try:
             compile(filename, doraise=True)
-        except PyCompileError,err:
+        except PyCompileError, err:
+            # return value to indicate at least one failure
+            rv = 1
             sys.stderr.write(err.msg)
+    return rv
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

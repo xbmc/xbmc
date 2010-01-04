@@ -1,7 +1,7 @@
-.TH PYTHON "1" "$Date: 2005-03-20 15:18:04 +0100 (So, 20 Mär 2005) $"
+.TH PYTHON "1" "$Date: 2009-09-12 22:21:55 -0400 (Sat, 12 Sep 2009) $"
 
-./" To view this file while editing, run it through groff:
-./"   groff -Tascii -man python.man | less
+.\" To view this file while editing, run it through groff:
+.\"   groff -Tascii -man python.man | less
 
 .SH NAME
 python \- an interpreted, interactive, object-oriented programming language
@@ -53,6 +53,9 @@ python \- an interpreted, interactive, object-oriented programming language
 ]
 [
 .B \-x
+]
+[
+.B \-3
 ]
 .br
        [
@@ -236,6 +239,9 @@ is thus equivalent to an omitted line number.
 Skip the first line of the source.  This is intended for a DOS
 specific hack only.  Warning: the line numbers in error messages will
 be off by one!
+.TP
+.B \-3
+Warn about Python 3.x incompatibilities that 2to3 cannot trivially fix.
 .SH INTERPRETER INTERFACE
 The interpreter interface resembles that of the UNIX shell: when
 called with standard input connected to a tty device, it prompts for
@@ -381,13 +387,11 @@ Main website:  http://www.python.org/
 .br
 Documentation:  http://docs.python.org/
 .br
-Community website:  http://starship.python.net/
-.br
 Developer resources:  http://www.python.org/dev/
 .br
-FTP:  ftp://ftp.python.org/pub/python/
+Downloads:  http://python.org/download/
 .br
-Module repository:  http://www.vex.net/parnassus/
+Module repository:  http://pypi.python.org/
 .br
 Newsgroups:  comp.lang.python, comp.lang.python.announce
 .SH LICENSING

@@ -1,18 +1,9 @@
+# Tkinter font wrapper
 #
-# Tkinter
-# $Id: tkFont.py 45311 2006-04-12 15:28:52Z georg.brandl $
-#
-# font wrapper
-#
-# written by Fredrik Lundh <fredrik@pythonware.com>, February 1998
+# written by Fredrik Lundh, February 1998
 #
 # FIXME: should add 'displayof' option where relevant (actual, families,
 #        measure, and metrics)
-#
-# Copyright (c) Secret Labs AB 1998.
-#
-# info@pythonware.com
-# http://www.pythonware.com
 #
 
 __version__ = "0.9"
@@ -40,7 +31,7 @@ class Font:
     name -- name to use for this font configuration (defaults to a unique name)
     exists -- does a named font by this name already exist?
        Creates a new named font if False, points to the existing font if True.
-       Raises _tkinter.TclError if the assertion is false.
+       Raises _Tkinter.TclError if the assertion is false.
 
        the following are ignored if font is specified:
 

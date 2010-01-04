@@ -4,6 +4,8 @@
 #include "Python.h"
 #include <ctype.h>
 
+static PyObject *int_int(PyIntObject *v);
+
 long
 PyInt_GetMax(void)
 {
@@ -56,13 +58,13 @@ fill_free_list(void)
 	p = &((PyIntBlock *)p)->objects[0];
 	q = p + N_INTOBJECTS;
 	while (--q > p)
-		q->ob_type = (struct _typeobject *)(q-1);
-	q->ob_type = NULL;
+		Py_TYPE(q) = (struct _typeobject *)(q-1);
+	Py_TYPE(q) = NULL;
 	return p + N_INTOBJECTS - 1;
 }
 
 #ifndef NSMALLPOSINTS
-#define NSMALLPOSINTS		100
+#define NSMALLPOSINTS		257
 #endif
 #ifndef NSMALLNEGINTS
 #define NSMALLNEGINTS		5
@@ -102,27 +104,43 @@ PyInt_FromLong(long ival)
 	}
 	/* Inline PyObject_New */
 	v = free_list;
-	free_list = (PyIntObject *)v->ob_type;
+	free_list = (PyIntObject *)Py_TYPE(v);
 	PyObject_INIT(v, &PyInt_Type);
 	v->ob_ival = ival;
 	return (PyObject *) v;
+}
+
+PyObject *
+PyInt_FromSize_t(size_t ival)
+{
+	if (ival <= LONG_MAX)
+		return PyInt_FromLong((long)ival);
+	return _PyLong_FromSize_t(ival);
+}
+
+PyObject *
+PyInt_FromSsize_t(Py_ssize_t ival)
+{
+	if (ival >= LONG_MIN && ival <= LONG_MAX)
+		return PyInt_FromLong((long)ival);
+	return _PyLong_FromSsize_t(ival);
 }
 
 static void
 int_dealloc(PyIntObject *v)
 {
 	if (PyInt_CheckExact(v)) {
-		v->ob_type = (struct _typeobject *)free_list;
+		Py_TYPE(v) = (struct _typeobject *)free_list;
 		free_list = v;
 	}
 	else
-		v->ob_type->tp_free((PyObject *)v);
+		Py_TYPE(v)->tp_free((PyObject *)v);
 }
 
 static void
 int_free(PyIntObject *v)
 {
-	v->ob_type = (struct _typeobject *)free_list;
+	Py_TYPE(v) = (struct _typeobject *)free_list;
 	free_list = v;
 }
 
@@ -136,7 +154,7 @@ PyInt_AsLong(register PyObject *op)
 	if (op && PyInt_Check(op))
 		return PyInt_AS_LONG((PyIntObject*) op);
 
-	if (op == NULL || (nb = op->ob_type->tp_as_number) == NULL ||
+	if (op == NULL || (nb = Py_TYPE(op)->tp_as_number) == NULL ||
 	    nb->nb_int == NULL) {
 		PyErr_SetString(PyExc_TypeError, "an integer is required");
 		return -1;
@@ -169,6 +187,65 @@ PyInt_AsLong(register PyObject *op)
 	return val;
 }
 
+Py_ssize_t
+PyInt_AsSsize_t(register PyObject *op)
+{
+#if SIZEOF_SIZE_T != SIZEOF_LONG
+	PyNumberMethods *nb;
+	PyIntObject *io;
+	Py_ssize_t val;
+#endif
+
+	if (op == NULL) {
+		PyErr_SetString(PyExc_TypeError, "an integer is required");
+		return -1;
+	}
+
+	if (PyInt_Check(op))
+		return PyInt_AS_LONG((PyIntObject*) op);
+	if (PyLong_Check(op))
+		return _PyLong_AsSsize_t(op);
+#if SIZEOF_SIZE_T == SIZEOF_LONG
+	return PyInt_AsLong(op);
+#else
+
+	if ((nb = Py_TYPE(op)->tp_as_number) == NULL ||
+	    (nb->nb_int == NULL && nb->nb_long == 0)) {
+		PyErr_SetString(PyExc_TypeError, "an integer is required");
+		return -1;
+	}
+
+	if (nb->nb_long != 0)
+		io = (PyIntObject*) (*nb->nb_long) (op);
+	else
+		io = (PyIntObject*) (*nb->nb_int) (op);
+	if (io == NULL)
+		return -1;
+	if (!PyInt_Check(io)) {
+		if (PyLong_Check(io)) {
+			/* got a long? => retry int conversion */
+			val = _PyLong_AsSsize_t((PyObject *)io);
+			Py_DECREF(io);
+			if ((val == -1) && PyErr_Occurred())
+				return -1;
+			return val;
+		}
+		else
+		{
+			Py_DECREF(io);
+			PyErr_SetString(PyExc_TypeError,
+					"nb_int should return int object");
+			return -1;
+		}
+	}
+
+	val = PyInt_AS_LONG(io);
+	Py_DECREF(io);
+
+	return val;
+#endif
+}
+
 unsigned long
 PyInt_AsUnsignedLongMask(register PyObject *op)
 {
@@ -181,21 +258,21 @@ PyInt_AsUnsignedLongMask(register PyObject *op)
 	if (op && PyLong_Check(op))
 		return PyLong_AsUnsignedLongMask(op);
 
-	if (op == NULL || (nb = op->ob_type->tp_as_number) == NULL ||
+	if (op == NULL || (nb = Py_TYPE(op)->tp_as_number) == NULL ||
 	    nb->nb_int == NULL) {
 		PyErr_SetString(PyExc_TypeError, "an integer is required");
-		return -1;
+		return (unsigned long)-1;
 	}
 
 	io = (PyIntObject*) (*nb->nb_int) (op);
 	if (io == NULL)
-		return -1;
+		return (unsigned long)-1;
 	if (!PyInt_Check(io)) {
 		if (PyLong_Check(io)) {
 			val = PyLong_AsUnsignedLongMask((PyObject *)io);
 			Py_DECREF(io);
 			if (PyErr_Occurred())
-				return -1;
+				return (unsigned long)-1;
 			return val;
 		}
 		else
@@ -203,7 +280,7 @@ PyInt_AsUnsignedLongMask(register PyObject *op)
 			Py_DECREF(io);
 			PyErr_SetString(PyExc_TypeError,
 					"nb_int should return int object");
-			return -1;
+			return (unsigned long)-1;
 		}
 	}
 
@@ -226,21 +303,21 @@ PyInt_AsUnsignedLongLongMask(register PyObject *op)
 	if (op && PyLong_Check(op))
 		return PyLong_AsUnsignedLongLongMask(op);
 
-	if (op == NULL || (nb = op->ob_type->tp_as_number) == NULL ||
+	if (op == NULL || (nb = Py_TYPE(op)->tp_as_number) == NULL ||
 	    nb->nb_int == NULL) {
 		PyErr_SetString(PyExc_TypeError, "an integer is required");
-		return -1;
+		return (unsigned PY_LONG_LONG)-1;
 	}
 
 	io = (PyIntObject*) (*nb->nb_int) (op);
 	if (io == NULL)
-		return -1;
+		return (unsigned PY_LONG_LONG)-1;
 	if (!PyInt_Check(io)) {
 		if (PyLong_Check(io)) {
 			val = PyLong_AsUnsignedLongLongMask((PyObject *)io);
 			Py_DECREF(io);
 			if (PyErr_Occurred())
-				return -1;
+				return (unsigned PY_LONG_LONG)-1;
 			return val;
 		}
 		else
@@ -248,7 +325,7 @@ PyInt_AsUnsignedLongLongMask(register PyObject *op)
 			Py_DECREF(io);
 			PyErr_SetString(PyExc_TypeError,
 					"nb_int should return int object");
-			return -1;
+			return (unsigned PY_LONG_LONG)-1;
 		}
 	}
 
@@ -264,7 +341,8 @@ PyInt_FromString(char *s, char **pend, int base)
 {
 	char *end;
 	long x;
-	char buffer[256]; /* For errors */
+	Py_ssize_t slen;
+	PyObject *sobj, *srepr;
 
 	if ((base != 0 && base < 2) || base > 36) {
 		PyErr_SetString(PyExc_ValueError,
@@ -288,9 +366,18 @@ PyInt_FromString(char *s, char **pend, int base)
 		end++;
 	if (*end != '\0') {
   bad:
-		PyOS_snprintf(buffer, sizeof(buffer),
-			      "invalid literal for int(): %.200s", s);
-		PyErr_SetString(PyExc_ValueError, buffer);
+		slen = strlen(s) < 200 ? strlen(s) : 200;
+		sobj = PyString_FromStringAndSize(s, slen);
+		if (sobj == NULL)
+			return NULL;
+		srepr = PyObject_Repr(sobj);
+		Py_DECREF(sobj);
+		if (srepr == NULL)
+			return NULL;
+		PyErr_Format(PyExc_ValueError,
+			     "invalid literal for int() with base %d: %s",
+			     base, PyString_AS_STRING(srepr));
+		Py_DECREF(srepr);
 		return NULL;
 	}
 	else if (errno != 0)
@@ -302,13 +389,13 @@ PyInt_FromString(char *s, char **pend, int base)
 
 #ifdef Py_USING_UNICODE
 PyObject *
-PyInt_FromUnicode(Py_UNICODE *s, int length, int base)
+PyInt_FromUnicode(Py_UNICODE *s, Py_ssize_t length, int base)
 {
 	PyObject *result;
-	char *buffer = PyMem_MALLOC(length+1);
+	char *buffer = (char *)PyMem_MALLOC(length+1);
 
 	if (buffer == NULL)
-		return NULL;
+		return PyErr_NoMemory();
 
 	if (PyUnicode_EncodeDecimal(s, length, buffer, NULL)) {
 		PyMem_FREE(buffer);
@@ -340,16 +427,17 @@ static int
 int_print(PyIntObject *v, FILE *fp, int flags)
      /* flags -- not used but required by interface */
 {
-	fprintf(fp, "%ld", v->ob_ival);
+	long int_val = v->ob_ival;
+	Py_BEGIN_ALLOW_THREADS
+	fprintf(fp, "%ld", int_val);
+	Py_END_ALLOW_THREADS
 	return 0;
 }
 
 static PyObject *
 int_repr(PyIntObject *v)
 {
-	char buf[64];
-	PyOS_snprintf(buf, sizeof(buf), "%ld", v->ob_ival);
-	return PyString_FromString(buf);
+	return _PyInt_Format(v, 10, 0);
 }
 
 static int
@@ -695,21 +783,10 @@ int_neg(PyIntObject *v)
 }
 
 static PyObject *
-int_pos(PyIntObject *v)
-{
-	if (PyInt_CheckExact(v)) {
-		Py_INCREF(v);
-		return (PyObject *)v;
-	}
-	else
-		return PyInt_FromLong(v->ob_ival);
-}
-
-static PyObject *
 int_abs(PyIntObject *v)
 {
 	if (v->ob_ival >= 0)
-		return int_pos(v);
+		return int_int(v);
 	else
 		return int_neg(v);
 }
@@ -739,7 +816,7 @@ int_lshift(PyIntObject *v, PyIntObject *w)
 		return NULL;
 	}
 	if (a == 0 || b == 0)
-		return int_pos(v);
+		return int_int(v);
 	if (b >= LONG_BIT) {
 		vv = PyLong_FromLong(PyInt_AS_LONG(v));
 		if (vv == NULL)
@@ -783,7 +860,7 @@ int_rshift(PyIntObject *v, PyIntObject *w)
 		return NULL;
 	}
 	if (a == 0 || b == 0)
-		return int_pos(v);
+		return int_int(v);
 	if (b >= LONG_BIT) {
 		if (a < 0)
 			a = -1;
@@ -837,7 +914,10 @@ int_coerce(PyObject **pv, PyObject **pw)
 static PyObject *
 int_int(PyIntObject *v)
 {
-	Py_INCREF(v);
+	if (PyInt_CheckExact(v))
+		Py_INCREF(v);
+	else
+		v = (PyIntObject *)PyInt_FromLong(v->ob_ival);
 	return (PyObject *)v;
 }
 
@@ -856,27 +936,13 @@ int_float(PyIntObject *v)
 static PyObject *
 int_oct(PyIntObject *v)
 {
-	char buf[100];
-	long x = v -> ob_ival;
-	if (x < 0)
-		PyOS_snprintf(buf, sizeof(buf), "-0%lo", -x);
-	else if (x == 0)
-		strcpy(buf, "0");
-	else
-		PyOS_snprintf(buf, sizeof(buf), "0%lo", x);
-	return PyString_FromString(buf);
+	return _PyInt_Format(v, 8, 0);
 }
 
 static PyObject *
 int_hex(PyIntObject *v)
 {
-	char buf[100];
-	long x = v -> ob_ival;
-	if (x < 0)
-		PyOS_snprintf(buf, sizeof(buf), "-0x%lx", -x);
-	else
-		PyOS_snprintf(buf, sizeof(buf), "0x%lx", x);
-	return PyString_FromString(buf);
+	return _PyInt_Format(v, 16, 0);
 }
 
 static PyObject *
@@ -898,8 +964,25 @@ int_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 		return PyInt_FromLong(0L);
 	if (base == -909)
 		return PyNumber_Int(x);
-	if (PyString_Check(x))
-		return PyInt_FromString(PyString_AS_STRING(x), NULL, base);
+	if (PyString_Check(x)) {
+		/* Since PyInt_FromString doesn't have a length parameter,
+		 * check here for possible NULs in the string. */
+		char *string = PyString_AS_STRING(x);
+		if (strlen(string) != PyString_Size(x)) {
+			/* create a repr() of the input string,
+			 * just like PyInt_FromString does */
+			PyObject *srepr;
+			srepr = PyObject_Repr(x);
+			if (srepr == NULL)
+				return NULL;
+			PyErr_Format(PyExc_ValueError,
+			     "invalid literal for int() with base %d: %s",
+			     base, PyString_AS_STRING(srepr));
+			Py_DECREF(srepr);
+			return NULL;
+		}
+		return PyInt_FromString(string, NULL, base);
+	}
 #ifdef Py_USING_UNICODE
 	if (PyUnicode_Check(x))
 		return PyInt_FromUnicode(PyUnicode_AS_UNICODE(x),
@@ -919,7 +1002,7 @@ int_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 static PyObject *
 int_subtype_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {
-	PyObject *tmp, *new;
+	PyObject *tmp, *newobj;
 	long ival;
 
 	assert(PyType_IsSubtype(type, &PyInt_Type));
@@ -936,14 +1019,14 @@ int_subtype_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 		ival = ((PyIntObject *)tmp)->ob_ival;
 	}
 
-	new = type->tp_alloc(type, 0);
-	if (new == NULL) {
+	newobj = type->tp_alloc(type, 0);
+	if (newobj == NULL) {
 		Py_DECREF(tmp);
 		return NULL;
 	}
-	((PyIntObject *)new)->ob_ival = ival;
+	((PyIntObject *)newobj)->ob_ival = ival;
 	Py_DECREF(tmp);
-	return new;
+	return newobj;
 }
 
 static PyObject *
@@ -952,9 +1035,149 @@ int_getnewargs(PyIntObject *v)
 	return Py_BuildValue("(l)", v->ob_ival);
 }
 
+static PyObject *
+int_getN(PyIntObject *v, void *context) {
+	return PyInt_FromLong((Py_intptr_t)context);
+}
+
+/* Convert an integer to the given base.  Returns a string.
+   If base is 2, 8 or 16, add the proper prefix '0b', '0o' or '0x'.
+   If newstyle is zero, then use the pre-2.6 behavior of octal having
+   a leading "0" */
+PyAPI_FUNC(PyObject*)
+_PyInt_Format(PyIntObject *v, int base, int newstyle)
+{
+	/* There are no doubt many, many ways to optimize this, using code
+	   similar to _PyLong_Format */
+	long n = v->ob_ival;
+	int  negative = n < 0;
+	int is_zero = n == 0;
+
+	/* For the reasoning behind this size, see
+	   http://c-faq.com/misc/hexio.html. Then, add a few bytes for
+	   the possible sign and prefix "0[box]" */
+	char buf[sizeof(n)*CHAR_BIT+6];
+
+	/* Start by pointing to the end of the buffer.  We fill in from
+	   the back forward. */
+	char* p = &buf[sizeof(buf)];
+
+	assert(base >= 2 && base <= 36);
+
+	do {
+		/* I'd use i_divmod, except it doesn't produce the results
+		   I want when n is negative.  So just duplicate the salient
+		   part here. */
+		long div = n / base;
+		long mod = n - div * base;
+
+		/* convert abs(mod) to the right character in [0-9, a-z] */
+		char cdigit = (char)(mod < 0 ? -mod : mod);
+		cdigit += (cdigit < 10) ? '0' : 'a'-10;
+		*--p = cdigit;
+
+		n = div;
+	} while(n);
+
+	if (base == 2) {
+		*--p = 'b';
+		*--p = '0';
+	}
+	else if (base == 8) {
+		if (newstyle) {
+			*--p = 'o';
+			*--p = '0';
+		}
+		else
+			if (!is_zero)
+				*--p = '0';
+	}
+	else if (base == 16) {
+		*--p = 'x';
+		*--p = '0';
+	}
+	else if (base != 10) {
+		*--p = '#';
+		*--p = '0' + base%10;
+		if (base > 10)
+			*--p = '0' + base/10;
+	}
+	if (negative)
+		*--p = '-';
+
+	return PyString_FromStringAndSize(p, &buf[sizeof(buf)] - p);
+}
+
+static PyObject *
+int__format__(PyObject *self, PyObject *args)
+{
+	PyObject *format_spec;
+
+	if (!PyArg_ParseTuple(args, "O:__format__", &format_spec))
+		return NULL;
+	if (PyBytes_Check(format_spec))
+		return _PyInt_FormatAdvanced(self,
+					     PyBytes_AS_STRING(format_spec),
+					     PyBytes_GET_SIZE(format_spec));
+	if (PyUnicode_Check(format_spec)) {
+		/* Convert format_spec to a str */
+		PyObject *result;
+		PyObject *str_spec = PyObject_Str(format_spec);
+
+		if (str_spec == NULL)
+			return NULL;
+
+		result = _PyInt_FormatAdvanced(self,
+					       PyBytes_AS_STRING(str_spec),
+					       PyBytes_GET_SIZE(str_spec));
+
+		Py_DECREF(str_spec);
+		return result;
+	}
+	PyErr_SetString(PyExc_TypeError, "__format__ requires str or unicode");
+	return NULL;
+}
+
+#if 0
+static PyObject *
+int_is_finite(PyObject *v)
+{
+	Py_RETURN_TRUE;
+}
+#endif
+
 static PyMethodDef int_methods[] = {
+	{"conjugate",	(PyCFunction)int_int,	METH_NOARGS,
+	 "Returns self, the complex conjugate of any int."},
+#if 0
+	{"is_finite",	(PyCFunction)int_is_finite,	METH_NOARGS,
+	 "Returns always True."},
+#endif
+	{"__trunc__",	(PyCFunction)int_int,	METH_NOARGS,
+         "Truncating an Integral returns itself."},
 	{"__getnewargs__",	(PyCFunction)int_getnewargs,	METH_NOARGS},
+        {"__format__", (PyCFunction)int__format__, METH_VARARGS},
 	{NULL,		NULL}		/* sentinel */
+};
+
+static PyGetSetDef int_getset[] = {
+	{"real", 
+	 (getter)int_int, (setter)NULL,
+	 "the real part of a complex number",
+	 NULL},
+	{"imag", 
+	 (getter)int_getN, (setter)NULL,
+	 "the imaginary part of a complex number",
+	 (void*)0},
+	{"numerator", 
+	 (getter)int_int, (setter)NULL,
+	 "the numerator of a rational number in lowest terms",
+	 NULL},
+	{"denominator", 
+	 (getter)int_getN, (setter)NULL,
+	 "the denominator of a rational number in lowest terms",
+	 (void*)1},
+	{NULL}  /* Sentinel */
 };
 
 PyDoc_STRVAR(int_doc,
@@ -964,8 +1187,9 @@ Convert a string or number to an integer, if possible.  A floating point\n\
 argument will be truncated towards zero (this does not include a string\n\
 representation of a floating point number!)  When converting a string, use\n\
 the optional base.  It is an error to supply a base when converting a\n\
-non-string. If the argument is outside the integer range a long object\n\
-will be returned instead.");
+non-string.  If base is zero, the proper base is guessed based on the\n\
+string content.  If the argument is outside the integer range a\n\
+long object will be returned instead.");
 
 static PyNumberMethods int_as_number = {
 	(binaryfunc)int_add,	/*nb_add*/
@@ -976,7 +1200,7 @@ static PyNumberMethods int_as_number = {
 	(binaryfunc)int_divmod,	/*nb_divmod*/
 	(ternaryfunc)int_pow,	/*nb_power*/
 	(unaryfunc)int_neg,	/*nb_negative*/
-	(unaryfunc)int_pos,	/*nb_positive*/
+	(unaryfunc)int_int,	/*nb_positive*/
 	(unaryfunc)int_abs,	/*nb_absolute*/
 	(inquiry)int_nonzero,	/*nb_nonzero*/
 	(unaryfunc)int_invert,	/*nb_invert*/
@@ -1006,11 +1230,11 @@ static PyNumberMethods int_as_number = {
 	int_true_divide,	/* nb_true_divide */
 	0,			/* nb_inplace_floor_divide */
 	0,			/* nb_inplace_true_divide */
+	(unaryfunc)int_int,	/* nb_index */
 };
 
 PyTypeObject PyInt_Type = {
-	PyObject_HEAD_INIT(&PyType_Type)
-	0,
+	PyVarObject_HEAD_INIT(&PyType_Type, 0)
 	"int",
 	sizeof(PyIntObject),
 	0,
@@ -1030,7 +1254,7 @@ PyTypeObject PyInt_Type = {
 	0,					/* tp_setattro */
 	0,					/* tp_as_buffer */
 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_CHECKTYPES |
-		Py_TPFLAGS_BASETYPE,		/* tp_flags */
+		Py_TPFLAGS_BASETYPE | Py_TPFLAGS_INT_SUBCLASS,	/* tp_flags */
 	int_doc,				/* tp_doc */
 	0,					/* tp_traverse */
 	0,					/* tp_clear */
@@ -1040,7 +1264,7 @@ PyTypeObject PyInt_Type = {
 	0,					/* tp_iternext */
 	int_methods,				/* tp_methods */
 	0,					/* tp_members */
-	0,					/* tp_getset */
+	int_getset,				/* tp_getset */
 	0,					/* tp_base */
 	0,					/* tp_dict */
 	0,					/* tp_descr_get */
@@ -1063,7 +1287,7 @@ _PyInt_Init(void)
 			return 0;
 		/* PyObject_New is inlined */
 		v = free_list;
-		free_list = (PyIntObject *)v->ob_type;
+		free_list = (PyIntObject *)Py_TYPE(v);
 		PyObject_INIT(v, &PyInt_Type);
 		v->ob_ival = ival;
 		small_ints[ival + NSMALLNEGINTS] = v;
@@ -1072,42 +1296,28 @@ _PyInt_Init(void)
 	return 1;
 }
 
-void
-PyInt_Fini(void)
+int
+PyInt_ClearFreeList(void)
 {
 	PyIntObject *p;
 	PyIntBlock *list, *next;
 	int i;
-	int bc, bf;	/* block count, number of freed blocks */
-	int irem, isum;	/* remaining unfreed ints per block, total */
+	int u;			/* remaining unfreed ints per block */
+	int freelist_size = 0;
 
-#if NSMALLNEGINTS + NSMALLPOSINTS > 0
-        PyIntObject **q;
-
-        i = NSMALLNEGINTS + NSMALLPOSINTS;
-        q = small_ints;
-        while (--i >= 0) {
-                Py_XDECREF(*q);
-                *q++ = NULL;
-        }
-#endif
-	bc = 0;
-	bf = 0;
-	isum = 0;
 	list = block_list;
 	block_list = NULL;
 	free_list = NULL;
 	while (list != NULL) {
-		bc++;
-		irem = 0;
+		u = 0;
 		for (i = 0, p = &list->objects[0];
 		     i < N_INTOBJECTS;
 		     i++, p++) {
 			if (PyInt_CheckExact(p) && p->ob_refcnt != 0)
-				irem++;
+				u++;
 		}
 		next = list->next;
-		if (irem) {
+		if (u) {
 			list->next = block_list;
 			block_list = list;
 			for (i = 0, p = &list->objects[0];
@@ -1115,7 +1325,7 @@ PyInt_Fini(void)
 			     i++, p++) {
 				if (!PyInt_CheckExact(p) ||
 				    p->ob_refcnt == 0) {
-					p->ob_type = (struct _typeobject *)
+					Py_TYPE(p) = (struct _typeobject *)
 						free_list;
 					free_list = p;
 				}
@@ -1133,22 +1343,43 @@ PyInt_Fini(void)
 		}
 		else {
 			PyMem_FREE(list);
-			bf++;
 		}
-		isum += irem;
+		freelist_size += u;
 		list = next;
 	}
+
+	return freelist_size;
+}
+
+void
+PyInt_Fini(void)
+{
+	PyIntObject *p;
+	PyIntBlock *list;
+	int i;
+	int u;			/* total unfreed ints per block */
+
+#if NSMALLNEGINTS + NSMALLPOSINTS > 0
+	PyIntObject **q;
+
+	i = NSMALLNEGINTS + NSMALLPOSINTS;
+	q = small_ints;
+	while (--i >= 0) {
+		Py_XDECREF(*q);
+		*q++ = NULL;
+	}
+#endif
+	u = PyInt_ClearFreeList();
 	if (!Py_VerboseFlag)
 		return;
 	fprintf(stderr, "# cleanup ints");
-	if (!isum) {
+	if (!u) {
 		fprintf(stderr, "\n");
 	}
 	else {
 		fprintf(stderr,
-			": %d unfreed int%s in %d out of %d block%s\n",
-			isum, isum == 1 ? "" : "s",
-			bc - bf, bc, bc == 1 ? "" : "s");
+			": %d unfreed int%s\n",
+			u, u == 1 ? "" : "s");
 	}
 	if (Py_VerboseFlag > 1) {
 		list = block_list;
@@ -1157,9 +1388,14 @@ PyInt_Fini(void)
 			     i < N_INTOBJECTS;
 			     i++, p++) {
 				if (PyInt_CheckExact(p) && p->ob_refcnt != 0)
+					/* XXX(twouters) cast refcount to
+					   long until %zd is universally
+					   available
+					 */
 					fprintf(stderr,
-				"#   <int at %p, refcnt=%d, val=%ld>\n",
-						p, p->ob_refcnt, p->ob_ival);
+				"#   <int at %p, refcnt=%ld, val=%ld>\n",
+						p, (long)p->ob_refcnt,
+						p->ob_ival);
 			}
 			list = list->next;
 		}

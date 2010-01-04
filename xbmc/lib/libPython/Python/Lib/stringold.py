@@ -18,6 +18,9 @@ hexdigits -- a string containing all characters considered hexadecimal digits
 octdigits -- a string containing all characters considered octal digits
 
 """
+from warnings import warnpy3k
+warnpy3k("the stringold module has been removed in Python 3.0", stacklevel=2)
+del warnpy3k
 
 # Some strings for ctype-style character classification
 whitespace = ' \t\n\r\v\f'
@@ -363,7 +366,6 @@ def capitalize(s):
     return s.capitalize()
 
 # Capitalize the words in a string, e.g. " aBc  dEf " -> "Abc Def".
-# See also regsub.capwords().
 def capwords(s, sep=None):
     """capwords(s, [sep]) -> string
 
@@ -389,7 +391,7 @@ def maketrans(fromstr, tostr):
         raise ValueError, "maketrans arguments must have same length"
     global _idmapL
     if not _idmapL:
-        _idmapL = map(None, _idmap)
+        _idmapL = list(_idmap)
     L = _idmapL[:]
     fromstr = map(ord, fromstr)
     for i in range(len(fromstr)):
