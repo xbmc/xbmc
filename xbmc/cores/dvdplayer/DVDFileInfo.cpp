@@ -130,10 +130,12 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   for (int i = 0; i < pDemuxer->GetNrOfStreams(); i++)
   {
     pStream = pDemuxer->GetStream(i);
-    if (pStream && pStream->type == STREAM_VIDEO)
+    if (pStream)
     {
-      nVideoStream = i;
-      break;
+      if(pStream->type == STREAM_VIDEO)
+        nVideoStream = i;
+      else
+        pStream->SetDiscard(AVDISCARD_ALL);
     }
   }
 
@@ -141,8 +143,8 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   if (nVideoStream != -1)
   {
     CDVDVideoCodec *pVideoCodec;
-    
-    CDVDStreamInfo hint(*pStream, true);
+
+    CDVDStreamInfo hint(*pDemuxer->GetStream(nVideoStream), true);
     hint.software = true;
     
     if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
@@ -166,35 +168,42 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
       {
         DemuxPacket* pPacket = NULL;
         int iDecoderState = VC_ERROR;
+        DVDVideoPicture picture;
 
-        // max 42 streams * 40 frames, should get a valid frame, if not abort.
-        int abort_index = 42 * 40;
+        // num streams * 40 frames, should get a valid frame, if not abort.
+        int abort_index = pDemuxer->GetNrOfStreams() * 40;
         do
         {
           pPacket = pDemuxer->Read();
-          if (pPacket)
+          if (!pPacket)
+            break;
+
+          if (pPacket->iStreamId != nVideoStream)
           {
-            if (pPacket->iStreamId == nVideoStream)
+            CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+            continue;
+          }
+
+          iDecoderState = pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->pts);
+          CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+
+          if (iDecoderState & VC_ERROR)
+            break;
+
+          if (iDecoderState & VC_PICTURE)
+          {
+            memset(&picture, 0, sizeof(DVDVideoPicture));
+            if (pVideoCodec->GetPicture(&picture))
             {
-              iDecoderState = pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->pts);
-              CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-              if (iDecoderState & VC_PICTURE)
+              if(!(picture.iFlags & DVP_FLAG_DROPPED))
                 break;
             }
-            else
-            {
-              CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-            }
           }
-          else
-            break;
+
         } while (abort_index--);
 
         if (iDecoderState & VC_PICTURE)
         {
-          DVDVideoPicture picture;
-          memset(&picture, 0, sizeof(DVDVideoPicture));
-          if (pVideoCodec->GetPicture(&picture))
           {
             int nWidth = g_advancedSettings.m_thumbSize;
             double aspect = (double)picture.iWidth / (double)picture.iHeight;
@@ -222,10 +231,6 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
 
             dllSwScale.Unload();
             delete [] pOutBuf;
-          }
-          else
-          {
-            CLog::Log(LOGDEBUG,"%s - coudln't get picture from decoder in  %s", __FUNCTION__, strFile.c_str());
           }
         }
         else

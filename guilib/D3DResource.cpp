@@ -56,6 +56,15 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, DWORD usage, D
   Release();
   if (D3D_OK == D3DXCreateTexture(g_Windowing.Get3DDevice(), m_width, m_height, m_mipLevels, m_usage, m_format, m_pool, &m_texture))
   {
+    D3DSURFACE_DESC desc;
+    if( D3D_OK == m_texture->GetLevelDesc(0, &desc))
+    {
+      if(desc.Format != m_format)
+        CLog::Log(LOGWARNING, "CD3DTexture::Create - format changed from %d to %d", m_format, desc.Format);
+      if(desc.Height != m_height || desc.Width != m_width)
+        CLog::Log(LOGWARNING, "CD3DTexture::Create - size changed from %ux%u to %ux%u", m_width, m_height, desc.Width, desc.Height);
+    }
+
     g_Windowing.Register(this);
     return true;
   }

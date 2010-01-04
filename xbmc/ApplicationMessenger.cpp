@@ -518,6 +518,14 @@ case TMSG_POWERDOWN:
           pDialog->Show_Internal();
       }
       break;
+      
+    case TMSG_GUI_DIALOG_CLOSE:
+      {
+        CGUIDialog *dialog = (CGUIDialog *)pMsg->lpVoid;
+        if (dialog)
+          dialog->Close_Internal(pMsg->dwParam1 > 0);
+      }
+      break;
 
     case TMSG_GUI_ACTIVATE_WINDOW:
       {
@@ -816,6 +824,13 @@ void CApplicationMessenger::Show(CGUIDialog *pDialog)
 {
   ThreadMessage tMsg = {TMSG_GUI_SHOW};
   tMsg.lpVoid = pDialog;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::Close(CGUIDialog *dialog, bool forceClose)
+{
+  ThreadMessage tMsg = {TMSG_GUI_DIALOG_CLOSE, forceClose ? 1 : 0};
+  tMsg.lpVoid = dialog;
   SendMessage(tMsg, true);
 }
 

@@ -44,6 +44,7 @@
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "FileSystem/File.h"
+#include "FileSystem/Directory.h"
 #include "utils/log.h"
 #include "Thread.h"
 #include "utils/TimeUtils.h"
@@ -997,8 +998,14 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case CODEC_TYPE_DATA:
       {
-#if (! defined USE_EXTERNAL_FFMPEG)
-        if (pStream->codec->codec_id == CODEC_ID_EBU_TELETEXT && g_guiSettings.GetBool("videoplayer.teletextenabled"))
+        m_streams[iId] = new CDemuxStream();
+        m_streams[iId]->type = STREAM_DATA;
+        break;
+      }
+    case CODEC_TYPE_SUBTITLE:
+      {
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,38,1)
+        if (pStream->codec->codec_id == CODEC_ID_DVB_TELETEXT && g_guiSettings.GetBool("videoplayer.teletextenabled"))
         {
           CDemuxStreamTeletext* st = new CDemuxStreamTeletext();
           m_streams[iId] = st;
@@ -1008,27 +1015,22 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         else
 #endif
         {
-          m_streams[iId] = new CDemuxStream();
-          m_streams[iId]->type = STREAM_DATA;
+          CDemuxStreamSubtitle* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
+          m_streams[iId] = st;
+          if(pStream->codec)
+            st->identifier = pStream->codec->sub_id;
           break;
         }
-      }
-    case CODEC_TYPE_SUBTITLE:
-      {
-        CDemuxStreamSubtitle* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
-        m_streams[iId] = st;
-        if(pStream->codec)
-          st->identifier = pStream->codec->sub_id;
-        break;
       }
     case CODEC_TYPE_ATTACHMENT:
       { //mkv attachments. Only bothering with fonts for now.
         if(pStream->codec->codec_id == CODEC_ID_TTF)
         {
-          XFILE::CFile file;
-          std::string fileName = "special://temp/";
+          std::string fileName = "special://temp/fonts/";
+          DIRECTORY::CDirectory::Create(fileName);
           fileName += pStream->filename;
-          if(file.OpenForWrite(fileName) && pStream->codec->extradata)
+          XFILE::CFile file;
+          if(pStream->codec->extradata && file.OpenForWrite(fileName))
           {
             file.Write(pStream->codec->extradata, pStream->codec->extradata_size);
             file.Close();
