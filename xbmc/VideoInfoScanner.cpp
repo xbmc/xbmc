@@ -370,7 +370,7 @@ namespace VIDEO
     return !m_bStop;
   }
 
-  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
+  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh, bool bNFOCheck, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
   {
     m_IMDB.SetScraperInfo(info);
 
@@ -548,7 +548,7 @@ namespace VIDEO
              continue;
           
           CNfoFile::NFOResult result = CNfoFile::NO_NFO;
-          if (!pURL)
+          if (bNFOCheck)
           {
             CScraperUrl scrUrl;
             // handle .nfo files
