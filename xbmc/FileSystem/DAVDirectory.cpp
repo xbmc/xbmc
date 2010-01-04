@@ -157,8 +157,6 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   TiXmlDocument davResponse;
   TiXmlNode *pChild;
 
-  CLog::Log(LOGINFO, "%s - Initialize DAV", __FUNCTION__);
-
   dav.SetCustomRequest(strRequest);
   dav.SetContentType("text/xml; charset=\"utf-8\"");
   dav.SetRequestHeader("depth", 1);
@@ -173,7 +171,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
   if (!dav.Open(url))
   {
-    CLog::Log(LOGERROR, "%s - Unable to get http directory", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Unable to get dav directory (%s)", __FUNCTION__, strPath.c_str());
     return false;
   }
 
