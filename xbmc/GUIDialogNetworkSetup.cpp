@@ -133,6 +133,8 @@ void CGUIDialogNetworkSetup::OnInitWindow()
   pSpin->AddLabel(g_localizeStrings.Get(20172), NET_PROTOCOL_XBMSP);
   pSpin->AddLabel(g_localizeStrings.Get(20301), NET_PROTOCOL_HTTPS);
   pSpin->AddLabel(g_localizeStrings.Get(20300), NET_PROTOCOL_HTTP);
+  pSpin->AddLabel(g_localizeStrings.Get(20254), NET_PROTOCOL_DAVS);
+  pSpin->AddLabel(g_localizeStrings.Get(20253), NET_PROTOCOL_DAV);
   pSpin->AddLabel(g_localizeStrings.Get(20173), NET_PROTOCOL_FTP);
   pSpin->AddLabel(g_localizeStrings.Get(20174), NET_PROTOCOL_DAAP);
   pSpin->AddLabel(g_localizeStrings.Get(20175), NET_PROTOCOL_UPNP);
@@ -188,9 +190,9 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
     m_port = "21";
   if (m_protocol == NET_PROTOCOL_HTTP || m_protocol == NET_PROTOCOL_RSS)
     m_port = "80";
-  if (m_protocol == NET_PROTOCOL_HTTPS)
+  if (m_protocol == NET_PROTOCOL_HTTPS || m_protocol == NET_PROTOCOL_DAVS)
     m_port = "443";
-  if (m_protocol == NET_PROTOCOL_TUXBOX)
+  if (m_protocol == NET_PROTOCOL_TUXBOX || NET_PROTOCOL_DAV)
     m_port = "80";
   else if (m_protocol == NET_PROTOCOL_XBMSP)
     m_port = "1400";
@@ -219,7 +221,12 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   // remote path
   SET_CONTROL_LABEL2(CONTROL_REMOTE_PATH, m_path);
   CONTROL_ENABLE_ON_CONDITION(CONTROL_REMOTE_PATH, m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP && m_protocol != NET_PROTOCOL_TUXBOX);
-  if (m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_HTTP || m_protocol == NET_PROTOCOL_HTTPS || m_protocol == NET_PROTOCOL_RSS)
+  if (m_protocol == NET_PROTOCOL_FTP ||
+      m_protocol == NET_PROTOCOL_HTTP ||
+      m_protocol == NET_PROTOCOL_HTTPS ||
+      m_protocol == NET_PROTOCOL_RSS ||
+      m_protocol == NET_PROTOCOL_DAV ||
+      m_protocol == NET_PROTOCOL_DAVS)
   {
     SET_CONTROL_LABEL(CONTROL_REMOTE_PATH, 1011);  // Remote Path
   }
@@ -252,10 +259,12 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_PASSWORD, CGUIEditControl::INPUT_TYPE_PASSWORD, 12326);
 
   // TODO: FIX BETTER DAAP SUPPORT
-  // server browse should be disabled if we are in DAAP, FTP, HTTP, HTTPS, RSS or TUXBOX
+  // server browse should be disabled if we are in DAAP, FTP, HTTP, HTTPS, RSS, TUXBOX, DAV or DAVS
   CONTROL_ENABLE_ON_CONDITION(CONTROL_SERVER_BROWSE, !m_server.IsEmpty() || !(m_protocol == NET_PROTOCOL_FTP ||
                                                                               m_protocol == NET_PROTOCOL_HTTP ||
                                                                               m_protocol == NET_PROTOCOL_HTTPS ||
+                                                                              m_protocol == NET_PROTOCOL_DAV ||
+                                                                              m_protocol == NET_PROTOCOL_DAVS ||
                                                                               m_protocol == NET_PROTOCOL_DAAP ||
                                                                               m_protocol == NET_PROTOCOL_RSS ||
                                                                               m_protocol == NET_PROTOCOL_TUXBOX));
@@ -274,6 +283,10 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
     url.SetProtocol("http");
   else if (m_protocol == NET_PROTOCOL_HTTPS)
     url.SetProtocol("https");
+  else if (m_protocol == NET_PROTOCOL_DAV)
+    url.SetProtocol("dav");
+  else if (m_protocol == NET_PROTOCOL_DAVS)
+    url.SetProtocol("davs");
   else if (m_protocol == NET_PROTOCOL_DAAP)
     url.SetProtocol("daap");
   else if (m_protocol == NET_PROTOCOL_UPNP)
@@ -320,6 +333,10 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
     m_protocol = NET_PROTOCOL_HTTP;
   else if (protocol == "https")
     m_protocol = NET_PROTOCOL_HTTPS;
+  else if (protocol == "dav")
+    m_protocol = NET_PROTOCOL_DAV;
+  else if (protocol == "davs")
+    m_protocol = NET_PROTOCOL_DAVS;
   else if (protocol == "daap")
     m_protocol = NET_PROTOCOL_DAAP;
   else if (protocol == "upnp")
