@@ -94,8 +94,6 @@ extern "C"
   struct dirent *dll_readdir(DIR *dirp);
   int dll_closedir(DIR *dirp);
   void dll_rewinddir(DIR *dirp);
-  int dll_scandir( const char* dir, struct dirent*** namelist, int(*filter)(const struct dirent*), int(*compar)(const void*, const void*) );
-  int dll_alphasort(const void* lhs, const void* rhs);
   char * dll_fgets (char* pszString, int num , FILE * stream);
   int dll_fgetc (FILE* stream);
   int dll_feof (FILE * stream);
