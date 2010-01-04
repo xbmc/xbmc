@@ -12,25 +12,25 @@ else ifeq (@USE_PYTHON2_4@,1)
     PYVERSION=python2.4
     SO=python24-$(ARCH).so
 else
-    SO=python24-$(ARCH).so
+    SO=python26-$(ARCH).so
 endif
 SLIB=$(SYSDIR)/$(SO)
-ZIP=$(SYSDIR)/python24.zip  ##Should probably add arch here too
+ZIP=$(SYSDIR)/python26.zip  ##Should probably add arch here too
 DIRS=../Python
 WRAPPER=../../../cores/DllLoader/exports/wrapper.o
 WRAPPERDEF=$(WRAPPER:.o=.def)
 PYWRAP=wrapper_python.o
 PYWRAPDEF=$(PYWRAP:.o=.def)
 ifeq ($(ARCH), powerpc64-linux)
-	PYLIBDIR=lib.linux-ppc64-2.4
+	PYLIBDIR=lib.linux-ppc64-2.6
 else
 ifeq ($(ARCH), powerpc-linux)
-	PYLIBDIR=lib.linux-ppc-2.4
+	PYLIBDIR=lib.linux-ppc-2.6
 else
 ifeq ($(ARCH), x86_64-linux)
-	PYLIBDIR=lib.linux-x86_64-2.4
+	PYLIBDIR=lib.linux-x86_64-2.6
 else
-	PYLIBDIR=lib.linux-i686-2.4
+	PYLIBDIR=lib.linux-i686-2.6
 endif
 endif
 endif
@@ -38,12 +38,12 @@ endif
 PYDIRS=bsddb compiler curses distutils email encodings hotshot idlelib \
 	lib-old lib-tk logging site-packages xml
 ifeq ($(ARCH), x86-osx)
-	PYLIBDIR=lib.macosx-10.4-i386-2.4
+	PYLIBDIR=lib.macosx-10.4-i386-2.6
 	PYDIRS+=plat-darwin
 	PYDIRS+=plat-mac
 else
 ifeq ($(ARCH), powerpc-osx)
-	PYLIBDIR=lib.macosx-10.4-ppc-2.4
+	PYLIBDIR=lib.macosx-10.4-ppc-2.6
 	PYDIRS+=plat-darwin
 	PYDIRS+=plat-mac
 else
@@ -56,20 +56,20 @@ PY+=$(foreach DIR, $(PYDIRS), $(wildcard ../Python/Lib/$(DIR)/*.py))
 PY+=$(foreach DIR, $(PYDIRS), $(wildcard ../Python/Lib/$(DIR)/*/*.py))
 PY+=$(foreach DIR, $(PYDIRS), $(wildcard ../Python/Lib/$(DIR)/*/*/*.py))
 PYC=$(addsuffix c, $(PY))
-PYO=$(addsuffix o, $(PY))
+#PYO=$(addsuffix o, $(PY))
 
 .PHONY: compile
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 all: $(SLIB)
 
-$(SLIB): $(PYWRAP) ../Python/libpython2.4.a $(PYO) ../../../../tools/Mach5/wrapper.rb
+$(SLIB): $(PYWRAP) ../Python/libpython2.6.a $(PYO) ../../../../tools/Mach5/wrapper.rb
 	rm -rf $(SYSDIR)/Lib
 	rsync -a --exclude '.svn' -t ../Python/build/$(PYLIBDIR)/*.so $(SYSDIR)/Lib
-	rsync -a --exclude '.svn' -t ../Python/Lib/*.{py,pyo} $(SYSDIR)/Lib
+	rsync -a --exclude '.svn' -t ../Python/Lib/*.py $(SYSDIR)/Lib
 	for dirs in $(PYDIRS); do rsync -a --exclude 'test*'  --exclude '.svn' ../Python/Lib/$$dirs $(SYSDIR)/Lib; done
 	(mkdir -p tmp && rm -rf tmp/*)
-	(cd ./tmp && ar x ../../Python/libpython2.4.a)
+	(cd ./tmp && ar x ../../Python/libpython2.6.a)
 	$(CXX) -bundle -flat_namespace -undefined suppress -shared -o $@ \
 		tmp/*.o \
 		wrapper_python.o
@@ -77,7 +77,7 @@ $(SLIB): $(PYWRAP) ../Python/libpython2.4.a $(PYO) ../../../../tools/Mach5/wrapp
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	@rm -rf tmp
 
-../Python/libpython2.4.a: compile
+../Python/libpython2.6.a: compile
 	$(MAKE) -C ../Python
 
 %pyo: %py
@@ -94,8 +94,8 @@ ifneq (@USE_EXTERNAL_PYTHON@,1)
 endif
 
 ifneq (@USE_EXTERNAL_PYTHON@,1)
-$(SLIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF) ../Python/libpython2.4.a
-	$(CC) -shared -o $@ -Wl,--whole-archive ../Python/libpython2.4.a \
+$(SLIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF) ../Python/libpython2.6.a
+	$(CC) -shared -o $@ -Wl,--whole-archive ../Python/libpython2.6.a \
 		-Wl,--no-whole-archive `cat wrapper_python.def` wrapper_python.o \
 		`cat ../../../cores/DllLoader/exports/wrapper.def` \
 		../../../cores/DllLoader/exports/wrapper.o
@@ -115,17 +115,17 @@ $(ZIP): $(PYC) $(PYO)
 		zip -0gurq ../$@ *.py* $(PYDIRS) -x *.svn* *test*; \
 		popd
 
-../Python/libpython2.4.a: compile
+../Python/libpython2.6.a: compile
 	$(MAKE) -C ../Python
 
 %pyc: %py
 	@echo Compiling $@
-	@LD_PRELOAD=../Python/libpython2.4.so.1.0 ../Python/python \
+	@LD_PRELOAD=../Python/libpython2.6.so.1.0 ../Python/python \
 		../Python/Lib/py_compile.py $<
 
 %pyo: %py
 	@echo Compiling $@
-	@LD_PRELOAD=../Python/libpython2.4.so.1.0 ../Python/python -O \
+	@LD_PRELOAD=../Python/libpython2.6.so.1.0 ../Python/python -O \
 		../Python/Lib/py_compile.py $<
 
 $(PYWRAP): $(PYWRAP:.o=.c)
@@ -145,14 +145,14 @@ endif
 
 clean:
 	for d in $(DIRS); do [ ! -f $$d/Makefile ] || make -C $$d clean; done
-	rm -f $(SLIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(PYWRAP) $(PYWRAPDEF)
+	rm -f $(SLIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.6.a $(PYWRAP) $(PYWRAPDEF)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	rm -rf $(SYSDIR)/Lib
 endif
 
 distclean:
 	for d in $(DIRS); do [ ! -f $$d/Makefile ] || make -C $$d distclean; done
-	rm -f $(SLIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(PYWRAP) $(PYWRAPDEF)
+	rm -f $(SLIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.6.a $(PYWRAP) $(PYWRAPDEF)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	rm -rf $(SYSDIR)/Lib
 endif
