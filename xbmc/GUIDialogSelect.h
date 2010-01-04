@@ -35,7 +35,6 @@ public:
   virtual ~CGUIDialogSelect(void);
   virtual bool OnMessage(CGUIMessage& message);
 
-  virtual void Close(bool forceClose = false);
   void Reset();
   void Add(const CStdString& strLabel);
   void Add(const CFileItem* pItem);

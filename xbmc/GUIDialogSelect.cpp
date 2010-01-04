@@ -116,11 +116,6 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogSelect::Close(bool forceClose)
-{
-  CGUIDialog::Close(forceClose);
-}
-
 void CGUIDialogSelect::Reset()
 {
   m_bButtonEnabled = false;
