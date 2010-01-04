@@ -190,6 +190,8 @@ void CURL::Parse(const CStdString& strURL1)
     || m_strProtocol.Equals("plugin")
     || m_strProtocol.Equals("hdhomerun")
     || m_strProtocol.Equals("rtsp")
+    || m_strProtocol.Equals("dav")
+    || m_strProtocol.Equals("davs")
     || m_strProtocol.Equals("zip"))
     sep = "?;#|";
   else if(m_strProtocol.Equals("ftp")

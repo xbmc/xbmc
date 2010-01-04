@@ -1697,6 +1697,8 @@
   <string id="20250">Party on! (videos)</string>
   <string id="20251">Mixing drinks (videos)</string>
   <string id="20252">Filling glasses (videos)</string>
+  <string id="20253">WebDAV server (HTTP)</string>
+  <string id="20254">WebDAV server (HTTPS)</string>
 
   <string id="20300">Web server directory (HTTP)</string>
   <string id="20301">Web server directory (HTTPS)</string>
@@ -1844,6 +1846,8 @@
   <string id="20443">Do you want to refresh info for all</string>
   <string id="20444">items within this path?</string>
   <string id="20445">Fanart</string>
+  <string id="20446">NFO-file found.</string>
+  <string id="20447">Refresh from internet?</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

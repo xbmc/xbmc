@@ -3842,6 +3842,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\DAVDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\DAVDirectory.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\Directory.cpp"
 					>
 				</File>

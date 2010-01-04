@@ -1791,6 +1791,8 @@
   <string id="20250">Party-Modus ist aktiviert!</string>
   <string id="20251">Titel werden gefiltert...</string>
   <string id="20252">Titel werden hinzugefügt...</string>
+  <string id="20253">WebDAV-Server (HTTP)</string>
+  <string id="20254">WebDAV-Server (HTTPS)</string>
   <string id="20300">Webserver-Verzeichnis (HTTP)</string>
   <string id="20301">Webserver-Verzeichnis (HTTPS)</string>
   <string id="20302">Ordner ist nicht beschreibbar:</string>

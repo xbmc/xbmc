@@ -305,6 +305,7 @@ CFileCurl::CFileCurl()
   m_postdata = "";
   m_username = "";
   m_password = "";
+  m_httpauth = "";
   m_state = new CReadState();
 }
 
@@ -416,6 +417,19 @@ void CFileCurl::SetCommonOptions(CReadState* state)
       g_curlInterface.easy_setopt(h, CURLOPT_FTPSSLAUTH, CURLFTPAUTH_TLS);
   }
 
+  // setup requested http authentication method
+  if(m_httpauth.length() > 0 && m_username.length() > 0 && m_password.length() > 0)
+  {
+    if( m_httpauth.Equals("any") )
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+    else if( m_httpauth.Equals("anysafe") )
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANYSAFE);
+    else if( m_httpauth.Equals("digest") )
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
+    else if( m_httpauth.Equals("ntlm") )
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_NTLM);
+  }
+
   // allow passive mode for ftp
   if( m_ftpport.length() > 0 )
     g_curlInterface.easy_setopt(h, CURLOPT_FTPPORT, m_ftpport.c_str());
@@ -517,11 +531,14 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
     url2.SetProtocol("ftp");
   else if( url2.GetProtocol().Equals("shout")
        ||  url2.GetProtocol().Equals("daap")
+       ||  url2.GetProtocol().Equals("dav")
        ||  url2.GetProtocol().Equals("tuxbox")
        ||  url2.GetProtocol().Equals("lastfm")
        ||  url2.GetProtocol().Equals("mms")
        ||  url2.GetProtocol().Equals("rss"))
     url2.SetProtocol("http");
+  else if (url2.GetProtocol().Equals("davs"))
+    url2.SetProtocol("https");
 
   if( url2.GetProtocol().Equals("ftp")
   ||  url2.GetProtocol().Equals("ftps") )
@@ -648,10 +665,17 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
           name = (*it);
           value = "";
         }
+
         // url decode value
         CUtil::UrlDecode(value);
-        // set headers
-        if (name.Equals("User-Agent"))
+
+        if(name.Equals("auth"))
+        {
+          m_httpauth = value;
+          if(m_httpauth.IsEmpty())
+            m_httpauth = "any";
+        }
+        else if (name.Equals("User-Agent"))
           SetUserAgent(value);
         else
           SetRequestHeader(name, value);

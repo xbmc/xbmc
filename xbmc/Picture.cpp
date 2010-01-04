@@ -150,7 +150,7 @@ bool CThumbnailWriter::DoWork()
     success = false;
   }
 
-  delete m_buffer;
+  delete [] m_buffer;
 
   return success;
 }
