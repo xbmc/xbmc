@@ -130,10 +130,12 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   for (int i = 0; i < pDemuxer->GetNrOfStreams(); i++)
   {
     pStream = pDemuxer->GetStream(i);
-    if (pStream && pStream->type == STREAM_VIDEO)
+    if (pStream)
     {
-      nVideoStream = i;
-      break;
+      if(pStream->type == STREAM_VIDEO)
+        nVideoStream = i;
+      else
+        pStream->SetDiscard(AVDISCARD_ALL);
     }
   }
 
@@ -141,8 +143,8 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   if (nVideoStream != -1)
   {
     CDVDVideoCodec *pVideoCodec;
-    
-    CDVDStreamInfo hint(*pStream, true);
+
+    CDVDStreamInfo hint(*pDemuxer->GetStream(nVideoStream), true);
     hint.software = true;
     
     if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
