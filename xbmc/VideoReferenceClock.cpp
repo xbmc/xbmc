@@ -1076,13 +1076,13 @@ void CVideoReferenceClock::SendVblankSignal()
   m_VblankEvent.Set();
 }
 
-#define MAXVBLANKDELAY 1200
+#define MAXVBLANKDELAY 13LL
 //guess when the next vblank should happen,
 //based on the refreshrate and when the previous one happened
-//increase that by 20% to allow for errors
+//increase that by 30% to allow for errors
 int64_t CVideoReferenceClock::TimeOfNextVblank()
 {
-  return m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXVBLANKDELAY / 1000);
+  return m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXVBLANKDELAY / 10LL);
 }
 
 //for the codec information screen
