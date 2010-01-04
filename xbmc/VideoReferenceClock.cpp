@@ -323,7 +323,14 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
   struct lconv *Locale = localeconv();
   FILE*  NvSettings;
 
-  CStdString Vendor = (const char*) glGetString(GL_VENDOR);
+  const char* VendorPtr = (const char*)glGetString(GL_VENDOR);
+  if (!VendorPtr)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glGetString(GL_VENDOR) returned NULL, not using nvidia-settings");
+    return false;
+  }
+
+  CStdString Vendor = VendorPtr;
   Vendor.ToLower();
   if (Vendor.find("nvidia") == std::string::npos)
   {
