@@ -38,19 +38,9 @@ d4rk@xbmc.org
 #include <GL/glew.h>
 #include "libprojectM/ConfigFile.h"
 #include "libprojectM/projectM.hpp"
-#include "libprojectM/Preset.hpp"
-#include "libprojectM/PCM.hpp"
 #include <string>
-/*#ifdef WIN32
-#include "libprojectM/win32-dirent.h"
-#include <io.h>
-#else
-#include <dirent.h>
-#endif*/
 
 projectM *globalPM = NULL;
-
-extern int preset_index;
 
 // some projectm globals
 int maxSamples=512;
@@ -62,27 +52,6 @@ char g_visName[512];
 viz_preset_list_t g_presets=NULL;
 projectM::Settings g_configPM;
 std::string g_configFile;
-
-// Some helper Functions
-// check for a valid preset extension
-#ifdef __APPLE__
-int check_valid_extension(struct dirent* ent)
-#else
-int check_valid_extension(const struct dirent* ent)
-#endif
-{
-  const char* ext = 0;
-
-  if (!ent) return 0;
-
-  ext = strrchr(ent->d_name, '.');
-  if (!ext) ext = ent->d_name;
-
-  if (0 == strcasecmp(ext, ".milk")) return 1;
-  if (0 == strcasecmp(ext, ".prjm")) return 1;
-
-  return 0;
-}
 
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
