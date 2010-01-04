@@ -51,6 +51,7 @@
 #include "LocalizeStrings.h"
 #include "utils/TimeUtils.h"
 #include "FactoryFileDirectory.h"
+#include "utils/log.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3

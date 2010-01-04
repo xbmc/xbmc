@@ -30,6 +30,7 @@
 #include "URL.h"
 #include "FileItem.h"
 #include "tinyXML/tinyxml.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

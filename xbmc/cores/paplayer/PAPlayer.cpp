@@ -32,6 +32,7 @@
 #include "MusicInfoTag.h"
 #include "../AudioRenderers/AudioRendererFactory.h"
 #include "../../utils/TimeUtils.h"
+#include "utils/log.h"
 
 #ifdef _LINUX
 #define XBMC_SAMPLE_RATE 44100

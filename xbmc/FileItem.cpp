@@ -55,6 +55,7 @@
 #include "Settings.h"
 #include "utils/TimeUtils.h"
 #include "utils/RegExp.h"
+#include "utils/log.h"
 #include "karaoke/karaokelyricsfactory.h"
 
 using namespace std;

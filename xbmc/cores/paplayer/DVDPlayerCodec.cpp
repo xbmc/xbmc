@@ -27,6 +27,7 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
+#include "utils/log.h"
 
 #include "AudioDecoder.h"
 

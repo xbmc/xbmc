@@ -25,6 +25,7 @@
 #include "../lib/libscrobbler/lastfmscrobbler.h"
 #include "../lib/libscrobbler/librefmscrobbler.h"
 #include "RssReader.h"
+#include "log.h"
 
 using namespace std;
 

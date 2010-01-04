@@ -36,6 +36,7 @@
 #include "LocalizeStrings.h"
 #include "CPUInfo.h"
 #include "utils/TimeUtils.h"
+#include "log.h"
 #ifdef _WIN32
 #include "dwmapi.h"
 #endif

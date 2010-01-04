@@ -23,7 +23,8 @@
 
 #include "utils/Thread.h"
 #include "ICodec.h"
-#include "FileSystem/RingBuffer.h"
+#include "utils/CriticalSection.h"
+#include "utils/RingBuffer.h"
 
 class CFileItem;
 

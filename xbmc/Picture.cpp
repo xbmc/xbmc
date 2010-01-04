@@ -27,6 +27,7 @@
 #include "FileSystem/FileCurl.h"
 #include "Util.h"
 #include "DllImageLib.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 

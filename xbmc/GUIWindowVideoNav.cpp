@@ -53,6 +53,7 @@
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
 #include "MediaManager.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

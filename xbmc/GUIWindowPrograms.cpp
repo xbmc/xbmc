@@ -40,6 +40,7 @@
 #include "Settings.h"
 #include "LocalizeStrings.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

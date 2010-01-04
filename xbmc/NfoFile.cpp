@@ -32,6 +32,7 @@
 #include "Album.h"
 #include "Artist.h"
 #include "GUISettings.h"
+#include "utils/log.h"
 
 #include <vector>
 

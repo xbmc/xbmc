@@ -33,6 +33,7 @@
 #include "Application.h"
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
+#include "log.h"
 
 using namespace HTML;
 using namespace std;

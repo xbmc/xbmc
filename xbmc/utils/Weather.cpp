@@ -39,6 +39,7 @@
 #include "FileSystem/Directory.h"
 #include "utils/TimeUtils.h"
 #include "StringUtils.h"
+#include "log.h"
 
 using namespace std;
 using namespace DIRECTORY;

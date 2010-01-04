@@ -21,7 +21,7 @@
  */
 
 #include "IFile.h"
-#include "RingBuffer.h"
+#include "utils/RingBuffer.h"
 #include <map>
 #include "utils/HttpHeader.h"
 

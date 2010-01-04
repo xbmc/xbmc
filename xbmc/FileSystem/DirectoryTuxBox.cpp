@@ -32,6 +32,7 @@
 #include "tinyXML/tinyxml.h"
 #include "AdvancedSettings.h"
 #include "FileItem.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

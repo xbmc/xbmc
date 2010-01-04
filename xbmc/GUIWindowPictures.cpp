@@ -39,6 +39,7 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
 
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3
