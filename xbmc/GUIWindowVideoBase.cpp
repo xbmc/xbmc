@@ -50,6 +50,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogSelect.h"
 #include "GUIDialogKeyboard.h"
+#include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
 #include "PlayList.h"
 #include "Settings.h"
@@ -528,10 +529,17 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   }
 
   CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
-  if (result == CNfoFile::FULL_NFO)
-    hasDetails = true;
-  if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
-    scanner.m_IMDB.SetScraperInfo(info);
+  if (result != CNfoFile::NO_NFO)
+  {
+    // In case we already have info, ask user to refresh from internet instead
+    if (!bHasInfo || !CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
+    {
+      if (result == CNfoFile::FULL_NFO)
+        hasDetails = true;
+      if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+        scanner.m_IMDB.SetScraperInfo(info);
+    }
+  }
 
   // Get the correct movie title
   CStdString movieName = item->GetMovieName(settings.parent_name);
