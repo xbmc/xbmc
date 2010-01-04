@@ -240,9 +240,9 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             else
             {
               if (strcmpi(type, "video") == 0)
-                strMask = g_stSettings.m_videoExtensions;
+                strMask = g_settings.m_videoExtensions;
               else if (strcmpi(type, "music") == 0)
-                strMask = g_stSettings.m_musicExtensions;
+                strMask = g_settings.m_musicExtensions;
               else if (strcmpi(type, "programs") == 0)
 #if defined(_WIN32_WINNT)
                 strMask = ".exe|.bat|.cmd|.py";

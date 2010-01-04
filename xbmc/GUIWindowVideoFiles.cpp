@@ -312,11 +312,6 @@ void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
   }
 }
 
-bool CGUIWindowVideoFiles::OnClick(int iItem)
-{
-  return CGUIWindowVideoBase::OnClick(iItem);
-}
-
 bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
@@ -519,7 +514,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         {
           ADDON::CScraperPtr info;
           VIDEO::SScanSettings settings;
-          int iFound = GetScraperForItem(item.get(), info, settings);
+          GetScraperForItem(item.get(), info, settings);
 
           int infoString = 13346;
 
@@ -556,10 +551,9 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           else
           {
             // single file
-            if ((info->Content() == CONTENT_MOVIES && (iFound > 0 ||
-                 m_database.HasMovieInfo(item->m_strPath)))      ||
-                 m_database.HasEpisodeInfo(item->m_strPath)      ||
-                 info->Content() == CONTENT_MUSICVIDEOS)
+            if ( info && m_database.HasMovieInfo(item->m_strPath) ||
+                 m_database.HasEpisodeInfo(item->m_strPath) || 
+                 info && info->Content() == CONTENT_MUSICVIDEOS )
             {
               buttons.Add(CONTEXT_BUTTON_INFO, infoString);
             }
