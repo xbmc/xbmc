@@ -656,6 +656,176 @@ extern "C"
     return EOF;
   }
 
+#ifndef _LINUX
+  // should be moved to CFile classes
+  intptr_t dll_findfirst(const char *file, struct _finddata_t *data)
+  {
+    struct _finddata64i32_t data64i32;
+    intptr_t ret = dll_findfirst64i32(file, &data64i32);
+    if (ret != -1)
+    {
+      int size = sizeof(data->name);
+      strncpy(data->name, data64i32.name, size);
+      if (size)
+        data->name[size - 1] = '\0';
+      data->size = (_fsize_t)data64i32.size;
+      data->time_write = (time_t)data64i32.time_write;
+      data->time_access = (time_t)data64i32.time_access;
+    }
+    return ret;
+  }
+
+  intptr_t dll_findfirst64i32(const char *file, struct _finddata64i32_t *data)
+  {
+    char str[1024];
+    int size = sizeof(str);
+    CURL url(_P(file));
+    if (url.IsLocal())
+    {
+      // move to CFile classes
+      if (strncmp(file, "\\Device\\Cdrom0", 14) == 0)
+      {
+        // replace "\\Device\\Cdrom0" with "D:"
+        strncpy(str, "D:", size);
+        if (size)
+        {
+          str[size - 1] = '\0';
+          strncat(str, file + 14, size - strlen(str));
+        }
+      }
+      else
+      {
+        strncpy(str, file, size);
+        if (size)
+          str[size - 1] = '\0';
+      }
+
+      // Make sure the slashes are correct & translate the path
+      return _findfirst64i32(_P(CURL::ValidatePath(str)), data);
+    }
+    // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
+    CStdString strURL(file);
+    CStdString strMask;
+    if (url.GetFileName().Find("*.*") != string::npos)
+    {
+      CStdString strReplaced = url.GetFileName();
+      strReplaced.Replace("*.*","");
+      url.SetFileName(strReplaced);
+    }
+    else if (url.GetFileName().Find("*.") != string::npos)
+    {
+      CUtil::GetExtension(url.GetFileName(),strMask);
+      url.SetFileName(url.GetFileName().Left(url.GetFileName().Find("*.")));
+    }
+    int iDirSlot=0; // locate next free directory
+    while ((vecDirsOpen[iDirSlot].Directory) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
+    if (iDirSlot >= MAX_OPEN_DIRS)
+      return -1; // no free slots
+    if (url.GetProtocol().Equals("filereader"))
+    {
+      CURL url2(url.GetFileName());
+      url = url2;
+    }
+    CStdString fName = url.GetFileName();
+    url.SetFileName("");
+    strURL = url.Get();
+    bVecDirsInited = true;
+    vecDirsOpen[iDirSlot].items.Clear();
+    vecDirsOpen[iDirSlot].Directory = CFactoryDirectory::Create(strURL);
+    vecDirsOpen[iDirSlot].Directory->SetMask(strMask);
+    vecDirsOpen[iDirSlot].Directory->GetDirectory(strURL+fName,vecDirsOpen[iDirSlot].items);
+    if (vecDirsOpen[iDirSlot].items.Size())
+    {
+      int size = sizeof(data->name);
+      strncpy(data->name,vecDirsOpen[iDirSlot].items[0]->GetLabel().c_str(), size);
+      if (size)
+        data->name[size - 1] = '\0';
+      data->size = static_cast<_fsize_t>(vecDirsOpen[iDirSlot].items[0]->m_dwSize);
+      data->time_write = iDirSlot; // save for later lookups
+      data->time_access = 0;
+      return (intptr_t)&vecDirsOpen[iDirSlot];
+    }
+    delete vecDirsOpen[iDirSlot].Directory;
+    vecDirsOpen[iDirSlot].Directory = NULL;
+    return -1; // whatever != NULL
+  }
+
+  // should be moved to CFile classes
+  int dll_findnext(intptr_t f, _finddata_t* data)
+  {
+    struct _finddata64i32_t data64i32;
+    int ret = dll_findnext64i32(f, &data64i32);
+    if (ret == 0)
+    {
+      int size = sizeof(data->name);
+      strncpy(data->name, data64i32.name, size);
+      if (size)
+        data->name[size - 1] = '\0';
+      data->size = (_fsize_t)data64i32.size;
+      data->time_write = (time_t)data64i32.time_write;
+      data->time_access = (time_t)data64i32.time_access;
+    }
+    return ret;
+  }
+
+  int dll_findnext64i32(intptr_t f, _finddata64i32_t* data)
+  {
+    int found = MAX_OPEN_DIRS;
+    for (int i = 0; i < MAX_OPEN_DIRS; i++)
+    {
+      if (f == (intptr_t)&vecDirsOpen[i] && vecDirsOpen[i].Directory)
+      {
+        found = i;
+        break;
+      }
+    }
+    if (found >= MAX_OPEN_DIRS)
+      return _findnext64i32(f, data); // local dir
+
+    // we have a valid data struture. get next item!
+    int iItem=(int)data->time_access;
+    if (iItem+1 < vecDirsOpen[found].items.Size()) // we have a winner!
+    {
+      int size = sizeof(data->name);
+      strncpy(data->name,vecDirsOpen[found].items[iItem+1]->GetLabel().c_str(), size);
+      if (size)
+        data->name[size - 1] = '\0';
+      data->size = static_cast<_fsize_t>(vecDirsOpen[found].items[iItem+1]->m_dwSize);
+      data->time_access++;
+      return 0;
+    }
+
+    vecDirsOpen[found].items.Clear();
+    return -1;
+  }
+
+  int dll_findclose(intptr_t handle)
+  {
+    int found = MAX_OPEN_DIRS;
+    for (int i = 0; i < MAX_OPEN_DIRS; i++)
+    {
+      if (handle == (intptr_t)&vecDirsOpen[i] && vecDirsOpen[i].Directory)
+      {
+        found = i;
+        break;
+      }
+    }
+    if (found >= MAX_OPEN_DIRS)
+      return _findclose(handle);
+
+    delete vecDirsOpen[found].Directory;
+    vecDirsOpen[found].Directory = NULL;
+    vecDirsOpen[found].items.Clear();
+    return 0;
+  }
+
+  void dll__security_error_handler(int code, void *data)
+  {
+    //NOTE: __security_error_handler has been removed in VS2005 and up
+    CLog::Log(LOGERROR, "security_error, code %i", code);
+  }
+#endif
+
   DIR *dll_opendir(const char *file)
   {
     char str[1024];
