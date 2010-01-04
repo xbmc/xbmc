@@ -46,19 +46,54 @@ const std::list<GUID>& CFGFilter::GetTypes() const
 
 void CFGFilter::SetTypes(const std::list<GUID>& types)
 {
-  m_types.RemoveAll();
-  m_types.AddTailList(&types);
+  while (!m_types.empty())
+    m_types.pop_back();
+  BOOST_FOREACH(GUID tp, types)
+  {
+    m_types.push_back(tp);
+  }
+  
 }
 
 void CFGFilter::AddType(const GUID& majortype, const GUID& subtype)
 {
-  m_types.AddTail(majortype);
-  m_types.AddTail(subtype);
+  m_types.push_back(majortype);
+  m_types.push_back(subtype);
 }
 
-bool CFGFilter::CheckTypes(const CAtlArray<GUID>& types, bool fExactMatch)
+bool CFGFilter::CheckTypes(const std::vector<GUID>& types, bool fExactMatch)
 {
-  POSITION pos = m_types.GetHeadPosition();
+  GuidListIter mtype;
+  mtype = m_types.begin();
+  while (mtype != m_types.end())
+  {
+    GuidListIter majortype = mtype;
+    mtype++;
+    if (mtype == m_types.end())
+    {
+      ASSERT(0);
+      break;
+    }
+    GuidListIter subtype = mtype;
+    for(int i = 0, len = types.size() & ~1; i < len; i += 2)
+    {
+      if(fExactMatch)
+      {
+        //if(majortype == types.at(i) && majortype != GUID_NULL
+        if (DShowUtil::GuidVectItterCompare(majortype,types.at(i)) && !DShowUtil::GuidItteratorIsNull(majortype)
+        && DShowUtil::GuidVectItterCompare(subtype,types.at(i+1)) && !DShowUtil::GuidItteratorIsNull(subtype))
+          return true;
+      }
+      else
+      {
+        if((DShowUtil::GuidItteratorIsNull(majortype) || DShowUtil::GuidVectIsNull(types[i]) || DShowUtil::GuidVectItterCompare(majortype,types.at(i)))
+        && (DShowUtil::GuidItteratorIsNull(subtype) || DShowUtil::GuidVectIsNull(types.at(i+1)) || DShowUtil::GuidVectItterCompare(subtype,types.at(i+1))))
+          return true;
+      }
+    }
+    mtype++;
+  }
+  /*POSITION pos = m_types.GetHeadPosition();
   while(pos)
   {
     const GUID& majortype = m_types.GetNext(pos);
@@ -80,7 +115,7 @@ bool CFGFilter::CheckTypes(const CAtlArray<GUID>& types, bool fExactMatch)
           return true;
       }
     }
-  }
+  }*/
 
   return false;
 }
@@ -329,8 +364,8 @@ void CFGFilterRegistry::ExtractFilterData(BYTE* p, UINT len)
     ChkLen(4)
     m_merit.mid = *(DWORD*)p; p += 4;
 
-    m_types.RemoveAll();
-
+    while(!m_types.empty())
+      m_types.pop_back();
     ChkLen(8)
     DWORD nPins = *(DWORD*)p; p += 8;
     while(nPins-- > 0)
@@ -465,20 +500,44 @@ CFGFilterList::~CFGFilterList()
 
 void CFGFilterList::RemoveAll()
 {
-  while(!m_filters.IsEmpty())
+  BOOST_FOREACH(const filter_t& f,m_filters)
+  {
+    if (f.autodelete)
+      delete f.pFGF;
+  }
+  while (!m_filters.empty())
+    m_filters.pop_back();
+  while (!m_sortedfilters.empty())
+    m_sortedfilters.pop_back();
+  /*while(!m_filters.IsEmpty())
   {
     const filter_t& f = m_filters.RemoveHead();
     if(f.autodelete) delete f.pFGF;
   }
-
-  m_sortedfilters.RemoveAll();
+  m_sortedfilters.RemoveAll();*/
 }
 
 void CFGFilterList::Insert(CFGFilter* pFGF, int group, bool exactmatch, bool autodelete)
 {
   if(CFGFilterRegistry* f1r = dynamic_cast<CFGFilterRegistry*>(pFGF))
   {
-    POSITION pos = m_filters.GetHeadPosition();
+    BOOST_FOREACH(filter_t& f2,m_filters)
+    {
+      if(group != f2.group) 
+        continue;
+      if(CFGFilterRegistry* f2r = dynamic_cast<CFGFilterRegistry*>(f2.pFGF))
+      {
+        if(f1r->GetMoniker() && f2r->GetMoniker() && S_OK == f1r->GetMoniker()->IsEqual(f2r->GetMoniker())
+        || f1r->GetCLSID() != GUID_NULL && f1r->GetCLSID() == f2r->GetCLSID())
+        {
+          if(autodelete) delete pFGF;
+          return;
+        }
+      }
+    }
+  }
+
+    /*POSITION pos = m_filters.GetHeadPosition();
     while(pos)
     {
       filter_t& f2 = m_filters.GetNext(pos);
@@ -490,42 +549,41 @@ void CFGFilterList::Insert(CFGFilter* pFGF, int group, bool exactmatch, bool aut
         if(f1r->GetMoniker() && f2r->GetMoniker() && S_OK == f1r->GetMoniker()->IsEqual(f2r->GetMoniker())
         || f1r->GetCLSID() != GUID_NULL && f1r->GetCLSID() == f2r->GetCLSID())
         {
-          /*TRACE(_T("FGM: Inserting %d %d %016I64x '%s' NOT!\n"), 
-            group, exactmatch, pFGF->GetMerit(),
-            pFGF->GetName().IsEmpty() ? CStdStringFromGUID(pFGF->GetCLSID()) : CStdString(pFGF->GetName()));*/
-
           if(autodelete) delete pFGF;
           return;
         }
       }
+    }*/
+  
+  BOOST_FOREACH(filter_t& mf,m_filters)
+  {
+    if (mf.pFGF == pFGF)
+    {
+      if(autodelete) 
+        delete pFGF;
+      return;
     }
+  
   }
-
-  POSITION pos = m_filters.GetHeadPosition();
+  /*POSITION pos = m_filters.GetHeadPosition();
   while(pos)
   {
     if(m_filters.GetNext(pos).pFGF == pFGF)
     {
-      /*TRACE(_T("FGM: Inserting %d %d %016I64x '%s' DUP!\n"), 
-        group, exactmatch, pFGF->GetMerit(),
-        pFGF->GetName().IsEmpty() ? CStdStringFromGUID(pFGF->GetCLSID()) : CStdString(pFGF->GetName()));*/
-
-      if(autodelete) delete pFGF;
+      if(autodelete) 
+        delete pFGF;
       return;
     }
-  }
+  }*/
 
-  /*TRACE(_T("FGM: Inserting %d %d %016I64x '%s'\n"), 
-    group, exactmatch, pFGF->GetMerit(),
-    pFGF->GetName().IsEmpty() ? CStdStringFromGUID(pFGF->GetCLSID()) : CStdString(pFGF->GetName()));*/
+  filter_t f = {m_filters.size(), pFGF, group, exactmatch, autodelete};
+  m_filters.push_back(f);
 
-  filter_t f = {m_filters.GetCount(), pFGF, group, exactmatch, autodelete};
-  m_filters.AddTail(f);
-
-  m_sortedfilters.RemoveAll();
+  while (!m_sortedfilters.empty())
+    m_sortedfilters.pop_back();
 }
 
-POSITION CFGFilterList::GetHeadPosition()
+/*POSITION CFGFilterList::GetHeadPosition()
 {
   if(m_sortedfilters.IsEmpty())
   {
@@ -539,22 +597,20 @@ POSITION CFGFilterList::GetHeadPosition()
         m_sortedfilters.AddTail(sort[i].pFGF);
   }
 
-  /*TRACE(_T("FGM: Sorting filters\n"));*/
 
   POSITION pos = m_sortedfilters.GetHeadPosition();
   while(pos)
   {
     CFGFilter* pFGF = m_sortedfilters.GetNext(pos);
-    /*TRACE(_T("FGM: - %016I64x '%s'\n"), pFGF->GetMerit(), pFGF->GetName().IsEmpty() ? CStdStringFromGUID(pFGF->GetCLSID()) : CStdString(pFGF->GetName()));*/
   }
 
   return m_sortedfilters.GetHeadPosition();
-}
+}*/
 
-CFGFilter* CFGFilterList::GetNext(POSITION& pos)
+/*CFGFilter* CFGFilterList::GetNext(POSITION& pos)
 {
   return m_sortedfilters.GetNext(pos);
-}
+}*/
 
 int CFGFilterList::filter_cmp(const void* a, const void* b)
 {

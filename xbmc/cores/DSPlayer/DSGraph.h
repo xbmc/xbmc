@@ -35,7 +35,7 @@
 #include "util.h"
 #include "dsconfig.h"
 
-
+#include "FgManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
   #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -174,7 +174,8 @@ protected:
   
 private:
   //Direct Show Filters
-  SmartPtr<IGraphBuilder2>         m_pGraphBuilder;
+  
+  CComPtr<IGraphBuilder2>        m_pGraphBuilder;
   CComQIPtr<IMediaControl>        m_pMediaControl;  
   CComQIPtr<IMediaEventEx>        m_pMediaEvent;
   CComQIPtr<IMediaSeeking>        m_pMediaSeeking;

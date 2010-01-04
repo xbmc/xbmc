@@ -1,7 +1,7 @@
 #pragma once
 
 #include "streams.h"
-
+#include <list>
 
 class CMediaTypeEx : public CMediaType
 {

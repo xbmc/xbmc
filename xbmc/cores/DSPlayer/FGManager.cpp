@@ -57,8 +57,12 @@ CFGManager::CFGManager(LPCTSTR pName, LPUNKNOWN pUnk)
   : CUnknown(pName, pUnk)
   , m_dwRegister(0)
 {
-  CoCreateInstance(CLSID_FilterGraph, GetOwner(), CLSCTX_ALL, __uuidof(m_pUnkInner), (void**)&m_pUnkInner);
-	CoCreateInstance(CLSID_FilterMapper2, NULL, CLSCTX_ALL, __uuidof(m_pFM), (void**)&m_pFM);
+  //ERROR NO MATTER WHAT THE FUCK IM TRYING BOTH ARE RETURNING NULL
+  CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_ALL, __uuidof(LPUNKNOWN), (void**)&m_pUnkInner);
+  CoCreateInstance(CLSID_FilterMapper2, NULL, CLSCTX_ALL, __uuidof(IFilterMapper2), (void**)&m_pFM);
+  
+  
+	//hr = CoCreateInstance(CLSID_FilterMapper2, NULL, CLSCTX_ALL, __uuidof(m_pFM), (void**)&m_pFM);
 }
 
 CFGManager::~CFGManager()
@@ -348,7 +352,8 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
   {
     CFGFilterList fl;
 
-    CAtlArray<GUID> types;
+    //CAtlArray<GUID> types;
+    std::vector<GUID> types;
     DShowUtil::ExtractMediaTypes(pPinOut, types);
 
     
@@ -373,10 +378,18 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     }
 
     SmartPtr<IEnumMoniker> pEM;
-    if(types.GetCount() > 0 
+    GUID * typesdata;
+    
+    BOOST_FOREACH(GUID tmpType,types)
+    {
+      *typesdata = tmpType;
+      typesdata++;
+
+    }
+    if(types.size() > 0 
     && SUCCEEDED(m_pFM->EnumMatchingFilters(
       &pEM, 0, FALSE, MERIT_DO_NOT_USE+1, 
-      TRUE, types.GetCount()/2, types.GetData(), NULL, NULL, FALSE,
+      TRUE, types.size()/2, typesdata, NULL, NULL, FALSE,
       !!pPinIn, 0, NULL, NULL, NULL)))
     {
       for(SmartPtr<IMoniker> pMoniker; S_OK == pEM->Next(1, &pMoniker, NULL); pMoniker = NULL)
@@ -386,13 +399,67 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
       }
     }
 //crashing right there on mkv
-//The subtitle might be the reason  
-    POSITION pos = fl.GetHeadPosition();
+//The subtitle might be the reason
+    BOOST_FOREACH(CFGFilter* pFGF,fl.getSortedList())
+    {
+    SmartPtr<IBaseFilter> pBF;
+      SmartPtr<IUnknown> pUnk;
+      if(FAILED(CreateFilter(pFGF, &pBF, &pUnk)))
+        continue;
+
+      if(pPinIn &&  DShowUtil::IsStreamEnd(pBF))
+        continue;
+      if(FAILED(hr = AddFilter(pBF, (LPCWSTR)pFGF->GetName().c_str())))
+        continue;
+
+      hr = E_FAIL;
+
+      if(types.size() == 2 && types[0] == MEDIATYPE_Stream && types.at(1) != MEDIATYPE_NULL)
+      {
+        CMediaType mt;
+        
+        mt.majortype = types[0];
+        mt.subtype = types[1];
+        mt.formattype = FORMAT_None;
+        if(FAILED(hr)) hr = ConnectFilterDirect(pPinOut, pBF, &mt);
+
+        mt.formattype = GUID_NULL;
+        if(FAILED(hr)) hr = ConnectFilterDirect(pPinOut, pBF, &mt);
+      }
+
+      if(FAILED(hr)) hr = ConnectFilterDirect(pPinOut, pBF, NULL);
+
+      if(SUCCEEDED(hr))
+      {
+        if(! DShowUtil::IsStreamEnd(pBF)) fDeadEnd = false;
+
+        hr = ConnectFilter(pBF, pPinIn);
+
+        if(SUCCEEDED(hr))
+        {
+          if(pUnk) m_pUnks.AddTail(pUnk);
+
+          // maybe the application should do this...
+          if(CComQIPtr<IMixerPinConfig, &IID_IMixerPinConfig> pMPC = pUnk)
+            pMPC->SetAspectRatioMode(AM_ARMODE_STRETCHED);
+          if(CComQIPtr<IVMRAspectRatioControl> pARC = pBF)
+            pARC->SetAspectRatioMode(VMR_ARMODE_NONE);
+          if(CComQIPtr<IVMRAspectRatioControl9> pARC = pBF)
+            pARC->SetAspectRatioMode(VMR_ARMODE_NONE);
+          return hr;
+        }
+      }
+
+      EXECUTE_ASSERT(SUCCEEDED(RemoveFilter(pBF)));
+    
+    
+    
+    }
+    /*POSITION pos = fl.GetHeadPosition();
     while(pos)
     {
       CFGFilter* pFGF = fl.GetNext(pos);
 
-      //TRACE(_T("FGM: Connecting '%s'\n"), pFGF->GetName());
 
       SmartPtr<IBaseFilter> pBF;
       SmartPtr<IUnknown> pUnk;
@@ -445,7 +512,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
       EXECUTE_ASSERT(SUCCEEDED(RemoveFilter(pBF)));
 
       //TRACE(_T("FGM: Connecting '%s' FAILED!\n"), pFGF->GetName());
-    }
+    }*/
   }
   
   
@@ -470,7 +537,8 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
 }
 
 STDMETHODIMP CFGManager::Render(IPin* pPinOut)
-{return E_NOTIMPL;
+{
+  return E_NOTIMPL;
   /*CAutoLock cAutoLock(this);
 
   return RenderEx(pPinOut, 0, NULL);*/

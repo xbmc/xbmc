@@ -23,6 +23,7 @@
 
 #include "StdString.h"
 #include <streams.h>
+
 #include "smartptr.h"
 #include "igraphbuilder2.h"
 #include "Filters/IMpaDecFilter.h"
@@ -35,7 +36,7 @@ class CDSConfig
 public:
   CDSConfig();
   virtual ~CDSConfig();
-  virtual HRESULT LoadGraph(SmartPtr<IGraphBuilder2> pGB);
+  virtual HRESULT LoadGraph(CComPtr<IGraphBuilder2> pGB);
 
   CStdString GetDxvaMode()  { return m_pStdDxva; };
 //AudioStream

@@ -10,6 +10,35 @@
 #include "log.h"
 #include "boost/foreach.hpp"
 #include "oaidl.H"
+
+bool DShowUtil::GuidVectItterCompare(GuidListIter it,const std::vector<GUID>::const_reference vect)
+{
+if (it->Data1 == vect.Data1 && it->Data2 == vect.Data2 && it->Data3 == vect.Data3 && it->Data4 == vect.Data4)
+  return true;
+else 
+  return false;
+}
+
+bool DShowUtil::GuidItteratorIsNull(GuidListIter it)
+{
+  GUID gnull;
+  gnull = GUID_NULL;
+if (it->Data1 == gnull.Data1 && it->Data2 == gnull.Data2 && it->Data3 == gnull.Data3 && it->Data4 == gnull.Data4)
+  return false;
+else 
+  return true;
+}
+
+bool DShowUtil::GuidVectIsNull(const std::vector<GUID>::const_reference vect)
+{
+  GUID gnull;
+  gnull = GUID_NULL;
+if (vect.Data1 == gnull.Data1 && vect.Data2 == gnull.Data2 && vect.Data3 == gnull.Data3 && vect.Data4 == gnull.Data4)
+  return false;
+else 
+  return true;
+}
+
 LONG DShowUtil::MFTimeToMsec(const LONGLONG& time)
 {
   //Time / one sec / one millisec
@@ -27,7 +56,10 @@ CStdString DShowUtil::GetFilterPath(CStdString pClsid)
   {
 			TCHAR		val[1024];
 			PLONG		len;
-      if (RegQueryValue(HKEY_CLASSES_ROOT,strReg,val,len) == ERROR_SUCCESS)
+      //LONG ret = RegOpenKeyEx(HKEY_LOCAL_MACHINE,"HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0",0, KEY_READ, &hKey);
+      //ret = RegQueryValueEx(hKey,"~MHz", NULL, NULL, (LPBYTE)&dwMHz, &dwSize);
+      //RegCloseKey(hKey);
+      if (RegQueryValue(HKEY_CLASSES_ROOT,strReg.c_str(),val,NULL) == ERROR_SUCCESS)
       {
         strResult = val;
         ret = 0;

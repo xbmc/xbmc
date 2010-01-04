@@ -50,12 +50,18 @@ typedef enum {CDROM_NotFound, CDROM_Audio, CDROM_VideoCD, CDROM_DVDVideo, CDROM_
 static const GUID CLSID_NullRenderer =
   { 0xC1F400A4, 0x3F08, 0x11D3, { 0x9F, 0x0B, 0x00, 0x60, 0x08, 0x03, 0x9E, 0x37 } };
 
+typedef std::list<GUID> GuidList;
+typedef std::list<GUID>::iterator GuidListIter;
+
 class  DShowUtil
 {
 public:
 //This is not needed its for getting the output format of a capture filter
 //and  also require  mfc for cfile
 //static void DumpStreamConfig(TCHAR* fn, IAMStreamConfig* pAMVSCCap);
+  static bool GuidVectItterCompare(GuidListIter it,const std::vector<GUID>::const_reference vect);
+  static bool GuidItteratorIsNull(GuidListIter it);
+  static bool GuidVectIsNull(const std::vector<GUID>::const_reference vect);
   static long MFTimeToMsec(const LONGLONG& time);
   static CStdString GetFilterPath(CStdString pClsid);
   static CStdStringW AnsiToUTF16(const CStdString strFrom);

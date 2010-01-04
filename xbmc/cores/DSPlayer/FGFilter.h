@@ -23,6 +23,7 @@
 #include "streams.h"
 #include "smartptr.h"
 #include <list>
+#include <vector>
 
 #define MERIT64(merit) (((UINT64)(merit))<<16)
 #define MERIT64_DO_NOT_USE MERIT64(MERIT_DO_NOT_USE)
@@ -51,7 +52,7 @@ public:
 	const std::list<GUID>& GetTypes() const;
 	void SetTypes(const std::list<GUID>& types);
 	void AddType(const GUID& majortype, const GUID& subtype);
-	bool CheckTypes(const CAtlArray<GUID>& types, bool fExactMatch);
+  bool CheckTypes(const std::vector<GUID>& types, bool fExactMatch);
 
 	std::list<CStdString> m_protocols, m_extensions, m_chkbytes; // TODO: subtype?
 
@@ -137,7 +138,8 @@ public:
 
 	void RemoveAll();
 	void Insert(CFGFilter* pFGF, int group, bool exactmatch = false, bool autodelete = true);
-
-	POSITION GetHeadPosition();
-	CFGFilter* GetNext(POSITION& pos);
+  std::list<CFGFilter*> getSortedList() { return m_sortedfilters;};
+  //also need to remove in cpp
+	//POSITION GetHeadPosition();
+	//CFGFilter* GetNext(POSITION& pos);
 };

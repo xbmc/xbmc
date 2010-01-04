@@ -140,7 +140,11 @@ public:
 
     HRESULT CoCreateInstance(_In_ REFCLSID rclsid, _In_opt_ LPUNKNOWN pUnkOuter = NULL, _In_ DWORD dwClsContext = CLSCTX_ALL)
     {
-      return ::CoCreateInstance(rclsid, pUnkOuter, dwClsContext, __uuidof(T), (void**)&m_ptr);
+      HRESULT hr;
+      ASSERT(m_ptr==NULL);
+      hr = ::CoCreateInstance(rclsid, pUnkOuter, dwClsContext, __uuidof(T), (void**)&m_ptr);
+      m_ptr->AddRef();
+      return hr;
     }
 
     
@@ -162,9 +166,9 @@ public:
 	void Attach(T* p) 
 	{
 		if (m_ptr)
-        {
+    {
 			m_ptr->Release();
-        }
+    }
 		m_ptr = p;
 	}
 

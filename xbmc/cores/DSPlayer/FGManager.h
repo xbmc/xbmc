@@ -71,14 +71,15 @@ public:
 	};
 
 private:
-  SmartPtr<IUnknown> m_pUnkInner;
+  CComPtr<IUnknown> m_pUnkInner;
 	
   DWORD m_dwRegister;
   CStreamPath m_streampath;
   CAutoPtrArray<CStreamDeadEnd> m_deadends;
 
 protected:
-  SmartPtr<IFilterMapper2> m_pFM;
+  
+  IFilterMapper2* m_pFM;
   CInterfaceList<IUnknown, &IID_IUnknown> m_pUnks;
   std::list<CFGFilter*> m_source, m_transform, m_override;
 

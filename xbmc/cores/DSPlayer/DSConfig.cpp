@@ -44,7 +44,7 @@ CDSConfig::~CDSConfig()
   
 }
 
-HRESULT CDSConfig::LoadGraph(SmartPtr<IGraphBuilder2> pGB)
+HRESULT CDSConfig::LoadGraph(CComPtr<IGraphBuilder2> pGB)
 {
   HRESULT hr = S_OK;
   m_pGraphBuilder = pGB.Detach();

@@ -33,7 +33,7 @@
 
 #include <streams.h>
 #include "DShowUtil/DShowUtil.h"
-#include "FgManager.h"
+
 #include "qnetwork.h"
 
 #include "DshowUtil/MediaTypeEx.h"
@@ -79,13 +79,15 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   if (m_pGraphBuilder)
 	  CloseFile();
   m_VideoInfo.Clear();
+  
   m_pGraphBuilder = new CFGManagerPlayer(_T("CFGManagerPlayer"), NULL, g_hWnd);
-  hr = m_pGraphBuilder->AddToROT();
+  
   //Adding every filters required for this file into the igraphbuilder
   hr = m_pGraphBuilder->RenderFileXbmc(file);
   if (FAILED(hr))
     return hr;
   //This
+  
   hr = m_pGraphBuilder.QueryInterface(&m_pMediaSeeking);
   hr = m_pGraphBuilder.QueryInterface(&m_pMediaControl);
   hr = m_pGraphBuilder.QueryInterface(&m_pMediaEvent);

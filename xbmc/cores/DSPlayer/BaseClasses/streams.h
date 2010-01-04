@@ -143,6 +143,7 @@ typedef struct {
 #include <comlite.h>    // Light weight com function prototypes
 
 #include <cache.h>      // Simple cache container class
+#include <atlcoll.h>    // REMOVE WHEN CONVERTED CInterfaceList
 #include <smartptr.h>   //Replacement for CComPtr
 #include <wxlist.h>     // Non MFC generic list class
 #include <msgthrd.h>	// CMsgThread

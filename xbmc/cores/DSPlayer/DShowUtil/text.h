@@ -1,4 +1,7 @@
+#ifndef DSHOWUTILTEXT_H
+#define DSHOWUTILTEXT_H
 #pragma once
+
 #include <list>
 #include "boost/foreach.hpp"
 
@@ -6,9 +9,10 @@
 // extern CString Explode(CString str, CAtlList<CString>& sl, TCHAR sep, int limit = 0);
 // extern CString Implode(CAtlList<CString>& sl, TCHAR sep);
 
-//template<class T, typename SEP>
+
 using namespace std;
-CStdString Explode(CStdString str, list<CStdString>& sl, TCHAR sep, int limit = 0)
+template<class T, typename SEP>
+T Explode(T str, list<T>& sl, SEP sep, int limit = 0)
 {
   while (!sl.empty())
     sl.pop_back();
@@ -53,8 +57,8 @@ CStdString Explode(CStdString str, list<CStdString>& sl, TCHAR sep, int limit = 
 	return sl.GetHead();
 }*/
 
-//template<class T, typename SEP>
-CStdString Implode(list<CStdString>& sl, TCHAR sep)
+template<class T, typename SEP>
+T Implode(list<T>& sl, SEP sep)
 {
 	CStdString ret;
   BOOST_FOREACH(CStdString ss,sl)
@@ -82,3 +86,4 @@ extern std::list<CStdString>& MakeLower(std::list<CStdString>& sl);
 extern std::list<CStdString>& MakeUpper(std::list<CStdString>& sl);
 extern std::list<CStdString>& RemoveStrings(std::list<CStdString>& sl, int minlen, int maxlen);
 
+#endif
