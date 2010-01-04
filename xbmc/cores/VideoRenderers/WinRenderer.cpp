@@ -486,11 +486,18 @@ void CWinRenderer::RenderLowMem(DWORD flags)
 
   UINT cPasses, iPass;
   if (!m_YUV2RGBEffect.Begin( &cPasses, 0 ))
+  {
+    CLog::Log(LOGERROR, "CWinRenderer::RenderLowMem - failed to begin d3d effect");
     return;
+  }
 
   for( iPass = 0; iPass < cPasses; iPass++ )
   {
-    m_YUV2RGBEffect.BeginPass( iPass );
+    if (!m_YUV2RGBEffect.BeginPass( iPass ))
+    {
+      CLog::Log(LOGERROR, "CWinRenderer::RenderLowMem - failed to begin d3d effect pass");
+      break;
+    }
 
     pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
     pD3DDevice->SetTexture(0, NULL);
