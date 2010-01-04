@@ -547,37 +547,37 @@ namespace VIDEO
               (info2.strContent.Equals("musicvideos") && m_database.HasMusicVideoInfo(pItem->m_strPath)))
              continue;
           
-          CNfoFile::NFOResult result;
+          CNfoFile::NFOResult result = CNfoFile::NO_NFO;
           if (!pURL)
           {
-          CScraperUrl scrUrl;
-          // handle .nfo files
-          result = CheckForNFOFile(pItem.get(),bDirNames,info2,scrUrl);
-          if (info2.strContent.Equals("tvshows") && result != CNfoFile::NO_NFO)
-          {
-            SScraperInfo info3(info2);
-            SScanSettings settings;
-            m_database.GetScraperForPath(pItem->m_strPath,info3,settings);
-            info3.strPath = info2.strPath;
-            m_database.SetScraperForPath(pItem->m_strPath,info3,settings);
-          }
-          if (result == CNfoFile::FULL_NFO)
-          {
-            pItem->GetVideoInfoTag()->Reset();
-            m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
-            if (m_pObserver)
-              m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
-
-            long lResult = AddMovieAndGetThumb(pItem.get(), info2.strContent, *pItem->GetVideoInfoTag(), -1, bDirNames, pDlgProgress);
-            if (bRefresh && info.strContent.Equals("tvshows") && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
-              FetchSeasonThumbs(lResult);
-            if (!bRefresh && info2.strContent.Equals("tvshows"))
-              i--;
-            Return = true;
-            continue;
-          }
-          if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
-            pURL = &scrUrl;
+            CScraperUrl scrUrl;
+            // handle .nfo files
+	    result = CheckForNFOFile(pItem.get(),bDirNames,info2,scrUrl);
+            if (info2.strContent.Equals("tvshows") && result != CNfoFile::NO_NFO)
+            {
+              SScraperInfo info3(info2);
+              SScanSettings settings;
+              m_database.GetScraperForPath(pItem->m_strPath,info3,settings);
+              info3.strPath = info2.strPath;
+              m_database.SetScraperForPath(pItem->m_strPath,info3,settings);
+            }
+            if (result == CNfoFile::FULL_NFO)
+            {
+              pItem->GetVideoInfoTag()->Reset();
+              m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
+              if (m_pObserver)
+                m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
+           
+              long lResult = AddMovieAndGetThumb(pItem.get(), info2.strContent, *pItem->GetVideoInfoTag(), -1, bDirNames, pDlgProgress);
+              if (bRefresh && info.strContent.Equals("tvshows") && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
+                FetchSeasonThumbs(lResult);
+              if (!bRefresh && info2.strContent.Equals("tvshows"))
+                i--;
+              Return = true;
+              continue;
+            }
+            if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+              pURL = &scrUrl;
           }
           // Get the correct movie title 
           CStdString strMovieName = pItem->GetMovieName(bDirNames);
