@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 18/12/2009-->
-<!--Based on English strings revision 25792-->
+<!--Date of translation: 27/12/2009-->
+<!--Based on English strings revision 26080-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -46,6 +46,19 @@
   <string id="45">Cum</string>
   <string id="46">Cmt</string>
   <string id="47">Paz</string>
+
+  <string id="51">Oca</string>
+  <string id="52">Şub</string>
+  <string id="53">Mar</string>
+  <string id="54">Nis</string>
+  <string id="55">May</string>
+  <string id="56">Haz</string>
+  <string id="57">Tem</string>
+  <string id="58">Ağu</string>
+  <string id="59">Eyl</string>
+  <string id="60">Eki</string>
+  <string id="61">Kas</string>
+  <string id="62">Ara</string>
 
   <string id="98">Görünüm: Otomatik</string>
   <string id="99">Görünüm: Otomatik büyük</string>

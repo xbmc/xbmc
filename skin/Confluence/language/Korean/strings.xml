@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 12/14/2009-->
+<!--Date of translation: 12/30/2009-->
 <!--$Revision$-->
 <strings>
   <string id="31000">변경</string>
@@ -45,8 +45,7 @@
   <string id="31101">홈 화면 옵션</string>
   <string id="31102">배경</string>
   <string id="31103">사진 슬라이드쇼에 "일시중지됨" 보이기</string>
-  <string id="31104">
-  </string>
+  <string id="31104">윈도우에 예고편 재생 [COLOR=grey3](비디오 정보 대화창만)[/COLOR]</string>
   <string id="31105">백그라운드 스캐너에 미디어 제목 보이기</string>
   <string id="31106">기타 옵션</string>
   <string id="31107">
@@ -72,6 +71,10 @@
   <string id="31126">음악 OSD 에 가사 사용</string>
   <string id="31127">가사 스크립트 경로</string>
   <string id="31128">XBMC 가사</string>
+  <string id="31129">비디오 OSD 에 자막 다운로드 사용</string>
+  <string id="31130">자막 스크립트 경로</string>
+  <string id="31140">음악 OSD</string>
+  <string id="31141">비디오 OSD</string>
   <string id="31200">바로가기</string>
   <string id="31201">카테고리</string>
   <string id="31202">배역 보이기</string>
@@ -113,6 +116,13 @@
   <string id="31327">해상도</string>
   <string id="31328">최근 추가됨</string>
   <string id="31329">[B]타이머 설정![/B] [COLOR=grey2] - 시스템 자동 종료[/COLOR]</string>
+  <string id="31330">영화 예고편을[CR][CR]재생하려면 누르세요</string>
+  <string id="31351">일시중지</string>
+  <string id="31352">중지</string>
+  <string id="31353">빨리 감기</string>
+  <string id="31354">되감기</string>
+  <string id="31355">영화 메뉴</string>
+  <string id="31356">자막 다운로드</string>
   <string id="31400">[B]모양새 설정[/B][CR][CR]스킨 변경 · 언어 및 지역 설정 · 파일 목록 옵션 변경[CR]화면보호기 설정</string>
   <string id="31401">[B]비디오 설정[/B][CR][CR]비디오 라이브러리 관리 · 비디오 재생 옵션 변경 · 비디오 목록 옵션 변경[CR]자막 글꼴 설정</string>
   <string id="31402">[B]음악 설정[/B][CR][CR]음악 라이브러리 관리 · 음악 재생 옵션 변경 · 음악 목록 옵션 변경[CR]노래 전송 설정 · 노래방 옵션 설정</string>
@@ -121,6 +131,5 @@
   <string id="31405">[B]네트워크 설정[/B][CR][CR]UPnP 및 HTTP 를 통한 XBMC 제어 설정 · 파일 공유 설정[CR]인터넷 접근 옵션 설정</string>
   <string id="31406">[B]시스템 설정[/B][CR][CR]화면 설정 및 조정 · 오디오 출력 설정 · 원격 제어 설정[CR]전원 절약 옵션 설정 · 디버깅 사용 · 마스터 잠금 설정</string>
   <string id="31407">[B]스킨 설정[/B][CR][CR]Confluence 스킨 설정 · 홈 메뉴 항목 추가 및 제거[CR]스킨 배경 변경</string>
-  <string id="31420">[B][COLOR=white]XBMC 가 디스크를 감지하지 못했습니다.[/COLOR][/B][CR][CR]드라이브에 디스크를 넣고 다시 시도하거나 취소하세요</string>
   <string id="31421">로그인할 XBMC 사용자 프로파일을[CR]선택하고 계속하세요</string>
 </strings>
