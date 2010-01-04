@@ -65,10 +65,10 @@ namespace PYXBMC
 
     self = (ControlImage*)type->tp_alloc(type, 0);
     if (!self) return NULL;
-    new(&self->strFileName) string();    
+    new(&self->strFileName) string();
 
     //if (!PyArg_ParseTuple(args, "lllls|l", &self->dwPosX, &self->dwPosY, &self->dwWidth, &self->dwHeight,
-    //	&cImage, &self->aspectRatio)) return NULL;
+    //  &cImage, &self->aspectRatio)) return NULL;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args, kwds,
@@ -96,7 +96,7 @@ namespace PYXBMC
 
   void ControlImage_Dealloc(ControlImage* self)
   {
-    self->strFileName.~string();  
+    self->strFileName.~string();
     self->ob_type->tp_free((PyObject*)self);
   }
 

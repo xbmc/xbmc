@@ -202,6 +202,7 @@ public:
     virtual NPT_Result OnSearchContainer(PLT_ActionReference&          action, 
                                          const char*                   container_id, 
                                          const char*                   search_criteria,
+                                         const char*                   filter,
                                          NPT_UInt32                    starting_index,
                                          NPT_UInt32                    requested_count,
                                          const NPT_List<NPT_String>&   sort_criteria, 
@@ -385,8 +386,17 @@ CUPnPServer::PopulateObjectFromTag(CMusicInfoTag&         tag,
     object.m_People.artists.Add(tag.GetArtist().c_str());
     object.m_People.artists.Add(tag.GetArtist().c_str(), "Performer");
     object.m_People.artists.Add(!tag.GetAlbumArtist().empty()?tag.GetAlbumArtist().c_str():tag.GetArtist().c_str(), "AlbumArtist");
-    object.m_Creator = tag.GetArtist();
+    if(tag.GetAlbumArtist().IsEmpty())
+        object.m_Creator = tag.GetArtist();
+    else
+        object.m_Creator = tag.GetAlbumArtist();
     object.m_MiscInfo.original_track_number = tag.GetTrackNumber();
+    if(tag.GetDatabaseId() >= 0) {
+      object.m_ReferenceID = NPT_String::Format("musicdb://4/%i%s", tag.GetDatabaseId(), CUtil::GetExtension(tag.GetURL()).c_str());
+    }
+    if (object.m_ReferenceID == object.m_ObjectID)
+        object.m_ReferenceID = "";
+
     if (resource) resource->m_Duration = tag.GetDuration();
 
     return NPT_SUCCESS;
@@ -408,19 +418,30 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
       *file_path = tag.m_strFileNameAndPath;
 
     if (tag.m_iDbId != -1 ) {
-        if (tag.m_strShowTitle.IsEmpty()) {
-          object.m_ObjectClass.type = "object.item.videoItem"; // XBox 360 wants object.item.videoItem instead of object.item.videoItem.movie, is WMP happy?
-          object.m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
+        if (!tag.m_strArtist.IsEmpty()) {
+          object.m_ObjectClass.type = "object.item.videoItem.musicVideoClip";
+          object.m_Creator = tag.m_strArtist;
           object.m_Title = tag.m_strTitle;
-        } else {
+          object.m_ReferenceID = NPT_String::Format("videodb://3/2/%i", tag.m_iDbId);
+        } else if (!tag.m_strShowTitle.IsEmpty()) {
           object.m_ObjectClass.type = "object.item.videoItem.videoBroadcast";
-          object.m_Affiliation.album = tag.m_strShowTitle;
-          object.m_Title = tag.m_strShowTitle + " - ";
-          object.m_Title += "S" + ("0" + NPT_String::FromInteger(tag.m_iSeason)).Right(2);
-          object.m_Title += "E" + ("0" + NPT_String::FromInteger(tag.m_iEpisode)).Right(2);
-          object.m_Title += " : " + tag.m_strTitle;
+          object.m_Recorded.program_title  = "S" + ("0" + NPT_String::FromInteger(tag.m_iSeason)).Right(2);
+          object.m_Recorded.program_title += "E" + ("0" + NPT_String::FromInteger(tag.m_iEpisode)).Right(2);
+          object.m_Recorded.program_title += " : " + tag.m_strTitle;
+          object.m_Recorded.series_title = tag.m_strShowTitle;
+          object.m_Recorded.episode_number = tag.m_iSeason * 100 + tag.m_iEpisode;
+          object.m_Title = object.m_Recorded.series_title + " - " + object.m_Recorded.program_title;
+          if(tag.m_iSeason != -1)
+              object.m_ReferenceID = NPT_String::Format("videodb://2/0/%i", tag.m_iDbId);
+        } else {
+          object.m_ObjectClass.type = "object.item.videoItem"; // XBox 360 wants object.item.videoItem instead of object.item.videoItem.movie, is WMP happy?
+          object.m_Title = tag.m_strTitle;
+          object.m_ReferenceID = NPT_String::Format("videodb://1/2/%i", tag.m_iDbId);
         }
     }
+
+    if(object.m_ReferenceID == object.m_ObjectID)
+        object.m_ReferenceID = "";
 
     StringUtils::SplitString(tag.m_strGenre, " / ", strings);
     for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
@@ -430,7 +451,10 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
     for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
         object.m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
     }
+
+    object.m_Affiliation.album = "[Unknown Series]"; // required to make WMP to show title
     object.m_People.director = tag.m_strDirector;
+    object.m_People.authors.Add(tag.m_strWritingCredits.c_str());
 
     object.m_Description.description = tag.m_strTagLine;
     object.m_Description.long_description = tag.m_strPlot;
@@ -1050,11 +1074,11 @@ NPT_Result
 CUPnPServer::OnSearchContainer(PLT_ActionReference&          action, 
                                const char*                   object_id, 
                                const char*                   search_criteria,
+                               const char*                   filter,
                                NPT_UInt32                    starting_index,
                                NPT_UInt32                    requested_count,
                                const NPT_List<NPT_String>&   sort_criteria,
                                const PLT_HttpRequestContext& context)
-
 {
     CLog::Log(LOGDEBUG, "Received Search request for object '%s' with search '%s'", 
         (const char*)object_id,
@@ -1092,7 +1116,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
                 if (count == 1) id += "-1/";
             }
         }
-        return OnBrowseDirectChildren(action, id, "*", starting_index, requested_count, sort_criteria, context);
+        return OnBrowseDirectChildren(action, id, filter, starting_index, requested_count, sort_criteria, context);
     } else if (NPT_String(search_criteria).Find("object.item.audioItem") >= 0) {
         // look for artist, album & genre filters
         NPT_String genre = FindSubCriteria(search_criteria, "upnp:genre");
@@ -1114,7 +1138,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
                 database.GetArtistByName((const char*)artist), // will return -1 if no artist
                 database.GetAlbumByName((const char*)album));  // will return -1 if no album
 
-            return OnBrowseDirectChildren(action, strPath.c_str(), "*", starting_index, requested_count, sort_criteria, context);
+            return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         } else if (artist.GetLength() > 0) {
             // all tracks by artist name filtered by album if passed
             CStdString strPath;
@@ -1122,18 +1146,18 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
                 database.GetArtistByName((const char*)artist),
                 database.GetAlbumByName((const char*)album)); // will return -1 if no album
 
-            return OnBrowseDirectChildren(action, strPath.c_str(), "*", starting_index, requested_count, sort_criteria, context);
+            return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         } else if (album.GetLength() > 0) {
             // all tracks by album name
             CStdString strPath;
             strPath.Format("musicdb://3/%ld/",
                 database.GetAlbumByName((const char*)album));
 
-            return OnBrowseDirectChildren(action, strPath.c_str(), "*", starting_index, requested_count, sort_criteria, context);
+            return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         }
 
         // browse all songs
-        return OnBrowseDirectChildren(action, "musicdb://4/", "*", starting_index, requested_count, sort_criteria, context);
+        return OnBrowseDirectChildren(action, "musicdb://4/", filter, starting_index, requested_count, sort_criteria, context);
     } else if (NPT_String(search_criteria).Find("object.container.album.musicAlbum") >= 0) {
         // sonos filters by genre
         NPT_String genre = FindSubCriteria(search_criteria, "upnp:genre");
@@ -1153,16 +1177,16 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
             strPath.Format("musicdb://1/%ld/%ld/",
                 database.GetGenreByName((const char*)genre),
                 database.GetArtistByName((const char*)artist)); // no artist should return -1
-            return OnBrowseDirectChildren(action, strPath.c_str(), "*", starting_index, requested_count, sort_criteria, context);
+            return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         } else if (artist.GetLength() > 0) {
             CStdString strPath;
             strPath.Format("musicdb://2/%ld/",
                 database.GetArtistByName((const char*)artist));
-            return OnBrowseDirectChildren(action, strPath.c_str(), "*", starting_index, requested_count, sort_criteria, context);
+            return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         }
 
         // all albums
-        return OnBrowseDirectChildren(action, "musicdb://3/", "*", starting_index, requested_count, sort_criteria, context);
+        return OnBrowseDirectChildren(action, "musicdb://3/", filter, starting_index, requested_count, sort_criteria, context);
     } else if (NPT_String(search_criteria).Find("object.container.person.musicArtist") >= 0) {
         // Sonos filters by genre
         NPT_String genre = FindSubCriteria(search_criteria, "upnp:genre");
@@ -1171,13 +1195,13 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
             database.Open();
             CStdString strPath;
             strPath.Format("musicdb://1/%ld/", database.GetGenreByName((const char*)genre));
-            return OnBrowseDirectChildren(action, strPath.c_str(), "*", starting_index, requested_count, sort_criteria, context);
+            return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index, requested_count, sort_criteria, context);
         }
-        return OnBrowseDirectChildren(action, "musicdb://2/", "*", starting_index, requested_count, sort_criteria, context);
+        return OnBrowseDirectChildren(action, "musicdb://2/", filter, starting_index, requested_count, sort_criteria, context);
     }  else if (NPT_String(search_criteria).Find("object.container.genre.musicGenre") >= 0) {
-        return OnBrowseDirectChildren(action, "musicdb://1/", "*", starting_index, requested_count, sort_criteria, context);
+        return OnBrowseDirectChildren(action, "musicdb://1/", filter, starting_index, requested_count, sort_criteria, context);
     } else if (NPT_String(search_criteria).Find("object.container.playlistContainer") >= 0) {
-        return OnBrowseDirectChildren(action, "special://musicplaylists/", "*", starting_index, requested_count, sort_criteria, context);
+        return OnBrowseDirectChildren(action, "special://musicplaylists/", filter, starting_index, requested_count, sort_criteria, context);
     } else if (NPT_String(search_criteria).Find("object.item.videoItem") >= 0) {
       CFileItemList items, itemsall;
 
@@ -1195,16 +1219,17 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
       items.Clear();
 
       // TODO - set proper base url for this
-      if (!database.GetEpisodesNav("videodb://2/0/", items)) {
+      if (!database.GetEpisodesByWhere("videodb://2/0/", "", items, false)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
       itemsall.Append(items);
       items.Clear();
 
-      return BuildResponse(action, itemsall, "*", starting_index, requested_count, sort_criteria, context, NULL);
+      return BuildResponse(action, itemsall, filter, starting_index, requested_count, sort_criteria, context, NULL);
   } else if (NPT_String(search_criteria).Find("object.item.imageItem") >= 0) {
-      return NPT_SUCCESS;
+      CFileItemList items;
+      return BuildResponse(action, items, filter, starting_index, requested_count, sort_criteria, context, NULL);;
   }
 
   return NPT_FAILURE;
@@ -2173,11 +2198,29 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
                                  PLT_MediaObject&       object,
                                  PLT_MediaItemResource* resource /* = NULL */)
 {
-    tag.m_strTitle    = object.m_Title;
+    if(object.m_Recorded.program_title.IsEmpty())
+    {
+        int episode;
+        int season;
+        int title = object.m_Recorded.program_title.Find(" : ");
+        if(sscanf(object.m_Recorded.program_title, "S%2dE%2d", &episode, &season) == 2 && title >= 0) {
+            tag.m_strTitle = object.m_Recorded.program_title.SubString(title + 3);
+            tag.m_iEpisode = episode;
+            tag.m_iSeason  = season;
+        } else {
+            tag.m_strTitle = object.m_Recorded.program_title;
+            tag.m_iSeason  = object.m_Recorded.episode_number / 100;
+            tag.m_iEpisode = object.m_Recorded.episode_number % 100;
+        }
+    }
+    else
+        tag.m_strTitle = object.m_Title;
     tag.m_strGenre    = JoinString(object.m_Affiliation.genre, " / ");
     tag.m_strDirector = object.m_People.director;
     tag.m_strTagLine  = object.m_Description.description;
     tag.m_strPlot     = object.m_Description.long_description;
+    tag.m_strShowTitle = object.m_Recorded.series_title;
+
     if(resource)
       tag.m_strRuntime.Format("%d",resource->m_Duration);
     return NPT_SUCCESS;

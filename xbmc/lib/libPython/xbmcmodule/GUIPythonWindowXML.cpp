@@ -89,7 +89,7 @@ bool CGUIPythonWindowXML::OnClick(int iItem) {
 }
 
 // SetupShares();
-/* 
+/*
  CGUIMediaWindow::OnWindowLoaded() calls SetupShares() so override it
 and just call UpdateButtons();
 */
@@ -218,7 +218,7 @@ void CGUIPythonWindowXML::AddItem(CFileItemPtr fileItem, int itemPosition)
   else if (itemPosition <  -1 &&  !(itemPosition*-1 < m_vecItems->Size()))
   {
     m_vecItems->AddFront(fileItem,0);
-  } 
+  }
   else
   {
     m_vecItems->AddFront(fileItem,itemPosition);
@@ -255,7 +255,7 @@ void CGUIPythonWindowXML::SetProperty(const CStdString& key, const CStdString& v
 }
 
 CFileItemPtr CGUIPythonWindowXML::GetListItem(int position)
-{ 
+{
   if (position < 0 || position >= m_vecItems->Size()) return CFileItemPtr();
   return m_vecItems->Get(position);
 }
@@ -313,7 +313,7 @@ bool CGUIPythonWindowXML::LoadXML(const CStdString &strPath, const CStdString &s
     return false;
   int size = file.Read(buffer, file.GetLength());
   if (size > 0)
-  { 
+  {
     buffer[size] = 0;
     xml = buffer;
     if (offset)
@@ -410,9 +410,9 @@ void CGUIPythonWindowXML::SetCallbackWindow(PyObject *object)
   pCallbackWindow = object;
 }
 
-void CGUIPythonWindowXML::GetContextButtons(int itemNumber, CContextButtons &buttons) 
+void CGUIPythonWindowXML::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  // maybe on day we can make an easy way to do this context menu 
+  // maybe on day we can make an easy way to do this context menu
   // with out this method overriding the MediaWindow version, it will display 'Add to Favorites'
 }
 
@@ -430,7 +430,7 @@ unsigned int CGUIPythonWindowXML::LoadScriptStrings()
   CUtil::AddFileToFolder(pathToLanguageFile, "strings.xml", pathToLanguageFile);
   CUtil::AddFileToFolder(pathToFallbackLanguageFile, "strings.xml", pathToFallbackLanguageFile);
 
-  // allocate a bunch of strings 
+  // allocate a bunch of strings
   return g_localizeStrings.LoadBlock(m_scriptPath, pathToLanguageFile, pathToFallbackLanguageFile);
 }
 

@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "directx_spectrum", "directx_spectrum.vcproj", "{0D91724A-E6F6-4708-AF47-9F88BBE2114C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug (DirectX)|Win32 = Debug (DirectX)|Win32
+		Release (DirectX)|Win32 = Release (DirectX)|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Debug (DirectX)|Win32.ActiveCfg = Debug (DirectX)|Win32
+		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Debug (DirectX)|Win32.Build.0 = Debug (DirectX)|Win32
+		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Release (DirectX)|Win32.ActiveCfg = Release (DirectX)|Win32
+		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Release (DirectX)|Win32.Build.0 = Release (DirectX)|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

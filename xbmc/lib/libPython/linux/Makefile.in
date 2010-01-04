@@ -51,7 +51,7 @@ else
 endif
 endif
 
-PY=$(wildcard ../Python/Lib/*.py) 
+PY=$(wildcard ../Python/Lib/*.py)
 PY+=$(foreach DIR, $(PYDIRS), $(wildcard ../Python/Lib/$(DIR)/*.py))
 PY+=$(foreach DIR, $(PYDIRS), $(wildcard ../Python/Lib/$(DIR)/*/*.py))
 PY+=$(foreach DIR, $(PYDIRS), $(wildcard ../Python/Lib/$(DIR)/*/*/*.py))

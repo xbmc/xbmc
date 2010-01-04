@@ -1844,7 +1844,8 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );
     im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
 
-    if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo"))
+    if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo")
+        && !(m_renderMethod & RENDER_SW))
     {
       CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
       m_pboused = true;
@@ -2068,7 +2069,8 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
     // third plane is not used
     im.planesize[2] = 0;
 
-    if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo"))
+    if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo")
+        && !(m_renderMethod & RENDER_SW))
     {
       CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
       m_pboused = true;
