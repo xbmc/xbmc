@@ -78,11 +78,13 @@ struct SDirData
 {
   DIRECTORY::IDirectory* Directory;
   CFileItemList items;
-  unsigned int curr_entry;
+  unsigned int curr_index;
+  struct dirent *last_entry;
   SDirData()
   {
     Directory = NULL;
-    curr_entry = 0;
+    curr_index = 0;
+    last_entry = NULL;
   }
 };
 
@@ -916,15 +918,18 @@ extern "C"
 
     // dirp is actually a SDirData*
     SDirData* dirData = (SDirData*)dirp;
+    if (dirData->last_entry)
+      free(dirData->last_entry);
     struct dirent *entry = NULL;
     entry = (dirent*) malloc(sizeof *entry);
-    if (dirData->curr_entry+1 < dirData->items.Size()) // we have a winner!
+    if (dirData->curr_index < dirData->items.Size())
     {
       int size = sizeof(entry->d_name);
-      strncpy(entry->d_name,dirData->items[dirData->curr_entry+1]->GetLabel().c_str(), size);
+      strncpy(entry->d_name,dirData->items[dirData->curr_index]->GetLabel().c_str(), size);
       if (size)
         entry->d_name[size-1] = '\0';
-      dirData->curr_entry++;
+      dirData->last_entry = entry;
+      dirData->curr_index++;
       return entry;
     }
     dirData->items.Clear();
@@ -945,9 +950,13 @@ extern "C"
     if (found >= MAX_OPEN_DIRS)
       return closedir(dirp);
 
-    delete vecDirsOpen[found].Directory;
-    vecDirsOpen[found].Directory = NULL;
-    vecDirsOpen[found].items.Clear();
+    SDirData* dirData = (SDirData*)dirp;
+    delete dirData->Directory;
+    dirData->Directory = NULL;
+    dirData->items.Clear();
+    if (dirData->last_entry)
+      free(dirData->last_entry);
+    dirData->curr_index = 0;
     return 0;
   }
 
