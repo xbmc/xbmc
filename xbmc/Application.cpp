@@ -117,9 +117,6 @@
 #include "lib/libGoAhead/XBMChttp.h"
 #include "lib/libGoAhead/WebServer.h"
 #endif
-#ifdef HAS_TIME_SERVER
-#include "utils/Sntp.h"
-#endif
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventServer.h"
 #endif
@@ -1377,35 +1374,6 @@ void CApplication::StopWebServer(bool bWait)
       CZeroconf::GetInstance()->RemoveService("services.webserver");
       CZeroconf::GetInstance()->RemoveService("services.webapi");
     }
-  }
-#endif
-}
-
-void CApplication::StartTimeServer()
-{
-#ifdef HAS_TIME_SERVER
-  if (g_guiSettings.GetBool("locale.timeserver") && m_network.IsAvailable() )
-  {
-    if( !m_psntpClient )
-    {
-      CSectionLoader::Load("SNTP");
-      CLog::Log(LOGNOTICE, "start timeserver client");
-
-      m_psntpClient = new CSNTPClient();
-      m_psntpClient->Update();
-    }
-  }
-#endif
-}
-
-void CApplication::StopTimeServer()
-{
-#ifdef HAS_TIME_SERVER
-  if( m_psntpClient )
-  {
-    CLog::Log(LOGNOTICE, "stop time server client");
-    SAFE_DELETE(m_psntpClient);
-    CSectionLoader::Unload("SNTP");
   }
 #endif
 }
@@ -4893,12 +4861,6 @@ void CApplication::ProcessSlow()
 #ifdef HAS_FILESYSTEM_HTSP
   // check for any idle htsp sessions
   HTSP::CHTSPDirectorySession::CheckIdle();
-#endif
-
-#ifdef HAS_TIME_SERVER
-  // check for any needed sntp update
-  if(m_psntpClient && m_psntpClient->UpdateNeeded())
-    m_psntpClient->Update();
 #endif
 
 #ifdef HAS_KARAOKE
