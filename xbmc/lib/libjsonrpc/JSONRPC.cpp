@@ -31,6 +31,7 @@ const JSON_ACTION commands[] = {
   { "JSONRPC.Introspect",               CJSONRPC::Introspect,                   RO, "Enumerates all actions and descriptions" },
   { "JSONRPC.Version",                  CJSONRPC::Version,                      RO, "Retrieve the jsonrpc protocol version" },
   { "JSONRPC.Permission",               CJSONRPC::Permission,                   RO, "Retrieve the clients permissions" },
+  { "JSONRPC.Ping",                     CJSONRPC::Ping,                         RO, "Ping responder" },
 
 // Player
 // Static methods
@@ -132,6 +133,13 @@ JSON_STATUS CJSONRPC::Permission(const CStdString &method, const Value& paramete
 {
   result["permission"] = (ALLOWEDPERMISSION == RW ? "RW" : "RO");
 
+  return OK;
+}
+
+JSON_STATUS CJSONRPC::Ping(const CStdString &method, const Value& parameterObject, Value &result)
+{
+  Value temp = "pong";
+  result.swap(temp);
   return OK;
 }
 
