@@ -486,7 +486,7 @@ class CDateTime;
 
 // the multiple information vector
 #define MULTI_INFO_START              40000
-#define MULTI_INFO_END                41000 // 1000 references is all we have for now
+#define MULTI_INFO_END                99999
 #define COMBINED_VALUES_START        100000
 
 // forward
