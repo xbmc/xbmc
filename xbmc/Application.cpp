@@ -3909,7 +3909,7 @@ void CApplication::OnPlayBackEnded()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlayBackEnded");
+  CBroadcastManager::Broadcast(Playback, "OnPlaybackEnded");
 
   if (IsPlayingAudio())
   {
@@ -3940,7 +3940,7 @@ void CApplication::OnPlayBackStarted()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlayBackStarted");
+  CBroadcastManager::Broadcast(Playback, "OnPlaybackStarted");
 
   CLog::Log(LOGDEBUG, "%s - Playback has started", __FUNCTION__);
 
@@ -3993,7 +3993,7 @@ void CApplication::OnPlayBackStopped()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlayBackStopped");
+  CBroadcastManager::Broadcast(Playback, "OnPlaybackStopped");
 
   CLastfmScrobbler::GetInstance()->SubmitQueue();
   CLibrefmScrobbler::GetInstance()->SubmitQueue();
@@ -4016,7 +4016,7 @@ void CApplication::OnPlayBackPaused()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackPaused;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlayBackPaused");
+  CBroadcastManager::Broadcast(Playback, "OnPlaybackPaused");
 
   CLog::Log(LOGDEBUG, "%s - Playback was paused", __FUNCTION__);
 }
@@ -4033,7 +4033,7 @@ void CApplication::OnPlayBackResumed()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackResumed;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlayBackResumed");
+  CBroadcastManager::Broadcast(Playback, "OnPlaybackResumed");
 
   CLog::Log(LOGDEBUG, "%s - Playback was resumed", __FUNCTION__);
 }
@@ -4054,7 +4054,7 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   }
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlayBackSpeedChanged");
+  CBroadcastManager::Broadcast(Playback, "OnPlaybackSpeedChanged");
 
   CLog::Log(LOGDEBUG, "%s - Playback speed changed", __FUNCTION__);
 }
@@ -4075,7 +4075,7 @@ void CApplication::OnPlayBackSeek(int iTime)
   }
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlayBackSeek");
+  CBroadcastManager::Broadcast(Playback, "OnPlaybackSeek");
 
   CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
 }
@@ -4096,7 +4096,7 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
   }
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlayBackSkeekChapter");
+  CBroadcastManager::Broadcast(Playback, "OnPlaybackSeekChapter");
 
   CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
 }
