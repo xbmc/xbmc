@@ -51,13 +51,13 @@
 XBPython g_pythonParser;
 
 #ifndef _LINUX
-#define PYTHON_DLL "special://xbmc/system/python/python24.dll"
+#define PYTHON_DLL "special://xbmc/system/python/python26.dll"
 #else
 #if defined(__APPLE__)
 #if defined(__POWERPC__)
-#define PYTHON_DLL "special://xbmc/system/python/python24-powerpc-osx.so"
+#define PYTHON_DLL "special://xbmc/system/python/python26-powerpc-osx.so"
 #else
-#define PYTHON_DLL "special://xbmc/system/python/python24-x86-osx.so"
+#define PYTHON_DLL "special://xbmc/system/python/python26-x86-osx.so"
 #endif
 #elif defined(__x86_64__)
 #if (defined HAVE_LIBPYTHON2_6)
@@ -65,7 +65,7 @@ XBPython g_pythonParser;
 #elif (defined HAVE_LIBPYTHON2_5)
 #define PYTHON_DLL "special://xbmc/system/python/python25-x86_64-linux.so"
 #else
-#define PYTHON_DLL "special://xbmc/system/python/python24-x86_64-linux.so"
+#define PYTHON_DLL "special://xbmc/system/python/python26-x86_64-linux.so"
 #endif
 #elif defined(_POWERPC)
 #if (defined HAVE_LIBPYTHON2_6)
@@ -73,7 +73,7 @@ XBPython g_pythonParser;
 #elif (defined HAVE_LIBPYTHON2_5)
 #define PYTHON_DLL "special://xbmc/system/python/python25-powerpc-linux.so"
 #else
-#define PYTHON_DLL "special://xbmc/system/python/python24-powerpc-linux.so"
+#define PYTHON_DLL "special://xbmc/system/python/python26-powerpc-linux.so"
 #endif
 #elif defined(_POWERPC64)
 #if (defined HAVE_LIBPYTHON2_6)
@@ -81,7 +81,7 @@ XBPython g_pythonParser;
 #elif (defined HAVE_LIBPYTHON2_5)
 #define PYTHON_DLL "special://xbmc/system/python/python25-powerpc64-linux.so"
 #else
-#define PYTHON_DLL "special://xbmc/system/python/python24-powerpc64-linux.so"
+#define PYTHON_DLL "special://xbmc/system/python/python26-powerpc64-linux.so"
 #endif
 #else /* !__x86_64__ && !__powerpc__ */
 #if (defined HAVE_LIBPYTHON2_6)
@@ -89,7 +89,7 @@ XBPython g_pythonParser;
 #elif (defined HAVE_LIBPYTHON2_5)
 #define PYTHON_DLL "special://xbmc/system/python/python25-i486-linux.so"
 #else
-#define PYTHON_DLL "special://xbmc/system/python/python24-i486-linux.so"
+#define PYTHON_DLL "special://xbmc/system/python/python26-i486-linux.so"
 #endif
 #endif /* __x86_64__ */
 #endif /* _LINUX */
@@ -296,14 +296,14 @@ void XBPython::Initialize()
 
       if (!m_pDll || !python_load_dll(*m_pDll))
       {
-        CLog::Log(LOGFATAL, "Python: error loading python24.dll");
+        CLog::Log(LOGFATAL, "Python: error loading python26.dll");
         Finalize();
         return;
       }
 
       // first we check if all necessary files are installed
 #ifndef _LINUX
-      if (!FileExist("special://xbmc/system/python/python24.zlib") ||
+      if (!FileExist("special://xbmc/system/python/python26.zlib") ||
         !FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/_ssl.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
@@ -331,7 +331,7 @@ void XBPython::Initialize()
       // OSX uses contents from extracted zip, 3X to 4X times faster during Py_Initialize
       setenv("PYTHONPATH", _P("special://xbmc/system/python/Lib").c_str(), 1);
 #else
-      setenv("PYTHONPATH", _P("special://xbmc/system/python/python24.zip").c_str(), 1);
+      setenv("PYTHONPATH", _P("special://xbmc/system/python/python26.zip").c_str(), 1);
 #endif /* __APPLE__ */
       setenv("PYTHONCASEOK", "1", 1);
       CLog::Log(LOGDEBUG, "Python wrapper library linked with internal Python library");
@@ -387,7 +387,7 @@ void XBPython::Finalize()
     CLog::Log(LOGERROR, "Python script counter attempted to become negative");
   if (m_iDllScriptCounter == 0 && m_bInitialized)
   {
-    CLog::Log(LOGINFO, "Python, unloading python24.dll because no scripts are running anymore");
+    CLog::Log(LOGINFO, "Python, unloading python26.dll because no scripts are running anymore");
 
     PyEval_AcquireLock();
     PyThreadState_Swap(m_mainThreadState);
@@ -397,11 +397,11 @@ void XBPython::Finalize()
 
     UnloadExtensionLibs();
 
-    // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
+    // first free all dlls loaded by python, after that python26.dll (this is done by UnloadPythonDlls
     DllLoaderContainer::UnloadPythonDlls();
 #ifdef _LINUX
     // we can't release it on windows, as this is done in UnloadPythonDlls() for win32 (see above).
-    // The implementation for linux and os x needs looking at - UnloadPythonDlls() currently only searches for "python24.dll"
+    // The implementation for linux and os x needs looking at - UnloadPythonDlls() currently only searches for "python26.dll"
     DllLoaderContainer::ReleaseModule(m_pDll);
 #endif
     m_hModule         = NULL;
