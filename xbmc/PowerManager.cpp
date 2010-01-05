@@ -27,6 +27,7 @@
 #include "GUISettings.h"
 #include "WindowingFactory.h"
 #include "utils/log.h"
+#include "BroadcastManager.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
@@ -49,6 +50,8 @@
 #ifdef HAS_IRSERVERSUITE
   #include "common/IRServerSuite/IRServerSuite.h"
 #endif
+
+using namespace BROADCAST;
 
 CPowerManager g_powerManager;
 
@@ -128,10 +131,16 @@ void CPowerManager::Initialize()
   
 bool CPowerManager::Powerdown()
 {
-  return CanPowerdown() ? m_instance->Powerdown() : false;
+
+  bool success = CanPowerdown() ? m_instance->Powerdown() : false;
+  if (success)
+    CBroadcastManager::Broadcast(System, "OnShutdown");
+
+  return success;
 }
 bool CPowerManager::Suspend()
 {
+  bool success = false;
   if (CanSuspend())
   {
     g_application.m_bRunResumeJobs = true;
@@ -139,25 +148,37 @@ bool CPowerManager::Suspend()
     g_lcd->SetBackLight(0);
 #endif
     g_Keyboard.ResetState();
-    return m_instance->Suspend();
+    success = m_instance->Suspend();
   }
   
-  return false;
+  if (success)
+    CBroadcastManager::Broadcast(System, "OnSuspend");
+
+  return success;
 }
 bool CPowerManager::Hibernate()
 {
+  bool success = false;
   if (CanHibernate())
   {
     g_application.m_bRunResumeJobs = true;
     g_Keyboard.ResetState();
-    return m_instance->Hibernate();
+    success = m_instance->Hibernate();
   }
 
-  return false;
+  if (success)
+    CBroadcastManager::Broadcast(System, "OnHibernate");
+
+  return success;
 }
 bool CPowerManager::Reboot()
 {
-  return CanReboot() ? m_instance->Reboot() : false;
+  bool success = CanReboot() ? m_instance->Reboot() : false;
+
+  if (success)
+    CBroadcastManager::Broadcast(System, "OnReboot");
+
+  return success;
 }
 
 void CPowerManager::Resume()
@@ -194,6 +215,8 @@ void CPowerManager::Resume()
 
   // reset
   g_application.m_bRunResumeJobs = false;
+
+  CBroadcastManager::Broadcast(System, "OnResume");
 }
 
 bool CPowerManager::CanPowerdown()
