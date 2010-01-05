@@ -77,11 +77,11 @@ void PresetLoader::rescan()
     return; // no files loaded. m_entries is empty
   }
 
-  struct dirent * dir_entry;
+  struct dirent64 * dir_entry;
   std::set<std::string> alphaSortedFileSet;
   std::set<std::string> alphaSortedPresetNameSet;
   
-  while ((dir_entry = readdir(m_dir)) != NULL)
+  while ((dir_entry = readdir64(m_dir)) != NULL)
   { 
 
     std::ostringstream out;

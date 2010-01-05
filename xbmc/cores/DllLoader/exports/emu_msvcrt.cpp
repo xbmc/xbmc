@@ -955,7 +955,10 @@ extern "C"
     dirData->Directory = NULL;
     dirData->items.Clear();
     if (dirData->last_entry)
+    {
       free(dirData->last_entry);
+      dirData->last_entry = NULL;
+    }
     dirData->curr_index = 0;
     return 0;
   }

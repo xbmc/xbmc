@@ -66,7 +66,7 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   VIS_PROPS* visprops = (VIS_PROPS*)props;
 
   g_configFile = string(visprops->datastore) + string("/projectm.conf");
-  std::string presetsDir = string(visprops->presets);
+  std::string presetsDir = "special://xbmc/addons/visualisations/ProjectM/presets/presets.zip/";
 
   g_configPM.meshX = gx;
   g_configPM.meshY = gy;
@@ -104,7 +104,15 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   if (globalPM)
     delete globalPM;
 
-  globalPM = new projectM(g_configFile);
+  try 
+  {
+    globalPM = new projectM(g_configFile);
+  }
+  catch (...)
+  {
+    printf("exception in projectM ctor");
+    return STATUS_UNKNOWN;
+  }
 
   return STATUS_NEED_SETTINGS;
 }

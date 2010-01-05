@@ -291,6 +291,11 @@ struct dirent * __wrap_readdir(DIR* dirp)
   return dll_readdir(dirp);
 }
 
+struct dirent * __wrap_readdir64(DIR* dirp)
+{
+  return dll_readdir(dirp);
+}
+
 int __wrap_closedir(DIR* dirp)
 {
   return dll_closedir(dirp);
