@@ -530,11 +530,13 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   }
 
   CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
+  bool NFOCheck(false);
   if (result != CNfoFile::NO_NFO)
   {
     // In case we already have info, ask user to refresh from internet instead
     if (!bHasInfo || !CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
     {
+      NFOCheck = true;
       if (result == CNfoFile::FULL_NFO)
         hasDetails = true;
       if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
@@ -683,7 +685,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
             m_database.DeleteDetailsForTvShow(item->m_strPath);
         }
       }
-      if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info,!pDlgInfo->RefreshAll(),&scrUrl,pDlgProgress))
+      if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info,!pDlgInfo->RefreshAll(),NFOCheck,&scrUrl,pDlgProgress))
       {
         if (info.strContent.Equals("movies"))
           m_database.GetMovieInfo(item->m_strPath,movieDetails);

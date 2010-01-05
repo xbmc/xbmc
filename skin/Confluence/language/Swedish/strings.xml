@@ -38,6 +38,7 @@
   <string id="31101">Hemskärmsalternativ</string>
   <string id="31102">Bakgrund</string>
   <string id="31103">Visa "Pausad" i bildspel</string>
+  <string id="31104">Spela trailers i ett fönster [COLOR=grey3](Endast i videoinformationsdialogen)[/COLOR]</string>
   <string id="31105">Visa mediatitlar i bakgrundsscannern</string>
   <string id="31106">Övriga alternativ</string>
   <string id="31108">Dölj huvudmenyknappar</string>
@@ -61,6 +62,10 @@
   <string id="31126">Aktivera sångtexter i musik-OSD</string>
   <string id="31127">SÖKVÄG TILL SÅNGTEXTSKRIPT</string>
   <string id="31128">XBMC Sångtexter</string>
+  <string id="31129">Aktivera undertextnedladdning i video-OSD</string>
+  <string id="31130">SÖKVÄG TILL UNDERTEXTSKRIPT</string>
+  <string id="31140">Musik-OSD</string>
+  <string id="31141">Video-OSD</string>
   <string id="31200">Genvägar</string>
   <string id="31201">Kategorier</string>
   <string id="31202">Visa rollista</string>
@@ -80,7 +85,7 @@
   <string id="31308">Filmdetaljer</string>
   <string id="31309">Använt minne:</string>
   <string id="31310">Spårnummer</string>
-  <string id="31311">FANART-BILD[CR][CR]INTE TILLGÄNGLIG[CR][CR]KLICKA PÅ KNAPPEN FÖR ATT ANGE</string>
+  <string id="31311">Fanart-bild[CR][CR]Inte Tillgänglig[CR][CR]Klicka på knappen för att ange</string>
   <string id="31312">Nuvarande skrapa</string>
   <string id="31313">Välj en skrapa</string>
   <string id="31314">Innehållsskrapealternativ</string>
@@ -97,7 +102,8 @@
   <string id="31326">Skapad</string>
   <string id="31327">Upplösning</string>
   <string id="31328">Nyligen tillagda</string>
-  <string id="31329">[B]TIMER SATT![/B] [COLOR=grey2] - SYSTEM AUTO AVSTÄNGNING OM[/COLOR]</string>
+  <string id="31329">[B]Timer satt![/B] [COLOR=grey2] - Automatisk avstängning av systemet om[/COLOR]</string>
+  <string id="31330">Klicka på knappen för att[CR][CR]spela filmtrailer</string>
   <string id="31400">[B]KONFIGURERA UTSEENDEINSTÄLLNINGAR[/B][CR][CR]Ändra skalet · Ange språk och region · Ange fillistningsalternativ[CR]Ange en skärmsläckare</string>
   <string id="31401">[B]KONFIGURERA GRAFIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt filmbibliotek · Ange filmuppspelningsalternativ · Ändra videoförteckningsalternativ[CR]Konfigurera undertextfonter</string>
   <string id="31402">[B]KONFIGURERA MUSIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt musikbibliotek · Ange musikuppspelningsalternativ · Ändra musiklistningsalternativ[CR]Ange låtinskickning · Ange karaokealternativ</string>
@@ -106,6 +112,12 @@
   <string id="31405">[B]KONFIGURERA NÄTVERKSINSTÄLLNINGAR[/B][CR][CR]Ange kontroll av XBMC via UPnP och HTTP · Konfigurera fildelning[CR]Konfigurera internetaccessalternativ</string>
   <string id="31406">[B]KONFIGURERA SYSTEMINSTÄLLNINGAR[/B][CR][CR]Ange och kalibrera bildskärmar · Konfigurera ljudutgång · Ställa in fjärrkontroller[CR]Ange energisparalternativ · Aktivera debuggningen · Konfigurera huvudkod och lås</string>
   <string id="31407">[B]KONFIGURERA SKALINSTÄLLNINGAR[/B][CR][CR]Ställa in Confluence-skalet · Lägga till och ta bort hemsidans menyknappar[CR]Ändra skalets bakgrunder</string>
-  <string id="31420">[B][COLOR=white]XBMC har inte upptäckt en disk.[/COLOR][/B][CR][CR]Vänligen sätt i en disk i din läsare och försök igen eller avbryt</string>
   <string id="31421">Välj din XBMC användarprofil[CR]för att logga in  och fortsätta</string>
+  <string id="31351">Paus</string>
+  <string id="31352">Stopp</string>
+  <string id="31353">Spola framåt</string>
+  <string id="31354">Spola bakåt</string>
+  <string id="31355">Filmmeny</string>
+  <string id="31356">Ladda ner undertexter</string>
+  <string id="31357"></string>
 </strings>
