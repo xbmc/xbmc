@@ -20,6 +20,9 @@
  */
 
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "system.h"
 #include "FileFactory.h"
 #include "FileHD.h"
@@ -53,7 +56,9 @@
 #include "VTPFile.h"
 #endif
 #include "FileZip.h"
+#ifdef HAVE_XBMC_NONFREE
 #include "FileRar.h"
+#endif
 #include "FileMusicDatabase.h"
 #include "FileSpecialProtocol.h"
 #include "MultiPathFile.h"
@@ -86,7 +91,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   strProtocol.MakeLower();
 
   if (strProtocol == "zip") return new CFileZip();
+#ifdef HAVE_XBMC_NONFREE
   else if (strProtocol == "rar") return new CFileRar();
+#endif
   else if (strProtocol == "musicdb") return new CFileMusicDatabase();
   else if (strProtocol == "special") return new CFileSpecialProtocol();
   else if (strProtocol == "multipath") return new CMultiPathFile();

@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "Application.h"
 #include "utils/Builtins.h"
 #include "Splash.h"
@@ -72,7 +75,9 @@
 #include "GUILargeTextureManager.h"
 #include "LastFmManager.h"
 #include "SmartPlaylist.h"
+#ifdef HAVE_XBMC_NONFREE
 #include "FileSystem/RarManager.h"
+#endif
 #include "PlayList.h"
 #include "WindowingFactory.h"
 #include "PowerManager.h"
@@ -3408,7 +3413,9 @@ void CApplication::Stop()
     m_applicationMessenger.Cleanup();
 
     CLog::Log(LOGNOTICE, "clean cached files!");
+#ifdef HAVE_XBMC_NONFREE
     g_RarManager.ClearCache(true);
+#endif
 
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();

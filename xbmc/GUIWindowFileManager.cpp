@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "system.h"
 #include "GUIWindowFileManager.h"
 #include "Application.h"
@@ -45,7 +48,9 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogProgress.h"
+#ifdef HAVE_XBMC_NONFREE
 #include "FileSystem/RarManager.h"
+#endif
 #include "Favourites.h"
 #include "PlayList.h"
 #include "utils/AsyncFileCopy.h"
@@ -682,6 +687,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       CURL url(strFile);
       if (url.GetProtocol() == "rar")
       {
+#ifdef HAVE_XBMC_NONFREE
         g_RarManager.SetWipeAtWill(false);
         CStdString strOriginalCachePath = g_advancedSettings.m_cachePath;
         CStdString strDestPath;
@@ -692,6 +698,9 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
         g_advancedSettings.m_cachePath = strOriginalCachePath;
         g_RarManager.SetWipeAtWill(true);
         return bResult;
+#else
+        return false;
+#endif
       }
       else
       {

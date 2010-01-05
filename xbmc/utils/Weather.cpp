@@ -19,9 +19,14 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "Weather.h"
 #include "FileSystem/ZipManager.h"
+#ifdef HAVE_XBMC_NONFREE
 #include "FileSystem/RarManager.h"
+#endif
 #include "FileSystem/FileCurl.h"
 #include "XMLUtils.h"
 #include "Temperature.h"
@@ -129,8 +134,10 @@ bool CWeatherJob::DoWork()
       CDirectory::Create(WEATHER_BASE_PATH);
       if (WEATHER_USE_ZIP)
         g_ZipManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
+#ifdef HAVE_XBMC_NONFREE
       else if (WEATHER_USE_RAR)
         g_RarManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
+#endif
       m_imagesOkay = true;
     }
     LoadWeather(xml);

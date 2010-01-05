@@ -18,6 +18,9 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "system.h"
 #ifdef __APPLE__
 #include <sys/param.h>
@@ -43,7 +46,9 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/RSSDirectory.h"
 #include "ThumbnailCache.h"
+#ifdef HAVE_XBMC_NONFREE
 #include "FileSystem/RarManager.h"
+#endif
 #include "FileSystem/CMythDirectory.h"
 #ifdef HAS_UPNP
 #include "FileSystem/UPnPDirectory.h"
@@ -1530,10 +1535,14 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
   }
   else
   {
+#ifdef HAVE_XBMC_NONFREE
     // get _ALL_files in the rar, even those located in subdirectories because we set the bMask to false.
     // so now we dont have to find any subdirs anymore, all files in the rar is checked.
     if( !g_RarManager.GetFilesInRar(ItemList, strRarPath, false, "") )
       return false;
+#else
+      return false;
+#endif
   }
   for (int it= 0 ; it <ItemList.Size();++it)
   {

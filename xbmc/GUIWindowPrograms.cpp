@@ -35,7 +35,6 @@
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
-#include "FileSystem/RarManager.h"
 #include "FileItem.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
