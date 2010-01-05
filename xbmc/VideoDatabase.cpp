@@ -7247,7 +7247,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
                   strSeasonThumb = "season-specials.tbn";
                 else
                   strSeasonThumb.Format("season%02i.tbn",iSeason);
-                CUtil::GetParentPath(item.GetTBNFile(), strParent);
+                CUtil::GetParentPath(item.GetFolderThumb(), strParent);
                 CUtil::AddFileToFolder(strParent, strSeasonThumb, strDest);
 
                 if (CFile::Exists(items[i]->GetCachedSeasonThumb()) && (overwrite || !CFile::Exists(strDest)))
