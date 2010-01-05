@@ -27,6 +27,12 @@
 
 #include "DVDVideoCodec.h"
 
+#ifdef _WIN32
+#define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
+#define BC_REG_PRODUCT    "CrystalHD" // 70010 ?
+#define BC_BCM_DLL        "bcmDIL.dll"
+#define BC_REG_INST_PATH  "InstallPath"
+#endif
 ////////////////////////////////////////////////////////////////////////////////////////////
 template <class T>
 class CSyncPtrQueue

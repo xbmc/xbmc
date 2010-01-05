@@ -23,6 +23,8 @@
   #include "config.h"
 #elif defined(_WIN32)
   #include "system.h"
+  #include "WIN32Util.h"
+  #include "util.h"
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
@@ -117,6 +119,7 @@ class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
 };
 
 void PrintFormat(BCM::BC_PIC_INFO_BLOCK &pib);
+void BcmDebugLog( BCM::BC_STATUS lResult, CStdString strFuncName="");
 
 const char* g_DtsStatusText[] = {
 	"BC_STS_SUCCESS",
@@ -334,7 +337,7 @@ void CMPCInputThread::Process(void)
       }
       else if (ret == BCM::BC_STS_BUSY)
       {
-        CLog::Log(LOGDEBUG, "%s: DtsProcInput returned BC_STS_BUSY", __MODULE_NAME__);
+        BcmDebugLog(ret, "DtsProcInput");
         Sleep(m_SleepTime); // Buffer is full
       }
     }
@@ -642,7 +645,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           pBuffer->m_width = m_width;
           pBuffer->m_height = m_height;
           pBuffer->m_field = CRYSTALHD_FIELD_FULL;
-          pBuffer->m_interlace = m_interlace;
+          pBuffer->m_interlace = m_interlace > 0 ? true : false;
           pBuffer->m_framerate = m_framerate;
           pBuffer->m_timestamp = m_timestamp;
           pBuffer->m_PictureNumber = procOut.PicInfo.picture_number;
@@ -779,10 +782,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
     break;
     
     default:
-      if (ret > 26)
-        CLog::Log(LOGDEBUG, "%s: DtsProcOutput returned %d.", __MODULE_NAME__, ret);
-      else
-        CLog::Log(LOGDEBUG, "%s: DtsProcOutput returned %s.", __MODULE_NAME__, g_DtsStatusText[ret]);
+      BcmDebugLog(ret, "DtsProcOutput");
     break;
   }
   
@@ -834,16 +834,36 @@ CCrystalHD::CCrystalHD() :
   m_pOutputThread(NULL)
 {
   m_dll = new DllLibCrystalHD;
-  m_dll->Load();
-  if (m_dll->IsLoaded())
+#if defined _WIN32  
+  CLog::Log(LOGINFO, "%s: detecting CrystalHD installation path", __MODULE_NAME__);
+  CStdString strRegKey;
+  strRegKey.Format("%s\\%s", BC_REG_PATH, BC_REG_PRODUCT );
+  HKEY hKey;
+  if( CWIN32Util::UtilRegOpenKeyEx( HKEY_LOCAL_MACHINE, strRegKey.c_str(), KEY_READ, &hKey ))
   {
-    BCM::BC_STATUS res;
-    uint32_t mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
-
-    res = m_dll->DtsDeviceOpen(&m_Device, mode);
+    DWORD dwType;
+    char *pcPath= NULL;
+    if( CWIN32Util::UtilRegGetValue( hKey, BC_REG_INST_PATH, &dwType, &pcPath, NULL, sizeof( pcPath ) ) == ERROR_SUCCESS )
+    {
+      CStdString strDll;
+      strDll.Format("%s%s%s", pcPath, CUtil::HasSlashAtEnd(pcPath) ? "":"\\", BC_BCM_DLL );
+      CLog::Log(LOGINFO, "%s: got CrystalHD installation path (%s)", __MODULE_NAME__, strDll.c_str());
+      m_dll->SetFile( strDll );
+    } else CLog::Log(LOGERROR, "%s: getting CrystalHD installation path faild", __MODULE_NAME__);
+  } else CLog::Log(LOGERROR, "%s: CrystalHD software seems to be not installed.", __MODULE_NAME__);
+#endif
+  if (m_dll->Load() && m_dll->IsLoaded() )
+  {
+    uint32_t mode = BCM::DTS_PLAYBACK_MODE          | 
+                    BCM::DTS_LOAD_FILE_PLAY_FW      | 
+                    BCM::DTS_PLAYBACK_DROP_RPT_MODE | 
+                    DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
+    
+    BCM::BC_STATUS res= m_dll->DtsDeviceOpen(&m_Device, mode);
     if (res != BCM::BC_STS_SUCCESS)
     {
       m_Device = NULL;
+      BcmDebugLog(res);
       CLog::Log(LOGERROR, "%s: device open failed", __MODULE_NAME__);
     }
     else
@@ -933,24 +953,28 @@ bool CCrystalHD::Open(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE co
     res = m_dll->DtsOpenDecoder(m_Device, stream_type);
     if (res != BCM::BC_STS_SUCCESS)
     {
+      BcmDebugLog(res, "DtsOpenDecoder");
       CLog::Log(LOGERROR, "%s: open decoder failed", __MODULE_NAME__);
       break;
     }
     res = m_dll->DtsSetVideoParams(m_Device, videoAlg, FALSE, FALSE, TRUE, 0x80000000 | BCM::vdecFrameRate23_97);
     if (res != BCM::BC_STS_SUCCESS)
     {
+      BcmDebugLog(res, "DtsSetVideoParams");
       CLog::Log(LOGERROR, "%s: set video params failed", __MODULE_NAME__);
       break;
     }
     res = m_dll->DtsStartDecoder(m_Device);
     if (res != BCM::BC_STS_SUCCESS)
     {
+      BcmDebugLog(res, "DtsStartDecoder");
       CLog::Log(LOGERROR, "%s: start decoder failed", __MODULE_NAME__);
       break;
     }
     res = m_dll->DtsStartCapture(m_Device);
     if (res != BCM::BC_STS_SUCCESS)
     {
+      BcmDebugLog(res, "DtsStartCapture");
       CLog::Log(LOGERROR, "%s: start capture failed", __MODULE_NAME__);
       break;
     }
@@ -1139,6 +1163,47 @@ void PrintFormat(BCM::BC_PIC_INFO_BLOCK &pib)
   CLog::Log(LOGDEBUG, "\tCustom Aspect: %d\n", pib.custom_aspect_ratio_width_height);
   CLog::Log(LOGDEBUG, "\tFrames to Drop: %d\n", pib.n_drop);
   CLog::Log(LOGDEBUG, "\tH264 Valid Fields: 0x%08x\n", pib.other.h264.valid);
+}
+
+void BcmDebugLog( BCM::BC_STATUS bcmResult, CStdString strFuncName)
+{
+  switch(bcmResult)
+  {
+    case BCM::BC_STS_SUCCESS:
+    case BCM::BC_STS_INV_ARG:
+    case BCM::BC_STS_BUSY:
+    case BCM::BC_STS_NOT_IMPL:
+    case BCM::BC_STS_PGM_QUIT:
+    case BCM::BC_STS_NO_ACCESS:
+    case BCM::BC_STS_INSUFF_RES:
+    case BCM::BC_STS_IO_ERROR:
+    case BCM::BC_STS_NO_DATA:
+    case BCM::BC_STS_VER_MISMATCH:
+    case BCM::BC_STS_TIMEOUT:
+    case BCM::BC_STS_FW_CMD_ERR:
+    case BCM::BC_STS_DEC_NOT_OPEN:
+    case BCM::BC_STS_ERR_USAGE:
+    case BCM::BC_STS_IO_USER_ABORT:
+    case BCM::BC_STS_IO_XFR_ERROR:
+    case BCM::BC_STS_DEC_NOT_STARTED:
+    case BCM::BC_STS_FWHEX_NOT_FOUND:
+    case BCM::BC_STS_FMT_CHANGE:
+    case BCM::BC_STS_HIF_ACCESS:
+    case BCM::BC_STS_CMD_CANCELLED:
+    case BCM::BC_STS_FW_AUTH_FAILED:
+    case BCM::BC_STS_BOOTLOADER_FAILED:
+    case BCM::BC_STS_CERT_VERIFY_ERROR:
+    case BCM::BC_STS_DEC_EXIST_OPEN:
+    case BCM::BC_STS_PENDING:
+    case BCM::BC_STS_CLK_NOCHG:
+      CLog::Log(LOGDEBUG, "%s: %s returned %s", __MODULE_NAME__, strFuncName.c_str(), g_DtsStatusText[bcmResult] );
+      if( bcmResult == BCM::BC_STS_DEC_EXIST_OPEN ) CLog::Log(LOGERROR, "%s: device is allready opened by another application", __MODULE_NAME__);
+    break;
+
+    default:
+      CLog::Log(LOGDEBUG, "%s: %s returned %d.", __MODULE_NAME__, bcmResult);
+    break;
+  }
 }
 
 #endif
