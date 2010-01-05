@@ -23,7 +23,7 @@
 
 #if !defined(_LINUX) && !defined(HAS_GL)
 #include "WinBaseRenderer.h"
-#include "cores/dsplayer/smartptr.h"
+#include <atlbase.h>
 //#define MP_DIRECTRENDERING
 
 
@@ -78,7 +78,7 @@ protected:
   typedef CD3DTexture        D3DVIDEOBUFFERS[NUM_BUFFERS];
   D3DVIDEOBUFFERS            m_D3DVideoSurfaces;
   CD3DTexture*               m_D3DVideoTexture;
-  SmartPtr<IDirect3DSurface9> m_D3DMemorySurface;
+  CComPtr<IDirect3DSurface9> m_D3DMemorySurface;
   
 
 
