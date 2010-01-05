@@ -60,7 +60,8 @@ SRCS=AlarmClock.cpp \
      fastmemcpy.cpp \
      PasswordManager.cpp \
      AliasShortcutUtils.cpp \
-     WebServer.cpp
+     WebServer.cpp \
+     BroadcastManager.cpp
 
 LIB=utils.a
 
