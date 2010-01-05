@@ -500,7 +500,7 @@ namespace VIDEO
           if (m_pObserver)
             m_pObserver->OnDirectoryChanged(pItem->m_strPath);
 
-          if (OnProcessSeriesFolder(episodes,files,idTvShow,showDetails.m_strTitle,pDlgProgress))
+          if (OnProcessSeriesFolder(episodes,files,idTvShow,showDetails.m_strTitle,bNFOCheck,pDlgProgress))
           {
             Return = true;
             m_database.SetPathHash(pItem->m_strPath,pItem->GetProperty("hash"));
@@ -587,23 +587,23 @@ namespace VIDEO
           if (pURL || (returncode=m_IMDB.FindMovie(strMovieName, movielist, pDlgProgress)) > 0)
           {
             CScraperUrl url;
-            int iMoviesFound=1;
             if (!pURL)
             {
-              iMoviesFound = movielist.size();
-              if (iMoviesFound)
+              if (movielist.size() > 0)
                 url = movielist[0];
             }
             else
             {
               url = *pURL;
             }
-            if (iMoviesFound > 0)
+
+            if (url.m_url.size() > 0)
             {
               if (m_pObserver && !url.strTitle.IsEmpty())
                 m_pObserver->OnSetTitle(url.strTitle);
               CUtil::ClearCache();
               long lResult=1;
+              
               lResult=GetIMDBDetails(pItem.get(), url, info2,bDirNames&&info2.strContent.Equals("movies"),NULL,result==CNfoFile::COMBINED_NFO);
               if (info2.strContent.Equals("tvshows"))
               {
@@ -620,7 +620,7 @@ namespace VIDEO
                     if (!m_IMDB.GetEpisodeList(url,episodes))
                       continue;
                   }
-                  if (OnProcessSeriesFolder(episodes,files,lResult,details.m_strTitle,pDlgProgress))
+                  if (OnProcessSeriesFolder(episodes,files,lResult,details.m_strTitle,bNFOCheck,pDlgProgress))
                     m_database.SetPathHash(pItem->m_strPath,pItem->GetProperty("hash"));
                 }
                 else
@@ -1073,7 +1073,7 @@ namespace VIDEO
     return lResult;
   }
 
-  bool CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)
+  bool CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, int idShow, const CStdString& strShowTitle, bool bNFOCheck /* = true */, CGUIDialogProgress* pDlgProgress /* = NULL */)
   {
     if (pDlgProgress)
     {
@@ -1122,23 +1122,26 @@ namespace VIDEO
       item.m_strPath = file->strPath;
 
       // handle .nfo files
-      CScraperUrl scrUrl;
-      SScraperInfo info(m_IMDB.GetScraperInfo());
-      item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
-      CNfoFile::NFOResult result = CheckForNFOFile(&item,false,info,scrUrl);
-      if (result == CNfoFile::FULL_NFO)
+      if (bNFOCheck)
       {
-        m_nfoReader.GetDetails(episodeDetails);
-        if (m_pObserver)
+        CScraperUrl scrUrl;
+        SScraperInfo info(m_IMDB.GetScraperInfo());
+        item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
+        CNfoFile::NFOResult result = CheckForNFOFile(&item,false,info,scrUrl);
+        if (result == CNfoFile::FULL_NFO)
         {
-          CStdString strTitle;
-          strTitle.Format("%s - %ix%i - %s",strShowTitle.c_str(),episodeDetails.m_iSeason,episodeDetails.m_iEpisode,episodeDetails.m_strTitle.c_str());
-          m_pObserver->OnSetTitle(strTitle);
+          m_nfoReader.GetDetails(episodeDetails);
+          if (m_pObserver)
+          {
+            CStdString strTitle;
+            strTitle.Format("%s - %ix%i - %s",strShowTitle.c_str(),episodeDetails.m_iSeason,episodeDetails.m_iEpisode,episodeDetails.m_strTitle.c_str());
+            m_pObserver->OnSetTitle(strTitle);
+          }
+          AddMovieAndGetThumb(&item,"tvshows",episodeDetails,idShow);
+          continue;
         }
-        AddMovieAndGetThumb(&item,"tvshows",episodeDetails,idShow);
-        continue;
       }
-
+      
       if (episodes.empty())
       {
         CLog::Log(LOGERROR,"CVideoInfoScanner::OnProcessSeriesFolder: Asked to lookup episode %s"
