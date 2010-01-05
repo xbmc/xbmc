@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 26168 -->
+<!--Based on english strings version 26371 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -103,9 +103,9 @@
   <string id="144">版本：</string>
   <string id="145">网络：</string>
   <string id="146">类型：</string>
-  <string id="147">手动(静态分配)</string>
-  <string id="148">自动(动态分配)</string>
-  <string id="149">网卡物理地址(MAC)</string>
+  <string id="147">手动（静态分配）</string>
+  <string id="148">自动（动态分配）</string>
+  <string id="149">网卡物理地址（MAC）</string>
   <string id="150">IP 地址</string>
   <string id="151">连接：</string>
   <string id="152">半双工</string>
@@ -178,7 +178,7 @@
   <string id="226">测试图案...</string>
   <string id="227">从 freedb.org 获取音乐 CD 信息</string>
   <string id="228">载入播放列表时打乱顺序</string>
-  <string id="229">关闭硬盘 空闲时间(分)</string>
+  <string id="229">硬盘停转时间</string>
   <string id="230">视频滤镜</string>
   <string id="231">无</string>
   <string id="232">点</string>
@@ -243,13 +243,13 @@
   <string id="303">延迟</string>
   <string id="304">语言</string>
   <string id="305">开启</string>
-  <string id="306">反交错(隔行变逐行)</string>
+  <string id="306">去交错（隔行变逐行）</string>
   <string id="307">- 自动后处理</string>
   <string id="308">- 垂直区块滤波器</string>
   <string id="309">- 水平区块滤波器</string>
   <string id="310">- 自动亮度/对比度调节</string>
   <string id="311">- 消除压缩带来的画面瑕疵</string>
-  <string id="312">(0=自动)</string>
+  <string id="312">（0=自动）</string>
   <string id="313">清理资料库</string>
   <string id="314">准备中...</string>
   <string id="315">资料库错误！</string>
@@ -417,7 +417,7 @@
   <string id="489">自动播放下一首歌曲</string>
   <string id="491">- 使用大图标</string>
   <string id="492">Vobsubs 字幕缩放</string>
-  <string id="493">高级选项(适合专家！)</string>
+  <string id="493">高级选项（仅适用于专家！）</string>
   <string id="494">总体音量</string>
   <string id="495">以桌面的分辨率播放视频</string>
   <string id="496">校准</string>
@@ -579,14 +579,14 @@
 
   <string id="708">使用 HTTP 代理服务器访问互联网</string>
 
-  <string id="711">网络地址(IP)</string>
+  <string id="711">网络地址（IP）</string>
   <string id="712">无效端口！必须在 1 至 65535 之间。</string>
   <string id="713">HTTP 代理</string>
 
   <string id="715">- 分配方式</string>
-  <string id="716">自动(动态分配)</string>
-  <string id="717">手动(静态分配)</string>
-  <string id="718">默认(Dashboard)</string>
+  <string id="716">自动（动态分配）</string>
+  <string id="717">手动（静态分配）</string>
+  <string id="718">默认（Dashboard）</string>
   <string id="719">- IP 地址</string>
   <string id="720">- 子网掩码</string>
   <string id="721">- 默认网关</string>
@@ -643,7 +643,7 @@
   <string id="773">搜索中</string>
   <string id="774">幻灯图片目录</string>
   <string id="775">网卡</string>
-  <string id="776">- 无线网络名 (ESSID)</string>
+  <string id="776">- 无线网络名（ESSID）</string>
   <string id="777">- 无线网加密方式</string>
   <string id="778">- 无线网安全</string>
   <string id="779">保存和应用网卡设置</string>
@@ -656,14 +656,14 @@
   <string id="786">网卡无法重启.</string>
   <string id="787">网卡停用</string>
   <string id="788">网卡停用完成.</string>
-  <string id="789">无线网络名 (ESSID)</string>
+  <string id="789">无线网络名（ESSID）</string>
 
   <string id="791">允许本机程序控制 XBMC</string>
   <string id="792">端口</string>
   <string id="793">端口范围</string>
   <string id="794">允许异地程序控制 XBMC</string>
-  <string id="795">初始重复等待时间(ms)</string>
-  <string id="796">持续等待时间(ms)</string>
+  <string id="795">初始重复等待时间（ms）</string>
+  <string id="796">持续等待时间（ms）</string>
   <string id="797">最大客户端数</string>
   <string id="798">互联网访问</string>
 
@@ -982,7 +982,7 @@
   <string id="13025">游戏手柄拔出</string>
 
   <string id="13100">闪烁过滤</string>
-  <string id="13101">使用驱动选择(需要重启)</string>
+  <string id="13101">使用驱动选择（需要重启）</string>
   <string id="13105">垂直空白同步</string>
   <string id="13106">停用</string>
   <string id="13107">只在视频播放时开启</string>
@@ -1051,7 +1051,7 @@
   <string id="13205">未知</string>
   <string id="13206">覆盖</string>
   <string id="13208">闹铃</string>
-  <string id="13209">闹铃间隔(分钟)</string>
+  <string id="13209">闹铃间隔（分钟）</string>
   <string id="13210">闹铃启动，倒计时%i分钟。</string>
   <string id="13211">响铃！</string>
   <string id="13212">闹铃取消，剩余%i分%i秒。</string>
@@ -1185,7 +1185,7 @@
   <string id="13405">取得缩略图</string>
   <string id="13406">图片信息</string>
   <string id="13407">%s 预设</string>
-  <string id="13408">(IMDb 用户评价)</string>
+  <string id="13408">（IMDb 用户评价）</string>
   <string id="13409">排行榜前 250：</string>
   <string id="13410">收听 last.fm 电台</string>
   <string id="13411">风扇最低转速</string>
@@ -1194,8 +1194,8 @@
   <string id="13414">包含只在合辑中出现的艺术家</string>
   <string id="13415">渲染模式</string>
   <string id="13416">自动检测</string>
-  <string id="13417">基本着色(ARB)</string>
-  <string id="13418">高级着色(GLSL)</string>
+  <string id="13417">基本着色（ARB）</string>
+  <string id="13418">高级着色（GLSL）</string>
   <string id="13419">软件着色</string>
   <string id="13420">安全移除</string>
   <string id="13421">VDPAU 硬解码</string>
@@ -1206,9 +1206,9 @@
 
   <string id="13500">影音同步方式</string>
   <string id="13501">音频时钟</string>
-  <string id="13502">视频时钟(丢弃/重复音频)</string>
-  <string id="13503">视频时钟(重采样音频)</string>
-  <string id="13504">最高重采样率(%)</string>
+  <string id="13502">视频时钟（丢弃/重复音频）</string>
+  <string id="13503">视频时钟（重采样音频）</string>
+  <string id="13504">最高重采样率（%）</string>
   <string id="13505">重采样质量</string>
   <string id="13506">低（快）</string>
   <string id="13507">中</string>
@@ -1224,7 +1224,7 @@
   <string id="13610">关闭</string>
   <string id="13611">标准</string>
   <string id="13612">通用遥控器</string>
-  <string id="13613">万能遥控器(Harmony)</string>
+  <string id="13613">万能遥控器（Harmony）</string>
 
   <string id="13620">Apple 遥控器错误</string>
   <string id="13621">不能打开 Apple 遥控器支持.</string>
@@ -1292,8 +1292,8 @@
   <string id="14063">日期和时间</string>
   <string id="14064">设置日期</string>
   <string id="14065">设置时间</string>
-  <string id="14066">输入24小时格式时间(时:分)</string>
-  <string id="14067">输入日期(日/月/年)</string>
+  <string id="14066">输入24小时格式时间（时:分）</string>
+  <string id="14067">输入日期（日/月/年）</string>
   <string id="14068">输入 IP 地址</string>
   <string id="14069">确定要设置这些参数吗？</string>
   <string id="14070">应用设置</string>
@@ -1443,7 +1443,7 @@
   <string id="16019">自动选择</string>
   <string id="16020">去交错</string>
   <string id="16021">抖动</string>
-  <string id="16022">抖动(倒转)</string>
+  <string id="16022">抖动（倒转）</string>
   <string id="16023">交错设置</string>
   <string id="16024">取消中...</string>
   <string id="16025">输入艺人名字</string>
@@ -1486,14 +1486,14 @@
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
 
-  <string id="16307">双立方 (软件)</string>
-  <string id="16308">Lanczos (软件)</string>
-  <string id="16309">Sinc (软件)</string>
+  <string id="16307">双立方（软件）</string>
+  <string id="16308">Lanczos（软件）</string>
+  <string id="16309">Sinc（软件）</string>
 
-  <string id="16310">(VDPAU)时间平滑</string>
-  <string id="16311">(VDPAU)时间/空间平滑</string>
-  <string id="16312">(VDPAU)降噪</string>
-  <string id="16313">(VDPAU)锐化</string>
+  <string id="16310">（VDPAU）时间平滑</string>
+  <string id="16311">（VDPAU）时间/空间平滑</string>
+  <string id="16312">（VDPAU）降噪</string>
+  <string id="16313">（VDPAU）锐化</string>
   <string id="16314">帧率逆转换</string>
   <string id="17500">显示睡眠时间</string>
 
@@ -1555,7 +1555,7 @@
   <string id="20060">媒体讯息</string>
   <string id="20061">分离的</string>
   <string id="20062">共用预设值</string>
-  <string id="20063">共用预设值(只读)</string>
+  <string id="20063">共用预设值（只读）</string>
   <string id="20064">复制预设值</string>
   <string id="20065">预设文件图片</string>
   <string id="20066">锁定偏好设置</string>
@@ -1599,7 +1599,7 @@
   <string id="20104">发现旧设置值</string>
   <string id="20105">你要使用吗？</string>
   <string id="20106">发现旧媒体来源</string>
-  <string id="20107">分离的(锁定)</string>
+  <string id="20107">分离的（锁定）</string>
   <string id="20108">根目录</string>
   <string id="20109">皮肤缩放</string>
   <string id="20110">UPnP 客户端</string>
@@ -1621,7 +1621,7 @@
   <string id="20126">注销</string>
   <string id="20128">转到根目录</string>
   <string id="20129">交织</string>
-  <string id="20130">交织(倒转)</string>
+  <string id="20130">交织（倒转）</string>
   <string id="20131">混合</string>
   <string id="20132">从头播放视频</string>
   <string id="20133">编辑网络位置</string>
@@ -1636,7 +1636,7 @@
   <string id="20142">用户名</string>
   <string id="20143">键入密码</string>
   <string id="20144">自动关机定时器</string>
-  <string id="20145">自动关机定时(分钟)</string>
+  <string id="20145">自动关机定时（分钟）</string>
   <string id="20146">启动自动关机在%i分钟后</string>
   <string id="20147">30分钟后自动关机</string>
   <string id="20148">60分钟后自动关机</string>
@@ -1662,10 +1662,10 @@
   <string id="20168">需要重新启动</string>
   <string id="20169">周</string>
   <string id="20170">生产线</string>
-  <string id="20171">Windows 网络(SMB)</string>
+  <string id="20171">Windows 网络（SMB）</string>
   <string id="20172">XBMSP 服务器</string>
   <string id="20173">FTP 服务器</string>
-  <string id="20174">ITunes 音乐共享(DAAP)</string>
+  <string id="20174">ITunes 音乐共享（DAAP）</string>
   <string id="20175">UPnP 媒体服务器</string>
   <string id="20176">显示视频信息</string>
   <string id="20177">完成</string>
@@ -1694,12 +1694,14 @@
 
   <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
 
-  <string id="20250">舞会模式！(视频)</string>
-  <string id="20251">鸡尾酒(视频)</string>
-  <string id="20252">填入玻璃(视频)</string>
+  <string id="20250">舞会模式！（视频）</string>
+  <string id="20251">鸡尾酒（视频）</string>
+  <string id="20252">填入玻璃（视频）</string>
+  <string id="20253">WebDAV服务器（HTTP）</string>
+  <string id="20254">WebDAV服务器（HTTPS）</string>
 
-  <string id="20300">WEB服务器目录(HTTP)</string>
-  <string id="20301">WEB服务器目录(HTTPS)</string>
+  <string id="20300">WEB服务器目录（HTTP）</string>
+  <string id="20301">WEB服务器目录（HTTPS）</string>
   <string id="20302">无法写入文件夹：</string>
   <string id="20303">你要跳过并继续吗？</string>
   <string id="20304">RSS 信源</string>
@@ -1709,7 +1711,7 @@
   <string id="20308">DHCP 服务器：</string>
   <string id="20309">新建文件夹</string>
   <string id="20310">播放时关闭 LCD 背光</string>
-  <string id="20311">未知或板载(保护状态)</string>
+  <string id="20311">未知或板载（保护状态）</string>
   <string id="20312">暂停时关闭 LCD 背光</string>
   <string id="20313">暂停时打开 LED</string>
   <string id="20314">视频 - 资料库</string>
@@ -1841,9 +1843,11 @@
   <string id="20440">当前同人画</string>
   <string id="20441">远程同人画</string>
   <string id="20442">更新内容</string>
-  <string id="20443">要刷新此目录下的所有项目吗？</string>
-  <string id="20444"></string>
+  <string id="20443">要刷新此目录下的</string>
+  <string id="20444">所有项目吗？</string>
   <string id="20445">同人画</string>
+  <string id="20446">发现NFO文件。</string>
+  <string id="20447">从互联网刷新吗？</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
