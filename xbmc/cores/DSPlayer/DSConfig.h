@@ -24,7 +24,6 @@
 #include "StdString.h"
 #include <streams.h>
 
-#include "smartptr.h"
 #include "igraphbuilder2.h"
 #include "Filters/IMpaDecFilter.h"
 #include "Filters/IMPCVideoDecFilter.h"
@@ -46,21 +45,21 @@ public:
   virtual void SetAudioStream(int iStream);
   
 protected:
-  bool GetStreamSelector(SmartPtr<IBaseFilter> pBF);
-  bool GetMpaDec(SmartPtr<IBaseFilter> pBF);
-  bool GetMpcVideoDec(SmartPtr<IBaseFilter> pBF);
-  bool GetffdshowVideo(SmartPtr<IBaseFilter> pBF);
+  bool GetStreamSelector(IBaseFilter* pBF);
+  bool GetMpaDec(IBaseFilter* pBF);
+  bool GetMpcVideoDec(IBaseFilter* pBF);
+  bool GetffdshowVideo(IBaseFilter* pBF);
   void LoadFilters();
   CCritSec m_pLock;
   //
   
 private:
   //Direct Show Filters
-  SmartPtr<IGraphBuilder2>        m_pGraphBuilder;
-  SmartPtr<IMPCVideoDecFilter>	 m_pIMpcDecFilter;//CComQIPtr
+  CComPtr<IGraphBuilder2>        m_pGraphBuilder;
+  CComQIPtr<IMPCVideoDecFilter>	 m_pIMpcDecFilter;
   //No guid defined for ffdshow video
-  //SmartPtr<IffdshowDecVideoA>	 m_pIffdDecFilter;
-  SmartPtr<IMpaDecFilter>       m_pIMpaDecFilter;//CComQIPtr
-  SmartPtr<IAMStreamSelect>     m_pIAMStreamSelect;//CComQIPtr
+  //CComPtr<IffdshowDecVideoA>	 m_pIffdDecFilter;
+  CComQIPtr<IMpaDecFilter>       m_pIMpaDecFilter;
+  CComQIPtr<IAMStreamSelect>     m_pIAMStreamSelect;
   CStdString                     m_pStdDxva;
 };

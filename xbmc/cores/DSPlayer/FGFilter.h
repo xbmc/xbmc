@@ -20,11 +20,9 @@
  */
 
 #pragma once
+#include <atlcomcli.h>
+#include <atlcoll.h>
 #include "streams.h"
-#include "smartptr.h"
-#include <list>
-#include <vector>
-
 #define MERIT64(merit) (((UINT64)(merit))<<16)
 #define MERIT64_DO_NOT_USE MERIT64(MERIT_DO_NOT_USE)
 #define MERIT64_DO_USE MERIT64(MERIT_DO_NOT_USE+1)
@@ -39,7 +37,7 @@ protected:
 	CLSID m_clsid;
 	CStdString m_name;
 	struct {union {UINT64 val; struct {UINT64 low:16, mid:32, high:16;};};} m_merit;
-	std::list<GUID> m_types;
+	CAtlList<GUID> m_types;
 
 public:
 	CFGFilter(const CLSID& clsid, CStdString name = L"", UINT64 merit = MERIT64_DO_USE);
@@ -49,12 +47,12 @@ public:
 	CStdStringW GetName() {return m_name;}
 	UINT64 GetMerit() {return m_merit.val;}
 	DWORD GetMeritForDirectShow() {return m_merit.mid;}
-	const std::list<GUID>& GetTypes() const;
-	void SetTypes(const std::list<GUID>& types);
+	const CAtlList<GUID>& GetTypes() const;
+	void SetTypes(const CAtlList<GUID>& types);
 	void AddType(const GUID& majortype, const GUID& subtype);
-  bool CheckTypes(const std::vector<GUID>& types, bool fExactMatch);
+	bool CheckTypes(const CAtlArray<GUID>& types, bool fExactMatch);
 
-	std::list<CStdString> m_protocols, m_extensions, m_chkbytes; // TODO: subtype?
+	CAtlList<CStdString> m_protocols, m_extensions, m_chkbytes; // TODO: subtype?
 
 	virtual HRESULT Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_IUnknown>& pUnks) = 0;
 };
@@ -63,7 +61,7 @@ class CFGFilterRegistry : public CFGFilter
 {
 protected:
 	CStdString m_DisplayName;
-	SmartPtr<IMoniker> m_pMoniker;
+	CComPtr<IMoniker> m_pMoniker;
 
 	void ExtractFilterData(BYTE* p, UINT len);
 
@@ -89,7 +87,7 @@ public:
 		CheckPointer(ppBF, E_POINTER);
 
 		HRESULT hr = S_OK;
-		SmartPtr<IBaseFilter> pBF = new T(NULL, &hr);
+		CComPtr<IBaseFilter> pBF = new T(NULL, &hr);
 		if(FAILED(hr)) return hr;
 
 		*ppBF = pBF.Detach();
@@ -129,8 +127,8 @@ class CFGFilterList
 {
 	struct filter_t {int index; CFGFilter* pFGF; int group; bool exactmatch, autodelete;};
 	static int filter_cmp(const void* a, const void* b);
-	std::list<filter_t> m_filters;
-	std::list<CFGFilter*> m_sortedfilters;
+	CAtlList<filter_t> m_filters;
+	CAtlList<CFGFilter*> m_sortedfilters;
 
 public:
 	CFGFilterList();
@@ -138,8 +136,7 @@ public:
 
 	void RemoveAll();
 	void Insert(CFGFilter* pFGF, int group, bool exactmatch = false, bool autodelete = true);
-  std::list<CFGFilter*> getSortedList() { return m_sortedfilters;};
-  //also need to remove in cpp
-	//POSITION GetHeadPosition();
-	//CFGFilter* GetNext(POSITION& pos);
+
+	POSITION GetHeadPosition();
+	CFGFilter* GetNext(POSITION& pos);
 };

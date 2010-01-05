@@ -64,19 +64,18 @@ void CDSConfig::LoadFilters()
   EndEnumFilters
 }
 
-bool CDSConfig::GetStreamSelector(SmartPtr<IBaseFilter> pBF)
+bool CDSConfig::GetStreamSelector(IBaseFilter* pBF)
 {
   if (m_pIAMStreamSelect)
     return true;
-  pBF.QueryInterface(&m_pIAMStreamSelect);
-  //m_pIAMStreamSelect = pBF;
+  m_pIAMStreamSelect = pBF;
   if(m_pIAMStreamSelect)
   {
     DWORD nStreams = 0, flags, group, prevgroup = -1;
     LCID lcid;
 	  CStdString destname;
 	  WCHAR* wname = NULL;
-	  SmartPtr<IUnknown> pObj, pUnk;
+	  CComPtr<IUnknown> pObj, pUnk;
     m_pIAMStreamSelect->Count(&nStreams);
     flags = 0;
     group = 0;
@@ -107,7 +106,7 @@ int CDSConfig::GetAudioStream()
   DWORD nStreams = 0, flags, group, prevgroup = -1;
   LCID lcid;
   WCHAR* wname = NULL;
-  SmartPtr<IUnknown> pObj, pUnk;
+  CComPtr<IUnknown> pObj, pUnk;
   m_pIAMStreamSelect->Count(&nStreams);
   flags = 0;
   group = 0;
@@ -127,7 +126,7 @@ void CDSConfig::GetAudioStreamName(int iStream, CStdString &strStreamName)
   DWORD nStreams = 0, flags, group, prevgroup = -1;
   LCID lcid;
   WCHAR* wname = NULL;
-  SmartPtr<IUnknown> pObj, pUnk;
+  CComPtr<IUnknown> pObj, pUnk;
   flags = 0;
   group = 0;
   wname = NULL;
@@ -144,7 +143,7 @@ void CDSConfig::SetAudioStream(int iStream)
     return;
   DWORD nStreams = 0, flags, group, prevgroup = -1;
   WCHAR* wname = NULL;
-  SmartPtr<IUnknown> pObj, pUnk;
+  CComPtr<IUnknown> pObj, pUnk;
   m_pIAMStreamSelect->Count(&nStreams);
   flags = 0;
   group = 0;
@@ -157,12 +156,11 @@ void CDSConfig::SetAudioStream(int iStream)
     CLog::Log(LOGDEBUG,"%s Sucessfully selected audio stream",__FUNCTION__);
 }
 
-bool CDSConfig::GetMpcVideoDec(SmartPtr<IBaseFilter> pBF)
+bool CDSConfig::GetMpcVideoDec(IBaseFilter* pBF)
 {
   if (m_pIMpcDecFilter)
     return false;
-  pBF->QueryInterface(&m_pIMpcDecFilter);
-  //m_pIMpcDecFilter = pBF;
+  m_pIMpcDecFilter = pBF;
   m_pStdDxva.Format("");
   if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
   {
@@ -181,12 +179,11 @@ bool CDSConfig::GetMpcVideoDec(SmartPtr<IBaseFilter> pBF)
   return true;
 }
 
-bool CDSConfig::GetMpaDec(SmartPtr<IBaseFilter> pBF)
+bool CDSConfig::GetMpaDec(IBaseFilter* pBF)
 {
   if (m_pIMpaDecFilter)
     return false;
-  //m_pIMpaDecFilter = pBF;
-  pBF.QueryInterface(&m_pIMpaDecFilter);
+  m_pIMpaDecFilter = pBF;
 //definition of AC3 VALUE DEFINITION
 //A52_CHANNEL 0
 //A52_MONO 1

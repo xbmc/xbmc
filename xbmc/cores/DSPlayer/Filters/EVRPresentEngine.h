@@ -89,8 +89,8 @@ protected:
   CCritSec                     m_ObjectLock;           // Thread lock for the D3D device.
 
     // COM interfaces
-  SmartPtr<IDirect3D9>          m_pD3D9;
-  SmartPtr<IDirect3DDevice9>    m_pDevice;
+  CComPtr<IDirect3D9>          m_pD3D9;
+  CComPtr<IDirect3DDevice9>    m_pDevice;
   bool                         m_bNeedNewDevice;
   IDirect3DDeviceManager9     *m_pDeviceManager;        // Direct3D device manager.
 	

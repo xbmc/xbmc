@@ -15,7 +15,7 @@ class COuterEVR
   : public CUnknown
   , public IBaseFilter
 {
-  SmartPtr<IUnknown>  m_pEVR;
+  CComPtr<IUnknown>  m_pEVR;
   CEVRAllocatorPresenter *m_pAllocatorPresenter;
 
 public:
@@ -23,7 +23,7 @@ public:
   // IBaseFilter
   virtual HRESULT STDMETHODCALLTYPE EnumPins(__out  IEnumPins **ppEnum)
   {
-    SmartPtr<IBaseFilter> pEVRBase;
+    CComPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -33,7 +33,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE FindPin(LPCWSTR Id, __out  IPin **ppPin)
   {
-    SmartPtr<IBaseFilter> pEVRBase;
+    CComPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -43,7 +43,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE QueryFilterInfo(__out  FILTER_INFO *pInfo)
   {
-    SmartPtr<IBaseFilter> pEVRBase;
+    CComPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -53,7 +53,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE JoinFilterGraph(__in_opt  IFilterGraph *pGraph, __in_opt  LPCWSTR pName)
   {
-    SmartPtr<IBaseFilter> pEVRBase;
+    CComPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -63,7 +63,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE QueryVendorInfo(__out  LPWSTR *pVendorInfo)
   {
-    SmartPtr<IBaseFilter> pEVRBase;
+    CComPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -73,7 +73,7 @@ public:
 
   virtual HRESULT STDMETHODCALLTYPE Stop( void)
   {
-    SmartPtr<IBaseFilter> pEVRBase;
+    CComPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -83,7 +83,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE Pause( void)
   {
-    SmartPtr<IBaseFilter> pEVRBase;
+    CComPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -93,7 +93,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE Run( REFERENCE_TIME tStart)
   {
-    SmartPtr<IBaseFilter> pEVRBase;
+    CComPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -105,7 +105,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE SetSyncSource(__in_opt  IReferenceClock *pClock)
   {
-    SmartPtr<IBaseFilter> pEVRBase;
+    CComPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -115,7 +115,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE GetSyncSource(__deref_out_opt  IReferenceClock **pClock)
   {
-    SmartPtr<IBaseFilter> pEVRBase;
+    CComPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -125,7 +125,7 @@ public:
 
   virtual HRESULT STDMETHODCALLTYPE GetClassID(__RPC__out CLSID *pClassID)
   {
-    SmartPtr<IBaseFilter> pEVRBase;
+    CComPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -173,7 +173,7 @@ HRESULT STDMETHODCALLTYPE COuterEVR::GetState( DWORD dwMilliSecsTimeout, __out  
   HRESULT ReturnValue;
   if (m_pAllocatorPresenter->GetState(dwMilliSecsTimeout, State, ReturnValue))
     return ReturnValue;
-  SmartPtr<IBaseFilter> pEVRBase;
+  CComPtr<IBaseFilter> pEVRBase;
   if (m_pEVR)
     m_pEVR->QueryInterface(&pEVRBase);
   if (pEVRBase)
@@ -296,7 +296,7 @@ STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   do
   {
     CMacrovisionKicker* pMK  = new CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL);
-    SmartPtr<IUnknown> pUnk = (IUnknown*)(INonDelegatingUnknown*)pMK;
+    CComPtr<IUnknown> pUnk = (IUnknown*)(INonDelegatingUnknown*)pMK;
     COuterEVR *pOuterEVR = new COuterEVR(NAME("COuterEVR"), pUnk, hr, this);
     m_pOuterEVR = pOuterEVR;
     pMK->SetInner((IUnknown*)(INonDelegatingUnknown*)pOuterEVR);
@@ -306,8 +306,8 @@ STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
       CLog::Log(LOGERROR,"%s Failed creating enchanced video renderer",__FUNCTION__);
       break;
     }
-    SmartPtr<IMFVideoPresenter>    pVP;
-    SmartPtr<IMFVideoRenderer>    pMFVR;
+    CComPtr<IMFVideoPresenter>    pVP;
+    CComPtr<IMFVideoRenderer>    pMFVR;
     CComQIPtr<IMFGetService, &__uuidof(IMFGetService)> pMFGS = pBF;
     hr = pMFGS->GetService (MR_VIDEO_RENDER_SERVICE, IID_IMFVideoRenderer, (void**)&pMFVR);
     if(SUCCEEDED(hr)) 
@@ -316,7 +316,7 @@ STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
       hr = pMFVR->InitializeRenderer (NULL, pVP);
 
     //something related with no crash in vista
-    SmartPtr<IPin>      pPin = DShowUtil::GetFirstPin(pBF);
+    CComPtr<IPin>      pPin = DShowUtil::GetFirstPin(pBF);
     CComQIPtr<IMemInputPin> pMemInputPin = pPin;    
     m_fUseInternalTimer = HookNewSegmentAndReceive((IPinC*)(IPin*)pPin, (IMemInputPinC*)(IMemInputPin*)pMemInputPin);
     if(FAILED(hr))

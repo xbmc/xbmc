@@ -1,7 +1,7 @@
 #pragma once
 
 #include "streams.h"
-#include <list>
+
 
 class CMediaTypeEx : public CMediaType
 {
@@ -15,5 +15,5 @@ public:
 	static CStdString GetAudioCodecName(const GUID& subtype, WORD wFormatTag);
 	static CStdString GetSubtitleCodecName(const GUID& subtype);
 
-	void Dump(std::list<CStdString>& sl);
+	void Dump(CAtlList<CStdString>& sl);
 };

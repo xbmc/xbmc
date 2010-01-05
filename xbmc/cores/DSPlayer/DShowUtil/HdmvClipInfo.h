@@ -24,9 +24,7 @@
 
 #include "Mpeg2Def.h"
 #include "dxva.h"
-#include <vector>
-#include <list>
-
+#include <atlcoll.h>
 enum BDVM_VideoFormat
 {
     BDVM_VideoFormat_Unknown = 0,
@@ -137,20 +135,20 @@ public:
 	HRESULT		ReadInfo(LPCTSTR strFile);
 	Stream*		FindStream(SHORT wPID);
 	bool		IsHdmv()					{ return m_bIsHdmv; };
-	int			GetStreamNumber()			{ return int(m_Streams.size()); };
-	Stream*		GetStreamByIndex(int nIndex){ return (unsigned(nIndex) < m_Streams.size()) ? &m_Streams[nIndex] : NULL; };
+	int			GetStreamNumber()			{ return int(m_Streams.GetCount()); };
+	Stream*		GetStreamByIndex(int nIndex){ return (unsigned(nIndex) < m_Streams.GetCount()) ? &m_Streams[nIndex] : NULL; };
 
-  HRESULT		FindMainMovie(LPCTSTR strFolder, CStdString& strPlaylistFile, std::list<PlaylistItem>& MainPlaylist);
-	HRESULT		ReadPlaylist(CStdString strPlaylistFile, REFERENCE_TIME& rtDuration, std::list<PlaylistItem>& Playlist);
+	HRESULT		FindMainMovie(LPCTSTR strFolder, CStdString& strPlaylistFile, CAtlList<PlaylistItem>& MainPlaylist);
+	HRESULT		ReadPlaylist(CStdString strPlaylistFile, REFERENCE_TIME& rtDuration, CAtlList<PlaylistItem>& Playlist);
 
 private :
 	DWORD		SequenceInfo_start_address;
 	DWORD		ProgramInfo_start_address;
 
 	HANDLE		m_hFile;
-  
-  std::vector<Stream> m_Streams;
-	//CAtlArray<Stream>	m_Streams;
+
+
+	CAtlArray<Stream>	m_Streams;
 	bool				m_bIsHdmv;
 
 	DWORD		ReadDword();

@@ -26,9 +26,6 @@
 #include "File.h"
 #include "FileItem.h"
 #include "tinyXML/tinyxml.h"
-#include "smartptr.h"
-#include <list>
-
 class CFGLoader : public CCritSec
 {
 public:
@@ -52,17 +49,17 @@ public:
   CStdString GetSplitterFilterInfo(){return  m_pStrSplitter;};
   CStdString GetAudioRenderer(){return  m_pStrAudioRenderer;};
 protected:
-  SmartPtr<IGraphBuilder2>   m_pGraphBuilder;
-  CStdString                m_xbmcConfigFilePath;
-  CStdString                m_pStrVideodec;
-  CStdString                m_pStrAudiodec;
-  CStdString                m_pStrAudioRenderer;
-  CStdString                m_pStrSource;
-  CStdString                m_pStrSplitter;
-  std::list<CFGFilterFile*> m_configFilter;
-  CFile                     m_File;
-  IBaseFilter               *m_SourceF;
-  IBaseFilter               *m_SplitterF;
+  CComPtr<IGraphBuilder2>  m_pGraphBuilder;
+  CStdString               m_xbmcConfigFilePath;
+  CStdString               m_pStrVideodec;
+  CStdString               m_pStrAudiodec;
+  CStdString               m_pStrAudioRenderer;
+  CStdString               m_pStrSource;
+  CStdString               m_pStrSplitter;
+  CAtlList<CFGFilterFile*> m_configFilter;
+  CFile                    m_File;
+  CComPtr<IBaseFilter>     m_SourceF;
+  IBaseFilter              *m_SplitterF;
 
   CInterfaceList<IUnknown, &IID_IUnknown> pUnk;
 };

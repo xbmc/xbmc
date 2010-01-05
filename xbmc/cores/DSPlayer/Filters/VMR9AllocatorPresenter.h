@@ -73,8 +73,8 @@ protected:
   bool           m_bNeedNewDevice;
 private:
   long        m_refCount;
-  SmartPtr<IVMRSurfaceAllocatorNotify9>    m_pIVMRSurfAllocNotify;
-  vector<SmartPtr<IDirect3DSurface9> >     m_pSurfaces;
+  CComPtr<IVMRSurfaceAllocatorNotify9>    m_pIVMRSurfAllocNotify;
+  vector<CComPtr<IDirect3DSurface9> >     m_pSurfaces;
   int                                     m_pNbrSurface;
   int                                     m_pCurSurface;
 };

@@ -2,7 +2,7 @@
 
 #include "streams.h"
 #include <dshow.h>
-#include <smartptr.h>
+
 #include <strsafe.h>
 #include <assert.h>
 
@@ -13,8 +13,6 @@
 #include "moreuuids.h"
 #include "vd.h"
 #include "text.h"
-#include <vector>
-#include <list>
 
 #ifndef ASSERT
 #define ASSERT assert
@@ -50,18 +48,12 @@ typedef enum {CDROM_NotFound, CDROM_Audio, CDROM_VideoCD, CDROM_DVDVideo, CDROM_
 static const GUID CLSID_NullRenderer =
   { 0xC1F400A4, 0x3F08, 0x11D3, { 0x9F, 0x0B, 0x00, 0x60, 0x08, 0x03, 0x9E, 0x37 } };
 
-typedef std::list<GUID> GuidList;
-typedef std::list<GUID>::iterator GuidListIter;
-
 class  DShowUtil
 {
 public:
 //This is not needed its for getting the output format of a capture filter
 //and  also require  mfc for cfile
 //static void DumpStreamConfig(TCHAR* fn, IAMStreamConfig* pAMVSCCap);
-  static bool GuidVectItterCompare(GuidListIter it,const std::vector<GUID>::const_reference vect);
-  static bool GuidItteratorIsNull(GuidListIter it);
-  static bool GuidVectIsNull(const std::vector<GUID>::const_reference vect);
   static long MFTimeToMsec(const LONGLONG& time);
   static CStdString GetFilterPath(CStdString pClsid);
   static CStdStringW AnsiToUTF16(const CStdString strFrom);
@@ -72,7 +64,7 @@ public:
   static bool IsStreamEnd(IBaseFilter* pBF);
   static bool IsVideoRenderer(IBaseFilter* pBF);
   static bool IsAudioWaveRenderer(IBaseFilter* pBF);
-  static std::vector<SmartPtr<IMoniker>> GetAudioRenderersGuid();
+  static std::vector<CComPtr<IMoniker>> GetAudioRenderersGuid();
   static HRESULT RemoveUnconnectedFilters(IGraphBuilder *pGraph);
   static IBaseFilter* GetUpStreamFilter(IBaseFilter* pBF, IPin* pInputPin = NULL);
   static IPin* GetUpStreamPin(IBaseFilter* pBF, IPin* pInputPin = NULL);
@@ -89,13 +81,13 @@ public:
   static IBaseFilter* GetFilterFromPin(IPin* pPin);
   static IPin* AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder* pGB);
   static IPin* InsertFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder* pGB);
-  static void ExtractMediaTypes(IPin* pPin, std::vector<GUID>& types);
-  static void ExtractMediaTypes(IPin* pPin, std::list<CMediaType>& mts);
+  static void ExtractMediaTypes(IPin* pPin, CAtlArray<GUID>& types);
+  static void ExtractMediaTypes(IPin* pPin, CAtlList<CMediaType>& mts);
   static CLSID GetCLSID(IBaseFilter* pBF);
   static CLSID GetCLSID(IPin* pPin);
   static bool IsCLSIDRegistered(LPCTSTR clsid);
   static bool IsCLSIDRegistered(const CLSID& clsid);
-  static void CStringToBin(CStdString str, std::vector<BYTE>& data);
+  static void CStringToBin(CStdString str, CAtlArray<BYTE>& data);
   static CStdString BinToCString(BYTE* ptr, int len);
 typedef enum {CDROM_NotFound, CDROM_Audio, CDROM_VideoCD, CDROM_DVDVideo, CDROM_Unknown} cdrom_t;
   //GetCDROMType need devioctl.h
@@ -142,7 +134,7 @@ typedef enum {CDROM_NotFound, CDROM_Audio, CDROM_VideoCD, CDROM_DVDVideo, CDROM_
   static bool SetRegKeyValue(LPCTSTR pszKey, LPCTSTR pszSubkey, LPCTSTR pszValueName, LPCTSTR pszValue);
   static bool SetRegKeyValue(LPCTSTR pszKey, LPCTSTR pszSubkey, LPCTSTR pszValue);
   static void RegisterSourceFilter(const CLSID& clsid, const GUID& subtype2, LPCTSTR chkbytes, LPCTSTR ext = NULL, ...);
-  static void RegisterSourceFilter(const CLSID& clsid, const GUID& subtype2, const std::list<CStdString>& chkbytes, LPCTSTR ext = NULL, ...);
+  static void RegisterSourceFilter(const CLSID& clsid, const GUID& subtype2, const CAtlList<CStdString>& chkbytes, LPCTSTR ext = NULL, ...);
   static void UnRegisterSourceFilter(const GUID& subtype);
   static LPCTSTR GetDXVAMode(const GUID* guidDecoder);
   static void DumpBuffer(BYTE* pBuffer, int nSize);
@@ -175,34 +167,34 @@ public:
 };
 
 #define BeginEnumFilters(pFilterGraph, pEnumFilters, pBaseFilter) \
-  {SmartPtr<IEnumFilters> pEnumFilters; \
+  {CComPtr<IEnumFilters> pEnumFilters; \
   if(pFilterGraph && SUCCEEDED(pFilterGraph->EnumFilters(&pEnumFilters))) \
   { \
-    for(SmartPtr<IBaseFilter> pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
+    for(CComPtr<IBaseFilter> pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
     { \
 
 #define EndEnumFilters }}}
 
 #define BeginEnumCachedFilters(pGraphConfig, pEnumFilters, pBaseFilter) \
-  {SmartPtr<IEnumFilters> pEnumFilters; \
+  {CComPtr<IEnumFilters> pEnumFilters; \
   if(pGraphConfig && SUCCEEDED(pGraphConfig->EnumCacheFilter(&pEnumFilters))) \
   { \
-    for(SmartPtr<IBaseFilter> pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
+    for(CComPtr<IBaseFilter> pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
     { \
 
 #define EndEnumCachedFilters }}}
 
 #define BeginEnumPins(pBaseFilter, pEnumPins, pPin) \
-  {SmartPtr<IEnumPins> pEnumPins; \
+  {CComPtr<IEnumPins> pEnumPins; \
   if(pBaseFilter && SUCCEEDED(pBaseFilter->EnumPins(&pEnumPins))) \
   { \
-    for(SmartPtr<IPin> pPin; S_OK == pEnumPins->Next(1, &pPin, 0); pPin = NULL) \
+    for(CComPtr<IPin> pPin; S_OK == pEnumPins->Next(1, &pPin, 0); pPin = NULL) \
     { \
 
 #define EndEnumPins }}}
 
 #define BeginEnumMediaTypes(pPin, pEnumMediaTypes, pMediaType) \
-  {SmartPtr<IEnumMediaTypes> pEnumMediaTypes; \
+  {CComPtr<IEnumMediaTypes> pEnumMediaTypes; \
   if(pPin && SUCCEEDED(pPin->EnumMediaTypes(&pEnumMediaTypes))) \
   { \
     AM_MEDIA_TYPE* pMediaType = NULL; \
@@ -212,13 +204,13 @@ public:
 #define EndEnumMediaTypes(pMediaType) } if(pMediaType) DeleteMediaType(pMediaType); }}
 
 #define BeginEnumSysDev(clsid, pMoniker) \
-  {SmartPtr<ICreateDevEnum> pDevEnum4$##clsid; \
+  {CComPtr<ICreateDevEnum> pDevEnum4$##clsid; \
   pDevEnum4$##clsid.CoCreateInstance(CLSID_SystemDeviceEnum); \
-  SmartPtr<IEnumMoniker> pClassEnum4$##clsid; \
+  CComPtr<IEnumMoniker> pClassEnum4$##clsid; \
   if(SUCCEEDED(pDevEnum4$##clsid->CreateClassEnumerator(clsid, &pClassEnum4$##clsid, 0)) \
   && pClassEnum4$##clsid) \
   { \
-    for(SmartPtr<IMoniker> pMoniker; pClassEnum4$##clsid->Next(1, &pMoniker, 0) == S_OK; pMoniker = NULL) \
+    for(CComPtr<IMoniker> pMoniker; pClassEnum4$##clsid->Next(1, &pMoniker, 0) == S_OK; pMoniker = NULL) \
     { \
 
 #define EndEnumSysDev }}}
