@@ -275,6 +275,7 @@ using namespace EVENTSERVER;
 #ifdef HAS_DBUS_SERVER
 using namespace DBUSSERVER;
 #endif
+using namespace BROADCAST;
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory

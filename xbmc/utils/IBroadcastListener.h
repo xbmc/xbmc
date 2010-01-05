@@ -22,18 +22,21 @@
 
 #include <string>
 
-enum EBroadcastFlag
+namespace BROADCAST
 {
-  Playback = 0x1,
-  GUI = 0x2,
-  System = 0x4,
-  Other = 0x8
-};
-
-class IBroadcastListener
-{
-public:
-  IBroadcastListener() { };
-  virtual ~IBroadcastListener() { };
-  virtual void Broadcast(EBroadcastFlag flag, std::string message) = 0;
-};
+  enum EBroadcastFlag
+  {
+    Playback = 0x1,
+    GUI = 0x2,
+    System = 0x4,
+    Other = 0x8
+  };
+  
+  class IBroadcastListener
+  {
+  public:
+    IBroadcastListener() { };
+    virtual ~IBroadcastListener() { };
+    virtual void Broadcast(EBroadcastFlag flag, std::string message) = 0;
+  };
+}

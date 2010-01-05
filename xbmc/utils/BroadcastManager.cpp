@@ -24,6 +24,7 @@
 #include "log.h"
 
 using namespace std;
+using namespace BROADCAST;
 
 vector<IBroadcastListener *> CBroadcastManager::m_listeners;
 

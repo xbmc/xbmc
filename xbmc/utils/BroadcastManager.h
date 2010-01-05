@@ -23,12 +23,15 @@
 #include "IBroadcastListener.h"
 #include <vector>
 
-class CBroadcastManager
+namespace BROADCAST
 {
-public:
-  static void AddListener(IBroadcastListener *listener);
-  static void RemoveListener(IBroadcastListener *listener);
-  static void Broadcast(EBroadcastFlag flag, std::string message);
-private:
-  static std::vector<IBroadcastListener *> m_listeners;
-};
+  class CBroadcastManager
+  {
+  public:
+    static void AddListener(IBroadcastListener *listener);
+    static void RemoveListener(IBroadcastListener *listener);
+    static void Broadcast(EBroadcastFlag flag, std::string message);
+  private:
+    static std::vector<IBroadcastListener *> m_listeners;
+  };
+}
