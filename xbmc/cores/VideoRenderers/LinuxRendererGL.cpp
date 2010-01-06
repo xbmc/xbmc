@@ -1751,7 +1751,6 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
 
   if( fields[FIELD_FULL][0].id == 0 ) return;
 
-  CLog::Log(LOGDEBUG, "Deleted YV12 texture %i", index);
   /* finish up all textures, and delete them */
   g_graphicsContext.BeginPaint();  //FIXME
   for(int f = 0;f<MAX_FIELDS;f++)
@@ -1761,10 +1760,7 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
       if( fields[f][p].id )
       {
         if (glIsTexture(fields[f][p].id))
-        {
           glDeleteTextures(1, &fields[f][p].id);
-          CLog::Log(LOGDEBUG, "GL: Deleting texture field %d plane %d", f+1, p+1);
-        }
         fields[f][p].id = 0;
       }
     }
@@ -1925,23 +1921,9 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
       glBindTexture(m_textureTarget, plane.id);
       if (m_renderMethod & RENDER_SW)
-      {
-        if(m_renderMethod & RENDER_POT)
-          CLog::Log(LOGNOTICE, "GL: Creating RGB POT texture of size %d x %d",  plane.texwidth, plane.texheight);
-        else
-          CLog::Log(LOGDEBUG,  "GL: Creating RGB NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
-
         glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-      } 
       else
-      {
-        if(m_renderMethod & RENDER_POT)
-          CLog::Log(LOGNOTICE, "GL: Creating YUV POT texture of size %d x %d",  plane.texwidth, plane.texheight);
-        else
-          CLog::Log(LOGDEBUG,  "GL: Creating YUV NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
-
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-      }
 
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
