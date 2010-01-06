@@ -880,7 +880,7 @@ CCrystalHD::CCrystalHD() :
 CCrystalHD::~CCrystalHD()
 {
   if (m_IsConfigured)
-    Close();
+    CloseDecoder();
 
   if (m_Device)
   {
@@ -949,7 +949,7 @@ CCrystalHD* CCrystalHD::GetInstance(void)
   return m_pInstance;
 }
 
-bool CCrystalHD::Open(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE codec_type)
+bool CCrystalHD::OpenDecoder(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE codec_type)
 {
   BCM::BC_STATUS res;
 
@@ -957,7 +957,7 @@ bool CCrystalHD::Open(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE co
     return false;
 
   if (m_IsConfigured)
-    Close();
+    CloseDecoder();
 
   uint32_t videoAlg = 0;
   switch (codec_type)
@@ -1018,7 +1018,7 @@ bool CCrystalHD::Open(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE co
   return m_IsConfigured;
 }
 
-void CCrystalHD::Close(void)
+void CCrystalHD::CloseDecoder(void)
 {
   if (m_pInputThread)
   {

@@ -123,8 +123,8 @@ public:
 
   bool DevicePresent(void);
 
-  bool Open(CRYSTALHD_CODEC_TYPE stream_type, CRYSTALHD_STREAM_TYPE codec_type);
-  void Close(void);
+  bool OpenDecoder(CRYSTALHD_CODEC_TYPE stream_type, CRYSTALHD_STREAM_TYPE codec_type);
+  void CloseDecoder(void);
   bool IsOpenforDecode(void);
   void Flush(void);
   unsigned int GetInputCount(void);
