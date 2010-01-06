@@ -408,6 +408,10 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 #ifdef HAVE_LIBVDPAU
   if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt))
   {
+    // if device was preempted, image contains junk
+    if(g_VDPAU->recover)
+      return VC_FLUSHED | VC_ERROR;
+
     g_VDPAU->PrePresent(m_pCodecContext,m_pFrame);
     if(g_VDPAU->VDPAURecovered)
       result |= VC_FLUSHED;
