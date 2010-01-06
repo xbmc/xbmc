@@ -1012,7 +1012,6 @@ void CGUIBaseContainer::SetType(VIEW_TYPE type, const CStdString &label)
 
 void CGUIBaseContainer::MoveToItem(int item)
 {
-  g_infoManager.SetContainerMoving(GetID(), item - m_cursor);
   m_cursor = item;
 }
 

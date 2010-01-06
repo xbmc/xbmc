@@ -358,7 +358,6 @@ void CGUIPanelContainer::SetCursor(int cursor)
   // +1 to ensure we're OK if we have a half item
   if (cursor > (m_itemsPerPage + 1)*m_itemsPerRow - 1) cursor = (m_itemsPerPage + 1)*m_itemsPerRow - 1;
   if (cursor < 0) cursor = 0;
-  g_infoManager.SetContainerMoving(GetID(), cursor - m_cursor);
   m_cursor = cursor;
 }
 
