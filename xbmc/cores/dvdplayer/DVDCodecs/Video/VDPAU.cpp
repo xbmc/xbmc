@@ -68,7 +68,7 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
   surfaceNum      = presentSurfaceNum = 0;
   picAge.b_age    = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   vdpauConfigured = false;
-  recover = VDPAURecovered = false;
+  recover = false;
 
   m_glPixmap = 0;
   m_glPixmapTexture = 0;
@@ -312,7 +312,6 @@ bool CVDPAU::CheckRecover(bool force)
     recover = false;
 
     InitVDPAUProcs();
-    VDPAURecovered = true;
 
     return true;
   }
