@@ -214,6 +214,8 @@ void CGUIListContainer::SetCursor(int cursor)
 {
   if (cursor > m_itemsPerPage - 1) cursor = m_itemsPerPage - 1;
   if (cursor < 0) cursor = 0;
+  if (!m_wasReset)
+    g_infoManager.SetContainerMoving(GetID(), cursor - m_cursor);
   m_cursor = cursor;
 }
 
@@ -257,6 +259,7 @@ bool CGUIListContainer::SelectItemFromPoint(const CPoint &point)
       if (!InsideLayout(layout, point))
         return false;
       
+      g_infoManager.SetContainerMoving(GetID(), row - m_cursor);
       m_cursor = row;
       CGUIListItemLayout *focusedLayout = GetFocusedLayout();
       if (focusedLayout)
