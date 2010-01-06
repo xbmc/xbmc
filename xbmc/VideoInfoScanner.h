@@ -77,10 +77,10 @@ namespace VIDEO
     bool ProcessItemNormal(CFileItemPtr item, EPISODES& episodeList, CStdString regexp);
     bool ProcessItemByDate(CFileItemPtr item, EPISODES& eipsodeList, CStdString regexp);
     long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir=false, CGUIDialogProgress* pDialog = NULL);
-    bool OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, int idShow, const CStdString& strShowTitle, bool bNFOCheck=true, CGUIDialogProgress* pDlgProgress = NULL);
+    bool OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);
     long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool combined=false);
-    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, bool bNFOCheck=true, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL);
+    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL);
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
     CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, SScraperInfo& info, CScraperUrl& scrUrl);

@@ -50,7 +50,6 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogSelect.h"
 #include "GUIDialogKeyboard.h"
-#include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
 #include "PlayList.h"
 #include "Settings.h"
@@ -528,24 +527,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     }
   }
 
-  CScraperUrl scrUrl1(scrUrl);
-  SScraperInfo info1(info);
-  CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info1,scrUrl1);
-  bool bNFOCheck(false);
-  if (result != CNfoFile::NO_NFO)
-  {
-    // In case we already have info, ask user to refresh from internet instead
-    if (!bHasInfo || !CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
-    {
-      info=info1;
-      scrUrl=scrUrl1;
-      bNFOCheck = true;
-      if (result == CNfoFile::FULL_NFO)
-        hasDetails = true;
-      if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
-        scanner.m_IMDB.SetScraperInfo(info);
-    }
-  }
+  CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
+  if (result == CNfoFile::FULL_NFO)
+    hasDetails = true;
+  if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+    scanner.m_IMDB.SetScraperInfo(info);
 
   // Get the correct movie title
   CStdString movieName = item->GetMovieName(settings.parent_name);
@@ -688,8 +674,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
             m_database.DeleteDetailsForTvShow(item->m_strPath);
         }
       }
-
-      if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info,!pDlgInfo->RefreshAll(),bNFOCheck,&scrUrl,pDlgProgress))
+      if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info,!pDlgInfo->RefreshAll(),&scrUrl,pDlgProgress))
       {
         if (info.strContent.Equals("movies"))
           m_database.GetMovieInfo(item->m_strPath,movieDetails);
@@ -705,11 +690,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         }
 
         // set path hash
-        if (info.strContent.Equals("movies") || info.strContent.Equals("musicvideos"))
+	if (info.strContent.Equals("movies") || info.strContent.Equals("musicvideos"))
         {
           CStdString hash, strParent;
           CFileItemList items;
-          CUtil::GetParentPath(list.m_strPath,strParent);
+	  CUtil::GetParentPath(list.m_strPath,strParent);
           CDirectory::GetDirectory(strParent,items,g_settings.m_videoExtensions);
           scanner.GetPathHash(items, hash);
           m_database.SetPathHash(strParent, hash);
