@@ -38,7 +38,6 @@ interface IGraphBuilder2 : public IFilterGraph2
 	STDMETHOD(ConnectFilter) (IPin* pPinOut, IBaseFilter* pBF) = 0;
 	STDMETHOD(ConnectFilterDirect) (IPin* pPinOut, IBaseFilter* pBF, const AM_MEDIA_TYPE* pmt) = 0;
 	STDMETHOD(NukeDownstream) (IUnknown* pUnk) = 0;
-	STDMETHOD(FindInterface) (REFIID iid, void** ppv, BOOL bRemove) = 0;
 	STDMETHOD(AddToROT) () = 0;
 	STDMETHOD(RemoveFromROT) () = 0;
 	STDMETHOD(RenderFileXbmc) (const CFileItem& pFileItem) = 0;

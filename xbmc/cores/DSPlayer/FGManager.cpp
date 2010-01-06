@@ -57,20 +57,24 @@ CFGManager::CFGManager(LPCTSTR pName, LPUNKNOWN pUnk)
   : CUnknown(pName, pUnk)
   , m_dwRegister(0)
 {
-  m_pUnkInner.CoCreateInstance(CLSID_FilterGraph, GetOwner());
-  m_pFM.CoCreateInstance(CLSID_FilterMapper2);
+  CoCreateInstance(CLSID_FilterGraph,GetOwner(),CLSCTX_ALL,__uuidof(IUnknown),(void**) &m_pUnkInner);
+  //m_pUnkInner.CoCreateInstance(CLSID_FilterGraph, GetOwner());
+  CoCreateInstance(CLSID_FilterMapper2,NULL,CLSCTX_ALL,__uuidof(m_pFM),(void**) &m_pFM);
+  //m_pFM.CoCreateInstance(CLSID_FilterMapper2);
 }
 
 CFGManager::~CFGManager()
 {
   CAutoLock cAutoLock(this);
-  while(!m_source.empty()) m_source.pop_back();
-  while(!m_transform.empty()) m_transform.pop_back();
-  while(!m_override.empty()) m_override.pop_back();
-  m_FileSource.Release();
-  m_XbmcVideoDec.Release();
-  m_pUnks.RemoveAll();
-  m_pUnkInner.Release();
+  while(!m_source.empty()) 
+    m_source.pop_back();
+  while(!m_transform.empty()) 
+    m_transform.pop_back();
+  while(!m_override.empty()) 
+    m_override.pop_back();
+
+  
+  SAFE_RELEASE(m_pUnkInner);// = NULL;//.Release();
 }
 
 STDMETHODIMP CFGManager::NonDelegatingQueryInterface(REFIID riid, void** ppv)
@@ -119,19 +123,16 @@ bool CFGManager::CStreamPath::Compare(const CStreamPath& path)
   return true;
 }
 
-HRESULT CFGManager::CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF, IUnknown** ppUnk)
+HRESULT CFGManager::CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF)
 {
   CheckPointer(pFGF, E_POINTER);
   CheckPointer(ppBF, E_POINTER);
-  CheckPointer(ppUnk, E_POINTER);
 
   CComPtr<IBaseFilter> pBF;
-  CInterfaceList<IUnknown, &IID_IUnknown> pUnk;
-  if(FAILED(pFGF->Create(&pBF, pUnk)))
+  if(FAILED(pFGF->Create(&pBF)))
     return E_FAIL;
 
   *ppBF = pBF.Detach();
-  m_pUnks.AddTailList(&pUnk);
 
   return S_OK;
 }
@@ -306,8 +307,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
   // 3. Try filters in the graph
 
   {
-    CInterfaceList<IBaseFilter> pBFs;
-
+    std::list<IBaseFilter*> pBFs;
     BeginEnumFilters(this, pEF, pBF)
     {
       if(pPinIn && (DShowUtil::IsStreamEnd(pBF) || DShowUtil::GetFilterFromPin(pPinIn) == pBF)
@@ -318,19 +318,18 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
       if(DShowUtil::GetCLSID(pPinOut) == DShowUtil::GUIDFromCString(_T("{04FE9017-F873-410E-871E-AB91661A4EF7}"))
       && DShowUtil::GetCLSID(pBF) == DShowUtil::GUIDFromCString(_T("{E30629D2-27E5-11CE-875D-00608CB78066}")))
         continue;
-
-      pBFs.AddTail(pBF);
+      pBFs.push_back(pBF);
     }
     EndEnumFilters
 
-    POSITION pos = pBFs.GetHeadPosition();
-    while(pos)
+    IBaseFilter* pBF;
+    for (list<IBaseFilter*>::iterator it = pBFs.begin() ; it != pBFs.end(); it++)
     {
-      IBaseFilter* pBF = pBFs.GetNext(pos);
-
+      pBF = *it;// ((IBaseFilter*)it);
       if(SUCCEEDED(hr = ConnectFilterDirect(pPinOut, pBF, NULL)))
       {
-        if(! DShowUtil::IsStreamEnd(pBF)) fDeadEnd = false;
+        if(! DShowUtil::IsStreamEnd(pBF)) 
+          fDeadEnd = false;
 
         if(SUCCEEDED(hr = ConnectFilter(pBF, pPinIn)))
           return hr;
@@ -352,7 +351,6 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     CFGFilter* pFGF;
     for(FilterListIter it = m_transform.begin() ; it != m_transform.end(); it++ )
     {
-      
       pFGF = *it;
       
       //CFGFilter* pFGF = m_transform.GetNext(pos);
@@ -389,11 +387,8 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     {
       CFGFilter* pFGF = fl.GetNext(pos);
 
-      //TRACE(_T("FGM: Connecting '%s'\n"), pFGF->GetName());
-
       CComPtr<IBaseFilter> pBF;
-      CComPtr<IUnknown> pUnk;
-      if(FAILED(CreateFilter(pFGF, &pBF, &pUnk)))
+      if(FAILED(CreateFilter(pFGF, &pBF)))
         continue;
 
       if(pPinIn &&  DShowUtil::IsStreamEnd(pBF))
@@ -420,28 +415,37 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
 
       if(SUCCEEDED(hr))
       {
-        if(! DShowUtil::IsStreamEnd(pBF)) fDeadEnd = false;
+        if(! DShowUtil::IsStreamEnd(pBF)) 
+          fDeadEnd = false;
 
         hr = ConnectFilter(pBF, pPinIn);
 
         if(SUCCEEDED(hr))
         {
-          if(pUnk) m_pUnks.AddTail(pUnk);
-
-          // maybe the application should do this...
-          if(CComQIPtr<IMixerPinConfig, &IID_IMixerPinConfig> pMPC = pUnk)
+          IMixerPinConfig* pMPC;
+          if (SUCCEEDED(pBF->QueryInterface(IID_IMixerPinConfig,(void **)&pMPC)))
+          {  
             pMPC->SetAspectRatioMode(AM_ARMODE_STRETCHED);
-          if(CComQIPtr<IVMRAspectRatioControl> pARC = pBF)
+            SAFE_RELEASE(pMPC);
+          }
+          IVMRAspectRatioControl* pARC;
+          if (SUCCEEDED(pBF->QueryInterface(__uuidof(IVMRAspectRatioControl),(void **)&pARC)))
+          {  
             pARC->SetAspectRatioMode(VMR_ARMODE_NONE);
-          if(CComQIPtr<IVMRAspectRatioControl9> pARC = pBF)
-            pARC->SetAspectRatioMode(VMR_ARMODE_NONE);
+            SAFE_RELEASE(pARC);
+          }
+
+          IVMRAspectRatioControl9* pARC9;
+          if (SUCCEEDED(pBF->QueryInterface(__uuidof(IVMRAspectRatioControl9),(void **)&pARC9)))
+          {  
+            pARC9->SetAspectRatioMode(VMR_ARMODE_NONE);
+            SAFE_RELEASE(pARC9);
+          }
           return hr;
         }
       }
 
       EXECUTE_ASSERT(SUCCEEDED(RemoveFilter(pBF)));
-
-      //TRACE(_T("FGM: Connecting '%s' FAILED!\n"), pFGF->GetName());
     }
   }
   
@@ -523,41 +527,6 @@ STDMETHODIMP CFGManager::ReconnectEx(IPin* ppin, const AM_MEDIA_TYPE* pmt)
   CAutoLock cAutoLock(this);
 
   return CComQIPtr<IFilterGraph2>(m_pUnkInner)->ReconnectEx(ppin, pmt);
-}
-
-STDMETHODIMP CFGManager::RenderEx(IPin* pPinOut, DWORD dwFlags, DWORD* pvContext)
-{
-  CAutoLock cAutoLock(this);
-
-  if(!pPinOut || dwFlags > AM_RENDEREX_RENDERTOEXISTINGRENDERERS || pvContext)
-    return E_INVALIDARG;
-
-  HRESULT hr;
-
-  if(dwFlags & AM_RENDEREX_RENDERTOEXISTINGRENDERERS)
-  {
-    CInterfaceList<IBaseFilter> pBFs;
-
-    BeginEnumFilters(this, pEF, pBF)
-    {
-      if(DShowUtil::IsStreamEnd(pBF))
-      {
-        pBFs.AddTail(pBF);
-      }
-    }
-    EndEnumFilters
-
-    POSITION pos = pBFs.GetHeadPosition();
-    while(pos)
-    {
-      if(SUCCEEDED(hr = ConnectFilter(pPinOut, pBFs.GetNext(pos))))
-        return hr;
-    }
-
-    return VFW_E_CANNOT_RENDER;
-  }
-
-  return Connect(pPinOut, (IPin*)NULL);
 }
 
 // IGraphBuilder2
@@ -708,25 +677,6 @@ STDMETHODIMP CFGManager::NukeDownstream(IUnknown* pUnk)
   }
 
   return S_OK;
-}
-
-
-STDMETHODIMP CFGManager::FindInterface(REFIID iid, void** ppv, BOOL bRemove)
-{
-  CAutoLock cAutoLock(this);
-
-  CheckPointer(ppv, E_POINTER);
-
-  for(POSITION pos = m_pUnks.GetHeadPosition(); pos; m_pUnks.GetNext(pos))
-  {
-    if(SUCCEEDED(m_pUnks.GetAt(pos)->QueryInterface(iid, ppv)))
-    {
-      if(bRemove) m_pUnks.RemoveAt(pos);
-      return S_OK;
-    }
-  }
-
-  return E_NOINTERFACE;
 }
 
 STDMETHODIMP CFGManager::AddToROT()
@@ -962,11 +912,11 @@ CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd)
   
 }
 
-HRESULT CFGManagerPlayer::CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF, IUnknown** ppUnk)
+HRESULT CFGManagerPlayer::CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF)
 {
   HRESULT hr;
 
-  if(FAILED(hr = __super::CreateFilter(pFGF, ppBF, ppUnk)))
+  if(FAILED(hr = __super::CreateFilter(pFGF, ppBF)))
     return hr;
   return hr;
 }

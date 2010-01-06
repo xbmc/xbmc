@@ -231,11 +231,9 @@ CFGFilterRegistry::CFGFilterRegistry(const CLSID& clsid, UINT64 merit)
   if(merit != MERIT64_DO_USE) m_merit.val = merit;
 }
 
-HRESULT CFGFilterRegistry::Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_IUnknown>& pUnks)
+HRESULT CFGFilterRegistry::Create(IBaseFilter** ppBF)
 {
   CheckPointer(ppBF, E_POINTER);
-
-  //if(ppUnk) *ppUnk = NULL;
 
   HRESULT hr = E_FAIL;
   
@@ -250,7 +248,8 @@ HRESULT CFGFilterRegistry::Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &
   else if(m_clsid != GUID_NULL)
   {
     CComPtr<IBaseFilter> pBF;
-    if(FAILED(pBF.CoCreateInstance(m_clsid))) return E_FAIL;
+    if(FAILED(pBF.CoCreateInstance(m_clsid))) 
+      return E_FAIL;
     *ppBF = pBF.Detach();
     hr = S_OK;
   }
@@ -395,7 +394,7 @@ CFGFilterFile::CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW na
   , m_autoload(false)
 {
 }
-HRESULT CFGFilterFile::Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_IUnknown>& pUnks)
+HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
 {
   CheckPointer(ppBF, E_POINTER);
 
@@ -422,7 +421,7 @@ CFGFilterVideoRenderer::CFGFilterVideoRenderer(const CLSID& clsid, CStdStringW n
   AddType(MEDIATYPE_Video, MEDIASUBTYPE_NULL);
 }
 
-HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_IUnknown>& pUnks)
+HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
 {
   CheckPointer(ppBF, E_POINTER);
 
@@ -441,7 +440,7 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF, CInterfaceList<IUnkno
   if(SUCCEEDED(hr = pCAP->CreateRenderer(&pRenderer)))
   {
     *ppBF = CComQIPtr<IBaseFilter>(pRenderer).Detach();
-    pUnks.AddTail(pCAP);
+    //pUnks.AddTail(pCAP);
   }
   if(!*ppBF) hr = E_FAIL;
 

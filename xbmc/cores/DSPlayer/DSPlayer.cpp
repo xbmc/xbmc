@@ -195,6 +195,7 @@ void CDSPlayer::Process()
 	  }
   }
   m_callback.OnPlayBackEnded();
+
   //g_renderManager.UnInit();
   
 }

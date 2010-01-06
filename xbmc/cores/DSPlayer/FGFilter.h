@@ -54,7 +54,7 @@ public:
 
 	CAtlList<CStdString> m_protocols, m_extensions, m_chkbytes; // TODO: subtype?
 
-	virtual HRESULT Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_IUnknown>& pUnks) = 0;
+  virtual HRESULT Create(IBaseFilter** ppBF) = 0;
 };
 
 class CFGFilterRegistry : public CFGFilter
@@ -73,7 +73,7 @@ public:
 	CStdString GetDisplayName() {return m_DisplayName;}
 	IMoniker* GetMoniker() {return m_pMoniker;}
 
-	HRESULT Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_IUnknown>& pUnks);
+	HRESULT Create(IBaseFilter** ppBF);
 };
 
 template<class T>
@@ -82,7 +82,7 @@ class CFGFilterInternal : public CFGFilter
 public:
 	CFGFilterInternal(CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE) : CFGFilter(__uuidof(T), name, merit) {}
 
-	HRESULT Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_IUnknown>& pUnks)
+	HRESULT Create(IBaseFilter** ppBF)
 	{
 		CheckPointer(ppBF, E_POINTER);
 
@@ -107,7 +107,7 @@ protected:
 public:
   CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE,CStdString filtername = "",CStdString filetype = "");
 
-  HRESULT Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_IUnknown>& pUnks);
+  HRESULT Create(IBaseFilter** ppBF);
   CStdString GetXFileType() { return m_xFileType; };
   CStdString GetXFilterName() { return m_xFilterName; };
   bool GetAutoLoad() { return m_autoload; };
@@ -120,7 +120,7 @@ class CFGFilterVideoRenderer : public CFGFilter
 public:
 	CFGFilterVideoRenderer(const CLSID& clsid, CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE);
 
-	HRESULT Create(IBaseFilter** ppBF, CInterfaceList<IUnknown, &IID_IUnknown>& pUnks);
+	HRESULT Create(IBaseFilter** ppBF);
 };
 
 class CFGFilterList

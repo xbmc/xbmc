@@ -61,6 +61,5 @@ protected:
   CComPtr<IBaseFilter>     m_SourceF;
   IBaseFilter              *m_SplitterF;
 
-  CInterfaceList<IUnknown, &IID_IUnknown> pUnk;
 };
 

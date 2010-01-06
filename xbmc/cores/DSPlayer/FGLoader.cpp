@@ -74,7 +74,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
       pFGF = m_configFilter.GetNext(pos);
       if ( ((CStdString)pRule->Attribute("source")).Equals(pFGF->GetXFilterName().c_str(),false) )
       {
-        if(SUCCEEDED(pFGF->Create(&m_SourceF, pUnk)))
+        if (SUCCEEDED(pFGF->Create(&m_SourceF)))
           break;
 	      else
 	      {
@@ -130,7 +130,7 @@ HRESULT CFGLoader::InsertSplitter(TiXmlElement *pRule)
     pFGF = m_configFilter.GetNext(pos);
 	if ( ( (CStdString)pRule->Attribute("splitter")).Equals(pFGF->GetXFilterName().c_str(),false ) )
     {
-      if(SUCCEEDED(pFGF->Create(&m_SplitterF, pUnk)))
+      if(SUCCEEDED(pFGF->Create(&m_SplitterF)))
         break;
 	  else
 	  {
@@ -165,7 +165,7 @@ HRESULT CFGLoader::InsertAudioDecoder(TiXmlElement *pRule)
     pFGF = m_configFilter.GetNext(pos);
     if ( ((CStdString)pRule->Attribute("audiodec")).Equals(pFGF->GetXFilterName().c_str(),false) )
     {
-      if(SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
+      if(SUCCEEDED(pFGF->Create(&ppBF)))
         break;
 	  else
 	  {
@@ -194,7 +194,7 @@ HRESULT CFGLoader::InsertVideoDecoder(TiXmlElement *pRule)
     pFGF = m_configFilter.GetNext(pos);
     if ( ((CStdString)pRule->Attribute("videodec")).Equals(pFGF->GetXFilterName().c_str(),false) )
     {
-      if(SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
+      if(SUCCEEDED(pFGF->Create(&ppBF)))
         break;
 	  else
 	  {
@@ -238,7 +238,7 @@ HRESULT CFGLoader::InsertAudioRenderer()
   }
   m_pStrAudioRenderer = currentName;
   pFGF = new CFGFilterRegistry(DShowUtil::GUIDFromCString(currentGuid));
-  hr = pFGF->Create(&ppBF, pUnk);
+  hr = pFGF->Create(&ppBF);
   hr = m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(currentName));
   ppBF.Release();
   return hr;
@@ -256,7 +256,7 @@ HRESULT CFGLoader::InsertAutoLoad()
     
     if ( pFGF->GetAutoLoad() )
     {
-      if (SUCCEEDED(pFGF->Create(&ppBF, pUnk)))
+      if (SUCCEEDED(pFGF->Create(&ppBF)))
 	    {
         m_pGraphBuilder->AddFilter(ppBF,pFGF->GetName().c_str());
         ppBF = NULL;
