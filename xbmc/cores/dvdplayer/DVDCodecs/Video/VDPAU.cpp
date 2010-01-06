@@ -53,6 +53,12 @@ static float studioCSC[3][4] =
     { 1.0f, 1.85556000f,        0.0f,-0.92780000f}
 };
 
+#define CHECK_VDPAU_RETURN(vdp, value) \
+        do { \
+          if(CheckStatus(vdp, __LINE__)) \
+            return value; \
+        } while(0);
+
 CVDPAU::CVDPAU(int width, int height, CodecID codec)
 {
   glXBindTexImageEXT = NULL;
@@ -919,7 +925,7 @@ void CVDPAU::ReadFormatOf( PixelFormat fmt
 }
 
 
-int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
+bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 {
   FiniVDPAUOutput();
 
@@ -948,17 +954,17 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
                               vid_height,
                               max_references,
                               &decoder);
-  CheckStatus(vdp_st, __LINE__);
+  CHECK_VDPAU_RETURN(vdp_st, false);
 
   vdp_st = vdp_presentation_queue_target_create_x11(vdp_device,
                                                     m_Pixmap, //x_window,
                                                     &vdp_flip_target);
-  CheckStatus(vdp_st, __LINE__);
+  CHECK_VDPAU_RETURN(vdp_st, false);
 
   vdp_st = vdp_presentation_queue_create(vdp_device,
                                          vdp_flip_target,
                                          &vdp_flip_queue);
-  CheckStatus(vdp_st, __LINE__);
+  CHECK_VDPAU_RETURN(vdp_st, false);
 
   totalAvailableOutputSurfaces = 0;
 
@@ -974,11 +980,7 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
                                        OutWidth,
                                        OutHeight,
                                        &outputSurfaces[i]);
-    CheckStatus(vdp_st, __LINE__);
-
-    if (vdp_st != VDP_STATUS_OK)
-      break;
-
+    CHECK_VDPAU_RETURN(vdp_st, false);
     totalAvailableOutputSurfaces++;
   }
   CLog::Log(LOGNOTICE, " (VDPAU) Total Output Surfaces Available: %i of a max (tmp: %i const: %i)", 
@@ -990,7 +992,7 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   outputSurface = outputSurfaces[surfaceNum];
 
   vdpauConfigured = true;
-  return 0;
+  return true;
 }
 
 void CVDPAU::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. van der Laan  -- VDPInfo
@@ -1031,6 +1033,13 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
   CVDPAU*               vdp        = ctx->GetContextVDPAU();
   struct pictureAge*    pA         = &vdp->picAge;
+
+  // while we are waiting to recover we can't do anything
+  if(vdp->recover)
+  {
+    CLog::Log(LOGWARNING, "CVDPAU::FFGetBuffer - returning due to awaiting recovery");
+    return -1;
+  }
   
   vdpau_render_state * render = NULL;
 
@@ -1140,7 +1149,10 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   if(vdp->decoder == VDP_INVALID_HANDLE 
   || vdp->vdpauConfigured == false
   || vdp->max_references < max_refs)
-    vdp->ConfigVDPAU(s, max_refs);
+  {
+    if(!vdp->ConfigVDPAU(s, max_refs))
+      return;
+  }
 
   vdp_st = vdp->vdp_decoder_render(vdp->decoder,
                                    render->surface,
@@ -1230,16 +1242,24 @@ void CVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)
     pCtx->recover = true;
 }
 
-void CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
+bool CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
 {
+  if (vdp_st == VDP_STATUS_HANDLE_DEVICE_MISMATCH
+  ||  vdp_st == VDP_STATUS_DISPLAY_PREEMPTED)
+    recover = true;
+
+  // no need to log errors about this case, as it will happen on cleanup
+  if (vdp_st == VDP_STATUS_INVALID_HANDLE && recover && vdpauConfigured)
+    return false;
+
   if (vdp_st != VDP_STATUS_OK)
   {
     CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
     if (vdpauConfigured && !VDPAUSwitching) 
       recover = true;
+    return true;
   }
-  if (vdp_st == VDP_STATUS_HANDLE_DEVICE_MISMATCH)
-    recover = true;
+  return false;
 }
 
 #endif

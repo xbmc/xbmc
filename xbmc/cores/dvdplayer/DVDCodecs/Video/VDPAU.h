@@ -89,10 +89,10 @@ public:
 
   void PrePresent(AVCodecContext *avctx, AVFrame *pFrame);
   void Present();
-  int  ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
+  bool ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();
   void InitCSCMatrix(int Height);
-  void CheckStatus(VdpStatus vdp_st, int line);
+  bool CheckStatus(VdpStatus vdp_st, int line);
 
   bool CheckRecover(bool force = false);
   void CheckFeatures();
