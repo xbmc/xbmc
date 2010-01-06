@@ -4227,9 +4227,18 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         pItem->SetLabelPreformated(true);
+        bool thumb=false,fanart=false;
         if (CFile::Exists(pItem->GetCachedVideoThumb()))
+        {
           pItem->SetThumbnailImage(pItem->GetCachedVideoThumb());
-        else // use the first item's thumb
+          thumb = true;
+        }
+        if (CFile::Exists(pItem->GetCachedFanart()))
+        {
+          pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
+          fanart = true;
+        }
+        if (!thumb || !fanart) // use the first item's thumb
         {
           CFileItemList items;
           CStdString strSQL = FormatSQL("select strPath, strFileName from movieview join setlinkmovie on setlinkmovie.idMovie=movieview.idmovie where setlinkmovie.idSet=%u",m_pDS->fv("sets.idSet").get_asInt());
@@ -4239,8 +4248,10 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
             CStdString path;
             ConstructPath(path,m_pDS2->fv(0).get_asString(),m_pDS2->fv(1).get_asString());
             CFileItem item(path,false);
-            if (CFile::Exists(item.GetCachedVideoThumb()))
+            if (!thumb && CFile::Exists(item.GetCachedVideoThumb()))
               pItem->SetThumbnailImage(item.GetCachedVideoThumb());
+            if (!fanart && CFile::Exists(item.GetCachedFanart()))
+              pItem->SetProperty("fanart_image",item.GetCachedFanart());
             m_pDS2->close();
           }
         }
