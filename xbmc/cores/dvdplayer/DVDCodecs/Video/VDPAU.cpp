@@ -87,7 +87,6 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
   tmpBrightness  = 0;
   tmpContrast    = 0;
   interlaced     = false;
-  VDPAUSwitching = false;
   max_references = 0;
 
   for (int i = 0; i < NUM_OUTPUT_SURFACES; i++)
@@ -307,15 +306,14 @@ bool CVDPAU::CheckRecover(bool force)
   {
     CLog::Log(LOGNOTICE,"Attempting recovery");
 
-    VDPAUSwitching = true;
     FiniVDPAUOutput();
     FiniVDPAUProcs();
 
-    InitVDPAUProcs();
-
-    VDPAURecovered = true;
-    VDPAUSwitching = false;
     recover = false;
+
+    InitVDPAUProcs();
+    VDPAURecovered = true;
+
     return true;
   }
   return false;
@@ -1252,8 +1250,7 @@ void CVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)
 {
   CLog::Log(LOGERROR,"VDPAU Device Preempted - attempting recovery");
   CVDPAU* pCtx = (CVDPAU*)context;
-  if (!pCtx->VDPAUSwitching)
-    pCtx->recover = true;
+  pCtx->recover = true;
 }
 
 bool CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
@@ -1269,8 +1266,7 @@ bool CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
   if (vdp_st != VDP_STATUS_OK)
   {
     CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
-    if (vdpauConfigured && !VDPAUSwitching) 
-      recover = true;
+    recover = true;
     return true;
   }
   return false;

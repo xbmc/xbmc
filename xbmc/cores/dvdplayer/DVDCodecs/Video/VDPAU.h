@@ -101,7 +101,7 @@ public:
   void SetSharpness();
   void SetDeinterlacing();
   void SetHWUpscaling();
-  bool VDPAURecovered, VDPAUSwitching;
+  bool VDPAURecovered;
 
   pictureAge picAge;
   bool       recover;
