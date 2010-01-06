@@ -1808,15 +1808,6 @@ void CLinuxRendererGL::ClearYV12Texture(int index)
 
 bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 {
-/*
-#ifdef HAVE_LIBVDPAU
-  if (m_renderMethod & RENDER_VDPAU)
-  {
-    SetEvent(m_eventTexturesDone[index]);
-    return true;
-  }
-#endif
-*/
   // Remember if we're software upscaling.
   m_isSoftwareUpscaling = IsSoftwareUpscaling();
 
