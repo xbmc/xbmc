@@ -214,11 +214,11 @@ void CGUIWindowMusicPlaylistEditor::PlayItem(int iItem)
   if (m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->Get(iItem)->IsDVD())
     return;
 
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   if (m_vecItems->Get(iItem)->IsDVD())
     MEDIA_DETECT::CAutorun::PlayDisc();
   else
-#endif    
+#endif
     CGUIWindowMusicBase::PlayItem(iItem);
 }
 
