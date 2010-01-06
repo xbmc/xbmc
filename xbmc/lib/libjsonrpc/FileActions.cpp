@@ -29,6 +29,7 @@
 
 using namespace DIRECTORY;
 using namespace Json;
+using namespace JSONRPC;
 
 JSON_STATUS CFileActions::GetRootDirectory(const CStdString &method, const Value& parameterObject, Value &result)
 {

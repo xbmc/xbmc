@@ -22,7 +22,9 @@
 #include "LibraryBase.h"
 #include "../Util.h"
 
+using namespace MUSIC_INFO;
 using namespace Json;
+using namespace JSONRPC;
 
 void CLibraryBase::FillVideoDetails(const CVideoInfoTag *videoInfo, const Value& parameterObject, Value &result)
 {

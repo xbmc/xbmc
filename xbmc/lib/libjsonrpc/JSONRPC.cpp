@@ -26,6 +26,8 @@
 #include "VideoLibrary.h"
 #include <string.h>
 
+using namespace JSONRPC;
+
 const JSON_ACTION commands[] = {
 // JSON-RPC
   { "JSONRPC.Introspect",               CJSONRPC::Introspect,                   RO, "Enumerates all actions and descriptions" },

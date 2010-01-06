@@ -29,6 +29,7 @@
 
 using namespace XFILE;
 using namespace std;
+using namespace JSONRPC;
 
 CWebServer::CWebServer()
 {

@@ -28,6 +28,7 @@
 
 using namespace MUSIC_INFO;
 using namespace Json;
+using namespace JSONRPC;
 
 JSON_STATUS CMusicLibrary::GetArtists(const CStdString &method, const Value& parameterObject, Value &result)
 {

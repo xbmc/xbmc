@@ -24,6 +24,7 @@
 #include "../Util.h"
 
 using namespace Json;
+using namespace JSONRPC;
 
 JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, const Value& parameterObject, Value &result)
 {

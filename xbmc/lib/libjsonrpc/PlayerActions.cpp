@@ -25,6 +25,7 @@
 #include "Util.h"
 
 using namespace Json;
+using namespace JSONRPC;
 
 JSON_STATUS CPlayerActions::GetActivePlayers(const CStdString &method, const Value& parameterObject, Value &result)
 {
