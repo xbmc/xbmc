@@ -1080,6 +1080,9 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
       CLog::Log(LOGNOTICE, " (VDPAU) No Video surface available could be created.... continuing with an invalid handler");
   }
 
+  if (render == NULL)
+    return -1;
+
   pic->data[1] =  pic->data[2] = NULL;
   pic->data[0]= (uint8_t*)render;
 
@@ -1101,7 +1104,6 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   }
   pic->type= FF_BUFFER_TYPE_USER;
 
-  assert(render != NULL);
   render->state |= FF_VDPAU_STATE_USED_FOR_REFERENCE;
   pic->reordered_opaque= avctx->reordered_opaque;
   return 0;
@@ -1114,7 +1116,11 @@ void CVDPAU::FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
   int i;
 
   render=(vdpau_render_state*)pic->data[0];
-  assert(render != NULL);
+  if(!render)
+  {
+    CLog::Log(LOGERROR, "CVDPAU::FFDrawSlice - invalid context handle provided");
+    return;
+  }
 
   render->state &= ~FF_VDPAU_STATE_USED_FOR_REFERENCE;
   for(i=0; i<4; i++)
@@ -1133,14 +1139,22 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   if(vdp->recover)
     return;
 
-  assert(src->linesize[0]==0 && src->linesize[1]==0 && src->linesize[2]==0);
-  assert(offset[0]==0 && offset[1]==0 && offset[2]==0);
+  if(src->linesize[0] || src->linesize[1] || src->linesize[2]
+  || offset[0] || offset[1] || offset[2])
+  {
+    CLog::Log(LOGERROR, "CVDPAU::FFDrawSlice - invalid linesizes or offsets provided");
+    return;
+  }
 
   VdpStatus vdp_st;
   vdpau_render_state * render;
 
   render = (vdpau_render_state*)src->data[0];
-  assert( render != NULL );
+  if(!render)
+  {
+    CLog::Log(LOGERROR, "CVDPAU::FFDrawSlice - invalid context handle provided");
+    return;
+  }
 
   uint32_t max_refs = 0;
   if(s->pix_fmt == PIX_FMT_VDPAU_H264)
