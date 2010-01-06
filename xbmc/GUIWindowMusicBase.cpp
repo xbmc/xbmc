@@ -851,6 +851,8 @@ bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArti
   { 
     if (!scanner.DownloadArtistInfo(strPath,strTempArtist,bCanceled,m_dlgProgress))
     {
+      if (bCanceled)
+        return false;
       if (m_dlgProgress && allowSelection != SELECTION_AUTO)
       {
         if (!CGUIDialogKeyboard::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
