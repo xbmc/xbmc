@@ -6,8 +6,38 @@
 #include <d3dx9.h>
 #include <dxva.h>
 #include <dxva2api.h>
-
+#include "charsetconverter.h"
 #include "log.h"
+
+#include "oaidl.H"
+
+bool DShowUtil::GuidVectItterCompare(GuidListIter it,const std::vector<GUID>::const_reference vect)
+{
+if (it->Data1 == vect.Data1 && it->Data2 == vect.Data2 && it->Data3 == vect.Data3 && it->Data4 == vect.Data4)
+  return true;
+else 
+  return false;
+}
+
+bool DShowUtil::GuidItteratorIsNull(GuidListIter it)
+{
+  GUID gnull;
+  gnull = GUID_NULL;
+if (it->Data1 == gnull.Data1 && it->Data2 == gnull.Data2 && it->Data3 == gnull.Data3 && it->Data4 == gnull.Data4)
+  return false;
+else 
+  return true;
+}
+
+bool DShowUtil::GuidVectIsNull(const std::vector<GUID>::const_reference vect)
+{
+  GUID gnull;
+  gnull = GUID_NULL;
+if (vect.Data1 == gnull.Data1 && vect.Data2 == gnull.Data2 && vect.Data3 == gnull.Data3 && vect.Data4 == gnull.Data4)
+  return false;
+else 
+  return true;
+}
 
 LONG DShowUtil::MFTimeToMsec(const LONGLONG& time)
 {
@@ -20,29 +50,36 @@ CStdString DShowUtil::GetFilterPath(CStdString pClsid)
   int ret = -1;
   CStdString strReg,strResult;
   strReg = _T("\\CLSID\\") + pClsid + _T("\\InprocServer32");
-  CRegKey reg;
+  //CRegKey reg;
   
-  if (reg.Open(HKEY_CLASSES_ROOT, strReg, KEY_READ) == ERROR_SUCCESS) 
+  if (RegLoadKey(HKEY_CLASSES_ROOT,strReg,KEY_READ == ERROR_SUCCESS))//reg.Open(HKEY_CLASSES_ROOT, strReg, KEY_READ) == ERROR_SUCCESS) 
   {
-
 			TCHAR		val[1024];
-			ULONG		len;
-			reg.QueryStringValue(_T(""), val, &len);
-			strResult = val;
+			PLONG		len;
+      //LONG ret = RegOpenKeyEx(HKEY_LOCAL_MACHINE,"HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0",0, KEY_READ, &hKey);
+      //ret = RegQueryValueEx(hKey,"~MHz", NULL, NULL, (LPBYTE)&dwMHz, &dwSize);
+      //RegCloseKey(hKey);
+      if (RegQueryValue(HKEY_CLASSES_ROOT,strReg.c_str(),val,NULL) == ERROR_SUCCESS)
+      {
+        strResult = val;
+        ret = 0;
+      }
+			//reg.QueryStringValue(_T(""), val, &len);
+			
 
-			ret = 0;
-			reg.Close();
+			//ret = 0;
+			//reg.Close();
   }
 		return strResult;
 }
 
 
-std::vector<CComPtr<IMoniker>> DShowUtil::GetAudioRenderersGuid()
+std::vector<IMoniker*> DShowUtil::GetAudioRenderersGuid()
 {
   
-  std::vector<CComPtr<IMoniker>> vAudioRenderers;
+  std::vector<IMoniker*> vAudioRenderers;
   //CLSID_AudioRendererCategory
-  CComPtr<IEnumMoniker> pEM;
+  IEnumMoniker* pEM;
   BeginEnumSysDev(CLSID_AudioRendererCategory, pMoniker)
 	{
 	  vAudioRenderers.push_back(pMoniker);
@@ -75,7 +112,7 @@ int DShowUtil::CountPins(IBaseFilter* pBF, int& nIn, int& nOut, int& nInC, int& 
     PIN_DIRECTION dir;
     if(SUCCEEDED(pPin->QueryDirection(&dir)))
     {
-      CComPtr<IPin> pPinConnectedTo;
+      IPin* pPinConnectedTo;
       pPin->ConnectedTo(&pPinConnectedTo);
 
       if(dir == PINDIR_INPUT) {nIn++; if(pPinConnectedTo) nInC++;}
@@ -103,14 +140,17 @@ bool DShowUtil::IsMultiplexer(IBaseFilter* pBF, bool fCountConnectedOnly)
 
 bool DShowUtil::IsStreamStart(IBaseFilter* pBF)
 {
-  CComQIPtr<IAMFilterMiscFlags> pAMMF(pBF);
+  IAMFilterMiscFlags* pAMMF;
+  pBF->QueryInterface(__uuidof(IAMFilterMiscFlags),(void **)&pAMMF);
+  
+  //CComQIPtr<IAMFilterMiscFlags> pAMMF(pBF);
   if(pAMMF && pAMMF->GetMiscFlags()&AM_FILTER_MISC_FLAGS_IS_SOURCE)
     return(true);
 
   int nIn, nOut, nInC, nOutC;
   CountPins(pBF, nIn, nOut, nInC, nOutC);
   AM_MEDIA_TYPE mt;
-  CComPtr<IPin> pIn = GetFirstPin(pBF);
+  IPin* pIn = GetFirstPin(pBF);
   return((nOut > 1)
     || (nOut > 0 && nIn == 1 && pIn && SUCCEEDED(pIn->ConnectionMediaType(&mt)) && mt.majortype == MEDIATYPE_Stream));
 }
@@ -159,8 +199,9 @@ bool DShowUtil::IsAudioWaveRenderer(IBaseFilter* pBF)
 {
   int nIn, nOut, nInC, nOutC;
   CountPins(pBF, nIn, nOut, nInC, nOutC);
-
-  if(nInC > 0 && nOut == 0 && CComQIPtr<IBasicAudio>(pBF))
+  IBasicAudio* pPFAudio;
+  pBF->QueryInterface(__uuidof(IBasicAudio),(void **)&pPFAudio);
+  if(nInC > 0 && nOut == 0 && pPFAudio)
   {
     BeginEnumPins(pBF, pEP, pPin)
     {
@@ -238,11 +279,12 @@ IPin* DShowUtil::GetUpStreamPin(IBaseFilter* pBF, IPin* pInputPin)
     if(pInputPin && pInputPin != pPin) continue;
 
     PIN_DIRECTION dir;
-    CComPtr<IPin> pPinConnectedTo;
+    IPin* pPinConnectedTo;
     if(SUCCEEDED(pPin->QueryDirection(&dir)) && dir == PINDIR_INPUT
     && SUCCEEDED(pPin->ConnectedTo(&pPinConnectedTo)))
     {
-      IPin* pRet = pPinConnectedTo.Detach();
+      IPin* pRet = pPinConnectedTo;
+      pPinConnectedTo = NULL;
       pRet->Release();
       return(pRet);
     }
@@ -262,7 +304,8 @@ IPin* DShowUtil::GetFirstPin(IBaseFilter* pBF, PIN_DIRECTION dir)
     pPin->QueryDirection(&dir2);
     if(dir == dir2)
     {
-      IPin* pRet = pPin.Detach();
+      IPin* pRet = pPin;
+      pPin = NULL;
       pRet->Release();
       return(pRet);
     }
@@ -280,10 +323,11 @@ IPin* DShowUtil::GetFirstDisconnectedPin(IBaseFilter* pBF, PIN_DIRECTION dir)
   {
     PIN_DIRECTION dir2;
     pPin->QueryDirection(&dir2);
-    CComPtr<IPin> pPinTo;
+    IPin* pPinTo;
     if(dir == dir2 && (S_OK != pPin->ConnectedTo(&pPinTo)))
     {
-      IPin* pRet = pPin.Detach();
+      IPin* pRet = pPin;
+      pPin = NULL;
       pRet->Release();
       return(pRet);
     }
@@ -296,7 +340,7 @@ IPin* DShowUtil::GetFirstDisconnectedPin(IBaseFilter* pBF, PIN_DIRECTION dir)
 IBaseFilter* DShowUtil::FindFilter(LPCWSTR clsid, IFilterGraph* pFG)
 {
   CLSID clsid2;
-  CLSIDFromString(CComBSTR(clsid), &clsid2);
+  CLSIDFromString(LPOLESTR(clsid), &clsid2);
   return(FindFilter(clsid2, pFG));
 }
 
@@ -318,7 +362,7 @@ IPin* DShowUtil::FindPin(IBaseFilter* pBF, PIN_DIRECTION direction, const AM_MED
   PIN_DIRECTION  pindir;
   BeginEnumPins(pBF, pEP, pPin)
   {
-    CComPtr<IPin>    pFellow;
+    IPin*    pFellow;
 
     if (SUCCEEDED (pPin->QueryDirection(&pindir)) &&
       pindir == direction &&
@@ -384,50 +428,61 @@ IBaseFilter* DShowUtil::GetFilterFromPin(IPin* pPin)
 IPin* DShowUtil::AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder* pGB)
 {
   IPin* pRet = pPin;
-
-  CInterfaceList<IBaseFilter> pFilters;
+  std::list<IBaseFilter*> pFilters;
 
   do
   {
     if(!pPin || DisplayName.IsEmpty() || !pGB)
       break;
 
-    CComPtr<IPin> pPinTo;
+    IPin* pPinTo;
     PIN_DIRECTION dir;
     if(FAILED(pPin->QueryDirection(&dir)) || dir != PINDIR_OUTPUT || SUCCEEDED(pPin->ConnectedTo(&pPinTo)))
       break;
 
-    CComPtr<IBindCtx> pBindCtx;
+    IBindCtx* pBindCtx;
     CreateBindCtx(0, &pBindCtx);
 
-    CComPtr<IMoniker> pMoniker;
+    IMoniker* pMoniker;
     ULONG chEaten;
-    if(S_OK != MkParseDisplayName(pBindCtx, CComBSTR(DisplayName), &chEaten, &pMoniker))
+    CStdStringW strDisplayNameW;
+    g_charsetConverter.subtitleCharsetToW(DisplayName,strDisplayNameW);
+    if(S_OK != MkParseDisplayName(pBindCtx, LPOLESTR(strDisplayNameW.c_str()), &chEaten, &pMoniker))
       break;
 
-    CComPtr<IBaseFilter> pBF;
+    IBaseFilter* pBF;
     if(FAILED(pMoniker->BindToObject(pBindCtx, 0, IID_IBaseFilter, (void**)&pBF)) || !pBF)
       break;
 
-    CComPtr<IPropertyBag> pPB;
+    IPropertyBag* pPB;
     if(FAILED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB)))
       break;
 
-    CComVariant var;
-    if(FAILED(pPB->Read(CComBSTR(_T("FriendlyName")), &var, NULL)))
+    VARIANT var;
+    if(FAILED(pPB->Read(LPCOLESTR(_T("FriendlyName")), &var, NULL)))
       break;
 
-    pFilters.AddTail(pBF);
+    pFilters.push_back(pBF);
     BeginEnumFilters(pGB, pEnum, pBF2) 
-      pFilters.AddTail(pBF2); 
+      pFilters.push_back(pBF2); 
     EndEnumFilters
 
     if(FAILED(pGB->AddFilter(pBF, CStdStringW(var.bstrVal))))
       break;
 
-    BeginEnumFilters(pGB, pEnum, pBF2) 
-      if(!pFilters.Find(pBF2) && SUCCEEDED(pGB->RemoveFilter(pBF2))) 
-        pEnum->Reset();
+    BeginEnumFilters(pGB, pEnum, pBF2)
+      //CAtlList find replaced by this
+      IBaseFilter* pBFS;
+      for (std::list<IBaseFilter*>::iterator it = pFilters.begin() ; it != pFilters.end(); it++)
+      {
+        //find pBF2 in the list
+        pBFS = *it;
+        if (pBFS == pBF2)
+        {
+          if (SUCCEEDED(pGB->RemoveFilter(pBF2)))
+            pEnum->Reset();
+        }
+      }
     EndEnumFilters
 
     pPinTo = GetFirstPin(pBF, PINDIR_INPUT);
@@ -446,8 +501,17 @@ IPin* DShowUtil::AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
     }
 
     BeginEnumFilters(pGB, pEnum, pBF2) 
-      if(!pFilters.Find(pBF2) && SUCCEEDED(pGB->RemoveFilter(pBF2))) 
-        pEnum->Reset();
+      for (std::list<IBaseFilter*>::iterator it = pFilters.begin() ; it != pFilters.end(); it++)
+      {
+        if (*it == pBF2)
+        {
+          if (SUCCEEDED(pGB->RemoveFilter(pBF2)))
+            pEnum->Reset();
+        }
+      }
+      
+      //if(!pFilters.Find(pBF2) && SUCCEEDED(pGB->RemoveFilter(pBF2))) 
+      //  pEnum->Reset();
     EndEnumFilters
 
     pRet = GetFirstPin(pBF, PINDIR_OUTPUT);
@@ -474,7 +538,8 @@ IPin* DShowUtil::InsertFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
     if(FAILED(pPin->QueryDirection(&dir)))
       break;
 
-    CComPtr<IPin> pFrom, pTo;
+    IPin* pFrom;
+    IPin* pTo;
 
     if(dir == PINDIR_INPUT)
     {
@@ -490,30 +555,32 @@ IPin* DShowUtil::InsertFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
     if(!pFrom || !pTo)
       break;
 
-    CComPtr<IBindCtx> pBindCtx;
+    IBindCtx* pBindCtx;
     CreateBindCtx(0, &pBindCtx);
 
-    CComPtr<IMoniker> pMoniker;
+    IMoniker* pMoniker;
     ULONG chEaten;
-    if(S_OK != MkParseDisplayName(pBindCtx, CComBSTR(DisplayName), &chEaten, &pMoniker))
+    CStdStringW DisplayNameW;
+    g_charsetConverter.utf8ToW(DisplayName,DisplayNameW);
+    if(S_OK != MkParseDisplayName(pBindCtx, LPCOLESTR(DisplayNameW.c_str()), &chEaten, &pMoniker))
       break;
 
-    CComPtr<IBaseFilter> pBF;
+    IBaseFilter* pBF;
     if(FAILED(pMoniker->BindToObject(pBindCtx, 0, IID_IBaseFilter, (void**)&pBF)) || !pBF)
       break;
 
-    CComPtr<IPropertyBag> pPB;
+    IPropertyBag* pPB;
     if(FAILED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB)))
       break;
 
-    CComVariant var;
-    if(FAILED(pPB->Read(CComBSTR(_T("FriendlyName")), &var, NULL)))
+    VARIANT var;
+    if(FAILED(pPB->Read(LPCOLESTR(L"FriendlyName"), &var, NULL)))
       break;
 
     if(FAILED(pGB->AddFilter(pBF, CStdStringW(var.bstrVal))))
       break;
 
-    CComPtr<IPin> pFromTo = GetFirstPin(pBF, PINDIR_INPUT);
+    IPin* pFromTo = GetFirstPin(pBF, PINDIR_INPUT);
     if(!pFromTo)
     {
       pGB->RemoveFilter(pBF);
@@ -535,7 +602,7 @@ IPin* DShowUtil::InsertFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
       break;
     }
 
-    CComPtr<IPin> pToFrom = GetFirstPin(pBF, PINDIR_OUTPUT);
+    IPin* pToFrom = GetFirstPin(pBF, PINDIR_OUTPUT);
     if(!pToFrom)
     {
       pGB->RemoveFilter(pBF);
@@ -557,15 +624,16 @@ IPin* DShowUtil::InsertFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
   return(pPin);
 }
 
-void DShowUtil::ExtractMediaTypes(IPin* pPin, CAtlArray<GUID>& types)
+void DShowUtil::ExtractMediaTypes(IPin* pPin, std::vector<GUID>& types)
 {
-  types.RemoveAll();
+  while (!types.empty())
+    types.pop_back();
 
     BeginEnumMediaTypes(pPin, pEM, pmt)
   {
     bool fFound = false;
 
-    for(int i = 0; !fFound && i < (int)types.GetCount(); i += 2)
+    for(int i = 0; !fFound && i < (int)types.size(); i += 2)
     {
       if(types[i] == pmt->majortype && types[i+1] == pmt->subtype)
         fFound = true;
@@ -573,22 +641,36 @@ void DShowUtil::ExtractMediaTypes(IPin* pPin, CAtlArray<GUID>& types)
 
     if(!fFound)
     {
-      types.Add(pmt->majortype);
-      types.Add(pmt->subtype);
+      types.push_back(pmt->majortype);
+      types.push_back(pmt->subtype);
     }
   }
   EndEnumMediaTypes(pmt)
 }
 
-void DShowUtil::ExtractMediaTypes(IPin* pPin, CAtlList<CMediaType>& mts)
+void DShowUtil::ExtractMediaTypes(IPin* pPin, std::list<CMediaType>& mts)
 {
-  mts.RemoveAll();
+  while (!mts.empty())
+    mts.pop_back();
 
-    BeginEnumMediaTypes(pPin, pEM, pmt)
+  BeginEnumMediaTypes(pPin, pEM, pmt)
   {
     bool fFound = false;
-
-    POSITION pos = mts.GetHeadPosition();
+  
+    for (std::list<CMediaType>::iterator it = mts.begin() ; it != mts.end(); it++)
+    {
+      if((*it).majortype == pmt->majortype && (*it).subtype == pmt->subtype)
+        fFound = true;
+      if (!fFound)
+      {
+        mts.push_back(CMediaType(*pmt));
+      }
+      if (fFound)
+        break;
+    }
+  }
+  EndEnumMediaTypes(pmt)
+    /*POSITION pos = mts.GetHeadPosition();
     while(!fFound && pos)
     {
       CMediaType& mt = mts.GetNext(pos);
@@ -600,8 +682,10 @@ void DShowUtil::ExtractMediaTypes(IPin* pPin, CAtlList<CMediaType>& mts)
     {
       mts.AddTail(CMediaType(*pmt));
     }
-  }
-  EndEnumMediaTypes(pmt)
+    EndEnumMediaTypes(pmt)
+    */
+
+  
 }
 
 int Eval_Exception(int n_except)
@@ -629,11 +713,19 @@ CLSID DShowUtil::GetCLSID(IPin* pPin)
 
 bool DShowUtil::IsCLSIDRegistered(LPCTSTR clsid)
 {
+  bool resReg = false;
   CStdString rootkey1(_T("CLSID\\"));
   CStdString rootkey2(_T("CLSID\\{083863F1-70DE-11d0-BD40-00A0C911CE86}\\Instance\\"));
-
-  return ERROR_SUCCESS == CRegKey().Open(HKEY_CLASSES_ROOT, rootkey1 + clsid, KEY_READ)
-    || ERROR_SUCCESS == CRegKey().Open(HKEY_CLASSES_ROOT, rootkey2 + clsid, KEY_READ);
+  HKEY pkey;
+  if (ERROR_SUCCESS == RegOpenKey(HKEY_CLASSES_ROOT,rootkey1 + clsid,&pkey));
+    resReg=true;
+  RegCloseKey(pkey);
+  if (ERROR_SUCCESS == RegOpenKey(HKEY_CLASSES_ROOT,rootkey2 + clsid,&pkey));
+    resReg=true;
+  RegCloseKey(pkey);
+  //return ERROR_SUCCESS == CRegKey().Open(HKEY_CLASSES_ROOT, rootkey1 + clsid, KEY_READ)
+  //  || ERROR_SUCCESS == CRegKey().Open(HKEY_CLASSES_ROOT, rootkey2 + clsid, KEY_READ);
+  return resReg;
 }
 
 bool DShowUtil::IsCLSIDRegistered(const CLSID& clsid)
@@ -650,11 +742,12 @@ bool DShowUtil::IsCLSIDRegistered(const CLSID& clsid)
   return(fRet);
 }
 
-void DShowUtil::CStringToBin(CStdString str, CAtlArray<BYTE>& data)
+void DShowUtil::CStringToBin(CStdString str, std::vector<BYTE>& data)
 {
   str.Trim();
   ASSERT((str.GetLength()&1) == 0);
-  data.SetCount(str.GetLength()/2);
+  data.resize(str.GetLength()/2);
+  //was CAtlArray SetCount
 
   BYTE b = 0;
 
@@ -702,7 +795,7 @@ CStdString DShowUtil::BinToCString(BYTE* ptr, int len)
   return(ret);
 }
 
-static void FindFiles(CStdString fn, CAtlList<CStdString>& files)
+static void FindFiles(CStdString fn, std::list<CStdString>& files)
 {
   CStdString path = fn;
   path.Replace('/', '\\');
@@ -712,7 +805,7 @@ static void FindFiles(CStdString fn, CAtlList<CStdString>& files)
   HANDLE h = FindFirstFile(fn, &findData);
   if(h != INVALID_HANDLE_VALUE)
   {
-    do {files.AddTail(path + findData.cFileName);}
+    do {files.push_back(path + findData.cFileName);}
     while(FindNextFile(h, &findData));
 
     FindClose(h);
@@ -738,58 +831,6 @@ CStdString GetDriveLabel(TCHAR drive)
 
   return(label);
 }
-//require mfc
-/*bool DShowUtil::GetKeyFrames(CString fn, CUIntArray& kfs)
-{
-  kfs.RemoveAll();
-
-  CString fn2 = CString(fn).MakeLower();
-  if(fn2.Mid(fn2.ReverseFind('.')+1) == _T("avi"))
-  {
-    AVIFileInit();
-      
-    PAVIFILE pfile;
-    if(AVIFileOpen(&pfile, fn, OF_SHARE_DENY_WRITE, 0L) == 0)
-    {
-      AVIFILEINFO afi;
-      memset(&afi, 0, sizeof(afi));
-      AVIFileInfo(pfile, &afi, sizeof(AVIFILEINFO));
-
-      CComPtr<IAVIStream> pavi;
-      if(AVIFileGetStream(pfile, &pavi, streamtypeVIDEO, 0) == AVIERR_OK)
-      {
-        AVISTREAMINFO si;
-        AVIStreamInfo(pavi, &si, sizeof(si));
-
-        if(afi.dwCaps&AVIFILECAPS_ALLKEYFRAMES)
-        {
-          kfs.SetSize(si.dwLength);
-          for(int DShowUtil::kf = 0; kf < (int)si.dwLength; kf++) kfs[kf] = kf;
-        }
-        else
-        {
-          for(int DShowUtil::kf = 0; ; kf++)
-          {
-            kf = pavi->FindSample(kf, FIND_KEY|FIND_NEXT);
-            if(kf < 0 || kfs.GetCount() > 0 && kfs[kfs.GetCount()-1] >= (UINT)kf) break;
-            kfs.Add(kf);
-          }
-
-          if(kfs.GetCount() > 0 && kfs[kfs.GetCount()-1] < si.dwLength-1)
-          {
-            kfs.Add(si.dwLength-1);
-          }
-        }
-      }
-
-      AVIFileRelease(pfile);
-    }
-
-    AVIFileExit();
-  }
-
-  return(kfs.GetCount() > 0);
-}*/
 
 DVD_HMSF_TIMECODE RT2HMSF(REFERENCE_TIME rt, double fps)
 {
@@ -1060,21 +1101,21 @@ bool DShowUtil::CreateFilter(CStdStringW DisplayName, IBaseFilter** ppBF, CStdSt
   *ppBF = NULL;
   FriendlyName.Empty();
 
-  CComPtr<IBindCtx> pBindCtx;
+  IBindCtx* pBindCtx;
   CreateBindCtx(0, &pBindCtx);
 
-  CComPtr<IMoniker> pMoniker;
+  IMoniker* pMoniker;
   ULONG chEaten;
-  if(S_OK != MkParseDisplayName(pBindCtx, CComBSTR(DisplayName), &chEaten, &pMoniker))
+  if(S_OK != MkParseDisplayName(pBindCtx, LPCOLESTR(DisplayName.c_str()), &chEaten, &pMoniker))
     return(false);
 
   if(FAILED(pMoniker->BindToObject(pBindCtx, 0, IID_IBaseFilter, (void**)ppBF)) || !*ppBF)
     return(false);
 
-  CComPtr<IPropertyBag> pPB;
-  CComVariant var;
+  IPropertyBag* pPB;
+  VARIANT var;
   if(SUCCEEDED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB))
-  && SUCCEEDED(pPB->Read(CComBSTR(_T("FriendlyName")), &var, NULL)))
+  && SUCCEEDED(pPB->Read(LPCOLESTR(_T("FriendlyName")), &var, NULL)))
     FriendlyName = var.bstrVal;
 
   return(true);
@@ -1087,23 +1128,23 @@ IBaseFilter* DShowUtil::AppendFilter(IPin* pPin, IMoniker* pMoniker, IGraphBuild
     if(!pPin || !pMoniker || !pGB)
       break;
 
-    CComPtr<IPin> pPinTo;
+    IPin* pPinTo;
     PIN_DIRECTION dir;
     if(FAILED(pPin->QueryDirection(&dir)) || dir != PINDIR_OUTPUT || SUCCEEDED(pPin->ConnectedTo(&pPinTo)))
       break;
 
-    CComPtr<IBindCtx> pBindCtx;
+    IBindCtx* pBindCtx;
     CreateBindCtx(0, &pBindCtx);
 
-    CComPtr<IPropertyBag> pPB;
+    IPropertyBag* pPB;
     if(FAILED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB)))
       break;
 
-    CComVariant var;
-    if(FAILED(pPB->Read(CComBSTR(_T("FriendlyName")), &var, NULL)))
+    VARIANT var;
+    if(FAILED(pPB->Read(LPCOLESTR(_T("FriendlyName")), &var, NULL)))
       break;
 
-    CComPtr<IBaseFilter> pBF;
+    IBaseFilter* pBF;
     if(FAILED(pMoniker->BindToObject(pBindCtx, 0, IID_IBaseFilter, (void**)&pBF)) || !pBF)
       break;
 
@@ -1132,22 +1173,22 @@ CStdStringW GetFriendlyName(CStdStringW DisplayName)
 {
   CStdStringW FriendlyName;
 
-  CComPtr<IBindCtx> pBindCtx;
+  IBindCtx* pBindCtx;
   CreateBindCtx(0, &pBindCtx);
 
-  CComPtr<IMoniker> pMoniker;
+  IMoniker* pMoniker;
   ULONG chEaten;
-  if(S_OK != MkParseDisplayName(pBindCtx, CComBSTR(DisplayName), &chEaten, &pMoniker))
+  if(S_OK != MkParseDisplayName(pBindCtx, LPCOLESTR(DisplayName.c_str()), &chEaten, &pMoniker))
   {
     FriendlyName.clear();
     return FriendlyName;
   }
     
 
-  CComPtr<IPropertyBag> pPB;
-  CComVariant var;
+  IPropertyBag* pPB;
+  VARIANT var;
   if(SUCCEEDED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB))
-  && SUCCEEDED(pPB->Read(CComBSTR(_T("FriendlyName")), &var, NULL)))
+  && SUCCEEDED(pPB->Read(LPCOLESTR(_T("FriendlyName")), &var, NULL)))
     FriendlyName = var.bstrVal;
 
   return FriendlyName;
@@ -1160,7 +1201,7 @@ typedef struct
   CLSID clsid;
 } ExternalObject;
 
-static CAtlList<ExternalObject> s_extobjs;
+static std::list<ExternalObject> s_extobjs;
 
 HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, void** ppv)
 {
@@ -1173,6 +1214,16 @@ HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, 
   HINSTANCE hInst = NULL;
   bool fFound = false;
 
+  for (std::list<ExternalObject>::iterator it = s_extobjs.begin() ; it != s_extobjs.end(); it++)
+  {
+    if(!(*it).path.CompareNoCase(fullpath))
+    {
+      hInst = (*it).hInst;
+      fFound = true;
+      break;
+    }
+  }
+  /*
   POSITION pos = s_extobjs.GetHeadPosition();
   while(pos)
   {
@@ -1183,18 +1234,19 @@ HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, 
       fFound = true;
       break;
     }
-  }
+  }*/
 
   HRESULT hr = E_FAIL;
-
-  if(hInst || (hInst = CoLoadLibrary(CComBSTR(fullpath), TRUE)))
+  CStdStringW fullpathW;
+  g_charsetConverter.subtitleCharsetToW(fullpath,fullpathW);
+  if(hInst || (hInst = CoLoadLibrary(LPOLESTR(fullpathW.c_str()), TRUE)))
   {
     typedef HRESULT (__stdcall * PDllGetClassObject)(REFCLSID rclsid, REFIID riid, LPVOID* ppv);
     PDllGetClassObject p = (PDllGetClassObject)GetProcAddress(hInst, "DllGetClassObject");
 
     if(p && FAILED(hr = p(clsid, iid, ppv)))
     {
-      CComPtr<IClassFactory> pCF;
+      IClassFactory* pCF;
       if(SUCCEEDED(hr = p(clsid, __uuidof(IClassFactory), (void**)&pCF)))
       {
         hr = pCF->CreateInstance(NULL, iid, ppv);
@@ -1214,7 +1266,7 @@ HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, 
     eo.path = fullpath;
     eo.hInst = hInst;
     eo.clsid = clsid;
-    s_extobjs.AddTail(eo);
+    s_extobjs.push_back(eo);
   }
 
   return hr;
@@ -1230,13 +1282,11 @@ HRESULT DShowUtil::LoadExternalPropertyPage(IPersist* pP, REFCLSID clsid, IPrope
   CLSID clsid2 = GUID_NULL;
   if(FAILED(pP->GetClassID(&clsid2))) return E_FAIL;
 
-  POSITION pos = s_extobjs.GetHeadPosition();
-  while(pos)
+  for (std::list<ExternalObject>::iterator it = s_extobjs.begin() ; it != s_extobjs.end(); it++)
   {
-    ExternalObject& eo = s_extobjs.GetNext(pos);
-    if(eo.clsid == clsid2)
+    if((*it).clsid == clsid2)
     {
-      return LoadExternalObject(eo.path, clsid, __uuidof(IPropertyPage), (void**)ppPP);
+      return LoadExternalObject((*it).path, clsid, __uuidof(IPropertyPage), (void**)ppPP);
     }
   }
 
@@ -1245,13 +1295,12 @@ HRESULT DShowUtil::LoadExternalPropertyPage(IPersist* pP, REFCLSID clsid, IPrope
 
 void DShowUtil::UnloadExternalObjects()
 {
-  POSITION pos = s_extobjs.GetHeadPosition();
-  while(pos)
+  for (std::list<ExternalObject>::iterator it = s_extobjs.begin() ; it != s_extobjs.end(); it++)
   {
-    ExternalObject& eo = s_extobjs.GetNext(pos);
-    CoFreeLibrary(eo.hInst);
+    CoFreeLibrary((*it).hInst);
   }
-  s_extobjs.RemoveAll();
+  while (!s_extobjs.empty())
+    s_extobjs.pop_back();
 }
 
 CStdString DShowUtil::GetMediaTypeName(const GUID& guid)
@@ -1282,7 +1331,9 @@ CStdString DShowUtil::GetMediaTypeName(const GUID& guid)
 GUID DShowUtil::GUIDFromCString(CStdString str)
 {
   GUID guid = GUID_NULL;
-  HRESULT hr = CLSIDFromString(CComBSTR(str), &guid);
+  CStdStringW strW;
+  g_charsetConverter.subtitleCharsetToW(str,strW);
+  HRESULT hr = CLSIDFromString(LPOLESTR(strW.c_str()), &guid);
   ASSERT(SUCCEEDED(hr));
   return guid;
 }
@@ -1290,7 +1341,9 @@ GUID DShowUtil::GUIDFromCString(CStdString str)
 HRESULT DShowUtil::GUIDFromCString(CStdString str, GUID& guid)
 {
   guid = GUID_NULL;
-  return CLSIDFromString(CComBSTR(str), &guid);
+  CStdStringW strW;
+  g_charsetConverter.subtitleCharsetToW(str,strW);
+  return CLSIDFromString(LPOLESTR(strW.c_str()), &guid);
 }
 
 CStdString DShowUtil::CStringFromGUID(const GUID& guid)
@@ -1949,14 +2002,13 @@ CStdString LanguageToISO6392(LPCTSTR lang)
   str.MakeLower();
   for(int i = 0, j = countof(s_isolangs); i < j; i++)
   {
-    CAtlList<CStdString> sl;
-    Explode(CStdString(s_isolangs[i].name), sl, ';');
-    POSITION pos = sl.GetHeadPosition();
-    while(pos)
+    std::list<CStdString> sl;
+    /*Explode(CStdString(s_isolangs[i].name), sl, ';');
+    BOOST_FOREACH(CStdString ss ,sl)
     {
-      if(!str.CompareNoCase(sl.GetNext(pos)))
+      if(!str.CompareNoCase(ss))
         return CStdString(s_isolangs[i].iso6392);
-    }
+    }*/
   }
   return _T("");
 }
@@ -2097,19 +2149,26 @@ void DShowUtil::RegisterSourceFilter(const CLSID& clsid, const GUID& subtype2, L
   va_end(marker);
 }
 
-void DShowUtil::RegisterSourceFilter(const CLSID& clsid, const GUID& subtype2, const CAtlList<CStdString>& chkbytes, LPCTSTR ext, ...)
+void DShowUtil::RegisterSourceFilter(const CLSID& clsid, const GUID& subtype2, const std::list<CStdString>& chkbytes, LPCTSTR ext, ...)
 {
   CStdString null = CStringFromGUID(GUID_NULL);
   CStdString majortype = CStringFromGUID(MEDIATYPE_Stream);
   CStdString subtype = CStringFromGUID(subtype2);
-
-  POSITION pos = chkbytes.GetHeadPosition();
+  int i=0;
+  for (std::list<CStdString>::const_iterator it = chkbytes.begin() ; it != chkbytes.end(); it++)
+  {
+    CStdString idx;
+    idx.Format(_T("%d"), i);
+    SetRegKeyValue(_T("Media Type\\") + majortype, subtype, idx, (*it));
+    i++;
+  }
+  /*POSITION pos = chkbytes.GetHeadPosition();
   for(int i = 0; pos; i++)
   {
     CStdString idx;
     idx.Format(_T("%d"), i);
     SetRegKeyValue(_T("Media Type\\") + majortype, subtype, idx, chkbytes.GetNext(pos));
-  }
+  }*/
 
   SetRegKeyValue(_T("Media Type\\") + majortype, subtype, _T("Source Filter"), CStringFromGUID(clsid));
   
@@ -2130,11 +2189,11 @@ void DShowUtil::UnRegisterSourceFilter(const GUID& subtype)
 CStdString DShowVideoInfo::GetInfoOnMajorType(IGraphBuilder *pGraphBuilder,          // Pointer to the filter graph manager.
                                   const GUID& clsidMajorType)  //MEDIATYPE_Video MEDIATYPE_Audio
 {
-CAtlList<CStdString> sl;
+std::list<CStdString> sl;
 
   BeginEnumFilters(pGraphBuilder, pEF, pBF)
   {
-    CComPtr<IBaseFilter> pUSBF = DShowUtil::GetUpStreamFilter(pBF,NULL);
+    IBaseFilter* pUSBF = DShowUtil::GetUpStreamFilter(pBF,NULL);
 
     if(DShowUtil::GetCLSID(pBF) == CLSID_NetShowSource)
     {
@@ -2169,15 +2228,21 @@ CAtlList<CStdString> sl;
       
       if( (!str.IsEmpty()) && ( mt.majortype == clsidMajorType ) )
       {
-        sl.AddTail(mt.ToString() + CStdString(L" [" + DShowUtil::GetPinName(pPin) + L"]"));
+        CStdString pinName1,pinName2,pinNameRes;
+        pinName1 = CStdString(mt.ToString().c_str());
+        g_charsetConverter.wToUTF8(CStdStringW(L" [" + DShowUtil::GetPinName(pPin) + L"]"),pinName2);
+        
+        sl.push_back(pinNameRes);
+        
+        //sl.AddTail(mt.ToString() + CStdString(L" [" + DShowUtil::GetPinName(pPin) + L"]"));
       }
     }
     EndEnumPins
   }
   EndEnumFilters
   
-  CStdString text = Implode(sl, '\n');
-  text.Replace(_T("\n"), _T("\r\n"));
+  CStdString text;// = Implode(sl, '\n');
+  //text.Replace(_T("\n"), _T("\r\n"));
   return text;
 }
 

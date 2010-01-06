@@ -56,7 +56,7 @@ void CFGFilter::AddType(const GUID& majortype, const GUID& subtype)
   m_types.AddTail(subtype);
 }
 
-bool CFGFilter::CheckTypes(const CAtlArray<GUID>& types, bool fExactMatch)
+bool CFGFilter::CheckTypes(const std::vector<GUID>& types, bool fExactMatch)
 {
   POSITION pos = m_types.GetHeadPosition();
   while(pos)
@@ -65,7 +65,7 @@ bool CFGFilter::CheckTypes(const CAtlArray<GUID>& types, bool fExactMatch)
     if(!pos) {ASSERT(0); break;}
     const GUID& subtype = m_types.GetNext(pos);
 
-    for(int i = 0, len = types.GetCount() & ~1; i < len; i += 2)
+    for(int i = 0, len = types.size() & ~1; i < len; i += 2)
     {
       if(fExactMatch)
       {

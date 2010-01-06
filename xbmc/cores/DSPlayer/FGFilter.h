@@ -50,7 +50,7 @@ public:
 	const CAtlList<GUID>& GetTypes() const;
 	void SetTypes(const CAtlList<GUID>& types);
 	void AddType(const GUID& majortype, const GUID& subtype);
-	bool CheckTypes(const CAtlArray<GUID>& types, bool fExactMatch);
+	bool CheckTypes(const std::vector<GUID>& types, bool fExactMatch);
 
 	CAtlList<CStdString> m_protocols, m_extensions, m_chkbytes; // TODO: subtype?
 

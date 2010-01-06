@@ -58,7 +58,6 @@ CFGManager::CFGManager(LPCTSTR pName, LPUNKNOWN pUnk)
   , m_dwRegister(0)
 {
   CoCreateInstance(CLSID_FilterGraph,GetOwner(),CLSCTX_ALL,__uuidof(IUnknown),(void**) &m_pUnkInner);
-  //m_pUnkInner.CoCreateInstance(CLSID_FilterGraph, GetOwner());
   CoCreateInstance(CLSID_FilterMapper2,NULL,CLSCTX_ALL,__uuidof(m_pFM),(void**) &m_pFM);
   //m_pFM.CoCreateInstance(CLSID_FilterMapper2);
 }
@@ -74,7 +73,7 @@ CFGManager::~CFGManager()
     m_override.pop_back();
 
   
-  SAFE_RELEASE(m_pUnkInner);// = NULL;//.Release();
+  SAFE_RELEASE(m_pUnkInner);
 }
 
 STDMETHODIMP CFGManager::NonDelegatingQueryInterface(REFIID riid, void** ppv)
@@ -106,12 +105,8 @@ bool CFGManager::CStreamPath::Compare(const CStreamPath& path)
 {
   PathListIter pos1 = begin();
   PathListConstIter pos2 = path.begin();
-  
-  //for (FileListIter it = pInfo->fileList.begin(); it != pInfo->fileList.end(); ++it)
   while((pos1 != end()) && (pos2 != path.end()))
   {
-    //const path_t& p1 = GetNext(pos1);
-    //const path_t& p2 = path.GetNext(pos2);
     const path_t& p1 = *pos1;
     const path_t& p2 = *pos2;
     if(p1.filter != p2.filter) return true;
@@ -344,7 +339,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
   {
     CFGFilterList fl;
 
-    CAtlArray<GUID> types;
+    std::vector<GUID> types;
     DShowUtil::ExtractMediaTypes(pPinOut, types);
 
     
@@ -352,8 +347,6 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     for(FilterListIter it = m_transform.begin() ; it != m_transform.end(); it++ )
     {
       pFGF = *it;
-      
-      //CFGFilter* pFGF = m_transform.GetNext(pos);
       if(pFGF->GetMerit() < MERIT64_DO_USE || pFGF->CheckTypes(types, false)) 
         fl.Insert(pFGF, 0, pFGF->CheckTypes(types, true), false);
     }
@@ -362,19 +355,20 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     for(FilterListIter it = m_override.begin() ; it != m_override.end() ; it++)
     {
       pFGF = *it;
-      //CFGFilter* pFGF = m_override.GetNext(pos);
       if(pFGF->GetMerit() < MERIT64_DO_USE || pFGF->CheckTypes(types, false)) 
         fl.Insert(pFGF, 0, pFGF->CheckTypes(types, true), false);
     }
 
-    CComPtr<IEnumMoniker> pEM;
-    if(types.GetCount() > 0 
+    IEnumMoniker* pEM;
+    //Not sure its the best way to do it but at least its not throwing unhandled exception
+    std::vector<GUID>::iterator it = types.begin();
+    if((types.size() > 0 )
     && SUCCEEDED(m_pFM->EnumMatchingFilters(
-      &pEM, 0, FALSE, MERIT_DO_NOT_USE+1, 
-      TRUE, types.GetCount()/2, types.GetData(), NULL, NULL, FALSE,
+      &pEM, 0, false, MERIT_DO_NOT_USE+1,
+      true, types.size()/2, &(*it), NULL, NULL, false, 
       !!pPinIn, 0, NULL, NULL, NULL)))
     {
-      for(CComPtr<IMoniker> pMoniker; S_OK == pEM->Next(1, &pMoniker, NULL); pMoniker = NULL)
+      for(IMoniker* pMoniker; S_OK == pEM->Next(1, &pMoniker, NULL); pMoniker = NULL)
       {
         CFGFilterRegistry* pFGF = new CFGFilterRegistry(pMoniker);
         fl.Insert(pFGF, 0, pFGF->CheckTypes(types, true));
@@ -398,7 +392,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
 
       hr = E_FAIL;
 
-      if(types.GetCount() == 2 && types[0] == MEDIATYPE_Stream && types[1] != MEDIATYPE_NULL)
+      if(types.size() == 2 && types[0] == MEDIATYPE_Stream && types[1] != MEDIATYPE_NULL)
       {
         CMediaType mt;
         
