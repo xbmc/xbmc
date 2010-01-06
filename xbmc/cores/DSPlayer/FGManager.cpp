@@ -123,11 +123,12 @@ HRESULT CFGManager::CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF)
   CheckPointer(pFGF, E_POINTER);
   CheckPointer(ppBF, E_POINTER);
 
-  CComPtr<IBaseFilter> pBF;
+  IBaseFilter* pBF;
   if(FAILED(pFGF->Create(&pBF)))
     return E_FAIL;
 
-  *ppBF = pBF.Detach();
+  *ppBF = pBF;
+  pBF = NULL;
 
   return S_OK;
 }
@@ -187,11 +188,11 @@ STDMETHODIMP CFGManager::ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MED
 
 	CAutoLock cAutoLock(this);
 
-  CComPtr<IBaseFilter> pBF = DShowUtil::GetFilterFromPin(pPinIn);
+  IBaseFilter* pBF = DShowUtil::GetFilterFromPin(pPinIn);
 	CLSID clsid = DShowUtil::GetCLSID(pBF);
 
 	// TODO: GetUpStreamFilter goes up on the first input pin only
-	for(CComPtr<IBaseFilter> pBFUS = DShowUtil::GetFilterFromPin(pPinOut); pBFUS; pBFUS = DShowUtil::GetUpStreamFilter(pBFUS))
+	for(IBaseFilter* pBFUS = DShowUtil::GetFilterFromPin(pPinOut); pBFUS; pBFUS = DShowUtil::GetUpStreamFilter(pBFUS))
 	{
 		if(pBFUS == pBF) 
       return VFW_E_CIRCULAR_GRAPH;
@@ -243,7 +244,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     || pPinIn && (FAILED(hr = pPinIn->QueryDirection(&dir)) || dir != PINDIR_INPUT))
       return VFW_E_INVALID_DIRECTION;
 
-    CComPtr<IPin> pPinTo;
+    IPin* pPinTo;
     if(SUCCEEDED(hr = pPinOut->ConnectedTo(&pPinTo)) || pPinTo
     || pPinIn && (SUCCEEDED(hr = pPinIn->ConnectedTo(&pPinTo)) || pPinTo))
       return VFW_E_ALREADY_CONNECTED;
@@ -381,7 +382,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     {
       CFGFilter* pFGF = fl.GetNext(pos);
 
-      CComPtr<IBaseFilter> pBF;
+      IBaseFilter* pBF;
       if(FAILED(CreateFilter(pFGF, &pBF)))
         continue;
 
@@ -544,7 +545,7 @@ STDMETHODIMP CFGManager::IsPinConnected(IPin* pPin)
 
   CheckPointer(pPin, E_POINTER);
 
-  CComPtr<IPin> pPinTo;
+  IPin* pPinTo;
   return SUCCEEDED(pPin->ConnectedTo(&pPinTo)) && pPinTo ? S_OK : S_FALSE;
 }
 
@@ -652,11 +653,11 @@ STDMETHODIMP CFGManager::NukeDownstream(IUnknown* pUnk)
   }
   else if(CComQIPtr<IPin> pPin = pUnk)
   {
-    CComPtr<IPin> pPinTo;
+    IPin* pPinTo;
     if(S_OK == IsPinDirection(pPin, PINDIR_OUTPUT)
     && SUCCEEDED(pPin->ConnectedTo(&pPinTo)) && pPinTo)
     {
-      if(CComPtr<IBaseFilter> pBF = DShowUtil::GetFilterFromPin(pPinTo))
+      if(IBaseFilter* pBF = DShowUtil::GetFilterFromPin(pPinTo))
       {
         NukeDownstream(pBF);
         Disconnect(pPinTo);
@@ -681,8 +682,8 @@ STDMETHODIMP CFGManager::AddToROT()
 
   if(m_dwRegister)
     return S_FALSE;
-    CComPtr<IRunningObjectTable> pROT;
-  CComPtr<IMoniker> pMoniker;
+    IRunningObjectTable* pROT;
+  IMoniker* pMoniker;
   WCHAR wsz[256];
   swprintf(wsz, L"FilterGraph %08p pid %08x (XBMC)", (DWORD_PTR)this, GetCurrentProcessId());
   if(SUCCEEDED(hr = GetRunningObjectTable(0, &pROT))
@@ -700,7 +701,7 @@ STDMETHODIMP CFGManager::RemoveFromROT()
 
   if(!m_dwRegister) return S_FALSE;
 
-  CComPtr<IRunningObjectTable> pROT;
+  IRunningObjectTable* pROT;
     if(SUCCEEDED(hr = GetRunningObjectTable(0, &pROT))
   && SUCCEEDED(hr = pROT->Revoke(m_dwRegister)))
     m_dwRegister = 0;
@@ -834,14 +835,14 @@ CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd)
 {
   if(m_pFM)
   {
-    CComPtr<IEnumMoniker> pEM;
+    IEnumMoniker* pEM;
 
     GUID guids[] = {MEDIATYPE_Video, MEDIASUBTYPE_NULL};
 
     if(SUCCEEDED(m_pFM->EnumMatchingFilters(&pEM, 0, FALSE, MERIT_DO_NOT_USE+1,
       TRUE, 1, guids, NULL, NULL, TRUE, FALSE, 0, NULL, NULL, NULL)))
     {
-      for(CComPtr<IMoniker> pMoniker; S_OK == pEM->Next(1, &pMoniker, NULL); pMoniker = NULL)
+      for(IMoniker* pMoniker; S_OK == pEM->Next(1, &pMoniker, NULL); pMoniker = NULL)
       {
         CFGFilterRegistry f(pMoniker);
         m_vrmerit = max(m_vrmerit, f.GetMerit());
@@ -853,14 +854,14 @@ CFGManagerPlayer::CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd)
 
   if(m_pFM)
   {
-    CComPtr<IEnumMoniker> pEM;
+    IEnumMoniker* pEM;
 
     GUID guids[] = {MEDIATYPE_Audio, MEDIASUBTYPE_NULL};
 
     if(SUCCEEDED(m_pFM->EnumMatchingFilters(&pEM, 0, FALSE, MERIT_DO_NOT_USE+1,
       TRUE, 1, guids, NULL, NULL, TRUE, FALSE, 0, NULL, NULL, NULL)))
     {
-      for(CComPtr<IMoniker> pMoniker; S_OK == pEM->Next(1, &pMoniker, NULL); pMoniker = NULL)
+      for(IMoniker* pMoniker; S_OK == pEM->Next(1, &pMoniker, NULL); pMoniker = NULL)
       {
         CFGFilterRegistry f(pMoniker);
         m_armerit = max(m_armerit, f.GetMerit());

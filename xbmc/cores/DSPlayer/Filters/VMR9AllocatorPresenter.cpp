@@ -291,8 +291,6 @@ CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error
   m_pNbrSurface(0),
   m_pCurSurface(0)
 {
-  m_D3D = g_Windowing.Get3DObject();
-  m_D3DDev = g_Windowing.Get3DDevice();
   hr = S_OK;
   m_bNeedNewDevice = false;
 }
@@ -485,8 +483,8 @@ STDMETHODIMP CVMR9AllocatorPresenter::AdviseNotify(IVMRSurfaceAllocatorNotify9 *
   CAutoLock cRenderLock(&m_RenderLock);
   HRESULT hr;
   m_pIVMRSurfAllocNotify = lpIVMRSurfAllocNotify;
-  HMONITOR hMonitor = m_D3D->GetAdapterMonitor(GetAdapter(m_D3D));
-  hr = m_pIVMRSurfAllocNotify->SetD3DDevice( m_D3DDev, hMonitor);
+  HMONITOR hMonitor = g_Windowing.Get3DObject()->GetAdapterMonitor(GetAdapter(g_Windowing.Get3DObject()));
+  hr = m_pIVMRSurfAllocNotify->SetD3DDevice( g_Windowing.Get3DDevice(), hMonitor);
   return hr;
 }
 
@@ -496,8 +494,8 @@ STDMETHODIMP CVMR9AllocatorPresenter::StartPresenting(DWORD_PTR dwUserID)
   CAutoLock cRenderLock(&m_RenderLock);
   HRESULT hr = S_OK;
   
-  ASSERT( m_D3DDev );
-  if( !m_D3DDev )
+  ASSERT( g_Windowing.Get3DDevice() );
+  if( !g_Windowing.Get3DDevice() )
     hr =  E_FAIL;
 
   

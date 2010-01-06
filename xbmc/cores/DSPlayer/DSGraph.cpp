@@ -86,11 +86,11 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   if (FAILED(hr))
     return hr;
   //This
-  hr = m_pGraphBuilder.QueryInterface(&m_pMediaSeeking);
-  hr = m_pGraphBuilder.QueryInterface(&m_pMediaControl);
-  hr = m_pGraphBuilder.QueryInterface(&m_pMediaEvent);
-  hr = m_pGraphBuilder.QueryInterface(&m_pBasicAudio);
-  hr = m_pGraphBuilder.QueryInterface(&m_pBasicVideo);
+  hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaSeeking),(void **)&m_pMediaSeeking);
+  hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaControl),(void **)&m_pMediaControl);
+  hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaEvent),(void **)&m_pMediaEvent);
+  hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pBasicAudio),(void **)&m_pBasicAudio);
+  hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pBasicVideo),(void **)&m_pBasicVideo);
   m_pDsConfig = new CDSConfig();
   //Get all custom interface
   m_pDsConfig->LoadGraph(m_pGraphBuilder);
@@ -135,8 +135,7 @@ void CDSGraph::CloseFile()
   }
   EndEnumFilters
   
-  if (m_pGraphBuilder)
-    m_pGraphBuilder.Release();
+  SAFE_RELEASE(m_pGraphBuilder);
   
 }
 

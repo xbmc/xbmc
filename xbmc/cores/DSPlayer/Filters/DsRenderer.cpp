@@ -34,8 +34,6 @@
 CDsRenderer::CDsRenderer()
 : CUnknown(NAME("CDsRenderer"), NULL)
 {
-  m_D3D = g_Windowing.Get3DObject();
-  m_D3DDev = g_Windowing.Get3DDevice();
   m_nCurSurface = 0;
   g_renderManager.PreInit(true);
   g_Windowing.Register(this);

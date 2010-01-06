@@ -58,9 +58,7 @@ private:
   IGraphBuilder2*                m_pGraphBuilder;
   //CComQIPtr<IMPCVideoDecFilter>	 m_pIMpcDecFilter;
   IMPCVideoDecFilter*         	 m_pIMpcDecFilter;
-
   IMpaDecFilter*                 m_pIMpaDecFilter;
-  //CComQIPtr<IAMStreamSelect>     m_pIAMStreamSelect;
   IAMStreamSelect*               m_pIAMStreamSelect;
   CStdString                     m_pStdDxva;
 };

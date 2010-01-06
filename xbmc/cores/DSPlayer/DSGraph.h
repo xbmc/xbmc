@@ -180,11 +180,11 @@ protected:
   
 private:
   //Direct Show Filters
-  CComPtr<IGraphBuilder2>         m_pGraphBuilder;
-  CComQIPtr<IMediaControl>        m_pMediaControl;  
-  CComQIPtr<IMediaEventEx>        m_pMediaEvent;
-  CComQIPtr<IMediaSeeking>        m_pMediaSeeking;
-  CComQIPtr<IBasicAudio>          m_pBasicAudio;
-  CComQIPtr<IBasicVideo2>         m_pBasicVideo;
+  IGraphBuilder2*                 m_pGraphBuilder;
+  IMediaControl*                  m_pMediaControl;  
+  IMediaEventEx*                  m_pMediaEvent;
+  IMediaSeeking*                  m_pMediaSeeking;
+  IBasicAudio*                    m_pBasicAudio;
+  IBasicVideo2*                   m_pBasicVideo;
   CDSConfig                       *m_pDsConfig;
 };

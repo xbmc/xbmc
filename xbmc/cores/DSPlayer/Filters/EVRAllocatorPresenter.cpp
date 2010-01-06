@@ -23,7 +23,7 @@ public:
   // IBaseFilter
   virtual HRESULT STDMETHODCALLTYPE EnumPins(__out  IEnumPins **ppEnum)
   {
-    CComPtr<IBaseFilter> pEVRBase;
+    IBaseFilter* pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -33,7 +33,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE FindPin(LPCWSTR Id, __out  IPin **ppPin)
   {
-    CComPtr<IBaseFilter> pEVRBase;
+    IBaseFilter* pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -43,7 +43,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE QueryFilterInfo(__out  FILTER_INFO *pInfo)
   {
-    CComPtr<IBaseFilter> pEVRBase;
+    IBaseFilter* pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -53,7 +53,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE JoinFilterGraph(__in_opt  IFilterGraph *pGraph, __in_opt  LPCWSTR pName)
   {
-    CComPtr<IBaseFilter> pEVRBase;
+    IBaseFilter* pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -63,7 +63,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE QueryVendorInfo(__out  LPWSTR *pVendorInfo)
   {
-    CComPtr<IBaseFilter> pEVRBase;
+    IBaseFilter* pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -73,7 +73,7 @@ public:
 
   virtual HRESULT STDMETHODCALLTYPE Stop( void)
   {
-    CComPtr<IBaseFilter> pEVRBase;
+    IBaseFilter* pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -83,7 +83,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE Pause( void)
   {
-    CComPtr<IBaseFilter> pEVRBase;
+    IBaseFilter* pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -93,7 +93,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE Run( REFERENCE_TIME tStart)
   {
-    CComPtr<IBaseFilter> pEVRBase;
+    IBaseFilter* pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -105,7 +105,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE SetSyncSource(__in_opt  IReferenceClock *pClock)
   {
-    CComPtr<IBaseFilter> pEVRBase;
+    IBaseFilter* pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -115,7 +115,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE GetSyncSource(__deref_out_opt  IReferenceClock **pClock)
   {
-    CComPtr<IBaseFilter> pEVRBase;
+    IBaseFilter* pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -125,7 +125,7 @@ public:
 
   virtual HRESULT STDMETHODCALLTYPE GetClassID(__RPC__out CLSID *pClassID)
   {
-    CComPtr<IBaseFilter> pEVRBase;
+    IBaseFilter* pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -173,7 +173,7 @@ HRESULT STDMETHODCALLTYPE COuterEVR::GetState( DWORD dwMilliSecsTimeout, __out  
   HRESULT ReturnValue;
   if (m_pAllocatorPresenter->GetState(dwMilliSecsTimeout, State, ReturnValue))
     return ReturnValue;
-  CComPtr<IBaseFilter> pEVRBase;
+  IBaseFilter* pEVRBase;
   if (m_pEVR)
     m_pEVR->QueryInterface(&pEVRBase);
   if (pEVRBase)

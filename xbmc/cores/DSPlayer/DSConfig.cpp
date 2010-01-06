@@ -33,13 +33,17 @@ using namespace std;
 
 CDSConfig::CDSConfig()
 {
+  m_pGraphBuilder = NULL;
+  m_pIMpcDecFilter = NULL;
+  m_pIMpaDecFilter = NULL;
+  m_pIAMStreamSelect = NULL;
 }
 
 CDSConfig::~CDSConfig()
 {
   SAFE_RELEASE(m_pIMpaDecFilter);
   SAFE_RELEASE(m_pIMpcDecFilter);
-  
+  SAFE_RELEASE(m_pIAMStreamSelect);
 }
 
 HRESULT CDSConfig::LoadGraph(IGraphBuilder2* pGB)
@@ -160,6 +164,8 @@ bool CDSConfig::GetMpcVideoDec(IBaseFilter* pBF)
   if (m_pIMpcDecFilter)
     return false;
   pBF->QueryInterface(__uuidof(m_pIMpcDecFilter), (void **)&m_pIMpcDecFilter);
+  if (!m_pIMpcDecFilter)
+    return false;
   m_pStdDxva.Format("");
   if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
   {

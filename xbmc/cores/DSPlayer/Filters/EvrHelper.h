@@ -749,7 +749,7 @@ namespace MediaFoundationSamples
         {
           if (m_hModuleMFPLAT)
             FreeLibrary(m_hModuleMFPLAT);
-          
+          //TOFIX
           S_RELEASE(m_pType);
         }
 
