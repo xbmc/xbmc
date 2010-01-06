@@ -301,6 +301,14 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (!m_pCodecContext)
     return VC_ERROR;
 
+#ifdef HAVE_LIBVDPAU
+  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt))
+  {
+    if(g_VDPAU && g_VDPAU->CheckRecover(false))
+      m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
+  }
+#endif
+
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
   try
   {

@@ -94,7 +94,7 @@ public:
   void InitCSCMatrix(int Height);
   void CheckStatus(VdpStatus vdp_st, int line);
 
-  void CheckRecover(bool force = false);
+  bool CheckRecover(bool force = false);
   void CheckFeatures();
   void SetColor(int Height);
   void SetNoiseReduction();
