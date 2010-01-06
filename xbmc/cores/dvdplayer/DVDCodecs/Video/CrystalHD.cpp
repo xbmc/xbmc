@@ -894,6 +894,29 @@ CCrystalHD::~CCrystalHD()
 }
 
 
+bool CCrystalHD::DevicePresent(void)
+{
+  return m_Device != NULL;
+}
+
+void CCrystalHD::RemoveInstance(void)
+{
+  if (m_pInstance)
+  {
+    delete m_pInstance;
+    m_pInstance = NULL;
+  }
+}
+
+CCrystalHD* CCrystalHD::GetInstance(void)
+{
+  if (!m_pInstance)
+  {
+    m_pInstance = new CCrystalHD();
+  }
+  return m_pInstance;
+}
+
 void CCrystalHD::CheckCrystalHDLibraryPath(void)
 {
   // support finding library by windows registry
@@ -924,29 +947,6 @@ void CCrystalHD::CheckCrystalHDLibraryPath(void)
     CLog::Log(LOGERROR, "%s: CrystalHD software seems to be not installed.", __MODULE_NAME__);
   }
 #endif
-}
-
-bool CCrystalHD::DevicePresent(void)
-{
-  return m_Device != NULL;
-}
-
-void CCrystalHD::RemoveInstance(void)
-{
-  if (m_pInstance)
-  {
-    delete m_pInstance;
-    m_pInstance = NULL;
-  }
-}
-
-CCrystalHD* CCrystalHD::GetInstance(void)
-{
-  if (!m_pInstance)
-  {
-    m_pInstance = new CCrystalHD();
-  }
-  return m_pInstance;
 }
 
 bool CCrystalHD::OpenDecoder(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE codec_type)
