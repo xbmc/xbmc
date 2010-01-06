@@ -801,6 +801,8 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
   { 
     if (!scanner.DownloadAlbumInfo(strPath,strTempArtist,strTempAlbum,bCanceled,album,m_dlgProgress))
     {
+      if (bCanceled)
+        return false;
       if (m_dlgProgress && allowSelection != SELECTION_AUTO)
       {
         if (!CGUIDialogKeyboard::ShowAndGetInput(strTempAlbum, g_localizeStrings.Get(16011), false))
