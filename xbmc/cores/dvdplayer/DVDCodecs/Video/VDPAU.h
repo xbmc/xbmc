@@ -96,7 +96,7 @@ public:
 
   bool CheckRecover(bool force = false);
   void CheckFeatures();
-  void SetColor(int Height);
+  void SetColor();
   void SetNoiseReduction();
   void SetSharpness();
   void SetDeinterlacing();

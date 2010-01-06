@@ -387,7 +387,7 @@ void CVDPAU::CheckFeatures()
   if (tmpBrightness != g_settings.m_currentVideoSettings.m_Brightness ||
       tmpContrast   != g_settings.m_currentVideoSettings.m_Contrast)
   {
-    SetColor(vid_height);
+    SetColor();
     tmpBrightness = g_settings.m_currentVideoSettings.m_Brightness;
     tmpContrast = g_settings.m_currentVideoSettings.m_Contrast;
   }
@@ -409,7 +409,7 @@ void CVDPAU::CheckFeatures()
   }
 }
 
-void CVDPAU::SetColor(int Height)
+void CVDPAU::SetColor()
 {
   VdpStatus vdp_st;
 
@@ -417,9 +417,12 @@ void CVDPAU::SetColor(int Height)
     m_Procamp.brightness = (float)((g_settings.m_currentVideoSettings.m_Brightness)-50) / 100;
   if (tmpContrast != g_settings.m_currentVideoSettings.m_Contrast)
     m_Procamp.contrast = (float)((g_settings.m_currentVideoSettings.m_Contrast)+50) / 100;
-  vdp_st = vdp_generate_csc_matrix(&m_Procamp, 
-                                   (Height < 720)? VDP_COLOR_STANDARD_ITUR_BT_601 : VDP_COLOR_STANDARD_ITUR_BT_709,
-                                   &m_CSCMatrix);
+
+  if(vid_height >= 600 || vid_width > 1024)
+    vdp_st = vdp_generate_csc_matrix(&m_Procamp, VDP_COLOR_STANDARD_ITUR_BT_709, &m_CSCMatrix);
+  else
+    vdp_st = vdp_generate_csc_matrix(&m_Procamp, VDP_COLOR_STANDARD_ITUR_BT_601, &m_CSCMatrix);
+
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
   if (g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
   {
