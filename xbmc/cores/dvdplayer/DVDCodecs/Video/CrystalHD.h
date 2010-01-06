@@ -27,12 +27,6 @@
 
 #include "DVDVideoCodec.h"
 
-#ifdef _WIN32
-#define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
-#define BC_REG_PRODUCT    "CrystalHD" // 70010 ?
-#define BC_BCM_DLL        "bcmDIL.dll"
-#define BC_REG_INST_PATH  "InstallPath"
-#endif
 ////////////////////////////////////////////////////////////////////////////////////////////
 template <class T>
 class CSyncPtrQueue
@@ -143,6 +137,7 @@ public:
   void SetDropState(bool bDrop);
 
 protected:
+  void CheckCrystalHDLibraryPath(void);
   void SetFrameRate(uint32_t resolution);
   void SetAspectRatio(uint32_t aspect_ratio, uint32_t custom_aspect_ratio_width_height);
   
