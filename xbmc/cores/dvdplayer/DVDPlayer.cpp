@@ -930,6 +930,8 @@ void CDVDPlayer::Process()
     {
       Sleep(10);
       SetCaching(CACHESTATE_DONE);
+      SAFE_RELEASE(m_CurrentAudio.startsync);
+      SAFE_RELEASE(m_CurrentVideo.startsync);
       continue;
     }
 
