@@ -1257,8 +1257,8 @@ void CDVDPlayer::HandlePlaySpeed()
   if(m_caching == CACHESTATE_PLAY)
   {
     // if all enabled streams have started playing we are done
-    if((m_CurrentVideo.id < 0 || !m_dvdPlayerVideo.AcceptsData() || !m_dvdPlayerVideo.IsStalled())
-    && (m_CurrentAudio.id < 0 || !m_dvdPlayerAudio.AcceptsData() || !m_dvdPlayerAudio.IsStalled()))
+    if((m_CurrentVideo.id < 0 || !m_dvdPlayerVideo.IsStalled())
+    && (m_CurrentAudio.id < 0 || !m_dvdPlayerAudio.IsStalled()))
       SetCaching(CACHESTATE_DONE);
   }
 
