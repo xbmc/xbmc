@@ -890,10 +890,13 @@ void CXBoxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 void CXBoxRenderer::FlipPage(int source)
 {  
+  if(source == AUTOSOURCE) 
+    source = NextYV12Texture();
+
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
   else
-    m_iYV12RenderBuffer = NextYV12Texture();
+    m_iYV12RenderBuffer = 0;
 
   /* we always decode into to the next buffer */
   ++m_iOSDRenderBuffer %= m_NumOSDBuffers;
