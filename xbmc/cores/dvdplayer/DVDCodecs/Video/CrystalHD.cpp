@@ -54,9 +54,9 @@ namespace BCM
     #define __LINUX_USER__
   #endif
 
-  #include "libcrystalhd/bc_dts_types.h"
-  #include "libcrystalhd/bc_dts_defs.h"
-  #include "libcrystalhd/libcrystalhd_if.h"
+  #include <libcrystalhd/bc_dts_types.h>
+  #include <libcrystalhd/bc_dts_defs.h>
+  #include <libcrystalhd/libcrystalhd_if.h>
 #endif
 };
 
