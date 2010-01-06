@@ -254,7 +254,6 @@ bool CDVDPlayerAudio::OpenDecoder(CDVDStreamInfo &hints, BYTE* buffer /* = NULL*
 int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 {
   int result = 0;
-  int datatimeout = 1000;
 
   // make sure the sent frame is clean
   memset(&audioframe, 0, sizeof(DVDAudioFrame));
@@ -316,7 +315,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
         // increase audioclock to after the packet
         m_audioClock += audioframe.duration;
-        datatimeout = (unsigned int)(DVD_TIME_TO_MSEC(audioframe.duration * 2.0));
       }
 
       if(audioframe.duration > 0)
@@ -341,9 +339,16 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
     CDVDMsg* pMsg;
     int priority = (m_speed == DVD_PLAYSPEED_PAUSE) ? 1 : 0;
+
+    int timeout;
+    if(m_duration > 0)
+      timeout = (int)(1000 * (m_duration / DVD_TIME_BASE + m_dvdAudio.GetCacheTime()));
+    else
+      timeout = 1000;
+
     // read next packet and return -1 on error
     LeaveCriticalSection(&m_critCodecSection); //Leave here as this might stall a while
-    MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, datatimeout, priority);
+    MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, timeout, priority);
     EnterCriticalSection(&m_critCodecSection);
 
     if (ret == MSGQ_TIMEOUT)
@@ -496,7 +501,7 @@ void CDVDPlayerAudio::Process()
       m_dvdAudio.Destroy();
       if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec))
         CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
-//      m_messageQueue.SetMaxTimeSize(4.0 - m_dvdAudio.GetCacheTotal());
+      m_messageQueue.SetMaxTimeSize(4.0 - m_dvdAudio.GetCacheTotal());
     }
 
     if( result & DECODE_FLAG_DROP )
@@ -521,8 +526,7 @@ void CDVDPlayerAudio::Process()
       m_dvdAudio.AddPackets(audioframe);
 
       // we are not running until something is cached in output device
-//      if(m_stalled && m_dvdAudio.GetCacheTime() > 0.0)
-      if(m_stalled && m_messageQueue.GetDataSize() > 0)
+      if(m_stalled && m_dvdAudio.GetCacheTime() > 0.0)
         m_stalled = false;
     }
 

@@ -113,7 +113,6 @@ CAc97DirectSound::~CAc97DirectSound()
   Deinitialize();
 }
 
-
 //***********************************************************************************************
 HRESULT CAc97DirectSound::Deinitialize()
 {
@@ -173,7 +172,6 @@ HRESULT CAc97DirectSound::Stop()
   DWORD m_dwPos=0;
   m_pDigitalOutput->GetCurrentPosition(&m_dwPos);
   m_dwTotalBytesAdded = m_dwPos;
-
 
   return S_OK;
 }
@@ -304,6 +302,27 @@ DWORD CAc97DirectSound::AddPackets(unsigned char *data, DWORD len)
     }
   }  
   return iBytesCopied;
+}
+
+FLOAT CAc97DirectSound::GetCacheTime()
+{
+  DWORD m_dwPos=0;
+  if( FAILED(m_pDigitalOutput->GetCurrentPosition(&m_dwPos)))
+    return 0.0f;
+
+  if( m_dwTotalBytesAdded < m_dwPos )
+  {
+//    CLog::Log(LOGWARNING, " - Stream position larger than what we've added");
+    m_dwTotalBytesAdded = m_dwPos;
+  }
+
+  // buffer delay
+  return (FLOAT)(m_dwTotalBytesAdded - m_dwPos) / (2 * 48000 * (16>>3));
+}
+
+FLOAT CAc97DirectSound::GetCacheTotal()
+{
+  return (FLOAT) ( (float)(m_dwPacketSize * m_dwNumPackets) / (float)(2 * 48000 * (16>>3)) );
 }
 
 //***********************************************************************************************

@@ -35,6 +35,8 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual DWORD GetChunkLen();
   virtual FLOAT GetDelay();
+  virtual FLOAT GetCacheTime();
+  virtual FLOAT GetCacheTotal();
   CResampleDirectSound(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, char* strAudioCodec = "", bool bIsMusic = false);
   virtual ~CResampleDirectSound();
 

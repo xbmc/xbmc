@@ -157,6 +157,16 @@ FLOAT CResampleDirectSound::GetDelay()
   return m_pRenderer->GetDelay();
 }
 
+FLOAT CResampleDirectSound::GetCacheTime()
+{
+  return m_pRenderer->GetCacheTime();
+}
+
+FLOAT CResampleDirectSound::GetCacheTotal()
+{
+  return m_pRenderer->GetCacheTotal();
+}
+
 DWORD CResampleDirectSound::GetChunkLen()
 {
   return m_dwInputSize;

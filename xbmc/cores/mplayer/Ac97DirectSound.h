@@ -46,6 +46,8 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual DWORD GetChunkLen();
   virtual FLOAT GetDelay();
+  virtual FLOAT GetCacheTime();
+  virtual FLOAT GetCacheTotal();
   virtual DWORD AddPackets(unsigned char* data, DWORD len);
   virtual DWORD GetSpace();
   virtual HRESULT Deinitialize();
