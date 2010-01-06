@@ -482,7 +482,7 @@ void CDVDPlayerAudio::Process()
   CLog::Log(LOGNOTICE, "running thread: CDVDPlayerAudio::Process()");
 
   int result;
-  bool packetadded;
+  bool packetadded(false);
 
   DVDAudioFrame audioframe;
   m_audioStats.Start();
