@@ -42,9 +42,9 @@
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 
-#include "../ffmpeg/DllAvFormat.h"
-#include "../ffmpeg/DllAvCodec.h"
-#include "../ffmpeg/DllSwScale.h"
+#include "Codecs/DllAvFormat.h"
+#include "Codecs/DllAvCodec.h"
+#include "Codecs/DllSwScale.h"
 
 
 bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)

@@ -796,6 +796,7 @@ static av_cold int svq3_decode_init(AVCodecContext *avctx)
     s->flags2 = avctx->flags2;
     s->unrestricted_mv = 1;
     h->is_complex=1;
+    avctx->pix_fmt = avctx->codec->pix_fmts[0];
 
     if (!s->context_initialized) {
         s->width  = avctx->width;
@@ -1066,6 +1067,6 @@ AVCodec svq3_decoder = {
     decode_end,
     svq3_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1 | CODEC_CAP_DELAY,
-    .long_name = NULL_IF_CONFIG_SMALL("Sorenson Vector Quantizer 3"),
+    .long_name = NULL_IF_CONFIG_SMALL("Sorenson Vector Quantizer 3 / Sorenson Video 3 / SVQ3"),
     .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUVJ420P, PIX_FMT_NONE},
 };

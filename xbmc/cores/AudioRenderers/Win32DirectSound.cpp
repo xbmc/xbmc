@@ -419,6 +419,12 @@ float CWin32DirectSound::GetCacheTime()
   return (float)m_CacheLen / (float)m_AvgBytesPerSec;
 }
 
+float CWin32DirectSound::GetCacheTotal()
+{
+  CSingleLock lock (m_critSection);
+  return (float)m_dwBufferLen / (float)m_AvgBytesPerSec;
+}
+
 //***********************************************************************************************
 unsigned int CWin32DirectSound::GetChunkLen()
 {

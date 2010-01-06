@@ -56,7 +56,7 @@
 						<height>24</height>
 						<align>right</align>
 						<label />
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<texturecheckmark>radiobutton-focus.png</texturecheckmark>
 						<texturecheckmarknofocus>radiobutton-nofocus.png</texturecheckmarknofocus>
@@ -167,7 +167,7 @@
 						<height>24</height>
 						<align>right</align>
 						<label />
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<texturecheckmark>radiobutton-focus.png</texturecheckmark>
 						<texturecheckmarknofocus>radiobutton-nofocus.png</texturecheckmarknofocus>
@@ -278,7 +278,7 @@
 						<height>24</height>
 						<align>right</align>
 						<label />
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<texturecheckmark>radiobutton-focus.png</texturecheckmark>
 						<texturecheckmarknofocus>radiobutton-nofocus.png</texturecheckmarknofocus>
@@ -389,7 +389,7 @@
 						<height>24</height>
 						<align>right</align>
 						<label />
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<texturecheckmark>radiobutton-focus.png</texturecheckmark>
 						<texturecheckmarknofocus>radiobutton-nofocus.png</texturecheckmarknofocus>
@@ -500,7 +500,7 @@
 						<height>24</height>
 						<align>right</align>
 						<label />
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<texturecheckmark>radiobutton-focus.png</texturecheckmark>
 						<texturecheckmarknofocus>radiobutton-nofocus.png</texturecheckmarknofocus>
@@ -611,7 +611,7 @@
 						<height>24</height>
 						<align>right</align>
 						<label />
-						<font>font13caps_title</font>
+						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<texturecheckmark>radiobutton-focus.png</texturecheckmark>
 						<texturecheckmarknofocus>radiobutton-nofocus.png</texturecheckmarknofocus>
@@ -770,7 +770,7 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<label>-</label>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<texturefocus border="5">button-focus.png</texturefocus>
 					<onleft>2075</onleft>
@@ -787,7 +787,7 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<label>-</label>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<texturefocus border="5">button-focus.png</texturefocus>
 					<onleft>2075</onleft>
@@ -804,7 +804,7 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<label>-</label>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<texturefocus border="5">button-focus.png</texturefocus>
 					<onleft>2075</onleft>
@@ -821,7 +821,7 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<label>-</label>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<texturefocus border="5">button-focus.png</texturefocus>
 					<onleft>2075</onleft>

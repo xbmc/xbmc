@@ -40,18 +40,16 @@ CXBApplicationEx::~CXBApplicationEx()
 }
 
 /* Create the app */
-HRESULT CXBApplicationEx::Create(HWND hWnd)
+bool CXBApplicationEx::Create(HWND hWnd)
 {
-  HRESULT hr;
-
   // Initialize the app's device-dependent objects
-  if ( FAILED( hr = Initialize() ) )
+  if (!Initialize())
   {
     CLog::Log(LOGERROR, "XBAppEx: Call to Initialize() failed!" );
-    return hr;
+    return false;
   }
 
-  return S_OK;
+  return true;
 }
 
 /* Destroy the app */

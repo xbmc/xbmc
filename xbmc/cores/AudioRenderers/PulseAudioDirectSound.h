@@ -45,6 +45,7 @@ public:
   virtual unsigned int GetChunkLen();
   virtual float GetDelay();
   virtual float GetCacheTime();
+  virtual float GetCacheTotal();
   CPulseAudioDirectSound();
   virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
   virtual ~CPulseAudioDirectSound();

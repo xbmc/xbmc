@@ -66,7 +66,7 @@ static int raw_write_packet(struct AVFormatContext *s, AVPacket *pkt)
 static int raw_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
     AVStream *st;
-    int id;
+    enum CodecID id;
 
     st = av_new_stream(s, 0);
     if (!st)
@@ -282,6 +282,7 @@ static int video_read_header(AVFormatContext *s,
     } else if ( st->codec->codec_id == CODEC_ID_MJPEG ||
                 st->codec->codec_id == CODEC_ID_MPEG4 ||
                 st->codec->codec_id == CODEC_ID_DIRAC ||
+                st->codec->codec_id == CODEC_ID_DNXHD ||
                 st->codec->codec_id == CODEC_ID_H264) {
         st->codec->time_base= (AVRational){1,25};
     }
@@ -472,7 +473,9 @@ static int h263_probe(AVProbeData *p)
             last_src_fmt= src_fmt;
         }
     }
-    if(valid_psc > 2*invalid_psc + 2*res_change + 2){
+//av_log(NULL, AV_LOG_ERROR, "h263_probe: psc:%d invalid:%d res_change:%d\n", valid_psc, invalid_psc, res_change);
+//h263_probe: psc:3 invalid:0 res_change:0 (1588/recent_ffmpeg_parses_mpg_incorrectly.mpg)
+    if(valid_psc > 2*invalid_psc + 2*res_change + 3){
         return 50;
     }else if(valid_psc > 2*invalid_psc)
         return 25;

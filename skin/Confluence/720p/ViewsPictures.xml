@@ -72,7 +72,7 @@
 				<posy>200</posy>
 				<width>1200</width>
 				<height>30</height>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 				<scroll>true</scroll>
@@ -185,7 +185,7 @@
 					<label>$INFO[ListItem.Label]</label>
 					<align>left</align>
 					<aligny>center</aligny>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>

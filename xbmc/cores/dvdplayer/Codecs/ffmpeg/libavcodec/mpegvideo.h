@@ -54,7 +54,7 @@ enum OutputFormat {
 #define MAX_FCODE 7
 #define MAX_MV 2048
 
-#define MAX_THREADS 8
+#define MAX_THREADS 16
 
 #define MAX_PICTURE_COUNT 32
 
@@ -571,6 +571,7 @@ typedef struct MpegEncContext {
     /* RV10 specific */
     int rv10_version; ///< RV10 version: 0 or 3
     int rv10_first_dc_coded[3];
+    int orig_width, orig_height;
 
     /* MJPEG specific */
     struct MJpegContext *mjpeg_ctx;
@@ -854,6 +855,7 @@ int ff_h263_get_gob_height(MpegEncContext *s);
 void ff_mpeg4_init_direct_mv(MpegEncContext *s);
 int ff_mpeg4_set_direct_mv(MpegEncContext *s, int mx, int my);
 void ff_h263_encode_motion(MpegEncContext * s, int val, int f_code);
+void ff_init_qscale_tab(MpegEncContext *s);
 
 
 /* rv10.c */

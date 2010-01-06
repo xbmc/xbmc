@@ -24,7 +24,6 @@
 #include <dlfcn.h>
 #include "WindowingFactory.h"
 #include "VDPAU.h"
-#include "vdpau.h"
 #include "TextureManager.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "DVDVideoCodecFFmpeg.h"

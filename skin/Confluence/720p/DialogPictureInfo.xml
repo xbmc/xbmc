@@ -34,7 +34,7 @@
 				<posy>40</posy>
 				<width>710</width>
 				<height>30</height>
-				<font>font30caps_title</font>
+				<font>font30_title</font>
 				<label>$LOCALIZE[13406]</label>
 				<align>right</align>
 				<aligny>center</aligny>
@@ -80,7 +80,7 @@
 						<posy>0</posy>
 						<width>160</width>
 						<height>35</height>
-						<font>font12caps_title</font>
+						<font>font12_title</font>
 						<aligny>center</aligny>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
@@ -123,7 +123,7 @@
 						<posy>0</posy>
 						<width>160</width>
 						<height>35</height>
-						<font>font12caps_title</font>
+						<font>font12_title</font>
 						<aligny>center</aligny>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>

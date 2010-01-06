@@ -307,6 +307,8 @@ typedef struct VC1Context{
     int x8_type;
     uint8_t broken_link;        ///< Broken link flag (BROKEN_LINK syntax element)
     uint8_t closed_entry;       ///< Closed entry point flag (CLOSED_ENTRY syntax element)
+
+    int warn_interlaced;
 } VC1Context;
 
 #endif /* FFMPEG_VC1_H */

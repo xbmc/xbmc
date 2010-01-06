@@ -39,7 +39,7 @@
 				<height>80</height>
 				<textoffsety>13</textoffsety>
 				<label>20096</label>
-				<font>font24caps_title</font>
+				<font>font24_title</font>
 				<align>right</align>
 				<aligny>top</aligny>
 				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
@@ -92,7 +92,7 @@
 					<posy>220</posy>
 					<width>240</width>
 					<height>20</height>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>blue</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>
@@ -114,7 +114,7 @@
 					<posy>280</posy>
 					<width>240</width>
 					<height>30</height>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>blue</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>
@@ -153,7 +153,7 @@
 				<posy>20</posy>
 				<width>740</width>
 				<height>30</height>
-				<font>font30caps_title</font>
+				<font>font30_title</font>
 				<label>$LOCALIZE[10034]</label>
 				<align>left</align>
 				<aligny>center</aligny>

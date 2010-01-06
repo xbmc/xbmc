@@ -52,7 +52,7 @@
 					<width>230</width>
 					<height>20</height>
 					<label>$LOCALIZE[29802]</label>
-					<font>font10caps_title</font>
+					<font>font10_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<align>left</align>

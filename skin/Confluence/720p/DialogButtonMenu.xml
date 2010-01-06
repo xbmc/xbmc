@@ -75,7 +75,7 @@
 				<label>-</label>
 				<align>center</align>
 				<aligny>center</aligny>
-				<font>font24caps_title</font>
+				<font>font24_title</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
@@ -117,6 +117,7 @@
 					<height>90</height>
 					<texturefocus>ButtonMenuLogOffFO.png</texturefocus>
 					<texturenofocus>ButtonMenuLogOffNF.png</texturenofocus>
+					<onclick>dialog.close(all,true)</onclick>
 					<onclick>System.LogOff</onclick>
 					<pulseonselect>no</pulseonselect>
 					<font>-</font>

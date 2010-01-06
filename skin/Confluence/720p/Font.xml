@@ -1,18 +1,14 @@
 <fonts>
 	<fontset id="Default" unicode="true">
+	<!-- Normal Fonts -->
 	 	<font>
 			<name>font10</name>
-			<filename>Default.ttf</filename>
-			<size>12</size>
-		</font>
-	 	<font>
-			<name>font10caps</name>
-			<filename>DefaultCaps.ttf</filename>
+			<filename>DejaVuSans.ttf</filename>
 			<size>12</size>
 		</font>
 	 	<font>
 			<name>font12</name>
-			<filename>Default.ttf</filename>
+			<filename>DejaVuSans.ttf</filename>
 			<size>16</size>
 		</font>
 	 	<font>
@@ -21,14 +17,8 @@
 			<size>16</size>
 		</font>
 	 	<font>
-			<name>font12boldcaps</name>
-			<filename>DefaultCaps.ttf</filename>
-			<size>16</size>
-			<style>bold</style>
-		</font>
-	 	<font>
 			<name>font13</name>
-			<filename>Default.ttf</filename>
+			<filename>DejaVuSans.ttf</filename>
 			<size>20</size>
 		</font>
 	 	<font>
@@ -42,194 +32,163 @@
 			<size>25</size>
 		</font>
 	 	<font>
-			<name>font30caps</name>
-			<filename>DefaultCaps.ttf</filename>
+			<name>font30</name>
+			<filename>DejaVuSans.ttf</filename>
 			<size>30</size>
 		</font>
 	 	<font>
 			<name>fontContextMenu</name>
-			<filename>DefaultCaps.ttf</filename>
+			<filename>DejaVuSans.ttf</filename>
 			<size>18</size>
 		</font>
 
 
+	<!-- Title Fonts -->
 	 	<font>
-			<name>font10caps_title</name>
-			<filename>TitleCaps.ttf</filename>
+			<name>font10_title</name>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>12</size>
 		</font>
 	 	<font>
-			<name>font12caps_title</name>
-			<filename>TitleCaps.ttf</filename>
+			<name>font12_title</name>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>16</size>
 		</font>
 	 	<font>
 			<name>font13_title</name>
-			<filename>Title.ttf</filename>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>20</size>
 		</font>
 	 	<font>
-			<name>font13caps_title</name>
-			<filename>TitleCaps.ttf</filename>
-			<size>20</size>
-		</font>
-	 	<font>
-			<name>font24caps_title</name>
-			<filename>TitleCaps.ttf</filename>
+			<name>font24_title</name>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>24</size>
 		</font>
 	 	<font>
-			<name>font28caps_title</name>
-			<filename>TitleCaps.ttf</filename>
+			<name>font28_title</name>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>28</size>
 		</font>
 	 	<font>
-			<name>font30caps_title</name>
-			<filename>TitleCaps.ttf</filename>
+			<name>font30_title</name>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>30</size>
 		</font>
 	 	<font>
-			<name>font35caps_title</name>
-			<filename>TitleCaps.ttf</filename>
+			<name>font35_title</name>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>35</size>
 		</font>
 	 	<font>
-			<name>font45caps_title</name>
-			<filename>TitleCaps.ttf</filename>
-			<size>45</size>
-		</font>
-	 	<font>
 			<name>font50caps_title</name>
-			<filename>TitleCaps.ttf</filename>
+			<filename>DejaVuSans-Bold-Caps.ttf</filename>
 			<size>50</size>
 		</font>
 
 	 	<font>
 			<name>WeatherTemp</name>
-			<filename>Title.ttf</filename>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>80</size>
 		</font>
 	</fontset>
 
-	<fontset id="Default_No_Uppercase" unicode="true">
+	<fontset id="Default_NoCaps" unicode="true">
+	<!-- Normal Fonts -->
 	 	<font>
 			<name>font10</name>
-			<filename>Default.ttf</filename>
-			<size>12</size>
-		</font>
-	 	<font>
-			<name>font10caps</name>
-			<filename>Default.ttf</filename>
+			<filename>DejaVuSans.ttf</filename>
 			<size>12</size>
 		</font>
 	 	<font>
 			<name>font12</name>
-			<filename>Default.ttf</filename>
+			<filename>DejaVuSans.ttf</filename>
 			<size>16</size>
 		</font>
 	 	<font>
 			<name>font12caps</name>
-			<filename>Default.ttf</filename>
+			<filename>DejaVuSans.ttf</filename>
 			<size>16</size>
-		</font>
-	 	<font>
-			<name>font12boldcaps</name>
-			<filename>Default.ttf</filename>
-			<size>16</size>
-			<style>bold</style>
 		</font>
 	 	<font>
 			<name>font13</name>
-			<filename>Default.ttf</filename>
+			<filename>DejaVuSans.ttf</filename>
 			<size>20</size>
 		</font>
 	 	<font>
 			<name>font13caps</name>
-			<filename>Default.ttf</filename>
+			<filename>DejaVuSans.ttf</filename>
 			<size>20</size>
 		</font>
 	 	<font>
 			<name>font16caps</name>
-			<filename>Default.ttf</filename>
+			<filename>DejaVuSans.ttf</filename>
 			<size>25</size>
 		</font>
 	 	<font>
-			<name>font30caps</name>
-			<filename>Default.ttf</filename>
+			<name>font30</name>
+			<filename>DejaVuSans.ttf</filename>
 			<size>30</size>
 		</font>
 	 	<font>
 			<name>fontContextMenu</name>
-			<filename>Default.ttf</filename>
+			<filename>DejaVuSans.ttf</filename>
 			<size>18</size>
 		</font>
 
 
+	<!-- Title Fonts -->
 	 	<font>
-			<name>font10caps_title</name>
-			<filename>Title.ttf</filename>
+			<name>font10_title</name>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>12</size>
 		</font>
 	 	<font>
-			<name>font12caps_title</name>
-			<filename>Title.ttf</filename>
+			<name>font12_title</name>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>16</size>
 		</font>
 	 	<font>
 			<name>font13_title</name>
-			<filename>Title.ttf</filename>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>20</size>
 		</font>
 	 	<font>
-			<name>font13caps_title</name>
-			<filename>Title.ttf</filename>
-			<size>20</size>
-		</font>
-	 	<font>
-			<name>font24caps_title</name>
-			<filename>Title.ttf</filename>
+			<name>font24_title</name>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>24</size>
 		</font>
 	 	<font>
-			<name>font28caps_title</name>
-			<filename>Title.ttf</filename>
+			<name>font28_title</name>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>28</size>
 		</font>
 	 	<font>
-			<name>font30caps_title</name>
-			<filename>Title.ttf</filename>
+			<name>font30_title</name>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>30</size>
 		</font>
 	 	<font>
-			<name>font35caps_title</name>
-			<filename>Title.ttf</filename>
+			<name>font35_title</name>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>35</size>
 		</font>
 	 	<font>
-			<name>font45caps_title</name>
-			<filename>Title.ttf</filename>
-			<size>45</size>
-		</font>
-	 	<font>
 			<name>font50caps_title</name>
-			<filename>Title.ttf</filename>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>50</size>
 		</font>
 
 	 	<font>
 			<name>WeatherTemp</name>
-			<filename>Title.ttf</filename>
+			<filename>DejaVuSans-Bold.ttf</filename>
 			<size>80</size>
 		</font>
 	</fontset>
+
 	<fontset id="Arial" unicode="true">
+	<!-- Normal Fonts -->
 	 	<font>
 			<name>font10</name>
-			<filename>Arial.ttf</filename>
-			<size>12</size>
-		</font>
-	 	<font>
-			<name>font10caps</name>
 			<filename>Arial.ttf</filename>
 			<size>12</size>
 		</font>
@@ -242,12 +201,6 @@
 			<name>font12caps</name>
 			<filename>Arial.ttf</filename>
 			<size>16</size>
-		</font>
-	 	<font>
-			<name>font12boldcaps</name>
-			<filename>Arial.ttf</filename>
-			<size>16</size>
-			<style>bold</style>
 		</font>
 	 	<font>
 			<name>font13</name>
@@ -265,7 +218,7 @@
 			<size>25</size>
 		</font>
 	 	<font>
-			<name>font30caps</name>
+			<name>font30</name>
 			<filename>Arial.ttf</filename>
 			<size>30</size>
 		</font>
@@ -276,13 +229,14 @@
 		</font>
 
 
+	<!-- Title Fonts -->
 	 	<font>
-			<name>font10caps_title</name>
+			<name>font10_title</name>
 			<filename>Arial.ttf</filename>
 			<size>12</size>
 		</font>
 	 	<font>
-			<name>font12caps_title</name>
+			<name>font12_title</name>
 			<filename>Arial.ttf</filename>
 			<size>16</size>
 		</font>
@@ -292,34 +246,24 @@
 			<size>20</size>
 		</font>
 	 	<font>
-			<name>font13caps_title</name>
-			<filename>Arial.ttf</filename>
-			<size>20</size>
-		</font>
-	 	<font>
-			<name>font24caps_title</name>
+			<name>font24_title</name>
 			<filename>Arial.ttf</filename>
 			<size>24</size>
 		</font>
 	 	<font>
-			<name>font28caps_title</name>
+			<name>font28_title</name>
 			<filename>Arial.ttf</filename>
 			<size>28</size>
 		</font>
 	 	<font>
-			<name>font30caps_title</name>
+			<name>font30_title</name>
 			<filename>Arial.ttf</filename>
 			<size>30</size>
 		</font>
 	 	<font>
-			<name>font35caps_title</name>
+			<name>font35_title</name>
 			<filename>Arial.ttf</filename>
 			<size>35</size>
-		</font>
-	 	<font>
-			<name>font45caps_title</name>
-			<filename>Arial.ttf</filename>
-			<size>45</size>
 		</font>
 	 	<font>
 			<name>font50caps_title</name>

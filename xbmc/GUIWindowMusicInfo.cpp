@@ -168,13 +168,6 @@ void CGUIWindowMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
   m_albumItem->GetMusicInfoTag()->SetRating('0' + (m_album.iRating + 1) / 2);
   m_albumItem->GetMusicInfoTag()->SetGenre(m_album.strGenre);
   CMusicDatabase::SetPropertiesFromAlbum(*m_albumItem,m_album);
-  /* TODO: remove when unifying the properties */
-  m_albumItem->SetProperty("albumstyles", m_album.strStyles);
-  m_albumItem->SetProperty("albummoods", m_album.strMoods);
-  m_albumItem->SetProperty("albumthemes", m_album.strThemes);
-  m_albumItem->SetProperty("albumreview", m_album.strReview);
-  m_albumItem->SetProperty("albumlabel", m_album.strLabel);
-  m_albumItem->SetProperty("albumtype", m_album.strType);
   m_albumItem->SetMusicThumb();
   // set the artist thumb
   CFileItem artist(m_album.strArtist);
@@ -197,16 +190,6 @@ void CGUIWindowMusicInfo::SetArtist(const CArtist& artist, const CStdString &pat
   m_albumItem->GetMusicInfoTag()->SetLoaded(true);
   m_albumItem->GetMusicInfoTag()->SetGenre(m_artist.strGenre);
   CMusicDatabase::SetPropertiesFromArtist(*m_albumItem,m_artist);
-  /* TODO: remove when unifying the properties */
-  m_albumItem->SetProperty("styles", m_artist.strStyles);
-  m_albumItem->SetProperty("moods", m_artist.strMoods);
-  m_albumItem->SetProperty("biography", m_artist.strBiography);
-  m_albumItem->SetProperty("instruments", m_artist.strInstruments);
-  m_albumItem->SetProperty("born", m_artist.strBorn);
-  m_albumItem->SetProperty("formed", m_artist.strFormed);
-  m_albumItem->SetProperty("died", m_artist.strDied);
-  m_albumItem->SetProperty("disbanded", m_artist.strDisbanded);
-  m_albumItem->SetProperty("yearsactive", m_artist.strYearsActive);
   CStdString strFanart = m_albumItem->GetCachedFanart();
   if (CFile::Exists(strFanart))
     m_albumItem->SetProperty("fanart_image",strFanart);

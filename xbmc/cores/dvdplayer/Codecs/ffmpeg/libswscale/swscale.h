@@ -31,7 +31,7 @@
 
 #define LIBSWSCALE_VERSION_MAJOR 0
 #define LIBSWSCALE_VERSION_MINOR 7
-#define LIBSWSCALE_VERSION_MICRO 1
+#define LIBSWSCALE_VERSION_MICRO 2
 
 #define LIBSWSCALE_VERSION_INT  AV_VERSION_INT(LIBSWSCALE_VERSION_MAJOR, \
                                                LIBSWSCALE_VERSION_MINOR, \
@@ -47,6 +47,16 @@
  * Returns the LIBSWSCALE_VERSION_INT constant.
  */
 unsigned swscale_version(void);
+
+/**
+ * Returns the libswscale build-time configuration.
+ */
+const char * swscale_configuration(void);
+
+/**
+ * Returns the libswscale license.
+ */
+const char * swscale_license(void);
 
 /* values for the flags, the stuff on the command line is different */
 #define SWS_FAST_BILINEAR     1
@@ -112,6 +122,10 @@ typedef struct {
 
 struct SwsContext;
 
+/**
+ * Frees the swscaler context swsContext.
+ * If swsContext is NULL, then does nothing.
+ */
 void sws_freeContext(struct SwsContext *swsContext);
 
 /**
@@ -135,7 +149,11 @@ struct SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat
 /**
  * Scales the image slice in srcSlice and puts the resulting scaled
  * slice in the image in dst. A slice is a sequence of consecutive
- * rows in an image. Slices can be bottom to top or top to bottom.
+ * rows in an image.
+ *
+ * Slices have to be provided in sequential order, either in
+ * top-bottom or bottom-top order. If slices are provided in
+ * non-sequential order the behavior of the function is undefined.
  *
  * @param context   the scaling context previously created with
  *                  sws_getContext()

@@ -37,7 +37,7 @@
 					<posy>50</posy>
 					<width>1030</width>
 					<height>30</height>
-					<font>font35caps_title</font>
+					<font>font35_title</font>
 					<label>$LOCALIZE[262]</label>
 					<align>center</align>
 					<aligny>center</aligny>

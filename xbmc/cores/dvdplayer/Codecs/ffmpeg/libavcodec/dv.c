@@ -398,6 +398,17 @@ static av_cold int dvvideo_init(AVCodecContext *avctx)
     return 0;
 }
 
+static av_cold int dvvideo_init_encoder(AVCodecContext *avctx)
+{
+    if (!ff_dv_codec_profile(avctx)) {
+        av_log(avctx, AV_LOG_ERROR, "Found no DV profile for %ix%i %s video\n",
+               avctx->width, avctx->height, avcodec_get_pix_fmt_name(avctx->pix_fmt));
+        return -1;
+    }
+
+    return dvvideo_init(avctx);
+}
+
 // #define VLC_DEBUG
 // #define printf(...) av_log(NULL, AV_LOG_ERROR, __VA_ARGS__)
 
@@ -415,11 +426,6 @@ typedef struct BlockInfo {
 static const int vs_total_ac_bits = (100 * 4 + 68*2) * 5;
 /* see dv_88_areas and dv_248_areas for details */
 static const int mb_area_start[5] = { 1, 6, 21, 43, 64 };
-
-static inline int get_bits_left(GetBitContext *s)
-{
-    return s->size_in_bits - get_bits_count(s);
-}
 
 static inline int put_bits_left(PutBitContext* s)
 {
@@ -1128,7 +1134,7 @@ static int dvvideo_decode_frame(AVCodecContext *avctx,
     int buf_size = avpkt->size;
     DVVideoContext *s = avctx->priv_data;
 
-    s->sys = dv_frame_profile(s->sys, buf, buf_size);
+    s->sys = ff_dv_frame_profile(s->sys, buf, buf_size);
     if (!s->sys || buf_size < s->sys->frame_size || dv_init_dynamic_tables(s->sys)) {
         av_log(avctx, AV_LOG_ERROR, "could not find dv frame profile\n");
         return -1; /* NOTE: we only accept several full frames */
@@ -1293,7 +1299,7 @@ static int dvvideo_encode_frame(AVCodecContext *c, uint8_t *buf, int buf_size,
 {
     DVVideoContext *s = c->priv_data;
 
-    s->sys = dv_codec_profile(c);
+    s->sys = ff_dv_codec_profile(c);
     if (!s->sys || buf_size < s->sys->frame_size || dv_init_dynamic_tables(s->sys))
         return -1;
 
@@ -1331,7 +1337,7 @@ AVCodec dvvideo_encoder = {
     CODEC_TYPE_VIDEO,
     CODEC_ID_DVVIDEO,
     sizeof(DVVideoContext),
-    dvvideo_init,
+    dvvideo_init_encoder,
     dvvideo_encode_frame,
     .pix_fmts  = (const enum PixelFormat[]) {PIX_FMT_YUV411P, PIX_FMT_YUV422P, PIX_FMT_YUV420P, PIX_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("DV (Digital Video)"),

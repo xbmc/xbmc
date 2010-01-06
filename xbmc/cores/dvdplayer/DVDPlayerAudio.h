@@ -121,8 +121,7 @@ public:
 
   double GetCurrentPts()                            { return m_ptsOutput.Current(); }
 
-  bool IsStalled()                                  { return m_stalled
-                                                          && m_messageQueue.GetDataSize() == 0;  }
+  bool IsStalled()                                  { return m_stalled;  }
   bool IsPassthrough() const;
 protected:
 
@@ -173,7 +172,7 @@ protected:
   int     m_speed;
   double  m_droptime;
   bool    m_stalled;
-  bool    m_started;
+  double  m_duration; // last packets duration
 
   CDVDPlayerResampler m_resampler;
 

@@ -23,6 +23,7 @@
 #include "log.h"
 #ifndef _LINUX
 #include <share.h>
+#include "CharsetConverter.h"
 #endif
 #include "CriticalSection.h"
 #include "SingleLock.h"
@@ -32,7 +33,7 @@
 #include "AdvancedSettings.h"
 #include "Thread.h"
 
-XFILE::CFile* CLog::m_file = NULL;
+FILE* CLog::m_file = NULL;
 
 static CCriticalSection critSec;
 
@@ -57,8 +58,7 @@ void CLog::Close()
   CSingleLock waitLock(critSec);
   if (m_file)
   {
-    m_file->Close();
-    delete m_file;
+    fclose(m_file);
     m_file = NULL;
   }
 }
@@ -71,26 +71,7 @@ void CLog::Log(int loglevel, const char *format, ... )
   {
     CSingleLock waitLock(critSec);
     if (!m_file)
-    {
-      m_file = new XFILE::CFile;
-      if (!m_file)
-        return;
-
-      // g_stSettings.m_logFolder is initialized in the CSettings constructor
-      // and changed in CApplication::Create()
-      CStdString strLogFile, strLogFileOld;
-
-      strLogFile.Format("%sxbmc.log", g_stSettings.m_logFolder.c_str());
-      strLogFileOld.Format("%sxbmc.old.log", g_stSettings.m_logFolder.c_str());
-
-      if(m_file->Exists(strLogFileOld))
-        m_file->Delete(strLogFileOld);
-      if(m_file->Exists(strLogFile))
-        m_file->Rename(strLogFile, strLogFileOld);
-
-      if(!m_file->OpenForWrite(strLogFile))
-        return;
-    }
+      return;
 
     SYSTEMTIME time;
     GetLocalTime(&time);
@@ -130,9 +111,9 @@ void CLog::Log(int loglevel, const char *format, ... )
     strData.Replace("\n", LINE_ENDING"                                            ");
     strData += LINE_ENDING;
 
-    m_file->Write(strPrefix.c_str(), strPrefix.size());
-    m_file->Write(strData.c_str(), strData.size());
-
+    fwrite(strPrefix.c_str(),strPrefix.size(),1,m_file);
+    fwrite(strData.c_str(),strData.size(),1,m_file);
+    fflush(m_file);
   }
 #ifndef _LINUX
 #if defined(_DEBUG) || defined(PROFILE)
@@ -155,6 +136,50 @@ void CLog::Log(int loglevel, const char *format, ... )
   }
 #endif
 #endif
+}
+
+bool CLog::Init(const char* path)
+{
+  CSingleLock waitLock(critSec);
+  if (!m_file)
+  {
+    // g_settings.m_logFolder is initialized in the CSettings constructor
+    // and changed in CApplication::Create()
+#ifdef _WIN32
+    CStdStringW pathW;
+    g_charsetConverter.utf8ToW(path, pathW, false);
+    CStdStringW strLogFile, strLogFileOld;
+
+    strLogFile.Format(L"%sxbmc.log", pathW);
+    strLogFileOld.Format(L"%sxbmc.old.log", pathW);
+
+    struct __stat64 info;
+    if (_wstat64(strLogFileOld.c_str(),&info) == 0 &&
+        !::DeleteFileW(strLogFileOld.c_str()))
+      return false;
+    if (_wstat64(strLogFile.c_str(),&info) == 0 &&
+        !::MoveFileW(strLogFile.c_str(),strLogFileOld.c_str()))
+      return false;
+
+    m_file = _wfsopen(strLogFile.c_str(),L"wb", _SH_DENYWR);
+#else
+    CStdString strLogFile, strLogFileOld;
+
+    strLogFile.Format("%sxbmc.log", path);
+    strLogFileOld.Format("%sxbmc.old.log", path);
+
+    struct stat64 info;
+    if (stat64(strLogFileOld.c_str(),&info) == 0 &&
+        remove(strLogFileOld.c_str()) != 0)
+      return false;
+    if (stat64(strLogFile.c_str(),&info) == 0 &&
+        rename(strLogFile.c_str(),strLogFileOld.c_str()) != 0)
+      return false;
+
+    m_file = fopen(strLogFile.c_str(),"wb");
+#endif
+  }
+  return m_file != NULL;
 }
 
 void CLog::DebugLog(const char *format, ... )

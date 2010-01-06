@@ -30,8 +30,6 @@ static av_cold int decode_init(AVCodecContext *avctx)
         av_log(avctx, AV_LOG_ERROR, "v210 needs even width\n");
         return -1;
     }
-    if (avcodec_check_dimensions(avctx, avctx->width, avctx->height) < 0)
-        return -1;
     avctx->pix_fmt             = PIX_FMT_YUV422P16;
     avctx->bits_per_raw_sample = 10;
 
@@ -114,6 +112,9 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 
 static av_cold int decode_close(AVCodecContext *avctx)
 {
+    AVFrame *pic = avctx->coded_frame;
+    if (pic->data[0])
+        avctx->release_buffer(avctx, pic);
     av_freep(&avctx->coded_frame);
 
     return 0;

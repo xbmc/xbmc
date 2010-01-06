@@ -27,7 +27,7 @@
 			<posy>18</posy>
 			<width>560</width>
 			<height>30</height>
-			<font>font13caps_title</font>
+			<font>font13_title</font>
 			<label>13406</label>
 			<align>left</align>
 			<aligny>center</aligny>
@@ -65,7 +65,7 @@
 			<align>left</align>
 			<aligny>center</aligny>
 			<label>-</label>
-			<font>font35caps_title</font>
+			<font>font35_title</font>
 		</control>
 	</controls>
 </window>

@@ -83,7 +83,7 @@
 				<posy>20</posy>
 				<width>740</width>
 				<height>30</height>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 				<align>center</align>
@@ -107,7 +107,7 @@
 					<texturefocus border="25,25,5,5">KeyboardCornerTop.png</texturefocus>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font13caps</font>
+					<font>font13</font>
 					<focusedcolor>black</focusedcolor>
 				</control>
 				<control type="button" id="48">
@@ -298,7 +298,7 @@
 					<radioheight>20</radioheight>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font13caps</font>
+					<font>font13</font>
 					<focusedcolor>black</focusedcolor>
 				</control>
 				<control type="button" id="65">
@@ -489,7 +489,7 @@
 					<radioheight>20</radioheight>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font13caps</font>
+					<font>font13</font>
 					<focusedcolor>black</focusedcolor>
 				</control>
 				<control type="button" id="75">
@@ -680,7 +680,7 @@
 					<radioheight>20</radioheight>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font13caps</font>
+					<font>font13</font>
 					<focusedcolor>black</focusedcolor>
 				</control>
 				<control type="button" id="85">
@@ -800,7 +800,7 @@
 					<texturefocus border="5">KeyboardKey.png</texturefocus>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font13caps</font>
+					<font>font13</font>
 					<focusedcolor>black</focusedcolor>
 				</control>
 				<control type="button" id="307">
@@ -812,7 +812,7 @@
 					<texturenofocus border="25,5,25,5">KeyboardCornerBottomNF.png</texturenofocus>
 					<texturefocus border="25,5,25,5">KeyboardCornerBottom.png</texturefocus>
 					<label>1006</label>
-					<font>font13caps</font>
+					<font>font13</font>
 					<align>center</align>
 					<aligny>center</aligny>
 					<onleft>306</onleft>
@@ -832,7 +832,7 @@
 					<texturefocus border="5">KeyboardKey.png</texturefocus>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font13caps</font>
+					<font>font13</font>
 					<focusedcolor>black</focusedcolor>
 					<onleft>307</onleft>
 					<onright>305</onright>
@@ -850,7 +850,7 @@
 					<aligny>center</aligny>
 					<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
 					<texturefocus border="5">KeyboardKey.png</texturefocus>
-					<font>font30caps</font>
+					<font>font30</font>
 					<focusedcolor>black</focusedcolor>
 					<onleft>32</onleft>
 					<onright>306</onright>
@@ -868,7 +868,7 @@
 					<aligny>center</aligny>
 					<texturenofocus flipx="true" border="5,5,25,25">KeyboardCornerBottomNF.png</texturenofocus>
 					<texturefocus flipx="true" border="5,5,25,25">KeyboardCornerBottom.png</texturefocus>
-					<font>font30caps</font>
+					<font>font30</font>
 					<focusedcolor>black</focusedcolor>
 					<onleft>305</onleft>
 					<onright>307</onright>

@@ -454,7 +454,7 @@ void CApplication::Preflight()
 #endif
 }
 
-HRESULT CApplication::Create(HWND hWnd)
+bool CApplication::Create(HWND hWnd)
 {
   g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
@@ -497,6 +497,13 @@ HRESULT CApplication::Create(HWND hWnd)
     g_settings.m_vecProfiles.push_back(*profile);
     delete profile;
   }
+
+  if (!CLog::Init(_P(g_stSettings.m_logFolder).c_str()))
+  {
+    fprintf(stderr,"Could not init logging classes. Permission errors on ~/.xbmc?\n");
+    return false;
+  }
+
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(__APPLE__)
@@ -576,7 +583,7 @@ HRESULT CApplication::Create(HWND hWnd)
   if (SDL_Init(sdlFlags) != 0)
   {
     CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
-    return E_FAIL;
+    return false;
   }
 #endif
 
@@ -593,7 +600,7 @@ HRESULT CApplication::Create(HWND hWnd)
   if (!g_Windowing.InitWindowSystem())
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to init windowing system");
-    return E_FAIL;
+    return false;
   }
 
   // Create the Mouse and Keyboard devices
@@ -645,21 +652,21 @@ HRESULT CApplication::Create(HWND hWnd)
   if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
-    return E_FAIL;
+    return false;
   }
 #else
   bool bFullScreen = g_guiSettings.m_LookAndFeelResolution != RES_WINDOW;
   if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
-    return E_FAIL;
+    return false;
   }
 #endif
 
   if (!g_Windowing.InitRenderSystem())
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to init rendering system");
-    return E_FAIL;
+    return false;
   }
 
   // set GUI res and force the clear of the screen
@@ -1068,7 +1075,7 @@ CProfile* CApplication::InitDirectoriesWin32()
 #endif
 }
 
-HRESULT CApplication::Initialize()
+bool CApplication::Initialize()
 {
 #ifdef HAS_DVD_DRIVE
   // turn off cdio logging
@@ -1310,7 +1317,7 @@ HRESULT CApplication::Initialize()
 
   // reset our screensaver (starts timers etc.)
   ResetScreenSaver();
-  return S_OK;
+  return true;
 }
 
 void CApplication::StartWebServer()
@@ -3209,7 +3216,7 @@ bool CApplication::ProcessKeyboard()
   return false;
 }
 
-HRESULT CApplication::Cleanup()
+bool CApplication::Cleanup()
 {
   try
   {
@@ -3345,12 +3352,12 @@ HRESULT CApplication::Cleanup()
     _CrtDumpMemoryLeaks();
     while(1); // execution ends
 #endif
-    return S_OK;
+    return true;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "Exception in CApplication::Cleanup()");
-    return E_FAIL;
+    return false;
   }
 }
 

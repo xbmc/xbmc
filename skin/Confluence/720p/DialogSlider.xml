@@ -23,7 +23,7 @@
 			<height>20</height>
 			<align>left</align>
 			<aligny>center</aligny>
-			<font>font12caps_title</font>
+			<font>font12_title</font>
 			<textcolor>blue</textcolor>
 		</control>
 		<control type="label" id="12">
@@ -34,7 +34,7 @@
 			<height>20</height>
 			<align>right</align>
 			<aligny>center</aligny>
-			<font>font12caps_title</font>
+			<font>font12_title</font>
 			<textcolor>white</textcolor>
 		</control>
 		<control type="slider" id="11">

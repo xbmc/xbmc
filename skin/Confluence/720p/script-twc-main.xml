@@ -123,8 +123,8 @@
 					<textoffsetx>0</textoffsetx>
 					<align>right</align>
 					<aligny>top</aligny>
-					<textoffsety>5</textoffsety>
-					<font>font30caps_title</font>
+					<textoffsety>0</textoffsety>
+					<font>font30_title</font>
 					<textcolor>grey2</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="5">MenuItemFO.png</texturefocus>
@@ -139,8 +139,8 @@
 					<textoffsetx>0</textoffsetx>
 					<align>right</align>
 					<aligny>top</aligny>
-					<textoffsety>5</textoffsety>
-					<font>font30caps_title</font>
+					<textoffsety>0</textoffsety>
+					<font>font30_title</font>
 					<textcolor>grey2</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="5">MenuItemFO.png</texturefocus>
@@ -155,8 +155,8 @@
 					<textoffsetx>0</textoffsetx>
 					<align>right</align>
 					<aligny>top</aligny>
-					<textoffsety>5</textoffsety>
-					<font>font30caps_title</font>
+					<textoffsety>0</textoffsety>
+					<font>font30_title</font>
 					<textcolor>grey2</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="5">MenuItemFO.png</texturefocus>
@@ -171,8 +171,8 @@
 					<textoffsetx>0</textoffsetx>
 					<align>right</align>
 					<aligny>top</aligny>
-					<textoffsety>5</textoffsety>
-					<font>font30caps_title</font>
+					<textoffsety>0</textoffsety>
+					<font>font30_title</font>
 					<textcolor>grey2</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="5">MenuItemFO.png</texturefocus>
@@ -187,8 +187,8 @@
 					<textoffsetx>0</textoffsetx>
 					<align>right</align>
 					<aligny>top</aligny>
-					<textoffsety>5</textoffsety>
-					<font>font30caps_title</font>
+					<textoffsety>0</textoffsety>
+					<font>font30_title</font>
 					<textcolor>grey2</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="5">MenuItemFO.png</texturefocus>
@@ -203,8 +203,8 @@
 					<textoffsetx>0</textoffsetx>
 					<align>right</align>
 					<aligny>top</aligny>
-					<textoffsety>5</textoffsety>
-					<font>font30caps_title</font>
+					<textoffsety>0</textoffsety>
+					<font>font30_title</font>
 					<textcolor>grey2</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="5">MenuItemFO.png</texturefocus>
@@ -220,8 +220,8 @@
 					<textoffsetx>0</textoffsetx>
 					<align>right</align>
 					<aligny>top</aligny>
-					<textoffsety>5</textoffsety>
-					<font>font30caps_title</font>
+					<textoffsety>0</textoffsety>
+					<font>font30_title</font>
 					<textcolor>grey2</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="5">MenuItemFO.png</texturefocus>
@@ -322,7 +322,7 @@
 					<posy>0</posy>
 					<width>590</width>
 					<height>30</height>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<label>$LOCALIZE[SCRIPT201] - $LOCALIZE[31251]</label>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -338,7 +338,7 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<label>SCRIPT302</label>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<texturenofocus>MenuItemNF.png</texturenofocus>
 					<texturefocus border="5">button-focus.png</texturefocus>
 					<onclick>XBMC.PlayMedia($INFO[Window.Property(Video)])</onclick>
@@ -368,7 +368,7 @@
 					<posy>200</posy>
 					<width>830</width>
 					<height>40</height>
-					<font>font30caps</font>
+					<font>font30</font>
 					<aligny>top</aligny>
 					<align>center</align>
 					<label>SCRIPT101</label>
@@ -390,7 +390,7 @@
 							<posy>0</posy>
 							<width>260</width>
 							<height>24</height>
-							<font>font13caps_title</font>
+							<font>font13_title</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<info>Window.Property(36Hour1title)</info>
@@ -429,7 +429,7 @@
 							<posy>35</posy>
 							<width>130</width>
 							<height>25</height>
-							<font>font12caps_title</font>
+							<font>font12_title</font>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>bottom</aligny>
@@ -443,7 +443,7 @@
 							<posy>55</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font30caps</font>
+							<font>font30</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -457,7 +457,7 @@
 							<posy>120</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font12caps_title</font>
+							<font>font12_title</font>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -471,7 +471,7 @@
 							<posy>140</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font30caps</font>
+							<font>font30</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -528,7 +528,7 @@
 							<posy>0</posy>
 							<width>260</width>
 							<height>24</height>
-							<font>font13caps_title</font>
+							<font>font13_title</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<info>Window.Property(36Hour2title)</info>
@@ -567,7 +567,7 @@
 							<posy>35</posy>
 							<width>130</width>
 							<height>25</height>
-							<font>font12caps_title</font>
+							<font>font12_title</font>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>bottom</aligny>
@@ -581,7 +581,7 @@
 							<posy>55</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font30caps</font>
+							<font>font30</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -595,7 +595,7 @@
 							<posy>120</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font12caps_title</font>
+							<font>font12_title</font>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -609,7 +609,7 @@
 							<posy>140</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font30caps</font>
+							<font>font30</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -666,7 +666,7 @@
 							<posy>0</posy>
 							<width>260</width>
 							<height>24</height>
-							<font>font13caps_title</font>
+							<font>font13_title</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<info>Window.Property(36Hour3title)</info>
@@ -705,7 +705,7 @@
 							<posy>35</posy>
 							<width>130</width>
 							<height>25</height>
-							<font>font12caps_title</font>
+							<font>font12_title</font>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>bottom</aligny>
@@ -719,7 +719,7 @@
 							<posy>55</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font30caps</font>
+							<font>font30</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -733,7 +733,7 @@
 							<posy>120</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font12caps_title</font>
+							<font>font12_title</font>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -747,7 +747,7 @@
 							<posy>140</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font30caps</font>
+							<font>font30</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -812,7 +812,7 @@
 					<posy>0</posy>
 					<width>590</width>
 					<height>30</height>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<label>$LOCALIZE[SCRIPT202] - $LOCALIZE[31251]</label>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -825,7 +825,7 @@
 					<posy>200</posy>
 					<width>830</width>
 					<height>40</height>
-					<font>font30caps</font>
+					<font>font30</font>
 					<aligny>top</aligny>
 					<align>center</align>
 					<label>SCRIPT102</label>
@@ -840,7 +840,7 @@
 						<posy>0</posy>
 						<width>70</width>
 						<height>20</height>
-						<font>font10caps_title</font>
+						<font>font10_title</font>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -853,7 +853,7 @@
 						<posy>0</posy>
 						<width>250</width>
 						<height>20</height>
-						<font>font10caps_title</font>
+						<font>font10_title</font>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -866,7 +866,7 @@
 						<posy>0</posy>
 						<width>80</width>
 						<height>20</height>
-						<font>font10caps_title</font>
+						<font>font10_title</font>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -880,7 +880,7 @@
 						<posy>0</posy>
 						<width>80</width>
 						<height>20</height>
-						<font>font10caps_title</font>
+						<font>font10_title</font>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -894,7 +894,7 @@
 						<posy>0</posy>
 						<width>80</width>
 						<height>20</height>
-						<font>font10caps_title</font>
+						<font>font10_title</font>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -908,7 +908,7 @@
 						<posy>0</posy>
 						<width>200</width>
 						<height>20</height>
-						<font>font10caps_title</font>
+						<font>font10_title</font>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -942,7 +942,7 @@
 								<posy>0</posy>
 								<width>70</width>
 								<height>80</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<textcolor>white</textcolor>
 								<shadowcolor>black</shadowcolor>
 								<selectedcolor>selected</selectedcolor>
@@ -1057,7 +1057,7 @@
 								<posy>0</posy>
 								<width>70</width>
 								<height>80</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<textcolor>white</textcolor>
 								<shadowcolor>black</shadowcolor>
 								<selectedcolor>selected</selectedcolor>
@@ -1234,7 +1234,7 @@
 					<posy>0</posy>
 					<width>590</width>
 					<height>30</height>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<label>$LOCALIZE[SCRIPT203] - $LOCALIZE[31251]</label>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -1247,7 +1247,7 @@
 					<posy>200</posy>
 					<width>830</width>
 					<height>40</height>
-					<font>font30caps</font>
+					<font>font30</font>
 					<aligny>top</aligny>
 					<align>center</align>
 					<label>SCRIPT103</label>
@@ -1265,7 +1265,7 @@
 					<label>SCRIPT300</label>
 					<altlabel>SCRIPT301</altlabel>
 					<usealttexture>!IsEmpty(Window.Property(WeekendToggle))</usealttexture>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<texturenofocus>MenuItemNF.png</texturenofocus>
 					<texturefocus border="5">button-focus.png</texturefocus>
 					<alttexturenofocus>MenuItemNF.png</alttexturenofocus>
@@ -1305,7 +1305,7 @@
 							<posy>0</posy>
 							<width>260</width>
 							<height>24</height>
-							<font>font13caps_title</font>
+							<font>font13_title</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<info>Window.Property(Weekend1day)</info>
@@ -1344,7 +1344,7 @@
 							<posy>35</posy>
 							<width>130</width>
 							<height>25</height>
-							<font>font12caps_title</font>
+							<font>font12_title</font>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>bottom</aligny>
@@ -1358,7 +1358,7 @@
 							<posy>55</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font30caps</font>
+							<font>font30</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -1372,7 +1372,7 @@
 							<posy>120</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font12caps_title</font>
+							<font>font12_title</font>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -1386,7 +1386,7 @@
 							<posy>140</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font30caps</font>
+							<font>font30</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -1474,7 +1474,7 @@
 							<posy>0</posy>
 							<width>260</width>
 							<height>24</height>
-							<font>font13caps_title</font>
+							<font>font13_title</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<info>Window.Property(Weekend2day)</info>
@@ -1513,7 +1513,7 @@
 							<posy>35</posy>
 							<width>130</width>
 							<height>25</height>
-							<font>font12caps_title</font>
+							<font>font12_title</font>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>bottom</aligny>
@@ -1527,7 +1527,7 @@
 							<posy>55</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font30caps</font>
+							<font>font30</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -1541,7 +1541,7 @@
 							<posy>120</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font12caps_title</font>
+							<font>font12_title</font>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -1555,7 +1555,7 @@
 							<posy>140</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font30caps</font>
+							<font>font30</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -1643,7 +1643,7 @@
 							<posy>0</posy>
 							<width>260</width>
 							<height>24</height>
-							<font>font13caps_title</font>
+							<font>font13_title</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<info>Window.Property(Weekend3day)</info>
@@ -1682,7 +1682,7 @@
 							<posy>35</posy>
 							<width>130</width>
 							<height>25</height>
-							<font>font12caps_title</font>
+							<font>font12_title</font>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>bottom</aligny>
@@ -1696,7 +1696,7 @@
 							<posy>55</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font30caps</font>
+							<font>font30</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -1710,7 +1710,7 @@
 							<posy>120</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font12caps_title</font>
+							<font>font12_title</font>
 							<textcolor>blue</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -1724,7 +1724,7 @@
 							<posy>140</posy>
 							<width>130</width>
 							<height>20</height>
-							<font>font30caps</font>
+							<font>font30</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<aligny>top</aligny>
@@ -1820,7 +1820,7 @@
 					<posy>0</posy>
 					<width>590</width>
 					<height>30</height>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<label>$LOCALIZE[SCRIPT204] - $LOCALIZE[31251]</label>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -1833,7 +1833,7 @@
 					<posy>200</posy>
 					<width>830</width>
 					<height>40</height>
-					<font>font30caps</font>
+					<font>font30</font>
 					<aligny>top</aligny>
 					<align>center</align>
 					<label>SCRIPT104</label>
@@ -1849,7 +1849,7 @@
 						<posy>0</posy>
 						<width>250</width>
 						<height>20</height>
-						<font>font10caps_title</font>
+						<font>font10_title</font>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -1862,7 +1862,7 @@
 						<posy>0</posy>
 						<width>80</width>
 						<height>20</height>
-						<font>font10caps_title</font>
+						<font>font10_title</font>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -1876,7 +1876,7 @@
 						<posy>0</posy>
 						<width>80</width>
 						<height>20</height>
-						<font>font10caps_title</font>
+						<font>font10_title</font>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -1890,7 +1890,7 @@
 						<posy>0</posy>
 						<width>230</width>
 						<height>20</height>
-						<font>font10caps_title</font>
+						<font>font10_title</font>
 						<textcolor>blue</textcolor>
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
@@ -1924,7 +1924,7 @@
 								<posy>0</posy>
 								<width>120</width>
 								<height>80</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<textcolor>white</textcolor>
 								<shadowcolor>black</shadowcolor>
 								<selectedcolor>selected</selectedcolor>
@@ -2019,7 +2019,7 @@
 								<posy>0</posy>
 								<width>120</width>
 								<height>80</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<textcolor>white</textcolor>
 								<shadowcolor>black</shadowcolor>
 								<selectedcolor>selected</selectedcolor>
@@ -2166,7 +2166,7 @@
 					<posy>0</posy>
 					<width>590</width>
 					<height>30</height>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<label>$LOCALIZE[SCRIPT200] - $LOCALIZE[31250]</label>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -2192,7 +2192,7 @@
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>$INFO[Skin.String(twc-maplist1-title)]</label>
-						<font>font12caps_title</font>
+						<font>font12_title</font>
 						<textcolor>white</textcolor>
 						<disabledcolor>grey3</disabledcolor>
 						<pulseonselect>false</pulseonselect>
@@ -2216,7 +2216,7 @@
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>$INFO[Skin.String(twc-maplist2-title)]</label>
-						<font>font12caps_title</font>
+						<font>font12_title</font>
 						<textcolor>white</textcolor>
 						<disabledcolor>grey3</disabledcolor>
 						<pulseonselect>false</pulseonselect>
@@ -2240,7 +2240,7 @@
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>$INFO[Skin.String(twc-maplist3-title)]</label>
-						<font>font12caps_title</font>
+						<font>font12_title</font>
 						<textcolor>white</textcolor>
 						<disabledcolor>grey3</disabledcolor>
 						<pulseonselect>false</pulseonselect>
@@ -2570,7 +2570,7 @@
 					<posy>0</posy>
 					<width>590</width>
 					<height>30</height>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<label>$LOCALIZE[SCRIPT206] - $LOCALIZE[8]</label>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -2636,7 +2636,7 @@
 					<posy>0</posy>
 					<width>590</width>
 					<height>30</height>
-					<font>font24caps_title</font>
+					<font>font24_title</font>
 					<label>$LOCALIZE[SCRIPT205] - $LOCALIZE[31252]</label>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -2771,7 +2771,7 @@
 					<posy>350</posy>
 					<width>450</width>
 					<height>100</height>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>selected</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<align>left</align>
@@ -2784,7 +2784,7 @@
 					<posy>390</posy>
 					<width>170</width>
 					<height>100</height>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<align>left</align>
@@ -2798,7 +2798,7 @@
 					<posy>390</posy>
 					<width>300</width>
 					<height>100</height>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<align>left</align>

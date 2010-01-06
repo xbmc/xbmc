@@ -330,3 +330,19 @@ bool CDVDAudio::IsValidFormat(const DVDAudioFrame &audioframe)
 
   return true;
 }
+
+double CDVDAudio::GetCacheTime()
+{
+  CSingleLock lock (m_critSection);
+  if(!m_pAudioDecoder)
+    return 0.0;
+  return m_pAudioDecoder->GetCacheTime();
+}
+
+double CDVDAudio::GetCacheTotal()
+{
+  CSingleLock lock (m_critSection);
+  if(!m_pAudioDecoder)
+    return 0.0;
+  return m_pAudioDecoder->GetCacheTotal();
+}

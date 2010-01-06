@@ -487,6 +487,11 @@ float CPulseAudioDirectSound::GetCacheTime()
   return (float)(m_uiBufferSize - GetSpace()) / (float)m_uiBytesPerSecond;
 }
 
+float CPulseAudioDirectSound::GetCacheTotal()
+{
+  return (float)m_uiBufferSize / (float)m_uiBytesPerSecond;
+}
+
 float CPulseAudioDirectSound::GetDelay()
 {
   if (!m_bIsAllocated)

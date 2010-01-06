@@ -46,13 +46,9 @@
 #define ATTRIB_LOG_FORMAT
 #endif
 
-namespace XFILE {
-  class CFile;
-}
-
 class CLog
 {
-  static XFILE::CFile *m_file;
+  static FILE* m_file;
 public:
   CLog();
   virtual ~CLog(void);
@@ -61,6 +57,7 @@ public:
   static void DebugLog(const char *format, ...);
   static void MemDump(char *pData, int length);
   static void DebugLogMemory();
+  static bool Init(const char* path);
 };
 
 // GL Error checking macro

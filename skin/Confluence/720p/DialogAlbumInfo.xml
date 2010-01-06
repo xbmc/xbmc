@@ -39,7 +39,7 @@
 					<posy>50</posy>
 					<width>1030</width>
 					<height>30</height>
-					<font>font35caps_title</font>
+					<font>font35_title</font>
 					<label>$INFO[Listitem.Album]</label>
 					<align>center</align>
 					<aligny>center</aligny>
@@ -53,7 +53,7 @@
 					<posy>50</posy>
 					<width>1030</width>
 					<height>30</height>
-					<font>font35caps_title</font>
+					<font>font35_title</font>
 					<label>$INFO[Listitem.Artist]</label>
 					<align>center</align>
 					<aligny>center</aligny>
@@ -97,7 +97,7 @@
 							<posy>0</posy>
 							<width>675</width>
 							<height>380</height>
-							<font>font30caps_title</font>
+							<font>font30_title</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<align>center</align>
@@ -138,7 +138,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -173,7 +173,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -291,7 +291,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -326,7 +326,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13caps_title</font>
+								<font>font13_title</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -417,7 +417,7 @@
 					<posy>480</posy>
 					<width>400</width>
 					<height>30</height>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>
@@ -431,7 +431,7 @@
 					<posy>480</posy>
 					<width>400</width>
 					<height>30</height>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>
@@ -445,7 +445,7 @@
 					<posy>480</posy>
 					<width>400</width>
 					<height>30</height>
-					<font>font13caps_title</font>
+					<font>font13_title</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>

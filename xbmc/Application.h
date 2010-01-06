@@ -85,14 +85,14 @@ class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMs
 public:
   CApplication(void);
   virtual ~CApplication(void);
-  virtual HRESULT Initialize();
+  virtual bool Initialize();
   virtual void FrameMove();
   virtual void Render();
   virtual void DoRender();
   virtual void RenderNoPresent();
   virtual void Preflight();
-  virtual HRESULT Create(HWND hWnd);
-  virtual HRESULT Cleanup();
+  virtual bool Create(HWND hWnd);
+  virtual bool Cleanup();
 
   void StartServices();
   void StopServices();

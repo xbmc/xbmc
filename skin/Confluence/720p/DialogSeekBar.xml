@@ -163,7 +163,7 @@
 				<height>20</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<textcolor>blue</textcolor>
 				<label>31042</label>
 				<visible>Player.Playing + !Player.Seeking</visible>
@@ -176,7 +176,7 @@
 				<height>20</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<textcolor>blue</textcolor>
 				<label>31043</label>
 				<visible>[Player.Paused + !Player.Caching] + !Player.Seeking</visible>
@@ -189,7 +189,7 @@
 				<height>20</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<textcolor>blue</textcolor>
 				<label>$LOCALIZE[15107] $INFO[Player.CacheLevel]%</label>
 				<visible>[Player.Paused + Player.Caching] + !Player.Seeking</visible>
@@ -202,7 +202,7 @@
 				<height>20</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<textcolor>blue</textcolor>
 				<label>[UPPERCASE]$LOCALIZE[773][/UPPERCASE]</label>
 				<visible>Player.Seeking</visible>
@@ -215,7 +215,7 @@
 				<height>20</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<textcolor>blue</textcolor>
 				<label>31044</label>
 				<visible>Player.Forwarding</visible>
@@ -228,7 +228,7 @@
 				<height>20</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<textcolor>blue</textcolor>
 				<label>31045</label>
 				<visible>Player.Rewinding</visible>
@@ -239,7 +239,7 @@
 				<posy>27</posy>
 				<width>240</width>
 				<height>20</height>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>white</textcolor>
 				<align>left</align>
 				<aligny>center</aligny>
@@ -252,7 +252,7 @@
 				<posy>27</posy>
 				<width>240</width>
 				<height>20</height>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>white</textcolor>
 				<align>left</align>
 				<aligny>center</aligny>
@@ -291,7 +291,7 @@
 				<height>20</height>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<textcolor>blue</textcolor>
 				<label>$LOCALIZE[21396]</label>
 				<visible>player.chaptercount</visible>
@@ -304,7 +304,7 @@
 				<height>20</height>
 				<align>right</align>
 				<aligny>center</aligny>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<textcolor>grey2</textcolor>
 				<label>$INFO[player.chapter]$INFO[player.chaptercount, / ]</label>
 				<visible>player.chaptercount</visible>

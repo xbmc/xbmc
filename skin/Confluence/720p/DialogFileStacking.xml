@@ -50,7 +50,7 @@
 			<height>30</height>
 			<align>center</align>
 			<aligny>center</aligny>
-			<font>font12caps</font>
+			<font>font12</font>
 			<label>31060</label>
 			<textcolor>grey2</textcolor>
 		</control>
@@ -109,7 +109,7 @@
 			<posy>155</posy>
 			<width>570</width>
 			<height>22</height>
-			<font>font13caps_title</font>
+			<font>font13_title</font>
 			<align>center</align>
 			<info>Container(450).ListItem.Label</info>
 		</control>

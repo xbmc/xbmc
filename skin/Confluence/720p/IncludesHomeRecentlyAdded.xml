@@ -29,7 +29,7 @@
 					<label>31323</label>
 					<align>left</align>
 					<aligny>center</aligny>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -95,7 +95,7 @@
 							<posy>0</posy>
 							<width>230</width>
 							<height>23</height>
-							<font>font12caps</font>
+							<font>font12</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<selectedcolor>selected</selectedcolor>
@@ -119,7 +119,7 @@
 							<posy>0</posy>
 							<width>230</width>
 							<height>23</height>
-							<font>font12caps</font>
+							<font>font12</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<selectedcolor>selected</selectedcolor>
@@ -183,7 +183,7 @@
 					<label>31324</label>
 					<align>left</align>
 					<aligny>center</aligny>
-					<font>font12caps_title</font>
+					<font>font12_title</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -228,7 +228,7 @@
 							<posy>2</posy>
 							<width>230</width>
 							<height>10</height>
-							<font>font10caps</font>
+							<font>font10</font>
 							<textcolor>grey</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<selectedcolor>selected</selectedcolor>
@@ -241,7 +241,7 @@
 							<posy>12</posy>
 							<width>230</width>
 							<height>20</height>
-							<font>font12caps</font>
+							<font>font12</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<selectedcolor>selected</selectedcolor>
@@ -265,7 +265,7 @@
 							<posy>2</posy>
 							<width>230</width>
 							<height>10</height>
-							<font>font10caps</font>
+							<font>font10</font>
 							<textcolor>grey</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<selectedcolor>selected</selectedcolor>
@@ -278,7 +278,7 @@
 							<posy>12</posy>
 							<width>230</width>
 							<height>20</height>
-							<font>font12caps</font>
+							<font>font12</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
 							<selectedcolor>selected</selectedcolor>

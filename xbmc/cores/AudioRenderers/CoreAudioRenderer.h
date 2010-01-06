@@ -110,6 +110,7 @@ class CCoreAudioRenderer : public IAudioRenderer
     virtual unsigned int AddPackets(const void* data, unsigned int len);
     virtual unsigned int GetSpace();
     virtual float GetCacheTime();
+    virtual float GetCacheTotal();
     virtual bool Pause();
     virtual bool Stop();
     virtual bool Resume();

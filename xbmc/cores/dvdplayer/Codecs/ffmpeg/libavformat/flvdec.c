@@ -50,7 +50,7 @@ static void flv_set_audio_codec(AVFormatContext *s, AVStream *astream, int flv_c
     switch(flv_codecid) {
         //no distinction between S16 and S8 PCM codec flags
         case FLV_CODECID_PCM:
-            acodec->codec_id = acodec->bits_per_coded_sample == 8 ? CODEC_ID_PCM_S8 :
+            acodec->codec_id = acodec->bits_per_coded_sample == 8 ? CODEC_ID_PCM_U8 :
 #if HAVE_BIGENDIAN
                                 CODEC_ID_PCM_S16BE;
 #else
@@ -58,7 +58,7 @@ static void flv_set_audio_codec(AVFormatContext *s, AVStream *astream, int flv_c
 #endif
             break;
         case FLV_CODECID_PCM_LE:
-            acodec->codec_id = acodec->bits_per_coded_sample == 8 ? CODEC_ID_PCM_S8 : CODEC_ID_PCM_S16LE; break;
+            acodec->codec_id = acodec->bits_per_coded_sample == 8 ? CODEC_ID_PCM_U8 : CODEC_ID_PCM_S16LE; break;
         case FLV_CODECID_AAC  : acodec->codec_id = CODEC_ID_AAC;                                    break;
         case FLV_CODECID_ADPCM: acodec->codec_id = CODEC_ID_ADPCM_SWF;                              break;
         case FLV_CODECID_SPEEX:
@@ -82,6 +82,7 @@ static int flv_set_video_codec(AVFormatContext *s, AVStream *vstream, int flv_co
     switch(flv_codecid) {
         case FLV_CODECID_H263  : vcodec->codec_id = CODEC_ID_FLV1   ; break;
         case FLV_CODECID_SCREEN: vcodec->codec_id = CODEC_ID_FLASHSV; break;
+        case FLV_CODECID_SCREEN2: vcodec->codec_id = CODEC_ID_FLASHSV2; break;
         case FLV_CODECID_VP6   : vcodec->codec_id = CODEC_ID_VP6F   ;
         case FLV_CODECID_VP6A  :
             if(flv_codecid == FLV_CODECID_VP6A)
@@ -410,9 +411,7 @@ static int flv_read_packet(AVFormatContext *s, AVPacket *pkt)
                 MPEG4AudioConfig cfg;
                 ff_mpeg4audio_get_config(&cfg, st->codec->extradata,
                                          st->codec->extradata_size);
-                if (cfg.chan_config > 7)
-                    return -1;
-                st->codec->channels = ff_mpeg4audio_channels[cfg.chan_config];
+                st->codec->channels = cfg.channels;
                 st->codec->sample_rate = cfg.sample_rate;
                 dprintf(s, "mp4a config channels %d sample rate %d\n",
                         st->codec->channels, st->codec->sample_rate);

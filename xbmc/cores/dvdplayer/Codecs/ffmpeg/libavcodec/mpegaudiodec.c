@@ -49,26 +49,6 @@
 
 #define HEADER_SIZE 4
 
-/* layer 3 "granule" */
-typedef struct GranuleDef {
-    uint8_t scfsi;
-    int part2_3_length;
-    int big_values;
-    int global_gain;
-    int scalefac_compress;
-    uint8_t block_type;
-    uint8_t switch_point;
-    int table_select[3];
-    int subblock_gain[3];
-    uint8_t scalefac_scale;
-    uint8_t count1table_select;
-    int region_size[3]; /* number of huffman codes in each region */
-    int preflag;
-    int short_start, long_end; /* long/short band indexes */
-    uint8_t scale_factors[40];
-    int32_t sb_hybrid[SBLIMIT * 18]; /* 576 samples */
-} GranuleDef;
-
 #include "mpegaudiodata.h"
 #include "mpegaudiodectab.h"
 
@@ -92,12 +72,7 @@ static const int huff_quad_vlc_tables_sizes[2] = {
 };
 /* computed from band_size_long */
 static uint16_t band_index_long[9][23];
-/* XXX: free when all decoders are closed */
-#define TABLE_4_3_SIZE (8191 + 16)*4
-static int8_t  table_4_3_exp[TABLE_4_3_SIZE];
-static uint32_t table_4_3_value[TABLE_4_3_SIZE];
-static uint32_t exp_table[512];
-static uint32_t expval_table[512][16];
+#include "mpegaudio_tablegen.h"
 /* intensity stereo coef table */
 static int32_t is_table[2][16];
 static int32_t is_table_lsf[2][2][16];
@@ -120,7 +95,7 @@ static const int32_t scale_factor_mult2[3][3] = {
     SCALE_GEN(4.0 / 9.0), /* 9 steps */
 };
 
-static DECLARE_ALIGNED_16(MPA_INT, window[512]);
+DECLARE_ALIGNED_16(MPA_INT, ff_mpa_synth_window[512]);
 
 /**
  * Convert region offsets to region sizes and truncate
@@ -351,7 +326,7 @@ static av_cold int decode_init(AVCodecContext * avctx)
                     scale_factor_mult[i][2]);
         }
 
-        ff_mpa_synth_init(window);
+        ff_mpa_synth_init(ff_mpa_synth_window);
 
         /* huffman decode tables */
         offset = 0;
@@ -407,25 +382,7 @@ static av_cold int decode_init(AVCodecContext * avctx)
         /* compute n ^ (4/3) and store it in mantissa/exp format */
 
         int_pow_init();
-        for(i=1;i<TABLE_4_3_SIZE;i++) {
-            double f, fm;
-            int e, m;
-            f = pow((double)(i/4), 4.0 / 3.0) * pow(2, (i&3)*0.25);
-            fm = frexp(f, &e);
-            m = (uint32_t)(fm*(1LL<<31) + 0.5);
-            e+= FRAC_BITS - 31 + 5 - 100;
-
-            /* normalized to FRAC_BITS */
-            table_4_3_value[i] = m;
-            table_4_3_exp[i] = -e;
-        }
-        for(i=0; i<512*16; i++){
-            int exponent= (i>>4);
-            double f= pow(i&15, 4.0 / 3.0) * pow(2, (exponent-400)*0.25 + FRAC_BITS + 5);
-            expval_table[exponent][i&15]= llrint(f);
-            if((i&15)==1)
-                exp_table[exponent]= llrint(f);
-        }
+        mpegaudio_tableinit();
 
         for(i=0;i<7;i++) {
             float f;
@@ -1935,7 +1892,7 @@ static int mp_decode_layer3(MPADecodeContext *s)
 {
     int nb_granules, main_data_begin, private_bits;
     int gr, ch, blocksplit_flag, i, j, k, n, bits_pos;
-    GranuleDef granules[2][2], *g;
+    GranuleDef *g;
     int16_t exponents[576];
 
     /* read side info */
@@ -1951,15 +1908,15 @@ static int mp_decode_layer3(MPADecodeContext *s)
             private_bits = get_bits(&s->gb, 5);
         nb_granules = 2;
         for(ch=0;ch<s->nb_channels;ch++) {
-            granules[ch][0].scfsi = 0; /* all scale factors are transmitted */
-            granules[ch][1].scfsi = get_bits(&s->gb, 4);
+            s->granules[ch][0].scfsi = 0;/* all scale factors are transmitted */
+            s->granules[ch][1].scfsi = get_bits(&s->gb, 4);
         }
     }
 
     for(gr=0;gr<nb_granules;gr++) {
         for(ch=0;ch<s->nb_channels;ch++) {
             dprintf(s->avctx, "gr=%d ch=%d: side_info\n", gr, ch);
-            g = &granules[ch][gr];
+            g = &s->granules[ch][gr];
             g->part2_3_length = get_bits(&s->gb, 12);
             g->big_values = get_bits(&s->gb, 9);
             if(g->big_values > 288){
@@ -2031,7 +1988,7 @@ static int mp_decode_layer3(MPADecodeContext *s)
 
     for(gr=0;gr<nb_granules;gr++) {
         for(ch=0;ch<s->nb_channels;ch++) {
-            g = &granules[ch][gr];
+            g = &s->granules[ch][gr];
             if(get_bits_count(&s->gb)<0){
                 av_log(s->avctx, AV_LOG_DEBUG, "mdb:%d, lastbuf:%d skipping granule %d\n",
                                             main_data_begin, s->last_buf_size, gr);
@@ -2075,7 +2032,7 @@ static int mp_decode_layer3(MPADecodeContext *s)
                             g->scale_factors[j++] = 0;
                     }
                 } else {
-                    sc = granules[ch][0].scale_factors;
+                    sc = s->granules[ch][0].scale_factors;
                     j = 0;
                     for(k=0;k<4;k++) {
                         n = (k == 0 ? 6 : 5);
@@ -2160,10 +2117,10 @@ static int mp_decode_layer3(MPADecodeContext *s)
         } /* ch */
 
         if (s->nb_channels == 2)
-            compute_stereo(s, &granules[0][gr], &granules[1][gr]);
+            compute_stereo(s, &s->granules[0][gr], &s->granules[1][gr]);
 
         for(ch=0;ch<s->nb_channels;ch++) {
-            g = &granules[ch][gr];
+            g = &s->granules[ch][gr];
 
             reorder_block(s, g);
             s->compute_antialias(s, g);
@@ -2205,7 +2162,7 @@ static int mp_decode_frame(MPADecodeContext *s,
         s->last_buf_size=0;
         if(s->in_gb.buffer){
             align_get_bits(&s->gb);
-            i= (s->gb.size_in_bits - get_bits_count(&s->gb))>>3;
+            i= get_bits_left(&s->gb)>>3;
             if(i >= 0 && i <= BACKSTEP_SIZE){
                 memmove(s->last_buf, s->gb.buffer + (get_bits_count(&s->gb)>>3), i);
                 s->last_buf_size=i;
@@ -2217,7 +2174,7 @@ static int mp_decode_frame(MPADecodeContext *s,
 
         align_get_bits(&s->gb);
         assert((get_bits_count(&s->gb) & 7) == 0);
-        i= (s->gb.size_in_bits - get_bits_count(&s->gb))>>3;
+        i= get_bits_left(&s->gb)>>3;
 
         if(i<0 || i > BACKSTEP_SIZE || nb_frames<0){
             if(i<0)
@@ -2236,7 +2193,7 @@ static int mp_decode_frame(MPADecodeContext *s,
         samples_ptr = samples + ch;
         for(i=0;i<nb_frames;i++) {
             ff_mpa_synth_filter(s->synth_buf[ch], &(s->synth_buf_offset[ch]),
-                         window, &s->dither_state,
+                         ff_mpa_synth_window, &s->dither_state,
                          samples_ptr, s->nb_channels,
                          s->sb_samples[ch][i]);
             samples_ptr += 32 * s->nb_channels;

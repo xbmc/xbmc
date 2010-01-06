@@ -68,6 +68,7 @@ void av_register_all(void)
     REGISTER_DEMUXER  (C93, c93);
     REGISTER_DEMUXER  (CAF, caf);
     REGISTER_DEMUXER  (CAVSVIDEO, cavsvideo);
+    REGISTER_DEMUXER  (CDG, cdg);
     REGISTER_MUXER    (CRC, crc);
     REGISTER_MUXDEMUX (DAUD, daud);
     REGISTER_MUXDEMUX (DIRAC, dirac);
@@ -99,6 +100,7 @@ void av_register_all(void)
     REGISTER_DEMUXER  (IPMOVIE, ipmovie);
     REGISTER_MUXER    (IPOD, ipod);
     REGISTER_DEMUXER  (ISS, iss);
+    REGISTER_DEMUXER  (IV8, iv8);
     REGISTER_DEMUXER  (LMLM4, lmlm4);
     REGISTER_MUXDEMUX (M4V, m4v);
     REGISTER_MUXDEMUX (MATROSKA, matroska);
@@ -162,7 +164,6 @@ void av_register_all(void)
     REGISTER_DEMUXER  (QCP, qcp);
     REGISTER_DEMUXER  (R3D, r3d);
     REGISTER_MUXDEMUX (RAWVIDEO, rawvideo);
-    REGISTER_DEMUXER  (REDIR, redir);
     REGISTER_DEMUXER  (RL2, rl2);
     REGISTER_MUXDEMUX (RM, rm);
     REGISTER_MUXDEMUX (ROQ, roq);

@@ -23,8 +23,7 @@
 #include "pnm.h"
 
 
-static int pnm_parse(AVCodecParserContext *s,
-                           AVCodecContext *avctx,
+static int pnm_parse(AVCodecParserContext *s, AVCodecContext *avctx,
                            const uint8_t **poutbuf, int *poutbuf_size,
                            const uint8_t *buf, int buf_size)
 {

@@ -213,7 +213,12 @@ void ff_id3v2_parse(AVFormatContext *s, int len, uint8_t version, uint8_t flags)
 
         if (tag[0] == 'T')
             read_ttag(s, tlen, tag);
-
+        else if (!tag[0]) {
+            if (tag[1])
+                av_log(s, AV_LOG_WARNING, "invalid frame id, assuming padding");
+            url_fskip(s->pb, len);
+            break;
+        }
         /* Skip to end of tag */
         url_fseek(s->pb, next, SEEK_SET);
     }
@@ -229,17 +234,23 @@ void ff_id3v2_parse(AVFormatContext *s, int len, uint8_t version, uint8_t flags)
 
 const AVMetadataConv ff_id3v2_metadata_conv[] = {
     { "TALB", "album"},
+    { "TAL",  "album"},
     { "TCOM", "composer"},
     { "TCON", "genre"},
+    { "TCO",  "genre"},
     { "TCOP", "copyright"},
     { "TDRL", "date"},
     { "TENC", "encoder"},
+    { "TEN",  "encoder"},
     { "TIT2", "title"},
+    { "TT2",  "title"},
     { "TLAN", "language"},
-    { "TPE1", "author"},
+    { "TPE1", "artist"},
+    { "TP1",  "artist"},
     { "TPOS", "disc"},
     { "TPUB", "publisher"},
     { "TRCK", "track"},
+    { "TRK",  "track"},
     { "TSOA", "albumsort"},
     { "TSOP", "authorsort"},
     { "TSOT", "titlesort"},

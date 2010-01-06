@@ -18,6 +18,7 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
 #include "avcodec.h"
 #include "pnm.h"
 
@@ -52,21 +53,26 @@ static void pnm_get(PNMContext *sc, char *str, int buf_size)
     *s = '\0';
 }
 
-int ff_pnm_decode_header(AVCodecContext *avctx, PNMContext * const s){
+int ff_pnm_decode_header(AVCodecContext *avctx, PNMContext * const s)
+{
     char buf1[32], tuple_type[32];
     int h, w, depth, maxval;
 
     pnm_get(s, buf1, sizeof(buf1));
-    if (!strcmp(buf1, "P4")) {
+    s->type= buf1[1]-'0';
+    if(buf1[0] != 'P')
+        return -1;
+
+    if (s->type==1 || s->type==4) {
         avctx->pix_fmt = PIX_FMT_MONOWHITE;
-    } else if (!strcmp(buf1, "P5")) {
+    } else if (s->type==2 || s->type==5) {
         if (avctx->codec_id == CODEC_ID_PGMYUV)
             avctx->pix_fmt = PIX_FMT_YUV420P;
         else
             avctx->pix_fmt = PIX_FMT_GRAY8;
-    } else if (!strcmp(buf1, "P6")) {
+    } else if (s->type==3 || s->type==6) {
         avctx->pix_fmt = PIX_FMT_RGB24;
-    } else if (!strcmp(buf1, "P7")) {
+    } else if (s->type==7) {
         w = -1;
         h = -1;
         maxval = -1;
@@ -147,7 +153,8 @@ int ff_pnm_decode_header(AVCodecContext *avctx, PNMContext * const s){
                 return -1;
             }
         }
-    }
+    }else
+        s->maxval=1;
     /* more check if YUV420 */
     if (avctx->pix_fmt == PIX_FMT_YUV420P) {
         if ((avctx->width & 1) != 0)
@@ -158,5 +165,25 @@ int ff_pnm_decode_header(AVCodecContext *avctx, PNMContext * const s){
         h /= 3;
         avctx->height = h;
     }
+    return 0;
+}
+
+av_cold int ff_pnm_end(AVCodecContext *avctx)
+{
+    PNMContext *s = avctx->priv_data;
+
+    if (s->picture.data[0])
+        avctx->release_buffer(avctx, &s->picture);
+
+    return 0;
+}
+
+av_cold int ff_pnm_init(AVCodecContext *avctx)
+{
+    PNMContext *s = avctx->priv_data;
+
+    avcodec_get_frame_defaults((AVFrame*)&s->picture);
+    avctx->coded_frame = (AVFrame*)&s->picture;
+
     return 0;
 }

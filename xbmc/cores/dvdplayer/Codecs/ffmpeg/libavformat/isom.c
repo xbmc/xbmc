@@ -32,6 +32,7 @@ const AVCodecTag ff_mp4_obj_type[] = {
     { CODEC_ID_MPEG4     , 0x20 },
     { CODEC_ID_H264      , 0x21 },
     { CODEC_ID_AAC       , 0x40 },
+    { CODEC_ID_MP4ALS    , 0x40 }, /* 14496-3 ALS */
     { CODEC_ID_MPEG2VIDEO, 0x61 }, /* MPEG2 Main */
     { CODEC_ID_MPEG2VIDEO, 0x60 }, /* MPEG2 Simple */
     { CODEC_ID_MPEG2VIDEO, 0x62 }, /* MPEG2 SNR */
@@ -54,7 +55,7 @@ const AVCodecTag ff_mp4_obj_type[] = {
     { CODEC_ID_VORBIS    , 0xDD }, /* non standard, gpac uses it */
     { CODEC_ID_DVD_SUBTITLE, 0xE0 }, /* non standard, see unsupported-embedded-subs-2.mp4 */
     { CODEC_ID_QCELP     , 0xE1 },
-    { 0, 0 },
+    { CODEC_ID_NONE      ,    0 },
 };
 
 const AVCodecTag codec_movvideo_tags[] = {
@@ -64,7 +65,9 @@ const AVCodecTag codec_movvideo_tags[] = {
     { CODEC_ID_RAWVIDEO, MKTAG('y', 'u', 'v', '2') }, /* Uncompressed YUV422 */
     { CODEC_ID_RAWVIDEO, MKTAG('A', 'V', 'U', 'I') }, /* YUV with alpha-channel (AVID Uncompressed) */
     { CODEC_ID_RAWVIDEO, MKTAG('2', 'v', 'u', 'y') }, /* UNCOMPRESSED 8BIT 4:2:2 */
+    { CODEC_ID_RAWVIDEO, MKTAG('y', 'u', 'v', 's') }, /* same as 2vuy but byte swapped */
 
+    { CODEC_ID_R210,   MKTAG('r', '2', '1', '0') }, /* UNCOMPRESSED 10BIT RGB */
     { CODEC_ID_V210,   MKTAG('v', '2', '1', '0') }, /* UNCOMPRESSED 10BIT 4:2:2 */
 
     { CODEC_ID_MJPEG,  MKTAG('j', 'p', 'e', 'g') }, /* PhotoJPEG */
@@ -183,7 +186,9 @@ const AVCodecTag codec_movaudio_tags[] = {
     { CODEC_ID_PCM_S16LE, MKTAG('s', 'o', 'w', 't') }, /*  */
     { CODEC_ID_PCM_S16LE, MKTAG('l', 'p', 'c', 'm') },
     { CODEC_ID_PCM_F32BE, MKTAG('f', 'l', '3', '2') },
+    { CODEC_ID_PCM_F32LE, MKTAG('f', 'l', '3', '2') },
     { CODEC_ID_PCM_F64BE, MKTAG('f', 'l', '6', '4') },
+    { CODEC_ID_PCM_F64LE, MKTAG('f', 'l', '6', '4') },
     { CODEC_ID_PCM_S8,    MKTAG('s', 'o', 'w', 't') },
     { CODEC_ID_PCM_U8,    MKTAG('r', 'a', 'w', ' ') }, /* 8 bits unsigned */
     { CODEC_ID_PCM_U8,    MKTAG('N', 'O', 'N', 'E') }, /* uncompressed */

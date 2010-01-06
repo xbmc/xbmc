@@ -30,7 +30,7 @@
 				<posy>15</posy>
 				<width>310</width>
 				<height>18</height>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<textcolor>white</textcolor>
 				<align>left</align>
 				<aligny>center</aligny>
@@ -43,7 +43,7 @@
 				<posy>35</posy>
 				<width>310</width>
 				<height>20</height>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<textcolor>grey2</textcolor>
 				<align>left</align>
 				<aligny>center</aligny>

@@ -46,7 +46,7 @@
 			<posy>18</posy>
 			<width>760</width>
 			<height>30</height>
-			<font>font13caps_title</font>
+			<font>font13_title</font>
 			<label>$LOCALIZE[13406]</label>
 			<align>center</align>
 			<aligny>center</aligny>
@@ -153,7 +153,7 @@
 				<width>200</width>
 				<height>41</height>
 				<label>1024</label>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<align>center</align>
 				<aligny>center</aligny>
 				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
@@ -170,7 +170,7 @@
 				<width>200</width>
 				<height>41</height>
 				<label>15019</label>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<align>center</align>
 				<aligny>center</aligny>
 				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
@@ -187,7 +187,7 @@
 				<width>200</width>
 				<height>41</height>
 				<label>1210</label>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<align>center</align>
 				<aligny>center</aligny>
 				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
@@ -240,7 +240,7 @@
 				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<label>186</label>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<onup>12</onup>
 				<onleft>20</onleft>
 				<onright>19</onright>
@@ -258,7 +258,7 @@
 				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<label>222</label>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<onup>12</onup>
 				<onleft>18</onleft>
 				<onright>20</onright>
@@ -276,7 +276,7 @@
 				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<label>20333</label>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<onup>12</onup>
 				<onleft>19</onleft>
 				<onright>18</onright>

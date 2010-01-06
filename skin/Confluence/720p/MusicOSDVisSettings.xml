@@ -2,13 +2,12 @@
 	<defaultcontrol>5</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>440</posx>
-		<posy>75</posy>
+		<posx>240</posx>
+		<posy>115</posy>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="group">
-			<animation effect="slide" start="0,0" end="-200,0" time="300" condition="!Player.ShowInfo">Conditional</animation>
 			<control type="image">
 				<description>background image</description>
 				<posx>0</posx>
@@ -49,7 +48,7 @@
 				<posy>18</posy>
 				<width>760</width>
 				<height>30</height>
-				<font>font13caps_title</font>
+				<font>font13_title</font>
 				<label>$LOCALIZE[250] - $LOCALIZE[5]</label>
 				<align>center</align>
 				<aligny>center</aligny>

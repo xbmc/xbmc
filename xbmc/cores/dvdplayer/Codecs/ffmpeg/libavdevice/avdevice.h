@@ -19,6 +19,8 @@
 #ifndef AVDEVICE_AVDEVICE_H
 #define AVDEVICE_AVDEVICE_H
 
+#include "libavutil/avutil.h"
+
 #define LIBAVDEVICE_VERSION_MAJOR 52
 #define LIBAVDEVICE_VERSION_MINOR  2
 #define LIBAVDEVICE_VERSION_MICRO  0
@@ -35,6 +37,16 @@
  * Returns the LIBAVDEVICE_VERSION_INT constant.
  */
 unsigned avdevice_version(void);
+
+/**
+ * Returns the libavdevice build-time configuration.
+ */
+const char * avdevice_configuration(void);
+
+/**
+ * Returns the libavdevice license.
+ */
+const char * avdevice_license(void);
 
 /**
  * Initialize libavdevice and register all the input and output devices.

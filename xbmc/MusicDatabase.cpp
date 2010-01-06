@@ -2727,17 +2727,6 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       CArtist artist;
       GetArtistInfo(idArtist,artist,false);
 
-      /* TODO: remove when we remove old property names */ 
-      pItem->SetProperty("instrument",artist.strInstruments);
-      pItem->SetProperty("style",artist.strStyles);
-      pItem->SetProperty("mood",artist.strMoods);
-      pItem->SetProperty("born",artist.strBorn);
-      pItem->SetProperty("formed",artist.strFormed);
-      pItem->SetProperty("description",artist.strBiography);
-      pItem->SetProperty("genre",artist.strGenre);
-      pItem->SetProperty("died",artist.strDied);
-      pItem->SetProperty("disbanded",artist.strDisbanded);
-      pItem->SetProperty("yearsactive",artist.strYearsActive);
       SetPropertiesFromArtist(*pItem,artist);
       items.Add(pItem);
 

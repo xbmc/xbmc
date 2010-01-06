@@ -56,7 +56,7 @@
 			<posy>20</posy>
 			<width>280</width>
 			<height>40</height>
-			<font>font13caps_title</font>
+			<font>font13_title</font>
 			<textcolor>white</textcolor>
 			<shadowcolor>black</shadowcolor>
 			<align>center</align>
@@ -135,7 +135,7 @@
 				<posy>0</posy>
 				<width>60</width>
 				<height>120</height>
-				<font>font12caps</font>
+				<font>font12</font>
 				<align>center</align>
 				<aligny>center</aligny>
 				<texturenofocus flipx="true" border="5,25,25,5">KeyboardCornerTopNF.png</texturenofocus>
@@ -262,7 +262,7 @@
 				<posy>120</posy>
 				<width>60</width>
 				<height>120</height>
-				<font>font12caps</font>
+				<font>font12</font>
 				<align>center</align>
 				<aligny>center</aligny>
 				<texturenofocus flipx="true" border="5,5,25,25">KeyboardCornerBottomNF.png</texturenofocus>
@@ -281,7 +281,7 @@
 				<posy>180</posy>
 				<width>60</width>
 				<height>60</height>
-				<font>font30caps</font>
+				<font>font30</font>
 				<label>&lt;</label>
 				<focusedcolor>black</focusedcolor>
 				<align>center</align>
@@ -317,7 +317,7 @@
 				<posy>180</posy>
 				<width>60</width>
 				<height>60</height>
-				<font>font30caps</font>
+				<font>font30</font>
 				<label>&gt;</label>
 				<focusedcolor>black</focusedcolor>
 				<align>center</align>

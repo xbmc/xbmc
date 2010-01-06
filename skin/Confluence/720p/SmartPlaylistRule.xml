@@ -47,7 +47,7 @@
 			<posy>18</posy>
 			<width>760</width>
 			<height>30</height>
-			<font>font13caps_title</font>
+			<font>font13_title</font>
 			<label>$LOCALIZE[21421]</label>
 			<align>center</align>
 			<aligny>center</aligny>
@@ -150,7 +150,7 @@
 			<texturefocus border="3">button-focus.png</texturefocus>
 			<texturenofocus border="3">button-nofocus.png</texturenofocus>
 			<label>1024</label>
-			<font>font12caps_title</font>
+			<font>font12_title</font>
 			<onup>9001</onup>
 			<onleft>17</onleft>
 			<onright>17</onright>
@@ -165,7 +165,7 @@
 				<height>40</height>
 				<align>center</align>
 				<aligny>center</aligny>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<texturefocus border="3">button-focus.png</texturefocus>
 				<texturenofocus border="3">MenuItemNF.png</texturenofocus>
 				<label>186</label>
@@ -182,7 +182,7 @@
 				<height>40</height>
 				<align>center</align>
 				<aligny>center</aligny>
-				<font>font12caps_title</font>
+				<font>font12_title</font>
 				<texturefocus border="3">button-focus.png</texturefocus>
 				<texturenofocus border="3">MenuItemNF.png</texturenofocus>
 				<label>222</label>
