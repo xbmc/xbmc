@@ -910,8 +910,7 @@ void CCrystalHD::CheckCrystalHDLibraryPath(void)
     char *pcPath= NULL;
     if( CWIN32Util::UtilRegGetValue( hKey, BC_REG_INST_PATH, &dwType, &pcPath, NULL, sizeof( pcPath ) ) == ERROR_SUCCESS )
     {
-      CStdString strDll;
-      strDll.Format("%s%s%s", pcPath, CUtil::HasSlashAtEnd(pcPath) ? "":"\\", BC_BCM_DLL );
+      CStdString strDll = CUtil::AddFileToFolder(pcPath, BC_BCM_DLL);
       CLog::Log(LOGINFO, "%s: got CrystalHD installation path (%s)", __MODULE_NAME__, strDll.c_str());
       m_dll->SetFile(strDll);
     }
