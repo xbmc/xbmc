@@ -46,18 +46,15 @@ namespace BCM
 {
 #if defined(WIN32)
   typedef void		*HANDLE;
-  #include <bc_dts_types.h>
-  #include <bc_dts_defs.h>
-  #include "lib/libcrystalhd/linux_lib/libcrystalhd/libcrystalhd_if.h"
 #else
   #ifndef __LINUX_USER__
     #define __LINUX_USER__
   #endif
+#endif
 
   #include <libcrystalhd/bc_dts_types.h>
   #include <libcrystalhd/bc_dts_defs.h>
   #include <libcrystalhd/libcrystalhd_if.h>
-#endif
 };
 
 #define __MODULE_NAME__ "CrystalHD"
