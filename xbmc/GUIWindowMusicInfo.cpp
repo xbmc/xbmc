@@ -503,7 +503,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
     item->SetLabel(g_localizeStrings.Get(20018));
     items.Add(item);
   }
-  
+
   CStdString result;
   bool flip=false;
   VECSOURCES sources(g_settings.m_musicSources);
@@ -593,7 +593,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
       CFile::Delete(item->GetCachedPictureThumb());
     items.Add(item);
   }
-  
+
   // Grab a local thumb
   CMusicDatabase database;
   database.Open();
@@ -618,7 +618,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
     itemNone->SetLabel(g_localizeStrings.Get(20439));
     items.Add(itemNone);
   }
-  
+
   CStdString result;
   VECSOURCES sources(g_settings.m_musicSources);
   g_mediaManager.GetLocalDrives(sources);

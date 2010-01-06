@@ -84,7 +84,6 @@ protected:
     float left, top, right, bottom;
     float advance;
     character_t letterAndStyle;
-    int   glyphIndex;
   };
   void AddReference();
   void RemoveReference();

@@ -100,7 +100,7 @@
 				<label>-</label>
 				<texturefocus>OSDNextTrackFO.png</texturefocus>
 				<texturenofocus>OSDNextTrackNF.png</texturenofocus>
-				<onleft>604</onleft>nah nvidia
+				<onleft>604</onleft>
 				<onright>606</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>

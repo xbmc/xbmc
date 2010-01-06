@@ -70,7 +70,8 @@ void CGraphicContext::SetOrigin(float x, float y)
 
 void CGraphicContext::RestoreOrigin()
 {
-  m_origins.pop();
+  if (m_origins.size())
+    m_origins.pop();
   RemoveTransform();
 }
 

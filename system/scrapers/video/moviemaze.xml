@@ -16,10 +16,10 @@
                 <RegExp input="$$1" output="&lt;url&gt;\1\2/\3.html&lt;/url&gt;" dest="3">
                         <expression clear="yes" noclean="1">(http://www.moviemaze.de/filme/)([0-9]*)/(.*).html</expression>
                 </RegExp>
-                <RegExp input="$$1" output="&lt;url function=&quot;GetByIMDBId&quot;&gt;http://www.imdb.com/title/tt\2/externalreviews&lt;/url&gt;" dest="3+">
+		<RegExp input="$$1" output="&lt;url function=&quot;GetByIMDBId&quot;&gt;http://google.com/search?q=cache:http://www.imdb.com/title/tt\2/externalreviews&lt;/url&gt;" dest="3+">
                         <expression>(imdb.com/)Title\?([0-9]+)</expression>
                 </RegExp>
-                <RegExp input="$$1" output="&lt;url function=&quot;GetByIMDBId&quot;&gt;http://www.imdb.com/title/tt\2/externalreviews&lt;/url&gt;" dest="3+">
+		<RegExp input="$$1" output="&lt;url function=&quot;GetByIMDBId&quot;&gt;http://google.com/search?q=cache:http://www.imdb.com/title/tt\2/externalreviews&lt;/url&gt;" dest="3+">
                         <expression>(imdb.com/title/tt)([0-9]*)</expression>
                 </RegExp>
         </NfoUrl>

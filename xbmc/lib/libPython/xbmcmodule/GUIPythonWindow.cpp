@@ -166,7 +166,7 @@ CRITICAL_SECTION g_critSection;
 void Py_InitCriticalSection()
 {
   static bool first_call = true;
-  if (first_call) 
+  if (first_call)
   {
     InitializeCriticalSection(&g_critSection);
     first_call = false;
@@ -185,18 +185,18 @@ void Py_MakePendingActionCalls()
   vector<PyXBMCAction*>::iterator iter;
   iter = g_actionQueue.begin();
   while (iter!=g_actionQueue.end())
-  {    
+  {
     PyXBMCAction* arg = (*iter);
     EnterCriticalSection(&g_critSection);
     g_actionQueue.erase(iter);
     LeaveCriticalSection(&g_critSection);
 
-    if (arg->type==0) 
+    if (arg->type==0)
     {
       Py_XBMC_Event_OnAction(arg);
     } else if (arg->type==1) {
       Py_XBMC_Event_OnControl(arg);
-    }   
+    }
 
     EnterCriticalSection(&g_critSection);
     iter=g_actionQueue.begin();
@@ -241,7 +241,7 @@ int Py_XBMC_Event_OnAction(void* arg)
     }
     else {
       CLog::Log(LOGERROR,"Exception in python script's onAction");
-    	PyErr_Print();
+      PyErr_Print();
     }
     delete action;
   }

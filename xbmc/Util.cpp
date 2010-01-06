@@ -840,6 +840,10 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
   if(host.length() == 0)
     return false;
 
+  // assume a hostname without dot's
+  // is local (smb netbios hostnames)
+  if(host.find('.') == string::npos)
+    return true;
 
   unsigned long address = ntohl(inet_addr(host.c_str()));
   if(address == INADDR_NONE)
@@ -849,21 +853,16 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
       address = ntohl(inet_addr(ip.c_str()));
   }
 
-  if(address == INADDR_NONE)
-  {
-    // assume a hostname without dot's
-    // is local (smb netbios hostnames)
-    if(host.find('.') == string::npos)
-      return true;
-  }
-  else
+  if(address != INADDR_NONE)
   {
     // check if we are on the local subnet
     if (!g_application.getNetwork().GetFirstConnectedInterface())
       return false;
+    
     if (g_application.getNetwork().HasInterfaceForIP(address))
       return true;
   }
+  
   return false;
 }
 
@@ -1924,7 +1923,7 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
   for (int y = 0; y < height; y++)
     memcpy(outpixels + y * stride, pixels + (height - y - 1) * stride, stride);
 
-  delete pixels; 
+  delete [] pixels; 
 
 #else
   //nothing to take a screenshot from
@@ -1953,7 +1952,7 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
     if (!CPicture::CreateThumbnailFromSurface(outpixels, width, height, stride, filename))
       CLog::Log(LOGERROR, "Unable to write screenshot %s", filename.c_str());
 
-    delete outpixels;
+    delete [] outpixels;
   }
   else
   {

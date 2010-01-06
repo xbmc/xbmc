@@ -76,7 +76,8 @@ bool CRenderSystemDX::InitRenderSystem()
 
   UpdateMonitor();
 
-  CreateDevice();
+  if(CreateDevice()==false)
+    return false;
 
   if(m_pD3D->GetAdapterIdentifier(m_adapter, 0, &AIdentifier) == D3D_OK)
   {

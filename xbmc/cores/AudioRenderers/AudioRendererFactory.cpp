@@ -81,6 +81,15 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
       device = deviceString.Right(deviceString.length() - iPos - 1);
       ReturnOnValidInitialize();
 
+#ifdef _WIN32
+      //If WASAPI failed try DirectSound.
+      if(deviceString.Left(iPos).Equals("wasapi"))
+      {
+        audioSink = CreateFromUri("directsound");
+        ReturnOnValidInitialize();
+      }
+#endif
+
       audioSink = new CNullDirectSound();
       audioSink->Initialize(pCallback, device, iChannels, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough);
       return audioSink;

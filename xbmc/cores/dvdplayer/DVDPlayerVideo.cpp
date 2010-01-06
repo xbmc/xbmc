@@ -123,8 +123,8 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_fForcedAspectRatio = 0;
   m_iNrOfPicturesNotToSkip = 0;
   InitializeCriticalSection(&m_critCodecSection);
-  m_messageQueue.SetMaxDataSize(8 * 1024 * 1024);
-  m_messageQueue.SetMaxTimeSize(4.0);
+  m_messageQueue.SetMaxDataSize(40 * 1024 * 1024);
+  m_messageQueue.SetMaxTimeSize(8.0);
   g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
 
   m_iCurrentPts = DVD_NOPTS_VALUE;
@@ -312,8 +312,13 @@ void CDVDPlayerVideo::Process()
   && m_hints.fpsscale )
   {
     int flags = 0;
-    flags |= m_bAllowFullscreen ? CONF_FLAGS_FULLSCREEN : 0;
-    flags |= CONF_FLAGS_YUVCOEF_BT709;
+    if(m_bAllowFullscreen)
+      flags |= CONF_FLAGS_FULLSCREEN;
+
+    if(m_hints.width > 1024 || m_hints.height >= 600)
+      flags |= CONF_FLAGS_YUVCOEF_BT709;
+    else
+      flags |= CONF_FLAGS_YUVCOEF_BT601;
 
     m_output.width     = m_hints.width;
     m_output.dwidth    = m_hints.width;
@@ -857,6 +862,12 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
       CDVDCodecUtils::CopyPicture(pDest, m_pTempOverlayPicture);
     }
   }
+  else if(pSource->format == DVDVideoPicture::FMT_NV12)
+  {
+    AutoCrop(pSource);
+    CDVDCodecUtils::CopyNV12Picture(pDest, pSource);
+  }
+
 }
 #endif
 
@@ -889,11 +900,34 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       case 4: // FCC
         flags |= CONF_FLAGS_YUVCOEF_BT601;
         break;
+      case 1: // ITU-R Rec.709 (1990) -- BT.709
+        flags |= CONF_FLAGS_YUVCOEF_BT709;
+        break;
       case 3: // RESERVED
       case 2: // UNSPECIFIED
-      case 1: // ITU-R Rec.709 (1990) -- BT.709
       default:
-        flags |= CONF_FLAGS_YUVCOEF_BT709;
+        if(pPicture->iWidth > 1024 || pPicture->iHeight >= 600)
+          flags |= CONF_FLAGS_YUVCOEF_BT709;
+        else
+          flags |= CONF_FLAGS_YUVCOEF_BT601;
+        break;
+    }
+
+    switch(pPicture->format)
+    {
+      case DVDVideoPicture::FMT_YUV420P:
+      case DVDVideoPicture::FMT_VDPAU:
+        flags |= CONF_FLAGS_FORMAT_YV12;
+        break;
+      case DVDVideoPicture::FMT_NV12:
+        flags |= CONF_FLAGS_FORMAT_NV12;
+        break;
+      case DVDVideoPicture::FMT_UYVY:
+        flags |= CONF_FLAGS_FORMAT_UYVY;
+        break;
+      case DVDVideoPicture::FMT_YUY2:
+        flags |= CONF_FLAGS_FORMAT_YUY2;
+        break;
     }
 
     if(m_bAllowFullscreen)
@@ -1106,7 +1140,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
 void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
 {
-  if(pPicture->format == DVDVideoPicture::FMT_YUV420P)
+  if ((pPicture->format == DVDVideoPicture::FMT_YUV420P) ||
+     (pPicture->format == DVDVideoPicture::FMT_NV12) )
   {
     RECT crop;
 

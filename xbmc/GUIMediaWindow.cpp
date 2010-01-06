@@ -161,7 +161,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 
   if (CGUIWindow::OnAction(action))
     return true;
-  
+
   // live filtering
   if (action.id == ACTION_FILTER_CLEAR)
   {
@@ -187,7 +187,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     OnMessage(message);
     return true;
   }
-  
+
   return false;
 }
 
@@ -807,7 +807,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
 
     // If karaoke song is being played AND popup autoselector is enabled, the playlist should not be added
-    bool do_not_add_karaoke = g_guiSettings.GetBool("karaoke.enabled") && 
+    bool do_not_add_karaoke = g_guiSettings.GetBool("karaoke.enabled") &&
       g_guiSettings.GetBool("karaoke.autopopupselector") && pItem->IsKaraoke();
 
     if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled() && !pItem->IsPlayList() && !do_not_add_karaoke )

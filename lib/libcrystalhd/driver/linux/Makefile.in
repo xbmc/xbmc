@@ -1,0 +1,41 @@
+#
+#  Broadcom Crystal HD (BCM970012) controller Makefile.
+#
+#
+CRYSTALHD_ROOT = @CRYSTALHDROOT@
+KDIR = @KERN_DIR@
+
+
+INCLUDES = -I$(KDIR)/include -I$(CRYSTALHD_ROOT)/../../include -I$(CRYSTALHD_ROOT)/../../include/link
+
+EXTRA_CFLAGS   = -D__KERNEL__ -DMODULE $(INCLUDES) $(INC)
+EXTRA_CFLAGS  += -Wall -Wstrict-prototypes -Wno-trigraphs -Werror -O2
+
+OBJ :=  crystalhd_lnx.o	\
+	crystalhd_misc.o	\
+	crystalhd_cmds.o  \
+	crystalhd_hw.o
+
+
+PWD = $(shell pwd)
+
+obj-m := crystalhd.o
+	crystalhd-objs := $(OBJ)
+
+all:
+	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
+
+install:
+	install -d /lib/modules/$(shell uname -r)/kernel/drivers/video/broadcom
+	install -m 0644 crystalhd.ko /lib/modules/$(shell uname -r)/kernel/drivers/video/broadcom
+	/sbin/depmod -a
+
+clean:
+	rm -f *.map *.list *.o *.ko crystalhd.mod.c $(OBJ)
+
+distclean:
+	rm -f *.map *.list *.o *.ko crystalhd.mod.c $(OBJ)
+	rm -f configure config.status config.log *~*
+	rm -rf autom4te.cache
+	rm -f Makefile
+	rm -f Module.symvers
