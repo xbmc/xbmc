@@ -2257,7 +2257,7 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   || method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
-  if(m_renderMethod == RENDER_METHOD_VDPAU)
+  if(m_renderMethod & RENDER_VDPAU)
   {
     if(method == VS_INTERLACEMETHOD_VDPAU
     || method == VS_INTERLACEMETHOD_RENDER_BLEND
@@ -2289,7 +2289,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
   if(method == VS_SCALINGMETHOD_CUBIC 
   && glewIsSupported("GL_ARB_texture_float")
   && glewIsSupported("GL_EXT_framebuffer_object")
-  && m_renderMethod == RENDER_GLSL)
+  && (m_renderMethod & RENDER_GLSL))
     return true;
 
   if (g_advancedSettings.m_videoHighQualityScaling != SOFTWARE_UPSCALING_DISABLED)
@@ -2300,7 +2300,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
       return true;
   }
 
-  if(method == VS_SCALINGMETHOD_VDPAU_HARDWARE && m_renderMethod == RENDER_METHOD_VDPAU)
+  if(method == VS_SCALINGMETHOD_VDPAU_HARDWARE && (m_renderMethod & RENDER_VDPAU))
     return true;
 
   return false;
