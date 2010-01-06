@@ -37,17 +37,16 @@ CDSConfig::CDSConfig()
 
 CDSConfig::~CDSConfig()
 {
-  if (m_pIMpaDecFilter)
-    m_pIMpaDecFilter.Release();
-  if (m_pIMpcDecFilter)
-    m_pIMpcDecFilter.Release();
+  SAFE_RELEASE(m_pIMpaDecFilter);
+  SAFE_RELEASE(m_pIMpcDecFilter);
   
 }
 
-HRESULT CDSConfig::LoadGraph(CComPtr<IGraphBuilder2> pGB)
+HRESULT CDSConfig::LoadGraph(IGraphBuilder2* pGB)
 {
   HRESULT hr = S_OK;
-  m_pGraphBuilder = pGB.Detach();
+  m_pGraphBuilder = pGB;
+  pGB = NULL;
   LoadFilters();
 
   return hr;
@@ -68,7 +67,7 @@ bool CDSConfig::GetStreamSelector(IBaseFilter* pBF)
 {
   if (m_pIAMStreamSelect)
     return true;
-  m_pIAMStreamSelect = pBF;
+  pBF->QueryInterface(__uuidof(m_pIAMStreamSelect), (void **) &m_pIAMStreamSelect);
   if(m_pIAMStreamSelect)
   {
     DWORD nStreams = 0, flags, group, prevgroup = -1;
@@ -160,7 +159,7 @@ bool CDSConfig::GetMpcVideoDec(IBaseFilter* pBF)
 {
   if (m_pIMpcDecFilter)
     return false;
-  m_pIMpcDecFilter = pBF;
+  pBF->QueryInterface(__uuidof(m_pIMpcDecFilter), (void **)&m_pIMpcDecFilter);
   m_pStdDxva.Format("");
   if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
   {
@@ -183,7 +182,8 @@ bool CDSConfig::GetMpaDec(IBaseFilter* pBF)
 {
   if (m_pIMpaDecFilter)
     return false;
-  m_pIMpaDecFilter = pBF;
+  pBF->QueryInterface(__uuidof(m_pIMpaDecFilter), (void **)&m_pIMpaDecFilter);
+
 //definition of AC3 VALUE DEFINITION
 //A52_CHANNEL 0
 //A52_MONO 1
