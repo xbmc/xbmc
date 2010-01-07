@@ -53,6 +53,7 @@ CDVDVideoCodecLibMpeg2::CDVDVideoCodecLibMpeg2()
   m_irffpattern = 0;
   m_bFilm = false;
   m_bIs422 = false;
+  m_pts = DVD_NOPTS_VALUE;
 }
 
 CDVDVideoCodecLibMpeg2::~CDVDVideoCodecLibMpeg2()
@@ -189,6 +190,7 @@ void CDVDVideoCodecLibMpeg2::Dispose()
   DeleteBuffer(NULL);
   m_pCurrentBuffer = NULL;
   m_irffpattern = 0;
+  m_pts = DVD_NOPTS_VALUE;
 
   m_dll.Unload();
 }
@@ -205,6 +207,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
 
   if (pData && iSize)
   {
+    m_pts = pts;
     //buffer more data
     iState = m_dll.mpeg2_parse(m_pHandle);
     if (iState != STATE_BUFFER)
@@ -264,7 +267,8 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
         if(m_pInfo->current_fbuf && m_pInfo->current_fbuf->id)
         {
           pBuffer = (DVDVideoPicture*)m_pInfo->current_fbuf->id;
-          pBuffer->pts = pts;
+          pBuffer->pts = m_pts;
+          m_pts = DVD_NOPTS_VALUE;
         }
         //Not too interesting really
         //we can do everything when we get a full picture instead. simplifies things.
@@ -457,6 +461,7 @@ void CDVDVideoCodecLibMpeg2::Reset()
 
   ReleaseBuffer(NULL);
   m_pCurrentBuffer = NULL;
+  m_pts = DVD_NOPTS_VALUE;
 }
 
 bool CDVDVideoCodecLibMpeg2::GetPicture(DVDVideoPicture* pDvdVideoPicture)
