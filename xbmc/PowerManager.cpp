@@ -134,7 +134,7 @@ bool CPowerManager::Powerdown()
 
   bool success = CanPowerdown() ? m_instance->Powerdown() : false;
   if (success)
-    CBroadcastManager::Broadcast(System, "OnShutdown");
+    CBroadcastManager::Broadcast(System, "xbmc", "Shutdown");
 
   return success;
 }
@@ -152,7 +152,7 @@ bool CPowerManager::Suspend()
   }
   
   if (success)
-    CBroadcastManager::Broadcast(System, "OnSuspend");
+    CBroadcastManager::Broadcast(System, "xbmc", "Suspend");
 
   return success;
 }
@@ -167,7 +167,7 @@ bool CPowerManager::Hibernate()
   }
 
   if (success)
-    CBroadcastManager::Broadcast(System, "OnHibernate");
+    CBroadcastManager::Broadcast(System, "xbmc", "Hibernate");
 
   return success;
 }
@@ -176,7 +176,7 @@ bool CPowerManager::Reboot()
   bool success = CanReboot() ? m_instance->Reboot() : false;
 
   if (success)
-    CBroadcastManager::Broadcast(System, "OnReboot");
+    CBroadcastManager::Broadcast(System, "xbmc", "Reboot");
 
   return success;
 }
@@ -216,7 +216,7 @@ void CPowerManager::Resume()
   // reset
   g_application.m_bRunResumeJobs = false;
 
-  CBroadcastManager::Broadcast(System, "OnResume");
+  CBroadcastManager::Broadcast(System, "xbmc", "Resume");
 }
 
 bool CPowerManager::CanPowerdown()

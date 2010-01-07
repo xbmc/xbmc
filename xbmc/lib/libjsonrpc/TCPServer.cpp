@@ -116,7 +116,7 @@ bool CTCPServer::CanBroadcast()
   return true;
 }
 
-void CTCPServer::Broadcast(EBroadcastFlag flag, std::string message)
+void CTCPServer::Broadcast(EBroadcastFlag flag, const char *sender, const char *message, const char *data)
 {
   Value root;
   root["jsonrpc"] = "2.0";
@@ -125,7 +125,7 @@ void CTCPServer::Broadcast(EBroadcastFlag flag, std::string message)
   StyledWriter writer;
   string str = writer.write(root);
 
-  printf("Broadcast (%s) -> (%s)\n", message.c_str(), str.c_str());
+  printf("Broadcast (%s) -> (%s)\n", message, str);
 
   for (unsigned int i = 0; i < m_connections.size(); i++)
   {

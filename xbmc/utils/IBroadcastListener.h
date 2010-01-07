@@ -20,8 +20,6 @@
  *
  */
 
-#include <string>
-
 namespace BROADCAST
 {
   enum EBroadcastFlag
@@ -37,6 +35,6 @@ namespace BROADCAST
   public:
     IBroadcastListener() { };
     virtual ~IBroadcastListener() { };
-    virtual void Broadcast(EBroadcastFlag flag, std::string message) = 0;
+    virtual void Broadcast(EBroadcastFlag flag, const char *sender, const char *message, const char *data) = 0;
   };
 }

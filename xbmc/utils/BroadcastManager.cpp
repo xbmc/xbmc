@@ -46,10 +46,10 @@ void CBroadcastManager::RemoveListener(IBroadcastListener *listener)
   }
 }
 
-void CBroadcastManager::Broadcast(EBroadcastFlag flag, string message)
+void CBroadcastManager::Broadcast(EBroadcastFlag flag, const char *sender, const char *message, const char *data)
 {
-  CLog::Log(LOGDEBUG, "BroadcastManager - Broadcast: %s", message.c_str());
-  printf("BroadcastManager - Broadcast: %s\n", message.c_str());
+  CLog::Log(LOGDEBUG, "BroadcastManager - Broadcast: %s from %s", message, sender);
+  printf("BroadcastManager - Broadcast: %s\n", message);
   for (unsigned int i = 0; i < m_listeners.size(); i++)
-    m_listeners[i]->Broadcast(flag, message);
+    m_listeners[i]->Broadcast(flag, sender, message, data);
 }

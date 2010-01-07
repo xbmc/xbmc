@@ -18,7 +18,7 @@ namespace JSONRPC
     static void StopServer(bool bWait);
 
     virtual bool CanBroadcast();
-    virtual void Broadcast(BROADCAST::EBroadcastFlag flag, std::string message);
+    virtual void Broadcast(BROADCAST::EBroadcastFlag flag, const char *sender, const char *message, const char *data);
   protected:
     void Process();
   private:

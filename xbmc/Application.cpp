@@ -3409,7 +3409,7 @@ void CApplication::Stop()
       m_pXbmcHttp->shuttingDown = true;
     }
 #endif
-    CBroadcastManager::Broadcast(System, "OnApplicationStop");
+    CBroadcastManager::Broadcast(System, "xbmc", "ApplicationStop");
 
     if( m_bSystemScreenSaverEnable )
       g_Windowing.EnableSystemScreenSaver(true);
@@ -3937,7 +3937,7 @@ void CApplication::OnPlayBackEnded()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlaybackEnded");
+  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackEnded");
 
   if (IsPlayingAudio())
   {
@@ -3968,7 +3968,7 @@ void CApplication::OnPlayBackStarted()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlaybackStarted");
+  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackStarted");
 
   CLog::Log(LOGDEBUG, "%s - Playback has started", __FUNCTION__);
 
@@ -3990,7 +3990,7 @@ void CApplication::OnQueueNextItem()
     getApplicationMessenger().HttpApi("broadcastlevel; OnQueueNextItem;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnQueueNextItem");
+  CBroadcastManager::Broadcast(Playback, "xbmc", "QueueNextItem");
 
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
@@ -4021,7 +4021,7 @@ void CApplication::OnPlayBackStopped()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlaybackStopped");
+  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackStopped");
 
   CLastfmScrobbler::GetInstance()->SubmitQueue();
   CLibrefmScrobbler::GetInstance()->SubmitQueue();
@@ -4044,7 +4044,7 @@ void CApplication::OnPlayBackPaused()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackPaused;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlaybackPaused");
+  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackPaused");
 
   CLog::Log(LOGDEBUG, "%s - Playback was paused", __FUNCTION__);
 }
@@ -4061,7 +4061,7 @@ void CApplication::OnPlayBackResumed()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackResumed;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlaybackResumed");
+  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackResumed");
 
   CLog::Log(LOGDEBUG, "%s - Playback was resumed", __FUNCTION__);
 }
@@ -4082,7 +4082,7 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   }
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlaybackSpeedChanged");
+  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackSpeedChanged");
 
   CLog::Log(LOGDEBUG, "%s - Playback speed changed", __FUNCTION__);
 }
@@ -4103,7 +4103,7 @@ void CApplication::OnPlayBackSeek(int iTime)
   }
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlaybackSeek");
+  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackSeek");
 
   CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
 }
@@ -4124,7 +4124,7 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
   }
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "OnPlaybackSeekChapter");
+  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackSeekChapter");
 
   CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
 }

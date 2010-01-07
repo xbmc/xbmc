@@ -30,7 +30,7 @@ namespace BROADCAST
   public:
     static void AddListener(IBroadcastListener *listener);
     static void RemoveListener(IBroadcastListener *listener);
-    static void Broadcast(EBroadcastFlag flag, std::string message);
+    static void Broadcast(EBroadcastFlag flag, const char *sender, const char *message, const char *data = NULL);
   private:
     static std::vector<IBroadcastListener *> m_listeners;
   };
