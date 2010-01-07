@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- should be self-explanatory -->
-<scraper framework="1.1" date="2009-07-28" name="TheTVDB.com" content="tvshows" thumb="tvdb.png" language="multi">
+<scraper framework="1.1" date="2009-07-28" name="TheTVDB.com" content="tvshows" thumb="tvdb.png" language="multi" cachePersistence="00:15">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;url function=&quot;GetLanguages&quot;&gt;http://www.thetvdb.com/api/1D62F2F90030C444/languages.xml&lt;/url&gt;" dest="5">
