@@ -405,7 +405,6 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
         // Set .amount1 = 1 for APPCOMMANDS like VOL_UP and DOWN that need to know how much to change the volume
         CAction action;
         action.id = newEvent.appcommand.action;
-        action.amount1 = 1;
         g_application.OnAction(action);
       }
       break;
@@ -4662,10 +4661,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       g_infoManager.ResetCurrentItem();
       m_currentStack->Clear();
 
-      // stop lastfm
-      if (CLastFmManager::GetInstance()->IsRadioEnabled())
-        CLastFmManager::GetInstance()->StopRadio();
-
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
         // sending true to PlayNext() effectively passes bRestart to PlayFile()
@@ -4675,6 +4670,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
       else
       {
+        // stop lastfm
+        if (CLastFmManager::GetInstance()->IsRadioEnabled())
+          CLastFmManager::GetInstance()->StopRadio();
+
         delete m_pPlayer;
         m_pPlayer = 0;
       }

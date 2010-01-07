@@ -1139,6 +1139,15 @@ void CLinuxRendererGL::LoadShaders(int field)
   else
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
 
+  if (glewIsSupported("GL_ARB_pixel_buffer_object") 
+  &&  g_guiSettings.GetBool("videoplayer.usepbo") && !(m_renderMethod & RENDER_SW))
+  {
+    CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
+    m_pboused = true;
+  }
+  else
+    m_pboused = false;
+
   // Now that we now the render method, setup texture function handlers
   if (m_renderMethod & RENDER_NV12)
   {
@@ -1747,7 +1756,6 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
 
   if( fields[FIELD_FULL][0].id == 0 ) return;
 
-  CLog::Log(LOGDEBUG, "Deleted YV12 texture %i", index);
   /* finish up all textures, and delete them */
   g_graphicsContext.BeginPaint();  //FIXME
   for(int f = 0;f<MAX_FIELDS;f++)
@@ -1757,10 +1765,7 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
       if( fields[f][p].id )
       {
         if (glIsTexture(fields[f][p].id))
-        {
           glDeleteTextures(1, &fields[f][p].id);
-          CLog::Log(LOGDEBUG, "GL: Deleting texture field %d plane %d", f+1, p+1);
-        }
         fields[f][p].id = 0;
       }
     }
@@ -1804,15 +1809,6 @@ void CLinuxRendererGL::ClearYV12Texture(int index)
 
 bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 {
-/*
-#ifdef HAVE_LIBVDPAU
-  if (m_renderMethod & RENDER_VDPAU)
-  {
-    SetEvent(m_eventTexturesDone[index]);
-    return true;
-  }
-#endif
-*/
   // Remember if we're software upscaling.
   m_isSoftwareUpscaling = IsSoftwareUpscaling();
 
@@ -1840,11 +1836,8 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );
     im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
 
-    if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo"))
+    if (m_pboused)
     {
-      CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
-      m_pboused = true;
-
       glGenBuffersARB(3, pbo);
 
       for (int i = 0; i < 3; i++)
@@ -1858,9 +1851,6 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     }
     else
     {
-      CLog::Log(LOGNOTICE, "GL: Not using GL_ARB_pixel_buffer_object");
-      m_pboused = false;
-
       for (int i = 0; i < 3; i++)
         im.plane[i] = new BYTE[im.planesize[i]];
     }
@@ -1929,23 +1919,9 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
       glBindTexture(m_textureTarget, plane.id);
       if (m_renderMethod & RENDER_SW)
-      {
-        if(m_renderMethod & RENDER_POT)
-          CLog::Log(LOGNOTICE, "GL: Creating RGB POT texture of size %d x %d",  plane.texwidth, plane.texheight);
-        else
-          CLog::Log(LOGDEBUG,  "GL: Creating RGB NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
-
         glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-      } 
       else
-      {
-        if(m_renderMethod & RENDER_POT)
-          CLog::Log(LOGNOTICE, "GL: Creating YUV POT texture of size %d x %d",  plane.texwidth, plane.texheight);
-        else
-          CLog::Log(LOGDEBUG,  "GL: Creating YUV NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
-
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
-      }
 
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -2064,7 +2040,8 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
     // third plane is not used
     im.planesize[2] = 0;
 
-    if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo"))
+    if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo")
+        && !(m_renderMethod & RENDER_SW))
     {
       CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
       m_pboused = true;
@@ -2276,7 +2253,7 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   || method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
-  if(m_renderMethod == RENDER_METHOD_VDPAU)
+  if(m_renderMethod & RENDER_VDPAU)
   {
     if(method == VS_INTERLACEMETHOD_VDPAU
     || method == VS_INTERLACEMETHOD_RENDER_BLEND
@@ -2308,7 +2285,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
   if(method == VS_SCALINGMETHOD_CUBIC 
   && glewIsSupported("GL_ARB_texture_float")
   && glewIsSupported("GL_EXT_framebuffer_object")
-  && m_renderMethod == RENDER_GLSL)
+  && (m_renderMethod & RENDER_GLSL))
     return true;
 
   if (g_advancedSettings.m_videoHighQualityScaling != SOFTWARE_UPSCALING_DISABLED)
@@ -2319,7 +2296,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
       return true;
   }
 
-  if(method == VS_SCALINGMETHOD_VDPAU_HARDWARE && m_renderMethod == RENDER_METHOD_VDPAU)
+  if(method == VS_SCALINGMETHOD_VDPAU_HARDWARE && (m_renderMethod & RENDER_VDPAU))
     return true;
 
   return false;

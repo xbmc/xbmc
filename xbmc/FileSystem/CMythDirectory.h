@@ -43,6 +43,7 @@ public:
 
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   virtual bool IsAllowed(const CStdString &strFile) const { return true; };
+  virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const;
 
   static bool SupportsFileOperations(const CStdString& strPath);
   static bool IsLiveTV(const CStdString& strPath);

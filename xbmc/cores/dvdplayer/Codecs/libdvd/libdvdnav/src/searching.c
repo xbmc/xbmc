@@ -100,16 +100,13 @@ static dvdnav_status_t dvdnav_scan_admap(dvdnav_t *this, int32_t domain, uint32_
   return DVDNAV_STATUS_ERR;
 }
 
-/* ssd/xbmc very different source code here.*/
-/* FIXME: right now, this function does not use the time tables but interpolates
-   only the cell times */
 dvdnav_status_t dvdnav_time_search(dvdnav_t *this,
 				   uint64_t time) {
 
-  uint64_t target = time;
+  uint32_t target;
   uint64_t length = 0;
   uint32_t first_cell_nr, last_cell_nr, cell_nr;
-  int32_t found;
+  int32_t found = 0;
   cell_playback_t *cell;
   dvd_state_t *state;
 
@@ -126,8 +123,14 @@ dvdnav_status_t dvdnav_time_search(dvdnav_t *this,
     return DVDNAV_STATUS_ERR;
   }
 
+  if((state->pgc->prohibited_ops.title_or_time_play == 1) ||
+      (this->pci.pci_gi.vobu_uop_ctl.title_or_time_play == 1 )){
+    printerr("operation forbidden.");
+    pthread_mutex_unlock(&this->vm_lock);
+    return DVDNAV_STATUS_ERR;
+  }
 
-  this->cur_cell_time = 0;
+  /* setup what cells we should be working within */
   if (this->pgc_based) {
     first_cell_nr = 1;
     last_cell_nr = state->pgc->nr_of_cells;
@@ -141,18 +144,96 @@ dvdnav_status_t dvdnav_time_search(dvdnav_t *this,
       last_cell_nr = state->pgc->nr_of_cells;
   }
 
-  found = 0;
+  /* FIXME: using time map is not going to work unless we are pgc_based */
+  /*        we'd need to recalculate the time to be relative to full pgc first*/
+  if(!this->pgc_based)
+  {
+#ifdef LOG_DEBUG
+    fprintf(MSG_OUT, "libdvdnav: time_search - not pgc based\n");
+#endif
+    goto timemapdone;
+  }
+
+  if(!this->vm->vtsi->vts_tmapt){
+    /* no time map for this program chain */
+#ifdef LOG_DEBUG
+    fprintf(MSG_OUT, "libdvdnav: time_search - no time map for this program chain\n");
+#endif
+    goto timemapdone;
+  }
+
+  if(this->vm->vtsi->vts_tmapt->nr_of_tmaps < state->pgcN){
+    /* to few time maps for this program chain */
+#ifdef LOG_DEBUG
+    fprintf(MSG_OUT, "libdvdnav: time_search - to few time maps for this program chain\n");
+#endif
+    goto timemapdone;
+  }
+
+  /* get the tmpat corresponding to the pgc */
+  vts_tmap_t *tmap = &(this->vm->vtsi->vts_tmapt->tmap[state->pgcN-1]);
+
+  if(tmap->tmu == 0){
+    /* no time unit for this time map */
+#ifdef LOG_DEBUG
+    fprintf(MSG_OUT, "libdvdnav: time_search - no time unit for this time map\n");
+#endif
+    goto timemapdone;
+  }
+
+  /* time is in pts (90khz clock), get the number of tmu's that represent */
+  /* first entry defines at time tmu not time zero */
+  int entry = time / tmap->tmu / 90000 - 1;
+  if(entry > tmap->nr_of_entries)
+    entry = tmap->nr_of_entries -1;
+
+  if(entry > 0)
+  {
+    /* get the table entry, disregarding marking of discontinuity */
+    target = tmap->map_ent[entry] & 0x7fffffff;
+  }
+  else
+  {
+    /* start from first vobunit */
+    target = state->pgc->cell_playback[first_cell_nr-1].first_sector;;
+  }
+
+  /* if we have an additional entry we can interpolate next position */
+  /* allowed only if next entry isn't discontinious */
+
+  if( entry < tmap->nr_of_entries - 1)
+  {
+    const uint32_t target2 = tmap->map_ent[entry+1];
+    const uint64_t timeunit = tmap->tmu*90000;
+    if( !( target2 & 0x80000000) )
+    {
+      length = target2 - target;
+      target += (uint32_t) (length * ( time - (entry+1)*timeunit ) / timeunit);
+    }
+  }
+  found = 1;
+
+timemapdone:
+
+
   for(cell_nr = first_cell_nr; (cell_nr <= last_cell_nr) && !found; cell_nr ++) {
     cell =  &(state->pgc->cell_playback[cell_nr-1]);
+
     if(cell->block_type == BLOCK_TYPE_ANGLE_BLOCK && cell->block_mode != BLOCK_MODE_FIRST_CELL)
       continue;
+
     length = dvdnav_convert_time(&cell->playback_time);
-    if (target >= length) {
-      target -= length;
+    if (time >= length) {
+      time -= length;
     } else {
       /* FIXME: there must be a better way than interpolation */
-      target = target * (cell->last_sector - cell->first_sector + 1) / length;
+      target = time * (cell->last_sector - cell->first_sector + 1) / length;
       target += cell->first_sector;
+
+#ifdef LOG_DEBUG
+      if( cell->first_sector > target || target > cell->last_sector )
+        fprintf(MSG_OUT, "libdvdnav: time_search - sector is not within cell min:%u, max:%u, cur:%u\n", cell->first_sector, cell->last_sector, target);
+#endif
 
       found = 1;
       break;
