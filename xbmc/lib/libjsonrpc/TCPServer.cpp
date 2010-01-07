@@ -39,9 +39,9 @@ CTCPServer::CTCPServer(int port)
 
 void CTCPServer::Process()
 {
-  m_bStop = Initialize();
+  m_bStop = !Initialize();
 
-  while (m_bStop)
+  while (!m_bStop)
   {
     int             max_fd = 0;
     fd_set          rfds;
