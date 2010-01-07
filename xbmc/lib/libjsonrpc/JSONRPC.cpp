@@ -100,7 +100,7 @@ using namespace std;
 
 ActionMap CJSONRPC::m_actionMap;
 
-JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   bool getCommands = parameterObject.get("getcommands", true).asBool();
   bool getDescriptions = parameterObject.get("getdescriptions", true).asBool();
@@ -124,25 +124,25 @@ JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *tran
   return OK;
 }
 
-JSON_STATUS CJSONRPC::Version(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CJSONRPC::Version(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   result["version"] = 1;
 
   return OK;
 }
 
-JSON_STATUS CJSONRPC::Permission(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CJSONRPC::Permission(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-/*  int flags = client->GetPermissionFlags();
+  int flags = client->GetPermissionFlags();
   if (flags & ReadData)
     result["permission"].append("ReadData");
   if (flags & ControlPlayback)
-    result["permission"].append("ControlPlayback");*/
+    result["permission"].append("ControlPlayback");
 
   return OK;
 }
 
-JSON_STATUS CJSONRPC::Ping(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CJSONRPC::Ping(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   Value temp = "pong";
   result.swap(temp);
@@ -216,7 +216,7 @@ JSON_STATUS CJSONRPC::InternalMethodCall(const CStdString& method, Value& o, Val
   if( iter != m_actionMap.end() )
   {
     if (iter->second.permission & client->GetPermissionFlags())
-      return iter->second.method(method, transport, o["params"], result);
+      return iter->second.method(method, transport, client, o["params"], result);
     else
       return BadPermission;
   }

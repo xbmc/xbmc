@@ -51,18 +51,18 @@ namespace JSONRPC
   class CVideoLibrary : public CLibraryBase
   {
   public:
-    static JSON_STATUS GetMovies(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS GetMovies(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
 
-    static JSON_STATUS GetTVShows(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS GetSeasons(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS GetEpisodes(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS GetTVShows(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS GetSeasons(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS GetEpisodes(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
 
-    static JSON_STATUS GetMusicVideoAlbums(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS GetMusicVideos(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS GetMusicVideoAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS GetMusicVideos(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
 
-    static JSON_STATUS GetMovieInfo(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS GetTVShowInfo(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS GetEpisodeInfo(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS GetMusicVideoInfo(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS GetMovieInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS GetTVShowInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS GetEpisodeInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS GetMusicVideoInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
   };
 }

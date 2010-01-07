@@ -31,7 +31,7 @@ using namespace DIRECTORY;
 using namespace Json;
 using namespace JSONRPC;
 
-JSON_STATUS CFileActions::GetRootDirectory(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CFileActions::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   CStdString type = parameterObject.get("type", "null").asString();
   type = type.ToLower();
@@ -61,7 +61,7 @@ JSON_STATUS CFileActions::GetRootDirectory(const CStdString &method, ITransportL
     return InvalidParams;
 }
 
-JSON_STATUS CFileActions::GetDirectory(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CFileActions::GetDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   if (parameterObject.isMember("type") && parameterObject.isMember("directory"))
   {   
@@ -108,7 +108,7 @@ JSON_STATUS CFileActions::GetDirectory(const CStdString &method, ITransportLayer
   return InvalidParams;
 }
 
-JSON_STATUS CFileActions::Download(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CFileActions::Download(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   if (!parameterObject.isMember("file"))
     return InvalidParams;

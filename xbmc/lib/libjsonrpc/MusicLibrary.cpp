@@ -30,7 +30,7 @@ using namespace MUSIC_INFO;
 using namespace Json;
 using namespace JSONRPC;
 
-JSON_STATUS CMusicLibrary::GetArtists(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CMusicLibrary::GetArtists(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
@@ -49,7 +49,7 @@ JSON_STATUS CMusicLibrary::GetArtists(const CStdString &method, ITransportLayer 
   return OK;
 }
 
-JSON_STATUS CMusicLibrary::GetAlbums(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CMusicLibrary::GetAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
@@ -69,7 +69,7 @@ JSON_STATUS CMusicLibrary::GetAlbums(const CStdString &method, ITransportLayer *
   return OK;
 }
 
-JSON_STATUS CMusicLibrary::GetSongs(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CMusicLibrary::GetSongs(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
@@ -90,7 +90,7 @@ JSON_STATUS CMusicLibrary::GetSongs(const CStdString &method, ITransportLayer *t
   return OK;
 }
 
-JSON_STATUS CMusicLibrary::GetSongInfo(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CMusicLibrary::GetSongInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   int songID = parameterObject.get("songid", -1).asInt();
 
