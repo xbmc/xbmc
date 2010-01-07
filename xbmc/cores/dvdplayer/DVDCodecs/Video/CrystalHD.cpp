@@ -921,7 +921,7 @@ void CCrystalHD::CheckCrystalHDLibraryPath(void)
   HKEY hKey;
   CStdString strRegKey;
   
-  CLog::Log(LOGINFO, "%s: detecting CrystalHD installation path", __MODULE_NAME__);
+  CLog::Log(LOGDEBUG, "%s: detecting CrystalHD installation path", __MODULE_NAME__);
   strRegKey.Format("%s\\%s", BC_REG_PATH, BC_REG_PRODUCT );
   
   if( CWIN32Util::UtilRegOpenKeyEx( HKEY_LOCAL_MACHINE, strRegKey.c_str(), KEY_READ, &hKey ))
@@ -931,17 +931,17 @@ void CCrystalHD::CheckCrystalHDLibraryPath(void)
     if( CWIN32Util::UtilRegGetValue( hKey, BC_REG_INST_PATH, &dwType, &pcPath, NULL, sizeof( pcPath ) ) == ERROR_SUCCESS )
     {
       CStdString strDll = CUtil::AddFileToFolder(pcPath, BC_BCM_DLL);
-      CLog::Log(LOGINFO, "%s: got CrystalHD installation path (%s)", __MODULE_NAME__, strDll.c_str());
+      CLog::Log(LOGDEBUG, "%s: got CrystalHD installation path (%s)", __MODULE_NAME__, strDll.c_str());
       m_dll->SetFile(strDll);
     }
     else
     {
-      CLog::Log(LOGERROR, "%s: getting CrystalHD installation path faild", __MODULE_NAME__);
+      CLog::Log(LOGDEBUG, "%s: getting CrystalHD installation path faild", __MODULE_NAME__);
     }
   }
   else
   {
-    CLog::Log(LOGERROR, "%s: CrystalHD software seems to be not installed.", __MODULE_NAME__);
+    CLog::Log(LOGDEBUG, "%s: CrystalHD software seems to be not installed.", __MODULE_NAME__);
   }
 #endif
 }
@@ -984,19 +984,19 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_
     res = m_dll->DtsSetVideoParams(m_Device, videoAlg, FALSE, FALSE, TRUE, 0x80000000 | BCM::vdecFrameRate23_97);
     if (res != BCM::BC_STS_SUCCESS)
     {
-      CLog::Log(LOGERROR, "%s: set video params failed", __MODULE_NAME__);
+      CLog::Log(LOGDEBUG, "%s: set video params failed", __MODULE_NAME__);
       break;
     }
     res = m_dll->DtsStartDecoder(m_Device);
     if (res != BCM::BC_STS_SUCCESS)
     {
-      CLog::Log(LOGERROR, "%s: start decoder failed", __MODULE_NAME__);
+      CLog::Log(LOGDEBUG, "%s: start decoder failed", __MODULE_NAME__);
       break;
     }
     res = m_dll->DtsStartCapture(m_Device);
     if (res != BCM::BC_STS_SUCCESS)
     {
-      CLog::Log(LOGERROR, "%s: start capture failed", __MODULE_NAME__);
+      CLog::Log(LOGDEBUG, "%s: start capture failed", __MODULE_NAME__);
       break;
     }
  
