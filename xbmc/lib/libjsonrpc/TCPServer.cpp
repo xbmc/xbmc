@@ -126,6 +126,15 @@ void CTCPServer::Broadcast(EBroadcastFlag flag, std::string message)
   string str = writer.write(root);
 
   printf("Broadcast (%s) -> (%s)\n", message.c_str(), str.c_str());
+
+  for (unsigned int i = 0; i < m_connections.size(); i++)
+  {
+    int sent = 0;
+    do
+    {
+      sent += send(m_connections[i].m_socket, str.c_str(), str.size() - sent, sent);
+    } while (sent < str.size());
+  }
 }
 
 bool CTCPServer::Initialize()
