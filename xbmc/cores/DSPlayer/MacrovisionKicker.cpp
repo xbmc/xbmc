@@ -31,13 +31,14 @@
 CMacrovisionKicker::CMacrovisionKicker(const TCHAR* pName, LPUNKNOWN pUnk)
 	: CUnknown(pName, pUnk)
 {
+  m_pInner = NULL;
 }
 
 CMacrovisionKicker::~CMacrovisionKicker()
 {
 }
 
-void CMacrovisionKicker::SetInner(CComPtr<IUnknown> pUnk)
+void CMacrovisionKicker::SetInner(IUnknown* pUnk)
 {
 	m_pInner = pUnk;
 }

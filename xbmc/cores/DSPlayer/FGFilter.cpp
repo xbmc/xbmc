@@ -100,7 +100,7 @@ CFGFilterRegistry::CFGFilterRegistry(IMoniker* pMoniker, UINT64 merit)
   m_DisplayName = m_name = str;
   CoTaskMemFree(str), str = NULL;
 
-  CComPtr<IPropertyBag> pPB;
+  IPropertyBag* pPB;
   if(SUCCEEDED(m_pMoniker->BindToStorage(0, 0, IID_IPropertyBag, (void**)&pPB)))
   {
     CComVariant var;
@@ -138,14 +138,14 @@ CFGFilterRegistry::CFGFilterRegistry(CStdString DisplayName, UINT64 merit)
 {
   if(m_DisplayName.IsEmpty()) return;
 
-  CComPtr<IBindCtx> pBC;
+  IBindCtx* pBC;
   CreateBindCtx(0, &pBC);
 
   ULONG chEaten;
   if(S_OK != MkParseDisplayName(pBC, CComBSTR(m_DisplayName), &chEaten, &m_pMoniker))
     return;
 
-  CComPtr<IPropertyBag> pPB;
+  IPropertyBag* pPB;
   if(SUCCEEDED(m_pMoniker->BindToStorage(0, 0, IID_IPropertyBag, (void**)&pPB)))
   {
     CComVariant var;
@@ -180,6 +180,7 @@ CFGFilterRegistry::CFGFilterRegistry(CStdString DisplayName, UINT64 merit)
 CFGFilterRegistry::CFGFilterRegistry(const CLSID& clsid, UINT64 merit) 
   : CFGFilter(clsid, L"", merit)
 {
+  m_pMoniker = NULL;
   if(m_clsid == GUID_NULL) return;
 
   CStdString guid = DShowUtil::CStringFromGUID(m_clsid);
@@ -240,17 +241,15 @@ HRESULT CFGFilterRegistry::Create(IBaseFilter** ppBF)
   if(m_pMoniker)
   {
     if(SUCCEEDED(hr = m_pMoniker->BindToObject(0, 0, IID_IBaseFilter, (void**)ppBF)))
-    {
       m_clsid = DShowUtil::GetCLSID(*ppBF);
-
-    }
   }
   else if(m_clsid != GUID_NULL)
   {
-    CComPtr<IBaseFilter> pBF;
-    if(FAILED(pBF.CoCreateInstance(m_clsid))) 
+    IBaseFilter* pBF;
+    if(FAILED(CoCreateInstance(m_clsid,NULL,CLSCTX_ALL,__uuidof(pBF), (void**)&pBF)))
       return E_FAIL;
-    *ppBF = pBF.Detach();
+    *ppBF = pBF;
+    pBF = NULL;
     hr = S_OK;
   }
 
@@ -266,10 +265,10 @@ interface IAMFilterData : public IUnknown
 
 void CFGFilterRegistry::ExtractFilterData(BYTE* p, UINT len)
 {
-  CComPtr<IAMFilterData> pFD;
+  IAMFilterData* pFD;
   BYTE* ptr = NULL;
-
-  if(SUCCEEDED(pFD.CoCreateInstance(CLSID_FilterMapper2))
+  
+  if(SUCCEEDED(CoCreateInstance(CLSID_FilterMapper2,NULL,CLSCTX_ALL,__uuidof(pFD), (void**)&pFD))
   && SUCCEEDED(pFD->ParseFilterData(p, len, (BYTE**)&ptr)))
   {
     REGFILTER2* prf = (REGFILTER2*)*(DWORD*)ptr; // this is f*cked up
@@ -427,7 +426,7 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
 
   HRESULT hr = S_OK;
 
-  CComPtr<IDsRenderer> pCAP;
+  IDsRenderer* pCAP;
   CStdString __err;
   if (m_clsid == __uuidof(CVMR9AllocatorPresenter))
     pCAP = new CVMR9AllocatorPresenter(hr,__err);
@@ -436,10 +435,14 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
 
   if(pCAP == NULL)
     return E_FAIL;
-  CComPtr<IUnknown> pRenderer;
+  IUnknown* pRenderer;
   if(SUCCEEDED(hr = pCAP->CreateRenderer(&pRenderer)))
   {
-    *ppBF = CComQIPtr<IBaseFilter>(pRenderer).Detach();
+    IBaseFilter* pBF;
+    pBF = (IBaseFilter*)pRenderer;
+    *ppBF = pBF;
+    pBF = NULL;
+    //*ppBF = CComQIPtr<IBaseFilter>(pRenderer).Detach();
     //pUnks.AddTail(pCAP);
   }
   if(!*ppBF) hr = E_FAIL;

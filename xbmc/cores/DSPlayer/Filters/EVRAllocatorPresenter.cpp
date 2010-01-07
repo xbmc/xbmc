@@ -15,7 +15,7 @@ class COuterEVR
   : public CUnknown
   , public IBaseFilter
 {
-  CComPtr<IUnknown>  m_pEVR;
+  IUnknown* m_pEVR;
   CEVRAllocatorPresenter *m_pAllocatorPresenter;
 
 public:
@@ -135,7 +135,7 @@ public:
 
   COuterEVR(const TCHAR* pName, LPUNKNOWN pUnk, HRESULT& hr, CEVRAllocatorPresenter *pAllocatorPresenter) : CUnknown(pName, pUnk)
   {
-    hr = m_pEVR.CoCreateInstance(CLSID_EnhancedVideoRenderer, GetOwner());
+    hr = CoCreateInstance(CLSID_EnhancedVideoRenderer,NULL,CLSCTX_ALL,__uuidof(m_pEVR),(void**)&m_pEVR );
     m_pAllocatorPresenter = pAllocatorPresenter;
   }
 
@@ -296,19 +296,22 @@ STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   do
   {
     CMacrovisionKicker* pMK  = new CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL);
-    CComPtr<IUnknown> pUnk = (IUnknown*)(INonDelegatingUnknown*)pMK;
+    IUnknown* pUnk = (IUnknown*)(INonDelegatingUnknown*)pMK;
     COuterEVR *pOuterEVR = new COuterEVR(NAME("COuterEVR"), pUnk, hr, this);
     m_pOuterEVR = pOuterEVR;
     pMK->SetInner((IUnknown*)(INonDelegatingUnknown*)pOuterEVR);
-    CComQIPtr<IBaseFilter> pBF = pUnk;
+    IBaseFilter* pBF;
+    hr = pUnk->QueryInterface(__uuidof(IBaseFilter),(void**)&pBF );
     if (FAILED (hr))
     {
       CLog::Log(LOGERROR,"%s Failed creating enchanced video renderer",__FUNCTION__);
       break;
     }
-    CComPtr<IMFVideoPresenter>    pVP;
-    CComPtr<IMFVideoRenderer>    pMFVR;
-    CComQIPtr<IMFGetService, &__uuidof(IMFGetService)> pMFGS = pBF;
+    IMFVideoPresenter*    pVP;
+    IMFVideoRenderer*    pMFVR;
+    IMFGetService* pMFGS;
+    pBF->QueryInterface(__uuidof(IMFGetService),(void**)&pMFGS );
+    
     hr = pMFGS->GetService (MR_VIDEO_RENDER_SERVICE, IID_IMFVideoRenderer, (void**)&pMFVR);
     if(SUCCEEDED(hr)) 
        hr = QueryInterface (__uuidof(IMFVideoPresenter), (void**)&pVP);
@@ -316,13 +319,17 @@ STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
       hr = pMFVR->InitializeRenderer (NULL, pVP);
 
     //something related with no crash in vista
-    CComPtr<IPin>      pPin = DShowUtil::GetFirstPin(pBF);
-    CComQIPtr<IMemInputPin> pMemInputPin = pPin;    
+    IPin* pPin = DShowUtil::GetFirstPin(pBF);
+    IMemInputPin* pMemInputPin;
+    pPin->QueryInterface(__uuidof(IMemInputPin),(void**)&pMemInputPin);
     m_fUseInternalTimer = HookNewSegmentAndReceive((IPinC*)(IPin*)pPin, (IMemInputPinC*)(IMemInputPin*)pMemInputPin);
     if(FAILED(hr))
       *ppRenderer = NULL;
     else
-      *ppRenderer = pBF.Detach();
+    {
+      *ppRenderer = pBF;
+      pBF = NULL;
+    }
   } while (0);
 
   return hr;

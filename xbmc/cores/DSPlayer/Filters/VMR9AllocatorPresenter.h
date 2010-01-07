@@ -12,7 +12,7 @@
 
 #include <vector>
 #pragma warning(pop)
-using namespace std;
+
 
 #include <d3d9.h>
 
@@ -73,10 +73,10 @@ protected:
   bool           m_bNeedNewDevice;
 private:
   long        m_refCount;
-  CComPtr<IVMRSurfaceAllocatorNotify9>    m_pIVMRSurfAllocNotify;
-  vector<CComPtr<IDirect3DSurface9> >     m_pSurfaces;
-  int                                     m_pNbrSurface;
-  int                                     m_pCurSurface;
+  IVMRSurfaceAllocatorNotify9*        m_pIVMRSurfAllocNotify;
+  std::vector<IDirect3DSurface9*>     m_pSurfaces;
+  int                                 m_pNbrSurface;
+  int                                 m_pCurSurface;
 };
 
 #endif // _DXALLOCATORPRESENTER_H

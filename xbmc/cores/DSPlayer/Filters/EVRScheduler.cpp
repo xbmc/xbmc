@@ -490,13 +490,3 @@ DWORD CEvrScheduler::SchedulerThreadProcPrivate()
     CLog::Log(LOGNOTICE,"Exit scheduler thread.");
     return (SUCCEEDED(hr) ? 0 : 1);
 }
-
-/*void CEvrScheduler::FlushSamples()
-{
-  CAutoLock				lock(&m_SampleQueueLock);
-	while (m_ScheduledSamples.GetCount() > 0)
-	{
-		CComPtr<IMFSample>		pMFSample;
-		pMFSample = m_ScheduledSamples.RemoveHead();
-	}
-}*/

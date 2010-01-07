@@ -61,7 +61,7 @@ class CFGFilterRegistry : public CFGFilter
 {
 protected:
 	CStdString m_DisplayName;
-	CComPtr<IMoniker> m_pMoniker;
+	IMoniker* m_pMoniker;
 
 	void ExtractFilterData(BYTE* p, UINT len);
 
@@ -87,10 +87,11 @@ public:
 		CheckPointer(ppBF, E_POINTER);
 
 		HRESULT hr = S_OK;
-		CComPtr<IBaseFilter> pBF = new T(NULL, &hr);
+		IBaseFilter* pBF = new T(NULL, &hr);
 		if(FAILED(hr)) return hr;
 
-		*ppBF = pBF.Detach();
+		*ppBF = pBF;
+    pBF = NULL;
 
 		return hr;
 	}

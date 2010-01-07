@@ -15,8 +15,6 @@ HRESULT FindAdapter(IDirect3D9 *pD3D9, HMONITOR hMonitor, UINT *puAdapterID);
 static const GUID GUID_SURFACE_INDEX = { 0x30c8e9f6, 0x415, 0x4b81, { 0xa3, 0x15, 0x1, 0xa, 0xc6, 0xa9, 0xda, 0x19 } };
 D3DPresentEngine::D3DPresentEngine(HRESULT& hr) : 
   m_DeviceResetToken(0),
-  m_pD3D9(NULL),
-  m_pDevice(NULL),
   m_pDeviceManager(NULL),
   m_pCallback(NULL),
 	m_bufferCount(4)
@@ -43,7 +41,6 @@ D3DPresentEngine::D3DPresentEngine(HRESULT& hr) :
 
 D3DPresentEngine::~D3DPresentEngine()
 {
-  m_pDevice = NULL;
   m_pDeviceManager = NULL;
 	m_pCallback = NULL;
 }
@@ -100,9 +97,9 @@ HRESULT D3DPresentEngine::CheckFormat(D3DFORMAT format)
     D3DDISPLAYMODE mode;
     D3DDEVICE_CREATION_PARAMETERS params;
 
-    if (m_pDevice)
+    if (g_Windowing.Get3DDevice())
     {
-        hr = m_pDevice->GetCreationParameters(&params);
+        hr = g_Windowing.Get3DDevice()->GetCreationParameters(&params);
         if(FAILED(hr))
           CLog::Log(LOGERROR,"%s",__FUNCTION__);
 
@@ -110,11 +107,11 @@ HRESULT D3DPresentEngine::CheckFormat(D3DFORMAT format)
         type = params.DeviceType;
 
     }
-    hr = m_pD3D9->GetAdapterDisplayMode(uAdapter, &mode);
+    hr = g_Windowing.Get3DObject()->GetAdapterDisplayMode(uAdapter, &mode);
         if(FAILED(hr))
           CLog::Log(LOGERROR,"%s",__FUNCTION__);
 
-    hr = m_pD3D9->CheckDeviceType(uAdapter, type, mode.Format, format, TRUE); 
+    hr = g_Windowing.Get3DObject()->CheckDeviceType(uAdapter, type, mode.Format, format, TRUE); 
     if(FAILED(hr))
       CLog::Log(LOGERROR,"%s",__FUNCTION__);
 
@@ -202,7 +199,7 @@ HRESULT D3DPresentEngine::CreateVideoSamples(
 	// Create the video samples.
     for (int i = 0; i < m_bufferCount; i++)
     {
-      hr = m_pDevice->CreateTexture(m_iVideoWidth,m_iVideoHeight,
+      hr = g_Windowing.Get3DDevice()->CreateTexture(m_iVideoWidth,m_iVideoHeight,
                                             1,
                                             D3DUSAGE_RENDERTARGET,
                                             D3DFMT_X8R8G8B8,
@@ -302,11 +299,11 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
     CHECK_HR(hr = pServ->GetService(MR_BUFFER_SERVICE, __uuidof(IDirect3DSurface9), (void**)&pSurface))
     SAFE_RELEASE(pServ);
   }
-  if (m_bNeedNewDevice || !m_pDevice)
+  if (m_bNeedNewDevice || !g_Windowing.Get3DDevice())
     return S_OK;
   if (pSurface)
   {
-    hr = m_pDevice->StretchRect(pSurface,NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);    
+    hr = g_Windowing.Get3DDevice()->StretchRect(pSurface,NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);    
     g_renderManager.PaintVideoTexture(m_pVideoTexture,m_pVideoSurface);
     g_application.NewFrame();
     g_application.WaitFrame(100);
@@ -348,17 +345,15 @@ done:
 HRESULT D3DPresentEngine::InitializeD3D()
 {
   HRESULT hr = S_OK;
-  m_pD3D9 = g_Windowing.Get3DObject();
-  m_pDevice = g_Windowing.Get3DDevice();
     
   hr = pfDXVA2CreateDirect3DDeviceManager9(&m_DeviceResetToken,&m_pDeviceManager);
 
   if (SUCCEEDED(hr))
   {
     CLog::Log(LOGNOTICE,"Sucess to create DXVA2CreateDirect3DDeviceManager9");
-    hr = m_pDeviceManager->ResetDevice(m_pDevice, m_DeviceResetToken);
+    hr = m_pDeviceManager->ResetDevice(g_Windowing.Get3DDevice(), m_DeviceResetToken);
   }
-  CComPtr<IDirectXVideoDecoderService>  pDecoderService;
+  IDirectXVideoDecoderService* pDecoderService = NULL;
   HANDLE hDevice;
   hr = m_pDeviceManager->OpenDeviceHandle(&hDevice);
   hr = m_pDeviceManager->GetVideoService(hDevice,__uuidof(IDirectXVideoDecoderService), (void**)&pDecoderService);
@@ -373,10 +368,9 @@ HRESULT D3DPresentEngine::InitializeD3D()
 HRESULT D3DPresentEngine::ResetD3dDevice()
 {
   HRESULT hr = E_FAIL;
-  m_pDevice = g_Windowing.Get3DDevice();
-  if (m_pDevice)
+  if (g_Windowing.Get3DDevice())
   {
-    hr = m_pDeviceManager->ResetDevice(m_pDevice ,m_DeviceResetToken);
+    hr = m_pDeviceManager->ResetDevice(g_Windowing.Get3DDevice() ,m_DeviceResetToken);
     if (SUCCEEDED(hr))
       m_bNeedNewDevice = false;
   }

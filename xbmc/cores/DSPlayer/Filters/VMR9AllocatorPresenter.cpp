@@ -40,14 +40,14 @@ class COuterVMR9
   , public IBasicVideo2
   , public IVMRWindowlessControl
 {
-  CComPtr<IUnknown>  m_pVMR;
+  IUnknown* m_pVMR;
   CVMR9AllocatorPresenter *m_pAllocatorPresenter;
 
 public:
 
   COuterVMR9(const TCHAR* pName, LPUNKNOWN pUnk, CVMR9AllocatorPresenter *_pAllocatorPresenter) : CUnknown(pName, pUnk)
   {
-    m_pVMR.CoCreateInstance(CLSID_VideoMixingRenderer9, GetOwner());
+    CoCreateInstance(CLSID_VideoMixingRenderer9,NULL,CLSCTX_ALL,__uuidof(m_pVMR),(void**) &m_pVMR);
     m_pAllocatorPresenter = _pAllocatorPresenter;
   }
 
@@ -60,8 +60,6 @@ public:
   STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv)
   {
     HRESULT hr;
-
-    // Casimir666 : en mode Renderless faire l'incrustation à la place du VMR
     if(riid == __uuidof(IVMRMixerBitmap9))
       return GetInterface((IVMRMixerBitmap9*)this, ppv);
 
@@ -74,9 +72,6 @@ public:
         return GetInterface((IBasicVideo*)this, ppv);
       if(riid == __uuidof(IBasicVideo2))
         return GetInterface((IBasicVideo2*)this, ppv);
-/*      if(riid == __uuidof(IVMRWindowlessControl))
-        return GetInterface((IVMRWindowlessControl*)this, ppv);
-*/
     }
 
     return SUCCEEDED(hr) ? hr : __super::NonDelegatingQueryInterface(riid, ppv);
@@ -86,16 +81,21 @@ public:
 
   STDMETHODIMP GetNativeVideoSize(LONG* lpWidth, LONG* lpHeight, LONG* lpARWidth, LONG* lpARHeight)
   {
-    if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
-    {
+    IVMRWindowlessControl9* pWC9 = NULL;
+    m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9);
+    
+    if(pWC9)
       return pWC9->GetNativeVideoSize(lpWidth, lpHeight, lpARWidth, lpARHeight);
-    }
 
     return E_NOTIMPL;
   }
+
   STDMETHODIMP GetMinIdealVideoSize(LONG* lpWidth, LONG* lpHeight) {return E_NOTIMPL;}
+
   STDMETHODIMP GetMaxIdealVideoSize(LONG* lpWidth, LONG* lpHeight) {return E_NOTIMPL;}
+
   STDMETHODIMP SetVideoPosition(const LPRECT lpSRCRect, const LPRECT lpDSTRect) {return E_NOTIMPL;}
+
     STDMETHODIMP GetVideoPosition(LPRECT lpSRCRect, LPRECT lpDSTRect)
   {
     if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
@@ -105,6 +105,7 @@ public:
 
     return E_NOTIMPL;
   }
+
   STDMETHODIMP GetAspectRatioMode(DWORD* lpAspectRatioMode)
   {
     if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
@@ -115,6 +116,7 @@ public:
 
     return E_NOTIMPL;
   }
+
   STDMETHODIMP SetAspectRatioMode(DWORD AspectRatioMode) {return E_NOTIMPL;}
   STDMETHODIMP SetVideoClippingWindow(HWND hwnd) {return E_NOTIMPL;}
   STDMETHODIMP RepaintVideo(HWND hwnd, HDC hdc) {return E_NOTIMPL;}
@@ -396,8 +398,8 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
 
 void CVMR9AllocatorPresenter::GetCurrentVideoSize()
 {
-  CComPtr<IBaseFilter> pVMR9;
-  CComPtr<IPin> pPin;
+  IBaseFilter* pVMR9;
+  IPin* pPin;
   CMediaType mt;
   if (SUCCEEDED (m_pIVMRSurfAllocNotify->QueryInterface (__uuidof(IBaseFilter), (void**)&pVMR9)) &&
       SUCCEEDED (pVMR9->FindPin(L"VMR Input0", &pPin)) &&
@@ -651,7 +653,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
     return S_OK;
   }
 
-  CComPtr<IDirect3DTexture9> pTexture;
+  IDirect3DTexture9* pTexture = NULL;
   lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
   HRESULT hrrr;
   if(pTexture)

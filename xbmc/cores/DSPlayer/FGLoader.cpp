@@ -36,6 +36,7 @@ using namespace std;
 CFGLoader::CFGLoader(IGraphBuilder2* gb)
 :m_pGraphBuilder(gb)
 {
+  m_SourceF = NULL;
 }
 
 CFGLoader::~CFGLoader()
@@ -109,7 +110,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
     //if(m_File.Open(pFileItem.GetAsUrl().GetFileName().c_str(), READ_TRUNCATED | READ_BUFFERED))
     if(m_File.Open(pFileItem.m_strPath, READ_TRUNCATED | READ_BUFFERED))
     {
-      CComPtr<IBaseFilter> pSrc;
+      IBaseFilter* pSrc;
       CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File,&pSrc,&hr);
       m_SourceF = pSrc;
       m_pGraphBuilder->AddFilter(m_SourceF, L"XBMC File Source");
@@ -158,7 +159,7 @@ HRESULT CFGLoader::InsertAudioDecoder(TiXmlElement *pRule)
 {
   HRESULT hr = S_OK;
   POSITION pos = m_configFilter.GetHeadPosition();
-  CComPtr<IBaseFilter> ppBF;
+  IBaseFilter* ppBF;
   CFGFilterFile* pFGF;
   while(pos)
   {
@@ -178,7 +179,7 @@ HRESULT CFGLoader::InsertAudioDecoder(TiXmlElement *pRule)
   g_charsetConverter.wToUTF8(pFGF->GetName(),m_pStrAudiodec);
 
   
-  ppBF.Release();
+  SAFE_RELEASE(ppBF);
   CLog::Log(LOGDEBUG,"DSPlayer %s Sucessfully added the audio decoder filter",__FUNCTION__);
   return hr;
 }
@@ -187,7 +188,7 @@ HRESULT CFGLoader::InsertVideoDecoder(TiXmlElement *pRule)
 {
   HRESULT hr = S_OK;
   POSITION pos = m_configFilter.GetHeadPosition();
-  CComPtr<IBaseFilter> ppBF;
+  IBaseFilter* ppBF;
   CFGFilterFile* pFGF;
   while(pos)
   {
@@ -205,7 +206,7 @@ HRESULT CFGLoader::InsertVideoDecoder(TiXmlElement *pRule)
   }
   m_pGraphBuilder->AddFilter(ppBF,pFGF->GetName().c_str());
   g_charsetConverter.wToUTF8(pFGF->GetName(),m_pStrVideodec);
-  ppBF.Release();
+  SAFE_RELEASE(ppBF);
   CLog::Log(LOGDEBUG,"DSPlayer %s Sucessfully added the video decoder filter",__FUNCTION__);
   return hr;
 }
@@ -213,7 +214,7 @@ HRESULT CFGLoader::InsertVideoDecoder(TiXmlElement *pRule)
 HRESULT CFGLoader::InsertAudioRenderer()
 {
   HRESULT hr = S_OK;
-  CComPtr<IBaseFilter> ppBF;
+  IBaseFilter* ppBF;
   CFGFilterRegistry* pFGF;
   CStdString currentGuid,currentName;
 
@@ -240,7 +241,7 @@ HRESULT CFGLoader::InsertAudioRenderer()
   pFGF = new CFGFilterRegistry(DShowUtil::GUIDFromCString(currentGuid));
   hr = pFGF->Create(&ppBF);
   hr = m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(currentName));
-  ppBF.Release();
+  SAFE_RELEASE(ppBF);
   return hr;
 }
 
@@ -248,7 +249,7 @@ HRESULT CFGLoader::InsertAutoLoad()
 {
   HRESULT hr = S_OK;
   POSITION pos = m_configFilter.GetHeadPosition();
-  CComPtr<IBaseFilter> ppBF;
+  IBaseFilter* ppBF;
   CFGFilterFile* pFGF;
   while(pos)
   {
@@ -267,7 +268,7 @@ HRESULT CFGLoader::InsertAutoLoad()
       }
     }
   }  
-  ppBF.Release();
+  SAFE_RELEASE(ppBF);
   CLog::Log(LOGDEBUG,"DSPlayer %s Is done adding the autoloading filters",__FUNCTION__);
   return hr;
 }
