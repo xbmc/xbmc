@@ -1,0 +1,19 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libfaad2_dll", "libfaad2_dll.vcproj", "{482DA264-EE88-4575-B208-87C4CB80CD08}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Debug|Win32.ActiveCfg = Debug|Win32
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Debug|Win32.Build.0 = Debug|Win32
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Release|Win32.ActiveCfg = Release|Win32
+		{482DA264-EE88-4575-B208-87C4CB80CD08}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

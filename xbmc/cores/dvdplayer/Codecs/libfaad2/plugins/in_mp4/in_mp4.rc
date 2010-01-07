@@ -1,0 +1,170 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Dutch (Netherlands) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
+#ifdef _WIN32
+LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE MOVEABLE PURE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE MOVEABLE PURE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE MOVEABLE PURE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_INFO DIALOGEX 0, 0, 303, 255
+STYLE DS_MODALFRAME | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "MPEG-4 File Info"
+FONT 8, "MS Sans Serif"
+BEGIN
+    GROUPBOX        "Track info",IDC_STATIC,7,7,289,64
+    EDITTEXT        IDC_METANAME,53,91,151,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_METAARTIST,53,109,151,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_METAWRITER,53,127,151,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_METAALBUM,53,145,233,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_METACOMMENTS,53,163,234,35,ES_AUTOHSCROLL
+    EDITTEXT        IDC_METAGENRE,53,202,151,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_METAYEAR,234,91,52,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_METATRACK1,234,109,52,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_METADISK1,234,127,52,14,ES_AUTOHSCROLL
+    CONTROL         "Part of a compilation",IDC_METACOMPILATION,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,207,202,80,14
+    DEFPUSHBUTTON   "OK",IDOK,246,234,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,186,234,50,14
+    LTEXT           "",IDC_INFOTEXT,14,17,275,47,0,WS_EX_CLIENTEDGE
+    GROUPBOX        "User data",IDC_USERDATA,7,76,289,151
+    LTEXT           "Name",IDC_STATIC1,13,91,20,14,SS_CENTERIMAGE
+    LTEXT           "Artist",IDC_STATIC2,13,109,16,14,SS_CENTERIMAGE
+    LTEXT           "Composer",IDC_STATIC3,13,127,32,14,SS_CENTERIMAGE
+    LTEXT           "Album",IDC_STATIC4,13,145,20,14,SS_CENTERIMAGE
+    LTEXT           "Comments",IDC_STATIC5,13,163,34,14,SS_CENTERIMAGE
+    LTEXT           "Year",IDC_STATIC7,211,91,16,14,SS_CENTERIMAGE
+    LTEXT           "Disc",IDC_STATIC9,211,127,15,14,SS_CENTERIMAGE
+    LTEXT           "Track",IDC_STATIC8,211,109,20,14,SS_CENTERIMAGE
+    LTEXT           "Genre",IDC_STATIC6,13,202,20,14,SS_CENTERIMAGE
+END
+
+IDD_CONFIG DIALOG DISCARDABLE  0, 0, 233, 166
+STYLE DS_MODALFRAME | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Configuration"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Slider1",IDC_PRIORITY,"msctls_trackbar32",TBS_VERT | 
+                    TBS_NOTICKS | WS_TABSTOP,13,15,18,46
+    CONTROL         "16 bits",IDC_16BITS,"Button",BS_AUTORADIOBUTTON,77,18,
+                    37,10
+    CONTROL         "16 bits dithered",IDC_16BITS_DITHERED,"Button",
+                    BS_AUTORADIOBUTTON | WS_DISABLED,77,29,64,10
+    CONTROL         "24 bits",IDC_24BITS,"Button",BS_AUTORADIOBUTTON,77,40,
+                    37,10
+    CONTROL         "32 bits",IDC_32BITS,"Button",BS_AUTORADIOBUTTON,77,51,
+                    37,10
+    CONTROL         "Downmix to stereo",IDC_DOWNMIX,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,152,13,74,10
+    CONTROL         "Use for AAC",IDC_USEFORAAC,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,152,26,55,10
+    CONTROL         "VBR Display",IDC_VBR,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,152,39,55,10
+    CONTROL         "Show errors",IDC_ERROR,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,152,52,53,10
+    EDITTEXT        IDC_TITLEFORMAT,14,86,121,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,176,145,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,176,125,50,14
+    GROUPBOX        "Priority",IDC_STATIC,7,7,57,58
+    LTEXT           "Highest",IDC_STATIC,34,18,25,8
+    LTEXT           "Normal",IDC_STATIC,34,35,23,8
+    LTEXT           "Lowest",IDC_STATIC,34,52,24,8
+    GROUPBOX        "Resolution",IDC_STATIC,71,7,73,58
+    GROUPBOX        "Title format",IDC_STATIC,7,72,137,87
+    LTEXT           "%0 - Track",IDC_STATIC,17,109,35,8
+    LTEXT           "%1 - Artist",IDC_STATIC,17,120,32,8
+    LTEXT           "%2 - Title",IDC_STATIC,17,131,30,8
+    LTEXT           "%3 - Album",IDC_STATIC,17,142,36,8
+    LTEXT           "%4 - Year",IDC_STATIC,68,109,31,8
+    LTEXT           "%5 - Comment",IDC_STATIC,68,120,46,8
+    LTEXT           "%6 - Genre",IDC_STATIC,68,131,36,8
+    LTEXT           "%7 - Filename",IDC_STATIC,68,142,44,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO MOVEABLE PURE 
+BEGIN
+    IDD_INFO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 296
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 248
+    END
+
+    IDD_CONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 226
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 159
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // Dutch (Netherlands) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

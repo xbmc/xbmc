@@ -1,0 +1,2091 @@
+# Microsoft eMbedded Visual Tools Project File - Name="libfaad2" - Package Owner=<4>
+# Microsoft eMbedded Visual Tools Generated Build File, Format Version 6.02
+# ** DO NOT EDIT **
+
+# TARGTYPE "Win32 (WCE x86) Static Library" 0x8304
+# TARGTYPE "Win32 (WCE ARM) Static Library" 0x8504
+
+CFG=libfaad2 - Win32 (WCE ARM) Debug
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
+!MESSAGE 
+!MESSAGE NMAKE /f "libfaad2.vcn".
+!MESSAGE 
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE 
+!MESSAGE NMAKE /f "libfaad2.vcn" CFG="libfaad2 - Win32 (WCE ARM) Debug"
+!MESSAGE 
+!MESSAGE Possible choices for configuration are:
+!MESSAGE 
+!MESSAGE "libfaad2 - Win32 (WCE ARM) Release" (based on "Win32 (WCE ARM) Static Library")
+!MESSAGE "libfaad2 - Win32 (WCE ARM) Debug" (based on "Win32 (WCE ARM) Static Library")
+!MESSAGE "libfaad2 - Win32 (WCE x86) Release" (based on "Win32 (WCE x86) Static Library")
+!MESSAGE "libfaad2 - Win32 (WCE x86) Debug" (based on "Win32 (WCE x86) Static Library")
+!MESSAGE 
+
+# Begin Project
+# PROP AllowPerConfigDependencies 0
+# PROP Scc_ProjName ""
+# PROP Scc_LocalPath ""
+# PROP ATL_Project 2
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "ARMRel"
+# PROP BASE Intermediate_Dir "ARMRel"
+# PROP BASE CPU_ID "{D6518FFC-710F-11D3-99F2-00105A0DF099}"
+# PROP BASE Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "ARMRel"
+# PROP Intermediate_Dir "ARMRel"
+# PROP CPU_ID "{D6518FFC-710F-11D3-99F2-00105A0DF099}"
+# PROP Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP Target_Dir ""
+CPP=clarm.exe
+# ADD BASE CPP /nologo /W3 /GX- /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "NDEBUG" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /YX /Oxs /M$(CECrtMT)  /c
+# ADD CPP /nologo /W3 /GX- /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "NDEBUG" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /YX /Oxs /M$(CECrtMT)  /c
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "ARMDbg"
+# PROP BASE Intermediate_Dir "ARMDbg"
+# PROP BASE CPU_ID "{D6518FFC-710F-11D3-99F2-00105A0DF099}"
+# PROP BASE Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "ARMDbg"
+# PROP Intermediate_Dir "ARMDbg"
+# PROP CPU_ID "{D6518FFC-710F-11D3-99F2-00105A0DF099}"
+# PROP Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP Target_Dir ""
+CPP=clarm.exe
+# ADD BASE CPP /nologo /W3 /GX- /Zi /Od /D "DEBUG" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /YX /M$(CECrtMTDebug)  /c
+# ADD CPP /nologo /W3 /GX- /Zi /Od /D "DEBUG" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /YX /M$(CECrtMTDebug)  /c
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "X86Rel"
+# PROP BASE Intermediate_Dir "X86Rel"
+# PROP BASE CPU_ID "{D6518FF3-710F-11D3-99F2-00105A0DF099}"
+# PROP BASE Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "X86Rel"
+# PROP Intermediate_Dir "X86Rel"
+# PROP CPU_ID "{D6518FF3-710F-11D3-99F2-00105A0DF099}"
+# PROP Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP Target_Dir ""
+CPP=cl.exe
+# ADD BASE CPP /nologo /W3 /GX- /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "_i386_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "NDEBUG" /D "_LIB" /YX /Gs8192 /GF /Oxs  /c
+# ADD CPP /nologo /W3 /GX- /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "_i386_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "NDEBUG" /D "_LIB" /YX /Gs8192 /GF /Oxs  /c
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "X86Dbg"
+# PROP BASE Intermediate_Dir "X86Dbg"
+# PROP BASE CPU_ID "{D6518FF3-710F-11D3-99F2-00105A0DF099}"
+# PROP BASE Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "X86Dbg"
+# PROP Intermediate_Dir "X86Dbg"
+# PROP CPU_ID "{D6518FF3-710F-11D3-99F2-00105A0DF099}"
+# PROP Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP Target_Dir ""
+CPP=cl.exe
+# ADD BASE CPP /nologo /W3 /GX- /Zi /Od /D "DEBUG" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "_i386_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "_LIB" /YX /Gs8192 /GF  /c
+# ADD CPP /nologo /W3 /GX- /Zi /Od /D "DEBUG" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "_i386_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "_LIB" /YX /Gs8192 /GF  /c
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+
+!ENDIF 
+
+# Begin Target
+
+# Name "libfaad2 - Win32 (WCE ARM) Release"
+# Name "libfaad2 - Win32 (WCE ARM) Debug"
+# Name "libfaad2 - Win32 (WCE x86) Release"
+# Name "libfaad2 - Win32 (WCE x86) Debug"
+# Begin Group "Source Files"
+
+# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Group "codebook"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\codebook\hcb_1.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_HCB_1=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_HCB_1=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_HCB_1=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_HCB_1=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\codebook\hcb_10.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_HCB_10=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_HCB_10=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_HCB_10=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_HCB_10=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\codebook\hcb_11.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_HCB_11=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_HCB_11=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_HCB_11=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_HCB_11=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\codebook\hcb_2.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_HCB_2=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_HCB_2=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_HCB_2=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_HCB_2=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\codebook\hcb_3.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_HCB_3=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_HCB_3=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_HCB_3=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_HCB_3=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\codebook\hcb_4.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_HCB_4=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_HCB_4=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_HCB_4=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_HCB_4=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\codebook\hcb_5.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_HCB_5=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_HCB_5=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_HCB_5=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_HCB_5=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\codebook\hcb_6.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_HCB_6=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_HCB_6=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_HCB_6=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_HCB_6=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\codebook\hcb_7.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_HCB_7=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_HCB_7=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_HCB_7=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_HCB_7=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\codebook\hcb_8.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_HCB_8=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_HCB_8=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_HCB_8=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_HCB_8=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\codebook\hcb_9.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_HCB_9=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_HCB_9=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_HCB_9=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_HCB_9=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\codebook\hcb_sf.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_HCB_S=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_HCB_S=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_HCB_S=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_HCB_S=\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\bits.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_BITS_=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_BITS_=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_BITS_=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_BITS_=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\cfft.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_CFFT_=\
+	".\cfft.h"\
+	".\cfft_tab.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_CFFT_=\
+	".\cfft.h"\
+	".\cfft_tab.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_CFFT_=\
+	".\cfft.h"\
+	".\cfft_tab.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_CFFT_=\
+	".\cfft.h"\
+	".\cfft_tab.h"\
+	".\common.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\common.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_COMMO=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_COMMO=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_COMMO=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_COMMO=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\syntax.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\data.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_DATA_=\
+	".\common.h"\
+	".\data.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_DATA_=\
+	".\common.h"\
+	".\data.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_DATA_=\
+	".\common.h"\
+	".\data.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_DATA_=\
+	".\common.h"\
+	".\data.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\decoder.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_DECOD=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\data.h"\
+	".\decoder.h"\
+	".\dither.h"\
+	".\drc.h"\
+	".\error.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\is.h"\
+	".\lt_predict.h"\
+	".\mdct.h"\
+	".\mp4.h"\
+	".\ms.h"\
+	".\output.h"\
+	".\pns.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	".\tns.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_DECOD=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\data.h"\
+	".\decoder.h"\
+	".\dither.h"\
+	".\drc.h"\
+	".\error.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\is.h"\
+	".\lt_predict.h"\
+	".\mdct.h"\
+	".\mp4.h"\
+	".\ms.h"\
+	".\output.h"\
+	".\pns.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	".\tns.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_DECOD=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\data.h"\
+	".\decoder.h"\
+	".\dither.h"\
+	".\drc.h"\
+	".\error.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\is.h"\
+	".\lt_predict.h"\
+	".\mdct.h"\
+	".\mp4.h"\
+	".\ms.h"\
+	".\output.h"\
+	".\pns.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	".\tns.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_DECOD=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\data.h"\
+	".\decoder.h"\
+	".\dither.h"\
+	".\drc.h"\
+	".\error.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\is.h"\
+	".\lt_predict.h"\
+	".\mdct.h"\
+	".\mp4.h"\
+	".\ms.h"\
+	".\output.h"\
+	".\pns.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	".\tns.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\dither.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_DITHE=\
+	".\common.h"\
+	".\dither.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_DITHE=\
+	".\common.h"\
+	".\dither.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_DITHE=\
+	".\common.h"\
+	".\dither.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_DITHE=\
+	".\common.h"\
+	".\dither.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\drc.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_DRC_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\drc.h"\
+	".\fixed.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_DRC_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\drc.h"\
+	".\fixed.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_DRC_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\drc.h"\
+	".\fixed.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_DRC_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\drc.h"\
+	".\fixed.h"\
+	".\syntax.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\error.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_ERROR=\
+	".\common.h"\
+	".\error.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_ERROR=\
+	".\common.h"\
+	".\error.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_ERROR=\
+	".\common.h"\
+	".\error.h"\
+	".\fixed.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_ERROR=\
+	".\common.h"\
+	".\error.h"\
+	".\fixed.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\filtbank.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_FILTB=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\decoder.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\kbd_win.h"\
+	".\mdct.h"\
+	".\sine_win.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_FILTB=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\decoder.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\kbd_win.h"\
+	".\mdct.h"\
+	".\sine_win.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_FILTB=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\decoder.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\kbd_win.h"\
+	".\mdct.h"\
+	".\sine_win.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_FILTB=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\decoder.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\kbd_win.h"\
+	".\mdct.h"\
+	".\sine_win.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\ic_predict.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_IC_PR=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\pns.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_IC_PR=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\pns.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_IC_PR=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\pns.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_IC_PR=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\pns.h"\
+	".\syntax.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\is.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_IS_C2c=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\is.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_IS_C2c=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\is.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_IS_C2c=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\is.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_IS_C2c=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\is.h"\
+	".\syntax.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\lt_predict.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_LT_PR=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\lt_predict.h"\
+	".\mdct.h"\
+	".\syntax.h"\
+	".\tns.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_LT_PR=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\lt_predict.h"\
+	".\mdct.h"\
+	".\syntax.h"\
+	".\tns.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_LT_PR=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\lt_predict.h"\
+	".\mdct.h"\
+	".\syntax.h"\
+	".\tns.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_LT_PR=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\lt_predict.h"\
+	".\mdct.h"\
+	".\syntax.h"\
+	".\tns.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\mdct.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_MDCT_=\
+	".\cfft.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\mdct.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_MDCT_=\
+	".\cfft.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\mdct.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_MDCT_=\
+	".\cfft.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\mdct.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_MDCT_=\
+	".\cfft.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\mdct.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\mp4.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_MP4_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\data.h"\
+	".\decoder.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\mdct.h"\
+	".\mp4.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_MP4_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\data.h"\
+	".\decoder.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\mdct.h"\
+	".\mp4.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_MP4_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\data.h"\
+	".\decoder.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\mdct.h"\
+	".\mp4.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_MP4_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\data.h"\
+	".\decoder.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\mdct.h"\
+	".\mp4.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\ms.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_MS_C34=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\is.h"\
+	".\ms.h"\
+	".\pns.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_MS_C34=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\is.h"\
+	".\ms.h"\
+	".\pns.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_MS_C34=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\is.h"\
+	".\ms.h"\
+	".\pns.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_MS_C34=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\is.h"\
+	".\ms.h"\
+	".\pns.h"\
+	".\syntax.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\output.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_OUTPU=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\decoder.h"\
+	".\dither.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\mdct.h"\
+	".\output.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_OUTPU=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\decoder.h"\
+	".\dither.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\mdct.h"\
+	".\output.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_OUTPU=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\decoder.h"\
+	".\dither.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\mdct.h"\
+	".\output.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_OUTPU=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\common.h"\
+	".\decoder.h"\
+	".\dither.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\ic_predict.h"\
+	".\mdct.h"\
+	".\output.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\pns.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_PNS_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\pns.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_PNS_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\pns.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_PNS_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\pns.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_PNS_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\pns.h"\
+	".\syntax.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\pulse.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_PULSE=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\pulse.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_PULSE=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\pulse.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_PULSE=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\pulse.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_PULSE=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\pulse.h"\
+	".\syntax.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\reordered_spectral_data.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_REORD=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\data.h"\
+	".\fixed.h"\
+	".\pulse.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_REORD=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\data.h"\
+	".\fixed.h"\
+	".\pulse.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_REORD=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\data.h"\
+	".\fixed.h"\
+	".\pulse.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_REORD=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\data.h"\
+	".\fixed.h"\
+	".\pulse.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\rvlc_scale_factors.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_RVLC_=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\rvlc_scale_factors.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_RVLC_=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\rvlc_scale_factors.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_RVLC_=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\rvlc_scale_factors.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_RVLC_=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\rvlc_scale_factors.h"\
+	".\syntax.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\specrec.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_SPECR=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\data.h"\
+	".\fixed.h"\
+	".\iq_table.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_SPECR=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\data.h"\
+	".\fixed.h"\
+	".\iq_table.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_SPECR=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\data.h"\
+	".\fixed.h"\
+	".\iq_table.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_SPECR=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\data.h"\
+	".\fixed.h"\
+	".\iq_table.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\syntax.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_SYNTA=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\data.h"\
+	".\decoder.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\huffman.h"\
+	".\ic_predict.h"\
+	".\mdct.h"\
+	".\pulse.h"\
+	".\rvlc_scale_factors.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_SYNTA=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\data.h"\
+	".\decoder.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\huffman.h"\
+	".\ic_predict.h"\
+	".\mdct.h"\
+	".\pulse.h"\
+	".\rvlc_scale_factors.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_SYNTA=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\data.h"\
+	".\decoder.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\huffman.h"\
+	".\ic_predict.h"\
+	".\mdct.h"\
+	".\pulse.h"\
+	".\rvlc_scale_factors.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_SYNTA=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\cfft.h"\
+	".\codebook\hcb.h"\
+	".\common.h"\
+	".\data.h"\
+	".\decoder.h"\
+	".\filtbank.h"\
+	".\fixed.h"\
+	".\huffman.h"\
+	".\ic_predict.h"\
+	".\mdct.h"\
+	".\pulse.h"\
+	".\rvlc_scale_factors.h"\
+	".\specrec.h"\
+	".\syntax.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\tns.c
+
+!IF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Release"
+
+DEP_CPP_TNS_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\syntax.h"\
+	".\tns.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE ARM) Debug"
+
+DEP_CPP_TNS_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\syntax.h"\
+	".\tns.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Release"
+
+DEP_CPP_TNS_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\syntax.h"\
+	".\tns.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libfaad2 - Win32 (WCE x86) Debug"
+
+DEP_CPP_TNS_C=\
+	".\analysis.h"\
+	".\bits.h"\
+	".\common.h"\
+	".\fixed.h"\
+	".\syntax.h"\
+	".\tns.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# End Group
+# Begin Group "Header Files"
+
+# PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\analysis.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\bits.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cfft.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cfft_tab.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\common.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\data.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\decoder.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\dither.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\drc.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\error.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\filtbank.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\fixed.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\codebook\hcb.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\huffman.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ic_predict.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\iq_table.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\is.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\kbd_win.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\lt_predict.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\mdct.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\mp4.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ms.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\output.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\pns.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\pulse.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\rvlc_scale_factors.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\sine_win.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\specrec.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\syntax.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\tns.h
+# End Source File
+# End Group
+# End Target
+# End Project
