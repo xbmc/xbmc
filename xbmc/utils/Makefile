@@ -61,7 +61,7 @@ SRCS=AlarmClock.cpp \
      PasswordManager.cpp \
      AliasShortcutUtils.cpp \
      WebServer.cpp \
-     BroadcastManager.cpp
+     AnnouncementManager.cpp
 
 LIB=utils.a
 

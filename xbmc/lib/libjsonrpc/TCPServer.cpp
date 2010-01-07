@@ -4,10 +4,10 @@
 #include <memory.h>
 #include "JSONRPC.h"
 #include "../libjsoncpp/json.h"
-#include "BroadcastManager.h"
+#include "AnnouncementManager.h"
 
 using namespace JSONRPC;
-using namespace BROADCAST;
+using namespace ANNOUNCEMENT;
 using namespace std;
 using namespace Json;
 
@@ -111,12 +111,12 @@ void CTCPServer::Process()
   Deinitialize();
 }
 
-bool CTCPServer::CanBroadcast()
+bool CTCPServer::CanAnnounce()
 {
   return true;
 }
 
-void CTCPServer::Broadcast(EBroadcastFlag flag, const char *sender, const char *message, const char *data)
+void CTCPServer::Announce(EAnnouncementFlag flag, const char *sender, const char *message, const char *data)
 {
   Value root;
   root["jsonrpc"] = "2.0";
@@ -125,11 +125,9 @@ void CTCPServer::Broadcast(EBroadcastFlag flag, const char *sender, const char *
   StyledWriter writer;
   string str = writer.write(root);
 
-  printf("Broadcast (%s) -> (%s)\n", message, str);
-
   for (unsigned int i = 0; i < m_connections.size(); i++)
   {
-    int sent = 0;
+    unsigned int sent = 0;
     do
     {
       sent += send(m_connections[i].m_socket, str.c_str(), str.size() - sent, sent);
@@ -171,7 +169,7 @@ bool CTCPServer::Initialize()
     return false;
   }
 
-  CBroadcastManager::AddListener(this);
+  CAnnouncementManager::AddAnnouncer(this);
 
   return true;
 }
@@ -190,12 +188,12 @@ void CTCPServer::Deinitialize()
     m_ServerSocket = -1;
   }
 
-  CBroadcastManager::RemoveListener(this);
+  CAnnouncementManager::RemoveAnnouncer(this);
 }
 
 CTCPServer::CTCPClient::CTCPClient()
 {
-  m_broadcastcapabilities = 0;
+  m_announcementflags = 0;
   m_socket = -1;
   m_beginBrackets = 0;
   m_endBrackets = 0;
@@ -208,14 +206,14 @@ int CTCPServer::CTCPClient::GetPermissionFlags()
   return OPERATION_PERMISSION_ALL;
 }
 
-int CTCPServer::CTCPClient::GetBroadcastFlags()
+int CTCPServer::CTCPClient::GetAnnouncementFlags()
 {
-  return m_broadcastcapabilities;
+  return m_announcementflags;
 }
 
-bool CTCPServer::CTCPClient::SetBroadcastFlags(int flags)
+bool CTCPServer::CTCPClient::SetAnnouncementFlags(int flags)
 {
-  m_broadcastcapabilities = flags;
+  m_announcementflags = flags;
   return true;
 }
 

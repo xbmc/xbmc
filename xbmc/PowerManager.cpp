@@ -27,7 +27,7 @@
 #include "GUISettings.h"
 #include "WindowingFactory.h"
 #include "utils/log.h"
-#include "BroadcastManager.h"
+#include "AnnouncementManager.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
@@ -51,7 +51,7 @@
   #include "common/IRServerSuite/IRServerSuite.h"
 #endif
 
-using namespace BROADCAST;
+using namespace ANNOUNCEMENT;
 
 CPowerManager g_powerManager;
 
@@ -134,7 +134,7 @@ bool CPowerManager::Powerdown()
 
   bool success = CanPowerdown() ? m_instance->Powerdown() : false;
   if (success)
-    CBroadcastManager::Broadcast(System, "xbmc", "Shutdown");
+    CAnnouncementManager::Announce(System, "xbmc", "Shutdown");
 
   return success;
 }
@@ -152,7 +152,7 @@ bool CPowerManager::Suspend()
   }
   
   if (success)
-    CBroadcastManager::Broadcast(System, "xbmc", "Suspend");
+    CAnnouncementManager::Announce(System, "xbmc", "Suspend");
 
   return success;
 }
@@ -167,7 +167,7 @@ bool CPowerManager::Hibernate()
   }
 
   if (success)
-    CBroadcastManager::Broadcast(System, "xbmc", "Hibernate");
+    CAnnouncementManager::Announce(System, "xbmc", "Hibernate");
 
   return success;
 }
@@ -176,7 +176,7 @@ bool CPowerManager::Reboot()
   bool success = CanReboot() ? m_instance->Reboot() : false;
 
   if (success)
-    CBroadcastManager::Broadcast(System, "xbmc", "Reboot");
+    CAnnouncementManager::Announce(System, "xbmc", "Reboot");
 
   return success;
 }
@@ -216,7 +216,7 @@ void CPowerManager::Resume()
   // reset
   g_application.m_bRunResumeJobs = false;
 
-  CBroadcastManager::Broadcast(System, "xbmc", "Resume");
+  CAnnouncementManager::Announce(System, "xbmc", "Resume");
 }
 
 bool CPowerManager::CanPowerdown()

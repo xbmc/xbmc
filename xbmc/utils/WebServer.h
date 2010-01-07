@@ -37,7 +37,7 @@ public:
 
   bool Start(const char *ip, int port);
   bool Stop();
-  virtual bool CanBroadcast();
+  virtual bool CanAnnounce();
 private:
   static int answer_to_connection (void *cls, struct MHD_Connection *connection,
                         const char *url, const char *method,
@@ -54,8 +54,8 @@ private:
   {
   public:
     virtual int  GetPermissionFlags();
-    virtual int  GetBroadcastFlags();
-    virtual bool SetBroadcastFlags(int flags);
+    virtual int  GetAnnouncementFlags();
+    virtual bool SetAnnouncementFlags(int flags);
   };
 };
 

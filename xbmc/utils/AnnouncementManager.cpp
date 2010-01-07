@@ -19,37 +19,36 @@
  *
  */
 
-#include "BroadcastManager.h"
+#include "AnnouncementManager.h"
 #include <stdio.h>
 #include "log.h"
 
 using namespace std;
-using namespace BROADCAST;
+using namespace ANNOUNCEMENT;
 
-vector<IBroadcastListener *> CBroadcastManager::m_listeners;
+vector<IAnnouncer *> CAnnouncementManager::m_announcers;
 
-void CBroadcastManager::AddListener(IBroadcastListener *listener)
+void CAnnouncementManager::AddAnnouncer(IAnnouncer *listener)
 {
-  m_listeners.push_back(listener);
+  m_announcers.push_back(listener);
 }
 
-void CBroadcastManager::RemoveListener(IBroadcastListener *listener)
+void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
 {
-  for (unsigned int i = 0; i < m_listeners.size(); i++)
+  for (unsigned int i = 0; i < m_announcers.size(); i++)
   {
-    if (m_listeners[i] == listener)
+    if (m_announcers[i] == listener)
     {
-      m_listeners.erase(m_listeners.begin() + i);
-      printf("found and removed listener\n");
+      m_announcers.erase(m_announcers.begin() + i);
       return;
     }
   }
 }
 
-void CBroadcastManager::Broadcast(EBroadcastFlag flag, const char *sender, const char *message, const char *data)
+void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, const char *data)
 {
-  CLog::Log(LOGDEBUG, "BroadcastManager - Broadcast: %s from %s", message, sender);
-  printf("BroadcastManager - Broadcast: %s\n", message);
-  for (unsigned int i = 0; i < m_listeners.size(); i++)
-    m_listeners[i]->Broadcast(flag, sender, message, data);
+  CLog::Log(LOGDEBUG, "CAnnouncementManager - Announcment: %s from %s", message, sender);
+  printf("CAnnouncementManager - Announcment: %s from %s\n", message, sender);
+  for (unsigned int i = 0; i < m_announcers.size(); i++)
+    m_announcers[i]->Announce(flag, sender, message, data);
 }

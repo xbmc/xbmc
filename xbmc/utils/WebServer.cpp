@@ -166,9 +166,8 @@ bool CWebServer::Stop()
   return !m_running;
 }
 
-bool CWebServer::CanBroadcast()
+bool CWebServer::CanAnnounce()
 {
-  // Does not support broadcast
   return false;
 }
 
@@ -177,14 +176,13 @@ int CWebServer::CHTTPClient::GetPermissionFlags()
   return OPERATION_PERMISSION_ALL;
 }
 
-int  CWebServer::CHTTPClient::GetBroadcastFlags()
+int  CWebServer::CHTTPClient::GetAnnouncementFlags()
 {
   // Does not support broadcast
   return 0;
 }
 
-bool CWebServer::CHTTPClient::SetBroadcastFlags(int flags)
+bool CWebServer::CHTTPClient::SetAnnouncementFlags(int flags)
 {
-  // Does not support broadcast
   return false;
 }

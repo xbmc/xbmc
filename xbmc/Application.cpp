@@ -132,7 +132,7 @@
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
-#include "utils/BroadcastManager.h"
+#include "utils/AnnouncementManager.h"
 
 // Windows includes
 #include "GUIWindowManager.h"
@@ -282,7 +282,7 @@ using namespace DBUSSERVER;
 #ifdef HAS_JSONRPC
 using namespace JSONRPC;
 #endif
-using namespace BROADCAST;
+using namespace ANNOUNCEMENT;
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
@@ -3409,7 +3409,7 @@ void CApplication::Stop()
       m_pXbmcHttp->shuttingDown = true;
     }
 #endif
-    CBroadcastManager::Broadcast(System, "xbmc", "ApplicationStop");
+    CAnnouncementManager::Announce(System, "xbmc", "ApplicationStop");
 
     if( m_bSystemScreenSaverEnable )
       g_Windowing.EnableSystemScreenSaver(true);
@@ -3937,7 +3937,7 @@ void CApplication::OnPlayBackEnded()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackEnded");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackEnded");
 
   if (IsPlayingAudio())
   {
@@ -3968,7 +3968,7 @@ void CApplication::OnPlayBackStarted()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackStarted");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackStarted");
 
   CLog::Log(LOGDEBUG, "%s - Playback has started", __FUNCTION__);
 
@@ -3990,7 +3990,7 @@ void CApplication::OnQueueNextItem()
     getApplicationMessenger().HttpApi("broadcastlevel; OnQueueNextItem;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "xbmc", "QueueNextItem");
+  CAnnouncementManager::Announce(Playback, "xbmc", "QueueNextItem");
 
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
@@ -4021,7 +4021,7 @@ void CApplication::OnPlayBackStopped()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackStopped");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackStopped");
 
   CLastfmScrobbler::GetInstance()->SubmitQueue();
   CLibrefmScrobbler::GetInstance()->SubmitQueue();
@@ -4044,7 +4044,7 @@ void CApplication::OnPlayBackPaused()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackPaused;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackPaused");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackPaused");
 
   CLog::Log(LOGDEBUG, "%s - Playback was paused", __FUNCTION__);
 }
@@ -4061,7 +4061,7 @@ void CApplication::OnPlayBackResumed()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackResumed;1");
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackResumed");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackResumed");
 
   CLog::Log(LOGDEBUG, "%s - Playback was resumed", __FUNCTION__);
 }
@@ -4082,7 +4082,7 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   }
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackSpeedChanged");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged");
 
   CLog::Log(LOGDEBUG, "%s - Playback speed changed", __FUNCTION__);
 }
@@ -4103,7 +4103,7 @@ void CApplication::OnPlayBackSeek(int iTime)
   }
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackSeek");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek");
 
   CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
 }
@@ -4124,7 +4124,7 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
   }
 #endif
 
-  CBroadcastManager::Broadcast(Playback, "xbmc", "PlaybackSeekChapter");
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeekChapter");
 
   CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
 }

@@ -20,21 +20,18 @@
  *
  */
 
-namespace BROADCAST
+#include "IAnnouncer.h"
+#include <vector>
+
+namespace ANNOUNCEMENT
 {
-  enum EBroadcastFlag
-  {
-    Playback = 0x1,
-    GUI = 0x2,
-    System = 0x4,
-    Other = 0x8
-  };
-  
-  class IBroadcastListener
+  class CAnnouncementManager
   {
   public:
-    IBroadcastListener() { };
-    virtual ~IBroadcastListener() { };
-    virtual void Broadcast(EBroadcastFlag flag, const char *sender, const char *message, const char *data) = 0;
+    static void AddAnnouncer(IAnnouncer *listener);
+    static void RemoveAnnouncer(IAnnouncer *listener);
+    static void Announce(EAnnouncementFlag flag, const char *sender, const char *message, const char *data = NULL);
+  private:
+    static std::vector<IAnnouncer *> m_announcers;
   };
 }

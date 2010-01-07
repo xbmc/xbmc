@@ -5,20 +5,20 @@
 #include <arpa/inet.h>
 #include <string>
 #include <vector>
-#include "IBroadcastListener.h"
+#include "IAnnouncer.h"
 #include "ITransportLayer.h"
 #include "Thread.h"
 
 namespace JSONRPC
 {
-  class CTCPServer : public ITransportLayer, public BROADCAST::IBroadcastListener, public CThread
+  class CTCPServer : public ITransportLayer, public ANNOUNCEMENT::IAnnouncer, public CThread
   {
   public:
     static void StartServer(int port);
     static void StopServer(bool bWait);
 
-    virtual bool CanBroadcast();
-    virtual void Broadcast(BROADCAST::EBroadcastFlag flag, const char *sender, const char *message, const char *data);
+    virtual bool CanAnnounce();
+    virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, const char *data);
   protected:
     void Process();
   private:
@@ -31,8 +31,8 @@ namespace JSONRPC
     public:
       CTCPClient();
       virtual int  GetPermissionFlags();
-      virtual int  GetBroadcastFlags();
-      virtual bool SetBroadcastFlags(int flags);
+      virtual int  GetAnnouncementFlags();
+      virtual bool SetAnnouncementFlags(int flags);
       void PushBuffer(CTCPServer *host, const char *buffer, int length);
       void Disconnect();
 
@@ -41,7 +41,7 @@ namespace JSONRPC
       socklen_t m_addrlen;
 
     private:
-      int m_broadcastcapabilities;
+      int m_announcementflags;
       int m_beginBrackets, m_endBrackets;
       std::string m_buffer;
     };

@@ -29,6 +29,6 @@ namespace JSONRPC
   {
   public:
     virtual ~ITransportLayer() { };
-    virtual bool CanBroadcast() = 0;
+    virtual bool CanAnnounce() = 0;
   };
 }
