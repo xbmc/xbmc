@@ -321,6 +321,8 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
               pBuffer->iRepeatPicture = 0.25;
             else if( pBuffer->iFlags & DVP_FLAG_REPEAT_TOP_FIELD )
               pBuffer->iRepeatPicture = 0.5 * (m_pInfo->current_picture->nb_fields - 2);
+            else
+              pBuffer->iRepeatPicture = 0.0;
 
             //Mpeg frametime is calculated using a 27ghz clock.. pts and such normally a 90mhz clock
             pBuffer->iDuration /= (27000000 / DVD_TIME_BASE);
