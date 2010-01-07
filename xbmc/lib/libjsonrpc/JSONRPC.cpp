@@ -102,17 +102,17 @@ ActionMap CJSONRPC::m_actionMap;
 
 JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-  bool getCommands = parameterObject.get("getcommands", true).asBool();
   bool getDescriptions = parameterObject.get("getdescriptions", true).asBool();
   bool getPermissions = parameterObject.get("getpermissions", true).asBool();
 
   int length = sizeof(commands)/sizeof(JSON_ACTION);
+  int clientflags = client->GetPermissionFlags();
   for (int i = 0; i < length; i++)
   {
     Value val;
 
-    if (getCommands)
-      val["command"] = commands[i].command;
+    val["command"] = commands[i].command;
+    val["executable"] = (clientflags & commands[i].permission > 0 ? true : false);
     if (getDescriptions)
       val["description"] = commands[i].description;
     if (getPermissions)
