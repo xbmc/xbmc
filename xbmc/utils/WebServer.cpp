@@ -190,5 +190,5 @@ bool CWebServer::SetBroadcastFlags(IClient *client, int flags)
 
 int CWebServer::CHTTPClient::GetPermissionFlags()
 {
-  return RW;
+  return OPERATION_PERMISSION_ALL;
 }

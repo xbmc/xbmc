@@ -50,9 +50,11 @@ namespace JSONRPC
 
   enum OperationPermission
   {
-    RO = false,
-    RW = true
+    ReadData = 0x1,
+    ControlPlayback = 0x2,
   };
+
+  #define OPERATION_PERMISSION_ALL (ReadData | ControlPlayback)
 
   typedef struct
   {
