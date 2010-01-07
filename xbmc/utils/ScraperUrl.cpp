@@ -296,12 +296,18 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
   if (doc.RootElement())
   {
     TiXmlHandle docHandle( &doc );
-    TiXmlElement *link = docHandle.FirstChild( "episodeguide" ).FirstChild( "url" ).Element();
-    while (link)
+    TiXmlElement *link = docHandle.FirstChild("episodeguide").Element();
+    if (link->FirstChildElement("url"))
     {
-      ParseElement(link);
-      link = link->NextSiblingElement("url");
+      link = link->FirstChildElement("url");
+      while (link)
+      {
+        ParseElement(link);
+        link = link->NextSiblingElement("url");
+      }
     }
+    else if (link->FirstChild() && link->FirstChild()->Value())
+      ParseString(link->FirstChild()->Value());
   }
   else
     return false;
