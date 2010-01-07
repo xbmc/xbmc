@@ -174,18 +174,22 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
   return result;
 }
 
-bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl& http)
+bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl& http, const CStdString& cacheContext1)
 {
   CURL url(scrURL.m_url);
   http.SetReferer(scrURL.m_spoof);
   CStdString strCachePath;
+
+  CStdString cacheContext = CUtil::GetFileName(cacheContext1);
 
   if (scrURL.m_isgz)
     http.SetContentEncoding("gzip");
 
   if (!scrURL.m_cache.IsEmpty())
   {
-    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers/"+scrURL.m_cache,strCachePath);
+    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,
+                           "scrapers/"+cacheContext+"/"+scrURL.m_cache,
+                           strCachePath);
     if (XFILE::CFile::Exists(strCachePath))
     {
       XFILE::CFile file;
@@ -231,7 +235,9 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl
   if (!scrURL.m_cache.IsEmpty())
   {
     CStdString strCachePath;
-    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers/"+scrURL.m_cache,strCachePath);
+    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,
+                           "scrapers/"+cacheContext+"/"+scrURL.m_cache,
+                           strCachePath);
     XFILE::CFile file;
     if (file.OpenForWrite(strCachePath,true))
       file.Write(strHTML.data(),strHTML.size());

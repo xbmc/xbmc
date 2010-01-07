@@ -140,7 +140,6 @@ namespace VIDEO
     m_info = info;
     m_pathsToScan.clear();
     m_pathsToClean.clear();
-    CScraperParser::ClearCache();
 
     if (strDirectory.IsEmpty())
     { // scan all paths in the database.  We do this by scanning all paths in the db, and crossing them off the list as
