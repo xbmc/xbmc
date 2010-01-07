@@ -174,3 +174,15 @@ bool CWebServer::Stop()
 
   return !m_running;
 }
+
+bool CWebServer::CanBroadcast()
+{
+  // Does not support broadcast
+  return false;
+}
+
+bool CWebServer::SetBroadcastFlags(IClient *client, int flags)
+{
+  // Does not support broadcast
+  return false;
+}

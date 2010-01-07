@@ -28,14 +28,17 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <microhttpd.h>
+#include "../lib/libjsonrpc/ITransportLayer.h"
 
-class CWebServer
+class CWebServer : public JSONRPC::ITransportLayer
 {
 public:
   CWebServer();
 
   bool Start(const char *ip, int port);
   bool Stop();
+  virtual bool CanBroadcast();
+  virtual bool SetBroadcastFlags(JSONRPC::IClient *client, int flags);
 private:
   static int answer_to_connection (void *cls, struct MHD_Connection *connection,
                         const char *url, const char *method,
