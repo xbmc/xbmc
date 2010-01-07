@@ -56,9 +56,6 @@ typedef std::list<GUID>::iterator GuidListIter;
 class  DShowUtil
 {
 public:
-//This is not needed its for getting the output format of a capture filter
-//and  also require  mfc for cfile
-//static void DumpStreamConfig(TCHAR* fn, IAMStreamConfig* pAMVSCCap);
   static bool GuidVectItterCompare(GuidListIter it,const std::vector<GUID>::const_reference vect);
   static bool GuidItteratorIsNull(GuidListIter it);
   static bool GuidVectIsNull(const std::vector<GUID>::const_reference vect);
@@ -97,12 +94,8 @@ public:
   static bool IsCLSIDRegistered(const CLSID& clsid);
   static void CStringToBin(CStdString str, std::vector<BYTE>& data);
   static CStdString BinToCString(BYTE* ptr, int len);
-typedef enum {CDROM_NotFound, CDROM_Audio, CDROM_VideoCD, CDROM_DVDVideo, CDROM_Unknown} cdrom_t;
-  //GetCDROMType need devioctl.h
-  //static cdrom_t GetCDROMType(TCHAR drive, CAtlList<CStdString>& files);
+  typedef enum {CDROM_NotFound, CDROM_Audio, CDROM_VideoCD, CDROM_DVDVideo, CDROM_Unknown} cdrom_t;
   static CStdString GetDriveLabel(TCHAR drive);
-  //this one require mfc
-  //static bool GetKeyFrames(CStdString fn, CUIntArray& kfs);
   static DVD_HMSF_TIMECODE RT2HMSF(REFERENCE_TIME rt, double fps = 0);
   static REFERENCE_TIME HMSF2RT(DVD_HMSF_TIMECODE hmsf, double fps = 0);
   static void memsetd(void* dst, unsigned int c, int nbytes);

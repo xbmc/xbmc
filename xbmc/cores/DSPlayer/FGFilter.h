@@ -23,6 +23,7 @@
 #include <atlcomcli.h>
 #include <atlcoll.h>
 #include "streams.h"
+#include <list>
 #define MERIT64(merit) (((UINT64)(merit))<<16)
 #define MERIT64_DO_NOT_USE MERIT64(MERIT_DO_NOT_USE)
 #define MERIT64_DO_USE MERIT64(MERIT_DO_NOT_USE+1)
@@ -37,7 +38,7 @@ protected:
 	CLSID m_clsid;
 	CStdString m_name;
 	struct {union {UINT64 val; struct {UINT64 low:16, mid:32, high:16;};};} m_merit;
-	CAtlList<GUID> m_types;
+  std::list<GUID> m_types;
 
 public:
 	CFGFilter(const CLSID& clsid, CStdString name = L"", UINT64 merit = MERIT64_DO_USE);
@@ -47,12 +48,12 @@ public:
 	CStdStringW GetName() {return m_name;}
 	UINT64 GetMerit() {return m_merit.val;}
 	DWORD GetMeritForDirectShow() {return m_merit.mid;}
-	const CAtlList<GUID>& GetTypes() const;
-	void SetTypes(const CAtlList<GUID>& types);
+	const std::list<GUID>& GetTypes() const;
+	void SetTypes(const std::list<GUID>& types);
 	void AddType(const GUID& majortype, const GUID& subtype);
 	bool CheckTypes(const std::vector<GUID>& types, bool fExactMatch);
 
-	CAtlList<CStdString> m_protocols, m_extensions, m_chkbytes; // TODO: subtype?
+	std::list<CStdString> m_protocols, m_extensions, m_chkbytes; // TODO: subtype?
 
   virtual HRESULT Create(IBaseFilter** ppBF) = 0;
 };

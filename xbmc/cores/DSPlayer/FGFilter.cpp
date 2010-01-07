@@ -39,26 +39,60 @@ CFGFilter::CFGFilter(const CLSID& clsid, CStdString name, UINT64 merit)
   m_merit.val = merit;
 }
 
-const CAtlList<GUID>& CFGFilter::GetTypes() const
+const std::list<GUID>& CFGFilter::GetTypes() const
 {
   return m_types;
 }
 
-void CFGFilter::SetTypes(const CAtlList<GUID>& types)
+void CFGFilter::SetTypes(const std::list<GUID>& types)
 {
-  m_types.RemoveAll();
-  m_types.AddTailList(&types);
+  while (!m_types.empty())
+    m_types.pop_back();
+  for (std::list<GUID>::const_iterator it = types.begin(); it != types.end(); it++)
+  {
+    m_types.push_back((*it));
+    
+  }
 }
 
 void CFGFilter::AddType(const GUID& majortype, const GUID& subtype)
 {
-  m_types.AddTail(majortype);
-  m_types.AddTail(subtype);
+  m_types.push_back(majortype);
+  m_types.push_back(subtype);
 }
 
 bool CFGFilter::CheckTypes(const std::vector<GUID>& types, bool fExactMatch)
 {
-  POSITION pos = m_types.GetHeadPosition();
+  for (std::list<GUID>::const_iterator it = m_types.begin(); it != m_types.end(); it++)
+  {
+    const GUID& majortype = *it;
+    it++;
+    if(it == m_types.end()) 
+    {
+      ASSERT(0); 
+      break;
+    }
+    const GUID& subtype = *it;
+
+    for(int i = 0, len = types.size() & ~1; i < len; i += 2)
+    {
+      if(fExactMatch)
+      {
+        if(majortype == types[i] && majortype != GUID_NULL
+        && subtype == types[i+1] && subtype != GUID_NULL)
+                return true;
+      }
+      else
+      {
+        if((majortype == GUID_NULL || types[i] == GUID_NULL || majortype == types[i])
+        && (subtype == GUID_NULL || types[i+1] == GUID_NULL || subtype == types[i+1]))
+          return true;
+      }
+    }
+  }
+  return false;
+
+  /*POSITION pos = m_types.GetHeadPosition();
   while(pos)
   {
     const GUID& majortype = m_types.GetNext(pos);
@@ -80,7 +114,7 @@ bool CFGFilter::CheckTypes(const std::vector<GUID>& types, bool fExactMatch)
           return true;
       }
     }
-  }
+  }*/
 
   return false;
 }
@@ -325,7 +359,8 @@ void CFGFilterRegistry::ExtractFilterData(BYTE* p, UINT len)
     ChkLen(4)
     m_merit.mid = *(DWORD*)p; p += 4;
 
-    m_types.RemoveAll();
+    while (!m_types.empty())
+      m_types.pop_back();
 
     ChkLen(8)
     DWORD nPins = *(DWORD*)p; p += 8;
@@ -490,11 +525,9 @@ void CFGFilterList::Insert(CFGFilter* pFGF, int group, bool exactmatch, bool aut
         if(f1r->GetMoniker() && f2r->GetMoniker() && S_OK == f1r->GetMoniker()->IsEqual(f2r->GetMoniker())
         || f1r->GetCLSID() != GUID_NULL && f1r->GetCLSID() == f2r->GetCLSID())
         {
-          /*TRACE(_T("FGM: Inserting %d %d %016I64x '%s' NOT!\n"), 
-            group, exactmatch, pFGF->GetMerit(),
-            pFGF->GetName().IsEmpty() ? CStdStringFromGUID(pFGF->GetCLSID()) : CStdString(pFGF->GetName()));*/
 
-          if(autodelete) delete pFGF;
+          if(autodelete) 
+            delete pFGF;
           return;
         }
       }
@@ -506,18 +539,10 @@ void CFGFilterList::Insert(CFGFilter* pFGF, int group, bool exactmatch, bool aut
   {
     if(m_filters.GetNext(pos).pFGF == pFGF)
     {
-      /*TRACE(_T("FGM: Inserting %d %d %016I64x '%s' DUP!\n"), 
-        group, exactmatch, pFGF->GetMerit(),
-        pFGF->GetName().IsEmpty() ? CStdStringFromGUID(pFGF->GetCLSID()) : CStdString(pFGF->GetName()));*/
-
       if(autodelete) delete pFGF;
       return;
     }
   }
-
-  /*TRACE(_T("FGM: Inserting %d %d %016I64x '%s'\n"), 
-    group, exactmatch, pFGF->GetMerit(),
-    pFGF->GetName().IsEmpty() ? CStdStringFromGUID(pFGF->GetCLSID()) : CStdString(pFGF->GetName()));*/
 
   filter_t f = {m_filters.GetCount(), pFGF, group, exactmatch, autodelete};
   m_filters.AddTail(f);

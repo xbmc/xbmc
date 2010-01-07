@@ -26,6 +26,7 @@
 #include "File.h"
 #include "FileItem.h"
 #include "tinyXML/tinyxml.h"
+#include <list>
 class CFGLoader : public CCritSec
 {
 public:
@@ -56,7 +57,7 @@ protected:
   CStdString               m_pStrAudioRenderer;
   CStdString               m_pStrSource;
   CStdString               m_pStrSplitter;
-  CAtlList<CFGFilterFile*> m_configFilter;
+  std::list<CFGFilterFile*> m_configFilter;
   CFile                    m_File;
   IBaseFilter*             m_SourceF;
   IBaseFilter*              m_SplitterF;
