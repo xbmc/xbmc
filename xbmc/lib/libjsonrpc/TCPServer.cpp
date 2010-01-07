@@ -13,7 +13,7 @@ using namespace Json;
 
 #define RECEIVEBUFFER 1024
 
-CTCPServer *CTCPServer::ServerInstance;
+CTCPServer *CTCPServer::ServerInstance = NULL;
 
 void CTCPServer::StartServer(int port)
 {
@@ -28,6 +28,11 @@ void CTCPServer::StopServer(bool bWait)
   if (ServerInstance)
   {
     ServerInstance->StopThread(bWait);
+    if (bWait)
+    {
+      delete ServerInstance;
+      ServerInstance = NULL;
+    }
   }
 }
 
