@@ -120,10 +120,16 @@ void CTCPServer::Announce(EAnnouncementFlag flag, const char *sender, const char
 {
   Value root;
   root["jsonrpc"] = "2.0";
-  root["method"]  = message;
+  root["method"]  = "Announcement";
+  root["params"]["sender"] = sender;
+  root["params"]["message"] = message;
+  if (data)
+    root["params"]["data"] = data;
 
   StyledWriter writer;
   string str = writer.write(root);
+
+  printf("Announce %s\n", str.c_str());
 
   for (unsigned int i = 0; i < m_connections.size(); i++)
   {
